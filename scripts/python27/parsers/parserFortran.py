@@ -1216,7 +1216,7 @@ if __name__ == "__main__":
          print '      ~> scanning the entire system: '
          oFiles = {}
          for mod in cfg['MODULES']: oFiles.update( filterPrincipalWrapNames( pFiles,
-            getTheseFiles(path.join(cfg['MODULES'][mod]['path'],'sources'),['.f','.f90']) ) )
+            getTheseFiles(cfg['MODULES'][mod]['path'],['.f','.f90','.F','.F90']) ) )
          if oFiles == {}:
             print '         ... nothing !'
             print '\n... Your program does not seem to be related to the system in this configuration.\n'

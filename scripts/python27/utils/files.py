@@ -73,12 +73,12 @@ def getTheseFiles(root,exts):
    files = []
    if path.exists(root) :
       #@note FD@EDF : allow scan of subdirectories...
-      for dirpath,dirnames,filenames in walk(root) : #break
-         if path.basename(dirpath)[0] == '.': continue
-         for file in filenames :
-            for ext in exts :
-               head,tail = path.splitext(file)
-               if tail.lower() == ext.lower() : files.append(path.join(dirpath,file))
+      #@note SEB@HRW : there must be aother way -- walk is too long
+      for dirpath,dirnames,filenames in walk(root) : break
+      for file in filenames :
+         for ext in exts :
+            head,tail = path.splitext(file)
+            if tail.lower() == ext.lower() : files.append(path.join(dirpath,file))
    return files
 
 """
@@ -185,6 +185,7 @@ def moveFile(fi,po):
 """
 """
 def moveFile2File(fi,fo):
+   if fo == fi: return
    if path.exists(fo):
       try: remove(fo)
       except:

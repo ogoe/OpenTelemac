@@ -19,12 +19,12 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="1"
+   <action xref="1" rank="2"
        do="translate;compile;run;cas;princi"
        code="artemis" target="art_bj78-scal.cas"
        title="bj78 scalar mode"
    />
-   <action xref="2"
+   <action xref="2" rank="2"
        do="translate;compile;run;cas;princi" ncsize="4"
        code="artemis" target="art_bj78-para.cas"
        title="bj78 parallel mode"

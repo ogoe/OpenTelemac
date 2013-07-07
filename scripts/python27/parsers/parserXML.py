@@ -53,7 +53,7 @@
 #
 # ~~> dependencies towards standard python
 import os
-from os import path,remove
+from os import path,remove,walk
 from optparse import Values
 import sys
 from copy import deepcopy
@@ -534,9 +534,14 @@ class actionRUN(ACTION):
                   for pFile in pFiles: print '           - ',pFile
                # ~~> Scans the entire system
                oFiles = {}
-               for mod in cfg['MODULES']: oFiles.update( filterPrincipalWrapNames( pFiles,
-                  getTheseFiles(path.join(cfg['MODULES'][mod]['path'],'sources'),['.f','.f90','.F','.F90']) ) )
-               if oFiles == []:
+               for mod in cfg['MODULES']:
+                  for dirpath,dirnames,filenames in walk(cfg['MODULES'][mod]['path']) : break
+                  for file in filenames:
+                     n,e = path.splitext(file)
+                     for pFile in pFiles:
+                        if pFile.lower() == n:
+                           oFiles.update( filterPrincipalWrapNames( [pFile],[path.join(dirpath,file)] ) )
+               if oFiles == {}:
                   raise Exception([{'name':'ACTION::diffPRINCI','msg':'I could not relate your PRINCI with the system: '+princiFile}])
                else:
                   print '        +> found:'
@@ -1154,6 +1159,14 @@ def runXML(xmlFile,xmlConfig,bypass):
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add extract object to the list'},e,bypass))
             continue   # bypass the rest of the for loop
+
+         # ~~> Temper with rank but still gather intelligence
+         #doex = True
+         #rankdo = ex.active['rank']
+         #rankdont = xmlConfig[cfgname]['options'].todos['act']['rank']
+         #if rankdont != rankdo*int( rankdont / rankdo ): doex = False
+         #ex.updateCFG({'doex':doex})
+         #if not doex: continue
 
          # ~~ Step 2. Cumul layers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          for layer in extracting.findall("layer"):

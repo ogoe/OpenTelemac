@@ -72,7 +72,7 @@ class CSV:
                subset.append(i+1)
                rowvar.append(self.rowvars[i]+' '+self.rowunits[i])
       return (colvar,self.colcore[0]),(rowvar,self.colcore[subset])
-      
+
    def addColumns(self,x,ys):
       if self.colcore == None:
          xunit = '(-)'

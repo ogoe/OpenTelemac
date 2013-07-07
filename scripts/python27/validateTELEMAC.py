@@ -85,97 +85,93 @@
 import sys
 import time
 from os import path,walk,environ
-from numpy import dtype,loadtxt
+from copy import deepcopy
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserXML import runXML
-from utils.messages import MESSAGES,filterMessage
+from utils.messages import MESSAGES,filterMessage,reprMessage
 from utils.files import moveFile2File,putFileContent
 
 # _____                         ____________________________________
 # ____/ Primary Class: REPORTs /___________________________________/
-#
+# TODO: Differentiate reports for action
+#      - needs implementation in runXML
+#      - need a report.tic() and report.toc()
+
 class REPORT:
 
-   # Version number
-   version = ''
-   # Name of the report: [ root, version, '_ValidationSummary_', action/reportName, date, .csv ]
-   fileFields = [ '[version]', 'ValidationSummary', '[name]' , '[date]' ]
-   # Collumns of the report
-   dtReport = dtype([('Case','S30'),('Module','S15'),('Status','S30'),('Duration','S30')])
    # Constant definition
    comment = '#'
    delimiter = ','
-   # File content
-   headers = []
-   columns = []
-   
-   def __init__(self, root, version, reportName ):
+
+   def __init__(self):
+      self.reports = {}
+      self.fileFields = [ '[version]', 'Validation-Summary', time.strftime("%Y-%m-%d-%Hh%Mmin%Ss", time.localtime(time.time())) ]
+      self.fileHeader = []
+
+   def add(self,root,repname,module,version):
       # ~~> Current file name
       self.fileFields[0] = version
-      self.fileFields[2] = reportName
-      self.fileFields[3] = time.strftime("%Y-%m-%d-%Hh%Mmin%Ss", time.localtime(time.time()))
+      self.fileFields[1] = repname
+      if not self.reports.has_key(repname): self.reports.update({ repname:{} })
       self.fileName = path.join( root, '_'.join(self.fileFields)+'.csv' )
       # ~~> Possible existing file name
       for dirpath,dirnames,filenames in walk(root) : break
       for filename in filenames:
          n,e = path.splitext(filename)
-         if e =='.csv' and n.split('_')[0] == version and n.split('_')[2] == reportName:
-            print '      +> Moving existing: ' + n.split('_')[3] + ' to ' + self.fileName
-            moveFile2File(filename,self.fileName)
-      # ~~> Possible existing file name
-      if path.exists(self.fileName):
-         print ' loading '
-         #self.headers = getHeaders(self.fileName)
-         #self.columns = loadtxt(self.fileName, dtype=self.dtReport, comments=self.comment, skiprows=len(self.headers), delimiter=self.delimiter)
-      else:
-         print '      +> Creating: ' + path.basename(self.fileName)
-         self.putContent(['try'])
+         n = n.split('_')
+         if e =='.csv' and n[0] == version and repname in n[1]:
+            if path.join(dirpath,filename) != self.fileName:
+               print '      +> Moving existing: ' + n[2] + ' to ' + path.basename(self.fileName)
+               moveFile2File(path.join(dirpath,filename),self.fileName)
+               self.loadHead(self.fileName)
+               self.reports[repname].update(self.loadCore(self.fileName))
+      # ~~> Storage facility
+      if not self.reports[repname].has_key(module): self.reports[repname].update({ module:{}, 'file':self.fileName })
+   
+   def update(self,repname,module,caseName,caseValue):
+      if self.reports.has_key(repname):
+         if self.reports[repname].has_key(module):
+            self.reports[repname][module].update({ caseName:caseValue })
 
-   # Headers are the first few lines (if any) that start with '#'
-   def getHeaders(self,fileName):
+   def loadHead(self,fileName):
+      self.fileHeader = []
       File = open(fileName,'r')
-      head = []
-      for line in file:
-         if line[0] == self.comment: head.append(line)
+      for line in File:
+         if line[0] == self.comment: self.fileHeader.append(line.strip())
          else: break
-      file.close()
-      return head
+      File.close()
 
-   def putHeaders(self):
-      putFileContent(self.fileName,dtReport)
+   def loadCore(self,fileName):
+      report = {}
+      # ~~> Opening
+      File = open(fileName,'r')
+      # ~~> Parsing
+      for line in File:
+         if line[0] == self.comment: continue
+         row = line.strip().split(self.delimiter)
+         if not report.has_key(row[0]): report.update({ row[0]:{}, 'file':fileName })
+         report[row[0]].update({row[1]:row[2]})
+      # ~~> closure
+      File.close()
+      return report
 
-   def putContent(self,content):
-      putFileContent(self.fileName,content)
-
-class actionREPORT(REPORT):
-   def __init__(self, root, version): REPORT.__init__(self, root,version, 'Action')
-   
-class extractREPORT(REPORT):
-   def __init__(self, root, version): REPORT.__init__(self, root,version, 'Extract')
-
-class drawREPORT(REPORT):
-   def __init__(self, root, version): REPORT.__init__(self, root,version, 'Plot')
-
-class checkREPORT(REPORT):
-   def __init__(self, root, version): REPORT.__init__(self, root,version, 'Check')
-
-
-class REPORTS:
-   
-   def __init__(self):
-      self.reports = {}
-
-   def add(self,root,version):
-      if not self.reports.has_key(root): self.reports.update({root:{}})
-      self.reports[root].update({'act':actionREPORT(root,version)})
-      self.reports[root].update({'get':extractREPORT(root,version)})
-      self.reports[root].update({'draw':drawREPORT(root,version)})
-      self.reports[root].update({'test':checkREPORT(root,version)})
-   
-   def filterRanks(self):
-      return
+   def dump(self):
+      contents = {}
+      for n in self.reports.keys():
+         if self.reports[n]['file'] not in contents.keys():
+            content = deepcopy(self.fileHeader)
+            content.append('Module'+self.delimiter+'Case'+self.delimiter+'Duration')
+            contents.update({ self.reports[n]['file']:content })
+      for n in self.reports.keys():
+         for m in self.reports[n].keys():
+            if m == 'file': continue
+            for z in self.reports[n][m].keys():
+               if z == 'Case': continue
+               contents[self.reports[n]['file']].append( m+self.delimiter+z+self.delimiter+str(self.reports[n][m][z]) )
+      for fileName in contents.keys():
+         putFileContent(fileName,contents[fileName])
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -258,7 +254,19 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~ Manage options to run only ranked actions ~~~~~~~~~~~~~~~~~~~~
-   # if no option are set, then all will be available
+#
+# if no option are set, then all will be available
+#   as a results: todos = {'test': {'todo': '', 'rank': 0}, 'draw': {'todo': '', 'rank': 0}, 'get': {'todo': '', 'rank': 0}, 'act': {'todo': '', 'rank': 0}}
+#   where if rank=0, it can be divided by all prime numbers
+#
+# if one option is set, for instance --act prnci, then all not set will be turned off
+#   as a result: todos = {'test': {'todo': '', 'rank': -1}, 'draw': {'todo': '', 'rank': -1}, 'get': {'todo': '', 'rank': -1}, 'act': {'todo': 'princi', 'rank': 0}}
+#   where 1 or -1 is used to turn off an option as it cannot be divided by any prime number
+#
+# if --rank is used, then all are sreset accordingly, for instance --rank 2.0.1.1
+#   as a result: todos = {'test': {'todo': 'none', 'rank': 1}, 'draw': {'todo': '', 'rank': 0}, 'get': {'todo': 'none', 'rank': 1}, 'act': {'todo': '', 'rank': 2}}
+#   where the numbers are associated to act,draw,get and test respectively
+#
    if options.action + options.drawing + options.extraction + options.criteria == '' :
       # rank = 0 can be divided by all prime numbers
       options.todos = { 'act':{'rank':0,'todo':options.action},
@@ -279,6 +287,10 @@ if __name__ == "__main__":
    # however, if rank is present, then it takes over
    if options.rank != '':
       rank = options.rank.split('.')
+      if len(rank) != 4:
+         print '\nNot able to decode you rank: ' + options.rank
+         print ' ... it should be something like 2.3.1.0, where the numbers are associated to act,draw,get and test respectively.'
+         sys.exit()
       options.todos['act']['rank'] = int(rank[0])
       if abs(options.todos['act']['rank']) == 1:  options.todos['act']['todo'] = 'none'
       options.todos['draw']['rank'] = int(rank[1])
@@ -298,7 +310,7 @@ if __name__ == "__main__":
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    xcpts = MESSAGES()
 # ~~~~ Reporting summary ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if options.report: report = REPORTS()
+   if options.report: report = REPORT()
 
    if args != []:
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -352,13 +364,9 @@ if __name__ == "__main__":
          # parsing for proper naming
          cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
          cfg.update({ 'PWD':PWD })
-         # Reporting per configuration (/root)
-         if options.report:
-            report.add(root,cfgs[cfgname]['version'])
-            print report.reports
-         sys.exit()
          # gathering XMLs
          for codeName in cfg['VALIDATION'].keys():
+            if options.report: report.add(root,'Validation-Summary',codeName,cfgs[cfgname]['version'])
             xmlKeys = cfg['VALIDATION'][codeName]
             if not xmls.has_key(codeName): xmls.update({codeName:{}})
             for key in xmlKeys.keys():
@@ -370,6 +378,7 @@ if __name__ == "__main__":
                      if not xmls[codeName][key].has_key(xmlPath): xmls[codeName][key].update({xmlPath:{}})
                      nxmls += 1
                      xmls[codeName][key][xmlPath].update({cfgname: { 'cfg':cfg, 'options':options } })
+      nxmls = nxmls / len(cfgs.keys())
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -383,47 +392,23 @@ if __name__ == "__main__":
                print '\n\nValidation of ' + key + ' of module ' + codeName
                print '     XML file: < '  + str(ixmls) + '/' + str(nxmls) + ' > ' + xmlFile + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-               #try:
-               tic = time.time()
-               runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass)
-               toc = time.time()
-               ttime = toc-tic
-               if options.report: report.update()
-               #except Exception as e:
-               #   status.append('failed')
-               #   xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
+               try:
+                  tic = time.time()
+                  runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass)
+                  toc = time.time()
+                  if options.report: report.update('Validation-Summary',codeName,key,toc-tic)
+               except Exception as e:
+                  mes = filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)
+                  xcpts.addMessages([mes])
+                  if options.report: report.update('Validation-Summary',codeName,key,'failed') #\n'+reprMessage([mes]))
 
-   """
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<         
 # ~~~~ Writes the Validation Report in a CSV file ~~~~~~~~~~~~~~~~~~~~
-      print '\n\nWritting Validation Report ... on    %s\n\
+      if options.report:
+         print '\n\nWritting Validation Summary Report ... on    %s\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' % (time.ctime(time.time()))
+         report.dump()
 
-      columns = []
-      if options.version != '':
-         if options.postprocess == False and options.criteria == False : 
-            SummaryFile  = path.join(root,'Revision#'+ options.version + '_' + 'ValidationSummaryRun.csv')
-         elif options.postprocess == True and options.criteria == False : 
-            SummaryFile = path.join(root,'Revision#'+ options.version + '_' + 'ValidationSummaryPostProcess.csv')
-         elif options.criteria == True and options.postprocess == False :
-            SummaryFile = path.join(root,'Revision#'+ options.version + '_' + 'ValidationSummaryCriteria.csv')
-         elif options.criteria == True and options.postprocess == True and options.runcase == True: 
-            SummaryFile = path.join(root,'Revision#'+ options.version + '_' + 'ValidationSummary.csv')
-      else : 
-         if options.postprocess == False and options.criteria == False :
-            SummaryFile  = path.join(root,d.isoformat() + '_' + 'ValidationSummaryRun.csv')
-         elif options.postprocess == True and options.criteria == False : 
-            SummaryFile = path.join(root,d.isoformat() + '_' + 'ValidationSummaryPostProcess.csv')
-         elif options.criteria == True and options.postprocess == False: 
-            SummaryFile = path.join(root,d.isoformat() + '_' + 'ValidationSummaryCriteria.csv')
-         elif options.criteria == True and options.postprocess == True and options.runcase == True:
-            SummaryFile = path.join(root,d.isoformat() + '_' + 'ValidationSummary.csv')
-            
-      columns = [cas,module,status]
-      
-      try : pass #putDataCSV(SummaryFile,columns)
-      except : xcpts.addMessages(['I could not write properly the Validation Summary, something went wrong'])
-   """
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
