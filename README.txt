@@ -2,7 +2,7 @@ TELEMAC-MASCARET is an integrated suite of solvers for use in the field of
 free-surface flow. Having been used in the context of many studies throughout
 the world, it has become one of the major standards in its field.
 TELEMAC-MASCARET is managed by a consortium of core organisations: Artelia
-(formerly Sogreah, France), BundesAnstalt für Wasserbau (BAW, Germany), Centre
+(France), BundesAnstalt für Wasserbau (BAW, Germany), Centre
 d’Etudes Techniques Maritimes et Fluviales (CETMEF, France), Daresbury
 Laboratory (United Kingdom), Electricité de France R&D (EDF, France), and HR
 Wallingford (United Kingdom).
