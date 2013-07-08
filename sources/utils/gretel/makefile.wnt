@@ -16,7 +16,7 @@
 #
 #--- Definitions pour SYSTEME TELEMAC
 !include <$(SYSTELCFG)\cfgmak.mak>
-VERSION    = V6P2
+VERSION    = V6P3
 
 
 

@@ -16,7 +16,7 @@
 #
 NOM_GENERIQUE = damo
 
-VERSION	      = v6p2
+VERSION	      = v6p3
 
 ###########################
 # Definition des macros

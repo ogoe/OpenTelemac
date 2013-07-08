@@ -3,7 +3,7 @@
 !                       *********************
 !
 !***********************************************************************
-!  STBTEL VERSION 6.2     19/02/2009   J-M HERVOUET (LNH) 01 30 87 80 18
+!  STBTEL VERSION 6.3     19/02/2009   J-M HERVOUET (LNH) 01 30 87 80 18
 !
 !***********************************************************************
 !
@@ -41,9 +41,9 @@
 !
       INTEGER NSFOND ,NFOND(5)
 !
-      CHARACTER*11 TYPELE
-      CHARACTER*80 TITRE
-      CHARACTER*6  PRECIS
+      CHARACTER(LEN=11) TYPELE
+      CHARACTER(LEN=80) TITRE
+      CHARACTER(LEN=6) PRECIS
 !
       COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
@@ -121,7 +121,7 @@
      &14X,'   SSSSS    T    BBBB     T    EEEE   L    ',/,
      &14X,'       S    T    B   B    T    E      L    ',/,
      &14X,'   SSSSS    T    BBBB     T    EEEEE  LLLLL',//,
-     &14X,'            VERSION 6.2  FORTRAN 90                 ',/////)
+     &14X,'            VERSION 6.3  FORTRAN 90                 ',/////)
 !
 !=======================================================================
 ! LECTURE DU FICHIER CAS

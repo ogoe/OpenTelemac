@@ -10,7 +10,7 @@
 /
 &DYN
 /
-/---SYSTEME-TELEMAC-V6P2------------------------------TELEMAC-3D-------------
+/---SYSTEME-TELEMAC-V6P3------------------------------TELEMAC-3D-------------
 /
 /Signification des differents mode d'acquisition/restitution
 /des fichiers vis a vis du parallelisme :
@@ -40,7 +40,7 @@
 /     Cette valeur designe le fichier des "conditions aux limites"	
 /     (utilise par le decoupeur "partel").
 /
-/---SYSTEME-TELEMAC-V6P2------------------------DeltaCAD-/-Septembre-2003----
+/---SYSTEME-TELEMAC-V6P3------------------------DeltaCAD-/-Septembre-2003----
 /
 NOM = 'NOMBRE DE PAS DE TEMPS'
 NOM1 = 'NUMBER OF TIME STEPS'
@@ -2310,8 +2310,8 @@ TYPE = CARACTERE
 INDEX = 12
 MNEMO = ''
 TAILLE = 0
-DEFAUT = 'V6P2'
-DEFAUT1 = 'V6P2'
+DEFAUT = 'V6P3'
+DEFAUT1 = 'V6P3'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
@@ -2326,8 +2326,8 @@ TYPE = CARACTERE
 INDEX = 13
 MNEMO = ''
 TAILLE = 0
-DEFAUT = 'V5P8'
-DEFAUT1 = 'V5P8'
+DEFAUT = 'V6P3'
+DEFAUT1 = 'V6P3'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
@@ -6131,8 +6131,8 @@ TYPE = CARACTERE
 INDEX = 100
 MNEMO = ''
 SUBMIT = 'INUTILE;T3DDICO;OBLIG;ASC;LIT;DICO'
-DEFAUT = 'telemac3dV6P2.dico'
-DEFAUT1 = 'telemac3dV6P2.dico'
+DEFAUT = 'telemac3d.dico'
+DEFAUT1 = 'telemac3d.dico'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
 NIVEAU = -3

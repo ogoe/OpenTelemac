@@ -17,7 +17,7 @@
 #
 NOM_GENERIQUE = mumps
 
-VERSION	      = v6p2
+VERSION	      = v6p3
 #
 ###########################
 # Definition des macros
