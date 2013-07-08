@@ -65,7 +65,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, ONLY : NBMAXNSHARE, NCSIZE, NPTIR
+      USE BIEF, ONLY : NBMAXNSHARE, NCSIZE, NPTIR, CHAIN_TYPE
       IMPLICIT NONE
 !
 !     MAXIMUM NUMBER OF HALO, IN THE PARALLEL VERSION THE NUMBER OF HALO WILL BE DIRECTLY COMPUTED
@@ -190,13 +190,6 @@
 !
 ! #### FOR SECTIONS 
 !
-      TYPE CHAIN_TYPE
-        INTEGER :: NPAIR(2)
-        DOUBLE PRECISION :: XYBEG(2), XYEND(2)
-        CHARACTER(LEN=24) :: DESCR
-        INTEGER :: NSEG
-        INTEGER, POINTER :: LISTE(:,:) 
-      END TYPE CHAIN_TYPE
       TYPE (CHAIN_TYPE), ALLOCATABLE :: CHAIN(:)
       INTEGER, PARAMETER :: NSEMAX=500 ! MAX NUMBER OF SEGMENTS IN A SECTION 
       INTEGER, ALLOCATABLE :: LISTE(:,:), ANPBEG(:),ANPEND(:) 
