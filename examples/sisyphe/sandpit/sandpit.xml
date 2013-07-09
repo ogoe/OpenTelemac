@@ -19,7 +19,7 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="Built"
+   <action xref="Built" rank="7"
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_sandpit.cas"
        title="Run Sandpit with coupled sisyphe telemac"

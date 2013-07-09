@@ -19,7 +19,7 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="1"
+   <action xref="1" rank="3"
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_conservation.cas"
        title="conservation T2D+SIS scalar mode"

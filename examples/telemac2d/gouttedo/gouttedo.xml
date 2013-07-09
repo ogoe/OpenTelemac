@@ -19,27 +19,27 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="1"
+   <action xref="1" rank="5"
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_gouttedo.cas"
        title="gouttedo scalar mode"
    /> 
-   <action xref="2"
+   <action xref="2" rank="5"
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_gouttedo_cin.cas"
        title="gouttedo scalar mode"
    /> 
-   <action xref="3"
+   <action xref="3" rank="5"
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_gouttedo_qua.cas"
        title="gouttedo scalar mode"
    />
-      <action xref="4"
+      <action xref="4" rank="5"
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_gouttedo.cas"
        title="gouttedo parallel mode"
    /> 
-   <action xref="5"
+   <action xref="5" rank="5"
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_gouttedo_qua.cas"
        title="gouttedo parallel mode"

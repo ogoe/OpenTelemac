@@ -19,12 +19,12 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="1"
+   <action xref="1" rank="2"
        do="translate;compile;run;cas;princi"
        code="sisyphe" target="sis_bosse.cas"
        title="bosse-analyt scalar mode sisyphe only"
    />
-   <action xref="2"
+   <action xref="2" rank="2"
        do="translate;compile;run;cas;princi" ncsize="4"
        code="sisyphe" target="sis_bosse.cas"
        title="bosse-analyt parallel mode sisyphe only"

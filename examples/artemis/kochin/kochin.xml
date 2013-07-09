@@ -19,7 +19,7 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="1" rank="2"
+   <action xref="1"  rank="2"
        do="translate;compile;run;cas;princi"
        code="artemis" target="kochin.cas"
        title="Incident potential from kochin function"

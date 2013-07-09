@@ -19,12 +19,12 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="1" 
+   <action xref="1"  rank="2"
        do="translate;compile;run;cas;princi" 
        code="stbtel" target="stb_srf_to_vtk_mesh_only.cas" 
        title="srf_to_vtk without results scalar mode" 
    />
-   <action xref="2" 
+   <action xref="2"  rank="2"
        do="translate;compile;run;cas;princi" 
        code="stbtel" target="stb_srf_to_vtk_2d_results.cas" 
        title="srf_to_vtk with 2d results scalar mode" 

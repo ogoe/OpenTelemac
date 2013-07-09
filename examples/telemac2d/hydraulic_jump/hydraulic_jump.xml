@@ -19,12 +19,12 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="1"
+   <action xref="1" rank="5"
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_hydraulic_jump_v1p0.cas"
        title="hydraulic_jump scalar mode"
    /> 
-   <action xref="2"
+   <action xref="2" rank="5"
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_hydraulic_jump_v2p0.cas"
        title="hydraulic_jump scalar mode"

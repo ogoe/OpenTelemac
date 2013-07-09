@@ -19,7 +19,7 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="RunCase"
+   <action xref="RunCase" rank="7"
        do="translate;compile;run;cas;princi"
        code="sisyphe" target="sis_foulness.cas"
        title="Run Foulness with uncoupled sisyphe"

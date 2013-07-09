@@ -19,12 +19,12 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="1" 
+   <action xref="1"  rank="3"
        do="translate;compile;run;cas;princi" 
        code="tomawac" target="tom_shoal.cas" 
        title="shoal scalar mode" 
    />
-   <action xref="2" 
+   <action xref="2"  rank="3"
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="tomawac" target="tom_shoal.cas" 
        title="shoal parallel mode" 

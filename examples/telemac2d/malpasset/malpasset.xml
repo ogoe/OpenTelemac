@@ -19,47 +19,47 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="1" 
+   <action xref="1"  rank="3"
        do="translate;compile;run;cas;princi" 
        code="telemac2d" target="t2d_malpasset-small.cas" 
        title="malpasset scalar mode" 
    />  
-   <action xref="2" 
+   <action xref="2"  rank="3"
        do="translate;compile;run;cas;princi" 
        code="telemac2d" target="t2d_malpasset-large.cas" 
        title="malpasset scalar mode" 
    /> 
-   <action xref="3" 
+   <action xref="3"  rank="3"
        do="translate;compile;run;cas;princi" 
        code="telemac2d" target="t2d_malpasset-small_cin.cas" 
        title="malpasset scalar mode" 
    />  
-   <action xref="4" 
+   <action xref="4"  rank="3"
        do="translate;compile;run;cas;princi" 
        code="telemac2d" target="t2d_malpasset-small_pos.cas" 
        title="malpasset scalar mode" 
    />  
-   <action xref="5" 
+   <action xref="5"  rank="3"
        do="translate;compile;run;cas;princi" 
        code="telemac2d" target="t2d_malpasset-small_prim.cas" 
        title="malpasset scalar mode" 
    />
-   <action xref="6" 
+   <action xref="6"  rank="3"
        do="translate;compile;run;cas;princi" ncsize="4"  
        code="telemac2d" target="t2d_malpasset-small.cas" 
        title="malpasset parallel mode" 
    />  
-   <action xref="7" 
+   <action xref="7"  rank="3"
        do="translate;compile;run;cas;princi" ncsize="4"  
        code="telemac2d" target="t2d_malpasset-large.cas" 
        title="malpasset parallel mode" 
    /> 
-   <action xref="8" 
+   <action xref="8"  rank="3"
        do="translate;compile;run;cas;princi" ncsize="4"  
        code="telemac2d" target="t2d_malpasset-small_pos.cas" 
        title="malpasset parallel mode" 
    />  
-   <action xref="9" 
+   <action xref="9"  rank="3"
        do="translate;compile;run;cas;princi" ncsize="4"  
        code="telemac2d" target="t2d_malpasset-small_prim.cas" 
        title="malpasset parallel mode" 

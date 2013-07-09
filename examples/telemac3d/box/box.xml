@@ -19,7 +19,7 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="t3d_Run" 
+   <action xref="t3d_Run"  rank="7"
        do="translate;compile;run;cas;princi" 
        code="telemac3d" target="t3d_box.cas" 
        title="box scalar mode" 
