@@ -35,6 +35,7 @@ INFORMATION ABOUT SOLVER        = YES
 /----------------------------------------------
 /
 COMPUTATION CONTINUED           = NO 
+INITIAL CONDITIONS : 'PARTICULAR'
 /
 /----------------------------------------------
 /  PHYSICAL PARAMETERS
