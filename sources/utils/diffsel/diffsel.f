@@ -239,7 +239,7 @@
      &    EPSILON = ABS(XTAB(K)-YTAB(K) )
 54          CONTINUE
           IF (EPSILON .GT. EPSREF) THEN
-            PRINT*, ' #11 ... ERREUR : EPSILON = ', EPSILON, ', T = ', R1
+           PRINT*, ' #11 ... ERREUR : EPSILON = ', EPSILON, ', T = ', R1
           ENDIF
 850   CONTINUE
 !

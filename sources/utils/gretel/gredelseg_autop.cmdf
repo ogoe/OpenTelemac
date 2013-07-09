@@ -7,7 +7,8 @@ name: GREDELSEG_AUTOP
 
 [gretel]
 path: <root>|sources|utils|gretel
-files: gredelseg_autop.f
+files: gredelpts_read_dataset.f
+  gredelseg_autop.f
 
 [bief]
 path: <root>|sources|utils|bief
@@ -15,7 +16,10 @@ files: bief_def.f
   bief.f
   stoseg.f
   voisin.f
+  elebd.f
 
 [special]
 path: <root>|sources|utils|special
 files: plante.f
+  check_allocate.f
+  extens.f

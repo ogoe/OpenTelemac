@@ -1,10 +1,25 @@
 [general]
 path: <root>|sources|utils|gretel
 module: gretel
-liborder: gretel
+liborder: special bief gretel
 version: v6p3
 name: GREDELMET_AUTOP
 
 [gretel]
 path: <root>|sources|utils|gretel
-files: gredelmet_autop.f
+files: gredel_fdnrst.f
+  gredelmet_autop.f
+
+[bief]
+path: <root>|sources|utils|bief
+files: bief_def.f
+  bief.f
+  stoseg.f
+  voisin.f
+  elebd.f
+
+[special]
+path: <root>|sources|utils|special
+files: plante.f
+  check_allocate.f
+  extens.f

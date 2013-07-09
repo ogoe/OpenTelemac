@@ -1,10 +1,19 @@
 [general]
 path: <root>|sources|utils|gretel
 module: gretel
-liborder: gretel
+liborder: special gretel
 version: v6p3
 name: GRETEL_AUTOP
 
 [gretel]
 path: <root>|sources|utils|gretel
-files: gretel_autop.f
+files: gretel_read_dataset.f
+  gretel_skip_header.f
+  gretel_cpikle2.f
+  gretel_autop.f
+
+[special]
+path: <root>|sources|utils|special
+files: extens.f
+  plante.f
+  check_allocate.f

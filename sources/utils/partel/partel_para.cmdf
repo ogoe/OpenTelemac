@@ -5,6 +5,11 @@ liborder: parallel special bief partel
 version: v6p3
 name: PARTEL_PARA
 
+[partel]
+path: <root>|sources|utils|partel
+files: partitioner_para.F
+  partel_para.F
+
 [bief]
 path: <root>|sources|utils|bief
 files: bief_def.f
@@ -12,11 +17,6 @@ files: bief_def.f
   front2.f
   voisin.f
   elebd.f
-
-[partel]
-path: <root>|sources|utils|partel
-files: partitioner_para.F
-  partel_para.F
 
 [parallel]
 path: <root>|sources|utils|parallel

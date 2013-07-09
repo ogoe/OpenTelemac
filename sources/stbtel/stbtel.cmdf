@@ -69,13 +69,13 @@ files: longlu.f
   next.f
   carlu.f
   influ.f
+  dico.f
   loglu.f
   classe.f
   aidelu.f
   intlu.f
-  dico.f
-  realu.f
   prev.f
+  realu.f
   damoc.f
   damocles.f
 
