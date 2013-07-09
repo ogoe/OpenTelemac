@@ -189,8 +189,8 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    USETELCFG = ''
    if environ.has_key('USETELCFG'): USETELCFG = environ['USETELCFG']
-   PWD = path.dirname(sys.argv[0])
-   SYSTELCFG = path.join(path.dirname(PWD),'config')
+   PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
+   SYSTELCFG = path.join(PWD,'configs')
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")

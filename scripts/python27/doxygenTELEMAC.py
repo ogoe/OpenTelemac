@@ -474,8 +474,8 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    CFGNAME = 'doxydocs'
-   PWD = path.dirname(path.dirname(sys.argv[0]))
-   SYSTELCFG = path.join(PWD,'config')
+   PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
+   SYSTELCFG = path.join(PWD,'configs')
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
