@@ -11,7 +11,7 @@
 /
 /  - "SCAL" :	
 /     Meme fichier pour tous les processeurs lu par tous.	
-/     Seule la version du maetre est consideree apres calcul.
+/     Seule la version du maitre est consideree apres calcul.
 /
 /  - "SELAFIN" :	
 /     Le fichier est "decompose/regroupe en sous-domaines" avec les outils
