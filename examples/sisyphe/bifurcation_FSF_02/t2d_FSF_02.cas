@@ -14,7 +14,8 @@ BOUNDARY CONDITIONS FILE          : geo_FSF_02.cli
 RESULTS FILE                      : r2d_FSF_02.slf
 COMPUTATION CONTINUED             : YES
 PREVIOUS COMPUTATION FILE         : r2d_FSF_02_init.slf
-FORTRAN FILE                      : conlit_v6p3.f
+REFERENCE FILE                    : f2d_FSF_02.slf
+VALIDATION : YES
 /
 /---------------------------------------------------------------------/
 /       GENERAL INFORMATIONS                                          /
@@ -22,9 +23,9 @@ FORTRAN FILE                      : conlit_v6p3.f
 /
 TITLE            : 'F.S.F. in a fixed rectangular channel with a bump'
 VARIABLES FOR GRAPHIC PRINTOUTS                 : 'H,U,V,Q,S,B'
-TIME STEP                                       : 1
+TIME STEP                                       : 1.
 GRAPHIC PRINTOUT PERIOD                         : 100
-LISTING PRINTOUT PERIOD                         : 50
+LISTING PRINTOUT PERIOD                         : 100
 NUMBER OF TIME STEPS                            : 1000
 /
 /---------------------------------------------------------------------/

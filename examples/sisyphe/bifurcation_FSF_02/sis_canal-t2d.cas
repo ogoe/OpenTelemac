@@ -3,7 +3,7 @@
 /       Free Surface Flow (FSF) in a fixed rectangular channel        /
 /       with a little bump in the beginning                           /
 /---------------------------------------------------------------------/
-/       AUTHOUR : Fabio Mattia                                        /
+/       AUTHOR : Fabio Mattia                                         /
 /       DATE    : 25/01/2013                                          /
 /---------------------------------------------------------------------/
 /       COMPUTER INFORMATIONS                                         /
@@ -13,6 +13,8 @@ GEOMETRY FILE                     : geo_FSF_02.slf
 /BOUNDARY CONDITIONS FILE          : geo_FSF_02.cli
 BOUNDARY CONDITIONS FILE          : sis_FSF_02.cli
 RESULTS FILE                      : sis_FSF_02.slf
+REFERENCE FILE                    : fis_FSF_02.slf
+VALIDATION                        : YES
 /
 /---------------------------------------------------------------------/
 /       GENERAL INFORMATIONS                                          /
