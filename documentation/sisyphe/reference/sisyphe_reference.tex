@@ -23,6 +23,8 @@
 % Optional but mandatory for EDF publications                        %
 \def\EDF_Eureka{1}
 \if\EDF_Eureka1
+  \def \eurekaTYPE{Reference manual}
+  \def \eurekaMODULE{\sisyphe}
   \usepackage[rddoc]{\edf/noteEDF}
 \fi
 %                                                                    %
@@ -68,8 +70,19 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % AUTHORS...                                                         %
-% CORPUS : TO BE MODIFIED BY AUTHORS                                 %
+% CORPUS : TO BE MODIFIED BY AUTHORS
+% Non-cohesive sediments: 
+\input{\texfile/PART1}
+\pagebreak
 \input{\texfile/CORPUS}
+\pagebreak
+\input{\texfile/PART2}
+\pagebreak
+% Cohesive sediments:
+\input{\texfile/CORPUS_COH}
+\pagebreak
+% Bibliography:
+\input{\texfile/BIBLIOGRAPHY}
 %                                                                    %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 

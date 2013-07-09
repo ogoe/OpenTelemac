@@ -1,133 +1,126 @@
-\section{Mixed sediments}\footnote{This chapter has been written by D. Phan van Bang, Lan and Villaret}
+\section{Mixed sediments}%\footnote{This chapter has been written by D. Phan van Bang, Lan and Villaret}
 
 \label{ch:mixed}
 
 \subsection{Sediment bed composition}
 
-Characteristics of each class\newline
-Sand-mud mixture can be represented in SISYPHE by using two classes of bed
-sediments (NSICLA= 2). This recent developments available in release 6.2
-require further testing and improvement. \newline
-The first class (noted 1) is non-cohesive and represented by its grain
-diameter D$_{1}$ and can be transported as bed-load or suspended load. The
-settling velocity W$_{s1}$ is a function of the relative sediment density
-(s=1.65) and grain diameter D$_{1}$. So far we assume only suspended load,
+\subsubsection{Characteristics of each class}
+Sand-mud mixture can be represented in \sisyphe by using two classes of bed
+sediments (\texttt{NSICLA= 2}). This recent developments available in release 6.3
+require further testing and improvement. 
+The \textbf{first class (noted 1) is non-cohesive} and represented by its grain
+diameter $D_1$ and can be transported as bed-load or suspended load. The
+settling velocity $w_{s1}$ is a function of the relative sediment density
+($s=1.65$) and grain diameter $D_1$. So far we assume only suspended load,
 which implies that the model is devoted to mixtures of fine sand grains and
-mud.\newline
-The second class (noted 2) is cohesive , grain diameter D$_{2}$ less than 60
-mm. The settling velocity W$_{s2}$ is a function of flocs properties which
+mud.
+
+The \textbf{second class (noted 2) is cohesive}, grain diameter $D_2$ less than $60$
+mm. The settling velocity $w_{s2}$ is a function of flocs properties which
 differs from the individual cohesive particles, and needs to be specified. 
-\newline
-Vertical structure of the sediment bed\newline
+
+\subsubsection{Vertical structure of the sediment bed}
 The vertical structure can be stratified as for pure mud. The bed is
-discretized into vertical layers up to a maximum number of layers (NOMBLAY%
-\texttt{<}20). Each layer is characterized by a constant value of the mass
-concentration for the mud, which can be specified in the steering file (C$%
-_{si}$ for i=1, NOMBLAY). \newline
-Note: the mass concentration of the mud component is defined for the mud
+discretized into vertical layers up to a maximum number of layers (\texttt{NOMBLAY <20}). 
+Each layer is characterized by a constant value of the mass
+concentration for the mud, which can be specified in the steering file ($C_{si}$ for \texttt{i=1, NOMBLAY}). 
+
+\begin{bclogo}[couleur = blue!10, arrondi = 0.10, logo = \bcattention]{\textsf{Attention}}
+The mass concentration of the mud component is defined for the mud
 only (i.e. mass of sediments per volume of mud). The initial bed layer
-thicknesses can be specified in subroutine init\_mixte.f, and varies as the
+thicknesses can be specified in subroutine \texttt{init\_mixte.f}, and varies as the
 bed undergoes erosion/deposition. The consolidation of sand/mud mixture is
-not yet developed. \newline
+not yet developed.
+\end{bclogo}
+
 The time and spatial variation in the sediment composition is obtained by
 variation in the composition of each layers (Percent of the mud and mass of
-sand per layers). \newline
-Percent of mud/sand mixture\newline
-For layer j\newline
+sand per layers). 
 
-Phase 1: Sand grains, density $\rho$$_{s}$
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.3,angle=0]{graphics/mudsand_1.png}
+\caption{Percent of mud/sand mixture for layer $j$.}\label{fig:mudsand1}
+\end{center}
+\end{figure}
 
-Phase 2: Mud bed mass density C$_{s}$
-
-Es
-
-The composition of the sediment bed depends on the percent of each class (P$%
-_{1}$,P$_{2}$) needs to be specified. In consistency with the algorithm for
-sand grading effects, P$_{i}$ represents the volume of class i divided by
-the total volume, such that $P_{2} +P_{1} =1$
-
+The composition of the sediment bed depends on the percent of each class ($P_1, P_2$) needs to be specified. In consistency with the algorithm for sand grading effects, $P_i$ represents the volume of class $i$ divided by
+the total volume, such that $P_1+P_2 =1$:
 \begin{equation*}
-P_{i} =\frac{V_{i} }{V_{t} } 
+P_i = \frac{V_i}{V_t}, 
 \end{equation*}
-where V$_{i}$ is the volume occupied by component i, and $V_{t} =V_{2}
-+V_{1} $, the total volume.\newline
-The total thickness of layer j is decomposed into Es= Es$_{1}$ + Es$_{2}$
-with Es$_{i}$ = p$_{i}$ Es.
-
-The total mass of the sand-mud mixture (M$_{t}$) is :
-
+where $V_i$ is the volume occupied by component $i$, and $V_t=V_1+V_2$, the total volume. The total thickness of the layer $j$ is decomposed into $Es= Es_1 + Es_2$, with $Es_i = p_i Es$. The total mass of the sand-mud mixture ($M_t$) is:
 \begin{equation*}
 M_{t} =C_{s} V_{2} +\rho _{s} V_{1} =\left( C_{s} P_{2} +\rho _{s} P_{1}
 \right) V_{t} 
 \end{equation*}
-With $\rho$$_{s}$ = 2650 Kg/m$^{3}$ (sand density) which is constant, while
-for the mud, C$_{s}$ depends on the consolidation state and is constant per
-sediment bed layer. It is specified by using keyword 'MUD CONCENTRATION PER
-LAYER'.\newline
-Mass balance\newline
-The total mass of the sand-mud mixture (M$_{t}$) is :
+with $\rho_s = 2650$ kg/m$^{3}$ (constant sand density), while
+for the mud, $C_s$ depends on the consolidation state and is constant per
+sediment bed layer. It is specified by using keyword \texttt{MUD CONCENTRATION PER
+LAYER}.
 
+\subsubsection{Mass balance}
+The total mass of the sand-mud mixture ($M_t$) is:
 \begin{equation*}
-M_{t} =C_{s} V_{2} +\rho _{s} V_{1} =\left( C_{s} P_{2} +\rho _{s} P_{1}
-\right) V_{t} 
+M_t =C_s V_2 + \rho_s V_1 = \left(C_sP_2+\rho_sP_1\right)V_t. 
 \end{equation*}
 We define for each class the mass per surface area and per layer:
-
-\begin{gather*}
-MS\_VASE=CsP_{2} Es \\
-MS\_SAND=\rho _{s} P_{1} Es
-\end{gather*}
-
-For the mass balance of the mud phase (phase 2)
-
 \begin{equation*}
-M_{2} =\sum\limits_{i=1,Npoin}\left[ \underbrace{\sum%
-\limits_{j=1,Nomblay}P_{2}^{} Cs_{}^{} Es_{} } Ms\_vase\right] _{j} S_{i} 
+MS\_VASE=\left\{\begin{array}{l}
+Cs\,P_2\,Es \\
+\rho_s\,P_1\, Es
+\end{array}
+\right. 
+\end{equation*}
+
+For the mass balance of the mud phase (phase 2):
+\begin{equation*}
+M_2 =\sum\limits_{i=1,Npoin}
+\left[\underbrace{\sum\limits_{j=1,Nomblay}P_2\,Cs\,Es}_{MS\_VASE}\right]_j S_i 
 \end{equation*}%
-Initialization\newline
-The initial percent of each class (p$_{1}$,p$_{2}$) needs to be specified.
-The keyword `INITIAL FRACTION FOR PARTICULAR SIZE CLASS' can be applied, if
-the initial distribution is constant (per layer and per node). \newline
-In the mass balance for each class, the total mass per unit surface area
-must account for the fraction of each class:
 
-Keywords:\newline
-Type of sediments\newline
-$\neg$\hspace{5mm} 'MIXED SEDIMENT' (default MIXTE = No)\newline
-$\neg$\hspace{5mm} If Mixte =Yes: \newline
-o\hspace{5mm} 'COHESIVE SEDIMENTS' (SEDCO) =YES, NO\hspace{5mm} \newline
-o\hspace{5mm} 'NUMBER OF SIZE-CLASSES OF BED MATERIAL' (NSICLA) = 2\newline
-$\neg$\hspace{5mm} `SEDIMENT DIAMETERS' = D1\texttt{>}0.00006 (non-cohesive
-sediment), D2(D$_{2}$\texttt{<}0.00006 m, for cohesive sediment)\newline
-$\neg$\hspace{5mm} `SEDIMENT DENSITY' ($\rho$$_{s}$= 2650 Kg/m$^{3}$,
-default value)\newline
-$\neg$\hspace{5mm} `settling velocities' = Ws$_{1}$, Ws$_{2}$
+\subsubsection{Initialization}
+The initial percent of each class ($p_1, p_2$) needs to be specified.
+The keyword \texttt{INITIAL FRACTION FOR PARTICULAR SIZE CLASS} can be applied, if
+the initial distribution is constant (per layer and per node). In the mass balance for each class, the total mass per unit surface area must account for the fraction of each class:
 
-Bed composition\newline
-$\neg$\hspace{5mm} 'NUMBER OF LAYERS OF THE CONSOLIDATION MODEL'
-(NOMBLAY=10, default )'\newline
-$\neg$\hspace{5mm} 'MUD CONCENTRATION PER LAYER' in Kg/m$^{3}$ (CONC\_VASE=
-50.; 100.;..,by default )\newline
-$\neg$\hspace{5mm} INITIAL FRACTION FOR PARTICULAR SIZE CLASS : p$_{1}$; p$%
-_{2}$
+For the type of sediments:
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+\begin{itemize}
+\item {\ttfamily MIXED SEDIMENT = YES} ({\ttfamily = NO}, default option)
+\item {\ttfamily COHESIVE SEDIMENTS = YES} ({\ttfamily = NO}, default option)
+\item {\ttfamily NUMBER OF SIZE-CLASSES OF BED MATERIAL = 2} ({\ttfamily NSICLA}) 
+\item {\ttfamily SEDIMENT DIAMETERS = D1, D2} (for non-cohesive sediments {\ttfamily D1>6.0E-5}, for cohesive sediments {\ttfamily D1<6.0E-5}.)
+\item {\ttfamily SETTLING VELOCITIES = $ws_1$, $ws_2$} 
+\end{itemize}
+\end{bclogo}
+
+For the bed composition:
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+\begin{itemize}
+\item {\ttfamily NUMBER OF LAYERS OF THE CONSOLIDATION MODEL} ({\ttfamily NOMBLAY = 10}, default option)
+\item {\ttfamily MUD CONCENTRATION PER LAYER} (in kg/m$^3$, {\ttfamily CONC\_VASE=
+50.; 100.;...}, default option)
+\item {\ttfamily INITIAL FRACTION FOR PARTICULAR SIZE CLASS = $p_1$; $p_2$} 
+\end{itemize}
+\end{bclogo}
 
 \subsection{Erosion/deposition fluxes}
-
-The erosion/deposition fluxes now depends on the mass \% of each class in
+The erosion/deposition fluxes now depends on the mass pourcentage $\%$ of each class in
 the surface layer (Panagiotopoulos et al., 1997). If the mass percent of the
-mud class is greater than 50\% the bed is considered as pure `cohesive' and
+mud class is greater than $50\%$, the bed is considered as pure cohesive and
 the erosion/deposition laws follow the Partheniades classical law. (see
-below for the calculation of the bed shear strength in a sand/mud mixture).%
-\newline
-If the mud percentage is less than 30 \%, the bed is considered as non
-cohesive, and has little effect on the bed shear strength.\newline
-Once sediment particles have been put in suspension, they are transported
-independently, by solving for each class, a transport equation for the
+below for the calculation of the bed shear strength in a sand/mud mixture).
+
+If the mud percentage is less than $30\%$, the bed is considered as non
+cohesive, and has little effect on the bed shear strength. Once sediment particles have been put in suspension, they are transported independently, by solving for each class, a transport equation for the
 volume concentration of the individual sediment particles (deflocculated)
 defined as:
 
 \begin{equation*}
-C_{\substack{ i  \\ }}^{} =\frac{C_{i} }{\rho _{s} } 
+C_i =\frac{C_i}{\rho_s} 
 \end{equation*}
 
 Mud flocs in suspension
@@ -135,109 +128,103 @@ Mud flocs in suspension
 Sand grains in suspension
 
 \begin{equation*}
-\frac{\partial C_{i} }{\partial t} +U_{conv} \frac{\partial C_{i} }{\partial
-x} +V_{conv} \frac{\partial C_{i} }{\partial y} =\left[ \frac{\partial }{%
-\partial x} \left( \epsilon _{s} \frac{\partial C_{i} }{\partial x} \right) +%
-\frac{\partial }{\partial y} \left( \epsilon _{s} \frac{\partial C_{i} }{%
-\partial y} \right) \right] +\frac{(E_{i} -D_{i} )}{h} 
+\frac{\partial C_i}{\partial t} + U_{conv}\frac{\partial C_i}{\partial
+x} +V_{conv} \frac{\partial C_i}{\partial y} =\left[\frac{\partial }{%
+\partial x} \left(\epsilon_s\frac{\partial C_i}{\partial x} \right) +%
+\frac{\partial }{\partial y} \left( \epsilon_s\frac{\partial C_i}{%
+\partial y} \right) \right] +\frac{(E_i - D_i)}{h} 
 \end{equation*}%
 The erosion flux is determined for each class of sediments as a function of
-the bed composition.\newline
-The deposition flux D= W$_{si}$ C$_{i}$ is an implicit term.
+the bed composition. The deposition flux $D= w_{si} C_i$ is treated implicitly.
 
-Erosion law for sand mud mixture
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.3,angle=0]{graphics/mudsand_2.png}
+\caption{Concentration of the individual sediment particles.}\label{fig:mudsand2}
+\end{center}
+\end{figure}
 
+\subsection{Erosion law for sand mud mixture}
 The rate of erosion is based on the Partheniades erosion law, where the
 critical bed shear strength of the mud class depends on the consolidation
 state.
 
-The bed shear strength of the sand mud mixtures depends on the \% of mud (P$%
-_{2}$ at the surface top layer). We follow here the method of Waeles (2005,
-[36]).\newline
-The erosion rate E$_{(1+2)}$ is calculated for the mixture and then for each
-class Ei.
-
-E$_{i}$= P$_{i}$ E$_{(1+2)}$
-
-$\neg$ C\texttt{>}50\%: mud dominant\newline
-We apply the Krone erosion law:
-
-\begin{gather*}
-E_{(1+2)} =M\left[ \left( \frac{u_{*} }{u_{*e}^{} } \right) ^{2} -1\right]
-\;\;for\;\;\tau _{b} =\rho u_{*}^{2} >\tau _{ce} =\rho u_{*e}^{2} \\
-E_{(1+2)} =0\;\;if\,\tau _{b} <\tau _{ce}
-\end{gather*}
-
-$\neg$ C\texttt{<}30\%: sand dominant\newline
-We apply the Zyserman and Fredsoe equilibrium concentration:
+The bed shear strength of the sand mud mixtures depends on the \% of mud ($P_2$ at the surface top layer). We follow here the method of Waeles (2005, [36]). The erosion rate $E_{(1+2)}$ is calculated for the mixture and then for each class $E_i$:
+\begin{equation*}
+E_i = P_i E_{(1+2)}.
+\end{equation*}%
+\begin{itemize}
+\item If $C>50\%$ then mud dominant. We apply the Krone erosion law:
 
 \begin{equation*}
-E_{(1+2)} =W_{s1} C_{eq} \;\;for\;\;\tau _{b} =\rho u_{*}^{2} >\tau _{ce}
-=\rho u_{*e}^{2} 
+E_{(1+2)} = \left\{\begin{array}{ll}
+M\left[\left(\frac{u_*}{u_{*e}} \right)^2-1\right]\quad & \text{if}\,\,\tau_b=\rho u_*^2>\tau_{ce}=\rho u_{*e}^2\\  
+0\quad & \text{if}\,\,\tau_b<\tau_{ce}
+\end{array}
+\right. 
 \end{equation*}
-$\neg$ 30\%\texttt{<}C\texttt{<}50\%: intermediate range.\newline
-We assume a linear interpolation of erosion rates for each class.
+
+\item If C\texttt{<}30\%: sand dominant. We apply the Zyserman and Fredsoe equilibrium concentration:
+\begin{equation*}
+E_{(1+2)} = w_{s1} C_{eq}\quad\text{for}\quad tau_b=\rho u_*^2>\tau_{ce}=\rho u_{*e}^2 
+\end{equation*}
+
+\item If $30\%<C<50\%$: intermediate range. We assume a linear interpolation of erosion rates for each class.
+\end{itemize}
 
 \subsection{Bed evolution}
-
 The bed evolution for both phases is calculated differently following the
 method for pure mud or pure sand; This is not entierely correct and should
-be modified in the near future:
+be modified in the near future.
 
-For sand (phase 1).\newline
+\subsubsection{For sand (phase 1)}
 We assume the first layer to be greater than the active layer thickness,
 such that the sand percent can be considered to be constant and equal to the
 percent of the top layer.
 
 \begin{equation*}
-P_{1} dZ_{f1} =(D_{1} -E_{1} )Dt 
+P_1 dZ_{f1} =(D_1 - E_1)\,Dt 
 \end{equation*}
+
 In this mass balance for sand, we do not consider the void ratio, since it
 is entirely filled by the fine sediments (the volume concentration of the
-sand phase is 1, instead of (n-1), where n is the bed porosity in case of
-either pure sand or sand mixtures).\newline
-If there is net erosion $(E_{1} -D_{1} )>0$: the first layer Es$_{1}$ is
-decreased Es$_{1}$=Es$_{1}$-P$_{1}$dZf$_{1}$\newline
-which is only correct if Es$_{1}$-P$_{1}$dZf$_{1}$\texttt{>}0$_{.}$\newline
-If there is net deposition $(D_{1} -E_{1} )>0$: the sediment is deposited in
-the first top layer Es1 is increased Es$_{1}$=Es$_{1}$-P1dZf$_{1}$
+sand phase is $1$, instead of $(n-1)$, where $n$ is the bed porosity in case of
+either pure sand or sand mixtures).
 
-For mud (phase 2)\newline
+If there is net erosion $(E_1-D_1) > 0$, the first layer $Es_1$ is
+decreased $Es_1=Es_1-P_1dZf_1$ which is only correct if $Es_1-P_1dZf_1>0$.
+
+If there is net deposition $(D_1-E_1)>0$, the sediment is deposited in
+the first top layer $Es_1$ is increased $Es_1=Es_1-P_1dZf_{1}$.
+
+\subsubsection{For mud (phase 2)}
 We follow the method described in part. The top layers are successively
-eroded until we match the erosion flux.\newline
-In case of deposition $(D_{2} -E_{2} )>0$: the sediment is deposited in the
-top layer
-
+eroded until we match the erosion flux. In case of deposition $(D_2-E_2)>0$, the sediment is deposited in the
+top layer:
 \begin{equation*}
 P_2 C s_2 \,DZf_{f_2} =\rho_s (D_2 - E_2) Dt 
 \end{equation*}
-The top layer thickness is increased in order to match : Es$_{2}$= Es$_{2}$
-+ dZf$_{2}$\newline
+
+The top layer thickness is increased in order to match $Es_2= Es_2+dZf_2$.
 In case of erosion the procedure consist in determining the maximum layer to
-be eroded
+be eroded:
 
 \begin{equation*}
-\sum\limits_{j=1}^{j\max -1}Ms_{2} (j) <\rho _{s} (E_{2} -D_{2}
-)Dt<\sum\limits_{j=1}^{j\max }Ms_{2} (j) 
+\sum\limits_{j=1}^{j\max -1} Ms_{2}(j) < \rho_s(E_2-D_2)Dt< \sum\limits_{j=1}^{j\max } Ms_2(j) 
 \end{equation*}
-All top layers (up to jmax-1) are emptied{\nobreakspace}: \newline
-For the last one, the mass balance is now
 
+All top layers (up to $jmax-1$) are emptied: for the last one, the mass balance is now computed as:
 \begin{equation*}
-\sum\limits_{j=1}^{j\max -1}Ms_{2} (j) +dEs_{2} (j\max )Cs(j\max )=\rho _{s}
-(E_{2} -D_{2} )Dt 
+\sum\limits_{j=1}^{j\max -1} Ms_2(j) + dEs_2(j\max)Cs(j\max)=\rho_s(E_2-D_2)Dt 
 \end{equation*}
-Reactualisation of the bed composition\newline
+
+\subsubsection{Reactualisation of the bed composition}
 The percent of each class of sediment needs to be recalculated (end of
-suspension main).
-
+suspension main):
 \begin{equation*}
-P_{i} =\frac{Es_{i} }{Es} 
-\end{equation*}%
-I
-
-With Es= Es$_{1}$+Es$_{2}$\newline
-
+P_i =\frac{Es_i}{Es}, 
+\end{equation*}
+with $Es= Es_1+Es_2$.
 
 %\section*{ Conclusions}
 
@@ -250,103 +237,7 @@ With Es= Es$_{1}$+Es$_{2}$\newline
 %further applications under in-situ conditions can be found in Van's PhD
 %thesis (2012).\newline
 
-\subsection*{References}
-
-Pham Van Bang D., Lefran\c{c}ois E., Sergent P., Bertrand F., 2008. MRI
-experimental and finite elements modelling of the
-sedimentation-consolidation of mud, La Houille Blanche, 168, n$^\circ$%
-3-2008, 39-44.\newline
-Sanchez, M., 1992, Mod\'{e}lisation dans un estuaire \`{a} mare: R\^{o}le du
-bouchon vaseux dans la tenue des sols sous marins. PhD thesis. University of
-Nantes (232 pages).\newline
-Bartholomeeusen, G., Sills, G.C., Znidarcic, D., van Kesteren, W.,
-Merckelbach, L.M., Pyke, R., Carrier, W.D., Lin, H., Penumadu, D.,
-Winterwerp, H., Masala, S. and Chan, D., 2002, Sidere: numerical prediction
-of large strain consolidation, G\'{e}otechnique 52, No. 9, 639-648.\newline
-Been, K. and Sills, G.C., 1981, Self weight consolidation of Soft Soils: an
-Experimental and Theoretical Study. Geotechnique, Volume 31, No.4, pp.
-519-535.\newline
-Camenen B. \& Pham Van Bang D., 2011. Modelling the settling of suspended
-sediments for concentrations close to the gelling concentration, Cont. Shelf
-Res., 31, S106-S116.\newline
-Hervouet, J.M. 2007. Hydrodynamics of free surface flow, modelling with
-finite elements system. Wiley. 341p.\newline
-Gibson, R.E., Englund, G. L. and Hussey, M. J. L., 1967, The theory of one
-dimensional consolidation of saturated clay, I. Finite Non-Linear
-Consolidation of Thin Homogeneous Layers. Geotechnique, pp. 261-273\newline
-Gibson, R.E., Schiffman, R.L. and Cargill, K.W., 1981, The theory of One
-dimensional Consolidation of Saturated Clays, II. Finite Nonlinear
-Consolidation of Thick Homogeneous Layers, Canadian Geotechnical Journal,
-Vol. 18, pp. 280-293\newline
-Hervouet J.M. (2007): Hydrodynamics of Free Surface Flows, modelling with
-the finite- element method, J. Wiley \& Sons Ltd, West Sussex, England, 340pp%
-\newline
-Lenormant, C., Lepeintre, F., Teisson, C., Malcherek, A., Markofsky, M., and
-Zielke, W., 1993, Three dimensional modelling of estuarine processes. In
-MAST Days and Euromar Market, Project Reports Volume 1.\newline
-Leveque, Randal J., 2002, Finite-Volime Methods for Hyperbolics Problems,
-Cambridge Texts in Applied Mathematics, ISBN 0-511-04219-1 eBook.\newline
-Migniot C., 1968. A study of the physical properties of different very fine
-sediments and their behaviour under hydrodynamic action, La Houille Blanche
-7, 591-620.\newline
-Partheniades, E., 1962, A study of erosion and deposition of cohesive soils
-in salt water. Ph.D thesis, University of California, Berkeley, 182 p.
-
-Pham Van Bang D., Ovarlez G., Tocquer L., 2007. Density and structural
-effects on the rheological characteristics of mud, La Houille Blanche, 2,
-85-93.
-
-Tassi, P., Villaret C., Huybrechts,N. Hervouet, JM. (2011): Numerical
-modelling of 2D and 3D suspended sediment transport in turbulent flows,
-Proceedings of the RCEM 2011 Conference in Beijing.\newline
-Pham Van Bang D., Lefran\c{c}ois E., Sergent P., Bertrand F., 2008. MRI
-experimental and finite elements modelling of the
-sedimentation-consolidation of mud, La Houille Blanche, 168, n$^\circ$%
-3-2008, 39-44.\newline
-Sanchez, M., 1992, Mod\'{e}lisation dans un estuaire \`{a} mare: R\^{o}le du
-bouchon vaseux dans la tenue des sols sous marins. PhD thesis. University of
-Nantes (232 pages).\newline
-Terzaghi, K. 1923. Die Berechnung des Durchlassigkeitsziffer des Tones aus
-des Verlauf des hydrodynamischen Spannungerscheinungen, Sitz. Akad. Wissen.
-Wien, Math. Naturwiss. Kl., Abt IIa, 132, 125-138.\newline
-Thi\'{e}bot J., 2008, Mod\'{e}lisation num\'{e}rique des processus
-gouvernant la formation et la d\'{e}gradation des massif vaseux (PhD thesis
-ENGREF- U.Caen), 130 p. \newline
-Thiebot, J., Guillou, S., Brun-Cottan, J-C., 2011, An optimisation method
-for determining permeability and effective stress relationships of
-consolidating cohesive sediment deposits, Continental Shelf Research 31
-(2011) S117-S123.\newline
-Toorman E. A., 1996, Sedimentation and self-weight consolidation: general
-unifying theory, G\'{e}otechnique 46, N$^\circ$ 1, pp. 101-113\newline
-Toorman, E.A., 1999. Sedimentation and self-weight consolidation:
-constitutive equations and numerical modelling. G\'{e}otechnique,
-49(6):709-726.
-
-Van L.A., 2012: Mod\'{e}lisation du transport des sediments mixtes
-sable-vase et application \`{a} la morphodynamique de l'estuaire de la
-Gironde, PhD Thesis, Universit\'{e} Paris-Est.\newline
-Van L.A., Villaret C., Pham van Bang D., Sch\"{u}ttrumpf H., 2012, Erosion
-and deposition of the Gironde mud, International Conference on Scour and
-Erosion, ICSE-6 -- Paris- August 27-31, 2012.\newline
-Van L.A., Pham Van Bang D., 2012, Hindered settling of sand/mud flocs
-mixtures: from model formulation to numerical validation, Advances in Water
-Resources (accepted).\newline
-Van Leussen, 1994: Estuarine macroflocs and their role in fine grained
-transport, PhD Thesis, Utrecht University(Nederlands).
-
-Villaret, C., Tassi, P. 2012{\nobreakspace}: SISYPHE User manual, release
-6.2,. Rapport EDF-LNHE H-P74-2012-02004-EN .\newline
-Villaret C., Walther R. ,2008: Numerical modeling of the Gironde estuary.
-Physics of Estuaries and Coastal Sediments, Liverpool, August 2008.\newline
-Villaret C., Van L.A., Huybrechts N., Pham Van Bang D., Boucher O. 2010.
-Consolidation effects on morphodynamics modelling: application to the
-Gironde estuary, La Houille Blanche, N$^\circ$ 6-2010, 15-24.\newline
-Winterwerp, J.C. and van Kesteren, W.G.M., 2004, Introduction to the physics
-of cohesive sediment in the marine environment, Development in Sedimentology
-56, Elsevier (466 pages).
-
-Waeles B., 2005: Detachment and transport of slay sand gravel mixtures by
-channel flows, Ph. D. Thesis University of Caen.
+%\subsection*{References}
 
 
 

@@ -2,17 +2,14 @@
 %                                                                    %
 %                                                                    %
 %                                                                    %
-% Title : openTELEMAC & Mascaret Latex Reference / Template file     %
+% Title : openTELEMAC & Mascaret Latex Releas enote / Template file  %
 % Version 6.3                                                        %
 %                                                                    %
 %                                                                    %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
-\documentclass[10pt,a4paper]{article}
+\documentclass[12pt,a4paper]{article}
 % ....................................................................
-\usepackage{nomencl}
-\makenomenclature
-%
 % MANDATORY PACKAGE
 \input{../../data/defs/openTELEMAC_def}
 % 
@@ -21,8 +18,10 @@
 % OPTIONS : PACKAGE MAY DIFFER FOR EDF OR EXTERNAL PUBLICATIONS      %
 % ...................................................................%
 % Optional but mandatory for EDF publications                        %
-\def\EDF_Eureka{1}
+\def\EDF_Eureka{0}
 \if\EDF_Eureka1
+  \def \eurekaTYPE{Release Notes}
+  \def \eurekaMODULE{\telddd}
   \usepackage[rddoc]{\edf/noteEDF}
 \fi
 %                                                                    %
@@ -30,8 +29,6 @@
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-
-
 \begin{document}
 
 \setcounter{page}{1}
@@ -74,10 +71,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
 % 
-%
-\label{lastpage}
-
-% this label should be on the last page for page numbering
 \end{document}
 
 
