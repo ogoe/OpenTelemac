@@ -65,8 +65,8 @@
 !
       CHARACTER*30 RES
       CHARACTER*50 RESPAR
-      CHARACTER*11 GREDELPTS_EXTENS
-      EXTERNAL    GREDELPTS_EXTENS
+      CHARACTER*11 EXTENS
+      EXTERNAL    EXTENS
       INTRINSIC MAXVAL
 !
 !-------------------------------------------------------------------------
@@ -99,7 +99,7 @@
       INQUIRE (FILE=GEO,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
-        CALL GREDELPTS_PLANTE (-1)
+        CALL PLANTE (-1)
         STOP
       END IF
 !
@@ -120,7 +120,7 @@
 10    CONTINUE
       GO TO 992
 990   WRITE(LU,*) 'ERROR WHEN OPENING OR READING FILE: ',GEO
-      CALL GREDELPTS_PLANTE(-1)
+      CALL PLANTE(-1)
       STOP
 992   CONTINUE
 !     READS THE 10 PARAMETERS AND THE DATE
@@ -132,29 +132,29 @@
       OPEN(3,FILE=RES,FORM='UNFORMATTED',ERR=991)
       GO TO 993
 991   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RES
-      CALL GREDELPTS_PLANTE(-1)
+      CALL PLANTE(-1)
       STOP
 993   CONTINUE
 !
 !     1) READS THE BEGINNING OF THE FIRST RESULTS FILE
 !
-!CC      RESPAR=RES // GREDELPTS_EXTENS(2**IDIMS-1,0)
+!CC      RESPAR=RES // EXTENS(2**IDIMS-1,0)
 !
-      RESPAR=RES(1:I_LEN) // GREDELPTS_EXTENS(NPROC-1,0)
+      RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,0)
 !
       INQUIRE (FILE=RESPAR,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', RESPAR
         WRITE (LU,*) 'CHECK THE NUMBER OF PROCESSORS'
         WRITE (LU,*) 'AND THE RESULT FILE CORE NAME'
-        CALL GREDELPTS_PLANTE(-1)
+        CALL PLANTE(-1)
         STOP
       END IF
 !
       OPEN(4,FILE=RESPAR,FORM='UNFORMATTED',ERR=994)
       GO TO 995
 994   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR
-      CALL GREDELPTS_PLANTE(-1)
+      CALL PLANTE(-1)
       STOP
 995   CONTINUE
 !
@@ -176,20 +176,20 @@
 !  DYNAMICALLY ALLOCATES THE ARRAYS
 !
       ALLOCATE(NPOIN(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELPTS_ALLOER (LU, 'NPOIN')
+      CALL CHECK_ALLOCATE(ERR, 'NPOIN')
       IF(NPLAN.EQ.0) THEN
         ALLOCATE(VERIF(NPOIN2)    ,STAT=ERR)
       ELSE
         ALLOCATE(VERIF(NPOIN2*NPLAN)    ,STAT=ERR)
       ENDIF
-      IF(ERR.NE.0) CALL GREDELPTS_ALLOER (LU, 'VERIF')
+      CALL CHECK_ALLOCATE(ERR, 'VERIF')
 !  GLOBAL_VALUES, STORES THE WHOLE DATASET (NBV1-VALUES)
       IF(NPLAN.EQ.0) THEN
         ALLOCATE(GLOBAL_VALUE(NPOIN2)       ,STAT=ERR)
       ELSE
         ALLOCATE(GLOBAL_VALUE(NPOIN2*NPLAN) ,STAT=ERR)
       ENDIF
-      IF(ERR.NE.0) CALL GREDELPTS_ALLOER (LU, 'GLOBAL_VALUE')
+      CALL CHECK_ALLOCATE(ERR, 'GLOBAL_VALUE')
 !
 !  END OF ALLOCATION ...
 !
@@ -199,12 +199,12 @@
 !
       DO IPID = 0,NPROC-1
          FU = IPID +10
-         RESPAR=RES(1:I_LEN) // GREDELPTS_EXTENS(NPROC-1,IPID)
+         RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,IPID)
          OPEN (FU,FILE=RESPAR,FORM='UNFORMATTED',ERR=998)
          GO TO 999
 998      WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR,
      &                      ' USING FILE UNIT: ', FU
-         CALL GREDELPTS_PLANTE(-1)
+         CALL PLANTE(-1)
          STOP
 999      REWIND(FU)
          READ(FU) NPOIN(IPID+1)
@@ -218,10 +218,10 @@
       ELSE
          ALLOCATE (KNOLG(NPOINMAX/NPLAN,NPROC),STAT=ERR)
       ENDIF
-      IF(ERR.NE.0) CALL GREDELPTS_ALLOER (LU, 'KNOLG')
+      CALL CHECK_ALLOCATE(ERR, 'KNOLG')
 !  LOCAL_VALUES, STORES THE WHOLE DATASET (NBV1-VALUES)
       ALLOCATE(LOCAL_VALUE(NPOINMAX),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELPTS_ALLOER (LU, 'LOCAL_VALUE')
+      CALL CHECK_ALLOCATE(ERR, 'LOCAL_VALUE')
 !
 ! READS KNOLG(NPOIN,NPROC)
 !
@@ -311,226 +311,3 @@
 !
       STOP
       END PROGRAM GREDELPTS_AUTOP
-!
-!
-!                       ***********************************
-                        CHARACTER*11 FUNCTION GREDELPTS_EXTENS
-!                       ***********************************
-     &(N,IPID)
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief       GREDELPTS_EXTENSION OF THE FILES ON EACH PROCESSOR.
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!history  J-M HERVOUET (LNH)
-!+        08/01/1997
-!+        V4P0
-!+
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IPID           |-->| NUMERO DU PROCESSEUR
-!| N             |-->| NOMBRE DE PROCESSEURS MOINS UN = NCSIZE-1
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-      INTEGER IPID,N
-!
-!-----------------------------------------------------------------------
-!
-      IF(N.GT.0) THEN
-!
-        GREDELPTS_EXTENS='00000-00000'
-!
-        IF(N.LT.10) THEN
-          WRITE(GREDELPTS_EXTENS(05:05),'(I1)') N
-        ELSEIF(N.LT.100) THEN
-          WRITE(GREDELPTS_EXTENS(04:05),'(I2)') N
-        ELSEIF(N.LT.1000) THEN
-          WRITE(GREDELPTS_EXTENS(03:05),'(I3)') N
-        ELSEIF(N.LT.10000) THEN
-          WRITE(GREDELPTS_EXTENS(02:05),'(I4)') N
-        ELSE
-          WRITE(GREDELPTS_EXTENS(01:05),'(I5)') N
-        ENDIF
-!
-        IF(IPID.LT.10) THEN
-          WRITE(GREDELPTS_EXTENS(11:11),'(I1)') IPID
-        ELSEIF(IPID.LT.100) THEN
-          WRITE(GREDELPTS_EXTENS(10:11),'(I2)') IPID
-        ELSEIF(IPID.LT.1000) THEN
-          WRITE(GREDELPTS_EXTENS(09:11),'(I3)') IPID
-        ELSEIF(IPID.LT.10000) THEN
-          WRITE(GREDELPTS_EXTENS(08:11),'(I4)') IPID
-        ELSE
-          WRITE(GREDELPTS_EXTENS(07:11),'(I5)') IPID
-        ENDIF
-!
-      ELSE
-!
-        GREDELPTS_EXTENS='       '
-!
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      RETURN
-      END
-!
-!                         ******************************
-                          SUBROUTINE GREDELPTS_READ_DATASET
-!                         ******************************
-     &(LOCAL_VALUE,NPOINMAX,NPOIN,IT,FU,ENDE)
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |---|
-!| ENDE           |---|
-!| FU             |---|
-!| LOCAL_VALUE    |---|
-!| NPOIN          |---|
-!| NPOINMAX       |---|
-!| NVALUE         |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-!
-      INTEGER NPOINMAX,NPOIN,FU
-      INTEGER IPOIN
-      INTEGER IT
-!
-      REAL LOCAL_VALUE(NPOINMAX)
-!
-      LOGICAL ENDE
-!
-      ENDE = .TRUE.
-!
-      READ(FU,END=999) IT, (LOCAL_VALUE(IPOIN),IPOIN=1,NPOIN)
-!
-      ENDE = .FALSE.
-!
- 999  RETURN
-      END
-!
-!     ************************************
-      SUBROUTINE GREDELPTS_ALLOER (N, CHFILE)
-!     ************************************
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHFILE         |---|
-!| N             |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER, INTENT(IN) :: N
-      CHARACTER*(*), INTENT(IN) :: CHFILE
-      WRITE(N,*) 'ERROR BY ALLOCATION OF ',CHFILE
-      CALL GREDELPTS_PLANTE(-1)
-      STOP
-      END SUBROUTINE GREDELPTS_ALLOER
-!
-!
-!     ******************************
-      SUBROUTINE GREDELPTS_PLANTE(IVAL)
-!     ******************************
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IVAL           |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-      INTEGER, INTENT(IN) :: IVAL
-      INTEGER ICODE
-!     STANDARD F90 :  STOP [n] WHERE N IS A STRING OF NOT MORE
-!     THAN FIVE DIGITS OR IS A CHARACTER CONSTANT.
-!     HOWEVER, CODE IS NOT ALWAYS SENT TO STDERR
-!     (COMPILER DEPENDENT, NAG DOESN'T FOR INSTANCE)
-!     ICODE MIGHT BE USED IN A POSSIBLE SYSTEM DEPENDENT EXIT PROCEDURE
-!     EXAMPLE : STOP 1 ; STOP '    1'
-      IF(IVAL.LT.0) THEN
-        ICODE = 0      ! JUST ASSUMED FOR NON-ERROR STOP
-      ELSEIF(IVAL.EQ.0.OR.IVAL.EQ.1) THEN
-        ICODE = 2      ! EXIT IVAL 0 OR 1 INDICATING A "CONTROLLED" ERROR
-        STOP 2
-      ELSE
-        ICODE = 1     ! SOMETHING ELSE? BUT AN ERROR!
-        STOP 1
-      ENDIF
-      WRITE(LU,*) 'RETURNING EXIT CODE: ', ICODE
-      STOP 0   !WHICH IS USUALLY EQUIVALENT TO CALL EXIT(0)
-
-!     JMH 30/09/2011 WHAT IS THIS (NAG COMPILER DOES NOT KNOW)
-!     CALL EXIT(ICODE)
-      END SUBROUTINE GREDELPTS_PLANTE

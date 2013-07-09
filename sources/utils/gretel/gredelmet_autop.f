@@ -40,6 +40,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE BIEF, ONLY : NCSIZE
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -59,6 +60,8 @@
 !
       INTEGER, DIMENSION(:)  , ALLOCATABLE :: NPOIN,IPOBO,NOQ,NSEG
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: IKLESA
+      INTEGER, DIMENSION(:,:), ALLOCATABLE :: NACHB,IFANUM
+      INTEGER, DIMENSION(:), ALLOCATABLE :: ISEGF,KNOLG
 !
 !
       REAL   , DIMENSION(:)  , ALLOCATABLE :: XORIG,YORIG
@@ -90,10 +93,10 @@
 !
       CHARACTER*30 RES
       CHARACTER*50 RESPAR
-      CHARACTER*11 GREDELMET_EXTENS
+      CHARACTER*11 EXTENS
       CHARACTER*30 CONLIM
       CHARACTER*7  FILETYPE
-      EXTERNAL    GREDELMET_EXTENS
+      EXTERNAL    EXTENS
       INTRINSIC MAXVAL
 !
       LI=5
@@ -123,7 +126,7 @@
       INQUIRE (FILE=GEO,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
-        CALL GREDELMET_PLANTE (-1)
+        CALL PLANTE (-1)
         STOP
       END IF
 !
@@ -144,7 +147,7 @@
 10    CONTINUE
       GO TO 992
 990   WRITE(LU,*) 'ERROR WHEN OPENING OR READING FILE: ',GEO
-      CALL GREDELMET_PLANTE(-1)
+      CALL PLANTE(-1)
       STOP
 992   CONTINUE
 !     READS THE 10 PARAMETERS AND THE DATE
@@ -156,29 +159,29 @@
       OPEN(3,FILE=RES,FORM='UNFORMATTED',ERR=991)
       GO TO 993
 991   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RES
-      CALL GREDELMET_PLANTE(-1)
+      CALL PLANTE(-1)
       STOP
 993   CONTINUE
 !
 !     1) READS THE BEGINNING OF THE FIRST RESULTS FILE
 !
-!CC      RESPAR=RES // GREDELMET_EXTENS(2**IDIMS-1,0)
+!CC      RESPAR=RES // EXTENS(2**IDIMS-1,0)
 !
-      RESPAR=RES(1:I_LEN) // GREDELMET_EXTENS(NPROC-1,0)
+      RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,0)
 !
       INQUIRE (FILE=RESPAR,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', RESPAR
         WRITE (LU,*) 'CHECK THE NUMBER OF PROCESSORS'
         WRITE (LU,*) 'AND THE RESULT FILE CORE NAME'
-        CALL GREDELMET_PLANTE(-1)
+        CALL PLANTE(-1)
         STOP
       END IF
 !
       OPEN(4,FILE=RESPAR,FORM='UNFORMATTED',ERR=994)
       GO TO 995
 994   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR
-      CALL GREDELMET_PLANTE(-1)
+      CALL PLANTE(-1)
       STOP
 995   CONTINUE
 !
@@ -198,35 +201,35 @@
 !  DYNAMICALLY ALLOCATES THE ARRAYS
 !
       ALLOCATE(NPOIN(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NPOIN')
+      CALL CHECK_ALLOCATE(ERR, 'NPOIN')
       ALLOCATE(NOQ(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NOQ')
+      CALL CHECK_ALLOCATE(ERR, 'NOQ')
       ALLOCATE(NSEG(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NSEG')
+      CALL CHECK_ALLOCATE(ERR, 'NSEG')
       ALLOCATE(IKLESA(3,NELEM),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IKLESA')
+      CALL CHECK_ALLOCATE(ERR, 'IKLESA')
       ALLOCATE(IPOBO(NPOIN2)      ,STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IPOBO')
+      CALL CHECK_ALLOCATE(ERR, 'IPOBO')
 !  X AND Y
       ALLOCATE(XORIG(NPOIN2)    ,STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'XORIG')
+      CALL CHECK_ALLOCATE(ERR, 'XORIG')
       ALLOCATE(YORIG(NPOIN2)    ,STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'YORIG')
+      CALL CHECK_ALLOCATE(ERR, 'YORIG')
 !
       ALLOCATE(IFABOR(NELEM,3),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IFABOR')
+      CALL CHECK_ALLOCATE(ERR, 'IFABOR')
       ALLOCATE(IKLE(NELEM,3),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IKLE')
+      CALL CHECK_ALLOCATE(ERR, 'IKLE')
       ALLOCATE(IADR(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IADR')
+      CALL CHECK_ALLOCATE(ERR, 'IADR')
       ALLOCATE(NVOIS(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NVOIS')
+      CALL CHECK_ALLOCATE(ERR, 'NVOIS')
       ALLOCATE(T3(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'T3')
+      CALL CHECK_ALLOCATE(ERR, 'T3')
       ALLOCATE(AREA(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'AREA')
+      CALL CHECK_ALLOCATE(ERR, 'AREA')
       ALLOCATE(NODENRS(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NODENRS')
+      CALL CHECK_ALLOCATE(ERR, 'NODENRS')
 !
 !  END OF ALLOCATION ...
 !
@@ -255,14 +258,14 @@
       OPEN(4,FILE=CONLIM,FORM='FORMATTED',ERR=996)
       GO TO 997
  996  WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',CONLIM
-      CALL GREDELMET_PLANTE(-1)
+      CALL PLANTE(-1)
       STOP
  997  CONTINUE
 !
       ALLOCATE(LIHBOR0(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'LIHBOR')
+      CALL CHECK_ALLOCATE(ERR, 'LIHBOR')
       ALLOCATE(NBOR0(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NBOR')
+      CALL CHECK_ALLOCATE(ERR, 'NBOR')
       DO I=1,NPOIN2
         READ(4,*,END=989) LIHBOR0(I),IDUM,IDUM,RDUM,RDUM,RDUM,RDUM,
      &                    IDUM,RDUM,RDUM,RDUM,NBOR0(I),IDUM
@@ -272,21 +275,21 @@
  989  NPTFR=I-1
 !
       ALLOCATE(LIHBOR(NPTFR),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'LIHBOR')
+      CALL CHECK_ALLOCATE(ERR, 'LIHBOR')
       ALLOCATE(NBOR(NPTFR),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NBOR')
+      CALL CHECK_ALLOCATE(ERR, 'NBOR')
       ALLOCATE(NELBOR(NPTFR),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NELBOR')
+      CALL CHECK_ALLOCATE(ERR, 'NELBOR')
       ALLOCATE(NULONE(NPTFR,2),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NULONE')
+      CALL CHECK_ALLOCATE(ERR, 'NULONE')
       ALLOCATE(KP1BOR(NPTFR,2),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'KP1BOR')
+      CALL CHECK_ALLOCATE(ERR, 'KP1BOR')
       ALLOCATE(IKLBOR(NPTFR,2),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IKLBOR')
+      CALL CHECK_ALLOCATE(ERR, 'IKLBOR')
       ALLOCATE(ELTSEG(NELEM,3),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'ELTSEG')
+      CALL CHECK_ALLOCATE(ERR, 'ELTSEG')
       ALLOCATE(ORISEG(NELEM,3),STAT=ERR)
-      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'ORISEG')
+      CALL CHECK_ALLOCATE(ERR, 'ORISEG')
 !
       MBND=0
 !
@@ -323,27 +326,44 @@
             IKLE(J,I)=IKLESA(I,J)
           ENDDO
         ENDDO
+      NCSIZE = 1
       IF(IELM.EQ.11.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
-        CALL GREDELMET_VOISIN(IFABOR,NELEM2,NELEM,IELM,IKLE,
+        ! DUMMY ARRAY
+        ALLOCATE(NACHB(1,1),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR, 'NACHB')
+!
+        CALL VOISIN(IFABOR,NELEM2,NELEM,IELM,IKLE,
      &              NELEM,
-     &              NPOIN2,IADR,NVOIS)
+     &              NPOIN2,NACHB,NBOR,NPTFR,IADR,NVOIS)
+!
+        DEALLOCATE(NACHB)
         MAXNVOIS = MAXVAL(NVOIS)/2
+!
       ELSE
         WRITE(LU,*) 'UNEXPECTED ELEMENT IN INBIEF:',IELM
-        CALL GREDELMET_PLANTE(1)
+        CALL PLANTE(1)
         STOP
       ENDIF
       KLOG = 2 ! SOLID BOUNDARY CONDITION: IS HARD-CODED !!!
       IF(IELM.EQ.11.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
-        CALL GREDELMET_ELEBD(NELBOR,NULONE,KP1BOR,
+        ! Dummy arrays
+        ALLOCATE(IFANUM(1,1),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR, 'IFANUM')
+        ALLOCATE(ISEGF(NPTFR),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR, 'ISEG')
+
+        CALL ELEBD(NELBOR,NULONE,KP1BOR,
      &             IFABOR,NBOR,IKLE,NELEM,
      &             IKLBOR,NELEM2,NELMAX2,
      &             NPOIN2,NPTFR2,IELM,
      &             LIHBOR,KLOG,
+     &             IFANUM,1,ISEGF,
      &             IADR,NVOIS,T3)
+        DEALLOCATE(IFANUM)
+        DEALLOCATE(ISEGF)
       ELSE
         WRITE(LU,*) 'UNEXPECTED ELEMENT IN INBIEF:',IELM
-        CALL GREDELMET_PLANTE(1)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -356,19 +376,24 @@
 !
          NSEG2 = (3*NELEM+NPTFR)/2
          ALLOCATE(LENGTH(2,NSEG2+MBND),STAT=ERR)
-         IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'LENGTH')
+         CALL CHECK_ALLOCATE(ERR, 'LENGTH')
          ALLOCATE(GLOSEG(NSEG2,2),STAT=ERR)
-         IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'GLOSEG')
+         CALL CHECK_ALLOCATE(ERR, 'GLOSEG')
          ALLOCATE(IFROM1(NSEG2),STAT=ERR)
-         IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IFROM1')
+         CALL CHECK_ALLOCATE(ERR, 'IFROM1')
          ALLOCATE(ITOPL1(NSEG2),STAT=ERR)
-         IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'ITOPL1')
+         CALL CHECK_ALLOCATE(ERR, 'ITOPL1')
 !
-      CALL GREDELMET_STOSEG(IFABOR,NELEM,NELMAX2,NELMAX2,IELM,IKLE,
+      ! DUMMY ARRAY
+         ALLOCATE(KNOLG(1),STAT=ERR)
+         CALL CHECK_ALLOCATE(ERR, 'KNOLG')
+!
+      CALL STOSEG(IFABOR,NELEM,NELMAX2,NELMAX2,IELM,IKLE,
      &            NBOR,NPTFR,
      &            GLOSEG,NSEG2,    ! GLOSEG%MAXDIM1,
      &            ELTSEG,ORISEG,NSEG2,
-     &            KP1BOR,NELBOR,NULONE)
+     &            KP1BOR,NELBOR,NULONE,KNOLG)
+      DEALLOCATE(KNOLG)
       ENDIF
 !
       IF(FILETYPE(1:6).EQ.'AREA2D') THEN
@@ -425,7 +450,7 @@
             IFROM = GLOSEG(ISEG,1)
             ITO   = GLOSEG(ISEG,2)
               IF ( K.EQ.1 ) THEN
-                CALL GREDELMET_FDNRST(IFROM,ITO,XORIG,YORIG,NODENRS,
+                CALL GREDEL_FDNRST(IFROM,ITO,XORIG,YORIG,NODENRS,
      &           NPOIN2,IFROM1(ISEG),ITOPL1(ISEG))
                 IF ( IFROM1(ISEG) .LT. 0 .AND.              !  *START*  LP 24/04/2009
      &               IFROM1(ISEG) .NE. NODENRS(IFROM) ) THEN
@@ -507,994 +532,6 @@
       STOP
       END PROGRAM GREDELMET_AUTOP
 !
-!                       **************************************
-                        CHARACTER*11 FUNCTION GREDELMET_EXTENS
-!                       **************************************
-     &(N,IPID)
 !
 !
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
 !
-!brief    GREDELMET_EXTENSION OF THE FILES ON EACH PROCESSOR.
-!+
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!history  J-M HERVOUET (LNH)
-!+        08/01/1997
-!+        V4P0
-!+
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IPID           |-->| NUMERO DU PROCESSEUR
-!| N              |-->| NOMBRE DE PROCESSEURS MOINS UN = NCSIZE-1
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-      INTEGER IPID,N
-!
-!-----------------------------------------------------------------------
-!
-      IF(N.GT.0) THEN
-!
-        GREDELMET_EXTENS='00000-00000'
-!
-        IF(N.LT.10) THEN
-          WRITE(GREDELMET_EXTENS(05:05),'(I1)') N
-        ELSEIF(N.LT.100) THEN
-          WRITE(GREDELMET_EXTENS(04:05),'(I2)') N
-        ELSEIF(N.LT.1000) THEN
-          WRITE(GREDELMET_EXTENS(03:05),'(I3)') N
-        ELSEIF(N.LT.10000) THEN
-          WRITE(GREDELMET_EXTENS(02:05),'(I4)') N
-        ELSE
-          WRITE(GREDELMET_EXTENS(01:05),'(I5)') N
-        ENDIF
-!
-        IF(IPID.LT.10) THEN
-          WRITE(GREDELMET_EXTENS(11:11),'(I1)') IPID
-        ELSEIF(IPID.LT.100) THEN
-          WRITE(GREDELMET_EXTENS(10:11),'(I2)') IPID
-        ELSEIF(IPID.LT.1000) THEN
-          WRITE(GREDELMET_EXTENS(09:11),'(I3)') IPID
-        ELSEIF(IPID.LT.10000) THEN
-          WRITE(GREDELMET_EXTENS(08:11),'(I4)') IPID
-        ELSE
-          WRITE(GREDELMET_EXTENS(07:11),'(I5)') IPID
-        ENDIF
-!
-      ELSE
-!
-        GREDELMET_EXTENS='       '
-!
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      RETURN
-      END
-!
-!
-!     ***************************************
-      SUBROUTINE GREDELMET_ALLOER (N, CHFILE)
-!     ***************************************
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHFILE         |---|
-!| N             |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER, INTENT(IN) :: N
-      CHARACTER*(*), INTENT(IN) :: CHFILE
-      WRITE(N,*) 'ERROR BY ALLOCATION OF ',CHFILE
-      CALL GREDELMET_PLANTE(-1)
-      STOP
-      END SUBROUTINE GREDELMET_ALLOER
-!
-!
-!     *********************************
-      SUBROUTINE GREDELMET_PLANTE(IVAL)
-!     *********************************
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IVAL           |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-      INTEGER, INTENT(IN) :: IVAL
-      INTEGER ICODE
-!     STANDARD F90 :  STOP [n] WHERE N IS A STRING OF NOT MORE
-!     THAN FIVE DIGITS OR IS A CHARACTER CONSTANT.
-!     HOWEVER, CODE IS NOT ALWAYS SENT TO STDERR
-!     (COMPILER DEPENDENT, NAG DOESN'T FOR INSTANCE)
-!     ICODE MIGHT BE USED IN A POSSIBLE SYSTEM DEPENDENT EXIT PROCEDURE
-!     EXAMPLE : STOP 1 ; STOP '    1'
-      IF(IVAL.LT.0) THEN
-        ICODE = 0      ! JUST ASSUMED FOR NON-ERROR STOP
-      ELSEIF(IVAL.EQ.0.OR.IVAL.EQ.1) THEN
-        ICODE = 2      ! EXIT IVAL 0 OR 1 INDICATING A "CONTROLLED" ERROR
-        STOP 2
-      ELSE
-        ICODE = 1     ! SOMETHING ELSE? BUT AN ERROR!
-        STOP 1
-      ENDIF
-      WRITE(LU,*) 'RETURNING EXIT CODE: ', ICODE
-      STOP 0   !WHICH IS USUALLY EQUIVALENT TO CALL EXIT(0)
-
-!     JMH 30/09/2011 WHAT IS THIS (NAG COMPILER DOES NOT KNOW)
-!     CALL EXIT(ICODE)
-      END SUBROUTINE GREDELMET_PLANTE
-!
-!
-!                       ***************************
-                        SUBROUTINE GREDELMET_VOISIN
-!                       ***************************
-     &(IFABOR,NELEM,NELMAX,IELM,IKLE,SIZIKL,
-     & NPOIN,IADR,NVOIS)
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief    BUILDS THE ARRAY IFABOR, WHERE IFABOR (IELEM, IFACE)
-!+                IS THE GLOBAL NUMBER OF THE NEIGHBOUR OF SIDE IFACE
-!+                OF ELEMENT IELEM (IF THIS NEIGHBOUR EXISTS) AND 0 IF
-!+                THE SIDE IS ON THE DOMAIN BOUNDARY.
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!history  J-M HERVOUET (LNHE)
-!+        19/02/2008
-!+        V5P9
-!+
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IADR           |---|
-!| IELM           |-->| 11: TRIANGLES
-!|                |   | 21: QUADRILATERES
-!| IFABOR         |<--| TABLEAU DES VOISINS DES FACES.
-!| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT
-!| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DANS LE MAILLAGE.
-!|                |   | (CAS DES MAILLAGES ADAPTATIFS)
-!| NPOIN          |-->| NOMBRE TOTAL DE POINTS DU DOMAINE
-!| NVOIS          |---|
-!| SIZIKL         |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER SIZIKL,NELEM,NELMAX,IELM,NPOIN
-      INTEGER IKLE(SIZIKL,*)
-      INTEGER IFABOR(NELMAX,*)
-      INTEGER NVOIS(NPOIN),IADR(NPOIN)
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER NFACE,NDP,KEL,IMAX,IFACE,IELEM,M1,M2,IV,IELEM2,IFACE2
-      INTEGER I,ERR,I1,I2,IDIMAT
-!
-      INTEGER SOMFAC(2,4,2)
-      DATA SOMFAC / 1,2 , 2,3 , 3,1 , 0,0   ,  1,2 , 2,3 , 3,4 , 4,1 /
-!
-!     DYNAMICALLY ALLOCATES THE WORKING ARRAYS
-!
-      INTEGER, DIMENSION(:), ALLOCATABLE :: MAT1,MAT2,MAT3
-!
-!-----------------------------------------------------------------------
-!
-      IF(IELM.EQ.21) THEN
-!       QUADRILATERALS
-        NFACE = 4
-!       NUMBER OF POINTS PER ELEMENT
-        NDP = 4
-!       ADDRESS IN SOMFAC
-        KEL = 2
-      ELSEIF(IELM.EQ.11.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
-!       TRIANGLES
-        NFACE = 3
-!       NUMBER OF POINTS PER ELEMENT
-        NDP = 3
-!       ADDRESS IN SOMFAC
-        KEL = 1
-      ELSE
-        IF(LNG.EQ.1) WRITE(LU,98) IELM
-        IF(LNG.EQ.2) WRITE(LU,99) IELM
-98      FORMAT(1X,'GREDELMET_VOISIN: IELM=',1I6,
-     &   ' TYPE D''ELEMENT NON PREVU')
-99      FORMAT(1X,'GREDELMET_VOISIN: IELM=',1I6,
-     &   ' TYPE OF ELEMENT NOT AVAILABLE')
-        CALL GREDELMET_PLANTE(1)
-        STOP
-      ENDIF
-!
-!     IDIMAT IS BIGGER THAN THE SUM OF THE NUMBER OF NEIGHBOURS OF
-!     ALL THE POINTS (NEIGHBOUR = CONNECTED BY A SEGMENT)
-!
-      IDIMAT = NDP*2*NELEM
-!
-      ALLOCATE(MAT1(IDIMAT),STAT=ERR)
-      ALLOCATE(MAT2(IDIMAT),STAT=ERR)
-      ALLOCATE(MAT3(IDIMAT),STAT=ERR)
-!
-      IF(ERR.NE.0) THEN
-        IF(LNG.EQ.1) WRITE(LU,1000) ERR
-        IF(LNG.EQ.2) WRITE(LU,2000) ERR
-1000    FORMAT(1X,'GREDELMET_VOISIN : ERREUR A L''ALLOCATION DE MEMOIRE :
-     &   ',/,1X,'CODE D''ERREUR : ',1I6)
-2000    FORMAT(1X,'GREDELMET_VOISIN: ERROR DURING ALLOCATION OF MEMORY :
-     &   ',/,1X,'ERROR CODE: ',1I6)
-        CALL GREDELMET_PLANTE(1)
-        STOP
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-!  ARRAY NVOIS FOR EACH POINT
-!  BEWARE : NVOIS IS BIGGER THAN THE ACTUAL NUMBER OF NEIGHBOURS
-!           THE SUM OF NVOIS WILL GIVE IDIMAT
-!
-      DO I=1,NPOIN
-        NVOIS(I) = 0
-      ENDDO
-!
-      DO IFACE = 1,NFACE
-        DO IELEM=1,NELEM
-          I1 = IKLE( IELEM , SOMFAC(1,IFACE,KEL) )
-          I2 = IKLE( IELEM , SOMFAC(2,IFACE,KEL) )
-          NVOIS(I1) = NVOIS(I1) + 1
-          NVOIS(I2) = NVOIS(I2) + 1
-        ENDDO
-      ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!  ADDRESSES OF EACH POINT IN A STRUCTURE OF TYPE COMPACT MATRIX
-!
-!
-      IADR(1) = 1
-      DO 50 I= 2,NPOIN
-        IADR(I) = IADR(I-1) + NVOIS(I-1)
-50    CONTINUE
-!
-      IMAX = IADR(NPOIN) + NVOIS(NPOIN) - 1
-      IF(IMAX.GT.IDIMAT) THEN
-        IF(LNG.EQ.1) WRITE(LU,51) IDIMAT,IMAX
-        IF(LNG.EQ.2) WRITE(LU,52) IDIMAT,IMAX
-51      FORMAT(1X,'GREDELMET_VOISIN: TAILLE DE MAT1,2,3 
-     &   (',1I9,') INSUFFISANTE',/,
-     &         1X,'IL FAUT AU MOINS : ',1I9)
-52      FORMAT(1X,'GREDELMET_VOISIN: SIZE OF MAT1,2,3 
-     &   (',1I9,') TOO SHORT',/,
-     &         1X,'MINIMUM SIZE: ',1I9)
-        CALL GREDELMET_PLANTE(1)
-        STOP
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-!  INITIALISES THE COMPACT MATRIX TO 0
-!
-      DO I=1,IMAX
-        MAT1(I) = 0
-      ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!  LOOP ON THE SIDES OF EACH ELEMENT:
-!
-      DO 60 IFACE = 1 , NFACE
-      DO 70 IELEM = 1 , NELEM
-!
-      IFABOR(IELEM,IFACE) = -1
-!
-!        GLOBAL NODE NUMBERS FOR THE SIDE:
-!
-         I1 = IKLE( IELEM , SOMFAC(1,IFACE,KEL) )
-         I2 = IKLE( IELEM , SOMFAC(2,IFACE,KEL) )
-!
-!        ORDERED GLOBAL NUMBERS:
-!
-         M1 = MIN0(I1,I2)
-         M2 = MAX0(I1,I2)
-!
-         DO 80 IV = 1,NVOIS(M1)
-!
-           IF(MAT1(IADR(M1)+IV-1).EQ.0) THEN
-              MAT1(IADR(M1)+IV-1)=M2
-              MAT2(IADR(M1)+IV-1)=IELEM
-              MAT3(IADR(M1)+IV-1)=IFACE
-              GO TO 81
-           ELSEIF(MAT1(IADR(M1)+IV-1).EQ.M2) THEN
-              IELEM2 = MAT2(IADR(M1)+IV-1)
-              IFACE2 = MAT3(IADR(M1)+IV-1)
-              IFABOR(IELEM,IFACE) = IELEM2
-              IFABOR(IELEM2,IFACE2) = IELEM
-              GO TO 81
-           ENDIF
-!
-80       CONTINUE
-!
-         IF(LNG.EQ.1) WRITE(LU,82)
-         IF(LNG.EQ.2) WRITE(LU,83)
-82       FORMAT(1X,'GREDELMET_VOISIN : ERREUR DANS LE MAILLAGE
-     &    ',/,1X,
-     &             '         PEUT-ETRE DES POINTS CONFONDUS')
-83       FORMAT(1X,'GREDELMET_VOISIN : ERROR IN THE MESH
-     &    ',/,1X,
-     &             '         MAYBE SUPERIMPOSED POINTS     ')
-         CALL GREDELMET_PLANTE(1)
-         STOP
-!
-81       CONTINUE
-!
-70    CONTINUE
-60    CONTINUE
-!
-!-----------------------------------------------------------------------
-!
-      DEALLOCATE(MAT1)
-      DEALLOCATE(MAT2)
-      DEALLOCATE(MAT3)
-!
-!-----------------------------------------------------------------------
-!
-      RETURN
-      END
-!
-!                       ************************************
-                        SUBROUTINE GREDELMET_ELEBD
-!                       ************************************
-     &(NELBOR,NULONE,KP1BOR,IFABOR,NBOR,IKLE,SIZIKL,IKLBOR,NELEM,NELMAX,
-     & NPOIN,NPTFR,IELM,LIHBOR,KLOG,T1,T2,T3)
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief    PRISMS SPLIT IN TETRAHEDRONS:
-!>           1) BUILDS THE ARRAYS NELBOR AND NULONE,
-!>           2) BUILDS THE ARRAY KP1BOR,
-!>           3) IFABOR DISTINGUISHES BETWEEN SOLID BOUNDARY,
-!>                  SIDES AND LIQUID SIDES,
-!>           4) COMPUTES IKLBOR.
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!history  J-M HERVOUET (LNHE)
-!+        20/03/2008
-!+        V5P9
-!+
-!
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IELM           |-->| TYPE D'ELEMENT.
-!|                |   | 11 : TRIANGLES.
-!|                |   | 21 : QUADRILATERES.
-!| IFABOR         |-->| TABLEAU DES GREDELMET_VOISINS DES FACES.
-!| IKLBOR         |---|
-!| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT.
-!| KLOG           |-->| CONVENTION POUR LA CONDITION LIMITE DE PAROI
-!| KP1BOR         |<--| NUMERO DU POINT SUIVANT LE POINT DE BORD K.
-!| LIHBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR H
-!| MXELVS         |-->| NOMBRE MAXIMUM D'ELEMENTS AUTOUR D'UN POINT
-!| MXPTVS         |-->| NOMBRE MAXIMUM DE GREDELMET_VOISINS D'UN POINT
-!| NBOR           |-->| NUMERO GLOBAL DU POINT DE BORD K.
-!| NELBOR         |<--| NUMERO DE L'ELEMENT ADJACENT AU KIEME SEGMENT
-!| NELEM          |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE.
-!| NELMAX         |---|
-!| NPOIN          |-->| NOMBRE TOTAL DE POINTS DU DOMAINE.
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-!| NULONE         |<--| NUMERO LOCAL D'UN POINT DE BORD DANS
-!|                |   | L'ELEMENT ADJACENT DONNE PAR NELBOR
-!| SIZIKL         |---|
-!| T1,2,3         |-->| TABLEAUX DE TRAVAIL ENTIERS.
-!| T2             |---|
-!| T3             |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER KLOG,NELMAX,NELEM,SIZIKL
-      INTEGER NPOIN,NPTFR,IELM
-      INTEGER NELBOR(NPTFR),LIHBOR(NPTFR)
-      INTEGER NULONE(NPTFR,2),KP1BOR(NPTFR,2)
-      INTEGER NBOR(NPTFR)
-      INTEGER IFABOR(NELMAX,3)
-      INTEGER IKLE(SIZIKL,3)
-      INTEGER IKLBOR(NPTFR,2)
-      INTEGER T1(NPOIN),T2(NPOIN),T3(NPOIN)
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER IELEM,NFACE,NPT,KEL,IPOIN
-      INTEGER K,IFACE,I1,I2,N1,N2,IPT,IEL,I,K1,K2
-!
-      INTEGER SOMFAC(2,4,2)
-!
-      DATA SOMFAC / 1,2 , 2,3 , 3,1 , 0,0   ,  1,2 , 2,3 , 3,4 , 4,1 /
-!
-!-----------------------------------------------------------------------
-!
-      IF(IELM.EQ.11.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
-!       TRIANGLES
-        NFACE = 3
-        NPT = 3
-        KEL = 1
-      ELSE
-        IF(LNG.EQ.1) WRITE(LU,900) IELM
-        IF(LNG.EQ.2) WRITE(LU,901) IELM
-900     FORMAT(1X,'GREDELMET_ELEBD : IELM=',1I6,
-     &   ' TYPE D''ELEMENT INCONNU')
-901     FORMAT(1X,'GREDELMET_ELEBD: IELM=',1I6,
-     &   ' UNKNOWN TYPE OF ELEMENT')
-        CALL GREDELMET_PLANTE(1)
-        STOP
-      ENDIF
-!
-!  INITIALISES T1,2,3 TO 0
-!
-      DO IPOIN=1,NPOIN
-        T1(IPOIN) = 0
-        T2(IPOIN) = 0
-        T3(IPOIN) = 0
-      ENDDO
-!
-!  STORES K IN TRAV(*,3) WITH ADDRESS NBOR(K)
-!  ALLOWS TO GO FROM GLOBAL NODE NUMBER TO BOUNDARY NODE NUMBER
-!
-      DO K = 1, NPTFR
-         T3(NBOR(K)) = K
-      ENDDO
-!
-!  LOOP ON ALL THE SIDES OF ALL THE ELEMENTS:
-!
-      DO 20 IFACE = 1 , NFACE
-      DO 10 IELEM = 1 , NELEM
-!
-      IF(IFABOR(IELEM,IFACE).EQ.-1) THEN
-!
-!      THIS IS A TRUE BOUNDARY SIDE (INTERNAL SIDES IN PARALLEL MODE
-!                                    ARE INDICATED WITH -2)
-!      GLOBAL NODE NUMBERS FOR THE SIDE :
-!
-       I1 = IKLE( IELEM , SOMFAC(1,IFACE,KEL) )
-       I2 = IKLE( IELEM , SOMFAC(2,IFACE,KEL) )
-!
-!      STORES IN T1 AND T2 WITH ADDRESS I1 : I2 AND IELEM
-!
-       T1(I1) = I2
-       T2(I1) = IELEM
-!
-!      A LIQUID SIDE IS RECOGNIZED BY BOUNDARY CONDITION ON H
-!
-!      07/02/03 IF(NPTFR...  COURTESY OLIVER GOETHEL, HANNOVER UNIVERSITY
-       IF(NPTFR.GT.0) THEN
-       IF(LIHBOR(T3(I1)).NE.KLOG.AND.LIHBOR(T3(I2)).NE.KLOG) THEN
-!        LIQUID SIDE : IFABOR=0  SOLID SIDE : IFABOR=-1
-         IFABOR(IELEM,IFACE)=0
-       ENDIF
-       ENDIF
-!
-      ENDIF
-!
-10    CONTINUE
-20    CONTINUE
-!
-!PARA
-!
-! NELBOR IS 0 WHEN THE ELEMENT BELONGS TO ANOTHER
-! SUB-DOMAIN
-!
-!
-!      ALREADY DONE
-!      IF(NCSIZE.GT.1) THEN
-!        DO 39 K1=1,NPTFR
-!          NELBOR(K)=0
-!39      CONTINUE
-!      ENDIF
-!
-!PARAFIN
-!
-!  LOOP ON ALL THE POINTS:
-!
-!     07/02/03 IF(NPTFR...  CORRECTION BY OLIVER GOETHELS, HANNOVER
-      IF(NPTFR.GT.0) THEN
-      DO I = 1 , NPOIN
-         IF(T1(I).NE.0) THEN
-!          NEXT POINT
-           KP1BOR(T3(I),1)=T3(T1(I))
-!          PREVIOUS POINT
-           KP1BOR(T3(T1(I)),2)=T3(I)
-           NELBOR(T3(I))=T2(I)
-         ENDIF
-      ENDDO
-      ENDIF
-!
-!PARAFIN
-!
-! COMPUTES NULONE
-!
-      DO 50 K1=1,NPTFR
-!
-!PARAFIN
-      K2=KP1BOR(K1,1)
-      IEL = NELBOR(K1)
-      N1  = NBOR(K1)
-      N2  = NBOR(K2)
-!
-      I1 = 0
-      I2 = 0
-!
-      DO 60 IPT=1,NPT
-!
-        IF(IKLE(IEL,IPT).EQ.N1) THEN
-          NULONE(K1,1) = IPT
-          I1 = 1
-        ENDIF
-        IF(IKLE(IEL,IPT).EQ.N2) THEN
-          NULONE(K1,2) = IPT
-          I2 = 1
-        ENDIF
-!
-60    CONTINUE
-!
-      IF(I1.EQ.0.OR.I2.EQ.0) THEN
-        IF(LNG.EQ.1) WRITE(LU,810) IEL
-        IF(LNG.EQ.2) WRITE(LU,811) IEL
-810     FORMAT(1X,'GREDELMET_ELEBD:
-     &   ERREUR DE NUMEROTATION DANS L''ELEMENT:',I6,/,
-     &         1X,'       CAUSE POSSIBLE :                       '   ,/,
-     &         1X,'       LE FICHIER DES CONDITIONS AUX LIMITES NE'  ,/,
-     &         1X,'       CORRESPOND PAS AU FICHIER DE GEOMETRIE  ')
-811     FORMAT(1X,'GREDELMET_ELEBD:
-     &   ERROR OF NUMBERING IN THE ELEMENT:',I6,
-     &         1X,'       POSSIBLE REASON:                       '   ,/,
-     &         1X,'       THE BOUNDARY CONDITION FILE IS NOT      '  ,/,
-     &         1X,'       RELEVANT TO THE GEOMETRY FILE           ')
-        CALL GREDELMET_PLANTE(1)
-        STOP
-      ENDIF
-!
-50    CONTINUE
-!
-!  COMPUTES IKLBOR : LIKE IKLE FOR BOUNDARY POINTS, WITH BOUNDARY
-!                    NODES NUMBERING
-!
-      DO K=1,NPTFR
-        IKLBOR(K,1) = K
-        IKLBOR(K,2) = KP1BOR(K,1)
-      ENDDO
-!
-!-----------------------------------------------------------------------
-!
-      RETURN
-      END
-!
-!                       ***************************
-                        SUBROUTINE GREDELMET_STOSEG
-!                       ***************************
-     &(IFABOR,NELEM,NELMAX,NELMAX2,IELM,IKLE,NBOR,NPTFR,
-     & GLOSEG,MAXSEG,ELTSEG,ORISEG,NSEG,KP1BOR,NELBOR,NULONE)
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief    BUILDS THE DATA STRUCTURE FOR EDGE-BASED STORAGE.
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!history  J-M HERVOUET (LNHE)
-!+        02/10/2008
-!+        V5P9
-!+
-!
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELTSEG         |<--| SEGMENTS OF EVERY TRIANGLE.
-!| GLOSEG         |<--| GLOBAL NUMBERS OF POINTS OF SEGMENTS.
-!| IELM           |-->| 11: TRIANGLES.
-!|                |   | 21: QUADRILATERES.
-!| IFABOR         |<--| TABLEAU DES VOISINS DES FACES.
-!| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT.
-!| KP1BOR         |-->| NUMBER OF POINT FOLLOWING BOUNDARY POINT K
-!|                |   | (I.E. K+1 MOST OF THE TIME BUT NOT ALWAYS).
-!| MAXSEG         |<--| 1st DIMENSION OF MAXSEG.
-!| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS.
-!| NELBOR         |-->| NUMBER OF ELEMENT CONTAINING SEGMENT K OF
-!|                |   | THE BOUNDARY.
-!| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DANS LE MAILLAGE.
-!|                |   | (CAS DES MAILLAGES ADAPTATIFS)
-!| NELMAX2        |-->| PREMIERE DIMENSION DE IFABOR
-!|                |   | (EN 3D LE NOMBRE D'ELEMENTS 2D)
-!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS.
-!| NSEG           |<--| NUMBER OF SEGMENTS OF THE MESH.
-!| NULONE         |-->| LOCAL NUMBER OF BOUNDARY POINTS IN A BOUNDARY
-!|                |   | ELEMENT.
-!| ORISEG         |<--| ORIENTATION OF SEGMENTS OF EVERY TRIANGLE.
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER NELMAX,NELMAX2,NPTFR,NSEG,MAXSEG,IELM,NELEM
-      INTEGER NBOR(NPTFR),KP1BOR(NPTFR)
-      INTEGER IFABOR(NELMAX2,3),IKLE(NELMAX,3)
-      INTEGER NELBOR(NPTFR),NULONE(NPTFR)
-      INTEGER GLOSEG(MAXSEG,2)
-      INTEGER ELTSEG(NELMAX,3),ORISEG(NELMAX,3)
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER IPTFR,NSE
-!
-      INTEGER NEL,IFA,I1,I2,J1,J2,IFACE,JFACE,IG1,IG2
-      INTEGER IELEM,IELEM1,IELEM2
-!
-      INTEGER NEXT(3)
-      DATA NEXT / 2,3,1 /
-!
-!-----------------------------------------------------------------------
-!
-      IF(IELM.NE.11.AND.IELM.NE.12.AND.IELM.NE.13.AND.IELM.NE.14) THEN
-        IF (LNG.EQ.1) WRITE(LU,500) IELM
-        IF (LNG.EQ.2) WRITE(LU,501) IELM
-500     FORMAT(1X,'GREDELMET_STOSEG (BIEF) : ELEMENT NON PREVU : ',1I6)
-501     FORMAT(1X,'GREDELMET_STOSEG (BIEF) : UNEXPECTED ELEMENT: ',1I6)
-        CALL GREDELMET_PLANTE(1)
-        STOP
-      ENDIF
-!
-!     INITIALISES ELTSEG
-!
-      DO IELEM = 1 , NELEM
-        ELTSEG(IELEM,1) = 0
-        ELTSEG(IELEM,2) = 0
-        ELTSEG(IELEM,3) = 0
-      ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!     LOOP ON BOUNDARY NODES :
-!
-      NSE = 0
-      DO IPTFR = 1 , NPTFR
-!
-!       IN PARALLEL MODE, IF THE BOUNDARY POINT FOLLOWING IPTFR
-!       IS IN  ANOTHER SUB-DOMAIN, KP1BOR(IPTFR)=IPTFR
-!       IN THIS CASE THE SEGMENT
-!       BASED ON IPTFR AND THIS POINT IS NOT IN THE LOCAL DOMAIN
-!       A CONSEQUENCE IS THAT NSE IS NOT EQUAL TO IPTFR
-!
-        IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-!
-          NSE = NSE + 1
-          GLOSEG(NSE,1) = NBOR(IPTFR)
-          GLOSEG(NSE,2) = NBOR(KP1BOR(IPTFR))
-          NEL = NELBOR(IPTFR)
-          IFA = NULONE(IPTFR)
-          ELTSEG(NEL,IFA) = NSE
-          ORISEG(NEL,IFA) = 1
-!
-        ENDIF
-!
-      ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!     LOOP ON ELEMENTS FOR NUMBERING INTERNAL SEGMENTS AND FILLING:
-!     GLOSEG, ELTSEG, ORISEG
-!
-      DO IELEM1 = 1 , NELEM
-        DO IFACE = 1 , 3
-          IF(ELTSEG(IELEM1,IFACE).EQ.0) THEN
-!           NEW SEGMENT (HENCE INTERNAL SO IFABOR<>0)
-            NSE = NSE + 1
-!           BOTH NEIGHBOURING ELEMENTS ARE TREATED FOR THIS SEGMENT
-            I1 = IKLE(IELEM1,     IFACE)
-            I2 = IKLE(IELEM1,NEXT(IFACE))
-            IF(I1.EQ.I2) THEN
-              IF(LNG.EQ.1) THEN
-               WRITE(LU,*) 'GREDELMET_STOSEG :
-     &           SEGMENT AVEC UN SEUL POINT'
-               WRITE(LU,*) '         ELEMENT ',IELEM1,' FACE ',IFACE
-              ENDIF
-              IF(LNG.EQ.2) THEN
-               WRITE(LU,*) 'GREDELMET_STOSEG: 
-     &          EDGE MADE OF ONLY ONE POINT'
-               WRITE(LU,*) '        ELEMENT ',IELEM1,' FACE ',IFACE
-              ENDIF
-              CALL GREDELMET_PLANTE(1)
-              STOP
-            ENDIF
-            ELTSEG(IELEM1,IFACE) = NSE
-            IG1=I1
-            IG2=I2
-!           SEGMENT ORIENTED LOWER RANK TO HIGHER RANK
-            IF(IG1.LT.IG2) THEN
-              GLOSEG(NSE,1) = I1
-              GLOSEG(NSE,2) = I2
-              ORISEG(IELEM1,IFACE) = 1
-            ELSE
-              GLOSEG(NSE,1) = I2
-              GLOSEG(NSE,2) = I1
-              ORISEG(IELEM1,IFACE) = 2
-            ENDIF
-!           OTHER ELEMENT NEIGHBOURING THIS SEGMENT
-            IELEM2 = IFABOR(IELEM1,IFACE)
-!           IELEM2 = 0 OR -1 MAY OCCUR IN PARALLEL MODE
-            IF(IELEM2.GT.0) THEN
-!             LOOKS FOR THE RIGHT SIDE OF ELEMENT IELEM2
-              DO JFACE = 1,3
-                J1 = IKLE(IELEM2,     JFACE)
-                J2 = IKLE(IELEM2,NEXT(JFACE))
-!               ALL ELEMENTS HAVE A COUNTER-CLOCKWISE NUMBERING
-                IF(I1.EQ.J2.AND.I2.EQ.J1) THEN
-                  ELTSEG(IELEM2,JFACE) = NSE
-                  ORISEG(IELEM2,JFACE) = 3-ORISEG(IELEM1,IFACE)
-!                 SIDE FOUND, NO NEED TO GO ON
-                  GO TO 1000
-                ELSEIF(I1.EQ.J1.AND.I2.EQ.J2) THEN
-!                 SIDE BADLY ORIENTED
-                  IF(LNG.EQ.1) THEN
-                    WRITE(LU,*) 'GREDELMET_STOSEG : MAILLAGE DEFECTUEUX'
-                    WRITE(LU,*) '         LA FACE ',JFACE
-                    WRITE(LU,*) '         DE L''ELEMENT ',IELEM2
-                    WRITE(LU,*) '         EST MAL ORIENTEE'
-                    WRITE(LU,*) '         (POINTS ',I1,' ET ',I2,')'
-                  ENDIF
-                  IF(LNG.EQ.2) THEN
-                    WRITE(LU,*) 'GREDELMET_STOSEG: WRONG MESH'
-                    WRITE(LU,*) '        FACE ',JFACE
-                    WRITE(LU,*) '        OF ELEMENT ',IELEM2
-                    WRITE(LU,*) '        IS NOT WELL ORIENTED'
-                    WRITE(LU,*) '         (POINTS ',I1,' AND ',I2,')'
-                  ENDIF
-                  CALL GREDELMET_PLANTE(1)
-                  STOP
-                ENDIF
-              ENDDO
-!             SIDE NOT FOUND, THIS IS AN ERROR
-              IF(LNG.EQ.1) THEN
-                WRITE(LU,*) 'GREDELMET_STOSEG : MAILLAGE DEFECTUEUX'
-                WRITE(LU,*) '         ELEMENTS ',IELEM1,' ET ',IELEM2
-                WRITE(LU,*) '         LIES PAR LES POINTS ',I1,' ET ',I2
-                WRITE(LU,*) '         MAIS CES POINTS NE FONT PAS UNE'
-                WRITE(LU,*) '         FACE DE L''ELEMENT ',IELEM2
-              ENDIF
-              IF(LNG.EQ.2) THEN
-                WRITE(LU,*) 'GREDELMET_STOSEG: WRONG MESH'
-                WRITE(LU,*) '        ELEMENTS ',IELEM1,' AND ',IELEM2
-                WRITE(LU,*) '        LINKED BY POINTS ',I1,' AND ',I2
-                WRITE(LU,*) '        BUT THESE POINTS ARE NOT AN EDGE'
-                WRITE(LU,*) '        OF ELEMENT ',IELEM2
-              ENDIF
-              CALL GREDELMET_PLANTE(1)
-              STOP
-            ENDIF
-1000        CONTINUE
-          ENDIF
-        ENDDO
-      ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!     CHECKS
-!
-      IF(NSEG.NE.NSE) THEN
-        IF (LNG.EQ.1) WRITE(LU,502) NSE,NSEG
-        IF (LNG.EQ.2) WRITE(LU,503) NSE,NSEG
-502     FORMAT(1X,'GREDELMET_STOSEG (BIEF) : MAUVAIS NOMBRE DE SEGMENTS
-     &   : ',1I6,
-     &            '                AU LIEU DE ',1I6,' ATTENDUS')
-503     FORMAT(1X,'GREDELMET_STOSEG (BIEF): WRONG NUMBER OF SEGMENTS
-     &   : ',1I6,
-     &            '               INSTEAD OF ',1I6,' EXPECTED')
-        CALL GREDELMET_PLANTE(1)
-        STOP
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      RETURN
-      END
-!
-!                       ***************************
-                        SUBROUTINE GREDELMET_FDNRST
-!                       ***************************
-     &(IFRM,ITO,X,Y,NODENRS,NPOIN2,IFRM1,ITOP1)
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief    FINDS THE NEAREST FROM -1 AND TO +1 POINTER.
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!history  LEO POSTMA (DELFT HYDRAULICS)
-!+        03/04/2007
-!+        V5P7
-!+
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IFRM           |-->|
-!| IFRM1          |---|
-!| ITO            |-->|
-!| ITOP1          |---|
-!| NODENRS        |-->| IF > 0 : NODE NUMBER
-!|                |   | IF
-!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES
-!| X,Y            |-->| NODE COORDINATES
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER, INTENT(IN)          :: IFRM,ITO,NPOIN2
-      INTEGER, INTENT(IN)          :: NODENRS(NPOIN2)
-      INTEGER, INTENT(INOUT)       :: IFRM1,ITOP1
-      REAL, INTENT(IN) :: X(NPOIN2), Y(NPOIN2)
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER IPOIN
-      REAL XFRM1,XTOP1,YFRM1,YTOP1,DISFRM,DISTO,DX,DY
-!
-!-----------------------------------------------------------------------
-!
-      XFRM1  = X(IFRM)
-      YFRM1  = Y(IFRM)
-      XTOP1  = X(ITO )
-      YTOP1  = Y(ITO )
-      DISFRM = XFRM1-XTOP1
-      XFRM1  = XFRM1 + DISFRM
-      XTOP1  = XTOP1 - DISFRM
-      DISFRM = YFRM1-YTOP1
-      YFRM1  = YFRM1 + DISFRM
-      YTOP1  = YTOP1 - DISFRM
-!
-      DX     = XFRM1-X(1)
-      DY     = YFRM1-Y(1)
-      DISFRM = DX*DX + DY*DY
-      DX     = XTOP1-X(1)
-      DY     = YTOP1-Y(1)
-      DISTO  = DX*DX + DY*DY
-      IFRM1  = 1
-      ITOP1  = 1
-      DO IPOIN = 2, NPOIN2
-         DX     = XFRM1-X(IPOIN)
-         DY     = YFRM1-Y(IPOIN)
-         DX     = DX*DX + DY*DY
-         IF(DX.LT.DISFRM) THEN
-           DISFRM = DX
-           IFRM1  = IPOIN
-         ENDIF
-         DX     = XTOP1-X(IPOIN)
-         DY     = YTOP1-Y(IPOIN)
-         DX     = DX*DX + DY*DY
-         IF(DX.LT.DISTO) THEN
-           DISTO  = DX
-           ITOP1  = IPOIN
-         ENDIF
-      ENDDO
-      IFRM1 = NODENRS(IFRM1)
-      ITOP1 = NODENRS(ITOP1)
-!
-!-----------------------------------------------------------------------
-!
-      RETURN
-      END

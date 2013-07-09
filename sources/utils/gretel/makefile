@@ -55,9 +55,12 @@ MESSAGE       = @echo "$(PWD) $(LIBRARY) $(LOGNAME) $(DATE) $@ ($?)" >>$(JOURNAL
 
 DEST          =  $(PROJECT)/builds/$(DIRLIB)
 
-LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/parallel$(MODE)$(VERSION).a \
-                $(PROJECT)/builds/$(DIRLIB)/lib/special$(MODE)$(VERSION).a \
-                $(LIBS_MPI)
+LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/bief$(MODE)$(VERSION).a \
+                $(PROJECT)/builds/$(DIRLIB)/lib/damo$(MODE)$(VERSION).a \
+                $(PROJECT)/builds/$(DIRLIB)/lib/mumps$(MODE)$(VERSION).a  \
+                $(PROJECT)/builds/$(DIRLIB)/lib/parallel$(MODE)$(VERSION).a \
+                $(PROJECT)/builds/$(DIRLIB)/lib/special$(MODE)$(VERSION).a  \
+                $(LK_LIB_SPECIAL) $(LIBS_MPI)
 
 INSTALL       = cp
 
@@ -67,10 +70,10 @@ MAKEFILE      = makefile
 #
 #------- Sources Fortran
 
-SRCS_GRETEL= gretel_autop.f
-SRCS_GREDELPTS= gredelpts_autop.f
-SRCS_GREDELSEG= gredelseg_autop.f
-SRCS_GREDELMET= gredelmet_autop.f
+SRCS_GRETEL= gretel_autop.f gretel_cpikle2.f gretel_read_dataset_elem.f gretel_read_dataset.f gretel_skip_header.f
+SRCS_GREDELPTS= gredelpts_autop.f gredelpts_read_dataset.f
+SRCS_GREDELSEG= gredelseg_autop.f gredelpts_read_dataset.f
+SRCS_GREDELMET= gredelmet_autop.f gredel_fdnrst.f
 SRCS_GREDELHYD= gredelhyd_autop.f
 
 #

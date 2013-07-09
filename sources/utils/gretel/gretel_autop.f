@@ -62,6 +62,36 @@
       COMMON/INFO/LNG,LU
 !
       CHARACTER(LEN=30) GEO
+      INTEGER IPID,ERR,FU
+      INTEGER NELEM,ECKEN,NDUM,I,J,K,NBV1,NBV2,PARAM(10)
+      INTEGER NPLAN,NPOIN2,NPOIN2LOC
+      INTEGER NPROC,NRESU,NPOINMAX
+      INTEGER I_S, I_SP, I_LEN
+!
+      INTEGER, DIMENSION(:)  , ALLOCATABLE :: NPOIN,IPOBO,VERIF,IPOBO3D
+      INTEGER, DIMENSION(:,:), ALLOCATABLE :: KNOLG
+      INTEGER, DIMENSION(:,:), ALLOCATABLE :: IKLESA,IKLE3D
+!
+      REAL   , DIMENSION(:,:), ALLOCATABLE :: GLOBAL_VALUE
+      REAL   , DIMENSION(:,:), ALLOCATABLE :: LOCAL_VALUE
+      REAL   , DIMENSION(:)  , ALLOCATABLE :: XORIG,YORIG
+!
+      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: GLOBAL_VALUE_D
+      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: LOCAL_VALUE_D
+      DOUBLE PRECISION, DIMENSION(:)  , ALLOCATABLE :: XORIG_D,YORIG_D
+!
+      REAL AT
+      DOUBLE PRECISION AT_D
+!
+      LOGICAL IS,ENDE,SERAFIND_GEO,SERAFIND_RES
+!
+      CHARACTER*30 RES
+      CHARACTER*50 RESPAR
+      CHARACTER*80 TITSEL
+      CHARACTER*32 TEXTLU(200)
+      CHARACTER*11 EXTENS
+      EXTERNAL  EXTENS
+      INTRINSIC REAL
 !
 !-------------------------------------------------------------------------
 !
@@ -106,7 +136,7 @@
 !|==================================================================|
 !
 !
-        ELSE
+      ENDIF
 !
 !
 !|==================================================================|
@@ -114,88 +144,6 @@
 !| START: MERGES FILES RESULTING FROM THE DOMAIN DECOMPOSITION      |
 !|                                                                  |
 !|==================================================================|
-!
-        CALL RECOMPOSITION_DECOMP_DOMAINE (GEO)
-!
-!|==================================================================|
-!|     	                                                            |
-!| END: MERGES FILES RESULTING FROM THE DOMAIN DECOMPOSITION        |
-!|                                                                  |
-!|==================================================================|
-!
-!
-      ENDIF
-      STOP
-      END PROGRAM GRETEL_AUTOP
-!
-!
-         SUBROUTINE RECOMPOSITION_DECOMP_DOMAINE (GEO)
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| GEO            |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      INTEGER LI
-      COMMON/INFO/LNG,LU
-!
-      CHARACTER(LEN=30), INTENT(IN) :: GEO
-!
-      INTEGER IPID,ERR,FU
-      INTEGER NELEM,ECKEN,NDUM,I,J,K,NBV1,NBV2,PARAM(10)
-      INTEGER NPLAN,NPOIN2,NPOIN2LOC
-      INTEGER NPROC,NRESU,NPOINMAX
-      INTEGER I_S, I_SP, I_LEN
-!
-      INTEGER, DIMENSION(:)  , ALLOCATABLE :: NPOIN,IPOBO,VERIF,IPOBO3D
-      INTEGER, DIMENSION(:,:), ALLOCATABLE :: KNOLG
-      INTEGER, DIMENSION(:,:), ALLOCATABLE :: IKLESA,IKLE3D
-!
-      REAL   , DIMENSION(:,:), ALLOCATABLE :: GLOBAL_VALUE
-      REAL   , DIMENSION(:,:), ALLOCATABLE :: LOCAL_VALUE
-      REAL   , DIMENSION(:)  , ALLOCATABLE :: XORIG,YORIG
-!
-      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: GLOBAL_VALUE_D
-      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: LOCAL_VALUE_D
-      DOUBLE PRECISION, DIMENSION(:)  , ALLOCATABLE :: XORIG_D,YORIG_D
-!
-      REAL AT
-      DOUBLE PRECISION AT_D
-!
-      LOGICAL IS,ENDE,SERAFIND_GEO,SERAFIND_RES
-!
-      CHARACTER*30 RES
-      CHARACTER*50 RESPAR
-      CHARACTER*72 TITRE
-      CHARACTER*80 TITSEL
-      CHARACTER*32 TEXTLU(200)
-      CHARACTER*11 GRETEL_EXTENS
-      EXTERNAL    GRETEL_EXTENS
-      INTEGER, INTRINSIC ::  MAXVAL
-      INTRINSIC REAL,DBLE
-!
-!-----------------------------------------------------------------------
-!
-      LI = 5
 !
 ! READS FILE NAMES AND THE NUMBER OF PROCESSORS / PARTITIONS
 !
@@ -209,7 +157,7 @@
       INQUIRE (FILE=GEO,EXIST=IS)
       IF(.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
-        CALL GRETEL_PLANTE (-1)
+        CALL PLANTE (-1)
         STOP
       ENDIF
 !
@@ -234,7 +182,7 @@
 10    CONTINUE
       GO TO 992
 990   WRITE(LU,*) 'ERROR WHEN OPENING OR READING FILE: ',GEO
-      CALL GRETEL_PLANTE(-1)
+      CALL PLANTE(-1)
       STOP
 992   CONTINUE
 !     READS THE 10 PARAMETERS AND THE DATE
@@ -246,27 +194,27 @@
       OPEN(3,FILE=RES,FORM='UNFORMATTED',ERR=991)
       GO TO 993
 991   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RES
-      CALL GRETEL_PLANTE(-1)
+      CALL PLANTE(-1)
       STOP
 993   CONTINUE
 !
 !     1) STARTS READING THE 1ST RESULT FILE
 !
-      RESPAR=RES(1:I_LEN) // GRETEL_EXTENS(NPROC-1,0)
+      RESPAR=RES(1:I_LEN) // extens(NPROC-1,0)
 !
       INQUIRE (FILE=RESPAR,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', RESPAR
         WRITE (LU,*) 'CHECK THE NUMBER OF PROCESSORS'
         WRITE (LU,*) 'AND THE RESULT FILE CORE NAME'
-        CALL GRETEL_PLANTE(-1)
+        CALL PLANTE(-1)
         STOP
       END IF
 !
       OPEN(4,FILE=RESPAR,FORM='UNFORMATTED',ERR=994)
       GO TO 995
 994   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR
-      CALL GRETEL_PLANTE(-1)
+      CALL PLANTE(-1)
       STOP
 995   CONTINUE
 !
@@ -327,17 +275,17 @@
 !  DYNAMICALLY ALLOCATES THE ARRAYS
 !
       ALLOCATE(NPOIN(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'NPOIN')
+      CALL CHECK_ALLOCATE(ERR, 'NPOIN')
       ALLOCATE(IKLESA(3,NELEM),STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'IKLESA')
+      CALL CHECK_ALLOCATE(ERR, 'IKLESA')
       ALLOCATE(IPOBO(NPOIN2)      ,STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'IPOBO')
+      CALL CHECK_ALLOCATE(ERR, 'IPOBO')
       IF(NPLAN.EQ.0) THEN
         ALLOCATE(VERIF(NPOIN2)    ,STAT=ERR)
       ELSE
         ALLOCATE(VERIF(NPOIN2*NPLAN)    ,STAT=ERR)
       ENDIF
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'VERIF')
+      CALL CHECK_ALLOCATE(ERR, 'VERIF')
 !
 !     GLOBAL_VALUES IN SINGLE PRECISION, STORES NBV1 VALUES
 !
@@ -346,7 +294,7 @@
       ELSE
         ALLOCATE(GLOBAL_VALUE(NPOIN2*NPLAN,NBV1) ,STAT=ERR)
       ENDIF
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'GLOBAL_VALUE')
+      CALL CHECK_ALLOCATE(ERR, 'GLOBAL_VALUE')
 !
 !     GLOBAL_VALUES IN DOUBLE PRECISION, STORES NBV1 VALUES
 !
@@ -356,32 +304,32 @@
         ELSE
           ALLOCATE(GLOBAL_VALUE_D(NPOIN2*NPLAN,NBV1) ,STAT=ERR)
         ENDIF
-        IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'GLOBAL_VALUE_D')
+        CALL CHECK_ALLOCATE(ERR, 'GLOBAL_VALUE_D')
       ENDIF
 !
 !     X AND Y SINGLE PRECISION
 !
       ALLOCATE(XORIG(NPOIN2)    ,STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'XORIG')
+      CALL CHECK_ALLOCATE(ERR, 'XORIG')
       ALLOCATE(YORIG(NPOIN2)    ,STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'YORIG')
+      CALL CHECK_ALLOCATE(ERR, 'YORIG')
 !
 !     X AND Y DOUBLE PRECISION
 !
       IF(SERAFIND_GEO.OR.SERAFIND_RES) THEN
         ALLOCATE(XORIG_D(NPOIN2)    ,STAT=ERR)
-        IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'XORIG_D')
+        CALL CHECK_ALLOCATE(ERR, 'XORIG_D')
         ALLOCATE(YORIG_D(NPOIN2)    ,STAT=ERR)
-        IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'YORIG_D')
+        CALL CHECK_ALLOCATE(ERR, 'YORIG_D')
       ENDIF
 !
 !  3D
 !
       IF(NPLAN.NE.0) THEN
       ALLOCATE(IKLE3D(NELEM*(NPLAN-1),6),STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'IKLE3D')
+      CALL CHECK_ALLOCATE(ERR, 'IKLE3D')
       ALLOCATE(IPOBO3D(NPOIN2*NPLAN),STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'IPOBO3D')
+      CALL CHECK_ALLOCATE(ERR, 'IPOBO3D')
       ENDIF
 !
 !  END OF ALLOCATION ...
@@ -433,18 +381,18 @@
 !
       DO IPID = 0,NPROC-1
          FU = IPID +10
-         RESPAR=RES(1:I_LEN) // GRETEL_EXTENS(NPROC-1,IPID)
+         RESPAR=RES(1:I_LEN) // extens(NPROC-1,IPID)
          OPEN (FU,FILE=RESPAR,FORM='UNFORMATTED',ERR=998)
          GO TO 999
 998      WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR,
      &                      ' USING FILE UNIT: ', FU
-         CALL GRETEL_PLANTE(-1)
+         CALL PLANTE(-1)
          STOP
 999      REWIND(FU)
          CALL GRETEL_SKIP_HEADER(FU,NPOIN(IPID+1),NBV1,ERR,LU)
          IF(ERR.NE.0) THEN
            WRITE(LU,*) 'ERROR READING FILE '
-           CALL GRETEL_PLANTE(-1)
+           CALL PLANTE(-1)
            STOP
          ENDIF
       ENDDO
@@ -458,18 +406,18 @@
       ELSE
          ALLOCATE (KNOLG(NPOINMAX/NPLAN,NPROC),STAT=ERR)
       ENDIF
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'KNOLG')
+      CALL CHECK_ALLOCATE(ERR, 'KNOLG')
 !
 !     LOCAL_VALUES IN SINGLE PRECISION, STORES NBV1 VALUES
 !
       ALLOCATE(LOCAL_VALUE(NPOINMAX,NBV1)    ,STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'LOCAL_VALUE')
+      CALL CHECK_ALLOCATE(ERR, 'LOCAL_VALUE')
 !
 !     LOCAL_VALUES IN DOUBLE PRECISION, STORES NBV1 VALUES
 !
       IF(SERAFIND_GEO.OR.SERAFIND_RES) THEN
         ALLOCATE(LOCAL_VALUE_D(NPOINMAX,NBV1)    ,STAT=ERR)
-        IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'LOCAL_VALUE_D')
+        CALL CHECK_ALLOCATE(ERR, 'LOCAL_VALUE_D')
       ENDIF
 !
 ! READS KNOLG(NPOIN,NPROC)
@@ -806,465 +754,12 @@
          CLOSE (FU)
       ENDDO
 !
-      END SUBROUTINE RECOMPOSITION_DECOMP_DOMAINE
-!                       ***********************************
-                        CHARACTER*11 FUNCTION GRETEL_EXTENS
-!                       ***********************************
-     &(N,IPID)
+!|==================================================================|
+!|     	                                                            |
+!| END: MERGES FILES RESULTING FROM THE DOMAIN DECOMPOSITION        |
+!|                                                                  |
+!|==================================================================|
 !
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
 !
-!brief       GRETEL_EXTENSION OF THE FILES ON EACH PROCESSOR.
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!history  J-M HERVOUET (LNH)
-!+        08/01/1997
-!+        V4P0
-!+
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IPID           |-->| NUMERO DU PROCESSEUR
-!| N              |-->| NOMBRE DE PROCESSEURS MOINS UN = NCSIZE-1
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-      INTEGER IPID,N
-!
-!-----------------------------------------------------------------------
-!
-      IF(N.GT.0) THEN
-!
-        GRETEL_EXTENS='00000-00000'
-!
-        IF(N.LT.10) THEN
-          WRITE(GRETEL_EXTENS(05:05),'(I1)') N
-        ELSEIF(N.LT.100) THEN
-          WRITE(GRETEL_EXTENS(04:05),'(I2)') N
-        ELSEIF(N.LT.1000) THEN
-          WRITE(GRETEL_EXTENS(03:05),'(I3)') N
-        ELSEIF(N.LT.10000) THEN
-          WRITE(GRETEL_EXTENS(02:05),'(I4)') N
-        ELSE
-          WRITE(GRETEL_EXTENS(01:05),'(I5)') N
-        ENDIF
-!
-        IF(IPID.LT.10) THEN
-          WRITE(GRETEL_EXTENS(11:11),'(I1)') IPID
-        ELSEIF(IPID.LT.100) THEN
-          WRITE(GRETEL_EXTENS(10:11),'(I2)') IPID
-        ELSEIF(IPID.LT.1000) THEN
-          WRITE(GRETEL_EXTENS(09:11),'(I3)') IPID
-        ELSEIF(IPID.LT.10000) THEN
-          WRITE(GRETEL_EXTENS(08:11),'(I4)') IPID
-        ELSE
-          WRITE(GRETEL_EXTENS(07:11),'(I5)') IPID
-        ENDIF
-!
-      ELSE
-!
-        GRETEL_EXTENS='       '
-!
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      RETURN
-      END
-!                       *****************************
-                        SUBROUTINE GRETEL_SKIP_HEADER
-!                       *****************************
-!
-     &(FU,NPOIN,NVALUE,ERR,LU)
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ERR            |---|
-!| FU             |---|
-!| LU             |---|
-!| NPOIN          |---|
-!| NVALUE         |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-!
-      INTEGER NPOIN,NELEM,ECKEN,NDUM,NBV1,NVALUE,I,NPLAN
-      INTEGER FU,ERR,LU
-      INTEGER PARAM(10)
-!
-!  1 : SKIPS TITLE
-!
-      READ(FU,ERR=999)
-!
-!  2 : READS NBV1
-!
-      READ(FU,ERR=999) NBV1
-      IF (NBV1.NE.NVALUE) THEN
-        WRITE(LU,*)  'NBV1.NE.NVALUE! CHECK OUTPUT FILES ...'
-        CALL GRETEL_PLANTE(-1)
-        STOP
-      ENDIF
-!
-!  3 : SKIPS NAMES AND UNITS OF THE VARIABLES
-!
-      DO I=1,NBV1
-        READ(FU,ERR=999)
-      END DO
-!
-!  4 : 10 PARAMETERS
-!
-      READ(FU,ERR=999) (PARAM(I),I=1,10)
-      NPLAN=PARAM(7)
-!  READS THE DATE (OPTIONAL) AND WRITES IT OUT
-      IF(PARAM(10).EQ.1) THEN
-        READ(FU,ERR=999)  (PARAM(I),I=1,6)
-      ENDIF
-!
-!  5 : 4 PARAMETERS
-!
-      READ(FU,ERR=999) NELEM,NPOIN,ECKEN,NDUM
-!
-!  6 : IKLE
-!
-      READ(FU,ERR=999)
-!
- 999  RETURN
-      END
-!                         ******************************
-                          SUBROUTINE GRETEL_READ_DATASET
-!                         ******************************
-!
-     &(LOCAL_VALUE,LOCAL_VALUE_D,SERAFIND,
-     & NPOINMAX,NPOIN,NVALUE,AT,AT_D,FU,ENDE)
-!
-!***********************************************************************
-! PARALLEL   V6P2                                   21/08/2010
-!***********************************************************************
-!
-!brief
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |---|
-!| ENDE           |---|
-!| FU             |---|
-!| LOCAL_VALUE    |---|
-!| NPOIN          |---|
-!| NPOINMAX       |---|
-!| NVALUE         |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-!
-      INTEGER NPOINMAX,NPOIN,NVALUE,FU
-      INTEGER IPOIN,IVALUE
-!
-      LOGICAL SERAFIND
-!
-      REAL AT
-      DOUBLE PRECISION AT_D
-      REAL LOCAL_VALUE(NPOINMAX,NVALUE)
-      DOUBLE PRECISION LOCAL_VALUE_D(NPOINMAX,NVALUE)
-!
-      LOGICAL ENDE
-!
-      ENDE = .TRUE.
-!
-      IF(SERAFIND) THEN
-        READ(FU,END=999) AT_D
-        DO IVALUE = 1,NVALUE
-          READ(FU,END=999) (LOCAL_VALUE_D(IPOIN,IVALUE),IPOIN=1,NPOIN)
-        ENDDO
-      ELSE
-        READ (FU,END=999) AT
-        DO IVALUE = 1,NVALUE
-          READ(FU,END=999) (LOCAL_VALUE(IPOIN,IVALUE),IPOIN=1,NPOIN)
-        ENDDO
-      ENDIF
-!
-      ENDE = .FALSE.
-!
-!-----------------------------------------------------------------------
-!
- 999  RETURN
-      END
-!
-!
-!
-!                         *****************************************
-                          SUBROUTINE GRETEL_READ_DATASET_ELEM
-!                         *****************************************
-     &(LOCAL_VALUELEM,NPROC,NELEM,NBV1,AT,FU,IPID,ENDE)
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |---|
-!| ENDE           |---|
-!| FU             |---|
-!| IPID           |---|
-!| LOCAL_VALUELEM |---|
-!| NBV1           |---|
-!| NELEM          |---|
-!| NPROC          |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-!
-      INTEGER NPROC,NELEM,NBV1,FU,IPID
-      INTEGER IELEM,IVALUE
-!
-      REAL AT
-      REAL LOCAL_VALUELEM(0:NPROC-1,1:NELEM,1:NBV1)
-!
-      LOGICAL ENDE
-!
-      ENDE = .TRUE.
-!
-      READ(FU,END=9099) AT
-      DO IVALUE = 1,NBV1
-         READ(FU,END=9099) (LOCAL_VALUELEM(IPID,IELEM,IVALUE)
-     &   ,IELEM=1,NELEM)
-      END DO
-!
-      ENDE = .FALSE.
-!
- 9099  RETURN
-      END
-!
-!
-!                       *******************************
-                        SUBROUTINE GRETEL_CPIKLE2
-!                       *******************************
-     &(IKLE3,IKLES,NELEM2,NELMAX2,NPOIN2,NPLAN)
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief       GRETEL_EXTENSION OF THE CONNECTIVITY TABLE.
-!+                CASE OF GRETEL_EXTENSION TO A QUASI-BUBBLE ELEMENT.
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!history  J-M HERVOUET (LNH)
-!+        23/08/1999
-!+        V5P1
-!+
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |<->| TABLEAU DES CONNECTIVITES
-!| IKLE3          |---|
-!| IKLES          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS
-!| NELEM2         |---|
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS
-!| NELMAX2        |---|
-!| NPLAN          |---|
-!| NPOIN          |-->| NOMBRE DE SOMMETS DU MAILLAGE
-!| NPOIN2         |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER, INTENT(IN)    :: NELEM2,NELMAX2,NPOIN2,NPLAN
-      INTEGER, INTENT(INOUT) :: IKLES(3,NELEM2)
-      INTEGER, INTENT(INOUT) :: IKLE3(NELMAX2,NPLAN-1,6)
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER IELEM,I
-!
-!-----------------------------------------------------------------------
-!
-!     BOTTOM AND TOP OF ALL LAYERS
-!
-      IF(NPLAN.GE.2) THEN
-        DO I = 1,NPLAN-1
-          DO IELEM = 1,NELEM2
-            IKLE3(IELEM,I,1) = IKLES(1,IELEM) + (I-1)*NPOIN2
-            IKLE3(IELEM,I,2) = IKLES(2,IELEM) + (I-1)*NPOIN2
-            IKLE3(IELEM,I,3) = IKLES(3,IELEM) + (I-1)*NPOIN2
-            IKLE3(IELEM,I,4) = IKLES(1,IELEM) +  I   *NPOIN2
-            IKLE3(IELEM,I,5) = IKLES(2,IELEM) +  I   *NPOIN2
-            IKLE3(IELEM,I,6) = IKLES(3,IELEM) +  I   *NPOIN2
-          ENDDO
-        ENDDO
-      ELSE
-        IF(LNG.EQ.1) WRITE(LU,*) 
-     &   'GRETEL_CPIKLE2 : IL FAUT AU MOINS 2 PLANS'
-        IF(LNG.EQ.2) WRITE(LU,*) 
-     &   'GRETEL_CPIKLE2 : MINIMUM OF 2 PLANES NEEDED'
-        CALL GRETEL_PLANTE(-1)
-        STOP
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      RETURN
-      END
-!
-!
-!     ******************************************
-      SUBROUTINE GRETEL_ALLOER (N, CHFILE)
-!     ******************************************
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHFILE         |---|
-!| N             |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER, INTENT(IN) :: N
-      CHARACTER*(*), INTENT(IN) :: CHFILE
-      WRITE(N,*) 'ERROR BY ALLOCATION OF ',CHFILE
-      CALL GRETEL_PLANTE(-1)
       STOP
-      END SUBROUTINE GRETEL_ALLOER
-!
-!
-!
-!     ************************************
-      SUBROUTINE GRETEL_PLANTE(IVAL)
-!     ************************************
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IVAL           |---|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-      INTEGER, INTENT(IN) :: IVAL
-      INTEGER ICODE
-!     STANDARD F90 :  STOP [n] WHERE N IS A STRING OF NOT MORE
-!     THAN FIVE DIGITS OR IS A CHARACTER CONSTANT.
-!     HOWEVER, CODE IS NOT ALWAYS SENT TO STDERR
-!     (COMPILER DEPENDENT, NAG DOESN'T FOR INSTANCE)
-!     ICODE MIGHT BE USED IN A POSSIBLE SYSTEM DEPENDENT EXIT PROCEDURE
-!     EXAMPLE : STOP 1 ; STOP '    1'
-      IF(IVAL.LT.0) THEN
-        ICODE = 0      ! JUST ASSUMED FOR NON-ERROR STOP
-      ELSEIF(IVAL.EQ.0.OR.IVAL.EQ.1) THEN
-        ICODE = 2      ! EXIT IVAL 0 OR 1 INDICATING A "CONTROLLED" ERROR
-        STOP 2
-      ELSE
-        ICODE = 1     ! SOMETHING ELSE? BUT AN ERROR!
-        STOP 1
-      ENDIF
-      WRITE(LU,*) 'RETURNING EXIT CODE: ', ICODE
-      STOP 0    !WHICH IS USUALLY EQUIVALENT TO CALL EXIT(0)
-
-!     JMH 30/09/2011 WHAT IS THIS (NAG COMPILER DOES NOT KNOW)
-!     CALL EXIT(ICODE)
-      END SUBROUTINE GRETEL_PLANTE
+      END PROGRAM GRETEL_AUTOP

@@ -47,11 +47,11 @@ GREDELSEG     = gredelseg$(VERSION).exe
 GREDELMET     = gredelmet$(VERSION).exe
 GREDELHYD     = gredelhyd$(VERSION).exe
 
-LKLIB         = $(PROJECT)\builds\$(drilib)\lib\bief$(MODE)$(VERSION).lib \
-                $(PROJECT)\builds\$(drilib)\lib\damo$(MODE)$(VERSION).lib \
-                $(PROJECT)\builds\$(drilib)\lib\mumps$(MODE)$(VERSION).lib  \
-                $(PROJECT)\builds\$(drilib)\lib\parallel$(MODE)$(VERSION).lib \
-                $(PROJECT)\builds\$(drilib)\lib\special$(MODE)$(VERSION).lib  \
+LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\damo$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\mumps$(MODE)$(VERSION).lib  \
+                $(PROJECT)\builds\$(DIRLIB)\lib\parallel$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)
 
 #------------------------ Liste des fichiers
@@ -59,13 +59,11 @@ LKLIB         = $(PROJECT)\builds\$(drilib)\lib\bief$(MODE)$(VERSION).lib \
 #------- Sources Fortran
 
 
-SRCS_PARTEL= partel.F extens.f
-SRCS_GRETEL= gretel_autop.f
-SRCS_GREDELPTS= gredelpts_autop.f
-SRCS_GREDELSEG= gredelseg_autop.f
-SRCS_GREDELMET= gredelmet_autop.f
+SRCS_GRETEL= gretel_autop.f gretel_cpikle2.f gretel_read_dataset_elem.f gretel_read_dataset.f gretel_skip_header.f
+SRCS_GREDELPTS= gredelpts_autop.f gredelpts_read_dataset.f
+SRCS_GREDELSEG= gredelseg_autop.f gredelpts_read_dataset.f
+SRCS_GREDELMET= gredelmet_autop.f gredel_fdnrst.f
 SRCS_GREDELHYD= gredelhyd_autop.f
-SRCS_DIFFSEL=diffsel.f
 
 #
 #------- Objets
