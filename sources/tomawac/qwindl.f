@@ -34,6 +34,11 @@
 !+        V6P3
 !+   A first optimisation.
 !
+!history  J-M HERVOUET (EDF/LNHE)
+!+        09/07/2013
+!+        V6P3
+!+   (1.D0/1.D-90)**4 triggers an overflow, 20 put instead of 90. 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CIMPLI         |-->| IMPLICITATION COEFFICIENT FOR SOURCE TERMS
 !| FPMN           |<->| WORK TABLE
@@ -89,8 +94,8 @@
 !     ARRAYS DEPENDING ONLY ON POINTS
 !
       DO IP=1,NPOIN2
-        FPMO(IP)=(C2/MAX(USOLD(IP),1.D-90))**4
-        FPMN(IP)=(C2/MAX(USNEW(IP),1.D-90))**4
+        FPMO(IP)=(C2/MAX(USOLD(IP),1.D-20))**4
+        FPMN(IP)=(C2/MAX(USNEW(IP),1.D-20))**4
       ENDDO
 !
 !     ARRAYS DEPENDING ONLY ON POINTS AND DIRECTIONS
