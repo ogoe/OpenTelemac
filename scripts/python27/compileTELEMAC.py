@@ -556,7 +556,7 @@ if __name__ == "__main__":
       #Liborder in the cmdf file is incorrect using fixed order instead
       #TODO: Solve order error for example jultim and gregtim
       #DONE: the error on the order, but has to be tested -- replace LIBDEPS by MAKSYSTEL['deps']...'liborder' in the loop below
-      LIBDEPS = ['special', 'parallel', 'mumps', 'gretel', 'partel', 'diffsel', 'damocles', 'bief', 'postel3d', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
+      LIBDEPS = ['special', 'parallel', 'mumps', 'damocles', 'bief', 'gretel', 'partel', 'diffsel', 'postel3d', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
 
 # ~~ Scans all cmdf files found in all modules ~~~~~~~~~~~~~~~~~~~~~
       cmdfFiles = {}; HOMERES = {}; found = False
