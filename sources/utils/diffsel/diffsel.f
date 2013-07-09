@@ -257,4 +257,4 @@
       PRINT*, '   -> EPSILON MAX GLOBAL : ', EPSMAX
       CLOSE (1)
       CLOSE (2)
-      END
+      END PROGRAM DIFFSEL
