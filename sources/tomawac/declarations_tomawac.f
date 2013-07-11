@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TOMAWAC   V6P2                                   25/06/2012
+! TOMAWAC   V6P3                                   25/06/2012
 !***********************************************************************
 !
 !brief    DECLARES BIEF STRUCTURES IN TOMAWAC.
@@ -91,8 +91,7 @@
      & STRA55, STRA56, STRA57, STRA58, STRA59, STRA60, STRA61, STRA62,
      & STRA63, STRA64, STRA65, STRA66, SPRIVE, SIBOR ,
      & SLIFBR, SLIQ, SELT, SETA, SFRE, SETAP1, SIAGNL, SITR11, SITR12,
-     & SITR13, SITR01, SKNI,SKNOGL,SELI, SITR31,
-     & SITR32, SITR33, SBETA,SISUB
+     & SITR13, SITR01, SITR31,SITR32, SITR33, SBETA,SISUB
 !
 !     BLOCK OF BIEF_OBJ STRUCTURES
 !
@@ -1000,9 +999,8 @@
 ! tableau de travail
       INTEGER, DIMENSION(:), POINTER :: ITR01
 !> @brief
-!
-      INTEGER, DIMENSION(:), POINTER :: KNI , KNOGL  
-      INTEGER, DIMENSION(:), POINTER :: ELI,ITR31,ITR32,ITR33
+! 
+      INTEGER, DIMENSION(:), POINTER :: ITR31,ITR32,ITR33
 !
 !     Diffraction
 !
