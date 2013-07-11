@@ -29,7 +29,7 @@
        code="telemac2d" target="t2d_malpasset-large.cas" 
        title="malpasset scalar mode" 
    /> 
-   <action xref="3"  rank="3"
+   <action xref="3"  rank="11"
        do="translate;compile;run;cas;princi" 
        code="telemac2d" target="t2d_malpasset-small_cin.cas" 
        title="malpasset scalar mode" 
