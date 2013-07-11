@@ -1795,6 +1795,26 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE OIL_FLOT
+     &(PARTICULES,NFLOT,NFLOT_MAX,X,Y,IKLE,NELEM,NELMAX,NPOIN,
+     & MESH,LT,NIT,AT,VOLDEV,RHO_OIL,NB_COMPO,NB_HAP)
+      USE BIEF_DEF
+      IMPLICIT NONE
+      INTEGER, INTENT(IN)             :: NPOIN,NIT,NFLOT_MAX,LT
+      INTEGER, INTENT(IN)             :: NB_COMPO,NB_HAP
+      INTEGER, INTENT(IN)             :: NELEM,NELMAX
+      INTEGER, INTENT(IN)             :: IKLE(NELMAX,3)
+      INTEGER, INTENT(INOUT)          :: NFLOT
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),AT
+      DOUBLE PRECISION, INTENT(IN)    :: VOLDEV,RHO_OIL
+      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
+      TYPE(OIL_PART), INTENT(INOUT)   :: PARTICULES(NFLOT_MAX)
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE OUTPUT_TELEMAC2D(TIME)
         IMPLICIT NONE
         DOUBLE PRECISION, INTENT(IN) :: TIME
