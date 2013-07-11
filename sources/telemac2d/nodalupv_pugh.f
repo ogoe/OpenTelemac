@@ -2,10 +2,10 @@
                         SUBROUTINE NODALUPV_PUGH
 !                       ************************
 !
-     &(UPVM2,UPVN2,MARDAT,MARTIM)
+     &(UPVM2,UPVN2,UPVS2,MARDAT,MARTIM)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   23/03/2011
+! TELEMAC2D   V6P3                                   23/03/2011
 !***********************************************************************
 !
 !brief    COMPUTES NODAL FACTORS PHASE FROM PUGH FORMULAE
@@ -21,11 +21,19 @@
 !+        V6P2
 !+   NAG doesn't like DINT
 !
+!history  C-T PHAM (LNHE)
+!+        31/10/2012
+!+        V6P3
+!+   Bug correction when MARTIM not equal to midnight or noon
+!+   Introduction of TT + UPVS2 (new output argument)
+!+   New calculation of UPVM2 and UPVN2
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MARDAT         |-->| DATE (YEAR, MONTH,DAY)
 !| MARTIM         |-->| TIME (HOUR, MINUTE,SECOND)
 !| UPVM2          |<--| U+V (ORIGIN + NODAL PHASE) FOR WAVE M2
 !| UPVN2          |<--| U+V (ORIGIN + NODAL PHASE) FOR WAVE N2
+!| UPVS2          |<--| U+V (ORIGIN + NODAL PHASE) FOR WAVE S2
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TELEMAC2D, EX_NODALUPV_PUGH => NODALUPV_PUGH
@@ -35,15 +43,15 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)           :: MARDAT(3),MARTIM(3)
-      DOUBLE PRECISION, INTENT(OUT) :: UPVM2,UPVN2
+      DOUBLE PRECISION, INTENT(OUT) :: UPVM2,UPVN2,UPVS2
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION PI,DTR
       DOUBLE PRECISION SLUNPUGH,HSOLPUGH,PLUNPUGH,NLUNPUGH
 !     DOUBLE PRECISION PSOLPUGH
-      DOUBLE PRECISION TJ
-      DOUBLE PRECISION VVM2,UUM2,VVN2,UUN2
+      DOUBLE PRECISION TJ,TT
+      DOUBLE PRECISION VVM2,UUM2,VVN2,UUN2,VVS2,UUS2
 !
       INTEGER YEAR,MONTH,DAY,NDAY,HOUR,MINUTE,SECOND,I
 !
@@ -92,21 +100,31 @@
       NLUNPUGH = MOD(259.16D0-  1934.14D0*TJ+0.0021D0*TJ**2,360.D0)
 !     PSOLPUGH = MOD(281.22D0+     1.72D0*TJ+0.0005D0*TJ**2,360.D0)
 !
-      VVM2 = MOD(2.D0*(HSOLPUGH-SLUNPUGH),360.D0)
+! TT MEAN GREENWICH SOLAR ANGLE, ORIGIN AT ZENITH
+! 15.D0 DEG = PI/12.D0
+! PI/12.D0*24.D0 = TWOPI
+      TT = 360.D0*(TJ*36525.D0-DBLE(INT(TJ*36525.D0)))+180.D0
+!
+      VVM2 = MOD(2.D0*(HSOLPUGH-SLUNPUGH+TT),360.D0)
       UUM2 = -2.1D0*SIN(NLUNPUGH*DTR)
-      VVN2 = MOD(-3.D0*SLUNPUGH+2.D0*HSOLPUGH+PLUNPUGH,360.D0)
+      VVN2 = MOD(-3.D0*SLUNPUGH+2.D0*HSOLPUGH+PLUNPUGH+2.D0*TT,360.D0)
       UUN2 = UUM2
+      VVS2 = MOD(2.D0*TT,360.D0)
+      UUS2 = 0.D0
 !
       UPVM2 = MOD(UUM2+VVM2,360.D0)
       UPVN2 = MOD(UUN2+VVN2,360.D0)
+      UPVS2 = VVS2
 !
       IF(UPVM2.LT.0.D0) UPVM2 = UPVM2 + 360.D0
       IF(UPVN2.LT.0.D0) UPVN2 = UPVN2 + 360.D0
+      IF(UPVS2.LT.0.D0) UPVS2 = UPVS2 + 360.D0
 !
 !     DEGREES TO RADIANS CONVERSIONS
 !
       UPVM2 = UPVM2*DTR
       UPVN2 = UPVN2*DTR
+      UPVS2 = UPVS2*DTR
 !
 !-----------------------------------------------------------------------
 !

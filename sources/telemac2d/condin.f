@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE PHYSICAL PARAMETERS H, U, V ETC.
@@ -92,7 +92,7 @@
      &                  LIHBOR%I,LIUBOR%I,KENT,KENTU,
      &                  GEOSYST,NUMZONE,LAMBD0,PHI0,
      &                  T2D_FILES,T2DBB1,T2DBB2,
-     &                  MARDAT,MARTIM,INTMICON)
+     &                  MARDAT,MARTIM,INTMICON,MSL)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN

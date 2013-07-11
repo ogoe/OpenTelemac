@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES VELOCITY, DEPTH AND TRACERS.
@@ -53,6 +53,12 @@
 !+   Addition of the TPXO tidal model by calling CONDI_TPXO
 !+   (the TPXO model being coded in module TPXO)
 !
+!history  C.-T. PHAM (LNHE), M.S.TURNBULL (HRW)
+!+        02/11/2012
+!+        V6P3
+!+   Correction of bugs when initialising velocity with TPXO
+!+   or when sea levels are referenced with respect to Chart Datum (CD)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -98,11 +104,11 @@
      &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
         CALL OS('X=-Y    ',X=H,Y=ZF)
         CALL CONDI_TPXO(NPOIN2,MESH2D%NPTFR,MESH2D%NBOR%I,
-     &                  X2%R,Y2%R,H%R,U%R,V%R,
+     &                  X2%R,Y2%R,H%R,U2D%R,V2D%R,
      &                  LIHBOR%I,LIUBOL%I,KENT,KENTU,
      &                  GEOSYST,NUMZONE,LATIT,LONGIT,
      &                  T3D_FILES,T3DBB1,T3DBB2,
-     &                  MARDAT,MARTIM,INTMICON)
+     &                  MARDAT,MARTIM,INTMICON,MSL)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
@@ -232,6 +238,14 @@
           DO J=1,NPOIN2
            U%R((I-1)*NPOIN2+J)=U2D%R(J)
            V%R((I-1)*NPOIN2+J)=V2D%R(J)
+          ENDDO
+        ENDDO
+      ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
+     &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
+        DO I=1,NPLAN
+          DO J=1,NPOIN2
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
           ENDDO
         ENDDO
       ELSE

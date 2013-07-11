@@ -53,7 +53,7 @@
       IMPLICIT NONE
 !
       PRIVATE
-      PUBLIC :: CONDI_TPXO,BORD_TIDE_TPXO,DEJA
+      PUBLIC :: CONDI_TPXO,BORD_TIDE_TPXO,CD2MSL_TPXO,DEJA
 !
 !-----------------------------------------------------------------------
 !
@@ -1781,7 +1781,7 @@ c$$$      U(22) = ZERO                                         ! theta1
 !
      &(NPOIN,NPTFR,NBOR,X,Y,H,U,V,LIHBOR,LIUBOR,KENT,KENTU,
      & GEOSYST,NUMZONE,LAMBD0,PHI0,T2D_FILES,T2DBB1,T2DBB2,
-     & MARDAT,MARTIM,INTMICON)
+     & MARDAT,MARTIM,INTMICON,MSL)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   06/12/2011
@@ -1800,6 +1800,14 @@ c$$$      U(22) = ZERO                                         ! theta1
 !+        Implementation and generalised for interfacing with
 !+        TELEMAC-2D AND 3D
 !
+!history  C.-T. PHAM (LNHE)
+!+        05/11/2012
+!+        V6P3
+!+        Correction of a bug for TELEMAC-3D. Initialisation of the
+!+        velocity arrays at 0
+!+        Correction of a bug when sea levels are referenced
+!+        with respect to Chart Datum (CD)
+!
 !warning  (-ZF) should be stored in H as you enter this subroutine
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1815,6 +1823,7 @@ c$$$      U(22) = ZERO                                         ! theta1
 !|  LIUBOR        |-->| TYPE OF BOUNDARY CONDITIONS ON VELOCITY
 !|  MARDAT        |<->| DATE (YEAR, MONTH,DAY)
 !|  MARTIM        |-->| TIME (HOUR, MINUTE,SECOND)
+!|  MSL           |-->| COEFFICIENT TO CALIBRATE SEA LEVEL KEYWORD
 !|  NBOR          |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !|  NPOIN         |-->| NUMBER OF 2D NODES IN THE MESH
 !|  NPTFR         |-->| NUMBER OF BOUNDARY POINTS
@@ -1830,6 +1839,7 @@ c$$$      U(22) = ZERO                                         ! theta1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -1843,7 +1853,7 @@ c$$$      U(22) = ZERO                                         ! theta1
       INTEGER, INTENT(IN)             :: GEOSYST,NUMZONE
       INTEGER, INTENT(IN)             :: MARTIM(3)
       INTEGER, INTENT(INOUT)          :: MARDAT(3)
-      DOUBLE PRECISION, INTENT(IN)    :: LAMBD0,PHI0
+      DOUBLE PRECISION, INTENT(IN)    :: LAMBD0,PHI0,MSL
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN),V(NPOIN)
@@ -2115,7 +2125,14 @@ c$$$      U(22) = ZERO                                         ! theta1
      &       PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
 !###> MST@HRW: CHECKING DRY LANDS
 !         IF(H(IPOIN).LT.0.D0) H(IPOIN) = 0.D0
-         H(IPOIN) = MAX(H(IPOIN),0.D0)
+!         H(IPOIN) = MAX(H(IPOIN),0.D0)
+!     CTP@LNHE: CASE WHEN BOTTOM IS REFERENCED WITH RESPECT TO CD
+!               ALSO TAKEN INTO ACCOUNT
+         IF(H(IPOIN).LE.0.D0) THEN
+           H(IPOIN) = 0.D0
+         ELSE
+           H(IPOIN) = H(IPOIN) + MSL
+         ENDIF
 !###< MST@HRW
 !
       ENDDO
@@ -2162,6 +2179,11 @@ c$$$      U(22) = ZERO                                         ! theta1
 !
       ALLOCATE( ZCON(NCON) )
       DO IPOIN = 1,NPOIN
+!
+!     INITIALISATION AT 0.D0
+!
+         U(IPOIN) = 0.D0
+         V(IPOIN) = 0.D0
 !
          CALL INTERPT(UT,NCON,N,M,MASKU,TH_LIM,PH_LIM,
      &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
@@ -2790,6 +2812,300 @@ c$$$          ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
 !
       RETURN
       END SUBROUTINE BORD_TIDE_TPXO
+!                    **********************
+                     SUBROUTINE CD2MSL_TPXO
+!                    **********************
+!
+     &(NPOIN,X,Y,H,GEOSYST,NUMZONE,LAMBD0,PHI0,T2D_FILES,T2DBB1,CAMPLIF,
+     & MSL)
+!
+!***********************************************************************
+! TELEMAC2D   V6P3                                   25/10/2012
+!***********************************************************************
+!
+!brief    Prepare a level boundary filter to store the TPXO constituents
+!+        at the boundary.
+!
+!note     Passing NPOIN, X, Y and H as arguments allows
+!+        this SUBROUTINE to be called from TELEMAC-2D or TELEMAC-3D
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        06/12/2011
+!+        V6P2
+!+        Implementation and generalised for interfacing with
+!+        TELEMAC-2D AND 3D
+!
+!warning  (-ZF) should be stored in H as you enter this subroutine
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!|  CAMPLIF       |-->| COEFFICIENT TO CALIBRATE THE AMPLITUDE OF
+!|                |   | HALF TIDAL RANGE
+!|  GEOSYST       |-->| TYPE OF GEOGRAPHIC SYSTEM (WGS84 LONG/LAT, UTM OR LAMBERT)
+!|  H             |<->| COMES IN AS -ZF, TO WHICH THE TPXO FREE SURFACE
+!|                |   | WILL BE ADDED TO PRODUCE WATER DEPTH
+!|  LAMBD0        |-->| LATITUDE OF ORIGIN POINT (KEYWORD, IN DEGREES)
+!|  MSL           |-->| COEFFICIENT TO CALIBRATE SEA LEVEL KEYWORD
+!|  NPOIN         |-->| NUMBER OF 2D NODES IN THE MESH
+!|  NUMZONE       |-->| NUMBER OF ZONE WHEN PLANE PROJECTION (UTM OR LAMBERT)
+!|  PHI0          |-->| LONGITUDE OF ORIGIN POINT (KEYWORD, IN DEGREES)
+!|  T2DBB1        |-->| ADDRESS OF DATA BASE 1 IN T2D_FILES
+!|  T2D_FILES     |-->| ARRAY OF FILES
+!|  U             |<--| 2D DEPTH-AVERAGED VELOCITY COMPONENT U
+!|  X             |-->| COORDINATES X OF THE NODES OF THE MESH
+!|  Y             |-->| COORDINATES Y OF THE NODES OF THE MESH
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)             :: NPOIN,T2DBB1
+      INTEGER, INTENT(IN)             :: GEOSYST,NUMZONE
+      DOUBLE PRECISION, INTENT(IN)    :: LAMBD0,PHI0,CAMPLIF,MSL
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN)
+      TYPE(BIEF_FILE), INTENT(IN)     :: T2D_FILES(*)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IC,I,J,K,IPOIN,IERR,NC,N,M
+      INTEGER, ALLOCATABLE :: MASKT(:,:)
+      DOUBLE PRECISION PI,DTR,RTD
+      DOUBLE PRECISION XM,XL,YL,XO,YO,ALPHA,RADIUS
+      DOUBLE PRECISION, ALLOCATABLE :: LAT(:),LON(:)
+      DOUBLE PRECISION PH_LIM(2),TH_LIM(2)
+      REAL PH_LIM_R(2),TH_LIM_R(2)
+      COMPLEX, ALLOCATABLE :: ZT(:,:,:)
+      COMPLEX(KIND(1.D0)), ALLOCATABLE :: ZCON(:)
+      CHARACTER(LEN=4) C_ID_MOD(TPXO_NCMX)
+!
+!     N,M: SIZES OF THE GRID SUPPORTING THE TPXO MODEL
+!     NC: NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
+!     MASKT MASK TO FILTER VALID AND INVALID (U,V,H) VALUES
+!     PH_LIM,TH_LIM: MIN AND MAX RANGES FOR PHASES AND PERIODES
+!     ZT,ZCON: PHASES AND PERIODS FOR U, V AND H
+!     HERE DEFINED AS COMPLEX
+!     C_ID_MOD INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+!
+      INTRINSIC ATAN
+!
+!-----------------------------------------------------------------------
+!
+      PI = 4.D0*ATAN(1.D0)
+      DTR = PI/180.D0
+      RTD = 180.D0/PI      
+!
+!-----------------------------------------------------------------------
+!
+!  SPECIFIC VALUES FOR THE EXAMPLE OF A GEOGRAPHIC SYSTEM DEFINED BY
+!  THE USER
+!
+      XO = 0.D0
+      YO = 51.5D0
+!  OR E.G.
+!     XO = PHI0       ! LONGITUDE
+!     YO = LAMBD0     ! LATITUDE
+!
+!  ANGLE BETWEEN EAST AXIS ---> X AXIS (TRIGONOMETRIC DEGREES)
+      ALPHA = 40.D0
+      ALPHA = ALPHA*DTR ! IN RADIANS
+!  RADIUS: RADIUS OF THE EARTH
+      RADIUS = 6371000.D0
+!
+!-----------------------------------------------------------------------
+!
+!     PREPARE STORAGE ON LEVEL BOUNDARIES
+!
+      IF(T2D_FILES(T2DBB1)%NAME(1:1).EQ.' ') THEN
+        IF(LNG.EQ.1) WRITE(LU,*) 'FICHIER TPXO POUR H NON DISPONIBLE'
+        IF(LNG.EQ.2) WRITE(LU,*) 'TPXO FILE FOR H NOT AVAILABLE'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+      IF(LNG.EQ.1) WRITE(LU,*) 'NIVEAU MOYEN BASE SUR TPXO :'
+      IF(LNG.EQ.2) WRITE(LU,*) 'MEAN SEA LEVEL BASED ON TPXO:'
+!
+!-----------------------------------------------------------------------
+!
+!     READ AVAILABLE DIMENSIONS
+!
+      REWIND(T2D_FILES(T2DBB1)%LU)
+      READ(T2D_FILES(T2DBB1)%LU) N,M,NC,TH_LIM_R,PH_LIM_R,C_ID_MOD(1:NC)
+!
+!-----------------------------------------------------------------------
+!
+!     COPY OF TH_LIM AND PH_LIM IN DOUBLE PRECISION
+!
+      TH_LIM(1) = TH_LIM_R(1)
+      TH_LIM(2) = TH_LIM_R(2)
+      PH_LIM(1) = PH_LIM_R(1)
+      PH_LIM(2) = PH_LIM_R(2)
+!
+!-----------------------------------------------------------------------
+!
+!     GET ALL AVAILABLE CONSTITUENTS AND SET THEIR INDICES
+!
+      NCON = NC
+      DO IC = 1,NC
+        C_ID(IC) = C_ID_MOD(IC)
+      ENDDO
+      ALLOCATE( CCIND(NCON) )
+      CALL DEF_CID( NCON,C_ID,CCIND )
+!
+!-----------------------------------------------------------------------
+!
+      ALLOCATE( LON(NPOIN) )
+      ALLOCATE( LAT(NPOIN) )
+!
+!  WGS84 NORTHERN OR SOUTHERN UTM, OR MERCATOR FOR TELEMAC
+!  WARNING!!! IN TELEMAC DICO, LAMBD0 IS LATITUDE AND PHI0 IS LONGITUDE
+!  LAMBD0 AND PHI0 ARE NOT USED FOR GEOSYST = 2 OR 3
+      IF(GEOSYST.EQ.2.OR.GEOSYST.EQ.3.OR.GEOSYST.EQ.5) THEN
+        CALL CONV_MERCATOR_TO_DEGDEC(NPOIN,X(1:NPOIN),Y(1:NPOIN),
+     &                               LON(1:NPOIN),LAT(1:NPOIN),
+     &                               GEOSYST,NUMZONE,PHI0,LAMBD0)
+!  NTF LAMBERT
+      ELSEIF(GEOSYST.EQ.4) THEN
+        CALL CONV_LAMBERT_TO_DEGDEC(NPOIN,X(1:NPOIN),Y(1:NPOIN),
+     &                              LON(1:NPOIN),LAT(1:NPOIN),
+     &                              NUMZONE)
+!  WGS84 LONGITUDE/LATITUDE
+      ELSEIF(GEOSYST.EQ.1) THEN
+        DO K=1,NPOIN
+          LON(K) = X(K)
+          LAT(K) = Y(K)
+        ENDDO
+      ELSEIF(GEOSYST.EQ.0) THEN
+!  DEFINED BY THE USER
+!  THIS IS AN EXAMPLE
+        DO K=1,NPOIN
+          XL = X(K)
+          YL = Y(K)
+!  ROTATION WITH ALPHA ANGLE HERE
+          XM=XL*COS(ALPHA)-YL*SIN(ALPHA)
+          YL=XL*SIN(ALPHA)+YL*COS(ALPHA)
+          XL=XM
+!  TRANSLATION AND CONVERSION INTO REAL DEGREES
+          LON(K) = XO+XL/RADIUS/COS(YO*DTR)*RTD
+          LAT(K) = YO+YL/RADIUS            *RTD
+        ENDDO
+      ELSEIF(GEOSYST.EQ.-1) THEN
+!  DEFAULT VALUE
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'VALEUR PAR DEFAUT INCORRECTE POUR LE SYSTEME'
+          WRITE(LU,*) 'GEOGRAPHIQUE. CHOISIR PARMI LES CHOIX POSSIBLES'
+          WRITE(LU,*) 'OU IMPLEMENTEZ LA CONVERSION'
+          WRITE(LU,*) 'VOUS-MEME AVEC LE CHOIX 0 DANS BORD_TIDAL_BC.F :'
+          WRITE(LU,*) '0 : DEFINI PAR L UTILISATEUR ;'
+          WRITE(LU,*) '1 : WGS84 LONGITUDE/LATITUDE IN DEGRES REELS ;'
+          WRITE(LU,*) '2 : WGS84 NORD UTM ;'
+          WRITE(LU,*) '3 : WGS84 SUD UTM ;'
+          WRITE(LU,*) '4 : LAMBERT ;'
+          WRITE(LU,*) '5 : MERCATOR POUR TELEMAC.'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'INCORRECT DEFAULT VALUE FOR THE GEOGRAPHIC'
+          WRITE(LU,*) 'SYSTEM. TO BE CHOSEN AMONG THE POSSIBLE CHOICES'
+          WRITE(LU,*) 'OR IMPLEMENT THE CONVERSION'
+          WRITE(LU,*) 'BY YOURSELF WITH CHOICE 0 IN BORD_TIDAL_BC.F:'
+          WRITE(LU,*) '0: DEFINED BY USER,'
+          WRITE(LU,*) '1: WGS84 LONGITUDE/LATITUDE IN REAL DEGREES,'
+          WRITE(LU,*) '2: WGS84 NORTHERN UTM,'
+          WRITE(LU,*) '3: WGS84 SOUTHERN UTM,'
+          WRITE(LU,*) '4: LAMBERT,'
+          WRITE(LU,*) '5: MERCATOR FOR TELEMAC.'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ELSE
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'SYSTEME GEOGRAPHIQUE DE COORDONNEES NON TRAITE.'
+          WRITE(LU,*) 'CHANGEZ DE SYSTEME OU IMPLEMENTEZ LA CONVERSION'
+          WRITE(LU,*) 'VOUS-MEME AVEC LE CHOIX 0 DANS BORD_TIDAL_BC.F :'
+          WRITE(LU,*) '0 : DEFINI PAR L UTILISATEUR ;'
+          WRITE(LU,*) '1 : WGS84 LONGITUDE/LATITUDE IN DEGRES REELS ;'
+          WRITE(LU,*) '2 : WGS84 NORD UTM ;'
+          WRITE(LU,*) '3 : WGS84 SUD UTM ;'
+          WRITE(LU,*) '4 : LAMBERT ;'
+          WRITE(LU,*) '5 : MERCATOR POUR TELEMAC.'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'GEOGRAPHIC SYSTEM FOR COORDINATES'
+          WRITE(LU,*) 'NOT TAKEN INTO ACCOUNT.'
+          WRITE(LU,*) 'CHANGE THE SYSTEM OR IMPLEMENT THE CONVERSION'
+          WRITE(LU,*) 'BY YOURSELF WITH CHOICE 0 IN BORD_TIDAL_BC.F:'
+          WRITE(LU,*) '0: DEFINED BY USER,'
+          WRITE(LU,*) '1: WGS84 LONGITUDE/LATITUDE IN REAL DEGREES,'
+          WRITE(LU,*) '2: WGS84 NORTHERN UTM,'
+          WRITE(LU,*) '3: WGS84 SOUTHERN UTM,'
+          WRITE(LU,*) '4: LAMBERT,'
+          WRITE(LU,*) '5: MERCATOR FOR TELEMAC.'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+      DO I = 1,NPOIN
+         IF( LON(I).GT.PH_LIM(2) ) LON(I) = LON(I) - 360.D0
+         IF( LON(I).LT.PH_LIM(1) ) LON(I) = LON(I) + 360.D0
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+!     GET DATA FROM THE H-FILE
+!
+      IF(LNG.EQ.1) WRITE(LU,*) ' - OBTENTION DES NIVEAUX'
+      IF(LNG.EQ.2) WRITE(LU,*) ' - ACQUIRING LEVELS'
+!
+      ALLOCATE( ZT(NCON,N,M), MASKT(N,M) )
+      DO J=1,M
+         DO I=1,N
+            MASKT(I,J) = 0
+         ENDDO
+      ENDDO
+!
+      DO IC = 1,NCON
+         REWIND(T2D_FILES(T2DBB1)%LU)
+         READ(T2D_FILES(T2DBB1)%LU)  ! HEADER LINE
+         DO K = 1,IC-1
+            READ(T2D_FILES(T2DBB1)%LU)
+         ENDDO
+         READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
+         WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
+      ENDDO
+!
+!     INTERPOLATE TPXO IN SPACE
+!
+      IF(LNG.EQ.1) WRITE(LU,*) ' - INTERPOLATION DES NIVEAUX'
+      IF(LNG.EQ.2) WRITE(LU,*) ' - INTERPOLATING LEVELS'
+!
+      ALLOCATE( ZCON(NCON) )
+      DO IPOIN = 1,NPOIN
+         CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
+     &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
+         IF( IERR.EQ.0 ) THEN
+           H(IPOIN) = 0.D0
+           DO I=1,NCON
+             H(IPOIN) = H(IPOIN) + ABS(ZCON(I))
+           ENDDO
+           H(IPOIN) = CAMPLIF*H(IPOIN)
+         ELSE
+           H(IPOIN) = MSL
+         ENDIF
+      ENDDO
+      DEALLOCATE( ZCON,ZT,MASKT )
+      DEALLOCATE( LON,LAT )
+!
+      IF(LNG.EQ.1) WRITE(LU,*) 'FIN DE CONSTRUCTION DE NIVEAU MOYEN'
+      IF(LNG.EQ.2) WRITE(LU,*) 'END OF BUILDING OF MEAN SEA LEVEL'
+!
+!-----------------------------------------------------------------------
+!
+      END SUBROUTINE CD2MSL_TPXO
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

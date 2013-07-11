@@ -399,8 +399,14 @@ c$$$            IF(BOUNDARY_COLOUR%I(K).EQ.1) THEN
         ENDDO
 !
         IF(J.EQ.NELEM+1) THEN
-          WRITE(LU,*) 'ERROR WHEN INTERPOLATION, K=',
-     &                BOUNDARY_COLOUR%I(NBTIDE(K)),' DIS=',DIS
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'ERREUR LORS DE L INTERPOLATION, K =',
+     &                   BOUNDARY_COLOUR%I(NBTIDE(K)),' DIS =',DIS
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'ERROR DURING INTERPOLATION, K =',
+     &                   BOUNDARY_COLOUR%I(NBTIDE(K)),' DIS =',DIS
+          ENDIF
 !
           J=IELEP
           N1=IKLESA(1,J)
