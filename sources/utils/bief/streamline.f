@@ -8961,16 +8961,17 @@
             HEAPOIL(NCHARA)%SOL_HAP(K)=PARTICULES(IPLOT)%HAP(K)%SOL
           ENDDO
           DO K=1,NB_COMPO
-            HEAPOIL(NCHARA)%MASS_COMPO(K)=PARTICULES(IPLOT)%COMPO(K)%MASS
+            HEAPOIL(NCHARA)%MASS_COMPO(K)=
+     &                                   PARTICULES(IPLOT)%COMPO(K)%MASS
             HEAPOIL(NCHARA)%TB_COMPO(K)=PARTICULES(IPLOT)%COMPO(K)%TB
             HEAPOIL(NCHARA)%SOL_COMPO(K)=PARTICULES(IPLOT)%COMPO(K)%SOL
           ENDDO
 !
           HEAPCOUNTS(ISUB(IPLOT)+1)=HEAPCOUNTS(ISUB(IPLOT)+1)+1
 !
-!====================================================================================
+!=======================================================================
 !                                OILSPILL
-!==================================================================================== 
+!======================================================================= 
 !
         ENDIF
       ENDDO   

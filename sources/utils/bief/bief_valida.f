@@ -6,7 +6,7 @@
      & MAXTAB,NP,IT,MAXIT,ACOMPARER)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    VALIDATES THE RESULTS AGAINST AN ANALYTICAL SOLUTION
@@ -36,6 +36,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        05/08/2009
+!+        V6P3
+!+   Name of code now printed in the listing.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACOMPARER      |-->| INDICATES WHICH VARIABLE TO COMPARE
 !| IT             |-->| TIME STEP NUMBER
@@ -53,6 +58,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF    !, EX_VALIDA => VALIDA
+      USE DECLARATIONS_TELEMAC
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -92,8 +98,8 @@
 !
 !  CALLS SUITE TO READ THE REFERENCE FILE
 !
-      IF(LNG.EQ.1) WRITE(LU,10)
-      IF(LNG.EQ.2) WRITE(LU,11)
+      IF(LNG.EQ.1) WRITE(LU,10) NAMECODE
+      IF(LNG.EQ.2) WRITE(LU,11) NAMECODE
       CALL BIEF_SUITE(VARREF,VARREF,IREF,UREF,REFFORMAT,HIST,0,NP,
      &                TIMEREF,TEXTREF,TEXTREF,0,FINDREF,ACOMPARER,
      &                .TRUE.,.TRUE.,MAXTAB)
@@ -165,12 +171,12 @@
 !-----------------------------------------------------------------------
 !
 10    FORMAT(1X,////,1X,80('='),/,
-     &       25X,' PROCEDURE DE VALIDATION ',/,
+     &       25X,' PROCEDURE DE VALIDATION DE ',A24,/,
      &       1X,80('-'),//,
      &       1X,' 1) RELECTURE DU FICHIER DE REFERENCE :',/,
      &       1X,' --------------------------------------',/)
 11    FORMAT(1X,////,1X,80('='),/,
-     &       25X,' VALIDATION PROCEDURE ',/,
+     &       25X,' VALIDATION PROCEDURE OF ',A24,/,
      &       1X,80('-'),//,
      &       1X,' 1) READING THE REFERENCE FILE :',/,
      &       1X,' ------------------------------',/)
