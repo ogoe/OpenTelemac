@@ -53,6 +53,12 @@
 !+   Double precision SERAFIN files taken into account. They are
 !+   recognised by a title ending with SERAFIND
 !
+!history  J-M HERVOUET (LNHE)
+!+        12/07/2013
+!+        V6P3
+!+   LOCAL_VALUE_D always allocated. Otherwise it cannot appear in a 
+!+   list of arguments of a subroutine (says Intel compiler...).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -417,6 +423,9 @@
 !
       IF(SERAFIND_GEO.OR.SERAFIND_RES) THEN
         ALLOCATE(LOCAL_VALUE_D(NPOINMAX,NBV1)    ,STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR, 'LOCAL_VALUE_D')
+      ELSE
+        ALLOCATE(LOCAL_VALUE_D(1,1)    ,STAT=ERR)
         CALL CHECK_ALLOCATE(ERR, 'LOCAL_VALUE_D')
       ENDIF
 !
