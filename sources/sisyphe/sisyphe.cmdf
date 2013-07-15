@@ -5,146 +5,6 @@ liborder: special parallel telemac2d mumps damocles bief sisyphe
 version: v6p3
 name: HOMERE_SISYPHE
 
-[sisyphe]
-path: <root>|sources|sisyphe
-files: declarations_sisyphe.f
-  interface_sisyphe_bedload.f
-  interface_sisyphe_suspension.f
-  interface_sisyphe.f
-  lecdon_split_outputpoints.f
-  nomvar_sisyphe.f
-  lecdon_sisyphe.f
-  read_sections_sisyphe.f
-  point_sisyphe.f
-  dredgesim_interface.f
-  maxslope.f
-  suspension_dispersion.f
-  suspension_erosion_coh.f
-  suspension_evol.f
-  suspension_bilan.f
-  suspension_vanrijn.f
-  suspension_fredsoe.f
-  suspension_bijker.f
-  suspension_flux_mixte.f
-  suspension_bilan_coh.f
-  suspension_sandflow.f
-  suspension_erosion.f
-  suspension_listing.f
-  suspension_conv.f
-  suspension_rouse.f
-  suspension_miles.f
-  suspension_depot.f
-  suspension_computation.f
-  suspension_main.f
-  disimp.f
-  read_fic_conc.f
-  cgl.f
-  conlit.f
-  bedload_direction.f
-  bedload_interact.f
-  bedload_bailard.f
-  bedload_engel_cc.f
-  bedload_hunz_meyer.f
-  bedload_meyer.f
-  bedload_soulsby.f
-  bedload_engel.f
-  bedload_vanrijn.f
-  bedload_seccurrent.f
-  integ.f
-  bedload_bijker.f
-  bedload_calcdw.f
-  bedload_dibwat.f
-  qsform.f
-  bedload_einst.f
-  bedload_formula.f
-  condim_susp.f
-  init_transport.f
-  predes.f
-  condis_sisyphe.f
-  rescue_sisyphe.f
-  noerod.f
-  bilan_sisyphe.f
-  init_constant.f
-  corstr_sisyphe.f
-  leclis.f
-  sis_arret.f
-  condim_sisyphe.f
-  tassement_2.f
-  tassement.f
-  bedload_diffin.f
-  bedload_nerbed_vf.f
-  bedload_solvs_fe.f
-  bedload_solvs_vf.f
-  bedload_evol.f
-  bedload_hiding_factor.f
-  bedload_effpnt.f
-  bedload_solidischarge.f
-  bedload_main.f
-  fluxpr_sisyphe.f
-  flusec_sisyphe.f
-  db.f
-  cvsp_outputfiles.f
-  cvsp_p.f
-  cvsp_check_steady.f
-  cvsp_integrate_volume.f
-  cvsp_check_f.f
-  cvsp_compress_brut.f
-  cvsp_compress_dp.f
-  cvsp_add_section.f
-  cvsp_write_profile.f
-  cvsp_compress_clean.f
-  cvsp_rm_fraction.f
-  cvsp_alt.f
-  layers_p.f
-  cvsp_make_actlay.f
-  cvsp_add_fraction.f
-  cvsp_main.f
-  init_compo.f
-  init_avai.f
-  init_compo_coh.f
-  init_mixte.f
-  vitchu_sisyphe.f
-  init_sediment.f
-  layer.f
-  rescue_sisyphe_notperma.f
-  coefro_sisyphe.f
-  ride.f
-  ride_vr.f
-  ks_sisyphe.f
-  tobw_sisyphe.f
-  tob_sisyphe.f
-  calcuw.f
-  mean_grain_size.f
-  init_zero.f
-  entete_sisyphe.f
-  sisyphe.f
-  homere_sisyphe.f
-
-[mumps]
-path: <root>|sources|utils|mumps
-files: solve_mumps.F
-  pre4_mumps.F
-
-[damocles]
-path: <root>|sources|utils|damocles
-files: majus.f
-  preval.f
-  next.f
-  intlu.f
-  longlu.f
-  cmd.f
-  precar.f
-  carlu.f
-  loglu.f
-  classe.f
-  aidelu.f
-  dico.f
-  realu.f
-  prev.f
-  influ.f
-  damoc.f
-  damocle.f
-
 [bief]
 path: <root>|sources|utils|bief
 files: bief_def.f
@@ -158,8 +18,8 @@ files: bief_def.f
   bief_open_files.f
   allblo.f
   ov.f
-  bief_nbmpts.f
   bief_nbpts.f
+  bief_nbmpts.f
   bief_allvec.f
   bief_nbfel.f
   bief_nbpel.f
@@ -174,16 +34,16 @@ files: bief_def.f
   cpstvc.f
   bief_nbsegel.f
   segbor.f
-  cpikle3.f
-  bief_ininds.f
-  cpikle2.f
   lit.f
   readgeo1.f
+  bief_ininds.f
   corrxy.f
   readgeo3.f
   readgeo2.f
+  cpikle3.f
   mxptel31.f
   mxptel.f
+  cpikle2.f
   ov_2.f
   almesh.f
   ovd.f
@@ -567,10 +427,30 @@ files: bief_def.f
   write_mesh.f
   bief_close_files.f
 
-[special]
-path: <root>|sources|utils|special
-files: plante.f
-  extens.f
+[damocles]
+path: <root>|sources|utils|damocles
+files: majus.f
+  preval.f
+  next.f
+  intlu.f
+  longlu.f
+  cmd.f
+  precar.f
+  carlu.f
+  influ.f
+  dico.f
+  loglu.f
+  classe.f
+  aidelu.f
+  prev.f
+  realu.f
+  damoc.f
+  damocle.f
+
+[mumps]
+path: <root>|sources|utils|mumps
+files: solve_mumps.F
+  pre4_mumps.F
 
 [parallel]
 path: <root>|sources|utils|parallel
@@ -598,6 +478,126 @@ files: declarations_parallel.F
   org_charac_type_alg.F
   p_imin.F
   p_exit.F
+
+[sisyphe]
+path: <root>|sources|sisyphe
+files: declarations_sisyphe.f
+  interface_sisyphe_bedload.f
+  interface_sisyphe_suspension.f
+  interface_sisyphe.f
+  lecdon_split_outputpoints.f
+  nomvar_sisyphe.f
+  lecdon_sisyphe.f
+  read_sections_sisyphe.f
+  point_sisyphe.f
+  dredgesim_interface.f
+  maxslope.f
+  suspension_dispersion.f
+  suspension_erosion_coh.f
+  suspension_evol.f
+  suspension_bilan.f
+  suspension_vanrijn.f
+  suspension_fredsoe.f
+  suspension_bijker.f
+  suspension_flux_mixte.f
+  suspension_bilan_coh.f
+  suspension_sandflow.f
+  suspension_erosion.f
+  suspension_listing.f
+  suspension_conv.f
+  suspension_rouse.f
+  suspension_miles.f
+  suspension_depot.f
+  suspension_computation.f
+  suspension_main.f
+  disimp.f
+  read_fic_conc.f
+  cgl.f
+  conlit.f
+  bedload_direction.f
+  bedload_interact.f
+  bedload_bailard.f
+  bedload_engel_cc.f
+  bedload_hunz_meyer.f
+  bedload_meyer.f
+  bedload_soulsby.f
+  bedload_engel.f
+  bedload_vanrijn.f
+  bedload_seccurrent.f
+  integ.f
+  bedload_bijker.f
+  bedload_calcdw.f
+  bedload_dibwat.f
+  qsform.f
+  bedload_einst.f
+  bedload_formula.f
+  condim_susp.f
+  init_transport.f
+  predes.f
+  condis_sisyphe.f
+  rescue_sisyphe.f
+  noerod.f
+  bilan_sisyphe.f
+  init_constant.f
+  corstr_sisyphe.f
+  leclis.f
+  sis_arret.f
+  condim_sisyphe.f
+  tassement_2.f
+  tassement.f
+  bedload_diffin.f
+  bedload_nerbed_vf.f
+  bedload_solvs_fe.f
+  bedload_solvs_vf.f
+  bedload_evol.f
+  bedload_hiding_factor.f
+  bedload_effpnt.f
+  bedload_solidischarge.f
+  bedload_main.f
+  fluxpr_sisyphe.f
+  flusec_sisyphe.f
+  db.f
+  cvsp_outputfiles.f
+  cvsp_p.f
+  cvsp_check_steady.f
+  cvsp_integrate_volume.f
+  cvsp_check_f.f
+  cvsp_compress_brut.f
+  cvsp_compress_dp.f
+  cvsp_add_section.f
+  cvsp_write_profile.f
+  cvsp_compress_clean.f
+  cvsp_rm_fraction.f
+  cvsp_alt.f
+  layers_p.f
+  cvsp_make_actlay.f
+  cvsp_add_fraction.f
+  cvsp_main.f
+  init_compo.f
+  init_avai.f
+  init_compo_coh.f
+  init_mixte.f
+  vitchu_sisyphe.f
+  init_sediment.f
+  layer.f
+  rescue_sisyphe_notperma.f
+  coefro_sisyphe.f
+  ride.f
+  ride_vr.f
+  ks_sisyphe.f
+  tobw_sisyphe.f
+  tob_sisyphe.f
+  calcuw.f
+  mean_grain_size.f
+  init_zero.f
+  entete_sisyphe.f
+  sisyphe.f
+  homere_sisyphe.f
+
+[special]
+path: <root>|sources|utils|special
+files: plante.f
+  extens.f
 
 [telemac2d]
 path: <root>|sources|telemac2d

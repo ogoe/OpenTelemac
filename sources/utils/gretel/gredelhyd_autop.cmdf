@@ -5,14 +5,14 @@ liborder: bief special gretel
 version: v6p3
 name: GREDELHYD_AUTOP
 
-[gretel]
-path: <root>|sources|utils|gretel
-files: gredelhyd_autop.f
-
 [bief]
 path: <root>|sources|utils|bief
 files: jultim.f
   gregtim.f
+
+[gretel]
+path: <root>|sources|utils|gretel
+files: gredelhyd_autop.f
 
 [special]
 path: <root>|sources|utils|special

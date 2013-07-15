@@ -5,133 +5,6 @@ liborder: special parallel mumps damocles bief tomawac
 version: v6p3
 name: HOMERE_TOMAWAC
 
-[mumps]
-path: <root>|sources|utils|mumps
-files: solve_mumps.F
-  pre4_mumps.F
-
-[tomawac]
-path: <root>|sources|tomawac
-files: declarations_tomawac.f
-  interface_tomawac.f
-  preqt2.f
-  tetmoy.f
-  lecsui.f
-  ifabtom.f
-  fremoy.f
-  venuti.f
-  maruti.f
-  couuti.f
-  noudon.f
-  stress.f
-  anaven.f
-  tautot.f
-  ustar1.f
-  ustar2.f
-  wnscou.f
-  qbrek4.f
-  qbbj78.f
-  qbrek1.f
-  foncro.f
-  bornes.f
-  qgauss.f
-  gammln.f
-  qbrek3.f
-  qbrek2.f
-  qwind3.f
-  qwind2.f
-  qwind1.f
-  cqueue.f
-  qnlin1.f
-  qnlin2.f
-  qnlin3.f
-  totnrj.f
-  kmoyen.f
-  frem01.f
-  frem02.f
-  qtria1.f
-  qmout1.f
-  qmout2.f
-  kerbou.f
-  qtria2.f
-  fpread.f
-  qfrot1.f
-  frepic.f
-  qwindl.f
-  semimp.f
-  propa.f
-  impr.f
-  filt_sa.f
-  rpi_intr.f
-  diffrac.f
-  conwac.f
-  predif.f
-  initab.f
-  vitfon.f
-  radiat.f
-  spread.f
-  wpower.f
-  dump2d.f
-  corfon.f
-  iniphy.f
-  ecrspe.f
-  spetma.f
-  spejon.f
-  delfra.f
-  fsprd1.f
-  fsprd3.f
-  fsprd2.f
-  speini.f
-  limwac.f
-  invert.f
-  rpi_invr.f
-  frmset.f
-  transf.f
-  intang.f
-  angles.f
-  prenl1.f
-  gauleg.f
-  couple.f
-  f1f1f1.f
-  prenl3.f
-  prenl2.f
-  ecrete.f
-  conw4d.f
-  prepro.f
-  anamar.f
-  cormar.f
-  sor3d.f
-  anacos.f
-  lecdoi.f
-  lecdon.f
-  condiw.f
-  wac.f
-  point_tomawac.f
-  nomvar_tomawac.f
-  tomawac_constants.f
-  lecdon_tomawac.f
-  homere_tomawac.f
-
-[damocles]
-path: <root>|sources|utils|damocles
-files: majus.f
-  longlu.f
-  preval.f
-  cmd.f
-  precar.f
-  next.f
-  carlu.f
-  loglu.f
-  classe.f
-  aidelu.f
-  intlu.f
-  dico.f
-  realu.f
-  prev.f
-  influ.f
-  damoc.f
-  damocle.f
-
 [bief]
 path: <root>|sources|utils|bief
 files: bief_def.f
@@ -180,8 +53,8 @@ files: bief_def.f
   omseg.f
   om3181.f
   cpstmt.f
-  bief_nbmpts.f
   bief_nbseg.f
+  bief_nbmpts.f
   bief_dim1_ext.f
   omsegbor.f
   om1211.f
@@ -502,20 +375,45 @@ files: bief_def.f
   ielbor.f
   bief_nbsegel.f
   segbor.f
-  cpikle3.f
-  bief_ininds.f
-  cpikle2.f
   readgeo1.f
+  bief_ininds.f
   corrxy.f
   readgeo3.f
   readgeo2.f
+  cpikle3.f
   mxptel31.f
   mxptel.f
   bief_nbfel.f
+  cpikle2.f
   almesh.f
   read_submit.f
   sortie.f
   bief_close_files.f
+
+[damocles]
+path: <root>|sources|utils|damocles
+files: majus.f
+  longlu.f
+  preval.f
+  cmd.f
+  precar.f
+  next.f
+  carlu.f
+  influ.f
+  dico.f
+  loglu.f
+  classe.f
+  aidelu.f
+  intlu.f
+  prev.f
+  realu.f
+  damoc.f
+  damocle.f
+
+[mumps]
+path: <root>|sources|utils|mumps
+files: solve_mumps.F
+  pre4_mumps.F
 
 [parallel]
 path: <root>|sources|utils|parallel
@@ -546,3 +444,105 @@ files: declarations_parallel.F
 path: <root>|sources|utils|special
 files: plante.f
   extens.f
+
+[tomawac]
+path: <root>|sources|tomawac
+files: declarations_tomawac.f
+  interface_tomawac.f
+  preqt2.f
+  tetmoy.f
+  lecsui.f
+  ifabtom.f
+  fremoy.f
+  venuti.f
+  maruti.f
+  couuti.f
+  noudon.f
+  stress.f
+  anaven.f
+  tautot.f
+  ustar1.f
+  ustar2.f
+  wnscou.f
+  qbrek4.f
+  qbbj78.f
+  qbrek1.f
+  foncro.f
+  bornes.f
+  qgauss.f
+  gammln.f
+  qbrek3.f
+  qbrek2.f
+  qwind3.f
+  qwind2.f
+  qwind1.f
+  cqueue.f
+  qnlin1.f
+  qnlin2.f
+  qnlin3.f
+  totnrj.f
+  kmoyen.f
+  frem01.f
+  frem02.f
+  qtria1.f
+  qmout1.f
+  qmout2.f
+  kerbou.f
+  qtria2.f
+  fpread.f
+  qfrot1.f
+  frepic.f
+  qwindl.f
+  semimp.f
+  propa.f
+  impr.f
+  filt_sa.f
+  rpi_intr.f
+  diffrac.f
+  conwac.f
+  predif.f
+  initab.f
+  vitfon.f
+  radiat.f
+  spread.f
+  wpower.f
+  dump2d.f
+  corfon.f
+  iniphy.f
+  ecrspe.f
+  spetma.f
+  spejon.f
+  delfra.f
+  fsprd1.f
+  fsprd3.f
+  fsprd2.f
+  speini.f
+  limwac.f
+  invert.f
+  rpi_invr.f
+  frmset.f
+  transf.f
+  intang.f
+  angles.f
+  prenl1.f
+  gauleg.f
+  couple.f
+  f1f1f1.f
+  prenl3.f
+  prenl2.f
+  ecrete.f
+  conw4d.f
+  prepro.f
+  anamar.f
+  cormar.f
+  sor3d.f
+  anacos.f
+  lecdoi.f
+  lecdon.f
+  condiw.f
+  wac.f
+  point_tomawac.f
+  nomvar_tomawac.f
+  tomawac_constants.f
+  lecdon_tomawac.f
+  homere_tomawac.f

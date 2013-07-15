@@ -161,7 +161,7 @@ def putScanContent(file,root,content):
       lines.append('[general]'+'\n'+'path: '+content['general']['path'].replace(root,'<root>').replace(sep,'|')+'\n'+'module: '+content['general']['module'])
       lines.append('liborder: '+' '.join(content['general']['liborder']))
       lines.append('version: '+content['general']['version']+'\n'+'name: '+content['general']['name'])
-   for lib in content.keys():
+   for lib in sorted(content.keys()):
       if lib == 'general': continue
       lines.append('\n['+lib+']'+'\n'+'path: '+content[lib]['path'].replace(root,'<root>').replace(sep,'|')+'\n'+'files: '+'\n  '.join(content[lib]['files']))
    putFileContent(file,lines)

@@ -5,6 +5,56 @@ liborder: special parallel bief damocles stbtel
 version: v6p3
 name: HOMERE_STBTEL
 
+[bief]
+path: <root>|sources|utils|bief
+files: bief_def.f
+  bief.f
+  declarations_telemac.f
+  m_med.F
+  lit.f
+  ecri2.f
+  readgeo1.f
+  corrxy.f
+  readgeo3.f
+  readgeo2.f
+  time_in_seconds.f
+  bief_eof.f
+  crosfr.f
+  fasp.f
+  mxptel31.f
+  mxptel.f
+  read_config.f
+
+[damocles]
+path: <root>|sources|utils|damocles
+files: longlu.f
+  preval.f
+  cmd.f
+  majus.f
+  precar.f
+  next.f
+  carlu.f
+  influ.f
+  dico.f
+  loglu.f
+  classe.f
+  aidelu.f
+  intlu.f
+  prev.f
+  realu.f
+  damoc.f
+  damocles.f
+
+[parallel]
+path: <root>|sources|utils|parallel
+files: declarations_parallel.F
+  p_exit.F
+  p_init.F
+
+[special]
+path: <root>|sources|utils|special
+files: plante.f
+
 [stbtel]
 path: <root>|sources|stbtel
 files: declarations_stbtel.F
@@ -58,53 +108,3 @@ files: declarations_stbtel.F
   lecdon_stbtel.f
   inisim.f
   homere_stbtel.f
-
-[damocles]
-path: <root>|sources|utils|damocles
-files: longlu.f
-  preval.f
-  cmd.f
-  precar.f
-  next.f
-  carlu.f
-  majus.f
-  loglu.f
-  classe.f
-  aidelu.f
-  intlu.f
-  dico.f
-  realu.f
-  prev.f
-  influ.f
-  damoc.f
-  damocles.f
-
-[bief]
-path: <root>|sources|utils|bief
-files: bief_def.f
-  bief.f
-  declarations_telemac.f
-  m_med.F
-  lit.f
-  ecri2.f
-  readgeo1.f
-  corrxy.f
-  readgeo3.f
-  readgeo2.f
-  time_in_seconds.f
-  bief_eof.f
-  crosfr.f
-  fasp.f
-  mxptel31.f
-  mxptel.f
-  read_config.f
-
-[parallel]
-path: <root>|sources|utils|parallel
-files: declarations_parallel.F
-  p_exit.F
-  p_init.F
-
-[special]
-path: <root>|sources|utils|special
-files: plante.f

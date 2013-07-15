@@ -5,11 +5,6 @@ liborder: special bief gretel
 version: v6p3
 name: GREDELSEG_AUTOP
 
-[gretel]
-path: <root>|sources|utils|gretel
-files: gredelpts_read_dataset.f
-  gredelseg_autop.f
-
 [bief]
 path: <root>|sources|utils|bief
 files: bief_def.f
@@ -17,6 +12,11 @@ files: bief_def.f
   stoseg.f
   voisin.f
   elebd.f
+
+[gretel]
+path: <root>|sources|utils|gretel
+files: gredelpts_read_dataset.f
+  gredelseg_autop.f
 
 [special]
 path: <root>|sources|utils|special
