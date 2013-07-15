@@ -748,22 +748,45 @@ def getFolders_ModulesTELEMAC(root):
                   elif not modules[moddir].has_key('files'): modules[moddir].update({'files':[path.join(dirpath,file)]})
                   else: modules[moddir]['files'].append(path.join(dirpath,file))
             # ~~> Two levels in modroot
+            
             for subdir in dirnames:
-               if subdir[0] != '.' :
-                  for subpath,subnames,filenames in walk(path.join(modroot,subdir)): break
-                  for file in filenames :
-                     f = path.splitext(file)
-                     if f[len(f)-1].lower() in ['.dico']:   # /!\ you found an executable module
-                        if not modules.has_key(subdir): modules.update({subdir:{'path':subpath,'dico':file,'cmdfs':[]}})
-                        else: modules[subdir].update({'dico':file})
-                     if f[len(f)-1].lower() in ['.cmdf']:   # /!\ you found at least one cmdf file
-                        if not modules.has_key(subdir): modules.update({subdir:{'path':subpath,'cmdfs':[path.join(subpath,file)]}})
-                        elif not modules[subdir].has_key('cmdfs'): modules[subdir].update({'cmdfs':[path.join(subpath,file)]})
-                        else: modules[subdir]['cmdfs'].append(path.join(subpath,file))
-                     if f[len(f)-1].lower() in ['.f','.f90']:      # /!\ you found a source file
-                        if not modules.has_key(subdir): modules.update({subdir:{'path':subpath,'files':[path.join(subpath,file)],'cmdfs':[]}})
-                        elif not modules[subdir].has_key('files'): modules[subdir].update({'files':[path.join(subpath,file)]})
-                        else: modules[subdir]['files'].append(path.join(subpath,file))
+               if subdir[0] != '.':
+                  # Special treatment for folders in utils as they are like the one
+                  if path.basename(modroot) == 'utils':
+                     for subpath,subnames,filenames in walk(path.join(modroot,subdir)): break
+                     for file in filenames :
+                        f = path.splitext(file)
+                        if f[len(f)-1].lower() in ['.dico']:   # /!\ you found an executable module
+                           if not modules.has_key(subdir): modules.update({subdir:{'path':subpath,'dico':file,'cmdfs':[]}})
+                           else: modules[subdir].update({'dico':file})
+                        if f[len(f)-1].lower() in ['.cmdf']:   # /!\ you found at least one cmdf file
+                           if not modules.has_key(subdir): modules.update({subdir:{'path':subpath,'cmdfs':[path.join(subpath,file)]}})
+                           elif not modules[subdir].has_key('cmdfs'): modules[subdir].update({'cmdfs':[path.join(subpath,file)]})
+                           else: modules[subdir]['cmdfs'].append(path.join(subpath,file))
+                        if f[len(f)-1].lower() in ['.f','.f90']:      # /!\ you found a source file
+                           if not modules.has_key(subdir): modules.update({subdir:{'path':subpath,'files':[path.join(subpath,file)],'cmdfs':[]}})
+                           elif not modules[subdir].has_key('files'): modules[subdir].update({'files':[path.join(subpath,file)]})
+                           else: modules[subdir]['files'].append(path.join(subpath,file))
+                     for subsubdir in subnames:
+                        if subsubdir[0] != '.':
+                           for subsubpath,subsubnames,filenames in walk(path.join(modroot,subdir,subsubdir)): break
+                           for file in filenames :
+                              modName=path.basename(subsubdir)
+                              f = path.splitext(file)
+                              if f[len(f)-1].lower() in ['.f','.f90']:      # /!\ you found a source file
+                                 if not modules.has_key(modName): modules.update({modName:{'path':subpath,'files':[path.join(subpath,file)],'cmdfs':[]}})
+                                 elif not modules[modName].has_key('files'): modules[modName].update({'files':[path.join(subpath,file)]})
+                                 else: modules[modName]['files'].append(path.join(subpath,file))
+                  else:
+                     for subpath,subnames,filenames in walk(path.join(modroot,subdir)): break
+                     for file in filenames :
+                        modName=path.basename(modroot)
+                        f = path.splitext(file)
+                        if f[len(f)-1].lower() in ['.f','.f90']:      # /!\ you found a source file
+                           if not modules.has_key(modName): modules.update({modName:{'path':subpath,'files':[path.join(subpath,file)],'cmdfs':[]}})
+                           elif not modules[modName].has_key('files'): modules[modName].update({'files':[path.join(subpath,file).replace(sep,'|')]})
+                           else: modules[modName]['files'].append(path.join(subpath,file))
+                  
 
    return modules
 

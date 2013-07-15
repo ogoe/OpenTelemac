@@ -528,14 +528,14 @@ if __name__ == "__main__":
                FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'version':cfgs[cfgname]['version'],'name':item,'module':prg[item][0],'liborder':MAKSYSTEL['deps']}}
                for obj,lib in HOMERES[item]['add']:
                   try:
-                     fic = all[lib][path.splitext(path.basename(obj))[0].upper()]
+                     fic = all[lib][path.splitext(path.basename(obj.replace('|',sep)))[0].upper()]
                   except  Exception as e:
                      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> missmatch between Fortran name and file name for: '+path.splitext(obj)[0].upper()},e,options.bypass)])
                   if not FileList.has_key(lib): FileList.update({lib:{'path':fic['path'],'files':[]}})
                   FileList[lib]['files'].append(fic['file'])
                for obj,lib in HOMERES[item]['tag']:
                   try:
-                     fic = all[lib][path.splitext(path.basename(obj))[0].upper()]
+                     fic = all[lib][path.splitext(path.basename(obj.replace('|',sep)))[0].upper()]
                   except  Exception as e:
                      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> missmatch between Fortran name and file name for: '+path.splitext(obj)[0].upper()},e,options.bypass)])
                   if not FileList.has_key(lib): FileList.update({lib:{'path':fic['path'],'files':[]}})
@@ -554,9 +554,9 @@ if __name__ == "__main__":
          cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
 
       #Liborder in the cmdf file is incorrect using fixed order instead
-      #TODO: Solve order error for example jultim and gregtim
+      #TODO: Solve order error when we compile telemac3d telemac2d is put before bief
       #DONE: the error on the order, but has to be tested -- replace LIBDEPS by MAKSYSTEL['deps']...'liborder' in the loop below
-      LIBDEPS = ['special', 'parallel', 'mumps', 'damocles', 'bief', 'gretel', 'partel', 'diffsel', 'postel3d', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
+      LIBDEPS = ['special', 'parallel', 'mumps', 'damocles', 'bief', 'gretel', 'partel', 'diffsel', 'postel3d', 'dredgesim', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
 
 # ~~ Scans all cmdf files found in all modules ~~~~~~~~~~~~~~~~~~~~~
       cmdfFiles = {}; HOMERES = {}; found = False
@@ -580,6 +580,8 @@ if __name__ == "__main__":
                if lib in cmdfFiles[mod][item].keys():
                   if lib == 'general': continue
                   for file in cmdfFiles[mod][item][lib]['files'] :
+                     #In case the file is in a subfolder of the module replace the | that defines the separator by the os separator
+                     file = file.replace('|',sep)
                      srcName = cmdfFiles[mod][item][lib]['path']+sep+file
                      p = cmdfFiles[mod][item][lib]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgname+sep+'lib')
                      createDirectories(p)

@@ -728,7 +728,7 @@ def scanSources(cfgdir,cfg,BYPASS):
          fic[mod].update({File:[]})
          #pbar.write(File,ibar)
          who = { 'path':SrcDir, \
-            'file':File.replace(SrcDir+sep,''), \
+            'file':File.replace(SrcDir+sep,'').replace(sep,'|'), \
             'libname':mod,   \
             'type':'',       \
             'name':'',       \
