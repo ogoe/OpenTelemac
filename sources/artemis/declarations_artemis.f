@@ -317,6 +317,12 @@
 !brief RELATIVE ANGULAR FREQUENCY
 ! RELATIVE PULSATION
       TYPE(BIEF_OBJ), TARGET :: WR
+!brief table for wave-current interaction
+! WAVE VECTOR COMPONENT X
+      TYPE(BIEF_OBJ), TARGET :: KANCX
+!brief table for wave-current interaction
+! WAVE VECTOR COMPONENT Y
+      TYPE(BIEF_OBJ), TARGET :: KANCY
 !
 !-----------------------------------------------------------------------
 !

@@ -360,9 +360,9 @@
 !
 !=======================================================================
 !
-      WRITE(6,*) 'ENTREE DANS BERKHO'
+!      WRITE(6,*) 'ENTREE DANS BERKHO'
       CALL BERKHO (LT)
-      WRITE(6,*) 'SORTIE DANS BERKHO'
+!      WRITE(6,*) 'SORTIE  DE  BERKHO'
 
 !
 !=======================================================================
@@ -372,8 +372,10 @@
 !
 !=======================================================================
 !
+!      WRITE(6,*) 'ENTREE  DS  CALRES'
       CALL CALRES
 !
+!      WRITE(6,*) 'SORTIE  DE  CALRES'
       IF (ALEMON .OR. ALEMUL) THEN
 !
 !        CUMULATIVELY COMPUTES THE M1, M2, AND MT1 MOMENTUMS
@@ -419,6 +421,7 @@
      & GRAV,PER,OMEGA,MESH%IKLE%I,MESH%NBOR%I,MESH%KP1BOR%I,
      & NELEM,NELMAX,IELM,IELMB,NPTFR,NPOIN,PRIVE)
 !
+!      WRITE(6,*) 'SORTIE  DE  UTIMP'
 !=======================================================================
 !
 ! : 7                  PRINTS OUT THE RESULTS
@@ -577,6 +580,7 @@
 !
       ENDIF
 !
+!      WRITE(6,*) 'SORTIE  DE  ARTEMIS'
 !-----------------------------------------------------------------------
 !
       RETURN

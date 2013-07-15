@@ -312,6 +312,19 @@
       CALL BIEF_ALLVEC(1,HMU   ,'HMU   ',IELM, 1 , 2 ,MESH)
       CALL BIEF_ALLVEC(1,HMUANC,'HMUANC',IELM, 1 , 2 ,MESH)
 !
+!
+! ARRAYS FOR THE WAVE-CURRENT INTERACTION :
+!
+! --> CURRENT VELOCITY : X and Y DIRECTIONS
+         CALL BIEF_ALLVEC(1, UC    ,'UC    ',IELM, 1 , 2 ,MESH)
+         CALL BIEF_ALLVEC(1, VC    ,'VC    ',IELM, 1 , 2 ,MESH)
+! --> RELATIVE ANGULAR FREQUENCY
+         CALL BIEF_ALLVEC(1, WR    ,'WR    ',IELM, 1 , 2 ,MESH)
+! --> STORAGE OF WAVE VECTOR COMPONENTS
+         CALL BIEF_ALLVEC(1, KANCX ,'KANCX ',IELM, 1 , 2 ,MESH)
+         CALL BIEF_ALLVEC(1, KANCY ,'KANCY ',IELM, 1 , 2 ,MESH)
+!
+!
 ! ARRAYS FOR RADIATION STRESSES
 !
       CALL BIEF_ALLVEC(1,SXX   ,'SXX   ',IELM, 1 , 2 ,MESH)
@@ -380,15 +393,6 @@
       ELSE
         CALL BIEF_ALLVEC_IN_BLOCK(PRIVE,4,1,'PRIV  ',0,1,2,MESH)
       ENDIF
-!
-!
-!
-! --> CURRENT VALOCITY : X and Y DIRECTIONS
-         CALL BIEF_ALLVEC(1, UC ,'UC     ',IELM, 1 , 2 ,MESH)
-         CALL BIEF_ALLVEC(1, VC ,'VC     ',IELM, 1 , 2 ,MESH)
-! --> RELATIVE ANGULAR FREQUENCY
-         CALL BIEF_ALLVEC(1, WR ,'WR     ',IELM, 1 , 2 ,MESH)
-!
 !
 !_______________________________________________________________________
 !

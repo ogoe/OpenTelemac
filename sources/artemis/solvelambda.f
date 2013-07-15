@@ -2,7 +2,7 @@
                   SUBROUTINE SOLVELAMBDA
 !                 ********************** 
 !                  
-     *(XK,XUC,XVC,XKX,XKY,XH)
+     &(XK,XUC,XVC,XKX,XKY,XH)
 !
 !***********************************************************************
 ! ARTEMIS   V6P3                                     06/2013
@@ -52,9 +52,10 @@ C Produit scalaire K.U
           
 97    CONTINUE   
       NIT=NIT+1
-      IF(NIT.GT.100000) THEN
+      IF (NIT.GT.100000) THEN
         WRITE(LU,*) 'ERREUR : ROUTINE SOLVELAMBDA !        '
         WRITE(LU,*) 'PROBLEME DANS LA DICHOTOMIE  !        '
+        WRITE(LU,*) 'NB ITER MAX EXCEEDED         !        '
         WRITE(LU,*) '--------------------------------------'
         WRITE(LU,*) 'ATTENTION : SI LE COURANT EST OPPOSE A'
         WRITE(LU,*) 'LA HOULE, L EQUATION DE DISPERSION N A'
@@ -62,7 +63,8 @@ C Produit scalaire K.U
         WRITE(LU,*) '--------------------------------------'
         STOP
       ENDIF
-!            
+      
+      
       AK10=SQRT(GRAV*K10*TANH(K10*XH))-OMEGA
      & +    (AK01+AK02)*K10/AK03
       AK20=SQRT(GRAV*K20*TANH(K20*XH))-OMEGA 
@@ -72,14 +74,24 @@ C Produit scalaire K.U
 !      
       IF(AK30*AK20.GE.0.D0)THEN 
         K20=K30
-        K30=(K10+K30)*0.5D0
-      ELSEIF(AK30*AK20.LE.0.D0)THEN
+      ELSEIF(AK30*AK10.GE.0.D0)THEN
         K10=K30
-        K30=(K20+K30)*0.5D0
+      ELSE
+        WRITE(LU,*) 'ERREUR : ROUTINE SOLVELAMBDA  !       '
+        WRITE(LU,*) 'PROBLEME DANS LA DICHOTOMIE   !       '
+        WRITE(LU,*) 'LES 2 POINTS SONT DU MEME COTE!       '
+        WRITE(LU,*) '--------------------------------------'
+        WRITE(LU,*) 'ATTENTION : SI LE COURANT EST OPPOSE A'
+        WRITE(LU,*) 'LA HOULE, L EQUATION DE DISPERSION N A'
+        WRITE(LU,*) 'PAS TOUJOURS UNE SOLUTION             '
+        WRITE(LU,*) '--------------------------------------'
+        STOP
       ENDIF
       DELTA=ABS(K20-K10)/K20
-!      
-      IF(DELTA.GT.1.D-6)THEN
+      K30=(K10+K20)*0.5D0
+      
+      
+      IF(DELTA.GT.1D-06)THEN
        GOTO 97
       ELSE
         XK=K30

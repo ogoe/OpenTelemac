@@ -104,9 +104,7 @@ C     WE USE OMEGA
 !=======================================================================
 ! WAVE INIDENCE USING SPEEDS AT THE SURFACE (AT T=0 AND T=OMEGA/4)
 !=======================================================================
-      WRITE(6,*) 'AVANT CALDIR'
       CALL CALDIR()
-      WRITE(6,*) 'APRES CALDIR'
 !=======================================================================
 !    NOMBRES D INTERET POUR LE COURANT, ATTENTION IL FAUT DECLARER 4 VARIABLES
 !                                                 PRIVEES DANS LE .cas
