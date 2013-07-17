@@ -60,10 +60,14 @@
 !
 !-----------------------------------------------------------------------
 !
-!  ******  SET TMP TO REORDERED B  *************************************
-      DO 1 K=1,N
-   1    TMP(K) = B(R(K))
-!  ******  SOLVE  LY = B  BY FORWARD SUBSTITUTION  *********************
+!     SET TMP TO REORDERED B
+!
+      DO K=1,N
+        TMP(K) = B(R(K))
+      ENDDO
+!
+!     SOLVE  LY = B  BY FORWARD SUBSTITUTION 
+!
       DO 3 K=1,N
         JMIN = IL(K)
         JMAX = IL(K+1) - 1
@@ -71,22 +75,29 @@
         TMP(K) = -TMPK
         IF (JMIN .GT. JMAX) GO TO 3
         ML = IJL(K) - JMIN
-        DO 2 J=JMIN,JMAX
-   2      TMP(JL(ML+J)) = TMP(JL(ML+J)) + TMPK * L(J)
+        DO J=JMIN,JMAX
+          TMP(JL(ML+J)) = TMP(JL(ML+J)) + TMPK * L(J)
+        ENDDO
    3    CONTINUE
-!  ******  SOLVE  UX = Y  BY BACK SUBSTITUTION  ************************
+!
+!     SOLVE  UX = Y  BY BACK SUBSTITUTION
+!
       K = N
-      DO 6 I=1,N
+      DO I=1,N
         SUM = -TMP(K)
         JMIN = IU(K)
         JMAX = IU(K+1) - 1
         IF (JMIN .GT. JMAX) GO TO 5
         MU = IJU(K) - JMIN
-        DO 4 J=JMIN,JMAX
-   4      SUM = SUM + U(J) * TMP(JU(MU+J))
+        DO J=JMIN,JMAX
+          SUM = SUM + U(J) * TMP(JU(MU+J))
+        ENDDO
    5    TMP(K) = -SUM
         Z(C(K)) = -SUM
         K = K - 1
-   6    CONTINUE
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END

@@ -6,7 +6,8 @@
      & NELEM,NELMAX,SURDET,XFLOT,YFLOT,ZFLOT,
      & SHPFLO,SHZFLO,TAGFLO,ELTFLO,ETAFLO,
      & NFLOT,NFLOT_MAX,FLOPRD,MESH,UL,
-     & ISUB,DX,DY,DZ,ELTBUF,SHPBUF,SHZBUF,SIZEBUF,STOCHA,VISC)
+     & ISUB,DX,DY,DZ,ELTBUF,SHPBUF,SHZBUF,SIZEBUF,STOCHA,VISC,
+     & AALGAE,DALGAE,RALGAE,EALGAE,ALGTYP,AK,EP,H)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -51,6 +52,13 @@
 !+        12/03/2013
 !+        V6P3
 !+   Arguments STOCHA and VISC added
+!
+!history  A Joly
+!+        20/06/2013
+!+        V6P3
+!+   New conditions added to treat algae transport
+!+     - Only tested in 2D
+!+     - Does not work for quadratic elements
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
@@ -101,6 +109,7 @@
 !
       USE BIEF, EX_DERIVE => DERIVE
       USE STREAMLINE
+      USE ALGAE_TRANSP
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -132,6 +141,11 @@
       DOUBLE PRECISION, INTENT(INOUT) :: SHZBUF(SIZEBUF)
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: VISC
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
+      LOGICAL         , OPTIONAL, INTENT(IN) :: AALGAE
+      DOUBLE PRECISION, OPTIONAL, INTENT(IN) :: AK(NPOIN),EP(NPOIN)
+      DOUBLE PRECISION, OPTIONAL, INTENT(IN) :: H(NPOIN)
+      DOUBLE PRECISION, OPTIONAL, INTENT(IN) :: DALGAE,RALGAE,EALGAE
+      INTEGER         , OPTIONAL, INTENT(IN) :: ALGTYP
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -155,8 +169,41 @@
 !
       LOGICAL DEJA
       DATA    DEJA/.FALSE./
+! 
+!     DEFINE VARIABLES THAT ARE USED IN ALGAE TRANSPORT
+!     THESE ARE NECESSARY IF NFLOT_MAX IS TOO LARGE
+!
+      LOGICAL INIT_ALG
+      DATA    INIT_ALG/.TRUE./
+      LOGICAL ALGAE
+      INTEGER SIZEBUF2
+      DOUBLE PRECISION,DIMENSION(:)  ,ALLOCATABLE::BUFF_1D
+      DOUBLE PRECISION,DIMENSION(:,:),ALLOCATABLE::BUFF_2D
 !
       SAVE
+!
+!-----------------------------------------------------------------------
+!
+!     CHECKING ARGUMENTS FOR ALGAE
+!
+      IF(PRESENT(AALGAE)) THEN
+        ALGAE=AALGAE
+      ELSE
+        ALGAE=.FALSE.
+      ENDIF
+      IF(ALGAE) THEN
+        IF(.NOT.PRESENT(AK).OR.
+     &     .NOT.PRESENT(EP).OR.
+     &     .NOT.PRESENT(H).OR.
+     &     .NOT.PRESENT(DALGAE).OR.
+     &     .NOT.PRESENT(RALGAE).OR.
+     &     .NOT.PRESENT(EALGAE).OR.
+     &     .NOT.PRESENT(ALGTYP)) THEN
+          WRITE(LU,*) 'DERIVE: MISSING ARGUMENTS FOR ALGAE'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -223,7 +270,108 @@
 !
 !     TRAJECTORIES COMPUTED FOR ALL POINTS
 !
-      CALL SCARACT(SVOID,SVOID,U,V,W,W,X,Y,ZSTAR,ZSTAR,
+!     ALLOCATE THE ALGAE VARIABLES IF NEEDED
+!
+      IF(ALGAE.AND.INIT_ALG) THEN
+        INIT_ALG=.FALSE.
+!       VERIFY THAT THE BUFFER SIZE IS BIG ENOUGH FOR PARTICLE TRANSPORT
+        IF(NFLOT_MAX.GT.SIZEBUF)THEN
+          SIZEBUF2=NFLOT_MAX
+          ALLOCATE(BUFF_1D(SIZEBUF2))
+          ALLOCATE(BUFF_2D(NDP,SIZEBUF2))
+        ENDIF
+      ENDIF
+!
+      IF(ALGAE) THEN
+        IF(LT.EQ.MAX(1,ALGAE_START)) THEN
+          IF(IELMU.EQ.11) THEN
+            CALL INTERP_ALGAE(NFLOT,NFLOT_MAX,SHPFLO,SHZFLO,ELTFLO,
+     &          U_X_AV_0%R,U_Y_AV_0%R,U_Z_AV_0%R,K_AV_0%R,EPS_AV_0%R,
+     &          H_FLU%R,NPOIN,IELM,NDP,NPLAN,NELMAX,IKLE,SHZBUF,IELMU,
+     &          NPOIN,U,V,W,AK,EP,H)
+            CALL INTERP_ALGAE(NFLOT,NFLOT_MAX,SHPFLO,SHZFLO,ELTFLO,
+     &          U_X_AV%R,U_Y_AV%R,U_Z_AV%R,K_AV%R,EPS_AV%R,
+     &          H_FLU%R,NPOIN,IELM,NDP,NPLAN,NELMAX,IKLE,SHZBUF,IELMU,
+     &          NPOIN,U,V,W,AK,EP,H)
+          ELSEIF(IELMU.EQ.12) THEN
+            CALL INTERP_ALGAE(NFLOT,NFLOT_MAX,SHPFLO,SHZFLO,ELTFLO,
+     &          U_X_AV_0%R,U_Y_AV_0%R,U_Z_AV_0%R,K_AV_0%R,EPS_AV_0%R,
+     &          H_FLU%R,NPOIN,IELM,NDP,NPLAN,NELMAX,IKLE,SHZBUF,IELMU,
+     &          NPOIN+NELMAX,U,V,W,AK,EP,H)
+            CALL INTERP_ALGAE(NFLOT,NFLOT_MAX,SHPFLO,SHZFLO,ELTFLO,
+     &          U_X_AV%R,U_Y_AV%R,U_Z_AV%R,K_AV%R,EPS_AV%R,
+     &          H_FLU%R,NPOIN,IELM,NDP,NPLAN,NELMAX,IKLE,SHZBUF,IELMU,
+     &          NPOIN+NELMAX,U,V,W,AK,EP,H)
+          ENDIF
+        ENDIF
+      ENDIF
+!
+! -----------------
+! IF ALGAE IS .TRUE., THEN USE ALGAE TRANSPORT
+! OTHERWISE THIS IS A NORMAL DROGUE TRANSPORT
+! -----------------
+!
+      IF(ALGAE)THEN
+!
+! FILL I_A_GL, WHICH WILL BE USED TO VERIFY THAT THE ALGAE INFO IS SENT IN
+! THE SAME FASHION AS THE PARTICLE POSITIONS
+!
+        DO IFLOT=1,NFLOT
+          I_A_GL%I(IFLOT)=TAGFLO(IFLOT)
+        END DO
+!
+        IF(IELMU.EQ.11)THEN
+          CALL INTERP_ALGAE(NFLOT,NFLOT_MAX,SHPFLO,SHZFLO,ELTFLO,
+     &          U_X_AV%R,U_Y_AV%R,U_Z_AV%R,K_AV%R,EPS_AV%R,
+     &          H_FLU%R,NPOIN,IELM,NDP,NPLAN,NELMAX,IKLE,SHZBUF,IELMU,
+     &          NPOIN,U,V,W,AK,EP,H)
+        ELSEIF(IELMU.EQ.12)THEN
+          CALL INTERP_ALGAE(NFLOT,NFLOT_MAX,SHPFLO,SHZFLO,ELTFLO,
+     &          U_X_AV%R,U_Y_AV%R,U_Z_AV%R,K_AV%R,EPS_AV%R,
+     &          H_FLU%R,NPOIN,IELM,NDP,NPLAN,NELMAX,IKLE,SHZBUF,IELMU,
+     &          NPOIN+NELMAX,U,V,W,AK,EP,H)
+        END IF
+!
+        CALL DISP_ALGAE(NFLOT_MAX,NFLOT,MESH%DIM,DT,ALGAE_START,
+     &                 U_X_AV_0%R,U_Y_AV_0%R,U_Z_AV_0%R,K_AV_0%R,
+     &                 EPS_AV_0%R,H_FLU%R,U_X_AV%R,U_Y_AV%R,U_Z_AV%R,
+     &                 U_X_0%R,U_Y_0%R,U_Z_0%R,V_X_0%R,V_Y_0%R,V_Z_0%R,
+     &                 DX,DY,DZ,ELTFLO,U_X%R,U_Y%R,U_Z%R,V_X%R,V_Y%R,
+     &                 V_Z%R,XFLOT,YFLOT,ZFLOT,LT,DALGAE,RALGAE,EALGAE,
+     &                 ALGTYP)
+!
+! FIND THE ELEMENT AND SUBDOMAIN AFTER THE TRANSPORT (WITH A VERIFICATION
+! IF SIZEBUF.LT.NFLOT_MAX)
+!
+        IF(NFLOT_MAX.GT.SIZEBUF)THEN
+          CALL SCARACT(SVOID,SVOID,U,V,W,W,X,Y,ZSTAR,ZSTAR,
+     &             XFLOT,YFLOT,
+     &             ZFLOT,ZFLOT,
+     &             DX,DY,
+     &             DZ,DZ,Z,
+     &             SHPFLO,SHZFLO,SHZFLO,
+     &             SURDET,DT,IKLE,IFABOR,ELTFLO,ETAFLO,
+     &             FRE,ELTBUF,ISUB,IELM,IELMU,
+     &             NELEM,NELMAX,            
+     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,        
+     &             BUFF_2D,BUFF_1D,BUFF_1D,FREBUF,SIZEBUF2,
+     &             AALG=ALGAE,APOST=.TRUE.)
+        ELSE
+          CALL SCARACT(SVOID,SVOID,U,V,W,W,X,Y,ZSTAR,ZSTAR,
+     &             XFLOT,YFLOT,
+     &             ZFLOT,ZFLOT,
+     &             DX,DY,
+     &             DZ,DZ,Z,
+     &             SHPFLO,SHZFLO,SHZFLO,
+     &             SURDET,DT,IKLE,IFABOR,ELTFLO,ETAFLO,
+     &             FRE,ELTBUF,ISUB,IELM,IELMU,
+     &             NELEM,NELMAX,            
+     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,        
+     &             SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
+     &             AALG=ALGAE,APOST=.TRUE.)
+        ENDIF
+      ELSE
+        CALL SCARACT(SVOID,SVOID,U,V,W,W,X,Y,ZSTAR,ZSTAR,
      &             XFLOT,YFLOT,ZFLOT,ZFLOT,
      &             DX,DY,DZ,DZ,Z,SHPFLO,SHZFLO,SHZFLO,SURDET,DT,
      &             IKLE,IFABOR,ELTFLO,ETAFLO,
@@ -232,6 +380,7 @@
      &             SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
      &             APOST=.TRUE.,ASTOCHA=STOCHA,AVISC=VISC)
 !                  APOST=.TRUE. OTHERWISE ISUB IS NOT FILLED
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -288,13 +437,29 @@
         ENDIF        
 !
       ENDIF
+! 
+!     SEND THE ALGAE INFORMATION IF IT IS NECESSARY
+!
+      IF(NCSIZE.GT.1.AND.ALGAE) THEN
+        CALL SEND_INFO_ALG(XFLOT,YFLOT,ZFLOT,SHPFLO,SHZFLO,ELTFLO,
+     &                 ETAFLO,ISUB,I_A_GL%I,ELTBUF,NDP,NFLOT,NFLOT_MAX,
+     &                 MESH,NPLAN,U_X_AV%R,U_Y_AV%R,U_Z_AV%R,K_AV%R,
+     &                 EPS_AV%R,H_FLU%R,U_X%R,U_Y%R,U_Z%R,V_X%R,V_Y%R,
+     &                 V_Z%R,NWIN,MESH%DIM,PSI)
+      ENDIF
 !
 !     SENDING THE PARTICLES THAT MIGRATED TO ANOTHER SUB-DOMAIN
 !
       IF(NCSIZE.GT.1) THEN
-        CALL SEND_PARTICLES(XFLOT,YFLOT,ZFLOT,SHPFLO,SHZFLO,ELTFLO,
-     &                      ETAFLO,ISUB,TAGFLO,NDP,NFLOT,NFLOT_MAX,
-     &                      MESH,NPLAN)
+        IF(ALGAE) THEN
+          CALL SEND_PARTICLES(XFLOT,YFLOT,ZFLOT,SHPFLO,SHZFLO,ELTFLO,
+     &                        ETAFLO,ISUB,TAGFLO,NDP,NFLOT,NFLOT_MAX,
+     &                        MESH,NPLAN,DX=DX,DY=DY,DZ=DZ)
+        ELSE
+          CALL SEND_PARTICLES(XFLOT,YFLOT,ZFLOT,SHPFLO,SHZFLO,ELTFLO,
+     &                        ETAFLO,ISUB,TAGFLO,NDP,NFLOT,NFLOT_MAX,
+     &                        MESH,NPLAN)
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -310,13 +475,40 @@
 11      CONTINUE
 !       LOST OR MIGRATED FLOATS
         IF(NFLOT.GT.0.AND.NCSIZE.GT.1) THEN
-          IF(ELTFLO(IFLOT).LE.0.OR.ISUB(IFLOT).NE.IPID) THEN 
-            CALL DEL_PARTICLE(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,
-     &                        XFLOT,YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,
-     &                        ELTFLO,ETAFLO,MESH%TYPELM,ISUB)
+          IF(ELTFLO(IFLOT).LE.0.OR.ISUB(IFLOT).NE.IPID) THEN
+! 
+!           REMOVE ALGAE INFORMATION FROM A SUB DOMAIN IF IT IS NECESSARY
+!
+            IF(ALGAE) THEN
+              CALL DEL_INFO_ALG(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,
+     &                   MESH%TYPELM,I_A_GL%I,ELTBUF,V_X%R,V_Y%R,V_Z%R,
+     &                   U_X%R,U_Y%R,U_Z%R,U_X_AV%R,U_Y_AV%R,U_Z_AV%R,
+     &                   K_AV%R,EPS_AV%R,H_FLU%R,NWIN,MESH%DIM,PSI)
+            ENDIF
+!
+            IF(ALGAE) THEN
+              CALL DEL_PARTICLE(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,XFLOT,
+     &                          YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,ELTFLO,
+     &                          ETAFLO,MESH%TYPELM,
+     &                          DX=DX,DY=DY,DZ=DZ,ISUB=ISUB)
+            ELSE
+              CALL DEL_PARTICLE(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,XFLOT,
+     &                          YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,ELTFLO,
+     &                          ETAFLO,MESH%TYPELM,
+     &                          ISUB=ISUB)
+            ENDIF
+!
 !           THE SAME IFLOT IS NOW A NEW PARTICLE AND MUST BE CHECKED AGAIN!
             IF(IFLOT.LE.NFLOT) GO TO 11
           ENDIF
+!
+          IF(ALGAE)THEN
+!           UPDATE DX_A,DY_A,DZ_A
+            DX_A%R(IFLOT)=DX(IFLOT)
+            DY_A%R(IFLOT)=DY(IFLOT)
+            DZ_A%R(IFLOT)=DZ(IFLOT)
+          ENDIF
+! 
           IFLOT=IFLOT+1
           IF(IFLOT.LE.NFLOT) GO TO 11
         ENDIF
@@ -329,12 +521,34 @@
 !       LOST FLOATS ONLY
         IF(NFLOT.GT.0) THEN
           IF(ELTFLO(IFLOT).LE.0) THEN 
-            CALL DEL_PARTICLE(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,
-     &                        XFLOT,YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,
-     &                        ELTFLO,ETAFLO,MESH%TYPELM)
+!
+!           REMOVE INFORMATION FROM A SUB DOMAIN IF NECESSARY
+!
+            IF(ALGAE) THEN
+              CALL DEL_INFO_ALG(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,
+     &                   MESH%TYPELM,I_A_GL%I,ELTBUF,V_X%R,V_Y%R,V_Z%R,
+     &                   U_X%R,U_Y%R,U_Z%R,U_X_AV%R,U_Y_AV%R,U_Z_AV%R,
+     &                   K_AV%R,EPS_AV%R,H_FLU%R,NWIN,MESH%DIM,PSI)
+              CALL DEL_PARTICLE(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,XFLOT,
+     &                    YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,ELTFLO,
+     &                    ETAFLO,MESH%TYPELM,DX=DX,DY=DY,DZ=DZ)
+            ELSE
+              CALL DEL_PARTICLE(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,XFLOT,
+     &                    YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,ELTFLO,
+     &                    ETAFLO,MESH%TYPELM)            
+            ENDIF
+!
 !           THE SAME IFLOT IS NOW A NEW PARTICLE AND MUST BE CHECKED AGAIN!
             IF(IFLOT.LE.NFLOT) GO TO 10
           ENDIF
+!
+          IF(ALGAE)THEN
+!           UPDATE DX_A,DY_A,DZ_A
+            DX_A%R(IFLOT)=DX(IFLOT)
+            DY_A%R(IFLOT)=DY(IFLOT)
+            DZ_A%R(IFLOT)=DZ(IFLOT)
+          ENDIF
+!
           IFLOT=IFLOT+1
           IF(IFLOT.LE.NFLOT) GO TO 10
         ENDIF
@@ -358,18 +572,19 @@
         IF(NFLOTG.GT.0.AND.(LT.EQ.1.OR.(LT/FLOPRD)*FLOPRD.EQ.LT)) THEN
 !
 !         1) EVERY PROCESSOR WRITES ITS OWN DATA IN A FILE WITH EXTENSION
-!
+! 
           IF(NFLOT.GT.0) THEN
             OPEN(99,FILE=EXTENS(NCSIZE,IPID+1),
      &           FORM='FORMATTED',STATUS='NEW')
             IF(IELM.EQ.11) THEN
               DO IFLOT=1,NFLOT
-                WRITE(99,300) TAGFLO(IFLOT),XFLOT(IFLOT),YFLOT(IFLOT),1
+                WRITE(99,300) TAGFLO(IFLOT),XFLOT(IFLOT),
+     &                        YFLOT(IFLOT),1
               ENDDO
             ELSE
               DO IFLOT=1,NFLOT
-                WRITE(99,301) TAGFLO(IFLOT),XFLOT(IFLOT),YFLOT(IFLOT),
-     &                        ZFLOT(IFLOT),1
+                WRITE(99,301) TAGFLO(IFLOT),XFLOT(IFLOT),
+     &                        YFLOT(IFLOT),ZFLOT(IFLOT),1
               ENDDO
             ENDIF
             CLOSE(99)
@@ -382,19 +597,19 @@
 !         3) PROCESSOR 0 READS ALL EXISTING FILES AND MERGES 
 !            THEM IN THE FINAL FILE
 !
-          IF(IPID.EQ.0) THEN      
+          IF(IPID.EQ.0) THEN
             WRITE(UL,200) 'ZONE DATAPACKING=POINT, T="G_',AT,
-     &      ' seconds"',', I=',NFLOTG,', SOLUTIONTIME=',AT
+     &        ' seconds"',', I=',NFLOTG,', SOLUTIONTIME=',AT
             DO IPROC=1,NCSIZE
               INQUIRE(FILE=EXTENS(NCSIZE,IPROC),EXIST=YESITIS)
               IF(YESITIS) THEN
                 OPEN(99,FILE=EXTENS(NCSIZE,IPROC),
      &               FORM='FORMATTED',STATUS='OLD')
-20              CONTINUE
-                READ(99,100,ERR=21,END=21) LIGNE
+22              CONTINUE
+                READ(99,100,ERR=23,END=23) LIGNE
                 WRITE(UL,*) LIGNE
-                GO TO 20
-21              CONTINUE
+                GO TO 22
+23              CONTINUE
                 CLOSE(99,STATUS='DELETE')
               ENDIF
             ENDDO
@@ -429,4 +644,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END
+      END SUBROUTINE DERIVE

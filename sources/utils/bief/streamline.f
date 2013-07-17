@@ -7573,7 +7573,8 @@
                         SUBROUTINE SEND_PARTICLES
 !                       ************************* 
 ! 
-     &(X,Y,Z,SHP,SHZ,ELT,ETA,ISUB,TAG,NDP,NPLOT,NPLOT_MAX,MESH,NPLAN)
+     &(X,Y,Z,SHP,SHZ,ELT,ETA,ISUB,TAG,NDP,NPLOT,NPLOT_MAX,MESH,NPLAN,
+     & DX,DY,DZ)
 ! 
 !*********************************************************************** 
 ! BIEF VERSION 6.3           24/04/97    J-M HERVOUET (LNHE) 
@@ -7587,6 +7588,11 @@
 !+        02/10/2012
 !+        V6P3
 !+     First version
+!
+!history  A JOLY (EDF-LNHE)
+!+        16/07/2013
+!+        V6P3
+!+     DX and DY added for algae. Not useful in other cases.
 ! 
 !----------------------------------------------------------------------- 
 !                             ARGUMENTS 
@@ -7612,7 +7618,7 @@
 ! 
 !*********************************************************************** 
 ! 
-      USE BIEF  
+      USE BIEF 
 ! 
       IMPLICIT NONE 
       INTEGER LNG,LU 
@@ -7629,6 +7635,9 @@
       DOUBLE PRECISION, INTENT(INOUT) :: X(NPLOT_MAX),Y(NPLOT_MAX)
       DOUBLE PRECISION, INTENT(INOUT) :: Z(NPLOT_MAX)
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
+      DOUBLE PRECISION, OPTIONAL, INTENT(INOUT) :: DX(NPLOT_MAX)
+      DOUBLE PRECISION, OPTIONAL, INTENT(INOUT) :: DY(NPLOT_MAX)
+      DOUBLE PRECISION, OPTIONAL, INTENT(INOUT) :: DZ(NPLOT_MAX)
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
@@ -7675,9 +7684,9 @@
         IF(ISUB(IPLOT).NE.IPID) THEN
           NCHARA=NCHARA+1 
           IF(NCHARA.GT.NCHDIM) THEN  
-            WRITE (LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM 
-            WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM' 
-            WRITE (LU,*) 'IPID=',IPID  
+            WRITE(LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM 
+            WRITE(LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM' 
+            WRITE(LU,*) 'IPID=',IPID  
             CALL PLANTE(1) 
             STOP 
           ENDIF             
@@ -7692,13 +7701,19 @@
           HEAPCHAR(NCHARA)%XP=SHP(1,IPLOT)   ! X-POSITION (HERE SHP1)  
           HEAPCHAR(NCHARA)%YP=SHP(2,IPLOT)   ! Y-POSITION (HERE SHP2)  
           HEAPCHAR(NCHARA)%ZP=SHP(3,IPLOT)   ! Z-POSITION (HERE SHP3)
-!         HEAPCHAR(NCHARA)%FP=0              ! F-POSITION (NOT USED HERE)
-          HEAPCHAR(NCHARA)%DX=SHZ(IPLOT)     ! DISPLACEMENT IN X, HERE SHZ  
-!         HEAPCHAR(NCHARA)%DY=               ! DY (NOT USED HERE)  
-!         HEAPCHAR(NCHARA)%DZ=               ! DZ (NOT USED HERE) 
-!         HEAPCHAR(NCHARA)%DF=               ! DF (NOT USED HERE)
+          HEAPCHAR(NCHARA)%FP=SHZ(IPLOT)     ! F-POSITION (HERE SHZ)
+          IF(PRESENT(DX)) THEN
+            HEAPCHAR(NCHARA)%DX=DX(IPLOT)      ! DISPLACEMENT IN X
+          ENDIF
+          IF(PRESENT(DY)) THEN
+            HEAPCHAR(NCHARA)%DY=DY(IPLOT)      ! DY 
+          ENDIF
+          IF(PRESENT(DZ)) THEN 
+            HEAPCHAR(NCHARA)%DZ=DZ(IPLOT)      ! DZ 
+          ENDIF
+!         HEAPCHAR(NCHARA)%DF=               ! DF (NOT USED) 
 !         HEAPCHAR(NCHARA)%BASKET            ! SIZE MAX_BASKET_SIZE   
-!
+!         PROCESSORS FROM 0 TO NCSIZE-1, HEAPCOUNTS FROM 1 TO NCSIZE
           HEAPCOUNTS(ISUB(IPLOT)+1)=HEAPCOUNTS(ISUB(IPLOT)+1)+1
         ENDIF
       ENDDO   
@@ -7754,14 +7769,18 @@
      &                    RECVCHAR(I)%NEPID
               CALL PLANTE(1)
               STOP
-            ENDIF                    
+            ENDIF         
+!           ADDING THE DISPLACEMENT OF THE KNOWN PARTICLE
+            DX(NPLOT+1)=RECVCHAR(I)%DX
+            DY(NPLOT+1)=RECVCHAR(I)%DY
+            DZ(NPLOT+1)=RECVCHAR(I)%DZ
 !           ADDING A PARTICLE WITH ALREADY KNOWN POSITION        
             CALL ADD_PARTICLE(XVOID,YVOID,ZVOID,
      &                        RECVCHAR(I)%IOR,NPLOT,NPLOT_MAX,
      &                        X,Y,Z,TAG,SHP,SHZ,ELT,ETA,MESH,NPLAN,
      &                        RECVCHAR(I)%XP,RECVCHAR(I)%YP,
-     &                        RECVCHAR(I)%ZP,RECVCHAR(I)%DX,
-     &                        RECVCHAR(I)%INE,RECVCHAR(I)%KNE)    
+     &                        RECVCHAR(I)%ZP,RECVCHAR(I)%FP,
+     &                        RECVCHAR(I)%INE,RECVCHAR(I)%KNE)
 !           THE PARTICLE IS IN THE SUB-DOMAIN AND SHOULD NOT BE
 !           REMOVED AFTER
             ISUB(NPLOT)=IPID
@@ -8086,7 +8105,7 @@
 !                    ***********************
 !
      &(TAG,NFLOT,NFLOT_MAX,XFLOT,YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,
-     & ELTFLO,ETAFLO,IELM,ISUB)
+     & ELTFLO,ETAFLO,IELM,DX,DY,DZ,ISUB)
 !
 !***********************************************************************
 ! BIEF   V6P3                                              14/02/2013
@@ -8101,6 +8120,11 @@
 !+        14/02/2013
 !+        V6P3
 !+   Valentine day!
+!
+!history  A JOLY (LNHE)
+!+        16/07/2013
+!+        V6P3
+!+   Optional DX, DY and DZ added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTFLO         |<->| NUMBERS OF ELEMENTS WHERE ARE THE FLOATS
@@ -8137,7 +8161,10 @@
       INTEGER         , INTENT(INOUT) :: ETAFLO(NFLOT_MAX)
       DOUBLE PRECISION, INTENT(INOUT) :: SHPFLO(3,NFLOT_MAX)
       DOUBLE PRECISION, INTENT(INOUT) :: SHZFLO(NFLOT_MAX)
-      INTEGER,OPTIONAL, INTENT(INOUT) :: ISUB(NFLOT_MAX)
+      INTEGER         ,OPTIONAL, INTENT(INOUT) :: ISUB(NFLOT_MAX)
+      DOUBLE PRECISION,OPTIONAL, INTENT(INOUT) :: DX(NFLOT_MAX)
+      DOUBLE PRECISION,OPTIONAL, INTENT(INOUT) :: DY(NFLOT_MAX)
+      DOUBLE PRECISION,OPTIONAL, INTENT(INOUT) :: DZ(NFLOT_MAX)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -8153,7 +8180,9 @@
 !           IF THE PARTICLE TO REMOVE WAS THE LAST IN THE LIST
 !           IT IS USELESS TO UPDATE DATA
             IF(NFLOT.GT.0.AND.IFLOT.NE.NFLOT+1) THEN
-!             UPDATING THE DATA
+!
+!             UPDATING THE DATA, FIRST MANDATORY ARRAYS
+!
               IF(IELM.EQ.10) THEN
                 DO I=IFLOT,NFLOT
                   XFLOT(I)=XFLOT(I+1)
@@ -8184,9 +8213,27 @@
                 CALL PLANTE(1)
                 STOP
               ENDIF
+!
+!             NOW OPTIONAL ARRAYS
+!
               IF(PRESENT(ISUB)) THEN
                 DO I=IFLOT,NFLOT
                   ISUB(I)=ISUB(I+1)         
+                ENDDO
+              ENDIF
+              IF(PRESENT(DX)) THEN
+                DO I=IFLOT,NFLOT
+                  DX(I)=DX(I+1)         
+                ENDDO
+              ENDIF
+              IF(PRESENT(DY)) THEN
+                DO I=IFLOT,NFLOT
+                  DY(I)=DY(I+1)         
+                ENDDO
+              ENDIF
+              IF(PRESENT(DZ)) THEN
+                DO I=IFLOT,NFLOT
+                  DZ(I)=DZ(I+1)         
                 ENDDO
               ENDIF
             ENDIF

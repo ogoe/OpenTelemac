@@ -67,7 +67,7 @@ MAKEFILE      = makefile
 
 SRCS= \
 bief_def.f declarations_telemac.f bief.f \
-streamline.f m_med.F \
+algae_transp.f  streamline.f m_med.F \
 addblo.f  allblo.f allblo_in_block.f             \
 almesh.f     appdots.f      asmve1.f       attend.f  \
 asmvec.f     asseg_3d.f     assex3.f      assve1.f      assvec.f \
