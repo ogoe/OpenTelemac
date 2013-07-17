@@ -9,7 +9,7 @@
 ! TOMAWAC   V6P2                                   25/06/2012 
 !*********************************************************************** 
 ! 
-!brief    DIFFRACTION  
+!brief    DIFFRACTION   
 !+         CALCULATION OF THE RADIAL FUNCTION FOR THE 
 !+         FREE-MESH METHOD 
 ! 

@@ -10,7 +10,7 @@
 ! TOMAWAC   V6P3                                   25/06/2012 
 !*********************************************************************** 
 ! 
-!brief    FREE-MESH METHOD FOR DIFFRACTION COMPUTATION 
+!brief    FREE-MESH METHOD FOR DIFFRACTION COMPUTATION  
 !+ 
 !+            CALCULATES FIRST AND SECOND DERIVATIVE OF 
 !+            VARIABLE FFD 
