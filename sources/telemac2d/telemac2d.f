@@ -2165,7 +2165,8 @@
      &              NFLOT,NFLOT_MAX,FLOPRD,MESH,T2D_FILES(T2DFLO)%LU,
      &              IT1%I,T1%R,T2%R,T2%R,IT2%I,W1%R,W1%R,NPOIN,STOCHA,
      &              VISC,
-     &              ALGAE,DALGAE,RALGAE,EALGAE,ALGTYP,AK%R,EP%R,H%R)
+     &              AALGAE=ALGAE,DALGAE=DALGAE,RALGAE=RALGAE,
+     &              EALGAE=EALGAE,ALGTYP=ALGTYP,AK=AK%R,EP=EP%R,H=H%R)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM DERIVE'
 !
         IF(SPHERI) THEN
