@@ -77,8 +77,8 @@ corfon.f         dirale.f         dismoy.f         entart.f         \
 fcte1.f          fcte2.f          fwspec.f         homere_artemis.f \
 lecdon_artemis.f masque_artemis.f nomvar_artemis.f                  \
 pentco.f         perale.f         phbor.f          point_artemis.f \
-radia1.f         radia2.f         solvelambda.f    spd.f            spe.f            \
-utimp.f          solvelambda.f    caldir.f    
+radia1.f         radia2.f         spd.f            spe.f            \
+utimp.f          solvelambda.f        
 
 #
 #------- Objets

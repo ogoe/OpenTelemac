@@ -22,17 +22,19 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_ARTEMIS
+!
       IMPLICIT NONE
       INTEGER LU
       COMMON  LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      DOUBLE PRECISION, INTENT(INOUT) :: XK
+      DOUBLE PRECISION, INTENT(IN)    :: XUC,XVC,XH,XKX,XKY
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER          NIT
-      DOUBLE PRECISION XUC,XVC,XH,XK,XKX,XKY
       DOUBLE PRECISION K10,K20,K30,AK10,AK20,AK30,DELTA,AK01,AK02,AK03
 !
 !-----------------------------------------------------------------------
@@ -49,7 +51,7 @@ C Produit scalaire K.U
       AK01=(XUC*XKX)
       AK02=(XVC*XKY)
       AK03=SQRT(XKX**2+XKY**2) 
-          
+!         
 97    CONTINUE   
       NIT=NIT+1
       IF (NIT.GT.100000) THEN
@@ -61,10 +63,10 @@ C Produit scalaire K.U
         WRITE(LU,*) 'LA HOULE, L EQUATION DE DISPERSION N A'
         WRITE(LU,*) 'PAS TOUJOURS UNE SOLUTION             '
         WRITE(LU,*) '--------------------------------------'
+        CALL PLANTE(1)
         STOP
-      ENDIF
-      
-      
+      ENDIF     
+!     
       AK10=SQRT(GRAV*K10*TANH(K10*XH))-OMEGA
      & +    (AK01+AK02)*K10/AK03
       AK20=SQRT(GRAV*K20*TANH(K20*XH))-OMEGA 
@@ -85,12 +87,12 @@ C Produit scalaire K.U
         WRITE(LU,*) 'LA HOULE, L EQUATION DE DISPERSION N A'
         WRITE(LU,*) 'PAS TOUJOURS UNE SOLUTION             '
         WRITE(LU,*) '--------------------------------------'
+        CALL PLANTE(1)
         STOP
       ENDIF
       DELTA=ABS(K20-K10)/K20
-      K30=(K10+K20)*0.5D0
-      
-      
+      K30=(K10+K20)*0.5D0     
+!      
       IF(DELTA.GT.1D-06)THEN
        GOTO 97
       ELSE
