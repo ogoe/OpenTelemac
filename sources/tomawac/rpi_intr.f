@@ -15,7 +15,7 @@
 !+            CALCULATES FIRST AND SECOND DERIVATIVE OF 
 !+            VARIABLE FFD 
 ! 
-!history  E. KRIEZI (LNH) 
+!history  E. KRIEZI (LNH)  
 !+        04/12/2006 
 !+        V5P5 
 !+ 

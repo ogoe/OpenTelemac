@@ -15,7 +15,7 @@
 ! TOMAWAC   V6P3                                   25/06/2012 
 !*********************************************************************** 
 ! 
-!brief    PREPARES DIFFRACTION. 
+!brief    PREPARES DIFFRACTION.  
 !+ 
 !+            COMPUTES THE ADVECTION FIELD; TRACES BACK THE 
 !+                CHARACTERISTICS. 
