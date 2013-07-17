@@ -100,7 +100,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER NP,I,J,NVAR,IB(10),ISTAT,MODE(3)
-      DOUBLE PRECISION ATT,BDX(2),Z(1)
+      DOUBLE PRECISION ATT,BDX(2),Z(1),T1VOID,T2VOID
       CHARACTER(LEN=3) C
       CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3)
       CHARACTER(LEN=72) TITCAS
@@ -265,7 +265,7 @@
         ELSEIF(CHDON(1:1).EQ.'W') THEN
 !         READS A WIND FIELD
           CALL VENUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,
-     &                0.D0,0.D0,0.D0,0.D0,F1,F2,F1,F2)
+     &                0.D0,0.D0,T1VOID,T2VOID,F1,F2,F1,F2)
         ELSE
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LE TYPE DE DONNEES A LIRE EST INCONNU'

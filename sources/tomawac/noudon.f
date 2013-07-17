@@ -236,12 +236,17 @@
 !     ------------------------------------------------------------------
 !
           IF(CHDON(1:1).EQ.'C') THEN
+            TROUVE(1)=.TRUE.
+            TROUVE(2)=.TRUE.
             CALL COUUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
      &                  F11,F21,F12,F22)
           ELSEIF(CHDON(1:1).EQ.'V'.OR.CHDON(1:1).EQ.'W') THEN
+            TROUVE(1)=.TRUE.
+            TROUVE(2)=.TRUE.
             CALL VENUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
      &                  F11,F21,F12,F22)
           ELSEIF(CHDON(1:1).EQ.'H') THEN
+            TROUVE(3)=.TRUE.
             CALL MARUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
      &                  F31,F32)
           ENDIF
