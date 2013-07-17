@@ -67,6 +67,11 @@
 !+   XEL, YEL now built in 3D. SURFAC based on XEL and YEL. Mercator
 !+   projection treated in 3D.
 !
+!history R. ATA (EDF R&D - LNHE)
+!+        21/05/2013
+!+        V6P3
+!+   add centre_mass_seg, new infcel, hloc, gradp(?)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
 !| IELMX          |-->| THE MORE COMPLEX ELEMENT USED (FOR MEMORY)
@@ -576,29 +581,47 @@
 !
 !-----------------------------------------------------------------------
 !
+!     V6P3 FOR NEW DATA STRUCTURE OF FINITE VOLUMES
+!     COMPUTE THE COORDINATES OF CENTRE OF GRAVITY FOR ELEMENTS RIGHT AND
+!     LEFT OF EDGES
+!
+      IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
+!
+       CALL CENTRE_MASS_SEG(MESH%X%R,MESH%Y%R,MESH%COORDG%R,
+     &                      MESH%IKLE%I,NPOIN,MESH%ELTSEG%I,
+     &                      MESH%ORISEG%I,NELEM,MESH%NSEG,
+     &                      MESH%JMI%I,MESH%CMI%R,MESH%GLOSEG%I,
+     &                      MESH%IFABOR%I,MESH)
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
 ! COMPLEMENTS THE DATA STRUCTURE FOR FINITE VOLUMES
 !
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
 !
-          CALL INFCEL(MESH%X%R,MESH%Y%R,MESH%IKLE%I,
-     &                MESH%NUBO%I,MESH%VNOIN%R,
-     &                NPOIN,MXPTVS,NELEM,NELMAX,MESH%NSEG,MESH%CMI%R,
-     &                MESH%JMI%I,MESH%AIRST%R)
+        CALL INFCEL(MESH%X%R,MESH%Y%R,
+     &              MESH%NUBO%I,MESH%VNOIN%R,NPOIN,
+     &              NELEM,MESH%NSEG,MESH%CMI%R,
+     &              MESH%AIRST%R,MESH%GLOSEG%I,
+     &              MESH%COORDG%R,MESH%ELTSEG%I,
+     &              MESH%ORISEG%I,MESH%IFABOR%I)
 !
-!         COMPUTES THE SURFACE OF THE CELLS
+!       COMPUTES THE SURFACE OF THE CELLS
 !
-          CALL VECTOR(T1,'=','MASBAS          ',11,
-     &                1.D0,T2,T2,T2,T2,T2,T2,MESH,.FALSE.,T2)
+        CALL VECTOR(T1,'=','MASBAS          ',11,
+     &              1.D0,T2,T2,T2,T2,T2,T2,MESH,.FALSE.,T2)
+        IF(NCSIZE.GT.1) CALL PARCOM(T1,2,MESH)
 !
-!         COMPUTES THE LOCAL SPACE STEP PER CELL
+!       COMPUTES THE LOCAL SPACE STEP PER CELL
 !
-          CALL HLOC(NPOIN,MESH%NSEG,MESH%NPTFR,MESH%NUBO%I,
-     &              MESH%NBOR%I,MESH%VNOIN%R,
-     &              MESH%XNEBOR%R,MESH%YNEBOR%R,T1%R,MESH%DTHAUT%R)
+        CALL HLOC(NPOIN,MESH%NSEG,NELEM,MESH%NUBO%I,MESH%VNOIN%R,T1%R,
+     &            MESH%DTHAUT%R,MESH,MESH%ELTSEG%I,MESH%IFABOR%I)
 !
-!         COMPUTES THE GRADIENTS OF THE BASE FUNCTIONS
+!       COMPUTES THE GRADIENTS OF THE BASE FUNCTIONS
 !
-          CALL GRADP(NPOIN,MESH%NELMAX,MESH%IKLE%I,MESH%SURFAC%R,
+        CALL GRADP(NPOIN,MESH%NELMAX,MESH%IKLE%I,MESH%SURFAC%R,
      &               MESH%X%R,MESH%Y%R,MESH%DPX%R,MESH%DPY%R)
 !
       ENDIF

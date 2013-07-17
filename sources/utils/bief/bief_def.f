@@ -450,6 +450,10 @@
           TYPE(BIEF_OBJ), POINTER :: CMI,DPX,DPY
           TYPE(BIEF_OBJ), POINTER :: DTHAUT,AIRST
 !
+!         CENTER OF MASS OF ELEMENTS NEIGHBORING AN EDGE
+!
+          TYPE(BIEF_OBJ), POINTER :: COORDG
+!
         END TYPE BIEF_MESH
 !
 !=======================================================================
