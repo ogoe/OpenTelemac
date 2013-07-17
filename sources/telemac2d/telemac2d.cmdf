@@ -10,6 +10,7 @@ path: <root>|sources|utils|bief
 files: bief_def.f
   declarations_telemac.f
   bief.f
+  algae_transp.f
   elapse.f
   config_code.f
   read_config.f

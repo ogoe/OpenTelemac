@@ -169,6 +169,12 @@
 !+        V6P3
 !+   Adding the file format in calls to FIND_IN_SEL.
 !
+!history  A. JOLY (EDF R&D, LNHE)
+!+        15/07/2013
+!+        V6P3
+!+   Allocating algae variables and initialising them for the next
+!+   time step
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
@@ -194,6 +200,8 @@
       USE M_COUPLING_ESTEL3D
 !     OIL SPILL MODEL
       USE OILSPILL
+!     ALGAE MODEL
+      USE ALGAE_TRANSP
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -945,6 +953,25 @@
      &              MESH%X%R,MESH%Y%R,
      &              NREJET,NPOIN,
      &              MESH%IKLE%I,NELEM,NELMAX)
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!  INITIALISING THE ALGAE VARIABLES
+!
+      IF(ALGAE) THEN
+!       ALLOCATE THE ALGAE VARIABLES IF NEEDED
+        CALL ALLOC_ALGAE(NFLOT_MAX,MESH,DT)
+        CALL OS('X=Y     ',X=U_X_AV_0,Y=U_X_AV)
+        CALL OS('X=Y     ',X=U_Y_AV_0,Y=U_Y_AV)
+        CALL OS('X=Y     ',X=U_Z_AV_0,Y=U_Z_AV)
+        CALL OS('X=Y     ',X=K_AV_0  ,Y=K_AV)
+        CALL OS('X=Y     ',X=EPS_AV_0,Y=EPS_AV)
+        CALL OS('X=Y     ',X=U_X_0   ,Y=U_X)
+        CALL OS('X=Y     ',X=U_Y_0   ,Y=U_Y)
+        CALL OS('X=Y     ',X=U_Z_0   ,Y=U_Z)
+        CALL OS('X=Y     ',X=V_X_0   ,Y=V_X)
+        CALL OS('X=Y     ',X=V_Y_0   ,Y=V_Y)
+        CALL OS('X=Y     ',X=V_Z_0   ,Y=V_Z)
       ENDIF
 !
 !=======================================================================
@@ -2137,7 +2164,8 @@
      &              SHPFLO%R,SHPFLO%R,TAGFLO%I,ELTFLO%I,ELTFLO%I,
      &              NFLOT,NFLOT_MAX,FLOPRD,MESH,T2D_FILES(T2DFLO)%LU,
      &              IT1%I,T1%R,T2%R,T2%R,IT2%I,W1%R,W1%R,NPOIN,STOCHA,
-     &              VISC)
+     &              VISC,
+     &              ALGAE,DALGAE,RALGAE,EALGAE,ALGTYP,AK%R,EP%R,H%R)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM DERIVE'
 !
         IF(SPHERI) THEN
@@ -2345,6 +2373,29 @@
      &                   MAXVAR,NPOIN,LT,NIT,ALIRE)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM BIEF_VALIDA'
       ENDIF
+
+
+!=======================================================================
+!              REDEFINING THE ALGAE VARIABLES FOR THE NEXT 
+!                            TIME STEP
+!=======================================================================
+!
+! DAJ
+! UPDATE THE ALGAE VARIABLES AT T_0 FOR THE CALCULATIONS OF THE NEXT TIME STEP
+      IF(ALGAE) THEN
+        CALL OS('X=Y     ',X=U_X_AV_0,Y=U_X_AV)
+        CALL OS('X=Y     ',X=U_Y_AV_0,Y=U_Y_AV)
+        CALL OS('X=Y     ',X=U_Z_AV_0,Y=U_Z_AV)
+        CALL OS('X=Y     ',X=K_AV_0,Y=K_AV)
+        CALL OS('X=Y     ',X=EPS_AV_0,Y=EPS_AV)
+        CALL OS('X=Y     ',X=U_X_0,Y=U_X)
+        CALL OS('X=Y     ',X=U_Y_0,Y=U_Y)
+        CALL OS('X=Y     ',X=U_Z_0,Y=U_Z)
+        CALL OS('X=Y     ',X=V_X_0,Y=V_X)
+        CALL OS('X=Y     ',X=V_Y_0,Y=V_Y)
+        CALL OS('X=Y     ',X=V_Z_0,Y=V_Z)
+      ENDIF
+! FAJ
 !
 !=======================================================================
 !
@@ -2418,4 +2469,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END
+      END SUBROUTINE TELEMAC2D
