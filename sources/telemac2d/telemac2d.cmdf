@@ -18,6 +18,7 @@ files: bief_def.f
   inclus.f
   m_med.F
   bief_open_files.f
+  centre_mass_seg.f 
   allblo.f
   bief_nbmpts.f
   ov.f
