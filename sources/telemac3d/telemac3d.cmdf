@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|telemac3d
 module: telemac3d
-liborder: special parallel mumps damocles telemac2d bief tomawac sisyphe telemac3d
+liborder: special parallel damocles bief sisyphe tomawac telemac2d telemac3d
 version: v6p3
 name: HOMERE_TELEMAC3D
 
@@ -243,6 +243,7 @@ files: declarations_telemac.f
   somme.f
   bief_sum.f
   streamline.f
+  algae_transp.f
   derive.f
   osdbif.f
   diraux.f
@@ -265,6 +266,8 @@ files: declarations_telemac.f
   dcpldu.f
   sd_strsg4.f
   sd_fabsg4.f
+  solve_mumps.F
+  pre4_mumps.F
   sd_strssd.f
   sd_strtri.f
   sd_fabcad.f
@@ -395,6 +398,8 @@ files: declarations_telemac.f
   fropro.f
   stoseg.f
   stoseg41.f
+  inpoly.f
+  centre_mass_seg.f
   elebd.f
   comp_nh_com_seg.f
   parini.f
@@ -470,11 +475,6 @@ files: majus.f
   realu.f
   damoc.f
   damocle.f
-
-[mumps]
-path: <root>|sources|utils|mumps
-files: solve_mumps.F
-  pre4_mumps.F
 
 [parallel]
 path: <root>|sources|utils|parallel

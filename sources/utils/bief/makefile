@@ -67,7 +67,7 @@ MAKEFILE      = makefile
 
 SRCS= \
 bief_def.f declarations_telemac.f bief.f \
-algae_transp.f  streamline.f m_med.F \
+streamline.f algae_transp.f  m_med.F \
 addblo.f  allblo.f allblo_in_block.f             \
 almesh.f     appdots.f      asmve1.f       attend.f  \
 asmvec.f     asseg_3d.f     assex3.f      assve1.f      assvec.f \
@@ -153,7 +153,8 @@ vc11bb.f     vc11pp.f       vc11tt.f      vc11tt0.f \
 vc13aa.f     vc13bb.f       vc13cc.f      vc13pp.f      vc13pp2.f     vc13tt.f  vc14aa.f \
 vc15aa.f     vc16aa.f       vc18pp.f      vc19aa.f      vecle3.f  vecle4.f vecle6.f \
 veclen.f     vector.f       vectos.f      vgfpsi.f  \
-voisin.f     voisin31.f     waitfor.f     write_data.f write_data_serafin.f   write_mesh.f write_mesh_serafin.f
+voisin.f     voisin31.f     waitfor.f     write_data.f write_data_serafin.f   write_mesh.f write_mesh_serafin.f \
+solve_mumps_par.F pre4_mumps.F solve_mumps.F 
 #
 #------- Objets
 #

@@ -17,7 +17,6 @@
 #Libs : Bief, Damocles, Parallel, Special, Mumps
         "sources|utils|special",
         "sources|utils|parallel",
-        "sources|utils|mumps",
         "sources|utils|damocles",
         "sources|utils|bief",
         "sources|utils|partel",

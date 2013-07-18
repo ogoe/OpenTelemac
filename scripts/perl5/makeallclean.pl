@@ -17,7 +17,6 @@
 #Libs : Bief, Damocles, Parallel, Special, Mumps
         "sources|utils|special",
         "sources|utils|parallel",
-        "sources|utils|mumps",
         "sources|utils|damocles",
         "sources|utils|bief",
         "sources|utils|partel",
@@ -45,7 +44,7 @@
 #--------------------Usage----------------------------
 
 sub usage
-{   printf "\n\nUsage: makeall90 [-y]\n";
+{   printf "\n\nUsage: makeallclean [-y]\n";
     printf "       -y : user confirm mode\n\n";
     exit;
 }

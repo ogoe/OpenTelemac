@@ -498,6 +498,11 @@ if __name__ == "__main__":
          except Exception as e:
            xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> could not clean up your configuration: '+ cfgname},e,options.bypass)])
 
+      #Liborder in the cmdf file is incorrect using fixed order instead
+      #TODO: Solve order error when we compile telemac3d telemac2d is put before bief
+      #DONE: the error on the order, but has to be tested -- replace LIBDEPS by MAKSYSTEL['deps']...'liborder' in the loop below
+      #TODO: Tested still not working even if we rename all the duplicated variable/functions names
+      LIBDEPS = ['special', 'parallel', 'mumps', 'damocles', 'bief', 'gretel', 'partel', 'diffsel', 'postel3d', 'dredgesim', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
       # Only if we ask for a scan
       if options.rescan:
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
@@ -525,7 +530,12 @@ if __name__ == "__main__":
                   ForCmd = path.join(ForDir,prg[item][0] + '.cmdf')
                else:
                   ForCmd = path.join(ForDir,item.lower() + '.cmdf')
-               FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'version':cfgs[cfgname]['version'],'name':item,'module':prg[item][0],'liborder':MAKSYSTEL['deps']}}
+               #TODO: Remove that loop when scan order is rectified
+               fixedLibOrder=[]
+               for lib in LIBDEPS:
+                 if lib in MAKSYSTEL['deps']: fixedLibOrder.append(lib)
+               #TODO: Replace fixedLibOrder by MAKSYSTEL['deps']
+               FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'version':cfgs[cfgname]['version'],'name':item,'module':prg[item][0],'liborder':fixedLibOrder}} 
                for obj,lib in HOMERES[item]['add']:
                   try:
                      fic = all[lib][path.splitext(path.basename(obj.replace('|',sep)))[0].upper()]
@@ -553,11 +563,6 @@ if __name__ == "__main__":
          options.rescan = False
          cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
 
-      #Liborder in the cmdf file is incorrect using fixed order instead
-      #TODO: Solve order error when we compile telemac3d telemac2d is put before bief
-      #DONE: the error on the order, but has to be tested -- replace LIBDEPS by MAKSYSTEL['deps']...'liborder' in the loop below
-      LIBDEPS = ['special', 'parallel', 'mumps', 'damocles', 'bief', 'gretel', 'partel', 'diffsel', 'postel3d', 'dredgesim', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
-
 # ~~ Scans all cmdf files found in all modules ~~~~~~~~~~~~~~~~~~~~~
       cmdfFiles = {}; HOMERES = {}; found = False
       rebuild = cfg['COMPILER']['REBUILD']
@@ -576,23 +581,21 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
             MAKSYSTEL = {'add':[],'tag':[],'deps':cmdfFiles[mod][item]['general']['liborder']}
             HOMERES.update({item:MAKSYSTEL})
-            for lib in LIBDEPS: #TODO: replace with cmdf['general']['liborder']
-               if lib in cmdfFiles[mod][item].keys():
-                  if lib == 'general': continue
-                  for file in cmdfFiles[mod][item][lib]['files'] :
-                     #In case the file is in a subfolder of the module replace the | that defines the separator by the os separator
-                     file = file.replace('|',sep)
-                     srcName = cmdfFiles[mod][item][lib]['path']+sep+file
-                     p = cmdfFiles[mod][item][lib]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgname+sep+'lib')
-                     createDirectories(p)
-                     objName = p + sep + path.splitext(file)[0] + cfg['SYSTEM']['sfx_obj']
-                     try:
-                        if (isNewer(srcName,objName) == 1) and rebuild < 2:
-                           HOMERES[item]['tag'].append((path.splitext(file)[0],lib))
-                        else:
-                           HOMERES[item]['add'].append((file,lib))
-                     except Exception as e:
-                           xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Could not find the following file for compilation: '+path.basename(srcName)+'\n         ... so it may have to be removed from the following cmdf file: '+cmdFile},e,options.bypass)])
+            for lib in MAKSYSTEL['deps']: 
+               for file in cmdfFiles[mod][item][lib]['files'] :
+                  #In case the file is in a subfolder of the module replace the | that defines the separator by the os separator
+                  file = file.replace('|',sep)
+                  srcName = cmdfFiles[mod][item][lib]['path']+sep+file
+                  p = cmdfFiles[mod][item][lib]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgname+sep+'lib')
+                  createDirectories(p)
+                  objName = p + sep + path.splitext(file)[0] + cfg['SYSTEM']['sfx_obj']
+                  try:
+                     if (isNewer(srcName,objName) == 1) and rebuild < 2:
+                        HOMERES[item]['tag'].append((path.splitext(file)[0],lib))
+                     else:
+                        HOMERES[item]['add'].append((file,lib))
+                  except Exception as e:
+                        xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Could not find the following file for compilation: '+path.basename(srcName)+'\n         ... so it may have to be removed from the following cmdf file: '+cmdFile},e,options.bypass)])
 # ~~ Creates modules and objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             if HOMERES[item]['add'] == []: print '      +> There is no need to compile any object'
             else:

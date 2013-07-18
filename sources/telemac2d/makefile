@@ -49,7 +49,6 @@ LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/sisyphe$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/tomawac$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/bief$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/damo$(MODE)$(VERSION).a \
-                $(PROJECT)/builds/$(DIRLIB)/lib/mumps$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/parallel$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/special$(MODE)$(VERSION).a \
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)

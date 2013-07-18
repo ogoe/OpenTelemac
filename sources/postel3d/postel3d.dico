@@ -747,16 +747,14 @@ NOM1 = 'DESCRIPTION OF LIBRARIES'
 TYPE = CARACTERE
 INDEX = 55
 MNEMO = 'LINKLIBS'
-TAILLE = 6
+TAILLE = 5
 DEFAUT = 'builds|PPP|lib|postel3dMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|mumpsMMMVVV.LLL';
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 
 DEFAUT1 = 'builds|PPP|lib|postel3dMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|mumpsMMMVVV.LLL';
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 

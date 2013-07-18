@@ -289,7 +289,7 @@ def parseConfig_CompileTELEMAC(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC.update({'root':get})
+   cfgTELEMAC.update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
    # using the template ... teldir\*\*telver\
@@ -361,7 +361,7 @@ def parseConfig_TranslateTELEMAC(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC[cfg].update({'root':get})
+   cfgTELEMAC[cfg].update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
    # using the template ... teldir\*\*telver\
@@ -402,7 +402,7 @@ def parseConfig_TranslateCAS(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC[cfg].update({'root':get})
+   cfgTELEMAC[cfg].update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
    # using the template ... teldir\*\*telver\
@@ -449,7 +449,7 @@ def parseConfig_DoxygenTELEMAC(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC.update({'root':get})
+   cfgTELEMAC.update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
    # using the template ... teldir\*\*telver\
@@ -511,7 +511,7 @@ def parseConfig_CompactTELEMAC(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC.update({'root':get})
+   cfgTELEMAC.update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
    # using the template ... teldir\*\*telver\
@@ -554,7 +554,7 @@ def parseConfig_ValidateTELEMAC(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC.update({'root':get})
+   cfgTELEMAC.update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc..
    # using the template ... teldir\*\*telver\
@@ -650,7 +650,7 @@ def parseConfig_RunningTELEMAC(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC.update({'root':get})
+   cfgTELEMAC.update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
    # using the template ... teldir\*\*telver\

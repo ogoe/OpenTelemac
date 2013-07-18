@@ -40,7 +40,7 @@ NOM_GENERIQUE = diffsel
 MODE          =
 
 EXEDEF	  = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
-LKLIB         = $(PROJECT)\builds\$(drilib)\lib\special$(MODE)$(VERSION).lib  \
+LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)
 
 #------------------------ Liste des fichiers

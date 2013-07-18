@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|utils|partel
 module: partel
-liborder: parallel special bief partel
+liborder: special parallel bief partel
 version: v6p3
 name: PARTEL_PARA
 

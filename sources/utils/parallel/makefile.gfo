@@ -43,8 +43,8 @@ MODE          =
 LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
 DEST          = $(PROJECT)\builds\$(DIRLIB)
 
-LKLIB         = $(PROJECT)\builds\$(drilib)\lib\special$(MODE)$(VERSION).lib  \
-                $(PROJECT)\..\lib\libmetis.lib
+LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
+                $(PROJECT)\optionals\metis-5.1.0\libmetis\libmetis.a
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)
 
 #------------------------ Liste des fichiers

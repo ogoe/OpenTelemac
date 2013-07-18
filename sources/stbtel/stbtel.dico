@@ -1079,13 +1079,11 @@ MNEMO = 'LINKLIBS'
 TAILLE = 5
 DEFAUT = 'builds|PPP|lib|stbtelMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|mumpsMMMVVV.LLL';
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 
 DEFAUT1 = 'builds|PPP|lib|stbtelMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|mumpsMMMVVV.LLL';
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 

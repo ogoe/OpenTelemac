@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|utils|gretel
 module: gretel
-liborder: bief special gretel
+liborder: special bief gretel
 version: v6p3
 name: GREDELHYD_AUTOP
 

@@ -6265,13 +6265,12 @@ NOM1 = 'DESCRIPTION DES LIBRARIES'
 TYPE = CARACTERE
 INDEX = 80
 MNEMO = 'LINKLIBS'
-TAILLE = 9
+TAILLE = 8
 DEFAUT = 'builds|PPP|lib|telemac3dMMMVVV.LLL'; 
 'builds|PPP|lib|telemac2dMMMVVV.LLL'; 
 'builds|PPP|lib|tomawacMMMVVV.LLL'; 
 'builds|PPP|lib|sisypheMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|mumpsMMMVVV.LLL';
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 
@@ -6280,7 +6279,6 @@ DEFAUT1 = 'builds|PPP|lib|telemac3dMMMVVV.LLL';
 'builds|PPP|lib|tomawacMMMVVV.LLL'; 
 'builds|PPP|lib|sisypheMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|mumpsMMMVVV.LLL';
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 

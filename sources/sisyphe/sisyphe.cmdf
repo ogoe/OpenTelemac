@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|sisyphe
 module: sisyphe
-liborder: special parallel telemac2d mumps damocles bief sisyphe
+liborder: special parallel damocles bief sisyphe telemac2d
 version: v6p3
 name: HOMERE_SISYPHE
 
@@ -183,6 +183,8 @@ files: bief_def.f
   dcpldu.f
   sd_strsg4.f
   sd_fabsg4.f
+  solve_mumps.F
+  pre4_mumps.F
   sd_strssd.f
   sd_strtri.f
   sd_fabcad.f
@@ -391,6 +393,8 @@ files: bief_def.f
   fropro.f
   stoseg.f
   stoseg41.f
+  inpoly.f
+  centre_mass_seg.f
   elebd.f
   comp_nh_com_seg.f
   parini.f
@@ -446,11 +450,6 @@ files: majus.f
   realu.f
   damoc.f
   damocle.f
-
-[mumps]
-path: <root>|sources|utils|mumps
-files: solve_mumps.F
-  pre4_mumps.F
 
 [parallel]
 path: <root>|sources|utils|parallel
