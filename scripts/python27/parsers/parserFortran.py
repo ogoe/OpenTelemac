@@ -37,6 +37,12 @@
       original version.
    Further capability to compare changes made between 2 PRINCI files.
 """
+"""@history 01/07/2013 -- Sebastien E. Bourban and Yoann Audoin
+   Upgrade to the new structure
+"""
+"""@history 13/07/2013 -- Sebastien E. Bourban
+   Now deals with DECLARATIONS first before identifying unkonwn externals
+"""
 """@brief
 """
 
@@ -705,12 +711,6 @@ def scanSources(cfgdir,cfg,BYPASS):
 
       # In case of subdirectories loop on the subdirectories as well
       FileList = cfg['MODULES'][mod]['files']
-      #getTheseFiles(SrcDir,['.f','.f90','.F','.F90'])
-      #for subDir in listdir(SrcDir):
-      #   if path.isdir(path.join(SrcDir,subDir)) and subDir[0] != '.':
-      #      print "Scanning subfolder "+subDir
-      #      subDirFileList = getTheseFiles(SrcDir+subDir,['.f','.f90','.F','.F90'])
-      #      FileList.extend(subDirFileList)
       if len(FileList) == 0:
          print '... found an empty module: ' + mod
          sys.exit()
@@ -746,7 +746,6 @@ def scanSources(cfgdir,cfg,BYPASS):
             if cfg['COMPILER']['REBUILD'] == 2:
                who['time'] = 0
             else:
-               #who['time'] = isNewer(path.join(ODir,path.splitext(path.basename(File))[0] + cfg['SYSTEM']['sfx_obj'].lower()),File)
                who['time'] = isNewer(File,path.join(ODir,path.splitext(path.basename(File))[0] + cfg['SYSTEM']['sfx_obj'].lower()))
 
          SrcF = open(File,'r')
@@ -813,6 +812,13 @@ def scanSources(cfgdir,cfg,BYPASS):
       for name in wcw[mod]:
          if name != 'path':
             who = wcw[mod][name]
+            f,u = sortFunctions(who['functions'],who['vars']['use'],wcw,mdl,who['uses'])
+            who['functions'] = f
+            who['vars']['use'].update(u) # because this is a dico-list, updating who updates wcw
+   for mod in wcw.keys() :
+      for name in wcw[mod]:
+         if name != 'path':
+            who = wcw[mod][name]
             for f in who['vars']['xtn']:
                if f not in who['functions']:
                   if debug: print f,' declared but not used in ',who['name']
@@ -821,13 +827,6 @@ def scanSources(cfgdir,cfg,BYPASS):
                while f in who['functions']:
                   who['functions'].remove(f)
                   who['calls'].update({f:[['']]})
-   for mod in wcw.keys() :
-      for name in wcw[mod]:
-         if name != 'path':
-            who = wcw[mod][name]
-            f,u = sortFunctions(who['functions'],who['vars']['use'],wcw,mdl,who['uses'])
-            who['functions'] = f
-            who['vars']['use'].update(u) # because this is a dico-list, updating who updates wcw
 
    # ~~ Sort out referencing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # Fill-in the 'called' category

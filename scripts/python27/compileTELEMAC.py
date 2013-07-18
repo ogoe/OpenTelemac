@@ -71,6 +71,10 @@
    Upgrade to the new structure of the system.
    Also, checking recursive behaviour with the getTree, by using level as a path.
 """
+"""@history 13/07/2013 -- Sebastien E. Bourban
+   Final upgrade to the scan to sort by libraries rather than by files
+   Also, checking recursive behaviour between libraries.
+"""
 """@brief
 """
 
@@ -92,29 +96,51 @@ from utils.progressbar import ProgressBar
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
 #
+def trimTree(name,lname,list,rebuild):
+   liborder = []
+   lrank = {}
+   t = getTree(name,lname,list,[],lrank,rebuild)
+   libdws = [lrank.keys()]
+   while lrank != {}:
+      for libdw in libdws:
+         for lib in libdw:
+            if lrank[lib]['up'] == [] and lib not in liborder: liborder.insert(0,lib)
+      libdws = []
+      for lib in liborder:
+         if lib in lrank.keys():
+            libdws.append(lrank[lib]['dw'])
+            del lrank[lib]
+         for ldw in lrank.keys():
+            if lib in lrank[ldw]['up']: lrank[ldw]['up'].remove(lib)
+   return liborder
 
-def getTree(name,lname,list,level,rebuild):
-   # ~~ Recursive tree Build ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if name in level:
-      print 'found recursive loop with',name,' :',' => '.join(level)
-      #sys.exit()
-      return list[lname][name]['time'],list[lname][name]['rank']+1
-   level.insert(0,name)
+def getTree(name,lname,list,level,lrank,rebuild):
+   # ~~ Recursive tree ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if level != []:
+      if name in zip(*level)[0]:
+         print 'found recursive loop with',name,' :',' => '.join(zip(*level)[0])
+         #sys.exit()
+         return list[lname][name]['time']
+   # ~~ New leaf ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   level.append((name,lname))
+   # ~~ Ranking ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if lname not in lrank.keys(): lrank.update({ lname:{'up':[],'dw':[]} })
+   for lib in zip(*level)[1]:
+      if lib not in lrank[lname]['up'] and lib != lname: lrank[lname]['up'].append(lib)
    # ~~ prints the tree to screen:
-   #print "#  "*len(level) + name + "  > "  + lname
    time = list[lname][name]['time']
-   #if debug: print '===> use',list[lname][name]['uses']
+   #if debug: print '===> use',name,lname,list[lname][name]['uses']
    for use in list[lname][name]['uses']:
       libname = lname
       if list[lname].get(use) == None:
          for lib in list.keys():
             if lib != lname and list[lib].get(use) != None: libname = lib
       if list[libname].get(use) != None:
-         tTree,rTree = getTree(use,libname,list,level,rebuild)
-         level.pop(0)
+         if libname not in lrank[lname]['dw'] and libname != lname: lrank[lname]['dw'].append(libname)
+         tTree = getTree(use,libname,list,level,lrank,rebuild)
+         level.pop()
          if rebuild < 3: time = time * tTree
-         if rTree > list[lname][name]['rank']: list[lname][name]['rank'] = rTree
-   #if debug: print '===> call',list[lname][name]['calls']
+   #if debug: print '===> call',name,lname,list[lname][name]['calls']
    for call in list[lname][name]['calls'].keys():
       libname = lname
       if list[lname].get(call) == None:
@@ -122,11 +148,11 @@ def getTree(name,lname,list,level,rebuild):
             if lib != lname and list[lib].get(call) != None:
                libname = lib
       if list[libname].get(call) != None:
-         tTree,rTree = getTree(call.strip(),libname,list,level,rebuild)
-         level.pop(0)
+         if libname not in lrank[lname]['dw'] and libname != lname: lrank[lname]['dw'].append(libname)
+         tTree = getTree(call.strip(),libname,list,level,lrank,rebuild)
+         level.pop()
          if rebuild < 3: time = time * tTree
-         if rTree > list[lname][name]['rank']: list[lname][name]['rank'] = rTree
-   #if debug and list[lname][name]['functions'] != []: print '===> fcts',name,list[lname][name]['functions']
+   #if debug and list[lname][name]['functions'] != []: print '===> fcts',name,lname,list[lname][name]['functions']
    for function in list[lname][name]['functions']:
       libname = lname
       if list[lname].get(function) == None:
@@ -134,25 +160,19 @@ def getTree(name,lname,list,level,rebuild):
             if lib != lname and list[lib].get(function) != None:
                libname = lib
       if list[libname].get(function) != None:
-         tTree,rTree = getTree(function.strip(),libname,list,level,rebuild)
-         level.pop(0)
+         if libname not in lrank[lname]['dw'] and libname != lname: lrank[lname]['dw'].append(libname)
+         tTree = getTree(function.strip(),libname,list,level,lrank,rebuild)
+         level.pop()
          if rebuild < 3: time = time * tTree
-         if rTree > list[lname][name]['rank']: list[lname][name]['rank'] = rTree
    list[lname][name]['time'] = time
-   rank = list[lname][name]['rank']
-   if lname not in MAKSYSTEL['deps'].keys(): MAKSYSTEL['deps'].update({lname:rank})
-   elif rank>MAKSYSTEL['deps'][lname]: MAKSYSTEL['deps'][lname]=rank
-   #if MAKSYSTEL.get(rank) == None: MAKSYSTEL.update({rank:{'add':[],'tag':[]}})
    if time == 0:
-      #if [name,lname] not in MAKSYSTEL[rank]['add']: MAKSYSTEL[rank]['add'].append([name,lname])
       if [list[lname][name]['file'],lname] not in MAKSYSTEL['add']: MAKSYSTEL['add'].append([list[lname][name]['file'],lname])
    else:
-      #if [name,lname] not in MAKSYSTEL[rank]['tag']: MAKSYSTEL[rank]['tag'].append([name,lname])
       if [name,lname] not in MAKSYSTEL['tag']: MAKSYSTEL['tag'].append([name,lname])
-   #print "|  "*rank + name + "  > "  + lname
+   #print "|  "*len(level) + name + "  > "  + lname
    #ndu print to check 0s and 1s print "|  "*len(level) + name + '  (' + str(time) + ')'
 
-   return list[lname][name]['time'],rank+1
+   return list[lname][name]['time']
 
 
 def putScanContent(file,root,content):
@@ -374,7 +394,7 @@ def createExeFiles(ename,ecfg,eprog,bypass):
    xecmd = xecmd.replace('<libsnag>',LibFiles.replace(' ',','))
    # <exename> and <objs> ... still to be replaced
    xecmd = xecmd.replace('<config>',LibDir).replace('<root>',cfg['root'])
-   
+
    if debug : print cmd
    mes = MESSAGES(size=10)
    try:
@@ -519,10 +539,8 @@ if __name__ == "__main__":
                   
 # ~~ Builds the Call Tree for each main program ~~~~~~~~~~~~~~~~~~~~
                debug = False; rebuild = cfg['COMPILER']['REBUILD']
-               MAKSYSTEL = {'add':[],'tag':[],'deps':{}}
-               t,r = getTree(item,prg[item][0],all,[],rebuild)
-               #del MAKSYSTEL['deps'][prg[item][0]]
-               MAKSYSTEL['deps'] = sorted(MAKSYSTEL['deps'],key=MAKSYSTEL['deps'].get,reverse=False) # /!\ careful of MAKSYSTEL['deps'][1:]
+               MAKSYSTEL = {'add':[],'tag':[],'deps':[]}
+               MAKSYSTEL['deps'] = trimTree(item,prg[item][0],all,rebuild)
                HOMERES.update({item:MAKSYSTEL})
 # ~~ Prepare the cmdf file to avoid future scans ~~~~~~~~~~~~~~~~~~~
                ForDir = cfg['MODULES'][prg[item][0]]['path']
@@ -581,7 +599,7 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
             MAKSYSTEL = {'add':[],'tag':[],'deps':cmdfFiles[mod][item]['general']['liborder']}
             HOMERES.update({item:MAKSYSTEL})
-            for lib in MAKSYSTEL['deps']: 
+            for lib in MAKSYSTEL['deps']:
                for file in cmdfFiles[mod][item][lib]['files'] :
                   #In case the file is in a subfolder of the module replace the | that defines the separator by the os separator
                   file = file.replace('|',sep)
@@ -595,7 +613,7 @@ if __name__ == "__main__":
                      else:
                         HOMERES[item]['add'].append((file,lib))
                   except Exception as e:
-                        xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Could not find the following file for compilation: '+path.basename(srcName)+'\n         ... so it may have to be removed from the following cmdf file: '+cmdFile},e,options.bypass)])
+                     xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Could not find the following file for compilation: '+path.basename(srcName)+'\n         ... so it may have to be removed from the following cmdf file: '+cmdFile},e,options.bypass)])
 # ~~ Creates modules and objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             if HOMERES[item]['add'] == []: print '      +> There is no need to compile any object'
             else:

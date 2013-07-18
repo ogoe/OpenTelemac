@@ -40,6 +40,10 @@
    keywords are now placed into a list (as opposed to dictionary) so to
       remember the order of entrance in the CAS file.
 """
+"""@history 17/06/2013 -- Sebastien E. Bourban
+   values of keywords are now checked for their type against the declared type
+      in the DICO.
+"""
 """@brief
 """
 
@@ -131,6 +135,8 @@ def scanCAS(cas):
 
 def readCAS(keywords,dico,frgb):
 
+   vint = re.compile(r'\d+\Z')
+   vflt = re.compile(r'\d+(|\.)([dDeE](\+|\-)?\d+|\d*)\Z')
    keylist,vallist = keywords
    for key,value in zip(*keywords):
       kw = key
@@ -140,15 +146,20 @@ def readCAS(keywords,dico,frgb):
          vals = []
          for val in value:
             if val.upper() in ['YES','Y','TRUE','OUI','O','VRAI']: vals.append('TRUE')
-            if val.upper() in ['NO','N','FALSE','NON','N','FAUX']: vals.append('FALSE')
+            elif val.upper() in ['NO','N','FALSE','NON','N','FAUX']: vals.append('FALSE')
+            else: raise Exception([{'name':'readCAS','msg':'... I am looking for a LOGICAL but found an inapropriate value set for keyword: '+key}])
          vallist[keylist.index(key)] = vals
       elif dico[kw]['TYPE'][0] in ['ENTIER','INTEGER']:
          vals = []
-         for val in value: vals.append(int(val))
+         for val in value:
+            if re.match(vint,val): vals.append(int(val))
+            else: raise Exception([{'name':'readCAS','msg':'... I am looking for an INTEGER but found an inapropriate value set for keyword: '+key}])
          vallist[keylist.index(key)] = vals
       elif dico[kw]['TYPE'][0] in ['REEL','REAL']:
          vals = []
-         for val in value: vals.append(float(val.lower().replace('d','e')))
+         for val in value:
+            if re.match(vflt,val.lower().replace('d','e')): vals.append(float(val.lower().replace('d','e')))
+            else: raise Exception([{'name':'readCAS','msg':'... I am looking for an FLOAT but found an inapropriate value set for keyword: '+key}])
          vallist[keylist.index(key)] = vals
       else:
          vals = []
