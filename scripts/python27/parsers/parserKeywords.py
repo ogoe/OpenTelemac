@@ -136,7 +136,7 @@ def scanCAS(cas):
 def readCAS(keywords,dico,frgb):
 
    vint = re.compile(r'\d+\Z')
-   vflt = re.compile(r'\d+(|\.)([dDeE](\+|\-)?\d+|\d*)\Z')
+   vflt = re.compile(r'\d+(|\.)\d*([dDeE](\+|\-)?\d+|)\Z')
    keylist,vallist = keywords
    for key,value in zip(*keywords):
       kw = key
@@ -166,6 +166,7 @@ def readCAS(keywords,dico,frgb):
          for val in value: vals.append(repr(val))
          vallist[keylist.index(key)] = vals
 
+   sys.exit()
    return (keylist,vallist)
 
 def rewriteCAS(cas):
