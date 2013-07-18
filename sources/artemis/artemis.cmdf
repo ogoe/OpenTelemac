@@ -64,6 +64,7 @@ files: bief_def.f
   dimens.f
   cpstvc.f
   bief_nbsegel.f
+  centre_mass_seg.f 
   segbor.f
   lit.f
   readgeo1.f

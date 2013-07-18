@@ -24,8 +24,9 @@
       USE DECLARATIONS_ARTEMIS
 !
       IMPLICIT NONE
-      INTEGER LU
-      COMMON  LU
+!
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

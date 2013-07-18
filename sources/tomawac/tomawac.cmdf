@@ -17,6 +17,7 @@ files: bief_def.f
   find_in_sel.f
   crosfr.f
   fasp.f
+  centre_mass_seg.f 
   fond.f
   cpstvc.f
   ovd.f

@@ -197,7 +197,7 @@
 !
       EPS= 1.E-14
       DO ISEG=1,NSEG
-         YESNO(ISEG)=.FALSE.
+        YESNO(ISEG)=.FALSE.
       ENDDO
       DO IELEM=1,NELEM
         I1 = IKLE(IELEM,1)
@@ -205,19 +205,19 @@
         I3 = IKLE(IELEM,3)
         DO I = 1,3
           ISEG = ELTSEG(IELEM,I)
-          IF(.NOT.YESNO(ISEG).AND.(IFABOR(IELEM,1).EQ.-1
-     &                        .OR. IFABOR(IELEM,1).EQ. 0)) THEN  !BOUNDARY SEG
+          IF(.NOT.YESNO(ISEG).AND.(IFABOR(IELEM,I).EQ.-1
+     &                        .OR. IFABOR(IELEM,I).EQ. 0)) THEN  !BOUNDARY SEG
             NB1=GLOSEG(ISEG,1)
             NB2=GLOSEG(ISEG,2)
-            ! CMI
-             CMI(1,ISEG)=0.5D0*(X(NB1)+X(NB2))
-             CMI(2,ISEG)=0.5D0*(Y(NB1)+Y(NB2))
-            !JMI
-             JMI(ISEG)=IELEM
-            ! ISEG HAS BEEN TREATED
-             YESNO(ISEG)=.TRUE.
+!           CMI
+            CMI(1,ISEG)=0.5D0*(X(NB1)+X(NB2))
+            CMI(2,ISEG)=0.5D0*(Y(NB1)+Y(NB2))
+!           JMI
+            JMI(ISEG)=IELEM
+!           ISEG HAS BEEN TREATED
+            YESNO(ISEG)=.TRUE.
           ENDIF
-         ENDDO
+        ENDDO
       ENDDO
 !
 !---------------------------------------------------------------------
