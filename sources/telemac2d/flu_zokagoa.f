@@ -2,10 +2,11 @@
                         SUBROUTINE FLU_ZOKAGOA
 !                       **********************
 
-     &(H1,H2,ETA1,ETA2,U1,U2,V1,V2,XNN,YNN,FLXI,FLXJ,G)
+     &(H1,H2,ZF1,ZF2,ETA1,ETA2,U1,U2,
+     & V1,V2,XNN,YNN,FLXI,FLXJ,G)
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.2                                     03/15/2011
+! TELEMAC 2D VERSION 6.3                                     06/02/2013
 !***********************************************************************
 !
 !brief  COMPUTES ZOKAGOA FLUX AT THE INERNAL INTERFACES 
@@ -17,18 +18,21 @@
 !+        V6P1
 !+
 !
+!history  R. ATA (EDF-LNHE)
+!+        06/02/2013
+!+        V6P3
+!+ remove unused variables
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  H1,H2         |-->|  LEFT AND RIGHT WATER DEPTHS
+!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION 
 !|  ETA1,ETA2     |-->|  LEFT AND RIGHT FREE SURFACES
+!|  FLXI,FLXJ     |<--|  RIGHT AND LEFT CONTRIBUTIONS TO THE FLUX
+!|  G             |-->|  GRAVITY CONSTANT
+!|  H1,H2         |-->|  LEFT AND RIGHT WATER DEPTHS
 !|  U1,U2         |-->|  LEFT AND RIGHT VELOCITY X-COMPONENTS
 !|  V1,V2         |-->|  LEFT AND RIGHT VELOCITY Y-COMPONENTS
 !|  XNN,YNN       |-->|  X AND Y COMPONENTS OF THE OUTWARD UNIT NORMAL
-!|  FLXI,FLXJ     |<--|  RIGHT AND LEFT CONTRIBUTIONS TO THE FLUX
-!|  G             |-->|  GRAVITY CONSTANT
-!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      USE BIEF
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -37,14 +41,12 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION, INTENT(IN)    :: G,H1,H2,ETA1,ETA2,U1,U2
-      DOUBLE PRECISION, INTENT(IN)    :: V1,V2,XNN,YNN
+      DOUBLE PRECISION, INTENT(IN)    :: V1,V2,XNN,YNN,ZF1,ZF2
       DOUBLE PRECISION, INTENT(INOUT) :: FLXI(3),FLXJ(3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IVAR ,CHOICE_D  
-!
-      DOUBLE PRECISION ZF1,ZF2
 !
       DOUBLE PRECISION GSUR2,ALPHA,FLUIJ_1,EPS,UI,UJ,VI,VJ
       DOUBLE PRECISION U_IJ,D_IJ,C_IJ,C_I,C_J,UI0,UJ0
@@ -53,7 +55,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      ALPHA=1.D0
+      ALPHA=0.5D0
       CHOICE_D=1
       EPS=1.E-6
       GSUR2=G/2.D0
@@ -68,11 +70,6 @@
       ENDDO
 !
 !-----------------------------------------------------------------------
-!
-!     BATHYMETRIES
-!
-      ZF1   =    ETA1-H1
-      ZF2   =    ETA2-H2
 !
 ! VELOCITIES
 !
@@ -93,7 +90,7 @@
 !
 ! WET/DRY TREATMENT
 !
-!     CALL WETDRY(ETA1,ZF1,H1,UI,VI,ETA2,ZF2,H2,UJ,VJ,EPS)
+!      CALL WETDRY(ETA1,ZF1,H1,UI,VI,ETA2,ZF2,H2,UJ,VJ,EPS)
 !
 !     LET'S COMPUTE D_IJ
 !

@@ -2,10 +2,10 @@
                        SUBROUTINE CALDT
 !                      ****************
 !
-     &(NS,G,H,U,V,DTHAUT,DT,CFL,ICIN,DTVARI,LISTIN)
+     &(NS,G,H,U,V,DTHAUT,DT,AT,TMAX,CFL,ICIN,DTVARI,LISTIN)
 !
 !***********************************************************************
-!TELEMAC-2D VERSION 6.2                                 22/11/10
+!TELEMAC-2D VERSION 6.3                                 30/06/13
 !***********************************************************************
 !
 !brief  COMPUTES THE TIME STEP UNDER CFL CONDITION
@@ -20,7 +20,19 @@
 !+        V6P1
 !+   Translation of French comments within the FORTRAN sources into
 !+   English comments
+!+
 !
+!history  R. ATA (EDF-LNHE) 
+!+        15/01/2013
+!+        V6P3
+!+   introduce fixed time step
+!+   handle very specific cases
+!+   parallelization
+!
+!history  R. ATA (EDF-LNHE) INTRODUCE FIXED TIME STEP
+!+        30/06/2013
+!+        V6P3
+!+  clean and remove unused variables
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NS             |-->| TOTAL NUMBER OF NODES 
@@ -30,12 +42,17 @@
 !| V              |-->| Y-COMPONENT OF VELOCITY
 !| DTHAUT         |-->| CHARACTERISTIC LENTH FOR CFL (DX)
 !| DT             |<--| TIME STEP 
+!| AT             |---| CURRENT TIME
+!| TMAX           |---| MAX SIMULATION TIME
 !| CFL            |-->| CFL
 !| ICIN           |-->| WHICH SCHEME (SEE LIST BELOW)
 !| DTVARI         |-->| LOGICAL: VARIABLE TIME STEP
 !| LISTIN         |-->| LOGICAL: OUTPUT LISTING
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE BIEF_DEF, ONLY:NCSIZE
+      USE INTERFACE_TELEMAC2D, EX_CALDT => CALDT 
+    ! USE MODULE,             LOCAL_NAME => NAME_AT_THE_INTERFACE 
       IMPLICIT NONE
       INTEGER LNG,LU                                                    
       COMMON/INFO/LNG,LU 
@@ -45,17 +62,23 @@
       INTEGER, INTENT(IN) :: NS,ICIN
       DOUBLE PRECISION, INTENT(INOUT) :: DT
       DOUBLE PRECISION, INTENT(IN) :: H(NS),U(NS),V(NS),DTHAUT(NS)
-      DOUBLE PRECISION, INTENT(IN) :: G,CFL
+      DOUBLE PRECISION, INTENT(IN) :: G,CFL,AT,TMAX
       LOGICAL, INTENT(IN) :: DTVARI,LISTIN
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
-      INTEGER IS
+      INTEGER IS 
       LOGICAL DEJA
-      DOUBLE PRECISION RA,RA3,EPSL,SIGMAX,UA2,UA3,UNORM  
+      DOUBLE PRECISION RA3,EPSL,SIGMAX,UA2,UA3,UNORM,DTT 
+      DOUBLE PRECISION P_DMIN
+      EXTERNAL P_DMIN
 !
 !-----------------------------------------------------------------------
 !
+!   +++++++++++++++++++++++++
+!     VARIABLE TIME STEP
+      IF(DTVARI)THEN
+!   +++++++++++++++++++++++++
       DEJA=.FALSE.
       DT = 1.E+12
       EPSL = 0.01D0
@@ -71,7 +94,7 @@
             WRITE(LU,*) ' SEE NODE:',IS,' FOR EXAMPLE'
             DEJA = .TRUE.
           ELSE
-            SIGMAX = H(IS)
+            SIGMAX = ABS(H(IS))
             UA2    = U(IS)
             UA3    = V(IS)                                       
             UNORM=SQRT(UA2*UA2 + UA3*UA3)
@@ -84,7 +107,6 @@
      &       ICIN.EQ.4.OR.ICIN.EQ.5) THEN
 !     SCHEMES OF ROE, ZOKAGOA, TCHAMEN, HLLC AND WAF
 !
-        RA =SQRT(G)
         DO IS=1,NS        
           IF(H(IS).LT.0.D0.AND.LISTIN.AND..NOT.DEJA)THEN
             WRITE(LU,*) 'CALDT WARNING : NEGATIVE WATER DEPTH'
@@ -94,9 +116,8 @@
             UA2    = U(IS)
             UA3    = V(IS)                                       
             UNORM=SQRT(UA2*UA2 + UA3*UA3)
-            SIGMAX= MAX(EPSL, RA*SQRT(H(IS))+UNORM )
-!           DTHAUT=|Ci|/Sum(Lij) IS THE CHOICE OF INRIA
-!            WE CAN CHANGE FOR MIN(CMI) FOR INSTANCE
+            SIGMAX= MAX(EPSL,SQRT(G*ABS(H(IS)))+UNORM)
+!           DTHAUT=|Ci|/Sum(Lij) 
             DT = MIN(DT, CFL*DTHAUT(IS)/SIGMAX)
           ENDIF
         ENDDO
@@ -109,6 +130,7 @@
         CALL PLANTE(1)
         STOP
       ENDIF
+      ENDIF
 !
 !*************************************************************************
 !     ERROR TREATMENT AND LISTING OUTPUTS
@@ -119,32 +141,61 @@
       IF(DT.LE.0.D0)THEN
         IF(LISTIN.AND.LNG.EQ.1)
      &      WRITE(LU,*) 'PAS DE TEMPS NEGATIF OU NUL: ',DT
+            WRITE(LU,*) 'PROBABLEMENT A CAUSE D UNE HAUTEUR'
+            WRITE(LU,*) 'D EAU NULLE PARTOUR ...'
         IF(LISTIN.AND.LNG.EQ.2) 
      &      WRITE(LU,*) 'NEGATIVE (OR NIL) TIME-STEP: ',DT
+            WRITE(LU,*) 'PROBABLY DUE TO NIL WATER'
+            WRITE(LU,*) 'DEPTH EVERYWHERE IN THE DOMAIN ...'
         CALL PLANTE(1)
         STOP
       ENDIF
 !
-      IF(DTVARI.AND.CFL.LT.1.D0) THEN
+      IF(DTVARI) THEN
+        IF(TMAX.LT.DT)DT=TMAX !REALLY CRAZY CASES
+        DTT=TMAX-AT
+        IF(CFL.GE.1.D0)DT=0.9D0*DT/CFL
+        IF(DTT.LT.DT.AND.DTT.GT.0.D0)DT=DTT !LAST TIME STEP        
+        IF(AT.GT.TMAX)THEN
+           IF(LNG.EQ.1)THEN
+             WRITE(LU,*)'CALDT: MAUVAIS CHOIX DE PARAMETRES DE TEMPS '
+             WRITE(LU,*)'TEMPS ET TEMPS MAX',AT,TMAX
+           ENDIF
+           IF(LNG.EQ.2) THEN 
+             WRITE(LU,*)'CALDT: BAD TIME PARAMETERS'
+             WRITE(LU,*)'TIME AND TMAX',AT,TMAX
+           ENDIF
+           CALL PLANTE(1)
+           STOP
+        ENDIF
+!
+!       FOR PARALLELISM
+!
+        IF(NCSIZE.GT.1) DT=P_DMIN(DT)
+!
         IF(LISTIN.AND.LNG.EQ.1) WRITE(LU,*) 'PAS DE TEMPS : ',DT
         IF(LISTIN.AND.LNG.EQ.2) WRITE(LU,*) 'TIME-STEP: ',DT
-      ELSEIF(DTVARI.AND.CFL.GE.1.D0) THEN
-        DT=0.5D0*DT/CFL
-        IF(LISTIN.AND.LNG.EQ.1) THEN 
-          WRITE(LU,*) 'ATTENTION CFL DEMANDE > 1 !...!'
-          WRITE(LU,*) 'PAS DE TEMPS (AVEC CFL = 0.5) : ',DT
-        ELSEIF(LISTIN.AND.LNG.EQ.2) THEN 
-          WRITE(LU,*) 'WARNING: WANTED CFL >1 !...! '
-          WRITE(LU,*) 'TIME-STEP (WITH CFL = 0.5): ',DT
+        IF(CFL.GE.1.D0) THEN
+          IF(LISTIN.AND.LNG.EQ.1) THEN 
+            WRITE(LU,*) 'ATTENTION CFL NON FOURNI OU > 1 !...!'
+            WRITE(LU,*) 'PAS DE TEMPS (AVEC CFL = 0.9) : ',DT
+          ELSEIF(LISTIN.AND.LNG.EQ.2) THEN 
+            WRITE(LU,*) 'WARNING: CFL NOT GIVEN OR >1 !...! '
+            WRITE(LU,*) 'TIME-STEP (WITH CFL = 0.9): ',DT
+          ENDIF
         ENDIF
-      ELSEIF(.NOT.DTVARI) THEN
-!       INCLUDES THE CASES: NOT DTVARI, ALL CFL (> AND < 1)
+      ENDIF
+!
+      IF(.NOT.DTVARI) THEN
+!       
+!     DT NOT VARIABLE
+!
         IF(LISTIN.AND.LNG.EQ.1) THEN 
-          WRITE(LU,*) 'ATTENTION CFL NON FOURNI !...!'
-          WRITE(LU,*) 'PAS DE TEMPS (AVEC CFL = 0.5) : ',DT
+          WRITE(LU,*) 'ATTENTION: PAS DE TEMPS FIXE ET CFL NON FOURNI.!'
+          WRITE(LU,*) 'PAS DE TEMPS PEUT NE PAS VERIFIER LE CFL : ',DT
         ELSEIF(LISTIN.AND.LNG.EQ.2) THEN 
-          WRITE(LU,*) 'WARNING: PLEASE GIVE CFL  !...! '
-          WRITE(LU,*) 'TIME-STEP (WITH CFL = 0.5): ',DT
+          WRITE(LU,*) 'WARNING: FIXED TIME-STEP AND CFL NOT GIVEN!...! '
+          WRITE(LU,*) 'TIME-STEP MAY NOT SATISFY CFL CONDITION: ',DT
         ENDIF
       ENDIF
 !

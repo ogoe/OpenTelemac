@@ -7,7 +7,7 @@
      & NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                         03/15/2011
+! TELEMAC2D   V6P3                                         01/07/2013
 !***********************************************************************
 !
 !brief      TIME INTEGRATION WITH NEWMARK SCHEME:
@@ -22,6 +22,12 @@
 !+        V6P1
 !+    CHANGE EXPLICIT EULER BY NEWMARK SCHEME
 !+    GAMMA FIXES THE SCHEME ACCURACY (SEE BELOW) 
+!
+!history  R. ATA (EDF-LNHE)
+!+        01/07/2013
+!+        V6P3
+!+    cleaning
+!+ 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  AIRS          |-->|  CELL AREAS
@@ -65,9 +71,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
       INTEGER I 
-! 
       DOUBLE PRECISION FACT,UNMGAMMA
-
+!
 !
 !=======================
 !---- TEST FOR DT
@@ -76,7 +81,7 @@
       IF(DT.LE.0.D0) THEN
         WRITE(LU,*)'*********************************************'
         WRITE(LU,*)'          WARNING: TIME STEP =0'
-        WRITE(LU,*)'          WE ARE IN MAJZZ...'
+        WRITE(LU,*)'          IN MAJZZ SUBROUTINE...'
         WRITE(LU,*)'*********************************************'  
         CALL PLANTE(1)
         STOP
@@ -94,9 +99,9 @@
 !
         DO I=1,NPOIN
           FACT=DT/AIRS(I)
-          W(1,I) = HN(I) + FACT * ( FLUX(I,1)+SMH(I) ) 
-          W(2,I) = QU(I) + FACT * FLUX (I,2)
-          W(3,I) = QV(I) + FACT * FLUX (I,3)     
+          W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I)) 
+          W(2,I) = QU(I) + FACT* FLUX(I,2)
+          W(3,I) = QV(I) + FACT* FLUX(I,3)     
         ENDDO
 !
       ELSEIF(GAMMA.GE.0.D0.AND.GAMMA.LT.1.D0) THEN
@@ -115,15 +120,15 @@
           FACT=DT/AIRS(I)
           !--- FIRST TIME STEP
           IF(LT.EQ.1)THEN
-            W(1,I) = HN(I) + FACT * ( FLUX(I,1)+SMH(I) ) 
-            W(2,I) = QU(I) + FACT * FLUX (I,2)
-            W(3,I) = QV(I) + FACT * FLUX (I,3)
+            W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I) ) 
+            W(2,I) = QU(I) + FACT* FLUX(I,2)
+            W(3,I) = QV(I) + FACT* FLUX(I,3)
           ELSE
-            W(1,I) = HN(I) + FACT * (UNMGAMMA*FLUX_OLD(I,1) + 
-     &                              GAMMA*FLUX(I,1)+SMH(I))
-            W(2,I) = QU(I) + FACT * (UNMGAMMA*FLUX_OLD(I,2) + 
+            W(1,I) = HN(I) + FACT*(UNMGAMMA*FLUX_OLD(I,1) + 
+     &                             GAMMA*FLUX(I,1)+SMH(I))
+            W(2,I) = QU(I) + FACT*(UNMGAMMA*FLUX_OLD(I,2) + 
      &                             GAMMA*FLUX(I,2))
-            W(3,I) = QV(I) + FACT * (UNMGAMMA*FLUX_OLD(I,3) + 
+            W(3,I) = QV(I) + FACT*(UNMGAMMA*FLUX_OLD(I,3) + 
      &                             GAMMA*FLUX(I,3))
           ENDIF
         ENDDO
@@ -139,7 +144,6 @@
         CALL PLANTE(1)
         STOP
       ENDIF
-
 100   CONTINUE
 !
 !     PROJECTION ON THE SLIPPING BOUNDARY CONDITIONS

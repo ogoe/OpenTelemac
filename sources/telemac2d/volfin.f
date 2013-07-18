@@ -2,22 +2,22 @@ C                       *****************
                         SUBROUTINE VOLFIN 
 !                       *****************
 !
-     & (W1,AT,DT,LT,NIT,NELEM,NPTFR,
+     & (W1,AT,DT,LT,NELEM,NPTFR,
      &  TB,ZF,CF,NPOIN,HN,H,U,V,QU,QV,G,LISTIN,
-     &  S,MSK,MASKEL,MESH,LIMPRO,NBOR,KDIR,KNEU,KDDL, 
+     &  MESH,LIMPRO,NBOR,KDIR,KNEU,KDDL, 
      &  HBOR,UBOR,VBOR,MASSES,FLUENT,FLUSOR,CFLWTD,DTVARI,KFROT,
      &  NREJET,ISCE,TSCE2,MAXSCE,MAXTRA,YASMH,SMH,
-     &  NTRAC,DIMT,T,HT,TN,DLIMT,LIMTRA,
+     &  NTRAC,DIMT,T,HT,TN,
      &  TBOR,MASSOU,FLUTENT,FLUTSOR,DTHAUT,DPX,DPY,DJX,DJY,CMI,JMI,
      &  DJXT,DJYT,DIFVIT,ITURB,PROPNU,DIFT,DIFNU,
      &  DX,DY,OPTVF,
      &  HSTOK,HCSTOK,LOGFR,DSZ,FLUXT,FLUHBOR,FLBOR,DTN,FLUSORTN,
      &  FLUENTN,LTT,
      &  FLUXTEMP,FLUHBTEMP,HC,SMTR,AIRST,TMAX,DTT,GAMMA,FLUX_OLD,
-     &  MXPTVS,NEISEG)
+     &  MXPTVS,NEISEG,V2DPAR)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V6P3                                   15/06/2013
 !***********************************************************************
 !
 !brief    1. SOLVES THE PROBLEM BY A METHOD OF TYPE ROE OR BY A KINETIC 
@@ -62,6 +62,12 @@ C                       *****************
 !+   ADD NEW ARGUEMENTS (MXPTVS,NEISEG)
 !+   FOR WAF SCHEME
 !
+!history  R. ATA (EDF-LNHE)
+!+        06/15/2013
+!+        V6P3
+!+   NO MORE CALL FOR VECTOR TO BUILD TB
+!+   INSTEAD USE V2DPAR
+!+   CLEAN UNUSED VARIABLES
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| ELEMENT AREA
@@ -76,7 +82,6 @@ C                       *****************
 !| DIFVIT         |-->|  LOGICAL: DIFFUSION FOR VELOCITY OR NOT
 !| DIMT           |-->| DIMENSION OF TRACER
 !| DJXT,DJYT      |<->| WORKING TABLES FOR TRACER
-!| DLIMT          |-->| DIMENSION OF TRACER ON THE BOUNDARY
 !| DSZ            |<->| VARIATION OF Z FOR ORDER 2
 !| DTHAUT         |-->| CHARACTERISTIC LENGTH (DX) USED FOR CFL
 !| DTN            |<->| TIME STEP   FROM TN+1 TO TN+2
@@ -153,7 +158,7 @@ C                       *****************
 !| YASMH          |-->| LOGICAL: TO TAKE INTO ACCOUNT SMH
 !| ZF             |-->| BED TOPOGRAPHY (BATHYMETRY)
 !| MXPTVS         |-->| MAX NUMBER OF NEIGHBOR FOR A NODE 
-!| NEISEG         |-->| NEIGBOR OF THE SEGMENT
+!| NEISEG         |-->| NEIGHBOR OF THE SEGMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -166,18 +171,17 @@ C                       *****************
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)    :: NPTFR,KDIR,KNEU,KDDL,DIMT,KFROT,OPTVF
-      INTEGER, INTENT(IN)    :: NELEM,NPOIN,LT,NIT,NREJET,ITURB,DLIMT
+      INTEGER, INTENT(IN)    :: NELEM,NPOIN,LT,NREJET,ITURB
       INTEGER, INTENT(IN)    :: NTRAC,MAXSCE,MAXTRA,MXPTVS
       INTEGER, INTENT(INOUT) :: LTT
       INTEGER, INTENT(IN)    :: LIMPRO(NPTFR,6),NBOR(NPTFR)
-      INTEGER, INTENT(IN)    :: LIMTRA(DLIMT)
       INTEGER, INTENT(IN)    :: ISCE(NREJET)
       INTEGER, INTENT(INOUT) :: JMI(*),LOGFR(NPOIN),NEISEG(2,*)
-      LOGICAL, INTENT(IN)    :: DIFVIT,DIFT,LISTIN,MSK,DTVARI,YASMH
+      LOGICAL, INTENT(IN)    :: DIFVIT,DIFT,LISTIN,DTVARI,YASMH
 
       DOUBLE PRECISION, INTENT(IN) :: PROPNU,DIFNU,GAMMA
       DOUBLE PRECISION, INTENT(INOUT) :: AT,DT,MASSES,DTT
-      DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN),QU(NPOIN),QV(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN),QU(NPOIN),QV(NPOIN)           
       DOUBLE PRECISION, INTENT(INOUT) :: W1(*)
 
       DOUBLE PRECISION, INTENT(INOUT) :: DSZ(2,*),HC(2,*)
@@ -198,9 +202,8 @@ C                       *****************
       DOUBLE PRECISION, INTENT(INOUT) :: DJXT(*),DJYT(*)
       DOUBLE PRECISION, INTENT(INOUT) :: FLUTENT(*),FLUTSOR(*)    
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TB
-      TYPE(BIEF_OBJ), INTENT(IN)      :: S,MASKEL 
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
-      TYPE(BIEF_OBJ) , INTENT(IN)     :: TBOR,TN
+      TYPE(BIEF_OBJ) , INTENT(IN)     :: TBOR,TN,V2DPAR
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: T,HT,SMTR,FLUHBOR,FLUHBTEMP
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLUXTEMP,FLUXT,FLBOR,FLUX_OLD
 !
@@ -210,23 +213,18 @@ C                       *****************
 !
       MASSES = 0.D0  
 !
-!   COMPUTE CELL AREAS 
-!
-      CALL VECTOR(TB%ADR(1)%P,'=','MASBAS          ',11,
-     &            1.D0,S,S,S,S,S,S,MESH,MSK,MASKEL)
-!
       CALL RESOLU(W1,W1(1+3*NPOIN),MESH%NUBO%I,
-     &            MESH%VNOIN%R,W1(1+9*NPOIN),AT,DT,LT,NIT, 
+     &            MESH%VNOIN%R,W1(1+9*NPOIN),AT,DT,LT,
      &            NELEM,MESH%NSEG,NPTFR,W1(1+6*NPOIN),
-     &            TB%ADR(1)%P%R,MESH%SURFAC%R,
+!RA  &            TB%ADR(1)%P%R,MESH%SURFAC%R,
+     &            V2DPAR%R,MESH%SURFAC%R,
      &            MESH%X%R,MESH%Y%R,MESH%IKLE%I, 
      &            ZF,CF,NPOIN,HN,H,U,V,QU,QV,G,LISTIN,
      &            MESH%XNEBOR%R,MESH%YNEBOR%R, 
-     &            MESH%XSGBOR%R,MESH%YSGBOR%R, 
      &            LIMPRO,NBOR,KDIR,KNEU,KDDL,HBOR,UBOR,VBOR,
      &            FLUSOR,FLUENT,CFLWTD,DTVARI,MESH%NELMAX,KFROT,
      &            NREJET,ISCE,TSCE2,MAXSCE,MAXTRA,YASMH,SMH,MASSES,
-     &            NTRAC,DIMT,T,HT,TN,DIMT,LIMTRA,
+     &            NTRAC,DIMT,T,HT,TN,DIMT,
      &            TBOR,MASSOU,FLUTENT,FLUTSOR,DTHAUT,DPX,DPY,DJX,DJY,
      &            CMI,JMI,SMTR,TB%ADR(3)%P%R,TB%ADR(4)%P%R,
      &            DJXT,DJYT,DIFVIT,ITURB,PROPNU,DIFT,DIFNU,DX,DY,OPTVF,
@@ -234,7 +232,8 @@ C                       *****************
      &            FLBOR,LOGFR,LTT,DTN,FLUXTEMP,FLUHBTEMP,HC,TMAX,DTT,
      &            TB%ADR(6)%P%R,TB%ADR(7)%P%R,TB%ADR(8)%P%R,
      &            TB%ADR(9)%P%R,TB%ADR(10)%P%R,
-     &            GAMMA,FLUX_OLD%R,MXPTVS,NEISEG)
+     &            GAMMA,FLUX_OLD%R,MXPTVS,NEISEG,
+     &            MESH%ELTSEG%I,MESH%IFABOR%I,MESH)
 !
 !-----------------------------------------------------------------------
 !

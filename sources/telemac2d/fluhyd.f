@@ -1,15 +1,16 @@
-C                       *****************
+!                       *****************
                         SUBROUTINE FLUHYD
-C                       *****************
-C
+!                       *****************
+!
      *(NS,NT,NSEG,NPTFR,NUBO,G,DT,X,Y,AIRS,NU,AIRE,
      * UA,ZF,VNOIN,CE,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     * KDDL,HBOR,UBOR,VBOR,FLUENT,FLUSORT,NORDRE,CMI,JMI,
+     * HBOR,UBOR,VBOR,FLUENT,FLUSORT,NORDRE,CMI,JMI,
      * DJX,DJY,DX,DY,DTHAUT,CFLWTD,FLBOR,
-     * DPX,DPY,IVIS,CVIS,FLUHBTEMP,BETA,DSZ,AIRST,HC,FLUXTEMP,NTRAC)
+     * DPX,DPY,IVIS,CVIS,FLUHBTEMP,BETA,
+     * DSZ,AIRST,HC,FLUXTEMP,NTRAC,ELTSEG,IFABOR,MESH)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   03/15/2011
+! TELEMAC2D   V6P3                                          03/06/2013
 !***********************************************************************
 !
 !brief    COMPUTES FLUXES AT TIME N.
@@ -37,6 +38,12 @@ C
 !+    INTRODUCTION OF FLBOR AND MASS BALANCE
 !+    CHANGE CE(3,NS) TO CE(NS,3)
 !
+!history  R. ATA (EDF-LNHE)
+!+        03/06/2013
+!+        V6P3
+!+    OPTIMIZATION AND CLEANING OF UNUSED VARIABLES
+!+    PARALLELIZATION
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| ELEMENT AREA
 !| AIRS           |-->| CELL AREA
@@ -60,7 +67,6 @@ C
 !| IVIS           |-->| OPTION FOR THE DIFFUSION OF VELOCITIES
 !| JMI            |-->| NUMBER OF THE TRIANGLE IN WHICH IS LOCATED
 !|                |   | THE MIDDLE POINT OF THE INTERFACE
-!| KDDL           |-->| CONVENTION FOR THE FREE POINTS
 !| KDIR           |-->| CONVENTION DIRICHLET POINTS
 !| KNEU           |-->| CONVENTION NEUMANN POINTS
 !| LIMPRO         |-->| TYPES OF BOUNDARY CONDITION
@@ -85,6 +91,7 @@ C
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC2D, ONLY:DEBUG
       USE INTERFACE_TELEMAC2D, EX_FLUHYD => FLUHYD
 !
       IMPLICIT NONE
@@ -93,9 +100,10 @@ C
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NS,NT,NSEG,NPTFR,KDIR,KNEU,KDDL,NORDRE
+      INTEGER, INTENT(IN) :: NS,NT,NSEG,NPTFR,KDIR,KNEU,NORDRE
       INTEGER, INTENT(IN) :: NBOR(NPTFR),LIMPRO(NPTFR,6),NU(NT,3)
       INTEGER, INTENT(IN) :: NUBO(2,NSEG),JMI(*),IVIS,NTRAC
+      INTEGER, INTENT(IN)  :: ELTSEG(NT,3)
       DOUBLE PRECISION, INTENT(IN) :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
       DOUBLE PRECISION, INTENT(IN) :: HBOR(NPTFR),G,CFLWTD,DTHAUT(*)
       DOUBLE PRECISION, INTENT(IN) :: UBOR(NPTFR),VBOR(NPTFR),CMI(2,*)
@@ -108,39 +116,49 @@ C
       DOUBLE PRECISION, INTENT(INOUT) :: DJX(3,*),DJY(3,*)
       DOUBLE PRECISION, INTENT(INOUT) :: DX(3,*),DY(3,*)
       TYPE(BIEF_OBJ), INTENT(INOUT) :: FLUXTEMP,FLUHBTEMP,FLBOR 
+      INTEGER, INTENT(IN)             :: IFABOR(NT,3) 
+      TYPE(BIEF_MESH),INTENT(INOUT)   :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !  
-      INTEGER IS,IVAR
+      INTEGER IS
 !
 !-----------------------------------------------------------------------
 !
-!     INITIALIZATION OF CE
-! 
-      DO IS=1,NS
-        DO IVAR=1,3
-          CE(IS,IVAR) = 0.D0
-        ENDDO
-      ENDDO
+!    INITIALISATION
+       CE(:,1)=(/(0.D0,IS=1,NS)/)
+       CE(:,2)=(/(0.D0,IS=1,NS)/)
+       CE(:,3)=(/(0.D0,IS=1,NS)/)
 !
 !-----------------------------------------------------------------------
 !
 !     COMPUTES GRADIENTS AT NODES AS WELL AS DIFFUSION TERMS
 !
       IF(NORDRE.EQ.2.OR.IVIS.EQ.1) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING GRADNOD'
         CALL GRADNOD(NS,NT,NU,AIRE,AIRS,
-     &               UA,DPX,DPY,DJX,DJY,DX,DY,IVIS,CVIS,CE,ZF)
+     &               UA,DPX,DPY,DJX,DJY,DX,DY,IVIS,CVIS,CE,ZF,MESH)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM GRADNOD'
       ENDIF
 !
-      CALL FLUCIN(NS,NSEG,NUBO,G,X,Y,CFLWTD,DT,UA,ZF,VNOIN,CE,NORDRE,
-     &            CMI,JMI,DJX,DJY,DX,DY,BETA,DSZ,AIRS,
-     &            AIRST,HC,FLUXTEMP,NPTFR,NBOR,XNEBOR,YNEBOR,NTRAC)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING FLUCIN'
+      CALL FLUCIN(NS,NT,NSEG,NUBO,G,X,Y,CFLWTD,DT,UA,ZF,VNOIN,CE,NORDRE,
+     &          CMI,JMI,DJX,DJY,DX,DY,BETA,DSZ,AIRS,
+     &          AIRST,HC,FLUXTEMP,NPTFR,NBOR,XNEBOR,YNEBOR,NTRAC,ELTSEG,
+     &          IFABOR,MESH)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM FLUCIN'
+!     FOR PARALLESM
+      IF(NCSIZE.GT.1)THEN
+        CALL PARCOM2(CE(:,1),CE(:,2),CE(:,3),NS,1,2,3,MESH)
+      ENDIF
 !
 !     BOUNDARY CONDITIONS TREATMENT
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING CDL'
       CALL CDL(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
      &         G,HBOR,UBOR,VBOR,UA,CE,FLUENT,FLUSORT,FLBOR,
      &         DTHAUT,DT,CFLWTD,FLUHBTEMP,NTRAC)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CDL'
 !
 !-----------------------------------------------------------------------
 !

@@ -1,12 +1,12 @@
-!                       ********************
+!                       ******************
                         SUBROUTINE CDL_WAF
-!                       ********************
+!                       ******************
 !
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,KDDL,
      & W,CE,FLUENT,FLUSORT,FLBOR,DTHAUT,DT,EPS,WINF)
 !
 !***********************************************************************
-!  TELEMAC 2D VERSION 6.2                                         R. ATA
+!  TELEMAC 2D VERSION 6.3                                         R. ATA
 !-----------------------------------------------------------------------
 !                 WAF SCHEME (OPTVF =6)
 !   
@@ -19,6 +19,11 @@
 !+
 !+        V6P2
 !+
+!history  R. ATA (EDF-LNHE) 01/07/2013
+!+
+!+        V6P3
+!+ reimplement strong imposition for wall condition
+!+ clean unused variables
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  NS            |-->|  TOTAL NUMNER OF NODES
@@ -67,16 +72,23 @@
       DOUBLE PRECISION :: FLX(4),H1,U10,U1,V1
       DOUBLE PRECISION :: H2,U2,V2,DX
       DOUBLE PRECISION :: INFLOW,OUTFLOW
+      DOUBLE PRECISION :: HL_UP,HR_UP,VL_UP,VR_UP,PSIL_UP,PSIR_UP
+!     HL_UP AND HR_UP NOT USED BUT COULD BE USED IF WE CHANGE ALGORITHM 
+!     FOR LIMITER
       DOUBLE PRECISION,PARAMETER ::XI=0.0D0
-! TO CORRECT WHEN CONSIDERING TRANCER
+!     TO CORRECT WHEN CONSIDERING TRANCER
       DOUBLE PRECISION,PARAMETER ::PSI1=0.0D0,PSI2=0.0D0
-
 !
-! LOOP OVER BOUNDARY NODES
+!-----------------------------------------------------------------------
+!
+!     LOOP OVER BOUNDARY NODES
+!
       DO K=1,NPTFR
-       IS=NBOR(K)
 !
-! INITIALIZATION
+        IS=NBOR(K)
+!
+!       INITIALIZATION
+!
        FLUENT  = 0.D0
        FLUSORT = 0.0D0
        INFLOW  = 0.0D0
@@ -95,14 +107,14 @@
        VNY=YNEBOR(K+NPTFR)
        VNL=SQRT(VNX**2+VNY**2)
 !
-       H1   = W(1,IS)
+       H1 = W(1,IS)
        IF(H1.GT.EPS)THEN
-          U1   = W(2,IS)/H1
-          V1   = W(3,IS)/H1
+         U1   = W(2,IS)/H1
+         V1   = W(3,IS)/H1
        ELSE
-          U1   = 0.0D0
-          V1   = 0.0D0
-          IDRY=IDRY+1
+         U1   = 0.0D0
+         V1   = 0.0D0
+         IDRY=IDRY+1
        ENDIF
 ! MEAN DISTANCE (FOR CFL)
        DX    = DTHAUT(IS)
@@ -117,42 +129,42 @@
 ! FIRST METHOD: STRONG IMPOSITION
 !********************************
 ! DEFINITION OF THE GHOST STATE Ue
-!         H2=H1
+         H2=H1
 !        ROTATION 
-!         U10 = U1
-!         U1  = XNN*U10+YNN*V1
-!         V1  =-YNN*U10+XNN*V1
-!! PUT NORMAL COMPONENT = 0        
-!         U1 =  0.0D0
-!         U2 =  U1
-!         V2 =  V1
-!! INVERSE ROTATION
-!         U10 = U1
-!         U1  = -YNN*V1
-!         V1  =  XNN*V1
-!!         
-!         U2  = -YNN*V2
-!         V2  =  XNN*V2
+         U10 = U1
+         U1  = XNN*U10+YNN*V1
+         V1  =-YNN*U10+XNN*V1
+! PUT NORMAL COMPONENT = 0        
+         U1 =  0.D0
+         U2 =  U1
+         V2 =  V1
+! INVERSE ROTATION
+         U10 = U1
+         U1  = -YNN*V1
+         V1  =  XNN*V1
+!         
+         U2  = -YNN*V2
+         V2  =  XNN*V2
 ! SECOND METHOD: WEAK IMPOSITION
 !********************************
-!DEFINITION OF THE GHOST STATE Ue
-            H2 = H1
-! INNER PRODUCT 2V.n
-           U10 = 2.D0*(U1*XNN + V1*YNN)
-! WEAK IMPOSITION: PUT Ve = V1-2(V1.n)n
-           U2 = U1 - U10*XNN
-           V2 = V1 - U10*YNN
-
-! HERE WE MAKE THE DECISION TO USE HL_UP=HL, HR_UP=HR ..
-! WHICH HAS A CONSEQUENCE THAT LIMITER =0 (A=1)
-         CALL FLUX_WAF(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
-     &                 H1,H2,V1,V2,PSI1,PSI2,
-     &                 XNN,YNN,DT,DX,FLX)
+! !DEFINITION OF THE GHOST STATE Ue
+!             H2 = H1
+! ! INNER PRODUCT 2V.n
+!            U10 = 2.D0*(U1*XNN + V1*YNN)
+! ! WEAK IMPOSITION: PUT Ve = V1-2(V1.n)n
+!            U2 = U1 - U10*XNN
+!            V2 = V1 - U10*YNN
+! 
+! ! HERE WE MAKE THE DECISION TO USE HL_UP=HL, HR_UP=HR ..
+! ! WHICH HAS A CONSEQUENCE THAT LIMITER =0 (A=1)
+!          CALL FLUX_WAF(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
+!      &                 H1,H2,V1,V2,PSI1,PSI2,
+!      &                 XNN,YNN,DT,DX,FLX)
 !
 !**************************************************
 !         LIQUID BOUDARIES
 !**************************************************
-       ELSEIF((LIMPRO(K,1).EQ.KDIR).OR.(LIMPRO(K,1).EQ.KDDL))THEN 
+       ELSEIF(LIMPRO(K,1).EQ.KDIR.OR.LIMPRO(K,1).EQ.KDDL)THEN 
 !===============================
 !    SI H EST IMPOSEE
 !===============================
@@ -160,7 +172,7 @@
         IF(LIMPRO(K,1).EQ.KDIR) THEN
 !
           H2 = WINF(1,K)
-
+!
           IF(H2 .GT.EPS)THEN
             U2 = WINF(2,K) / H2
             V2 = WINF(3,K) / H2
@@ -205,21 +217,20 @@
           INFLOW     = FLX(1)*VNL
           FLUENT     = FLUENT + INFLOW
           FLBOR%R(K) = INFLOW  
-
+!
       ENDIF
       ENDIF
 !
+100   CONTINUE
 !
-100    CONTINUE
-
-       CE(IS,1)  = CE(IS,1) - VNL*FLX(1)
-       CE(IS,2)  = CE(IS,2) - VNL*FLX(2)
-       CE(IS,3)  = CE(IS,3) - VNL*FLX(3)
+      CE(IS,1)  = CE(IS,1) - VNL*FLX(1)
+      CE(IS,2)  = CE(IS,2) - VNL*FLX(2)
+      CE(IS,3)  = CE(IS,3) - VNL*FLX(3)
 !
-       ENDDO
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
-       RETURN
-       END
-C**********************************************************************
+      RETURN
+      END
+

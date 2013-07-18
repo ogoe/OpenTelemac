@@ -2,14 +2,13 @@
                         SUBROUTINE RESOLU
 !                       *****************
 !
-     & (W,FLUSCE,NUBO,VNOIN,WINF,AT,DT,LT,NIT,
+     & (W,FLUSCE,NUBO,VNOIN,WINF,AT,DT,LT,
      &  NELEM,NSEG,NPTFR,FLUX,AIRS,AIRE,
      &  X,Y,IKLE,ZF,CF,NPOIN,HN,H,U,V,QU,QV,G,LISTIN,
-     &  XNEBOR,YNEBOR,XSGBOR,YSGBOR,
-     &  LIMPRO,NBOR,KDIR,KNEU,KDDL,
+     &  XNEBOR,YNEBOR,LIMPRO,NBOR,KDIR,KNEU,KDDL,
      &  HBOR,UBOR,VBOR,FLUSORT,FLUENT,CFLWTD,DTVARI,NELMAX,KFROT,  
      &  NREJET,ISCE,TSCE2,MAXSCE,MAXTRA,YASMH,SMH,MASSES,
-     &  NTRAC,DIMT,T,HTN,TN,DLIMT,LIMTRA,
+     &  NTRAC,DIMT,T,HTN,TN,DLIMT,
      &  TBOR,MASSOU,FLUTENT,FLUTSOR,DTHAUT,DPX,DPY,DJX,DJY,CMI,JMI,
      &  SMTR,DXT,DYT,DJXT,DJYT,
      &  DIFVIT,ITURB,PROPNU,DIFT,DIFNU,
@@ -17,10 +16,11 @@
      &  DSZ,AIRST,HSTOK,HCSTOK,FLUXT,FLUHBOR,FLBOR,
      &  LOGFR,LTT,DTN,FLUXTEMP,FLUHBTEMP,
      &  HC,TMAX,DTT,T1,T2,T3,T4,T5,
-     &  GAMMA,FLUX_OLD,NVMAX,NEISEG)
+     &  GAMMA,FLUX_OLD,NVMAX,NEISEG,ELTSEG,IFABOR,
+     &  MESH)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V6P3                                   26/06/2013
 !***********************************************************************
 !
 !brief    1. SOLVES THE PROBLEM BY A METHOD OF TYPE ROE OR BY A 
@@ -66,6 +66,13 @@
 !+        V6P2
 !+    ADD HLLC AND WAF FLUXES 
 !
+!history  R. ATA (EDF-LNHE)
+!+
+!+        01/07/2013
+!+        V6P3
+!+      adaptation with the new data structure (common with FEM)
+!+      remove unused variables
+!+      parallel version
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| ELEMENT AREA
@@ -77,7 +84,7 @@
 !| CMI            |-->| COORDINATES OF MIDDLE PONTS OF EDGES
 !| DIFNU          |-->| COEFFICIENT OF DIFFUSION FOR TRACER
 !| DIFT           |-->| LOGICAL: DIFFUSION FOR TRACER OR NOT
-!| DIFVIT         |-->|  LOGICAL: DIFFUSION FOR VELOCITY OR NOT
+!| DIFVIT         |-->| LOGICAL: DIFFUSION FOR VELOCITY OR NOT
 !| DIMT           |-->| DIMENSION OF TRACER
 !| DJXT,DJYT      |---| WORKING TABLES FOR TRACER
 !| DLIMT          |-->| DIMENSION OF TRACER ON THE BOUNDARY
@@ -113,7 +120,6 @@
 !| KFROT          |-->| BED FRICTION LAW 
 !| KNEU           |-->| CONVENTION NEUMANN POINTS
 !| LIMPRO         |-->| TYPES OF BOUNDARY CONDITION
-!| LIMTRA         |-->| TYPES OF BOUNDARY CONDITION FOR TRACER
 !| LISTIN         |-->| IF YES, PRINT MESSAGES AT LISTING.
 !| LOGFR          |<->| REFERENCE OF BOUNDARY NODES
 !| LTT            |<->| NUMBER OF TIME STEP FOR TRACER
@@ -122,6 +128,7 @@
 !| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
 !| MAXTRA         |-->| MAXIMUM NUMBER OF TRACERS
 !| NBOR           |-->| GLOBAL INDICES FOR BORD NODES
+!| NB_NEIGHB      |-->| NUMBER OF NEIGHBORING SUBDOMAINS(SHARING POINTS)
 !| NEISEG         |-->| NEIGHBORS OF SEGMENT (FOR LIMITER)
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
@@ -159,8 +166,10 @@
 !| ZF             |-->| BED TOPOGRAPHY (BATHYMETRY)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE BIEF_DEF
       USE BIEF
       USE INTERFACE_TELEMAC2D, EX_RESOLU => RESOLU
+!      USE DECLARATIONS_TELEMAC2D, ONLY:DEBUG ! IF NEEDED DECOMMENT
 !
       IMPLICIT NONE
 !
@@ -169,18 +178,19 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NELEM,NPOIN,NSEG,NPTFR,LT,NIT,NREJET,DIMT
+      INTEGER, INTENT(IN) :: NELEM,NPOIN,NSEG,NPTFR,LT,NREJET,DIMT
       INTEGER, INTENT(IN) :: MAXSCE,MAXTRA,NVMAX
       INTEGER, INTENT(IN) :: DLIMT,OPTVF,JMI(*)
       INTEGER, INTENT(IN) :: KDIR,KNEU,KDDL,ITURB,NELMAX,KFROT,NTRAC
       INTEGER, INTENT(IN) :: NUBO(2,*),LIMPRO(NPTFR,6),NBOR(NPTFR)
-      INTEGER, INTENT(IN) :: IKLE(NELMAX,3),ISCE(NREJET),LIMTRA(DLIMT)
+      INTEGER, INTENT(IN) :: IKLE(NELMAX,3),ISCE(NREJET)
       INTEGER, INTENT(INOUT) :: LTT,LOGFR(*),NEISEG(2,NSEG)
+      INTEGER, INTENT(IN)    :: ELTSEG(NELEM,3)
+      INTEGER,  INTENT(IN)   :: IFABOR(NELEM,*)
 !
       LOGICAL, INTENT(IN) :: LISTIN,DTVARI,YASMH,DIFVIT,DIFT
       DOUBLE PRECISION, INTENT(INOUT) :: T1(*),T2(*),T3(*),T4(*),T5(*)
-      DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: XSGBOR(NPTFR,4),YSGBOR(NPTFR,4)
+      DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)	
       DOUBLE PRECISION, INTENT(INOUT) :: DT
       DOUBLE PRECISION, INTENT(IN)    :: AT,VNOIN(3,*),GAMMA
       DOUBLE PRECISION, INTENT(IN)    :: TSCE2(MAXSCE,MAXTRA)
@@ -212,12 +222,13 @@
 !
       TYPE(BIEF_OBJ) , INTENT(IN)     :: TBOR,TN
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: T,HTN,SMTR,FLUHBOR,FLUHBTEMP
-      TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLUXTEMP,FLUXT,FLBOR 
+      TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLUXTEMP,FLUXT,FLBOR
+      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,IS,K,ICIN,IVIS,NORDRE,ITRAC
-!
+
       DOUBLE PRECISION XNC,W1,DMIN,BETA,TEST
 !                                                                       
       DOUBLE PRECISION,PARAMETER:: EPS =  1.D-6   
@@ -263,7 +274,7 @@
           WINF(2,K) =  H(NBOR(K))*UBOR(K)                 
           WINF(3,K) =  H(NBOR(K))*VBOR(K)
         ENDIF 
-       ENDDO
+       ENDDO                                                                                                                                              
                                         
        IF(ICIN .EQ.0) THEN
 !-----------------------------------------------------------------------
@@ -296,22 +307,22 @@
 !
 !CALCUL DU DT QUI SATISFAIT CFL
 !
-      CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,CFLWTD,ICIN,DTVARI,LISTIN)
-      DT = MIN(DT,TMAX-AT) 
+      CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,AT,TMAX,
+     &           CFLWTD,ICIN,DTVARI,LISTIN)
 !
 !    WINF CONTAINS BORDVALUE AFTER THE USE OF RIEMANN INVARIANTS
 !
       CALL FLUSEW
 !
-     &   (WINF,UBOR,VBOR,NPOIN,EPS,G,W,       
-     &    XNEBOR,YNEBOR,XSGBOR,YSGBOR,
-     &    NPTFR,LIMPRO,NBOR,KDIR,KNEU,KDDL)    
+     &   (WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
+     &    NPTFR,LIMPRO,NBOR,KDIR,KDDL)    
 !
 !
       CALL FLUROE(W,FLUSCE,NUBO,VNOIN,
      &            WINF,FLUX,FLUSORT,FLUENT,NELEM,NSEG,NPTFR,   
-     &            NPOIN,X,Y,AIRS,ZF,EPS,DMIN,G,
-     &            XNEBOR,YNEBOR,LIMPRO,NBOR,KDIR,KNEU,KDDL,FLBOR)
+     *            NPOIN,X,Y,AIRS,ZF,EPS,DMIN,G,
+     *            XNEBOR,YNEBOR,LIMPRO,NBOR,KDIR,KNEU,KDDL,FLBOR,
+     &            ELTSEG,IFABOR,MESH)             
 !
 ! INTEGRATION IN TIME
 ! 
@@ -370,6 +381,13 @@
 !
       IVIS=0
       IF(DIFVIT.AND.ITURB.EQ.1) IVIS=1
+! kinetic order 2 not yet parallel      
+      IF(NCSIZE.GT.1.AND.NORDRE.GT.1)THEN
+         WRITE(LU,*) 'KINETIC SCHEME OF SECOND ORDRE  '
+         WRITE(LU,*) ' ++++ NOT PARALLELIZED YET ++++ '
+         CALL PLANTE(1)
+         STOP
+      ENDIF
 !
       IF(LT.EQ.1) THEN
 !
@@ -390,8 +408,9 @@
 !     COMPUTE GRADIENT OF ZF FOR ORDRE2
 !
        IF(NORDRE.EQ.2) THEN
-      CALL GRADZ(NPOIN,NELMAX,NSEG,IKLE,NUBO,X,Y,AIRE,AIRS,CMI,JMI,
-     &           ZF,DPX,DPY,DSZ,BETA,AIRST,T1,T2,T3,T4,T5)
+        CALL GRADZ(NPOIN,NELMAX,NSEG,IKLE,NUBO,X,Y,AIRE,AIRS,CMI,
+     &           JMI,ZF,DPX,DPY,DSZ,BETA,AIRST,T1,T2,T3,T4,T5,
+     &           ELTSEG,IFABOR,MESH)
        ENDIF
 !
 !    INITIALIZATION FOR TRACER
@@ -443,17 +462,19 @@ C
 !
 !  TIME STEP UNDER CFL CONDITION (ORDRE 1)
 !
-       CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DTN,CFLWTD,ICIN,DTVARI,LISTIN)
+       DTN = DT
+       CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DTN,AT,TMAX,
+     &           CFLWTD,ICIN,DTVARI,LISTIN)
 !
 ! COMPUTE HYDRAULIC FLUXES
 !
        CALL FLUHYD
      &       (NPOIN,NELMAX,NSEG,NPTFR,NUBO,G,DTN,X,Y,AIRS,IKLE,AIRE,
      &        W,ZF,VNOIN,FLUX,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &        KDDL,HBOR,UBOR,VBOR,FLUENTN,FLUSORTN,NORDRE,CMI,JMI,
+     &        HBOR,UBOR,VBOR,FLUENTN,FLUSORTN,NORDRE,CMI,JMI,
      &        DJX,DJY,DX,DY,DTHAUT,CFLWTD,FLBOR,
      &        DPX,DPY,IVIS,PROPNU,FLUHBTEMP,BETA,
-     &        DSZ,AIRST,HC,FLUXTEMP,NTRAC)
+     &        DSZ,AIRST,HC,FLUXTEMP,NTRAC,ELTSEG,IFABOR,MESH)
 !
       IF(NTRAC.GT.0) THEN
 !       INITIALIZATION FOR TRACER
@@ -558,21 +579,22 @@ C
 !
 ! TIME STEP UNDER CFL CONDITION (ORDRE 1)
 !
-      CALL CALDT(NPOIN,G,H,U,V,DTHAUT,DTN,CFLWTD,ICIN,DTVARI,LISTIN)
+      CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DTN,AT,TMAX,
+     &           CFLWTD,ICIN,DTVARI,LISTIN)
 !
 ! HYDRO FLUXES OF THE NEXT TIME STEP
 !
       CALL FLUHYD
      &       (NPOIN,NELMAX,NSEG,NPTFR,NUBO,G,DTN,X,Y,AIRS,IKLE,AIRE,
      &        W,ZF,VNOIN,FLUX,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &        KDDL,HBOR,UBOR,VBOR,FLUENTN,FLUSORTN,NORDRE,CMI,JMI,
+     &        HBOR,UBOR,VBOR,FLUENTN,FLUSORTN,NORDRE,CMI,JMI,
      &        DJX,DJY,DX,DY,DTHAUT,CFLWTD,FLBOR,
      &        DPX,DPY,IVIS,PROPNU,FLUHBTEMP,BETA,
-     &        DSZ,AIRST,HC,FLUXTEMP,NTRAC)
+     &        DSZ,AIRST,HC,FLUXTEMP,NTRAC,ELTSEG,IFABOR,MESH)
 !
 ! TEST OF TRACER FLUX (FOR POSITIVITY)
 ! 
-!    NE SERT A RIEN MAIS EVITE WARNING DE COMPILATEUR
+!    USELESS, BUT TO AVOID COMPILER ERROR
       TEST=-1.D0
 !
       CALL TESTEUR(NPOIN,NSEG,NPTFR,NUBO,DTN,NBOR,
@@ -636,11 +658,12 @@ C
         WRITE(LU,*) '          *********************** '
         WRITE(LU,*) ' '
 !INITIALIZATION OF FLUX_OLD
-      DO I=1,NPOIN
+       DO I=1,NPOIN
         FLUX_OLD(I,1) = 0.0D0
         FLUX_OLD(I,2) = 0.0D0
         FLUX_OLD(I,3) = 0.0D0
-      ENDDO
+       ENDDO     
+
       ENDIF
 
 !-----------------------------------------------------------------------
@@ -655,26 +678,26 @@ C
 !
 ! TIME STEP UNDER CFL CONDITION
 !
-      CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,CFLWTD,ICIN,DTVARI,LISTIN)
-!
-      DT = MIN(DT,TMAX-AT) 
+      CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,AT,TMAX,
+     &           CFLWTD,ICIN,DTVARI,LISTIN)   
 !
 !INFLOW AND OUTFLOWS
 !
-      CALL FLUSEW(WINF,UBOR,VBOR,NPOIN,EPS,G,W,       
-     &            XNEBOR,YNEBOR,XSGBOR,YSGBOR,
-     &            NPTFR,LIMPRO,NBOR,KDIR,KNEU,KDDL)
+      CALL FLUSEW(WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
+     &            NPTFR,LIMPRO,NBOR,KDIR,KDDL)
 !
 !-----------------------------------------------------------------------
 ! FLUX COMPUTATION
-
-      CALL FLUXZZ(NPOIN,NSEG,NUBO,G,W,ZF,VNOIN,FLUX)
-
+      CALL FLUXZZ(X,Y,NPOIN,NSEG,NELMAX,NUBO,G,W,ZF,VNOIN,
+     &            ELTSEG,FLUX,IFABOR)
+! FOR PARALLESM
+      IF(NCSIZE.GT.1)THEN
+        CALL PARCOM2(FLUX(:,1),FLUX(:,2),FLUX(:,3),NPOIN,1,2,3,MESH)
+      ENDIF
 !BOUNDARY CONDITIONS
-
        CALL CDLZZ(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
      &             KDDL,G,W,FLUX,FLUENT,FLUSORT,
-     &             FLBOR,EPS,ZF,WINF)
+     &             FLBOR,ZF,WINF)
 !
 !-----------------------------------------------------------------------
 !
@@ -683,7 +706,6 @@ C
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &          HN,QU,QV,LT,GAMMA,
      &          NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G) 
-!
 !-----------------------------------------------------------------------
 
 ! VOLUME ADDED BY SOURCE TERMS
@@ -738,11 +760,12 @@ C-----------------------------------------------------------------------
         WRITE(LU,*) '          *********************** '
         WRITE(LU,*) ' '
 !INITIALIZATION OF FLUX_OLD
-      DO I=1,NPOIN
-        FLUX_OLD(I,1) = 0.0D0
-        FLUX_OLD(I,2) = 0.0D0
-        FLUX_OLD(I,3) = 0.0D0
-      ENDDO
+        DO I=1,NPOIN
+          FLUX_OLD(I,1) = 0.0D0
+          FLUX_OLD(I,2) = 0.0D0
+          FLUX_OLD(I,3) = 0.0D0
+        ENDDO    
+
       ENDIF
 
 !-----------------------------------------------------------------------
@@ -757,27 +780,30 @@ C-----------------------------------------------------------------------
 !
 ! TIME STEP UNDER CFL CONDITION
 !
-      CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,CFLWTD,ICIN,DTVARI,LISTIN)
+      CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,AT,TMAX,
+     &           CFLWTD,ICIN,DTVARI,LISTIN)
 !
-      DT = MIN(DT,TMAX-AT) 
 !
 !INFLOW AND OUTFLOWS
 !
-      CALL FLUSEW(WINF,UBOR,VBOR,NPOIN,EPS,G,W,       
-     &            XNEBOR,YNEBOR,XSGBOR,YSGBOR,
-     &            NPTFR,LIMPRO,NBOR,KDIR,KNEU,KDDL)  
+      CALL FLUSEW(WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
+     &            NPTFR,LIMPRO,NBOR,KDIR,KDDL)  
 !
 !-----------------------------------------------------------------------
 ! FLUX COMPUTATION
 
-      CALL FLUX_TCH(NPOIN,NSEG,NUBO,G,W,ZF,VNOIN,FLUX)
+      CALL FLUX_TCH(X,Y,NPOIN,NSEG,NELMAX,NUBO,G,W,ZF,VNOIN,
+     &              ELTSEG,FLUX,IFABOR)
 
+!  FOR PARALLESM
+      IF(NCSIZE.GT.1)THEN
+        CALL PARCOM2(FLUX(:,1),FLUX(:,2),FLUX(:,3),NPOIN,1,2,3,MESH)
+      ENDIF
 !BOUNDARY CONDITIONS
 
        CALL CDL_TCH(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &             KDDL,G,HBOR,UBOR,VBOR,W,FLUX,FLUENT,FLUSORT,
-     &             FLBOR,DTHAUT,
-     &             DT,CFLWTD,EPS,ZF,WINF)
+     &             KDDL,G,W,FLUX,FLUENT,FLUSORT,
+     &             FLBOR,EPS,ZF,WINF)
 !
 !-----------------------------------------------------------------------
 !
@@ -843,7 +869,8 @@ C-----------------------------------------------------------------------
         FLUX_OLD(I,1) = 0.0D0
         FLUX_OLD(I,2) = 0.0D0
         FLUX_OLD(I,3) = 0.0D0
-      ENDDO
+       ENDDO  
+
       ENDIF
 
 !-----------------------------------------------------------------------
@@ -857,20 +884,24 @@ C-----------------------------------------------------------------------
 !
 !  TIME STEP UNDER CFL CONDITION
 !
-      CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,CFLWTD,ICIN,DTVARI,LISTIN)
+      CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,AT,TMAX,
+     &           CFLWTD,ICIN,DTVARI,LISTIN)
 !
-      DT = MIN(DT,TMAX-AT) 
 ! 
 ! INFLOW AND OUTFLOWS
 !
-      CALL FLUSEW(WINF,UBOR,VBOR,NPOIN,EPS,G,W,       
-     &            XNEBOR,YNEBOR,XSGBOR,YSGBOR,
-     &            NPTFR,LIMPRO,NBOR,KDIR,KNEU,KDDL)  
+      CALL FLUSEW(WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
+     &            NPTFR,LIMPRO,NBOR,KDIR,KDDL)  
 !
 !-----------------------------------------------------------------------
 !  FLUX COMPUTATION
 !
-      CALL HYD_HLLC(NPOIN,NSEG,NUBO,G,W,ZF,VNOIN,FLUX)
+      CALL HYD_HLLC(NPOIN,NELEM,NSEG,NUBO,G,W,ZF,VNOIN,
+     &              X,Y,ELTSEG,FLUX,IFABOR)
+!  FOR PARALLESM
+      IF(NCSIZE.GT.1)THEN
+        CALL PARCOM2(FLUX(:,1),FLUX(:,2),FLUX(:,3),NPOIN,1,2,3,MESH)
+      ENDIF
 !
 ! BOUNDARY CONDITIONS
 !
@@ -932,25 +963,33 @@ C-----------------------------------------------------------------------
 !             INITIALIZATION FOR THE 1ST TIME STEP
 !             *************************************
 !
+! kinetic order 2 not yet parallel      
+      IF(NCSIZE.GT.1)THEN
+         WRITE(LU,*) ' ++++++++  WAF SCHEME  ++++++++ '
+         WRITE(LU,*) ' ++++ NOT PARALLELIZED YET ++++ '
+         CALL PLANTE(1)
+         STOP
+      ENDIF
+!
         WRITE(LU,*) ' '
         WRITE(LU,*) '          *********************** '
         WRITE(LU,*) '          *     WAF  SCHEME    * '              
         WRITE(LU,*) '          *********************** '
         WRITE(LU,*) ' '
 ! INITIALIZATION OF FLUX_OLD
-      DO I=1,NPOIN
-        FLUX_OLD(I,1) = 0.0D0
-        FLUX_OLD(I,2) = 0.0D0
-        FLUX_OLD(I,3) = 0.0D0
-      ENDDO
-      DO I=1,NSEG
-        NEISEG(1,I) = 0
-        NEISEG(2,I) = 0
-      ENDDO
+        DO I=1,NPOIN
+         FLUX_OLD(I,1) = 0.0D0
+         FLUX_OLD(I,2) = 0.0D0
+         FLUX_OLD(I,3) = 0.0D0
+        ENDDO
+! INITIALIZATION OF NEISEG
+        DO I=1,NSEG
+         NEISEG(1,I) = 0
+         NEISEG(2,I) = 0
+        ENDDO
 ! SEARCH FOR NEIGHBORS OF SEGMENT (FOR LIMITER)
-      CALL SEG_NEIGHBORS
-     &        (X,Y,IKLE,NPOIN,
-     &         NVMAX,NELEM,NELMAX,NSEG,NEISEG)
+        CALL SEG_NEIGHBORS
+     &     (X,Y,IKLE,NPOIN,NVMAX,NELEM,NELMAX,NSEG,NEISEG)
 !
       ENDIF
 !-----------------------------------------------------------------------
@@ -964,23 +1003,23 @@ C-----------------------------------------------------------------------
 !
 !  TIME STEP UNDER CFL CONDITION
 !
-      CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,CFLWTD,ICIN,DTVARI,LISTIN)
+      CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,AT,TMAX,
+     &           CFLWTD,ICIN,DTVARI,LISTIN)
 !
-      DT = MIN(DT,TMAX-AT) 
 ! 
 ! INFLOW AND OUTFLOWS
 !
       CALL FLUSEW
 !
-     &   (WINF,UBOR,VBOR,NPOIN,EPS,G,W,
-     &    XNEBOR,YNEBOR,XSGBOR,YSGBOR,
-     &    NPTFR,LIMPRO,NBOR,KDIR,KNEU,KDDL)  
+     &   (WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
+     &    NPTFR,LIMPRO,NBOR,KDIR,KDDL)  
 !
 !-----------------------------------------------------------------------
 !  FLUX COMPUTATION
        CALL HYD_WAF
 !
-     &    (NPOIN,NSEG,NUBO,G,W,ZF,VNOIN,DT,DTHAUT,FLUX,NEISEG)
+     &    (NPOIN,NSEG,NELEM,NUBO,G,W,ZF,VNOIN,DT,DTHAUT,
+     &     X,Y,FLUX,ELTSEG,NEISEG)
 !
 ! BOUNDARY CONDITIONS
 !

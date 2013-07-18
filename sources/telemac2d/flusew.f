@@ -2,12 +2,11 @@
                        SUBROUTINE FLUSEW
 !                      *****************
 !
-     &(AMINF,UBOR,VBOR,NPOIN,EPS,G,W,
-     & XNEBOR,YNEBOR,XSGBOR,YSGBOR,
-     & NPTFR,LIMPRO,NBOR,KDIR,KNEU,KDDL)
+     &(AMINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
+     & NPTFR,LIMPRO,NBOR,KDIR,KDDL)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                           03/15/2011
+! TELEMAC2D   V6P3                                           05/15/2013
 !***********************************************************************
 !
 !brief  HOW TO MANAGE INLET AND OUTLET (NOT IMPLEMENTED YET):
@@ -43,7 +42,12 @@
 !history  R. ATA (EDF-LNHE)
 !+        03/15/2011
 !+        V6P1
-!+    INTRODUCTION OF XSGBOR AND YSGBOR TO BE ADAPTED ADAPT 
+!+    INTRODUCTION OF XSGBOR AND YSGBOR TO BE ADAPTED 
+!+ 
+!history  R. ATA (EDF-LNHE)
+!+        05/15/2013
+!+        V6P3
+!+    clean and remove unused variables
 !+ 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AMINF          |<--| IN/OUT VALUES TO BE IMPOSED
@@ -71,12 +75,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NPOIN,NPTFR,KDIR,KNEU,KDDL
+      INTEGER, INTENT(IN)             :: NPOIN,NPTFR,KDIR,KDDL
       INTEGER, INTENT(IN)             :: LIMPRO(NPTFR,6),NBOR(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(NPTFR),YNEBOR(NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: XSGBOR(NPTFR,4),YSGBOR(NPTFR,4)
       DOUBLE PRECISION, INTENT(IN)    :: W(3,NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: UBOR(NPTFR),VBOR(NPTFR),EPS,G
+      DOUBLE PRECISION, INTENT(IN)    :: EPS,G
       DOUBLE PRECISION, INTENT(INOUT) :: AMINF(3,NPTFR) 
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -88,54 +91,53 @@
 !
 !     IF H IS FREE OR INFLOW IS FREE 
       IF(LIMPRO(K,1).EQ.KDDL.OR.LIMPRO(K,2).EQ.KDDL) THEN 
-      IEL = NBOR(K)
-      XN = XNEBOR(K)
-      YN = YNEBOR(K)
-      HJ = W(1,IEL)
-      IF(HJ.GT.EPS) THEN
-        UJ = W(2,IEL)/HJ
-        VJ = W(3,IEL)/HJ
-        R  =  UJ*XN + VJ*YN-2.D0*SQRT(G*HJ)
-        R1 =  UJ*XN + VJ*YN+2.D0*SQRT(G*HJ)
+        IEL = NBOR(K)
+        XN = XNEBOR(K)
+        YN = YNEBOR(K)
+        HJ = W(1,IEL)
+        IF(HJ.GT.EPS) THEN
+          UJ = W(2,IEL)/HJ
+          VJ = W(3,IEL)/HJ
+          R  =  UJ*XN + VJ*YN-2.D0*SQRT(G*HJ)
+          R1 =  UJ*XN + VJ*YN+2.D0*SQRT(G*HJ)
 !
 !     IF IN/OUTFLOW IMPOSED
 ! 
-        IF(LIMPRO(K,2).EQ.KDIR) THEN
+          IF(LIMPRO(K,2).EQ.KDIR) THEN
 !
 !   Q GIVEN ; COMPUTES H FOR A SUBCRITICAL ENTRY
 !
-          RLAMB0 = UJ*XN + VJ*YN
-          IF ( RLAMB0.LE.0.D0) THEN
-            PI = -R+RLAMB0
-            HI = (PI**2/4.D0)/G
-            UI = AMINF(2,K)/HI
-            VI = AMINF(3,K)/HI
-            AMINF(1,K) = HI
+            RLAMB0 = UJ*XN + VJ*YN
+            IF ( RLAMB0.LE.0.D0) THEN
+              PI = -R+RLAMB0
+              HI = (PI**2/4.D0)/G
+              UI = AMINF(2,K)/HI
+              VI = AMINF(3,K)/HI
+              AMINF(1,K) = HI
+            ENDIF
           ENDIF
-        ENDIF
 !
 !       IF H IMPOSED
 !
-        IF(LIMPRO(K,1).EQ.KDIR) THEN 
+          IF(LIMPRO(K,1).EQ.KDIR) THEN 
 !
 !   H GIVEN ; COMUTES Q FOR A SUBCRITICAL OUTFLOW
 !
-           HI = AMINF(1,K)
+            HI = AMINF(1,K)
 !
-           RLAMB0 = UJ*XN + VJ*YN 
-           IF (RLAMB0.GE.-0.0001D0) THEN
-             UI = (R1-2.D0*SQRT(G*HI))*XN 
-             VI = (R1-2.D0*SQRT(G*HI))*YN 
-             AMINF(2,K) = UI*HI
-             AMINF(3,K) = VI*HI
-           ENDIF
-         ENDIF
+            RLAMB0 = UJ*XN + VJ*YN 
+            IF (RLAMB0.GE.-0.0001D0) THEN
+               UI = (R1-2.D0*SQRT(G*HI))*XN 
+               VI = (R1-2.D0*SQRT(G*HI))*YN 
+               AMINF(2,K) = UI*HI
+               AMINF(3,K) = VI*HI
+            ENDIF
+          ENDIF
        ENDIF  
 !
        ENDIF
 !
 10    CONTINUE 
-
 !
       RETURN                                                            
       END  

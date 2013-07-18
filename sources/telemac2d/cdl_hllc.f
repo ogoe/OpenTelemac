@@ -7,7 +7,7 @@
 !                                                                       
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.2                                     01/15/2012
+! TELEMAC 2D VERSION 6.3                                     07/15/2013
 !***********************************************************************
 !
 !brief  COMPUTATION OF THE CONVECTIVE FLUXES AT BOUNDARIES FOR HLLC FLUX
@@ -18,6 +18,12 @@
 !+
 !+        V6P2
 !+
+!
+!history  R. ATA (EDF-LNHE) 07/15/2013
+!+
+!+        V6P3
+!+ reimplement strong imposition
+!+ cleaning 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  NS            |-->|  TOTAL NUMBER OF NODES
@@ -87,10 +93,11 @@
 !   NON NORMALIZED NORMAL
        VNX=XNEBOR(K+NPTFR)
        VNY=YNEBOR(K+NPTFR)
+!
        VNL=SQRT(VNX**2+VNY**2)
 !
        H1   = W(1,IS)
-
+!
        IF(H1.GT.EPS)THEN
           U1   = W(2,IS)/H1
           V1   = W(3,IS)/H1
@@ -111,35 +118,35 @@
 ! FIRST METHOD: STRONG IMPOSITION
 !********************************
 ! DEFINITION OF THE GHOST STATE Ue
-!         H2=H1
+         H2=H1
 !        ROTATION 
-!         U10 = U1
-!         U1  = XNN*U10+YNN*V1
-!         V1  =-YNN*U10+XNN*V1
-!! PUT NORMAL COMPONENT = 0        
-!         U1 =  0.0D0
-!         U2 =  U1
-!         V2 =  V1
-!! INVERSE ROTATION
-!         U10 = U1
-!         U1  = -YNN*V1
-!         V1  =  XNN*V1
-!!         
-!         U2  = -YNN*V2
-!         V2  =  XNN*V2
+         U10 = U1
+         U1  = XNN*U10+YNN*V1
+         V1  =-YNN*U10+XNN*V1
+! PUT NORMAL COMPONENT = 0        
+         U1 =  0.0D0
+         U2 =  U1
+         V2 =  V1
+! INVERSE ROTATION
+         U10 = U1
+         U1  = -YNN*V1
+         V1  =  XNN*V1
+!         
+         U2  = -YNN*V2
+         V2  =  XNN*V2
 ! SECOND METHOD: WEAK IMPOSITION
 !********************************
-!DEFINITION OF THE GHOST STATE Ue
-            H2 = H1
-! INNER PRODUCT 2V.n
-           U10 = 2.D0*(U1*XNN + V1*YNN)
-! WEAK IMPOSITION: PUT Ve = V1-2(V1.n)n
-           U2 = U1 - U10*XNN
-           V2 = V1 - U10*YNN
-
-         CALL FLUX_HLLC(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
-     *                 XNN,YNN,ROT,FLX)
-!
+! !DEFINITION OF THE GHOST STATE Ue
+!             H2 = H1
+! ! INNER PRODUCT 2V.n
+!            U10 = 2.D0*(U1*XNN + V1*YNN)
+! ! WEAK IMPOSITION: PUT Ve = V1-2(V1.n)n
+!            U2 = U1 - U10*XNN
+!            V2 = V1 - U10*YNN
+! 
+!          CALL FLUX_HLLC(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
+!      *                 XNN,YNN,ROT,FLX)
+! !
 !**************************************************
 !         LIQUID BOUNDARIES
 !**************************************************
@@ -196,7 +203,6 @@
           INFLOW     = FLX(1)*VNL
           FLUENT     = FLUENT + INFLOW
           FLBOR%R(K) = INFLOW 
-
       ENDIF
       ENDIF
 !

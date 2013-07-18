@@ -3,11 +3,10 @@
 !                       ******************
 !
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,KDDL,G,
-     & HBOR,UBOR,VBOR,W,CE,FLUENT,FLUSORT,
-     & FLBOR,DTHAUT,DT,CFL,EPS,ZF,WINF)
+     & W,CE,FLUENT,FLUSORT,FLBOR,EPS,ZF,WINF)
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.2                                     03/15/2011
+! TELEMAC 2D VERSION 6.2                                     01/07/2013
 !***********************************************************************
 !
 !brief  COMPUTATION OF THE CONVECTIVE FLUXES AT BOUNDARIES FOR TCHAMEN FLUX
@@ -18,6 +17,11 @@
 !+
 !+        V6P1
 !+
+!history  R. ATA (EDF-LNHE)
+!+       01/07/2013
+!+        V6P3
+!+ clean and remove unused variables
+!+ comment the flux call (line 140 )
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  NS            |-->|  TOTAL NUMBER OF NODES
@@ -55,10 +59,9 @@
       INTEGER, INTENT(IN)             :: NS,NPTFR,KDIR,KNEU,KDDL
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMPRO(NPTFR,6)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: HBOR(NPTFR),W(3,NS),DTHAUT(*)
-      DOUBLE PRECISION, INTENT(IN)    :: UBOR(NPTFR),VBOR(NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: G,CFL,EPS,ZF(NS)
-      DOUBLE PRECISION, INTENT(IN)    :: DT,WINF(3,NPTFR)
+      DOUBLE PRECISION, INTENT(IN)    :: W(3,NS)
+      DOUBLE PRECISION, INTENT(IN)    :: G,EPS,ZF(NS)
+      DOUBLE PRECISION, INTENT(IN)    :: WINF(3,NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3),FLUENT,FLUSORT
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLBOR
 !
@@ -110,7 +113,7 @@
 !    SOLID WALL
 !************************
 !
-!    PERFECT SLIPPIN CONDITION
+!    PERFECT SLIPPING CONDITION
 !===============================
 !
        IF(LIMPRO(K,1).EQ.KNEU) THEN 
@@ -133,9 +136,9 @@
 !
          U2  = -YNN*V2
          V2  =  XNN*V2
-
-         CALL FLU_TCHAMEN(H2,H1,ETA2,ETA1,U2,U1,
-     &                    V2,V1,XNN,YNN,FLXI,FLXJ,G)
+! not necesary  
+!          CALL FLU_TCHAMEN(H2,H1,ETA2,ETA1,U2,U1,
+!      &                    V2,V1,XNN,YNN,FLXI,FLXJ,G)
 
 !**************************************************
 !        LIQUID BOUNDARY

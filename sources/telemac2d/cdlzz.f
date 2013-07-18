@@ -3,10 +3,10 @@
 !                       ****************
 !
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,KDDL,G,
-     & W,CE,FLUENT,FLUSORT,FLBOR,EPS,ZF,WINF)
+     & W,CE,FLUENT,FLUSORT,FLBOR,ZF,WINF)
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.1                                     03/15/2011
+! TELEMAC 2D VERSION 6.3                                     01/07/2013
 !***********************************************************************
 !
 !brief  COMPUTATION OF THE CONVECTIVE FLUXES AT BOUNDARIES FOR TCHAMEN ZOKA
@@ -16,7 +16,12 @@
 !history  R. ATA (EDF-LNHE)
 !+
 !+        V6P1
+!+ 
+! history  R. ATA (EDF-LNHE) 01/07/2013
 !+
+!+        V6P3 
+!+ COMMENT THE FLUX CALL FOR WALL CONDITTION
+!+ CLEAN UNUSED VARIABLES
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  NS            |-->|  TOTAL NUMNER OF NODES
@@ -37,6 +42,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_TELEMAC2D, EX_CDLZZ => CDLZZ
 !  
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -48,7 +54,7 @@
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMPRO(NPTFR,6)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: W(3,NS)
-      DOUBLE PRECISION, INTENT(IN)    :: G,EPS,ZF(NS)
+      DOUBLE PRECISION, INTENT(IN)    :: G,ZF(NS)
       DOUBLE PRECISION, INTENT(IN)    :: WINF(3,NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3),FLUENT,FLUSORT
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLBOR
@@ -59,8 +65,10 @@
 !    
       DOUBLE PRECISION VNX,VNY,XNN,YNN,VNL
       DOUBLE PRECISION :: FLXI(3),FLXJ(3),H1,U10,U1,V1,ETA1
-      DOUBLE PRECISION :: H2,ETA2,U2,V2
-      DOUBLE PRECISION :: INFLOW,OUTFLOW
+      DOUBLE PRECISION :: H2,ETA2,U2,V2,ZF1,ZF2
+      DOUBLE PRECISION :: INFLOW,OUTFLOW,EPS
+     
+      EPS=1.0E-3
 !
 !     LOOP OVER BOUNDARY NODES
 !
@@ -97,7 +105,8 @@
        VNL=SQRT(VNX**2+VNY**2)
 !
        H1   = W(1,IS)
-       ETA1=H1+ZF(IS)
+       ZF1  = ZF(IS)
+       ETA1 = H1+ZF1
        IF(H1.GT.EPS)THEN
          U1 = W(2,IS)/H1
          V1 = W(3,IS)/H1
@@ -118,8 +127,9 @@
 !
 !        DEFINITION OF THE GOST STATE Ue
 !
-         H2=H1
-         ETA2=ETA1
+         H2  = H1
+         ETA2= ETA1
+         ZF2 = ZF1
 !        ROTATION 
          U10 = U1
          U1  = XNN*U10+YNN*V1
@@ -139,9 +149,9 @@
 ! 
          U2  = -YNN*V2
          V2  =  XNN*V2
-!
-         CALL FLU_ZOKAGOA(H1,H2,ETA1,ETA2,U1,U2,
-     &                    V1,V2,XNN,YNN,FLXI,FLXJ,G)
+! NOT NECESARY
+!         CALL FLU_ZOKAGOA(H1,H2,ZF1,ZF2,ETA1,ETA2,U1,U2,
+!     &                    V1,V2,XNN,YNN,FLXI,FLXJ,G)
 !
 !**************************************************
 !     LIQUID BOUNDARY
@@ -156,6 +166,7 @@
 !
           H2 = WINF(1,K)
           ETA2 = H2 + ZF(IS)
+          ZF2 = ZF(IS)
           IF(H2 .GT.EPS)THEN
             U2 = WINF(2,K) / H2
             V2 = WINF(3,K) / H2
@@ -167,7 +178,7 @@
 !
           IF(IDRY.LT.2)THEN
 !         AT LEAST ONE WET CELL
-            CALL FLU_ZOKAGOA(H1,H2,ETA1,ETA2,U1,U2,
+            CALL FLU_ZOKAGOA(H1,H2,ZF1,ZF2,ETA1,ETA2,U1,U2,
      &                       V1,V2,XNN,YNN,FLXI,FLXJ,G)
           ENDIF 
           OUTFLOW    = FLXI(1)*VNL
@@ -180,6 +191,8 @@
           H2 = H1
           U2 = U1
           V2 = V1
+          ZF1= ZF(IS)
+          ZF2= ZF1
           ETA2=ETA1
 !
           H1 = WINF(1,K)
@@ -195,14 +208,14 @@
 !
           IF(IDRY.LT.2)THEN
 !         AT LEAST ONE WET CELL
-            CALL FLU_ZOKAGOA(H2,H1,ETA2,ETA1,U2,U1,
+            CALL FLU_ZOKAGOA(H2,H1,ZF1,ZF2,ETA2,ETA1,U2,U1,
      &                       V2,V1,XNN,YNN,FLXI,FLXJ,G)
           ENDIF 
           INFLOW     = FLXI(1)*VNL
           FLUENT     = FLUENT + INFLOW
           FLBOR%R(K) = INFLOW  
 !
-      ENDIF
+        ENDIF
       ENDIF
 !
 100    CONTINUE
