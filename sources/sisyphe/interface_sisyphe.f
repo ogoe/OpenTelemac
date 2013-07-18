@@ -702,7 +702,6 @@ C
       USE BIEF_DEF
        USE BIEF
       IMPLICIT NONE
-      INTEGER LNG,LU
       INTEGER,INTENT(IN)              :: NPOIN
       INTEGER, INTENT(IN)             :: LT,NOMBLAY
       DOUBLE PRECISION, INTENT(IN)    :: DTS

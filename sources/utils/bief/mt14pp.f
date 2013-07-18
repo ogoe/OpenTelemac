@@ -130,8 +130,6 @@
       INTEGER IPLUS1(6),IPLUS3(6),INDIC(0:7)
       INTEGER IXM,I0,J0,K0,I3,J3,K3
 !
-      CHARACTER(LEN=16) :: FORMUL
-!
 !-----------------------------------------------------------------------
 !
 !     DONNEES

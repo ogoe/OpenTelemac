@@ -29,7 +29,6 @@ files: bief_def.f
   bief_allmat.f
   bief_ininds.f
   ielbor.f
-  centre_mass_seg.f 
   corrxy.f
   readgeo3.f
   readgeo2.f

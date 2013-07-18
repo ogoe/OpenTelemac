@@ -41,12 +41,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER  I,K
-      INTEGER LLT, LTT, JG
+      INTEGER  I
       DOUBLE PRECISION RHO, RHO_S, G, D50, D90, DMAX, TAUC, TAUB, D
       DOUBLE PRECISION A1, A2, A3, A4, A5, A6, RHOCR, PON, SUMME
-      DOUBLE PRECISION AT, DSTAR
-      LOGICAL DB
+      DOUBLE PRECISION DSTAR
 !
 !----------------------------------------------------------------------- 
 !

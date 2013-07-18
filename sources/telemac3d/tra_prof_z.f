@@ -57,7 +57,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION USTAR,Y0,HH,DENOM,AUX,KS,DELTAZ,ROUSE,ZREFE
+      DOUBLE PRECISION USTAR,HH,DELTAZ,ROUSE,ZREFE
       INTEGER IPOIN3
 !
 !-----------------------------------------------------------------------

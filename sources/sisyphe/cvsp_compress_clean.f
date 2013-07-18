@@ -31,29 +31,21 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER  I,K, CNTR_ERASE, MARKERMAX, MARKERCNT,  TTT, NNN, JG
-      INTEGER  MAXPOS, M, MMM, MARKERMAXOLD, MARKERMAXVERYOLD
-      INTEGER MARKER(PRO_MAX_MAX), MARKERTEMP(PRO_MAX_MAX)    
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!     
-! USED TO MARK NODES THAT WILL BE KEPT
-!
-      DOUBLE PRECISION LOSS(PRO_MAX_MAX)     
+      INTEGER  I,K, MARKERMAX, MARKERCNT,  TTT, JG
+      INTEGER MARKER(PRO_MAX_MAX)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 ! STORES THE FRACTION ERRORS THAT WILL OCCURE IF THE POINT IS ELEMINATED FROM CURRENT PROFILE
 !
-      DOUBLE PRECISION MAXDIST, SUM_NSICLA, SUMFERR 
+      DOUBLE PRECISION SUMFERR 
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 ! STORES THE MAXIMUM DISTANCE OF ANY NODE IN THE CURRENT LOOP
 !
-      DOUBLE PRECISION  FI, FJ, FK, DI, DJ, DK, THRESH, DIST, SUMF
-      LOGICAL DUMMY, STOPIT, NORMALIZE_FRACTION, DB
-      CHARACTER*30 DEBUGFILE
+      DOUBLE PRECISION  DIST, SUMF
+      LOGICAL DB
 !
 !----------------------------------------------------------------------- 
 ! LOCAL -> GLOBAL / PARALLEL STUFF

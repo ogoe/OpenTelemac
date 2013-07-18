@@ -96,7 +96,8 @@
 !#####> NOE-CHANGES
 !@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       LOGICAL CVGCSL
-      INTEGER NITCSL, ITCSL, ERR
+      INTEGER ERR 
+!     INTEGER NITCSL, ITCSL
       DOUBLE PRECISION DTCSL,RESCSL
       DOUBLE PRECISION, ALLOCATABLE :: TRA01(:,:)
       DOUBLE PRECISION, ALLOCATABLE :: TRA02(:),TRA03(:),ZNOE(:)

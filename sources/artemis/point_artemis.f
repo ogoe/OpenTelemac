@@ -47,7 +47,7 @@
 !
       INTEGER ISYM,MEMW1,INOSYM,ISTOP,NTR,NTRBD
       INTEGER, TARGET :: TMP=1029
-      INTEGER CFG(2),CFGBOR(2),I
+      INTEGER CFG(2),CFGBOR(2)
 !-----------------------------------------------------------------------
 !
       IF(LISTIN) THEN

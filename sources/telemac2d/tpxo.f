@@ -2343,7 +2343,7 @@ c$$$      U(22) = ZERO                                         ! theta1
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IC,I,J,K,IPOIN,IERR,NC,N,M
-      INTEGER IPTFR,IPTFRL,NPTFRL
+      INTEGER IPTFR,NPTFRL
       INTEGER, ALLOCATABLE :: MASKT(:,:),MASKU(:,:),MASKV(:,:)
 !
       DOUBLE PRECISION PI,DTR,RTD

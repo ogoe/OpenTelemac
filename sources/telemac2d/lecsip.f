@@ -75,8 +75,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N,I
-      LOGICAL NOT_HERE
+      INTEGER N
 !
       DOUBLE PRECISION DELTA1,DELTA2,ALT1,ALT2
       DOUBLE PRECISION ANG1,ANG2,CS1,CS2,CE1,CE2

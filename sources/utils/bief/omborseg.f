@@ -84,7 +84,7 @@
 !
       INTRINSIC MIN
 !
-      DOUBLE PRECISION Y(1),Z(1)
+      DOUBLE PRECISION Z(1)
 !
       INTEGER DIMX,DIMY
 !

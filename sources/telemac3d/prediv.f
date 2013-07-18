@@ -91,8 +91,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IPOIN3,IPOIN2,IPTFR3,IPLAN,IS,IIS,SIZD,SIZX,ELMD,ELMX,I
-      DOUBLE PRECISION C,TETAP
+      INTEGER IPOIN3,IPOIN2,IPTFR3,IPLAN,IS,IIS,SIZD,SIZX,ELMD
       CHARACTER(LEN=16) FORMUL
 !
 !=======================================================================

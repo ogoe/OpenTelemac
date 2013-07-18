@@ -116,7 +116,7 @@
       INTEGER LV,NDP,IDP,I1,I2,I3,NPOIN2
       INTEGER NPTFR2,NELEM2,NELMAX2,NELEB2,NELEB
 !
-      DOUBLE PRECISION C,Z(1),X2,X3,Y2,Y3
+      DOUBLE PRECISION Z(1),X2,X3,Y2,Y3
 !
 !-----------------------------------------------------------------------
 !     FOR CALL TO VOISIN31

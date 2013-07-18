@@ -72,7 +72,7 @@
       !
       INTEGER                     :: I
       DOUBLE PRECISION            :: TX, LOGF
-      DOUBLE PRECISION            :: CSAL,CSAL1, CSAL2, CSAL3
+      DOUBLE PRECISION            :: CSAL,CSAL1, CSAL3
       DOUBLE PRECISION            :: AX, MX, NX, BX, PX, QX
       DOUBLE PRECISION            :: UCW2, TAUCW,ZERO
 !

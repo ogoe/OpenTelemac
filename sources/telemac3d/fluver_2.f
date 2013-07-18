@@ -44,7 +44,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IS,IIS,IPLAN,IPOIN2,ILEVEL,IUPPER,ILOWER
+      INTEGER IPLAN,IPOIN2,ILEVEL,IUPPER
       DOUBLE PRECISION FLUXMID,NPX,NPY,UMID,VMID,WMID
 !
 !-----------------------------------------------------------------------

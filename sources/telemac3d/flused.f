@@ -118,7 +118,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I
-      DOUBLE PRECISION NZ
+!     DOUBLE PRECISION NZ
 !
       INTRINSIC MAX
 !

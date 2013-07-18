@@ -105,7 +105,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,ISTAT,NPOIN,NVAR,NPL,LAST,IB(1)
+      INTEGER I,ISTAT,NPOIN,NVAR,NPL,IB(1)
       CHARACTER(LEN=72) CAR
 !
       INTEGER, PARAMETER :: NFMAX = 200

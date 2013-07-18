@@ -90,7 +90,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       CHARACTER(LEN=16) :: FORMUL
-      INTEGER           :: I,IPTFR3,IPOIN2,IPLAN,I1,I2,I3,IELEM,NP
+      INTEGER           :: I,IPTFR3,IPOIN2,IPLAN,I1,I2,I3,NP
       INTEGER           :: I3D,IP
       LOGICAL           :: MSKGRA
       DOUBLE PRECISION  :: C

@@ -653,8 +653,6 @@ files: friction_def.f
   m_coupling_estel3d.f
   oil_flot.f
   oilspill.f
-  sl.f
-  vit.f
   conv_mercator_to_degdec.f
   conv_lambert_to_degdec.f
   tpxo.f
@@ -666,8 +664,10 @@ files: friction_def.f
   nodalupv_pugh.f
   bord_tide.f
   tidal_model_t2d.f
+  sl.f
   sta_dis_cur.f
   tr.f
+  vit.f
   debimp.f
   bord.f
   valro.f

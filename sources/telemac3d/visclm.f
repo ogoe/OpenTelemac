@@ -127,7 +127,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER ITRAC,I,IPLAN,I3D,OPTION
-      DOUBLE PRECISION SDELTAZ,AUX,AUX1,AUX2,DENOM,DELTAZ,ZMIL
+      DOUBLE PRECISION SDELTAZ,AUX,AUX1,AUX2,DENOM
 !
 !-----------------------------------------------------------------------
 !

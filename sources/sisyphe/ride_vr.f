@@ -57,7 +57,7 @@
 !
 ! LOCAL VARIABLES
 !
-      DOUBLE PRECISION UC,AI,ZERO,KSCR,KSCD,KSCMR,MOB,FES,FFS
+      DOUBLE PRECISION AI,ZERO,KSCR,KSCD,KSCMR,MOB,FES,FFS
       DOUBLE PRECISION DSAND,DGRAVEL,DSILT
 !
 !---------------------------------------------------------------------

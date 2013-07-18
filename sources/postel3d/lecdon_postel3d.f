@@ -51,7 +51,7 @@
       LOGICAL            MOTLOG(NMAX)
 !
       CHARACTER*72     MOTCLE(4,NMAX,2)
-      INTEGER          TROUVE(4,NMAX) , DEFINT(NMAX)
+      INTEGER          TROUVE(4,NMAX)
       INTEGER      I(10),J,K
       LOGICAL DOC
 !

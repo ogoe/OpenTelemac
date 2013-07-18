@@ -231,7 +231,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IP,K,NPTFR,IPLAN,IPTFR,IS,IPTFR2,I,IIS,PARA,DIM1X
+      INTEGER IP,K,IPTFR,IS,I,IIS,PARA,DIM1X
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
       DOUBLE PRECISION STOFD,TETASUPG
       CHARACTER(LEN=1) :: S0FTYPR

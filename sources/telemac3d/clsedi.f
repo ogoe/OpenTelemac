@@ -110,9 +110,9 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN) :: NPOIN2,NPOIN3,KLOG,NPFMAX,ICQ
       INTEGER, INTENT(IN) :: NCOUCH,ITURBV,NPLAN,ICR
 !
@@ -146,27 +146,27 @@ C
 !
       LOGICAL, INTENT(IN)          :: TASSE , GIBSON , SEDCO
       DOUBLE PRECISION, INTENT(IN) :: AC, KSPRATIO
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C 
-      DOUBLE PRECISION KSP,A,C,ZERO,HCLIP,MU
-      INTEGER IPOIN,I
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! 
+      DOUBLE PRECISION KSP,A,ZERO,HCLIP,MU
+      INTEGER IPOIN
 !
 !-----------------------------------------------------------------------
 !
       ZERO = 1.D-6
 !
       DO IPOIN=1,NPOIN2
-C       COMPUTES THE FLUID DENSITY
+!       COMPUTES THE FLUID DENSITY
         DENSI(IPOIN) = (DELTAR(IPOIN)+1.D0)*RHO0
-C       COMPUTES THE STRESS AT THE BOTTOM
+!       COMPUTES THE STRESS AT THE BOTTOM
         TOB%R(IPOIN) = DENSI(IPOIN)*UETCAR(IPOIN)
       ENDDO
 !
       IF(ICR.EQ.1) THEN
 !
         DO IPOIN=1,NPOIN2
-C         CORRECTION FOR SKIN FRICTION (SEE TOB_SISYPHE)
+!         CORRECTION FOR SKIN FRICTION (SEE TOB_SISYPHE)
           KSP=KSPRATIO *DMOY%R(IPOIN)
           IF(CF%R(IPOIN) > ZERO.AND.HN%R(IPOIN).GT.KSP) THEN
             HCLIP=MAX(HN%R(IPOIN),KSP)
@@ -180,7 +180,7 @@ C         CORRECTION FOR SKIN FRICTION (SEE TOB_SISYPHE)
 !
       ENDIF
 !
-C      -----COMPUTES THE EXPLICIT EROSION FLUX-----
+!      -----COMPUTES THE EXPLICIT EROSION FLUX-----
 !
       IF(SEDCO) THEN
 !
@@ -205,8 +205,8 @@ C      -----COMPUTES THE EXPLICIT EROSION FLUX-----
 !
       ENDIF
 !
-C      -----WRITES THE BOUNDARY CONDITIONS AT THE BOTTOM / SURFACE-----
-C      -----                FOR THE SEDIMENT                      -----
+!      -----WRITES THE BOUNDARY CONDITIONS AT THE BOTTOM / SURFACE-----
+!      -----                FOR THE SEDIMENT                      -----
 !
       CALL FLUSED(ATABOF , BTABOF , ATABOS , BTABOS ,
      &            LITABF , LITABS , TA     , WC     ,

@@ -65,7 +65,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,OPTNU
+      INTEGER IELEM
 !
       DOUBLE PRECISION Y(1),Z(1)
       DOUBLE PRECISION SL1,SL2,SL3,ZF1,ZF2,ZF3,H1,H2,H3,EPS1,EPS2

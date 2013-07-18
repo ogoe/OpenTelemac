@@ -148,13 +148,10 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELMF,I,IOPT1,IOPT2
-      INTEGER IELEM,I1,I2,I3
-      LOGICAL YACSTE
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION MASSET,MASSETN,TSOU,DT_REMAIN,DDT,TDT
-      DOUBLE PRECISION FXT2
+      DOUBLE PRECISION DT_REMAIN,DDT,TDT
       CHARACTER(LEN=16) FORMUL
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVE_HT,SAVE_HNT
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: FXMAT,FXMATPAR
@@ -164,6 +161,10 @@
 !
       INTEGER NITMAX,NIT
       DATA NITMAX/200/
+!     INTEGER IELEM,I1,I2,I3
+!     LOGICAL YACSTE
+!     DOUBLE PRECISION MASSET,MASSETN,TSOU
+!     DOUBLE PRECISION FXT2
 !
 !-----------------------------------------------------------------------
 !

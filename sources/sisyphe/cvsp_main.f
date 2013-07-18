@@ -81,9 +81,8 @@
 !
       LOGICAL CVSP_CHECK_F, DB, RET
       INTEGER I,J,K,ARRET,ARRET2
-      DOUBLE PRECISION DZFCL,EVL,HEIGH,AEVOL,AUX,AT,DELTA
-      INTEGER LLT, LTT, KK
-      CHARACTER*50 DEBUGSTRING
+      DOUBLE PRECISION DZFCL,EVL,AT,DELTA
+      INTEGER KK
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -67,8 +67,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IPOIN2,IPLAN,N2,IT
-      DOUBLE PRECISION C,DIST
+      INTEGER IPOIN2,IPLAN
 !
       INTRINSIC LOG, SQRT, MAX
 !

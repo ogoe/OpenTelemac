@@ -14,7 +14,6 @@ files: bief_def.f
   lit.f
   ecri2.f
   readgeo1.f
-  centre_mass_seg.f 
   corrxy.f
   readgeo3.f
   readgeo2.f

@@ -85,7 +85,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER NSEGH,NSEGV,IHOR
-      INTEGER I1,I2,I3,I4,IPLAN,ISEG2D,ISEG3D,I2D,I3D,ICR1,ICR2,IS1
+      INTEGER I1,I2,I3,I4,IPLAN,ISEG2D,ISEG3D,ICR1,ICR2,IS1
 !
 !-----------------------------------------------------------------------
 !

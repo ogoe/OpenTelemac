@@ -67,7 +67,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM2,IETAGE,IPTFR1,IPTFR2,IELBR,IFACE,LOC,IT1,IT2,IT3,IT
+      INTEGER IELEM2,IETAGE,IFACE,IT1,IT2,IT3,IT
       INTEGER I1,I2,ITET,IFAC
       LOGICAL OK
 !

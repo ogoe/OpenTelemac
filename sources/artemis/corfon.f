@@ -47,7 +47,7 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER I
+!     INTEGER I
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

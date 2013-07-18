@@ -62,10 +62,10 @@
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER N,I
+      INTEGER N
 ! 
       DOUBLE PRECISION XSOR,YSOR,XENT,YENT
-      DOUBLE PRECISION ANG1,ANG2 
+!     DOUBLE PRECISION ANG1,ANG2 
       DOUBLE PRECISION DX,DY,ANG 
 ! 
       DOUBLE PRECISION PI 

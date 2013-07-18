@@ -38,8 +38,8 @@
 !
       INTEGER,           INTENT(IN)    :: J
       DOUBLE PRECISION,  INTENT(IN)    :: THRESHOLD
-      INTEGER I,K, CNTR_ERASE, MARKERMAX, MARKERCNT,  TTT, NNN, JG
-      INTEGER MAXPOS, M, MMM, MARKERMAXOLD, MARKERMAXVERYOLD
+      INTEGER I,K, MARKERMAX, MARKERCNT,  TTT, NNN, JG
+      INTEGER MAXPOS, M, MARKERMAXOLD, MARKERMAXVERYOLD
       INTEGER MARKER(PRO_MAX_MAX), MARKERTEMP(PRO_MAX_MAX)      
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -51,18 +51,16 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! STORES THE FRACTION ERRORS THAT WILL OCCURE IF THE POINT IS ELEMINATED FROM CURRENT PROFILE
 !
-      DOUBLE PRECISION MAXDIST, SUM_NSICLA       
+      DOUBLE PRECISION MAXDIST
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! STORES THE MAXIMUM DISTANCE OF ANY NODE IN THE CURRENT LOOP
 !
       DOUBLE PRECISION  FI, FJ, FK, DI, DJ, DK, THRESH
-      LOGICAL DUMMY, STOPIT, NORMALIZE_FRACTION !, DB
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !      
       LOGICAL, EXTERNAL:: DB
-      CHARACTER(LEN=30) DEBUGFILE
 !
 !----------------------------------------------------------------------- 
 ! PARALLEL: LOCAL TO GLOBAL

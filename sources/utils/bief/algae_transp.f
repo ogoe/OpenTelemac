@@ -575,7 +575,7 @@
 ! SAVE ALLOCATABLE VARIABLES
       SAVE :: U_I_0,U_I,V_I_0,V_I,X_I_0,X_I,C_I
 ! DAJ
-      CHARACTER(LEN=100)              :: LOG_NAME
+!      CHARACTER(LEN=100)              :: LOG_NAME
 ! FAJ
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

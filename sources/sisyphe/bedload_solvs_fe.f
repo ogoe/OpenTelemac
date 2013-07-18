@@ -145,8 +145,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,I,N
-      DOUBLE PRECISION MASINI,MASFIN,FLUXB
+      INTEGER K,N
 !
       DOUBLE PRECISION P_DSUM
       EXTERNAL         P_DSUM

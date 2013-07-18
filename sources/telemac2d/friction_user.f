@@ -45,7 +45,7 @@
       !2/ Local variables
       !------------------
       INTEGER       :: I,K,IVAL1,IVAL2,NFILE
-      INTEGER       :: NPOIN_GLOB,NPTFR_INT_GLOB,P_ISUM
+      INTEGER       :: NPOIN_GLOB,P_ISUM
       CHARACTER*144 :: NOMFILE
 
       EXTERNAL P_ISUM

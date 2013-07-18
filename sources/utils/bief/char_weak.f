@@ -55,7 +55,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,I1,I2,I3,I4,I5,I6,K,I,IG,IPLAN
+      INTEGER IELEM,I1,I2,I3,I4,I5,I6,I,IG,IPLAN
       DOUBLE PRECISION TIERS,A,B,C,D,H1,H2,H3,A1,A2,A3
       DOUBLE PRECISION WEIGH1,WEIGH2,WEIGH3
 !

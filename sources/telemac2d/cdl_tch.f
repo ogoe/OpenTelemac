@@ -64,7 +64,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IS,K,NIT,IDRY    
+      INTEGER IS,K,IDRY    
 !
       DOUBLE PRECISION VNX,VNY,XNN,YNN,VNL
       DOUBLE PRECISION ::  FLXI(3),FLXJ(3),H1,U10,U1,V1,ETA1
