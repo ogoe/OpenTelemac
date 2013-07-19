@@ -70,7 +70,7 @@
 !history R. ATA (EDF R&D - LNHE)
 !+        21/05/2013
 !+        V6P3
-!+   add centre_mass_seg, new infcel, hloc, gradp(?)
+!+   add centre_mass_seg, new infcel, hloc.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
