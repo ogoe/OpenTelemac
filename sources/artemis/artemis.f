@@ -4,20 +4,15 @@
 !
 !
 !***********************************************************************
-! ARTEMIS   V6P1                                   21/08/2010
+! ARTEMIS   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE MODIFIED BERKHOFF EQUATION.
 !
-!history  J-M HERVOUET (LNH)
-!+
-!+
-!+   LINKED TO BIEF 5.0
-!
 !history  D. AELBRECHT (LNH)
 !+        21/04/1999
 !+        V5P1
-!+
+!+   First version.
 !
 !history  C. DENIS (SINETICS)
 !+        21/06/2010
@@ -156,7 +151,6 @@
 !       This way LECLIM ONLY READ the boundary conditions file and
 !       DO NOT CHANGE the LIHBOR values
 !
-!      WRITE(6,*) 'ON ENTRE DANS LECLIM'
       CALL LECLIM (LIHBOR%I   , LIUBOR%I , ITB1%I , ITB1%I,
      &             TB1%R      , TB1%R    , TB1%R  , TB1%R ,
      &             TB1%R      , TB1%R    , TB1%R  ,
@@ -164,8 +158,7 @@
      &             ART_FILES(ARTCLI)%LU,
      &             0       , 0    , 0 ,  0 , 0 , 0,
      &             NUMLIQ%I   ,MESH,BOUNDARY_COLOUR%I)
-!      WRITE(6,*) 'ON SORT DE LECLIM'
-
+!
 !-----------------------------------------------------------------------
 !
 ! COMPLEMENTS THE DATA STRUCTURE FOR BIEF
