@@ -538,6 +538,8 @@ class actionRUN(ACTION):
                   for dirpath,dirnames,filenames in walk(cfg['MODULES'][mod]['path']) : break
                   for file in filenames:
                      n,e = path.splitext(file)
+                     # Only looking for fortran files
+                     if e.lower() not in ['.f','.f90']: continue
                      for pFile in pFiles:
                         if pFile.lower() == n:
                            oFiles.update( filterPrincipalWrapNames( [pFile],[path.join(dirpath,file)] ) )
