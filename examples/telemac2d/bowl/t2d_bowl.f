@@ -75,7 +75,7 @@ C=====================================
 C DEFINITION DES PARAMETRES A UTILISER                        
       GR=9.81D0
       PERI=1773.D0
-!     ALPHA=1.6E-7
+C     ALPHA=1.6E-7
       PI=4.D0*ATAN(1.D0)
       ALPHA=PI**2/(2.D0*PERI**2*GR)
       X1=1.0D0
@@ -86,11 +86,11 @@ C DEFINITION DES PARAMETRES A UTILISER
       CONST2=ALPHA*(Y1**2-X1**2)
 C ===================================      
       DO I = 1 , NPOIN        
-C  CALCUL DE r 
-      r=SQRT(X(I)**2+Y(I)**2)                                                            
+C  CALCUL DE r
+      r=SQRT(X(I)**2+Y(I)**2) 
       IF(r.LE.RAY) THEN                                           
-        H%R(I) = CONST1+(CONST2*r**2)*CONST1**2                                                     
-        U%R(I) = 0.D0                                                    
+        H%R(I) = CONST1+(CONST2*r**2)*CONST1**2
+        U%R(I) = 0.D0                         
       ELSE      
         H%R(I) = 0.D0   
         U%R(I) = 0.D0   
@@ -196,10 +196,10 @@ C-----------------------------------------------------------------------
 C
       GR=9.81D0
       PERI=1773.D0
-!     ALPHA=1.6E-7
+C     ALPHA=1.6E-7
       PI=4.D0*ATAN(1.D0)
       ALPHA=PI**2/(2.D0*PERI**2*GR)
-!     ALPHA=1.6E-7
+C     ALPHA=1.6E-7
       DO I=1,NPOIN
         RAY2=X(I)**2+Y(I)**2 
         ZF%R(I) = ALPHA*RAY2
@@ -208,6 +208,6 @@ C
 C-----------------------------------------------------------------------
 C
       RETURN
-      END                                                                                                                               
+      END     
                               
  

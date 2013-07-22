@@ -1,5 +1,5 @@
 !                    *****************
-                     SUBROUTINE CORFON
+                     SUBROUTINE TOM_CORFON
 !                    *****************
 !
 !
@@ -61,21 +61,21 @@
       IF(LNG.EQ.1) THEN
         IF(LISFON.EQ.0) THEN
           WRITE(LU,*)
-          WRITE(LU,*) 'CORFON (TOMAWAC) : PAS DE MODIFICATION DU FOND'
+          WRITE(LU,*) 'TOM_CORFON : PAS DE MODIFICATION DU FOND'
           WRITE(LU,*)
         ELSE
           WRITE(LU,*)
-          WRITE(LU,*) 'CORFON (TOMAWAC) : ',LISFON,' LISSAGES DU FOND'
+          WRITE(LU,*) 'TOM_CORFON : ',LISFON,' LISSAGES DU FOND'
           WRITE(LU,*)
         ENDIF
       ELSE
         IF(LISFON.EQ.0) THEN
           WRITE(LU,*)
-          WRITE(LU,*) 'CORFON (TOMAWAC): NO MODIFICATION OF BOTTOM'
+          WRITE(LU,*) 'TOM_CORFON : NO MODIFICATION OF BOTTOM'
           WRITE(LU,*)
         ELSE
           WRITE(LU,*)
-          WRITE(LU,*) 'CORFON (TOMAWAC): ',LISFON,' BOTTOM SMOOTHINGS'
+          WRITE(LU,*) 'TOM_CORFON : ',LISFON,' BOTTOM SMOOTHINGS'
           WRITE(LU,*)
         ENDIF
       ENDIF

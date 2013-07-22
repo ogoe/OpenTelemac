@@ -8,7 +8,7 @@ C  Nom du cas : FROTTEMENT SUR LE FOND (CAS D'UN FOND PLAT)            C
 C               EXECUTION DANS L'UN OU L'AUTRE DES MODES DE TOMAWAC.   C
 C                                                                      C
 C  Ce fichier contient les subroutines suivantes :                     C
-C   CORFON : affectation de la cote du fond a -5m partout.             C
+C   TOM_CORFON : affectation de la cote du fond a -5m partout.             C
 C   CORRXY : modification des coordonnees du maillage lu sur fichier.  C
 C   SPELIM : modification du calcul de OM0 en mode ex-COWADIS pour     C
 C            retrouver les memes resultats qu'en V1P0 de COWADIS.      C
@@ -19,14 +19,14 @@ C                          Michel BENOIT (EDF R&D LNHE)   22/12/2005   C
 C======================================================================C
 C
 C                       *****************
-                        SUBROUTINE CORFON
+                        SUBROUTINE TOM_CORFON
 C                       *****************
 C
 C***********************************************************************
 C PROGICIEL : COWADIS           26/07/99           F.MARCOS
 C***********************************************************************
 C
-C  USER SUBROUTINE CORFON
+C  USER SUBROUTINE TOM_CORFON
 C
 C  FONCTION  : MODIFICATION DE LA TOPOGRAPHIE
 C  FUNCTION  : MODIFICATION OF THE BOTTOM TOPOGRAPHY

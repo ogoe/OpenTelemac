@@ -82,7 +82,7 @@ C
       END
 !
 !                    *****************
-                     SUBROUTINE CORFON
+                     SUBROUTINE TOM_CORFON
 !                    *****************
 !
 !

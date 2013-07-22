@@ -406,11 +406,6 @@ files: bief_def.f
   fasp.f
   fond.f
   fonstr.f
-  create_dataset_serafin.f
-  create_dataset.f
-  build_ikle_ext.f
-  ludcmp.f
-  lubksb.f
   vecle3.f
   vecle6.f
   vecle4.f
@@ -449,6 +444,11 @@ files: bief_def.f
   survol.f
   geoelt.f
   inbief.f
+  create_dataset_serafin.f
+  create_dataset.f
+  build_ikle_ext.f
+  ludcmp.f
+  lubksb.f
   cvtrvf_pos.f
   cvdftr.f
   invmtx.f
@@ -733,7 +733,6 @@ files: friction_def.f
   flu_zokagoa.f
   cdlzz.f
   fluxzz.f
-  intemp.f
   zeropsi.f
   zerophi.f
   cdl.f
@@ -754,8 +753,8 @@ files: friction_def.f
   limiter.f
   flux_waf.f
   hyd_waf.f
-  flusrc.f
   fluxe.f
+  flusrc.f
   fluroe.f
   caldt.f
   smtrac.f
@@ -766,6 +765,7 @@ files: friction_def.f
   cdl_waf.f
   cdl_tch.f
   gradz.f
+  intemp.f
   resolu.f
   volfin.f
   kepsil.f
@@ -873,7 +873,7 @@ files: declarations_tomawac.f
   spread.f
   wpower.f
   dump2d.f
-  corfon.f
+  tom_corfon.f
   iniphy.f
   ecrspe.f
   spetma.f

@@ -1,5 +1,5 @@
 !                    *****************
-                     SUBROUTINE CORFON
+                     SUBROUTINE ART_CORFON
 !                    *****************
 !
 !

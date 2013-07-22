@@ -186,14 +186,14 @@ C
       RETURN                                                            
       END                                                               
 C                       *****************
-                        SUBROUTINE CORFON
+                        SUBROUTINE ART_CORFON
 C                       *****************
 C
 C***********************************************************************
 C PROGICIEL : TELEMAC 5.0          01/03/90    J-M HERVOUET
 C***********************************************************************
 C
-C  USER SUBROUTINE CORFON
+C  USER SUBROUTINE ART_CORFON
 C
 C  FUNCTION  : MODIFICATION OF THE BOTTOM TOPOGRAPHY
 C

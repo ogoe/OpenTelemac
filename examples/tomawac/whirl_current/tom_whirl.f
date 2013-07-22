@@ -8,7 +8,7 @@ C  Nom du cas : PROPAGATION SUR COURANT TOURBILLONNAIRE.               C
 C                                                                      C
 C  Ce fichier contient les subroutines suivantes :                     C
 C   ANACOS : specification d'un champ de courant analytique.           C
-C   CORFON : la cote du fond est fixee a -200 m.                       C
+C   TOM_CORFON : la cote du fond est fixee a -200 m.                       C
 C   CORRXY : dilatation du maillage lu sur le fichier GEO.             C
 C   SPELIM :                                                           C
 C   LIMWAC : affectation du spectre de houle aux limites.              C
@@ -95,14 +95,14 @@ C
       RETURN
       END
 C                       *****************
-                        SUBROUTINE CORFON
+                        SUBROUTINE TOM_CORFON
 C                       *****************
 C
 C***********************************************************************
 C PROGICIEL : COWADIS           26/07/99           F.MARCOS
 C***********************************************************************
 C
-C  USER SUBROUTINE CORFON
+C  USER SUBROUTINE TOM_CORFON
 C
 C  FONCTION  : MODIFICATION DE LA TOPOGRAPHIE
 C  FUNCTION  : MODIFICATION OF THE BOTTOM TOPOGRAPHY

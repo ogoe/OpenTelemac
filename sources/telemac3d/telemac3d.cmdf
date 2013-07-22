@@ -381,11 +381,6 @@ files: declarations_telemac.f
   fond.f
   strche.f
   fonstr.f
-  create_dataset_serafin.f
-  create_dataset.f
-  build_ikle_ext.f
-  ludcmp.f
-  lubksb.f
   vecle3.f
   vecle6.f
   vecle4.f
@@ -425,6 +420,11 @@ files: declarations_telemac.f
   survol.f
   geoelt.f
   inbief.f
+  create_dataset_serafin.f
+  create_dataset.f
+  build_ikle_ext.f
+  ludcmp.f
+  lubksb.f
   config_code.f
   positive_depths.f
   front2.f
@@ -850,7 +850,7 @@ files: declarations_tomawac.f
   spread.f
   wpower.f
   dump2d.f
-  corfon.f
+  tom_corfon.f
   iniphy.f
   ecrspe.f
   spetma.f

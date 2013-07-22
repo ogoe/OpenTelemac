@@ -233,7 +233,7 @@
 !
 ! STANDARD SUBROUTINE DOES NOT DO ANYTHING
 !
-      CALL CORFON
+      CALL ART_CORFON
 !
 !
 !=======================================================================

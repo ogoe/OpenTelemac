@@ -30,6 +30,7 @@ files: declarations_artemis.f
   calcue.f
   fwspec.f
   berkho.f
+  art_corfon.f
   spd.f
   dirale.f
   utimp.f
@@ -37,7 +38,6 @@ files: declarations_artemis.f
   calres.f
   entart.f
   calre2.f
-  corfon.f
   condih.f
   spe.f
   perale.f
