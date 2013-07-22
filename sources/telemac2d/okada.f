@@ -102,7 +102,7 @@
 !
       DOUBLE PRECISION HH, L, W, D, TH, DL, RD, Y0, X0, C0
 !
-      DOUBLE PRECISION ZERO, OSIXTY, DEG2RAD, RR
+      DOUBLE PRECISION ZERO,DEG2RAD, RR
       DOUBLE PRECISION HALFL, MINOR,MAJOR, XSPH0,YSPH0
       DOUBLE PRECISION CS2,SN2,DIST, XSPH,YSPH
       DOUBLE PRECISION DEL_X, DEL_Y, DS, DD, SN, CS
@@ -118,7 +118,6 @@
 !     USER AND CONVERTION CONSTANTS
 !
       ZERO = 0.D0
-      OSIXTY = 1.D0/60.D0
       RR = 6.371D6
 !
       PI = 4.D0*ATAN(1.D0)
@@ -244,7 +243,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION SN,CS,P,Q,D_BAR,R,XX,A4,PI
+      DOUBLE PRECISION SN,CS,Q,D_BAR,R,A4,PI
 !
       INTRINSIC ATAN,COS,SIN,LOG,SQRT
 !
@@ -254,11 +253,9 @@
 !
       SN = SIN(DP)
       CS = COS(DP)
-      P = X2*CS + DD*SN
       Q = X2*SN - DD*CS
       D_BAR = Y2*SN - Q*CS
       R  = SQRT(Y1**2 + Y2**2 + Q**2)
-      XX = SQRT(Y1**2 + Q**2)
       A4 = 0.5D0/CS*(LOG(R+D_BAR) - SN*LOG(R+Y2))
       OKADA_STRIKE_SLIP=-(D_BAR*Q/R/(R+Y2)+Q*SN/(R+Y2)+A4*SN)/(2.D0*PI)
 !
@@ -304,7 +301,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION SN,CS,P,Q,D_BAR,R,XX,A5,PI
+      DOUBLE PRECISION SN,CS,Q,D_BAR,R,XX,A5,PI
 !
       INTRINSIC ATAN,COS,SIN,SQRT
 !
@@ -314,7 +311,6 @@
 !
       SN = SIN(DP)
       CS = COS(DP)
-      P = X2*CS + DD*SN
       Q = X2*SN - DD*CS
       D_BAR = Y2*SN - Q*CS
       R = SQRT(Y1**2 + Y2**2 + Q**2)
