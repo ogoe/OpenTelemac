@@ -166,7 +166,6 @@ def readCAS(keywords,dico,frgb):
          for val in value: vals.append(repr(val))
          vallist[keylist.index(key)] = vals
 
-   sys.exit()
    return (keylist,vallist)
 
 def rewriteCAS(cas):
