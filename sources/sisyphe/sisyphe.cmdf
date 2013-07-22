@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|sisyphe
 module: sisyphe
-liborder: special parallel damocles bief sisyphe telemac2d
+liborder: special parallel damocles bief sisyphe
 version: v6p3
 name: HOMERE_SISYPHE
 
@@ -597,11 +597,3 @@ files: declarations_sisyphe.f
 path: <root>|sources|utils|special
 files: plante.f
   extens.f
-
-[telemac2d]
-path: <root>|sources|telemac2d
-files: friction_def.f
-  declarations_telemac2d.f
-  interface_telemac2d.f
-  read_fic_frliq.f
-  q.f

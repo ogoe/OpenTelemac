@@ -636,8 +636,6 @@ files: friction_def.f
   interface_telemac2d.f
   read_sections_telemac2d.f
   point_telemac2d.f
-  read_fic_frliq.f
-  q.f
   nomvar_telemac2d.f
   lecdon_telemac2d.f
   initstr.f
@@ -653,6 +651,8 @@ files: friction_def.f
   m_coupling_estel3d.f
   oil_flot.f
   oilspill.f
+  read_fic_frliq.f
+  q.f
   conv_mercator_to_degdec.f
   conv_lambert_to_degdec.f
   tpxo.f

@@ -627,10 +627,9 @@ path: <root>|sources|telemac2d
 files: friction_def.f
   declarations_telemac2d.f
   interface_telemac2d.f
-  read_fic_frliq.f
-  q.f
   grad_zconv.f
   meteo.f
+  read_fic_frliq.f
   sta_dis_cur.f
   conv_mercator_to_degdec.f
   conv_lambert_to_degdec.f
