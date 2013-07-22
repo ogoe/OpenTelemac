@@ -44,7 +44,6 @@
 !
       INTEGER IVAR 
 !
-      DOUBLE PRECISION ZF1,ZF2
       DOUBLE PRECISION FLUIJ_20
 !
       INTEGER CHOICE_D
@@ -71,11 +70,6 @@
       ENDDO
 !
 !-----------------------------------------------------------------------
-!
-!     BATHYMETRIES
-!
-      ZF1   =    ETA1-H1
-      ZF2   =    ETA2-H2
 !
 !     VELOCITIES
 !

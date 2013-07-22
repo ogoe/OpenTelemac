@@ -55,7 +55,7 @@
 !
          DOUBLE PRECISION RI,RJ,CT2,UT,VT,RLAMB0
          DOUBLE PRECISION CT,PRII,PRIJ,ALPHA
-         DOUBLE PRECISION RLAMBM,PS,SA,RLAMBP,PROD,TW(3)
+         DOUBLE PRECISION RLAMBM,PS,SA,RLAMBP,TW(3)
          DOUBLE PRECISION TR(3),T(3),CI2,CI,CJ,CJ2,RLAMBI,RLAMBJ
 !
 !-----------------------------------------------------------------------
@@ -124,16 +124,8 @@
            CJ = SQRT (CJ2)
            RLAMBI = ALPHA - CI
            RLAMBJ = UJ * XN + VJ * YN - CJ
-           PROD = RLAMBI * RLAMBJ
 !
-!TBTB : MODIFICATION ONLY IN THE RELAXATION :
-           IF ( RLAMBI .LT. 0.D0 .AND. RLAMBJ .GT. 0.D0
-!C   *                         .AND. ABS(RLAMBM) .LT. D1
-     &                                                   ) THEN
-!
-!     : MODIFICATION IN THE RELAXATION OR THE SHOCK:
-!          IF( PROD. LT. 0.D0 .AND. ABS(RLAMBM).LT.D1 ) THEN
-!
+           IF ( RLAMBI .LT. 0.D0 .AND. RLAMBJ .GT. 0.D0) THEN
             RLAMBM = MIN(0.D0,RLAMBM) - ABS(RLAMBI - RLAMBJ) / 4.D0
            ENDIF
 !     END
@@ -191,8 +183,6 @@
 !
             ALPHA = UJ * XN + VJ* YN
 !
-!TBTB BEGINNING: MODIFICATION OF RLAMBP IF RLAMBP
-!
             IF (HI.LE.0.D0) THEN
               CI2 = 0.D0
             ELSE
@@ -209,19 +199,10 @@
             CJ = SQRT (CJ2)
             RLAMBI = UI * XN + VI * YN + CI
             RLAMBJ = ALPHA + CJ
-            PROD = RLAMBI * RLAMBJ
 !
-!TBTB: MODIFICATION ONLY IN THE RELAXATION:
-            IF ( RLAMBI .LT. 0. .AND. RLAMBJ .GT. 0.
-!C   *                          .AND. ABS(RLAMBP) .LT. D1
-     &                                                    ) THEN
-!
-!TBTB: MODIFICATION IN THE RELAXATION OR IN THE SHOCK:
-!           IF ( PROD . LT . 0. .AND. ABS(RLAMBP).LT.D1 ) THEN
-!
+            IF ( RLAMBI .LT. 0. .AND. RLAMBJ .GT. 0.) THEN
                RLAMBP = MAX(0.D0,RLAMBP) + ABS(RLAMBI - RLAMBJ) / 4.
             ENDIF
-!TBTB END
 !
 !   --->    COMPUTES FLUX 1
 !           ----------------

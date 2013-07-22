@@ -63,25 +63,17 @@
       INTEGER INDIC(2)
 !
       DOUBLE PRECISION XGI, YGI, XGJ, YGJ, DIJ, A1, A2
-      DOUBLE PRECISION D1,HI,UI,VI,HJ,VJ,UJ,XN,YN,RNORM
+      DOUBLE PRECISION HI,UI,VI,HJ,VJ,UJ,XN,YN
       DOUBLE PRECISION CT2,CT,RLAMB0,RLAMBM,ALPHA,CI2
-      DOUBLE PRECISION CJ,CJ2,RLAMBJ,PROD,RLAMBI,RLAMBP
+      DOUBLE PRECISION CJ,CJ2,RLAMBJ,RLAMBI,RLAMBP
       DOUBLE PRECISION RI,RJ,UT,VT,CI,UN
-      DOUBLE PRECISION T11(3),T21(3),T31(3),TS11(3),TS21(3),TS31(3)
-      DOUBLE PRECISION T12(3),T22(3),T32(3),TS12(3),TS22(3),TS32(3)
-      DOUBLE PRECISION GE(3),FE(3),ZF1,ZF2,PSA1,PSA2,PSA,UM,VM
+      DOUBLE PRECISION T11(3),T21(3),TS11(3),TS21(3)
+      DOUBLE PRECISION T12(3),T22(3),TS12(3),TS22(3)
+      DOUBLE PRECISION GE(3),FE(3),ZF1,ZF2,PSA1,PSA2,PSA
 !
       INTRINSIC MIN,MAX
 !
 !-----------------------------------------------------------------------
-!
-!------
-! 1. INITIALISATIONS
-!------
-!
-      D1 = 0.3D0
-!
-!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
 !------
 ! 1. COMPUTES SOURCES TERMS AT THE INTERFACE IEL1 , IEL2
@@ -116,7 +108,6 @@
 !
        XN = VNOIN (1,ISEGIN)
        YN = VNOIN (2,ISEGIN)
-       RNORM = VNOIN (3,ISEGIN)
 !
 !    BOTTOM MODIFICATION: AT REST WITH A DRY ELEMENT
 !
@@ -156,8 +147,6 @@
 !      MAX OF THE TWO FOLLOWING LINES INSERTED BY JMH
        UT = ( RI * UI + RJ * UJ ) / MAX(RI+RJ,1.D-8)
        VT = ( RI * VI + RJ * VJ ) / MAX(RI+RJ,1.D-8)
-       UM = (UI+UJ)/2.D0
-       VM = (VI+VJ)/2.D0
        CT2 = G*(HI+HJ)/2.D0
        CT = SQRT ( CT2 )
 !
@@ -166,23 +155,15 @@
 !
        RLAMB0 = UT * XN + VT * YN
 !
-!TBTB BEGINNING: MODIFICATION OF RLAMB0 IF RLAMB0 < D1
-!C   IT IS NECESSARY TO ADD FLUXES FOR THE DUPLICATED EIGENVALUES
-!C   TO BE COMPLETED BY WHOEVER WISHES TO
-!C
-!TBTB END
-!
 !     COMPUTES EIGENVALUES MATRICES
 !--------------------------------------------
+!
          T11(1) = 1.D0
          T11(2) = UT - CT * XN
          T11(3) = VT - CT * YN
          T21(1) = 0.D0
          T21(2) = CT * YN
          T21(3) = -CT * XN
-         T31(1) = 1.D0
-         T31(2) = UT + CT * XN
-         T31(3) = VT + CT * YN
 !
          T12(1) = 1.D0
          T12(2) = UT + CT * XN
@@ -190,29 +171,20 @@
          T22(1) = 0.D0
          T22(2) = -CT * YN
          T22(3) = +CT * XN
-         T32(1) = 1.D0
-         T32(2) = UT - CT * XN
-         T32(3) = VT - CT * YN
 !
          TS11(1) = (UT * XN + VT * YN) * CT + CT2
          TS21(1) = (2.D0 * VT * XN - 2.D0 * UT * YN) * CT
-         TS31(1) = -(UT * XN + VT * YN) * CT + CT2
          TS11(2) = -XN * CT
          TS21(2) = 2.D0 * YN * CT
-         TS31(2) = XN * CT
          TS11(3) = -YN * CT
          TS21(3) = -2.D0 * XN * CT
-         TS31(3) = YN * CT
 !
          TS12(1) = -(UT * XN + VT * YN) * CT + CT2
          TS22(1) = -(2.D0 * VT * XN - 2.D0 * UT * YN) * CT
-         TS32(1) = +(UT * XN + VT * YN) * CT + CT2
          TS12(2) = +XN * CT
          TS22(2) = -2.D0 * YN * CT
-         TS32(2) = -XN * CT
          TS12(3) = +YN * CT
          TS22(3) = +2.D0* XN * CT
-         TS32(3) = -YN * CT
 !
 !----------CALCULS POUR LES TERMES SOURCES--------------------
 !
@@ -265,7 +237,6 @@
            CJ = SQRT (CJ2)
            RLAMBI = ALPHA - CI
            RLAMBJ = UJ * XN + VJ * YN - CJ
-           PROD = RLAMBI * RLAMBJ
 !
            IF ( RLAMBI .LT. 0.D0 .AND. RLAMBJ .GT. 0.D0
      &                                                   ) THEN
@@ -329,13 +300,7 @@
 !          --------------
 !
            RLAMBP = RLAMB0 + CT
-!
-!          PROD = RLAMBI * RLAMBJ
-!
-!
            ALPHA = UI * XN + VI * YN
-!
-!TBTB BEGINNING: MODIFICATION OF RLAMBP IF RLAMBM
 !
            CI2 = G*HI
            CI = SQRT (CI2)
@@ -343,18 +308,10 @@
            CJ = SQRT (CJ2)
            RLAMBI = ALPHA - CI
            RLAMBJ = UJ * XN + VJ * YN - CJ
-           PROD = RLAMBI * RLAMBJ
 !
-!TBTB: MODIFIES ONLY IN THE RELAXATION:
-            IF ( RLAMBI .LT. 0.D0 .AND. RLAMBJ .GT. 0.D0) THEN
-!
-!TBTB : MODIFIES IN THE RELAXATION OR IN THE SHOCK:
-!           IF ( PROD . LT . 0.D0 .AND. ABS(RLAMBP).LT.D1 ) THEN
-!
-               RLAMBP = MAX(0.D0,RLAMBP) + ABS(RLAMBI - RLAMBJ)/4.D0
-            ENDIF
-!TBTB END
-!
+           IF(RLAMBI .LT. 0.D0 .AND. RLAMBJ .GT. 0.D0) THEN
+              RLAMBP = MAX(0.D0,RLAMBP) + ABS(RLAMBI - RLAMBJ)/4.D0
+           ENDIF
 !
 !-----------COMPUTATION OF SOURCE TERMS --------------------------
 !

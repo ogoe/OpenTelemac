@@ -1010,7 +1010,7 @@
 !  IF NO TRACER, THERE SHOULD BE NO TRACER DIFFUSION:
 !-----------------------------------------------------------------------
 !
-      IF (NTRAC.EQ.0) THEN
+      IF(NTRAC.EQ.0) THEN
         DIFT = .FALSE.
       ENDIF
 !
@@ -1026,16 +1026,18 @@
 !-----------------------------------------------------------------------
 !
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF'.AND.NCSIZE.GT.1) THEN
+        IF(OPTVF.EQ.2.OR.OPTVF.EQ.6) THEN
         WRITE(LU,*)'++++++++++++++++++++++++++++++++++++++++++++++++++'
-        IF(LNG.EQ.1) WRITE(LU,1) NCSIZE
-        IF(LNG.EQ.2) WRITE(LU,2) NCSIZE
-1       FORMAT(1X,'NPROC =',1I6,' PARALLELISME NON DISPONIBLE POUR VF')
-2       FORMAT(1X,'NPROC =',1I6,' PARALLEL OPTION NOT AVAILABLE FOR FV')
+        IF(LNG.EQ.1) WRITE(LU,1) 
+        IF(LNG.EQ.2) WRITE(LU,2) 
+1       FORMAT(1X,'PARALLELISME NON DISPONIBLE POUR VF ORDRE 2')
+2       FORMAT(1X,'PARALLEL OPTION NOT AVAILABLE FOR FV ORDER 2')
          WRITE(LU,*)'++++++++++++++++++++++++++++++++++++++++++++++++++'
         CALL PLANTE(1)
         STOP
-       
+        ENDIF       
       ENDIF
+!
 !-----------------------------------------------------------------------
 !  NAME OF THE VARIABLES FOR THE RESULTS AND GEOMETRY FILES:
 !-----------------------------------------------------------------------
