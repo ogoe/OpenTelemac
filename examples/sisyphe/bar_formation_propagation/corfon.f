@@ -48,8 +48,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       LOGICAL MAS
-      REAL RAND
-      INTRINSIC RAND
+      REAL RANDOM_NUMBER
+      INTRINSIC RANDOM_NUMBER
 !
 !-----------------------------------------------------------------------
 !
@@ -60,7 +60,7 @@
 !
       DO I=1,NPOIN
 !     ZF%R(I) 
-         ZF%R(I)=0.531-0.00452*X(I)+((RAND(0)*0.005)-0.005)
+         ZF%R(I)=0.531-0.00452*X(I)+((RANDOM_NUMBER(0)*0.005)-0.005)
 ! numbers in the range [-0.005 // 0.005]
       ENDDO
 !
