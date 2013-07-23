@@ -24,7 +24,7 @@ FORTRAN FILE                      : corfon.f
 /       GENERAL INFORMATIONS                                          /
 /---------------------------------------------------------------------/
 /
-PARALLEL PROCESSORS                             : 8
+/PARALLEL PROCESSORS                             : 8
 TITLE      :  'Bars Test Case: Linear channel,bed configuration: Ripples'
 COUPLING WITH                                   : 'INTER-SISYPHE'
 COUPLING PERIOD FOR SISYPHE                     : 1

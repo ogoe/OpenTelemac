@@ -17,7 +17,7 @@ RESULTS FILE                      : Bar_Test_Random_Sis.slf
 /       GENERAL INFORMATIONS                                          /
 /---------------------------------------------------------------------/
 /
-PARALLEL PROCESSORS                            : 8
+/PARALLEL PROCESSORS                            : 8
 TITLE  :   'Bars Test Case: Linear channel,bed configuration: Ripples'
 CORRECTION ON CONVECTION VELOCITY              : YES
 TYPE OF ADVECTION                              : 1
