@@ -21,6 +21,35 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!=======================================================================
+!
+!  STRUCTURES FOR OIL SPILL PARTICLES
+!
+!=======================================================================
+!
+!      TYPE COMPO
+!        DOUBLE PRECISION::SOL                         ---> SOLUBILITY OF OIL COMPONENT
+!        DOUBLE PRECISION::MASS                        ---> MASS OF OIL COMPONENT
+!        DOUBLE PRECISION::TB                          ---> BOILING TEMPERATURE OF OIL COMPONENT 
+!      END TYPE COMPO
+!      
+!      TYPE OIL_PART
+!        INTEGER::STATE                                ---> STATE OF THE OIL PARTICLE (1:DRIFT PARTICLE,2:BEACHING PARTICLE)
+!        INTEGER::ELTOIL                               ---> NUMBERS OF ELEMENTS WHERE ARE THE PARTICLE
+!        INTEGER::TPSECH                               ---> BEACHING TIME OF THE PARTICLE
+!        INTEGER::ID                                   ---> TAG OF THE PARTICLE
+!        DOUBLE PRECISION::XOIL,YOIL                   ---> POSITIONS OF FLOATING OIL PARTICLE
+!        DOUBLE PRECISION::MASS0                       ---> INITAL MASS OF THE PARTICLE
+!        DOUBLE PRECISION::MASS                        ---> MASS OF THE PARTICLE
+!        DOUBLE PRECISION::MASS_DISS                   ---> DISSOLVED MASS OF THE PARTICLE
+!        DOUBLE PRECISION::MASS_EVAP                   ---> EVAPORATED MASS OF THE PARTICLE
+!        DOUBLE PRECISION::SURFACE                     ---> SURFACE OF THE PARTICLE
+!        DOUBLE PRECISION,DIMENSION(3)::SHPOIL         ---> BARYCENTRIC COORDINATES OF PARTICLE IN THEIR ELEMENTS
+!        TYPE(COMPO),DIMENSION(:),ALLOCATABLE::COMPO   ---> UNSOLVABLE COMPONENT OF OIL
+!        TYPE(COMPO),DIMENSION(:),ALLOCATABLE::HAP     ---> SOLVABLE COMPONENT OF OIL
+!      END TYPE OIL_PART
+!
+!=======================================================================
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       MODULE OILSPILL
@@ -78,8 +107,20 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEB TWO RECORDS
+!|                |   | FOR FLOATS POSITIONS.
+!| FM_COMPO       |-->| MASS FRACTION OF UNSOLVABLE COMPOUND IN OIL
+!| FM_HAP         |-->| MASS FRACTION TEMPERATURE OF SOLVABLE COMPOUND IN OIL
+!| ISUB           |<->| ARRIVAL SUB-DOMAIN OF PARTICLES.
+!| KDISS          |-->| DISSOLVED MASS TRANSFER COEFFICIENT
+!| KVOL           |-->| OVERALL VOLATILIZATION RATE COEFFICIENT
+!| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS.
+!| NB_COMPO       |-->| NUMBER OF UNSOLVABLE COMPOUND IN OIL
+!| NB_HAP         |-->| NUMBER OF SOLVABLE COMPOUND IN OIL
+!| PARTICULES     |-->| OIL STRUCTURE DEFINED IN BIEF DEF
+!| SOLU           |-->| SOLUBILITY OF SOLVABLE COMPOUND
+!| TB_COMPO       |-->| BOILING TEMPERATURE OF UNSOLVABLE COMPOUND IN OIL
+!| TB_HAP         |-->| BOILING TEMPERATURE OF SOLVABLE COMPOUND IN OIL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -96,14 +137,19 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION,PARAMETER            ::KARMAN=0.41D0
+      DOUBLE PRECISION,PARAMETER               ::KARMAN=0.41D0
       LOGICAL INIT
       DATA INIT /.FALSE./
-      INTEGER                               ::I,K,IFLOT
-      INTEGER                               ::NB_COMPO,NB_HAP
-      DOUBLE PRECISION                      ::ETA_OIL,RHO_OIL,VOLDEV
+      INTEGER                                  ::I,K,IFLOT
+      INTEGER                                  ::NB_COMPO,NB_HAP
+      DOUBLE PRECISION                         ::ETA_OIL,RHO_OIL,VOLDEV
+      DOUBLE PRECISION                         ::TAMB,VERIF
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::TB_COMPO,FM_COMPO
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::TB_HAP,FM_HAP,SOLU
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::KDISS,KVOL
 !
-      SAVE RHO_OIL,VOLDEV,NB_COMPO,ETA_OIL,NB_HAP
+      SAVE RHO_OIL,VOLDEV,NB_COMPO,ETA_OIL,NB_HAP,TAMB
+      SAVE TB_COMPO,FM_COMPO,TB_HAP,FM_HAP,SOLU,KDISS,KVOL
 !
 !-----------------------------------------------------------------------
 !
@@ -112,13 +158,29 @@
          CALL BIEF_ALLVEC(1,UCONV_OIL,'UCONVO',11,1,2,MESH)
          CALL BIEF_ALLVEC(1,VCONV_OIL,'VCONVO',11,1,2,MESH)
 !
+!
+         VERIF=0.D0
+!
          ALLOCATE(PARTICULES(NFLOT_MAX))
+!
+!======================================================================
+!----------------READING THE INPUT STEERING FILE-----------------------
+!======================================================================   
 !
          READ(T2D_FILES(T2DMIG)%LU,*)
          READ(T2D_FILES(T2DMIG)%LU,*) NB_COMPO
 !
          DO I=1,NFLOT_MAX
            ALLOCATE(PARTICULES(I)%COMPO(NB_COMPO))
+         END DO
+!
+         ALLOCATE(TB_COMPO(NB_COMPO))
+         ALLOCATE(FM_COMPO(NB_COMPO))
+         READ(T2D_FILES(T2DMIG)%LU,*)
+         DO I=1,NB_COMPO
+            READ(T2D_FILES(T2DMIG)%LU,*) FM_COMPO(I),
+     &           TB_COMPO(I)
+            VERIF=VERIF+FM_COMPO(I)
          END DO
 !
          READ(T2D_FILES(T2DMIG)%LU,*)
@@ -128,6 +190,25 @@
            ALLOCATE(PARTICULES(I)%HAP(NB_HAP))
          END DO
 !
+         ALLOCATE(TB_HAP(NB_HAP))
+         ALLOCATE(FM_HAP(NB_HAP))
+         ALLOCATE(SOLU(NB_HAP))
+         ALLOCATE(KDISS(NB_HAP))
+         ALLOCATE(KVOL(NB_HAP)) 
+         READ(T2D_FILES(T2DMIG)%LU,*)
+         DO I=1,NB_HAP
+            READ(T2D_FILES(T2DMIG)%LU,*) FM_HAP(I)
+     *           ,TB_HAP(I),SOLU(I),KDISS(I),KVOL(I)
+            VERIF=VERIF+FM_HAP(I)
+         END DO 
+!
+         IF(1.D0-VERIF.GT.ABS(1.D-10)) THEN
+            WRITE(LU,*) 'WARNING::THE SUM OF EACH COMPONENT', 
+     *           ' MASS FRACTION IS NOT EQUALS TO 1',VERIF
+            WRITE(LU,*) 'PLEASE, MODIFIED THE INPUT STEERING FILE '
+            CALL PLANTE(1)
+         END IF
+!
          READ(T2D_FILES(T2DMIG)%LU,*)
          READ(T2D_FILES(T2DMIG)%LU,*) RHO_OIL
 !
@@ -136,6 +217,9 @@
 !
          READ(T2D_FILES(T2DMIG)%LU,*)
          READ(T2D_FILES(T2DMIG)%LU,*) VOLDEV
+!
+         READ(T2D_FILES(T2DMIG)%LU,*)
+         READ(T2D_FILES(T2DMIG)%LU,*) TAMB
 !
          DO I=1,NFLOT_MAX
            PARTICULES(I)%STATE=0
@@ -157,46 +241,62 @@
              PARTICULES(I)%HAP(K)%SOL=0.D0
            END DO
          END DO
+!
+!======================================================================
+!-------MEMORY ALLOCATION FOR CALCULATIONS ON MULTIPLE PROCESSORS------
+!======================================================================  
+!
          IF(NCSIZE.GT.1) CALL OIL_ORGANISE_CHARS(NFLOT_MAX)
          INIT=.TRUE.
 !
       ENDIF
 !
 !======================================================================
-!          AJOUT DU VENT DANS LE TRANSPORT DE L HYDROCARBURE
+!------------------------OIL SLICK VELOCITY----------------------------  
+!-------INDUCED BY THE FLOW VELOCITY AND BY THE ACTION OF WIND---------
 !======================================================================
 !
+      IF(VENT)THEN
            DO I=1,UCONV%DIM1
              UCONV_OIL%R(I)=UCONV%R(I)*(1.D0+(1.D0/KARMAN)*
      *            SQRT(CF%R(I)*0.5D0))+0.036D0*WINDX%R(I)
              VCONV_OIL%R(I)=VCONV%R(I)*(1.D0+(1.D0/KARMAN)*
      *            SQRT(CF%R(I)*0.5D0))+0.036D0*WINDY%R(I)
            ENDDO
+        ELSE
+           DO I=1,UCONV%DIM1
+             UCONV_OIL%R(I)=UCONV%R(I)*(1.D0+(1.D0/KARMAN)*
+     *            SQRT(CF%R(I)*0.5D0))
+             VCONV_OIL%R(I)=VCONV%R(I)*(1.D0+(1.D0/KARMAN)*
+     *            SQRT(CF%R(I)*0.5D0))
+           ENDDO
+        END IF
 !
 !======================================================================
-!     APPEL A OIL_FLOT (CONTIENT L'INITIALISATION DES PARTICULES)
+!--CALLING OIL_FLOT (CONTAINED INITIALIZATION OF PARTICULES STRUCTURE)-
 !======================================================================
 !
-           CALL OIL_FLOT(PARTICULES,NFLOT,NFLOT_MAX,MESH%X%R,
-     &                   MESH%Y%R,MESH%IKLE%I,NELEM,NELMAX,NPOIN,MESH,
-     &                   LT,NIT,AT,VOLDEV,RHO_OIL,NB_COMPO,NB_HAP)
+           CALL OIL_FLOT(PARTICULES,NFLOT,NFLOT_MAX,
+     &                   MESH,LT,VOLDEV,RHO_OIL,NB_COMPO,NB_HAP,
+     &                   FM_COMPO,TB_COMPO,FM_HAP,TB_HAP,SOLU)
+!
 !
 !======================================================================
-!          APPEL A OIL_SPREADING (ETALEMENT DES PARTICULES)
+!--------------CALLING OIL_SPREADING (ETALEMENT DES PARTICULES)--------
 !====================================================================== 
 !
            CALL OIL_SPREADING(VOLDEV,ETA_OIL,RHO_OIL,NFLOT,
-     &                        NFLOT_MAX,LT,DT,1)
+     &                        NFLOT_MAX,DT,2)
 !
 !======================================================================
-!          APPEL A OIL_REFLOATING (RELARGAGE DES PARTICULES)
+!--------CALLING OIL_REFLOATING (RELEASE OF BEACHING PARTICLE)---------
 !====================================================================== 
 ! 
            CALL OIL_REFLOATING(LT,DT,NPOIN,NELMAX,3,MESH%IKLE%I,H%R,
-     &                         HN%R,RHO_OIL,NFLOT_MAX,NFLOT,CF%R)
+     &                         HN%R,RHO_OIL,NFLOT,CF%R)
 !
 !======================================================================
-!        APPEL A DERIVE (CONVECTION ET DIFFUSION DES PARTICULES)
+!-----CALLING DERIVE (ADVECTION AND DIFFUSION OF THE OIL PARTICLE)-----
 !====================================================================== 
 !
            CALL OIL_DERIVE(UCONV_OIL%R,VCONV_OIL%R,VCONV_OIL%R,DT,AT,
@@ -210,29 +310,29 @@
      &                     W1%R,NPOIN,1,VISC,NB_COMPO,NB_HAP)
 !
 !======================================================================
-!          APPEL A OIL_BEACHING (ECHOUAGE DES PARTICULES)
+!----------------------CALLING OIL_BEACHING----------------------------
 !======================================================================   
 !
-           CALL OIL_BEACHING(MESH%IKLE%I,NPOIN,NELMAX,3,H%R,HN%R,
-     &                       NFLOT_MAX,NFLOT,RHO_OIL,
-     &                       MESH%SURFAC%R,CF%R,ETA_OIL,LT)
+           CALL OIL_BEACHING(MESH%IKLE%I,NPOIN,NELMAX,3,H%R,HN%R,NFLOT,
+     &                       RHO_OIL,MESH%SURFAC%R,CF%R,ETA_OIL,LT)
 !
 !======================================================================
-!          APPEL A OIL_EVAP (EVAPORATION DES PARTICULES)
+!-------------CALLING OIL_EVAP (EVAPORATION OF OIL PARTICLES)-----------
 !======================================================================   
 !
-           CALL OIL_EVAP(NB_COMPO,NB_HAP,NFLOT,NFLOT_MAX,LT,DT)
+           CALL OIL_EVAP(NB_COMPO,NB_HAP,NFLOT,
+     &          DT,3,NELMAX,MESH%IKLE%I,TAMB)
 !
 !======================================================================
-!          APPEL A OIL_DISSO (DISSOLUTION DES PARTICULES)
-!====================================================================== 
+!-----------CALLING OIL_DISSO (DISSOLUTION OF OIL PARTICLES)------------
+!======================================================================  
 !
-           CALL OIL_DISSO(NB_COMPO,NB_HAP,NFLOT,NFLOT_MAX,LT,
-     &                    DT,NELMAX,MESH%IKLE%I,HN%R,NPOIN,UNSV2D%R,
-     &                    TN,NTRAC,TB,MESH)
+           CALL OIL_DISSO(NB_COMPO,NB_HAP,NFLOT,DT,
+     &                    3,NELMAX,MESH%IKLE%I,HN%R,NPOIN,UNSV2D%R,
+     &                    TN,TB,MESH,KDISS)
 !
 !======================================================================
-!             GESTION DES PARTICULE PERDUES SI LEURS  MASS = 0
+!-------MANAGEMENT OF LOST PARTICLES IF THEIR MASS EQUALS TO 0---------
 !====================================================================== 
 !
            DO IFLOT=1,NFLOT
@@ -243,18 +343,18 @@
            END DO
 !
 !======================================================================
-!         APPEL A OIL_VOLATI (VOLATILISATION DU PÉTROLE DISSOUS
-!                  DANS LA COLONNE D'EAU DES PARTICULES)
+!------------------CALLING OIL_VOLATI (VOLATILIZATION OF---------------
+!----------------DISSOLVED COMPONENTS IN THE WATER COLUMN--------------
 !====================================================================== 
 !
-           CALL OIL_VOLATI(T3,TIMP,YASMI,HPROP,NTRAC,
-     &          NFLOT_MAX,NFLOT,NELMAX,MESH%IKLE%I,NPOIN,MESH)
+           CALL OIL_VOLATI(T3,TIMP,YASMI,HPROP,NFLOT,
+     &          3,NELMAX,MESH%IKLE%I,NPOIN,MESH,NB_HAP,KVOL)
 !
 !======================================================================
-!         APPEL A OIL_BILAN (BILAN DE MASSE DE L'HYDROCARBURE)
+!---------------CALLING OIL_BILAN (MASS BALANCE OF OIL)----------------
 !====================================================================== 
 ! 
-           CALL OIL_BILAN(NFLOT,NFLOT_MAX,LT,DT,FLOPRD)
+           CALL OIL_BILAN(NFLOT,LT,FLOPRD)
 !
 !----------------------------------------------------------------------
 !
@@ -362,12 +462,12 @@
       DOUBLE PRECISION, INTENT(INOUT) :: SHPBUF(NDP,SIZEBUF)
       DOUBLE PRECISION, INTENT(INOUT) :: SHZBUF(SIZEBUF)
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
-      TYPE(BIEF_OBJ) , INTENT(IN) :: VISC
+      TYPE(BIEF_OBJ)  , INTENT(IN)    :: VISC
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IFLOT,FRE(1),FREBUF(1),IPROC,NFLOTG,NPLAN,ELT
-      INTEGER N1,N2,N3,NOMB,SENS,I,J,IR
+      INTEGER N1,N2,N3,NOMB,SENS,IR
 !
       DOUBLE PRECISION ZSTAR(1)
 !
@@ -452,10 +552,10 @@
 !
 !-----------------------------------------------------------------------
 !
+!     THE CALCULATION OF THE DRIFT IS PERFORMED ONLY FOR 
+!     NON BEACHING OIL PARTICLES. SO, THE NON BEACHING PARTICLE
+!     CHARACTERISTICS ARE TRANSFERRED TO THE WORK FLOAT TABLE
 !
-!========================================================================
-!                           OILSPILL
-!========================================================================
       IR = 0
       DO IFLOT = 1,NFLOT
          IF(PARTICULES(IFLOT)%STATE.EQ.1)THEN
@@ -470,10 +570,6 @@
          END IF
       END DO
 !
-!========================================================================
-!                           OILSPILL
-!========================================================================
-!
       CALL SCARACT(SVOID,SVOID,U,V,W,W,X,Y,ZSTAR,ZSTAR,
      &             XFLOT,YFLOT,ZFLOT,ZFLOT,
      &             DX,DY,DZ,DZ,Z,SHPFLO,SHZFLO,SHZFLO,SURDET,DT,
@@ -481,7 +577,7 @@
      &             FRE,ELTBUF,ISUB,IELM,IELMU,NELEM,NELMAX,            
      &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,IR,NPOIN2,SENS,        
      &             SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
-     &             APOST=.TRUE.,ASTOCHA=1,AVISC=VISC)
+     &             APOST=.TRUE.,ASTOCHA=STOCHA,AVISC=VISC)
 !
 !-----------------------------------------------------------------------
 !
@@ -492,9 +588,11 @@
 !       THEY ARE REDONE HERE FOR PARTICLES WHICH ARE STILL IN THE
 !       SUB-DOMAIN
 !
-!========================================================================
-!                           OILSPILL
-!========================================================================
+!     AT THIS STAGE, WE NEED TO RECOMPUTE THE TABLE ISUB AND ELTFLO
+!     FOR ALL PARTICLES IN THE SUB-DOMAIN IN ORDER TO SEND AND DESTROY 
+!     PARTICLE INFORMATION. MOREOVER, THE TABLE TAGFLO AND SHPFLO ARE
+!     ARE RECOMPUTED IN ORDER TO HAVE INFORMATION NECESSARY TO LOCALIZED
+!     THE PARTICLES THAT MIGRATED TO ANOTHER SUB-DOMAIN  
 !
         IF(IELM.EQ.11) THEN
            DO IFLOT=NFLOT,1,-1
@@ -576,28 +674,17 @@
             END IF
          ENDIF
       END IF
-      WRITE(LU,*) 'BACK FROM RESTITUTION AFTER SCARACT'
 !
-!     SENDING THE PARTICLES THAT MIGRATED TO ANOTHER SUB-DOMAIN
-!
-!========================================================================
-!                           OILSPILL
-!========================================================================  
+!     SENDING THE PARTICLES THAT MIGRATED TO ANOTHER SUB-DOMAIN 
 !
       IF(NCSIZE.GT.1) THEN  
-         WRITE(LU,*) 'CALLING OIL SEND INFO'
          CALL OIL_SEND_INFO(XFLOT,YFLOT,ZFLOT,SHPFLO,SHZFLO,ELTFLO,
      &        ETAFLO,ISUB,TAGFLO,NDP,NFLOT,NFLOT_MAX,
      &        MESH,NPLAN,PARTICULES,NB_COMPO,NB_HAP)
          CALL OIL_SEND_PARTICLES(XFLOT,YFLOT,ZFLOT,SHPFLO,SHZFLO,ELTFLO,
      &        ETAFLO,ISUB,TAGFLO,NDP,NFLOT,NFLOT_MAX,
      &        MESH,NPLAN,PARTICULES)
-         WRITE(LU,*) 'BACK FROM OIL SEND INFO'
-      ENDIF
-!
-!========================================================================
-!                           OILSPILL
-!========================================================================  
+      ENDIF 
 !
 !-----------------------------------------------------------------------
 !
@@ -613,14 +700,8 @@
 !       LOST OR MIGRATED FLOATS
         IF(NFLOT.GT.0.AND.NCSIZE.GT.1) THEN
           IF(ELTFLO(IFLOT).LE.0.OR.ISUB(IFLOT).NE.IPID) THEN 
-!===========================================================================
-!                                     OILSPILL
-!===========================================================================
              CALL OIL_DEL_PARTICLE(PARTICULES(IFLOT)%ID,NFLOT,NFLOT_MAX,
      &            MESH%TYPELM,ISUB,PARTICULES,NB_COMPO,NB_HAP)
-!===========================================================================
-!                                     OILSPILL
-!===========================================================================
             IF(IFLOT.LE.NFLOT) GO TO 11
          ENDIF
          IFLOT=IFLOT+1
@@ -635,14 +716,8 @@
 !       LOST FLOATS ONLY
         IF(NFLOT.GT.0) THEN
           IF(ELTFLO(IFLOT).LE.0) THEN 
-!===========================================================================
-!                                     OILSPILL
-!===========================================================================
             CALL OIL_DEL_PARTICLE(PARTICULES(IFLOT)%ID,NFLOT,NFLOT_MAX,
      &           MESH%TYPELM,ISUB,PARTICULES,NB_COMPO,NB_HAP)
-!===========================================================================
-!                                     OILSPILL
-!===========================================================================
 !           THE SAME IFLOT IS NOW A NEW PARTICLE AND MUST BE CHECKED AGAIN!
             IF(IFLOT.LE.NFLOT) GO TO 10
           ENDIF
@@ -675,21 +750,9 @@
      &           FORM='FORMATTED',STATUS='NEW')
             IF(IELM.EQ.11) THEN
               DO IFLOT=1,NFLOT
-!========================================================================
-!                           OILSPILL
-!========================================================================
-!                WRITE(99,300) TAGFLO(IFLOT),XFLOT(IFLOT),YFLOT(IFLOT),1
-                 WRITE(99,304) PARTICULES(IFLOT)%ID,
+                 WRITE(99,300) PARTICULES(IFLOT)%ID,
      &                PARTICULES(IFLOT)%XOIL,PARTICULES(IFLOT)%YOIL,
-     &                PARTICULES(IFLOT)%SURFACE
-!========================================================================
-!                           OILSPILL
-!========================================================================
-              ENDDO
-            ELSE
-              DO IFLOT=1,NFLOT
-                WRITE(99,301) TAGFLO(IFLOT),XFLOT(IFLOT),YFLOT(IFLOT),
-     &                        ZFLOT(IFLOT),1
+     &                PARTICULES(IFLOT)%STATE
               ENDDO
             ENDIF
             CLOSE(99)
@@ -731,22 +794,13 @@
      &                  ' seconds"',', I=',NFLOT,', SOLUTIONTIME=',AT
           IF(IELM.EQ.11) THEN
             DO IFLOT=1,NFLOT
-               WRITE(UL,304) PARTICULES(IFLOT)%ID,
+               WRITE(UL,300) PARTICULES(IFLOT)%ID,
      &                PARTICULES(IFLOT)%XOIL,PARTICULES(IFLOT)%YOIL,
-     &                PARTICULES(IFLOT)%SURFACE
-!!              WRITE(UL,300) TAGFLO(IFLOT),XFLOT(IFLOT),YFLOT(IFLOT),1
-            ENDDO
-          ELSE
-            DO IFLOT=1,NFLOT
-              WRITE(UL,301) TAGFLO(IFLOT),XFLOT(IFLOT),
-     &                      YFLOT(IFLOT),ZFLOT(IFLOT),1
+     &                PARTICULES(IFLOT)%STATE
             ENDDO
           ENDIF
 200       FORMAT(A,F12.4,A,A,I4,A,F12.4)
-300       FORMAT(I6,',',F16.8,',',F16.8,',',I2)
-303       FORMAT(I6,',',F16.8,',',F16.8,',',I4)   
-304       FORMAT(I6,',',F16.8,',',F16.8,',',F16.8)          
-301       FORMAT(I6,',',F16.8,',',F16.8,',',F16.8,',',I2)
+300       FORMAT(I6,',',F16.8,',',F16.8,',',I2)        
         ENDIF
 !
       ENDIF      
@@ -759,19 +813,33 @@
                         SUBROUTINE OIL_SPREADING
 !                       ************************
 !
-     *(VOLDEV,ETA_OIL,RHO_OIL,NFLOT,NFLOT_MAX,LT,DT,ETAL)
+     *(VOLDEV,ETA_OIL,RHO_OIL,NFLOT,NFLOT_MAX,DT,ETAL)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   06/06/2013
 !***********************************************************************
 !
 !brief
-!+CETTE ROUTINE CALCULE L'ETALEMENT DE CHACUNE DES PARTICULES SELON LA 
-!+FORMULATION PROPOSEE PAR FAY(1971). LA FORMULATION A ETE MODIFIEE
-!+POUR QUE LE PHENOMENE D''ETALEMENT DE LA NAPPE NE DEPENDE PAS DU 
-!+NOMBRE DE PARTICULES INJECTEES POUR LA MODELISATION DE LA POLLUTION
-!+
-!+
+!+THIS ROUTINE COMPUTES THE SLICK EXPANSION CONTROLLED BY MACHANICAL 
+!+FORCES SUCH AS GRAVITY, SURFACE TENSION, INERTIA AND VISCOSITY (FAY,1971).
+!+TWO FORMULATION ARE IMPLEMENTED HERE:
+!++++IF ETAL=1 THE FORMULATION PROPOSED BY FAY IS USED. THIS MODEL DOES NOT 
+!+CONSIDER THE OIL VISCOSITY AND WOULD BE MORE CONVENIENT FOR CALM WATER
+!++++IF ETAL=2 THE FORMULATION USED, HAS BEEN PROPOSED TO MODEL THE SLICK
+!+EXPANSION FOR RELATIVELY SMALL SPILL (20 ML)
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| LT             |-->| CURRENT TIME STEP
+!| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
+!| NFLOT          |-->| NUMBER OF FLOATS
+!| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
+!| ETAL           |-->| NUMBER OF THE SPREADING MODEL
+!| ETA_OIL        |-->| OIL VISCOSITY
+!| RHO_OIL        |-->| OIL DENSITY
+!| VOLDEV         |-->| VOLUME OF THE OIL SPILL
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -779,7 +847,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)          :: LT,NFLOT,NFLOT_MAX,ETAL
+      INTEGER, INTENT(IN)          :: NFLOT,NFLOT_MAX,ETAL
       DOUBLE PRECISION, INTENT(IN) :: DT,RHO_OIL,ETA_OIL,VOLDEV        
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -830,7 +898,7 @@
      &                        **(-1.D0/4.D0)*DT**(1.D0/4.D0)
      &                        *(VOLDEV/NFLOT_MAX)
                ELSE
-                 VOL=(PARTICULES(IFLOT)%MASS/RHO_OIL)
+                 VOL=PARTICULES(IFLOT)%MASS/RHO_OIL
                  PARTICULES(IFLOT)%SURFACE=(
      &                       PARTICULES(IFLOT)%SURFACE**4+(27.D0*PI/
      &              2.D0)*(GRAVITE*DELTA)
@@ -849,40 +917,55 @@
                         SUBROUTINE OIL_EVAP
 !                       *******************
 !
-     &(NB_COMPO,NB_HAP,NFLOT,NFLOT_MAX,LT,DT)
+     &(NB_COMPO,NB_HAP,NFLOT,DT,NDP,NELMAX,IKLE,TAMB)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   16/06/2013
 !***********************************************************************
 !
 !brief
-!+CETTE ROUTINE CALCULE L'EVAPORATION DE CHACUN DES COMPOSÉS DES PARTICULES 
-!+SELON LA FORMULATION BASEE SUR LA THEORIE DU DOUBLE FILM DE WHITMAN (1923)
-!+AINSI QUE LA FORMULATION DE CLAYPERON POUR LA DETERMINATION DE LA PRESSION
-!+EN VAPEUR SATURANTE. POUR LIMITER LE NOMBRE DE VARIABLE LORS DU CALCUL DE 
-!+LA PRESSION EN VAPEUR SATURANTE DE CHACUN DES PRODUITS CONSIDERES DANS L'
-!+HYDROCARBURE, LE CALCUL DE L'ENTHALPIE MOLAIRE EST EFFECTUEE EN SE BASANT
-!+SUR LA FORMULATION DE GRAY WATSON (2000) QUI NECESSITE UNIQUEMENT LA TEMPERATURE 
-!+D'EBULLITION DU PRODUIT CONSIDERE.
-!+LE COEFFICIENT DE TRANSFERT DE MASSE EVAPOREE DE L'HYDROCARBURE DEVERSE�EST
-!+CALCULE A PARTIR DE LA FORMULATION DE MACKAY ET MATSUGU (1973).
+!+THE EVAPORATION MODEL USED IS BASED ON A PSEUDO-COMPONENT APPROACH. THE
+!+CHANGE IN THE MASS OF THE PETROLEUM COMPONENT IS CHARACTERIZED, USING
+!+THE MOLAR FLUX EXPRESSION OF STIVER AND MACKAY (1984) AND THE THERMODYNAMIC
+!+PHASE EQUILIBRIUM EQUATION. IN ORDER TO LIMIT THE VARIABLE NUMBER IN THE MODEL
+!+THE GRAY WATSON METHOD (BOETHLING, 2000) IS USED TO DETERMINE THE MOLAR 
+!+ENTHALPY AS A FUNCTION OF THE COMPONENT'S BOILING TEMPERATURE
+!+IN THIS MODEL, THE MASS TRANSFER COEFFICIENT KEVAP IS CALCULATED ACCORDING TO 
+!+THE THEORY OF MACKAY AND MATSUGU (1973)
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| LT             |-->| CURRENT TIME STEP
+!| NB_COMPO       |-->| NUMBER OF UNSOLVABLE COMPOUND IN OIL
+!| NB_HAP         |-->| NUMBER OF SOLVABLE COMPOUND IN OIL
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
+!| NFLOT          |-->| NUMBER OF FLOATS
+!| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
+!| TAMB           |-->| WATER TEMPERATURE
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
+      USE DECLARATIONS_TELEMAC2D, ONLY : WINDX,WINDY,VENT
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU   
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)          ::NB_COMPO,NB_HAP
-      INTEGER, INTENT(IN)          :: LT,NFLOT,NFLOT_MAX
-      DOUBLE PRECISION, INTENT(IN) :: DT         
+      INTEGER, INTENT(IN)          :: NB_COMPO,NB_HAP,NDP,NELMAX
+      INTEGER, INTENT(IN)          :: NFLOT
+      DOUBLE PRECISION, INTENT(IN) :: DT,TAMB
+      INTEGER         , INTENT(IN) :: IKLE(NELMAX,NDP)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IFLOT,K
-      DOUBLE PRECISION VENT,TAMB,TOTALE,Ke,MW,MASSE,BILAN
+      INTEGER IFLOT,K,I1,I2,I3
+      DOUBLE PRECISION::TOTALE,Ke,MW,MASSE,BILAN
+      DOUBLE PRECISION::VENT_RELAT,VENTX,VENTY
       DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::MASSE_EVAP_COMPO,C,D
       DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::MASSE_EVAP_HAP
       DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::MW_HAP,MW_COMPO
@@ -903,14 +986,7 @@
       END IF
 !
 !-----------------------------------------------------------------------
-!--------------------PARAMETRE METEO------------------------------------
-!-----------------------------------------------------------------------
-!
-      VENT=0.224D0
-      TAMB=273.15D0+18.9D0
-!
-!-----------------------------------------------------------------------
-!-----------------------INITIALISATION----------------------------------
+!-----------------------INITIALIZATION----------------------------------
 !-----------------------------------------------------------------------
 !
       IF(NFLOT.GT.0) THEN
@@ -927,7 +1003,7 @@
             END DO
             MASSE=0.D0
 !-----------------------------------------------------------------------
-!---------------------CALCUL MASSE MOLAIRE COMPO------------------------
+!------------MOLAR MASS CALCULATION OF UNSOLVABLE COMPOUND--------------
 !-----------------------------------------------------------------------  
             DO K=1,NB_COMPO
                MW_COMPO(K)=
@@ -935,7 +1011,7 @@
      *              +(9.494D-07*PARTICULES(IFLOT)%COMPO(K)%TB**2)
             END DO
 !-----------------------------------------------------------------------
-!---------------------CALCUL MASSE MOLAIRE HAP--------------------------
+!------------MOLAR MASS CALCULATION OF UNSOLVABLE COMPOUND--------------
 !-----------------------------------------------------------------------  
             DO K=1,NB_HAP
                MW_HAP(K)=
@@ -943,7 +1019,7 @@
      *              +(9.494D-07*PARTICULES(IFLOT)%HAP(K)%TB**2)
             END DO
 !-----------------------------------------------------------------------
-!----------CALCUL MASSE MOLAIRE DE L'HYDROCARBURE DEVERSE---------------
+!--------------------MOLAR MASS CALCULATION OF THE OIL------------------
 !-----------------------------------------------------------------------  
             MW=0.D0
             DO K=1,NB_COMPO
@@ -955,11 +1031,43 @@
      *              PARTICULES(IFLOT)%MASS)*MW_HAP(K)
             END DO
 !-----------------------------------------------------------------------
-!-------------CALCUL DU COEFFICIENT DE TRANSFERT DE MASSE---------------
-!-----------------------------------------------------------------------  
-            Ke=0.0048D0*VENT**0.78D0*1.3676D0*(0.018D0/MW)**(1.D0/3.D0)
+!-------WIND CALCULATION (DIFFERENCE BETWEEN U SURFACE AND WIND)--------
 !-----------------------------------------------------------------------
-!-------------CALCUL DU NOMBRE DE MOL TOTAL DE LA NAPPE-----------------
+            I1=IKLE(PARTICULES(IFLOT)%ELTOIL,1)
+            I2=IKLE(PARTICULES(IFLOT)%ELTOIL,2)
+            I3=IKLE(PARTICULES(IFLOT)%ELTOIL,3)
+
+            IF(VENT)THEN
+               VENTX=((UCONV_OIL%R(I1)-WINDX%R(I1))
+     *              *PARTICULES(IFLOT)%SHPOIL(1)
+     *              +(UCONV_OIL%R(I2)-WINDX%R(I2))
+     *              *PARTICULES(IFLOT)%SHPOIL(2)
+     *              +(UCONV_OIL%R(I3)-WINDX%R(I3))
+     *              *PARTICULES(IFLOT)%SHPOIL(3))
+
+               VENTY=((VCONV_OIL%R(I1)-WINDY%R(I1))
+     *              *PARTICULES(IFLOT)%SHPOIL(1)
+     *              +(VCONV_OIL%R(I2)-WINDY%R(I2))
+     *              *PARTICULES(IFLOT)%SHPOIL(2)
+     *              +(VCONV_OIL%R(I3)-WINDY%R(I3))
+     *              *PARTICULES(IFLOT)%SHPOIL(3))
+            ELSE
+               VENTX=UCONV_OIL%R(I1)*PARTICULES(IFLOT)%SHPOIL(1)
+     *              +UCONV_OIL%R(I2)*PARTICULES(IFLOT)%SHPOIL(2)
+     *              +UCONV_OIL%R(I3)*PARTICULES(IFLOT)%SHPOIL(3)
+
+               VENTY=VCONV_OIL%R(I1)*PARTICULES(IFLOT)%SHPOIL(1)
+     *              +VCONV_OIL%R(I2)*PARTICULES(IFLOT)%SHPOIL(2)
+     *              +VCONV_OIL%R(I3)*PARTICULES(IFLOT)%SHPOIL(3)
+            END IF
+            VENT_RELAT = SQRT(VENTX**2+VENTY**2)
+!-----------------------------------------------------------------------
+!------------CALCULATION OF THE MASS TRANSFER COEFFICIENT---------------
+!-----------------------------------------------------------------------  
+            Ke=0.0048D0*VENT_RELAT**0.78D0*1.3676D0
+     *           *(0.018D0/MW)**(1.D0/3.D0)
+!-----------------------------------------------------------------------
+!----------CALCULATION OF THE TOTAL MOL IN THE OIL SLICK----------------
 !-----------------------------------------------------------------------
             TOTALE=0.D0
             DO K=1,NB_COMPO
@@ -969,8 +1077,8 @@
                TOTALE=TOTALE+PARTICULES(IFLOT)%HAP(K)%MASS/MW_HAP(K)
             END DO
 !------------------------------------------------------------------------------
-!--------CALCUL DE LA MASSE  DE CHAQUE COMPO DE LHYDROCARBURE------------------
-!--------------------------APRES EVAPORATION-----------------------------------
+!---------DETERMINATION OF EACH OIL COMPONENT MASS AFTER EVAPORATION-----------
+!-----------------------------(UNSOLVABLE)-------------------------------------
 !------------------------------------------------------------------------------            
             DO K=1,NB_COMPO
                MASSE_EVAP_COMPO(K)=0.D0
@@ -1000,8 +1108,8 @@
                END IF
             END DO
 !------------------------------------------------------------------------------
-!----------CALCUL DE LA MASSE  DE CHAQUE HAP DE LHYDROCARBURE------------------
-!--------------------------APRES EVAPORATION-----------------------------------
+!---------DETERMINATION OF EACH OIL COMPONENT MASS AFTER EVAPORATION-----------
+!-----------------------------(SOLVABLE)---------------------------------------
 !------------------------------------------------------------------------------  
             DO K=1,NB_HAP
                MASSE_EVAP_HAP(K)=0.D0
@@ -1048,18 +1156,37 @@
                         SUBROUTINE OIL_DISSO
 !                       ********************
 !
-     *(NB_COMPO,NB_HAP,NFLOT,NFLOT_MAX,LT,DT,
-     * NELMAX,IKLE,HN,NPOIN,UNSV2D,TN,NTRAC,TB,MESH)
+     *(NB_COMPO,NB_HAP,NFLOT,DT,NDP,
+     * NELMAX,IKLE,HN,NPOIN,UNSV2D,TN,TB,MESH,KDISS)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   16/06/2013
 !***********************************************************************
 !
 !brief
-!+CETTE ROUTINE CALCULE LA DISSOLUTION DE CHACUN DES HAP COMPOSANT L'HYDROCARBURE 
-!+SELON LA FORMULATION BASEE SUR LA THEORIE DU DOUBLE FILM DE WHITMAN (1923)
-!+LE COEFFICIENT DE TRANSFERT DE MASSE DISSOUTE EST À RENSEIGNER PAR L'UTILISATEUR.
+!+THIS ROUTINE COMPUTES THE DISSOLUTION PHENOMENON OF EACH OIL SOLVABLE COMPONENT
+!+BASED ON WHITMAN'S (1923) THEORY, WHICH FORMULATES THE MASS TRANSFER FLUX 
+!+FOR MASS TRANSFER PHENOMENA
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
+!| HN             |<->| DEPTH AT TIME T(N)
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| KDISS          |-->| DISSOLUTION RATE COEFFICIENT
+!| LT             |-->| CURRENT TIME STEP
+!| NB_COMPO       |-->| NUMBER OF UNSOLVABLE COMPOUND IN OIL
+!| NB_HAP         |-->| NUMBER OF SOLVABLE COMPOUND IN OIL
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
+!| NFLOT          |-->| NUMBER OF FLOATS
+!| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| UNSV2D         |-->| 1/(INTEGRAL OF TEST FUNCTIONS), NOT ASSEMBLED IN PARALLEL
+!| TB             |<->| BLOCK WITH T1,T2,...
+!| TN             |<->| TRACERS AT TIME N
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF                  
       IMPLICIT NONE
@@ -1068,20 +1195,21 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: LT,NFLOT_MAX,NB_COMPO,NTRAC
-      INTEGER, INTENT(IN)             :: NB_HAP,NFLOT
+      INTEGER, INTENT(IN)             :: NB_COMPO
+      INTEGER, INTENT(IN)             :: NB_HAP,NFLOT,NDP
       DOUBLE PRECISION, INTENT(IN)    :: DT
       INTEGER         , INTENT(IN)    :: NELMAX,NPOIN
-      INTEGER         , INTENT(IN)    :: IKLE(NELMAX,3)
+      INTEGER         , INTENT(IN)    :: IKLE(NELMAX,NDP)
       DOUBLE PRECISION, INTENT(INOUT) :: HN(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: UNSV2D(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: KDISS(NB_HAP)
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TN    
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TB  
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NDP,I,K,J,IFLOT,IEL,I1,I2,I3,N
+      INTEGER K,J,IFLOT,I1,I2,I3
       DOUBLE PRECISION::X0,MASSE
       DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::VOL,HAUT
       DOUBLE PRECISION,DIMENSION(:,:),ALLOCATABLE::C
@@ -1089,18 +1217,15 @@
       DOUBLE PRECISION,DIMENSION(:,:),ALLOCATABLE::M
       DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::MW_HAP,MW_COMPO
       DOUBLE PRECISION::TOT,TOTALE
-      DOUBLE PRECISION KDISS(4)
-      DATA KDISS/4.99D-06,5.87D-06,3.12D-06,1.2D-06/  
       LOGICAL DEJA
       DATA DEJA /.FALSE./
 !
       SAVE
 !
 !-----------------------------------------------------------------------
-! ----------------ALLOCATION DES TABLEAUX-------------------------------
+!-----------------------TABLE ALLOCATION--------------------------------
 !-----------------------------------------------------------------------
 !
-      NDP = 3
       IF(.NOT.DEJA) THEN
         ALLOCATE(VOL(NDP))
         ALLOCATE(HAUT(NDP))
@@ -1121,7 +1246,7 @@
            IF(PARTICULES(IFLOT)%STATE.EQ.1) THEN
 !
 !--------------------------------------------------------------
-! -------------------INITIALISATION----------------------------
+! -------------------INITIALIZATION----------------------------
 !--------------------------------------------------------------
 !
              DO K=1,NB_HAP
@@ -1145,8 +1270,8 @@
              I3=IKLE(PARTICULES(IFLOT)%ELTOIL,3)
 !
 !-----------------------------------------------------------------------
-!---------------------CALCUL MASSE MOLAIRE COMPO------------------------
-!----------------------------------------------------------------------- 
+!------------MOLAR MASS CALCULATION OF UNSOLVABLE COMPOUND--------------
+!-----------------------------------------------------------------------
 ! 
              DO K=1,NB_COMPO
                MW_COMPO(K)=
@@ -1155,7 +1280,7 @@
              ENDDO
 !
 !-----------------------------------------------------------------------
-!---------------------CALCUL MASSE MOLAIRE HAP--------------------------
+!-------------MOLAR MASS CALCULATION OF SOLVABLE COMPOUND---------------
 !-----------------------------------------------------------------------
 !  
              DO K=1,NB_HAP
@@ -1165,7 +1290,7 @@
              ENDDO
 !
 !-----------------------------------------------------------------------
-!-------------CALCUL DU NOMBRE DE MOL TOTAL DE LA NAPPE-----------------
+!----------CALCULATION OF THE TOTAL MOL IN THE OIL SLICK----------------
 !-----------------------------------------------------------------------
 !
             TOTALE=0.D0
@@ -1255,7 +1380,7 @@
             PARTICULES(IFLOT)%MASS=MASSE
 !
 !-----------------------------------------------------------------------
-!---------------QUANTITE DE TRACEUR LACHEE------------------------------
+!----------AMOUNT OF TRACER INJECTED INTO THE WATER COLUMN--------------
 !-----------------------------------------------------------------------
 !
             IF(HN(I1).GE.0.0001D0)THEN
@@ -1281,6 +1406,11 @@
       END IF
       DO K=1,NB_HAP
         IF(NCSIZE.GT.1) CALL PARCOM(TB%ADR(K)%P,2,MESH)
+!
+!-----------------------------------------------------------------------
+!-------------UPDATING OF THE TRACER AMOUNT IN THE DOMAIN---------------
+!-----------------------------------------------------------------------
+!
         CALL OS('X=X+Y   ',X=TN%ADR(K)%P ,Y=TB%ADR(K)%P)
       ENDDO
 !
@@ -1292,17 +1422,33 @@
                         SUBROUTINE OIL_VOLATI
 !                       *********************
 !
-     *(T3,TIMP,YASMI,HPROP,NTRAC,NFLOT_MAX,NFLOT,NELMAX,IKLE,NPOIN,MESH)
+     *(T3,TIMP,YASMI,HPROP,NFLOT,NDP,NELMAX,IKLE,NPOIN,MESH,NB_HAP,KVOL)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   16/06/2013
 !***********************************************************************
 !
 !brief
-!+CETTE ROUTINE CALCULE LA VOLATILISATION DE CHACUN DES HAP COMPOSANT L'HYDROCARBURE 
-!+GRACE A UN TERME SOURCE IMPLICITE A RENSEIGNER PAR L'UTILISATEUR. LES TERMES
-!+SOURCES CORRESPONDENT AUX COEFFICIENTS DE TRANSFERT DE MASSE.
+!+THIS ROUTINE COMPUTES THE VOLATILIZATION FLUX OF EACH DISSOLVED COMPONENT
+!+ACCORDING TO AN IMPLICIT TERM, WHICH MUST BE INFORMED BY THE USER
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| HPROP          |-->| PROPAGATION DEPTH
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| KVOL           |-->| VOLATILIZATION RATE COEFFICIENT
+!| NB_HAP         |-->| NUMBER OF SOLVABLE OIL COMPONENT
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
+!| NFLOT          |-->| NUMBER OF FLOATS
+!| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| TIMP           |<->| IMPLICIT SOURCE TERM.
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| YASMI          |<->| IF YES, THERE ARE IMPLICIT SOURCE TERMS
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF                  
       IMPLICIT NONE
@@ -1311,10 +1457,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NTRAC,NFLOT_MAX
-      INTEGER, INTENT(IN)             :: NELMAX,NPOIN,NFLOT
-      INTEGER, INTENT(IN)             :: IKLE(NELMAX,3)
+      INTEGER, INTENT(IN)             :: NB_HAP
+      INTEGER, INTENT(IN)             :: NELMAX,NPOIN,NFLOT,NDP
+      INTEGER, INTENT(IN)             :: IKLE(NELMAX,NDP)
       LOGICAL, INTENT(INOUT)          :: YASMI(*) 
+      DOUBLE PRECISION,INTENT(IN)     :: KVOL(NB_HAP)
       TYPE(BIEF_OBJ), INTENT(IN)      :: HPROP
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T3,TIMP
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
@@ -1324,14 +1471,10 @@
       INTEGER I1,I2,I3,IFLOT,ITRAC,I,NFLOTMAX
       INTEGER P_IMAX 
       EXTERNAL P_IMAX
-      DOUBLE PRECISION KVOL(4)
-      DATA KVOL/1.08D-06,3.66D-07,5.18D-08,1.20D-08/
 !
 !-----------------------------------------------------------------------
 !
-!     TERMES SOURCES EXPLICITES (ICI MIS A ZERO)
-!
-      DO ITRAC=1,NTRAC
+      DO ITRAC=1,NB_HAP
         CALL OS('X=0     ',X=TIMP%ADR(ITRAC)%P)
       ENDDO
 !
@@ -1356,9 +1499,11 @@
            T3%R(I3)=T3%R(I3)+1.D0
         ENDDO
 !
+!THE WORK TABLE T3 IS USED TO DEFINED THE AREA NOT COVERED BY THE OIL SLICK
+!
         IF(NCSIZE.GT.1) CALL PARCOM(T3,2,MESH)
 !
-        DO ITRAC=1,NTRAC
+        DO ITRAC=1,NB_HAP
           DO I=1,NPOIN
             IF(T3%R(I).LT.0.5D0.AND.HPROP%R(I).GE.1.D-4)THEN
               TIMP%ADR(ITRAC)%P%R(I)=-KVOL(ITRAC)	
@@ -1379,7 +1524,7 @@
                         SUBROUTINE OIL_BEACHING
 !                       ***********************
 !
-     &(IKLE,NPOIN,NELMAX,NDP,H,HN,NFLOT_MAX,NFLOT,RHO_OIL,
+     &(IKLE,NPOIN,NELMAX,NDP,H,HN,NFLOT,RHO_OIL,
      & SURFAC,CF,ETA_OIL,LT)
 !
 !***********************************************************************
@@ -1387,9 +1532,26 @@
 !***********************************************************************
 !
 !brief
-!+CETTE ROUTINE CALCULE L'ECHOUAGE DES PARTICULES D'HYDROCARBURES EN 
-!FONCTION DU TYPE DE BERGE ESTIME PAR LA TAILLE DE GRAIN.
+!+THIS ROUTINES COMPUTES THE OIL BEACHING OF THE PARTICLES BASED ON
+!+THE BANK TYPE ESTIMATED BY THE GRAIN SIZE
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| CF             |-->| ADIMENSIONAL FRICTION COEFFICIENT
+!| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
+!| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEB TWO RECORDS
+!| HN             |-->| DEPTH AT TIME T(N)
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| LT             |-->| CURRENT TIME STEP
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
+!| NFLOT          |-->| NUMBER OF FLOATS
+!| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| RHO_OIL        |-->| DENSITY OF OIL
+!| SURFAC         |-->| AREA OF ELEMENTS IN 2D
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
 !  
@@ -1401,7 +1563,7 @@
 !
 !
       INTEGER         , INTENT(IN)    :: NELMAX,NDP,NPOIN
-      INTEGER         , INTENT(IN)    :: NFLOT_MAX,NFLOT,LT
+      INTEGER         , INTENT(IN)    :: NFLOT,LT
       DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: H(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: HN(NPOIN)
@@ -1415,7 +1577,7 @@
 !
       INTEGER IEL
       DOUBLE PRECISION HAUTPART,VOLECH,VOLDIS,L,M
-      DOUBLE PRECISION Tm,Cv,Dp,Ks,EPAISSEUR,TGRAIN
+      DOUBLE PRECISION Tm,Cv,Dp,Ks,EPAISSEUR
       DOUBLE PRECISION HH
 !
 !-----------------------------------------------------------------------
@@ -1513,8 +1675,10 @@
                 ENDIF
               ENDIF
             ENDDO
-!!!DANS LE CALCUL DU VOLUME DE BERGE DISPONIBLE L'INCLINAISON DE LA BERGE EST
-!NÉGLIGÉ DANS LA FORMULATION CI-DESSOUS
+!
+!IN THE CALCULATION OF THE BANK VOLUME AVAILABLE, THE SLOPE OF THE BANK IS NEGLECTED
+!IN THE FOLLOWING FORMULATION
+!
             VOLDIS=(1.D0/3.D0)*SURFAC(IEL)*Tm+0.5D0*Cv*Dp
      &              *SQRT((1.D0/3.D0)*SURFAC(IEL))-VOLECH
 !
@@ -1537,17 +1701,33 @@
                         SUBROUTINE OIL_REFLOATING
 !                       *************************
 !
-     *(LT,DT,NPOIN,NELMAX,NDP,IKLE,H,HN,RHO_OIL,
-     & NFLOT_MAX,NFLOT,CF)
+     *(LT,DT,NPOIN,NELMAX,NDP,IKLE,H,HN,RHO_OIL,NFLOT,CF)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   16/06/2013
 !***********************************************************************
 !
 !brief
-!+CETTE ROUTINE CALCULE LE RELARAGE DES PARTICULES ECHOUÉES D'HYDROCARBURES EN 
-!FONCTION DU TYPE DE BERGE ESTIME PAR LA TAILLE DE GRAIN.
+!+THIS ROUTINE COMPUTES THE RELEASE OF THE OIL BEACHING PARTICLE BASED ON
+!+THE BANK TYPE ESTIMATED BY THE GRAIN SIZE
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| CF             |-->| ADIMENSIONAL FRICTION COEFFICIENT
+!| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
+!| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEB TWO RECORDS
+!| HN             |<->| DEPTH AT TIME T(N)
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| LT             |-->| CURRENT TIME STEP
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
+!| NFLOT          |-->| NUMBER OF FLOATS
+!| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| RHO_OIL        |-->| DENSITY OF OIL
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF                  
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -1557,7 +1737,7 @@
 !
       INTEGER         , INTENT(IN)    :: NPOIN,LT,NDP
       INTEGER         , INTENT(IN)    :: NELMAX
-      INTEGER         , INTENT(IN)    :: NFLOT_MAX,NFLOT
+      INTEGER         , INTENT(IN)    :: NFLOT
       DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN),HN(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: RHO_OIL,DT
@@ -1633,15 +1813,25 @@
                         SUBROUTINE OIL_BILAN
 !                       ********************
 !
-     *(NFLOT,NFLOT_MAX,LT,DT,FLOPRD)
+     *(NFLOT,LT,FLOPRD)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   16/06/2013
 !***********************************************************************
 !
 !brief
-!+CETTE ROUTINE CALCULE LE BILAN DE MASSE DE L'HYDROCARBURE
+!+THIS ROUTINE COMPUTES THE OIL MASS BALANCE
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
+!| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEB TWO RECORDS
+!| LT             |-->| CURRENT TIME STEP
+!| NFLOT          |-->| NUMBER OF FLOATS
+!| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF                  
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -1649,9 +1839,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)          :: LT,NFLOT_MAX,NFLOT
-      INTEGER         , INTENT(IN)    :: FLOPRD
-      DOUBLE PRECISION, INTENT(IN) :: DT   
+      INTEGER, INTENT(IN)          :: LT,NFLOT
+      INTEGER         , INTENT(IN) :: FLOPRD   
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1667,7 +1856,7 @@
       EXTERNAL         P_DSUM
 !
 !-----------------------------------------------------------------------
-!--------------------------INITIALISATION-------------------------------
+!--------------------------INITIALIZATION-------------------------------
 !-----------------------------------------------------------------------
 !
       MASSE_INACT=0.D0
@@ -1703,6 +1892,10 @@
         WRITE(LU,*)  'BILAN',IPID,BILAN_OIL
       END IF
 !
+!--------------------------------------------------------------------------
+!----------------------------PARALLEL VERSION------------------------------
+!--------------------------------------------------------------------------
+!
       IF(NCSIZE.GT.1)THEN
       IF(MOD.EQ.0) WRITE(LU,*) '======================================='
       IF(MOD.EQ.0) WRITE(LU,*) '========','BILAN HYDROCARBURE','======='
@@ -1716,6 +1909,11 @@
       IF(MOD.EQ.0) WRITE(LU,*) 'BILAN NAPPE SURFACE',P_DSUM(BILAN_OIL)
       IF(MOD.EQ.0) WRITE(LU,*) '======================================='
       ELSE
+!
+!--------------------------------------------------------------------------
+!--------------------------SCALAR VERSION----------------------------------
+!--------------------------------------------------------------------------
+!
       IF(MOD.EQ.0) WRITE(LU,*) '======================================='
       IF(MOD.EQ.0) WRITE(LU,*) '========','BILAN HYDROCARBURE','======='
       IF(MOD.EQ.0) WRITE(LU,*) '======================================='

@@ -2,8 +2,8 @@
                      SUBROUTINE OIL_FLOT
 !                    *******************
 !
-     &(PARTICULES,NFLOT,NFLOT_MAX,X,Y,IKLE,NELEM,NELMAX,NPOIN,
-     & MESH,LT,NIT,AT,VOLDEV,RHO_OIL,NB_COMPO,NB_HAP)
+     &(PARTICULES,NFLOT,NFLOT_MAX,MESH,LT,VOLDEV,RHO_OIL,
+     &NB_COMPO,NB_HAP,FMCOMPO,TBCOMPO,FMHAP,TBHAP,SOLU)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   21/08/2010
@@ -45,25 +45,23 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
-!| ELTFLO         |<->| NUMBERS OF ELEMENTS WHERE ARE THE FLOATS
+!| ELTFLO         |-->| NUMBERS OF ELEMENTS WHERE ARE THE FLOATS
 !| LT             |-->| CURRENT TIME STEP
 !| MESH           |<->| MESH STRUCTURE
 !| NFLOT          |-->| NUMBER OF FLOATS
 !| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
 !| NIT            |-->| NUMBER OF TIME STEPS
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
-!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!| PARTICULES     |<->| OIL STRUCTURE DEFINED IN BIEF DEF
+!| SHPFLO         |-->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
 !|                |   | ELEMENTS.
 !| X,Y            |-->| COORDINATES OF POINTS IN THE MESH
-!| XFLOT,YFLOT    |<--| POSITIONS OF FLOATING BODIES
+!| XFLOT,YFLOT    |-->| POSITIONS OF FLOATING BODIES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE STREAMLINE, ONLY : ADD_PARTICLE,DEL_PARTICLE
+      USE STREAMLINE, ONLY : ADD_PARTICLE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -71,13 +69,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NPOIN,NIT,NFLOT_MAX,LT
+      INTEGER, INTENT(IN)             :: NFLOT_MAX,LT
       INTEGER, INTENT(IN)             :: NB_COMPO,NB_HAP
-      INTEGER, INTENT(IN)             :: NELEM,NELMAX
-      INTEGER, INTENT(IN)             :: IKLE(NELMAX,3)
       INTEGER, INTENT(INOUT)          :: NFLOT
-      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),AT
       DOUBLE PRECISION, INTENT(IN)    :: VOLDEV,RHO_OIL
+      DOUBLE PRECISION, INTENT(IN)    :: FMCOMPO(NB_COMPO)
+      DOUBLE PRECISION, INTENT(IN)    :: TBCOMPO(NB_COMPO)
+      DOUBLE PRECISION, INTENT(IN)    :: FMHAP(NB_HAP)
+      DOUBLE PRECISION, INTENT(IN)    :: TBHAP(NB_HAP)
+      DOUBLE PRECISION, INTENT(IN)    :: SOLU(NB_HAP)
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
       TYPE(OIL_PART), INTENT(INOUT)   :: PARTICULES(NFLOT_MAX)
 !
@@ -93,23 +93,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION TBCOMPO(6)
-      DATA TBCOMPO/528.38D0,615.12D0,
-     *             705.11D0,820.13D0,960.12D0,1125.16D0/
-      DOUBLE PRECISION TBHAP(1)
-      DATA TBHAP/497.05D0/
-      DOUBLE PRECISION SOLU(1)
-      DATA SOLU/0.018D0/
-      DOUBLE PRECISION FVCOMPO(6)
-      DATA FVCOMPO/0.06D0,0.06D0,0.20D0,0.17D0,0.17D0,0.32D0/
-      DOUBLE PRECISION FVHAP(1)
-      DATA FVHAP/0.02D0/
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
 !     THIS IS AN EXAMPLE !!!!!!!!!!!!!!!!!!!!
 !
-      IF(LT.EQ.100) THEN 
+      IF(LT.EQ.35640) THEN 
          NUM_GLO=0
          NUM_MAX=0
          NUM_LOC=0
@@ -128,7 +114,7 @@
                IF(NFLOT_OIL.EQ.1)THEN
                   NUM_LOC = NUM_LOC+1
 !=========================================================================
-!  INITIALISATION PARAMETRES NECESSAIRE AU DEPLACEMENT DES PARTICULES
+!----INITIALIZATION PARAMETERS FOR THE CALCULATION OF PARTICULE MOTION----
 !=========================================================================
                   PARTICULES(NUM_LOC)%XOIL = XFLOT(1)
                   PARTICULES(NUM_LOC)%YOIL = YFLOT(1)
@@ -138,8 +124,8 @@
                   PARTICULES(NUM_LOC)%SHPOIL(3) = SHPFLO(3,1)
                   PARTICULES(NUM_LOC)%ELTOIL = ELTFLO(1)
 !=========================================================================
-!  INITIALISATION PARAMETRES NECESSAIRE AU PROCESSUS PHYSICO-CHIMIQUES 
-!                             DES HYDROCARBURES
+!-----------INITIALIZATION PARAMETERS FOR THE CALCULATION OF OIL----------
+!---------------------------WEATHERING PROCESSES--------------------------
 !=========================================================================
                   PARTICULES(NUM_LOC)%STATE=1
                   PARTICULES(NUM_LOC)%TPSECH=0
@@ -150,7 +136,7 @@
                   PARTICULES(NUM_LOC)%MASS_DISS=0.D0
                   DO I=1,NB_COMPO
                      PARTICULES(NUM_LOC)%COMPO(I)%MASS=
-     &                    PARTICULES(NUM_LOC)%MASS0*FVCOMPO(I)
+     &                    PARTICULES(NUM_LOC)%MASS0*FMCOMPO(I)
                      PARTICULES(NUM_LOC)%COMPO(I)%TB=TBCOMPO(I)
                      PARTICULES(NUM_LOC)%COMPO(I)%SOL=0.D0
                      PARTICULES(NUM_LOC)%MASS=PARTICULES(NUM_LOC)%MASS+
@@ -158,7 +144,7 @@
                   END DO
                   DO I=1,NB_HAP
                      PARTICULES(NUM_LOC)%HAP(I)%MASS=
-     &                    PARTICULES(NUM_LOC)%MASS0*FVHAP(I)
+     &                    PARTICULES(NUM_LOC)%MASS0*FMHAP(I)
                      PARTICULES(NUM_LOC)%HAP(I)%TB=TBHAP(I)
                       PARTICULES(NUM_LOC)%HAP(I)%SOL=SOLU(I)
                      PARTICULES(NUM_LOC)%MASS=PARTICULES(NUM_LOC)%MASS+
