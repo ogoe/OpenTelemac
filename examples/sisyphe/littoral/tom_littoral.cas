@@ -31,8 +31,9 @@ RAISON FREQUENTIELLE = 1.1007
 NOMBRE DE FREQUENCES = 12
 /NOMBRE DE DIRECTIONS = 36
 NOMBRE DE DIRECTIONS = 12
-PAS DE TEMPS = 5.
-/NOMBRE DE PAS DE TEMPS = 100
+PAS DE TEMPS = 10.
+/ SO FAR NECESSARY FOR VALIDATION
+NOMBRE DE PAS DE TEMPS = 100
 /--------------------------------------------------------------------/
 / CONDITIONS INITIALES   
 /--------------------------------------------------------------------/

@@ -8,7 +8,7 @@
 /                    ENVIRONNEMENT INFORMATIQUE
 /----------------------------------------------------------------------
 / 
-/PROCESSEURS PARALLELES = 1
+/PROCESSEURS PARALLELES = 8
 /
 COUPLAGE AVEC : 'TOMAWAC,SISYPHE'
 /
@@ -50,7 +50,7 @@ VARIABLES POUR LES SORTIES GRAPHIQUES = H,S,B,U,V
 /'PERIODE PIC TPR5S               '
 /
 PAS DE TEMPS           = 10.
-NOMBRE DE PAS DE TEMPS = 1000
+NOMBRE DE PAS DE TEMPS = 100
 PERIODE POUR LES SORTIES GRAPHIQUES = 100
 PERIODE DE SORTIE LISTING =10
 /----------------------------------------------------------------------
