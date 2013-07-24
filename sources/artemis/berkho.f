@@ -1101,7 +1101,7 @@
             RELDIS = RELDIS * 0.85D0
          ENDIF
 !
-         IF (NCSIZE .NE. 0) THEN
+         IF (NCSIZE .GT. 1) THEN
             ECRHMU = P_DMAX(ECRHMU)
             MODHMU = P_DMAX(MODHMU)
          END IF
