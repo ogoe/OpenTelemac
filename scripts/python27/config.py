@@ -239,7 +239,7 @@ def parseConfigFile(file,name,bypass=False):
    generalDict,configDict = getConfigs(file,name,bypass)
    
    # ~~ Replacing user keys throughout ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   key_sqbrack = re.compile(r'(?P<before>.*?)\[(?P<key>[\w_.-~=+]*)\](?P<after>[^\Z]*)\Z')
+   key_sqbrack = re.compile(r'(?P<before>.*?)\[(?P<key>[\w_.-~=+]*)\](?P<after>.*?)\Z')
    for cfgname in configDict.keys():
       # ~~> making sure cfgname also includes all keys from general
       for genkey in generalDict.keys() :
