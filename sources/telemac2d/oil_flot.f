@@ -3,7 +3,7 @@
 !                    *******************
 !
      &(PARTICULES,NFLOT,NFLOT_MAX,MESH,LT,VOLDEV,RHO_OIL,
-     &NB_COMPO,NB_HAP,FMCOMPO,TBCOMPO,FMHAP,TBHAP,SOLU)
+     &NB_COMPO,NB_HAP,FMCOMPO,TBCOMPO,FMHAP,TBHAP,SOLU,ETAL,AREA)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   21/08/2010
@@ -61,6 +61,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC2D, ONLY : GRAV
       USE STREAMLINE, ONLY : ADD_PARTICLE
 !
       IMPLICIT NONE
@@ -71,8 +72,9 @@
 !
       INTEGER, INTENT(IN)             :: NFLOT_MAX,LT
       INTEGER, INTENT(IN)             :: NB_COMPO,NB_HAP
+      INTEGER, INTENT(IN)             :: ETAL
       INTEGER, INTENT(INOUT)          :: NFLOT
-      DOUBLE PRECISION, INTENT(IN)    :: VOLDEV,RHO_OIL
+      DOUBLE PRECISION, INTENT(IN)    :: VOLDEV,RHO_OIL,AREA
       DOUBLE PRECISION, INTENT(IN)    :: FMCOMPO(NB_COMPO)
       DOUBLE PRECISION, INTENT(IN)    :: TBCOMPO(NB_COMPO)
       DOUBLE PRECISION, INTENT(IN)    :: FMHAP(NB_HAP)
@@ -83,19 +85,31 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER :: K,J,NUM_GLO,NUM_LOC,NUM_MAX,I
-      INTEGER ::NFLOT_OIL
-      DOUBLE PRECISION :: COORD_X, COORD_Y
-      DOUBLE PRECISION :: XFLOT(1), YFLOT(1)
-      DOUBLE PRECISION :: SHPFLO(3,1)
-      INTEGER          :: TAGFLO(1)
-      INTEGER          :: ELTFLO(1)
+      INTEGER                         :: K,J,NUM_GLO,NUM_LOC,NUM_MAX,I
+      INTEGER                         :: NFLOT_OIL
+      DOUBLE PRECISION                :: RHO_EAU,PI,COEF1
+      DOUBLE PRECISION                :: COEF2,DELTA,NU,NU2
+      DOUBLE PRECISION                :: COORD_X, COORD_Y
+      DOUBLE PRECISION                :: XFLOT(1), YFLOT(1)
+      DOUBLE PRECISION                :: SHPFLO(3,1)
+      INTEGER                         :: TAGFLO(1)
+      INTEGER                         :: ELTFLO(1)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !     THIS IS AN EXAMPLE !!!!!!!!!!!!!!!!!!!!
 !
-      IF(LT.EQ.35640) THEN 
+         RHO_EAU=1000.D0
+         PI=ACOS(-1.D0)
+!        HARDCODED WATER MOLECULAR VISCOSITY
+         NU=1.D-6
+         NU2=NU**2
+!
+         COEF1=1.21D0**4
+         COEF2=COEF1/1.53**2
+         DELTA=(RHO_EAU-RHO_OIL)/(RHO_EAU)
+!
+      IF(LT.EQ.10000) THEN 
          NUM_GLO=0
          NUM_MAX=0
          NUM_LOC=0
@@ -104,8 +118,8 @@
          NUM_MAX=INT(SQRT(REAL(NFLOT_MAX)))
          DO K=0,NUM_MAX-1
             DO J=0,NUM_MAX-1
-               COORD_X=136939.469D0+J*0.1D0
-               COORD_Y=6706174.0D0+K*0.1D0
+               COORD_X=336000.D0+REAL(j)
+               COORD_Y=371000.D0+REAL(k)
                NUM_GLO=NUM_GLO+1
                NFLOT_OIL = 0
                CALL ADD_PARTICLE(COORD_X,COORD_Y,0.D0,NUM_GLO,NFLOT_OIL,
@@ -129,9 +143,25 @@
 !=========================================================================
                   PARTICULES(NUM_LOC)%STATE=1
                   PARTICULES(NUM_LOC)%TPSECH=0
-                  PARTICULES(NUM_LOC)%SURFACE = 0.D0
-                  PARTICULES(NUM_LOC)%MASS0 = (VOLDEV*RHO_OIL)/
-     &                 REAL(NFLOT_MAX)
+                  IF(ETAL.EQ.1)THEN
+                     PARTICULES(NUM_LOC)%SURFACE=PI*COEF2*
+     &                    (DELTA*GRAV/(VOLDEV*NU2))**(1.D0/6.D0)
+     &                    *VOLDEV/NFLOT_MAX 
+                  ELSEIF(ETAL.EQ.3)THEN
+                     PARTICULES(NUM_LOC)%SURFACE = AREA
+                  ELSEIF(ETAL.EQ.2) THEN
+                     PARTICULES(NUM_LOC)%SURFACE = 0.D0
+                  ELSE
+                    IF(LNG.EQ.1) THEN
+                      WRITE(LU,*) 'ETAL=',ETAL,' INCONNU DANS OIL_FLOT'
+                    ENDIF
+                    IF(LNG.EQ.1) THEN
+                      WRITE(LU,*) 'ETAL=',ETAL,' UNKNOWN IN OIL_FLOT'
+                    ENDIF
+                    CALL PLANTE(1)
+                    STOP
+                  END IF
+                  PARTICULES(NUM_LOC)%MASS0 = (VOLDEV*RHO_OIL)/NFLOT_MAX
                   PARTICULES(NUM_LOC)%MASS_EVAP=0.D0
                   PARTICULES(NUM_LOC)%MASS_DISS=0.D0
                   DO I=1,NB_COMPO

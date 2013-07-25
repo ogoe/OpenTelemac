@@ -45,8 +45,8 @@
 !        DOUBLE PRECISION::MASS_EVAP                   ---> EVAPORATED MASS OF THE PARTICLE
 !        DOUBLE PRECISION::SURFACE                     ---> SURFACE OF THE PARTICLE
 !        DOUBLE PRECISION,DIMENSION(3)::SHPOIL         ---> BARYCENTRIC COORDINATES OF PARTICLE IN THEIR ELEMENTS
-!        TYPE(COMPO),DIMENSION(:),ALLOCATABLE::COMPO   ---> UNSOLVABLE COMPONENT OF OIL
-!        TYPE(COMPO),DIMENSION(:),ALLOCATABLE::HAP     ---> SOLVABLE COMPONENT OF OIL
+!        TYPE(COMPO),DIMENSION(:),ALLOCATABLE::COMPO   ---> UNSOLUBLE COMPONENT OF OIL
+!        TYPE(COMPO),DIMENSION(:),ALLOCATABLE::HAP     ---> SOLUBLE COMPONENT OF OIL
 !      END TYPE OIL_PART
 !
 !=======================================================================
@@ -109,18 +109,18 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEB TWO RECORDS
 !|                |   | FOR FLOATS POSITIONS.
-!| FM_COMPO       |-->| MASS FRACTION OF UNSOLVABLE COMPOUND IN OIL
-!| FM_HAP         |-->| MASS FRACTION TEMPERATURE OF SOLVABLE COMPOUND IN OIL
+!| FM_COMPO       |-->| MASS FRACTION OF UNSOLUBLE COMPOUND IN OIL
+!| FM_HAP         |-->| MASS FRACTION TEMPERATURE OF SOLUBLE COMPOUND IN OIL
 !| ISUB           |<->| ARRIVAL SUB-DOMAIN OF PARTICLES.
 !| KDISS          |-->| DISSOLVED MASS TRANSFER COEFFICIENT
 !| KVOL           |-->| OVERALL VOLATILIZATION RATE COEFFICIENT
 !| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS.
-!| NB_COMPO       |-->| NUMBER OF UNSOLVABLE COMPOUND IN OIL
-!| NB_HAP         |-->| NUMBER OF SOLVABLE COMPOUND IN OIL
+!| NB_COMPO       |-->| NUMBER OF UNSOLUBLE COMPOUND IN OIL
+!| NB_HAP         |-->| NUMBER OF SOLUBLE COMPOUND IN OIL
 !| PARTICULES     |-->| OIL STRUCTURE DEFINED IN BIEF DEF
-!| SOLU           |-->| SOLUBILITY OF SOLVABLE COMPOUND
-!| TB_COMPO       |-->| BOILING TEMPERATURE OF UNSOLVABLE COMPOUND IN OIL
-!| TB_HAP         |-->| BOILING TEMPERATURE OF SOLVABLE COMPOUND IN OIL
+!| SOLU           |-->| SOLUBILITY OF SOLUBLE COMPOUND
+!| TB_COMPO       |-->| BOILING TEMPERATURE OF UNSOLUBLE COMPOUND IN OIL
+!| TB_HAP         |-->| BOILING TEMPERATURE OF SOLUBLE COMPOUND IN OIL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -140,16 +140,16 @@
       DOUBLE PRECISION,PARAMETER               ::KARMAN=0.41D0
       LOGICAL INIT
       DATA INIT /.FALSE./
-      INTEGER                                  ::I,K,IFLOT
+      INTEGER                                  ::I,K,IFLOT,ETAL
       INTEGER                                  ::NB_COMPO,NB_HAP
       DOUBLE PRECISION                         ::ETA_OIL,RHO_OIL,VOLDEV
-      DOUBLE PRECISION                         ::TAMB,VERIF
+      DOUBLE PRECISION                         ::TAMB,VERIF,AREA
       DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::TB_COMPO,FM_COMPO
       DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::TB_HAP,FM_HAP,SOLU
       DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::KDISS,KVOL
 !
-      SAVE RHO_OIL,VOLDEV,NB_COMPO,ETA_OIL,NB_HAP,TAMB
-      SAVE TB_COMPO,FM_COMPO,TB_HAP,FM_HAP,SOLU,KDISS,KVOL
+      SAVE RHO_OIL,VOLDEV,NB_COMPO,ETA_OIL,NB_HAP,TAMB,ETAL
+      SAVE TB_COMPO,FM_COMPO,TB_HAP,FM_HAP,SOLU,KDISS,KVOL,AREA
 !
 !-----------------------------------------------------------------------
 !
@@ -171,42 +171,48 @@
          READ(T2D_FILES(T2DMIG)%LU,*) NB_COMPO
 !
          DO I=1,NFLOT_MAX
-           ALLOCATE(PARTICULES(I)%COMPO(NB_COMPO))
+           ALLOCATE(PARTICULES(I)%COMPO(MAX(NB_COMPO,1)))
          END DO
 !
-         ALLOCATE(TB_COMPO(NB_COMPO))
-         ALLOCATE(FM_COMPO(NB_COMPO))
-         READ(T2D_FILES(T2DMIG)%LU,*)
-         DO I=1,NB_COMPO
-            READ(T2D_FILES(T2DMIG)%LU,*) FM_COMPO(I),
-     &           TB_COMPO(I)
-            VERIF=VERIF+FM_COMPO(I)
-         END DO
+         ALLOCATE(TB_COMPO(MAX(NB_COMPO,1)))
+         ALLOCATE(FM_COMPO(MAX(NB_COMPO,1)))
+         IF(NB_COMPO.GT.0)THEN
+            READ(T2D_FILES(T2DMIG)%LU,*)
+            DO I=1,NB_COMPO
+               READ(T2D_FILES(T2DMIG)%LU,*) FM_COMPO(I),
+     &              TB_COMPO(I)
+               VERIF=VERIF+FM_COMPO(I)
+            END DO
+         END IF
 !
          READ(T2D_FILES(T2DMIG)%LU,*)
          READ(T2D_FILES(T2DMIG)%LU,*) NB_HAP
 !
          DO I=1,NFLOT_MAX
-           ALLOCATE(PARTICULES(I)%HAP(NB_HAP))
+           ALLOCATE(PARTICULES(I)%HAP(MAX(NB_HAP,1)))
          END DO
+! 
+         ALLOCATE(TB_HAP(MAX(NB_HAP,1)))
+         ALLOCATE(FM_HAP(MAX(NB_HAP,1)))
+         ALLOCATE(SOLU(MAX(NB_HAP,1)))
+         ALLOCATE(KDISS(MAX(NB_HAP,1)))
+         ALLOCATE(KVOL(MAX(NB_HAP,1))) 
+         IF(NB_HAP.GT.0)THEN 
+            READ(T2D_FILES(T2DMIG)%LU,*)
+            DO I=1,NB_HAP
+               READ(T2D_FILES(T2DMIG)%LU,*) FM_HAP(I)
+     *              ,TB_HAP(I),SOLU(I),KDISS(I),KVOL(I)
+               VERIF=VERIF+FM_HAP(I)
+            END DO 
+         END IF
 !
-         ALLOCATE(TB_HAP(NB_HAP))
-         ALLOCATE(FM_HAP(NB_HAP))
-         ALLOCATE(SOLU(NB_HAP))
-         ALLOCATE(KDISS(NB_HAP))
-         ALLOCATE(KVOL(NB_HAP)) 
-         READ(T2D_FILES(T2DMIG)%LU,*)
-         DO I=1,NB_HAP
-            READ(T2D_FILES(T2DMIG)%LU,*) FM_HAP(I)
-     *           ,TB_HAP(I),SOLU(I),KDISS(I),KVOL(I)
-            VERIF=VERIF+FM_HAP(I)
-         END DO 
-!
-         IF(1.D0-VERIF.GT.ABS(1.D-10)) THEN
-            WRITE(LU,*) 'WARNING::THE SUM OF EACH COMPONENT', 
-     *           ' MASS FRACTION IS NOT EQUALS TO 1',VERIF
-            WRITE(LU,*) 'PLEASE, MODIFIED THE INPUT STEERING FILE '
-            CALL PLANTE(1)
+         IF(NB_HAP.GT.0.OR.NB_COMPO.GT.0)THEN
+            IF(1.D0-VERIF.GT.ABS(1.D-10)) THEN
+               WRITE(LU,*) 'WARNING::THE SUM OF EACH COMPONENT', 
+     *              ' MASS FRACTION IS NOT EQUALS TO 1'
+               WRITE(LU,*) 'PLEASE, MODIFIED THE INPUT STEERING FILE '
+               CALL PLANTE(1)
+            END IF
          END IF
 !
          READ(T2D_FILES(T2DMIG)%LU,*)
@@ -220,6 +226,14 @@
 !
          READ(T2D_FILES(T2DMIG)%LU,*)
          READ(T2D_FILES(T2DMIG)%LU,*) TAMB
+!
+         READ(T2D_FILES(T2DMIG)%LU,*)
+         READ(T2D_FILES(T2DMIG)%LU,*) ETAL
+!
+         IF(ETAL.EQ.3)THEN
+            READ(T2D_FILES(T2DMIG)%LU,*)
+            READ(T2D_FILES(T2DMIG)%LU,*) AREA
+         END IF
 !
          DO I=1,NFLOT_MAX
            PARTICULES(I)%STATE=0
@@ -276,9 +290,9 @@
 !--CALLING OIL_FLOT (CONTAINED INITIALIZATION OF PARTICULES STRUCTURE)-
 !======================================================================
 !
-           CALL OIL_FLOT(PARTICULES,NFLOT,NFLOT_MAX,
-     &                   MESH,LT,VOLDEV,RHO_OIL,NB_COMPO,NB_HAP,
-     &                   FM_COMPO,TB_COMPO,FM_HAP,TB_HAP,SOLU)
+           CALL OIL_FLOT(PARTICULES,NFLOT,NFLOT_MAX,MESH,LT,
+     &                   VOLDEV,RHO_OIL,NB_COMPO,NB_HAP,FM_COMPO,
+     &                   TB_COMPO,FM_HAP,TB_HAP,SOLU,ETAL,AREA)
 !
 !
 !======================================================================
@@ -286,7 +300,7 @@
 !====================================================================== 
 !
            CALL OIL_SPREADING(VOLDEV,ETA_OIL,RHO_OIL,NFLOT,
-     &                        NFLOT_MAX,DT,2)
+     &                        NFLOT_MAX,DT,ETAL)
 !
 !======================================================================
 !--------CALLING OIL_REFLOATING (RELEASE OF BEACHING PARTICLE)---------
@@ -320,41 +334,52 @@
 !-------------CALLING OIL_EVAP (EVAPORATION OF OIL PARTICLES)-----------
 !======================================================================   
 !
-           CALL OIL_EVAP(NB_COMPO,NB_HAP,NFLOT,
-     &          DT,3,NELMAX,MESH%IKLE%I,TAMB)
+           IF(NB_COMPO.GT.0.OR.NB_HAP.GT.0)THEN
+              CALL OIL_EVAP(NB_COMPO,NB_HAP,NFLOT,DT,3,NELMAX
+     &             ,MESH%IKLE%I,TAMB)
+           END IF
 !
 !======================================================================
 !-----------CALLING OIL_DISSO (DISSOLUTION OF OIL PARTICLES)------------
 !======================================================================  
 !
-           CALL OIL_DISSO(NB_COMPO,NB_HAP,NFLOT,DT,
-     &                    3,NELMAX,MESH%IKLE%I,HN%R,NPOIN,UNSV2D%R,
-     &                    TN,TB,MESH,KDISS)
+           IF(NB_HAP.GT.0)THEN
+              CALL OIL_DISSO(NB_COMPO,NB_HAP,NFLOT,DT,
+     &             3,NELMAX,MESH%IKLE%I,HN%R,NPOIN,UNSV2D%R,
+     &             TN,TB,MESH,KDISS)
+           END IF
 !
 !======================================================================
 !-------MANAGEMENT OF LOST PARTICLES IF THEIR MASS EQUALS TO 0---------
 !====================================================================== 
 !
-           DO IFLOT=1,NFLOT
-              IF(PARTICULES(IFLOT)%MASS.EQ.0.D0) THEN 
-                 CALL OIL_DEL_PARTICLE(PARTICULES(IFLOT)%ID,NFLOT,
-     &           NFLOT_MAX,MESH%TYPELM,IT1%I,PARTICULES,NB_COMPO,NB_HAP)
+              IF(NB_COMPO.GT.0.OR.NB_HAP.GT.0)THEN
+                 DO IFLOT=1,NFLOT
+                    IF(PARTICULES(IFLOT)%MASS.EQ.0.D0) THEN 
+                       CALL OIL_DEL_PARTICLE(PARTICULES(IFLOT)%ID,NFLOT,
+     &                      NFLOT_MAX,MESH%TYPELM,IT1%I,PARTICULES,
+     &                      NB_COMPO,NB_HAP)
+                    END IF
+                 END DO
               END IF
-           END DO
 !
 !======================================================================
 !------------------CALLING OIL_VOLATI (VOLATILIZATION OF---------------
 !----------------DISSOLVED COMPONENTS IN THE WATER COLUMN--------------
 !====================================================================== 
 !
-           CALL OIL_VOLATI(T3,TIMP,YASMI,HPROP,NFLOT,
-     &          3,NELMAX,MESH%IKLE%I,NPOIN,MESH,NB_HAP,KVOL)
+           IF(NB_HAP.GT.0)THEN
+              CALL OIL_VOLATI(T3,TIMP,YASMI,HPROP,NFLOT,
+     &             3,NELMAX,MESH%IKLE%I,NPOIN,MESH,NB_HAP,KVOL)
+           END IF
 !
 !======================================================================
 !---------------CALLING OIL_BILAN (MASS BALANCE OF OIL)----------------
 !====================================================================== 
 ! 
-           CALL OIL_BILAN(NFLOT,LT,FLOPRD)
+           IF(NB_COMPO.GT.0.OR.NB_HAP.GT.0)THEN
+              CALL OIL_BILAN(NFLOT,LT,FLOPRD)
+           END IF
 !
 !----------------------------------------------------------------------
 !
@@ -828,7 +853,11 @@
 !++++IF ETAL=2 THE FORMULATION USED, HAS BEEN PROPOSED TO MODEL THE SLICK
 !+EXPANSION FOR RELATIVELY SMALL SPILL (20 ML)
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!history  CEDRIC GOEURY (LHSV)
+!+        11/07/2013
+!+        V6P3
+!+   First version
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LT             |-->| CURRENT TIME STEP
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
@@ -841,6 +870,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC2D, ONLY : GRAV
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU      
@@ -862,7 +892,6 @@
        IF(NFLOT.GT.0) THEN
          RHO_EAU=1000.D0
          PI=ACOS(-1.D0)
-         GRAVITE=9.81D0
 !        HARDCODED WATER MOLECULAR VISCOSITY
          NU=1.D-6
          NU2=NU**2
@@ -871,41 +900,28 @@
          COEF2=COEF1/1.53**2
          DELTA=(RHO_EAU-RHO_OIL)/(RHO_EAU)
          DO IFLOT = 1,NFLOT
-           IF(PARTICULES(IFLOT)%STATE.EQ.1) THEN
-             IF(ETAL.EQ.1)THEN
-               IF(PARTICULES(IFLOT)%SURFACE.EQ.0.D0) THEN
-                 PARTICULES(IFLOT)%SURFACE=PI*COEF2*
-     &     (DELTA*GRAVITE/(VOLDEV*NU2))**(1.D0/6.D0)*VOLDEV/NFLOT_MAX
-               ELSE
-                 VOL=(PARTICULES(IFLOT)%MASS/RHO_OIL)
-                 PARTICULES(IFLOT)%SURFACE=
-     &                        SQRT((PARTICULES(IFLOT)%SURFACE-
-     &                        PI*COEF2*
-     &                        (DELTA*GRAVITE/(VOLDEV*NU2))
-     &                        **(1.D0/6.D0)*(VOLDEV/NFLOT_MAX))**2
-     &                        +(PI*COEF1*((GRAVITE*DELTA)
-     &                        /(VOLDEV*SQRT(NU)))**(1.D0/3.D0)
-     &                        *VOL)**2*DT)
-     &                        +PI*COEF2*
-     &                        (DELTA*GRAVITE/(VOLDEV*NU2))
-     &                        **(1.D0/6.D0)*VOLDEV/NFLOT_MAX
-               ENDIF
-             ELSEIF(ETAL.EQ.2)THEN
-               IF(PARTICULES(IFLOT)%SURFACE.EQ.0.D0)THEN
-                 PARTICULES(IFLOT)%SURFACE=(27.D0*PI/2.D0)
-     &                        **(1.D0/4.D0)*(GRAVITE*DELTA)
-     &                        **(1.D0/4.D0)*(ETA_OIL*VOLDEV)
-     &                        **(-1.D0/4.D0)*DT**(1.D0/4.D0)
-     &                        *(VOLDEV/NFLOT_MAX)
-               ELSE
-                 VOL=PARTICULES(IFLOT)%MASS/RHO_OIL
-                 PARTICULES(IFLOT)%SURFACE=(
-     &                       PARTICULES(IFLOT)%SURFACE**4+(27.D0*PI/
-     &              2.D0)*(GRAVITE*DELTA)
-     &              *(ETA_OIL*VOLDEV)**(-1.D0)*DT*VOL**4)**(1.D0/4.D0) 
-               ENDIF
+            IF(PARTICULES(IFLOT)%MASS.GT.0.D0)THEN
+               VOL=(PARTICULES(IFLOT)%MASS/RHO_OIL) 
+            ELSE
+               VOL=(PARTICULES(IFLOT)%MASS0/RHO_OIL) 
+            ENDIF
+            IF(PARTICULES(IFLOT)%STATE.EQ.1.AND.ETAL.EQ.1) THEN
+               PARTICULES(IFLOT)%SURFACE=
+     &              SQRT((PARTICULES(IFLOT)%SURFACE-
+     &              PI*COEF2*
+     &              (DELTA*GRAV/(VOLDEV*NU2))
+     &              **(1.D0/6.D0)*(VOLDEV/NFLOT_MAX))**2
+     &              +(PI*COEF1*((GRAV*DELTA)                 
+     &              /(VOLDEV*SQRT(NU)))**(1.D0/3.D0)
+     &              *VOL)**2*DT)
+     &              +PI*COEF2*
+     &              (DELTA*GRAV/(VOLDEV*NU2))                 
+     &              **(1.D0/6.D0)*VOLDEV/NFLOT_MAX
+             ELSEIF(PARTICULES(IFLOT)%STATE.EQ.1.AND.ETAL.EQ.2)THEN
+                PARTICULES(IFLOT)%SURFACE=(PARTICULES(IFLOT)%SURFACE**4
+     &               +((13.5D0*PI*GRAV*DELTA*DT)/            
+     &               (ETA_OIL*VOLDEV))*VOL**4)**0.25D0
              ENDIF
-           ENDIF
          ENDDO
        ENDIF
 !
@@ -930,17 +946,20 @@
 !+PHASE EQUILIBRIUM EQUATION. IN ORDER TO LIMIT THE VARIABLE NUMBER IN THE MODEL
 !+THE GRAY WATSON METHOD (BOETHLING, 2000) IS USED TO DETERMINE THE MOLAR 
 !+ENTHALPY AS A FUNCTION OF THE COMPONENT'S BOILING TEMPERATURE
-!+IN THIS MODEL, THE MASS TRANSFER COEFFICIENT KEVAP IS CALCULATED ACCORDING TO 
-!+THE THEORY OF MACKAY AND MATSUGU (1973)
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!+IN THIS MODEL, THE MASS TRANSFER COEFFICIENT KEVAP IS CALCULATED 
+!+ACCORDING TO THE THEORY OF MACKAY AND MATSUGU (1973)
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!history  CEDRIC GOEURY (LHSV)
+!+        11/07/2013
+!+        V6P3
+!+   First version
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| LT             |-->| CURRENT TIME STEP
-!| NB_COMPO       |-->| NUMBER OF UNSOLVABLE COMPOUND IN OIL
-!| NB_HAP         |-->| NUMBER OF SOLVABLE COMPOUND IN OIL
+!| NB_COMPO       |-->| NUMBER OF UNSOLUBLE COMPOUND IN OIL
+!| NB_HAP         |-->| NUMBER OF SOLUBLE COMPOUND IN OIL
 !| NDP            |-->| NUMBER OF POINTS PER ELEMENT
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
 !| NFLOT          |-->| NUMBER OF FLOATS
@@ -1003,7 +1022,7 @@
             END DO
             MASSE=0.D0
 !-----------------------------------------------------------------------
-!------------MOLAR MASS CALCULATION OF UNSOLVABLE COMPOUND--------------
+!------------MOLAR MASS CALCULATION OF UNSOLUBLE COMPOUND--------------
 !-----------------------------------------------------------------------  
             DO K=1,NB_COMPO
                MW_COMPO(K)=
@@ -1011,7 +1030,7 @@
      *              +(9.494D-07*PARTICULES(IFLOT)%COMPO(K)%TB**2)
             END DO
 !-----------------------------------------------------------------------
-!------------MOLAR MASS CALCULATION OF UNSOLVABLE COMPOUND--------------
+!------------MOLAR MASS CALCULATION OF UNSOLUBLE COMPOUND--------------
 !-----------------------------------------------------------------------  
             DO K=1,NB_HAP
                MW_HAP(K)=
@@ -1060,6 +1079,7 @@
      *              +VCONV_OIL%R(I2)*PARTICULES(IFLOT)%SHPOIL(2)
      *              +VCONV_OIL%R(I3)*PARTICULES(IFLOT)%SHPOIL(3)
             END IF
+
             VENT_RELAT = SQRT(VENTX**2+VENTY**2)
 !-----------------------------------------------------------------------
 !------------CALCULATION OF THE MASS TRANSFER COEFFICIENT---------------
@@ -1078,7 +1098,7 @@
             END DO
 !------------------------------------------------------------------------------
 !---------DETERMINATION OF EACH OIL COMPONENT MASS AFTER EVAPORATION-----------
-!-----------------------------(UNSOLVABLE)-------------------------------------
+!-----------------------------(UNSOLUBLE)-------------------------------------
 !------------------------------------------------------------------------------            
             DO K=1,NB_COMPO
                MASSE_EVAP_COMPO(K)=0.D0
@@ -1109,7 +1129,7 @@
             END DO
 !------------------------------------------------------------------------------
 !---------DETERMINATION OF EACH OIL COMPONENT MASS AFTER EVAPORATION-----------
-!-----------------------------(SOLVABLE)---------------------------------------
+!-----------------------------(SOLUBLE)---------------------------------------
 !------------------------------------------------------------------------------  
             DO K=1,NB_HAP
                MASSE_EVAP_HAP(K)=0.D0
@@ -1164,20 +1184,23 @@
 !***********************************************************************
 !
 !brief
-!+THIS ROUTINE COMPUTES THE DISSOLUTION PHENOMENON OF EACH OIL SOLVABLE COMPONENT
-!+BASED ON WHITMAN'S (1923) THEORY, WHICH FORMULATES THE MASS TRANSFER FLUX 
-!+FOR MASS TRANSFER PHENOMENA
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!+THIS ROUTINE COMPUTES THE DISSOLUTION PHENOMENON OF EACH OIL SOLUBLE 
+!+COMPONENT BASED ON WHITMAN'S (1923) THEORY, WHICH FORMULATES THE
+!+MASS TRANSFER FLUX FOR MASS TRANSFER PHENOMENA.
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!history  CEDRIC GOEURY (LHSV)
+!+        11/07/2013
+!+        V6P3
+!+   First version
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
 !| HN             |<->| DEPTH AT TIME T(N)
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| KDISS          |-->| DISSOLUTION RATE COEFFICIENT
 !| LT             |-->| CURRENT TIME STEP
-!| NB_COMPO       |-->| NUMBER OF UNSOLVABLE COMPOUND IN OIL
-!| NB_HAP         |-->| NUMBER OF SOLVABLE COMPOUND IN OIL
+!| NB_COMPO       |-->| NUMBER OF UNSOLUBLE COMPOUND IN OIL
+!| NB_HAP         |-->| NUMBER OF SOLUBLE COMPOUND IN OIL
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
 !| NFLOT          |-->| NUMBER OF FLOATS
 !| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
@@ -1270,7 +1293,7 @@
              I3=IKLE(PARTICULES(IFLOT)%ELTOIL,3)
 !
 !-----------------------------------------------------------------------
-!------------MOLAR MASS CALCULATION OF UNSOLVABLE COMPOUND--------------
+!------------MOLAR MASS CALCULATION OF UNSOLUBLE COMPOUND--------------
 !-----------------------------------------------------------------------
 ! 
              DO K=1,NB_COMPO
@@ -1280,7 +1303,7 @@
              ENDDO
 !
 !-----------------------------------------------------------------------
-!-------------MOLAR MASS CALCULATION OF SOLVABLE COMPOUND---------------
+!-------------MOLAR MASS CALCULATION OF SOLUBLE COMPOUND---------------
 !-----------------------------------------------------------------------
 !  
              DO K=1,NB_HAP
@@ -1431,14 +1454,17 @@
 !brief
 !+THIS ROUTINE COMPUTES THE VOLATILIZATION FLUX OF EACH DISSOLVED COMPONENT
 !+ACCORDING TO AN IMPLICIT TERM, WHICH MUST BE INFORMED BY THE USER
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!history  CEDRIC GOEURY (LHSV)
+!+        11/07/2013
+!+        V6P3
+!+   First version
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| HPROP          |-->| PROPAGATION DEPTH
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| KVOL           |-->| VOLATILIZATION RATE COEFFICIENT
-!| NB_HAP         |-->| NUMBER OF SOLVABLE OIL COMPONENT
+!| NB_HAP         |-->| NUMBER OF SOLUBLE OIL COMPONENT
 !| NDP            |-->| NUMBER OF POINTS PER ELEMENT
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
 !| NFLOT          |-->| NUMBER OF FLOATS
@@ -1524,8 +1550,7 @@
                         SUBROUTINE OIL_BEACHING
 !                       ***********************
 !
-     &(IKLE,NPOIN,NELMAX,NDP,H,HN,NFLOT,RHO_OIL,
-     & SURFAC,CF,ETA_OIL,LT)
+     &(IKLE,NPOIN,NELMAX,NDP,H,HN,NFLOT,RHO_OIL,SURFAC,CF,ETA_OIL,LT)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   16/06/2013
@@ -1534,9 +1559,12 @@
 !brief
 !+THIS ROUTINES COMPUTES THE OIL BEACHING OF THE PARTICLES BASED ON
 !+THE BANK TYPE ESTIMATED BY THE GRAIN SIZE
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!history  CEDRIC GOEURY (LHSV)
+!+        11/07/2013
+!+        V6P3
+!+   First version
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |-->| ADIMENSIONAL FRICTION COEFFICIENT
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
@@ -1596,8 +1624,13 @@
      &             H(N2)*PARTICULES(IFLOT)%SHPOIL(2)+
      &             H(N3)*PARTICULES(IFLOT)%SHPOIL(3)
 !
-          EPAISSEUR=(PARTICULES(IFLOT)%MASS/RHO_OIL)/
-     &               PARTICULES(IFLOT)%SURFACE
+          IF(PARTICULES(IFLOT)%MASS.GT.0.D0)THEN
+             EPAISSEUR=(PARTICULES(IFLOT)%MASS/RHO_OIL)/
+     &            PARTICULES(IFLOT)%SURFACE
+          ELSE
+             EPAISSEUR=(PARTICULES(IFLOT)%MASS0/RHO_OIL)/
+     &            PARTICULES(IFLOT)%SURFACE    
+          END IF
 !
           L=MAX(PARTICULES(IFLOT)%SHPOIL(1),
      &          PARTICULES(IFLOT)%SHPOIL(2),
@@ -1710,9 +1743,12 @@
 !brief
 !+THIS ROUTINE COMPUTES THE RELEASE OF THE OIL BEACHING PARTICLE BASED ON
 !+THE BANK TYPE ESTIMATED BY THE GRAIN SIZE
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!history  CEDRIC GOEURY (LHSV)
+!+        11/07/2013
+!+        V6P3
+!+   First version
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |-->| ADIMENSIONAL FRICTION COEFFICIENT
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
@@ -1751,9 +1787,11 @@
       DOUBLE PRECISION Pref,RAND,EPAISSEUR
       DOUBLE PRECISION HH
 !
+      INTRINSIC RANDOM_NUMBER
+!
 !-----------------------------------------------------------------------
 !
-      DO  IFLOT=1,NFLOT
+      DO IFLOT=1,NFLOT
          IF(PARTICULES(IFLOT)%STATE.EQ.2)THEN
             IEL=PARTICULES(IFLOT)%ELTOIL
             N1=IKLE(IEL,1)
@@ -1764,8 +1802,13 @@
      &               H(N2)*PARTICULES(IFLOT)%SHPOIL(2)+
      &               H(N3)*PARTICULES(IFLOT)%SHPOIL(3)
 !
-            EPAISSEUR=(PARTICULES(IFLOT)%MASS/RHO_OIL)/
-     &           PARTICULES(IFLOT)%SURFACE
+          IF(PARTICULES(IFLOT)%MASS.GT.0.D0)THEN
+             EPAISSEUR=(PARTICULES(IFLOT)%MASS/RHO_OIL)/
+     &            PARTICULES(IFLOT)%SURFACE
+          ELSE
+             EPAISSEUR=(PARTICULES(IFLOT)%MASS0/RHO_OIL)/
+     &            PARTICULES(IFLOT)%SURFACE    
+          END IF
 !                        
             L=MAX(PARTICULES(IFLOT)%SHPOIL(1),
      &            PARTICULES(IFLOT)%SHPOIL(2),
@@ -1788,11 +1831,11 @@
             ELSE
                Pref=0.D0
                IF(Ks.GE.6.5D-05.AND.Ks.LT.1.D-03)THEN
-                  Kf=0.25D0/(24.D0*60.D0*60.D0)
+                  Kf=0.25D0/(24.D0*60.D0**2)
                ELSE IF(Ks.GE.1.D-03.AND.Ks.LT.256.D-03)THEN
-                  Kf=0.15D0/(24.D0*60.D0*60.D0)   
+                  Kf=0.15D0/(24.D0*60.D0**2)   
                ELSEIF(Ks.GE.256.D-03)THEN
-                  Kf=0.85D0/(24.D0*60.D0*60.D0)  
+                  Kf=0.85D0/(24.D0*60.D0**2)  
                END IF               
                Pref=1.D0-EXP(-Kf*(LT-PARTICULES(IFLOT)%TPSECH)*DT)            
                CALL RANDOM_NUMBER(RAND)
@@ -1821,9 +1864,12 @@
 !
 !brief
 !+THIS ROUTINE COMPUTES THE OIL MASS BALANCE
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!history  CEDRIC GOEURY (LHSV)
+!+        11/07/2013
+!+        V6P3
+!+   First version
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
 !| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEB TWO RECORDS
@@ -1839,12 +1885,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)          :: LT,NFLOT
-      INTEGER         , INTENT(IN) :: FLOPRD   
+      INTEGER, INTENT(IN)          :: LT,NFLOT,FLOPRD   
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER         ::I,MOD
+      INTEGER         ::I
       DOUBLE PRECISION::MASSE_PART
       DOUBLE PRECISION::MASSE_INACT
       DOUBLE PRECISION::MASSE_INI
@@ -1865,8 +1910,6 @@
       MASSE_EVAP=0.D0
       MASSE_DISS=0.D0
       BILAN_OIL=0.D0
-
-      MOD=MODULO(LT,FLOPRD) 
 !
 !-----------------------------------------------------------------------
 !
@@ -1886,46 +1929,53 @@
       IF(MASSE_INI.GT.0.D0) THEN
          BILAN_OIL=(MASSE_INI-(MASSE_INACT+MASSE_PART+
      *        MASSE_EVAP+MASSE_DISS))/MASSE_INI
-      END IF
-
-      IF(ABS(BILAN_OIL).GT.1.D-13)THEN
-        WRITE(LU,*)  'BILAN',IPID,BILAN_OIL
-      END IF
+      ENDIF
+!
+      IF(ABS(BILAN_OIL).GT.1.D-13) THEN
+        WRITE(LU,*)  'BALANCE ',IPID,BILAN_OIL
+      ENDIF
+!
+!--------------------------------------------------------------------------
+!------------------------------ PRINTING     ------------------------------
+!--------------------------------------------------------------------------
+!
+      IF(MODULO(LT,FLOPRD).EQ.0) THEN 
+        IF(NCSIZE.GT.1) THEN
 !
 !--------------------------------------------------------------------------
 !----------------------------PARALLEL VERSION------------------------------
 !--------------------------------------------------------------------------
 !
-      IF(NCSIZE.GT.1)THEN
-      IF(MOD.EQ.0) WRITE(LU,*) '======================================='
-      IF(MOD.EQ.0) WRITE(LU,*) '========','BILAN HYDROCARBURE','======='
-      IF(MOD.EQ.0) WRITE(LU,*) '======================================='
-      IF(MOD.EQ.0) WRITE(LU,*) 'MASSE NAPPE',P_DSUM(MASSE_PART)
-      IF(MOD.EQ.0) WRITE(LU,*) 'MASSE INITIALE',P_DSUM(MASSE_INI)
-      IF(MOD.EQ.0) WRITE(LU,*) 'MASSE ECHOUEE',P_DSUM(MASSE_INACT)
-      IF(MOD.EQ.0) WRITE(LU,*) 'MASSE DISSOUTE',P_DSUM(MASSE_DISS)
-      IF(MOD.EQ.0) WRITE(LU,*) 'MASSE EVAPOREE',P_DSUM(MASSE_EVAP)
-      IF(MOD.EQ.0) WRITE(LU,*) '======================================='
-      IF(MOD.EQ.0) WRITE(LU,*) 'BILAN NAPPE SURFACE',P_DSUM(BILAN_OIL)
-      IF(MOD.EQ.0) WRITE(LU,*) '======================================='
-      ELSE
+          WRITE(LU,*) '======================================='
+          WRITE(LU,*) '========  BALANCE OF OIL SPILL  ======='
+          WRITE(LU,*) '======================================='
+          WRITE(LU,*) 'MASS OF SPILL',P_DSUM(MASSE_PART)
+          WRITE(LU,*) 'INITIAL MASS',P_DSUM(MASSE_INI)
+          WRITE(LU,*) 'STRANDED MASS',P_DSUM(MASSE_INACT)
+          WRITE(LU,*) 'DISSOLVED MASS',P_DSUM(MASSE_DISS)
+          WRITE(LU,*) 'EVAPORATED MASS',P_DSUM(MASSE_EVAP)
+          WRITE(LU,*) '======================================='
+          WRITE(LU,*) 'BALANCE SURFACE SPILL',P_DSUM(BILAN_OIL)
+          WRITE(LU,*) '======================================='
+        ELSE
 !
 !--------------------------------------------------------------------------
 !--------------------------SCALAR VERSION----------------------------------
 !--------------------------------------------------------------------------
 !
-      IF(MOD.EQ.0) WRITE(LU,*) '======================================='
-      IF(MOD.EQ.0) WRITE(LU,*) '========','BILAN HYDROCARBURE','======='
-      IF(MOD.EQ.0) WRITE(LU,*) '======================================='
-      IF(MOD.EQ.0) WRITE(LU,*) 'MASSE NAPPE',MASSE_PART
-      IF(MOD.EQ.0) WRITE(LU,*) 'MASSE INITIALE',MASSE_INI
-      IF(MOD.EQ.0) WRITE(LU,*) 'MASSE ECHOUEE',MASSE_INACT
-      IF(MOD.EQ.0) WRITE(LU,*) 'MASSE DISSOUTE',MASSE_DISS
-      IF(MOD.EQ.0) WRITE(LU,*) 'MASSE EVAPOREE',MASSE_EVAP
-      IF(MOD.EQ.0) WRITE(LU,*) '======================================='
-      IF(MOD.EQ.0) WRITE(LU,*) 'BILAN NAPPE SURFACE',BILAN_OIL
-      IF(MOD.EQ.0) WRITE(LU,*) '======================================='
-      END IF
+          WRITE(LU,*) '======================================='
+          WRITE(LU,*) '========  BALANCE OF OIL SPILL  ======='
+          WRITE(LU,*) '======================================='
+          WRITE(LU,*) 'MASS OF SPILL',MASSE_PART
+          WRITE(LU,*) 'INITIAL MASS',MASSE_INI
+          WRITE(LU,*) 'STRANDED MASS',MASSE_INACT
+          WRITE(LU,*) 'DISSOLVED MASS',MASSE_DISS
+          WRITE(LU,*) 'EVAPORATED MASS',MASSE_EVAP
+          WRITE(LU,*) '======================================='
+          WRITE(LU,*) 'BALANCE SURFACE SPILL',BILAN_OIL
+          WRITE(LU,*) '======================================='
+        ENDIF
+      ENDIF
       RETURN
       END SUBROUTINE OIL_BILAN
 !

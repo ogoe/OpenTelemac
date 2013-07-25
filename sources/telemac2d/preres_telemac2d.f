@@ -27,6 +27,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. GOEURY (EDF R&D LNHE)
+!+        25/07/2013
+!+        V6P3
+!+   Sum of HAP in oilspills has been added.  
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -291,6 +296,23 @@
         DO N=1,NPOIN
           T7%R(N) = SQRT(0.5D0*CF%R(N)*(U%R(N)**2+V%R(N)**2))
         ENDDO
+      ENDIF
+!
+!=======================================================================
+! COMPUTES THE SUM OF SOLUBLE COMPONENT DURING THE OIL SPILL
+!=======================================================================
+!
+      IF((SORLEO(23).OR.SORIMP(23)).AND.SPILL_MODEL.AND.NTRAC.GT.0) THEN
+         DO N=1,NPOIN
+           PRIVE1(N) = T%ADR(1)%P%R(N)
+         ENDDO
+         IF(NTRAC.GT.1) THEN
+           DO I=2,NTRAC
+             DO N=1,NPOIN
+               PRIVE1(N) = PRIVE1(N) + T%ADR(I)%P%R(N)
+             ENDDO
+           ENDDO
+        ENDIF
       ENDIF
 !
 !=======================================================================
