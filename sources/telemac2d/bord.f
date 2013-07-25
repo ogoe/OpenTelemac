@@ -139,7 +139,7 @@
       IF(YAZMIN) THEN
         DO K=1,NPTFR
           IFR=NUMLIQ(K)
-          ZMIN(IFR)=MIN(ZMIN(IFR),ZF(NBOR(K))+H%R(NBOR(K)))
+          IF(IFR.GT.0) ZMIN(IFR)=MIN(ZMIN(IFR),ZF(NBOR(K))+H%R(NBOR(K)))
         ENDDO
         IF(NCSIZE.GT.1) THEN
           DO IFR=1,NFRLIQ
