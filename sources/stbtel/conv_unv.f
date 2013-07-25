@@ -485,8 +485,8 @@
       WRITE(NOUT,*) 'TOTAL NO. OF FAMILIES                :',MESH2%NFAM
       WRITE(NOUT,*) 'LIST OF FAMILIES, FAMILY_ID, COLOR_ID :'
       DO I=1,MESH2%NFAM
-        WRITE(NOUT,'(A16,A2,I2,A1,I2)') MESH2%NAMEFAM(I),' :',
-     &               MESH2%IDFAM,',',MESH2%VALFAM
+        WRITE(NOUT,'(A16,A2,I4,A1,I4)') MESH2%NAMEFAM(I),' :',
+     &               MESH2%IDFAM(I),',',MESH2%VALFAM(I)
       ENDDO
 
       CLOSE(NOUT,IOSTAT=IERR)
