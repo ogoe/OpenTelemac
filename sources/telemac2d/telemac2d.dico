@@ -5387,15 +5387,23 @@ MNEMO = 'ALGTYP'
 TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
-CHOIX=
-'1="??N"';'2="??"'
-CHOIX1=
-'1="??"';'2="??"'
+CHOIX = '1="SPHERE"';
+        '2="IRIDAEA FLACCIDA (PROCHE DES ULVES)"';
+        '3="PELVETIOPSIS LIMITATA"';
+        '4="GIGARTINA LEPTORHYNCHOS"'
+CHOIX1= '1="SPHERE"';
+        '2="IRIDAEA FLACCIDA (CLOSE TO ULVA)"';
+        '3="PELVETIOPSIS LIMITATA"';
+        '4="GIGARTINA LEPTORHYNCHOS"'
 RUBRIQUE = 'PARAMETRES PHYSIQUES'
 RUBRIQUE1 = 'PHYSICAL PARAMETERS' 
 NIVEAU = 2
-AIDE = 'Type des algues'
-AIDE1 = 'Algae type'
+AIDE = 'Type des algues. Pour le choix 1 les algues seront 
+modelisees comme des spheres, pour les autres choix voir Gaylord 
+et al. (1994).'
+AIDE1 = 'Algae type. For choice 1 the algae particles will be 
+modeled as spheres, and for the other choices see Gaylord et
+al. (1994)'
 
 NOM = 'OPTION POUR LES CARACTERISTIQUES'
 NOM1 = 'OPTION FOR CHARACTERISTICS'

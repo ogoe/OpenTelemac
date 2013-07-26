@@ -37,7 +37,7 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
-!history  J-M HERVOUETIN (EDF R&D, LNHE)
+!history  J-M HERVOUET (EDF R&D, LNHE)
 !+        22/02/2013
 !+        V6P3
 !+   New version called at every time step, compatible with //.
@@ -100,6 +100,22 @@
 !    &                     XFLOT,YFLOT,YFLOT,TAGFLO,SHPFLO,SHPFLO,
 !    &                     ELTFLO,ELTFLO,MESH%TYPELM)
 !     ENDIF
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! 
+!     EXAMPLE : FOR ALGAE PARTICLE TRANSPORT
+!               => ALGAE_START NEEDS TO BE DEFINED
+! 
+!       ALGAE_START=2
+! 
+!       IF(LT.EQ.MAX(1,ALGAE_START)) THEN
+!         DO I=1,NFLOT_MAX
+!           CALL ADD_PARTICLE(0.175D0,0.45D0,0.D0,I,NFLOT,
+!      &                    NFLOT_MAX,XFLOT,YFLOT,YFLOT,TAGFLO,
+!      &                    SHPFLO,SHPFLO,ELTFLO,ELTFLO,MESH,1,
+!      &                    0.D0,0.D0,0.D0,0.D0,0,0)
+!         END DO
+!       ENDIF
 !
 !-----------------------------------------------------------------------
 !
