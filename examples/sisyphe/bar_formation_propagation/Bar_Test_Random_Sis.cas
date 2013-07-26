@@ -3,7 +3,7 @@
 /       Free Surface Flow in a fixed rectangular channel:             /
 /       Initial bed configuration covered by ripples                  /
 /---------------------------------------------------------------------/
-/       AUTHOURS: Fabio Mattia - Pablo Tassi - Jean-Michel Hervouet   /
+/       AUTHORS: Fabio Mattia - Pablo Tassi - Jean-Michel Hervouet    /
 /       DATE    : 16/05/2013                                          /
 /---------------------------------------------------------------------/
 /       COMPUTER INFORMATIONS                                         /
@@ -12,6 +12,8 @@
 GEOMETRY FILE                     : Bar_Test_Random.slf
 BOUNDARY CONDITIONS FILE          : Bar_Test_Random.cli
 RESULTS FILE                      : Bar_Test_Random_Sis.slf
+REFERENCE FILE                    : Bar_Test_Random_Fis.slf
+VALIDATION : YES
 /
 /---------------------------------------------------------------------/
 /       GENERAL INFORMATIONS                                          /

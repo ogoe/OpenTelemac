@@ -40,24 +40,26 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      DOUBLE PRECISION PI,L0,Li,Lo
+
       INTEGER I
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL MAS
-!
-      INTRINSIC RANDOM_NUMBER
+
+      REAL YR
 !
 !-----------------------------------------------------------------------
 !
       DO I=1,NPOIN
-!     ZF%R(I) 
-         ZF%R(I)=0.531-0.00452*X(I)+((RANDOM_NUMBER(0)*0.005)-0.005)
-! numbers in the range [-0.005 // 0.005]
+        CALL RANDOM_NUMBER(HARVEST=YR)
+        ZF%R(I)=0.531D0-0.00452D0*X(I)+(YR*0.005D0-0.005D0)
       ENDDO
+!
+!     IN PARALLEL, ZF MUST BE THE SAME IN ALL PROCESSORS
+!
+      IF(NCSIZE.GT.1) CALL PARCOM(ZF,3,MESH)
 !
 !-----------------------------------------------------------------------
 !

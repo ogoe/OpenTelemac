@@ -3,7 +3,7 @@
 /       Free Surface Flow in a fixed rectangular channel:             /
 /       Initial bed configuration covered by ripples                  /
 /---------------------------------------------------------------------/
-/       AUTHOURS: Fabio Mattia - Pablo Tassi - Jean-Michel Hervouet   /
+/       AUTHORS:  Fabio Mattia - Pablo Tassi                          /
 /       DATE    : 16/05/2013                                          /
 /                                                                     /
 /       for a longer simulation (at least 2 days), please change:     /
@@ -19,24 +19,22 @@ BOUNDARY CONDITIONS FILE          : Bar_Test_Random.cli
 RESULTS FILE                      : Bar_Test_Random_r2d_T2d.slf
 SISYPHE STEERING FILE             : Bar_Test_Random_Sis.cas
 FORTRAN FILE                      : corfon.f
+REFERENCE FILE                    : Bar_Test_Random_f2d_T2d.slf
+VALIDATION : YES
 /
 /---------------------------------------------------------------------/
 /       GENERAL INFORMATIONS                                          /
 /---------------------------------------------------------------------/
 /
 /PARALLEL PROCESSORS                             : 8
-TITLE      :  'Bars Test Case: Linear channel,bed configuration: Ripples'
-COUPLING WITH                                   : 'INTER-SISYPHE'
+TITLE : 'Bars Test Case: Linear channel,bed configuration: Ripples'
+COUPLING WITH   : 'SISYPHE'
 COUPLING PERIOD FOR SISYPHE                     : 1
 VARIABLES FOR GRAPHIC PRINTOUTS                 : 'H,U,V,Q,US'
-TIME STEP                                       : .1       
-NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS : 144000  /1h
-/GRAPHIC PRINTOUT PERIOD                         : 144000  /1h
-/LISTING PRINTOUT PERIOD                         : 36000   /15min
-GRAPHIC PRINTOUT PERIOD                         : 1440  /1h
-LISTING PRINTOUT PERIOD                         : 360   /15min
-/NUMBER OF TIME STEPS                            : 6912000 /2days
-NUMBER OF TIME STEPS                            : 10000 /   
+TIME STEP                                       : 0.1       
+GRAPHIC PRINTOUT PERIOD                         : 10000
+LISTING PRINTOUT PERIOD                         : 1000   
+NUMBER OF TIME STEPS                            : 10000 
 MASS-BALANCE                                    : YES
 INFORMATION ABOUT SOLVER                        : YES
 /TREATMENT OF THE LINEAR SYSTEM : 2 
