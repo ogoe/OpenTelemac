@@ -17,9 +17,7 @@
       PUBLIC :: ALLOC_ALGAE,INTERP_ALGAE,DISP_ALGAE
 ! MODEL VARIABLES
       INTEGER :: ALGAE_START
-      DATA ALGAE_START / 0 / ! SET TO 2 AT THE MOMENT SO THAT ALL VARIABLES ARE DEFINED INITIALY,
-                             ! DUE TO THE WAY FLOT AND DERIVE ARE CALLED IT CANNOT BE SET TO
-                             ! ANYTHING LOWER
+      DATA ALGAE_START / 1 / ! THIS VALUE NEEDS TO BE UPDATED IN FLOT
 ! MEAN FLUID VARIABLES AT THE POSITION OF EACH ALGAE PARTICLES
       TYPE(BIEF_OBJ):: U_X_AV_0
       TYPE(BIEF_OBJ):: U_Y_AV_0
@@ -88,6 +86,9 @@
 ! |  NAME          |MODE|                  ROLE                        |
 ! |________________|____|______________________________________________|
 ! | NP_TOT         | -->| TOTAL NUMBER OF ALGAE PARTICLES              |
+! | MESH           | -->| MESH STRUCTURE WITH ALL THE INFORMATIONS     |
+! |                |    | OF THE MESH TREATED                          |
+! | DT             | -->| NUMERICAL TIME STEP OF THE SIMULATIONS       |
 ! |________________|____|______________________________________________|
 ! MODE : -->(NON MODIFIED DATA), <--(RESULT), <-->(MODIFIED DATA)
 !
@@ -110,7 +111,7 @@
 !
       INTEGER         , INTENT(IN) :: NP_TOT
       TYPE(BIEF_MESH) , INTENT(IN) :: MESH
-      DOUBLE PRECISION,INTENT(IN)  :: DT
+      DOUBLE PRECISION, INTENT(IN) :: DT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -196,6 +197,10 @@
 ! .________________.____.______________________________________________.
 ! |  NAME          |MODE|                  ROLE                        |
 ! |________________|____|______________________________________________|
+! | NA             | -->| TOTAL NUMBER OF ALGAE PARTICLES              |
+! | NDIM           | -->| NUMBER OF DIMENSIONS TREATED IN THE          |
+! |                |    | SIMULATION                                   |
+! | DT             | -->| NUMERICAL TIME STEP OF THE SIMULATIONS       |
 ! |________________|____|______________________________________________|
 ! MODE : -->(NON MODIFIED DATA), <--(RESULT), <-->(MODIFIED DATA)
 !
@@ -313,6 +318,23 @@
 ! |                |    | POSITION OF EACH ALGAE PARTICLE              |
 ! | H_FLU          |<-- | WATER DEPTH AT THE POSITION OF EACH ALGAE    |
 ! |                |    | PARTICLE                                     |
+! | NPOIN          | -->| NUMBER OF POINTS IN THE MESH                 |
+! | IELM           | -->| ELEMENT TYPE OF THE MESH (ASSUMED THE SAME   |
+! |                |    | FOR K, EPS AND H)                            |
+! | NDP            | -->| NUMBER OF NODES PER ELEMENTS                 |
+! | NPLAN          | -->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS    |
+! | NELMAX         | -->| MAXIMUM NUMBER OF ELEMENTS IN 2D             |
+! | IKLE           | -->| CONNECTIVITY TABLE                           |
+! | W1             | -->| TEMPORARY WORK ARRAY USED AS A BUFFER FOR    |
+! |                |    | FREQUENCY                                    |
+! | IELMU          | -->| ELEMENT TYPE FOR U, V AND W                  |
+! | NPOINU         | -->| NUMBER OF POINTS IN THE MESH FOR VARIABLES   |
+! |                |    | U, V AND W                                   |
+! | UCONV,VCONV,   | -->| THE X, Y AND Z COMPONENTS OF THE FLUID       |
+! |   WCONV        |    | VELOCITIES AT EACH NODE OF THE MESH          |
+! | AK,EPS         | -->| TURBULENT PROPERTIES OF THE FLOW AT EACH     |
+! |                |    | NODE OF THE MESH                             |
+! | H              | -->| WATER DEPTH AT EACH NODE OF THE MESH         |
 ! |________________|____|______________________________________________|
 ! MODE : -->(NON MODIFIED DATA), <--(RESULT), <-->(MODIFIED DATA)
 !
@@ -448,6 +470,11 @@
 ! | DX_A,DY_A,DZ_A |<-- | DISPLACEMENT OF EACH ALGAE PARTICLE          |
 ! | ELEM_ALG       |<-->| NUMBER OF THE ELEMENT CONTAINING THE ALGAE   |
 ! |                |    | PARTICLE                                     |
+! | LT             | -->| TIME ITERATION OF THE SIMULATION             |
+! | DALGAE         | -->| DIAMETER OF THE ALGAE PARTICLES              |
+! | RALGAE         | -->| DENSITY OF THE ALGAE PARTICLES               |
+! | EALGAE         | -->| THICKNESS OF THE ALGAE PARTICLES             |
+! | ALGTYP         | -->| ALGAE TYPE OF THE PARTICLES                  |
 ! |________________|____|______________________________________________|
 ! MODE : -->(NON MODIFIED DATA), <--(RESULT), <-->(MODIFIED DATA)
 !
@@ -575,7 +602,7 @@
 ! SAVE ALLOCATABLE VARIABLES
       SAVE :: U_I_0,U_I,V_I_0,V_I,X_I_0,X_I,C_I
 ! DAJ
-!      CHARACTER(LEN=100)              :: LOG_NAME
+      CHARACTER(LEN=100)              :: LOG_NAME
 ! FAJ
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
