@@ -70,7 +70,7 @@ from parserFortran import getPrincipalWrapNames,filterPrincipalWrapNames
 from runcode import runCAS,checkConsistency,compilePRINCI
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
-from utils.files import getTheseFiles,getFileContent,putFileContent,addFileContent,createDirectories,copyFile,moveFile, matchSafe,diffTextFiles
+from utils.files import getFileContent,putFileContent,addFileContent,createDirectories,copyFile,moveFile, matchSafe,diffTextFiles
 from utils.messages import filterMessage, MESSAGES
 from mtlplots.plotTELEMAC import Figure1D,Figure2D
 
@@ -230,7 +230,7 @@ class ACTION:
       if self.dids.has_key(self.active["xref"]):
          raise Exception([{'name':'ACTION::addACTION','msg':'you are getting me confused, this xref already exists: '+self.active["xref"]}])
       self.dids.update({ self.active["xref"]:{} })
-      if self.active["rank"] == '': self.active["rank"] = '1'
+      if self.active["rank"] == '': self.active["rank"] = '953'
       self.active["rank"] = int(self.active["rank"])
       if isinstance(self.active["deprefs"], StringTypes):
          deprefs = {}
@@ -696,6 +696,8 @@ class groupPLOT(GROUPS):
 
    def addDraw(self,draw):
       GROUPS.addGroup(self,draw)
+      if self.dids[self.active['type']][self.tasks["xref"]]['rank'] == '': self.dids[self.active['type']][self.tasks["xref"]]['rank'] = '953'
+      self.dids[self.active['type']][self.tasks["xref"]]['rank'] = int(self.dids[self.active['type']][self.tasks["xref"]]['rank'])
       #self.active['deco'] = self.tasks["deco"]
 
    def distributeMeta(self,subtask):
@@ -918,11 +920,7 @@ def runXML(xmlFile,xmlConfig,bypass):
    title = ""
    dc = groupMETA(xmlFile,title,bypass)
    dc.addGroupType("meta")
-   first = True
    for metaing in xmlRoot.findall("meta"):
-      if first:
-         print '\n... looping through the meta list'
-         first = False
 
       # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
       try:
@@ -966,11 +964,7 @@ def runXML(xmlFile,xmlConfig,bypass):
    #    TODO: limit the number of path / safe duplication
    #
    do = actionRUN(xmlFile,title,bypass)
-   first = True
    for action in xmlRoot.findall("action"):
-      if first:
-         print '\n... looping through the todo list'
-         first = False
 
       # ~~ Step 1. Common check for keys and driving file ~~~~~~~~~~
       try:
@@ -1115,17 +1109,12 @@ def runXML(xmlFile,xmlConfig,bypass):
                except Exception as e:
                   xcpt.append(filterMessage({'name':'runXML::runCommand','msg':'   +> '+do.active["do"]},e,bypass))
 
-   if first: print '\n/!\ no todo list to go through'
    if xcpt != []: raise Exception({'name':'runXML','msg':'looking at actions in xmlFile: '+xmlFile,'tree':xcpt})
 
-   # ~~ Load data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~ Load targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #
    gt = actionGET(xmlFile,title,bypass)
-   first = True
    for load in xmlRoot.findall("load"):
-      if first:
-         print '\n... looping through the loading list'
-         first = False
 
       # ~~ Step 1. Common check for keys and driving file ~~~~~~~~~~
       try:
@@ -1148,13 +1137,9 @@ def runXML(xmlFile,xmlConfig,bypass):
    # ~~ Extraction targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # did has all the IO references and the latest sortie files
    ex = groupGET(xmlFile,title,bypass)
-   first = True
    for typeSave in ["save1d","save2d","save3d"]:
       ex.addGroupType(typeSave)
       for extracting in xmlRoot.findall(typeSave):
-         if first:
-            print '\n... looping through the data extraction list'
-            first = False
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          try:
             ex.addGroup(extracting)
@@ -1163,12 +1148,11 @@ def runXML(xmlFile,xmlConfig,bypass):
             continue   # bypass the rest of the for loop
 
          # ~~> Temper with rank but still gather intelligence
-         #doex = True
-         #rankdo = ex.active['rank']
-         #rankdont = xmlConfig[cfgname]['options'].todos['act']['rank']
-         #if rankdont != rankdo*int( rankdont / rankdo ): doex = False
-         #ex.updateCFG({'doex':doex})
-         #if not doex: continue
+         doex = True
+         rankdo = ex.dids[typeSave][ex.active['xref']]['rank']
+         rankdont = xmlConfig[cfgname]['options'].todos['get']['rank']
+         if rankdont != rankdo*int( rankdont / rankdo ): doex = False
+         if not doex: continue
 
          # ~~ Step 2. Cumul layers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          for layer in extracting.findall("layer"):
@@ -1203,19 +1187,16 @@ def runXML(xmlFile,xmlConfig,bypass):
 
          ex.update(ex.tasks)
 
-   if first: print '\n/!\ no data extraction list to go through'
    if xcpt != []: raise Exception({'name':'runXML','msg':'looking at extractions in xmlFile: '+xmlFile,'tree':xcpt})
 
    # ~~ Matrix distribution by extraction types ~~~~~~~~~~~~~~~~~~~~
-   first = True
    for typeSave in ex.dids.keys():
       for xref in ex.dids[typeSave]:
-         if first:
-            print '\n... extracting data'
-            first = False
-         print '    +> reference: ',xref,' of type ',typeSave
 
          task = ex.dids[typeSave][xref]
+         if not task.has_key("layers"): continue
+         print '    +> reference: ',xref,' of type ',typeSave
+
          xlayers = ''   # now done with strings as arrays proved to be too challenging
          for layer in task["layers"]:
             if layer['config'] == 'together':
@@ -1273,19 +1254,22 @@ def runXML(xmlFile,xmlConfig,bypass):
    
    # ~~ Gathering targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    plot = groupPLOT(xmlFile,title,bypass)
-   first = True
    for typePlot in ["plot1d","plot2d","plot3d","plotpv"]:
       plot.addGroupType(typePlot)
       for ploting in xmlRoot.findall(typePlot):
-         if first:
-            print '\n... gathering targets through the plot list'
-            first = False
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          try:
             plot.addDraw(ploting)
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add plot to the list'},e,bypass))
             continue   # bypass the rest of the for loop
+
+         # ~~> Temper with rank but still gather intelligence
+         doplt = True
+         rankdo = plot.dids[typePlot][plot.active['xref']]['rank']
+         rankdont = xmlConfig[cfgname]['options'].todos['draw']['rank']
+         if rankdont != rankdo*int( rankdont / rankdo ): doplt = False
+         if not doplt: continue
 
          # ~~ Step 2. Cumul layers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          for layer in ploting.findall("layer"):
@@ -1338,16 +1322,14 @@ def runXML(xmlFile,xmlConfig,bypass):
 
    # ~~ Matrix distribution by plot types ~~~~~~~~~~~~~~~~~~~~~~~~~~
    # /!\ configurations cannot be called "together" or "distinct" or "oneofall"
-   first = True
    for typePlot in plot.dids.keys():
-      if first:
-         print '\n... plotting figures'
-         first = False
 
       for xref in plot.dids[typePlot]:
-         print '    +> reference: ',xref,' of type ',typePlot
 
          draw = plot.dids[typePlot][xref]
+         if not draw.has_key("layers"): continue
+         print '    +> reference: ',xref,' of type ',typePlot
+
          xlayers = ''   # now done with strings as arrays proved to be too challenging
          for layer in draw["layers"]:
             if layer['config'] == 'together':
@@ -1409,11 +1391,7 @@ def runXML(xmlFile,xmlConfig,bypass):
    racine = path.split(xmlFile)[0]
    os.chdir(racine)
    docriteria = CRITERIA(xmlFile,title,bypass)
-   first = True
    for criteria in xmlRoot.findall("criteria"):
-      if first:
-         print '\n... looping through the Criteria todo list'
-         first = False
 
   # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~~~~
       try:
@@ -1421,6 +1399,13 @@ def runXML(xmlFile,xmlConfig,bypass):
       except Exception as e:
          xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
          continue
+
+      # ~~> Temper with rank but still gather intelligence
+      docrt = True
+      rankdo = docriteria.dids['?'][docriteria.active['xref']]['rank']
+      rankdont = xmlConfig[cfgname]['options'].todos['test']['rank']
+      if rankdont != rankdo*int( rankdont / rankdo ): docrt = False
+      if not docrt: continue
 
       for cfgname in xmlConfig.keys():
          criteriacfg = xmlConfig[cfgname]['cfg']

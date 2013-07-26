@@ -90,7 +90,7 @@ from copy import deepcopy
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserXML import runXML
-from utils.messages import MESSAGES,filterMessage,reprMessage
+from utils.messages import MESSAGES,filterMessage
 from utils.files import moveFile2File,putFileContent
 
 # _____                         ____________________________________
@@ -389,8 +389,8 @@ if __name__ == "__main__":
          for key in xmls[codeName]:
             for xmlFile in xmls[codeName][key]:
                ixmls += 1
-               print '\n\nValidation of ' + key + ' of module ' + codeName
-               print '     XML file: < '  + str(ixmls) + '/' + str(nxmls) + ' > ' + xmlFile + '\n\
+               print '\n\nValidation < '  + str(ixmls) + '/' + str(nxmls) + ' > of ' + key + ' of module ' + codeName
+               print '     XML file: ' + xmlFile + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
                try:
                   tic = time.time()
