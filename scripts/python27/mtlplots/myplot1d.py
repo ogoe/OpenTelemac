@@ -50,7 +50,6 @@ def drawHistoryLines(plt,(x,ys),deco):
                plt.plot(x0,y0[i][j])
 
    # ~~ Deco ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print deco
    # ~~> plt.grid
    if deco.has_key('grid'): plt.grid(deco['grid'])
    # ~~> plt.axis
