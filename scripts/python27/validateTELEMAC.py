@@ -287,9 +287,11 @@ if __name__ == "__main__":
    # however, if rank is present, then it takes over
    if options.rank != '':
       rank = options.rank.split('.')
+      if len(rank) == 1: rank = [ rank[0],rank[0],rank[0],rank[0] ]
       if len(rank) != 4:
          print '\nNot able to decode you rank: ' + options.rank
-         print ' ... it should be something like 2.3.1.0, where the numbers are associated to act,draw,get and test respectively.'
+         print ' ... it should be something like 2.3.1.0, where the numbers are associated to act,draw,get and test respectively,'
+         print '     or it could be just one integer, in which case rank will associate the integer to act,draw,get and test.'
          sys.exit()
       options.todos['act']['rank'] = int(rank[0])
       if abs(options.todos['act']['rank']) == 1:  options.todos['act']['todo'] = 'none'

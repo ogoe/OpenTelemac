@@ -45,6 +45,10 @@
          Also separated python / executable running as an action rather
          than an extraction
 """
+"""@history 27/07/2013 -- Sebastien E. Bourban:
+         Addition of a rank at the level of the XML file, in the top
+            "validation" key.
+"""
 """@brief
 """
 
@@ -217,12 +221,13 @@ class ACTION:
          "title": '', "deprefs":'', "outrefs":'', "where":'' }
 
    def __init__(self,title='',bypass=True):
-      self.active = deepcopy(self.availkeys)
+      self.active = {}
       if title != '': self.active["title"] = title
       self.bypass = bypass
       self.dids = {}
 
-   def addAction(self,actions):
+   def addAction(self,actions,rank=''):
+      self.active.update(deepcopy(self.availkeys))
       try:
          self.active = getXMLKeys(actions,self.active)
       except Exception as e:
@@ -230,6 +235,7 @@ class ACTION:
       if self.dids.has_key(self.active["xref"]):
          raise Exception([{'name':'ACTION::addACTION','msg':'you are getting me confused, this xref already exists: '+self.active["xref"]}])
       self.dids.update({ self.active["xref"]:{} })
+      if self.active["rank"] == '': self.active["rank"] = rank
       if self.active["rank"] == '': self.active["rank"] = '953'
       self.active["rank"] = int(self.active["rank"])
       if isinstance(self.active["deprefs"], StringTypes):
@@ -295,7 +301,7 @@ class GROUPS:
    #                                                General Methods
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    availacts = ''
-   availkeys = { "xref": '', "deco": '' }
+   availkeys = { "xref": None, "deco": '' }
    groupkeys = { }
    avaylkeys = { }
 
@@ -307,7 +313,6 @@ class GROUPS:
       # those you need to see in the XML file
       self.active["target"] = None
       self.active["code"] = None
-      self.active["xref"] = None
       self.active["do"] = None
       self.active["type"] = None
       # additional entities
@@ -420,8 +425,8 @@ class actionRUN(ACTION):
       self.active["xref"] = None
       self.active["do"] = None
 
-   def addAction(self,actions):
-      target = ACTION.addAction(self,actions)
+   def addAction(self,actions,rank=''):
+      target = ACTION.addAction(self,actions,rank)
       self.code = self.active["code"]
       return target
 
@@ -694,8 +699,9 @@ class groupPLOT(GROUPS):
       # those you reset
       self.active['path'] = path.dirname(xmlFile)
 
-   def addDraw(self,draw):
+   def addDraw(self,draw,rank=''):
       GROUPS.addGroup(self,draw)
+      if self.dids[self.active['type']][self.tasks["xref"]]['rank'] == '': self.dids[self.active['type']][self.tasks["xref"]]['rank'] = rank
       if self.dids[self.active['type']][self.tasks["xref"]]['rank'] == '': self.dids[self.active['type']][self.tasks["xref"]]['rank'] = '953'
       self.dids[self.active['type']][self.tasks["xref"]]['rank'] = int(self.dids[self.active['type']][self.tasks["xref"]]['rank'])
       #self.active['deco'] = self.tasks["deco"]
@@ -736,6 +742,13 @@ class groupGET(GROUPS):
       GROUPS.__init__(self,title,bypass)
       # those you reset
       self.active['path'] = path.dirname(xmlFile)
+
+   def addGroup(self,draw,rank=''):
+      GROUPS.addGroup(self,draw)
+      if self.dids[self.active['type']][self.tasks["xref"]]['rank'] == '': self.dids[self.active['type']][self.tasks["xref"]]['rank'] = rank
+      if self.dids[self.active['type']][self.tasks["xref"]]['rank'] == '': self.dids[self.active['type']][self.tasks["xref"]]['rank'] = '953'
+      self.dids[self.active['type']][self.tasks["xref"]]['rank'] = int(self.dids[self.active['type']][self.tasks["xref"]]['rank'])
+      #self.active['deco'] = self.tasks["deco"]
 
    def distributeMeta(self,subtask):
       # ~~> distribute decoration
@@ -912,6 +925,9 @@ def runXML(xmlFile,xmlConfig,bypass):
    xmlTree = XML.parse(f)  # may need to try first and report error
    xmlRoot = xmlTree.getroot()
    f.close()
+   # ~~ Default Ranking ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   rank = ''
+   if "rank" in xmlRoot.keys(): rank = xmlRoot.attrib["rank"]
 
    # ~~ Meta data process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #
@@ -968,7 +984,7 @@ def runXML(xmlFile,xmlConfig,bypass):
 
       # ~~ Step 1. Common check for keys and driving file ~~~~~~~~~~
       try:
-         targetFile = do.addAction(action)
+         targetFile = do.addAction(action,rank)
       except Exception as e:
          xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
          continue    # bypass rest of the loop
@@ -1118,7 +1134,7 @@ def runXML(xmlFile,xmlConfig,bypass):
 
       # ~~ Step 1. Common check for keys and driving file ~~~~~~~~~~
       try:
-         targetFile = gt.addAction(load)
+         targetFile = gt.addAction(load,rank)
       except Exception as e:
          xcpt.append(filterMessage({'name':'runXML','msg':'add load to the list'},e,bypass))
          continue    # bypass rest of the loop
@@ -1142,7 +1158,7 @@ def runXML(xmlFile,xmlConfig,bypass):
       for extracting in xmlRoot.findall(typeSave):
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          try:
-            ex.addGroup(extracting)
+            ex.addGroup(extracting,rank)
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add extract object to the list'},e,bypass))
             continue   # bypass the rest of the for loop
@@ -1259,7 +1275,7 @@ def runXML(xmlFile,xmlConfig,bypass):
       for ploting in xmlRoot.findall(typePlot):
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          try:
-            plot.addDraw(ploting)
+            plot.addDraw(ploting,rank)
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add plot to the list'},e,bypass))
             continue   # bypass the rest of the for loop
