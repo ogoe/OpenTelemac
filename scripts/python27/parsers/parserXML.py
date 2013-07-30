@@ -225,9 +225,13 @@ class ACTION:
       if title != '': self.active["title"] = title
       self.bypass = bypass
       self.dids = {}
+      self.path = ''
+      self.safe = ''
 
    def addAction(self,actions,rank=''):
       self.active.update(deepcopy(self.availkeys))
+      self.active['path'] = self.path
+      self.active['safe'] = self.safe
       try:
          self.active = getXMLKeys(actions,self.active)
       except Exception as e:
@@ -377,12 +381,13 @@ class groupMETA(GROUPS):
    def __init__(self,xmlFile,title='',bypass=True):
       GROUPS.__init__(self,title,bypass)
       # those you reset
-      self.active['path'] = path.dirname(xmlFile)
+      self.path = path.dirname(xmlFile)
       # those you need to see in the XML file
       self.active["deco"] = {}
 
    def addDraw(self,meta):
       GROUPS.addGroup(self,meta)
+      self.active['path'] = self.path
 
    def addLookTask(self,layer,nametask='look'):
       #self.avaylkeys = deepcopy(GROUPS.avaylkeys)
@@ -418,7 +423,7 @@ class actionRUN(ACTION):
    def __init__(self,xmlFile,title='',bypass=True):
       ACTION.__init__(self,title,bypass)
       # those you reset
-      self.active['path'] = path.dirname(xmlFile)
+      self.path = path.dirname(xmlFile)
       # those you need to see in the XML file
       self.active["target"] = None
       self.active["code"] = None
@@ -427,6 +432,7 @@ class actionRUN(ACTION):
 
    def addAction(self,actions,rank=''):
       target = ACTION.addAction(self,actions,rank)
+      self.active['path'] = self.path
       self.code = self.active["code"]
       return target
 
@@ -664,7 +670,7 @@ class actionGET(ACTION):
    def __init__(self,xmlFile,title='',bypass=True):
       ACTION.__init__(self,title,bypass)
       # those you reset
-      self.active['path'] = path.dirname(xmlFile)
+      self.path = path.dirname(xmlFile)
       # those you need to see in the XML file
       self.active["target"] = None
       self.active["xref"] = None
@@ -672,6 +678,7 @@ class actionGET(ACTION):
 
    def addCFG(self,cfgname,cfg):
       ACTION.addCFG(self,cfgname,cfg)
+      self.active['path'] = self.path
       ACTION.updateCFG(self,{ "type": self.active["type"],
          "target":path.join(self.active['path'],self.active["target"]) })
 
@@ -697,10 +704,13 @@ class groupPLOT(GROUPS):
    def __init__(self,xmlFile,title='',bypass=True):
       GROUPS.__init__(self,title,bypass)
       # those you reset
-      self.active['path'] = path.dirname(xmlFile)
+      self.path = path.dirname(xmlFile)
+      self.safe = ''
 
    def addDraw(self,draw,rank=''):
       GROUPS.addGroup(self,draw)
+      self.active['path'] = self.path
+      self.active['safe'] = self.safe
       if self.dids[self.active['type']][self.tasks["xref"]]['rank'] == '': self.dids[self.active['type']][self.tasks["xref"]]['rank'] = rank
       if self.dids[self.active['type']][self.tasks["xref"]]['rank'] == '': self.dids[self.active['type']][self.tasks["xref"]]['rank'] = '953'
       self.dids[self.active['type']][self.tasks["xref"]]['rank'] = int(self.dids[self.active['type']][self.tasks["xref"]]['rank'])
@@ -741,10 +751,13 @@ class groupGET(GROUPS):
    def __init__(self,xmlFile,title='',bypass=True):
       GROUPS.__init__(self,title,bypass)
       # those you reset
-      self.active['path'] = path.dirname(xmlFile)
+      self.path = path.dirname(xmlFile)
+      self.safe = ''
 
    def addGroup(self,draw,rank=''):
       GROUPS.addGroup(self,draw)
+      self.active['path'] = self.path
+      self.active['safe'] = self.safe
       if self.dids[self.active['type']][self.tasks["xref"]]['rank'] == '': self.dids[self.active['type']][self.tasks["xref"]]['rank'] = rank
       if self.dids[self.active['type']][self.tasks["xref"]]['rank'] == '': self.dids[self.active['type']][self.tasks["xref"]]['rank'] = '953'
       self.dids[self.active['type']][self.tasks["xref"]]['rank'] = int(self.dids[self.active['type']][self.tasks["xref"]]['rank'])
@@ -777,7 +790,8 @@ class CRITERIA(GROUPS):
    def __init__(self,xmlFile,title='',bypass=True):
       GROUPS.__init__(self,title,bypass)
       # those you reset
-      self.active['path'] = path.dirname(xmlFile)
+      self.path = path.dirname(xmlFile)
+      self.safe = ''
       # ~~~~~~~~~~~~~
       self.variabling = {}; self.conditionning = {}
 
@@ -788,6 +802,8 @@ class CRITERIA(GROUPS):
          raise Exception([filterMessage({'name':'ACTION::addCriteria'},e,self.bypass)])  # only one item here
       else:
          self.active = i
+      self.active['path'] = self.path
+      self.active['safe'] = self.safe
       if self.dids.has_key(self.active["xref"]):
          raise Exception([{'name':'CRITERIA::addCriteria','msg':'you are getting me confused, this xref already exists: '+self.active["xref"]}])
       self.dids.update({ self.active["xref"]:{} })
