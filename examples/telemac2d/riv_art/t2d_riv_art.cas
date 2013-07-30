@@ -91,7 +91,7 @@ FRICTION COEFFICIENT                        : 94.
 /----------------------------------------------------------------------
 /                            OILSPILL
 /----------------------------------------------------------------------
-OIL SPILL MODEL                             : 1
+OIL SPILL MODEL                             : YES
 OILSPILL STEERING FILE                      : oilspill.txt
 NUMBER OF DROGUES                           : 1156
 PRINTOUT PERIOD FOR DROGUES                 : 100
