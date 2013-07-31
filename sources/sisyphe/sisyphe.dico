@@ -3531,7 +3531,7 @@ NOM1 = 'DESCRIPTION OF LIBRARIES'
 TYPE = CARACTERE
 INDEX = 54
 MNEMO = 'LINKLIBS'
-TAILLE = 5
+TAILLE = 6
 DEFAUT = 'builds|PPP|lib|sisypheMMMVVV.LLL'; 
 'builds|PPP|lib|dredgesimMMMVVV.LLL';
 'builds|PPP|lib|biefMMMVVV.LLL'; 
