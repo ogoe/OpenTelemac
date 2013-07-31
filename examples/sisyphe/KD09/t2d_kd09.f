@@ -93,7 +93,7 @@
      &                  LIHBOR%I,LIUBOR%I,KENT,KENTU, 
      &                  GEOSYST,NUMZONE,LAMBD0,PHI0, 
      &                  T2D_FILES,T2DBB1,T2DBB2, 
-     &                  MARDAT,MARTIM,INTMICON) 
+     &                  MARDAT,MARTIM,INTMICON,MSL) 
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR. 
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR. 
      &       CDTINI(1:07).EQ.'SPECIAL') THEN 
