@@ -22,23 +22,19 @@
 !| T                     |<--| Timestep ID
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-
-
-
       USE DECLARATIONS_SISYPHE, ONLY: MESH, CVSM_OUT, LT, ENTET
-
-
+!
       implicit none
-
+!
       integer, INTENT(IN)    :: J_Global
       integer, INTENT(IN)    :: TimeStamp
-
+!
       integer J
 
             J = J_Global
             db = .false.
 
-                if (J.eq.1) db = .true.
+               !if (J.eq.1) db = .true.
 
          !Use this to limit output to CAS_FILE DEFINED TIMESTEPS
             if(CVSM_OUT) THEN
@@ -61,7 +57,7 @@
             !if ( (J.eq.1553)) db = .true.
 
          !Use this to set an output for a certain node, with timestep rules
-            !if ( (J.eq.948).and.(AT.ge.0D0)) db = .true.
+            !if ( (J.eq.948).and.(AT.ge.0.D0)) db = .true.
 
 
          !Use this to set an output for a certain node, at a specific timestep

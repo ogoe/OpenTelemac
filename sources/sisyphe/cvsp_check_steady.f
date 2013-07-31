@@ -47,7 +47,7 @@
         IF((PRO_D(J,K+1,1) - PRO_D(J,K,1)).LT.0.D0) THEN
           WRITE(LU,*) 'ERR: UNSTEADY VSP! ,J,K,AT',
      &           JG, K, AT, PRO_D(J,K+1,1), PRO_D(J,K,1)
-          CALL CVSP_P('./ERR/','UNSTEADY_',JG)
+          CALL CVSP_P('./','UNSTEADY_',JG)
           CALL PLANTE(1)
           STOP
         ENDIF

@@ -204,7 +204,7 @@
                FHIG = 0.D0
 !               
                WRITE(LU,*) 'Z_LOW >= Z_HIGH', DHIG, DLOW, Z_HIGH, Z_LOW
-               CALL CVSP_P('./ERR/','ZLOHI',JG)
+               CALL CVSP_P('./','ZLOHI',JG)
                MYCASE  = MYCASE + 1000000000
                LASTCASE = 5
 !               
@@ -214,7 +214,7 @@
                FHIG = 0.D0
 !               
                WRITE(LU,*) 'DHIG <= DLOW', J,DHIG, DLOW, Z_HIGH, Z_LOW
-               CALL CVSP_P('./ERR/','DLOHI',JG)
+               CALL CVSP_P('./','DLOHI',JG)
                MYCASE  = MYCASE + 1000000000
                LASTCASE = 6
 !               
@@ -243,7 +243,7 @@
      &              PRO_F(J,REVCNT-1,F_CNT),PRO_F(J,REVCNT,F_CNT),
      &              PRO_D(J,REVCNT-1,F_CNT),PRO_D(J,REVCNT,F_CNT),
      &              LASTCASE
-               CALL CVSP_P('./ERR/','IVKT',JG)
+               CALL CVSP_P('./','IVKT',JG)
                CALL PLANTE(1)
             ENDIF
 !DEBUG!DEBUG!DEBUG!DEBUG!DEBUG!DEBUG
@@ -267,7 +267,7 @@
 !      
 !DEBUG!DEBUG!DEBUG!DEBUG!DEBUG!DEBUG
       IF (CVSP_INTEGRATE_VOLUME < 0.D0) THEN
-         CALL CVSP_P('./ERR/','IVK0',JG)
+         CALL CVSP_P('./','IVK0',JG)
          WRITE(*,FMT='(A,2(I11),14(G20.10))')'INTEGRATE_VOL_ER:<0:'
      &        ,JG, I, AT, CVSP_INTEGRATE_VOLUME, MYCASE ,Z_HIGH,Z_LOW,
      &        SUMUP,SUMUP2,SUMUP3,CHSUM,A(1),A(2),A(3),A(4),A(5)
@@ -290,7 +290,7 @@
 !-----------------------------------------------------------------------
 !           
       IF (ABS(SUMUP).GT.1.D-5) THEN
-         CALL CVSP_P('./ERR/','IV_E',JG)
+         CALL CVSP_P('./','IV_E',JG)
          WRITE(LU,*) 'INTEGRATE VOLUME ACCURRACY!!!', SUMUP, JG
          DO K = 1, PRO_MAX(J)
 !

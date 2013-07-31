@@ -73,7 +73,7 @@
       
       JG = J
       IF(NCSIZE.GT.1) JG = MESH%KNOLG%I(J)
-      IF(DB(JG,0)) CALL CVSP_P('./ERR/','BRUA',JG)
+      IF(DB(JG,0)) CALL CVSP_P('./','BRUA',JG)
 !
 !-----------------------------------------------------------------------     
 ! WORKS LIKE THE MAKE_ACT LAYER ROUTINE BUT FOR VSP
@@ -120,7 +120,7 @@
         STOP
       ENDIF
 !      
-      IF(DB(JG,0)) CALL CVSP_P('./ERR/','BRUE',JG)
+      IF(DB(JG,0)) CALL CVSP_P('./','BRUE',JG)
 !
 !----------------------------------------------------------------------- 
 !     

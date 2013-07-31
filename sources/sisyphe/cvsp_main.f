@@ -97,7 +97,7 @@
         IF(Z%R(J)-ZF%R(J).LT.0.D0) THEN
            WRITE(LU,*) 'UHM_Z.LT.ZF_BEF ',AT,Z%R(J),ZF%R(J),HN%R(J),
      &                 (Z%R(J)-ZF%R(J))-HN%R(J)
-           CALL CVSP_P('./ERR/','Z_', J)
+           CALL CVSP_P('./','Z_', J)
         ENDIF
       ENDDO
 !     
@@ -115,7 +115,7 @@
 !      
 ! DEBUG INFO
       IAMCASE = 0
-      IF (DB(JG,0).EQV..TRUE.) CALL CVSP_P('./VSP/','V_A',JG)
+      IF (DB(JG,0)) CALL CVSP_P('./','V_A',JG)
 ! DEBUG INFO
 !     
 !-----------------------------------------------------------------------     
@@ -212,7 +212,7 @@
 ! WRITES THE VSP FOR SINGLE POINTS
          DO KK = 1, 100
             IF (CVSMOUTPUT(KK).GT.0) THEN
-               CALL CVSP_P('./VSP/','V_', CVSMOUTPUT(KK))
+               CALL CVSP_P('./','V_', CVSMOUTPUT(KK))
             ENDIF
          ENDDO
       END IF
@@ -231,7 +231,7 @@
          IF (Z%R(J)-ZF%R(J).LT.0.D0) THEN
             WRITE(LU,*) 'UHM_Z.LT.ZF ', I,AT,Z%R(J),ZF%R(J),HN%R(J),
      &           (Z%R(J)-ZF%R(J))-HN%R(J)
-            CALL CVSP_P('./ERR/','Z_', J)
+            CALL CVSP_P('./','Z_', J)
          END IF
       ENDDO
 !     
@@ -242,7 +242,7 @@
       IF((CVSM_OUT).OR.(DB(-1,-1).EQV..TRUE.)) THEN
          DO KK = 1,100
             IF (CVSMOUTPUT(KK).GT.0) THEN
-               CALL LAYERS_P('./LAY/VSP_', CVSMOUTPUT(KK))
+               CALL LAYERS_P('./VSP_', CVSMOUTPUT(KK))
             ENDIF
          ENDDO
       END IF
