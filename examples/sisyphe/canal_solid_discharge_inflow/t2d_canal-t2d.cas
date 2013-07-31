@@ -8,6 +8,8 @@ PERIODE DE COUPLAGE POUR SISYPHE = 1
 FICHIER DES CONDITIONS AUX LIMITES :  geo_canal-t2d.cli
 FICHIER DE GEOMETRIE               :  geo_canal-t2d.slf
 FICHIER DES RESULTATS              :  r2d_canal-t2d.slf
+FICHIER DE REFERENCE               :  f2d_canal-t2d.slf
+VALIDATION : OUI
 /FICHIER DU CALCUL PRECEDENT        : tel2d_init.r2d
 /SUITE DE CALCUL  = OUI
 /
@@ -15,7 +17,7 @@ TITRE :' Telemac2d-Sisyphe'
 /                                                                               
 REMISE A ZERO DU TEMPS = OUI
 NOMBRE DE PAS DE TEMPS = 5000
-PERIODE POUR LES SORTIES GRAPHIQUES = 500
+PERIODE POUR LES SORTIES GRAPHIQUES = 5000
 PERIODE DE SORTIE LISTING = 100        
 /
 VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,H,S,B,US,Q,L                     
@@ -23,7 +25,7 @@ BILAN DE MASSE = VRAI
 PAS DE TEMPS = 0.1 
 /
 / PARAMETRES NUMERIQUES
-/ ---------------------
+/ 
 BANCS DECOUVRANTS = OUI
 OPTION DE TRAITEMENT DES BANCS DECOUVRANTS = 1
 MASS-LUMPING SUR H : 1.    
@@ -39,7 +41,7 @@ PRECISION DU SOLVEUR = 1.E-6
 LOI DE FROTTEMENT SUR LE FOND = 3    
 COEFFICIENT DE FROTTEMENT = 30.           
 MODELE DE TURBULENCE = 1
-COEFFICIENT DE DIFFUSION DES VITESSES = 0.1                                                                   
+COEFFICIENT DE DIFFUSION DES VITESSES=0.1                                                                   
 /
 / CONDITIONS INITIALES - AUX LIMITES
 / ----------------------------------

@@ -27,10 +27,10 @@ STOCKAGE DES MATRICES : 3
 / -----------------------------------------------------
 FICHIER DE GEOMETRIE = geo_canal-t2d.slf
 FICHIER DES CONDITIONS AUX LIMITES = geo_canal-t2d.cli
-/FICHIER DE REFERENCE = bosse_tel2d.ref
-/VALIDATION : OUI
 /
 FICHIER DES RESULTATS = sis_canal-t2d.slf
+FICHIER DE REFERENCE  = fis_canal-t2d.slf
+VALIDATION : OUI
 /
 /CALCUL 
 / -----------------------------------------------------
