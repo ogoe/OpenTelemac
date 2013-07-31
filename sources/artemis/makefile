@@ -72,7 +72,7 @@ declarations_artemis.f interface_artemis.f \
 artemis.f        berkho.f         borh.f           calcfw.f       caldir.f  \
 calcmn.f         calcqb.f         calctm.f         calcue.f         \
 calre2.f         calres.f         cntpre.f         condih.f         \
-corfon.f         dirale.f         dismoy.f         entart.f         \
+art_corfon.f         dirale.f         dismoy.f         entart.f         \
 fcte1.f          fcte2.f          fwspec.f         homere_artemis.f \
 lecdon_artemis.f masque_artemis.f nomvar_artemis.f                  \
 pentco.f         perale.f         phbor.f          point_artemis.f \

@@ -47,6 +47,7 @@ LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).a
 
 EXEDEF        = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
 LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/sisyphe$(MODE)$(VERSION).a \
+                $(PROJECT)/builds/$(DIRLIB)/lib/dredgesim$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/tomawac$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/telemac2d$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/bief$(MODE)$(VERSION).a \

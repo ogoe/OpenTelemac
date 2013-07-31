@@ -70,7 +70,7 @@ MAKEFILE      = makefile
 SRCS= \
 declarations_tomawac.f interface_tomawac.f \
 anacos.f anamar.f anaven.f angles.f bornes.f \
-condiw.f conw4d.f conwac.f corfon.f \
+condiw.f conw4d.f conwac.f tom_corfon.f \
 cormar.f couple.f couuti.f cqueue.f delfra.f diffrac.f dump2d.f \
 ecrete.f ecrspe.f f1f1f1.f filt_sa.f\
 foncro.f fpread.f frem01.f frem02.f fremoy.f frepic.f frmset.f fsprd1.f \

@@ -22,6 +22,8 @@
         "sources|utils|partel",
         "sources|utils|gretel",
         "sources|utils|diffsel",
+#dredgesim
+        "sources|dredgesim",
 #Sisyphe
 	"sources|sisyphe",
 #Tomawac

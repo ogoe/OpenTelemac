@@ -13,30 +13,30 @@ files: bief_def.f
   read_submit.f
   lit.f
   ov.f
-  bief_nbpts.f
   bief_nbmpts.f
+  bief_nbpts.f
   bief_allvec.f
   bief_allvec_in_block.f
   dimens.f
   cpstvc.f
   bief_nbsegel.f
   segbor.f
-  readgeo1.f
+  cpikle3.f
   bief_nbpel.f
   bief_dim2_ext.f
   bief_nbseg.f
   bief_dim1_ext.f
   bief_allmat.f
   bief_ininds.f
-  ielbor.f
+  cpikle2.f
+  readgeo1.f
   corrxy.f
   readgeo3.f
   readgeo2.f
-  cpikle3.f
   mxptel31.f
   mxptel.f
   bief_nbfel.f
-  cpikle2.f
+  ielbor.f
   ov_2.f
   almesh.f
   allblo.f
@@ -54,16 +54,16 @@ files: preval.f
   intlu.f
   longlu.f
   cmd.f
-  majus.f
   precar.f
   carlu.f
-  influ.f
-  dico.f
+  majus.f
   loglu.f
   classe.f
   aidelu.f
-  prev.f
+  dico.f
   realu.f
+  prev.f
+  influ.f
   damoc.f
   damocle.f
 

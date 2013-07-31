@@ -30,18 +30,18 @@ path: <root>|sources|utils|damocles
 files: longlu.f
   preval.f
   cmd.f
-  majus.f
   precar.f
   next.f
   carlu.f
-  influ.f
-  dico.f
+  majus.f
   loglu.f
   classe.f
   aidelu.f
   intlu.f
-  prev.f
+  dico.f
   realu.f
+  prev.f
+  influ.f
   damoc.f
   damocles.f
 
