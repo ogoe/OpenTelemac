@@ -42,6 +42,7 @@ FICHIER DES CONDITIONS AUX LIMITES : geo_conservation.cli
 FICHIER DE GEOMETRIE               : geo_conservation.slf
 FICHIER DE REFERENCE               : f2d_conservation.slf
 FICHIER DES RESULTATS              : r2d_conservation.slf
+VALIDATION : OUI
 /
 /----------------------------------------------------------------------/ 
 /                     OPTIONS GENERALES                                  
@@ -68,8 +69,7 @@ IMPLICITATION POUR LA HAUTEUR = 1.
 IMPLICITATION POUR LA VITESSE = 0.6  
 PRECONDITIONNEMENT : 2             
 /---------------------------------------------------------------/
-BILAN DE MASSE : OUI    
-/ VALIDATION : OUI                               
+BILAN DE MASSE : OUI                                  
 CONDITIONS INITIALES : PARTICULIERES     
 STOCKAGE DES MATRICES : 3        
 / POUR EQUATION D'ONDE : 
