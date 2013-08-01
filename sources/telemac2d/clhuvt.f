@@ -2,12 +2,12 @@
                      SUBROUTINE CLHUVT
 !                    *****************
 !
-     &(NWEIRS,NPSING,NPSMAX,NUMDIG,ZDIG,X,Y,ZF,IOPTAN,UNORM,CHESTR,
+     &(NWEIRS,NPSING,NDGA1,NDGB1,ZDIG,X,Y,ZF,IOPTAN,UNORM,CHESTR,
      & NKFROT,KARMAN,T,NTRAC,H,UBOR,VBOR,TBOR,NBOR,
      & LIHBOR,LIUBOR,LIVBOR,LITBOR)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    DEFINES THE DEPTHS, VELOCITIES, ... TO BE IMPOSED
@@ -42,6 +42,12 @@
 !+   Adaptation to parallelism
 !+
 !
+!history  C.COULET / A.REBAI / E.DAVID (ARTELIA)
+!+        12/06/2013
+!+        V6P3
+!+   Adaptation to the dynamic allocation of weirs
+!
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHESTR         |-->| FRICTION COEFFICIENT.
 !| H              |-->| WATER DEPTH.
@@ -53,11 +59,11 @@
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NKFROT         |-->| FRICTION LAW, PER POINT
 !| NPSING         |-->| NUMBER OF POINTS FOR EVERY SINGULARITY.
-!| NPSMAX         |-->| MAXIMUM NUMBER OF POINTS FOR ONE SIDE OF A
-!|                |   | SINGULARITY.
 !| NTRAC          |-->| NUMBER OF TRACERS
-!| NUMDIG         |-->| NUMDIG(K,I,NP) : BOUNDARY NUMBER OF POINT NP
-!|                |   | OF SIDE K OF WEIR I.
+!| NDGA1          |-->| NDGA1%ADR(I)%I(NP) : BOUNDARY NUMBER OF POINT NP
+!|                |   | OF WEIR I (side1)
+!| NDGB1          |-->| NDGB1%ADR(I)%I(NP) : BOUNDARY NUMBER OF POINT NP
+!|                |   | OF WEIR I (side2)
 !| NWEIRS         |-->| NUMBER OF SINGULARITIES
 !| T              |-->| BLOCK OF TRACERS.
 !| UBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
@@ -78,16 +84,16 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)    :: NWEIRS,NPSMAX,IOPTAN
-      INTEGER, INTENT(IN)    :: NPSING(NWEIRS),NUMDIG(2,NWEIRS,NPSMAX)
+      INTEGER, INTENT(IN)             :: NWEIRS,IOPTAN
       INTEGER, INTENT(IN)             :: NBOR(*),NKFROT(*)
       INTEGER, INTENT(INOUT)          :: LIUBOR(*),LIHBOR(*),LIVBOR(*)
       INTEGER, INTENT(IN)             :: NTRAC
-      DOUBLE PRECISION, INTENT(IN)    :: ZDIG(NWEIRS,NPSMAX)
       DOUBLE PRECISION, INTENT(IN)    :: X(*),Y(*),ZF(*),CHESTR(*),H(*)
       DOUBLE PRECISION, INTENT(IN)    :: UNORM(*)
       DOUBLE PRECISION, INTENT(INOUT) :: UBOR(*),VBOR(*)
       DOUBLE PRECISION, INTENT(IN)    :: KARMAN
+      TYPE(BIEF_OBJ)  , INTENT(IN)    :: NPSING,NDGA1,NDGB1
+      TYPE(BIEF_OBJ)  , INTENT(IN)    :: ZDIG
       TYPE(BIEF_OBJ)  , INTENT(INOUT) :: TBOR,LITBOR
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: T
 !
@@ -115,20 +121,37 @@
 !
 !         LOOPS ON THE NODES OF EACH CREST
 !
-          DO 30 I=1,NPSING(N)
+          DO 30 I=1,NPSING%I(N)
 !
-          I1=NUMDIG(K,N,I)
+          IF(K.EQ.1) THEN
+            I1=NDGA1%ADR(N)%P%I(I)
+          ELSE
+            I1=NDGB1%ADR(N)%P%I(I)
+          ENDIF
 !
           IF(I.EQ.1) THEN
             I0=I1
-            I2=NUMDIG(K,N,I+1)
+            IF(K.EQ.1) THEN
+              I2=NDGA1%ADR(N)%P%I(I+1)
+            ELSE
+              I2=NDGB1%ADR(N)%P%I(I+1)
+            ENDIF
             XX=0.D0
-          ELSEIF(I.LT.NPSING(N)) THEN
-            I0=NUMDIG(K,N,I-1)
-            I2=NUMDIG(K,N,I+1)
+          ELSEIF(I.LT.NPSING%I(N)) THEN
+            IF(K.EQ.1) THEN
+              I0=NDGA1%ADR(N)%P%I(I-1)
+              I2=NDGA1%ADR(N)%P%I(I+1)
+            ELSE
+              I0=NDGB1%ADR(N)%P%I(I-1)
+              I2=NDGB1%ADR(N)%P%I(I+1)
+            ENDIF
             XX=1.D0
           ELSE
-            I0=NUMDIG(K,N,I-1)
+            IF(K.EQ.1) THEN
+              I0=NDGA1%ADR(N)%P%I(I-1)
+            ELSE
+              I0=NDGB1%ADR(N)%P%I(I-1)
+            ENDIF
             I2=I1
             XX=0.D0
           ENDIF
@@ -194,7 +217,7 @@
 !
 !            ONE TAKES THE HEIGHT ON THE CREST (TO BE DISCUSSED)
 !            HH = H(N1)
-             HH = H(N1)+ZF(N1)-ZDIG(N,I)
+             HH = H(N1)+ZF(N1)-ZDIG%ADR(N)%P%R(I)
 !            LINE ADDED ON 23/11/2005 BY JMH (HH MAY BE NEGATIVE)
              HH=MAX(HH,0.D0)
              PENTE=(H0-H2+ZF0-ZF2)/DL
@@ -252,9 +275,9 @@
 !
 !  TYPES OF CONDITIONS FOR THE DEPTH AND THE VELOCITY:
 !
-      DO 40 I=1,NPSING(N)
+      DO 40 I=1,NPSING%I(N)
 !
-        I1=NUMDIG(1,N,I)
+        I1=NDGA1%ADR(N)%P%I(I)
         IF(I1.GT.0) THEN
           LIHBOR(I1)=4
           LIUBOR(I1)=6
@@ -268,7 +291,7 @@
           UNORM1 =P_DMAX(MAX(UNORM1,0.D0))-P_DMIN(MAX(-UNORM1,0.D0))
         ENDIF 
 !
-        I2=NUMDIG(2,N,I)
+        I2=NDGB1%ADR(N)%P%I(I)
         IF(I2.GT.0) THEN
           LIHBOR(I2)=4
           LIUBOR(I2)=6

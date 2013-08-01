@@ -5481,6 +5481,26 @@ NIVEAU = 2
 AIDE = 'Applique a la matrice de masse'
 AIDE1 = 'To be applied to the mass matrix'
 
+NOM = 'TYPE DES SEUILS'
+NOM1 = 'TYPE OF WEIRS'
+TYPE = ENTIER
+INDEX = 87
+MNEMO = 'TYPSEUIL'
+TAILLE = 1
+DEFAUT = 1
+DEFAUT1 = 1
+CHOIX=
+'1="HORIZONTAL AVEC MEME NOMBRE DE NOEUDS AMONT/AVAL (Solution historique avec bord)"';
+'2="GENERALE (Nouvelle solution avec pts sources)"'
+CHOIX1=
+'1="HORIZONTAL WITH SAME NUMBER OF NODES UPSTREAM/DOWNSTREAM (Historical solution with bord)"';
+'2="GENERAL (New solution with sources points)"'
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 1
+AIDE = 'Méthode de traitement des seuils'
+AIDE1 = 'Method for treatment of weirs'
+
 / 
 / POUR LES LANCEURS PERL : 
 / 
@@ -5661,5 +5681,4 @@ RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1 
 AIDE  = 'Executable parallele par defaut de T2D' 
 AIDE1 = 'Default parallel executable for T2D' 
- 
- 
+

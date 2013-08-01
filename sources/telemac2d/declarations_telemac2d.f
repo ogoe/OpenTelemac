@@ -42,6 +42,11 @@
 !+        V6P3
 !+     Correction of a bug in BUSE.F
 !
+!history  C.COULET / A.REBAI / E.DAVID (ARTELIA)
+!+        07/06/2013
+!+        V6P3
+!+   Modification for new treatment of weirs
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -301,14 +306,6 @@
 !
       TYPE(BIEF_OBJ), TARGET :: SHPFLO,XLAG,YLAG,SHPLAG
 !
-!     ELEVATION OF POINTS IN A WEIR
-!
-      TYPE(BIEF_OBJ), TARGET :: ZDIG
-!
-!     DISCHARGE COEFFICIENTS OF POINTS IN WEIRS
-!
-      TYPE(BIEF_OBJ), TARGET :: PHIDIG
-!
 !     TIME STEP OF INITIAL RELEASE FOR FLOATING BODIES, IDEM FOR FINAL
 ! 
       TYPE(BIEF_OBJ), TARGET :: DEBFLO,FINFLO
@@ -328,10 +325,6 @@
 !     ELEMENT WHERE IS THE LAGRANGIAN DRIFT
 !
       TYPE(BIEF_OBJ), TARGET :: ELTLAG
-!
-!     BOUNDARY NUMBERS OF POINTS IN A WEIR
-!
-      TYPE(BIEF_OBJ), TARGET :: NUMDIG
 !
 !     INTEGERS WORKING ARRAYS
 !
@@ -468,7 +461,7 @@
       TYPE(BIEF_OBJ),TARGET :: UBUS, VBUS, DBUS, TBUS, CLPBUS
       TYPE(BIEF_OBJ),TARGET :: SECBUS
 !
-!      NEIGHBORS OF SEGMENT (FOR WAF SCHEME)
+!     NEIGHBORS OF SEGMENT (FOR WAF SCHEME)
 !
       TYPE(BIEF_OBJ),TARGET :: NEISEG
 !
@@ -476,6 +469,14 @@
       TYPE(BIEF_OBJ),TARGET :: OPTNBR, TDECBR, DURBR, ZFINBR, ZDECBR
       TYPE(BIEF_OBJ),TARGET :: NUMPSD, NBNDBR, INDBR, ZCRBR
 !
+!     FOR WEIR MANAGEMENT
+      TYPE(BIEF_OBJ),TARGET :: NPSING
+      TYPE(BIEF_OBJ),TARGET :: NDGA1, NDGA2, NDGB1, NDGB2
+      TYPE(BIEF_OBJ),TARGET :: WDIG, ZDIG, PHIDIG
+      TYPE(BIEF_OBJ),TARGET :: QWA, QWB
+      TYPE(BIEF_OBJ),TARGET :: UWEIRA,UWEIRB,VWEIRA,VWEIRB
+      TYPE(BIEF_OBJ),TARGET :: QP0
+      TYPE(BIEF_OBJ),TARGET :: TWEIRA,TWEIRB
 !
 !-----------------------------------------------------------------------
 !
@@ -604,18 +605,6 @@
 !     12/02/2013: 47
 !
       INTEGER, PARAMETER :: MAXLU_T2D = 47
-!
-!     MAXIMUM NUMBER OF POINTS ON ONE SIDE OF A SINGULARITY (READ IN THE DATA)
-! 
-      INTEGER NPSMAX
-!
-!     MAXIMUM NUMBER OF SINGULARITIES
-! 
-      INTEGER, PARAMETER :: NWRMAX = 10
-!
-!     NUMBER OF POINTS OF EITHER SIDES OF SINGULARITIES
-!
-      INTEGER NPSING(NWRMAX)
 !
 !     GEOMETRY FILE NUMBER
 ! 
@@ -1075,6 +1064,13 @@
 !
       INTEGER STOCHA
 !
+!     OPTION FOR WEIR TREATMENT
+!
+      INTEGER TYPSEUIL
+!
+!     STORAGE OF MAXIMUM NUMBER OF ELEMENTS ON ALL WEIRS
+!
+      INTEGER MAXNPS
 !
 !-----------------------------------------------------------------------
 !

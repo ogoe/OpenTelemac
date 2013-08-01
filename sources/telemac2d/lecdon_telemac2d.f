@@ -48,6 +48,11 @@
 !+        V6P3
 !+   Treatment of spatial projection type.
 !
+!history  C.COULET / A.REBAI / E.DAVID (ARTELIA)
+!+        30/04/2013
+!+        V6P3
+!+   Modification for new treatment of weirs
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
@@ -526,6 +531,9 @@
          STOCHA = MOTINT(ADRESS(1,85))
 !        NUMBER OF GAUSS POINTS FOR CHARACTERISTICS
          NGAUSS = MOTINT(ADRESS(1,86))
+!
+!        OPTION FOR WEIR TREATMENT
+         TYPSEUIL = MOTINT(ADRESS(1,87))
 !
 ! REAL KEYWORDS:
 !

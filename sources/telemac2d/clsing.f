@@ -2,12 +2,12 @@
                      SUBROUTINE CLSING
 !                    *****************
 !
-     &(NWEIRS,NPSING,NPSMAX,NUMDIG,X,Y,ZF,CHESTR,NKFROT,KARMAN,
+     &(NWEIRS,NPSING,NDGA1,NDGB1,X,Y,ZF,CHESTR,NKFROT,KARMAN,
      & ZDIG,PHIDIG,NBOR,H,T,NTRAC,IOPTAN,UNORM,
      & UBOR,VBOR,TBOR,LIHBOR,LIUBOR,LIVBOR,LITBOR,GRAV)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    MANAGES THE COMPUTATION OF DISCHARGES AND
@@ -39,7 +39,11 @@
 !+        09/08/2011
 !+        V6P2
 !+   Adaptation to parallelism
-!+
+!
+!history  C.COULET / A.REBAI / E.DAVID (ARTELIA)
+!+        12/06/2013
+!+        V6P3
+!+   Adaptation to the dynamic allocation of weirs
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHESTR         |-->| FRICTION COEFFICIENT
@@ -53,11 +57,11 @@
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NKFROT         |-->| FRICTION LAW, PER POINT
 !| NPSING         |-->| NUMBER OF POINTS FOR EVERY SINGULARITY.
-!| NPSMAX         |-->| MAXIMUM NUMBER OF POINTS FOR ONE SIDE OF A
-!|                |   | SINGULARITY.
 !| NTRAC          |-->| NUMBER OF TRACERS
-!| NUMDIG         |-->| NUMDIG(K,I,NP) : BOUNDARY NUMBER OF POINT NP
-!|                |   | OF SIDE K OF WEIR I.
+!| NDGA1          |-->| NDGA1%ADR(I)%I(NP) : BOUNDARY NUMBER OF POINT NP
+!|                |   | OF WEIR I (side1)
+!| NDGB1          |-->| NDGB1%ADR(I)%I(NP) : BOUNDARY NUMBER OF POINT NP
+!|                |   | OF WEIR I (side2)
 !| NWEIRS         |-->| NUMBER OF SINGULARITIES
 !| PHIDIG         |-->| DISCHARGE COEFFICIENT OF THE WEIR
 !| T              |-->| BLOCK OF TRACERS
@@ -80,17 +84,17 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NWEIRS,NPSMAX,IOPTAN
-      INTEGER, INTENT(IN) :: NKFROT(*),NBOR(*)
-      INTEGER, INTENT(IN) :: NPSING(NWEIRS),NUMDIG(2,NWEIRS,NPSMAX)
-      INTEGER, INTENT(INOUT) :: LIUBOR(*),LIVBOR(*),LIHBOR(*)
-      INTEGER, INTENT(IN) :: NTRAC
-      DOUBLE PRECISION, INTENT(IN) :: PHIDIG(NWEIRS,NPSMAX)
-      DOUBLE PRECISION, INTENT(IN) :: ZDIG(NWEIRS,NPSMAX),H(*)
-      DOUBLE PRECISION, INTENT(IN) :: X(*),Y(*),ZF(*),CHESTR(*)
-      DOUBLE PRECISION, INTENT(IN) :: KARMAN,GRAV
+      INTEGER, INTENT(IN)             :: NWEIRS,IOPTAN
+      INTEGER, INTENT(IN)             :: NKFROT(*),NBOR(*)
+      INTEGER, INTENT(INOUT)          :: LIUBOR(*),LIVBOR(*),LIHBOR(*)
+      INTEGER, INTENT(IN)             :: NTRAC
+      DOUBLE PRECISION, INTENT(IN)    :: H(*)
+      DOUBLE PRECISION, INTENT(IN)    :: X(*),Y(*),ZF(*),CHESTR(*)
+      DOUBLE PRECISION, INTENT(IN)    :: KARMAN,GRAV
       DOUBLE PRECISION, INTENT(INOUT) :: UBOR(*),VBOR(*)
       DOUBLE PRECISION, INTENT(INOUT) :: UNORM(*)
+      TYPE(BIEF_OBJ)  , INTENT(IN)    :: NPSING,NDGA1,NDGB1
+      TYPE(BIEF_OBJ)  , INTENT(IN)    :: PHIDIG,ZDIG
       TYPE(BIEF_OBJ)  , INTENT(INOUT) :: TBOR,LITBOR
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: T
 !
@@ -110,9 +114,9 @@
 !     COMPUTES UNIT DISCHARGES
 !
       DO 10 N=1,NWEIRS
-      DO 20 I=1,NPSING(N)
+      DO 20 I=1,NPSING%I(N)
 !
-        IA=NUMDIG(1,N,I)
+        IA=NDGA1%ADR(N)%P%I(I)
         IF(IA.GT.0) THEN
           NA=NBOR(IA)
           HA=H(NA)
@@ -122,7 +126,7 @@
           ZFA=0.D0
         ENDIF
 !
-        IB=NUMDIG(2,N,I)
+        IB=NDGB1%ADR(N)%P%I(I)
         IF(IB.GT.0) THEN
           NB=NBOR(IB)
           HB=H(NB)
@@ -142,8 +146,8 @@
         YAA=HA+ZFA
         YBB=HB+ZFB
 !
-        YS=ZDIG(N,I)
-        PHI=PHIDIG(N,I)
+        YS=ZDIG%ADR(N)%P%R(I)
+        PHI=PHIDIG%ADR(N)%P%R(I)
 !
         IF(YAA.GT.YBB) THEN
 !         CASE WHERE A IS UPSTREAM
@@ -190,7 +194,7 @@
 !     DETERMINES THE NUMERICAL VALUE
 !     OF THE BOUNDARY CONDITIONS:
 !
-      CALL CLHUVT(NWEIRS,NPSING,NPSMAX,NUMDIG,ZDIG,X,Y,ZF,
+      CALL CLHUVT(NWEIRS,NPSING,NDGA1,NDGB1,ZDIG,X,Y,ZF,
      &            IOPTAN,UNORM,CHESTR,NKFROT,KARMAN,T,NTRAC,H,
      &            UBOR,VBOR,TBOR,NBOR,LIHBOR,LIUBOR,LIVBOR,LITBOR)
 !

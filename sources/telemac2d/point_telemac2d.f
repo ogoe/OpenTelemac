@@ -63,6 +63,11 @@
 !+        V6P3
 !+   Size of arrays in TB modified in case of floats.
 !
+!history  C.COULET / A.REBAI / E.DAVID (ARTELIA)
+!+        12/06/2013
+!+        V6P3
+!+   Adaptation to the dynamic allocation of weirs
+!
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        18/06/2013
 !+        V6P3
@@ -1081,21 +1086,6 @@
         CALL BIEF_ALLVEC(2,DEBLAG,'DEBLAG',0         ,1,0,MESH)
         CALL BIEF_ALLVEC(2,FINLAG,'FINLAG',0         ,1,0,MESH)
         CALL BIEF_ALLVEC(2,ELTLAG,'ELTLAG',0         ,1,0,MESH)
-      ENDIF
-!
-!_______________________________________________________________________
-!
-!  ARRAYS USED FOR WEIRS
-!
-!-----------------------------------------------------------------------
-!
-!     NUMDIG (2, NWEIRS, NPSMAX) IN ACTUAL FACT
-!     NPOIN IS GREATER THAN NWEIRS * NPSMAX, WHICH ARE BOTH
-!     READ IN THE SINGULARITY FILES
-      IF(NWEIRS.NE.0) THEN
-        CALL BIEF_ALLVEC(2,NUMDIG,'NUMDIG',2*NPOIN,1,0,MESH)
-      ELSE
-        CALL BIEF_ALLVEC(2,NUMDIG,'NUMDIG',    0  ,1,0,MESH)
       ENDIF
 !
 !_______________________________________________________________________

@@ -11,7 +11,9 @@
      & FXWAVE,FYWAVE,RAIN,RAIN_MMPD,PLUIE,
      & T2D_FILES,T2DBI1,BANDEC,OPTBAN,
      & NSIPH,ENTSIP,SORSIP,DSIP,USIP,VSIP,
-     & NBUSE,ENTBUS,SORBUS,DBUS,UBUS,VBUS)
+     & NBUSE,ENTBUS,SORBUS,DBUS,UBUS,VBUS,
+     & TYPSEUIL,NWEIRS,
+     & NPSING,NDGA1,NDGB1,NBOR)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   21/08/2010
@@ -27,6 +29,8 @@
 !+              - TIDAL FORCE
 !+
 !+              - SOURCES AND SINKS
+!+
+!+              - WEIRS (IF TYPSEUIL=2)
 !code
 !+    RESPECTIVE TERMS ARE:
 !+    ==========================
@@ -102,6 +106,11 @@
 !+   Possibility of negative depths taken into account when limiting
 !+   evaporation on dry zones.
 !
+!history  C.COULET / A.REBAI / E.DAVID (ARTELIA)
+!+        07/06/2013
+!+        V6P3
+!+   Modification for new treatment of weirs
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
 !| BANDEC         |-->| IF YES, TIDAL FLATS OR DRY ZONES
@@ -132,16 +141,20 @@
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NBOR           |-->| INDICES OF BOUNDARY POINTS
 !| NBUSE          |-->| NUMBER OF TUBES
 !| NORD           |-->| DIRECTION OF NORTH WITH RESPECT TO Y AXIS
 !|                |   | (TRIGONOMETRIC SENSE) IN DEGREES.
+!| NPSING         |-->| NUMBER OF POINTS OF WEIRS
 !| NPTH           |-->| RECORD NUMBER IN THE WAVE CURRENTS FILE
 !| NREJET         |-->| NUMBER OF POINT SOURCES
 !| NREJEU         |-->| NUMBER OF POINT SOURCES WITH GIVEN VELOCITY
 !|                |   | IF NREJEU=0 VELOCITY OF SOURCES IS TAKEN EQUAL
 !|                |   | TO VELOCITY.
 !| NSIPH          |-->| NUMBER OF CULVERTS
+!| NDGA1,NDGB1    |-->| INDICES OF POINTS OF WEIRS
 !| NVARCL         |-->| NUMBER OF CLANDESTINE VARIABLES
+!| NWEIRS         |-->| NUMBER OF WEIRS
 !| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
 !| OPTSOU         |-->| OPTION FOR THE TREATMENT OF SOURCES
 !| PHI0           |-->| LATITUDE OF ORIGIN POINT
@@ -154,8 +167,9 @@
 !| SORSIP         |-->| INDICES OF CULVERTS EXISTS IN GLOBAL NUMBERING
 !| SPHERI         |-->| IF TRUE : SPHERICAL COORDINATES
 !| T1             |<->| WORK BIEF_OBJ STRUCTURE
-!| T2D_FILES      |-->| BIEF_FILE STRUCTURE WITH AL TELEMAC-2D FILES
+!| T2D_FILES      |-->| BIEF_FILE STRUCTURE WITH ALL TELEMAC-2D FILES
 !| T2D_BI1        |-->| RANK OF BINARY FILE 1
+!| TYPSEUIL       |-->| TYPE OS WEIRS (ONLY TYPSEUIL=2 IS MANAGE HERE)
 !| UBUS           |-->| VELOCITY U AT TUBE EXTREMITY
 !| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
 !| USIP           |-->| VELOCITY U AT CULVERT EXTREMITY
@@ -171,6 +185,9 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
+!     FOR SEEING OTHER VARIABLES IN DECLARATIONS_TELEMAC2D:
+      USE DECLARATIONS_TELEMAC2D, ONLY : V2DPAR,QWA,QWB,
+     &                                   UWEIRA,VWEIRA,UWEIRB,VWEIRB
       USE INTERFACE_TELEMAC2D, EX_PROSOU => PROSOU
       USE M_COUPLING_ESTEL3D
 !
@@ -182,45 +199,50 @@
 !
 !     WORKING ARRAYS
 !
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: T1
+      TYPE(BIEF_OBJ)   , INTENT(INOUT) :: T1
 !
 !-----------------------------------------------------------------------
 !
 !     VECTORS
 !
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: FU,FV,SMH,FXWAVE,FYWAVE
-      TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,UN,VN,HN,UNSV2D
-      TYPE(BIEF_OBJ), INTENT(IN)    :: WINDX,WINDY,COSLAT,SINLAT
+      TYPE(BIEF_OBJ)   , INTENT(INOUT) :: FU,FV,SMH,FXWAVE,FYWAVE
+      TYPE(BIEF_OBJ)   , INTENT(IN)    :: MASKEL,UN,VN,HN,UNSV2D
+      TYPE(BIEF_OBJ)   , INTENT(IN)    :: WINDX,WINDY,COSLAT,SINLAT
 !
 !-----------------------------------------------------------------------
 !
 !     MESH STRUCTURE
 !
-      TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
+      TYPE(BIEF_MESH)  , INTENT(INOUT) :: MESH
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER, INTENT(IN)           :: NVARCL,LT,NREJET,NREJEU,OPTSOU
-      INTEGER, INTENT(IN)           :: NPTH,T2DBI1,OPTBAN
-      INTEGER, INTENT(IN)           :: MARDAT(3),MARTIM(3),ISCE(NREJET)
-      DOUBLE PRECISION, INTENT(IN)  :: HWIND,AT,FAIR,FCOR,DSCE(NREJET)
-      DOUBLE PRECISION, INTENT(IN)  :: GRAV,NORD,PHI0,RAIN_MMPD,DT
-      CHARACTER(LEN=32), INTENT(IN) :: VARCLA(NVARCL)
-      LOGICAL, INTENT(IN)           :: VENT,MAREE,CORIOL,SPHERI,MSK
-      LOGICAL, INTENT(IN)           :: COUROU,RAIN,BANDEC
-      LOGICAL, INTENT(INOUT)        :: YASMH
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: VARCL,PLUIE
-      TYPE(BIEF_FILE), INTENT(IN)   :: T2D_FILES(*)
+      INTEGER          , INTENT(IN)    :: NVARCL,LT,NREJET,NREJEU,OPTSOU
+      INTEGER          , INTENT(IN)    :: NPTH,T2DBI1,OPTBAN
+      INTEGER          , INTENT(IN)    :: MARDAT(3),MARTIM(3)
+      INTEGER          , INTENT(IN)    :: ISCE(NREJET)
+      DOUBLE PRECISION , INTENT(IN)    :: HWIND,AT,FAIR,FCOR
+      DOUBLE PRECISION , INTENT(IN)    :: DSCE(NREJET)
+      DOUBLE PRECISION , INTENT(IN)    :: GRAV,NORD,PHI0,RAIN_MMPD,DT
+      CHARACTER(LEN=32), INTENT(IN)    :: VARCLA(NVARCL)
+      LOGICAL          , INTENT(IN)    :: VENT,MAREE,CORIOL,SPHERI,MSK
+      LOGICAL          , INTENT(IN)    :: COUROU,RAIN,BANDEC
+      LOGICAL          , INTENT(INOUT) :: YASMH
+      TYPE(BIEF_OBJ)   , INTENT(INOUT) :: VARCL,PLUIE
+      TYPE(BIEF_FILE)  , INTENT(IN)    :: T2D_FILES(*)
 !
-      INTEGER          , INTENT(IN) :: NSIPH
-      INTEGER          , INTENT(IN) :: ENTSIP(NSIPH),SORSIP(NSIPH)
-      DOUBLE PRECISION , INTENT(IN) :: DSIP(NSIPH)
-      DOUBLE PRECISION , INTENT(IN) :: USIP(NSIPH,2),VSIP(NSIPH,2)
+      INTEGER          , INTENT(IN)    :: NSIPH
+      INTEGER          , INTENT(IN)    :: ENTSIP(NSIPH),SORSIP(NSIPH)
+      DOUBLE PRECISION , INTENT(IN)    :: DSIP(NSIPH)
+      DOUBLE PRECISION , INTENT(IN)    :: USIP(NSIPH,2),VSIP(NSIPH,2)
 !
-      INTEGER          , INTENT(IN) :: NBUSE
-      INTEGER          , INTENT(IN) :: ENTBUS(NBUSE),SORBUS(NBUSE)
-      DOUBLE PRECISION , INTENT(IN) :: DBUS(NBUSE)
-      DOUBLE PRECISION , INTENT(IN) :: UBUS(NBUSE,2),VBUS(NBUSE,2)
+      INTEGER          , INTENT(IN)    :: NBUSE
+      INTEGER          , INTENT(IN)    :: ENTBUS(NBUSE),SORBUS(NBUSE)
+      DOUBLE PRECISION , INTENT(IN)    :: DBUS(NBUSE)
+      DOUBLE PRECISION , INTENT(IN)    :: UBUS(NBUSE,2),VBUS(NBUSE,2)
+!
+      INTEGER          , INTENT(IN)    :: TYPSEUIL,NWEIRS
+      TYPE(BIEF_OBJ)   , INTENT(IN)    :: NBOR,NPSING,NDGA1,NDGB1
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -506,6 +528,38 @@
      &      DBUS(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
           ENDIF
         ENDDO
+      ENDIF
+!
+!     WEIRS (ONLY IF TYPSEUIL=2)
+!
+      IF(NWEIRS.GT.0.AND.TYPSEUIL.EQ.2) THEN
+!
+        YASMH = .TRUE.
+!
+         DO N=1,NWEIRS
+            DO I=1,NPSING%I(N)
+               IR=NDGA1%ADR(N)%P%I(I)
+               IF(IR.GT.0) THEN
+                 SMH%R(IR)= SMH%R(IR)+QWA%ADR(N)%P%R(I)*UNSV2D%R(IR)
+! QUANTITY OF MOVEMENTS NOT TAKING IN ACCOUNT FOR THE MOMENT
+! The following lines generate instability and crash
+! Probably because we would like to impose velocities accross  solid boundaries!
+!
+!                 FU%R(IR) = FU%R(IR) + (UWEIRA%ADR(N)%P%R(I)-UN%R(IR))*
+!     &              QWA%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+!                 FV%R(IR) = FV%R(IR) + (VWEIRA%ADR(N)%P%R(I)-VN%R(IR))*
+!     &              QWA%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+               ENDIF
+               IR=NDGB1%ADR(N)%P%I(I)
+               IF(IR.GT.0) THEN
+                 SMH%R(IR)=SMH%R(IR)+QWB%ADR(N)%P%R(I)*UNSV2D%R(IR)
+!                 FU%R(IR) = FU%R(IR) + (UWEIRB%ADR(N)%P%R(I)-UN%R(IR))*
+!     &              QWB%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+!                 FV%R(IR) = FV%R(IR) + (VWEIRB%ADR(N)%P%R(I)-VN%R(IR))*
+!     &              QWB%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+               ENDIF
+            ENDDO
+         ENDDO
       ENDIF
 !
 !***********************************************************************

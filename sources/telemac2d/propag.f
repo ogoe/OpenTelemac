@@ -15,7 +15,8 @@
      & MAT,RHS,UNK,TB,S,BD,PRECCU,SOLSYS,CFLMAX,OPDVIT,OPTSOU,
      & NFRLIQ,SLVPRO,EQUA,VERTIC,ADJO,ZFLATS,TETAZCOMP,UDEL,VDEL,DM1,
      & ZCONV,COUPLING,FLBOR,BM1S,BM2S,CV1S,VOLU2D,V2DPAR,UNSV2D,
-     & NUMDIG,NWEIRS,NPSING,HFROT,FLULIM,YAFLULIM,RAIN,PLUIE,MAXADV)
+     & NDGA1,NDGB1,NWEIRS,NPSING,HFROT,FLULIM,YAFLULIM,RAIN,PLUIE,
+     & MAXADV)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   21/08/2010
@@ -131,6 +132,11 @@
 !+        V6P3
 !+   Value of NELBOR controlled for allowing bound checking.
 !
+!history  C.COULET / A.REBAI / E.DAVID (ARTELIA)
+!+        12/06/2013
+!+        V6P3
+!+   Adaptation to the dynamic allocation of weirs
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23            |<->| MATRIX
 !| A32            |<->| MATRIX
@@ -221,8 +227,10 @@
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
 !| NPSING         |-->| NUMBER OF POINTS FOR EVERY SINGULARITY.
-!| NUMDIG         |-->| NUMDIG(K,I,NP) : BOUNDARY NUMBER OF POINT NP
-!|                |   | OF SIDE K OF WEIR I.
+!| NDGA1          |-->| NDGA1%ADR(I)%I(NP) : BOUNDARY NUMBER OF POINT NP
+!|                |   | OF WEIR I (side1)
+!| NDGB1          |-->| NDGB1%ADR(I)%I(NP) : BOUNDARY NUMBER OF POINT NP
+!|                |   | OF WEIR I (side2)
 !| NWEIRS         |-->| NUMBER OF SINGULARITIES
 !| OPDVIT         |-->| OPTION FOR DIFFUSION OF VELOCITIES
 !| OPTBAN         |-->| KEYWORD: 'OPTION FOR THE TREATMENT OF TIDAL FLATS' 
@@ -292,6 +300,7 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC, ONLY : ADV_CAR,ADV_SUP,ADV_NSC,ADV_PSI,
      &   ADV_PSI_NC,ADV_NSC_NC,ADV_LPO,ADV_NSC_TF,ADV_PSI_TF,ADV_LPO_TF
+      USE DECLARATIONS_TELEMAC2D, ONLY : TYPSEUIL
 !
       USE INTERFACE_TELEMAC2D, EX_PROPAG => PROPAG
 !
@@ -314,11 +323,10 @@
       TYPE(SLVCFG), INTENT(INOUT)     :: SLVPRO
       CHARACTER(LEN=20),  INTENT(IN)  :: EQUA
       CHARACTER(LEN=*) ,  INTENT(IN)  :: COUPLING
-!                                                           NPSMAX
-      INTEGER, INTENT(IN) :: NPSING(NWEIRS),NUMDIG(2,NWEIRS,*     )
 !
 !  STRUCTURES OF VECTORS
 !
+      TYPE(BIEF_OBJ), INTENT(IN)    :: NPSING,NDGA1,NDGB1
       TYPE(BIEF_OBJ), INTENT(IN)    :: UCONV,VCONV,SMH,UN,VN,HN
       TYPE(BIEF_OBJ), INTENT(IN)    :: VOLU2D,V2DPAR,UNSV2D,FLULIM
       TYPE(BIEF_OBJ), INTENT(INOUT) :: RO,UDEL,VDEL,DM1,ZCONV,FLBOR
@@ -1165,11 +1173,11 @@
 !     IMPOSING EQUALITY OF FLUXES ON EITHER SIDE OF A WEIR
 !     HERE ALL PROCESSORS DO ALL WEIRS...
 !
-      IF(NWEIRS.GT.0) THEN
+      IF(NWEIRS.GT.0.AND.TYPSEUIL.EQ.1) THEN
         DO N=1,NWEIRS
-          DO I=1,NPSING(N)
-            I1=NUMDIG(1,N,I)
-            I2=NUMDIG(2,N,I)
+          DO I=1,NPSING%I(N)
+            I1=NDGA1%ADR(N)%P%I(I)
+            I2=NDGB1%ADR(N)%P%I(I)
             IF(I1.GT.0) THEN
               FL1=FLBOR%R(I1)
             ELSE

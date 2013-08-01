@@ -4,7 +4,8 @@
 !
      &(TEXP,TIMP,YASMI,TSCEXP,HPROP,TN,TETAT,NREJTR,ISCE,DSCE,TSCE,
      & MAXSCE,MAXTRA,AT,DT,MASSOU,NTRAC,FAC,NSIPH,ENTSIP,SORSIP,
-     & DSIP,TSIP,NBUSE,ENTBUS,SORBUS,DBUS,TBUS)
+     & DSIP,TSIP,NBUSE,ENTBUS,SORBUS,DBUS,TBUS,NWEIRS,TYPSEUIL,
+     & NPSING,NDGA1,NDGB1,TWEIRA,TWEIRB)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   21/08/2010
@@ -55,6 +56,11 @@
 !+        V6P2
 !+   In parallel, P_DSUM on MASSOU must be done once at the end
 !
+!history  C.COULET (ARTELIA)
+!+        14/06/2013
+!+        V6P2
+!+   Modification for weirs (type 2) management
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| DBUS           |-->| DISCHARGE OF TUBES.
@@ -74,6 +80,7 @@
 !| NREJTR         |-->| NUMBER OF POINT SOURCES AS GIVEN BY TRACERS KEYWORDS
 !| NSIPH          |-->| NUMBER OF CULVERTS
 !| NTRAC          |-->| NUMBER OF TRACERS
+!| NWEIRS         |-->| NUMBER OF WEIRS
 !| SORBUS         |-->| INDICES OF TUBES EXITS IN GLOBAL NUMBERING
 !| SORSIP         |-->| INDICES OF PIPES EXITS IN GLOBAL NUMBERING
 !| TBUS           |-->| VALUES OF TRACERS AT TUBES EXTREMITY
@@ -86,11 +93,15 @@
 !|                |   | IN TRACER EQUATION, EQUAL TO:
 !|                |   | TSCE - ( 1 - TETAT ) TN
 !| TSIP           |-->| VALUES OF TRACERS AT CULVERT EXTREMITY
+!| TWEIRA         |-->| VALUES OF TRACERS ON SIDE A OF WEIR
+!| TWEIRB         |-->| VALUES OF TRACERS ON SIDE B OF WEIR
+!| TYPSEUIL       |-->| TYPE OF WEIRS (IF = 2, WEIRS TREATED AS SOURCES POINTS)
 !| YASMI          |<--| IF YES, THERE ARE IMPLICIT SOURCE TERMS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC2D, ONLY : LOITRAC, COEF1TRAC
+      USE DECLARATIONS_TELEMAC2D, ONLY : LOITRAC, COEF1TRAC, QWA, QWB,
+     &                                   MAXNPS
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -99,23 +110,25 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER          , INTENT(IN)    :: ISCE(*),NREJTR,NTRAC
-      INTEGER          , INTENT(IN)    :: NSIPH,NBUSE
+      INTEGER          , INTENT(IN)    :: NSIPH,NBUSE,NWEIRS
       INTEGER          , INTENT(IN)    :: ENTSIP(NSIPH),SORSIP(NSIPH)
       INTEGER          , INTENT(IN)    :: ENTBUS(NBUSE),SORBUS(NBUSE)
-      INTEGER          , INTENT(IN)    :: MAXSCE,MAXTRA
+      INTEGER          , INTENT(IN)    :: MAXSCE,MAXTRA,TYPSEUIL
       LOGICAL          , INTENT(INOUT) :: YASMI(*)
       DOUBLE PRECISION , INTENT(IN)    :: AT,DT,TETAT,DSCE(*)
       DOUBLE PRECISION , INTENT(IN)    :: DSIP(NSIPH),DBUS(NBUSE)
       DOUBLE PRECISION , INTENT(IN)    :: TSCE(MAXSCE,MAXTRA),FAC(*)
       DOUBLE PRECISION , INTENT(INOUT) :: MASSOU(*)
       TYPE(BIEF_OBJ)   , INTENT(IN)    :: TN,HPROP,TSIP,TBUS
+      TYPE(BIEF_OBJ)   , INTENT(IN)    :: TWEIRA,TWEIRB
+      TYPE(BIEF_OBJ)   , INTENT(IN)    :: NPSING,NDGA1,NDGB1
       TYPE(BIEF_OBJ)   , INTENT(INOUT) :: TSCEXP,TEXP,TIMP
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,IR,ITRAC
+      INTEGER I,IR,ITRAC,N,INDIC
 !
-      DOUBLE PRECISION DEBIT,TRASCE
+      DOUBLE PRECISION DEBIT,TRASCE,RAIN_MPS
 !
       DOUBLE PRECISION P_DSUM
       EXTERNAL         P_DSUM
@@ -277,8 +290,47 @@
           ENDDO
         ENDIF
 !
+        IF(NWEIRS.GT.0.AND.TYPSEUIL.EQ.2) THEN
+          DO N = 1 , NWEIRS
+            DO I = 1 , NPSING%I(N)
+              INDIC = (N-1)*MAXNPS + I
+              IR = NDGA1%ADR(N)%P%I(I)
+              IF(IR.GT.0) THEN
+                IF(NCSIZE.GT.1) THEN
+!                 FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
+!                 (SEE CALL TO P_DSUM BELOW)
+                  MASSOU(ITRAC)=MASSOU(ITRAC)-DT*QWA%ADR(N)%P%R(I)*
+     &                          TWEIRA%ADR(ITRAC)%P%R(INDIC)*FAC(IR)
+                ELSE
+                  MASSOU(ITRAC)=MASSOU(ITRAC)-DT*QWA%ADR(N)%P%R(I)*
+     &                          TWEIRA%ADR(ITRAC)%P%R(INDIC)
+                ENDIF
+                TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR) +
+     &             TWEIRA%ADR(ITRAC)%P%R(INDIC) -
+     &             (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
+              ENDIF
+              IR = NDGB1%ADR(N)%P%I(I)
+              IF(IR.GT.0) THEN
+                IF(NCSIZE.GT.1) THEN
+!                 FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
+!                 (SEE CALL TO P_DSUM BELOW)
+                  MASSOU(ITRAC)=MASSOU(ITRAC)+DT*QWB%ADR(N)%P%R(I)*
+     &                          TWEIRB%ADR(ITRAC)%P%R(INDIC)*FAC(IR)
+                ELSE
+                  MASSOU(ITRAC)=MASSOU(ITRAC)+DT*QWB%ADR(N)%P%R(I)*
+     &                          TWEIRB%ADR(ITRAC)%P%R(INDIC)
+                ENDIF
+                TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR) +
+     &             TWEIRB%ADR(ITRAC)%P%R(INDIC) -
+     &             (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
+              ENDIF
+            ENDDO
+          ENDDO
+        ENDIF
+!
         IF(NCSIZE.GT.1.AND.
-     &     (NREJTR.GT.0.OR.NSIPH.GT.0.OR.NBUSE.GT.0)) THEN
+     &     (NREJTR.GT.0.OR.NSIPH.GT.0.OR.NBUSE.GT.0.OR.
+     &      (NWEIRS.GT.0.AND.TYPSEUIL.EQ.2))) THEN
           MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
         ENDIF
 !
