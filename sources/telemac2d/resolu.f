@@ -16,8 +16,7 @@
      &  DSZ,AIRST,HSTOK,HCSTOK,FLUXT,FLUHBOR,FLBOR,
      &  LOGFR,LTT,DTN,FLUXTEMP,FLUHBTEMP,
      &  HC,TMAX,DTT,T1,T2,T3,T4,T5,
-     &  GAMMA,FLUX_OLD,NVMAX,NEISEG,ELTSEG,IFABOR,
-     &  MESH)
+     &  GAMMA,FLUX_OLD,NVMAX,NEISEG,ELTSEG,IFABOR,MESH)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   26/06/2013
@@ -169,7 +168,7 @@
       USE BIEF_DEF
       USE BIEF
       USE INTERFACE_TELEMAC2D, EX_RESOLU => RESOLU
-!      USE DECLARATIONS_TELEMAC2D, ONLY:DEBUG ! IF NEEDED DECOMMENT
+      USE DECLARATIONS_TELEMAC2D, ONLY:DEBUG ! IF NEEDED DECOMMENT
 !
       IMPLICIT NONE
 !
@@ -228,9 +227,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,IS,K,ICIN,IVIS,NORDRE,ITRAC
-
-      DOUBLE PRECISION XNC,W1,DMIN,BETA,TEST
-!                                                                       
+      DOUBLE PRECISION XNC,W1,DMIN,BETA,TEST,ZZ(1)
+!                                                      
+      DOUBLE PRECISION P_DMIN
+      EXTERNAL P_DMIN
+!                  
       DOUBLE PRECISION,PARAMETER:: EPS =  1.D-6   
 !
 !
@@ -320,8 +321,8 @@
 !
       CALL FLUROE(W,FLUSCE,NUBO,VNOIN,
      &            WINF,FLUX,FLUSORT,FLUENT,NELEM,NSEG,NPTFR,   
-     *            NPOIN,X,Y,AIRS,ZF,EPS,DMIN,G,
-     *            XNEBOR,YNEBOR,LIMPRO,NBOR,KDIR,KNEU,KDDL,FLBOR,
+     &            NPOIN,X,Y,AIRS,ZF,EPS,DMIN,G,
+     &            XNEBOR,YNEBOR,LIMPRO,NBOR,KDIR,KNEU,KDDL,FLBOR,
      &            ELTSEG,IFABOR,MESH)             
 !
 ! INTEGRATION IN TIME
@@ -381,13 +382,6 @@
 !
       IVIS=0
       IF(DIFVIT.AND.ITURB.EQ.1) IVIS=1
-! kinetic order 2 not yet parallel      
-      IF(NCSIZE.GT.1.AND.NORDRE.GT.1)THEN
-         WRITE(LU,*) 'KINETIC SCHEME OF SECOND ORDRE  '
-         WRITE(LU,*) ' ++++ NOT PARALLELIZED YET ++++ '
-         CALL PLANTE(1)
-         STOP
-      ENDIF
 !
       IF(LT.EQ.1) THEN
 !
@@ -415,6 +409,7 @@
 !
 !    INITIALIZATION FOR TRACER
 !
+
        IF(NTRAC.GT.0) THEN
          DO ITRAC=1,NTRAC
            MASSOU(ITRAC) = 0.D0
@@ -434,15 +429,15 @@
          LOGFR(IS)=0
        ENDDO
 !
-       DO K=1,NPTFR
-!
-        IS=NBOR(K)
-        IF(LIMPRO(K,2).EQ.KDIR) LOGFR(IS)=1
-        IF(LIMPRO(K,1).EQ.KDIR) LOGFR(IS)=3
-        IF(LIMPRO(K,1).EQ.KNEU) LOGFR(IS)=2     
-! 
-       ENDDO 
-       ENDIF
+       IF(NPTFR.GT.0)THEN !FOR PARALLLEL CASES
+         DO K=1,NPTFR
+           IS=NBOR(K)
+           IF(LIMPRO(K,2).EQ.KDIR) LOGFR(IS)=1
+           IF(LIMPRO(K,1).EQ.KDIR) LOGFR(IS)=3
+           IF(LIMPRO(K,1).EQ.KNEU) LOGFR(IS)=2     
+         ENDDO
+       ENDIF 
+      ENDIF
 !-----------------------------------------------------------------------
 !
       IF(LT.EQ.1.OR.NTRAC.EQ.0) THEN
@@ -473,8 +468,8 @@ C
      &        W,ZF,VNOIN,FLUX,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
      &        HBOR,UBOR,VBOR,FLUENTN,FLUSORTN,NORDRE,CMI,JMI,
      &        DJX,DJY,DX,DY,DTHAUT,CFLWTD,FLBOR,
-     &        DPX,DPY,IVIS,PROPNU,FLUHBTEMP,BETA,
-     &        DSZ,AIRST,HC,FLUXTEMP,NTRAC,ELTSEG,IFABOR,MESH)
+     &        DPX,DPY,IVIS,PROPNU,FLUHBTEMP,BETA,DSZ,AIRST,HC,FLUXTEMP,
+     &        NTRAC,ELTSEG,IFABOR,MESH)
 !
       IF(NTRAC.GT.0) THEN
 !       INITIALIZATION FOR TRACER
@@ -521,7 +516,6 @@ C
      &                SMH,NREJET,ISCE,TSCE2,MAXSCE,MAXTRA,ITRAC)
 !
         ENDDO
-
 !
       ENDIF
 !
@@ -556,7 +550,6 @@ C
           V(I) = 0.D0
         ENDIF
 115   CONTINUE
-
 !
       IF(NTRAC.EQ.0)  RETURN
 !
@@ -601,6 +594,8 @@ C
      &             NORDRE,AIRS,AIRST,HSTOK,HCSTOK,
      &             FLUXT,FLUXTEMP,FLUHBOR,FLUHBTEMP,LOGFR,TEST,NTRAC)
 !
+!  IF THERE IS NEGATIVE TEST ALL PROC WILL CONTINUE
+      TEST = P_DMIN(TEST)
       IF(TEST.GE.0.D0) RETURN
  200  CONTINUE
 !
@@ -618,10 +613,9 @@ C
      &             DJXT,DJYT,DXT,DYT,
      &             DPX,DPY,DIFT,DIFNU,BETA,DSZ,AIRST,HSTOK,
      &             HCSTOK,FLUXT%ADR(ITRAC)%P%R,FLUHBOR%ADR(ITRAC)%P%R,
-     &             MASSOU(ITRAC),DTT)
+     &             MASSOU(ITRAC),DTT,MESH,ELTSEG,IFABOR,VNOIN)
 !
 !
-
       DO I=1,NPOIN  
         HTN%ADR(ITRAC)%P%R(I) = T%ADR(ITRAC)%P%R(I)
         IF(H(I).GT.EPS) THEN
@@ -638,7 +632,6 @@ C
       CALL REINIT(NPOIN,NSEG,NPTFR,H,
      &            SMTR,HSTOK,HC,HCSTOK,FLUXT,FLUHBOR,DTT,NTRAC)
 !
-
       ELSE IF(ICIN.EQ.2) THEN
 !   *****************************
 !
@@ -695,9 +688,9 @@ C
         CALL PARCOM2(FLUX(:,1),FLUX(:,2),FLUX(:,3),NPOIN,1,2,3,MESH)
       ENDIF
 !BOUNDARY CONDITIONS
-       CALL CDLZZ(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &             KDDL,G,W,FLUX,FLUENT,FLUSORT,
-     &             FLBOR,ZF,WINF)
+         CALL CDLZZ(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
+     &              KDDL,G,W,FLUX,FLUENT,FLUSORT,
+     &              FLBOR,ZF,WINF)
 !
 !-----------------------------------------------------------------------
 !
@@ -800,10 +793,9 @@ C-----------------------------------------------------------------------
         CALL PARCOM2(FLUX(:,1),FLUX(:,2),FLUX(:,3),NPOIN,1,2,3,MESH)
       ENDIF
 !BOUNDARY CONDITIONS
-
-       CALL CDL_TCH(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &             KDDL,G,W,FLUX,FLUENT,FLUSORT,
-     &             FLBOR,EPS,ZF,WINF)
+        CALL CDL_TCH(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
+     &               KDDL,G,W,FLUX,FLUENT,FLUSORT,
+     &               FLBOR,EPS,ZF,WINF)
 !
 !-----------------------------------------------------------------------
 !
@@ -900,13 +892,13 @@ C-----------------------------------------------------------------------
      &              X,Y,ELTSEG,FLUX,IFABOR)
 !  FOR PARALLESM
       IF(NCSIZE.GT.1)THEN
-        CALL PARCOM2(FLUX(:,1),FLUX(:,2),FLUX(:,3),NPOIN,1,2,3,MESH)
+        CALL PARCOM2(FLUX(1,1),FLUX(1,2),FLUX(1,3),NPOIN,1,2,3,MESH)
       ENDIF
 !
 ! BOUNDARY CONDITIONS
 !
-       CALL CDL_HLLC(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &             KDDL,W,FLUX,FLUENT,FLUSORT,FLBOR,EPS,WINF)
+        CALL CDL_HLLC(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
+     &                KDDL,W,FLUX,FLUENT,FLUSORT,FLBOR,EPS,WINF)
 !
 !-----------------------------------------------------------------------
 !
@@ -963,14 +955,6 @@ C-----------------------------------------------------------------------
 !             INITIALIZATION FOR THE 1ST TIME STEP
 !             *************************************
 !
-! kinetic order 2 not yet parallel      
-      IF(NCSIZE.GT.1)THEN
-         WRITE(LU,*) ' ++++++++  WAF SCHEME  ++++++++ '
-         WRITE(LU,*) ' ++++ NOT PARALLELIZED YET ++++ '
-         CALL PLANTE(1)
-         STOP
-      ENDIF
-!
         WRITE(LU,*) ' '
         WRITE(LU,*) '          *********************** '
         WRITE(LU,*) '          *     WAF  SCHEME    * '              
@@ -988,9 +972,11 @@ C-----------------------------------------------------------------------
          NEISEG(2,I) = 0
         ENDDO
 ! SEARCH FOR NEIGHBORS OF SEGMENT (FOR LIMITER)
-        CALL SEG_NEIGHBORS
-     &     (X,Y,IKLE,NPOIN,NVMAX,NELEM,NELMAX,NSEG,NEISEG)
-!
+!        CALL SEG_NEIGHBORS
+!     &       (X,Y,NPOIN,NVMAX,NELEM,NSEG,
+!     &        ELTSEG,NUBO,IFABOR,KNOLG,NEISEG)
+         CALL SEG_NEIGHBORS
+     &       (X,Y,IKLE,NPOIN,NVMAX,NELEM,NELMAX,NSEG,NEISEG)
       ENDIF
 !-----------------------------------------------------------------------
 !     COPY VARIABLES INTO W
@@ -1010,7 +996,6 @@ C-----------------------------------------------------------------------
 ! INFLOW AND OUTFLOWS
 !
       CALL FLUSEW
-!
      &   (WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
      &    NPTFR,LIMPRO,NBOR,KDIR,KDDL)  
 !
@@ -1023,8 +1008,9 @@ C-----------------------------------------------------------------------
 !
 ! BOUNDARY CONDITIONS
 !
-       CALL CDL_WAF(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &             KDDL,W,FLUX,FLUENT,FLUSORT,FLBOR,DTHAUT,DT,EPS,WINF)
+        CALL CDL_WAF(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
+     &               KDDL,W,FLUX,FLUENT,FLUSORT,FLBOR,DTHAUT,DT,
+     &               EPS,WINF)
 !
 !-----------------------------------------------------------------------
 !

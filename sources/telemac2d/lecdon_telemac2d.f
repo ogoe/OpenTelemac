@@ -1026,15 +1026,15 @@
 !-----------------------------------------------------------------------
 !
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF'.AND.NCSIZE.GT.1) THEN
-        IF(OPTVF.EQ.2.OR.OPTVF.EQ.6) THEN
-        WRITE(LU,*)'++++++++++++++++++++++++++++++++++++++++++++++++++'
-        IF(LNG.EQ.1) WRITE(LU,1) 
-        IF(LNG.EQ.2) WRITE(LU,2) 
-1       FORMAT(1X,'PARALLELISME NON DISPONIBLE POUR VF ORDRE 2')
-2       FORMAT(1X,'PARALLEL OPTION NOT AVAILABLE FOR FV ORDER 2')
+        IF(OPTVF.EQ.6) THEN
          WRITE(LU,*)'++++++++++++++++++++++++++++++++++++++++++++++++++'
-        CALL PLANTE(1)
-        STOP
+         IF(LNG.EQ.1) WRITE(LU,1) 
+         IF(LNG.EQ.2) WRITE(LU,2) 
+1        FORMAT(1X,'PARALLELISME NON DISPONIBLE POUR LE SCHEMA WAF')
+2        FORMAT(1X,'PARALLEL OPTION NOT AVAILABLE FOR WAF SCHEME')
+         WRITE(LU,*)'++++++++++++++++++++++++++++++++++++++++++++++++++'
+         CALL PLANTE(1)
+         STOP
         ENDIF       
       ENDIF
 !

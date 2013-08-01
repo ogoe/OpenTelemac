@@ -52,6 +52,8 @@
 !
       USE BIEF 
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C
@@ -77,6 +79,8 @@ C
       DOUBLE PRECISION A,A1,A2,A3,ALPHA0,ALPHA1,ALPHA2,C,VP1,VP2 ,VP3
       DOUBLE PRECISION HG ,RHG,HRHG,UG,VG,DEST,RVG,CA1,AM
       DOUBLE PRECISION UIN,VIN,HUIN,HVIN,SIGMAX,DTL,UNORM 
+      DOUBLE PRECISION P_DMIN
+      EXTERNAL P_DMIN
 !
       SQ2   = SQRT(2.D0)
       SG    = SQRT(G)
@@ -90,6 +94,7 @@ C
       FLUENT=0.D0
       FLUSORT=0.D0
 !
+      IF(NPTFR.GT.0)THEN ! USEFUL FOR PARALLEL 
       DO K=1,NPTFR
        IS=NBOR(K)
        VNX1=XNEBOR(K)
@@ -333,12 +338,11 @@ C
        FLUU =  (U *RUN + 0.5D0*G*H**2* VNX)*VNL
        FLUV =  (V *RUN + 0.5D0*G*H**2* VNY)*VNL
 !
- 1000  CONTINUE
+1000  CONTINUE
        ENDIF
 !
        IF(LIMPRO(K,1).EQ.KDIR)  FLUSORT = FLUSORT + FLUH
        IF(LIMPRO(K,2).EQ.KDIR)  FLUENT = FLUENT +FLUH
-
 !RA
        FLBOR%R(K)=FLUH       
 !
@@ -353,6 +357,8 @@ C
        ENDIF
 ! 
        ENDDO
+       ENDIF
+       IF(NCSIZE.GT.1)DT=P_DMIN(DT)
 !
 !-----------------------------------------------------------------------
 !

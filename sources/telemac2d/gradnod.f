@@ -6,7 +6,7 @@
      & MESH)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   13/04/2013
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE GRADIENTS BY TRIANGLES AND NODE
@@ -28,12 +28,13 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
 !history  R. ATA (EDF R&D-LNHE)
 !+        13/04/2013
 !+        V6P3
 !+   Optimization and parallel implementation
-!+   More english comments
-!+   
+!+   More explicit english comments
+!
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRS           |-->| CELL'S AREAS
@@ -51,7 +52,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE BIEF_DEF, ONLY: NCSIZE
+      USE BIEF_DEF, ONLY: NCSIZE,IPID
       USE INTERFACE_TELEMAC2D, EX_GRADNOD => GRADNOD
       IMPLICIT NONE
 !
@@ -96,7 +97,6 @@
         AIRJ=   AIRT(JT)
 !
 !       COMPUTES THE P1-GRADIENTS
-!
 !
 !   COMPUTES THE H+Z GRADIENT
 !
@@ -143,11 +143,16 @@
 
 !     FOR PARALLELILSM
       IF(NCSIZE.GT.1)THEN                 ! NPON,NPLAN,ICOM,IAN
-        CALL PARCOM2(DX(1,:),DX(2,:),DX(3,:),NS,1,2,2,MESH )
-        CALL PARCOM2(DY(1,:),DY(2,:),DY(3,:),NS,1,2,2,MESH )
+        CALL PARCOM2(DX(1,:),DX(2,:),DX(3,:),NS,1,2,3,MESH )
+        CALL PARCOM2(DY(1,:),DY(2,:),DY(3,:),NS,1,2,3,MESH )
       ENDIF
 !
       IF(IVIS.EQ.0.OR.CVIS.EQ.0.) GOTO 10 ! IF THERE IS NO VISCOSITY OR NO VELOCITY DIFFUSISION
+!
+!     INITIALISES CE (WAS NOT DONE BEFORE)
+      CALL OV( 'X=0     ' ,CE(:,1)   ,CE(:,1)  ,CE(:,1),0.D0 ,NS)
+      CALL OV( 'X=0     ' ,CE(:,2)   ,CE(:,2)  ,CE(:,2),0.D0 ,NS)
+      CALL OV( 'X=0     ' ,CE(:,3)   ,CE(:,3)  ,CE(:,3),0.D0 ,NS)
 !
       DO JT=1,NT
 !
@@ -175,7 +180,11 @@
          CE(NUBO3,3)       = CE(NUBO3,3) -AUX*
      &  (DJX(3,JT)*DPX(3,JT)+DJY(3,JT)*DPY(3,JT))
        ENDDO
-
+!     FOR PARALLELILSM
+      IF(NCSIZE.GT.1)THEN                 ! NPON,NPLAN,ICOM,IAN
+        CALL PARCOM2(CE(:,1),CE(:,2),CE(:,3),NS,1,2,3,MESH )
+      ENDIF
+!
 10       CONTINUE
 !
 !     COMPLETES THE COMPUTATION OF THE NODAL GRADIENTS

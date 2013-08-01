@@ -3,10 +3,10 @@
 !                    *******************
 !
      &(NS,NT,NU,AIRT,AIRS,H,T,DPX,DPY,DJX,DJY,
-     & DX,DY,DIFT,CVIST,CE,DTT)
+     & DX,DY,DIFT,CVIST,CE,DTT,MESH)
 !
-!***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+!!***********************************************************************
+! TELEMAC2D   V6P3                                   21/07/2013
 !***********************************************************************
 !
 !brief    COMPUTES THE GRADIENTS BY TRIANGLES AND NODE
@@ -29,6 +29,13 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  R. ATA (EDF R&D-LNHE)
+!+        13/04/2013
+!+        V6P3
+!+   Optimization and parallel implementation
+!+   More explicit english comments
+!+   Adaptation for new data structure
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRS           |-->| CELL'S AREAS
 !| AIRT           |-->| TRIANGLES' AREAS
@@ -45,7 +52,12 @@
 !| T              |-->| TRACERS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE BIEF_DEF
+      USE INTERFACE_TELEMAC2D, EX_GRADNODT => GRADNODT
+      USE DECLARATIONS_TELEMAC2D, ONLY: DEBUG
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -57,20 +69,21 @@
       DOUBLE PRECISION, INTENT(INOUT) :: DJX(NT),DJY(NT),DX(NS),DY(NS)
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS)
       DOUBLE PRECISION, INTENT(IN)    :: DTT,CVIST
+      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IS,JT,NUBO1,NUBO2,NUBO3
-      DOUBLE PRECISION AIRJ,UA1,UA2,UA3,AIS,HTT,AUX
+      DOUBLE PRECISION AIRJ,UA1,UA2,UA3,AIS,HTT,AUX,TEMPOR,TIERS
 !
+      TIERS = 1.0D0/3.0D0
 !-----------------------------------------------------------------------
 !
 !     INITIALISES THE HERMITIAN NODAL GRADIENTS
 !
-      DO IS=1,NS
-        DX(IS)  = 0.D0
-        DY(IS)  = 0.D0
-      ENDDO
+      CALL OV( 'X=0     ' ,CE,CE,CE,0.D0 ,NS)
+      CALL OV( 'X=0     ' ,DX,DX,DX,0.D0 ,NS)
+      CALL OV( 'X=0     ' ,DY,DY,DY,0.D0 ,NS)
 !
 !     LOOP ON GLOBAL LIST OF TRIANGLES
 !
@@ -81,52 +94,69 @@
          NUBO3 = NU(JT,3)
 !
          AIRJ=   AIRT(JT)
-         HTT = H(NUBO1)+H(NUBO2)+H(NUBO3)
-         AUX =  CVIST*DTT*AIRJ*HTT/3.
 !
 !        COMPUTES THE P1-GRADIENTS
 !
-           UA1=T(NUBO1)
-           UA2=T(NUBO2)
-           UA3=T(NUBO3)
+         UA1=T(NUBO1)
+         UA2=T(NUBO2)
+         UA3=T(NUBO3)
 !
 !  GRADIENTS BY TRIANGLES
 !
-            DJX(JT)      = UA1*DPX(1,JT) +
-     &               UA2*DPX(2,JT) + UA3*DPX(3,JT)
-            DJY(JT)      = UA1*DPY(1,JT) +
-     &               UA2*DPY(2,JT) + UA3*DPY(3,JT)
+         DJX(JT) = UA1*DPX(1,JT) +
+     &             UA2*DPX(2,JT) + UA3*DPX(3,JT)
+         DJY(JT) = UA1*DPY(1,JT) +
+     &             UA2*DPY(2,JT) + UA3*DPY(3,JT)
 !
 !  GRADIENTS BY NODES
 !
-         DX(NUBO1)    = DX(NUBO1) + AIRJ*DJX(JT)
-         DX(NUBO2)    = DX(NUBO2) + AIRJ*DJX(JT)
-         DX(NUBO3)    = DX(NUBO3) + AIRJ*DJX(JT)
+         TEMPOR    = AIRJ*DJX(JT)
+         DX(NUBO1) = DX(NUBO1) + TEMPOR
+         DX(NUBO2) = DX(NUBO2) + TEMPOR
+         DX(NUBO3) = DX(NUBO3) + TEMPOR
 !
-         DY(NUBO1)    = DY(NUBO1) + AIRJ*DJY(JT)
-         DY(NUBO2)    = DY(NUBO2) + AIRJ*DJY(JT)
-         DY(NUBO3)    = DY(NUBO3) + AIRJ*DJY(JT)
+         TEMPOR    = AIRJ*DJY(JT)
+         DY(NUBO1) = DY(NUBO1) + TEMPOR
+         DY(NUBO2) = DY(NUBO2) + TEMPOR
+         DY(NUBO3) = DY(NUBO3) + TEMPOR
+      ENDDO ! RA: SEPARATION OF LOOPS TO EXECUTE PARCOM 
+      IF(NCSIZE.GT.1)THEN
+        CALL PARCOM2(DX,DY,DY,NS,1,2,2,MESH)
+      ENDIF
 !
 !   DIFFUSION TERM
 !
-       IF(DIFT.AND.CVIST.NE.0.) THEN
-         CE(NUBO1)       = CE(NUBO1) -AUX*
-     &  (DJX(JT)*DPX(1,JT)+DJY(JT)*DPY(1,JT))
-         CE(NUBO2)       = CE(NUBO2) -AUX*
-     &  (DJX(JT)*DPX(2,JT)+DJY(JT)*DPY(2,JT))
-         CE(NUBO3)       = CE(NUBO3) -AUX*
-     &  (DJX(JT)*DPX(3,JT)+DJY(JT)*DPY(3,JT))
+      IF(DIFT.AND.CVIST.NE.0.) THEN
+         DO JT=1,NT
 !
-        ENDIF
+           NUBO1 = NU(JT,1)
+           NUBO2 = NU(JT,2)
+           NUBO3 = NU(JT,3)
 !
-       ENDDO
+           AIRJ =  AIRT(JT)
+           HTT  = H(NUBO1)+H(NUBO2)+H(NUBO3)
+           AUX  =  CVIST*DTT*AIRJ*HTT/3.
+!
+           CE(NUBO1)       = CE(NUBO1) -AUX*
+     &     (DJX(JT)*DPX(1,JT)+DJY(JT)*DPY(1,JT))
+           CE(NUBO2)       = CE(NUBO2) -AUX*
+     &     (DJX(JT)*DPX(2,JT)+DJY(JT)*DPY(2,JT))
+           CE(NUBO3)       = CE(NUBO3) -AUX*
+     &     (DJX(JT)*DPX(3,JT)+DJY(JT)*DPY(3,JT))
+         ENDDO
+!
+!        FOR PARALLELILSM
+         IF(NCSIZE.GT.1)THEN
+           CALL PARCOM2(CE,CE,CE,NS,1,2,1,MESH)
+         ENDIF
+      ENDIF
 !
 !     COMPLETES THE COMPUTATION OF THE NODAL GRADIENTS
 !
       DO IS=1,NS
-         AIS = 1.D0/(3.D0*AIRS(IS))
-         DX(IS)       = DX(IS)*AIS
-         DY(IS)       = DY(IS)*AIS
+         AIS     = TIERS/AIRS(IS)
+         DX(IS)  = DX(IS)*AIS
+         DY(IS)  = DY(IS)*AIS
       ENDDO
 !
 !-----------------------------------------------------------------------
