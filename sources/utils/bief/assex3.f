@@ -6,7 +6,7 @@
      & MESH,NELMAX,ELTSEG,ORISEG)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    ASSEMBLES MATRICES EXTRA-DIAGONAL TERMS
@@ -33,6 +33,11 @@
 !+        25/08/2011
 !+        V6P2
 !+   Tetrahedron element added
+!
+!history  S. PAVAN (LNHE)
+!+        01/08/2013
+!+        V6P3
+!+   Arguments added to AS3_1111_Q
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM1XMT        |-->| FIRST DIMENSION OF XMT
@@ -126,7 +131,7 @@
      &                    ELTSEG(1,1),ELTSEG(1,2),ELTSEG(1,3))
         ELSEIF(TYPEXT.EQ.'Q') THEN
           CALL AS3_1111_Q(XM,BIEF_NBSEG(11,MESH),
-     &                    XMT,NELMAX,NELEM,
+     &                    XMT,DIM1XMT,DIM2XMT,NELMAX,NELEM,STOXMT,
      &                    ELTSEG(1,1),ELTSEG(1,2),ELTSEG(1,3),
      &                    ORISEG(1,1),ORISEG(1,2),ORISEG(1,3))
         ENDIF
@@ -288,3 +293,4 @@
 !
       RETURN
       END
+
