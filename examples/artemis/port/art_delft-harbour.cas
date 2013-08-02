@@ -4,7 +4,7 @@ BOUNDARY CONDITIONS FILE           : geo_delft-harbour.cli
 GEOMETRY FILE                      : geo_delft-harbour.slf
 RESULTS FILE                       : art_delft-harbour.res
 /
-REFERENCE FILE                     : ref_delft-harbour.res
+REFERENCE FILE                     : ref_delft-harbour.slf
 VALIDATION                         : YES
 MATRIX STORAGE                     : 3
 /
