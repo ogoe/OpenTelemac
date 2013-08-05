@@ -51,6 +51,11 @@
 !+        V6P3
 !+   Modification for new treatment of weirs and dynamic allocation
 !
+!history  J.-M. HERVOUET (LNH)
+!+        05/08/2013
+!+        V6P3
+!+   Setting QP0 to 0 must be protected by a test on TYPSEUIL
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFIC           |-->| LOGICAL UNIT OF FORMATED DATA FILE 1
 !| IOPTAN         |<--| OPTION FOR TANGENTIAL VELOCITIES
@@ -206,6 +211,8 @@
           ALLOCATE(WDIG%ADR(N)%P)
           CALL BIEF_ALLVEC(1,WDIG%ADR(N)%P,NOM,NPSING%I(N)-1,1,0,MESH)
           NOM(1:3) = 'QP0'
+!         JMH 05/08/2013: IF NOT INCREMENTED, QP0%N WILL REMAIN 0
+          QP0%N=QP0%N+1
           ALLOCATE(QP0%ADR(N)%P)
           CALL BIEF_ALLVEC(1,QP0%ADR(N)%P,NOM,NPSING%I(N)-1,1,0,MESH)
         ELSE
@@ -538,11 +545,10 @@
         ENDIF
       ENDIF
 !
-      DO N=1, NWEIRS
-         CALL OS('X=0     ',X=QP0%ADR(N)%P)
-      ENDDO
-!
       IF(TYPSEUIL.EQ.2) THEN
+        DO N=1, NWEIRS
+          CALL OS('X=0     ',X=QP0%ADR(N)%P)
+        ENDDO
         CALL ALLBLO(TWEIRA,'TWEIRA')
         CALL ALLBLO(TWEIRB,'TWEIRA')
         IF(NTRAC.GT.0) THEN
@@ -557,6 +563,7 @@
      &                              NWEIRS,MAXNPS,0,MESH)
         ENDIF
       ENDIF
+!
 !-----------------------------------------------------------------------
 !
       RETURN
