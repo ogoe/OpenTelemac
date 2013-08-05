@@ -769,6 +769,10 @@ files: friction_def.f
   akepin.f
   cltrac.f
   condin_adj.f
+  collect_values.f
+  loi_w_inc.f
+  calcul_tang_w2.f
+  calcul_q_weir.f
   corvis.f
   lecsng.f
   source_telemac2d.f
@@ -882,10 +886,6 @@ files: friction_def.f
   point_adj_t2d.f
   homere_adj_t2d.f
   homere_telemac2d.f
-  collect_values.f
-  loi_w_inc.f
-  calcul_tang_w2.f
-  calcul_q_weir.f
 
 [tomawac]
 path: <root>|sources|tomawac
