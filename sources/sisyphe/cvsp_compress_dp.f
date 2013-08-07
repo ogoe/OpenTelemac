@@ -13,11 +13,13 @@
 !+
 !+         WITH A DOUGLAS PEUKER LIKE ALGORITHM
 !+         THE ALGORITHM IS MODIFIED: INSTEAD FROM "POINT TO LINE DISTANCES"
-!+          TO THE "SUM OF FRACTION ERRORS" !!!
+!+          TO THE "SUM OF FRACTION ERRORS" !
 !
 !history UWE MERKEL
-!+        2011-07-20
+!+        20/07/2011
+!+        V6P2
 !+
+!
 !history  P. A. TASSI (EDF R&D, LNHE)
 !+        12/03/2013
 !+        V6P3

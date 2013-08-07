@@ -16,6 +16,7 @@
 !reference   CAVALERI L. & P. MALANOTTE-RIZZOLI, 1981 :
 !+                 "WIND WAVE PREDICTION IN SHALLOW WATER : THEORY AND
 !+                  APPLICATIONS". J. GEOPHYS. RES., 86(C5),10,961-975
+!
 !reference   TOLMAN  (1992) : EFFECT OF NUMERICS ON THE PHYSICS IN 
 !+                A THIRD-GENERATION WIND-WAVE MODEL, JPO, VOL 22,
 !+                PP 1095-1111.
@@ -23,6 +24,7 @@
 !history  E. GAGNAIRE-RENOU (EDF/LNHE)
 !+        09/2010
 !+        V6P0
+!+
 !
 !history  G.MATTAROLO (EDF - LNHE)
 !+        27/06/2011

@@ -10,8 +10,10 @@
 !brief   INITS A VERTICAL SORTING PROFILE USING HIRANO LAYERS
 !
 !history UWE MERKEL
-!+        2012-04-19
+!+        19/04/2012
+!+        V6P2
 !+
+!
 !history  P. A. TASSI (EDF R&D, LNHE)
 !+        12/03/2013
 !+        V6P3

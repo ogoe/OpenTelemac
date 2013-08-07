@@ -5,35 +5,28 @@
      &(IKLE,NDEPAR,LGVEC)
 !
 !***********************************************************************
-! PROGICIEL: STBTEL V5.2          28/08/89  J-M HERVOUET (LNH) 3071 8018
+! STBTEL    V5P2                                   28/08/89
 !***********************************************************************
 !
-! FONCTION : DETECTION DES DEPENDANCES ARRIERES
+!brief    DETECTION OF BACKWARD DEPENDENCIES
 !
-!-----------------------------------------------------------------------
-!                             ARGUMENTS
-! .________________.____.______________________________________________.
-! |      NOM       |MODE|                   ROLE                       |
-! |________________|____|______________________________________________|
-! |  IKLE          | -->|NUMEROS GLOBAUX DES NOEUDS DE CHAQUE ELEMENT  |
-! |  NDEPAR        | -->|NOMBRE DE DEPENDANCES ARRIERES                |
-! |________________|____|______________________________________________
-! | COMMON:        |    |
-! |  GEO:          |    |
-! |    MESH        | -->| TYPE DES ELEMENTS DU MAILLAGE
-! |    NDP         | -->| NOMBRE DE NOEUDS PAR ELEMENTS
-! |    NPOIN       | -->| NOMBRE TOTAL DE NOEUDS DU MAILLAGE
-! |    NELEM       | -->| NOMBRE TOTAL D'ELEMENTS DU MAILLAGE
-! |    NPMAX       | -->| DIMENSION EFFECTIVE DES TABLEAUX X ET Y
-! |                |    | (NPMAX = NPOIN + 0.1*NELEM)
-! |    NELMAX      | -->| DIMENSION EFFECTIVE DES TABLEAUX CONCERNANT
-! |                |    | LES ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
-! |________________|____|______________________________________________|
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-!-----------------------------------------------------------------------
-! APPELE PAR : STBTEL
-! APPEL DE : -
-!***********************************************************************
+!history  J-M HERVOUET (LNH)
+!+        28/08/89
+!+        V5P2
+!+
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| IKLE      |<--| GLOBAL NUMBERING OF ALL NODES BY ELEMENT
+!| NDEPAR    |<--| NUMBER OF BACKWARD DEPENDENCIES
+!| MESH      |-->| TYPE OF ELEMENTS IN THE MESH
+!| NDP       |-->| NUMBER OF NODE PER ELEMENT
+!| NPOIN     |-->| TOTAL NUMBER OF NODES IN THE MESH
+!| NELEM     |-->| TOTAL NUMBER OF ELEMENTS IN THE MESH
+!| NPMAX     |-->| EFFECTIVE DIMENSION OF ARRAYS X AND Y
+!|           |   | (NPMAX = NPOIN + 0.1*NELEM)
+!| NELMAX    |-->| EFFECTIVE DIMENSION OF THE ARRAYS DEALING WITH
+!|           |   | THE ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
       INTEGER LNG,LU

@@ -1,21 +1,25 @@
-      MODULE M_MED
-!***********************************************************************
-! THIS FILE IS PART OF BIEF
-! COPYRIGHT (C) EDF 2008
-!-----------------------------------------------------------------------
+!                 ************
+                  MODULE M_MED
+!                 ************
 !
 !***********************************************************************
-! BIEF
+! BIEF  V5P8                                                 2008
 !***********************************************************************
 !
 !brief    INTERFACES OF MED PUBLIC SUBROUTINES
 !
-!warning  NOTE THAT THIS INTERFACE IS FOR THE LIBRARY INCLUDED IN MED V3.0.4
-!         CHANGES MIGHT BE REQUIRED WITH FUTURE VERSIONS OF MED.
+!warning  NOTE THAT THIS INTERFACE IS FOR THE LIBRARY INCLUDED IN MED
+!+     V3.0.4 CHANGES MIGHT BE REQUIRED WITH FUTURE VERSIONS OF MED.
 !
 !history JULIEN HOLLEVILE
+!+        2008
+!+        V5P8
+!+
 !
 !history FABIEN DECUNG
+!+        2010
+!+        V6P0
+!+
 !
 !history YOANN AUDOUIN
 !+       29/10/2011     
@@ -23,6 +27,7 @@
 !+       ADAPTING CODE TO MED V3.0.4         
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!|               |-->| 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 
@@ -257,6 +262,9 @@
 !+        STOP EXECUTION IF AN ERROR OCCURED.
 !                     
 !history  J.HOLLEVILLE
+!+        2010
+!+        V6P0
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CRET           |-->| 10 INTEGERS, SEE SELAFIN FILE STANDARD
@@ -302,6 +310,9 @@
 !+        MEDFILE%CANAL.
 !                     
 !history  J.HOLLEVILLE
+!+        2010
+!+        V6P0
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IDFILE         |<->| MED FILE DESCRIPTOR
@@ -378,6 +389,9 @@
 !brief    CLOSE A MED DATA FILE
 !                     
 !history  J.HOLLEVILLE
+!+        2010
+!+        V6P0
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IDFILE         |-->| MED FILE DESCRIPTOR
@@ -426,6 +440,9 @@
 !brief    WRITE THE MESH INFORMATIONS INTO THE RESULT FILE
 !                     
 !history  J.HOLLEVILLE
+!+        2010
+!+        V6P0
+!+
 !                     
 !history  Y.AUDOUIN
 !+        29/10/2011
@@ -603,6 +620,9 @@
 !+        ...)
 !                     
 !history  J.HOLLEVILLE
+!+        2010
+!+        V6P0
+!+
 !                     
 !history  Y.AUDOUIN
 !+        29/10/2011
@@ -773,7 +793,7 @@
 ! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
-Cbrief    WRITE DATA VALUES ON A MESH INTO THE MED DATA FILE.
+!brief    WRITE DATA VALUES ON A MESH INTO THE MED DATA FILE.
 !+        DATA VALUES ARE STORED IN A BIEF_OBJ BLOCK (BVARSOR),
 !+        AND THE LOGICAL OUTVAR INDICATES FOR EACH VARIABLE IF 
 !+        WE SHOULD PRINT IT OUT OR NOT. THE BLOCK BVARSOR CONTAINS
@@ -787,6 +807,9 @@ Cbrief    WRITE DATA VALUES ON A MESH INTO THE MED DATA FILE.
 !+        FOR THE SUBROUTINE CREATING THIS FIELDS (MED_DATASET_CREATE)
 !                     
 !history  J.HOLLEVILLE
+!+        2010
+!+        V6P0
+!+
 !                     
 !history  Y.AUDOUIN
 !+        29/10/2011
@@ -1038,9 +1061,12 @@ Cbrief    WRITE DATA VALUES ON A MESH INTO THE MED DATA FILE.
 ! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
-Cbrief    READING RESULTS FROM A MED FILE
+!brief    READING RESULTS FROM A MED FILE
 !                     
 !history  J.HOLLEVILLE
+!+        2010
+!+        V6P0
+!+
 !                     
 !history  Y.AUDOUIN
 !+        29/10/2011
@@ -1307,6 +1333,9 @@ Cbrief    READING RESULTS FROM A MED FILE
 !brief    WRITE ' ' TO '_'
 !                     
 !history  J.HOLLEVILLE
+!+        2010
+!+        V6P0
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| STRING         |<->| THE STRING TO CONVERT
@@ -1346,6 +1375,9 @@ Cbrief    READING RESULTS FROM A MED FILE
 !+        return : COMP_NUM =  
 !                     
 !history  J.HOLLEVILLE
+!+        2010
+!+        V6P0
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| STRING         |<->| THE NAME OF THE VARIABLE TO TEST

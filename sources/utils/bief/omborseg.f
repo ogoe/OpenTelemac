@@ -10,7 +10,8 @@
 !***********************************************************************
 !
 !brief    OPERATIONS ON MATRICES WITH AN EDGE-BASED STORAGE
-!         WHERE N IS A BOUNDARY MATRIX
+!+         WHERE N IS A BOUNDARY MATRIX
+!
 !code
 !+   D: DIAGONAL MATRIX
 !+   C: CONSTANT
@@ -23,6 +24,7 @@
 !+      OP = 'M=M+N   '  : ADDS N TO M
 !
 !history  F. DECUNG (LNHE)
+!+        2012
 !+        V6P3
 !+   Adapted from omseg.f
 !

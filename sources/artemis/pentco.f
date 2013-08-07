@@ -10,6 +10,7 @@
 !
 !brief FUNCTION:   CALCULATE SECOND ORDER BOTTOM EFFECTS (GRADIENT&CURVATURE) 
 !+                  FOR EXTENDED MILD-SLOPE EQUATION
+!
 !code
 !+        OUTPUT :      
 !+        1 + F = 1 + E1(KH)*grad(H)**2 + E2(KH)/K0*LAPLACIEN(H)
@@ -24,9 +25,9 @@
 !+
 !+     (given X = 2 KH)
 !+     
-!+              ( X**4 + 4 X**3 SH(X) - 9 SH(X)SH(2X) + 3 X (X+2SH(X))*(CH(X)**2-2CH(X)+3) )
-!+     E1(KH) = -----------------------------------------------------------------------------
-!+                                   3 ( X+SH(X) )**4  
+!+          ( X**4 + 4 X**3 SH(X) - 9 SH(X)SH(2X) + 3 X (X+2SH(X))*(CH(X)**2-2CH(X)+3) )
+!+ E1(KH) = -----------------------------------------------------------------------------
+!+                                  3 ( X+SH(X) )**4
 !+
 !+
 !+
@@ -55,10 +56,12 @@
 !+
 !+
 !+ THE SECOND MEMEBER (DIFFUSION) IS MODIFIED
-!+
+!
 !history C.PEYRARD & E.RAZAFINDRAKOTO
 !+        31/05/11
 !+        V6P1
+!+
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|    II          |-->|  OPTION FOR GRADIENT AND CURVATURE EFFECTS  
 !|    T2          |---|  WORK TABLE

@@ -9,13 +9,15 @@
 !brief  CVSP_WRITE_PROFILE
 !
 !history UWE MERKEL
-!+        2011-07-20
+!+        20/07/2011
+!+        V6P3
+!+
 !
 !history PAT (PABLO TASSI)
 !+        2012-08-24
-!+
-!+ add write(LU,*)
-!+ secure programming
+!+        V6P3
+!+ Add write(LU,*)
+!+ Secure programming
 !
 !history  P. A. TASSI (EDF R&D, LNHE)
 !+        12/03/2013

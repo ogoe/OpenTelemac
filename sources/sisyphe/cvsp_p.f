@@ -11,8 +11,10 @@
 !brief   CSV-FILE OUTPUT OF A VERTICAL SORTING PROFILE IN POINT J
 !
 !history UWE MERKEL
-!+        2011-07-20
+!+        20/07/2011
+!+        V6P3
 !+
+!
 !history  P. A. TASSI (EDF R&D, LNHE)
 !+        12/03/2013
 !+        V6P3

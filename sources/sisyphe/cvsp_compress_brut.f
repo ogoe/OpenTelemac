@@ -15,7 +15,8 @@
 !+        TO PREVENT PRO_MAX_MAX OVERFLOW
 !
 !history UWE MERKEL
-!+        2011-12-23
+!+        23/12/2011
+!+        V6P2
 !+
 !
 !history PABLO TASSI PAT (EDF-LNHE)

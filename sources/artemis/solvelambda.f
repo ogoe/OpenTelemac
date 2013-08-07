@@ -10,12 +10,14 @@
 !
 !brief    RESOLUTION OF DISPERSION EQUATION WITH CURRENT  
 !+        USING  DICHOTOMIE
-!                          ->->
-!   Eq solved on k : omega-k.U = sqrt(gk tanh(kH))        
+!
+!code                          ->->
+!+      Eq solved on k : omega-k.U = sqrt(gk tanh(kH))
 !
 !history  D.IDIER / J.PARISI / C.PEYRARD 
 !+        30/06/2013
 !+        V6P3
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| XK             |<-->| K : NOMBRE D'ONDE AU POINT I

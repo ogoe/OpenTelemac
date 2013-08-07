@@ -11,19 +11,20 @@
 !***********************************************************************
 !
 !brief 
-! 
-!     FUNCTION  : COMPUTE ALL THE FLUXES FOR INTERNAL INTERFACES USING
-!                 HLLC FLUX.
+!+     FUNCTION  : COMPUTE ALL THE FLUXES FOR INTERNAL INTERFACES USING
+!+                 HLLC FLUX.
 !
 !history  RIADH ATA (EDF R&D-LNHE)
 !+        07/15/2012
+!+        V6P2
 !+
+!
 !history  R. ATA (EDF-LNHE)
-!+
 !+        01/07/2013
 !+        V6P3
 !+      adaptation with the new data structure (common with FEM)
 !+      PARALLELIZATION
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  CE            |<-->|  FLUX  INCREMENTS AT INTERNAL FACES          |                          |
 ! |  ELTSEG        | -->|  SEGMENT NUMBERS PER ELEMENT                 |

@@ -13,13 +13,15 @@
 !
 !history U.MERKEL & REBEKKA KOPMANN
 !+        2012
+!+        V6P2
 !+
+!
 !history PABLO TASSI PAT (EDF-LNHE)
 !+        12/02/2013
 !+        V6P3
 !+ PREPARING FOR THE USE OF A HIGHER NSICLM VALUE
 !+ (BY REBEKKA KOPMANN)
-!+
+!
 !history  P. A. TASSI (EDF R&D, LNHE)
 !+        12/03/2013
 !+        V6P3
