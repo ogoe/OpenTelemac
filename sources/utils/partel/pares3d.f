@@ -870,7 +870,7 @@
             ENDIF
          ENDDO
          DO I = 1,4
-            IF (IFABOR(IELEM,I).EQ.0) THEN
+            IF (IFABOR(IELEM,I).LE.0) THEN
                IF ((IKLE1.EQ.(IKLE(NELBOR(IELEB),SOMFAC(1,I))))
      &         .AND.(IKLE2.EQ.(IKLE(NELBOR(IELEB),SOMFAC(2,I))))  
      &         .AND. (IKLE3.EQ.(IKLE(NELBOR(IELEB),SOMFAC(3,I)))))
@@ -1031,7 +1031,6 @@
       WRITE(LU,82) NPARTS
       WRITE(LU,*) 'SORTIE DE METIS CORRECTE'
 !
-      EPART = EPART+1
 !
 !D ******************************************************
 !D     LOOP OVER THE TETRA TO COMPUTER THE NUMBER AND THE LABEL
@@ -1342,56 +1341,56 @@
 !D            IF (EPART(NUMTET)==IDD) THEN 
         DO POS=1,NELEM_P(IDD)
                                 ! BOUCLE SUR TETRA ET TRIA POUR ECOLOR
-           J=ELEGL(POS,IDD)
-           NUMTET=TYPELEM(J,2)  ! NUM LOCAL DU TETRA DANS LA LISTE DES TETRAS 
-           ELEM=111
+          J=ELEGL(POS,IDD)
+          NUMTET=TYPELEM(J,2)  ! NUM LOCAL DU TETRA DANS LA LISTE DES TETRAS 
+          ELEM=111
 ! OB D
 ! PRETRAITEMENT POUR LES EVENTUELS PB DE COULEURS DES NOEUDS DE TETRAS
 ! A L'INTERFACE
-              IBIDC=0
-              IF (TETCOLOR(NUMTET,1)) IBIDC=IBIDC+1000
-              IF (TETCOLOR(NUMTET,2)) IBIDC=IBIDC+ 200
-              IF (TETCOLOR(NUMTET,3)) IBIDC=IBIDC+  30
-              IF (TETCOLOR(NUMTET,4)) IBIDC=IBIDC+   4
+          IBIDC=0
+          IF (TETCOLOR(NUMTET,1)) IBIDC=IBIDC+1000
+          IF (TETCOLOR(NUMTET,2)) IBIDC=IBIDC+ 200
+          IF (TETCOLOR(NUMTET,3)) IBIDC=IBIDC+  30
+          IF (TETCOLOR(NUMTET,4)) IBIDC=IBIDC+   4
 ! POUR MONITORING
 !              IF (IBIDC/=0) WRITE(6,*)'IDD',IDD,'PARTEL',J,COMPT,IBIDC
 ! IDEM VERSION DE REFERENCE
 !	      IBIDC=0
 ! OB F
-              WRITE(NINP2,65,ERR=112)COMPT,ELEM,-IBIDC,IBID,ECOLOR(J),4
-              COMPT=COMPT+1
-              N=4*(NUMTET-1)+1
-              IKLE1=NODES4(IKLESTET(N))
-              IKLE2=NODES4(IKLESTET(N+1))
-              IKLE3=NODES4(IKLESTET(N+2))
-              IKLE4=NODES4(IKLESTET(N+3))
-              WRITE(NINP2,66,ERR=112)IKLE1,IKLE2,IKLE3,IKLE4
-       IF ((IKLE1.LT.0).OR.(IKLE2.LT.0).OR.(IKLE3.LT.0).OR.(IKLE4.LT.0))
-     &          GOTO 147
-              IF (TETTRI2(NUMTET).NE.0) THEN
-                NI=4*(NUMTET-1)+1
-                NF=NI+TETTRI2(NUMTET)-1
-                DO M=NI,NF   ! ON PARCOURT LES TRIANGLES DE BORD ASSOCIES
-                  NUMTRI=TETTRI(M)  ! AU NUMTET TETRAEDRE; NUM LOCAL DU TRIA
-                  NUMTRIG=CONVTRI(NUMTRI)  ! NUMERO GLOBAL DU TRIANGLE
-                  ELEM=91
-                  TRIUNV(4*NBTRIIDD+1)=ECOLOR(NUMTRIG)
-                  N=3*(NUMTRI-1)+1
-                  IKLE1=NODES4(IKLESTRI(N))
-                  IKLE2=NODES4(IKLESTRI(N+1))
-                  IKLE3=NODES4(IKLESTRI(N+2))
-                  TRIUNV(4*NBTRIIDD+2)=IKLE1
-                  TRIUNV(4*NBTRIIDD+3)=IKLE2
-                  TRIUNV(4*NBTRIIDD+4)=IKLE3
-                  NBTRIIDD=NBTRIIDD+1
+          WRITE(NINP2,65,ERR=112)COMPT,ELEM,-IBIDC,IBID,ECOLOR(J),4
+          COMPT=COMPT+1
+          N=4*(NUMTET-1)+1
+          IKLE1=NODES4(IKLESTET(N))
+          IKLE2=NODES4(IKLESTET(N+1))
+          IKLE3=NODES4(IKLESTET(N+2))
+          IKLE4=NODES4(IKLESTET(N+3))
+          WRITE(NINP2,66,ERR=112)IKLE1,IKLE2,IKLE3,IKLE4
+          IF ((IKLE1.LT.0).OR.(IKLE2.LT.0).OR.(IKLE3.LT.0)
+     &        .OR.(IKLE4.LT.0)) GOTO 147
+          IF (TETTRI2(NUMTET).NE.0) THEN
+            NI=4*(NUMTET-1)+1
+            NF=NI+TETTRI2(NUMTET)-1
+            DO M=NI,NF   ! ON PARCOURT LES TRIANGLES DE BORD ASSOCIES
+              NUMTRI=TETTRI(M)  ! AU NUMTET TETRAEDRE; NUM LOCAL DU TRIA
+              NUMTRIG=CONVTRI(NUMTRI)  ! NUMERO GLOBAL DU TRIANGLE
+              ELEM=91
+              TRIUNV(4*NBTRIIDD+1)=ECOLOR(NUMTRIG)
+              N=3*(NUMTRI-1)+1
+              IKLE1=NODES4(IKLESTRI(N))
+              IKLE2=NODES4(IKLESTRI(N+1))
+              IKLE3=NODES4(IKLESTRI(N+2))
+              TRIUNV(4*NBTRIIDD+2)=IKLE1
+              TRIUNV(4*NBTRIIDD+3)=IKLE2
+              TRIUNV(4*NBTRIIDD+4)=IKLE3
+              NBTRIIDD=NBTRIIDD+1
 !
-              IF ((IKLE1.LT.0).OR.(IKLE2.LT.0).OR.(IKLE3.LT.0)) GOTO 147
+              IF ((IKLE1.LT.0).OR.(IKLE2.LT.0).OR.(IKLE3.LT.0)) 
+     &           GOTO 147
 !
-                ENDDO  ! EN M
-              ENDIF  ! EN TETTRI2
-        !    ENDIF  ! EN EPART
-      !    ENDIF  ! EN TYPELEM
+            ENDDO  ! EN M
+          ENDIF  ! EN TETTRI2
         ENDDO ! EN J
+        print *,NBTRIIDD, NELIN
 
 ! MAINTENANT ON PEUX RECOPIER LE BLOC DES TRIANGLES !
         ELEM=91
