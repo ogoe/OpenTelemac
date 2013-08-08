@@ -60,7 +60,7 @@
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
-from os import path,walk,environ
+from os import path,walk,environ,sep
 import sys
 from shutil import copytree,ignore_patterns
 # ~~> dependencies towards the root of pytel
@@ -170,7 +170,7 @@ if __name__ == "__main__":
             pc = path.join(path.join(pt,options.archiveName),cfgname)
             archive = path.join(pt,options.archiveName)
 
-      dirs = ['builds','scripts','configs']
+      dirs = ['builds'+sep+cfgname,'scripts','sources']
       for pid in dirs:
          pi = path.join(pt,pid)
          po = pi.replace(pt,pc)
