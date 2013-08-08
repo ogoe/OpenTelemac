@@ -1,6 +1,6 @@
 /* The standard CSS for doxygen */
 
-body, table, div, p, dl {
+table, div, p, dl {
 	font-family: Lucida Grande, Verdana, Geneva, Arial, sans-serif;
 	font-size: 12px;
 }
@@ -174,12 +174,6 @@ div.groupHeader {
 div.groupText {
 	margin-left: 16px;
 	font-style: italic;
-}
-
-body {
-	background: white;
-	color: black;
-        margin: 0;
 }
 
 div.contents {

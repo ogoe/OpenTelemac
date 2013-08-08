@@ -295,10 +295,10 @@ def replaceDOXYGEN(doxydocs):
       <link rel="stylesheet" href="./images/principal.css" type="text/css" />
       <style type="text/css"> 
       #ahgalleryOTconsortium { margin-left: auto; margin-right: auto; margin-top: 0px !important; margin-bottom: 0px !important; width: 1000px; } 
-      #ahgalleryOTconsortium ul.hover_block0, #ahgalleryOTconsortium ul.hover_block1, #ahgalleryOTconsortium ul.hover_block2 { display: block; overflow: hidden; height: 1%; padding-top: 20px; padding-left: 2px; background: transparent; margin-left: 2px; margin-top: 0 !important; margin-bottom: 0 !important; } 
+      #ahgalleryOTconsortium ul.hover_block0, #ahgalleryOTconsortium ul.hover_block1, #ahgalleryOTconsortium ul.hover_block2 { display: block; overflow: hidden; padding-top: 20px; padding-left: 2px; background: transparent; margin-left: 2px; margin-top: 0 !important; margin-bottom: 0 !important; } 
       #ahgalleryOTconsortium ul.bottom_block { padding-bottom: 20px ; } 
       #ahgalleryOTconsortium ul.hover_block0 li.item, #ahgalleryOTconsortium ul.hover_block1 li.item, #ahgalleryOTconsortium ul.hover_block2 li.item { margin-left: 0; padding-left: 0; list-style:none; list-style-position: inside; float:left; background: transparent; width: 150px; position: relative; } 
-      #ahgalleryOTconsortium ul.hover_block0 li a.teaser, #ahgalleryOTconsortium ul.hover_block1 li a.teaser , #ahgalleryOTconsortium ul.hover_block2 li a.teaser{ display: block; position: relative; overflow: hidden; height: 60px; width: 140px; padding: 1px; } 
+      #ahgalleryOTconsortium ul.hover_block0 li a.teaser, #ahgalleryOTconsortium ul.hover_block1 li a.teaser , #ahgalleryOTconsortium ul.hover_block2 li a.teaser{ display: block; position: relative; overflow: hidden; height: 60px; width: 130px; padding: 1px; } 
       #ahgalleryOTconsortium ul.hover_block0 li div.teaser, #ahgalleryOTconsortium ul.hover_block1 li div.teaser , #ahgalleryOTconsortium ul.hover_block2 li div.teaser { display: block; position: relative; overflow: hidden; height: 60px; width: 140px; padding: 1px; } 
       #ahgalleryOTconsortium ul.hover_block0 li img.overlay, #ahgalleryOTconsortium ul.hover_block1 li img.overlay, #ahgalleryOTconsortium ul.hover_block2 li img.overlay { margin: 0; position: absolute; top: 5px; left: 0; border: 0; } 
       </style> 
