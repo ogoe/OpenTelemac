@@ -270,7 +270,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                   nptime = nptime + 1
                npsize = npsize + 1
          elif oFiles[k].split(';')[5] == 'PARAL' and ncsize > 1: # MAIN MODULE
-            npsize = 1
+            npsize = 0
             cb,ce = path.splitext(eval(v[0]))
             while 1:
                cref = path.join(CASDir,cb+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)+ce)
