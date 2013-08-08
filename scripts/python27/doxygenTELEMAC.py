@@ -287,7 +287,7 @@ def replaceDOXYGEN(doxydocs):
       <meta name="description" content="The open TELEMAC-MASCARET system is a set of software for free surface numerical modelling of:\n* 2D, 3D Hydrodynamics,\n* Sediment (sand and muds),\n* Waves." /> 
       <TITLE>The open TELEMAC-MASCARET system: 2D, 3D hydrodynamics sediment waves simulation system</TITLE> 
       <link rel="shortcut icon" href="./images/favicon.ico" type="image/vnd.microsoft.icon" /> 
-      <script src="http://www.opentelemac.org/modules/mod_animate_hover/js/jquery-1.4.2.min.js" type="text/javascript"></script> 
+      <script src="./images/jquery-1.4.2.min.js" type="text/javascript"></script>
       <link rel="stylesheet" href="./images/system.css" type="text/css" />
       <link rel="stylesheet" href="./images/position.css" type="text/css" media="screen,projection" />
       <link rel="stylesheet" href="./images/layout.css" type="text/css" media="screen,projection" />
