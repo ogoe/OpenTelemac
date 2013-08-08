@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = "The TELEMAC system"
-PROJECT_NUMBER         = v6p1
+PROJECT_NUMBER         = v6p3
 # @INCLUDE               = doxyfile_include.h
 OUTPUT_DIRECTORY       =
 CREATE_SUBDIRS         = NO
@@ -89,20 +89,24 @@ WARN_LOGFILE           = Doxygen_BuildLog.txt
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = ./ \
-                         ./artemis/arte_v6p1/sources \
-                         ./bief/bief_v6p1/sources \
-                         ./damocles/damo_v6p1/sources \
-                         ./mumpsvoid/mumpsvoid_v6p1/sources \
-                         ./parallel/parallel_v6p1/sources \
-                         ./sisyphe/sisyphe_v6p1/sources \
-                         ./special/special_v6p1/sources \
-                         ./stbtel/stbtel_v6p1/sources \
-                         ./spartacus2d/spartacus2d_v6p1/sources \
-                         ./postel3d/postel3d_v6p1/sources \
-                         ./telemac2d/tel2d_v6p1/sources \
-                         ./telemac3d/tel3d_v6p1/sources \
-                         ./tomawac/toma_v6p1/sources
+                         ./sources/artemis \
+                         ./sources/postel3d \
+                         ./sources/sisyphe \
+                         ./sources/stbtel \
+                         ./sources/telemac2d \
+                         ./sources/telemac3d \
+                         ./sources/tomawac \
+                         ./sources/utils/bief \
+                         ./sources/utils/damocles \
+                         ./sources/utils/diffsel \
+                         ./sources/utils/gretel \
+                         ./sources/utils/parallel \
+                         ./sources/utils/partel \
+                         ./sources/utils/special
 FILE_PATTERNS          = *.f \
+                         *.F \
+						 *.f90 \
+						 *.F90 \
                          *.dox
 RECURSIVE              = YES
 EXCLUDE                =
