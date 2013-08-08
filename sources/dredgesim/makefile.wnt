@@ -31,7 +31,10 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
-.f.obj:
+.SUFFIXES:
+.SUFFIXES: .f .F .F90 .f90 .o .mod .MOD
+
+.f90.obj:
  $(F90) $(F90_PROJ) $<  
 #
 #----- Paramétrage Telemac
@@ -41,7 +44,8 @@ MODE          =
 LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
 DEST          = $(PROJECT)\builds\$(DIRLIB)
 
-LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\parallel$(MODE)$(VERSION).lib \
+LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\parallel$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)
 

@@ -45,7 +45,8 @@ MODE          =
 LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).a
 
 EXEDEF        = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
-LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/parallel$(MODE)$(VERSION).a \
+LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/bief$(MODE)$(VERSION).a \
+                $(PROJECT)/builds/$(DIRLIB)/lib/parallel$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/special$(MODE)$(VERSION).a \
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)
 
@@ -139,7 +140,10 @@ libprofile:
 
 #------- Regles de compilation des sources FORTRAN
 
-%.o:   	%.f90
+.SUFFIXES:
+.SUFFIXES: .f .F .F90 .f90 .o .mod .MOD
+
+.f90.o:
 	@echo "=> Compilation de $< :"
 	@if [ ! -d $(DEST)/lib ]; then \
 	echo "creation du repertoire $(DEST)";mkdir $(DEST) $(DEST)/lib $(DEST)/bin; fi
@@ -151,7 +155,7 @@ libprofile:
 	 echo "Transfert du module $(@F:.o=.MOD) ";\
 	 cp  *.MOD $(DEST)/lib/.; /bin/rm *.MOD; fi;
 
-%.f90%.o:
+.F90.o:
 	@echo "=> Compilation de $< :"
 	@if [ ! -d $(DEST)/lib ]; then \
 	echo "creation du repertoire $(DEST)";mkdir $(DEST) $(DEST)/lib $(DEST)/bin; fi

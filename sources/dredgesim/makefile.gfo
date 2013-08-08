@@ -31,6 +31,9 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
+.SUFFIXES:
+.SUFFIXES: .f .F .F90 .f90 .o .mod .MOD
+
 .f90.o:
     $(F90) $(F90_PROJ) $<
 #
@@ -41,7 +44,8 @@ MODE          =
 LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
 DEST          = $(PROJECT)\builds\$(DIRLIB)
 
-LKLIB         = $(PROJECT)\builds\$(drilib)\lib\parallel$(MODE)$(VERSION).lib \
+LKLIB         = $(PROJECT)\builds\$(drilib)\lib\bief$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(drilib)\lib\parallel$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(drilib)\lib\special$(MODE)$(VERSION).lib  \
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)
 
