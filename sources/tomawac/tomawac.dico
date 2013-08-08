@@ -4958,7 +4958,7 @@ est donne en heures'
 AIDE1 = 'Unit given in seconds, for example 3600. if time
 is given in hours'
 /
-NOM = 'UNITE DE TEMPS DU FICHIER DU NIVEAU DE LA MARE' 
+NOM = 'UNITE DE TEMPS DU FICHIER DU NIVEAU DE LA MAREE' 
 NOM1 = 'TIME UNIT IN TIDAL WATER LEVEL FILE' 
 TYPE = REEL 
 INDEX = 82 
@@ -5007,7 +5007,7 @@ L''unite est celle du fichier'
 AIDE1 = 'Will be withdrawn from the time read in the file.
  The unit is that of the file'
 /
-NOM = 'DEPHASAGE DU FICHIER DU NIVEAU DE LA MARE' 
+NOM = 'DEPHASAGE DU FICHIER DU NIVEAU DE LA MAREE' 
 NOM1 = 'TIME SHIFT IN TIDAL WATER LEVEL FILE' 
 TYPE = REEL 
 INDEX = 85 
