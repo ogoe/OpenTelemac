@@ -22,8 +22,23 @@
    <action xref="1"  rank="3"
        do="translate;compile;run;cas;princi" 
        code="telemac2d" target="t2d_tide-jmj_real_gen.cas" 
-       title="tide scalar mode" 
+       title="tide scalar mode real gen" 
    />
+   <action xref="2" rank="3" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_tide-jmj_type_gen.cas" 
+       title="tide scalar mode type gen" 
+   />
+   <action xref="3" rank="3"   
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_tide-jmj_type.cas" 
+       title="tide scalar mode type" 
+   />    
+   <action xref="4" rank="3" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_tide-jmj_type.cas" 
+       title="tide parallel mode type" 
+   />    
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  
