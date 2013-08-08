@@ -103,7 +103,6 @@ files: declarations_stbtel.F
   surcon.f
   lecadc.f
   elmpb.f
-  voisin_stbtel.f
   dynami.f
   stbtel.f
   lecdon_stbtel.f
