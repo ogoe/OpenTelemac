@@ -110,7 +110,6 @@ stbtel.f             \
 surcon.f             \
 verifi.f             \
 verifs.f             \
-voisin_stbtel.f      \
 conv_lim.f           \
 lib_vtk_io.F         \
 conv_med.F           \

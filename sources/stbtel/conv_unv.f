@@ -468,7 +468,12 @@
       DOUBLE PRECISION :: XB(3)
       CHARACTER*80 :: TITLE2
       INTEGER, ALLOCATABLE :: NCOLOR(:)
+      INTEGER, ALLOCATABLE :: myvalfam(:)
+      INTEGER, ALLOCATABLE :: sort(:)
       INTEGER :: ELEM
+      CHARACTER(LEN=200) :: LINE
+      integer :: tempmin
+      integer :: pos(1)
 !      
       WRITE(LU,*) '----------------------------------------------------'
       IF(LNG.EQ.1) WRITE(LU,*) '------DEBUT ECRITURE DU FICHIER UNV'
@@ -485,9 +490,31 @@
       WRITE(NOUT,*) 'TOTAL NO. OF FAMILIES                :',MESH2%NFAM
       WRITE(NOUT,*) 'LIST OF FAMILIES, FAMILY_ID, COLOR_ID :'
       DO I=1,MESH2%NFAM
-        WRITE(NOUT,'(A16,A2,I4,A1,I4)') MESH2%NAMEFAM(I),' :',
+        WRITE(NOUT,'(A,A2,I4,A1,I4)') MESH2%NAMEFAM(I),' :',
      &               MESH2%IDFAM(I),',',MESH2%VALFAM(I)
       ENDDO
+      allocate(myvalfam(mesh2%nfam))
+      allocate(sort(mesh2%nfam))
+      myvalfam = mesh2%valfam
+      SORT = -1
+      i = 0
+      tempmin = minval(myvalfam)
+      do while (tempmin.lt.100)
+        i = i + 1
+        sort(i) = tempmin
+        pos = minloc(myvalfam)
+        do while (myvalfam(pos(1)).eq.tempmin)
+          myvalfam(pos(1)) = 100
+          pos = minloc(myvalfam)
+        enddo
+        tempmin = minval(myvalfam)
+      enddo
+      WRITE(NOUT,*) 'number of external faces         :',
+     &              i-1
+      write(NOUT,*) 'Priority for the external faces  :',
+     &   (SORT(j),j=2,i)
+      deallocate(myvalfam)
+      deallocate(sort)
 
       CLOSE(NOUT,IOSTAT=IERR)
       CALL FNCT_CHECK(IERR,'CLOSE '//TRIM(LOGFILE2))
@@ -565,6 +592,12 @@
         DO J=1,MESH2%NDP
           IB(J) = MESH2%IKLES((I-1)*MESH2%NDP+J)
         ENDDO
+        ! Estel 3d convention we need to swap order 1 and 2 for tetrahedron
+        IF (ELEM.EQ.111) THEN
+          IERR = IB(1)
+          IB(1) = IB(2)
+          IB(2) = IERR
+        ENDIF
         WRITE(NOUT,'(6I10)') (IB(J),J=1,MESH2%NDP)
       ENDDO
       DEALLOCATE(NCOLOR)

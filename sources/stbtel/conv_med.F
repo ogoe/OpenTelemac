@@ -65,6 +65,7 @@
       INTEGER, ALLOCATABLE :: ELEMNUM(:)
       INTEGER, ALLOCATABLE :: ELEMNUM2(:)
       LOGICAL :: MYFALSE
+      INTEGER :: POS
 !      
       WRITE(LU,*) '----------------------------------------------------'
       IF(LNG.EQ.1) WRITE(LU,*) '------BEGINNING READING OF MED FILE'
@@ -253,6 +254,21 @@
      &                  MESH2%GROUPFAM(I,1:MESH2%NGROUPFAM(I)),IERR) 
           ENDIF
           CALL FNCT_CHECK(IERR,'MFAFAI')
+          ! IDENTIFYING COLOR VALUE FROM NAME
+          POS = INDEX(MESH2%NAMEFAM(I),':')
+          IF (POS.EQ.0) THEN
+            MESH2%VALFAM(I) = 0
+          ELSE
+            IF (MESH2%NAMEFAM(I)(POS-2:POS-2).EQ.'_') THEN
+              READ(MESH2%NAMEFAM(I)(POS-1:POS-1),'(I1)') MESH2%VALFAM(I)
+            ELSE IF(MESH2%NAMEFAM(I)(POS-3:POS-3).EQ.'_') THEN
+              READ(MESH2%NAMEFAM(I)(POS-2:POS-1),'(I2)') MESH2%VALFAM(I)
+            ELSE IF(MESH2%NAMEFAM(I)(POS-4:POS-4).EQ.'_') THEN
+              READ(MESH2%NAMEFAM(I)(POS-3:POS-1),'(I3)') MESH2%VALFAM(I)
+            ELSE
+              WRITE(LU,*) 'INCORRECT NUMBER OF COLOR'
+            ENDIF
+          ENDIF
           IF(DEBUG) WRITE(LU,*) 'NAMEFAM : ',MESH2%NAMEFAM(I)
           IF(DEBUG) WRITE(LU,*) 'VALFAM : ',MESH2%VALFAM(I)
           IF(DEBUG) WRITE(LU,*) 'IDFAM : ',MESH2%IDFAM(I)
@@ -427,7 +443,7 @@
           ENDDO
         ENDDO
       ENDIF
-      ! READING FAMILIES FOR THE SEOND ELEMENT
+      ! READING FAMILIES FOR THE SECOND ELEMENT
       IF(MESH2%NELEM2.NE.0) THEN
         ALLOCATE(MESH2%NCOLOR2(MESH2%NELEM2),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%NCOLOR2')
