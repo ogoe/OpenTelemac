@@ -422,9 +422,14 @@ def replaceDOXYGEN(doxydocs):
         <div class="clr"></div>
        </div></div>
        </div></div>
-               <div id="footer-sub"><div id="footer"><ul class="menu"><li class="item-187"><a href="http://www.opentelemac.org/index.php?option=com_content&amp;view=article&amp;id=81&amp;Itemid=187" >Contact</a></li>
-                  <li class="item-111"><a href="http://www.opentelemac.org/index.php?option=com_content&amp;view=article&amp;id=80&amp;Itemid=111" >Licence</a></li>
-                  <li class="item-112"><a href="http://www.opentelemac.org/index.php?option=com_content&amp;view=article&amp;id=58&amp;Itemid=112" >Forum rules</a></li></ul></div>
+               <div id="footer-sub"><div id="footer">
+                  <ul class="menu">
+                     <li class="item-187"><a href="http://www.opentelemac.org/index.php/forum-rules" >Forum rules</a></li>
+                     <li class="item-111"><a href="http://www.opentelemac.org/index.php/licence" >Licence</a></li>
+                     <li class="item-112"><a href="http://www.opentelemac.org/index.php/privacy" >Privacy</a></li>
+                     <li class="item-112"><a href="http://www.opentelemac.org/index.php/terms-and-conditions" >Terms &amp; Conditions</a></li>
+                  </ul>
+               </div>
        </div></div>
       </body></html>""", '<dl class="user"><dt><h3><b>','</b></h3></dt><dd><br/>' ]
 
@@ -486,8 +491,6 @@ if __name__ == "__main__":
       help="specify the root, default is taken from config file" )
    parser.add_option("-m", "--modules",type="string",dest="modules",default='',
       help="specify the list modules, default is taken from config file" )
-   parser.add_option("-t", "--template",action="store_true",dest="template",default=False,
-      help="after the first call to DOXYGEN, switch the template to the openTELEMAC-MASCARET template" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -510,7 +513,7 @@ if __name__ == "__main__":
    if options.version != '': cfgs[cfgname]['version'] = options.version
    if options.modules != '': cfgs[cfgname]['modules'] = options.modules
    if options.doxyDir == '':
-      cfgs[cfgname].update({'doxydocs':path.join(cfgs[cfgname]['root'],cfgname)})
+      cfgs[cfgname].update({'doxydocs':path.join(cfgs[cfgname]['root'],'documentation'+sep+cfgname)})
    else:
       cfgs[cfgname].update({'doxydocs':options.doxyDir})
    if not path.isdir(cfgs[cfgname]['doxydocs']): createDirectories(cfgs[cfgname]['doxydocs'])
@@ -525,35 +528,31 @@ if __name__ == "__main__":
    print '    +> options:       ' +  cfgs[cfgname]['options'] + '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
-   if not options.template:
+   # ~~ Scans all source files to build a relation database ~~
+   fic,mdl,sbt,fct,prg,dep,racine = scanSources(cfgname,cfg,BYPASS)
 
-      # ~~ Scans all source files to build a relation database ~~
-      fic,mdl,sbt,fct,prg,dep,racine = scanSources(cfgname,cfg,BYPASS)
+   # ~~ Scann all source files to update Doxygen ~~~~~~~~~~~~~~~~
+   for mod in fic.keys():
+      print '\nCreating the DOXYGEN headers for ' + mod + '\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+      for ifile in fic[mod].keys():
 
-      # ~~ Scann all source files to update Doxygen ~~~~~~~~~~~~~~~~
-      for mod in fic.keys():
-         print '\nCreating the DOXYGEN headers for ' + mod + '\n\
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-         for ifile in fic[mod].keys():
+         # ~~ Read the content of the source file ~~~~~~~~~~~~
+         ilines = getFileContent(ifile)
+         # ~~ Update its Doxygen content ~~~~~~~~~~~~~~~~~~~~~
+         olines = createDOXYGEN(ifile,ilines,mod,racine)
+         # ~~ Make sure the distination exists ~~~~~~~~~~~~~~~
+         ofile = ifile.replace(cfg['root'],cfg['doxydocs'])
+         createDirectories(path.dirname(ofile))
+         # ~~ Write the content of the source file ~~~~~~~~~~~
+         putFileContent(ofile,olines)
 
-            # ~~ Read the content of the source file ~~~~~~~~~~~~
-            ilines = getFileContent(ifile)
-            # ~~ Update its Doxygen content ~~~~~~~~~~~~~~~~~~~~~
-            olines = createDOXYGEN(ifile,ilines,mod,racine)
-            # ~~ Make sure the distination exists ~~~~~~~~~~~~~~~
-            ofile = ifile.replace(cfg['root'],cfg['doxydocs'])
-            createDirectories(path.dirname(ofile))
-            # ~~ Write the content of the source file ~~~~~~~~~~~
-            putFileContent(ofile,olines)
+   # ~~ Run Doxygen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   chdir(cfg['doxydocs'])
+   if system('doxygen'): sys.exit()
 
-      # ~~ Run Doxygen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      chdir(cfg['doxydocs'])
-      if system('doxygen'): sys.exit()
-
-   else:
-
-      # ~~ Scan all HTML files and replace template in phases
-      replaceDOXYGEN(path.join(cfg['root'],'documentation'+sep+'doxydocs'+sep+'html'))
+   # ~~ Scan all HTML files and replace template in phases
+   replaceDOXYGEN(path.join(cfgs[cfgname]['doxydocs'],'html'))
 
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
