@@ -1,11 +1,28 @@
-\subsection{Fetch-limited growth}
-%
+\documentclass[10pt]{article}
+\usepackage[scale=0.80]{geometry}
+%\usepackage{graphicx}  % Required for including pictures
+\usepackage[pdftex]{graphicx}
+\usepackage{float} % Allows putting an [H] in \begin{figure} to specify the exact location of the figure
+\usepackage{wrapfig} % Allows in-line images
+\usepackage[british,UKenglish,USenglish,english,american]{babel}
+%\usepackage[utf8]{inputenc} %T1 ou utf8 latin1
+\usepackage{ragged2e}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{color}
+\usepackage{float}
+\definecolor{gray}{gray}{0.20} %pourcentage de gris
+\definecolor{red2}{cmyk}{0,1,0.99,0.04}	% cyan, magenta, jaune et noir
 
-% - Purpose & Problem description: 
-%     These first two parts give reader short details about the test case, 
-%     the physical phenomena involved and specify how the numerical solution will be validated
-%    
-\subsubsection{Purpose}
+\title{\begin{Large}
+\textbf{Benchmark test : Fetch-limited growth}\\
+\end{Large}}
+\author{Marine Le Gal - Elodie Gagnaire Renou - Michel Benoit}
+\begin{document}
+\maketitle 
+
+\section{Purpose}
 The goal of this test-case is to validate the generation (Source/sink terms)  and the growth of the wave spectrum depending of the length of wind action (fetch) with a constant wind defined at 10 meters from the sea surface. The domain used is simple and we want to observe the evolution of few parameters along its length, as the significant wave height, peak period and variance spectrum. 
 It is supposed that the wind blew long enought to have reached a steady state.\\
 Thus, this benchmark will allow us to compare and validate the different models of wind generation (three models), whitecapping dissipation (two models), non-linear quadruplet interactions (three models but only two are used here). Friction bottom dissipation and eventually depth-induced breaking dissipation (four models) is also included when a finite depth is imposed. The models used are presented in the table 1.\\ \quad \\
@@ -44,7 +61,7 @@ test 7a & Snyder & Westhuysen et al& DIA & 180 & 0.038 & -- \\
 Malanotte-Rizzoli (1981) is used.\textit{* : Discrete Interaction Approximation,Hasselmann et al., 1985. ** : Gaussian Quadrature Method,introduced by Lavrenov
 [Lavrenov, 2001] and implemented by Benoit and Gagnaire-Renou [Gagnaire-Renou et al., 2010]}}
 \end{table}
-\subsubsection{Referent experiments}
+\section{Referent experiments}
 In order to validate TOMAWAC's results, they will be compared to different empirical formulas:
 \begin{itemize}
 \item Infinite depth :
@@ -55,9 +72,9 @@ In order to validate TOMAWAC's results, they will be compared to different empir
 \item Finite depth :
 \subitem CERC (1984)
 \end{itemize}
-\subsubsection{Test-case description}
+\section{Test-case description}
 
-\paragraph{Geometry of the domain and bathymetry}
+\subsection{Geometry of the domain and bathymetry}
 \begin{tabular}{ccc}
 Domain & dimension :& 1000 km * 500 km\\
  Depth constant along the domain :& test 7a & 180 m\\
@@ -67,7 +84,7 @@ Domain & dimension :& 1000 km * 500 km\\
 & test 7e & 5 m\\
  & or infinite\\
 \end{tabular}
-\paragraph{Mesh}
+\subsection{Mesh}
 Several meshes have been tested. The important point highlighted by the analysis is at the begining of the fech the mesh must be sufficiently fine. At the end, the "free" mesh has been kept because it is the most used in industry and maritime applications (can be adapted to coast).
 \quad \vspace{3cm}
 \begin{figure}[H]
@@ -76,20 +93,21 @@ Several meshes have been tested. The important point highlighted by the analysis
       \caption{Free and refined mesh $\Delta x_{bigger} \approx 25 000 m$ - $\Delta x_{medium} \approx 20 000 m$ - $\Delta x_{smaller} \approx 10 000 m$}
 \end{figure}
 
-\subparagraph{Spectro-angular discretization}
+\subsubsection{Spectro-angular discretization}
 \begin{itemize}
 \item 50 frequencies ($f_1 $= 0.04 Hz for $U_{10} = 20m/s$, $f_1 $= 0.08 Hz for $U_{10} = 10m/s$ with geometric spacing q = 1.05)
 \item 36 directions uniformly distributed
 \end{itemize}
 
-\paragraph{Initial and Boundary conditions}
+\subsection{Initial and Boundary conditions}
+Jonswap spectrum has been set as initial condition.\\
 The domain is a part of a sea. A constant and homogeneous wind blows perpendicular to a long and straight coastline. The boundary conditions are shown in Figure 2:
 \begin{figure}
 \centering
 \includegraphics[scale=0.5]{boundarycond.jpg}
 \caption{Boundary conditions}
 \end{figure}
-\subsubsection{Numerical parameters}
+\section{Numerical parameters}
 \begin{itemize}
 \item time step : 900s
 \item physical time reached : 48 h
@@ -103,15 +121,15 @@ CPU times & 3min & 3h25 & 5h40 & 25 s \\
 \end{tabular}
 \end{itemize}
 
-\subsubsection{TOMAWAC Results - infinite depth }
-\paragraph{Wave's growth depending of the fetch for different wind velocities}
+\section{TOMAWAC Results - infinite depth }
+\subsection{Wave's growth depending of the fetch for different wind velocities}
 The figure 3 shows the significant wave heights and the peak periods of waves along the fetch (along the axis $ y = 250 km$ ) for the test 1 (the others are not shown because they give the same conclusions). These curves are obtained after 48 hour of wind action for a wind of 5 to 25 m/s. It is clearly seen that the wind has a considerable impact on these values and bigger waves are obtained with stronger wind. Also, stronger is the wind, longer is the fetch needed to reach the steady state. It can be noticed that the significant wave height does not grow linearly but following the squared wind velocity.
 \begin{figure}[H]
   \centering
   	\includegraphics[width=0.5\textwidth]{Hm0_free_mesh.jpg}\includegraphics[width=0.5\textwidth]{Tp_free_mesh.jpg}
       \caption{Significant wave heights and peak periods for the first test, $U_{10} = 5 - 10 - 15 - 20 - 25 m/s$}
 \end{figure}
-\paragraph{Non-dimensionnal variances and peak frequencies}
+\subsection{Non-dimensionnal variances and peak frequencies}
 Here all the tests are compared, but only with a 20m/s and 10m/s winds. The value obtained with TOMAWAC V6P2 are compared with the empirical formulas : JONSWAP (Hasselmann and al. 1973), CERC (1977), Wilson and Goda (1965 \& 2003), Kahma and Calkoen (1992). The non-dimensionnal variables are :\\
 \begin{figure}[H]
   \centering
@@ -133,7 +151,7 @@ Thus, the analysis of Figure 4 shows a good matching between the  TOMAWAC wave s
 \[\nu = (1.23 \pm 0.08)* 10^{-1}\]
  It seems that the non-dimensional peak frequency $f_p*$ is a little bit over-estimated and the non-dimensional variance is a bit underestimated. Indeed, the empirical formula given by CERC (1984), which is used as a criterion for fully developed seas, to calculate the minimum fetch during the minimum duration (48h), is : $\frac{t_{min} g}{U_{10}} = 68.8 (\frac{X_{min} g}{U_{10}^2})^{0.67}$. Applying this formula we found that the fully developed seas is reached around $1 117 km$ for a 10 m/s wind and around $1 672 km$ for a 20 m/s wind. Thus, the fully developed sea may not be entirely reached at our last point ($X_{10} = 1000km$) and which may explain the growth of the variance spectrum for some of the tests (see next section). 
 
-\paragraph{Variance spectrum for a constant wind}
+\subsection{Variance spectrum for a constant wind}
 In this section, we look at the development of the variance spectrum $E(f)$ along the fetch.
 \[ E(f) = \int_{0}^{2\pi} F(f,\theta )d\theta
 \]
@@ -160,22 +178,22 @@ and the variance spectra are normalised by the peak value of the Pierson-Moskowi
 $E_{PM}(f_{PM}) = \frac{\alpha g^2}{(2\pi)^4 f_{PM}^5} exp(-5/4)$ with $f_{PM}=\frac{0.13 g}{U_{10}}$ and the Philipp's constant $\alpha = 0.0081$\\
 \begin{figure}[h!]
   \begin{tabular}{cc}
-  \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t1_v10.pdf} & \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t1_fine_v20.pdf}\\
-    \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t2_v10.pdf} & \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t2_v20.pdf}\\
-      \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t3_v10.pdf} & \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t3_v20.pdf}\\
-\includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t4_v10.pdf} & \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t4_v20.pdf}\\
+  \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t1_v10.pdf} & \includegraphics[width=0.5\textwidth]{freemesh/Profondeurinfinie/test1/variance_ad_free_mesh_t1_fine_v20.pdf}\\
+    \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t2_v10.pdf} & \includegraphics[width=0.5\textwidth]{freemesh/Profondeurinfinie/test2/variance_ad_free_mesh_t2_v20.pdf}\\
+      \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t3_v10.pdf} & \includegraphics[width=0.5\textwidth]{freemesh/Profondeurinfinie/test3/variance_ad_free_mesh_t3_v20.pdf}\\
+\includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t4_v10.pdf} & \includegraphics[width=0.5\textwidth]{freemesh/Profondeurinfinie/test4/variance_ad_free_mesh_t4_v20.pdf}\\
         \end{tabular}\end{figure}\begin{figure}[h!]
           \begin{tabular}{cc}
-          \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t5_v10.pdf} & \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t5_v20.pdf}\\\\
-  \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t6_v10.pdf} & \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t6_fine_v20.pdf}\\
-    \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t6b_v10.pdf} & \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t6b_v20.pdf}\\
+          \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t5_v10.pdf} & \includegraphics[width=0.5\textwidth]{freemesh/Profondeurinfinie/test5/variance_ad_free_mesh_t5_v20.pdf}\\\\
+  \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t6_v10.pdf} & \includegraphics[width=0.5\textwidth]{freemesh/Profondeurinfinie/test6/variance_ad_free_mesh_t6_fine_v20.pdf}\\
+    \includegraphics[width=0.5\textwidth]{variance_ad_free_mesh_t6b_v10.pdf} & \includegraphics[width=0.5\textwidth]{freemesh/Profondeurinfinie/test6b/variance_ad_free_mesh_t6b_v20.pdf}\\
   \end{tabular}
       \caption{Comparaison of normalized spectrum variance for the different tests and U10 = 10m/s (left) and 20m/s (right).}
 \end{figure}
 On Figure 5, non-dimensionnal variance spectra can be observed. We can notice that as the fetch grows, the variance spectrum amplitude grows and the peak frequency declines. Moreover, the variance spectrum tends to the Pierson-Moskowitz spectrum for some cases. The exact quadruplet transfers calculation impact can be seen on the test 5, 6 and 6b, the shape of the curve changes, the spectrum is more peaked and the maximum value is higher, and it allows to observe a spectrum peak overstepping the state value predicted by Pierson-Moskowitz formula, it is an overshoot (test 6 for $U10 = 20m/s$ and test 6b).\\
 For $U10 = 10m/s$, the last fetch points (points 7, 8, 9 and 10) get really close spectra. We can conclude that from a certain fetch, the fully developed sea state is reached. Althought, for the case $U10 = 20m/s$, the spectrum continues to grow and the overshoot's presence shows that this balance state is not yet reached. Thus, TOMAWAC gives good results which can be improved with the exact GQM quadruplet transfers model.
 
-\paragraph{Finite depth TOMAWAC results}
+\subsection{Finite depth TOMAWAC results}
 In this section, finite depths are considered : 180m, 60m, 30m, 15m and 5m. In regards of Miche's criterion (1994), excepted for a 5 meters depth and $V = 20m/s$, there is no bathymetric breaking dissipation. All the tests are done for the same generation (Snyder), white capping (Westhuysen) and quadruplet transfer (DIA) models. Figure 6 shows the evolution of the non-dimensional variance along the fetch for the different tests. In order to compare with the CERC (1984) parametrization, non-dimensional variables are defined as:\\
 \begin{itemize}
 \item CERC parametrization (1984) :
@@ -193,12 +211,12 @@ For a 10m/s wind, except for $d = 5 m $ and $d = 15 m$, the results are less clo
 \caption{Comparaison of normalized Variance M0* for U10 = 10m/s (high) and 20m/s (bottom) for different depths : 5, 15, 30, 60, 180 m}
 \end{figure}
 Generally, TOMAWAC gives correct results if you adapt the model at the good application model. 
-\subsubsection{Conclusion}
-\paragraph*{Infinite Depth}
+\section{Conclusion}
+\subsection*{Infinite Depth}
 This benchmark allows to verify that TOMAWAC results for simultaneous processing of different source terms are correct. A comparison with empirical formulas validates this simulation with generally matching results. The use of the exact GQM quadruplet transfers model allows the visualization of overshoots, but,CPU time are increased, so it is not advisable to use this model for big industrial cases.
-\paragraph*{Finite depth}
+\subsection*{Finite depth}
 Even if a 1000 km fetch with only 5 m depth is hard to study in reality, TOMAWAC results get close to the empirical formula. Bottom friction effect seems to be well represented.
-\subsubsection*{Rerences}
+\section*{Rerences}
 \bibliography{b}
 ALVES J.H.G.M., BANNER M.L. (2003) : Revisiting the Pierson-Moskowitz Asymptotic Limits for Fully Developed Wind Waves. Journal of Physical Oceanography, volume 33, pp 1301 - 1323\\
  BATTJES J.A., JANSSEN J.P.F.M. (1978): Energy loss and set-up due to breaking of random waves. Proc.
@@ -236,3 +254,15 @@ YAN L. (1987): An improved wind input source term for third generation ocean wav
 8, Royal Dutch Meteor. Inst.\\
 I R YOUNG \& L A. VERHAGEN 1996, The growth of fetch-limited waves in water of finite
 depth. Part I: total energy and peak frequency. Coastal Engg. vol. 28, pp. 47-78.\\
+
+ 
+
+
+
+
+
+
+
+
+ 
+\end{document}

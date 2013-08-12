@@ -482,39 +482,47 @@
 !      
 !-----------------------------------------------------------------------
 !
+      NOUT = 666
       OPEN(NOUT,IOSTAT=IERR,FILE=LOGFILE2,STATUS='NEW',FORM='FORMATTED')
       CALL FNCT_CHECK(IERR,'OPEN '//TRIM(LOGFILE2))
       WRITE(NOUT,*) 'TOTAL NO. OF NODES                   :',MESH2%NPOIN
       WRITE(NOUT,*) 'TOTAL NO. OF ELEMENTS                :',
      &              MESH2%NELEM+MESH2%NELEM2
-      WRITE(NOUT,*) 'TOTAL NO. OF FAMILIES                :',MESH2%NFAM
-      WRITE(NOUT,*) 'LIST OF FAMILIES, FAMILY_ID, COLOR_ID :'
-      DO I=1,MESH2%NFAM
-        WRITE(NOUT,'(A,A2,I4,A1,I4)') MESH2%NAMEFAM(I),' :',
-     &               MESH2%IDFAM(I),',',MESH2%VALFAM(I)
-      ENDDO
-      allocate(myvalfam(mesh2%nfam))
-      allocate(sort(mesh2%nfam))
-      myvalfam = mesh2%valfam
-      SORT = -1
-      i = 0
-      tempmin = minval(myvalfam)
-      do while (tempmin.lt.100)
-        i = i + 1
-        sort(i) = tempmin
-        pos = minloc(myvalfam)
-        do while (myvalfam(pos(1)).eq.tempmin)
-          myvalfam(pos(1)) = 100
-          pos = minloc(myvalfam)
-        enddo
-        tempmin = minval(myvalfam)
-      enddo
-      WRITE(NOUT,*) 'number of external faces         :',
-     &              i-1
-      write(NOUT,*) 'Priority for the external faces  :',
-     &   (SORT(j),j=2,i)
-      deallocate(myvalfam)
-      deallocate(sort)
+      IF(MESH2%NFAM.NE.0) THEN
+        WRITE(NOUT,*)'TOTAL NO. OF FAMILIES                :',MESH2%NFAM
+        WRITE(NOUT,*) 'LIST OF FAMILIES, FAMILY_ID, COLOR_ID :'
+        DO I=1,MESH2%NFAM
+          WRITE(NOUT,'(A,A2,I4,A1,I4)') MESH2%NAMEFAM(I),' :',
+     &                 MESH2%IDFAM(I),',',MESH2%VALFAM(I)
+        ENDDO
+        ALLOCATE(MYVALFAM(MESH2%NFAM))
+        ALLOCATE(SORT(MESH2%NFAM))
+        MYVALFAM = MESH2%VALFAM
+        SORT = -1
+        I = 0
+        TEMPMIN = MINVAL(MYVALFAM)
+        DO WHILE (TEMPMIN.LT.100)
+          I = I + 1
+          SORT(I) = TEMPMIN
+          POS = MINLOC(MYVALFAM)
+          DO WHILE (MYVALFAM(POS(1)).EQ.TEMPMIN)
+            MYVALFAM(POS(1)) = 100
+            POS = MINLOC(MYVALFAM)
+          ENDDO
+          TEMPMIN = MINVAL(MYVALFAM)
+        ENDDO
+        WRITE(NOUT,*) 'number of external faces         :',
+     &                i-1
+        WRITE(NOUT,*) 'Priority for the external faces  :',
+     &     (SORT(j),j=2,i)
+        DEALLOCATE(MYVALFAM)
+        DEALLOCATE(SORT)
+      ELSE
+        WRITE(NOUT,*) 'TOTAL NO. OF FAMILIES                :  0'
+        WRITE(NOUT,*) 'LIST OF FAMILIES, FAMILY_ID, COLOR_ID :'
+        WRITE(NOUT,*) 'number of external faces         :'
+        WRITE(NOUT,*) 'Priority for the external faces  :'
+      ENDIF
 
       CLOSE(NOUT,IOSTAT=IERR)
       CALL FNCT_CHECK(IERR,'CLOSE '//TRIM(LOGFILE2))
