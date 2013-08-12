@@ -1,4 +1,4 @@
-!! <H2>M_DIC_CHECKS</h2>
+!!m <H2>M_DIC_CHECKS</h2>
 !! @author Susanne Spohr
 !! @version 1.4 vom 02/03/04, Quellcode: mod_m_dic_checks.f90
 !! <HR>
@@ -2006,7 +2006,7 @@ CONTAINS
     !! Fehlerkennung
     INTEGER    :: ierr=0
     !
-    INTEGER    :: klam_auf , &     ! \
+    INTEGER    :: klam_auf , &     ! /
                   klam_zu  , &     !   Positionsnummern der einzelnen 
                   punkt_1  , &     !   signifikanten Zeichen im Check-String
                   punkt_2          ! /
