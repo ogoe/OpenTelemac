@@ -1,0 +1,83 @@
+/
+/  HP C3700 : 145 s  5.6 JMH 
+/  HP C3700 : 153 s  5.7 JMH 13/02/2007 (Nag : 378 s,Dell :103 s)
+/  HP C3700 : 162 s  5.8 JMH 19/12/2007 (Nag : 414 s,Dell : 90 s)
+/  HP C3700 : 150 s  5.9 JMH 17/10/2008 (Nag : 376 s,Dell : 68 s)
+/  HP C3700 : ??? s  6.0 JMH 04/12/2009 (Nag : 371 s,Intel: 52 s)
+/  HP C3700 : 153 s  6.1 JMH 21/01/2011 (Nag : ??? s,Intel: ?? s)
+/  HP C3700 : 129 s  6.2 JMH 29/05/2012 (Nag : ??? s,Intel: ?? s)
+/
+/----------------------------------------------------------------------
+/                        CALCUL TELEMAC-3D
+/----------------------------------------------------------------------
+/                      ENVIRONNEMENT INFORMATIQUE
+/----------------------------------------------------------------------
+/
+FICHIER FORTRAN                    : t3d_vent.f
+FICHIER DES CONDITIONS AUX LIMITES : geo_vent.cli
+FICHIER DE GEOMETRIE               : geo_vent.slf
+FICHIER DES RESULTATS 2D           : r2d_vent.slf
+FICHIER DES RESULTATS 3D           : r3d_vent.slf
+FICHIER DE REFERENCE               : f3d_vent.slf
+VALIDATION : OUI
+/
+/----------------------------------------------------------------------
+/                        OPTIONS GENERALES                              
+/----------------------------------------------------------------------
+/   
+CONDITIONS INITIALES : 'COTE NULLE'
+TRANSFORMATION DU MAILLAGE : 2
+/                                                                    
+TITRE : 'TEST CANAL Soumis a un vent'
+/               
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D              : 'U,V,H,B'
+VARIABLES POUR LES SORTIES GRAPHIQUES 3D              : 'Z,U,V,W,NUZ'
+PAS DE TEMPS                                          : 10.
+NOMBRE DE PAS DE TEMPS                                : 2000
+PERIODE POUR LES SORTIES GRAPHIQUES                   : 2000
+PERIODE POUR LES SORTIES LISTING                      : 100
+/
+NOMBRE DE PLANS HORIZONTAUX                           : 15
+/
+/----------------------------------------------------------------------
+/                       OPTIONS NUMERIQUES
+/----------------------------------------------------------------------
+/
+BANCS DECOUVRANTS : NON
+/
+BILAN DE MASSE 						  : OUI
+INFORMATION SUR LE BILAN DE MASSE A CHAQUE SORTIE LISTING : OUI
+/OPTION 6 : LONGUEUR DE MELANGE 'TSANIS'
+MODELE DE TURBULENCE VERTICAL : 2
+MODELE DE LONGUEUR DE MELANGE : 6
+/
+COEFFICIENT DE DIFFUSION HORIZONTAL DES VITESSES          : 0.1
+COEFFICIENT DE DIFFUSION VERTICAL DES VITESSES            : 1.E-6
+SCHEMA POUR LA DIFFUSION DES VITESSES 			  : 1
+/
+SCHEMA POUR LA CONVECTION DES VITESSES                    : 5
+/
+PRECISION POUR LA DIFFUSION DES VITESSES                  : 1.E-7
+PRECISION POUR LA VITESSE VERTICALE                       : 1.E-6
+IMPLICITATION POUR LA HAUTEUR                             : 0.6
+IMPLICITATION POUR LES VITESSES                           : 0.6
+MASS-LUMPING POUR LA HAUTEUR   =1.
+MASS-LUMPING POUR LES VITESSES =1.
+/
+/----------------------------------------------------------------------
+/             VENT (10 m/s  direction OUEST)
+/----------------------------------------------------------------------
+/
+VENT                                                     : OUI
+/ COEFFICIENT REFAIT DANS BORD3D
+COEFFICIENT D'INFLUENCE DU VENT                          : 1.625E-6
+VITESSE DU VENT SUIVANT X                                : 10.
+VITESSE DU VENT SUIVANT Y                                :  0.
+/
+/----------------------------------------------------------------------
+/
+PRECONDITIONNEMENT POUR LA PROPAGATION : 2
+SOLVEUR POUR LA PROPAGATION : 1
+PRECISION POUR LA PROPAGATION : 1.E-8
+/
+&FIN                                                              

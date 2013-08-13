@@ -1,0 +1,103 @@
+/DEBUGGER = 1
+/----------------------------------------------------------------------
+/
+/           FICHIER DE DECLARATION DES MOTS CLES DU CODE
+/
+/                            TELEMAC
+/----------------------------------------------------------------------
+/                    ENVIRONNEMENT INFORMATIQUE
+/----------------------------------------------------------------------
+/ 
+/PROCESSEURS PARALLELES = 8
+/
+COUPLAGE AVEC : 'TOMAWAC,SISYPHE'
+/
+COURANTS DE HOULE = OUI
+FICHIER DES PARAMETRES DE TOMAWAC : 'tom_littoral.cas'
+/
+FICHIER DES PARAMETRES DE SISYPHE : 'sis_littoral.cas'
+/
+
+FICHIER FORTRAN                    = 't2d_littoral.f' 
+FICHIER DES CONDITIONS AUX LIMITES = 'geo_t2d_littoral.cli'
+/ lecture fond + maillage
+FICHIER DE GEOMETRIE               = 'geo_littoral.slf'
+FICHIER DES RESULTATS              = 'res_t2d_littoral.slf'
+FICHIER DE REFERENCE   		   = 'ref_t2d_littoral.slf'
+VALIDATION = OUI
+/----------------------------------------------------------------------
+/ CONDITIONS INITIALES
+/----------------------------------------------------------------------
+CONDITIONS INITIALES = 'COTE NULLE'
+/
+/REMISE A ZERO DU TEMPS = OUI
+/SUITE DE CALCUL = OUI
+/FICHIER DU CALCUL PRECEDENT = '../TELEMAC2/telemac2.r2d'
+/----------------------------------------------------------------------
+/                         OPTIONS GENERALES
+/----------------------------------------------------------------------
+/  PRISE EN COMPTE DES TERMES DE FORCAGES DE  TOMAWAC
+/----------------------------------------------------------------------
+/NUMERO DE L'ENREGISTREMENT DANS LE FICHIER DE HOULE =  5
+/----------------------------------------------------------------------
+/
+TITRE = 'LITTORAL'
+/ 
+VARIABLES POUR LES SORTIES GRAPHIQUES = H,S,B,U,V
+/NOMS DES VARIABLES CLANDESTINES = 
+/'DIRECTION MOY   DEG             ';
+/'HAUTEUR HM0     M               ';
+/'PERIODE PIC TPR5S               '
+/
+PAS DE TEMPS           = 10.
+NOMBRE DE PAS DE TEMPS = 100
+PERIODE POUR LES SORTIES GRAPHIQUES = 100
+PERIODE DE SORTIE LISTING =10
+/----------------------------------------------------------------------
+INFORMATIONS SUR LE SOLVEUR           = OUI
+DIFFUSION DES VITESSES                = OUI
+MODELE DE TURBULENCE                  = 4
+COEFFICIENT DE DIFFUSION DES VITESSES = 1.e-6
+CORIOLIS                              = NON
+/
+/------------------------------------------------
+/                      CONDITIONS AUX LIMITES
+/------------------------------------------------
+/
+LISSAGES DU FOND                    = 0
+LOI DE FROTTEMENT SUR LE FOND       = 5
+COEFFICIENT DE FROTTEMENT           = 0.05
+/
+COTES IMPOSEES                      = 0.
+/-------------------------------------------
+/          OPTIONS NUMERIQUES
+/-------------------------------------------
+/
+DISCRETISATIONS EN ESPACE = 12;11
+/
+BANCS DECOUVRANTS = NON
+OPTION DE TRAITEMENT DES BANCS DECOUVRANTS = 1
+CLIPPING DE H    = FAUX
+/
+BILAN DE MASSE = VRAI 
+/
+PRECISION DU SOLVEUR                 = 1e-05
+MAXIMUM D'ITERATIONS POUR LE SOLVEUR = 100
+/
+FORME DE LA CONVECTION                            = 1;5
+NOMBRE DE SOUS-ITERATIONS POUR LES NON-LINEARITES = 1
+/
+PROPAGATION                   = VRAI 
+IMPLICITATION POUR LA HAUTEUR = 0.6
+IMPLICITATION POUR LA VITESSE = 0.6
+/
+PRECONDITIONNEMENT = 2
+/
+SOLVEUR                     = 7
+OPTION DU SOLVEUR           = 4
+MASS-LUMPING SUR H          = 1.
+MASS-LUMPING SUR LA VITESSE = 0.9
+/
+STOCKAGE DES MATRICES       = 3
+/
+&FIN

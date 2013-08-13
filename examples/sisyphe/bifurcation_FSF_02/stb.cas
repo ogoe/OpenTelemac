@@ -1,0 +1,23 @@
+/
+/**********************************************************************/
+/                                                                      /
+/           FICHIER DE DECLARATION DES MOTS CLES DU CODE               /
+/                          STBTEL  V5.5                                /
+/                                                                      /
+/                  Traitement d'un maillage Selafin                    /
+/                      cutting an element in 4                         /
+/  SOGREAH                                                26/01/1999   /
+/**********************************************************************/
+/
+/ > stbtel stb.cas
+/
+FICHIER UNIVERSEL                           : './geo_FSF_02.slf'
+FICHIER DE GEOMETRIE POUR TELEMAC           : './geo_FSF_02_times_4.slf'
+FICHIER DES CONDITIONS AUX LIMITES          : './geo_times_4.cli'
+/ attenzione -> dopo devi modificare il nuovo file "cli"!
+/
+MAILLEUR                                    : SELAFIN
+/
+DECOUPAGE DES TRIANGLES EN QUATRE            : OUI
+/
+&FIN

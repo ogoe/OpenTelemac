@@ -1,0 +1,127 @@
+#------------------------------makefile.wnt----------------------------
+#     Système TELEMAC Version 5.8     R. BALLESTER - ADMIn Informatique
+#
+# Makefile de POSTEL3D pour WindowsNT (avec Intel).
+#
+# ATTENTION : doit etre lance dans le repertoire adequat :
+#                   POSTEL3D*/.../sources.
+#
+# Modes supportes :
+#        % maktel 
+#        % maktel  [all] [install] [menage]
+#        % maktel  libdebug
+#        % maktel  libprofile
+#----------------------------------------------------Aout-1999-DeltaCAD
+#
+#--- Definitions pour SYSTEME TELEMAC
+!include <$(SYSTELCFG)\cfgmak.mak>
+VERSION    = V6P3
+
+
+
+DIRINC = $(PROJECT)\builds\$(dirlib)\lib
+
+#
+FCO       = $(FC_OPT_COMPIL)
+F90       = $(FC_NAM)
+F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) \
+                   $(FC_OPT_INCLUDE)$(DIRINC)
+
+LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
+#
+# ----- Règles de compilation Fortran
+#
+.f.o:
+    $(F90) $(F90_PROJ) $<
+#
+#----- Paramétrage Telemac
+#
+NOM_GENERIQUE = postel3d
+MODE          =
+LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
+DEST          = $(PROJECT)\builds\$(DIRLIB)
+
+EXEDEF	  = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
+LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\damo$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\parallel$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
+                $(LK_LIB_SPECIAL) $(LIBS_MPI)
+
+#------------------------ Liste des fichiers
+#
+#------- Sources Fortran
+
+SRCS= \
+declarations_postel3d.f \
+coupeh.f                 exten1.f                 exten2.f          lecdon_postel3d.f        postel3d.f        \
+coupev.f                 lecr3d.f                 pre2dh.f          \
+pre2dv.f                 ecrdeb.f                 nomtra.f          \
+homere_postel3d.f        point_postel3d.f
+
+#
+#------- Objets
+#
+OBJS = $(SRCS:.f=.o)
+
+#
+# ------------------------ Cibles
+#
+#--- La librairie (non installée)
+ALL: $(MODS) $(LIBRARY) $(EXEDEF)
+
+exedef:         $(EXEDEF)
+
+"$(LIBRARY)" : $(OBJS)
+	@echo  -
+	@echo ---------------------Création de la librairie.
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
+
+"$(EXEDEF)":	$(OBJS)
+	@echo  -
+	@echo ---------------------Link executable par defaut
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS) $(LKLIB)
+	echo "Termine."
+
+#--- Suppression des ".obj" (existants) + ".lib"
+menage:  $(SRCS)
+	@echo  -
+	@echo ---------------------Destruction de tous les objets.
+	!@if EXIST $(**B).o del /q  $(**B).o
+	@echo ---------------------Destruction des librairies
+	!@if EXIST *.lib del /q  *.lib
+	@echo ---------------------Destruction des executables
+	!@if EXIST *.exe del /q  *.exe
+
+#--- Installation de la librairie
+install: $(LIBRARY) $(EXEDEF)
+	@echo  -
+	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+	copy $(LIBRARY) $(DEST)\lib\$(LIBRARY)
+	@echo ---------------------Installe $(EXEDEF) dans $(DEST).
+	copy $(EXEDEF)  $(DEST)\bin\$(EXEDEF)
+
+#--- Librairie en DEBUG
+libdebug:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.gfo "FCO=$(FC_OPT_DEBUG)" LKO="$(LK_OPT_DEBUG)" "MODE=d" 
+	nmake /f makefile.gfo install  "FCO=$(FC_OPT_DEBUG)" LKO="$(LK_OPT_DEBUG)" "MODE=d" 
+
+#--- Librairie en PROFILE
+libprofile:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)" LKO="$(LK_OPT_OPT_PROFILE)" "MODE=p" 
+	nmake /f makefile.gfo install  "FCO=$(FC_OPT_PROFILE)" LKO="$(LK_OPT_OPT_PROFILE)" "MODE=p"
+
+#------- Modules
+#
+MODS = declarations_postel3d.o
+
+declarations_postel3d.o:
+	$(FC) $(FFLAGS) declarations_postel3d.f  
+	if EXIST $(DEST)\lib\declarations_postel3d.mod del /f $(DEST)\lib\declarations_postel3d.mod
+  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+	move declarations_postel3d.mod $(DEST)\lib

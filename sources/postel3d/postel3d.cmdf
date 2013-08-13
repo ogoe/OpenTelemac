@@ -1,0 +1,96 @@
+[general]
+path: <root>|sources|postel3d
+module: postel3d
+liborder: special parallel damocles bief postel3d
+version: v6p3
+name: HOMERE_POSTEL3D
+
+[bief]
+path: <root>|sources|utils|bief
+files: bief_def.f
+  bief.f
+  declarations_telemac.f
+  read_submit.f
+  lit.f
+  ov.f
+  bief_nbmpts.f
+  bief_nbpts.f
+  bief_allvec.f
+  bief_allvec_in_block.f
+  dimens.f
+  cpstvc.f
+  bief_nbsegel.f
+  segbor.f
+  cpikle3.f
+  bief_nbpel.f
+  bief_dim2_ext.f
+  bief_nbseg.f
+  bief_dim1_ext.f
+  bief_allmat.f
+  bief_ininds.f
+  cpikle2.f
+  readgeo1.f
+  corrxy.f
+  readgeo3.f
+  readgeo2.f
+  mxptel31.f
+  mxptel.f
+  bief_nbfel.f
+  ielbor.f
+  ov_2.f
+  almesh.f
+  allblo.f
+  read_config.f
+  bief_init.f
+  ecri2.f
+  m_med.F
+  bief_open_files.f
+  bief_close_files.f
+
+[damocles]
+path: <root>|sources|utils|damocles
+files: preval.f
+  next.f
+  intlu.f
+  longlu.f
+  cmd.f
+  precar.f
+  carlu.f
+  majus.f
+  loglu.f
+  classe.f
+  aidelu.f
+  dico.f
+  realu.f
+  prev.f
+  influ.f
+  damoc.f
+  damocle.f
+
+[parallel]
+path: <root>|sources|utils|parallel
+files: declarations_parallel.F
+  p_imax.F
+  p_init.F
+  p_exit.F
+
+[postel3d]
+path: <root>|sources|postel3d
+files: declarations_postel3d.f
+  lecdon_postel3d.f
+  point_postel3d.f
+  coupeh.f
+  lecr3d.f
+  exten2.f
+  exten1.f
+  ecrdeb.f
+  coupev.f
+  pre2dv.f
+  pre2dh.f
+  postel3d.f
+  homere_postel3d.f
+
+[special]
+path: <root>|sources|utils|special
+files: plante.f
+  extens.f

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="hydraulic_jump">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <meta xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="hydraulic_jump" author="telemac2d" contact="www.opentelemac.org" />
+   </meta>
+   <meta xref="vect">
+      <look colour="jet.xml" />
+   </meta>
+   <meta xref="line">
+      <look colour="k" />
+   </meta>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="1" rank="5"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_hydraulic_jump_v1p0.cas"
+       title="hydraulic_jump scalar mode"
+   /> 
+   <action xref="2" rank="5"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_hydraulic_jump_v2p0.cas"
+       title="hydraulic_jump scalar mode"
+   />
+<!-- Error in the .f file not handling parallelism
+   <action xref="3"
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_hydraulic_jump_v1p0.cas"
+       title="hydraulic_jump parallel mode"
+   /> 
+   <action xref="4"
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_hydraulic_jump_v2p0.cas"
+       title="hydraulic_jump parallel mode"
+   />   
+-->
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+  <plot1d xref="Profiles" type="v-section" config="together" size="[12;7]" > 
+      <layer vars="free surface:line" extract="[4;1][18;1]" target="1:T2DRES" time="[1]"  /> 
+      <layer vars="free surface:line" extract="[4;1][18;1]" target="1:T2DRES" time="[2]"  /> 
+      <layer vars="free surface:line" extract="[4;1][18;1]" target="1:T2DRES" time="[3]"  /> 
+      <layer vars="free surface:line" extract="[4;1][18;1]" target="1:T2DRES" time="[4]"  /> 
+	  <layer vars="free surface:line" extract="[4;1][18;1]" target="1:T2DRES" time="[5]"  /> 
+	  <layer vars="free surface:line;bottom:line" extract="[4;1][18;1]" target="1:T2DRES" time="[-1]"  /> 
+   </plot1d>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="[20;5]" > 
+      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="Bathy" size="[20;5]" > 
+      <layer vars="bottom:map" target="1:T2DRES" config="oneofall" /> 
+   </plot2d> 
+    <plot2d xref="FreeSurfacet0" size="[20;5]" > 
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[1]" /> 
+   </plot2d> 
+       <plot2d xref="FreeSurfacetf" size="[20;5]" > 
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+
+</validation>
