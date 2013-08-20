@@ -281,6 +281,9 @@
             A=MAS(I)/MAX(DENOM,1.D-12)
             B=DT+A*(HSTART(I)-H(I))
             IF(B.GT.0.D0) DTMAX = MIN(DTMAX,A*HSTART(I)*DT/B)
+!           THIS WOULD BE SIMPLER (TO BE PUT IN VERSION 6.4)
+!           B=DT*DENOM+MAS(I)*(HSTART(I)-H(I))
+!           IF(B.GT.0.D0) DTMAX=MIN(DTMAX,MAS(I)*HSTART(I)*DT/B)
           ENDDO
         ELSEIF(YASMH) THEN
           DO I = 1,NPOIN
@@ -288,6 +291,9 @@
             A=MAS(I)/MAX(DENOM,1.D-12)
             B=DT+A*(HSTART(I)-H(I))
             IF(B.GT.0.D0) DTMAX = MIN(DTMAX,A*HSTART(I)*DT/B)
+!           THIS WOULD BE SIMPLER (TO BE PUT IN VERSION 6.4)
+!           B=DT*DENOM+MAS(I)*(HSTART(I)-H(I))
+!           IF(B.GT.0.D0) DTMAX=MIN(DTMAX,MAS(I)*HSTART(I)*DT/B)
           ENDDO
         ELSEIF(RAIN) THEN
           DO I = 1,NPOIN
@@ -295,6 +301,9 @@
             A=MAS(I)/MAX(DENOM,1.D-12)
             B=DT+A*(HSTART(I)-H(I))
             IF(B.GT.0.D0) DTMAX = MIN(DTMAX,A*HSTART(I)*DT/B)
+!           THIS WOULD BE SIMPLER (TO BE PUT IN VERSION 6.4)
+!           B=DT*DENOM+MAS(I)*(HSTART(I)-H(I))
+!           IF(B.GT.0.D0) DTMAX=MIN(DTMAX,MAS(I)*HSTART(I)*DT/B)
           ENDDO
         ELSE
           DO I = 1,NPOIN
@@ -302,6 +311,9 @@
             A=MAS(I)/MAX(DENOM,1.D-12)
             B=DT+A*(HSTART(I)-H(I))
             IF(B.GT.0.D0) DTMAX = MIN(DTMAX,A*HSTART(I)*DT/B)
+!           THIS WOULD BE SIMPLER (TO BE PUT IN VERSION 6.4)
+!           B=DT*DENOM+MAS(I)*(HSTART(I)-H(I))
+!           IF(B.GT.0.D0) DTMAX=MIN(DTMAX,MAS(I)*HSTART(I)*DT/B)
           ENDDO  
         ENDIF
 !
