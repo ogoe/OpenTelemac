@@ -38,10 +38,12 @@
      &                                 MESH,T13,T14,IELMH_SIS,NELEM,
      &                                 NLAYER,E,ZR,HN,FDM,LEOPR,
      &                                 PTINIG,LT,MARDAT,MARTIM,XKV,XMVS
+#if defined (HAVE_DREDGESIM)
       USE P_SISYPHE_UI, ONLY : INIT_AND_SETUP_DS,CLEAR_SISYDREDGE
       USE P_DREDGESIM_UI, ONLY : STOP_DREDGESIM,CLEAR_DREDGESIM
       USE P_DREDGESIM_UI, ONLY : RUN_DREDGESIM
       USE M_DREDGESIM_DATA, ONLY: NODE_SEDIMENT_FRACTION
+#endif
 
 !
       IMPLICIT NONE
@@ -68,12 +70,10 @@
      &          SAVE,TARGET :: TDS_NODE_SEDIMENT_FRACTION
       DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE, 
      &          SAVE,TARGET :: TDS_HN
-      
-
-
 !
 !-----------------------------------------------------------------------
 !
+#if defined (HAVE_DREDGESIM)
 
       IF(OPTION.EQ.1) THEN
 !
@@ -226,6 +226,15 @@
         STOP        
 !
       ENDIF
+#else
+      IF(LNG.EQ.1) WRITE(LU,*) 'DREDESIM NON INSTALLE'//
+     &                         ' COMPILE AVEC -DHAVE_DREDGESIM'
+      IF(LNG.EQ.2) WRITE(LU,*) 'DREDGESIM NOT INSTALLED'//
+     &                         ' COMPILE WITH -DHAVE_DREDGESIM'
+      CALL PLANTE(1)
+      STOP        
+     
+#endif
 !
 !-----------------------------------------------------------------------
 !

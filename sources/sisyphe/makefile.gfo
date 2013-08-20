@@ -87,7 +87,7 @@ ride_vr.f\
 bedload_hunz_meyer.f       condim_susp.f              noerod.f\
 suspension_evol.f\
 condis_sisyphe.f           nomvar_sisyphe.f           vitchu_sisyphe.f\
-dredgesim_interface.f\
+dredgesim_interface.F\
 bedload_interact.f         conlit.f                   point_sisyphe.f  \
 corstr_sisyphe.f           predes.f                         maxslope.f \
 init_transport.f          init_mixte.f   init_compo_coh.f      init_zero.f\

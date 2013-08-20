@@ -51,8 +51,8 @@ files: bief_def.f
   declarations_telemac.f
   allblo.f
   ov.f
-  bief_nbmpts.f
   bief_nbpts.f
+  bief_nbmpts.f
   bief_allvec.f
   bief_nbpel.f
   bief_dim2_ext.f
@@ -65,18 +65,18 @@ files: bief_def.f
   cpstvc.f
   bief_nbsegel.f
   segbor.f
-  cpikle3.f
-  bief_ininds.f
-  cpikle2.f
   lit.f
   readgeo1.f
+  bief_ininds.f
+  ielbor.f
   corrxy.f
   readgeo3.f
   readgeo2.f
+  cpikle3.f
   mxptel31.f
   mxptel.f
   bief_nbfel.f
-  ielbor.f
+  cpikle2.f
   ov_2.f
   almesh.f
   read_submit.f
@@ -439,13 +439,13 @@ files: majus.f
   cmd.f
   precar.f
   carlu.f
+  influ.f
+  dico.f
   loglu.f
   classe.f
   aidelu.f
-  dico.f
-  realu.f
   prev.f
-  influ.f
+  realu.f
   damoc.f
   damocle.f
 

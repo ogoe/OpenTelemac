@@ -14,11 +14,11 @@ files: bief_def.f
   lit.f
   ecri2.f
   readgeo1.f
-  voisin.f
   corrxy.f
   readgeo3.f
   readgeo2.f
   time_in_seconds.f
+  voisin.f
   bief_eof.f
   crosfr.f
   fasp.f
@@ -31,18 +31,18 @@ path: <root>|sources|utils|damocles
 files: longlu.f
   preval.f
   cmd.f
+  majus.f
   precar.f
   next.f
   carlu.f
-  majus.f
+  influ.f
+  dico.f
   loglu.f
   classe.f
   aidelu.f
   intlu.f
-  dico.f
-  realu.f
   prev.f
-  influ.f
+  realu.f
   damoc.f
   damocles.f
 
