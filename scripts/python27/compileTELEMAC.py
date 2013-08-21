@@ -365,7 +365,10 @@ def createExeFiles(ename,ecfg,eprog,bypass):
       if cfg['COMPILER']['REBUILD'] > 2 or cfg['COMPILER']['REBUILD'] == 0:
          refresh = False
          for o in ObjFiles.split(): refresh = refresh or ( isNewer(o,ExeFile) == 0 )
-         for l in LibFiles.split(): refresh = refresh or ( isNewer(l,ExeFile) == 0 )
+         for l in LibFiles.split(): 
+            # Only checks the telemac libraries
+            if l.find(cfg['root']+sep+'builds'+sep+ecfg+sep+'lib') <> -1:
+               refresh = refresh or ( isNewer(l,ExeFile) == 0 )
          if refresh: remove(ExeFile)
    if path.exists(ExeFile): return True
    
@@ -604,7 +607,7 @@ if __name__ == "__main__":
                   srcName = cmdfFiles[mod][item][lib]['path']+sep+file
                   p = cmdfFiles[mod][item][lib]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgname+sep+'lib')
                   createDirectories(p)
-                  objName = p + sep + path.splitext(file)[0] + cfg['SYSTEM']['sfx_obj']
+                  objName = p + sep + path.splitext(path.basename(file))[0] + cfg['SYSTEM']['sfx_obj']
                   try:
                      if (isNewer(srcName,objName) == 1) and rebuild < 2:
                         HOMERES[item]['tag'].append((path.splitext(file)[0],lib))
