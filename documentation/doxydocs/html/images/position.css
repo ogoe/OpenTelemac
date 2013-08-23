@@ -1,0 +1,474 @@
+/**
+ * @author The otm-website Team ( AWE & SBO )
+ * @copyright Copyright (C) 2012 HR Wallingford. All rights reserved.
+ * @license GNU/GPL, see LICENSE.php
+ *
+ * Defines the following IDs:
+ * - #all, #header, #back
+ * - #contentarea, #contentarea2
+ * - #wrapper, #wrapper2
+ * - #main
+ * - #right
+ *
+ * Defines the following CLASSes:
+ * -
+ * -
+ * -
+ * -
+ * -
+ * -
+ */
+
+* { margin: 0; }
+body
+{
+   font-size: 100%;
+   padding: 0px;
+   text-align: center;
+   position:relative;
+}
+
+/** \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+ *   id = ALL (- PAGE -)
+ *   Includes ALL except FOOTER
+ */
+#all
+{
+   margin: 0 auto;
+   max-width:1000px; /* AWE: Maximum width for the content of all pages. Was 1050px; originally
+                        You can fit this to the header picture (or fit the header picture to this) */
+   padding: 0px;
+   text-align: left;
+}
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *   id = BACK (- ? -)
+ */
+#back
+{ /* ...here re-amphisising what has been defined in #all already ... */
+   margin: 0;
+   padding:0px;
+}
+/** ///////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+/** \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+ *   LOGO HEADER
+ *   Graphic at the top of all pages
+ *>index.php:
+ *   <div class="logoheader">
+ *      <h1 id="logo">
+ *         if ($logo): <img src="$this->baseurl/htmlspecialchars($logo)" alt="htmlspecialchars($templateparams->get('sitetitle'))" />
+ *         if (!$logo ): htmlspecialchars($templateparams->get('sitetitle'));
+ *         <span class="header1">htmlspecialchars($templateparams->get('sitedescription'))></span>
+ *      </h1>
+ *   </div>
+ *>parameters:
+ *   - $logo
+ *>methods:
+ *   - $templateparams->get('sitetitle')
+ *   - $templateparams->get('sitedescription')
+ */
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *   id = HEADER (- TOP -)
+ */
+#header
+{
+   display:block !important;
+   position:relative;
+   padding:0px 0 0 0;
+   overflow:hidden;
+}
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *   class = LOGOHEADER (- TOP -)
+ */
+.logoheader
+{
+   margin:0; padding:0;
+   text-align:left;
+   font-weight:normal;
+   line-height:1.5em;
+   min-height:305px;      /* This defines the height of the header picture */ /* AWE: Was 310 when header picture height was 260 (now 255) */
+}
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *   <h1> id = LOGO (- TOP -)
+ *   Includes the website title (or the logo if defined by the user -- but not used here)
+ */
+#logo
+{
+   display:block;
+   margin-top:100px;    /* now obsolute / otherwise this to follow bigger-smaller: 1.4em; */ /*AWE: was 110, reduced to better fit smaller header */
+   margin-left:10px;    /* position:absolute; */
+   width:625px;         /* now that you are in absolute, you should not need this one */
+   padding:20px 20px 20px 10px;      /* top; right; bottom; left; */
+   /* font-weight:normal; */
+   font-size:40px;      /* absolute so it stays with the picture an does not move with bigger/smaller */
+   line-height:35px;    /* absolute so it stays with the picture an does not move with bigger/smaller */
+}
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+#logo img { display: block; }
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *   <span> class = HEADER1 (- BELOW WEBSITE TITLE OR LOGO -)
+ */
+#logo span { padding-left:2px }
+#logo span.header1
+{
+   top:0em;
+   display:block;
+   font-size:0.4em;     /* font-size 40% of the <h1> it is in. */
+   line-height:0.8em
+}
+/** ///////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+/** \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+ *   id = CONTENT AREA (- BELOW THE HEADER -)
+ *   Include the WRAPPERS and the RIGHT column
+ *   - WRAPPER is 72%
+ *   - RIGHT is 20%
+ */
+#contentarea,
+#contentarea2
+{
+   position:relative;
+   overflow:hidden;
+   padding:0px 20px !important;         /* top; right; bottom; left; */
+   margin:0;
+}
+/** ///////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+/** \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+ *   id = WRAPPERS (- MIDDLE TOP -)
+ *   Include MAIN */
+#wrapper
+{
+   width:730px;     /* this has an influence on the width of the middle/main
+                      part of the page. Was 53% , then 78%*/
+   position:relative;
+   float:left;     /* means that if width too big, "right" column will be
+                      moved down */
+}
+#wrapper2
+{
+   width:730px;      /* this has an influence on the width of the middle/main
+                      part of the page. Was 72% */
+   position:relative;
+   float:left;     /* means that if width too big, "right" column will be
+                      moved down */
+   padding-bottom:20px
+}
+#wrapper2 .item-page
+{
+    max-width:730px /*was 660*/
+}
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *   id = MAIN (- MIDDLE TOP -)
+ *   Main content. Includes TOP and is next to RIGHT and LEFT */
+#main
+{
+    position: relative;
+    padding: 10px 10px 20px 0px;        /* top; right; bottom; left; */ /*AWE: was 10px 0px 20px 0px*/
+    min-height:600px; /* this has an influence on the height of the middle/main
+                         part of the page AWE: was 420*/ 
+}
+/** ///////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+/** \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+ *   id = RIGHT (- RIGHT TOP, RIGHT MIDDLE, RIGHT BOTTOM -)
+ */
+#right
+{
+   position:relative;
+   float:right; /* AWE was left */
+   width: 210px; /* AWE was 20% */
+   margin:10px 0px 10px 2%;      /* top; right; bottom; left; */
+   padding:0px 0px 5px 0px;      /* top; right; bottom; left; */
+}
+/** ///////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+/** \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+ *   id = FOOTER-OUTER (- BOTTOM -)
+ *   Includes FOOTER-INNER (which includes BOTTOM and BOXes) and FOOTER-SUB
+ *
+ *>index.php:
+ *<div id="footer-outer">
+ *   <div id="footer-inner">
+ *      <div id="bottom">
+ *         <div class="box box1"> <jdoc-:include type="modules" name="position-9" style="otmDivision" headerlevel="3" /></div>
+ *         <div class="box box2"> <jdoc-:include type="modules" name="position-10" style="otmDivision" headerlevel="3" /></div>
+ *         <div class="box box3"> <jdoc-:include type="modules" name="position-11" style="otmDivision" headerlevel="3" /></div>
+ *      </div>
+ *   </div>
+ *   <div id="footer-sub">
+ *      <div id="footer">
+ *      <jdoc-:include type="modules" name="position-14" />
+ *      <p><'TPL_OTM_POWERED_BY' = "opentelemac.org">open TELEMAC-MASCARET</p>
+ *   </div>
+ *</div>
+ *>methods:
+ *   - otmDivision
+ */
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *   id = FOOTER-INNER (- BOTTOM -)
+ */
+#footer-inner
+{
+   max-width:1000px;     /* in phase with the size of the HEADER picture */
+   margin:0 auto;
+   font-size:0.8em;
+   padding:0px 0px 0px 0px;  /* AWE: was 10px 15px 15px 10px; */
+}
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *   id = BOTTOM (- BOTTOM -)
+ *   Includes classes BOXes */
+#bottom { overflow:hidden; }
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *   class = BOX, BOX1, BOX2, BOX3 (- BOTTOM -)
+ *   Within id=BOTTOM  */
+.box
+{
+   /*width:27%; AWE: don't think this is needed */
+   float:left;
+   margin-right:10px;
+   /*min-height:100px*/
+ 
+}
+.box1 { width:100% }      /* "position-9" AWE: was 35% */
+/*.box2 { width:32% }      /* "position-10" AWE: don't think this is needed any more */
+/*.box3 { float:right }    /* "position-11" AWE: don't think this is needed any more */ 
+
+/* *** AWE: added to make the images in the footer display correctly  *** */
+#ahgalleryOTconsortium ul.hover_block0, #ahgalleryOTconsortium ul.hover_block1, #ahgalleryOTconsortium ul.hover_block2 {
+	height: 62px;
+}
+
+/** ///////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+img { border: 0 none; }
+
+
+.unseen,
+.hidelabeltxt
+{
+    display: inline;
+    height: 0px;
+    left: -3000px;
+    position: absolute;
+    top: -2000px;
+    width: 0px;
+}
+/* ++++++++++++++  nav after content  ++++++++++++++ */
+.left
+{
+        padding-top:0px;
+        float:right;
+        margin:10px 0px 10px 0%;
+        width: 22%;
+        position:relative;
+
+}
+
+/* ++++++++++++++  nav before content  ++++++++++++++ */
+.left1
+{
+    padding:0px 0 0 0px;
+    float: left;
+    margin:10px 3% 10px 0px;
+    width: 21%;
+    position:relative
+}
+.leftbigger
+{
+     width:25%
+}
+
+/* ###################### header ###################### */
+.skiplinks,
+.skiplinks li
+{
+    display: inline;
+    height: 0px;
+    line-height:0;
+    padding:0 !important;
+}
+.skiplinks li a.u2
+{
+    display: inline;
+    height: 0px;
+    left: -3000px;
+    position: absolute;
+    top: -2000px;
+    width: 0px;
+
+}
+.skiplinks li a.u2:active,
+.skiplinks li a.u2:focus
+{
+    position:absolute;
+    width:13em;
+    top:10px;
+    left:10px;
+    line-height:1.5em;
+    padding:5px;
+    font-weight:bold;
+    height:3em;
+
+}
+
+/** \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+ *   class = WRAP (- EVERYWHERE -)
+ *   Make sure the floaters get in line, usually called at the end of a large section */
+.wrap
+{
+   font-size:1px; height:0; line-height:1px; margin:0; padding:0; border:0;
+   clear:both; float:none; visibility:hidden;
+}
+/** ///////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+
+
+
+#line
+{       padding:5px 0px 2px 2px;
+        position:absolute;
+        right :20px;
+        top:5em;
+        max-width:38em;
+
+}
+
+
+/* ++++++++++++++  button for closing right column  ++++++++++++++ */
+
+#close
+{
+        margin-right:0px;
+        font-size:0.85em;
+        text-transform:uppercase;
+}
+
+#close span
+{
+    position:absolute;
+    right: 20px;
+    z-index:10000;
+    top:5px;
+    width:7em;
+    font-weight:bold;
+    text-align:right;
+    line-height:1.5em;
+    padding:5px 2px 5px 5px
+}
+
+/* ###################### main ###################### */
+
+/* ++++++++++++++  position  ++++++++++++++ */
+
+.blog-featured
+{
+        padding: 0;
+}
+
+.items-leading
+{
+        padding:0px 5px 10px 5px;
+        overflow:hidden;
+        margin-bottom:10px
+}
+
+.row-separator
+{
+        display: block;
+        clear: both;
+        margin: 0;
+        border: 0px;
+        height:1px
+}
+
+.item-separator
+{
+        display: none;
+        margin: 0px;
+}
+
+.shownocolumns
+{
+        width:98% !important; /*-AWE-  What is that important keyword?*/
+}
+
+#top
+{
+        margin:0 0 20px 0;
+        overflow:hidden
+}
+
+/* ++++++++++++++  blog  ++++++++++++++ */
+
+.cols-1
+{
+        display: block;
+        float: none !important;
+        margin: 0 !important;
+}
+
+.cols-2 .column-1
+{
+        width:46%;
+        float:left;
+}
+
+.cols-2 .column-2
+{
+        width:46%;
+        float:right;
+        margin:0
+}
+
+.cols-3 .column-1
+{
+        float:left;
+        width:29%;
+        padding:0px 5px;
+        margin-right:4%
+
+}
+.cols-3 .column-2
+{
+        float:left;
+        width:29%;
+        margin-left:0;
+        padding:0px 5px
+}
+.cols-3 .column-3
+{
+        float:right;
+        width:29%;
+        padding:0px 5px
+}
+
+.items-row
+{
+        overflow:hidden;
+        margin-bottom:10px !important;
+}
+
+.column-1,
+.column-2,
+.column-3
+{
+        padding:10px 5px
+}
+
+.column-2
+{
+        width:55%;
+        margin-left:40%;
+}
+
+.column-3
+{
+        width:30%
+}
+
+.blog-more
+{
+        padding:10px 5px
+}
+

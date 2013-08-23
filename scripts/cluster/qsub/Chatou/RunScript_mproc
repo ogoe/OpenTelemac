@@ -1,0 +1,140 @@
+#!/bin/bash
+#
+# Generation of scripts based on the telemac's architecture and
+# on the PBS system. Those scripts are inspired by scripts
+# written by Hugues Prisker and Tanguy Courau.
+# The principle looks like: a file called $jobname is created and
+# submitted by the following command: qsub $jobname
+#
+# Inputs are:
+#   -the name of the job (jobname),
+#   -the number of processors (nbnodes),
+#   -the code to be used (codename),
+#   -and the name of the case (casename)
+#
+########################################################################
+#
+# C. Moulinec. EDF R&D LNHE. 07/02/06
+# email address: charles.moulinec@edf.fr
+#
+########################################################################
+#
+if [ $# = 4 ]
+then
+ jobname=$1
+ nbnodes=$2
+ codename=$3
+ casename=$4
+else
+  echo  "Syntax : RunScript jobname nbnodes codename casename"
+  exit
+fi
+#
+# The script $jobname starts here and looks as follows:
+#
+# 1- PBS commands to assign the name and the number of processors
+#    (in this case, it is possible to send jobs on only one processor).
+#    Activation of the walltime in case of long jobs on 1 processor.
+# 2- Definition/prompt of the Working Directory.
+# 3- Evaluation of NP as the processor number. It is obtained by counting
+#    the number of lines in the file containing the processor list.
+# 4- Deletion of mpirun.txt and mpi_telemac.conf.
+# 5- Copy of the file containing the processor name list ($PBS_NODEFILE),
+#    into mpirun.txt.
+# 6- Construction of mpi_telemac.conf by concatenation of the file
+#    containing the number of processors and mpirun.txt.
+# 7- Deletion of intermediate files.
+# 8- Start of the computation.
+#
+cat > $jobname << TAG
+#!/bin/bash
+# To start this job : qsub $jobname
+# Job description
+#PBS -N "$jobname"
+# Resources used
+#PBS -l "nodes=$nbnodes:ppn=2"
+#
+#PBS -l "walltime=47:59:00"
+#
+### Note that in this example nbnodes the number of processors
+### and not the number of nodes which should be given by $nbnodes:ppn=2.
+#
+# Use the following command to go to your working directory (default is home)
+cd \$PBS_O_WORKDIR
+#
+# NP=number of processors. Found by counting the number of lines
+# in \$PBS_NODEFILE
+#
+export NP=\$(cat "\$PBS_NODEFILE" | wc -l)
+#
+# Deletion of old mpirun.txt and mpi_telemac.conf and auxiliary file
+#
+rm -rf mpirun.txt mpi_telemac.conf mpitmp.conf
+#
+# mpirun.txt is copied from the file PBS_NODEFILE, created by the
+# system and which gives the processors to be in used by the current job.
+#
+cp \$PBS_NODEFILE mpirun.txt
+LIMIT="\$NP"
+#
+# mpi_telemac.conf is obtained by concatenation of two files (a temporary
+# file (mpitmp.conf) which contains the number of processors and mpirun.txt)
+#
+cat >> mpitmp.conf << TAG1
+\$NP
+TAG1
+cat mpitmp.conf mpirun.txt > mpi_telemac.conf
+#
+# Deletion of the auxiliary file mpitmp.conf
+#
+rm -rf mpitmp.conf
+#
+# Code running
+#
+$codename $casename
+#
+########### AT THE END OF THE JOB, CHECK OVER THE PROCESSES BEING USED.
+########### HAVE THEY ALL BEEN KILLED?
+#
+#  Display processes used by the user on all the processors.
+#  This is saved in the file username.proc. The unwanted processes
+#  can be killed by the command kill -9 PID.
+#
+# Username's initialisation. File initialisation (The previous
+# file containing the list of processes is deleted).
+#
+username="`whoami`"
+rm -rf \$username".proc"
+#
+#
+LIMIT1=9
+process=n01
+for ((a=1; a <= LIMIT1 ; a++))
+do
+  echo \${process/1/\$a} >> \$username".proc"
+  rsh \${process/1/\$a} ps -ef | grep \$username >> \$username".proc"
+done
+#
+LIMIT2=64
+process=n10
+for ((a=10; a <= LIMIT2 ; a++))
+do
+  echo \${process/10/\$a} >> \$username".proc"
+  rsh \${process/10/\$a} ps -ef | grep \$username >> \$username".proc"
+done
+#
+# End of the Script
+echo "fin"
+TAG
+#
+# End of the script $jobname
+#
+#########################################################################
+#
+# Change of priority and submission of the job.
+#
+chmod 755 $jobname
+qsub $jobname
+#
+# END of THE JOB.
+#

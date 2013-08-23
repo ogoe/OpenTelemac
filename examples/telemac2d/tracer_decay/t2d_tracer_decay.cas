@@ -1,0 +1,86 @@
+/
+/
+/ This case has been provided on Telemac forum
+/ by user "sumit". Many thanks!!
+/
+/
+/****************************************************
+TITLE = 'Simple tracer decay for Channel-Coarse mesh'
+/****************************************************
+/
+/----------------------------------------------------
+/  COMPUTER INFORMATIONS
+/----------------------------------------------------
+/
+GEOMETRY FILE             = geo_tracer_decay.slf
+BOUNDARY CONDITIONS FILE  = geo_tracer_decay.cli
+RESULTS FILE              = r2d_tracer_decay.slf
+REFERENCE FILE            = f2d_tracer_decay.slf
+FORTRAN FILE              = t2d_tracer_decay.f
+VALIDATION : YES
+/
+/----------------------------------------------
+/  GENERAL INFORMATIONS - OUTPUTS
+/----------------------------------------------
+/
+TITLE                            = 'Channel 2D Tracer'
+VARIABLES FOR GRAPHIC PRINTOUTS  = 'U,V,H,S,Q,T1'
+/
+/ Put a smaller period to have a more
+/ accurate time series
+/
+GRAPHIC PRINTOUT PERIOD          = 81
+LISTING PRINTOUT PERIOD          = 100
+MASS-BALANCE                     = YES
+TIME STEP                        = 100.
+NUMBER OF TIME STEPS             = 5184
+INFORMATION ABOUT SOLVER         = YES
+/
+/----------------------------------------------
+/  INITIAL CONDITIONS
+/----------------------------------------------
+/
+COMPUTATION CONTINUED           = NO 
+INITIAL CONDITIONS              = 'PARTICULAR'
+/
+/----------------------------------------------
+/  BOUNDARY CONDITIONS
+/----------------------------------------------
+/
+PRESCRIBED VELOCITIES               = -0.03;0.03 
+PRESCRIBED TRACERS VALUES           =  0.;30.           
+/
+/----------------------------------------------
+/  CONTROL SECTIONS
+/----------------------------------------------
+/
+PRINTING CUMULATED FLOWRATES = yes
+SECTIONS INPUT FILE  = Control_Section.dat
+SECTIONS OUTPUT FILE = Control_Section_Output.dat
+/
+/----------------------------------------------
+/  PHYSICAL PARAMETERS
+/----------------------------------------------
+/
+LAW OF BOTTOM FRICTION           = 0
+/----------------------------------------------
+/  NUMERICAL PARAMETERS 
+/----------------------------------------------
+/
+SOLVER FOR DIFFUSION OF TRACERS    =  1
+MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF TRACERS = 1200
+ACCURACY FOR DIFFUSION OF TRACERS = 1.E-10
+TIDAL FLATS                       = NO
+ADVECTION OF U AND V              = NO
+ADVECTION OF H                    = NO
+ADVECTION OF TRACERS              = YES
+TYPE OF ADVECTION                 = 1
+DIFFUSION OF VELOCITY              =NO 
+CONTINUITY CORRECTION             = YES
+/************************************
+/NON_CONSERVATIVE TRACER IS ADDED
+/************************************
+NUMBER OF TRACERS = 1
+NAMES OF TRACERS = 'TRAC MG/L'
+COEFFICIENT FOR DIFFUSION OF TRACERS = 30. 
+&FIN

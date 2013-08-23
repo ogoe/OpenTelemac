@@ -1,0 +1,64 @@
+/V6P1
+/VOLUMES FINIS : OUI
+PARAMETRES DE SHIELDS = 0.0470
+POROSITE DU LIT NON COHESIF = 0.375
+/
+/                   COUPLAGE SISYPHE-TELEMAC2D
+/
+/           FICHIER DE DECLARATION DES MOTS CLES DU CODE                
+/
+/
+/                            SISYPHE                                      
+/
+/
+/---------------------------------------------------------------        
+/
+/ENTREES-SORTIES, FICHIERS 
+/-------------------------
+FICHIER DE GEOMETRIE = geo_epi-en-riviere.slf
+FICHIER DES CONDITIONS AUX LIMITES = geo_epi-en-riviere.cli
+FICHIER DE REFERENCE = fis_epi-en-riviere.slf
+VALIDATION = OUI
+FICHIER DES RESULTATS = sis_epi-en-riviere.slf
+/
+/
+/ DUREE DU CALCUL 
+/ --------------
+/ le pas de temps sisyphe = pas de temps telemac * periode de couplage
+/ la durée du calcul et le pas de temps des sorties graphiques sont
+/ gouvernés par le fichier cas de télémac 
+PAS DE TEMPS = 2.5
+/
+/ ENTREE-SORTIE
+/ --------------
+TITRE = 'COUPLAGE SISYPHE - TELEMAC 2D'
+VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,S,E,H,B,N,P,I,J,TOB,MU
+/
+/ PARAMETRES NUMERIQUES
+/ ---------------------
+BILAN DE MASSE = OUI
+BANCS DECOUVRANTS = OUI
+OPTION DE TRAITEMENT DES BANCS DECOUVRANTS = 1
+PRECISION DU SOLVEUR =1e-4
+MASS-LUMPING = OUI
+/
+ZERO = 1e-12
+TETA = 0.5
+BETA = 0.
+VALEUR MINIMUM DE H = 0.
+/
+/ TRANSPORT SOLIDE 
+/ ------------------
+/    
+FORMULE DE TRANSPORT SOLIDE = 1
+RAPPORT D'EVOLUTION CRITIQUE = 10.
+/
+/ attention seule la deviation est prise en compte 
+/ dans Koch et Flochstra
+EFFET DE PENTE = OUI
+BETA = 0.
+/
+/
+DIAMETRES DES GRAINS = 0.00013
+/
+/&ETA

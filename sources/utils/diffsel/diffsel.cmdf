@@ -1,0 +1,10 @@
+[general]
+path: <root>|sources|utils|diffsel
+module: diffsel
+liborder: diffsel
+version: v6p3
+name: DIFFSEL
+
+[diffsel]
+path: <root>|sources|utils|diffsel
+files: diffsel.f

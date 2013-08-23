@@ -1,0 +1,195 @@
+#------------------------------makefile.wnt----------------------------
+#     Système TELEMAC Version 6.0     PLG / INGEROP
+#
+# Makefile de TELEMAC2D pour WindowsNT (GFORTRAN/G95).
+#
+# ATTENTION : doit être lancé dans le répertoire adéquat :
+#                   TELEMAC2D*/.../sources.
+#
+# Modes supportes :
+#        % maktel
+#        % maktel  [all] [install] [menage]
+#        % maktel  libdebug
+#        % maktel  libprofile
+#-----------------------------------------------------Juin-1999-DeltaCAD
+#
+#--- Definitions pour SYSTEME TELEMAC
+!include <$(SYSTELCFG)\cfgmak.mak>
+VERSION    = V6P3
+
+
+
+DIRINC = $(PROJECT)\builds\$(dirlib)\lib
+
+#
+FCO       = $(FC_OPT_COMPIL)
+F90       = $(FC_NAM)
+F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) \
+                   $(FC_OPT_INCLUDE)$(DIRINC)
+
+LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
+#
+# ----- Règles de compilation Fortran
+#
+.f.o:
+    $(F90) $(F90_PROJ) $<
+#
+#----- Paramétrage Telemac
+#
+NOM_GENERIQUE = telemac2d
+MODE          =
+LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
+DEST          = $(PROJECT)\builds\$(DIRLIB)
+
+EXEDEF	  = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
+LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\sisyphe$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\dredgesim$(MODE)$(VERSION).a \
+                $(PROJECT)\builds\$(DIRLIB)\lib\tomawac$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\damo$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\parallel$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
+                $(LK_LIB_SPECIAL) $(LIBS_MPI)
+
+#------------------------ Liste des fichiers
+#
+#------- Sources Fortran
+
+SRCS= \
+friction_def.f\
+declarations_telemac2d.f  interface_telemac2d.f  \
+m_coupling_estel3d.f tpxo.f okada.f \
+homere_telemac2d.f                     \
+lecdon_telemac2d.f                     \
+akepin.f assignstr.f astro.f  bilan.f  \
+bilant1.f bord.f  bord_tidal_bc.f bord_tide.f bord_tide_legos.f breach.f buse.f  caldt.f  \
+cdl.f cdlproj.f cdlzz.f cdl_hllc.f cdl_tch.f cdl_waf.f celerite.f chpcon.f clhuvt.f  \
+clsing.f cltrac.f   coefmat.f coefro.f complim.f condin.f  condin_adj.f  \
+conv_mercator_to_degdec.f conv_lambert_to_degdec.f  \
+corfon.f corpor.f   cornor.f  correction_depth_2d.f  corstr.f  \
+corvis.f cosake.f   cost_function.f cubeequation.f \
+calcul_q_weir.f calcul_tang_w2.f collect_values.f \
+debimp.f debsce.f   def_zones.f  \
+difsou.f disper.f   dragcoeff.f dragfo.f entete.f exlim.f fdnrst.f filter_h.f flot.f \
+flucin.f flucint.f fluhyd.f \
+fluroe.f flusec_telemac2d.f flusew.f flusrc.f flutrac.f fluxe.f fluxzz.f flux_hllc.f flux_waf.f flux_tch.f \
+flu_tchamen.f flu_zokagoa.f \
+fluxpr_telemac2d.f fricti.f friction.f friction_bubble.f \
+friction_lindner.f  friction_calc.f friction_quad.f \
+friction_unif.f friction_zones.f friction_user.f \
+friction_read.f friction_scan.f friction_init.f friction_choice.f \
+gestio.f  gradnod.f gradnodt.f gradz.f grad_zconv.f \
+homere_adj_t2d.f hpropa.f hyd_hllc.f hyd_waf.f interpol.f  \
+href.f   incide.f   initstr.f intemp.f isitok.f  \
+kepscl.f kepsil.f   kepsin.f lagran.f lecbus.f lecbreach.f \
+lecsip.f lecsng.f  limiter.f loiden.f loinoy.f loi_w_inc.f  majtrac.f majzz.f \
+marast.f masbas2d.f maskob.f   matbou.f mesures.f meteo.f  metgra.f \
+newstr.f nodalf_pugh.f nodalf_schureman.f nodalupv_pugh.f nodalupv_schureman.f \
+nomvar_telemac2d.f oil_flot.f output_telemac2d.f point_telemac2d.f point_adj_t2d.f  \
+oil_spill_2d.f poros.f poro11.f \
+prebor.f preres_telemac2d.f  propag.f propag_adj.f propin_telemac2d.f  \
+prosou.f q.f  read_fic_curves.f read_fic_sources.f read_sections_telemac2d.f \
+receding.f reinit.f rescue.f resolu.f  read_fic_frliq.f \
+rotne0.f seg_neighbors.f siphon.f sl.f smagor.f smoothing_flux.f smtrac.f \
+sorflo.f source_telemac2d.f  spectre.f sta_dis_cur.f steady.f tel4del.f telemac2d.f  testeur.f \
+thomps.f tidal_model_t2d.f tr.f trsce.f  utimp_telemac2d.f \
+valro.f  vistur.f vit.f     \
+volfin.f vusce.f vvsce.f wall_friction.f wetdry.f wrihyd.f zeropsi.f zerophi.f  
+
+#
+#------- Objets
+#
+OBJS = $(SRCS:.f=.o)
+
+#
+# ------------------------ Cibles
+#
+#--- La librairie (non installée)
+ALL: $(MODS) $(LIBRARY) $(EXEDEF)
+
+exedef:         $(EXEDEF)
+exedefpara:     $(EXEDEFPARA)
+
+"$(LIBRARY)" : $(OBJS)
+	@echo  -
+	@echo ---------------------Création de la librairie.
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
+
+"$(EXEDEF)":	$(OBJS)
+	@echo  -
+	@echo ---------------------Link executable par defaut
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS) $(LKLIB)
+	echo "Termine."
+
+#--- Suppression des ".obj" (existants) + ".lib"
+menage:  $(SRCS)
+	@echo  -
+	@echo ---------------------Destruction de tous les objets.
+	!@if EXIST $(**B).o del /q  $(**B).o
+	@echo ---------------------Destruction des librairies
+	!@if EXIST *.lib del /q  *.lib
+	@echo ---------------------Destruction des executables
+	!@if EXIST *.exe del /q  *.exe
+
+#--- Scalar version
+install: $(LIBRARY) $(EXEDEF)
+	@echo  -
+	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+	copy $(LIBRARY) $(DEST)\lib\$(LIBRARY)
+	@echo ---------------------Installe $(EXEDEF) dans $(DEST).
+	copy $(EXEDEF)  $(DEST)\bin\$(EXEDEF)
+
+#--- Librairie en DEBUG
+libdebug:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.gfo "FCO=$(FC_OPT_DEBUG)"  "MODE=d"
+	nmake /f makefile.gfo install  "MODE=d"
+
+#--- Librairie en PROFILE
+libprofile:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
+	nmake /f makefile.gfo install  "MODE=p"
+
+#------- Modules
+#
+MODS = *.o
+
+declarations_telemac2d.o:
+    $(F90) $(F90_PROJ) declarations_telemac2d.f
+    if EXIST $(DEST)\lib\declarations_telemac2d.mod del /f $(DEST)\lib\declarations_telemac2d.mod
+  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+    move declarations_telemac2d.mod $(DEST)\lib
+
+friction_def.o:
+    $(F90) $(F90_PROJ) friction_def.f
+    if EXIST $(DEST)\lib\friction_def.mod del /f $(DEST)\lib\friction_def.mod
+  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+    move friction_def.mod $(DEST)\lib
+
+interface_telemac2d.o:
+    $(F90) $(F90_PROJ) interface_telemac2d.f
+    if EXIST $(DEST)\lib\interface_telemac2d.mod del /f $(DEST)\lib\interface_telemac2d.mod
+  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+    move interface_telemac2d.mod $(DEST)\lib
+
+m_coupling_estel3d.o:
+    $(F90) $(F90_PROJ) m_coupling_estel3d.f
+    if EXIST $(DEST)\lib\m_coupling_estel3d.mod del /f $(DEST)\lib\m_coupling_estel3d.mod
+  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+    move m_coupling_estel3d.mod $(DEST)\lib
+
+tpxo.o:
+    $(F90) $(F90_PROJ) tpxo.f
+    if EXIST $(DEST)\lib\tpxo.mod del /f $(DEST)\lib\tpxo.mod
+  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+    move tpxo.mod $(DEST)\lib
+
+okada.o:
+    $(F90) $(F90_PROJ) okada.f
+    if EXIST $(DEST)\lib\okada.mod del /f $(DEST)\lib\okada.mod
+  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+    move okada.mod $(DEST)\lib

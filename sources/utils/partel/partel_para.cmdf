@@ -1,0 +1,36 @@
+[general]
+path: <root>|sources|utils|partel
+module: partel
+liborder: special parallel bief partel
+version: v6p3
+name: PARTEL_PARA
+
+[bief]
+path: <root>|sources|utils|bief
+files: bief_def.f
+  bief.f
+  front2.f
+  voisin.f
+  elebd.f
+
+[parallel]
+path: <root>|sources|utils|parallel
+files: declarations_parallel.F
+  p_time.F
+  p_exit.F
+  p_allgatherv_i.F
+  p_sync.F
+  p_isum_array.F
+  p_imax_array.F
+  p_init.F
+
+[partel]
+path: <root>|sources|utils|partel
+files: partitioner_para.F
+  partel_para.F
+
+[special]
+path: <root>|sources|utils|special
+files: plante.f
+  check_allocate.f
+  extens.f

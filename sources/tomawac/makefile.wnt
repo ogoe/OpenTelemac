@@ -1,0 +1,151 @@
+#------------------------------makefile.wnt----------------------------
+#     Système TELEMAC Version 6.0     CCT - MHL
+#
+# Makefile de TOMAWAC pour WindowsNT (avec Intel).
+#
+# ATTENTION : doit être lancé dans le répertoire adéquat :
+#                   TOMAWAC/.../sources.
+#
+# Modes supportes :
+#        % maktel 
+#        % maktel  [all] [install] [menage]
+#        % maktel  libdebug
+#        % maktel  libprofile
+#-----------------------------------------------------Juin-1999-DeltaCAD
+#
+#--- Definitions pour SYSTEME TELEMAC
+!include <$(SYSTELCFG)\cfgmak.mak>
+VERSION    = V6P3
+
+
+
+DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
+
+#
+FCO       = $(FC_OPT_COMPIL)
+F90       = $(FC_NAM)
+F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) \
+                   $(FC_OPT_INCLUDE)$(DIRINC)
+
+LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
+#
+# ----- Règles de compilation Fortran
+#
+.f.obj:
+    $(F90) $(F90_PROJ) $<  
+#
+#----- Paramétrage Telemac
+#
+NOM_GENERIQUE = tomawac
+MODE          =
+LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
+DEST          = $(PROJECT)\builds\$(DIRLIB)
+
+EXEDEF	  = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
+LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\damo$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\parallel$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
+                $(LK_LIB_SPECIAL) $(LIBS_MPI)
+
+#------------------------ Liste des fichiers
+#
+#------- Sources Fortran
+
+SRCS= \
+declarations_tomawac.f interface_tomawac.f \
+anacos.f anamar.f anaven.f angles.f bornes.f \
+condiw.f conw4d.f conwac.f tom_corfon.f \
+cormar.f couple.f couuti.f cqueue.f \
+delfra.f diffrac.f dump2d.f \
+ecrete.f ecrspe.f f1f1f1.f filt_sa.f\
+foncro.f fpread.f frem01.f frem02.f fremoy.f frepic.f frmset.f fsprd1.f \
+fsprd2.f fsprd3.f gammln.f gauleg.f \
+homere_tomawac.f impr.f iniphy.f initab.f invert.f \
+intang.f  ifabtom.f kerbou.f kmoyen.f \
+lecdoi.f lecdon.f lecdon_tomawac.f lecsui.f \
+limwac.f maruti.f nomvar_tomawac.f noudon.f  \
+point_tomawac.f predif.f \
+prenl1.f prenl2.f prenl3.f prepro.f preqt2.f propa.f \
+qbbj78.f qbrek1.f qbrek2.f qbrek3.f qbrek4.f qfrot1.f qgauss.f \
+qmout1.f qmout2.f qnlin1.f qnlin2.f qnlin3.f \
+qtria1.f qtria2.f qwind1.f qwind2.f qwind3.f qwindl.f \
+radiat.f rpi_intr.f rpi_invr.f \
+semimp.f sor3d.f speini.f spejon.f spetma.f spread.f stress.f \
+tautot.f tetmoy.f tomawac_constants.f totnrj.f transf.f \
+ustar1.f ustar2.f venuti.f vitfon.f \
+wac.f wnscou.f wpower.f 
+
+#
+#------- Objets
+#
+OBJS = $(SRCS:.f=.obj)
+
+#
+# ------------------------ Cibles
+#
+#--- La librairie (non installée)
+ALL: $(MODS) $(LIBRARY) $(EXEDEF)
+
+exedef:         $(EXEDEF)
+
+"$(LIBRARY)" : $(OBJS)
+	@echo  -
+	@echo ---------------------Création de la librairie.
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME)$(LIBRARY) $(OBJS)
+
+"$(EXEDEF)":	$(OBJS)
+	@echo  -
+	@echo ---------------------Link executable par defaut
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS) $(LKLIB)
+	echo "Termine."
+
+#--- Suppression des ".obj" (existants) + ".lib"
+menage:  $(SRCS) 
+	@echo  -
+	@echo ---------------------Destruction de tous les objets.
+	!@if EXIST $(**B).obj del /q  $(**B).obj
+	@echo ---------------------Destruction des librairies
+	!@if EXIST *.lib del /q  *.lib
+	@echo ---------------------Destruction des executables
+	!@if EXIST *.exe del /q  *.exe
+
+#--- Installation de la librairie
+install: $(LIBRARY) $(EXEDEF)
+	@echo  -
+	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+	copy $(LIBRARY) $(DEST)\lib\$(LIBRARY)
+	@echo ---------------------Installe $(EXEDEF) dans $(DEST).
+	copy $(EXEDEF)  $(DEST)\bin\$(EXEDEF)
+
+#--- Librairie en DEBUG
+libdebug:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.wnt "FCO=$(FC_OPT_DEBUG)"  "MODE=d" 
+	nmake /f makefile.wnt install  "MODE=d" 
+
+#--- Librairie en PROFILE
+libprofile:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  "MODE=p" 
+	nmake /f makefile.wnt install  "MODE=p" 
+
+#------- Modules
+#
+MODS = *.obj
+
+declarations_tomawac.obj:
+    $(F90) $(F90_PROJ) declarations_tomawac.f  
+    if EXIST $(DEST)\lib\declarations_tomawac.mod del /f $(DEST)\lib\declarations_tomawac.mod
+  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+    move declarations_tomawac.mod $(DEST)\lib
+
+interface_tomawac.obj:
+    $(F90) $(F90_PROJ) interface_tomawac.f  
+    if EXIST $(DEST)\lib\interface_tomawac.mod del /f $(DEST)\lib\interface_tomawac.mod
+  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+    move interface_tomawac.mod $(DEST)\lib
+

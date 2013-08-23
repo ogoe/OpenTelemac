@@ -1,0 +1,18 @@
+#!/bin/csh
+#
+cd `dirname $0`
+set bindir=`pwd`
+echo $bindir
+set project=`dirname $bindir`
+echo $project
+#
+if (! ${?SYSTELINI} ) then
+set dsti=$project/config
+else
+set dsti=$SYSTELINI
+endif
+echo $dsti
+set d1=`grep  "HOSTTYPE=" $dsti/systel.ini` 
+set hosttype=`echo $d1 | sed -e 's/HOSTTYPE=//' `
+echo $hosttype
+#

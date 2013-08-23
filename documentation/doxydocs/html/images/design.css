@@ -1,0 +1,843 @@
+/**
+ * Design elements for default Template
+ *
+ * @author Andreas Gohr <andi@splitbrain.org>
+ * @author Anika Henke <henke@cosmocode.de>
+ */
+
+/* -------------- general elements --------------- */
+
+* { padding: 0; margin: 0; }
+
+body {
+   background: url(images/header_outer.gif) repeat-x scroll left 0px rgb(255, 255, 255);
+   font-size: 100%;
+   padding: 0px;
+   text-align: center;
+   position:relative;
+   color: #333;
+   font-family: arial, helvetica, sans-serif;
+}
+
+/* the document */
+
+div.all {
+	text-align: left;
+	color: #333;
+	border:solid 0px ;
+	padding-top:0px;
+}
+
+div.all table {
+  font-size: 100%;
+}
+
+div.all tr,
+div.all td,
+div.all th {
+}
+
+div.all img {
+  border: 0;
+}
+
+div.all p,
+div.all blockquote,
+div.all table,
+div.all pre {
+        margin:0;
+        line-height:1.3em
+}
+
+div.all hr {
+  border: 0px;
+  border-top: 1px solid __border__;
+  text-align: center;
+  height: 0px;
+  margin: 1em 0;
+}
+
+div.all div.nothing {
+  text-align: center;
+  margin: 2em;
+}
+
+/* ---------------- forms ------------------------ */
+
+div.all form {
+  border: none;
+  display: inline;
+}
+
+div.all label.block {
+  display: block;
+  text-align: right;
+  font-weight: bold;
+}
+
+div.all label.simple {
+  display: block;
+  text-align: left;
+  font-weight: normal;
+}
+
+div.all label.block input.edit {
+  width: 50%;
+}
+
+div.all fieldset {
+  width: 286px;
+  text-align: center;
+  padding: 0.5em;
+  margin: auto;
+  margin-bottom: 1.5em;
+}
+
+div.all textarea.edit {
+  font-family: monospace;
+  font-size: 14px;
+  color: __text__;
+  background-color: __background__;
+  padding: 0.3em 0 0 0.3em;
+  width: 100%;
+}
+
+/* nice alphatransparency background except for IE <7 */
+html>body div.all textarea.edit {
+  background:  __background__ url(images/inputshadow.png) repeat-x top;
+}
+
+div.all input.edit,
+div.all select.edit {
+  font-size: 100%;
+  color: __text__;
+  background-color: __background__;
+  vertical-align: middle;
+  margin: 1px;
+  padding: 0.20em 0.3em;
+  display: inline;
+}
+
+/* nice alphatransparency background except for IE <7 */
+html>body div.all input.edit,
+html>body div.all select.edit {
+  background:  __background__ url(images/inputshadow.png) repeat-x top;
+}
+
+div.all select.edit {
+  padding: 0.1em 0;
+}
+
+div.all input.missing {
+  font-size: 100%;
+  color: __text__;
+  background-color: #ffc2d1;
+  vertical-align: middle;
+  margin: 1px;
+  padding: 0.20em 0.3em;
+  display: inline;
+}
+
+/* disabled style - not understood by IE */
+div.all textarea.edit[disabled],
+div.all textarea.edit[readonly],
+div.all input.edit[disabled],
+div.all input.edit[readonly],
+div.all select.edit[disabled] {
+  background-color: __background_neu__!important;
+  color: __text_neu__!important;
+}
+
+/* edit form */
+div.all div.toolbar,
+div.all div#wiki__editbar {
+   margin: 2px 0;
+   text-align: left;
+}
+div.all div#size__ctl {
+   float: right;
+   width: 60px;
+   height: 2.7em;
+}
+div.all #size__ctl img {
+   cursor: pointer;
+}
+div.all div#wiki__editbar div.editButtons {
+   float: left;
+   padding: 0 1.0em 0.7em 0;
+}
+div.all div#wiki__editbar div.summary {
+   float: left;
+}
+div.all .nowrap {
+   white-space: nowrap;
+}
+div.all div#draft__status {
+  float: right;
+  color: __text_alt__;
+}
+
+/* --------- buttons ------------------- */
+
+
+div.all input.button,
+div.all button.button {
+  border: 1px solid __text_other__;
+  color: __text__;
+  background-color: __background_neu__;
+  vertical-align: middle;
+  text-decoration: none;
+  font-size: 100%;
+  cursor: pointer;
+  margin: 1px;
+  padding: 0.125em 0.4em;
+}
+
+div.all input.button:hover,
+div.all button.button:hover {
+  border: 1px solid __border__;
+  background-color: __background_other__;
+}
+
+/* nice alphatransparency background except for IE <7 */
+html>body div.all input.button,
+html>body div.all button.button {
+  background: __background_neu__ url(images/buttonshadow.png) repeat-x bottom;
+}
+
+* html div.all input.button,
+* html div.all button.button {
+  height: 1.8em;
+}
+
+div.all div.secedit input.button {
+  border: 1px solid __text_other__;
+  color: __text__;
+  background-color: __background_neu__;
+  vertical-align: middle;
+  text-decoration: none;
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+  cursor: pointer;
+  float: right;
+  display: inline;
+}
+
+div.all div.secedit input.button:hover {
+  border: 1px solid __border__;
+  background-color: __background_other__;
+}
+
+/* ----------- page navigator ------------- */
+
+div.all div.pagenav {
+    margin: 1em 0 0 0;
+}
+
+div.all div.pagenav-prev {
+    text-align: right;
+    float: left;
+    width: 49%
+}
+
+div.all div.pagenav-next {
+    text-align: left;
+    float: right;
+    width: 49%
+}
+
+/* --------------- Links ------------------ */
+
+
+
+div.all a:active,
+div.all a:link {text-decoration: none;}
+div.all a:hover {text-decoration: none;}
+
+div.all div.li a:hover {text-decoration: underline;}
+
+div.all.bar-top{    
+      background : transparent; 
+	  border:0;
+	  border-bottom:solid 0px #ffa44a; 
+	  list-style-type:none;
+	  text-decoration: none;
+}
+
+div.all .bar-top  { border:0; }
+div.all .bar-top a:link
+{
+	  color:#fff; 
+	  border:0;
+	  border-right:solid 0px #ffa44a; 
+	  background:transparent;
+	  padding:10px ;
+}
+div.all .bar-top a:visited{
+   text-decoration: none;
+   color:#fff; 
+   border:0;
+   border-right:solid 0px #ffa44a; 
+   background:transparent;
+   padding:10px ;
+	  }
+div.all .bar-top a:hover,
+div.all .bar-top a:active,
+div.all .bar-top a:focus
+{
+	  color:#333; 
+	  background:#ffd1a3; 
+	  padding:10px;
+}
+
+div.all h1 a,
+div.all h2 a,
+div.all h3 a,
+div.all h4 a,
+div.all h5 a,
+div.all a.nolink {
+  color: __text__ !important;
+  text-decoration: none !important;
+}
+div.all h1 a,
+div.all h2 a,
+div.all h3 a,
+div.all h4 a,
+div.all h5 a,
+div.all a.hover {text-decoration: underline;}
+
+/* external link */
+div.all a.urlextern {
+  background: transparent url(images/link_icon.gif) 0px 1px no-repeat;
+  padding: 1px 0px 1px 16px;
+}
+
+/* windows share */
+div.all a.windows {
+  background: transparent url(images/windows.gif) 0px 1px no-repeat;
+  padding: 1px 0px 1px 16px;
+}
+
+/* interwiki link (icon are set by all) */
+div.all a.interwiki {
+}
+
+/* link to some embedded media */
+div.all a.media {
+}
+
+div.all a.urlextern:link,
+div.all a.windows:link,
+div.all a.interwiki:link {
+   text-decoration: none;
+}
+
+div.all a.urlextern:visited,
+div.all a.windows:visited,
+div.all a.interwiki:visited {
+   color:#444
+}
+
+div.all a.urlextern:hover{text-decoration: underline;}
+div.all a.urlextern:active{}
+div.all a.windows:hover{text-decoration: underline;}
+div.all a.windows:active{}
+div.all a.interwiki:hover{text-decoration: underline;}
+div.all a.interwiki:active {}
+}
+
+/* email link */
+div.all a.mail {
+  background: transparent url(images/mail_icon.gif) 0px 1px no-repeat;
+  padding: 1px 0px 1px 16px;
+}
+
+/* existing wikipage */
+div.all a.wikilink1 {
+  color: __existing__ !important;
+}
+
+/* not existing wikipage */
+div.all a.wikilink2 {
+  color: __missing__ !important;
+}
+
+div.all .logo a :visited,
+div.all .logo a :link,
+div.all .logo a :active,
+div.all .logo a :hover
+{
+   text-decoration: none;
+   color:#fff !important;
+   font-family: arial,helvetica,sans-serif;
+   padding:0.9em 2	0px 20px 10px;
+   font-weight:bold;
+   text-shadow:0.1em 0.1em 0.2em rgb(51, 51, 51);
+   margin-left:10px;    /* position:absolute; */
+   width:625px;         /* now that you are in absolute, you should not need this one */
+   font-size:40px;      /* absolute so it stays with the picture an does not move with bigger/smaller */
+   line-height:170px;
+}
+
+/* ------------- Page elements ----------------- */
+
+div.all div.preview {
+  background-color: __background_neu__;
+  margin: 0 0 0 2em;
+  padding: 4px;
+  border: 1px dashed __text_neu__;
+}
+
+div.all div.breadcrumbs {
+  color: rgb(85, 85, 85);
+  padding: 0px;   
+  text-align:left;
+  margin: 0px; 
+  margin-top : 20px ;
+  font-size:0.80em ;
+  font-family: arial,helvetica,sans-serif;
+}
+
+div.all div.breadcrumbs a{
+  color: rgb(85, 85, 85);
+  padding: 0px;   
+  text-align:left;
+  margin: 0px; 
+  margin-top : 20px ;
+  font-family: arial,helvetica,sans-serif;
+}
+div.all div.breadcrumbs a:hover{text-decoration:underline;}
+
+div.all span.user {
+  color: __text_other__;
+  font-size: 90%;
+}
+
+div.all li.minor {
+  color: __text_neu__;
+  font-style: italic;
+}
+
+/* embedded images */
+div.all img.media {
+  margin: 3px;
+}
+
+div.all img.medialeft {
+  border: 0;
+  float: left;
+  margin: 0 1.5em 0 0;
+}
+
+div.all img.mediaright {
+  border: 0;
+  float: right;
+  margin: 0 0 0 1.5em;
+}
+
+div.all img.mediacenter {
+  border: 0;
+  display: block;
+  margin: 0 auto;
+}
+
+/* smileys */
+div.all img.middle {
+  vertical-align: middle;
+}
+
+div.all acronym {
+  cursor: help;
+  border-bottom: 1px dotted __text_other__;
+}
+
+/* general headline setup */
+div.all h1,
+div.all h2,
+div.all h3,
+div.all h4,
+div.all h5 {
+   font-size: 1.4em; 
+   font-weight:normal;
+   margin-bottom:8px; 
+   padding:25px 0px 3px 0px;
+   color:rgb(212,118,0); 
+   font-family: 'Titillium Maps', Arial;
+}
+
+/* special headlines */
+div.all h1 {font-size: 150%}
+div.all h2 {font-size: 130%; border-bottom: none}
+div.all h3 {font-size: 120%; border-bottom: none}
+div.all h4 {font-size: 110%; border-bottom: none}
+div.all h5 {font-size: 100%; border-bottom: none}
+
+/* indent different sections */
+div.all div.level1{
+   padding:0px 5px 10px;
+   overflow:hidden;
+   margin-bottom:10px;
+}
+
+div.all div.level2 {}
+div.all div.level3 {}
+div.all div.level4 {}
+div.all div.level5 {}
+
+/* unordered lists */
+div.all ul {
+  line-height: 1.5em;
+  list-style-type: square;
+  list-style-image: none;
+  margin: 0 0 0.5em 1.5em;
+  color: __text_alt__;
+}
+
+/* ordered lists */
+div.all ol {
+  line-height: 1.5em;
+  list-style-image: none;
+  margin: 0 0 0.5em 1.5em;
+  color: __text_alt__;
+  font-weight: bold;
+}
+
+/* the list items overriding the ul/ol definition */
+div.all .li {
+  color: __text__;
+  font-weight: normal;
+}
+
+div.all ol {list-style-type: decimal}
+div.all ol ol {list-style-type: upper-roman}
+div.all ol ol ol {list-style-type: lower-alpha}
+div.all ol ol ol ol {list-style-type: lower-greek}
+
+div.all li.open {
+  list-style-image: url(images/open__theme__.gif);
+    /*list-style-type: circle;*/
+}
+
+div.all li.closed {
+  list-style-image: url(images/closed__theme__.gif);
+    /*list-style-type: disc;*/
+}
+
+div.all blockquote {
+  border: 1px solid __text_other__;
+  background-color: __background_neu__;
+  line-height: 1.2em;
+  font-size: 95%;
+  padding: 0.5em;
+  opacity: 0.9;
+}
+
+div.all pre {
+  font-size: 9px;
+  line-height: 1.2em;
+  padding: 0.5em;
+  border: 1px dashed #8cacbb;
+  color: #000;
+  overflow: auto;
+}
+
+/* code blocks by indention */
+div.all pre.pre {
+  background-color: #c6d3da;
+}
+
+/* code blocks by code tag */
+div.all pre.code {
+  background-color: #f7f9fa;
+}
+
+/* inline code words */
+div.all code {
+  font-size: 110%;
+}
+
+/* code blocks by file tag */
+div.all pre.file {
+  background-color: #c6d3da;
+}
+
+/* inline tables */
+div.all table.inline {
+  background-color: __background__;
+  line-height: 1.2em;
+  font-size: 95%;
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+
+div.all table.inline th {
+  padding: 3px;
+  border: 1px solid __border__;
+  background-color: __background_alt__;
+}
+
+div.all table.inline td {
+  padding: 3px;
+  border: 1px solid __border__;
+}
+
+/* ---------- table of contents ------------------- */
+
+div.all #dw__toc {
+  margin: 1.2em 0 0 2em;
+  float: right;
+  width: 200px;
+  font-size: 80%;
+  clear: both;
+}
+
+div.all #dw__toc h3 {
+  border: 2px solid rgb(221, 221, 221);
+  background-color: rgb(247, 243, 239);
+  text-align: left;
+  font-weight: bold;
+  padding: 3px;
+  margin: 0 0 2px 0;
+  font-size: 1em;
+}
+
+div.all .toggle strong {
+    border: 0.4em solid __background_alt__;
+    float: right;
+    display: block;
+    margin: 0.4em 3px 0 0;
+}
+
+div.all .toggle span {
+    display: none;
+}
+
+div.all .toggle.closed strong {
+    margin-top: 0.4em;
+    border-top: 0.4em solid __text__;
+}
+
+div.all .toggle.open strong {
+    margin-top: 0;
+    border-bottom: 0.4em solid __text__;
+}
+
+div.all #dw__toc > div {
+  border: 2px solid rgb(221, 221, 221);
+  background-color: rgb(247, 243, 239);
+  text-align: left;
+  padding: 0.5em 0 0.7em 0;
+}
+
+div.all #dw__toc ul {
+  list-style-type: none;
+  list-style-image: none;
+  line-height: 1.2em;
+  padding-left: 1em;
+  margin: 0;
+  color:rgb(102, 102, 102);
+}
+
+div.all #dw__toc ul li {
+  background: transparent url(images/tocdot2.gif) 0 0.6em no-repeat;
+  padding-left: 0.4em;
+  color:rgb(102, 102, 102);
+}
+
+div.all #dw__toc ul li.clear {
+  background-image: none;
+  padding-left: 0.4em;
+}
+
+div.all #dw__toc a:link,
+div.all #dw__toc a:visited {
+  color: __extern__;
+}
+
+div.all #dw__toc a:hover {text-decoration:underline;}
+div.all #dw__toc a:active {color: __text__;}
+
+/* ---------------------------- Diff rendering --------------------------*/
+div.all table.diff {
+  background-color: __background__;
+  width: 100%;
+}
+div.all td.diff-blockheader {
+  font-weight: bold;
+}
+div.all table.diff th {
+  border-bottom: 1px solid __border__;
+  font-size: 120%;
+  width: 50%;
+  font-weight: normal;
+  text-align: left;
+}
+div.all table.diff td {
+  font-family: monospace;
+  font-size: 100%;
+}
+div.all td.diff-addedline {
+  background-color: #ddffdd;
+}
+div.all td.diff-deletedline {
+    background-color: #ffffbb;
+}
+div.all td.diff-context {
+    background-color: __background_neu__;
+}
+div.all span.diffchange {
+  color: red;
+}
+
+/* --------------------- footnotes -------------------------------- */
+
+
+
+/* --------------- search result formating --------------- */
+
+div.all input#qsearch__in {
+  margin: 0px;
+  margin: 0px;
+  color: rgb(0, 0, 0);
+}
+
+div.all .search_result {
+  margin-bottom: o.5em;
+  padding: 0 1em 0 3em;
+}
+
+div.all .search_snippet {
+  color: __text_other__;
+  font-size: 90%;
+  margin-left: 2em;
+}
+
+div.all .search_sep {
+  color: __text__;
+  border:solid 2px #000;
+}
+
+div.all .search_hit {
+  color: __text__;
+  background-color: __highlight__;
+}
+
+div.all div.search_quickresult {
+  margin: 0 0 1.5em 3em;
+  padding: 0 1em 1em 0;
+  border-bottom: 1px dashed __border__;
+}
+div.all div.search_quickresult h3 {
+  margin: 0 0 1em 0;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+div.all ul.search_quickhits {
+  margin: 0 0 0.5em 1em;
+}
+
+div.all ul.search_quickhits li {
+  margin: 0 1em 0 1em;
+  float:left;
+  width: 30%;
+}
+
+/* ------------------ Additional ---------------------- */
+
+#config__manager fieldset td.value {
+    /* fixed data column width */
+    width: 65%;
+}
+#config__manager td input.edit {
+    width: 95%;
+}
+
+/* ---------- AJAX quicksearch ----------- */
+
+div.all div.ajax_qsearch {
+  position: absolute;
+  right: 288px;
+  width: 231px;
+  opacity: 0.9;
+  display: none;
+  font-size: 80%;
+  line-height: 1.2em;
+  border: 1px solid __border__;
+  background-color: __background_other__;
+  text-align: left;
+  padding: 0.5em;
+}
+
+/* --------- Toolbar -------------------- */
+
+button.toolbutton {
+  background-color: __background_neu__;
+  padding: 0px;
+  margin: 0 1px 0 0;
+  border: 1px solid __border__;
+  cursor: pointer;
+}
+
+button.toolbutton:hover {
+  background-color: __background_other__;
+	border: 1px solid __border__;
+}
+
+/* nice alphatransparency background except for IE <7 */
+html>body button.toolbutton {
+  background:  __background_neu__ url(images/buttonshadow.png) repeat-x bottom;
+}
+
+div.picker {
+  width: 286px;
+  border: 1px solid __border__;
+  background-color: __background_alt__;
+}
+
+button.pickerbutton {
+  padding: 1px 0;
+  margin: 0 1px 1px 0;
+  border: 1px solid __background_alt__;
+  background-color: transparent;
+  font-size: 90%;
+  cursor: pointer;
+}
+
+button.pickerbutton:hover {
+  border: 1px solid __border__;
+  background-color: __background_other__;
+}
+
+/* ---------- Spellchecking ------------- */
+
+div.all a.spell_error {
+  color: #f00;
+  text-decoration: none;
+}
+
+div.all div#spell__suggest {
+  background-color: __background__;
+  padding: 2px;
+  border: 1px solid __text__;
+  font-size: 80%;
+  display: none;
+}
+
+div.all div#spell__result {
+  border: 1px solid __border__;
+  color: __text__;
+  font-size: 110%;
+  padding: 3px;
+  background-color: __background_other__;
+  display: none;
+}
+
+div.all span.spell_noerr {
+  color: #093;
+}
+
+div.all span.spell_wait {
+  color: #06c;
+}
