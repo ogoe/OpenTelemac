@@ -48,6 +48,12 @@ def drawHistoryLines(plt,(x,ys),deco):
             for j in range(len(y0[i])):
                #plt.ylabel(n0[i])
                plt.plot(x0,y0[i][j])
+      elif dim == 4:
+         n0,n1,n2,n4,y0 = y
+         for i in range(len(y0)):
+            for j in range(len(y0[i])):
+               for k in range(len(y0[i][j])):
+                  plt.plot(x0,y0[i][j][k])
 
    # ~~ Deco ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # ~~> plt.grid
@@ -96,6 +102,12 @@ def drawPolylineLines(plt,(x,ys),deco):
             for j in range(len(y0[i])):
                #plt.ylabel(str(n1[i]))
                plt.plot(x0,y0[i][j])
+      elif dim == 4:
+         n0,n1,n2,n3,y0 = y
+         for i in range(len(y0)):
+            for j in range(len(y0[i])):
+               for k in range(len(y0[i][j])):
+                  plt.plot(x0,y0[i][j][k])
 
    # ~~ Deco ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # ~~> plt.grid

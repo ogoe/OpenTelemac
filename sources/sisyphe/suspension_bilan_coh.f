@@ -6,7 +6,7 @@
      & XMVS,MS_VASE, NOMBLAY,NPOIN,
      & MASSOU,MASED0,MSK,ENTET,MASTEN,MASTOU,MASINI,T1,T2,
      & T3,MASFIN,MASDEPT,MASDEP,AGGLOT,
-     & VOLU2D,NUMLIQ,NFRLIQ,NPTFR,FLBORTRA)
+     & VOLU2D,NUMLIQ,NFRLIQ,NPTFR,FLBORTRA,SEDCO)
 !
 !***********************************************************************
 ! SISYPHE   V6P3                                   13/02/2013
@@ -64,7 +64,11 @@
       USE INTERFACE_SISYPHE,EX_SUSPENSION_BILAN_COH
      *                    => SUSPENSION_BILAN_COH
       USE BIEF
+! FOR MUD      
       USE DECLARATIONS_SISYPHE, ONLY: MASV0, MASVT
+! FOR SAND
+      USE DECLARATIONS_SISYPHE, ONLY: MASS0, MASST
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -78,15 +82,16 @@
       INTEGER,          INTENT(IN)    :: NUMLIQ(NPTFR), NOMBLAY,NPOIN
       DOUBLE PRECISION, INTENT(IN)    :: DT,XMVS
       DOUBLE PRECISION, INTENT(IN)    :: MASSOU,MASED0,AGGLOT
-      LOGICAL,          INTENT(IN)    :: MSK,ENTET
+      LOGICAL,          INTENT(IN)    :: MSK,ENTET,SEDCO
       DOUBLE PRECISION, INTENT(INOUT) :: MASTEN,MASTOU,MASINI
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T2,T3,T1
       DOUBLE PRECISION, INTENT(INOUT) :: MASFIN,MASDEPT,MASDEP
       DOUBLE PRECISION, INTENT(IN)    :: MS_VASE(NPOIN, NOMBLAY)
+      
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER IFRLIQ,I,J
-      DOUBLE PRECISION            :: ERREUR, PERDUE, FLUXT, MASV_INIT
+      DOUBLE PRECISION            :: ERREUR, PERDUE, FLUXT, MASS_INIT
 !     HERE 300 IS MAXFRO, THE MAXIMUM NUMBER OF LIQUID BOUNDARIES
       DOUBLE PRECISION FLT_BOUND(300)
       ! 4/ EXTERNAL FUNCTION
@@ -139,8 +144,12 @@
       ! II - TOTAL MASS OF SEDIMENT BED  (KG)  ! 
       !                           ---> MASVT   !
       ! **************************             !
-! SAVE RESULT PAS DE TEMPS PRECEDENT : MASV_INIT
-       MASV_INIT = MASVT
+! SAVE RESULT PAS DE TEMPS PRECEDENT : MASS_INIT
+      IF(SEDCO) THEN
+         MASS_INIT = MASVT
+      ELSE
+         MASS_INIT = MASST
+      ENDIF
 !
       DO I=1,NPOIN
         T1%R(I)=0.D0
@@ -148,19 +157,30 @@
           T1%R(I)= T1%R(I)+MS_VASE(I,J)
         ENDDO
        ENDDO
-       MASVT=DOTS(T1,VOLU2D)      
+       IF(SEDCO) THEN
+           MASVT=DOTS(T1,VOLU2D)      
+           IF(NCSIZE.GT.1) MASVT=P_DSUM(MASVT)
+       ELSE
+           MASST=DOTS(T1,VOLU2D)
+           IF(NCSIZE.GT.1) MASST=P_DSUM(MASST)
+       ENDIF    
 !
-       IF(NCSIZE.GT.1) MASVT=P_DSUM(MASVT)
+
 
       ! ***************************************************     !
       ! III - TOTAL MASS OF DEPOSITED (OR ERODED) SEDIMENTS (KG)!
       !                           ---> MASDEP                   !
       ! ***************************************************     !
-       MASDEP = MASVT-MASV0
+       IF(SEDCO)THEN
+         MASDEP = MASVT-MASV0
+         MASDEPT = MASVT - MASS_INIT
+       ELSE
+         MASDEP = MASST-MASS0
+         MASDEPT = MASST - MASS_INIT
+       ENDIF
 !
 !  MASS DEPOSITED DURING TIME STEP : MASDEPT
 !
-       MASDEPT = MASVT - MASV_INIT
 !
 !=======================================================================
 !
@@ -242,10 +262,18 @@
       ! XI - LISTING OF THE FINAL MASS-BALANCE !
       ! ************************************** !
       IF(LT.EQ.NIT.AND.ENTET) THEN
+         IF(SEDCO)THEN
          PERDUE = MASED0*XMVS + MASV0 
      *          + MASTEN*XMVS 
      *          - MASFIN*XMVS - MASVT
 !               + MASTOU*XMVS
+         ELSE
+           PERDUE = MASED0*XMVS + MASS0 
+     *          + MASTEN*XMVS 
+     *          - MASFIN*XMVS - MASST
+!               + MASTOU*XMVS
+         ENDIF
+         
          IF(LNG.EQ.1) THEN
 !
             WRITE(LU,3000) ITRA
