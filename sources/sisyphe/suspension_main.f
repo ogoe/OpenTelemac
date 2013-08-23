@@ -442,10 +442,10 @@
                 ES(I,J)= ES_VASE (I,J) + ES_SABLE(I,J)
                 IF(ES(I,J).GT.1.D-04) THEN
                   AVAIL(I,J,1)= ES_SABLE(I,J)/ES(I,J)
-                  AVAIL (I,J,2)= ES_VASE(I,J)/ES(I,J)
-                ELSE
-                 AVAIL(I,J,1)=0.5 D0
-                 AVAIL(I,J,2)=0.5 D0  
+                  AVAIL (I,J,2)= ES_VASE(I,J)/ES(I,J)    
+!CVL                ELSE
+!CVL                 AVAIL(I,J,1)=0.5 D0
+!CVL                 AVAIL(I,J,2)=0.5 D0  
                ENDIF      
           ENDIF
           ELAY%R(I)=ELAY%R(I)+ES(I,J)
