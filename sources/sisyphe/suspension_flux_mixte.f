@@ -123,7 +123,8 @@
       DOUBLE PRECISION FLUERSABLE,FLUERVASE,FLUER_LOC(NLAYMAX)
 !
       DOUBLE PRECISION QE_MOY,TEMPS,QER_VASE,QER_SABLE
-
+! Mass percent of the mud phase F2 to replace AVAIL AVAIL(I,J,2)
+      DOUBLE PRECISION F2 
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !
@@ -146,13 +147,14 @@
 !---------COMPUTES THE CRITICAL STRESS FOR EACH LAYER AS A FUNCTION OF THE C                 PROPORTION OF MUD
       DO J=1,NOMBLAY
         DO I=1,NPOIN
-          IF(AVAIL(I,J,2).LE.0.3D0)THEN
+          F2= MS_VASE(I, J)/(MS_VASE(I, J) + MS_SABLE(I, J)) 
+          IF(F2.LE.0.3D0)THEN
             TOCE_MIXTE(I,J)=TOCE_SABLE
-          ELSEIF(AVAIL(I,J,2).GE.0.5D0)THEN
+          ELSEIF(F2.GE.0.5D0)THEN
              TOCE_MIXTE(I,J)=TOCE_VASE(J)
           ELSE
                  TOCE_MIXTE(I,J)= TOCE_SABLE +
-     &   (AVAIL(I,J,2)-0.3D0)*(TOCE_VASE(J)-TOCE_SABLE)/(0.5D0-0.3D0)
+     &   (F2-0.3D0)*(TOCE_VASE(J)-TOCE_SABLE)/(0.5D0-0.3D0)
           ENDIF
         ENDDO
       ENDDO
@@ -169,6 +171,7 @@
           IF (DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_FREDSOE'
 !
           DO I=1,NPOIN
+ 
             CSTAEQ%R(I)=CSTAEQ%R(I)*AVAIL(I,1,1)
           ENDDO
 !          
@@ -190,6 +193,7 @@
      &                      GRAV,XMVE,XMVS,VCE,ZERO,AC,CSTAEQ,ZREF)
          IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_VANRIJN'
           DO I=1,NPOIN
+!         
             CSTAEQ%R(I)=CSTAEQ%R(I)*AVAIL(I,1,1)
           ENDDO
 !        fin modif CV
@@ -207,7 +211,8 @@
 !
 !-----------COMPUTES FLUER_SABLE_VASE AS A FUNCTION OF THE PROPORTION OF MUD
 !
-          IF(AVAIL(I,J,2).LE.0.3D0)THEN
+          F2= MS_VASE(I, J)/(MS_VASE(I, J) + MS_SABLE(I, J)) 
+          IF(F2.LE.0.3D0)THEN
 !-------------PROPORTION OF MUD < 30%, FLUXES ARE SIMILAR TO THOSE FOR SAND ONLY
             IF(TAUP%R(I).GT.TOCE_MIXTE(I,J))THEN
                  FLUER_LOC(J)=CSTAEQ%R(I)*XWC
@@ -215,7 +220,7 @@
                FLUER_LOC(J)=0.D0
             ENDIF
 !-------------PROPORTION OF MUD > 50%, FLUXES ARE SIMILAR TO THOSE FOR MUD ONLY
-          ELSEIF(AVAIL(I,J,2).GE.0.5D0)THEN
+          ELSEIF(F2.GE.0.5D0)THEN
             IF(TAUP%R(I).GT.TOCE_MIXTE(I,J))THEN
                FLUER_LOC(J)=PARTHENIADES*
      &              ((TAUP%R(I)/TOCE_MIXTE(I,J))-1.D0)
@@ -233,7 +238,7 @@
                FLUERSABLE=0.D0
                FLUERVASE=0.D0
             ENDIF
-               FLUER_LOC(J)=(AVAIL(I,J,2)-0.3D0)/
+               FLUER_LOC(J)=(F2-0.3D0)/
      &           (0.5D0-0.3D0)*(FLUERVASE-FLUERSABLE)+FLUERSABLE
           ENDIF
         ENDDO
