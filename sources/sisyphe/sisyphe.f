@@ -1470,6 +1470,9 @@ C!!! ONLY FOR ONE CLASS
 !       GRAPHIC OUTPUTS AND VALIDATION STAGE
 !
         IF(BILMA) THEN
+! CVL Bilan in volume 
+! not valid for cohesif or mixte
+          IF(.NOT.MIXTE.AND.(.NOT.SEDCO(1))) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'BILAN_SISYPHE'
           CALL BILAN_SISYPHE(E,ESOMT,MESH,MSK,MASKEL,T1,T2,S,
      &                       IELMU_SIS,VCUMU,DTS,NPTFR,ENTETS,
@@ -1478,6 +1481,7 @@ C!!! ONLY FOR ONE CLASS
      &                       LGRAFED,NUMLIQ%I,NFRLIQ,FLBCLA,VF,LT,NIT,
      &                       NPOIN,VOLU2D,CSF_SABLE,MASDEP,MASDEPT,
      &                       CHARR,SUSP,SLIDE)
+          ENDIF
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_BILAN_SISYPHE'
         ENDIF
 !
