@@ -114,7 +114,7 @@
 !             PARALLEL MODE, OTHER FILE TYPE
               ELSE
               CALL OPEN_FILE_MED(PATH(1:NCAR)//TRIM(FILES(I)%TELNAME)
-     &               //EXTENS(NCSIZE-1,IPID)//'.med',FILES(I)%LU,
+     &               //EXTENS(NCSIZE-1,IPID),FILES(I)%LU,
      &               FILES(I)%ACTION)
               ENDIF
             ENDIF
