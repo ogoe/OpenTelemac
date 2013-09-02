@@ -31,8 +31,16 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
-.f.obj:
- $(F90) $(F90_PROJ) $<  
+.f.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
+.F.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib 
 #
 #----- Paramétrage Telemac
 #
@@ -43,7 +51,7 @@ DEST          = $(PROJECT)\builds\$(DIRLIB)
 
 EXEDEF	  = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
 LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\sisyphe$(MODE)$(VERSION).lib \
-                $(PROJECT)\builds\$(DIRLIB)\lib\dredgesim$(MODE)$(VERSION).a \
+                $(PROJECT)\builds\$(DIRLIB)\lib\dredgesim$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\tomawac$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\damo$(MODE)$(VERSION).lib \
@@ -58,7 +66,7 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\sisyphe$(MODE)$(VERSION).lib \
 SRCS= \
 friction_def.f\
 declarations_telemac2d.f  interface_telemac2d.f  \
-m_coupling_estel3d.f tpxo.f okada.f \
+m_coupling_estel3d.f tpxo.f okada.f oilspill.f\
 homere_telemac2d.f                     \
 lecdon_telemac2d.f                     \
 akepin.f assignstr.f astro.f  bilan.f  \
@@ -82,11 +90,11 @@ gestio.f  gradnod.f gradnodt.f gradz.f grad_zconv.f \
 homere_adj_t2d.f hpropa.f hyd_hllc.f hyd_waf.f interpol.f  \
 href.f   incide.f   initstr.f intemp.f isitok.f  \
 kepscl.f kepsil.f   kepsin.f lagran.f lecbus.f lecbreach.f \
-lecsip.f lecsng.f  limiter.f loiden.f loinoy.f loi_w_inc.f majtrac.f majzz.f \
+lecsip.f lecsng.f  limiter.f loiden.f loinoy.f loi_w_inc.f  majtrac.f majzz.f \
 marast.f masbas2d.f maskob.f   matbou.f mesures.f meteo.f  metgra.f \
 newstr.f nodalf_pugh.f nodalf_schureman.f nodalupv_pugh.f nodalupv_schureman.f \
 nomvar_telemac2d.f oil_flot.f output_telemac2d.f point_telemac2d.f point_adj_t2d.f  \
-oil_spill_2d.f poros.f poro11.f \
+poros.f poro11.f \
 prebor.f preres_telemac2d.f  propag.f propag_adj.f propin_telemac2d.f  \
 prosou.f q.f  read_fic_curves.f read_fic_sources.f read_sections_telemac2d.f \
 receding.f reinit.f rescue.f resolu.f  read_fic_frliq.f \
@@ -94,12 +102,13 @@ rotne0.f seg_neighbors.f siphon.f sl.f smagor.f smoothing_flux.f smtrac.f \
 sorflo.f source_telemac2d.f  spectre.f sta_dis_cur.f steady.f tel4del.f telemac2d.f  testeur.f \
 thomps.f tidal_model_t2d.f tr.f trsce.f  utimp_telemac2d.f \
 valro.f  vistur.f vit.f     \
-volfin.f vusce.f vvsce.f wall_friction.f wetdry.f wrihyd.f zeropsi.f zerophi.f  
+volfin.f vusce.f vvsce.f wall_friction.f wetdry.f wrihyd.f zeropsi.f zerophi.f   
 
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.obj)
+TEMP = $(SRCS:.f=.obj)
+OBJS = $(TEMP:.F=.obj)
 
 #
 # ------------------------ Cibles
@@ -152,43 +161,3 @@ libprofile:
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
 	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  "MODE=p" 
 	nmake /f makefile.wnt install  "MODE=p" 
-
-#------- Modules
-#
-MODS = *.obj
-
-declarations_telemac2d.obj:
-    $(F90) $(F90_PROJ) declarations_telemac2d.f  
-    if EXIST $(DEST)\lib\declarations_telemac2d.mod del /f $(DEST)\lib\declarations_telemac2d.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move declarations_telemac2d.mod $(DEST)\lib
-
-friction_def.obj:
-    $(F90) $(F90_PROJ) friction_def.f  
-    if EXIST $(DEST)\lib\friction_def.mod del /f $(DEST)\lib\friction_def.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move friction_def.mod $(DEST)\lib
-    
-interface_telemac2d.obj:
-    $(F90) $(F90_PROJ) interface_telemac2d.f  
-    if EXIST $(DEST)\lib\interface_telemac2d.mod del /f $(DEST)\lib\interface_telemac2d.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move interface_telemac2d.mod $(DEST)\lib
-    
-m_coupling_estel3d.obj:
-    $(F90) $(F90_PROJ) m_coupling_estel3d.f  
-    if EXIST $(DEST)\lib\m_coupling_estel3d.mod del /f $(DEST)\lib\m_coupling_estel3d.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move m_coupling_estel3d.mod $(DEST)\lib
-
-tpxo.obj:
-    $(F90) $(F90_PROJ) tpxo.f  
-    if EXIST $(DEST)\lib\tpxo.mod del /f $(DEST)\lib\tpxo.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move tpxo.mod $(DEST)\lib
-
-okada.obj:
-    $(F90) $(F90_PROJ) okada.f  
-    if EXIST $(DEST)\lib\okada.mod del /f $(DEST)\lib\okada.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move okada.mod $(DEST)\lib

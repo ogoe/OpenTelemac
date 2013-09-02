@@ -31,8 +31,16 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
-.f.obj:
-    $(F90) $(F90_PROJ) $<  
+.f.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
+.F.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
 #
 #----- Paramétrage Telemac
 #
@@ -54,25 +62,27 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
 
 SRCS= \
 declarations_artemis.f interface_artemis.f \
-artemis.f        berkho.f         borh.f           calcfw.f        caldir.f  \
+artemis.f        berkho.f         borh.f           calcfw.f       caldir.f  \
 calcmn.f         calcqb.f         calctm.f         calcue.f         \
 calre2.f         calres.f         cntpre.f         condih.f         \
 art_corfon.f         dirale.f         dismoy.f         entart.f         \
 fcte1.f          fcte2.f          fwspec.f         homere_artemis.f \
 lecdon_artemis.f masque_artemis.f nomvar_artemis.f                  \
-pentco.f         perale.f         phbor.f           point_artemis.f \
-radia1.f         radia2.f         solvelambda.f    spd.f            spe.f            \
-utimp.f       
+pentco.f         perale.f         phbor.f          point_artemis.f \
+radia1.f         radia2.f         spd.f            spe.f            \
+utimp.f          solvelambda.f        
+
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.obj)
+TEMP = $(SRCS:.f=.obj)
+OBJS = $(TEMP:.F=.obj)
 
 #
 # ------------------------ Cibles
 #
 #--- La librairie (non installée)
-ALL: $(MODS) $(LIBRARY) $(EXEDEF)
+ALL: $(LIBRARY) $(EXEDEF)
 
 exedef:         $(EXEDEF)
 
@@ -119,19 +129,3 @@ libprofile:
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
 	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  "MODE=p" 
 	nmake /f makefile.wnt install  "MODE=p" 
-
-#------- Modules
-#
-MODS = declarations_artemis.obj interface_artemis.obj
-
-declarations_artemis.obj:
-    $(F90) $(F90_PROJ) declarations_artemis.f  
-    if EXIST $(DEST)\lib\declarations_artemis.mod del /f $(DEST)\lib\declarations_artemis.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move declarations_artemis.mod $(DEST)\lib
-
-interface_artemis.obj:
-    $(F90) $(F90_PROJ) interface_artemis.f  
-    if EXIST $(DEST)\lib\interface_artemis.mod del /f $(DEST)\lib\interface_artemis.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move interface_artemis.mod $(DEST)\lib

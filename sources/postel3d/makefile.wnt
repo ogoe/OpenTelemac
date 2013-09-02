@@ -31,8 +31,16 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
-.f.obj:
-    $(F90) $(F90_PROJ) $<  
+.f.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
+.F.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
 #
 #----- Paramétrage Telemac
 #
@@ -62,13 +70,15 @@ homere_postel3d.f        point_postel3d.f
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.obj)
+
+TEMP = $(SRCS:.f=.obj)
+OBJS = $(TEMP:.F=.obj)
 
 #
 # ------------------------ Cibles
 #
 #--- La librairie (non installée)
-ALL: $(MODS) $(LIBRARY) $(EXEDEF)
+ALL: $(LIBRARY) $(EXEDEF)
 
 exedef:         $(EXEDEF)
 
@@ -115,13 +125,3 @@ libprofile:
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
 	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)" LKO="$(LK_OPT_OPT_PROFILE)" "MODE=p" 
 	nmake /f makefile.wnt install  "FCO=$(FC_OPT_PROFILE)" LKO="$(LK_OPT_OPT_PROFILE)" "MODE=p" 
-
-#------- Modules
-#
-MODS = declarations_postel3d.obj
-
-declarations_postel3d.obj:
-	$(FC) $(FFLAGS) declarations_postel3d.f  
-	if EXIST $(DEST)\lib\declarations_postel3d.mod del /f $(DEST)\lib\declarations_postel3d.mod
-	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-	move declarations_postel3d.mod $(DEST)\lib

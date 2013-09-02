@@ -19,7 +19,7 @@ VERSION    = V6P3
 
 
 
-DIRINC = $(PROJECT)\builds\$(dirlib)\lib
+DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
 
 #
 FCO       = $(FC_OPT_COMPIL)
@@ -32,7 +32,15 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 # ----- Règles de compilation Fortran
 #
 .f.o:
-    $(F90) $(F90_PROJ) $<
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
+.F.o:
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
 #
 #----- Paramétrage Telemac
 #
@@ -43,7 +51,7 @@ DEST          = $(PROJECT)\builds\$(DIRLIB)
 
 EXEDEF	  = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
 LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\sisyphe$(MODE)$(VERSION).lib \
-                $(PROJECT)\builds\$(DIRLIB)\lib\dredgesim$(MODE)$(VERSION).a \
+                $(PROJECT)\builds\$(DIRLIB)\lib\dredgesim$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\tomawac$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\damo$(MODE)$(VERSION).lib \
@@ -58,7 +66,7 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\sisyphe$(MODE)$(VERSION).lib \
 SRCS= \
 friction_def.f\
 declarations_telemac2d.f  interface_telemac2d.f  \
-m_coupling_estel3d.f tpxo.f okada.f \
+m_coupling_estel3d.f tpxo.f okada.f oilspill.f\
 homere_telemac2d.f                     \
 lecdon_telemac2d.f                     \
 akepin.f assignstr.f astro.f  bilan.f  \
@@ -86,7 +94,7 @@ lecsip.f lecsng.f  limiter.f loiden.f loinoy.f loi_w_inc.f  majtrac.f majzz.f \
 marast.f masbas2d.f maskob.f   matbou.f mesures.f meteo.f  metgra.f \
 newstr.f nodalf_pugh.f nodalf_schureman.f nodalupv_pugh.f nodalupv_schureman.f \
 nomvar_telemac2d.f oil_flot.f output_telemac2d.f point_telemac2d.f point_adj_t2d.f  \
-oil_spill_2d.f poros.f poro11.f \
+poros.f poro11.f \
 prebor.f preres_telemac2d.f  propag.f propag_adj.f propin_telemac2d.f  \
 prosou.f q.f  read_fic_curves.f read_fic_sources.f read_sections_telemac2d.f \
 receding.f reinit.f rescue.f resolu.f  read_fic_frliq.f \
@@ -99,16 +107,16 @@ volfin.f vusce.f vvsce.f wall_friction.f wetdry.f wrihyd.f zeropsi.f zerophi.f
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.o)
+TEMP = $(SRCS:.f=.o)
+OBJS = $(TEMP:.F=.o)
 
 #
 # ------------------------ Cibles
 #
 #--- La librairie (non installée)
-ALL: $(MODS) $(LIBRARY) $(EXEDEF)
+ALL: $(LIBRARY) $(EXEDEF)
 
 exedef:         $(EXEDEF)
-exedefpara:     $(EXEDEFPARA)
 
 "$(LIBRARY)" : $(OBJS)
 	@echo  -
@@ -154,42 +162,3 @@ libprofile:
 	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
 	nmake /f makefile.gfo install  "MODE=p"
 
-#------- Modules
-#
-MODS = *.o
-
-declarations_telemac2d.o:
-    $(F90) $(F90_PROJ) declarations_telemac2d.f
-    if EXIST $(DEST)\lib\declarations_telemac2d.mod del /f $(DEST)\lib\declarations_telemac2d.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move declarations_telemac2d.mod $(DEST)\lib
-
-friction_def.o:
-    $(F90) $(F90_PROJ) friction_def.f
-    if EXIST $(DEST)\lib\friction_def.mod del /f $(DEST)\lib\friction_def.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move friction_def.mod $(DEST)\lib
-
-interface_telemac2d.o:
-    $(F90) $(F90_PROJ) interface_telemac2d.f
-    if EXIST $(DEST)\lib\interface_telemac2d.mod del /f $(DEST)\lib\interface_telemac2d.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move interface_telemac2d.mod $(DEST)\lib
-
-m_coupling_estel3d.o:
-    $(F90) $(F90_PROJ) m_coupling_estel3d.f
-    if EXIST $(DEST)\lib\m_coupling_estel3d.mod del /f $(DEST)\lib\m_coupling_estel3d.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move m_coupling_estel3d.mod $(DEST)\lib
-
-tpxo.o:
-    $(F90) $(F90_PROJ) tpxo.f
-    if EXIST $(DEST)\lib\tpxo.mod del /f $(DEST)\lib\tpxo.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move tpxo.mod $(DEST)\lib
-
-okada.o:
-    $(F90) $(F90_PROJ) okada.f
-    if EXIST $(DEST)\lib\okada.mod del /f $(DEST)\lib\okada.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move okada.mod $(DEST)\lib

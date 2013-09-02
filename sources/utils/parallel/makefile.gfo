@@ -20,21 +20,30 @@ VERSION    = V6P3
 
 
 
-DIRINC = $(PROJECT)\builds\$(dirlib)\lib
+DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
 
-DIRINC_MPI    = $(PROJECT)\..\mpi\include
+DIRINC_MPI    = $(PROJECT)\optionals\mpi\$(DIRLIB)\include
 #
 FCO       = $(FC_OPT_COMPIL)
 F90       = $(FC_NAM)
 F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) \
                    $(FC_OPT_INCLUDE)$(DIRINC) \
-                   $(FC_OPT_INCLUDE) $(DIRINC_MPI)
+                   $(FC_OPT_INCLUDE)$(DIRINC_MPI)
 LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
 .f.o:
-    $(F90) $(F90_PROJ) $<
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
+		
+.F.o:
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
 #
 #----- Paramétrage Telemac
 #
@@ -44,7 +53,6 @@ LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
 DEST          = $(PROJECT)\builds\$(DIRLIB)
 
 LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
-                $(PROJECT)\optionals\metis-5.1.0\libmetis\libmetis.a
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)
 
 #------------------------ Liste des fichiers
@@ -52,10 +60,10 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
 #------- Sources Fortran
 
 SRCS	      = interface_parallel.f \
-		errpvm.F \
-                extens.f \
                 declarations_parallel.F \
+		errpvm.F \
 		org_charac_type1.F \
+		oil_org_charac_type.F \
 		org_charac_type_alg.F \
 		p_dmax.F \
 		p_dmin.F \
@@ -75,6 +83,7 @@ SRCS	      = interface_parallel.f \
 		p_mpi_alltoall.F \
 		p_mpi_alltoallv.F \
 		p_mpi_alltoallv_alg.F \
+		p_mpi_alltoallv_oil.F \
 		p_mpi_alltoallv_i.F \
 		p_mpi_type_commit.F \
 		p_mpi_type_get_extent.F \
@@ -92,16 +101,17 @@ SRCS	      = interface_parallel.f \
 #
 #------- Objets
 #
-TEMP = $(SCRS:.f=.o)
+TEMP = $(SRCS:.f=.o)
 OBJS = $(TEMP:.F=.o)
+
 #
 # ------------------------ Cibles
 #
 #--- La librairie (non installée)
-ALL: $(MODS) $(LIBRARY) 
+ALL: $(LIBRARY) 
 
 
-"$(LIBRARY)" : $(OBJS)
+$(LIBRARY) : $(OBJS)
 	@echo  -
 	@echo ---------------------Création de la librairie.
 	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
@@ -135,19 +145,3 @@ libprofile:
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
 	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
 	nmake /f makefile.gfo install  "MODE=p"
-
-#------- Modules
-#
-MODS = *.o
-
-declarations_parallel.o:
-    $(F90) $(F90_PROJ) declarations_parallel.f
-    if EXIST $(DEST)\lib\declarations_parallel.mod del /f $(DEST)\lib\declarations_parallel.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move declarations_parallel.mod $(DEST)\lib
-
-interface_parallel.o:
-    $(F90) $(F90_PROJ) interface_parallel.f
-    if EXIST $(DEST)\lib\interface_parallel.mod del /f $(DEST)\lib\interface_parallel.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move interface_parallel.mod $(DEST)\lib

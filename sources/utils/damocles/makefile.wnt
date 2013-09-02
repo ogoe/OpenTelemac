@@ -31,8 +31,16 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
-.f.obj:
-    $(F90) $(F90_PROJ) $<  
+.f.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
+.F.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
 #
 #----- Paramétrage Telemac
 #
@@ -53,7 +61,8 @@ minus.f   next.f  precar.f prev.f  preval.f realu.f
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.obj)
+TEMP = $(SRCS:.f=.obj)
+OBJS = $(TEMP:.F=.obj)
 
 #
 # ------------------------ Cibles

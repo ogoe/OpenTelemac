@@ -17,9 +17,7 @@
 !include <$(SYSTELCFG)\cfgmak.mak>
 VERSION    = V6P3
 
-
-
-DIRINC = $(PROJECT)\builds\$(dirlib)\lib
+DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
 
 #
 FCO       = $(FC_OPT_COMPIL)
@@ -32,7 +30,15 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 # ----- Règles de compilation Fortran
 #
 .f.o:
-    $(F90) $(F90_PROJ) $<
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
+.F.o:
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
 #
 #----- Paramétrage Telemac
 #
@@ -62,13 +68,14 @@ homere_postel3d.f        point_postel3d.f
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.o)
+TEMP = $(SRCS:.f=.o)
+OBJS = $(TEMP:.F=.o)
 
 #
 # ------------------------ Cibles
 #
 #--- La librairie (non installée)
-ALL: $(MODS) $(LIBRARY) $(EXEDEF)
+ALL: $(LIBRARY) $(EXEDEF)
 
 exedef:         $(EXEDEF)
 
@@ -115,13 +122,3 @@ libprofile:
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
 	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)" LKO="$(LK_OPT_OPT_PROFILE)" "MODE=p" 
 	nmake /f makefile.gfo install  "FCO=$(FC_OPT_PROFILE)" LKO="$(LK_OPT_OPT_PROFILE)" "MODE=p"
-
-#------- Modules
-#
-MODS = declarations_postel3d.o
-
-declarations_postel3d.o:
-	$(FC) $(FFLAGS) declarations_postel3d.f  
-	if EXIST $(DEST)\lib\declarations_postel3d.mod del /f $(DEST)\lib\declarations_postel3d.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-	move declarations_postel3d.mod $(DEST)\lib

@@ -19,7 +19,7 @@ VERSION    = V6P3
 
 
 
-DIRINC = $(PROJECT)\builds\$(dirlib)\lib
+DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
 
 #
 FCO       = $(FC_OPT_COMPIL)
@@ -32,7 +32,15 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 # ----- Règles de compilation Fortran
 #
 .f.o:
-    $(F90) $(F90_PROJ) $<
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
+.F.o:
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
 #
 #----- Paramétrage Telemac
 #
@@ -46,6 +54,7 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\telemac2d$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\sisyphe$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\dredgesim$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\tomawac$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\damo$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\parallel$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
@@ -63,7 +72,7 @@ airwik2.f          airwik3.f  amr_plan.f bil3d.f    bissel.f \
 bord3d.f           bypass_crushed_points_seg.f    bypass_crushed_points_ebe.f  calcg.f  calcot.f  check.f \
 clsedi.f           coef.f     complete_ebe_fluint.f    condim.f   condis.f   t3d_corfon.f \
 correction_depth_3d.f    coupe.f    cstkep.f   cvdf3d.f \
-debimp3d.f         debimp_3d.f      dessed.f  diag_murd.f \
+debimp3d.f         debimp_3d.f           dessed.f  diag_murd.f \
 diff3d.f           drialg.f   dricv.f    driuti.f   drsurr.f \
 erodc.f            erodnc.f   erode.f    exchange_with_atmosphere.f \
 extmsk.f           findksce.f flot3d.f flupri.f flused.f fluver_2.f \
@@ -85,13 +94,14 @@ wave_equation.f    wcturb.f   wstarw.f   wstar.f
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.o)
+TEMP = $(SRCS:.f=.o)
+OBJS = $(TEMP:.F=.o)
 
 #
 # ------------------------ Cibles
 #
 #--- La librairie (non installée)
-ALL: $(MODS) $(LIBRARY) $(EXEDEF)
+ALL: $(LIBRARY) $(EXEDEF)
 
 exedef:         $(EXEDEF)
 
@@ -138,25 +148,3 @@ libprofile:
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
 	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
 	nmake /f makefile.gfo install  "MODE=p"
-
-#------- Modules
-#
-MODS = *.o
-
-declarations_telemac3d.o:
-    $(F90) $(F90_PROJ) declarations_telemac3d.f
-    if EXIST $(DEST)\lib\declarations_telemac3d.mod del /f $(DEST)\lib\declarations_telemac3d.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move declarations_telemac3d.mod $(DEST)\lib
-
-interface_telemac3d.o:
-    $(F90) $(F90_PROJ) interface_telemac3d.f
-    if EXIST $(DEST)\lib\interface_telemac3d.mod del /f $(DEST)\lib\interface_telemac3d.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move interface_telemac3d.mod $(DEST)\lib
-
-exchange_with_atmosphere.o:
-    $(F90) $(F90_PROJ) exchange_with_atmosphere.f
-    if EXIST $(DEST)\lib\exchange_with_atmosphere.mod del /f $(DEST)\lib\exchange_with_atmosphere.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move exchange_with_atmosphere.mod $(DEST)\lib

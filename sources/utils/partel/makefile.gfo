@@ -4,7 +4,7 @@
 # Makefile de PARALLEL pour WindowsNT (GFORTRAN/G95).
 #
 # ATTENTION : doit être lancé dans le répertoire adéquat :
-#                   parallel*/.../sources.
+#                   sources/utils/partel/.
 #
 # Modes supportés :
 #        % maktel
@@ -20,7 +20,7 @@ VERSION    = V6P3
 
 
 
-DIRINC = $(PROJECT)\builds\$(dirlib)\lib
+DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
 
 #
 FCO       = $(FC_OPT_COMPIL)
@@ -33,7 +33,16 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 # ----- Règles de compilation Fortran
 #
 .f.o:
-    $(F90) $(F90_PROJ) $<
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
+		
+.F.o:
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
 #
 #----- Paramétrage Telemac
 #
@@ -46,24 +55,24 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\damo$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\parallel$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
-                $(LK_LIB_SPECIAL) $(LIBS_MPI)
+                $(LK_LIB_SPECIAL) $(LIBS_MPI) $(LIB_METIS)
 
 #------------------------ Liste des fichiers
 #
 #------- Sources Fortran
 
-SRCS	      = partel.F pares3d.f partitioner.F
+SRCS = partel.F pares3d.f partitioner.F
 
 #
 #------- Objets
 #
-TEMP = $(SCRS:.f=.o)
+TEMP = $(SRCS:.f=.o)
 OBJS = $(TEMP:.F=.o)
 #
 #------------------------ Cibles
 #
 #--- La librairie (non installée)
-ALL: $(MODS) $(LIBRARY) $(EXEDEF)
+ALL: $(EXEDEF)
 
 exedef:         $(EXEDEF)
 
@@ -78,7 +87,7 @@ exedef:         $(EXEDEF)
 	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS) $(LKLIB)
 	echo "Termine."
 
-#--- Suppression des ".obj" (existants) + ".lib"
+#--- Suppression des ".o" (existants) + ".lib"
 menage:  $(SRCS)
 	@echo  -
 	@echo ---------------------Destruction de tous les objets.
@@ -106,6 +115,3 @@ libprofile:
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
 	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
 	nmake /f makefile.gfo install  "MODE=p"
-
-#------- Modules
-#

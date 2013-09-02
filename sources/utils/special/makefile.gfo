@@ -19,7 +19,7 @@ VERSION    = V6P3
 
 
 
-DIRINC = $(PROJECT)\builds\$(dirlib)\lib
+DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
 
 #
 FCO       = $(FC_OPT_COMPIL)
@@ -31,8 +31,18 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
+
 .f.o:
-    $(F90) $(F90_PROJ) $<
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
+		
+.F.o:
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
 #
 #----- Paramétrage Telemac
 #
@@ -53,7 +63,8 @@ check_allocate.f plante.f
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.o)
+TEMP = $(SRCS:.f=.o)
+OBJS = $(TEMP:.F=.o)
 
 #
 # ------------------------ Cibles
@@ -97,12 +108,4 @@ libprofile:
 	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
 	nmake /f makefile.gfo install  "MODE=p"
 
-#--- Modules
-#
-MODS =   *.o
-gracestop.o:
-    $(F90) $(F90_PROJ) gracestop.f
-    if EXIST $(DIRINC)\gracestop.mod del /f $(DIRINC)\gracestop.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move gracestop.mod $(DIRINC)
 

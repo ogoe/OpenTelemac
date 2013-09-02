@@ -31,8 +31,16 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
-.f.obj:
-    $(F90) $(F90_PROJ) $<  
+.f.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
+.F.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
 #
 #----- Paramétrage Telemac
 #
@@ -52,7 +60,16 @@ check_allocate.f plante.f
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.obj)
+.f.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
+.F.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
 
 #
 # ------------------------ Cibles
@@ -63,7 +80,7 @@ ALL: $(LIBRARY)
 "$(LIBRARY)" : $(OBJS)
 	@echo  -
 	@echo ---------------------Création de la librairie. WNT
-	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME)$(LIBRARY) $(OBJS)
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
 
 #--- Suppression des ".obj" (existants) + ".lib"
 menage:  $(SRCS) 

@@ -19,7 +19,7 @@ VERSION    = V6P3
 
 
 
-DIRINC = $(PROJECT)\builds\$(dirlib)\lib
+DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
 
 #
 FCO       = $(FC_OPT_COMPIL)
@@ -31,8 +31,17 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
-.f.o:
+.f.o:                                                                                                  
+    @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
     $(F90) $(F90_PROJ) $<
+    @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+    @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
+
+.F.o:                                                                                                  
+    @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+    $(F90) $(F90_PROJ) $<
+    @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+    @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
 #
 #----- Paramétrage Telemac
 #
@@ -77,10 +86,10 @@ suspension_fredsoe.f       suspension_vanrijn.f\
 bedload_einst.f            flusec_sisyphe.f           fluxpr_sisyphe.f\
 bedload_engel.f            bedload_vanrijn.f          suspension_listing.f\
 bedload_engel_cc.f        bedload_seccurrent.f       bilan_sisyphe.f\
-suspension_main.f    suspension_bilan_coh.f\
+suspension_main.f        suspension_bilan_coh.f\
 bedload_evol.f             calcuw.f     disimp.f      lecdon_sisyphe.f   \
 bedload_formula.f          leclis.f                   suspension_rouse.f\
-tobw_sisyphe.f\
+tobw_sisyphe.f   suspension_miles.f\
 coefro_sisyphe.f           maskab.f                         tob_sisyphe.f\
 bedload_hiding_factor.f    condim_sisyphe.f           mean_grain_size.f\
 ride_vr.f\
@@ -102,19 +111,18 @@ cvsp_compress_clean.f cvsp_compress_dp.f cvsp_init.f \
 cvsp_init_from_layers.f 	cvsp_integrate_volume.f cvsp_main.f\
 cvsp_make_actlay.f cvsp_outputfiles.f cvsp_p.f\
 cvsp_rm_fraction.f cvsp_write_profile.f layers_p.f\
-cvsp_output_init.f lecdon_split_outputpoints.f\
-suspension_miles.f
+cvsp_output_init.f lecdon_split_outputpoints.f
 
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.o)
-
+TEMP = $(SRCS:.f=.o)
+OBJS = $(TEMP:.F=.o)
 #
 # ------------------------ Cibles
 #
 #--- La librairie (non installée)
-ALL: $(MODS) $(LIBRARY) $(EXEDEF)
+ALL: $(LIBRARY) $(EXEDEF)
 
 exedef:         $(EXEDEF)
 
@@ -161,36 +169,3 @@ libprofile:
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
 	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
 	nmake /f makefile.gfo install  "MODE=p"
-
-#------- Modules
-#
-MODS = *.o
-declarations_sisyphe.o:
-    $(F90) $(F90_PROJ) declarations_sisyphe.f
-    if EXIST $(DEST)\lib\declarations_sisyphe.mod del /f $(DEST)\lib\declarations_sisyphe.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move declarations_sisyphe.mod $(DEST)\lib
-
-mod_io_sisyphe.o:
-    $(F90) $(F90_PROJ) mod_io_sisyphe.f
-    if EXIST $(DEST)\lib\io_sisyphe.mod del /f $(DEST)\lib\io_sisyphe.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move io_sisyphe.mod $(DEST)\lib
-
-interface_sisyphe.o:
-    $(F90) $(F90_PROJ) interface_sisyphe.f
-    if EXIST $(DEST)\lib\interface_sisyphe.mod del /f $(DEST)\lib\interface_sisyphe.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move interface_sisyphe.mod $(DEST)\lib
-
-interface_sisyphe_bedload.o:
-    $(F90) $(F90_PROJ) interface_sisyphe_bedload.f
-    if EXIST $(DEST)\lib\interface_sisyphe_bedload.mod del /f $(DEST)\lib\interface_sisyphe_bedload.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move interface_sisyphe_bedload.mod $(DEST)\lib
-
-interface_sisyphe_suspension.o:
-    $(F90) $(F90_PROJ) interface_sisyphe_suspension.f
-    if EXIST $(DEST)\lib\interface_sisyphe_suspension.mod del /f $(DEST)\lib\interface_sisyphe_suspension.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-    move interface_sisyphe_suspension.mod $(DEST)\lib

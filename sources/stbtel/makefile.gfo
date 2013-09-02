@@ -19,7 +19,7 @@ VERSION    = V6P3
 
 
 
-DIRINC = $(PROJECT)\builds\$(dirlib)\lib
+DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
 
 #
 FCO       = $(FC_OPT_COMPIL)
@@ -32,7 +32,15 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 # ----- Règles de compilation Fortran
 #
 .f.o:
-    $(F90) $(F90_PROJ) $<
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
+.F.o:
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
 #
 #----- Paramétrage Telemac
 #
@@ -53,7 +61,7 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
 #------- Sources Fortran
 
 SRCS= \
-declarations_stbtel.f   \
+declarations_stbtel.F   \
 homere_stbtel.f             \
 circul.f             \
 cordep.f             \
@@ -112,7 +120,7 @@ OBJS = $(TEMP:.F=.o)
 # ------------------------ Cibles
 #
 #--- La librairie (non installée)
-ALL: $(MODS) $(LIBRARY) $(EXEDEF)
+ALL: $(LIBRARY) $(EXEDEF)
 
 exedef:         $(EXEDEF)
 
@@ -161,42 +169,3 @@ libprofile:
 	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)" LKO="$(LK_OPT_OPT_PROFILE)" "MODE=p"
 	nmake /f makefile.gfo install  "FCO=$(FC_OPT_PROFILE)" LKO="$(LK_OPT_OPT_PROFILE)" "MODE=p"
 
-#------- Modules
-#
-MODS = *.o
-
-declarations_stbtel.o:
-	$(FC) $(FFLAGS) declarations_stbtel.f
-	if EXIST $(DEST)\lib\declarations_stbtel.mod del /f $(DEST)\lib\declarations_stbtel.mod
- 	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-	move declarations_stbtel.mod $(DEST)\lib
-lib_vtk_io.o:
-	$(FC) $(FFLAGS) lib_vtk_io.F
-	if EXIST $(DEST)\lib\lib_vtk_io.mod del /f $(DEST)\lib\lib_vtk_io.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-	move lib_vtk_io.mod $(DEST)\lib
-conv_lim.o:
-	$(FC) $(FFLAGS) conv_lim.F
-	if EXIST $(DEST)\lib\conv_lim.mod del /f $(DEST)\lib\conv_lim.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-	move conv_lim.mod $(DEST)\lib
-conv_unv.o:
-	$(FC) $(FFLAGS) conv_unv.F
-	if EXIST $(DEST)\lib\conv_unv.mod del /f $(DEST)\lib\conv_unv.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-	move conv_unv.mod $(DEST)\lib
-conv_serafin.o:
-	$(FC) $(FFLAGS) conv_serafin.F
-	if EXIST $(DEST)\lib\conv_serafin.mod del /f $(DEST)\lib\conv_serafin.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-	move conv_serafin.mod $(DEST)\lib
-conv_med.o:
-	$(FC) $(FFLAGS) conv_med.F
-	if EXIST $(DEST)\lib\conv_med.mod del /f $(DEST)\lib\conv_med.mod
-  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-	move conv_med.mod $(DEST)\lib
-conv_cgns.o:
-	$(FC) $(FFLAGS) conv_cgns.F
-	if EXIST $(DEST)\lib\conv_cgns.mod del /f $(DEST)\lib\conv_cgns.mod
-	if NOT EXIST $(DEST)\lib\NUL mkdir $(DEST)\lib
-	move conv_cgns.mod $(DEST)\lib

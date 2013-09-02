@@ -32,8 +32,16 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
-.f.obj:
-    $(F90) $(F90_PROJ) $<  
+.f.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
+.F.obj:                                                                                                  
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
+        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib 
 #
 #----- Paramétrage Telemac
 #
@@ -67,11 +75,16 @@ SRCS_GREDELHYD= gredelhyd_autop.f
 #
 #------- Objets
 #
-OBJS_GRETEL = $(SRCS_GRETEL:.f=.obj)
-OBJS_GREDELPTS = $(SRCS_GREDELPTS:.f=.obj)
-OBJS_GREDELSEG = $(SRCS_GREDELSEG:.f=.obj)
-OBJS_GREDELMET = $(SRCS_GREDELMET:.f=.obj)
-OBJS_GREDELHYD = $(SRCS_GREDELHYD:.f=.obj)
+TEMP = $(SRCS_GRETEL:.f=.obj)
+OBJS_GRETEL = $(TEMP:.F=.obj)
+TEMP = $(SRCS_GREDELPTS:.f=.obj)
+OBJS_GREDELPTS = $(TEMP:.F=.obj)
+TEMP = $(SRCS_GREDELSEG:.f=.obj)
+OBJS_GREDELPTS = $(TEMP:.F=.obj)
+TEMP = $(SRCS_GREDELMET:.f=.obj)
+OBJS_GREDELPTS = $(TEMP:.F=.obj)
+TEMP = $(SRCS_GREDELHYD:.f=.obj)
+OBJS_GREDELPTS = $(TEMP:.F=.obj)
 #
 #------------------------ Cibles
 #
