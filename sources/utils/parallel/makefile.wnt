@@ -99,7 +99,7 @@ SRCS	      = interface_parallel.f \
 #
 #------- Objets
 #
-TEMP = $(SCRS:.f=.obj)
+TEMP = $(SRCS:.f=.obj)
 OBJS = $(TEMP:.F=.obj)
 #
 #------------------------ Cibles

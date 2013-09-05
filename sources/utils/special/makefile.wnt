@@ -60,17 +60,8 @@ check_allocate.f plante.f
 #
 #------- Objets
 #
-.f.obj:                                                                                                  
-        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-        $(F90) $(F90_PROJ) $<
-        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
-        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
-.F.obj:                                                                                                  
-        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-        $(F90) $(F90_PROJ) $<
-        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
-        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
-
+TEMP = $(SRCS:.f=.o)
+OBJS = $(TEMP:.F=.o)
 #
 # ------------------------ Cibles
 #

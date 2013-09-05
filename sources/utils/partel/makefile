@@ -57,7 +57,7 @@ LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/bief$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/parallel$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/special$(MODE)$(VERSION).a \
                 $(PROJECT)/optionals/metis-5.1.0/libmetis/libmetis.a \
-                $(LIBS_MPI)
+                $(LIBS_MPI) $(LK_LIB_SPECIAL)
 
 INSTALL	      = cp
 
