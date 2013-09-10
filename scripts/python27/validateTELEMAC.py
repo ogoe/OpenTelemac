@@ -105,12 +105,13 @@ class REPORT:
    comment = '#'
    delimiter = ','
 
-   def __init__(self):
+   def __init__(self,repname):
       self.reports = {}
-      self.fileFields = [ '[version]', 'Validation-Summary', time.strftime("%Y-%m-%d-%Hh%Mmin%Ss", time.localtime(time.time())) ]
+      self.fileFields = [ '[version]', repname, time.strftime("%Y-%m-%d-%Hh%Mmin%Ss", time.localtime(time.time())) ]
       self.fileHeader = []
 
    def add(self,root,repname,module,version):
+      if repname == '': return
       # ~~> Current file name
       self.fileFields[0] = version
       self.fileFields[1] = repname
@@ -131,6 +132,7 @@ class REPORT:
       if not self.reports[repname].has_key(module): self.reports[repname].update({ module:{}, 'file':self.fileName })
    
    def update(self,repname,module,caseName,caseValue):
+      if repname == '': return
       if self.reports.has_key(repname):
          if self.reports[repname].has_key(module):
             self.reports[repname][module].update({ caseName:caseValue })
@@ -145,31 +147,55 @@ class REPORT:
 
    def loadCore(self,fileName):
       report = {}
+      headrow = ''
       # ~~> Opening
       File = open(fileName,'r')
-      # ~~> Parsing
+      # ~~> Parsing head row
       for line in File:
          if line[0] == self.comment: continue
-         row = line.strip().split(self.delimiter)
-         if not report.has_key(row[0]): report.update({ row[0]:{}, 'file':fileName })
-         report[row[0]].update({row[1]:row[2]})
+         if headrow == '': headrow = line.strip().split(self.delimiter)
+         else:
+            corerow = line.strip().split(self.delimiter)
+            if not report.has_key(corerow[0]): report.update({ corerow[0]:{}, 'file':fileName })
+            report[corerow[0]].update({ corerow[1]:{} })
+            for i,k in zip(range(len(headrow)),corerow[2:]):
+               if k != '': report[corerow[0]][corerow[1]].update({ headrow[i+2]:k })
       # ~~> closure
       File.close()
       return report
 
-   def dump(self):
+   def dump(self):   # /!\ TODO:(JCP) Update with CSV call functionalities (?)
+      if self.reports == {}: return
       contents = {}
+      headrows = ['Module','Case']
+      # ~~> Copy the default header
       for n in self.reports.keys():
          if self.reports[n]['file'] not in contents.keys():
             content = deepcopy(self.fileHeader)
-            content.append('Module'+self.delimiter+'Case'+self.delimiter+'Duration')
             contents.update({ self.reports[n]['file']:content })
+      # ~~> Identify all entry names / keys for the header row
+      for n in self.reports.keys():                        # repname (could be "Validation-Summary")
+         for m in self.reports[n].keys():                  # codename (could be stbtel)
+            if m == 'file': continue
+            for z in self.reports[n][m].keys():            # case name (could adcirc)
+               if z == 'Case': continue
+               for k in self.reports[n][m][z].keys():      # reported keys (one of which is Duration)
+                  if k not in headrows: headrows.append(k)
+         contents[self.reports[n]['file']].append(self.delimiter.join(headrows))
+      # ~~> Line template for those absenties
+      emptyline = []
+      for k in headrows: emptyline.append('')
+      # ~~> Copy the core passed/failed vallues
       for n in self.reports.keys():
          for m in self.reports[n].keys():
             if m == 'file': continue
             for z in self.reports[n][m].keys():
                if z == 'Case': continue
-               contents[self.reports[n]['file']].append( m+self.delimiter+z+self.delimiter+str(self.reports[n][m][z]) )
+               for k in self.reports[n][m][z].keys():
+                  line = deepcopy(emptyline)
+                  line[0] = m; line[1] = z
+                  line[headrows.index(k)] = str(self.reports[n][m][z][k])
+               contents[self.reports[n]['file']].append( self.delimiter.join(line) )
       for fileName in contents.keys():
          putFileContent(fileName,contents[fileName])
 
@@ -232,8 +258,8 @@ if __name__ == "__main__":
       help="filter specific data extractions from the XML file and will only do these by default" )
    parser.add_option("--test",type="string",dest="criteria",default='',
       help="filter specific drawing actions from the XML file, and will only do these" )
-   parser.add_option("--report",action="store_true",dest="report",default=False,
-      help="will create a report summary if option is present" )
+   parser.add_option("--report",type="string",dest="report",default='',
+      help="will create a report summary of with your chosen middle name" )
 	  
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
@@ -312,7 +338,7 @@ if __name__ == "__main__":
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    xcpts = MESSAGES()
 # ~~~~ Reporting summary ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if options.report: report = REPORT()
+   report = REPORT(options.report)
 
    if args != []:
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -368,7 +394,7 @@ if __name__ == "__main__":
          cfg.update({ 'PWD':PWD })
          # gathering XMLs
          for codeName in cfg['VALIDATION'].keys():
-            if options.report: report.add(root,'Validation-Summary',codeName,cfgs[cfgname]['version'])
+            report.add(root,options.report,codeName,cfgs[cfgname]['version'])
             xmlKeys = cfg['VALIDATION'][codeName]
             if not xmls.has_key(codeName): xmls.update({codeName:{}})
             for key in xmlKeys.keys():
@@ -384,8 +410,8 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      print '\n\nLooping through all XML files ... on %s\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' % (time.ctime(time.time()))
+      print '\n\nLooping through all XML files ...\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       ixmls = 0
       for codeName in xmls.keys():
          for key in xmls[codeName]:
@@ -396,21 +422,18 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
                try:
                   tic = time.time()
-                  runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass)
+                  r = runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass)
                   toc = time.time()
-                  if options.report: report.update('Validation-Summary',codeName,key,toc-tic)
+                  r.update({'Duration (s)':toc-tic})
+                  report.update(options.report,codeName,key,r)
                except Exception as e:
                   mes = filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)
                   xcpts.addMessages([mes])
-                  if options.report: report.update('Validation-Summary',codeName,key,'failed') #\n'+reprMessage([mes]))
+                  report.update(options.report,codeName,key,{'Failure':'x'}) #\n'+reprMessage([mes]))
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<         
 # ~~~~ Writes the Validation Report in a CSV file ~~~~~~~~~~~~~~~~~~~~
-      if options.report:
-         print '\n\nWritting Validation Summary Report ... on    %s\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' % (time.ctime(time.time()))
-         report.dump()
-
+      report.dump()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -29,6 +29,7 @@
 import sys
 import re
 from os import path,remove
+from types import *
 import numpy as np
 
 # _____                   __________________________________________
@@ -116,6 +117,14 @@ class CSV:
                   self.rowvars.append(n0+':'+str(n1[i])+'_'+str(n2[j]))
                   self.rowunits.append(u0)
                self.colcore = np.vstack((self.colcore,y0[i]))
+         elif dim == 4:
+            n0,n1,n2,n3,y0 = y
+            for i in range(len(y0)):
+               for j in range(len(y0[i])):
+                  for k in range(len(y0[i][j])):
+                     self.rowvars.append(n0+':'+str(n1[i])+'_'+str(n2[j])+'_'+str(n3[k]))
+                     self.rowunits.append(u0)
+                  self.colcore = np.vstack((self.colcore,y0[i][j]))
 
    def putFileContent(self,fileName):
       if path.exists(fileName): remove(fileName)
@@ -139,6 +148,10 @@ class CSV:
          if line[0] == '#': self.rowheader.append(line.rstrip())
          else: isHead = False
       # ~~> parse variables / units
+      if ',' not in line.rstrip():
+         print '... could not find more than one column in your CSV file: ',fileName
+         print 'you need at one support column, either T(time), L(length), X and Y (coordinates), but found only ',line
+         sys.exit()
       vars = line.rstrip().split(',')
       self.colvars = vars[0]
       self.rowvars = vars[1:]

@@ -21,8 +21,8 @@
 """
 """@history 28/03/2012 -- Sebastien E. Bourban:
          2D Vector plots are now supported with the ability to extract
-         (re-interpolate) vectors on a regular mesh, given the roi
-         (region-of-interest) and the extract (="[nx,ny]").
+         (re-interpolate) vectors on a regular mesh, given the
+         extract (="[xmin;ymin][xmax;ymax][nx;ny]").
 """
 """@history 08/03/2013 -- Juliette Parisi:
          Plot1D from csv file
@@ -58,9 +58,9 @@ sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import getFileContent
 from parsers.parserCSV import CSV
 from parsers.parserSortie import getValueHistorySortie
-from parsers.parserSELAFIN import SELAFIN,getValueHistorySLF,getValuePolylineSLF,subsetVariablesSLF
+from parsers.parserSELAFIN import SELAFIN,getValueHistorySLF,getValuePolylineSLF,subsetVariablesSLF,getValuePolyplanSLF
 from samplers.meshes import xysLocateMesh,sliceMesh
-from parsers.parserStrings import parseArrayPaires
+from parsers.parserStrings import parseArrayFrame,parseArrayPoint,parseArrayGrid
 
 # _____                   __________________________________________
 # ____/ Plotting Toolbox /_________________________________________/
@@ -152,6 +152,16 @@ def decoStandard(userdeco):
       if not userdeco.has_key(key): userdeco.update({key:deco[key]})
    return userdeco
 
+def getKDTree(MESHX,MESHY,IKLE):
+   from scipy.spatial import cKDTree
+   isoxy = np.column_stack((np.sum(MESHX[IKLE],axis=1)/3.0,np.sum(MESHY[IKLE],axis=1)/3.0))
+   return cKDTree(isoxy)
+
+def getMPLTri(MESHX,MESHY,IKLE):
+   from matplotlib.tri import Triangulation
+   mpltri = Triangulation(MESHX,MESHY,IKLE).get_cpp_triangulation()
+   return mpltri.get_neighbors(),mpltri.get_edges()
+
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
 #
@@ -179,7 +189,7 @@ def openFigure(plot):
    #dpi = pltdefault['dpi']
    if plot.has_key('dpi'): dpi = plot['dpi']
    #  > plt.figure(figsize=(width,height))
-   figsize = plot["size"][0]
+   figsize = parseArrayFrame(plot["size"])
    #  > plt.figure() returns a Figure, where we can add one or more Axes instances
    fig = plt.figure(figsize=figsize)
 
@@ -261,13 +271,35 @@ class Dumper1D:
 class Dumper2D:
 
    def __init__(self):
-      self.slf = SELAFIN()
+      self.slf = SELAFIN('')
 
    def doMesh2DElements(self,elements,deco): pass #dumpMesh2DElements(plt,elements,deco)
    def doMeshLines(self,edgexy,deco): pass #dumpMeshLines(plt,edgexy,deco)
-   def doColouredTriMaps(self,data,deco): pass #dumpColouredTriMaps(plt,data,deco)
+
+   def doColouredTriMaps(self,(x,y,ikle,z),deco):
+      #if self.slf.NBV1 == 0:
+      #   self.slf.NDP3 = 3
+      #   self.slf.NELEM3 = len(ikle)
+      #   self.slf.NPOIN3 = len(x)
+      #   self.slf.NPLAN = 1
+      #   #self.slf.IPARAM
+      #   self.slf.IKLE3 = ikle
+      #   #self.slf.IPOBO
+      #   self.slf.MESHX = x
+      #   self.slf.MESHY = y
+      #self.slf.NBV1 += len(z)
+      #for ivar in range(len(z)):
+      #   iname = str(len(self.slf.VARNAMES))+'?       '
+      #   self.slf.VARNAMES.append(iname[0:8])
+      #   self.slf.VARNAMES.append('?       ')
+      #self.slf.NVAR = self.slf.NBV1
+      #self.slf.VARINDEX = range(self.slf.NVAR)
+      pass
+
    def doLabeledTriContours(self,data,deco): pass #dumpLabeledTriContours(plt,data,deco)
    def doColouredTriVects(self,data,deco): pass #dumpColouredTriVects(plt,data,deco)
+
+   def putFileContent(self,fileName): self.slf.putFileContent(fileName)
 
 # _____                        _____________________________________
 # ____/ Primary Class: FIGURE /____________________________________/
@@ -275,19 +307,19 @@ class Dumper2D:
 class Figure:
    do = None
 
-   def __init__(self,type,plot,figureName,display=False):
-      if type == 'plot1d':
+   def __init__(self,typl,plot,figureName,display=False):
+      if typl == 'plot1d':
          self.do = Drawer1D(openFigure(plot))
-      elif type == 'plot2d':
+      elif typl == 'plot2d':
          self.do = Drawer2D(openFigure(plot))
-      elif type == 'save1d':
+      elif typl == 'save1d':
          self.do = Dumper1D()
-      elif type == 'save2d':
+      elif typl == 'save2d':
          self.do = Dumper2D()
       else:
-         print '... do not know how to Figure this one out: ' + type
+         print '... do not know how to Figure this one out: ' + typl
          sys.exit()
-      self.typePlot = type
+      self.typePlot = typl
       self.figureName = figureName
       self.display = display
 
@@ -301,150 +333,340 @@ class Figure:
 class Figure1D(Figure):
    # TODO: use the names to label the curves
 
-   def draw(self,type,what):
+   def draw(self,typl,what):
 
-      if 'sortie' in type.lower():
+      if 'sortie' in typl.lower():
          # ~~> Load data
+         # what['file']: has only one file
          sortie = getFileContent(what['file'])
          # ~~> Extract data
+         # what['vars']: list of pairs variables:support delimited by ';' (/!\ support is ignored)
          data = getValueHistorySortie(sortie,what['vars'])
          # ~~> Draw/Dump data
+         # what['deco']: TODO
          self.do.doHistoryLines(data,decoStandard(what["deco"]))
 
-      elif 'csv' in type.lower():
-         # ~~> Load & Extract data
+      elif 'csv' in typl.lower():
+         # ~~> Load data
+         # what['file']: has only one file
          csv = CSV()
-         #t,data = 
          csv.getFileContent(what['file'])
+         # ~~> Extract data
+         # what['vars']: list of pairs variables:support delimited by ';' (/!\ support is ignored)
          t,data = csv.getColumns(what["vars"])
          # ~~> Draw/Dump data
+         # what['deco']: TODO
          self.do.doHistoryLines((t,[('experiment',data[0],data[1])]),decoStandard(what["deco"]))
 
-      elif 'SELAFIN' in type.upper():
+      elif 'SELAFIN' in typl.upper() or 'slf' in typl.lower():
          # ~~> Load data
          slf = SELAFIN(what['file'])
+         slf.setKDTree()
+         slf.setMPLTri()
 
-         if what['type'] == 'history':
+         if what['type'] == 'history':   # ~~> 1D time history from 2D or 3D results
             # ~~> Extract data
+            # what['vars']: list of pairs variables:support delimited by ';' (/!\ support is ignored)
             vars = subsetVariablesSLF(what["vars"],slf.VARNAMES)
-            support,tree,neighbours = xysLocateMesh(what["extract"],slf.IKLE2,slf.MESHX,slf.MESHY)
-            # - support[1] is the list of elements, one for each x,y in what["extract"]
-            # - slf.IKLE2[support[1]] is the list triplet of node, one triplet for each element
-            # - support[2] is the list of lambdas
-            t,data = getValueHistorySLF(slf.file,slf.tags,what['time'],(support[1],slf.IKLE2[support[1]],support[2]),slf.NVAR,slf.NPOIN3,vars)
+            # what['time']: list of frames or (times,) delimited by ';'
+            t = parseArrayFrame(what['time'],len(slf.tags['cores']))
+            # what['extract']: could be list delimited by ';', of:
+            #    + points (x;y),
+            #    + 2D points (x;y) bundled within (x;y)#n or (x;y)@d#n, delimited by ';'
+            #      where n is a plan number and d is depth from that plane (or the surface by default)
+            support2d = []; zps = []
+            for xyi,zpi in parseArrayPoint(what["extract"],slf.NPLAN):
+               if type(xyi) == type(()): support2d.append( xysLocateMesh(xyi,slf.IKLE2,slf.MESHX,slf.MESHY,slf.tree,slf.neighbours) )
+               else: support2d.append( xyi )
+               zps.append( zpi )
+            support3d = zip(support2d,zps)
+            # - support2d[i][0] is either the node or the triplet of nodes for each element including (x,y)
+            # - support2d[i][1] is the plan or depth definition
+            data = getValueHistorySLF(slf.file,slf.tags,t,support3d,slf.NVAR,slf.NPOIN3,slf.NPLAN,vars)
             # ~~> Draw/Dump data
-            self.do.doHistoryLines((t,[('history',vars[1],what["extract"],data)]),decoStandard(what["deco"]))
+            self.do.doHistoryLines((('Time (s)',slf.tags['times'][t]),[('history','not used','not used',data)]),decoStandard(what["deco"]))
             
          elif what['type'] == 'v-section':
             # ~~> Extract data
+            # what['vars']: list of pairs variables:support2d delimited by ';'
             vars = subsetVariablesSLF(what["vars"],slf.VARNAMES)
-            support,tree = sliceMesh(what["extract"],slf.IKLE2,slf.MESHX,slf.MESHY)
-            d,xy,t,data = getValuePolylineSLF(slf.file,slf.tags,what['time'],support,slf.TITLE,slf.NVAR,slf.NPOIN3,vars)
+            # what['time']: list of frames or (times,) delimited by ';'
+            t = parseArrayFrame(what['time'],len(slf.tags['cores']))
+            # what['extract']: could be list delimited by ';', of:
+            #    + points (x;y),
+            #    + 2D points (x;y) bundled within (x;y)#n or (x;y)@d#n, delimited by ';'
+            #      where n is a plan number and d is depth from that plane (or the surface by default)
+            xyo = []; zpo = []
+            for xyi,zpi in parseArrayPoint(what["extract"],slf.NPLAN):
+               if type(xyi) == type(()): xyo.append(xyi)
+               else: xyo.append( (slf.MESHX[xyi],slf.MESHY[xyi]) )
+               for p in zpi:                         # /!\ common deinition of plans
+                  if p not in zpo: zpo.append(p)     # /!\ only allowing plans for now
+            xys,support2d = sliceMesh(xyo,slf.IKLE2,slf.MESHX,slf.MESHY,slf.tree)
+            # - support2d[i][0] is either the douplets of nodes for each edges crossing with the polyline
+            # - support2d[i][1] is the plan or depth definition
+            support3d = []
+            for s2d in support2d: support3d.append( (s2d,zpo) )   # common vertical definition to all points
+            data = getValuePolylineSLF(slf.file,slf.tags,t,support3d,slf.NVAR,slf.NPOIN3,slf.NPLAN,vars)
+            # Distance d-axis
+            distot = 0.0
+            d = [ distot ]
+            for xy in range(len(xys)-1):
+               distot += np.sqrt( np.power(xys[xy+1][0]-xys[xy][0],2) + np.power(xys[xy+1][1]-xys[xy][1],2) )
+               d.append(distot)
             # ~~> Draw/Dump data
-            self.do.doPolylineLines((d,[('v-section',vars[1],t,data)]),decoStandard(what["deco"]))
+            self.do.doPolylineLines((('Distance (m)',d),[('v-section',vars[1],t,zpo,data)]),decoStandard(what["deco"]))
 
          else: print '... do not know how to draw this type: ' + what['type']
 
       else:
-         print '... do not know how to draw this format: ' + type
+         print '... do not know how to draw this format: ' + typl
 
 class Figure2D(Figure):
 
-   def draw(self,type,what):
-
-      # ~~> Load data
-      slf = SELAFIN(what['file'])
+   def draw(self,typl,what):
 
       # /!\ WACLEO: Temporary fix because TOMAWAC's IOs names are not yet standard TELEMAC
-      if 'WACLEO' in type.upper() or \
-         'SELAFIN' in type.upper():
+      if 'WACLEO' in typl.upper() or \
+         'SELAFIN' in typl.upper() or \
+         'slf' in typl.lower():
+
+         # ~~> Load data
+         slf = SELAFIN(what['file'])
+         slf.setKDTree()
+         slf.setMPLTri()
 
          # ~~> Extract data
          elements = None; edges = []; edgexy = []
 
-         # ~~> Deco
-         xmin = np.min(slf.MESHX); xmax = np.max(slf.MESHX)
-         ymin = np.min(slf.MESHY); ymax = np.max(slf.MESHY)
-         if what.has_key('roi'):
-            if what['roi'] != []:
-               xmin = min(what['roi'][0][0],what['roi'][1][0])
-               xmax = max(what['roi'][0][0],what['roi'][1][0])
-               ymin = min(what['roi'][0][1],what['roi'][1][1])
-               ymax = max(what['roi'][0][1],what['roi'][1][1])
-         deco['roi'] = [[xmin,ymin],[xmax,ymax]]
+         if what['type'] == 'v-section':
+            
+            # ~~> Extract variable data for only one time frame
+            # what['time']: list of frames or (times,) delimited by ';'
+            t = parseArrayFrame(what['time'],len(slf.tags['cores']))
+            if len(t) != 1: print '... the time definition should only have one frame in this case. It is: ',what['time'],'. I will assume you wish to plot the last frame.'
+            t = [ t[len(t)-1] ]
+            # what['vars']: list of pairs variables:support2d delimited by ';', include 'Z' I hope
+            vars = []; vtypes = []
+            for var in what["vars"].split(';'):
+               v,vtype = var.split(':')
+               vars.append( v ); vtypes.append( vtype )
+            vars = subsetVariablesSLF(';'.join(vars),slf.VARNAMES)
+            # what['extract']: could be list delimited by ';', of:
+            #    + points (x;y),
+            #    + 2D points (x;y) bundled within (x;y)#n or (x;y)@d#n, delimited by ';'
+            #      where n is a plan number and d is depth from that plane (or the surface by default)
+            xyo = []; zpo = []
+            for xyi,zpi in parseArrayPoint(what["extract"],slf.NPLAN):
+               if type(xyi) == type(()): xyo.append(xyi)
+               else: xyo.append( (slf.MESHX[xyi],slf.MESHY[xyi]) )
+               for p in zpi:                         # /!\ common deinition of plans
+                  if p not in zpo: zpo.append(p)     # /!\ only allowing plans for now
 
-         for var in what["vars"].split(';'):
-            v,t = var.split(':')
+            # ~~> Extract horizontal mesh
+            xys,support2d = sliceMesh(xyo,slf.IKLE2,slf.MESHX,slf.MESHY,slf.tree)
+            support3d = []
+            for s2d in support2d: support3d.append( (s2d,zpo) )   # common vertical definition to all points
+            data = getValuePolylineSLF(slf.file,slf.tags,t,support3d,slf.NVAR,slf.NPOIN3,slf.NPLAN,vars)
+            # Distance d-axis
+            distot = 0.0
+            d = [ distot ]
+            for xy in range(len(xys)-1):
+               distot += np.sqrt( np.power(xys[xy+1][0]-xys[xy][0],2) + np.power(xys[xy+1][1]-xys[xy][1],2) )
+               d.append(distot)
+            MESHX = np.repeat(d,len(zpo))
+            # ~~>  Extract Z
+            varz = subsetVariablesSLF('z',slf.VARNAMES)
+            MESHZ = 10*np.ravel( getValuePolylineSLF(slf.file,slf.tags,t,support3d,slf.NVAR,slf.NPOIN3,slf.NPLAN,varz)[0][0].T )
+            # ~~>  Connect
+            IKLE = []
+            for j in range(len(d)-1):
+               for i in range(len(zpo)-1):
+                  IKLE.append([ i+j*len(zpo),i+(j+1)*len(zpo),i+1+j*len(zpo) ])
+                  IKLE.append([ i+1+j*len(zpo),i+(j+1)*len(zpo),i+1+(j+1)*len(zpo) ])
+            IKLE = np.array(IKLE)
 
-            if "mesh" in t:
-               # ~~> Extract mesh connectivity
-               if elements == None: elements = np.dstack((slf.MESHX[slf.IKLE2],slf.MESHY[slf.IKLE2]))
-               # ~~> Draw/Dump (works with triangles and quads)
-               self.do.doMesh2DElements(elements,decoStandard(what["deco"]))
+            # ~~> Possible re-sampling
+            support2d = []
+            if what["sample"] != '':
+               supMESHX = []; supMESHZ = []
+               supIKLE = []
+               for grid in parseArrayGrid(what["sample"],[(min(MESHX),min(MESHZ)),(max(MESHX),max(MESHZ))]):
+                  mx,my = np.meshgrid(np.linspace(grid[0][0], grid[1][0], grid[2][0]+1),np.linspace(grid[0][1], grid[1][1], grid[2][1]+1))
+                  # splitting quad into triangles
+                  dimy = len(mx)
+                  dimx = len(mx[0])
+                  for j in range(dimy-1):
+                     for i in range(dimx-1):
+                        supIKLE.append([ i+j*dimx,i+1+j*dimx,i+(j+1)*dimx ])
+                        supIKLE.append([ i+1+j*dimx,i+1+(j+1)*dimx,i+(j+1)*dimx ])
+                  mx = np.concatenate(mx); my = np.concatenate(my)
+                  supMESHX.extend(mx)
+                  supMESHZ.extend(my)
+                  for xyo in zip(mx,my): support2d.append( xysLocateMesh(xyo,IKLE,MESHX,MESHZ,getKDTree(MESHX,MESHZ,IKLE),getMPLTri(MESHX,MESHZ,IKLE)[0]) )
+               IKLE = np.array(supIKLE)
+               MESHX = np.array(supMESHX)
+               MESHZ = np.array(supMESHZ)
 
-            elif "wire" in t:
-               # ~~> Extract unique edges and outline /!\ assumes all same clowise orientation
-               if edges == []:
-                  for e in slf.IKLE2:
-                     for n in range(slf.NDP2):
-                        if (e[n],e[(n+1)%slf.NDP2]) not in edges: edges.append((e[(n+1)%slf.NDP2],e[n]))
-                  # ~~> Assemble wires
-                  for e in edges:
-                     edgexy.append(( (slf.MESHX[e[0]],slf.MESHY[e[0]]) , (slf.MESHX[e[1]],slf.MESHY[e[1]]) ))
-               # ~~> Draw/Dump (works with triangles and quads)
-               self.do.doMeshLines(edgexy,decoStandard(what["deco"]))
+            # ~~> Loop on variables
+            for var in what["vars"].split(';'):
+               v,vtype = var.split(':')
 
-            else:
-               # ~~> Extract variable data
-               VARSORS = []
-               frame = 0
-               if what.has_key('time'):
-                  frame = int(what['time'][0])
-                  if frame < 0: frame = max( 0, len(slf.tags['cores']) + frame )
-                  else: frame = max( frame,len(slf.tags['cores'])-1 )
-               slf.file.seek(slf.tags['cores'][frame])
-               slf.file.read(4+4+4)
-               for ivar in range(slf.NVAR):
-                  slf.file.read(4)
-                  if v.upper() in slf.VARNAMES[ivar].strip():
-                     VARSORS.append(np.asarray(unpack('>'+str(slf.NPOIN3)+'f',slf.file.read(4*slf.NPOIN3))))
-                  else:
-                     slf.file.read(4*slf.NPOIN3)
-                  slf.file.read(4)
-               # ~~> Multi-variables calculations
-               MESHX = np.array(slf.MESHX); MESHY = np.array(slf.MESHY)
-               if len(VARSORS) > 1:
-                  if "arrow" in t or "angle" in t:
-                     if what['extract'] != []:
-                        dx = (xmax-xmin)/float(what['extract'][0][0])
-                        dy = (ymax-ymin)/float(what['extract'][0][1])
-                        grid = np.meshgrid(np.arange(xmin, xmax+dx, dx),np.arange(ymin, ymax+dy, dy))
-                        MESHX = np.concatenate(grid[0]); MESHY = np.concatenate(grid[1])
-                        support,tree,neighbours = xysLocateMesh(np.dstack((MESHX,MESHY))[0],slf.IKLE2,slf.MESHX,slf.MESHY)
-                        le,ln,bn = support[1],slf.IKLE2[support[1]],support[2]
-                        VARSOR = [np.zeros(len(le),np.float32),np.zeros(len(le),np.float32)]
-                        for xy in range(len(bn)):
-                           if le[xy] >= 0:
-                              VARSOR[0][xy] = bn[xy][0]*VARSORS[0][ln[xy][0]] + bn[xy][1]*VARSORS[0][ln[xy][1]] + bn[xy][2]*VARSORS[0][ln[xy][2]]
-                              VARSOR[1][xy] = bn[xy][0]*VARSORS[1][ln[xy][0]] + bn[xy][1]*VARSORS[1][ln[xy][1]] + bn[xy][2]*VARSORS[1][ln[xy][2]]
-                  else:
-                     t = "map"
-                     VARSOR = np.sqrt(np.sum(np.power(np.dstack(VARSORS[0:2])[0],2),axis=1))
+               # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               if "mesh" in vtype:
+                  # ~~> Extract mesh connectivity
+                  if elements == None: elements = np.dstack((MESHX[IKLE],MESHZ[IKLE]))
+                  # ~~> Draw/Dump (works with triangles and quads)
+                  self.do.doMesh2DElements(elements,decoStandard(what["deco"]))
+
+               # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               elif "wire" in vtype:
+
+                  if support2d != []:
+                     print '... you cannot "wire" and "sample" at the same time yet with this layer: ',var
+                     sys.exit()
+                  # ~~> Extract unique edges and outline /!\ assumes all same clowise orientation
+                  if edgexy == []:
+                     # ~~> Bottom row
+                     for j in range(len(d)-1): edgexy.append(((MESHX[j*len(zpo)],MESHZ[j*len(zpo)]),(MESHX[(j+1)*len(zpo)],MESHZ[(j+1)*len(zpo)])))
+                     # ~~> Left column
+                     for i in range(len(zpo)-1): edgexy.append(((MESHX[i],MESHZ[i]),(MESHX[i+1],MESHZ[i+1])))
+                     # ~~> Top rows and Right columns
+                     for j in range(len(d)-1):
+                        for i in range(len(zpo)-1):
+                           edgexy.append(((MESHX[i+1+(j+1)*len(zpo)],MESHZ[i+1+(j+1)*len(zpo)]),(MESHX[i+1+j*len(zpo)],MESHZ[i+1+j*len(zpo)])))
+                           edgexy.append(((MESHX[i+(j+1)*len(zpo)],MESHZ[i+(j+1)*len(zpo)]),(MESHX[i+1+(j+1)*len(zpo)],MESHZ[i+1+(j+1)*len(zpo)])))
+                  # ~~> Draw/Dump (works with triangles and quads)
+                  self.do.doMeshLines(edgexy,decoStandard(what["deco"]))
+
                else:
-                  VARSOR = VARSORS[0]
-               # ~~> Element types
-               if slf.NDP3 == 3: IKLE = np.array(slf.IKLE2)
-               elif slf.NDP3 == 4:
-                  # ~~> split each quad into triangles
-                  IKLE = np.delete(np.concatenate((slf.IKLE2,np.roll(slf.IKLE2,2,axis=1))),np.s_[3::],axis=1)
-               # ~~> Draw/Dump (multiple options possible)
-               if "map" in t: self.do.doColouredTriMaps((slf.MESHX,slf.MESHY,IKLE,VARSOR),decoStandard(what["deco"]))
-               if "label" in t: self.do.doLabeledTriContours((slf.MESHX,slf.MESHY,slf.IKLE2,VARSOR),decoStandard(what["deco"]))
-               if "arrow" in t: self.do.doColouredTriVects((MESHX,MESHY,VARSOR,False),decoStandard(what["deco"]))
-               if "angle" in t: self.do.doColouredTriVects((MESHX,MESHY,VARSOR,True),decoStandard(what["deco"]))
+                  vars = subsetVariablesSLF(v,slf.VARNAMES)
+                  VARSORS = []
+                  for ivar in range(len(vars[0])): VARSORS.append( np.ravel(data[ivar][0].T) )
+
+                  # ~~> Re-sampling
+                  if support2d != []:
+                     data = np.zeros((len(vars[0]),len(support2d)),dtype=np.float64)
+                     for ivar in range(len(vars[0])):
+                        for ipt in range(len(support2d)):
+                           ln,bn = support2d[ipt]
+                           data[ivar][ipt] = 0.0
+                           for inod in range(len(bn)):                  # /!\ node could be outside domain
+                              if ln[inod] >=0: data[ivar][ipt] += bn[inod]*VARSORS[ivar][ln[inod]]
+                     VARSORS = data
+
+                  # ~~> Multi-variables calculations
+                  if len(VARSORS) > 1:
+                     if "map" in vtype: VARSORS = [ np.sqrt(np.sum(np.power(np.dstack(VARSORS[0:3:2])[0],2),axis=1)) ]
+                  # ~~> Draw/Dump (multiple options possible)
+                  if "map" in vtype: self.do.doColouredTriMaps((MESHX,MESHZ,IKLE,VARSORS[0]),decoStandard(what["deco"]))
+                  if "label" in vtype: self.do.doLabeledTriContours((MESHX,MESHZ,IKLE,VARSORS[0]),decoStandard(what["deco"]))
+                  if "arrow" in vtype: self.do.doColouredTriVects((MESHX,MESHZ,VARSORS,False),decoStandard(what["deco"]))
+                  if "angle" in vtype: self.do.doColouredTriVects((MESHX,MESHZ,VARSORS,True),decoStandard(what["deco"]))
+                  
+         else: # if what['type'] != 'v-section'
+
+            # ~~> Possible re-sampling
+            support2d = []
+            if what["sample"] != '':
+               MESHX = []; MESHY = []
+               IKLE = []
+               for grid in parseArrayGrid(what["sample"],[(min(slf.MESHX),min(slf.MESHY)),(max(slf.MESHX),max(slf.MESHY))]):
+                  mx,my = np.meshgrid(np.linspace(grid[0][0], grid[1][0], grid[2][0]+1),np.linspace(grid[0][1], grid[1][1], grid[2][1]+1))
+                  # splitting quad into triangles
+                  dimy = len(mx)
+                  dimx = len(mx[0])
+                  for j in range(dimy-1):
+                     for i in range(dimx-1):
+                        IKLE.append([ i+j*dimx,i+1+j*dimx,i+(j+1)*dimx ])
+                        IKLE.append([ i+1+j*dimx,i+1+(j+1)*dimx,i+(j+1)*dimx ])
+                  mx = np.concatenate(mx); my = np.concatenate(my)
+                  MESHX.extend(mx)
+                  MESHY.extend(my)
+                  for xyo in zip(mx,my): support2d.append( xysLocateMesh(xyo,slf.IKLE2,slf.MESHX,slf.MESHY,slf.tree,slf.neighbours) )
+               IKLE = np.array(IKLE)
+               MESHX = np.array(MESHX)
+               MESHY = np.array(MESHY)
+
+            # ~~> Default MESH
+            else:
+               MESHX = np.array(slf.MESHX); MESHY = np.array(slf.MESHY)
+               # work on the mesh of 2D triangles
+               if slf.NDP2 == 3: IKLE = np.array(slf.IKLE2)
+               # split each quad into triangles
+               elif slf.NDP2 == 4: IKLE = np.delete(np.concatenate((slf.IKLE2,np.roll(slf.IKLE2,2,axis=1))),np.s_[3::],axis=1)
+
+            # ~~> Loop on variables
+            for var in what["vars"].split(';'):
+               v,vtype = var.split(':')
+
+               # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               if "mesh" in vtype:
+                  # ~~> Extract mesh connectivity
+                  if elements == None: elements = np.dstack((MESHX[IKLE],MESHY[IKLE]))
+                  # ~~> Draw/Dump (works with triangles and quads)
+                  self.do.doMesh2DElements(elements,decoStandard(what["deco"]))
+
+               # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               elif "wire" in vtype:
+                  # ~~> Extract unique edges and outline /!\ assumes all same clowise orientation
+                  if edges == []:
+                     for e in IKLE:
+                        for n in range(slf.NDP2):
+                           if (e[n],e[(n+1)%slf.NDP2]) not in edges: edges.append((e[(n+1)%slf.NDP2],e[n]))
+                     # ~~> Assemble wires
+                     for e in edges:
+                        edgexy.append(( (MESHX[e[0]],MESHY[e[0]]) , (MESHX[e[1]],MESHY[e[1]]) ))
+                  # ~~> Draw/Dump (works with triangles and quads)
+                  self.do.doMeshLines(edgexy,decoStandard(what["deco"]))
+
+               # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               else:
+                  # ~~> Extract variable data for only one time frame and one plane
+                  # what['time']: list of frames or (times,) delimited by ';'
+                  t = parseArrayFrame(what['time'],len(slf.tags['cores']))
+                  if len(t) != 1: print '... the time definition should only have one frame in this case. It is: ',what['time'],'. I will assume you wish to plot the last frame.'
+                  t = [ t[len(t)-1] ]
+                  # what['vars']: list of pairs variables:support2d delimited by ';'
+                  vars = subsetVariablesSLF(v,slf.VARNAMES)
+                  # what['extract']: could be list delimited by ';', of:
+                  #    + points (x;y),
+                  #    + 2D points (x;y) bundled within (x;y)#n or (x;y)@d#n, delimited by ';'
+                  #      where n is a plan number and d is depth from that plane (or the surface by default)
+                  xyo = []; zpo = []
+                  for xyi,zpi in parseArrayPoint(what["extract"],slf.NPLAN):
+                     if xyi == [] or type(xyi) == type(()): xyo.append(xyi)
+                     else: xyo.append( (slf.MESHX[xyi],slf.MESHY[xyi]) )
+                     for p in zpi:                         # /!\ common deinition of plans
+                        if p not in zpo: zpo.append(p)     # /!\ only allowing plans for now
+                  if len(zpo) != 1: print '... the vertical definition should only have one plan in this case. It is: ',what['extract'],'. I will assume you wish to plot the higher plane.'
+                  # could be more than one variables including v, but only one time frame t and one plan
+                  data = getValuePolyplanSLF(slf.file,slf.tags,t,zpo,slf.NVAR,slf.NPOIN3,slf.NPLAN,vars)
+                  VARSORS = []
+                  for ivar in range(len(data)): VARSORS.append( data[ivar][0][0] )
+
+                  # ~~> Re-sampling
+                  if support2d != []:
+                     data = np.zeros((len(vars[0]),len(support2d)),dtype=np.float64)
+                     for ivar in range(len(vars[0])):
+                        for ipt in range(len(support2d)):
+                           ln,bn = support2d[ipt]
+                           data[ivar][ipt] = 0.0
+                           for inod in range(len(bn)):                  # /!\ node could be outside domain
+                              if ln[inod] >=0: data[ivar][ipt] += bn[inod]*VARSORS[ivar][ln[inod]]
+                     VARSORS = data
+
+                  # ~~> Multi-variables calculations
+                  if len(VARSORS) > 1:
+                     if "map" in vtype: VARSORS = [ np.sqrt(np.sum(np.power(np.dstack(VARSORS[0:2])[0],2),axis=1)) ]
+                  # ~~> Draw/Dump (multiple options possible)
+                  if "map" in vtype: self.do.doColouredTriMaps((MESHX,MESHY,IKLE,VARSORS[0]),decoStandard(what["deco"]))
+                  if "label" in vtype: self.do.doLabeledTriContours((MESHX,MESHY,IKLE,VARSORS[0]),decoStandard(what["deco"]))
+                  if "arrow" in vtype: self.do.doColouredTriVects((MESHX,MESHY,VARSORS,False),decoStandard(what["deco"]))
+                  if "angle" in vtype: self.do.doColouredTriVects((MESHX,MESHY,VARSORS,True),decoStandard(what["deco"]))
 
       else:
-         print '... do not know how to draw this format: ' + type
+         print '... do not know how to draw this format: ' + typl
 
       slf.file.close()
 
@@ -496,7 +718,7 @@ if __name__ == "__main__":
 
       fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\1\\wing95s\\t2d_bumpflu_v1p0.cas_2011-11-23-13h40min12s.sortie'
       figure.draw( draw['type'], { 'file':fileName, 'type': 'history',
-         'time':parseArrayPaires("[0;-1]")[0], 'vars':'voltotal:time' })
+         'time':parseArrayFrame("[0;-1]")[0], 'vars':'voltotal:time' })
 
       figure.show()
 
@@ -507,8 +729,8 @@ if __name__ == "__main__":
 
       fileName = 'C:\\home\\opentelemac\\trunk\\telemac2d\\tel2d_v6p2\\validation\\011_bumpflu\\f2d_bumpflu.slf'
       figure.draw( draw['type'], { 'file':fileName, 'type': 'history',
-         'extract': parseArrayPaires('[10;1][0;1]'),
-         'time':parseArrayPaires("[0;-1]")[0],'vars': 'surface libre:time' })
+         'extract': parseArrayPoint('[10;1][0;1]'),
+         'time':parseArrayFrame("[0;-1]")[0],'vars': 'surface libre:time' })
 
       figure.show()
 
@@ -519,8 +741,8 @@ if __name__ == "__main__":
 
       fileName = 'C:\\home\\opentelemac\\trunk\\telemac2d\\tel2d_v6p2\\validation\\011_bumpflu\\f2d_bumpflu.slf'
       figure.draw( draw['type'], { 'file':fileName, 'type': 'v-section',
-         'extract': parseArrayPaires('[0.0;1.0][20.0;1.0]'),
-         'time':parseArrayPaires("[-1]")[0],'vars': 'surface libre:distance;fond:distance' })
+         'extract': parseArrayPoint('[0.0;1.0][20.0;1.0]'),
+         'time':parseArrayFrame("[-1]")[0],'vars': 'surface libre:distance;fond:distance' })
 
       figure.show()
 
@@ -534,7 +756,7 @@ if __name__ == "__main__":
 
       fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\1\\wintels\\geo_bumpflu_v1p0.slf'
       figure.draw( draw['type'], { 'file':fileName,
-         'time':parseArrayPaires("[-1]")[0],'vars': 'fond:map' })
+         'time':parseArrayFrame("[-1]")[0],'vars': 'fond:map' })
 
       figure.show()
 
@@ -548,7 +770,7 @@ if __name__ == "__main__":
 
       fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\pwc_cali071-darwin_v6p2w1_2009-02-08-00.spc'
       figure.draw( draw['type'], { 'file':fileName,
-         'time':parseArrayPaires("[-1]")[0],'vars': 'f01:map' })
+         'time':parseArrayFrame("[-1]")[0],'vars': 'f01:map' })
 
       figure.show()
 

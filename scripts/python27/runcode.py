@@ -599,19 +599,50 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    # ~~ Read the principal CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cas,lang = processCAS(casFile,dico,frgb)
    # ~~ Forces run in parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   nctile = 0
+   ncnodes = 0
+   if options.nctile != '' and options.ncnodes != '':
+      nctile = max( 1,int(options.nctile) )
+      ncnodes = max( 1,int(options.ncnodes) )
+      ncsize = ncnodes*nctile
+      if lang == 1: cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,ncsize)
+      if lang == 2: cas = setKeyValue('PARALLEL PROCESSORS',cas,frgb,ncsize)
    if options.ncsize != '':
-      if lang == 1: cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(options.ncsize))
-      if lang == 2: cas = setKeyValue('PARALLEL PROCESSORS',cas,frgb,int(options.ncsize))
+      if options.nctile != '':
+         nctile = max( 1,int(options.nctile) )
+         ncnodes = int( max( 1,int(options.ncsize) ) / nctile )
+         ncsize = ncnodes*nctile
+      if options.ncnodes != '':
+         ncnodes = max( 1,int(options.ncnodes) )
+         nctile = int( max( 1,int(options.ncsize) ) / ncnodes )
+         ncsize = ncnodes*nctile
+      if options.nctile != '' and options.ncnodes != '':
+         ncnodes = 1
+         ncsize = max( 1,int(options.ncsize) )
+         nctile = ncsize
+      if lang == 1: cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,ncsize)
+      if lang == 2: cas = setKeyValue('PARALLEL PROCESSORS',cas,frgb,ncsize)
+   else:
+      ncsize = getNCSIZE(cas,dico,frgb)
+      if options.nctile != '':
+         nctile = max( 1,int(options.nctile) )
+         ncnodes = int( ncsize / nctile )
+         ncsize = ncnodes*nctile
+      if options.ncnodes != '':
+         ncnodes = max( 1,int(options.ncnodes) )
+         nctile = int( ncsize / ncnodes )
+         ncsize = ncnodes*nctile
+      if options.nctile != '' and options.ncnodes != '':
+         ncnodes = 1
+         nctile = ncsize
+      if lang == 1: cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,ncsize)
+      if lang == 2: cas = setKeyValue('PARALLEL PROCESSORS',cas,frgb,ncsize)
+
    # ~~ Consistency checks ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if not checkConsistency(cas,dico,frgb,cfg):
       raise Exception([{'name':'runCAS','msg':'inconsistent CAS file: '+casFile+ \
          '    +> you may be using an inappropriate configuration: '+cfgName+ \
          '    +> or may be wishing for parallel mode while using scalar configuration'}])
-   ncsize = getNCSIZE(cas,dico,frgb)
-   nctile = max( 1,int(options.nctile) )
-   ncnodes = int(ncsize/nctile)
-   if ncnodes*nctile != ncsize:
-      raise Exception([{'name':'runCAS','msg':'ncsize not a multiple of nctile'}])
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    CASDir = path.dirname(casFile)
@@ -867,101 +898,49 @@ if __name__ == "__main__":
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configname",
-                      type="string",
-                      dest="configName",
-                      default=USETELCFG,
-                      help="specify configuration name, default is randomly found in the configuration file" )
-   parser.add_option("-f", "--configfile",
-                      type="string",
-                      dest="configFile",
-                      default=SYSTELCFG,
-                      help="specify configuration file, default is systel.cfg" )
-   parser.add_option("-r", "--rootdir",
-                      type="string",
-                      dest="rootDir",
-                      default='',
-                      help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",
-                      type="string",
-                      dest="version",
-                      default='',
-                      help="specify the version number, default is taken from config file" )
-   parser.add_option("-s", "--sortiefile",
-                      action="store_true",
-                      dest="sortieFile",
-                      default=False,
-                      help="specify whether there is a sortie file, default is no" )
-   parser.add_option("-t", "--tmpdirectory",
-                      action="store_false",
-                      dest="tmpdirectory",
-                      default=True,
-                      help="specify whether the temporary directory is removed, default is yes" )
-   parser.add_option("-x", "--compileonly",
-                      action="store_true",
-                      dest="compileonly",
-                      default=False,
-                      help="specify whether to only create an executable but not run, default is no" )
-   parser.add_option("-w", "--workdirectory",
-                      type="string",
-                      dest="wDir",
-                      default='',
-                      help="specify whether to re-run within a defined subdirectory" )
-   parser.add_option("--jobname",
-                      type="string",
-                      dest="jobname",
-                      default='job_unamed',
-                      help="specify a jobname for HPC queue tracking" )
-   parser.add_option("--queue",
-                      type="string",
-                      dest="hpc_queue",
-                      default='',
-                      help="specify a queue for HPC queue tracking" )
-   parser.add_option("--walltime",
-                      type="string",
-                      dest="walltime",
-                      default='01:00:00',
-                      help="specify a walltime for HPC queue tracking" )
-   parser.add_option("--email",
-                      type="string",
-                      dest="email",
-                      default='s.bourban@hrwallingford.com',
-                      help="specify an e-mail adress to warn when HPC job is finished" )
-   parser.add_option("--hosts",
-                      type="string",
-                      dest="hosts",
-                      default='',
-                      help="specify the list of hosts available for parallel mode, ';' delimited" )
-   parser.add_option("--ncsize",
-                      type="string",
-                      dest="ncsize",
-                      default='',
-                      help="the number of processors forced in parallel mode" )
-   parser.add_option("--nctile",
-                      type="string",
-                      dest="nctile",
-                      default='1',
-                      help="the number of core per node. ncsize/nctile is the number of compute nodes" )
-   parser.add_option("--split",
-                      action="store_true",
-                      dest="split",
-                      default=False,
-                      help="will only do the trace (and the split in parallel) if option there" )
-   parser.add_option("--merge",
-                      action="store_true",
-                      dest="merge",
-                      default=False,
-                      help="will only do the output copying (and recollection in parallel) if option there" )
-   parser.add_option("--run",
-                      action="store_true",
-                      dest="run",
-                      default=False,
-                      help="will only run the simulation if option there" )
-   parser.add_option("--hpc",
-                      action="store_true",
-                      dest="hpc",
-                      default=False,
-                      help="Run hpc_cmdexec instead of runcode.py" )
+   # ~~> Environment
+   parser.add_option("-c", "--configname",type="string",dest="configName",default=USETELCFG,
+      help="specify configuration name, default is randomly found in the configuration file" )
+   parser.add_option("-f", "--configfile",type="string",dest="configFile",default=SYSTELCFG,
+      help="specify configuration file, default is systel.cfg" )
+   parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',
+      help="specify the root, default is taken from config file" )
+   parser.add_option("-v", "--version",type="string",dest="version",default='',
+      help="specify the version number, default is taken from config file" )
+   parser.add_option("-s", "--sortiefile",action="store_true",dest="sortieFile",default=False,
+      help="specify whether there is a sortie file, default is no" )
+   parser.add_option("-t", "--tmpdirectory",action="store_false",dest="tmpdirectory",default=True,
+      help="specify whether the temporary directory is removed, default is yes" )
+   parser.add_option("-x", "--compileonly",action="store_true",dest="compileonly",default=False,
+      help="specify whether to only create an executable but not run, default is no" )
+   parser.add_option("-w", "--workdirectory",type="string",dest="wDir",default='',
+      help="specify whether to re-run within a defined subdirectory" )
+   # ~~> HPC / parallel
+   parser.add_option("--jobname",type="string",dest="jobname",default='job_unamed',
+      help="specify a jobname for HPC queue tracking" )
+   parser.add_option("--queue",type="string",dest="hpc_queue",default='',
+      help="specify a queue for HPC queue tracking" )
+   parser.add_option("--walltime",type="string",dest="walltime",default='01:00:00',
+      help="specify a walltime for HPC queue tracking" )
+   parser.add_option("--email",type="string",dest="email",default='s.bourban@hrwallingford.com',
+      help="specify an e-mail adress to warn when HPC job is finished" )
+   parser.add_option("--hosts",type="string",dest="hosts",default='',
+      help="specify the list of hosts available for parallel mode, ';' delimited" )
+   parser.add_option("--ncsize",type="string",dest="ncsize",default='',
+      help="the number of processors forced in parallel mode" )
+   parser.add_option("--nctile",type="string",dest="nctile",default='',
+      help="the number of core per node. ncsize/nctile is the number of compute nodes" )
+   parser.add_option("--ncnodes",type="string",dest="ncnodes",default='',
+      help="the number of of nodes. ncsize = ncnodes*nctile is the total number of compute nodes" )
+   parser.add_option("--hpc",action="store_true",dest="hpc",default=False,
+      help="Run hpc_cmdexec instead of runcode.py" )
+   # ~~> Computation parts
+   parser.add_option("--split",action="store_true",dest="split",default=False,
+      help="will only do the trace (and the split in parallel) if option there" )
+   parser.add_option("--merge",action="store_true",dest="merge",default=False,
+      help="will only do the output copying (and recollection in parallel) if option there" )
+   parser.add_option("--run",action="store_true",dest="run",default=False,
+      help="will only run the simulation if option there" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'

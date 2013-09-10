@@ -93,16 +93,34 @@ def drawMesh2DElements(plt,elements,deco):
    # ~~> Plot data
    #ex: fig = plt.figure(1,figsize=(3.0,4.0),dpi=100), where figsize is in inches
    crax.add_collection(colection)   # adds, or plots our collection
-   xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
-   ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
+   if deco.has_key('roi'):
+      xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
+      ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
+   else:
+      xmin = np.min( elements.T[0][0] )
+      xmax = np.max( elements.T[0][0] )
+      ymin = np.min( elements.T[1][0] )
+      ymax = np.max( elements.T[1][0] )
+      for npd in range(len(elements[0][0])):
+         xmin = min( xmin,np.min( elements.T[0][npd] ) )
+         xmax = max( xmax,np.max( elements.T[0][npd] ) )
+         ymin = min( ymin,np.min( elements.T[1][npd] ) )
+         ymax = max( ymax,np.max( elements.T[1][npd] ) )
    if deco.has_key('crax.xlim'):
       xmin -= deco['crax.xlim']; xmax += deco['crax.xlim']
    if deco.has_key('crax.ylim'):
       ymin -= deco['crax.ylim']; ymin += deco['crax.ylim']
+   cmin,cmax = crax.get_xlim()
+   if xmin > cmin: xmin = cmin
+   if xmax < cmax: xmax = cmax
+   cmin,cmax = crax.get_ylim()
+   if ymin > cmin: ymin = cmin
+   if ymax < cmax: ymax = cmax
    crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
    crax.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
    #plt.axis([np.min(x0),np.max(x0),np.min(y0),np.max(y0)])
-   crax.axis('equal')         # sets both axis scale to be equal
+   #crax.axis('equal')         # sets both axis scale to be equal
+   crax.set_aspect('equal')
    #curax.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
 
    return
@@ -116,8 +134,8 @@ def drawMeshLines(plt,edges,deco):
    crax = plt.gca()
    # ~~>  Collections
    colection = collections.LineCollection(
-      edges, antialiaseds=0, # cmap=cm.jet, norm=plt.Normalize()
-      linewidth=1 ) #colors = 'k', 
+      edges, antialiaseds=0,  # cmap=cm.jet ,norm=plt.Normalize(),
+      linewidth=1 ) #colors = 'k',
    #colection.set_zorder(deco['zorder'])
 
    #colection.set_array(val)       # each element colour dependent on its value from its verticies
@@ -125,15 +143,30 @@ def drawMeshLines(plt,edges,deco):
    # ~~> Plot data
    #ex: fig = plt.figure(1,figsize=(3.0,4.0),dpi=100), where figsize is in inches
    crax.add_collection(colection, autolim=True)   # adds, or plots our collection
-   xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
-   ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
+   if deco.has_key('roi'):
+      xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
+      ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
+   else:
+      (xmin,ymin),(xmax,ymax) = edges[0]
+      for edge in edges:
+         if xmin > edge[0][0]: xmin = edge[0][0]
+         if ymin > edge[0][1]: ymin = edge[0][1]
+         if xmax < edge[1][0]: xmax = edge[1][0]
+         if ymax < edge[1][1]: ymax = edge[1][1]
    if deco.has_key('crax.xlim'):
       xmin -= deco['crax.xlim']; xmax += deco['crax.xlim']
    if deco.has_key('crax.ylim'):
       ymin -= deco['crax.ylim']; ymin += deco['crax.ylim']
+   cmin,cmax = crax.get_xlim()
+   if xmin > cmin: xmin = cmin
+   if xmax < cmax: xmax = cmax
+   cmin,cmax = crax.get_ylim()
+   if ymin > cmin: ymin = cmin
+   if ymax < cmax: ymax = cmax
    crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
-   crax.set_ylim(ymim,ymax)   # sets y axis limits, default 0-1
-   crax.axis('equal')         # sets both axis scale to be equal
+   crax.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
+   #crax.axis('equal')         # sets both axis scale to be equal
+   crax.set_aspect('equal')
 
    return
 
@@ -214,15 +247,26 @@ def drawLabeledTriContours(plt,(x,y,ikle,z),deco):
    #l,b,w,h = plt.gca().get_position().bounds
    #ll,bb,ww,hh = CB.ax.get_position().bounds
    #CB.ax.set_position([ll, b+0.1*h, ww, h*0.8])
-   xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
-   ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
+   if deco.has_key('roi'):
+      xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
+      ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
+   else:
+      xmin = np.min(x); ymin = np.min(y)
+      xmax = np.max(x); ymax = np.max(y)
    if deco.has_key('crax.xlim'):
       xmin -= deco['crax.xlim']; xmax += deco['crax.xlim']
    if deco.has_key('crax.ylim'):
       ymin -= deco['crax.ylim']; ymin += deco['crax.ylim']
+   cmin,cmax = crax.get_xlim()
+   if xmin > cmin: xmin = cmin
+   if xmax < cmax: xmax = cmax
+   cmin,cmax = crax.get_ylim()
+   if ymin > cmin: ymin = cmin
+   if ymax < cmax: ymax = cmax
    crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
-   crax.set_ylim(ymim,ymax)   # sets y axis limits, default 0-1
-   crax.axis('equal')         # sets both axis scale to be equal
+   crax.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
+   #crax.axis('equal')         # sets both axis scale to be equal
+   crax.set_aspect('equal')
 
    return
 
@@ -240,15 +284,26 @@ def drawColouredTriMaps(plt,(x,y,ikle,z),deco):
    plt.tricontourf(x,y,ikle, z, cmap=colourmap)
    # adds numbers along the iso-contours
    plt.clabel(cs,fontsize=9,inline=1)
-   xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
-   ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
+   if deco.has_key('roi'):
+      xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
+      ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
+   else:
+      xmin = np.min(x); ymin = np.min(y)
+      xmax = np.max(x); ymax = np.max(y)
    if deco.has_key('crax.xlim'):
       xmin -= deco['crax.xlim']; xmax += deco['crax.xlim']
    if deco.has_key('crax.ylim'):
       ymin -= deco['crax.ylim']; ymin += deco['crax.ylim']
+   cmin,cmax = crax.get_xlim()
+   if xmin > cmin: xmin = cmin
+   if xmax < cmax: xmax = cmax
+   cmin,cmax = crax.get_ylim()
+   if ymin > cmin: ymin = cmin
+   if ymax < cmax: ymax = cmax
    crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
    crax.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
-   crax.axis('equal')         # sets both axis scale to be equal
+   #crax.axis('equal')         # sets both axis scale to be equal
+   crax.set_aspect('equal')
    #mp.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
    #if geometry.has_key('cmapPlot'): fig.colorbar(colection)     # sets up colourbar
    #if geometry.has_key('cmapPlot'): fig.colorbar(colormap)     # sets up colourbar
@@ -271,15 +326,26 @@ def drawColouredTriVects(plt,(x,y,uv,normalised),deco):
    cs.set_array(z)
    #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')
    # adds numbers along the iso-contours
-   xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
-   ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
+   if deco.has_key('roi'):
+      xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
+      ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
+   else:
+      xmin = np.min(x); ymin = np.min(y)
+      xmax = np.max(x); ymax = np.max(y)
    if deco.has_key('crax.xlim'):
       xmin -= deco['crax.xlim']; xmax += deco['crax.xlim']
    if deco.has_key('crax.ylim'):
       ymin -= deco['crax.ylim']; ymin += deco['crax.ylim']
+   cmin,cmax = crax.get_xlim()
+   if xmin > cmin: xmin = cmin
+   if xmax < cmax: xmax = cmax
+   cmin,cmax = crax.get_ylim()
+   if ymin > cmin: ymin = cmin
+   if ymax < cmax: ymax = cmax
    crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
    crax.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
-   crax.axis('equal')         # sets both axis scale to be equal
+   #crax.axis('equal')         # sets both axis scale to be equal
+   crax.set_aspect('equal')
    #mp.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
    #if geometry.has_key('cmapPlot'): fig.colorbar(colection)     # sets up colourbar
    #if geometry.has_key('cmapPlot'): fig.colorbar(colormap)     # sets up colourbar

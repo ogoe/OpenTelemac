@@ -234,25 +234,22 @@ def traceRay2XY(IKLE,MESHX,MESHY,neighbours,ei,xyi,en,xyn):
    # ~~> you should not be here !
    return False,pnt
 
-def xysLocateMesh(xys,IKLE,MESHX,MESHY,tree=None,neighbours=None):
-   # ~~ Re-sampling nodes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   ipt = []; iet = []; ibr = []
-   
-   for xyo in xys:
-      # ~~> get to the nearest element
-      oet = -1; obr = [0.0,0.0,0.0]
-      eo,bo,tree = nearLocateMesh(xyo,IKLE,MESHX,MESHY,tree)
-      if bo == []:
-         found,ray,neighbours = xyTraceMesh(eo,[np.sum(MESHX[IKLE[eo]])/3.0,np.sum(MESHY[IKLE[eo]])/3.0],xyo,IKLE,MESHX,MESHY,neighbours)
-         if found:
-            obr = ray['b'][ray['n']]
-            oet = ray['e'][ray['n']]
-      else:
-         obr = bo
-         oet = eo
-      ipt.append(xyo); iet.append(oet); ibr.append(obr)
+def xysLocateMesh(xyo,IKLE,MESHX,MESHY,tree=None,neighbours=None):
 
-   return (ipt,iet,ibr),tree,neighbours
+   # ~~> get to the nearest element
+   oet = -1; obr = [0.0,0.0,0.0]
+   eo,bo,tree = nearLocateMesh(np.array(xyo),IKLE,MESHX,MESHY,tree)
+   if bo == []:
+      found,ray,neighbours = xyTraceMesh(eo,[np.sum(MESHX[IKLE[eo]])/3.0,np.sum(MESHY[IKLE[eo]])/3.0],xyo,IKLE,MESHX,MESHY,neighbours)
+      if found:
+         obr = ray['b'][ray['n']]
+         oet = ray['e'][ray['n']]
+   else:
+      obr = bo
+      oet = eo
+
+   if oet == -1: return [-1,-1,-1],obr
+   return IKLE[oet],obr
 
 def crossMesh(polyline,IKLE,MESHX,MESHY,tree=None,neighbours=None):
    """
@@ -313,30 +310,26 @@ def sliceMesh(polyline,IKLE,MESHX,MESHY,tree=None):
    A new method to slice through a triangular mesh (replaces crossMesh)
    """
    from matplotlib.tri import Triangulation
-   ipt = []; iet = []; ibr = []
+   xys = []
+   douplets = []
    # ~~> Calculate the minimum mesh resolution
    dxy = math.sqrt(min(np.square(np.sum(np.fabs(MESHX[IKLE]-MESHX[np.roll(IKLE,1)]),axis=1)/3.0) + \
             np.square(np.sum(np.fabs(MESHY[IKLE]-MESHY[np.roll(IKLE,1)]),axis=1)/3.0)))
    accuracy = np.power(10.0, -8+np.floor(np.log10(dxy)))
 
-   xyo = polyline[0]
+   xyo = np.array(polyline[0])
    for i in range(len(polyline)-1):
-      xyi = polyline[i+1]
+      xyi = np.array(polyline[i+1])
       dio = math.sqrt(sum(np.square(xyo-xyi)))
 
       # ~~> Resample the line to that minimum mesh resolution
       rsmpline = np.dstack((np.linspace(xyo[0],xyi[0],num=int(dio/dxy)),np.linspace(xyo[1],xyi[1],num=int(dio/dxy))))[0]
       nbpoints = len(rsmpline)
-
-      # ~~> Create the KDTree of the iso-barycentres
-      if tree == None:
-         from scipy.spatial import cKDTree
-         isoxy = np.column_stack((np.sum(MESHX[IKLE],axis=1)/3.0,np.sum(MESHY[IKLE],axis=1)/3.0))
-         tree = cKDTree(isoxy)
+      nbneighs = min( 8,len(IKLE) )
       # ~~> Filter closest 8 elements (please create a good mesh) as a halo around the polyline
-      halo = np.zeros((nbpoints,8),dtype=np.int)
+      halo = np.zeros((nbpoints,nbneighs),dtype=np.int)
       for i in range(nbpoints):
-         d,e = tree.query(rsmpline[i],8)
+         d,e = tree.query(rsmpline[i],nbneighs)
          halo[i] = e
       halo = np.unique(halo)
 
@@ -350,7 +343,7 @@ def sliceMesh(polyline,IKLE,MESHX,MESHY,tree=None):
          if getDistancePointToLine((MESHX[node],MESHY[node]),xyo,xyi) < accuracy: olah.append(node)
       ijsect = zip(olah,olah)
       xysect = [(MESHX[i],MESHY[i]) for i in olah]
-      lmsect = [ 1.0 for i in range(len(ijsect)) ]
+      lmsect = [ (1.0,0.0) for i in range(len(ijsect)) ]
       mask = np.zeros((len(edges),2),dtype=bool)
       for i in olah:
          mask = np.logical_or( edges == i  , mask )
@@ -362,19 +355,19 @@ def sliceMesh(polyline,IKLE,MESHX,MESHY,tree=None):
          if xyj != []:
             ijsect.append(edge)     # nodes from the mesh
             xysect.append(tuple(xyj[0]))   # intersection (xo,yo)
-            lmsect.append(xyj[1])   # weight along each each
+            lmsect.append((xyj[1],1.0-xyj[1]))   # weight along each each
 
       # ~~> Final sorting along keys x and y
       xysect = np.array(xysect, dtype=[('x', '<f4'), ('y', '<f4')])
       xysort = np.argsort(xysect, order=('x','y'))
 
       # ~~> Move on to next point
-      ipt.extend([ xysect[i] for i in xysort ])
-      iet.extend([ ijsect[i] for i in xysort ])
-      ibr.extend([ lmsect[i] for i in xysort ])
+      for i in xysort:
+         xys.append( xysect[i] )
+         douplets.append( (ijsect[i],lmsect[i]) )
       xyo = xyi
 
-   return (ipt,iet,ibr),tree
+   return xys,douplets
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/

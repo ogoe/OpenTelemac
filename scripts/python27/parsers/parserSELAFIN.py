@@ -49,6 +49,10 @@
          Massively speeding up the cross-sectioning through meshes, which
             is now implemented within samplers / meshes.py
 """
+"""@history 31/07/2013 -- Sebastien E. Bourban:
+         Allowing for the 3D extraction of timeseries, etc. including the new
+            method getValuePolyplanSLF
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -76,7 +80,7 @@ def subsetVariablesSLF(vars,ALLVARS):
    ids = []; names = []
    # vars has the form "var1:object;var2:object;var3;var4"
    # /!\ the ; separator might be a problem for command line action
-   v = vars.split(';')
+   v = vars.replace(',',';').split(';')
    for ivar in range(len(v)):
       vi = v[ivar].split(':')[0]
       for jvar in range(len(ALLVARS)):
@@ -90,39 +94,48 @@ def subsetVariablesSLF(vars,ALLVARS):
 
    return ids,names
 
-def getValueHistorySLF( f,tags,time,(le,ln,bn),NVAR,NPOIN3,(varsIndexes,varsName) ):
-
-   # ~~ Subset time ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # /!\ History requires 2 values, both values should be integers starting from 0 to -1, just like frame
-   if len(time) != 2:
-      print "... A time history needs 2 frames. You seem to wish to extract ",len(time)," frame(s)."
-      sys.exit()
-   for i in range(len(time)):
-      if time[i] < 0: time[i] = max( 0, len(tags['cores']) + time[i] )
-      else: time[i] = min( time[i], len(tags['cores'])-1 )
-   subset = []
-   for t in range(len(tags['cores'])):
-      if t >= time[0] and t <= time[1]: subset.append(t)
-   if len(subset) < 3:
-      print "... A time history needs 2 frames. I could not find any time stamps given the interval: ",time
-      sys.exit()
+def getValueHistorySLF( f,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsName) ):
+   """
+      Extraction of time series at points.
+      A point could be:
+      (a) A point could be a node 2D associated with one or more plan number
+      (b) A pair (x,y) associated with one or more plan number
+/!\   Vertical interpolation has not been implemented yet.
+      Arguments:
+      - time: the discrete list of time frame to extract from the time history
+      - support: the list of points
+      - varsIndexes: the index in the NVAR-list to the variable to extract
+   """
+   # ~~ Total size of support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   lens = 0
+   for xy,zp in support: lens += len(zp)
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   z = np.zeros((len(varsIndexes),len(bn),len(subset)))
-   for t in range(len(subset)):
-      f.seek(tags['cores'][subset[t]])
-      f.seek(4+4+4,1)
-      for ivar in range(NVAR):
-         f.seek(4,1)
-         if ivar in varsIndexes:
+   z = np.zeros((len(varsIndexes),lens,len(time)))
+   for it in range(len(time)):            # it is from 0 to len(time)-1
+      f.seek(tags['cores'][time[it]])     # time[it] is the frame to be extracted
+      f.seek(4+4+4,1)                     # the file pointer is initialised
+      for ivar in range(NVAR):            # ivar is from 0 to NVAR-1
+         f.seek(4,1)                      # the file pointer advances through all records to keep on track
+         if ivar in varsIndexes:          # extraction of a particular variable
             VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
-            for xy in range(len(bn)):
-               z[varsIndexes.index(ivar)][xy][t] = bn[xy][0]*VARSOR[ln[xy][0]] + bn[xy][1]*VARSOR[ln[xy][1]] + bn[xy][2]*VARSOR[ln[xy][2]]
+            ipt = 0                       # ipt is from 0 to lens-1 (= all points extracted and all plans extracted)
+            for xy,zp in support:
+               if type(xy) == type(()):   # xp is a pair (x,y) and you need interpolation
+                  for plan in zp:   # /!\ only list of plans is allowed for now
+                     z[varsIndexes.index(ivar)][ipt][it] = 0.
+                     ln,bn = xy
+                     for inod in range(len(bn)): z[varsIndexes.index(ivar)][ipt][it] += bn[inod]*VARSOR[ln[inod]+plan*NPOIN3/NPLAN]
+                     ipt += 1             # ipt advances to keep on track
+               else:
+                  for plan in zp:   # /!\ only list of plans is allowed for now
+                     z[varsIndexes.index(ivar)][ipt][it] = VARSOR[xy+plan*NPOIN3/NPLAN]
+                     ipt += 1             # ipt advances to keep on track
          else:
-            f.seek(4*NPOIN3,1)
+            f.seek(4*NPOIN3,1)            # the file pointer advances through all records to keep on track
          f.seek(4,1)
 
-   return ('Time (s)',tags['times'][subset]),z
+   return z
 
 def getEdgesSLF(IKLE,MESHX,MESHY,showbar=True):
 
@@ -186,42 +199,69 @@ def getNeighboursSLF(IKLE,MESHX,MESHY,showbar=True):
 
    return neighbours
 
-def getValuePolylineSLF(f,tags,time,(p,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,varsName)):
-   # TODO: rework subset of time with 3 frames or more, whether
-   #    they define a range or a series of frames. The later is assumed for now
-   # ~~ Subset time ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if len(time) < 1:
-      print "... At least 1 frames is asked for."
-      sys.exit()
-   subset = []
-   for i in range(len(time)):
-      if time[i] < 0: subset.append(max( 0, len(tags['cores']) + time[i] ))
-      else: subset.append(max( time[i], len(tags['cores'])-1 ))
+def getValuePolylineSLF(f,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsName)):
+   """
+      Extraction of longitudinal profiles along lines.
+      A line is made of points extracted from sliceMesh:
+      A point is a pair (x,y) associated with one or more plan number
+/!\   Vertical interpolation has not been implemented yet.
+      Arguments:
+      - time: the discrete list of time frame to extract from the time history
+      - support: the list of points intersecting th mesh
+      - varsIndexes: the index in the NVAR-list to the variable to extract
+   """
+   # ~~ Total size of support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   lens = len(support[0][1])
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   z = np.zeros((len(varsIndexes),len(subset),len(p))) #,len(tags['cores'])))
-   # ~~ Extract distances along ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # TODO: convert x into a numpy array calculation
-   d = 0.0
-   x = [ d ]
-   for xy in range(len(p)-1):
-      d = d + np.sqrt( np.power(p[xy+1][0]-p[xy][0],2) + np.power(p[xy+1][1]-p[xy][1],2) )
-      x.append(d)
+   z = np.zeros((len(varsIndexes),len(time),lens,len(support)),dtype=np.float64)
    # ~~ Extract data along line ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for it,t in zip(range(len(subset)),subset):   # /!\ assumes a series of frames
-      f.seek(tags['cores'][t])
-      f.read(4+4+4)
-      for ivar in range(NVAR):
-         f.read(4)
-         if ivar in varsIndexes:
+   for it in range(len(time)):            # it is from 0 to len(time)-1
+      f.seek(tags['cores'][time[it]])     # time[it] is the frame to be extracted
+      f.read(4+4+4)                       # the file pointer is initialised
+      for ivar in range(NVAR):            # ivar is from 0 to NVAR-1
+         f.read(4)                        # the file pointer advances through all records to keep on track
+         if ivar in varsIndexes:          # extraction of a particular variable
             VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
-            for xy in range(len(p)):
-               z[varsIndexes.index(ivar)][it][xy] = bn[xy]*VARSOR[ln[xy][0]] + (1.0-bn[xy])*VARSOR[ln[xy][1]]
+            for ipt in range(len(support)):  # ipt is from 0 to lens-1 (= all points extracted and all plans extracted)
+               xy,zp = support[ipt]
+               for ipl in range(len(zp)):    # /!\ only list of plans is allowed for now
+                  z[varsIndexes.index(ivar)][it][ipl][ipt] = 0.
+                  ln,bn = xy
+                  for inod in range(len(bn)): z[varsIndexes.index(ivar)][it][ipl][ipt] += bn[inod]*VARSOR[ln[inod]+zp[ipl]*NPOIN3/NPLAN]
          else:
-            f.read(4*NPOIN3)
+            f.read(4*NPOIN3)              # the file pointer advances through all records to keep on track
          f.read(4)
 
-   return ('Distance (m)',x),p,subset,z
+   return z
+
+def getValuePolyplanSLF(f,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsName)):
+   """
+      Extraction of variables at a list of times on a list of planes.
+      A plane is an integer
+/!\   Vertical interpolation has not been implemented yet.
+      Arguments:
+      - time: the discrete list of time frame to extract from the time history
+      - support: the list of planes
+      - varsIndexes: the index in the NVAR-list to the variable to extract
+   """
+   # ~~ Extract planes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   z = np.zeros((len(varsIndexes),len(time),len(support),NPOIN3/NPLAN),dtype=np.float64) #,len(tags['cores'])))
+   # ~~ Extract data on several planes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   for it in range(len(time)):            # it is from 0 to len(time)-1
+      f.seek(tags['cores'][time[it]])     # time[it] is the frame to be extracted
+      f.read(4+4+4)                       # the file pointer is initialised
+      for ivar in range(NVAR):            # ivar is from 0 to NVAR-1
+         f.read(4)                        # the file pointer advances through all records to keep on track
+         if ivar in varsIndexes:          # extraction of a particular variable
+            VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
+            for ipl in range(len(support)):  # ipt is from 0 to len(support) (= all plans extracted)
+               z[varsIndexes.index(ivar)][it][ipl] = VARSOR[support[ipl]*NPOIN3/NPLAN:(support[ipl]+1)*NPOIN3/NPLAN]
+         else:
+            f.read(4*NPOIN3)              # the file pointer advances through all records to keep on track
+         f.read(4)
+
+   return z
 
 # _____                  ___________________________________________
 # ____/ Primary Classes /__________________________________________/
@@ -359,6 +399,9 @@ class SELAFIN:
          self.NBV2 = 0; self.CLDNAMES = []; self.CLDUNITS = []
          self.IKLE3 = []; self.IKLE2 = []; self.IPOB2 = []; self.IPOB3 = []; self.MESHX = []; self.MESHY = []
          self.tags = { 'cores':[],'times':[] }
+      self.tree = None
+      self.neighbours = None
+      self.edges = None
 
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #   Parsing the Big-Endian binary file
@@ -572,6 +615,19 @@ class SELAFIN:
             f.seek(4,1)
       if showbar: pbar.finish()
       return z
+
+   def setKDTree(self,set=False):
+      if set or self.tree == None:
+         from scipy.spatial import cKDTree
+         isoxy = np.column_stack((np.sum(self.MESHX[self.IKLE2],axis=1)/3.0,np.sum(self.MESHY[self.IKLE2],axis=1)/3.0))
+         self.tree = cKDTree(isoxy)
+
+   def setMPLTri(self,set=False):
+      if set or self.neighbours == None or self.edges == None:
+         from matplotlib.tri import Triangulation
+         mpltri = Triangulation(self.MESHX,self.MESHY,self.IKLE2).get_cpp_triangulation()
+         self.neighbours = mpltri.get_neighbors()
+         self.edges = mpltri.get_edges()
 
    def __del__(self): self.file.close()
 
