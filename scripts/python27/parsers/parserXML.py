@@ -486,7 +486,8 @@ class actionRUN(ACTION):
       setattr(specs,'merge', options.merge)
       if options.ncsize != '' and self.active["ncsize"] != '': self.active["ncsize"] = options.ncsize
       setattr(specs,'ncsize', self.active["ncsize"])
-      setattr(specs,'nctile', '1')    # default but should not be used for validation
+      setattr(specs,'nctile', '')    # default but should not be used for validation
+      setattr(specs,'ncnodes', '')    # default but should not be used for validation
       setattr(specs,'bypass',self.bypass)
 
       # ~~> check on sorties and run
@@ -1376,7 +1377,7 @@ def runXML(xmlFile,xmlConfig,bypass):
                   for x in xlayers.split('|'): xys.append( (x+';'+layer['config']).strip(';') )
                xlayers = '|'.join(xys)
          if xlayers == '':
-            xcpt.append(filterMessage({'name':'runXML','msg':'could not find reference to draw the action: '+xref},e))
+            xcpt.append({'name':'runXML','msg':'could not find reference to draw the action: '+target})
             continue
 
          nbFile = 0; alayers = xlayers.split('|')
