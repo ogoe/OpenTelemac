@@ -31,7 +31,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AUBOR          |<--| LAW OF FRICTION ON BOUNDARIES
 !|                |   | NUT*DU/DN=AUBOR*U+BUBOR
-!| CFBOR          |<--| ADIMENSIONAL FRICTION COEFFICIENT ON BOUNDARIES
+!| CFBOR          |-->| ADIMENSIONAL FRICTION COEFFICIENT ON BOUNDARIES
 !| DISBOR         |-->| DISTANCE BETWEEN BOUNDARY AND NEAREST POINTS INSIDE
 !| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
 !| KARMAN         |-->| VON KARMAN CONSTANT

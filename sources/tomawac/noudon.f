@@ -115,7 +115,10 @@
       DOUBLE PRECISION DAT2B(1),Z(1),C,COEF
       CHARACTER(LEN=3) C1
       CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3)
-      LOGICAL VOID
+      LOGICAL VOID,COUUT,VENUT,MARUT
+      DATA COUUT/.FALSE./
+      DATA VENUT/.FALSE./
+      DATA MARUT/.FALSE./
 !
       INTRINSIC TRIM
 !
@@ -190,16 +193,16 @@
          ENDDO
 !        VARIABLE NOT USEFUL, JUMPING THE RECORD
          IF(VOID) READ(NDON)
-       ENDDO
+        ENDDO
 !
-       IF(TV2.LT.AT) THEN
-         IF(LNG.EQ.1) THEN
-           WRITE(LU,*) ' NOUDON : ON SAUTE 1 ENREGISTREMENT'
-         ELSEIF(LNG.EQ.2) THEN
-           WRITE(LU,*) ' NOUDON: JUMP OF 1 DATA RECORD'
-         ENDIF
-         GO TO 95
-       ENDIF
+        IF(TV2.LT.AT) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) ' NOUDON : ON SAUTE 1 ENREGISTREMENT'
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) ' NOUDON: JUMP OF 1 DATA RECORD'
+          ENDIF
+          GO TO 95
+        ENDIF
 !
        DO J=1,3
          IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
@@ -238,15 +241,18 @@
           IF(CHDON(1:1).EQ.'C') THEN
             TROUVE(1)=.TRUE.
             TROUVE(2)=.TRUE.
+            COUUT=.TRUE.
             CALL COUUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
      &                  F11,F21,F12,F22)
           ELSEIF(CHDON(1:1).EQ.'V'.OR.CHDON(1:1).EQ.'W') THEN
             TROUVE(1)=.TRUE.
             TROUVE(2)=.TRUE.
+            VENUT=.TRUE.
             CALL VENUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
      &                  F11,F21,F12,F22)
           ELSEIF(CHDON(1:1).EQ.'H') THEN
             TROUVE(3)=.TRUE.
+            MARUT=.TRUE.
             CALL MARUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
      &                  F31,F32)
           ENDIF
@@ -276,6 +282,11 @@
             ENDIF
           ENDDO
         ENDDO
+        IF(COUUT.OR.VENUT) THEN
+          TROUVE(1)=.TRUE.
+          TROUVE(2)=.TRUE.
+        ENDIF
+        IF(MARUT) TROUVE(3)=.TRUE.
 !
       ENDIF
 !

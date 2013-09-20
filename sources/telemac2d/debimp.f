@@ -36,9 +36,9 @@
 !+   Velocity updated with UBOR and VBOR eventually computed
 !
 !history  R. ATA (EDF R&D, LNHE)
-!+        24/05/2013
+!+        15/09/2013
 !+        V6P3
-!+   Back to version 6.0 for masking in finite volumes.
+!+   fixing bug with FV (imposed discharge)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| STRING DESCRIBING THE EQUATIONS SOLVED
@@ -96,31 +96,26 @@
 !  THE LAST NODE ON THE BOUNDARY. IN FACT THIS SEGMENT WILL BE SOLID
 !  AND WILL HAVE A MASK ALREADY SET TO ZERO.
 !
-      IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
+      CALL OS( 'X=0     ' , X=WORK1 )
 !
-        DO K=1,NPTFR
-          IF(NUMLIQ(K).EQ.IFRLIQ) THEN
-            WORK1%R(K)=MASK(K)
-          ELSE
-            WORK1%R(K)=0.D0
-          ENDIF
-        ENDDO
-!
-      ELSE
+      DO K=1,NPTFR
+        IF(NUMLIQ(K).EQ.IFRLIQ) THEN
+           WORK1%R(K)=MASK(K)
+        ENDIF
+      ENDDO 
 !
 !       FINITE VOLUMES INCLUDE SOLID SEGMENTS NEIGHBOURING LIQUID
 !       BOUNDARIES
 !
+      IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
         DO K=1,NPTFR
-          IF(NUMLIQ(K).EQ.IFRLIQ) THEN
+          IF(NUMLIQ(K).EQ.IFRLIQ.AND.MASK(K).GT.0.5D0) THEN ! TO AVOID TO ERASE
+                                    ! LAST NODES
             WORK1%R(K)          =MASK(K)
             WORK1%R(KP1BOR(K,1))=MASK(K)
             WORK1%R(KP1BOR(K,2))=MASK(K)
-          ELSE
-            WORK1%R(K)=0.D0
           ENDIF
         ENDDO
-!
       ENDIF
 !
       IELM=11

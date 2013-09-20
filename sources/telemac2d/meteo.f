@@ -99,14 +99,17 @@
 !        WIND VELOCITY ALONG Y (HERE FVAIR)
 !        THEY WILL BE SET ONCE FOR ALL BEFORE THE FIRST ITERATION (LT=0)
 !
-!     2: CONSTANT IN SPACE WIND COMPONENTS OF VELOCITY GIVEN IN THE FILE
-!        FO1_WIND DECLARED AS FORMATTED DATA FILE 1 = FO1_WIND 
+!     2: TIME VARYING CONSTANT IN SPACE WIND COMPONENTS OF VELOCITY 
+!        GIVEN IN THE FILE FO1_WIND DECLARED AS 
+!        FORMATTED DATA FILE 1 = FO1_WIND 
+!
+!-----------------------------------------------------------------------
 !
       MY_OPTION = 1
 !
 !-----------------------------------------------------------------------
 !
-!     BEWARE, HERE ONLY ONE COMPUTATION AT FIRST TIMESTEP
+!     AT FIRST TIMESTEP
 !
       IF(LT.EQ.0) THEN
 !

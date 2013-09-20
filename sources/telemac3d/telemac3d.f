@@ -98,6 +98,14 @@
 !+   first call to PREADV.
 !+   Mesh better updated in case of coupling with Sisyphe.
 !
+!history  J-M HERVOUET (LNHE)
+!+        20/09/2013
+!+        V6P3   
+!+   CALL PLANE_BOTTOM added at the beginning of time loop (otherwise
+!+   when calling kepcl3 IPBOT is done with ZPROP at the first iteration
+!+   and with Z for the others, while ZPROP is always sent as argument.
+!+   This could trigger unexpected divisions by 0.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -1147,6 +1155,17 @@
       IF (MOD(LT,LISPRD) == 0) INFOGR = .TRUE.
       INFOGR = LISTIN .AND. INFOGR
       IF (INFOGR) CALL MITTIT(1,AT,LT)
+!
+!=======================================================================
+!
+!     CORRECTION JMH 20/09/2013
+!            
+!     IPBOT HAS BEEN MODIFIED FOR CVDF3D IN THE PREVIOUS TIME STEP, 
+!     IT IS RESTORED HERE WITH ZPROP
+!     NOTE: DIFFERENT IPBOT_Z AND IPBOT_ZPROP WOULD BE CLEARER....
+      IF(LT.GT.1) THEN
+        CALL PLANE_BOTTOM(IPBOT%I,ZPROP%R,NPOIN2,NPLAN,SIGMAG,OPTBAN)
+      ENDIF             
 !
 !=======================================================================
 ! SOURCES : COMPUTES INPUTS WHEN VARYING IN TIME

@@ -13,7 +13,7 @@
 !note     DURING THE FIRST PASS THE USER MUST IDENTIFY THE TIMES TV1 AND TV2
 !+        WHICH SURROUND THE FIRST TIME STEP. NEXT, USING THE ARRAYS
 !+        XRELV,YRELV,UR,VR OR DIRECTLY FROM THE WIND FILE, THE USER
-!+        MAY HAVE TO INTERPOLATE THE TIDES READ FROM THE FILE INTO THE
+!+        MAY HAVE TO INTERPOLATE THE WINDS READ FROM THE FILE INTO THE
 !+        ARRAYS U1,V1 U2,V2.
 !+
 !+    INTERPOLATION SUBROUTINE FASP :
@@ -92,11 +92,19 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      WRITE(LU,*) '*********************************************'
-      WRITE(LU,*) '  VOUS FAITES APPEL A LA PROCEDURE VENUTI    '
-      WRITE(LU,*) '    (FORMAT DU FICHIER DES VENTS = 4)        '
-      WRITE(LU,*) '     MAIS VOUS NE L''AVEZ PAS MODIFIEE       '
-      WRITE(LU,*) '*********************************************'
+      IF(LNG.EQ.1) THEN
+        WRITE(LU,*) '*********************************************'
+        WRITE(LU,*) '  VOUS FAITES APPEL A LA PROCEDURE VENUTI    '
+        WRITE(LU,*) '    (FORMAT DU FICHIER DES VENTS = 4)        '
+        WRITE(LU,*) '     MAIS VOUS NE L''AVEZ PAS MODIFIEE       '
+        WRITE(LU,*) '*********************************************'
+      ELSEIF(LNG.EQ.2) THEN
+        WRITE(LU,*) '*********************************************'
+        WRITE(LU,*) '      YOU ARE CALLING SUBROUTINE VENUTI      '
+        WRITE(LU,*) '            (WINDS FILE FORMAT = 4)          '
+        WRITE(LU,*) '           BUT YOU DID NOT MODIFY IT         '
+        WRITE(LU,*) '*********************************************'
+      ENDIF
       CALL PLANTE(1)
       STOP
 !
