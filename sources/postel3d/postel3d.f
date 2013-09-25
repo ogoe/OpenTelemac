@@ -53,6 +53,7 @@
       DOUBLE PRECISION, ALLOCATABLE :: VAR(:)
       DOUBLE PRECISION, ALLOCATABLE :: SHZ(:)
       INTEGER IB(2), ERR
+      INTEGER IB2(10)
       CHARACTER(LEN=1) CB
 !
 !***********************************************************************
@@ -116,7 +117,8 @@
         ENDDO
       ENDIF
 !
-      READ(NPRE)
+      READ(NPRE) (IB2(I),I=1,10)
+      IF(IB2(10).EQ.1) READ(NPRE)
       READ(NPRE)
       READ(NPRE)
       READ(NPRE)
