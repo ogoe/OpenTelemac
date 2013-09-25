@@ -467,15 +467,15 @@ C ---------------------------------------------------------------------C
       !2/ Local variables
       !------------------
       INTEGER       :: I,K,IVAL1,IVAL2,NFILE
-      INTEGER       :: NPOIN_GLOB,NPTFR_INT_GLOB,P_ISUM
+      INTEGER       :: NPOIN_GLOB
       CHARACTER*144 :: NOMFILE
 
-      EXTERNAL P_ISUM
 !=======================================================================!
 !=======================================================================!
 !                               PROGRAMME                               !
 !=======================================================================!
 !=======================================================================!
+
       NFILE   = T2D_FILES(T2DFO1)%LU
       NOMFILE = T2D_FILES(T2DFO1)%NAME
 
@@ -485,8 +485,8 @@ C ---------------------------------------------------------------------C
       NPOIN_GLOB = 0
 
       DO 
-         READ(NFILE,*,END=666)
-         NPOIN_GLOB = NPOIN_GLOB + 1
+        READ(NFILE,*,END=666)
+        NPOIN_GLOB = NPOIN_GLOB + 1
       ENDDO
 
 666   CONTINUE      
@@ -497,10 +497,12 @@ C ---------------------------------------------------------------------C
       ! ---------
       DO I = 1,NPOIN_GLOB
          READ(NFILE,*,END=999,ERR=998) IVAL1, IVAL2
-         IF (NCSIZE>1) THEN
-            K = MESH%KNOGL%I(I)
+         IF(NCSIZE>1) THEN
+!          CORRECTION JMH 25/09/2013
+!          K = MESH%KNOGL%I(I)
+           K = GLOBAL_TO_LOCAL_POINT(I,MESH)
          ELSE
-            K = I
+           K = I
          ENDIF
          KFROPT%I(K) = IVAL2
       ENDDO
