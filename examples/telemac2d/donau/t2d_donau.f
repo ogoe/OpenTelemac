@@ -504,7 +504,9 @@ C ---------------------------------------------------------------------C
          ELSE
            K = I
          ENDIF
-         KFROPT%I(K) = IVAL2
+!        HUM, SECOND CORRECTION JMH 26/09/2013
+!        KFROPT%I(K) = IVAL2
+         IF(K.NE.0) KFROPT%I(K) = IVAL2
       ENDDO
       GOTO 997
 
