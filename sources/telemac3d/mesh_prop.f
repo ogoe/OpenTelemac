@@ -36,6 +36,11 @@
 !+        V6P0
 !+   Inverse of VOLU3DPAR differently clipped
 !
+!history  J-M HERVOUET (LNHE)
+!+        30/09/2013
+!+        V6P3
+!+   Parameter MINIMUM_VOLUME introduced.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| H              |-->| WATER DEPTH
 !| HAULIN         |-->| MEAN DEPTH FOR LINEARISATION
@@ -85,6 +90,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
+      DOUBLE PRECISION MINIMUM_VOLUME
+      MINIMUM_VOLUME=1.D-6
 !
 !-----------------------------------------------------------------------
 !
@@ -134,14 +141,14 @@
         CALL OS('X=Y     ',X=VOLU3DPAR,Y=VOLU3D)
         CALL PARCOM(VOLU3DPAR,2,MESH3D)
         CALL OS('X=1/Y   ',X=UNSV3D,Y=VOLU3DPAR,
-     &          IOPT=2,INFINI=1.D6,ZERO=1.D-6)
+     &          IOPT=2,INFINI=1.D0/MINIMUM_VOLUME,ZERO=MINIMUM_VOLUME)
 !               VERSION 6.1
-!    &          IOPT=2,INFINI=0.D0,ZERO=1.D-6)
+!    &          IOPT=2,INFINI=0.D0,ZERO=MINIMUM_VOLUME)
       ELSE
         CALL OS('X=1/Y   ',X=UNSV3D,Y=VOLU3D,
-     &          IOPT=2,INFINI=1.D6,ZERO=1.D-6)
+     &          IOPT=2,INFINI=1.D0/MINIMUM_VOLUME,ZERO=MINIMUM_VOLUME)
 !               VERSION 6.1
-!    &          IOPT=2,INFINI=0.D0,ZERO=1.D-6)
+!    &          IOPT=2,INFINI=0.D0,ZERO=MINIMUM_VOLUME)
       ENDIF
 !
 !     RESTORES Z

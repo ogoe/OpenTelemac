@@ -47,6 +47,12 @@
 !+   Richardson's number formula changed. It is built only if asked for
 !+   post-processing.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        30/09/2013
+!+        V6P3
+!+   Gradients done with ZPROP, which enables the use of UNSV3D: cheaper
+!+   and avoids a hidden parameter, see MINIMUM_VOLUME in MESH_PROP.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |<->| TURBULENT ENERGY K
 !| C1             |-->| CONSTANT FOR K-EPSILON MODEL
@@ -93,9 +99,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC3D, ONLY : IPBOT,NONHYD,CLIPK,CLIPE,WSIK,
+      USE DECLARATIONS_TELEMAC3D, ONLY : CLIPK,CLIPE,WSIK,
      &                                   YAP,RHO0,PERNORM2,PERPROD,
-     &                                   RIMIN,RIMAX,OPTPROD,SORG3D
+     &                                   RIMIN,RIMAX,OPTPROD,SORG3D,
+     &                                   ZPROP,UNSV3D
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -129,6 +136,9 @@
       DOUBLE PRECISION TAU,A12LOG,LL,YY,YP,ROAIR
       DOUBLE PRECISION SURPRAN,UNSURTAU,SQRCMU
       INTEGER N,N2D
+!
+      DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
+!
 !     INTEGER I
 !
 !     !!!!!!!!!!!!!!!!!  MEMORY BOOK-KEEPING, IMPORTANT !!!!!!!!!!!!!!!!
@@ -138,6 +148,8 @@
 !     THEIR MEMORY IS REUSED
       S2  =>DUDX
       PROD=>DUDY
+      SAVEZ     =>MESH3D%Z%R
+      MESH3D%Z%R=>ZPROP%R
 !
 !     !!!!!!!!!!!!!!  END OF MEMORY BOOK-KEEPING, IMPORTANT !!!!!!!!!!!!
 !
@@ -150,6 +162,9 @@
 !-----------------------------------------------------------------------
 !
 !     COMPUTING VELOCITY GRADIENTS
+!
+!     THIS IS DONE WITH ZPROP (SEE MESH3D%Z%R=>ZPROP%R)
+!     FOR A COMPATIBLE USE OF UNSV3D
 !
       CALL VECTOR(DUDX,'=','GRADF          X',IELM3,1.D0,U,
      &            S,S,S,S,S,MESH3D,MSK,MASKEL)
@@ -171,8 +186,6 @@
      &            S,S,S,S,S,MESH3D,MSK,MASKEL)
       CALL VECTOR(DTADZ,'=','GRADF          Z',IELM3,1.D0,DELTAR,
      &            S,S,S,S,S,MESH3D,MSK,MASKEL)
-      CALL VECTOR(TR,'=','MASBAS          ',IELM3,1.D0,
-     &            S,S,S,S,S,S,MESH3D,MSK,MASKEL)
 !
       IF(NCSIZE.GT.1) THEN
         CALL PARCOM(DUDX ,2,MESH3D)
@@ -185,36 +198,24 @@
         CALL PARCOM(DWDY ,2,MESH3D)
         CALL PARCOM(DWDZ ,2,MESH3D)
         CALL PARCOM(DTADZ,2,MESH3D)
-        CALL PARCOM(TR   ,2,MESH3D)
       ENDIF
 !
       DO N=1,NPOIN3
-        IF(TR%R(N).GT.1.D-6) THEN
-          TR%R(N)=1.D0/TR%R(N)
-          DUDX%R(N) =DUDX%R(N) *TR%R(N)
-          DUDY%R(N) =DUDY%R(N) *TR%R(N)
-          DUDZ%R(N) =DUDZ%R(N) *TR%R(N)
-          DVDX%R(N) =DVDX%R(N) *TR%R(N)
-          DVDY%R(N) =DVDY%R(N) *TR%R(N)
-          DVDZ%R(N) =DVDZ%R(N) *TR%R(N)
-          DWDX%R(N) =DWDX%R(N) *TR%R(N)
-          DWDY%R(N) =DWDY%R(N) *TR%R(N)
-          DWDZ%R(N) =DWDZ%R(N) *TR%R(N)
-          DTADZ%R(N)=DTADZ%R(N)*TR%R(N)
-        ELSE
-          DUDX%R(N) =0.D0
-          DUDY%R(N) =0.D0
-          DUDZ%R(N) =0.D0
-          DVDX%R(N) =0.D0
-          DVDY%R(N) =0.D0
-          DVDZ%R(N) =0.D0
-          DWDX%R(N) =0.D0
-          DWDY%R(N) =0.D0
-          DWDZ%R(N) =0.D0
-          DTADZ%R(N)=0.D0
-        ENDIF
+        DUDX%R(N) =DUDX%R(N) *UNSV3D%R(N)
+        DUDY%R(N) =DUDY%R(N) *UNSV3D%R(N)
+        DUDZ%R(N) =DUDZ%R(N) *UNSV3D%R(N)
+        DVDX%R(N) =DVDX%R(N) *UNSV3D%R(N)
+        DVDY%R(N) =DVDY%R(N) *UNSV3D%R(N)
+        DVDZ%R(N) =DVDZ%R(N) *UNSV3D%R(N)
+        DWDX%R(N) =DWDX%R(N) *UNSV3D%R(N)
+        DWDY%R(N) =DWDY%R(N) *UNSV3D%R(N)
+        DWDZ%R(N) =DWDZ%R(N) *UNSV3D%R(N)
+        DTADZ%R(N)=DTADZ%R(N)*UNSV3D%R(N)
       ENDDO
 !
+!     RESTORING Z IN MESH3D
+!
+      MESH3D%Z%R=>SAVEZ
 !
 !***********************************************************************
 !                                                                      *
@@ -422,4 +423,3 @@
 !
       RETURN
       END
-
