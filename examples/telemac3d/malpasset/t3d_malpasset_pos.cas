@@ -1,7 +1,7 @@
 CONTOURNEMENT DES VOLUMES NULS : NON
 DEBUGGER : 0
 /
-/PROCESSEURS PARALLELES : 8
+PROCESSEURS PARALLELES : 8
 /
 STOCKAGE DES MATRICES : 3
 /
@@ -16,11 +16,6 @@ STOCKAGE DES MATRICES : 3
 / 653 LE 16/03/2010 (MICHAEL SWAP + DIFF3D CORRIGE)
 / 759 LE 21/05/2010 
 /
-/  HP LINUX 8 PROCESSEURS
-/
-/  ??? S LE 27/04/2010  (1 processeur)
-/  ??? S LE 27/04/2010  (1 processeur)
-/
 / Version 6.1 avec nouvel algorithme independant de la numerotation des
 /             segments.
 /
@@ -31,9 +26,12 @@ STOCKAGE DES MATRICES : 3
 / Version 6.2 
 /
 /  981 s le 29/12/2011 (HP Unix)
-/  ??? s le ????       (HP Z600 Linux calibre 5 avec 1 processeur )
 /   36 s le 08/08/2012 (HP Z600 Linux calibre 7 avec 8 processeurs)
 /
+/ Version 6.3 
+/
+/   154 s le 30/09/2013 (HP Z600 Linux calibre 7, compilateur Nag, 1 processeur)
+/    28 s le 30/09/2013 (HP Z600 Linux calibre 7, compilateur Nag, 8 processeurs)
 /
 SOLVEUR POUR LA PROPAGATION=2
 PRECONDITIONNEMENT POUR LA PROPAGATION : 11
