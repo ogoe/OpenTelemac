@@ -26,6 +26,13 @@
 !+  OPTIMIZATION OF THE CODE
 !+  AVOID DIVISION BY 0
 !
+!history  RIADH ATA (EDF R&D-LNHE)
+!+        10/6/2013
+!+        V6P3
+!+  BUG FIXED IN COMPUTING U*
+!+  THANKS TO L. STADLER (BAW)
+!
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  FLX           | <--|  FLUX COMPONENTS AT THE INTERFACE            |
 ! |  H1,H2         | -->|  LEFT AND RIGHT WATER DEPTHS                 |
@@ -119,7 +126,9 @@
       AR = SQRT(G*HR)
 ! STAR VARIABLES
       HSTAR = 0.5D0*(HL+HR)-0.25D0*(UR-UL)*(HL+HR)/(AL+AR)
-      USTAR = 0.5D0*(UL+UR)-0.25D0*(HR-HL)*(AL+AR)/(HL+HR)
+!RA BUG FIXED WHEN COMPUTING U STAR 
+!       USTAR = 0.5D0*(UL+UR)-0.25D0*(HR-HL)*(AL+AR)/(HL+HR)
+      USTAR = 0.5D0*(UL+UR)-       (HR-HL)*(AL+AR)/(HL+HR)
 ! COMPUTE pQL AND pQR:
 ! IT WILL DEPEND IF WE ARE IN PRESENCE OF SHOCK OR RAREFACTION WAVE 
       IF(HSTAR.LT.HL)THEN
