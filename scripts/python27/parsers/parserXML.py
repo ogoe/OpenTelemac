@@ -624,8 +624,18 @@ class actionRUN(ACTION):
 
       # ~~> copy of inputs
       copyFile(path.join(self.active['path'],self.active["target"]),self.active['safe'])
-      for iFile in self.active["deprefs"]: copyFile(path.join(self.active['path'],iFile),self.active['safe'])
-
+      for iFile in self.active["deprefs"]:
+         if iFile in self.dids.keys():
+            if self.active['cfg'] in self.dids[iFile]:
+               layer = findTargets(self.dids[iFile][self.active['cfg']],self.active["deprefs"][iFile])
+               if layer != []: copyFile(layer[0][0],self.active['safe'])
+            else : raise Exception([{'name':'runXML','msg':'could not find the configuration '+self.active['cfg']+'for the dependant: '+iFile}])
+         else:
+            if self.active["where"] != '':
+               if path.exists(path.join(self.active["where"],iFile)): copyFile(path.join(self.active["where"],iFile),self.active['safe'])
+            elif path.exists(path.join(self.path,iFile)): copyFile(path.join(self.path,iFile),self.active['safe'])
+            else: raise Exception([{'name':'runXML','msg':'could not find reference to the dependant: '+iFile}])
+      
       # ~~> execute command locally
       os.chdir(self.active['safe'])
       try:
@@ -1206,6 +1216,10 @@ def runXML(xmlFile,xmlConfig,bypass):
 
          task = ex.dids[typeSave][xref]
          if not task.has_key("layers"): continue
+         oneFound = False
+         for layer in task["layers"]:
+            if layer['fileName'] != {}: oneFound = True
+         if not oneFound: continue
          print '    +> reference: ',xref,' of type ',typeSave
 
          xlayers = ''   # now done with strings as arrays proved to be too challenging
@@ -1353,6 +1367,10 @@ def runXML(xmlFile,xmlConfig,bypass):
 
          draw = plot.dids[typePlot][xref]
          if not draw.has_key("layers"): continue
+         oneFound = False
+         for layer in draw["layers"]:
+            if layer['fileName'] != {}: oneFound = True
+         if not oneFound: continue
          print '    +> reference: ',xref,' of type ',typePlot
 
          xlayers = ''   # now done with strings as arrays proved to be too challenging
@@ -1377,7 +1395,7 @@ def runXML(xmlFile,xmlConfig,bypass):
                   for x in xlayers.split('|'): xys.append( (x+';'+layer['config']).strip(';') )
                xlayers = '|'.join(xys)
          if xlayers == '':
-            xcpt.append({'name':'runXML','msg':'could not find reference to draw the action: '+target})
+            #xcpt.append({'name':'runXML','msg':'could not find reference to draw the action: '+target})
             continue
 
          nbFile = 0; alayers = xlayers.split('|')
