@@ -64,13 +64,11 @@
    </plot2d>   
    <plot2d xref="Velocity_tf" size="[10;8]" > 
       <layer vars="vitesse:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
-   </plot2d> 
-
-<!--   
-   <plot2d xref="Velocity arrows" size="[8;10]" >   
+   </plot2d>
+   <plot2d xref="Velocity arrows" size="[10;8]" >   
       <layer vars="vitesse:angle" target="1:T2DRES" config="oneofall" time="[-1]" extract="[20;20]" /> 
    </plot2d>
-   -->
+
 
  
 </validation> 

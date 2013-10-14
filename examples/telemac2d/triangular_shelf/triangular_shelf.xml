@@ -29,14 +29,14 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-   <plot1d xref="Gages1" type="history" config="together" time="[0;-1]" size="[12;5]" > 
-      <layer vars="free surface:line" extract="[7.5;0]" target="1:T2DRES" />
+   <plot1d xref="Gages1" type="history" config="together" time="[0:-1]" size="[12;5]" > 
+      <layer vars="free surface:line" extract="(7.5;0)" target="1:T2DRES" />
    </plot1d>
-   <plot1d xref="Gages2" type="history" config="together" time="[0;-1]" size="[12;5]" > 
-      <layer vars="free surface:line" extract="[17;-5]" target="1:T2DRES" />
+   <plot1d xref="Gages2" type="history" config="together" time="[0:-1]" size="[12;5]" > 
+      <layer vars="free surface:line" extract="(17;-5)" target="1:T2DRES" />
    </plot1d>
-   <plot1d xref="Gages3" type="history" config="together" time="[0;-1]" size="[12;5]" > 
-      <layer vars="free surface:line" extract="[25;0]" target="1:T2DRES" />
+   <plot1d xref="Gages3" type="history" config="together" time="[0:-1]" size="[12;5]" > 
+      <layer vars="free surface:line" extract="(25;0)" target="1:T2DRES" />
    </plot1d>
 
 

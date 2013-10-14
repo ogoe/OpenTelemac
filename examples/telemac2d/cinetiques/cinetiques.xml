@@ -30,10 +30,7 @@
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    --> 
    <plot1d xref="FreeSurface1d" type="v-section" config="together" size="[12;5]" > 
-      <layer vars="hauteur d'eau:line" extract="[2;10][18;10]" target="1:T2DRES" time="[0]"/>    
-      <layer vars="hauteur d'eau:line" extract="[2;10][18;10]" target="1:T2DRES" time="[10]"/>  
-	  <layer vars="hauteur d'eau:line" extract="[2;10][18;10]" target="1:T2DRES" time="[20]"/>  
-	  <layer vars="hauteur d'eau:line" extract="[2;10][18;10]" target="1:T2DRES" time="[30]"/>  
+      <layer vars="hauteur d'eau:line" extract="(2;10)(18;10)" target="1:T2DRES" time="[0:-1:2]"/>    
    </plot1d>  
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 

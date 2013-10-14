@@ -24,11 +24,12 @@
        code="telemac2d" target="t2d_bumpflu.cas" 
        title="bumpflu scalar mode" 
    />
-   <action xref="2"  rank="3"
+    <action xref="2"  rank="3"
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_bumpflu.cas" 
        title="bumpflu parallel mode" 
-   />   
+   />  
+  
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
 

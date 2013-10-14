@@ -29,12 +29,8 @@
  
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    --> 
-   <plot1d xref="FreeSurface_Section" type="v-section" size="[12;5]" config="together" time="[0]">
-      <layer vars="free surface:line" extract="[420;240][2880;2700]" target="1:T2DRES" time="[0]"/> 
-      <layer vars="free surface:line" extract="[420;240][2880;2700]" target="1:T2DRES" time="[1]"/> 
-      <layer vars="free surface:line" extract="[420;240][2880;2700]" target="1:T2DRES" time="[2]"/> 
-      <layer vars="free surface:line" extract="[420;240][2880;2700]" target="1:T2DRES" time="[3]"/> 
-      <layer vars="free surface:line" extract="[420;240][2880;2700]" target="1:T2DRES" time="[-1]"/> 
+   <plot1d xref="FreeSurface_Section" type="v-section" size="[12;5]" config="together" >
+      <layer vars="free surface:line" extract="(420;240)(2880;2700)" target="1:T2DRES" time="[0:-1]"/>
    </plot1d>
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 

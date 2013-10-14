@@ -34,16 +34,11 @@
  
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    --> 
-   <plot1d xref="FreeSurfaceTimeSeries" type="history" config="together" time="[0;-1]" size="[12;5]" >  
-      <layer vars="surface libre:line" extract="[270;500][1030;460]" target="1:T2DRES" />  
+   <plot1d xref="FreeSurfaceTimeSeries" type="history" config="together" time="[0:-1]" size="[12;5]" >  
+      <layer vars="surface libre:line" extract="(270;500)(1030;460)" target="1:T2DRES" />  
    </plot1d> 
    <plot1d xref="FreeSurfaceProfiles" type="v-section" config="together" size="[12;5]" >  
-      <layer vars="surface libre:line" extract="[0;500][1000;500]" target="1:T2DRES" time="[0]" /> 
-      <layer vars="surface libre:line" extract="[0;500][1000;500]" target="1:T2DRES" time="[20]" /> 
-      <layer vars="surface libre:line" extract="[0;500][1000;500]" target="1:T2DRES" time="[40]" /> 
-      <layer vars="surface libre:line" extract="[0;500][1000;500]" target="1:T2DRES" time="[60]" /> 
-      <layer vars="surface libre:line" extract="[0;500][1000;500]" target="1:T2DRES" time="[80]" />	 
-      <layer vars="surface libre:line" extract="[0;500][1000;500]" target="1:T2DRES" time="[-1]" />   
+      <layer vars="surface libre:line" extract="(0;500)(1000;500)" target="1:T2DRES" time="[0:-1:10]" />
    </plot1d>    
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 

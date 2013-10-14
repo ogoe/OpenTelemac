@@ -35,16 +35,10 @@
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
    <plot1d xref="FreeSurface_Y5" type="v-section" size="[12;5]" config="together">
-      <layer vars="surface libre:line" extract="[0;5][46;5]" target="1:T2DRES" time="[0]"/> 
-	  <layer vars="surface libre:line" extract="[0;5][46;5]" target="1:T2DRES" time="[1]"/> 
-	  <layer vars="surface libre:line" extract="[0;5][46;5]" target="1:T2DRES" time="[2]"/> 
-	  <layer vars="surface libre:line" extract="[0;5][46;5]" target="1:T2DRES" time="[-1]"/> 
+      <layer vars="surface libre:line" extract="(0;5)(46;5)" target="1:T2DRES" time="[0:-1]"/>
    </plot1d>
    <plot1d xref="WaterDepth_Y5" type="v-section" size="[12;5]" config="together">
-      <layer vars="hauteur d'eau:line" extract="[0;5][46;5]" target="1:T2DRES" time="[0]"/> 
-	  <layer vars="hauteur d'eau:line" extract="[0;5][46;5]" target="1:T2DRES" time="[1]"/> 
-	  <layer vars="hauteur d'eau:line" extract="[0;5][46;5]" target="1:T2DRES" time="[2]"/> 
-	  <layer vars="hauteur d'eau:line" extract="[0;5][46;5]" target="1:T2DRES" time="[-1]"/> 
+      <layer vars="hauteur d'eau:line" extract="(0;5)(46;5)" target="1:T2DRES" time="[0:-1]"/>
    </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

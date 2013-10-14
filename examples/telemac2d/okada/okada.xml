@@ -31,6 +31,13 @@
    />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   --> 
+   <plot1d xref="FS_section" type="v-section" size="[12;5]" config="oneofall" > 
+      <layer vars="free surface:line" target="1:T2DRES" extract="(-1600000;-1400000)(-1000000;-2000000)" time="[0;1;2;3]" />
+   </plot1d>
+
    
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   -->

@@ -36,9 +36,9 @@
  
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    --> 
-   <plot1d xref="Velocity1d" type="history" time="[0;-1]" size="[12;5]" config="oneofall" > 
-      <layer vars="vitesse u:line" target="1:T2DRES" extract="[5.2;4.6]" /> 
-      <layer vars="vitesse v:line" target="1:T2DRES" extract="[5.2;4.6]" />
+   <plot1d xref="Velocity1d" type="history" time="[0:-1]" size="[12;5]" config="oneofall" > 
+      <layer vars="vitesse u:line" target="1:T2DRES" extract="(5.2;4.6)" /> 
+      <layer vars="vitesse v:line" target="1:T2DRES" extract="(5.2;4.6)" />
 <!--
       <layer vars="vitesse u:line" target="2:T2DRES" extract="[5.2;4.6]" /> 
       <layer vars="vitesse v:line" target="2:T2DRES" extract="[5.2;4.6]" />	  
@@ -47,8 +47,7 @@
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
---> 
+ 
    <plot2d xref="Mesh" size="[10;8]" > 
       <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
    </plot2d> 
@@ -61,8 +60,8 @@
    <plot2d xref="Velocity map t15" size="[10;8]" > 
       <layer vars="vitesse:map" target="1:T2DRES" config="oneofall" time="[15]" /> 
    </plot2d>   
-<!--   <plot2d xref="Velocity arrows" size="[10;10]" >   
+   <plot2d xref="Velocity arrows" size="[10;10]" >   
       <layer vars="vitesse:angle" target="1:T2DRES" config="oneofall" time="[15]" extract="[20;20]" /> 
    </plot2d>
- -->
+
 </validation> 

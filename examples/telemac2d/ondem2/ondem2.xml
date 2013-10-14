@@ -34,8 +34,8 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-   <plot1d xref="FreeSurfaceTimeSeries" type="history" config="together" time="[0;-1]" size="[12;5]" > 
-      <layer vars="surface libre:line" extract="[-280000;200000]" target="1:T2DRES" /> 
+   <plot1d xref="FreeSurfaceTimeSeries" type="history" config="together" time="[0:-1]" size="[12;5]" > 
+      <layer vars="surface libre:line" extract="(-280000;200000)" target="1:T2DRES" /> 
    </plot1d> 
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
