@@ -32,7 +32,7 @@
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
 -->
    <plot1d xref="Period" type="history" config="together" time="[0;-1]" size="[12;5]" > 
-      <layer vars="wave height:line" extract="[2700;2000]" target="1:ARTRES" />
+      <layer vars="wave height:line" extract="(2700;2000)" target="1:ARTRES" />
    </plot1d> 
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

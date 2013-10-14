@@ -27,18 +27,14 @@
 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
-   
-   <extract xref="exp" >
-       <task do="readCSV" target="experiment.csv"
-       title="breach experiment data" code="artemis" />
-   </extract>
+
  
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
    <plot1d xref="Section" type="v-section" config="together" size="[10;7]" > 
-      <layer vars="wave height:line" extract="[0;915][1800;915]" target="1:ARTRES"  time="[0]" /> 
-      <layer columns="x:h" target="exp:csv" />
+      <layer vars="wave height:line" extract="(0;915)(1800;915)" target="1:ARTRES"  time="[0]" /> 
+      <layer vars="x;h" target="experiment.csv" />     -->
    </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

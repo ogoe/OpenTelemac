@@ -30,7 +30,7 @@
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
   <plot1d xref="Section" type="v-section" config="together" size="[10;7]" > 
-      <layer vars="wave height:line" extract="[0;0.6][19.9;0.6]" time="[0]" target="1:ARTRES" /> 
+      <layer vars="wave height:line" extract="(0;0.6)(19.9;0.6)" time="[0]" target="1:ARTRES" /> 
    </plot1d> 
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
