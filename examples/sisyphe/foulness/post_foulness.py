@@ -16,10 +16,10 @@ import matplotlib.pyplot as plt
 YouAreHere =  getcwd()
 pathsplit = YouAreHere.split(sep)
 p = pathsplit[0]+sep
-for i in range(len(pathsplit[0:-7])):
+for i in range(len(pathsplit[0:-6])):
    i+=1
    p = path.join(p,pathsplit[i])
-pytelpath = path.join(p,'pytel') 
+pytelpath = path.join(path.join(p,'scripts') ,'python27')
 sys.path.append(pytelpath)
 
 ################################################################################
@@ -27,11 +27,23 @@ sys.path.append(pytelpath)
 ################################################################################
 
 from parsers.parserSELAFIN import SELAFIN
-from parsers.parserCSV import getVariableCSV,putDataCSV
+from parsers.parserCSV import CSV
 
 ################################################################################
 #####                    MAIN PROGRAM                                 ##########
 ################################################################################
+
+def putDataCSV(file,columns):
+   if path.exists(file): remove(file)
+   csvF = open(file,'wb')
+   csvF.write('#\n')
+   csvF.write('#\n')
+   for j in range(len(columns[0])):
+      for i in range(len(columns)):
+         if i == (len(columns)-1) : csvF.write(str(columns[i][j])+'\n')
+         else : csvF.write(str(columns[i][j])+',')
+   csvF.close()
+   return
 
 if __name__ == "__main__":
     
@@ -41,7 +53,7 @@ if __name__ == "__main__":
 
     # Times Series from Selafin file
     # 5113 is the node number
-    # 0,1,2,8 are the varaible indexes
+    # 0,1,2,8 are the variable indexes
       
     slf = SELAFIN("sis_foulness.slf")
 	   
@@ -55,9 +67,10 @@ if __name__ == "__main__":
     # Experiment data from CSV file
     # always write the variable name in lower case
 
-    file = 'fielddata.csv'
-    QSexp =  getVariableCSV(file,'qs')
-    
+    csv = CSV()
+    csv.getFileContent('fielddata.csv')
+    t,QSexp = csv.getColumns('qs')
+       
     ############################################################################
     #####                        CALCS                                    ######
     ############################################################################
@@ -65,11 +78,11 @@ if __name__ == "__main__":
     speed = power( (power(u,2) + power(v,2)),(1.0/2.0) )
     k = (power(speed,3))/h
     QSmodel = QSsuspension * 2650000.0
-    QSexpEBB = QSexp[15:26]*h[4:15]* speed[4:15]
-    QSexpFLOOD = QSexp[3:14]*h[15:26]* speed[15:26]
+    QSexpEBB = QSexp[1][0][15:26]*h[4:15]* speed[4:15]
+    QSexpFLOOD = QSexp[1][0][3:14]*h[15:26]* speed[15:26]
     
     ############################################################################
-    #####             Wrtting data in CSV file                            ######
+    #####             Writing data in CSV file                           ######
     ############################################################################
     
     # the first two values of a column must be the variable name and the 

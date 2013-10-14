@@ -27,13 +27,13 @@
   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
+   <action xref="RunPython"
+      do="python post_foulness.py" code="exec"
+	  target="post_foulness.py" deprefs="fielddata.csv;RunCase:SISRES"
+      title="Foulness post processing"
+   />
    
-<!--    <extract xref="RunPython" >
-      <task do="runPYTHON" target="post_foulness.py"
-	   dependency="fielddata.csv" code="sisyphe"
-       title="Foulness post processing" />
-   </extract>
- -->   <!-- 
+<!-- 
    <extract xref="L2" >
       <task do="L2error" target="transport_rates_ebb.csv" ExactData = "SedimentTransportExperiment" 
 	         ModelData = "SedimentTransportModel" title="Ebb" reference = "RunPython"/>

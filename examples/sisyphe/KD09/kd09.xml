@@ -27,7 +27,7 @@
   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  -->  
-   <extract xref="Validate" code="sisyphe"
+<!--   <extract xref="Validate" code="sisyphe"
        do="runPYTHON" target="post_kd09.exe"
 	   dependency="ggensimp.out"
        title="kd09 validation"
@@ -38,7 +38,7 @@
 	   dependency="kd09bed.csv;kd09dep.csv"
        title="kd09 plot"
    />    
-
+ --> 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
  
