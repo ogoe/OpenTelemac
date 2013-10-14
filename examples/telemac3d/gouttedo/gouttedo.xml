@@ -34,12 +34,29 @@
  
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    --> 
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
---> 
+   <plot1d xref="timeseries" type="history" config="together" time="[0:-1]" size="[12;7]" > 
+      <layer vars="Z:line" extract="(10;10)" target="1:T3DRES" /> 
+   </plot1d>
+   <plot1d xref="section1d" type="v-section" config="together"  size="[12;7]" > 
+      <layer vars="Z:line" extract="(0;10)(20;10)" target="1:T3DRES" time="[0:-1]"/> 
+   </plot1d> 
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
---> 
+   <plot2d xref="mesh" config="oneofall" time="[-1]" size="[12;7]" > 
+      <layer vars="bottom:mesh" target="1:T3DRES" /> 
+   </plot2d> 
+   <plot2d xref="mesh_section" type="v-section" config="oneofall" time="[-1]" size="[12;7]" > 
+      <layer vars="Z:mesh" extract="(0;10)(20;10)" target="1:T3DRES"  /> 
+   </plot2d> 
+   <plot2d xref="z_section2d" type="v-section" config="oneofall" time="[-1]" size="[12;7]" > 
+      <layer vars="Z:map" extract="(0;10)(20;10)" target="1:T3DRES"  /> 
+   </plot2d>   
+   <plot2d xref="z_map_t5" config="oneofall" time="[5]" size="[12;7]" > 
+      <layer vars="Z:map" extract="[]#[2]" target="1:T3DRES"  /> 
+   </plot2d>
+   <plot2d xref="z_map_t8" config="oneofall" time="[8]" size="[12;7]" > 
+      <layer vars="Z:map" extract="[]#[2]" target="1:T3DRES"  /> 
+   </plot2d>     
  
 </validation>

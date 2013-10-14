@@ -50,7 +50,8 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot2d xref="mesh" config="oneofall" time="[-1]" size="[12;7]" > 
+      <layer vars="bottom:mesh" target="1:T3DRES" /> 
+   </plot2d> 
 
 </validation>

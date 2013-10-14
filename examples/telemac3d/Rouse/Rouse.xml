@@ -34,12 +34,34 @@
  
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    --> 
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
---> 
+   <plot1d xref="timeseries" type="history" config="together" time="[0:-1]" size="[12;7]" > 
+      <layer vars="Z:line" extract="(250;50)" target="1:T3DRES" /> 
+   </plot1d> 
+   <plot1d xref="timeseries_p1" type="history" config="together" time="[0:-1]" size="[12;7]" > 
+      <layer vars="Z:line" extract="(250;50)#[-1]" target="1:T3DRES" /> 
+   </plot1d> 
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
---> 
- 
+   <plot2d xref="mesh" config="oneofall" time="[-1]" size="[12;7]" > 
+      <layer vars="bottom:mesh" target="1:T3DRES" /> 
+   </plot2d> 
+   <plot2d xref="mesh_section" type="v-section" config="oneofall" time="[-1]" size="[12;7]" > 
+      <layer vars="Z:mesh" extract="(0;50)(500;50)" target="1:T3DRES"  /> 
+   </plot2d> 
+   <plot2d xref="tracer" type="v-section" config="oneofall" time="[-1]" size="[12;7]" > 
+      <layer vars="traceur 1:map" extract="(450;0)(450;100)" target="1:T3DRES"  /> 
+   </plot2d>   
+   <plot2d xref="velocityU_section" type="v-section" config="oneofall" time="[-1]" size="[12;7]" > 
+      <layer vars="vitesse U:map" extract="(450;0)(450;100)" target="1:T3DRES"  /> 
+   </plot2d>
+   <plot2d xref="velocityV_section" type="v-section" config="oneofall" time="[-1]" size="[12;7]" > 
+      <layer vars="vitesse V:map" extract="(450;0)(450;100)" target="1:T3DRES"  /> 
+   </plot2d>
+   <plot2d xref="velocity" type="v-section" config="oneofall" time="[-1]" size="[12;7]" > 
+      <layer vars="vitesse:angle" extract="(450;0)(450;100)" target="1:T3DRES"  /> 
+   </plot2d>    
+   <plot2d xref="tracer_tf" config="oneofall" time="[-1]" size="[12;7]" > 
+      <layer vars="traceur 1:map" target="1:T3DRES"  /> 
+   </plot2d>   
 </validation> 
