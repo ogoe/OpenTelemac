@@ -9,7 +9,7 @@
      & YAFLBOR,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,RAIN,PLUIE,TRAIN)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    FINITE VOLUMES, UPWIND, EXPLICIT ADVECTOR.
@@ -45,6 +45,11 @@
 !+        18/06/2013
 !+        V6P3
 !+   New call to CFLVF, for new monotonicity criterion.
+!
+!history  SARA PAVAN & J-M HERVOUET (LNHE)
+!+        24/10/2013
+!+        V7P0
+!+   T3 changed into T2 in the call to in use).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -323,7 +328,7 @@
      &           MESH%GLOSEG%I,MESH%GLOSEG%DIM1,MESH,MSK,MASKPT,
      &           RAIN,PLUIE%R,T4%R,MESH%NELEM,MESH%IKLE%I,
      &           LIMTRA,KDIR,FBOR%R,FSCEXP%R,TRAIN,MESH%NBOR%I,
-     &           T3,T6)
+     &           T2,T6)
 !
       IF(NCSIZE.GT.1) DDT=P_DMIN(DDT)
 !

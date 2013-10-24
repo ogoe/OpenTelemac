@@ -7,7 +7,7 @@
      & NELEM,IKLE,LIMTRA,KDIR,FBOR,FSCEXP,TRAIN,NBOR,MINFC,MAXFC)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE MAXIMUM TIMESTEP THAT ENABLES
@@ -56,6 +56,11 @@
 !+        V6P3
 !+   New stability criterion based on local min and max of function.
 !+   See hardcoded option OPT.
+!
+!history  S. PAVAN & J-M HERVOUET (EDF R&D, LNHE)
+!+        24/10/2013
+!+        V7P0
+!+   Old stability criterion simplified.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
@@ -120,7 +125,7 @@
 !
 !-----------------------------------------------------------------------
 ! DETERMINES MAX AND MIN FOR THE NEW MONOTONICITY CRITERION
-!----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
       IF(OPT.EQ.3) THEN
 !
@@ -210,10 +215,10 @@
 !       CLASSICAL CRITERION
 !
         DO I = 1,NSEG
-          IF(FXMATPAR(I).LT.0.D0) THEN
-            TAB1%R(GLOSEG(I,1)) = TAB1%R(GLOSEG(I,1)) - FXMAT(I)
-          ELSEIF(FXMATPAR(I).GT.0.D0) THEN
-            TAB1%R(GLOSEG(I,2)) = TAB1%R(GLOSEG(I,2)) + FXMAT(I)
+          IF(FXMATPAR(I).GT.0.D0) THEN
+            TAB1%R(GLOSEG(I,1)) = TAB1%R(GLOSEG(I,1)) + FXMAT(I)
+          ELSE
+            TAB1%R(GLOSEG(I,2)) = TAB1%R(GLOSEG(I,2)) - FXMAT(I)
           ENDIF
         ENDDO
 !
@@ -276,44 +281,32 @@
 !
         IF(YASMH.AND.RAIN) THEN
           DO I = 1,NPOIN
-            DENOM=TAB1%R(I)-MIN(FXBOR(I),0.D0)
-     &                     +MAX(SMH(I)+PLUIE(I),0.D0)
-            A=MAS(I)/MAX(DENOM,1.D-12)
-            B=DT+A*(HSTART(I)-H(I))
-            IF(B.GT.0.D0) DTMAX = MIN(DTMAX,A*HSTART(I)*DT/B)
-!           THIS WOULD BE SIMPLER (TO BE PUT IN VERSION 6.4)
-!           B=DT*DENOM+MAS(I)*(HSTART(I)-H(I))
-!           IF(B.GT.0.D0) DTMAX=MIN(DTMAX,MAS(I)*HSTART(I)*DT/B)
+            DENOM=TAB1%R(I)+MAX(FXBOR(I),0.D0)
+     &                     -MIN(SMH(I)+PLUIE(I),0.D0)
+            IF(DENOM.GT.1.D-20) THEN
+              DTMAX = MIN(DTMAX,MAS(I)*HSTART(I)/DENOM)
+            ENDIF 
           ENDDO
         ELSEIF(YASMH) THEN
           DO I = 1,NPOIN
-            DENOM=TAB1%R(I)-MIN(FXBOR(I),0.D0)+MAX(SMH(I),0.D0)
-            A=MAS(I)/MAX(DENOM,1.D-12)
-            B=DT+A*(HSTART(I)-H(I))
-            IF(B.GT.0.D0) DTMAX = MIN(DTMAX,A*HSTART(I)*DT/B)
-!           THIS WOULD BE SIMPLER (TO BE PUT IN VERSION 6.4)
-!           B=DT*DENOM+MAS(I)*(HSTART(I)-H(I))
-!           IF(B.GT.0.D0) DTMAX=MIN(DTMAX,MAS(I)*HSTART(I)*DT/B)
+            DENOM=TAB1%R(I)+MAX(FXBOR(I),0.D0)-MIN(SMH(I),0.D0)
+            IF(DENOM.GT.1.D-20) THEN
+              DTMAX = MIN(DTMAX,MAS(I)*HSTART(I)/DENOM)
+            ENDIF 
           ENDDO
         ELSEIF(RAIN) THEN
           DO I = 1,NPOIN
-            DENOM=TAB1%R(I)-MIN(FXBOR(I),0.D0)+MAX(PLUIE(I),0.D0)
-            A=MAS(I)/MAX(DENOM,1.D-12)
-            B=DT+A*(HSTART(I)-H(I))
-            IF(B.GT.0.D0) DTMAX = MIN(DTMAX,A*HSTART(I)*DT/B)
-!           THIS WOULD BE SIMPLER (TO BE PUT IN VERSION 6.4)
-!           B=DT*DENOM+MAS(I)*(HSTART(I)-H(I))
-!           IF(B.GT.0.D0) DTMAX=MIN(DTMAX,MAS(I)*HSTART(I)*DT/B)
+            DENOM=TAB1%R(I)+MAX(FXBOR(I),0.D0)-MIN(PLUIE(I),0.D0)
+            IF(DENOM.GT.1.D-20) THEN
+              DTMAX = MIN(DTMAX,MAS(I)*HSTART(I)/DENOM)
+            ENDIF
           ENDDO
         ELSE
           DO I = 1,NPOIN
-            DENOM=TAB1%R(I)-MIN(FXBOR(I),0.D0)
-            A=MAS(I)/MAX(DENOM,1.D-12)
-            B=DT+A*(HSTART(I)-H(I))
-            IF(B.GT.0.D0) DTMAX = MIN(DTMAX,A*HSTART(I)*DT/B)
-!           THIS WOULD BE SIMPLER (TO BE PUT IN VERSION 6.4)
-!           B=DT*DENOM+MAS(I)*(HSTART(I)-H(I))
-!           IF(B.GT.0.D0) DTMAX=MIN(DTMAX,MAS(I)*HSTART(I)*DT/B)
+            DENOM=TAB1%R(I)+MAX(FXBOR(I),0.D0)
+            IF(DENOM.GT.1.D-20) THEN
+              DTMAX = MIN(DTMAX,MAS(I)*HSTART(I)/DENOM)
+            ENDIF
           ENDDO  
         ENDIF
 !

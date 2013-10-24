@@ -5,7 +5,7 @@
      &(FLOW,PHIEL,NSEG,NELEM,ELTSEG,ORISEG,IKLE,INIFLO,IOPT,FN)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODIFIES THE FLUXES FOR THE FINITE VOLUME SCHEME.
@@ -39,6 +39,13 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET & SARA PAVAN (EDF R&D, LNHE)
+!+        22/10/2013
+!+        V7P0
+!+   Correction of PSI scheme. Reduction of fluxes based on same
+!+   contribution than classical distributive schemes (i.e. without 
+!+   integration by part). 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTSEG         |-->| SEGMENTS OF EVERY TRIANGLE
 !| FLOW           |<--| FLUXES PER SEGMENTS
@@ -71,8 +78,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,ISEG
-      DOUBLE PRECISION A1,A2,A3,F1,F2,F3,THIRD,CSTE,F12,F23,F31
+      INTEGER IELEM,ISEG,I1,I2,I3,I
+      DOUBLE PRECISION A1,A2,A3,K1,K2,K3,THIRD,CSTE,F12,F23,F31,F1,F2,F3
       DOUBLE PRECISION FN1,FN2,FN3,F21,F32,F13
       DOUBLE PRECISION BETA1FI,BETA2FI,BETA3FI,FI
 !
@@ -263,22 +270,27 @@
 !     PSI-SCHEME
 !
       DO IELEM = 1,NELEM
-        F1 = PHIEL(IELEM,1)
-        F2 = PHIEL(IELEM,2)
-        F3 = PHIEL(IELEM,3)
 !
-        FN1=FN%R(IKLE(IELEM,1))
-        FN2=FN%R(IKLE(IELEM,2))
-        FN3=FN%R(IKLE(IELEM,3))
+        K1 = -PHIEL(IELEM,1)
+        K2 = -PHIEL(IELEM,2)
+        K3 = -PHIEL(IELEM,3)
 !
 !       STARTS WITH N-SCHEME (EQUIVALENT TO LEO POSTMA'S IMPLEMENTATION)
+!       FIJ HERE LIKE LAMBDA(I,J) IN BOOK
 !
-        F12=MAX(MIN(F1,-F2),0.D0)
-        F23=MAX(MIN(F2,-F3),0.D0)
-        F31=MAX(MIN(F3,-F1),0.D0)
-        F21=MAX(MIN(F2,-F1),0.D0)
-        F32=MAX(MIN(F3,-F2),0.D0)
-        F13=MAX(MIN(F1,-F3),0.D0)
+        F12=MAX(MIN(K1,-K2),0.D0)
+        F23=MAX(MIN(K2,-K3),0.D0)
+        F31=MAX(MIN(K3,-K1),0.D0)
+        F21=MAX(MIN(K2,-K1),0.D0)
+        F32=MAX(MIN(K3,-K2),0.D0)
+        F13=MAX(MIN(K1,-K3),0.D0)
+!
+        I1=IKLE(IELEM,1)
+        I2=IKLE(IELEM,2)
+        I3=IKLE(IELEM,3)
+        FN1=FN%R(I1)
+        FN2=FN%R(I2)
+        FN3=FN%R(I3)
 !
         BETA1FI=F12*(FN1-FN2)+F13*(FN1-FN3)
         BETA2FI=F21*(FN2-FN1)+F23*(FN2-FN3)
@@ -290,6 +302,9 @@
 !
 !       WHAT FOLLOWS IS INSPIRED FROM SUBROUTINE VC08AA
 !       WHERE FIJ IS LIJ
+!
+!       THIS LINE CHANGES THE SCHEME INTO N-SCHEME
+!       GO TO 1000
 !
         IF(FI.GT.0.D0) THEN
           IF(BETA1FI.GT.FI) THEN
@@ -343,30 +358,35 @@
           F32=0.D0
           F13=0.D0
         ENDIF
+!       
+!1000    CONTINUE        
 !
-!       ASSEMBLES
+!       ASSEMBLES FLUXES
+!       A DIFFERENCE WITH STANDARD DISTRIBUTIVE SCHEMES
+!
+!       HERE BEWARE CONVENTION ON FLOW
 !
 !       SEGMENT 1
         ISEG  = ELTSEG(IELEM,1)
         IF(ORISEG(IELEM,1).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + F12 - F21
+          FLOW(ISEG) = FLOW(ISEG) + F21 - F12         
         ELSE
-          FLOW(ISEG) = FLOW(ISEG) - F12 + F21
+          FLOW(ISEG) = FLOW(ISEG) - F21 + F12
         ENDIF
 !       SEGMENT 2
         ISEG  = ELTSEG(IELEM,2)
         IF(ORISEG(IELEM,2).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + F23 - F32
+          FLOW(ISEG) = FLOW(ISEG) + F32 - F23
         ELSE
-          FLOW(ISEG) = FLOW(ISEG) - F23 + F32
+          FLOW(ISEG) = FLOW(ISEG) - F32 + F23
         ENDIF
 !       SEGMENT 3
         ISEG  = ELTSEG(IELEM,3)
         IF(ORISEG(IELEM,3).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + F31 - F13
+          FLOW(ISEG) = FLOW(ISEG) + F13 - F31
         ELSE
-          FLOW(ISEG) = FLOW(ISEG) - F31 + F13
-        ENDIF
+          FLOW(ISEG) = FLOW(ISEG) - F13 + F31
+        ENDIF    
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -376,14 +396,16 @@
        IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'FLUX_EF_VF :'
           WRITE(LU,*) 'OPTION INCONNUE : ',IOPT
-          IF(IOPT.EQ.3.AND..NOT.PRESENT(FN)) THEN
+!         IF(IOPT.EQ.3.AND..NOT.PRESENT(FN)) THEN
+          IF(IOPT.EQ.3) THEN
             WRITE(LU,*) 'OPTION 3 : FONCTION CONVECTEE REQUISE'
           ENDIF
         ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'FLUX_EF_VF:'
           WRITE(LU,*) 'UNKNOWN OPTION: ',IOPT
-          IF(IOPT.EQ.3.AND..NOT.PRESENT(FN)) THEN
+!         IF(IOPT.EQ.3.AND..NOT.PRESENT(FN)) THEN
+          IF(IOPT.EQ.3) THEN
             WRITE(LU,*) 'OPTION 3: ADVECTED FUNCTION REQUIRED'
           ENDIF
         ENDIF
