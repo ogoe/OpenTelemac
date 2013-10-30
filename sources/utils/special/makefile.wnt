@@ -71,7 +71,7 @@ ALL: $(LIBRARY)
 "$(LIBRARY)" : $(OBJS)
 	@echo  -
 	@echo ---------------------Création de la librairie. WNT
-	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME)$(LIBRARY) $(OBJS)
 
 #--- Suppression des ".obj" (existants) + ".lib"
 menage:  $(SRCS) 

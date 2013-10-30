@@ -65,7 +65,7 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
 SRCS = partitioner.F util_pares.f pares3d.F partel.F
 #------- Objets
 #
-TEMP = $(SCRS:.f=.obj)
+TEMP = $(SRCS:.f=.obj)
 OBJS = $(TEMP:.F=.obj)
 #
 #------------------------ Cibles
