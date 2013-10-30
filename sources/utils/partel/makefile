@@ -67,9 +67,9 @@ MAKEFILE      = makefile
 #
 #------- Sources Fortran
 
-SRCS_PARTEL= partel.F partitioner.F pares3d.f
-SRCS_PARTEL_PARA= partel_para.F partitioner_para.F
-SRCS_PARTEL_PRELIM= partel_prelim.F partitioner.F
+SRCS_PARTEL= util_pares.f partitioner.F pares3d.F partel.F 
+SRCS_PARTEL_PARA= partitioner_para.F partel_para.F
+SRCS_PARTEL_PRELIM= partitioner.F partel_prelim.F 
 
 #
 #------- Objets

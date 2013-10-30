@@ -62,7 +62,7 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
 #
 #------- Sources Fortran
 
-SRCS = partel.F pares3d.f partitioner.F
+SRCS = partitioner.F util_pares.f pares3d.F partel.F
 
 #
 #------- Objets

@@ -11,6 +11,8 @@ files: bief_def.f
   bief.f
   front2.f
   voisin.f
+  declarations_telemac.f
+  m_med.F
   elebd31.f
   voisin31.f
   elebd.f
@@ -18,7 +20,8 @@ files: bief_def.f
 [partel]
 path: <root>|sources|utils|partel
 files: partitioner.F
-  pares3d.f
+  util_pares.f
+  pares3d.F
   partel.F
 
 [special]

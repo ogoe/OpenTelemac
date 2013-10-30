@@ -26,9 +26,8 @@
 !| MYPART         |-->| PARTITION NUMBER OF A POINT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-#if defined (HAVE_SCOTCH)
       USE ISO_C_BINDING
-#endif
+!
       IMPLICIT NONE
 #if defined (HAVE_SCOTCH)
       include 'scotchf.h'
@@ -52,7 +51,7 @@
 !
       INTEGER I,J,K,ERR,NUMFLAG,EDGECUT,NCOMMONNODES
       INTEGER, ALLOCATABLE :: EPTR(:), EIND(:)
-      INTEGER, ALLOCATABLE :: NULLTABLE(:)
+      INTEGER, POINTER :: NULLTABLE
 !
 ! SCOTCH
 !
@@ -126,6 +125,7 @@
         NUMFLAG = 1
 !       
 #if defined(HAVE_MPI)
+        CALL C_F_POINTER(C_NULL_PTR, NULLTABLE)
         CALL METIS_PARTMESHDUAL 
      &        (NELEM, NPOIN, EPTR, EIND, NULLTABLE,
      &         NULLTABLE, NCOMMONNODES, NPARTS, NULLTABLE, 
