@@ -69,6 +69,11 @@
 !+   CVDF3D, otherwise S0U is forgotten if there are iterations for non
 !+   linearities.
 !
+!history  J-M HERVOUET (LNHE)
+!+        12/11/2013
+!+        V6P3
+!+   Correction in case of atmospheric pressure.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -256,8 +261,8 @@
      &              MESH2D,MSKGRA,TE3)
         DO I=1,U%DIM1
           I2=MOD(I-1,NPOIN2)+1
-          T3_01%R(I)=T3_01%R(I)+T2_01%R(I2)
-          T3_02%R(I)=T3_02%R(I)+T2_02%R(I2)
+          T3_01%R(I)=T3_01%R(I)+T2_01%R(I2)*UNSV2D%R(I2)
+          T3_02%R(I)=T3_02%R(I)+T2_02%R(I2)*UNSV2D%R(I2)
         ENDDO
       ENDIF
 !
@@ -809,4 +814,3 @@
 !
       RETURN
       END
-
