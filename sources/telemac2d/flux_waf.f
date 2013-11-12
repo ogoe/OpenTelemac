@@ -1,12 +1,13 @@
-!                       ***********************
+!                       *******************
                         SUBROUTINE FLUX_WAF
-!                       ***********************
+!                       *******************
 
-     & (XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
+     &(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
      & HL_UP,HR_UP,VL_UP,VR_UP,PSIL_UP,PSIR_UP,
      & XNN,YNN,DT,DX,WAFFLX)
+!
 !***********************************************************************
-! TELEMAC 2D VERSION 6.2                                         R. ATA
+! TELEMAC 2D VERSION 6.3                                         R. ATA
 !
 !***********************************************************************
 !brief 
@@ -25,6 +26,11 @@
 !+        V6P3
 !+  OPTIMIZATION OF THE CODE
 !+  AVOID DIVISION BY 0
+!
+!history  RIADH ATA (EDF R&D-LNHE)
+!+        12/11/2013
+!+        V6P3
+!+  BUG FIXED IN COMPUTING U*, THANKS TO L. STADLER (BAW)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  DT            | -->|  TIME STEP                                   |
@@ -63,7 +69,8 @@
       DOUBLE PRECISION, INTENT(IN)    :: PSIL_UP,PSIR_UP
       DOUBLE PRECISION, INTENT(IN)    :: DX
       DOUBLE PRECISION, INTENT(INOUT) :: WAFFLX(4)
-!***********************************************************************
+!     
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER                         :: I,ILIM
       LOGICAL                         :: ROT,TVD
@@ -84,28 +91,33 @@
 !
       DOUBLE PRECISION                :: LIM_RL,LIM_RR,LIM_RSTAR
       DOUBLE PRECISION                :: rL,rR,rSTAR,DELTA
+!
+      INTRINSIC SIGN
+!
 !-----------------------------------------------------------------------
+!
       EPS   = 1.E-6
       GSUR2 = G/2.0D0
       ROT   = .FALSE.
       TVD   = .TRUE.
       ILIM  = 4
-      pQL   = 0.0D0
-      pQR   = 0.0D0
-      USTAR = 0.0D0
-      HSTAR = 0.0D0
-      AL    = 0.0D0
-      AR    = 0.0D0
+      pQL   = 0.D0
+      pQR   = 0.D0
+      USTAR = 0.D0
+      HSTAR = 0.D0
+      AL    = 0.D0
+      AR    = 0.D0
+!
 !***********************************************************************
-! INITIALIZATION OF FLX, HLLCFLX AND WAFFLX
+!     INITIALIZATION OF FLX, HLLCFLX AND WAFFLX
       DO I=1,4
-         FLX(I)     = 0.0D0
-         HLLCFLX(I) = 0.0D0
-         WAFFLX(I)  = 0.0D0
+        FLX(I)     = 0.D0
+        HLLCFLX(I) = 0.D0
+        WAFFLX(I)  = 0.D0
       ENDDO
 !
 !-----------------------------------------------------------------------
-! DEPTHS, VELOCITIES, TRACERS
+!     DEPTHS, VELOCITIES, TRACERS
       HL    = H1
       UL    = U1
       VL    = V1
@@ -132,7 +144,7 @@
       VR  =-YNN*U0+XNN*VR
 !
 ! CASE WITH DRY LEFT AND RIGHT  
-      IF(HL.LT.EPS.AND.HR.LT.EPS)GOTO 20 
+      IF(HL.LT.EPS.AND.HR.LT.EPS) GOTO 20 
 !
 10    CONTINUE
 !
@@ -144,7 +156,9 @@
 ! STAR VARIABLES
 !
       HSTAR = 0.5D0*(HL+HR)-0.25D0*(UR-UL)*(HL+HR)/(AL+AR)
-      USTAR = 0.5D0*(UL+UR)-0.25D0*(HR-HL)*(AL+AR)/(HL+HR)
+!RA BUG FIXED WHEN COMPUTING U STAR, THANKS TO L.STADLER (BAW) 
+!     USTAR = 0.5D0*(UL+UR)-0.25D0*(HR-HL)*(AL+AR)/(HL+HR)
+      USTAR = 0.5D0*(UL+UR)-       (HR-HL)*(AL+AR)/(HL+HR)
 
 ! COMPUTE pQL AND pQR:
 ! IT DEPENDS IF WE ARE IN PRESENCE OF SHOCK OR RAREFACTION WAVE 
@@ -185,11 +199,12 @@
       FR(3)   = HR*UR*VR
       FR(4)   = HR*UR*PSI_R 
 !
-! SL, SR AND SSTAR  (WE CONSIDER DRY CASES)
-      IF(HL.GT.EPS)THEN
+!     SL, SR AND SSTAR  (WE CONSIDER DRY CASES)
+!
+      IF(HL.GT.EPS) THEN
         SL    = UL-AL*pQL
       ELSE
-        SL    = UR - 2.0D0*AR
+        SL    = UR - 2.D0*AR
         SR    = UR + AR
         SSTAR = SL
       ENDIF
@@ -198,7 +213,7 @@
         SR    = UR + AR*pQR
       ELSE
         SL    = UL - AL
-        SR    = UL + 2.0D0*AL
+        SR    = UL + 2.D0*AL
         SSTAR = SR
         GOTO 35
       ENDIF
@@ -208,37 +223,43 @@
 !
 ! WEIGHTING COEFFICIENTS wL,wLR, wR wLSTAR AND wRSTAR
 !
-!   COURANT NUMBERS FOR ALL WAVES
+!     COURANT NUMBERS FOR ALL WAVES
       DTDX  = DT/DX 
       cL    = SL*DTDX
       cR    = SR*DTDX
       cSTAR = SSTAR*DTDX
+!
 !===================================================
 !   NON TVD WAF SCHEME
 !===================================================
-      IF(.NOT.TVD)THEN
-!   COEFFICIENTS
-      wL     = 0.5D0*(1.0D0 + cL)
-      wR     = 0.5D0*(1.0D0 - cR)
-      wLR    = 0.5D0*(cR - cL)
-      wLSTAR = 0.5D0*(1.0D0 + cSTAR)
-      wRSTAR = 0.5D0*(1.0D0 - cSTAR)
 !
-! FINAL FLUX (BEFORE ROTATION)
+      IF(.NOT.TVD) THEN
+!
+!     COEFFICIENTS
+      wL     = 0.5D0*(1.D0 + cL)
+      wR     = 0.5D0*(1.D0 - cR)
+      wLR    = 0.5D0*(cR - cL)
+      wLSTAR = 0.5D0*(1.D0 + cSTAR)
+      wRSTAR = 0.5D0*(1.D0 - cSTAR)
+!
+!     FINAL FLUX (BEFORE ROTATION)
 !
       FLX(1) = wL*FL(1) + wLR*HLLCFLX(1) + wR*FR(1)
       FLX(2) = wL*FL(2) + wLR*HLLCFLX(2) + wR*FR(2)
       FLX(3) = (wLSTAR*VL + wRSTAR*VR)*FLX(1)
       FLX(4) = (wLSTAR*PSI_L + wRSTAR*PSI_R)*FLX(1)
+!
 !===================================================
 !    TVD WAF SCHEME
 !===================================================
+!
       ELSE
-C   LIMITERS
+!
+!     LIMITERS
 !     PREPARE rK BEFORE CALLING LIMITER
 !     COMPUTE ALL rK (SEE LOUKILI ET AL. PAGE 4)
 !       rL
-        IF(SL.GT.0.0D0)THEN
+        IF(SL.GT.0.D0)THEN
           DELTA = HL-HL_UP
         ELSE
           DELTA = HR_UP-HR
@@ -252,7 +273,7 @@ C   LIMITERS
         ENDIF
         rR = DELTA/(HR-HL + EPS)
 !       r*
-        IF(SSTAR.GT.0.0D0)THEN
+        IF(SSTAR.GT.0.D0)THEN
           DELTA = VL-VL_UP
         ELSE
           DELTA = VR_UP-VR
@@ -265,11 +286,11 @@ C   LIMITERS
 !
 !   TVD COEFFICIENTS
 !
-      wL     = 0.5D0*(1.0D0 + DSIGN(1.D0,cL)*LIM_RL) !DSIGN(A,B)=|A|*SIGN(B)
-      wR     = 0.5D0*(1.0D0 - DSIGN(1.D0,cR)*LIM_RR)
-      wLR    = 0.5D0*(DSIGN(1.D0,cR)*LIM_RR - DSIGN(1.D0,cL)*LIM_RL)
-      wLSTAR = 0.5D0*(1.0D0 + DSIGN(1.D0,cSTAR)*LIM_RSTAR)
-      wRSTAR = 0.5D0*(1.0D0 - DSIGN(1.D0,cSTAR)*LIM_RSTAR)
+      wL     = 0.5D0*(1.D0 + SIGN(1.D0,cL)*LIM_RL) !DSIGN(A,B)=|A|*SIGN(B)
+      wR     = 0.5D0*(1.D0 - SIGN(1.D0,cR)*LIM_RR)
+      wLR    = 0.5D0*(SIGN(1.D0,cR)*LIM_RR - SIGN(1.D0,cL)*LIM_RL)
+      wLSTAR = 0.5D0*(1.D0 + SIGN(1.D0,cSTAR)*LIM_RSTAR)
+      wRSTAR = 0.5D0*(1.D0 - SIGN(1.D0,cSTAR)*LIM_RSTAR)
 !
 ! FINAL FLUX (BEFORE ROTATION)
 !
@@ -284,15 +305,15 @@ C   LIMITERS
 !
 ! INVERSE ROTATION
 !
-         FLU2X  = XNN*FLX(2) - YNN*FLX(3) 
-         FLU2Y  = YNN*FLX(2) + XNN*FLX(3)
+      FLU2X  = XNN*FLX(2) - YNN*FLX(3) 
+      FLU2Y  = YNN*FLX(2) + XNN*FLX(3)
 !
 ! FINAL WAF FLUX 
 !
-         WAFFLX(1) = FLX(1)
-         WAFFLX(2) = FLU2X 
-         WAFFLX(3) = FLU2Y
-         WAFFLX(4) = FLX(4) 
+      WAFFLX(1) = FLX(1)
+      WAFFLX(2) = FLU2X 
+      WAFFLX(3) = FLU2Y
+      WAFFLX(4) = FLX(4) 
 !
 50    CONTINUE
 !

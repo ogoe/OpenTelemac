@@ -180,6 +180,11 @@
 !+   Allocating algae variables and initialising them for the next
 !+   time step
 !
+!history R.ATA (EDF R&D, LNHE)
+!+        10/10/2013
+!+        V6P3
+!+   FORCING LISTING AND GRAPHIC OUTPUTS FOR LAST TIME STEP, FOR FV
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
@@ -754,7 +759,28 @@
 !
         CALL OS( 'X=YZ    ' , QU , U , H , C )
         CALL OS( 'X=YZ    ' , QV , V , H , C )
-!
+!       PREPARES SIMULATION TIME WHEN DURATION =0
+        IF(DUREE.EQ.0.D0) THEN
+          IF(DT.GT.0.D0.AND.NIT.GE.1) THEN
+            DUREE = NIT*DT
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'DUREE DE SIMULATION DEMANDEE :',DUREE 
+            ELSEIF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'SIMULATION DURATION:',DUREE 
+            ENDIF
+          ELSE
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'FOURNIR DUREE DE SIMULATION' 
+              WRITE(LU,*) 'OU NOMBRE D''ITERATIONS '
+            ELSEIF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'PLEASE GIVE AT LEAST A DURATION' 
+              WRITE(LU,*) 'OR A NUMBER OF ITERATIONS'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+        ENDIF
+! 
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -1915,9 +1941,11 @@
        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM VOLFIN'
 !
        AT = AT + DT
-       IF(AT.GE.TMAX) THEN
-         NIT = LT
-         IF(LISTIN) CALL ENTETE(1,AT,LT)
+       IF (LT.GE.NIT.OR.AT.GE.TMAX) THEN !LAST TIME STEP
+          NIT = LT         
+          LEOPRD = LT ! TO GET OUTPUT OF LAST TIME STEP IN RESULT FILE
+          ENTET = .TRUE.
+          CALL ENTETE(1,AT,LT)
        ENDIF
 !
       ELSE
