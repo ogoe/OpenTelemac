@@ -5320,8 +5320,10 @@ CONTROLE = 1 ; 3
 RUBRIQUE = 'EQUATIONS';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS';'GENERAL'
 NIVEAU = 1
-AIDE = 'Option 2 ou 3 obligatoire pour les coordonnees spheriques'
-AIDE1 = 'Option 2 or 3 mandatory for spherical coordinates'
+AIDE = 'Option 2 ou 3 obligatoire pour les coordonnees spheriques
+Option 3 : latitude et longitude en radians !'
+AIDE1 = 'Option 2 or 3 mandatory for spherical coordinates
+Option 3: latitude and longitude in radians!'
 
 NOM = 'MODELE DE TRANSPORT DES ALGUES' 
 NOM1 = 'ALGAE TRANSPORT MODEL' 
