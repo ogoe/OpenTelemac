@@ -106,6 +106,12 @@
 !+   and with Z for the others, while ZPROP is always sent as argument.
 !+   This could trigger unexpected divisions by 0.
 !
+!history  J-M HERVOUET (LNHE)
+!+        15/11/2013
+!+        V6P3   
+!+   After second call to bief_suite, checking that Z has been found,
+!+   otherwise stop
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -490,6 +496,19 @@
      &                  HIST,0,NPOIN3,AT,TEXTP3,VARCLA,NVARCL,
      &                  TROUVE,ALIRE3D,LISTIN,
      &                  START_RECORD.EQ.0,MAXVAR,NPLAN)
+        IF(TROUVE(1).NE.1) THEN
+          WRITE(LU,*) ' '
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'COORDONNEE Z MANQUANTE DANS LE'
+            WRITE(LU,*) 'FICHIER DU CALCUL PRECEDENT'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'Z COORDINATE MISSING IN THE'
+            WRITE(LU,*) 'PREVIOUS COMPUTATION FILE'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SUITE'
 !
         DO K=1,NPOIN2
@@ -2471,3 +2490,4 @@ C     ENDIF
 !
       RETURN
       END
+
