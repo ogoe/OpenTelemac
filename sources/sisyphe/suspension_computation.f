@@ -137,6 +137,12 @@
 !+        V6P3
 !+   YAFLULIM was not initialised in one case. 
 !
+!history  J.-M. HERVOUET (LNHE)
+!+        18/11/2013
+!+        V6P3
+!+   Pointers GLOSEG1 and GLOSEG2 added to avoid an unwanted copy of
+!+   arrays in call to suspension_conv (after message by Intel compiler) 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
@@ -381,10 +387,13 @@
       LOGICAL          :: YASMI2,YAFLULIM
       TYPE (BIEF_OBJ),  POINTER :: HOLD
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVE_UCONV,SAVE_VCONV
-! Ajout CV
       DOUBLE PRECISION :: MSTOT
       DOUBLE PRECISION :: CONC_SABLE(NPOIN, NOMBLAY)
-      INTEGER 	       ::J
+      INTEGER 	       :: J
+!
+      INTEGER, POINTER, DIMENSION(:) :: GLOSEG1,GLOSEG2
+!
+!-----------------------------------------------------------------------
 !
 !     IN CHARAC IELMT IS INTENT(INOUT)
       IELMT=IELM
@@ -393,6 +402,8 @@
 !    
       SAVE_UCONV=>UCONV%R
       SAVE_VCONV=>VCONV%R
+      GLOSEG1=>MESH%GLOSEG%I(1:MESH%GLOSEG%DIM1)
+      GLOSEG2=>MESH%GLOSEG%I(MESH%GLOSEG%DIM1+1:2*MESH%GLOSEG%DIM1)
 !
 !======================================================================!
 !======================================================================!
@@ -464,10 +475,9 @@
         CALL CPSTVC(U2D,T12)
         CALL SUSPENSION_CONV(TOB,XMVE, KSR,NPOIN,ZREF,U2D,V2D,HN,HMIN,
      &                       UCONV,VCONV,KARMAN,ZERO,XWC,T1,T12,RESOL,
-     &                       MESH%GLOSEG%I(1:MESH%GLOSEG%DIM1),
-     &            MESH%GLOSEG%I(MESH%GLOSEG%DIM1+1:2*MESH%GLOSEG%DIM1),
-     &            MESH%NSEG,FLULIM,YAFLULIM,SOLSYS_SIS,SOLSYS,
-     &            UCONV_TEL,VCONV_TEL)
+     &                       GLOSEG1,GLOSEG2,MESH%NSEG,FLULIM,
+     &                       YAFLULIM,SOLSYS_SIS,SOLSYS,
+     &                       UCONV_TEL,VCONV_TEL)
 !
 !       ADVECTION FORM WHICH ACCEPTS AN ADVECTION FIELD
 !       THAT DOES NOT SATISFY CONTINUITY + LEO-POSTMA CONSTANT
