@@ -5,20 +5,13 @@
      & (X,Y,NPOIN)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODIFIES THE COORDINATES OF THE POINTS IN THE MESH.
 !
 !warning  USER SUBROUTINE; COMMENTED LINES ARE AN EXAMPLE
-!code
-!+  EXAMPLE : MULTIPLIES BY A CONSTANT (SCALES THE MESH)
-!+            CHANGES THE ORIGIN
-!+
-!+      DO I = 1 , NPOIN
-!+         X(I) = 3.D0 * X(I) + 100.D0
-!+         Y(I) = 5.D0 * Y(I) - 50.D0
-!+      ENDDO
+!
 !warning  DO NOT PERFORM ROTATIONS AS IT WILL CHANGE
 !+            THE NUMBERING OF THE LIQUID BOUNDARIES
 !
@@ -47,7 +40,6 @@
 !
       USE BIEF, EX_CORRXY => CORRXY
 !
-!
 !     OTHER DATA ARE AVAILABLE WITH THE DECLARATIONS OF EACH PROGRAM
 !
 !     USE DECLARATIONS_TELEMAC2D
@@ -67,19 +59,37 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!       INTEGER I
 !
 !-----------------------------------------------------------------------
 !
-!  EXAMPLE : MULTIPLIES BY A CONSTANT (SCALES THE MESH)
-!            CHANGES THE ORIGIN
+!      EXAMPLE 1: MULTIPLIES BY A CONSTANT (SCALES THE MESH)
+!                 AND CHANGES THE ORIGIN
+!
+!      INTEGER I
 !
 !      DO I = 1 , NPOIN
-!         X(I) = 3.D0 * X(I) + 100.D0
-!         Y(I) = 5.D0 * Y(I) - 50.D0
+!        X(I) = 3.D0 * X(I) + 100.D0
+!        Y(I) = 5.D0 * Y(I) - 50.D0
+!      ENDDO
+!
+!
+!-----------------------------------------------------------------------
+!
+!      EXAMPLE 2: CHANGING LATITUDE-LONGITUDE IN DEGREES TO RADIANS
+!
+!      INTEGER I
+!      DOUBLE PRECISION DEGTORAD
+!      INTRINSIC ACOS
+!
+!      DEGTORAD=ACOS(-1.D0)/180.D0
+!      DO I = 1 , NPOIN
+!        X(I) = X(I) * DEGTORAD
+!        Y(I) = Y(I) * DEGTORAD
 !      ENDDO
 !
 !-----------------------------------------------------------------------
+!
+!     THIS SHOULD BE CHANGED IF MODIFICATIONS ARE DONE
 !
       IF(LNG.EQ.1) THEN
         WRITE(LU,*)'CORRXY (BIEF) : PAS DE MODIFICATION DES COORDONNEES'

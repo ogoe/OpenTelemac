@@ -40,6 +40,13 @@
 !+        V6P3
 !+   Treatment of latitude-longitude coordinates.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        18/11/2013
+!+        V6P3
+!+   Latitude-longitude coordinates checked (some users will 
+!+   inadvertently give them in degrees). Latitude and longitude
+!+   of origin point converted into radians.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FFORMAT        |-->| FILE FORMAT
 !| IB             |-->| SERIES OF 10 INTEGERS IN THE SELAFIN FORMAT
@@ -80,10 +87,9 @@
       CHARACTER(LEN=2) RF
 !
       DOUBLE PRECISION, PARAMETER :: R=6.37D6
-      DOUBLE PRECISION, PARAMETER :: PI=3.141592653589793D0
-      DOUBLE PRECISION PS4
+      DOUBLE PRECISION PS4,TAN1,TAN2,LONGIRAD
 !
-      INTRINSIC LOG,TAN
+      INTRINSIC LOG,TAN,ATAN
 !
 !-----------------------------------------------------------------------
 !
@@ -142,10 +148,37 @@
 !     CHANGED INTO MERCATOR PROJECTION
 !
       IF(PROJECTION.EQ.3) THEN
-        PS4=PI*0.25D0
+        PS4=ATAN(1.D0)
+        LONGIRAD=LONGI0*PS4/90.D0
+        TAN2=TAN(0.5D0*LATI0*PS4/90.D0+PS4)
+        IF(TAN2.LT.0.D0) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'LATI0=',LATI0,' EST PROBABLEMENT FAUSSE'
+          ENDIF 
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'LATI0=',LATI0,' IS PROBABLY WRONG'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
         DO I=1,NPOIN
-          X(I)=R*(X(I)-LONGI0)
-          Y(I)=R*(LOG(TAN(0.5D0*Y(I)+PS4))-LOG(TAN(0.5D0*LATI0+PS4)))
+          X(I)=R*(X(I)-LONGIRAD)
+          TAN1=TAN(0.5D0*Y(I)+PS4)
+          IF(TAN1.LT.0.D0) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'LA LATITUDE DOIT ETRE DONNEE EN  RADIANS'
+              WRITE(LU,*) 'ICI Y(I)=',Y(I),' POUR I=',I
+              WRITE(LU,*) 'UTILISEZ CORRXY (BIEF) POUR LA CONVERSION'
+            ENDIF 
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'LATITUDE MUST BE GIVEN IN RADIANS'
+              WRITE(LU,*) 'HERE Y(I)=',Y(I),' FOR I=',I
+              WRITE(LU,*) 'USE CORRXY (BIEF) FOR CONVERSION'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          Y(I)=R*(LOG(TAN1)-LOG(TAN2))
         ENDDO 
 !       NOW IT IS MERCATOR
         PROJECTION=2
