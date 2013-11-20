@@ -2,8 +2,7 @@
                         SUBROUTINE CENTRE_MASS_SEG
 !                       **************************
 !
-     & (X,Y,COORD_G,IKLE,NPOIN,ELTSEG,
-     & ORISEG,NELEM,NSEG,JMI,CMI,GLOSEG,
+     &(X,Y,COORD_G,IKLE,NPOIN,ELTSEG,ORISEG,NELEM,NSEG,JMI,CMI,GLOSEG,
      & IFABOR,MESH)
 !
 !***********************************************************************
@@ -24,6 +23,11 @@
 !+        18/12/12
 !+        V6P3
 !+
+!history  R. ATA & J-M HERVOUET
+!+        19/11/2013
+!+        V6P3
+!+    Optimisation and simplification.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CMI            |<--| COORDINATES OF MID-INTERFACE POINTS 
 !| COORD_G        |<--| CENTER OF MASS OF ELEMENTS NEIGHBORS OF AN EDGE
@@ -72,12 +76,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
-      INTEGER ISEG,NB1,NB2
-      INTEGER IELEM,I,I1,I2,I3
-      DOUBLE PRECISION XEL,YEL,XG1,XG2,YG1,YG2,EPS
-      DOUBLE PRECISION XSOM(3),YSOM(3) 
+      INTEGER ISEG,NB1,NB2,IELEM,I,I1,I2,I3
+      DOUBLE PRECISION XEL,YEL,XG1,XG2,YG1,YG2,XSOM(3),YSOM(3) 
       DOUBLE PRECISION X_MIDPOINT,Y_MIDPOINT
-      LOGICAL YESNO(NSEG)
 !
 !-----------------------------------------------------------------------
 !   INITIALIZATION OF VARIABLES
@@ -90,7 +91,6 @@
         CMI(1,I)     = 0.D0
         CMI(2,I)     = 0.D0
         JMI(I)       = 0
-        YESNO(I)     =.FALSE.
       ENDDO
       IF(NCSIZE.GT.1)THEN
         DO I=1,NSEG
@@ -103,8 +103,7 @@
       DO IELEM=1, NELEM 
         I1 = IKLE(IELEM,1)
         I2 = IKLE(IELEM,2)
-        I3 = IKLE(IELEM,3)
-!       
+        I3 = IKLE(IELEM,3)       
         XEL = (X(I1)+X(I2)+X(I3))/3.0D0
         YEL = (Y(I1)+Y(I2)+Y(I3))/3.0D0           
         DO I = 1,3
@@ -115,20 +114,19 @@
           ELSEIF(ORISEG(IELEM,I).EQ.2)THEN !G IS RIGHT OF THE EDGE 
             COORD_G(ISEG,3) =XEL
             COORD_G(ISEG,4) =YEL
-          ENDIF
-!        
+          ENDIF       
         ENDDO
       ENDDO
 ! 
       IF(NCSIZE.GT.1) THEN
-       CALL PARCOM2_SEG(COORD_G(1:NSEG,1),
-     &                  COORD_G(1:NSEG,2),
-     &                  COORD_G(1:NSEG,2), ! NO EFFECT FOR THIS ONE
+       CALL PARCOM2_SEG(COORD_G(1,1),
+     &                  COORD_G(1,2),
+     &                  COORD_G(1,2), ! NO EFFECT FOR THIS ONE
      &                  NSEG,1,1,2,MESH,1,11)
 !
-       CALL PARCOM2_SEG(COORD_G(1:NSEG,3),
-     &                  COORD_G(1:NSEG,4),
-     &                  COORD_G(1:NSEG,4), ! NO EFFECT FOR THIS ONE
+       CALL PARCOM2_SEG(COORD_G(1,3),
+     &                  COORD_G(1,4),
+     &                  COORD_G(1,4), ! NO EFFECT FOR THIS ONE
      &                  NSEG,1,1,2,MESH,1,11)
 
       ENDIF
@@ -147,66 +145,50 @@
           ISEG = ELTSEG(IELEM,I)
           NB1 = GLOSEG(ISEG,1)
           NB2 = GLOSEG(ISEG,2)
-          IF(.NOT.YESNO(ISEG))THEN
-           XG1 = COORD_G(ISEG,1)
-           YG1 = COORD_G(ISEG,2)
-           XG2 = COORD_G(ISEG,3)
-           YG2 = COORD_G(ISEG,4)
-           ! CENTER OF SEGMENT G1G2
-           X_MIDPOINT = 0.5D0*(XG1+XG2)
-           Y_MIDPOINT = 0.5D0*(YG1+YG2) 
-           ! JMI: IN WHICH ELEMENT IS CMI
-           ! WE USE INPOLY FUNCTION (SEE INPOLY.F)
-           XSOM(1)=X(I1)
-           XSOM(2)=X(I2)
-           XSOM(3)=X(I3)
-!
-           YSOM(1)=Y(I1)
-           YSOM(2)=Y(I2)
-           YSOM(3)=Y(I3)
-           IF(INPOLY(X_MIDPOINT,Y_MIDPOINT,XSOM,YSOM,3 ))THEN 
-              IF(NCSIZE.GT.1)THEN
-                MESH%MSEG%X%R(ISEG)=IELEM ! I USE THIS STUPID WAY BECAUSE WE CAN 
-                                          ! NOT USE PARCOM2_SEG FOR INTEGERS
-              ENDIF
-              CMI(1,ISEG) = X_MIDPOINT
-              CMI(2,ISEG) = Y_MIDPOINT 
-              JMI(ISEG)= IELEM
-              YESNO(ISEG)=.TRUE.
-           ENDIF
+          XG1 = COORD_G(ISEG,1)
+          YG1 = COORD_G(ISEG,2)
+          XG2 = COORD_G(ISEG,3)
+          YG2 = COORD_G(ISEG,4)
+          ! CENTER OF SEGMENT G1G2
+          X_MIDPOINT = 0.5D0*(XG1+XG2)
+          Y_MIDPOINT = 0.5D0*(YG1+YG2) 
+          ! JMI: IN WHICH ELEMENT IS CMI
+          ! WE USE INPOLY FUNCTION (SEE INPOLY.F)
+          XSOM(1)=X(I1)
+          XSOM(2)=X(I2)
+          XSOM(3)=X(I3)
+          YSOM(1)=Y(I1)
+          YSOM(2)=Y(I2)
+          YSOM(3)=Y(I3)
+          IF(INPOLY(X_MIDPOINT,Y_MIDPOINT,XSOM,YSOM,3 ))THEN 
+            CMI(1,ISEG) = X_MIDPOINT
+            CMI(2,ISEG) = Y_MIDPOINT 
+            JMI(ISEG)= IELEM
           ENDIF
         ENDDO
       ENDDO
-!   FOR PARALLELISM
-!+--+-+-+-+-+-+-+-+-+-+-
-      IF(NCSIZE.GT.1) THEN
-       CALL PARCOM2_SEG(CMI(1,1:NSEG),
-     &                  CMI(2,1:NSEG),
-     &                  MESH%MSEG%X%R(1:NSEG), 
-     &                  NSEG,1,1,3,MESH,1,11)
-!     !RECOVER THE INTEGER 
-       DO ISEG=1,NSEG
-         I1       = NINT(MESH%MSEG%X%R(ISEG))
-!         JMI(ISEG)= I1         ! IN THIS WAY, JMI(I)=0 FOR INTERFACE SEGMENT
-                                ! IF CMI IS NOT IN THIS SUBDOMAIN
-         IF(I1.NE.0)YESNO(ISEG)=.TRUE. !TO SAY THAT INTERFACE SEGMENTS ARE ALREADY TREATED
-       ENDDO
+!
+!     FOR PARALLELISM
+!
+      IF(NCSIZE.GT.1) THEN      
+!       NOTE JMH: CMI(1,1:NSEG) HERE IMPLIES A TEMPORARY COPY BY THE COMPILER
+!                 AND THEN A REDISTRIBUTION
+        CALL PARCOM2_SEG(CMI(1,1:NSEG),
+     &                   CMI(2,1:NSEG),
+     &                   CMI, 
+     &                   NSEG,1,1,2,MESH,1,11)
       ENDIF   
 !
 ! BOUNDARY SEGMENTS
 !
-      EPS= 1.E-14
-      DO ISEG=1,NSEG
-        YESNO(ISEG)=.FALSE.
-      ENDDO
       DO IELEM=1,NELEM
         I1 = IKLE(IELEM,1)
         I2 = IKLE(IELEM,2)
         I3 = IKLE(IELEM,3)
         DO I = 1,3
           ISEG = ELTSEG(IELEM,I)
-          IF(.NOT.YESNO(ISEG).AND.(IFABOR(IELEM,I).EQ.-1
-     &                        .OR. IFABOR(IELEM,I).EQ. 0)) THEN  !BOUNDARY SEG
+          IF(IFABOR(IELEM,I).EQ.-1.OR. IFABOR(IELEM,I).EQ. 0) THEN 
+!           BOUNDARY SEGMENT
             NB1=GLOSEG(ISEG,1)
             NB2=GLOSEG(ISEG,2)
 !           CMI
@@ -215,7 +197,6 @@
 !           JMI
             JMI(ISEG)=IELEM
 !           ISEG HAS BEEN TREATED
-            YESNO(ISEG)=.TRUE.
           ENDIF
         ENDDO
       ENDDO
