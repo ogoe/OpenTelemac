@@ -63,7 +63,9 @@
       IF(NREJET.NE.0) THEN
         DO I=1,NREJET
           IS =ISCE(I)
-          SMTR(IS) = SMTR(IS) + DT*SMH(IS) * TSCE2(I,ITRAC)
+          IF(IS.GT.0) THEN
+            SMTR(IS) = SMTR(IS) + DT*SMH(IS) * TSCE2(I,ITRAC)
+          ENDIF
         ENDDO
       ENDIF
 !
