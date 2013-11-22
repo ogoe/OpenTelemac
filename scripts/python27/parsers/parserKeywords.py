@@ -138,6 +138,8 @@ def readCAS(keywords,dico,frgb):
    vint = re.compile(r'\d+\Z')
    vflt = re.compile(r'(-)?\d*(|\.)\d*([dDeE](\+|\-)?\d+|)\Z')
    keylist,vallist = keywords
+   print keylist
+   print vallist
    for key,value in zip(*keywords):
       kw = key
       if kw[0] == '&': continue

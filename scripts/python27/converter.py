@@ -144,29 +144,29 @@ if __name__ == "__main__":
           extens=str(ndomains-1).zfill(5)+'-'+str(idom).zfill(5)
       # Writting the steering file
       fichier = open("stb"+extens+".cas","w")
-      fichier.write("CONVERTER : YES\n")
+      fichier.write("CONVERTER : 'YES'\n")
       if options.debug:
-          fichier.write("DEBUG : YES\n")
-      fichier.write("INPUT FILE FORMAT : "+inputFormat+"\n")
-      fichier.write("INPUT FILE : "+inputFile+extens+"\n")
+          fichier.write("DEBUG : 'YES'\n")
+      fichier.write("INPUT FILE FORMAT : '"+inputFormat+"'\n")
+      fichier.write("INPUT FILE : '"+inputFile+extens+"'\n")
       if options.boundaryFile != "":
-          fichier.write("BOUNDARY FILE : "+options.boundaryFile+extens+"\n")
+          fichier.write("BOUNDARY FILE : '"+options.boundaryFile+extens+"'\n")
       if options.logFile != "":
-          fichier.write("LOG FILE : "+options.logFile+extens+"\n")
-      fichier.write("OUTPUT FILE FORMAT : "+outputFormat+"\n")
-      fichier.write("OUTPUT FILE : "+outputFile+extens+"\n")
+          fichier.write("LOG FILE : '"+options.logFile+extens+"'\n")
+      fichier.write("OUTPUT FILE FORMAT : '"+outputFormat+"'\n")
+      fichier.write("OUTPUT FILE : '"+outputFile+extens+"'\n")
       if options.isdble:
-          fichier.write("SELAFIN IN DOUBLE PRECISION : YES\n")
+          fichier.write("SELAFIN IN DOUBLE PRECISION : 'YES'\n")
       # if 
       if outputFormat == "SERAFIN":
-          fichier.write("OUTPUT BOUNDARY FILE : "+outputFile[0:(n-3)]+"cli"+extens+"\n")
+          fichier.write("OUTPUT BOUNDARY FILE : '"+outputFile[0:(n-3)]+"cli"+extens+"'\n")
       # If th output is in UNV format add the name of the lof file
       if outputFormat == "UNV":
-          fichier.write("OUTPUT LOG FILE : "+outputFile[0:(n-3)]+"log"+extens+"\n")
+          fichier.write("OUTPUT LOG FILE : '"+outputFile[0:(n-3)]+"log"+extens+"'\n")
       fichier.close()
       # Running stbtel
       system("stbtel.py stb"+extens+".cas")
       # Remove the case file
-      remove("stb"+extens+".cas")
+      #remove("stb"+extens+".cas")
    
    sys.exit()
