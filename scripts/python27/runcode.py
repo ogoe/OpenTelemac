@@ -110,7 +110,7 @@ import shutil
 import threading
 from time import localtime, strftime
 from subprocess import *
-from os import path,walk,mkdir,chdir,remove,sep,environ,listdir,symlink,getcwd
+from os import path,walk,mkdir,chdir,remove,sep,environ,listdir
 # ~~> dependencies towards other modules
 from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
@@ -126,14 +126,6 @@ from parsers.parserSortie import getLatestSortieFiles
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
 #
-
-def custom_copy(src, dest, use_link):
-   """ Copy a file to its destination """
-   print '     cuuuuuustoooooooommmmmm'
-   if use_link:
-     symlink(src, dest)
-   else:
-     shutil.copy2(src, dest)
 
 def checkConsistency(cas,dico,frgb,cfg):
 
@@ -197,7 +189,7 @@ def processTMP(casFile):
 
    return TMPDir
 
-def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
+def processLIT(cas,iFiles,TMPDir,ncsize,update):
 
    xcpt = []                            # try all files for full report
    # ~~ copy input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -236,15 +228,14 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
                # It depends on the selected format (Selafin, Ideas, Med)
             elif iFiles[k].split(';')[5][0:12] == 'SELAFIN-GEOM':
                print '    copying: ', path.basename(cref),crun
-               custom_copy(path.join(getcwd(),cref), crun, use_link)
+               shutil.copy(cref,crun)
             else:
                # FD : this is not a true copy. Why ?
                print '    copying: ', path.basename(cref),crun
-               custom_copy(path.join(getcwd(),cref), crun, use_link)
-               #putFileContent(crun,getFileContent(cref)+[''])
+               putFileContent(crun,getFileContent(cref)+[''])
          else:
             print '    copying: ', path.basename(cref),crun
-            custom_copy(path.join(getcwd(),cref), crun, use_link)
+            shutil.copy(cref,crun)
 
    if xcpt != []: raise Exception(xcpt) # raise full report
    return
@@ -460,7 +451,7 @@ def getGLOGEO(cas,iFiles):
          if iFiles[k].split(';')[5][-4:] == 'GEOM': GLOGEO = iFiles[k].split(';')[1]
    return GLOGEO
 
-def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,use_link):
+def runPartition(partel,cas,conlim,iFiles,ncsize,bypass):
 
    if ncsize < 2: return True
    # ~~ split input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -475,7 +466,7 @@ def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,use_link):
                raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
          elif iFiles[k].split(';')[5][0:5] == 'PARAL':
             print ' duplicating: ', path.basename(crun)
-            for n in range(ncsize): custom_copy(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:],use_link)
+            for n in range(ncsize): shutil.copy2(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
 
    return True
 
@@ -617,7 +608,6 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       if lang == 1: cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,ncsize)
       if lang == 2: cas = setKeyValue('PARALLEL PROCESSORS',cas,frgb,ncsize)
    if options.ncsize != '':
-      ncsize = int(options.ncsize)
       if options.nctile != '':
          nctile = max( 1,int(options.nctile) )
          ncnodes = int( max( 1,int(options.ncsize) ) / nctile )
@@ -709,12 +699,12 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    if not options.merge:
       # >>> Copy INPUT files into WDir
       try:
-         processLIT(cas,iFS,WDir,ncsize,(options.wDir!=''),options.use_link)
+         processLIT(cas,iFS,WDir,ncsize,(options.wDir!=''))
       except Exception as e:
          raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
       for mod in COUPLAGE.keys():
          try:
-            processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],WDir,ncsize,(options.wDir!=''),options.use_link)
+            processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],WDir,ncsize,(options.wDir!=''))
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
    # >>> Placing yourself into the WDir
@@ -827,13 +817,13 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
          CONLIM = getCONLIM(cas,iFS)    # Global CONLIM file
          if not options.merge:
             try:
-               runPartition(parCmd,cas,CONLIM,iFS,ncsize,options.bypass,options.use_link)
+               runPartition(parCmd,cas,CONLIM,iFS,ncsize,options.bypass)
             except Exception as e:
                raise Exception([filterMessage({'name':'runCAS','msg':'Partioning primary input files of the CAS file: '+path.basename(casFile)},e,options.bypass)])
             for mod in COUPLAGE.keys():
                CONLIM = getCONLIM(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'])
                try:
-                  runPartition(parCmd,COUPLAGE[mod]['cas'],CONLIM,COUPLAGE[mod]['iFS'],ncsize,options.bypass,options.use_link)
+                  runPartition(parCmd,COUPLAGE[mod]['cas'],CONLIM,COUPLAGE[mod]['iFS'],ncsize,options.bypass)
                except Exception as e:
                   raise Exception([filterMessage({'name':'runCAS','msg':'Partioning coupling input files'},e,options.bypass)])
 
@@ -951,8 +941,6 @@ if __name__ == "__main__":
       help="will only do the output copying (and recollection in parallel) if option there" )
    parser.add_option("--run",action="store_true",dest="run",default=False,
       help="will only run the simulation if option there" )
-   parser.add_option("--use-link",action="store_true",dest="use_link",default=False,
-      help="Will use link instead of copy in the temporary folder (Unix system only)" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
