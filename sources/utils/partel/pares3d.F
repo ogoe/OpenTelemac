@@ -459,7 +459,7 @@
             ENDIF
          ENDDO
       END IF
-#else
+#endif
 
       IF (.NOT.FORMAT_MED) THEN
          NBFAMILY=NBFAMILY+1       ! POUR TITRE DU BLOC
@@ -469,7 +469,6 @@
             READ(NLOG,50,ERR=111,END=120)LOGFAMILY(I)
          ENDDO
       ENDIF
-#endif
 !     END MODIF V STOBIAC
 
       READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
@@ -2007,14 +2006,13 @@
               WRITE(NLOG2,50,ERR=113)'--'
            ENDDO
         ENDIF
-#else 
+#endif 
         IF (.NOT.FORMAT_MED) THEN
            WRITE(NLOG2,53 ,ERR=113) NBFAMILY-1
            DO J=1,NBFAMILY
               WRITE(NLOG2,50,ERR=113)'--'
            ENDDO
         ENDIF
-#endif
 !       END MODIF V STOBIAC
 
         ! ADDITION BY JP RENAUD ON 15/02/2007
