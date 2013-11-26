@@ -2,11 +2,10 @@
                      SUBROUTINE ANAVEN
 !                    *****************
 !
-     &( UV    , VV    , X     , Y     , NPOIN2, AT    , DDC   , VX_CTE,
-     &  VY_CTE)
+     &(UV,VV,X,Y,NPOIN2,AT,DDC,VX_CTE,VY_CTE)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   08/06/2011
+! TOMAWAC   V6P3                                   08/06/2011
 !***********************************************************************
 !
 !brief    SPECIFIES AN ANALYTICAL WIND
@@ -41,6 +40,11 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        26/11/2013
+!+        V6P3
+!+   Example added to copy the wind in Telemac-2D memory.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
@@ -55,25 +59,41 @@
 !
       IMPLICIT NONE
 !
+!     WHEN COUPLING WITH TELEMAC-2D, THIS WILL ALLOW A COPY OF WIND
+!     IN TELEMAC-2D
+!
+!     USE DECLARATIONS_TELEMAC2D, ONLY : WINDX,WINDY
+!
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
 !
-!.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER  NPOIN2
       DOUBLE PRECISION AT    , DDC   , VX_CTE, VY_CTE
       DOUBLE PRECISION X (NPOIN2)    , Y (NPOIN2)
       DOUBLE PRECISION UV(NPOIN2)    , VV(NPOIN2)
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER  IP
 !
+!     STANDARD CASE (CONSTANT VALUES IN THE STEERING FILE)
 !
       DO IP=1,NPOIN2
         UV(IP)=VX_CTE
         VV(IP)=VY_CTE
       ENDDO
+!
+!     EXAMPLE IF COUPLING WITH TELEMAC-2D
+!     READING TOMAWAC WIND IN TELEMAC-2D SHOULD BE POSSIBLE ALSO
+!
+!     DO IP=1,NPOIN2
+!       UV(IP)=WINDX%R(IP)
+!       VV(IP)=WINDY%R(IP)
+!     ENDDO
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

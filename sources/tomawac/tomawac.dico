@@ -1710,17 +1710,18 @@ DEFAUT1 = 0
 RUBRIQUE = 'TEMPS' 
 RUBRIQUE1 = 'TIME' 
 NIVEAU = 2 
-AIDE = 'Donne la date du debut du calcul au format aammjjhhmm 
+AIDE = 'Donne la date du debut du calcul au format aaaammjjhhmm 
 ce qui permet de se reperer par rapport au fichier des vents, 
-9310241524 represente le 24 octobre 93 a 15h24. 
+199310241524 represente le 24 octobre 93 a 15h24. 
 **Mots-cles associes :** 
 FICHIER DES VENTS BINAIRE 
 FICHIER DES VENTS FORMATE 
 BINAIRE DU FICHIER DES VENTS 
 FORMAT DU FICHIER DES VENTS' 
 AIDE1 = 'Gives the date of the computation beginning. The format 
-is yymmddhhmm, as an exemple 9310241524 means the 24 october 93 
-at 15h24. This date gives a reference for the reading of the 
+is yyyymmddhhmm, 
+as an exemple 199310241524 means the 24 october 93 
+at 15h24. This date gives a reference for reading the 
 wind file. 
 **Related keywords:** 
 BINARY WIND FILE 
@@ -3847,7 +3848,7 @@ TYPE = CARACTERE
 INDEX = 9 
 MNEMO = 'Variable WAC_FILES(WACLEO)%NAME' 
 TAILLE= 0 
-SUBMIT = 'WACLEO-READWRITE-33;WACLEO;OBLIG;BIN;ECR;SCAL'  
+SUBMIT = 'WACLEO-READWRITE-33;WACLEO;OBLIG;BIN;ECR;PARAL'  
 DEFAUT = 'spect' 
 DEFAUT1 = 'spect' 
 RUBRIQUE = 'RESULTATS' 
