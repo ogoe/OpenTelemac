@@ -91,7 +91,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER NSEMAX,ERR
-      PARAMETER(NSEMAX=50)
+      PARAMETER(NSEMAX=200)
 !
       INTEGER IELEM,IEL,I1,I2,I3,J1,J2,J3,ELBEST,IGBEST,ILBEST,IELMH
       INTEGER ILPREC,ISEG,ISEC,NSEC,PT,DEP,ARR,IELMU
