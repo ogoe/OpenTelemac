@@ -5,7 +5,7 @@
      &(CODE,FILES,NFILES,PATH,NCAR,FLOT,IFLOT,ICODE)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPENS FILES DECLARED IN THE STEERING FILE.
@@ -29,6 +29,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        27/11/2013
+!+        V6P3
+!+   Opening by all processors of ACTION='WRITE' file precluded. In this
+!+   case only the processor 0 will do it.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| NAME OF CALLING PROGRAMME
@@ -109,11 +115,15 @@
             ELSE
 !             PARALLEL MODE, FILE TYPE: SCAL
               IF(FILES(I)%TYPE(1:4).EQ.'SCAL') THEN
-              CALL OPEN_FILE_MED(PATH(1:NCAR)//TRIM(FILES(I)%TELNAME)
-     &               ,FILES(I)%LU,FILES(I)%ACTION)
+                IF(IPID.EQ.0.OR.FILES(I)%ACTION(1:5).NE.'WRITE') THEN
+                  CALL OPEN_FILE_MED(
+     &                PATH(1:NCAR)//TRIM(FILES(I)%TELNAME),
+     &                FILES(I)%LU,FILES(I)%ACTION)
+                ENDIF
 !             PARALLEL MODE, OTHER FILE TYPE
               ELSE
-              CALL OPEN_FILE_MED(PATH(1:NCAR)//TRIM(FILES(I)%TELNAME)
+                CALL OPEN_FILE_MED(
+     &               PATH(1:NCAR)//TRIM(FILES(I)%TELNAME)
      &               //EXTENS(NCSIZE-1,IPID),FILES(I)%LU,
      &               FILES(I)%ACTION)
               ENDIF
@@ -127,10 +137,14 @@
      &             FORM=FORME,ACTION=FILES(I)%ACTION)
             ELSE
 !             PARALLEL, FILE TYPE: SCAL
+!             ALL PROCESSORS CANNOT OPEN THE SAME FILE FOR WRITING
+!             IN THIS CASE, ONLY PROCESSOR 0 MAY OPEN AND WRITE
               IF(FILES(I)%TYPE(1:4).EQ.'SCAL') THEN
-                OPEN(FILES(I)%LU,
-     &               FILE=PATH(1:NCAR)//TRIM(FILES(I)%TELNAME),
-     &               FORM=FORME,ACTION=FILES(I)%ACTION)
+                IF(IPID.EQ.0.OR.FILES(I)%ACTION(1:5).NE.'WRITE') THEN
+                  OPEN(FILES(I)%LU,
+     &                 FILE=PATH(1:NCAR)//TRIM(FILES(I)%TELNAME),
+     &                 FORM=FORME,ACTION=FILES(I)%ACTION)
+                ENDIF
 !             PARALLEL, OTHER FILE TYPE
               ELSE
                 OPEN(FILES(I)%LU,
@@ -155,3 +169,4 @@
 !
       RETURN
       END
+
