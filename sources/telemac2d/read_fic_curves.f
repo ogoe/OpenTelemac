@@ -34,6 +34,13 @@
 !+   variable FIRST introduced (NAG compiler refuses two successive
 !+   reads at an end of file, so error redirected as end).
 !
+!history  J-M HERVOUET (LNHE)
+!+        28/11/2013
+!+        V6P3
+!+   Empty lines tested and considered as commented lines when reading
+!+   data Q and Z. This allows carriage returns followed by an empty
+!+   line at the end of the file.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NFIC           |-->| LOGICAL UNIT OF FILE
 !| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
@@ -126,7 +133,7 @@
         PTS_CURVES(ICURVE)=0
 4       CONTINUE
         READ(NFIC,FMT='(A)',END=1001,ERR=999) LIGNE
-        IF(LIGNE(1:1).NE.'#') THEN
+        IF(LIGNE(1:1).NE.'#'.AND.LIGNE.NE.'') THEN
           PTS_CURVES(ICURVE)=PTS_CURVES(ICURVE)+1
           IF(PASS.EQ.1) THEN
 !           READS AND STORES
@@ -222,3 +229,4 @@
 !
       RETURN
       END
+
