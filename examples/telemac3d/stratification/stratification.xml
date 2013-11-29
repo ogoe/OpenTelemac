@@ -19,12 +19,12 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="1"  rank="3"
+   <action xref="1"  rank="7"
        do="translate;compile;run;cas;princi" 
        code="telemac3d" target="t3d_stratification.cas" 
        title="stratification scalar mode" 
    />
-   <action xref="2"  rank="3"
+   <action xref="2"  rank="7"
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac3d" target="t3d_stratification.cas" 
        title="stratification parallel mode" 
