@@ -28,6 +28,11 @@
 !+        V6P3
 !+    Optimisation and simplification.
 !
+!history  R. ATA & J-M HERVOUET
+!+        01/12/2013
+!+        V6P3
+!+    add verification tests
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CMI            |<--| COORDINATES OF MID-INTERFACE POINTS 
 !| COORD_G        |<--| CENTER OF MASS OF ELEMENTS NEIGHBORS OF AN EDGE
@@ -79,6 +84,7 @@
       INTEGER ISEG,NB1,NB2,IELEM,I,I1,I2,I3
       DOUBLE PRECISION XEL,YEL,XG1,XG2,YG1,YG2,XSOM(3),YSOM(3) 
       DOUBLE PRECISION X_MIDPOINT,Y_MIDPOINT
+      LOGICAL DEJA
 !
 !-----------------------------------------------------------------------
 !   INITIALIZATION OF VARIABLES
@@ -179,6 +185,31 @@
      &                   NSEG,1,1,2,MESH,1,11)
       ENDIF   
 !
+!     TEST TO SEE IF ALL INTERNAL EDGES ARE WELL TREATED 
+!     NOTE RA: FOR MALPASSET SMALL, MESH IS VERY POOR AND WITHOUT
+!     THE FOLLOWING TEST, IT CRASHES 
+      DEJA =.FALSE.
+      DO IELEM=1,NELEM
+        I1 = IKLE(IELEM,1)
+        I2 = IKLE(IELEM,2)
+        I3 = IKLE(IELEM,3)
+        DO I = 1,3
+          ISEG = ELTSEG(IELEM,I)
+          IF(JMI(ISEG).EQ.0.AND.
+     &       IFABOR(IELEM,I).NE.-1.AND.IFABOR(IELEM,I).NE.0) THEN
+            IF(.NOT.DEJA)THEN
+              WRITE(LU,*)'MESH WITH POOR QUALITY '
+              WRITE(LU,*)'FOR INSTANCE, SEE ELEMENT :',IELEM
+              WRITE(LU,*)'WITH NODES',I1,I2,I3
+              DEJA=.TRUE.
+            ENDIF
+          ENDIF
+          CMI(1,ISEG)=0.5D0*(COORD_G(ISEG,1)+COORD_G(ISEG,3)) 
+          CMI(2,ISEG)=0.5D0*(COORD_G(ISEG,2)+COORD_G(ISEG,4))
+          JMI(ISEG)=IELEM
+        ENDDO
+      ENDDO
+!
 ! BOUNDARY SEGMENTS
 !
       DO IELEM=1,NELEM
@@ -201,7 +232,21 @@
         ENDDO
       ENDDO
 !
+! TO VERIFY THAT IT IS WELL DONE
+!
+      IF(NCSIZE.LE.1)THEN
+       DO ISEG=1,NSEG
+         IF(JMI(ISEG).EQ.0)THEN
+           WRITE(LU,*)'CENTRE_MASS_SEG: PROBLEM JMI NOT GOOD'
+           WRITE(LU,*)'FOR SEGMENT :',ISEG
+           CALL PLANTE(1)
+           STOP
+         ENDIF
+       ENDDO
+      ENDIF
+!
 !---------------------------------------------------------------------
 !
       RETURN
       END
+
