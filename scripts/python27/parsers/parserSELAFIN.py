@@ -402,6 +402,7 @@ class SELAFIN:
       self.tree = None
       self.neighbours = None
       self.edges = None
+      self.alterZnames = []
 
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #   Parsing the Big-Endian binary file
@@ -456,9 +457,9 @@ class SELAFIN:
       f.seek(4,1)
       self.IKLE3 = np.array( unpack('>'+str(self.NELEM3*self.NDP3)+'i',f.read(4*self.NELEM3*self.NDP3)) ) - 1
       f.seek(4,1)
-      if self.NPLAN > 1: self.IKLE2 = np.compress( self.IKLE3 < self.NPOIN2, self.IKLE3 ).reshape((self.NELEM2,self.NDP2))
       self.IKLE3 = self.IKLE3.reshape((self.NELEM3,self.NDP3))
-      if self.NPLAN == 1: self.IKLE2 = self.IKLE3
+      if self.NPLAN > 1: self.IKLE2 = np.compress( [ True,True,True,False,False,False ], self.IKLE3[0:self.NELEM2], axis=1 )
+      else: self.IKLE2 = self.IKLE3
       # ~~ Read the IPOBO array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       f.seek(4,1)
       self.IPOB3 = np.asarray( unpack('>'+str(self.NPOIN3)+'i',f.read(4*self.NPOIN3)) )
@@ -506,6 +507,10 @@ class SELAFIN:
                f.seek(4*self.NPOIN3,1)
             f.seek(4,1)
       return z
+   
+   def alterVALUES(self,vars=None,mZ=1,pZ=0):
+      if vars != None:
+         self.alterZm = mZ; self.alterZp = pZ; self.alterZnames = vars.split(':')
 
    def appendHeaderSLF(self):
       f = self.fole
@@ -583,7 +588,13 @@ class SELAFIN:
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    def getVALUES( self,t ):
-      return self.getVariablesAt( t,self.VARINDEX )
+      VARSOR = self.getVariablesAt( t,self.VARINDEX )
+      for v in self.alterZnames:
+         for iv in range(len(self.VARNAMES)):
+            if v.lower() in self.VARNAMES[iv].lower(): VARSOR[iv] = self.alterZm * VARSOR[iv] + self.alterZp
+         for iv in range(len(self.CLDNAMES)):
+            if v.lower() in self.CLDNAMES[iv].lower(): VARSOR[iv+self.NBV1] = self.alterZm * VARSOR[iv+self.NBV1] + self.alterZp
+      return VARSOR
 
    def getSERIES( self,nodes,varsIndexes=[],showbar=True ):
       f = self.file
@@ -629,7 +640,8 @@ class SELAFIN:
          self.neighbours = mpltri.get_neighbors()
          self.edges = mpltri.get_edges()
 
-   def __del__(self): self.file.close()
+   def __del__(self):
+      if self.fileName != '': self.file.close()
 
 class SELAFINS:
 
@@ -656,8 +668,10 @@ class SELAFINS:
       for slf in self.slfs[1:]:
          max = 1.e-5 + np.max( slf.tags['times'] ) + np.max( self.slfs[0].tags['times'] )
          accuracy = np.power(10.0, -5+np.floor(np.log10(max)))  #/!\ max always positive
-         same = same and ( accuracy > \
-            np.max( slf.tags['times'] - self.slfs[0].tags['times'] ) - np.min( slf.tags['times'] - self.slfs[0].tags['times'] ) )
+         if len(slf.tags['times']) != len(self.slfs[0].tags['times']): same = False
+         else:
+            same = same and ( accuracy > \
+               np.max( slf.tags['times'] - self.slfs[0].tags['times'] ) - np.min( slf.tags['times'] - self.slfs[0].tags['times'] ) )
       return same
 
    def pop(self,index=0):
@@ -685,7 +699,7 @@ class SELAFINS:
             ibar += 1
             time = self.slf.tags['times'][t]
             self.slf.appendCoreTimeSLF(t)
-            self.slf.appendCoreVarsSLF(getVALUES(t))
+            self.slf.appendCoreVarsSLF(self.slf.getVALUES(t))
             pbar.update(ibar)
          pbar.finish()
          for slf in self.slfs:
