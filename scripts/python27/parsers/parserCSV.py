@@ -86,7 +86,7 @@ class CSV:
          self.colunits = xunit
          self.colcore = np.array([x0])
       elif len(x[1]) != len(self.colcore[0]):
-         print '... aggregating columns of different support: ',x[0]
+         print '... cannot aggregate columns of different supports: ',x[0]
          sys.exit()
       u0 = '(-)'
       for y in ys:
@@ -112,15 +112,25 @@ class CSV:
             self.colcore = np.vstack((self.colcore,y0))
          elif dim == 3:
             n0,n1,n2,y0 = y
+            # i is likely to vary with the extracted location
             for i in range(len(y0)):
+               # j is likely to vary with the extracted layers
                for j in range(len(y0[i])):
+                  # y0[i][j] is likely to vary with the extracted time stamps
                   self.rowvars.append(n0+':'+str(n1[i])+'_'+str(n2[j]))
                   self.rowunits.append(u0)
                self.colcore = np.vstack((self.colcore,y0[i]))
          elif dim == 4:
             n0,n1,n2,n3,y0 = y
+            print len(y0),n1
+            # i is likely to vary with the extracted location
             for i in range(len(y0)):
+               print len(y0[i]),n2
+               # j is likely to vary with the extracted layers
                for j in range(len(y0[i])):
+                  print n0,n1,n2,n3
+                  print len(y0[i]),y0[i]
+                  sys.exit()
                   for k in range(len(y0[i][j])):
                      self.rowvars.append(n0+':'+str(n1[i])+'_'+str(n2[j])+'_'+str(n3[k]))
                      self.rowunits.append(u0)

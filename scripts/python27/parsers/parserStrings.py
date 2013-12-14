@@ -223,6 +223,42 @@ def parseArrayGrid(s,size):
 
    return grids
 
+
+def parseArrayPaires(s):
+
+   paires = []
+
+   # ~~ Special deal of all paires ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if s == '': return []
+
+   # ~~ Identify individual paires ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   for node in re.findall(complx,s+','):
+
+      # ~~> Is it a point (x,y) or a node n
+      xy = node[1]
+      proci = re.match(nod2d,xy)
+      procr = re.match(pnt2d,xy)
+      proce = re.match(empty,xy)
+      if proci: pointA = int(proci.group('n'))
+      elif procr:
+         xy = procr.group('n').replace(',',';').split(';')
+         if len(xy) == 2: pointA = ( float(xy[0]),float(xy[1]) )
+         #if len(xy) == 3: pointA = ( float(xy[0]),float(xy[1]),float(xy[2]) )
+         if len(xy) != 2:
+            print '... we are not allowing anything anything but a pair (x,y). You have: <' + node[0] + '>from the string "' + s + '"'
+            print '   +> if you need (x,y,z) you should use a depth above plan 0: (x,y)@z#0'
+            sys.exit()
+      elif proce:
+         pointA = []
+      else:
+         print '... could not parse the point <' + node[0] + '> from the string "' + s + '"'
+         sys.exit()
+
+      # ~~> Final packing
+      paires.append( pointA )
+
+   return paires
+
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
 #

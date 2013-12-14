@@ -337,7 +337,7 @@ class GROUPS:
       except Exception as e:
          raise Exception([filterMessage({'name':'GROUP::addSubTask'},e,self.bypass)])
       # ~~> filling-in remaining gaps
-      subtasks = self.distributeMeta(subtasks)
+      subtasks = self.distributeDeco(subtasks)
       # ~~> adding subtask to the list of tasks
       if self.tasks.has_key(nametask): self.tasks[nametask].append(subtasks)
       else: self.tasks.update({nametask:[subtasks]})
@@ -347,7 +347,7 @@ class GROUPS:
       self.tasks[nametask][index].update({ 'fileName': target })
       if not self.dids[self.active['type']][self.active['xref']].has_key(nametask): self.dids[self.active['type']][self.active['xref']].update({nametask:[self.tasks[nametask][index]]})
 
-   def distributeMeta(self,subtask): return subtask
+   def distributeDeco(self,subtask): return subtask
 
    def decoTasks(self,deco={},index=0,nametask='layers'):
       # ~~> set default
@@ -355,13 +355,12 @@ class GROUPS:
 
    
 # _____                        _____________________________________
-# ____/ Secondary Class: META /____________________________________/
+# ____/ Secondary Class: DECO /____________________________________/
 #
-class groupMETA(GROUPS):
+class groupDECO(GROUPS):
 
    availkeys = deepcopy(GROUPS.availkeys)
-   availkeys.update({ "roi":'', "deco": '', "size":'[15;10]',
-         'outFormat': 'png', 'grid': True })
+   availkeys.update({ })
    groupkeys = deepcopy(GROUPS.groupkeys)
 
    def __init__(self,xmlFile,title='',bypass=True):
@@ -371,8 +370,8 @@ class groupMETA(GROUPS):
       # those you need to see in the XML file
       self.active["deco"] = {}
 
-   def addDraw(self,meta):
-      GROUPS.addGroup(self,meta)
+   def addDraw(self,deco):
+      GROUPS.addGroup(self,deco)
       self.active['path'] = self.path
 
    def addLookTask(self,layer,nametask='look'):
@@ -698,7 +697,7 @@ class actionGET(ACTION):
 class groupPLOT(GROUPS):
 
    availkeys = deepcopy(GROUPS.availkeys)
-   availkeys.update({ 'path':'','safe':'','cfg':'', "size":'[15;10]',
+   availkeys.update({ 'path':'','safe':'','cfg':'', "size":'', "dpi":'',
          "time": '[-1]', "extract": '', "vars": '', 'outFormat': 'png',
          "sample": '', "target": '', "ratio2d": '', "do": '', "rank":'',
          "title": '', "deprefs":'', "outrefs":'', "where":'',
@@ -723,21 +722,13 @@ class groupPLOT(GROUPS):
       self.dids[self.active['type']][self.tasks["xref"]]['rank'] = int(self.dids[self.active['type']][self.tasks["xref"]]['rank'])
       self.dids[self.active['type']][self.tasks["xref"]]['deco'] = self.tasks["deco"]
 
-   def distributeMeta(self,subtask):
+   def distributeDeco(self,subtask):
       # ~~> distribute decoration
       vars = subtask["vars"].split(';')
       for i in range(len(vars)):
          if ':' not in vars[i]: vars[i] = vars[i] + ':' + self.tasks["deco"]
       subtask["vars"] = ';'.join(vars)
       return subtask
-
-   def decoLooks(self,deco={},index=0,nametask='layers'):
-      # ~~> set default
-      GROUPS.decoTasks(self,deco,index,nametask)
-      # ~~> set the look
-      if deco.has_key('look'):
-         for key in deco['look'][0].keys():
-            self.tasks[nametask][index]['deco'].update({key:deco['look'][0][key]})
 
 # _____                           ___________________________________
 # ____/ Secondary Class groupGET /__________________________________/
@@ -770,7 +761,7 @@ class groupGET(GROUPS):
       self.dids[self.active['type']][self.tasks["xref"]]['rank'] = int(self.dids[self.active['type']][self.tasks["xref"]]['rank'])
       #self.active['deco'] = self.tasks["deco"]
 
-   def distributeMeta(self,subtask):
+   def distributeDeco(self,subtask):
       # ~~> distribute decoration
       vars = subtask["vars"].split(';')
       for i in range(len(vars)):
@@ -953,46 +944,46 @@ def runXML(xmlFile,xmlConfig,bypass):
    rank = ''
    if "rank" in xmlRoot.keys(): rank = xmlRoot.attrib["rank"]
 
-   # ~~ Meta data process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~ Decoration process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #
    #    This needs to be developed further
    #
    title = ""
-   dc = groupMETA(xmlFile,title,bypass)
-   dc.addGroupType("meta")
-   for metaing in xmlRoot.findall("meta"):
+   dc = groupDECO(xmlFile,title,bypass)
+   dc.addGroupType("deco")
+   for decoing in xmlRoot.findall("deco"):
 
       # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
       try:
-         dc.addGroup(metaing)
+         dc.addGroup(decoing)
       except Exception as e:
-         xcpt.append(filterMessage({'name':'runXML','msg':'add meta object to the list'},e,bypass))
+         xcpt.append(filterMessage({'name':'runXML','msg':'add deco object to the list'},e,bypass))
          continue   # bypass the rest of the for loop
 
       # ~~ Step 2. Cumul looks ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if len(metaing.findall("look")) > 1:
-         xcpt.append({'name':'runXML','msg':'you can only have one look in meta referenced: '+dc.tasks["xref"]})
-      if len(metaing.findall("look")) > 0:
-         look = metaing.findall("look")[0]
+      if len(decoing.findall("look")) > 1:
+         xcpt.append({'name':'runXML','msg':'you can only have one look in deco referenced: '+dc.tasks["xref"]})
+      if len(decoing.findall("look")) > 0:
+         look = decoing.findall("look")[0]
          try:
             dc.addLookTask(look)
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add look to the list'},e,bypass))
             continue   # bypass the rest of the for loop
-      # ~~ Step 2. Cumul metas ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if len(metaing.findall("data")) > 1:
-         xcpt.append({'name':'runXML','msg':'you can only have one data in meta referenced: '+dc.tasks["xref"]})
-      if len(metaing.findall("data")) > 0:
-         data = metaing.findall("data")[0]
+      # ~~ Step 2. Cumul decos ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      if len(decoing.findall("data")) > 1:
+         xcpt.append({'name':'runXML','msg':'you can only have one data in deco referenced: '+dc.tasks["xref"]})
+      if len(decoing.findall("data")) > 0:
+         data = decoing.findall("data")[0]
          try:
             dc.addDataTask(data)
          except Exception as e:
-            xcpt.append(filterMessage({'name':'runXML','msg':'add meta to the list'},e,bypass))
+            xcpt.append(filterMessage({'name':'runXML','msg':'add deco to the list'},e,bypass))
             continue   # bypass the rest of the for loop
 
       dc.update(dc.tasks)
 
-   if xcpt != []: raise Exception({'name':'runXML','msg':'looking at meta in xmlFile: '+xmlFile,'tree':xcpt})
+   if xcpt != []: raise Exception({'name':'runXML','msg':'looking at deco in xmlFile: '+xmlFile,'tree':xcpt})
    display = False
 
    # ~~ Main action process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1026,7 +1017,9 @@ def runXML(xmlFile,xmlConfig,bypass):
          dodo = True
          rankdo = do.active['rank']
          rankdont = xmlConfig[cfgname]['options'].todos['act']['rank']
-         if rankdont != rankdo*int( rankdont / rankdo ): dodo = False
+         if rankdont == 1: dodo = False
+         if rankdont == 0: rankdont = 1
+         if rankdo != rankdont*int( rankdo / rankdont ): dodo = False
          do.updateCFG({'dodo':dodo})
 
          # ~~> Create the safe
@@ -1194,7 +1187,9 @@ def runXML(xmlFile,xmlConfig,bypass):
                   oneFound = False
                   for cfgname in xmlConfig.keys():
                      rankdont = xmlConfig[cfgname]['options'].todos['get']['rank']
-                     if rankdont != rankdo*int( rankdont / rankdo ): continue
+                     if rankdont == 1: continue
+                     if rankdont == 0: rankdont = 1
+                     if rankdo != rankdont*int( rankdo / rankdont ): continue
                      oneFound = True
                      #cfg = xmlConfig[cfgname]['cfg']
                      layer = findTargets(do.dids[xref][cfgname],src)
@@ -1220,6 +1215,24 @@ def runXML(xmlFile,xmlConfig,bypass):
                   for cfgname in xmlConfig.keys(): findlayer.update({ cfgname:[[path.join(ex.path,target)],'',type] })
                   ex.targetSubTask(findlayer,index,namex)
                else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target})
+
+            # ~~> round up decos, replacing the name by the associated deco dico
+            # > at the action level
+            if len(ex.tasks['deco']) > 0:
+               if dc.dids['deco'].has_key(ex.tasks['deco']):
+                  ex.tasks['deco'] = dc.dids['deco'][ex.tasks['deco']]
+               elif ex.tasks['deco'] != '':
+                  print '... ignoring the figure decoration named: ',ex.tasks['deco']
+               else: ex.tasks['deco'] = {}
+            else: ex.tasks['deco'] = {}
+            # > at the layer level
+            if len(ex.tasks[namex][index]['deco']) > 0:
+               if dc.dids['deco'].has_key(ex.tasks[namex][index]['deco']):
+                  ex.tasks[namex][index]['deco'] = dc.dids['deco'][ex.tasks[namex][index]['deco']]
+               elif ex.tasks[namex][index]['deco'] != '':
+                  print '... ignoring the '+namex+' decoration named: ',ex.tasks[namex][index]['deco']
+               else: ex.tasks[namex][index]['deco'] = {}
+            else: ex.tasks[namex][index]['deco'] = {}
 
          ex.update(ex.tasks)
 
@@ -1272,6 +1285,7 @@ def runXML(xmlFile,xmlConfig,bypass):
             # ~~> Create Figure
             if typeSave == "save1d": figure = Figure1D(typeSave,task,extractName)
             if typeSave == "save2d": figure = Figure2D(typeSave,task,extractName)
+            if typeSave == "save3d": figure = Figure3D(typeSave,task,extractName)
 
             for layer,cfgs in zip(task["layers"],cfglist.split(';')):
                for cfg in cfgs.split(':'):
@@ -1324,10 +1338,12 @@ def runXML(xmlFile,xmlConfig,bypass):
                   oneFound = False
                   for cfgname in xmlConfig.keys():
                      rankdont = xmlConfig[cfgname]['options'].todos['draw']['rank']
-                     if rankdont != rankdo*int( rankdont / rankdo ): continue
+                     if rankdont == 1: continue
+                     if rankdont == 0: rankdont = 1
+                     if rankdo != rankdont*int( rankdo / rankdont ): continue
                      oneFound = True
-                     layer = findTargets(ex.dids[xref][cfgname],src)
-                     if layer != []: layers.update({ cfgname:layer })
+                     findlayer = findTargets(ex.dids[xref][cfgname],src)
+                     if findlayer != []: layers.update({ cfgname:findlayer })
                   if oneFound and layers == {}:
                      xcpt.append({'name':'runXML','msg':'could not find reference to draw the extract: '+xref+':'+src})
                      plot.targetSubTask({},index,namex)
@@ -1339,10 +1355,12 @@ def runXML(xmlFile,xmlConfig,bypass):
                   oneFound = False
                   for cfgname in xmlConfig.keys():
                      rankdont = xmlConfig[cfgname]['options'].todos['draw']['rank']
-                     if rankdont != rankdo*int( rankdont / rankdo ): continue
+                     if rankdont == 1: continue
+                     if rankdont == 0: rankdont = 1
+                     if rankdo != rankdont*int( rankdo / rankdont ): continue
                      oneFound = True
-                     layer = findTargets(do.dids[xref][cfgname],src)
-                     if layer != []: layers.update({ cfgname:layer })
+                     findlayer = findTargets(do.dids[xref][cfgname],src)
+                     if findlayer != []: layers.update({ cfgname:findlayer })
                   if oneFound and layers == {}:
                      xcpt.append({'name':'runXML','msg':'could not find reference to draw the action: '+xref+':'+src})
                      plot.targetSubTask({},index,namex)
@@ -1365,13 +1383,26 @@ def runXML(xmlFile,xmlConfig,bypass):
                   plot.targetSubTask(findlayer,index,namex)
                else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target})
 
-            # ~~> round up decos
-            if dc.dids['meta'].has_key(plot.tasks['deco']):
-               plot.decoLooks(dc.dids['meta'][plot.tasks['deco']],index,namex)
-            else: plot.decoLooks({},index,namex)
+            # ~~> round up decos, replacing the name by the associated deco dico
+            # > at the action level
+            if len(plot.tasks['deco']) > 0:
+               if dc.dids['deco'].has_key(plot.tasks['deco']):
+                  plot.tasks['deco'] = dc.dids['deco'][plot.tasks['deco']]
+               elif plot.tasks['deco'] != '':
+                  print '... ignoring the figure decoration named: ',plot.tasks['deco']
+               else: plot.tasks['deco'] = {}
+            else: plot.tasks['deco'] = {}
+            # > at the layer level
+            if len(plot.tasks[namex][index]['deco']) > 0:
+               if dc.dids['deco'].has_key(plot.tasks[namex][index]['deco']):
+                  plot.tasks[namex][index]['deco'] = dc.dids['deco'][plot.tasks[namex][index]['deco']]
+               elif plot.tasks[namex][index]['deco'] != '':
+                  print '... ignoring the '+namex+' decoration named: ',plot.tasks[namex][index]['deco']
+               else: plot.tasks[namex][index]['deco'] = {}
+            else: plot.tasks[namex][index]['deco'] = {}
 
          plot.update(plot.tasks)
-   
+
    if xcpt != []: raise Exception({'name':'runXML','msg':'looking at targets in xmlFile: '+xmlFile,'tree':xcpt})
 
    # ~~ Matrix distribution by plot types ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1426,9 +1457,10 @@ def runXML(xmlFile,xmlConfig,bypass):
             # ~~> Create Figure
             if typePlot == "plot1d": figure = Figure1D(typePlot,draw,figureName,display)
             if typePlot == "plot2d": figure = Figure2D(typePlot,draw,figureName,display)
+            if typePlot == "plot3d": figure = Figure3D(typePlot,draw,figureName,display)
             # ~~> User Deco taken from 'look'
-            if layer['deco'].has_key('look'):
-               for key in layer['deco']['look'][0]: layer['deco'].update({key:layer['deco']['look'][0][key]})
+            #if layer['deco'].has_key('look'):
+            #   for key in layer['deco']['look'][0]: layer['deco'].update({key:layer['deco']['look'][0][key]})
 
             for layer,cfgs in zip(draw["layers"],cfglist.split(';')):
                for cfg in cfgs.split(':'):
@@ -1460,7 +1492,9 @@ def runXML(xmlFile,xmlConfig,bypass):
       docrt = True
       rankdo = docriteria.dids['?'][docriteria.active['xref']]['rank']
       rankdont = xmlConfig[cfgname]['options'].todos['test']['rank']
-      if rankdont != rankdo*int( rankdont / rankdo ): docrt = False
+      if rankdont == 1: docrt = False
+      if rankdont == 0: rankdont = 1
+      if rankdo != rankdont*int( rankdo / rankdont ): docrt = False
       if not docrt: continue
 
       for cfgname in xmlConfig.keys():
