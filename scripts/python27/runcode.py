@@ -417,7 +417,7 @@ def getNCSIZE(cas,dico,frgb):
 
    # ~~ check keyword ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    value,defaut = getKeyWord('PROCESSEURS PARALLELES',cas,dico,frgb)
-   ncsize = -1
+   ncsize = 0
    if value != []: ncsize = value[0]
    elif defaut != []: ncsize = int(defaut[0])
 
@@ -795,8 +795,8 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                   MODFiles.update({ mod:{ 'frgb':frgbPlage,'iFS':iFSPlage,'oFS':oFSPlage,'dico':dicoPlage } })
 
                # ~~ Read the coupled CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~
-               casPlage,l,n = processCAS(casNamePlage,MODFiles[mod]['dico'],MODFiles[mod]['frgb'])
-               CASFiles[name]['with'].update({ casNamePlage:{ 'code':mod, 'cas':casPlage } })
+               casPlage,l,n = processCAS([casNamePlage],MODFiles[mod]['dico'],MODFiles[mod]['frgb'])
+               CASFiles[name]['with'].update({ casNamePlage:{ 'code':mod, 'cas':casPlage[0] } })
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Handling all input files (PART I) ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -816,7 +816,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
          for cplage in CASFiles[name]['with']:
             try:
-               processLIT(cplage,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'])
+               processLIT(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'])
             except Exception as e:
                raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
          # >>> Placing yourself into the wdir
@@ -973,9 +973,9 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS','msg':'Partioning primary input files of the CAS file: '+name},e,options.bypass)])
          for cplage in CASFiles[name]['with']:
-            CONLIM = getCONLIM(cplage,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
+            CONLIM = getCONLIM(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
             try:
-               runPartition(parCmd,cplage,CONLIM,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],ncsize,options.bypass)
+               runPartition(parCmd,CASFiles[name]['with'][cplage]['cas'],CONLIM,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],ncsize,options.bypass)
             except Exception as e:
                raise Exception([filterMessage({'name':'runCAS','msg':'Partioning coupling input files'},e,options.bypass)])
    
@@ -1022,7 +1022,8 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          #hpccmd = hpccmd.replace('<ncnode>',str(ncnode))  /
          if ncruns == 1 and not hpcpass:
             cfg['HPC'].update({ 'wdir':wdir })
-            cfg['HPC'].update({ 'sortie':path.basename(CASFiles.values()[0]['sortie']) })
+            if options.sortieFile: cfg['HPC'].update({ 'sortie':path.basename(CASFiles.values()[0]['sortie']) })
+            else: cfg['HPC'].update({ 'sortie':'absent.sortie' })
             cfg['HPC'].update({ 'exename':path.basename(CASFiles.values()[0]['exe']) })
          else:
             cfg['HPC'].update({ 'wdir':casdir })
@@ -1051,8 +1052,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             stdin = stdin.replace('<exename>',cfg['HPC']['exename'])
             if hpcpass:
                # ~~> Recreate the runcode.py command 
-               runcmd = 'python /home/HR/sbo/opentelemac/trunk/scripts/python27/runcode.py ' + codeName
-               runcmd = runcmd + ' --mpi '
+               runcmd = 'runcode.py ' + codeName + ' --mpi '
                if options.configName != '': runcmd = runcmd + ' -c ' + options.configName
                if options.configFile != '': runcmd = runcmd + ' -f ' + options.configFile
                if options.rootDir != '': runcmd = runcmd + ' -r ' + options.rootDir
@@ -1136,8 +1136,8 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          GLOGEO = getGLOGEO(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    # Global GEO file
          runRecollection(execmd,CASFiles[name]['cas'],GLOGEO,MODFiles[CASFiles[name]['code']]['oFS'],ncsize,options.bypass)
          for cplage in CASFiles[name]['with']:
-            GLOGEO = getGLOGEO(cplage,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
-            runRecollection(execmd,cplage,GLOGEO,MODFiles[CASFiles[name]['with'][cplage]['code']]['oFS'],ncsize,options.bypass)
+            GLOGEO = getGLOGEO(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
+            runRecollection(execmd,CASFiles[name]['with'][cplage]['cas'],GLOGEO,MODFiles[CASFiles[name]['with'][cplage]['code']]['oFS'],ncsize,options.bypass)
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Handling all output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1150,7 +1150,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
       files = processECR(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['oFS'],CASFiles[name]['dir'],CASFiles[name]['wir'],CASFiles[name]['sortie'],ncsize,options.bypass)
       sortiefiles.extend(files)
       for cplage in CASFiles[name]['with']:
-         files = processECR(cplage,MODFiles[CASFiles[name]['with'][cplage]['code']]['oFS'],CASFiles[name]['dir'],CASFiles[name]['wir'],None,ncsize,options.bypass)
+         files = processECR(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['oFS'],CASFiles[name]['dir'],CASFiles[name]['wir'],None,ncsize,options.bypass)
          sortiefiles.extend(files)
    #except Exception as e:
    #   raise Exception([filterMessage({'name':'runCAS','msg':'I could not copy the output files back from the temporary directory:\n      '+wdir},e,options.bypass)])  # only one item here
@@ -1161,7 +1161,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          try:
             removeDirectories(CASFiles[name]['wir'])
          except Exception as e:
-            print '\n\nWarning: Your operating system does nt allow me to remove a directory\n\n'
+            print '\n\nWarning: Your operating system does not allow me to remove a directory\n\n'
 
    return sortiefiles
 
