@@ -80,6 +80,8 @@ from parsers.parserLQD import LQD
 from utils.files import moveFile
 from utils.progressbar import ProgressBar
 from samplers.meshes import subdivideMesh
+from converters import convertUTM as utm
+
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
 #
@@ -229,17 +231,7 @@ class alterSELAFIN(PARAFINS,chopSELAFIN):
       self.slf.tags['times'] = mT * self.slf.tags['times'] + pT
 
    def alterVALUES(self,vars=None,mZ=1,pZ=0):
-      if vars != None:
-         self.alterZm = mZ; self.alterZp = pZ; self.alterZnames = vars.split(':')
-
-   def getVALUES(self,t):
-      VARSOR = self.getPALUES(t)
-      for v in self.alterZnames:
-         for iv in range(len(self.slf.VARNAMES)):
-            if v.lower() in self.slf.VARNAMES[iv].lower(): VARSOR[iv] = self.alterZm * VARSOR[iv] + self.alterZp
-         for iv in range(len(self.slf.CLDNAMES)):
-            if v.lower() in self.slf.CLDNAMES[iv].lower(): VARSOR[iv+slf.slf.NBV1] = self.alterZm * VARSOR[iv+slf.slf.NBV1] + self.alterZp
-      return VARSOR
+      self.slf.alterVALUES(vars,mZ,pZ)
 
 class calcsSELAFIN(PARAFINS,alterSELAFIN):
 
@@ -548,6 +540,8 @@ if __name__ == "__main__":
    parser.add_option("--T*?",type="string",dest="atm",default="1",help="scales the ATs" )
    parser.add_option("--sph2ll",type="string",dest="sph2ll",default=None,help="convert from spherical to longitude-latitude" )
    parser.add_option("--ll2sph",type="string",dest="ll2sph",default=None,help="convert from longitude-latitude to spherical" )
+   parser.add_option("--ll2utm",type="string",dest="ll2utm",default=None,help="convert from longitude-latitude to UTM" )
+   parser.add_option("--utm2ll",type="string",dest="utm2ll",default=None,help="convert from UTM to longitude-latitude" )
    parser.add_option("--X+?",type="string",dest="axp",default="0",help="adds to the MESHX" )
    parser.add_option("--X*?",type="string",dest="axm",default="1",help="scales the MESHX" )
    parser.add_option("--Y+?",type="string",dest="ayp",default="0",help="adds to the MESHY" )
@@ -709,6 +703,12 @@ if __name__ == "__main__":
             slf.slf.MESHX = radius * ( np.deg2rad(slf.slf.MESHX) - long0 )
             slf.slf.MESHY = radius * ( np.log( np.tan( np.deg2rad(slf.slf.MESHY)/2. + np.pi/4. ) ) \
                                      - np.log( np.tan( lat0/2. + np.pi/4. ) ) )
+         if options.ll2utm != None:
+            zone = int(options.ll2utm)
+            slf.slf.MESHX,slf.slf.MESHY,zone = utm.fromLatLong(slf.slf.MESHX,slf.slf.MESHY)
+         if options.utm2ll != None:
+            zone = int(options.utm2ll)
+            slf.slf.MESHX,slf.slf.MESHY = utm.toLatLong(slf.slf.MESHX,slf.slf.MESHY,zone)
 
          slf.putContent( outFile )
          
