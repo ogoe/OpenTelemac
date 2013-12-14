@@ -70,7 +70,7 @@ from parserSortie import getLatestSortieFiles
 #from parserCSV import getVariableCSV,putDataCSV,addColumnCSV
 from parserFortran import getPrincipalWrapNames,filterPrincipalWrapNames
 # ~~> dependencies towards the root of pytel
-from runcode import runCAS,checkConsistency,compilePRINCI
+from runcode import runCAS,getCASLang,getNCSIZE,compilePRINCI
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import getFileContent,putFileContent,addFileContent,createDirectories,copyFile,moveFile, matchSafe,diffTextFiles
@@ -484,10 +484,15 @@ class actionRUN(ACTION):
       setattr(specs,'split', options.split)
       setattr(specs,'run', options.run)
       setattr(specs,'merge', options.merge)
+      setattr(specs,'jobname', options.jobname)
+      setattr(specs,'hpc_queue', options.hpc_queue)
+      setattr(specs,'walltime', options.walltime)
+      setattr(specs,'email', options.email)
+      setattr(specs,'mpi', options.mpi)
       if options.ncsize != '' and self.active["ncsize"] != '': self.active["ncsize"] = options.ncsize
       setattr(specs,'ncsize', self.active["ncsize"])
       setattr(specs,'nctile', '')    # default but should not be used for validation
-      setattr(specs,'ncnodes', '')    # default but should not be used for validation
+      setattr(specs,'ncnode', '')    # default but should not be used for validation
       setattr(specs,'bypass',self.bypass)
 
       # ~~> check on sorties and run
@@ -499,7 +504,7 @@ class actionRUN(ACTION):
          print '     +> running cas file: ' + self.active["target"]
          for k in outputs: matchSafe('',path.basename(k[1][0]),self.active['safe'],2)
          try:
-            sortieFiles = runCAS(self.active['cfg'],cfg,self.active["code"],sacFile,specs)
+            sortieFiles = runCAS(self.active['cfg'],cfg,self.active["code"],[sacFile],specs)
          except Exception as e:
             raise Exception([filterMessage({'name':'ACTION::runCAS'},e,self.bypass)])  # only one item here
       if sortieFiles != []: self.updateCFG({ 'sortie': sortieFiles })
@@ -1040,9 +1045,19 @@ def runXML(xmlFile,xmlConfig,bypass):
             dico = DICOS[dicoFile]['dico']
             frgb = DICOS[dicoFile]['frgb']
             cas = readCAS(scanCAS(casFile),dico,frgb)
+            lang = getCASLang(cas,frgb)
+            if lang == 1:
+               cas = setKeyValue('FICHIER DES PARAMETRES',cas,frgb,repr(path.basename(casFile)))
+               cas = setKeyValue('DICTIONNAIRE',cas,frgb,repr(path.normpath(frgb['DICO'])))
+            if lang == 2:
+               cas = setKeyValue('STEERING FILE',cas,frgb,repr(path.basename(casFile)))
+               cas = setKeyValue('DICTIONARY',cas,frgb,repr(path.normpath(frgb['DICO'])))
             if do.active["ncsize"] != '': cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(do.active["ncsize"]))
+            ncsize = getNCSIZE(cas,dico,frgb)
             do.updateCFG({'cas':cas})
-            if not checkConsistency(cas,dico,frgb,cfg): continue
+            if ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize == 0: continue
+            if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize > 0: continue
+
             idico = DICOS[dicoFile]['input']
             odico = DICOS[dicoFile]['output']
 

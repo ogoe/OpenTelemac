@@ -234,10 +234,24 @@ if __name__ == "__main__":
       help="specify whether to display on screen or save silently" )
    parser.add_option("-w", "--workdirectory",type="string",dest="wDir",default='',
       help="specify whether to re-run within a defined subdirectory" )
+   parser.add_option("--jobname",type="string",dest="jobname",default='job_unamed',
+      help="specify a jobname for HPC queue tracking" )
+   parser.add_option("--queue",type="string",dest="hpc_queue",default='',
+      help="specify a queue for HPC queue tracking" )
+   parser.add_option("--walltime",type="string",dest="walltime",default='01:00:00',
+      help="specify a walltime for HPC queue tracking" )
+   parser.add_option("--email",type="string",dest="email",default='s.bourban@hrwallingford.com',
+      help="specify an e-mail adress to warn when HPC job is finished" )
    parser.add_option("--hosts",type="string",dest="hosts",default='',
       help="specify the list of hosts available for parallel mode, ';' delimited" )
    parser.add_option("--ncsize",type="string",dest="ncsize",default='',
       help="the number of processors forced in parallel mode" )
+   parser.add_option("--nctile",type="string",dest="nctile",default='',
+      help="the number of core per node. ncsize/nctile is the number of compute nodes" )
+   parser.add_option("--ncnode",type="string",dest="ncnode",default='',
+      help="the number of of nodes. ncsize = ncnode*nctile is the total number of compute nodes" )
+   parser.add_option("--mpi",action="store_true",dest="mpi",default=False,
+      help="make sure the mpi command is executed, ignoring any hpc command" )
    parser.add_option("--split",action="store_true",dest="split",default=False,
       help="will only do the trace (and the split in parallel) if option there" )
    parser.add_option("--merge",action="store_true",dest="merge",default=False,

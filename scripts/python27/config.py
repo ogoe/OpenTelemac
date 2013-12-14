@@ -208,11 +208,10 @@ def getConfigs(file,name,bypass=False):
          
       cfgnames = [name]
    # ~~ Verify presence of configs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if not bypass:
-      for cfg in cfgnames:
-         if cfg not in cfgfile.sections():
-            print '\nNot able to find the configuration [' + cfg + '] in the configuration file: ' + file
-            sys.exit()
+   for cfg in cfgnames:
+      if cfg not in cfgfile.sections():
+         print '\nNot able to find the configuration [' + cfg + '] in the configuration file: ' + file
+         sys.exit()
    # ~~ Read General ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    try:
       general = dict(cfgfile.items('general'))
@@ -239,18 +238,17 @@ def parseConfigFile(file,name,bypass=False):
    generalDict,configDict = getConfigs(file,name,bypass)
    
    # ~~ Replacing user keys throughout ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   key_sqbrack = re.compile(r'(?P<before>.*?)\[(?P<key>[\w_.-~=+]*)\](?P<after>.*?)\Z')
+   key_sqbrack = re.compile(r'(?P<brack>\[[\w_.-~=+]*?\])') #,re.I)
    for cfgname in configDict.keys():
       # ~~> making sure cfgname also includes all keys from general
       for genkey in generalDict.keys() :
          if not configDict[cfgname].has_key(genkey): configDict[cfgname].update({genkey:generalDict[genkey]})
       # ~~> replacing [key] by its value
       for cfgkey in configDict[cfgname].keys():
-         proc = re.match(key_sqbrack,configDict[cfgname][cfgkey])
-         if proc:
-            k = proc.group('key')
-            if configDict[cfgname].has_key(k): configDict[cfgname][cfgkey] = configDict[cfgname][cfgkey].replace('['+k+']',generalDict[k])
-            elif environ.has_key(k): configDict[cfgname][cfgkey] = configDict[cfgname][cfgkey].replace('['+k+']',environ[k])
+         for k in re.findall(key_sqbrack,configDict[cfgname][cfgkey]):
+            key = k.strip('[]')
+            if configDict[cfgname].has_key(key): configDict[cfgname][cfgkey] = configDict[cfgname][cfgkey].replace(k,configDict[cfgname][key])
+            elif environ.has_key(key): configDict[cfgname][cfgkey] = configDict[cfgname][cfgkey].replace(k,environ[key])
             else:
                print '... Could not find your special key ',k,' in key ',cfgkey,' of configuration ',cfgname
    globals()["CONFIGS"] = configDict
@@ -345,6 +343,13 @@ def parseConfig_CompileTELEMAC(cfg):
    system.update({'sfx_lib':getConfigKey(cfg,'sfx_lib',True,False).lower()})
    system.update({'sfx_mod':getConfigKey(cfg,'sfx_mod',True,False).lower()})
    cfgTELEMAC.update({'SYSTEM':system})
+
+   # tagged fields for cmdx and cmdo
+   cfgTELEMAC.update({'TRACE':{}})
+   for k in cfg.keys():
+      if k[0:4] in ['root','libs']:
+          get = getConfigKey(cfg,k,False,False)
+          if get != '': cfgTELEMAC['TRACE'].update({k:get})
 
    return cfgTELEMAC
 
@@ -608,20 +613,14 @@ def parseConfig_ValidateTELEMAC(cfg):
                cfgTELEMAC['VALIDATION'].update({mod:{'path':path.realpath(val_dir)}})
                cfgTELEMAC['VALIDATION'][mod].update(val_mod)
 
-   # Get path_parallel: for parallel option
-   # the parallel dependent command line executables (partel, gretel, ...)
-   get = getPARALLEL(cfg)
-   cfgTELEMAC.update({'PARALLEL':get})
+   # Get path_parallel for partel
+   cfgTELEMAC.update({'PARTEL':getPARTEL(cfg)})
    # Get mpi_cpulist and mpi_cmdexec: for mpi option
    # .. in theory, mpi could be replaced by something else (?)
-   if cfgTELEMAC['PARALLEL'] != None:
-      get = getMPI(cfg)
-      if get != None: cfgTELEMAC.update({'MPI':get})
+   cfgTELEMAC.update({'MPI':getMPI(cfg)})
    # Get hpc_cmdexec and hpc_infile for hpc option
    # .. in theory, bsub could be replaced by another queueing system
-   if cfgTELEMAC['PARALLEL'] != None:
-      get = getHPC(cfg)
-      if get != None: cfgTELEMAC.update({'HPC':get})
+   cfgTELEMAC.update({'HPC':getHPC(cfg)})
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
@@ -634,6 +633,13 @@ def parseConfig_ValidateTELEMAC(cfg):
    system.update({'sfx_lib':getConfigKey(cfg,'sfx_lib',True,False).lower()})
    system.update({'sfx_mod':getConfigKey(cfg,'sfx_mod',True,False).lower()})
    cfgTELEMAC.update({'SYSTEM':system})
+
+   # tagged fields for cmdx and cmdo
+   cfgTELEMAC.update({'TRACE':{}})
+   for k in cfg.keys():
+      if k[0:4] in ['root','libs']:
+          get = getConfigKey(cfg,k,False,False)
+          if get != '': cfgTELEMAC['TRACE'].update({k:get})
 
    return cfgTELEMAC
 
@@ -671,18 +677,13 @@ def parseConfig_RunningTELEMAC(cfg):
 
    # Get path_parallel: for parallel option
    # the parallel dependent command line executables (partel, gretel, ...)
-   get = getPARALLEL(cfg)
-   cfgTELEMAC.update({'PARALLEL':get})
+   cfgTELEMAC.update({'PARTEL':getPARTEL(cfg)})
    # Get mpi_cpulist and mpi_cmdexec: for mpi option
    # .. in theory, mpi could be replaced by something else (?)
-   if cfgTELEMAC['PARALLEL'] != None:
-      get = getMPI(cfg)
-      if get != None: cfgTELEMAC.update({'MPI':get})
+   cfgTELEMAC.update({'MPI':getMPI(cfg)})
    # Get hpc_cmdexec and hpc_infile for hpc option
    # .. in theory, bsub could be replaced by another queueing system
-   if cfgTELEMAC['PARALLEL'] != None:
-      get = getHPC(cfg)
-      if get != None: cfgTELEMAC.update({'HPC':get})
+   cfgTELEMAC.update({'HPC':getHPC(cfg)})
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
@@ -695,6 +696,13 @@ def parseConfig_RunningTELEMAC(cfg):
    system.update({'sfx_lib':getConfigKey(cfg,'sfx_lib',True,False).lower()})
    system.update({'sfx_mod':getConfigKey(cfg,'sfx_mod',True,False).lower()})
    cfgTELEMAC.update({'SYSTEM':system})
+
+   # tagged fields for cmdx and cmdo
+   cfgTELEMAC.update({'TRACE':{}})
+   for k in cfg.keys():
+      if k[0:4] in ['root','libs']:
+          get = getConfigKey(cfg,k,False,False)
+          if get != '': cfgTELEMAC['TRACE'].update({k:get})
 
    return cfgTELEMAC
 
@@ -818,17 +826,14 @@ def getEXTERNALs(cfgDict,ext,mod): # key ext_all and ext_..., with ext = mods, i
 
 """
    Extract full user defined comand line
-   for the treatment of the option 'parallel'
+   for the treatment of the PARTEL in parallel
 """
-def getPARALLEL(cfgDict):
+def getPARTEL(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   parallel = None
-   if cfgDict.has_key('options'):
-      if 'parallel' in cfgDict['options'].lower():
-         parallel = {}
-         if cfgDict.has_key('par_path'): parallel.update({'PATH':cfgDict['par_path']})
-         if cfgDict.has_key('par_cmdexec'): parallel.update({'EXEC':cfgDict['par_cmdexec']})
-   return parallel
+   partel = {}
+   if cfgDict.has_key('par_path'): partel.update({'PATH':cfgDict['par_path']})
+   if cfgDict.has_key('par_cmdexec'): partel.update({'EXEC':cfgDict['par_cmdexec']})
+   return partel
 
 """
    Extract full user defined comand line
@@ -836,20 +841,14 @@ def getPARALLEL(cfgDict):
 """
 def getMPI(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   mpi = None
-   if cfgDict.has_key('options'):
-      if 'mpi' in cfgDict['options'].lower():
-         mpi = {}
-         mpi.update({'HOSTS':gethostname().split('.')[0]}) # /!\ defaulting on  the local hostname
-         if cfgDict.has_key('mpi_hosts'):
-            if len(cfgDict['mpi_hosts'].split()) > 0: mpi['HOSTS'] = cfgDict['mpi_hosts']
-         mpi.update({'HOSTFILE': 'MPI_HOSTFILE'})
-         if cfgDict.has_key('mpi_infile'): mpi.update({'INFILE':cfgDict['mpi_infile']})
-         if cfgDict.has_key('mpi_cmdexec'):
-            mpi.update({'EXEC':cfgDict['mpi_cmdexec']})
-         else:
-            print '... I do not know how to run MPI, can you help ?'
-            sys.exit()
+   mpi = {}
+   if cfgDict.has_key('mpi_cmdexec'):
+      mpi.update({'EXEC':cfgDict['mpi_cmdexec']})
+      if cfgDict.has_key('mpi_infile'): mpi.update({'INFILE':cfgDict['mpi_infile']})
+      mpi.update({'HOSTS':gethostname().split('.')[0]}) # /!\ defaulting on  the local hostname
+      if cfgDict.has_key('mpi_hosts'):
+         if len(cfgDict['mpi_hosts'].split()) > 0: mpi['HOSTS'] = cfgDict['mpi_hosts']
+      mpi.update({'HOSTFILE': 'MPI_HOSTFILE'})
    return mpi
 
 """
@@ -858,16 +857,13 @@ def getMPI(cfgDict):
 """
 def getHPC(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   hpc = None
-   if cfgDict.has_key('options'):
-      if 'hpc' in cfgDict['options'].lower():
-         hpc = {}
-         if cfgDict.has_key('hpc_stdin'): hpc.update({'STDIN':cfgDict['hpc_stdin']})
-         if cfgDict.has_key('hpc_cmdexec'):
-            hpc.update({'EXEC':cfgDict['hpc_cmdexec']})
-         else:
-            print '... I do not know how to run on HPC, can you help ?'
-            sys.exit()
+   hpc = {}
+   if cfgDict.has_key('hpc_cmdexec'):
+      hpc.update({'EXCODE':cfgDict['hpc_cmdexec']})
+      if cfgDict.has_key('hpc_stdin'): hpc.update({'STDIN':['HPC_STDIN',cfgDict['hpc_stdin'].replace(r'\n','\n')]})
+   if cfgDict.has_key('hpc_runcode'):
+      hpc.update({'PYCODE':cfgDict['hpc_runcode']})
+      if cfgDict.has_key('hpc_stdin'): hpc.update({'STDIN':['HPC_STDIN',cfgDict['hpc_stdin'].replace(r'\n','\n')]})
    return hpc
 
 """
@@ -915,21 +911,7 @@ def parseUserModules(cfgDict,modules):
          sys.exit()
    # ~~ Deal with all ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if 'system' in userList : userList = ' '.join(modules.keys())
-   # ~~ Activates parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # TODO : update pytel for all library switches
-   #if cfgDict.has_key('options'):
-   #   if 'parallel' in cfgDict['options'].lower():
-   #      userList = userList.replace('paravoid','')
-   #      if modules.has_key('paravoid'): del modules['paravoid']
-   #   else:
-   #      userList = userList.replace('parallel','')
-   #      if modules.has_key('parallel'): del modules['parallel']
-   #else:
-   #   userList = userList.replace('parallel','')
-   #   if modules.has_key('parallel'): del modules['parallel']
-   # ~~ Activates openmi ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   #if cfgDict.has_key('options'):
-   #   if 'openmi' in cfgDict['options'].lower():
+
    return userList,typeBuild
 
 """
@@ -1068,7 +1050,6 @@ if __name__ == "__main__":
       print '    +> root:    ',cfg['root']
       print '    +> version: ',cfg['version']
       print '    +> module:  ',' / '.join(cfg['MODULES'].keys())
-      print '    +> options: ',cfg['options']
       if options.configDelete: cleanConfig(cfg,cfgname)
    
    print '\n\n\

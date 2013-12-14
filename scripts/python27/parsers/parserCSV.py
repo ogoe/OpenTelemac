@@ -161,7 +161,7 @@ class CSV:
       self.rowunits = units[1:]
       # ~~> parse main values
       SrcF.seek(0)
-      data = np.loadtxt(SrcF, comments='#', skiprows=2, delimiter=',')
+      data = np.loadtxt(SrcF, comments='#', skiprows=4, delimiter=',')
       self.colcore = data.T
       # ~~> closure
       SrcF.close()

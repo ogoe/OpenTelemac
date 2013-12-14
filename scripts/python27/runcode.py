@@ -58,12 +58,13 @@
          that PARTEL in PARALLEL did not solve our partitioning problem.
 """
 """@history 07/03/2012 -- Sebastien E. Bourban
-         Allowing a launch of the main executable (MPIEXEC) to run on an HPC queue
+         Allowing a launch of the main executable / script to run on an HPC queue
          Example given with BSUB to run on encore.ocf.co.uk
 """
 """@history 04/04/2012 -- Sebastien E. Bourban
          Three new options are now available toruncode:
          --split: only does the copying of files (and the split when in parallel)
+         -x  : only does the compilation of the executable
          --run  : only does the running (by copying the CAS and the PRINCI
             again, for good measure)
          --merge: only does the re-collection and copy back of files,
@@ -88,8 +89,8 @@
 """@history 29/08/2012 -- Sebastien E. Bourban
          Additonal option --nctile setting the number of cores per node.
          In the case of HPC use, the variable <ncsize> is replaced by ncsize,
-            and now two other variables are available: <nctile> and <ncnodes>.
-         ncsize must be ncnodes x nctile.
+            and now two other variables are available: <nctile> and <ncnode>.
+         ncsize must be ncnode x nctile.
 """
 """@history 04/12/2012 -- Juliette Parisi and Sebastien E. Bourban
    Simplifying call to parseConfigFile, which now takes two arguments
@@ -126,41 +127,86 @@ from parsers.parserSortie import getLatestSortieFiles
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
 #
+"""
+   ncruns: allows a number of CAS files to be placed in the same
+      queue and run in parallel as a single batch.
+   ncnode: is the number of pysical ships or processors.
+   nctile: is the number of core utilised per node
+   ncsize: is the value of set in the CAS file, i.e. the total
+      number of geometrical sub-domains.
+   
+   Note: ncsize = 0 is also supported.
+   
+   Logic:
+      First, nctile is the one parameter we cannot modify, unless
+         ncnode and ncsize are provided.
+      If ncruns > 1, then ncsize and nctile will not be adjusted,
+      but:
+       - if ncnode is given by the user, there will be no
+         adjustment, even if the resource allocated ncnode * nctile
+         might be too much or too few.
+       - if ncnode is not provided, the ncnode will be adjusted to
+         best fit ncsize * ncruns with a constant nctile.
+      If ncruns = 1, then normal adjustment will be done, 
+      with:
+       - if ncnode is given by the user then ...
+          + if ncsize is given by the user, there will be a
+            re-adjustment of nctile to accomodate
+          + if nctile is given by the user, there will be a
+            re-adjustment of ncsize to accomodate
 
-def checkConsistency(cas,dico,frgb,cfg):
+"""
+def checkParaTilling(onctile,oncnode,oncsize,ncruns,ncsize):
 
-   kl,vl = cas
-   # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
-   lang = 1
-   # Look to find the first key that is different in both language
-   i = 0
-   while kl[i][0] == '&' or \
-      ( kl[i] in frgb['FR'].keys() and kl[i] in frgb['GB'].keys() ):
-      i+=1
-   if kl[i] not in frgb['FR'].keys(): lang = 2
+   # ~~ Default values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   ncnode = 1
+   if oncnode != '': ncnode = max( 1,int(oncnode) )
+   if oncsize != '': ncsize = int(oncsize)
+   
+   # ~~ Special case of nctile ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   nctile = 1
+   if onctile != '': nctile = max( 1,int(onctile) )
+   elif ncnode > 1:
+      if ncsize > 1: nctile = int( ncsize / ncnode )
+      elif ncruns > 1: nctile = int( ncruns / ncnode )
 
-   # ~~ check for parallel consistency ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   value,defaut = getKeyWord('PROCESSEURS PARALLELES',cas,dico,frgb)
-   ncsize = 0
-   if value != []: ncsize = value[0]
-   elif defaut != []: ncsize = int(defaut[0])
-   if cfg['PARALLEL'] == None:
-      if ncsize != 0: return False
-   if cfg['PARALLEL'] != None:
-      if ncsize == 0: return False
-   if lang == 1: cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,max(ncsize,1))
-   if lang == 2: cas = setKeyValue('PARALLEL PROCESSORS',cas,frgb,max(ncsize,1))
+   # ~~ Special case of batching ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if oncnode == '':
+      # ~~> temporary measure before doing each run in parallel of one another
+      ncnode = int( max( 1,ncsize ) / nctile )
+      if ncnode * nctile < max( 1,ncsize ): ncnode = ncnode + 1
+      # ~~> valid for runs in parallel of one another
+      #ncnode = int( max( 1,ncsize ) * ncruns / nctile )
+      #if ncnode * nctile < max( 1,ncsize ) * ncruns: ncnode = ncnode + 1
+
+   if ncruns == 1:
+   # ~~ Standard cases ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # If the command line options.nctile and options.ncnode are fixed
+      if onctile != '' and oncnode != '':
+         ncsize = ncnode * nctile
+   # If options.ncsize is set, it will have priority over the others
+      elif oncsize != '':
+         # ncnode is an integer of nctile and ncsize is re-ajusted
+         if onctile != '':
+            ncnode = int( max( 1,ncsize ) / nctile )
+            while ncnode * nctile < max( 1,ncsize ): ncnode = ncnode + 1
+         # nctile is an integer of ncnode and ncsize is re-ajusted
+         if oncnode != '':
+            nctile = int( max( 1,ncsize ) / ncnode )
+            while ncnode * nctile < max( 1,ncsize ): nctile = nctile + 1
+         # local processor with 1 node and many cores
+         if onctile == '' and oncnode == '':
+            ncnode = 1
+            nctile = max( 1,ncsize )
+
+   return nctile,ncnode,ncsize
 
    # ~~ check for openmi consistency ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
    return True
 
-def processCAS(casFile,dico,frgb):
-
-   # ~~ extract keywords ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cas = readCAS(scanCAS(casFile),dico,frgb)
-
-   # ~~ check language on one of the input file names ~~~~~`~~~~~~~~~
+def getCASLang(cas,frgb):
+   # ~~> add DICTIONARY and STEERING FILE to the CAS file
    lang = 1
    kl = cas[0]
    # Look to find the first key that is different in both language
@@ -170,17 +216,48 @@ def processCAS(casFile,dico,frgb):
       i+=1
    if kl[i] not in frgb['FR'].keys(): lang = 2
 
-   # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
-   if lang == 1:
-      print '... simulation en Francais avec ',path.basename(casFile)
-      cas = setKeyValue('FICHIER DES PARAMETRES',cas,frgb,repr(path.basename(casFile)))
-      cas = setKeyValue('DICTIONNAIRE',cas,frgb,repr(path.normpath(frgb['DICO'])))
-   if lang == 2:
-      print '... running in English with ',path.basename(casFile)
-      cas = setKeyValue('STEERING FILE',cas,frgb,repr(path.basename(casFile)))
-      cas = setKeyValue('DICTIONARY',cas,frgb,repr(path.normpath(frgb['DICO'])))
+   return lang
 
-   return cas,lang
+def processCAS(casFiles,dico,frgb):
+
+   # ~~ Aquire CAS Files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cases = []; langs = []
+   for casFile in casFiles:
+      
+      #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+      casFile = path.realpath(casFile)
+      if not path.exists(casFile): raise Exception([{'name':'runCAS','msg':'inexistent CAS file: '+casFile+ \
+            '    +> or you may have forgotten an option key in your command line'}])
+
+      # ~~> extract keywords
+      cas = readCAS(scanCAS(casFile),dico,frgb)
+
+      # ~~> extract language and set extra keywords
+      lang = getCASLang(cas,frgb)
+      if lang == 1:
+         cas = setKeyValue('FICHIER DES PARAMETRES',cas,frgb,repr(path.basename(casFile)))
+         cas = setKeyValue('DICTIONNAIRE',cas,frgb,repr(path.normpath(frgb['DICO'])))
+      if lang == 2:
+         cas = setKeyValue('STEERING FILE',cas,frgb,repr(path.basename(casFile)))
+         cas = setKeyValue('DICTIONARY',cas,frgb,repr(path.normpath(frgb['DICO'])))
+      
+      # ~~> Store the CAS File
+      cases.append( cas ); langs.append( lang )
+
+   # ~~ Batching commonalities ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   lang = langs[0]
+   ncsize = getNCSIZE(cases[0],dico,frgb)
+   for cf,c,l in zip(casFiles,cases,langs):
+      if ncsize != getNCSIZE(c,dico,frgb):
+         raise Exception([{'name':'processCAS','msg':'batched CAS files should have same NCSIZE '+str(ncsize)+' != '+path.basename(cf)}])
+      if lang != l:
+         raise Exception([{'name':'processCAS','msg':'batched CAS files should have same LANGUAGE '+str(lang)+' != '+path.basename(cf)}])
+
+   # ~~ For Information ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if lang == 1: print '    +> simulation en Francais'
+   if lang == 2: print '    +> running in English'
+
+   return cases,lang,ncsize
 
 def processTMP(casFile):
 
@@ -230,7 +307,6 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update):
                print '    copying: ', path.basename(cref),crun
                shutil.copy(cref,crun)
             else:
-               # FD : this is not a true copy. Why ?
                print '    copying: ', path.basename(cref),crun
                putFileContent(crun,getFileContent(cref)+[''])
          else:
@@ -363,23 +439,16 @@ def getMPICommand(cfgMPI):
 
 def getHPCCommand(cfgHPC):
    # ~~> Executable
-   hpcCmd = cfgHPC['EXEC']
+   if cfgHPC.has_key('EXCODE'): hpcCmd = cfgHPC['EXCODE']
+   elif cfgHPC.has_key('PYCODE'): hpcCmd = cfgHPC['PYCODE']
    # ~~> script
    if cfgHPC.has_key('STDIN'):
-      infile = 'HPC_STDIN'
-      cfgHPC['STDIN'] = { infile: cfgHPC['STDIN'].replace(r'\n','\n') }
-      hpcCmd = hpcCmd.replace('<hpc_stdin>',infile)
+      hpc_stdin = cfgHPC['STDIN'][0]
+      hpcCmd = hpcCmd.replace('<hpc_stdin>',hpc_stdin)
 
    return hpcCmd
 
-def processPARALLEL(ncsize,wdir):
-
-   # ~~ parallel case ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if ncsize > 0: putFileContent('PARAL',[str(ncsize),str(len(wdir)),wdir,''])
-
-   return
-
-def processExecutable(useName,objName,f90Name,objCmd,exeCmd,CASDir,bypass):
+def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
 
    if path.exists(f90Name) and not path.exists(useName):
    # ~~ requires compilation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -399,13 +468,11 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,CASDir,bypass):
       except Exception as e:
          raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason. Please verify your external library installation.'},e,bypass)])
       if code != 0: raise Exception([{'name':'processExecutable','msg':'could not link your executable (runcode='+str(code)+').\n      '+tail}])
+      print '    created: ',path.basename(useName)
    
    else:
    # ~~ default executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       shutil.copy2(useName,path.basename(useName))
-
-   # ~~ save a copy for future uses ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if CASDir != '': shutil.copy2(path.basename(useName),path.join(CASDir,path.basename(useName)))
 
    return True
 
@@ -418,8 +485,13 @@ def compilePRINCI(princiFile,codeName,cfgName,cfg,bypass):
    if not path.exists(objFile) or not path.exists(exeFile):
       raise Exception([{'name':'compilePRINCI','msg':'... could not find:' + exeFile + \
          '\n    ~~~> you may need to compile your system with the configuration: ' + cfgName }])
+   # ~~> Make the keys portable (no full path)
    objCmd = getFileContent(objFile)[0]
    exeCmd = getFileContent(exeFile)[0]
+   for k in cfg['TRACE']:
+      objCmd = objCmd.replace('['+k+']',path.realpath(cfg['TRACE'][k]))
+      exeCmd = exeCmd.replace('['+k+']',path.realpath(cfg['TRACE'][k]))
+   # ~~<
    chdir(path.dirname(princiFile))
    princiFile = path.basename(princiFile)
    objFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['sfx_obj']
@@ -586,294 +658,510 @@ def runGREDEL(gredel,file,geom,type,ncsize,bypass):
    if code != 0: raise Exception([{'name':'runGREDEL','msg':'Could not split your file (runcode='+str(code)+').\n     '+file+'\n      '+tail}])
    return
 
-def runCAS(cfgName,cfg,codeName,casFile,options):
+"""
+   runCAS now takes in an array of casFiles, and if possible,
+      run these in parallel of one another and as one job on a queue
+      where the mpi_exec command do the parallelisation
+   Notes:
+      - casdir is where the CAS files are.
+      - wdir is <widr> and used to store HPC_STDIN.
+        If only one CAS file, HPC_STDIN is stored within <wdir>
+        If more than one CAS file, HPC_STDIN is stored one level up
+          in casdir
+      - The hpccmd is unique. The mpicmd is not (unfortunately).
+"""
+def runCAS(cfgName,cfg,codeName,casNames,options):
 
-   # ~~~~ Read the DICO File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~~~ Read the main DICO File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    dicoFile = path.join(cfg['MODULES'][codeName]['path'],codeName+'.dico')
    if not path.exists(dicoFile): raise Exception([{'name':'runCAS','msg':'could not find the DICO file: '+dicoFile}])
+   print '\n... reading the main module dictionary'
    frgb,dico = scanDICO(dicoFile)
    iFS,oFS = getIOFilesSubmit(frgb,dico)
+   #> MODFiles avoids duplication of dico parsing
+   MODFiles = { codeName:{ 'frgb':frgb,'iFS':iFS,'oFS':oFS,'dico':dico } }
+   pbin = cfg['root']+sep+'builds'+sep+cfgName+sep+'bin'
 
-   # ~~ Read the principal CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if not path.exists(casFile): raise Exception([{'name':'runCAS','msg':'inexistent CAS file: '+casFile}])
-   # ~~ Read the principal CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cas,lang = processCAS(casFile,dico,frgb)
-   # ~~ Forces run in parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   nctile = 0
-   ncnodes = 0
-   if options.nctile != '' and options.ncnodes != '':
-      nctile = max( 1,int(options.nctile) )
-      ncnodes = max( 1,int(options.ncnodes) )
-      ncsize = ncnodes*nctile
-      if lang == 1: cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,ncsize)
-      if lang == 2: cas = setKeyValue('PARALLEL PROCESSORS',cas,frgb,ncsize)
-   if options.ncsize != '':
-      if options.nctile != '':
-         nctile = max( 1,int(options.nctile) )
-         ncnodes = int( max( 1,int(options.ncsize) ) / nctile )
-         ncsize = ncnodes*nctile
-      if options.ncnodes != '':
-         ncnodes = max( 1,int(options.ncnodes) )
-         nctile = int( max( 1,int(options.ncsize) ) / ncnodes )
-         ncsize = ncnodes*nctile
-      if options.nctile != '' and options.ncnodes != '':
-         ncnodes = 1
-         ncsize = max( 1,int(options.ncsize) )
-         nctile = ncsize
-      if lang == 1: cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,ncsize)
-      if lang == 2: cas = setKeyValue('PARALLEL PROCESSORS',cas,frgb,ncsize)
-   else:
-      ncsize = getNCSIZE(cas,dico,frgb)
-      if options.nctile != '':
-         nctile = max( 1,int(options.nctile) )
-         ncnodes = int( ncsize / nctile )
-         ncsize = ncnodes*nctile
-      if options.ncnodes != '':
-         ncnodes = max( 1,int(options.ncnodes) )
-         nctile = int( ncsize / ncnodes )
-         ncsize = ncnodes*nctile
-      if options.nctile != '' and options.ncnodes != '':
-         ncnodes = 1
-         nctile = ncsize
-      if lang == 1: cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,ncsize)
-      if lang == 2: cas = setKeyValue('PARALLEL PROCESSORS',cas,frgb,ncsize)
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~~~ Acquiring all CAS file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # You need to do this if ...
+   #    - if options.split, to copy the correct CAS files and get the LIT files
+   #    - if options.run, to get to the FORTRAN FILE for compilation
+   #    - if options.compileonly, same as options.run
+   #    - if options.merge, to get the ECR files and associated ncsize
+   print '\n... processing the main CAS file(s)'
+   try:
+      cases,lang,ncsize = processCAS(casNames,MODFiles[codeName]['dico'],MODFiles[codeName]['frgb'])
+   except Exception as e:
+      raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])
+   CASFiles = {}
+   for cas,casName in zip(cases,casNames): CASFiles.update({ path.basename(casName):{ 'code':codeName, 'cas':cas, 'dir':path.dirname(path.realpath(casName)) } })
+   ncruns = len(CASFiles)
 
-   # ~~ Consistency checks ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if not checkConsistency(cas,dico,frgb,cfg):
-      raise Exception([{'name':'runCAS','msg':'inconsistent CAS file: '+casFile+ \
-         '    +> you may be using an inappropriate configuration: '+cfgName+ \
-         '    +> or may be wishing for parallel mode while using scalar configuration'}])
-
-   # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   CASDir = path.dirname(casFile)
-   TMPDir = processTMP(casFile)
-   WDir = TMPDir
-   if options.wDir != '':
-      WDir = path.join(path.dirname(casFile),options.wDir)
-   if not path.exists(WDir):
-      mkdir(WDir)
-      options.wDir = ''
-
-   # ~~ Read the included CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cplages,defaut = getKeyWord('COUPLING WITH',cas,dico,frgb)
-   #/!\ having done the loop this way it will not check for DELWAQ
-   COUPLAGE = {}
-   for cplage in cplages:
-      for mod in cfg['MODULES'].keys():
-         if mod in cplage.lower():
-
-            # ~~~~ Extract the CAS File name ~~~~~~~~~~~~~~~~~~~~~~~
-            casFilePlage,defaut = getKeyWord(mod.upper()+' STEERING FILE',cas,dico,frgb)
-            if casFilePlage == []: casFilePlage = defaut[0]
-            else: casFilePlage = eval(casFilePlage[0])
-            casFilePlage = path.join(CASDir,casFilePlage)
-            if not path.isfile(casFilePlage): raise Exception([{'name':'runCAS','msg':'missing coupling CAS file for '+mod+': '+casFilePlage}])
-
-            # ~~~~ Read the DICO File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            dicoFilePlage = path.join(cfg['MODULES'][mod]['path'],mod+'.dico')
-            if not path.exists(dicoFilePlage): raise Exception([{'name':'getDICO','msg':'could not find the DICO file: '+dicoFilePlage}])
-            frgbPlage,dicoPlage = scanDICO(dicoFilePlage)
-            iFSPlage,oFSPlage = getIOFilesSubmit(frgbPlage,dicoPlage)
-
-            # ~~ Read the coupled CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~
-            casPlage,lang = processCAS(casFilePlage,dicoPlage,frgbPlage)
-            if not checkConsistency(casPlage,dicoPlage,frgbPlage,cfg): raise Exception([{'name':'runCAS','msg':'inconsistent CAS file: '+casFilePlage}])
-
-            COUPLAGE.update({mod:{}})
-            COUPLAGE[mod].update({'cas':casPlage,'frgb':frgbPlage,'iFS':iFSPlage,'oFS':oFSPlage,'dico':dicoPlage})
-
-   # ~~ Handling sortie file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   sortiefile = None
-   if options.sortieFile:
-      if options.merge:
-         # try re-using existing/latest sortie file with same root name
-         sortiefile =  path.basename(getLatestSortieFiles(path.join(WDir,path.basename(casFile)))[0])
-      else:
-         # define the filename (basename) of the sortie file
-         sortiefile =  path.basename(TMPDir)+'.sortie'
-   sortiefiles = []
-
-   # ~~ Handling all input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # >>> Placing yourself where the CAS File is
-   chdir(CASDir)
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Common behaviours for all CAS files ~~~~~~~~~~~~~~~~~~~~~~~
+   # You need to do this if ...
+   #    - if options.split, to copy the correct CAS files once ncsize updated
+   #    - if options.run, to re-copy the correct CAS file
+   #    - if options.merge, to get ncsize but no need to copy correct CAS file anymore
+   # Outputs ...
+   #    > nctile, ncnode, ncsize
+   #    > lang, casdir
+   if options.mpi and cfg.has_key('HPC'): cfg['HPC'] = {}
+   print '\n... checking parallelisation'
+   nctile,ncnode,ncsize = checkParaTilling(options.nctile,options.ncnode,options.ncsize,ncruns,ncsize)
+   if ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize == 0:
+      #raise Exception([{'name':'runCAS','msg':'parallel inconsistency: '
+      print 'Warning: parallel inconsistency: ' + \
+         '\n    +> you may be using an inappropriate configuration: '+cfgName+ \
+         '\n    +> or may be wishing for parallel mode while setting to no processor' #}])
+      return []
+   if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize > 0:
+      raise Exception([{'name':'runCAS','msg':'parallel inconsistency: ' \
+         '\n    +> you may be using an inappropriate configuration: '+cfgName+ \
+         '\n    +> or may be wishing for scalar mode while setting to '+str(ncsize)+' processors'}])
+   hpcpass = False
+   if cfg['HPC'] != {}: hpcpass = ( cfg['HPC'].has_key('PYCODE') )
+   # ~~ Forces keyword if parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if not options.merge:
-      # >>> Copy INPUT files into WDir
-      try:
-         processLIT(cas,iFS,WDir,ncsize,(options.wDir!=''))
-      except Exception as e:
-         raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
-      for mod in COUPLAGE.keys():
+      if lang == 1:
+         for name in CASFiles: CASFiles[name]['cas'] = \
+            setKeyValue('PROCESSEURS PARALLELES',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['frgb'],ncsize)
+      elif lang == 2:
+         for name in CASFiles: CASFiles[name]['cas'] = \
+            setKeyValue('PARALLEL PROCESSORS',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['frgb'],ncsize)
+   # ~~ Find a common root to all CAS files ~~~~~~~~~~~~~~~~~~~~~
+   casdir = ''
+   for name in CASFiles:
+      if casdir == '': casdir = CASFiles[name]['dir']
+      elif casdir != CASFiles[name]['dir']:
+         raise Exception([{'name':'runCAS','msg':'Location of more than one CAS file is not common to all:' \
+            '    +> you should have all your CAS files within the same directory'}])
+
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # You need to do this if ...
+   #    - if options.split, to know where to copy the LIT files into
+   #    - if options.run, to run
+   #    - if options.compileonly, same as options.run
+   #    - if options.merge, to know where to copy the ECR file from
+   # Outputs ...
+   #    > wdir
+   #    > CASFiles[name]['wir'] and CASFiles[name]['wrt']
+   print '\n... handling temporary directories'
+   for name in CASFiles:
+      TMPDir = processTMP(CASFiles[name]['dir']+sep+name)    #/!\ useful to sortie file name
+      wdir = TMPDir
+      CASFiles[name].update({ 'wir':wdir, 'wrt':True, 'sortie':TMPDir })
+      if options.wDir != '':
+         if ncruns == 1: wdir = path.join(CASFiles[name]['dir'],options.wDir)
+         else: wdir = path.join(CASFiles[name]['dir'],path.basename(name)+'_'+path.basename(options.wDir))
+         CASFiles[name]['wir'] = wdir
+      if not path.exists(wdir) and not hpcpass:
+         mkdir(wdir)
+         CASFiles[name]['wrt'] = False
+
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Read the included CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # You need to do this if ...
+   #    - if options.split, to include coupling code files in LIT
+   #    - if options.run, to run in coupled mode ?? may not need to know that ??
+   #    - if options.compileonly, to aggregate FORTRAN FILEs
+   #    - if options.merge, to include coupling code files in ECR
+   print '\n... checking coupling between codes'
+   for name in CASFiles:
+      cplages,defaut = getKeyWord('COUPLING WITH',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['dico'],MODFiles[CASFiles[name]['code']]['frgb'])
+      CASFiles[name].update({ 'with':{} })
+
+      #/!\ having done the loop this way it will not check for DELWAQ
+      for cplage in cplages:
+         for mod in cfg['MODULES'].keys():
+            if mod in cplage.lower():
+
+               # ~~~~ Extract the CAS File name ~~~~~~~~~~~~~~~~~~~~~~~
+               casNamePlage,defaut = getKeyWord(mod.upper()+' STEERING FILE',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['dico'],MODFiles[CASFiles[name]['code']]['frgb'])
+               if casNamePlage == []: casNamePlage = defaut[0]
+               else: casNamePlage = eval(casNamePlage[0])
+               casNamePlage = path.join(CASFiles[name]['dir'],casNamePlage)
+               if not path.isfile(casNamePlage): raise Exception([{'name':'runCAS','msg':'missing coupling CAS file for '+mod+': '+casNamePlage}])
+
+               # ~~~~ Read the DICO File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               if mod not in MODFiles:
+                  dicoFilePlage = path.join(cfg['MODULES'][mod]['path'],mod+'.dico')
+                  if not path.exists(dicoFilePlage): raise Exception([{'name':'getDICO','msg':'could not find the DICO file: '+dicoFilePlage}])
+                  frgbPlage,dicoPlage = scanDICO(dicoFilePlage)
+                  iFSPlage,oFSPlage = getIOFilesSubmit(frgbPlage,dicoPlage)
+                  MODFiles.update({ mod:{ 'frgb':frgbPlage,'iFS':iFSPlage,'oFS':oFSPlage,'dico':dicoPlage } })
+
+               # ~~ Read the coupled CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~
+               casPlage,l,n = processCAS(casNamePlage,MODFiles[mod]['dico'],MODFiles[mod]['frgb'])
+               CASFiles[name]['with'].update({ casNamePlage:{ 'code':mod, 'cas':casPlage } })
+
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Handling all input files (PART I) ~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # You need to do this if ...
+   #    - if options.split, obvisouly this is PART I of the main file pre-processing
+   #    - if options.compileonly, you also need to copy the FORTRAN FILE
+   if not options.merge and not options.run and not hpcpass:
+      print '\n... first pass at copying all input files'
+      for name in CASFiles:
+         print '    +> ',name
+         # >>> Placing yourself where the CAS File is
+         chdir(CASFiles[name]['dir'])
+         # >>> Copy INPUT files into wdir
          try:
-            processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],WDir,ncsize,(options.wDir!=''))
+            processLIT(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'],CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'])
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
-   # >>> Placing yourself into the WDir
-   chdir(WDir)
-   # >>> Creating LNG file
-   processCONFIG(lang)
+         for cplage in CASFiles[name]['with']:
+            try:
+               processLIT(cplage,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'])
+            except Exception as e:
+               raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
+         # >>> Placing yourself into the wdir
+         chdir(CASFiles[name]['wir'])
+         # >>> Creating LNG file
+         processCONFIG(lang)
 
-   # ~~ Handling Time Step for Progress ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   #time,defaut = getKeyWord('TIME STEP',cas,dico,frgb)
-   #time,defaut = getKeyWord('NUMBER OF TIME STEPS',cas,dico,frgb)
-
-   # ~~ Handling Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # >>> Names for the executable set
-      #> names within WDir
-   f90File = iFS['FICHIER FORTRAN'].split(';')[1]
-      #> aggregation of PRINCI files
-   for mod in COUPLAGE.keys():
-      f90FilePlage = COUPLAGE[mod]['iFS']['FICHIER FORTRAN'].split(';')[1]
-      if path.isfile(f90FilePlage):
-         putFileContent(f90File,getFileContent(f90File)+['']+getFileContent(f90FilePlage))
-         remove(f90FilePlage)
-   plib = cfg['MODULES'][codeName]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgName+sep+'lib')
-   pbin = cfg['root']+sep+'builds'+sep+cfgName+sep+'bin'
-   objFile = path.splitext(f90File)[0] + cfg['SYSTEM']['sfx_obj']
-      #> default executable name
-   exeFile = path.join(pbin,codeName+cfg['SYSTEM']['sfx_exe'])
-      #> user defined executable name
-   useFile = exeFile
-   value,defaut = getKeyWord('FICHIER FORTRAN',cas,dico,frgb)
-   if value != []:
-      useFort = path.join(CASDir,eval(value[0]))
-      useFile = path.join(CASDir,path.splitext(eval(value[0]))[0]+cfg['SYSTEM']['sfx_exe'])
-      # /!\ removing dependency over cfg['REBUILD']:
-      if path.exists(useFile):
-         if isNewer(useFile,useFort) == 1 or cfg['REBUILD'] == 1 : remove(useFile)
-      #> default command line compilation and linkage
-   if not path.exists(path.join(plib,codeName+'.cmdo')):
-      raise Exception([{'name':'runCAS','msg': \
-         '\nNot able to find your OBJECT command line: ' + path.join(plib,codeName+'.cmdo') + '\n' + \
-         '\n ... you have to compile this module at least: '+codeName}])
-   objCmd = getFileContent(path.join(plib,codeName+'.cmdo'))[0]
-   if not path.exists(path.join(plib,codeName+'.cmdx')):
-      raise Exception([{'name':'runCAS','msg': \
-         '\nNot able to find your OBJECT command line: ' + path.join(plib,codeName+'.cmdx') + '\n' + \
-         '\n ... you have to compile this module at least: '+codeName}])
-   exeCmd = getFileContent(path.join(plib,codeName+'.cmdx'))[0]
-   # >>> Compiling the executable if required
-   exename = path.join(WDir,'out_'+path.basename(useFile))
-   runCmd = exename
-   if not options.merge and not options.split:
-      try:
-         processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir,options.bypass)
-      except Exception as e:
-         raise Exception([filterMessage({'name':'runCAS','msg':'could not compile: ' + path.basename(useFile)},e,options.bypass)])  # only one item here
-      shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
-
-   # ~~ Handling the parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if ncsize > 0:
-      # >>> Parallel execution configuration
-      mpiCmd = ''
-      if cfg.has_key('MPI') and not options.merge:
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Handling the executables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # You need to do this if ...
+   #    - if options.run, obvisouly this is the main executable to run
+   #    - if options.compileonly, obvisouly this is the main executable to create
+   if not options.merge and not options.split and not hpcpass:
+      print '\n... checking the executable'
+      for name in CASFiles:
+         chdir(CASFiles[name]['wir'])
+         # >>> Names for the executable set
+            #> names within wdir
+         f90File = MODFiles[CASFiles[name]['code']]['iFS']['FICHIER FORTRAN'].split(';')[1]
+            #> aggregation of PRINCI files
+         for cplage in CASFiles[name]['with']:
+            f90FilePlage = MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS']['FICHIER FORTRAN'].split(';')[1]
+            if path.isfile(f90FilePlage):
+               putFileContent(f90File,getFileContent(f90File)+['']+getFileContent(f90FilePlage))
+               remove(f90FilePlage)
+         plib = cfg['MODULES'][CASFiles[name]['code']]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgName+sep+'lib')
+         objFile = path.splitext(f90File)[0] + cfg['SYSTEM']['sfx_obj']
+            #> default executable name
+         exeFile = path.join(pbin,CASFiles[name]['code']+cfg['SYSTEM']['sfx_exe'])
+            #> user defined executable name
+         useFile = exeFile
+         value,defaut = getKeyWord('FICHIER FORTRAN',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['dico'],MODFiles[CASFiles[name]['code']]['frgb'])
+         # ~~ check if compileTELEMAC.py has been called since
+         if value != []:
+            useFort = path.join(CASFiles[name]['dir'],eval(value[0]))
+            useFile = path.join(CASFiles[name]['dir'],path.splitext(eval(value[0]))[0]+cfg['SYSTEM']['sfx_exe'])
+            # /!\ removing dependency over cfg['REBUILD']:
+            if path.exists(useFile):
+               if cfg['REBUILD'] == 1: remove(useFile)
+               elif isNewer(useFile,exeFile) == 1: remove(useFile)
+               elif isNewer(useFile,useFort) == 1: remove(useFile)
+            #> default command line compilation and linkage
+         if not path.exists(path.join(plib,CASFiles[name]['code']+'.cmdo')):
+            raise Exception([{'name':'runCAS','msg': \
+               '\nNot able to find your OBJECT command line: ' + path.join(plib,CASFiles[name]['code']+'.cmdo') + '\n' + \
+               '\n ... you have to compile this module at least: '+CASFiles[name]['code']}])
+         objCmd = getFileContent(path.join(plib,CASFiles[name]['code']+'.cmdo'))[0]
+         if not path.exists(path.join(plib,CASFiles[name]['code']+'.cmdx')):
+            raise Exception([{'name':'runCAS','msg': \
+               '\nNot able to find your OBJECT command line: ' + path.join(plib,CASFiles[name]['code']+'.cmdx') + '\n' + \
+               '\n ... you have to compile this module at least: '+CASFiles[name]['code']}])
+         exeCmd = getFileContent(path.join(plib,CASFiles[name]['code']+'.cmdx'))[0]
+         # ~~> Make the keys portable (no full path)
+         for k in cfg['TRACE']:
+            objCmd = objCmd.replace('['+k+']',path.realpath(cfg['TRACE'][k]))
+            exeCmd = exeCmd.replace('['+k+']',path.realpath(cfg['TRACE'][k]))
+         # >>> Compiling the executable if required
+         exename = path.join(CASFiles[name]['wir'],'out_'+path.basename(useFile))
+         CASFiles[name].update({ 'run':exename, 'exe':exename })
+         # ~~> no file executable compilation if hpcpass
+         if hpcpass: continue
+         try:
+            processExecutable(useFile,objFile,f90File,objCmd,exeCmd,options.bypass)
+         except Exception as e:
+            raise Exception([filterMessage({'name':'runCAS','msg':'could not compile: ' + path.basename(useFile)},e,options.bypass)])  # only one item here
+         print ' re-copying: ',path.basename(useFile),exename
+         shutil.copy2(path.basename(useFile),useFile)
+         shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
+   
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Handling the MPI command ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # You need to do this if ...
+   #    - if options.split, for PARTEL that could be used in parallel
+   #    - if options.run, obvisouly this is the main executable to run
+   # Note: the mpicmd is unique and run once
+   if not options.merge and not hpcpass:
+      if cfg['MPI'] != {}:
+         print '\n... modifying run command to MPI instruction'
          # ~~> MPI host file provided through the command line
          if options.hosts != '':
             if cfg['MPI'].has_key('HOSTS'): cfg['MPI']['HOSTS'] = options.hosts.replace(':',' ')
             else: cfg['MPI'].update( {'HOSTS':options.hosts.replace(':',' ')} )
-         # ~~> MPI Command line ( except <exename> )
-         mpiCmd = getMPICommand(cfg['MPI']) # /!\ cfg['MPI'] is also modified
-         mpiCmd = mpiCmd.replace('<ncsize>',str(ncsize))
-         mpiCmd = mpiCmd.replace('<wdir>',WDir)   # /!\ Make sure WDir works in UNC convention
-         hostfile = cfg['MPI']['HOSTFILE']
          # ~~> MPI host file ( may be re-written by the HPC INFILE script )
+         hostfile = cfg['MPI']['HOSTFILE']
          hosts = []; n = 0
          while n < ncsize:
             for i in cfg['MPI']['HOSTS'].split():
                hosts.append(i); n += 1
                if n == ncsize: break
-         putFileContent(hostfile,hosts)
+         # ~~> MPI Command line and options ( except <exename> )
+         mpicmd = getMPICommand(cfg['MPI']) # /!\ cfg['MPI'] is also modified
+         # mpi_exec supports: -n <ncsize> -wdir <wdir> <exename>
+         mpicmd = mpicmd.replace('<ncsize>',str(ncsize))
+         for name in CASFiles:
+            # >>> Parallel execution configuration
+            chdir(CASFiles[name]['wir'])
+            mpi = mpicmd
+            # ~~> filling in the blanks
+            mpi = mpi.replace('<wdir>',CASFiles[name]['wir'])
+            CASFiles[name]['mpi'] = mpi
+            if not options.split:
+               CASFiles[name]['run'] = mpi.replace('<exename>',path.basename(CASFiles[name]['exe']))
+            # ~~> no file handling necessary if hpcpass
+            if hpcpass: continue
+            # ~~> Creating the HOST file
+            putFileContent(hostfile,hosts)
+            # ~~> Creating the PARA file
+            putFileContent('PARAL',[str(ncsize),str(len(CASFiles[name]['wir']+sep)),CASFiles[name]['wir']+sep,''])
 
-         # >>> Replace running command
-         runCmd = mpiCmd.replace('<exename>',exename)
-
-      # >>> Parallel tools
-      # ~~> Path
-      PARDir = pbin
-      if cfg['PARALLEL'] != None:
-         if cfg['PARALLEL'].has_key('PATH'): PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
-      # ~~> Call to PARTEL
-      parCmd = path.join(pbin+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' < PARTEL.PAR >> <partel.log>')
-      if cfg['PARALLEL'] != None:
-         if cfg['PARALLEL'].has_key('EXEC'): parCmd = cfg['PARALLEL']['EXEC']
-      parCmd = parCmd.replace('<mpi_cmdexec>',mpiCmd).replace('<exename>','')
-      parCmd = parCmd.replace('<root>',cfg['root']).replace('<config>',PARDir)
-      # ~~> Creating the PARA files
-      if not options.merge: processPARALLEL(ncsize,WDir+sep)  # /!\ Make sure WDir works in UNC convention
-
-
-   if options.compileonly:
-      print '\n\n... Your simulation is ready for launch and you can now :\n'
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Getting out if compile only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if options.compileonly and not hpcpass:
+      print '\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '... Your simulation is ready for launch and you can now :\n'
       print '    +> re-run without option -x (--compileonly) or with option --run\n'
-      print '    +> or run the following command within : ',path.basename(WDir)
-      print '       ~>    run with EXE: ',path.basename(exename)
-      if cfg.has_key('MPI'): print '       ~> or run with MPI: ',mpiCmd.replace('<exename>',path.basename(exename))
+      if cfg['MPI'] == {}:
+         print '    +> or run the following command within each local subdirectory:'
+         for name in CASFiles:
+            print '       -> in <'+CASFiles[name]['wir'].replace(CASFiles[name]['dir'],'.')+sep+'>',
+            print ' run with EXE:\n                 ',path.basename(CASFiles[name]['exe'])
+      else:
+         print '    +> or run with MPI: '
+         for name in CASFiles: print '                 '+CASFiles[name]['run']
       return []
 
-   # ~~ Handling the partionning ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if not options.compileonly:
-      if ncsize > 0:
-         # >>> Running the partionning
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Handling the PARTEL command and partitioning ~~~~~~~~~~~~~~~
+   # You need to do this if ...
+   #    - if options.split, to execute PARTEL if ncsize > 0
+   #    - options.compileonly is out already
+   if not options.merge and not options.run and ncsize > 0 and not hpcpass:
+      print '\n... modifying run command to PARTEL instruction'
+      for name in CASFiles:
+         chdir(CASFiles[name]['wir'])
+         # ~~> Path
+         PARDir = pbin
+         if cfg['PARTEL'] != {}:
+            if cfg['PARTEL'].has_key('PATH'): PARDir = cfg['PARTEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
+         # ~~> Call to PARTEL
+         parcmd = path.join(pbin+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' < PARTEL.PAR >> <partel.log>')
+         if cfg['PARTEL'] != {}:
+            if cfg['PARTEL'].has_key('EXEC'): parcmd = cfg['PARTEL']['EXEC']
+         # <mpi_cmdexec> and <exename> should be known by now
+         if cfg['MPI'] != {}:
+            parcmd = parcmd.replace('<mpi_cmdexec>',CASFiles[name]['mpi']).replace('<exename>','')
+         parcmd = parcmd.replace('<root>',cfg['root']).replace('<config>',PARDir)
+         # >>> Add running command
+         CASFiles[name].update({ 'par':parcmd })
+
          # ~~> Run PARTEL
-         CONLIM = getCONLIM(cas,iFS)    # Global CONLIM file
-         if not options.merge:
-            try:
-               runPartition(parCmd,cas,CONLIM,iFS,ncsize,options.bypass)
-            except Exception as e:
-               raise Exception([filterMessage({'name':'runCAS','msg':'Partioning primary input files of the CAS file: '+path.basename(casFile)},e,options.bypass)])
-            for mod in COUPLAGE.keys():
-               CONLIM = getCONLIM(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'])
-               try:
-                  runPartition(parCmd,COUPLAGE[mod]['cas'],CONLIM,COUPLAGE[mod]['iFS'],ncsize,options.bypass)
-               except Exception as e:
-                  raise Exception([filterMessage({'name':'runCAS','msg':'Partioning coupling input files'},e,options.bypass)])
-
-      # >>> Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if not options.merge:
-         if options.split:
-            if path.exists(exename):
-               print '\n\n... Unless you wish to re-compile your executable, your simulation is ready for launch and you can now :\n'
-               print '    +> re-run without option --split or with option --run'
-               print '    +> or run the following command within : ',path.basename(WDir)
-               print '       ~>    run with EXE: ',path.basename(exename)
-               if cfg.has_key('MPI'): print '       ~> or run with MPI: ',mpiCmd.replace('<exename>',path.basename(exename))
-            else:
-               print '\n\n... Your simulation is almost ready for launch. You need to compile your executable with the option -x (--compileonly)\n'
-            return []          # Split only: do not proceed any further
-         print '\n\nRunning your simulation :\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-         print runCmd+'\n\n'
-         if not runCode(runCmd,sortiefile): raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
-      if options.run:
-         print '\n\n... Your simulation has been completed but you need to re-collect files using the option --merge\n'
-         return []  # Run only: do not proceed any further
-
-      # >>> Handling the recollection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if ncsize > 0:
-         # ~~> GRETEL Executable
-         exeCmd = path.join(PARDir,'gretel_autop'+cfg['SYSTEM']['sfx_exe'])
-         # ~~> Run GRETEL
-         GLOGEO = getGLOGEO(cas,iFS)    # Global GEO file
-         runRecollection(exeCmd,cas,GLOGEO,oFS,ncsize,options.bypass)
-         for mod in COUPLAGE.keys():
-            GLOGEO = getGLOGEO(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'])
-            runRecollection(exeCmd,COUPLAGE[mod]['cas'],GLOGEO,COUPLAGE[mod]['oFS'],ncsize,options.bypass)
-
-   # ~~ Handling all output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      try:
-         files = processECR(cas,oFS,CASDir,WDir,sortiefile,ncsize,options.bypass)
-      except Exception as e:
-         raise Exception([filterMessage({'name':'runCAS','msg':'I could not copy the output files back from the temporary directory:\n      '+WDir},e,options.bypass)])  # only one item here
-      sortiefiles.extend(files)
-      for mod in COUPLAGE.keys():
+         CONLIM = getCONLIM(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    # Global CONLIM file
          try:
-            files = processECR(COUPLAGE[mod]['cas'],COUPLAGE[mod]['oFS'],CASDir,WDir,None,ncsize,options.bypass)
+            runPartition(parcmd,CASFiles[name]['cas'],CONLIM,MODFiles[CASFiles[name]['code']]['iFS'],ncsize,options.bypass)
          except Exception as e:
-            raise Exception([filterMessage({'name':'runCAS','msg':'I could not copy the output files back from the temporary directory:\n      '+WDir},e,options.bypass)])  # only one item here
+            raise Exception([filterMessage({'name':'runCAS','msg':'Partioning primary input files of the CAS file: '+name},e,options.bypass)])
+         for cplage in CASFiles[name]['with']:
+            CONLIM = getCONLIM(cplage,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
+            try:
+               runPartition(parCmd,cplage,CONLIM,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],ncsize,options.bypass)
+            except Exception as e:
+               raise Exception([filterMessage({'name':'runCAS','msg':'Partioning coupling input files'},e,options.bypass)])
+   
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Getting out if split only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if options.split and not hpcpass:
+      print '\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '... Your simulation is almost ready for launch. You need to compile your executable with the option -x (--compileonly)\n'
+      return []          # Split only: do not proceed any further
+
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Handling sortie file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # Outputs ...
+   #    > CASFiles.values()[0]['sortie']
+   print '\n... handling sortie file(s)'
+   if not options.sortieFile:
+      for name in CASFiles: CASFiles[name]['sortie'] = None
+   else:
+      if options.merge:
+         # try re-using existing/latest sortie file with same root name
+         for name in CASFiles: CASFiles[name]['sortie'] = path.basename(getLatestSortieFiles(path.join(CASFiles[name]['wir'],path.basename(name)))[0])
+      else:
+         # define the filename (basename) of the sortie file
+         for name in CASFiles: CASFiles[name]['sortie'] = path.basename(CASFiles[name]['sortie'])+'.sortie'
+
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Handling the HPC command ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # You need to do this if ...
+   #    - if options.run, obvisouly this is the main executable to run
+   # Inputs ...
+   #    - ncsize, nctilem ncnode, wdir, casdir, options, codeName
+   #    - cfg['HPC']['STDIN'] and cfg['MPI']['HOSTS']
+   #    - CASFiles.values()[0]['sortie'] and CASFiles.values()[0]['exe']
+   #    - CASFiles[name]['run']
+   # Outputs ...
+   #    > runcmd and putFileContent(stdinfile,)
+   if not options.merge:
+      if cfg['HPC'] != {}:
+         print '\n... modifying run command to HPC instruction'
+         # ~~> HPC Command line launching runcode
+         hpccmd = getHPCCommand(cfg['HPC'])
+         #hpccmd = hpccmd.replace('<ncsize>',str(ncsize))  \
+         #hpccmd = hpccmd.replace('<nctile>',str(nctile))  |- You should not have these in the command line
+         #hpccmd = hpccmd.replace('<ncnode>',str(ncnode))  /
+         if ncruns == 1 and not hpcpass:
+            cfg['HPC'].update({ 'wdir':wdir })
+            cfg['HPC'].update({ 'sortie':path.basename(CASFiles.values()[0]['sortie']) })
+            cfg['HPC'].update({ 'exename':path.basename(CASFiles.values()[0]['exe']) })
+         else:
+            cfg['HPC'].update({ 'wdir':casdir })
+            cfg['HPC'].update({ 'sortie':'combined.'+codeName+'.sortie' })
+            cfg['HPC'].update({ 'exename':'combined.'+codeName })
+         hpccmd = hpccmd.replace('<wdir>',cfg['HPC']['wdir'])
+         cfg['HPC'].update( {'cmd':hpccmd } )
+         # ~~> HPC queueing script
+         if cfg['HPC'].has_key('STDIN'):
+            # ~~> Replace the parameter in the hpc_stdin script
+            stdinfile = cfg['HPC']['STDIN'][0] # only one key for now
+            stdin = cfg['HPC']['STDIN'][1]
+            stdin = stdin.replace('<hosts>',cfg['MPI']['HOSTS'])
+            stdin = stdin.replace('<ncsize>',str(ncsize))
+            stdin = stdin.replace('<nctile>',str(nctile))
+            stdin = stdin.replace('<ncnode>',str(ncnode))
+            stdin = stdin.replace('<email>',options.email)
+            stdin = stdin.replace('<jobname>',options.jobname)
+            stdin = stdin.replace('<time>',strftime("%Y-%m-%d-%Hh%Mmin%Ss", localtime()))
+            stdin = stdin.replace('<queue>',options.hpc_queue)
+            stdin = stdin.replace('<walltime>',options.walltime)
+            stdin = stdin.replace('<codename>',codeName)
+            stdin = stdin.replace('\n ','\n')
+            stdin = stdin.replace('<wdir>',cfg['HPC']['wdir'])      # /!\ HPC_STDIN in the TMP directory
+            stdin = stdin.replace('<sortiefile>',cfg['HPC']['sortie'])
+            stdin = stdin.replace('<exename>',cfg['HPC']['exename'])
+            if hpcpass:
+               # ~~> Recreate the runcode.py command 
+               runcmd = 'python /home/HR/sbo/opentelemac/trunk/scripts/python27/runcode.py ' + codeName
+               runcmd = runcmd + ' --mpi '
+               if options.configName != '': runcmd = runcmd + ' -c ' + options.configName
+               if options.configFile != '': runcmd = runcmd + ' -f ' + options.configFile
+               if options.rootDir != '': runcmd = runcmd + ' -r ' + options.rootDir
+               if options.version != '': runcmd = runcmd + ' -v ' + options.version
+               if options.sortieFile: runcmd = runcmd + ' -s '
+               if options.tmpdirectory: runcmd = runcmd + ' -t '
+               if options.wDir != '': runcmd = runcmd + ' -w ' + options.wDir
+               runcmd = runcmd + ' --nctile ' + str(nctile)
+               runcmd = runcmd + ' --ncnode ' + str(ncnode)
+               runcmd = runcmd + ' --ncsize ' + str(ncsize)
+               if options.split: runcmd = runcmd + ' --split '
+               if options.compileonly: runcmd = runcmd + ' -x '
+               if options.merge: runcmd = runcmd + ' --merge '
+               if options.run: runcmd = runcmd + ' --run '
+               runcmd = runcmd + ' ' + ' '.join(CASFiles.keys())
+               stdin = stdin.replace('<py_runcode>',runcmd)         # /!\ parallel mode ?
+            else:
+               # ~~> Recreate the <mpi_exec> (option --hpc)
+               mpicmd = []
+               for name in CASFiles: mpicmd.append(CASFiles[name]['run'])
+               stdin = stdin.replace('<mpi_cmdexec>','\n'.join(mpicmd))   # /!\ serial mode
+            # ~~> Special case
+            if hpcpass: cfg['HPC']['sortie'] = None
+            # ~~> Write to HPC_STDIN
+            chdir(cfg['HPC']['wdir'])
+            putFileContent(stdinfile,stdin.split('\n'))
+
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # You need to do this if ...
+   #    - options.split is out already
+   #    - options.compileonly is out already
+   #    - if options.run, obvisouly this is the main run of the executable
+   # Inputs ...
+   #    - runcmd if options.hpc
+   #    - CASFiles[name]['run'] and CASFiles[name]['sortie'] otherwise
+   if not options.merge:
+      print '\n\nRunning your simulation(s) :\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      if cfg['HPC'] != {}:
+         chdir(cfg['HPC']['wdir'])
+         if not runCode(cfg['HPC']['cmd'],cfg['HPC']['sortie']):
+            raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
+         print '\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         print '... Your simulation has been launched through the queue.\n'
+         if hpcpass: print '   +> You need to wait for completion before checking on results.\n'
+         else: print '   +> You need to wait for completion before re-collecting files using the option --merge\n'
+         return []          # HPC lunch only: do not proceed any further from that end
+      else: # case of codename or mpi launch
+         # This should be done in parallel when multiple CASFiles
+         for name in CASFiles:
+            chdir(CASFiles[name]['wir'])
+            print '\n\n'+CASFiles[name]['run']+'\n\n'
+            if not runCode(CASFiles[name]['run'],CASFiles[name]['sortie']):
+               raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
+
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Getting out if run only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #    - options.split and options.compileonly are out already
+   if options.run:
+      print '\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '... Your simulation has been completed but you need to re-collect files using the option --merge\n'
+      return []          # Run only: do not proceed any further
+
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Handling the recollection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #    - options.split and options.compileonly and options run are out already
+   if ncsize > 0:
+      print '\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '... merging separated result files\n'
+      # ~~> Path
+      PARDir = pbin
+      if cfg['PARTEL'] != {}:
+         if cfg['PARTEL'].has_key('PATH'): PARDir = cfg['PARTEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
+      # ~~> GRETEL Executable
+      execmd = path.join(PARDir,'gretel_autop'+cfg['SYSTEM']['sfx_exe'])
+      # ~~> Run GRETEL
+      for name in CASFiles:
+         print '    +> ',name
+         chdir(CASFiles[name]['wir'])
+         GLOGEO = getGLOGEO(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    # Global GEO file
+         runRecollection(execmd,CASFiles[name]['cas'],GLOGEO,MODFiles[CASFiles[name]['code']]['oFS'],ncsize,options.bypass)
+         for cplage in CASFiles[name]['with']:
+            GLOGEO = getGLOGEO(cplage,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
+            runRecollection(execmd,cplage,GLOGEO,MODFiles[CASFiles[name]['with'][cplage]['code']]['oFS'],ncsize,options.bypass)
+
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Handling all output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '... handling result files\n'
+   sortiefiles = []
+   for name in CASFiles:
+      print '    +> ',name
+      chdir(CASFiles[name]['wir'])
+      files = processECR(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['oFS'],CASFiles[name]['dir'],CASFiles[name]['wir'],CASFiles[name]['sortie'],ncsize,options.bypass)
+      sortiefiles.extend(files)
+      for cplage in CASFiles[name]['with']:
+         files = processECR(cplage,MODFiles[CASFiles[name]['with'][cplage]['code']]['oFS'],CASFiles[name]['dir'],CASFiles[name]['wir'],None,ncsize,options.bypass)
          sortiefiles.extend(files)
+   #except Exception as e:
+   #   raise Exception([filterMessage({'name':'runCAS','msg':'I could not copy the output files back from the temporary directory:\n      '+wdir},e,options.bypass)])  # only one item here
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   chdir(CASDir)
-   if options.tmpdirectory: removeDirectories(WDir)
+   if options.tmpdirectory:
+      for name in CASFiles:
+         try:
+            removeDirectories(CASFiles[name]['wir'])
+         except Exception as e:
+            print '\n\nWarning: Your operating system does nt allow me to remove a directory\n\n'
 
    return sortiefiles
 
@@ -930,11 +1218,10 @@ if __name__ == "__main__":
       help="the number of processors forced in parallel mode" )
    parser.add_option("--nctile",type="string",dest="nctile",default='',
       help="the number of core per node. ncsize/nctile is the number of compute nodes" )
-   parser.add_option("--ncnodes",type="string",dest="ncnodes",default='',
-      help="the number of of nodes. ncsize = ncnodes*nctile is the total number of compute nodes" )
-   parser.add_option("--hpc",action="store_true",dest="hpc",default=False,
-      help="Run hpc_cmdexec instead of runcode.py" )
-   # ~~> Computation parts
+   parser.add_option("--ncnode",type="string",dest="ncnode",default='',
+      help="the number of of nodes. ncsize = ncnode*nctile is the total number of compute nodes" )
+   parser.add_option("--mpi",action="store_true",dest="mpi",default=False,
+      help="make sure the mpi command is executed, ignoring any hpc command" )
    parser.add_option("--split",action="store_true",dest="split",default=False,
       help="will only do the trace (and the split in parallel) if option there" )
    parser.add_option("--merge",action="store_true",dest="merge",default=False,
@@ -970,6 +1257,12 @@ if __name__ == "__main__":
    # still in lower case
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
    if options.version != '': cfgs[cfgname]['version'] = options.version
+   # recognised keys in the config
+   if options.ncsize == '' and cfgs[cfgname].has_key('ncsize'): options.ncsize = cfgs[cfgname]['ncsize']
+   if options.nctile == '' and cfgs[cfgname].has_key('nctile'): options.nctile = cfgs[cfgname]['nctile']
+   if options.ncnode == '' and cfgs[cfgname].has_key('ncnode'): options.ncnode = cfgs[cfgname]['ncnode']
+
+   # bypass errors and carries on
    options.bypass = False
    if options.split or options.merge or options.run:
       if options.wDir == '':
@@ -982,58 +1275,12 @@ if __name__ == "__main__":
       sys.exit()
    # parsing for proper naming
    cfg = parseConfig_RunningTELEMAC(cfgs[cfgname])
-   # in case we are launching on a cluster
-   if cfg.has_key('HPC') and options.hpc: 
-      ncsize = int(options.ncsize)
-      nctile = max( 1,int(options.nctile) )
-      ncnodes = int(ncsize/nctile)
-      hpcCmd = getHPCCommand(cfg['HPC'])
-      if cfg['HPC'].has_key('STDIN'):
-         stdinfile = cfg['HPC']['STDIN'].keys()[0] # only one key for now
-         stdin = cfg['HPC']['STDIN'][stdinfile]
-         # Recreate the options for runcode.py
-         hpc_options = ''
-         if options.configName != '': hpc_options = hpc_options + ' -c ' + options.configName
-         if options.configFile != '': hpc_options = hpc_options + ' -f ' + options.configFile
-         if options.rootDir != '': hpc_options = hpc_options + ' -r ' + options.rootDir
-         if options.version != '': hpc_options = hpc_options + ' -v ' + options.version
-         if options.sortieFile: hpc_options = hpc_options + ' -s '
-         if options.tmpdirectory: hpc_options = hpc_options + ' -t '
-         if options.compileonly: hpc_options = hpc_options + ' -x '
-         if options.wDir != '': hpc_options = hpc_options + ' -w ' + options.wDir
-         if options.ncsize != '': hpc_options = hpc_options + ' --ncsize ' + options.ncsize
-         if options.split: hpc_options = hpc_options + ' --split '
-         if options.merge: hpc_options = hpc_options + ' --merge '
-         if options.run: hpc_options = hpc_options + ' --run '
-         print 'hpc_options '+hpc_options
-         # Replace the parameter in the hpc_stdin script
-         stdin = stdin.replace('<options>',hpc_options)
-         stdin = stdin.replace('<ncsize>',str(ncsize))
-         stdin = stdin.replace('<nctile>',str(nctile))
-         stdin = stdin.replace('<ncnodes>',str(ncnodes))
-         stdin = stdin.replace('<wdir>',options.wDir)
-         stdin = stdin.replace('<email>',options.email)
-         stdin = stdin.replace('<time>',strftime("%Y-%m-%d-%Hh%Mmin%Ss", localtime()))
-         stdin = stdin.replace('<jobname>',options.jobname)
-         stdin = stdin.replace('<queue>',options.hpc_queue)
-         stdin = stdin.replace('<walltime>',options.walltime)
-         stdin = stdin.replace('<codename>',codeName)
-         casFilesStr = ''
-         for cas in casFiles:
-           casFilesStr = casFilesStr + ' ' + cas
-         stdin = stdin.replace('<casfiles>',casFilesStr)
-         putFileContent(stdinfile,stdin.split('\n'))
-      print '\n\nRunning python in hpc mode\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-      runCode(hpcCmd,None)
-      sys.exit()
-      
+   
    print '\n\nRunning your CAS file for:\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    print '    +> configuration: ' +  cfgname
    print '    +> root:          ' +  cfgs[cfgname]['root']
    print '    +> version        ' +  cfgs[cfgname]['version']
-   print '    +> options:       ' +  cfgs[cfgname]['options']
    if options.wDir != '':
       print '    +> directory      ' +  options.wDir
       options.tmpdirectory = False
@@ -1049,20 +1296,13 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    xcpts = MESSAGES()
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Loop over CAS Files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for casFile in casFiles:
-      casFile = path.realpath(casFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
-      print '\n\nRunning ' + path.basename(casFile) + ' with '+ codeName + ' under ' + path.dirname(casFile) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-      print '... reading module dictionary'
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Run the Code from the CAS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      try:
-         runCAS(cfgname,cfg,codeName,casFile,options)
-      except Exception as e:
-         xcpts.addMessages(filterMessage({'name':'_____________\nruncode::main:\n      '+path.dirname(casFile)},e,options.bypass))
+   try:
+      runCAS(cfgname,cfg,codeName,casFiles,options)
+   except Exception as e:
+      xcpts.addMessages(filterMessage({'name':'_____________\nruncode::main:\n'},e,options.bypass))
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

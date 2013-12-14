@@ -222,7 +222,7 @@ def getScanContent(file,root,bypass):
       if lib not in content.keys(): raise Exception([{'name':'getScanContent','msg':'The reference ' + lib + ' in the [general] liborder key is not defined in your cmdf-scan file:'+file}])
    return content
 
-def createObjFiles(oname,oprog,odict,ocfg,bypass):
+def createObjFiles(cfg,oname,oprog,odict,ocfg,bypass):
    # ~~ Assumes that the source filenames are in lower case ~~~~~~~~
    Root,Suffix = path.splitext(path.basename(oname))
 
@@ -263,7 +263,7 @@ def createObjFiles(oname,oprog,odict,ocfg,bypass):
    #and remove .f from objList
    return out
 
-def createLibFiles(lname,lcfg,lprog,bypass):
+def createLibFiles(cfg,lname,lcfg,lprog,bypass):
    # ~~ Assumes that all objects are in <config> ~~~~~~~~~~~~~~~~~~~
    # ~~ recreates the lib regardless ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -306,7 +306,7 @@ def createLibFiles(lname,lcfg,lprog,bypass):
    print '   - created ' + LibFile
    return False
 
-def createExeFiles(ename,ecfg,eprog,bypass):
+def createExeFiles(cfg,ename,ecfg,eprog,bypass):
 
    # ~~ Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    LibDir = cfg['MODULES'][eprog]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+ecfg+sep+'lib')
@@ -412,8 +412,14 @@ def createExeFiles(ename,ecfg,eprog,bypass):
       if path.exists(ExeCmd): remove(ExeCmd)
       raise Exception([{'name':'createExeFiles','msg':'something went wrong, I am not sure why (runcode='+str(code)+').\n      '+tail}])
    print '   - created ' + ExeFile
+
+   # ~~> Make the keys portable (no full path)
+   for k in cfg['TRACE']:
+      xocmd = xocmd.replace(cfg['TRACE'][k],'['+k+']')
+      xecmd = xecmd.replace(cfg['TRACE'][k],'['+k+']')
    putFileContent(ObjCmd,[xocmd])
    putFileContent(ExeCmd,[xecmd])
+
    return False
 
 # _____             ________________________________________________
@@ -510,8 +516,7 @@ if __name__ == "__main__":
       print '    +> configuration: ' +  cfgname
       print '    +> root:          ' +  cfgs[cfgname]['root']
       print '    +> version:       ' +  cfgs[cfgname]['version']
-      print '    +> modules:       ' +  cfgs[cfgname]['modules']
-      print '    +> options:       ' +  cfgs[cfgname]['options'] + '\n\n\
+      print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
       if options.cleanup:
@@ -621,7 +626,7 @@ if __name__ == "__main__":
                ibar = 0; pbar = ProgressBar(maxval=len(HOMERES[item]['add'])).start()
                for obj,lib in HOMERES[item]['add'] :
                   try:
-                     pbar.write( createObjFiles(obj,item,{'libname':lib,'type':'','path':cmdfFiles[mod][item][lib]['path']},cfgname,options.bypass),ibar )
+                     pbar.write( createObjFiles(cfg,obj,item,{'libname':lib,'type':'','path':cmdfFiles[mod][item][lib]['path']},cfgname,options.bypass),ibar )
                      ibar = ibar + 1; pbar.update(ibar)
                   except Exception as e:
                      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating objects: '+path.basename(obj)},e,options.bypass)])
@@ -630,14 +635,14 @@ if __name__ == "__main__":
             foundLib = True
             for lib in HOMERES[item]['deps']:
                try:
-                  f = createLibFiles(lib,cfgname,item,options.bypass)
+                  f = createLibFiles(cfg,lib,cfgname,item,options.bypass)
                except Exception as e:
                   xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating library: '+path.basename(lib)},e,options.bypass)])
                foundLib = foundLib and f
             if foundLib: print '      +> There is no need to package any library'
 # ~~ Creates executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             try:
-               foundExe = createExeFiles(item.lower(),cfgname,mod,options.bypass)
+               foundExe = createExeFiles(cfg,item.lower(),cfgname,mod,options.bypass)
             except Exception as e:
                xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating executable: '+ item.lower()},e,options.bypass)])
             if foundExe: print '      +> There is no need to create the associate executable'

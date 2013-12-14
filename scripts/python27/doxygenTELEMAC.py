@@ -524,8 +524,7 @@ if __name__ == "__main__":
    print '    +> configuration: ' +  cfgname
    print '    +> root:          ' +  cfgs[cfgname]['root']
    print '    +> version:       ' +  cfgs[cfgname]['version']
-   print '    +> modules:       ' +  cfgs[cfgname]['modules']
-   print '    +> options:       ' +  cfgs[cfgname]['options'] + '\n\n\
+   print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
    # ~~ Scans all source files to build a relation database ~~
