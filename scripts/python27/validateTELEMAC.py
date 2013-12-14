@@ -274,6 +274,8 @@ if __name__ == "__main__":
       help="filter specific drawing actions from the XML file, and will only do these" )
    parser.add_option("--report",type="string",dest="report",default='',
       help="will create a report summary of with your chosen middle name" )
+   parser.add_option("--clean",action="store_true",dest="cleanup",default=False,
+      help="will erase all object, executable, result files from subfolders on the selected configs/modules" )
 	  
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
@@ -364,11 +366,12 @@ if __name__ == "__main__":
          # still in lower case
          if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
          if options.version != '': cfgs[cfgname]['version'] = options.version
-         if options.modules != '': cfgs[cfgname]['modules'] = options.modules
+         if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
          cfgs[cfgname]['display'] = options.display
          # parsing for proper naming
          cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
          cfg.update({ 'PWD':PWD })
+         if options.cleanup: cfg['REBUILD'] = 2
 
          for xmlFile in args:
             if not path.isfile(xmlFile):
@@ -401,11 +404,12 @@ if __name__ == "__main__":
             root = path.abspath(options.rootDir)
          else : root = cfgs[cfgname]['root']
          if options.version != '': cfgs[cfgname]['version'] = options.version
-         if options.modules != '': cfgs[cfgname]['modules'] = options.modules
+         if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
          cfgs[cfgname]['display'] = options.display
          # parsing for proper naming
          cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
          cfg.update({ 'PWD':PWD })
+         if options.cleanup: cfg['REBUILD'] = 2
          # gathering XMLs
          for codeName in cfg['VALIDATION'].keys():
             report.add(root,options.report,codeName,cfgs[cfgname]['version'])
