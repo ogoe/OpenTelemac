@@ -5,16 +5,16 @@
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
-   <meta xref="default"> 
+   <deco xref="default"> 
       <look format="png" colourbar="jet.xml" /> 
       <data title="tide" author="telemac3d" contact="www.opentelemac.org" /> 
-   </meta> 
-   <meta xref="vect"> 
+   </deco> 
+   <deco xref="vect"> 
       <look colour="jet.xml" /> 
-   </meta> 
-   <meta xref="line"> 
+   </deco> 
+   <deco xref="line"> 
       <look colour="k" /> 
-   </meta> 
+   </deco> 
  
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 

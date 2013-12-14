@@ -5,16 +5,16 @@
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
-   <meta xref="default"> 
+   <deco xref="default"> 
       <look format="png" colourbar="jet.xml" /> 
       <data title="bump" author="telemac3d" contact="www.opentelemac.org" /> 
-   </meta> 
-   <meta xref="vect"> 
-      <look colour="jet.xml" /> 
-   </meta> 
-   <meta xref="line"> 
+   </deco> 
+   <deco xref="vect"> 
       <look colour="k" /> 
-   </meta> 
+   </deco> 
+   <deco xref="line"> 
+      <look colour="k" /> 
+   </deco> 
  
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
@@ -36,20 +36,21 @@
    --> 
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
 -->  
+   <plot1d xref="figure15" type="v-section" config="together" time="[-1]" size="[12;5]" deco="default" > 
+      <layer vars="cote z:line" extract="(0;1)#[0;3;-1](21;1)#[0;3;-1]" target="1:T3DRES" deco="vect" /> 
+      <layer vars="surface libre:line;fond:line" extract="(0;1)(21;1)" target="1:T3DHYD" deco="line" /> 
+   </plot1d> <!--
    <plot1d xref="figure5" type="v-section" config="together" time="[-1]" size="[12;5]" > 
       <layer vars="surface libre:line;fond:line" extract="(0;1)(21;1)" target="1:T3DHYD" /> 
    </plot1d> 
-   <plot1d xref="figure15" type="v-section" config="together" time="[-1]" size="[12;5]" > 
-      <layer vars="cote z:line" extract="(0;1)(21;1)" target="1:T3DRES" /> 
-   </plot1d>
    <plot1d xref="figure0" type="history" config="together" time="[0:-1]" size="[12;3]" > 
       <layer vars="Z:line" extract="703#[-1];(0;1)#[2]" target="1:T3DRES" /> 
-   </plot1d>  
+   </plot1d>  -->
    
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
     type="plan" is assumed by default if nothing else is there, particularly for 2D files
 	roi="[-1.0;-0.3][23.0;0.7]"
--->  
+-->  <!--
    <plot2d xref="figure3" type="v-section" config="oneofall" time="[-1]" size="[12;5]" > 
       <layer vars="Z:mesh" extract="(0;1)(21;1)" target="1:T3DRES"  /> 
    </plot2d>  
@@ -69,6 +70,6 @@
    <plot2d xref="figure9" size="[12;3]" > 
       <layer vars="vitesse:map" target="1:T3DHYD" config="oneofall" time="[-1]" /> 
       <layer vars="vitesse:angle" target="1:T3DHYD" config="oneofall" time="[-1]" extract="[5;0][15;2][10;4]" /> 
-   </plot2d>  
+   </plot2d>  -->
 
 </validation>

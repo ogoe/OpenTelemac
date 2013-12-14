@@ -5,16 +5,16 @@
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
-   <meta xref="default"> 
+   <deco xref="default"> 
       <look format="png" colourbar="jet.xml" /> 
       <data title="Sub-critical flow over a bump" author="S.E.Bourban" contact="s.bourban@hrwallingford.com" /> 
-   </meta> 
-   <meta xref="vect"> 
+   </deco> 
+   <deco xref="vect"> 
       <look colour="jet.xml" /> 
-   </meta> 
-   <meta xref="line"> 
+   </deco> 
+   <deco xref="line"> 
       <look colour="k" /> 
-   </meta> 
+   </deco> 
  
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
@@ -33,7 +33,7 @@
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
 
-   <save1d xref="figure4" type="history" config="together" time="[0:-1]" > 
+   <save1d xref="figure4" type="history" config="together" time="[0:-1]" deco="default" > 
       <layer vars="surface libre:line" extract="703;(0;1)" target="1:T2DRES" /> 
    </save1d>  
    <save1d xref="figure5" type="v-section" config="oneofall" time="[-1]" > 

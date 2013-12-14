@@ -5,16 +5,16 @@
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
-   <meta xref="default">
-      <look format="png" colourbar="jet.xml" />
+   <deco xref="default" >
+      <look savefig.format="png" image.cmap="jet" savefig.dpi="120" figure.figsize="[15;3]" />
       <data title="bosse" author="artemis" contact="www.opentelemac.org" />
-   </meta>
-   <meta xref="vect">
-      <look colour="jet.xml" />
-   </meta>
-   <meta xref="line">
-      <look colour="k" />
-   </meta>
+   </deco>
+   <deco xref="vect">
+      <look image.cmap="jet" />
+   </deco>
+   <deco xref="line">
+      <look image.cmap="k" lines.color="red" />
+   </deco>
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
@@ -29,12 +29,12 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-   <plot1d xref="Section" type="v-section" config="together" size="[10;7]" > 
-      <layer vars="wave height:line" extract="(7;5)(7;14)" target="1:ARTRES" time="[0]" /> 
+   <plot1d xref="Section" type="v-section" config="together" deco="default" > 
+      <layer vars="wave height:line" extract="(7;5)(7;14)" target="1:ARTRES" time="[0]" deco="line" /> 
    </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  -->
+  --> <!--
    <plot2d xref="Mesh" size="[8;10]" > 
       <layer vars="bottom:mesh" target="1:ARTGEO" config="oneofall" /> 
    </plot2d>
@@ -44,6 +44,6 @@
    <plot2d xref="WaveHeight" size="[8;10]" > 
       <layer vars="wave height:map" target="1:ARTRES" config="oneofall" /> 
    </plot2d>
-
+-->
 
 </validation>
