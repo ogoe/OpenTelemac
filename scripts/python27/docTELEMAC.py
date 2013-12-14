@@ -187,7 +187,7 @@ if __name__ == "__main__":
          root = path.abspath(options.rootDir)
       else : root = cfgs[cfgname]['root']  
       if options.version != '': cfgs[cfgname]['version'] = options.version
-      if options.modules != '': cfgs[cfgname]['modules'] = options.modules
+      if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
       cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
       cfg.update({ 'PWD':PWD })
       # Loop on all the modules

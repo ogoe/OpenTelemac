@@ -508,7 +508,7 @@ if __name__ == "__main__":
       # still in lower case
       if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
       if options.version != '': cfgs[cfgname]['version'] = options.version
-      if options.modules != '': cfgs[cfgname]['modules'] = options.modules
+      if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
       # parsing for proper naming
       cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
       print '\n\nScanning the source code for:\n\

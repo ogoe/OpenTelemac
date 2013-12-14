@@ -141,7 +141,7 @@ if __name__ == "__main__":
          print '\nNot able to find your root directory: ' + cfgs[cfgname]['root'] + '\n'
          sys.exit()
       if options.version != '': cfgs[cfgname]['version'] = options.version
-      if options.modules != '': cfgs[cfgname]['modules'] = options.modules
+      if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
       # parsing for proper naming
       cfg = parseConfig_CompactTELEMAC(cfgs[cfgname])
       print '\n\nScanning the source code for:\n\

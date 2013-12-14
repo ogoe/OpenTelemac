@@ -511,7 +511,7 @@ if __name__ == "__main__":
    # still in lower case
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
    if options.version != '': cfgs[cfgname]['version'] = options.version
-   if options.modules != '': cfgs[cfgname]['modules'] = options.modules
+   if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
    if options.doxyDir == '':
       cfgs[cfgname].update({'doxydocs':path.join(cfgs[cfgname]['root'],'documentation'+sep+cfgname)})
    else:
