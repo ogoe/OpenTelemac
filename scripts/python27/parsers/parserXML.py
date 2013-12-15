@@ -64,6 +64,7 @@ from copy import deepcopy
 from socket import gethostname
 from scipy import linalg as la
 from types import StringTypes
+from fractions import gcd
 # ~~> dependencies from within pytel/parsers
 from parserKeywords import scanDICO,scanCAS,readCAS,translateCAS, getKeyWord,setKeyValue, getIOFilesSubmit
 from parserSortie import getLatestSortieFiles
@@ -1018,8 +1019,7 @@ def runXML(xmlFile,xmlConfig,bypass):
          rankdo = do.active['rank']
          rankdont = xmlConfig[cfgname]['options'].todos['act']['rank']
          if rankdont == 1: dodo = False
-         if rankdont == 0: rankdont = 1
-         if rankdo != rankdont*int( rankdo / rankdont ): dodo = False
+         if gcd(rankdont,rankdo) == 1: dodo = False
          do.updateCFG({'dodo':dodo})
 
          # ~~> Create the safe
@@ -1188,8 +1188,7 @@ def runXML(xmlFile,xmlConfig,bypass):
                   for cfgname in xmlConfig.keys():
                      rankdont = xmlConfig[cfgname]['options'].todos['get']['rank']
                      if rankdont == 1: continue
-                     if rankdont == 0: rankdont = 1
-                     if rankdo != rankdont*int( rankdo / rankdont ): continue
+                     if gcd(rankdont,rankdo) == 1: continue
                      oneFound = True
                      #cfg = xmlConfig[cfgname]['cfg']
                      layer = findTargets(do.dids[xref][cfgname],src)
@@ -1341,8 +1340,7 @@ def runXML(xmlFile,xmlConfig,bypass):
                   for cfgname in xmlConfig.keys():
                      rankdont = xmlConfig[cfgname]['options'].todos['draw']['rank']
                      if rankdont == 1: continue
-                     if rankdont == 0: rankdont = 1
-                     if rankdo != rankdont*int( rankdo / rankdont ): continue
+                     if gcd(rankdont,rankdo) == 1: continue
                      oneFound = True
                      findlayer = findTargets(ex.dids[xref][cfgname],src)
                      if findlayer != []: layers.update({ cfgname:findlayer })
@@ -1358,8 +1356,7 @@ def runXML(xmlFile,xmlConfig,bypass):
                   for cfgname in xmlConfig.keys():
                      rankdont = xmlConfig[cfgname]['options'].todos['draw']['rank']
                      if rankdont == 1: continue
-                     if rankdont == 0: rankdont = 1
-                     if rankdo != rankdont*int( rankdo / rankdont ): continue
+                     if gcd(rankdont,rankdo) == 1: continue
                      oneFound = True
                      findlayer = findTargets(do.dids[xref][cfgname],src)
                      if findlayer != []: layers.update({ cfgname:findlayer })
@@ -1497,8 +1494,7 @@ def runXML(xmlFile,xmlConfig,bypass):
       rankdo = docriteria.dids['?'][docriteria.active['xref']]['rank']
       rankdont = xmlConfig[cfgname]['options'].todos['test']['rank']
       if rankdont == 1: docrt = False
-      if rankdont == 0: rankdont = 1
-      if rankdo != rankdont*int( rankdo / rankdont ): docrt = False
+      if gcd(rankdont,rankdo) == 1: docrt = False
       if not docrt: continue
 
       for cfgname in xmlConfig.keys():
