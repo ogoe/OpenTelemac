@@ -1205,34 +1205,36 @@ def runXML(xmlFile,xmlConfig,bypass):
                if ex.tasks[namex][index]["where"] != '':
                   if path.exists(path.join(ex.tasks[namex][index]["where"],target)):
                      findlayer = {}
-                     type = path.splitext(path.basename(target))[1].lower()[1:]
-                     for cfgname in xmlConfig.keys(): findlayer.update({ cfgname:[[path.join(ex.tasks[namex][index]["where"],target)],'',type] })
+                     t = path.splitext(path.basename(target))[1].lower()[1:]
+                     for cfgname in xmlConfig.keys(): findlayer.update({ cfgname:[[path.join(ex.tasks[namex][index]["where"],target)],'',t] })
                      ex.targetSubTask(findlayer,index,namex)
                   else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target+' where '+ex.tasks[namex][index]["where"]})
                elif path.exists(path.join(ex.path,target)):
                   findlayer = {}
-                  type = path.splitext(path.basename(target))[1].lower()[1:]
-                  for cfgname in xmlConfig.keys(): findlayer.update({ cfgname:[[path.join(ex.path,target)],'',type] })
+                  t = path.splitext(path.basename(target))[1].lower()[1:]
+                  for cfgname in xmlConfig.keys(): findlayer.update({ cfgname:[[path.join(ex.path,target)],'',t] })
                   ex.targetSubTask(findlayer,index,namex)
                else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target})
 
             # ~~> round up decos, replacing the name by the associated deco dico
             # > at the action level
-            if len(ex.tasks['deco']) > 0:
-               if dc.dids['deco'].has_key(ex.tasks['deco']):
-                  ex.tasks['deco'] = dc.dids['deco'][ex.tasks['deco']]
-               elif ex.tasks['deco'] != '':
-                  print '... ignoring the figure decoration named: ',ex.tasks['deco']
+            if type(ex.tasks['deco']) == type(''):
+               if ex.tasks['deco'] != '':
+                  if dc.dids['deco'].has_key(ex.tasks['deco']):
+                     ex.tasks['deco'] = dc.dids['deco'][ex.tasks['deco']]
+                  elif ex.tasks['deco'] != '':
+                     print '... ignoring the figure decoration named: ',ex.tasks['deco']
+                  else: ex.tasks['deco'] = {}
                else: ex.tasks['deco'] = {}
-            else: ex.tasks['deco'] = {}
             # > at the layer level
-            if len(ex.tasks[namex][index]['deco']) > 0:
-               if dc.dids['deco'].has_key(ex.tasks[namex][index]['deco']):
-                  ex.tasks[namex][index]['deco'] = dc.dids['deco'][ex.tasks[namex][index]['deco']]
-               elif ex.tasks[namex][index]['deco'] != '':
-                  print '... ignoring the '+namex+' decoration named: ',ex.tasks[namex][index]['deco']
+            if type(ex.tasks[namex][index]['deco']) == type(''):
+               if ex.tasks[namex][index]['deco'] != '':
+                  if dc.dids['deco'].has_key(ex.tasks[namex][index]['deco']):
+                     ex.tasks[namex][index]['deco'] = dc.dids['deco'][ex.tasks[namex][index]['deco']]
+                  elif ex.tasks[namex][index]['deco'] != '':
+                     print '... ignoring the '+namex+' decoration named: ',ex.tasks[namex][index]['deco']
+                  else: ex.tasks[namex][index]['deco'] = {}
                else: ex.tasks[namex][index]['deco'] = {}
-            else: ex.tasks[namex][index]['deco'] = {}
 
          ex.update(ex.tasks)
 
@@ -1372,34 +1374,36 @@ def runXML(xmlFile,xmlConfig,bypass):
                if plot.tasks[namex][index]["where"] != '':
                   if path.exists(path.join(plot.tasks[namex][index]["where"],target)):
                      findlayer = {}
-                     type = path.splitext(path.basename(target))[1].lower()[1:]
-                     for cfgname in xmlConfig.keys(): findlayer.update({ cfgname:[[path.join(plot.tasks[namex][index]["where"],target)],'',type] })
+                     t = path.splitext(path.basename(target))[1].lower()[1:]
+                     for cfgname in xmlConfig.keys(): findlayer.update({ cfgname:[[path.join(plot.tasks[namex][index]["where"],target)],'',t] })
                      plot.targetSubTask(findlayer,index,namex)
                   else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target+' where '+plot.tasks[namex][index]["where"]})
                elif path.exists(path.join(plot.path,target)):
                   findlayer = {}
-                  type = path.splitext(path.basename(target))[1].lower()[1:]
-                  for cfgname in xmlConfig.keys(): findlayer.update({ cfgname:[[path.join(plot.path,target)],'',type] })
+                  t = path.splitext(path.basename(target))[1].lower()[1:]
+                  for cfgname in xmlConfig.keys(): findlayer.update({ cfgname:[[path.join(plot.path,target)],'',t] })
                   plot.targetSubTask(findlayer,index,namex)
                else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target})
 
             # ~~> round up decos, replacing the name by the associated deco dico
             # > at the action level
-            if len(plot.tasks['deco']) > 0:
-               if dc.dids['deco'].has_key(plot.tasks['deco']):
-                  plot.tasks['deco'] = dc.dids['deco'][plot.tasks['deco']]
-               elif plot.tasks['deco'] != '':
-                  print '... ignoring the figure decoration named: ',plot.tasks['deco']
+            if type(plot.tasks['deco']) == type(''):
+               if plot.tasks['deco'] != '':
+                  if dc.dids['deco'].has_key(plot.tasks['deco']):
+                     plot.tasks['deco'] = dc.dids['deco'][plot.tasks['deco']]
+                  elif plot.tasks['deco'] != '':
+                     print '... ignoring the figure decoration named: ',plot.tasks['deco']
+                  else: plot.tasks['deco'] = {}
                else: plot.tasks['deco'] = {}
-            else: plot.tasks['deco'] = {}
             # > at the layer level
-            if len(plot.tasks[namex][index]['deco']) > 0:
-               if dc.dids['deco'].has_key(plot.tasks[namex][index]['deco']):
-                  plot.tasks[namex][index]['deco'] = dc.dids['deco'][plot.tasks[namex][index]['deco']]
-               elif plot.tasks[namex][index]['deco'] != '':
-                  print '... ignoring the '+namex+' decoration named: ',plot.tasks[namex][index]['deco']
+            if type(plot.tasks[namex][index]['deco']) == type(''):
+               if plot.tasks[namex][index]['deco'] != '':
+                  if dc.dids['deco'].has_key(plot.tasks[namex][index]['deco']):
+                     plot.tasks[namex][index]['deco'] = dc.dids['deco'][plot.tasks[namex][index]['deco']]
+                  elif plot.tasks[namex][index]['deco'] != '':
+                     print '... ignoring the '+namex+' decoration named: ',plot.tasks[namex][index]['deco']
+                  else: plot.tasks[namex][index]['deco'] = {}
                else: plot.tasks[namex][index]['deco'] = {}
-            else: plot.tasks[namex][index]['deco'] = {}
 
          plot.update(plot.tasks)
 
