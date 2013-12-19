@@ -96,10 +96,10 @@ from utils.progressbar import ProgressBar
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
 #
-def trimTree(name,lname,list,rebuild):
+def trimTree(name,lname,lst,rebuild):
    liborder = []
    lrank = {}
-   t = getTree(name,lname,list,[],lrank,rebuild)
+   _ = getTree(name,lname,lst,[],lrank,rebuild)
    libdws = [lrank.keys()]
    while lrank != {}:
       for libdw in libdws:
@@ -107,119 +107,120 @@ def trimTree(name,lname,list,rebuild):
             if lrank[lib]['up'] == [] and lib not in liborder: liborder.insert(0,lib)
       libdws = []
       for lib in liborder:
-         if lib in lrank.keys():
+         if lib in lrank:
             libdws.append(lrank[lib]['dw'])
             del lrank[lib]
-         for ldw in lrank.keys():
+         for ldw in lrank:
             if lib in lrank[ldw]['up']: lrank[ldw]['up'].remove(lib)
    return liborder
 
-def getTree(name,lname,list,level,lrank,rebuild):
+def getTree(name,lname,lst,level,lrank,rebuild):
    # ~~ Recursive tree ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if level != []:
       if name in zip(*level)[0]:
          print 'found recursive loop with',name,' :',' => '.join(zip(*level)[0])
-         #sys.exit()
-         return list[lname][name]['time']
+         #sys.exit(1)
+         return lst[lname][name]['time']
    # ~~ New leaf ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    level.append((name,lname))
    # ~~ Ranking ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if lname not in lrank.keys(): lrank.update({ lname:{'up':[],'dw':[]} })
+   if lname not in lrank: 
+      lrank.update({ lname:{'up':[],'dw':[]} })
    for lib in zip(*level)[1]:
       if lib not in lrank[lname]['up'] and lib != lname: lrank[lname]['up'].append(lib)
    # ~~ prints the tree to screen:
-   time = list[lname][name]['time']
-   #if debug: print '===> use',name,lname,list[lname][name]['uses']
-   for use in list[lname][name]['uses']:
+   time = lst[lname][name]['time']
+   #if debug: print '===> use',name,lname,lst[lname][name]['uses']
+   for use in lst[lname][name]['uses']:
       libname = lname
-      if list[lname].get(use) == None:
-         for lib in list.keys():
-            if lib != lname and list[lib].get(use) != None: libname = lib
-      if list[libname].get(use) != None:
+      if lst[lname].get(use) == None:
+         for lib in lst:
+            if lib != lname and lst[lib].get(use) != None: libname = lib
+      if lst[libname].get(use) != None:
          if libname not in lrank[lname]['dw'] and libname != lname: lrank[lname]['dw'].append(libname)
-         tTree = getTree(use,libname,list,level,lrank,rebuild)
+         tTree = getTree(use,libname,lst,level,lrank,rebuild)
          level.pop()
          if rebuild < 3: time = time * tTree
-   #if debug: print '===> call',name,lname,list[lname][name]['calls']
-   for call in list[lname][name]['calls'].keys():
+   #if debug: print '===> call',name,lname,lst[lname][name]['calls']
+   for call in lst[lname][name]['calls']:
       libname = lname
-      if list[lname].get(call) == None:
-         for lib in list.keys():
-            if lib != lname and list[lib].get(call) != None:
+      if lst[lname].get(call) == None:
+         for lib in lst:
+            if lib != lname and lst[lib].get(call) != None:
                libname = lib
-      if list[libname].get(call) != None:
+      if lst[libname].get(call) != None:
          if libname not in lrank[lname]['dw'] and libname != lname: lrank[lname]['dw'].append(libname)
-         tTree = getTree(call.strip(),libname,list,level,lrank,rebuild)
+         tTree = getTree(call.strip(),libname,lst,level,lrank,rebuild)
          level.pop()
          if rebuild < 3: time = time * tTree
-   #if debug and list[lname][name]['functions'] != []: print '===> fcts',name,lname,list[lname][name]['functions']
-   for function in list[lname][name]['functions']:
+   #if debug and lst[lname][name]['functions'] != []: print '===> fcts',name,lname,lst[lname][name]['functions']
+   for function in lst[lname][name]['functions']:
       libname = lname
-      if list[lname].get(function) == None:
-         for lib in list.keys():
-            if lib != lname and list[lib].get(function) != None:
+      if lst[lname].get(function) == None:
+         for lib in lst:
+            if lib != lname and lst[lib].get(function) != None:
                libname = lib
-      if list[libname].get(function) != None:
+      if lst[libname].get(function) != None:
          if libname not in lrank[lname]['dw'] and libname != lname: lrank[lname]['dw'].append(libname)
-         tTree = getTree(function.strip(),libname,list,level,lrank,rebuild)
+         tTree = getTree(function.strip(),libname,lst,level,lrank,rebuild)
          level.pop()
          if rebuild < 3: time = time * tTree
-   list[lname][name]['time'] = time
+   lst[lname][name]['time'] = time
    if time == 0:
-      if [list[lname][name]['file'],lname] not in MAKSYSTEL['add']: MAKSYSTEL['add'].append([list[lname][name]['file'],lname])
+      if [lst[lname][name]['file'],lname] not in MAKSYSTEL['add']: MAKSYSTEL['add'].append([lst[lname][name]['file'],lname])
    else:
       if [name,lname] not in MAKSYSTEL['tag']: MAKSYSTEL['tag'].append([name,lname])
    #print "|  "*len(level) + name + "  > "  + lname
    #ndu print to check 0s and 1s print "|  "*len(level) + name + '  (' + str(time) + ')'
 
-   return list[lname][name]['time']
+   return lst[lname][name]['time']
 
 
-def putScanContent(file,root,content):
+def putScanContent(fle,root,content):
    lines = []
-   if content.has_key('general'):
+   if 'general' in content:
       lines.append('[general]'+'\n'+'path: '+content['general']['path'].replace(root,'<root>').replace(sep,'|')+'\n'+'module: '+content['general']['module'])
       lines.append('liborder: '+' '.join(content['general']['liborder']))
       lines.append('version: '+content['general']['version']+'\n'+'name: '+content['general']['name'])
    for lib in sorted(content.keys()):
       if lib == 'general': continue
       lines.append('\n['+lib+']'+'\n'+'path: '+content[lib]['path'].replace(root,'<root>').replace(sep,'|')+'\n'+'files: '+'\n  '.join(content[lib]['files']))
-   putFileContent(file,lines)
+   putFileContent(fle,lines)
    return
 
-def getScanContent(file,root,bypass):
+def getScanContent(fle,root,bypass):
    content = {}
-   if not path.exists(file): raise Exception([{'name':'getScanContent','msg':'Could not find the cmdf-scan file: '+file+'\n     ... you may have to use the --rescan option'}])
+   if not path.exists(fle): raise Exception([{'name':'getScanContent','msg':'Could not find the cmdf-scan file: '+fle+'\n     ... you may have to use the --rescan option'}])
    # ~~ Read Configuration File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfgfile = ConfigParser.RawConfigParser()
    try:
-      cfgfile.read(file)
+      cfgfile.read(fle)
    except Exception as e:
-      raise Exception([filterMessage({'name':'getScanContent','msg':'Could not read the required parameters in the cmdf-scan file: '+file+'\n     ... you may have to use the --rescan option'},e,bypass)])
+      raise Exception([filterMessage({'name':'getScanContent','msg':'Could not read the required parameters in the cmdf-scan file: '+fle+'\n     ... you may have to use the --rescan option'},e,bypass)])
    # ~~ Read General ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    try:
       general = dict(cfgfile.items('general'))
    except Exception as e:
-      raise Exception([filterMessage({'name':'getScanContent','msg':'Could not find the general section in the cmdf-scan file: '+file},e,bypass)])
-   if not general.has_key('path'): raise Exception([{'name':'getScanContent','msg':'Could not find the key path in the general section of the cmdf-scan file:'+file}])
+      raise Exception([filterMessage({'name':'getScanContent','msg':'Could not find the general section in the cmdf-scan file: '+fle},e,bypass)])
+   if not 'path' in general: raise Exception([{'name':'getScanContent','msg':'Could not find the key path in the general section of the cmdf-scan file:'+fle}])
    general['path'] = general['path'].replace('<root>',root).replace('|',sep)
-   if not general.has_key('module'): raise Exception([{'name':'getScanContent','msg':'Could not find the key module in the general section of the cmdf-scan file:'+file}])
-   if not general.has_key('liborder'): raise Exception([{'name':'getScanContent','msg':'Could not find the key liborder in the general section of the cmdf-scan file:'+file}])
-   if not general.has_key('version'): raise Exception([{'name':'getScanContent','msg':'Could not find the key version in the general section of the cmdf-scan file:'+file}])
-   if not general.has_key('name'): raise Exception([{'name':'getScanContent','msg':'Could not find the key name in the general section of the cmdf-scan file:'+file}])
+   if not 'module' in general: raise Exception([{'name':'getScanContent','msg':'Could not find the key module in the general section of the cmdf-scan file:'+fle}])
+   if not 'liborder' in general: raise Exception([{'name':'getScanContent','msg':'Could not find the key liborder in the general section of the cmdf-scan file:'+fle}])
+   if not 'version' in general: raise Exception([{'name':'getScanContent','msg':'Could not find the key version in the general section of the cmdf-scan file:'+fle}])
+   if not 'name' in general: raise Exception([{'name':'getScanContent','msg':'Could not find the key name in the general section of the cmdf-scan file:'+fle}])
    general['liborder'] = general['liborder'].split()
    content.update({'general':general})
    # ~~ Filter all libraries and files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for lib in cfgfile.sections():
       if lib == 'general': continue
-      if lib not in content['general']['liborder']: raise Exception([{'name':'getScanContent','msg':'Found a section not in the [general] liborder key ' + lib + ' of the cmdf-scan file:'+file}])
+      if lib not in content['general']['liborder']: raise Exception([{'name':'getScanContent','msg':'Found a section not in the [general] liborder key ' + lib + ' of the cmdf-scan file:'+fle}])
       content.update({lib:dict(cfgfile.items(lib))})
-      if not content[lib].has_key('path'): raise Exception([{'name':'getScanContent','msg':'Could not find the key path in the section ' + lib + ' of the cmdf-scan file:'+file}])
+      if not 'path' in content[lib]: raise Exception([{'name':'getScanContent','msg':'Could not find the key path in the section ' + lib + ' of the cmdf-scan file:'+fle}])
       content[lib]['path'] = content[lib]['path'].replace('<root>',root).replace('|',sep)
-      if not content[lib].has_key('files'): raise Exception([{'name':'getScanContent','msg':'Could not find the key files in the section ' + lib + ' of the cmdf-scan file:'+file}])
+      if not 'files' in content[lib]: raise Exception([{'name':'getScanContent','msg':'Could not find the key files in the section ' + lib + ' of the cmdf-scan file:'+fle}])
       content[lib]['files'] = content[lib]['files'].replace('\n',' ').replace('  ',' ').split()
    for lib in content['general']['liborder']:
-      if lib not in content.keys(): raise Exception([{'name':'getScanContent','msg':'The reference ' + lib + ' in the [general] liborder key is not defined in your cmdf-scan file:'+file}])
+      if lib not in content: raise Exception([{'name':'getScanContent','msg':'The reference ' + lib + ' in the [general] liborder key is not defined in your cmdf-scan file:'+fle}])
    return content
 
 def createObjFiles(cfg,oname,oprog,odict,ocfg,bypass):
@@ -336,7 +337,7 @@ def createExeFiles(cfg,ename,ecfg,eprog,bypass):
    if not path.exists(libFile): raise Exception([{'name':'createExeFiles','msg':'Library missing:\n      '+libFile}])
 
    # ~~ Add external libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if cfg['MODULES'][eprog].has_key('libs'):
+   if 'libs' in cfg['MODULES'][eprog]:
       for lib in cfg['MODULES'][eprog]['libs'].split():
          # FD@EDF : temporary removal of the following action
          # => interesting but we should also support LDFLAGS as -lpthread -lmpich -lmed...
@@ -367,7 +368,7 @@ def createExeFiles(cfg,ename,ecfg,eprog,bypass):
          for o in ObjFiles.split(): refresh = refresh or ( isNewer(o,ExeFile) == 0 )
          for l in LibFiles.split(): 
             # Only checks the telemac libraries
-            if l.find(cfg['root']+sep+'builds'+sep+ecfg+sep+'lib') <> -1:
+            if l.find(cfg['root']+sep+'builds'+sep+ecfg+sep+'lib') != -1:
                refresh = refresh or ( isNewer(l,ExeFile) == 0 )
          if refresh: remove(ExeFile)
    if path.exists(ExeFile): return True
@@ -438,10 +439,10 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    USETELCFG = ''
-   if environ.has_key('USETELCFG'): USETELCFG = environ['USETELCFG']
+   if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    SYSTELCFG = path.join(PWD,'configs')
-   if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
+   if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",
@@ -490,11 +491,11 @@ if __name__ == "__main__":
       dircfg = path.abspath(path.dirname(options.configFile))
       if path.isdir(dircfg) :
          print ' ... in directory: ' + dircfg + '\n ... use instead: '
-         for dirpath,dirnames,filenames in walk(dircfg) : break
-         for file in filenames :
-            head,tail = path.splitext(file)
-            if tail == '.cfg' : print '    +> ',file
-      sys.exit()
+         _, _, filenames = walk(dircfg).next()
+         for fle in filenames :
+            head,tail = path.splitext(fle)
+            if tail == '.cfg' : print '    +> ',fle
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -504,7 +505,7 @@ if __name__ == "__main__":
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
 
-   for cfgname in cfgs.keys():
+   for cfgname in cfgs:
       # still in lower case
       if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
       if options.version != '': cfgs[cfgname]['version'] = options.version
@@ -532,13 +533,13 @@ if __name__ == "__main__":
       # Only if we ask for a scan
       if options.rescan:
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
-         fic,mdl,sbt,fct,prg,dep,all = scanSources(cfgname,cfg,BYPASS)
+         fic,mdl,sbt,fct,prg,dep,all_file = scanSources(cfgname,cfg,BYPASS)
 
 # ~~ Builds the Call Tree for each main program ~~~~~~~~~~~~~~~~~~~~
          HOMERES = {}
          print '\nUpdating your cmdf file for compilation without scan\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-         for item in prg.keys() :
+         for item in prg:
 
             if prg[item][0] in cfg['COMPILER']['MODULES']:
                print '      +> '+item
@@ -546,7 +547,7 @@ if __name__ == "__main__":
 # ~~ Builds the Call Tree for each main program ~~~~~~~~~~~~~~~~~~~~
                debug = False; rebuild = cfg['COMPILER']['REBUILD']
                MAKSYSTEL = {'add':[],'tag':[],'deps':[]}
-               MAKSYSTEL['deps'] = trimTree(item,prg[item][0],all,rebuild)
+               MAKSYSTEL['deps'] = trimTree(item,prg[item][0],all_file,rebuild)
                HOMERES.update({item:MAKSYSTEL})
 # ~~ Prepare the cmdf file to avoid future scans ~~~~~~~~~~~~~~~~~~~
                ForDir = cfg['MODULES'][prg[item][0]]['path']
@@ -562,24 +563,24 @@ if __name__ == "__main__":
                FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'version':cfgs[cfgname]['version'],'name':item,'module':prg[item][0],'liborder':fixedLibOrder}} 
                for obj,lib in HOMERES[item]['add']:
                   try:
-                     fic = all[lib][path.splitext(path.basename(obj.replace('|',sep)))[0].upper()]
+                     fic = all_file[lib][path.splitext(path.basename(obj.replace('|',sep)))[0].upper()]
                   except  Exception as e:
                      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> missmatch between Fortran name and file name for: '+path.splitext(obj)[0].upper()},e,options.bypass)])
-                  if not FileList.has_key(lib): FileList.update({lib:{'path':fic['path'],'files':[]}})
+                  if not lib in FileList: FileList.update({lib:{'path':fic['path'],'files':[]}})
                   FileList[lib]['files'].append(fic['file'])
                for obj,lib in HOMERES[item]['tag']:
                   try:
-                     fic = all[lib][path.splitext(path.basename(obj.replace('|',sep)))[0].upper()]
+                     fic = all_file[lib][path.splitext(path.basename(obj.replace('|',sep)))[0].upper()]
                   except  Exception as e:
                      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> missmatch between Fortran name and file name for: '+path.splitext(obj)[0].upper()},e,options.bypass)])
-                  if not FileList.has_key(lib): FileList.update({lib:{'path':fic['path'],'files':[]}})
+                  if not FileList: FileList.update({lib:{'path':fic['path'],'files':[]}})
                   FileList[lib]['files'].append(fic['file'])
                if not path.exists(ForCmd) or rebuild == 2: putScanContent(ForCmd,cfg['root'],FileList)
                else:
                   FixeList = getScanContent(ForCmd,cfg['root'],options.bypass)
-                  for lib in FileList.keys():
+                  for lib in FileList:
                      if lib == 'general': continue
-                     if FixeList.has_key(lib):
+                     if lib in FixeList:
                         for fic in FileList[lib]['files']:
                            if fic not in FixeList[lib]['files']: FixeList[lib]['files'].append(fic)
                   putScanContent(ForCmd,cfg['root'],FixeList)
@@ -592,7 +593,7 @@ if __name__ == "__main__":
       rebuild = cfg['COMPILER']['REBUILD']
       for mod in cfg['COMPILER']['MODULES']:
          cmdfFiles.update({mod:{}})
-         if mod in cfg['MODULES'].keys():
+         if mod in cfg['MODULES']:
             found = found or ( cfg['MODULES'][mod]['cmdfs'] != [] )
             for cmdFile in cfg['MODULES'][mod]['cmdfs']:   # make sure the key cmdfs exists
                try: cmdf = getScanContent(cmdFile,cfg['root'],options.bypass)
@@ -600,24 +601,24 @@ if __name__ == "__main__":
                   xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Scanning the cmdf file: '+path.basename(cmdFile)},e,options.bypass)])
                cmdfFiles[mod].update({cmdf['general']['name']:cmdf})
 # ~~ Look whether .o older than .f ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         for item in cmdfFiles[mod].keys():
+         for item in cmdfFiles[mod]:
             print '\n\nCompiling the program ' + item + ' and dependents\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
             MAKSYSTEL = {'add':[],'tag':[],'deps':cmdfFiles[mod][item]['general']['liborder']}
             HOMERES.update({item:MAKSYSTEL})
             for lib in MAKSYSTEL['deps']:
-               for file in cmdfFiles[mod][item][lib]['files'] :
+               for fle in cmdfFiles[mod][item][lib]['files'] :
                   #In case the file is in a subfolder of the module replace the | that defines the separator by the os separator
-                  file = file.replace('|',sep)
-                  srcName = cmdfFiles[mod][item][lib]['path']+sep+file
+                  fle = fle.replace('|',sep)
+                  srcName = cmdfFiles[mod][item][lib]['path']+sep+fle
                   p = cmdfFiles[mod][item][lib]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgname+sep+'lib')
                   createDirectories(p)
-                  objName = p + sep + path.splitext(path.basename(file))[0] + cfg['SYSTEM']['sfx_obj']
+                  objName = p + sep + path.splitext(path.basename(fle))[0] + cfg['SYSTEM']['sfx_obj']
                   try:
                      if (isNewer(srcName,objName) == 1) and rebuild < 2:
-                        HOMERES[item]['tag'].append((path.splitext(file)[0],lib))
+                        HOMERES[item]['tag'].append((path.splitext(fle)[0],lib))
                      else:
-                        HOMERES[item]['add'].append((file,lib))
+                        HOMERES[item]['add'].append((fle,lib))
                   except Exception as e:
                      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Could not find the following file for compilation: '+path.basename(srcName)+'\n         ... so it may have to be removed from the following cmdf file: '+cmdFile},e,options.bypass)])
 # ~~ Creates modules and objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -659,4 +660,4 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    else: print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)

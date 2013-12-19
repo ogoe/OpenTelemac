@@ -48,7 +48,7 @@ class Drawer2D:
 
       # ~~~ special conversions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       for key in self.upar.keys(): # /!\ the .keys() is necessary
-         if key in mpl.rcParams.keys():
+         if key in mpl.rcParams:
             if type(mpl.rcParams[key]) == type([]):
                if type(mpl.rcParams[key][0]) == type(1) or type(mpl.rcParams[key][0]) == type(1.0):
                   self.mpar[key] = parseArrayFrame(self.upar[key])
@@ -56,7 +56,7 @@ class Drawer2D:
                #elif type(mpl.rcParams[key][0]) == type(""): pass
                else:
                   print '... I did not know ',type(mpl.rcParams[key]),' could be an acceptable type'
-                  sys.exit()
+                  sys.exit(1)
             elif type(mpl.rcParams[key]) == type(1):
                self.mpar[key] = int(self.upar[key])
                del self.upar[key]
@@ -68,7 +68,7 @@ class Drawer2D:
                del self.upar[key]
             else:
                print '... I did not know ',type(mpl.rcParams[key]),' could be an acceptable type'
-               sys.exit()
+               sys.exit(1)
          elif self.upar[key] != '':
             if key == "roi": self.upar[key] = parseArrayPaires(self.upar[key])
             elif key == "dpi":
@@ -424,7 +424,7 @@ def drawGridContours(plt,(x,y,z),deco):
 
    # ~~> Draw major contours
    cs1 = plt.contour(x,y,z, levels[::2], colors = deco['contour.major.color'], hold='on')
-   for c in cs2.collections:
+   for c in cs1.collections:
       c.set_linestyle(deco['contour.major.style'])
       c.set_zorder(zorder)
 
@@ -437,9 +437,9 @@ def drawGridContours(plt,(x,y,z),deco):
     # label every 4th level
    inlineLabelSize = int(hrwd['inline.label.size'])
    CS4 = plt.clabel(CS2, CS2.levels[1::2],
-      inline=1,
-      fmt='%'+hrwd['inline.label.fmt'],
-      fontsize=inlineLabelSize)
+                    inline=1,
+                    fmt='%'+hrwd['inline.label.fmt'],
+                    fontsize=inlineLabelSize)
 
    return
 
@@ -457,7 +457,7 @@ def drawColouredQuadMaps(plt,(nelem,npoin,ndp,nplan),(x,y,ikle,z),deco):
    crax = plt.gca()
    # ~~> Plot data
    colourmap = cm.jet
-   #if geometry.has_key('cmapPlot'):
+   #if 'cmapPlot' in geometry:
    #   colourmap = LinearSegmentedColormap('User', getColourMap(geometry['cmapPlot']))
    zmin = np.min(z); zmax = np.max(z)
 
@@ -492,8 +492,8 @@ def drawColouredQuadMaps(plt,(nelem,npoin,ndp,nplan),(x,y,ikle,z),deco):
 
 
    #mp.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
-   #if geometry.has_key('cmapPlot'): fig.colorbar(colection)     # sets up colourbar
-   #if geometry.has_key('cmapPlot'): fig.colorbar(colormap)     # sets up colourbar
+   #if 'cmapPlot' in geometry: fig.colorbar(colection)     # sets up colourbar
+   #if 'cmapPlot' in geometry: fig.colorbar(colormap)     # sets up colourbar
 
    return
 """
@@ -507,4 +507,4 @@ __date__ ="$19-Jul-2011 08:51:29$"
 
 if __name__ == "__main__":
 
-   sys.exit()
+   sys.exit(0)

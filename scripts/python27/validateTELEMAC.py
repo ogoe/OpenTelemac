@@ -91,7 +91,7 @@ from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserXML import runXML
 from utils.messages import MESSAGES,filterMessage
-from utils.files import moveFile2File,putFileContent
+from utils.files import checkSymLink,moveFile2File,putFileContent
 
 # _____                         ____________________________________
 # ____/ Primary Class: REPORTs /___________________________________/
@@ -115,10 +115,10 @@ class REPORT:
       # ~~> Current file name
       self.fileFields[0] = version
       self.fileFields[1] = repname
-      if not self.reports.has_key(repname): self.reports.update({ repname:{} })
+      if not repname in self.reports: self.reports.update({ repname:{} })
       self.fileName = path.join( root, '_'.join(self.fileFields)+'.csv' )
       # ~~> Possible existing file name
-      for dirpath,dirnames,filenames in walk(root) : break
+      dirpath, _, filenames = walk(root).next()
       for filename in filenames:
          n,e = path.splitext(filename)
          n = n.split('_')
@@ -129,12 +129,12 @@ class REPORT:
                self.loadHead(self.fileName)
                self.reports[repname].update(self.loadCore(self.fileName))
       # ~~> Storage facility
-      if not self.reports[repname].has_key(module): self.reports[repname].update({ module:{}, 'file':self.fileName })
+      if not module in self.reports[repname]: self.reports[repname].update({ module:{}, 'file':self.fileName })
    
    def update(self,repname,module,caseName,caseValue):
       if repname == '': return
-      if self.reports.has_key(repname):
-         if self.reports[repname].has_key(module):
+      if repname in self.reports:
+         if module in self.reports[repname]:
             self.reports[repname][module].update({ caseName:caseValue })
 
    def loadHead(self,fileName):
@@ -156,7 +156,7 @@ class REPORT:
          if headrow == '': headrow = line.strip().split(self.delimiter)
          else:
             corerow = line.strip().split(self.delimiter)
-            if not report.has_key(corerow[0]): report.update({ corerow[0]:{}, 'file':fileName })
+            if corerow[0] not in report: report.update({ corerow[0]:{}, 'file':fileName })
             report[corerow[0]].update({ corerow[1]:{} })
             for i,k in zip(range(len(headrow)),corerow[2:]):
                if k != '': report[corerow[0]][corerow[1]].update({ headrow[i+2]:k })
@@ -169,34 +169,34 @@ class REPORT:
       contents = {}
       headrows = ['Module','Case']
       # ~~> Copy the default header
-      for n in self.reports.keys():
-         if self.reports[n]['file'] not in contents.keys():
+      for n in self.reports:
+         if self.reports[n]['file'] not in contents:
             content = deepcopy(self.fileHeader)
             contents.update({ self.reports[n]['file']:content })
       # ~~> Identify all entry names / keys for the header row
-      for n in self.reports.keys():                        # repname (could be "Validation-Summary")
-         for m in self.reports[n].keys():                  # codename (could be stbtel)
+      for n in self.reports:                        # repname (could be "Validation-Summary")
+         for m in self.reports[n]:                  # codename (could be stbtel)
             if m == 'file': continue
-            for z in self.reports[n][m].keys():            # case name (could adcirc)
+            for z in self.reports[n][m]:            # case name (could adcirc)
                if z == 'Case': continue
-               for k in self.reports[n][m][z].keys():      # reported keys (one of which is Duration)
+               for k in self.reports[n][m][z]:      # reported keys (one of which is Duration)
                   if k not in headrows: headrows.append(k)
          contents[self.reports[n]['file']].append(self.delimiter.join(headrows))
       # ~~> Line template for those absenties
       emptyline = []
       for k in headrows: emptyline.append('')
       # ~~> Copy the core passed/failed vallues
-      for n in self.reports.keys():
-         for m in self.reports[n].keys():
+      for n in self.reports:
+         for m in self.reports[n]:
             if m == 'file': continue
-            for z in self.reports[n][m].keys():
+            for z in self.reports[n][m]:
                if z == 'Case': continue
-               for k in self.reports[n][m][z].keys():
+               for k in self.reports[n][m][z]:
                   line = deepcopy(emptyline)
                   line[0] = m; line[1] = z
                   line[headrows.index(k)] = str(self.reports[n][m][z][k])
                contents[self.reports[n]['file']].append( self.delimiter.join(line) )
-      for fileName in contents.keys():
+      for fileName in contents:
          putFileContent(fileName,contents[fileName])
 
 # _____             ________________________________________________
@@ -214,10 +214,10 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    USETELCFG = ''
-   if environ.has_key('USETELCFG'): USETELCFG = environ['USETELCFG']
+   if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    SYSTELCFG = path.join(PWD,'configs')
-   if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
+   if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",type="string",dest="configName",default=USETELCFG,
@@ -276,6 +276,9 @@ if __name__ == "__main__":
       help="will create a report summary of with your chosen middle name" )
    parser.add_option("--clean",action="store_true",dest="cleanup",default=False,
       help="will erase all object, executable, result files from subfolders on the selected configs/modules" )
+   # ~~> Other
+   parser.add_option("--use-link",action="store_true",dest="use_link",default=False,
+      help="Will use link instead of copy in the temporary folder (Unix system only)" )
 	  
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
@@ -283,11 +286,15 @@ if __name__ == "__main__":
       dircfg = path.abspath(path.dirname(options.configFile))
       if path.isdir(dircfg) :
          print ' ... in directory: ' + dircfg + '\n ... use instead: '
-         for dirpath,dirnames,filenames in walk(dircfg) : break
-         for file in filenames :
-            head,tail = path.splitext(file)
-            if tail == '.cfg' : print '    +> ',file
-      sys.exit()
+         _, _, filenames = walk(dircfg).next()
+         for fle in filenames :
+            head,tail = path.splitext(fle)
+            if tail == '.cfg' : print '    +> ',fle
+      sys.exit(1)
+   # Checking if symlink is available
+   if (options.use_link and not checkSymLink(options.use_link)):
+      print '\nThe symlink option is only available on Linux systems. Remove the option and try again'
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
@@ -334,7 +341,7 @@ if __name__ == "__main__":
          print '\nNot able to decode you rank: ' + options.rank
          print ' ... it should be something like 2.3.1.0, where the numbers are associated to act,draw,get and test respectively,'
          print '     or it could be just one integer, in which case rank will associate the integer to act,draw,get and test.'
-         sys.exit()
+         sys.exit(1)
       options.todos['act']['rank'] = int(rank[0])
       if abs(options.todos['act']['rank']) == 1:  options.todos['act']['todo'] = 'none'
       options.todos['draw']['rank'] = int(rank[1])
@@ -362,7 +369,7 @@ if __name__ == "__main__":
       print '\n\nScanning XML files and configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       xmls = {}
-      for cfgname in cfgs.keys():
+      for cfgname in cfgs:
          # still in lower case
          if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
          if options.version != '': cfgs[cfgname]['version'] = options.version
@@ -377,13 +384,13 @@ if __name__ == "__main__":
             if not path.isfile(xmlFile):
                print '\nNot able to find your XML file: ' + xmlFile
                print ' ... maybe something wrong with your command line'
-               sys.exit()
-            if not xmls.has_key(xmlFile): xmls.update({xmlFile:{}})
+               sys.exit(1)
+            if not xmlFile in xmls: xmls.update({xmlFile:{}})
             xmls[xmlFile].update({cfgname:{'cfg':cfg,'options':options}})
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      for xmlFile in xmls.keys():
+      for xmlFile in xmls:
          print '\n\nFocused validation on ' + xmlFile + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
          try:
@@ -397,7 +404,7 @@ if __name__ == "__main__":
       print '\n\nScanning XML files and configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       xmls = {}; nxmls = 0
-      for cfgname in cfgs.keys():
+      for cfgname in cfgs:
          # still in lower case
          if options.rootDir != '': 
             cfgs[cfgname]['root'] = path.abspath(options.rootDir)
@@ -411,27 +418,27 @@ if __name__ == "__main__":
          cfg.update({ 'PWD':PWD })
          if options.cleanup: cfg['REBUILD'] = 2
          # gathering XMLs
-         for codeName in cfg['VALIDATION'].keys():
+         for codeName in cfg['VALIDATION']:
             report.add(root,options.report,codeName,cfgs[cfgname]['version'])
             xmlKeys = cfg['VALIDATION'][codeName]
-            if not xmls.has_key(codeName): xmls.update({codeName:{}})
-            for key in xmlKeys.keys():
+            if not codeName in xmls: xmls.update({codeName:{}})
+            for key in xmlKeys:
                if key != 'path':
-                  if not xmls[codeName].has_key(key): xmls[codeName].update({key:{}})
+                  if not key in xmls[codeName]: xmls[codeName].update({key:{}})
                   xmlDir = path.join(xmlKeys['path'],key)
                   for xmlFile in xmlKeys[key]:
                      xmlPath = path.join(xmlDir,xmlFile)
-                     if not xmls[codeName][key].has_key(xmlPath): xmls[codeName][key].update({xmlPath:{}})
+                     if not xmlPath in xmls[codeName][key]: xmls[codeName][key].update({xmlPath:{}})
                      nxmls += 1
                      xmls[codeName][key][xmlPath].update({cfgname: { 'cfg':cfg, 'options':options } })
-      nxmls = nxmls / len(cfgs.keys())
+      nxmls = nxmls / len(cfgs)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print '\n\nLooping through all XML files ...\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       ixmls = 0
-      for codeName in xmls.keys():
+      for codeName in xmls:
          for key in xmls[codeName]:
             for xmlFile in xmls[codeName][key]:
                ixmls += 1
@@ -467,4 +474,4 @@ if __name__ == "__main__":
 
    
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 
-   sys.exit()
+   sys.exit(0)

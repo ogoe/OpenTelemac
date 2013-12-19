@@ -111,11 +111,11 @@ import shutil
 import threading
 from time import localtime, strftime
 from subprocess import *
-from os import path,walk,mkdir,chdir,remove,sep,environ,listdir
+from os import path,walk,mkdir,chdir,remove,sep,environ,listdir,getcwd
 # ~~> dependencies towards other modules
 from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
-from utils.files import getFileContent,putFileContent,removeDirectories,isNewer
+from utils.files import checkSymLink,symlinkFile,getFileContent,putFileContent,removeDirectories,isNewer
 from utils.messages import MESSAGES,filterMessage
 from parsers.parserKeywords import scanCAS,readCAS,rewriteCAS,scanDICO,getKeyWord,setKeyValue,getIOFilesSubmit
 from parsers.parserSortie import getLatestSortieFiles
@@ -156,6 +156,7 @@ from parsers.parserSortie import getLatestSortieFiles
             re-adjustment of ncsize to accomodate
 
 """
+
 def checkParaTilling(onctile,oncnode,oncsize,ncruns,ncsize):
 
    # ~~ Default values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -212,9 +213,9 @@ def getCASLang(cas,frgb):
    # Look to find the first key that is different in both language
    i = 0
    while kl[i][0] == '&' or \
-      ( kl[i] in frgb['FR'].keys() and kl[i] in frgb['GB'].keys() ):
+      ( kl[i] in frgb['FR'] and kl[i] in frgb['GB'] ):
       i+=1
-   if kl[i] not in frgb['FR'].keys(): lang = 2
+   if kl[i] not in frgb['FR']: lang = 2
 
    return lang
 
@@ -266,13 +267,13 @@ def processTMP(casFile):
 
    return TMPDir
 
-def processLIT(cas,iFiles,TMPDir,ncsize,update):
+def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
 
    xcpt = []                            # try all files for full report
    # ~~ copy input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k,v in zip(*cas):
-      if iFiles.has_key(k):
-         cref = eval(v[0]) #eval(v[k][0])
+      if k in iFiles:
+         cref = v[0].strip("'\"") 
          if not path.isfile(cref):
             xcpt.append({'name':'processLIT','msg':'file does not exist: '+path.basename(cref)})
             continue
@@ -304,14 +305,26 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update):
                # An input mesh may be a binary or an ascii file
                # It depends on the selected format (Selafin, Ideas, Med)
             elif iFiles[k].split(';')[5][0:12] == 'SELAFIN-GEOM':
-               print '    copying: ', path.basename(cref),crun
-               shutil.copy(cref,crun)
+               if use_link:
+                  print '    linking: ', path.basename(cref),crun
+                  symlinkFile(path.join(getcwd(),cref), crun)
+               else:
+                  print '    copying: ', path.basename(cref),crun
+                  shutil.copy2(path.join(getcwd(),cref), crun)
+            else:
+               if use_link:
+                  print '    linking: ', path.basename(cref),crun
+                  symlinkFile(path.join(getcwd(),cref), crun)
+               else:
+                  print '    copying: ', path.basename(cref),crun
+                  putFileContent(crun,getFileContent(cref)+[''])
+         else:
+            if use_link:
+               print '    linking: ', path.basename(cref),crun
+               symlinkFile(path.join(getcwd(),cref), crun)
             else:
                print '    copying: ', path.basename(cref),crun
-               putFileContent(crun,getFileContent(cref)+[''])
-         else:
-            print '    copying: ', path.basename(cref),crun
-            shutil.copy(cref,crun)
+               shutil.copy2(path.join(getcwd(),cref), crun)
 
    if xcpt != []: raise Exception(xcpt) # raise full report
    return
@@ -321,11 +334,11 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
    xcpt = []                            # try all files for full report
    # ~~ copy output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k,v in zip(*cas):
-      if oFiles.has_key(k):
+      if  k in oFiles:
          if oFiles[k].split(';')[5] == 'MULTI':   # POSTEL3D
             npsize = 1
             while 1:                              # HORIZONTAL SECTION FILES
-               cref = path.join(CASDir,eval(v[0])+'_{0:03d}'.format(npsize))
+               cref = path.join(CASDir,v[0].strip("'\"")+'_{0:03d}'.format(npsize))
                if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
                crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)
                if not path.isfile(crun): break
@@ -337,7 +350,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                nptime = 1
                if not path.isfile(oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)): break
                while 1:
-                  cref = path.join(CASDir,eval(v[0])+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime))
+                  cref = path.join(CASDir,v[0].strip("'\"")+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime))
                   if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
                   crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)
                   if not path.isfile(crun): break
@@ -347,7 +360,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                npsize = npsize + 1
          elif oFiles[k].split(';')[5] == 'PARAL' and ncsize > 1: # MAIN MODULE
             npsize = 0
-            cb,ce = path.splitext(eval(v[0]))
+            cb,ce = path.splitext(v[0].strip("'\""))
             while 1:
                cref = path.join(CASDir,cb+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)+ce)
                if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
@@ -360,12 +373,13 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
          elif oFiles[k].split(';')[5] == 'MULTI2':
             for crun in listdir('.') :
                if crun.count(oFiles[k].split(';')[1]) == 1:
-                  cref = path.join(CASDir,crun.lower().replace(oFiles[k].split(';')[1].lower(),eval(v[0]).split('.')[0])) + '.' + eval(v[0]).split('.')[1]
+                  cref = path.join(CASDir,crun.lower().replace(oFiles[k].split(';')[1].lower(),
+                         v[0].strip("'\"").split('.')[0])) + '.' + v[0].strip("'\"").split('.')[1]
                   if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
                   shutil.move(crun,cref)
                   print '  moving: ', path.basename(cref)
          else:
-            cref = path.join(CASDir,eval(v[0]))
+            cref = path.join(CASDir,v[0].strip("'\""))
             if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
             crun = oFiles[k].split(';')[1]
             if not path.isfile(crun):
@@ -428,11 +442,11 @@ def getMPICommand(cfgMPI):
    mpiCmd = cfgMPI['EXEC']
    # ~~> host file
    hostfile = ''
-   if cfgMPI.has_key('HOSTFILE'): hostfile = cfgMPI['HOSTFILE']
+   if 'HOSTFILE' in cfgMPI: hostfile = cfgMPI['HOSTFILE']
    mpiCmd = mpiCmd.replace('<hostfile>',hostfile)
    # ~~> stdin file
    infile = ''
-   if cfgMPI.has_key('INFILE'): infile = cfgMPI['INFILE']
+   if 'INFILE' in cfgMPI: infile = cfgMPI['INFILE']
    mpiCmd = mpiCmd.replace('<mpi_infile>',infile)
 
    return mpiCmd
@@ -442,7 +456,7 @@ def getHPCCommand(cfgHPC):
    if cfgHPC.has_key('EXCODE'): hpcCmd = cfgHPC['EXCODE']
    elif cfgHPC.has_key('PYCODE'): hpcCmd = cfgHPC['PYCODE']
    # ~~> script
-   if cfgHPC.has_key('STDIN'):
+   if 'STDIN' in cfgHPC:
       hpc_stdin = cfgHPC['STDIN'][0]
       hpcCmd = hpcCmd.replace('<hpc_stdin>',hpc_stdin)
 
@@ -479,7 +493,7 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
 def compilePRINCI(princiFile,codeName,cfgName,cfg,bypass):
 
    plib = cfg['MODULES'][codeName]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgName+sep+'lib')
-   pbin = cfg['root']+sep+'builds'+sep+cfgName+sep+'bin'
+   #pbin = cfg['root']+sep+'builds'+sep+cfgName+sep+'bin'
    objFile = path.join(plib,codeName+'.cmdo')
    exeFile = path.join(plib,codeName+'.cmdx')
    if not path.exists(objFile) or not path.exists(exeFile):
@@ -498,7 +512,7 @@ def compilePRINCI(princiFile,codeName,cfgName,cfg,bypass):
    exeFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['sfx_exe']
    if path.exists(exeFile): remove(exeFile)
    try:
-      processExecutable(exeFile,objFile,princiFile,objCmd,exeCmd,'',bypass)
+      processExecutable(exeFile,objFile,princiFile,objCmd,exeCmd,bypass)
    except Exception as e:
       raise Exception([filterMessage({'name':'compilePRINCI','msg':'could not compile: ' + princiFile},e,bypass)])  # only one item here
    if path.exists(objFile): remove(objFile)
@@ -510,7 +524,7 @@ def getCONLIM(cas,iFiles):
    # ~~ look for CONLIM ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    CONLIM = ''
    for k in cas[0]:
-      if iFiles.has_key(k):
+      if k in iFiles:
          if iFiles[k].split(';')[5] == 'CONLIM': CONLIM = iFiles[k].split(';')[1]
    return CONLIM
 
@@ -519,16 +533,16 @@ def getGLOGEO(cas,iFiles):
    # ~~ look for GLOBAL GEO ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    GLOGEO = ''
    for k in cas[0]:
-      if iFiles.has_key(k):
+      if k in iFiles:
          if iFiles[k].split(';')[5][-4:] == 'GEOM': GLOGEO = iFiles[k].split(';')[1]
    return GLOGEO
 
-def runPartition(partel,cas,conlim,iFiles,ncsize,bypass):
+def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,use_link):
 
    if ncsize < 2: return True
    # ~~ split input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k in cas[0]:
-      if iFiles.has_key(k):
+      if k in iFiles:
          crun = iFiles[k].split(';')[1]
          if iFiles[k].split(';')[5][0:7] == 'SELAFIN':
             print ' partitioning: ', path.basename(crun)
@@ -537,8 +551,12 @@ def runPartition(partel,cas,conlim,iFiles,ncsize,bypass):
             except Exception as e:
                raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
          elif iFiles[k].split(';')[5][0:5] == 'PARAL':
-            print ' duplicating: ', path.basename(crun)
-            for n in range(ncsize): shutil.copy2(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
+            if use_link:
+               print 'duplilinking: ', path.basename(crun)
+               for n in range(ncsize): symlinkFile(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
+            else:
+               print ' duplicating: ', path.basename(crun)
+               for n in range(ncsize): shutil.copy2(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
 
    return True
 
@@ -611,19 +629,19 @@ def runRecollection(gretel,cas,glogeo,oFiles,ncsize,bypass):
    if ncsize < 2: return True
    # ~~ aggregate output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k in cas[0]:
-      if oFiles.has_key(k):
+      if  k in oFiles:
          crun = oFiles[k].split(';')[1]
-         type = oFiles[k].split(';')[5]
-         if type[0:7] == 'SELAFIN':
+         tpe = oFiles[k].split(';')[5]
+         if tpe[0:7] == 'SELAFIN':
             print ' recollectioning: ', path.basename(crun)
             try:
                runGRETEL(gretel,crun,glogeo,ncsize,bypass)
             except Exception as e:
                raise Exception([filterMessage({'name':'runRecollection'},e,bypass)])
-         if type[0:6] == 'DELWAQ':
+         if tpe[0:6] == 'DELWAQ':
             print ' recollectioning: ', path.basename(crun)
             try:
-               runGREDEL(gretel,crun,glogeo,type[6:],ncsize,bypass)
+               runGREDEL(gretel,crun,glogeo,tpe[6:],ncsize,bypass)
             except Exception as e:
                raise Exception([filterMessage({'name':'runRecollection'},e,bypass)])
    return True
@@ -776,7 +794,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
 
       #/!\ having done the loop this way it will not check for DELWAQ
       for cplage in cplages:
-         for mod in cfg['MODULES'].keys():
+         for mod in cfg['MODULES']:
             if mod in cplage.lower():
 
                # ~~~~ Extract the CAS File name ~~~~~~~~~~~~~~~~~~~~~~~
@@ -811,12 +829,12 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          chdir(CASFiles[name]['dir'])
          # >>> Copy INPUT files into wdir
          try:
-            processLIT(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'],CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'])
+            processLIT(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'],CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],options.use_link)
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
          for cplage in CASFiles[name]['with']:
             try:
-               processLIT(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'])
+               processLIT(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],options.use_link)
             except Exception as e:
                raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
          # >>> Placing yourself into the wdir
@@ -897,7 +915,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          print '\n... modifying run command to MPI instruction'
          # ~~> MPI host file provided through the command line
          if options.hosts != '':
-            if cfg['MPI'].has_key('HOSTS'): cfg['MPI']['HOSTS'] = options.hosts.replace(':',' ')
+            if 'HOSTS' in cfg['MPI']: cfg['MPI']['HOSTS'] = options.hosts.replace(':',' ')
             else: cfg['MPI'].update( {'HOSTS':options.hosts.replace(':',' ')} )
          # ~~> MPI host file ( may be re-written by the HPC INFILE script )
          hostfile = cfg['MPI']['HOSTFILE']
@@ -969,13 +987,13 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          # ~~> Run PARTEL
          CONLIM = getCONLIM(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    # Global CONLIM file
          try:
-            runPartition(parcmd,CASFiles[name]['cas'],CONLIM,MODFiles[CASFiles[name]['code']]['iFS'],ncsize,options.bypass)
+            runPartition(parcmd,CASFiles[name]['cas'],CONLIM,MODFiles[CASFiles[name]['code']]['iFS'],ncsize,options.bypass,options.use_link)
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS','msg':'Partioning primary input files of the CAS file: '+name},e,options.bypass)])
          for cplage in CASFiles[name]['with']:
             CONLIM = getCONLIM(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
             try:
-               runPartition(parcmd,CASFiles[name]['with'][cplage]['cas'],CONLIM,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],ncsize,options.bypass)
+               runPartition(parcmd,CASFiles[name]['with'][cplage]['cas'],CONLIM,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],ncsize,options.bypass,options.use_link)
             except Exception as e:
                raise Exception([filterMessage({'name':'runCAS','msg':'Partioning coupling input files'},e,options.bypass)])
    
@@ -1172,7 +1190,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
 __author__="Sebastien E. Bourban; Noemie Durand"
 __date__ ="$19-Jul-2010 08:51:29$"
 
-if __name__ == "__main__":
+def main(module=None):
    debug = False
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1180,10 +1198,10 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    USETELCFG = ''
-   if environ.has_key('USETELCFG'): USETELCFG = environ['USETELCFG']
+   if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    SYSTELCFG = path.join(PWD,'configs')
-   if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
+   if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    # ~~> Environment
@@ -1216,7 +1234,7 @@ if __name__ == "__main__":
       help="specify the list of hosts available for parallel mode, ';' delimited" )
    parser.add_option("--ncsize",type="string",dest="ncsize",default='',
       help="the number of processors forced in parallel mode" )
-   parser.add_option("--nctile",type="string",dest="nctile",default='',
+   parser.add_option("--nctile",type="string",dest="nctile",default='0',
       help="the number of core per node. ncsize/nctile is the number of compute nodes" )
    parser.add_option("--ncnode",type="string",dest="ncnode",default='',
       help="the number of of nodes. ncsize = ncnode*nctile is the total number of compute nodes" )
@@ -1228,21 +1246,31 @@ if __name__ == "__main__":
       help="will only do the output copying (and recollection in parallel) if option there" )
    parser.add_option("--run",action="store_true",dest="run",default=False,
       help="will only run the simulation if option there" )
+   # ~~> Other
+   parser.add_option("--use-link",action="store_true",dest="use_link",default=False,
+      help="Will use link instead of copy in the temporary folder (Unix system only)" )
    options, args = parser.parse_args()
+   # If module is given add it as first argument
+   if not module is None:
+       args.insert(0,module)
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
       dircfg = path.abspath(path.dirname(options.configFile))
       if path.isdir(dircfg) :
          print ' ... in directory: ' + dircfg + '\n ... use instead: '
-         for dirpath,dirnames,filenames in walk(dircfg) : break
-         for file in filenames :
-            head,tail = path.splitext(file)
-            if tail == '.cfg' : print '    +> ',file
-      sys.exit()
+         _, _, filenames = walk(dircfg).next()
+         for ffile in filenames :
+            head,tail = path.splitext(ffile)
+            if tail == '.cfg' : print '    +> ',ffile
+      sys.exit(1)
    if len(args) < 2:
       print '\nThe name of the module to run and one CAS file at least are required\n'
       parser.print_help()
-      sys.exit()
+      sys.exit(1)
+   # Checking if symlink is available
+   if (options.use_link and not checkSymLink(options.use_link)):
+      print '\nThe symlink option is only available on Linux systems. Remove the option and try again'
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads command line arguments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1252,7 +1280,7 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
-   cfgname = cfgs.keys()[0]
+   cfgname = cfgs.iterkeys().next()
 
    # still in lower case
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
@@ -1267,12 +1295,12 @@ if __name__ == "__main__":
    if options.split or options.merge or options.run:
       if options.wDir == '':
          print '\nPlease use option -w (--workdirectory) with either of the options --split, --run or --merge\n'
-         sys.exit()
+         sys.exit(1)
    if (options.split and options.merge) or (options.split and options.run) or (options.split and options.compileonly) or \
       (options.merge and options.run) or (options.merge and options.compileonly) or \
       (options.run and options.compileonly):
       print '\nOnly one of the options --split, --run, --merge or --compileonly (-x) can be used at a time'
-      sys.exit()
+      sys.exit(1)
    # parsing for proper naming
    cfg = parseConfig_RunningTELEMAC(cfgs[cfgname])
    
@@ -1289,9 +1317,9 @@ if __name__ == "__main__":
 
 # >>> Check wether the config has been compiled for the runcode
    if options.compileonly: cfg['REBUILD'] = 1
-   if codeName not in cfg['MODULES'].keys():
+   if codeName not in cfg['MODULES']:
       print '\nThe code requested is not installed on this system : ' + codeName + '\n'
-      sys.exit()
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1315,4 +1343,7 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)
+
+if __name__ == "__main__":
+   main(None)

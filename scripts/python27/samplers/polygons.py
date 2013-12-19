@@ -190,7 +190,7 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)
 
 """
 Early work by S.E.Bourban ... will be replaced by more recent work from M.S.Turnbull
@@ -219,7 +219,7 @@ def cutAngleJoinSplit(poly,angle,dist,stencil):
                #   should use split / join
                #   poly = np.delete(poly,iline%len(line))
                #   print 'I can delete the following',a,b,c
-               #   sys.exit()
+               #   sys.exit(1)
                #   found += 1
                #   continue
             iline += 1

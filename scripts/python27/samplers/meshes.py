@@ -269,7 +269,7 @@ def crossMesh(polyline,IKLE,MESHX,MESHY,tree=None,neighbours=None):
          found,ej,xyj,bj = dichoLocateMesh(rank,eo,xyo,ei,xyi,IKLE,MESHX,MESHY,tree)
          if not found:
             print '... Could not find easily an intersection with the mesh'
-            sys.exit()
+            sys.exit(1)
          found,rayo,neighbours = xyTraceMesh(ej,xyj,xyo,IKLE,MESHX,MESHY,neighbours)
          #print 'raya'
          for j in range(rayo['n'])[:-1]:
@@ -383,4 +383,4 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)

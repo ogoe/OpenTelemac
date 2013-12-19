@@ -66,7 +66,7 @@ from shutil import copytree,ignore_patterns
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_CompactTELEMAC
 # ~~> dependencies towards other pytel/modules
-from utils.files import createDirectories,removeDirectories,zip,copyFile
+from utils.files import createDirectories, removeDirectories, zip, copyFile
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -82,10 +82,10 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    USETELCFG = ''
-   if environ.has_key('USETELCFG'): USETELCFG = environ['USETELCFG']
+   if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    SYSTELCFG = path.join(PWD,'configs')
-   if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
+   if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",
@@ -124,22 +124,22 @@ if __name__ == "__main__":
       dircfg = path.abspath(path.dirname(options.configFile))
       if path.isdir(dircfg) :
          print ' ... in directory: ' + dircfg + '\n ... use instead: '
-         for dirpath,dirnames,filenames in walk(dircfg) : break
-         for file in filenames :
-            head,tail = path.splitext(file)
-            if tail == '.cfg' : print '    +> ',file
-      sys.exit()
+         _, _, filenames = walk(dircfg).next()
+         for fle in filenames :
+            head,tail = path.splitext(fle)
+            if tail == '.cfg' : print '    +> ',fle
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
 
-   for cfgname in cfgs.keys():
+   for cfgname in cfgs:
       # still in lower case
       if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
       if not path.exists(cfgs[cfgname]['root']):
          print '\nNot able to find your root directory: ' + cfgs[cfgname]['root'] + '\n'
-         sys.exit()
+         sys.exit(1)
       if options.version != '': cfgs[cfgname]['version'] = options.version
       if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
       # parsing for proper naming
@@ -155,9 +155,9 @@ if __name__ == "__main__":
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
       print '\n\nConfiguration ' + cfgname + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-      if cfg['MODULES'].keys() == []:
+      if cfg['MODULES'] == {}:
          print '\nNot able to find any modules within your root directory ' + cfgs[cfgname]['root'] + '\n'
-         sys.exit()
+         sys.exit(1)
       
       pt = cfg['root']
       pc = path.join(pt,cfgname)
@@ -200,4 +200,4 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)

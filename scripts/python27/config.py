@@ -159,7 +159,7 @@ cmd_obj:    gfortran [fflags] <mods> <incs> <f95name>
 # ~~> dependencies towards standard python
 import re
 import sys
-from os import path, walk, listdir, environ
+from os import path, walk, listdir, environ, sep
 from socket import gethostname
 import ConfigParser
 from optparse import OptionParser
@@ -189,12 +189,12 @@ def getConfigs(file,name,bypass=False):
       cfgfile.read(file)
    except:
       parser.error("Could not access required parameters in config file")
-      sys.exit()
+      sys.exit(1)
    # ~~ Read Config Names ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfgs = cfgfile.get('Configurations','configs')
    if cfgs == '' :
       print '\nPlease specify appropriate configuration names for key Configuration in config file\n'
-      sys.exit()
+      sys.exit(1)
    # ~~ Filter Config Names ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfgnames = cfgs.split()
    if name != '':
@@ -204,14 +204,14 @@ def getConfigs(file,name,bypass=False):
          else:
             print '\n ... use instead:'
             for cfg in cfgnames : print '    +> ',cfg
-            sys.exit()
+            sys.exit(1)
          
       cfgnames = [name]
    # ~~ Verify presence of configs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for cfg in cfgnames:
       if cfg not in cfgfile.sections():
          print '\nNot able to find the configuration [' + cfg + '] in the configuration file: ' + file
-         sys.exit()
+         sys.exit(1)
    # ~~ Read General ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    try:
       general = dict(cfgfile.items('general'))
@@ -239,12 +239,12 @@ def parseConfigFile(file,name,bypass=False):
    
    # ~~ Replacing user keys throughout ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    key_sqbrack = re.compile(r'(?P<brack>\[[\w_.-~=+]*?\])') #,re.I)
-   for cfgname in configDict.keys():
+   for cfgname in configDict:
       # ~~> making sure cfgname also includes all keys from general
-      for genkey in generalDict.keys() :
-         if not configDict[cfgname].has_key(genkey): configDict[cfgname].update({genkey:generalDict[genkey]})
+      for genkey in generalDict :
+         if not genkey in configDict[cfgname]: configDict[cfgname].update({genkey:generalDict[genkey]})
       # ~~> replacing [key] by its value
-      for cfgkey in configDict[cfgname].keys():
+      for cfgkey in configDict[cfgname]:
          for k in re.findall(key_sqbrack,configDict[cfgname][cfgkey]):
             key = k.strip('[]')
             if configDict[cfgname].has_key(key): configDict[cfgname][cfgkey] = configDict[cfgname][cfgkey].replace(k,configDict[cfgname][key])
@@ -260,13 +260,13 @@ def parseConfigFile(file,name,bypass=False):
 """
 def getConfigKey(cfg,key,there,empty):
    # ~~ Get the root of the System ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if there and not cfg.has_key(key):
+   if there and not key in cfg:
       print ('\nKey %s required in configuration (or on the command line as an option) \n' % (key))
-      sys.exit()
+      sys.exit(1)
    if empty and cfg[key] == '':
       print ('\nKey %s required non empty field \n' % (key))
-      sys.exit()
-   if not cfg.has_key(key): return ''
+      sys.exit(1)
+   if not key in cfg: return ''
    return cfg[key]
 
 # _____                  ___________________________________________
@@ -286,7 +286,7 @@ def parseConfig_CompileTELEMAC(cfg):
    get = getConfigKey(cfg,'root',True,True)
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
-      sys.exit()
+      sys.exit(1)
    cfgTELEMAC.update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
@@ -304,13 +304,13 @@ def parseConfig_CompileTELEMAC(cfg):
    # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
    # for every module in the list of modules to account for
    # specific external includes for all or each module
-   for mod in cfgTELEMAC['MODULES'].keys():
+   for mod in cfgTELEMAC['MODULES']:
       cfgTELEMAC['MODULES'][mod].update({'mods':addEXTERNALs(cfg,'mods',mod).replace('<root>',cfgTELEMAC['root'])})
       cfgTELEMAC['MODULES'][mod].update({'incs':addEXTERNALs(cfg,'incs',mod).replace('<root>',cfgTELEMAC['root'])})
       cfgTELEMAC['MODULES'][mod].update({'libs':addEXTERNALs(cfg,'libs',mod).replace('<root>',cfgTELEMAC['root'])})
    # Get cmd_obj: ... cmd_lib: ... cmd_exe: ...
    # the compiler dependent command lines to create obj, lib and exe
-   for mod in cfgTELEMAC['MODULES'].keys():
+   for mod in cfgTELEMAC['MODULES']:
       cfgTELEMAC['MODULES'][mod].update({'xobj':getEXTERNALs(cfg,'cmd_obj',mod).replace('<root>',cfgTELEMAC['root'])})
       cfgTELEMAC['MODULES'][mod].update({'xlib':getEXTERNALs(cfg,'cmd_lib',mod).replace('<root>',cfgTELEMAC['root'])})
       cfgTELEMAC['MODULES'][mod].update({'xexe':getEXTERNALs(cfg,'cmd_exe',mod).replace('<root>',cfgTELEMAC['root'])})
@@ -325,11 +325,11 @@ def parseConfig_CompileTELEMAC(cfg):
    cfgTELEMAC['COMPILER'].update({'MODULES':get.split()})
    cfgTELEMAC['COMPILER'].update({'REBUILD':tbd})
    for mod in get.split():
-      if mod not in cfgTELEMAC['MODULES'].keys():
+      if mod not in cfgTELEMAC['MODULES']:
          print ('\nThe following module does not exist %s \n' % (mod))
-         sys.exit()
+         sys.exit(1)
    for mod in get.split():
-      if mod not in cfgTELEMAC['MODULES'].keys():
+      if mod not in cfgTELEMAC['MODULES']:
          del cfgTELEMAC['COMPILER']['MODULES'][cfgTELEMAC['COMPILER']['MODULES'].index(mod)]
 
    # Get command_zip: and command_piz:
@@ -346,7 +346,7 @@ def parseConfig_CompileTELEMAC(cfg):
 
    # tagged fields for cmdx and cmdo
    cfgTELEMAC.update({'TRACE':{}})
-   for k in cfg.keys():
+   for k in cfg:
       if k[0:4] in ['root','libs']:
           get = getConfigKey(cfg,k,False,False)
           if get != '': cfgTELEMAC['TRACE'].update({k:get})
@@ -365,7 +365,7 @@ def parseConfig_TranslateTELEMAC(cfg):
    get = getConfigKey(CONFIGS[cfg],'root',True,True)
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
-      sys.exit()
+      sys.exit(1)
    cfgTELEMAC[cfg].update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
@@ -385,11 +385,11 @@ def parseConfig_TranslateTELEMAC(cfg):
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
    cfgTELEMAC[cfg]['COMPILER'].update({'MODULES':get.split()})
    for mod in get.split():
-      if mod not in cfgTELEMAC[cfg]['MODULES'].keys():
+      if mod not in cfgTELEMAC[cfg]['MODULES']:
          print ('\nThe following module does not exist %s \n' % (mod))
-         sys.exit()
+         sys.exit(1)
    for mod in get.split():
-      if mod not in cfgTELEMAC[cfg]['MODULES'].keys():
+      if mod not in cfgTELEMAC[cfg]['MODULES']:
          del cfgTELEMAC[cfg]['COMPILER']['MODULES'][cfgTELEMAC[cfg]['COMPILER']['MODULES'].index(mod)]
 
    return cfgTELEMAC
@@ -406,7 +406,7 @@ def parseConfig_TranslateCAS(cfg):
    get = getConfigKey(CONFIGS[cfg],'root',True,True)
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
-      sys.exit()
+      sys.exit(1)
    cfgTELEMAC[cfg].update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
@@ -426,11 +426,11 @@ def parseConfig_TranslateCAS(cfg):
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
    cfgTELEMAC[cfg]['COMPILER'].update({'MODULES':get.split()})
    for mod in get.split():
-      if mod not in cfgTELEMAC[cfg]['MODULES'].keys():
+      if mod not in cfgTELEMAC[cfg]['MODULES']:
          print ('\nThe following module does not exist %s \n' % (mod))
-         sys.exit()
+         sys.exit(1)
    for mod in get.split():
-      if mod not in cfgTELEMAC[cfg]['MODULES'].keys():
+      if mod not in cfgTELEMAC[cfg]['MODULES']:
         del cfgTELEMAC[cfg]['COMPILER']['MODULES'][cfgTELEMAC[cfg]['COMPILER']['MODULES'].index(mod)]
 
    # Get tellng:
@@ -453,7 +453,7 @@ def parseConfig_DoxygenTELEMAC(cfg):
    get = getConfigKey(cfg,'root',True,True)
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
-      sys.exit()
+      sys.exit(1)
    cfgTELEMAC.update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
@@ -482,11 +482,11 @@ def parseConfig_DoxygenTELEMAC(cfg):
    cfgTELEMAC['COMPILER'].update({'MODULES':get.split()})
    cfgTELEMAC['COMPILER'].update({'REBUILD':tbd})
    for mod in get.split():
-      if mod not in cfgTELEMAC['MODULES'].keys():
+      if mod not in cfgTELEMAC['MODULES']:
          print ('\nThe following module does not exist %s \n' % (mod))
-         sys.exit()
+         sys.exit(1)
    for mod in get.split():
-      if mod not in cfgTELEMAC['MODULES'].keys():
+      if mod not in cfgTELEMAC['MODULES']:
         del cfgTELEMAC['COMPILER']['MODULES'][cfgTELEMAC['COMPILER']['MODULES'].index(mod)]
 
    # Get command_zip: and command_piz:
@@ -515,7 +515,7 @@ def parseConfig_CompactTELEMAC(cfg):
    get = getConfigKey(cfg,'root',True,True)
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
-      sys.exit()
+      sys.exit(1)
    cfgTELEMAC.update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
@@ -558,7 +558,7 @@ def parseConfig_ValidateTELEMAC(cfg):
    get = getConfigKey(cfg,'root',True,True)
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
-      sys.exit()
+      sys.exit(1)
    cfgTELEMAC.update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc..
@@ -576,7 +576,7 @@ def parseConfig_ValidateTELEMAC(cfg):
    # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
    # for every module in the list of modules to account for
    # specific external includes for all or each module
-   for mod in cfgTELEMAC['MODULES'].keys():
+   for mod in cfgTELEMAC['MODULES']:
       cfgTELEMAC['MODULES'][mod].update({'mods':addEXTERNALs(cfg,'mods',mod).replace('<root>',cfgTELEMAC['root'])})
       cfgTELEMAC['MODULES'][mod].update({'incs':addEXTERNALs(cfg,'incs',mod).replace('<root>',cfgTELEMAC['root'])})
       cfgTELEMAC['MODULES'][mod].update({'libs':addEXTERNALs(cfg,'libs',mod).replace('<root>',cfgTELEMAC['root'])})
@@ -588,24 +588,24 @@ def parseConfig_ValidateTELEMAC(cfg):
    # in which 'n' means all ranks equal to n,
    # in which '>n' means all ranks greater than n,
    # where 'n', '>n', and '<n' can be combined if necessary
-   if not cfg.has_key('val_rank'): val_ranks = range(10)
+   if not 'val_rank' in cfg: val_ranks = range(10)
    else: val_ranks = parseValidationRanks(cfg['val_rank'])
    # Get validation: user list of module and there associated directories
    # in which 'system' means all existing modules,
    # and in which 'update' means a continuation, ignoring previously completed runs
    # and in which 'clean' means a re-run of all validation tests
-   if not cfg.has_key('val_root'):
+   if not 'val_root' in cfg:
       val_root = path.realpath(path.join(cfgTELEMAC['root'],'validation'))
       if not path.isdir(val_root):
          print '\nNot able to find your validation set from the path: ' + val_root + '\n'
          print ' ... check the val_root key in your configuration file'
-         sys.exit()
+         sys.exit(1)
    else:
       val_root = cfg['val_root'].replace('<root>',cfgTELEMAC['root'])
    get,tbd = parseUserModules(cfg,cfgTELEMAC['MODULES'])
    cfgTELEMAC.update({'REBUILD':tbd})
    for mod in get.split():
-      if mod in cfgTELEMAC['MODULES'].keys():
+      if mod in cfgTELEMAC['MODULES']:
          val_dir = path.join(val_root,mod)
          if path.isdir(val_dir):
             val_mod = getFiles_ValidationTELEMAC(val_dir,val_ranks)
@@ -636,7 +636,7 @@ def parseConfig_ValidateTELEMAC(cfg):
 
    # tagged fields for cmdx and cmdo
    cfgTELEMAC.update({'TRACE':{}})
-   for k in cfg.keys():
+   for k in cfg:
       if k[0:4] in ['root','libs']:
           get = getConfigKey(cfg,k,False,False)
           if get != '': cfgTELEMAC['TRACE'].update({k:get})
@@ -655,7 +655,7 @@ def parseConfig_RunningTELEMAC(cfg):
    get = getConfigKey(cfg,'root',True,True)
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
-      sys.exit()
+      sys.exit(1)
    cfgTELEMAC.update({'root':path.normpath(get)})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
@@ -699,7 +699,7 @@ def parseConfig_RunningTELEMAC(cfg):
 
    # tagged fields for cmdx and cmdo
    cfgTELEMAC.update({'TRACE':{}})
-   for k in cfg.keys():
+   for k in cfg:
       if k[0:4] in ['root','libs']:
           get = getConfigKey(cfg,k,False,False)
           if get != '': cfgTELEMAC['TRACE'].update({k:get})
@@ -714,13 +714,13 @@ def parseConfig_RunningTELEMAC(cfg):
 def getFiles_ValidationTELEMAC(root,ranks):
    validation = {}
 
-   for dirpath,dirnames,filenames in walk(root) : break
-   for dir in dirnames:
-      val = { dir:[] }
-      for valpath,valnames,filenames in walk(path.join(dirpath,dir)) : break
-      for file in filenames:
-         if path.splitext(file)[1] == '.xml' : val[dir].append(file)
-      if val[dir] != []: validation.update(val)
+   dirpath, dirnames, _ = walk(root).next()
+   for ddir in dirnames:
+      val = { ddir:[] }
+      _, _, filenames = walk(path.join(dirpath,ddir)).next()
+      for fle in filenames:
+         if path.splitext(fle)[1] == '.xml' : val[ddir].append(fle)
+      if val[ddir] != []: validation.update(val)
 
    return validation
 
@@ -735,65 +735,65 @@ def getFolders_ModulesTELEMAC(root):
    if not path.exists(sources):
       print '... I could not locate the source code in ',sources
       print '\nEither the root key in your cfg file is not valid, or you are using a past version of the system.'
-      sys.exit()
+      sys.exit(1)
    for moddir in listdir(sources) :
       if not (moddir[0] == '.' or path.isfile(path.join(sources,moddir))) :
          modroot = path.join(sources,moddir.lower())
          if path.exists(modroot) :
-            for dirpath,dirnames,filenames in walk(modroot): break
+            dirpath, dirnames, filenames = walk(modroot).next()
             # ~~> One level in modroot
-            for file in filenames :
-               f = path.splitext(file)
+            for fle in filenames :
+               f = path.splitext(fle)
                if f[len(f)-1].lower() in ['.dico']:   # /!\ you found an executable module
-                  if not modules.has_key(moddir): modules.update({moddir:{'path':dirpath,'dico':file,'cmdfs':[]}})
-                  else: modules[moddir].update({'dico':file})
+                  if not moddir in modules: modules.update({moddir:{'path':dirpath,'dico':fle,'cmdfs':[]}})
+                  else: modules[moddir].update({'dico':fle})
                if f[len(f)-1].lower() in ['.cmdf']:   # /!\ you found at least one cmdf file
-                  if not modules.has_key(moddir): modules.update({moddir:{'path':dirpath,'cmdfs':[path.join(dirpath,file)]}})
-                  elif not modules[moddir].has_key('cmdfs'): modules[moddir].update({'cmdfs':[path.join(dirpath,file)]})
-                  else: modules[moddir]['cmdfs'].append(path.join(dirpath,file))
+                  if not moddir in modules: modules.update({moddir:{'path':dirpath,'cmdfs':[path.join(dirpath,fle)]}})
+                  elif not 'cmdfs' in modules[moddir]: modules[moddir].update({'cmdfs':[path.join(dirpath,fle)]})
+                  else: modules[moddir]['cmdfs'].append(path.join(dirpath,fle))
                if f[len(f)-1].lower() in ['.f','.f90']:      # /!\ you found a source file
-                  if not modules.has_key(moddir): modules.update({moddir:{'path':dirpath,'files':[path.join(dirpath,file)],'cmdfs':[]}})
-                  elif not modules[moddir].has_key('files'): modules[moddir].update({'files':[path.join(dirpath,file)]})
-                  else: modules[moddir]['files'].append(path.join(dirpath,file))
+                  if not moddir in modules: modules.update({moddir:{'path':dirpath,'files':[path.join(dirpath,fle)],'cmdfs':[]}})
+                  elif not 'files' in modules[moddir]: modules[moddir].update({'files':[path.join(dirpath,fle)]})
+                  else: modules[moddir]['files'].append(path.join(dirpath,fle))
             # ~~> Two levels in modroot
             
             for subdir in dirnames:
                if subdir[0] != '.':
                   # Special treatment for folders in utils as they are like the one
                   if path.basename(modroot) == 'utils':
-                     for subpath,subnames,filenames in walk(path.join(modroot,subdir)): break
-                     for file in filenames :
-                        f = path.splitext(file)
+                     subpath, subnames, filenames = walk(path.join(modroot,subdir)).next()
+                     for fle in filenames :
+                        f = path.splitext(fle)
                         if f[len(f)-1].lower() in ['.dico']:   # /!\ you found an executable module
-                           if not modules.has_key(subdir): modules.update({subdir:{'path':subpath,'dico':file,'cmdfs':[]}})
-                           else: modules[subdir].update({'dico':file})
+                           if not subdir in modules: modules.update({subdir:{'path':subpath,'dico':fle,'cmdfs':[]}})
+                           else: modules[subdir].update({'dico':fle})
                         if f[len(f)-1].lower() in ['.cmdf']:   # /!\ you found at least one cmdf file
-                           if not modules.has_key(subdir): modules.update({subdir:{'path':subpath,'cmdfs':[path.join(subpath,file)]}})
-                           elif not modules[subdir].has_key('cmdfs'): modules[subdir].update({'cmdfs':[path.join(subpath,file)]})
-                           else: modules[subdir]['cmdfs'].append(path.join(subpath,file))
+                           if not subdir in modules: modules.update({subdir:{'path':subpath,'cmdfs':[path.join(subpath,fle)]}})
+                           elif not 'cmdfs' in modules[subdir]: modules[subdir].update({'cmdfs':[path.join(subpath,fle)]})
+                           else: modules[subdir]['cmdfs'].append(path.join(subpath,fle))
                         if f[len(f)-1].lower() in ['.f','.f90']:      # /!\ you found a source file
-                           if not modules.has_key(subdir): modules.update({subdir:{'path':subpath,'files':[path.join(subpath,file)],'cmdfs':[]}})
-                           elif not modules[subdir].has_key('files'): modules[subdir].update({'files':[path.join(subpath,file)]})
-                           else: modules[subdir]['files'].append(path.join(subpath,file))
+                           if not subdir in modules: modules.update({subdir:{'path':subpath,'files':[path.join(subpath,fle)],'cmdfs':[]}})
+                           elif not 'files' in modules[subdir]: modules[subdir].update({'files':[path.join(subpath,fle)]})
+                           else: modules[subdir]['files'].append(path.join(subpath,fle))
                      for subsubdir in subnames:
                         if subsubdir[0] != '.':
-                           for subsubpath,subsubnames,filenames in walk(path.join(modroot,subdir,subsubdir)): break
-                           for file in filenames :
+                           _, _, filenames = walk(path.join(modroot,subdir,subsubdir)).next()
+                           for fle in filenames :
                               modName=path.basename(subsubdir)
-                              f = path.splitext(file)
+                              f = path.splitext(fle)
                               if f[len(f)-1].lower() in ['.f','.f90']:      # /!\ you found a source file
-                                 if not modules.has_key(modName): modules.update({modName:{'path':subpath,'files':[path.join(subpath,file)],'cmdfs':[]}})
-                                 elif not modules[modName].has_key('files'): modules[modName].update({'files':[path.join(subpath,file)]})
-                                 else: modules[modName]['files'].append(path.join(subpath,file))
+                                 if not modName in modules: modules.update({modName:{'path':subpath,'files':[path.join(subpath,fle)],'cmdfs':[]}})
+                                 elif not 'files' in modules[modName]: modules[modName].update({'files':[path.join(subpath,fle)]})
+                                 else: modules[modName]['files'].append(path.join(subpath,fle))
                   else:
-                     for subpath,subnames,filenames in walk(path.join(modroot,subdir)): break
-                     for file in filenames :
+                     subpath, _, filenames = walk(path.join(modroot,subdir)).next()
+                     for fle in filenames :
                         modName=path.basename(modroot)
-                        f = path.splitext(file)
+                        f = path.splitext(fle)
                         if f[len(f)-1].lower() in ['.f','.f90']:      # /!\ you found a source file
-                           if not modules.has_key(modName): modules.update({modName:{'path':subpath,'files':[path.join(subpath,file)],'cmdfs':[]}})
-                           elif not modules[modName].has_key('files'): modules[modName].update({'files':[path.join(subpath,file).replace(sep,'|')]})
-                           else: modules[modName]['files'].append(path.join(subpath,file))
+                           if not modName in modules: modules.update({modName:{'path':subpath,'files':[path.join(subpath,fle)],'cmdfs':[]}})
+                           elif not 'files' in modules[modName]: modules[modName].update({'files':[path.join(subpath,fle).replace(sep,'|')]})
+                           else: modules[modName]['files'].append(path.join(subpath,fle))
                   
 
    return modules
@@ -806,9 +806,11 @@ def getFolders_ModulesTELEMAC(root):
 def addEXTERNALs(cfgDict,ext,mod): # key ext_all and ext_..., with ext = mods, incs, libs, cmd_*
    # ~~ Loads External Dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    extList = ''
-   if cfgDict.has_key(ext): extList = cfgDict[ext]
-   if cfgDict.has_key(ext+'_all'): extList = extList + ' ' + cfgDict[ext+'_all']
-   if cfgDict.has_key(ext+'_'+mod): extList = extList + ' ' + cfgDict[ext+'_'+mod]
+   if ext in cfgDict: extList = cfgDict[ext]
+   ext_all = ext + '_all'
+   if ext_all in cfgDict: extList += ' ' + cfgDict[ext_all]
+   ext_mod = ext + '_' + mod
+   if ext_mod in cfgDict: extList += ' ' + cfgDict[ext_mod]
    return extList
 
 """
@@ -819,9 +821,11 @@ def addEXTERNALs(cfgDict,ext,mod): # key ext_all and ext_..., with ext = mods, i
 def getEXTERNALs(cfgDict,ext,mod): # key ext_all and ext_..., with ext = mods, incs, libs, cmd_*
    # ~~ Loads External Dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    extList = ''
-   if cfgDict.has_key(ext): extList = cfgDict[ext]
-   if cfgDict.has_key(ext+'_all'): extList = cfgDict[ext+'_all']
-   if cfgDict.has_key(ext+'_'+mod): extList = cfgDict[ext+'_'+mod]
+   if ext in cfgDict: extList = cfgDict[ext]
+   ext_all = ext + '_all'
+   if ext_all in cfgDict: extList = cfgDict[ext_all]
+   ext_mod = ext + '_' + mod
+   if ext_mod in cfgDict: extList = cfgDict[ext_mod]
    return extList
 
 """
@@ -881,7 +885,7 @@ def parseUserModules(cfgDict,modules):
    # ~~ Loads To-Be Compiled ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    typeBuild = 0; userList = ''
    userList = 'clean ' + ' '.join(modules.keys())
-   if cfgDict.has_key('modules'):
+   if 'modules' in cfgDict:
       if cfgDict['modules'].strip() != '': userList = cfgDict['modules']
    # ~~ Loads To-Be Compiled ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    word = r'\s*(?P<before>.*)\s*(?P<this>(\b(%s)\b))\s*(?P<after>.*)\s*\Z'
@@ -908,7 +912,7 @@ def parseUserModules(cfgDict,modules):
    for mod in userList.split():
       if '-' == mod[0:1]:
          print '\nCould not find the following module:',mod[1:]
-         sys.exit()
+         sys.exit(1)
    # ~~ Deal with all ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if 'system' in userList : userList = ' '.join(modules.keys())
 
@@ -956,24 +960,11 @@ def parseValidationRanks(userList):
 
 def cleanConfig(cfg,cfgname):
 
-   found = False
    cfgDir = path.join(path.join(cfg['root'],'builds'),cfgname)
    if path.exists(cfgDir):
-      found = True
       removeDirectories(cfgDir)
       print '\n    +> build deleted!'
    else: print '\n ... Found no build to delete!'
-   # The cmdf files are to be versioned, therefore no delete required.
-   # The cmdf files are recreated when the --rescan option is used
-   #found = False
-   #for mod in cfg['MODULES'].keys():
-   #   for dirpath,dirnames,filenames in walk(cfg['MODULES'][mod]['path']) : break
-   #   for file in filenames:
-   #      if path.splitext(file)[1] == '.cmdf':
-   #         found = True
-   #         remove(path.join(dirpath,file))
-   #if found: print '    +> cmdf files deleted!\n'
-   #else: print ' ... found no cmdf file to delete!\n'
 
 
 # _____             ________________________________________________
@@ -989,10 +980,10 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    USETELCFG = ''
-   if environ.has_key('USETELCFG'): USETELCFG = environ['USETELCFG']
+   if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    SYSTELCFG = path.join(PWD,'configs')
-   if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
+   if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",
@@ -1029,15 +1020,15 @@ if __name__ == "__main__":
       dircfg = path.dirname(options.configFile)
       if path.isdir(dircfg) :
          print ' ... in directory: ' + dircfg + '\n ... use instead: '
-         for dirpath,dirnames,filenames in walk(dircfg) : break
-         for file in filenames :
-            head,tail = path.splitext(file)
-            if tail == '.cfg' : print '    +> ',file
-      sys.exit()
+         _, _, filenames = walk(dircfg).next()
+         for fle in filenames:
+            head,tail = path.splitext(fle)
+            if tail == '.cfg' : print '    +> ',fle
+      sys.exit(1)
 
    cfgs = parseConfigFile(options.configFile,options.configName,True)
 
-   for cfgname in cfgs.keys():
+   for cfgname in cfgs:
       print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
       # still in lower case
@@ -1058,4 +1049,4 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
    
-   sys.exit()
+   sys.exit(0)

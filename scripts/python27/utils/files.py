@@ -39,6 +39,12 @@ import shutil
 import time
 import difflib
 from os import path,walk,mkdir,getcwd,chdir,remove,rmdir,listdir,stat,makedirs
+try:
+   from os import symlink
+   SYMLINK_AVAIL = True
+except ImportError:
+   SYMLINK_AVAIL = False
+import errno
 from fnmatch import fnmatch #,translate
 from zipfile import ZipFile as zipfile
 from distutils.archive_util import make_archive
@@ -52,17 +58,21 @@ from utils.messages import filterMessage
 # ____/ Global Variables /_________________________________________/
 #
 
+def checkSymLink(use_link):
+   return ( SYMLINK_AVAIL and use_link )
+
+   
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
 #
 
-def addToList(list,name,value):
-   if list.get(name) != None:
-      if value not in list[name]:
-         list[name].append(value)
+def addToList(lst,name,value):
+   if lst.get(name) != None:
+      if value not in lst[name]:
+         lst[name].append(value)
    else:
-      list.update({name:[value]})
-   return list
+      lst.update({name:[value]})
+   return lst
 
 """@brief Make a list of all files in root that have
    the extension in [ext]
@@ -74,11 +84,11 @@ def getTheseFiles(root,exts):
    if path.exists(root) :
       #@note FD@EDF : allow scan of subdirectories...
       #@note SEB@HRW : there must be aother way -- walk is too long
-      for dirpath,dirnames,filenames in walk(root) : break
-      for file in filenames :
+      dirpath, _, filenames = walk(root).next()
+      for fle in filenames :
          for ext in exts :
-            head,tail = path.splitext(file)
-            if tail.lower() == ext.lower() : files.append(path.join(dirpath,file))
+            head,tail = path.splitext(fle)
+            if tail.lower() == ext.lower() : files.append(path.join(dirpath,fle))
    return files
 
 """
@@ -140,6 +150,18 @@ def createDirectories(po):
       pr = path.join(pr,pd.pop())
       mkdir(pr)
    return
+
+"""
+"""
+def symlinkFile(src, dest):
+   """ Copy a file to its destination """
+   # If link already exist overwrite it
+   try:
+      symlink(src, dest)
+   except OSError, e:
+      if e.errno == errno.EEXIST: 
+         remove(dest)
+         symlink(src, dest)
 
 """
 """
@@ -234,7 +256,7 @@ def checkSafe(fi,safe,ck):
 """
 def matchSafe(fi,ex,safe,ck):
    # ~~> list all entries
-   for dp,dn,filenames in walk(safe): break
+   dp, _, filenames = walk(safe).next()
    if filenames == []: return True
    # ~~> match expression
    exnames = []
@@ -335,4 +357,4 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)

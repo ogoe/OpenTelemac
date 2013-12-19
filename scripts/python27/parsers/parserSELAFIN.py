@@ -90,7 +90,7 @@ def subsetVariablesSLF(vars,ALLVARS):
    if len(ids) < len(v):
       print "... Could not find ",v," in ",ALLVARS
       print "   +> may be you forgot to switch name spaces into underscores in your command ?"
-      sys.exit()
+      sys.exit(1)
 
    return ids,names
 
@@ -186,11 +186,11 @@ def getNeighboursSLF(IKLE,MESHX,MESHY,showbar=True):
          for k in [0,1,2]:
             ibar += 1
             if showbar: pbar.update(ibar)
-            if insiders.has_key((e[k],e[(k+1)%3])):
+            if (e[k],e[(k+1)%3]) in insiders:
                a,b = insiders[(e[k],e[(k+1)%3])]
                if a == i: neighbours[i][k] = b
                if b == i: neighbours[i][k] = a
-            if insiders.has_key((e[(k+1)%3],e[k])):
+            if (e[(k+1)%3],e[k]) in insiders:
                a,b = insiders[(e[(k+1)%3],e[k])]
                if a == i: neighbours[i][k] = b
                if b == i: neighbours[i][k] = a
@@ -415,19 +415,19 @@ class SELAFIN:
       if l!=chk:
          print '... Cannot read the TITLE of your SELAFIN file'
          print '     +> Maybe it is the wrong file format or wrong Endian ?'
-         sys.exit()
+         sys.exit(1)
       # ~~ Read NBV(1) and NBV(2) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       l,self.NBV1,self.NBV2,chk = unpack('>iiii',f.read(4+8+4))
       self.NVAR = self.NBV1 + self.NBV2
       self.VARINDEX = range(self.NVAR)
       # ~~ Read variable names and units ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       self.VARNAMES = []; self.VARUNITS = []
-      for i in range(self.NBV1):
+      for _ in range(self.NBV1):
          l,vn,vu,chk = unpack('>i16s16si',f.read(4+16+16+4))
          self.VARNAMES.append(vn)
          self.VARUNITS.append(vu)
       self.CLDNAMES = []; self.CLDUNITS = []
-      for i in range(self.NBV2):
+      for _ in range(self.NBV2):
          l,vn,vu,chk = unpack('>i16s16si',f.read(4+16+16+4))
          self.CLDNAMES.append(vn)
          self.CLDUNITS.append(vu)
@@ -666,8 +666,8 @@ class SELAFINS:
    def isMerge(self):
       same = True
       for slf in self.slfs[1:]:
-         max = 1.e-5 + np.max( slf.tags['times'] ) + np.max( self.slfs[0].tags['times'] )
-         accuracy = np.power(10.0, -5+np.floor(np.log10(max)))  #/!\ max always positive
+         mmax = 1.e-5 + np.max( slf.tags['times'] ) + np.max( self.slfs[0].tags['times'] )
+         accuracy = np.power(10.0, -5+np.floor(np.log10(mmax)))  #/!\ max always positive
          if len(slf.tags['times']) != len(self.slfs[0].tags['times']): same = False
          else:
             same = same and ( accuracy > \
@@ -676,7 +676,7 @@ class SELAFINS:
 
    def pop(self,index=0):
       index = max( 0,min(index,len(self.slfs)-1) )
-      return slfs.pop(self.slfs[index])
+      return self.slfs.pop(self.slfs[index])
 
    def putContent(self,fileName): # TODO: files also have to have the same header
       if self.suite and self.merge:
@@ -776,12 +776,12 @@ class SELAFINS:
          print "Does not know how to merge your files. Try either:"
          print "    + to make sure your files have the same time support"
          print "    + to make sure your files have the same variables"
-         sys.exit()
+         sys.exit(1)
 
    def __del__(self):
-      if self.slf != None: SELAFIN.__del__(self.slf)
+      if self.slf != None: del self.slf
       if self.slfs != []:
-         for slf in self.slfs: SELAFIN.__del__(slf)
+         for slf in self.slfs: del slf
 
 class PARAFINS(SELAFINS):
 
@@ -801,7 +801,7 @@ class PARAFINS(SELAFINS):
             self.slf.VARINDEX = range(self.slf.NVAR)
          else:
             print "... Incompatibilities between files for ",path.basename(root)
-            sys.exit()
+            sys.exit(1)
          # ~~> Create the corresponding map
          self.mapPOIN = np.zeros(self.slf.NPOIN3,dtype=np.int)
          for i,slf in zip(range(len(self.slfs)),self.slfs): self.mapPOIN[slf.IPOB3-1] = i
@@ -824,9 +824,9 @@ class PARAFINS(SELAFINS):
             return []
       print '      +> Reading the header from the following partitions:'
       ibar = 0; pbar = ProgressBar(maxval=len(slfnames)).start()
-      for file in sorted(slfnames):
-         ibar += 1; pbar.write('         ~> '+path.basename(file),ibar)
-         slf = SELAFIN(file)
+      for fle in sorted(slfnames):
+         ibar += 1; pbar.write('         ~> '+path.basename(fle),ibar)
+         slf = SELAFIN(fle)
          self.slfs.append(slf)
          pbar.update(ibar)
       pbar.finish()
@@ -860,7 +860,7 @@ class PARAFINS(SELAFINS):
          return z
       else: return self.slf.getSERIES(nodes)  # ,varsIndexes not necessary
 
-   def putContent(self,fileName,showbar=True): # TODO: files also have to have the same header
+   def para_putContent(self,fileName,showbar=True): # TODO: files also have to have the same header
       self.slf.fole = open(fileName,'wb')
       ibar = 0
       if showbar: pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
@@ -888,4 +888,4 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)

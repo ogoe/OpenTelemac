@@ -53,7 +53,8 @@
 # ~~> dependencies towards standard python
 import sys
 import re
-from os import path, walk, sep, chdir, mkdir, remove, system, environ
+from os import path, walk, sep, chdir, mkdir, remove, environ
+import subprocess as sp
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_DoxygenTELEMAC
 # ~~> dependencies towards other pytel/modules
@@ -222,10 +223,10 @@ def createDOXYGEN(ifile,ilines,lname,list):
          olines.append('!>   </table>\n!')
 
       # ~~ Extended Description
-      #if vars.keys() != '' or who['args'] != '':
+      #if vars != {} or who['args'] != '':
       #   for a in who['args']:
       #      found = False
-      #      for v in vars.keys():
+      #      for v in vars:
       #         if a in parseVars(v): found = True
       #      if not found: vars.update({a:['',['']]})
       #   olines.extend(['!>  @par Details of primary variable(s)\n!>  <br><table>'])
@@ -435,12 +436,12 @@ def replaceDOXYGEN(doxydocs):
 
    text = r'(?P<before>[\s\S]*?)(?P<text>%s)(?P<after>[\s\S]*)'
    if path.exists(doxydocs):
-      for dirpath,dirnames,filenames in walk(doxydocs) : break
-      for file in filenames :
-         head,tail = path.splitext(file)
+      dirpath, _, filenames = walk(doxydocs).next()
+      for fle in filenames :
+         head,tail = path.splitext(fle)
          if tail == '.html' :
-            print '    +> ',file
-            lines = ''.join(getFileContent(path.join(dirpath,file)))
+            print '    +> ',fle
+            lines = ''.join(getFileContent(path.join(dirpath,fle)))
             proc = True
             while proc:
                proc = False
@@ -454,7 +455,7 @@ def replaceDOXYGEN(doxydocs):
                         b = proc1.group('after')
                         lines = a + otext + b
                         #print 'replacing: ',proc0.group('text')+proc1.group('before')
-            putFileContent(path.join(dirpath,file),[lines])
+            putFileContent(path.join(dirpath,fle),[lines])
 
    return
 
@@ -476,7 +477,7 @@ if __name__ == "__main__":
    CFGNAME = 'doxydocs'
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    SYSTELCFG = path.join(PWD,'configs')
-   if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
+   if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",type="string",dest="configName",default=CFGNAME,
@@ -497,16 +498,16 @@ if __name__ == "__main__":
       dircfg = path.abspath(path.dirname(options.configFile))
       if path.isdir(dircfg) :
          print ' ... in directory: ' + dircfg + '\n ... use instead: '
-         for dirpath,dirnames,filenames in walk(dircfg) : break
-         for file in filenames :
-            head,tail = path.splitext(file)
-            if tail == '.cfg' : print '    +> ',file
-      sys.exit()
+         _, _, filenames  = walk(dircfg).next()
+         for fle in filenames :
+            head,tail = path.splitext(fle)
+            if tail == '.cfg' : print '    +> ',fle
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
-   cfgname = cfgs.keys()[0]
+   cfgname = cfgs.iterkeys().next()
 
    # still in lower case
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
@@ -531,10 +532,10 @@ if __name__ == "__main__":
    fic,mdl,sbt,fct,prg,dep,racine = scanSources(cfgname,cfg,BYPASS)
 
    # ~~ Scann all source files to update Doxygen ~~~~~~~~~~~~~~~~
-   for mod in fic.keys():
+   for mod in fic:
       print '\nCreating the DOXYGEN headers for ' + mod + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-      for ifile in fic[mod].keys():
+      for ifile in fic[mod]:
 
          # ~~ Read the content of the source file ~~~~~~~~~~~~
          ilines = getFileContent(ifile)
@@ -548,7 +549,7 @@ if __name__ == "__main__":
 
    # ~~ Run Doxygen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    chdir(cfg['doxydocs'])
-   if system('doxygen'): sys.exit()
+   if sp.call(['doxygen']): sys.exit(1)
 
    # ~~ Scan all HTML files and replace template in phases
    replaceDOXYGEN(path.join(cfgs[cfgname]['doxydocs'],'html'))
@@ -558,5 +559,5 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)
 

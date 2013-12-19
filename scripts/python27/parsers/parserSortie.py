@@ -39,7 +39,7 @@ from utils.files import getFileContent
 """
 def getLatestSortieFiles(fi):
    # ~~> list all entries
-   for dp,dn,filenames in walk(path.dirname(fi)): break
+   dp, _, filenames = walk(path.dirname(fi)).next()
    # ~~> match expression
    exnames = [] #[ path.basename(fi) ]
    for fo in filenames:
@@ -68,13 +68,13 @@ sortie_time = re.compile(r'\s*ITERATION\s+(?P<iteration>\d+)\s+(TEMPS|TIME)[\s:]
             + r'\s*\Z',re.I)
 
 def parseTimeProfile(sortieLines):
-   iter = []; time = []
+   itr = []; time = []
    for line in sortieLines:
       proc = re.match(sortie_time,line)
       if proc:
-         iter.append(int(proc.group('iteration')))
+         itr.append(int(proc.group('iteration')))
          time.append(float(proc.group('number')))
-   return ('Iteration #',iter), ('Time (s)',time)
+   return ('Iteration #',itr), ('Time (s)',time)
 
 """
    Returns the name of the study, read from the TELEMAC sortie file
@@ -156,7 +156,7 @@ def parseValueProfile(sortieLines):
                iLine = iLine + 1
                if iLine >= len(sortieLines):
                   print '... Could not parse FLUXES FOR BOUNDARY ' + str(i+1)
-                  sys.exit()
+                  sys.exit(1)
                proc = re.match(sortie_volfluxes,sortieLines[iLine])
             fluxesProf[i].append(float(proc.group('value')))
          iLine = iLine + 1
@@ -165,7 +165,7 @@ def parseValueProfile(sortieLines):
             iLine = iLine + 1
             if iLine >= len(sortieLines):
                print '... Could not parse RELATIVE ERROR IN VOLUME '
-               sys.exit()
+               sys.exit(1)
                proc = re.match(sortie_volerror,sortieLines[iLine])
          errorsProf.append(float(proc.group('value')))
 
@@ -191,7 +191,7 @@ def parseValueProfile(sortieLines):
    Creates the x,y arrays for plotting
    Values read from the TELEMAC sortie file ... every time this is called
 """
-def getValueHistorySortie(content,vars):
+def getValueHistorySortie(content,vrs):
 
    # ~~ Extract data
    title = parseNameOfStudy(content)
@@ -199,7 +199,7 @@ def getValueHistorySortie(content,vars):
    y1,y2,y3 = parseValueProfile(content)
 
    y0 = []
-   for var in vars.split(';'):
+   for var in vrs.split(';'):
       v,s = var.split(':')
       
       # ~~ y-axis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -208,7 +208,7 @@ def getValueHistorySortie(content,vars):
       elif v == "volerror": y0.append(y3)
       else:
          print '... do not know how to extract: ' + v + ' of support ' + s
-         sys.exit()
+         sys.exit(1)
    
    return x0,y0
 
@@ -229,8 +229,8 @@ if __name__ == "__main__":
 
    # ~~ Extract data
    content = getFileContent(sortieFile)
-   title = getNameOfStudy(content)
-   i,x = getTimeProfile(content)
-   y1,y2,y3 = getValueProfile(content)
+   title = parseNameOfStudy(content)
+   i,x = parseTimeProfile(content)
+   y1,y2,y3 = parseValueProfile(content)
 
    print 'my job is done'

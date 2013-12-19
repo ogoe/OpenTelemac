@@ -56,8 +56,7 @@
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
-import os
-from os import path,remove,walk
+from os import path, remove, walk, chdir, getcwd
 from optparse import Values
 import sys
 from copy import deepcopy
@@ -89,7 +88,7 @@ DICOS = {}
 def getDICO(cfg,code):
 
    dicoFile = path.join(cfg['MODULES'][code]['path'],code+'.dico')
-   if dicoFile not in DICOS.keys():
+   if dicoFile not in DICOS:
       print '    +> register this DICO file: ' + dicoFile
       frgb,dico = scanDICO(dicoFile)
       idico,odico = getIOFilesSubmit(frgb,dico)
@@ -109,8 +108,8 @@ def getXMLKeys(xml,do):
 
    xcpt = []                            # try all keys for full report
    done = do.copy()                     # shallow copy is here sufficient
-   for key in done.keys():
-      if not key in xml.keys():
+   for key in done:
+      if key not in xml.keys():
          if done[key] == None:
             xcpt.append({'name':'getXMLKeys','msg':'cannot find the key: '+key})
       else:
@@ -131,15 +130,15 @@ def setSafe(casFile,cas,idico,odico,safe):
    # ~~> process input / output
    iFS = []; oFS = []
    for k,v in zip(*cas):
-      if idico.has_key(k):
-         copyFile(path.join(wDir,eval(v[0])),safe)
-         ifile = path.join(safe,eval(v[0]))
+      if k in idico:
+         copyFile(path.join(wDir,v[0].strip("'\"")),safe)
+         ifile = path.join(safe,v[0].strip("'\""))
          iFS.append([k,[ifile],idico[k]])
          #if not path.isfile(ifile):
          #   print '... file does not exist ',ifile
-         #   sys.exit()
-      if odico.has_key(k):
-         ofile = path.join(safe,eval(v[0]))
+         #   sys.exit(1)
+      if k in odico:
+         ofile = path.join(safe,v[0].strip("'\""))
          oFS.append([k,[ofile],odico[k]])
 
    return sortieFiles,iFS,oFS
@@ -147,8 +146,8 @@ def setSafe(casFile,cas,idico,odico,safe):
 def findTargets(dido,src):
    layer = []
 
-   if dido.has_key(src): layer = [dido[src],'',src]
-   if layer == [] and dido.has_key('input'):
+   if src in dido: layer = [dido[src],'',src]
+   if layer == [] and 'input' in dido:
       for i,j,k in dido['input']:
          k = k.split(';')
          if src in k[1]:               # filename, fileForm, fileType
@@ -156,7 +155,7 @@ def findTargets(dido,src):
             if k[5] =='SCAL': k[5] = k[1]
             # \!/
             layer = [j,k[3],k[5]]
-   if layer == []  and dido.has_key('output'):
+   if layer == []  and 'output' in dido:
       if dido['code'] == 'postel3d':
          for file in dido['output']:
             if src == path.basename(file) : layer = [[file],'','SELAFIN']
@@ -168,7 +167,7 @@ def findTargets(dido,src):
                if k[5] =='SCAL': k[5] = k[1]
                # \!/
                layer = [j,k[3],k[5]]
-   if layer == [] and dido.has_key('type'):
+   if layer == [] and 'type' in dido:
       if dido['type'] == src: layer = [[dido['target']],'',src]
 
    return layer
@@ -224,7 +223,7 @@ class ACTION:
          self.active = getXMLKeys(actions,self.active)
       except Exception as e:
          raise Exception([filterMessage({'name':'ACTION::addACTION'},e,self.bypass)])  # only one item here
-      if self.dids.has_key(self.active["xref"]):
+      if self.active["xref"] in self.dids:
          raise Exception([{'name':'ACTION::addACTION','msg':'you are getting me confused, this xref already exists: '+self.active["xref"]}])
       self.dids.update({ self.active["xref"]:{} })
       if self.active["rank"] == '': self.active["rank"] = rank
@@ -314,14 +313,14 @@ class GROUPS:
       self.dids.update({group:{}})
       self.active['type'] = group
 
-   def addGroup(self,group):
+   def addGroup(self,group,rank=''):
       tasks = deepcopy(self.availkeys)
       try:
          self.tasks = getXMLKeys(group,tasks)
       except Exception as e:
          raise Exception([filterMessage({'name':'GROUP::addGroup'},e,self.bypass)])
       self.active['xref'] = self.tasks["xref"]
-      if self.dids[self.active['type']].has_key(self.tasks["xref"]):
+      if self.tasks["xref"] in self.dids[self.active['type']]:
          raise Exception([{'name':'GROUP::addGroup','msg':'you are getting me confused, this xref already exists: '+self.tasks["xref"]}])
       self.dids[self.active['type']].update({self.tasks["xref"]:self.tasks})
 
@@ -340,13 +339,13 @@ class GROUPS:
       # ~~> filling-in remaining gaps
       subtasks = self.distributeDeco(subtasks)
       # ~~> adding subtask to the list of tasks
-      if self.tasks.has_key(nametask): self.tasks[nametask].append(subtasks)
+      if nametask in self.tasks: self.tasks[nametask].append(subtasks)
       else: self.tasks.update({nametask:[subtasks]})
       return len(self.tasks[nametask])-1,nametask
 
    def targetSubTask(self,target,index=0,nametask='layers'):
       self.tasks[nametask][index].update({ 'fileName': target })
-      if not self.dids[self.active['type']][self.active['xref']].has_key(nametask): self.dids[self.active['type']][self.active['xref']].update({nametask:[self.tasks[nametask][index]]})
+      if nametask not in self.dids[self.active['type']][self.active['xref']]: self.dids[self.active['type']][self.active['xref']].update({nametask:[self.tasks[nametask][index]]})
 
    def distributeDeco(self,subtask): return subtask
 
@@ -378,7 +377,7 @@ class groupDECO(GROUPS):
    def addLookTask(self,layer,nametask='look'):
       #self.avaylkeys = deepcopy(GROUPS.avaylkeys)
       self.avaylkeys = {}
-      for key in layer.attrib.keys():
+      for key in layer.attrib:
          self.avaylkeys.update({key:layer.attrib[key]})
          if key == 'grid':
             if layer.attrib['grid'] == 'no': layer.attrib['grid'] = False
@@ -424,9 +423,9 @@ class actionRUN(ACTION):
 
    def addCFG(self,cfgname,cfg):
       if not ( self.active["code"] == 'exec' or
-               self.active["code"] in cfg['MODULES'].keys() ):
+               self.active["code"] in cfg['MODULES'] ):
          print '... do not know about: ' + self.active["code"] + ' in configuration: ' + cfgname
-         sys.exit()
+         sys.exit(1)
       ACTION.addCFG(self,cfgname,cfg)
       ACTION.updateCFG(self,{ "links": {},
          'code': self.active["code"],
@@ -471,29 +470,33 @@ class actionRUN(ACTION):
       
       # ~~> prepare options as if run from command line
       specs = Values()
-      setattr(specs,'configName',options.configName)
-      setattr(specs,'configFile', options.configFile)
-      setattr(specs,'sortieFile',True)
-      setattr(specs,'tmpdirectory',True)
-      setattr(specs,'rootDir', options.rootDir)
-      setattr(specs,'version', options.version)
-      setattr(specs,'wDir', options.wDir)
-      setattr(specs,'compileonly', False)
-      if options.hosts != '': setattr(specs,'hosts', options.hosts)
-      else: setattr(specs,'hosts', gethostname().split('.')[0])
-      setattr(specs,'split', options.split)
-      setattr(specs,'run', options.run)
-      setattr(specs,'merge', options.merge)
-      setattr(specs,'jobname', options.jobname)
-      setattr(specs,'hpc_queue', options.hpc_queue)
-      setattr(specs,'walltime', options.walltime)
-      setattr(specs,'email', options.email)
-      setattr(specs,'mpi', options.mpi)
-      if options.ncsize != '' and self.active["ncsize"] != '': self.active["ncsize"] = options.ncsize
-      setattr(specs,'ncsize', self.active["ncsize"])
-      setattr(specs,'nctile', '')    # default but should not be used for validation
-      setattr(specs,'ncnode', '')    # default but should not be used for validation
-      setattr(specs,'bypass',self.bypass)
+      specs.configName = options.configName
+      specs.configFile = options.configFile
+      specs.sortieFile = True
+      specs.tmpdirectory = True
+      specs.rootDir = options.rootDir
+      specs.version = options.version
+      specs.wDir = options.wDir
+      specs.compileonly = False
+      if options.hosts != '': 
+         specs.hosts = options.hosts
+      else: 
+         specs.hosts = gethostname().split('.')[0]
+      specs.split = options.split
+      specs.run = options.run
+      specs.merge = options.merge
+      specs.jobname = options.jobname
+      specs.hpc_queue = options.hpc_queue
+      specs.walltime = options.walltime
+      specs.email = options.email
+      specs.mpi = options.mpi
+      if options.ncsize != '' and self.active["ncsize"] != '': 
+         self.active["ncsize"] = options.ncsize
+      specs.ncsize = self.active["ncsize"]
+      specs.nctile = ''    # default but should not be used for validation
+      specs.ncnode = ''    # default but should not be used for validation
+      specs.bypass = self.bypass
+      specs.use_link = options.use_link
 
       # ~~> check on sorties and run
       casFile = path.join(self.active['path'],self.active["target"])
@@ -523,7 +526,7 @@ class actionRUN(ACTION):
       value,default = getKeyWord('FICHIER FORTRAN',active['cas'],DICOS[active['dico']]['dico'],DICOS[active['dico']]['frgb'])
       princiFile = ''
       if value != []:
-         princiFile = path.join(active['path'],eval(value[0]))
+         princiFile = path.join(active['path'],value[0].strip("'\""))
          if path.exists(princiFile):
             htmlFile = path.join(oneup,path.splitext(path.basename(princiFile))[0]+'.html')
             if matchSafe(htmlFile,path.basename(htmlFile),oneup,rebuild):
@@ -538,14 +541,14 @@ class actionRUN(ACTION):
                # ~~> Scans the entire system
                oFiles = {}
                for mod in cfg['MODULES']:
-                  for dirpath,dirnames,filenames in walk(cfg['MODULES'][mod]['path']) : break
-                  for file in filenames:
-                     n,e = path.splitext(file)
+                  dirpath, _, filenames = walk(cfg['MODULES'][mod]['path']).next()
+                  for fle in filenames:
+                     n,e = path.splitext(fle)
                      # Only looking for fortran files
                      if e.lower() not in ['.f','.f90']: continue
                      for pFile in pFiles:
                         if pFile.lower() == n:
-                           oFiles.update( filterPrincipalWrapNames( [pFile],[path.join(dirpath,file)] ) )
+                           oFiles.update( filterPrincipalWrapNames( [pFile],[path.join(dirpath,fle)] ) )
                if oFiles == {}:
                   raise Exception([{'name':'ACTION::diffPRINCI','msg':'I could not relate your PRINCI with the system: '+princiFile}])
                else:
@@ -555,7 +558,7 @@ class actionRUN(ACTION):
                oriFile = path.splitext(princiFile)[0]+'.original'+path.splitext(princiFile)[1]
                putFileContent(oriFile,[])
                for p in pFiles:
-                  if p in oFiles.keys(): addFileContent(oriFile,getFileContent(oFiles[p]))
+                  if p in oFiles: addFileContent(oriFile,getFileContent(oFiles[p]))
                # ~~> Process difference and write output into an HTML file
                diff = diffTextFiles(oriFile,princiFile,options)
                remove(oriFile)
@@ -575,12 +578,15 @@ class actionRUN(ACTION):
       active = self.dids[xref][cfgname]
       confirmed = False
       # ~~> principal PRINCI file
-      value,default = getKeyWord('FICHIER FORTRAN',active['cas'],DICOS[active['dico']]['dico'],DICOS[active['dico']]['frgb'])
+      value,default = getKeyWord('FICHIER FORTRAN',active['cas'],
+                                 DICOS[active['dico']]['dico'],
+                                 DICOS[active['dico']]['frgb'])
       princiFile = ''; princiSafe = ''
       if value != []:       # you do not need to compile the default executable
-         princiFile = path.join(active['path'],eval(value[0]))
+         princiFile = path.join(active['path'],value[0].strip("'\""))
          if path.exists(princiFile):
-            exeFile = path.join(active['safe'],path.splitext(eval(value[0]))[0] + cfg['SYSTEM']['sfx_exe'])
+            exeFile = path.join(active['safe'],path.splitext(value[0].strip("'\""))[0] + \
+                      cfg['SYSTEM']['sfx_exe'])
             if not path.exists(exeFile) or cfg['REBUILD'] == 0:
                print '     +> compiling princi file: ' + path.basename(princiFile)
                copyFile(princiFile,active['safe'])
@@ -595,14 +601,14 @@ class actionRUN(ACTION):
          value,default = getKeyWord('FICHIER FORTRAN',link['cas'],DICOS[link['dico']]['dico'],DICOS[link['dico']]['frgb'])
          princiFilePlage = ''
          if value != []:       # you do not need to compile the default executable
-            princiFilePlage = path.join(active['path'],eval(value[0]))
+            princiFilePlage = path.join(active['path'],value[0].strip("'\""))
             if path.exists(princiFilePlage):
                if princiSafe != '':
                   print '*********adding content of '+path.basename(princiFilePlage)+' to '+princiSafe
                   putFileContent(princiSafe,getFileContent(princiSafe)+['']+getFileContent(princiFilePlage))
                else:
                   print '     +> compiling princi file: ' + path.basename(princiFilePlage)
-                  exeFile = path.join(active['safe'],path.splitext(eval(value[0]))[0] + cfg['SYSTEM']['sfx_exe'])
+                  exeFile = path.join(active['safe'],path.splitext(value[0].strip("'\""))[0] + cfg['SYSTEM']['sfx_exe'])
                   princiSafe = path.join(active['safe'],path.basename(princiFilePlage))
                   print '*********copying '+path.basename(princiFilePlage)+ ' ' + active['safe']
                   copyFile(princiFilePlage,active['safe'])
@@ -630,7 +636,7 @@ class actionRUN(ACTION):
       # ~~> copy of inputs
       copyFile(path.join(self.active['path'],self.active["target"]),self.active['safe'])
       for iFile in self.active["deprefs"]:
-         if iFile in self.dids.keys():
+         if iFile in self.dids:
             if self.active['cfg'] in self.dids[iFile]:
                layer = findTargets(self.dids[iFile][self.active['cfg']],self.active["deprefs"][iFile])
                if layer != []: copyFile(layer[0][0],self.active['safe'])
@@ -642,7 +648,7 @@ class actionRUN(ACTION):
             else: raise Exception([{'name':'runXML','msg':'could not find reference to the dependant: '+iFile}])
       
       # ~~> execute command locally
-      os.chdir(self.active['safe'])
+      chdir(self.active['safe'])
       try:
          tail,code = mes.runCmd(self.active["do"],True) #self.bypass)
       except Exception as e:
@@ -725,10 +731,10 @@ class groupPLOT(GROUPS):
 
    def distributeDeco(self,subtask):
       # ~~> distribute decoration
-      vars = subtask["vars"].split(';')
-      for i in range(len(vars)):
-         if ':' not in vars[i]: vars[i] = vars[i] + ':' + self.tasks["deco"]
-      subtask["vars"] = ';'.join(vars)
+      vrs = subtask["vars"].split(';')
+      for i in range(len(vrs)):
+         if ':' not in vrs[i]: vrs[i] = vrs[i] + ':' + self.tasks["deco"]
+      subtask["vars"] = ';'.join(vrs)
       return subtask
 
 # _____                           ___________________________________
@@ -764,10 +770,10 @@ class groupGET(GROUPS):
 
    def distributeDeco(self,subtask):
       # ~~> distribute decoration
-      vars = subtask["vars"].split(';')
-      for i in range(len(vars)):
-         if ':' not in vars[i]: vars[i] = vars[i] + ':xyz'   # :xyz is not used
-      subtask["vars"] = ';'.join(vars)
+      vrs = subtask["vars"].split(';')
+      for i in range(len(vrs)):
+         if ':' not in vrs[i]: vrs[i] = vrs[i] + ':xyz'   # :xyz is not used
+      subtask["vars"] = ';'.join(vrs)
       return subtask
 
 # _____                           ___________________________________
@@ -803,7 +809,7 @@ class CRITERIA(GROUPS):
          self.active = i
       self.active['path'] = self.path
       self.active['safe'] = self.safe
-      if self.dids.has_key(self.active["xref"]):
+      if self.active["xref"] in self.dids:
          raise Exception([{'name':'CRITERIA::addCriteria','msg':'you are getting me confused, this xref already exists: '+self.active["xref"]}])
       self.dids.update({ self.active["xref"]:{} })
       print '\n    +> Validation Criteria :', self.active["xref"]
@@ -824,10 +830,10 @@ class CRITERIA(GROUPS):
       self.dids[self.active["xref"]][self.active['cfg']]['variables'].update({self.variabling["vars"]:{}})
       active = self.dids[self.active["xref"]][self.active['cfg']]['variables']
           
-      folder,file = self.variabling["target"].split(':')
-      pathfolder = path.join(os.getcwd(),folder)
+      folder,fle = self.variabling["target"].split(':')
+      pathfolder = path.join(getcwd(),folder)
       pathcfg = path.join(pathfolder,cfgname)
-      pathfile = path.join(pathcfg,file) 
+      pathfile = path.join(pathcfg,fle) 
       
       active[self.variabling["vars"]]['path'] = [pathfile]
       self.variabling['path'] = [pathfile]
@@ -836,7 +842,7 @@ class CRITERIA(GROUPS):
    def addcondition(self,condition,NBR):
       conditionning = {"do": None, "success":None, "failure":None, "warning":'',
                         "result":[]}
-      cfgname = self.active['cfg']
+      #cfgname = self.active['cfg']
       try:
          self.conditionning = getXMLKeys(condition,conditionning)
       except Exception as e:
@@ -859,11 +865,11 @@ class CRITERIA(GROUPS):
       
       print '         +> comparing :', NameVar1, '&', NameVar2
 
-      if NameVar1.isalpha() == False : var1 = float(NameVar1)
+      if not NameVar1.isalpha(): var1 = float(NameVar1)
       else :     
          PathVar1 = variables[NameVar1]['path'][0]
          var1 = [] #getVariableCSV(PathVar1,NameVar1)
-      if NameVar2.isalpha() == False : var2 = float(NameVar2)
+      if not NameVar2.isalpha(): var2 = float(NameVar2)
       else :     
          PathVar2 = variables[NameVar2]['path'][0]
          var2 = [] #getVariableCSV(PathVar2,NameVar2)
@@ -881,11 +887,11 @@ class CRITERIA(GROUPS):
       ######### Failure condition ################################
       NameVar1,operator,NameVar2 = condition["failure"].split(':')
 
-      if NameVar1.isalpha() == False : var1 = float(NameVar1)
+      if not NameVar1.isalpha(): var1 = float(NameVar1)
       else :     
          PathVar1 = variables[NameVar1]['path'][0]
          var1 = [] #getVariableCSV(PathVar1,NameVar1)
-      if NameVar2.isalpha() == False : var2 = float(NameVar2)
+      if not NameVar2.isalpha(): var2 = float(NameVar2)
       else :     
          PathVar2 = variables[NameVar2]['path'][0]
          var2 = [] #getVariableCSV(PathVar2,NameVar2)
@@ -907,18 +913,18 @@ class CRITERIA(GROUPS):
    def CalcL2error(self,task):   
       xref = self.active["xref"]; cfgname = self.active['cfg']
       active = self.dids[xref][cfgname]
-      file = self.tasking["target"]
-      print '       +> Calculating L2 error :', self.tasking["title"],'\n'
-      if self.tasking["reference"] != '':
-         file = path.join(self.dids[self.tasking["reference"]][cfgname]['tasks']['safe'],file)
-      var1 = self.tasking["ModelData"].lower()
-      var2 = self.tasking["ExactData"].lower()
-      VarModel,VarExperiment = get2VariablesCSV(file,var1,var2)
+      fle = task["target"]
+      print '       +> Calculating L2 error :', task["title"],'\n'
+      if task["reference"] != '':
+         fle = path.join(self.dids[task["reference"]][cfgname]['tasks']['safe'],fle)
+      var1 = task["ModelData"].lower()
+      var2 = task["ExactData"].lower()
+      VarModel,VarExperiment = 0.0, 0.0 #get2VariablesCSV(fle,var1,var2)
       L2error = (la.norm(VarModel-VarExperiment))/(la.norm(VarExperiment))
-      columns = [[self.tasking["title"],'None',L2error]]
+      columns = [[task["title"],'None',L2error]]
       file2 = path.join(self.active['safe'], xref +'.csv')
       if path.exists(file2): 
-         columns = [[self.tasking["title"],'None',L2error]]
+         columns = [[task["title"],'None',L2error]]
          #addColumnCSV(file2,columns[0])
       else : pass #putDataCSV(file2,columns)
       return
@@ -943,7 +949,7 @@ def runXML(xmlFile,xmlConfig,bypass):
    f.close()
    # ~~ Default Ranking ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    rank = ''
-   if "rank" in xmlRoot.keys(): rank = xmlRoot.attrib["rank"]
+   if "rank" in xmlRoot: rank = xmlRoot.attrib["rank"]
 
    # ~~ Decoration process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #
@@ -1010,7 +1016,7 @@ def runXML(xmlFile,xmlConfig,bypass):
             continue    # bypass rest of the loop
 
       # ~~ Step 2. Loop over configurations ~~~~~~~~~~~~~~~~~~~~~~~~
-      for cfgname in xmlConfig.keys():
+      for cfgname in xmlConfig:
          cfg = xmlConfig[cfgname]['cfg']
          do.addCFG(cfgname,cfg) #if not : continue
          
@@ -1026,7 +1032,7 @@ def runXML(xmlFile,xmlConfig,bypass):
          createDirectories(do.active['safe'])
 
          # ~~ Step 3a. Deals with TELEMAC launchers ~~~~~~~~~~~~~~~~
-         if do.active["code"] in cfg['MODULES'].keys():
+         if do.active["code"] in cfg['MODULES']:
 
             do.availacts = "translate;run;compile;princi"
 
@@ -1064,12 +1070,12 @@ def runXML(xmlFile,xmlConfig,bypass):
             cplages,defaut = getKeyWord('COUPLING WITH',cas,dico,frgb)
             links = {}
             for cplage in cplages:
-               for mod in cfg['MODULES'].keys():
+               for mod in cfg['MODULES']:
                   if mod in cplage.lower():
                      # ~~> Extract the CAS File name
                      casFilePlage,defaut = getKeyWord(mod.upper()+' STEERING FILE',cas,dico,frgb)
                      if casFilePlage == []: casFilePlage = defaut[0]
-                     else: casFilePlage = eval(casFilePlage[0])
+                     else: casFilePlage = casFilePlage[0].strip("'\"")
                      casFilePlage = path.join(path.dirname(casFile),casFilePlage)
                      if not path.isfile(casFilePlage): raise Exception([{'name':'runCAS','msg':'missing coupling CAS file for '+mod+': '+casFilePlage}])
                      # ~~> Read the DICO File
@@ -1116,11 +1122,11 @@ def runXML(xmlFile,xmlConfig,bypass):
                #try:
                   # - comparison with standard source files
                   specs = Values()
-                  setattr(specs,'unified',False)
-                  setattr(specs,'ndiff',False)
-                  setattr(specs,'html',True)
-                  setattr(specs,'ablines',3)
-                  setattr(specs,'context',False)
+                  specs.unified = False
+                  specs.ndiff = False
+                  specs.html = True
+                  specs.ablines = True
+                  specs.context = False
                   do.diffPRINCI(specs,cfg,cfg['REBUILD'])
                #except Exception as e:
                #   xcpt.append(filterMessage({'name':'runXML','msg':'   +> diff(princi)'},e,bypass))
@@ -1182,10 +1188,10 @@ def runXML(xmlFile,xmlConfig,bypass):
             # ~~> round up targets and their configurations looking in exes and does
             if len(target.split(':')) > 1:
                xref,src = target.split(':')
-               if do.dids.has_key(xref):
+               if xref in do.dids:
                   layers = {}
                   oneFound = False
-                  for cfgname in xmlConfig.keys():
+                  for cfgname in xmlConfig:
                      rankdont = xmlConfig[cfgname]['options'].todos['get']['rank']
                      if rankdont == 1: continue
                      if gcd(rankdont,rankdo) == 1: continue
@@ -1205,13 +1211,13 @@ def runXML(xmlFile,xmlConfig,bypass):
                   if path.exists(path.join(ex.tasks[namex][index]["where"],target)):
                      findlayer = {}
                      t = path.splitext(path.basename(target))[1].lower()[1:]
-                     for cfgname in xmlConfig.keys(): findlayer.update({ cfgname:[[path.join(ex.tasks[namex][index]["where"],target)],'',t] })
+                     for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(ex.tasks[namex][index]["where"],target)],'',t] })
                      ex.targetSubTask(findlayer,index,namex)
                   else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target+' where '+ex.tasks[namex][index]["where"]})
                elif path.exists(path.join(ex.path,target)):
                   findlayer = {}
                   t = path.splitext(path.basename(target))[1].lower()[1:]
-                  for cfgname in xmlConfig.keys(): findlayer.update({ cfgname:[[path.join(ex.path,target)],'',t] })
+                  for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(ex.path,target)],'',t] })
                   ex.targetSubTask(findlayer,index,namex)
                else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target})
 
@@ -1240,11 +1246,11 @@ def runXML(xmlFile,xmlConfig,bypass):
    if xcpt != []: raise Exception({'name':'runXML','msg':'looking at extractions in xmlFile: '+xmlFile,'tree':xcpt})
 
    # ~~ Matrix distribution by extraction types ~~~~~~~~~~~~~~~~~~~~
-   for typeSave in ex.dids.keys():
+   for typeSave in ex.dids:
       for xref in ex.dids[typeSave]:
 
          task = ex.dids[typeSave][xref]
-         if not task.has_key("layers"): continue
+         if not "layers" in task: continue
          oneFound = False
          for layer in task["layers"]:
             if layer['fileName'] != {}: oneFound = True
@@ -1264,11 +1270,11 @@ def runXML(xmlFile,xmlConfig,bypass):
                   for x in xlayers.split('|'): xys.append( (x+';'+ylayers[i]).strip(';') )
                xlayers = '|'.join(xys)
             elif layer['config'] == 'oneofall':
-               xys = []; cfg = layer['fileName'].keys()[0]     #/!\ you are sure to have at least one (?)
+               xys = []; cfg = layer['fileName'].iterkeys().next()     #/!\ you are sure to have at least one (?)
                for x in xlayers.split('|'): xys.append( (x+';'+cfg).strip(';') )
                xlayers = '|'.join(xys)
             else:
-               if layer['config'] in layer['fileName'].keys():
+               if layer['config'] in layer['fileName']:
                   xys = []
                   for x in xlayers.split('|'): xys.append( (x+';'+layer['config']).strip(';') )
                xlayers = '|'.join(xys)
@@ -1290,8 +1296,8 @@ def runXML(xmlFile,xmlConfig,bypass):
 
             for layer,cfgs in zip(task["layers"],cfglist.split(';')):
                for cfg in cfgs.split(':'):
-                  for file in layer['fileName'][cfg][0]:
-                     figure.draw( layer['fileName'][cfg][2], { 'file': file,
+                  for fle in layer['fileName'][cfg][0]:
+                     figure.draw( layer['fileName'][cfg][2], { 'file': fle,
                         'deco': {},
                         'vars': layer["vars"], 'extract':layer["extract"], 'sample':layer["sample"],
                         'type': task['type'], 'time':layer["time"] } )
@@ -1301,7 +1307,7 @@ def runXML(xmlFile,xmlConfig,bypass):
    if xcpt != []: raise Exception({'name':'runXML','msg':'looking at savings in xmlFile: '+xmlFile,'tree':xcpt})
 
    """      if "L2error" in doaddtask["do"]:
-               os.chdir(racine)
+               chdir(racine)
                try:
                   ex.CalcL2error(doaddtask)
                except Exception as e:
@@ -1334,10 +1340,10 @@ def runXML(xmlFile,xmlConfig,bypass):
             # ~~> round up targets and their configurations looking in exes and does
             if len(target.split(':')) > 1:
                xref,src = target.split(':')
-               if ex.dids.has_key(xref):
+               if xref in ex.dids:
                   layers = {}
                   oneFound = False
-                  for cfgname in xmlConfig.keys():
+                  for cfgname in xmlConfig:
                      rankdont = xmlConfig[cfgname]['options'].todos['draw']['rank']
                      if rankdont == 1: continue
                      if gcd(rankdont,rankdo) == 1: continue
@@ -1350,10 +1356,10 @@ def runXML(xmlFile,xmlConfig,bypass):
                      continue    # bypass the rest of the for loop
                   else:
                      plot.targetSubTask(layers,index,namex)
-               elif do.dids.has_key(xref):
+               elif xref in do.dids:
                   layers = {}
                   oneFound = False
-                  for cfgname in xmlConfig.keys():
+                  for cfgname in xmlConfig:
                      rankdont = xmlConfig[cfgname]['options'].todos['draw']['rank']
                      if rankdont == 1: continue
                      if gcd(rankdont,rankdo) == 1: continue
@@ -1372,13 +1378,13 @@ def runXML(xmlFile,xmlConfig,bypass):
                   if path.exists(path.join(plot.tasks[namex][index]["where"],target)):
                      findlayer = {}
                      t = path.splitext(path.basename(target))[1].lower()[1:]
-                     for cfgname in xmlConfig.keys(): findlayer.update({ cfgname:[[path.join(plot.tasks[namex][index]["where"],target)],'',t] })
+                     for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(plot.tasks[namex][index]["where"],target)],'',t] })
                      plot.targetSubTask(findlayer,index,namex)
                   else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target+' where '+plot.tasks[namex][index]["where"]})
                elif path.exists(path.join(plot.path,target)):
                   findlayer = {}
                   t = path.splitext(path.basename(target))[1].lower()[1:]
-                  for cfgname in xmlConfig.keys(): findlayer.update({ cfgname:[[path.join(plot.path,target)],'',t] })
+                  for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(plot.path,target)],'',t] })
                   plot.targetSubTask(findlayer,index,namex)
                else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target})
 
@@ -1408,12 +1414,12 @@ def runXML(xmlFile,xmlConfig,bypass):
 
    # ~~ Matrix distribution by plot types ~~~~~~~~~~~~~~~~~~~~~~~~~~
    # /!\ configurations cannot be called "together" or "distinct" or "oneofall"
-   for typePlot in plot.dids.keys():
+   for typePlot in plot.dids:
 
       for xref in plot.dids[typePlot]:
 
          draw = plot.dids[typePlot][xref]
-         if not draw.has_key("layers"): continue
+         if not "layers" in draw: continue
          oneFound = False
          for layer in draw["layers"]:
             if layer['fileName'] != {}: oneFound = True
@@ -1433,11 +1439,11 @@ def runXML(xmlFile,xmlConfig,bypass):
                   for x in xlayers.split('|'): xys.append( (x+';'+ylayers[i]).strip(';') )
                xlayers = '|'.join(xys)
             elif layer['config'] == 'oneofall':
-               xys = []; cfg = layer['fileName'].keys()[0]     #/!\ you are sure to have at least one (?)
+               xys = []; cfg = layer['fileName'].iterkeys().next()     #/!\ you are sure to have at least one (?)
                for x in xlayers.split('|'): xys.append( (x+';'+cfg).strip(';') )
                xlayers = '|'.join(xys)
             else:
-               if layer['config'] in layer['fileName'].keys():
+               if layer['config'] in layer['fileName']:
                   xys = []
                   for x in xlayers.split('|'): xys.append( (x+';'+layer['config']).strip(';') )
                xlayers = '|'.join(xys)
@@ -1465,8 +1471,8 @@ def runXML(xmlFile,xmlConfig,bypass):
 
             for layer,cfgs in zip(draw["layers"],cfglist.split(';')):
                for cfg in cfgs.split(':'):
-                  for file in layer['fileName'][cfg][0]:
-                     figure.draw( layer['fileName'][cfg][2], { 'file': file,
+                  for fle in layer['fileName'][cfg][0]:
+                     figure.draw( layer['fileName'][cfg][2], { 'file': fle,
                         'deco': layer["deco"],
                         'vars': layer["vars"], 'extract':layer["extract"], 'sample':layer["sample"],
                         'type': draw['type'], 'time':layer["time"] } )
@@ -1478,7 +1484,7 @@ def runXML(xmlFile,xmlConfig,bypass):
    # ~~ Validation Criteria ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #
    racine = path.split(xmlFile)[0]
-   os.chdir(racine)
+   chdir(racine)
    docriteria = CRITERIA(xmlFile,title,bypass)
    for criteria in xmlRoot.findall("criteria"):
 
@@ -1497,13 +1503,13 @@ def runXML(xmlFile,xmlConfig,bypass):
       if gcd(rankdont,rankdo) == 1: docrt = False
       if not docrt: continue
 
-      for cfgname in xmlConfig.keys():
+      for cfgname in xmlConfig:
          criteriacfg = xmlConfig[cfgname]['cfg']
          docriteria.addCFG(cfgname,criteriacfg) #if not : continue
 
-         for vars in criteria.findall("variable"):
+         for vrs in criteria.findall("variable"):
             try:
-               doaddvariable = docriteria.addvariable(vars)
+               doaddvariable = docriteria.addvariable(vrs)
             except Exception as e:
                xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
                continue
@@ -1524,7 +1530,7 @@ def runXML(xmlFile,xmlConfig,bypass):
                   xcpt.append(filterMessage({'name':'runXML','msg':'   +> compare'},e,bypass))
 
 
-      for criteria in docriteria.dids.keys() :        
+      for criteria in docriteria.dids:        
          for cfg in docriteria.dids[criteria]:
             for NBR in docriteria.dids[criteria][cfg]['condition']:
                if docriteria.dids[criteria][cfg]['condition'][NBR]['result'][0] == 'success' : continue
@@ -1556,4 +1562,4 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)

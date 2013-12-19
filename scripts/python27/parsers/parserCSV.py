@@ -87,7 +87,7 @@ class CSV:
          self.colcore = np.array([x0])
       elif len(x[1]) != len(self.colcore[0]):
          print '... cannot aggregate columns of different supports: ',x[0]
-         sys.exit()
+         sys.exit(1)
       u0 = '(-)'
       for y in ys:
          dim = len(y) - 1
@@ -128,9 +128,10 @@ class CSV:
                print len(y0[i]),n2
                # j is likely to vary with the extracted layers
                for j in range(len(y0[i])):
-                  print n0,n1,n2,n3
-                  print len(y0[i]),y0[i]
-                  sys.exit()
+                  # Debug lines ???
+                  #print n0,n1,n2,n3
+                  #print len(y0[i]),y0[i]
+                  #sys.exit()
                   for k in range(len(y0[i][j])):
                      self.rowvars.append(n0+':'+str(n1[i])+'_'+str(n2[j])+'_'+str(n3[k]))
                      self.rowunits.append(u0)
@@ -149,7 +150,7 @@ class CSV:
    def getFileContent(self,fileName):
       if not path.exists(fileName):
          print '... could not find your CSV file: ',fileName
-         sys.exit()
+         sys.exit(1)
       SrcF = open(fileName,'r')
       # ~~> parse header
       isHead = True
@@ -161,7 +162,7 @@ class CSV:
       if ',' not in line.rstrip():
          print '... could not find more than one column in your CSV file: ',fileName
          print 'you need at one support column, either T(time), L(length), X and Y (coordinates), but found only ',line
-         sys.exit()
+         sys.exit(1)
       vars = line.rstrip().split(',')
       self.colvars = vars[0]
       self.rowvars = vars[1:]
@@ -184,4 +185,4 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)

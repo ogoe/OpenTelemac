@@ -52,7 +52,13 @@ from os import path
 from utils.files import getFileContent,putFileContent
 from utils.progressbar import ProgressBar
 from utils.geometry import isClose
-from samplers.polygons import isClockwise
+from samplers.polygons import isClockwise, \
+                       removeDuplicates as pl_removeDuplicates, \
+                       removeDuplilines as pl_removeDuplilines, \
+                       removeDuplangles as pl_removeDuplangles, \
+                       smoothSubdivise as pl_smoothSubdivise, \
+                       subsampleDistance as pl_subsampleDistance, \
+                       subsampleAngle as pl_subsampleAngle
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -100,7 +106,7 @@ def getInS(file):
             atrbut.update({natrbut:[proc.group('after').strip()]})
          else:
             print '... Could not read the order of your Attributes:',core[icore]
-            sys.exit()
+            sys.exit(1)
       # ... more instruction coming ...
       icore += 1
    head = core[0:icore]
@@ -108,7 +114,7 @@ def getInS(file):
 
    # ~~ Parse body ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # This is also fairly fast, so you might not need a progress bar
-   poly = []; type = []; npoin = 0
+   poly = []; typ = []; npoin = 0
    while icore < len(core):
       if core[icore].strip() == '':
          icore += 1
@@ -117,13 +123,14 @@ def getInS(file):
       proc = re.match(var_1int,core[icore])
       if not proc:
          print '\nCould not parse the following polyline header: '+core[icore]
-         sys.exit()
+         sys.exit(1)
       nrec = int(proc.group('number'))
       a = proc.group('after').strip().split()
       if len(a) != natrbut:
          print '... Could not find the correct number of attribute:',core[icore],', ',natrbut,' expected'
-         sys.exit()
-      for i in atrbut.keys(): atrbut[i].append(a[i-1])
+         sys.exit(1)
+      for i in atrbut: 
+         atrbut[i].append(a[i-1])
       xyi = []; icore += 1
       for irec in range(nrec):
          nbres = core[icore+irec].split()
@@ -132,14 +139,14 @@ def getInS(file):
             proc = re.match(var_1int,nbres[0])
             if not proc:
                print '\nCould not parse the following polyline record: '+core[icore+irec]
-               sys.exit()
+               sys.exit(1)
          nbres[0] = float(proc.group('number'))
          proc = re.match(var_1dbl,nbres[1])
          if not proc:
             proc = re.match(var_1int,nbres[1])
             if not proc:
                print '\nCould not parse the following polyline record: '+core[icore+irec]
-               sys.exit()
+               sys.exit(1)
          nbres[1] = float(proc.group('number'))
          xyi.append(nbres)
       if xyi != []:
@@ -148,13 +155,13 @@ def getInS(file):
             xyi.pop(len(xyi)-1)
             cls = 1
          poly.append(np.asarray(xyi))
-         type.append(cls)
+         typ.append(cls)
       npoin += len(xyi)
       icore += nrec
 
-   return head,fileType,npoin,poly,type,atrbut
+   return head,fileType,npoin,poly,typ,atrbut
 
-def putInS(file,head,fileType,poly,type=None,atrbut=None):
+def putInS(file,head,fileType,poly,typ=None,atrbut=None):
 
    # ~~ Write head ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if head != []: core = head
@@ -166,23 +173,23 @@ def putInS(file,head,fileType,poly,type=None,atrbut=None):
       ':EndHeader' ]
 
    # ~~ Look for closed lines ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if type == None:
-      type = []
+   if typ == None:
+      typ = []
       for ip in poly:
-         if isClose(ip[0],ip[len(ip)-1]): type.append(True)
-         else: type.append(False)
+         if isClose(ip[0],ip[len(ip)-1]): typ.append(True)
+         else: typ.append(False)
 
    # ~~ Look for closed lines ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if atrbut == None:
       atrbut = {1:['name']}
-      for p in poly: atrbut[1].append('0')
+      for _ in poly: atrbut[1].append('0')
 
    # ~~ Write body ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for i,ip,it in zip(range(len(poly)),poly,type):
+   for i,ip,it in zip(range(len(poly)),poly,typ):
       il = len(ip)
       if il != 0 and not isClose(ip[0],ip[len(ip)-1]): il += it
       line = str(il)
-      for a in range(len(atrbut.keys())): line  = line + ' ' + atrbut[a+1][i+1]
+      for a in atrbut: line  = line + ' ' + a[i+1]
       core.append(line)
       if fileType == 'i2s':
          for xyi in ip: core.append(str(xyi[0])+' '+str(xyi[1]))
@@ -231,7 +238,7 @@ class InS:
       while ip < len(self.poly):
          ibar += len(self.poly[ip])
          lb = len(self.poly[ip])
-         self.poly[ip],self.type[ip] = removeDuplicates(self.poly[ip],self.type[ip])
+         self.poly[ip],self.type[ip] = pl_removeDuplicates(self.poly[ip],self.type[ip])
          la = len(self.poly[ip])
          if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
          if self.poly[ip] == []:
@@ -248,7 +255,7 @@ class InS:
       ip = 0
       while ip < len(self.poly):
          ibar += len(self.poly[ip])
-         p,t = removeDuplilines(self.poly[ip],self.type[ip])
+         p,t = pl_removeDuplilines(self.poly[ip],self.type[ip])
          pbar.trace() # /!\ the call requires sub-progress bar
          if len(p) > 1:
             pbar.maxval -= len(self.poly[ip])
@@ -271,7 +278,7 @@ class InS:
       while ip < len(self.poly):
          ibar += len(self.poly[ip])
          lb = len(self.poly[ip])
-         self.poly[ip],self.type[ip] = removeDuplangles(self.poly[ip],self.type[ip])
+         self.poly[ip],self.type[ip] = pl_removeDuplangles(self.poly[ip],self.type[ip])
          la = len(self.poly[ip])
          if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
          if self.poly[ip] == []:
@@ -313,7 +320,7 @@ class InS:
       for ip in range(len(self.poly)):
          ibar += len(self.poly[ip])
          lb = len(self.poly[ip])
-         self.poly[ip],self.type[ip] = smoothSubdivise(self.poly[ip],self.type[ip],weight)
+         self.poly[ip],self.type[ip] = pl_smoothSubdivise(self.poly[ip],self.type[ip],weight)
          la = len(self.poly[ip])
          if la > lb: pbar.write('    +> added '+str(la-lb)+' points to polygon '+str(ip+1),ibar)
          pbar.update(ibar)
@@ -328,7 +335,7 @@ class InS:
       while ip < len(self.poly):
          ibar += len(self.poly[ip])
          lb = len(self.poly[ip])
-         self.poly[ip],self.type[ip] = subsampleDistance(self.poly[ip],self.type[ip],distance)
+         self.poly[ip],self.type[ip] = pl_subsampleDistance(self.poly[ip],self.type[ip],distance)
          la = len(self.poly[ip])
          if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
          if self.poly[ip] == []:
@@ -349,7 +356,7 @@ class InS:
       while ip < len(self.poly):
          ibar += len(self.poly[ip])
          lb = len(self.poly[ip])
-         self.poly[ip],self.type[ip] = subsampleAngle(self.poly[ip],self.type[ip],angle)
+         self.poly[ip],self.type[ip] = pl_subsampleAngle(self.poly[ip],self.type[ip],angle)
          la = len(self.poly[ip])
          if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
          if self.poly[ip] == []:
@@ -380,7 +387,7 @@ class InS:
          else:
             self.poly[ip],loops = cutAngleJoinSplit(
                self.poly[ip],angle,distance,stencil )
-         sys.exit()
+         sys.exit(1)
          la = len(self.poly[ip])
          if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
          if len(loops) > 0: pbar.write('    +> separate loops created from polygon '+str(ip+1),ibar)
@@ -421,7 +428,7 @@ def getXYn(file):
          proc = re.match(var_2dbl,core[icore]+' ')
          if not proc:
             print '\nCould not parse the first record: '+core[icore]
-            sys.exit()
+            sys.exit(1)
          else: fileType = 'xy'
       else: fileType = 'xyz'
 
@@ -435,13 +442,13 @@ def getXYn(file):
          proc = re.match(var_2dbl,core[icore]+' ')
          if not proc:
             print '\nCould not parse the following xyz record: '+core[icore]
-            sys.exit()
+            sys.exit(1)
          xyz.append([float(proc.group('number1')),float(proc.group('number2'))])
       elif fileType == 'xyz':
          proc = re.match(var_3dbl,core[icore]+' ')
          if not proc:
             print '\nCould not parse the following xyz record: '+core[icore]
-            sys.exit()
+            sys.exit(1)
          xyz.append([float(proc.group('number1')),float(proc.group('number2')),float(proc.group('number3'))])
       icore += 1
    #pbar.finish()
@@ -462,9 +469,9 @@ def putXYn(file,head,fileType,xyz):
 
    # ~~ Write body ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if fileType == 'xy':
-      for i in xyz: core.append(str(xyz[0])+' '+str(xyz[1]))
+      for _ in xyz: core.append(str(xyz[0])+' '+str(xyz[1]))
    elif fileType == 'xyz':
-      for i in xyz: core.append(str(xyz[0])+' '+str(xyz[1])+' '+str(xyz[2]))
+      for _ in xyz: core.append(str(xyz[0])+' '+str(xyz[1])+' '+str(xyz[2]))
 
    # ~~ Put all ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    putFileContent(file,core)

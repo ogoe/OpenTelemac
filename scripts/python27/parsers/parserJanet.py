@@ -66,12 +66,12 @@ def getINSEL(file):
    core = getFileContent(file)
    if not re.match(dat_footer,core[len(core)-1]):
       print '\nCould not parse the following end line of the file: '+core[len(core)-1]
-      sys.exit()
+      sys.exit(1)
 
    # ~~ First scan at INSEL and DAMM ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # This is also fairly fast, so you might not need a progress bar
    core.pop(len(core)-1)
-   poly = []; type = []; npoin = 0
+   poly = []; typ = []; npoin = 0
    iline = 0; xyi = []; fileType = True
    while iline < len(core):
       proco = re.match(dat_openh,core[iline])
@@ -81,7 +81,7 @@ def getINSEL(file):
       if proco or procc:
          iline += 1
          if xyi != []:
-            poly.append(xyi); npoin += len(xyi); type.append(t)
+            poly.append(xyi); npoin += len(xyi); typ.append(t)
             xyi = []
       else:
          proc = re.match(var_3dbl,core[iline].strip())
@@ -94,9 +94,9 @@ def getINSEL(file):
                xyi.append((proc.group('number1'),proc.group('number2')))
             else:
                print '\nCould not parse the following polyline record: '+core[iline]
-               sys.exit()
+               sys.exit(1)
       iline += 1
-   poly.append(xyi); npoin += len(xyi); type.append(t)
+   poly.append(xyi); npoin += len(xyi); typ.append(t)
 
    # ~~ Second scan at INSEL and DAMM ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # This is also fairly fast, so you might not need a progress bar
@@ -115,7 +115,7 @@ def getINSEL(file):
             poly[pline][iline] = [ float(a),float(b) ]
          poly[pline] = np.asarray(poly[pline])
 
-   return fileType,npoin,poly,type
+   return fileType,npoin,poly,typ
 
 """
    self.poly is a numpy object, while self.type is not.
@@ -124,7 +124,7 @@ class INSEL:
 
    def __init__(self,fileName):
       self.fileName = fileName
-      self.fileType,self.npoin,self.poly,self.type = getINSEL(self.fileName)
+      self.fileType,self.npoin,self.poly,self.typ = getINSEL(self.fileName)
 
    def toi2s(self,ins):
       ins.head = []
@@ -132,5 +132,5 @@ class INSEL:
       else: ins.fileType = 'i2s'
       ins.npoin = self.npoin
       ins.poly = self.poly
-      ins.type = self.type
+      ins.typ = self.typ
       return ins

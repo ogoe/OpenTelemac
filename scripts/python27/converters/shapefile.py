@@ -130,17 +130,17 @@ class Reader:
             if type(args[0]) is type("stringTest"):
                 self.load(args[0])
                 return
-        if "shp" in kwargs.keys():
+        if "shp" in kwargs:
             if hasattr(kwargs["shp"], "read"):
                 self.shp = kwargs["shp"]
                 if hasattr(self.shp, "seek"):
                     self.shp.seek(0)
-            if "shx" in kwargs.keys():
+            if "shx" in kwargs:
                 if hasattr(kwargs["shx"], "read"):
                     self.shx = kwargs["shx"]
                     if hasattr(self.shx, "seek"):
                         self.shx.seek(0)
-        if "dbf" in kwargs.keys():
+        if "dbf" in kwargs:
             if hasattr(kwargs["dbf"], "read"):
                 self.dbf = kwargs["dbf"]
                 if hasattr(self.dbf, "seek"):

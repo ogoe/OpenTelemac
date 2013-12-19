@@ -53,7 +53,7 @@ __date__ ="$13-Jan-2012 08:51:29$"
         multiple input files can be used
 """
 
-if __name__ == "__main__":
+def main(action=None):
    debug = False
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -71,10 +71,12 @@ if __name__ == "__main__":
    parser.add_option("--aclockwise",action="store_true",dest="faclock",default=False,help="if present, clockwise polylines will be converted anticlockwise" )
 
    options, args = parser.parse_args()
+   if not action is None:
+       args.insert(0, action)
    if len(args) < 1:
       print '\nThe name of one file at least is required\n'
       parser.print_help()
-      sys.exit()
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads code name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,9 +88,9 @@ if __name__ == "__main__":
 
       if not options.freplace:
          if len(args) != 3:
-            print '\nThe code ',codename,' (without --replace) uses a minimum of 2 argumensts, aside from the options\n'
+            print '\nThe code ',codeName,' (without --replace) uses a minimum of 2 argumensts, aside from the options\n'
             parser.print_help()
-            sys.exit()
+            sys.exit(1)
          insFiles = [ args[1] ]
          outFile = args[2]
       else:
@@ -130,16 +132,19 @@ if __name__ == "__main__":
 
          ins.putContent( outFile )
 
-         if options.freplace: moveFile(outFile,slfFile)
+         if options.freplace: moveFile(outFile,insFile)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of UNKNOWN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    else:
       print '\nDo not know what to do with this code name: ',codeName
-      sys.exit()
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)
+
+if __name__ == "__main__":
+    main(None)

@@ -62,9 +62,9 @@ class InS2Shp(InS):
       for poly in self.poly:
          f.poly(shapeType = 5, parts = [poly])
          if i == 1:
-            for k in self.atrbut.keys(): f.field(self.atrbut[k][0], 'C', '40')
+            for k in self.atrbut: f.field(self.atrbut[k][0], 'C', '40')
          a = []
-         for k in self.atrbut.keys(): a.append(self.atrbut[k][i])
+         for k in self.atrbut: a.append(self.atrbut[k][i])
          f.record(*a)
          i += 1
       f.save(path.basename(path.splitext(fileName)[0]))
@@ -90,7 +90,7 @@ if __name__ == "__main__":
    if len(args) < 1:
       print '\nAt least a code name (and its associated inputs) are required\n'
       parser.print_help()
-      sys.exit()
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads code name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,4 +113,4 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)

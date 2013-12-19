@@ -21,8 +21,8 @@
 #
 # ~~> dependencies towards standard python
 import sys
-from os import system, remove
-import ConfigParser
+from os import remove
+import subprocess as sp
 from optparse import OptionParser
 
 # _____             ________________________________________________
@@ -55,6 +55,18 @@ if __name__ == "__main__":
              dest="outputFile",
              default="output.med",
              help="name of the output file also defines the output format")
+   # output fomrat
+   parser.add_option("","--input-format",
+             type="string",
+             dest="inputFormat",
+             default="",
+             help="name of the input format, overwrites input detected by extension")
+   # output fomrat
+   parser.add_option("","--output-format",
+             type="string",
+             dest="outputFormat",
+             default="",
+             help="name of the output format, overwrites output detected by extension")
    # the boundary file option
    parser.add_option("-b","--boundary-file",
              type="string",
@@ -79,12 +91,6 @@ if __name__ == "__main__":
              dest="silent",
              default=False,
              help="disable stbtel output informations")
-   # specail option to read/write selafin with bouble precision
-   parser.add_option("","--selafin-double-precision",
-             action="store_true",
-             dest="isdble",
-             default=False,
-             help="state that the selafin file is in double precision")
    # the debug mode option
    parser.add_option("","--debug",
              action="store_true",
@@ -98,75 +104,73 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Identifying input and output informations ~~~~~~~~~~~~~~~~~~~
    if len(args) < 1:
-       print("\nMissing input file\n")
-       parser.print_help()
-       sys.exit(-1)
+     print("\nMissing input file\n")
+     parser.print_help()
+     sys.exit(1)
    # Getting input and output file names
    inputFile = args[0]
    outputFile = options.outputFile
-   # Finding the input format by checking the extension
-   n = len(inputFile)
-   i = inputFile.find('.')
-   inputExtension = inputFile[i+1:n]
-   if not inputExtension in formats.keys():
-        print("The input file extension is unknown")
-        print("Known associations :")
-        print(formats)
-        sys.exit(-1)
-   inputFormat = formats[inputExtension]
-   # Finding the output format
-   n = len(outputFile)
-   i = outputFile.find('.')
-   outputExtension = outputFile[i+1:n]
-   if not outputExtension in formats.keys():
-        print("The output file extension is unknown")
-        print("Known associations :")
-        print(formats)
-        sys.exit(-1)
-   outputFormat = formats[outputExtension]
+   if options.inputFormat == "":
+     # Finding the input format by checking the extension
+     n = len(inputFile)
+     i = inputFile.find('.')
+     inputExtension = inputFile[i+1:n]
+     if not inputExtension in formats:
+       print("The input file extension is unknown")
+       print("Known associations :")
+       print(formats)
+       sys.exit(1)
+     inputFormat = formats[inputExtension]
+   if options.outputFormat == "":
+     # Finding the output format
+     n = len(outputFile)
+     i = outputFile.find('.')
+     outputExtension = outputFile[i+1:n]
+     if not outputExtension in formats:
+       print("The output file extension is unknown")
+       print("Known associations :")
+       print(formats)
+       sys.exit(1)
+     outputFormat = formats[outputExtension]
    
-   # if double precision parameter enable check that input or output is selafin
-   if options.isdble:
-     print("\n*** Working with double precision serafin ***\n")
-     if not (outputFormat == 'SERAFIN' or inputFormat == 'SERAFIN'):
-        print("serafin double precision parameter available only")
-        print("if input or output format is selafin")
-        sys.exit(-1)
    # Loop on the number of domains
    ndomains = options.ndomains
    for idom in range(0,ndomains):
-      # build the extension added to each file of the distributed mesh by partel
-      if ndomains == 1:
-        # Nothing if we are dealling with a non-distributed mesh
-        extens=''
-      else:
-          # the string of format 00000-00000
-          extens=str(ndomains-1).zfill(5)+'-'+str(idom).zfill(5)
-      # Writting the steering file
-      fichier = open("stb"+extens+".cas","w")
-      fichier.write("CONVERTER : 'YES'\n")
-      if options.debug:
-          fichier.write("DEBUG : 'YES'\n")
-      fichier.write("INPUT FILE FORMAT : '"+inputFormat+"'\n")
-      fichier.write("INPUT FILE : '"+inputFile+extens+"'\n")
-      if options.boundaryFile != "":
-          fichier.write("BOUNDARY FILE : '"+options.boundaryFile+extens+"'\n")
-      if options.logFile != "":
-          fichier.write("LOG FILE : '"+options.logFile+extens+"'\n")
-      fichier.write("OUTPUT FILE FORMAT : '"+outputFormat+"'\n")
-      fichier.write("OUTPUT FILE : '"+outputFile+extens+"'\n")
-      if options.isdble:
-          fichier.write("SELAFIN IN DOUBLE PRECISION : 'YES'\n")
-      # if 
-      if outputFormat == "SERAFIN":
-          fichier.write("OUTPUT BOUNDARY FILE : '"+outputFile[0:(n-3)]+"cli"+extens+"'\n")
-      # If th output is in UNV format add the name of the lof file
-      if outputFormat == "UNV":
-          fichier.write("OUTPUT LOG FILE : '"+outputFile[0:(n-3)]+"log"+extens+"'\n")
-      fichier.close()
-      # Running stbtel
-      system("stbtel.py stb"+extens+".cas")
-      # Remove the case file
-      #remove("stb"+extens+".cas")
-   
-   sys.exit()
+     # build the extension added to each file of the distributed mesh by partel
+     if ndomains == 1:
+       # Nothing if we are dealling with a non-distributed mesh
+       extens=''
+     else:
+       # the string of format 00000-00000
+       extens=str(ndomains-1).zfill(5)+'-'+str(idom).zfill(5)
+     # Writting the steering file
+     fichier = open("stb%s.cas" % extens,"w")
+     fichier.write("CONVERTER : 'YES'\n")
+     if options.debug:
+       fichier.write("DEBUG : 'YES'\n")
+     fichier.write("INPUT FILE FORMAT : '%s'\n" % inputFormat)
+     fichier.write("INPUT FILE : '%s%s'\n" % (inputFile, extens))
+     if options.boundaryFile != "":
+       fichier.write("BOUNDARY FILE : '%s%s'\n" % (options.boundaryFile, extens))
+     if options.logFile != "":
+       fichier.write("LOG FILE : '%s%s'\n" % (options.logFile, extens))
+     fichier.write("OUTPUT FILE FORMAT : '%s'\n" % outputFormat)
+     fichier.write("OUTPUT FILE : '%s%s'\n" % (outputFile, extens))
+     # if the output is serafin format we add the boundary file 
+     if outputFormat == "SERAFIN":
+       fichier.write("OUTPUT BOUNDARY FILE : '%scli%s'\n" % (outputFile[0:(n-3)], extens))
+     # If th output is in UNV format add the name of the log file
+     if outputFormat == "UNV":
+       fichier.write("OUTPUT LOG FILE : '%slog%s'\n" % (outputFile[0:(n-3)], extens))
+     fichier.close()
+     # Running stbtel
+     sp.call(["stbtel.py", "stb%s.cas" % extens])
+     # Remove the case file
+     remove("stb%s.cas" % extens)
+
+   print '\n\n'+'~'*72
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nMy work is done\n\n'
+
+   sys.exit(0)

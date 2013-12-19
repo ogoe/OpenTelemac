@@ -101,7 +101,7 @@ def toLatLong( easting,northing, zone ):
    maxeast = np.max(easting)
    if mineast < -1000000 or maxeast > 1000000:
       print '... Easting out of range (must be between 100 km and 1000 km)'
-      sys.exit()
+      sys.exit(1)
    
    maxnord = np.max(northing)
    if maxnord < 0: northing = northing - 10000000   # South and North
@@ -109,12 +109,12 @@ def toLatLong( easting,northing, zone ):
    maxnord = np.max(northing)
    if minnord < 0 or maxnord > 10000000:
       print '... Northing out of range (must be between 0 m and 10.000.000 m)'
-      sys.exit()
+      sys.exit(1)
    
    # ~~> zoning
    if zone < 1 or zone > 60:
       print '... Zone number out of range (must be between 1 and 60)'
-      sys.exit()
+      sys.exit(1)
 
 
    #if zone_letter < 'N': northing -= 10000000
@@ -168,7 +168,7 @@ def fromLatLong(longitude,latitude):
    maxlat = np.max(latitude)
    if minlat < -84 or maxlat > 84:
       print '... Latitude out of range (must be between 84 deg S and 84 deg N)'
-      sys.exit()
+      sys.exit(1)
    lat_rad = np.radians(latitude)
    lat_sin = np.sin(lat_rad)
    lat_cos = np.cos(lat_rad)
@@ -181,7 +181,7 @@ def fromLatLong(longitude,latitude):
    maxlon = np.max(longitude)
    if minlon < -180 or maxlon > 180:
       print '... Longitude out of range (must be between 180 deg W and 180 deg E)'
-      sys.exit()
+      sys.exit(1)
    lon_rad = np.radians(longitude)
 
    # ~~> zone number for the mid point

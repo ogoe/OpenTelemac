@@ -102,7 +102,7 @@ def parseArrayFrame(s,size=-1):
       elif procr: frameA = ( float(procr.group('n')), )
       else:
          print '... could not parse the point <' + node[0] + '> from the string "' + s + '"'
-         sys.exit()
+         sys.exit(1)
 
       # ~~> Final packing
       frames.extend( frameA )
@@ -161,12 +161,12 @@ def parseArrayPoint(s,size=-1):
          if len(xy) != 2:
             print '... we are not allowing anything anything but a pair (x,y). You have: <' + node[0] + '>from the string "' + s + '"'
             print '   +> if you need (x,y,z) you should use a depth above plan 0: (x,y)@z#0'
-            sys.exit()
+            sys.exit(1)
       elif proce:
          pointA = []
       else:
          print '... could not parse the point <' + node[0] + '> from the string "' + s + '"'
-         sys.exit()
+         sys.exit(1)
 
       # ~~> Is it a depth d or a plane p or both
       pointB = []
@@ -247,12 +247,12 @@ def parseArrayPaires(s):
          if len(xy) != 2:
             print '... we are not allowing anything anything but a pair (x,y). You have: <' + node[0] + '>from the string "' + s + '"'
             print '   +> if you need (x,y,z) you should use a depth above plan 0: (x,y)@z#0'
-            sys.exit()
+            sys.exit(1)
       elif proce:
          pointA = []
       else:
          print '... could not parse the point <' + node[0] + '> from the string "' + s + '"'
-         sys.exit()
+         sys.exit(1)
 
       # ~~> Final packing
       paires.append( pointA )
@@ -287,7 +287,7 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)
 
 """
 This will parse pairs of values from a string and
@@ -320,9 +320,8 @@ def parseArrayPaires(s):
             if re.match(var_dist,v) or re.match(var_cote,v) or re.match(var_plan,v): p.append(v)
             else:
                print '... could not parse the array: ' + s
-               sys.exit()
+               sys.exit(1)
       z.append(p)
 
    return z
-
 """

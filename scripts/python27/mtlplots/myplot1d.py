@@ -225,4 +225,4 @@ __date__ ="$19-Jul-2011 08:51:29$"
 
 if __name__ == "__main__":
 
-   sys.exit()
+   sys.exit(0)

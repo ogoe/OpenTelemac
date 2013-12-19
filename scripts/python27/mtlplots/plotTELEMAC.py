@@ -207,7 +207,7 @@ class Figure:
          self.do = Dumper3D() # meta data with plot['deco']
       else:
          print '... do not know how to Figure this one out: ' + typl
-         sys.exit()
+         sys.exit(1)
       self.typePlot = typl
       self.figureName = figureName
       self.display = display
@@ -415,7 +415,7 @@ class Figure2D(Figure):
 
                   if support2d != []:
                      print '... you cannot "wire" and "sample" at the same time yet with this layer: ',var
-                     sys.exit()
+                     sys.exit(1)
                   # ~~> Extract unique edges and outline /!\ assumes all same clowise orientation
                   if edgexy == []:
                      # ~~> Bottom row
@@ -586,7 +586,7 @@ def getColourMap(fileName):
    except:
       print "... Could not access/read expected colour map file content: " + fileName
       f.close()
-      sys.exit()
+      sys.exit(1)
 
    for entry in xmlRoot.findall("Point"):
       red.append((float(entry.attrib["x"]),float(entry.attrib["r"]),float(entry.attrib["r"])))
@@ -674,7 +674,7 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)
 """
 def plot2dMeshSLF(geometry):
 
@@ -724,12 +724,12 @@ def plot2dMeshSLF(geometry):
       # Extract variable data
       NBV1,NBV2,VARNAMES,VARUNITS = vars
       for i in range(NBV1+NBV2):
-         if geometry.has_key('varsPlot'):
+         if 'varsPlot' in geometry:
             if not VARNAMES[i].strip() in geometry['varsPlot']: continue
          VARSOR = getCoreValueSLF(f,i,NPOIN3)
          # ~~ Plot data
          colourmap = cm.jet
-         if geometry.has_key('cmapPlot'):
+         if 'cmapPlot'in geometry:
             colourmap = LinearSegmentedColormap('User', getColourMap(geometry['cmapPlot']))
          zmin = VARSOR[0]; zmax = VARSOR[0]
          for z in VARSOR[1:]:
@@ -747,8 +747,8 @@ def plot2dMeshSLF(geometry):
          mp.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
          mp.axis('equal')         # sets both axis scale to be equal
          #mp.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
-         #if geometry.has_key('cmapPlot'): fig.colorbar(colection)     # sets up colourbar
-         #if geometry.has_key('cmapPlot'): fig.colorbar(colormap)     # sets up colourbar
+         #if 'cmapPlot' in geometry: fig.colorbar(colection)     # sets up colourbar
+         #if 'cmapPlot' in geometry: fig.colorbar(colormap)     # sets up colourbar
          plt.show()
          figout = '.'.join([path.splitext(geometry['fileName'])[0],"bathy",geometry['outFormat']])
          plt.savefig(figout)      # saves output plot to .png file

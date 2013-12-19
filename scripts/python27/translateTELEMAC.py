@@ -149,7 +149,7 @@ class dlgBox(QtGui.QWidget) :
       self.translator = 'BabelFish'
 
       # ~~ Initialisation of files left ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      for mod in MODULES.keys():
+      for mod in MODULES:
          self.leftFileNames.extend(MODULES[mod]['sources'])
 
       # ~~ Go to next text in the next file to be translated ~~~~~~~
@@ -434,7 +434,7 @@ class dlgBox(QtGui.QWidget) :
          poolLines.extend(self.leftLines)
          print poolLines
          putFileContent(self.outFileName,poolLines)
-      sys.exit()
+      sys.exit(1)
 
 class ConfirmSaveBox(QtGui.QWidget):
     def __init__(self, parent=None):
@@ -466,10 +466,10 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    USETELCFG = ''
-   if environ.has_key('USETELCFG'): USETELCFG = environ['USETELCFG']
+   if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    SYSTELCFG = path.join(PWD,'configs')
-   if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
+   if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",
                       type="string",
@@ -484,17 +484,17 @@ if __name__ == "__main__":
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
-      sys.exit()
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
-   cfgname = cfgs.keys()[0]
+   cfgname = cfgs.iterkeys().next()
 
    cfg = parseConfig_TranslateTELEMAC(cfgname)[cfgname]
 
    MODULES = {}
-   for mod in cfg['MODULES'].keys():
+   for mod in cfg['MODULES']:
       if mod in cfg['COMPILER']['MODULES']:
          files = getTheseFiles(path.join(cfg['MODULES'][mod]['path'],'sources'),['.f'])
          if files != []:

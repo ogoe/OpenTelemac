@@ -512,7 +512,7 @@ __date__ ="$09-Jan-2012 08:51:29$"
       alter [--title] [--date] [--time] ...
 """
 
-if __name__ == "__main__":
+def main(action=None):
    debug = False
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -554,10 +554,13 @@ if __name__ == "__main__":
    parser.add_option("--parallel",action="store_true",dest="parallel",default=False,help="if option there, will assume input files have not been recollected, in which case you also need one example of the global file" )
 
    options, args = parser.parse_args()
+   # Adding the action first if called from alter/scan/chop.py
+   if not action is None:
+       args.insert(0,action)
    if len(args) < 1:
       print '\nThe name of one SELAFIN file at least is required\n'
       parser.print_help()
-      sys.exit()
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads code name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -573,7 +576,7 @@ if __name__ == "__main__":
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
          if not path.exists(slfFile):
             print '\nCould not find the file named: ',slfFile
-            sys.exit()
+            sys.exit(1)
          print '\n\nScanning ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          vars = options.xvars
@@ -593,7 +596,7 @@ if __name__ == "__main__":
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
          if not path.exists(slfFile):
             print '\nCould not find the file named: ',slfFile
-            sys.exit()
+            sys.exit(1)
          print '\n\nScanning ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          vars = options.xvars
@@ -613,14 +616,14 @@ if __name__ == "__main__":
             if len(args) != 3:
                print '\nThe code "chop" (without --replace) here requires 2 file names\n'
                parser.print_help()
-               sys.exit()
+               sys.exit(1)
             slfFiles = [ args[1] ]
             outFile = args[2]
          else:
             if len(args) != 4:
                print '\nThe code "chop" (without --replace) here requires 2 file names and 1 file root name for the partition\n'
                parser.print_help()
-               sys.exit()
+               sys.exit(1)
             slfFiles = [ args[1] ]
             rootFile = args[2]
             outFile = args[3]
@@ -633,7 +636,7 @@ if __name__ == "__main__":
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
          if not path.exists(slfFile):
             print '\nCould not find the file named: ',slfFile
-            sys.exit()
+            sys.exit(1)
          print '\n\nChoping ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          vars = options.xvars
@@ -654,14 +657,14 @@ if __name__ == "__main__":
             if len(args) != 3:
                print '\nThe code "alter" (without --replace) requires 2 file names\n'
                parser.print_help()
-               sys.exit()
+               sys.exit(1)
             slfFiles = [ args[1] ]
             outFile = args[2]
          else:
             if len(args) != 4:
                print '\nThe code "alter" (without --replace) here requires 2 file names and 1 file root name for the partition\n'
                parser.print_help()
-               sys.exit()
+               sys.exit(1)
             slfFiles = [ args[1] ]
             rootFile = args[2]
             outFile = args[3]
@@ -674,7 +677,7 @@ if __name__ == "__main__":
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
          if not path.exists(slfFile):
             print '\nCould not find the file named: ',slfFile
-            sys.exit()
+            sys.exit(1)
          print '\n\nAltering ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          vars = options.xvars
@@ -723,7 +726,7 @@ if __name__ == "__main__":
          if len(args) < 4:
             print '\nThe code "merge" requires at leat 2 file names, aside from the options\n'
             parser.print_help()
-            sys.exit()
+            sys.exit(1)
          slfFiles = args[1:len(args)-1]
          outFile = args[len(args)-1]
       
@@ -734,7 +737,7 @@ if __name__ == "__main__":
             slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
             if not path.exists(slfFile):
                print '\nCould not find the file named: ',slfFile
-               sys.exit()
+               sys.exit(1)
             slfs.add( slfFile )
 
          slfs.putContent(outFile)
@@ -743,7 +746,7 @@ if __name__ == "__main__":
          if len(args) != 4:
             print '\nThe code "merge" here requires 2 file names and 1 file root name for the partition\n'
             parser.print_help()
-            sys.exit()
+            sys.exit(1)
          slfFile = args[1]
          rootFile = args[2]
          outFile = args[3]
@@ -753,7 +756,7 @@ if __name__ == "__main__":
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
          if not path.exists(slfFile):
             print '\nCould not find the file named: ',slfFile
-            sys.exit()
+            sys.exit(1)
 
          vars = options.xvars
          if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
@@ -777,7 +780,7 @@ if __name__ == "__main__":
       if len(args) < 3:
          print '\nThe code "diff" uses a minimum of 3 argumensts, aside from the options\n'
          parser.print_help()
-         sys.exit()
+         sys.exit(1)
       slfFiles = args[1:len(args)-1]
       outFile = args[len(args)-1]
 
@@ -788,7 +791,7 @@ if __name__ == "__main__":
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
          if not path.exists(slfFile):
             print '\nCould not find the file named: ',slfFile
-            sys.exit()
+            sys.exit(1)
          slfs.add( slfFile )
 
       slfs.putContent(outFile)
@@ -801,7 +804,7 @@ if __name__ == "__main__":
          if len(args) < 4:
             print '\nThe code "sample" requires at least 2 file names and one series of node numbers\n'
             parser.print_help()
-            sys.exit()
+            sys.exit(1)
          slfFile = args[1]
          outFile = args[2]
          nodList = []
@@ -810,7 +813,7 @@ if __name__ == "__main__":
          if len(args) != 5:
             print '\nThe code "merge" here requires 2 file names, 1 file root name for the partition and 1 series of node numbers\n'
             parser.print_help()
-            sys.exit()
+            sys.exit(1)
          slfFile = args[1]
          rootFile = args[2]
          outFile = args[3]
@@ -820,7 +823,7 @@ if __name__ == "__main__":
       slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
       if not path.exists(slfFile):
          print '\nCould not find the file named: ',slfFile
-         sys.exit()
+         sys.exit(1)
       print '\n\nSample ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       vars = options.xvars
@@ -838,14 +841,14 @@ if __name__ == "__main__":
          if len(args) < 3:
             print '\nThe code "calcs" requires 2 file names\n'
             parser.print_help()
-            sys.exit()
+            sys.exit(1)
          slfFile = args[1]
          outFile = args[2]
       else:
          if len(args) != 4:
             print '\nThe code "calcs" requires 2 file names and 1 root file name for parallel inputs\n'
             parser.print_help()
-            sys.exit()
+            sys.exit(1)
          slfFile = args[1]
          rootFile = args[2]
          outFile = args[3]
@@ -853,7 +856,7 @@ if __name__ == "__main__":
       slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
       if not path.exists(slfFile):
          print '\nCould not find the file named: ',slfFile
-         sys.exit()
+         sys.exit(1)
       print '\n\nCalculations for ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       vars = options.xvars; calcList = []
@@ -899,20 +902,20 @@ if __name__ == "__main__":
       if not options.freplace:
          if len(args) != 3:
             print '\nThe code "subdivide" (without --replace) here requires 2 file names\n'
-            sys.exit()
+            sys.exit(1)
          slfFile = args[1]
          outFile = args[2]
       else:
          if len(args) != 2:
             print '\nThe code "subdivide" (with --replace) here requires 1 file name at a time\n'
-            sys.exit()
+            sys.exit(1)
          slfFile = args[1]
          outFile = "subdivide-tmp.slf"
 
       slfFile = path.realpath(slfFile)
       if not path.exists(slfFile):
          print '\nCould not find the file named: ',slfFile
-         sys.exit()
+         sys.exit(1)
       print '\n\nSubdividing ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       slf = subSELAFIN( slfFile )
@@ -924,10 +927,13 @@ if __name__ == "__main__":
 # ~~~~ Case of UNKNOWN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    else:
       print '\nDo not know what to do with this code name: ',codeName
-      sys.exit()
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)
+
+if __name__ == "__main__":
+   main()

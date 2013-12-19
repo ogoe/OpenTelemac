@@ -40,7 +40,7 @@ try:
 except:
    print '... you are in bad luck !'
    print '  ~>  you need the pydap library unzipped locally'
-   sys.exit()
+   sys.exit(1)
 
 
 # _____                   __________________________________________
@@ -396,12 +396,12 @@ if __name__ == "__main__":
       for i in options.tfrom.split('-'): period[0].append(int(i))
    else:
       print '... could not find your from date. Please use --from option (- delimited, no spaces).\n\n'
-      sys.exit()
+      sys.exit(1)
    if options.tstop != None:
       for i in options.tstop.split('-'): period[1].append(int(i))
    else:
       print '... could not find your stop date. Please use --stop option (- delimited, no spaces).\n\n'
-      sys.exit()
+      sys.exit(1)
 
    # arbitrary box (small pieve of the atlantic side of Mexico)
    modelbox = [[],[]]
@@ -409,12 +409,12 @@ if __name__ == "__main__":
       for i in options.blcorner.split(','): modelbox[0].append(int(i))
    else:
       print '... could not find your bounding box bottom left corner. Please use --bl option (, delimited, no spaces).\n\n'
-      sys.exit()
+      sys.exit(1)
    if options.trcorner != None:
       for i in options.trcorner.split(','): modelbox[1].append(int(i))
    else:
       print '... could not find your bounding box top right corner. Please use --tr option (, delimited, no spaces).\n\n'
-      sys.exit()
+      sys.exit(1)
 
    # rootName
    rootName = options.rootName
@@ -445,4 +445,4 @@ if __name__ == "__main__":
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
 
-   sys.exit()
+   sys.exit(0)

@@ -35,7 +35,7 @@ import sys
 import traceback
 import os
 import threading
-from subprocess import *
+import subprocess as sp 
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
@@ -58,33 +58,33 @@ def filterMessage(d,e=None,bypass=True):
                '\n~~~~~~~~~~~~~~~~~~\n'+
                ''.join(traceback.format_exception(*sys.exc_info()))+
                '~~~~~~~~~~~~~~~~~~'}
-            if d.has_key('name'): cd['name'] = d['name']+':\n      '+cd['name']
-            if d.has_key('msg'): cd['msg'] = d['msg']+':\n      '+cd['msg']
+            if 'name' in d: cd['name'] = d['name']+':\n      '+cd['name']
+            if 'msg' in d: cd['msg'] = d['msg']+':\n      '+cd['msg']
          if bypass: return cd
          print reprMessage([cd])
-         sys.exit()
+         sys.exit(1)
       elif type(e.args) == type([]):
          message = []
          for i in e.args: message.append(i)
          cd.update({'tree':message})
          print cd     #\
-         sys.exit()   # > This should never happend
+         sys.exit(1)   # > This should never happend
          return cd    #/
       else:
          cd.update({'tree':[repr(e.args)]})
          print cd     #\
-         sys.exit()   # > This should never happend
+         sys.exit(1)   # > This should never happend
          return cd    #/
    # ~~> case without
    else:
       if type(d) == type({}):
          if bypass: return d.copy()
          print reprMessage([d])
-         sys.exit()
+         sys.exit(1)
       else:
          cd = {'name':'uncontroled error from python:','msg':repr(d)}
          print cd    #\
-         sys.exit()  # > This should never happend or maybe ?
+         sys.exit(1)  # > This should never happend or maybe ?
          return cd   #/
 
 def reprMessage(items):
@@ -92,14 +92,14 @@ def reprMessage(items):
    for item in items:
       if type(item) == type({}):
          mi = item['name'] + ':'
-         if item.has_key('msg'): mi = mi + ' ' + item['msg']
-         if item.has_key('tree'):
+         if 'msg' in item: mi = mi + ' ' + item['msg']
+         if 'tree' in item:
             me = reprMessage(item['tree'])
             mi = mi + '\n   |' + '\n   |'.join(me.split('\n'))
          message.append(mi)
       else:
          print items      #\
-         sys.exit()       # > This should not happend
+         sys.exit(1)       # > This should not happend
    return '\n'.join(message)
 
 
@@ -125,7 +125,7 @@ class MESSAGES:
 
    def runCmd(self,exe,bypass):
       if bypass:
-         proc = Popen(exe,bufsize=1024,stdout=PIPE,stderr=PIPE,shell=True)
+         proc = sp.Popen(exe,bufsize=1024,stdout=sp.PIPE,stderr=sp.PIPE,shell=True)
          t1 = threading.Thread(target=self.bufferScreen,args=(proc.stdout,))
          t1.start()
          t1.join()
@@ -134,9 +134,11 @@ class MESSAGES:
             self.tail = 'I was only able to capture the following execution error. You may wish to re-run without bypass option.'+ \
                '\n~~~~~~~~~~~~~~~~~~\n'+str(proc.stderr.read().strip())+'\n~~~~~~~~~~~~~~~~~~'
          return self.tail,proc.returncode
-      if os.system(exe):
-         print '... The following command failed for the reason above\n'+exe
-         sys.exit(1)
+      else:
+         returncode = sp.call(exe,shell=True)
+         if returncode != 0:
+            print '... The following command failed for the reason above\n'+exe
+            sys.exit(1)
       return '',0
 
    def bufferScreen(self,pipe):

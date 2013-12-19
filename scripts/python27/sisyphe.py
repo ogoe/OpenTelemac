@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-import sys,os
-if __name__ == "__main__": os.system("python "+os.path.join(os.path.dirname(sys.argv[0]),"runcode.py")+" "+os.path.splitext(os.path.basename(sys.argv[0]))[0]+" " + ' '.join(sys.argv[1:]))
-
 """@author Sebastien E. Bourban
 """
 """@note ... this work is based on a collaborative effort between
@@ -14,3 +11,7 @@ if __name__ == "__main__": os.system("python "+os.path.join(os.path.dirname(sys.
  /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
 !________!                                                        `--'   `--
 """
+from runcode import main
+
+if __name__ == "__main__":
+    main('sisyphe')
