@@ -46,7 +46,7 @@ C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C
       LOGICAL MAS
-      INTEGER IM,JM,I,J
+      INTEGER IM,JM,I,J,I_L,J_L
       DOUBLE PRECISION EIKON
 C
 C-----------------------------------------------------------------------
@@ -61,22 +61,25 @@ C
 C
       ENDIF
 C
-      IM = 47                                                             
-      JM = 10                                                             
+      IM = 47
+      JM = 10
 C                                                                         
 C  VARIANTE FOND EN PENTE RECTILIGNE + CUVETTE                            
 C                                                                         
-      DO 10 I=1,IM                                                        
-      DO 20 J=1,JM 
+      DO I=1,I                                                        
+      DO J=1,JM 
 C       PENTE RECTILIGNE                                                       
-        ZF%R(I+(J-1)*IM) = -0.6D0 + 0.46D0 * FLOAT(I-1) / FLOAT(IM-1) 
-C       BOSSE GAUSSIENNE            
-        IF(I.GT.9.AND.I.LT.29) THEN                                      
-          EIKON = -(I-19)**2/20.D0                                        
-          ZF%R(I+(J-1)*IM) = ZF%R(I+(J-1)*IM) + 0.1D0*EXP(EIKON)                            
-        ENDIF                                                             
-20    CONTINUE                                                            
-10    CONTINUE    
+        I_L = GLOBAL_TO_LOCAL_POINT(I,MESH)
+        J_L = GLOBAL_TO_LOCAL_POINT(J,MESH)
+        ZF%R(I_L+(J_L-1)*IM) = -0.6D0 + 0.46D0 * FLOAT(I_L-1) 
+     &  / FLOAT(IM-1) 
+C       BOSSE GAUSSI_LENNE            
+        IF(I_L.GT.9.AND.I_L.LT.29) THEN
+          EIKON = -(I_L-19)**2/20.D0 
+          ZF%R(I_L+(J_L-1)*IM) = ZF%R(I_L+(J_L-1)*IM) + 0.1D0*EXP(EIKON)
+        ENDIF                                                 
+      ENDDO                                                            
+      ENDDO    
 C
 C-----------------------------------------------------------------------
 C
@@ -175,7 +178,7 @@ C     PROGRAMMABLE PART
 C     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
 C                                                                                                                                             
 C       Q = DEBIT(I)
-        Q = -5.D0*HN%R(236)/0.6D0                                                           
+        Q = -5.D0*HN%R(236)/0.6D0
 C 
       ENDIF          
 C
