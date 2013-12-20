@@ -1,0 +1,111 @@
+/
+/                   COUPLAGE SISYPHE-TELEMAC2D
+/           FICHIER DE DECLARATION DES MOTS CLES DU CODE                
+/                           TELEMAC 2D                                      
+/
+/ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/
+/ Dell 2.8 GHz Linux, comp. pgi :    5 s version 5.7 JMH 09/05/2007
+/ HP C3700, compilateur HP      :  5.5 s version 5.7 CV  07/05/2007 
+/ HP C3700, compilateur Nag     :    6 s version 5.7 JMH 09/05/2007 
+/
+/ Dell 2.8 GHz Linux, comp. pgi :    5 s version 5.8 JMH 18/01/2008
+/ HP C3700, compilateur HP      :    7 s version 5.8 JMH 09/01/2008 
+/ HP C3700, compilateur Nag     :   14 s version 5.8 JMH 23/01/2008 
+/
+/ Version 5.9 (reference faite sur HP)
+/
+/ Difference entre compilateurs sur U due a un debut de tourbillon
+/ de Karman sur la pile de pont a la sortie.
+/
+/ HP C3700, compilateur HP        : 6 s version CV  24/12/2008
+/ Dell 2.8 GHz Linux, comp. Intel : 3 s version JMH 29/12/2008
+/ 
+/ Version 6.0
+/
+/ HP C3700, compilateur HP  : 11 s JMH 29/09/2009
+/ HP C3700, compilateur Nag : 18 s JMH 08/12/2009
+/ Dell 2.8 GHz Linux, Intel :  3 s JMH 10/12/2009
+/
+/ HP C3700, compilateur HP  : 7 s CV   02/06/2010
+/ Dell 2.8 GHz Linux, Intel :  4 s CV 10/05/2010
+/
+/ Version 6.1
+/
+/ HP C3700, compilateur HP  : 7 s JMH 26/04/2011 (reference refaite)
+/ Dell 2.8 GHz Linux, Intel : 2 s CV  21/03/2011
+/ HP C3700, compilateur Nag : 15s CV  31/03/2011
+/  HP Z600 Linux, comp. Intel: 2 s MS  21/07/2011 (reference refaite)
+/ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+/
+/  FICHIERS
+/ ----------
+/ 
+FICHIER DES CONDITIONS AUX LIMITES : geo_epi-en-riviere.cli
+FICHIER DE GEOMETRIE               : geo_epi-en-riviere.slf
+FICHIER DE REFERENCE               : f2d_epi-en-riviere.slf
+FICHIER DES RESULTATS              : r2d_epi-en-riviere.slf
+FICHIER DES FRONTIERES LIQUIDES    : t2d_epi-en-riviere.qsl 
+FICHIER DU CALCUL PRECEDENT        : ini_epi-en-riviere.slf 
+FICHIER DES PARAMETRES DE SISYPHE  : sis_epi-en-riviere.cas
+/
+/ CALCULS
+/ +++++++
+/
+/TITRE :' Couplage  Telemac2d-Sisyphe'                                      
+VALIDATION : OUI
+/
+COUPLAGE AVEC : 'INTER-SISYPHE'
+PERIODE DE COUPLAGE POUR SISYPHE= 1
+/
+SUITE DE CALCUL : OUI
+/ pour avoir les mêmes pas de temps que pour les sorties Sisyphe
+/  -- >REMISE A ZERO DU TEMPS = OUI
+/
+/ ENTREE - SORTIES
+/ ++++++++++++++++                                                                               
+PAS DE TEMPS = 2.5   
+NOMBRE DE PAS DE TEMPS = 200
+PERIODE POUR LES SORTIES GRAPHIQUES = 100
+PERIODE DE SORTIE LISTING = 100          
+VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,H,S,B,K,E,D                    
+/
+BILAN DE MASSE = VRAI
+/
+/ PARAMETRES NUMERIQUES
+/ ---------------------
+BANCS DECOUVRANTS = OUI
+OPTION DE TRAITEMENT DES BANCS DECOUVRANTS = 1
+CORRECTION DE CONTINUITE : OUI
+TRAITEMENT DES HAUTEURS NEGATIVES : 2
+MASS-LUMPING SUR H : 1.                                                        
+FORME DE LA CONVECTION = 1;5                                                    
+OPTION DE SUPG         = 1;0
+COMPATIBILITE DU GRADIENT DE SURFACE LIBRE : 0.9                                                                                        
+SOLVEUR : 7  OPTION DU SOLVEUR : 3      
+PRECISION DU SOLVEUR = 1.E-6    
+/                                                
+/ TURBULENCE - LOI DE FROTTEMENT
+/---------------------------------
+LOI DE FROTTEMENT SUR LE FOND = 3    
+COEFFICIENT DE FROTTEMENT = 50.           
+MODELE DE TURBULENCE = 1 
+COEFFICIENT DE DIFFUSION DES VITESSES = 0.1                                                                   
+/
+/ CONDITIONS INITIALES - AUX LIMITES
+/ ----------------------------------
+DEBITS IMPOSES = 0.;1200.        
+COTES IMPOSEES = 258.;0.                                                       
+COTE INITIALE = 258.  
+CONDITIONS INITIALES = 'COTE CONSTANTE'                     
+OPTION POUR LES FRONTIERES LIQUIDES : 1;1 
+/
+/ PARAMETRES NUMERIQUES
+/ +++++++++++++++++++++
+DISCRETISATIONS EN ESPACE : 11;11
+STOCKAGE DES MATRICES : 3   
+PRODUIT MATRICE-VECTEUR : 1
+PROCESSEURS PARALLELES : 0    
+/
+/            
+/&ETA                                                                            

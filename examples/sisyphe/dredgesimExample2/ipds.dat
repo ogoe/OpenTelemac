@@ -1,0 +1,293 @@
+# Filetype = initial physical datasets (ascii)
+# -----------------------------------------------------------------------------
+#
+# Eingangsdatei fuer die Testroutine/n des Programm-Pakets "io_ipds"
+# >>> Diese Datei nicht loeschen <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# >>> Diese Datei nicht verschieben <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# >>> Diese Datei nicht veraendern <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ------------------------------------------------------------------------------
+# Datumsangabe
+#
+BEGINDATA date_and_time
+#
+  datetime = 01.01.2000-00:00:00
+#
+ENDDATA date_and_time
+#
+# -----------------------------------------------------------------------------
+# Definition von physikalischen Konstantwerten fuer das Gesamtgebiet
+#
+BEGINDATA global_constant_values
+#
+#   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+  waterlevel  =  1.00
+  salinity    = 30.00
+  temperature = 20.00
+#
+#   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#  Die Summe aller vorgegebenen Sedimentfraktionen muss in
+#  jedem Fall 1 sein, unabhaengig von der gewaehlten Porositaet 
+#
+ sediment_fraction   = SehrFeinerSand     1.0
+# sediment_fraction   = Feinsand           0.6 
+#
+ porosity            =          0.3
+#
+#   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+ rigid_layer_depth     = relative   -30.00
+ rigid_layer_roughness = nikuradse  0.000001
+#
+ENDDATA global_constant_values
+#
+BEGINDATA region
+# - - - - - - - - - - - - - - - - - - - - - - - -
+region_name = Fahrrinne
+# - - - - - - - - - - - - - - - - - - - - - - - -
+border_point =    0.0        0.0
+border_point =    0.0    -1400.0
+border_point =    1400.0 -1400.0
+border_point =    1400.0     0.0
+#
+ENDDATA region
+#
+BEGINDATA region
+# - - - - - - - - - - - - - - - - - - - - - - - -
+region_name = Baggerpolygon_1
+# - - - - - - - - - - - - - - - - - - - - - - - -
+border_point =    1055.578 -538.499
+border_point =    1061.281 -598.704
+border_point =    1038.472 -655.725
+border_point =    1025.167 -667.129
+border_point =     954.842 -680.434
+border_point =     916.828 -688.037
+border_point =     871.211 -701.342
+border_point =     844.601 -693.739
+border_point =     835.098 -653.824
+border_point =     825.594 -621.513
+border_point =     911.125 -587.300
+#
+ENDDATA region
+#
+BEGINDATA region
+# - - - - - - - - - - - - - - - - - - - - - - - -
+region_name = Baggerpolygon_2
+# - - - - - - - - - - - - - - - - - - - - - - - -
+border_point =    884.076 -1162.24
+border_point =    910.334 -1211.67
+border_point =    947.918 -1243.07
+border_point =    988.591 -1245.13
+border_point =    998.374 -1241.01
+border_point =    1012.79 -1189.01
+border_point =    966.968 -1171.51
+#
+ENDDATA region
+#
+BEGINDATA region
+# - - - - - - - - - - - - - - - - - - - - - - - -
+region_name = Kolk
+# - - - - - - - - - - - - - - - - - - - - - - - -
+#border_point =    807.939 -991.636
+border_point =    796.758 -984.182
+border_point =    776.258 -953.433
+border_point =    779.985 -908.707
+border_point =    810.734 -871.436
+border_point =    815.859 -834.165
+border_point =    854.994 -818.790
+border_point =    874.096 -784.314
+border_point =    918.355 -776.860
+border_point =    965.876 -765.679
+border_point =    996.159 -800.620
+#border_point =    996.159 -803.416
+#
+ENDDATA region
+#
+BEGINDATA region
+# - - - - - - - - - - - - - - - - - - - - - - - -
+region_name = Baggerpolygon_A
+# - - - - - - - - - - - - - - - - - - - - - - - -
+border_point =    927.298 -597.137
+border_point =    910.626 -654.731
+border_point =    954.579 -642.606
+border_point =    993.985 -631.996
+border_point =    1019.750 -638.059
+border_point =    1056.125 -627.449
+border_point =    1107.656 -612.293
+border_point =    1160.703 -578.950
+border_point =    1187.984 -539.544
+border_point =    1231.937 -519.841
+border_point =    1260.733 -477.403
+border_point =    1242.546 -428.904
+border_point =    1248.608 -375.857
+border_point =    1230.421 -339.482
+border_point =    1216.781 -287.952
+border_point =    1181.921 -257.639
+border_point =    1136.453 -254.608
+border_point =    1072.797 -507.716
+#
+ENDDATA region
+#
+BEGINDATA region
+# - - - - - - - - - - - - - - - - - - - - - - - -
+region_name = Baggerpolygon_B
+# - - - - - - - - - - - - - - - - - - - - - - - -
+border_point =    997.276 -1276.241
+border_point =    958.564 -1280.887
+border_point =    893.529 -1299.468
+border_point =    882.690 -1256.111
+border_point =    833.139 -1246.821
+border_point =    782.040 -1232.885
+border_point =    774.298 -1187.979
+border_point =    737.135 -1161.656
+border_point =    737.135 -1115.202
+border_point =    737.135 -1074.942
+border_point =    712.360 -1042.424
+border_point =    720.102 -991.325
+border_point =    734.038 -943.323
+border_point =    778.943 -909.257
+border_point =    809.912 -868.997
+border_point =    857.915 -856.610
+border_point =    828.494 -1085.781
+border_point =    878.694 -1197.270
+border_point =    998.824 -1228.239
+#
+ENDDATA region
+#
+BEGINDATA region
+# - - - - - - - - - - - - - - - - - - - - - - - -
+region_name = 2500.0
+# - - - - - - - - - - - - - - - - - - - - - - - -
+border_point =    1048.056 -724.668
+border_point =    1051.952 -799.993
+border_point =    1400.0   -800.0
+border_point =    1400.0      0.0
+border_point =    1200.0      0.0
+border_point =    1160.687 -123.809
+border_point =    1252.824 -214.649
+border_point =    1306.031 -365.183
+border_point =    1290.458 -528.695
+border_point =    1195.725 -641.595
+#
+ENDDATA region
+#
+BEGINDATA region
+# - - - - - - - - - - - - - - - - - - - - - - - -
+region_name = 3500.0
+# - - - - - - - - - - - - - - - - - - - - - - - -
+border_point =     600.0    -800.0
+border_point =     600.0   -1400.0
+border_point =    1200.0   -1400.0
+border_point =    1200.0   -1319.0
+border_point =    1002.366 -1319.0
+border_point =     799.924 -1243.733
+border_point =     692.214 -1073.733
+border_point =     692.214  -973.809
+border_point =     736.336  -890.756
+border_point =     759.695  -800.0
+#
+ENDDATA region
+# ------------------------------------------------------------------------------
+BEGINDATA sampling_point                                                        
+  sampling_point_name = Mittendrin                                         
+  sampling_point_xy   = 1300.0  -400.0
+#
+ENDDATA sampling_point
+# ------------------------------------------------------------------------------
+BEGINDATA sampling_point                                                        
+  sampling_point_name = Bagger_1                                         
+  sampling_point_xy   = 939.636 -636.718
+#
+ENDDATA sampling_point
+# ------------------------------------------------------------------------------
+BEGINDATA sampling_point                                                        
+  sampling_point_name = Bagger_2                                         
+  sampling_point_xy   = 943.437 -1199.325
+#
+ENDDATA sampling_point
+# ------------------------------------------------------------------------------
+BEGINDATA sampling_point                                                        
+  sampling_point_name = Punkt_im_Kolk                                         
+  sampling_point_xy   = 864.312 -834.165
+#
+ENDDATA sampling_point
+# ------------------------------------------------------------------------------
+BEGINDATA sampling_point                                                        
+  sampling_point_name = Bagger_A                                         
+  sampling_point_xy   = 1181.137 -506.2
+ENDDATA sampling_point
+# ------------------------------------------------------------------------------
+BEGINDATA sampling_point                                                        
+  sampling_point_name = Bagger_B                                         
+  sampling_point_xy   = 809.912 -1119.847
+ENDDATA sampling_point
+# ------------------------------------------------------------------------------
+BEGINDATA sampling_point                                                        
+  sampling_point_name = Schute_A                                         
+  sampling_point_xy   = 1048.056 -724.668
+ENDDATA sampling_point
+# ------------------------------------------------------------------------------
+BEGINDATA sampling_point                                                        
+  sampling_point_name = Schute_B                                         
+  sampling_point_xy   = 600.0 -800.0
+ENDDATA sampling_point
+#
+# --------------------------------------------------------------------------    
+# Zuordnung von Sampling points zu regions                                      
+BEGINDATA regional_values                                                       
+  region = inside Fahrrinne                                                
+  sampling_point = Mittendrin
+  interpolation_method = nearest_points_in_sectors                                   
+ENDDATA regional_values   
+# --------------------------------------------------------------------------    
+# Zuordnung von Sampling points zu regions                                      
+BEGINDATA regional_values                                                       
+  region = inside Baggerpolygon_1                                                
+  sampling_point = Bagger_1
+  interpolation_method = nearest_points_in_sectors                                   
+ENDDATA regional_values   
+# --------------------------------------------------------------------------    
+# Zuordnung von Sampling points zu regions                                      
+BEGINDATA regional_values                                                       
+  region = inside Baggerpolygon_2                                                
+  sampling_point = Bagger_2
+  interpolation_method = nearest_points_in_sectors                                   
+ENDDATA regional_values
+# --------------------------------------------------------------------------    
+# Zuordnung von Sampling points zu regions                                      
+BEGINDATA regional_values                                                       
+  region = inside Kolk                                                
+  sampling_point = Punkt_im_Kolk
+  interpolation_method = nearest_points_in_sectors                                   
+ENDDATA regional_values
+# ------------------------------------------------------------------------------
+# Zuordnung von Sampling points zu regions                                      
+BEGINDATA regional_values                                                       
+  region = inside Baggerpolygon_A                                               
+  sampling_point = Bagger_A
+  interpolation_method = nearest_points_in_sectors                                   
+ENDDATA regional_values
+# --------------------------------------------------------------------------    
+# Zuordnung von Sampling points zu regions                                      
+BEGINDATA regional_values                                                       
+  region = inside Baggerpolygon_B                                               
+  sampling_point = Bagger_B
+  interpolation_method = nearest_points_in_sectors                                   
+ENDDATA regional_values
+# --------------------------------------------------------------------------    
+# Zuordnung von Sampling points zu regions                                      
+BEGINDATA regional_values                                                       
+  region = inside 2500.0                                               
+  sampling_point = Schute_A
+  interpolation_method = nearest_points_in_sectors                                   
+ENDDATA regional_values
+# --------------------------------------------------------------------------    
+# Zuordnung von Sampling points zu regions                                      
+BEGINDATA regional_values                                                       
+  region = inside 3500.0                                               
+  sampling_point = Schute_B
+  interpolation_method = nearest_points_in_sectors                                   
+ENDDATA regional_values
+#
+ENDFILE
+# ------------------------------------------------------------------------------

@@ -1,0 +1,80 @@
+/DEBUGGER = 1
+/********************************************************************/
+/             FICHIER DES PARAMETRES                                 /
+/                    DE TOMAWAC                                      /
+/   
+/********************************************************************/
+/PROCESSEURS PARALLELES = 1
+/--------------------------------------------------------------------/
+/     FICHIERS
+/--------------------------------------------------------------------/
+FICHIER DE GEOMETRIE = 'geo_littoral.slf'
+FICHIER DES CONDITIONS AUX LIMITES = 'geo_tom_littoral.cli'
+FICHIER DES RESULTATS 2D = 'res_tom_littoral.slf'
+FICHIER FORTRAN = 'tom_littoral.f'
+FICHIER DE REFERENCE = 'ref_tom_littoral.slf'
+/--------------------------------------------------------------------/
+/ DIVERS ENTREES-SORTIES
+/--------------------------------------------------------------------/
+VALIDATION = OUI
+TITRE = 'LITTORAL'
+PERIODE POUR LES SORTIES GRAPHIQUES = 10
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D = 
+HM0,DMOY,TPR5,ZF,WD,FX,FY,UX,UY
+PERIODE POUR LES SORTIES LISTING = 10
+/--------------------------------------------------------------------/
+/ DISCRETISATION
+/--------------------------------------------------------------------/
+FREQUENCE MINIMALE = 0.05
+RAISON FREQUENTIELLE = 1.1007
+/NOMBRE DE FREQUENCES = 25
+NOMBRE DE FREQUENCES = 12
+/NOMBRE DE DIRECTIONS = 36
+NOMBRE DE DIRECTIONS = 12
+PAS DE TEMPS = 10.
+/ SO FAR NECESSARY FOR VALIDATION
+NOMBRE DE PAS DE TEMPS = 100
+/--------------------------------------------------------------------/
+/ CONDITIONS INITIALES   
+/--------------------------------------------------------------------/
+COTE INITIALE DU PLAN D'EAU AU REPOS = 10.
+TYPE DE SPECTRE DIRECTIONNEL INITIAL = 6
+HAUTEUR SIGNIFICATIVE INITIALE = 0.5
+FREQUENCE DE PIC INITIALE = 0.125
+FACTEUR DE PIC INITIAL = 3.3
+FONCTION DE REPARTITION ANGULAIRE INITIALE = 1
+FACTEUR DE PONDERATION POUR FRA INITIALE = 1.0
+DIRECTION PRINCIPALE 1 INITIALE = 30.
+ETALEMENT DIRECTIONNEL 1 INITIAL = 3
+/--------------------------------------------------------------------/
+/ CONDITIONS AUX LIMITES   
+/--------------------------------------------------------------------/
+TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
+HAUTEUR SIGNIFICATIVE AUX LIMITES = 1.
+FREQUENCE DE PIC AUX LIMITES = 0.125
+FACTEUR DE PIC AUX LIMITES = 3.3
+DIRECTION PRINCIPALE 1 AUX LIMITES = 30.
+ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 3.
+/--------------------------------------------------------------------/
+/ OPTIONS DU CALCUL
+/--------------------------------------------------------------------/
+PROFONDEUR D'EAU MINIMALE = 0.05
+PROFONDEUR INFINIE = NON
+PRISE EN COMPTE DES TERMES SOURCES = OUI
+PRISE EN COMPTE DU VENT = NON
+DISSIPATION PAR FROTTEMENT SUR LE FOND = 1
+/COEFFICIENT DE FROTTEMENT SUR LE FOND = 0.042
+/ Valeur par défaut: 0.038
+/===========DEFERLEMENT
+NOMBRE DE SOUS-PAS DE TEMPS POUR LE DEFERLEMENT = 5
+/=========== 1 : Battjes et Janssen (1978)
+/=========== 2 : Thornton et Guza (1983)
+DISSIPATION PAR DEFERLEMENT = 1
+DEFERLEMENT 2 (TG) FONCTION DE PONDERATION = 2
+DEFERLEMENT 2 (TG) CHOIX FREQUENCE CARACTERISTIQUE = 5 
+DEFERLEMENT 2 (TG) CONSTANTE B = 1.0
+DEFERLEMENT 2 (TG) CONSTANTE GAMMA = 0.42
+/
+/PRISE EN COMPTE D'UN COURANT STATIONNAIRE = OUI
+/&ETA
+&FIN

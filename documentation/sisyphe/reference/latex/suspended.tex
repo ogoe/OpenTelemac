@@ -1,0 +1,289 @@
+\section{Suspended load}\label{ch:suspension}
+\subsection{Suspended load transport equation}
+
+\subsubsection{Passive scalar hypothesis}
+For non-equilibrium flow conditions, the bedload and the suspended load
+are dealt separately. The interface between the bedload and suspended
+load is located at $z=Z_{ref}$:
+\begin{itemize} 
+\item In the thin high-concentrated bedload layer ($z <Z_{ref}$) inter-particle interactions and flow-turbulent interactions strongly modify the flow structure. Equilibrium conditions are however a
+reliable assumption to relate the bed-load to the current induced bed shear
+stress.
+\item In the upper part of the flow ($z>Z_{ref}$), for dilute suspension clear flow concepts still apply, and the sediment grains can be regarded as a passive scalar which follows the mean and turbulent flow
+velocity, with an additional settling velocity term.
+\end{itemize}
+
+\subsubsection{Settling velocity}
+The settling velocity $w_{s}$ is an important parameter for the suspension.
+It can be either specified or calculated by the model as a
+function of grain diameter. The van Rijn formula~\cite{vanRijn87, vanRijn93} which is valid for non-cohesive spherical particles and dilute
+suspensions, has been implemented in \sisyphe as follows:
+
+\begin{equation*}
+w_{s} = \left\{\begin{array}{ll}
+\displaystyle
+\frac{(s-1)g d_{50}^2}{18\nu}, & \quad \text{if } d_{50} \leq 10^{-4} \\
+\displaystyle
+\frac{10\nu}{d_{50}} \left(\sqrt{1+0.01\frac{(s-1)gd_{50}^3}{18\nu^2}}-1\right), & \quad \text{if } 10^{-4} \leq d_{50} \leq 10^{-3}\\ 
+\displaystyle
+1.1 \sqrt{(s-1)gd_{50}}, & \quad \text{otherwise} 
+\end{array}
+\right.
+\end{equation*}
+with $s=\rho_{s}/\rho_0$ is the relative density and $g$ is gravity.%
+
+Outside the bedload layer sediment particles are assumed to follow the mean
+flow velocity, $\mathbf{u} = (u,v,w)^T$, with an additional vertical
+settling velocity $w_s$. 
+
+\subsubsection{Three-dimensional sediment transport equation}
+The suspended sediment load can be calculated by solving the full three-dimensional (3D) advection-diffusion equation for the suspended sediment concentration distribution, expressed as:
+
+\begin{equation}\label{eq:ADE3D}
+\frac{\partial c}{\partial t} + \frac{\partial(u c)}{\partial x} + \frac{\partial(v c)}{\partial y} + \frac{\partial(w c)}{\partial z} - \frac{\partial(w_s c)}{\partial z} = \frac{\partial}{\partial x}\left(\varepsilon_s\frac{\partial c}{\partial x}\right) + 
+                                           \frac{\partial}{\partial y}\left(\varepsilon_s\frac{\partial c}{\partial y}\right) +
+                                           \frac{\partial}{\partial z}\left(\varepsilon_s\frac{\partial c}{\partial z}\right) 
+\end{equation}
+with $c=c(\mathbf x,t)$ the volumetric suspended sediment concentration, $w_s > 0$ the vertical-settling sediment velocity, $\varepsilon_s$ the turbulent diffusivity of sediment, often related to the eddy viscosity $\nu_t$ by $\varepsilon_s=\nu_t/\sigma_c$, with $\sigma_c$ being the turbulent Schmidt number (between $0.5$ and $1.0$). The advection-diffusion equation (\ref{eq:ADE3D}) is completed with initial conditions specifying $C=C(\mathbf x,0)$ and boundary conditions as follows. 
+
+At the inlet boundary, a local equilibrium concentration profile can be specified. This profile can be derived from equation (\ref{eq:ADE3D}) by assuming uniform and steady flow conditions. If a parabolic distribution of turbulent eddy diffusivity coefficient is adopted, then the vertical distribution of suspended sediment concentration is the classical Rouse profile.
+At the outlet, the normal gradients of the concentration are set equal to zero. A similar boundary condition can be specified at the sidewalls of the model. 
+
+At the free surface $z=Z_s$, the net vertical sediment flux is set to zero, thus:
+\begin{equation*}
+\left(\varepsilon_s\frac{\partial c}{\partial z} + w_s c\right)_{z=Z_s} = 0.
+\end{equation*}
+
+At the interface between the bed-load and the suspended load $z=Z_{ref}$, a Neumann type boundary condition is specified, in which the total vertical flux equals the net sediment transport:
+
+\begin{equation*}
+\left(\varepsilon_s\frac{\partial c}{\partial z} + w_sc\right)_{z=Z_{ref}} = D-E.
+\end{equation*}
+
+The deposition $D$ and entrainment $E$ fluxes can be expressed as $D=w_s c|_{z=z_b}$ and $E=w_s c_{ref}$, respectively. Further details are given next. The 3D advection-diffusion equation (\ref{eq:ADE3D}), with suitable initial and boundary conditions are solved with {\scshape Sedi-3d}, the set of subroutines of \telddd for three-dimensional sediment transport modelling. We refer the reader to the corresponding documentation~\cite{sedi3d}.   
+
+\subsubsection{Two-dimensional sediment transport equation}
+The two-dimensional (2D) sediment transport equation for the depth-averaged suspended-load concentration $C=C(x,y,t)$ is
+obtained by integrating the 3D sediment transport equation (\ref{eq:ADE3D}) over the suspended-load zone. By applying the Leibniz integral rule, adopting suitable boundary conditions and assuming that the bedload zone is very thin, the depth-integrated suspended-load transport equation is obtained:
+\begin{equation}\label{eq:ADE2D}
+\frac{\partial hC}{\partial t} + \frac{\partial (hUC)}{\partial x} +
+\frac{\partial (hVC)}{\partial y} = 
+\frac{\partial }{\partial x} \left(h\epsilon_s\frac{\partial C}{\partial x}\right) + 
+\frac{\partial }{\partial y} \left(h\epsilon_s\frac{\partial C}{\partial y}\right) + E - D,
+\end{equation}
+with $h=Z_s-Z_f \approx Z_s-Z_{zref}$ the water depth, assuming that the bedload layer thickness is very thin, and $(U,V)^T$ are the depth-averaged velocity components in the $x-$ and $y-$directions, respectively. 
+
+If the effects of the heterogeneous vertical distribution of suspended sediment are taken into account, the following 2D depth-averaged horizontal suspended sediment transport model in its non-conservative form is obtained:
+\begin{equation}\label{eq:ADE2DNC}
+\frac{\partial C}{\partial t} + \underbrace{
+U \frac{\partial C}{\partial x} + 
+V \frac{\partial C}{\partial y}}_{\text{advection}} = 
+\underbrace{\frac{1}{h} \left(\frac{\partial }{\partial x} \left( h\epsilon_s \frac{\partial C}{\partial x} \right) + 
+\frac{\partial }{\partial y} \left(h\epsilon_s \frac{\partial C}{\partial y} \right) \right)}_{\text{diffusion}} +
+\frac{E-D}{h}, 
+\end{equation}
+where $U$ and $V$ are the depth-averaged convective flow velocities in the $x-$ and $y-$ directions, respectively.
+
+\begin{bclogo}[couleur = blue!10, arrondi = 0.10, logo = \bcattention]{\textsf{Attention}}
+Different schemes are available for solving the non-linear advection terms
+depending on the choice of the parameter the classical characteristics
+schemes. To the diffusive schemes SUPG and PSI, it is recommended to use conservative schemes. 
+\end{bclogo}
+
+\subsubsection{Treatment of the diffusion terms}
+
+According to the choice of the parameter \texttt{OPDTRA} of the keyword \texttt{OPTION FOR THE DIFFUSION OF TRACER}, the diffusion terms in (\ref{eq:ADE2DNC}) can be simplified as follows:
+
+\begin{itemize}
+\item \texttt{OPDTRA = 1}: the diffusion term is solved in the form $\grad\cdot(\varepsilon_s\grad T)$
+\item \texttt{OPDTRA = 2}: the diffusion term is solved in the form $\frac{1}{h}\grad\cdot(h\varepsilon_s\grad T)$
+\end{itemize}
+
+The value of the dispersion coefficient $\epsilon_s$ depends on the
+choice of the parameter \texttt{OPTDIF} of the keyword \texttt{OPTION FOR THE DISPERSION}:
+
+\begin{itemize}
+\item \texttt{OPTDIF = 1}: the values of the constant longitudinal and transversal dispersivity coefficients ($T1$ and $T2$ respectively) are provided with the keywords \texttt{DISPERSION ALONG THE FLOW} and \texttt{DISPERSION ACROSS THE FLOW} 
+\item \texttt{OPTDIF = 2}: the values of the longitudinal and transversal dispersivity coefficients are computed with the Elder model $T1=\alpha_l u^* h$ and $T2=\_alpha_t u^* h$, where the coefficients $\alpha_l$ and $\alpha_t$ can be provided with the keywords \texttt{DISPERSION ALONG THE FLOW} and \texttt{DISPERSION ACROSS THE FLOW}. 
+%the Elder model is used to calculate both the longitudinal $\epsilon^l$ and transversal $\epsilon^t$ dispersion components as a function of the friction velocity as $\epsilon^l_s = \alpha_l u_*h$ and $\epsilon^t_s = \alpha_t u_*h$, with $\alpha_l=6$ and $\alpha_t=0.6$
+\item \texttt{OPTDIF = 3}: the values of the dispersion coefficients are provide by \teldd
+\end{itemize}
+
+The diffusion term can also be set to zero with keyword \texttt{DIFFUSION = NO} (\texttt{YES} is the option by default).
+
+
+%\medskip
+%\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+%\begin{itemize}
+%\item {\sffamily SUSPENSION} (= NO by default)
+%\item {\sffamily DIFFUSION} (= YES, by default)
+%\item {\sffamily OPTION FOR THE DIFFUSION OF TRACER}
+%(OPDTRA=1,the default option corresponds to the simplified expression of the
+%diffusion term)
+%\item {\sffamily OPTION FOR THE DISPERSION} (=1, default option)
+%\item {\sffamily DISPERSION ALONG THE FLOW} ($\epsilon_s = 10^{-2}$ m$^{2}$s$^{-1}$, default value)
+%\item {\sffamily DISPERSION ACROSS THE FLOW} ($\epsilon_s = 10^{-2}$ m$^{2}$s$^{-1}$, default value)
+%\item {\sffamily TYPE OF ADVECTION} (RESOL=1 , method of
+%characteristics by default)
+%\end{itemize}
+%\end{bclogo}
+
+\subsubsection{Treatment of the advection terms}
+The convective velocity can be corrected from the depth-averaged
+mean velocity in order to account for the fact that most sediment is
+transported near the bed.
+
+\begin{bclogo}[couleur = blue!10, arrondi = 0.10, logo = \bcattention]{\textsf{Tidal flats}}
+In presence of tidal flats, it is recommended to use conservative
+scheme based on the calculation of flux per segments. The scheme \texttt{14} should
+be used only if the convection velocity differs from the depth-averaged velocity
+and no longer satisfies the shallow-water continuity equation, that is when the keyword \texttt{CORRECTION ON CONVECTION VELOCITY = YES}.
+\end{bclogo}
+
+\subsection{Bed evolution}
+\subsubsection{Bed evolution due to the suspension}
+By considering only suspended load sediment transport, the bed evolution is function of the net vertical sediment flux at the interface between the bedload and the suspended
+load given by: 
+\begin{equation}\label{eq:ExnerSusp}
+(1-n)\frac{\partial Z_f}{\partial t} + (E-D)_{z=Z_{ref}} = 0  
+\end{equation}
+with $Z_f$ the bed elevation, $Z_{ref}$ the interface between the
+bedload and suspended load, and $n$ the bed porosity. Once the flow variables are determined by solving the hydrodynamics and suspended sediment transport equations, changes of bed level are computed from Equation (\ref{eq:ExnerSusp}) for the cell coincident to the bed, calculating at each time step the net sediment flux $E-D$ at the bedload-suspended load
+interface ($z = Z_{ref}$), as explained later. Further details on the derivation of the mass balance equation (\ref{eq:ExnerSusp}) and coupling strategies can be found in~\cite{Wu}.
+
+\begin{bclogo}[couleur = blue!10, arrondi = 0.10, logo = \bcattention]{\textsf{Attention}}
+In Equation (\ref{eq:ExnerSusp}), the net sediment flux $D-E$ is expressed in ms$^{-1}$. 
+For consistency with bedload units, expressed in m$^{2}$s$^{-1}$), concentration is dimensionless. 
+However, the user can choose concentration by mass per unit volume of the mixture (kg m$^{-3}$) by using the keyword \texttt{MASS CONCENTRATION}. The relation between concentration by volume and concentration by mass is $C_m$ (kg m$^{-3}$) = $\rho_s C$.
+\end{bclogo}
+
+\subsection{Equilibrium concentrations}
+
+\subsubsection{Erosion and deposition rates}
+For non-cohesive sediments, the net sediment flux $E-D$ is
+determined based on the concept of equilibrium concentration, see~\cite{CelikRodi}:
+\begin{equation}\label{eq:CelikRodi}
+\left(E-D \right)_{Z_{ref}} = W_s \left(C_{eq} - C_{Z_{ref}}\right) 
+\end{equation}
+where $C_{eq}$ is the equilibrium near-bed concentration and $C_{zref}$ is
+the near-bed concentration, calculated at the interface between the bed-load
+and the suspended load, $z=Z_{ref}$. The keyword \texttt{REFERENCE CONCENTRATION FORMULA} access to four differents semi-empirical formulas: 
+\begin{itemize}
+\item \texttt{ICQ= 1}: Zyserman and Fredsoe formula
+\begin{equation}\label{eq:ZysermanFredsoe}
+C_{eq} =\frac{0.331(\theta'-\theta_c)^{1.75}}{1+0.72(\theta'-\theta_c)^{1.75}}, 
+\end{equation}
+where $\theta_c$ is the critical Shields parameter and $\theta'= \mu\theta$ ,the non-dimensional skin friction which is related to the Shields parameter, by use of the ripple correction factor.
+
+\item \texttt{ICQ= 2}: Bijker (1992) formula
+The equilibrium concentration corresponds to the volume concentration at the
+top of the bed-load layer. It can related to the bed load transport rate:
+\begin{equation}\label{eq:Bijker}
+C_{eq} = \frac{Q_s}{b Z_{ref} u_*}, 
+\end{equation}
+with an empirical factor $b = 6.34$.
+
+\begin{bclogo}[couleur = blue!10, arrondi = 0.10, logo = \bcattention]{\textsf{Attention}}
+The near bed concentration computed with the Bijker formula is related to the bedload. Therefore, this option cannot be used without bedload transport (\texttt{BED-LOAD = YES}). Furthermore, both bedload and suspended load transport must be calculated at each time step, with the keyword \texttt{PERIOD OF COUPLING} set equal to 1.
+\end{bclogo}
+
+\item \texttt{ICQ= 3}: van Rijn formula
+
+\item \texttt{ICQ= 4}: Soulsby-van Rijn formula
+\end{itemize}
+
+\subsubsection{Reference level}
+The reference elevation $Z_{ref}$ corresponds to the interface
+between bedload and suspended load. For flat beds, the bed-load layer
+thickness is proportional to the grain size, whereas when the bed is
+rippled, the bedload layer thickness scales with the equilibrium bed
+roughness ($k_r$). The definition of the reference elevation needs also to be consistent with
+the choice of the equilibrium near-bed concentration formula. 
+
+\begin{itemize}
+\item \texttt{ICQ = 1}: According to Zyserman and Fredsoe, the reference
+elevation should be set to $Z_{ref} = 2d_{50}$. In \sisyphe we take $Z_{ref}=k'_s$, 
+where $k'_s$ is the skin bed roughness for flat bed ($k_s' \approx d_{50}$) 
+, the default value of proportionality factor is \texttt{KSPRATIO =3}). 
+\item \texttt{ICQ = 2}: According to Bijker, $Z_{ref} = k_r$.
+\end{itemize}
+
+\subsubsection{Vertical concentration profile}
+We assume here a Rouse profile for the vertical concentration distribution,
+which is theoretically valid in uniform steady flow conditions:
+\begin{equation}\label{eq:Rouseprofile}
+C(z)=C_{Z_{ref}}\left(\frac{z-h}{z}\frac{a}{a-h}\right)^R, 
+\end{equation}
+where $R$ is the Rouse number defined by
+\begin{equation}\label{eq:R}
+R=\frac{w_s}{\kappa u_*}, 
+\end{equation}
+with $\kappa$ the von Karman constant ($\kappa = 0.4$), $u_*$ the
+friction velocity corresponding to the total bed shear stress (see \S~\ref{xxx}), and $a$ the reference elevation above the bed elevation.
+
+\subsubsection{Ratio between the reference and depth-averaged concentration}
+By depth-integration of the Rouse profile (\ref{eq:Rouseprofile}), the following relation
+can be established between the mean (depth-averaged) concentration and the
+reference concentration:
+\begin{equation*}
+C_{Zref} = F C,
+\end{equation*}
+where:
+\begin{equation}\label{eq:Rouseprofile}
+F^{-1} = \left(\frac{Z_{ref}}{h}\right)^R\int_{Zref/h}^1\left(\frac{1-u}{u}\right)^R du. 
+\end{equation}
+In \sisyphe, we use the following approximate expression for $F$:
+\begin{align*}
+F^{-1} &= \frac{1}{\left(1-Z\right)} B^R\left( 1-B^{(1-R)} \right), \quad \text{for } R \neq 1\\
+F^{-1} &= -B \log B, \quad \text{for } R = 1,
+\end{align*}
+with $B = Z_{ref}/h$.
+
+\subsection{Convection velocity}
+A straightforward treatment of the advection terms would imply the
+definition of an advection velocity and replacement of the depth-averaged
+velocity $U$ in Eq. (\ref{eq:ADE2DNC}) by:
+\begin{equation*}
+U_{conv} = \overline{UC}/C.
+\end{equation*}
+A correction factor is introduced in \sisyphe, defined by:
+\begin{equation*}
+F_{conv} =\frac{U_{conv}}{U} 
+\end{equation*}
+The convection velocity should be smaller than the mean flow velocity ($F_{conv} \leq 1$) since sediment concentrations are mostly transported in the lower part of the water column where velocities are smaller. We further
+assume an exponential profile concentration profile which is a reasonable
+approximation of the Rouse profile, and a logarithmic velocity profile, in
+order to establish the following analytical expression for $F_{conv}$:
+\begin{equation*}
+F_{conv} =-\frac{I_2 - \ln\left(\frac{B}{30}\right) I_1}{I_1 \ln\left( 
+\frac{eB}{30}\right)}, 
+\end{equation*}
+with $B=k_s/h = Z_{ref}/h$ and 
+\begin{equation*}
+I_1 =\int_B^1\left(\frac{(1-u)}{u}\right)^R du,\quad I_2 = \int_B^1 \ln u \left(\frac{(1-u)}{u} \right)^R du.  
+\end{equation*}
+For further details, see~\cite{Huybrechts}.
+
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+\begin{itemize}
+\item \ttfamily{CORRECTION ON CONVECTION VELOCITY} (\ttfamily{= NO}, default option)
+\end{itemize}
+\end{bclogo}
+
+
+\subsection{Initial and boundary conditions for sediment concentrations}
+
+\subsubsection{Initial conditions}
+
+The initial values of volume concentration for each class can be either imposed
+in the subroutine \texttt{condim\_susp.f} or specified in the steering file through the keyword
+\texttt{INITIAL SUSPENSION CONCENTRATIONS}. It will not be used if \texttt{EQUILIBRIUM INFLOW CONCENTRATION = YES}.
+
+\subsubsection{Boundary conditions}
+For boundary conditions, the concentration of each class can be
+specified in the steering file through keyword \texttt{CONCENTRATION PER CLASS AT BOUNDARIES}. 
+To avoid unwanted erosion or sedimentation at the entrance of the domain, it may be also convenient to use keyword \texttt{EQUILIBRIUM INFLOW CONCENTRATION = YES} to specify the value of the concentration at inflow, according to the choice of the \texttt{REFERENCE CONCENTRATION FORMULA}. The depth-averaged equilibrium concentration is then calculated assuming equilibrium concentration at the bed and a Rouse profile correction for the $F$ factor. 
+Input concentrations can be also directly specified in the subroutine \texttt{conlit.f}.
+
+

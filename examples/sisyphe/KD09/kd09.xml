@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="kd09">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="kd09" author="D.Kelly" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="Built" rank="11"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_kd09.cas"
+       title="kd09 telemac2d-sisyphe coupled scalar mode "
+   />
+  
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ -->  
+<!--   <extract xref="Validate" code="sisyphe"
+       do="runPYTHON" target="post_kd09.exe"
+	   dependency="ggensimp.out"
+       title="kd09 validation"
+   />
+   <extract xref="Plot" code="sisyphe"
+       do="runPYTHON" target="plot_kd09.py"
+	   reference="Validate"
+	   dependency="kd09bed.csv;kd09dep.csv"
+       title="kd09 plot"
+   />    
+ --> 
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+ 
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+
+</validation>

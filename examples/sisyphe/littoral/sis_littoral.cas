@@ -1,0 +1,56 @@
+/
+TITRE = ' TRANSPORT LITTORAL'
+CAS PERMANENT = VRAI
+/
+/ FICHIERS (1)
+/ ______________
+/mode sisyphe seul
+/
+FICHIER DE GEOMETRIE = 'geo_littoral.slf'
+FICHIER DES CONDITIONS AUX LIMITES = 'geo_sis_littoral.cli'
+FICHIER DES RESULTATS ='res_sis_littoral.slf'
+FICHIER DE REFERENCE = 'ref_sis_littoral.slf'
+/
+/ FROTTEMENT
+/______________________
+/
+LOI DE FROTTEMENT SUR LE FOND = 5
+COEFFICIENT DE FROTTEMENT = 0.05
+RATIO ENTRE LA RUGOSITE DE PEAU ET LE DIAMETRE MOYEN = 3
+/
+/ENTREES-SORTIES, GRAPHIQUES ET LISTING (1)
+/ ________________________________________
+/ 
+VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,H,M,W,X,TOB
+/ 
+BILAN DE MASSE = VRAI
+/ meme que pour fichier cas Telemac
+PERIODE DE SORTIE GRAPHIQUE = 10
+PERIODE DE SORTIE LISTING = 10
+/NOMBRE DE PAS DE TEMPS = 10
+PAS DE TEMPS = 10.
+/
+/
+/PARAMETRES NUMERIQUES (1)
+/ -----------------------
+/
+ZERO = 1e-12
+TETA = 0.5
+/MASS-LUMPING = NO
+/
+/TRANSPORT SOLIDE (1)
+/ __________________
+/
+FORMULE DE TRANSPORT SOLIDE = 5
+PRISE EN COMPTE DE LA HOULE = OUI
+/ attention seule la deviation est prise en compte 
+/ dans Koch et Flochstra
+EFFET DE PENTE = OUI
+BETA = 0.
+/
+DIAMETRE MOYEN DES GRAINS = 0.0003
+/D90 = 0.0003
+POROSITE DU LIT NON COHESIF = 0.375
+/
+&ETA
+/

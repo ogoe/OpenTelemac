@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="siphon">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="siphon" author="telemac2d" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="1" rank="3"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_siphon.cas"
+       title="siphon scalar mode"
+   />
+   <action xref="2" rank="3"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_siphon.cas"
+       title="siphon parallel mode"
+   />   
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
+-->
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="[10;8]" > 
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="tracor1_tf" size="[10;8]" > 
+      <layer vars="traceur 1:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+   <plot2d xref="tracor1_t1" size="[10;8]" > 
+      <layer vars="traceur 1:map" target="1:T2DRES" config="oneofall" time="[1]" /> 
+   </plot2d>
+   <plot2d xref="tracor1_t10" size="[10;8]" > 
+      <layer vars="traceur 1:map" target="1:T2DRES" config="oneofall" time="[10]" /> 
+   </plot2d>
+   <plot2d xref="tracor1_t20" size="[10;8]" > 
+      <layer vars="traceur 1:map" target="1:T2DRES" config="oneofall" time="[20]" /> 
+   </plot2d>
+   <plot2d xref="tracor2_tf" size="[10;8]" > 
+      <layer vars="traceur 2:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+   <plot2d xref="tracor2_t1" size="[10;8]" > 
+      <layer vars="traceur 2:map" target="1:T2DRES" config="oneofall" time="[1]" /> 
+   </plot2d>
+   <plot2d xref="tracor2_t10" size="[10;8]" > 
+      <layer vars="traceur 2:map" target="1:T2DRES" config="oneofall" time="[10]" /> 
+   </plot2d>
+   <plot2d xref="tracor2_t20" size="[10;8]" > 
+      <layer vars="traceur 2:map" target="1:T2DRES" config="oneofall" time="[20]" /> 
+   </plot2d>
+</validation>

@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="island">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="island" author="telemac2d" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="1" rank="3"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_island.cas"
+       title="island scalar mode"
+   />
+<!-- Test case removed FV is not available in parallel -->
+<!--
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_island.cas"
+       title="island parallel mode"
+   />   
+-->
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="Gages6" type="history" config="together" time="[0:-1]" size="[12;5]" > 
+      <layer vars="free surface:line" extract="(9.3;15)(10.5;15)(13;12.5)" target="1:T2DRES" />
+   </plot1d>
+
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="[10;10]" > 
+      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="Bathy" size="[10;10]" > 
+	  <layer vars="bottom:map" target="1:T2DRES" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="FreeSurface" roi="[10;12][15.5;17]" size="[10;10]" > 
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[32]" /> 
+   </plot2d>     
+
+</validation>
