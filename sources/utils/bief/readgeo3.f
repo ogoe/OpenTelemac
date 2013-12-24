@@ -5,23 +5,19 @@
      &(KNOLG,X,Y,NPOIN,NFIC,IB,FFORMAT,PROJECTION,LATI0,LONGI0,Z)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS OR COMPUTES THE VALUES OF NPOIN, NELEM, NPTFR,
 !+                MXPTVS, MXELVS IN THE GEOMETRY FILE (CHANNEL NGEO).
+!+        Latitude-longitude coordinates transformed into Mercator.
 !
 !warning  USER SUBROUTINE (MAY BE REWRITTEN FOR ANOTHER FILE FORMAT)
 !
-!history  J-M HERVOUET (LNH)     ; REGINA NEBAUER; LAM MINH PHUONG
-!+        19/10/03
-!+
-!+
-!
-!history  EMILE RAZAFINDRAKOTO
-!+        19/10/05
-!+        V5P6
-!+
+!history  J-M HERVOUET (EDF R&D, LNHE)    
+!+        19/10/2003
+!+        V5P3
+!+   First version
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -47,6 +43,12 @@
 !+   inadvertently give them in degrees). Latitude and longitude
 !+   of origin point converted into radians.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        24/12/2013
+!+        V7P0
+!+   Latitude-longitude coordinates now given in degrees. Radians
+!+   triggered too many errors.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FFORMAT        |-->| FILE FORMAT
 !| IB             |-->| SERIES OF 10 INTEGERS IN THE SELAFIN FORMAT
@@ -56,8 +58,8 @@
 !| NFIC           |-->| LOGICAL UNIT OF SELAFIN FILE
 !| NPOIN          |<--| NUMBER OF POINTS IN THE MESH
 !| PROJECTION     |<->| SPATIAL PROJECTION TYPE
-!| X              |<--| ABSCISSAE OF POINTS IN THE MESH
-!| Y              |<--| ORDINATES OF POINTS IN THE MESH
+!| X              |<->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |<->| ORDINATES OF POINTS IN THE MESH
 !| Z              |<--| ELEVATIONS OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -144,13 +146,13 @@
 !
       CALL CORRXY(X,Y,NPOIN)
 !
-!     LATITUDE-LONGITUDE COORDINATES (RADIAN) 
+!     LATITUDE-LONGITUDE COORDINATES (DEGREES) 
 !     CHANGED INTO MERCATOR PROJECTION
 !
       IF(PROJECTION.EQ.3) THEN
         PS4=ATAN(1.D0)
         LONGIRAD=LONGI0*PS4/90.D0
-        TAN2=TAN(0.5D0*LATI0*PS4/90.D0+PS4)
+        TAN2=TAN(LATI0*PS4/180.D0+PS4)
         IF(TAN2.LT.0.D0) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LATI0=',LATI0,' EST PROBABLEMENT FAUSSE'
@@ -162,16 +164,16 @@
           STOP
         ENDIF
         DO I=1,NPOIN
-          X(I)=R*(X(I)-LONGIRAD)
-          TAN1=TAN(0.5D0*Y(I)+PS4)
+          X(I)=R*(X(I)*PS4/90.D0-LONGIRAD)
+          TAN1=TAN(Y(I)*PS4/180.D0+PS4)
           IF(TAN1.LT.0.D0) THEN
             IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'LA LATITUDE DOIT ETRE DONNEE EN  RADIANS'
+              WRITE(LU,*) 'LA LATITUDE DOIT ETRE DONNEE EN DEGRES'
               WRITE(LU,*) 'ICI Y(I)=',Y(I),' POUR I=',I
               WRITE(LU,*) 'UTILISEZ CORRXY (BIEF) POUR LA CONVERSION'
             ENDIF 
             IF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'LATITUDE MUST BE GIVEN IN RADIANS'
+              WRITE(LU,*) 'LATITUDE MUST BE GIVEN IN DEGREES'
               WRITE(LU,*) 'HERE Y(I)=',Y(I),' FOR I=',I
               WRITE(LU,*) 'USE CORRXY (BIEF) FOR CONVERSION'
             ENDIF
