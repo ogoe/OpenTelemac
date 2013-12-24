@@ -235,7 +235,8 @@
       INDIV  = MOTINT( ADRESS(1, 13) )
       NSITS  = MOTINT( ADRESS(1, 14) )
       INISPE = MOTINT( ADRESS(1, 15) )
-      IDTEL  = MOTINT( ADRESS(1, 16) )
+!     FREE INTEGER
+!     ?????  = MOTINT( ADRESS(1, 16) )
       NPTT   = MOTINT( ADRESS(1, 17) )
       LVMAC  = MOTINT( ADRESS(1, 18) )
       SBREK  = MOTINT( ADRESS(1, 19) )
@@ -413,6 +414,7 @@
       TRIGO  = MOTLOG( ADRESS(3, 13) )
       SPEULI = MOTLOG( ADRESS(3, 14) )
       FLTDIF = MOTLOG( ADRESS(3, 15) )
+      RAZTIM = MOTLOG( ADRESS(3, 16) )
 !
 ! STRING KEYWORDS
 !

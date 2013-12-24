@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TOMAWAC   V6P3                                   25/06/2012
+! TOMAWAC   V7P0                                  25/06/2012
 !***********************************************************************
 !
 !brief    DECLARES BIEF STRUCTURES IN TOMAWAC.
@@ -41,6 +41,12 @@
 !+        25/06/2012
 !+        V6P2
 !+   Declaration of new variables for representing diffraction
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        24/12/2013
+!+        V7P0
+!+   Logical variable RAZTIM added (initial time set to zero).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -248,10 +254,6 @@
 ! 
       INTEGER NSITS
 !
-!     RANK OF THE TELEMAC DATA ITEM TO BE RECOVERED
-! 
-      INTEGER IDTEL
-!
 !     TIME INCREMENT NUMBER IN TELEMAC FILE
 ! 
       INTEGER NPTT
@@ -272,29 +274,28 @@
 ! 
       INTEGER FRABL
 !
-!> @brief
+!     ??????
 !
       INTEGER NPLEO
 !
 !     DEBUGGER
 ! 
       INTEGER DEBUG
-!> @brief
-! indicateur de sortie des variables 2d
-      INTEGER SORG2D
-!> @brief COORDINATES OF THE ORIGIN IN (X, Y)
-! coordonnes de l'origine
-      INTEGER I_ORIG
-!> @brief COORDINATES OF THE ORIGIN IN (X, Y)
-! coordonnee de l'origine
-      INTEGER J_ORIG
-!> @brief LINEAR WAVE GROWTH
+!   
+!     ????? 
 !
-!GM V6P1 - NEW SOURCE TERMS
-! croissance lineaire des vagues
+      INTEGER SORG2D
+!
+!     COORDINATES OF THE ORIGIN IN (X, Y)
+! 
+      INTEGER I_ORIG,J_ORIG
+!
+!     LINEAR WAVE GROWTH
+!
       INTEGER LVENT
-!> @brief SETTING FOR INTEGRATION ON OMEGA1
-! reglage pour integration sur omega1 - QNL4 methode GQM
+!
+!     SETTING FOR INTEGRATION ON OMEGA1
+! 
       INTEGER IQ_OM1
 !
 !     SETTING FOR INTEGRATION ON THETA1
@@ -344,84 +345,109 @@
 !     WHITE CAPPING DISSIPATION COEFFICIENT
 ! 
       DOUBLE PRECISION CMOUT1
-!> @brief WHITE CAPPING WEIGHTING COEFFICIENT
-! coefficient de ponderation pour le moutonnement
+!
+!     WHITE CAPPING WEIGHTING COEFFICIENT
+! 
       DOUBLE PRECISION CMOUT2
-!> @brief AIR DENSITY
-! masse volumique de l'air
+!
+!     AIR DENSITY
+! 
       DOUBLE PRECISION ROAIR
-!> @brief WATER DENSITY
-! masse volumique de l'eau
+!
+!     WATER DENSITY
+! 
       DOUBLE PRECISION ROEAU
-!> @brief WIND GENERATION COEFFICIENT
-! constante betamax de la formule de generation par le vent
+!
+!     WIND GENERATION COEFFICIENT
+! 
       DOUBLE PRECISION BETAM
-!> @brief VON KARMAN CONSTANT
-! constante de von karman
+!
+!     VON KARMAN CONSTANT
+! 
       DOUBLE PRECISION XKAPPA
-!> @brief CHARNOCK CONSTANT
-! constante de la loi de charnock
+!
+!     CHARNOCK CONSTANT
+! 
       DOUBLE PRECISION ALPHA
-!> @brief SHIFT GROWING CURVE DUE TO WIND
-! constante decalage courbe de croissance due au vent
+!
+!     SHIFT GROWING CURVE DUE TO WIND
+! 
       DOUBLE PRECISION DECAL
-!> @brief ELEVATION FOR WIND MEASUREMENTS
-! cote a laquelle le vent est mesure (m)
+!
+!     ELEVATION FOR WIND MEASUREMENTS
+! 
       DOUBLE PRECISION ZVENT
-!> @brief WIND DRAG COEFFICIENT
-! coefficient de trainee de vent
+!
+!     WIND DRAG COEFFICIENT
+! 
       DOUBLE PRECISION CDRAG
-!> @brief DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA
-! modele deferlement bj : constante alpha
+!
+!     DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA
+! 
       DOUBLE PRECISION ALFABJ
-!> @brief DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1
-! modele deferlement bj : constante gamma1
+!
+!     DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1
+! 
       DOUBLE PRECISION GAMBJ1
-!> @brief DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2
-! modele deferlement bj : constante gamma2
+!
+!     DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2
+!
       DOUBLE PRECISION GAMBJ2
-!> @brief DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B
-! modele deferlement tg : constante b
+!
+!     DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B
+! 
       DOUBLE PRECISION BORETG
-!> @brief DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA
-! modele deferlement tg : constante gamma
+!
+!     DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA
+!
       DOUBLE PRECISION GAMATG
-!> @brief DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA
-! modele deferlement ro : constante alpha
+!
+!     DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA
+! 
       DOUBLE PRECISION ALFARO
-!> @brief DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA
-! modele deferlement ro : constante gamma
+!
+!     DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA
+! 
       DOUBLE PRECISION GAMARO
-!> @brief DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2
-! modele deferlement ro : constante gamma2
+!
+!     DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2
+! 
       DOUBLE PRECISION GAM2RO
-!> @brief DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0
-! modele deferlement ih : constante beta
+!
+!     DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0
+! 
       DOUBLE PRECISION BETAIH
-!> @brief DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR
-! modele deferlement ih : constante m2*
+!
+!     DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR
+! 
       DOUBLE PRECISION EM2SIH
-!> @brief MAXIMUM VALUE OF THE RATIO HM0 OVER D
-! coefficient limitateur de la hauteur hm0 par rapport a d
+!
+!     MAXIMUM VALUE OF THE RATIO HM0 OVER D
+! 
       DOUBLE PRECISION COEFHS
-!> @brief COEFFICIENT OF THE TIME SUB-INCREMENTS FOR BREAKING
-! pas de temps pour le deferlement
+!
+!     COEFFICIENT OF THE TIME SUB-INCREMENTS FOR BREAKING
+! 
       DOUBLE PRECISION XDTBRK
-!> @brief STANDARD CONFIGURATION PARAMETER
-! coefficient lambda de la configuartion std
+!
+!     STANDARD CONFIGURATION PARAMETER
+! 
       DOUBLE PRECISION XLAMD
-!> @brief IMPLICITATION COEFFICIENT FOR SOURCE TERMS
-! coefficient implicitation pour termes sources
+!
+!     IMPLICITATION COEFFICIENT FOR SOURCE TERMS
+! 
       DOUBLE PRECISION CIMPLI
 !
 !     INITIAL STILL WATER LEVEL
 ! 
       DOUBLE PRECISION ZREPOS
-!> @brief TRIADS 1 (LTA) COEFFICIENT ALPHA
-! triads 1 (lta) constante alpha
+!
+!     TRIADS 1 (LTA) COEFFICIENT ALPHA
+! 
       DOUBLE PRECISION ALFLTA
-!> @brief TRIADS 1 (LTA) COEFFICIENT RFMLTA
-! triads 1 (lta) constante rfmlta
+!
+!     TRIADS 1 (LTA) COEFFICIENT RFMLTA
+! 
       DOUBLE PRECISION RFMLTA
 !> @brief TRIADS 2 (SPB) COEFFICIENT K
 ! triads 2 (spb) constante k
@@ -516,158 +542,193 @@
 !> @brief BOUNDARY PEAK FACTOR
 ! facteur de pic aux limites
       DOUBLE PRECISION GAMMAL
-!> @brief
+!
+!     ?????
 !
       DOUBLE PRECISION ALF1, GAM1, GAM2
-!> @brief WIND VELOCITY ALONG X
-! vitesse du vent suivant x
-      DOUBLE PRECISION VX_CTE
-!> @brief WIND VELOCITY ALONG Y
-! vitesse du vent suivant y
-      DOUBLE PRECISION VY_CTE
-!> @brief MINIMUM WATER DEPTH
-! valeur minimale de la profondeur d'eau
-      DOUBLE PRECISION PROMIN
-!> @brief ABSCISSAE OF SPECTRUM PRINTOUT POINTS
-! abscisses des points de sortie du spectre
-      DOUBLE PRECISION XLEO(99)
-!> @brief ORDINATES OF SPECTRUM PRINTOUT POINTS
-! ordonnees des points de sortie du spectre
-      DOUBLE PRECISION YLEO (99)
 !
-!GM V6P1 - NEW SOURCE TERMS
-!> @brief YAN GENERATION COEFFICIENT D
-! constante utilisee pour la generation  par le vent de Yan
+!     WIND VELOCITY ALONG X AND Y
+! 
+      DOUBLE PRECISION VX_CTE,VY_CTE
+!
+!     MINIMUM WATER DEPTH
+! 
+      DOUBLE PRECISION PROMIN
+!
+!     COORDINATES OF SPECTRUM PRINTOUT POINTS
+! 
+      DOUBLE PRECISION XLEO(99),YLEO(99)
+!
+!     YAN GENERATION COEFFICIENT D
+! 
       DOUBLE PRECISION COEFWD
-!> @brief YAN GENERATION COEFFICIENT E
-! constante utilisee pour la generation  par le vent de Yan
+!
+!     YAN GENERATION COEFFICIENT E
+! 
       DOUBLE PRECISION COEFWE
-!> @brief YAN GENERATION COEFFICIENT F
-! constante utilisee pour la generation  par le vent de Yan
+!
+!     YAN GENERATION COEFFICIENT F
+! 
       DOUBLE PRECISION COEFWF
-!> @brief YAN GENERATION COEFFICIENT H
-! constante utilisee pour la generation  par le vent de Yan
+!
+!     YAN GENERATION COEFFICIENT H
+! 
       DOUBLE PRECISION COEFWH
-!> @brief WESTHUYSEN DISSIPATION COEFFICIENT
-! coefficient de dissipation par moutonnement - Westhuysen
+!
+!     WESTHUYSEN DISSIPATION COEFFICIENT
+! 
       DOUBLE PRECISION CMOUT3
-!> @brief SATURATION THRESHOLD FOR THE DISSIPATION
-! dissipation par moutonnement, seuil de saturation - Westhuysen
+!
+!     SATURATION THRESHOLD FOR THE DISSIPATION
+! 
       DOUBLE PRECISION CMOUT4
-!> @brief WESTHUYSEN WHITE CAPPING DISSIPATION
-! coefficient de dissipation par moutonnement - Westhuysen
+!
+!     WESTHUYSEN WHITE CAPPING DISSIPATION
+! 
       DOUBLE PRECISION CMOUT5
-!> @brief WESTHUYSEN WEIGHTING COEFFICIENT
-! coefficient de ponderation de Westhuysen
+!
+!     WESTHUYSEN WEIGHTING COEFFICIENT
+! 
       DOUBLE PRECISION CMOUT6
-!> @brief QNL4 - THRESHOLD0 FOR CONFIGURATIONS ELIMINATION
-! seuil0 pour elimination des configurations - QNL4, methode GQM
+!
+!     QNL4 - THRESHOLD0 FOR CONFIGURATIONS ELIMINATION
+! 
       DOUBLE PRECISION SEUIL
-!> @brief QNL4 - THRESHOLD1 FOR CONFIGURATIONS ELIMINATION
-! seuil1 pour elimination des configurations - QNL4, methode GQM
+!
+!     QNL4 - THRESHOLD1 FOR CONFIGURATIONS ELIMINATION
+! 
       DOUBLE PRECISION SEUIL1
-!> @brief QNL4 - THRESHOLD2 FOR CONFIGURATIONS ELIMINATION
-! seuil2 pour elimination des configurations - QNL4, methode GQM
+!
+!     QNL4 - THRESHOLD2 FOR CONFIGURATIONS ELIMINATION
+! 
       DOUBLE PRECISION SEUIL2
-!GM Fin
-!V6P2 Diffraction
-!> @brief SPECTRUM VARIANCE THRESHOLD FOR DIFFRACTION
-! seuil minimum de variance spectrale considere pour diffraction
+!
+!     SPECTRUM VARIANCE THRESHOLD FOR DIFFRACTION
+! 
       DOUBLE PRECISION F2DIFM
-!V6P2 End diffraction
-!> @brief CONSIDERATION OF SOURCE TERMS
-! si oui, prise en compte des termes sources
+!
+!     CONSIDERATION OF SOURCE TERMS
+! 
       LOGICAL TSOU
-!> @brief SPHERICAL COORDINATES
-! si oui, on est en coord. spher.
+!
+!     SPHERICAL COORDINATES
+! 
       LOGICAL SPHE
-!> @brief GLOBAL OUTPUT AT THE END
-! si oui, sortie globale a la fin
+!
+!     GLOBAL OUTPUT AT THE END
+! 
       LOGICAL GLOB
-!> @brief NEXT COMPUTATION
-! si oui, suite de calcul
+!
+!     NEXT COMPUTATION
+! 
       LOGICAL SUIT
-!> @brief INFINITE DEPTH
-! si oui, profondeur infinie
+!
+!     INFINITE DEPTH
+! 
       LOGICAL PROINF
-!> @brief CONSIDERATION OF A CURRENT
-! si oui, prise en compte du courant
+!
+!     CONSIDERATION OF A CURRENT
+! 
       LOGICAL COURAN
-!> @brief CONSIDERATION OF A WIND
-! si oui, prise en compte du vent
+!
+!     CONSIDERATION OF A WIND
+! 
       LOGICAL VENT
-!> @brief CONSIDERATION OF A STATIONARY CURRENT
-! si oui, prise en compte d'un courant stationnaire
+!
+!     CONSIDERATION OF A STATIONARY CURRENT
+! 
       LOGICAL COUSTA
-!> @brief CONSIDERATION OF A STATIONARY WIND
-! si oui, prise en compte d'un vent stationnaire
+!
+!     CONSIDERATION OF A STATIONARY WIND
+! 
       LOGICAL VENSTA
-!> @brief CONSIDERATION OF TIDE
-! si oui, prise en compte de la maree
+!
+!     CONSIDERATION OF TIDE
+! 
       LOGICAL MAREE
-!> @brief TRIGONOMETRICAL CONVENTION
-! convention trigonometrique
+!
+!     TRIGONOMETRICAL CONVENTION
+! 
       LOGICAL TRIGO
-!> @brief RECOVERY OF TELEMAC DATA ITEM
-! si oui, on recupere une donnee telemac
+!
+!     RECOVERY OF TELEMAC DATA ITEM
+! 
       LOGICAL DONTEL
-!> @brief CONSIDERATION OF PROPAGATION
-! si oui, prise en compte de la propagation
+!
+!     CONSIDERATION OF PROPAGATION
+! 
       LOGICAL PROP
-!> @brief VALIDATION
-! validation
+!
+!     VALIDATION
+! 
       LOGICAL VALID
-!> @brief LIMIT SPECTRUM MODIFIED BY USER
-! spectre aux limites modifie par l'utilisateur
+!
+!     LIMIT SPECTRUM MODIFIED BY USER
+! 
       LOGICAL SPEULI
-!V6P2 Diffraction
-!> @brief DIFFRACTION FILTER
-! si oui, lissage de l amplitude locale du spectre direct.
+!
+!     DIFFRACTION FILTER
+! 
       LOGICAL FLTDIF
-!V6P2 End Diffraction
-!> @brief TITLE!!!!!!!!!!
-! titre du cas de calcul
+!
+!     INITIAL TIME SET TO ZERO
+!
+      LOGICAL RAZTIM
+!
+!     TITLE
+! 
       CHARACTER (LEN=80) :: TITCAS
-!> @brief VARIABLES FOR 2D GRAPHIC PRINTOUTS
-! variables pour les sorties graphiques 2d
-      CHARACTER (72) :: SORT2D
-!> @brief GEOMETRY FILE BINARY
-! binaire du fichier de geometrie
-      CHARACTER*3 BINGEO
-!> @brief GLOBAL RESULT FILE BINARY
-! binaire du fichier des resultats globaux
-      CHARACTER*3 BINRBI
-!> @brief 2D RESULTS FILE BINARY
-! binaire du fichier des resultats 2d
-      CHARACTER*3 BINRES
-!> @brief PUNCTUAL RESULTS FILE BINARY
-! binaire du fichier des resultats ponctuels
-      CHARACTER*3 BINLEO
-!> @brief PREVIOUS COMPUTATION FILE BINARY
-! binaire du fichier du calcul precedent
-      CHARACTER*3 BINPRE
-!> @brief CURRENTS FILE BINARY
-! binaire du fichier des courants
-      CHARACTER*3 BINCOU
-!> @brief WINDS FILE BINARY
-! binaire du fichier des vents en entree
-      CHARACTER*3 BINVEN
-!> @brief TIDAL WATER LEVEL FILE BINARY
-! binaire du fichier des hauteurs de la maree
-      CHARACTER*3 BINMAR
-!> @brief BINARY FILE 1 BINARY
-! binaire du fichier binaire utilisateur
-      CHARACTER*3 BINBI1
-!> @brief RELEASE
-! numero de version
-      CHARACTER*4 VERS
+!
+!     VARIABLES FOR 2D GRAPHIC PRINTOUTS
+! 
+      CHARACTER(LEN=72) :: SORT2D
+!
+!     GEOMETRY FILE BINARY
+! 
+      CHARACTER(LEN=3) BINGEO
+!
+!     GLOBAL RESULT FILE BINARY
+! 
+      CHARACTER(LEN=3) BINRBI
+!
+!     2D RESULTS FILE BINARY
+! 
+      CHARACTER(LEN=3) BINRES
+!
+!     PUNCTUAL RESULTS FILE BINARY
+! 
+      CHARACTER(LEN=3) BINLEO
+!
+!     PREVIOUS COMPUTATION FILE BINARY
+! 
+      CHARACTER(LEN=3) BINPRE
+!
+!     CURRENTS FILE BINARY
+! 
+      CHARACTER(LEN=3) BINCOU
+!
+!     WINDS FILE BINARY
+! 
+      CHARACTER(LEN=3) BINVEN
+!
+!     TIDAL WATER LEVEL FILE BINARY
+! 
+      CHARACTER(LEN=3) BINMAR
+!
+!     BINARY FILE 1 BINARY
+! 
+      CHARACTER(LEN=3) BINBI1
+!
+!     RELEASE
+! 
+      CHARACTER(LEN=4) VERS
 !> @brief
       INTEGER NDP
 !> @brief
 ! standard du fichier de geometrie
       INTEGER STDGEO
 !> @brief
-      CHARACTER*20 EQUA
+      CHARACTER(LEN=20) EQUA
 !
 !     TYPE OF ELEMENT IN 2D, 3D
 !
@@ -735,13 +796,13 @@
 !> @brief
       LOGICAL SORLEO(MAXVAR) , SORIMP(MAXVAR)
 !> @brief
-      CHARACTER*32 VARCLA(10)
+      CHARACTER(LEN=32) VARCLA(10)
 !> @brief
 ! nom des variables
-      CHARACTER*32 TEXTE(MAXVAR)
+      CHARACTER(LEN=32) TEXTE(MAXVAR)
 !> @brief
 ! nom des variables du calcul precedent
-      CHARACTER*32 TEXTPR(MAXVAR)
+      CHARACTER(LEN=32) TEXTPR(MAXVAR)
 !     7 VARIABLES HAVE BEEN USED FOR VALIDATION
 !          SIGNIFICANT WAVE HEIGHT    HM0       ( 2)
 !          MEAN DIRECTION             DMOY      ( 3)
@@ -753,13 +814,11 @@
 !> @brief
 !
       DOUBLE PRECISION HIST(1)
-!> @brief
 !
       INTEGER ALIRE(MAXVAR)
 !
-! JMH20/04/2009, MISSING A 0 VALUE (?)
       DATA ALIRE /0,1,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,
-     &0,0,0,0,0,0,0,0/
+     &            0,0,0,0,0,0,0,0/
       DATA HIST /9999.D0/
 !
 !-----------------------------------------------------------------------
@@ -767,18 +826,13 @@
 !   THE TARGETS ARE DEFINED IN POINT
 !-----------------------------------------------------------------------
 !
-!> @brief MESH COORDINATES
-! abscisses des points du maillage
-      DOUBLE PRECISION, DIMENSION(:), POINTER :: X
-!> @brief MESH COORDINATES
-! ordonnees des points du maillage
-      DOUBLE PRECISION, DIMENSION(:), POINTER :: Y
-!> @brief
-! abscisses des noeuds des elements
-      DOUBLE PRECISION, DIMENSION(:), POINTER :: XEL
-!> @brief
-! ordonnees des noeuds des elements
-      DOUBLE PRECISION, DIMENSION(:), POINTER :: YEL
+!     MESH COORDINATES PER POINT
+! 
+      DOUBLE PRECISION, DIMENSION(:), POINTER :: X,Y
+!
+!     MESH COORDINATES IN ELEMENTS
+!
+      DOUBLE PRECISION, DIMENSION(:), POINTER :: XEL,YEL
 !> @brief
 ! inverse du determinant des elements 2d
       DOUBLE PRECISION, DIMENSION(:), POINTER :: SURDET

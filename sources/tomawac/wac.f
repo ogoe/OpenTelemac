@@ -385,6 +385,9 @@
           IF(DEPTH(IP).LT.PROMIN) DEPTH(IP)=0.9D0*PROMIN
         ENDDO
       ENDIF
+!
+      IF(RAZTIM) AT=0.D0
+!
       AT0=AT
 !
       DO IP=1,NPOIN2
