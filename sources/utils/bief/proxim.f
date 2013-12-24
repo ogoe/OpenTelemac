@@ -5,7 +5,7 @@
      &(IP,XP,YP,X,Y,NP,NPOIN,IKLE,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    IDENTIFIES THE POINTS OF THE MESH CLOSEST TO A SET
@@ -32,6 +32,13 @@
 !+        16/11/2012
 !+        V6P3
 !+   Write statements added.
+!
+!history  J-M HERVOUET (LNHE)
+!+        24/12/2013
+!+        V7P0
+!+   In parallel the distance between given points and points in the 
+!+   mesh must be now less than 1.D-8 instead of 1.D-4 (to avoid 
+!+   problems with subroutine ecrspe in Tomawac)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| CONNECTIVITY TABLE.
@@ -131,7 +138,7 @@
             WRITE(LU,*) 'SOURCE POINT ',K,' PUT ON POINT ',IP(K)
             WRITE(LU,*) 'LOCATED AT ',SQRT(DIST2),' METRES'
           ENDIF
-          IF(SQRT(DIST2).GT.1.D-4.AND.NCSIZE.GT.1) THEN
+          IF(SQRT(DIST2).GT.1.D-8.AND.NCSIZE.GT.1) THEN
             XX=X(IP(K))
             YY=Y(IP(K))
             ALERT=1.D0
