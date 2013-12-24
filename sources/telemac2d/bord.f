@@ -9,7 +9,7 @@
      & NOMIMP)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/08/2010
+! TELEMAC2D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODIFIES THE BOUNDARY CONDITIONS ARRAYS
@@ -46,6 +46,11 @@
 !+        V6P3
 !+   A new test to see if NUMLIQ(K)>0 (it may happen with weirs that
 !+   LIHBOR(K)=KENT and NUMLIQ(K)=0.
+!
+!history  J-M HERVOUET (LNHE)
+!+        24/12/2013
+!+        V7P0
+!+   Stage-discharge curves Q(Z) now programmed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| STRING DESCRIBING THE EQUATIONS SOLVED
@@ -117,7 +122,7 @@
 !
       INTEGER K,MSK8,IFRLIQ,YADEB(MAXFRO),IERR,ITRAC,IFR,N
 !
-      DOUBLE PRECISION Z,ZMIN(MAXFRO)
+      DOUBLE PRECISION Z,QIMP,ZMIN(MAXFRO)
 !
       LOGICAL YAZMIN
 !
@@ -127,14 +132,20 @@
 !
       INTRINSIC MAX
 !
+!     PROVISOIRE
+!
+      DOUBLE PRECISION DIS_STA_CUR
+      EXTERNAL         DIS_STA_CUR
+!
 !-----------------------------------------------------------------------
 !
-!     IF VELOCITY PROFILE OPTION 5: MINIMUM ELEVATION OF EVERY BOUNDARY
+!     IF VELOCITY PROFILE OPTION 5 OR STAGE-DISCHARGE CURVE Q(Z):
+!     THE MINIMUM ELEVATION OF EVERY BOUNDARY IS NEEDED
 !
       YAZMIN=.FALSE.
       DO IFR=1,NFRLIQ
         ZMIN(IFR)=1.D99
-        IF(PROVEL(IFR).EQ.5) YAZMIN=.TRUE.
+        IF(PROVEL(IFR).EQ.5.OR.STA_DIS_CURVES(IFR).EQ.2) YAZMIN=.TRUE.
       ENDDO
       IF(YAZMIN) THEN
         DO K=1,NPTFR
@@ -334,7 +345,13 @@
 !
         IF(NCSIZE.GT.1) YADEB(IFRLIQ)=P_IMAX(YADEB(IFRLIQ))
         IF(YADEB(IFRLIQ).EQ.1) THEN
-          CALL DEBIMP(Q(IFRLIQ),UBOR,VBOR,U,V,H,NUMLIQ,
+          IF(STA_DIS_CURVES(IFRLIQ).EQ.2) THEN
+            QIMP=DIS_STA_CUR(IFRLIQ,PTS_CURVES(IFRLIQ),QZ,NFRLIQ,
+     &                       ZMIN(IFRLIQ))
+          ELSE
+            QIMP=Q(IFRLIQ)
+          ENDIF
+          CALL DEBIMP(QIMP,UBOR,VBOR,U,V,H,NUMLIQ,
      &                IFRLIQ,TRA05,TRA06,
      &                NPTFR,MASK%ADR(MSK8)%P%R,MESH,MESH%KP1BOR%I,
      &                EQUA)

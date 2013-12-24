@@ -78,7 +78,7 @@ corfon.f corpor.f   cornor.f  correction_depth_2d.f  corstr.f  \
 corvis.f cosake.f   cost_function.f cubeequation.f \
 calcul_q_weir.f calcul_tang_w2.f collect_values.f \
 debimp.f debsce.f   def_zones.f  \
-difsou.f disper.f   dragcoeff.f dragfo.f entete.f exlim.f fdnrst.f filter_h.f flot.f \
+difsou.f disper.f dis_sta_cur.f  dragcoeff.f dragfo.f entete.f exlim.f fdnrst.f filter_h.f flot.f \
 flucin.f flucint.f fluhyd.f \
 fluroe.f flusec_telemac2d.f flusew.f flusrc.f flutrac.f fluxe.f fluxzz.f flux_hllc.f flux_waf.f flux_tch.f \
 flu_tchamen.f flu_zokagoa.f \
