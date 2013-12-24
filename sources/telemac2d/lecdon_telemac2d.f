@@ -53,6 +53,12 @@
 !+        V6P3
 !+   Modification for new treatment of weirs
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        24/12/2013
+!+        V6P3
+!+   Now wave driven currents may be discarded in coupling with Tomawac.
+!+   Actually the user may want a one way coupling.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
@@ -1887,7 +1893,8 @@
 !
 !     WAVE DRIVEN CURRENTS MANDATORY IF COUPLING TO TOMAWAC
 !
-      IF(INCLUS(COUPLING,'TOMAWAC')) COUROU=.TRUE.
+!     COMMENTED ON 24/12/2013
+!     IF(INCLUS(COUPLING,'TOMAWAC')) COUROU=.TRUE.
 !
 !-----------------------------------------------------------------------
 !
