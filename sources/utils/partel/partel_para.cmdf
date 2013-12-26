@@ -22,10 +22,12 @@ files: declarations_parallel.F
   p_isum_array.F
   p_imax_array.F
   p_init.F
+  p_allgatherv_i.F
 
 [partel]
 path: <root>|sources|utils|partel
 files: partel_para.F
+  partitioner_para.F
 
 [special]
 path: <root>|sources|utils|special
