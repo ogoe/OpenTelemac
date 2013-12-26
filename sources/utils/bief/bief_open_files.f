@@ -5,7 +5,7 @@
      &(CODE,FILES,NFILES,PATH,NCAR,FLOT,IFLOT,ICODE)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                   26/12/2013
 !***********************************************************************
 !
 !brief    OPENS FILES DECLARED IN THE STEERING FILE.
@@ -35,6 +35,12 @@
 !+        V6P3
 !+   Opening by all processors of ACTION='WRITE' file precluded. In this
 !+   case only the processor 0 will do it.
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        26/12/2013
+!+        V7P0
+!+   Checking the declared format when possible : case of a SERAFIN file
+!+   in READ mode.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| NAME OF CALLING PROGRAMME
@@ -70,6 +76,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I
+      CHARACTER(LEN=80) :: TITLE
 !
       CHARACTER(LEN=11) :: FORME,EXTENS
       EXTERNAL EXTENS
@@ -154,6 +161,31 @@
               ENDIF
             ENDIF
 !
+!           ALREADY EXISTING FILE, CHECKING THE FORMAT
+!           WHEN IT IS WRITTEN IN THE TITLE 
+!
+            IF(FILES(I)%FMT(1:7).EQ.'SERAFIN'.AND.
+     &         FILES(I)%ACTION(1:5).EQ.'READ ') THEN
+              READ(FILES(I)%LU) TITLE
+              IF(TITLE(73:79).EQ.'SERAFIN') THEN
+                IF(FILES(I)%FMT(8:8).NE.TITLE(80:80)) THEN
+                  IF(LNG.EQ.1) THEN
+                    WRITE(LU,*) 'FICHIER : ',FILES(I)%NAME
+                    WRITE(LU,*) 'FORMAT ANNONCE : ',FILES(I)%FMT
+                    WRITE(LU,*) 'FORMAT REEL : ',TITLE(73:80)
+                  ENDIF
+                  IF(LNG.EQ.2) THEN
+                    WRITE(LU,*) 'FILE: ',FILES(I)%NAME
+                    WRITE(LU,*) 'DECLARED FORMAT: ',FILES(I)%FMT
+                    WRITE(LU,*) 'REAL FORMAT: ',TITLE(73:80)
+                  ENDIF
+                  CALL PLANTE(1)
+                  STOP
+                ENDIF      
+              ENDIF
+              REWIND(FILES(I)%LU)
+            ENDIF
+!
           ENDIF
 !
         ENDIF
@@ -169,4 +201,3 @@
 !
       RETURN
       END
-
