@@ -631,7 +631,7 @@
 ! COMPUTES THE STARTING ELEMENT FOR THE METHOD OF CHARACTERISTICS
 !
       CALL MAKE_ELTCAR(MESH%ELTCAR%I,MESH%IKLE%I,NPOIN2,NELEM2,
-     &                 NELMAX,MESH%KNOLG%I,T1%R,IT1%I,MESH,NPLAN,IELMX)
+     &                 NELMAX,MESH%KNOLG%I,IT1%I,MESH,NPLAN,IELMX)
 !
 !-----------------------------------------------------------------------
 !

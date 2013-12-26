@@ -123,7 +123,7 @@
 !| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF   !, EX_MATRIY => MATRIY
+      USE BIEF, EX_MATRIY => MATRIY
 !
       IMPLICIT NONE
       INTEGER LNG,LU

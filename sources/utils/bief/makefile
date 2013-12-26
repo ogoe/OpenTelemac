@@ -125,8 +125,8 @@ om1112.f     om1113.f       om1201.f      om1211.f  om1302.f  om1311.f  om2121.f
 om4111.f     om4121.f       om4141.f      om5111.f  om5161.f  opass.f \
 os.f         osbd.f         osdb.f \
 osdbif.f     ov.f           ovbd.f        ovd.f \
-ovdb.f       ovd_2.f        ov_2.f        paraco.f \
-paragl.f     parcom.f       parcom2.f     parcom2_seg.f parcom_bord.f parini.f  parmoy.f \
+ovdb.f       ovd_2.f        ov_2.f        paraco.f paracoi.f  \
+paragl.f     parcom.f       parcom2.f     parcom2i.f parcom2_seg.f parcom2i_seg.f parcom_bord.f parini.f  parmoy.f \
 positive_depths.f    \
 prebd4.f     prebd9.f       prebdt.f \
 precd1.f     precd4.f       precd9.f      precdt.f  preverseg.f  preverebe.f \

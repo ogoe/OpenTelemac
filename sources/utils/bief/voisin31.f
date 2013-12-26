@@ -57,7 +57,7 @@
 !| SIZIKL         |-->| FIRST DIMENSION OF IKLE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF !, EX_VOISIN31 => VOISIN31
+      USE BIEF, EX_VOISIN31 => VOISIN31
 !
       IMPLICIT NONE
       INTEGER LNG,LU

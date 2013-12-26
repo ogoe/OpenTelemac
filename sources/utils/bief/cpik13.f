@@ -46,7 +46,7 @@
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF
+      USE BIEF, ONLY : NCSIZE
 !
       IMPLICIT NONE
       INTEGER LNG,LU

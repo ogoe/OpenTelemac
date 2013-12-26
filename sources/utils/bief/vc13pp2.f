@@ -82,7 +82,7 @@
 !| Z              |-->| Z-COORDINATES OF POINTS IN THE MESH, PER POINT !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF !, EX_VC13PP2 => VC13PP2
+      USE BIEF, EX_VC13PP2 => VC13PP2
 !
       IMPLICIT NONE
       INTEGER LNG,LU

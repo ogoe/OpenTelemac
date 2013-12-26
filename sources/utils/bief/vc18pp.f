@@ -71,7 +71,7 @@
 !| Z              |-->| ELEVATIONS OF POINTS ,PER POINT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF !, EX_VC18PP => VC18PP
+      USE BIEF, EX_VC18PP => VC18PP
 !
       IMPLICIT NONE
       INTEGER LNG,LU

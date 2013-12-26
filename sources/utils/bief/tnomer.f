@@ -78,7 +78,7 @@
 !| XA             |<--| OFF-DIAGONAL TERMS OF THE MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF  ! , EX_TNOMER => TNOMER
+      USE BIEF, EX_TNOMER => TNOMER
 !
       IMPLICIT NONE
       INTEGER LNG,LU

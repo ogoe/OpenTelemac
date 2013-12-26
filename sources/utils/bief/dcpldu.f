@@ -63,7 +63,7 @@
 !| MESH           |-->| MESH STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF    !, EX_DCPLDU => DCPLDU
+      USE BIEF, EX_DCPLDU => DCPLDU
 !
       IMPLICIT NONE
       INTEGER LNG,LU

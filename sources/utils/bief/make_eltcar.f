@@ -2,11 +2,10 @@
                      SUBROUTINE MAKE_ELTCAR
 !                    **********************
 !
-     &(ELTCAR,IKLE,NPOIN2,NELEM2,NELMAX,KNOLG,SCORE,ISCORE,MESH,NPLAN,
-     & IELM)
+     &(ELTCAR,IKLE,NPOIN2,NELEM2,NELMAX,KNOLG,ISCORE,MESH,NPLAN,IELM)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                       21/08/2010
 !***********************************************************************
 !
 !brief    For every point in the mesh, gives an element that contains
@@ -43,6 +42,12 @@
 !+        V6P3
 !+        Correction of IELEM3D in tetrahedra part (1st use 1st bug...)
 !
+!history  J-M HERVOUET (LNHE, EDF R&D)
+!+        20/11/2013
+!+        V7P0
+!+        Call of PARCOM2I and PARCOM2I_SEG added for ISCORE, instead of
+!+        copying to a double precision SCORE (the latter suppressed).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTCAR         |<--| ELEMENT CHOSEN FOR EVERY POINT
 !| IELM           |-->| TYPE OF ELEMENT (11: TRIANGLE, 41: PRISM...)
@@ -54,7 +59,6 @@
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NPLAN          |-->| NUMBER OF PLANES (CASE OF A 3D MESH, OR 1 IN 2D)
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
-!| SCORE          |<->| DOUBLE PRECISION WORK ARRAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !    
       USE BIEF_DEF
@@ -68,7 +72,6 @@
       INTEGER, INTENT(IN)             :: IKLE(NELMAX,*),KNOLG(NPOIN2)
       INTEGER, INTENT(INOUT)          :: ELTCAR(*)
       INTEGER, INTENT(INOUT)          :: ISCORE(*)
-      DOUBLE PRECISION, INTENT(INOUT) :: SCORE(*)
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH      
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -212,22 +215,14 @@
 !
         ENDIF
 !        
-!       DOUBLE PRECISION FOR CALLING PARCOM2
-        DO I=1,NP
-          SCORE(I)=ISCORE(I)
-        ENDDO
 !       LARGEST VALUE BETWEEN NEIGHBOURING SUB-DOMAINS TAKEN
-        CALL PARCOM2(SCORE,SCORE,SCORE,NPOIN2,1,1,1,MESH)
+        CALL PARCOM2I(ISCORE,ISCORE,ISCORE,NPOIN2,1,1,1,MESH)
         IF(IELM.EQ.13) THEN
-          CALL PARCOM2_SEG(SCORE(NPOIN2+1:NP),
-     &                     SCORE(NPOIN2+1:NP),
-     &                     SCORE(NPOIN2+1:NP),
-     &                     MESH%NSEG,1,1,1,MESH,1,11)
+          CALL PARCOM2I_SEG(ISCORE(NPOIN2+1:NP),
+     &                      ISCORE(NPOIN2+1:NP),
+     &                      ISCORE(NPOIN2+1:NP),
+     &                      MESH%NSEG,1,1,1,MESH,1,11)
         ENDIF
-!       BACK TO INTEGERS
-        DO I=1,NP
-          ISCORE(I)=NINT(SCORE(I))
-        ENDDO
 !
         IF(IELM.EQ.11.OR.IELM.EQ.12.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
 !

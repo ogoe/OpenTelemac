@@ -48,7 +48,7 @@
 !| V              |-->| ARRAY OF SIZE NPOIN
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF !, EX_VECLE4 => VECLE4
+      USE BIEF, EX_VECLE4 => VECLE4
 !
       IMPLICIT NONE
       INTEGER LNG,LU

@@ -47,7 +47,7 @@
 !| NULONE         |-->| LOCAL NUMBER OF K IN ELEMENT NELBOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF   !, EX_COMP_IKLE => COMP_IKLE
+      USE BIEF, EX_COMP_IKLE => COMP_IKLE
 !
       IMPLICIT NONE
       INTEGER LNG,LU

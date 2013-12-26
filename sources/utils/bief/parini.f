@@ -6,20 +6,14 @@
      & NB_NEIGHB_SEG,NELEM2,IFAPAR)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE ARRAYS USED IN PARALLEL MODE.
 !
 !history  REINHARD HINKELMANN (HANNOVER UNI.); PASCAL VEZOLLE (IBM)
-!+
-!+
-!+
-!
-!history  J-M HERVOUET (LNHE)
-!+        02/10/2008
-!+        V5P9
-!+
+!+        ??/??/????
+!         V5P9
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -32,6 +26,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        19/11/2013
+!+        V7P0
+!+   Adding an allocation of BUF_SEND%I and BUF_RECV%I  
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FAC              |<--| 1/(NUMBER OF NEIGHBOURING SUB-DOMAINS)
@@ -264,7 +263,7 @@
          IF(IPB.EQ.IPID-IL) ILM=ILM+1
         ENDDO
 !
-!====   ENDS COMPUTATION OF THE NUMBER OF INTERFACE POINTS PER NEIGHBOUR
+!==== ENDS COMPUTATION OF THE NUMBER OF INTERFACE POINTS PER NEIGHBOUR
 !
 !=== POSSIBILITY OF SORTING LIST_SEND AND RECV FOR TORE BG
 !
@@ -280,9 +279,17 @@
         CALL BIEF_ALLVEC(1,MESH%BUF_SEND,'BUSEND',IL*3,NB_NEIGHB,0,MESH)
         CALL BIEF_ALLVEC(1,MESH%BUF_RECV,'BURECV',IL*3,NB_NEIGHB,0,MESH)
 !
+!       ADDED FOR INTEGER COMMUNICATIONS
+        ALLOCATE(MESH%BUF_SEND%I(IL*3*NB_NEIGHB))
+        ALLOCATE(MESH%BUF_RECV%I(IL*3*NB_NEIGHB))       
+!
+!       NOTE JMH: IS THIS USEFUL ?
+!
         DO I=1,IL*3*NB_NEIGHB
           MESH%BUF_SEND%R(I) = 0.D0
           MESH%BUF_RECV%R(I) = 0.D0
+          MESH%BUF_SEND%I(I) = 0
+          MESH%BUF_RECV%I(I) = 0
         ENDDO
 !
 !

@@ -86,7 +86,7 @@
 !| XMT            |-->| ELEMENT BY ELEMENT STORAGE OF MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF !, EX_AS3_4141_S => AS3_4141_S
+      USE BIEF, EX_AS3_4141_S => AS3_4141_S
 !
       IMPLICIT NONE
       INTEGER LNG,LU

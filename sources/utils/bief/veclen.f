@@ -47,7 +47,7 @@
 !| V              |-->| ARRAY OF SIZE NPOIN
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF !, EX_VECLEN => VECLEN
+      USE BIEF, EX_VECLEN => VECLEN
 !
       IMPLICIT NONE
       INTEGER LNG,LU

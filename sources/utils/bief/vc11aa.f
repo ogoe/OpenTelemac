@@ -71,7 +71,7 @@
 !| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF   !, EX_VC11AA => VC11AA
+      USE BIEF, EX_VC11AA => VC11AA
 !
       IMPLICIT NONE
       INTEGER LNG,LU

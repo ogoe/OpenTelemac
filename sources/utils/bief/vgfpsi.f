@@ -45,7 +45,7 @@
 !| XMUL           |-->| MULTIPLICATION FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF !, EX_VGFPSI => VGFPSI
+      USE BIEF, EX_VGFPSI => VGFPSI
 !
       IMPLICIT NONE
       INTEGER LNG,LU

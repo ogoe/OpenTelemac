@@ -72,7 +72,7 @@
 !| MESH           |-->| MESH STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF   !, EX_DECLDU => DECLDU
+      USE BIEF, EX_DECLDU => DECLDU
 !
       IMPLICIT NONE
       INTEGER LNG,LU

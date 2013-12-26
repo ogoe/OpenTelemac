@@ -105,7 +105,7 @@
 !| Z              |-->| ELEVATIONS OF POINTS IN THE MESH, PER POINT !!!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF   !, EX_VC04PP => VC04PP
+      USE BIEF, EX_VC04PP => VC04PP
 !
       IMPLICIT NONE
       INTEGER LNG,LU

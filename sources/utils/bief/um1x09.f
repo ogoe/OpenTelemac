@@ -36,7 +36,7 @@
 !| X3             |-->| THIRD UNKNOWN
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF    !, EX_UM1X09 => UM1X09
+      USE BIEF, EX_UM1X09 => UM1X09
 !
       IMPLICIT NONE
       INTEGER LNG,LU

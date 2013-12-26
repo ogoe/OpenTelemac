@@ -173,7 +173,7 @@
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF
+      USE BIEF, ONLY : NCSIZE
       USE DECLARATIONS_TELEMAC, ONLY : TETRA
 !
       IMPLICIT NONE

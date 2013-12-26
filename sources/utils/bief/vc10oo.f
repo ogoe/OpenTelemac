@@ -70,7 +70,7 @@
 !| YNOR           |-->| SECOND COMPONENT OF NORMAL TO ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF   !, EX_VC10OO => VC10OO
+      USE BIEF, EX_VC10OO => VC10OO
 !
       IMPLICIT NONE
       INTEGER LNG,LU

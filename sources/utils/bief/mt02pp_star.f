@@ -107,7 +107,7 @@
 !| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF
+      USE BIEF, EX_MT02PP_STAR => MT02PP_STAR
 !
       IMPLICIT NONE
       INTEGER LNG,LU
