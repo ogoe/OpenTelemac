@@ -142,7 +142,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE INTERFACE_TELEMAC3D, EX_TRISOU => TRISOU
-      USE DECLARATIONS_TELEMAC3D, ONLY : SPHERI
+      USE DECLARATIONS_TELEMAC3D, ONLY : SPHERI,MAREE,MARDAT,MARTIM,
+     &                                   T2_01,T2_02
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -497,6 +498,25 @@
               CV2(I3)=CV2(I3)-UN3(I3)*CORI
             ENDDO
           ENDDO
+!
+!         TAKES THE TIDE GENERATING FORCE INTO ACCOUNT
+!
+          IF(MAREE) THEN
+            CALL CPSTVC(MESH2D%X,T2_01)
+            CALL CPSTVC(MESH2D%Y,T2_02)
+            CALL OS('X=0     ',X=T2_01)
+            CALL OS('X=0     ',X=T2_02)
+            CALL MARAST(MARDAT,MARTIM,LONGIT,NPOIN2,AT,
+     &                  T2_01%R,T2_02%R,MESH2D%X%R,
+     &                  MESH2D%SINLAT%R,MESH2D%COSLAT%R,GRAV)
+            DO IPLAN=1,NPLAN
+              DO I=1,NPOIN2
+                I3=(IPLAN-1)*NPOIN2+I
+                CV1(I3)=CV1(I3)+T2_01%R(I)
+                CV2(I3)=CV2(I3)+T2_02%R(I)
+              ENDDO
+            ENDDO
+          ENDIF
 !
         ELSE
 !

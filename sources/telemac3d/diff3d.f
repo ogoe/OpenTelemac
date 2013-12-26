@@ -15,7 +15,7 @@
      & SIGMAG,IPBOT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P0                                  21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE DIFFUSION AND SUPG ADVECTION STEPS
@@ -58,6 +58,11 @@
 !+        23/04/2012
 !+        V6P2
 !+   Values of tracers in rain taken into account.
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        24/12/2013
+!+        V7P0
+!+   With SUPG, upwinding of time derivative now done.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
@@ -165,6 +170,10 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
 !
+!     PROVISOIRE
+!
+      USE DECLARATIONS_TELEMAC3D, ONLY:UCONV,VCONV,WSCONV,DM1,ZCONV
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -208,12 +217,6 @@
       DOUBLE PRECISION, POINTER :: VOLUME(:)
 !
 !-----------------------------------------------------------------------
-!
-!   SEMI-IMPLICITATION COEFFICIENT FOR SUPG
-!
-!     TETASUPG = 1.D0  (IS REQUIRED FOR MASS CONSERVATION)
-!     IF NOT 1.D0, FLUX AT THE END OF CVDF3D SHOULD BE MODIFIED
-!     TETASUPG = 0.55D0
 !
       NITERD = SLVDIF%NITMAX
       IF(OPTDIF.EQ.2) TETADI = 0.D0
@@ -268,6 +271,23 @@
 !                                                   HAS A FACTOR 1/DT
       ELSE
         CALL MATVEC ('X=AY    ',SEM3D, MTRA2,T3_04, C, MESH3D)
+      ENDIF
+!
+!=======================================================================
+!     
+!     SUPG SCHEME: TEST OF UPWINDING OF THE TIME DERIVATIVE
+!
+      IF(SCHCF.EQ.ADV_SUP) THEN
+!       HERE OPTSUP=2 ONLY
+        CALL MATRIX(MTRA1,'M=TN    ','MATVGR 2        ',
+     &              IELM3,IELM3,0.5D0,DM1,ZCONV,SVIDE,
+     &              UCONV,VCONV,WSCONV,MESH3D,MSK,MASKEL)  
+!       COEFFICIENT 1/DT HAS ALREADY BEEN PUT IN MTRA1 (0.5=0.5*DT/DT)
+        CALL OM('M=X(M)  ',MTRA2,MTRA2,SVIDE,C,MESH3D)
+        CALL OM('M=M+N   ',MTRA2,MTRA1,SVIDE,C,MESH3D)
+!       RIGHT HAND SIDE PART
+!                                            =FN IN THIS OPTION
+        CALL MATVEC ('X=X+CAY  ',SEM3D,MTRA1,FC,1.D0,MESH3D)
       ENDIF
 !
 !=======================================================================
@@ -531,18 +551,16 @@
 !
 !=======================================================================
 !
-!   ADDS SUPG MATRIX IF SCHCF=AADV_SUP
+!   ADDS SUPG MATRIX IF SCHCF=ADV_SUP
 !
 !=======================================================================
 !
 !
       IF(SCHCF.EQ.ADV_SUP.AND.OPTDIF.EQ.1) THEN
-!
-         IF(MTRA2%TYPEXT.EQ.'S') THEN
-           CALL OM('M=X(M)  ',MTRA2,MTRA2,SVIDE,C,MESH3D)
-         ENDIF
-         CALL OM ('M=M+CN  ',MTRA2, MSUPG, SVIDE, TETASUPG, MESH3D )
-!
+        IF(MTRA2%TYPEXT.EQ.'S') THEN
+          CALL OM('M=X(M)  ',MTRA2,MTRA2,SVIDE,C,MESH3D)
+        ENDIF
+        CALL OM ('M=M+CN  ',MTRA2, MSUPG, SVIDE, TETASUPG, MESH3D )
       ENDIF
 !
 !=======================================================================

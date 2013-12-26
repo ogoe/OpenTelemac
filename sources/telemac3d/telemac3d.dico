@@ -2933,20 +2933,6 @@ been entered onto a nautical chart drawn as per Mercator projection
 The LATITUDE OF ORIGIN POINT (another keyword), which corresponds to 
 ordinate y=0 in the mesh, must moreover be given.' 
 
-NOM = 'FREE LOGICAL'
-NOM1 = 'FREE LOGICAL'
-TYPE = LOGIQUE
-INDEX = 18
-MNEMO = ''
-TAILLE = 0
-DEFAUT = NON
-DEFAUT1 = NO
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
-NIVEAU = 1
-AIDE = ' '
-AIDE1 = ' ' 
-
 NOM = 'VALIDATION'
 NOM1 = 'VALIDATION'
 TYPE = LOGIQUE
@@ -6123,7 +6109,22 @@ RUBRIQUE1 = 'PHYSICAL PARAMETERS'
 NIVEAU = 2
 AIDE = 'Applique a la matrice de masse'
 AIDE1 = 'To be applied to the mass matrix'
-
+/
+/ VERSION 7.0
+/
+NOM = 'FORCE GENERATRICE DE LA MAREE' 
+NOM1 = 'TIDE GENERATING FORCE' 
+TYPE = LOGIQUE 
+INDEX = 18 
+MNEMO = 'MAREE' 
+TAILLE = 0 
+DEFAUT = NON 
+DEFAUT1 = NO 
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 1 
+AIDE = 'Active la prise en compte de la force generatrice de la maree' 
+AIDE1 = 'The tide generating force is taken into account. '  
 /
 /---------------------------------------------------------------------
 /
