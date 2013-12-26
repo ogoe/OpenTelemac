@@ -88,12 +88,14 @@ SRCS	      = interface_parallel.f \
 		p_mpi_type_create_struct.F \
 		p_read.F \
 		p_iread.F \
+		p_ireadi.F \
 		p_iread_c.F \
 		p_sync.F \
 		p_time.F \
 		p_wait_paraco.F \
 		p_writ.F \
 		p_iwrit.F \
+		p_iwriti.F \
 		p_iwrit_c.F 
 
 #

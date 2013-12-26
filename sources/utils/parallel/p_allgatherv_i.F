@@ -1,12 +1,12 @@
-!                    *****************
+!                    *************************
                      SUBROUTINE P_ALLGATHERV_I
-     &              (SEND_BUFFER, SEND_COUNT, SEND_TYPE, RECV_BUFFER, 
-     &               RECV_COUNT, DISPLS, RECV_TYPE, COMM, IERR)
-!                    *****************
+!                    *************************
 !
+     &(SEND_BUFFER, SEND_COUNT, SEND_TYPE, RECV_BUFFER, 
+     & RECV_COUNT, DISPLS, RECV_TYPE, COMM, IERR)
 !
 !***********************************************************************
-! PARALLEL   V6P1                                   21/08/2010
+! PARALLEL   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    Gathers data from all tasks and deliver the combined data to all tasks
@@ -25,7 +25,9 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-      
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!     
       INTEGER, INTENT(IN)    :: SEND_BUFFER(:)
       INTEGER, INTENT(IN)    :: SEND_COUNT 
       INTEGER, INTENT(IN)    :: SEND_TYPE
@@ -34,10 +36,9 @@
       INTEGER, INTENT(IN)    :: DISPLS(:)
       INTEGER, INTENT(IN)    :: RECV_TYPE
       INTEGER, INTENT(IN)    :: COMM
-      INTEGER, INTENT(OUT)   :: IERR
-      
+      INTEGER, INTENT(OUT)   :: IERR      
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       IERR = 0
 #if defined (HAVE_MPI)
