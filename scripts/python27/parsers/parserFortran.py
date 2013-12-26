@@ -798,18 +798,18 @@ def scanSources(cfgdir,cfg,BYPASS):
    # ~~ Cross-referencing CALLS together ~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # For those CALLs stored in 'calls' but not part of the system:
    #   move them from 'calls' to 'function' (outsiders remain)
-   for mod in wcw:
-      for name in wcw[mod]:
+   for mod in wcw.keys():
+      for name in wcw[mod].keys():
          if name != 'path':
             who = wcw[mod][name]
-            for s in who['calls']:
+            for s in who['calls'].keys():
                if s not in sbt:
                   del wcw[mod][name]['calls'][s]
                   wcw[mod][name]['functions'].append(s)
 
    # ~~ Cross-referencing FUNCTIONS together ~~~~~~~~~~~~~~~~~~~~~~~
-   for mod in wcw:
-      for name in wcw[mod]:
+   for mod in wcw.keys():
+      for name in wcw[mod].keys():
          if name != 'path':
             who = wcw[mod][name]
             f,u = sortFunctions(who['functions'],who['vars']['use'],wcw,mdl,who['uses'])
@@ -830,8 +830,8 @@ def scanSources(cfgdir,cfg,BYPASS):
 
    # ~~ Sort out referencing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # Fill-in the 'called' category
-   for mod in wcw:
-      for name in wcw[mod]:
+   for mod in wcw.keys():
+      for name in wcw[mod].keys():
          if name != 'path':
             for call in wcw[mod][name]['calls']:
                if call in sbt:
