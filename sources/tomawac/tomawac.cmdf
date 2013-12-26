@@ -97,6 +97,7 @@ files: bief_def.f
   mt03cc.f
   mt12ab.f
   mt01aa.f
+  mt12aa.f
   mt99bb.f
   mt04pp.f
   mt08bb.f
@@ -111,7 +112,7 @@ files: bief_def.f
   mt06oo.f
   mt06pp.f
   mt06aa.f
-  mt02pp.f
+  mt04bb.f
   mt05pp.f
   mt04tt.f
   mt12bb.f
@@ -125,7 +126,7 @@ files: bief_def.f
   mt05aa.f
   mt11aa.f
   mt11ab.f
-  mt11ac.f
+  mt02pp.f
   mt03aa.f
   mt02bb.f
   mt01bb.f
@@ -133,7 +134,7 @@ files: bief_def.f
   mt06ff.f
   mt12ac.f
   mt99aa.f
-  mt12aa.f
+  mt11ac.f
   mt04cc.f
   mt08ab.f
   mt08pp.f
@@ -145,7 +146,6 @@ files: bief_def.f
   mt13ab.f
   mt13aa.f
   mt06bb.f
-  mt04bb.f
   mt06ft.f
   mt03bb.f
   mt07bb.f
@@ -349,6 +349,9 @@ files: bief_def.f
   ptel31.f
   pttoel.f
   hloc.f
+  paracoi.f
+  parcom2i.f
+  parcom2i_seg.f
   make_eltcar.f
   stoseg51.f
   latitu.f
@@ -424,9 +427,9 @@ files: declarations_parallel.F
   org_charac_type1.F
   p_sync.F
   p_isum.F
-  p_imax.F
   p_mpi_alltoall.F
   p_mpi_alltoallv.F
+  p_imax.F
   oil_org_charac_type.F
   p_mpi_alltoallv_alg.F
   p_mpi_alltoallv_oil.F
@@ -437,6 +440,8 @@ files: declarations_parallel.F
   p_iread.F
   p_dsum.F
   p_dmax.F
+  p_ireadi.F
+  p_iwriti.F
   p_exit.F
 
 [special]
@@ -466,10 +471,10 @@ files: declarations_tomawac.f
   qbrek4.f
   qbbj78.f
   qbrek1.f
+  gammln.f
   foncro.f
   bornes.f
   qgauss.f
-  gammln.f
   qbrek3.f
   qbrek2.f
   qwind3.f
