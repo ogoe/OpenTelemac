@@ -122,8 +122,7 @@
      &                         FLBOR,DT,UNSV2D,NPOIN2,
      &                         GLOSEG(1:DIMGLO,1),
      &                         GLOSEG(1:DIMGLO,2),
-     &                         MESH2D%NBOR%I,NPTFR2,.FALSE.,
-!                                                    YAFLODEL
+     &                         MESH2D%NBOR%I,NPTFR2,
      &                         SMH,.TRUE.,2,
 !                                   YASMH OPTSOU
 !                              SMH IN PROJECTED FORM IN T3D

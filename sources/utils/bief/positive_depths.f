@@ -3,7 +3,7 @@
 !                    **************************
 !
      &(T1,T2,T3,T4,H,HN,MESH,FLODEL,COMPUTE_FLODEL,FLBOR,DT,
-     & UNSV2D,NPOIN,GLOSEG1,GLOSEG2,NBOR,NPTFR,YAFLODEL,
+     & UNSV2D,NPOIN,GLOSEG1,GLOSEG2,NBOR,NPTFR,
      & SMH,YASMH,OPTSOU,FLULIM,LIMPRO,HBOR,KDIR,INFO,FLOPOINT,
      & NAMECODE,OPTION,NITMAX)
 !
@@ -41,6 +41,11 @@
 !+        V6P2
 !+   Argument NITMAX added.
 !
+!history  J-M HERVOUET (LNHE)
+!+        30/12/2013
+!+        V7P0
+!+   Argument YAFLODEL removed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL HERE 
 !| DT             |-->| TIME STEP
@@ -77,7 +82,6 @@
 !| T3             |-->| WORK ARRAY
 !| T4             |-->| WORK ARRAY
 !| UNSV2D         |-->| INVERSE OF INTEGRAL OF BASIS FUNCTIONS
-!| YAFLODEL       |-->| NOT USED
 !| YASMH          |-->| IF(YES) SMH MUST BE TAKEN INTO ACCOUNT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -99,7 +103,7 @@
       TYPE(BIEF_MESH),INTENT(INOUT)   :: MESH
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,FLODEL,H,FLBOR
       TYPE(BIEF_OBJ), INTENT(IN)      :: UNSV2D,HN,SMH
-      LOGICAL, INTENT(IN)             :: YAFLODEL,YASMH,INFO
+      LOGICAL, INTENT(IN)             :: YASMH,INFO
       LOGICAL, INTENT(IN)             :: COMPUTE_FLODEL
       CHARACTER(LEN=24)               :: NAMECODE
 !

@@ -112,7 +112,7 @@
       CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.FALSE.,
      &                     FLBOR,DT,UNSV2D,
      &                     NPOIN,GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
-     &                     MESH%NBOR%I,MESH%NPTFR,YAFLODEL,
+     &                     MESH%NBOR%I,MESH%NPTFR,
      &                     SMH,YASMH,
      &                     OPTSOU,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
      &                     MESH%W%R,NAMECODE,2,MAXADV)
@@ -134,7 +134,7 @@
       CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.FALSE.,
      &                     FLBOR,DT,UNSV2D,
      &                     NPOIN,GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
-     &                     MESH%NBOR%I,MESH%NPTFR,YAFLODEL,
+     &                     MESH%NBOR%I,MESH%NPTFR,
      &                     T5,.TRUE.,
      &                     OPTSOU,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
      &                     MESH%W%R,NAMECODE,2,MAXADV)
@@ -146,7 +146,7 @@
       CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.FALSE.,
      &                     FLBOR,DT,UNSV2D,
      &                     NPOIN,GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
-     &                     MESH%NBOR%I,MESH%NPTFR,YAFLODEL,
+     &                     MESH%NBOR%I,MESH%NPTFR,
      &                     PLUIE,RAIN,
      &                     1,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
      &                     MESH%W%R,NAMECODE,2,MAXADV)

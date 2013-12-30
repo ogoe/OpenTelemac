@@ -186,8 +186,8 @@
       CALL POSITIVE_DEPTHS(T1,T2,T3,T4,HZ,HZN,MESH,
      &                     FLODEL,.TRUE.,FLBCLA,DT,UNSV2D,NPOIN,
      &                     GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
-     &                     MESH%NBOR%I,NPTFR,.FALSE.,T8,.FALSE.,
-!                                                    VOID
+     &                     MESH%NBOR%I,NPTFR,T8,.FALSE.,
+!                                            VOID
      &                     1,FLULIM,
      &                     LIMTEC%I,T8%R  ,KDIR,ENTET,MESH%W%R,
 !                                   EBOR%R

@@ -185,6 +185,11 @@
 !+        V6P3
 !+   FORCING LISTING AND GRAPHIC OUTPUTS FOR LAST TIME STEP, FOR FV
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        30/12/2013
+!+        V7P0
+!+   Initialisation of YAFLODEL added (overlooked bug?).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
@@ -320,6 +325,7 @@
       CHARR_TEL=.FALSE.
       CHARR=.FALSE.
       SUSP=.FALSE.
+      YAFLODEL=.FALSE.
       DISCLIN=11
       NFLOT=0
 !
