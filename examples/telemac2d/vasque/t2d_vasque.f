@@ -66,14 +66,13 @@ C
 C                                                                         
 C  VARIANTE FOND EN PENTE RECTILIGNE + CUVETTE                            
 C                                                                         
-      DO I=1,I                                                        
+      DO I=1,IM 
       DO J=1,JM 
 C       PENTE RECTILIGNE                                                       
         I_L = GLOBAL_TO_LOCAL_POINT(I,MESH)
         J_L = GLOBAL_TO_LOCAL_POINT(J,MESH)
-        ZF%R(I_L+(J_L-1)*IM) = -0.6D0 + 0.46D0 * FLOAT(I_L-1) 
-     &  / FLOAT(IM-1) 
-C       BOSSE GAUSSI_LENNE            
+        ZF%R(I_L+(J_L-1)*IM)=-0.6D0+0.46D0*FLOAT(I_L-1)/FLOAT(IM-1) 
+C       BOSSE GAUSSIENNE            
         IF(I_L.GT.9.AND.I_L.LT.29) THEN
           EIKON = -(I_L-19)**2/20.D0 
           ZF%R(I_L+(J_L-1)*IM) = ZF%R(I_L+(J_L-1)*IM) + 0.1D0*EXP(EIKON)
