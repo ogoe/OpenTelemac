@@ -12,7 +12,8 @@ PARALLEL PROCESSORS : 0
 FORTRAN FILE             : t2d_cone.f 
 BOUNDARY CONDITIONS FILE : geo_cone.cli
 GEOMETRY FILE            : geo_cone.slf
-REFERENCE FILE           : f2d_cone.slf   VALIDATION : YES 
+REFERENCE FILE           : f2d_cone.slf
+VALIDATION               : YES 
 RESULTS FILE             : r2d_cone.slf
 /
 /----------------------------------------------------------------------/ 
@@ -22,11 +23,11 @@ RESULTS FILE             : r2d_cone.slf
 TITLE = 'TELEMAC-2D: ROTATING CONE TEST'                                                              
 VARIABLES FOR GRAPHIC PRINTOUTS: 'U,V,H,T1'                        
 /
- TIME STEP = 0.392699082    NUMBER OF TIME STEPS = 16 
- TIME STEP = 0.785398164    NUMBER OF TIME STEPS = 8 
- TIME STEP = 1.570796328    NUMBER OF TIME STEPS = 4 
- TIME STEP = 3.141592653    NUMBER OF TIME STEPS = 2 
- TIME STEP = 6.283185308    NUMBER OF TIME STEPS = 1                                               
+/TIME STEP = 0.392699082    NUMBER OF TIME STEPS = 16 
+/TIME STEP = 0.785398164    NUMBER OF TIME STEPS = 8 
+/TIME STEP = 1.570796328    NUMBER OF TIME STEPS = 4 
+/TIME STEP = 3.141592653    NUMBER OF TIME STEPS = 2 
+/TIME STEP = 6.283185308    NUMBER OF TIME STEPS = 1                                               
  TIME STEP = 0.196349541    NUMBER OF TIME STEPS = 32
 /TIME STEP = 0.098174771    NUMBER OF TIME STEPS = 64
 /TIME STEP = 0.049087385    NUMBER OF TIME STEPS = 128 
