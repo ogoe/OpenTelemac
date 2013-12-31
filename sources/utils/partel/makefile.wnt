@@ -1,5 +1,5 @@
 #------------------------------makefile.wnt----------------------------
-#     Système TELEMAC Version 6.0     CCT - MHL
+#     Système TELEMAC Version 7.0     CCT - MHL
 #
 # Makefile de PARALLEL pour WindowsNT (avec Intel).
 #
@@ -16,7 +16,7 @@
 #
 #--- Definitions pour SYSTEME TELEMAC
 !include <$(SYSTELCFG)\cfgmak.mak>
-VERSION    = V6P3
+VERSION    = V7P0
 
 
 

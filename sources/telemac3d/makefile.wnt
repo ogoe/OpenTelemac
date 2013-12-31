@@ -1,5 +1,5 @@
 #------------------------------makefile.wnt----------------------------
-#     Système TELEMAC Version 5.7     R. BALLESTER - ADMIn Informatique
+#     Système TELEMAC Version 7.0     R. BALLESTER - ADMIn Informatique
 #
 # Makefile de TELEMAC3D pour WindowsNT (avec Intel).
 #
@@ -15,7 +15,7 @@
 #
 #--- Definitions pour SYSTEME TELEMAC
 !include <$(SYSTELCFG)\cfgmak.mak>
-VERSION    = V6P3
+VERSION    = V7P0
 
 
 

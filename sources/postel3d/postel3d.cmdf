@@ -2,7 +2,7 @@
 path: <root>|sources|postel3d
 module: postel3d
 liborder: special parallel damocles bief postel3d
-version: v6p3
+version: v7p0
 name: HOMERE_POSTEL3D
 
 [bief]

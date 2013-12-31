@@ -1,5 +1,5 @@
 #------------------------------makefile.gfo----------------------------
-#     Système TELEMAC Version 6.0     PLG / INGEROP
+#     Système TELEMAC Version 7.0     PLG / INGEROP
 #
 # Makefile de ARTEMIS pour WindowsNT (GFORTRAN/G95).
 #
@@ -15,7 +15,7 @@
 #
 #--- Definitions pour SYSTEME TELEMAC
 !include <$(SYSTELCFG)\cfgmak.mak>
-VERSION    = V6P3
+VERSION    = V7P0
 
 
 

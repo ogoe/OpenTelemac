@@ -16,7 +16,7 @@
 #
 NOM_GENERIQUE = gretel
 
-VERSION	      = v6p3
+VERSION	      = v7p0
 
 ###########################
 # Definition des macros

@@ -15,7 +15,7 @@
 #
 NOM_GENERIQUE = diffsel
 
-VERSION	      = v6p3
+VERSION	      = v7p0
 
 ###########################
 # Definition des macros

@@ -2,7 +2,7 @@
 path: <root>|sources|tomawac
 module: tomawac
 liborder: special parallel damocles bief tomawac
-version: v6p3
+version: v7p0
 name: HOMERE_TOMAWAC
 
 [bief]

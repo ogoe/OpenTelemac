@@ -2,7 +2,7 @@
 path: <root>|sources|telemac3d
 module: telemac3d
 liborder: special parallel damocles bief sisyphe tomawac telemac2d telemac3d
-version: v6p3
+version: v7p0
 name: HOMERE_TELEMAC3D
 
 [bief]

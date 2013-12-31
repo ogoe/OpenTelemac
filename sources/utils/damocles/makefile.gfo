@@ -15,7 +15,7 @@
 #
 #--- Definitions pour SYSTEME TELEMAC
 !include <$(SYSTELCFG)\cfgmak.mak>
-VERSION    = V6P3
+VERSION    = V7P0
 
 
 DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib

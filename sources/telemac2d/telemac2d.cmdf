@@ -2,7 +2,7 @@
 path: <root>|sources|telemac2d
 module: telemac2d
 liborder: special parallel damocles bief sisyphe tomawac telemac2d
-version: v6p3
+version: v7p0
 name: HOMERE_TELEMAC2D
 
 [bief]
