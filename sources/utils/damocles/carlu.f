@@ -1,12 +1,12 @@
-!                    ****************************
-                     CHARACTER*144 FUNCTION CARLU
-!                    ****************************
+!                    *********************************
+                     CHARACTER(LEN=144) FUNCTION CARLU
+!                    *********************************
 !
      &( LCAR   , ICOL  , LIGNE  , EXTREM , MOTCLE , SIZE , MOTIGN ,
      &  LONIGN , NMAXR , NFICDA , LGVAR  )
 !
 !***********************************************************************
-! DAMOCLES   V6P0                                   21/08/2010
+! DAMOCLES   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    DECODES A CHARACTER STRING, FROM COLUMN ICOL+1 OF THE
@@ -46,6 +46,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J.M. HERVOUET (EDF R&D, LNHE)
+!+        31/12/2013
+!+        V7P0
+!+   Prints of LIGNED limited to maximum size LGVAR.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EXTREM         |-->| SEPARATEUR DE CHAINE = ' OU "
 !| ICOL           |<->| POSITION COURANTE DU POINTEUR DANS LA LIGNE
@@ -62,12 +67,11 @@
 !
       IMPLICIT NONE
 !
-!
       INTEGER       LCAR,ICOL,NMAXR(4),NFICDA,LGVAR,SIZE(4,*)
       INTEGER       LONIGN(100)
       CHARACTER(LEN=*) LIGNE
-      CHARACTER*1   EXTREM
-      CHARACTER*72  MOTIGN(100),MOTCLE(4,*)
+      CHARACTER(LEN=1) EXTREM
+      CHARACTER(LEN=72) MOTIGN(100),MOTCLE(4,*)
 !
       INTEGER  NEXT,PRECAR,LONGLU
       EXTERNAL NEXT,PRECAR,LONGLU
@@ -82,10 +86,10 @@
       INTEGER       I,IDEB,IFIN,NCAR,ICOL2,NLIGN2,ITYP,K,LGLU,LONPRO(15)
       INTEGER       QCAS
       LOGICAL       COTE,LISUIV,LUFIC,LUCOTE
-      CHARACTER*1   QUOTE,TABUL
-      CHARACTER*9   MOTPRO(15)
-      CHARACTER*72  LIGNE2
-      CHARACTER*144 LIGNED
+      CHARACTER(LEN=1)   QUOTE,TABUL
+      CHARACTER(LEN=9)   MOTPRO(15)
+      CHARACTER(LEN=72)  LIGNE2
+      CHARACTER(LEN=144) LIGNED
 !
 !-----------------------------------------------------------------------
 !
@@ -101,7 +105,9 @@
       DATA MOTPRO/'NOM','TYPE','INDEX','TAILLE','DEFAUT','AIDE',
      & 'CHOIX','RUBRIQUE','NIVEAU','MNEMO','COMPOSE','COMPORT',
      & 'CONTROLE','APPARENCE','SUBMIT'/
-! LENGTH OF PROTECTED WORDS
+!
+!     LENGTH OF PROTECTED WORDS
+!
       DATA LONPRO /3,4,5,6,6,4,5,8,6,5,7,7,8,9,6/
 !
 !***********************************************************************
@@ -119,7 +125,6 @@
       TABUL  = CHAR(9)
       NLIGN2 = NLIGN
       ICOL2  = ICOL
-!     LIGNE2 = LIGNE
       LIGNE2 = LIGNE(1:MIN(72,LEN(LIGNE)))
       LIGNED = ' '
       LGLU   = 0
@@ -194,53 +199,53 @@
 !
         LGLU = LGLU + ICOL2
 !
-        IF (LGLU.GT.LGVAR) THEN
-             ERREUR = .TRUE.
-             IF (LONGLU(LIGNED).GT.0) THEN
-               LIGNED = LIGNED(1:LONGLU(LIGNED))//LIGNE2(1:ICOL2)
-             ELSE
-               LIGNED = LIGNE2(1:ICOL2)
-             ENDIF
-             IF (LGLU.GT.0) WRITE(LU,'(1X,A)') LIGNED(1:LGLU)
-             WRITE(LU,*) ' '
-             IF (LNG.EQ.1) THEN
-               WRITE(LU,'(1X,A6,I4,1X,A27)') 'LIGNE: ',NLIGN,
-     &                'ERREUR : CHAINE TROP LONGUE'
-             ELSEIF (LNG.EQ.2) THEN
-               WRITE(LU,'(1X,A5,I4,1X,A23)') 'LINE: ',NLIGN,
-     &                'ERROR : STRING TOO LONG'
-             ENDIF
-             ICOL = ICOL -1
-             GO TO 1000
-         ELSE
-! NEEDS TO READ ANOTHER LINE - SIMULATES A SHIFT OF LINE
-             LISUIV = .FALSE.
-             LIGNE = LIGNE2
-             IF (LONGLU(LIGNED).GT.0) THEN
-               LIGNED = LIGNED(1:LONGLU(LIGNED))//LIGNE2(1:LONGLI)
-             ELSE
-              LIGNED = LIGNE2(1:LONGLI)
-             ENDIF
-             NLIGN = NLIGN2
-             ICOL = ICOL2
-             IFIN = LONGLI+1
-             GO TO 290
+        IF(LGLU.GT.LGVAR) THEN
+          ERREUR = .TRUE.
+          IF (LONGLU(LIGNED).GT.0) THEN
+            LIGNED = LIGNED(1:LONGLU(LIGNED))//LIGNE2(1:ICOL2)
+          ELSE
+            LIGNED = LIGNE2(1:ICOL2)
+          ENDIF
+          IF(LGLU.GT.0) WRITE(LU,'(1X,A)') LIGNED(1:MIN(LGLU,144))
+          WRITE(LU,*) ' '
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,'(1X,A6,I4,1X,A27)') 'LIGNE: ',NLIGN,
+     &              'ERREUR : CHAINE TROP LONGUE'
+          ELSEIF (LNG.EQ.2) THEN
+            WRITE(LU,'(1X,A5,I4,1X,A23)') 'LINE: ',NLIGN,
+     &              'ERROR : STRING TOO LONG'
+          ENDIF
+          ICOL = ICOL -1
+          GO TO 1000
+        ELSE
+!         NEEDS TO READ ANOTHER LINE - SIMULATES A SHIFT OF LINE
+          LISUIV = .FALSE.
+          LIGNE = LIGNE2
+          IF (LONGLU(LIGNED).GT.0) THEN
+            LIGNED = LIGNED(1:LONGLU(LIGNED))//LIGNE2(1:LONGLI)
+          ELSE
+            LIGNED = LIGNE2(1:LONGLI)
+          ENDIF
+          NLIGN = NLIGN2
+          ICOL = ICOL2
+          IFIN = LONGLI+1
+          GO TO 290
         ENDIF
-  96    IF (LISUIV) THEN
-            IF (LONGLU(LIGNED).GT.0) THEN
-               LIGNED = LIGNED(1:LONGLU(LIGNED))//LIGNE2(1:ICOL2)
-             ELSE
-              LIGNED = LIGNE2(1:LONGLI)
-             ENDIF
-            IFIN = LGLU+ICOL2
-            IDEB = 1
+  96    IF(LISUIV) THEN
+          IF(LONGLU(LIGNED).GT.0) THEN
+            LIGNED = LIGNED(1:LONGLU(LIGNED))//LIGNE2(1:ICOL2)
+          ELSE
+            LIGNED = LIGNE2(1:LONGLI)
+          ENDIF
+          IFIN = LGLU+ICOL2
+          IDEB = 1
         ENDIF
        ENDIF
 !
-           GO TO 901
- 900       CONTINUE
-           RETOUR = .TRUE.
- 901       CONTINUE
+       GO TO 901
+ 900   CONTINUE
+       RETOUR = .TRUE.
+ 901   CONTINUE
            DO 90 I = 1 , LGLU
              IF (LIGNED(I:I).EQ.QUOTE.OR.LIGNED(I:I).EQ.'&'.OR.
      &          LIGNED(I:I).EQ.'='.OR.LIGNED(I:I).EQ.':'.OR.
@@ -316,34 +321,34 @@
                 ENDIF
 !
                 ICOL2 = 0
-                IF (LIGNE2(1:1).EQ.QUOTE.AND.LUCOTE) THEN
+                IF(LIGNE2(1:1).EQ.QUOTE.AND.LUCOTE) THEN
                    LUCOTE = .FALSE.
                    ICOL2=1
                 ENDIF
  110            ICOL2 =PRECAR (ICOL2+1,LIGNE2,EXTREM,EXTREM,EXTREM)
                 IF(ICOL2.LT.LONGLI) THEN
                 IF(LIGNE2(ICOL2+1:ICOL2+1).EQ.
-     &             EXTREM.AND.EXTREM.EQ.QUOTE) THEN
-!                   ICOL2 = PRECAR(ICOL2+1,LIGNE2,EXTREM,EXTREM,EXTREM)
-                    ICOL2=ICOL2+1
-                    COTE=.TRUE.
-                    IF (ICOL2.EQ.LONGLI) QCAS=3
-                   GO TO 110
+     &            EXTREM.AND.EXTREM.EQ.QUOTE) THEN
+!                 ICOL2 = PRECAR(ICOL2+1,LIGNE2,EXTREM,EXTREM,EXTREM)
+                  ICOL2=ICOL2+1
+                  COTE=.TRUE.
+                  IF (ICOL2.EQ.LONGLI) QCAS=3
+                  GO TO 110
                 ENDIF
                 ENDIF
-                IF (ICOL2.EQ.LONGLI) ICOL2=ICOL2+1
-                IF (LGLU.GT.0) THEN
+                IF(ICOL2.EQ.LONGLI) ICOL2=ICOL2+1
+                IF(LGLU.GT.0) THEN
                   LIGNED = LIGNED(1:LGLU)//LIGNE2(1:ICOL2-1)
                 ELSE
                   LIGNED = LIGNE2(1:ICOL2-1)
                 ENDIF
                 LGLU = LGLU + ICOL2-1
 !
-                IF (LGLU.GT.LGVAR) GO TO 910
+                IF(LGLU.GT.LGVAR) GO TO 910
 !
 ! GOES TO NEXT LINE IF NOT COMPLETE, OR IF HAS FOUND A QUOTE IN 72
 !
-                IF (ICOL2.GE.LONGLI) THEN
+                IF(ICOL2.GE.LONGLI) THEN
                   LISUIV = .FALSE.
                   LIGNE = LIGNE2
                   NLIGN = NLIGN2
@@ -358,7 +363,7 @@
                 RETOUR = .TRUE.
 !
  910            CONTINUE
-                WRITE(LU,'(1X,A)') LIGNED(1:MAX(1,LGLU))
+                WRITE(LU,'(1X,A)') LIGNED(1:MAX(1,MIN(LGLU,LGVAR)))
                 WRITE(LU,*)
                 IF(LNG.EQ.1) THEN
                 WRITE(LU,'(1X,A6,I4,A)') 'LIGNE: ',NLIGN,
@@ -379,9 +384,9 @@
       ENDIF
 !
  920  CONTINUE
-      IF ( LGLU.NE.0  ) THEN
-           LCAR = MIN(LGLU,LGVAR)
-           CARLU = LIGNED(1:LGLU)
+      IF(LGLU.NE.0) THEN
+        LCAR = MIN(LGLU,LGVAR)
+        CARLU = LIGNED(1:LGLU)
       ENDIF
 !
 !  CHANGES DOUBLE QUOTES WITH SIMPLE QUOTES
@@ -425,5 +430,7 @@
 1999  FORMAT(1X,'LOGICAL UNIT ',1I2,'   ERROR LINE ',1I6)
       RETOUR = .TRUE.
       RETURN
+!
+!-----------------------------------------------------------------------
 !
       END
