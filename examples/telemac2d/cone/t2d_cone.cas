@@ -13,8 +13,8 @@ FORTRAN FILE             : t2d_cone.f
 BOUNDARY CONDITIONS FILE : geo_cone.cli
 GEOMETRY FILE            : geo_cone.slf
 REFERENCE FILE           : f2d_cone.slf
-VALIDATION               : YES 
 RESULTS FILE             : r2d_cone.slf
+VALIDATION               : YES
 /
 /----------------------------------------------------------------------/ 
 /                     OPTIONS GENERALES                                  
