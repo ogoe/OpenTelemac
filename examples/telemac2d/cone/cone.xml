@@ -7,7 +7,7 @@
    /!\ This section is being ignored at the moment --> 
    <deco xref="default"> 
       <look format="png" colourbar="jet.xml" /> 
-      <data title="canal" author="telemac2d" contact="www.opentelemac.org" /> 
+      <data title="cone" author="telemac2d" contact="www.opentelemac.org" /> 
    </deco> 
    <deco xref="vect"> 
       <look colour="jet.xml" /> 
@@ -19,27 +19,44 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="1"  rank="7"
+   <action xref="1"  rank="2"
        do="translate;compile;run;cas;princi" 
-       code="telemac3d" target="t2d_cone.cas" 
+       code="telemac2d" target="t2d_cone.cas" 
        title="rotating cone in 2D" 
    />
-   <action xref="2"  rank="7"
+    <action xref="2"  rank="2"
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_cone.cas" 
-       title="canal parallel mode" 
+       title="rotating cone parallel mode" 
    />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ This section is being ignored at the moment --> 
- 
+   --> <!-- 
+   <save1d xref="figure1" type="v-section" config="oneofall" > 
+      <layer vars="tracer:line" extract="(10.05;10.05):(20.1;10.05)" time="[0]" target="1:T2DRES" /> 
+      <layer vars="tracer:line" extract="(10.05;10.05):(10.05;20.1)" time="[1]" target="1:T2DRES" /> 
+      <layer vars="tracer:line" extract="(10.05;10.05):(0;10.05)" time="[2]" target="1:T2DRES" /> 
+      <layer vars="tracer:line" extract="(10.05;10.05):(10.05;-20.1)" time="[3]" target="1:T2DRES" /> 
+      <layer vars="tracer:line" extract="(10.05;10.05):(20.1;10.05)" time="[4]" target="1:T2DRES" /> 
+   </save1d>
+ --> 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    --> 
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
---> 
+   <plot1d xref="figure1" type="v-section" config="oneofall" size="[12;3]" > 
+      <layer vars="tracer:line" extract="(10.05;10.05):(20.1;10.05)" time="[0]" target="1:T2DRES" /> 
+      <layer vars="tracer:line" extract="(10.05;10.05):(10.05;20.1)" time="[1]" target="1:T2DRES" /> 
+      <layer vars="tracer:line" extract="(10.05;10.05):(0;10.05)" time="[2]" target="1:T2DRES" /> 
+      <layer vars="tracer:line" extract="(10.05;10.05):(10.05;-20.1)" time="[3]" target="1:T2DRES" /> 
+      <layer vars="tracer:line" extract="(10.05;10.05):(20.1;10.05)" time="[4]" target="1:T2DRES" /> 
+   </plot1d>
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
---> 
+   <plot2d xref="figure2" config="oneofall" size="[8;8]" > 
+      <layer vars="velocity:map" target="1:T2DRES" time="[-1]" /> 
+      <layer vars="velocity:angle" sample="(10.05;7.05)(20.1;13.05)[10;4]" target="1:T2DRES" time="[-1]" /> 
+   </plot2d>
+   <plot2d xref="figure3" config="oneofall" size="[8;8]" > 
+      <layer vars="tracer:map" target="1:T2DRES" time="[-1]" /> 
+   </plot2d>
  
 </validation>
