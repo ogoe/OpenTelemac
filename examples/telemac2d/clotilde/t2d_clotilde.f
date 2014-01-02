@@ -136,21 +136,25 @@ C
 C
       IF ((AT.GE.30000.D0) .AND. (AT.LE.31315.D0)) THEN
       DO 115 boucleCR6=1,nbathyCR6
-         ZF%R(MESH%KNOGL%I(numeroCR6(boucleCR6)))=0.01D0*AT-246.75D0    
+         ZF%R(GLOBAL_TO_LOCAL_POINT(numeroCR6(boucleCR6),MESH))=
+     &                                                0.01D0*AT-246.75D0    
  115  CONTINUE
       ELSEIF (AT.GT.31315.D0) THEN
       DO 116 boucleCR6=1,nbathyCR6
-         ZF%R(MESH%KNOGL%I(numeroCR6(boucleCR6)))=fondCR6(boucleCR6)
+         ZF%R(GLOBAL_TO_LOCAL_POINT(numeroCR6(boucleCR6),MESH))=
+     &                                                fondCR6(boucleCR6)
  116  CONTINUE
       ENDIF
 C
       IF ((AT.GE.30000.D0) .AND. (AT.LE.31190.D0)) THEN
       DO 117 boucleCR7=1,nbathyCR7
-         ZF%R(MESH%KNOGL%I(numeroCR7(boucleCR7)))=0.01D0*AT-245.5D0
+         ZF%R(GLOBAL_TO_LOCAL_POINT(numeroCR7(boucleCR7),MESH))=
+     &                                                 0.01D0*AT-245.5D0
  117  CONTINUE
       ELSEIF (AT.GT.31190.D0) THEN
       DO 118 boucleCR7=1,nbathyCR7
-         ZF%R(MESH%KNOGL%I(numeroCR7(boucleCR7)))=fondCR7(boucleCR7)
+         ZF%R(GLOBAL_TO_LOCAL_POINT(numeroCR7(boucleCR7),MESH))=
+     &                                                fondCR7(boucleCR7)
  118  CONTINUE
       ENDIF
 C   
