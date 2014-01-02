@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    HARMONIC ANALYSIS OF TIDE WAVES USING LEAST-SQUARE
@@ -30,6 +30,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        02/01/2014
+!+        V7P0
+!+   Securing bound checking in parallelism.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -41,7 +46,7 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      DOUBLE PRECISION PI,CFX,CFY,A
+      DOUBLE PRECISION PI,CFX,CFY,A,B
 !
       DOUBLE PRECISION, ALLOCATABLE :: AM(:,:),BM(:,:),HA(:)
 !
@@ -160,12 +165,15 @@
                WRITE(LU,*) ' '
                DO J = 1, NPTS
 !                 IN PARALLEL POINT DOES NOT ALWAYS EXIST, MAYBE ELSEWHERE
-                  IF(NCSIZE.GT.0) THEN
-                    WRITE(LU,100) NAME_PTS(J),
-     &                            P_DMIN(AMPL%ADR(I)%P%R(LIST_PTS(J)))
-     &                           +P_DMAX(AMPL%ADR(I)%P%R(LIST_PTS(J))),
-     &	                          P_DMIN(PHAS%ADR(I)%P%R(LIST_PTS(J)))
-     &                           +P_DMAX(PHAS%ADR(I)%P%R(LIST_PTS(J)))
+                  IF(NCSIZE.GT.1) THEN
+                    A=0.D0
+                    B=0.D0
+                    IF(LIST_PTS(J).GT.0) THEN
+                      A=AMPL%ADR(I)%P%R(LIST_PTS(J))
+                      B=PHAS%ADR(I)%P%R(LIST_PTS(J))
+                    ENDIF
+                    WRITE(LU,100) NAME_PTS(J),P_DMIN(A)+P_DMAX(A),
+     &	                                      P_DMIN(B)+P_DMAX(B)
                   ELSE
                     WRITE(LU,100) NAME_PTS(J),
      &                            AMPL%ADR(I)%P%R(LIST_PTS(J)),

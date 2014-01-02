@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                  21/08/2010
+! TELEMAC2D   V7P0                                  21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE VARIABLES WHICH WILL BE WRITTEN TO
@@ -31,6 +31,11 @@
 !+        25/07/2013
 !+        V6P3
 !+   Sum of HAP in oilspills has been added.  
+!
+!history  J-M HERVOUET EDF R&D, LNHE)
+!+        02/01/2014
+!+        V7P0
+!+   Securing bound checking in parallelism.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -157,9 +162,9 @@
             DO N=1,NPTS
 !             IN PARALLEL POINT DOES NOT ALWAYS EXIST, MAYBE ELSEWHERE
               IF(NCSIZE.GT.1) THEN
-                WRITE(LU,*) NAME_PTS(N),' : ',
-     &                    P_DMIN(VARSOR%ADR(I)%P%R(LIST_PTS(N)))+
-     &                    P_DMAX(VARSOR%ADR(I)%P%R(LIST_PTS(N)))
+                HHH=0.D0
+                IF(LIST_PTS(N).GT.0) HHH=VARSOR%ADR(I)%P%R(LIST_PTS(N))
+                WRITE(LU,*) NAME_PTS(N),' : ',P_DMIN(HHH)+P_DMAX(HHH)
               ELSE
                 WRITE(LU,*) NAME_PTS(N),' : ',
      &                                    VARSOR%ADR(I)%P%R(LIST_PTS(N))

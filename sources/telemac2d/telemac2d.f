@@ -5,7 +5,7 @@
      &(PASS,ATDEP,NITER,CODE,DTDEP,NEWTIME,DOPRINT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/08/2010
+! TELEMAC2D   V7P0                                  02/01/2014
 !***********************************************************************
 !
 !brief    SOLVES THE SAINT-VENANT EQUATIONS FOR U,V,H.
@@ -189,6 +189,11 @@
 !+        30/12/2013
 !+        V7P0
 !+   Initialisation of YAFLODEL added (overlooked bug?).
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        02/01/2014
+!+        V7P0
+!+   Removing a use of KNOGL.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
@@ -454,7 +459,7 @@
 !
       IF(NPTS.GT.0.AND.NCSIZE.GT.1) THEN
         DO I=1,NPTS
-          LIST_PTS(I)=MESH%KNOGL%I(LIST_PTS(I))
+          LIST_PTS(I)=GLOBAL_TO_LOCAL_POINT(LIST_PTS(I),MESH)
         ENDDO
       ENDIF
 !
