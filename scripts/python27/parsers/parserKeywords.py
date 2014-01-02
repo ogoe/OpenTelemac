@@ -141,7 +141,9 @@ def readCAS(keywords,dico,frgb):
    for key,value in zip(*keywords):
       kw = key
       if kw[0] == '&': continue
-      if kw not in dico: 
+      if kw not in dico:
+         if kw not in frgb['GB']:
+            raise Exception([{'name':'readCAS','msg':'... could not find the following keyword in the selected dictionary file: '+key+'\n     ~> you may not be running the code associated to your CAS file.'}])
          kw = frgb['GB'][kw]
       if dico[kw]['TYPE'][0] == 'LOGIQUE':
          vals = []
