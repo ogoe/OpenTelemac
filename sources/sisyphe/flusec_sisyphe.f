@@ -3,7 +3,7 @@
 !                    *************************
 !
      &(U,V,H,QSXC,QSYC,CHARR,QSXS,QSYS,SUSP,
-     & IKLE,NELMAX,NELEM,X,Y,DT,NCP,CTRLSC,INFO,TPS,KNOGL)
+     & IKLE,NELMAX,NELEM,X,Y,DT,NCP,CTRLSC,INFO,TPS)
 !
 !***********************************************************************
 ! SISYPHE   V6P1                                   21/07/2011
@@ -31,6 +31,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        02/01/2014
+!+        V7P0
+!+   KNOGL removed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHARR          |-->| LOGICAL, BEDLOAD
 !| CTRLSC         |-->| CONTROL SECTION
@@ -38,7 +43,6 @@
 !| H              |-->| WATER DEPTH 
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| INFO           |-->| IF YES, PRINT
-!| KNOGL          |-->| FROM GLOBAL TO LOCAL NUMBERING IN PARALLEL
 !| NCP            |-->| TWO TIMES THE NUMBER OF CONTROL SECTIONS
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
@@ -53,7 +57,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_SISYPHE, ONLY: CHAIN
+      USE DECLARATIONS_SISYPHE, ONLY: CHAIN,MESH
       USE INTERFACE_SISYPHE, EX_FLUSEC_SISYPHE => FLUSEC_SISYPHE
 !
       IMPLICIT NONE
@@ -64,7 +68,7 @@
 !
       INTEGER, INTENT(IN)          :: NELMAX,NELEM,NCP
       INTEGER, INTENT(IN)          :: IKLE(NELMAX,*)
-      INTEGER, INTENT(IN)          :: CTRLSC(NCP),KNOGL(*)
+      INTEGER, INTENT(IN)          :: CTRLSC(NCP)
       DOUBLE PRECISION, INTENT(IN) :: X(*),Y(*),TPS,DT
       LOGICAL, INTENT(IN)          :: INFO,SUSP,CHARR
       TYPE(BIEF_OBJ), INTENT(IN)   :: U,V,H,QSXC,QSYC,QSXS,QSYS
@@ -94,10 +98,7 @@
       SAVE FLXC,VOLNEGC,VOLPOSC,OLD_METHOD
 !
 !-----------------------------------------------------------------------
-! CV 
-!      WRITE(LU,*) '-> ENTERING FLUSEC_SISYPHE'
-!      WRITE(LU,*) 'NCP: ',NCP
-!      WRITE(LU,*) 'CTRLSC: ',CTRLSC(:)
+!
       SUR6 = 1.D0/6.D0
       NSEC = NCP/2
 !
@@ -153,8 +154,8 @@
         DEP = CTRLSC(1+2*(ISEC-1))
         ARR = CTRLSC(2+2*(ISEC-1))
         IF(NCSIZE.GT.1) THEN
-          DEP=KNOGL(DEP)
-          ARR=KNOGL(ARR)
+          DEP=GLOBAL_TO_LOCAL_POINT(DEP,MESH)
+          ARR=GLOBAL_TO_LOCAL_POINT(ARR,MESH)
           IF(DEP.EQ.0.AND.ARR.EQ.0) THEN
             NSEG(ISEC)=0
             GO TO 60

@@ -10,7 +10,7 @@
      & THETAW_TEL,HW_TEL,TW_TEL)
 !
 !***********************************************************************
-! SISYPHE   V6P3                                   31/07/2012
+! SISYPHE   V7P0                                   02/01/2014
 !***********************************************************************
 !
 !brief  The real main program of Sisyphe, with the time loop.
@@ -83,6 +83,11 @@
 !+        16/04/2013
 !+        V6P3
 !+   Adding the file format in the call to FONSTR.
+!
+!history  J-M HERVOUET (EDF R&D, LNHE) 
+!+        02/01/2014 
+!+        V7P0
+!+   KNOGL removed from call to flusec_sisyphe.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
@@ -1494,7 +1499,7 @@ C!!! ONLY FOR ONE CLASS
      &                        MESH%IKLE%I,
      &                        MESH%NELMAX,MESH%NELEM,
      &                        MESH%X%R,MESH%Y%R,
-     &                        DTS,NCP,CTRLSC,ENTETS,AT0,MESH%KNOGL%I)
+     &                        DTS,NCP,CTRLSC,ENTETS,AT0)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_FLUSEC_SISYPHE'
         ENDIF
 !
