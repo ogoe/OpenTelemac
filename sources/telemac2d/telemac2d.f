@@ -193,7 +193,8 @@
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        02/01/2014
 !+        V7P0
-!+   Removing a use of KNOGL.
+!+   Removing a use of KNOGL. KNOGL suppressed in call to 
+!+   flusec_telemac2d.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
@@ -1059,7 +1060,7 @@
           CALL FLUSEC_TELEMAC2D(U,V,H,MESH%IKLE%I,MESH%XEL%R,MESH%YEL%R,
      &                          MESH%NELMAX,MESH%NELEM,
      &                          MESH%X%R,MESH%Y%R,
-     &                          0.D0,NCP,CTRLSC,ENTET,AT,MESH%KNOGL%I,
+     &                          0.D0,NCP,CTRLSC,ENTET,AT,
      &                          MSKSEC,BM1,BM2,T1,H,MESH,S,CV1,
      &                          MESH%IFABOR%I,COMFLU,CUMFLO)
         ENDIF
@@ -2173,7 +2174,7 @@
         CALL FLUSEC_TELEMAC2D(U,V,H,MESH%IKLE%I,MESH%XEL%R,MESH%YEL%R,
      &                        MESH%NELMAX,MESH%NELEM,
      &                        MESH%X%R,MESH%Y%R,DT,NCP,
-     &                        CTRLSC,ENTET,AT,MESH%KNOGL%I,
+     &                        CTRLSC,ENTET,AT,
      &                        MSKSEC,BM1,BM2,T1,HPROP,MESH,S,CV1,
      &                        MESH%IFABOR%I,COMFLU,CUMFLO)
       ENDIF

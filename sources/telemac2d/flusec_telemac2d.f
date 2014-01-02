@@ -3,10 +3,10 @@
 !                    ***************************
 !
      &(U,V,H,IKLE,XEL,YEL,NELMAX,NELEM,X,Y,DT,NCP,CTRLSC,INFO,TPS,
-     & KNOGL,MSKSEC,BM1,BM2,T1,HPROP,MESH,S,CV1,IFABOR,COMFLU,CUMFLO)
+     & MSKSEC,BM1,BM2,T1,HPROP,MESH,S,CV1,IFABOR,COMFLU,CUMFLO)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES FLUXES THROUGH CONTROL SECTIONS
@@ -36,6 +36,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        02/01/2014
+!+        V7P0
+!+   Use of KNOGL and argument KNOGL removed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BM1            |<->| WORK MATRIX
 !| BM2            |<->| WORK MATRIX
@@ -51,7 +56,6 @@
 !|                |   | BOUNDARY
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| INFO           |-->| IF YES, PRINT
-!| KNOGL          |-->| FROM GLOBAL TO LOCAL NUMBERING IN PARALLEL
 !| MESH           |-->| MESH STRUCTURE
 !| MSKSEC         |<->| BLOCK OF WORK ARRAYS, PER SECTION
 !| NCP            |-->| TWO TIMES THE NUMBER OF CONTROL SECTIONS
@@ -79,7 +83,7 @@
       INTEGER, INTENT(IN) :: NELMAX,NELEM
       INTEGER, INTENT(INOUT) :: NCP ! CAN BE CHANGED
       INTEGER, INTENT(INOUT) :: CTRLSC(NCP) ! CAN BE CHANGED
-      INTEGER, INTENT(IN) :: IKLE(NELMAX,*),KNOGL(*)
+      INTEGER, INTENT(IN) :: IKLE(NELMAX,*)
       INTEGER, INTENT(IN) :: IFABOR(NELMAX,*)
       DOUBLE PRECISION, INTENT(IN) :: X(*),Y(*),TPS,DT
       DOUBLE PRECISION, INTENT(IN) :: XEL(NELMAX,*),YEL(NELMAX,*)
@@ -150,8 +154,8 @@
         VOLNEG(ISEC)=0.D0
         VOLPOS(ISEC)=0.D0
         IF(NCSIZE.GT.1) THEN
-          DEP=KNOGL(DEP)
-          ARR=KNOGL(ARR)
+          DEP=GLOBAL_TO_LOCAL_POINT(DEP,MESH)
+          ARR=GLOBAL_TO_LOCAL_POINT(ARR,MESH)
           IF(DEP.EQ.0.AND.ARR.EQ.0) THEN
             NSEG(ISEC)=0
             GO TO 60
@@ -417,4 +421,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE FLUSEC_TELEMAC2D
+      END
