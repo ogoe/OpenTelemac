@@ -559,7 +559,7 @@ class Figure2D(Figure):
       else:
          print '... do not know how to draw this format: ' + typl
 
-      slf.file.close()
+      slf.file['hook'].close()
 
       return
 

@@ -542,13 +542,10 @@ def parseConfig_CompactTELEMAC(cfg):
    of the relevant modules for each configuration
    The principal assumption is that the validation cases are
    either under:
-     + val_root\\module\\mod_version\\rnn_*
-     + teldir\\module\\mod_version\\val_root\\rnn_*
-   where 'r' is the rank.
+     + val_root\\*
+     + teldir\\examples\\module\\val_root\\*
    If the 'val_root' key is not in the config, the default
-   path is assumed to be based on the first option, with
-   val_root = teldir\\..\\validation, i.e.
-     + teldir\\..\\validation\\module\\mod_version\\rnn_*
+   path is assumed to be based on the second option
 """
 def parseConfig_ValidateTELEMAC(cfg):
    #  cfg is either  wintel32s wintel32p wing9532s wing9532p ...
@@ -571,7 +568,7 @@ def parseConfig_ValidateTELEMAC(cfg):
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
-   # teldir\module_name\*telver\
+   # teldir\module_name\
    cfgTELEMAC.update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC['root'])})
    # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
    # for every module in the list of modules to account for
@@ -595,24 +592,26 @@ def parseConfig_ValidateTELEMAC(cfg):
    # and in which 'update' means a continuation, ignoring previously completed runs
    # and in which 'clean' means a re-run of all validation tests
    if not 'val_root' in cfg:
-      val_root = path.realpath(path.join(cfgTELEMAC['root'],'validation'))
+      val_root = path.realpath(path.join(cfgTELEMAC['root'],'examples'))
       if not path.isdir(val_root):
          print '\nNot able to find your validation set from the path: ' + val_root + '\n'
          print ' ... check the val_root key in your configuration file'
          sys.exit(1)
    else:
       val_root = cfg['val_root'].replace('<root>',cfgTELEMAC['root'])
+   _, examples, _ = walk(val_root).next()
    get,tbd = parseUserModules(cfg,cfgTELEMAC['MODULES'])
    cfgTELEMAC.update({'REBUILD':tbd})
-   for mod in get.split():
-      if mod in cfgTELEMAC['MODULES']:
-         val_dir = path.join(val_root,mod)
-         if path.isdir(val_dir):
-            val_mod = getFiles_ValidationTELEMAC(val_dir,val_ranks)
-            if val_mod != {}:
-               cfgTELEMAC['VALIDATION'].update({mod:{'path':path.realpath(val_dir)}})
-               cfgTELEMAC['VALIDATION'][mod].update(val_mod)
+   for mod in (' '.join(examples)).split():   # /!\ other ways to copy ?
+      if mod not in get and mod in cfgTELEMAC['MODULES']: examples.remove(mod)
+   for mod in examples:
+      val_dir = path.join(val_root,mod)
+      val_mod = getFiles_ValidationTELEMAC(val_dir,val_ranks)
+      if val_mod != {}:
+         cfgTELEMAC['VALIDATION'].update({mod:{'path':path.realpath(val_dir)}})
+         cfgTELEMAC['VALIDATION'][mod].update(val_mod)
 
+   print cfgTELEMAC['VALIDATION'].keys()
    # Get path_parallel for partel
    cfgTELEMAC.update({'PARTEL':getPARTEL(cfg)})
    # Get mpi_cpulist and mpi_cmdexec: for mpi option

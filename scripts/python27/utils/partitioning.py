@@ -545,7 +545,7 @@ class splitSELAFIN():
             # ~~> Write polygons to double check
             fmti = '00000' + str(part)
             fmti = fmti[len(fmti)-5:]
-            fileName = path.join(path.dirname(self.slf.fileName),self.isDOMAIN+fmtn+'-'+fmti+'.i2s')
+            fileName = path.join(path.dirname(self.slf.file['name']),self.isDOMAIN+fmtn+'-'+fmti+'.i2s')
             putInS(fileName,[],'i2s',polyXY)
 
          # ~~> Convert node numbers into x,y
@@ -557,7 +557,7 @@ class splitSELAFIN():
                pxy.append([ self.slf.MESHX[n],self.slf.MESHY[n] ])
             polyXY.append(pxy)
          # ~~> Write polygons to double check
-         fileName = path.join(path.dirname(self.slf.fileName),self.isDOMAIN+'.i2s')
+         fileName = path.join(path.dirname(self.slf.file['name']),self.isDOMAIN+'.i2s')
          putInS(fileName,[],'i2s',polyXY)
 
       print '\n... Final check to the element partitioning'
@@ -567,14 +567,14 @@ class splitSELAFIN():
       if self.isDOMAIN != '':
          # ~~> This is optional
          print '\n... Printing the domain split into a SELAFIN'
-         fileRoot,fileExts = path.splitext(self.slf.fileName)
-         self.slf.fole = open(fileRoot+'_PROCS'+fileExts,'wb')
+         fileRoot,fileExts = path.splitext(self.slf.file['name'])
+         self.slf.fole.update({ 'hook': open(fileRoot+'_PROCS'+fileExts,'wb') })
          self.slf.appendHeaderSLF()
          self.slf.appendCoreTimeSLF(0)
          VARSOR = self.slf.getVALUES(0)
          for v in range(self.slf.NVAR): VARSOR[v] = self.NSPLIT
          self.slf.appendCoreVarsSLF(VARSOR)
-         self.slf.fole.close()
+         self.slf.fole['hook'].close()
 
       print '\n... Storing the global liquid boundary numbering (NUMLIQ)'
       # ~~> Implying NUMLIQ and the number NFRLIQ based on the joined-up lines
@@ -646,12 +646,12 @@ class splitSELAFIN():
          self.slfn.MESHY = self.slf.MESHY[KNOLG[part]]
 
          # ~~> GEO file: File names
-         fileRoot,fileExts = path.splitext(self.slf.fileName)
-         self.slfn.fileName = fileRoot+fmtn+'-'+fmti+fileExts
+         fileRoot,fileExts = path.splitext(self.slf.file['name'])
+         self.slfn.file['name'] = fileRoot+fmtn+'-'+fmti+fileExts
 
          # ~~> GEO file: Printing
-         print '       ~> printing: ',self.slfn.fileName
-         self.slfn.fole = open(self.slfn.fileName,'wb')
+         print '       ~> printing: ',self.slfn.file['name']
+         self.slfn.fole.update({ 'hook': open(self.slfn.file['name'],'wb') })
          self.slfn.appendHeaderSLF()
          LVARSOR = np.zeros((self.slfn.NVAR,self.slfn.NPOIN2),dtype=np.float32)
          for t in range(len(self.slf.tags['times'])):
@@ -659,7 +659,7 @@ class splitSELAFIN():
             VARSOR = self.slf.getVALUES(t)
             for v in range(self.slfn.NVAR): LVARSOR[v] = VARSOR[v][KNOLG[part]]
             self.slfn.appendCoreVarsSLF(LVARSOR)
-         self.slfn.fole.close()
+         self.slfn.fole['hook'].close()
 
       if not self.isCONLIM: return
 

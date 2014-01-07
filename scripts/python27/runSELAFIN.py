@@ -146,6 +146,10 @@ class scanSELAFIN(PARAFINS,chopSELAFIN): # /!\ does not support PARAFINS yet -- 
          chopSELAFIN.updateTIMES(self,tfrom,tstep,tstop)
 
    def printHeader(self):
+      if self.slf.file['endian'] == ">": print 'This file appears to be coded in "big endian"'
+      else: print 'This SELAFIN file appears to be coded in "little endian"'
+      if self.slf.file['float'] == ('f',4): print 5*' '+'and the floats are assumed to be SINGLE PRECISION\n'
+      else: print 5*' '+'and the floats are assumed to be DOUBLE PRECISION\n'
       print "TITLE        :    <" + self.slf.TITLE + ">"
       if self.slf.IPARAM[9] == 1:    # /!\ needs proper formatting
          print "DATE / TIME  : ", \
@@ -259,7 +263,8 @@ class calcsSELAFIN(PARAFINS,alterSELAFIN):
       self.calcs.append( [ calc, args ] )
 
    def putContent(self,fileName):
-      self.slf.fole = open(fileName,'wb')
+      self.slf.fole.update({ 'hook': open(fileName,'wb') })
+      self.slf.file['name'] = fileName
       pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
       self.slf.appendHeaderSLF()
       # ~~> Time stepping
@@ -270,7 +275,7 @@ class calcsSELAFIN(PARAFINS,alterSELAFIN):
          for fct,args in self.calcs: self.slf.appendCoreVarsSLF(fct(vars,args))
          pbar.update(t)
       pbar.finish()
-      self.slf.fole.close()
+      self.slf.fole['hook'].close()
 
 class crunchSELAFIN(PARAFINS,alterSELAFIN):
 
@@ -376,7 +381,8 @@ class crunchSELAFIN(PARAFINS,alterSELAFIN):
          pbar.update(t)
       pbar.finish()
       # ~~> Header
-      self.slf.fole = open(fileName,'wb')
+      self.slf.fole.update({ 'hook': open(fileName,'wb') })
+      self.slf.fole['name'] = fileName
       self.slf.NBV1 = 0; self.slf.NBV2 = 0; self.slf.VARNAMES = []; self.slf.VARUNITS = []
       for calc in self.calcs:
          for cname,cunit in calc['vars']:
@@ -389,7 +395,7 @@ class crunchSELAFIN(PARAFINS,alterSELAFIN):
       for calc,icalc in zip(self.calcs,range(len(self.calcs))):
          fct = calc['stop']
          self.slf.appendCoreVarsSLF(fct(t0,t,vari[icalc]))
-      self.slf.fole.close()
+      self.slf.fole['hook'].close()
 
 class subSELAFIN(SELAFIN): # TODO with 3D
 
@@ -433,7 +439,8 @@ class subSELAFIN(SELAFIN): # TODO with 3D
       else:
          self.IKLE3 = self.IKLE2
       # ~~> Filing
-      self.fole = open(fileName,'wb')
+      self.fole.update({ 'hook': open(fileName,'wb') })
+      self.fole['name'] = fileName
       self.appendHeaderSLF()
       pbar = ProgressBar(maxval=len(self.tags['times'])).start()
       # ~~> Time stepping
@@ -452,7 +459,7 @@ class subSELAFIN(SELAFIN): # TODO with 3D
          self.appendCoreVarsSLF(varx)
          pbar.update(t)
       pbar.finish()
-      self.fole.close()
+      self.fole['hook'].close()
 
 class scanSPECTRAL(scanSELAFIN):
 
@@ -534,6 +541,8 @@ def main(action=None):
    parser.add_option("--reset",action="store_true",dest="areset",default=False,help="reset AT to zero second" )
    parser.add_option("--date",type="string",dest="adate",default=None,help="set the start date of the SLF (dd-mm-yyyy)" )
    parser.add_option("--time",type="string",dest="atime",default=None,help="set the start time of the SLF (hh:mm:ss)" )
+   parser.add_option("--endian",action="store_true",dest="eswitch",default=False,help="switch between endian encoddings" )
+   parser.add_option("--float",action="store_true",dest="fswitch",default=False,help="switch between DOUBLE and SINGLE precision float" )
    parser.add_option("--switch",action="store_true",dest="aswitch",default=False,help="switch between VARIABLES and CLANDESTINES" )
    parser.add_option("--name",type="string",dest="aname",default=None,help="change the name of a VARIABLE: 'OLD VAR=NEW VAR'" )
    parser.add_option("--T+?",type="string",dest="atp",default="0",help="adds to the ATs" )
@@ -642,6 +651,8 @@ def main(action=None):
          vars = options.xvars
          if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
          slf = chopSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars, root=rootFile )
+         if options.eswitch: slf.alterEndian()
+         if options.fswitch: slf.alterFloat()
 
          slf.putContent( outFile )
 
@@ -688,6 +699,8 @@ def main(action=None):
          if options.adate != None: slf.alterDATETIME(date=options.adate.split('-'))
          if options.atime != None: slf.alterDATETIME(time=options.atime.split(':'))
          if options.aswitch: slf.switchVARS()
+         if options.eswitch: slf.alterEndian()
+         if options.fswitch: slf.alterFloat()
          if options.aname != None: slf.alterVARS( options.aname )
          slf.alterTIMES( mT=float(options.atm),pT=float(options.atp) )
          slf.alterMESH( mX=float(options.axm),pX=float(options.axp),mY=float(options.aym),pY=float(options.ayp) )
@@ -766,6 +779,8 @@ def main(action=None):
          if options.adate != None: slf.alterDATETIME(date=options.adate.split('-'))
          if options.atime != None: slf.alterDATETIME(time=options.atime.split(':'))
          if options.aswitch: slf.switchVARS()
+         if options.eswitch: slf.alterEndian()
+         if options.fswitch: slf.alterFloat()
          if options.aname != None: slf.alterVARS( options.aname )
          slf.alterTIMES( mT=float(options.atm),pT=float(options.atp) )
          slf.alterMESH( mX=float(options.axm),pX=float(options.axp),mY=float(options.aym),pY=float(options.ayp) )
@@ -892,6 +907,8 @@ def main(action=None):
       slf.alterTIMES( mT=float(options.atm),pT=float(options.atp) )
       slf.alterMESH( mX=float(options.axm),pX=float(options.axp),mY=float(options.aym),pY=float(options.ayp) )
       if options.azname != None: slf.alterVALUES( options.azname, mZ=float(options.azm),pZ=float(options.azp) )
+      if options.eswitch: slf.alterEndian()
+      if options.fswitch: slf.alterFloat()
 
       slf.putContent(outFile)
 

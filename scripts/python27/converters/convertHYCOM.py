@@ -254,9 +254,17 @@ class HYCOM():
       #a = np.arange(40).reshape(5,8)[::-1].ravel()  # 5 plans, 8 points
       print '     +> Write SELAFIN headers'
       if not only2D:
-         self.slf3d.fole = open('t3d_'+rootName,'wb')
+         self.slf3d.fole = {}
+         self.slf3d.fole.update({ 'hook': open('t3d_'+rootName,'wb') })
+         self.slf3d.fole.update({ 'name': 't3d_'+rootName })
+         self.slf3d.fole.update({ 'endian': ">" })     # big endian
+         self.slf3d.fole.update({ 'float': ('f',4) })  # single precision
          self.slf3d.appendHeaderSLF()
-      self.slf2d.fole = open('t2d_'+rootName,'wb')
+      self.slf2d.fole = {}
+      self.slf2d.fole.update({ 'hook': open('t2d_'+rootName,'wb') })
+      self.slf2d.fole.update({ 'name': 't2d_'+rootName })
+      self.slf2d.fole.update({ 'endian': ">" })     # big endian
+      self.slfd.fole.update({ 'float': ('f',4) })  # single precision
       self.slf2d.appendHeaderSLF()
       # ~~~~ Time loop(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       var3d = np.zeros(self.slf3d.NPOIN3,dtype=np.float)
@@ -361,8 +369,8 @@ class HYCOM():
             ibar += 1
 
       pbar.finish()
-      if not only2D: self.slf3d.fole.close()
-      self.slf2d.fole.close()
+      if not only2D: self.slf3d.fole['hook'].close()
+      self.slf2d.fole['hook'].close()
 
    def __del__(self): pass
 

@@ -1,14 +1,14 @@
 """@author Christopher J. Cawthorn and Sebastien E. Bourban
 """
 """@note ... this work is based on a collaborative effort between
-  .________.                                                          ,--.
-  |        |                                                      .  (  (
-  |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.
-  /   \  /    Howbery Park,                 6, quai Watier       \   )   /_   )
-   ,.  `'     Wallingford, Oxfordshire      78401 Cedex           `-'_  __ `--
-  /  \   /    OX10 8BA, United Kingdom      Chatou, France        __/ \ \ `.
- /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
-!________!                                                        `--'   `--
+                           .________.                             ,--.
+ HR Wallingford            |        |     EDF - LNHE          .  (  (           Bundesanstalt fur            +-     -+
+                           |,-.    /                         / \_ \_/ .--.        Wasserbau             =~~..|_ BAW  |
+ Howbery Park,             /   \  /       6, quai Watier     \   )   /_   )                                `^|.`-_   |
+ Wallingford, Oxfordshire   ,.  `'        78401 Cedex         `-'_  __ `--      17, Kussmaulstr. PO 210253   +-)   \-+
+ OX10 8BA, United Kingdom  /  \   /       Chatou, France      __/ \ \ `.        76152  Karlsruhe, Germany    _/     }
+ www.hrwallingford.com    /    `-'|       innovation.edf.com |    )  )  )       www.baw.de               _.=^       )
+                         !________!                           `--'   `--                             ______________/
 """
 """@brief
          Tools for handling SELAFIN files and TELEMAC binary related in python
@@ -53,6 +53,13 @@
          Allowing for the 3D extraction of timeseries, etc. including the new
             method getValuePolyplanSLF
 """
+"""@history 31/12/2013 -- Leo Stadler and Sebastien E. Bourban:
+         Allowing for automated checking of both little and big endians
+"""
+"""@history 1/01/2014 -- Leo Stadler and Sebastien E. Bourban:
+         Allowing for automated checking of both single and double
+            precision floats
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -94,7 +101,7 @@ def subsetVariablesSLF(vars,ALLVARS):
 
    return ids,names
 
-def getValueHistorySLF( f,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsName) ):
+def getValueHistorySLF( hook,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsName) ):
    """
       Extraction of time series at points.
       A point could be:
@@ -106,6 +113,10 @@ def getValueHistorySLF( f,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsN
       - support: the list of points
       - varsIndexes: the index in the NVAR-list to the variable to extract
    """
+   f = hook['hook']
+   endian = hook['endian']
+   ftype,fsize = hook['float']
+   
    # ~~ Total size of support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    lens = 0
    for xy,zp in support: lens += len(zp)
@@ -114,11 +125,11 @@ def getValueHistorySLF( f,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsN
    z = np.zeros((len(varsIndexes),lens,len(time)))
    for it in range(len(time)):            # it is from 0 to len(time)-1
       f.seek(tags['cores'][time[it]])     # time[it] is the frame to be extracted
-      f.seek(4+4+4,1)                     # the file pointer is initialised
+      f.seek(4+fsize+4,1)                     # the file pointer is initialised
       for ivar in range(NVAR):            # ivar is from 0 to NVAR-1
          f.seek(4,1)                      # the file pointer advances through all records to keep on track
          if ivar in varsIndexes:          # extraction of a particular variable
-            VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
+            VARSOR = unpack(endian+str(NPOIN3)+ftype,f.read(fsize*NPOIN3))
             ipt = 0                       # ipt is from 0 to lens-1 (= all points extracted and all plans extracted)
             for xy,zp in support:
                if type(xy) == type(()):   # xp is a pair (x,y) and you need interpolation
@@ -132,7 +143,7 @@ def getValueHistorySLF( f,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsN
                      z[varsIndexes.index(ivar)][ipt][it] = VARSOR[xy+plan*NPOIN3/NPLAN]
                      ipt += 1             # ipt advances to keep on track
          else:
-            f.seek(4*NPOIN3,1)            # the file pointer advances through all records to keep on track
+            f.seek(fsize*NPOIN3,1)            # the file pointer advances through all records to keep on track
          f.seek(4,1)
 
    return z
@@ -199,7 +210,7 @@ def getNeighboursSLF(IKLE,MESHX,MESHY,showbar=True):
 
    return neighbours
 
-def getValuePolylineSLF(f,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsName)):
+def getValuePolylineSLF(hook,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsName)):
    """
       Extraction of longitudinal profiles along lines.
       A line is made of points extracted from sliceMesh:
@@ -210,6 +221,10 @@ def getValuePolylineSLF(f,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsN
       - support: the list of points intersecting th mesh
       - varsIndexes: the index in the NVAR-list to the variable to extract
    """
+   f = hook['hook']
+   endian = hook['endian']
+   ftype,fsize = hook['float']
+  
    # ~~ Total size of support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    lens = len(support[0][1])
 
@@ -218,11 +233,11 @@ def getValuePolylineSLF(f,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsN
    # ~~ Extract data along line ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for it in range(len(time)):            # it is from 0 to len(time)-1
       f.seek(tags['cores'][time[it]])     # time[it] is the frame to be extracted
-      f.read(4+4+4)                       # the file pointer is initialised
+      f.read(4+fsize+4)                       # the file pointer is initialised
       for ivar in range(NVAR):            # ivar is from 0 to NVAR-1
          f.read(4)                        # the file pointer advances through all records to keep on track
          if ivar in varsIndexes:          # extraction of a particular variable
-            VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
+            VARSOR = unpack(endian+str(NPOIN3)+ftype,f.read(fsize*NPOIN3))
             for ipt in range(len(support)):  # ipt is from 0 to lens-1 (= all points extracted and all plans extracted)
                xy,zp = support[ipt]
                for ipl in range(len(zp)):    # /!\ only list of plans is allowed for now
@@ -230,12 +245,12 @@ def getValuePolylineSLF(f,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsN
                   ln,bn = xy
                   for inod in range(len(bn)): z[varsIndexes.index(ivar)][it][ipl][ipt] += bn[inod]*VARSOR[ln[inod]+zp[ipl]*NPOIN3/NPLAN]
          else:
-            f.read(4*NPOIN3)              # the file pointer advances through all records to keep on track
+            f.read(fsize*NPOIN3)              # the file pointer advances through all records to keep on track
          f.read(4)
 
    return z
 
-def getValuePolyplanSLF(f,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsName)):
+def getValuePolyplanSLF(hook,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsName)):
    """
       Extraction of variables at a list of times on a list of planes.
       A plane is an integer
@@ -245,23 +260,59 @@ def getValuePolyplanSLF(f,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,varsN
       - support: the list of planes
       - varsIndexes: the index in the NVAR-list to the variable to extract
    """
+   f = hook['hook']
+   endian = hook['endian']
+   ftype,fsize = hook['float']
+
    # ~~ Extract planes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    z = np.zeros((len(varsIndexes),len(time),len(support),NPOIN3/NPLAN),dtype=np.float64) #,len(tags['cores'])))
    # ~~ Extract data on several planes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for it in range(len(time)):            # it is from 0 to len(time)-1
       f.seek(tags['cores'][time[it]])     # time[it] is the frame to be extracted
-      f.read(4+4+4)                       # the file pointer is initialised
+      f.read(4+fsize+4)                       # the file pointer is initialised
       for ivar in range(NVAR):            # ivar is from 0 to NVAR-1
          f.read(4)                        # the file pointer advances through all records to keep on track
          if ivar in varsIndexes:          # extraction of a particular variable
-            VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
+            VARSOR = unpack(endian+str(NPOIN3)+ftype,f.read(fsize*NPOIN3))
             for ipl in range(len(support)):  # ipt is from 0 to len(support) (= all plans extracted)
                z[varsIndexes.index(ivar)][it][ipl] = VARSOR[support[ipl]*NPOIN3/NPLAN:(support[ipl]+1)*NPOIN3/NPLAN]
          else:
-            f.read(4*NPOIN3)              # the file pointer advances through all records to keep on track
+            f.read(fsize*NPOIN3)              # the file pointer advances through all records to keep on track
          f.read(4)
 
    return z
+
+def getEndianFromChar(f,nchar):
+   pointer = f.tell()
+   endian = ">"       # "<" means little-endian, ">" means big-endian
+   l,c,chk = unpack(endian+'i'+str(nchar)+'si',f.read(4+nchar+4))
+   if chk!=nchar:
+      endian = "<"
+      f.seek(pointer)
+      l,c,chk = unpack(endian+'i'+str(nchar)+'si',f.read(4+nchar+4))
+   if l!=chk:
+      print '... Cannot read '+str(nchar)+' characters from your binary file'
+      print '     +> Maybe it is the wrong file format ?'
+      sys.exit(1)
+   f.seek(pointer)
+   return endian
+
+def getFloatTypeFromFloat(f,endian,nfloat):
+   pointer = f.tell()
+   ifloat = 4
+   cfloat = 'f'
+   l = unpack(endian+'i',f.read(4))
+   if l[0]!=ifloat*nfloat:
+      ifloat = 8
+      cfloat = 'd'
+   r = unpack(endian+str(nfloat)+cfloat,f.read(ifloat*nfloat))
+   chk = unpack(endian+'i',f.read(4))
+   if l!=chk:
+      print '... Cannot read '+str(nfloat)+' floats from your binary file'
+      print '     +> Maybe it is the wrong file format ?'
+      sys.exit(1)
+   f.seek(pointer)
+   return cfloat,ifloat
 
 # _____                  ___________________________________________
 # ____/ Primary Classes /__________________________________________/
@@ -372,19 +423,48 @@ class CONLIM:
       putFileContent(fileName,core)
 
 class SELAFIN:
+   """                                 (DOXYGEN parsing)
+   Class Selafin 
 
-   DATETIME = [1972,07,13,17,24,27]  # ... needed here because optional in SLF
+   @brief
+      Read and create Selafin files with python
+   
+   @details
+      The idea is to be able to set floatType and floatTypeSize from
+      outside when we start to write a selafinfiles.
+      This will make it possible to do some kind of converters
+
+   @history
+      - switch between big/little endian
+      - switch to double precission only for float
+   
+   @TODO
+      - changes where only tested for simple reading, writing must still be done
+      - getSERIES was not tested 
+      - all appen and put functions must be tested
+      - needs some intensive testing
+   """
+
+   DATETIME = [1972,07,13,17,24,27]  # ... needed here because optional in SLF (static)
    
    def __init__(self,fileName):
-      self.fileName = fileName
+      self.file = {}
+      self.file.update({ 'name': fileName })
+      self.file.update({ 'endian': ">" })    # "<" means little-endian, ">" means big-endian
+      self.file.update({ 'float': ('f',4) }) #'f' size 4, 'd' = size 8
       if fileName != '':
-         self.file = open(fileName,'rb')
+         self.file.update({ 'hook': open(fileName,'rb') })
+         # ~~> checks endian encoding
+         self.file['endian'] = getEndianFromChar(self.file['hook'],80)
          # ~~> header parameters
-         self.tags = { 'meta': self.file.tell() }
-         self.getHeaderParametersSLF()
-         # ~~> mesh and connectivity
-         self.tags.update({ 'mesh': self.file.tell() })
-         self.getHeaderMeshSLF()
+         self.tags = { 'meta': self.file['hook'].tell() } #TODO remove?
+         self.getHeaderMetaDataSLF()
+         # ~~> sizes and connectivity
+         self.getHeaderIntegersSLF()
+         # ~~> checks float encoding
+         self.file['float'] = getFloatTypeFromFloat(self.file['hook'],self.file['endian'],self.NPOIN3)
+         # ~~> xy mesh
+         self.getHeaderFloatsSLF()
          # ~~> time series
          self.tags = { 'cores':[],'times':[] }
          self.getTimeHistorySLF()
@@ -399,48 +479,52 @@ class SELAFIN:
          self.NBV2 = 0; self.CLDNAMES = []; self.CLDUNITS = []
          self.IKLE3 = []; self.IKLE2 = []; self.IPOB2 = []; self.IPOB3 = []; self.MESHX = []; self.MESHY = []
          self.tags = { 'cores':[],'times':[] }
+      self.fole = {}
+      self.fole.update({ 'name': '' })
+      self.fole.update({ 'endian': self.file['endian'] })
+      self.fole.update({ 'float': self.file['float'] })
       self.tree = None
       self.neighbours = None
       self.edges = None
       self.alterZnames = []
 
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   #   Parsing the Big-Endian binary file
+   #   Parsing the Big- and Little-Endian binary file
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-   def getHeaderParametersSLF(self):
-      f = self.file
+   def getHeaderMetaDataSLF(self):
+      f = self.file['hook']
+      endian = self.file['endian']
       # ~~ Read title ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      l,self.TITLE,chk = unpack('>i80si',f.read(4+80+4))
-      if l!=chk:
-         print '... Cannot read the TITLE of your SELAFIN file'
-         print '     +> Maybe it is the wrong file format or wrong Endian ?'
-         sys.exit(1)
+      l,self.TITLE,chk = unpack(endian+'i80si',f.read(4+80+4))
       # ~~ Read NBV(1) and NBV(2) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      l,self.NBV1,self.NBV2,chk = unpack('>iiii',f.read(4+8+4))
+      l,self.NBV1,self.NBV2,chk = unpack(endian+'iiii',f.read(4+8+4))
       self.NVAR = self.NBV1 + self.NBV2
       self.VARINDEX = range(self.NVAR)
       # ~~ Read variable names and units ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       self.VARNAMES = []; self.VARUNITS = []
       for _ in range(self.NBV1):
-         l,vn,vu,chk = unpack('>i16s16si',f.read(4+16+16+4))
+         l,vn,vu,chk = unpack(endian+'i16s16si',f.read(4+16+16+4))
          self.VARNAMES.append(vn)
          self.VARUNITS.append(vu)
       self.CLDNAMES = []; self.CLDUNITS = []
       for _ in range(self.NBV2):
-         l,vn,vu,chk = unpack('>i16s16si',f.read(4+16+16+4))
+         l,vn,vu,chk = unpack(endian+'i16s16si',f.read(4+16+16+4))
          self.CLDNAMES.append(vn)
          self.CLDUNITS.append(vu)
       # ~~ Read IPARAM array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      d = unpack('>12i',f.read(4+40+4))
+      d = unpack(endian+'12i',f.read(4+40+4))
       self.IPARAM = np.asarray( d[1:11] )
       # ~~ Read DATE/TIME array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       self.DATETIME = [1972,07,13,17,15,13]
       if self.IPARAM[9] == 1:
-         d = unpack('>8i',f.read(4+24+4))
+         d = unpack(endian+'8i',f.read(4+24+4))
          self.DATETIME = np.asarray( d[1:9] )
+
+   def getHeaderIntegersSLF(self):
+      f = self.file['hook']
+      endian = self.file['endian']
       # ~~ Read NELEM3, NPOIN3, NDP3, NPLAN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      l,self.NELEM3,self.NPOIN3,self.NDP3,self.NPLAN,chk = unpack('>6i',f.read(4+16+4))
+      l,self.NELEM3,self.NPOIN3,self.NDP3,self.NPLAN,chk = unpack(endian+'6i',f.read(4+16+4))
       self.NELEM2 = self.NELEM3
       self.NPOIN2 = self.NPOIN3
       self.NDP2 = self.NDP3
@@ -450,42 +534,46 @@ class SELAFIN:
          self.NELEM2 = self.NELEM3 / ( self.NPLAN - 1 )
          self.NPOIN2 = self.NPOIN3 / self.NPLAN
          self.NDP2 = self.NDP3 / 2
-
-   def getHeaderMeshSLF(self):
-      f = self.file
       # ~~ Read the IKLE array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       f.seek(4,1)
-      self.IKLE3 = np.array( unpack('>'+str(self.NELEM3*self.NDP3)+'i',f.read(4*self.NELEM3*self.NDP3)) ) - 1
+      self.IKLE3 = np.array( unpack(endian+str(self.NELEM3*self.NDP3)+'i',f.read(4*self.NELEM3*self.NDP3)) ) - 1
       f.seek(4,1)
       self.IKLE3 = self.IKLE3.reshape((self.NELEM3,self.NDP3))
       if self.NPLAN > 1: self.IKLE2 = np.compress( [ True,True,True,False,False,False ], self.IKLE3[0:self.NELEM2], axis=1 )
       else: self.IKLE2 = self.IKLE3
       # ~~ Read the IPOBO array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       f.seek(4,1)
-      self.IPOB3 = np.asarray( unpack('>'+str(self.NPOIN3)+'i',f.read(4*self.NPOIN3)) )
+      self.IPOB3 = np.asarray( unpack(endian+str(self.NPOIN3)+'i',f.read(4*self.NPOIN3)) )
       f.seek(4,1)
       self.IPOB2 = self.IPOB3[0:self.NPOIN2]
+
+   def getHeaderFloatsSLF(self):
+      f = self.file['hook']
+      endian = self.file['endian']
       # ~~ Read the x-coordinates of the nodes ~~~~~~~~~~~~~~~~~~
+      ftype,fsize = self.file['float']
       f.seek(4,1)
-      self.MESHX = np.asarray( unpack('>'+str(self.NPOIN3)+'f',f.read(4*self.NPOIN3))[0:self.NPOIN2] )
+      self.MESHX = np.asarray( unpack(endian+str(self.NPOIN3)+ftype,f.read(fsize*self.NPOIN3))[0:self.NPOIN2] )
       f.seek(4,1)
       # ~~ Read the y-coordinates of the nodes ~~~~~~~~~~~~~~~~~~
       f.seek(4,1)
-      self.MESHY = np.asarray( unpack('>'+str(self.NPOIN3)+'f',f.read(4*self.NPOIN3))[0:self.NPOIN2] )
+      self.MESHY = np.asarray( unpack(endian+str(self.NPOIN3)+ftype,f.read(fsize*self.NPOIN3))[0:self.NPOIN2] )
       f.seek(4,1)
-
+      
    def getTimeHistorySLF(self):
-      f = self.file
+      f = self.file['hook']
+      endian = self.file['endian']
+      ftype,fsize = self.file['float']
       ATs = []; ATt = []
       while True:
          try:
             ATt.append(f.tell())
             # ~~ Read AT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             f.seek(4,1)
-            ATs.append(unpack('>f',f.read(4))[0])
+            ATs.append(unpack(endian+ftype,f.read(fsize))[0])
             f.seek(4,1)
             # ~~ Skip Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            f.seek(self.NVAR*(4+4*self.NPOIN3+4),1)
+            f.seek(self.NVAR*(4+fsize*self.NPOIN3+4),1)
          except:
             ATt.pop(len(ATt)-1)   # since the last record failed the try
             break
@@ -493,85 +581,102 @@ class SELAFIN:
       self.tags.update({ 'times': np.asarray(ATs) })
 
    def getVariablesAt( self,frame,varsIndexes ):
-      f = self.file
+      f = self.file['hook']
+      endian = self.file['endian']
+      ftype,fsize = self.file['float']
       z = np.zeros((len(varsIndexes),self.NPOIN3))
       # if tags has 31 frames, len(tags)=31 from 0 to 30, then frame should be >= 0 and < len(tags)
       if frame < len(self.tags['cores']) and frame >= 0:
          f.seek(self.tags['cores'][frame])
-         f.seek(4+4+4,1)
+         f.seek(4+fsize+4,1)
          for ivar in range(self.NVAR):
             f.seek(4,1)
             if ivar in varsIndexes:
-               z[varsIndexes.index(ivar)] = unpack('>'+str(self.NPOIN3)+'f',f.read(4*self.NPOIN3))
+               z[varsIndexes.index(ivar)] = unpack(endian+str(self.NPOIN3)+ftype,f.read(fsize*self.NPOIN3))
             else:
-               f.seek(4*self.NPOIN3,1)
+               f.seek(fsize*self.NPOIN3,1)
             f.seek(4,1)
       return z
    
+   def alterEndian(self):
+      if self.fole['endian'] == ">": self.fole['endian'] = "<"
+      else: self.fole['endian'] = ">"
+
+   def alterFloat(self):
+      if self.fole['float'] == ('f',4): self.fole['float'] = ('d',8)
+      else: self.fole['float'] = ('f',4)
+      
    def alterVALUES(self,vars=None,mZ=1,pZ=0):
       if vars != None:
          self.alterZm = mZ; self.alterZp = pZ; self.alterZnames = vars.split(':')
 
    def appendHeaderSLF(self):
-      f = self.fole
+      f = self.fole['hook']
+      endian = self.fole['endian']
+      ftype,fsize = self.fole['float']
       # ~~ Write title ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      f.write(pack('>i80si',80,self.TITLE,80))
+      f.write(pack(endian+'i80si',80,self.TITLE,80))
      # ~~ Write NBV(1) and NBV(2) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      f.write(pack('>iiii',4+4,self.NBV1,self.NBV2,4+4))
+      f.write(pack(endian+'iiii',4+4,self.NBV1,self.NBV2,4+4))
       # ~~ Write variable names and units ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       for i in range(self.NBV1):
-         f.write(pack('>i',32))
-         f.write(pack('>16s',self.VARNAMES[i]))
-         f.write(pack('>16s',self.VARUNITS[i]))
-         f.write(pack('>i',32))
+         f.write(pack(endian+'i',32))
+         f.write(pack(endian+'16s',self.VARNAMES[i]))
+         f.write(pack(endian+'16s',self.VARUNITS[i]))
+         f.write(pack(endian+'i',32))
       for i in range(self.NBV2):
-         f.write(pack('>i',32))
-         f.write(pack('>16s',self.CLDNAMES[i]))
-         f.write(pack('>16s',self.CLDUNITS[i]))
-         f.write(pack('>i',32))
+         f.write(pack(endian+'i',32))
+         f.write(pack(endian+'16s',self.CLDNAMES[i]))
+         f.write(pack(endian+'16s',self.CLDUNITS[i]))
+         f.write(pack(endian+'i',32))
       # ~~ Write IPARAM array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      f.write(pack('>i',4*10))
-      for i in range(len(self.IPARAM)): f.write(pack('>i',self.IPARAM[i]))
-      f.write(pack('>i',4*10))
+      f.write(pack(endian+'i',4*10))
+      for i in range(len(self.IPARAM)): f.write(pack(endian+'i',self.IPARAM[i]))
+      f.write(pack(endian+'i',4*10))
       # ~~ Write DATE/TIME array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if self.IPARAM[9] == 1:
-         f.write(pack('>i',4*6))
-         for i in range(6): f.write(pack('>i',self.DATETIME[i]))
-         f.write(pack('>i',4*6))
+         f.write(pack(endian+'i',4*6))
+         for i in range(6): f.write(pack(endian+'i',self.DATETIME[i]))
+         f.write(pack(endian+'i',4*6))
       # ~~ Write NELEM3, NPOIN3, NDP3, NPLAN ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      f.write(pack('>6i',4*4,self.NELEM3,self.NPOIN3,self.NDP3,1,4*4))  #/!\ where is NPLAN ?
+      f.write(pack(endian+'6i',4*4,self.NELEM3,self.NPOIN3,self.NDP3,1,4*4))  #/!\ where is NPLAN ?
       # ~~ Write the IKLE array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      f.write(pack('>i',4*self.NELEM3*self.NDP3))
-      f.write(pack('>'+str(self.NELEM3*self.NDP3)+'i',*(n+1 for e in self.IKLE3 for n in e)))
-      f.write(pack('>i',4*self.NELEM3*self.NDP3))
+      f.write(pack(endian+'i',4*self.NELEM3*self.NDP3))
+      f.write(pack(endian+str(self.NELEM3*self.NDP3)+'i',*(n+1 for e in self.IKLE3 for n in e)))
+      f.write(pack(endian+'i',4*self.NELEM3*self.NDP3))
       # ~~ Write the IPOBO array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      f.write(pack('>i',4*self.NPOIN3))
-      f.write(pack('>'+str(self.NPOIN3)+'i',*(self.IPOB3)))
-      f.write(pack('>i',4*self.NPOIN3))
+      f.write(pack(endian+'i',4*self.NPOIN3))
+      f.write(pack(endian+str(self.NPOIN3)+'i',*(self.IPOB3)))
+      f.write(pack(endian+'i',4*self.NPOIN3))
       # ~~ Write the x-coordinates of the nodes ~~~~~~~~~~~~~~~~~~~~~~~
-      f.write(pack('>i',4*self.NPOIN3))
-      f.write(pack('>'+str(self.NPOIN3)+'f',*(np.tile(self.MESHX,self.NPLAN))))
-      f.write(pack('>i',4*self.NPOIN3))
+      f.write(pack(endian+'i',fsize*self.NPOIN3))
+      f.write(pack(endian+str(self.NPOIN3)+ftype,*(np.tile(self.MESHX,self.NPLAN))))
+      f.write(pack(endian+'i',fsize*self.NPOIN3))
       # ~~ Write the y-coordinates of the nodes ~~~~~~~~~~~~~~~~~~~~~~~
-      f.write(pack('>i',4*self.NPOIN3))
-      f.write(pack('>'+str(self.NPOIN3)+'f',*(np.tile(self.MESHY,self.NPLAN))))
-      f.write(pack('>i',4*self.NPOIN3))
+      f.write(pack(endian+'i',fsize*self.NPOIN3))
+      f.write(pack(endian+str(self.NPOIN3)+ftype,*(np.tile(self.MESHY,self.NPLAN))))
+      f.write(pack(endian+'i',fsize*self.NPOIN3))
 
    def appendCoreTimeSLF( self,t ):
-      f = self.fole
+      f = self.fole['hook']
+      endian = self.fole['endian']
+      ftype,fsize = self.fole['float']
       # Print time record
-      f.write(pack('>ifi',4,self.tags['times'][t],4))
+      f.write(pack(endian+'i'+ftype+'i',4,self.tags['times'][t],4))
 
    def appendCoreVarsSLF( self,VARSOR ):
-      f = self.fole
+      f = self.fole['hook']
+      endian = self.fole['endian']
+      ftype,fsize = self.fole['float']
       # Print variable records
       for v in VARSOR:
-         f.write(pack('>i',4*self.NPOIN3))
-         f.write(pack('>'+str(self.NPOIN3)+'f',*(v)))
-         f.write(pack('>i',4*self.NPOIN3))
+         f.write(pack(endian+'i',fsize*self.NPOIN3))
+         f.write(pack(endian+str(self.NPOIN3)+ftype,*(v)))
+         f.write(pack(endian+'i',fsize*self.NPOIN3))
 
    def putContent( self,fileName,showbar=True ):
-      self.fole = open(fileName,'wb')
+      self.fole.update({ 'name': fileName })
+      self.fole.update({ 'hook': open(fileName,'wb') })
       ibar = 0
       if showbar: pbar = ProgressBar(maxval=len(self.tags['times'])).start()
       self.appendHeaderSLF()
@@ -580,7 +685,7 @@ class SELAFIN:
          self.appendCoreTimeSLF(t)
          self.appendCoreVarsSLF(self.getVALUES(t))
          if showbar: pbar.update(ibar)
-      self.fole.close()
+      self.fole['hook'].close()
       if showbar: pbar.finish()
 
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -597,7 +702,9 @@ class SELAFIN:
       return VARSOR
 
    def getSERIES( self,nodes,varsIndexes=[],showbar=True ):
-      f = self.file
+      f = self.file['hook']
+      endian = self.file['endian']
+      ftype,fsize = self.file['float']
       if varsIndexes == []: varsIndexes = self.VARINDEX
       # ~~ Ordering the nodes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # This assumes that nodes starts at 1
@@ -608,21 +715,21 @@ class SELAFIN:
       if showbar: pbar = ProgressBar(maxval=len(self.tags['cores'])).start()
       for t in range(len(self.tags['cores'])):
          f.seek(self.tags['cores'][t])
-         f.seek(4+4+4,1)
+         f.seek(4+fsize+4,1)
          if showbar: pbar.update(t)
          for ivar in range(self.NVAR):
             f.seek(4,1)
             if ivar in varsIndexes:
                jnod = onodes[0]
-               f.seek(4*(jnod[1]-1),1)
-               z[varsIndexes.index(ivar),jnod[0],t] = unpack('>f',f.read(4))[0]
+               f.seek(fsize*(jnod[1]-1),1)
+               z[varsIndexes.index(ivar),jnod[0],t] = unpack(endian+ftype,f.read(fsize))[0]
                for inod in onodes[1:]:
-                  f.seek(4*(inod[1]-jnod[1]-1),1)
-                  z[varsIndexes.index(ivar),inod[0],t] = unpack('>f',f.read(4))[0]
+                  f.seek(fsize*(inod[1]-jnod[1]-1),1)
+                  z[varsIndexes.index(ivar),inod[0],t] = unpack(endian+ftype,f.read(fsize))[0]
                   jnod = inod
-               f.seek(4*self.NPOIN3-4*jnod[1],1)
+               f.seek(fsize*self.NPOIN3-fsize*jnod[1],1)
             else:
-               f.seek(4*self.NPOIN3,1)
+               f.seek(fsize*self.NPOIN3,1)
             f.seek(4,1)
       if showbar: pbar.finish()
       return z
@@ -641,13 +748,15 @@ class SELAFIN:
          self.edges = mpltri.get_edges()
 
    def __del__(self):
-      if self.fileName != '': self.file.close()
+      if self.file['name'] != '': self.file['hook'].close()
 
 class SELAFINS:
 
    def __init__(self):
       self.slfs = []
       self.slf = None
+      self.suite = True
+      self.merge = True
 
    def add(self,fileName):
       slf = SELAFIN(fileName)
@@ -681,7 +790,8 @@ class SELAFINS:
    def putContent(self,fileName): # TODO: files also have to have the same header
       if self.suite and self.merge:
          if len(self.slfs) == 2:  # /!\ difference only between two files
-            self.slf.fole = open(fileName,'wb')
+            self.slf.fole.update({ 'hook': open(fileName,'wb') })
+            self.slf.fole['name'] = fileName
             ibar = 0; pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
             self.slf.appendHeaderSLF()
             for t in range(len(self.slf.tags['times'])):
@@ -692,7 +802,8 @@ class SELAFINS:
             pbar.finish()
          else: self.slf.putContent(fileName) # just a copy
       elif self.suite:
-         self.slf.fole = open(fileName,'wb')
+         self.slf.fole.update({ 'hook': open(fileName,'wb') })
+         self.slf.fole['name'] = fileName
          ibar = 0; pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
          self.slf.appendHeaderSLF()
          for t in range(len(self.slf.tags['times'])):
@@ -713,9 +824,10 @@ class SELAFINS:
                   slf.appendCoreVarsSLF(slf.getVALUES(t))
                   pbar.update(ibar)
             pbar.finish()
-         self.slf.fole.close()
+         self.slf.fole['hook'].close()
       elif self.merge:
-         self.slf.fole = open(fileName,'wb')
+         self.slf.fole.update({ 'hook': open(fileName,'wb') })
+         self.slf.fole['name'] = fileName
          for slf in self.slfs[1:]:
             slf.fole = self.slf.fole
             idvars = []
@@ -742,10 +854,11 @@ class SELAFINS:
                self.slf.appendCoreVarsSLF(slf.getVALUES(t))
             pbar.update(ibar)
          pbar.finish()
-         self.slf.fole.close()
+         self.slf.fole['hook'].close()
       elif len(self.slf.tags['times']) == 1 and len(self.slfs) == 2:
       # self.slf will be distributed over the time frames of the scond other
-         self.slf.fole = open(fileName,'wb')
+         self.slf.fole.update({ 'hook': open(fileName,'wb') })
+         self.slf.fole['name'] = fileName
          slf = self.slfs[1]
          slf.fole = self.slf.fole
          idvars = []
@@ -771,7 +884,7 @@ class SELAFINS:
             slf.appendCoreVarsSLF(slf.getVALUES(t))
             pbar.update(ibar)
          pbar.finish()
-         self.slf.fole.close()
+         self.slf.fole['hook'].close()
       else:
          print "Does not know how to merge your files. Try either:"
          print "    + to make sure your files have the same time support"
@@ -789,6 +902,8 @@ class PARAFINS(SELAFINS):
       SELAFINS.__init__(self)
       # ~~> The main slf is based on the header of the GEO file
       self.slf = SELAFIN(fileName)
+      self.file = self.slf.file
+      self.fole = self.slf.fole
       if root != None:
          # ~~> Loading the individual headers
          self.addRoot(root)
@@ -805,6 +920,10 @@ class PARAFINS(SELAFINS):
          # ~~> Create the corresponding map
          self.mapPOIN = np.zeros(self.slf.NPOIN3,dtype=np.int)
          for i,slf in zip(range(len(self.slfs)),self.slfs): self.mapPOIN[slf.IPOB3-1] = i
+
+   def alterEndian(self): self.slf.alterEndian()
+
+   def alterFloat(self): self.slf.alterFloat()
 
    def addRoot(self,root):
       # ~~> list all entries
@@ -860,8 +979,8 @@ class PARAFINS(SELAFINS):
          return z
       else: return self.slf.getSERIES(nodes)  # ,varsIndexes not necessary
 
-   def para_putContent(self,fileName,showbar=True): # TODO: files also have to have the same header
-      self.slf.fole = open(fileName,'wb')
+   def putContent(self,fileName,showbar=True): # TODO: files also have to have the same header
+      self.slf.fole.update({ 'hook': open(fileName,'wb') })
       ibar = 0
       if showbar: pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
       self.slf.appendHeaderSLF()
@@ -871,7 +990,7 @@ class PARAFINS(SELAFINS):
          self.slf.appendCoreTimeSLF(t) # Time stamps
          self.slf.appendCoreVarsSLF(self.getPALUES(t))
          if showbar: pbar.update(ibar)
-      self.slf.fole.close()
+      self.slf.fole['hook'].close()
       if showbar: pbar.finish()
 
 # _____             ________________________________________________

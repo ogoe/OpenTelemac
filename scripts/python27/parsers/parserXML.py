@@ -56,7 +56,7 @@
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
-from os import path, remove, walk, chdir, getcwd
+from os import path, remove, walk, chdir, getcwd, environ
 from optparse import Values
 import sys
 from copy import deepcopy
@@ -634,7 +634,8 @@ class actionRUN(ACTION):
       mes = MESSAGES(size=10)
 
       # ~~> copy of inputs
-      copyFile(path.join(self.active['path'],self.active["target"]),self.active['safe'])
+      if path.isfile(path.join(self.active['path'],self.active["target"])):
+         copyFile(path.join(self.active['path'],self.active["target"]),self.active['safe'])
       for iFile in self.active["deprefs"]:
          if iFile in self.dids:
             if self.active['cfg'] in self.dids[iFile]:
@@ -650,10 +651,10 @@ class actionRUN(ACTION):
       # ~~> execute command locally
       chdir(self.active['safe'])
       try:
-         tail,code = mes.runCmd(self.active["do"],True) #self.bypass)
+         tail,code = mes.runCmd(self.active["do"],self.bypass) # /!\ Do you really need True here ?
       except Exception as e:
          raise Exception([filterMessage({'name':'runCommand','msg':'something went wrong when executing you command.'},e,True)])
-      if code != 0: raise Exception([{'name':'runCommand','msg':'Could run your command ('+self.active["do"]+').\n      '+tail}])
+      if code != 0: raise Exception([{'name':'runCommand','msg':'Could not run your command ('+self.active["do"]+').\n      '+tail}])
       
       # ~~> copy of outputs /!\ you are replacing one config by another
       for oFile in self.active["outrefs"]:
@@ -1011,7 +1012,11 @@ def runXML(xmlFile,xmlConfig,bypass):
          xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
          continue    # bypass rest of the loop
       else:
-         if not path.isfile(path.join(do.active['path'],targetFile)):
+         oneFound = False
+         if path.isfile(path.join(do.active['path'],targetFile)): oneFound = True
+         for d in sys.path:
+            if path.isfile(path.join(d,targetFile)): oneFound = True
+         if not oneFound:
             xcpt.append({'name':'runXML','msg':'could not find your target file'+targetFile})
             continue    # bypass rest of the loop
 
