@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of python scripts
+-->
+<validation xref="selafin_rw">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="selafin_rw" author="S.E.Bourban" contact="www.opentelemac.org" />
+   </deco>
+  
+<!-- Actions based on python scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <action xref="1"
+      do="runSELAFIN.py scan geo_bowl.slf --core" code="exec" rank="2"
+	   target="runSELAFIN.py" deprefs="geo_bowl.slf;f2d_bowl_vf_fr.slf"
+      title="Converting big-endian to little endian files and vice-versa"
+   />
+   
+<!-- 
+   <extract xref="L2" >
+      <task do="L2error" target="transport_rates_ebb.csv" ExactData = "SedimentTransportExperiment" 
+	         ModelData = "SedimentTransportModel" title="Ebb" reference = "RunPython"/>
+	  <task do="L2error" target="transport_rates_flood.csv" ExactData = "SedimentTransportExperiment" 
+	         ModelData = "SedimentTransportModel" title="flood" reference = "RunPython"/>       
+   </extract> 
+      -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+ 
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+  
+<!-- Criteria ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  --><!-- 
+   <criteria xref="L2" config="oneofall" > 
+      <variable vars="ebb" target="L2:L2.csv"/>
+	  <variable vars="flood" target="L2:L2.csv"/>
+         <condition  do="compare" success="ebb:LE:0.290" failure="ebb:GT:0.300"  /> 
+	     <condition  do="compare" success="flood:LE:0.390" failure="flood:GT:0.400" /> 
+   </criteria> -->
+
+ </validation> 
