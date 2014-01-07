@@ -46,7 +46,7 @@ C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C
       LOGICAL MAS
-      INTEGER IM,JM,I,J,I_L,J_L
+      INTEGER IM,JM,I,J,POS_LOC
       DOUBLE PRECISION EIKON
 C
 C-----------------------------------------------------------------------
@@ -69,13 +69,12 @@ C
       DO I=1,IM 
       DO J=1,JM 
 C       PENTE RECTILIGNE                                                       
-        I_L = GLOBAL_TO_LOCAL_POINT(I,MESH)
-        J_L = GLOBAL_TO_LOCAL_POINT(J,MESH)
-        ZF%R(I_L+(J_L-1)*IM)=-0.6D0+0.46D0*FLOAT(I_L-1)/FLOAT(IM-1) 
+        POS_LOC = GLOBAL_TO_LOCAL_POINT(I+(J-1)*IM,MESH)
+        ZF%R(POS_LOC)=-0.6D0+0.46D0*FLOAT(I-1)/FLOAT(IM-1) 
 C       BOSSE GAUSSIENNE            
-        IF(I_L.GT.9.AND.I_L.LT.29) THEN
-          EIKON = -(I_L-19)**2/20.D0 
-          ZF%R(I_L+(J_L-1)*IM) = ZF%R(I_L+(J_L-1)*IM) + 0.1D0*EXP(EIKON)
+        IF(I.GT.9.AND.I.LT.29) THEN
+          EIKON = -(I-19)**2/20.D0 
+          ZF%R(POS_LOC) = ZF%R(POS_LOC) + 0.1D0*EXP(EIKON)
         ENDIF                                                 
       ENDDO                                                            
       ENDDO    
