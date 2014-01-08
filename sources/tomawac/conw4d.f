@@ -4,10 +4,10 @@
 !
      &(CX,CY,CT,CF,U,V,XK,CG,COSF,TGF,DEPTH,DZHDT,DZY,DZX,DVY,DVX,
      & DUY,DUX,FREQ,COSTET,SINTET,NPOIN2,NPLAN,JF,NF,PROINF,SPHE,
-     & COURAN,MAREE,TRA01)
+     & MAREE,TRA01)
 !
 !***********************************************************************
-! TOMAWAC   V6P3                                   14/06/2011
+! TOMAWAC   V7P0                                   14/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE ADVECTION FIELD.
@@ -44,11 +44,16 @@
 !+   Optimisation (loops on NPOIN2 and NPLAN swapped to get smaller 
 !+   strides, work array TRA01 differently used, etc.)
 !
+!history  J-M HERVOUET (EDF-LNHE)
+!+        08/01/2014
+!+        V7P0
+!+   Was always called with COURAN=.TRUE., with heavy tests on this
+!+   variable. COURAN now considered=.TRUE. and suppressed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CG             |-->| DISCRETIZED GROUP VELOCITY
 !| COSF           |-->| COSINE OF THE LATITUDES OF THE POINTS 2D
 !| COSTET         |-->| COSINE OF TETA ANGLE
-!| COURAN         |-->| LOGICAL INDICATING IF THERE IS A CURRENT
 !| CT             |<--| ADVECTION FIELD ALONG TETA
 !| CY             |<--| ADVECTION FIELD ALONG X(OR PHI)
 !| CX             |<--| ADVECTION FIELD ALONG Y(OR LAMBDA)
@@ -101,7 +106,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: COSTET(NPLAN),SINTET(NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: COSF(NPOIN2),TGF(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN2)
-      LOGICAL, INTENT(IN)             :: PROINF,SPHE,COURAN,MAREE
+      LOGICAL, INTENT(IN)             :: PROINF,SPHE,MAREE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -129,30 +134,20 @@
             TR1=GSQP/FREQ(JF)*COSTET(IP)
             TR2=GSQP/FREQ(JF)*SINTET(IP)
             DO IPOIN=1,NPOIN2
-              CY(IPOIN,IP,JF)=TR1
-              CX(IPOIN,IP,JF)=TR2
-              CT(IPOIN,IP,JF)=0.D0
+              LSDUDN= SINTET(IP)*
+     &              (-COSTET(IP)*DVY(IPOIN)-SINTET(IP)*DUY(IPOIN))
+     &              + COSTET(IP)*
+     &              ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
+              LSDUDS= COSTET(IP)*
+     &               (COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
+     &              + SINTET(IP)*
+     &               (COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
+              CY(IPOIN,IP,JF)=TR1+V(IPOIN)
+              CX(IPOIN,IP,JF)=TR2+U(IPOIN)
+              CT(IPOIN,IP,JF)=-LSDUDN
+              CF(IPOIN,IP,JF)=-CG(IPOIN,JF)*XK(IPOIN,JF)*LSDUDS*USDPI
             ENDDO
           ENDDO
-!
-          IF(COURAN) THEN
-            DO IP=1,NPLAN
-              DO IPOIN=1,NPOIN2
-                LSDUDN= SINTET(IP)*
-     &                 (-COSTET(IP)*DVY(IPOIN)-SINTET(IP)*DUY(IPOIN))
-     &              + COSTET(IP)*
-     &                 ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-                LSDUDS= COSTET(IP)*
-     &                 (COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
-     &              + SINTET(IP)*
-     &                 (COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-                CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF)+V(IPOIN)
-                CX(IPOIN,IP,JF)=CX(IPOIN,IP,JF)+U(IPOIN)
-                CT(IPOIN,IP,JF)=-LSDUDN
-                CF(IPOIN,IP,JF)=-CG(IPOIN,JF)*XK(IPOIN,JF)*LSDUDS*USDPI
-              ENDDO
-            ENDDO
-          ENDIF
 !
 !       ----------------------------------------------------------------
 !       ... AND IN SPHERICAL COORDINATE SYSTEM
@@ -164,32 +159,22 @@
             TR1=GSQP/FREQ(JF)*COSTET(IP)
             TR2=GSQP/FREQ(JF)*SINTET(IP)
             DO IPOIN=1,NPOIN2
-              CY(IPOIN,IP,JF)=TR1*SR*GRADEG
-              CX(IPOIN,IP,JF)=TR2*GRADEG*SR/COSF(IPOIN)
-              CT(IPOIN,IP,JF)=TR2*TGF(IPOIN)*SR
+              SRCF=SR/COSF(IPOIN)
+              LSDUDN= SINTET(IP)*SR*
+     &               (-COSTET(IP)*DVY(IPOIN)-SINTET(IP)*DUY(IPOIN))
+     &               + COSTET(IP)*SRCF*
+     &               ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
+              LSDUDS= COSTET(IP)*SR*
+     &               (COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
+     &              + SINTET(IP)*SRCF*
+     &               (COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
+              CY(IPOIN,IP,JF)=(TR1+V(IPOIN))*GRADEG*SR 
+              CX(IPOIN,IP,JF)=(TR2+U(IPOIN))*GRADEG*SRCF
+              CT(IPOIN,IP,JF)=TR2*TGF(IPOIN)*SR - LSDUDN*GRADEG
+              CF(IPOIN,IP,JF)= - LSDUDS*GRADEG*
+     &                        CG(IPOIN,JF)*XK(IPOIN,JF)*USDPI
             ENDDO
           ENDDO
-!
-          IF(COURAN) THEN                    
-            DO IP=1,NPLAN
-              DO IPOIN=1,NPOIN2
-                SRCF=SR/COSF(IPOIN)
-                LSDUDN= SINTET(IP)*SR*
-     &                 (-COSTET(IP)*DVY(IPOIN)-SINTET(IP)*DUY(IPOIN))
-     &                 + COSTET(IP)*SRCF*
-     &                 ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-                LSDUDS= COSTET(IP)*SR*
-     &                 (COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
-     &                + SINTET(IP)*SRCF*
-     &                 (COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-                CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF) + V(IPOIN)*SR*GRADEG
-                CX(IPOIN,IP,JF)=CX(IPOIN,IP,JF) + U(IPOIN)*SRCF*GRADEG
-                CT(IPOIN,IP,JF)=CT(IPOIN,IP,JF) - LSDUDN*GRADEG
-                CF(IPOIN,IP,JF)= - LSDUDS*GRADEG*
-     &                            CG(IPOIN,JF)*XK(IPOIN,JF)*USDPI
-             ENDDO
-            ENDDO
-          ENDIF
         ENDIF
 !
 !-----------------------------------------------------------------------
@@ -222,57 +207,54 @@
             ENDDO
           ENDDO
 !
-          IF(COURAN) THEN
-!
-            DO IPOIN=1,NPOIN2
-              DEUKD=2.D0*XK(IPOIN,JF)*DEPTH(IPOIN)
-              IF(DEUKD.GT.7.D2) THEN
-                TRA01(IPOIN)=0.D0
-              ELSE
-                TRA01(IPOIN)=XK(IPOIN,JF)*DEUPI*FREQ(JF)/SINH(DEUKD)
-              ENDIF
-            ENDDO
-!   
-            IF(MAREE) THEN        
-              DO IP=1,NPLAN
-                DO IPOIN=1,NPOIN2
-                  LSDUDN= SINTET(IP)*
-     &                 (-COSTET(IP)*DVY(IPOIN)-SINTET(IP)*DUY(IPOIN))
-     &                + COSTET(IP)*
-     &                 ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-                  LSDUDS= COSTET(IP)*
-     &                 (COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
-     &                + SINTET(IP)*
-     &                 (COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-                  USGD=V(IPOIN)*DZY(IPOIN)+U(IPOIN)*DZX(IPOIN)
-      	          CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF) + V(IPOIN)
-                  CX(IPOIN,IP,JF)=CX(IPOIN,IP,JF) + U(IPOIN)
-                  CT(IPOIN,IP,JF)=CT(IPOIN,IP,JF) - LSDUDN
-                  CF(IPOIN,IP,JF)= (TRA01(IPOIN)*(USGD+DZHDT(IPOIN))
-     &                 - LSDUDS*CG(IPOIN,JF)*XK(IPOIN,JF))*USDPI
-                ENDDO
-              ENDDO
+          DO IPOIN=1,NPOIN2
+            DEUKD=2.D0*XK(IPOIN,JF)*DEPTH(IPOIN)
+            IF(DEUKD.GT.7.D2) THEN
+              TRA01(IPOIN)=0.D0
             ELSE
-!             IDEM BUT DZHDT=0.D0
-              DO IP=1,NPLAN
-                DO IPOIN=1,NPOIN2
-                  LSDUDN= SINTET(IP)*
-     &                 (-COSTET(IP)*DVY(IPOIN)-SINTET(IP)*DUY(IPOIN))
-     &                + COSTET(IP)*
-     &                 ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-                  LSDUDS= COSTET(IP)*
-     &                 (COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
-     &                + SINTET(IP)*
-     &                 (COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-                  USGD=V(IPOIN)*DZY(IPOIN)+U(IPOIN)*DZX(IPOIN)
-      	          CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF) + V(IPOIN)
-                  CX(IPOIN,IP,JF)=CX(IPOIN,IP,JF) + U(IPOIN)
-                  CT(IPOIN,IP,JF)=CT(IPOIN,IP,JF) - LSDUDN
-                  CF(IPOIN,IP,JF)= (TRA01(IPOIN)*USGD
-     &               - LSDUDS*CG(IPOIN,JF)*XK(IPOIN,JF))*USDPI
-                ENDDO
-              ENDDO
+              TRA01(IPOIN)=XK(IPOIN,JF)*DEUPI*FREQ(JF)/SINH(DEUKD)
             ENDIF
+          ENDDO
+!   
+          IF(MAREE) THEN        
+            DO IP=1,NPLAN
+              DO IPOIN=1,NPOIN2
+                LSDUDN= SINTET(IP)*
+     &               (-COSTET(IP)*DVY(IPOIN)-SINTET(IP)*DUY(IPOIN))
+     &              + COSTET(IP)*
+     &               ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
+                LSDUDS= COSTET(IP)*
+     &               (COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
+     &              + SINTET(IP)*
+     &               (COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
+                USGD=V(IPOIN)*DZY(IPOIN)+U(IPOIN)*DZX(IPOIN)
+      	        CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF) + V(IPOIN)
+                CX(IPOIN,IP,JF)=CX(IPOIN,IP,JF) + U(IPOIN)
+                CT(IPOIN,IP,JF)=CT(IPOIN,IP,JF) - LSDUDN
+                CF(IPOIN,IP,JF)= (TRA01(IPOIN)*(USGD+DZHDT(IPOIN))
+     &                 - LSDUDS*CG(IPOIN,JF)*XK(IPOIN,JF))*USDPI
+              ENDDO
+            ENDDO
+          ELSE
+!           IDEM BUT DZHDT=0.D0
+            DO IP=1,NPLAN
+              DO IPOIN=1,NPOIN2
+                LSDUDN= SINTET(IP)*
+     &               (-COSTET(IP)*DVY(IPOIN)-SINTET(IP)*DUY(IPOIN))
+     &              + COSTET(IP)*
+     &               ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
+                LSDUDS= COSTET(IP)*
+     &               (COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
+     &              + SINTET(IP)*
+     &               (COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
+                USGD=V(IPOIN)*DZY(IPOIN)+U(IPOIN)*DZX(IPOIN)
+      	        CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF) + V(IPOIN)
+                CX(IPOIN,IP,JF)=CX(IPOIN,IP,JF) + U(IPOIN)
+                CT(IPOIN,IP,JF)=CT(IPOIN,IP,JF) - LSDUDN
+                CF(IPOIN,IP,JF)= (TRA01(IPOIN)*USGD
+     &             - LSDUDS*CG(IPOIN,JF)*XK(IPOIN,JF))*USDPI
+              ENDDO
+            ENDDO
           ENDIF
 !
 !       --------------------------------------------------------------
@@ -302,65 +284,63 @@
             ENDDO
           ENDDO
 !
-          IF(COURAN) THEN
-!
-            DO IPOIN=1,NPOIN2
-              DEUKD=2.D0*XK(IPOIN,JF)*DEPTH(IPOIN)
-              IF(DEUKD.GT.7.D2) THEN
-                TRA01(IPOIN)=0.D0
-              ELSE
-                TRA01(IPOIN)=XK(IPOIN,JF)*DEUPI*FREQ(JF)/SINH(DEUKD)
-              ENDIF
-            ENDDO
-!
-            IF(MAREE) THEN 
-              DO IP=1,NPLAN         
-                DO IPOIN=1,NPOIN2
-                  SRCF=SR/COSF(IPOIN)
-                  LSDUDN= SINTET(IP)*SR*
-     &                 (-COSTET(IP)*DVY(IPOIN)-SINTET(IP)*DUY(IPOIN))
-     &                + COSTET(IP)*SRCF*
-     &                 ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-                  LSDUDS= COSTET(IP)*SR*
-     &                 ( COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
-     &                + SINTET(IP)*SRCF*
-     &                 ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-                  USGD=V(IPOIN)*DZY(IPOIN)*SR
-     &              +U(IPOIN)*DZX(IPOIN)*SRCF
-                  CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF)+V(IPOIN)*SR*GRADEG
-                  CX(IPOIN,IP,JF)=CX(IPOIN,IP,JF)+U(IPOIN)*SRCF*GRADEG
-                  CT(IPOIN,IP,JF)=CT(IPOIN,IP,JF)-LSDUDN*GRADEG
-                  CF(IPOIN,IP,JF)=
-     &             (TRA01(IPOIN)*(USGD*GRADEG+DZHDT(IPOIN))
-     &            -LSDUDS*GRADEG*CG(IPOIN,JF)*XK(IPOIN,JF))*USDPI
-              ENDDO
-              ENDDO
+          DO IPOIN=1,NPOIN2
+            DEUKD=2.D0*XK(IPOIN,JF)*DEPTH(IPOIN)
+            IF(DEUKD.GT.7.D2) THEN
+              TRA01(IPOIN)=0.D0
             ELSE
-!             IDEM BUT DZHDT=0.D0
-              DO IP=1,NPLAN
-                DO IPOIN=1,NPOIN2
-                  SRCF=SR/COSF(IPOIN)
-                  LSDUDN= SINTET(IP)*SR*
-     &                 (-COSTET(IP)*DVY(IPOIN)-SINTET(IP)*DUY(IPOIN))
-     &                + COSTET(IP)*SRCF*
-     &                 ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-                  LSDUDS= COSTET(IP)*SR*
-     &                 ( COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
-     &                + SINTET(IP)*SRCF*
-     &                 ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-                  USGD=V(IPOIN)*DZY(IPOIN)*SR
-     &                +U(IPOIN)*DZX(IPOIN)*SRCF
-                  CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF)+V(IPOIN)*SR*GRADEG
-                  CX(IPOIN,IP,JF)=CX(IPOIN,IP,JF)+U(IPOIN)*SRCF*GRADEG
-                  CT(IPOIN,IP,JF)=CT(IPOIN,IP,JF)-LSDUDN*GRADEG
-                  CF(IPOIN,IP,JF)=(TRA01(IPOIN)*USGD
-     &                -LSDUDS*CG(IPOIN,JF)*XK(IPOIN,JF))*GRADEG*USDPI
-              ENDDO
-              ENDDO
+              TRA01(IPOIN)=XK(IPOIN,JF)*DEUPI*FREQ(JF)/SINH(DEUKD)
             ENDIF
+          ENDDO
+!
+          IF(MAREE) THEN 
+            DO IP=1,NPLAN         
+              DO IPOIN=1,NPOIN2
+                SRCF=SR/COSF(IPOIN)
+                LSDUDN= SINTET(IP)*SR*
+     &               (-COSTET(IP)*DVY(IPOIN)-SINTET(IP)*DUY(IPOIN))
+     &              + COSTET(IP)*SRCF*
+     &               ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
+                LSDUDS= COSTET(IP)*SR*
+     &               ( COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
+     &              + SINTET(IP)*SRCF*
+     &               ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
+                USGD=V(IPOIN)*DZY(IPOIN)*SR
+     &              +U(IPOIN)*DZX(IPOIN)*SRCF
+                CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF)+V(IPOIN)*SR*GRADEG
+                CX(IPOIN,IP,JF)=CX(IPOIN,IP,JF)+U(IPOIN)*SRCF*GRADEG
+                CT(IPOIN,IP,JF)=CT(IPOIN,IP,JF)-LSDUDN*GRADEG
+                CF(IPOIN,IP,JF)=
+     &           (TRA01(IPOIN)*(USGD*GRADEG+DZHDT(IPOIN))
+     &          -LSDUDS*GRADEG*CG(IPOIN,JF)*XK(IPOIN,JF))*USDPI
+              ENDDO
+            ENDDO
+          ELSE
+!           IDEM BUT DZHDT=0.D0
+            DO IP=1,NPLAN
+              DO IPOIN=1,NPOIN2
+                SRCF=SR/COSF(IPOIN)
+                LSDUDN= SINTET(IP)*SR*
+     &               (-COSTET(IP)*DVY(IPOIN)-SINTET(IP)*DUY(IPOIN))
+     &              + COSTET(IP)*SRCF*
+     &               ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
+                LSDUDS= COSTET(IP)*SR*
+     &               ( COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
+     &              + SINTET(IP)*SRCF*
+     &               ( COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
+                USGD=V(IPOIN)*DZY(IPOIN)*SR
+     &              +U(IPOIN)*DZX(IPOIN)*SRCF
+                CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF)+V(IPOIN)*SR*GRADEG
+                CX(IPOIN,IP,JF)=CX(IPOIN,IP,JF)+U(IPOIN)*SRCF*GRADEG
+                CT(IPOIN,IP,JF)=CT(IPOIN,IP,JF)-LSDUDN*GRADEG
+                CF(IPOIN,IP,JF)=(TRA01(IPOIN)*USGD
+     &              -LSDUDS*CG(IPOIN,JF)*XK(IPOIN,JF))*GRADEG*USDPI
+              ENDDO
+            ENDDO
           ENDIF
 !
         ENDIF
+!
       ENDIF
 !
 !-----------------------------------------------------------------------

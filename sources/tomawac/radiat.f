@@ -43,6 +43,11 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  J-M HERVOUET (EDF - LNHE)
+!+        08/01/2014
+!+        V7P0
+!+   CALL PARCOM suppressed by using new argument ASSPAR in VECTOR
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CG1            |-->| DISCRETIZED GROUP VELOCITY
 !| CGSUC1         |<--| WORK TABLE
@@ -124,8 +129,8 @@
 !     INVERSE OF INTEGRALS OF TEST FUNCTIONS
 !
       CALL VECTOR(ST0,'=','MASBAS          ',IELM2,1.D0,
-     &            ST0,ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-      IF(NCSIZE.GT.1) CALL PARCOM(ST0,2,MESH)
+     &            ST0,ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &            ASSPAR=.TRUE.)
       CALL OS('X=1/Y   ',X=ST0,Y=ST0)
 !    
 !     DERIVATIVE IN X
@@ -133,17 +138,12 @@
       CALL OV('X=Y     ',T4,SXX,T3,C,NPOIN2)
       CALL VECTOR
      & (ST1,'=','GRADF          X',IELM2,1.D0,ST4,
-     &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3)
+     &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3,ASSPAR=.TRUE.)
 !
       CALL OV('X=Y     ',T4,SXY,T3,C,NPOIN2)
       CALL VECTOR
      & (ST2,'=','GRADF          X',IELM2,1.D0,ST4,
-     &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3)
-!
-      IF(NCSIZE.GT.1) THEN
-        CALL PARCOM(ST1,2,MESH)
-        CALL PARCOM(ST2,2,MESH)
-      ENDIF
+     &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3,ASSPAR=.TRUE.)
 !
       CALL OV('X=YZ    ',DSXXDX,T1,ST0%R,C,NPOIN2)
       CALL OV('X=YZ    ',DSXYDX,T2,ST0%R,C,NPOIN2)
@@ -153,17 +153,12 @@
       CALL OV('X=Y     ',T4,SYY,T3,C,NPOIN2)
       CALL VECTOR
      & (ST1,'=','GRADF          Y',IELM2,1.D0,ST4,
-     &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3)
+     &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3,ASSPAR=.TRUE.)
 !
       CALL OV('X=Y     ',T4,SXY,T3,C,NPOIN2)
       CALL VECTOR
      & (ST2,'=','GRADF          Y',IELM2,1.D0,ST4,
-     &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3)
-!
-      IF(NCSIZE.GT.1) THEN
-        CALL PARCOM(ST1,2,MESH)
-        CALL PARCOM(ST2,2,MESH)
-      ENDIF
+     &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3,ASSPAR=.TRUE.)
 !
       CALL OV('X=YZ    ',DSYYDY,T1,ST0%R,C,NPOIN2)
       CALL OV('X=YZ    ',DSXYDY,T2,ST0%R,C,NPOIN2)

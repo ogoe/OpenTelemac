@@ -9,7 +9,7 @@
      &  RXX   , RYY   , NEIGB , NB_CLOSE, DIFFRA, MAXNSP, FLTDIF,OPTDER)
 ! 
 !*********************************************************************** 
-! TOMAWAC   V6P3                                   25/06/2012 
+! TOMAWAC   V7P0                                   25/06/2012 
 !*********************************************************************** 
 ! 
 !brief    COMPUTES DIFFRACTION. 
@@ -38,6 +38,11 @@
 !+        V6P3 
 !+   Now velocities modified, not fully computed. 
 !+   A preliminary call of conwac is requested.
+!
+!history  J-M HERVOUET (EDF - LNHE)
+!+        08/01/2014
+!+        V7P0
+!+   CALL PARCOM suppressed by using new argument ASSPAR in VECTOR
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 !| A              |<--| AMPLITUDE OF DIRECTIONAL SPECTRUM 
@@ -199,8 +204,8 @@
 !     INVERSE OF INTEGRALS OF TEST FUNCTIONS
 !
       CALL VECTOR(ST0,'=','MASBAS          ',IELM2,1.D0,
-     &            ST0,ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-      IF(NCSIZE.GT.1) CALL PARCOM(ST0,2,MESH)
+     &            ST0,ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &            ASSPAR=.TRUE.)
       CALL OS('X=1/Y   ',X=ST0,Y=ST0)
 ! 
 !     LOOP OVER THE DIRECTIONS 
@@ -221,14 +226,14 @@
         IF(FLTDIF) CALL FILT_SA 
 ! 
         CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SA,
-     *              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-        IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &              ASSPAR=.TRUE.)
         DO I=1,NPOIN2
           FRDA(I,1)=ST1%R(I)*ST0%R(I)
         ENDDO
         CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SA,
-     *              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-        IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)        
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &              ASSPAR=.TRUE.)      
         DO I=1,NPOIN2
           FRDA(I,2)=ST1%R(I)*ST0%R(I)
         ENDDO
@@ -239,14 +244,14 @@
         IF(DIFFRA.EQ.1) THEN 
 !                  
           CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SCCG,
-     *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-          IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)
+     &                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &                ASSPAR=.TRUE.)
           DO I=1,NPOIN2
             FRDK(I,1)=ST1%R(I)*ST0%R(I)
           ENDDO      
           CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SCCG,
-     *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-          IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)          
+     &                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &                ASSPAR=.TRUE.)      
           DO I=1,NPOIN2
             FRDK(I,2)=ST1%R(I)*ST0%R(I)
           ENDDO
@@ -254,14 +259,14 @@
         ELSE 
 !
           CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SXKONPT,
-     *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-          IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)
+     &                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &                ASSPAR=.TRUE.)
           DO I=1,NPOIN2
             FRDK(I,1)=ST1%R(I)*ST0%R(I)
           ENDDO
           CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SXKONPT,
-     *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-          IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)          
+     &                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &                ASSPAR=.TRUE.)         
           DO I=1,NPOIN2
             FRDK(I,2)=ST1%R(I)*ST0%R(I)
           ENDDO
@@ -301,14 +306,14 @@
             SDDY%R(I)=FRDA(I,2)
           ENDDO
           CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SDDX,
-     *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-          IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)
+     &                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &                ASSPAR=.TRUE.)
           DO I=1,NPOIN2
             SCDA(I,3)=ST1%R(I)*ST0%R(I)
           ENDDO
           CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SDDY,
-     *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-          IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)
+     &                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &                ASSPAR=.TRUE.)
           DO I=1,NPOIN2
             SCDA(I,3)=SCDA(I,3)+ST1%R(I)*ST0%R(I)
           ENDDO
@@ -382,12 +387,12 @@
 !       DELTA GRADIENT COMPUTATION 
 !       
         CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SDELTA,
-     *              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-        IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &              ASSPAR=.TRUE.)
         CALL OV('X=YZ    ',SDDX%R,ST1%R,ST0%R,0.D0,NPOIN2)
         CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SDELTA,
-     *              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0) 
-        IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)       
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &              ASSPAR=.TRUE.)     
         CALL OV('X=YZ    ',SDDY%R,ST1%R,ST0%R,0.D0,NPOIN2) 
 !
 !       calculation of CG_n =CG(1+delta)^0.5 

@@ -2,10 +2,10 @@
                      SUBROUTINE VECTOR
 !                    *****************
 !
-     &(VEC,OP,FORMUL,IELM1,XMUL,F,G,H,U,V,W,MESH,MSK,MASKEL,LEGO)
+     &(VEC,OP,FORMUL,IELM1,XMUL,F,G,H,U,V,W,MESH,MSK,MASKEL,LEGO,ASSPAR)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                   08/01/2014
 !***********************************************************************
 !
 !brief    COMPUTES VECTORS.
@@ -60,7 +60,14 @@
 !+        V6P3
 !+   Checking size of vector, and status=0 allowed if OP='='.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        08/01/2014
+!+        V7P0
+!+   New optional argument ASSPAR, to assemble the vector in parallel.
+!+   This will avoid a lot of CALL PARCOM everywhere.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ASSPAR         |-->| IF YES, RARALLEL ASSEMBLY OF THE VECTOR IS DONE
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA (BIEF_OBJ)
 !| FORMUL         |-->| STRING WITH THE FORMULA DESCRIBING THE VECTOR
 !| G              |-->| FUNCTION USED IN THE VECTOR FORMULA (BIEF_OBJ)
@@ -95,7 +102,7 @@
       CHARACTER(LEN=1),  INTENT(IN)    :: OP
       TYPE(BIEF_OBJ),    INTENT(IN)    :: F,G,H,U,V,W,MASKEL
       TYPE(BIEF_MESH),   INTENT(INOUT) :: MESH
-      LOGICAL, OPTIONAL, INTENT(IN)    :: LEGO
+      LOGICAL, OPTIONAL, INTENT(IN)    :: LEGO,ASSPAR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -196,6 +203,16 @@
      &              IELM1,MESH%LV,MSK,MASKEL%R,MESH,DIM1T,
      &              MESH%NELBOR%I,MESH%NULONE%I)
 !
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!  OPTIONAL ASSEMBLY: VALUES OF VEC SUMMED AT INTERFACE POINTS
+!-----------------------------------------------------------------------
+!
+      IF(NCSIZE.GT.1) THEN
+        IF(PRESENT(ASSPAR).AND.DIMENS(IELM1).EQ.MESH%DIM) THEN
+          IF(ASSPAR) CALL PARCOM(VEC,2,MESH)
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------

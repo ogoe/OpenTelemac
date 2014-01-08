@@ -14,7 +14,7 @@
 #
 # definition des noms de fichiers
 #
-NOM_GENERIQUE = parallel
+NOM_GENERIQUE = partel
 
 VERSION	      = v7p0
 

@@ -6,15 +6,10 @@
      &  NVHMA , NVCOU , PART  , U_TEL , V_TEL , H_TEL )
 !
 !***********************************************************************
-! TOMAWAC   V6P3                                   14/06/2011
+! TOMAWAC   V7P0                                   14/06/2011
 !***********************************************************************
 !
 !brief    INITIALISES ARRAYS OF PHYSICAL PARAMETERS.
-!
-!history
-!+        25/08/2000
-!+        V5P0
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -42,6 +37,11 @@
 !+        07/12/2012
 !+        V6P3
 !+   Taking into account tidal flats + various optimisations.
+!
+!history  J-M HERVOUET (EDF - LNHE)
+!+        08/01/2014
+!+        V7P0
+!+   CALL PARCOM suppressed by using new argument ASSPAR in VECTOR
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
@@ -175,34 +175,24 @@
 !     UPDATES THE CURRENT AND WATER DEPTH GRADIENTS AT TIME 'AT'
 !
       CALL VECTOR(SDZX,'=','GRADF          X',IELM2,1.D0,SDEPTH,
-     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,ASSPAR=.TRUE.)
       CALL VECTOR(SDZY,'=','GRADF          Y',IELM2,1.D0,SDEPTH,
-     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,ASSPAR=.TRUE.)
 !
       CALL VECTOR(SDUX,'=','GRADF          X',IELM2,1.D0,SUC,
-     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,ASSPAR=.TRUE.)
       CALL VECTOR(SDUY,'=','GRADF          Y',IELM2,1.D0,SUC,
-     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,ASSPAR=.TRUE.)
 !
       CALL VECTOR(SDVX,'=','GRADF          X',IELM2,1.D0,SVC,
-     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,ASSPAR=.TRUE.)
       CALL VECTOR(SDVY,'=','GRADF          Y',IELM2,1.D0,SVC,
-     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,ASSPAR=.TRUE.)
 !
 !     INTEGRAL OF TEST FUNCTIONS
 !
       CALL VECTOR(ST0,'=','MASBAS          ',IELM2,1.D0,ST0,
-     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-!
-      IF(NCSIZE.GT.1) THEN
-        CALL PARCOM(SDZX,2,MESH)
-        CALL PARCOM(SDUX,2,MESH)
-        CALL PARCOM(SDVX,2,MESH)
-        CALL PARCOM(SDZY,2,MESH)
-        CALL PARCOM(SDUY,2,MESH)
-        CALL PARCOM(SDVY,2,MESH)
-        CALL PARCOM(ST0,2,MESH)
-      ENDIF
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,ASSPAR=.TRUE.)
 !
       CALL OV('X=1/Y   ',ST0%R ,ST0%R,ST0%R,0.D0,NPOIN2)
 !

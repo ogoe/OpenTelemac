@@ -6,7 +6,7 @@
      & IKLE,NELMAX,NELEM,X,Y,DT,NCP,CTRLSC,INFO,TPS)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V7P0                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES FLUXES THROUGH CONTROL SECTIONS

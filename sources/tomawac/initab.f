@@ -5,7 +5,7 @@
      &(IBOR1,IFABOR1,NELEM2_DIM,PART)
 !
 !***********************************************************************
-! TOMAWAC   V6P3                                   20/06/2011
+! TOMAWAC   V7P0                                   20/06/2011
 !***********************************************************************
 !
 !brief    INITIALISES USEFUL ARRAYS.
@@ -47,6 +47,11 @@
 !+        07/12/2012
 !+        V6P3
 !+   Optimisation.
+!
+!history  J-M HERVOUET (EDF - LNHE)
+!+        08/01/2014
+!+        V7P0
+!+   CALL PARCOM suppressed by using new argument ASSPAR in VECTOR
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IBOR1          |<--| WORK TABLE
@@ -123,8 +128,8 @@
 !
       IF(.NOT.PROINF.OR.COURAN.OR.PART.EQ.0) THEN
         CALL VECTOR(ST0,'=','MASBAS          ',IELM2,1.D0,MESH%X,
-     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-        IF(NCSIZE.GT.1) CALL PARCOM(ST0,2,MESH)
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &              ASSPAR=.TRUE.)
         CALL OV('X=1/Y   ',ST0%R,ST0%R,ST0%R,C,NPOIN2)
       ENDIF
 !
@@ -132,32 +137,24 @@
 !
       IF(.NOT.PROINF) THEN
         CALL VECTOR(SDZX,'=','GRADF          X',IELM2,1.D0,SDEPTH,
-     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &              ASSPAR=.TRUE.)
         CALL VECTOR(SDZY,'=','GRADF          Y',IELM2,1.D0,SDEPTH,
-     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-        IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(SDZX,2,MESH)
-          CALL PARCOM(SDZY,2,MESH)
-        ENDIF
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
+     &              ASSPAR=.TRUE.)
         CALL OV('X=XY    ',SDZX%R,ST0%R,ST0%R,C,NPOIN2)
         CALL OV('X=XY    ',SDZY%R,ST0%R,ST0%R,C,NPOIN2)
       ENDIF
 !
       IF(COURAN.OR.PART.EQ.0) THEN
         CALL VECTOR(SDUX,'=','GRADF          X',IELM2,1.D0,SUC,
-     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,ASSPAR=.TRUE.)
         CALL VECTOR(SDVX,'=','GRADF          X',IELM2,1.D0,SVC,
-     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,ASSPAR=.TRUE.)
         CALL VECTOR(SDUY,'=','GRADF          Y',IELM2,1.D0,SUC,
-     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,ASSPAR=.TRUE.)
         CALL VECTOR(SDVY,'=','GRADF          Y',IELM2,1.D0,SVC,
-     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-        IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(SDUX,2,MESH)
-          CALL PARCOM(SDVX,2,MESH)
-          CALL PARCOM(SDUY,2,MESH)
-          CALL PARCOM(SDVY,2,MESH)
-        ENDIF
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,ASSPAR=.TRUE.)
         CALL OV('X=XY    ',SDUX%R,ST0%R,ST0%R,C,NPOIN2)
         CALL OV('X=XY    ',SDVX%R,ST0%R,ST0%R,C,NPOIN2)
         CALL OV('X=XY    ',SDUY%R,ST0%R,ST0%R,C,NPOIN2)
@@ -168,4 +165,3 @@
 !
       RETURN
       END
-

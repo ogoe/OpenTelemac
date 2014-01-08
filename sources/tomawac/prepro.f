@@ -215,7 +215,7 @@
         CALL CONW4D(CX%R,CY%R,CT%R,CF%R,
      &              U,V,XK,CG,COSF,TGF,DEPTH,DZHDT,DZY,DZX,DVY,DVX,
      &              DUY,DUX,FREQ%R,COSTET,SINTET,NPOIN2,NPLAN,
-     &              JF,NF,PROINF,SPHE,COURAN,MAREE,TRA01)
+     &              JF,NF,PROINF,SPHE,MAREE,TRA01)
 !
       ENDDO
 !
