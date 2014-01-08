@@ -13,8 +13,23 @@
 <!-- Actions based on python scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
    <action xref="1"
-      do="runSELAFIN.py scan geo_bowl.slf --core" code="exec" rank="2"
-	   target="runSELAFIN.py" deprefs="geo_bowl.slf;f2d_bowl_vf_fr.slf"
+      do="runSELAFIN.py scan r2d_bowl_vf_gb_DoublePrecision_BigEndian.slf --core" code="exec" rank="2"
+	   target="runSELAFIN.py" deprefs="r2d_bowl_vf_gb_DoublePrecision_BigEndian.slf"
+      title="Converting big-endian to little endian files and vice-versa"
+   />
+   <action xref="2"
+      do="runSELAFIN.py scan r2d_bowl_vf_gb_DoublePrecision_LittleEndian.slf --core" code="exec" rank="2"
+	   target="runSELAFIN.py" deprefs="r2d_bowl_vf_gb_DoublePrecision_LittleEndian.slf"
+      title="Converting big-endian to little endian files and vice-versa"
+   />
+   <action xref="3"
+      do="runSELAFIN.py scan r2d_bowl_vf_gb_SinglePrecision_BigEndian.slf --core" code="exec" rank="2"
+	   target="runSELAFIN.py" deprefs="r2d_bowl_vf_gb_SinglePrecision_BigEndian.slf"
+      title="Converting big-endian to little endian files and vice-versa"
+   />
+   <action xref="4"
+      do="runSELAFIN.py scan r2d_bowl_vf_gb_SinglePrecision_LittleEndian.slf --core" code="exec" rank="2"
+	   target="runSELAFIN.py" deprefs="r2d_bowl_vf_gb_SinglePrecision_LittleEndian.slf"
       title="Converting big-endian to little endian files and vice-versa"
    />
    
