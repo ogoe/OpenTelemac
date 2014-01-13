@@ -611,7 +611,8 @@ def parseConfig_ValidateTELEMAC(cfg):
          cfgTELEMAC['VALIDATION'].update({mod:{'path':path.realpath(val_dir)}})
          cfgTELEMAC['VALIDATION'][mod].update(val_mod)
 
-   print cfgTELEMAC['VALIDATION'].keys()
+   print '    +> '+cfg+': ' + ', '.join(cfgTELEMAC['VALIDATION'].keys())
+   
    # Get path_parallel for partel
    cfgTELEMAC.update({'PARTEL':getPARTEL(cfg)})
    # Get mpi_cpulist and mpi_cmdexec: for mpi option
