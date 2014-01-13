@@ -936,7 +936,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             mpi = mpi.replace('<wdir>',CASFiles[name]['wir'])
             CASFiles[name]['mpi'] = mpi
             if not options.split:
-               CASFiles[name]['run'] = mpi.replace('<exename>',path.basename(CASFiles[name]['exe']))
+               CASFiles[name]['run'] = mpi.replace('<exename>',CASFiles[name]['exe']) #path.basename(CASFiles[name]['exe']))
             # ~~> no file handling necessary if hpcpass
             if hpcpass: continue
             # ~~> Creating the HOST file
