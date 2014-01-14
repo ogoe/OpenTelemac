@@ -610,8 +610,6 @@ def parseConfig_ValidateTELEMAC(cfg):
       if val_mod != {}:
          cfgTELEMAC['VALIDATION'].update({mod:{'path':path.realpath(val_dir)}})
          cfgTELEMAC['VALIDATION'][mod].update(val_mod)
-
-   print '    +> '+cfg+': ' + ', '.join(cfgTELEMAC['VALIDATION'].keys())
    
    # Get path_parallel for partel
    cfgTELEMAC.update({'PARTEL':getPARTEL(cfg)})

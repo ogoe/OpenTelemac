@@ -377,6 +377,7 @@ if __name__ == "__main__":
          cfgs[cfgname]['display'] = options.display
          # parsing for proper naming
          cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
+         print '    +> '+cfgname+': ' + ', '.join(cfg['VALIDATION'].keys())
          cfg.update({ 'PWD':PWD })
          if options.cleanup: cfg['REBUILD'] = 2
 
@@ -415,6 +416,7 @@ if __name__ == "__main__":
          cfgs[cfgname]['display'] = options.display
          # parsing for proper naming
          cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
+         print '    +> '+cfgname+': ' + ', '.join(cfg['VALIDATION'].keys())
          cfg.update({ 'PWD':PWD })
          if options.cleanup: cfg['REBUILD'] = 2
          # gathering XMLs
