@@ -80,11 +80,11 @@ OBJS_GRETEL = $(TEMP:.F=.obj)
 TEMP = $(SRCS_GREDELPTS:.f=.obj)
 OBJS_GREDELPTS = $(TEMP:.F=.obj)
 TEMP = $(SRCS_GREDELSEG:.f=.obj)
-OBJS_GREDELPTS = $(TEMP:.F=.obj)
+OBJS_GREDELSEG = $(TEMP:.F=.obj)
 TEMP = $(SRCS_GREDELMET:.f=.obj)
-OBJS_GREDELPTS = $(TEMP:.F=.obj)
+OBJS_GREDELMET = $(TEMP:.F=.obj)
 TEMP = $(SRCS_GREDELHYD:.f=.obj)
-OBJS_GREDELPTS = $(TEMP:.F=.obj)
+OBJS_GREDELHYD = $(TEMP:.F=.obj)
 #
 #------------------------ Cibles
 #
