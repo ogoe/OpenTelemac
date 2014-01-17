@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINICIPAL TELEMAC2D VARIABLES
@@ -46,6 +46,11 @@
 !+        07/06/2013
 !+        V6P3
 !+   Modification for new treatment of weirs
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        17/01/2014
+!+        V7P0
+!+   Adding a zones data file.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -714,6 +719,10 @@
 !     DROGUES FILE
 !
       INTEGER T2DFLO
+!
+!     ZONES FILE
+!
+      INTEGER T2DZFI
 !
 !     GRAPHIC PRINTOUT PERIOD
 ! 
@@ -1541,35 +1550,35 @@
 !
 !     TITLE OF STUDY
 ! 
-      CHARACTER*72 TITCAS
+      CHARACTER(LEN=72) TITCAS
 !
 !     VARIABLES FOR GRAPHIC PRINTOUT
 !
-      CHARACTER*72 VARDES
+      CHARACTER(LEN=72) VARDES
 !
 !     INITIAL CONDITIONS
 ! 
-      CHARACTER*72 CDTINI
+      CHARACTER(LEN=72) CDTINI
 !
 !     VARIABLES TO BE PRINTED
 ! 
-      CHARACTER*72 VARIMP
+      CHARACTER(LEN=72) VARIMP
 !
 !     EQUATIONS
 ! 
-      CHARACTER*20 EQUA
+      CHARACTER(LEN=20) EQUA
 !
 !     NAMES OF CLANDESTINE VARIABLES
 ! 
-      CHARACTER*32 VARCLA(10)
+      CHARACTER(LEN=32) VARCLA(10)
 !
 !     NAMES AND UNITS OF VARIABLES
 !
-      CHARACTER*32 TEXTE(MAXVAR),TEXTPR(MAXVAR)
+      CHARACTER(LEN=32) TEXTE(MAXVAR),TEXTPR(MAXVAR)
 !
 !     NAMES OF REMARKABLE POINTS
 ! 
-      CHARACTER*32 NAME_PTS(100)
+      CHARACTER(LEN=32) NAME_PTS(100)
 !
 !     NAMES OF TRACERS
 ! 

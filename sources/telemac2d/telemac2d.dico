@@ -5502,6 +5502,24 @@ RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE = 'Méthode de traitement des seuils'
 AIDE1 = 'Method for treatment of weirs'
+/ 
+/ VERSION 7.0
+/
+NOM = 'FICHIER DES ZONES'
+NOM1 = 'ZONES FILE'
+TYPE = CARACTERE 
+INDEX = 59
+MNEMO = 'T2D_FILES(T2DZFI)%NAME' 
+SUBMIT = 'T2DZFI-READ-30;T2DZFI;FACUL;ASC;LIT;SCAL' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'Fichier des zones avec sur chaque ligne
+numero de point  numero de zone' 
+AIDE1 = 'Zones file, with on every line:
+point number   zone number' 
 
 / 
 / POUR LES LANCEURS PERL : 
@@ -5512,7 +5530,7 @@ NOM1 = 'LIST OF FILES'
 TYPE = CARACTERE 
 INDEX = 99 
 MNEMO = '' 
-TAILLE = 43
+TAILLE = 44
 DEFAUT = 'FICHIER DES PARAMETRES'; 
          'DICTIONNAIRE'; 
          'FICHIER FORTRAN'; 
@@ -5555,7 +5573,8 @@ DEFAUT = 'FICHIER DES PARAMETRES';
          'FICHIER DE DONNEES DES SIPHONS';
          'FICHIER DE DONNEES DES BUSES';
          'FICHIER DE DONNEES DES BRECHES';
-         'FICHIER DES FLOTTEURS'
+         'FICHIER DES FLOTTEURS';
+         'FICHIER DES ZONES'
 DEFAUT1 ='STEERING FILE'; 
          'DICTIONARY'; 
          'FORTRAN FILE'; 
@@ -5598,7 +5617,8 @@ DEFAUT1 ='STEERING FILE';
          'CULVERT DATA FILE';
          'TUBES DATA FILE';
          'BREACHES DATA FILE';
-         'DROGUES FILE'
+         'DROGUES FILE';
+         'ZONES FILE'
 RUBRIQUE  = 'FICHIERS' 
 RUBRIQUE1 = 'FILES' 
 NIVEAU = 1 
