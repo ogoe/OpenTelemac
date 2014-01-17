@@ -106,7 +106,7 @@ LAW OF BOTTOM FRICTION            = 0
 /
 FRICTION DATA                      = YES
 FRICTION DATA FILE                 = roughness.tbl
-FORMATTED DATA FILE 1              = gitter_09_tbl.bfr
+ZONES FILE                         = gitter_09_tbl.bfr
 MAXIMUM NUMBER OF FRICTION DOMAINS = 10
 NON-SUBMERGED VEGETATION FRICTION  = NO
 &ETA
