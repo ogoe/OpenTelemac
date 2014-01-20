@@ -34,6 +34,8 @@ import sys
 from os import path
 import numpy as np
 import math
+from scipy.spatial import cKDTree
+from matplotlib.tri import Triangulation
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) )
 from utils.geometry import getSegmentIntersection,getBarycentricWeights,isInsideTriangle,getDistancePointToLine
@@ -53,7 +55,6 @@ def nearLocateMesh(xyo,IKLE,MESHX,MESHY,tree=None):
    """
    # ~~> Create the KDTree of the iso-barycentres
    if tree == None:
-      from scipy.spatial import cKDTree
       isoxy = np.column_stack((np.sum(MESHX[IKLE],axis=1)/3.0,np.sum(MESHY[IKLE],axis=1)/3.0))
       tree = cKDTree(isoxy)
    # ~~> Find the indices corresponding to the nearest elements to the points
@@ -108,7 +109,6 @@ def xyTraceMesh(inear,xyi,xyo,IKLE,MESHX,MESHY,neighbours=None):
       associated barycentric weights, and the neighbourhood if computed
    """   
    if neighbours == None:
-      from matplotlib.tri import Triangulation
       neighbours = Triangulation(MESHX,MESHY,IKLE).get_cpp_triangulation().get_neighbors()
    found,ray = traceRay2XY(IKLE,MESHX,MESHY,neighbours,inear,xyi,inear,xyo)
 

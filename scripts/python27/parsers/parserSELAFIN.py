@@ -70,6 +70,8 @@ import sys
 from os import path,getcwd
 import glob
 import numpy as np
+from scipy.spatial import cKDTree
+from matplotlib.tri import Triangulation
 # ~~> dependencies towards other modules
 # ~~> dependencies towards other pytel/modules
 from utils.progressbar import ProgressBar
@@ -736,13 +738,13 @@ class SELAFIN:
 
    def setKDTree(self,set=False):
       if set or self.tree == None:
-         from scipy.spatial import cKDTree
+         #from scipy.spatial import cKDTree
          isoxy = np.column_stack((np.sum(self.MESHX[self.IKLE2],axis=1)/3.0,np.sum(self.MESHY[self.IKLE2],axis=1)/3.0))
          self.tree = cKDTree(isoxy)
 
    def setMPLTri(self,set=False):
       if set or self.neighbours == None or self.edges == None:
-         from matplotlib.tri import Triangulation
+         #from matplotlib.tri import Triangulation
          mpltri = Triangulation(self.MESHX,self.MESHY,self.IKLE2).get_cpp_triangulation()
          self.neighbours = mpltri.get_neighbors()
          self.edges = mpltri.get_edges()

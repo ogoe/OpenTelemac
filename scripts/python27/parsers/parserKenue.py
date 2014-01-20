@@ -189,7 +189,7 @@ def putInS(file,head,fileType,poly,typ=None,atrbut=None):
       il = len(ip)
       if il != 0 and not isClose(ip[0],ip[len(ip)-1]): il += it
       line = str(il)
-      for a in atrbut: line  = line + ' ' + a[i+1]
+      for a in atrbut: line  = line + ' ' + atrbut[a][i+1]
       core.append(line)
       if fileType == 'i2s':
          for xyi in ip: core.append(str(xyi[0])+' '+str(xyi[1]))
