@@ -845,8 +845,7 @@ C
 !
 !***********************************************************************  
 !                                                                         
-! DIRECT INTEGRATION OF THE EQUATION OF GRADUALLY
-!                VARIED FLOW 
+! DIRECT INTEGRATION OF THE EQUATION OF GRADUALLY VARIED FLOW 
 ! REF 
 ! 1.Restoration of the contact surface in FORCE-type centred schemes II 
 ! Canestrelli, Toro 2012
@@ -886,24 +885,25 @@ C
       DOUBLE PRECISION F,G,FT,GT,GAMMA,DXIN      
       DOUBLE PRECISION XIN(ITMAX),YIN(ITMAX)                                                    
 !                                                                         
-      INTRINSIC SQRT,ABS,DLOG,ATAN                                                                                                 
+      INTRINSIC SQRT,ABS,LOG,ATAN                                                                                                 
 !
 ! VARIABLES: S -> PENTE; N -> COEFFICIENT DE MANNING                                                                          
 !----------------------------------------------------------------------- 
 !
 ! INITIALISE X ET YIN--->Riadh
+!
       DO I=1,ITMAX
-         XIN(I)=10000000000
-         YIN(I)=0.D0
+        XIN(I)=1.D10
+        YIN(I)=0.D0
       ENDDO
 !
 ! DEBIT SCALAIRE (m2/s) DANS LE CANAL
 !
-      Q=6000.0D0/450.D0
+      Q=6000.D0/450.D0
 !
 ! HAUTEUR CRITIQUE
 ! 
-      YC=(Q**2.D0/9.81D0)**UNT
+      YC=(Q**2/9.81D0)**UNT
 !
 ! HAUTEUR REGIME UNIFORME
 !
@@ -933,7 +933,7 @@ C
          ALFA2=UNDIX*SQRT(0.5D0*(5.D0-SQRT(5.D0)))
 !
          BETA1=1.D0-SQRT(5.D0)
-         BETA1=1.D0+SQRT(5.D0)
+         BETA2=1.D0+SQRT(5.D0)
 !
          F1=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETA**UNT-UNQ*BETA2)
          F4=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETA**UNT+UNQ*BETA2)
@@ -960,24 +960,24 @@ C
          Z3T=1.D0+0.5*BETA1*ETAT**UNT+ETAT**(2.D0/3.D0)
 !
          F=ALFA1*(ATAN(F1)+ATAN(F4))-ALFA2*(ATAN(F2)+ATAN(F3))+
-     &     (1.D0/40.D0)*(BETA1*(DLOG(ABS(Z1))-DLOG(ABS(Z4)))-
-     &     BETA2*(DLOG(ABS(Z2))-DLOG(ABS(Z3))))-
-     &     UNDIX*(DLOG(ABS(ETA**UNT-1.D0))-DLOG(ABS(ETA**UNT+1.D0)))
+     &     (1.D0/40.D0)*(BETA1*(LOG(ABS(Z1))-LOG(ABS(Z4)))-
+     &     BETA2*(LOG(ABS(Z2))-LOG(ABS(Z3))))-
+     &     UNDIX*(LOG(ABS(ETA**UNT-1.D0))-LOG(ABS(ETA**UNT+1.D0)))
 !
          G=ALFA2*(ATAN(F1)-ATAN(F4))-ALFA1*(ATAN(F2)-ATAN(F3))
-     &     +(1.D0/40.0D0)*(BETA2*(DLOG(ABS(Z1))+DLOG(ABS(Z4)))
-     &     +BETA1*(DLOG(ABS(Z2))+DLOG(ABS(Z3))))
-     &     -UNDIX*(DLOG(ABS(ETA**UNT-1.D0))-DLOG(ABS(ETA**UNT+1.D0)))
+     &     +(1.D0/40.0D0)*(BETA2*(LOG(ABS(Z1))+LOG(ABS(Z4)))
+     &     +BETA1*(LOG(ABS(Z2))+LOG(ABS(Z3))))
+     &     -UNDIX*(LOG(ABS(ETA**UNT-1.D0))-LOG(ABS(ETA**UNT+1.D0)))
 !
          FT=ALFA1*(ATAN(F1T)+ATAN(F4T))-ALFA2*(ATAN(F2T)+ATAN(F3T))
-     &     +(1.D0/40.D0)*(BETA1*(DLOG(ABS(Z1T))-DLOG(ABS(Z4T)))
-     &     -BETA2*(DLOG(ABS(Z2T))-DLOG(ABS(Z3T))))
-     &     -UNDIX*(DLOG(ABS(ETAT**UNT-1.D0))-DLOG(ABS(ETAT**UNT+1.D0)))
+     &     +(1.D0/40.D0)*(BETA1*(LOG(ABS(Z1T))-LOG(ABS(Z4T)))
+     &     -BETA2*(LOG(ABS(Z2T))-LOG(ABS(Z3T))))
+     &     -UNDIX*(LOG(ABS(ETAT**UNT-1.D0))-LOG(ABS(ETAT**UNT+1.D0)))
 !
          GT=ALFA2*(ATAN(F1T)-ATAN(F4T))-ALFA1*(ATAN(F2T)-ATAN(F3T))
-     &     +(1.D0/40.0D0)*(BETA2*(DLOG(ABS(Z1))+DLOG(ABS(Z4)))
-     &     +BETA1*(DLOG(ABS(Z2T))+DLOG(ABS(Z3T))))
-     &     -UNDIX*(DLOG(ABS(ETAT**UNT-1.D0))-DLOG(ABS(ETAT**UNT+1.D0)))
+     &     +(1.D0/40.0D0)*(BETA2*(LOG(ABS(Z1))+LOG(ABS(Z4)))
+     &     +BETA1*(LOG(ABS(Z2T))+LOG(ABS(Z3T))))
+     &     -UNDIX*(LOG(ABS(ETAT**UNT-1.D0))-LOG(ABS(ETAT**UNT+1.D0)))
 !
          GAMMA=ETA-ETAT+3.D0*(FT-F)+3.D0*ETAC**3.D0*(G-GT)
          XIN(I)=XOUT+(YN/S)*GAMMA
@@ -990,7 +990,7 @@ C
 ! APPROXIMATION LINEAIRE SUR LES POINTS DU MAILLAGE
 !
       DO J=1,ITMAX-1
-      !-->Riadh
+!        -->Riadh
          DO I=1,NPOIN
             IF(X(I).LT.XIN(J).AND.X(I).GT.XIN(J+1))THEN
                DXIN=XIN(J)-XIN(J+1)
@@ -999,6 +999,8 @@ C
             ENDIF
          ENDDO
       ENDDO 
+!
 !-----------------------------------------------------------------------
+!
       RETURN
       END
