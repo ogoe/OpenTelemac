@@ -161,7 +161,7 @@ def readCAS(keywords,dico,frgb):
       elif dico[kw]['TYPE'][0] in ['REEL','REAL']:
          vals = []
          for val in value:
-            if re.match(vflt,val.lower().replace('d','e')): vals.append(float(val.lower().replace('d','e')))
+            if re.match(vflt,val.lower().replace('d','e')): vals.append(val)
             else: raise Exception([{'name':'readCAS','msg':'... I am looking for an FLOAT but found an inapropriate value set for keyword: '+key}])
          vallist[keylist.index(key)] = vals
       else:
