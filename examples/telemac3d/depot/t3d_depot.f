@@ -152,9 +152,6 @@
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
           CALL OS( 'X=C     ', X=TA%ADR(I)%P, C=TRAC0(I))
-          PRINT*,'VARIABLE ',TA%ADR(I)%P%NAME
-          PRINT*,'CONDIM I=',I,' PDOTS=',P_DOTS(TA%ADR(I)%P,
-     &                                          TA%ADR(I)%P,MESH3D)
         ENDDO
       ENDIF
 !
@@ -323,12 +320,13 @@ C
 C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C
+      INTEGER, INTENT(IN) :: LT
 C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C     
       LOGICAL LEO
 C
-      INTEGER LTT,LT,I,NODE,N
+      INTEGER LTT,I,NODE,N
       DOUBLE PRECISION C
 C
 C-----------------------------------------------------------------------
@@ -352,30 +350,24 @@ C SPECIFIQUE PROFIL DE ROUSE
 C
 C ESSAI JMH
 C
-      N=46
-      IF(NCSIZE.GT.1) THEN
-        NODE=0
-        DO I=1,NPOIN2
-          IF(MESH2D%KNOLG%I(I).EQ.N) NODE=I
-        ENDDO
-      ELSE
-        NODE=N
-      ENDIF
+      NODE=GLOBAL_TO_LOCAL_POINT(46,MESH2D)
       IF(LT.EQ.NIT.AND.NODE.GT.0) THEN
-      PRINT*,' Z          U         C            NUT TRAC      NUT VIT '
+      WRITE(LU,*)
+     &  ' Z          U         C            NUT TRAC      NUT VIT '
       C=0.D0
       DO I=1,NPLAN
-        PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),U%R(NODE+(I-1)*NPOIN2), 
-     *         TA%ADR(NTRAC)%P%R(NODE+(I-1)*NPOIN2),
-     *         VISCTA%ADR(NTRAC)%P%ADR(3)%P%R(NODE+(I-1)*NPOIN2), 
-     *         VISCVI%ADR(3)%P%R(NODE+(I-1)*NPOIN2) 
+       WRITE(LU,*) MESH3D%Z%R(NODE+(I-1)*NPOIN2),U%R(NODE+(I-1)*NPOIN2), 
+     &         TA%ADR(NTRAC)%P%R(NODE+(I-1)*NPOIN2),
+     &         VISCTA%ADR(NTRAC)%P%ADR(3)%P%R(NODE+(I-1)*NPOIN2), 
+     &         VISCVI%ADR(3)%P%R(NODE+(I-1)*NPOIN2) 
         C=C+TA%ADR(NTRAC)%P%R(NODE+(I-1)*NPOIN2)  
       ENDDO
        C=(C-0.5D0*(TA%ADR(NTRAC)%P%R(NODE)+
-     *             TA%ADR(NTRAC)%P%R(NODE+(NPLAN-1)*1188)))/
-     *             FLOAT(NPLAN-1)
-       PRINT*,'C VOLUMIQUE MOYEN EN SORTIE : ',C/2650.D0
+     &             TA%ADR(NTRAC)%P%R(NODE+(NPLAN-1)*NPOIN2)))/
+     &             FLOAT(NPLAN-1)
+       WRITE(LU,*) 'C VOLUMIQUE MOYEN EN SORTIE : ',C/2650.D0
       ENDIF
+C
 C FIN ESSAI JMH
 C
 C=======================================================================
@@ -534,16 +526,16 @@ C
 !-----------------------------------------------------------------------
 !
       INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3,NPFMAX,NCOUCH
-      DOUBLE PRECISION, INTENT(OUT)   :: IVIDE(NPFMAX,NPOIN2)
-      DOUBLE PRECISION, INTENT(OUT)   :: EPAI(NPFMAX-1,NPOIN2)
-      DOUBLE PRECISION, INTENT(OUT)   :: CONC(NCOUCH)
-      DOUBLE PRECISION, INTENT(OUT)   :: TEMP(NCOUCH,NPOIN2)
-      DOUBLE PRECISION, INTENT(OUT)   :: HDEP(NPOIN2)
-      DOUBLE PRECISION, INTENT(OUT)   :: ZR(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: IVIDE(NPFMAX,NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPFMAX-1,NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: CONC(NCOUCH)
+      DOUBLE PRECISION, INTENT(INOUT) :: TEMP(NCOUCH,NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZR(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: ZF(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TREST(NCOUCH)
-      INTEGER, INTENT(OUT)            :: NPF(NPOIN2)
+      INTEGER, INTENT(INOUT)          :: NPF(NPOIN2)
       TYPE(BIEF_OBJ)                  :: PRIVE
       LOGICAL, INTENT(IN)             :: TASSE, GIBSON,CONSOL
 !
@@ -565,7 +557,7 @@ C
 !
 !     -----    INITIALIZATION OF ZR    ---
 !
-      CALL OV( 'X=Y-Z   ' , ZR    , ZF   , HDEP , 0.D0 , NPOIN2)
+      CALL OV( 'X=Y-Z   ' , ZR   , ZF   , HDEP , 0.D0 , NPOIN2)
 !
 !     -------------------------------------------------------
 !           INITIAL CONDITIONS FOR THE MULTILAYER MODEL

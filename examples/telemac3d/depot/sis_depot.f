@@ -52,9 +52,11 @@ C--------------------
 C RIGID BEDS POSITION
 C---------------------
 C
-C     HERE ZR=ZF 
+C     HERE ZR=ZF-0.01D0 : PROVISIONAL, SHOULD BE 0,
+C                         WAITING FOR TELEMAC-3D CORRECTION... SO THAT
+C                         ZF ALWAYS >= ZR
 C                                                              
-      CALL OV('X=Y     ',ZR,ZF,ZF,0.D0,NPOIN)                                                    
+      CALL OV('X=Y+C   ',ZR,ZF,ZF,-0.01D0,NPOIN)                                                    
 C
 C------------------
 C SMOOTHING OPTION
