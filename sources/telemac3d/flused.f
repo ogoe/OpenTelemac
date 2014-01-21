@@ -10,7 +10,7 @@
      &  NPOIN3 , NPOIN2 , NPLAN  , KLOG   , SEDCO)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES THE FLUXES AT THE BOTTOM AND FREE SURFACE
@@ -41,6 +41,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. VILLARET (HR-WALLINGFORD) & J-M HERVOUET (EDF LAB, LNHE)
+!+        20/01/2014
+!+        V7P0
+!+   Erosion and deposition fluxes cancelled on tidal flats.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM) 
 !| ATABOS         |<->| FOR BOUNDARY CONDITION (SURFACE) NOT USED
@@ -70,6 +75,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC3D, ONLY: IPBOT,SIGMAG,OPTBAN
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -150,30 +156,50 @@
 !
 !     COMMON COMPUTATION OF THE TRACER FLUX ON THE BOTTOM
 !
-      DO I=1,NPOIN2
 !
-!       ALREADY DONE IN LIMI3D (AND ALL BOTTOM POINTS ARE KLOG IF NOT
-!                               MODIFIED BY USER IN BORD3D)
-!       ATABOF(I)=0.D0
-!       BTABOF(I)=0.D0
+      IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
 !
-        IF(LITABF(I).EQ.KLOG) THEN
+        DO I=1,NPOIN2
+          ATABOF(I)=0.D0
+          BTABOF(I)=0.D0
+          IF(LITABF(I).EQ.KLOG) THEN
+!           NO EROSION AND DEPOSITION ON TIDAL FLATS
+            IF(IPBOT%I(I).NE.NPLAN-1) THEN
+              ATABOF(I) = WC(I) * PDEPOT(I)  
+              BTABOF(I) = FLUER(I) 
+            ENDIF
+          ENDIF
+        ENDDO
 !
-!         COMPONENT ALONG Z OF THE OUTGOING NORMAL VECTOR
+      ELSE
 !
-!         NZ = 1.D0+GRADZFX(I)**2+GRADZFY(I)**2
-!         NZ = -1.D0/SQRT(NZ)
-!         WC
-!         ATABOF(I) = - WC(I) * PDEPOT(I) * NZ
-!         BTABOF(I) = - FLUER(I) * NZ
-!         JMH: BEWARE, IN DIFF3D NZ IS CONSIDERED AS -1. 
-!              HENCE WRONG FORMULA BELOW IS ACTUALLY CORRECT
-          ATABOF(I) = WC(I) * PDEPOT(I)  
-          BTABOF(I) = FLUER(I)  
+        DO I=1,NPOIN2
 !
-        ENDIF
+!         ALREADY DONE IN LIMI3D (AND ALL BOTTOM POINTS ARE KLOG IF NOT
+!                                 MODIFIED BY USER IN BORD3D, BUT WELL)
+          ATABOF(I)=0.D0
+          BTABOF(I)=0.D0
 !
-      ENDDO
+          IF(LITABF(I).EQ.KLOG) THEN
+!
+!           COMPONENT ALONG Z OF THE OUTGOING NORMAL VECTOR
+!
+!           NZ = 1.D0+GRADZFX(I)**2+GRADZFY(I)**2
+!           NZ = -1.D0/SQRT(NZ)
+!           WC
+!           ATABOF(I) = - WC(I) * PDEPOT(I) * NZ
+!           BTABOF(I) = - FLUER(I) * NZ
+!           JMH: BEWARE!!!!!!, IN DIFF3D NZ IS CONSIDERED AS -1. 
+!                HENCE WRONG FORMULA BELOW IS ACTUALLY CORRECT
+!
+            ATABOF(I) = WC(I) * PDEPOT(I)  
+            BTABOF(I) = FLUER(I) 
+!
+          ENDIF
+!
+        ENDDO
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

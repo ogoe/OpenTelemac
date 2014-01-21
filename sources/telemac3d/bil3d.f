@@ -5,7 +5,7 @@
      &(LT,IKLBORL,NPTFR,NETAG,NELEM)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE RELATIVE BALANCE OF THE MASSES OF
@@ -46,6 +46,12 @@
 !+        V6P2
 !+   Values of tracers in rain taken into account.
 !
+!history  C. VILLARET (HR-WALLINGFORD) & J-M HERVOUET (EDF LAB, LNHE)
+!+        20/01/2014
+!+        V7P0
+!+   The fact that the bottom value may not be on the bottom (depending
+!+   on IPBOT) if(SIGMAG.OR.OPTBAN.EQ.1) is taken into account.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLBORL        |-->| CONNECTIVITY TABLE OF LATERAL BOUNDARIES
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -72,7 +78,7 @@
 !
       DOUBLE PRECISION FLUTOT,SUR12,A1,A2,FLURAIN,D,Z_1,Z_2,REALRAIN
 !
-      INTEGER I,L1,L2,L3,L4,N1,N2,N3,N4,IVBIL,ILIQ,IELEB
+      INTEGER I,L1,L2,L3,L4,N1,N2,N3,N4,IVBIL,ILIQ,IELEB,NP
       INTEGER IPTFR,IETAGE,ITRAC
 !                            25=MAXTRA+5
       DOUBLE PRECISION FLUDI(25),FLUS1(25),FLUXTOTAL
@@ -193,11 +199,26 @@
 !
             IF(ATABOF%ADR(ITRAC)%P%TYPR.NE.'0') THEN
 !             WITH MASS-LUMPING LIKE IN DIFF3D
-              DO I=1,NPOIN2
-                FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
-     &          + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
-     &                                    *TA%ADR(ITRAC)%P%R(I)
-              ENDDO
+!             CORRECTION CV+JMH 28/10/2013  SEE ALSO DIFF3D
+              IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
+!               HERE ATABOF TAKEN INTO ACCOUNT ALSO ON TIDAL FLATS
+!               FOR THE CASE OF VELOCITIES. IN OTHER CASES (E.G. SETTLING
+!               VELOCITY) ATABOF SHOULD BE CANCELLED WHEN BUILT)
+                DO I=1,NPOIN2
+!                 TRACER AT ACTUAL BOTTOM PLANE TAKEN INTO ACCOUNT, HENCE IPBOT IN
+!                 ADDRESS OF TA.
+ 	          FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
+     &             + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
+!                                     HERE NOT I !!!!!!!!
+     &             *TA%ADR(ITRAC)%P%R(IPBOT%I(I)*NPOIN2+I)
+                ENDDO
+              ELSE
+                DO I=1,NPOIN2
+                  FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
+     &            + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
+     &                               *TA%ADR(ITRAC)%P%R(I)
+                ENDDO
+              ENDIF
             ENDIF
 !
             IF(ATABOS%ADR(ITRAC)%P%TYPR.NE.'0') THEN
@@ -375,7 +396,7 @@
 603   FORMAT(  'BILAN PLUIE-EVAPORATION                       : ',G16.7)
 604   FORMAT(  'BALANCE RAIN-EVAPORATION                      : ',G16.7)
 !
-611   FORMAT(/,'  SEDIMENT ',
+611   FORMAT(/,'  SEDIMENT EN SUSPENSION ',
      &       /,'FLUX CONVECTIF A TRAVERS LES BORDS            : ',G16.7,
      &       /,'FLUX DIFFUSIF + DEPOT                         : ',G16.7,
      &       /,'MASSE AU PAS DE TEMPS PRECEDENT               : ',G16.7,
@@ -383,7 +404,7 @@
      &       /,'MASSE SORTIE PAR LES LIMITES PENDANT CE TEMPS : ',G16.7,
      &       /,'ERREUR SUR LA MASSE AU COURS DU PAS DE TEMPS  : ',G16.7)
 !
-612   FORMAT(/,'  SEDIMENT ',
+612   FORMAT(/,'  SEDIMENT IN SUSPENSION ',
      &       /,'ADVECTIVE FLUX THROUGH THE BOUNDARIES         : ',G16.7,
      &       /,'DIFFUSIVE FLUX + DEPOSITION                   : ',G16.7,
      &       /,'MASS AT THE PREVIOUS TIME STEP                : ',G16.7,
