@@ -503,8 +503,8 @@ def compilePRINCI(princiFile,codeName,cfgName,cfg,bypass):
    objCmd = getFileContent(objFile)[0]
    exeCmd = getFileContent(exeFile)[0]
    for k in cfg['TRACE']:
-      objCmd = objCmd.replace('['+k+']',path.realpath(cfg['TRACE'][k]))
-      exeCmd = exeCmd.replace('['+k+']',path.realpath(cfg['TRACE'][k]))
+      objCmd = objCmd.replace('['+k+']',path.normpath(cfg['TRACE'][k]))
+      exeCmd = exeCmd.replace('['+k+']',path.normpath(cfg['TRACE'][k]))
    # ~~<
    chdir(path.dirname(princiFile))
    princiFile = path.basename(princiFile)
@@ -889,8 +889,8 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          exeCmd = getFileContent(path.join(plib,CASFiles[name]['code']+'.cmdx'))[0]
          # ~~> Make the keys portable (no full path)
          for k in cfg['TRACE']:
-            objCmd = objCmd.replace('['+k+']',path.realpath(cfg['TRACE'][k]))
-            exeCmd = exeCmd.replace('['+k+']',path.realpath(cfg['TRACE'][k]))
+            objCmd = objCmd.replace('['+k+']',path.normpath(cfg['TRACE'][k]))
+            exeCmd = exeCmd.replace('['+k+']',path.normpath(cfg['TRACE'][k]))
          # >>> Compiling the executable if required
          exename = path.join(CASFiles[name]['wir'],'out_'+path.basename(useFile))
          CASFiles[name].update({ 'run':exename, 'exe':exename })

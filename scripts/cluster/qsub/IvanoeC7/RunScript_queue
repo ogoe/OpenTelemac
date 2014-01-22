@@ -173,6 +173,8 @@ if __name__ == "__main__":
       parser.print_help()
       sys.exit(1)
 
+   code = args[0]
+   case = args[1]
    
    create_run_slurm(options)
    if options.ok_submit:
