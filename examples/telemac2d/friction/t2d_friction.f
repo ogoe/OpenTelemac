@@ -852,23 +852,24 @@ C
 ! 2.Direct integration of the equation of gradually varied flow 
 ! Venutelli 2004          
 !                                                                         
-! ATTENTION, IL NE S'AGIT ICI QUE DE LA SOLUTION        
-! PERMANENTE, QUI EST TOUTEFOIS MISE DANS LE            
-! FICHIER DE RESULTATS A TOUS LES PAS DE TEMPS.         
+! WARNING: THIS IS THE STEADY STATE SOLUTION        
+!          HOWEVER IT IS ADDED AT EVERY TIME
+!          AND STOCKED IN THE OUTPUT FILE
 !                                                                         
 !-----------------------------------------------------------------------  
 !                             ARGUMENTS                                   
 ! .________________.____.______________________________________________.  
 ! |      NOM       |MODE|                   ROLE                       |  
 ! |________________|____|______________________________________________|  
-! |     H          |<-- |  HAUTEUR D'EAU.                              |    
+! |     H          |<-- |  WATER DEPTH                                 |    
 ! |     X          | -->|  ABSCISSAE                                   |
-! |   NPOIN        | -->|  POINTS DU MAILLAGE                          |   
+! |   NPOIN        | -->|  NUMBER OF MESH POINTS                       |   
 ! |________________|____|______________________________________________|  
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)   
 !**********************************************************************   
 !                                                                         
-      IMPLICIT NONE                                                       
+      IMPLICIT NONE   
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU                                    
 !
       INTEGER I,J,NPOIN
       INTEGER, PARAMETER :: ITMAX = 4000
@@ -876,8 +877,10 @@ C
       DOUBLE PRECISION, PARAMETER :: UNT=1.D0/3.D0
       DOUBLE PRECISION, PARAMETER :: UNDIX=1.D0/10.D0
       DOUBLE PRECISION, PARAMETER :: UNQ=1.D0/4.D0
-      DOUBLE PRECISION, PARAMETER :: S=1.853658536585365*1.D-5
-      DOUBLE PRECISION, PARAMETER :: N=0.0143D0
+      DOUBLE PRECISION, PARAMETER :: S=1.8536585365*1.D-5
+      DOUBLE PRECISION, PARAMETER :: N=0.0143D0,DOMAIN_L=410000.D0
+      DOUBLE PRECISION, PARAMETER :: YOUT_INI=11.6D0
+      DOUBLE PRECISION, PARAMETER :: EPSIL = 1.D-5
       DOUBLE PRECISION Q,YC,YN,YOUT,XOUT,DY,ETA,ETAC,ETAT
       DOUBLE PRECISION ALFA1,ALFA2,BETA1,BETA2
       DOUBLE PRECISION F1,F2,F3,F4,Z1,Z2,Z3,Z4
@@ -887,41 +890,47 @@ C
 !                                                                         
       INTRINSIC SQRT,ABS,LOG,ATAN                                                                                                 
 !
-! VARIABLES: S -> PENTE; N -> COEFFICIENT DE MANNING                                                                          
+! VARIABLES: S -> BED SLOPE; N -> COEFFICIENT OF MANNING                                                                          
 !----------------------------------------------------------------------- 
 !
-! INITIALISE X ET YIN--->Riadh
+! INITIALIZE X ET YIN
 !
       DO I=1,ITMAX
         XIN(I)=1.D10
         YIN(I)=0.D0
       ENDDO
 !
-! DEBIT SCALAIRE (m2/s) DANS LE CANAL
+! SCALAR FLOWRATE (m2/s) IN THE FLUME
 !
       Q=6000.D0/450.D0
 !
-! HAUTEUR CRITIQUE
+! CRITICAL WATER DEPTH
 ! 
       YC=(Q**2/9.81D0)**UNT
 !
-! HAUTEUR REGIME UNIFORME
+! WATER DEPTH FOR UNIFORM REGIME
 !
       YN=((Q*N)/SQRT(S))**(3.D0/5.D0)
 !
-! REGIME FLUVIALE: LE POINT DE DEPART POUR LE DESSIN DU PROFIL EST L'AVAL
+! SUBCRITICAL REGIME: WE START COMPUTATION FROM DOWNSTREAM
 !
-! HAUTEUR ET X(LONGUEUR DU CANAL) A LA SORTIE SONT DONNEES
+! WATER DEPTH AND X(FLUME LENGTH) AT THE OUTLET (GIVEN DATA)
 !
-      YOUT = 11.6D0 
-      XOUT = 410000.0D0 
+      YOUT = YOUT_INI
+      XOUT = DOMAIN_L 
 !
-! INCREMENT HAUTEUR D'EAU
+! INCREMENT OF WATER DEPTH
 !
       DY = 0.0008D0
       ETAC=YC/YN
       YIN(1)=YOUT
       XIN(1)=XOUT
+! ALPHAs AND BETAs
+      ALFA1=UNDIX*SQRT(0.5D0*(5.D0+SQRT(5.D0)))
+      ALFA2=UNDIX*SQRT(0.5D0*(5.D0-SQRT(5.D0)))
+!
+      BETA1=1.D0-SQRT(5.D0)
+      BETA2=1.D0+SQRT(5.D0)
 !
       DO 10 I=2,ITMAX
 !
@@ -929,23 +938,17 @@ C
          ETA=YIN(I)/YN
          ETAT=YOUT/YN
 !
-         ALFA1=UNDIX*SQRT(0.5D0*(5.D0+SQRT(5.D0)))
-         ALFA2=UNDIX*SQRT(0.5D0*(5.D0-SQRT(5.D0)))
-!
-         BETA1=1.D0-SQRT(5.D0)
-         BETA2=1.D0+SQRT(5.D0)
-!
          F1=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETA**UNT-UNQ*BETA2)
          F4=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETA**UNT+UNQ*BETA2)
 !
          F2=2.D0*SQRT(2.D0/(5.D0+SQRT(5.D0)))*(ETA**UNT+UNQ*BETA1)
          F3=2.D0*SQRT(2.D0/(5.D0+SQRT(5.D0)))*(ETA**UNT-UNQ*BETA1)
 !
-         Z1=1.D0+0.5*BETA2*ETA**UNT+ETA**(2.D0/3.D0)
-         Z4=1.D0-0.5*BETA2*ETA**UNT+ETA**(2.D0/3.D0)
+         Z1=1.D0+0.5D0*BETA2*ETA**UNT+ETA**(2.D0/3.D0)
+         Z4=1.D0-0.5D0*BETA2*ETA**UNT+ETA**(2.D0/3.D0)
 !
-         Z2=1.D0-0.5*BETA1*ETA**UNT+ETA**(2.D0/3.D0)
-         Z3=1.D0+0.5*BETA1*ETA**UNT+ETA**(2.D0/3.D0)
+         Z2=1.D0-0.5D0*BETA1*ETA**UNT+ETA**(2.D0/3.D0)
+         Z3=1.D0+0.5D0*BETA1*ETA**UNT+ETA**(2.D0/3.D0)
 !
          F1T=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETAT**UNT-UNQ*BETA2)
          F4T=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETAT**UNT+UNQ*BETA2)
@@ -953,11 +956,11 @@ C
          F2T=2.D0*SQRT(2.D0/(5.D0+SQRT(5.D0)))*(ETAT**UNT+UNQ*BETA1)
          F3T=2.D0*SQRT(2.D0/(5.D0+SQRT(5.D0)))*(ETAT**UNT-UNQ*BETA1)
 !
-         Z1T=1.D0+0.5*BETA2*ETAT**UNT+ETAT**(2.D0/3.D0)
-         Z4T=1.D0-0.5*BETA2*ETAT**UNT+ETAT**(2.D0/3.D0)
+         Z1T=1.D0+0.5D0*BETA2*ETAT**UNT+ETAT**(2.D0/3.D0)
+         Z4T=1.D0-0.5D0*BETA2*ETAT**UNT+ETAT**(2.D0/3.D0)
 !
-         Z2T=1.D0-0.5*BETA1*ETAT**UNT+ETAT**(2.D0/3.D0)
-         Z3T=1.D0+0.5*BETA1*ETAT**UNT+ETAT**(2.D0/3.D0)
+         Z2T=1.D0-0.5D0*BETA1*ETAT**UNT+ETAT**(2.D0/3.D0)
+         Z3T=1.D0+0.5D0*BETA1*ETAT**UNT+ETAT**(2.D0/3.D0)
 !
          F=ALFA1*(ATAN(F1)+ATAN(F4))-ALFA2*(ATAN(F2)+ATAN(F3))+
      &     (1.D0/40.D0)*(BETA1*(LOG(ABS(Z1))-LOG(ABS(Z4)))-
@@ -979,26 +982,44 @@ C
      &     +BETA1*(LOG(ABS(Z2T))+LOG(ABS(Z3T))))
      &     -UNDIX*(LOG(ABS(ETAT**UNT-1.D0))-LOG(ABS(ETAT**UNT+1.D0)))
 !
-         GAMMA=ETA-ETAT+3.D0*(FT-F)+3.D0*ETAC**3.D0*(G-GT)
+         GAMMA=ETA-ETAT+3.D0*(FT-F)+3.D0*(ETAC**3)*(G-GT)
          XIN(I)=XOUT+(YN/S)*GAMMA
-         IF(XIN(I).LT.1.D-5) GO TO 10
+         IF(XIN(I).LT.EPSIL) GO TO 10
          XOUT=XIN(I)
          YOUT=YIN(I)
 !
 10    CONTINUE
 !
-! APPROXIMATION LINEAIRE SUR LES POINTS DU MAILLAGE
+! LINEAR APPROXIMATION FOR ALL MESH POINTS
 !
-      DO J=1,ITMAX-1
-!        -->Riadh
-         DO I=1,NPOIN
+      DO I=1,NPOIN
+!        FIRST OUTPUT POINTS
+         IF(ABS(X(I)-DOMAIN_L).LE.EPSIL)THEN
+            H(I)=YOUT_INI
+            CYCLE
+         ENDIF
+         DO J=1,ITMAX-1
+!       
             IF(X(I).LT.XIN(J).AND.X(I).GT.XIN(J+1))THEN
                DXIN=XIN(J)-XIN(J+1)
                H(I)=(1.D0/DXIN)*((XIN(J)-X(I))*YIN(J+1)+
-     &             (X(I)-XIN(J+1))*YIN(J))
+     &                           (X(I)-XIN(J+1))*YIN(J))
+            CYCLE
+!            DEBUG 
+               IF(H(I).LE.0.D0)THEN
+                WRITE(LU,*)'NEGATIVE H FOR I:',I
+                WRITE(LU,*)'H IS EQUAL :',H(I)
+                WRITE(LU,*),'BORDED BY: ', XIN(J),XIN(J+1)
+                CALL PLANTE(1)
+                STOP
+               ENDIF
             ENDIF
          ENDDO
       ENDDO 
+! DEBUG RIADH
+!      CALL PLANTE(1)
+!      STOP
+! END DEBUG
 !
 !-----------------------------------------------------------------------
 !
