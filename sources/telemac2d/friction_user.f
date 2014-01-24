@@ -30,10 +30,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        17/01/2014
+!+        24/01/2014
 !+        V7P0
 !+   Provisionnal version, with ZONES FILE, but this file has yet to be
-!+   treated in partel.
+!+   treated in partel. KNOGL replaced by GLOBAL_TO_LOCAL_POINT.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -81,12 +81,12 @@
 ! 
       DO I = 1,NPOIN_GLOB
          READ(NFILE,*,END=999,ERR=998) IVAL1, IVAL2
-         IF (NCSIZE.GT.1) THEN
-            K = MESH%KNOGL%I(I)
+         IF(NCSIZE.GT.1) THEN
+           K = GLOBAL_TO_LOCAL_POINT(I,MESH)
          ELSE
-            K = I
+           K = I
          ENDIF
-         KFROPT%I(K) = IVAL2
+         IF(K.GT.0) KFROPT%I(K) = IVAL2
       ENDDO
       GOTO 997
 !
