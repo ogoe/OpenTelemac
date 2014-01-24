@@ -39,6 +39,7 @@ C
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
+      INTEGER I
 C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C
@@ -62,11 +63,14 @@ C
 C-----------------------------------------------------------------------
 C CCV MODIFICATION DU FOND FRONTIERE 2
 C ++++++++++++++++++++++++++++++++++++
-      ZF%R(61) =460.5
-      ZF%R(323)=459.5
-      ZF%R(565)=459.5
-      ZF%R(363)=460.5
-  	
+      I = GLOBAL_TO_LOCAL_POINT(61, MESH)
+      IF(I.ne.0) ZF%R(I) =460.5
+      I = GLOBAL_TO_LOCAL_POINT(323, MESH)
+      IF(I.ne.0) ZF%R(323)=459.5
+      I = GLOBAL_TO_LOCAL_POINT(565, MESH)
+      IF(I.ne.0) ZF%R(565)=459.5
+      I = GLOBAL_TO_LOCAL_POINT(363, MESH)
+      IF(I.ne.0) ZF%R(363)=460.5
 C-----------------------------------------------------------------------
 C
       RETURN
