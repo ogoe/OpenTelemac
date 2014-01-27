@@ -7771,9 +7771,15 @@
               STOP
             ENDIF         
 !           ADDING THE DISPLACEMENT OF THE KNOWN PARTICLE
-            DX(NPLOT+1)=RECVCHAR(I)%DX
-            DY(NPLOT+1)=RECVCHAR(I)%DY
-            DZ(NPLOT+1)=RECVCHAR(I)%DZ
+            IF(PRESENT(DX)) THEN
+              DX(NPLOT+1)=RECVCHAR(I)%DX
+            ENDIF
+            IF(PRESENT(DY)) THEN
+              DY(NPLOT+1)=RECVCHAR(I)%DY
+            ENDIF
+            IF(PRESENT(DZ)) THEN
+              DZ(NPLOT+1)=RECVCHAR(I)%DZ
+            ENDIF
 !           ADDING A PARTICLE WITH ALREADY KNOWN POSITION        
             CALL ADD_PARTICLE(XVOID,YVOID,ZVOID,
      &                        RECVCHAR(I)%IOR,NPLOT,NPLOT_MAX,
@@ -7825,6 +7831,12 @@
 !+        14/02/2013
 !+        V6P3
 !+   Valentine day!
+!
+!history  C. GOEURY & J-M HERVOUET (EDF LAB, LNHE)
+!+        27/01/2014
+!+        V7P0
+!+   Z now allowed to be higher than the free surface.
+!+   Point then considered to be on the free surface.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELT            |-->| ELEMENT OF THE FLOAT (IF 0, THE POINT WILL BE
@@ -8066,10 +8078,15 @@
           IF(ETAFLO(NFLOT).EQ.0) THEN
             IF(LNG.EQ.1) WRITE(LU,37) TAG
             IF(LNG.EQ.2) WRITE(LU,38) TAG
-37          FORMAT('LARGAGE DU FLOTTEUR',I6,' AU DESSUS DE LA SURFACE')
-38          FORMAT('DROP POINT OF FLOAT',I6,' ABOVE FREE SURFACE')
-            CALL PLANTE(1)
-            STOP
+37          FORMAT('LARGAGE DU FLOTTEUR',I6,
+     &      ' AU DESSUS DE LA SURFACE',/,
+     &      'IL EST REMIS A LA SURFACE.')
+38          FORMAT('DROP POINT OF FLOAT',I6,
+     &      ' ABOVE FREE SURFACE',/,
+     &      'IT IS PUT BACK ON THE FREE SURFACE.')
+            ETAFLO(NFLOT) = NPLAN-1
+            SHZFLO(NFLOT) = 1.D0
+            ZFLOT(NFLOT)  = ZS
           ENDIF
         ENDIF
 !
