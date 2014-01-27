@@ -6,7 +6,7 @@
      & NELEM2,NELMAX2,NPOIN2,NPLAN,NETAGE,NPTFR)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    CASE OF PRISMS SPLIT IN TETRAHEDRONS.
@@ -38,7 +38,15 @@
 !+        12/08/2011
 !+        V6P2
 !+   Arguments NELEB and NELEBX added.
-!+
+!
+!history  J-M HERVOUET(EDF LAB, LNHE)
+!+        27/01/2014
+!+        V7P0
+!+   In parallel, boundary elements that correspond to another subdomain
+!+   are given a IKLBOR that reduces the element to a point.
+!+   The previous version had IKLBOR = 0 which causes a crash when
+!+   checking bounds. 
+!
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLBOR         |<--| CONNECTIVITY TABLE FOR BOUNDARY ELEMENTS
@@ -224,9 +232,15 @@
             DO K=1,2
 !             THE ELEMENT IS OUTSIDE THIS DOMAIN
               NELBOR(IPTFR,K,IETAGE)   = 0
-              IKLBOR(IPTFR,K,IETAGE,1) = 0
-              IKLBOR(IPTFR,K,IETAGE,2) = 0
-              IKLBOR(IPTFR,K,IETAGE,3) = 0
+!             WE GIVE HERE A FALSE ELEMENT
+!             WITH 3 TIMES THE SAME EXISTING POINT
+!             THE INTEGRALS COMPUTED WILL GIVE 0
+!             SO NO CONTRIBUTION WILL BE ADDED TO THIS POINT
+!             BY ROUTINES LIKE ASSVE1
+!             GIVING IKLBOR=0 WOULD NEED CHECKING IN ASSVE1...
+              IKLBOR(IPTFR,K,IETAGE,1) = IPTFR  + (IETAGE-1)*NPTFR
+              IKLBOR(IPTFR,K,IETAGE,2) = IPTFR  + (IETAGE-1)*NPTFR
+              IKLBOR(IPTFR,K,IETAGE,3) = IPTFR  + (IETAGE-1)*NPTFR
               NULONE(IPTFR,K,IETAGE,1) = 0
               NULONE(IPTFR,K,IETAGE,2) = 0
               NULONE(IPTFR,K,IETAGE,3) = 0
