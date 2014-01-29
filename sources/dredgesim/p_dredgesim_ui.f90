@@ -2039,8 +2039,7 @@ CONTAINS
      node_sediment_fraction, get_nof_nodes
 
     use bief, ONLY : bief_obj
-    !
-    INTEGER :: NSICLA, NPOIN
+!
     !! current timestep in seconds
     INTEGER :: ipoin, isicla, NSICLA, NPOIN
     REAL (KIND=Double) , INTENT(IN) :: timestep_in_sec ! 
