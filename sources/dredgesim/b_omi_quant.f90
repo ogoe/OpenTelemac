@@ -1342,7 +1342,7 @@ CONTAINS
     CHARACTER (LEN=22) , PARAMETER :: c_upname='set_omi_quant_code_1_0' ! 
     !! Hilfsvariable
     CHARACTER (LEN=10) :: ch        ! 
-    INTEGER            :: nq, i, jc ! 
+    INTEGER            :: nq, i     ! 
     !
     nq = get_max_omi_quant( code )
     IF ( nq /= SIZE(this) ) THEN
@@ -1987,7 +1987,6 @@ CONTAINS
     !! Name der Programmeinheit
     CHARACTER (LEN=22) , PARAMETER   :: c_upname='get_omi_bot_quant_id_0' ! 
     !! Hilfsvariablen
-    CHARACTER (LEN=5)                :: ch                 ! 
     TYPE (t_omi_quant) , ALLOCATABLE :: l_quant(:)         ! 
     INTEGER                          :: nq, code, code_bot ! 
     !

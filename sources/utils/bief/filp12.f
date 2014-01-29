@@ -64,13 +64,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      DO 10 I = 1 , NPOIN
+      DO I = 1 , NPOIN
 !
         IF(INPOLY(X(I),Y(I),XSOM,YSOM,NSOM)) F(I) = C
 !
-10    CONTINUE
+      ENDDO ! I 
 !
-      DO 20 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         I1 = IKLE(IELEM,1)
         I2 = IKLE(IELEM,2)
@@ -79,7 +79,7 @@
         YY = 0.3333333333D0 * ( Y(I1)+Y(I2)+Y(I3) )
         IF(INPOLY(XX,YY,XSOM,YSOM,NSOM)) F(IELEM+NPOIN) = C
 !
-20    CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

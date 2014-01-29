@@ -86,7 +86,7 @@
 !
 2     LB = L(ES)
       BLPMAX = LAST(ES)
-      DO 3 BLP=1,BLPMAX
+      DO BLP=1,BLPMAX
         B = LB
         LB = L(B)
         VB = V(B)
@@ -94,11 +94,11 @@
 !----------IF VB IS UNTAGGED VERTEX, THEN TAGS AND APPENDS TO LIST OF
 !----------UNELIMINATED NEIGHBOURS
 !
-        IF(MARK(VB).GE.TAG)  GO TO 3
+        IF(MARK(VB).GE.TAG) CYCLE
         MARK(VB) = TAG
         L(TAIL) = B
         TAIL = B
-3     CONTINUE
+      ENDDO ! BLP
 !
 !--------MARKS ES INACTIVE
 !

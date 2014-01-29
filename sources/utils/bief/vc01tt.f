@@ -99,7 +99,7 @@
 !
          XSUR120 = XMUL / 120.D0
 !
-         DO 3 IELEM = 1 , NELEM
+         DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -132,7 +132,7 @@
            W3(IELEM) = COEF * (F1234+F3)
            W4(IELEM) = COEF * (F1234+F4)
 !
-3        CONTINUE
+         ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -145,7 +145,7 @@
 !
          XSUR120 = XMUL / 120.D0
 !
-         DO 4 IELEM = 1 , NELEM
+         DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -181,7 +181,7 @@
            W3(IELEM) = COEF * (F1234+F3)
            W4(IELEM) = COEF * (F1234+F4)
 !
-4        CONTINUE
+         ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
       ELSE

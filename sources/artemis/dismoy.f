@@ -72,11 +72,11 @@
 !     -----------------------------------------------------------
 !
       SOMD = 0.D0
-      DO 300 NG=1,NPOIN
+      DO NG=1,NPOIN
          ISOM = 0
          SOM = 0.D0
 !
-         DO 250 IELEM=1,NELEM
+         DO IELEM=1,NELEM
 !
             IF (IKLE(IELEM,1).EQ.NG) THEN
 !           --                       ---
@@ -114,12 +114,12 @@
             ENDIF
 !           -----
 !
- 250     CONTINUE
+         ENDDO ! IELEM
 !
          DMOY = SOM / FLOAT(ISOM)
          SOMD = SOMD + (PI / (K(NG)*DMOY))
 !
- 300  CONTINUE
+      ENDDO ! NG
 !
 !     ESTIMATES THE NUMBER OF SMOOTHINGS FROM THE AVERAGE DISTANCE
 !     -------------------------------------------------------------------

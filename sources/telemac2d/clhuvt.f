@@ -113,15 +113,15 @@
 !
 !     LOOPS ON THE HYDRAULIC STRUCTURES
 !
-      DO 10 N=1,NWEIRS
+      DO N=1,NWEIRS
 !
 !       LOOPS ON THE CRESTS OF THE HYDRAULIC STRUCTURES
 !
-        DO 20 K=1,2
+        DO K=1,2
 !
 !         LOOPS ON THE NODES OF EACH CREST
 !
-          DO 30 I=1,NPSING%I(N)
+          DO I=1,NPSING%I(N)
 !
           IF(K.EQ.1) THEN
             I1=NDGA1%ADR(N)%P%I(I)
@@ -267,15 +267,15 @@
 !
           ENDIF
 !
-30    CONTINUE
-20    CONTINUE
+      ENDDO ! I
+      ENDDO ! K
 !
 !
 !-----------------------------------------------------------------------
 !
 !  TYPES OF CONDITIONS FOR THE DEPTH AND THE VELOCITY:
 !
-      DO 40 I=1,NPSING%I(N)
+      DO I=1,NPSING%I(N)
 !
         I1=NDGA1%ADR(N)%P%I(I)
         IF(I1.GT.0) THEN
@@ -367,13 +367,13 @@
           ENDIF
         ENDIF
 !
-40    CONTINUE
+      ENDDO ! I
 !
 !-----------------------------------------------------------------------
 !
 ! END OF THE LOOP ON THE CREST
 !
-10    CONTINUE
+      ENDDO ! N
 !
 !-----------------------------------------------------------------------
 !

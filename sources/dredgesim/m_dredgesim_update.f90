@@ -181,8 +181,8 @@ CONTAINS
     DO n=1,get_nof_dredge_poly( )
        crit_type = get_criterion_crit_type( dredge_criterion(n) )
        IF (crit_type == 3) THEN
-       	  CALL interpolate_ref_surface_level ( )
-       	  EXIT
+          CALL interpolate_ref_surface_level ( )
+          EXIT
        END IF
     END DO
     !
@@ -248,14 +248,14 @@ CONTAINS
     IF (ALLOCATED(node_fraction_volume_rs        )) node_fraction_volume_rs         = 0.0_Double
     !
     IF (ALLOCATED(initial_time_to_observe)) THEN
-    	DO n=1,get_nof_dredge_poly( )
-    	   IF (initial_time_to_observe(n) < initial_time) THEN
-    	      time_to_observe(n) = initial_time
-    	      initial_time_to_observe(n) = initial_time
-    	   ELSE
-    	      time_to_observe(n) = initial_time_to_observe(n)
-    	   END IF
-    	END DO
+        DO n=1,get_nof_dredge_poly( )
+           IF (initial_time_to_observe(n) < initial_time) THEN
+              time_to_observe(n) = initial_time
+              initial_time_to_observe(n) = initial_time
+           ELSE
+              time_to_observe(n) = initial_time_to_observe(n)
+           END IF
+        END DO
     END IF    
     !
     
@@ -266,10 +266,10 @@ CONTAINS
              IF (dispose_poly_name(k,n)=='not_defined') THEN
                 EXIT
              ELSE IF (dispose_poly_name(k,n)==list_of_disp_polys(i)) THEN
-             	EXIT
+                EXIT
              ELSE IF (list_of_disp_polys(i)=='no_definition') THEN
-             	list_of_disp_polys(i)=dispose_poly_name(k,n)
-             	EXIT
+                list_of_disp_polys(i)=dispose_poly_name(k,n)
+                EXIT
              END IF
           END DO
        END DO
@@ -281,7 +281,7 @@ CONTAINS
     !! read data from the restart file 
     IF (restart) CALL read_restart_data ( )
     IF (PTINIG_ds > 0) THEN
-    	output_time_restart=PTINIG_ds*time_to_real_seconds(act_timestep)*1.0_Double
+        output_time_restart=PTINIG_ds*time_to_real_seconds(act_timestep)*1.0_Double
     END IF
   END SUBROUTINE update_dredgesim_prepare_d
   !
@@ -338,8 +338,8 @@ CONTAINS
     ! declarations
     TYPE (t_file) :: l_file
     ! parameters for reading a data file
-    INTEGER :: unit, nof_section, status, i, ierror
-    CHARACTER(LEN=100) :: filename
+    INTEGER :: unit, nof_section, status, i
+    CHARACTER(LEN=240) :: filename
     REAL(KIND=Double), ALLOCATABLE :: xle(:), yle(:), zle(:), xri(:), yri(:), zri(:)
     ! parameters for interpolation methods
     INTEGER :: ns, ne, nv, np
@@ -373,7 +373,7 @@ CONTAINS
     readloop: DO
               READ(unit, *, IOSTAT=status)
               IF (status/=0) EXIT
-	          i=i+1
+                  i=i+1
               nof_section=i
               END DO readloop 
               CLOSE (unit)
@@ -485,11 +485,11 @@ CONTAINS
              a3 = (node_coord(ip,1)-xm(n2))*(ym(n1)-ym(n2))&
                 - (node_coord(ip,2)-ym(n2))*(xm(n1)-xm(n2))
              IF ((a1.ge.0.).and.(a2.ge.0.).and.(a3.ge.0.)) THEN
-		        elem(ip) = ie
-			    EXIT
-		     END IF
+                elem(ip) = ie
+                EXIT
+             END IF
           ELSE
-		     a1 = (node_coord(ip,1)-xm(n2))*(ym(n1)-ym(n2))&
+                     a1 = (node_coord(ip,1)-xm(n2))*(ym(n1)-ym(n2))&
                 - (node_coord(ip,2)-ym(n2))*(xm(n1)-xm(n2))
              a2 = (node_coord(ip,1)-xm(n3))*(ym(n2)-ym(n3))&
                 - (node_coord(ip,2)-ym(n3))*(xm(n2)-xm(n3))
@@ -500,7 +500,7 @@ CONTAINS
              IF ((a1.ge.0.).and.(a2.ge.0.).and. (a3.ge.0.).and.(a4.ge.0)) THEN
                 elem(ip) = ie
                 EXIT
-		     END IF 
+             END IF 
           END IF
        END DO     
     END DO
@@ -521,21 +521,21 @@ CONTAINS
           t22=-ym(i1)+ym(i2)
           t23=-ym(i1)+ym(i4)
           t24= ym(i1)-ym(i2)+ym(i3)-ym(i4)
-	       !
-	       det = t12*t23-t22*t13
+          !
+          det = t12*t23-t22*t13
 
-	      !
-	      IF (det<epsdet) PRINT*, 'QUADINT: element ',elem(ip), ' determinant < ',epsdet
-	         !
-	         surdet = 1.0_Double/det
+          !
+          IF (det<epsdet) PRINT*, 'QUADINT: element ',elem(ip), ' determinant < ',epsdet
             !
-	         ff     = ( t14*t23-t13*t24 ) * surdet
+            surdet = 1.0_Double/det
+            !
+            ff     = ( t14*t23-t13*t24 ) * surdet
             ffprim = ( t12*t24-t14*t22 ) * surdet
             !
             xprim = ( t23*(node_coord(ip,1)-xm(i1))-t13*(node_coord(ip,2)-ym(i1)) )*surdet
             yprim = (-t22*(node_coord(ip,1)-xm(i1))+t12*(node_coord(ip,2)-ym(i1)) )*surdet
-	         !
-	         IF (ABS(ff*ffprim).lt.epsff) THEN
+            !
+            IF (ABS(ff*ffprim).lt.epsff) THEN
                xisopa=xprim/(1.0_Double + ff     * yprim)
                yisopa=yprim/(1.0_Double + ffprim * xprim)
             ELSE
@@ -543,16 +543,16 @@ CONTAINS
                xisopa=(-(1.0_Double-ffprim*xprim+ff*yprim)+delta)/(ffprim+ffprim)
                yisopa=(-(1.0_Double+ffprim*xprim-ff*yprim)+delta)/(ff+ff)
             END IF
-	         !
+            !
 
-	        shp(elem(ip),1) = ( 1.0_Double-xisopa ) * ( 1.0_Double-yisopa )
-           shp(elem(ip),2) =              xisopa   * ( 1.0_Double-yisopa )
-           shp(elem(ip),3) =              xisopa   *              yisopa
-           shp(elem(ip),4) = ( 1.0_Double-xisopa ) *              yisopa 
-	        !
-	        ! taken from "INTERPOLATE"
-	        zs(ip,1) = SUM(shp(elem(ip),:)*zm(ikle(elem(ip),:)))
-	        zs(ip,2) = km(elem(ip))
+            shp(elem(ip),1) = ( 1.0_Double-xisopa ) * ( 1.0_Double-yisopa )
+            shp(elem(ip),2) =              xisopa   * ( 1.0_Double-yisopa )
+            shp(elem(ip),3) =              xisopa   *              yisopa
+            shp(elem(ip),4) = ( 1.0_Double-xisopa ) *              yisopa 
+            !
+            ! taken from "INTERPOLATE"
+            zs(ip,1) = SUM(shp(elem(ip),:)*zm(ikle(elem(ip),:)))
+            zs(ip,2) = km(elem(ip))
             !LEODEBUG Simple warning if ZS is equal to zero -> this means that the interpolation fails
             !since an element lies outside the bounding box
             IF (debug_ds > 0) THEN
@@ -621,10 +621,10 @@ CONTAINS
     ! declarations
     TYPE (t_file) :: l_file
     ! parameters for reading a data file
-    INTEGER :: unit, status, ierror
-    CHARACTER(LEN=100) :: filename, identifier, name_1, name_2, name_3, name_4
+    INTEGER :: unit, status
+    CHARACTER(LEN=240) :: filename, identifier, name_1, name_2, name_3, name_4
     INTEGER :: node_no, i, k, n
-    REAL(KIND=Double) :: double_1, double_2, double_3
+    REAL(KIND=Double) :: double_1, double_2
     ! getting the input file
     l_file = get_io_info_file(input_files(3))  
     ! setting file unit and name
@@ -656,12 +656,12 @@ CONTAINS
                           IF(NCSIZE .GT. 1) THEN
                             IF(node_no==knolg(i)) THEN
                                delta_dredge_node_depth(i,n)=double_1   
-                       	       aim_node_depth(i,n)=double_2
-                       	     END IF
+                               aim_node_depth(i,n)=double_2
+                             END IF
                           ELSE
                              IF(node_no==i) THEN
                                delta_dredge_node_depth(i,n)=double_1   
-                       	       aim_node_depth(i,n)=double_2
+                               aim_node_depth(i,n)=double_2
                              END IF
                           END IF
                        END DO
@@ -675,16 +675,16 @@ CONTAINS
                           IF(NCSIZE .GT. 1) THEN
                             IF(node_no==knolg(i)) THEN
                                node_sediment_volume_rs(i,n)=double_1   
-                       	       DO k=1,get_nof_sediment_fraction( )
-                       	          IF(fraction_name(k)==name_2) node_fraction_volume_rs(i,k,n)=double_2
-                       	       END DO
+                               DO k=1,get_nof_sediment_fraction( )
+                                  IF(fraction_name(k)==name_2) node_fraction_volume_rs(i,k,n)=double_2
+                               END DO
                              END IF
                           ELSE
                              IF(node_no==i) THEN
                                node_sediment_volume_rs(i,n)=double_1   
-                       	       DO k=1,get_nof_sediment_fraction( )
-                       	          IF(fraction_name(k)==name_2) node_fraction_volume_rs(i,k,n)=double_2
-                       	       END DO
+                               DO k=1,get_nof_sediment_fraction( )
+                                  IF(fraction_name(k)==name_2) node_fraction_volume_rs(i,k,n)=double_2
+                               END DO
                              END IF
                           END IF
                        END DO
@@ -717,12 +717,12 @@ CONTAINS
                                 IF(NCSIZE .GT. 1) THEN
                                    IF(node_no==knolg(i)) THEN
                                      delta_disp_node_depth(i,n,k)=double_1   
-                       	             disp_node_depth(i,n,k)=double_2
+                                     disp_node_depth(i,n,k)=double_2
                                    END IF
                                 ELSE
                                    IF(node_no==i) THEN
                                      delta_disp_node_depth(i,n,k)=double_1   
-                       	             disp_node_depth(i,n,k)=double_2
+                                     disp_node_depth(i,n,k)=double_2
                                    END IF
                                 END IF
                              END DO
@@ -738,8 +738,8 @@ CONTAINS
                           IF (TRIM(name_1)==TRIM(dispose_poly_name(k,n))) THEN
                              dredged_sediment_volume_to_disp(n,k)=double_1   
                              DO i=1,get_nof_sediment_fraction( )
-                       	        IF(i==node_no) dredged_fraction_volume_to_disp(n,k,i)=double_2
-                       	     END DO
+                                IF(i==node_no) dredged_fraction_volume_to_disp(n,k,i)=double_2
+                             END DO
                           END IF
                        END DO
                     END IF

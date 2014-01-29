@@ -126,7 +126,7 @@
 !
 !        LOOP ON THE ELEMENTS
 !
-         DO 2 IELEM = 1,NELEM
+         DO IELEM = 1,NELEM
 !
             I1 = IKLE1(IELEM)
             I2 = IKLE2(IELEM)
@@ -229,7 +229,7 @@
      &               + PXFS * (HU3SI+HU3I3S)
      &               + PYFS * (HV3SI+HV3I3S)
 !
-2        CONTINUE
+         ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

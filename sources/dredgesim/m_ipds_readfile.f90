@@ -534,11 +534,11 @@ CONTAINS
     DO i = 1, SIZE(blockname)
        !
        IF ( n_block(i) == 1 ) THEN
-       	  IF (DEBUG_ds > 0) THEN 
+          IF (DEBUG_ds > 0) THEN 
              WRITE(*,'(A,I8,3A)') '   > Lese ',n_block(i),' Block   "',TRIM(blockname(i)),'" ...'
           END IF
        ELSE
-       	  IF (DEBUG_ds > 0) THEN
+          IF (DEBUG_ds > 0) THEN
              WRITE(*,'(A,I8,3A)') '   > Lese ',n_block(i),' Bloecke "',TRIM(blockname(i)),'" ...'
           END IF
        END IF
@@ -1014,7 +1014,7 @@ CONTAINS
     !! Ergebniswert: Anzahl unterschiedlicher physikalischer Groessen
     INTEGER :: n_phy_in_block
     !! Zaehler
-    INTEGER :: k, l, n_key
+    INTEGER :: k, n_key
     !
     n_phy_in_block = 0
     !

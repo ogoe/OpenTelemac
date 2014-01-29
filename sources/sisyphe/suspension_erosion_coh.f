@@ -34,7 +34,7 @@
 !history  C. VILLARET
 !+        22/08/2012
 !+        V6P2
-!+	  Added a number of improvements and modifications
+!+        Added a number of improvements and modifications
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP

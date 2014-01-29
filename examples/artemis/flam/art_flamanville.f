@@ -155,7 +155,7 @@ C
          CALL LIT(Z,TAB1,IB,BID,2,'I ',NCOW,BINCOW,ISTAT)
          NVAR=IB(1)
 C
-         DO 85 I=1,NVAR
+         DO I=1,NVAR
 C
             CALL LIT(Z,TAB1,IB,TTEXTE(I),32,'CH',NCOW,BINCOW,ISTAT)
 C
@@ -164,7 +164,7 @@ C
             IF (TTEXTE(I).EQ.'TETA_MOYEN      DEG             ')
      *          ID(2)=I
 C
- 85      CONTINUE
+         ENDDO
 C
 C        VARIABLES IPARAM ET IDATE
 C
@@ -207,16 +207,16 @@ C
 C        PAS DE TEMPS ET VARIABLES
 C
          IF(NPTH.GT.1) THEN
-           DO 111 I=1,(NPTH-1)*(NVAR+1)
+           DO I=1,(NPTH-1)*(NVAR+1)
              READ(NCOW)
- 111       CONTINUE
+           ENDDO
          ENDIF
 C
          CALL LIT(ATT,TAB1,IB,BID,1,'R4',NCOW,BINCOW,ISTAT)
 C
 C        VARIABLES D'INDICE NPTH
 C
-         DO 95 I=1,NVAR
+         DO I=1,NVAR
             IF (I.EQ.ID(1)) THEN
                CALL LIT(HSCOWA,TAB1,IB,BID,NP,'R4',NCOW,BINCOW,ISTAT)
             ELSEIF (I.EQ.ID(2)) THEN
@@ -224,7 +224,7 @@ C
             ELSE
                READ(NCOW)
             ENDIF
- 95      CONTINUE
+         ENDDO
 C
 C        IMPRESSIONS SUR LE LISTING
 C
@@ -242,9 +242,9 @@ C
 C        MODIFICATION DE LA VARIABLE DMARTE POUR ARTEMIS :
 C        CHANGEMENT DE REPERE ET D'UNITE
 C
-         DO 99 I=1,NP
+         DO I=1,NP
             DMCOWA(I) = 90.D0 - DMCOWA(I)
- 99      CONTINUE
+         ENDDO
 C
          IF (LNG.EQ.1) WRITE(LU,290) 
          IF (LNG.EQ.2) WRITE(LU,291)
@@ -400,7 +400,7 @@ C***********************************************************************
 C                                                                       
       IMPLICIT NONE                                                     
 C                                                                       
-      INTEGER NP,N,NPOIN,NPTFR,INUM,I,IFR                                   
+      INTEGER NP,N,NPOIN,NPTFR,INUM,I,IFR
       INTEGER, INTENT(IN) ::  NBOR(NPTFR)
 C                                                                       
       DOUBLE PRECISION X(NPOIN),Y(NPOIN),XRELV(NP),YRELV(NP),VRELV(NP)  
@@ -415,7 +415,7 @@ C-----------------------------------------------------------------------
 C                                                                       
 C  BOUCLE SUR LES POINTS DU MAILLAGE :                                  
 C                                                                       
-      DO 100 IFR = 1 , NPTFR                                              
+      DO IFR = 1 , NPTFR
 C
       I = NBOR(IFR)
 C                                                                       
@@ -439,88 +439,88 @@ C
       ZCADR4=0.D0                                                       
 C                                                                       
 C --------->  BOUCLE SUR LES POINTS RELEVES (IL Y EN A NP):             
-      DO 31 N=1,NP                                                      
-           DIFX = XRELV(N)-X(I)                                         
-           DIFY = YRELV(N)-Y(I)                                         
-           DIST = DIFX*DIFX + DIFY*DIFY                                 
+      DO N=1,NP                                                      
+        DIFX = XRELV(N)-X(I)                                         
+        DIFY = YRELV(N)-Y(I)                                         
+        DIST = DIFX*DIFX + DIFY*DIFY                                 
 C                                                                       
-             IF ( DIST.LT.1.D-6 ) DIST=1.D-6                            
+        IF ( DIST.LT.1.D-6 ) DIST=1.D-6                            
 C ->QUADRANT 1 :                                                        
-               IF( DIFX.LE.0.D0.AND.DIFY.LE.0.D0) THEN                  
-                 IF(DIST.LE.DIST1)THEN                                  
-                      X1=XRELV(N)                                       
-                      Y1=YRELV(N)                                       
-                      DIST1=DIST                                        
-                      ZCADR1=VRELV(N)                                   
-                      OK1 = .TRUE.                                      
-                 ENDIF                                                  
+          IF( DIFX.LE.0.D0.AND.DIFY.LE.0.D0) THEN                  
+            IF(DIST.LE.DIST1)THEN                                  
+              X1=XRELV(N)                                       
+              Y1=YRELV(N)                                       
+              DIST1=DIST                                        
+              ZCADR1=VRELV(N)                                   
+              OK1 = .TRUE.                                      
+            ENDIF                                                  
 C ->QUADRANT 2 :                                                        
-              ELSE IF( DIFX.GE.0.D0.AND.DIFY.LE.0.D0) THEN              
-                 IF(DIST.LE.DIST2)THEN                                  
-                      X2=XRELV(N)                                       
-                      Y2=YRELV(N)                                       
-                      DIST2=DIST                                        
-                      ZCADR2=VRELV(N)                                   
-                      OK2 = .TRUE.                                      
-                 ENDIF                                                  
+          ELSE IF( DIFX.GE.0.D0.AND.DIFY.LE.0.D0) THEN              
+             IF(DIST.LE.DIST2)THEN                                  
+               X2=XRELV(N)                                       
+               Y2=YRELV(N)                                       
+               DIST2=DIST                                        
+               ZCADR2=VRELV(N)                                   
+               OK2 = .TRUE.                                      
+             ENDIF                                                  
 C ->QUADRANT 3 :                                                        
-              ELSE IF( DIFX.GE.0.D0.AND.DIFY.GE.0.D0) THEN              
-                 IF(DIST.LE.DIST3)THEN                                  
-                      X3=XRELV(N)                                       
-                      Y3=YRELV(N)                                       
-                      DIST3=DIST                                        
-                      ZCADR3=VRELV(N)                                   
-                      OK3 = .TRUE.                                      
-                 ENDIF                                                  
+          ELSE IF( DIFX.GE.0.D0.AND.DIFY.GE.0.D0) THEN              
+             IF(DIST.LE.DIST3)THEN                                  
+               X3=XRELV(N)                                       
+               Y3=YRELV(N)                                       
+               DIST3=DIST                                        
+               ZCADR3=VRELV(N)                                   
+               OK3 = .TRUE.                                      
+             ENDIF                                                  
 C ->QUADRANT 4 :                                                        
-              ELSE IF( DIFX.LE.0.D0.AND.DIFY.GE.0.D0) THEN              
-                 IF(DIST.LE.DIST4)THEN                                  
-                      X4=XRELV(N)                                       
-                      Y4=YRELV(N)                                       
-                      DIST4=DIST                                        
-                      ZCADR4=VRELV(N)                                   
-                      OK4 = .TRUE.                                      
-                 ENDIF                                                  
-              ENDIF                                                     
- 31        CONTINUE                                                     
+          ELSE IF( DIFX.LE.0.D0.AND.DIFY.GE.0.D0) THEN              
+             IF(DIST.LE.DIST4)THEN                                  
+               X4=XRELV(N)                                       
+               Y4=YRELV(N)                                       
+               DIST4=DIST                                        
+               ZCADR4=VRELV(N)                                   
+               OK4 = .TRUE.                                      
+             ENDIF                                                  
+          ENDIF                                                     
+      ENDDO                                                     
 C                                                                       
 C --------->  FIN DE LA BOUCLE SUR LES POINTS RELEVES.                  
 C                                                                       
-         ZNUM = 0.D0                                                    
-         ZDEN = 0.D0                                                    
-         INUM = 0                                                       
-         IF(OK1) THEN                                                   
-          ZNUM = ZNUM + ZCADR1/DIST1                                    
-          ZDEN = ZDEN + 1.D0/DIST1                                      
-          INUM = INUM + 1                                               
-         ENDIF                                                          
-         IF(OK2) THEN                                                   
-          ZNUM = ZNUM + ZCADR2/DIST2                                    
-          ZDEN = ZDEN + 1.D0/DIST2                                      
-          INUM = INUM + 1                                               
-         ENDIF                                                          
-         IF(OK3) THEN                                                   
-          ZNUM = ZNUM + ZCADR3/DIST3                                    
-          ZDEN = ZDEN + 1.D0/DIST3                                      
-          INUM = INUM + 1                                               
-         ENDIF                                                          
-         IF(OK4) THEN                                                   
-          ZNUM = ZNUM + ZCADR4/DIST4                                    
-          ZDEN = ZDEN + 1.D0/DIST4                                      
-          INUM = INUM + 1                                               
-         ENDIF                                                          
+      ZNUM = 0.D0                                                    
+      ZDEN = 0.D0                                                    
+      INUM = 0                                                       
+      IF(OK1) THEN                                                   
+       ZNUM = ZNUM + ZCADR1/DIST1                                    
+       ZDEN = ZDEN + 1.D0/DIST1                                      
+       INUM = INUM + 1                                               
+      ENDIF                                                          
+      IF(OK2) THEN                                                   
+       ZNUM = ZNUM + ZCADR2/DIST2                                    
+       ZDEN = ZDEN + 1.D0/DIST2                                      
+       INUM = INUM + 1                                               
+      ENDIF                                                          
+      IF(OK3) THEN                                                   
+       ZNUM = ZNUM + ZCADR3/DIST3                                    
+       ZDEN = ZDEN + 1.D0/DIST3                                      
+       INUM = INUM + 1                                               
+      ENDIF                                                          
+      IF(OK4) THEN                                                   
+       ZNUM = ZNUM + ZCADR4/DIST4                                    
+       ZDEN = ZDEN + 1.D0/DIST4                                      
+       INUM = INUM + 1                                               
+      ENDIF                                                          
+C                                                                    
+      IF(INUM.NE.0) THEN                                             
+C        VARINT : VARIABLE AU POINT                                      
+         VARINT(I)=ZNUM/ZDEN 
+      ELSE
+         WRITE(*,*) 'INUM = ', INUM
+         WRITE(*,*) 'PAS DE POINT TROUVE POUR INTERPOLER '
+         WRITE(*,*) 'IGLB = ', I
+         VARINT(I) = 0.D0                                               
+      ENDIF                                                          
 C                                                                       
-         IF(INUM.NE.0) THEN                                             
-C           VARINT : VARIABLE AU POINT                                      
-            VARINT(I)=ZNUM/ZDEN                                               
-         ELSE
-            WRITE(*,*) 'INUM = ', INUM
-            WRITE(*,*) 'PAS DE POINT TROUVE POUR INTERPOLER '
-            WRITE(*,*) 'IGLB = ', I
-            VARINT(I) = 0.D0                                               
-         ENDIF                                                          
-C                                                                       
-100   CONTINUE                                                          
+      ENDDO                                                          
 C                                                                       
 C-----------------------------------------------------------------------
 C                                                                       

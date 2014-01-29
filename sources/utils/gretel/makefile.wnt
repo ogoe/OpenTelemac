@@ -15,6 +15,7 @@
 #--- Definitions pour PVM
 #
 #--- Definitions pour SYSTEME TELEMAC
+!include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
 VERSION    = V7P0
 
@@ -64,32 +65,23 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
 
 #------------------------ Liste des fichiers
 #
-#------- Sources Fortran
-
-SRCS_GRETEL= gretel_autop.f gretel_cpikle2.f gretel_read_dataset_elem.f gretel_read_dataset.f gretel_skip_header.f
-SRCS_GREDELPTS= gredelpts_autop.f gredelpts_read_dataset.f
-SRCS_GREDELSEG= gredelseg_autop.f gredelpts_read_dataset.f
-SRCS_GREDELMET= gredelmet_autop.f gredel_fdnrst.f
-SRCS_GREDELHYD= gredelhyd_autop.f
-
-#
 #------- Objets
 #
 TEMP = $(SRCS_GRETEL:.f=.obj)
 OBJS_GRETEL = $(TEMP:.F=.obj)
-TEMP = $(SRCS_GREDELPTS:.f=.obj)
-OBJS_GREDELPTS = $(TEMP:.F=.obj)
-TEMP = $(SRCS_GREDELSEG:.f=.obj)
-OBJS_GREDELSEG = $(TEMP:.F=.obj)
-TEMP = $(SRCS_GREDELMET:.f=.obj)
-OBJS_GREDELMET = $(TEMP:.F=.obj)
-TEMP = $(SRCS_GREDELHYD:.f=.obj)
-OBJS_GREDELHYD = $(TEMP:.F=.obj)
+TEMP1 = $(SRCS_GREDELPTS:.f=.obj)
+OBJS_GREDELPTS = $(TEMP1:.F=.obj)
+TEMP2 = $(SRCS_GREDELSEG:.f=.obj)
+OBJS_GREDELSEG = $(TEMP2:.F=.obj)
+TEMP3 = $(SRCS_GREDELMET:.f=.obj)
+OBJS_GREDELMET = $(TEMP3:.F=.obj)
+TEMP4 = $(SRCS_GREDELHYD:.f=.obj)
+OBJS_GREDELHYD = $(TEMP4:.F=.obj)
 #
 #------------------------ Cibles
 #
 #--- La librairie (non installée)
-all: $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD) 
+all: $(GRETEL)
 
 "$(LIBRARY)" : $(OBJS)
 	@echo  -
@@ -115,7 +107,7 @@ menage:  $(SRCS_GRETEL) $(SRCS_GREDELPTS) $(SRCS_GREDELSEG) $(SRCS_GREDELMET) $(
 	!@if EXIST *.exe del /q  *.exe
 
 #--- Installation de la librairie
-install: $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD)
+install: $(GRETEL)
 	@echo  -
 	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
 	@echo ---------------------Installe GRETEL et autres.

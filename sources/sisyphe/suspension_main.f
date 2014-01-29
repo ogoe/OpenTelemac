@@ -450,7 +450,7 @@
           ENDIF
           ELAY%R(I)=ELAY%R(I)+ES(I,J)
           ENDDO 
-         ENDDO	      
+         ENDDO      
        ENDIF
 !
       ! *********************************************************** !

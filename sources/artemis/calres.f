@@ -77,21 +77,21 @@ C     WE USE OMEGA
 ! PHASE OF THE POTENTIAL (IN RADIAN)
 !=======================================================================
 !
-      DO 10 I=1,NPOIN
+      DO I=1,NPOIN
          IF (T1%R(I).LT.ZERO) THEN
             PHAS%R(I) = 0.D0
          ELSE
             PHAS%R(I) = ATAN2( PHII%R(I),PHIR%R(I) )
          ENDIF
-10    CONTINUE
+      ENDDO
 !
 !=======================================================================
 ! FREE SURFACE ELEVATION
 !=======================================================================
       IF (COURANT) THEN
-          DO 20 I=1,NPOIN
+          DO I=1,NPOIN
              S%R(I) = -WR%R(I)/GRAV*PHII%R(I) + H%R(I) + ZF%R(I)
-20        ENDDO
+          ENDDO
       ELSE
           DO I=1,NPOIN
              S%R(I) = -OMEGA/GRAV*PHII%R(I) + H%R(I) + ZF%R(I)
@@ -119,4 +119,4 @@ C     WE USE OMEGA
 !=======================================================================
 !
       RETURN
-      END
+      END SUBROUTINE

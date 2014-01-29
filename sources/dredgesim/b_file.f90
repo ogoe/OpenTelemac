@@ -2380,7 +2380,7 @@ CONTAINS
     !! Objekt (Skalar)
     TYPE (t_file) , INTENT(IN) :: this !
     !! log.Wert, ob Datei geschlossen
-    LOGICAL :: unit_op, unit_cl
+    LOGICAL :: unit_cl
     !
     unit_cl = ( .NOT. unit_is_opened_0(this) )
     !

@@ -61,7 +61,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      DO 10 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         I1 = IKLE(IELEM,1)
         I2 = IKLE(IELEM,2)
@@ -70,7 +70,7 @@
      &      INPOLY(X(I2),Y(I2),XSOM,YSOM,NSOM) .AND.
      &      INPOLY(X(I3),Y(I3),XSOM,YSOM,NSOM) ) F(IELEM) = C
 !
-10    CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

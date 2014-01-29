@@ -114,7 +114,7 @@
 !
 !   LOOP ON THE BOUNDARY SIDES
 !
-         DO 1 IELEM = 1,NELEM
+         DO IELEM = 1,NELEM
 !
 !           GLOBAL NUMBERING OF THE SIDE VERTICES
 !
@@ -161,7 +161,7 @@
            A22(IELEM) = DET2 * (F123+F2+F2)
            A33(IELEM) = DET2 * (F123+F3+F3)
 !
-1        CONTINUE
+         ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -186,7 +186,7 @@
 !
 !     NOTE: ON A TRIANGULAR MESH IN PLANE (X, Y)
 !
-!     DO 1 IELEM = 1 , NELEM
+!     DO IELEM = 1 , NELEM
 !
 !     F1 = F(IKLE1(IELEM))
 !     F2 = F(IKLE2(IELEM))
@@ -211,7 +211,7 @@
 !     A22(IELEM) = DET2 * (F123+F2+F2)
 !     A33(IELEM) = DET2 * (F123+F3+F3)
 !
-!1     CONTINUE
+!      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

@@ -85,7 +85,7 @@
 ! IN ORDER NOT TO TAKE NODES IMPOSED IN PRIDIH INTO ACCOUNT,
 ! WHEN IT HAS NOT BEEN REQUESTED.
 !
-      DO 501 I=1,NPTFR
+      DO I=1,NPTFR
          LIDIR%I(I) = KSORT
 !        BEWARE: IT IS ASSUMED HERE THAT NPTFRX=NPTFR
          LIDIR%I(I+NPTFR) = KSORT
@@ -107,17 +107,17 @@
          APHI4B%R(I) = 0.D0
          BPHI4B%R(I) = 0.D0
          CPHI4B%R(I) = 0.D0
-         DPHI4B%R(I) = 0.D0	
+         DPHI4B%R(I) = 0.D0
          CGRX1B%R(I) = 0.D0
          CGRY1B%R(I) = 0.D0
          DGRX1B%R(I) = 0.D0
-         DGRY1B%R(I) = 0.D0	
+         DGRY1B%R(I) = 0.D0
 
- 501  CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
-      DO 1001 I=1,NPTFR
+      DO I=1,NPTFR
 !
 !        ********************************
 !        GLOBAL NUMBER OF THE BOUNDARY NODE I
@@ -183,7 +183,7 @@
 !------------ POTENTIAL (REAL, IMAGINAR)            
           GRE=PRB%R(I)
           GIM=PIB%R(I)
-	 
+ 
 ! ----------- GRADIENTS (REAL, IMAGINAR)
           DDXGRE= DDXPRB%R(I)
           DDYGRE= DDYPRB%R(I)
@@ -334,10 +334,10 @@
 !DA         ENDIF
 !
 !
- 1001 CONTINUE
+      ENDDO
 !-----------------------------------------------------------------------
 !
 !
       RETURN
-      END
+      END SUBROUTINE
 

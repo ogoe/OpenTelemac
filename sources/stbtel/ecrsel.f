@@ -95,7 +95,7 @@
 !  ECRITURE DES VARIABLES
 !
       IF (NVARIN.GT.0) THEN
-         DO 20 IVAR = 1,NVARIN
+         DO IVAR = 1,NVARIN
 !
 !           ZF DEJA LU AVEC ADCIRC
             IF(MAILLE.NE.'ADCIRC') THEN
@@ -107,29 +107,29 @@
                   CALL LIT(VAINIT(NPOIN1+1),W,IBID,CBID,NPOIN2,'R4',
      &                     NFO1,STD,ISTAT)
                ELSE
-                  DO 22 I = NPOIN1+1,NPINIT
+                  DO I = NPOIN1+1,NPINIT
                      VAINIT(I) = 0.D0
-22                CONTINUE
+                  ENDDO
                ENDIF
             ENDIF
 !
             IF (IVAR.EQ.NSFOND) THEN
                CALL ECRI2(ZF,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
             ELSE
-               DO 30 IPOIN = 1,NPOIN
+               DO IPOIN = 1,NPOIN
                   VAR(IPOIN) = VAINIT(IKINIT(ELT(IPOIN),1))*SHP(IPOIN,1)
      &                       + VAINIT(IKINIT(ELT(IPOIN),2))*SHP(IPOIN,2)
      &                       + VAINIT(IKINIT(ELT(IPOIN),3))*SHP(IPOIN,3)
-30             CONTINUE
+               ENDDO
                CALL ECRI2(VAR,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
             ENDIF
-20       CONTINUE
+         ENDDO
 !
          IF (OK2) THEN
             IF (NVARIN.LT.NVAR2) THEN
-               DO 32 IVAR = NVARIN+1,NVAR2
+               DO IVAR = NVARIN+1,NVAR2
                   CALL LIT(VAINIT,W,IBID,CBID,2,'R4',NFO1,STD,ISTAT)
-32             CONTINUE
+               ENDDO
             ENDIF
          ENDIF
 !

@@ -1613,13 +1613,15 @@
         real(R8P),    intent(IN):: textCoo(1:NC_NN,1:dimm) ! texture
         integer(I4P)::             E_IO                    ! Input/Output inquiring flag: $0$ if IO is done, $> 0$ if IO is not done
         character(len=maxlen)::    s_buffer                ! buffer string
+        character(len=maxlen)::    s_buffer2               ! buffer string
         integer(I8P)::             n1,n2                   ! counters
         !--------------------------------------------------------------------------------------------------------------------------------
       
         !--------------------------------------------------------------------------------------------------------------------------------
         select case(f_out)
         case(f_out_ascii)
-          write(unit=Unit_VTK,fmt='(A,1X,'//FI4P//'1X,A)',iostat=E_IO)
+          s_buffer2 = '(A,1X,'//FI4P//'1X,A)'
+          write(unit=Unit_VTK,fmt=trim(s_buffer2),        iostat=E_IO)
      &          'TEXTURE_COORDINATES '//trim(varname),dimm,' double'
           write(s_buffer,     fmt='(I1)',                 iostat=E_IO)
      &          dimm
@@ -1627,7 +1629,8 @@
           write(unit=Unit_VTK,fmt=trim(s_buffer),         iostat=E_IO)
      &          ((textCoo(n1,n2),n2=1,dimm),n1=1,NC_NN)
         case(f_out_binary)
-          write(s_buffer,     fmt='(A,1X,'//FI4P//'1X,A)',iostat=E_IO)
+          s_buffer2 = '(A,1X,'//FI4P//'1X,A)'
+          write(s_buffer,     fmt=trim(s_buffer),         iostat=E_IO)
      &          'TEXTURE_COORDINATES '//trim(varname),dimm,' double'
           write(unit=Unit_VTK,                            iostat=E_IO)
      &          trim(s_buffer)//end_rec
@@ -1655,13 +1658,15 @@
         real(R4P),    intent(IN):: textCoo(1:NC_NN,1:dimm) ! texture
         integer(I4P)::             E_IO                    ! Input/Output inquiring flag: $0$ if IO is done, $> 0$ if IO is not done
         character(len=maxlen)::    s_buffer                ! buffer string
+        character(len=maxlen)::    s_buffer2               ! buffer string
         integer(I8P)::             n1,n2                   ! counters
         !--------------------------------------------------------------------------------------------------------------------------------
       
         !--------------------------------------------------------------------------------------------------------------------------------
         select case(f_out)
         case(f_out_ascii)
-          write(unit=Unit_VTK,fmt='(A,1X,'//FI4P//'1X,A)',iostat=E_IO)
+          s_buffer2 = '(A,1X,'//FI4P//'1X,A)'
+          write(unit=Unit_VTK,fmt=trim(s_buffer2),        iostat=E_IO)
      &          'TEXTURE_COORDINATES '//trim(varname),dimm,' float'
           write(s_buffer,     fmt='(I1)',                 iostat=E_IO)
      &          dimm
@@ -1669,7 +1674,8 @@
           write(unit=Unit_VTK,fmt=trim(s_buffer),         iostat=E_IO)
      &          ((textCoo(n1,n2),n2=1,dimm),n1=1,NC_NN)
         case(f_out_binary)
-          write(s_buffer,     fmt='(A,1X,'//FI4P//'1X,A)',iostat=E_IO)
+          s_buffer2 = '(A,1X,'//FI4P//'1X,A)'
+          write(s_buffer,     fmt=trim(s_buffer2),        iostat=E_IO)
      &          'TEXTURE_COORDINATES '//trim(varname),dimm,' float'
           write(unit=Unit_VTK,                            iostat=E_IO)
      &          trim(s_buffer)//end_rec
@@ -2146,8 +2152,10 @@
      &          repeat(' ',indent)//'<DataArray type="Float64" 
      &          NumberOfComponents="3" Name="Point" format="appended" 
      &          offset="',trim(s_buffer),'">'//end_rec
-          N_Byte  = 3*NN*sizeof(Tipo_R8)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R8
+          N_Byte  = 3*NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,            iostat=E_IO)
      &          N_Byte,'R8',3*NN
           write(unit=Unit_VTK_Append,            iostat=E_IO)
@@ -2218,8 +2226,10 @@
      &          repeat(' ',indent)//'<DataArray type="Float32" 
      &          NumberOfComponents="3" Name="Point" format="appended" 
      &          offset="',trim(s_buffer),'">'//end_rec
-          N_Byte  = 3*NN*sizeof(Tipo_R4)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R4
+          N_Byte  = 3*NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,            iostat=E_IO)
      &          N_Byte,'R4',3*NN
           write(unit=Unit_VTK_Append,            iostat=E_IO)
@@ -2303,8 +2313,10 @@
      &          repeat(' ',indent)//'<DataArray type="Float64" 
      &          Name="X" format="appended" offset="',trim(s_buffer),
      &          '">'//end_rec
-          N_Byte  = (nx2-nx1+1)*sizeof(Tipo_R8)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R8
+          N_Byte  = (nx2-nx1+1)*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,            iostat=E_IO)
      &          N_Byte,'R8',nx2-nx1+1
           write(unit=Unit_VTK_Append,            iostat=E_IO)
@@ -2316,8 +2328,10 @@
      &          repeat(' ',indent)//'<DataArray type="Float64" 
      &          Name="Y" format="appended" offset="',trim(s_buffer),
      &          '">'//end_rec
-          N_Byte  = (ny2-ny1+1)*sizeof(Tipo_R8)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R8
+          N_Byte  = (ny2-ny1+1)*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,            iostat=E_IO)
      &          N_Byte,'R8',ny2-ny1+1
           write(unit=Unit_VTK_Append,            iostat=E_IO)
@@ -2329,8 +2343,10 @@
      &          repeat(' ',indent)//'<DataArray type="Float64" 
      &          Name="Z" format="appended" offset="',trim(s_buffer),
      &          '">'//end_rec
-          N_Byte  = (nz2-nz1+1)*sizeof(Tipo_R8)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R8
+          N_Byte  = (nz2-nz1+1)*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,            iostat=E_IO)
      &          N_Byte,'R8',nz2-nz1+1
           write(unit=Unit_VTK_Append,            iostat=E_IO)
@@ -2414,8 +2430,10 @@
      &          repeat(' ',indent)//'<DataArray type="Float32" 
      &          Name="X" format="appended" offset="',trim(s_buffer),
      &          '">'//end_rec
-          N_Byte  = (nx2-nx1+1)*sizeof(Tipo_R4)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R4
+          N_Byte  = (nx2-nx1+1)*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,            iostat=E_IO)N_Byte,
      &          'R4',nx2-nx1+1
           write(unit=Unit_VTK_Append,            iostat=E_IO)
@@ -2427,8 +2445,10 @@
      &          repeat(' ',indent)//'<DataArray type="Float32" 
      &          Name="Y" format="appended" offset="',trim(s_buffer),
      &          '">'//end_rec
-          N_Byte  = (ny2-ny1+1)*sizeof(Tipo_R4)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R4
+          N_Byte  = (ny2-ny1+1)*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,            iostat=E_IO)N_Byte,
      &          'R4',ny2-ny1+1
           write(unit=Unit_VTK_Append,            iostat=E_IO)
@@ -2440,8 +2460,10 @@
      &          repeat(' ',indent)//'<DataArray type="Float32" 
      &          Name="Z" format="appended" offset="',trim(s_buffer),
      &          '">'//end_rec
-          N_Byte  = (nz2-nz1+1)*sizeof(Tipo_R4)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R4
+          N_Byte  = (nz2-nz1+1)*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,            iostat=E_IO)
      &          N_Byte,'R4',nz2-nz1+1
           write(unit=Unit_VTK_Append,            iostat=E_IO)
@@ -2520,8 +2542,10 @@
      &          repeat(' ',indent)//'<DataArray type="Float64" 
      &          NumberOfComponents="3" Name="Point" format="appended" 
      &          offset="',trim(s_buffer),'">'//end_rec
-          N_Byte  = 3*NN*sizeof(Tipo_R8)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R8
+          N_Byte  = 3*NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,                        
      &          iostat=E_IO)N_Byte,'R8',3*NN
           write(unit=Unit_VTK_Append,                        
@@ -2594,8 +2618,10 @@
      &          repeat(' ',indent)//'<DataArray type="Float32" 
      &          NumberOfComponents="3" Name="Point" format="appended" 
      &          offset="',trim(s_buffer),'">'//end_rec
-          N_Byte  = 3*NN*sizeof(Tipo_R4)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R4
+          N_Byte  = 3*NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,                        
      &          iostat=E_IO)N_Byte,'R4',3*NN
           write(unit=Unit_VTK_Append,                        
@@ -2793,8 +2819,9 @@
      &          repeat(' ',indent)//'<DataArray type="Int32" 
      &          Name="connectivity" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = size(connect)*sizeof(Tipo_I4)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_I4
+          N_Byte  = size(connect)*n1
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)
      &          N_Byte,'I4',size(connect)
           write(unit=Unit_VTK_Append,iostat=E_IO)
@@ -2806,8 +2833,9 @@
      &          repeat(' ',indent)//'<DataArray type="Int32" 
      &          Name="offsets" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = NC*sizeof(Tipo_I4)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_I4
+          N_Byte  = NC*n1
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'I4',NC
           write(unit=Unit_VTK_Append,iostat=E_IO)(offset(n1),n1=1,NC)
           write(unit=Unit_VTK,       iostat=E_IO)
@@ -2817,8 +2845,10 @@
      &          repeat(' ',indent)//'<DataArray type="Int8" 
      &          Name="types" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = NC*sizeof(Tipo_I1)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_I1
+          N_Byte  = NC*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'I1',NC
           write(unit=Unit_VTK_Append,iostat=E_IO)(cell_type(n1),n1=1,NC)
           write(unit=Unit_VTK,       iostat=E_IO)
@@ -3083,8 +3113,10 @@
      &          repeat(' ',indent)//'<DataArray type="Float64" Name="'//
      &          trim(varname)//'" NumberOfComponents="1" 
      &          format="appended" offset="',trim(s_buffer),'">'//end_rec
-          N_Byte  = NC_NN*sizeof(Tipo_R8)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R8
+          N_Byte  = NC_NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'R8',NC_NN
           write(unit=Unit_VTK_Append,iostat=E_IO)(var(n1),n1=1,NC_NN)
           write(unit=Unit_VTK,       iostat=E_IO)
@@ -3125,8 +3157,10 @@
      &          '<DataArray type="Float32" Name="'//trim(varname)//
      &          '" NumberOfComponents="1" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = NC_NN*sizeof(Tipo_R4)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R4
+          N_Byte  = NC_NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'R4',NC_NN
           write(unit=Unit_VTK_Append,iostat=E_IO)(var(n1),n1=1,NC_NN)
           write(unit=Unit_VTK,       iostat=E_IO)
@@ -3166,8 +3200,10 @@
      &          '<DataArray type="Int64" Name="'//trim(varname)//
      &          '" NumberOfComponents="1" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = NC_NN*sizeof(Tipo_I8)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_I8
+          N_Byte  = NC_NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'I8',NC_NN
           write(unit=Unit_VTK_Append,iostat=E_IO)(var(n1),n1=1,NC_NN)
           write(unit=Unit_VTK,       iostat=E_IO)repeat(' ',indent)//
@@ -3208,8 +3244,9 @@
      &          '<DataArray type="Int32" Name="'//trim(varname)//
      &          '" NumberOfComponents="1" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = NC_NN*sizeof(Tipo_I4)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_I4
+          N_Byte  = NC_NN*n1
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'I4',NC_NN
           write(unit=Unit_VTK_Append,iostat=E_IO)(var(n1),n1=1,NC_NN)
           write(unit=Unit_VTK,       iostat=E_IO)repeat(' ',indent)//
@@ -3250,8 +3287,10 @@
      &          '<DataArray type="Int16" Name="'//trim(varname)//
      &          '" NumberOfComponents="1" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = NC_NN*sizeof(Tipo_I2)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_I2
+          N_Byte  = NC_NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'I2',NC_NN
           write(unit=Unit_VTK_Append,iostat=E_IO)(var(n1),n1=1,NC_NN)
           write(unit=Unit_VTK,       iostat=E_IO)
@@ -3292,8 +3331,10 @@
      &          '<DataArray type="Int8" Name="'//trim(varname)//
      &          '" NumberOfComponents="1" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = NC_NN*sizeof(Tipo_I1)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_I1
+          N_Byte  = NC_NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'I1',NC_NN
           write(unit=Unit_VTK_Append,iostat=E_IO)(var(n1),n1=1,NC_NN)
           write(unit=Unit_VTK,       iostat=E_IO)
@@ -3339,8 +3380,10 @@
      &          '<DataArray type="Float64" Name="'//trim(varname)//
      &          '" NumberOfComponents="3" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = 3*NC_NN*sizeof(Tipo_R8)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R8
+          N_Byte  = 3*NC_NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'R8',3*NC_NN
           write(unit=Unit_VTK_Append,iostat=E_IO)
      &          (varX(n1),varY(n1),varZ(n1),n1=1,NC_NN)
@@ -3387,8 +3430,10 @@
      &          '<DataArray type="Float32" Name="'//trim(varname)//
      &          '" NumberOfComponents="3" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = 3*NC_NN*sizeof(Tipo_R4)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_R4
+          N_Byte  = 3*NC_NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'R4',3*NC_NN
           write(unit=Unit_VTK_Append,iostat=E_IO)
      &          (varX(n1),varY(n1),varZ(n1),n1=1,NC_NN)
@@ -3435,8 +3480,10 @@
      &          '<DataArray type="Int64" Name="'//trim(varname)//
      &          '" NumberOfComponents="3" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = 3*NC_NN*sizeof(Tipo_I8)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_I8
+          N_Byte  = 3*NC_NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'I8',3*NC_NN
           write(unit=Unit_VTK_Append,iostat=E_IO)
      &          (varX(n1),varY(n1),varZ(n1),n1=1,NC_NN)
@@ -3483,8 +3530,9 @@
      &          '<DataArray type="Int32" Name="'//trim(varname)//
      &          '" NumberOfComponents="3" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = 3*NC_NN*sizeof(Tipo_I4)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_I4
+          N_Byte  = 3*NC_NN*n1
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'I4',3*NC_NN
           write(unit=Unit_VTK_Append,iostat=E_IO)
      &          (varX(n1),varY(n1),varZ(n1),n1=1,NC_NN)
@@ -3531,8 +3579,10 @@
      &          '<DataArray type="Int16" Name="'//trim(varname)//
      &          '" NumberOfComponents="3" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = 3*NC_NN*sizeof(Tipo_I2)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_I2
+          N_Byte  = 3*NC_NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'I2',3*NC_NN
           write(unit=Unit_VTK_Append,iostat=E_IO)
      &          (varX(n1),varY(n1),varZ(n1),n1=1,NC_NN)
@@ -3579,8 +3629,10 @@
      &          '<DataArray type="Int8" Name="'//trim(varname)//
      &          '" NumberOfComponents="3" format="appended" offset="',
      &          trim(s_buffer),'">'//end_rec
-          N_Byte  = 3*NC_NN*sizeof(Tipo_I1)
-          ioffset = ioffset + sizeof(Tipo_I4) + N_Byte
+          inquire(iolength=n1) Tipo_I1
+          N_Byte  = 3*NC_NN*n1
+          inquire(iolength=n1) Tipo_I4
+          ioffset = ioffset + n1 + N_Byte
           write(unit=Unit_VTK_Append,iostat=E_IO)N_Byte,'I1',3*NC_NN
           write(unit=Unit_VTK_Append,iostat=E_IO)
      &          (varX(n1),varY(n1),varZ(n1),n1=1,NC_NN)

@@ -106,11 +106,11 @@
 !
         IF(COPY) CALL OV('X=Y     ' , XB , XA , Z , C  , NELMAX*3 )
 !
-        DO 10 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
          W(IELEM,2) = 1.D0 - XB(IELEM,1)**2
          XB(IELEM,3) = (XB(IELEM,3)-XB(IELEM,1)*XB(IELEM,2))/W(IELEM,2)
          W(IELEM,3) = 1.D0 - XB(IELEM,2)**2 -XB(IELEM,3)**2
-10      CONTINUE
+        ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -118,7 +118,7 @@
 !
         IF(COPY) CALL OV('X=Y     ' , XB , XA , Z , C  , NELMAX*6 )
 !
-        DO 20 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 ! L U FACTORISATION
          W(IELEM,2)=1.D0 - XB(IELEM,1)*XB(IELEM,4)
          XB(IELEM,6) = (XB(IELEM,6)-XB(IELEM,1)*XB(IELEM,5))/W(IELEM,2)
@@ -126,7 +126,7 @@
          W(IELEM,3)=1.D0-XB(IELEM,2)*XB(IELEM,5)-XB(IELEM,3)*XB(IELEM,6)
 ! L D U FACTORISATION
          XB(IELEM,3) = XB(IELEM,3) / W(IELEM,2)
-20      CONTINUE
+        ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

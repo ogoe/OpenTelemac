@@ -100,7 +100,7 @@
 !
 ! LOOP ON ALL THE SEGMENTS OF THE POLYGON
 !
-      DO 10 N=1,NSOM
+      DO N=1,NSOM
 !
 !     DEP : 1ST POINT OF THE SEGMENT    ARR : 2ND POINT
 !
@@ -149,7 +149,7 @@
 !
       IF(ABS(X-XDEP).LE.EPS.AND.ABS(Y-YDEP).LE.EPS) THEN
         NSECT=1
-        GO TO 2000
+        EXIT
       ENDIF
 !
 !     DETERMINANT OF THE KRAMER SYSTEM
@@ -179,9 +179,7 @@
         NSECT=NSECT+1
       ENDIF
 !
-10    CONTINUE
-!
-2000  CONTINUE
+      ENDDO ! N
 !
       INPOLY=(MOD(NSECT,2).EQ.1)
 !

@@ -177,7 +177,7 @@
 !
 !          CASE WHERE BOTH MATRICES ARE NONSYMMETRICAL
 !
-           DO 10 K = 1 , NPTFR
+           DO K = 1 , NPTFR
              IEL = NELBOR(K)
              XM( IEL , CORNSY(NULONE(K),1) ) =
      &       XM( IEL , CORNSY(NULONE(K),1) ) + XN(K)
@@ -192,13 +192,13 @@
              XM( IEL , CORNSY(NULONE(K),6) ) =
      &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+5*NPTFRX)
 !
-10         CONTINUE
+           ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE M CAN BE ANYTHING AND N IS SYMMETRICAL
 !
-           DO 20 K = 1 , NPTFR
+           DO K = 1 , NPTFR
              IEL = NELBOR(K)
              XM( IEL , CORNSY(NULONE(K),1) ) =
      &       XM( IEL , CORNSY(NULONE(K),1) ) + XN(K)
@@ -212,13 +212,13 @@
      &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+NPTFRX)
              XM( IEL , CORNSY(NULONE(K),6) ) =
      &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+2*NPTFRX)
-20         CONTINUE
+           ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE BOTH MATRICES ARE SYMMETRICAL
 !
-           DO 30 K = 1 , NPTFR
+           DO K = 1 , NPTFR
              IEL = NELBOR(K)
              XM( IEL , CORSYM(NULONE(K),1) ) =
      &       XM( IEL , CORSYM(NULONE(K),1) ) + XN(K)
@@ -226,7 +226,7 @@
      &       XM( IEL , CORSYM(NULONE(K),2) ) + XN(K+NPTFRX)
              XM( IEL , CORSYM(NULONE(K),3) ) =
      &       XM( IEL , CORSYM(NULONE(K),3) ) + XN(K+2*NPTFRX)
-30         CONTINUE
+           ENDDO ! K 
         ELSE
            IF (LNG.EQ.1) WRITE(LU,99) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
            IF (LNG.EQ.2) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
@@ -248,7 +248,7 @@
 !
 !          CASE WHERE BOTH MATRICES ARE NONSYMMETRICAL
 !
-           DO 40 K = 1 , NPTFR
+           DO K = 1 , NPTFR
              IEL = NELBOR(K)
              XM( IEL , CORNSY(NULONE(K),1) ) =
      &       XM( IEL , CORNSY(NULONE(K),1) ) + XN(K+3*NPTFRX)
@@ -262,13 +262,13 @@
      &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+NPTFRX)
              XM( IEL , CORNSY(NULONE(K),6) ) =
      &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+2*NPTFRX)
-40         CONTINUE
+           ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE M CAN BE ANYTHING AND N IS SYMMETRICAL
 !
-           DO 50 K = 1 , NPTFR
+           DO K = 1 , NPTFR
              IEL = NELBOR(K)
              XM( IEL , CORNSY(NULONE(K),1) ) =
      &       XM( IEL , CORNSY(NULONE(K),1) ) + XN(K)
@@ -282,13 +282,13 @@
      &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+NPTFRX)
              XM( IEL , CORNSY(NULONE(K),6) ) =
      &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+2*NPTFRX)
-50         CONTINUE
+           ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE BOTH MATRICES ARE SYMMETRICAL
 !
-           DO 60 K = 1 , NPTFR
+           DO K = 1 , NPTFR
              IEL = NELBOR(K)
              XM( IEL , CORSYM(NULONE(K),1) ) =
      &       XM( IEL , CORSYM(NULONE(K),1) ) + XN(K)
@@ -296,7 +296,7 @@
      &       XM( IEL , CORSYM(NULONE(K),2) ) + XN(K+NPTFRX)
              XM( IEL , CORSYM(NULONE(K),3) ) =
      &       XM( IEL , CORSYM(NULONE(K),3) ) + XN(K+2*NPTFRX)
-60         CONTINUE
+           ENDDO ! K 
 !
         ELSE
            IF (LNG.EQ.1) WRITE(LU,99) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)

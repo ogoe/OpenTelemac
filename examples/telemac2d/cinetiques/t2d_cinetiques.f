@@ -363,9 +363,9 @@ C CALCUL DE LA CELERITE (MISE DANS FU, VOIR LE BLOC VARSOR)
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(3)).OR.(IMP.AND.SORIMP(3))) THEN
-        DO 5 N=1,NPOIN
+        DO N=1,NPOIN
           FU%R(N) = SQRT ( GRAV * MAX(H%R(N),0.D0) )
-5       CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -381,10 +381,10 @@ C CALCUL DU NOMBRE DE FROUDE
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(7)).OR.(IMP.AND.SORIMP(7))) THEN
-        DO 10 N=1,NPOIN
+        DO N=1,NPOIN
           HHH = MAX( H%R(N) , 1.D-8 )
           T2%R(N) = SQRT (( U%R(N)**2 + V%R(N)**2 ) / ( HHH*GRAV ))
-10      CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -392,9 +392,9 @@ C CALCUL DU DEBIT SCALAIRE
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN
-        DO 30 N=1,NPOIN
+        DO N=1,NPOIN
          T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
-30      CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================

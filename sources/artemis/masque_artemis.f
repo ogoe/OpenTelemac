@@ -62,7 +62,7 @@
       CALL OS( 'X=C     ' , MASK4 , SBID , SBID , 0.D0 )
       CALL OS( 'X=C     ' , MASK5 , SBID , SBID , 0.D0 )
 !
-      DO 6 IK=1,NPTFR
+      DO IK=1,NPTFR
 !
          IF (LIHBOR%I(IK).EQ.KLOG) THEN
             MASK3%R(IK) = 1.D0
@@ -82,7 +82,8 @@
          ELSE
             MASK3%R(IK) = 1.D0
          ENDIF
- 6    CONTINUE
-        RETURN
+      ENDDO ! IK
+!
+      RETURN
       END
 

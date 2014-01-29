@@ -31,6 +31,7 @@ VERSION	      = v7p0
 #
 # Options du compilateur :
 #
+include makefile.am
 include $(SYSTELCFG)/cfgmak.mak
 #
 DIRINC           = $(PROJECT)/builds/$(DIRLIB)/lib
@@ -57,13 +58,6 @@ INSTALL       = cp
 MAKEFILE      = makefile
 
 #------------------------ Liste des fichiers
-#
-#------- Sources Fortran
-
-SRCS= \
-aidelu.f carlu.f classe.f cmd.f damoc.f damocle.f damocles.f \
-dico.f    influ.f intlu.f  loglu.f longlu.f majus.f    \
-minus.f   next.f  precar.f prev.f  preval.f realu.f
 #
 #------- Objets
 #

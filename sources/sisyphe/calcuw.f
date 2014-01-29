@@ -62,7 +62,7 @@
 !  SOLVES Y=X*TH(X) WITH Y=(2*PI/TW)**2*H/G AND X=(2*PI/L)*H
 !  USING A POLYNOMIAL FUNCTION (HUNT METHOD - 9TH ORDER)
 !
-      DO 10 I=1,NPOIN
+      DO I=1,NPOIN
        IF ( (TW(I) .GT. 0.D0).AND.(HW(I).GT.0.D0) ) THEN
          Y = DPI2 / GRAV * H(I) / (TW(I) * TW(I))
          POL = 1.D0 + Y * ( 0.66667D0 +
@@ -84,6 +84,6 @@
        ELSE
          UW(I) = 0.D0
        ENDIF
- 10   CONTINUE
+      ENDDO
       RETURN
       END SUBROUTINE CALCUW

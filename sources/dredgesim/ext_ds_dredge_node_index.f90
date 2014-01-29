@@ -84,7 +84,7 @@ SUBROUTINE ext_ds_dredge_node_index ( )
   TYPE (t_error) , ALLOCATABLE :: all_errors(:)                     ! 
   CHARACTER (LEN=c_max_len_pac) , PARAMETER :: c_pac(1)= (/ &       ! 
        'io_ipds   ' /)    ! 
-  INTEGER :: i, j, n, nn, idx ! 
+  INTEGER :: i, j, nn, idx ! 
   !
   ! ------------------------------------------------------------------
   ! [1] generate temporary required local error messages
@@ -168,7 +168,7 @@ CONTAINS
 !    DO i=1,get_ds_nof_dredge_poly_tc( )
 !       IF (.NOT. is_ipds_region_defined(get_ds_dredge_poly_name_tc(i))) THEN
 !          PRINT*, 'Bagger-/Verklapppolygon NICHT in ipds definiert:', get_ds_dredge_poly_name_tc(i)
-!	   END IF
+!          END IF
 !    END DO
     !
     node_coord => get_ds_node_coord_ref ( )

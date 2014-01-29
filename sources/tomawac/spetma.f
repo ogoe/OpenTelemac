@@ -68,7 +68,7 @@
 !
       IF (FP.GT.FPMIN) THEN
         COEF=AL*GRAVIT**2/DEUPI**4
-        DO 100 JF=1,NF
+        DO JF=1,NF
           FF=FREQ(JF)
           IF(FF.LT.FP) THEN
             SIG=SIGMAA
@@ -98,11 +98,11 @@
           ENDIF
           SPEC(JF)=ARG1*ARG2*ARG3*ARG4
           IF(SPEC(JF).LT.E2FMIN) SPEC(JF)=0.D0
-  100   CONTINUE
+        ENDDO ! JF
       ELSE
-        DO 150 JF=1,NF
+        DO JF=1,NF
           SPEC(JF)=0.D0
-  150   CONTINUE
+        ENDDO ! JF
       ENDIF
 !
       RETURN

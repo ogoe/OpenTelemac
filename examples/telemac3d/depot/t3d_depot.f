@@ -507,9 +507,9 @@ C
 ! |    NPOIN3      | -->| NUMBER OF POINTS IN 3D
 ! |    NPF         |<-- | NUMBER OF POINTS WITHIN THE BED ALONG THE VERTICAL  
 ! |    NPFMAX      | -->| MAXIMUM NUMBER OF HORIZONTAL PLANES WITHIN THE BED       
-! |                |    | 	 (GIBSON MODEL)
+! |                |    |        (GIBSON MODEL)
 ! |    NCOUCH      | -->| NUMBER OF LAYERS WITHIN THE BED
-! |                |    |   	 (GIBSON MODEL)
+! |                |    |        (GIBSON MODEL)
 ! |    TASSE       | -->| MULTILAYER SETTLING MODEL
 ! |    GIBSON      | -->| GIBSON SETTLING MODEL
 ! |    PRIVE       | -->| BLOCK OF PRIVATE ARRAYS FOR USER

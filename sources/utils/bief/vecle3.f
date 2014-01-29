@@ -78,24 +78,24 @@
 !
 !  SCALAR MODE
 !
-      DO 10 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
         V(IKLE(IELEM,1)) = V(IKLE(IELEM,1)) + 1.D0
         V(IKLE(IELEM,2)) = V(IKLE(IELEM,2)) + 1.D0
         V(IKLE(IELEM,3)) = V(IKLE(IELEM,3)) + 1.D0
-10    CONTINUE
+      ENDDO ! IELEM 
 !
 !  VECTOR MODE WITH FORCED VECTORISATION
 ! (FUJITSU COMMANDS, THEN CRAY COMMANDS)
 !
-      DO 20 IB = 1,(NELEM+LV-1)/LV
+      DO IB = 1,(NELEM+LV-1)/LV
 !VOCL LOOP,NOVREC
 !DIR$ IVDEP
-      DO 30 IELEM = 1+(IB-1)*LV , MIN(NELEM,IB*LV)
+      DO IELEM = 1+(IB-1)*LV , MIN(NELEM,IB*LV)
         V(IKLE(IELEM,1)) = V(IKLE(IELEM,1)) - 1.D0
         V(IKLE(IELEM,2)) = V(IKLE(IELEM,2)) - 1.D0
         V(IKLE(IELEM,3)) = V(IKLE(IELEM,3)) - 1.D0
-30    CONTINUE
-20    CONTINUE
+      ENDDO ! IELEM 
+      ENDDO ! IB 
 !
 !-----------------------------------------------------------------------
 !

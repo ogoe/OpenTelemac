@@ -270,7 +270,7 @@ C
 !
 !     LOOP ON ALL 2D BOUNDARY POINTS
 !
-      DO 5 K=1,NPTFR2
+      DO K=1,NPTFR2
 !
 !     PRESCRIBED ELEVATION GIVEN IN PARAMETER FILE (NCOTE<>0)
 !     -------------------------------------------------------
@@ -421,7 +421,7 @@ C
         ENDDO
       ENDIF
 !
-5      CONTINUE
+       ENDDO
 !        
 !     PRESCRIBED DISCHARGES: FINAL TREATMENT OF VELOCITIES
 !     ----------------------------------------------------
@@ -429,7 +429,7 @@ C
 !     LOOP ON LIQUID BOUNDARIES
 !
       IF(NFRLIQ.NE.0) THEN
-      DO 10 IFRLIQ = 1 , NFRLIQ
+      DO IFRLIQ = 1 , NFRLIQ
 !
       IF(NDEBIT.NE.0) THEN
 !
@@ -460,7 +460,7 @@ C
 
       ENDIF
 !
-10    CONTINUE
+      ENDDO
       ENDIF
 !
 !     RESETTING BOUNDARY CONDITIONS ON U AND V (WILL BE USED BY TFOND

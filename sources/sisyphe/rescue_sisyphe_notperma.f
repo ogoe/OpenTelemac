@@ -195,10 +195,10 @@
             CALL OV( 'X=C     ' , THETAW , U , V , 90.D0  , NPOIN )
          ENDIF
       ENDIF
-909     FORMAT(1X,'CALCUL PRECEDENT SANS ANGLE DE HOULE : ON',
-     &          ' PREND ZERO')
-910     FORMAT(1X,'PREVIOUS COMPUTATION WITHOUT WAVE ANGLE : IT IS',
-     &          ' FIXED TO ZERO')
+!909     FORMAT(1X,'CALCUL PRECEDENT SANS ANGLE DE HOULE : ON',
+!     &          ' PREND ZERO')
+!910     FORMAT(1X,'PREVIOUS COMPUTATION WITHOUT WAVE ANGLE : IT IS',
+!     &          ' FIXED TO ZERO')
 !
 !-----------------------------------------------------------------------
 !

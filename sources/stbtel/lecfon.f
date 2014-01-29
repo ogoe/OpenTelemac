@@ -78,11 +78,11 @@
 !  INITIALISATION
 !=======================================================================
 !
-      DO 10 I=1,NBAT
+      DO I=1,NBAT
          XRELV(I)=0.D0
          YRELV(I)=0.D0
          ZRELV(I)=0.D0
-10    CONTINUE
+      ENDDO
 !
 !=======================================================================
 ! LECTURE DES FICHIERS FOND
@@ -141,7 +141,7 @@
 ! temporaire
       ELSE
 !
-        DO 20 I = 1,NBFOND
+        DO I = 1,NBFOND
 !
            REWIND NFOND(I)
 30         READ(NFOND(I),1000,END=40) C
@@ -177,7 +177,7 @@
               STOP
            ENDIF
 !
-20      CONTINUE
+        ENDDO! I
       ENDIF
 !
 ! Ajout PCt - FASTTABS - le 11/07/1996
@@ -240,19 +240,10 @@
      &         'SOUS-PROGRAMME LECFON',/,
      &         'LA BATHYMETRIE EST LUE DANS LE FICHIER FASTTABS',/
      &         '**********************************************',/)
-4060  FORMAT(/,'****************************************',/,
-     &         'SUBROUTINE LECFON',/,
-     &         'READING BATHYMETRY IN FASTTABS MESH FILE',/
-     &         '****************************************',/)
-1070  FORMAT(/,'**********************************************',/,
-     &         'SOUS-PROGRAMME LECFON',/,
-     &         'NOMBRE DE POINTS LUS DANS LE FICHIER FASTTABS : ',
-     &         I5,/
-     &         '**********************************************',/)
 4070  FORMAT(/,'****************************************',/,
      &         'SUBROUTINE LECFON',/,
      &         'NUMBER OF BATHYMETRIC POINTS IN FASTTABS FILE : ',
      &         I5,/
      &         '****************************************',/)
 !
-      END
+      END SUBROUTINE

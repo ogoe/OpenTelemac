@@ -93,45 +93,45 @@
       COEF1 = DTETAR*DEUPI**4*FRMAX**5/GRAVIT**2
       COEF2 = DEUPI*ROEAU/ROAIR*DTETAR
 !
-      DO 12 IP=1,NPOIN2
+      DO IP=1,NPOIN2
         XTAUW(IP)=0.D0
         YTAUW(IP)=0.D0
-   12 CONTINUE
+      ENDDO ! IP
 !
 !.....INTEGRATES THE SOURCE TERM OVER FREQUENCIES AND DIRECTIONS
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-      DO 110 JF=1,NF
+      DO JF=1,NF
         AUX=COEF2*FREQ(JF)*DFREQ(JF)
-        DO 120 JP=1,NPLAN
+        DO JP=1,NPLAN
           C1=AUX*SINTET(JP)
           C2=AUX*COSTET(JP)
-          DO 100 IP=1,NPOIN2
+          DO IP=1,NPOIN2
             XTAUW(IP)=XTAUW(IP)+TSTOT(IP,JP,JF)*C1
             YTAUW(IP)=YTAUW(IP)+TSTOT(IP,JP,JF)*C2
-  100     CONTINUE
-  120   CONTINUE
-  110 CONTINUE
+          ENDDO ! IP
+        ENDDO ! JP
+      ENDDO ! JF
 !
 !.....COMPUTES THE PARAMETERISED HIGH FREQUENCY PART
 !     """""""""""""""""""""""""""""""""""""""""""""""""""
-      DO 170 IP=1,NPOIN2
+      DO IP=1,NPOIN2
         TAUHF(IP)=0.D0
-  170 CONTINUE
+      ENDDO ! IP
 !
-      DO 200 JP=1,NPLAN
+      DO JP=1,NPLAN
         DIREC=TETA(JP)
-        DO 171 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           COSTMP=MAX(COS(DIREC-TWNEW(IP)),0.D0)
           TAUHF(IP)=TAUHF(IP)+F(IP,JP,NF)*COSTMP**3
-  171   CONTINUE
-  200 CONTINUE
+        ENDDO ! IP
+      ENDDO ! JP
 !
       JTOT  = 50
       CONST1= BETAM/XKAPPA**2
       OMEGAM= DEUPI*FRMAX
       X0    = 0.05D0
 !
-      DO 173 IP=1,NPOIN2
+      DO IP=1,NPOIN2
         USTAR=USNEW(IP)
         ALFA =Z0NEW(IP)*GRAVIT/USTAR**2
 !
@@ -153,7 +153,7 @@
         YC    = MAX(OMEGAM,X0*GRAVIT/UST)*SQRT(Z0/GRAVIT)
         DELY  = MAX((1.D0-YC)/FLOAT(JTOT),0.D0)
         TTAUHF = 0.D0
-        DO 102 J=1,JTOT
+        DO J=1,JTOT
           Y     = YC+DBLE(J-1)*DELY
           OMEGA = Y*SQRT(GRAVIT/Z0)
           CM    = GRAVIT/OMEGA
@@ -163,20 +163,20 @@
           ZLOG  = MIN(DLOG(ZMU),0.D0)
           ZBETA = CONST1*ZMU*ZLOG**4
           TTAUHF= TTAUHF+ZBETA/Y*DELY
-  102   CONTINUE
+        ENDDO ! J
 !----------------------------------------------ANCIENNE SUB TAUWHF
 !
         TAUHF(IP) = TTAUHF*COEF1*USTAR**2*TAUHF(IP)
-  173 CONTINUE
+      ENDDO ! IP
 !
 !.....TAKES THE PARAMETERISED HIGH FREQUENCY PART INTO ACCOUNT
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 !
-      DO 190 IP=1,NPOIN2
+      DO IP=1,NPOIN2
         XTAUW(IP) = XTAUW(IP) + TAUHF(IP)*SIN(TWNEW(IP))
         YTAUW(IP) = YTAUW(IP) + TAUHF(IP)*COS(TWNEW(IP))
         TAUWAV(IP)= SQRT(XTAUW(IP)**2+YTAUW(IP)**2)
-  190 CONTINUE
+      ENDDO ! IP
 !
       RETURN
       END

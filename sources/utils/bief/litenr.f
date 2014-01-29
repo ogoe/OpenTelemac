@@ -128,9 +128,9 @@
 !  GETS THE VALUES WRITTEN IN THE TIME RECORD
 !
       IF(NHIST.NE.0) THEN
-        DO 139 IHIST = 1, NHIST
+        DO IHIST = 1, NHIST
           HIST(IHIST) = AAT(1+IHIST)
-139     CONTINUE
+        ENDDO ! IHIST 
       ENDIF
 !
       IF(LISTIN.AND.LNG.EQ.1) WRITE(LU,140) AT
@@ -144,12 +144,12 @@
 !
 !     CORRECTION JMH 16/12/03: NVARCL IS TAKEN INTO ACCOUNT HERE IN NVAR
 !                              AS AN OUPUT OF SKIPGEO
-!     DO 80 K=1,NVAR+NVARCL
-      DO 80 K=1,NVAR
+!     DO K=1,NVAR+NVARCL
+      DO K=1,NVAR
 !
         OK = .FALSE.
 !
-      DO 81 L=1,MAXVAR
+      DO L=1,MAXVAR
 !
       IF (TEXTLU(K)(1:32).EQ.TEXTPR(L)(1:32) ) THEN
 !
@@ -202,13 +202,13 @@
 !
       ENDIF
 !
-81    CONTINUE
+      ENDDO ! L
 !
 !     THIS SHOULD NEVER HAPPEN NOW ?????
 !
       IF(NVARCL.NE.0) THEN
 !
-      DO 82 L=1,NVARCL
+      DO L=1,NVARCL
 !
       IF(TEXTLU(K)(1:32).EQ.VARCLA(L)(1:32) ) THEN
         OK = .TRUE.
@@ -217,7 +217,7 @@
         TROUVE(MAXVAR+L)=1
       ENDIF
 !
-82    CONTINUE
+      ENDDO ! L
       ENDIF
 !
         IF(.NOT.OK) THEN
@@ -230,7 +230,7 @@
           CALL LIT(AAT,W,IBID,CBID ,2,'R4',NPRE,STD,ISTAT)
         ENDIF
 !
-80    CONTINUE
+      ENDDO ! K
 !
 !-----------------------------------------------------------------------
 !

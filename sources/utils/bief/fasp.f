@@ -71,7 +71,7 @@
 !
 !  LOOP ON THE MESH NODES:
 !
-      DO 100 I = 1 , NPOIN
+      DO I = 1 , NPOIN
 !
 !     INTERPOLATES THE BOTTOM FROM 4 QUADRANTS
 !
@@ -93,50 +93,50 @@
       ZCADR4=0.D0
 !
 ! --------->  LOOP ON THE SET OF POINTS (THERE ARE NP):
-      DO 30 N=1,NP
-           DIFX = XRELV(N)-X(I)
-           DIFY = YRELV(N)-Y(I)
-           DIST = DIFX*DIFX + DIFY*DIFY
+      DO N=1,NP
+        DIFX = XRELV(N)-X(I)
+        DIFY = YRELV(N)-Y(I)
+        DIST = DIFX*DIFX + DIFY*DIFY
 !
-             IF ( DIST.LT.1.D-6 ) DIST=1.D-6
+        IF ( DIST.LT.1.D-6 ) DIST=1.D-6
 ! ->QUADRANT 1 :
-               IF( DIFX.LE.0.D0.AND.DIFY.LE.0.D0) THEN
-                 IF(DIST.LE.DIST1)THEN
-                      X1=XRELV(N)
-                      Y1=YRELV(N)
-                      DIST1=DIST
-                      ZCADR1=ZRELV(N)
-                      OK1 = .TRUE.
-                 ENDIF
+          IF( DIFX.LE.0.D0.AND.DIFY.LE.0.D0) THEN
+            IF(DIST.LE.DIST1)THEN
+                 X1=XRELV(N)
+                 Y1=YRELV(N)
+                 DIST1=DIST
+                 ZCADR1=ZRELV(N)
+                 OK1 = .TRUE.
+            ENDIF
 ! ->QUADRANT 2 :
-              ELSE IF( DIFX.GE.0.D0.AND.DIFY.LE.0.D0) THEN
-                 IF(DIST.LE.DIST2)THEN
-                      X2=XRELV(N)
-                      Y2=YRELV(N)
-                      DIST2=DIST
-                      ZCADR2=ZRELV(N)
-                      OK2 = .TRUE.
-                 ENDIF
+        ELSE IF( DIFX.GE.0.D0.AND.DIFY.LE.0.D0) THEN
+           IF(DIST.LE.DIST2)THEN
+                X2=XRELV(N)
+                Y2=YRELV(N)
+                DIST2=DIST
+                ZCADR2=ZRELV(N)
+                OK2 = .TRUE.
+           ENDIF
 ! ->QUADRANT 3 :
-              ELSE IF( DIFX.GE.0.D0.AND.DIFY.GE.0.D0) THEN
-                 IF(DIST.LE.DIST3)THEN
-                      X3=XRELV(N)
-                      Y3=YRELV(N)
-                      DIST3=DIST
-                      ZCADR3=ZRELV(N)
-                      OK3 = .TRUE.
-                 ENDIF
+        ELSE IF( DIFX.GE.0.D0.AND.DIFY.GE.0.D0) THEN
+           IF(DIST.LE.DIST3)THEN
+                X3=XRELV(N)
+                Y3=YRELV(N)
+                DIST3=DIST
+                ZCADR3=ZRELV(N)
+                OK3 = .TRUE.
+           ENDIF
 ! ->QUADRANT 4 :
-              ELSE IF( DIFX.LE.0.D0.AND.DIFY.GE.0.D0) THEN
-                 IF(DIST.LE.DIST4)THEN
-                      X4=XRELV(N)
-                      Y4=YRELV(N)
-                      DIST4=DIST
-                      ZCADR4=ZRELV(N)
-                      OK4 = .TRUE.
-                 ENDIF
-              ENDIF
- 30        CONTINUE
+        ELSE IF( DIFX.LE.0.D0.AND.DIFY.GE.0.D0) THEN
+           IF(DIST.LE.DIST4)THEN
+                X4=XRELV(N)
+                Y4=YRELV(N)
+                DIST4=DIST
+                ZCADR4=ZRELV(N)
+                OK4 = .TRUE.
+           ENDIF
+        ENDIF
+      ENDDO ! N
 !
 ! --------->  END OF LOOP ON THE SET OF POINTS
 !
@@ -180,7 +180,7 @@
           ZF(I) = -1.D6
          ENDIF
 !
-100   CONTINUE
+      ENDDO ! I 
 !
 !-----------------------------------------------------------------------
 !

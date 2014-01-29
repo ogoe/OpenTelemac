@@ -269,7 +269,7 @@ C
       TYPE (BIEF_OBJ),  INTENT(IN)    :: S
 !
 !------------------------------------------------------------------
-! cas test de la	 bosse
+! cas test de la bosse
       DOUBLE PRECISION  PI
 !------------------------------------------------------------------
       INTEGER K,I
@@ -293,14 +293,14 @@ C
 C  Bosse à t=0
 C
       PI=3.141592653589793D0 
-      DO 2 I=1,NPOIN2                                                            
+      DO I=1,NPOIN2                                              
         ZF(I) = 0.D0
-        IF (MESH2D%X%R(I).GE.2.D0.AND.MESH2D%X%R(I).LE.10.D0) THEN                        
-           ZF(I)=.1D0*DSIN(PI*(MESH2D%X%R(I)-2.D0)/8.D0)**2                                                                          
-        END IF                                                                                                                        
-2     CONTINUE
+        IF (MESH2D%X%R(I).GE.2.D0.AND.MESH2D%X%R(I).LE.10.D0) THEN
+           ZF(I)=.1D0*DSIN(PI*(MESH2D%X%R(I)-2.D0)/8.D0)**2      
+        END IF                                                  
+      ENDDO   
 !
-!	 
+! 
       RETURN
       END SUBROUTINE CORFON
 

@@ -63,7 +63,7 @@
 !
 !.....MAIN LOOP ON THE NODES OF THE 2D MESH
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""
-      DO 100 IP=1,NPOIN2
+      DO IP=1,NPOIN2
 !
 !.......COMPUTES THE WIND SPEED 10 METERS ABOVE WATER
 !       """""""""""""""""""""""""""""""""""""""""
@@ -78,7 +78,7 @@
 !       """""""""""""""""""""""""""""""""""
         USTAR(IP)=DSQRT(CDRAG)*UVENT
 !
-  100 CONTINUE
+      ENDDO ! IP
 !
       RETURN
       END

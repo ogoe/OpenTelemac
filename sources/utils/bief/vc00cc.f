@@ -71,7 +71,7 @@
 !
       XSUR3=XMUL/3.D0
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       COEF = XSUR3 * SURFAC(IELEM)
 !
@@ -82,7 +82,7 @@
       W5(IELEM) = COEF
       W6(IELEM) = COEF
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

@@ -212,7 +212,7 @@
         ENDDO
       ELSEIF(LINLOG.EQ.2) THEN
 !       LOGARITHMIC DERIVATIVE 
-! 	DU/DZ =DU/D(LOG(Z))/Z
+!       DU/DZ =DU/D(LOG(Z))/Z
 !
         IF(KFROT.NE.5) THEN
           WRITE(LU,*) 'NIKURADSE LAW MANDATORY'

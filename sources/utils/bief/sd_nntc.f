@@ -9,16 +9,16 @@
 !***********************************************************************
 !
 !brief NUMERIC SOLUTION OF THE TRANSPOSE OF A SPARSE NONSYMMETRIC SYSTEM
-!+	OF LINEAR EQUATIONS GIVEN LU-FACTORIZATION (COMPRESSED POINTER
-!+	STORAGE)
+!+      OF LINEAR EQUATIONS GIVEN LU-FACTORIZATION (COMPRESSED POINTER
+!+      STORAGE)
 !+
 !code
-!+	 INPUT VARIABLES..  N, R, C, IL, JL, IJL, L, D, IU, JU, IJU, U, B
-!+	 OUTPUT VARIABLES.. Z
+!+       INPUT VARIABLES..  N, R, C, IL, JL, IJL, L, D, IU, JU, IJU, U, B
+!+       OUTPUT VARIABLES.. Z
 !+
-!+	 PARAMETERS USED INTERNALLY..
+!+       PARAMETERS USED INTERNALLY..
 !+ FIA    \ TMP   - TEMPORARY VECTOR WHICH GETS RESULT OF SOLVING UT Y = B
-!+	 \	     SIZE = N.
+!+        \           SIZE = N.
 !
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
 !         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS 
@@ -75,17 +75,19 @@
       ENDDO
 !  ******  SOLVE  LT X = Y  BY BACK SUBSTITUTION  **********************
       K = N
-      DO 6 I=1,N
+      DO I=1,N
         SUM = -TMP(K)
         JMIN = IL(K)
         JMAX = IL(K+1) - 1
-        IF (JMIN .GT. JMAX) GO TO 5
-        ML = IJL(K) - JMIN
-        DO 4 J=JMIN,JMAX
-   4      SUM = SUM + L(J) * TMP(JL(ML+J))
-   5    TMP(K) = -SUM * D(K)
+        IF (JMIN .LE. JMAX) THEN
+          ML = IJL(K) - JMIN
+          DO J=JMIN,JMAX
+            SUM = SUM + L(J) * TMP(JL(ML+J))
+          ENDDO ! J
+        ENDIF
+        TMP(K) = -SUM * D(K)
         Z(R(K)) = TMP(K)
         K = K - 1
-   6    CONTINUE
+      ENDDO ! I
       RETURN
       END

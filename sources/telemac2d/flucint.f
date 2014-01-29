@@ -100,7 +100,7 @@
 !
 !     LOOP ON GLOBAL LIST OF EDGES
 !
-      DO 500 NSG=1,NSEG
+      DO NSG=1,NSEG
          J         = int(JMI(NSG))
 !
          NUBO1     = NUBO(1,NSG)
@@ -171,7 +171,7 @@
          GRADJI(2)  = XNN*GRADJI(2)+YNN*GRADJI(3)
 !
        DO IVAR=1,4
-        IF(IVAR.EQ.3) GOTO 100
+         IF(IVAR.NE.3) THEN
 !
          GRIJ = GRADIJ(IVAR)
          GRJI = GRADJI(IVAR)
@@ -195,7 +195,7 @@
          GRADJ(IVAR)  = AUX2*
      &      (GRJ2  *GRJI + GRJI2 *GRJ )/(GRJ2 + GRJI2)
 !
- 100     CONTINUE
+         ENDIF
        ENDDO
 !
 !
@@ -319,7 +319,7 @@
        CE(NUBO1,1) = CE(NUBO1,1) - FLU41
        CE(NUBO2,1) = CE(NUBO2,1) + FLU41
 !
-500   CONTINUE
+      ENDDO ! NSG
 !
 !-----------------------------------------------------------------------
 !

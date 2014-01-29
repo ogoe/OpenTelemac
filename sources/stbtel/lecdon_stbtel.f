@@ -106,19 +106,19 @@
       CORTRI    = MOTREA  (ADRES(2,3))
 !>>>>
       IF (NSOM.GE.3) THEN
-         DO 2 I=1,NSOM
+         DO I=1,NSOM
             SOM(I,1) = MOTREA  (ADRES(2,4)+I-1)
             SOM(I,2) = MOTREA  (ADRES(2,5)+I-1)
-2        CONTINUE
+         ENDDO
          SOM(NSOM+1,1) = SOM(1,1)
          SOM(NSOM+1,2) = SOM(1,2)
       ENDIF
 !
       IF (NSOM2.GE.3) THEN
-         DO 3 I=1,NSOM2
+         DO I=1,NSOM2
             SOM2(I,1) = MOTREA  (ADRES(2,6)+I-1)
             SOM2(I,2) = MOTREA  (ADRES(2,7)+I-1)
-3        CONTINUE
+         ENDDO
          SOM2(NSOM2+1,1) = SOM2(1,1)
          SOM2(NSOM2+1,2) = SOM2(1,2)
       ENDIF
@@ -153,7 +153,7 @@
 !-----------------------------------------------------------------------
 !
       NBFOND=0
-      DO 5 I=1,DIMENS(4,8)
+      DO I=1,DIMENS(4,8)
          IF (MOTCAR ( ADRES(4,8) + I-1).NE.' ') THEN
             NBFOND = NBFOND + 1
             IF(I.EQ.1) THEN
@@ -173,7 +173,7 @@
               NOMFRC = MOTCAR ( ADRES(4,8) + I-1)
             ENDIF
          ENDIF
-5     CONTINUE
+      ENDDO
 !
       NOMGEO = MOTCAR( ADRES(4, 5) )
       NOMFOR = MOTCAR( ADRES(4, 3) )

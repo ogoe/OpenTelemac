@@ -481,11 +481,11 @@
                         IR4=0
                         IR5=0
                         IR6=0
-                        DO 55 J=1,NPTFR
+                        DO J=1,NPTFR
                            IF (I1.EQ.NBOR(J)) IR5=1
                            IF (I2.EQ.NBOR(J)) IR4=1
                            IF (I3.EQ.NBOR(J)) IR6=1
- 55                     CONTINUE
+                        ENDDO ! J
                         
 !     THEY ARE ALSO BOUNDARY NODES
                         IF (IR5.EQ.1.AND.IR4.EQ.1.AND.IR6.EQ.1) THEN
@@ -546,8 +546,8 @@
 !
 !  LOOP ON ALL THE SIDES OF ALL THE ELEMENTS:
 !
-      DO 90 IFACE = 1 , NFACE
-      DO 100 IELEM = 1 , NELEM
+      DO IFACE = 1 , NFACE
+      DO IELEM = 1 , NELEM
 !
       IF(IFABOR(IELEM,IFACE).EQ.-1) THEN
 !
@@ -571,8 +571,8 @@
 !
       ENDIF
 !
-100    CONTINUE
-90    CONTINUE
+       ENDDO ! IELEM 
+      ENDDO ! IFACE 
 !
 !
 1000  CONTINUE

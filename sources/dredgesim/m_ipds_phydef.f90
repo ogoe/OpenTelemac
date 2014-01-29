@@ -123,7 +123,7 @@ MODULE m_ipds_phydef
        'signifikante Wellenhoehe                ', & ! 27
        'mittlere Wellenrichtung (x-R.)          ', & ! 28
        'mittlere Wellenrichtung (y-R.)          ' /) ! 29
-  !	       
+  !       
   !! Englische Bezeichnungen der mit den Keys verbundenen physikalischen Groessen
   CHARACTER (LEN=40), PUBLIC , PARAMETER :: c_phy_name_en(c_nof_phy) = (/ &
        'water level                             ', & ! 01

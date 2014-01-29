@@ -41,7 +41,7 @@
 ! BOUCLE SUR TOUS LES PLANS DE COUPE
 !=======================================================================
 !
-      DO 5 ISOM = 1,NSOM
+      DO ISOM = 1,NSOM
 !
          DX = SOM(ISOM+1,1) - SOM(ISOM,1)
          DY = SOM(ISOM+1,2) - SOM(ISOM,2)
@@ -51,11 +51,11 @@
 !      RECHERCHE DES POINTS EXT.(=0) , INT.(=1) , SUR LE BORD (=2)
 !=======================================================================
 !
-         DO 10 IPOIN = 1,NPOIN
+         DO IPOIN = 1,NPOIN
             INDIC(IPOIN) = 0
             IF (DX*(Y(IPOIN)-SOM(ISOM,2)).GE.DY*(X(IPOIN)-SOM(ISOM,1)))
      &          INDIC(IPOIN) = 1
-10       CONTINUE
+         ENDDO
 !
          IELEM = 1
 20       CONTINUE
@@ -128,19 +128,19 @@
             A1 = 1.D0 / (DX*DX + DY*DY)
             A2 = A1 * (SOM(ISOM,1)*SOM(ISOM+1,2) -
      &                 SOM(ISOM,2)*SOM(ISOM+1,1) )
-            DO 40 IDP = 1,3
-               DO 50 IELEM = 1,NELEM
+            DO IDP = 1,3
+               DO IELEM = 1,NELEM
                   IPOIN = IKLE(IELEM,IDP)
                   IF (INDIC(IPOIN).EQ.2) THEN
                      A3 = A1*(X(IPOIN)*DX+Y(IPOIN)*DY)
                      X(IPOIN) = DX*A3 + DY*A2
                      Y(IPOIN) = DY*A3 - DX*A2
                   ENDIF
-50             CONTINUE
-40          CONTINUE
+               ENDDO
+            ENDDO
          ENDIF
 !
-5     CONTINUE
+      ENDDO !ISOM
 !
 !=======================================================================
 !

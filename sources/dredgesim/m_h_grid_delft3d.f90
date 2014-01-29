@@ -587,7 +587,7 @@ CONTAINS
     CHARACTER (LEN=19) , PARAMETER   :: c_upname='create_delft3d_file' ! 
     !! Hilfsvariablen
     CHARACTER (LEN=c_file_path_and_name_len) :: l_text ! 
-    INTEGER                                  :: idx, l ! 
+    INTEGER                                  :: idx    ! 
     !
     file_n = file_o
     l_text = get_file_path_and_name ( file_o )
@@ -742,7 +742,7 @@ CONTAINS
     !! Dateibezeichner f&uuml;r die zu lesenden Daten
     TYPE (t_file)   , INTENT(IN) :: file ! 
     !! Hilfsvariablen
-    INTEGER :: i, enc(2), n, m, l_iunit ! 
+    INTEGER :: enc(2), n, m, l_iunit ! 
     ! 
     IF ( no_error( ) .AND. isprun == 0 ) THEN
        l_iunit = get_file_unit ( file )

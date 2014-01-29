@@ -78,7 +78,7 @@
 !
       DOUBLE PRECISION FLUTOT,SUR12,A1,A2,FLURAIN,D,Z_1,Z_2,REALRAIN
 !
-      INTEGER I,L1,L2,L3,L4,N1,N2,N3,N4,IVBIL,ILIQ,IELEB,NP
+      INTEGER I,L1,L2,L3,L4,N1,N2,N3,N4,IVBIL,ILIQ,IELEB
       INTEGER IPTFR,IETAGE,ITRAC
 !                            25=MAXTRA+5
       DOUBLE PRECISION FLUDI(25),FLUS1(25),FLUXTOTAL
@@ -207,7 +207,7 @@
                 DO I=1,NPOIN2
 !                 TRACER AT ACTUAL BOTTOM PLANE TAKEN INTO ACCOUNT, HENCE IPBOT IN
 !                 ADDRESS OF TA.
- 	          FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
+                  FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
      &             + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
 !                                     HERE NOT I !!!!!!!!
      &             *TA%ADR(ITRAC)%P%R(IPBOT%I(I)*NPOIN2+I)

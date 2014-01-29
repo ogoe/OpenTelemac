@@ -93,10 +93,10 @@
          B1 = EXP(-1.25D0 * (FP/FMAX)**4)
          B2 = EXP(-1.25D0 * (FP/FMIN)**4)
          B  = B1 - B2
-         DO 10 I=1,NPALE
+         DO I=1,NPALE
             PALE(NPALE-I+1) = PERPIC *
      &    (-0.8D0*LOG( B2 + B*FLOAT(2*I-1)/FLOAT(2*NPALE) ))**(0.25D0)
-10       CONTINUE
+         ENDDO
 !
       ELSE
 !
@@ -131,9 +131,9 @@
 !        SURFACE OF THE SPECTRUM (TRAPEZOIDS METHOD)
 !
          SUMB = (SPE(FMIN) + SPE(FMAX))/2.D0
-         DO 20 I = 2,NPAS-1
+         DO I = 2,NPAS-1
             SUMB = SUMB + SPE(FMIN+FLOAT(I)*DF)
-20       CONTINUE
+         ENDDO
 !
 !        DIVIDES THE SPECTRUM INTO 2*NPALE BANDS OF EQUAL ENERGY
 !
@@ -143,7 +143,7 @@
 !
          SUMICI = SPE(FMIN)/2.D0
          I   = 1
-         DO 30 K=1,NPAS
+         DO K=1,NPAS
             VAR = SPE(FMIN+DF*FLOAT(K))
             SUMICI = SUMICI + VAR/2.D0
             IF (SUMICI.GT.SUMB*FLOAT(2*I-1)) THEN
@@ -152,7 +152,7 @@
                IF (I.GT.NPALE) RETURN
             ENDIF
             SUMICI = SUMICI + VAR/2.D0
-30       CONTINUE
+         ENDDO
 !
 !
       ENDIF

@@ -100,7 +100,7 @@
 !
       IF(IELMF.EQ.0) THEN
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
       F1 = F(IELEM)
       DET1 = LGSEG(IELEM) * SUR30
 !
@@ -111,14 +111,14 @@
       A23(IELEM) = A13(IELEM)
       A33(IELEM) = DET1 * (16.D0*F1)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !     F LINEAR BY SEGMENT, IN A BOUNDARY ARRAY
 !     NOTE: IKLE IS HERE A BOUNDARY IKLE
 !
       ELSEIF(IELMF.EQ.1) THEN
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       F1 = F(IKLE1(IELEM))
       F2 = F(IKLE2(IELEM))
@@ -132,13 +132,13 @@
       A23(IELEM) = DET1 * (4.D0*F2)
       A33(IELEM) = DET1 * 16.D0 * (F1+F2)
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
 !     F LINEAR, IN AN ARRAY DEFINED ON THE DOMAIN
 !
       ELSEIF(IELMF.EQ.11.OR.IELMF.EQ.21) THEN
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       F1 = F(NBOR(IELEM,1))
       F2 = F(NBOR(IELEM,2))
@@ -152,14 +152,14 @@
       A23(IELEM) = DET1 * (4.D0*F2)
       A33(IELEM) = DET1 * 16.D0 * (F1+F2)
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
 !     F QUADRATIC BY SEGMENT, IN A BOUNDARY ARRAY
 !     NOTE: IKLE IS HERE A BOUNDARY IKLE
 !
       ELSEIF(IELMF.EQ.2) THEN
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       F1 = F(IKLE1(IELEM))
       F2 = F(IKLE2(IELEM))
@@ -173,13 +173,13 @@
       A23(IELEM) = DET1 * (-8.D0*F1+20.D0*F2+16.D0*F3)
       A33(IELEM) = DET1 * 16.D0 * (F1+F2+12.D0*F3)
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
 !     F QUADRATIC, IN AN ARRAY DEFINED ON THE DOMAIN
 !
       ELSEIF(IELMF.EQ.13) THEN
 !
-      DO 5 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       F1 = F(NBOR(IELEM,1))
       F2 = F(NBOR(IELEM,2))
@@ -194,7 +194,7 @@
       A23(IELEM) = DET1 * (-8.D0*F1+20.D0*F2+16.D0*F3)
       A33(IELEM) = DET1 * 16.D0 * (F1+F2+12.D0*F3)
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
 !     OTHER TYPES OF DISCRETISATION OF F
 !

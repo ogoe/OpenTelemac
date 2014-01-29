@@ -47,7 +47,7 @@
       WRITE(LU,10)
 100   FORMAT(/////,1X,'LISTING DE POSTEL-3D ',78('-'))
 101   FORMAT(/////,1X,'LISTING OF POSTEL-3D ',78('-'))
-10    FORMAT('1',1X,100(1H-),////////,
+10    FORMAT('1',1X,100('-'),////////,
      &12X,'PPPP    OOO    SSSS  TTTTT  EEEEE  L         3333   DDDD ',/,
      &12X,'P   P  O   O  S        T    E      L             3  D   D',/,
      &12X,'PPPP   O   O   SSS     T    EEEE   L     ---  333   D   D',/,

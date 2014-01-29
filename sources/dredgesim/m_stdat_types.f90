@@ -1223,7 +1223,6 @@ CONTAINS
     !! Name der Subroutine
     CHARACTER (LEN=31), PARAMETER :: c_upname='dealloc_t_check'
     !
-    INTEGER                        :: i
     !
     ! De-Allokieren des Speicherplatzes
     ! 
@@ -1249,115 +1248,112 @@ CONTAINS
     !! Statusvariable
     INTEGER :: stat ! 
     !
-    INTEGER                        :: i
+    ! feld%int
     !
+    IF ( ASSOCIATED(feld%int) ) THEN
        !
-       ! feld%int
+       DEALLOCATE ( feld%int, STAT=stat )
        !
-       IF ( ASSOCIATED(feld%int) ) THEN
+       IF ( stat /= 0 ) THEN ! Fehler bei Speicher-Deallocate
           !
-          DEALLOCATE ( feld%int, STAT=stat )
+          CALL setup_error_act &
+                ( all_errors(:), -20000, c_upname, c_modname, stat )
+          CALL setup_error_act ( '<felder>', 'feld%int' )
+          !
+       END IF
+       !
+       IF ( no_error( ) ) NULLIFY (feld%int)
+       !
+    END IF
+    !
+    ! feld%real
+    !
+    IF ( no_error( ) ) THEN
+       !
+       IF ( ASSOCIATED(feld%real) ) THEN
+          !
+          DEALLOCATE ( feld%real, STAT=stat )
           !
           IF ( stat /= 0 ) THEN ! Fehler bei Speicher-Deallocate
              !
              CALL setup_error_act &
                    ( all_errors(:), -20000, c_upname, c_modname, stat )
-             CALL setup_error_act ( '<felder>', 'feld%int' )
+             CALL setup_error_act ( '<felder>', 'feld%real' )
              !
           END IF
           !
-          IF ( no_error( ) ) NULLIFY (feld%int)
+          IF ( no_error( ) ) NULLIFY (feld%real)
           !
        END IF
        !
-       ! feld%real
+    END IF ! no_error( )
+    !
+    ! feld%char
+    !
+    IF ( no_error( ) ) THEN
        !
-       IF ( no_error( ) ) THEN
+       IF ( ASSOCIATED(feld%char) ) THEN
           !
-          IF ( ASSOCIATED(feld%real) ) THEN
+          DEALLOCATE ( feld%char, STAT=stat )
+          !
+          IF ( stat /= 0 ) THEN ! Fehler bei Speicher-Deallocate
              !
-             DEALLOCATE ( feld%real, STAT=stat )
-             !
-             IF ( stat /= 0 ) THEN ! Fehler bei Speicher-Deallocate
-                !
-                CALL setup_error_act &
-                      ( all_errors(:), -20000, c_upname, c_modname, stat )
-                CALL setup_error_act ( '<felder>', 'feld%real' )
-                !
-             END IF
-             !
-             IF ( no_error( ) ) NULLIFY (feld%real)
+             CALL setup_error_act &
+                   ( all_errors(:), -20000, c_upname, c_modname, stat )
+             CALL setup_error_act ( '<felder>', 'feld%char' )
              !
           END IF
           !
-       END IF ! no_error( )
-       !
-       ! feld%char
-       !
-       IF ( no_error( ) ) THEN
+          IF ( no_error( ) ) NULLIFY (feld%char)
           !
-          IF ( ASSOCIATED(feld%char) ) THEN
+       END IF
+       !
+    END IF ! no_error( )
+    !
+    ! feld%log
+    !
+    IF ( no_error( ) ) THEN
+       !
+       IF ( ASSOCIATED(feld%log) ) THEN
+          !
+          DEALLOCATE ( feld%log, STAT=stat )
+          !
+          IF ( stat /= 0 ) THEN ! Fehler bei Speicher-Deallocate
              !
-             DEALLOCATE ( feld%char, STAT=stat )
-             !
-             IF ( stat /= 0 ) THEN ! Fehler bei Speicher-Deallocate
-                !
-                CALL setup_error_act &
-                      ( all_errors(:), -20000, c_upname, c_modname, stat )
-                CALL setup_error_act ( '<felder>', 'feld%char' )
-                !
-             END IF
-             !
-             IF ( no_error( ) ) NULLIFY (feld%char)
+             CALL setup_error_act &
+                   ( all_errors(:), -20000, c_upname, c_modname, stat )
+             CALL setup_error_act ( '<felder>', 'feld%log' )
              !
           END IF
           !
-       END IF ! no_error( )
-       !
-       ! feld%log
-       !
-       IF ( no_error( ) ) THEN
+          IF ( no_error( ) ) NULLIFY (feld%log)
           !
-          IF ( ASSOCIATED(feld%log) ) THEN
+       END IF
+       !
+    END IF ! no_error( )
+    !
+    ! feld%doub
+    !
+    IF ( no_error( ) ) THEN
+       !
+       IF ( ASSOCIATED(feld%doub) ) THEN
+          !
+          DEALLOCATE ( feld%doub, STAT=stat )
+          !
+          IF ( stat /= 0 ) THEN ! Fehler bei Speicher-Deallocate
              !
-             DEALLOCATE ( feld%log, STAT=stat )
-             !
-             IF ( stat /= 0 ) THEN ! Fehler bei Speicher-Deallocate
-                !
-                CALL setup_error_act &
-                      ( all_errors(:), -20000, c_upname, c_modname, stat )
-                CALL setup_error_act ( '<felder>', 'feld%log' )
-                !
-             END IF
-             !
-             IF ( no_error( ) ) NULLIFY (feld%log)
+             CALL setup_error_act &
+                   ( all_errors(:), -20000, c_upname, c_modname, stat )
+             CALL setup_error_act ( '<felder>', 'feld%doub' )
              !
           END IF
           !
-       END IF ! no_error( )
-       !
-       ! feld%doub
-       !
-       IF ( no_error( ) ) THEN
+          IF ( no_error( ) ) NULLIFY (feld%doub)
           !
-          IF ( ASSOCIATED(feld%doub) ) THEN
-             !
-             DEALLOCATE ( feld%doub, STAT=stat )
-             !
-             IF ( stat /= 0 ) THEN ! Fehler bei Speicher-Deallocate
-                !
-                CALL setup_error_act &
-                      ( all_errors(:), -20000, c_upname, c_modname, stat )
-                CALL setup_error_act ( '<felder>', 'feld%doub' )
-                !
-             END IF
-             !
-             IF ( no_error( ) ) NULLIFY (feld%doub)
-             !
-          END IF
-          !
-       END IF ! no_error( )
+       END IF
        !
+    END IF ! no_error( )
+    !
     !
   END SUBROUTINE dealloc_t_feld
   !
@@ -1457,7 +1453,6 @@ CONTAINS
     !! Name der Subroutine
     CHARACTER (LEN=31), PARAMETER :: c_upname='Adressnummern_suchen'
     INTEGER                             :: i
-    LOGICAL                             :: l_def
     !
        !
        ! Initialisierungen

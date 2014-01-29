@@ -1552,8 +1552,9 @@ c$$$      U(22) = ZERO                                         ! theta1
 !     IN SCHUREMAN, THETA1 HAS THE SAME NODAL FACTORS AS
 !     CHI1 AND J1
 !     HERE, GEOMETRIC AVERAGE OF CHI1 AND J1
+      ! theta1
       F(9)  = SQRT( SQRT((1.D0 + 0.221D0*COSN)**2 + (0.221D0*SINN)**2)
-     &             *SQRT((1.D0 + 0.198D0*COSN)**2 + (0.198D0*SINN)**2)) ! theta1
+     &             *SQRT((1.D0 + 0.198D0*COSN)**2 + (0.198D0*SINN)**2))
       F(10) = SQRT((1.D0 + 0.198D0*COSN)**2 + (0.198D0*SINN)**2)   ! J1
       F(11) = SQRT((1.D0 + 0.640D0*COSN + 0.134D0*COS2N)**2 +
      &             (0.640D0*SINN + 0.134D0*SIN2N)**2 )             ! OO1

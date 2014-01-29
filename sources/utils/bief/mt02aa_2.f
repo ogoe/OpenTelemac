@@ -102,7 +102,7 @@
      &   .AND.
      &   IELMNV.EQ.10.AND.ISOV.EQ.3) THEN
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 ! THE 3 TERMS OF MATRIX V (KS IS SYMMETRICAL)
 !
@@ -147,7 +147,7 @@
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !-----------------------------------------------------------------------
 !
       ELSE

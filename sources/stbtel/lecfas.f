@@ -75,9 +75,9 @@
 !
       IPOIN=0
       IELEM=0
-      DO 5 I=1,NPOIN
+      DO I=1,NPOIN
         TFAST1(I)=  -1
- 5    CONTINUE
+      ENDDO
 !
 ! TRAITEMENT DE LA GEOMETRIE
 ! PREMIERE PASSE, ON S'OCCUPE DES ELEMENTS
@@ -141,9 +141,9 @@
 !  TRIANGLE LINEAIRE
 !- on conserve les elements tels quels
 !
-          DO 14 I=1,3
+          DO I=1,3
              IKLE(IELEM,I)=ELMLOC(I)
- 14        CONTINUE
+           ENDDO
          ENDIF
 !
       ENDIF
@@ -165,10 +165,11 @@
 !
 ! - CONVERTION DES NUMEROS DE POINTS DES ELEMENTS
 !
-      DO 25 I=1,NELEM
-        DO 25 J=1,3
+      DO I=1,NELEM
+        DO J=1,3
          IKLE(I,J)=TFAST1(IKLE(I,J))
-  25  CONTINUE
+        ENDDO
+      ENDDO
 !
 ! TRAITEMENT DES CONDITION CONDITIONS LIMITES
 ! SI DEMANDE
@@ -178,9 +179,9 @@
 !       ------
       ENDIF
 ! -------------------
-       DO 28 I=1,NPOIN
+       DO I=1,NPOIN
         TFAST1(I)=  0
- 28    CONTINUE
+       ENDDO
        REWIND (NFO1)
  30    READ (NFO1, '(A)',ERR=8010, END=2000) LIGNE
        IF (LIGNE(1:3).EQ.'BCN') THEN
@@ -230,9 +231,9 @@
         IGC=IGC+1
         READ(LIGNE(4:70),*,ERR=8010,END=9010)IE,
      &                (TFAST2(I),I=1,IE)
-        DO 50 I=1,IE
+        DO I=1,IE
           NCOLOR(TFAST2(I))=TFAST1(IGC)
- 50     CONTINUE
+        ENDDO
        ENDIF
       GO TO 40
  3000 RETURN

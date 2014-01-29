@@ -80,30 +80,30 @@
 !-----C-------------------------------------------------------C
 !-----C SUMS UP THE CONTRIBUTIONS FOR THE DISCRETISED PART OF THE SPECTRUM     C
 !-----C-------------------------------------------------------C
-      DO 20 JF=1,NF
+      DO JF=1,NF
 !
 !.......INTEGRATES WRT DIRECTIONS TO GET E(F)
 !       """""""""""""""""""""""""""""""""""""""""""""""""
-        DO 60 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           E(IP) = 0.D0
-   60   CONTINUE
-        DO 30 JP=1,NPLAN
-          DO 40 IP=1,NPOIN2
+        ENDDO ! IP
+        DO JP=1,NPLAN
+          DO IP=1,NPOIN2
                  E(IP) = E(IP) + F(IP,JP,JF)*DTETAR
-   40     CONTINUE
-   30   CONTINUE
+          ENDDO ! IP
+        ENDDO ! JP
 !
 !.......SUMS UP THE CONTRIBUTION OF THE FREQUENCY F
 !       """""""""""""""""""""""""""""""""""""""""""
-        DO 50 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           IF (E(IP).GT.SEUIL) THEN
             AUXI = E(IP)**EXPO*DFREQ(JF)
             FREAD(IP) = FREAD(IP)+AUXI*FREQ(JF)
             DENOM(IP) = DENOM(IP)+AUXI
           ENDIF
-   50   CONTINUE
+        ENDDO ! IP
 !
-   20 CONTINUE
+      ENDDO ! JF
 !
 !-----C-------------------------------------------------------------C
 !-----C (OPTIONALLY) TAKES INTO ACCOUNT THE HIGH-FREQUENCY PART     C
@@ -111,23 +111,23 @@
       IF (TAILF.GT.1.D0) THEN
         COEFN=FREQ(NF)**2/(TAILF*EXPO-2.D0)
         COEFD=FREQ(NF)   /(TAILF*EXPO-1.D0)
-        DO 55 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           AUXI=E(IP)**EXPO
           FREAD(IP) = FREAD(IP)+AUXI*COEFN
           DENOM(IP) = DENOM(IP)+AUXI*COEFD
-   55   CONTINUE
+        ENDDO ! IP
       ENDIF
 !
 !-----C-------------------------------------------------------------C
 !-----C COMPUTES THE PEAK FREQUENCY                                 C
 !-----C-------------------------------------------------------------C
-      DO 70 IP=1,NPOIN2
+      DO IP=1,NPOIN2
         IF (DENOM(IP).LT.1.D-90) THEN
           FREAD(IP) = SEUIL
         ELSE
           FREAD(IP) = FREAD(IP)/DENOM(IP)
         ENDIF
-   70 CONTINUE
+      ENDDO ! IP
 !
       RETURN
       END

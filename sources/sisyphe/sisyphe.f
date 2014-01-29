@@ -901,7 +901,7 @@
 ! 
         ENDIF
 !
-        DO 710 MN = 1, NCALCU
+        DO MN = 1, NCALCU
 !
           IF(.NOT.PERMA.AND.CODE(1:7).NE.'TELEMAC') THEN
 !           DETERMINES THE FIRST RECORD TO BE READ :
@@ -920,7 +920,7 @@
 !         LOOP ON THE RECORDS (IF PERMA NIDT=1)
 !         ------------------------------
 
-          DO 700 MT = 1, NIDT
+          DO MT = 1, NIDT
 !
 !  ----   DETERMINES THE TIMESTEP NUMBER :
 !
@@ -1686,14 +1686,14 @@ C!!! ONLY FOR ONE CLASS
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_VALIDA'
         ENDIF
 !
-!       END OF THE LOOP ON THE RECORDS : 700
-700     CONTINUE
+!       END OF THE LOOP ON THE RECORDS 
+        ENDDO !MT
 !
 !=======================================================================
 !
-!       END OF THE LOOP ON THE NUMBER OF EVENTS : 710
+!       END OF THE LOOP ON THE NUMBER OF EVENTS 
 !
-710     CONTINUE
+        ENDDO !MN
 !
 !-----------------------------------------------------------------------
 !

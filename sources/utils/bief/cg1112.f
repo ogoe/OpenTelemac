@@ -49,7 +49,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,IDIM
+      INTEGER IELEM,IDIM1
 !
       DOUBLE PRECISION TIERS
 !
@@ -61,15 +61,15 @@
 !
 !VOCL LOOP,NOVREC
 !DIR$ IVDEP
-      DO 20 IDIM  = 1 , DIM2
-      DO 10 IELEM = 1 , NELEM
+      DO IDIM1  = 1 , DIM2
+      DO IELEM = 1 , NELEM
 !
-        X(IKLE(IELEM,4),IDIM) = TIERS * ( X(IKLE(IELEM,1),IDIM)
-     &                                  + X(IKLE(IELEM,2),IDIM)
-     &                                  + X(IKLE(IELEM,3),IDIM) )
+        X(IKLE(IELEM,4),IDIM1) = TIERS * ( X(IKLE(IELEM,1),IDIM1)
+     &                                  + X(IKLE(IELEM,2),IDIM1)
+     &                                  + X(IKLE(IELEM,3),IDIM1) )
 !
-10    CONTINUE
-20    CONTINUE
+      ENDDO ! IELEM 
+      ENDDO ! IDIM1  
 !
 !-----------------------------------------------------------------------
 !

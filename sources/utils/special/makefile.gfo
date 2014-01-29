@@ -14,6 +14,7 @@
 #-----------------------------------------------------Juin-1999-DeltaCAD
 #
 #--- Definitions pour SYSTEME TELEMAC
+!include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
 VERSION    = V7P0
 
@@ -54,12 +55,6 @@ DEST          = $(PROJECT)\builds\$(DIRLIB)
 LKLIB         = $(LK_LIB_SPECIAL) 
 
 #------------------------ Liste des fichiers
-#
-#------- Sources Fortran
-
-SRCS= \
-gracestop.f     special_plante.f extens.f\
-check_allocate.f plante.f
 #
 #------- Objets
 #

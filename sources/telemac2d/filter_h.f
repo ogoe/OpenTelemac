@@ -70,7 +70,7 @@
 !
       IF(YAFLODEL) CALL OV('X=C     ',W1%R,W1%R,W1%R,0.D0,3*MESH%NELMAX)
 !
-      DO 10 I=1,N
+      DO I=1,N
 !
 !-----------------------------------------------------------------------
 !
@@ -101,7 +101,7 @@
 !
 !-----------------------------------------------------------------------
 !
-10    CONTINUE
+      ENDDO ! I
 !
 !     TAKES FLUXES DUE TO THE SMOOTHING OF NEGATIVE DEPTHS INTO ACCOUNT
 !     FLODEL NOT INITIALISED

@@ -149,7 +149,7 @@
 !              
 !     2. CONSTRUCTION STOCKAGE SEGMENT MATRICE BLOCK (DE 4)
 !     ===================================================== 
-!	    
+!
       CALL SD_STRSG4(NPOIN,NSEGB,GLOSEGB,NPBLK,NSEGBLK,GLOSEG4)
 !     
       CALL SD_FABSG4(NPOIN,NSEGB,DAB1,DAB2,DAB3,DAB4,

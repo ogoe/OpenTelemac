@@ -138,9 +138,9 @@
       IF(ECRI) THEN
         IB(1)=0
         IB(2)=0
-        DO 91 I=1,NSOR
+        DO I=1,NSOR
           IF(SORLEO(I)) IB(1) = IB(1) + 1
-91      CONTINUE
+        ENDDO
         IB(1) = IB(1) + NVARCL
         CALL ECRI2(XBID,IB,CBID,2,'I ',NFIC,STD,ISTAT)
       ELSE
@@ -152,20 +152,20 @@
 !
       IF(NVAR.GE.1) THEN
         IF(ECRI) THEN
-          DO 19 I=1,NSOR
+          DO I=1,NSOR
             IF(SORLEO(I)) THEN
              CALL ECRI2(XBID,IBID,TEXTE(I)(1:32),32,'CH',NFIC,STD,ISTAT)
             ENDIF
-19        CONTINUE
+          ENDDO
           IF(NVARCL.NE.0) THEN
-            DO 18 I=1,NVARCL
+            DO I=1,NVARCL
             CALL ECRI2(XBID,IBID,VARCLA(I)(1:32),32,'CH',NFIC,STD,ISTAT)
-18          CONTINUE
+            ENDDO
           ENDIF
         ELSE
-          DO 10 I=1,NVAR+NVARCL
+          DO I=1,NVAR+NVARCL
             CALL LIT(XBID,W,IBID,TEXTLU(I),32,'CH',NFIC,STD,ISTAT)
-10        CONTINUE
+          ENDDO
         ENDIF
       ENDIF
 !
@@ -173,9 +173,9 @@
 !
       IF(ECRI) THEN
         IB(1) = 1
-        DO 29 I = 2,10
+        DO I = 2,10
          IB(I) = 0
-29      CONTINUE
+        ENDDO
 !   Y-A-T-IL PASSAGE DE LA DATE ?
         IF(DATE(1)+DATE(2)+DATE(3)+TIME(1)+TIME(2)+TIME(3).NE.0) THEN
          IB(10) = 1
@@ -237,20 +237,20 @@
         CALL LIT(XBID,W,IB   ,CBID,    2    ,'I ',NFIC,STD,ISTAT)
       ELSEIF(ECRI) THEN
 !       INVERSION DE IKLE  EN IKLES POUR SELAFIN
-        DO 27 I      = 1,NDP
-        DO 28 IELEM  = 1,NELEM
+        DO I      = 1,NDP
+        DO IELEM  = 1,NELEM
           IKLES((IELEM-1)*NDP+I) = IKLE((I-1)*NELEM+IELEM)
-28      CONTINUE
-27      CONTINUE
+        ENDDO
+        ENDDO
         CALL ECRI2(XBID   ,IKLES,CBID,NELEM*NDP,'I ',NFIC,STD,ISTAT)
       ELSE
         CALL LIT(XBID,W,IKLES,CBID,NELEM*NDP,'I ',NFIC,STD,ISTAT)
 !       INVERSION DE IKLES EN IKLE.
-        DO 12 I      = 1,NDP
-        DO 11 IELEM  = 1,NELEM
+        DO I      = 1,NDP
+        DO IELEM  = 1,NELEM
           IKLE((I-1)*NELEM+IELEM) = IKLES((IELEM-1)*NDP+I)
-11      CONTINUE
-12      CONTINUE
+        ENDDO
+        ENDDO
       ENDIF
 !
 !   LEC/ECR 7 : IPOBO
@@ -259,9 +259,9 @@
         CALL LIT(XBID,W,ITRAV,CBID,NPOIN,'I ',NFIC,STD,ISTAT)
         NPTFR = 0
         IF(NPOIN.GE.1) THEN
-          DO 22 I = 1 , NPOIN
+          DO I = 1 , NPOIN
             IF(ITRAV(I).NE.0) NPTFR = NPTFR + 1
-22        CONTINUE
+          ENDDO
         ENDIF
 !       ITRAV(1) : IPOBO  ITRAV(1+NPOIN) : IKLES
 !       ITRAV(1+NPOIN+NDP*NELEM) : TABLEAU DE TRAVAIL.
@@ -271,12 +271,12 @@
 !       IPOBO EST MODIFIE PAR MXPTEL
       ELSEIF(ECRI) THEN
         IF(IPARAM(8).EQ.0.AND.IPARAM(9).EQ.0) THEN
-          DO 40 I=1,NPOIN
+          DO I=1,NPOIN
            ITRAV(I) = 0
-40        CONTINUE
-          DO 41 I =1,NPTFR
+          ENDDO
+          DO I =1,NPTFR
            ITRAV(NBOR(I)) = I
-41        CONTINUE
+          ENDDO
           CALL ECRI2(XBID   ,ITRAV,CBID,NPOIN,'I ',NFIC,STD,ISTAT)
         ELSE
 !       PARALLELISME

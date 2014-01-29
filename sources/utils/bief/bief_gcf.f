@@ -81,7 +81,7 @@
 !         Converged? If so, exit.
           IF (ABS((G-GOLD)/G).LT.EPS) GO TO 110
 !         If not, save value.
-          GOLD   = G	
+          GOLD   = G
         ENDIF
       ENDDO
       IF(LNG.EQ.1) THEN

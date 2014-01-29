@@ -55,14 +55,14 @@
       XMAX = X(1)
       IMAX = 1
 !
-      DO 10 I = 2 , NPOIN
+      DO I = 2 , NPOIN
 !
         IF(X(I).GT.XMAX) THEN
           IMAX = I
           XMAX = X(I)
         ENDIF
 !
-10    CONTINUE
+      ENDDO ! I 
 !
 !-----------------------------------------------------------------------
 !

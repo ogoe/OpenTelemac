@@ -54,12 +54,12 @@ C
 C  Bosse à t=0
 C
       PI=3.141592653D0 
-      DO 2 I=1,NPOIN                                                            
+      DO I=1,NPOIN   
          ZF%R(I) = 0.D0
-         IF (X(I) .GE. 2.D0 .AND. X(I) .LE. 10.D0) THEN                        
-         ZF%R(I)=0.1D0*SIN(PI*(X(I)-2.D0)/8.D0)**2                                                                          
-         ENDIF                                                                                                                        
-2     CONTINUE
+         IF (X(I) .GE. 2.D0 .AND. X(I) .LE. 10.D0) THEN
+         ZF%R(I)=0.1D0*SIN(PI*(X(I)-2.D0)/8.D0)**2
+         ENDIF
+      ENDDO
 C
 C-----------------------------------------------------------------------
 C
@@ -96,11 +96,11 @@ C
       ENDDO
       DO II=1,NN 
         H0(II)=0.D0 
-        ZF0(II)=0.D0                                                         
+        ZF0(II)=0.D0
         IF(XFICTIF(II).GE. 2.D0 .AND.
      *     XFICTIF(II).LE.10.D0) THEN                        
-          ZF0(II)=0.1D0*SIN(PI*(XFICTIF(II)-2.D0)/8.D0)**2                                                                           
-        ENDIF                                                                 
+          ZF0(II)=0.1D0*SIN(PI*(XFICTIF(II)-2.D0)/8.D0)**2
+        ENDIF
         H0(II)=0.6D0-ZF0(II)  
       ENDDO
       DO II=1,NN
@@ -246,16 +246,16 @@ C
 C     VITESSE V:    V=QV/H
 C
       IF ((LEO.AND.SORLEO(2)).OR.(IMP.AND.SORIMP(2))) THEN
-       CALL OS( 'X=Y/Z   ' , T2 , QV , HN , 0.D0 , 2 , 0.D0 , HMIN )         
+       CALL OS( 'X=Y/Z   ' , T2 , QV , HN , 0.D0 , 2 , 0.D0 , HMIN )
       ENDIF
 C
 C     CELERITE C:   (GRAV*H)**0.5
 C
       IF ((LEO.AND.SORLEO(3)).OR.(IMP.AND.SORIMP(3))) THEN
          CALL CPSTVC(HN,T3)
-         DO 50 IN=1, NPOIN
+         DO IN=1, NPOIN
             T3%R(IN)= SQRT (GRAV*HN%R(IN))
-50       CONTINUE
+         ENDDO
       ENDIF
 C
 C     SURFACE LIBRE Z: H+ZF
@@ -270,13 +270,13 @@ C
         CALL OS( 'X=Y/Z   ' , T1 , QU , HN , 0.D0 , 2 , 0.D0 , HMIN )
         CALL OS( 'X=Y/Z   ' , T2 , QV , HN , 0.D0 , 2 , 0.D0 , HMIN ) 
         CALL CPSTVC(QU,T4) 
-        DO 10 IN=1,NPOIN
+        DO IN=1,NPOIN
            T4%R(IN)= T1%R(IN)**2+T2%R(IN)**2
-10      CONTINUE       
+        ENDDO       
         CALL OS( 'X=Y/Z   ' , T4 , T4 , HN , 0.D0 , 2 , 0.D0 , HMIN )  
-        DO 110 IN=1,NPOIN
+        DO IN=1,NPOIN
           T4%R(IN)=SQRT(T4%R(IN)/GRAV)        
-110     CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -298,7 +298,7 @@ C  CV    IF((LEO.AND.SORLEO(27+(NOMBLAY+4)*NSICLA+NOMBLAY)).OR.
 C  CV  *   (IMP.AND.SORIMP(27+(NOMBLAY+4)*NSICLA+NOMBLAY))) THEN
       IF(LEO.OR.IMP) THEN
             CALL CARACTERISTIQUE(MESH%X%R,MESH%Y%R,NPOIN,
-     *                                        PRIVE%ADR(1)%P%R,AAT)
+     &                                        PRIVE%ADR(1)%P%R,AAT)
       ENDIF
 C
 C=======================================================================

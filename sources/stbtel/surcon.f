@@ -74,15 +74,15 @@
 ! RECHERCHE DES TRIANGLES SURCONTRAINTS
 !=======================================================================
 !
-      DO 10 K = 1 , NPMAX
+      DO K = 1 , NPMAX
          IPO(K) = 0
-10    CONTINUE
+      ENDDO
 !
-      DO 20 K = 1 , NPTFR
+      DO K = 1 , NPTFR
          IPO(NBOR(K)) = 1
-20    CONTINUE
-!
-      DO 30 K = 1 , NELEM
+      ENDDO
+
+      DO K = 1 , NELEM
          IF (IPO(IKLE(K,1))+IPO(IKLE(K,2))+IPO(IKLE(K,3)).EQ.3) THEN
 !
 ! LE TRIANGLE EST SURCONTRAINT, ON LE DECOUPE EN TROIS
@@ -103,7 +103,7 @@
      &                   NELEM2,NPOIN2,COLOR)
 !
          ENDIF
-30    CONTINUE
+      ENDDO !K
 !
 !=======================================================================
 ! REMISE A JOUR DE NPOIN ET NELEM
@@ -122,11 +122,11 @@
 !
       ISWAP = 0
       KSWAP = 0
-      DO 40 IELEM = 1,NELEM
+      DO IELEM = 1,NELEM
          IP(1) = IKLE(IELEM,1)
          IP(2) = IKLE(IELEM,2)
          IP(3) = IKLE(IELEM,3)
-         DO 50 I = 1,3
+         DO I = 1,3
             J = ISUI(I)
             IF(IFABOR(IELEM,I).GT.0.AND.IPO(IP(I))+IPO(IP(J)).EQ.2) THEN
                KELEM = IFABOR(IELEM,I)
@@ -160,8 +160,8 @@
 !
                ENDIF
             ENDIF
- 50      CONTINUE
- 40   CONTINUE
+         ENDDO
+      ENDDO
 !
 !=======================================================================
 !

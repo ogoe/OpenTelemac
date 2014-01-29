@@ -90,7 +90,7 @@
 !
 !.......COMPUTES THE LINEAR COEFFICIENT BETA (WEIBULL FIT)
 !       """""""""""""""""""""""""""""""""""""""""""""""""""""
-        DO 40 IP = 1,NPOIN2
+        DO IP = 1,NPOIN2
           IF (VARIAN(IP).GT.SEUIL) THEN
             BX    = COEF2*VARIAN(IP)/(DEPTH(IP)*DEPTH(IP))
             SIGMA = SQRT(8.D0*VARIAN(IP))/DEPTH(IP)
@@ -105,30 +105,30 @@
           ELSE
             BETA(IP) = 0.D0
           ENDIF
-   40   CONTINUE
+        ENDDO ! IP 
 !
       ELSE
 !
 !.......COMPUTES THE LINEAR COEFFICIENT BETA (RAYLEIGH FIT)
 !       """"""""""""""""""""""""""""""""""""""""""""""""""""""
-        DO 50 IP = 1,NPOIN2
+        DO IP = 1,NPOIN2
           BX = COEF2*VARIAN(IP)/(DEPTH(IP)**2)
           XM = 1.D0
           A  = 1.D0
           FN = QGAUSS(BX,IEXPRO,A,XM)
           BETA(IP) = COEF1*FCAR(IP)*FN
-   50   CONTINUE
+        ENDDO ! IP 
       ENDIF
 !
 !     TAKES THE SOURCE TERM INTO ACCOUNT
 !     
-      DO 10 IFF = 1,NF
-        DO 20 JP = 1,NPLAN
-          DO 30 IP = 1,NPOIN2
+      DO IFF = 1,NF
+        DO JP = 1,NPLAN
+          DO IP = 1,NPOIN2
             TSTOT(IP,JP,IFF) = TSTOT(IP,JP,IFF)+BETA(IP)*F(IP,JP,IFF)
-   30     CONTINUE
-   20   CONTINUE
-   10 CONTINUE
+          ENDDO ! IP 
+        ENDDO ! JP 
+      ENDDO ! IFF 
 !
       RETURN
       END

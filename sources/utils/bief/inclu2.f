@@ -56,7 +56,7 @@
 !
       IF(IMAX.GE.0) THEN
 !
-         DO 10 I = 0,IMAX
+         DO I = 0,IMAX
             IF(C1(I+1:I+LC2).EQ.C2(1:LC2)) THEN
                FLAG = .TRUE.
                IF (I.NE.0) THEN
@@ -71,7 +71,7 @@
                ENDIF
                INCLU2 = INCLU2.OR.FLAG
             ENDIF
-10       CONTINUE
+         ENDDO ! I 
 !
       ENDIF
 !

@@ -1755,7 +1755,7 @@ CONTAINS
     !! Name der Funktion
     CHARACTER (LEN=15) , PARAMETER :: c_upname='ok_omi_space_id' ! 
     !! Hilfsvariable
-    INTEGER :: idx, l ! 
+    INTEGER :: idx ! 
     !
     idx = get_c_omi_space_id_idx ( this%id )
     ok  = ( idx > 0 )

@@ -194,10 +194,10 @@
 !
 !----GENERATES INVERSE PERMUTATION FROM PERMUTATION
 !
-4     DO 5 K=1,N
+4     DO K=1,N
         NEXT(K) = -NEXT(K)
         LAST(NEXT(K)) = K
-5     CONTINUE
+      ENDDO ! K
 !
 !-----------------------------------------------------------------------
 !

@@ -110,7 +110,7 @@
 !      LOOP OVER ELEMENTS
 !     ***********************
 !
-      DO 30  IEL = 1 , NELEM
+      DO IEL = 1 , NELEM
 !
         I1 = IKLE(IEL,1)
         I2 = IKLE(IEL,2)
@@ -123,25 +123,25 @@
 !         LOOP OVER THE 3 NODES OF THE ELEMENT IEL
 ! ----  *******************************************
 !
-        DO 40  IS = 1 , 3
+        DO IS = 1 , 3
           IS1 = NU(IS)
           IS2 = NU(NEX(IS))
 !
 !         IS2 IS IT A NEIGHBOR OF IS1? ---> LOOP OVER NEGHBORS OF IS1
 !
-          DO 41  KV1 = 1 , NVMAX
+          DO KV1 = 1 , NVMAX
             IF (JVOIS (IS1, KV1, 1) .EQ. 0) GO TO 43
             IF (JVOIS (IS1, KV1, 1) .EQ. IS2) GO TO 44
-41        CONTINUE
+          ENDDO ! KV1 
 !
  43       CONTINUE
           JVOIS (IS1, KV1, 1) = IS2
 !
 !         IS1 IS IT NEIGHBOR OF IS2? --->LOOP OVER NEIGHBORS OF IS2
 !
-          DO 45  KV2 = 1 , NVMAX
+          DO KV2 = 1 , NVMAX
             IF (JVOIS (IS2, KV2, 1) .EQ. 0) GO TO 46
- 45       CONTINUE
+          ENDDO ! KV2 
 !
  46       CONTINUE
 !
@@ -179,12 +179,12 @@
 !           END OF THE LOOP OVER EDGES
 ! ----    *********************************
 48    CONTINUE
-40      CONTINUE
-30    CONTINUE
+        ENDDO ! IS
+      ENDDO ! IEL
 !
 !   CONSTRUCTION OF EDGE OF THE BOUNDARY
 !
-      DO 50  ISEG =1, NSEG
+      DO ISEG =1, NSEG
         NUB1 = NUBO(1,ISEG)
         IF(NUB1.LT.0) THEN
 !
@@ -195,7 +195,7 @@
           IS2=NUBO(2,ISEG)
 !
         ENDIF
-50    CONTINUE
+      ENDDO ! ISEG 
 !
 !---------------------------------------------------------------------
 !
@@ -213,7 +213,7 @@
          NEISEG(2,ISEG)=0
       ENDDO
 !
-      DO 100 ISEG=1,NSEG
+      DO ISEG=1,NSEG
 !        RECUPERATE NODES
          NUBO1 = NUBO (1,ISEG) 
          NUBO2 = NUBO (2,ISEG)
@@ -345,7 +345,7 @@
              CALL PLANTE(1)
              STOP
           ENDIF
-100   CONTINUE
+      ENDDO ! ISEG
 ! 
       DEALLOCATE(JVOIS)
 !

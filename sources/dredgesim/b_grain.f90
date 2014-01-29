@@ -3338,7 +3338,7 @@ CONTAINS
     ! Lokale Parameter und Variablen
     !! Name der Function
     CHARACTER (LEN=31), PARAMETER :: c_upname='all_grain_available_name_1_0' 
-    INTEGER :: i,j
+    INTEGER :: j
     !
     ok = .false.
     do j = 1,SIZE(this1)
@@ -3368,7 +3368,7 @@ CONTAINS
     ! Lokale Parameter und Variablen
     !! Name der Function
     CHARACTER (LEN=31), PARAMETER :: c_upname='all_grain_available_mid_1_0' 
-    INTEGER :: i,j
+    INTEGER :: j
     !
     ok = .false.
     do j = 1,SIZE(this1)
@@ -3703,7 +3703,6 @@ CONTAINS
     !! Name der Subroutine
     CHARACTER (LEN=31), PARAMETER :: c_upname='get_grain_sorting_d' 
     REAL (KIND = Double)                           :: dm
-    INTEGER                        :: i
     !
     dm = get_grain_mean_size(this,percent)
     !

@@ -89,11 +89,11 @@
       INDIC3 = 0
       REWIND NGEO
 !
-      DO 5 I=1,NPOIN
+      DO I=1,NPOIN
          X(I) = 9999999.D0
          Y(I) = 9999999.D0
          NCOLOR(I) = 99999
- 5    CONTINUE
+      ENDDO
 !
 !=======================================================================
 ! LECTURE SEQUENTIELLE DU FICHIER ET RECHERCHE DES INDICATEURS
@@ -126,7 +126,7 @@
       ELSE IF (NSEC.EQ.NSEC11) THEN
          INDIC1 = 1
 !
-         DO 30 I=1,NPOIN1
+         DO I=1,NPOIN1
             READ(NGEO,35,ERR=110,END=120) NSEC,N1,N2,NCOLOI,X1,Y1
 !
 ! PASSAGE EN DOUBLE PRECISION
@@ -134,7 +134,7 @@
             X(NSEC) = DBLE(X1)
             Y(NSEC) = DBLE(Y1)
             NCOLOR(NSEC) = NCOLOI
- 30         CONTINUE
+         ENDDO
 !
  35         FORMAT(4I10,2E13.5)
 !
@@ -145,13 +145,13 @@
       ELSE IF (NSEC.EQ.NSEC12) THEN
          INDIC1 = 1
 !
-         DO 31 I=1,NPOIN1
+         DO I=1,NPOIN1
             READ(NGEO,36,ERR=110,END=120) NSEC,N1,N2,NCOLOI
             READ(NGEO,37,ERR=110,END=120) X2,Y2
             X(NSEC) = X2
             Y(NSEC) = Y2
             NCOLOR(NSEC) = NCOLOI
- 31      CONTINUE
+         ENDDO
 !
  36         FORMAT(4I10)
  37         FORMAT(2D25.16)
@@ -164,7 +164,7 @@
 !
       ELSE IF (NSEC.EQ.NSEC2) THEN
          INDIC2 = 1
-         DO 40 I=1,NELEM
+         DO I=1,NELEM
             IF (MESH.EQ.2) THEN
                READ(NGEO,2000,ERR=110,END=120) NSEC
                READ(NGEO,4000,ERR=110,END=120) IKLE(I,1),IKLE(I,2),
@@ -180,7 +180,7 @@
  4400          FORMAT(2X,'TYPE OF MESH NOT AVAILABLE : MESH = ',I3)
                STOP
             ENDIF
- 40      CONTINUE
+         ENDDO
          GOTO 50
 !
       ENDIF

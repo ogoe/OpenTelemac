@@ -74,12 +74,12 @@
                 GO TO 1000
            ELSE
                 IF ( I.LE.1 ) GO TO 1000
-                DO 110 J = I-1 , 1 , -1
+                DO J = I-1 , 1 , -1
                      IF ( LIGNE(J:J).EQ.'/' ) THEN
                           I = J
                           GO TO 100
                      ENDIF
-  110           CONTINUE
+                ENDDO ! J 
            ENDIF
 !-----------------------------------------------------------------------
 !

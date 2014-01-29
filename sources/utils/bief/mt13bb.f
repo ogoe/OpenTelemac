@@ -107,7 +107,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-        DO 1 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -137,7 +137,7 @@
         A33(IELEM) = - A31(IELEM)  - A32(IELEM) - A34(IELEM)
         A44(IELEM) = 0.D0
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -145,7 +145,7 @@
 !  DERIVATIVE WRT Y  =
 !================================
 !
-        DO 2 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -175,7 +175,7 @@
         A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
         A44(IELEM) = 0.D0
 !
-2       CONTINUE
+        ENDDO ! IELEM 
 !
         ELSE
 !

@@ -110,10 +110,10 @@
 !  INIT_COMPO_COH : composition of the sediment bed : thickness of layers 
 !                  and concentrations The number of sediment bed layers is fixed
  
-       	IF(.NOT.DEBU) THEN
+        IF(.NOT.DEBU) THEN
 !    
           CALL INIT_COMPO_COH(ES,CONC_VASE,CONC,NPOIN,
-     *       NOMBLAY,NSICLA,AVAIL,AVA0)
+     &       NOMBLAY,NSICLA,AVAIL,AVA0)
 !
 !         Recalcul des epaisseurs pour satisfaire : Sum (ES)=ZF-ZR
 ! 
@@ -138,9 +138,9 @@
                 GOTO 144
               ENDIF
               HAUTSED = HAUTSED + ES(I,K)
-!	      
+!             
            ENDDO
-!	   
+!          
 144        CONTINUE
 !
 !          FOR CLEAN OUTPUTS
@@ -167,18 +167,18 @@
 !
          DO I=1,NPOIN
 !
-           ELAY(I)=ZF(I)-ZR(I)	 
+           ELAY(I)=ZF(I)-ZR(I)
 !
            EST=0.D0
 !
-!           IF(NOMBLAY.GT.1) THEN	   
+!           IF(NOMBLAY.GT.1) THEN
 !
             DO J=1,NOMBLAY
                EST=EST+ES(I,J)
             ENDDO
 !           ELSE
 !             EST=ES(I,1)
-!           ENDIF	   
+!           ENDIF
 !
            DIFF= ELAY(I) - EST
 !
@@ -270,8 +270,8 @@
 !
 !-----------------------------------------------------------------------
 !
-1800  FORMAT(1X,'IL Y A PLUS DE ',1I6,' COUCHES DANS LA STRATIFICATION')
-1815  FORMAT(1X,'THERE ARE MORE THAN ',1I6,' LAYERS IN STRATIFICATION')
+!1800  FORMAT(1X,'IL Y A PLUS DE ',1I6,' COUCHES DANS LA STRATIFICATION')
+!1815  FORMAT(1X,'THERE ARE MORE THAN ',1I6,' LAYERS IN STRATIFICATION')
 !
 !-----------------------------------------------------------------------
 !

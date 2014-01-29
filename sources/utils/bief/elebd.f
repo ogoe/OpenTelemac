@@ -132,8 +132,8 @@
 !
 !  LOOP ON ALL THE FACES OF ALL THE ELEMENTS:
 !
-      DO 20 IFACE = 1 , NFACE
-      DO 10 IELEM = 1 , NELEM
+      DO IFACE = 1 , NFACE
+      DO IELEM = 1 , NELEM
 !
       IF(IFABOR(IELEM,IFACE).EQ.-1) THEN
 !
@@ -160,8 +160,8 @@
 !
       ENDIF
 !
-10    CONTINUE
-20    CONTINUE
+      ENDDO ! IELEM 
+      ENDDO ! IFACE 
 !
 !     LOOP ON ALL THE POINTS:
 !
@@ -181,7 +181,7 @@
 !     NELBOR AND NULONE SET TO 0
 !
       IF(NCSIZE.GT.1) THEN
-        DO 49 K1=1,NPTFR
+        DO K1=1,NPTFR
           IF(ISEG(K1).GT.0) THEN
             KP1BOR(K1,1)=K1
             NELBOR(K1)=0
@@ -196,15 +196,15 @@
           ELSEIF(ISEG(K1).LT.0) THEN
             KP1BOR(K1,2)=K1
           ENDIF
-49      CONTINUE
+        ENDDO ! K1
       ENDIF
 !
 ! COMPUTES ARRAY NULONE
 !
-      DO 50 K1=1,NPTFR
+      DO K1=1,NPTFR
 !
       IF(NCSIZE.GT.1) THEN
-        IF(ISEG(K1).GT.0.OR.ISEG(K1).EQ.-9999) GO TO 50
+        IF(ISEG(K1).GT.0.OR.ISEG(K1).EQ.-9999) CYCLE
       ENDIF
 !
       K2=KP1BOR(K1,1)
@@ -247,7 +247,7 @@
         STOP
       ENDIF
 !
-50    CONTINUE
+      ENDDO ! K1
 !
 !  COMPUTES IKLBOR : LIKE IKLE FOR BOUNDARY POINTS, WITH BOUNDARY
 !                    POINTS NUMBERING

@@ -173,20 +173,20 @@ MODULE m_h_grid_selafin
        !   123456789 123456789 123456789 12
        (/ 'BOTTOM          M               ' , &
           'FREE SURFACE    M               ' , &
-		  'WATER DEPTH     M               ' /)
+          'WATER DEPTH     M               ' /)
 
   CHARACTER (LEN=32) , PARAMETER :: sc_cnev(c_maxcnev) = & ! 
        !   123456789 123456789 123456789 12
        (/ 'BOTTOM          m               ' , &
           'FREE SURFACE    m               ' , &
-		  'WATER DEPTH     m               ' /)
+          'WATER DEPTH     m               ' /)
 !nd
   !! vordefinierte Variablennamen franzoesisch
   CHARACTER (LEN=32) , PARAMETER :: fc_cnev(c_maxcnev) = & ! 
        !   123456789 123456789 123456789 12
        (/ 'FOND            M               ' , &
           'SURFACE LIBRE   M               ' , &
-		  'HAUTEUR D''EAU   M               ' /)
+          'HAUTEUR D''EAU   M               ' /)
   !
   !! Name des Moduls
   CHARACTER (LEN=16), PARAMETER :: c_modname = 'm_h_grid_selafin' ! 
@@ -560,7 +560,7 @@ CONTAINS
        END DO
        IF ( iostat == 0 ) THEN
           DO i=1,SIZE(l_cnev(:)) 
-		     DO j=1,SIZE(cnev(:))
+             DO j=1,SIZE(cnev(:))
 !nd                IF ( cnev(j) == c_cnev(i) ) THEN
                 IF ( cnev(j) == c_cnev(i) .OR. cnev(j) == fc_cnev(i) .OR. cnev(j) == sc_cnev(i) ) THEN
                    l_cnev(i)   = .true.

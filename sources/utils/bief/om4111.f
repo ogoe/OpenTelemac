@@ -128,37 +128,37 @@
 !
 !          CASE WHERE BOTH MATRICES ARE NONSYMMETRICAL
 !
-           DO 10 K = 1 , SIZXN
+           DO K = 1 , SIZXN
              XM(K,1, 1) = XM(K,1, 1) + XN(K,1)
              XM(K,1, 2) = XM(K,1, 2) + XN(K,2)
              XM(K,1, 6) = XM(K,1, 6) + XN(K,3)
              XM(K,1,16) = XM(K,1,16) + XN(K,4)
              XM(K,1,17) = XM(K,1,17) + XN(K,5)
              XM(K,1,21) = XM(K,1,21) + XN(K,6)
-10         CONTINUE
+           ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE M CAN BE ANYTHING AND N IS SYMMETRICAL
 !
-           DO 20 K = 1 , SIZXN
+           DO K = 1 , SIZXN
              XM(K,1, 1) = XM(K,1, 1) + XN(K,1)
              XM(K,1, 2) = XM(K,1, 2) + XN(K,2)
              XM(K,1, 6) = XM(K,1, 6) + XN(K,3)
              XM(K,1,16) = XM(K,1,16) + XN(K,1)
              XM(K,1,17) = XM(K,1,17) + XN(K,2)
              XM(K,1,21) = XM(K,1,21) + XN(K,3)
-20         CONTINUE
+           ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE BOTH MATRICES ARE SYMMETRICAL
 !
-           DO 30 K = 1 , SIZXN
+           DO K = 1 , SIZXN
              XM(K,1, 1) = XM(K,1, 1) + XN(K,1)
              XM(K,1, 2) = XM(K,1, 2) + XN(K,2)
              XM(K,1, 6) = XM(K,1, 6) + XN(K,3)
-30         CONTINUE
+           ENDDO ! K 
 !
         ELSE
            IF (LNG.EQ.1) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
@@ -181,37 +181,37 @@
 !
 !          CASE WHERE BOTH MATRICES ARE NONSYMMETRICAL
 !
-           DO 40 K = 1 , SIZXN
+           DO K = 1 , SIZXN
              XM(K,1, 1) = XM(K,1, 1) + XN(K,4)
              XM(K,1, 2) = XM(K,1, 2) + XN(K,5)
              XM(K,1, 6) = XM(K,1, 6) + XN(K,6)
              XM(K,1,16) = XM(K,1,16) + XN(K,1)
              XM(K,1,17) = XM(K,1,17) + XN(K,2)
              XM(K,1,21) = XM(K,1,21) + XN(K,3)
-40         CONTINUE
+           ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE M CAN BE ANYTHING AND N IS SYMMETRICAL
 !
-           DO 50 K = 1 , SIZXN
+           DO K = 1 , SIZXN
              XM(K,1, 1) = XM(K,1, 1) + XN(K,1)
              XM(K,1, 2) = XM(K,1, 2) + XN(K,2)
              XM(K,1, 6) = XM(K,1, 6) + XN(K,3)
              XM(K,1,16) = XM(K,1,16) + XN(K,1)
              XM(K,1,17) = XM(K,1,17) + XN(K,2)
              XM(K,1,21) = XM(K,1,21) + XN(K,3)
-50         CONTINUE
+           ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE BOTH MATRICES ARE SYMMETRICAL
 !
-           DO 60 K = 1 , SIZXN
+           DO K = 1 , SIZXN
              XM(K,1, 1) = XM(K,1, 1) + XN(K,1)
              XM(K,1, 2) = XM(K,1, 2) + XN(K,2)
              XM(K,1, 6) = XM(K,1, 6) + XN(K,3)
-60         CONTINUE
+           ENDDO ! K 
 !
         ELSE
            IF (LNG.EQ.1) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
@@ -230,37 +230,37 @@
 !
 !          CASE WHERE BOTH MATRICES ARE NONSYMMETRICAL
 !
-           DO 110 K = 1 , SIZXN
+           DO K = 1 , SIZXN
              XM(K,NETAGE,13) = XM(K,NETAGE,13) + XN(K,1)
              XM(K,NETAGE,14) = XM(K,NETAGE,14) + XN(K,2)
              XM(K,NETAGE,15) = XM(K,NETAGE,15) + XN(K,3)
              XM(K,NETAGE,28) = XM(K,NETAGE,28) + XN(K,4)
              XM(K,NETAGE,29) = XM(K,NETAGE,29) + XN(K,5)
              XM(K,NETAGE,30) = XM(K,NETAGE,30) + XN(K,6)
-110        CONTINUE
+           ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE M CAN BE ANYTHING AND N IS SYMMETRICAL
 !
-           DO 120 K = 1 , SIZXN
+           DO K = 1 , SIZXN
              XM(K,NETAGE,13) = XM(K,NETAGE,13) + XN(K,1)
              XM(K,NETAGE,14) = XM(K,NETAGE,14) + XN(K,2)
              XM(K,NETAGE,15) = XM(K,NETAGE,15) + XN(K,3)
              XM(K,NETAGE,28) = XM(K,NETAGE,28) + XN(K,1)
              XM(K,NETAGE,29) = XM(K,NETAGE,29) + XN(K,2)
              XM(K,NETAGE,30) = XM(K,NETAGE,30) + XN(K,3)
-120        CONTINUE
+           ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE BOTH MATRICES ARE SYMMETRICAL
 !
-           DO 130 K = 1 , SIZXN
+           DO K = 1 , SIZXN
              XM(K,NETAGE,13) = XM(K,NETAGE,13) + XN(K,1)
              XM(K,NETAGE,14) = XM(K,NETAGE,14) + XN(K,2)
              XM(K,NETAGE,15) = XM(K,NETAGE,15) + XN(K,3)
-130        CONTINUE
+           ENDDO ! K 
 !
         ELSE
            IF (LNG.EQ.1) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
@@ -279,37 +279,37 @@
 !
 !          CASE WHERE BOTH MATRICES ARE NONSYMMETRICAL
 !
-           DO 140 K = 1 , SIZXN
+           DO K = 1 , SIZXN
              XM(K,NETAGE,13) = XM(K,NETAGE,13) + XN(K,4)
              XM(K,NETAGE,14) = XM(K,NETAGE,14) + XN(K,5)
              XM(K,NETAGE,15) = XM(K,NETAGE,15) + XN(K,6)
              XM(K,NETAGE,28) = XM(K,NETAGE,28) + XN(K,1)
              XM(K,NETAGE,29) = XM(K,NETAGE,29) + XN(K,2)
              XM(K,NETAGE,30) = XM(K,NETAGE,30) + XN(K,3)
-140        CONTINUE
+           ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE M CAN BE ANYTHING AND N IS SYMMETRICAL
 !
-           DO 150 K = 1 , SIZXN
+           DO K = 1 , SIZXN
              XM(K,NETAGE,13) = XM(K,NETAGE,13) + XN(K,1)
              XM(K,NETAGE,14) = XM(K,NETAGE,14) + XN(K,2)
              XM(K,NETAGE,15) = XM(K,NETAGE,15) + XN(K,3)
              XM(K,NETAGE,28) = XM(K,NETAGE,28) + XN(K,1)
              XM(K,NETAGE,29) = XM(K,NETAGE,29) + XN(K,2)
              XM(K,NETAGE,30) = XM(K,NETAGE,30) + XN(K,3)
-150        CONTINUE
+           ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE BOTH MATRICES ARE SYMMETRICAL
 !
-           DO 160 K = 1 , SIZXN
+           DO K = 1 , SIZXN
              XM(K,NETAGE,13) = XM(K,NETAGE,13) + XN(K,1)
              XM(K,NETAGE,14) = XM(K,NETAGE,14) + XN(K,2)
              XM(K,NETAGE,15) = XM(K,NETAGE,15) + XN(K,3)
-160        CONTINUE
+           ENDDO ! K 
 !
         ELSE
            IF (LNG.EQ.1) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)

@@ -160,7 +160,7 @@
 !   RELATIVE = ABSOLUTE => ADVECTION IN 3D
 !   SEPARATES OUT THE FREQUENCIES
 !
-        DO 200 JF=1,NF
+        DO JF=1,NF
 !
 !      ---------------------------------------------------------------
 !
@@ -201,7 +201,7 @@
 !                 AND PERIODICITY 
      &            .TRUE.)
 !
-200   CONTINUE
+      ENDDO ! JF
 !
       ELSE
 !

@@ -30,17 +30,17 @@ VERSION	      = v7p0
 #
 # Options du compilateur :
 #
+include makefile.am
 include $(SYSTELCFG)/cfgmak.mak
 #
 DIRINC           = $(PROJECT)/builds/$(DIRLIB)/lib
-
-INCMPI        = $(PROJECT)/optionals/mpi/$(DIRLIB)/include
+DIRINC_MPI       = $(PROJECT)/optionals/mpi/$(DIRLIB)/include
 
 #
 FCO           = $(FC_OPT_COMPIL)
 LKO           = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS) 
-FC            = $(FC_NAM)
-FFLAGS	      = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)$(INCMPI)
+FC            = $(FC_MPI)
+FFLAGS	      = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)$(DIRINC_MPI)
 
 MODE          =
 
@@ -60,48 +60,6 @@ INSTALL       = cp
 MAKEFILE      = makefile
 
 #------------------------ Liste des fichiers
-#
-#------- Sources Fortran
-
-SRCS	      = interface_parallel.f \
-                declarations_parallel.F \
-		errpvm.F \
-		org_charac_type1.F \
-		oil_org_charac_type.F \
-		org_charac_type_alg.F \
-		p_dmax.F \
-		p_dmin.F \
-		p_dsum.F \
-		p_exit.F \
-		p_imax.F \
-		p_imin.F \
-		p_init.F \
-		p_isum.F \
-                p_isum_array.F \
-                p_imax_array.F \
-		p_lsum.F \
-		p_mail.F \
-		p_mpi_address.F \
-		p_mpi_address2.F \
-		p_mpi_address3.F \
-		p_mpi_alltoall.F \
-		p_mpi_alltoallv.F \
-		p_mpi_alltoallv_alg.F \
-		p_mpi_alltoallv_oil.F \
-		p_mpi_alltoallv_i.F \
-		p_mpi_type_commit.F \
-		p_mpi_type_get_extent.F \
-		p_mpi_type_free.F \
-		p_mpi_type_create_struct.F \
-		p_read.F \
-		p_iread.F \
-		p_ireadi.F \
-		p_sync.F \
-		p_time.F \
-		p_wait_paraco.F \
-		p_writ.F \
-		p_iwrit.F \
-		p_iwriti.F 
 #
 #------- Objets
 #

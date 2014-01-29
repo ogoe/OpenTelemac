@@ -106,7 +106,7 @@
      &     .OR.(IELMU.EQ.12.AND.IELMV.EQ.12)
      &     .OR.(IELMU.EQ.13.AND.IELMV.EQ.13)) THEN
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         X2  = XEL(IELEM,2)
         X3  = XEL(IELEM,3)
@@ -126,7 +126,7 @@
         W2(IELEM) = FACT
         W3(IELEM) = FACT
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

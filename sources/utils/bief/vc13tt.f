@@ -138,7 +138,7 @@
 !
 !     DERIVATIVE WITH RESPECT TO X
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          I1 = IKLE1(IELEM)
          I2 = IKLE2(IELEM)
@@ -162,7 +162,7 @@
          W3(IELEM)=W1(IELEM)
          W4(IELEM)=W1(IELEM)
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -202,7 +202,7 @@
 !
 !     DERIVATIVE WITH RESPECT TO Z
 !
-      DO 5 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          I1 = IKLE1(IELEM)
          I2 = IKLE2(IELEM)
@@ -226,7 +226,7 @@
          W3(IELEM)=W1(IELEM)
          W4(IELEM)=W1(IELEM)
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !

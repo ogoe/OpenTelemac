@@ -193,7 +193,7 @@
 !
                 IF (ITAI .NE. DEFLU) THEN
                    IF (ITAI .GT. DEFLU) THEN
-                      DO 100 I = DEFLU + 1 , ITAI
+                      DO I = DEFLU + 1 , ITAI
                          IF     (NTYP .EQ. 1) THEN
                             DEFINT(I) = DEFINT(MAX(1,DEFLU))
                          ELSEIF (NTYP .EQ. 2) THEN
@@ -204,7 +204,7 @@
                             DEFCAR(I) = DEFCAR(MAX(1,DEFLU))
                          ENDIF
 !                        DEFATT(NYTP,I) = DEFATT(NYTP,MAX(1,DEFLU))
- 100                  CONTINUE
+                      ENDDO ! I 
                    ENDIF
                    DEFLU = ITAI
                 ENDIF
@@ -248,7 +248,7 @@
                      STOP 'ERREUR DAMOCLES 9'
                    ENDIF
 !
-                DO 200 I = 1 , ITAI
+                DO I = 1 , ITAI
                    IF (NTYP .EQ. 1) THEN
                       MOTINT(ADRESS(NTYP,INDX)+I-1) = DEFINT(I)
                    ELSE IF (NTYP .EQ. 2) THEN
@@ -260,7 +260,7 @@
                    ENDIF
                    IF (INDIC(NTYP,INDX).GE.2)
      &                 MOTATT(NTYP,ADRESS(NTYP,INDX)+I-1) = DEFATT(I)
- 200            CONTINUE
+                ENDDO ! I 
 !
 !   UPDATES THE NEXT FREE ADDRESS
 !

@@ -350,7 +350,7 @@
 !
 !   LOOP ON THE PRISMS
 !
-      DO 21 IELEM=1,NELEM
+      DO IELEM=1,NELEM
 !
       I1=IKLE(IELEM,1)
       I2=IKLE(IELEM,2)
@@ -423,7 +423,7 @@
 !
 !---------------------------------------------------------------
 !
-21    CONTINUE
+      ENDDO ! IELEM
 !
       ELSEIF(SF%ELM.EQ.30.AND.ISO.EQ.6) THEN
 !
@@ -439,7 +439,7 @@
 !
 !   LOOP ON THE TETRAHEDRONS
 !
-      DO 22 IELEM=1,NELEM
+      DO IELEM=1,NELEM
 !
       I1=IKLE(IELEM,1)
       I2=IKLE(IELEM,2)
@@ -524,7 +524,7 @@
      & (Y2*Z3-Z2*Y3)*(FTOT*(Y2*Z4-Z2*Y4)+FGTOT*(-X2*Z4+Z2*X4)+
      & FHTOT*(X2*Y4-Y2*X4))-(X2*Y3-Y2*X3)*(HTOT*(X2*Y4-Y2*X4)+
      & FHTOT*(Y2*Z4-Z2*Y4)+GHTOT*(-X2*Z4+Z2*X4)))
-22    CONTINUE
+      ENDDO ! IELEM
 !
       ELSE
 !
@@ -545,7 +545,7 @@
 !
 !     IF(INCHYD) THEN
 !
-!     DO 22 IELEM=1,NELEM
+!     DO IELEM=1,NELEM
 !
 !        I1=IKLE(IELEM,1)
 !        I2=IKLE(IELEM,2)
@@ -567,7 +567,7 @@
 !
 !        ENDIF
 !
-!22    CONTINUE
+!      ENDDO ! IELEM
 !
 !     ENDIF
 !

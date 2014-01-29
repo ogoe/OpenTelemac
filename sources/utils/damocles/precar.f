@@ -72,13 +72,13 @@
 !
       PRECAR = LONGLI
 !
-      DO 100 K = ICOL,LONGLI
+      DO K = ICOL,LONGLI
       IF (LIGNE(K:K).EQ.CAR1.OR.LIGNE(K:K).EQ.CAR2.OR.
      &    LIGNE(K:K).EQ.CAR3) THEN
         PRECAR = K
         GO TO 1000
       ENDIF
-100   CONTINUE
+      ENDDO ! K 
 !
       PRECAR=LONGLI+1
 !

@@ -275,7 +275,7 @@
 !     BLOCKS
 !-----------------------------------------------------------------------
 !
-       DO 60 IBL = 1 , X%N
+       DO IBL = 1 , X%N
          IF(YAY) THEN
            IF(.NOT.CMPOBJ(X%ADR(IBL)%P,Y%ADR(IBL)%P)) THEN
              CALL CPSTVC(Y%ADR(IBL)%P,X%ADR(IBL)%P)
@@ -337,7 +337,7 @@
          ENDIF
 !
 !
-60     CONTINUE
+       ENDDO ! IBL 
 !
 !-----------------------------------------------------------------------
 !

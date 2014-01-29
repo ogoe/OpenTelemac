@@ -575,7 +575,7 @@ CONTAINS
     INTEGER               :: i, j, k, n, ia, ie, ka, ke, nsl, nms, nss, nval      !  
     INTEGER , POINTER     :: p_nv, p_ne, p_ks(:), p_nen(:,:), p_b_ms(:), p_b_v(:) ! 
     INTEGER , ALLOCATABLE :: l_stru_start(:), l_stru_len(:), l_stru_list(:)       ! 
-    INTEGER , POINTER     :: p_ss_len(:), p_ss_start(:), p_vv_list(:)             ! 
+    INTEGER , POINTER     :: p_vv_list(:)             ! 
     CHARACTER (LEN=c_len_omi_ind_id) , ALLOCATABLE :: l_stru_id(:)                ! 
     LOGICAL , ALLOCATABLE :: l_ind(:) ! 
     TYPE (t_file)         :: l_file ! 
@@ -1451,7 +1451,7 @@ CONTAINS
     !! Ergebnis : alle unterschiedlichen Knoten
     INTEGER , POINTER    :: res(:)    ! 
     !! Hilfsvariablen
-    INTEGER              :: i, ia, ie, j ! 
+    INTEGER              :: i, ia, ie ! 
     INTEGER , POINTER    :: l_res(:)  ! 
     !
     NULLIFY( res )
@@ -1548,7 +1548,7 @@ CONTAINS
     INTEGER , POINTER :: l_jt(:)       ! 
     INTEGER , POINTER :: l_ss_len(:)   ! 
     INTEGER , POINTER :: l_ss_start(:) ! 
-    INTEGER           :: nl, my_sl        ! 
+    INTEGER           :: my_sl        ! 
     !
     NULLIFY ( res )
     IF ( get_vv_poly_count( this, val, lfd ) > 0 ) THEN

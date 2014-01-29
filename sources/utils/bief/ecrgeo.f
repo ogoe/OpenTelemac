@@ -127,9 +127,9 @@
 !
       IB(1)=0
       IB(2)=0
-      DO 91 I=1,NSOR
+      DO I=1,NSOR
         IF(SORLEO(I)) IB(1) = IB(1) + 1
-91    CONTINUE
+      ENDDO ! I
       CALL ECRI2(XBID,IB,CBID,2,'I ',NFIC,'STD',ISTAT)
       NVAR =  IB(1)  +  IB(2)
 !
@@ -151,9 +151,9 @@
 !   LEC/ECR 4   : LIST OF 10 INTEGER PARAMETERS
 !
         IB(1) = 1
-        DO 29 I = 2,10
+        DO I = 2,10
          IB(I) = 0
-29      CONTINUE
+        ENDDO ! I 
 !
 !       ORIGIN COORDINATES IN METRES
 !
@@ -248,13 +248,13 @@
         ALLOCATE(IPOBO(NPOIN),STAT=ERR)
         IF(ERR.NE.0) STOP 'ECRGEO : ALLOCATION DE IPOBO'
         YA_IPOBO = .TRUE.
-        DO 40 I=1,NPOIN
+        DO I=1,NPOIN
          IPOBO(I) = 0
-40      CONTINUE
+        ENDDO ! I
 !       ONLY LATERAL BOUNDARY POINTS WITH PRISMS
-        DO 41 I =1,NPTFR
+        DO I =1,NPTFR
          IPOBO(NBOR(I)) = I
-41      CONTINUE
+        ENDDO ! I 
         CALL ECRI2(XBID,IPOBO,CBID,NPOIN,'I ',NFIC,'STD',ISTAT)
 !
       ENDIF

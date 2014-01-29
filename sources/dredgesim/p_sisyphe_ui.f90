@@ -349,7 +349,6 @@ END INTERFACE
     ! hint: dummy values as no names in Sisyphe but needed for DredgeSim
     CHARACTER (LEN=40) :: varname
     CHARACTER (LEN=20), dimension(:), allocatable :: var
-    CHARACTER (LEN=4) :: cdum
     !
 
     ALLOCATE (var(NSICLA))
@@ -455,7 +454,7 @@ END INTERFACE
     DO i=1,NELEM
        nofp(i) = 3
     END DO
-    ! 	
+    ! 
     var => nofp
     !
   END FUNCTION get_sm_nodes_of_poly_ref_d
@@ -585,7 +584,7 @@ END INTERFACE
     INTEGER , INTENT(IN) :: nof_nodes
     !! number of sediment fractions
     INTEGER , INTENT(IN) :: nof_sediment_fractions ! 
-    INTEGER :: ipoin, isicla, ilayer
+    INTEGER :: ipoin, isicla
     DOUBLE PRECISION :: var(nof_nodes, nof_sediment_fractions)
     DOUBLE PRECISION :: avai_dr(nof_nodes, nof_sediment_fractions)
     !
@@ -595,7 +594,7 @@ END INTERFACE
 !        avai_dr(ipoin+(ilayer-1)*npoin, isicla) = &
         avai_dr (ipoin,isicla) = &
 !RK bis v5p9        AVAIL(1,isicla,ipoin)
-! ab v6p0
+!ab v6p0
         AVAIL(ipoin,1,isicla)
 !      END DO
      END DO
@@ -613,7 +612,7 @@ END INTERFACE
     !
     DOUBLE PRECISION, POINTER :: var(:,:)
     DOUBLE PRECISION  ::   avai_dr(npoin,nsicla)
-    INTEGER :: ipoin, isicla, ilayer
+    INTEGER :: ipoin, isicla
     !
     DO ipoin=1,NPOIN
      DO isicla=1,nsicla
@@ -826,6 +825,7 @@ END INTERFACE
      end do
     end do
 !    var => mesh_buf_send   !
+    nullify(var)
 
     !
   END FUNCTION get_sm_buf_send_d
@@ -895,7 +895,7 @@ END INTERFACE
        ! [6]
        ! -----------------------------------------------------------------
        IF (DEBUG_ds > 0) THEN
-       	  WRITE(*,*) ' ... printing array shapes '
+          WRITE(*,*) ' ... printing array shapes '
        END IF
        IF ( no_error( ) ) CALL print_dredgesim_shape ( )
        IF (DEBUG_ds > 0) THEN
@@ -1328,8 +1328,6 @@ END INTERFACE
       !LEO raus CHARACTER (LEN=15) , PARAMETER :: c_modname='externe Routine'     ! 
       !! name of external subroutine
       CHARACTER (LEN=20) , PARAMETER :: c_upname_c='ext_ds_fraction_name' !  
-      ! variables
-      INTEGER :: nof_c ! 
       !
       !LEO OLD:
       !IF ( no_error( ) ) nof_c = get_sm_nof_sediment_fractions ( )
@@ -1418,7 +1416,7 @@ END INTERFACE
       TYPE (t_error) , ALLOCATABLE :: all_errors_le(:)                     ! 
       CHARACTER (LEN=c_max_len_pac) , PARAMETER :: c_pac_le(1)= (/ &       ! 
            'io_ipds   ' /)    ! 
-      INTEGER :: i_le, j_le, n_le, nn_le, idx_le ! 
+      INTEGER :: i_le, j_le, nn_le, idx_le ! 
       !
       ! ------------------------------------------------------------------
       ! [1] generate temporary required local error messages
@@ -1715,17 +1713,6 @@ END INTERFACE
     use bief, only : bief_obj, bief_mesh
     use m_dredgesim_data, ONLY : leopr_ds, debug_ds , nb_neighb, dimbuf, dimnhcom,set_ds_node_area_ref
     
-    INTEGER, POINTER :: ikp1d(:), ikm1d(:), nachb1d(:), indpu1d(:)
-    INTEGER, POINTER ::  nhp1d(:), nhm1d(:)
-    INTEGER, POINTER :: gtproc_nachb_ids(:), ltproc_nachb_ids(:)
-    INTEGER, POINTER :: nodelist_of_nachb_nodes(:), nachb_nodelist_of_nodes(:)
-    INTEGER, POINTER :: gtproc_nof_nachb_nodes(:), ltproc_nof_nachb_nodes(:)
-    INTEGER, POINTER :: gtproc_nodelist_of_nachb_nodes(:,:), ltproc_nodelist_of_nachb_nodes(:,:)
-    INTEGER, POINTER :: edgelist_of_nachb_edges(:), nachb_edgelist_of_edges(:)
-    INTEGER, POINTER :: gtproc_nof_nachb_edges(:), ltproc_nof_nachb_edges(:)
-    INTEGER, POINTER :: gtproc_edgelist_of_nachb_edges(:,:), ltproc_edgelist_of_nachb_edges(:,:)
-    INTEGER :: nof_nachb_gtproc, nof_nachb_ltproc, nof_nachb_nodes
-    INTEGER :: iproc, inode
     INTEGER :: idx_slash
     !
     ! DredgeSim trace
@@ -1737,7 +1724,7 @@ END INTERFACE
     ! h_grid variable
     TYPE (t_file) :: dredgesim_mesh
 !RK Sisyphe variables
-     INTEGER :: ipid, ilmax, NCSIZE
+     INTEGER :: ipid, NCSIZE
      INTEGER :: ncou !,NOMBLAY
      CHARACTER(LEN=250) :: dredgeinp, ngeo_name
 
@@ -1750,8 +1737,6 @@ END INTERFACE
      TYPE(BIEF_MESH) :: MESH_S
      TYPE (BIEF_OBJ) :: ZF_S, ZR_S, HN_S, E_S, NLAYER_S, NODE_AREA_S ! MASKEL
      
-     LOGICAL :: MSK
-
     !LS workaround to set variables global
     NELEM = NELEM_S
     NSICLA = NSICLA_S

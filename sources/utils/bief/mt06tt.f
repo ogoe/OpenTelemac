@@ -95,7 +95,7 @@
       IF (IELMF .EQ. 31) THEN
 !     LOOP ON THE TETRAHEDRONS
 !
-          DO 20 IELEM=1,NELEM
+          DO IELEM=1,NELEM
 !
               I1=IKLE(IELEM,1)
               I2=IKLE(IELEM,2)
@@ -143,7 +143,7 @@
 !
 !-----------------------------------------------------------------------
 !
-20        CONTINUE
+          ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -152,7 +152,7 @@
       ELSEIF (IELMF .EQ. 30) THEN
 !     LOOP ON THE TETRAHEDRONS
 !
-          DO 30 IELEM=1,NELEM
+          DO IELEM=1,NELEM
 !
               I1=IKLE(IELEM,1)
               I2=IKLE(IELEM,2)
@@ -204,7 +204,7 @@
 !
 !-----------------------------------------------------------------------
 !
-30    CONTINUE
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
       ELSE

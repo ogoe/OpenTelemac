@@ -137,7 +137,7 @@ CONTAINS
     !! name of subroutine
     CHARACTER (LEN=30) , PARAMETER :: c_upname='write_calculated_dredged_vol_d' !
     ! variables
-    INTEGER       :: i, k, n, unit, stat ! 
+    INTEGER       :: i, n, unit, stat ! 
     TYPE (t_file) :: l_file ! 
     !
     l_file = get_io_info_file(output_files(1))
@@ -209,7 +209,7 @@ CONTAINS
     !! name of subroutine
     CHARACTER (LEN=25) , PARAMETER :: c_upname='write_final_dredged_vol_d' !
     ! variables
-    INTEGER       :: i, k, n, unit, stat ! 
+    INTEGER       :: i, n, unit, stat ! 
     TYPE (t_file) :: l_file ! 
     !
     l_file = get_io_info_file(output_files(1))
@@ -283,7 +283,7 @@ CONTAINS
     !! name of subroutine
     CHARACTER (LEN=27) , PARAMETER :: c_upname='write_dredged_volumes_pop_d' !
     ! variables
-    INTEGER       :: i, k, n, unit, stat ! 
+    INTEGER       :: i, n, unit, stat ! 
     TYPE (t_file) :: l_file ! 
     !
     l_file = get_io_info_file(output_files(1))
@@ -410,7 +410,7 @@ CONTAINS
                   l_disp_sediment_volume(n)
           ELSE
              WRITE (unit, 8010, IOSTAT=stat) &
-               	  list_of_disp_polys(n), &
+                  list_of_disp_polys(n), &
                   datetime_to_string(act_time), &
                   0.0_Double, &
                   0.0_Double
@@ -473,9 +473,9 @@ CONTAINS
           '  Final Disposed Fractions : ',G15.8,' ',A)
     !
     IF (ALLOCATED(l_disp_total_volume)) THEN
-    	DEALLOCATE(l_disp_sediment_volume)
-    	DEALLOCATE(l_disp_fraction_volume)
-    	DEALLOCATE(l_disp_total_volume)
+        DEALLOCATE(l_disp_sediment_volume)
+        DEALLOCATE(l_disp_fraction_volume)
+        DEALLOCATE(l_disp_total_volume)
     END IF
     !
   END SUBROUTINE write_final_disposed_vol_d
@@ -592,9 +592,9 @@ CONTAINS
           '  Disposed Fractions       : ',G15.8,' ',A)
     !
     IF (ALLOCATED(l_disp_total_volume)) THEN
-    	DEALLOCATE(l_disp_sediment_volume)
-    	DEALLOCATE(l_disp_fraction_volume)
-    	DEALLOCATE(l_disp_total_volume)
+        DEALLOCATE(l_disp_sediment_volume)
+        DEALLOCATE(l_disp_fraction_volume)
+        DEALLOCATE(l_disp_total_volume)
     END IF
 
     !
@@ -620,11 +620,11 @@ CONTAINS
     IF (get_nof_dredge_poly( ) > 0) ALLOCATE(l_dredge_poly_name(get_nof_dredge_poly( )))
     DO n=1,get_nof_dredge_poly( )
        IF (get_criterion_crit_type(dredge_criterion(n))==1) THEN
-       	  l_dredge_poly_name(n) = 'Bottom_Depth_Criterion'
+          l_dredge_poly_name(n) = 'Bottom_Depth_Criterion'
        ELSE IF (get_criterion_crit_type(dredge_criterion(n))==2) THEN
-       	  l_dredge_poly_name(n) = 'Water_Depth_Criterion'
+          l_dredge_poly_name(n) = 'Water_Depth_Criterion'
        ELSE IF (get_criterion_crit_type(dredge_criterion(n))==3) THEN
-       	  l_dredge_poly_name(n) = 'Reference_Surface_Criterion'
+          l_dredge_poly_name(n) = 'Reference_Surface_Criterion'
        END IF
     END DO
     !
@@ -636,179 +636,179 @@ CONTAINS
        restart_filename='DSRES'
     ENDIF
     OPEN (UNIT=restart_unit, FILE=restart_filename, STATUS='UNKNOWN', &
-	ACTION='WRITE', IOSTAT=ierror)
+        ACTION='WRITE', IOSTAT=ierror)
     IF (ANY(delta_dredge_node_depth(:,:) /= 0.0_Double) .OR.&
         ANY(node_sediment_volume_rs(:,:) /= 0.0_Double) .OR.&
         ANY(delta_disp_node_depth(:,:,:) /= 0.0_Double)) THEN
-	DO n=1,get_nof_dredge_poly( )
+        DO n=1,get_nof_dredge_poly( )
            IF (ANY(delta_dredge_node_depth(:,n) /= 0.0_Double)) THEN
               WRITE (restart_unit, FMT = 990, IOSTAT=status) &
               last_act_time_rs, &
               n, &
-	      -99.999_Double, &
-	      -99.999_Double, &
-	      last_obs_time_rs(n), &
+              -99.999_Double, &
+              -99.999_Double, &
+              last_obs_time_rs(n), &
               next_obs_time_rs(n), &
               ini_time_rs
-	   END IF
+           END IF
        END DO
        DO n=1,get_nof_dredge_poly( )
           DO i=1,get_nof_nodes( )
-	     IF (delta_dredge_node_depth(i,n) /= 0.0_Double) THEN
-	        IF (NCSIZE .GT. 1) THEN
-	            WRITE (restart_unit, FMT = 1000, IOSTAT=status) &
+             IF (delta_dredge_node_depth(i,n) /= 0.0_Double) THEN
+                IF (NCSIZE .GT. 1) THEN
+                    WRITE (restart_unit, FMT = 1000, IOSTAT=status) &
                    TRIM(get_criterion_poly_name(dredge_criterion(n))), &
                     knolg(i), &
-	            delta_dredge_node_depth(i,n), &
-	            aim_node_depth(i,n), &
+                    delta_dredge_node_depth(i,n), &
+                    aim_node_depth(i,n), &
                     TRIM(l_dredge_poly_name(n)), &
                     '---', &
                     '---'
-	         ELSE
-	            WRITE (restart_unit, FMT = 1000, IOSTAT=status) &
+                 ELSE
+                    WRITE (restart_unit, FMT = 1000, IOSTAT=status) &
                     TRIM(get_criterion_poly_name(dredge_criterion(n))), &
                     i, &
-	            delta_dredge_node_depth(i,n), &
-	            aim_node_depth(i,n), &
+                    delta_dredge_node_depth(i,n), &
+                    aim_node_depth(i,n), &
                     TRIM(l_dredge_poly_name(n)), &
                     '---', &
                     '---'
-	         END IF
-	      END IF
-	   END DO
-	END DO
-	DO n=1,get_nof_dredge_poly( )
+                 END IF
+              END IF
+           END DO
+        END DO
+        DO n=1,get_nof_dredge_poly( )
            DO i=1,get_nof_nodes( )
-	      IF (node_sediment_volume_rs(i,n) /= 0.0_Double) THEN
-	         DO k=1,get_nof_sediment_fraction( )
-	            IF (NCSIZE .GT. 1) THEN
-	               WRITE (restart_unit, FMT = 1100, IOSTAT=status) &
+              IF (node_sediment_volume_rs(i,n) /= 0.0_Double) THEN
+                 DO k=1,get_nof_sediment_fraction( )
+                    IF (NCSIZE .GT. 1) THEN
+                       WRITE (restart_unit, FMT = 1100, IOSTAT=status) &
                        TRIM(get_criterion_poly_name(dredge_criterion(n))), &
                        knolg(i), &
-	               node_sediment_volume_rs(i,n), &
-	               node_fraction_volume_rs(i,k,n), &
+                       node_sediment_volume_rs(i,n), &
+                       node_fraction_volume_rs(i,k,n), &
                        TRIM(fraction_name(k)), &
                        '---', &
                        '---'
-	            ELSE
-	               WRITE (restart_unit, FMT = 1100, IOSTAT=status) &
+                    ELSE
+                       WRITE (restart_unit, FMT = 1100, IOSTAT=status) &
                        TRIM(get_criterion_poly_name(dredge_criterion(n))), &
                        i, &
-	               node_sediment_volume_rs(i,n), &
-	               node_fraction_volume_rs(i,k,n), &
+                       node_sediment_volume_rs(i,n), &
+                       node_fraction_volume_rs(i,k,n), &
                        TRIM(fraction_name(k)), &
                        '---', &
                        '---'
-	            END IF
-	         END DO
-	      END IF
-	   END DO
-	END DO
-	DO n=1,get_nof_dredge_poly( )
-       DO i=1,get_nof_nodes( )
+                    END IF
+                 END DO
+              END IF
+           END DO
+        END DO
+        DO n=1,get_nof_dredge_poly( )
+        DO i=1,get_nof_nodes( )
           IF (node_total_volume(i,n) /= 0.0_Double) THEN
-	        IF (NCSIZE .GT. 1) THEN
-	            WRITE (restart_unit, FMT = 1200, IOSTAT=status) &
+                IF (NCSIZE .GT. 1) THEN
+                    WRITE (restart_unit, FMT = 1200, IOSTAT=status) &
                     TRIM(get_criterion_poly_name(dredge_criterion(n))), &
                     knolg(i), &
-	                node_total_volume(i,n), &
-	                -99.999_Double, &
+                        node_total_volume(i,n), &
+                        -99.999_Double, &
                     TRIM(l_dredge_poly_name(n)), &
                     '---', &
                     '---'
-	         ELSE
-	            WRITE (restart_unit, FMT = 1200, IOSTAT=status) &
+                 ELSE
+                    WRITE (restart_unit, FMT = 1200, IOSTAT=status) &
                     TRIM(get_criterion_poly_name(dredge_criterion(n))), &
                     i, &
-	            node_total_volume(i,n), &
-	            -99.999_Double, &
+                    node_total_volume(i,n), &
+                    -99.999_Double, &
                     TRIM(l_dredge_poly_name(n)), &
                     '---', &
                     '---'
-	         END IF
-	      END IF
-	   END DO
-	END DO
-	DO n=1,get_nof_dredge_poly( )
-	   DO k=1,nof_dispose_poly
+                 END IF
+              END IF
+           END DO
+        END DO
+        DO n=1,get_nof_dredge_poly( )
+           DO k=1,nof_dispose_poly
               DO i=1,get_nof_nodes( )
-	         IF (delta_disp_node_depth(i,n,k) /= 0.0_Double) THEN
+                 IF (delta_disp_node_depth(i,n,k) /= 0.0_Double) THEN
                    IF (NCSIZE .GT. 1) THEN
-	               WRITE (restart_unit, FMT = 2000, IOSTAT=status) &
+                       WRITE (restart_unit, FMT = 2000, IOSTAT=status) &
                       TRIM(dispose_poly_name(k,n)), &
                       knolg(i), &
-	               delta_disp_node_depth(i,n,k), &
-	               disp_node_depth(i,n,k), &
-	               TRIM(get_criterion_poly_name(dredge_criterion(n))), &
-	               '---', &
+                       delta_disp_node_depth(i,n,k), &
+                       disp_node_depth(i,n,k), &
+                       TRIM(get_criterion_poly_name(dredge_criterion(n))), &
+                       '---', &
                       '---'
-	            ELSE
-	               WRITE (restart_unit, FMT = 2000, IOSTAT=status) &
+                    ELSE
+                       WRITE (restart_unit, FMT = 2000, IOSTAT=status) &
                        TRIM(dispose_poly_name(k,n)), &
                        i, &
-	               delta_disp_node_depth(i,n,k), &
-	               disp_node_depth(i,n,k), &
-	               TRIM(get_criterion_poly_name(dredge_criterion(n))), &
-	               '---', &
+                       delta_disp_node_depth(i,n,k), &
+                       disp_node_depth(i,n,k), &
+                       TRIM(get_criterion_poly_name(dredge_criterion(n))), &
+                       '---', &
                       '---'
                     END IF
-	         ELSEIF (dispose_node_index(i,n,k) ==1 .AND. delta_disp_node_depth(i,n,k) == 0.0_Double&
+                 ELSEIF (dispose_node_index(i,n,k) ==1 .AND. delta_disp_node_depth(i,n,k) == 0.0_Double&
                        .AND. ANY(delta_dredge_node_depth(:,n) /= 0.0_Double)) THEN
                     IF (NCSIZE .GT. 1) THEN
-	               WRITE (restart_unit, FMT = 2000, IOSTAT=status) &
+                       WRITE (restart_unit, FMT = 2000, IOSTAT=status) &
                       TRIM(dispose_poly_name(k,n)), &
                       knolg(i), &
-	               delta_disp_node_depth(i,n,k), &
-	               disp_node_depth(i,n,k), &
-	               TRIM(get_criterion_poly_name(dredge_criterion(n))), &
-	               '---', &
+                       delta_disp_node_depth(i,n,k), &
+                       disp_node_depth(i,n,k), &
+                       TRIM(get_criterion_poly_name(dredge_criterion(n))), &
+                       '---', &
                       '---'
-	             ELSE
-	               WRITE (restart_unit, FMT = 2000, IOSTAT=status) &
+                     ELSE
+                       WRITE (restart_unit, FMT = 2000, IOSTAT=status) &
                        TRIM(dispose_poly_name(k,n)), &
                        i, &
-	               delta_disp_node_depth(i,n,k), &
-	               disp_node_depth(i,n,k), &
-	               TRIM(get_criterion_poly_name(dredge_criterion(n))), &
-	               '---', &
+                       delta_disp_node_depth(i,n,k), &
+                       disp_node_depth(i,n,k), &
+                       TRIM(get_criterion_poly_name(dredge_criterion(n))), &
+                       '---', &
                       '---'
                     END IF
              END IF
-	      END DO
-	   END DO
-	END DO
-	DO n=1,get_nof_dredge_poly( )
-	   DO k=1,nof_dispose_poly
+              END DO
+           END DO
+        END DO
+        DO n=1,get_nof_dredge_poly( )
+           DO k=1,nof_dispose_poly
               IF (dredged_sediment_volume_to_disp(n,k) /= 0.0_Double) THEN
-	         DO i=1,get_nof_sediment_fraction( )
+                 DO i=1,get_nof_sediment_fraction( )
                     WRITE (restart_unit, FMT = 2100, IOSTAT=status) &
                     TRIM(dispose_poly_name(k,n)), &
                     i, &
-	            dredged_sediment_volume_to_disp(n,k), &
-	            dredged_fraction_volume_to_disp(n,k,i), &
-	            TRIM(get_criterion_poly_name(dredge_criterion(n))), &
-	            '---', &
+                    dredged_sediment_volume_to_disp(n,k), &
+                    dredged_fraction_volume_to_disp(n,k,i), &
+                    TRIM(get_criterion_poly_name(dredge_criterion(n))), &
+                    '---', &
                    '---'
- 	         END DO
-	      END IF
-	   END DO
-	END DO
-       DO n=1,nof_dredge_poly_tc
-	   IF (act_time >= dredge_time_tc(n,1) .AND. act_time < disposal_time_tc(n,2)) THEN
-	      IF (sediment_volume_tc(n) /= 0.0_Double) THEN
+                 END DO
+              END IF
+           END DO
+        END DO
+        DO n=1,nof_dredge_poly_tc
+           IF (act_time >= dredge_time_tc(n,1) .AND. act_time < disposal_time_tc(n,2)) THEN
+              IF (sediment_volume_tc(n) /= 0.0_Double) THEN
                  DO i=1,get_nof_sediment_fraction( )
                     WRITE (restart_unit, FMT = 2100, IOSTAT=status) &
                     TRIM(dispose_poly_name_tc(n)), &
                     i, &
-	            sediment_volume_tc(n), &
-	            fraction_volume_tc(i,n), &
-	            TRIM(dredge_poly_name_tc(n)), &
-	            '---', &
+                    sediment_volume_tc(n), &
+                    fraction_volume_tc(i,n), &
+                    TRIM(dredge_poly_name_tc(n)), &
+                    '---', &
                    '---'
- 	         END DO
- 	     END IF
-	   END IF
-	END DO
+                 END DO
+             END IF
+           END IF
+        END DO
     CLOSE (restart_unit)
     ELSE
     CLOSE (restart_unit, status='delete')
@@ -819,7 +819,7 @@ CONTAINS
     1200 FORMAT ( 'dredged_volumes    ',A,' ',I6,' ',G15.8,' ',G15.8,' ',A,' ', A,' ', A)
     2000 FORMAT ( 'criterion_disposal ',A,' ',I6,' ',G15.8,' ',G15.8,' ',A,' ', A,' ', A)
     2100 FORMAT ( 'fractions_to_disp  ',A,' ',I6,' ',G15.8,' ',G15.8,' ',A,' ', A,' ', A)
-    3000 FORMAT ( 'time_steered_disp  ',A,' ',I6,' ',G15.8,' ',G15.8,' ',A,' ', A,' ', A)
+!   3000 FORMAT ( 'time_steered_disp  ',A,' ',I6,' ',G15.8,' ',G15.8,' ',A,' ', A,' ', A)
     !
     IF(ALLOCATED(l_dredge_poly_name)) DEALLOCATE(l_dredge_poly_name)
   END SUBROUTINE write_restart_data_d

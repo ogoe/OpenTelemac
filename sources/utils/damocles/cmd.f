@@ -99,7 +99,11 @@
 !-----------------------------------------------------------------------
 !
       INTEGER          I1,IAD,L1,L2,TRANS,ISIZE,K,I,N
-      CHARACTER*72     FORMA1(35)
+      CHARACTER(LEN=72)  :: FMT0, FMT1, FMT2, FMT3, FMT4, FMT5, FMT6, 
+     &     FMT7, FMT8, FMT9, FMT10, FMT11, FMT12, FMT13, FMT14, FMT15, 
+     &     FMT16, FMT17, FMT18, FMT19, FMT20, FMT21, FMT22, FMT23, 
+     &     FMT24, FMT25, FMT26, FMT27, FMT28, FMT29, FMT30, FMT31, 
+     &     FMT32, FMT33, FMT34, FMT35 
       CHARACTER*6      TYP(4)
       CHARACTER*1      TABUL
 !
@@ -157,21 +161,21 @@
  13          FORMAT(1X,/,1X,'VALUES OF THE KEY-WORDS:',/)
            ENDIF
 !
-           FORMA1(1)= '(1X,A,/,1X,7HMOTINT(,1I3,2H)=,A,I9   ,/)'
-           FORMA1(2)= '(1X,A,/,1X,7HMOTREA(,1I3,2H)=,A,G16.7,/)'
-           FORMA1(3)= '(1X,A,/,1X,7HMOTLOG(,1I3,2H)=,A,L1   ,/)'
-           FORMA1(4)= '(1X,A,/,1X,7HMOTCAR(,1I3,2H)=,A,A    ,/)'
-           FORMA1(5)= '(1X,A,/,1X,7HMOTINT(,1I3,4H) = ,A,3H ; ,I9   ,/)'
-           FORMA1(6)= '(1X,A,/,1X,7HMOTREA(,1I3,4H) = ,A,3H ; ,G16.7,/)'
-           FORMA1(7)= '(1X,A,/,1X,7HMOTLOG(,1I3,4H) = ,A,3H ; ,L1   ,/)'
-           FORMA1(8)= '(1X,A,/,1X,7HMOTCAR(,1I3,4H) = ,A,3H ; ,A    ,/)'
+           fmt1 ="(1X,A,/,1X,'MOTINT(',1I3,')=',A,I9   ,/)"
+           fmt2 ="(1X,A,/,1X,'MOTREA(',1I3,')=',A,G16.7,/)"
+           fmt3 ="(1X,A,/,1X,'MOTLOG(',1I3,')=',A,L1   ,/)"
+           fmt4 ="(1X,A,/,1X,'MOTCAR(',1I3,')=',A,A    ,/)"
+           fmt5 ="(1X,A,/,1X,'MOTINT(',1I3,') = ',A,' ; ',I9   ,/)"
+           fmt6 ="(1X,A,/,1X,'MOTREA(',1I3,') = ',A,' ; ',G16.7,/)"
+           fmt7 ="(1X,A,/,1X,'MOTLOG(',1I3,') = ',A,' ; ',L1   ,/)"
+           fmt8 ="(1X,A,/,1X,'MOTCAR(',1I3,') = ',A,' ; ',A    ,/)"
 !
-           DO 209 N =1,4
-           DO 210 I = 1 , NMAXR(N)
+           DO N =1,4
+           DO I = 1 , NMAXR(N)
            IF(UTINDX(N,I)) THEN
            ISIZE = SIZE(N,I)
            IF(TROUVE(N,I).GE.1) THEN
-             DO 211 K=1,DIMENS(N,I)
+             DO K=1,DIMENS(N,I)
              IAD = ADRESS(N,I) + K - 1
               IF (INDIC(N,I).LT.2) THEN
                 TRANS=0
@@ -182,23 +186,42 @@
                 L1=LONGLU(MOTATT(N,IAD))
               ENDIF
 !             IF (TROUVE(N,I).NE.3) THEN
+              ! Array as format not accepted in fortran 95
+              SELECT CASE (N+TRANS)
+              CASE(1)
+                fmt0 = fmt1
+              CASE(2)
+                fmt0 = fmt2
+              CASE(3)
+                fmt0 = fmt3
+              CASE(4)
+                fmt0 = fmt4
+              CASE(5)
+                fmt0 = fmt5
+              CASE(6)
+                fmt0 = fmt6
+              CASE(7)
+                fmt0 = fmt7
+              CASE(8)
+                fmt0 = fmt8
+              END SELECT
                IF(N.EQ.1) THEN
-                WRITE(LU,FORMA1(N+TRANS))
+                WRITE(LU,FMT0)
      &          MOTCLE(N,I)(1:ISIZE),IAD,MOTATT(N,IAD)(1:L1),MOTINT(IAD)
                ELSE IF (N.EQ.2) THEN
-                WRITE(LU,FORMA1(N+TRANS))
+                WRITE(LU,FMT0)
      &          MOTCLE(N,I)(1:ISIZE),IAD,MOTATT(N,IAD)(1:L1),MOTREA(IAD)
                ELSE IF (N.EQ.3) THEN
-                WRITE(LU,FORMA1(N+TRANS))
+                WRITE(LU,FMT0)
      &          MOTCLE(N,I)(1:ISIZE),IAD,MOTATT(N,IAD)(1:L1),MOTLOG(IAD)
                ELSE IF (N.EQ.4) THEN
                 L2 = LONGLU(MOTCAR(IAD))
-                WRITE(LU,FORMA1(N+TRANS))
+                WRITE(LU,FMT0)
      &          MOTCLE(N,I)(1:ISIZE),IAD,MOTATT(N,IAD)(1:L1),
      &          MOTCAR(IAD)(1:L2)
                ENDIF
 !             ENDIF
-211        CONTINUE
+             ENDDO ! K
            ELSE
              IF(LNG.EQ.1) THEN
                WRITE(LU,212) MOTCLE(N,I)(1:ISIZE)
@@ -210,8 +233,8 @@
            ENDIF
 !
            ENDIF
-210        CONTINUE
-209        CONTINUE
+           ENDDO ! I
+           ENDDO ! N
 !
 ! *********************** COMMAND &IND **************************
 !
@@ -223,86 +246,115 @@
 !
 ! DEFINITION OF THE FORMATS USED
 !
-           FORMA1(1)  = '(1X,7HMOTINT(,1I3,3H) =,A,I9   )'
-           FORMA1(2)  = '(1X,7HMOTREA(,1I3,3H) =,A,G16.7)'
-           FORMA1(3)  = '(1X,7HMOTLOG(,1I3,3H) =,A,L1   )'
-           FORMA1(4)  = '(1X,7HMOTCAR(,1I3,3H) =,A,A    )'
-           FORMA1(5)  = '(1X,7HMOTINT(,1I3,4H) = ,A,3H ; ,I9   )'
-           FORMA1(6)  = '(1X,7HMOTREA(,1I3,4H) = ,A,3H ; ,G16.7)'
-           FORMA1(7)  = '(1X,7HMOTLOG(,1I3,4H) = ,A,3H ; ,L1   )'
-           FORMA1(8)  = '(1X,7HMOTCAR(,1I3,4H) = ,A,3H ; ,A    )'
-           FORMA1(9)  = '(1X,24H!!! TABLEAU COMPACTE !!!)'
-           FORMA1(10) = '(1X,23H!!! COMPACTED ARRAY !!!)'
-           FORMA1(11) = '(1X,32HATTENTION ! TAILLE EN SORTIE = 0)'
-           FORMA1(12) = '(1X,25HWARNING ! OUTPUT SIZE = 0)'
-           FORMA1(13) = '(1X,9HTAILLE = ,I4)'
-           FORMA1(14) = '(1X,8HSIZE  = ,I4)'
-           FORMA1(15) = '(1X,30HVALEUR OPTIONNELLE NON TROUVEE)'
-           FORMA1(16) = '(1X,24HOPTIONAL VALUE NOT FOUND)'
-           FORMA1(17) = '(1X,25HVALEUR FORCEE NON TROUVEE)'
-           FORMA1(18) = '(1X,22HFORCED VALUE NOT FOUND)'
-           FORMA1(19) = '(1X,9HINDEX  = ,I4)'
-           FORMA1(20) = '(1X,8HINDEX = ,I4)'
-           FORMA1(21) = '(1X,18HVALEUR NON TROUVEE)'
-           FORMA1(22) = '(1X,15HVALUE NOT FOUND)'
-           FORMA1(23) = '(/,1X,22HVALEUR DES MOTS-CLES :,/)'
-           FORMA1(24) = '(/,1X,25HVALUES OF THE KEY-WORDS :,/)'
-           FORMA1(25) = '(1X,29HNOMBRE DE MOTS ENTIERS     = ,I4,'//
-     &                  '10X,16H(DERNIER INDEX :,I4,1H))'
-           FORMA1(26) = '(1X,32HNUMBER OF INTEGER   KEY WORDS = ,I4,'//
-     &                  '10X,13H(LAST INDEX :,I4,1H))'
-           FORMA1(27) = '(1X,29HNOMBRE DE MOTS REELS       = ,I4,'//
-     &                  '10X,16H(DERNIER INDEX :,I4,1H))'
-           FORMA1(28) = '(1X,32HNUMBER OF REAL      KEY WORDS = ,I4,'//
-     &                  '10X,13H(LAST INDEX :,I4,1H))'
-           FORMA1(29) = '(1X,29HNOMBRE DE MOTS LOGIQUES    = ,I4,'//
-     &                  '10X,16H(DERNIER INDEX :,I4,1H))'
-           FORMA1(30) = '(1X,32HNUMBER OF LOGICAL   KEY WORDS = ,I4,'//
-     &                  '10X,13H(LAST INDEX :,I4,1H))'
-           FORMA1(31) = '(1X,29HNOMBRE DE MOTS CARACTERES  = ,I4,'//
-     &                  '10X,16H(DERNIER INDEX :,I4,1H))'
-           FORMA1(32) = '(1X,32HNUMBER OF CHARACTER KEY WORDS = ,I4,'//
-     &                  '10X,13H(LAST INDEX :,I4,1H))'
-           FORMA1(33) = '(1X,29HNOMBRE TOTAL DE MOTS CLES  = ,I4)'
-           FORMA1(34) = '(1X,32HTOTAL NUMBER OF KEY WORDS     = ,I4)'
-           FORMA1(35) = '(/,1X,70(1H-),/,1X,A,/,1X,70(1H-))'
-!
-! TITLE
-           WRITE(LU,FORMA1(22+LNG))
+           FMT1 ="(1X,'MOTINT(',1I3,') =',A,I9   )"
+           FMT2 ="(1X,'MOTREA(',1I3,') =',A,G16.7)"
+           FMT3 ="(1X,'MOTLOG(',1I3,') =',A,L1   )"
+           FMT4 ="(1X,'MOTCAR(',1I3,') =',A,A    )"
+           FMT5 ="(1X,'MOTINT(',1I3,') = ',A,' ; ',I9   )"
+           FMT6 ="(1X,'MOTREA(',1I3,') = ',A,' ; ',G16.7)"
+           FMT7 ="(1X,'MOTLOG(',1I3,') = ',A,' ; ',L1   )"
+           FMT8 ="(1X,'MOTCAR(',1I3,') = ',A,' ; ',A    )"
+           FMT9 ="(1X,'!!! TABLEAU COMPACTE !!!')"
+           FMT10="(1X,'!!! COMPACTED ARRAY !!!')"
+           FMT11="(1X,'ATTENTION ! TAILLE EN SORTIE = 0')"
+           FMT12="(1X,'WARNING ! OUTPUT SIZE = 0')"
+           FMT13="(1X,'TAILLE = ',I4)"
+           FMT14="(1X,'SIZE  = ',I4)"
+           FMT15="(1X,'VALEUR OPTIONNELLE NON TROUVEE')"
+           FMT16="(1X,'OPTIONAL VALUE NOT FOUND')"
+           FMT17="(1X,'VALEUR FORCEE NON TROUVEE')"
+           FMT18="(1X,'FORCED VALUE NOT FOUND')"
+           FMT19="(1X,'INDEX  = ',I4)"
+           FMT20="(1X,'INDEX = ',I4)"
+           FMT21="(1X,'VALEUR NON TROUVEE')"
+           FMT22="(1X,'VALUE NOT FOUND')"
+           FMT23="(/,1X,'VALEUR DES MOTS-CLES :',/)"
+           FMT24="(/,1X,'VALUES OF THE KEY-WORDS :',/)"
+           FMT25="(1X,'NOMBRE DE MOTS ENTIERS     = ',I4,)"//
+     &           "10X,'(DERNIER INDEX :',I4,')')"
+           FMT26="(1X,'NUMBER OF INTEGER   KEY WORDS = ',I4,"//
+     &           "10X,'(LAST INDEX :',I4,')')"
+           FMT27="(1X,'NOMBRE DE MOTS REELS       = ',I4,"//
+     &           "10X,'(DERNIER INDEX :',I4,')')"
+           FMT28="(1X,'NUMBER OF REAL      KEY WORDS = ',I4,"//
+     &           "10X,'(LAST INDEX :',I4,')')"
+           FMT29="(1X,'NOMBRE DE MOTS LOGIQUES    = ',I4,"//
+     &           "10X,'(DERNIER INDEX :',I4,')')"
+           FMT30="(1X,'NUMBER OF LOGICAL   KEY WORDS = ',I4,"//
+     &           "10X,'(LAST INDEX :',I4,')')"
+           FMT31="(1X,'NOMBRE DE MOTS CARACTERES  = ',I4,"//
+     &           "10X,'(DERNIER INDEX :',I4,')')"
+           FMT32="(1X,'NUMBER OF CHARACTER KEY WORDS = ',I4,"//
+     &           "10X,'(LAST INDEX :',I4,')')"
+           FMT33="(1X,'NOMBRE TOTAL DE MOTS CLES  = ',I4)"
+           FMT34="(1X,'TOTAL NUMBER OF KEY WORDS     = ',I4)"
+           FMT35="(/,1X,70('-'),/,1X,A,/,1X,70('-'))"
+! 
+! TITLE 
+      IF(LNG.EQ.1) THEN
+           WRITE(LU,FMT23)
 !
            WRITE(LU,*)' '
            WRITE(LU,*)'====================================='
-           WRITE(LU,FORMA1(24+LNG)) NMOT(1),NMAXR(1)
-           WRITE(LU,FORMA1(26+LNG)) NMOT(2),NMAXR(2)
-           WRITE(LU,FORMA1(28+LNG)) NMOT(3),NMAXR(3)
-           WRITE(LU,FORMA1(30+LNG)) NMOT(4),NMAXR(4)
+           WRITE(LU,FMT25) NMOT(1),NMAXR(1)
+           WRITE(LU,FMT27) NMOT(2),NMAXR(2)
+           WRITE(LU,FMT29) NMOT(3),NMAXR(3)
+           WRITE(LU,FMT25) NMOT(4),NMAXR(4)
            WRITE(LU,*)'-------------------------------------'
-           WRITE(LU,FORMA1(32+LNG)) NMOT(1)+NMOT(2)+NMOT(3)+NMOT(4)
+           WRITE(LU,FMT33) NMOT(1)+NMOT(2)+NMOT(3)+NMOT(4)
            WRITE(LU,*)'====================================='
            WRITE(LU,*)' '
+       ELSE
+           WRITE(LU,FMT24)
 !
-           DO 409 N =1,4
-           DO 410 I = 1 , NMAXR(N)
+           WRITE(LU,*)' '
+           WRITE(LU,*)'====================================='
+           WRITE(LU,FMT26) NMOT(1),NMAXR(1)
+           WRITE(LU,FMT28) NMOT(2),NMAXR(2)
+           WRITE(LU,FMT30) NMOT(3),NMAXR(3)
+           WRITE(LU,FMT26) NMOT(4),NMAXR(4)
+           WRITE(LU,*)'-------------------------------------'
+           WRITE(LU,FMT34) NMOT(1)+NMOT(2)+NMOT(3)+NMOT(4)
+           WRITE(LU,*)'====================================='
+           WRITE(LU,*)' '
+       
+       ENDIF
+!
+           DO N =1,4
+           DO I = 1 , NMAXR(N)
            IF(UTINDX(N,I)) THEN
            IF(TROUVE(N,I).GE.1.OR.DIMENS(N,I).GT.1) THEN
-             WRITE(LU,FORMA1(35)) MOTCLE(N,I)(1:SIZE(N,I))
+             WRITE(LU,FMT35) MOTCLE(N,I)(1:SIZE(N,I))
 ! COMPACTED ?
-             IF (TROUVE(N,I).EQ.5) WRITE(LU,FORMA1(8+LNG))
+             IF (TROUVE(N,I).EQ.5) THEN
+               IF(LNG.EQ.1) WRITE(LU,FMT9)
+               IF(LNG.EQ.2) WRITE(LU,FMT10)
+             ENDIF
 ! INDEX
-             WRITE(LU,FORMA1(18+LNG)) I
+             IF(LNG.EQ.1) WRITE(LU,FMT19) I
+             IF(LNG.EQ.2) WRITE(LU,FMT20) I
 ! SIZE
-             WRITE(LU,FORMA1(12+LNG)) DIMENS(N,I)
-             IF (DIMENS(N,I).GT.1.AND.TROUVE(N,I).EQ.0.AND.DYNAM)
-     &          WRITE(LU,FORMA1(10+LNG))
+             IF(LNG.EQ.1) WRITE(LU,FMT13) DIMENS(N,I)
+             IF(LNG.EQ.2) WRITE(LU,FMT14) DIMENS(N,I)
+             IF (DIMENS(N,I).GT.1.AND.TROUVE(N,I).EQ.0.AND.DYNAM) THEN
+                IF(LNG.EQ.1) WRITE(LU,FMT11)
+                IF(LNG.EQ.2) WRITE(LU,FMT12)
+             ENDIF
 !
 ! TROUVE ?
-             IF (TROUVE(N,I).EQ.3) WRITE(LU,FORMA1(14+LNG))
-             IF (TROUVE(N,I).EQ.6) WRITE(LU,FORMA1(16+LNG))
+             IF (TROUVE(N,I).EQ.3) THEN
+               IF(LNG.EQ.1) WRITE(LU,FMT15)
+               IF(LNG.EQ.2) WRITE(LU,FMT16)
+             ENDIF
+             IF (TROUVE(N,I).EQ.6) THEN
+               IF(LNG.EQ.1) WRITE(LU,FMT17)
+               IF(LNG.EQ.2) WRITE(LU,FMT18)
+             ENDIF
 !
 ! LINEFEED FOR PRESENTATION PURPOSES
              IF (DIMENS(N,I).GT.1) WRITE(LU,*) ' '
 !
-             DO 411 K=1,DIMENS(N,I)
+             DO K=1,DIMENS(N,I)
               IAD = ADRESS(N,I) + K - 1
               IF (INDIC(N,I).GE.2) THEN
                 TRANS = 4
@@ -314,33 +366,57 @@
               ENDIF
 !
 !             IF (TROUVE(N,I).NE.3) THEN
+               SELECT CASE (N+TRANS)
+               CASE(1)
+                 fmt0 = fmt1
+               CASE(2)
+                 fmt0 = fmt2
+               CASE(3)
+                 fmt0 = fmt3
+               CASE(4)
+                 fmt0 = fmt4
+               CASE(5)
+                 fmt0 = fmt5
+               CASE(6)
+                 fmt0 = fmt6
+               CASE(7)
+                 fmt0 = fmt7
+               CASE(8)
+                 fmt0 = fmt8
+               END SELECT
                IF(N.EQ.1) THEN
-                    WRITE(LU,FORMA1(N+TRANS))
+                    WRITE(LU,FMT0)
      &                    IAD,MOTATT(N,IAD)(1:L1),MOTINT(IAD)
                ELSE IF (N.EQ.2) THEN
-                    WRITE(LU,FORMA1(N+TRANS))
+                    WRITE(LU,FMT0)
      &                    IAD,MOTATT(N,IAD)(1:L1),MOTREA(IAD)
                ELSE IF (N.EQ.3) THEN
-                    WRITE(LU,FORMA1(N+TRANS))
+                    WRITE(LU,FMT0)
      &                    IAD,MOTATT(N,IAD)(1:L1),MOTLOG(IAD)
                ELSE IF (N.EQ.4) THEN
                     L2 = LONGLU(MOTCAR(IAD))
-                    WRITE(LU,FORMA1(N+TRANS))
+                    WRITE(LU,FMT0)
      &                    IAD,MOTATT(N,IAD)(1:L1),MOTCAR(IAD)(1:L2)
                ENDIF
 !             ENDIF
-411        CONTINUE
+           ENDDO ! K
            ELSE
-              WRITE(LU,FORMA1(35)) MOTCLE(N,I)(1:SIZE(N,I))
-              WRITE(LU,FORMA1(20+LNG))
-              WRITE(LU,FORMA1(18+LNG)) I
-              WRITE(LU,FORMA1(12+LNG)) DIMENS(N,I)
+              WRITE(LU,FMT35) MOTCLE(N,I)(1:SIZE(N,I))
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,FMT21)
+                WRITE(LU,FMT19) I
+                WRITE(LU,FMT13) DIMENS(N,I)
+              ELSE
+                WRITE(LU,FMT22)
+                WRITE(LU,FMT20) I
+                WRITE(LU,FMT14) DIMENS(N,I)
+              ENDIF
               WRITE(LU,*)' '
            ENDIF
 !
            ENDIF
-410        CONTINUE
-409        CONTINUE
+           ENDDO ! I
+           ENDDO ! N
 !
 ! *********************** COMMAND &LIS **************************
 !
@@ -350,30 +426,33 @@
              GO TO 1000
            ENDIF
 ! FORMATS
-           FORMA1(1) = '(/,1X,21HLISTE DES MOTS-CLES :,/)'
-           FORMA1(2) = '(/,1X,16HKEY-WORDS LIST :,/)'
-           FORMA1(3) = '(1X,12HDIMENSION : ,I3,5X,13HADRESSE DANS ,A,'//
-     &                 '1X,1H:,1X,I3)'
-           FORMA1(4) = '(1X,7HSIZE : ,I3,5X,10HADRESS IN ,A,'//
-     &                 '1X,1H:,1X,I3)'
-           FORMA1(5) =  '(1X,/,1X,A)'
+           FMT1 = "(/,1X,'LISTE DES MOTS-CLES :',/)"
+           FMT2 = "(/,1X,'KEY-WORDS LIST :',/)"
+           FMT3 = "(1X,'DIMENSION : ',I3,5X,'ADRESSE DANS ',A,"//
+     &                 "1X,':',1X,I3)"
+           FMT4 = "(1X,'SIZE : ',I3,5X,'ADRESS IN ',A,"//
+     &                 "1X,':',1X,I3)"
+           FMT5 = "(1X,/,1X,A)"
 ! TITLE
-           WRITE (LU,FORMA1(LNG))
+           IF(LNG.EQ.1) WRITE (LU,FMT1)
+           IF(LNG.EQ.2) WRITE (LU,FMT2)
 !
-           DO 309 N = 1 , 4
-           DO 310 I = 1 , NMAXR(N)
+           DO N = 1 , 4
+           DO I = 1 , NMAXR(N)
 !
            IF(UTINDX(N,I)) THEN
              IAD = ADRESS(N,I)
-             WRITE (LU,FORMA1(5)) MOTCLE(N,I)(1:SIZE(N,I))
+             WRITE (LU,FMT5) MOTCLE(N,I)(1:SIZE(N,I))
              IF (DIMENS(N,I).GT.1.AND.TROUVE(N,I).EQ.0.AND.DYNAM) THEN
-               WRITE (LU,FORMA1(2+LNG)) 0,TYP(N),IAD
+               IF(LNG.EQ.1) WRITE (LU,FMT3) 0,TYP(N),IAD
+               IF(LNG.EQ.2) WRITE (LU,FMT4) 0,TYP(N),IAD
              ELSE
-               WRITE (LU,FORMA1(2+LNG)) DIMENS(N,I),TYP(N),IAD
+               IF(LNG.EQ.1) WRITE (LU,FMT3) DIMENS(N,I),TYP(N),IAD
+               IF(LNG.EQ.2) WRITE (LU,FMT4) DIMENS(N,I),TYP(N),IAD
              ENDIF
            ENDIF
-310        CONTINUE
-309        CONTINUE
+           ENDDO ! I
+           ENDDO ! N
 !
 ! *********************** COMMAND &DOC **************************
 !

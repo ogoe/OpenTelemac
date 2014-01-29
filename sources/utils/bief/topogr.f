@@ -118,15 +118,15 @@
 !  INITIALISES ITRA01 TO DETECT HOLES IN THE MESH
 !  (POINTS NOT LINKED TO AN ELEMENT, CASE OF CURVILINEAR MESH)
 !
-      DO 6 I1    = 1 , MXPTVS+1
-      DO 5 IPOIN = 1 , NPOIN
-         ITRA01(IPOIN,I1) = 0
-5     CONTINUE
-6     CONTINUE
+      DO I1    = 1 , MXPTVS+1
+        DO IPOIN = 1 , NPOIN
+           ITRA01(IPOIN,I1) = 0
+        ENDDO ! IPOIN 
+      ENDDO ! I1    
 !
 !<<<<
 !
-      DO 10 IELEM = 1,NELEM
+      DO IELEM = 1,NELEM
 !
          I1 = IKLE(IELEM,1)
          I2 = IKLE(IELEM,2)
@@ -164,7 +164,7 @@
          ITRA01(I3,1) = IELEM
          ITRA02(I3)   = 3
 !
-10    CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -176,10 +176,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      DO 20 IPTFR = 1,NPTFR
+      DO IPTFR = 1,NPTFR
          ITRA01(NBOR(IPTFR),1) = NELBOR(IPTFR)
          ITRA02(NBOR(IPTFR))   = NULONE(IPTFR)
-20    CONTINUE
+      ENDDO ! IPTFR 
 !
 !-----------------------------------------------------------------------
 !
@@ -202,9 +202,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      DO 30 IPOIN = 1,NPOIN
+      DO IPOIN = 1,NPOIN
          ITRA03(IPOIN) = 0
-30    CONTINUE
+      ENDDO ! IPOIN 
 !
       IMAX = 0
 !
@@ -224,7 +224,7 @@
         STOP
       ENDIF
 !
-      DO 50 IPOIN = 1,NPOIN
+      DO IPOIN = 1,NPOIN
 !
          IF (ITRA03(IPOIN).EQ.0) THEN
             N1 = ITRA01(IPOIN,IMAX)
@@ -239,7 +239,7 @@
             ENDIF
          ENDIF
 !
-50    CONTINUE
+      ENDDO ! IPOIN 
 !
       IF (FLAG) GOTO 40
 !
@@ -257,14 +257,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      DO 70 IPOIN = 1,NPOIN
+      DO IPOIN = 1,NPOIN
          ITRA02(IPOIN) = 0
          ITRA05(IPOIN) = 0
-70    CONTINUE
+      ENDDO ! IPOIN 
 !
-      DO 80 I = 1,IMAX-1
+      DO I = 1,IMAX-1
 !
-         DO 90 IPOIN = 1,NPOIN
+         DO IPOIN = 1,NPOIN
 !
             IF (ITRA03(IPOIN).GE.I.OR.ITRA03(IPOIN).LT.-I) THEN
 !
@@ -281,11 +281,11 @@
 !
             ENDIF
 !
-90       CONTINUE
+         ENDDO ! IPOIN 
 !
-80    CONTINUE
+      ENDDO ! I 
 !
-      DO 95 IPOIN = 1,NPOIN
+      DO IPOIN = 1,NPOIN
          IF((ITRA03(IPOIN).LT.0.AND.(ITRA02(IPOIN).LE.-4.OR.
      &       ITRA02(IPOIN).GE.5)).OR.ABS(ITRA02(IPOIN)).GE.6) THEN
            IF (LNG.EQ.1) THEN
@@ -297,7 +297,7 @@
            ENDIF
            STOP
          ENDIF
-95    CONTINUE
+      ENDDO ! IPOIN 
 !
 !-----------------------------------------------------------------------
 !
@@ -307,7 +307,7 @@
 !
       FLAG = .FALSE.
 !
-      DO 100 IPOIN = 1,NPOIN
+      DO IPOIN = 1,NPOIN
 !
          I1 = ITRA03(IPOIN)
 !
@@ -446,30 +446,30 @@
 !
          ENDIF
 !
-100   CONTINUE
+      ENDDO ! IPOIN 
 !
       IF (FLAG) THEN
 !
-         DO 110 IPOIN = 1,NPOIN
+         DO IPOIN = 1,NPOIN
 !
             IF (ITRA05(IPOIN).NE.0) THEN
 !
                IF (ITRA05(IPOIN).LT.ITRA02(IPOIN)) THEN
-                  DO 120 I = ITRA02(IPOIN),ITRA03(IPOIN)
+                  DO I = ITRA02(IPOIN),ITRA03(IPOIN)
                      ZFE(ITRA01(IPOIN,I)) = MAX(ZFE(ITRA01(IPOIN,I)),
      &                                          ZREF(IPOIN))
-120               CONTINUE
+                  ENDDO ! I 
                   ITRA02(IPOIN) = 1
                ENDIF
 !
-               DO 130 I = ITRA02(IPOIN),ITRA05(IPOIN)
+               DO I = ITRA02(IPOIN),ITRA05(IPOIN)
                   ZFE(ITRA01(IPOIN,I)) = MAX(ZFE(ITRA01(IPOIN,I)),
      &                                       ZREF(IPOIN))
-130            CONTINUE
+               ENDDO ! I 
 !
             ENDIF
 !
-110      CONTINUE
+         ENDDO ! IPOIN 
 !
          GOTO 60
 !

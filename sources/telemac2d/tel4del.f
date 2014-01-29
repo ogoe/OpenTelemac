@@ -489,11 +489,10 @@
 !
 ! LP 27/02/2011: BECAUSE OF UNFORMATTED FILES. ALL NOW IN 1 RECORD
 !
-         WRITE(NMAF) 0, (((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG+MBND),     ! LP 27/02/2011
-     &                     NLAY=1,NOLAY), ((1.0,1.0), K=NOQ1+1,NOQ)     ! BECAUSE OF
-!                                                                       ! UNFORMATTED FILES
-!                                                                       ! ALL NOW IN 1 RECORD
-!
+         WRITE(NMAF) 0, (((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG+MBND),     
+     &                     NLAY=1,NOLAY), ((1.0,1.0), K=NOQ1+1,NOQ)     
+!         LP 27/02/2011 
+!         BECAUSE OF UNFORMATTED FILES ALL NOW IN 1 RECORD
 !
 !        DERIVES THE FROM-TO EXCHANGE TABLE FOR COMPUTATIONAL ELEMENTS
 !        VERTICALLY FOR ALL LAYERS. THE LAYERS DIFFER NPOIN2 IN
@@ -519,8 +518,9 @@
 !        FILLS IN THE HORIZONTAL AREA IN THE LAST DIRECTION EXCHANGE AREA
 !
          DO NLAY = 1 , NOLAY-1
-            AREAWQ( (NOLAY*(NSEG+MBND))+(NLAY-1)*NPOIN2+1 :             !  LP 05/04/2009
-     &              (NOLAY*(NSEG+MBND))+ NLAY   *NPOIN2     ) = V2DPAR  !  LP 05/04/2009
+!  LP 05/04/2009
+            AREAWQ( (NOLAY*(NSEG+MBND))+(NLAY-1)*NPOIN2+1 :             
+     &              (NOLAY*(NSEG+MBND))+ NLAY   *NPOIN2     ) = V2DPAR  
          ENDDO
 !
          IF(TRICK) THEN
@@ -963,8 +963,6 @@
 !CCCCCAGREG
 !
 !        STATIONARY DATABASE IF REQUIRED
-!
- 20   CONTINUE
 !
       IF ( LLT .LT. NNIT ) THEN
          ISTEPA = ISTEPA + 1

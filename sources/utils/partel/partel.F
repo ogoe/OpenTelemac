@@ -251,9 +251,10 @@
 !----------------------------------------------------------------------
 ! NAMES OF THE INPUT FILES:
 !
-      INQUIRE(FILE='partel.par',EXIST=FOUND)
-      IF( FOUND ) OPEN(UNIT=72,FILE='partel.par')
+      INQUIRE(FILE='PARTEL.PAR',EXIST=FOUND)
+      IF( FOUND ) OPEN(UNIT=72,FILE='PARTEL.PAR')
 
+      IF (FOUND) REWIND(72)
       DO 
         IF( FOUND ) THEN                  
            READ(72,*) NAMEINP             

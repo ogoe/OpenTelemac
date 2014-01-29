@@ -19,10 +19,10 @@
 !+       OUTPUT VARIABLES.. Z, L, D, U, FLAG
 !+
 !+ FIA   \ ROW   - HOLDS INTERMEDIATE VALUES IN CALCULATION OF  U AND L.
-!+	 \	     SIZE = N.
+!+       \           SIZE = N.
 !+ FIA   \ TMP   - HOLDS NEW RIGHT-HAND SIDE  B*  FOR SOLUTION OF THE
-!+	 \	     EQUATION UX = B*.
-!+	 \	     SIZE = N.
+!+       \           EQUATION UX = B*.
+!+       \           SIZE = N.
 !+
 !+
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP

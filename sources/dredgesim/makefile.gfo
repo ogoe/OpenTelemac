@@ -14,6 +14,7 @@
 #-----------------------------------------------------Juin-1999-DeltaCAD
 #
 #--- Definitions pour SYSTEME TELEMAC
+!include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
 VERSION    = V7P0
 
@@ -60,30 +61,6 @@ LKLIB         = $(PROJECT)\builds\$(drilib)\lib\bief$(MODE)$(VERSION).lib \
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)
 
 #------------------------ Liste des fichiers
-#
-#------- Sources Fortran
-
-SRCS= \
-b_error.f90 b_constants.f90 b_carry.f90 b_time.f90 \
-b_cmds.f90 b_file.f90 b_date.f90 b_datetime.f90 \
-b_dim.f90 b_var.f90 b_phy.f90 b_att.f90 \
-b_io_info.f90 b_grain.f90 l_criterion.f90 m_dredgesim_data.f90 \
-m_dredgesim_output.f90 m_dredgesim_interpolations.f90 m_dredgesim_compute.f90 m_dredgesim_update.f90 \
-m_dictionary_data.f90 m_stdat_types.f90 m_stringliste.f90 m_stdat_checks.f90 \
-m_lesehilfe.f90 m_dic_checks.f90 m_felder.f90 m_diction_ein.f90 \
-p_dictionary_ui.f90 m_dredgesim_steer.f90 m_dredgesim_errors.f90 \
-b_omi_space.f90 b_omi_xyz.f90 b_omi_ind.f90 b_omi_ele.f90 \
-b_omi_stamp.f90 b_omi_span.f90 b_omi_dim.f90 b_omi_unit.f90 \
-b_omi_quant.f90 b_omi_arg.f90 b_omi_dope.f90 b_omi_exch.f90 \
-m_h_grid_data.f90 b_point_2d.f90 m_h_grid_derive.f90 m_h_grid_omi.f90 \
-m_h_grid_delft3d.f90 m_h_grid_gitter05.f90 m_h_grid_errors.f90 m_h_grid_selafin.f90 \
-m_h_grid_convert.f90 m_h_grid_untrim.f90 m_h_grid_dimensions.f90 b_omi_exch_r.f90 \
-p_h_grid_ui.f90 m_ipds_phydef.f90 m_ipds_phyval.f90 m_ipds_physet.f90 \
-m_ipds_mespos.f90 m_ipds_region.f90 m_ipds_regphyset.f90 m_ipds_data.f90 \
-m_ipds_errors.f90 m_ipds_readfile.f90 m_ipds_derive.f90 m_ipds_omi.f90 \
-m_ipds_interpolation.f90 m_ipds_access.f90 io_ipds_ui.f90 \
-p_dredgesim_ui.f90 ext_ds_dredge_node_index.f90 p_sisyphe_ui.f90
-
 #
 #------- Objets
 #

@@ -415,7 +415,7 @@
 !     FOR INTEGRATION OF THE SOURCE TERMS, BY PROPAGATION TIME STEP
 !     -----------------------------------------------------------------
 !
-      DO 100 ISITS=1,NSITS
+      DO ISITS=1,NSITS
 !
 !       1. ASSIGNS THE START AND END DATES OF TIME STEP
 !       ===============================================
@@ -806,7 +806,7 @@
           SUME=(XDTBRK**NDTBRK-1.D0)/(XDTBRK-1.D0)
           DTN=DTSI/SUME
 !
-          DO 782 IDT=1,NDTBRK
+          DO IDT=1,NDTBRK
 !         7.2 INITIALISES THE ARRAYS FOR THE SOURCE-TERMS
 !         ----------------------------------------------------
           DO IFF=1,NF
@@ -906,7 +906,7 @@
 !
         DTN=DTN*XDTBRK
 !
-  782   CONTINUE
+        ENDDO ! IDT
 !
         ENDIF
 !
@@ -922,7 +922,7 @@
         ENDIF
 !
 !
-  100 CONTINUE
+      ENDDO ! ISITS
 !
 !     -----------------------------------------------------------------
 !     END OF THE MAIN LOOP ON THE NUMBER OF TIME STEPS (NSITS)

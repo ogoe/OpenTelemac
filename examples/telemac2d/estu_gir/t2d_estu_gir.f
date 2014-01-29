@@ -539,9 +539,9 @@ C
 C  INITIALISATION DE YADEB
 C
       IF(NFRLIQ.GE.1) THEN
-        DO 1 K=1,NFRLIQ
+        DO K=1,NFRLIQ
           YADEB(K)=0
-1       CONTINUE
+        ENDDO
       ENDIF                                                            
 C--------------------------------------------------------------------
 C L'amplitude de la maree est representee par une somme d'harmonique
@@ -595,7 +595,7 @@ C 27 ou NF02
 C
 
 c          plus utilise pour le moment
-          DO 2 IPTFRL = 1,NPTFRLM
+          DO IPTFRL = 1,NPTFRLM
 C
 c             READ(27,*)
 c             READ(27,*)   NIVM(IPTFRL), ALF
@@ -780,7 +780,7 @@ c ----------------------------------------------------------------------
 C
 C            PREMIERE VALEUR SUSPECTE FIDE FL + PAS DE FACTEUR NODAL
 C
-2        CONTINUE
+         ENDDO
 c 777      FORMAT(16X,F4.2,5X,F5.1)
   777   FORMAT(F9.3,F9.3)
 CXC       ENDIF
@@ -790,7 +790,7 @@ C CALCUL DE LA MAREE: amplitude
 C======================================================
 C
       IPTFRL = 1
-      DO 51 K=1,NPTFR
+      DO K=1,NPTFR
 C
 C
 C
@@ -883,7 +883,7 @@ C       U ET V INITIALISES AVEC LES BONNES VALEURS
 !       PRINT*,'H%R(NBOR(K))=',H%R(NBOR(K))
       ENDIF
 C
-51    CONTINUE   
+      ENDDO   
 C                                                                         
 C!
 !-----------------------------------------------------------------------
@@ -909,7 +909,7 @@ C  BOUCLE SUR LES FRONTIERES LIQUIDES
 C
       IF(NFRLIQ.NE.0) THEN
 C
-      DO 10 IFRLIQ = 1 , NFRLIQ
+      DO IFRLIQ = 1 , NFRLIQ
 C
       IF(NDEBIT.NE.0) THEN
         IF(NDEBIT.GE.IFRLIQ) THEN
@@ -939,7 +939,7 @@ C
 C
 C-----------------------------------------------------------------------
 C
-10    CONTINUE
+      ENDDO
 C
       ENDIF
 C

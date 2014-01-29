@@ -95,7 +95,7 @@
 !
          XSUR24 = XMUL / 24.D0
 !
-         DO 3 IELEM = 1 , NELEM
+         DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -119,7 +119,7 @@
 !
            W(IELEM) = COEF * F(IELEM)
 !
-3        CONTINUE
+         ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

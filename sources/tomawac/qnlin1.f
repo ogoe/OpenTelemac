@@ -155,7 +155,7 @@
 !
 !     FIRST LOOP ON THE FREQUENCIES
 !     
-      DO 200 JF=JFMIN,JFMAX
+      DO JF=JFMIN,JFMAX
 !
 !       COMPUTES THE CONSIDERED FREQUENCY
 !       
@@ -209,13 +209,13 @@
 !
 !       SECOND LOOP ON ANGULAR SYMMETRY
 !       
-        DO 300 IMAGE=1,2
+        DO IMAGE=1,2
 !
          KAUX=(IMAGE-1)*4
 !
 !        THIRD LOOP ON THE DIRECTIONS
 !        
-         DO 400 JP=1,NPLAN
+         DO JP=1,NPLAN
 !
           JPP0 = IANGNL(JP,KAUX+1)
           JPP1 = IANGNL(JP,KAUX+2)
@@ -229,7 +229,7 @@
 !........./ THE SPECTRUM F- WITH FREQUENCY (1-XLAMD).FREQ IS ZERO /
 !........./-------------------------------------------------------/
 !
-          DO 500 IP=1,NPOIN2
+          DO IP=1,NPOIN2
            FDEJF = F(IP,JP,JB )*COEFJF
            FPLUS = F(IP,JPP0,JBP0)*D1 + F(IP,JPP1,JBP0)*D2
      &           + F(IP,JPP0,JBP1)*D3 + F(IP,JPP1,JBP1)*D4
@@ -240,32 +240,32 @@
            TAUX2(IP) = TERM1*TERM3
            TAUX3(IP) = 2.D0*TERM1*TAUX1(IP)
            TAUX5(IP) = FDEJF*US1PL4*TERM3
-  500     CONTINUE
+          ENDDO ! IP
 !
           IF (JB.EQ.JF) THEN
 !
-          DO 510 IP=1,NPOIN2
+          DO IP=1,NPOIN2
            TSTOT(IP,JP  ,JF  )=TSTOT(IP,JP  ,JF  )-TAUX2(IP)*2.D0
            TSDER(IP,JP  ,JF  )=TSDER(IP,JP  ,JF  )-TAUX3(IP)*2.D0
-  510     CONTINUE
+          ENDDO ! IP
 !
           IF (JBP0.EQ.JFP0) THEN
 !
-          DO 520 IP=1,NPOIN2
+          DO IP=1,NPOIN2
            TSTOT(IP,JPP0,JFP0)=TSTOT(IP,JPP0,JFP0)+TAUX2(IP)*C1
            TSTOT(IP,JPP1,JFP0)=TSTOT(IP,JPP1,JFP0)+TAUX2(IP)*C2
            TSDER(IP,JPP0,JFP0)=TSDER(IP,JPP0,JFP0)+TAUX5(IP)*C1SQ
            TSDER(IP,JPP1,JFP0)=TSDER(IP,JPP1,JFP0)+TAUX5(IP)*C2SQ
-  520     CONTINUE
+          ENDDO ! IP
 !
           IF (JBP1.EQ.JFP1) THEN
 !
-          DO 530 IP=1,NPOIN2
+          DO IP=1,NPOIN2
            TSTOT(IP,JPP0,JFP1)=TSTOT(IP,JPP0,JFP1)+TAUX2(IP)*C3
            TSTOT(IP,JPP1,JFP1)=TSTOT(IP,JPP1,JFP1)+TAUX2(IP)*C4
            TSDER(IP,JPP0,JFP1)=TSDER(IP,JPP0,JFP1)+TAUX5(IP)*C3SQ
            TSDER(IP,JPP1,JFP1)=TSDER(IP,JPP1,JFP1)+TAUX5(IP)*C4SQ
-  530     CONTINUE
+          ENDDO ! IP
 !
           ENDIF
           ENDIF
@@ -277,7 +277,7 @@
 !........./ FREQUENCIES F-, F, F+ MAY HAVE ENERGY                  /
 !........./--------------------------------------------------------/
 !
-          DO 600 IP=1,NPOIN2
+          DO IP=1,NPOIN2
            FDEJF = F(IP,JP,JB )*COEFJF
            FPLUS = F(IP,JPP0,JBP0)*D1 + F(IP,JPP1,JBP0)*D2
      &           + F(IP,JPP0,JBP1)*D3 + F(IP,JPP1,JBP1)*D4
@@ -292,50 +292,50 @@
            TAUX3(IP) = (2.D0*TERM1-TERM2)*TAUX1(IP)
            TAUX5(IP) = (FDEJF-2.D0*FMOIN)*US1PL4*TERM3
            TAUX4(IP) = (FDEJF-2.D0*FPLUS)*US1ML4*TERM3
-  600     CONTINUE
+          ENDDO ! IP
 !
           IF (JBM0.EQ.JFM0) THEN
 !
-          DO 710 IP=1,NPOIN2
+          DO IP=1,NPOIN2
            TSTOT(IP,JPM0,JFM0)=TSTOT(IP,JPM0,JFM0)+TAUX2(IP)*C5
            TSTOT(IP,JPM1,JFM0)=TSTOT(IP,JPM1,JFM0)+TAUX2(IP)*C6
            TSDER(IP,JPM0,JFM0)=TSDER(IP,JPM0,JFM0)+TAUX4(IP)*C5SQ
            TSDER(IP,JPM1,JFM0)=TSDER(IP,JPM1,JFM0)+TAUX4(IP)*C6SQ
-  710     CONTINUE
+          ENDDO ! IP
 !
           IF (JBM1.EQ.JFM1) THEN
 !
-          DO 720 IP=1,NPOIN2
+          DO IP=1,NPOIN2
            TSTOT(IP,JPM0,JFM1)=TSTOT(IP,JPM0,JFM1)+TAUX2(IP)*C7
            TSTOT(IP,JPM1,JFM1)=TSTOT(IP,JPM1,JFM1)+TAUX2(IP)*C8
            TSDER(IP,JPM0,JFM1)=TSDER(IP,JPM0,JFM1)+TAUX4(IP)*C7SQ
            TSDER(IP,JPM1,JFM1)=TSDER(IP,JPM1,JFM1)+TAUX4(IP)*C8SQ
-  720     CONTINUE
+          ENDDO ! IP
 !
           IF (JB.EQ.JF) THEN
 !
-          DO 730 IP=1,NPOIN2
+          DO IP=1,NPOIN2
            TSTOT(IP,JP  ,JF  )=TSTOT(IP,JP  ,JF  )-TAUX2(IP)*2.D0
            TSDER(IP,JP  ,JF  )=TSDER(IP,JP  ,JF  )-TAUX3(IP)*2.D0
-  730     CONTINUE
+          ENDDO ! IP
 !
           IF (JBP0.EQ.JFP0) THEN
 !
-          DO 740 IP=1,NPOIN2
+          DO IP=1,NPOIN2
            TSTOT(IP,JPP0,JFP0)=TSTOT(IP,JPP0,JFP0)+TAUX2(IP)*C1
            TSTOT(IP,JPP1,JFP0)=TSTOT(IP,JPP1,JFP0)+TAUX2(IP)*C2
            TSDER(IP,JPP0,JFP0)=TSDER(IP,JPP0,JFP0)+TAUX5(IP)*C1SQ
            TSDER(IP,JPP1,JFP0)=TSDER(IP,JPP1,JFP0)+TAUX5(IP)*C2SQ
-  740     CONTINUE
+          ENDDO ! IP
 !
           IF (JBP1.EQ.JFP1) THEN
 !
-          DO 750 IP=1,NPOIN2
+          DO IP=1,NPOIN2
            TSTOT(IP,JPP0,JFP1)=TSTOT(IP,JPP0,JFP1)+TAUX2(IP)*C3
            TSTOT(IP,JPP1,JFP1)=TSTOT(IP,JPP1,JFP1)+TAUX2(IP)*C4
            TSDER(IP,JPP0,JFP1)=TSDER(IP,JPP0,JFP1)+TAUX5(IP)*C3SQ
            TSDER(IP,JPP1,JFP1)=TSDER(IP,JPP1,JFP1)+TAUX5(IP)*C4SQ
-  750     CONTINUE
+          ENDDO ! IP
 !
           ENDIF
           ENDIF
@@ -345,11 +345,11 @@
 !
           ENDIF
 !
-  400    CONTINUE
+         ENDDO ! JP
 !
-  300   CONTINUE
+        ENDDO ! IMAGE
 !
-  200 CONTINUE
+      ENDDO ! JF
 !
 !-----------------------------------------------------------------------
 !

@@ -105,7 +105,7 @@
 !
          SUR360 = XMUL / 360.D0
 !
-         DO 3 IELEM = 1 , NELEM
+         DO IELEM = 1 , NELEM
 !
             COEF = SUR360 * SURFAC(IELEM)
 !
@@ -154,7 +154,7 @@
             W5(IELEM) = SH2 * (SF2+SF5+SF5) + SHF2 + SHF5 + SHF5
             W6(IELEM) = SH3 * (SF3+SF6+SF6) + SHF3 + SHF6 + SHF6
 !
-3        CONTINUE
+         ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

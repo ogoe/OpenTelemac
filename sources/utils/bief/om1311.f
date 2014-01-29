@@ -139,9 +139,9 @@
         TYPDIM(1:1)=TYPDIN(1:1)
 !
         IF(TYPEXN(1:1).EQ.'Q') THEN
-          DO 111 I=1,15
+          DO I=1,15
             CALL OV( 'X=Y     ' , XM(1,I) , XN(1,I) , Z , C , NELEM )
-111       CONTINUE
+          ENDDO ! I
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
@@ -160,9 +160,9 @@
         CALL OV( 'X=CY    ' , DM      , DN      , Z , C , NDIAG )
 !
         IF(TYPEXN(1:1).EQ.'Q') THEN
-          DO 22 I=1,15
+          DO I=1,15
             CALL OV( 'X=CY    ' , XM(1,I) , XN(1,I) , Z , C , NELEM )
-22        CONTINUE
+          ENDDO ! I
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
@@ -194,9 +194,9 @@
             CALL PLANTE(1)
             STOP
           ENDIF
-          DO 33 I=1,15
+          DO I=1,15
             CALL OV( 'X=X+CY  ' , XM(1,I) , XN(1,I) , Z , C , NELEM )
-33        CONTINUE
+          ENDDO ! I
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)

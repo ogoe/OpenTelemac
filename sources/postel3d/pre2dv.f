@@ -59,34 +59,34 @@
 !
 ! PARAMETRES IDENTIQUES A TOUS LES PAS DE TEMPS
 !
-      DO 5 IC = 1,NC2DV
+      DO IC = 1,NC2DV
 !
          LGTOT = 0.D0
-         DO 6 I = 1,NSEG(IC)
+         DO I = 1,NSEG(IC)
             LGSEG(I) = SQRT((X2DV(I+1,IC)-X2DV(I,IC))**2
      &                     +(Y2DV(I+1,IC)-Y2DV(I,IC))**2)
             LGTOT = LGTOT + LGSEG(I)
-6        CONTINUE
+         ENDDO
          LGTOT = MAX(LGTOT,1D-6)
 !
          IMTOT = 0
          IMMAX = 0
          NSEGMA = 1
-         DO 7 I = 1,NSEG(IC)
+         DO I = 1,NSEG(IC)
             IMSEG(I,IC) = MAX(NINT(LGSEG(I)*FLOAT(IM-1)/LGTOT),1)
             IMTOT = IMTOT + IMSEG(I,IC)
             IF (IMSEG(I,IC).GT.IMMAX) THEN
                IMMAX = IMSEG(I,IC)
                NSEGMA = I
             ENDIF
-7        CONTINUE
+         ENDDO
          IMSEG(NSEGMA,IC) = IMMAX + IM-1 - IMTOT
 !
          FLAG = .TRUE.
          ISEG = 0
          IFSEG = 1
 !
-         DO 10 I = 1,IM
+         DO I = 1,IM
 !
             IF (I.GT.IFSEG.OR.I.EQ.1) THEN
                ISEG = ISEG + 1
@@ -105,7 +105,7 @@
             SHP(I,2,IC) = 0.
             SHP(I,3,IC) = 0.
 !
-            DO 20 N = 1,NELEM2
+            DO N = 1,NELEM2
                N1 = IKLES(1,N)
                N2 = IKLES(2,N)
                N3 = IKLES(3,N)
@@ -122,22 +122,22 @@
                   SHP(I,2,IC) = A2 * SURDET
                   SHP(I,3,IC) = A3 * SURDET
                ENDIF
-20          CONTINUE
+            ENDDO !N
 !
-10       CONTINUE
+         ENDDO !N
 !
          IF (FLAG) THEN
             IF (LNG.EQ.1) WRITE(LU,101) IC
             IF (LNG.EQ.2) WRITE(LU,102) IC
          ENDIF
 !
-         DO 30 J = 2,JM
-            DO 40 I = 1,IM
+         DO J = 2,JM
+            DO I = 1,IM
                INDIC(I,J,IC) = INDIC(I,1,IC)
-40          CONTINUE
-30       CONTINUE
+            ENDDO
+         ENDDO
 !
-5     CONTINUE
+      ENDDO !IC
 !
 !-----------------------------------------------------------------------
 !
@@ -149,4 +149,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END
+      END SUBROUTINE

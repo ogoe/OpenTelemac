@@ -1734,7 +1734,6 @@ CONTAINS
     !
     CHARACTER (LEN=3)                  :: c_parpos
     INTEGER                            :: i
-    LOGICAL                            :: l_found_opt
     !
     !
     IF ( act_key%key%ParAnz .EQ. 0 ) THEN
@@ -1930,7 +1929,7 @@ CONTAINS
     !! Statusvariable
     INTEGER   :: stat ! 
     !
-    CHARACTER (LEN=key_len)             :: blockname, key
+    CHARACTER (LEN=key_len)             :: key
     CHARACTER (LEN=line_len)            :: karte, wert
     !
     LOGICAL                             :: doit_par

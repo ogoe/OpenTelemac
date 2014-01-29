@@ -403,7 +403,7 @@ CONTAINS
     IF ( .NOT. initialised ) THEN
        ! [1.1] Drucken des Copyright-Hinweises
        IF (DEBUG_ds > 0) THEN
-       	  WRITE(*,*) ' '
+          WRITE(*,*) ' '
           WRITE(*,*) ' "m_ipds_regphyset" version 3.2 of 26.03 07'
           WRITE(*,*) ' Copyright (C) 2002 Bundesanstalt fuer Wasserbau'
        END IF
@@ -622,8 +622,7 @@ CONTAINS
     !! Name der Function
     CHARACTER (LEN=14), PARAMETER :: c_upname='ok_regphyset_1' 
     !! Z&auml;hler      
-    CHARACTER (LEN=10) :: l_char ! 
-    INTEGER            :: i, j   ! 
+    INTEGER            :: i      ! 
     !
     ok = .false.
     IF ( ok_initialised( c_upname ) ) THEN ! Modul muss initialisiert sein

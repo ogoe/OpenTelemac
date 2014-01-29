@@ -52,12 +52,12 @@
 !
 !----------------------------------------------------------------------
 !
-      DO 10 I=1,LEN(CHAINE)
+      DO I=1,LEN(CHAINE)
 !
       IPOS=INDEX(STMIN,CHAINE(I:I))
       IF(IPOS.NE.0) CHAINE(I:I)=STMAJ(IPOS:IPOS)
 !
-10    CONTINUE
+      ENDDO ! I
 !
 !-----------------------------------------------------------------------
 !

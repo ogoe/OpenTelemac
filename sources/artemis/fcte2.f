@@ -39,7 +39,7 @@
       ELSE
         SHHX = SINH(XXX)
         CHHX = COSH(XXX)
-        THHX = SHHX/CHHX	 
+        THHX = SHHX/CHHX
         FCTE2=(THHX-XXX)*CHHX/(XXX*(SHHX+XXX)**2) 
       ENDIF
 !

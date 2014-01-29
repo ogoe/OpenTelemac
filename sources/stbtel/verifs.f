@@ -82,37 +82,37 @@
 !=======================================================================
 !
       NPTFR = 0
-      DO 10 IELEM=1,NELEM
-         DO 20 IFACE=1,NDP
+      DO IELEM=1,NELEM
+         DO IFACE=1,NDP
             IF (IFABOR(IELEM,IFACE).LE.0) THEN
                NPTFR = NPTFR + 1
                TRAV1(NPTFR,1) = IKLE(IELEM,       IFACE )
                TRAV1(NPTFR,2) = IKLE(IELEM,SOMSUI(IFACE))
             ENDIF
-20       CONTINUE
-10    CONTINUE
+         ENDDO
+      ENDDO
 !
 !=======================================================================
 ! ON VERIFIE QUE CHAQUE POINT N'APPARAIT QUE DEUX FOIS
 ! ( UNE FOIS COMME NOEUD 1 , UNE FOIS COMME NOEUD 2 )
 !=======================================================================
 !
-      DO 50 I=1,NPTFR
+      DO I=1,NPTFR
         I1 = 1
         I2 = 1
-        DO 60 ISUIV=1,NPTFR
+        DO ISUIV=1,NPTFR
           IF (TRAV1(I,1).EQ.TRAV1(ISUIV,2)) I1 = I1 + 1
           IF (TRAV1(I,2).EQ.TRAV1(ISUIV,1)) I2 = I2 + 1
-60      CONTINUE
+        ENDDO
         IF (I1.NE.2) THEN
           IF (NBPB.EQ.0) THEN
             NBPB = 1
             NUMPB(NBPB) = TRAV1(I,1)
            ELSE
             EXIST = .FALSE.
-            DO 100  J=1,NBPB
+            DO J=1,NBPB
               IF (NUMPB(J).EQ.TRAV1(I,1)) EXIST = .TRUE.
- 100        CONTINUE
+            ENDDO
             IF (.NOT.EXIST) THEN
               NBPB = NBPB + 1
               IF (NBPB.GT.100) THEN
@@ -130,9 +130,9 @@
             NUMPB(NBPB) = TRAV1(I,2)
            ELSE
             EXIST = .FALSE.
-            DO 101 J=1,NBPB
+            DO J=1,NBPB
               IF (NUMPB(J).EQ.TRAV1(I,2)) EXIST = .TRUE.
- 101        CONTINUE
+            ENDDO
             IF (.NOT.EXIST) THEN
               NBPB = NBPB + 1
               IF (NBPB.GT.100) THEN
@@ -144,7 +144,7 @@
             ENDIF
           ENDIF
         ENDIF
-50    CONTINUE
+      ENDDO
 !
       RETURN
 !

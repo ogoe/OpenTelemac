@@ -59,16 +59,16 @@
 ! RECHERCHE DES POINTS N'APPARTENANT A AUCUN ELEMENT
 !=======================================================================
 !
-      DO 10 I=1,NPOIN
+      DO I=1,NPOIN
          NEW(I) = 0
-10    CONTINUE
+      ENDDO
 !
-      DO 20 I=1,NELEM
+      DO I=1,NELEM
          NEW(IKLE(I,1)) = IKLE(I,1)
          NEW(IKLE(I,2)) = IKLE(I,2)
          NEW(IKLE(I,3)) = IKLE(I,3)
          IF(NDP.EQ.4) NEW(IKLE(I,4)) = IKLE(I,4)
-20    CONTINUE
+      ENDDO
 !
 !=======================================================================
 ! RECHERCHE DES POINTS TROP PROCHES
@@ -79,19 +79,19 @@
       PTELI  = .FALSE.
       NPTELI = 0
 !
-      DO 30 I=1,NPOIN-1
+      DO I=1,NPOIN-1
          IF(NEW(I).EQ.I) THEN
-            DO 40 J=I+1,NPOIN
+            DO J=I+1,NPOIN
                IF((X(I)-X(J))**2+(Y(I)-Y(J))**2.LT.EPSI
      &            .AND.NEW(J).EQ.J) THEN
                   PTPRO  = .TRUE.
                   NEW(J) = I
                ENDIF
-40          CONTINUE
+            ENDDO
          ELSE
             PTELI = .TRUE.
          ENDIF
-30    CONTINUE
+      ENDDO
 !
 !=======================================================================
 ! SEUL LE DERNIER POINT EST A ELIMINER
@@ -104,12 +104,12 @@
 !=======================================================================
 !
       IF(PTPRO) THEN
-         DO 50 I=1,NELEM
+         DO I=1,NELEM
             IKLE(I,1) = NEW(IKLE(I,1))
             IKLE(I,2) = NEW(IKLE(I,2))
             IKLE(I,3) = NEW(IKLE(I,3))
             IF(NDP.EQ.4) IKLE(I,4) = NEW(IKLE(I,4))
-50       CONTINUE
+         ENDDO
       ENDIF
 !
 !=======================================================================
@@ -117,7 +117,7 @@
 !=======================================================================
 !
       IF(PTELI) THEN
-         DO 60 I=1,NPOIN
+         DO I=1,NPOIN
             IF(NEW(I).EQ.I) THEN
                NEW(I) = I - NPTELI
                X(I-NPTELI) = X(I)
@@ -126,18 +126,18 @@
             ELSE
                NPTELI = NPTELI + 1
             ENDIF
-60       CONTINUE
+         ENDDO
 !
 !=======================================================================
 ! MODIFICATION DES IKLE DUE AU REMPLISSAGE DES TROUS
 !=======================================================================
 !
-         DO 70 I=1,NELEM
+         DO I=1,NELEM
             IKLE(I,1) = NEW(IKLE(I,1))
             IKLE(I,2) = NEW(IKLE(I,2))
             IKLE(I,3) = NEW(IKLE(I,3))
             IF(NDP.EQ.4) IKLE(I,4) = NEW(IKLE(I,4))
-70       CONTINUE
+         ENDDO
       ENDIF
 !
       NPOIN = NPOIN - NPTELI
@@ -152,20 +152,20 @@
 !
       IF (NDP.EQ.3) THEN
 !
-         DO 75 I=1,NELEM
+         DO I=1,NELEM
             I1 = IKLE(I,1)
             I2 = IKLE(I,2)
             I3 = IKLE(I,3)
             NEW(I) = 0
             IF (I1.EQ.I2.OR.I1.EQ.I3.OR.I2.EQ.I3) NEW(I) = 1
-75       CONTINUE
+         ENDDO
 !
-         DO 80 I=1,NELEM-1
+         DO I=1,NELEM-1
             IF (NEW(I).EQ.0) THEN
                I1 = IKLE(I,1)
                I2 = IKLE(I,2)
                I3 = IKLE(I,3)
-               DO 90 J=I+1,NELEM
+               DO J=I+1,NELEM
                   IF (NEW(J).EQ.0) THEN
                      J1 = IKLE(J,1)
                      J2 = IKLE(J,2)
@@ -174,15 +174,15 @@
      &                   (I2.EQ.J1.OR.I2.EQ.J2.OR.I2.EQ.J3).AND.
      &                   (I3.EQ.J1.OR.I3.EQ.J2.OR.I3.EQ.J3)) NEW(J) = 1
                   ENDIF
-90             CONTINUE
+               ENDDO
             ELSE
                ELELI = .TRUE.
             ENDIF
-80       CONTINUE
+         ENDDO
 !
       ELSE
 !
-         DO 95 I=1,NELEM
+         DO I=1,NELEM
             I1 = IKLE(I,1)
             I2 = IKLE(I,2)
             I3 = IKLE(I,3)
@@ -190,15 +190,15 @@
             NEW(I) = 0
             IF (I1.EQ.I2.OR.I1.EQ.I3.OR.I1.EQ.I4.OR.
      &          I2.EQ.I3.OR.I2.EQ.I4.OR.I3.EQ.I4) NEW(I) = 1
-95       CONTINUE
+         ENDDO
 !
-         DO 100 I=1,NELEM-1
+         DO I=1,NELEM-1
             IF (NEW(I).EQ.0) THEN
                I1 = IKLE(I,1)
                I2 = IKLE(I,2)
                I3 = IKLE(I,3)
                I4 = IKLE(I,4)
-               DO 110 J=I+1,NELEM
+               DO J=I+1,NELEM
                   IF (NEW(J).EQ.0) THEN
                      J1 = IKLE(J,1)
                      J2 = IKLE(J,2)
@@ -209,11 +209,11 @@
      &          (I3.EQ.J1.OR.I3.EQ.J2.OR.I3.EQ.J3.OR.I3.EQ.J4).AND.
      &          (I4.EQ.J1.OR.I4.EQ.J2.OR.I4.EQ.J3.OR.I4.EQ.J4)) NEW(J)=1
                   ENDIF
-110            CONTINUE
+               ENDDO
             ELSE
                ELELI = .TRUE.
             ENDIF
-100      CONTINUE
+         ENDDO
 !
       ENDIF
 !
@@ -228,7 +228,7 @@
 !=======================================================================
 !
       IF(ELELI) THEN
-         DO 120 I=1,NELEM
+         DO I=1,NELEM
             IF(NEW(I).EQ.0) THEN
                IKLE(I-NELELI,1) = IKLE(I,1)
                IKLE(I-NELELI,2) = IKLE(I,2)
@@ -237,7 +237,7 @@
             ELSE
                NELELI = NELELI + 1
             ENDIF
-120      CONTINUE
+         ENDDO
       ENDIF
 !
       NELEM = NELEM - NELELI

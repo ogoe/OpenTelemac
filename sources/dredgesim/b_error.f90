@@ -1766,9 +1766,6 @@ CONTAINS
     !! Testergebnis (Skalar)
     LOGICAL :: ok ! 
     !
-    !! Testergebnisse f&uuml;r alle Komponenten
-    LOGICAL :: l_ok(c_nofcomp) ! 
-    !
     ok = le_error_ierr ( this1, this2 )
     !
   END FUNCTION le_error_0_0

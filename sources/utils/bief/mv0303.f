@@ -160,14 +160,14 @@
 !
          IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 20 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
              W1(IELEM) =  C * (   XA12(IELEM) * Y(IKLE2(IELEM))
      &                          + XA13(IELEM) * Y(IKLE3(IELEM))  )
              W2(IELEM) =  C * (   XA23(IELEM) * Y(IKLE3(IELEM))
      &                          + XA21(IELEM) * Y(IKLE1(IELEM))  )
              W3(IELEM) =  C * (   XA31(IELEM) * Y(IKLE1(IELEM))
      &                          + XA32(IELEM) * Y(IKLE2(IELEM))  )
-20         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -207,14 +207,14 @@
 !
          IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 21 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
              W1(IELEM) =   - XA12(IELEM) * Y(IKLE2(IELEM))
      &                     - XA13(IELEM) * Y(IKLE3(IELEM))
              W2(IELEM) =   - XA23(IELEM) * Y(IKLE3(IELEM))
      &                     - XA21(IELEM) * Y(IKLE1(IELEM))
              W3(IELEM) =   - XA31(IELEM) * Y(IKLE1(IELEM))
      &                     - XA32(IELEM) * Y(IKLE2(IELEM))
- 21         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -254,14 +254,14 @@
 !
          IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 40  IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
              W1(IELEM) = W1(IELEM)   + XA12(IELEM) * Y(IKLE2(IELEM))
      &                               + XA13(IELEM) * Y(IKLE3(IELEM))
              W2(IELEM) = W2(IELEM)   + XA23(IELEM) * Y(IKLE3(IELEM))
      &                               + XA21(IELEM) * Y(IKLE1(IELEM))
              W3(IELEM) = W3(IELEM)   + XA31(IELEM) * Y(IKLE1(IELEM))
      &                               + XA32(IELEM) * Y(IKLE2(IELEM))
-40         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -293,14 +293,14 @@
 !
          IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 60 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
              W1(IELEM) = W1(IELEM)   - XA12(IELEM) * Y(IKLE2(IELEM))
      &                               - XA13(IELEM) * Y(IKLE3(IELEM))
              W2(IELEM) = W2(IELEM)   - XA23(IELEM) * Y(IKLE3(IELEM))
      &                               - XA21(IELEM) * Y(IKLE1(IELEM))
              W3(IELEM) = W3(IELEM)   - XA31(IELEM) * Y(IKLE1(IELEM))
      &                               - XA32(IELEM) * Y(IKLE2(IELEM))
-60         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -332,14 +332,14 @@
 !
          IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 80 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
              W1(IELEM)=W1(IELEM) + C * (XA12(IELEM) * Y(IKLE2(IELEM))
      &                                 +XA13(IELEM) * Y(IKLE3(IELEM)))
              W2(IELEM)=W2(IELEM) + C * (XA23(IELEM) * Y(IKLE3(IELEM))
      &                                 +XA21(IELEM) * Y(IKLE1(IELEM)))
              W3(IELEM)=W3(IELEM) + C * (XA31(IELEM) * Y(IKLE1(IELEM))
      &                                 +XA32(IELEM) * Y(IKLE2(IELEM)))
-80         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -371,14 +371,14 @@
 !
          IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 100 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
              W1(IELEM) =   + XA21(IELEM) * Y(IKLE2(IELEM))
      &                     + XA31(IELEM) * Y(IKLE3(IELEM))
              W2(IELEM) =   + XA12(IELEM) * Y(IKLE1(IELEM))
      &                     + XA32(IELEM) * Y(IKLE3(IELEM))
              W3(IELEM) =   + XA13(IELEM) * Y(IKLE1(IELEM))
      &                     + XA23(IELEM) * Y(IKLE2(IELEM))
-100        CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -418,14 +418,14 @@
 !
          IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 101 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
              W1(IELEM) =   - XA21(IELEM) * Y(IKLE2(IELEM))
      &                     - XA31(IELEM) * Y(IKLE3(IELEM))
              W2(IELEM) =   - XA12(IELEM) * Y(IKLE1(IELEM))
      &                     - XA32(IELEM) * Y(IKLE3(IELEM))
              W3(IELEM) =   - XA13(IELEM) * Y(IKLE1(IELEM))
      &                     - XA23(IELEM) * Y(IKLE2(IELEM))
- 101        CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -465,14 +465,14 @@
 !
          IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 120 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
              W1(IELEM) = W1(IELEM) + XA21(IELEM) * Y(IKLE2(IELEM))
      &                             + XA31(IELEM) * Y(IKLE3(IELEM))
              W2(IELEM) = W2(IELEM) + XA12(IELEM) * Y(IKLE1(IELEM))
      &                             + XA32(IELEM) * Y(IKLE3(IELEM))
              W3(IELEM) = W3(IELEM) + XA13(IELEM) * Y(IKLE1(IELEM))
      &                             + XA23(IELEM) * Y(IKLE2(IELEM))
-120        CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -504,14 +504,14 @@
 !
          IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 140 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
              W1(IELEM) = W1(IELEM) - XA21(IELEM) * Y(IKLE2(IELEM))
      &                             - XA31(IELEM) * Y(IKLE3(IELEM))
              W2(IELEM) = W2(IELEM) - XA12(IELEM) * Y(IKLE1(IELEM))
      &                             - XA32(IELEM) * Y(IKLE3(IELEM))
              W3(IELEM) = W3(IELEM) - XA13(IELEM) * Y(IKLE1(IELEM))
      &                             - XA23(IELEM) * Y(IKLE2(IELEM))
-140        CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -543,14 +543,14 @@
 !
          IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 160 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
              W1(IELEM) = W1(IELEM) + C*(XA21(IELEM) * Y(IKLE2(IELEM))
      &                                 +XA31(IELEM) * Y(IKLE3(IELEM)))
              W2(IELEM) = W2(IELEM) + C*(XA12(IELEM) * Y(IKLE1(IELEM))
      &                                 +XA32(IELEM) * Y(IKLE3(IELEM)))
              W3(IELEM) = W3(IELEM) + C*(XA13(IELEM) * Y(IKLE1(IELEM))
      &                                 +XA23(IELEM) * Y(IKLE2(IELEM)))
-160        CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !

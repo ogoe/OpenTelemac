@@ -83,38 +83,30 @@
         C2    = 0.D0
       ENDIF
 !
-      DO 110 JP=1,NPLAN
+      DO JP=1,NPLAN
         FTH = DIREC(JP)
 !
         ARGUM = FTH-TETA1
-   50   CONTINUE
-        IF(ARGUM.LT.-PI) THEN
+        DO WHILE(ARGUM.LT.-PI)
           ARGUM=ARGUM+DEUPI
-          GOTO 50
-        ENDIF
-   60   CONTINUE
-        IF (ARGUM.GT.PI) THEN
+        ENDDO
+        DO WHILE(ARGUM.GT.PI)
           ARGUM=ARGUM-DEUPI
-          GOTO 60
-        ENDIF
+        ENDDO
         FRA1=DELT1*EXP(MAX(-10.D0,C1*ARGUM*ARGUM))
 !
         ARGUM = FTH-TETA2
-   70   CONTINUE
-        IF (ARGUM.LT.-PI) THEN
+        DO WHILE(ARGUM.LT.-PI)
           ARGUM=ARGUM+DEUPI
-          GOTO 70
-        ENDIF
-   80   CONTINUE
-        IF (ARGUM.GT.PI) THEN
+        ENDDO
+        DO WHILE(ARGUM.GT.PI)
           ARGUM=ARGUM-DEUPI
-          GOTO 80
-        ENDIF
+        ENDDO
         FRA2=DELT2*EXP(MAX(-10.D0,C2*ARGUM*ARGUM))
 !
         FRA(JP)=XLAMDA*FRA1+(1.D0-XLAMDA)*FRA2
         IF (FRA(JP).LT.1.D-10) FRA(JP)=0.D0
-  110 CONTINUE
+      ENDDO ! JP
 !
       RETURN
       END

@@ -110,7 +110,7 @@
       XMS018 = XMUL / 18.D0
       XMS036 = XMUL / 36.D0
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -132,7 +132,7 @@
          A24(IELEM) = F1*XMS018
          A34(IELEM) = F1*XMS018
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !
 !-----------------------------------------------------------------------
@@ -145,7 +145,7 @@
       XMS018 = XMUL /  18.D0
       XMS540 = XMUL / 540.D0
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -172,7 +172,7 @@
          A24(IELEM) = (SURFAC(IELEM)*( 7*F3+16*F2+ 7*F1))*XMS540
          A34(IELEM) = (SURFAC(IELEM)*(16*F3+ 7*F2+ 7*F1))*XMS540
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -186,7 +186,7 @@
       XMS090 = XMUL / 90.D0
       XMS180 = XMUL / 180.D0
 !
-      DO 5 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -211,7 +211,7 @@
          A24(IELEM) = (SURFAC(IELEM)*(F3+4*F4+4*F2+F1))*XMS180
          A34(IELEM) = (SURFAC(IELEM)*(4*F3+4*F4+F2+F1))*XMS180
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

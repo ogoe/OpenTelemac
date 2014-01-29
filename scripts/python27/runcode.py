@@ -270,6 +270,7 @@ def processTMP(casFile):
 def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
 
    xcpt = []                            # try all files for full report
+   section_name = ''
    # ~~ copy input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k,v in zip(*cas):
       if k in iFiles:
@@ -311,6 +312,16 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
                else:
                   print '    copying: ', path.basename(cref),crun
                   shutil.copy2(path.join(getcwd(),cref), crun)
+            elif iFiles[k].split(';')[5][0:7] == 'SECTION':
+               # Giving section name means that we have to give it to partel
+               section_name = path.basename(crun)
+               if use_link:
+                  print '    linking: ', path.basename(cref),crun
+                  symlinkFile(path.join(getcwd(),cref), crun)
+               else:
+                  print '    copying: ', path.basename(cref),crun
+                  putFileContent(crun,getFileContent(cref)+[''])
+             
             else:
                if use_link:
                   print '    linking: ', path.basename(cref),crun
@@ -327,7 +338,7 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
                shutil.copy2(path.join(getcwd(),cref), crun)
 
    if xcpt != []: raise Exception(xcpt) # raise full report
-   return
+   return section_name
 
 def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
 
@@ -537,7 +548,7 @@ def getGLOGEO(cas,iFiles):
          if iFiles[k].split(';')[5][-4:] == 'GEOM': GLOGEO = iFiles[k].split(';')[1]
    return GLOGEO
 
-def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,use_link):
+def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,section_name,use_link):
 
    if ncsize < 2: return True
    # ~~ split input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -547,7 +558,7 @@ def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,use_link):
          if iFiles[k].split(';')[5][0:7] == 'SELAFIN':
             print ' partitioning: ', path.basename(crun)
             try:
-               runPARTEL(partel,crun,conlim,ncsize,bypass)
+               runPARTEL(partel,crun,conlim,ncsize,bypass,section_name)
             except Exception as e:
                raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
          elif iFiles[k].split(';')[5][0:5] == 'PARAL':
@@ -560,9 +571,11 @@ def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,use_link):
 
    return True
 
-def runPARTEL(partel,file,conlim,ncsize,bypass):
+def runPARTEL(partel,file,conlim,ncsize,bypass,section_name):
 
-   putFileContent('PARTEL.PAR',[file,conlim,str(ncsize),str(1),str(0),str(1),str(1),''])
+   has_section = str(0) if section_name == "" else str(1)
+   print has_section,section_name
+   putFileContent('PARTEL.PAR',[file,conlim,str(ncsize),str(1),has_section,section_name])
    parCmd = partel.replace('<partel.log>','partel_'+file+'.log').split(';')
    mes = MESSAGES(size=10)
    for p in parCmd:
@@ -800,7 +813,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                # ~~~~ Extract the CAS File name ~~~~~~~~~~~~~~~~~~~~~~~
                casNamePlage,defaut = getKeyWord(mod.upper()+' STEERING FILE',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['dico'],MODFiles[CASFiles[name]['code']]['frgb'])
                if casNamePlage == []: casNamePlage = defaut[0]
-               else: casNamePlage = eval(casNamePlage[0])
+               else: casNamePlage = casNamePlage[0].strip("'\"")
                casNamePlage = path.join(CASFiles[name]['dir'],casNamePlage)
                if not path.isfile(casNamePlage): raise Exception([{'name':'runCAS','msg':'missing coupling CAS file for '+mod+': '+casNamePlage}])
 
@@ -821,6 +834,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    # You need to do this if ...
    #    - if options.split, obvisouly this is PART I of the main file pre-processing
    #    - if options.compileonly, you also need to copy the FORTRAN FILE
+   section_name = ''
    if not options.merge and not options.run and not hpcpass:
       print '\n... first pass at copying all input files'
       for name in CASFiles:
@@ -829,12 +843,14 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          chdir(CASFiles[name]['dir'])
          # >>> Copy INPUT files into wdir
          try:
-            processLIT(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'],CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],options.use_link)
+            section_name = processLIT(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'],
+                       CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],options.use_link)
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
          for cplage in CASFiles[name]['with']:
             try:
-               processLIT(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],options.use_link)
+               section_name = processLIT(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],
+                          CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],options.use_link)
             except Exception as e:
                raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
          # >>> Placing yourself into the wdir
@@ -869,8 +885,8 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          value,defaut = getKeyWord('FICHIER FORTRAN',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['dico'],MODFiles[CASFiles[name]['code']]['frgb'])
          # ~~ check if compileTELEMAC.py has been called since
          if value != []:
-            useFort = path.join(CASFiles[name]['dir'],eval(value[0]))
-            useFile = path.join(CASFiles[name]['dir'],path.splitext(eval(value[0]))[0]+cfg['SYSTEM']['sfx_exe'])
+            useFort = path.join(CASFiles[name]['dir'],value[0].strip("'\""))
+            useFile = path.join(CASFiles[name]['dir'],path.splitext(value[0].strip("'\""))[0]+cfg['SYSTEM']['sfx_exe'])
             # /!\ removing dependency over cfg['REBUILD']:
             if path.exists(useFile):
                if cfg['REBUILD'] == 1: remove(useFile)
@@ -987,13 +1003,15 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          # ~~> Run PARTEL
          CONLIM = getCONLIM(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    # Global CONLIM file
          try:
-            runPartition(parcmd,CASFiles[name]['cas'],CONLIM,MODFiles[CASFiles[name]['code']]['iFS'],ncsize,options.bypass,options.use_link)
+            runPartition(parcmd,CASFiles[name]['cas'],CONLIM,MODFiles[CASFiles[name]['code']]['iFS'],
+                         ncsize,options.bypass,section_name,options.use_link)
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS','msg':'Partioning primary input files of the CAS file: '+name},e,options.bypass)])
          for cplage in CASFiles[name]['with']:
             CONLIM = getCONLIM(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
             try:
-               runPartition(parcmd,CASFiles[name]['with'][cplage]['cas'],CONLIM,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],ncsize,options.bypass,options.use_link)
+               runPartition(parcmd,CASFiles[name]['with'][cplage]['cas'],CONLIM,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],
+                            ncsize,options.bypass,section_name,options.use_link)
             except Exception as e:
                raise Exception([filterMessage({'name':'runCAS','msg':'Partioning coupling input files'},e,options.bypass)])
    

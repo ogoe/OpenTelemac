@@ -85,7 +85,7 @@
 !
 !   LOOP ON THE BOUNDARY SIDES
 !
-         DO 1 IELEM = 1,NELEM
+         DO IELEM = 1,NELEM
 !
 !           GLOBAL NUMBERING OF THE SIDE NODES
 !
@@ -116,7 +116,7 @@
             W2(IELEM) = COEF
             W3(IELEM) = COEF
 !
-1        CONTINUE
+         ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -127,7 +127,7 @@
 !
 !     XSUR3 = XMUL / 3.D0
 !
-!     DO 3 IELEM = 1 , NELEM
+!     DO IELEM = 1 , NELEM
 !
 !
 !       COEF = XSUR3 * SURFAC(IELEM)
@@ -136,7 +136,7 @@
 !       W2(IELEM) = COEF
 !       W3(IELEM) = COEF
 !
-!3     CONTINUE
+!     ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

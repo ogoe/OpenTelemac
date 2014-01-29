@@ -90,7 +90,7 @@
       READ(IFIC,*,ERR=998) RELAXS
       READ(IFIC,*,END=900)
 !
-      DO 10 N=1,NSIPH
+      DO N=1,NSIPH
         READ(IFIC,*,ERR=997) ENTSIP(N),SORSIP(N),
      &                       DELTA1,DELTA2,CE1,CE2,
      &                       CS1,CS2,SECSIP(N),LSIP(N),
@@ -105,7 +105,7 @@
         ALTSIP(N,2) = ALT2
         ANGSIP(N,1) = ANG1*PI/180.D0
         ANGSIP(N,2) = ANG2*PI/180.D0
-10    CONTINUE
+      ENDDO ! N
 !
 !     IN // THE POINTS ARE GIVEN THEIR LOCAL NUMBER
 !           OR 0 IF NOT IN THE SUB-DOMAIN

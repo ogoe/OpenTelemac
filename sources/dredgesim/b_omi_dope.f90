@@ -1774,7 +1774,7 @@ CONTAINS
     CHARACTER (LEN=c_len_omi_arg_value) :: value ! 
     LOGICAL , ALLOCATABLE               :: l_ok(:)  ! 
     INTEGER , ALLOCATABLE               :: l_key(:), l_val(:) ! 
-    INTEGER                             :: i, j, nn ! 
+    INTEGER                             :: i, nn ! 
     !
     IF ( ASSOCIATED( this%args) ) THEN
        ALLOCATE( l_ok(SIZE(this%args)), l_key(SIZE(this%args)), l_val(SIZE(this%args)) )

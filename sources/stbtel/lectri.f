@@ -62,7 +62,7 @@
       REWIND (NGEO)
       REWIND (NFO1)
       READ (NGEO,'(//)')
-      DO 1 I=1,NPOIN
+      DO I=1,NPOIN
         READ (NGEO,*,ERR=8000,END=9000) NUMNOD,X(I),Y(I),ITYPND
         IF (ITYPND.EQ.1) NCOLOR(I) = 11
         IF (ITYPND.EQ.2) NCOLOR(I) = 4
@@ -77,11 +77,11 @@
         IF (ITYPND.EQ.11) NCOLOR(I) = 3
         IF (ITYPND.EQ.12) NCOLOR(I) = 14
         IF (ITYPND.EQ.13) NCOLOR(I) = 13
- 1    CONTINUE
+      ENDDO
 !
-      DO 2 I=1,NELEM
+      DO I=1,NELEM
         READ (NFO1, * , ERR=8010, END=9010) (IKLE(I,J),J=1,3)
- 2    CONTINUE
+      ENDDO
       RETURN
  8000 CONTINUE
       IF (LNG.EQ.1) WRITE (LU,4000)

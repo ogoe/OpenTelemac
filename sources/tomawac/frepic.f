@@ -58,36 +58,36 @@
       INTEGER  JP    , JF    , IP
 !
 !
-      DO 10 IP = 1,NPOIN2
+      DO IP = 1,NPOIN2
         FPIC(IP) = 1.D-20
         EMAX(IP) = 0.D0
-   10 CONTINUE
+      ENDDO ! IP 
 !
 !.....LOOP OVER DISCRETISED FREQUENCIES
 !     """""""""""""""""""""""""""""""""""""""""""""
-      DO 20 JF = 1,NF
+      DO JF = 1,NF
 !
 !.......INTEGRATES WRT DIRECTIONS TO GET E(F)
 !       """""""""""""""""""""""""""""""""""""""""""""""""
-        DO 60 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           E(IP) = 0.D0
-   60   CONTINUE
-        DO 30 JP = 1,NPLAN
-          DO 40 IP=1,NPOIN2
+        ENDDO ! IP
+        DO JP = 1,NPLAN
+          DO IP=1,NPOIN2
                  E(IP) = E(IP) + F(IP,JP,JF)
-   40     CONTINUE
-   30   CONTINUE
+          ENDDO ! IP
+        ENDDO ! JP 
 !
 !.......KEEPS THE MAXIMUM VALUE FOR E(F) AND ASSOCIATED FREQUENCY
 !       """""""""""""""""""""""""""""""""""""""""""""""""""""
-        DO 50 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           IF (E(IP).GT.EMAX(IP)) THEN
             EMAX(IP) = E(IP)
             FPIC(IP) = FREQ(JF)
           ENDIF
-   50   CONTINUE
+        ENDDO ! IP
 !
-   20 CONTINUE
+      ENDDO ! JF 
 !
       RETURN
       END

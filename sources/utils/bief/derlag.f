@@ -112,7 +112,7 @@
 !
       SENS=1
 !
-      DO 10 ILAG=1,NLAG
+      DO ILAG=1,NLAG
 !
         IF(LT.EQ.DEBLAG(ILAG)) THEN
 !
@@ -193,7 +193,7 @@
           ENDDO
         ENDIF
 !
-10    CONTINUE
+      ENDDO ! ILAG
 !
 !-----------------------------------------------------------------------
 !

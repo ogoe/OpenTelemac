@@ -63,7 +63,7 @@
 !
 !  BUILDS THE ARRAY LIMKEP
 !
-      DO 1 K=1,NPTFR
+      DO K=1,NPTFR
 !
         IF(LIUBOR(K).EQ.KENT) THEN
 !
@@ -106,7 +106,7 @@
 !
         ENDIF
 !
-1     CONTINUE
+      ENDDO ! K
 !
 !-----------------------------------------------------------------------
 !

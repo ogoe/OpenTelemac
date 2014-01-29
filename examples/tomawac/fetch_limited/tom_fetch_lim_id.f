@@ -75,7 +75,7 @@ C
 C
       DO IP=1,NPOIN2
         UV(IP)=UCONST
-	VV(IP)=VCONST
+        VV(IP)=VCONST
       ENDDO
 !
       RETURN

@@ -76,27 +76,27 @@
 !
 !  FROM IKLE TO SUB-DOMAIN NUMBERING
 !  ALREADY DONE BY THE DOMAIN PARTITIONER
-!      DO 18 J=1,3
-!      DO 17 I=1,NELEM
+!      DO J=1,3
+!      DO I=1,NELEM
 !        IKLE(I,J)=KNOGL(IKLE(I,J))
-!17    CONTINUE
-!18    CONTINUE
+!      ENDDO ! I
+!      ENDDO ! J
 !
 !  FROM NBOR TO SUB-DOMAIN NUMBERING
 !  EXCEPT FOR ESTEL3D WHERE NBOR ALREADY HAS LOCAL NUMBERS
 !  SEE M_UNV2MESH.F90 /ESTEL3D  AND PARTEL.F /PARALLEL
 !
       IF(NNAMECODE(1).NE.'ESTEL3D                 ') THEN
-        DO 19 I=1,NPTFR
+        DO I=1,NPTFR
           NBOR(I)=KNOGL(NBOR(I))
-19      CONTINUE
+        ENDDO ! I
       ENDIF
 !
 !  FROM NACHB TO SUB-DOMAIN NUMBERING
 !
-      DO 21 I=1,NPTIR
+      DO I=1,NPTIR
         NACHB(1,I)=KNOGL(NACHB(1,I))
-21    CONTINUE
+      ENDDO ! I
 !
 !-----------------------------------------------------------------------
 !

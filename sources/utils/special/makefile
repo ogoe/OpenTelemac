@@ -31,6 +31,7 @@ VERSION	      = v7p0
 #
 # Options du compilateur :
 #
+include makefile.am
 include $(SYSTELCFG)/cfgmak.mak
 #
 DIRINC           = $(PROJECT)/builds/$(DIRLIB)/lib
@@ -58,12 +59,6 @@ INSTALL       = cp
 MAKEFILE      = makefile
 
 #------------------------ Liste des fichiers
-#
-#------- Sources Fortran
-
-SRCS= \
-gracestop.f     special_plante.f extens.f\
-check_allocate.f plante.f
 #
 #------- Objets
 #

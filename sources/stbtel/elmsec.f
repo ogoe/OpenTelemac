@@ -94,9 +94,9 @@
         RETURN
       ENDIF
 !     INITIALISATION DU TABLEAU ISDRY : PAS DEFAUT TOUS SECS
-      DO 5 I = 1, NPOIN
+      DO I = 1, NPOIN
         ISDRY(I) = 1
- 5    CONTINUE
+      ENDDO
 !     LECTURE DES RESULTATS TELEMAC ET REMPLISSAGE DU TABLEAU ISDRY
 !     -------------------------------------------------------------
       NPDT = 0
@@ -113,31 +113,31 @@
 !
 !     ON LIT LES VARIABLES STOCKEES AVANT LA HAUTEUR
 !
-      DO 15 I = 1, IHAUT -1
+      DO I = 1, IHAUT -1
         CALL LIT(H ,WORK,IBID,CBID,NPOIN,'R4',NGEO,STD,ISTAT)
- 15   CONTINUE
+      ENDDO
 !
 !     VARIABLE HAUTEUR D'EAU
 !
       CALL LIT(H ,WORK,IBID,CBID,NPOIN,'R4',NGEO,STD,ISTAT)
 !
 !     MISE A JOUR DE ISDRY EN FONCTION DE LA HAUTEUR D'EAU DU PAS DE TEMPS
-      DO 25 I = 1, NPOIN
+      DO I = 1, NPOIN
         IF (H(I).GT.SEUSEC) THEN
           ISDRY(I) = 0
         ELSE
           NPSEC = NPSEC + 1
         ENDIF
- 25   CONTINUE
+      ENDDO
       IF (LNG.EQ.1) WRITE(LU,1000) TPSFIN(1), NPSEC, SEUSEC
       IF (LNG.EQ.2) WRITE(LU,2000) TPSFIN(1), NPSEC, SEUSEC
 !
 !
 !     LECTURE AUTRES VARIABLES RESTANTES
 !     ----------------------------------
-      DO 35 I = IHAUT +1, NVAR
+      DO I = IHAUT +1, NVAR
         CALL LIT(H ,WORK,IBID,CBID,NPOIN,'R4',NGEO,STD,ISTAT)
- 35   CONTINUE
+      ENDDO
 !
       GOTO 10
  12   CONTINUE
@@ -156,7 +156,7 @@
       NSEC = 0
 !
 !     PARCOURS DES ELEMENTS
-      DO 45 IEL = 1, NELEM
+      DO IEL = 1, NELEM
         NP1 = IKLE(IEL, 1)
         NP2 = IKLE(IEL, 2)
         NP3 = IKLE(IEL, 3)
@@ -183,7 +183,7 @@
 !           FIN SI ELIMINATION PART. SECS
           ENDIF
         ENDIF
- 45   CONTINUE
+      ENDDO !IEL
 !     FIN PARCOURS DE TOUS LES ELEMENTS
       IF (NSEC.EQ.0) THEN
        IF (LNG.EQ.1) WRITE(LU,1002)
@@ -221,11 +221,11 @@
         IF ((IKLE(IEL, 1).EQ.0).AND.(IKLE(IEL, 2).EQ.0).AND.
      &     (IKLE(IEL, 3).EQ.0)) THEN
          NELI = NELI + 1
-         DO 48 I = IEL, NELEM - NELI
+         DO I = IEL, NELEM - NELI
            IKLE(I,1) = IKLE(I+1, 1)
            IKLE(I,2) = IKLE(I+1, 2)
            IKLE(I,3) = IKLE(I+1, 3)
- 48      CONTINUE
+         ENDDO
         ELSE
          IEL = IEL + 1
         ENDIF
@@ -245,28 +245,28 @@
 !      ELIMINATION DES POINTS NE FAISANT PLUS PARTIE DU MAILLAGE
 !      REUTILISATION DE ISDRY POUR MARQUER LES POINTS NON UTILISEES
 !      ---------------------------------------------
-       DO 65 I = 1, NPOIN
+       DO I = 1, NPOIN
          ISDRY(I) = 0
          NEW(I) = 0
- 65    CONTINUE
+       ENDDO
 !
-       DO 75 IEL = 1, NELEM
+       DO IEL = 1, NELEM
         ISDRY(IKLE(IEL,1)) = IKLE(IEL,1)
         ISDRY(IKLE(IEL,2)) = IKLE(IEL,2)
         ISDRY(IKLE(IEL,3)) = IKLE(IEL,3)
- 75    CONTINUE
+       ENDDO
 !
        NELI = 0
        I = 1
 !      POUR CHAQUE POINT FAIRE
-       DO 85 I = 1, NPOIN
+       DO I = 1, NPOIN
          IF (ISDRY(I) .EQ.0) THEN
            NELI = NELI + 1
            NEW(I) = 0
          ELSE
            NEW(I) = I - NELI
          ENDIF
- 85    CONTINUE
+       ENDDO
 !      FIN POUR CHAQUE POINT
 !
        NELI = 0
@@ -278,7 +278,7 @@
 !      WRITE(LU,*) 'POINT A ELIMINER',I,':',X(I),Y(I),NCOLOR(I)
            NELI = NELI + 1
 !          DECALAGE DANS LE TABLEAU DES POINTS
-           DO 95 J = I, NPOIN - NELI
+           DO J = I, NPOIN - NELI
              X(J) = X(J+1)
              Y(J) = Y(J+1)
              NCOLOR(J) = NCOLOR(J+1)
@@ -287,7 +287,7 @@
              ELSE
                ISDRY(J) = 0
              ENDIF
- 95        CONTINUE
+           ENDDO
          ELSE
            I = I + 1
          ENDIF
@@ -304,14 +304,14 @@
 !
 !      ON REPERCUTE LA RENUMEROTATION DANS IKLE
 !      ----------------------------------------
-       DO 115 IEL = 1, NELEM
+       DO IEL = 1, NELEM
          J = IKLE(IEL,1)
          IKLE(IEL,1) = NEW(J)
          J = IKLE(IEL,2)
          IKLE(IEL,2) = NEW(J)
          J = IKLE(IEL,3)
          IKLE(IEL,3) = NEW(J)
- 115   CONTINUE
+       ENDDO
       RETURN
 !***********************************************************************
  1000 FORMAT(1X,'TEMPS ',G15.3,' : ',I8,

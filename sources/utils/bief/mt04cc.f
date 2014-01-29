@@ -118,7 +118,7 @@
 !
 !  P1 DISCRETISATION OF THE VELOCITY:
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -488,7 +488,7 @@
          A66(IELEM) = - A16(IELEM) - A26(IELEM) - A36(IELEM)
      &                - A46(IELEM) - A56(IELEM)
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -498,7 +498,7 @@
 !
 !  P2 DISCRETISATION OF THE VELOCITY:
 !
-      DO 5 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -1301,7 +1301,7 @@
          A66(IELEM) = - A16(IELEM) - A26(IELEM) - A36(IELEM)
      &                - A46(IELEM) - A56(IELEM)
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

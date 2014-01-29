@@ -18,16 +18,16 @@ path: <root>|sources|utils|parallel
 files: declarations_parallel.F
   p_time.F
   p_exit.F
+  p_allgatherv_i.F
   p_sync.F
   p_isum_array.F
   p_imax_array.F
   p_init.F
-  p_allgatherv_i.F
 
 [partel]
 path: <root>|sources|utils|partel
-files: partel_para.F
-  partitioner_para.F
+files: partitioner_para.F
+  partel_para.F
 
 [special]
 path: <root>|sources|utils|special

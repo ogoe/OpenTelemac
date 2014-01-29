@@ -34,6 +34,7 @@
 !
 !     ARRAY OF DISPLACEMENTS BETWEEN BASIC COMPONENTS, HERE INITIALISED ONLY 
 !
+#if defined (HAVE_MPI)
       INTEGER (KIND=MPI_ADDRESS_KIND), DIMENSION(18) :: CH_DELTA
 ! 
 !     ARRAY OF BLOCKLENGTHS OF TYPE COMPONENTS, BASKET INITIALISED TO 1 
@@ -46,7 +47,6 @@
 !     
 !----------------------------------------------------------------------
 !
-#if defined (HAVE_MPI)
 !     THE CODE BELOW HERE MUST BE CONSISTENT WITH THIS TYPE:
 !
 !     TYPE ALG_TYPE 

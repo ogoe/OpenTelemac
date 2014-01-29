@@ -1354,8 +1354,6 @@ CONTAINS
     !! Ergebnis: Indices f&uuml;r die Position der n_quant-ten <EM>Quantity</EM> <BR>
     !! this( ij(1) )%exch( ij(2) ) kennzeichnet die Position
     INTEGER :: ij(2) ! 
-    !! Hilfsvariablen
-    INTEGER :: i !
     TYPE (t_string_r) , POINTER :: string_r(:)
     !
     CALL create_memo_data ( this, comp_idx )
@@ -1383,8 +1381,6 @@ CONTAINS
     !! Ergebnis: Indices f&uuml;r die (erste) Position der <EM>Quantity</EM> mit Id "quant_id" <BR>
     !! this( ij(1) )%exch( ij(2) ) kennzeichnet die Position
     INTEGER :: ij(2) ! 
-    !! Hilfsvariablen
-    INTEGER :: i !
     TYPE (t_string_r) , POINTER :: string_r(:)
     !
     CALL create_memo_data ( this, comp_idx )
@@ -1412,8 +1408,6 @@ CONTAINS
     !! Ergebnis: Indices f&uuml;r die Position der n_elemset-ten <EM>ElementSet</EM> <BR>
     !! this( ij(1) )%exch( ij(2) ) kennzeichnet die Position
     INTEGER :: ij(2) ! 
-    !! Hilfsvariablen
-    INTEGER :: i !
     TYPE (t_string_r) , POINTER :: string_r(:)
     !
     CALL create_memo_data ( this, comp_idx )
@@ -1441,8 +1435,6 @@ CONTAINS
     !! Ergebnis: Indices f&uuml;r die Position des <EM>ElementSet</EM> mit Id "elemset_id" <BR>
     !! this( ij(1) )%exch( ij(2) ) kennzeichnet die Position
     INTEGER :: ij(2) ! 
-    !! Hilfsvariablen
-    INTEGER :: i !
     TYPE (t_string_r) , POINTER :: string_r(:)
     !
     CALL create_memo_data ( this, comp_idx )
@@ -1473,8 +1465,6 @@ CONTAINS
     !! <EM>ElementSet</EM> und <EM>Quantity</EM> <BR>
     !! this( ij(1) )%exch( ij(2) ) kennzeichnet die Position
     INTEGER :: ij(2) ! 
-    !! Hilfsvariablen
-    INTEGER :: i ! 
     TYPE (t_string_r) , POINTER :: e_string_r(:), q_string_r(:)
     !
     CALL create_memo_data ( this, comp_idx )

@@ -69,7 +69,7 @@
 !
 !  CHECKS THE DEPTH
 !
-      DO 10 I = 1 , NPH
+      DO I = 1 , NPH
         IF(H(I).LT.BORNES(1)) THEN
           ARRET = .TRUE.
           IF(LNG.EQ.1) THEN
@@ -88,13 +88,13 @@
            WRITE(LU,101) 'UPPER','H',I,X(I),Y(I),'H',H(I),BORNES(2)
           ENDIF
         ENDIF
-10    CONTINUE
+      ENDDO ! I 
 !
 !-----------------------------------------------------------------------
 !
 !  CHECKS THE VELOCITY U
 !
-      DO 20 I = 1 , NPU
+      DO I = 1 , NPU
         IF(U(I).LT.BORNES(3)) THEN
           ARRET = .TRUE.
           IF(LNG.EQ.1) THEN
@@ -113,13 +113,13 @@
            WRITE(LU,101) 'UPPER','U',I,X(I),Y(I),'U',U(I),BORNES(4)
           ENDIF
         ENDIF
-20    CONTINUE
+      ENDDO ! I 
 !
 !-----------------------------------------------------------------------
 !
 !  CHECKS THE VELOCITY V
 !
-      DO 30 I = 1 , NPV
+      DO I = 1 , NPV
         IF(V(I).LT.BORNES(5)) THEN
           ARRET = .TRUE.
           IF(LNG.EQ.1) THEN
@@ -138,7 +138,7 @@
            WRITE(LU,101) 'UPPER','V',I,X(I),Y(I),'V',V(I),BORNES(6)
           ENDIF
         ENDIF
-30    CONTINUE
+      ENDDO ! I 
 !
 !-----------------------------------------------------------------------
 !

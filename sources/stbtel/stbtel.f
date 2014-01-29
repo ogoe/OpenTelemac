@@ -276,10 +276,10 @@
      &                       NACHB,NBOR,NPTFR,TRAV1,TRAV2)
           CALL VERIFS (IFABOR,IKLE,TRAV1,NPTFR,NUMPB,NBPB)
           IF (NBPB.GT.0) THEN
-            DO 50 I=1,NBPB
+            DO I=1,NBPB
               IF (LNG.EQ.1) WRITE(LU,3000) NUMPB(I)
               IF (LNG.EQ.2) WRITE(LU,3001) NUMPB(I)
- 50         CONTINUE
+            ENDDO
             CALL ELMPB (NBPB, NUMPB, X,Y,IKLE,NCOLOR,ISDRY,TRAV2)
            ELSE
             IF (LNG.EQ.1) WRITE(LU,3008)
@@ -476,10 +476,6 @@
      &          ' TENTATIVE(S)')
  4100 FORMAT(1X,'BACKWARD DEPENDENCIES ARE CANCELLED AFTER ',I2,
      &          ' ATTEMPTS')
- 2001 FORMAT(//,1X,'ELIMINATION DES ELEMENTS SECS DU MAILLAGE',
-     &        /,1X,'-----------------------------------------')
- 4001 FORMAT(//,1X,'MESH DRY ELEMENT SUPPRESSION',
-     &        /,1X,'----------------------------')
 !
  2002 FORMAT(//,'***********************************************',/,
      &          'ELIMINATION DES ELEMENTS SECS DU MAILLAGE ',/,

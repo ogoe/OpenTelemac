@@ -83,7 +83,7 @@
         ARGMI2=0.D0
       ENDIF
 !
-      DO 110 JP=1,NPLAN
+      DO JP=1,NPLAN
         FTH = DIREC(JP)
 !
         ARGUM = ABS(COS(0.5D0*(FTH-TETA1)))
@@ -102,7 +102,7 @@
 !
         FRA(JP)=XLAMDA*FRA1+(1.D0-XLAMDA)*FRA2
         IF (FRA(JP).LT.1.D-10) FRA(JP)=0.D0
-  110 CONTINUE
+      ENDDO ! JP
 !
       RETURN
       END

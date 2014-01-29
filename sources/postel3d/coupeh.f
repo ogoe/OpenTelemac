@@ -92,92 +92,92 @@
 !
 !    POUR CHAQUE COUPE HORIZONTALE FAIRE :
 !
-      DO 1 IC = 1,NC2DH
+      DO IC = 1,NC2DH
 !
          CANAL = NCOU + IC -1
          XB(1)=AT
          CALL ECRI2(XB,IB,CB,1,'R4',CANAL,BINCOU,ISTAT)
 !
-         DO 2 I = 1,NPOIN2
+         DO I = 1,NPOIN2
             VAR(I) = HREF(IC)
 !            IF (NPLREF(IC).GE.1) VAR(I) = VAR(I) + Z(I,NPLREF(IC))
             IF (NPLREF(IC).GE.1) THEN
              VAR(I) = VAR(I) + Z(I,NPLREF(IC))
             ENDIF
             PLINF(I) = 1
-2        CONTINUE
+         ENDDO
 !
          IF (NPLAN.GE.3) THEN
-            DO 3 J = 2,NPLAN-1
-               DO 4 I = 1,NPOIN2
+            DO J = 2,NPLAN-1
+               DO I = 1,NPOIN2
                   IF (Z(I,J).LE.VAR(I)) PLINF(I) = J
-4              CONTINUE
-3           CONTINUE
+               ENDDO
+            ENDDO
          ENDIF
 !
 !
-         DO 5 I = 1,NPOIN2
+         DO I = 1,NPOIN2
 !..01/2004
 !  ATTENTION : Cas des bancs decouvrants (plans confondus)
             SHZ(I) = (          VAR(I)   -Z(I,PLINF(I)))
      &             / MAX((Z(I,PLINF(I)+1)-Z(I,PLINF(I))),1.D-6)
 !..01/2004
-5        CONTINUE
+         ENDDO
 !
 !-----------------------------------------------------------------------
 !
 !    INDICATEUR DU DOMAINE
 !    ---------------------
-         DO 8 I = 1,NPOIN2
+         DO I = 1,NPOIN2
             VAR(I) = MIN(SHZ(I),1.D0-SHZ(I)) + 1.D-6
-8        CONTINUE
+         ENDDO
          CALL ECRI2(VAR,IB,CB,NPOIN2,'R4',CANAL,BINCOU,ISTAT)
 !
 !
 !    COMPOSANTE U DE LA VITESSE
 !    --------------------------
-            DO 10 I = 1,NPOIN2
-               VAR(I) = 0.D0
-               IF (SHZ(I).GT.-1.D-6.AND.SHZ(I).LT.1.000001D0)
-     &         VAR(I) = U(I,PLINF(I))*(1.-SHZ(I))+U(I,PLINF(I)+1)*SHZ(I)
-10          CONTINUE
-            CALL ECRI2(VAR,IB,CB,NPOIN2,'R4',CANAL,BINCOU,ISTAT)
+         DO I = 1,NPOIN2
+            VAR(I) = 0.D0
+            IF (SHZ(I).GT.-1.D-6.AND.SHZ(I).LT.1.000001D0)
+     &      VAR(I) = U(I,PLINF(I))*(1.-SHZ(I))+U(I,PLINF(I)+1)*SHZ(I)
+         ENDDO
+         CALL ECRI2(VAR,IB,CB,NPOIN2,'R4',CANAL,BINCOU,ISTAT)
 !
 !
 !    COMPOSANTE V DE LA VITESSE
 !    --------------------------
-            DO 20 I = 1,NPOIN2
-               VAR(I) = 0.D0
-               IF (SHZ(I).GT.-1.D-6.AND.SHZ(I).LT.1.000001D0)
-     &         VAR(I) = V(I,PLINF(I))*(1.-SHZ(I))+V(I,PLINF(I)+1)*SHZ(I)
-20          CONTINUE
-            CALL ECRI2(VAR,IB,CB,NPOIN2,'R4',CANAL,BINCOU,ISTAT)
+         DO I = 1,NPOIN2
+            VAR(I) = 0.D0
+            IF (SHZ(I).GT.-1.D-6.AND.SHZ(I).LT.1.000001D0)
+     &      VAR(I) = V(I,PLINF(I))*(1.-SHZ(I))+V(I,PLINF(I)+1)*SHZ(I)
+         ENDDO
+         CALL ECRI2(VAR,IB,CB,NPOIN2,'R4',CANAL,BINCOU,ISTAT)
 !
 !    COMPOSANTE W DE LA VITESSE
 !    --------------------------
-            DO 30 I = 1,NPOIN2
-               VAR(I) = W(I,PLINF(I))*(1.-SHZ(I))+W(I,PLINF(I)+1)*SHZ(I)
-30          CONTINUE
-            CALL ECRI2(VAR,IB,CB,NPOIN2,'R4',CANAL,BINCOU,ISTAT)
+         DO I = 1,NPOIN2
+            VAR(I) = W(I,PLINF(I))*(1.-SHZ(I))+W(I,PLINF(I)+1)*SHZ(I)
+         ENDDO
+         CALL ECRI2(VAR,IB,CB,NPOIN2,'R4',CANAL,BINCOU,ISTAT)
 !
 !
          if (nva3.gt.4) then
          DO J=1,NVA3-4
-            DO 40 I = 1,NPOIN2
+            DO I = 1,NPOIN2
                VAR(I) = 0.D0
                IF (SHZ(I).GT.-1.D-6.AND.SHZ(I).LT.1.000001D0)
      &            VAR(I) =
      &          TAB%ADR(J)%P%R((PLINF(I)-1)*NPOIN2+I)*(1.-SHZ(I))
      &        + TAB%ADR(J)%P%R( PLINF(I)   *NPOIN2+I)*    SHZ(I)
-40          CONTINUE
+            ENDDO
             CALL ECRI2(VAR,IB,CB,NPOIN2,'R4',CANAL,BINCOU,ISTAT)
          ENDDO
          endif
 !
 !
-1     CONTINUE
+      ENDDO !IC
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END
+      END SUBROUTINE

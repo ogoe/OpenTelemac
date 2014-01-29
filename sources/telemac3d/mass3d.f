@@ -122,8 +122,8 @@
 !
 !-----------------------------------------------------------------------
 !
-101   FORMAT(' MASSE D''EAU INITIALE DANS LE DOMAINE : ',3X, G16.7)
-102   FORMAT(' INITIAL MASS OF WATER IN THE DOMAIN :',3X,G16.7)
+!101   FORMAT(' MASSE D''EAU INITIALE DANS LE DOMAINE : ',3X, G16.7)
+!102   FORMAT(' INITIAL MASS OF WATER IN THE DOMAIN :',3X,G16.7)
 !
 !-----------------------------------------------------------------------
 !

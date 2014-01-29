@@ -101,7 +101,7 @@
 !
 !   LOOP ON THE BOUNDARY SIDES
 !
-         DO 1 IELEM = 1,NELEM
+         DO IELEM = 1,NELEM
 !
 !           GLOBAL NUMBERING OF THE SIDE NODES
 !
@@ -137,7 +137,7 @@
             W2(IELEM) = COEF * ( F123 + F2 )
             W3(IELEM) = COEF * ( F123 + F3 )
 !
-1        CONTINUE
+         ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -164,7 +164,7 @@
 !
 !     XSUR12 = XMUL / 12.D0
 !
-!     DO 3 IELEM = 1 , NELEM
+!     DO IELEM = 1 , NELEM
 !
 !       F1  = F(IKLE1(IELEM))
 !       F2  = F(IKLE2(IELEM))
@@ -177,7 +177,7 @@
 !       W2(IELEM) = COEF * ( F123 + F2 )
 !       W3(IELEM) = COEF * ( F123 + F3 )
 !
-!3     CONTINUE
+!     ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

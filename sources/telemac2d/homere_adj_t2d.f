@@ -507,8 +507,8 @@
          IF(LNG.EQ.1) WRITE(LU,403)
          IF(LNG.EQ.2) WRITE(LU,404)
          WRITE(LU,405)
-403      FORMAT(/////,1X,'LISTING D" ESTIMATION',82(1H-))
-404      FORMAT(/////,1X,'LISTING OF ESTIMATION',82(1H-))
+403      FORMAT(/////,1X,'LISTING D" ESTIMATION',82('-'))
+404      FORMAT(/////,1X,'LISTING OF ESTIMATION',82('-'))
 405      FORMAT(/////,
      &14X,'TTTTT  EEEEE  L      EEEEE  M   M  AAAAA  CCCCC',/,
      &14X,'  T    E      L      E      MM MM  A   A  C    ',/,

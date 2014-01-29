@@ -111,7 +111,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2  =   XEL(IELEM,2)
       X3  =   XEL(IELEM,3)
@@ -155,7 +155,7 @@
       A22(IELEM) = - A23(IELEM) - A12(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !  CASE WHERE U AND V ARE QUASI-BUBBLE
@@ -164,7 +164,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2  =   XEL(IELEM,2)
       X3  =   XEL(IELEM,3)
@@ -231,7 +231,7 @@
       A22(IELEM) = - A23(IELEM) - A12(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
 !
 !-----------------------------------------------------------------------
@@ -241,7 +241,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2  =   XEL(IELEM,2)
       X3  =   XEL(IELEM,3)
@@ -382,7 +382,7 @@
       A13(IELEM) = - A11(IELEM) - A12(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
 !
 !     OTHER TYPES OF DISCRETISATION FOR U

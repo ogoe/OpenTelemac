@@ -31,6 +31,7 @@ VERSION	      = v7p0
 #
 # Options du compilateur :
 #
+include makefile.am
 include $(SYSTELCFG)/cfgmak.mak
 #
 DIRINC           = $(PROJECT)/builds/$(DIRLIB)/lib
@@ -64,15 +65,6 @@ INSTALL       = cp
 MAKEFILE      = makefile
 
 #------------------------ Liste des fichiers
-#
-#------- Sources Fortran
-
-SRCS= \
-declarations_postel3d.f \
-coupeh.f                 exten1.f                 exten2.f          lecdon_postel3d.f        postel3d.f        \
-coupev.f                 lecr3d.f                 pre2dh.f          \
-pre2dv.f                 ecrdeb.f                 nomtra.f          \
-homere_postel3d.f        point_postel3d.f
 #
 #------- Objets
 #

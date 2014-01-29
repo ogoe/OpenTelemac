@@ -471,7 +471,6 @@
       INTEGER, ALLOCATABLE :: myvalfam(:)
       INTEGER, ALLOCATABLE :: sort(:)
       INTEGER :: ELEM
-      CHARACTER(LEN=200) :: LINE
       integer :: tempmin
       integer :: pos(1)
 !      

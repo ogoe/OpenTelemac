@@ -207,22 +207,22 @@
       ITAI   = -100
       DEFLU  = 0
 !
-      DO 2 K=1, 5
+      DO K=1, 5
        VUCMD(K) = .FALSE.
        VUCMD0(K) = .FALSE.
-2     CONTINUE
+      ENDDO ! K
 !
-      DO 3 K=1,100
+      DO K=1,100
        MOTIGN(K)= ' '
        TYPIGN(K)=1
        LONIGN(K)=0
-3     CONTINUE
+      ENDDO ! K
 !
-      DO 5 K=1, 4
+      DO K=1, 4
        NMOT(K) = 0
        NMAXR(K) = 0
        OFFSET(K) = 1
-       DO 6 I=1,NMAX
+       DO I=1,NMAX
          ADRESS(K,I)  = 0
          DIMENS(K,I)  = 1
          TROUVE(K,I)  = 0
@@ -245,8 +245,8 @@
          USRATT(I)    = ' '
          MOTCLE(K,I)  = ' '
          INDIC(K,I)   = 0
-6      CONTINUE
-5      CONTINUE
+       ENDDO ! I
+       ENDDO ! K
 !
 ! CHECKS THE LANGUAGE
 !
@@ -439,7 +439,7 @@
 !
 !
            IF (.NOT.(DYNAM)) THEN
-             DO 400 I=1 , MIN(IVAL,ITAI)
+             DO I=1 , MIN(IVAL,ITAI)
                IF     (NTYP.EQ.1) THEN
                       MOTINT(ADD+I-1) = DEFINT(I)
                ELSEIF (NTYP.EQ.2) THEN
@@ -449,14 +449,14 @@
                ELSEIF (NTYP.EQ.4)THEN
                        MOTCAR(ADD+I-1) = DEFCAR(I)
                ENDIF
- 400         CONTINUE
+             ENDDO ! I
            ELSE
-              DO 410 I=1 ,NMAXR(NTYP)
+              DO I=1 ,NMAXR(NTYP)
                 IF (UTINDX(NTYP,I)) THEN
                   IF(ADRESS(NTYP,I) .NE. ADD) THEN
                     IF (ADRESS(NTYP,I) .LT. ADD) DEPLAC = 0
                     IF (ADRESS(NTYP,I) .GT. ADD) DEPLAC = IVAL - ITAI
-                    DO 420 J=1 , DIMENS(NTYP,I)
+                    DO J=1 , DIMENS(NTYP,I)
                       ADSRC = ADRESS(NTYP,I)+J-1
                       ADDES = ADRESS(NTYP,I)+J-1+DEPLAC
                       IF (ADDES.GT. NMAX) GO TO 1515
@@ -470,14 +470,14 @@
                               USRCAR(ADDES) = MOTCAR(ADSRC)
                       ENDIF
                       USRATT(ADDES) = MOTATT(NTYP,ADSRC)
- 420                CONTINUE
+                    ENDDO ! J
                     IF (ADRESS(NTYP,I) .GT. ADD) THEN
                       ADRESS(NTYP,I) = ADRESS(NTYP,I) + DEPLAC
                       IF (ADRESS(NTYP,I) .GT. NMAX) GO TO 1515
                     ENDIF
 !
                   ELSE IF (ADRESS(NTYP,I) .EQ. ADD) THEN
-                    DO 430 J=1 ,IVAL
+                    DO J=1 ,IVAL
                       IF     (NTYP.EQ.1) THEN
                              USRINT(ADD+J-1) = DEFINT(J)
                       ELSEIF (NTYP.EQ.2) THEN
@@ -488,16 +488,16 @@
                              USRCAR(ADD+J-1) = DEFCAR(J)
                       ENDIF
                       USRATT(ADD+J-1) = DEFATT(J)
- 430                CONTINUE
+                    ENDDO ! J
                     DIMENS(NTYP,I) = IVAL
                   ENDIF
                ENDIF
- 410         CONTINUE
+             ENDDO ! I
 ! SORTS IN FINAL ARRAYS
-             DO 440 I=1 ,NMAXR(NTYP)
+             DO I=1 ,NMAXR(NTYP)
                IF (UTINDX(NTYP,I)) THEN
                  ADSRC = ADRESS(NTYP,I)
-                 DO 450 J=1 ,DIMENS(NTYP,I)
+                 DO J=1 ,DIMENS(NTYP,I)
                   IF     (NTYP.EQ.1) THEN
                          MOTINT(ADSRC+J-1)=USRINT(ADSRC+J-1)
                   ELSEIF (NTYP.EQ.2) THEN
@@ -508,9 +508,9 @@
                          MOTCAR(ADSRC+J-1)=USRCAR(ADSRC+J-1)
                   ENDIF
                   MOTATT(NTYP,ADSRC+J-1) = USRATT(ADSRC+J-1)
- 450             CONTINUE
+                 ENDDO ! J
                ENDIF
- 440         CONTINUE
+             ENDDO ! I
            ENDIF
 !
 !
@@ -757,12 +757,12 @@
             ICOL = NEXT(ICOL+1,LIGNE) -1
             CALL INFLU(ICOL,LIGNE,DEFATT,TROUVE,LUIGN,MOTCLE,SIZE,
      &                 MOTIGN,LONIGN,NMAXR,NFICDA,GESTD)
-            DO 890 I=1,DEFLU
+            DO I=1,DEFLU
                DEFINT(I)    = 0
                DEFREA(I)    = 0.
                DEFLOG(I)    = .FALSE.
                DEFCAR(I)    = ' '
- 890        CONTINUE
+            ENDDO ! I
             IF (ERREUR) GO TO 900
             ICOL = NEXT(ICOL,LIGNE)
           ENDIF
@@ -838,7 +838,7 @@
 !
 ! COMPACTS WHITE CHARS - REDISTRIBUTES - TESTS THE RESULTS
 !
-      DO 1195 K=1,NMAXR(4)
+      DO K=1,NMAXR(4)
        IF (UTINDX(4,K).AND.INDIC(4,K).GE.2.AND.
      &     TROUVE(4,K).LT.3.AND.TROUVE(4,K).GT.0) THEN
          ADD = ADRESS(4,K)
@@ -851,14 +851,14 @@
  1185    CONTINUE
 ! IF IT IS A WHITE CHAR (LENGTH=0):
          IF (LONGLU(MOTCAR(ADD+I-1)).EQ.0) THEN
-           DO 1190 J=I,NVAL-1
+           DO J=I,NVAL-1
              MOTCAR(ADD+J-1)=MOTCAR(ADD+J)
 !
 ! SUBMITS DO NOT FOLLOW IF THIS LINE IS COMMENTED OUT
 ! OTHERWISE PB EXPERIENCED WITH STBTEL
 !            MOTATT(4,ADD+J-1)=MOTATT(4,ADD+J)
 !
- 1190      CONTINUE
+           ENDDO ! J
            NVAL = NVAL-1
            IF (I.LE.NVAL) GO TO 1185
          ENDIF
@@ -893,7 +893,7 @@
           TROUVE(4,K) = 3
        ENDIF
 !
- 1195 CONTINUE
+      ENDDO ! K
 !
 ! CARRIES OUT THE COMMANDS RECORDED BEFORE THE END
       EXECMD = .TRUE.
@@ -918,8 +918,8 @@
 !
       WRITE(LU,*) ' '
 !
-      DO 1200  K = 1 , 4
-      DO 1201 INDX = 1 , NMAXR(K)
+      DO K = 1 , 4
+      DO INDX = 1 , NMAXR(K)
         IF (UTINDX(K,INDX)) THEN
           IF (TROUVE(K,INDX).EQ.0) THEN
 !
@@ -938,8 +938,8 @@
             ENDIF
           ENDIF
         ENDIF
-1201  CONTINUE
-1200  CONTINUE
+      ENDDO ! INDX 
+      ENDDO ! K 
 !
 1300  CONTINUE
       IF(ARRET) THEN

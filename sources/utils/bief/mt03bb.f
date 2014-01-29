@@ -127,7 +127,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2  =   XEL(IELEM,2)
       X3  =   XEL(IELEM,3)
@@ -248,7 +248,7 @@
       A43(IELEM) = - A13(IELEM) - A23(IELEM) - A33(IELEM)
       A44(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 ! CASE WHERE U IS OF QUASI-BUBBLE DISCRETISATION
@@ -259,7 +259,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2  =   XEL(IELEM,2)
       X3  =   XEL(IELEM,3)
@@ -377,7 +377,7 @@
       A43(IELEM) = - A13(IELEM) - A23(IELEM) - A33(IELEM)
       A44(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
 !     OTHER TYPES OF FUNCTIONS F AND G
 !

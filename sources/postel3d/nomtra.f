@@ -61,11 +61,11 @@
 !
       IF(LNG.EQ.2) THEN
 !
-      DO 10 I=1,NTRAC
+      DO I=1,NTRAC
         TEXTE = 'ACTIVE TRACER '
         TEXTE = TEXTE(1:14)//CHAR(48+I)//'                 '
         NOMTAC(I) = TEXTE
-10    CONTINUE
+      ENDDO
 !
 !  EXAMPLE
 !
@@ -78,11 +78,11 @@
 !
       ELSE
 !
-      DO 20 I=1,NTRAC
+      DO I=1,NTRAC
         TEXTE = 'TRACEUR ACTIF '
         TEXTE = TEXTE(1:14)//CHAR(48+I)//'                 '
         NOMTAC(I) = TEXTE
-20    CONTINUE
+      ENDDO
 !
 !  EXEMPLE
 !
@@ -102,11 +102,11 @@
 !
       IF(LNG.EQ.2) THEN
 !
-      DO 30 I=1,NTRPA
+      DO I=1,NTRPA
         TEXTE = 'PASSIVE TRACER '
         TEXTE = TEXTE(1:15)//CHAR(48+I)//'                 '
         NOMTPA(I) = TEXTE
-30    CONTINUE
+      ENDDO
 !
 !
 !  EXAMPLE
@@ -119,11 +119,11 @@
 !
       ELSE
 !
-      DO 40 I=1,NTRPA
+      DO I=1,NTRPA
         TEXTE = 'TRACEUR PASSIF '
         TEXTE = TEXTE(1:15)//CHAR(48+I)//'                 '
         NOMTPA(I) = TEXTE
-40    CONTINUE
+      ENDDO
 !
 !  EXEMPLE
 !
@@ -139,4 +139,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END
+      END SUBROUTINE

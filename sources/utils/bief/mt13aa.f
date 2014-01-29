@@ -97,7 +97,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   DIAGONAL TERMS
 !
@@ -114,7 +114,7 @@
       A13(IELEM) = A33(IELEM)
       A23(IELEM) = A33(IELEM)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -122,7 +122,7 @@
 !  DERIVATIVE WRT Y  =
 !================================
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   DIAGONAL TERMS
 !
@@ -139,7 +139,7 @@
       A13(IELEM) = A33(IELEM)
       A23(IELEM) = A33(IELEM)
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
         ELSE
 !

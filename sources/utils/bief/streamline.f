@@ -6798,10 +6798,10 @@
 11    FORMAT(1X,'STREAMLINE::SCARACT:: TYPE D''ELEMENT INCONNU : ',I6) 
 12    FORMAT(1X,'STREAMLINE::SCARACT:: UNKNOWN TYPE OF ELEMENT : ',I6) 
 ! 
-13    FORMAT(1X,'STREAMLINE::SCARACT::', 
-     &          ' (PARALLELE) REMONTEE INCOMPLETE POUR : ',I6) 
-14    FORMAT(1X,'STREAMLINE::SCARACT::', 
-     &          ' (PARALLEL) INCOMPLETE PATH LINE FOR : ',I6) 
+!13    FORMAT(1X,'STREAMLINE::SCARACT::', 
+!     &          ' (PARALLELE) REMONTEE INCOMPLETE POUR : ',I6) 
+!14    FORMAT(1X,'STREAMLINE::SCARACT::', 
+!     &          ' (PARALLEL) INCOMPLETE PATH LINE FOR : ',I6) 
 ! 
 15    FORMAT(1X,'STREAMLINE::SCARACT::', 
      &          ' MAUVAIS BLOC DES VARIABLES : ',2I6) 
@@ -7799,15 +7799,15 @@
 ! 
 !----------------------------------------------------------------------- 
 ! 
-15    FORMAT(1X,'STREAMLINE::SEND_PARTICLES::',/,1X, 
-     &          'MAUVAIS BLOC DES VARIABLES : ',2I6) 
-16    FORMAT(1X,'STREAMLINE::SEND_PARTICLES::',/,1X, 
-     &          'WRONG BLOCK OF VARIABLES : ',2I6) 
-! 
-17    FORMAT(1X,'STREAMLINE::SEND_PARTICLES',/,1X,
-     &          'TYPE D''OBJET INCONNU : ',2I6) 
-18    FORMAT(1X,'STREAMLINE::SEND_PARTICLES',/,1X,
-     &          'UNKNOWN TYPE OF OBJECT : ',2I6) 
+!15    FORMAT(1X,'STREAMLINE::SEND_PARTICLES::',/,1X, 
+!     &          'MAUVAIS BLOC DES VARIABLES : ',2I6) 
+!16    FORMAT(1X,'STREAMLINE::SEND_PARTICLES::',/,1X, 
+!     &          'WRONG BLOCK OF VARIABLES : ',2I6) 
+!! 
+!17    FORMAT(1X,'STREAMLINE::SEND_PARTICLES',/,1X,
+!     &          'TYPE D''OBJET INCONNU : ',2I6) 
+!18    FORMAT(1X,'STREAMLINE::SEND_PARTICLES',/,1X,
+!     &          'UNKNOWN TYPE OF OBJECT : ',2I6) 
 !
 !----------------------------------------------------------------------- 
 ! 
@@ -8507,15 +8507,15 @@
 ! 
 !----------------------------------------------------------------------- 
 ! 
-15    FORMAT(1X,'STREAMLINE::SEND_INFO_ALG::',/,1X, 
-     &          'MAUVAIS BLOC DES VARIABLES : ',2I6) 
-16    FORMAT(1X,'STREAMLINE::SEND_INFO_ALG::',/,1X, 
-     &          'WRONG BLOCK OF VARIABLES : ',2I6) 
-! 
-17    FORMAT(1X,'STREAMLINE::INFO_ALG',/,1X,
-     &          'TYPE D''OBJET INCONNU : ',2I6) 
-18    FORMAT(1X,'STREAMLINE::INFO_ALG',/,1X,
-     &          'UNKNOWN TYPE OF OBJECT : ',2I6) 
+!15    FORMAT(1X,'STREAMLINE::SEND_INFO_ALG::',/,1X, 
+!     &          'MAUVAIS BLOC DES VARIABLES : ',2I6) 
+!16    FORMAT(1X,'STREAMLINE::SEND_INFO_ALG::',/,1X, 
+!     &          'WRONG BLOCK OF VARIABLES : ',2I6) 
+!! 
+!17    FORMAT(1X,'STREAMLINE::INFO_ALG',/,1X,
+!     &          'TYPE D''OBJET INCONNU : ',2I6) 
+!18    FORMAT(1X,'STREAMLINE::INFO_ALG',/,1X,
+!     &          'UNKNOWN TYPE OF OBJECT : ',2I6) 
 !
 !----------------------------------------------------------------------- 
 ! 
@@ -8887,15 +8887,15 @@
 ! 
 !----------------------------------------------------------------------- 
 ! 
-15    FORMAT(1X,'STREAMLINE::OIL_SEND_PARTICLES::',/,1X, 
-     &          'MAUVAIS BLOC DES VARIABLES : ',2I6) 
-16    FORMAT(1X,'STREAMLINE::OIL_SEND_PARTICLES::',/,1X, 
-     &          'WRONG BLOCK OF VARIABLES : ',2I6) 
-! 
-17    FORMAT(1X,'STREAMLINE::SEND_PARTICLES',/,1X,
-     &          'TYPE D''OBJET INCONNU : ',2I6) 
-18    FORMAT(1X,'STREAMLINE::OIL_SEND_PARTICLES',/,1X,
-     &          'UNKNOWN TYPE OF OBJECT : ',2I6) 
+!15    FORMAT(1X,'STREAMLINE::OIL_SEND_PARTICLES::',/,1X, 
+!     &          'MAUVAIS BLOC DES VARIABLES : ',2I6) 
+!16    FORMAT(1X,'STREAMLINE::OIL_SEND_PARTICLES::',/,1X, 
+!     &          'WRONG BLOCK OF VARIABLES : ',2I6) 
+!! 
+!17    FORMAT(1X,'STREAMLINE::SEND_PARTICLES',/,1X,
+!     &          'TYPE D''OBJET INCONNU : ',2I6) 
+!18    FORMAT(1X,'STREAMLINE::OIL_SEND_PARTICLES',/,1X,
+!     &          'UNKNOWN TYPE OF OBJECT : ',2I6) 
 !
 !----------------------------------------------------------------------- 
 ! 
@@ -9126,15 +9126,15 @@
 ! 
 !----------------------------------------------------------------------- 
 ! 
-15    FORMAT(1X,'STREAMLINE::OIL_SEND_INFO::',/,1X, 
-     &          'MAUVAIS BLOC DES VARIABLES : ',2I6) 
-16    FORMAT(1X,'STREAMLINE::OIL_SEND_INFO::',/,1X, 
-     &          'WRONG BLOCK OF VARIABLES : ',2I6) 
+!15    FORMAT(1X,'STREAMLINE::OIL_SEND_INFO::',/,1X, 
+!     &          'MAUVAIS BLOC DES VARIABLES : ',2I6) 
+!16    FORMAT(1X,'STREAMLINE::OIL_SEND_INFO::',/,1X, 
+!     &          'WRONG BLOCK OF VARIABLES : ',2I6) 
 ! 
-17    FORMAT(1X,'STREAMLINE::OIL_SEND_INFO',/,1X,
-     &          'TYPE D''OBJET INCONNU : ',2I6) 
-18    FORMAT(1X,'STREAMLINE::OIL_SEND_INFO',/,1X,
-     &          'UNKNOWN TYPE OF OBJECT : ',2I6) 
+!17    FORMAT(1X,'STREAMLINE::OIL_SEND_INFO',/,1X,
+!     &          'TYPE D''OBJET INCONNU : ',2I6) 
+!18    FORMAT(1X,'STREAMLINE::OIL_SEND_INFO',/,1X,
+!     &          'UNKNOWN TYPE OF OBJECT : ',2I6) 
 !
 !----------------------------------------------------------------------- 
 ! 

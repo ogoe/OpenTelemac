@@ -88,9 +88,9 @@
 !
       IF (NTASD.GT.0) THEN
         READ(NGEO,ERR=110,END=120) LONG,(IA(I),I=1,MIN(LONG,32))
-        DO 10 I=1,NTASD
+        DO I=1,NTASD
           READ(NGEO,ERR=110,END=120) LONG,(IA(J),J=1,MIN(LONG,32))
-10      CONTINUE
+        ENDDO
       ENDIF
 !
 !=======================================================================

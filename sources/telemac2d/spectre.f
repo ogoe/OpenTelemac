@@ -143,7 +143,7 @@
                AMPL%ADR(I)%P%R(J) = SQRT(CFX**2+CFY**2)
                PHAS%ADR(I)%P%R(J) = 180.D0*DATAN2(CFY,CFX)/PI
                IF (PHAS%ADR(I)%P%R(J).LT.0.D0)
-     &	           PHAS%ADR(I)%P%R(J)=PHAS%ADR(I)%P%R(J)+360.D0
+     &             PHAS%ADR(I)%P%R(J)=PHAS%ADR(I)%P%R(J)+360.D0
             ENDDO
          ENDDO
       ENDIF
@@ -157,9 +157,9 @@
                WRITE(LU,*) ' '
                WRITE(LU,*) ' '
                IF(LNG.EQ.1) WRITE(LU,*) 'ANALYSE DE LA PERIODE ',
-     &	                                 PERIAF(I), ' S :'
+     &                                   PERIAF(I), ' S :'
                IF(LNG.EQ.2) WRITE(LU,*) 'ANALYSE OF PERIOD ',
-     &	                                 PERIAF(I), ' S :'
+     &                                   PERIAF(I), ' S :'
                WRITE(LU,*) ' '
                WRITE(LU,90) 'NOM DE POINT', 'AMPLITUDE', 'PHASE'
                WRITE(LU,*) ' '
@@ -173,11 +173,11 @@
                       B=PHAS%ADR(I)%P%R(LIST_PTS(J))
                     ENDIF
                     WRITE(LU,100) NAME_PTS(J),P_DMIN(A)+P_DMAX(A),
-     &	                                      P_DMIN(B)+P_DMAX(B)
+     &                                        P_DMIN(B)+P_DMAX(B)
                   ELSE
                     WRITE(LU,100) NAME_PTS(J),
      &                            AMPL%ADR(I)%P%R(LIST_PTS(J)),
-     &	                          PHAS%ADR(I)%P%R(LIST_PTS(J))
+     &                            PHAS%ADR(I)%P%R(LIST_PTS(J))
                   ENDIF
                ENDDO
             ENDIF

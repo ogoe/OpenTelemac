@@ -86,16 +86,16 @@
 !
 !     INITIALISES W
 !
-      DO 32 IELEM = 1 , 4*NELMAX
+      DO IELEM = 1 , 4*NELMAX
         W1(IELEM) = 0.D0
-32    CONTINUE
+      ENDDO ! IELEM 
 !
 !     USING THE PSI SCHEME,
 !     LOOP ON THE 3 SUB-TRIANGLES AND PRE-ASSEMBLY
 !
-      DO 10 IT=1,3
+      DO IT=1,3
 !DIR$ IVDEP
-      DO 33 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !       ADDRESSES IN AN ARRAY (NELMAX,*)
         IAD1= IELEM + (IL(IT,1)-1)*NELMAX
@@ -132,8 +132,8 @@
         W1(IAD2) = W1(IAD2) + L21 + L23
         W1(IAD3) = W1(IAD3) + L31 + L32
 !
-33    CONTINUE
-10    CONTINUE
+      ENDDO ! IELEM 
+      ENDDO ! IT
 !
 !-----------------------------------------------------------------------
 !

@@ -127,9 +127,9 @@
 !
 !  LISTE DE FUTURS PARAMETRES DEJA PREVUS.(SEUL LES PREMIERS SERVENT)
 !
-      DO 1 I=1,10
+      DO I=1,10
          IB(I)=0
-1     CONTINUE
+      ENDDO
 !   ECRITURE ECLATEE DES RESULTATS (CONVENTION LEONARD)
       IB(2)=1
 !
@@ -140,7 +140,7 @@
 !     CANCELLING WHAT HAS DONE OPEN_FILES
       CLOSE(NCOU)
 !
-      DO 2 IC = 1,NC2DV
+      DO IC = 1,NC2DV
 !
          CANAL = NCOU + IC -1
 !
@@ -160,7 +160,7 @@
          LGDEB = 0.D0
          LGSEG = 0.D0
 !
-         DO 3 I = 1,IM
+         DO I = 1,IM
 !
 !    COORDONNEE HORIZONTALE SUIVANT LE PLAN DE COUPE (X)
 !
@@ -177,7 +177,7 @@
 !
 !    COORDONNEE VERTICALE (Y)
 !
-            DO 4 J = 1,JM
+            DO J = 1,JM
 !
                TAB1(I,J) = TAB1(I,1)
                TAB2(I,J) = ( SHP(I,1,IC)*Z(IKLES(1,ELEM(I,IC)),J)
@@ -185,8 +185,8 @@
      &                     + SHP(I,3,IC)*Z(IKLES(3,ELEM(I,IC)),J) )
      &                     * DISTOR(IC)
 !
-4           CONTINUE
-3        CONTINUE
+            ENDDO
+         ENDDO !I
 !
 !    ENREGISTREMENT DES AUTRES PARAMETRES DE L'ENTETE
 !    ------------------------------------------------
@@ -248,7 +248,7 @@ CC PLG         CALL ECRI2(XB,IG,CB, 5,'I',CANAL,BINCOU,ISTAT)
             ALFA = ATAN2(Y2DV(2,IC)-Y2DV(1,IC),X2DV(2,IC)-X2DV(1,IC))
             FLAG = .TRUE.
 !
-            DO 10 I = 1,IM
+            DO I = 1,IM
 !
                IF (FLAG) COST = COS(ALFA)
                IF (FLAG) SINT = SIN(ALFA)
@@ -272,7 +272,7 @@ CC PLG         CALL ECRI2(XB,IG,CB, 5,'I',CANAL,BINCOU,ISTAT)
                A2 = SHP(I,2,IC)
                A3 = SHP(I,3,IC)
 !
-               DO 11 J = 1,JM
+               DO J = 1,JM
 !
                   U1 = A1*U(N1,J) + A2*U(N2,J) + A3*U(N3,J)
                   V1 = A1*V(N1,J) + A2*V(N2,J) + A3*V(N3,J)
@@ -289,8 +289,8 @@ CC PLG         CALL ECRI2(XB,IG,CB, 5,'I',CANAL,BINCOU,ISTAT)
 !
                TAB3(I,J) = -SINT*U1 + COST*V1
 !
-11             CONTINUE
-10          CONTINUE
+               ENDDO
+            ENDDO !I
 !
             CALL ECRI2(TAB1,IBID,CB,IM*JM,'R4',CANAL,BINCOU,ISTAT)
             CALL ECRI2(TAB2,IBID,CB,IM*JM,'R4',CANAL,BINCOU,ISTAT)
@@ -299,27 +299,26 @@ CC PLG         CALL ECRI2(XB,IG,CB, 5,'I',CANAL,BINCOU,ISTAT)
 ! autres variables
 !
           IF (NBV(1).GT.3) THEN
-            DO 30 K = 1,NBV(1)-3
-               DO 31 J = 1,JM
-                  DO 32 I = 1,IM
+            DO K = 1,NBV(1)-3
+               DO J = 1,JM
+                  DO I = 1,IM
                      TAB1(I,J) = SHP(I,1,IC)
      &               *TAB%ADR(K)%P%R(IKLES(1,ELEM(I,IC))+(J-1)*NPOIN2)
      &                         + SHP(I,2,IC)
      &               *TAB%ADR(K)%P%R(IKLES(2,ELEM(I,IC))+(J-1)*NPOIN2)
      &                         + SHP(I,3,IC)
      &               *TAB%ADR(K)%P%R(IKLES(3,ELEM(I,IC))+(J-1)*NPOIN2)
-32                CONTINUE
-31             CONTINUE
+                  ENDDO !I
+               ENDDO !J
                CALL ECRI2(TAB1,IBID,CB,IM*JM,'R4',CANAL,BINCOU,ISTAT)
-30          CONTINUE
+            ENDDO !K
 !
-          ELSE
           ENDIF
 !
       CLOSE(CANAL)
-2     CONTINUE
+      ENDDO !IC
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END
+      END SUBROUTINE

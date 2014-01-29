@@ -101,7 +101,7 @@
 !
 !   P0 DISCRETISATION OF F:
 !
-      DO 5 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE INTERMEDIATE VARIABLES
 !
@@ -136,7 +136,7 @@
          A46(IELEM) = A45(IELEM)
          A56(IELEM) = A45(IELEM)
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

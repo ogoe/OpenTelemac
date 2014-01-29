@@ -334,7 +334,7 @@ C--------------------------------------------------------------
 C
       POR=19.D0/20.D0
 C
-      DO 4 IELEM = 1 , NELEM                                         
+      DO IELEM = 1 , NELEM                                         
 C                                                                            
         XX1 = (  X(IKLE%I(IELEM)          )+
      *           X(IKLE%I(IELEM+NELMAX)   )+
@@ -353,7 +353,7 @@ C
           ENDIF
         ENDIF
 C                                      
-4     CONTINUE                                                       
+      ENDDO                                                       
 C
 C-----------------------------------------------------------------------
 C

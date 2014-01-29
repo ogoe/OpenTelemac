@@ -121,7 +121,7 @@
 !
       TLOC1 = TSLOC(YEAR,MONTH,DAY,HOUR,MINUTE,SEC,AT)
 !
-      DO 10 I=1,NPOIN
+      DO I=1,NPOIN
 !
 ! LONGITUDE OF THE CONSIDERED NODE
 !
@@ -181,7 +181,7 @@
         FU1(I)=FU1(I)+(1.D0+K2-H2)*(FXL+FXS)
         FV1(I)=FV1(I)+(1.D0+K2-H2)*(FYL+FYS)
 !
-10    CONTINUE
+      ENDDO ! I
 !
 !-----------------------------------------------------------------------
 !

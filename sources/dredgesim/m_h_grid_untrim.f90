@@ -1073,14 +1073,12 @@ CONTAINS
     CHARACTER (LEN=20), PARAMETER :: c_upname='read_baw_datablock_4' ! 
     !! kantenbezogene Daten
     TYPE (l_edg)       :: edg    ! 
-    !! Materialkennung
-    TYPE (e_mat)       :: mat    ! 
     !! Nachbarpolygone einer Kante
     TYPE (e_nei)       :: nei    ! 
     !! Tiefenlage der Kante
     TYPE (e_dep)       :: dep    ! 
     !! Namelist f&uuml;r die Kantendaten
-    NAMELIST /edge/ edg, mat, nei, dep ! 
+    NAMELIST /edge/ edg, nei, dep ! 
     !
     IF ( no_error( ) .AND. isprun == 0 .AND. ns > 0 ) THEN
        ALLOCATE ( p_jb(ns), p_jt(ns), p_je(ns,2), p_hu(ns), STAT=stat )
@@ -1168,14 +1166,12 @@ CONTAINS
     CHARACTER (LEN=20), PARAMETER :: c_upname='read_baw_datablock_5' ! 
     !! elementbezogene Daten
     TYPE (l_cel) :: cel           !  
-    !! Materialkennung
-    TYPE (e_mat) :: mat           ! 
     !! Knotenverzeichnis des Elements
     TYPE (c_ver) :: ver ! 
     !! aktuelle Anzahl der maximalen Knoten/Kanten je Polygon
     INTEGER      :: mxn ! 
     !! Namelist f&uuml;r Elementdaten
-    NAMELIST /element/ cel, mat, ver ! 
+    NAMELIST /element/ cel, ver ! 
     !
     IF ( no_error( ) .AND. isprun == 0 .AND. ne > 0 ) THEN
        ALLOCATE ( p_ks(ne), p_is(ne,maxedges), p_nen(ne,maxedges), STAT=stat )
@@ -1224,8 +1220,6 @@ CONTAINS
     TYPE (e_mat) :: mat           ! 
     !! Knotenverzeichnis des Elements
     TYPE (c_ver) :: ver           ! 
-    !! aktuelle Anzahl der maximalen Knoten/Kanten je Polygon
-    INTEGER      :: mxn           ! 
     !! Namelist f&uuml;r Elementdaten
     NAMELIST /element/ cel, mat, ver ! 
     !

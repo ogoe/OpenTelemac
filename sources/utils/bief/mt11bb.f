@@ -145,7 +145,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-        DO 1 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -179,7 +179,7 @@
         A33(IELEM) = (Y2*(11*F3+3*F2-2*F1)+5*Y3*(-F2+F1))*XSUR72
         A44(IELEM) = (Y2*(F3-F1)+Y3*(-F2+F1))*XSUR24
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -187,7 +187,7 @@
 !  DERIVATIVE WRT Y  =
 !================================
 !
-        DO 2 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -221,7 +221,7 @@
         A33(IELEM) = (X2*(-11*F3-3*F2+2*F1)+5*X3*(F2-F1))*XSUR72
         A44(IELEM) = (X2*(-F3+F1)+X3*(F2-F1))*XSUR24
 !
-2       CONTINUE
+        ENDDO ! IELEM 
 !
         ELSE
 !
@@ -246,7 +246,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-        DO 3 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -282,7 +282,7 @@
         A33(IELEM) = (Y2*(12*F3-3*F4+4*F2-F1)+5*Y3*(-F2+F1))*XSUR72
         A44(IELEM) = (Y2*(F3-F1)+Y3*(-F2+F1))*XSUR24
 !
-3       CONTINUE
+        ENDDO ! IELEM 
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -290,7 +290,7 @@
 !  DERIVATIVE WRT Y  =
 !================================
 !
-        DO 4 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -328,7 +328,7 @@
         A33(IELEM) = (X2*(-12*F3+3*F4-4*F2+F1)+5*X3*(F2-F1))*XSUR72
         A44(IELEM) = (X2*(-F3+F1)+X3*(F2-F1))*XSUR24
 !
-4       CONTINUE
+        ENDDO ! IELEM 
 !
         ELSE
 !

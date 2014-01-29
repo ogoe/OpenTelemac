@@ -125,7 +125,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       DET = SUR48 / SURFAC(IELEM)
 !
@@ -150,7 +150,7 @@
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -161,7 +161,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       DET = SUR48 / SURFAC(IELEM)
 !
@@ -186,7 +186,7 @@
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -199,7 +199,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       DET = SUR48 / SURFAC(IELEM)
 !
@@ -223,7 +223,7 @@
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -234,7 +234,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 5 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       DET = SUR48 / SURFAC(IELEM)
 !
@@ -261,7 +261,7 @@
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -274,7 +274,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 6 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       DET = SUR48 / SURFAC(IELEM)
 !
@@ -310,7 +310,7 @@
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !
-6     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -323,7 +323,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 7 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       DET = SUR48 / SURFAC(IELEM)
 !
@@ -348,7 +348,7 @@
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !
-7     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -359,7 +359,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 9 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       DET = SUR48 / SURFAC(IELEM)
 !
@@ -386,7 +386,7 @@
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !
-9     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -399,7 +399,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 10 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       DET = SUR24 / SURFAC(IELEM)
 !
@@ -435,7 +435,7 @@
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !
-10    CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

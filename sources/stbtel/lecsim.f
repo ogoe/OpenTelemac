@@ -95,11 +95,11 @@
 !
       REWIND NGEO
 !
-      DO 5 I=1,NPOIN
+      DO I=1,NPOIN
          X(I) = 9999999.D0
          Y(I) = 9999999.D0
          NCOLOR(I) = 99999
- 5    CONTINUE
+      ENDDO
 !
 !=======================================================================
 ! LECTURE SEQUENTIELLE DU FICHIER (1ER ENRGISTREMENT DE LA SD)
@@ -122,9 +122,9 @@
 !
       IF (NTASD.GT.0) THEN
          READ(NGEO,ERR=110,END=120) LONG,(NOP5(I),I=1,LONG)
-         DO 10 I=1,NTASD
+         DO I=1,NTASD
             READ(NGEO,ERR=110,END=120) LONG,(NOP5(J),J=1,LONG)
- 10      CONTINUE
+         ENDDO
       ENDIF
 !
 !=======================================================================
@@ -150,10 +150,10 @@
 !=======================================================================
 !
       READ(NGEO,ERR=110,END=120) LONG,(X1(I),Y1(I),I=1,NPOIN)
-      DO 20 I=1,NPOIN
+      DO I=1,NPOIN
          X(I) = DBLE(X1(I))
          Y(I) = DBLE(Y1(I))
- 20   CONTINUE
+      ENDDO
 !
 !=======================================================================
 ! LECTURE SEQUENTIELLE DES IKLE (TABLEAU NOP5)
@@ -162,7 +162,7 @@
 !
       INDIC = 0
       READ(NGEO,ERR=110,END=120) LONG,(NOP5(I),I=1,LONG)
-      DO 30 I=1,NELEM
+      DO I=1,NELEM
          INDIC = INDIC +1
          NCGE  = NOP5(INDIC)
          INDIC = INDIC +1
@@ -178,35 +178,36 @@
             IF (LNG.EQ.2) WRITE(LU,4000)
             STOP
          ENDIF
-         DO 40 K=1,NNO
+         DO K=1,NNO
             INDIC = INDIC +1
             IKLE(I,K) = NOP5(INDIC)
- 40      CONTINUE
-         IF (NCOPNP.EQ.1) GOTO 50
-         INDIC = INDIC +1
-         NPO = NOP5(INDIC)
-         DO 60 K=1,NPO
-            INDIC = INDIC +1
- 60      CONTINUE
- 50      CONTINUE
+         ENDDO
+         IF (NCOPNP.NE.1) THEN
+           INDIC = INDIC +1
+           NPO = NOP5(INDIC)
+           DO K=1,NPO
+              INDIC = INDIC +1
+           ENDDO
+         ENDIF
 !  NMAE :
-         IF (NMAE.EQ.0) GOTO 30
-         INDIC = INDIC +1
-         INING = NOP5(INDIC)
-         DO 70 K=2,NMAE
-            IF (INING.EQ.3) THEN
-               INDIC = INDIC +1
-               NCOLOR(IKLE(I,K-1)) = NOP5(INDIC)
-            ELSE IF(INING.EQ.2) THEN
-               INDIC = INDIC +1
-               IF (K.GT.NNO+1) NCOLOR(IKLE(I,K-(NNO+1))) = NOP5(INDIC)
-            ELSE IF(INING.EQ.1) THEN
-               INDIC = INDIC +1
-               IF (K.GT.2*NNO+1)
-     &         NCOLOR(IKLE(I,K-(2*NNO+1))) = NOP5(INDIC)
-            ENDIF
- 70      CONTINUE
- 30   CONTINUE
+         IF (NMAE.NE.0) THEN
+           INDIC = INDIC +1
+           INING = NOP5(INDIC)
+           DO K=2,NMAE
+              IF (INING.EQ.3) THEN
+                 INDIC = INDIC +1
+                 NCOLOR(IKLE(I,K-1)) = NOP5(INDIC)
+              ELSE IF(INING.EQ.2) THEN
+                 INDIC = INDIC +1
+                 IF (K.GT.NNO+1) NCOLOR(IKLE(I,K-(NNO+1))) = NOP5(INDIC)
+              ELSE IF(INING.EQ.1) THEN
+                 INDIC = INDIC +1
+                 IF (K.GT.2*NNO+1)
+     &           NCOLOR(IKLE(I,K-(2*NNO+1))) = NOP5(INDIC)
+              ENDIF
+           ENDDO
+         ENDIF
+      ENDDO !I
 !
       GOTO 80
 !

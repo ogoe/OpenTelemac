@@ -79,7 +79,7 @@
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
 !  TO BE MODIFIED BY USER
-      DO 10 I=1,NPOIN                                                   
+      DO I=1,NPOIN                                                   
 C
        IF(Y(I).GT.-0.1D0) THEN
          H%R(I) = 2.D0
@@ -87,7 +87,7 @@ C
          H%R(I) = 6.D0
        ENDIF
 C
-10    CONTINUE                                              
+      ENDDO                                              
 !  END OF CODE TO BE MODIFIED BY USER
       ELSE
         IF(LNG.EQ.1) THEN
@@ -222,7 +222,7 @@ C           ABSCISSES DES POINTS C , D ET E
             XD = (URG - CRG) * T                                        
             XE = WR * T                                                 
 C                                                                       
-            DO 320 NOEUD=1,JM                                           
+            DO NOEUD=1,JM                                           
 C                                                                       
                XCOUR = X(1,NOEUD)                                       
 C                                                                       
@@ -231,7 +231,7 @@ C
 C                 EN XCOUR LE NIVEAU EST DE YG                          
                   H(1,NOEUD)         = YG                               
                   V(1,NOEUD)         = 0.                               
-                  GOTO 320                                              
+                  CYCLE
                ENDIF                                                    
 C                                                                       
                IF (XCOUR.LE.XD) THEN                                    
@@ -239,7 +239,7 @@ C
 C                 EN XCOUR POINT DE L'ONDE DE DETENTE                   
                   H(1,NOEUD) =   ((2./3.*CG-(XCOUR/(3.* T)))**2)/G      
                   V(1,NOEUD) = 2.*(CG - SQRT(G*H(1,NOEUD)))             
-                  GOTO 320                                              
+                  CYCLE
                ENDIF                                                    
 C                                                                       
                IF (XCOUR.LE.XE) THEN                                    
@@ -247,21 +247,21 @@ C
 C                 EN XCOUR TIRANT D'EAU EGAL TIRANT A GAUCHE DU RESSAUT 
                   H(1,NOEUD)= YRG                                       
                   V(1,NOEUD)= URG                                       
-                  GOTO 320                                              
+                  CYCLE
                ENDIF                                                    
 C                                                                       
 C              EN XCOUR TIRANT D'EAU EGAL TIRANT A DROITE DU RESSAUT    
                H(1,NOEUD)         = YD                                  
                V(1,NOEUD)         = 0.D0                                
 C                                                                       
-320         CONTINUE                                                    
+            ENDDO                                                    
 C                                                                       
-      DO 746 J = 1,JM                                                   
-      DO 745 I = 2,IM                                                   
+      DO J = 1,JM                                                   
+      DO I = 2,IM                                                   
         H(I,J) = H(1,J)                                                 
         V(I,J) = V(1,J)                                                 
-745   CONTINUE                                                          
-746   CONTINUE                                                          
+      ENDDO                                                          
+      ENDDO                                                          
 C                                                                       
 C-----------------------------------------------------------------------
 C                                                                       
@@ -1039,7 +1039,7 @@ C
 C  ITERATIONS :                                                         
 C                                                                       
       FC=FB                                                             
-      DO 10 ITER=1,ITMAX                                                
+      DO ITER=1,ITMAX                                                
         IF(FB*FC.GT.0.D0) THEN                                          
           C=A                                                           
           FC=FA                                                         
@@ -1092,7 +1092,7 @@ C
           B=B+SIGN(EPS2,XM)                                             
         ENDIF                                                           
         FB=FC1(B)                                                       
-10    CONTINUE                                                          
+      ENDDO                                                          
 C                                                                       
       IF (LNG.EQ.1) WRITE(LU,*) 'ZBRENT : MAXIMUM D''ITERATIONS ATTEINT'
       IF (LNG.EQ.2) WRITE(LU,*) 'ZBRENT : EXCEEDING MAXIMUM ITERATIONS' 

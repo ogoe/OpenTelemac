@@ -113,8 +113,8 @@
 !
 !     COMPUTES UNIT DISCHARGES
 !
-      DO 10 N=1,NWEIRS
-      DO 20 I=1,NPSING%I(N)
+      DO N=1,NWEIRS
+      DO I=1,NPSING%I(N)
 !
         IA=NDGA1%ADR(N)%P%I(I)
         IF(IA.GT.0) THEN
@@ -188,8 +188,8 @@
           ENDIF
         ENDIF
 !
-20    CONTINUE
-10    CONTINUE
+      ENDDO ! I
+      ENDDO ! N
 !
 !     DETERMINES THE NUMERICAL VALUE
 !     OF THE BOUNDARY CONDITIONS:

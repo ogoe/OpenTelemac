@@ -1360,7 +1360,6 @@ CONTAINS
     TYPE (t_att)       , POINTER     :: p_att(:)         ! 
     TYPE (t_datetime)  , ALLOCATABLE :: l_datetime(:)    ! 
     TYPE (t_omi_stamp) , ALLOCATABLE :: l_stamp(:)       ! 
-    TYPE (t_omi_stamp) , POINTER     :: p_stamp(:)       ! 
     INTEGER            , PARAMETER   :: c_idx(2)=(/6,7/) ! 
     INTEGER                          :: i, j, idx(2)     ! 
     !

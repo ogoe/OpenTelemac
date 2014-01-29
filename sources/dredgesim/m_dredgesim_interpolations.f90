@@ -184,11 +184,11 @@ CONTAINS
        RESULT ( var )
     !! variabless
     INTEGER :: i !
-	!! values on edges
+    !! values on edges
     REAL ( KIND = Double ), INTENT (IN) ::  edge_values (:)
     !! result : values on polys
     REAL ( KIND = Double ) ::  var( SIZE(edgelist_of_poly,1) )
-	!
+    !
     ! [1.1] 
     !
     DO i = 1, SIZE(edgelist_of_poly,1) ! loop over all polygons
@@ -208,9 +208,9 @@ CONTAINS
     INTEGER :: i !
     !! values on edges
     REAL ( KIND = Double ), INTENT (IN) ::  edge_values (:,:)
-	!! result : values on polys
+    !! result : values on polys
     REAL ( KIND = Double ) ::  var( SIZE(edgelist_of_poly,1), SIZE(edge_values,2) )
-	!
+    !
     ! [1.1] loop over the vector
     DO i = 1, SIZE(edge_values,2) 
        var(:,i) = interpolate_edge_to_poly_0 ( edge_values(:,i) )
@@ -228,10 +228,10 @@ CONTAINS
     INTEGER :: i!
     !! values on edges 
     REAL ( KIND = Double ), INTENT (IN) ::  edge_values (:,:,:)
-	!! result : values on polys
+    !! result : values on polys
     REAL ( KIND = Double ) ::  var( SIZE(edgelist_of_poly,1), SIZE(edge_values,2), & 
          SIZE(edge_values,3))
-	!
+    !
     ! [1.1] loop over the last index 
     DO i = 1, SIZE(edge_values (:,:,:),3) 
        var(:,:,i) = interpolate_edge_to_poly_1 ( edge_values(:,:,i) )

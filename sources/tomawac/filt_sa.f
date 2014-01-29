@@ -33,7 +33,7 @@
       LISFON =1 
 !
       CALL FILTER(SA,.TRUE.,ST1,ST2,AM1,'MATMAS          ', 
-     *            1.D0,ST1,ST1,ST1,ST1,ST1,ST1,MESH,.FALSE.,ST1,LISFON)        
+     &            1.D0,ST1,ST1,ST1,ST1,ST1,ST1,MESH,.FALSE.,ST1,LISFON)
 ! 
 !-----------------------------------------------------------------------
 ! 

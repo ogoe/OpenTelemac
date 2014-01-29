@@ -66,7 +66,7 @@
       NPOIN = VISC%DIM1
       NPX   = VISC%MAXDIM1
 !
-      DO 20 I=1,NPOIN
+      DO I=1,NPOIN
 !
          NORMV = MAX(SQRT(U(I)**2+V(I)**2),1.D-6)
          COST = U(I)/NORMV
@@ -78,7 +78,7 @@
          VISC%R(I+NPX  ) = PROPNU + ( KT - KL ) * COST**2    + KL
          VISC%R(I+2*NPX) = PROPNU + ( KL - KT ) * COST*SINT
 !
-20    CONTINUE
+      ENDDO ! I
 !
 !-----------------------------------------------------------------------
 !

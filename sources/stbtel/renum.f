@@ -62,19 +62,19 @@
 ! CALCUL DU NOMBRE DE POINTS ET ELEMENTS VOISINS
 !=======================================================================
 !
-      DO 100 IPOIN = 1,NPOIN
+      DO IPOIN = 1,NPOIN
          TRAV1(IPOIN) = 0
-100   CONTINUE
+      ENDDO
 !
-      DO 110 IELEM = 1,NELEM
+      DO IELEM = 1,NELEM
          TRAV1(IKLE(IELEM,1)) = TRAV1(IKLE(IELEM,1)) + 2
          TRAV1(IKLE(IELEM,2)) = TRAV1(IKLE(IELEM,2)) + 2
          TRAV1(IKLE(IELEM,3)) = TRAV1(IKLE(IELEM,3)) + 2
-110   CONTINUE
+      ENDDO
 !
-      DO 112 IPTFR = 1,NPTFR
+      DO IPTFR = 1,NPTFR
          TRAV1(NBOR(IPTFR)) = TRAV1(NBOR(IPTFR)) + 1
-112   CONTINUE
+      ENDDO
 !
 !=======================================================================
 ! RENUMEROTATIONS DES POINTS SUIVANT ORDRE CROISSANT DE VOISINS
@@ -82,72 +82,72 @@
 !
       TABMAX = 0
 !
-      DO 120 IPOIN = 1,NPOIN
+      DO IPOIN = 1,NPOIN
 !
          I1 = TRAV1(IPOIN)
 !
          IF (I1.GT.TABMAX) THEN
-            DO 130 I2 = TABMAX+1,I1
+            DO I2 = TABMAX+1,I1
                TAB(I2) = IPOIN - 1
-130         CONTINUE
+            ENDDO
             TABMAX = I1
          ELSEIF (I1.LT.TABMAX) THEN
-            DO 140 I2 = TABMAX,I1+1,-1
+            DO I2 = TABMAX,I1+1,-1
                TAB(I2) = TAB(I2) + 1
                TRAV2(TAB(I2)) = TRAV2(TAB(I2-1)+1)
-140         CONTINUE
+            ENDDO
          ENDIF
 !
          TAB(I1) = TAB(I1) + 1
          TRAV2(TAB(I1)) = IPOIN
 !
-120   CONTINUE
+      ENDDO
 !
-      DO 145 I1 = 1,TABMAX
+      DO I1 = 1,TABMAX
          PRINT*,'TAB(',I1,')=',TAB(I1)
-145   CONTINUE
+      ENDDO
 !
 !=======================================================================
 ! MODIFICATIONS CORRESPONDANTES DANS LES DIFFERENTES VARIABLES
 !=======================================================================
 !
-      DO 150 IPOIN = 1,NPOIN
+      DO IPOIN = 1,NPOIN
          TRAV1(TRAV2(IPOIN)) = IPOIN
-150   CONTINUE
+      ENDDO
 !
-      DO 160 IELEM = 1,NELEM
+      DO IELEM = 1,NELEM
          IKLE(IELEM,1) = TRAV1(IKLE(IELEM,1))
          IKLE(IELEM,2) = TRAV1(IKLE(IELEM,2))
          IKLE(IELEM,3) = TRAV1(IKLE(IELEM,3))
-160   CONTINUE
+      ENDDO
 !
-      DO 165 IPTFR = 1,NPTFR
+      DO IPTFR = 1,NPTFR
          NBOR(IPTFR) = TRAV1(NBOR(IPTFR))
          NBOR(NPTFR+IPTFR) = TRAV1(NBOR(NPTFR+IPTFR))
-165   CONTINUE
+      ENDDO
 !
-      DO 200 IPOIN = 1,NPOIN
+      DO IPOIN = 1,NPOIN
          W(IPOIN) = X(TRAV2(IPOIN))
-200   CONTINUE
-      DO 205 IPOIN = 1,NPOIN
+      ENDDO
+      DO IPOIN = 1,NPOIN
          X(IPOIN) = W(IPOIN)
-205   CONTINUE
+      ENDDO
 !
-      DO 210 IPOIN = 1,NPOIN
+      DO IPOIN = 1,NPOIN
          W(IPOIN) = Y(TRAV2(IPOIN))
-210   CONTINUE
-      DO 215 IPOIN = 1,NPOIN
+      ENDDO
+      DO IPOIN = 1,NPOIN
          Y(IPOIN) = W(IPOIN)
-215   CONTINUE
+      ENDDO
 !
       IF (COLOR) THEN
 !
-         DO 230 IPOIN = 1,NPOIN
+         DO IPOIN = 1,NPOIN
             TRAV1(IPOIN) = NCOLOR(TRAV2(IPOIN))
-230      CONTINUE
-         DO 235 IPOIN = 1,NPOIN
+         ENDDO
+         DO IPOIN = 1,NPOIN
             NCOLOR(IPOIN) = TRAV1(IPOIN)
-235      CONTINUE
+         ENDDO
 !
       ENDIF
 !

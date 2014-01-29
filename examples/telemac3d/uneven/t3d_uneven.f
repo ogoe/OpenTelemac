@@ -240,7 +240,7 @@
       INTEGER K,I
       LOGICAL MAS
 !
-      DO 20 I=1,NPOIN2
+      DO I=1,NPOIN2
        IF (X(I).LE.160.D0) THEN
         ZF(I)=-10.D0
        ENDIF
@@ -250,7 +250,7 @@
        IF (X(I).GE.260.D0) THEN
         ZF(I)=-5.D0
        ENDIF
-20    CONTINUE
+      ENDDO
 !
 !  LISSAGES EVENTUELS DU FOND
 !

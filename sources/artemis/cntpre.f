@@ -70,50 +70,42 @@
 !
       IF (MOD(IPRECO,2).EQ.0.OR.MOD(IPRECO,3).EQ.0) THEN
 !
-         DO 10 I=1,NPOIN
+         DO I=1,NPOIN
             IF (DAM(I).LE.0.D0) THEN
-20             CONTINUE
-               IF(MOD(IPREC2,2).EQ.0) THEN
+               DO WHILE(MOD(IPREC2,2).EQ.0)
                  IPREC2 = IPREC2/2
-                 GO TO 20
-               ENDIF
-21             CONTINUE
-               IF(MOD(IPREC2,3).EQ.0) THEN
+               ENDDO
+               DO WHILE(MOD(IPREC2,3).EQ.0)
                  IPREC2 = IPREC2/3
-                 GO TO 21
-               ENDIF
+               ENDDO
                IF (LNG.EQ.1) WRITE(LU,100)
                IF (LNG.EQ.2) WRITE(LU,101)
 100     FORMAT(1X,'CNTPRE (ARTEMIS) : PRECONDITIONNEMENT DIAGONAL NON AP
      &PLIQUE (UN ELEMENT DIAGONAL DE LA MATRICE EST NEGATIF OU NUL)')
 101     FORMAT(1X,'CNTPRE (ARTEMIS) : DIAGONAL SCALING NOT APPLIED (ONE
      &COEFFICIENT OF THE MATRIX DIAGONAL IS NEGATIVE OR ZERO)')
-               GOTO 30
+               EXIT
             ENDIF
-10       CONTINUE
+         ENDDO
 !
       ELSEIF (MOD(IPRECO,5).EQ.0) THEN
 !
-         DO 40 I=1,NPOIN
+         DO I=1,NPOIN
             IF (ABS(DAM(I)).LE.1.D-6) THEN
-50             CONTINUE
-               IF(MOD(IPREC2,5).EQ.0) THEN
+               DO WHILE(MOD(IPREC2,5).EQ.0)
                  IPREC2 = IPREC2/5
-                 GO TO 50
-               ENDIF
+               ENDDO
                IF (LNG.EQ.1) WRITE(LU,200)
                IF (LNG.EQ.2) WRITE(LU,201)
 200     FORMAT(1X,'CNTPRE (ARTEMIS) : PRECONDITIONNEMENT DIAGONAL NON AP
      &PLIQUE (UN ELEMENT DIAGONAL DE LA MATRICE EST NUL)')
 201     FORMAT(1X,'CNTPRE (ARTEMIS) : DIAGONAL SCALING NOT APPLIED (ONE
      &COEFFICIENT OF THE MATRIX DIAGONAL IS ZERO)')
-               GOTO 30
+               EXIT
             ENDIF
-40       CONTINUE
+         ENDDO
 !
       ENDIF
-!
-30    CONTINUE
 !
 !-----------------------------------------------------------------------
 !

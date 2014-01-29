@@ -284,8 +284,6 @@ CONTAINS
     INTEGER , POINTER :: p_nen(:,:)
     !! Polygonverzeichnis der Polygone
     INTEGER , POINTER :: p_ie(:,:)  
-    !! Kantenverzeichnis der Polygone
-    INTEGER , POINTER :: p_is(:,:)  
     !! Randkennungen der Knoten
     INTEGER , POINTER :: p_ipobo(:) 
     !! Randkennungen der Polygone
@@ -740,13 +738,11 @@ CONTAINS
     !! Hilfsvariable Dateivarianten-Nummer
     INTEGER :: ivar            ! 
     !! Statusvariable
-    INTEGER :: stat, iostat    !  
+    INTEGER :: stat !  
     !! Anzahl der Polygone entlang des offenen Randes
     INTEGER , POINTER :: p_nbc        ! 
     !! Knotenverzeichnis der Polygone
     INTEGER , POINTER :: p_nen(:,:)   ! 
-    !! Polygonverzeichnis der Polygone
-    INTEGER , POINTER :: p_ie(:,:)    ! 
     !! Kantenverzeichnis der Polygone sowie Randkantentypverzeichnis der Polygone
     INTEGER , POINTER :: p_is(:,:), p_isbnd(:,:) ! 
     !! Randkennungen der Polygone
@@ -764,7 +760,7 @@ CONTAINS
     !! nicht weiter erodierbare Tiefen &uuml;ber Kanten und Knoten
     REAL (KIND=Double) , POINTER :: p_huu(:), p_hvu(:)   ! 
     !! Koordinaten der Zentren der Polygone sowie der Knoten
-    REAL (KIND=Double) , POINTER :: p_xc(:,:), p_xy(:,:) !            
+    REAL (KIND=Double) , POINTER :: p_xy(:,:) !            
     !! Tiefen an den Knoten
     REAL (KIND=Double) , POINTER :: p_hv(:)              ! 
     !! enthaelt das Polygon mindestens eine Kante am offenen Rand?
@@ -1402,7 +1398,7 @@ CONTAINS
     !! Hilfsvariable Dateivarianten-Nummer
     INTEGER :: ivar ! 
     !! Statusvariable
-    INTEGER :: stat, iostat ! 
+    INTEGER :: iostat ! 
     !! Anzahl der Innenkanten
     INTEGER            , POINTER :: p_nsi     ! 
     !! Polygonverzeichnis der Kanten
@@ -1679,7 +1675,7 @@ CONTAINS
     CHARACTER (LEN=80) , ALLOCATABLE :: l_text(:)                                                   ! 
     INTEGER            , ALLOCATABLE :: l_ks(:), l_is(:,:), l_nen(:,:), m_is(:), m_nen(:), m_ie(:)  ! 
     REAL (KIND=Double) , ALLOCATABLE :: l_xy(:,:), l_hu(:), l_huu(:)                                ! 
-    INTEGER :: i, ii, iadd, j, jj, jm, jn, kn, kk, mm, ne, ne3, ne4, nn, n3, n4, m_ks, dwlp_code    ! 
+    INTEGER :: i, ii, iadd, j, jj, jm, jn, kn, mm, ne, ne3, ne4, nn, n3, n4, m_ks, dwlp_code    ! 
     REAL (KIND=Double) :: xym(2), hu, huu, mean_hu, max_hu, min_hu, max_huu ! 
     !
     NULLIFY( p_nv, p_ne , p_ns, p_nsi, p_nsf, p_nbc, p_jb, p_jt, p_ks, p_is, &

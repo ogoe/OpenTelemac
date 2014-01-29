@@ -144,7 +144,6 @@
         CALL PLANTE(1)
         STOP
       ENDIF
-100   CONTINUE
 !
 !     PROJECTION ON THE SLIPPING BOUNDARY CONDITIONS
 !     **********************************************

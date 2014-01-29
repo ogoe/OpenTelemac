@@ -83,9 +83,9 @@
         NPTFR = 0
 !
         IF(NPOIN.GE.1) THEN
-          DO 22 I = 1 , NPOIN
+          DO I = 1 , NPOIN
             IF(IPOBO(I).NE.0) NPTFR = NPTFR + 1
-22        CONTINUE
+          ENDDO ! I 
         ENDIF
 !
       ELSE
@@ -96,9 +96,9 @@
 !       BUT NPTFR, MXPTVS AND MXELVS NEED TO BE COMPUTED
         NPTFR = IB(8)
         IF(NPOIN.GE.1) THEN
-          DO 122 I = 1 , NPOIN
+          DO I = 1 , NPOIN
             IPOBO(I)=1
-122       CONTINUE
+          ENDDO ! I 
         ENDIF
 !       IPOBO SET TO 1: MXPTVS WILL HAVE 1 TOO MANY
 !       BUT WOULD OTHERWISE NEED TO BUILD THE TRUE IPOBO AND ALSO

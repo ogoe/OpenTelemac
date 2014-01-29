@@ -139,35 +139,35 @@
 !
 !     CASE WHERE BLOCK A ONLY CONTAINS THE DIAGONALS
 !
-        DO 10 I=1,S
+        DO I=1,S
           CALL DWNUP1(X%ADR(I)%P,
      &                A%ADR(I)%P,
      &                B%ADR(I)%P,
      &                DITR,MESH)
-10      CONTINUE
+        ENDDO ! I
 !
       ELSEIF(S.GT.0.AND.S**2.EQ.SA) THEN
 !
 !     CASE WHERE BLOCK A CONTAINS AS MANY MATRICES AS THERE ARE IN
 !     THE COMPLETE SYSTEM: ONLY CONSIDERS THE DIAGONALS
 !
-        DO 11 I=1,S
+        DO I=1,S
           CALL DWNUP1(X%ADR(I)%P,
      &                A%ADR(1+(S+1)*(I-1))%P,
      &                B%ADR(I)%P,
      &                DITR,MESH)
-11      CONTINUE
+        ENDDO ! I
 !
 !     CASE WHERE A IS A SINGLE MATRIX AND X IS A BLOCK
 !
       ELSEIF(S.GT.0.AND.SA.EQ.0) THEN
 !
-        DO 12 I=1,S
+        DO I=1,S
           CALL DWNUP1(X%ADR(I)%P,
      &                A,
      &                B%ADR(I)%P,
      &                DITR,MESH)
-12      CONTINUE
+        ENDDO ! I
 !
       ELSE
         IF (LNG.EQ.1) WRITE(LU,301)

@@ -74,13 +74,13 @@
 4     FORMAT(//,1X,'DATA INTERPOLATION',/,
      &          1X,'------------------',/)
 !
-      DO 10 IPOIN = 1,NPOIN
+      DO IPOIN = 1,NPOIN
 !
          XP = X(IPOIN)
          YP = Y(IPOIN)
          C1 = -999999.D0
 !
-         DO 20 IELEM = 1,NEINIT
+         DO IELEM = 1,NEINIT
             X1 = XINIT(IKINIT(IELEM,1))
             X2 = XINIT(IKINIT(IELEM,2))
             X3 = XINIT(IKINIT(IELEM,3))
@@ -96,7 +96,7 @@
                C1 = C2
                JELEM = IELEM
             ENDIF
-20       CONTINUE
+         ENDDO
 !
          IF (LNG.EQ.1) WRITE(LU,*) 'EXTRAPOLATION NECESSAIRE POUR ',
      &                             'LE POINT :',IPOIN
@@ -120,7 +120,7 @@
          SHP(IPOIN,3) = A3/C1
          ELT(IPOIN) = IELEM
 !
-10    CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

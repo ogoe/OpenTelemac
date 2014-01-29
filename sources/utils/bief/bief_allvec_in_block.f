@@ -79,9 +79,9 @@
 !-----------------------------------------------------------------------
 !
       IDEB = 6
-      DO 5 I=5,2,-1
+      DO I=5,2,-1
         IF(NOMGEN(I:I).EQ.' ') IDEB = I
-5     CONTINUE
+      ENDDO ! I
 !
 !-----------------------------------------------------------------------
 !
@@ -89,7 +89,7 @@
 !
       IF(N.GT.0) THEN
 !
-      DO 10 I = BLO%N+1 , BLO%N+N
+      DO I = BLO%N+1 , BLO%N+N
 !
 !  NAME OF THE VECTOR
 !
@@ -116,7 +116,7 @@
         ALLOCATE(BLO%ADR(I)%P)
         CALL BIEF_ALLVEC(NAT,BLO%ADR(I)%P,NOM,IELM,NDIM,STATUT,MESH)
 !
-10    CONTINUE
+      ENDDO ! I 
 !
       BLO%N=BLO%N+N
 !

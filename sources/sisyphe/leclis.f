@@ -111,7 +111,7 @@
 ! READS ALL THE LINES IN THE BOUNDARY CONDITION FILE
 !
 !
-        DO 40 K=1,NPTFR
+        DO K=1,NPTFR
 !
         IF(STDGEO.EQ.3 .AND. NCSIZE.LE.1) THEN
           READ(NLIM,*) LIHBOR(K),LIQBOR(K),IBID,Q2BOR%R(K),
@@ -132,7 +132,7 @@
           STOP
         ENDIF
 !
-40      CONTINUE
+        ENDDO
 !
 21        FORMAT(1X,'LECLIS : STANDARD DU FICHIER DE GEOMETRIE : ',1I6,/
      &           1X,'         CETTE VALEUR EST INCONNUE ET       ',    /
@@ -141,12 +141,12 @@
 22        FORMAT(1X,'LECLIS : GEOMETRY FILE STANDARD : ',I6   ,/
      &           1X,'         UNKNOWN PARAMETER AND BOUNDARY ',/
      &           1X,'         CONDITIONS FILE DEPENDS ON IT !')
-23        FORMAT(1X,'LECLIS : ERREUR LIGNE ',I5,' DANS LE FICHIER DES',
-     &         /,1X,'         CONDITIONS AUX LIMITES, POINT DE BORD',
-     &         /,1X,'         NUMERO ',I5,' AU LIEU DE ',I5)
-24        FORMAT(1X,'LECLIS : ERROR LINE ',I5,' IN BOUNDARY CONDITIONS',
-     &         /,1X,'         FILE, BOUNDARY POINT NUMBER ',I5,
-     &         /,1X,'         INSTEAD OF ',I5)
+!23        FORMAT(1X,'LECLIS : ERREUR LIGNE ',I5,' DANS LE FICHIER DES',
+!     &         /,1X,'         CONDITIONS AUX LIMITES, POINT DE BORD',
+!     &         /,1X,'         NUMERO ',I5,' AU LIEU DE ',I5)
+!24        FORMAT(1X,'LECLIS : ERROR LINE ',I5,' IN BOUNDARY CONDITIONS',
+!     &         /,1X,'         FILE, BOUNDARY POINT NUMBER ',I5,
+!     &         /,1X,'         INSTEAD OF ',I5)
 !
 !-----------------------------------------------------------------------
 !

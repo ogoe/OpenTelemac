@@ -3516,7 +3516,6 @@ CONTAINS
     LOGICAL :: ok ! 
     ! lokale Parameter / Variablen
     CHARACTER (LEN=14) , PARAMETER :: c_upname='ok_io_info_key' ! 
-    CHARACTER (LEN=5)              :: l_char                    ! 
     INTEGER :: n ! 
     !
     n  = LEN_TRIM(c_undef_ch)
@@ -3566,7 +3565,6 @@ CONTAINS
     LOGICAL :: ok ! 
     ! lokale Parameter / Variablen
     CHARACTER (LEN=14) , PARAMETER :: c_upname='ok_io_info_pac' ! 
-    CHARACTER (LEN=5)              :: l_char                    ! 
     INTEGER :: n ! 
     !
     n  = LEN_TRIM(c_undef_ch)
@@ -4427,7 +4425,7 @@ CONTAINS
     INTEGER                        :: res  ! 
     ! Hilfsvariablen
     INTEGER , PARAMETER :: c_nn_min=5000   ! 
-    INTEGER :: i, nn        ! 
+    INTEGER :: nn        ! 
     TYPE (t_time) :: d_time ! 
     REAL (KIND=Double) :: d_tsec ! 
     REAL (KIND=Double) , SAVE, ALLOCATABLE :: r_time(:) ! ... reduziert den Aufwand

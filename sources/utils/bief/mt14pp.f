@@ -181,7 +181,7 @@
 !     COMPUTES THE COEFFICIENTS B(I) BY ELEMENTS
 !     AND COMPUTES LAMBDA(I,J)
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          IXM = 0
          IF (W(IKLE(IELEM,1)).GT.0.D0) IXM = 1
@@ -549,7 +549,7 @@
          XM(PPQ(J3,K0),IELEM) = LJ3K0
          XM(PPQ(K3,K0),IELEM) = LK3K0
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

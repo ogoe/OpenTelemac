@@ -42,31 +42,31 @@
 !      RECHERCHE DES ELEMENTS A DIVISER PAR 4 OU PAR 2
 !=======================================================================
 !
-      DO 1 IPOIN = 1,NPOIN
+      DO IPOIN = 1,NPOIN
          INDICP(IPOIN) = 1
-1     CONTINUE
+      ENDDO
 !
       IF (NSOM2.GE.3) THEN
 !
-         DO 5 ISOM = 1,NSOM2
+         DO ISOM = 1,NSOM2
 !
             DX = SOM2(ISOM+1,1) - SOM2(ISOM,1)
             DY = SOM2(ISOM+1,2) - SOM2(ISOM,2)
 !
-            DO 10 IPOIN = 1,NPOIN
+            DO IPOIN = 1,NPOIN
                IF (DX*(Y(IPOIN)-SOM2(ISOM,2)).LT.
      &             DY*(X(IPOIN)-SOM2(ISOM,1))) INDICP(IPOIN) = 0
-10          CONTINUE
+            ENDDO
 !
-5        CONTINUE
+         ENDDO
 !
       ENDIF
 !
-      DO 20 IELEM = 1,NELEM
+      DO IELEM = 1,NELEM
          INDICE(IELEM) = INDICP(IKLE(IELEM,1))
      &               + 2*INDICP(IKLE(IELEM,2))
      &               + 4*INDICP(IKLE(IELEM,3))
-20    CONTINUE
+      ENDDO
 !
 !=======================================================================
 !      DIVISION DES ELEMENTS PAR 4 OU PAR 2
@@ -74,7 +74,7 @@
 !
       IPOIN = 1
 !
-      DO 30 IELEM = 1,NELEM
+      DO IELEM = 1,NELEM
 !
          IF (INDICE(IELEM).EQ.7) THEN
 !
@@ -159,7 +159,7 @@
 !
          ENDIF
 !
-30    CONTINUE
+      ENDDO !IELEM
 !
       NPOIN = NPOIN + IPOIN - 1
       NELEM = NELEM + IPOIN - 1
@@ -180,4 +180,4 @@
      &        /,1X,'NEW NUMBER OF ELEMENTS : ',I9)
 !
       RETURN
-      END
+      END SUBROUTINE

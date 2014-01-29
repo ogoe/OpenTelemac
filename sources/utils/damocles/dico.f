@@ -132,8 +132,8 @@
 !*******************************************************
 !
       IF (NFIC.EQ.NFICDA) THEN
-        DO 100 ITYP = 1,4
-          DO 110 INDX=1,NMAXR(ITYP)
+        DO ITYP = 1,4
+          DO INDX=1,NMAXR(ITYP)
             IF (UTINDX(ITYP,INDX)) THEN
               K=SIZE(ITYP,INDX)
               IF(K.EQ.ILONG) THEN
@@ -143,12 +143,12 @@
                 ENDIF
               ENDIF
             ENDIF
- 110      CONTINUE
- 100    CONTINUE
+          ENDDO ! INDX
+        ENDDO ! ITYP 
 !
 ! IF NOT, DETERMINES IF ITS AN EDAMOX KEYWORD OF INDEX = -1
 !
-        DO 900 I=1,NIGN
+        DO I=1,NIGN
           IF(LONIGN(I).EQ.ILONG) THEN
             IF(CHAINE(1:ILONG).EQ.MOTIGN(I)(1:ILONG)) THEN
               ITYP = TYPIGN(I)
@@ -156,7 +156,7 @@
               GO TO 1000
             ENDIF
           ENDIF
-900     CONTINUE
+        ENDDO ! I
 !
 ! END OF SEARCH THROUGH THE USER KEYWORDS
        GO TO 910
@@ -174,7 +174,7 @@
 ! (ESTIMATED 6500 TESTS FOR TELEMAC)
       IF (CHAINE(ILONG:ILONG).EQ.'1') GOTO 125
 !
-      DO 120 I=1,15
+      DO I=1,15
        IF (ILONG.EQ.LONPRO(I)) THEN
          IF (CHAINE(1:ILONG).EQ.MOTPRO(I)(1:ILONG)) THEN
 !           IF 'AIDE' AND LNG=FRANCAIS, WILL EDIT THE HELP IF DOC
@@ -185,7 +185,7 @@
             GO TO 1000
          ENDIF
        ENDIF
-120   CONTINUE
+      ENDDO ! I
 !
 !  IF NOT: LOOKS FOR IT AMONG THE RESERVED WORDS FOR LANGUAGES
 !          OTHER THAN FRENCH. (MAX NBLANG LANGUAGES AND NBLANG<=10)
@@ -198,8 +198,8 @@
 !
 125   CONTINUE
       IF (NBLANG.GE.2) THEN
-      DO 130 I=1,5
-      DO 131 K=1,NBLANG-1
+      DO I=1,5
+      DO K=1,NBLANG-1
         IF (LGRUB(I)+1.EQ.ILONG) THEN
         MOTLNG = RUBPRO(I)(1:LGRUB(I))//LNGPRO(K)(1:1)
         IF (CHAINE(1:ILONG).EQ.MOTLNG(1:ILONG)) THEN
@@ -216,8 +216,8 @@
           GO TO 1000
         ENDIF
         ENDIF
-131   CONTINUE
-130   CONTINUE
+      ENDDO ! K
+      ENDDO ! I
       ENDIF
 !
 !  6) ERROR : KEYWORD UNKNOWN

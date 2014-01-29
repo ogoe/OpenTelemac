@@ -125,9 +125,9 @@
 !  COMPACT MATRIX
 !
       IADR(1) = 1
-      DO 50 I= 2,NPOIN
+      DO I= 2,NPOIN
         IADR(I) = IADR(I-1) + NVOIS(I-1)
-50    CONTINUE
+      ENDDO ! I
 !
       IMAX = IADR(NPOIN) + NVOIS(NPOIN) - 1
       IF(IMAX.GT.IDIMAT) THEN
@@ -153,8 +153,8 @@
 !
 !  LOOP ON THE SIDES OF EACH ELEMENT:
 !
-      DO 60 IFACE = 1 , NFACE
-      DO 70 IELEM = 1 , NELEM
+      DO IFACE = 1 , NFACE
+      DO IELEM = 1 , NELEM
 !
          IFABOR(IELEM,IFACE) = 0
 !
@@ -168,7 +168,7 @@
          M1 = MIN(I1,I2)
          M2 = MAX(I1,I2)
 !
-         DO 80 IV = 1,NVOIS(M1)
+         DO IV = 1,NVOIS(M1)
 !
            IF(MAT1(IADR(M1)+IV-1).EQ.0) THEN
               MAT1(IADR(M1)+IV-1)=M2
@@ -183,7 +183,7 @@
               GO TO 81
            ENDIF
 !
-80       CONTINUE
+         ENDDO ! IV 
 !
          IF(LNG.EQ.1) WRITE(LU,82)
          IF(LNG.EQ.2) WRITE(LU,83)
@@ -196,8 +196,8 @@
 !
 81       CONTINUE
 !
-70    CONTINUE
-60    CONTINUE
+      ENDDO ! IELEM
+      ENDDO ! IFACE
 !
       NSEGBOR = 0
       DO IFACE=1,NFACE

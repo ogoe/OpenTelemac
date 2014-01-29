@@ -31,6 +31,7 @@ VERSION	      = v7p0
 #
 # Options du compilateur :
 #
+include makefile.am
 include $(SYSTELCFG)/cfgmak.mak
 #
 DIRINC           = $(PROJECT)/builds/$(DIRLIB)/lib
@@ -67,27 +68,18 @@ MAKEFILE      = makefile
 
 #------------------------ Liste des fichiers
 #
-#------- Sources Fortran
-
-SRCS_GRETEL= gretel_autop.f gretel_cpikle2.f gretel_read_dataset_elem.f gretel_read_dataset.f gretel_skip_header.f
-SRCS_GREDELPTS= gredelpts_autop.f gredelpts_read_dataset.f
-SRCS_GREDELSEG= gredelseg_autop.f gredelpts_read_dataset.f
-SRCS_GREDELMET= gredelmet_autop.f gredel_fdnrst.f
-SRCS_GREDELHYD= gredelhyd_autop.f
-
-#
 #------- Objets
 #
 TEMP = $(SRCS_GRETEL:.f=.o)
 OBJS_GRETEL = $(TEMP:.F=.o)
-TEMP = $(SRCS_GREDELPTS:.f=.o)
-OBJS_GREDELPTS = $(TEMP:.F=.o)
-TEMP = $(SRCS_GREDELSEG:.f=.o)
-OBJS_GREDELSEG = $(TEMP:.F=.o)
-TEMP = $(SRCS_GREDELMET:.f=.o)
-OBJS_GREDELMET = $(TEMP:.F=.o)
-TEMP = $(SRCS_GREDELHYD:.f=.o)
-OBJS_GREDELHYD = $(TEMP:.F=.o)
+TEMP1 = $(SRCS_GREDELPTS:.f=.o)
+OBJS_GREDELPTS = $(TEMP1:.F=.o)
+TEMP2 = $(SRCS_GREDELSEG:.f=.o)
+OBJS_GREDELSEG = $(TEMP2:.F=.o)
+TEMP3 = $(SRCS_GREDELMET:.f=.o)
+OBJS_GREDELMET = $(TEMP3:.F=.o)
+TEMP4 = $(SRCS_GREDELHYD:.f=.o)
+OBJS_GREDELHYD = $(TEMP4:.F=.o)
 
 PRINT	      = pr
 
@@ -98,7 +90,7 @@ SHELL	      = /bin/sh
 # Definition des cibles
 #
 
-all:		$(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD)
+all:		$(GRETEL)
 
 $(GRETEL) : 	$(OBJS_GRETEL) $(OBJS_GREDELPTS) $(OBJS_GREDELSEG) $(OBJS_GREDELMET) $(OBJS_GREDELHYD) 
 		$(MESSAGE) "Link de $(GRETEL)"

@@ -83,10 +83,10 @@
         Y=XK0*DEPTH
         AUX=1.D0
         YI=1.D0
-        DO 12 I=1,9
+        DO I=1,9
           YI=YI*Y
           AUX=AUX+P(I)*YI
-   12   CONTINUE
+        ENDDO ! I
         AUX=Y+1.D0/AUX
         CK2=OM/SQRT(GRAVIT*DEPTH/AUX)
 !
@@ -97,18 +97,17 @@
         Y=XK0*DEPTH
         AUX=1.D0
         YI=1.D0
-        DO 11 I=1,9
+        DO I=1,9
           YI=YI*Y
           AUX=AUX+P(I)*YI
-   11   CONTINUE
+        ENDDO ! I
         AUX=Y+1.D0/AUX
         CK2=OM/SQRT(GRAVIT*DEPTH/AUX)
-    2   CONTINUE
+        DO
         A=CK2
         CK2=XK0/TANH(A*DEPTH)
-        IF (ABS(CK2-A)/CK2.LT.EPS) GOTO 3
-        GOTO 2
-    3   CONTINUE
+        IF (ABS(CK2-A)/CK2.LT.EPS) EXIT
+        ENDDO
 !
       ELSE
 !

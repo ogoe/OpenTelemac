@@ -118,7 +118,7 @@
      &    (IELMU.EQ.11.OR.IELMU.EQ.12.OR.IELMU.EQ.21) .AND.
      &    (IELMV.EQ.11.OR.IELMV.EQ.12.OR.IELMV.EQ.21)      ) THEN
 !
-      DO 1 IELEM =1,NELEM
+      DO IELEM =1,NELEM
 !
 !     NUMBERING OF THE BOUNDARY NODES
 !
@@ -144,7 +144,7 @@
       W1(IELEM) = LGSEG(IELEM) * ( VX1*XNOR(IELEM) + VY1*YNOR(IELEM) )
       W2(IELEM) = LGSEG(IELEM) * ( VX2*XNOR(IELEM) + VY2*YNOR(IELEM) )
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !   F LINEAR FUNCTION ON TRIANGLES OR QUADRILATERALS
@@ -155,7 +155,7 @@
      &        (IELMU.EQ.1                               ) .AND.
      &        (IELMV.EQ.1                               )      ) THEN
 !
-      DO 2 IELEM =1,NELEM
+      DO IELEM =1,NELEM
 !
 !     NUMBERING OF THE BOUNDARY NODES
 !
@@ -184,7 +184,7 @@
       W1(IELEM) = LGSEG(IELEM) * ( VX1*XNOR(IELEM) + VY1*YNOR(IELEM) )
       W2(IELEM) = LGSEG(IELEM) * ( VX2*XNOR(IELEM) + VY2*YNOR(IELEM) )
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !   F LINEAR FUNCTION ON SEGMENTS
@@ -195,7 +195,7 @@
      &         IELMU.EQ.1 .AND.
      &         IELMV.EQ.1        ) THEN
 !
-      DO 3 IELEM =1,NELEM
+      DO IELEM =1,NELEM
 !
 !     NUMBERING OF THE BOUNDARY NODES
 !
@@ -221,7 +221,7 @@
       W1(IELEM) = LGSEG(IELEM) * ( VX1*XNOR(IELEM) + VY1*YNOR(IELEM) )
       W2(IELEM) = LGSEG(IELEM) * ( VX2*XNOR(IELEM) + VY2*YNOR(IELEM) )
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
 !
 !-----------------------------------------------------------------------
@@ -234,7 +234,7 @@
      &        (IELMU.EQ.13                               ) .AND.
      &        (IELMV.EQ.13                               )       ) THEN
 !
-      DO 4 IELEM =1,NELEM
+      DO IELEM =1,NELEM
 !
 !     NUMBERING OF THE BOUNDARY NODES
 !
@@ -263,7 +263,7 @@
       W1(IELEM) = LGSEG(IELEM) * ( VX1*XNOR(IELEM) + VY1*YNOR(IELEM) )
       W2(IELEM) = LGSEG(IELEM) * ( VX2*XNOR(IELEM) + VY2*YNOR(IELEM) )
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !   F LINEAR FUNCTION ON TRIANGLES
@@ -274,7 +274,7 @@
      &        (IELMU.EQ.2                               ) .AND.
      &        (IELMV.EQ.2                               )       ) THEN
 !
-      DO 5 IELEM =1,NELEM
+      DO IELEM =1,NELEM
 !
 !     NUMBERING OF THE BOUNDARY NODES
 !
@@ -307,7 +307,7 @@
       W1(IELEM) = LGSEG(IELEM) * ( VX1*XNOR(IELEM) + VY1*YNOR(IELEM) )
       W2(IELEM) = LGSEG(IELEM) * ( VX2*XNOR(IELEM) + VY2*YNOR(IELEM) )
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !   F QUADRATIC FUNCTION ON SEGMENTS
@@ -318,7 +318,7 @@
      &         IELMU.EQ.2 .AND.
      &         IELMV.EQ.2        ) THEN
 !
-      DO 6 IELEM =1,NELEM
+      DO IELEM =1,NELEM
 !
 !     NUMBERING OF THE BOUNDARY NODES
 !
@@ -350,7 +350,7 @@
       W1(IELEM) = LGSEG(IELEM) * ( VX1*XNOR(IELEM) + VY1*YNOR(IELEM) )
       W2(IELEM) = LGSEG(IELEM) * ( VX2*XNOR(IELEM) + VY2*YNOR(IELEM) )
 !
-6     CONTINUE
+      ENDDO ! IELEM 
 !
 !
 !-----------------------------------------------------------------------

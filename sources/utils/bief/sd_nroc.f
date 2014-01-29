@@ -9,23 +9,23 @@
 !***********************************************************************
 !
 !brief   SPARSE MATRIX PACKAGE - NONSYMMETRIC CODES
-!		   REORDERS ROWS OF A, LEAVING ROW ORDER UNCHANGED
-!code
-!+ REORDERS ROWS OF A, LEAVING ROW ORDER UNCHANGED
-!+
-!+
-!+       PARAMETERS USED INTERNALLY..
-!+ NIA   \ P     - AT THE KTH STEP, P IS A LINKED LIST OF THE REORDERED
-!+       \	     COLUMN INDICES OF THE KTH ROW OF A.  P(N+1) POINTS
-!+       \	     TO THE FIRST ENTRY IN THE LIST.
-!+       \	     SIZE = N+1.
-!+ NIA   \ JAR   - AT THE KTH STEP,JAR CONTAINS THE ELEMENTS OF THE
-!+       \	     REORDERED COLUMN INDICES OF A.
-!+       \	     SIZE = N.
-!+ FIA   \ AR	 - AT THE KTH STEP, AR CONTAINS THE ELEMENTS OF THE
-!+       \	     REORDERED ROW OF A.
-!+       \	     SIZE = N.
-!+
+!                  REORDERS ROWS OF A, LEAVING ROW ORDER UNCHANGED
+!
+!  REORDERS ROWS OF A, LEAVING ROW ORDER UNCHANGED
+! 
+! 
+!        PARAMETERS USED INTERNALLY..
+!  NIA     P     - AT THE KTH STEP, P IS A LINKED LIST OF THE REORDERED
+!                    COLUMN INDICES OF THE KTH ROW OF A.  P(N+1) POINTS
+!                    TO THE FIRST ENTRY IN THE LIST.
+!                    SIZE = N+1.
+!  NIA     JAR   - AT THE KTH STEP,JAR CONTAINS THE ELEMENTS OF THE
+!                    REORDERED COLUMN INDICES OF A.
+!                    SIZE = N.
+!  FIA     AR    - AT THE KTH STEP, AR CONTAINS THE ELEMENTS OF THE
+!                    REORDERED ROW OF A.
+!                    SIZE = N.
+! 
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
 !
 !         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS 
@@ -58,35 +58,39 @@
       DOUBLE PRECISION  A(*), AR(*)
 !
 !  ******  FOR EACH NONEMPTY ROW  *******************************
-      DO 5 K=1,N
+      DO K=1,N
         JMIN = IA(K)
         JMAX = IA(K+1) - 1
-        IF(JMIN .GT. JMAX) GO TO 5
+        IF(JMIN .GT. JMAX) CYCLE
         P(N+1) = N + 1
 !  ******  INSERT EACH ELEMENT IN THE LIST  *********************
-        DO 3 J=JMIN,JMAX
+        DO J=JMIN,JMAX
           NEWJ = IC(JA(J))
           I = N + 1
-   1      IF(P(I) .GE. NEWJ) GO TO 2
+          DO
+            IF(P(I) .GE. NEWJ) EXIT
             I = P(I)
-            GO TO 1
-   2      IF(P(I) .EQ. NEWJ) GO TO 102
+          ENDDO
+          IF(P(I) .EQ. NEWJ) THEN
+! ** ERROR.. DUPLICATE ENTRY IN A
+            FLAG = N + K
+            RETURN
+          ENDIF
           P(NEWJ) = P(I)
           P(I) = NEWJ
           JAR(NEWJ) = JA(J)
           AR(NEWJ) = A(J)
-   3      CONTINUE
+        ENDDO ! J
 !  ******  REPLACE OLD ROW IN JA AND A  *************************
         I = N + 1
-        DO 4 J=JMIN,JMAX
+        DO J=JMIN,JMAX
           I = P(I)
           JA(J) = JAR(I)
-   4      A(J) = AR(I)
-   5    CONTINUE
+          A(J) = AR(I)
+        ENDDO ! J
+      ENDDO ! K
       FLAG = 0
+!
       RETURN
 !
-! ** ERROR.. DUPLICATE ENTRY IN A
- 102  FLAG = N + K
-      RETURN
       END

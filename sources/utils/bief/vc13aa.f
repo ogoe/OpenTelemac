@@ -111,7 +111,7 @@
 !
       IF(ICOORD.EQ.1) THEN
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         W1(IELEM) = ( YEL(IELEM,2) *
      &                (F(IKLE1(IELEM))-F(IKLE3(IELEM)))
@@ -120,13 +120,13 @@
         W2(IELEM) = W1(IELEM)
         W3(IELEM) = W1(IELEM)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
 !  Y COORDINATE
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          W1(IELEM) = ( XEL(IELEM,2) *
      &                 (F(IKLE3(IELEM))-F(IKLE1(IELEM)))
@@ -135,7 +135,7 @@
          W2(IELEM)  =  W1(IELEM)
          W3(IELEM)  =  W1(IELEM)
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !
@@ -160,7 +160,7 @@
 !
       IF(ICOORD.EQ.1) THEN
 !
-      DO 5 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         Y2 = YEL(IELEM,2)
         Y3 = YEL(IELEM,3)
@@ -174,13 +174,13 @@
         W2(IELEM)=(-3*Y2*F3+Y3*(-3*F4+F3+4*F2)) * XSUR18
         W3(IELEM)=(Y2*(3*F4-4*F3-F2)+3*Y3*F2) * XSUR18
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
 !  Y COORDINATE
 !
-      DO 6 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         X2 = XEL(IELEM,2)
         X3 = XEL(IELEM,3)
@@ -194,7 +194,7 @@
         W2(IELEM)=(3*X2*F3+X3*(3*F4-F3-4*F2)) * XSUR18
         W3(IELEM)=(X2*(-3*F4+4*F3+F2)-3*X3*F2) * XSUR18
 !
-6     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !
@@ -215,7 +215,7 @@
 !
       IF(ICOORD.EQ.1) THEN
 !
-      DO 7 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         Y2 = YEL(IELEM,2)
         Y3 = YEL(IELEM,3)
@@ -229,13 +229,13 @@
         W2(IELEM)=(-3*Y2*F3+Y3*(-3*F4+F3+4*F2)) * XSUR18
         W3(IELEM)=(Y2*(3*F4-4*F3-F2)+3*Y3*F2) * XSUR18
 !
-7     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
 !  Y COORDINATE
 !
-      DO 8 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         X2 = XEL(IELEM,2)
         X3 = XEL(IELEM,3)
@@ -249,7 +249,7 @@
         W2(IELEM)=(3*X2*F3+X3*(3*F4-F3-4*F2)) * XSUR18
         W3(IELEM)=(X2*(-3*F4+4*F3+F2)-3*X3*F2) * XSUR18
 !
-8     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !
@@ -268,27 +268,27 @@
 !
       IF(ICOORD.EQ.1) THEN
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         W1(IELEM) = ( YEL(IELEM,2) * (F(IELEM)-F(IELEM+2*NELMAX))
      &              + YEL(IELEM,3) * (F(IELEM+NELMAX)-F(IELEM)))* XSUR6
         W2(IELEM) = W1(IELEM)
         W3(IELEM) = W1(IELEM)
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
 !  Y COORDINATE
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          W1(IELEM) = ( XEL(IELEM,2) * (F(IELEM+2*NELMAX)-F(IELEM))
      &               + XEL(IELEM,3) * (F(IELEM)-F(IELEM+NELMAX)))*XSUR6
          W2(IELEM)  =  W1(IELEM)
          W3(IELEM)  =  W1(IELEM)
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !

@@ -4082,7 +4082,7 @@ CONTAINS
     !! Code oder "-1"
     INTEGER :: res ! 
     ! Hilfsvariablen
-    INTEGER :: idx, jdx ! 
+    INTEGER :: idx ! 
     !
     res = -1
     idx = get_phy_quants_idx ( var )
@@ -4121,7 +4121,7 @@ CONTAINS
     !! Code oder -1
     INTEGER :: res ! 
     ! Hilfsvariablen
-    INTEGER :: idx, jdx ! 
+    INTEGER :: idx ! 
     !
     res = -1
     idx = get_phy_quants_idx ( var )
@@ -4318,7 +4318,7 @@ CONTAINS
     !! Ergebnis: Standardbezeichnung oder "undefined"
     CHARACTER (LEN=c_len_standard_name) :: res ! 
     !! Hilfsvariablen
-    INTEGER :: i, jdx ! 
+    INTEGER :: jdx ! 
     !
     jdx = get_phy_standards_idx ( var, idx )
     IF ( jdx > 0 ) THEN
@@ -7413,8 +7413,6 @@ CONTAINS
     !! Verschiebung zum Nullpunkt (in SI-Einheiten) (Default = 0.0)
     REAL (KIND=DOUBLE), INTENT(IN) , OPTIONAL :: offset  ! 
     !
-    !! Hilfsvariablen
-    INTEGER :: i ! 
     !
     this%code     = code  
     this%id(:)    = REPEAT ( ' ', LEN(this%id)    ) ! 
@@ -7596,8 +7594,6 @@ CONTAINS
     !! ausf&uuml;hrliche Klassenbeschreibung (Englisch)
     CHARACTER (LEN=*)  , INTENT(IN)    :: descr_en ! 
     !
-    !! Hilfsvariablen
-    INTEGER :: i ! 
     !
     this%code     = code  
     this%id(:)    = REPEAT ( ' ', LEN(this%id)    ) ! 
@@ -7617,7 +7613,7 @@ CONTAINS
   SUBROUTINE init_phy_all_quants_d ( )
     !
     TYPE (t_file) :: cfg_files(c_max_cfg_files) ! 
-    INTEGER :: i, j, nof                        ! 
+    INTEGER :: i,  nof                        ! 
     !
     ! Ermittle die Namen der Konfigurationsdateien und oeffne die Datei ---
     DO i=1,SIZE(c_cfg_files)
@@ -7687,7 +7683,7 @@ CONTAINS
     LOGICAL            , INTENT(IN)    :: flx        ! 
     !
     !! Hilfsvariablen
-    INTEGER :: i, idx ! 
+    INTEGER :: idx ! 
     !
     this%code     = code  
     this%id(:)    = REPEAT ( ' ', LEN(this%id)    ) ! 
@@ -7720,7 +7716,7 @@ CONTAINS
   SUBROUTINE init_phy_all_standards_d ( )
     !
     TYPE (t_file) :: cfg_file ! 
-    INTEGER :: i, j, nof      ! 
+    INTEGER :: i, nof      ! 
     !
     ! Ermittle den Namen der Konfigurationsdatei und oeffne die Datei ---
     cfg_file = get_phy_cfg_file( c_cfg_files(4) )
@@ -8380,7 +8376,7 @@ CONTAINS
     !! nicht definiert, wird -1 zur&uuml;ckgegeben
     INTEGER :: res  ! 
     !! Hilfsvariablen
-    INTEGER :: i, j ! 
+    INTEGER :: i ! 
     !
     res = -1
     !
@@ -8441,7 +8437,7 @@ CONTAINS
     !! nicht definiert, wird -1 zur&uuml;ckgegeben
     INTEGER :: res  ! 
     !! Hilfsvariablen
-    INTEGER :: i, j ! 
+    INTEGER :: i ! 
     !
     res = -1
     !
@@ -8468,7 +8464,7 @@ CONTAINS
     INTEGER :: res  ! 
     !! Hilfsvariablen
     LOGICAL :: l_ok(2) ! 
-    INTEGER :: i, j ! 
+    INTEGER :: i ! 
     !
     res     = -1
     l_ok(1) = ( INDEX( unit%id(language), 'E+' ) > 0 .OR. &
@@ -8849,7 +8845,7 @@ CONTAINS
     CHARACTER (LEN=140)                 :: karte             ! 
     CHARACTER (LEN=c_len_standard_name) :: standard_name     ! 
     INTEGER                             :: icode, idim, ivar ! 
-    INTEGER                             :: i, n, m, stat     ! 
+    INTEGER                             :: n, m, stat     ! 
     ! ---------------------------------------------------------------------
     stat = 0
     m    = 0

@@ -230,12 +230,12 @@
         DO I=1,NTRAC
           CALL OS( 'X=C     ', X=TA%ADR(I)%P, C=TRAC0(I))
         ENDDO        
-        DO 21 IPLAN=1,NPLAN
-          DO 20 IPOIN2=1,NPOIN2
+        DO IPLAN=1,NPLAN
+          DO IPOIN2=1,NPOIN2
             IPOIN3 = IPOIN2 + (IPLAN-1)*NPOIN2
             IF(X(IPOIN3).LE.15.D0) TA%ADR(1)%P%R(IPOIN3) = 1.D0
-20        CONTINUE
-21      CONTINUE
+          ENDDO
+        ENDDO
       ENDIF
 !
 !

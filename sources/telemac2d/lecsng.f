@@ -76,7 +76,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N,I,IPTFR,ISTAT,NNWEIRS
+      INTEGER N,I,IPTFR,NNWEIRS
       DOUBLE PRECISION XDIG1,XDIG2,YDIG1,YDIG2
 !
       CHARACTER(LEN=6) :: NOM
@@ -145,7 +145,7 @@
         ENDIF
       ENDIF
 !
-      DO 10 N=1,NWEIRS
+      DO N=1,NWEIRS
         READ(IFIC,*,END=900)
         READ(IFIC,*,END=900)
         READ(IFIC,*,ERR=997) NPSING%I(N)
@@ -266,7 +266,7 @@
            WRITE(LU,*)'LECSNG : TYPE OF WEIRS NOT IMPLEMENTED'
          ENDIF
       ENDIF
-10    CONTINUE
+      ENDDO ! N
 !
 !     RETRIEVING BOUNDARY POINTS NUMBERS 
 !     WITH MINUS SIGN TO TRACE POINTS WHICH ARE NOT IN THE DOMAIN

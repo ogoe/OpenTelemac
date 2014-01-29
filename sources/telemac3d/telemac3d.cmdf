@@ -2,7 +2,7 @@
 path: <root>|sources|telemac3d
 module: telemac3d
 liborder: special parallel damocles bief sisyphe tomawac telemac2d telemac3d
-version: v7p0
+version: v6p3
 name: HOMERE_TELEMAC3D
 
 [bief]
@@ -126,7 +126,6 @@ files: declarations_telemac.f
   mt03cc.f
   mt12ab.f
   mt01aa.f
-  mt12aa.f
   mt99bb.f
   mt04pp.f
   mt08bb.f
@@ -141,7 +140,7 @@ files: declarations_telemac.f
   mt06oo.f
   mt06pp.f
   mt06aa.f
-  mt04bb.f
+  mt02pp.f
   mt05pp.f
   mt04tt.f
   mt12bb.f
@@ -155,7 +154,7 @@ files: declarations_telemac.f
   mt05aa.f
   mt11aa.f
   mt11ab.f
-  mt02pp.f
+  mt11ac.f
   mt03aa.f
   mt02bb.f
   mt01bb.f
@@ -163,7 +162,7 @@ files: declarations_telemac.f
   mt06ff.f
   mt12ac.f
   mt99aa.f
-  mt11ac.f
+  mt12aa.f
   mt04cc.f
   mt08ab.f
   mt08pp.f
@@ -175,6 +174,7 @@ files: declarations_telemac.f
   mt13ab.f
   mt13aa.f
   mt06bb.f
+  mt04bb.f
   mt06ft.f
   mt03bb.f
   mt07bb.f
@@ -429,7 +429,6 @@ files: declarations_telemac.f
   inbief.f
   create_dataset_serafin.f
   create_dataset.f
-  global_to_local_point.f
   build_ikle_ext.f
   ludcmp.f
   lubksb.f
@@ -461,6 +460,7 @@ files: declarations_telemac.f
   bief_gammp.f
   bief_erf.f
   masktf.f
+  global_to_local_point.f
   gregtim.f
 
 [damocles]
@@ -821,10 +821,10 @@ files: declarations_tomawac.f
   qbrek4.f
   qbbj78.f
   qbrek1.f
-  gammln.f
   foncro.f
   bornes.f
   qgauss.f
+  gammln.f
   qbrek3.f
   qbrek2.f
   qwind3.f

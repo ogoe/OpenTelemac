@@ -1,4 +1,4 @@
-!     		     *******************************
+!                    *******************************
                      SUBROUTINE SUSPENSION_BILAN_COH
 !                    *******************************
 !
@@ -305,12 +305,12 @@
      &         ,' EN SUSPENSION AU TEMPS T+DT : ',G20.11,' KG')
 1110  FORMAT(1X,'FRONTIERE ',1I3,' FLUX TRACEUR ',1I2,' = ',G16.7,
      &          ' ( >0 : ENTRANT  <0 : SORTANT )')
-1112  FORMAT(1X,'FLUX IMPOSE DE LA CLASSE ',I2
-     &         ,'                             : ',G20.11,' KG/S')
-1113  FORMAT(1X,'FLUX LIBRE  DE LA CLASSE ',I2
-     &         ,'                             : ',G20.11,' KG/S')
-1114  FORMAT(1X,'FLUX DE LA CLASSE        ',I2
-     &         ,' PAR ONDE INCIDENTE          : ',G20.11,' KG/S')
+!1112  FORMAT(1X,'FLUX IMPOSE DE LA CLASSE ',I2
+!     &         ,'                             : ',G20.11,' KG/S')
+!1113  FORMAT(1X,'FLUX LIBRE  DE LA CLASSE ',I2
+!     &         ,'                             : ',G20.11,' KG/S')
+!1114  FORMAT(1X,'FLUX DE LA CLASSE        ',I2
+!     &         ,' PAR ONDE INCIDENTE          : ',G20.11,' KG/S')
 1115  FORMAT(1X,'MASSE DEPOSEE SUR LE FOND  : ',G20.11,' KG')
 1116  FORMAT(1X,'VOLUME CREE PAR TERME SOURCE  '
      &         ,   '                          : ',G20.11,' KG')
@@ -331,12 +331,12 @@
      &         ,' IN SUSPENSION AT TIME T+DT : ',G20.11,' KG')
 2110  FORMAT(1X,'BOUNDARY ',1I3,' FLUX TRACER ',1I2,' = ',G20.11,
      &          ' ( >0 : ENTERING  <0 : EXITING )')
-2112  FORMAT(1X,'PRESCRIBED SEDIMENT FLUX OF CLASS ',I2
-     &         ,'                            : ',G20.11,' KG/S')
-2113  FORMAT(1X,'FREE FLUX OF CLASS                ',I2
-     &         ,'                            : ',G20.11,' KG/S')
-2114  FORMAT(1X,'FLUX OF SEDIMENT CLASS            ',I2
-     &         ,' ADDED BY INCIDENT WAVE     : ',G20.11,' KG/S')
+!2112  FORMAT(1X,'PRESCRIBED SEDIMENT FLUX OF CLASS ',I2
+!     &         ,'                            : ',G20.11,' KG/S')
+!2113  FORMAT(1X,'FREE FLUX OF CLASS                ',I2
+!     &         ,'                            : ',G20.11,' KG/S')
+!2114  FORMAT(1X,'FLUX OF SEDIMENT CLASS            ',I2
+!     &         ,' ADDED BY INCIDENT WAVE     : ',G20.11,' KG/S')
 2115  FORMAT(1X,'VOLUME OF DEPOSIT           : ',G20.11,' KG')
 2116  FORMAT(1X,'VOLUME CREATED BY SOURCE TERM       '
      &         ,'                            : ',G20.11,' KG')

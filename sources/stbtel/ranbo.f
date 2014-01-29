@@ -76,15 +76,15 @@
 !=======================================================================
 !
       NPTFR = 0
-      DO 10 IELEM=1,NELEM
-         DO 20 IFACE=1,NDP
+      DO IELEM=1,NELEM
+         DO IFACE=1,NDP
             IF (IFABOR(IELEM,IFACE).LE.0) THEN
                NPTFR = NPTFR + 1
                TRAV1(NPTFR,1) = IKLE(IELEM,       IFACE )
                TRAV1(NPTFR,2) = IKLE(IELEM,SOMSUI(IFACE))
             ENDIF
-20       CONTINUE
-10    CONTINUE
+         ENDDO
+      ENDDO
 !
 !=======================================================================
 ! ON VERIFIE QUE CHAQUE POINT N'APPARAIT QUE DEUX FOIS
@@ -92,13 +92,13 @@
 !=======================================================================
 !
       IERROR = 0
-      DO 50 I=1,NPTFR
+      DO I=1,NPTFR
          I1 = 1
          I2 = 1
-         DO 60 ISUIV=1,NPTFR
+         DO ISUIV=1,NPTFR
             IF (TRAV1(I,1).EQ.TRAV1(ISUIV,2)) I1 = I1 + 1
             IF (TRAV1(I,2).EQ.TRAV1(ISUIV,1)) I2 = I2 + 1
-60       CONTINUE
+         ENDDO
          IF (I1.NE.2) THEN
             IERROR = IERROR + 1
             IF (LNG.EQ.1) WRITE(LU,1010) X(TRAV1(I,1)),Y(TRAV1(I,1)),I1
@@ -109,7 +109,7 @@
             IF (LNG.EQ.1) WRITE(LU,1010) X(TRAV1(I,2)),Y(TRAV1(I,2)),I2
             IF (LNG.EQ.2) WRITE(LU,1020) X(TRAV1(I,2)),Y(TRAV1(I,2)),I2
          ENDIF
-50    CONTINUE
+      ENDDO
 !
 1010  FORMAT(1X,'ERREUR SUR LE POINT DE BORD :',/,
      &       1X,'X=',F13.3,'  Y=',F13.3,/,
@@ -130,7 +130,7 @@
       SOM2 = X(1) + Y(1)
       Y2   = Y(1)
 !
-      DO 80 I=1,NPTFR
+      DO I=1,NPTFR
 !
          SOM1 = X(TRAV1(I,1)) + Y(TRAV1(I,1))
          IF (ABS(SOM1-SOM2).LE.ABS(EPSILO*SOM1)) THEN
@@ -145,7 +145,7 @@
             ISUIV = I
          ENDIF
 !
-80    CONTINUE
+      ENDDO
 !
       NOEUD1 = TRAV1(ISUIV,1)
       NOEUD2 = TRAV1(ISUIV,2)
@@ -157,14 +157,14 @@
       IILE = 0
       NILE = 1
 !
-      DO 70 I=2,NPTFR
+      DO I=2,NPTFR
 !
 !=======================================================================
 ! RECHERCHE DE L'ARETE DONT LE PREMIER NOEUD EST IDENTIQUE AU SECOND
 ! DE L'ARETE PRECEDENTE
 !=======================================================================
 !
-         DO 90 ISUIV=I,NPTFR
+         DO ISUIV=I,NPTFR
 !
             IF (TRAV1(ISUIV,1).EQ.TRAV1(I-1,2)) THEN
 !
@@ -180,11 +180,11 @@
                TRAV1(I,2) = NOEUD2
                KP1BOR(I+NPTFR) = I-1
                KP1BOR(I-1) = I
-               GOTO 70
+               EXIT
 !
             ENDIF
 !
-90       CONTINUE
+         ENDDO
 !
 !=======================================================================
 ! SI ON NE TROUVE PAS DE POINT SUIVANT : ON VERIFIE QUE LE DERNIER POINT
@@ -212,7 +212,7 @@
          IILE = IILE+1
          NILE = I
 !
-70    CONTINUE
+      ENDDO! ISUIV
 !
 !=======================================================================
 ! ON VERIFIE QUE LA DERNIERE ILE EST FERMEE
@@ -245,11 +245,11 @@
 ! BORD DANS LE TABLEAU NCOLFR
 !=======================================================================
 !
-      DO 110 I=1,NPTFR
+      DO I=1,NPTFR
          NBOR(I      ) = TRAV1(I,1)
          NBOR(I+NPTFR) = TRAV1(I,2)
          NCOLFR(I) = NCOLOR(TRAV1(I,1))
-110   CONTINUE
+      ENDDO
 !
       RETURN
       END

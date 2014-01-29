@@ -146,8 +146,6 @@
 ! CASE WITH DRY LEFT AND RIGHT  
       IF(HL.LT.EPS.AND.HR.LT.EPS) GOTO 20 
 !
-10    CONTINUE
-!
 ! CELERITIES
 !
       AL = SQRT(G*HL)
@@ -301,7 +299,6 @@
 !
       ENDIF
 !
-45    CONTINUE
 !
 ! INVERSE ROTATION
 !
@@ -315,7 +312,6 @@
       WAFFLX(3) = FLU2Y
       WAFFLX(4) = FLX(4) 
 !
-50    CONTINUE
 !
 !-----------------------------------------------------------------------
 !

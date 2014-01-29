@@ -286,15 +286,15 @@ C
 C     ===========================================================
 C     CALCUL DES GRANDEURS FREQUENTIELLES
 C     ===========================================================
-      DO 201 IFREQ = 1,NF
+      DO IFREQ = 1,NF
          FREQ(IFREQ) = FPIC*1.1D0**(IFREQ-12)
-201   CONTINUE
+      ENDDO
 C
       DFREQ(1)=5.D-2*FREQ(1)
       DFREQ(NF)=5.D-2*FREQ(NF-1)
-      DO 202 IFREQ = 2,NF-1
+      DO IFREQ = 2,NF-1
           DFREQ(IFREQ) = 5.D-2*(FREQ(IFREQ)+FREQ(IFREQ-1))
-202   CONTINUE
+      ENDDO
 C
 C     ===========================================================
 C     APPEL A SPEINI
@@ -318,25 +318,25 @@ C   EXAMPLE OF MODIFICATION OF FRA - TO BE MODIFIED DEPENDING
 C     ON YOUR CASE
 C
         ALLOCATE(TRAV(1:NF))
-        DO 100 IFREQ=1,NF
+        DO IFREQ=1,NF
              IF (FREQ(IFREQ).LT.FPIC) THEN
               TRAV(IFREQ)=0.4538D0*(FREQ(IFREQ)/FPIC)**(-2.03D0)
            ELSE
                TRAV(IFREQ)=0.4538D0*(FREQ(IFREQ)/FPIC)**(1.04D0)
            ENDIF
-100     CONTINUE
+        ENDDO
 C
-        DO 20 IPLAN=1,NPLAN
+        DO IPLAN=1,NPLAN
              DTETA=TETA(IPLAN)-TETA1
            IF ((TETA(IPLAN)-TETA1).GT.DEUPI/2) THEN
                DTETA=DEUPI-DTETA
             ENDIF
-           DO 30 IFREQ=1,NF
+           DO IFREQ=1,NF
                FRA(IPLAN)=1.D0/SQRT(DEUPI)*TRAV(IFREQ)*
      *                       EXP(-DTETA**2/(2.D0*TRAV(IFREQ)**2))
                RESU(IPLAN,IFREQ)= SPEC(IFREQ)*FRA(IPLAN)
-30         CONTINUE
-20      CONTINUE
+           ENDDO
+        ENDDO
         DEALLOCATE(TRAV)
 
       ENDIF
@@ -344,23 +344,23 @@ C
 C     ===========================================================
 C     INTEGRATION SUR LES FREQUENCES
 C     ===========================================================
-      DO 404 IPLAN = 1,NPLAN
+      DO IPLAN = 1,NPLAN
          ENER(IPLAN) = 0.D0
          OM00(IPLAN) = 0.D0
-         DO 303 IFREQ = 1,NF
+         DO IFREQ = 1,NF
             ENER(IPLAN) = ENER(IPLAN) + 
      *                RESU(IPLAN,IFREQ)*DFREQ(IFREQ)
             OM00(IPLAN) = OM00(IPLAN) + 
      *                   RESU(IPLAN,IFREQ)*DFREQ(IFREQ)*FREQ(IFREQ)
 C    *                   RESU(IPLAN,IFREQ)*DFREQ(IFREQ)/FREQ(IFREQ)
-303      CONTINUE
+         ENDDO
          IF (ENER(IPLAN).GT.1.D-10) THEN
               OM00(IPLAN) = DEUPI * OM00(IPLAN) / ENER(IPLAN)
 C             OM00(IPLAN) = DEUPI / OM00(IPLAN) * ENER(IPLAN)
          ELSE
              OM00(IPLAN) = DEUPI * F0
          ENDIF
-404   CONTINUE
+      ENDDO
 C
 C-----------------------------------------------------------------------
 C
@@ -535,7 +535,7 @@ C
                ENDIF
              DO IFREQ=1,NF
                  FRA(IPLAN)=1.D0/SQRT(DEUPI)*TRAV(IFREQ)*
-     *	           EXP(-DTETA**2/(2.D0*TRAV(IFREQ)**2))
+     &           EXP(-DTETA**2/(2.D0*TRAV(IFREQ)**2))
                  F(NBOR(IPTFR),IPLAN,IFREQ)=SPEC(IFREQ)*FRA(IPLAN)
              ENDDO
            ENDDO

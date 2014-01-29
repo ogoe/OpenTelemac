@@ -101,31 +101,31 @@
 !
 !  SCALAR MODE
 !
-      DO 10 IELEM = NELEM , 1 , -1
+      DO IELEM = NELEM , 1 , -1
         X(IKLE3(IELEM))=X(IKLE3(IELEM))-XA6(IELEM)*X(IKLE4(IELEM))
         X(IKLE2(IELEM))=X(IKLE2(IELEM))-XA5(IELEM)*X(IKLE4(IELEM))
      &                                 -XA4(IELEM)*X(IKLE3(IELEM))
         X(IKLE1(IELEM))=X(IKLE1(IELEM))-XA3(IELEM)*X(IKLE4(IELEM))
      &                                 -XA2(IELEM)*X(IKLE3(IELEM))
      &                                 -XA1(IELEM)*X(IKLE2(IELEM))
-10    CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !
 !  VECTOR MODE
 !
-      DO 20 IB = (NELEM+LV-1)/LV , 1 , -1
+      DO IB = (NELEM+LV-1)/LV , 1 , -1
 !VOCL LOOP,NOVREC
 !DIR$ IVDEP
-      DO 30 IELEM = MIN(NELEM,IB*LV) , 1+(IB-1)*LV , -1
+      DO IELEM = MIN(NELEM,IB*LV) , 1+(IB-1)*LV , -1
         X(IKLE3(IELEM))=X(IKLE3(IELEM))-XA6(IELEM)*X(IKLE4(IELEM))
         X(IKLE2(IELEM))=X(IKLE2(IELEM))-XA5(IELEM)*X(IKLE4(IELEM))
      &                                 -XA4(IELEM)*X(IKLE3(IELEM))
         X(IKLE1(IELEM))=X(IKLE1(IELEM))-XA3(IELEM)*X(IKLE4(IELEM))
      &                                 -XA2(IELEM)*X(IKLE3(IELEM))
      &                                 -XA1(IELEM)*X(IKLE2(IELEM))
-30    CONTINUE
-20    CONTINUE
+      ENDDO ! IELEM 
+      ENDDO ! IB 
 !
       ENDIF
 !

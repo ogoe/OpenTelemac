@@ -15,6 +15,7 @@
 #--- Definitions pour PVM
 #
 #--- Definitions pour SYSTEME TELEMAC
+!include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
 VERSION    = V7P0
 
@@ -55,10 +56,6 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)
 
 #------------------------ Liste des fichiers
-#
-#------- Sources Fortran
-
-SRCS	      = diffsel.f 
 #
 #------- Objets
 #

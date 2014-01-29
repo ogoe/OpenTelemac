@@ -105,7 +105,7 @@
 !
 ! LOOP OVER THE TUBES
 !
-      DO 10 N=1,NBUSE
+      DO N=1,NBUSE
 !
 !     IDENTIFIES ENTRY / EXIT NODES
 !
@@ -312,7 +312,7 @@
 !
 !  END OF THE LOOP OVER THE TUBES
 !
-10    CONTINUE
+      ENDDO ! N
 !
 !-----------------------------------------------------------------------
 !

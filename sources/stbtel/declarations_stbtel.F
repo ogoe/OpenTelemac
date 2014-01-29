@@ -55,7 +55,7 @@
 !
       CHARACTER*3  STD
       CHARACTER*9  MAILLE
-      CHARACTER*72 FOND(5)
+      CHARACTER*144 FOND(5)
 !
 !-----------------------------------------------------------------------
 !     CONVERTER

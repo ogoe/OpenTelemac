@@ -2951,9 +2951,9 @@ CONTAINS
     '# Ueberblick ueber die implementierten Dateivarianten ',/ &
     '# -- Nr -- -- Access -- --  Form  -- -- Delim -- -- Code -- -- Type ----------')
 8001 FORMAT( '#',I6,5X,A10,3X,A11,2X,A10,3X,I5,6X,A )
-8002 FORMAT( &
-    '# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -',/ &
-    '#------------------------------------------------------------')
+!8002 FORMAT( &
+!    '# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -',/ &
+!    '#------------------------------------------------------------')
     !
   END SUBROUTINE print_h_grid_static_d
   !

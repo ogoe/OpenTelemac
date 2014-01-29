@@ -349,22 +349,22 @@ CONTAINS
     USE m_dredgesim_data, ONLY : &
          ! data
          input_files, output_files, dredge_criterion, &
-	 dredging_rate, alloc_dredging_rate, disposal_rate, alloc_disposal_rate, &
-	 nof_dispose_poly, dispose_poly_name, dispose_weighting_factor, &
-	 alloc_dispose_poly_name, alloc_dispose_weighting_fac, &
-	 nof_dredge_poly_tc, nof_dispose_poly_tc, alloc_dredge_poly_name_tc, dredge_poly_name_tc, &
-	 alloc_dispose_poly_name_tc, dispose_poly_name_tc, alloc_dredge_sed_vol_tc, dredge_sed_vol_tc, &
-	 alloc_dispose_sed_vol_tc, dispose_sed_vol_tc, alloc_predef_dredge_time_tc, predef_dredge_time_tc, &
-	 alloc_predef_disp_time_tc, predef_disp_time_tc, alloc_dredge_time_tc, dredge_time_tc, &
-	 alloc_disposal_time_tc, disposal_time_tc, &
-	 nof_predef_disp_poly, alloc_predef_disp_poly_name, predef_disp_poly_name, &
-	 alloc_predef_disp_sed_class, predef_disp_sed_class, &
-	 alloc_predef_disp_sed_vol, predef_disp_sed_vol, &
-	 alloc_predef_sed_distrib, predef_sed_distrib, &
-	 alloc_predef_depos_time, predef_depos_time, &
-	 alloc_art_bl_time, art_bl_time,&
-	 observing_period, alloc_observing_period, &
-	 limiting_discharge, alloc_limiting_discharge, &
+         dredging_rate, alloc_dredging_rate, disposal_rate, alloc_disposal_rate, &
+         nof_dispose_poly, dispose_poly_name, dispose_weighting_factor, &
+         alloc_dispose_poly_name, alloc_dispose_weighting_fac, &
+         nof_dredge_poly_tc, nof_dispose_poly_tc, alloc_dredge_poly_name_tc, dredge_poly_name_tc, &
+         alloc_dispose_poly_name_tc, dispose_poly_name_tc, alloc_dredge_sed_vol_tc, dredge_sed_vol_tc, &
+         alloc_dispose_sed_vol_tc, dispose_sed_vol_tc, alloc_predef_dredge_time_tc, predef_dredge_time_tc, &
+         alloc_predef_disp_time_tc, predef_disp_time_tc, alloc_dredge_time_tc, dredge_time_tc, &
+         alloc_disposal_time_tc, disposal_time_tc, &
+         nof_predef_disp_poly, alloc_predef_disp_poly_name, predef_disp_poly_name, &
+         alloc_predef_disp_sed_class, predef_disp_sed_class, &
+         alloc_predef_disp_sed_vol, predef_disp_sed_vol, &
+         alloc_predef_sed_distrib, predef_sed_distrib, &
+         alloc_predef_depos_time, predef_depos_time, &
+         alloc_art_bl_time, art_bl_time,&
+         observing_period, alloc_observing_period, &
+         limiting_discharge, alloc_limiting_discharge, &
          navigation_possible, alloc_navigation_possible, &
          minimum_volume, alloc_minimum_volume, &
          sector_radius, alloc_sector_radius, &
@@ -372,7 +372,7 @@ CONTAINS
          alloc_ini_obs_time, alloc_ini_time_to_observe, ini_obs_time, initial_time_to_observe, &
          disp_scours_auto, alloc_disp_scours_auto, disp_scours_tc, alloc_disp_scours_tc, disp_scours_abl, alloc_disp_scours_abl, &
          restart, write_ds_messages, alloc_list_of_disp_polys, list_of_disp_polys
-	 !
+         !
     !! data object
     TYPE (t_file) , INTENT(INOUT) :: this ! 
     !! name of the routine
@@ -384,8 +384,8 @@ CONTAINS
     CHARACTER (LEN= 10) :: hlp_ch                 ! 
     TYPE (t_file)       :: l_file                 ! 
     LOGICAL             :: lex                          ! 
-    INTEGER             :: iblo, jblo, ikey, ilin, ipar, nn, n_b , n_l, n_p, check_no! 
-    CHARACTER (LEN=240)           :: var_ch, test_ch    ! 
+    INTEGER             :: iblo, jblo, ikey, ilin, ipar, nn, n_b , n_l, check_no! 
+    CHARACTER (LEN=240)           :: var_ch    ! 
     CHARACTER (LEN=240) , POINTER :: arr_ch(:) ! 
     LOGICAL                       :: var_lo    ! 
     LOGICAL             , POINTER :: arr_lo(:) ! 
@@ -393,7 +393,7 @@ CONTAINS
     INTEGER             , POINTER :: arr_in(:) ! 
     REAL                          :: var_re    ! 
     REAL                , POINTER :: arr_re(:) ! 
-    REAL (KIND=Double)            :: var_dp, test_dp    ! 
+    REAL (KIND=Double)            :: var_dp    ! 
     REAL (KIND=Double)  , POINTER :: arr_dp(:) ! 
     ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ! [1.1] initialization and setup
@@ -530,8 +530,8 @@ CONTAINS
                       IF ( nn > 0 ) CALL set_io_info_code( input_files(ikey), input_code(1:nn,ikey) )
                       IF (ikey==3) restart=.true.
                       IF (ikey==4) THEN
-                      	 CALL get_input_data ( blo(iblo), iblo, key(ikey,iblo), n_lin(ikey, iblo), 1, var_ch, lex)
-                      	 IF (TRIM(var_ch) == 'YES') write_ds_messages = .true.
+                         CALL get_input_data ( blo(iblo), iblo, key(ikey,iblo), n_lin(ikey, iblo), 1, var_ch, lex)
+                         IF (TRIM(var_ch) == 'YES') write_ds_messages = .true.
                       END IF
                    CASE ( 2 ) ! "Output_Files"
                       CALL set_io_info_file ( output_files(ikey), l_file )
@@ -547,7 +547,7 @@ CONTAINS
                 CASE ( 3 ) ! "Dredge_Criterion"
                    IF ( jblo == 1 .AND. ikey == 1 ) THEN
                       ALLOCATE( dredge_criterion(n_blo(iblo)) )
-                      CALL new_criterion( dredge_criterion )					  
+                      CALL new_criterion( dredge_criterion )  
                    END IF
                    SELECT CASE ( ikey )
                    CASE ( 1 ) ! name of dredge polygon
@@ -572,9 +572,9 @@ CONTAINS
                       CALL alloc_ini_time_to_observe(n_blo(iblo))
                       DO n_b = 1, n_blo(iblo)
                          CALL get_input_data ( blo(iblo), n_b, key(ikey,iblo), n_lin(ikey, iblo), 1, var_ch, lex)
-			 ini_obs_time(n_b)=TRIM(var_ch)
-			 initial_time_to_observe(n_b)=string_to_datetime(ini_obs_time(n_b))              
-		      END DO
+                         ini_obs_time(n_b)=TRIM(var_ch)
+                         initial_time_to_observe(n_b)=string_to_datetime(ini_obs_time(n_b))              
+                      END DO
                    CASE ( 5 ) ! Limiting Discharge
                       CALL alloc_limiting_discharge(n_blo(iblo))
                       CALL alloc_navigation_possible(n_blo(iblo))
@@ -583,9 +583,9 @@ CONTAINS
                          limiting_discharge(n_b)=var_dp
                       END DO
                    CASE ( 6 ) ! kritische Tiefe
-                      CALL set_criterion_crit_depth( dredge_criterion(jblo), var_dp )					  
+                      CALL set_criterion_crit_depth( dredge_criterion(jblo), var_dp )  
                    CASE ( 7 ) ! Baggertiefe
-                      CALL set_criterion_dredge_depth( dredge_criterion(jblo), var_dp )					  
+                      CALL set_criterion_dredge_depth( dredge_criterion(jblo), var_dp )  
                    CASE ( 8 )  ! Baggerrate
                       CALL alloc_dredging_rate(n_blo(iblo))
                       DO n_b = 1, n_blo(iblo)
@@ -612,8 +612,8 @@ CONTAINS
                    END SELECT
                 END SELECT
                 SELECT CASE ( iblo )
-		CASE ( 4 ) ! "Time_Controlled_Maintenance"
-		   IF ( jblo == 1 .AND. ikey == 1 ) THEN
+                CASE ( 4 ) ! "Time_Controlled_Maintenance"
+                   IF ( jblo == 1 .AND. ikey == 1 ) THEN
                       nof_dredge_poly_tc=n_blo(iblo)
                       CALL alloc_dredge_poly_name_tc(nof_dredge_poly_tc)
                       CALL alloc_predef_dredge_time_tc(nof_dredge_poly_tc)
@@ -626,7 +626,7 @@ CONTAINS
                       CALL alloc_dispose_poly_name_tc(nof_dispose_poly_tc)
                       CALL alloc_predef_disp_time_tc(nof_dispose_poly_tc)
                       CALL alloc_disposal_time_tc(nof_dispose_poly_tc)
-                      CALL alloc_dispose_sed_vol_tc(nof_dispose_poly_tc)					  					  				  
+                      CALL alloc_dispose_sed_vol_tc(nof_dispose_poly_tc)
                    END IF
                    SELECT CASE ( ikey )
                    CASE ( 1 ) ! name of dredge polygon for time controlled dredging
@@ -637,7 +637,7 @@ CONTAINS
                       CALL get_input_data ( blo(iblo), jblo, key(ikey,iblo), 1 , 2, var_ch, lex)
                       predef_dredge_time_tc(jblo,2)=TRIM(var_ch)
                       dredge_time_tc(jblo,:) = string_to_datetime ( predef_dredge_time_tc(jblo,:) )
-                   CASE ( 3 ) ! total dredged volume for time controlled dredging				  
+                   CASE ( 3 ) ! total dredged volume for time controlled dredging  
                       dredge_sed_vol_tc(jblo)=var_dp
                    CASE ( 4 ) ! name of disposal polygon for time controlled disposal
                       dispose_poly_name_tc(jblo)=TRIM(var_ch)
@@ -647,9 +647,9 @@ CONTAINS
                       CALL get_input_data ( blo(iblo), jblo, key(ikey,iblo), 1 , 2, var_ch, lex)
                       predef_disp_time_tc(jblo,2)=TRIM(var_ch)
                       disposal_time_tc(jblo,:) = string_to_datetime ( predef_disp_time_tc(jblo,:) )
-                   CASE ( 6 ) ! sediment volume to dispose by time controlled disposal				  
+                   CASE ( 6 ) ! sediment volume to dispose by time controlled disposal  
                       dispose_sed_vol_tc(jblo)=var_dp
-                   CASE ( 7 ) ! disposing in scours or not				  
+                   CASE ( 7 ) ! disposing in scours or not  
                       CALL get_input_data ( blo(iblo), jblo, key(ikey,iblo), 1 , 1, var_ch, lex)
                       disp_scours_tc(jblo)=TRIM(var_ch)
                    END SELECT
@@ -662,7 +662,7 @@ CONTAINS
                       CALL alloc_predef_disp_sed_vol(nof_predef_disp_poly)
                       CALL alloc_predef_depos_time(nof_predef_disp_poly)
                       CALL alloc_art_bl_time(nof_predef_disp_poly)
-                      CALL alloc_disp_scours_abl(nof_predef_disp_poly)				  
+                      CALL alloc_disp_scours_abl(nof_predef_disp_poly)  
                    END IF
                    SELECT CASE ( ikey )
                    CASE ( 1 ) ! name of disposal polygon for artificial bed load supply
@@ -681,7 +681,7 @@ CONTAINS
                       !However it get's called later from prepare_dredgesim -> ext_ds_fraction_name_d
                       !-> set_ds_used_sediment_classes -> predef_disp_sed_class
                       CALL alloc_predef_disp_sed_class(n_blo(iblo), n_lin(ikey,iblo))
-                      CALL alloc_predef_sed_distrib(n_blo(iblo), n_lin(ikey,iblo))					  
+                      CALL alloc_predef_sed_distrib(n_blo(iblo), n_lin(ikey,iblo))  
                       DO n_b = 1, n_blo(iblo)
                          DO n_l = 1, n_lin(ikey, iblo)
                             var_ch = REPEAT( c_undef_ch, LEN(var_ch) ); lex = .false.
@@ -691,15 +691,15 @@ CONTAINS
                             predef_sed_distrib(n_b , n_l)=var_dp
                           END DO
                       END DO
-		   CASE ( 3 ) ! sediment volume to dispose by artificial bed load supply				  
+                   CASE ( 3 ) ! sediment volume to dispose by artificial bed load supply  
                       predef_disp_sed_vol(jblo)=var_dp
-                   CASE ( 4 ) ! date and time of artificial bed load supply				  
+                   CASE ( 4 ) ! date and time of artificial bed load supply  
                       CALL get_input_data ( blo(iblo), jblo, key(ikey,iblo), 1 , 1, var_ch, lex)
                       predef_depos_time(jblo,1)=TRIM(var_ch)
                       CALL get_input_data ( blo(iblo), jblo, key(ikey,iblo), 1 , 2, var_ch, lex)
                       predef_depos_time(jblo,2)=TRIM(var_ch)
                       art_bl_time(jblo,:) = string_to_datetime ( predef_depos_time(jblo,:) )
-                    CASE ( 5 ) ! disposing in scours or not				  
+                    CASE ( 5 ) ! disposing in scours or not  
                       CALL get_input_data ( blo(iblo), jblo, key(ikey,iblo), 1 , 1, var_ch, lex)
                       disp_scours_abl(jblo)=TRIM(var_ch)
                     END SELECT
@@ -714,7 +714,7 @@ CONTAINS
                    CASE ( 2 ) ! Maximum error allowed when disposing scours
                       CALL get_input_data ( blo(iblo), jblo, key(ikey,iblo), 1 , 1, var_dp, lex)
                       max_error_disp_scours=var_dp
-                   CASE ( 3 ) ! Maximum deposition depth when disposing scours				  
+                   CASE ( 3 ) ! Maximum deposition depth when disposing scours  
                       CALL get_input_data ( blo(iblo), jblo, key(ikey,iblo), 1 , 1, var_dp, lex)
                       min_depo_depth_disp_scours=var_dp
                    END SELECT
@@ -753,19 +753,19 @@ CONTAINS
                         CALL get_input_data ( blo(iblo), jblo, key(ikey,iblo), n_l, 1, var_ch, lex)
                         CALL get_input_data ( blo(iblo), jblo, key(ikey,iblo), n_l, 2, var_dp, lex)
                         IF (lex) dispose_poly_name(n_l , jblo)=TRIM(var_ch)
-                        IF (lex) dispose_weighting_factor(n_l, jblo)=var_dp							   
+                        IF (lex) dispose_weighting_factor(n_l, jblo)=var_dp   
                      END DO
                    CASE ( 11 )  ! Verklapprate
                      CALL get_input_data ( blo(iblo), jblo, key(ikey,iblo), n_lin(ikey, iblo), 1, var_dp, lex)
-                     IF (lex) disposal_rate(jblo)=var_dp							   
-                   CASE ( 12 ) ! disposing in scours or not				  
+                     IF (lex) disposal_rate(jblo)=var_dp 
+                   CASE ( 12 ) ! disposing in scours or not  
                      CALL get_input_data ( blo(iblo), jblo, key(ikey,iblo), n_lin(ikey, iblo), 1, var_ch, lex)
                      IF (lex) disp_scours_auto(jblo)=TRIM(var_ch)                     
                    END SELECT
                 END SELECT
              END IF
           END DO
-	END DO
+        END DO
     END DO
     !
     !! allocating list of dispose poly names

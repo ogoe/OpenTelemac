@@ -110,7 +110,7 @@ C-----------------------------------------------------------------------
 C
       RETURN
 
-      DO 2 I=1,NPOIN                                                            
+      DO I=1,NPOIN                                                            
          WLev(I) = 0.D0
 
           IF (Y(I) .GE. 8138.D0) THEN   
@@ -147,7 +147,7 @@ c        140-160
          endif
          H%R(I)=Wlev(I)-ZF%R(I)
                                                                                                                       
-2     CONTINUE
+      ENDDO
 
       END           
 C                       *****************
@@ -207,7 +207,7 @@ C  Bosse � t=0
 C
 
 c      Lo=1.5D0
-      DO 2 I=1,NPOIN                                                            
+      DO I=1,NPOIN                                                            
          ZF%R(I) = 0.D0
 
           IF (Y(I) .GE. 8138.D0) THEN   
@@ -243,7 +243,7 @@ c        140-160
 
          endif
                                                                                                                         
-2     CONTINUE
+      ENDDO
 C
 C-----------------------------------------------------------------------
 C

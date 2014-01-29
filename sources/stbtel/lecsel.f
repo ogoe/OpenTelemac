@@ -80,9 +80,9 @@
       CALL LIT(XBID,W,IBID,TITRE,72,'CH',NGEO,STD,ISTAT)
       CALL LIT(XBID,W,IB  ,CBID , 2,'I ',NGEO,STD,ISTAT)
       NVARIN = IB(1) + IB(2)
-      DO 10 I=1,NVARIN
+      DO I=1,NVARIN
          CALL LIT(XBID,W,IBID,TEXTE(I),32,'CH',NGEO,STD,ISTAT)
-10    CONTINUE
+      ENDDO
 !     LECTURE ET STOCKAGE DU TABLEAU IPARAM
       CALL LIT(XBID,W,IPARAM  ,CBID,10,'I ',NGEO,STD,ISTAT)
 !     LECTURE ET STOCKAGE DE LA DATE
@@ -118,9 +118,9 @@
          CALL LIT(XBID,W,IBID,CBID,72,'CH',NFO1,STD,ISTAT)
          CALL LIT(XBID,W,IB  ,CBID, 2,'I ',NFO1,STD,ISTAT)
          NVAR2 = IB(1) + IB(2)
-         DO 20 I=1,NVAR2
+         DO I=1,NVAR2
             CALL LIT(XBID,W,IBID,CBID,32,'CH',NFO1,STD,ISTAT)
-20       CONTINUE
+         ENDDO
          CALL LIT(XBID,W,IB  ,CBID,10,'I ',NFO1,STD,ISTAT)
          CALL LIT(XBID,W,IB  ,CBID, 4,'I ',NFO1,STD,ISTAT)
 !
@@ -144,24 +144,24 @@
 !
 !       INVERSION DE IKLES EN IKLE.
 !
-      DO 13 I = 1,NDP
-        DO 11 IELEM = 1,NELEM1
+      DO I = 1,NDP
+        DO IELEM = 1,NELEM1
           IKLE  (IELEM,I) = IKLES(I,IELEM)
           IKINIT(IELEM,I) = IKLES(I,IELEM)
-11      CONTINUE
+        ENDDO
         IF (FUSION) THEN
-           DO 12 IELEM = NELEM1+1,NELEM
+           DO IELEM = NELEM1+1,NELEM
              IKLE  (IELEM,I) = IKLES(I,IELEM) + NPOIN1
              IKINIT(IELEM,I) = IKLES(I,IELEM) + NPOIN1
-12         CONTINUE
+           ENDDO
         ENDIF
-13    CONTINUE
+      ENDDO
 !
-      DO 14 I = 1,NPOIN
+      DO I = 1,NPOIN
          XINIT(I) = X(I)
          YINIT(I) = Y(I)
          NCOLOR(I) = 11
-14    CONTINUE
+      ENDDO
 !
 !=======================================================================
 !

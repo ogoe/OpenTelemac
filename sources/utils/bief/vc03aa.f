@@ -114,7 +114,7 @@
      &     .AND.IELMU.EQ.11
      &     .AND.IELMV.EQ.11  ) THEN
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2 = XEL(IELEM,2)
       X3 = XEL(IELEM,3)
@@ -150,7 +150,7 @@
       W2(IELEM) = ( WX2*G(IELEM) + WY2*H(IELEM) ) * COEF
       W3(IELEM) = ( WX3*G(IELEM) + WY3*H(IELEM) ) * COEF
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

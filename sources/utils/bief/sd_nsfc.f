@@ -10,54 +10,54 @@
 !***********************************************************************
 !
 !brief     SYMBOLIC LDU-FACTORIZATION OF NONSYMMETRIC SPARSE MATRIX
-!+	      (COMPRESSED POINTER STORAGE)
+!+            (COMPRESSED POINTER STORAGE)
 !code
-!+	 INPUT VARIABLES.. N, R, IC, IA, JA, JLMAX, JUMAX.
-!+	 OUTPUT VARIABLES.. IL, JL, IJL, IU, JU, IJU, FLAG.
+!+       INPUT VARIABLES.. N, R, IC, IA, JA, JLMAX, JUMAX.
+!+       OUTPUT VARIABLES.. IL, JL, IJL, IU, JU, IJU, FLAG.
 !+
-!+	 PARAMETERS USED INTERNALLY..
-!+ NIA   \ Q	- SUPPOSE  M*  IS THE RESULT OF REORDERING  M.  IF
-!+	 \          PROCESSING OF THE ITH ROW OF  M*  (HENCE THE ITH
-!+	 \          ROW OF  U) IS BEING DONE,  Q(J)  IS INITIALLY
-!+	 \          NONZERO IF  M*(I,J) IS NONZERO (J.GE.I).  SINCE
-!+	 \          VALUES NEED NOT BE STORED, EACH ENTRY POINTS TO THE
-!+	 \          NEXT NONZERO AND  Q(N+1)  POINTS TO THE FIRST.  N+1
-!+	 \          INDICATES THE END OF THE LIST.  FOR EXAMPLE, IF N=9
-!+	 \          AND THE 5TH ROW OF  M*  IS
-!+	 \             0 X X 0 X 0 0 X 0
-!+	 \          THEN  Q  WILL INITIALLY BE
-!+	 \             A A A A 8 A A 10 5	    (A - ARBITRARY).
-!+	 \          AS THE ALGORITHM PROCEEDS, OTHER ELEMENTS OF  Q
-!+	 \          ARE INSERTED IN THE LIST BECAUSE OF FILLIN.
-!+	 \	     Q  IS USED IN AN ANALOGOUS MANNER TO COMPUTE THE
-!+	 \	     ITH COLUMN OF  L.
-!+	 \	     SIZE = N+1.
+!+       PARAMETERS USED INTERNALLY..
+!+ NIA   \ Q    - SUPPOSE  M*  IS THE RESULT OF REORDERING  M.  IF
+!+       \          PROCESSING OF THE ITH ROW OF  M*  (HENCE THE ITH
+!+       \          ROW OF  U) IS BEING DONE,  Q(J)  IS INITIALLY
+!+       \          NONZERO IF  M*(I,J) IS NONZERO (J.GE.I).  SINCE
+!+       \          VALUES NEED NOT BE STORED, EACH ENTRY POINTS TO THE
+!+       \          NEXT NONZERO AND  Q(N+1)  POINTS TO THE FIRST.  N+1
+!+       \          INDICATES THE END OF THE LIST.  FOR EXAMPLE, IF N=9
+!+       \          AND THE 5TH ROW OF  M*  IS
+!+       \             0 X X 0 X 0 0 X 0
+!+       \          THEN  Q  WILL INITIALLY BE
+!+       \             A A A A 8 A A 10 5    (A - ARBITRARY).
+!+       \          AS THE ALGORITHM PROCEEDS, OTHER ELEMENTS OF  Q
+!+       \          ARE INSERTED IN THE LIST BECAUSE OF FILLIN.
+!+       \           Q  IS USED IN AN ANALOGOUS MANNER TO COMPUTE THE
+!+       \           ITH COLUMN OF  L.
+!+       \           SIZE = N+1.
 !+ NIA   \ IRA,  - VECTORS USED TO FIND THE COLUMNS OF  M.  AT THE KTH
 !+ NIA   \ JRA,      STEP OF THE FACTORIZATION,  IRAC(K)  POINTS TO THE
 !+ NIA   \ IRAC      HEAD OF A LINKED LIST IN  JRA  OF ROW INDICES I
-!+	 \	     SUCH THAT I .GE. K AND  M(I,K)  IS NONZERO.  ZERO
-!+	 \	     INDICATES THE END OF THE LIST.  IRA(I)  (I.GE.K)
-!+	 \	     POINTS TO THE SMALLEST J SUCH THAT J .GE. K AND
-!+	 \	     M(I,J)  IS NONZERO.
-!+	 \	     SIZE OF EACH = N.
+!+       \           SUCH THAT I .GE. K AND  M(I,K)  IS NONZERO.  ZERO
+!+       \           INDICATES THE END OF THE LIST.  IRA(I)  (I.GE.K)
+!+       \           POINTS TO THE SMALLEST J SUCH THAT J .GE. K AND
+!+       \           M(I,J)  IS NONZERO.
+!+       \           SIZE OF EACH = N.
 !+ NIA   \ IRL,  - VECTORS USED TO FIND THE ROWS OF  L.  AT THE KTH STEP
-!+ NIA   \ JRL	    OF THE FACTORIZATION,  JRL(K)  POINTS TO THE HEAD
-!+	 \	     OF A LINKED LIST IN  JRL  OF COLUMN INDICES J
-!+	 \	     SUCH J .LT. K AND  L(K,J)  IS NONZERO.  ZERO
-!+	 \	     INDICATES THE END OF THE LIST.  IRL(J)  (J.LT.K)
-!+	 \	     POINTS TO THE SMALLEST I SUCH THAT I .GE. K AND
-!+	 \	     L(I,J)  IS NONZERO.
-!+	 \	     SIZE OF EACH = N.
+!+ NIA   \ JRL      OF THE FACTORIZATION,  JRL(K)  POINTS TO THE HEAD
+!+       \           OF A LINKED LIST IN  JRL  OF COLUMN INDICES J
+!+       \           SUCH J .LT. K AND  L(K,J)  IS NONZERO.  ZERO
+!+       \           INDICATES THE END OF THE LIST.  IRL(J)  (J.LT.K)
+!+       \           POINTS TO THE SMALLEST I SUCH THAT I .GE. K AND
+!+       \           L(I,J)  IS NONZERO.
+!+       \           SIZE OF EACH = N.
 !+ NIA   \ IRU,  - VECTORS USED IN A MANNER ANALOGOUS TO  IRL AND JRL
-!+ NIA   \ JRU	    TO FIND THE COLUMNS OF  U.
-!+	 \	     SIZE OF EACH = N.
-!+	 
+!+ NIA   \ JRU      TO FIND THE COLUMNS OF  U.
+!+       \           SIZE OF EACH = N.
+!+       
 !+  INTERNAL VARIABLES..
 !+    JLPTR - POINTS TO THE LAST POSITION USED IN  JL.
 !+    JUPTR - POINTS TO THE LAST POSITION USED IN  JU.
 !+    JMIN,JMAX - ARE THE INDICES IN  A OR U  OF THE FIRST AND LAST
-!+		  ELEMENTS TO BE EXAMINED IN A GIVEN ROW.
-!+		  FOR EXAMPLE,  JMIN=IA(K), JMAX=IA(K+1)-1.
+!+                ELEMENTS TO BE EXAMINED IN A GIVEN ROW.
+!+                FOR EXAMPLE,  JMIN=IA(K), JMAX=IA(K+1)-1.
 !+
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
 !         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS 
@@ -194,7 +194,9 @@
   11    IF (JLMIN .GT. JLPTR)  GO TO 15
         QM = Q(QM)
         DO 12 J=JLMIN,JLPTR
-          IF (JL(J) - QM)  12, 13, 15
+          IF (JL(J) < QM ) GOTO 12
+          IF (JL(J) == QM ) GOTO 13
+          IF (JL(J) > QM ) GOTO 15
   12      CONTINUE
         GO TO 15
   13    IJL(K) = J
@@ -296,7 +298,9 @@
   28    IF (JUMIN .GT. JUPTR)  GO TO 32
         QM = Q(QM)
         DO 29 J=JUMIN,JUPTR
-          IF (JU(J) - QM)  29, 30, 32
+          IF (JU(J) < QM) GOTO 29
+          IF (JU(J) == QM) GOTO 30
+          IF (JU(J) > QM) GOTO 32
   29      CONTINUE
         GO TO 32
   30    IJU(K) = J

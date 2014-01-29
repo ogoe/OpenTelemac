@@ -66,7 +66,7 @@
 !
       WRITE(LU,100)
       WRITE(LU,110)
-100   FORMAT(100(1H-),////////,
+100   FORMAT(100('-'),////////,
      &16X,
      &'TTTTT  OOOOO  M   M  AAAAA  W   W  AAAAA  CCCCC '
      &,/,16X,

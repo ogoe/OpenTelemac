@@ -15,6 +15,7 @@
 #--- Definitions pour PVM
 #
 #--- Definitions pour SYSTEME TELEMAC
+!include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
 VERSION    = V7P0
 
@@ -47,10 +48,11 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 NOM_GENERIQUE = partel
 MODE          =
-LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
 DEST          = $(PROJECT)\builds\$(DIRLIB)
 
-EXEDEF	  = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
+PARTEL        = partel$(VERSION).exe
+PARTEL_PARA   = partel_para$(VERSION).exe
+PARTEL_PRELIM = partel_prelim$(VERSION).exe
 LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\damo$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\parallel$(MODE)$(VERSION).lib \
@@ -60,26 +62,37 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
 
 #------------------------ Liste des fichiers
 #
-#------- Sources Fortran
-
-SRCS = partitioner.F util_pares.f pares3d.F partel.F
 #------- Objets
 #
-TEMP = $(SRCS:.f=.obj)
-OBJS = $(TEMP:.F=.obj)
+TEMP = $(SRCS_PARTEL:.F=.obj)
+OBJS_PARTEL = $(TEMP:.f=.obj)
+OBJS_PARTEL_PARA = $(SRCS_PARTEL_PARA:.F=.obj) 
+OBJS_PARTEL_PRELIM = $(SRCS_PARTEL_PRELIM:.F=.obj)
 #
 #------------------------ Cibles
 #
 #--- La librairie (non installée)
-ALL: $(MODS) $(EXEDEF)
+ALL: $(PARTEL) $(PARTEL_PARA) $(PARTEL_PRELIM) 
 
-exedef:         $(EXEDEF)
+exedef:         $(PARTEL) $(PARTEL_PARA) $(PARTEL_PRELIM) 
 
 
-"$(EXEDEF)":	$(OBJS)
+"$(PARTEL)":	$(OBJS_PARTEL)
 	@echo  -
 	@echo ---------------------Link executable par defaut
-	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS) $(LKLIB)
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL) $(OBJS_PARTEL) $(LKLIB)
+	echo "Termine."
+
+"$(PARTEL_PRELIM)":	$(OBJS_PARTEL_PRELIM)
+	@echo  -
+	@echo ---------------------Link executable par defaut
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL_PRELIM) $(OBJS_PARTEL_PRELIM) $(LKLIB)
+	echo "Termine."
+
+"$(PARTEL_PARA)":	$(OBJS_PARTEL_PARA)
+	@echo  -
+	@echo ---------------------Link executable par defaut
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL_PARA) $(OBJS_PARTEL_PARA) $(LKLIB)
 	echo "Termine."
 
 #--- Suppression des ".obj" (existants) + ".lib"
@@ -93,7 +106,7 @@ menage:  $(SRCS)
 	!@if EXIST *.exe del /q  *.exe
 
 #--- Installation de la librairie
-install:  $(EXEDEF)
+install:  $(PARTEL) $(PARTEL_PARA) $(PARTEL_PRELIM) 
 	@echo  -
 	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
 	@echo ---------------------Installe $(EXEDEF) dans $(DEST).

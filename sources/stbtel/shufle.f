@@ -49,15 +49,15 @@
 !
 !=======================================================================
 !
-      DO 10 I = 1 , (NELEM-4)/2 , 2
+      DO I = 1 , (NELEM-4)/2 , 2
         CALL ECHELE (IKLE,I,NELEM-I+1)
-10    CONTINUE
+      ENDDO
 !
 !=======================================================================
 !
       IF(NDP.EQ.4) THEN
 !
-        DO 20 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
           I1 = IKLE(IELEM,1)
           I2 = IKLE(IELEM,2)
@@ -85,11 +85,11 @@
             IKLE(IELEM,4) = I3
           ENDIF
 !
-20      CONTINUE
+        ENDDO
 !
       ELSEIF(NDP.EQ.3) THEN
 !
-        DO 30 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
           I1 = IKLE(IELEM,1)
           I2 = IKLE(IELEM,2)
@@ -107,7 +107,7 @@
             IKLE(IELEM,3) = I2
           ENDIF
 !
-30      CONTINUE
+        ENDDO
 !
       ELSE
 !

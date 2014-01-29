@@ -2352,7 +2352,7 @@
              CALL MT09OO(   T(1,1)   ,XM(1,OOQ(1,2,S)),
      &                      XM(1,OOQ(2,1,S)),   T(1,2),
      &                   XMUL,SF,F,SG,G,SU,SV,U,V,
-     &	                 IKLBOR(1,1),IKLBOR(1,2),
+     &                   IKLBOR(1,1),IKLBOR(1,2),
      &                   NBOR,NELEB,NELMAX)
 !
              TYPDIA='Q'

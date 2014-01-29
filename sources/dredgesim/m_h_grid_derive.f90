@@ -2094,8 +2094,6 @@ CONTAINS
     CHARACTER (LEN=12), PARAMETER   :: c_upname='derive_nsi_d' ! 
     !! Name der angeforderten Gr&ouml;&szlig;e
     CHARACTER (LEN=26), PARAMETER   :: c_pgname='Anzahl der internen Kanten' ! 
-    !! Statusvariable STAT
-    INTEGER                         :: stat      ! 
     !! Polygonverzeichnis der Kanten
     INTEGER               , POINTER :: p_je(:,:) ! 
     !! Tiefen auf den Kanten
@@ -2162,8 +2160,6 @@ CONTAINS
     CHARACTER (LEN=12), PARAMETER   :: c_upname='derive_nsf_d' ! 
     !! Name der angeforderten Gr&ouml;&szlig;e
     CHARACTER (LEN=26), PARAMETER   :: c_pgname='letzte Kante mit Fluss-Rb.' ! 
-    !! Statusvariable STAT
-    INTEGER                         :: stat       ! 
     !! Polygonverzeichnis der Kanten
     INTEGER               , POINTER :: p_nsi      ! 
     !! Anzahl der Kanten
@@ -2192,7 +2188,7 @@ CONTAINS
     !! diverse Hilfsfelder
     LOGICAL , ALLOCATABLE :: l_data1(:)                 ! 
     !! Hilfsvariable
-    INTEGER :: i, i1, i2, j, j1, j2, k, l, n, nsf ! 
+    INTEGER :: i, j, k, l, n, nsf ! 
     REAL (KIND=Double) :: d                 ! 
     !
     ivar = get_h_grid_variant_no(this)
@@ -2364,8 +2360,6 @@ CONTAINS
     CHARACTER (LEN=15), PARAMETER   :: c_upname='derive_nrand_d' ! 
     !! Name der angeforderten Gr&ouml;&szlig;e
     CHARACTER (LEN=35), PARAMETER   :: c_pgname='Anzahl Knoten auf aeusserem Rand ' ! 
-    !! Statusvariable STAT
-    INTEGER                         :: stat  ! 
     !! Knotenverzeichnis der Polygone
     INTEGER            , POINTER    :: p_nen(:,:) ! 
     !! Anzahl der Knoten/Kanten in den Polygonen
@@ -2396,7 +2390,7 @@ CONTAINS
     !! Diverse Indizes von Polygonen
     INTEGER    :: act_b_poly               ! 
     !! Z&auml;hlervariable
-    INTEGER    :: i, j, k, n ! 
+    INTEGER    :: i, j, n ! 
     !
     ivar = get_h_grid_variant_no(this)
     !
@@ -2553,10 +2547,9 @@ CONTAINS
     INTEGER            , POINTER :: p_je(:,:)                     ! 
     INTEGER            , POINTER :: p_jb(:), p_jt(:)              ! 
     REAL (KIND=Double) , POINTER :: p_xy(:,:)                     ! 
-    LOGICAL                      :: found                         ! 
     INTEGER , ALLOCATABLE        :: l_b_s(:), l_b_ms(:), l_b_v(:) ! 
     INTEGER , POINTER            :: p_b_t(:)                      !  
-    INTEGER                      :: i, j, k, n, ia, ie, ns, nf, is, nbs, mvs, mss, memo, l(1), m(1), ivar ! 
+    INTEGER                      :: i, j, k, n, ia, ie, ns, nf, nbs, mvs, mss, memo, l(1), m(1), ivar ! 
     INTEGER                      :: nj, mjs, n_nf, j_i(2), j_j(2), j_mvs(2) ! 
     REAL (KIND=Double)           :: x1, x2, y1, y2 ! 
     !
@@ -3562,7 +3555,7 @@ CONTAINS
     !! Status nach (De-) Allokieren
     INTEGER                         :: stat        
     !! Z&auml;hler
-    INTEGER                         :: inode, itria, i
+    INTEGER                         :: itria
     !
     NULLIFY ( p_node_tria )
     ! Allokieren von Memory fuer das Knotenverzeichnis der Teildreiecke
@@ -3700,7 +3693,6 @@ CONTAINS
     INTEGER                   :: res        ! 
     !! Hilfsvariablen
     INTEGER , POINTER         :: l_enc(:,:) ! 
-    INTEGER                   :: m_enc(2)   ! 
     !
     l_enc => get_enc_object ( this )
     IF ( ASSOCIATED( l_enc ) ) THEN
@@ -3879,8 +3871,6 @@ CONTAINS
     LOGICAL , INTENT(IN) :: volume(:,:) ! 
     !! Ergebnis: Anzahl der Kontrollvolumina im Modellgebiet
     INTEGER :: res                    ! 
-    !! Hilfsvariablen
-    INTEGER :: i, j, l_idx(4)         !  
     !
     res = COUNT( volume(:,:) )
     !
@@ -4002,7 +3992,7 @@ CONTAINS
     INTEGER       , INTENT(INOUT) :: isbnd  ! 
     !! Hilfsvariable
     LOGICAL :: found   ! 
-    INTEGER :: i, j, k, km, m1, m2, n1, n2, sm, sn, dm, dn ! 
+    INTEGER :: i, j, k, m1, m2, n1, n2, sm, sn, dm, dn ! 
     !
     found = .false.
     IF ( ASSOCIATED(bnd) ) THEN
@@ -4052,7 +4042,7 @@ CONTAINS
     INTEGER       , INTENT(INOUT) :: isdam(:) ! 
     !! Hilfsvariable
     LOGICAL :: found   ! 
-    INTEGER :: i, j, k, km, m1, m2, n1, n2, sm, sn, dm, dn ! 
+    INTEGER :: i, j, k, m1, m2, n1, n2, sm, sn, dm, dn ! 
     !
     found = .false.
     DO k=1,SIZE(lth)
@@ -4106,7 +4096,7 @@ CONTAINS
     INTEGER        , INTENT(INOUT) :: isdam(:) ! 
     !! Hilfsvariable
     LOGICAL :: found   ! 
-    INTEGER :: i, j, k, km, m1, m2, n1, n2, sm, sn, dm, dn ! 
+    INTEGER :: i, j, k, m1, m2, n1, n2, sm, sn, dm, dn ! 
     !
     IF ( ANY( (/2,3/) == ityp ) ) THEN
        found = .false.

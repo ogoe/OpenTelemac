@@ -90,10 +90,10 @@
         IF (NBFOND.NE.0.AND.LNG.EQ.1) WRITE(LU,1000)
         IF (NBFOND.NE.0.AND.LNG.EQ.2) WRITE(LU,4000)
 !
-        DO 20 I = 1,NBFOND
+        DO I = 1,NBFOND
            IF (LNG.EQ.1) WRITE(LU,1100) I,FOND(I),I,NP(I)
            IF (LNG.EQ.2) WRITE(LU,4100) I,FOND(I),I,NP(I)
- 20     CONTINUE
+        ENDDO
       ENDIF
 !
 !=======================================================================
@@ -110,20 +110,20 @@
 !  ON AFFECTE A CES POINTS LA PROFONDEUR DE LEUR PLUS PROCHE VOISIN.
 !=======================================================================
 !
-      DO 60 I=1,NPOIN
+      DO I=1,NPOIN
         IF(ZF(I).LT.-0.9D6) THEN
            DIST = 1.D12
-           DO 70 IVOIS = 1 , NPOIN
+           DO IVOIS = 1 , NPOIN
               DIST2 = ( X(I)-X(IVOIS) )**2 + ( Y(I)-Y(IVOIS) )**2
               IF(DIST2.LT.DIST.AND.ZF(IVOIS).GT.-0.9D6) THEN
                  DIST = DIST2
                  ZF(I) = ZF(IVOIS)
               ENDIF
-70         CONTINUE
+           ENDDO
            IF (LNG.EQ.1) WRITE(LU,1200) I,X(I),Y(I),ZF(I)
            IF (LNG.EQ.2) WRITE(LU,4200) I,X(I),Y(I),ZF(I)
         ENDIF
-60    CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

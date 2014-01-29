@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #-----------------------------------------------------
 #
 # Lancement de MAKE pour SYSTEL
@@ -6,8 +6,12 @@
 #------------------------------DeltaCAD-Septembre98---
 #
 SYSTELCFG=`getsystelcfg`
-export SYSTELCFG
+HOMETEL=`getproject`
+HOSTTYPE=`gethosttype`
+DEST=$HOMETEL/builds/$HOSTTYPE
+if [ ! -d $DEST ]; then\
+  mkdir $DEST $DEST/lib $DEST/bin
+fi
 #
-#correction 13/09/99
-#make $1 $2 $3
 make $*
+

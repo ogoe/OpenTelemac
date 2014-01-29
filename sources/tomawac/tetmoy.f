@@ -90,7 +90,7 @@
 !-----C  SUMS UP THE DISCRETISED PART OF THE SPECTRUM         C
 !-----C-------------------------------------------------------C
 !
-      DO 30 JF=1,NF
+      DO JF=1,NF
 !
         DFDTET=DFREQ(JF)*DTETAR
 !
@@ -113,7 +113,7 @@
           SINMOY(IP)=SINMOY(IP)+TAUXS(IP)
         ENDDO
 !
-   30 CONTINUE
+      ENDDO ! JF
 !
 !-----C-------------------------------------------------------------C
 !-----C  TAKES THE HIGH FREQUENCY PART INTO ACCOUNT (OPTIONAL)      C

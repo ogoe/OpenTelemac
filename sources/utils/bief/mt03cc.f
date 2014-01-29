@@ -130,7 +130,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2  =   XEL(IELEM,2)
       X3  =   XEL(IELEM,3)
@@ -452,7 +452,7 @@
       A55(IELEM) = - A51(IELEM) - A52(IELEM) - A53(IELEM)
      &             - A54(IELEM) - A56(IELEM)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 ! CASE WHERE U IS OF P2 DISCRETISATION
@@ -463,7 +463,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2  =   XEL(IELEM,2)
       X3  =   XEL(IELEM,3)
@@ -1069,7 +1069,7 @@
       A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
      &             - A64(IELEM) - A65(IELEM)
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
 !     OTHER TYPES OF FUNCTIONS F AND G
 !

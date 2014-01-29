@@ -94,7 +94,7 @@
       XSU108 = XMUL / 108.D0
       XSUR09 = XMUL / 9.D0
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1  = F(IKLE1(IELEM))
         F2  = F(IKLE2(IELEM))
@@ -108,7 +108,7 @@
 !
         W4(IELEM) = SURFAC(IELEM)*(F3+F2+F1)*XSUR09
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !     F QUASI-BUBBLE
@@ -119,7 +119,7 @@
       XSUR36 = XMUL / 36.D0
       XSUR18 = XMUL / 18.D0
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1  = F(IKLE1(IELEM))
         F2  = F(IKLE2(IELEM))
@@ -131,7 +131,7 @@
         W3(IELEM) = SURFAC(IELEM)*(2*F4+4*F3+  F2+  F1)*XSUR36
         W4(IELEM) = SURFAC(IELEM)*(3*F4+  F3+  F2+  F1)*XSUR18
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !      OTHER

@@ -87,9 +87,9 @@
 !  DEJAVU : MARKS WITH 1 THE POINTS THAT HAVE ALREADY BEEN TREATED
 !  NILE   : NUMBER OF ISLANDS
 !
-      DO 10 K=1,NPTFR
+      DO K=1,NPTFR
         DEJAVU(K) = 0
-10    CONTINUE
+      ENDDO ! K
 !
       NILE = 0
       IDEP = 1
@@ -108,7 +108,7 @@
       MAXNS = MINNS
       YMIN  = Y(NBOR(IDEP))
 !
-      DO 30 K = 1 , NPTFR
+      DO K = 1 , NPTFR
       IF(DEJAVU(K).EQ.0) THEN
         NS = X(NBOR(K)) + Y(NBOR(K))
         IF(NS.LT.MINNS) THEN
@@ -118,13 +118,13 @@
         ENDIF
         IF(NS.GT.MAXNS) MAXNS = NS
       ENDIF
-30    CONTINUE
+      ENDDO ! K 
 !
       EPS = (MAXNS-MINNS) * 1.D-4
 !
 !  SELECTS THE SOUTHERNMOST POINT FROM THE SOUTH-WESTERNMOST CANDIDATES
 !
-      DO 40 K = 1 , NPTFR
+      DO K = 1 , NPTFR
       IF(DEJAVU(K).EQ.0) THEN
         NS = X(NBOR(K)) + Y(NBOR(K))
         IF(ABS(MINNS-NS).LT.EPS) THEN
@@ -134,7 +134,7 @@
           ENDIF
         ENDIF
       ENDIF
-40    CONTINUE
+      ENDDO ! K 
 !
 !-----------------------------------------------------------------------
 !
@@ -277,19 +277,19 @@
 !
 !  CHECKS WHETHER THERE ARE OTHER CONTOURS LEFT:
 !
-      DO 60 K = 1 , NPTFR
+      DO K = 1 , NPTFR
         IF(DEJAVU(K).EQ.0) THEN
           IDEP = K
           NILE = NILE + 1
           GO TO 20
         ENDIF
-60    CONTINUE
+      ENDDO ! K 
 !
 !-----------------------------------------------------------------------
 !
-      DO 79 K=1,NPTFR
+      DO K=1,NPTFR
         NUMLIQ(K)=0
-79    CONTINUE
+      ENDDO ! K
 !
 !  PRINTS OUT THE RESULTS AND COMPUTES NUMLIQ
 !
@@ -299,7 +299,7 @@
       IF(NFRLIQ.NE.0) THEN
         IF(LISTIN.AND.LNG.EQ.1) WRITE(LU,70) NFRLIQ
         IF(LISTIN.AND.LNG.EQ.2) WRITE(LU,170) NFRLIQ
-        DO 80 K = 1, NFRLIQ
+        DO K = 1, NFRLIQ
 !
 !  MARKS THE NUMBERS OF THE LIQUID BOUNDARIES
 !
@@ -321,13 +321,13 @@
      &                            X(NBOR(DEBLIQ(K))),Y(NBOR(DEBLIQ(K))),
      &                            FINLIQ(K),NBOR(FINLIQ(K)),
      &                            X(NBOR(FINLIQ(K))),Y(NBOR(FINLIQ(K)))
-80      CONTINUE
+        ENDDO ! K 
       ENDIF
 !
       IF(NFRSOL.NE.0) THEN
         IF(LISTIN.AND.LNG.EQ.1) WRITE(LU,100) NFRSOL
         IF(LISTIN.AND.LNG.EQ.2) WRITE(LU,101) NFRSOL
-        DO 110 K = 1, NFRSOL
+        DO K = 1, NFRSOL
           IF(LISTIN.AND.LNG.EQ.1) WRITE(LU,90)
      &                            K,DEBSOL(K),NBOR(DEBSOL(K)),
      &                            X(NBOR(DEBSOL(K))),Y(NBOR(DEBSOL(K))),
@@ -338,7 +338,7 @@
      &                            X(NBOR(DEBSOL(K))),Y(NBOR(DEBSOL(K))),
      &                            FINSOL(K),NBOR(FINSOL(K)),
      &                            X(NBOR(FINSOL(K))),Y(NBOR(FINSOL(K)))
-110     CONTINUE
+        ENDDO ! K 
       ENDIF
 !
 !-----------------------------------------------------------------------

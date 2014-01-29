@@ -259,7 +259,7 @@
      &  .OR. 2.*ABS(DSZ(2,NSG)).GE.HI0
      &  .OR. 2.*ABS(DSZ(2,NSG)).GE.HJ0)  THEN
 !ra02/05/2013 FOR OPTIMIZATION
-          CYCLE 	  
+          CYCLE
 !           DSH(1,NSG) =0.D0
 !           DSH(2,NSG) =0.D0
 !           DSU(1,NSG) =0.D0
@@ -374,7 +374,7 @@
      &  .OR. 2.*ABS(DSZ(2,NSG)).GE.HJ0)  THEN
 !ra02/05/2013 FOR APTIMIZATION
           CYCLE 
-         ELSE	  
+         ELSE
 !
 !   ONE REBUILDS H+Z, DSH = VARIATION OF H+Z
 !

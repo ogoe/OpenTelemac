@@ -111,7 +111,7 @@
 !
 !  P1 DISCRETISATION FOR ISOTROPIC VISCOSITY:
 !
-      DO 5 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -167,7 +167,7 @@
       A33(IELEM) = - A13(IELEM) - A23(IELEM) - A34(IELEM)
       A44(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -179,7 +179,7 @@
 !
       IAD2 = SU%MAXDIM1
       IAD3 = 2*IAD2
-      DO 6 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -257,7 +257,7 @@
       A33(IELEM) = - A13(IELEM) - A23(IELEM) - A34(IELEM)
       A44(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
 !
-6     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

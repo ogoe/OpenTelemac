@@ -3494,7 +3494,7 @@ CONTAINS
     !! Hilfsfeld
     CHARACTER (LEN=LEN(this%ch)), ALLOCATABLE :: l_ch(:) !     
     !! Z&auml;hlervariablen
-    INTEGER :: i,n ! 
+    INTEGER :: n ! 
     !! Statusvariable
     INTEGER :: stat ! 
     !
@@ -3609,7 +3609,7 @@ CONTAINS
     !! Hilfsfeld
     INTEGER, ALLOCATABLE :: l_in(:) !     
     !! Z&auml;hlervariablen
-    INTEGER :: i,n ! 
+    INTEGER :: n ! 
     !! Statusvariable
     INTEGER :: stat ! 
     !
@@ -3680,7 +3680,7 @@ CONTAINS
     !! Hilfsfeld
     REAL (KIND=Double) , ALLOCATABLE :: l_dp(:) !     
     !! Z&auml;hlervariablen
-    INTEGER :: i,n ! 
+    INTEGER :: n ! 
     !! Statusvariable
     INTEGER :: stat ! 
     !
@@ -4457,8 +4457,6 @@ CONTAINS
     INTEGER      , INTENT(IN) :: id      ! 
     !! R&uuml;ckgabewert : Feldindex (idx = 0 falls nicht gefunden)
     INTEGER :: idx ! 
-    !! Z&auml;hlervariable
-    INTEGER :: i ! 
     !
     IF ( ANY( this(:)%id == id ) ) THEN
        idx = MINVAL( MINLOC( this(:)%id, this(:)%id == id ) )
@@ -5110,8 +5108,6 @@ CONTAINS
     INTEGER :: l_n_var_id(SIZE(var)) ! 
     !! maximale Variablen Id
     INTEGER :: max_var_id ! 
-    !! Z&auml;hlervariable
-    INTEGER :: i ! 
     !
     IF ( o_var_id /= n_var_id ) THEN
        l_n_var_id(:) = get_var_id( var(:) )
@@ -5385,8 +5381,6 @@ CONTAINS
     TYPE (t_datetime) , ALLOCATABLE :: time(:) ! 
     !! Hilfsvariablen
     INTEGER :: idx(2)                          ! 
-    !! Z&auml;hler
-    INTEGER :: i, n                            ! 
     !
     ok     = .false.
     idx(:) = get_att_idx( this(:), c_att_name(id(:)) )
@@ -5450,7 +5444,7 @@ CONTAINS
     !! Hilfsvariablen
     INTEGER :: idx(4)                          ! 
     !! Z&auml;hler
-    INTEGER :: i, n                            ! 
+    INTEGER :: n                            ! 
     !
     ok     = .false.
     idx(:) = get_att_idx( this(:), c_att_name(id(:)) )
@@ -6759,7 +6753,7 @@ CONTAINS
     !! zwei Felder, die zeigen, wo die o.g. Attribute in this(:) stehen (idx = 0 falls nicht gefunden)
     INTEGER :: frst_idx(c_max_check), scnd_idx(c_max_check)
     !! Z&auml;hlervariable Nr. des Tests
-    INTEGER :: i, j, k, m_f, m_s, n, n_f, n_s, n_t ! 
+    INTEGER :: i, j, k, m_f, m_s, n_f, n_s, n_t ! 
     !! Hilfstext
     CHARACTER(LEN=15)  :: ctxt ! 
     !! verschiedene Parameter-Felder f&uuml;r die Tests mit den variablenbezogenen Attributen
@@ -8881,8 +8875,6 @@ CONTAINS
     CHARACTER (LEN=19) , PARAMETER :: c_upname='ok_multiple_dates_0' ! 
     !! Zeitangabe als Datentyp datetime
     TYPE (t_datetime)  :: ch_datetime(SIZE(this%ch)) 
-    !! Zeitangabe als String
-    CHARACTER (LEN=34) :: ctxt
     !! Z&auml;hler als String
     CHARACTER (LEN=15)  :: itxt
     !! Z&auml;hler

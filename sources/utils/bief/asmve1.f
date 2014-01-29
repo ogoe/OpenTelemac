@@ -66,21 +66,21 @@
 !
 !  SCALAR MODE
 !
-      DO 10 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
         X(IKLE(IELEM)) = X(IKLE(IELEM)) * W(IELEM)
-10    CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !
 !  VECTOR MODE
 !
-      DO 20 IB = 1,(NELEM+LV-1)/LV
+      DO IB = 1,(NELEM+LV-1)/LV
 !VOCL LOOP,NOVREC
 !DIR$ IVDEP
-      DO 30 IELEM = 1+(IB-1)*LV , MIN(NELEM,IB*LV)
+      DO IELEM = 1+(IB-1)*LV , MIN(NELEM,IB*LV)
         X(IKLE(IELEM)) = X(IKLE(IELEM)) * W(IELEM)
-30    CONTINUE
-20    CONTINUE
+      ENDDO ! IELEM 
+      ENDDO ! IB 
 !
       ENDIF
 !

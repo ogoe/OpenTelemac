@@ -338,11 +338,11 @@
             IF(ABS(F_INTF(ILEO,JF)).LT.1.D-90) F_INTF(ILEO,JF)=0.D0
           ENDDO
           CALL ECRI2(AUXIL,IBID,C,NPSPE,'R4',NSCO,'STD',ISTAT)
-        ENDDO		  
+        ENDDO 
         DO JF=1,NF
           WRITE(NSPE,'(100(E10.4,2X))') FREQ(JF),
      &                                (F_INTF(ILEO,JF),ILEO=1,NLEO)
-        ENDDO	  	  
+        ENDDO 
 !
       ENDIF
 !

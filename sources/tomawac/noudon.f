@@ -322,7 +322,6 @@
 !
 !     IF FAILED TO READ THE FILE ...
 !
-100   CONTINUE
       WRITE(LU,*)'*********************************************'
       IF (LNG.EQ.1) THEN
          WRITE(LU,*)'  ERREUR A LA LECTURE DU FICHIER DE DONNEES  '

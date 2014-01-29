@@ -77,7 +77,7 @@
       DELT1 = 1.D0/DELFRA(SPRED1,DEUPI)
       DELT2 = 1.D0/DELFRA(SPRED2,DEUPI)
 !
-      DO 110 JP=1,NPLAN
+      DO JP=1,NPLAN
         FTH = DIREC(JP)
 !
         ARGUM = COS(FTH-TETA1)
@@ -96,7 +96,7 @@
 !
         FRA(JP)=XLAMDA*FRA1+(1.D0-XLAMDA)*FRA2
         IF (FRA(JP).LT.1.D-9) FRA(JP)=0.D0
-  110 CONTINUE
+      ENDDO ! JP
 !
       RETURN
       END

@@ -164,33 +164,33 @@
 ! CHECKS IF IT'S A KNOWN KEYWORD FOR THE STEERING FILE
 !
             IF (NFIC.EQ.NFICDA) THEN
-             DO 300 ITYP = 1,4
-              DO 310 I=1,NMAXR(ITYP)
+             DO ITYP = 1,4
+              DO I=1,NMAXR(ITYP)
 !                K=LONGLU(MOTCLE(ITYP,I))
                  K=SIZE(ITYP,I)
                  IF (K.GT.0.AND.LIGNE2(1:K).EQ.MOTCLE(ITYP,I)(1:K)) THEN
                     LISUIV = .FALSE.
                     GO TO 96
                  ENDIF
- 310          CONTINUE
- 300         CONTINUE
-             DO 320 I=1,100
+              ENDDO ! I
+             ENDDO ! ITYP 
+             DO I=1,100
 !               K = LONGLU(MOTIGN(I))
                 K = LONIGN(I)
                 IF(K.GT.0.AND.LIGNE2(1:K).EQ.MOTIGN(I)(1:K)) THEN
                   LISUIV = .FALSE.
                   GO TO 96
                 ENDIF
- 320         CONTINUE
+             ENDDO ! I
             ELSE
-             DO 330 I=1,15
+             DO I=1,15
 !               K = LONGLU(MOTPRO(I))
                 K = LONPRO(I)
                 IF(K.GT.0.AND.LIGNE2(1:K).EQ.MOTPRO(I)(1:K)) THEN
                   LISUIV = .FALSE.
                   GO TO 96
                 ENDIF
- 330         CONTINUE
+             ENDDO ! I
             ENDIF
 !
 ! GETS TO THIS POINT IF/WHEN HAS TO READ THE NEXT LINE
@@ -242,11 +242,11 @@
         ENDIF
        ENDIF
 !
-       GO TO 901
- 900   CONTINUE
-       RETOUR = .TRUE.
- 901   CONTINUE
-           DO 90 I = 1 , LGLU
+           GO TO 901
+ 900       CONTINUE
+           RETOUR = .TRUE.
+ 901       CONTINUE
+           DO I = 1 , LGLU
              IF (LIGNED(I:I).EQ.QUOTE.OR.LIGNED(I:I).EQ.'&'.OR.
      &          LIGNED(I:I).EQ.'='.OR.LIGNED(I:I).EQ.':'.OR.
      &          LIGNED(I:I).EQ.'/') THEN
@@ -265,7 +265,7 @@
               ERREUR = .TRUE.
               GO TO 1000
             ENDIF
-90         CONTINUE
+           ENDDO ! I 
 !
       ELSE
 !

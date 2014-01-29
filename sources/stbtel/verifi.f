@@ -70,7 +70,7 @@
 !
       IF (MESH.EQ.2) THEN
 !
-         DO 70 IELEM=1,NELEM
+         DO IELEM=1,NELEM
 !
             ITEST1 = 0
             CALL CIRCUL (IKLE,ITEST1,IELEM,1,2,3,X,Y)
@@ -79,19 +79,19 @@
             CALL CIRCUL (IKLE,ITEST1,IELEM,4,1,2,X,Y)
             IF (ITEST1.GT.0) ITEST = ITEST + 1
 !
- 70      CONTINUE
+         ENDDO
 !
 ! CAS DES TRIANGLES
 !
       ELSE IF (MESH.EQ.3) THEN
 !
-         DO 80 IELEM=1,NELEM
+         DO IELEM=1,NELEM
 !
             ITEST1 = 0
             CALL CIRCUL (IKLE,ITEST1,IELEM,1,2,3,X,Y)
             IF (ITEST1.GT.0) ITEST = ITEST + 1
 !
- 80      CONTINUE
+         ENDDO
 !
       ELSE
          IF (LNG.EQ.1) WRITE(LU,90) MESH

@@ -364,11 +364,11 @@ C
 C                                                                         
 C     CALCUL DE LA SOLUTION EXACTE                                        
 C                                                                         
-      DO 10 I = 1 , NPOIN                                                 
+      DO I = 1 , NPOIN                                                 
 C                                                                         
         FEXA(I) = SQRT( 2.D0*FVENT * X(I) / GRAV + H0*H0)                 
 C                                                                         
-10    CONTINUE                                                            
+      ENDDO                                                            
 C                                                                         
 C-----------------------------------------------------------------------  
 C                                                                         
@@ -479,9 +479,9 @@ C
 C
 C-----------------------------------------------------------------------
 C
-      DO 10 I=1,NPOIN
+      DO I=1,NPOIN
         ZF%R(I) = -2.D0
- 10   CONTINUE
+      ENDDO
 C
 C-----------------------------------------------------------------------
 C
@@ -557,9 +557,9 @@ C CALCUL DE LA CELERITE (MISE DANS FU, VOIR LE BLOC VARSOR)
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(3)).OR.(IMP.AND.SORIMP(3))) THEN
-        DO 5 N=1,NPOIN
+        DO N=1,NPOIN
           FU%R(N) = SQRT ( GRAV * MAX(H%R(N),0.D0) )
-5       CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -575,10 +575,10 @@ C CALCUL DU NOMBRE DE FROUDE
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(7)).OR.(IMP.AND.SORIMP(7))) THEN
-        DO 10 N=1,NPOIN
+        DO N=1,NPOIN
           HHPLG = MAX( H%R(N) , 1.D-8 )
           T2%R(N) = SQRT (( U%R(N)**2 + V%R(N)**2 ) / ( HHPLG*GRAV ))
-10      CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -586,9 +586,9 @@ C CALCUL DU DEBIT SCALAIRE
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN
-        DO 30 N=1,NPOIN
+        DO N=1,NPOIN
          T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
-30      CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -698,7 +698,7 @@ C
 C  ITERATIONS :                                                         
 C                                                                       
       FC=FB                                                             
-      DO 10 ITER=1,ITMAX                                                
+      DO ITER=1,ITMAX                                                
         IF(FB*FC.GT.0.D0) THEN                                          
           C=AA                                                           
           FC=FA                                                         
@@ -751,7 +751,7 @@ C
           B=B+SIGN(EPS2,XM)                                             
         ENDIF                                                           
         FB=FC1(B)                                                       
-10    CONTINUE                                                          
+      ENDDO                                                          
 C                                                                       
       IF (LNG.EQ.1) WRITE(LU,*) 'ZBRENT : MAXIMUM D''ITERATIONS ATTEINT'
       IF (LNG.EQ.2) WRITE(LU,*) 'ZBRENT : EXCEEDING MAXIMUM ITERATIONS' 

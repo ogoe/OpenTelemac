@@ -61,6 +61,7 @@
 !
 !-----------------------------------------------------------------------
 !
+      IER = 0
 #if defined (HAVE_MPI)
       CALL MPI_BARRIER(MPI_COMM_WORLD,IER)
 !

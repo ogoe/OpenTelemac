@@ -88,16 +88,16 @@
 !-----C-------------------------------------------------------C
 !-----C SUMS UP THE CONTRIBUTIONS FOR THE DISCRETISED PART OF THE SPECTRUM     C
 !-----C-------------------------------------------------------C
-      DO 20 JF = 1,NF-1
+      DO JF = 1,NF-1
         AUX3=DTETAR*DFREQ(JF)
         AUX4=AUX3*FREQ(JF)**2
-        DO 10 JP = 1,NPLAN
-          DO 5 IP=1,NPOIN2
+        DO JP = 1,NPLAN
+          DO IP=1,NPOIN2
             AUX1(IP) = AUX1(IP) + F(IP,JP,JF)*AUX4
             AUX2(IP) = AUX2(IP) + F(IP,JP,JF)*AUX3
-    5     CONTINUE
-   10   CONTINUE
-   20 CONTINUE
+          ENDDO ! IP
+        ENDDO ! JP 
+      ENDDO ! JF 
 !
 !-----C-------------------------------------------------------------C
 !-----C (OPTIONALLY) TAKES INTO ACCOUNT THE HIGH-FREQUENCY PART     C
@@ -109,23 +109,23 @@
         AUX3=DTETAR*DFREQ(NF)
         AUX4=AUX3*FREQ(NF)**2
       ENDIF
-      DO 40 JP = 1,NPLAN
-        DO 45 IP=1,NPOIN2
+      DO JP = 1,NPLAN
+        DO IP=1,NPOIN2
           AUX1(IP) = AUX1(IP) + F(IP,JP,NF)*AUX4
           AUX2(IP) = AUX2(IP) + F(IP,JP,NF)*AUX3
-   45   CONTINUE
-   40 CONTINUE
+        ENDDO ! IP
+      ENDDO ! JP 
 !
 !-----C-------------------------------------------------------------C
 !-----C COMPUTES THE MEAN FREQUENCY                                 C
 !-----C-------------------------------------------------------------C
-      DO 50 IP=1,NPOIN2
+      DO IP=1,NPOIN2
         IF (AUX2(IP).LT.SEUIL) THEN
           FM02(IP) = SEUIL
         ELSE
           FM02(IP) = SQRT(AUX1(IP)/AUX2(IP))
         ENDIF
-   50 CONTINUE
+      ENDDO ! IP
 !
       RETURN
       END

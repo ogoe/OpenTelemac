@@ -41,6 +41,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       IERR = 0
+      RECV_BUFFER = 0
 #if defined (HAVE_MPI)
       CALL MPI_ALLGATHERV(SEND_BUFFER, SEND_COUNT, SEND_TYPE, 
      &                   RECV_BUFFER, RECV_COUNT,

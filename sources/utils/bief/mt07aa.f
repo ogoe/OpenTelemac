@@ -98,7 +98,7 @@
 !
       IF(IELMF.EQ.10) THEN
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       DET = SURFAC(IELEM) * SUR12
       T   = F(IELEM)
@@ -119,7 +119,7 @@
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

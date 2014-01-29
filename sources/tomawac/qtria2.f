@@ -106,23 +106,23 @@
       LRAISF = LOG(RAISF)
       RAISM1 = RAISF-1.D0
 !
-      DO 200 IFF = 1,NF
+      DO IFF = 1,NF
        FREQ3 = FREQ(IFF)
-       DO 201 JFF = 1,IFF-1
+       DO JFF = 1,IFF-1
         FREQ1 = FREQ(JFF)
         FREQ2 = FREQ3-FREQ1
         IF(FREQ2.LE.FREQ0) THEN
-          GOTO 201
+          CYCLE
         ENDIF
         FR1 = 1.D0 + LOG(FREQ2/FREQ0)/LRAISF
         IFR = IDINT(FR1)
         FR1 = FR1 - DBLE(IFR)
         FR1 = (RAISF**FR1-1.D0)/RAISM1
-        DO 202 IP3 = 1,NBD
+        DO IP3 = 1,NBD
          IPL = INDI(IP3)
-         DO 203 IP1 = 1,NBD
+         DO IP1 = 1,NBD
           JPL = INDI(IP1)
-          DO 205 IPO = 1,NPOIN2
+          DO IPO = 1,NPOIN2
 !         COMPUTES K2
 !         --------------------
           DEP = DEPTH(IPO)
@@ -140,7 +140,7 @@
 !         INTERACTIONS BETWEEN COMPONENTS WHICH DIRECTIONS ARE NOT
 !         WITHIN THE ANGULAR SECTOR DEFINED BY THE USER (VARIABLES
 !         BDISPB AND BDSSPB) ARE NOT TAKEN INTO ACCOUNT
-             GOTO 205
+             CYCLE
           ENDIF
 !
           AP2    = (TETA2-TETA(1))/DTETA
@@ -199,11 +199,11 @@
           TSTOT(IPO,IPL,IFF) = TSTOT(IPO,IPL,IFF) + VR1*BISP
           TSTOT(IPO,JPL,JFF) = TSTOT(IPO,JPL,JFF) - VR3*BISP
 !          
- 205      CONTINUE
- 203     CONTINUE
- 202    CONTINUE
- 201   CONTINUE
- 200  CONTINUE
+          ENDDO ! IPO 
+         ENDDO ! IP1 
+        ENDDO ! IP3 
+       ENDDO ! JFF 
+      ENDDO ! IFF 
 !
       RETURN
       END

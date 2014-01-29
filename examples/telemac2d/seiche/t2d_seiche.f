@@ -72,14 +72,14 @@ C
      *       CDTINI(1:07).EQ.'SPECIAL') THEN
 C                                                                       
 C                                                                       
-      DO 10 I=1,NPOIN                                                   
+      DO I=1,NPOIN                                                   
 C
 C                                                                       
         PI = 3.141592653589D0
         H%R(I) = 10.D0+0.01*COS((2*PI*X(I))/200.D0)                        
         U%R(I) = 0.D0
 C                                                                       
-10    CONTINUE                                                          
+      ENDDO                                                          
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -180,9 +180,9 @@ C CALCUL DE LA CELERITE (MISE DANS FU, VOIR LE BLOC VARSOR)
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(3)).OR.(IMP.AND.SORIMP(3))) THEN
-        DO 5 N=1,NPOIN
+        DO N=1,NPOIN
           FU%R(N) = SQRT ( GRAV * MAX(H%R(N),0.D0) )
-5       CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -198,10 +198,10 @@ C CALCUL DU NOMBRE DE FROUDE
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(7)).OR.(IMP.AND.SORIMP(7))) THEN
-        DO 10 N=1,NPOIN
+        DO N=1,NPOIN
           HHPLG = MAX( H%R(N) , 1.D-8 )
           T2%R(N) = SQRT (( U%R(N)**2 + V%R(N)**2 ) / ( HHPLG*GRAV ))
-10      CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -209,9 +209,9 @@ C CALCUL DU DEBIT SCALAIRE
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN
-        DO 30 N=1,NPOIN
+        DO N=1,NPOIN
          T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
-30      CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -257,12 +257,12 @@ C=======================================================================
 C                                                                       
       COEF = SQRT(1.D0*GRAV)                                            
       IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN             
-        DO 14 N=1,NPOIN 
+        DO N=1,NPOIN 
         ARG1 = COEF-(X(N)-5.98)/(2.D0/MAX(AT,DT))                         
         PRIVE%ADR(1)%P%R(N) = MAX(0.D0,ARG1)               
         PRIVE%ADR(1)%P%R(N) = 4.D0*PRIVE%ADR(1)%P%R(N)**2/9.D0/9.81     
         PRIVE%ADR(1)%P%R(N) = MIN(4.D0,PRIVE%ADR(1)%P%R(N))             
-14      CONTINUE                                                        
+        ENDDO                                                        
       ENDIF                                                             
 C
 C=======================================================================

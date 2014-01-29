@@ -83,9 +83,9 @@
 !
 !  LISTE DE FUTURS PARAMETRES DEJA PREVUS.(SEUL LES PREMIERS SERVENT)
 !
-      DO 10 J = 1,10
+      DO J = 1,10
          IB(J) = 0
-10    CONTINUE
+      ENDDO
 !   ECRITURE ECLATEE DES RESULTATS (CONVENTION SELAFIN)
       IB(1) = 1
 !
@@ -93,7 +93,7 @@
 !
 !  POUR CHAQUE COUPE HORIZONTALE FAIRE :
 !
-      DO 20 IC = 1,NC2DH
+      DO IC = 1,NC2DH
 !
          CANAL = NCOU
 !
@@ -113,9 +113,9 @@
          CALL ECRI2( X, IBID,CB,  NPOIN2,'R4',NCOU-1+IC,BINCOU,ISTAT)
          CALL ECRI2( Y, IBID,CB,  NPOIN2,'R4',NCOU-1+IC,BINCOU,ISTAT)
 !
-20    CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END
+      END SUBROUTINE

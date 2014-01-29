@@ -101,7 +101,7 @@
 !
       IF(IELMF.EQ.0) THEN
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !  TO BE OPTIMISED
       F1 = F(IELEM)
       F2 = F(IELEM)
@@ -114,14 +114,14 @@
       A12(IELEM) = DET1 * F12
       A22(IELEM) = DET1 * (F12+2*F2)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !     F LINEAR BY SEGMENT, IN A BOUNDARY ARRAY
 !     NOTE: IKLE IS HERE A BOUNDARY IKLE
 !
       ELSEIF(IELMF.EQ.1) THEN
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       F1 = F(IKLE1(IELEM))
       F2 = F(IKLE2(IELEM))
@@ -131,13 +131,13 @@
       A12(IELEM) = DET1 * F12
       A22(IELEM) = DET1 * (F12+2*F2)
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
 !     F LINEAR, IN AN ARRAY DEFINED ON THE DOMAIN
 !
       ELSEIF(IELMF.EQ.11.OR.IELMF.EQ.21) THEN
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       F1 = F(NBOR(IKLE1(IELEM)))
       F2 = F(NBOR(IKLE2(IELEM)))
@@ -147,7 +147,7 @@
       A12(IELEM) = DET1 * F12
       A22(IELEM) = DET1 * (F12+2*F2)
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
 !     OTHER TYPES OF DISCRETISATION OF F
 !

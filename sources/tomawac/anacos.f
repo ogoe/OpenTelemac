@@ -15,10 +15,10 @@
 !+      UCONST=0.D0
 !+      VCONST=0.D0
 !+
-!+      DO 100 IP=1,NPOIN2
+!+      DO IP=1,NPOIN2
 !+        UC(IP)=UCONST
 !+        VC(IP)=VCONST
-!+  100 CONTINUE
+!+    ENDDO ! IP
 !
 !history
 !+        07/06/2001
@@ -70,10 +70,10 @@
       UCONST=0.D0
       VCONST=0.D0
 !
-      DO 100 IP=1,NPOIN2
+      DO IP=1,NPOIN2
         UC(IP)=UCONST
         VC(IP)=VCONST
-  100 CONTINUE
+      ENDDO ! IP
 !
       RETURN
       END

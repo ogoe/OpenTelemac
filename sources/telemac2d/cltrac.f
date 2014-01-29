@@ -90,8 +90,8 @@
 !
       DO ITRAC=1,NTRAC
 !
-        DO 10 N=1,NWEIRS
-        DO 20 I=1,NPSING%I(N)
+        DO N=1,NWEIRS
+        DO I=1,NPSING%I(N)
 !
           I1 = NDGA1%ADR(N)%P%I(I)
           I2 = NDGB1%ADR(N)%P%I(I)
@@ -147,8 +147,8 @@
             ENDIF
           ENDIF
 !
-20      CONTINUE
-10      CONTINUE
+        ENDDO ! I
+        ENDDO ! N
 !
       ENDDO
 !

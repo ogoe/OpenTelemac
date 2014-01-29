@@ -595,16 +595,16 @@ C
       TYPE(BIEF_OBJ), TARGET :: ZFCL_MS
 
 !> @brief MEYER PETER MUELLER factor
-C	  
+!  
       TYPE(BIEF_OBJ), TARGET :: MPM_ARAY
-C
-C     FLUX LIMITATION PER SEGMENT
-C
+!
+!     FLUX LIMITATION PER SEGMENT
+!
       TYPE(BIEF_OBJ), TARGET :: FLULIM
 !
 !     FLUXES AT BOUNDARY FOR EVERY CLASS
 !
-      TYPE(BIEF_OBJ), TARGET :: FLBCLA		  
+      TYPE(BIEF_OBJ), TARGET :: FLBCLA
 ! 
 !     CV modifs V6P2 new variables for consolidation model
 ! 

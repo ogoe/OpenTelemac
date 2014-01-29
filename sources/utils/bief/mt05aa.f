@@ -125,7 +125,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2  =   XEL(IELEM,2) * SUR24
       X3  =   XEL(IELEM,3) * SUR24
@@ -150,7 +150,7 @@
       A31(IELEM)  = (X3-X2) * QUATRV + (Y2-Y3) * QUATRU
       A32(IELEM)  = -X3     * QUATRV +     Y3  * QUATRU
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -163,7 +163,7 @@
 !
 !     N SCHEME: U AND V ARE TREATED AS IF LINEAR
 !
-      DO 33 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          X2 = XEL(IELEM,2)
          X3 = XEL(IELEM,3)
@@ -206,7 +206,7 @@
          A31(IELEM)  = - L31
          A32(IELEM)  = - L32
 !
-33    CONTINUE
+      ENDDO ! IELEM 
 !
       ELSEIF(IELMU.EQ.11.AND.IELMV.EQ.11) THEN
 !
@@ -214,7 +214,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2  =   XEL(IELEM,2) * SUR24
       X3  =   XEL(IELEM,3) * SUR24
@@ -246,7 +246,7 @@
       A31(IELEM)  = (X3-X2) * (V123+V3) + (Y2-Y3) * (U123+U3)
       A32(IELEM)  = -X3     * (V123+V3) +     Y3  * (U123+U3)
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -256,7 +256,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2  =   XEL(IELEM,2)
       X3  =   XEL(IELEM,3)
@@ -294,7 +294,7 @@
       A22(IELEM) = - A21(IELEM) - A23(IELEM)
       A33(IELEM) = - A31(IELEM) - A32(IELEM)
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -304,7 +304,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2  =   XEL(IELEM,2)
       X3  =   XEL(IELEM,3)
@@ -347,7 +347,7 @@
       A22(IELEM) = - A21(IELEM) - A23(IELEM)
       A33(IELEM) = - A31(IELEM) - A32(IELEM)
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
 !     OTHER TYPES OF U AND V DISCRETISATION
 !

@@ -4897,7 +4897,7 @@ CONTAINS
        val => this%xg
     ELSE
        IF (DEBUG_ds > 0) THEN
-       	  WRITE(*,*) ' *** Warning *** keine Daten "xg(:,:)"'
+          WRITE(*,*) ' *** Warning *** keine Daten "xg(:,:)"'
        END IF
        NULLIFY ( val )
     END IF
@@ -10590,8 +10590,6 @@ CONTAINS
     LOGICAL :: ok ! 
     !! Name der Funktion
     CHARACTER (LEN=16) , PARAMETER :: c_upname='ok_h_grid_text_1'
-    !! Z&auml;hlervariable
-    INTEGER :: i ! 
     !    
     SELECT CASE ( get_h_grid_variant_no ( this ) )
     CASE(1,2,3,4,5,6)
@@ -11123,8 +11121,6 @@ CONTAINS
     CHARACTER (LEN=14) , PARAMETER :: c_upname='ok_h_grid_dy_1'
     !! Hilfsfeld
     CHARACTER (LEN=15) :: ctxt ! 
-    !! Z%auml;hlervariable
-    INTEGER :: i ! 
     !
     SELECT CASE ( get_h_grid_variant_no ( this ) )
     CASE(1,2,3,4,5,6)
@@ -11159,8 +11155,6 @@ CONTAINS
     CHARACTER (LEN=14) , PARAMETER :: c_upname='ok_h_grid_dg_1'
     !! Hilfsfeld
     CHARACTER (LEN=15) :: ctxt ! 
-    !! Z%auml;hlervariable
-    INTEGER :: i ! 
     REAL (KIND=Double) , POINTER :: p_dxmin ! 
     REAL (KIND=Double)           :: dxmin   ! 
     !
@@ -11199,8 +11193,6 @@ CONTAINS
     CHARACTER (LEN=14) , PARAMETER :: c_upname='ok_h_grid_aa_1'
     !! Hilfsfeld
     CHARACTER (LEN=15) :: ctxt ! 
-    !! Z%auml;hlervariable
-    INTEGER :: i ! 
     !
     SELECT CASE ( get_h_grid_variant_no ( this ) )
     CASE(1,2,3,4,5,6)
@@ -11235,8 +11227,6 @@ CONTAINS
     CHARACTER (LEN=14) , PARAMETER :: c_upname='ok_h_grid_hu_1'
     !! Hilfsfeld
     CHARACTER (LEN=15) :: ctxt ! 
-    !! Z%auml;hlervariable
-    INTEGER :: i ! 
     !
     SELECT CASE ( get_h_grid_variant_no ( this ) )
     CASE(1,2,3,4,5,6)
@@ -11277,8 +11267,6 @@ CONTAINS
     CHARACTER (LEN=14) , PARAMETER :: c_upname='ok_h_grid_hw_1'
     !! Hilfsfeld
     CHARACTER (LEN=15) :: ctxt ! 
-    !! Z%auml;hlervariable
-    INTEGER :: i ! 
     !
     SELECT CASE ( get_h_grid_variant_no ( this ) )
     CASE(1,2,3,4,5,6)
@@ -11324,8 +11312,6 @@ CONTAINS
     CHARACTER (LEN=17) , PARAMETER :: c_upname='ok_h_grid_ipobo_1'
     !! Hilfsfeld
     CHARACTER (LEN=10) :: ctxt ! 
-    !! Z%auml;hlervariable
-    INTEGER :: i ! 
     !
     SELECT CASE ( get_h_grid_variant_no ( this ) )
     CASE(1,2,3,4,5,6)
@@ -11379,8 +11365,6 @@ CONTAINS
     CHARACTER (LEN=17) , PARAMETER :: c_upname='ok_h_grid_knolg_1'
     !! Hilfsfeld
     CHARACTER (LEN=10) :: ctxt ! 
-    !! Z%auml;hlervariable
-    INTEGER :: i ! 
     !
     SELECT CASE ( get_h_grid_variant_no ( this ) )
     CASE(1,2,3,4,5,6)
@@ -11731,7 +11715,6 @@ CONTAINS
     CHARACTER (LEN=10) :: ch      ! 
     LOGICAL            :: l_as(2) ! 
     INTEGER            :: l_ns(2) ! 
-    INTEGER            :: i       ! 
     !
     l_ns(:) = -1
     l_as(1) = ASSOCIATED( this%b_ms )
@@ -11763,7 +11746,6 @@ CONTAINS
     CHARACTER (LEN=10) :: ch      ! 
     LOGICAL            :: l_as(2) ! 
     INTEGER            :: l_ns(2) ! 
-    INTEGER            :: i       ! 
     !
     l_ns(:) = -1
     l_as(1) = ASSOCIATED( this%b_ms )
@@ -11795,7 +11777,6 @@ CONTAINS
     CHARACTER (LEN=10) :: ch      ! 
     LOGICAL            :: l_as(2) ! 
     INTEGER            :: l_ns(2) ! 
-    INTEGER            :: i       ! 
     !
     l_ns(:) = -1
     l_as(1) = ASSOCIATED( this%b_ms )
@@ -11827,7 +11808,6 @@ CONTAINS
     CHARACTER (LEN=10) :: ch      ! 
     LOGICAL            :: l_as(2) ! 
     INTEGER            :: l_ns(2) ! 
-    INTEGER            :: i       ! 
     !
     l_ns(:) = -1
     l_as(1) = ASSOCIATED( this%b_ms )
@@ -12251,7 +12231,7 @@ CONTAINS
     !! Hilfsvariablen
     CHARACTER (LEN=10) :: ctxt            ! 
     LOGICAL            :: l_ok(3)         ! 
-    INTEGER            :: i, nbnd, mx, mn ! 
+    INTEGER            :: nbnd, mx, mn ! 
     !
     SELECT CASE ( get_h_grid_variant_no ( this ) )
     CASE(1,2,3,4,5,6)
@@ -12301,7 +12281,7 @@ CONTAINS
     !! Hilfsvariablen
     CHARACTER (LEN=10) :: ctxt                       ! 
     LOGICAL            :: l_ok(5)                    ! 
-    INTEGER            :: i, j, ndam, mx, mn, kx, kn ! 
+    INTEGER            :: j, ndam, mx, mn, kx, kn ! 
     !
     SELECT CASE ( get_h_grid_variant_no ( this ) )
     CASE(1,2,3,4,5,6)
@@ -12378,8 +12358,6 @@ CONTAINS
     CHARACTER (LEN=15) , PARAMETER :: c_upname='ok_h_grid_huu_1'
     !! Hilfsfeld
     CHARACTER (LEN=15) :: ctxt ! 
-    !! Z%auml;hlervariable
-    INTEGER :: i ! 
     !
     SELECT CASE ( get_h_grid_variant_no ( this ) )
     CASE(1,2,3,4,5,6)
@@ -12422,8 +12400,6 @@ CONTAINS
     CHARACTER (LEN=15) , PARAMETER :: c_upname='ok_h_grid_hvu_1'
     !! Hilfsfeld
     CHARACTER (LEN=15) :: ctxt ! 
-    !! Z%auml;hlervariable
-    INTEGER :: i ! 
     !
     SELECT CASE ( get_h_grid_variant_no ( this ) )
     CASE(1,2,3,4,5,6)
@@ -12466,8 +12442,6 @@ CONTAINS
     CHARACTER (LEN=15) , PARAMETER :: c_upname='ok_h_grid_hwu_1'
     !! Hilfsfeld
     CHARACTER (LEN=15) :: ctxt ! 
-    !! Z%auml;hlervariable
-    INTEGER :: i ! 
     !
     SELECT CASE ( get_h_grid_variant_no ( this ) )
     CASE(1,2,3,4,5,6)
@@ -12508,9 +12482,6 @@ CONTAINS
     LOGICAL :: ok ! 
     !! Name der Funktion
     CHARACTER (LEN=16) , PARAMETER :: c_upname='ok_h_grid_dwlp_0'
-    !! Hilfsfeld
-    CHARACTER (LEN=15) :: ctxt ! 
-    INTEGER :: i ! 
     !
     SELECT CASE ( get_h_grid_variant_no ( this ) )
     CASE(1,2,3,4,5,6)
@@ -13603,7 +13574,7 @@ CONTAINS
     !! Statusvariable
     INTEGER :: stat
     !! Z&auml;hler
-    INTEGER :: i, j
+    INTEGER :: i
     !
     IF ( ASSOCIATED( this%xs ) ) THEN
        WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
@@ -13648,7 +13619,7 @@ CONTAINS
     !! Statusvariable
     INTEGER :: stat ! 
     !! Z&auml;hler
-    INTEGER :: i, j ! 
+    INTEGER :: i ! 
     !
     IF ( ASSOCIATED( this%xc ) ) THEN
        WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
@@ -14179,8 +14150,6 @@ CONTAINS
     CHARACTER (LEN=20) , PARAMETER :: c_upname='print_h_grid_quant_1'
     !! Statusvariable
     INTEGER :: stat ! 
-    !! Z&auml;hler
-    INTEGER :: i ! 
     !
     IF ( ASSOCIATED( this%quant ) ) THEN
        WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
@@ -14215,8 +14184,6 @@ CONTAINS
     CHARACTER (LEN=18) , PARAMETER :: c_upname='print_h_grid_xyz_1'
     !! Statusvariable
     INTEGER :: stat ! 
-    !! Z&auml;hler
-    INTEGER :: i ! 
     !
     IF ( ASSOCIATED( this%xyz ) ) THEN
        WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
@@ -14251,8 +14218,6 @@ CONTAINS
     CHARACTER (LEN=18) , PARAMETER :: c_upname='print_h_grid_ele_1'
     !! Statusvariable
     INTEGER :: stat ! 
-    !! Z&auml;hler
-    INTEGER :: i ! 
     !
     IF ( ASSOCIATED( this%ele ) ) THEN
        WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
@@ -14287,8 +14252,6 @@ CONTAINS
     CHARACTER (LEN=18) , PARAMETER :: c_upname='print_h_grid_ind_1'
     !! Statusvariable
     INTEGER :: stat ! 
-    !! Z&auml;hler
-    INTEGER :: i ! 
     !
     IF ( ASSOCIATED( this%ind ) ) THEN
        WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
@@ -14323,8 +14286,6 @@ CONTAINS
     CHARACTER (LEN=19) , PARAMETER :: c_upname='print_h_grid_dope_1'
     !! Statusvariable
     INTEGER :: stat ! 
-    !! Z&auml;hler
-    INTEGER :: i ! 
     !
     IF ( ASSOCIATED( this%dope ) ) THEN
        WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
@@ -14359,8 +14320,6 @@ CONTAINS
     CHARACTER (LEN=19) , PARAMETER :: c_upname='print_h_grid_exch_1'
     !! Statusvariable
     INTEGER :: stat ! 
-    !! Z&auml;hler
-    INTEGER :: i ! 
     !
     IF ( ASSOCIATED( this%exch ) ) THEN
        WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
@@ -14395,8 +14354,6 @@ CONTAINS
     CHARACTER (LEN=19) , PARAMETER :: c_upname='print_h_grid_span_0'
     !! Statusvariable
     INTEGER :: stat ! 
-    !! Z&auml;hler
-    INTEGER :: i ! 
     !
     IF ( ASSOCIATED( this%span ) ) THEN
        WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
@@ -14431,8 +14388,6 @@ CONTAINS
     CHARACTER (LEN=20) , PARAMETER :: c_upname='print_h_grid_stamp_0'
     !! Statusvariable
     INTEGER :: stat ! 
-    !! Z&auml;hler
-    INTEGER :: i ! 
     !
     IF ( ASSOCIATED( this%stamp ) ) THEN
        WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
@@ -14468,7 +14423,6 @@ CONTAINS
     !! Statusvariable
     INTEGER :: stat ! 
     !! Z&auml;hler
-    INTEGER :: i ! 
     !
     IF ( ASSOCIATED( this%space ) ) THEN
        WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
@@ -14505,7 +14459,6 @@ CONTAINS
     !! Statusvariable
     INTEGER :: stat ! 
     !! Z&auml;hler
-    INTEGER :: i ! 
     !
     IF ( ASSOCIATED( this%dxmin ) ) THEN
        WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )

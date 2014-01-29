@@ -72,21 +72,21 @@
 !                               +----------------------+
 !.............................. ! INFINITE WATER DEPTH !
 !                               +----------------------+
-        DO 310 JF=1,NF
+        DO JF=1,NF
           AUX1=DPDSUG*(FREQ(JF))**2
           AUX3=0.5D0*GRAVIT/(DEUPI*FREQ(JF))
-          DO 320 IP=1,NPOIN2
+          DO IP=1,NPOIN2
             XK(IP,JF)=AUX1
             CG(IP,JF)=AUX3
-  320     CONTINUE
-  310   CONTINUE
+          ENDDO ! IP
+        ENDDO ! JF
       ELSE
 !                               +--------------------+
 !.............................. ! FINITE WATER DEPTH !
 !                               +--------------------+
-        DO 410 JF=1,NF
+        DO JF=1,NF
           AUX2=DEUPI*FREQ(JF)
-          DO 430 IP=1,NPOIN2
+          DO IP=1,NPOIN2
             CALL WNSCOU(AUX1,FREQ(JF),DEPTH(IP))
             DEUKD=2.D0*AUX1*DEPTH(IP)
             IF (DEUKD.GT.7.D2) THEN
@@ -96,8 +96,8 @@
             ENDIF
             XK(IP,JF)=AUX1
             CG(IP,JF)=AUX3
-  430     CONTINUE
-  410   CONTINUE
+          ENDDO ! IP
+        ENDDO ! JF
       ENDIF
 !
 !
@@ -107,23 +107,23 @@
 !                               +-----------------------------+
 !.............................. ! CARTESIAN COORDINATE SYSTEM !
 !                               +-----------------------------+
-        DO 710 JF=1,NF
+        DO JF=1,NF
           AUX1=DEUPI2*FREQ(JF)
-          DO 720 IP=1,NPOIN2
+          DO IP=1,NPOIN2
             B(IP,JF)= CG(IP,JF)/(AUX1*XK(IP,JF))
-  720     CONTINUE
-  710   CONTINUE
+          ENDDO ! IP
+        ENDDO ! JF
 !
       ELSE
 !                               +-----------------------------+
 !.............................. ! SPHERICAL COORDINATE SYSTEM !
 !                               +-----------------------------+
-        DO 810 JF=1,NF
+        DO JF=1,NF
           AUX1=DEUPI2*FREQ(JF)*R2
-          DO 820 IP=1,NPOIN2
+          DO IP=1,NPOIN2
             B(IP,JF)= CG(IP,JF)/(AUX1*XK(IP,JF)*COSPHI(IP))
-  820     CONTINUE
-  810   CONTINUE
+          ENDDO ! IP
+        ENDDO ! JF
       ENDIF
 !
       RETURN

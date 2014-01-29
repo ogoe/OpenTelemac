@@ -75,14 +75,14 @@
 !-----C  SUMS UP THE DISCRETISED PART OF THE SPECTRUM         C
 !-----C-------------------------------------------------------C
 !
-      DO 20 JF = 1,NF-1
+      DO JF = 1,NF-1
         AUX1=DFREQ(JF)*DTETAR
-        DO 10 JP = 1,NPLAN
-          DO 5 IP=1,NPOIN2
+        DO JP = 1,NPLAN
+          DO IP=1,NPOIN2
             VARIAN(IP) = VARIAN(IP) + F(IP,JP,JF)*AUX1
-    5     CONTINUE
-   10   CONTINUE
-   20 CONTINUE
+          ENDDO ! IP
+        ENDDO ! JP 
+      ENDDO ! JF 
 !
 !-----C-------------------------------------------------------------C
 !-----C  TAKES THE HIGH FREQUENCY PART INTO ACCOUNT (OPTIONAL)      C
@@ -93,11 +93,11 @@
       ELSE
         AUX1=DTETAR*DFREQ(NF)
       ENDIF
-      DO 40 JP = 1,NPLAN
-        DO 45 IP=1,NPOIN2
+      DO JP = 1,NPLAN
+        DO IP=1,NPOIN2
           VARIAN(IP) = VARIAN(IP) + F(IP,JP,NF)*AUX1
-   45   CONTINUE
-   40 CONTINUE
+        ENDDO ! IP
+      ENDDO ! JP 
 !
       RETURN
       END

@@ -115,7 +115,7 @@
 !
       IF(ICOORD.EQ.1) THEN
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1 = F(IKLE1(IELEM))
         F2 = F(IKLE2(IELEM))
@@ -133,13 +133,13 @@
         W3(IELEM)=(Y2*(-2*G3*F3+2*G3*F1-G2*F3+G2*F1-G1*F3+G1*F1)+Y3*(
      &             2*G3*F2-2*G3*F1+G2*F2-G2*F1+G1*F2-G1*F1))* XSUR24
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
 !  Y COORDINATE
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1 = F(IKLE1(IELEM))
         F2 = F(IKLE2(IELEM))
@@ -157,7 +157,7 @@
         W3(IELEM)=(X2*(2*G3*F3-2*G3*F1+G2*F3-G2*F1+G1*F3-G1*F1)+X3*(-
      &             2*G3*F2+2*G3*F1-G2*F2+G2*F1-G1*F2+G1*F1)) * XSUR24
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !

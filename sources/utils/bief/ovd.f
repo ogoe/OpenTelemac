@@ -85,13 +85,13 @@
 !
         IF(IOPT.EQ.1) THEN
 !
-        DO 30 I=1,NPOIN
+        DO I=1,NPOIN
             X(I) = 1.D0/Y(I)
-30      CONTINUE
+        ENDDO ! I
 !
         ELSEIF(IOPT.EQ.2) THEN
 !
-        DO 31 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Y(I)).GT.EPS) THEN
             X(I) = 1.D0/Y(I)
@@ -99,11 +99,11 @@
             X(I) = D
           ENDIF
 !
-31      CONTINUE
+        ENDDO ! I
 !
         ELSEIF(IOPT.EQ.3) THEN
 !
-        DO 32 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Y(I)).GT.EPS) THEN
             X(I) = 1.D0/Y(I)
@@ -114,11 +114,11 @@
             STOP
           ENDIF
 !
-32      CONTINUE
+        ENDDO ! I
 !
         ELSEIF(IOPT.EQ.4) THEN
 !
-        DO 33 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Y(I)).GT.EPS) THEN
             X(I) = 1.D0/Y(I)
@@ -128,7 +128,7 @@
             X(I) = -1.D0/EPS
           ENDIF
 !
-33      CONTINUE
+        ENDDO ! I
 !
         ENDIF
 !
@@ -138,13 +138,13 @@
 !
         IF(IOPT.EQ.1) THEN
 !
-        DO 40 I=1,NPOIN
+        DO I=1,NPOIN
             X(I) = Y(I) / Z(I)
-40      CONTINUE
+        ENDDO ! I
 !
         ELSEIF(IOPT.EQ.2) THEN
 !
-        DO 41 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Z(I)).GT.EPS) THEN
             X(I) = Y(I) / Z(I)
@@ -152,11 +152,11 @@
             X(I) = D
           ENDIF
 !
-41      CONTINUE
+        ENDDO ! I
 !
         ELSEIF(IOPT.EQ.3) THEN
 !
-        DO 42 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Z(I)).GT.EPS) THEN
             X(I) = Y(I) / Z(I)
@@ -167,11 +167,11 @@
             STOP
           ENDIF
 !
-42      CONTINUE
+        ENDDO ! I
 !>>>>
         ELSEIF(IOPT.EQ.4) THEN
 !
-        DO 43 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Z(I)).GT.EPS) THEN
             X(I) = Y(I) / Z(I)
@@ -183,7 +183,7 @@
             X(I) = -Y(I) / EPS
           ENDIF
 !
-43      CONTINUE
+        ENDDO ! I
 !<<<<
 !
         ENDIF
@@ -194,13 +194,13 @@
 !
         IF(IOPT.EQ.1) THEN
 !
-        DO 50 I=1,NPOIN
+        DO I=1,NPOIN
             X(I) = C*Y(I) / Z(I)
-50      CONTINUE
+        ENDDO ! I
 !
         ELSEIF(IOPT.EQ.2) THEN
 !
-        DO 51 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Z(I)).GT.EPS) THEN
             X(I) = C*Y(I) / Z(I)
@@ -208,11 +208,11 @@
             X(I) = D
           ENDIF
 !
-51      CONTINUE
+        ENDDO ! I
 !
         ELSEIF(IOPT.EQ.3) THEN
 !
-        DO 52 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Z(I)).GT.EPS) THEN
             X(I) = C*Y(I) / Z(I)
@@ -223,11 +223,11 @@
             STOP
           ENDIF
 !
-52      CONTINUE
+        ENDDO ! I
 !>>>>
         ELSEIF(IOPT.EQ.4) THEN
 !
-        DO 53 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Z(I)).GT.EPS) THEN
             X(I) = C*Y(I) / Z(I)
@@ -239,7 +239,7 @@
             X(I) = -C*Y(I) / EPS
           ENDIF
 !
-53      CONTINUE
+        ENDDO ! I
 !<<<<
         ENDIF
 !
@@ -249,13 +249,13 @@
 !
         IF(IOPT.EQ.1) THEN
 !
-        DO 60 I=1,NPOIN
+        DO I=1,NPOIN
             X(I) = C*X(I)*Y(I) / Z(I)
-60      CONTINUE
+        ENDDO ! I
 !
         ELSEIF(IOPT.EQ.2) THEN
 !
-        DO 61 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Z(I)).GT.EPS) THEN
             X(I) = C*X(I)*Y(I) / Z(I)
@@ -263,11 +263,11 @@
             X(I) = D
           ENDIF
 !
-61      CONTINUE
+        ENDDO ! I
 !
         ELSEIF(IOPT.EQ.3) THEN
 !
-        DO 62 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Z(I)).GT.EPS) THEN
             X(I) = C*X(I)*Y(I) / Z(I)
@@ -278,11 +278,11 @@
             STOP
           ENDIF
 !
-62      CONTINUE
+        ENDDO ! I
 !>>>>
         ELSEIF(IOPT.EQ.4) THEN
 !
-        DO 63 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Z(I)).GT.EPS) THEN
             X(I) = C*X(I)*Y(I) / Z(I)
@@ -294,7 +294,7 @@
             X(I) = -C*Y(I) / EPS
           ENDIF
 !
-63      CONTINUE
+        ENDDO ! I
 !<<<<
 !
         ENDIF
@@ -305,13 +305,13 @@
 !
         IF(IOPT.EQ.1) THEN
 !
-        DO 70 I=1,NPOIN
+        DO I=1,NPOIN
             X(I) = X(I) + C * Y(I) / Z(I)
-70      CONTINUE
+        ENDDO ! I
 !
         ELSEIF(IOPT.EQ.2) THEN
 !
-        DO 71 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Z(I)).GT.EPS) THEN
             X(I) = X(I) + C * Y(I) / Z(I)
@@ -319,11 +319,11 @@
             X(I) = D
           ENDIF
 !
-71      CONTINUE
+        ENDDO ! I
 !
         ELSEIF(IOPT.EQ.3) THEN
 !
-        DO 72 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Z(I)).GT.EPS) THEN
             X(I) = X(I) + C * Y(I) / Z(I)
@@ -334,11 +334,11 @@
             STOP
           ENDIF
 !
-72      CONTINUE
+        ENDDO ! I
 !>>>>
         ELSEIF(IOPT.EQ.4) THEN
 !
-        DO 73 I=1,NPOIN
+        DO I=1,NPOIN
 !
           IF (ABS(Z(I)).GT.EPS) THEN
             X(I) = X(I) + C*Y(I) / Z(I)
@@ -350,7 +350,7 @@
             X(I) = X(I) - C*Y(I) / EPS
           ENDIF
 !
-73      CONTINUE
+        ENDDO ! I
 !<<<<
 !
         ENDIF

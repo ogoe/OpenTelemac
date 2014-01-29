@@ -91,7 +91,7 @@
 !------ #3 : NAMES AND UNITS
 !
       NVAR = I1 + I2
-      DO 100 I=1, NVAR
+      DO I=1, NVAR
       READ(1) C1_32
       READ(2) C2_32
 !
@@ -101,31 +101,31 @@
           STOP
         ENDIF
 !
-100   CONTINUE
+      ENDDO ! I
         PRINT *, ' #3 ... OK,   NVAR=',NVAR
 !
 !------ #4 : 1,0,0,0,0,0,0,0,0,0,0
 !
       READ(1)  ( IT1(K), K=1,10)
       READ(2)  ( IT2(K), K=1,10)
-        DO 20 K=1, 10
+        DO K=1, 10
         IF (IT1(K) .NE.IT2(K)) THEN
           PRINT*, ' #4 ... ERREUR IT1=',IT1(K),
      &                     ',   IT2=',IT2(K)
           STOP
         ENDIF
-20      CONTINUE
+        ENDDO ! K
 !
       IF (IT1(10) .EQ. 1) THEN
       READ(1)  ( IT1(K), K=1,6)
       READ(2)  ( IT2(K), K=1,6)
-        DO 30 K=1, 10
+        DO K=1, 10
         IF (IT1(K) .NE. IT2(K)) THEN
           PRINT*, ' #4 ... ERREUR IT1=',IT1(K),
      &                     ',   IT2=',IT2(K)
           STOP
         ENDIF
-30      CONTINUE
+        ENDDO ! K
       ENDIF
       PRINT *, ' #4 ... OK'
 !
@@ -148,12 +148,12 @@
       READ (1) (ITAB(I), I=1, NELEM1*NDP1)
       READ (2) (JTAB(I), I=1, NELEM1*NDP1)
         EPSILON=0.
-        DO 50 K=1, NELEM1*NDP1
+        DO K=1, NELEM1*NDP1
         IF (FLOAT(ABS(ITAB(K)-JTAB(K))) .GT. EPSMAX)
      &      EPSMAX=ABS(ITAB(K)-JTAB(K))
         IF (FLOAT(ABS(ITAB(K)-JTAB(K))) .GT. EPSILON)
      &          EPSILON = FLOAT(ABS(ITAB(K)-JTAB(K)) )
-50        CONTINUE
+        ENDDO ! K
         IF (EPSILON .GT. EPSREF) THEN
           PRINT*, ' #6 ... ERREUR : EPSILON = ', EPSILON
         ENDIF
@@ -164,12 +164,12 @@
       READ (1) (ITAB(I), I=1, NPOIN1)
       READ (2) (JTAB(I), I=1, NPOIN1)
         EPSILON=0.
-        DO 51 K=1, NPOIN1
+        DO K=1, NPOIN1
         IF (ABS(ITAB(K)-JTAB(K)) .GT. EPSMAX)
      &      EPSMAX=ABS(ITAB(K)-JTAB(K))
         IF (ABS(ITAB(K)-JTAB(K)) .GT. EPSILON)
      &          EPSILON = ABS(ITAB(K)-JTAB(K) )
-51      CONTINUE
+        ENDDO ! K
         IF (EPSILON .GT. EPSREF) THEN
           PRINT*, ' #7 ... ERREUR IPOBO : EPSILON = ', EPSILON
         ENDIF
@@ -182,12 +182,12 @@
       READ (1) (XTAB(I), I=1, NPOIN1)
       READ (2) (YTAB(I), I=1, NPOIN1)
         EPSILON=0.
-        DO 52 K=1, NPOIN1
+        DO K=1, NPOIN1
         IF (ABS(XTAB(K)-YTAB(K)) .GT. EPSMAX)
      &      EPSMAX=ABS(XTAB(K)-YTAB(K))
         IF (ABS(XTAB(K)-YTAB(K)) .GT. EPSILON)
      &          EPSILON = ABS(XTAB(K)-YTAB(K) )
-52        CONTINUE
+        ENDDO ! K
         IF (EPSILON .GT. EPSREF) THEN
           PRINT*, ' #8 ... ERREUR : EPSILON = ', EPSILON
           STOP
@@ -200,12 +200,12 @@
       READ (1) (XTAB(I), I=1, NPOIN1)
       READ (2) (YTAB(I), I=1, NPOIN1)
         EPSILON=0.
-        DO 200 K=1, NPOIN1
+        DO K=1, NPOIN1
         IF (ABS(XTAB(K)-YTAB(K)) .GT. EPSMAX)
      &      EPSMAX=ABS(XTAB(K)-YTAB(K))
         IF (ABS(XTAB(K)-YTAB(K)) .GT. EPSILON)
      &          EPSILON = ABS(XTAB(K)-YTAB(K) )
-200        CONTINUE
+        ENDDO ! K
         IF (EPSILON .GT. EPSREF) THEN
           PRINT*, ' #9 ... ERREUR : EPSILON = ', EPSILON
           STOP
@@ -228,20 +228,20 @@
 !------ #9 : NVAR VECTORS
 !
       IF ( NVAR .LT. 1) GOTO 800
-      DO 850 J=1,NVAR
+      DO J=1,NVAR
         READ (1) (XTAB(I), I=1, NPOIN1)
         READ (2) (YTAB(I), I=1, NPOIN1)
         EPSILON=0.
-        DO 54 K=1, NPOIN1
+        DO K=1, NPOIN1
           IF (ABS(XTAB(K)-YTAB(K)) .GT. EPSMAX)
      &      EPSMAX=ABS(XTAB(K)-YTAB(K))
           IF (ABS(XTAB(K)-YTAB(K)) .GT. EPSILON)
      &    EPSILON = ABS(XTAB(K)-YTAB(K) )
-54          CONTINUE
-          IF (EPSILON .GT. EPSREF) THEN
-           PRINT*, ' #11 ... ERREUR : EPSILON = ', EPSILON, ', T = ', R1
-          ENDIF
-850   CONTINUE
+        ENDDO ! K
+        IF (EPSILON .GT. EPSREF) THEN
+         PRINT*, ' #11 ... ERREUR : EPSILON = ', EPSILON, ', T = ', R1
+        ENDIF
+      ENDDO ! J
 !
       GOTO 800
 !

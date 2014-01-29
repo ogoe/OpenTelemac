@@ -161,7 +161,7 @@
 !
       REWIND NSCO
       WRITE (NSCO,'(A9)') '''NOMXXXX'''
-      WRITE (NSCO,'(1H'',A8,1H'')') '02/10/92'
+      WRITE (NSCO,"('',A8,'')") '02/10/92'
 !
 !     WRITES THE TITLE ON 60 CHARACTERS FOR SCOPE
       WRITE (NSCO,'(A)') '''TELEMAC-3D : THE BEST'''

@@ -97,7 +97,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 1 IELEM=1,NELEM
+      DO IELEM=1,NELEM
 !
          I1 = IKLE(IELEM,1)
          I2 = IKLE(IELEM,2)
@@ -174,7 +174,7 @@
 !
          XM(IELEM,12)= -(-X2*Y3+Y2*X3)*(F1+2*F3+F2+F4)*XSUR120
 !
-1     CONTINUE
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !

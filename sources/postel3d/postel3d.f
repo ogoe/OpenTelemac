@@ -141,9 +141,9 @@
 ! PREPARATION DES DONNEES POUR LES COUPES HORIZONTALES
 !
       IF(NC2DH.GE.1) THEN
-         DO 70 K = 1,NPOIN2
+         DO K = 1,NPOIN2
             IPOBO(K) = 0
-70       CONTINUE
+         ENDDO
          CALL PRE2DH (X,Y,IKLES,IPOBO,NPOIN2,NELEM2,NC2DH,NRES,
      &      TITCAS,NVAR,NTRAC,NTRPA,BINCOU,nva3,textlu)
       ENDIF
@@ -160,7 +160,7 @@
       NCOU2 = NCOU
       N=0
 !
-      DO 90 K = 1,NENRE
+      DO K = 1,NENRE
          IF (K.GE.NUPRSO.AND.MOD(K-NUPRSO,PESOGR).EQ.0) THEN
 !
 ! LA ON SAIT QUE CET ENREGISTREMENT EST A TRANSCRIRE
@@ -185,15 +185,15 @@
 !
 ! LA ON SAIT QUE CET ENREGISTREMENT N'EST PAS A TRANSCRIRE
 !
-           DO 100 J = 1,NVA3+1
+           DO J = 1,NVA3+1
               READ(NPRE)
-100        CONTINUE
+           ENDDO
          ENDIF
-90    CONTINUE
+      ENDDO
 !
-      do i=1,nc2dh
-      close(nres+i-1)
-      enddo
+      DO I=1,NC2DH
+        CLOSE(NRES+I-1)
+      ENDDO
 !
       DEALLOCATE (RB)
       DEALLOCATE (VAR)
@@ -201,12 +201,12 @@
 !
 !-----------------------------------------------------------------------
 !
-101   FORMAT('LE NUMERO DU PREMIER ENREGISTREMENT POUR LES COUPES',/,
-     &       'EST SUPERIEUR AU NOMBRE D''ENREGISTREMENTS')
-102   FORMAT('THE NUMBER OF THE FIRST RECORD FOR CROSS SECTIONS',/,
-     &       'IS HIGHER THAN THE NUMBER OF RECORDS')
+!101   FORMAT('LE NUMERO DU PREMIER ENREGISTREMENT POUR LES COUPES',/,
+!     &       'EST SUPERIEUR AU NOMBRE D''ENREGISTREMENTS')
+!102   FORMAT('THE NUMBER OF THE FIRST RECORD FOR CROSS SECTIONS',/,
+!     &       'IS HIGHER THAN THE NUMBER OF RECORDS')
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END
+      END SUBROUTINE

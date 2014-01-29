@@ -143,11 +143,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      DO 1 K=1,NPTFR
+      DO K=1,NPTFR
         CLH(K) = LIHBOR(K)
         CLU(K) = LIUBOR(K)
         CLV(K) = LIVBOR(K)
-1     CONTINUE
+      ENDDO ! K
 !
 !     FOR THOMPSON TREATMENT
 !
@@ -174,7 +174,7 @@
       ALERTE1=.FALSE.
       ALERTE2=.FALSE.
 !
-      DO 3 K=1,NPTFR
+      DO K=1,NPTFR
 !
         N = NBOR(K)
         F2 = (U(N)**2+V(N)**2) / GRAV / MAX(H(N),1.D-8)
@@ -219,7 +219,7 @@
           ENDIF
         ENDIF
 !
-3     CONTINUE
+      ENDDO ! K
 !
       IF(ALERTE1.AND.ENTET) THEN
         IF(LNG.EQ.1) THEN
@@ -255,7 +255,7 @@
 !
       CALL OS('X=0     ',X=MASK)
 !
-      DO 4 K=1,NPTFR
+      DO K=1,NPTFR
 !
 !     IF THE NODE FOLLOWING K IS NOT IN THE SUB-DOMAIN IN PARALLEL MODE
 !     WILL HAVE KP1=K
@@ -479,7 +479,7 @@
         STOP
       ENDIF
 !
-4     CONTINUE
+      ENDDO ! K
 !
 !-----------------------------------------------------------------------
 !

@@ -109,7 +109,7 @@
 !
         IF(ICOORD.EQ.1) THEN
 !
-        DO 1 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
         F1  = F(IKLE1(IELEM))
         F2  = F(IKLE2(IELEM))
@@ -123,7 +123,7 @@
         W3(IELEM) = W1(IELEM)
         W4(IELEM) = 1.5D0*W1(IELEM)
 !
-1       CONTINUE
+        ENDDO ! IELEM 
 !
 !================================
 !  DERIVATIVE WRT Y  =
@@ -131,7 +131,7 @@
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
-        DO 2 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
         F1  = F(IKLE1(IELEM))
         F2  = F(IKLE2(IELEM))
@@ -145,7 +145,7 @@
         W3(IELEM) = W1(IELEM)
         W4(IELEM) = 1.5D0*W1(IELEM)
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
         ELSE
 !
@@ -165,7 +165,7 @@
 !
       IF(ICOORD.EQ.1) THEN
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1  = F(IELEM)
         F2  = F(IELEM+NELMAX)
@@ -179,13 +179,13 @@
         W3(IELEM) = W1(IELEM)
         W4(IELEM) = 1.5D0*W1(IELEM)
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
 !  Y COORDINATE
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1  = F(IELEM)
         F2  = F(IELEM+NELMAX)
@@ -199,7 +199,7 @@
         W3(IELEM) = W1(IELEM)
         W4(IELEM) = 1.5D0*W1(IELEM)
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
         ELSE
 !
@@ -221,7 +221,7 @@
 !
       IF(ICOORD.EQ.1) THEN
 !
-        DO 5 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
         F1 = F(IKLE1(IELEM))
         F2 = F(IKLE2(IELEM))
@@ -236,7 +236,7 @@
         W3(IELEM) =  ((2*Y3  -Y2)*(F2-F1)+3*(F4-F3)*Y2)*XSUR18
         W4(IELEM) =  ( -(Y3  -Y2)* F1-F3*Y2+F2*Y3)*XSUR6
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
 !================================
 !  DERIVATIVE WRT Y  =
@@ -244,7 +244,7 @@
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
-      DO 6 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1  = F(IKLE1(IELEM))
         F2  = F(IKLE2(IELEM))
@@ -259,7 +259,7 @@
         W3(IELEM)=((X2-2*X3)*(F2-F1)-3*X2*(F4-F3))*XSUR18
         W4(IELEM)=(X2*(F3-F1)-X3*(F2-F1))*XSUR6
 !
-6     CONTINUE
+      ENDDO ! IELEM 
 !
         ELSE
 !
@@ -281,7 +281,7 @@
 !
       IF(ICOORD.EQ.1) THEN
 !
-        DO 7 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
         F1  = F(IELEM         )
         F2  = F(IELEM+  NELMAX)
@@ -296,7 +296,7 @@
         W3(IELEM)=((2*Y3-Y2)*(F2-F1)+3*(F4-F3)*Y2)*XSUR18
         W4(IELEM)=(-((Y3-Y2)*F1+F3*Y2-F2*Y3))*XSUR6
 !
-7     CONTINUE
+      ENDDO ! IELEM 
 !
 !================================
 !  DERIVATIVE WRT Y  =
@@ -304,7 +304,7 @@
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
-      DO 8 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1  = F(IELEM         )
         F2  = F(IELEM+  NELMAX)
@@ -319,7 +319,7 @@
         W3(IELEM)=((X2-2*X3)*(F2-F1)-3*X2*(F4-F3))*XSUR18
         W4(IELEM)=(X2*(F3-F1)-X3*(F2-F1))*XSUR6
 !
-8     CONTINUE
+      ENDDO ! IELEM 
 !
         ELSE
 !

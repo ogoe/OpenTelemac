@@ -2,7 +2,7 @@
                         SUBROUTINE F1F1F1
 !                       *****************
 !
-     *(F1SF,NF1,IQ_OM1)
+     &(F1SF,NF1,IQ_OM1)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   15/06/2011
@@ -58,7 +58,7 @@
             WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
           ELSEIF(LNG.EQ.2) THEN
             WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
-            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1	  
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1  
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -84,7 +84,7 @@
             WRITE(LU,*) 'ARRET DANS F1F1F1 : VALEUR INCORRECTE DE NF1'
             WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
             WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
-            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1	  
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1  
           ENDIF
           STOP
         ENDIF
@@ -122,7 +122,7 @@
             WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
           ELSEIF(LNG.EQ.2) THEN
             WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
-            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1	  
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1  
           ENDIF
           STOP
         ENDIF
@@ -145,7 +145,7 @@
             WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
           ELSEIF(LNG.EQ.2) THEN
             WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
-            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1	  
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1
           ENDIF
           STOP
         ENDIF
@@ -179,7 +179,7 @@
             WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
           ELSEIF(LNG.EQ.2) THEN
             WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
-            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1	  
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1
           ENDIF
           CALL PLANTE(1)
           STOP

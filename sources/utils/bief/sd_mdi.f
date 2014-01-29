@@ -73,23 +73,23 @@
 !
 !----INITIALISES DEGREES, ELEMENT LISTS, AND DEGREE LISTS
 !
-      DO 1 VI=1,N
+      DO VI=1,N
         MARK(VI) = 1
         L(VI) = 0
         HEAD(VI) = 0
-1     CONTINUE
+      ENDDO ! VI
       SFS = N+1
 !
 !----CREATES NONZERO STRUCTURE
 !----FOR EACH NONZERO ENTRY A(VI,VJ) IN STRICT UPPER TRIANGLE
 !
-      DO 3 VI=1,N
+      DO VI=1,N
         JMIN = IA(VI)
         JMAX = IA(VI+1) - 1
-        IF(JMIN.GT.JMAX)  GO TO 3
-        DO 2 J=JMIN,JMAX
+        IF(JMIN.GT.JMAX)  CYCLE
+        DO J=JMIN,JMAX
           VJ = JA(J)
-          IF(VI.GE.VJ) GO TO 2
+          IF(VI.GE.VJ) CYCLE
           IF(SFS.GE.MAXIMUM) GO TO 101
 !
 !------ENTERS VJ IN ELEMENT LIST FOR VI
@@ -107,19 +107,19 @@
           L(SFS) = L(VJ)
           L(VJ) = SFS
           SFS = SFS+1
-2       CONTINUE
-3     CONTINUE
+        ENDDO ! J
+      ENDDO ! VI
 !
 !----CREATES DEGREE LISTS AND INITIALISES MARK VECTOR
 !
-      DO 4 VI=1,N
+      DO VI=1,N
         DVI = MARK(VI)
         NEXT(VI) = HEAD(DVI)
         HEAD(DVI) = VI
         LAST(VI) = -DVI
         IF(NEXT(VI).GT.0)  LAST(NEXT(VI)) = VI
         MARK(VI) = TAG
-4     CONTINUE
+      ENDDO ! VI
 !
       RETURN
 !

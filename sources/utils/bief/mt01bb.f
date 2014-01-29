@@ -80,7 +80,7 @@
 !
       XSUR36 = XMUL / 36.D0
 !
-      DO 5 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !  EXTRADIAGONAL TERMS
 !
@@ -98,7 +98,7 @@
          A33(IELEM) =     A11(IELEM)
          A44(IELEM) = 3 * A14(IELEM)
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

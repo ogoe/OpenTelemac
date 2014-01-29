@@ -137,35 +137,35 @@
 !
 !     CASE WHERE THE BLOCK A ONLY CONTAINS DIAGONALS
 !
-        DO 10 I=1,S
+        DO I=1,S
           CALL PUOG1( X%ADR(I)%P,
      &                A%ADR(I)%P,
      &                B%ADR(I)%P,
      &                DITR,MESH,COPY)
-10      CONTINUE
+        ENDDO ! I
 !
       ELSEIF(S.GT.0.AND.S**2.EQ.SA) THEN
 !
 !     CASE WHERE THE BLOCK A CONTAINS AS MANY MATRICES AS THERE ARE
 !     IN THE WHOLE SYSTEM: ONLY TAKES THE DIAGONALS
 !
-        DO 11 I=1,S
+        DO I=1,S
           CALL PUOG1(X%ADR(I)%P,
      &                A%ADR(1+(S+1)*(I-1))%P,
      &                B%ADR(I)%P,
      &                DITR,MESH,COPY)
-11      CONTINUE
+        ENDDO ! I
 !
 !     CASE WHERE A IS A SINGLE MATRIX AND X A BLOCK
 !
       ELSEIF(S.GT.0.AND.SA.EQ.0) THEN
 !
-        DO 12 I=1,S
+        DO I=1,S
           CALL PUOG1( X%ADR(I)%P,
      &                A,
      &                B%ADR(I)%P,
      &                DITR,MESH,COPY)
-12      CONTINUE
+        ENDDO ! I
 !
       ELSE
         IF (LNG.EQ.1) WRITE(LU,301)

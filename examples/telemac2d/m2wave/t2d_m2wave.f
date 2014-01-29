@@ -111,25 +111,25 @@ C
 C                                                                                                                                                              
       PI=3.1415926535D0                                                         
       R=6400000.D0                                                              
-      DO 5 I=1,8                                                                
+      DO I=1,8                                                                
          X0(I)=R*X0(I)*PI/180.D0                                                
          Y0(I)=R*LOG(TAN((Y0(I)+90.D0)*PI/360.D0))                            
      *        -R*LOG(TAN(69.D0*PI/180.D0))                                    
          A1(I)=A1(I)*PI/180.D0                                                  
          A2(I)=A2(I)*PI/180.D0                                                  
-5     CONTINUE                                                                  
+      ENDDO                                                                  
 C                                                                               
       DO I=1,NPOIN
         CHESTR%R(I) = 95.3D0
       ENDDO
-      DO 10 I=1,NPOIN                                                           
+      DO I=1,NPOIN                                                           
          IF (Y(I).GT.100000.D0) THEN                                            
-            DO 20 J=1,8                                                         
+            DO J=1,8                                                         
                A3=ATAN2(Y(I)-Y0(J),X(I)-X0(J))                                 
                IF (A3.LT.A1(J).AND.A3.GT.A2(J)) CHESTR%R(I)=C(J)                  
- 20         CONTINUE                                                            
+            ENDDO                                                            
          ENDIF                                                                  
- 10   CONTINUE                                                                  
+      ENDDO                                                                  
 C
 C-----------------------------------------------------------------------
 C
@@ -248,25 +248,25 @@ C
 C                                                                               
       PI=3.141592653589793D0                                                         
       R=6400000.D0                                                              
-      DO 5 I=1,8                                                                
+      DO I=1,8                                                                
          X0(I)=R*X0(I)*PI/180.D0                                                
          Y0(I)=R*LOG(TAN((Y0(I)+90.D0)*PI/360.D0))                            
      *        -R*LOG(TAN(69.D0*PI/180.D0))                                    
          A1(I)=A1(I)*PI/180.D0                                                  
          A2(I)=A2(I)*PI/180.D0                                                  
-5     CONTINUE                                                                  
+      ENDDO                                                                  
 C                                                                               
       DO I=1,NPOIN
         CHESTR%R(I) = 90.D0
       ENDDO
-      DO 10 I=1,NPOIN                                                           
+      DO I=1,NPOIN                                                           
          IF (Y(I).GT.100000.D0) THEN                                            
-            DO 20 J=1,8                                                         
+            DO J=1,8                                                         
                A3=DATAN2(Y(I)-Y0(J),X(I)-X0(J))                                 
                IF (A3.LT.A1(J).AND.A3.GT.A2(J)) CHESTR%R(I)=C(J)                  
- 20         CONTINUE                                                            
+            ENDDO                                                            
          ENDIF                                                                  
- 10   CONTINUE                                                                  
+      ENDDO                                                                  
 C
 C-----------------------------------------------------------------------
 C

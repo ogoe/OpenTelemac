@@ -1127,7 +1127,7 @@ CONTAINS
     !! Name der Subroutine
     CHARACTER (LEN=20), PARAMETER :: c_upname='set_carry_values_0_1'
     !! Vorzeichen
-    INTEGER  :: ivz, i
+    INTEGER  :: ivz
     LOGICAL  :: l_sameSize
     !
     l_sameSize = .false.

@@ -114,7 +114,7 @@
 !
 ! LOOP OVER THE SIPHONS
 !
-      DO 10 N=1,NSIPH
+      DO N=1,NSIPH
 !
 !     IDENTIFIES ENTRY / EXIT NODES
 !
@@ -269,7 +269,7 @@
 !
 !  END OF THE LOOP OVER THE SIPHONS
 !
-10    CONTINUE
+      ENDDO ! N
 !
 !-----------------------------------------------------------------------
 !

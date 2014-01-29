@@ -70,26 +70,26 @@ C  --------------------------------------------------------------
 C  INITIALISATION DES TABLEAUX NON LUS DANS LE FICHIER RESULTATS:
 C  --------------------------------------------------------------
 C
-      DO 1 I=1,NPOIN                                                            
+      DO I=1,NPOIN 
          Z(I)=10.D0                                                
-         ZF(I)=0.D0                                                             
+         ZF(I)=0.D0    
          H(I)=Z(I)-ZF(I)
 C
 C  MODIF JMH : U VARIABLE : CROIT LINEAIREMENT JUSQU'A 10 POUR X=8
 C                           REDESCEND ENSUITE
 C
-         IF(X(I).LT.8.D0) THEN                                                        
+         IF(X(I).LT.8.D0) THEN  
 C          QU(I)=10.D0*X(I)/8.D0
            U(I)=X(I)/8.D0
          ELSE
 C          QU(I)=10.D0*(1.D0-(X(I)-8.D0)/8.D0)
            U(I)=1.D0-(X(I)-8.D0)/8.D0
-         ENDIF                                                             
+         ENDIF                      
 C        QV(I)=0.D0 
-         V(I)=0.D0                                                            
+         V(I)=0.D0                 
 C        Q(I)=SQRT(QU(I)**2+QV(I)**2)
 C                                                     
-1     CONTINUE  
+      ENDDO     
 C-----------------------------------------------------------------------
 C
       RETURN
@@ -154,11 +154,11 @@ C    ZEMAX: EPAISSEUR MAX DU LIT
         CALL OV( 'X=Y+C     ',ZR,ZF,ZF,-ZEMAX,NPOIN) 
 C    XMAX: LONGUEUR DU PLATIER
         XMAX=6.D0         
-        DO 100 I=1,NPOIN
+        DO I=1,NPOIN
            IF(X(I).LE.XMAX.OR.X(I).GE.10.5D0) THEN
                ZR(I)=ZF(I)
            ENDIF
- 100    CONTINUE                                                                                 
+        ENDDO
 C
 C       NLISS CORRESPOND AU NOMBRE DE LISSAGES EFFECTUEES SUR
 C       LES VALEURS NEGATIVES DE LA VARIABLE (ZF-ZR)

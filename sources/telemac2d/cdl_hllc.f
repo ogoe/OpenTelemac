@@ -171,7 +171,7 @@
           IF(IDRY.LT.2)THEN
 !         AT LEAST ONE WET CELL
             CALL FLUX_HLLC(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
-     *                    XNN,YNN,ROT,FLX)
+     &                    XNN,YNN,ROT,FLX)
           ENDIF 
           OUTFLOW    = FLX(1)*VNL
           FLUSORT    = FLUSORT + OUTFLOW
@@ -198,7 +198,7 @@
           IF(IDRY.LT.2)THEN
 !         AT LEAST ONE WET CELL
             CALL FLUX_HLLC(XI,H2,H1,U2,U1,V2,V1,PSI2,PSI1,
-     *                    XNN,YNN,ROT,FLX)
+     &                    XNN,YNN,ROT,FLX)
           ENDIF 
           INFLOW     = FLX(1)*VNL
           FLUENT     = FLUENT + INFLOW
@@ -206,17 +206,14 @@
       ENDIF
       ENDIF
 !
+      CE(IS,1)  = CE(IS,1) - VNL*FLX(1)
+      CE(IS,2)  = CE(IS,2) - VNL*FLX(2)
+      CE(IS,3)  = CE(IS,3) - VNL*FLX(3)
 !
-100    CONTINUE
-
-       CE(IS,1)  = CE(IS,1) - VNL*FLX(1)
-       CE(IS,2)  = CE(IS,2) - VNL*FLX(2)
-       CE(IS,3)  = CE(IS,3) - VNL*FLX(3)
-!
-       ENDDO
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
-       RETURN
-       END
+      RETURN
+      END
 !**********************************************************************

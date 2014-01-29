@@ -113,7 +113,7 @@
 !
 !     PSI SCHEME
 !
-      DO 33 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          X2 = XEL(IELEM,2)
          X3 = XEL(IELEM,3)
@@ -161,13 +161,13 @@
            W3(IELEM) = - XMUL * MAX( MIN(-BETAN3,-PHIT),0.D0 )
          ENDIF
 !
-33    CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !
 !     NORMAL CENTERED SCHEME
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          X2 = XEL(IELEM,2)
          X3 = XEL(IELEM,3)
@@ -193,7 +193,7 @@
          W3(IELEM)=(  ( Y2*F1MF3 + Y3*F2MF1 ) * (U1+U2+U3+U3)
      &              - ( X2*F1MF3 + X3*F2MF1 ) * (V1+V2+V3+V3)  )*XSUR24
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
       ENDIF
 !
@@ -208,7 +208,7 @@
 !  PSI SCHEME (U4 DISCARDED HERE)
 !             (AS IF U WAS P1   )
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          X2 = XEL(IELEM,2)
          X3 = XEL(IELEM,3)
@@ -256,13 +256,13 @@
            W3(IELEM) = - XMUL * MAX( MIN(-BETAN3,-PHIT),0.D0 )
          ENDIF
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !
 !  NORMAL CENTERED SCHEME
 !
-      DO 44 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          X2 = XEL(IELEM,2)
          X3 = XEL(IELEM,3)
@@ -295,7 +295,7 @@
      &    U3*Y2-12*F3*U4*Y2-5*F3*U2*Y2-5*F3*U1*Y2+14*F2*U3*Y3+
      &    12*F2*U4*Y3+5*F2*U2*Y3+5*F2*U1*Y3)*XSU216
 !
-44    CONTINUE
+      ENDDO ! IELEM 
 !
       ENDIF
 !
@@ -310,7 +310,7 @@
 !  PSI SCHEME (U4,U5 AND U6 DISCARDED HERE)
 !             (AS IF U WAS P1             )
 !
-      DO 5 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          X2 = XEL(IELEM,2)
          X3 = XEL(IELEM,3)
@@ -358,13 +358,13 @@
            W3(IELEM) = - XMUL * MAX( MIN(-BETAN3,-PHIT),0.D0 )
          ENDIF
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !
 !  NORMAL CENTERED SCHEME
 !
-      DO 55 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          X2 = XEL(IELEM,2)
          X3 = XEL(IELEM,3)
@@ -411,7 +411,7 @@
      &             U4*Y3*F2*4.D0-V3*X3*F2*2.D0-U2*Y3*F2+V3*X2*F3*2.D0+
      &             U5*Y3*F2*8.D0-U5*Y2*F3*8.D0-U3*Y2*F3*2.D0)*XSUR120
 !
-55    CONTINUE
+      ENDDO ! IELEM 
 !
       ENDIF
 !

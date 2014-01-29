@@ -228,7 +228,7 @@
 !
          IF(IELM3.EQ.41) THEN
 !
-         DO 20 IELEM = 1,NELEM3
+         DO IELEM = 1,NELEM3
 !
             I1 = IKLE3(IELEM,1)
             I2 = IKLE3(IELEM,2)
@@ -427,11 +427,11 @@
                ENDIF
             ENDIF
 !
-20       CONTINUE
+         ENDDO ! IELEM 
 !
          ELSEIF(IELM3.EQ.51) THEN
 !
-         DO 30 IELEM = 1,NELEM3
+         DO IELEM = 1,NELEM3
 !
             I1 = IKLE3(IELEM,1)
             I2 = IKLE3(IELEM,2)
@@ -523,7 +523,7 @@
                ENDIF
             ENDIF
 !
-30       CONTINUE
+         ENDDO ! IELEM 
 !
          ELSE
            WRITE(LU,*) 'ELEMENT ',IELM3,' NOT COMPUTED IN MURD3D'

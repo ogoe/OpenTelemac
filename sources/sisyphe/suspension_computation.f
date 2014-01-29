@@ -389,7 +389,7 @@
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVE_UCONV,SAVE_VCONV
       DOUBLE PRECISION :: MSTOT
       DOUBLE PRECISION :: CONC_SABLE(NPOIN, NOMBLAY)
-      INTEGER 	       :: J
+      INTEGER          :: J
 !
       INTEGER, POINTER, DIMENSION(:) :: GLOSEG1,GLOSEG2
 !
@@ -678,7 +678,7 @@
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !  8. SOURCE AND SINKS
-!     IMPLICIT SOURCE TERM FOR THE DEPOSITION 	    : T9
+!     IMPLICIT SOURCE TERM FOR THE DEPOSITION       : T9
 !     EXPLICIT SOURCE TERM WITHOUT PUNCTUAL SOURCES : T11
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !

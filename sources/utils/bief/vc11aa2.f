@@ -113,7 +113,7 @@
 !
       IF(ICOORD.EQ.1) THEN
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         KSAT=H(IELEM)
         G1 = G(IELEM)
@@ -136,13 +136,13 @@
         W2(IELEM)=KSAT*W2(IELEM)
         W3(IELEM)=KSAT*W3(IELEM)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
 !  Y COORDINATE
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         KSAT=H(IELEM)
         G1 = G(IELEM)
@@ -165,7 +165,7 @@
         W2(IELEM)=KSAT*W2(IELEM)
         W3(IELEM)=KSAT*W3(IELEM)
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !

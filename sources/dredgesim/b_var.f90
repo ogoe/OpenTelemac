@@ -1019,8 +1019,6 @@ CONTAINS
     LOGICAL :: ok ! 
     !! Name der Function
     CHARACTER (LEN=12), PARAMETER :: c_upname='ok_var_0_dim' 
-    !! Z&auml;hlervariable
-    INTEGER :: i ! 
     !
     ok = .false.
     IF ( ok_initialised( c_upname ) ) THEN ! Modul muss initialisiert sein
@@ -2213,8 +2211,6 @@ CONTAINS
     INTEGER      , INTENT(IN) :: id      ! 
     !! R&uuml;ckgabewert : Feldindex (idx = 0 falls nicht gefunden)
     INTEGER :: idx ! 
-    !! Z&auml;hlervariable
-    INTEGER :: i ! 
     !
     IF ( ANY( this(:)%id == id ) ) THEN
        idx = MINVAL( MINLOC( this(:)%id, this(:)%id == id ) )

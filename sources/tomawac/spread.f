@@ -82,59 +82,59 @@
       SEUIL=1.D-20
       DTETAR=DEUPI/DBLE(NPLAN)
 !
-      DO 10 IP=1,NPOIN2
+      DO IP=1,NPOIN2
         COSMOY(IP)=0.D0
         SINMOY(IP)=0.D0
         VARIAN(IP)=0.D0
-   10 CONTINUE
+      ENDDO ! IP
 !
 !-----C-------------------------------------------------------C
 !-----C  SUMS UP THE DISCRETISED PART OF THE SPECTRUM         C
 !-----C-------------------------------------------------------C
-      DO 30 JF=1,NF
+      DO JF=1,NF
 !
         DFDTET=DFREQ(JF)*DTETAR
 !
-        DO 35 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           TAUXC(IP)=0.D0
           TAUXS(IP)=0.D0
           TAUXE(IP)=0.D0
-   35   CONTINUE
+        ENDDO ! IP
 !
-        DO 20 JP=1,NPLAN
+        DO JP=1,NPLAN
           AUXC=COSTET(JP)*DFDTET
           AUXS=SINTET(JP)*DFDTET
-          DO 40 IP=1,NPOIN2
+          DO IP=1,NPOIN2
             TAUXC(IP)=TAUXC(IP)+F(IP,JP,JF)*AUXC
             TAUXS(IP)=TAUXS(IP)+F(IP,JP,JF)*AUXS
             TAUXE(IP)=TAUXE(IP)+F(IP,JP,JF)*DFDTET
-   40     CONTINUE
-   20   CONTINUE
+          ENDDO ! IP
+        ENDDO ! JP
 !
-        DO 45 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           COSMOY(IP)=COSMOY(IP)+TAUXC(IP)
           SINMOY(IP)=SINMOY(IP)+TAUXS(IP)
           VARIAN(IP)=VARIAN(IP)+TAUXE(IP)
-   45   CONTINUE
+        ENDDO ! IP
 !
-   30 CONTINUE
+      ENDDO ! JF
 !
 !-----C-------------------------------------------------------------C
 !-----C  TAKES INTO ACCOUNT THE HIGH FREQUENCY PART (OPTIONAL)      C
 !-----C-------------------------------------------------------------C
       IF (TAILF.GT.1.D0) THEN
         COEFT=FREQ(NF)/((TAILF-1.D0)*DFREQ(NF))
-        DO 55 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           COSMOY(IP)=COSMOY(IP)+TAUXC(IP)*COEFT
           SINMOY(IP)=SINMOY(IP)+TAUXS(IP)*COEFT
           VARIAN(IP)=VARIAN(IP)+TAUXE(IP)*COEFT
-   55   CONTINUE
+        ENDDO ! IP
       ENDIF
 !
 !-----C-------------------------------------------------------------C
 !-----C  COMPUTES THE DIRECTIONAL WIDTH                             C
 !-----C-------------------------------------------------------------C
-      DO 60 IP=1,NPOIN2
+      DO IP=1,NPOIN2
         IF (VARIAN(IP).GT.SEUIL) THEN
           AUXS=SINMOY(IP)/VARIAN(IP)
           AUXC=COSMOY(IP)/VARIAN(IP)
@@ -143,7 +143,7 @@
         ELSE
           DIRSPR(IP)=SEUIL
         ENDIF
-   60 CONTINUE
+      ENDDO ! IP
 !
       RETURN
       END

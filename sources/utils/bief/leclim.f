@@ -207,7 +207,7 @@
         STOP
       ENDIF
 !
-      DO 50 K=1,NPTFR
+      DO K=1,NPTFR
 !
 !     CHECKING FRICTION COEFFICIENT
 !
@@ -252,7 +252,7 @@
       UBOR(K+DIMUBOR) = UBOR(K)
       VBOR(K+DIMUBOR) = VBOR(K)
 !
-50    CONTINUE
+      ENDDO ! K
 !
       IF(TRAC) THEN
         DO K=1,NPTFR

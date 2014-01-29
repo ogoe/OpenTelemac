@@ -14,10 +14,10 @@
 !code
 !+  EXAMPLE :
 !+
-!+      DO 10 ILAG=1,NLAG
+!+      DO ILAG=1,NLAG
 !+         DEBLAG(ILAG) = 1
 !+         FINLAG(ILAG) = 299
-!+ 10   CONTINUE
+!+      ENDDO ! ILAG
 !warning  TWO DRIFTS CANNOT COMPLETE IN THE SAME TIMESTEP (ONLY THE 1ST WILL BE WRITTEN TO FILE)
 !warning  THE RESULTS MUST BE SAVED BETWEEN TWO DRIFT COMPUTATION ENDS
 !
@@ -85,10 +85,10 @@
 !
 !  EXAMPLE :
 !
-!      DO 10 ILAG=1,NLAG
+!      DO ILAG=1,NLAG
 !         DEBLAG(ILAG) = 1
 !         FINLAG(ILAG) = 299
-! 10   CONTINUE
+!      ENDDO ! ILAG
 !
 !-----------------------------------------------------------------------
 !

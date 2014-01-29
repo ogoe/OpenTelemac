@@ -48,17 +48,18 @@
 !
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      INTEGER IPOIN,ISICLA
-      COMMON/INFO/LNG,LU
-!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: OPTION
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+#if defined (HAVE_DREDGESIM)
       CHARACTER(LEN=250) :: DREDGEINP,SEDGEO
+      INTEGER IPOIN,ISICLA
       DOUBLE PRECISION,ALLOCATABLE :: AVAI_GF(:,:)
       INTEGER I,J
       CHARACTER(LEN=11) EXTENS
@@ -70,6 +71,7 @@
      &          SAVE,TARGET :: TDS_NODE_SEDIMENT_FRACTION
       DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE, 
      &          SAVE,TARGET :: TDS_HN
+#endif
 !
 !-----------------------------------------------------------------------
 !

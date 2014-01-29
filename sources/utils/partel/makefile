@@ -31,6 +31,7 @@ VERSION	      = v7p0
 #
 # Options du compilateur :
 #
+include makefile.am
 include $(SYSTELCFG)/cfgmak.mak
 #
 DIRINC           = $(PROJECT)/builds/$(DIRLIB)/lib
@@ -64,13 +65,6 @@ INSTALL	      = cp
 MAKEFILE      = makefile
 
 #------------------------ Liste des fichiers
-#
-#------- Sources Fortran
-
-SRCS_PARTEL= util_pares.f partitioner.F pares3d.F partel.F 
-SRCS_PARTEL_PARA= partitioner_para.F partel_para.F
-SRCS_PARTEL_PRELIM= partitioner.F partel_prelim.F 
-
 #
 #------- Objets
 #

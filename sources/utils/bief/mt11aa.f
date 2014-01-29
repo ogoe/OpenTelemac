@@ -119,7 +119,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -145,7 +145,7 @@
       A31(IELEM)  =      Y2 * (F3+F3+F2+F1)  +      Y3 * (-F2+F1)
       A32(IELEM)  = (Y2+Y2) * (F3+F2)        +      Y3 * (-F2+F1)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -153,7 +153,7 @@
 !  CASE OF DERIVATIVE WRT Y =
 !================================
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -179,7 +179,7 @@
       A31(IELEM)  =      X2 * (-F3-F3-F2-F1) +      X3 * (F2-F1)
       A32(IELEM)  =-(X2+X2) * (F3+F2)        +      X3 * (F2-F1)
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
         ELSE
 !

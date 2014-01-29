@@ -112,7 +112,7 @@
       IF(     IELMF.EQ.10.AND.IELMG.EQ.11.
      &    AND.IELMU.EQ.11.AND.IELMV.EQ.11  ) THEN
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2 = XEL(IELEM,2)
       X3 = XEL(IELEM,3)
@@ -137,7 +137,7 @@
       W2(IELEM) =           (-GG*X3+FF*Y3)  * COEF
       W3(IELEM) =          -(FF*Y2-GG*X2)   * COEF
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

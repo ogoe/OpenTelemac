@@ -55,14 +55,14 @@
       XMIN = X(1)
       IMIN = 1
 !
-      DO 10 I = 2, NPOIN
+      DO I = 2, NPOIN
 !
         IF(X(I).LT.XMIN) THEN
           IMIN = I
           XMIN = X(I)
         ENDIF
 !
-10    CONTINUE
+      ENDDO ! I 
 !
 !-----------------------------------------------------------------------
 !

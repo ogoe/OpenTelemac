@@ -101,12 +101,12 @@
                 NEXT = I
                 GO TO 1000
            ELSE
-                DO 110 J = I+1 , LONGLI
+                DO J = I+1 , LONGLI
                      IF ( LIGNE(J:J).EQ.'/' ) THEN
                           I = J
                           GO TO 100
                      ENDIF
-110             CONTINUE
+                ENDDO ! J 
                 I = LONGLI
                 GO TO 100
             ENDIF

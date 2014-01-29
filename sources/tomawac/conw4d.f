@@ -228,7 +228,7 @@
      &              + SINTET(IP)*
      &               (COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
                 USGD=V(IPOIN)*DZY(IPOIN)+U(IPOIN)*DZX(IPOIN)
-      	        CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF) + V(IPOIN)
+                CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF) + V(IPOIN)
                 CX(IPOIN,IP,JF)=CX(IPOIN,IP,JF) + U(IPOIN)
                 CT(IPOIN,IP,JF)=CT(IPOIN,IP,JF) - LSDUDN
                 CF(IPOIN,IP,JF)= (TRA01(IPOIN)*(USGD+DZHDT(IPOIN))
@@ -248,7 +248,7 @@
      &              + SINTET(IP)*
      &               (COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
                 USGD=V(IPOIN)*DZY(IPOIN)+U(IPOIN)*DZX(IPOIN)
-      	        CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF) + V(IPOIN)
+                CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF) + V(IPOIN)
                 CX(IPOIN,IP,JF)=CX(IPOIN,IP,JF) + U(IPOIN)
                 CT(IPOIN,IP,JF)=CT(IPOIN,IP,JF) - LSDUDN
                 CF(IPOIN,IP,JF)= (TRA01(IPOIN)*USGD

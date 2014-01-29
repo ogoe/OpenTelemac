@@ -14,6 +14,7 @@
 #----------------------------------------------------Juin-1999-DeltaCAD
 #
 #--- Definitions pour SYSTEME TELEMAC
+!include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
 VERSION    = V7P0
 
@@ -57,13 +58,6 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)
 
 #------------------------ Liste des fichiers
-#
-#------- Sources Fortran
-
-SRCS= \
-aidelu.f carlu.f classe.f cmd.f damoc.f damocle.f damocles.f \
-dico.f    influ.f intlu.f  loglu.f longlu.f majus.f    \
-minus.f   next.f  precar.f prev.f  preval.f realu.f
 #
 #------- Objets
 #

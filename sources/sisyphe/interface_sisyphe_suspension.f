@@ -54,7 +54,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: MASFIN,MASDEPT,MASDEP
       END SUBROUTINE SUSPENSION_BILAN
       !================================================================!
-!     		      ***************************
+!                     ***************************
                      SUBROUTINE SUSPENSION_BILAN_COH
 !                    ***************************
 !

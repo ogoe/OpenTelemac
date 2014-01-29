@@ -709,7 +709,7 @@ CONTAINS
     IF ( .NOT. initialised ) THEN
        !
        IF (DEBUG_ds > 0) THEN
-       	  WRITE(*,*) ' '
+          WRITE(*,*) ' '
           WRITE(*,*) ' "p_dredgesim_ui" version ... <'
           WRITE(*,*) ' Copyright (C) 2007 Bundesanstalt fuer Wasserbau '
           WRITE(*,*)
@@ -1935,7 +1935,7 @@ CONTAINS
 !LEO       ! [6]
 !LEO       ! -----------------------------------------------------------------
 !LEO       IF (DEBUG_ds > 0) THEN
-!LEO       	  WRITE(*,*) ' ... printing array shapes '
+!LEO          WRITE(*,*) ' ... printing array shapes '
 !LEO       END IF
 !LEO       IF ( no_error( ) ) CALL print_dredgesim_shape ( )
 !LEO       IF (DEBUG_ds > 0) THEN
@@ -1977,13 +1977,11 @@ CONTAINS
     CHARACTER (LEN=c_len_datetime_to_string) :: l_string ! 
     
 !     DOUBLE PRECISION :: AVAIL(get_nof_nodes(), 1,size(node_sediment_fraction,2))
-     DOUBLE PRECISION, POINTER :: avai_dr(:,:),AVAIL(:,:,:)
+     DOUBLE PRECISION, POINTER :: AVAIL(:,:,:)
 
     TYPE (BIEF_OBJ) :: ZF
     !LEO TODO check if it is ok. I changed 
     !DOUBLE PRECISION :: ipoin, isicla
-    ! to
-    INTEGER :: ipoin, isicla
     !
 
     IF ( ok_initialised( c_upname ) ) THEN
@@ -1996,7 +1994,7 @@ CONTAINS
        act_time     = time
        act_timestep = su_datetime( act_time, old_time )
        l_string     = datetime_to_string( act_time )
-       WRITE(*,*) ' +++ dredgesim-Time = ',TRIM(l_string)	   
+       WRITE(*,*) ' +++ dredgesim-Time = ',TRIM(l_string)   
 ! update botom elevation:
 !       CALL set_ds_node_depth ( get_sm_node_depth( ))
        !LEO TODO set_ds_node_depth here? It should be
@@ -2041,7 +2039,8 @@ CONTAINS
      node_sediment_fraction, get_nof_nodes
 
     use bief, ONLY : bief_obj
-	!
+    !
+    INTEGER :: NSICLA, NPOIN
     !! current timestep in seconds
     INTEGER :: ipoin, isicla, NSICLA, NPOIN
     REAL (KIND=Double) , INTENT(IN) :: timestep_in_sec ! 
@@ -2153,7 +2152,6 @@ CONTAINS
     !! name of subroutine
     CHARACTER (LEN=16), PARAMETER  :: c_upname='stop_dredgesim_d' ! 
     !! variables
-    INTEGER :: crit_type, i
     !
     IF ( ok_initialised( c_upname ) ) THEN
        WRITE(*,*) ' >>> STOP dredgesim simulation '
@@ -2167,8 +2165,8 @@ CONTAINS
        IF (NCSIZE.GT.1) THEN
           IF (ipid==0) THEN
               IF (ALLOCATED(dredge_criterion)) THEN
-              	 CALL write_final_dredged_volume ()
-              	 CALL write_final_disposed_volume ()
+                 CALL write_final_dredged_volume ()
+                 CALL write_final_disposed_volume ()
               END IF
 !             IF (ANY(all_total_volume(:) /= 0.0_Double))CALL write_final_dredged_volume ()
 !             IF (ANY(disp_total_volume(:,:) /= 0.0_Double))CALL write_final_disposed_volume ()

@@ -292,12 +292,12 @@
 !
          IF(TYPEXM(1:1).EQ.'Q') THEN
 !
-         DO 70 IELEM = 1 , NELEM
+         DO IELEM = 1 , NELEM
 !
            XM(IELEM, 1) = XM(IELEM, 1) * D(IKLE(IELEM,2))
            XM(IELEM, 2) = XM(IELEM, 2) * D(IKLE(IELEM,1))
 !
-70       CONTINUE
+         ENDDO ! IELEM 
 !
          ELSEIF(TYPEXM(1:1).EQ.'S') THEN
           IF (LNG.EQ.1) WRITE(LU,170)
@@ -338,12 +338,12 @@
 !
          IF(TYPEXM(1:1).EQ.'Q') THEN
 !
-         DO 80 IELEM = 1 , NELEM
+         DO IELEM = 1 , NELEM
 !
            XM(IELEM, 1) = XM(IELEM, 1) * D(IKLE(IELEM,1))
            XM(IELEM, 2) = XM(IELEM, 2) * D(IKLE(IELEM,2))
 !
-80       CONTINUE
+         ENDDO ! IELEM 
 !
          ELSEIF(TYPEXM(1:1).EQ.'S') THEN
           IF (LNG.EQ.1) WRITE(LU,180)
@@ -385,16 +385,16 @@
 !
          IF(TYPEXM(1:1).EQ.'S') THEN
 !
-         DO 85 IELEM = 1 , NELEM
+         DO IELEM = 1 , NELEM
            XM(IELEM,1)=XM(IELEM,1)* D(IKLE(IELEM,2)) * D(IKLE(IELEM,1))
-85       CONTINUE
+         ENDDO ! IELEM 
 !
          ELSEIF(TYPEXM(1:1).EQ.'Q') THEN
 !
-         DO 86 IELEM = 1 , NELEM
+         DO IELEM = 1 , NELEM
            XM(IELEM,1)=XM(IELEM,1)* D(IKLE(IELEM,2)) * D(IKLE(IELEM,1))
            XM(IELEM,2)=XM(IELEM,2)* D(IKLE(IELEM,1)) * D(IKLE(IELEM,2))
-86       CONTINUE
+         ENDDO ! IELEM 
 !
         ELSEIF(TYPEXM(1:1).NE.'0') THEN
            IF (LNG.EQ.1) WRITE(LU,20) TYPEXM(1:1)

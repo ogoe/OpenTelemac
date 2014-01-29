@@ -514,7 +514,7 @@ CONTAINS
     !! mit -1 wird die Recorddimension gekennzeichnet
     INTEGER :: res                   ! 
     !! Hilfsvariablen
-    INTEGER                        :: i, j, k, idx, jdx ! 
+    INTEGER                        :: i, j, idx ! 
     INTEGER          , ALLOCATABLE :: l_res(:)       ! 
     CHARACTER (LEN=80), POINTER    :: var_name(:)    ! 
     !

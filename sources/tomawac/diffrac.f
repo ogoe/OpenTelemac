@@ -210,7 +210,7 @@
 ! 
 !     LOOP OVER THE DIRECTIONS 
 !      
-      DO 220 IP = 1,NPLAN
+      DO IP = 1,NPLAN
 ! 
 !       COMPUTATION OF LOCAL AMPLITUDES OF DIRECTIONAL SPECTRA 
 !     
@@ -237,7 +237,7 @@
         DO I=1,NPOIN2
           FRDA(I,2)=ST1%R(I)*ST0%R(I)
         ENDDO
-!      	 
+!
 !       DIFFRA=1 - Mean Slope Equation model 
 !       DIFFRA=2 - Revised Mean Slope Equation model
 !
@@ -408,7 +408,7 @@
           ENDIF                  
         ENDDO   
 ! 
-220   CONTINUE   
+      ENDDO !    IP 
 ! 
 !     ---------------------------------------------------------------- 
 !       ... AND SPHERICAL COORDINATES 

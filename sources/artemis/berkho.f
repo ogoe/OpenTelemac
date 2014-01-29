@@ -134,7 +134,7 @@
       DOUBLE PRECISION XMUL,XK,ZERO
       
       
-      INTEGER J,ITERKN
+      INTEGER ITERKN
 !
 !-----------------------------------------------------------------------
 !
@@ -194,9 +194,9 @@
      &           (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
         ENDDO
 !
-!	ACTUALIZATION OF BOUNDARY CONDITIONS : K AS CHANGED !!
+!       ACTUALIZATION OF BOUNDARY CONDITIONS : K AS CHANGED !!
 !       ------------------------------------------------------
-!	 ----------
+!        ----------
          CALL PHBOR       
 !        ----------
        ENDIF
@@ -366,7 +366,7 @@
      &        MESH,.TRUE.,MASK5)
           CALL OM( 'M=M+N   ' , AM1 , MBOR , SBID , CBID , MESH )
          ENDIF
-!	 
+!
        ENDIF
 !
 !     =========================================
@@ -457,7 +457,7 @@
 !CP
 !         IF (NCSIZE.GT.1) THEN
 !           CALL PARCOM(CV1,2,MESH)
-!	  ENDIF
+!         ENDIF
 !CP
 
 
@@ -544,7 +544,7 @@
 !CP
 !          IF (NCSIZE.GT.1) THEN
 !           CALL PARCOM(CV2,2,MESH)
-!	  ENDIF
+!         ENDIF
 !CP
 !     =========================================
 !                   MATRIX BM
@@ -865,7 +865,7 @@
 !        ------------------------------------------------------
 !
             IF (.NOT. ALEMON .AND. .NOT. ALEMUL) THEN
-               DO 20 I = 1,NPOIN
+               DO I = 1,NPOIN
                   HM = 0.88D0/K%R(I)*TANH(GAMMAS*K%R(I)*H%R(I)/0.88D0)
 !
 !     HMUE = HMU/SQRT(2)
@@ -907,7 +907,7 @@
                         ENDIF
                      ENDIF
                   ENDIF
- 20            CONTINUE
+               ENDDO
 !
 !
 !           --------------------------------
@@ -915,13 +915,13 @@
 !           --------------------------------
 !
                IF (IBREAK.EQ.2) THEN
-                  DO 30 I = 1,NPOIN
+                  DO I = 1,NPOIN
                     HM = 0.88D0/K%R(I)*TANH(GAMMAS*K%R(I)*H%R(I)/0.88D0)
                      HEFF=MIN(HMU%R(I),HM)
                      HEFF=MAX(HEFF,1.D-5)
                      MU2%R(I)=T3%R(I)*KDALLY*
      &                    (1.D0-(GDALLY*H%R(I)/HEFF)**2)/H%R(I)
- 30               CONTINUE
+                  ENDDO
                ENDIF
 !
 !     -------------------------------------
@@ -929,12 +929,12 @@
 !     -------------------------------------
 !
                IF (IBREAK.EQ.1) THEN
-                  DO 40 I = 1,NPOIN
+                  DO I = 1,NPOIN
                    HM = 0.88D0/K%R(I)*TANH(GAMMAS*K%R(I)*H%R(I)/0.88D0)
                      HEFF=MIN(HMU%R(I),HM)
                      HEFF=MAX(HEFF,1.D-5)
                      MU2%R(I) = T3%R(I)*2.D0*HEFF/(H%R(I)*CG%R(I)*PER)
- 40               CONTINUE
+                  ENDDO
                ENDIF
 !
 !     -------------------------------------------------------------
@@ -943,7 +943,7 @@
 !     -------------------------------------------------------------
 !
             ELSE
-               DO 50 I = 1,NPOIN
+               DO I = 1,NPOIN
                   HM = 0.88D0/K%R(I)*TANH(GAMMAS*K%R(I)*H%R(I)/0.88D0)
 !
 !     HMUE = HMU/SQRT (2)
@@ -971,7 +971,7 @@
                HEFF=MAX(HEFF,1.D-5)
                MU2%R(I)=ALFABJ*OMEGA*T3%R(I)*((HM/HEFF)**2)/
      &                (3.141592653589D0*CG%R(I))
- 50         CONTINUE
+            ENDDO
 !
          END IF
 !
@@ -1003,7 +1003,7 @@
                CALL FWSPEC(FW%R,FWCOEF,MESH%X%R,MESH%Y%R,
      &                     NPOIN,PRIVE,ZF%R)
             ELSE
-               DO 70 I = 1,NPOIN
+               DO I = 1,NPOIN
                   CALL CALCFW
      &                   (I,H%R,C%R,CG%R,K%R,HMU%R,
      &                    NPOIN,OMEGA,GRAV,
@@ -1011,7 +1011,7 @@
      &                    FORMFR,REGIDO,RICOEF,
      &                    ENTREG,ENTRUG,FFW)
                   FW%R(I) = FFW
- 70            CONTINUE
+               ENDDO
             ENDIF
 !
 !           -----------------------------------------
@@ -1037,21 +1037,21 @@
 !
                CALL OS( 'X=C     ' , T1 , SBID , SBID , 0.D0 )
 !
-               DO 80 I = 1,NPOIN
+               DO I = 1,NPOIN
                   T1%R(I) = (0.5D0*FW%R(I)*T4%R(I))/
      &                    (H%R(I)*((COSH(K%R(I)*H%R(I)))**2))
                   T1%R(I) = T1%R(I)/CG%R(I)
- 80            CONTINUE
+               ENDDO
             ENDIF
 !
             IF (FORMFR .EQ. 2) THEN
                CALL OS( 'X=C     ' , T1 , SBID , SBID , 0.D0 )
-               DO 90 I = 1,NPOIN
+               DO I = 1,NPOIN
                   T1%R(I) = (2*FW%R(I)*HMU%R(I)*
      &                    ((OMEGA/SINH(K%R(I)*H%R(I)))**3))
                   T1%R(I) = T1%R(I)/(3.D0*3.14159D0*GRAV)
                   T1%R(I) = T1%R(I)/CG%R(I)
- 90            CONTINUE
+               ENDDO
             ENDIF
 !
 !        -------------------------

@@ -275,12 +275,12 @@
      &         ,' EN SUSPENSION AU TEMPS T+DT : ',G16.7,' M3')
 1110  FORMAT(1X,'FRONTIERE ',1I3,' FLUX TRACEUR ',1I2,' = ',G16.7,
      &          ' ( >0 : ENTRANT  <0 : SORTANT )')
-1112  FORMAT(1X,'FLUX IMPOSE DE LA CLASSE ',I2
-     &         ,'                             : ',G16.7,' M3/S')
-1113  FORMAT(1X,'FLUX LIBRE  DE LA CLASSE ',I2
-     &         ,'                             : ',G16.7,' M3/S')
-1114  FORMAT(1X,'FLUX DE LA CLASSE        ',I2
-     &         ,' PAR ONDE INCIDENTE          : ',G16.7,' M3/S')
+!1112  FORMAT(1X,'FLUX IMPOSE DE LA CLASSE ',I2
+!     &         ,'                             : ',G16.7,' M3/S')
+!1113  FORMAT(1X,'FLUX LIBRE  DE LA CLASSE ',I2
+!     &         ,'                             : ',G16.7,' M3/S')
+!1114  FORMAT(1X,'FLUX DE LA CLASSE        ',I2
+!     &         ,' PAR ONDE INCIDENTE          : ',G16.7,' M3/S')
 1115  FORMAT(1X,'VOLUME DEPOSE SUR LE FOND  : ',G16.7,' M3')
 1116  FORMAT(1X,'VOLUME CREE PAR TERME SOURCE  '
      &         ,   '                          : ',G16.7,' M3')
@@ -301,12 +301,12 @@
      &         ,' IN SUSPENSION AT TIME T+DT : ',G16.7,' M3')
 2110  FORMAT(1X,'BOUNDARY ',1I3,' FLUX TRACER ',1I2,' = ',G16.7,
      &          ' ( >0 : ENTERING  <0 : EXITING )')
-2112  FORMAT(1X,'PRESCRIBED SEDIMENT FLUX OF CLASS ',I2
-     &         ,'                            : ',G16.7,' M3/S')
-2113  FORMAT(1X,'FREE FLUX OF CLASS                ',I2
-     &         ,'                            : ',G16.7,' M3/S')
-2114  FORMAT(1X,'FLUX OF SEDIMENT CLASS            ',I2
-     &         ,' ADDED BY INCIDENT WAVE     : ',G16.7,' M3/S')
+!2112  FORMAT(1X,'PRESCRIBED SEDIMENT FLUX OF CLASS ',I2
+!     &         ,'                            : ',G16.7,' M3/S')
+!2113  FORMAT(1X,'FREE FLUX OF CLASS                ',I2
+!     &         ,'                            : ',G16.7,' M3/S')
+!2114  FORMAT(1X,'FLUX OF SEDIMENT CLASS            ',I2
+!     &         ,' ADDED BY INCIDENT WAVE     : ',G16.7,' M3/S')
 2115  FORMAT(1X,'VOLUME OF DEPOSIT           : ',G16.7,' M3')
 2116  FORMAT(1X,'VOLUME CREATED BY SOURCE TERM       '
      &         ,'                            : ',G16.7,' M3')

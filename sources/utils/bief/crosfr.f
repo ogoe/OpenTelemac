@@ -76,7 +76,7 @@
 !     DM     : MINIMUM DISTANCE
       DM2 = DM**2
 !
-      DO 10 KA=1,NPTFR
+      DO KA=1,NPTFR
 !
 ! INTERSECTION OF A BOUNDARY SEGMENT AND THE SEGMENT
 ! FORMED BY THE POINTS (X,Y) AND (XR,YR)
@@ -88,7 +88,7 @@
 !
         DET = (XR-X)*(YA-YB) - (YR-Y)*(XA-XB)
 !
-        IF(ABS(DET).LT.1.D-6) GO TO 10
+        IF(ABS(DET).LT.1.D-6) CYCLE
 !
         ALFA = ( (XA-X)*(YA-YB) - (YA-Y)*(XA-XB) ) / DET
         BETA = ( (XR-X)*(YA-Y ) - (YR-Y)*(XA-X ) ) / DET
@@ -97,7 +97,7 @@
         IF(ALFA.GE.EPS.AND.ALFA.LE.1.D0-EPS.AND.
      &     BETA.GE.EPS.AND.BETA.LE.1.D0-EPS) THEN
           OK = .FALSE.
-          GO TO 1000
+          EXIT
         ENDIF
 !
 ! ALSO ELIMINATES THE POINTS TOO CLOSE TO THE BOUNDARY
@@ -106,12 +106,12 @@
         DISTB2 = (XR-XB)**2 + (YR-YB)**2
         IF(DISTA2.LT.DM2.OR.DISTB2.LT.DM2) THEN
           OK = .FALSE.
-          GO TO 1000
+          EXIT
         ENDIF
 !
-10    CONTINUE
+      ENDDO ! KA
 !
 !-----------------------------------------------------------------------
 !
-1000  RETURN
+      RETURN
       END

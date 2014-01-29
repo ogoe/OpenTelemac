@@ -72,7 +72,9 @@
       DO 10 ILP=1,ILPMAX
         I = L(I)
         VI = V(I)
-        IF (LAST(VI))  1, 10, 8
+        IF (LAST(VI) < 0) GOTO 1
+        IF (LAST(VI) == 0) GOTO 10
+        IF (LAST(VI) > 0) GOTO 8
 !
 !------IF VI NEITHER PROTOTYPE NOR DUPLICATE VERTEX, THEN MERGES ELEMENTS
 !------TO COMPUTE DEGREE

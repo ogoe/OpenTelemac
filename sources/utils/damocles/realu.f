@@ -158,7 +158,7 @@
       ILONG  = I2 - I1
       IPOINT = I2 - 1
       IFDECI = I2 - 1
-      DO 100 I = I1 , I2-1
+      DO I = I1 , I2-1
 !          ACCEPTS '.' AND ','
            IF ( LIGNE(I:I).EQ.'.' ) THEN
                 IPOINT = I
@@ -176,7 +176,7 @@
                 FORMAE = .TRUE.
                 IFDECI = I-1
            ENDIF
-  100 CONTINUE
+      ENDDO ! I 
 !
 !     //// NUMBER OF DECIMAL POINTS ///
 !

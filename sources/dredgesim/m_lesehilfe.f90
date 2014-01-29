@@ -517,7 +517,6 @@ CONTAINS
     CHARACTER (LEN=6)             :: c_egb
     !! ggf. String mit Zeilnummer
     CHARACTER (LEN=6)             :: c_zeil
-    CHARACTER (LEN=6)             :: c_key
     !! Blockbezeichnung fuer Fehlermeldung
     CHARACTER (LEN=120)           :: c_block
     !

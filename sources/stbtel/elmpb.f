@@ -64,16 +64,16 @@
 !     ELIMINATION DES ELEMENTS COMPORTANT DES POINTS A PROBLEME
 !     -------------------------------------------------------------
 !
-      DO 10 I=1,NBPB
-        DO 11 IEL = 1, NELEM
+      DO I=1,NBPB
+        DO IEL = 1, NELEM
           IF (IKLE(IEL,1).EQ.NUMPB(I).OR.IKLE(IEL,2).EQ.NUMPB(I)
      &        .OR.IKLE(IEL,3).EQ.NUMPB(I)) THEN
             IKLE(IEL, 1) = 0
             IKLE(IEL, 2) = 0
             IKLE(IEL, 3) = 0
           ENDIF
- 11     CONTINUE
- 10   CONTINUE
+        ENDDO
+      ENDDO
 !
 !     ELIMINATION DES ELEMENTS
 !     ------------------------
@@ -85,11 +85,11 @@
         IF ((IKLE(IEL, 1).EQ.0).AND.(IKLE(IEL, 2).EQ.0).AND.
      &     (IKLE(IEL, 3).EQ.0)) THEN
          NELI = NELI + 1
-         DO 48 I = IEL, NELEM - NELI
+         DO I = IEL, NELEM - NELI
            IKLE(I,1) = IKLE(I+1, 1)
            IKLE(I,2) = IKLE(I+1, 2)
            IKLE(I,3) = IKLE(I+1, 3)
- 48      CONTINUE
+         ENDDO
         ELSE
          IEL = IEL + 1
         ENDIF
@@ -104,28 +104,28 @@
 !      ELIMINATION DES POINTS NE FAISANT PLUS PARTIE DU MAILLAGE
 !      REUTILISATION DE ISDRY POUR MARQUER LES POINTS NON UTILISEES
 !      ---------------------------------------------
-       DO 65 I = 1, NPOIN
+       DO I = 1, NPOIN
          ISDRY(I) = 0
          NEW(I) = 0
- 65    CONTINUE
+       ENDDO
 !
-       DO 75 IEL = 1, NELEM
+       DO IEL = 1, NELEM
         ISDRY(IKLE(IEL,1)) = IKLE(IEL,1)
         ISDRY(IKLE(IEL,2)) = IKLE(IEL,2)
         ISDRY(IKLE(IEL,3)) = IKLE(IEL,3)
- 75    CONTINUE
+       ENDDO
 !
        NELI = 0
        I = 1
 !      POUR CHAQUE POINT FAIRE
-       DO 85 I = 1, NPOIN
+       DO I = 1, NPOIN
          IF (ISDRY(I) .EQ.0) THEN
            NELI = NELI + 1
            NEW(I) = 0
          ELSE
            NEW(I) = I - NELI
          ENDIF
- 85    CONTINUE
+       ENDDO
 !      FIN POUR CHAQUE POINT
 !
        NELI = 0
@@ -136,7 +136,7 @@
 !          POINT I  A ELIMINER
            NELI = NELI + 1
 !          DECALAGE DANS LE TABLEAU DES POINTS
-           DO 95 J = I, NPOIN - NELI
+           DO J = I, NPOIN - NELI
              X(J) = X(J+1)
              Y(J) = Y(J+1)
              NCOLOR(J) = NCOLOR(J+1)
@@ -145,7 +145,7 @@
              ELSE
                ISDRY(J) = 0
              ENDIF
- 95        CONTINUE
+           ENDDO
          ELSE
            I = I + 1
          ENDIF
@@ -157,14 +157,14 @@
 !
 !      ON REPERCUTE LA RENUMEROTATION DANS IKLE
 !      ----------------------------------------
-       DO 115 IEL = 1, NELEM
+       DO IEL = 1, NELEM
          J = IKLE(IEL,1)
          IKLE(IEL,1) = NEW(J)
          J = IKLE(IEL,2)
          IKLE(IEL,2) = NEW(J)
          J = IKLE(IEL,3)
          IKLE(IEL,3) = NEW(J)
- 115   CONTINUE
+       ENDDO
        RETURN
 !***********************************************************************
  1009 FORMAT(1X,'ELEMENTS SUPPRIMES DU MAILLAGE :',I8)

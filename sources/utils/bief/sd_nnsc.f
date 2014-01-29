@@ -9,15 +9,15 @@
 !***********************************************************************
 !
 !brief NUMERICAL SOLUTION OF SPARSE NONSYMMETRIC SYSTEM OF LINEAR
-!+	EQUATIONS GIVEN LDU-FACTORIZATION (COMPRESSED POINTER STORAGE)
+!+      EQUATIONS GIVEN LDU-FACTORIZATION (COMPRESSED POINTER STORAGE)
 !+
 !+
-!+	 INPUT VARIABLES..  N, R, C, IL, JL, IJL, L, D, IU, JU, IJU, U, B
-!+	 OUTPUT VARIABLES.. Z
+!+       INPUT VARIABLES..  N, R, C, IL, JL, IJL, L, D, IU, JU, IJU, U, B
+!+       OUTPUT VARIABLES.. Z
 !+
-!+	 PARAMETERS USED INTERNALLY..
+!+       PARAMETERS USED INTERNALLY..
 !+ FIA   \ TMP   - TEMPORARY VECTOR WHICH GETS RESULT OF SOLVING  LY = B.
-!+	 \	     SIZE = N.
+!+       \           SIZE = N.
 !+
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
 !
@@ -68,17 +68,17 @@
 !
 !     SOLVE  LY = B  BY FORWARD SUBSTITUTION 
 !
-      DO 3 K=1,N
+      DO K=1,N
         JMIN = IL(K)
         JMAX = IL(K+1) - 1
         TMPK = -D(K) * TMP(K)
         TMP(K) = -TMPK
-        IF (JMIN .GT. JMAX) GO TO 3
+        IF (JMIN .GT. JMAX) CYCLE
         ML = IJL(K) - JMIN
         DO J=JMIN,JMAX
           TMP(JL(ML+J)) = TMP(JL(ML+J)) + TMPK * L(J)
         ENDDO
-   3    CONTINUE
+      ENDDO ! K
 !
 !     SOLVE  UX = Y  BY BACK SUBSTITUTION
 !

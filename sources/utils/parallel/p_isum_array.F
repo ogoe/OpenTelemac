@@ -40,6 +40,7 @@
 !-----------------------------------------------------------------------
 !
       IERR = 0
+      RECV_BUFFER = 0
 #if defined (HAVE_MPI)
       CALL MPI_ALLREDUCE(SEND_BUFFER,RECV_BUFFER,NCOUNT,MPI_INTEGER,
      &                   MPI_SUM,MPI_COMM_WORLD,IERR)

@@ -124,7 +124,7 @@
 !
 !        LOOP ON THE BOUNDARY SIDES
 !
-         DO 1 IELEM = 1,NELEB
+         DO IELEM = 1,NELEB
 !
            IEL=NELBOR(IELEM)
 !
@@ -191,7 +191,7 @@
 !
            ENDIF
 !
-1        CONTINUE
+         ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

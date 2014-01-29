@@ -2712,7 +2712,7 @@ CONTAINS
     LOGICAL          , INTENT(OUT) :: ex   ! 
     !! Hilfsvariablen
     LOGICAL , ALLOCATABLE :: l_mask(:)                      ! 
-    INTEGER               :: i, nn, np                      ! 
+    INTEGER               :: i, nn                          ! 
     INTEGER , ALLOCATABLE :: l_stru_start(:), l_stru_len(:) ! 
     INTEGER , POINTER     :: p_stru_list(:)                 ! 
     CHARACTER (LEN=c_len_omi_ind_stru_id) , ALLOCATABLE :: l_stru_id(:) ! 

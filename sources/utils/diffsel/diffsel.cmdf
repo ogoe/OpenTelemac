@@ -2,7 +2,7 @@
 path: <root>|sources|utils|diffsel
 module: diffsel
 liborder: diffsel
-version: v7p0
+version: v6p3
 name: DIFFSEL
 
 [diffsel]

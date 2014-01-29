@@ -112,10 +112,10 @@
 !
       IF (IPID.NE.NCSIZE-1) THEN
         IZH=1
-        DO 60 IL=IPID+1,NCSIZE-1
+        DO IL=IPID+1,NCSIZE-1
           II=0
-          DO 50 I=1,NPTIR
-            DO 40 J=2,NBMAXNSHARE
+          DO I=1,NPTIR
+            DO J=2,NBMAXNSHARE
               IF(NACHB(J,I).EQ.IL) THEN
                 IF(IZH.GT.NBMAXDSHARE) THEN
                   IF(LNG.EQ.1) THEN
@@ -130,15 +130,15 @@
                 II=II+1
                 NHP(IZH,II)=NACHB(1,I)
               ENDIF
-40          CONTINUE
-50        CONTINUE
+            ENDDO ! J
+          ENDDO ! I
           IF(II.NE.0) THEN
             IKP(IZH,1)=IL
             IKP(IZH,2)=II
             IZH=IZH+1
             IMAX=IL
           ENDIF
-60      CONTINUE
+        ENDDO ! IL
       ENDIF
 !
 !
@@ -148,10 +148,10 @@
 !
       IF (IPID.NE.0) THEN
         IZH=1
-        DO 90 IL=IPID-1,0,-1
+        DO IL=IPID-1,0,-1
           II=0
-          DO 80 I=1,NPTIR
-           DO 70 J=2,NBMAXNSHARE
+          DO I=1,NPTIR
+           DO J=2,NBMAXNSHARE
               IF(NACHB(J,I).EQ.IL) THEN
                 IF(IZH.GT.NBMAXDSHARE) THEN
                   IF(LNG.EQ.1) THEN
@@ -166,15 +166,15 @@
                 II=II+1
                 NHM(IZH,II)=NACHB(1,I)
               ENDIF
-70          CONTINUE
-80        CONTINUE
+            ENDDO ! J
+          ENDDO ! I
           IF(II.NE.0) THEN
             IKM(IZH,1)=IL
             IKM(IZH,2)=II
             IZH=IZH+1
             IMIN=IL
           ENDIF
-90      CONTINUE
+        ENDDO ! IL
       ENDIF
 !
 !**   DETERMINES ILMAX

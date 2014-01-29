@@ -170,9 +170,9 @@ C CALCUL DE LA CELERITE (MISE DANS FU, VOIR LE BLOC VARSOR)
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(3)).OR.(IMP.AND.SORIMP(3))) THEN
-        DO 5 N=1,NPOIN
+        DO N=1,NPOIN
           FU%R(N) = SQRT ( GRAV * MAX(H%R(N),0.D0) )
-5       CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -188,10 +188,10 @@ C CALCUL DU NOMBRE DE FROUDE
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(7)).OR.(IMP.AND.SORIMP(7))) THEN
-        DO 10 N=1,NPOIN
+        DO N=1,NPOIN
           HHH = MAX( H%R(N) , 1.D-8 )
           T2%R(N) = SQRT (( U%R(N)**2 + V%R(N)**2 ) / ( HHH*GRAV ))
-10      CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -199,9 +199,9 @@ C CALCUL DU DEBIT SCALAIRE
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN
-        DO 30 N=1,NPOIN
+        DO N=1,NPOIN
          T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
-30      CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -265,10 +265,10 @@ C CALCUL DU NOMBRE DE FROUDE EXACT
 C=======================================================================  
 C                                                                         
       IF((LEO.AND.SORLEO(26)).OR.(IMP.AND.SORIMP(26))) THEN               
-        DO 40 N=1,NPOIN                                                   
+        DO N=1,NPOIN                                                   
          HHH = MAX(PRIVE%ADR(1)%P%R(N),1.D-8)                                           
          PRIVE%ADR(4)%P%R(N)=SQRT(PRIVE%ADR(2)%P%R(N)**2/(HHH*GRAV))                        
-40      CONTINUE                                                          
+        ENDDO                                                          
       ENDIF         
 C
 C=======================================================================
@@ -644,7 +644,7 @@ C
       A(1) = 1.D0                                                         
       A(3) = 0.D0                                                         
       A(4) = Q**2/2.D0/9.81D0                                             
-      DO 10 I=1,NPOIN                                                     
+      DO I=1,NPOIN                                                     
 C                                                                         
       A(2) = ZF(I)-H0                                                     
 C                                                                         
@@ -652,13 +652,13 @@ C     ON PREND LA PLUS GRANDE SOLUTION REELLE
       H(I) = 2.01D0                                                       
       CALL ZBRENT(FC1,1.D-4,HCRIT,H(I),100)                               
 C                                                                         
-10    CONTINUE                                                            
+      ENDDO                                                            
 C                                                                         
 C-----------------------------------------------------------------------  
 C                                                                         
-      DO 20 I=1,NPOIN                                                     
+      DO I=1,NPOIN                                                     
         U(I) = Q / MAX(H(I),1.D-8)                                      
-20    CONTINUE                                                            
+      ENDDO                                                            
 C                                                                         
 C-----------------------------------------------------------------------  
 C                                                                         
@@ -765,7 +765,7 @@ C
 C  ITERATIONS :                                                         
 C                                                                       
       FC=FB                                                             
-      DO 10 ITER=1,ITMAX                                                
+      DO ITER=1,ITMAX                                                
         IF(FB*FC.GT.0.D0) THEN                                          
           C=A                                                           
           FC=FA                                                        
@@ -818,7 +818,7 @@ C
           B=B+SIGN(EPS2,XM)                                             
         ENDIF                                                           
         FB=FC1(B)                                                       
-10    CONTINUE                                                          
+      ENDDO                                                          
 C                                                                       
       IF (LNG.EQ.1) WRITE(LU,*) 'ZBRENT : MAXIMUM D''ITERATIONS ATTEINT'
       IF (LNG.EQ.2) WRITE(LU,*) 'ZBRENT : EXCEEDING MAXIMUM ITERATIONS' 

@@ -157,13 +157,13 @@
         TYPDIM(1:1)=TYPDIN(1:1)
 !
         IF(TYPEXN(1:1).EQ.'S') THEN
-          DO 1 I=1,15
+          DO I=1,15
             CALL OV( 'X=Y     ' , XM(1,I) , XN(1,I) , Z , C , NELEM )
-1         CONTINUE
+          ENDDO ! I
         ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
-          DO 111 I=1,30
+          DO I=1,30
             CALL OV( 'X=Y     ' , XM(1,I) , XN(1,I) , Z , C , NELEM )
-111       CONTINUE
+          ENDDO ! I
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
@@ -207,13 +207,13 @@
         CALL OV( 'X=CY    ' , DM       , DN       , Z , C , NDIAG )
 !
         IF(TYPEXN(1:1).EQ.'S') THEN
-          DO 2 I=1,15
+          DO I=1,15
             CALL OV( 'X=CY    ' , XM(1,I) , XN(1,I) , Z , C , NELEM )
-2         CONTINUE
+          ENDDO ! I
         ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
-          DO 22 I=1,30
+          DO I=1,30
             CALL OV( 'X=CY    ' , XM(1,I) , XN(1,I) , Z , C , NELEM )
-22        CONTINUE
+          ENDDO ! I
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
@@ -235,13 +235,13 @@
         ENDIF
 !
         IF(TYPEXN(1:1).EQ.'S') THEN
-          DO 3 I=1,15
+          DO I=1,15
             CALL OV( 'X=X+CY  ' , XM(1,I) , XN(1,I) , Z , C , NELEM )
-3         CONTINUE
+          ENDDO ! I
           IF(TYPEXM(1:1).EQ.'Q') THEN
-          DO 334 I=1,15
+          DO I=1,15
             CALL OV( 'X=X+CY  ' , XM(1,I+15) , XN(1,I) , Z , C , NELEM )
-334       CONTINUE
+          ENDDO ! I
           ENDIF
         ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
           IF(TYPEXM(1:1).NE.'Q') THEN
@@ -254,9 +254,9 @@
             CALL PLANTE(1)
             STOP
           ENDIF
-          DO 33 I=1,30
+          DO I=1,30
             CALL OV( 'X=X+CY  ' , XM(1,I) , XN(1,I) , Z , C , NELEM )
-33        CONTINUE
+          ENDDO ! I
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
@@ -272,13 +272,13 @@
         CALL OV( 'X=X+Y   ' , DM       , DN       , Z , C , NDIAG )
 !
         IF(TYPEXN(1:1).EQ.'S') THEN
-          DO 4 I=1,15
+          DO I=1,15
             CALL OV( 'X=X+Y   ' , XM(1,I) , XN(1,I) , Z , C , NELEM )
-4         CONTINUE
+          ENDDO ! I
           IF(TYPEXM(1:1).EQ.'Q') THEN
-          DO 444 I=1,15
+          DO I=1,15
            CALL OV( 'X=X+Y   ' , XM(1,I+15) , XN(1,I) , Z , C , NELEM )
-444       CONTINUE
+          ENDDO ! I
           ENDIF
         ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
           IF(TYPEXM(1:1).NE.'Q') THEN
@@ -287,9 +287,9 @@
             CALL PLANTE(1)
             STOP
           ENDIF
-          DO 44 I=1,30
+          DO I=1,30
             CALL OV( 'X=X+Y   ' , XM(1,I) , XN(1,I) , Z , C , NELEM )
-44        CONTINUE
+          ENDDO ! I
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
@@ -319,7 +319,7 @@
 !
          IF(TYPEXM(1:1).EQ.'Q') THEN
 !
-         DO 50 IELEM = 1 , NELEM
+         DO IELEM = 1 , NELEM
 !
            XM(IELEM, 1) = XM(IELEM, 1) * D(IKLE(IELEM,2))
            XM(IELEM, 2) = XM(IELEM, 2) * D(IKLE(IELEM,3))
@@ -353,7 +353,7 @@
            XM(IELEM,29) = XM(IELEM,29) * D(IKLE(IELEM,4))
            XM(IELEM,30) = XM(IELEM,30) * D(IKLE(IELEM,5))
 !
-50       CONTINUE
+         ENDDO ! IELEM 
 !
          ELSEIF(TYPEXM(1:1).EQ.'S') THEN
           IF (LNG.EQ.1) WRITE(LU,150)
@@ -392,7 +392,7 @@
 !
          IF(TYPEXM(1:1).EQ.'Q') THEN
 !
-         DO 60 IELEM = 1 , NELEM
+         DO IELEM = 1 , NELEM
 !
            XM(IELEM, 1) = XM(IELEM, 1) * D(IKLE(IELEM,1))
            XM(IELEM, 2) = XM(IELEM, 2) * D(IKLE(IELEM,1))
@@ -426,7 +426,7 @@
            XM(IELEM,29) = XM(IELEM,29) * D(IKLE(IELEM,6))
            XM(IELEM,30) = XM(IELEM,30) * D(IKLE(IELEM,6))
 !
-60       CONTINUE
+         ENDDO ! IELEM 
 !
          ELSEIF(TYPEXM(1:1).EQ.'S') THEN
           IF (LNG.EQ.1) WRITE(LU,160)
@@ -470,7 +470,7 @@
 !
         IF(TYPEXM(1:1).EQ.'S') THEN
 !
-         DO 65 IELEM = 1 , NELEM
+         DO IELEM = 1 , NELEM
 !
            I1 = IKLE(IELEM,1)
            I2 = IKLE(IELEM,2)
@@ -495,11 +495,11 @@
            XM(IELEM,14) =  XM(IELEM,14) * D(I6) * D(I4)
            XM(IELEM,15) =  XM(IELEM,15) * D(I6) * D(I5)
 !
-65       CONTINUE
+         ENDDO ! IELEM 
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q') THEN
 !
-         DO 66 IELEM = 1 , NELEM
+         DO IELEM = 1 , NELEM
 !
            I1 = IKLE(IELEM,1)
            I2 = IKLE(IELEM,2)
@@ -539,7 +539,7 @@
            XM(IELEM,29) =  XM(IELEM,29) * D(I6) * D(I4)
            XM(IELEM,30) =  XM(IELEM,30) * D(I6) * D(I5)
 !
-66       CONTINUE
+         ENDDO ! IELEM 
 !
         ELSEIF(TYPEXM(1:1).NE.'0') THEN
            IF (LNG.EQ.1) WRITE(LU,20) TYPEXM(1:1)
@@ -666,9 +666,9 @@
       ENDIF
 !
       IF(J.GT.0) THEN
-         DO 30 I = 1,J
+         DO I = 1,J
             CALL OV ( 'X=XY    ' , XM(1,I) , D , Z , C , NELEM )
-30       CONTINUE
+         ENDDO ! I 
       ENDIF
 !
 !-----------------------------------------------------------------------

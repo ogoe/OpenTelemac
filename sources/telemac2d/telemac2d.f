@@ -197,16 +197,16 @@
 !+   flusec_telemac2d.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
-!| CODE           |-->| CALLING PROGRAM (IF COUPLING)
-!| DOPRINT        |-->| FOR OVERWRITING THE KEYWORD ON LISTING
-!| DTDEP          |-->| TIME STEP TO USE WHEN COUPLING WITH ESTEL-3D
-!| NEWTIME        |-->| ARE WE STARTING A NEW TIME STEP OR JUST ITERATING?
-!|                |   | THIS IS FOR COUPLING WITH ESTEL-3D
-!| NITER          |-->| NUMBER OF ITERATIONS WHEN CALLED FOR COUPLING
-!| PASS           |-->| -1 : ALL STEPS
-!|                |   | 0 : ONLY INITIALISATION
-!|                |   | 1 : ONLY TIME-STEPS STEPS
+!param atdep          [in] starting time when called for coupling
+!param code           [in] calling program (if coupling)
+!param doprint        [in] for overwriting the keyword on listing
+!param dtdep          [in] time step to use when coupling with estel-3d
+!param newtime        [in] are we starting a new time step or just iterating?
+!+                      this is for coupling with estel-3d
+!param niter          [in] number of iterations when called for coupling
+!param pass           [in] -1 : all steps
+!+                      0 : only initialisation
+!+                      1 : only time-steps steps
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -1435,7 +1435,7 @@
 !
       IF(SISYPHE_CFD.AND.CONSTFLOW_SIS) GOTO 999
 !
-      DO 888 ISIS_CFD=1,NSIS_CFD
+      DO ISIS_CFD=1,NSIS_CFD
 !
 !=======================================================================
 !
@@ -1758,7 +1758,7 @@
 !
 !=======================================================================
 !
-      DO 701 ISOUSI = 1 , NSOUSI
+      DO ISOUSI = 1 , NSOUSI
       IF(DEBUG.GT.0) WRITE(LU,*) 'BOUCLE 701 ISOUSI=',ISOUSI
 !
 !=======================================================================
@@ -2024,7 +2024,7 @@
 !=======================================================================
 ! END OF THE LOOP OF THE SUB-ITERATIONS
 !
-701   CONTINUE
+      ENDDO ! ISOUSI 
 !
 !=======================================================================
 !
@@ -2314,7 +2314,7 @@
 ! FH-BMD
 !=============================================
 !     FOR NEW COUPLING
-888   CONTINUE
+      ENDDO ! ISIS_CFD
       IF (SISYPHE_CFD) CONSTFLOW_SIS = .TRUE.
 999   CONTINUE
 !

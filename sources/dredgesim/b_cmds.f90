@@ -478,7 +478,7 @@ CONTAINS
     !! rufende Subroutine/Funktion
     CHARACTER(LEN=*), INTENT(IN) :: c_called_by
     !! Rueckgabewert: Fehlernummer aus C-Routine sys_cmd_cmds oder vom Allokieren
-    INTEGER :: ierr2, system
+    INTEGER :: ierr2
     !! Name der Function
     CHARACTER (LEN=14), PARAMETER :: c_upname='unixcmd_cmds_d' 
     !!
@@ -1137,7 +1137,7 @@ CONTAINS
     !! aktuelle Laenge von c_string
     CHARACTER(LEN=7) :: c_akt_len
     !! Zaehler
-    INTEGER ::  i, j
+    INTEGER ::  i
     !! in unixcmd_cmds generierte Fehlerkennung
     INTEGER ::  ierr2
     !

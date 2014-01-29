@@ -130,7 +130,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-        DO 1 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -159,7 +159,7 @@
         A22(IELEM) = (14*Y2*(F3-F1)+Y3*(-5*F3-28*F2+9*F1))*XSU216
         A33(IELEM) = (Y2*(28*F3+5*F2-9*F1)+14*Y3*(-F2+F1))*XSU216
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -167,7 +167,7 @@
 !  CASE OF DERIVATIVE WRT Y =
 !================================
 !
-        DO 2 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -197,7 +197,7 @@
         A22(IELEM) = (14*X2*(-F3+F1)+X3*(5*F3+28*F2-9*F1))*XSU216
         A33(IELEM) = (X2*(-28*F3-5*F2+9*F1)+14*X3*(F2-F1))*XSU216
 !
-2       CONTINUE
+        ENDDO ! IELEM 
 !
         ELSE
 !
@@ -222,7 +222,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-        DO 3 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -260,7 +260,7 @@
         A22(IELEM) = (14*Y2*(F3-F1)+Y3*(-10*F3+15*F4-33*F2+4*F1))*XSU216
         A33(IELEM) = (Y2*(33*F3-15*F4+10*F2-4*F1)+14*Y3*(-F2+F1))*XSU216
 !
-3       CONTINUE
+        ENDDO ! IELEM 
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -268,7 +268,7 @@
 !  CASE OF DERIVATIVE WRT Y =
 !================================
 !
-        DO 4 IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -306,7 +306,7 @@
         A22(IELEM) = (14*X2*(-F3+F1)+X3*(10*F3-15*F4+33*F2-4*F1))*XSU216
         A33(IELEM) = (X2*(-33*F3+15*F4-10*F2+4*F1)+14*X3*(F2-F1))*XSU216
 !
-4       CONTINUE
+        ENDDO ! IELEM 
 !
         ELSE
 !

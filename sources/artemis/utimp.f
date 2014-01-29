@@ -38,10 +38,10 @@
 !+      CALL OS( 'X=Y/Z   ' , TRA02 , TRA02 , TRA01 , BID )
 !+      CALL OS( 'X=Y/Z   ' , TRA03 , TRA03 , TRA01 , BID )
 !+
-!+      DO 25 I = 1,NPOIN
+!+      DO I = 1,NPOIN
 !+         PRIVE%ADR(1)%P%R(1) = TRA02(I)
 !+         PRIVE%ADR(1)%P%R(2) = TRA03(I)
-!+ 25   CONTINUE
+!+      ENDDO
 !
 !history  J-M HERVOUET (LNH)
 !+
@@ -140,10 +140,10 @@
 !      CALL OS( 'X=Y/Z   ' , TRA02 , TRA02 , TRA01 , BID )
 !      CALL OS( 'X=Y/Z   ' , TRA03 , TRA03 , TRA01 , BID )
 !
-!      DO 25 I = 1,NPOIN
+!      DO I = 1,NPOIN
 !         PRIVE%ADR(1)%P%R(1) = TRA02(I)
 !         PRIVE%ADR(1)%P%R(2) = TRA03(I)
-! 25   CONTINUE
+!      ENDDO
 !
       RETURN
       END

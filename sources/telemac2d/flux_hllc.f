@@ -119,7 +119,6 @@
 ! CASE WITH DRY LEFT AND RIGHT  
       IF(HL.LT.EPS.AND.HR.LT.EPS)GOTO 20 
 !
-10    CONTINUE
 ! CELERITIES
 !
       AL = SQRT(G*HL)
@@ -278,8 +277,6 @@
          HLLCFLX(3) = FLX(3)
          HLLCFLX(4) = FLX(4) 
        ENDIF
-!
-50    CONTINUE
 !
 !-----------------------------------------------------------------------
 !

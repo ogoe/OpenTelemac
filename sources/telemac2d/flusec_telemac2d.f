@@ -141,7 +141,7 @@
       ENDIF
 !
       IF (.NOT.ALLOCATED(CHAIN)) OLD_METHOD=.TRUE.
-      DO 60 ISEC =1,NSEC
+      DO ISEC =1,NSEC
 !!JAJ #### IN THE SERIAL CASE, OR "CLASSICAL" IN PARALLEL,
 !     FOLLOW THE ALGORITHM OF FINDING SEGMENT CHAINS
 !
@@ -158,11 +158,11 @@
           ARR=GLOBAL_TO_LOCAL_POINT(ARR,MESH)
           IF(DEP.EQ.0.AND.ARR.EQ.0) THEN
             NSEG(ISEC)=0
-            GO TO 60
+            CYCLE
           ENDIF
           IF((DEP.EQ.0.AND.ARR.NE.0).OR.(DEP.NE.0.AND.ARR.EQ.0)) THEN
             NSEG(ISEC)=-1
-            GO TO 60
+            CYCLE
           ENDIF
         ENDIF
         PT = DEP
@@ -170,7 +170,7 @@
         DIST=(X(DEP)-X(ARR))**2+(Y(DEP)-Y(ARR))**2
 10      CONTINUE
 !
-        DO 20 IELEM =1,NELEM
+        DO IELEM =1,NELEM
 !
           I1 = IKLE(IELEM,1)
           I2 = IKLE(IELEM,2)
@@ -209,7 +209,7 @@
             ENDIF
           ENDIF
 !
-20      CONTINUE
+        ENDDO ! IELEM 
 !
         IF(IGBEST.EQ.PT) THEN
           IF(LNG.EQ.1) WRITE(LU,32)
@@ -287,49 +287,50 @@
 !       OTHER TRIANGLES WITH ONLY 1 POINT TOUCHING THE SECTION
 !       LOOKING AT NEIGHBOURS TO FIND THEIR SIDE
 !
-999     CONTINUE
-        OK=.TRUE.
-        DO IEL=1,NELEM
-          J1=IKLE(IEL,1)
-          J2=IKLE(IEL,2)
-          J3=IKLE(IEL,3)
-          DO ISEG=1,NSEG(ISEC)
-            I1 = LISTE(ISEC,ISEG,1)
-            I2 = LISTE(ISEC,ISEG,2)
-            IF((J1.EQ.I1.OR.J2.EQ.I1.OR.J3.EQ.I1.OR.
-     &          J1.EQ.I2.OR.J2.EQ.I2.OR.J3.EQ.I2).AND.
-     &          ABS(MSKSEC%ADR(ISEC)%P%R(IEL)).LT.0.5D0) THEN
-!             LOOKING AT NEIGHBOURS
-              IF(IFABOR(IEL,1).GT.0) THEN
-                IELEM=IFABOR(IEL,1)
-                IF(ABS(MSKSEC%ADR(ISEC)%P%R(IELEM)).GT.0.5D0) THEN
-                  MSKSEC%ADR(ISEC)%P%R(IEL)=MSKSEC%ADR(ISEC)%P%R(IELEM)
-                ENDIF
-              ENDIF
-              IF(IFABOR(IEL,2).GT.0) THEN
-                IELEM=IFABOR(IEL,2)
-                IF(ABS(MSKSEC%ADR(ISEC)%P%R(IELEM)).GT.0.5D0) THEN
-                  MSKSEC%ADR(ISEC)%P%R(IEL)=MSKSEC%ADR(ISEC)%P%R(IELEM)
-                ENDIF
-              ENDIF
-              IF(IFABOR(IEL,3).GT.0) THEN
-                IELEM=IFABOR(IEL,3)
-                IF(ABS(MSKSEC%ADR(ISEC)%P%R(IELEM)).GT.0.5D0) THEN
-                  MSKSEC%ADR(ISEC)%P%R(IEL)=MSKSEC%ADR(ISEC)%P%R(IELEM)
-                ENDIF
-              ENDIF
-!             CORRECTION JMH 11/01/2008
-!             IF(MSKSEC%ADR(ISEC)%P%R(IEL).LT.0.5D0) OK=.FALSE.
-              IF(ABS(MSKSEC%ADR(ISEC)%P%R(IEL)).LT.0.5D0) OK=.FALSE.
-            ENDIF
+        DO 
+          OK=.TRUE.
+          DO IEL=1,NELEM
+           J1=IKLE(IEL,1)
+           J2=IKLE(IEL,2)
+           J3=IKLE(IEL,3)
+           DO ISEG=1,NSEG(ISEC)
+             I1 = LISTE(ISEC,ISEG,1)
+             I2 = LISTE(ISEC,ISEG,2)
+             IF((J1.EQ.I1.OR.J2.EQ.I1.OR.J3.EQ.I1.OR.
+     &           J1.EQ.I2.OR.J2.EQ.I2.OR.J3.EQ.I2).AND.
+     &           ABS(MSKSEC%ADR(ISEC)%P%R(IEL)).LT.0.5D0) THEN
+!              LOOKING AT NEIGHBOURS
+               IF(IFABOR(IEL,1).GT.0) THEN
+                 IELEM=IFABOR(IEL,1)
+                 IF(ABS(MSKSEC%ADR(ISEC)%P%R(IELEM)).GT.0.5D0) THEN
+                   MSKSEC%ADR(ISEC)%P%R(IEL)=MSKSEC%ADR(ISEC)%P%R(IELEM)
+                 ENDIF
+               ENDIF
+               IF(IFABOR(IEL,2).GT.0) THEN
+                 IELEM=IFABOR(IEL,2)
+                 IF(ABS(MSKSEC%ADR(ISEC)%P%R(IELEM)).GT.0.5D0) THEN
+                   MSKSEC%ADR(ISEC)%P%R(IEL)=MSKSEC%ADR(ISEC)%P%R(IELEM)
+                 ENDIF
+               ENDIF
+               IF(IFABOR(IEL,3).GT.0) THEN
+                 IELEM=IFABOR(IEL,3)
+                 IF(ABS(MSKSEC%ADR(ISEC)%P%R(IELEM)).GT.0.5D0) THEN
+                   MSKSEC%ADR(ISEC)%P%R(IEL)=MSKSEC%ADR(ISEC)%P%R(IELEM)
+                 ENDIF
+               ENDIF
+!              CORRECTION JMH 11/01/2008
+!              IF(MSKSEC%ADR(ISEC)%P%R(IEL).LT.0.5D0) OK=.FALSE.
+               IF(ABS(MSKSEC%ADR(ISEC)%P%R(IEL)).LT.0.5D0) OK=.FALSE.
+             ENDIF
+           ENDDO
           ENDDO
+          IF(OK) EXIT
         ENDDO
-        IF(.NOT.OK) GO TO 999
 !
 !       IF(COMFLU.AND.NSEG(ISEC).GE.1) THEN
         ENDIF
 !
-60    CONTINUE
+      ENDDO ! ISEC
 !
 !     IF(.NOT.DEJA) THEN
       ENDIF
@@ -343,7 +344,7 @@
       IELMH=HPROP%ELM
       IELMU=U%ELM
 !
-      DO 70 ISEC = 1 , NSEC
+      DO ISEC = 1 , NSEC
       FLX(ISEC) = 0.D0
       IF(NSEG(ISEC).GE.1) THEN
 !
@@ -408,7 +409,7 @@
 !     IF(NSEG(ISEC).GT.1)...
       ENDIF
 !
-70    CONTINUE
+      ENDDO ! ISEC 
 !
 !-----------------------------------------------------------------------
 !

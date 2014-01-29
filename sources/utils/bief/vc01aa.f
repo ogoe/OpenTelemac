@@ -94,7 +94,7 @@
 !
       XSUR12 = XMUL / 12.D0
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1  = F(IKLE1(IELEM))
         F2  = F(IKLE2(IELEM))
@@ -107,7 +107,7 @@
         W2(IELEM) = COEF * ( F123 + F2 )
         W3(IELEM) = COEF * ( F123 + F3 )
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -117,13 +117,13 @@
 !
       XSUR03 = XMUL / 3.D0
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         W1(IELEM) = XSUR03 * SURFAC(IELEM) * F(IELEM)
         W2(IELEM) = W1(IELEM)
         W3(IELEM) = W1(IELEM)
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -133,7 +133,7 @@
 !
       XSUR12 = XMUL / 12.D0
 !
-      DO 5 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1  = F(IELEM)
         F2  = F(IELEM+NELEM)
@@ -146,7 +146,7 @@
         W2(IELEM) = COEF * ( F123 + F2 )
         W3(IELEM) = COEF * ( F123 + F3 )
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

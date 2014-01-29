@@ -161,7 +161,7 @@
 !
 !  LOOP ON ALL BOUNDARY POINTS
 !
-      DO 5 K=1,NPTFR
+      DO K=1,NPTFR
 !
 !  LEVEL IMPOSED WITH VALUE GIVEN IN THE CAS FILE (NCOTE0)
 !
@@ -278,7 +278,7 @@ c          Z = SL(IFRLIQ,NBOR(K))
         ENDDO
       ENDIF
 !
-5     CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -306,7 +306,7 @@ c          Z = SL(IFRLIQ,NBOR(K))
 !
       IF(NFRLIQ.NE.0) THEN
 !
-      DO 10 IFRLIQ = 1 , NFRLIQ
+      DO IFRLIQ = 1 , NFRLIQ
 !
       IF(NDEBIT.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
 !
@@ -329,7 +329,7 @@ c          Z = SL(IFRLIQ,NBOR(K))
 !
 !-----------------------------------------------------------------------
 !
-10    CONTINUE
+      ENDDO
 !
       ENDIF
 !
@@ -392,7 +392,7 @@ c          Z = SL(IFRLIQ,NBOR(K))
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
       INTEGER OPTHYB(4)
-      DOUBLE PRECISION EPSOUI	  
+      DOUBLE PRECISION EPSOUI  
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -482,17 +482,17 @@ c          Z = SL(IFRLIQ,NBOR(K))
       CRIPER(2) = 1.D-4
       CRIPER(3) = 1.D-4
 !
-      DO 5 K=1,MAXFRO
+      DO K=1,MAXFRO
         FRTYPE(K)=1
         PROVEL(K)=1
         STA_DIS_CURVES(K)=0
-5     CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
 ! INITIALISES THE VARIABLES FOR DAMOCLES CALL :
 !
-      DO 10 K=1,NMAX
+      DO K=1,NMAX
 !       A FILENAME NOT GIVEN BY DAMOCLES WILL BE RECOGNIZED AS A WHITE SPACE
 !       (IT MAY BE THAT NOT ALL COMPILERS WILL INITIALISE LIKE THAT)
         MOTCAR(K)(1:1)=' '
@@ -501,7 +501,7 @@ c          Z = SL(IFRLIQ,NBOR(K))
         DIMEN(2,K) = 0
         DIMEN(3,K) = 0
         DIMEN(4,K) = 0
-10    CONTINUE
+      ENDDO
 !     WRITES OUT INFO
       DOC = .FALSE.
 !
@@ -638,9 +638,9 @@ c          Z = SL(IFRLIQ,NBOR(K))
 !        FREE KEYWORD
 !        ??????           = MOTINT( ADRESS(1, 4) )
          IF(DIMEN(1,5).NE.0) THEN
-           DO 20 K=1,DIMEN(1,5)
+           DO K=1,DIMEN(1,5)
             ICONVF(K)     = MOTINT( ADRESS(1,5) + K-1 )
-20         CONTINUE
+           ENDDO
          ENDIF
 !        FREE KEYWORD
 !        ??????           = MOTINT( ADRESS(1, 6) )
@@ -655,9 +655,9 @@ c          Z = SL(IFRLIQ,NBOR(K))
          SLVPRO%PRECON    = MOTINT( ADRESS(1,14) )
          IORDRH    = MOTINT( ADRESS(1,15) )
          IF(DIMEN(1,16).NE.0) THEN
-           DO 21 K=1,DIMEN(1,16)
+           DO K=1,DIMEN(1,16)
             DISCRE(K) = MOTINT( ADRESS(1,16) + K-1 )
-21         CONTINUE
+           ENDDO
          ENDIF
 !        STDGEO    = MOTINT( ADRESS(1,17) )
 !        STDRES    = MOTINT( ADRESS(1,18) )
@@ -683,15 +683,15 @@ c          Z = SL(IFRLIQ,NBOR(K))
          OPTBAN    = MOTINT( ADRESS(1,35) )
          LVMAC     = MOTINT( ADRESS(1,36) )
          IF(DIMEN(1,37).NE.0) THEN
-           DO 30 K=1,DIMEN(1,37)
+           DO K=1,DIMEN(1,37)
             OPTSUP(K) = MOTINT( ADRESS(1,37) + K-1 )
-30         CONTINUE
+           ENDDO
          ENDIF
          IORDRU    = MOTINT( ADRESS(1,38) )
          IF(DIMEN(1,39).NE.0) THEN
-           DO 31 K=1,DIMEN(1,39)
+           DO K=1,DIMEN(1,39)
             OPTHYB(K) = MOTINT( ADRESS(1,39) + K-1 )
-31         CONTINUE
+           ENDDO
          ENDIF
          OPTASS    = MOTINT( ADRESS(1,40) )
          MARDAT(1) = MOTINT( ADRESS(1,41) )
@@ -722,10 +722,10 @@ c          Z = SL(IFRLIQ,NBOR(K))
          NTYPFR = DIMEN(1,47)
          THOMFR=.FALSE.
          IF(NTYPFR.NE.0) THEN
-           DO 32 K=1,NTYPFR
+           DO K=1,NTYPFR
             FRTYPE(K) = MOTINT( ADRESS(1,47) + K-1 )
             IF(FRTYPE(K).EQ.2) THOMFR=.TRUE.
-32         CONTINUE
+           ENDDO
          ENDIF
          SOLSYS    = MOTINT( ADRESS(1,48) )
 !

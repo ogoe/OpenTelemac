@@ -127,7 +127,7 @@
 !
 !     PSI SCHEME P1 AND LINEAR INTERPOLATION
 !
-      DO 33 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          X2 = XEL(IELEM+NELMAX)
          X3 = XEL(IELEM+2*NELMAX)
@@ -178,13 +178,13 @@
          W5(IELEM) =   (W2(IELEM)+ W3(IELEM))/2.D0
          W6(IELEM) =   (W3(IELEM)+ W1(IELEM))/2.D0
 !
-33    CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !
 !     CLASSICAL COMPUTATION
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          X2 = XEL(IELEM+NELMAX)
          X3 = XEL(IELEM+2*NELMAX)
@@ -385,7 +385,7 @@
      &            48.D0*Y3*F5*U5-48.D0*X3*F6*V5+20.D0*X2*F6*V3+
      &            4.D0*Y3*F2*U1+32.D0*X3*F5*V4+ANS1) * (-XSU630)
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
       ENDIF
 !
@@ -397,7 +397,7 @@
 !
 !     PSI SCHEME P1 AND LINEAR INTERPOLATION
 !
-      DO 44 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          X2 = XEL(IELEM+NELMAX)
          X3 = XEL(IELEM+2*NELMAX)
@@ -448,7 +448,7 @@
          W5(IELEM) =   (W2(IELEM)+ W3(IELEM))/2.D0
          W6(IELEM) =   (W3(IELEM)+ W1(IELEM))/2.D0
 !
-44    CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !

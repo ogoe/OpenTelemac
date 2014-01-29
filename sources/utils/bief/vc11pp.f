@@ -139,7 +139,7 @@
 !-----------------------------------------------------------------------
 !  DERIVATIVE WRT X
 !
-      DO 3, IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          I1 = IKLE1(IELEM)
          I2 = IKLE2(IELEM)
@@ -383,14 +383,14 @@
      &3*G4+6*G5+6*G6)*F5)*Z6
       W6(IELEM) = ((S3+S4)*Y3+(S6+S5)*Y2)*XS1440
 !
- 3    ENDDO
+      ENDDO
 !
       ELSE IF (ICOORD.EQ.2) THEN
 !
 !-----------------------------------------------------------------------
 !  DERIVATIVE WRT Y
 !
-      DO 4, IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          I1 = IKLE1(IELEM)
          I2 = IKLE2(IELEM)
@@ -634,13 +634,13 @@
      &3-3*G4-6*G5-6*G6)*F5)*Z6
       W6(IELEM) = ((S4+S3)*X3+(S5+S6)*X2)*XS1440
 !
- 4    ENDDO
+      ENDDO
 !
       ELSE IF (ICOORD.EQ.3) THEN
 !-----------------------------------------------------------------------
 !  DERIVATIVE WRT Z
 !
-      DO 5, IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          I1 = IKLE1(IELEM)
          I2 = IKLE2(IELEM)
@@ -710,7 +710,7 @@
      &     +(2*G1+2*G2+6*G3+4*G4+4*G5+12*G6)*(F6-F3)
      &     )
 !
- 5    ENDDO
+      ENDDO
 !
       ELSE
 !

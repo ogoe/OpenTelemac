@@ -249,7 +249,7 @@
 !
 ! ====>   INLET FLUX
 !
-      DO 200 K = 1 , NPTFR
+      DO K = 1 , NPTFR
 !
       NB = NBOR(K)
       INDIC = 0
@@ -378,7 +378,7 @@
         ENDIF
 !
        ENDIF
-200   CONTINUE
+      ENDDO ! K 
 !
       DEALLOCATE(YESNO)
 !-----------------------------------------------------------------------

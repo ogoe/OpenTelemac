@@ -93,13 +93,13 @@ C     ****
       ELSE
 C     ****
 C
-        DO 20 K=1,NPOIN
+        DO K=1,NPOIN
            HAUT  = MAX(H(K),1.D-4)
            USTAR = SQRT( 0.5D0 * CF(K) * ( U(K)**2 + V(K)**2 ) )
            CEPS  = C2*SQRT(CMU)/SQRT(ESTAR*SCHMIT)/(0.5D0*CF(K))**0.75D0
            AK(K) = C2*USTAR**2/(0.5D0*CF(K)*CEPS)
            EP(K) = MAX( USTAR**3/(HAUT*SQRT(0.5D0*CF(K))) , EMIN )
-20      CONTINUE
+        ENDDO
 C
 C     *****
       ENDIF

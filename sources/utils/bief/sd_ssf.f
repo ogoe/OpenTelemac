@@ -251,7 +251,9 @@
         I = Q(K)
         IF (JUMIN.GT.JUPTR)  GO TO 12
         DO 11 JMIN=JUMIN,JUPTR
-          IF (JU(JMIN)-I)  11, 13, 12
+          IF (JU(JMIN) < I) GOTO 11
+          IF (JU(JMIN) == I) GOTO 13
+          IF (JU(JMIN) > I) GOTO 12
 11      CONTINUE
 12      GO TO 15
 !

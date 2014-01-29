@@ -76,14 +76,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         DET1 = LGSEG(IELEM) * XSUR6
         A11(IELEM) = DET1 + DET1
         A12(IELEM) = DET1
         A22(IELEM) = DET1 + DET1
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

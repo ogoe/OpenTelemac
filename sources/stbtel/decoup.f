@@ -80,15 +80,15 @@
 !=======================================================================
 !
       IF (COLOR) THEN
-         DO 10 IFAC=1,3
+         DO IFAC=1,3
             IF(IFABOR(ISURC,IFAC).GT.0) ICOLOR = IFABOR(ISURC,IFAC)
- 10      CONTINUE
+         ENDDO
 !
-         DO 20 I=1,3
+         DO I=1,3
             IF(IKLE(ICOLOR,I).NE.I1.AND.IKLE(ICOLOR,I).NE.I2.AND.
      &         IKLE(ICOLOR,I).NE.I3)
      &         NCOLOR(NPOIN2) = NCOLOR(IKLE(ICOLOR,I))
- 20      CONTINUE
+         ENDDO
        ENDIF
 !
 !=======================================================================

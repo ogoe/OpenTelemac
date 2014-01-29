@@ -88,7 +88,7 @@
 ! FROM U= A COS WT + B SIN WT  TO : U = A1 COS ( WT - PHI1)
 !      V= C COS WT + D SIN WT       V = A2 COS ( WT - PHI2)
 !
-      DO 30 I=1,NPOIN
+      DO I=1,NPOIN
         A1 = SQRT ( U0%R(I)*U0%R(I) + T3%R(I)*T3%R(I) )
         PHI1 = ATAN2( T3%R(I),U0%R(I) )
         A2 = SQRT ( V0%R(I)*V0%R(I) + T4%R(I)*T4%R(I) )
@@ -135,13 +135,13 @@
         ENDIF
         INCI%R(I)  = ALPHA0
         T2%R(I) = WT0
- 30   CONTINUE
+      ENDDO
 !
 ! FREE SURFACE IN PHASE WITH ALPHA0
 ! INCIDENCE IS CONSIDERED POSITIVE WHEN THE FREE SURFACE IS
 ! POSITIVE.
 !
-      DO 40 I=1,NPOIN
+      DO I=1,NPOIN
          A1 = -(PHII%R(I)*COS(T2%R(I))-PHIR%R(I)*SIN(T2%R(I)))
          IF (A1.LT.0.D0) THEN
            IF (INCI%R(I).GE.0.D0) THEN
@@ -150,7 +150,7 @@
              INCI%R(I) = INCI%R(I) + PI
            ENDIF
          ENDIF
- 40   CONTINUE
+      ENDDO
 
  
 !=======================================================================

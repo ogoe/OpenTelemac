@@ -157,17 +157,17 @@
       CRIPER(2) = 1.D-4
       CRIPER(3) = 1.D-4
 !
-      DO 5 K=1,MAXFRO
+      DO K=1,MAXFRO
         FRTYPE(K)=1
         PROVEL(K)=1
         STA_DIS_CURVES(K)=0
-5     CONTINUE
+      ENDDO ! K
 !
 !-----------------------------------------------------------------------
 !
 ! INITIALISES THE VARIABLES FOR DAMOCLES CALL :
 !
-      DO 10 K=1,MAXKEY
+      DO K=1,MAXKEY
 !       A FILENAME NOT GIVEN BY DAMOCLES WILL BE RECOGNIZED AS A WHITE SPACE
 !       (IT MAY BE THAT NOT ALL COMPILERS WILL INITIALISE LIKE THAT)
         MOTCAR(K)(1:1)=' '
@@ -176,7 +176,7 @@
         DIMEN(2,K) = 0
         DIMEN(3,K) = 0
         DIMEN(4,K) = 0
-10    CONTINUE
+      ENDDO ! K
 !     WRITES OUT INFO
       DOC = .FALSE.
 !
@@ -366,9 +366,9 @@
          SLVPRO%PRECON    = MOTINT( ADRESS(1,14) )
          IORDRH    = MOTINT( ADRESS(1,15) )
          IF(DIMEN(1,16).NE.0) THEN
-           DO 21 K=1,DIMEN(1,16)
+           DO K=1,DIMEN(1,16)
             DISCRE(K) = MOTINT( ADRESS(1,16) + K-1 )
-21         CONTINUE
+           ENDDO ! K
          ENDIF
 !        STDGEO    = MOTINT( ADRESS(1,17) )
 !        STDRES    = MOTINT( ADRESS(1,18) )
@@ -394,9 +394,9 @@
          OPTBAN    = MOTINT( ADRESS(1,35) )
          LVMAC     = MOTINT( ADRESS(1,36) )
          IF(DIMEN(1,37).NE.0) THEN
-           DO 30 K=1,DIMEN(1,37)
+           DO K=1,DIMEN(1,37)
             OPTSUP(K) = MOTINT( ADRESS(1,37) + K-1 )
-30         CONTINUE
+           ENDDO ! K
          ENDIF
          IORDRU       = MOTINT( ADRESS(1,38) )
          START_RECORD = MOTINT( ADRESS(1,39) )

@@ -95,7 +95,7 @@
               AVAIL(I,J,1)= AVA0(1)
               AVAIL(I,J,2)= AVA0(2)
              ENDIF
-	  ENDIF   
+          ENDIF   
 !
          ENDDO
       ENDDO

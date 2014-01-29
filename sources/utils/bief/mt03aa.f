@@ -120,7 +120,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2  =  XEL(IELEM,2)
       X3  =  XEL(IELEM,3)
@@ -160,7 +160,7 @@
       A32(IELEM) = - A22(IELEM) - A12(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -168,7 +168,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2  =   XEL(IELEM,2)
       X3  =   XEL(IELEM,3)
@@ -209,7 +209,7 @@
       A32(IELEM) = - A22(IELEM) - A12(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !     OTHER TYPES OF FUNCTIONS F AND G
 !
 !-----------------------------------------------------------------------

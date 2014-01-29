@@ -133,7 +133,7 @@
 !
       ELSEIF(INISPE.EQ.1) THEN
 !
-        DO 100 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           UVENT=SQRT(UV(IP)**2+VV(IP)**2)
           IF (UVENT.GT.UVMIN) THEN
 !
@@ -173,7 +173,7 @@
             ENDDO
           ENDIF
 !
-  100   CONTINUE
+        ENDDO ! IP
 !
 !     ==/ INISPE = 2 /===========================================
 !     IF NON ZERO WIND -E(F): JONSWAP AS A FUNCTION OF THE WIND (AL,FP)
@@ -184,7 +184,7 @@
 !
       ELSEIF (INISPE.EQ.2) THEN
 !
-        DO 200 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           UVENT=SQRT(UV(IP)**2+VV(IP)**2)
 !
 !         COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
@@ -231,7 +231,7 @@
             ENDDO
           ENDDO
 !
-  200   CONTINUE
+        ENDDO ! IP
 !
 !     ==/ INISPE = 3 /===========================================
 !     IF NON ZERO WIND -E(F): PARAMETERISED JONSWAP (AL,FP)
@@ -242,7 +242,7 @@
 !
       ELSEIF (INISPE.EQ.3) THEN
 !
-        DO 300 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           UVENT=SQRT(UV(IP)**2+VV(IP)**2)
           IF(UVENT.GT.UVMIN) THEN
 !
@@ -278,7 +278,7 @@
             ENDDO
           ENDIF
 !
-  300   CONTINUE
+        ENDDO ! IP
 !
 !     ==/ INISPE = 4 /===========================================
 !     IF NON ZERO WIND -E(F): PARAMETERISED JONSWAP (AL,FP)
@@ -289,7 +289,7 @@
 !
       ELSEIF (INISPE.EQ.4) THEN
 !
-        DO 400 IP=1,NPOIN2
+        DO IP=1,NPOIN2
 !
 !         COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
 !        
@@ -322,7 +322,7 @@
             ENDDO
           ENDDO
 !
-  400   CONTINUE
+        ENDDO ! IP
 !
 !     ==/ INISPE = 5 /===========================================
 !     IF NON ZERO WIND -E(F): PARAMETERISED JONSWAP (HM0,FP)
@@ -336,7 +336,7 @@
         COEF=0.0624D0/(0.230D0+0.0336D0*GAMMA-0.185D0/(1.9D0+GAMMA))
      &      *(DEUPI*FPIC)**4*HM0**2/GRAVIT**2
 !
-        DO 500 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           UVENT=SQRT(UV(IP)**2+VV(IP)**2)
           IF (UVENT.GT.UVMIN) THEN
 !
@@ -372,7 +372,7 @@
             ENDDO
           ENDIF
 !
-  500   CONTINUE
+        ENDDO ! IP
 !
 !     ==/ INISPE = 6 /===========================================
 !     IF NON ZERO WIND -E(F): PARAMETERISED JONSWAP (HM0,FP)
@@ -386,7 +386,7 @@
         COEF=0.0624D0/(0.230D0+0.0336D0*GAMMA-0.185D0/(1.9D0+GAMMA))
      &      *(DEUPI*FPIC)**4*HM0**2/GRAVIT**2
 !
-        DO 600 IP=1,NPOIN2
+        DO IP=1,NPOIN2
 !
 !         COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
 !         
@@ -419,7 +419,7 @@
             ENDDO
           ENDDO
 !
-  600   CONTINUE
+        ENDDO ! IP
 !
 !     ==/ INISPE = 7 /===========================================
 !     IF NON ZERO WIND -E(F): PARAMETERISED TMA (HM0,FP)
@@ -433,7 +433,7 @@
         COEF=0.0624D0/(0.230D0+0.0336D0*GAMMA-0.185D0/(1.9D0+GAMMA))
      &      *(DEUPI*FPIC)**4*HM0**2/GRAVIT**2
 !
-        DO 700 IP=1,NPOIN2
+        DO IP=1,NPOIN2
 !
 !         COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
 !         
@@ -467,7 +467,7 @@
             ENDDO
           ENDDO
 !
-  700   CONTINUE
+        ENDDO ! IP
 !
       ELSE
         IF(LNG.EQ.1) WRITE(LU,*) 'SPEINI: OPTION INCONNUE : ',INISPE

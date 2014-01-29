@@ -128,19 +128,19 @@
 !
 !     INITIALISES W
 !
-      DO 32 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
         W1(IELEM) = 0.D0
         W2(IELEM) = 0.D0
         W3(IELEM) = 0.D0
         W4(IELEM) = 0.D0
-32    CONTINUE
+      ENDDO ! IELEM 
 !
 !     PSI SCHEME, LOOP ON THE 3 SUB-TRIANGLES AND
 !     PREASSEMBLY
 !
-      DO 10 IT=1,3
+      DO IT=1,3
 !DIR$ IVDEP
-      DO 33 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !     ADDRESSES IN ARRAY (NELMAX,*)
       IAD1= IELEM + (IL(IT,1)-1)*NELMAX
@@ -189,14 +189,14 @@
       W1(IAD2)=W1(IAD2)+ XMUL * SIG * MAX(MIN(SIG*BETAN2,SIG*PHIT),0.D0)
       W1(IAD3)=W1(IAD3)+ XMUL * SIG * MAX(MIN(SIG*BETAN3,SIG*PHIT),0.D0)
 !
-33    CONTINUE
-10    CONTINUE
+      ENDDO ! IELEM 
+      ENDDO ! IT
 !
       ELSE
 !
 !     CLASSICAL COMPUTATION
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          X2 = XEL(IELEM+NELMAX)
          X3 = XEL(IELEM+2*NELMAX)
@@ -241,7 +241,7 @@
      &     Y3)*F2-3*((V3-V1)*X2-(V2-V1)*X3-(Y3-Y2)*U1-U3*Y2+U2*Y3)*
      &     F4)*XSUR72
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
       ENDIF
 !
@@ -262,7 +262,7 @@
 !
 !     CLASSICAL COMPUTATION
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          X2 = XEL(IELEM+NELMAX)
          X3 = XEL(IELEM+2*NELMAX)
@@ -301,7 +301,7 @@
      &    *X2-(4*Y3-Y2)*U3-(3*Y3+Y2)*U1-5*U2*Y3)*F2-3*((V3-V1)*
      &    X2-(V2-V1)*X3-(Y3-Y2)*U1-U3*Y2+U2*Y3)*F4)*XSUR72
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
       ENDIF
 !

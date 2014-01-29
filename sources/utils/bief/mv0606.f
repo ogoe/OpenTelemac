@@ -116,7 +116,7 @@
 !
          IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 10 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -167,11 +167,11 @@
      &                   + XA(IELEM,14) * Y(I4)
      &                   + XA(IELEM,15) * Y(I5)
 !
-10         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO 20 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -222,7 +222,7 @@
      &                   + XA(IELEM,29) * Y(I4)
      &                   + XA(IELEM,30) * Y(I5)
 !
-20         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -265,7 +265,7 @@
 !
          IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 11 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -316,11 +316,11 @@
      &                   - XA(IELEM,14) * Y(I4)
      &                   - XA(IELEM,15) * Y(I5)
 !
-11         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO 21 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -371,7 +371,7 @@
      &                   - XA(IELEM,29) * Y(I4)
      &                   - XA(IELEM,30) * Y(I5)
 !
-21         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -414,7 +414,7 @@
 !
          IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 30 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -465,11 +465,11 @@
      &                   + XA(IELEM,14) * Y(I4)
      &                   + XA(IELEM,15) * Y(I5)
 !
-30         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO 40  IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -520,7 +520,7 @@
      &                   + XA(IELEM,29) * Y(I4)
      &                   + XA(IELEM,30) * Y(I5)
 !
-40         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -552,7 +552,7 @@
 !
          IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 50 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -603,11 +603,11 @@
      &                   - XA(IELEM,14) * Y(I4)
      &                   - XA(IELEM,15) * Y(I5)
 !
-50         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO 60 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -658,7 +658,7 @@
      &                   - XA(IELEM,29) * Y(I4)
      &                   - XA(IELEM,30) * Y(I5)
 !
-60         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -690,7 +690,7 @@
 !
          IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 70 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -741,11 +741,11 @@
      &                   + XA(IELEM,14) * Y(I4)
      &                   + XA(IELEM,15) * Y(I5) )
 !
-70         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO 80 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -796,7 +796,7 @@
      &                   + XA(IELEM,29) * Y(I4)
      &                   + XA(IELEM,30) * Y(I5) )
 !
-80         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -828,7 +828,7 @@
 !
          IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 90  IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -879,11 +879,11 @@
      &                   + XA(IELEM,14) * Y(I4)
      &                   + XA(IELEM,15) * Y(I5)
 !
-90         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO 100 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -934,7 +934,7 @@
      &                   + XA(IELEM,14) * Y(I4)
      &                   + XA(IELEM,15) * Y(I5)
 !
-100        CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -977,7 +977,7 @@
 !
          IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 91  IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -1028,11 +1028,11 @@
      &                   - XA(IELEM,14) * Y(I4)
      &                   - XA(IELEM,15) * Y(I5)
 !
-91         CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO 101 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -1083,7 +1083,7 @@
      &                   - XA(IELEM,14) * Y(I4)
      &                   - XA(IELEM,15) * Y(I5)
 !
-101        CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -1126,7 +1126,7 @@
 !
          IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 110 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -1177,11 +1177,11 @@
      &                   + XA(IELEM,14) * Y(I4)
      &                   + XA(IELEM,15) * Y(I5)
 !
-110      CONTINUE
+         ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO 120 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -1232,7 +1232,7 @@
      &                   + XA(IELEM,14) * Y(I4)
      &                   + XA(IELEM,15) * Y(I5)
 !
-120        CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -1264,7 +1264,7 @@
 !
          IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 130 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -1315,11 +1315,11 @@
      &                   - XA(IELEM,14) * Y(I4)
      &                   - XA(IELEM,15) * Y(I5)
 !
-130      CONTINUE
+         ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO 140 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -1370,7 +1370,7 @@
      &                   - XA(IELEM,14) * Y(I4)
      &                   - XA(IELEM,15) * Y(I5)
 !
-140        CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -1402,7 +1402,7 @@
 !
          IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO 150 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -1453,11 +1453,11 @@
      &                   + XA(IELEM,14) * Y(I4)
      &                   + XA(IELEM,15) * Y(I5) )
 !
-150      CONTINUE
+         ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO 160 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
 !
            I1 = IKLE1(IELEM)
            I2 = IKLE2(IELEM)
@@ -1508,7 +1508,7 @@
      &                   + XA(IELEM,14) * Y(I4)
      &                   + XA(IELEM,15) * Y(I5) )
 !
-160        CONTINUE
+           ENDDO ! IELEM 
 !
          ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !

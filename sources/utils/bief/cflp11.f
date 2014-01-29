@@ -71,7 +71,7 @@
 !
 ! LOOP ON THE ELEMENTS
 !
-        DO 10 IELEM = 1, NELEM
+        DO IELEM = 1, NELEM
 !
           X2 = X(IELEM,2)
           X3 = X(IELEM,3)
@@ -103,7 +103,7 @@
           W1(IELEM,2) = L21 + L23
           W1(IELEM,3) = L31 + L32
 !
-10      CONTINUE
+        ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

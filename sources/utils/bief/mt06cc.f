@@ -114,7 +114,7 @@
       XSUR045 = XMUL / 45.D0
       XSUR180 = XMUL /180.D0
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -151,7 +151,7 @@
 !
          A56(IELEM) =   A45(IELEM)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -163,7 +163,7 @@
       XSUR315 = XMUL /  315.D0
       XSU1260 = XMUL / 1260.D0
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
       AUX210 = SURFAC(IELEM) * XSUR210
       AUX315 = SURFAC(IELEM) * XSUR315
       AUX1260= SURFAC(IELEM) * XSU1260
@@ -208,7 +208,7 @@
 !
          A56(IELEM) =  (2.D0*F1+3.D0*F3+2.D0*F2)*AUX315*4.D0
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -222,7 +222,7 @@
       XSUR630 = XMUL /  630.D0
       XSU1260 = XMUL / 1260.D0
 !
-      DO 5 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
       AUX315 = SURFAC(IELEM) * XSUR315
       AUX630 = SURFAC(IELEM) * XSUR630
       AUX1260= SURFAC(IELEM) * XSU1260
@@ -267,7 +267,7 @@
 !
       A56(IELEM) =  2.D0*(6.D0*(F6+F5)+4.D0*F4-F2-F1) * AUX315
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !

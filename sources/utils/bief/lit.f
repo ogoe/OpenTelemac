@@ -154,9 +154,9 @@
 !
 !        IF (TYPE(1:2).EQ.'R4') THEN
 !           CALL LECIBM( W , NVAL , TYPE , CANAL )
-!           DO 77 J=1,NVAL
+!           DO J=1,NVAL
 !             X(J)=DBLE(W(J))
-!77          CONTINUE
+!            ENDDO ! J
 !        ELSEIF (TYPE(1:2).EQ.'R8') THEN
 !           CALL LECIBM( X , NVAL , TYPE , CANAL )
 !        ELSEIF (TYPE(1:1).EQ.'I') THEN
@@ -176,9 +176,9 @@
 !  READS R4 AND R8 - TO BE CHECKED
 !        IF (TYPE(1:2).EQ.'R4') THEN
 !           CALL LECI3E( W , NVAL , 'F' , CANAL , ISTAT )
-!           DO 78 J=1,NVAL
+!           DO J=1,NVAL
 !             X(J)=DBLE(W(J))
-!78          CONTINUE
+!            ENDDO ! J
 !        ELSEIF (TYPE(1:2).EQ.'R8') THEN
 !           CALL LECI3E( X , NVAL , 'F' , CANAL , ISTAT )
 !        ELSEIF (TYPE(1:1).EQ.'I') THEN

@@ -142,7 +142,7 @@
         VOLPOSC(ISEC)=0.D0
       ENDDO
 !
-      DO 60 ISEC =1,NSEC
+      DO ISEC =1,NSEC
 !
 !!JAJ #### IN THE SERIAL CASE, OR "CLASSICAL" IN PARALLEL,
 !     FOLLOW THE ALGORITHM OF FINDING SEGMENT CHAINS
@@ -158,11 +158,11 @@
           ARR=GLOBAL_TO_LOCAL_POINT(ARR,MESH)
           IF(DEP.EQ.0.AND.ARR.EQ.0) THEN
             NSEG(ISEC)=0
-            GO TO 60
+            EXIT
           ENDIF
           IF((DEP.EQ.0.AND.ARR.NE.0).OR.(DEP.NE.0.AND.ARR.EQ.0)) THEN
             NSEG(ISEC)=-1
-            GO TO 60
+            EXIT
           ENDIF
         ENDIF
         PT = DEP
@@ -170,7 +170,7 @@
         DIST=(X(DEP)-X(ARR))**2+(Y(DEP)-Y(ARR))**2
 10      CONTINUE
 !
-        DO 20 IELEM =1,NELEM
+        DO IELEM =1,NELEM
 !
           I1 = IKLE(IELEM,1)
           I2 = IKLE(IELEM,2)
@@ -209,7 +209,7 @@
             ENDIF
           ENDIF
 !
-20      CONTINUE
+        ENDDO !IELEM
 !
         IF(IGBEST.EQ.PT) THEN
           IF(LNG.EQ.1) WRITE(LU,32)
@@ -258,7 +258,7 @@
           END DO
         ENDIF
 !
-60    CONTINUE
+      ENDDO
 !
 !     IF(.NOT.DEJA) THEN
       ENDIF

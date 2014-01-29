@@ -56,28 +56,28 @@
 !
       IND(1) = 1
 !
-      DO 1 I = 2 , N
+      DO I = 2 , N
 !
 !--->    IS(1:I-1) IS SORTED
 !
          I1 = I-1
-         DO 5 K = I1 , 1 , -1
+         DO K = I1 , 1 , -1
 !
 !--->       FOR L > K+1  IS(IND(L)) > IS(I)
 !
             IF(IS(IND(K)).GT.IS(I)) THEN
               IND(K+1) = IND(K)
             ELSE
-              GO TO 2
+              EXIT
             ENDIF
 !
-5        CONTINUE
+         ENDDO ! K 
 !
 !--->    ASSERTION : IS(IND(K))
 !
-2        IND(K+1)=I
+         IND(K+1)=I
 !
-1     CONTINUE
+      ENDDO ! I 
 !
 !-----------------------------------------------------------------------
 !

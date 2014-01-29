@@ -718,8 +718,8 @@
 !         de temps effectifs de TOMAWAC. La variable LT_WAC
 !         compte les pas de temps de chaque boucle, meme
 !         quand TOMAWAC est appele par TELEMAC
-!      DO 10 LT=1,NIT
-      DO 10 LT_WAC=1,NIT
+!      DO LT=1,NIT
+      DO LT_WAC=1,NIT
 !
 !.....11.1 AFFECTATION DE LA DATE DE FIN DU PAS DE TEMPS COURANT.
 !    
@@ -1006,7 +1006,7 @@
 !
       ENDIF
 !
-10    CONTINUE
+      ENDDO ! LT_WAC
 !
 !Fin COUPLAGE : fin du cycle IF(PART.NE.0)
       ENDIF

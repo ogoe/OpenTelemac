@@ -112,7 +112,7 @@
 !
 !        LOOP ON THE ELEMENTS
 !
-         DO 2 IELEM = 1,NELEM
+         DO IELEM = 1,NELEM
 !
             I1 = IKLE1(IELEM)
             I2 = IKLE2(IELEM)
@@ -177,7 +177,7 @@
      &                + ( V1234 + V4 ) * HELP2
      &                + ( W1234 + Q4 ) * HELP3
 !
-2        CONTINUE
+         ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

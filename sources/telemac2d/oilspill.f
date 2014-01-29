@@ -883,7 +883,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
        INTEGER IFLOT
-       DOUBLE PRECISION PI,GRAVITE,RHO_EAU,DELTA,VOL,NU,NU2,COEF1,COEF2
+       DOUBLE PRECISION PI,RHO_EAU,DELTA,VOL,NU,NU2,COEF1,COEF2
 !
        SAVE
 !
@@ -1167,7 +1167,7 @@
                BILAN=BILAN+MASSE_EVAP_HAP(K)
             END DO
             PARTICULES(IFLOT)%MASS=MASSE
-           PARTICULES(IFLOT)%MASS_EVAP=PARTICULES(IFLOT)%MASS_EVAP+BILAN                  
+           PARTICULES(IFLOT)%MASS_EVAP=PARTICULES(IFLOT)%MASS_EVAP+BILAN
          END DO
       END IF      
       RETURN
@@ -1532,7 +1532,7 @@
         DO ITRAC=1,NB_HAP
           DO I=1,NPOIN
             IF(T3%R(I).LT.0.5D0.AND.HPROP%R(I).GE.1.D-4)THEN
-              TIMP%ADR(ITRAC)%P%R(I)=-KVOL(ITRAC)	
+              TIMP%ADR(ITRAC)%P%R(I)=-KVOL(ITRAC)
             ELSE
               TIMP%ADR(ITRAC)%P%R(I)=0.D0
             END IF
@@ -1829,7 +1829,7 @@
                PARTICULES(IFLOT)%STATE=1
                PARTICULES(IFLOT)%TPSECH=0
             ELSE
-               Pref=0.D0
+               PREF=0.D0
                IF(Ks.GE.6.5D-05.AND.Ks.LT.1.D-03)THEN
                   Kf=0.25D0/(24.D0*60.D0**2)
                ELSE IF(Ks.GE.1.D-03.AND.Ks.LT.256.D-03)THEN
@@ -1837,7 +1837,7 @@
                ELSEIF(Ks.GE.256.D-03)THEN
                   Kf=0.85D0/(24.D0*60.D0**2)  
                END IF               
-               Pref=1.D0-EXP(-Kf*(LT-PARTICULES(IFLOT)%TPSECH)*DT)            
+               PREF=1.D0-EXP(-KF*(LT-PARTICULES(IFLOT)%TPSECH)*DT)
                CALL RANDOM_NUMBER(RAND)
                IF(RAND.LT.Pref)THEN
                   PARTICULES(IFLOT)%STATE=1

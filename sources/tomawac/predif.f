@@ -157,7 +157,7 @@
 !       RELATIVE = ABSOLUTE => ADVECTION IN 3D 
 !       SEPARATES OUT THE FREQUENCIES 
 ! 
-        DO 200 IFF=1,NF 
+        DO IFF=1,NF 
 ! 
 !        COMPUTES THE ADVECTION FIELD 
 !
@@ -201,7 +201,7 @@
 !                 AND PERIODICITY 
      &            .TRUE.) 
 ! 
-200    CONTINUE 
+       ENDDO !  IFF
 ! 
       ELSE 
 ! 

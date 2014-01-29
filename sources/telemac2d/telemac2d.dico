@@ -41,29 +41,29 @@
 /Signification des differents mode d'acquisition/restitution 
 /des fichiers vis a vis du parallelisme : 
 / 
-/  - "SCAL" :	 
+/  - "SCAL" : 
 /     Meme fichier pour tous les processeurs lu par tous.
 /     Seule la version du maitre est consideree apres calcul.
 / 
-/  - "SELAFIN" :	 
+/  - "SELAFIN" : 
 /     Le fichier est "decompose/regroupe en sous-domaines" avec les outils 
-/      "partel/gretel" (dans le mode par defaut "parallelisme automatique")	 
+/      "partel/gretel" (dans le mode par defaut "parallelisme automatique") 
 /     Chaque processeur dispose d'un fichier prive. 
 /  - "SELAFIN-GEOM" : 
 /     idem SELAFIN mais pour le fichier de geometrie ='FICHIER DE GEOMETRIE' 
 /      (usage par le regroupeur GRETEL en parallelisme) 
 / 
-/  - "PARAL" :	 
+/  - "PARAL" : 
 /     Le fichier est duplique avant calcul ("LIT") pour chaque processeur 
 /      (avec une extension numerique), sauf s'il pre-existe avec cette   
-/      extension numerique : il est alors utilise (copie).	 
+/      extension numerique : il est alors utilise (copie). 
 /     En mode "non automatique" : les fichiers lus doivent pre-exister avec  
-/      leur extension numerique.	 
+/      leur extension numerique. 
 /     S'il s'agit d'un fichier resultat ("ECR"), le fichier est restitue 
-/      avec son extension numerique (fichier specifique a chaque processeur).	 
+/      avec son extension numerique (fichier specifique a chaque processeur). 
 / 
-/  - "CONLIM" :	 
-/     Cette valeur designe le fichier des "conditions aux limites"	 
+/  - "CONLIM" : 
+/     Cette valeur designe le fichier des "conditions aux limites" 
 /     (utilise par le decoupeur "partel"). 
 / 
 /  - "SECTION" :  

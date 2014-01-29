@@ -218,8 +218,6 @@
         ENDIF
       ENDIF
 !
-100    CONTINUE
-!
        CE(IS,1)  = CE(IS,1) - VNL*FLXI(1)
        CE(IS,2)  = CE(IS,2) - VNL*FLXI(2)
        CE(IS,3)  = CE(IS,3) - VNL*FLXI(3)

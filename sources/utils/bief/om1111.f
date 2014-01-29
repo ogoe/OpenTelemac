@@ -458,23 +458,23 @@
 !
          IF(TYPEXM(1:1).EQ.'Q') THEN
            IF(TYPEXN(1:1).EQ.'Q') THEN
-           DO 82 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
             XM(IELEM, 1) = XM(IELEM,1) - XN(IELEM, 1) * D(IKLE(IELEM,1))
             XM(IELEM, 2) = XM(IELEM,2) - XN(IELEM, 2) * D(IKLE(IELEM,1))
             XM(IELEM, 3) = XM(IELEM,3) - XN(IELEM, 3) * D(IKLE(IELEM,2))
             XM(IELEM, 4) = XM(IELEM,4) - XN(IELEM, 4) * D(IKLE(IELEM,2))
             XM(IELEM, 5) = XM(IELEM,5) - XN(IELEM, 5) * D(IKLE(IELEM,3))
             XM(IELEM, 6) = XM(IELEM,6) - XN(IELEM, 6) * D(IKLE(IELEM,3))
-82         CONTINUE
+           ENDDO ! IELEM 
            ELSEIF(TYPEXN(1:1).EQ.'S') THEN
-           DO 81 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
             XM(IELEM, 1) = XM(IELEM,1) - XN(IELEM, 1) * D(IKLE(IELEM,1))
             XM(IELEM, 2) = XM(IELEM,2) - XN(IELEM, 2) * D(IKLE(IELEM,1))
             XM(IELEM, 3) = XM(IELEM,3) - XN(IELEM, 3) * D(IKLE(IELEM,2))
             XM(IELEM, 4) = XM(IELEM,4) - XN(IELEM, 1) * D(IKLE(IELEM,2))
             XM(IELEM, 5) = XM(IELEM,5) - XN(IELEM, 2) * D(IKLE(IELEM,3))
             XM(IELEM, 6) = XM(IELEM,6) - XN(IELEM, 3) * D(IKLE(IELEM,3))
-81         CONTINUE
+           ENDDO ! IELEM 
            ELSEIF(TYPEXN(1:1).NE.'0') THEN
             IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
             IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
@@ -507,23 +507,23 @@
 !
          IF(TYPEXM(1:1).EQ.'Q') THEN
            IF(TYPEXN(1:1).EQ.'Q') THEN
-           DO 83 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
            XM(IELEM, 1) = XM(IELEM,1) - XN(IELEM, 1) * D(IKLE(IELEM,2))
            XM(IELEM, 2) = XM(IELEM,2) - XN(IELEM, 2) * D(IKLE(IELEM,3))
            XM(IELEM, 3) = XM(IELEM,3) - XN(IELEM, 3) * D(IKLE(IELEM,3))
            XM(IELEM, 4) = XM(IELEM,4) - XN(IELEM, 4) * D(IKLE(IELEM,1))
            XM(IELEM, 5) = XM(IELEM,5) - XN(IELEM, 5) * D(IKLE(IELEM,1))
            XM(IELEM, 6) = XM(IELEM,6) - XN(IELEM, 6) * D(IKLE(IELEM,2))
-83         CONTINUE
+           ENDDO ! IELEM 
            ELSEIF(TYPEXN(1:1).EQ.'S') THEN
-           DO 84 IELEM = 1 , NELEM
+           DO IELEM = 1 , NELEM
            XM(IELEM, 1) = XM(IELEM,1) - XN(IELEM, 1) * D(IKLE(IELEM,2))
            XM(IELEM, 2) = XM(IELEM,2) - XN(IELEM, 2) * D(IKLE(IELEM,3))
            XM(IELEM, 3) = XM(IELEM,3) - XN(IELEM, 3) * D(IKLE(IELEM,3))
            XM(IELEM, 4) = XM(IELEM,4) - XN(IELEM, 1) * D(IKLE(IELEM,1))
            XM(IELEM, 5) = XM(IELEM,5) - XN(IELEM, 2) * D(IKLE(IELEM,1))
            XM(IELEM, 6) = XM(IELEM,6) - XN(IELEM, 3) * D(IKLE(IELEM,2))
-84         CONTINUE
+           ENDDO ! IELEM 
            ELSEIF(TYPEXN(1:1).NE.'0') THEN
             IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
             IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)

@@ -81,7 +81,7 @@
 !
       DHTEST = 1.D6
 !
-      DO 100 I=1,NPOIN
+      DO I=1,NPOIN
          T1%R(I) = 1.D0 + T2%R(I) *( 0.6522D0 +
      &                    T2%R(I) *( 0.4622D0 +
      &                    T2%R(I) *
@@ -90,7 +90,7 @@
          T1%R(I) = SQRT( T2%R(I)*(T2%R(I) + 1.D0/T1%R(I)) )
          K%R(I)  = T1%R(I)/H%R(I)
          DHTEST  = MIN( DHTEST , H%R(I) )
-100   CONTINUE
+      ENDDO
 !
 !
 !=======================================================================
@@ -106,10 +106,10 @@
 ! COMPUTES MEAN CG
 !=======================================================================
 !
-      DO 200 I=1,NPOIN
+      DO I=1,NPOIN
          CG%R(I) = C%R(I)/2.D0 *
      &             (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
-200   CONTINUE
+      ENDDO
 !
       RETURN
       END

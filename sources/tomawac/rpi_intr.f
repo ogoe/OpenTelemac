@@ -1,6 +1,6 @@
 !                       ******************* 
                         SUBROUTINE RPI_INTR 
-!             		*******************
+!                       *******************
 ! 
      &(NEIGB  , NB_CLOSE, RK      , RX  , RY      , RXX     , RYY , 
      & NPOIN2 , I       , MAXNSP  , FFD , FIRDIV1 , FIRDIV2 , 

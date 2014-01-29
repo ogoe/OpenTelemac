@@ -95,20 +95,20 @@
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""""
       DELTA1=-DTPLUS
       DELTA2= DTMOIN
-      DO 110 JP=1,NPLAN
+      DO JP=1,NPLAN
         CALL INTANG( IANGNL(JP,2) , IANGNL(JP,1) , JP , NPLAN , DELTA1)
         CALL INTANG( IANGNL(JP,3) , IANGNL(JP,4) , JP , NPLAN , DELTA2)
-  110 CONTINUE
+      ENDDO ! JP
 !
 !.....1.3 DETERMINES ANGULAR INDICES FOR THE 'IMAGE' CONFIGURATION
 !         (CORRESPONDING TO (DTPLUS,-DTMOIN))
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""
       DELTA1= DTPLUS
       DELTA2=-DTMOIN
-      DO 120 JP=1,NPLAN
+      DO JP=1,NPLAN
         CALL INTANG( IANGNL(JP,5) , IANGNL(JP,6) , JP , NPLAN , DELTA1)
         CALL INTANG( IANGNL(JP,8) , IANGNL(JP,7) , JP , NPLAN , DELTA2)
-  120 CONTINUE
+      ENDDO ! JP
 !
 !.....1.4 DETERMINES COEFFICIENTS OF ANGULAR INTERPOLATION
 !     """""""""""""""""""""""""""""""""""""""""""

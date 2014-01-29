@@ -79,7 +79,7 @@
       ITBB = ITBB + 1
 !     REINITIALISES THE BLOCK
       TBB%ADR(IPT)%P%N=0
-      DO 20 K = 1 , MAX(S,1)
+      DO K = 1 , MAX(S,1)
         IF(ITB.GT.MAXTB) THEN
           IF(LNG.EQ.1) WRITE(LU,10) ITB + MAX(S,1) - K + 1
           IF(LNG.EQ.2) WRITE(LU,11) ITB + MAX(S,1) - K + 1
@@ -89,7 +89,7 @@
         IAD=ITB
         CALL ADDBLO(TBB%ADR(IPT)%P,TB%ADR(IAD)%P)
         ITB = ITB + 1
-20    CONTINUE
+      ENDDO ! K 
 !
 !-----------------------------------------------------------------------
 !

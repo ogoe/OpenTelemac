@@ -237,7 +237,7 @@
 !
 !     K-1 1ST COLUMNS
 !
-      DO 10 J=1,K-1
+      DO J=1,K-1
 !
         IF(PRECO) THEN
           CALL GOUP(B , AUX , V%ADR(J)%P ,'D',MESH,.TRUE.)
@@ -249,20 +249,20 @@
 !
         CALL OS('X=Y     ', V%ADR(J+1)%P ,AV%ADR(J)%P , X , BID )
 !
-        DO 30 I = 1,J
+        DO I = 1,J
 !
           H(I,J) = P_DOTS( V%ADR(J+1)%P , V%ADR(I)%P , MESH )
 !
           CALL OS('X=X+CY  ',V%ADR(J+1)%P,V%ADR(I)%P,V%ADR(I)%P,-H(I,J))
 !
-30      CONTINUE
+        ENDDO ! I 
 !
          H(J+1,J)=P_DOTS(V%ADR(J+1)%P,V%ADR(J+1)%P,MESH)
          H(J+1,J) = SQRT( H(J+1,J) )
 !
          CALL OS('X=CX    ',V%ADR(J+1)%P, B, B, 1.D0/H(J+1,J))
 !
-10    CONTINUE
+      ENDDO ! J
 !
 ! K-TH COLUMN (VECTOR V(K+1) IS NOT COMPLETELY BUILT)
 !
@@ -276,12 +276,12 @@
 !
         H(K+1,K) = P_DOTS( AV%ADR(K)%P , AV%ADR(K)%P , MESH )
 !
-        DO 31 I = 1,K
+        DO I = 1,K
 !
           H(I,K) = P_DOTS( AV%ADR(K)%P , V%ADR(I)%P , MESH )
           H(K+1,K) = H(K+1,K) - H(I,K)**2
 !
-31      CONTINUE
+        ENDDO ! I 
 !       IN THEORY H(K+1,K) IS POSITIVE
 !       TO MACHINE ACCURACY
         H(K+1,K) = SQRT( ABS(H(K+1,K)) )
@@ -295,15 +295,15 @@
 !
 !  ROTATIONS IN RANGE [1 - K]
 !
-      DO 40 I = 1 , K
+      DO I = 1 , K
 !
 !     MODIFIES COLUMN I OF H BY THE PREVIOUS ROTATIONS
       IF(I.GE.2) THEN
-        DO 41 J = 1,I-1
+        DO J = 1,I-1
           ZZ       =  C(J) * H(J,I) + S(J) * H(J+1,I)
           H(J+1,I) = -S(J) * H(J,I) + C(J) * H(J+1,I)
           H(J,I) = ZZ
-41      CONTINUE
+        ENDDO ! J 
       ENDIF
 !     MODIFIES COLUMN I OF H BY ROTATION I
       R = SQRT( H(I,I)**2 + H(I+1,I)**2 )
@@ -322,7 +322,7 @@
       E(I+1) = -S(I) * E(I)
       E(I  ) =  C(I) * E(I)
 !
-40    CONTINUE
+      ENDDO ! I 
 !
 !-----------------------------------------------------------------------
 ! SOLVES SYSTEM H*Y = E     (H UPPER TRIANGULAR OF DIMENSION K)
@@ -332,18 +332,18 @@
 !-----------------------------------------------------------------------
 !
       E(K) = E(K) / H(K,K)
-      DO 120 J = K-1,1,-1
-      DO 130 L = J+1,K
+      DO J = K-1,1,-1
+      DO L = J+1,K
         E(J) = E(J) - H(J,L) * E(L)
-130   CONTINUE
+      ENDDO ! L 
       E(J) = E(J) / H(J,J)
-120   CONTINUE
+      ENDDO ! J 
 !
 !-----------------------------------------------------------------------
 ! BUILDS THE SOLUTION FOR STEP M : X(M+1) = X(M) + VK * Y(K)
 !-----------------------------------------------------------------------
 !
-      DO 150 L = 1,K
+      DO L = 1,K
 !
 !  COMPUTES THE NEW SOLUTION X
 !
@@ -353,7 +353,7 @@
 !
         CALL OS('X=X+CY  ', R0 , AV%ADR(L)%P , R0 , E(L) )
 !
-150   CONTINUE
+      ENDDO ! L 
 !
 ! CHECKS THAT THE ACCURACY IS NOT ALREADY REACHED
 ! THE RESIDUAL NORM IS GIVEN BY ABS(E(K+1))

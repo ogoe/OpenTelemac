@@ -81,13 +81,13 @@
 !  TO BE MODIFIED BY USER
 !  MODIFIED BY QINGHUI ZHANG 15 JULY 2013
 !  FOR THE PURPOSE OF PRECSCRIBING A CONSTANT INITIAL DEPTH AND VELOCITY
-      DO 10 I=1,NPOIN
+      DO I=1,NPOIN
 C
          H%R(I) = 10.D0
          U%R(I) = 3.D-2
          V%R(I) = 0.D0
 C
-10    CONTINUE
+      ENDDO
 
 !  END OF CODE TO BE MODIFIED BY USER
       ELSE
@@ -295,7 +295,7 @@ C
 !
 !  LOOP ON ALL BOUNDARY POINTS
 !
-      DO 5 K=1,NPTFR
+      DO K=1,NPTFR
 !
 !  LEVEL IMPOSED WITH VALUE GIVEN IN THE CAS FILE (NCOTE0)
 !
@@ -438,7 +438,7 @@ C
       ENDIF
 
 
-5     CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -466,7 +466,7 @@ C
 !
       IF(NFRLIQ.NE.0) THEN
 !
-      DO 10 IFRLIQ = 1 , NFRLIQ
+      DO IFRLIQ = 1 , NFRLIQ
 !
       IF(NDEBIT.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
 !
@@ -489,7 +489,7 @@ C
 !
 !-----------------------------------------------------------------------
 !
-10    CONTINUE
+      ENDDO
 !
       ENDIF
 !

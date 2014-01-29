@@ -91,7 +91,7 @@
 !
 !       LOOP ON THE TRIANGLES:
 !
-        DO 20 IELEM=1,NELEM
+        DO IELEM=1,NELEM
           X1=X(IKLE(IELEM,1))
           X2=X(IKLE(IELEM,2))
           X3=X(IKLE(IELEM,3))
@@ -111,7 +111,7 @@
               ENDIF
             ENDDO
           ENDIF
-20      CONTINUE
+        ENDDO ! IELEM
         IF(IP(K).EQ.0) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'POINT SOURCE OU SPECTRE ',K,' HORS DOMAINE'

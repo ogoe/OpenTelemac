@@ -1194,7 +1194,7 @@
               FL2=P_DSUM(FL2)
             ENDIF
 !           MULTIPLICATION FACTOR SO THAT BOTH FLUXES ARE EQUAL
-            IF(ABS(FL1).GT.1.D-4.AND.ABS(FL2).GT.1.D-4) THEN             
+            IF(ABS(FL1).GT.1.D-4.AND.ABS(FL2).GT.1.D-4) THEN
               IF(I1.GT.0) FLBOR%R(I1)= FLBOR%R(I1)*(FL1-FL2)*0.5D0/FL1 
               IF(I2.GT.0) FLBOR%R(I2)=-FLBOR%R(I2)*(FL1-FL2)*0.5D0/FL2
             ELSE

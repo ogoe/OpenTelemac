@@ -83,13 +83,13 @@
       CALL LIT(XBID,WBID,IB  ,CBID, 2,'I ',NGEO,STD,ISTAT)
       NVAR = IB(1) + IB(2)
       IHAUT = 0
-      DO 10 I=1,NVAR
+      DO I=1,NVAR
          CALL LIT(XBID,WBID,IBID,NOMVAR,32,'CH',NGEO,STD,ISTAT)
          IF( NOMVAR(1:16) .EQ. 'FOND            ' .OR.
      &       NOMVAR(1:16) .EQ. 'BOTTOM          ' ) NSFOND = I
          IF( NOMVAR(1:16) .EQ. 'HAUTEUR D''EAU   ' .OR.
      &       NOMVAR(1:16) .EQ. 'WATER DEPTH     ' ) IHAUT = I
-10    CONTINUE
+      ENDDO
       CALL LIT(XBID,WBID,IB  ,CBID,10,'I ',NGEO,STD,ISTAT)
 !
 !     CORRECTION JMH 07/03/2001
@@ -123,9 +123,9 @@
          CALL LIT(XBID,WBID,IBID,CBID,72,'CH',NFO1,STD,ISTAT)
          CALL LIT(XBID,WBID,IB  ,CBID, 2,'I ',NFO1,STD,ISTAT)
          NVAR = IB(1) + IB(2)
-         DO 20 I=1,NVAR
+         DO I=1,NVAR
             CALL LIT(XBID,WBID,IBID,NOMVAR,32,'CH',NFO1,STD,ISTAT)
-20       CONTINUE
+         ENDDO
          CALL LIT(XBID,WBID,IB  ,CBID,10,'I ',NFO1,STD,ISTAT)
          CALL LIT(XBID,WBID,IB  ,CBID, 4,'I ',NFO1,STD,ISTAT)
 !

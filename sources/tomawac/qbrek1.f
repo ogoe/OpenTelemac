@@ -92,7 +92,7 @@
 !
 !.....COMPUTES THE LINEAR COEFFICIENT BETA: QBREK1 = BETA * F
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""""
-      DO 25 IP = 1,NPOIN2
+      DO IP = 1,NPOIN2
          IF (VARIAN(IP).GT.SEUIL) THEN
 !
 !..........COMPUTES THE MAXIMUM WAVE HEIGHT
@@ -114,17 +114,17 @@
          ELSE
            BETA(IP) = 0.D0
          ENDIF
-   25 CONTINUE
+      ENDDO ! IP 
 !
 !.....TAKES THE SOURCE TERM INTO ACCOUNT
 !     """"""""""""""""""""""""""""""""
-      DO 10 IFF = 1,NF
-        DO 20 JP = 1,NPLAN
-          DO 30 IP = 1,NPOIN2
+      DO IFF = 1,NF
+        DO JP = 1,NPLAN
+          DO IP = 1,NPOIN2
             TSTOT(IP,JP,IFF) = TSTOT(IP,JP,IFF)+BETA(IP)*F(IP,JP,IFF)
-   30     CONTINUE
-   20   CONTINUE
-   10 CONTINUE
+          ENDDO ! IP 
+        ENDDO ! JP 
+      ENDDO ! IFF 
 !
       RETURN
       END

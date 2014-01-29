@@ -79,7 +79,7 @@
       READ(IFIC,*,ERR=998) RELAXB 
       READ(IFIC,*,END=900) 
 ! 
-      DO 10 N=1,NBUSE 
+      DO N=1,NBUSE 
         READ(IFIC,*,ERR=997) ENTBUS(N),SORBUS(N), 
      &                       CEBUS(N,1),CEBUS(N,2),
      &                       CSBUS(N,1),CSBUS(N,2), 
@@ -122,7 +122,7 @@
 ! UNCOMMENT THE FOLLOWING LINE TO IMPOSE THE DIRECTION OF FLOW FROM THE DATA FILE 
 !        ANGBUS(N,1) = ANG1*PI/180.D0 
 !        ANGBUS(N,2) = ANG2*PI/180.D0 
-10    CONTINUE 
+      ENDDO !  N
 ! 
       GO TO 1000 
 ! 

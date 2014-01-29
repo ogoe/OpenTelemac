@@ -111,7 +111,7 @@
       IF(      IELMF.EQ.12.AND.IELMG.EQ.10.AND.IELMH.EQ.10
      &    .AND.IELMU.EQ.11.AND.IELMV.EQ.11                 ) THEN
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2 = XEL(IELEM,2)
       X3 = XEL(IELEM,3)
@@ -185,7 +185,7 @@
      &   X2*V1+X3*V3+4*X3*V2+4*X3*V1-U3*Y3-U3*Y2-4*U2*Y3-4*U2*
      &   Y2-4*U1*Y3-4*U1*Y2))*F2))*XMUL/(18*(X2*Y3-X3*Y2))
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -194,7 +194,7 @@
       ELSEIF(IELMF.EQ.12.AND.IELMG.EQ.10.AND.IELMH.EQ.10.
      &                   AND.IELMU.EQ.12.AND.IELMV.EQ.12  ) THEN
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       X2 = XEL(IELEM,2)
       X3 = XEL(IELEM,3)
@@ -264,7 +264,7 @@
      &   (X2*V4+X2*V2+X2*V1+X3*V4+X3*V2+X3*V1-U4*Y3-U4*Y2-U2*Y3-U2
      &   *Y2-U1*Y3-U1*Y2))*F2))*XMUL/(6*(X2*Y3-X3*Y2))
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
       ELSE

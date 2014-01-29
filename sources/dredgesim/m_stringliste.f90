@@ -228,7 +228,7 @@ CONTAINS
     CHARACTER (LEN=LEN(list_string))             :: string              ! 
     CHARACTER (LEN=4)                            :: c_listlen           ! 
     INTEGER                                      :: tz_anz, dl_anz, i, i_pos, & ! 
-                                                    i_anf, i_end, i_len, nn ! 
+                                                    i_anf, i_end, nn ! 
     INTEGER  , DIMENSION(:,:) , ALLOCATABLE      :: tz_pos, dl_pos      ! 
     !
     !
@@ -884,7 +884,7 @@ CONTAINS
     INTEGER :: stat ! 
     !
     CHARACTER (LEN=key_len), DIMENSION(:) , POINTER      :: char_liste
-    INTEGER                                              :: i, j, ios
+    INTEGER                                              :: i, j
     !
        !
        ! Initialisierungen
@@ -1082,7 +1082,6 @@ CONTAINS
     CHARACTER (LEN=31), PARAMETER :: c_upname='make_liste_int' 
 
     CHARACTER(LEN=key_len)                    :: c_temp
-    INTEGER                                   :: i
     !
        !
        IF ( LEN(sign) .GT. 1 ) THEN
@@ -1138,7 +1137,6 @@ CONTAINS
     CHARACTER (LEN=31), PARAMETER :: c_upname='make_liste_real' 
 
     CHARACTER(LEN=key_len)                    :: c_temp
-    INTEGER                                   :: i
     !
        !
        IF ( LEN(sign) .GT. 1 ) THEN
@@ -1194,7 +1192,6 @@ CONTAINS
     CHARACTER (LEN=31), PARAMETER :: c_upname='make_liste_doub' 
 
     CHARACTER(LEN=key_len)                    :: c_temp
-    INTEGER                                   :: i
     !
        !
        IF ( LEN(sign) .GT. 1 ) THEN
@@ -1250,7 +1247,6 @@ CONTAINS
     CHARACTER (LEN=31), PARAMETER :: c_upname='make_liste_log' 
 
     CHARACTER(LEN=key_len)                    :: c_temp
-    INTEGER                                   :: i
     !
        !
        IF ( LEN(sign) .GT. 1 ) THEN

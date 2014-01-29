@@ -1,60 +1,60 @@
-C                       *****************
+!                       *****************
                         SUBROUTINE CORFON
-C                       *****************
-C
-C***********************************************************************
-C PROGICIEL : TELEMAC-2D 5.0          01/03/90    J-M HERVOUET
-C***********************************************************************
-C
-C  USER SUBROUTINE CORFON
-C
-C  FUNCTION  : MODIFICATION OF THE BOTTOM TOPOGRAPHY
-C
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS USED IN THE EXAMPLE 
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |      ZF        |<-->| FOND A MODIFIER.
-C |      X,Y,(Z)   | -->| COORDONNEES DU MAILLAGE (Z N'EST PAS EMPLOYE).
-C |      A         |<-- | MATRICE
-C |      T1,2      | -->| TABLEAUX DE TRAVAIL (DIMENSION NPOIN)
-C |      W1        | -->| TABLEAU DE TRAVAIL (DIMENSION 3 * NELEM)
-C |      NPOIN     | -->| NOMBRE DE POINTS DU MAILLAGE.
-C |      PRIVE     | -->| TABLEAU PRIVE POUR L'UTILISATEUR.
-C |      LISFON    | -->| NOMBRE DE LISSAGES DU FOND.
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C
-C PROGRAMME APPELANT :
-C PROGRAMMES APPELES : RIEN EN STANDARD
-C
-C***********************************************************************
-C
+!                       *****************
+!
+!***********************************************************************
+! PROGICIEL : TELEMAC-2D 5.0          01/03/90    J-M HERVOUET
+!***********************************************************************
+!
+!  USER SUBROUTINE CORFON
+!
+!  FUNCTION  : MODIFICATION OF THE BOTTOM TOPOGRAPHY
+!
+!
+!-----------------------------------------------------------------------
+!  ARGUMENTS USED IN THE EXAMPLE 
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|_______________________________________________
+! |      ZF        |<-->| FOND A MODIFIER.
+! |      X,Y,(Z)   | -->| COORDONNEES DU MAILLAGE (Z N'EST PAS EMPLOYE).
+! |      A         |<-- | MATRICE
+! |      T1,2      | -->| TABLEAUX DE TRAVAIL (DIMENSION NPOIN)
+! |      W1        | -->| TABLEAU DE TRAVAIL (DIMENSION 3 * NELEM)
+! |      NPOIN     | -->| NOMBRE DE POINTS DU MAILLAGE.
+! |      PRIVE     | -->| TABLEAU PRIVE POUR L'UTILISATEUR.
+! |      LISFON    | -->| NOMBRE DE LISSAGES DU FOND.
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+!
+! PROGRAMME APPELANT :
+! PROGRAMMES APPELES : RIEN EN STANDARD
+!
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU,IPOIN, I
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C Debut CR
-C seuil passe usiniere
-C      INTEGER boucleCR5,nbathyCR5
-C      PARAMETER (nbathyCR5=25)
-C      INTEGER numeroCR5(nbathyCR5)
-C      DOUBLE PRECISION fondCR5(nbathyCR5)
-C      DATA numeroCR5 / 41161,44127,43449,44059,41060,44195,44126,44128,
-C     &44221,44170,43752,43976,43448,44238,43447,44095,43975,43977,44006,
-C     &44239,9866,44153,43918,44007,13267/
-C      DATA fondCR5  / 52.50D0, 52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,
-C     &52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,
-C     &52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,
-C     &52.50D0,52.50D0,52.50D0 /     
-C seuil passe navigable
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! Debut CR
+! seuil passe usiniere
+!      INTEGER boucleCR5,nbathyCR5
+!      PARAMETER (nbathyCR5=25)
+!      INTEGER numeroCR5(nbathyCR5)
+!      DOUBLE PRECISION fondCR5(nbathyCR5)
+!      DATA numeroCR5 / 41161,44127,43449,44059,41060,44195,44126,44128,
+!     &44221,44170,43752,43976,43448,44238,43447,44095,43975,43977,44006,
+!     &44239,9866,44153,43918,44007,13267/
+!      DATA fondCR5  / 52.50D0, 52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,
+!     &52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,
+!     &52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,
+!     &52.50D0,52.50D0,52.50D0 /     
+! seuil passe navigable
       INTEGER boucleCR6,nbathyCR6
       PARAMETER (nbathyCR6=55)
       INTEGER numeroCR6(nbathyCR6)
@@ -74,7 +74,7 @@ C seuil passe navigable
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0 /     
-C seuil passe est
+! seuil passe est
       INTEGER boucleCR7,nbathyCR7
       PARAMETER (nbathyCR7=21)
       INTEGER numeroCR7(nbathyCR7)
@@ -85,153 +85,153 @@ C seuil passe est
       DATA fondCR7  / 66.40D0, 66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0/    
-C Fin CR
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+! Fin CR
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       LOGICAL MAS
-C
-C-----------------------------------------------------------------------
-C
-C  MODIFICATION DU FOND DE CERTAINS POINTS DE LA FRONTIERE
-C         
-C  LISSAGES EVENTUELS DU FOND
-C
+!
+!-----------------------------------------------------------------------
+!
+!  MODIFICATION DU FOND DE CERTAINS POINTS DE LA FRONTIERE
+!         
+!  LISSAGES EVENTUELS DU FOND
+!
       IF(LISFON.GT.0) THEN
-C
+!
         MAS=.TRUE.
         CALL FILTER(ZF,MAS,T1,T2,AM1,'MATMAS          ',
      *              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C      IF(LNG.EQ.1) THEN
-C        IF(LISFON.EQ.0) THEN
-C          WRITE(LU,*)
-C          WRITE(LU,*) 'CORFON (TELEMAC2D) : PAS DE MODIFICATION DU FOND'
-C          WRITE(LU,*)
-C        ELSE
-C          WRITE(LU,*)
-C          WRITE(LU,*) 'CORFON (TELEMAC2D) : ',LISFON,' LISSAGES DU FOND'
-C          WRITE(LU,*)
-C        ENDIF
-C      ENDIF
-C      IF(LNG.EQ.2) THEN
-C        IF(LISFON.EQ.0) THEN
-C          WRITE(LU,*)
-C          WRITE(LU,*) 'CORFON (TELEMAC2D): NO MODIFICATION OF BOTTOM'
-C          WRITE(LU,*)
-C        ELSE
-C          WRITE(LU,*)
-C          WRITE(LU,*) 'CORFON (TELEMAC2D): ',LISFON,' BOTTOM SMOOTHINGS'
-C          WRITE(LU,*)
-C        ENDIF
-C      ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C Debut CR
-C
-C
+!
+!-----------------------------------------------------------------------
+!
+!      IF(LNG.EQ.1) THEN
+!        IF(LISFON.EQ.0) THEN
+!          WRITE(LU,*)
+!          WRITE(LU,*) 'CORFON (TELEMAC2D) : PAS DE MODIFICATION DU FOND'
+!          WRITE(LU,*)
+!        ELSE
+!          WRITE(LU,*)
+!          WRITE(LU,*) 'CORFON (TELEMAC2D) : ',LISFON,' LISSAGES DU FOND'
+!          WRITE(LU,*)
+!        ENDIF
+!      ENDIF
+!      IF(LNG.EQ.2) THEN
+!        IF(LISFON.EQ.0) THEN
+!          WRITE(LU,*)
+!          WRITE(LU,*) 'CORFON (TELEMAC2D): NO MODIFICATION OF BOTTOM'
+!          WRITE(LU,*)
+!        ELSE
+!          WRITE(LU,*)
+!          WRITE(LU,*) 'CORFON (TELEMAC2D): ',LISFON,' BOTTOM SMOOTHINGS'
+!          WRITE(LU,*)
+!        ENDIF
+!      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+! Debut CR
+!
+!
       IF ((AT.GE.30000.D0) .AND. (AT.LE.31315.D0)) THEN
-      DO 115 boucleCR6=1,nbathyCR6
+      DO boucleCR6=1,nbathyCR6
          ZF%R(GLOBAL_TO_LOCAL_POINT(numeroCR6(boucleCR6),MESH))=
      &                                                0.01D0*AT-246.75D0    
- 115  CONTINUE
+      ENDDO
       ELSEIF (AT.GT.31315.D0) THEN
-      DO 116 boucleCR6=1,nbathyCR6
+      DO boucleCR6=1,nbathyCR6
          ZF%R(GLOBAL_TO_LOCAL_POINT(numeroCR6(boucleCR6),MESH))=
      &                                                fondCR6(boucleCR6)
- 116  CONTINUE
+      ENDDO
       ENDIF
-C
+!
       IF ((AT.GE.30000.D0) .AND. (AT.LE.31190.D0)) THEN
-      DO 117 boucleCR7=1,nbathyCR7
+      DO boucleCR7=1,nbathyCR7
          ZF%R(GLOBAL_TO_LOCAL_POINT(numeroCR7(boucleCR7),MESH))=
      &                                                 0.01D0*AT-245.5D0
- 117  CONTINUE
+      ENDDO
       ELSEIF (AT.GT.31190.D0) THEN
-      DO 118 boucleCR7=1,nbathyCR7
+      DO boucleCR7=1,nbathyCR7
          ZF%R(GLOBAL_TO_LOCAL_POINT(numeroCR7(boucleCR7),MESH))=
      &                                                fondCR7(boucleCR7)
- 118  CONTINUE
+      ENDDO
       ENDIF
-C   
-C Fin CR
+!   
+! Fin CR
       RETURN
       END      
-C                       ***************************
+!                       ***************************
                         DOUBLE PRECISION FUNCTION Q
-C                       ***************************
-C
+!                       ***************************
+!
      *( I )
-C
-C***********************************************************************
-C  TELEMAC 2D VERSION 5.0    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
-C
-C***********************************************************************
-C
-C FONCTION  : DONNE LA VALEUR DU DEBIT POUR TOUTES LES ENTREES A DEBIT
-C             IMPOSE.
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C |      NOM       |MODE|                   ROLE                       |
-C |________________|____|______________________________________________|
-C |   AT           | -->| TEMPS AUQUEL ON DONNE LE DEBIT               |
-C |   I            | -->| RANG DE LA FRONTIERE A DEBIT IMPOSE          |
-C |                |    | (1 S'IL N'Y EN A QU'UNE)                     |
-C |   DEBIT        | -->| TABLEAU DES DEBITS IMPOSES.                  |
-C |                |    | (LU DANS LE FICHIER DES PARAMETRES)          |
-C |   HAUTEUR D'EAU| -->| TABLEAU DES HAUTEURS D'EAU.                  |
-C |   NPOIN        | -->| NOMBRE DE POINTS DU TABLEAU DES HAUTEURS     |
-C |________________|____|______________________________________________|
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C  APPELE PAR : BORD
-C
-C***********************************************************************
-C
+!
+!***********************************************************************
+!  TELEMAC 2D VERSION 5.0    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
+!
+!***********************************************************************
+!
+! FONCTION  : DONNE LA VALEUR DU DEBIT POUR TOUTES LES ENTREES A DEBIT
+!             IMPOSE.
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! |      NOM       |MODE|                   ROLE                       |
+! |________________|____|______________________________________________|
+! |   AT           | -->| TEMPS AUQUEL ON DONNE LE DEBIT               |
+! |   I            | -->| RANG DE LA FRONTIERE A DEBIT IMPOSE          |
+! |                |    | (1 S'IL N'Y EN A QU'UNE)                     |
+! |   DEBIT        | -->| TABLEAU DES DEBITS IMPOSES.                  |
+! |                |    | (LU DANS LE FICHIER DES PARAMETRES)          |
+! |   HAUTEUR D'EAU| -->| TABLEAU DES HAUTEURS D'EAU.                  |
+! |   NPOIN        | -->| NOMBRE DE POINTS DU TABLEAU DES HAUTEURS     |
+! |________________|____|______________________________________________|
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!
+!-----------------------------------------------------------------------
+!
+!  APPELE PAR : BORD
+!
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER         , INTENT(IN) :: I
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       CHARACTER*8 FCT
       INTEGER N
       LOGICAL DEJA,OK(MAXFRO)
       DATA    DEJA /.FALSE./
       SAVE    OK,DEJA
-C
-C     FIRST CALL, OK INITIALISED TO .TRUE.
-C
+!
+!     FIRST CALL, OK INITIALISED TO .TRUE.
+!
       IF(.NOT.DEJA) THEN
         DO N=1,MAXFRO
           OK(N)=.TRUE.
         ENDDO
         DEJA=.TRUE.
       ENDIF
-C
-C     IF FILE OF LIQUID BOUNDARIES EXISTING, ATTEMPT TO FIND
-C     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-C                      IF  NO, OK SET     TO .FALSE.
-C
+!
+!     IF FILE OF LIQUID BOUNDARIES EXISTING, ATTEMPT TO FIND
+!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
+!                      IF  NO, OK SET     TO .FALSE.
+!
       IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
-C
-C       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
+!
+!       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
         FCT(1:2)='Q('
         IF(I.LT.10) THEN 
           WRITE(FCT(3:3),FMT='(I1)') I
@@ -243,89 +243,89 @@ C       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
           STOP 'Q NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
         ENDIF
         CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I)) 
-C
+!
       ENDIF
-C
+!
       IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
-C 
-C     PROGRAMMABLE PART                              
-C     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
-C                                                                                                                                            
+! 
+!     PROGRAMMABLE PART                              
+!     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
+!                                                                                                                                            
         Q = DEBIT(I)   
         IF (I.EQ.2) THEN            
             IF (AT.LE.36000.D0) THEN
                 Q = AT - 26000.D0
             ELSE 
-            	Q = DEBIT(I)
+                Q = DEBIT(I)
             ENDIF
         ELSEIF (I.EQ.3) THEN
             IF (AT.LE.30800.D0) THEN
                 Q= -0.05D0*AT+1550.D0
             ELSE 
-            	Q = DEBIT(I)
+                Q = DEBIT(I)
             ENDIF
         ELSEIF (I.EQ.4) THEN
             IF (AT.LE.29500.D0) THEN
                 Q= -1.D0*AT+28000.D0
             ELSE 
-            	Q = DEBIT(I)
+                Q = DEBIT(I)
             ENDIF    
         ELSEIF (I.EQ.5) THEN
             IF (AT.LE.29500.D0) THEN
                 Q= AT-28000.D0
             ELSE 
-            	Q = DEBIT(I)
+                Q = DEBIT(I)
             ENDIF 
         ELSEIF (I.EQ.6) THEN
             IF (AT.LE.35500.D0) THEN
                 Q= AT-27000.D0
             ELSE 
-            	Q = DEBIT(I)
+                Q = DEBIT(I)
             ENDIF
         ENDIF
       ENDIF                                                         
-C 
-C-----------------------------------------------------------------------
-C
-C     PRINT * , 'I=',I,' Q=',Q
+! 
+!-----------------------------------------------------------------------
+!
+!     PRINT * , 'I=',I,' Q=',Q
       RETURN
       END
-C                       ****************************
+!                       ****************************
                         DOUBLE PRECISION FUNCTION SL
-C                       ****************************
-C
-C
+!                       ****************************
+!
+!
      *( I , N )
-C
-C***********************************************************************
-C  TELEMAC 2D VERSION 5.1    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
-C
-C***********************************************************************
-C
-C FONCTION  : DONNE LA VALEUR DE LA COTE DE LA SURFACE LIBRE POUR TOUTES
-C             LES ENTREES A COTE IMPOSEE.
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C |      NOM       |MODE|                   ROLE                       |
-C |________________|____|______________________________________________|
-C |   I            | -->| RANG DE LA FRONTIERE A COTE IMPOSEE
-C |                |    | (1 S'IL N'Y EN A QU'UNE)
-C |   N            | -->| NUMERO GLOBAL DU POINT
-C |________________|____|_______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C  APPELE PAR : BORD
-C
-C***********************************************************************
-C
+!
+!***********************************************************************
+!  TELEMAC 2D VERSION 5.1    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
+!
+!***********************************************************************
+!
+! FONCTION  : DONNE LA VALEUR DE LA COTE DE LA SURFACE LIBRE POUR TOUTES
+!             LES ENTREES A COTE IMPOSEE.
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! |      NOM       |MODE|                   ROLE                       |
+! |________________|____|______________________________________________|
+! |   I            | -->| RANG DE LA FRONTIERE A COTE IMPOSEE
+! |                |    | (1 S'IL N'Y EN A QU'UNE)
+! |   N            | -->| NUMERO GLOBAL DU POINT
+! |________________|____|_______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!
+!-----------------------------------------------------------------------
+!
+!  APPELE PAR : BORD
+!
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -333,37 +333,37 @@ C
       COMMON/FLUX/FLXCR
       DOUBLE PRECISION Q1CR, Q2CR, Z1CR, Z2CR
       DOUBLE PRECISION CLIMIT
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN) :: I,N
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       CHARACTER*8 FCT
       INTEGER J
       LOGICAL DEJA,OK(MAXFRO)
       DATA    DEJA /.FALSE./
       SAVE    OK,DEJA
-C
-C     FIRST CALL, OK INITIALISED TO .TRUE.
-C
+!
+!     FIRST CALL, OK INITIALISED TO .TRUE.
+!
       IF(.NOT.DEJA) THEN
         DO J=1,MAXFRO
           OK(J)=.TRUE.
         ENDDO
         DEJA=.TRUE.
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C     IF FILE OF LIQUID BOUNDARIES EXISTING, ATTEMPT TO FIND
-C     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-C                      IF  NO, OK SET     TO .FALSE.
-C
+!
+!-----------------------------------------------------------------------
+!
+!     IF FILE OF LIQUID BOUNDARIES EXISTING, ATTEMPT TO FIND
+!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
+!                      IF  NO, OK SET     TO .FALSE.
+!
       IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
-C
-C       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
+!
+!       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
         FCT(1:3)='SL('
         IF(I.LT.10) THEN 
           WRITE(FCT(4:4),FMT='(I1)') I
@@ -377,67 +377,67 @@ C       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
           STOP 
         ENDIF
         CALL READ_FIC_FRLIQ(SL,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
-C
+!
       ENDIF
-C
+!
       IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
-C 
-C     PROGRAMMABLE PART                              
-C     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
-C                                                                             
+! 
+!     PROGRAMMABLE PART                              
+!     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
+!                                                                             
         REWIND 26
         SL = COTE(I)
         IF (I.EQ.7) THEN            
             IF (AT.LE.35400.D0) THEN
                 SL = 0.0005D0*AT+41.3D0
             ELSE 
-            	READ(26,200) Q2CR, Z2CR
-            	Q1CR = 3900.D0
-            	Z1CR = 58.50D0
-            	DO WHILE (Q2CR.LT.FLXCR)
-            	Q1CR = Q2CR
-            	Z1CR = Z2CR
-            	READ(26,200) Q2CR, Z2CR
+                READ(26,200) Q2CR, Z2CR
+                Q1CR = 3900.D0
+                Z1CR = 58.50D0
+                DO WHILE (Q2CR.LT.FLXCR)
+                Q1CR = Q2CR
+                Z1CR = Z2CR
+                READ(26,200) Q2CR, Z2CR
                 ENDDO
  200   FORMAT((F10.2,F5.2))
                 SL = CLIMIT(Q1CR,Q2CR,Z1CR,Z2CR)
-C                print *, Q1CR, Q2CR, Z1CR, Z2CR, SL
+!                print *, Q1CR, Q2CR, Z1CR, Z2CR, SL
             ENDIF
         ENDIF
         IF (I.EQ.1) THEN            
             IF (AT.LE.42860.D0) THEN
                 SL = 0.0005D0*AT+16.7D0
             ELSE 
-            	SL = COTE(I)
+                SL = COTE(I)
             ENDIF
         ENDIF
-C 
+! 
       ENDIF           
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C                       ********************************
+!                       ********************************
                         DOUBLE PRECISION FUNCTION CLIMIT
-C                       ********************************
-C
-C
+!                       ********************************
+!
+!
      *( Q1CR, Q2CR, X1, X2)
-C
+!
       IMPLICIT NONE
-C
+!
       DOUBLE PRECISION Q1CR, Q2CR, X1, X2
       DOUBLE PRECISION :: FLXCR
       COMMON/FLUX/FLXCR
-C
-C
-C-----------------------------------------------------------------------
-C
+!
+!
+!-----------------------------------------------------------------------
+!
       CLIMIT = (X2 - X1)/(Q2CR - Q1CR) * ( FLXCR - Q1CR) + X1
 
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END

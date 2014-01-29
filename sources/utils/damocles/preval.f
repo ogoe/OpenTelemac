@@ -76,12 +76,12 @@
 !
            IF ( I.GE.LONGLI ) GO TO 1000
            IF ( LIGNE(I:I).EQ.'/' ) THEN
-                DO 110 J = I+1 , LONGLI
+                DO J = I+1 , LONGLI
                      IF ( LIGNE(J:J).EQ.'/' ) THEN
                           I = J
                           GO TO 100
                      ENDIF
-  110           CONTINUE
+                ENDDO ! J 
                 GO TO 1000
 !-----------------------------------------------------------------------
            ELSE

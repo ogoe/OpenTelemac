@@ -369,7 +369,7 @@ C
        X2= 4655.553D0                                               
        Y2= 4392.104D0                                                    
 C                                                                       
-       DO 99 I=1,NPOIN                                                  
+       DO I=1,NPOIN                                                  
          HD=DISTAN(X1,Y1,X2,Y2,X(I),Y(I))                              
          IF(HD.GT.0.001D0) THEN                                                                                                                                                      
            H(I) = 100.D0 - ZF(I)                                                                                        
@@ -384,7 +384,7 @@ C
 C
          H(I)=MAX(0.D0,H(I))
 C                                                                        
-99     CONTINUE                                                           
+       ENDDO                                                           
 C                                                                         
 C-----------------------------------------------------------------------  
 C                                                                         

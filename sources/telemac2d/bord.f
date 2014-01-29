@@ -175,7 +175,7 @@
 !
 !  LOOP ON ALL BOUNDARY POINTS
 !
-      DO 5 K=1,NPTFR
+      DO K=1,NPTFR
 !
 !  LEVEL IMPOSED WITH VALUE GIVEN IN THE CAS FILE (NCOTE0)
 !
@@ -304,7 +304,7 @@
         ENDDO
       ENDIF
 !
-5     CONTINUE
+      ENDDO ! K 
 !
 !-----------------------------------------------------------------------
 !
@@ -332,7 +332,7 @@
 !
       IF(NFRLIQ.NE.0) THEN
 !
-      DO 10 IFRLIQ = 1 , NFRLIQ
+      DO IFRLIQ = 1 , NFRLIQ
 !
       IF(NDEBIT.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
 !
@@ -361,7 +361,7 @@
 !
 !-----------------------------------------------------------------------
 !
-10    CONTINUE
+      ENDDO ! IFRLIQ
 !
       ENDIF
 !

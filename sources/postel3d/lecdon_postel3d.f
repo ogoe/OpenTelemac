@@ -86,7 +86,7 @@
       IF (LNG.EQ.1) WRITE(LU,21)
       IF (LNG.EQ.2) WRITE(LU,22)
 !
-      DO 30 K=1,NMAX
+      DO K=1,NMAX
 !
 !    UN FICHIER NON DONNE PAR DAMOCLES SERA RECONNU PAR UN BLANC
 !    (IL N'EST PAS SUR QUE TOUS LES COMPILATEURS INITIALISENT AINSI)
@@ -98,7 +98,7 @@
          DIMENS(3,K) = 0
          DIMENS(4,K) = 0
 !
-30    CONTINUE
+      ENDDO
 !
 !     IMPRESSION DE LA DOC
       DOC = .FALSE.
@@ -190,10 +190,10 @@
 !   LEC/ECR 3 : NOMS ET UNITES DES VARIABLES
 !
       IF(NVA3.GE.1) THEN
-        DO 11 K=1,NVA3
+        DO K=1,NVA3
           CALL LIT(XB,RB,IB,TEXTLU(K),32,'CH',POS_FILES(POSPRE)%LU,
      &             BINPRE,ISTAT)
-11      CONTINUE
+        ENDDO
       ENDIF
 !
 !
@@ -207,20 +207,20 @@
           varsub=.false.
           endif
 !
-      DO 40 K = 1,5
+      DO K = 1,5
          READ(POS_FILES(POSPRE)%LU)
-40    CONTINUE
+      ENDDO
       NENRE = 0
 43    CONTINUE
 !th   +1 car il y a dt
-      DO 45 K = 1,nva3+1
+      DO K = 1,nva3+1
          READ(POS_FILES(POSPRE)%LU,ERR=48,END=48)
-45    CONTINUE
+      ENDDO
 !
        if (varsub) then
-      DO 46 K = 1,4
+      DO K = 1,4
          READ(POS_FILES(POSPRE)%LU,ERR=48,END=48)
-46    CONTINUE
+      ENDDO
        endif
 !
       NENRE = NENRE + 1
@@ -235,7 +235,7 @@
       NC2DH = MIN(MAX(MOTINT(ADRESS(1,1)),0),9)
 !
       IF(NC2DH.GE.1) THEN
-         DO 50 K=1,NC2DH
+         DO K=1,NC2DH
             NPLREF(K) = K-1
             IF (K.LE.DIMENS(1,5)) NPLREF(K) = MOTINT(ADRESS(1,5)+K-1)
 !th un controle que l'on peut pour l'instant enlever
@@ -243,7 +243,7 @@
 !th            NPLREF(K) = MIN(MAX(NPLREF(K),0),NPLAN)
             HREF(K) = 0.D0
             IF (K.LE.DIMENS(2,1)) HREF(K) = MOTREA(ADRESS(2,1)+K-1)
-50       CONTINUE
+         ENDDO
       ENDIF
 !
 ! MOTS CLES LIES AUX COUPES VERTICALES
@@ -254,21 +254,21 @@
       JM = NPLAN
 !
       IF(NC2DV.GE.1) THEN
-         DO 60 K=1,NC2DV
+         DO K=1,NC2DV
             NSEG(K) = MIN(DIMENS(2,2*K),DIMENS(2,2*K+1)) - 1
             IF (NSEG(K).LT.1) THEN
                IF (LNG.EQ.1) WRITE(LU,91) K
                IF (LNG.EQ.2) WRITE(LU,92) K
                CALL PLANTE(0)
             ENDIF
-            DO 65 J=0,NSEG(K)
+            DO J=0,NSEG(K)
                X2DV(J+1,K) = MOTREA(ADRESS(2,2*K  )+J)
                Y2DV(J+1,K) = MOTREA(ADRESS(2,2*K+1)+J)
-65          CONTINUE
+            ENDDO
             DISTOR(K) = 1.D0
             IF (K.LE.DIMENS(2,20)) DISTOR(K) = MOTREA(ADRESS(2,20)+K-1)
             IM = MAX(IM,NSEG(K)+1)
-60       CONTINUE
+         ENDDO !K
       ENDIF
 !
 ! ARRET EN CAS DE DEMANDE DE COUPES NULLE
@@ -306,30 +306,30 @@
 102   FORMAT('YOU HAVE ASKED NO HORIZONTAL CROSS SECTION AND',/,
      &       'NO VERTICAL CROSS SECTION, POSTEL3D HAS NOTHING TO DO')
 !
-111   FORMAT(' NOMBRE D''ENREGISTREMENTS    : ',I8,///,
-     &       ' MAILLAGE 2D',/,
-     &       ' -----------',//,
-     &       ' NOMBRE DE POINTS 2D         : ',I8,/,
-     &       ' NOMBRE D''ELEMENTS 2D        : ',I8,/,
-     &       ' NOMBRE DE POINTS DE BORD 2D : ',I8,///,
-     &       ' MAILLAGE 3D',/,
-     &       ' -----------',//,
-     &       ' NOMBRE DE POINTS 3D         : ',I8,/,
-     &       ' NOMBRE D''ELEMENTS 3D        : ',I8,/,
-     &       ' NOMBRE DE PLANS             : ',I8,//)
-112   FORMAT(' NUMBER OF RECORDS           : ',I8,///,
-     &       ' 2D MESH',/,
-     &       ' -------',//,
-     &       ' NUMBER OF 2D NODES          : ',I8,/,
-     &       ' NUMBER OF 2D ELEMENTS       : ',I8,/,
-     &       ' NUMBER OF 2D BOUNDARY NODES : ',I8,///,
-     &       ' 3D MESH',/,
-     &       ' -------',//,
-     &       ' NUMBER OF 3D NODES          : ',I8,/,
-     &       ' NUMBER OF 3D ELEMENTS       : ',I8,/,
-     &       ' NUMBER OF LEVELS            : ',I8,//)
+!111   FORMAT(' NOMBRE D''ENREGISTREMENTS    : ',I8,///,
+!     &       ' MAILLAGE 2D',/,
+!     &       ' -----------',//,
+!     &       ' NOMBRE DE POINTS 2D         : ',I8,/,
+!     &       ' NOMBRE D''ELEMENTS 2D        : ',I8,/,
+!     &       ' NOMBRE DE POINTS DE BORD 2D : ',I8,///,
+!     &       ' MAILLAGE 3D',/,
+!     &       ' -----------',//,
+!     &       ' NOMBRE DE POINTS 3D         : ',I8,/,
+!     &       ' NOMBRE D''ELEMENTS 3D        : ',I8,/,
+!     &       ' NOMBRE DE PLANS             : ',I8,//)
+!112   FORMAT(' NUMBER OF RECORDS           : ',I8,///,
+!     &       ' 2D MESH',/,
+!     &       ' -------',//,
+!     &       ' NUMBER OF 2D NODES          : ',I8,/,
+!     &       ' NUMBER OF 2D ELEMENTS       : ',I8,/,
+!     &       ' NUMBER OF 2D BOUNDARY NODES : ',I8,///,
+!     &       ' 3D MESH',/,
+!     &       ' -------',//,
+!     &       ' NUMBER OF 3D NODES          : ',I8,/,
+!     &       ' NUMBER OF 3D ELEMENTS       : ',I8,/,
+!     &       ' NUMBER OF LEVELS            : ',I8,//)
 !
       DEALLOCATE (RB)
 !
       RETURN
-      END
+      END SUBROUTINE

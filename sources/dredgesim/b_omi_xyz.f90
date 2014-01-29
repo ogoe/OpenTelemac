@@ -3560,10 +3560,8 @@ CONTAINS
     !! Name der Subroutine
     CHARACTER (LEN=16) , PARAMETER :: c_upname='update_omi_xyz_0' ! 
     !! Hilfsvariable
-    INTEGER                          :: i, j, k, ns, nb, nl, n3, nk ! 
-    LOGICAL                          :: ok                          !  
-    CHARACTER (LEN=10)               :: ch                          !  
-    REAL (KIND=Double) , ALLOCATABLE :: z_old(:)                    ! 
+    LOGICAL                          :: ok                      !  
+    REAL (KIND=Double) , ALLOCATABLE :: z_old(:)                ! 
     !
     IF ( ok_initialised( c_upname ) ) THEN ! Modul muss initialisiert sein
        IF ( ok_omi_xyz ( this ) ) THEN
@@ -3729,7 +3727,7 @@ CONTAINS
     CHARACTER (LEN=28) , PARAMETER :: c_upname='create_omi_xyz_with_layers_0' ! 
     !! Hilfsvariablen
     CHARACTER (LEN=10) :: ch               ! 
-    INTEGER            :: i, j, k, nn, snc ! 
+    INTEGER            :: snc ! 
     LOGICAL            :: l_ok(12)         ! 
     LOGICAL            , ALLOCATABLE :: l_valid(:), l_modif(:)         ! 
     INTEGER            , ALLOCATABLE :: l_l2d(:), l_l3d(:,:), l_nc(:)  ! 
@@ -5800,7 +5798,7 @@ CONTAINS
     !! Hilfsvariablen
     CHARACTER (LEN=10) :: ch          ! 
     LOGICAL            :: as, l_ok(2) ! 
-    INTEGER            :: nk, i       ! 
+    INTEGER            :: nk          ! 
     !
     as = ASSOCIATED( this%layers )
     !
@@ -6536,7 +6534,7 @@ CONTAINS
     !! Name der Funktion
     CHARACTER (LEN=23) , PARAMETER :: c_upname='get_omi_xyz_nof_point_b' ! 
     !! Hilfsvariable 
-    INTEGER :: i, k ! 
+    INTEGER :: i ! 
     !
     IF ( has_omi_xyz_sigma_layers_0( this ) ) THEN
        DO i=1,SIZE(res)

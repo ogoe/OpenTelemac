@@ -162,17 +162,17 @@
 !
 !----FOR EACH ROW K
 !
-      DO 11 K=1,N
+      DO K=1,N
 !
 !------INITIALISES K-TH ROW WITH ELEMENTS NONZERO IN ROW P(K) OF M
 !
         JMIN = IA(P(K))
         JMAX = IA(P(K)+1) - 1
         IF(JMIN.GT.JMAX) GO TO 5
-        DO 4 J=JMIN,JMAX
+        DO J=JMIN,JMAX
           VJ = IP(JA(J))
           IF (K.LE.VJ)  D(VJ) = A(J)
-4       CONTINUE
+        ENDDO ! J
 !
 !------MODIFIES K-TH ROW BY ADDING IN THOSE ROWS I WITH U(I,K) NE 0
 !------FOR EACH ROW I TO BE ADDED IN
@@ -218,7 +218,7 @@
 !
         JMIN = IU(K)
         JMAX = IU(K+1) - 1
-        IF(JMIN.GT.JMAX)  GO TO 11
+        IF(JMIN.GT.JMAX) CYCLE
         MU = IJU(K) - JMIN
         DO J=JMIN,JMAX
           JUMUJ = JU(MU+J)
@@ -232,7 +232,7 @@
         I = JU(MU+JMIN)
         JL(K) = JL(I)
         JL(I) = K
-11    CONTINUE
+      ENDDO ! K
 !
       FLAG = 0
       RETURN

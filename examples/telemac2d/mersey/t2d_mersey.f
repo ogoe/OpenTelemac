@@ -111,14 +111,14 @@ C
 C  INITIALISATION DE YADEB
 C
       IF(NFRLIQ.GE.1) THEN
-        DO 1 K=1,NFRLIQ
+        DO K=1,NFRLIQ
           YADEB(K)=0
-1       CONTINUE
+        ENDDO
       ENDIF
 C
 C  BOUCLE SUR TOUS LES POINTS FRONTIERE
 C
-      DO 5 K=1,NPTFR
+      DO K=1,NPTFR
 C
 C  COTE IMPOSEE AVEC VALEUR DONNEE DANS LE FICHIER CAS (NCOTE<>0)
 C
@@ -235,7 +235,7 @@ C         TBOR EST REMPLI DANS CLHUVT
       ENDDO
       ENDIF
 C
-5     CONTINUE
+      ENDDO
 C
 C  CAS DES DEBITS IMPOSES :
 C
@@ -243,7 +243,7 @@ C  BOUCLE SUR LES FRONTIERES LIQUIDES
 C
       IF(NFRLIQ.NE.0) THEN
 C
-      DO 10 IFRLIQ = 1 , NFRLIQ
+      DO IFRLIQ = 1 , NFRLIQ
 C
       IF(NDEBIT.NE.0) THEN
 C
@@ -272,7 +272,7 @@ C
 C
 C-----------------------------------------------------------------------
 C
-10    CONTINUE
+      ENDDO
 C
       ENDIF
 C

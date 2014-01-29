@@ -19,12 +19,12 @@
 !+      UCONST=0.D0
 !+      VCONST=0.D0
 !+
-!+      DO 100 IP=1,NPOIN2
+!+      DO IP=1,NPOIN2
 !+        UC(IP)   = UCONST
 !+        VC(IP)   = VCONST
 !+        ZM(IP)   = 0.D0
 !+        DZHDT(IP)= 0.D0
-!+  100 CONTINUE
+!+      ENDDO ! IP
 !
 !history
 !+
@@ -94,12 +94,12 @@
       UCONST=0.D0
       VCONST=0.D0
 !
-      DO 100 IP=1,NPOIN2
+      DO IP=1,NPOIN2
         UC(IP)   = UCONST
         VC(IP)   = VCONST
         ZM(IP)   = 3.D0
         DZHDT(IP)= 0.D0
-  100 CONTINUE
+      ENDDO ! IP
 !
 !-----------------------------------------------------------------------
 !

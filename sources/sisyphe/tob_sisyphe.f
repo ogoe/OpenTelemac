@@ -113,8 +113,8 @@
 !-----------------------------------------------------------------------
 !
 !     INTERNAL COUPLING WITH TELEMAC2D OR 3D
-!         	UETCAR IS CF IN TELEMAC-2D
-!         	UETCAR IS UETCAR IN TELEMAC3D ?
+!               UETCAR IS CF IN TELEMAC-2D
+!               UETCAR IS UETCAR IN TELEMAC3D ?
 !  KSP : skin friction
 !  KSR: ripple roughness
 !  KS : total bed roughness

@@ -104,7 +104,7 @@
 !
       IF(IELMF.EQ.11) THEN
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       F1 = F(IKLE1(IELEM))
       F2 = F(IKLE2(IELEM))
@@ -129,7 +129,7 @@
       A22(IELEM) = DET2 * (F123+F2+F2)
       A33(IELEM) = DET2 * (F123+F3+F3)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -137,7 +137,7 @@
 !
       ELSEIF(IELMF.EQ.10) THEN
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
       F1 = F(IELEM)
 !
@@ -158,7 +158,7 @@
       A22(IELEM) = DET2 * F1
       A33(IELEM) = DET2 * F1
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
 !     OTHER TYPES OF DISCRETISATION OF F
 !

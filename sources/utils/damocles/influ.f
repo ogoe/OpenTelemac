@@ -187,7 +187,7 @@
 !
 !  EXAMINES THE SUBMIT FIELDS
 !
-      DO 1140 I = 1 , DEFLU
+      DO I = 1 , DEFLU
  200     ICOLA = 0
          ANALYS = DEFATT(I)
 !
@@ -223,7 +223,7 @@
          CALL MAJUS(FIELD)
 !
          CHAMP(1)=100
-         DO 300 II=1,NBCHP1
+         DO II=1,NBCHP1
          IF (LCAR.EQ.LGMOTG(II).AND.
      &       FIELD(1:MIN(LCAR,10)).EQ.MOTCH1(II)(1:MIN(LCAR,10))) THEN
             IF (GESTD.AND.GECHP1(II).EQ.1) THEN
@@ -235,7 +235,7 @@
               GOTO 400
             ENDIF
          ENDIF
-300      CONTINUE
+         ENDDO ! II
 !
 !   *** FIELD 2 ***
 !
@@ -306,7 +306,7 @@
 !
 ! IF THE 1ST FIELD IS NOT KNOWN, IGNORES THE REST
 ! TO BE COMPATIBLE WITH EVOLUTIONS OF THE LAUNCHER
-        IF (CHAMP(1).EQ.100) GO TO 1140
+        IF (CHAMP(1).EQ.100) CYCLE
 !
 !   *** FIELD 3 ***
 !
@@ -351,7 +351,7 @@
             WRITE(LU,*) MESERR(2*(CHAMP(1)-1)+LNG)
             GO TO 1300
         ENDIF
-1140  CONTINUE
+      ENDDO ! I 
 !
 !-----------------------------------------------------------------------
 !

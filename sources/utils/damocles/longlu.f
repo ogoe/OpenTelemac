@@ -60,9 +60,9 @@
         I = 0
         GO TO 110
       ENDIF
-      DO 100 I = LONG , 1 , -1
-      IF (LIGNE(I:I).NE.' '.AND.LIGNE(I:I).NE.TABUL) GO TO 110
-100   CONTINUE
+      DO I = LONG , 1 , -1
+        IF (LIGNE(I:I).NE.' '.AND.LIGNE(I:I).NE.TABUL) EXIT
+      ENDDO ! I 
 110   CONTINUE
       LONGLU = I
 !

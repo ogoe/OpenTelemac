@@ -92,22 +92,22 @@
 !.......COMPUTES THE LINEAR COEFFICIENT BETA : QBREK2 = BETA * F
 !       WITH THE WEIGHT FUNCTION W(H) != CONSTANT
 !       """""""""""""""""""""""""""""""""""""""""""""""""""""""
-        DO 35 IP = 1,NPOIN2
+        DO IP = 1,NPOIN2
           BETA(IP) = (COEF*SQRT(VARIAN(IP)**3)*FCAR(IP)/
      &              DEPTH(IP)**3)*(1.D0-1.D0/(1.D0+VARIAN(IP)*8.D0
      &              /(GAMMA2*DEPTH(IP)*DEPTH(IP)))**2.5D0)
-  35    CONTINUE
+        ENDDO ! IP 
       ENDIF
 !
 !.....TAKES THE SOURCE TERM INTO ACCOUNT
 !     """"""""""""""""""""""""""""""""
-      DO 10 IFF = 1,NF
-        DO 20 JP = 1,NPLAN
+      DO IFF = 1,NF
+        DO JP = 1,NPLAN
           DO IP = 1,NPOIN2
             TSTOT(IP,JP,IFF) = TSTOT(IP,JP,IFF)+BETA(IP)*F(IP,JP,IFF)
-          ENDDO
-   20   CONTINUE
-   10 CONTINUE
+          ENDDO ! IP
+        ENDDO ! JP 
+      ENDDO ! IFF 
 !
       RETURN
       END

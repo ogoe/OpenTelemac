@@ -150,9 +150,9 @@
 !
 !
       IADR(1) = 1
-      DO 50 I= 2,NPOIN
+      DO I= 2,NPOIN
         IADR(I) = IADR(I-1) + NVOIS(I-1)
-50    CONTINUE
+      ENDDO ! I
 !
       IMAX = IADR(NPOIN) + NVOIS(NPOIN) - 1
       IF(IMAX.GT.IDIMAT) THEN
@@ -178,8 +178,8 @@
 !
 !  LOOP ON THE SIDES OF EACH ELEMENT:
 !
-      DO 60 IFACE = 1 , NFACE
-      DO 70 IELEM = 1 , NELEM
+      DO IFACE = 1 , NFACE
+      DO IELEM = 1 , NELEM
 !
       IFABOR(IELEM,IFACE) = -1
 !
@@ -193,7 +193,7 @@
          M1 = MIN0(I1,I2)
          M2 = MAX0(I1,I2)
 !
-         DO 80 IV = 1,NVOIS(M1)
+         DO IV = 1,NVOIS(M1)
 !
            IF(MAT1(IADR(M1)+IV-1).EQ.0) THEN
               MAT1(IADR(M1)+IV-1)=M2
@@ -208,7 +208,7 @@
               GO TO 81
            ENDIF
 !
-80       CONTINUE
+         ENDDO ! IV 
 !
          IF(LNG.EQ.1) WRITE(LU,82)
          IF(LNG.EQ.2) WRITE(LU,83)
@@ -221,16 +221,16 @@
 !
 81       CONTINUE
 !
-70    CONTINUE
-60    CONTINUE
+      ENDDO ! IELEM
+      ENDDO ! IFACE
 !
 !  COULD TRY SOMETHING A BIT LIGHTER
 !  USING INDPU FOR EXAMPLE
 !
       IF(NCSIZE.GT.1) THEN
 !
-      DO 61 IFACE=1,NFACE
-      DO 71 IELEM=1,NELEM
+      DO IFACE=1,NFACE
+      DO IELEM=1,NELEM
 !
 !  SOME BOUNDARY SIDES ARE INTERFACES BETWEEN SUB-DOMAINS IN
 !  ACTUAL FACT: THEY ARE ASSIGNED A VALUE -2 INSTEAD OF -1
@@ -244,10 +244,10 @@
          IR2=0
 !
          IF(NPTIR.GT.0) THEN
-           DO 44 J=1,NPTIR
+           DO J=1,NPTIR
              IF(I1.EQ.NACHB(1,J)) IR1=1
              IF(I2.EQ.NACHB(1,J)) IR2=1
-44         CONTINUE
+           ENDDO ! J
          ENDIF
 !
          IF(IR1.EQ.1.AND.IR2.EQ.1) THEN
@@ -255,10 +255,10 @@
 !          ALSO A TRUE BOUNDARY SIDE
            IR3=0
            IR4=0
-           DO 55 J=1,NPTFR
+           DO J=1,NPTFR
              IF(I1.EQ.NBOR(J)) IR3=1
              IF(I2.EQ.NBOR(J)) IR4=1
-55         CONTINUE
+           ENDDO ! J
 !          PRIORITY TO THE TRUE BOUNDARY SIDES
            IF(IR3.EQ.0.OR.IR4.EQ.0) THEN
              IFABOR(IELEM,IFACE)=-2
@@ -267,8 +267,8 @@
 !
       ENDIF
 !
-71    CONTINUE
-61    CONTINUE
+      ENDDO ! IELEM
+      ENDDO ! IFACE
 !
       ENDIF
 !

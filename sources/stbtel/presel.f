@@ -44,26 +44,26 @@
 !  IKLE EST REFAIT EN FONCTION DU NOMBRE DEFINITIF D'ELEMENTS
 !  LE RESULTAT EST MIS DANS TRAV1.
 !
-      DO 10 IELEM = 1 , NELEM
-         DO 20 IDP = 1 , NDP
+      DO IELEM = 1 , NELEM
+         DO IDP = 1 , NDP
            TRAV1(IELEM,IDP) = IKLE(IELEM,IDP)
-20       CONTINUE
-10    CONTINUE
+         ENDDO
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
 !  NOMS DES VARIABLES QUI SERONT DANS LE FICHIER DE GEOMETRIE
 !  TABLEAUX INDIQUANT SI ELLES SERONT ECRITES.
 !
-      DO 30 I = 1 , 26
+      DO I = 1 , 26
          SORLEO(I) = .FALSE.
-30    CONTINUE
+      ENDDO
 !
       NVAROU = NVARIN
       IF (NVAROU.GT.0) THEN
-         DO 35 I = 1 , NVAROU
+         DO I = 1 , NVAROU
             SORLEO(I) = .TRUE.
-35       CONTINUE
+         ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------

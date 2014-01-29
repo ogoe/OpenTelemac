@@ -189,7 +189,7 @@
           CALL PLANTE(1)
           STOP            
         ENDIF   
-        TEXTE_ES(K)(1:16)  = 'LAYER'//LAY//' THICKNESS'
+        TEXTE_ES(K)(1:16)  = 'LAYER'//LAY//' THICKNES'
         TEXTE_ES(K)(17:32) = 'M               '
       ENDDO
 !V6P2

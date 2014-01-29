@@ -98,7 +98,7 @@
 !
         CALL INIT_COMPO(IT1%I)
 !
-        DO 45 J=1,NPOIN
+        DO J=1,NPOIN
 !
 !       NOMBLAY IS THE MAXIMUM NUMBER OF LAYERS ALLOWED
 !
@@ -119,11 +119,10 @@
             ES(J,K) = ZF%R(J) - ZR%R(J) -  HAUTSED
             NLAYER%I(J) = K
             HAUTSED = HAUTSED + ES(J,K)
-            GOTO 144
+            EXIT
           ENDIF
           HAUTSED = HAUTSED + ES(J,K)
         ENDDO
-144     CONTINUE
 !
 !       OTHER LAYERS SET TO 0.D0
 !
@@ -180,7 +179,7 @@
           ENDDO
         ENDIF
 !
-45      CONTINUE
+        ENDDO !J
 !
       ENDIF
 !

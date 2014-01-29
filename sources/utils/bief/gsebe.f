@@ -98,12 +98,12 @@
 !
 !       TAKES THE DIAGONALS OF BLOCK A
 !
-        DO 10 I=1,SB
+        DO I=1,SB
           CALL OM( 'M=N     ' ,  B%ADR(I)%P ,
      &              A%ADR(1+(SB+1)*(I-1))%P , B%ADR(I)%P%D ,
      &              C , MESH )
           B%ADR(I)%P%TYPDIA='I'
-10      CONTINUE
+        ENDDO ! I
 !
       ELSEIF(SA.NE.0.AND.SB.EQ.0) THEN
 !

@@ -143,7 +143,7 @@
 !
 !  P1 DISCRETISATION OF THE VELOCITY:
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -206,7 +206,7 @@
          A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
          A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -218,7 +218,7 @@
 !
 !  P1 DISCRETISATION OF THE VELOCITY:
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -281,7 +281,7 @@
          A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
          A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -295,7 +295,7 @@
 !
 !  N SCHEME
 !
-      DO 33 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !     COORDINATES OF THE SUB-TRIANGLE VERTICES
       X1T1 = XEL(IELEM,1)
@@ -391,11 +391,11 @@
       A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
       A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
 !
-33    CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !  TRADITIONAL METHOD
 !
@@ -463,7 +463,7 @@
          A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
          A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
       ENDIF
 !

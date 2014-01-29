@@ -470,10 +470,10 @@ C
       UCONST=1.0D0
       VCONST=1.0D0
 C
-      DO 100 IP=1,NPOIN2
+      DO IP=1,NPOIN2
         UC(IP)=UCONST
         VC(IP)=VCONST
-  100 CONTINUE
+      ENDDO
 C
       RETURN
       END

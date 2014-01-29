@@ -87,7 +87,7 @@
       INTEGER IEL,K
       DOUBLE PRECISION HI,UI,VI,XN,YN,R1,RLAMB0,HJ,UJ,VJ,R,PI
 !
-      DO 10 K = 1 , NPTFR 
+      DO K = 1 , NPTFR 
 !
 !     IF H IS FREE OR INFLOW IS FREE 
       IF(LIMPRO(K,1).EQ.KDDL.OR.LIMPRO(K,2).EQ.KDDL) THEN 
@@ -137,7 +137,7 @@
 !
        ENDIF
 !
-10    CONTINUE 
+      ENDDO !  K 
 !
       RETURN                                                            
       END  

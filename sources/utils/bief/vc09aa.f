@@ -104,7 +104,7 @@
       IF(      IELMF.EQ.11.AND.IELMG.EQ.11
      &    .AND.IELMU.EQ.11.AND.IELMV.EQ.11  ) THEN
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          X2 = XEL(IELEM,2)
          X3 = XEL(IELEM,3)
@@ -145,7 +145,7 @@
          W2(IELEM) = (     G1*T12 + 2 * G2*T22 +     G3*T23 ) * XS120
          W3(IELEM) = (     G1*T13 +     G2*T23 + 2 * G3*T33 ) * XS120
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

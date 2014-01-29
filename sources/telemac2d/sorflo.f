@@ -96,27 +96,27 @@
 !
          NELFLO= 0
 !
-         DO 10 IFLOT=1,NFLOT
+         DO IFLOT=1,NFLOT
             IF (DEBFLO(IFLOT).LT.NIT) THEN
                IDEB=(DEBFLO(IFLOT)-1)/FLOPRD + 1
                IFIN=(MIN0(FINFLO(IFLOT),NIT)-1)/FLOPRD + 1
-               DO 20 IIT=IDEB,IFIN
+               DO IIT=IDEB,IFIN
                   NELFLO = NELFLO + 1
                   XFLOT (NELFLO) = XFLOT (NITFLO*(IFLOT-1)+IIT)
                   YFLOT (NELFLO) = YFLOT (NITFLO*(IFLOT-1)+IIT)
                   IKLFLO(NELFLO) = NELFLO + 1
-20             CONTINUE
+               ENDDO ! IIT
                IKLFLO(NELFLO) = NELFLO - 1
             ENDIF
-10       CONTINUE
+         ENDDO ! IFLOT
 !
          IF(NELFLO.NE.0) THEN
 !
-            DO 30 IELFLO=1,NELFLO
+            DO IELFLO=1,NELFLO
                IKLFLO(  NELFLO+IELFLO) = IKLFLO(IELFLO)
                IKLFLO(2*NELFLO+IELFLO) = IKLFLO(IELFLO)
                IKLFLO(IELFLO) = IELFLO
-30          CONTINUE
+            ENDDO ! IELFLO
 !
 !           SELAFIN FORMAT
 !

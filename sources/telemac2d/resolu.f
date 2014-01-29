@@ -189,7 +189,7 @@
 !
       LOGICAL, INTENT(IN) :: LISTIN,DTVARI,YASMH,DIFVIT,DIFT
       DOUBLE PRECISION, INTENT(INOUT) :: T1(*),T2(*),T3(*),T4(*),T5(*)
-      DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)	
+      DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: DT
       DOUBLE PRECISION, INTENT(IN)    :: AT,VNOIN(3,*),GAMMA
       DOUBLE PRECISION, INTENT(IN)    :: TSCE2(MAXSCE,MAXTRA)
@@ -227,7 +227,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,IS,K,ICIN,IVIS,NORDRE,ITRAC
-      DOUBLE PRECISION XNC,W1,DMIN,BETA,TEST,ZZ(1)
+      DOUBLE PRECISION XNC,W1,DMIN,BETA,TEST
 !                                                      
       DOUBLE PRECISION P_DMIN
       EXTERNAL P_DMIN
@@ -275,7 +275,7 @@
           WINF(2,K) =  H(NBOR(K))*UBOR(K)                 
           WINF(3,K) =  H(NBOR(K))*VBOR(K)
         ENDIF 
-       ENDDO                                                                                                                                              
+       ENDDO
                                         
        IF(ICIN .EQ.0) THEN
 !-----------------------------------------------------------------------
@@ -300,11 +300,11 @@
 !
 !    COPY  VARIABLES INTO W
 !
-      DO 111 I=1,NPOIN
+      DO I=1,NPOIN
         W(1,I)= HN(I)
         W(2,I)= QU(I)
         W(3,I)= QV(I)
-111   CONTINUE
+      ENDDO ! I
 !
 !CALCUL DU DT QUI SATISFAIT CFL
 !
@@ -529,7 +529,7 @@ C
        MASSES = DT * MASSES
       ENDIF
 !
-      DO 115 I=1,NPOIN
+      DO I=1,NPOIN
         H(I)  = W(1,I)
         QU(I) = W(2,I)
         QV(I) = W(3,I)
@@ -549,7 +549,7 @@ C
           U(I) = 0.D0
           V(I) = 0.D0
         ENDIF
-115   CONTINUE
+      ENDDO ! I
 !
       IF(NTRAC.EQ.0)  RETURN
 !
@@ -711,7 +711,7 @@ C
         MASSES = DT * MASSES
       ENDIF
 !
-      DO 715 I=1,NPOIN 
+      DO I=1,NPOIN 
         H(I)  = W(1,I)
         QU(I) = W(2,I)
         QV(I) = W(3,I)
@@ -729,7 +729,7 @@ C
           U(I) = 0.D0
           V(I) = 0.D0
         ENDIF
-715   CONTINUE 
+      ENDDO !  I
 !
 !-----------------------------------------------------------------------
 !
@@ -818,7 +818,7 @@ C-----------------------------------------------------------------------
         MASSES = DT * MASSES
       ENDIF
 !
-      DO 815 I=1,NPOIN
+      DO I=1,NPOIN
         H(I)  = W(1,I)
         QU(I) = W(2,I)
         QV(I) = W(3,I)
@@ -836,7 +836,7 @@ C-----------------------------------------------------------------------
           U(I) = 0.D0
           V(I) = 0.D0
         ENDIF
-815   CONTINUE   
+      ENDDO !    I
 !
 !    *****************************
       ELSE IF(ICIN.EQ.4) THEN
@@ -921,7 +921,7 @@ C-----------------------------------------------------------------------
         MASSES = DT * MASSES
       ENDIF
 !                                                                       
-      DO 915 I=1,NPOIN                                                  
+      DO I=1,NPOIN                                                  
         H(I)  = W(1,I)                                                
         QU(I) = W(2,I)                                                  
         QV(I) = W(3,I)
@@ -940,7 +940,7 @@ C-----------------------------------------------------------------------
           V(I) = 0.D0
         ENDIF
 !
-915   CONTINUE
+      ENDDO ! I
 !
 !    *****************************
       ELSEIF(ICIN.EQ.5) THEN
@@ -1032,7 +1032,7 @@ C-----------------------------------------------------------------------
         MASSES = DT * MASSES
       ENDIF
 !
-      DO 1015 I=1,NPOIN
+      DO I=1,NPOIN
         H(I)  = W(1,I)
         QU(I) = W(2,I)
         QV(I) = W(3,I)
@@ -1050,7 +1050,7 @@ C-----------------------------------------------------------------------
           U(I) = 0.D0
           V(I) = 0.D0
         ENDIF
-1015   CONTINUE
+       ENDDO ! I
 !
 !-----------------------------------------------------------------------
 !

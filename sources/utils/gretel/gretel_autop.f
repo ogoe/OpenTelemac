@@ -120,7 +120,7 @@
      &       .OR.(GEO.EQ.'E2DSCAL')) THEN
 !
 !|=======================================================================/
-!|     	                                                                 /
+!|                                                                       /
 !| START: MERGES FILES RESULTING FROM THE PARTICULATE DECOMPOSITION      /
 !|                                                                       /
 !| SERAFIN  = INCHANGE => MERE COPY OF ONE OF THE NPROC FILES            /
@@ -136,7 +136,7 @@
 !
 !
 !|==================================================================|
-!|     	                                                            |
+!|                                                                  |
 !| END: MERGES FILES RESULTING FROM THE PARTICULATE DECOMPOSITION   |
 !|                                                                  |
 !|==================================================================|
@@ -146,7 +146,7 @@
 !
 !
 !|==================================================================|
-!|     	                                                            |
+!|                                                                  |
 !| START: MERGES FILES RESULTING FROM THE DOMAIN DECOMPOSITION      |
 !|                                                                  |
 !|==================================================================|
@@ -183,9 +183,9 @@
       IF(TITSEL(73:80).EQ.'SERAFIND') SERAFIND_GEO=.TRUE. 
 !
       READ(2,ERR=990) NBV1,NBV2
-      DO 10 I=1,NBV1+NBV2
+      DO I=1,NBV1+NBV2
         READ(2,ERR=990)
-10    CONTINUE
+      ENDDO ! I
       GO TO 992
 990   WRITE(LU,*) 'ERROR WHEN OPENING OR READING FILE: ',GEO
       CALL PLANTE(-1)
@@ -240,11 +240,11 @@
 !
 !  3 : NAMES AND UNITS OF THE VARIABLES
 !
-      DO 500 I=1,NBV1
+      DO I=1,NBV1
         READ(4) TEXTLU(I)
         WRITE(LU,*) 'VARIABLE ',I,' : ',TEXTLU(I)
         WRITE(3) TEXTLU(I)
-500   CONTINUE
+      ENDDO ! I
 !
 !  4 : 10 PARAMETERS
 !
@@ -764,7 +764,7 @@
       ENDDO
 !
 !|==================================================================|
-!|     	                                                            |
+!|                                                                  |
 !| END: MERGES FILES RESULTING FROM THE DOMAIN DECOMPOSITION        |
 !|                                                                  |
 !|==================================================================|

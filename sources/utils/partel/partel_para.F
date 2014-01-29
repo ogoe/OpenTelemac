@@ -417,7 +417,7 @@
          END DO
 !      END DO
 !      STOP
- 111  CLOSE (NINP)
+      CLOSE (NINP)
       CALL P_SYNC()
       IF (ID .EQ. 0) THEN
          STARTCTIME=p_time()

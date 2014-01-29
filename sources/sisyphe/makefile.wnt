@@ -14,6 +14,7 @@
 #-----------------------------------------------------Juin-1999-DeltaCAD
 #
 #--- Definitions pour SYSTEME TELEMAC
+!include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
 VERSION    = V7P0
 
@@ -60,61 +61,6 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\dredgesim$(MODE)$(VERSION).lib \
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)
 
 #------------------------ Liste des fichiers
-#
-#------- Sources Fortran
-
-
-SRCS= \
-declarations_sisyphe.f         \
-interface_sisyphe_bedload.f    \
-interface_sisyphe_suspension.f \
-interface_sisyphe.f            \
-homere_sisyphe.f               \
-bedload_main.f             qsform.f\
-sis_arret.f                bedload_meyer.f            rescue_sisyphe.f\
-bedload_bailard.f          diricl.f     ride.f\
-bedload_bijker.f           entete_sisyphe.f\
-bedload_nerbed_vf.f                     suspension_bilan.f\
-bedload_calcdw.f           suspension_computation.f  \
-bedload_dibwat.f           init_avai.f                suspension_dispersion.f \
-bedload_diffin.f           bedload_solidischarge.f    init_compo.f\
-layer.f  suspension_erosion.f   \
-suspension_erosion_coh.f   suspension_flux_mixte.f \
-bedload_direction.f        bedload_solvs_fe.f         init_constant.f\
-suspension_depot.f\
-bedload_solvs_vf.f         integ.f                    suspension_conv.f\
-bedload_effpnt.f           bedload_soulsby.f          suspension_bijker.f\
-suspension_fredsoe.f       suspension_vanrijn.f\
-bedload_einst.f            flusec_sisyphe.f           fluxpr_sisyphe.f\
-bedload_engel.f            bedload_vanrijn.f          suspension_listing.f\
-bedload_engel_cc.f        bedload_seccurrent.f       bilan_sisyphe.f\
-suspension_main.f        suspension_bilan_coh.f\
-bedload_evol.f             calcuw.f     disimp.f      lecdon_sisyphe.f   \
-bedload_formula.f          leclis.f                   suspension_rouse.f\
-tobw_sisyphe.f   suspension_miles.f\
-coefro_sisyphe.f           maskab.f                         tob_sisyphe.f\
-bedload_hiding_factor.f    condim_sisyphe.f           mean_grain_size.f\
-ride_vr.f\
-bedload_hunz_meyer.f       condim_susp.f              noerod.f\
-suspension_evol.f\
-condis_sisyphe.f           nomvar_sisyphe.f           vitchu_sisyphe.f\
-dredgesim_interface.F\
-bedload_interact.f         conlit.f                   point_sisyphe.f  \
-corstr_sisyphe.f           predes.f                         maxslope.f \
-init_transport.f          init_mixte.f   init_compo_coh.f      init_zero.f\
-init_sediment.f            ks_sisyphe.f               tassement_2.f\
-sisyphe.f                 read_sections_sisyphe.f   suspension_sandflow.f \
-rescue_sisyphe_notperma.f \
-tassement.f               read_fic_conc.f            cgl.f \
-db.f cvsp_add_fraction.f cvsp_add_section.f cvsp_alt.f \
-cvsp_check_f.f cvsp_check_steady.f \
-cvsp_compress_brut.f \
-cvsp_compress_clean.f cvsp_compress_dp.f cvsp_init.f \
-cvsp_init_from_layers.f 	cvsp_integrate_volume.f cvsp_main.f\
-cvsp_make_actlay.f cvsp_outputfiles.f cvsp_p.f\
-cvsp_rm_fraction.f cvsp_write_profile.f layers_p.f\
-cvsp_output_init.f lecdon_split_outputpoints.f
-
 #
 #------- Objets
 #

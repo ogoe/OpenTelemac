@@ -1848,8 +1848,6 @@ CONTAINS
     INTEGER      , INTENT(IN) :: id      ! 
     !! R&uuml;ckgabewert : Feldindex (idx = 0 falls nicht gefunden)
     INTEGER :: idx ! 
-    !! Z&auml;hlervariable
-    INTEGER :: i ! 
     !
     IF ( ANY( this(:)%id == id ) ) THEN
        idx = MINVAL( MINLOC( this(:)%id, this(:)%id == id ) )

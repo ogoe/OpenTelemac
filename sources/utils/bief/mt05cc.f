@@ -136,7 +136,7 @@
 !
 !  P1 DISCRETISATION OF THE VELOCITY:
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -258,7 +258,7 @@
          A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
      &                - A64(IELEM) - A65(IELEM)
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -270,7 +270,7 @@
 !
 !  P1 DISCRETISATION OF THE VELOCITY:
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -391,7 +391,7 @@
      &                - A54(IELEM) - A56(IELEM)
          A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
      &                - A64(IELEM) - A65(IELEM)
-2     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -410,7 +410,7 @@
         CALL PLANTE(1)
       ELSE
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !  TRADITIONAL METHOD
 !
@@ -594,7 +594,7 @@
          A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
      &                - A64(IELEM) - A65(IELEM)
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
       ENDIF
 !

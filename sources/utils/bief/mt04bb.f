@@ -114,7 +114,7 @@
 !
 !  P1 DISCRETISATION OF THE VELOCITY:
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -235,7 +235,7 @@
 !
          A44(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -245,7 +245,7 @@
 !
 !  QUASI-BUBBLE DISCRETISATION OF THE VELOCITY:
 !
-      DO 5 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
@@ -370,7 +370,7 @@
 !
          A44(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
 !
-5     CONTINUE
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

@@ -67,9 +67,9 @@ C CALCUL DE LA CELERITE (MISE DANS FU, VOIR LE BLOC VARSOR)
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(3)).OR.(IMP.AND.SORIMP(3))) THEN
-        DO 5 N=1,NPOIN
+        DO N=1,NPOIN
           FU%R(N) = SQRT ( GRAV * MAX(H%R(N),0.D0) )
-5       CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -85,10 +85,10 @@ C CALCUL DU NOMBRE DE FROUDE
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(7)).OR.(IMP.AND.SORIMP(7))) THEN
-        DO 10 N=1,NPOIN
+        DO N=1,NPOIN
           HHH = MAX( H%R(N) , 1.D-8 )
           T2%R(N) = SQRT (( U%R(N)**2 + V%R(N)**2 ) / ( HHH*GRAV ))
-10      CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -96,9 +96,9 @@ C CALCUL DU DEBIT SCALAIRE
 C=======================================================================
 C
       IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN
-        DO 30 N=1,NPOIN
+        DO N=1,NPOIN
          T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
-30      CONTINUE
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -143,10 +143,10 @@ C=======================================================================
 C CALCUL DE LA VITESSE ET DE LA HAUTEUR EXACTE : FORME CONSERVATIVE                          
 C=======================================================================  
 C                                                                         
-      IF(((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))).AND.              
-     *   ((LEO.AND.SORLEO(24)).OR.(IMP.AND.SORIMP(24)))) THEN 
+      IF(((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))).AND.
+     &   ((LEO.AND.SORLEO(24)).OR.(IMP.AND.SORIMP(24)))) THEN 
 C                   HAUTEUR          VITESSE            
-        CALL EXACTE(PRIVE%ADR(1)%P%R,PRIVE%ADR(2)%P%R,ZF%R,X,NPOIN,1)                                   
+        CALL EXACTE(PRIVE%ADR(1)%P%R,PRIVE%ADR(2)%P%R,ZF%R,X,NPOIN,1)
       ENDIF
 C                                                                         
 C=======================================================================  
@@ -156,18 +156,18 @@ C
       IF((LEO.AND.SORLEO(25)).OR.(IMP.AND.SORIMP(25))) THEN
 C                            Z               
         CALL OV( 'X=Y+Z   ' ,PRIVE%ADR(3)%P%R,
-     *                       PRIVE%ADR(1)%P%R,ZF%R,0.D0,NPOIN)                
+     *                       PRIVE%ADR(1)%P%R,ZF%R,0.D0,NPOIN)
       ENDIF
 C
 C=======================================================================  
 C CALCUL DE LA SURFACE LIBRE "NON-CONSERVATIVE"                                        
 C=======================================================================  
 C                                                                         
-      IF((LEO.AND.SORLEO(26)).OR.(IMP.AND.SORIMP(26))) THEN               
-        DO 40 N=1,NPOIN                                                   
-         HHH = MAX(PRIVE%ADR(1)%P%R(N),1.D-8)                                           
-         PRIVE%ADR(4)%P%R(N)=SQRT(PRIVE%ADR(2)%P%R(N)**2/(HHH*GRAV))                        
-40      CONTINUE                                                          
+      IF((LEO.AND.SORLEO(26)).OR.(IMP.AND.SORIMP(26))) THEN
+        DO N=1,NPOIN
+         HHH = MAX(PRIVE%ADR(1)%P%R(N),1.D-8)
+         PRIVE%ADR(4)%P%R(N)=SQRT(PRIVE%ADR(2)%P%R(N)**2/(HHH*GRAV))
+        ENDDO
       ENDIF
 C
 C=======================================================================
@@ -234,7 +234,7 @@ C
       EXTERNAL F                                                   
       DOUBLE PRECISION F                                           
 C                                                                         
-      INTRINSIC REAL                                                      
+      INTRINSIC REAL
 C                                                                         
 C-----------------------------------------------------------------------  
 C 
@@ -242,7 +242,7 @@ C     LARGEUR DU CANAL EGALE A 1.
 C 
 C     MAILLAGE DE CARRES DECOUPES EN TRIANGLES, L'ORDRE DES POINTS EST TEL
 C     QU'ON PEUT FAIRE COMME SUR UN MAILLAGE REGULIER.                                                                       
-      IM = 132                                                            
+      IM = 132
       JM = 11 
 C     POINT DE PASSAGE EN CRITIQUE (DIFFERENT DU SEUIL)
 C     LE FOND A ETE CALCULE POUR AVOIR LE POINT CRITIQUE A
@@ -252,70 +252,70 @@ C
 C     COTE AVAL                                                                                                            
       YAVAL  = 0.6D0 
 C     DEBIT LINEIQUE (PAR M2 DE LARGEUR)                                                     
-      QFIXG  = 1.D0                                                       
+      QFIXG  = 1.D0
       G      = 9.81D0 
 C     COEFFICIENT DE STRICKLER                                                    
       ST     = 40.D0                                                   
 C                                                                                                                              
-      DO 10 NOEUD=1,IM-1                                                  
-        ND = NOEUD + 1                                                    
-        NG = NOEUD 
+      DO NOEUD=1,IM-1
+        ND = NOEUD + 1
+        NG = NOEUD
 C       PENTE RADIER ? (AVEC UN SIGNE -)                                                      
-        PRAD(NOEUD) = -(ZF(ND,5)-ZF(NG,5)) / (X(ND,5)-X(NG,5))            
-10    CONTINUE                                                            
+        PRAD(NOEUD) = -(ZF(ND,5)-ZF(NG,5)) / (X(ND,5)-X(NG,5))
+      ENDDO
 C                                                                         
 C     PAR RUNGE-KUTTA (METHODE DE LA TANGENTE AMELIOREE)                  
 C     NOMBRE DE SOUS PAS                                                  
-      NRK = 10000                                                         
+      NRK = 10000
 C     PAS DE RUNGE-KUTTA                                                  
-      PRK = (X(IM,5)-X(1,5))/FLOAT(NRK-1)                                
+      PRK = (X(IM,5)-X(1,5))/FLOAT(NRK-1)
 C                                                                         
 C     ON COMMENCE PAR CALCULER LA LIGNE D'EAU FLUVIALE                    
 C     DEPUIS L'AVAL TANT QUE Y SUPERIEUR A YCRITIQUE                      
 C                                                                         
-      YCRIT=(QFIXG**2/G)**(1.D0/3.D0)                                     
+      YCRIT=(QFIXG**2/G)**(1.D0/3.D0)
       YVF(IM) = YAVAL                                                   
-      XRK = X(IM,5)                                                     
-      YRK = YAVAL                                                         
-      IC  = IM-1                                                          
+      XRK = X(IM,5)
+      YRK = YAVAL
+      IC  = IM-1
 C                                                                         
-      DO 20 N=1,NRK                                                       
+      DO N=1,NRK
 C                                                                         
 C        PREDICTION                                                       
-         XRKPR = XRK - PRK                                                
-         YRKPR = YRK - PRK*F(YRK,IC,QFIXG,PRAD,ST)                        
-         IF(YRKPR.LT.YCRIT) THEN                                         
-C           CHARGE INSUFFISANTE POUR PASSER LE SEUIL EN FLUVIAL           
-            NOEUDF = IC+1                                                 
-            GOTO 30                                                       
-         ENDIF                                                            
-C        CORRECTION                                                       
-         XRKCO = XRKPR                                                    
-         YRKCO = YRK - PRK*(F(YRK  ,IC,QFIXG,PRAD,ST) +                     
-     *                      F(YRKPR,IC,QFIXG,PRAD,ST))*0.5D0                          
-         IF(YRKCO.LT.YCRIT) THEN                                         
-C           CHARGE INSUFFISANTE POUR PASSER LE SEUIL EN FLUVIAL           
-            NOEUDF = IC+1                                                 
-            GOTO 30                                                       
-         ENDIF                                                            
-C                                                                         
-C        EST-ON SORTI DE LA MAILLE COURANTE ?                             
-         IF(XRKCO.LE.X(IC,5)) THEN                                       
-C           CALCUL DE Y AU NOEUD PAR INTERPOLATION LINEAIRE               
-            YVF(IC) = (YRK-YRKCO)/PRK*(X(IC,5)-XRK)+ YRK                  
-C           CHANGEMENT DE MAILLE COURANTE                                 
-            IC = IC-1                                                     
-            IF (IC.EQ.0) GOTO 40                                          
-         ENDIF                                                            
-C        ACTUALISATION                                                    
-         XRK = XRKCO                                                      
-         YRK = YRKCO                                                      
-C                                                                         
-20       CONTINUE                                                         
-40       DO 50 NOEUD=1,IM                                               
-            YV(NOEUD) = YVF(NOEUD)                                        
-50       CONTINUE                                                         
-         GOTO 60                                                          
+         XRKPR = XRK - PRK                                       
+         YRKPR = YRK - PRK*F(YRK,IC,QFIXG,PRAD,ST)               
+         IF(YRKPR.LT.YCRIT) THEN                                 
+C           CHARGE INSUFFISANTE POUR PASSER LE SEUIL EN FLUVIAL  
+            NOEUDF = IC+1                                        
+            GOTO 30                                              
+         ENDIF                                                   
+C        CORRECTION                                              
+         XRKCO = XRKPR                                           
+         YRKCO = YRK - PRK*(F(YRK  ,IC,QFIXG,PRAD,ST) +           
+     *                      F(YRKPR,IC,QFIXG,PRAD,ST))*0.5D0    
+         IF(YRKCO.LT.YCRIT) THEN                                 
+C           CHARGE INSUFFISANTE POUR PASSER LE SEUIL EN FLUVIAL  
+            NOEUDF = IC+1                                        
+            GOTO 30                                              
+         ENDIF                                                   
+C                                                                
+C        EST-ON SORTI DE LA MAILLE COURANTE ?                    
+         IF(XRKCO.LE.X(IC,5)) THEN                               
+C           CALCUL DE Y AU NOEUD PAR INTERPOLATION LINEAIRE      
+            YVF(IC) = (YRK-YRKCO)/PRK*(X(IC,5)-XRK)+ YRK         
+C           CHANGEMENT DE MAILLE COURANTE                        
+            IC = IC-1                                            
+            IF (IC.EQ.0) GOTO 40                                 
+         ENDIF                                                   
+C        ACTUALISATION                                           
+         XRK = XRKCO                                             
+         YRK = YRKCO                                             
+C                                                                
+         ENDDO                                                
+40       DO NOEUD=1,IM                                        
+            YV(NOEUD) = YVF(NOEUD)                               
+         ENDDO                                                
+         GOTO 60                                                 
 C                                                                         
 30       CONTINUE   
 C
@@ -335,7 +335,7 @@ C
          YRK = YV(ICRIT)                                            
          IC  = ICRIT-1                                                   
 C                                                                         
-         DO 70  N=1,NRK                                                   
+         DO N=1,NRK                                                   
 C                                                                         
 C        PREDICTION                                                       
            XRKPR = XRK - PRK                                              
@@ -357,7 +357,7 @@ C          ACTUALISATION
            XRK = XRKCO                                                    
            YRK = YRKCO                                                    
 C                                                                         
-70         CONTINUE 
+           ENDDO 
 C                                                      
 C          PARTIE TORRENTIELLE
 C                                            
@@ -374,7 +374,7 @@ C          0.9999 POUR PARTIR SUR LA BONNE BRANCHE DE SOLUTION
            YRK = 0.9999D0*YCRIT                                         
            IC  = ICRIT + 1                                               
 C                                                                         
-      DO 90 N=1,NRK                                                       
+      DO N=1,NRK                                                       
 C                                                                         
 C        PREDICTION                                                       
          XRKPR = XRK + PRK                                                
@@ -397,12 +397,12 @@ C
          XRK = XRKCO                                                         
          YRK = YRKCO
 C                                                         
-90    CONTINUE                                                                                                                                                                      
+      ENDDO                                                                                                                                                                      
 C                                                                         
 C     RECHERCHE D'UN RESSAUT 
 C                                             
       IF (NOEUDF.EQ.IM) GOTO 120                                        
-      DO 100 NOEUD=NOEUDF,IM                                            
+      DO NOEUD=NOEUDF,IM                                            
 C        HAUTEUR CONJUGUEE DU FLUVIAL H1*H2(H1+H2)=2HC**3                                    
          YFLU = YVF(NOEUD)
          IF(ICONS.EQ.1) THEN                                                                                                 
@@ -415,12 +415,12 @@ C        HAUTEUR CONJUGUEE DU FLUVIAL H1*H2(H1+H2)=2HC**3
            STOP
          ENDIF                            
          IF (RES.LE.YV(NOEUD)) THEN                                       
-           DO 110 INOEUD=NOEUD+1,IM                                     
+           DO INOEUD=NOEUD+1,IM                                     
            YV(INOEUD)=YVF(INOEUD)                                         
-110        CONTINUE                                                       
+           ENDDO                                                       
            GOTO 60                                                        
          ENDIF                                                            
-100      CONTINUE                                                         
+      ENDDO                                                         
 C        PAS DE RESSAUT                                                   
 120      CONTINUE                                                         
 C                                                                         
@@ -428,12 +428,12 @@ C
 C                                                                         
 C-----------------------------------------------------------------------  
 C                                                                                                                                                 
-      DO 130 I=1,IM                                                     
-      DO 140 J=1,JM                                                     
+      DO I=1,IM                                                     
+      DO J=1,JM                                                     
         HN(I,J) = YV(I)                                                   
          U(I,J) = QFIXG/HN(I,J)                                           
-140   CONTINUE                                                            
-130   CONTINUE                                                            
+      ENDDO                                                            
+      ENDDO                                                            
 C                                                                         
 C-----------------------------------------------------------------------  
 C                                                                         
@@ -808,14 +808,3 @@ C-----------------------------------------------------------------------
 C
       RETURN
       END
-
-
-
-
-
-
-
-
-
-
-

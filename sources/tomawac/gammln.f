@@ -78,10 +78,10 @@
       TMP=X+5.5D0
       TMP=(X+0.5D0)*DLOG(TMP)-TMP
       SER=1.D0
-      DO 11 J=1,6
+      DO J=1,6
         X=X+1.D0
         SER=SER+COF(J)/X
-   11 CONTINUE
+      ENDDO ! J
       GAMMLN=TMP+DLOG(STP*SER)
       IF (XX.LT.1D0) THEN
         AUX=0.5D0*DEUPI*(1.D0-XX)

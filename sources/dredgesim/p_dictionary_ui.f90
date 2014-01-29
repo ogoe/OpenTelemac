@@ -5031,7 +5031,7 @@ CONTAINS
     INTEGER                                            :: i, j, k, anz
     LOGICAL                                            :: l_sort
     CHARACTER (LEN=key_len) , DIMENSION(:) , POINTER   :: c_liste
-    INTEGER                                            :: min, max
+    INTEGER                                            :: min
     CHARACTER (LEN=line_len)                           :: string
 
     CHARACTER (LEN=4)                                  :: c_lencom
@@ -5439,7 +5439,7 @@ CONTAINS
     !! Name der Subroutine
     CHARACTER (LEN=31), PARAMETER :: c_upname='Check_AngabenAnzahl'
     !
-    INTEGER                                :: i, j
+    INTEGER                                :: i
     INTEGER                                :: min, max
     !
     IF ( ok_initialised ( c_upname ) ) THEN

@@ -15,6 +15,7 @@
 #--- Definitions pour PVM
 #
 #--- Definitions pour SYSTEME TELEMAC
+!include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
 VERSION    = V7P0
 
@@ -22,7 +23,7 @@ VERSION    = V7P0
 
 DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
 
-DIRINC_MPI    = $(PROJECT)\optionals\mpi\include
+DIRINC_MPI    = $(PROJECT)\optionals\mpi\$(DIRINC_MPI)\include
 #
 FCO       = $(FC_OPT_COMPIL)
 F90       = $(FC_NAM)
@@ -54,6 +55,7 @@ DEST          = $(PROJECT)\builds\$(DIRLIB)
 
 #------------------------ Liste des fichiers
 #
+<<<<<<< .courant
 #------- Sources Fortran
 
 SRCS	      = interface_parallel.f \
@@ -97,6 +99,8 @@ SRCS	      = interface_parallel.f \
 		p_iwriti.F  
 
 #
+=======
+>>>>>>> .fusion-droit.r4614
 #------- Objets
 #
 TEMP = $(SRCS:.f=.obj)

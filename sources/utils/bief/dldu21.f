@@ -121,7 +121,7 @@
 !
         IF(COPY) CALL OV('X=Y     ' , XB , XA , Z , C  , NELMAX*6 )
 !
-        DO 100 IELEM=1,NELEM
+        DO IELEM=1,NELEM
 !
 ! MATRIX TO FACTORISE (SYMMETRICAL WITH 1S ON THE DIAGONAL)
 !
@@ -174,7 +174,7 @@
            W(IELEM,3)    = BETA33
            W(IELEM,4)    = BETA44
 !
-100     CONTINUE
+        ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -182,7 +182,7 @@
 !
         IF(COPY) CALL OV('X=Y     ' , XB , XA , Z , C  , NELMAX*12 )
 !
-        DO 200 IELEM=1,NELEM
+        DO IELEM=1,NELEM
 !
 ! MATRIX TO FACTORISE (WITH 1S ON THE DIAGONAL)
 !
@@ -247,7 +247,7 @@
            W(IELEM,3)    = BETA33
            W(IELEM,4)    = BETA44
 !
-200     CONTINUE
+        ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !

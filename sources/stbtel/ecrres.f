@@ -127,22 +127,22 @@
 !
       IF(NVARIN.GT.0) THEN
 !
-         DO 20 IVAR = 1,NVARIN
+         DO IVAR = 1,NVARIN
             CALL LIT(VAINIT,W,IBID,CBID,NPOIN1,'R4',NGEO,STD,ISTAT)
 !
             IF (STOTOT.OR.A(1).EQ.TPSFIN(1)) THEN
               IF (IVAR.EQ.NSFOND) THEN
                CALL ECRI2(ZF,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
               ELSE
-               DO 30 IPOIN = 1,NPOIN
+               DO IPOIN = 1,NPOIN
                   VAR(IPOIN) = VAINIT(IKINIT(ELT(IPOIN),1))*SHP(IPOIN,1)
      &                       + VAINIT(IKINIT(ELT(IPOIN),2))*SHP(IPOIN,2)
      &                       + VAINIT(IKINIT(ELT(IPOIN),3))*SHP(IPOIN,3)
-30             CONTINUE
+               ENDDO
                CALL ECRI2(VAR,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
               ENDIF
             ENDIF
-20       CONTINUE
+         ENDDO
 !
       ENDIF
 !

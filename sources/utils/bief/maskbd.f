@@ -89,7 +89,7 @@
 !
       FLAG = .FALSE.
 !
-      DO 10 IELEM = 1,NELEM
+      DO IELEM = 1,NELEM
          I1 = IKLE(IELEM,1)
          I2 = IKLE(IELEM,2)
          I3 = IKLE(IELEM,3)
@@ -98,14 +98,14 @@
             FLAG = .TRUE.
             MASKEL(IELEM) = 0.D0
          ENDIF
-10    CONTINUE
+      ENDDO ! IELEM 
 !
 20    CONTINUE
 !
       IF (FLAG) THEN
 !
          FLAG = .FALSE.
-         DO 30 IELEM = 1,NELEM
+         DO IELEM = 1,NELEM
 !
             ITRA01(IELEM) = 0
             IF (MASKEL(IELEM).GT.0.5D0) THEN
@@ -128,14 +128,14 @@
 !
             ENDIF
 !
-30       CONTINUE
+         ENDDO ! IELEM 
 !
-         DO 40 IELEM = 1,NELEM
+         DO IELEM = 1,NELEM
             IF (ITRA01(IELEM).EQ.1) THEN
                FLAG = .TRUE.
                MASKEL(IELEM) = 0.D0
             ENDIF
-40       CONTINUE
+         ENDDO ! IELEM 
 !
          GOTO 20
 !

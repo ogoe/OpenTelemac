@@ -30,7 +30,7 @@
 !+
 !+--------------------------------------------------------------
 !+
-!+     DO 4 IELEM = 1 , NELEM
+!+     DO IELEM = 1 , NELEM
 !+
 !+       XX1 = (  X(IKLE%I(IELEM)          )+
 !+    *           X(IKLE%I(IELEM+NELMAX)   )+
@@ -43,7 +43,7 @@
 !+         POROS%R(IELEM) = 0.5D0
 !+       ENDIF
 !+
-!+4     CONTINUE
+!+      ENDDO ! IELEM 
 !
 !history  J-M HERVOUET (LNHE)
 !+        01/03/1990
@@ -102,7 +102,7 @@
 !
 !--------------------------------------------------------------
 !
-!     DO 4 IELEM = 1 , NELEM
+!     DO IELEM = 1 , NELEM
 !
 !       XX1 = (  X(IKLE%I(IELEM)          )+
 !    *           X(IKLE%I(IELEM+NELMAX)   )+
@@ -115,7 +115,7 @@
 !         POROS%R(IELEM) = 0.5D0
 !       ENDIF
 !
-!4     CONTINUE
+!      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

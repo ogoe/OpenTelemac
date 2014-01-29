@@ -96,13 +96,12 @@
      &                             GAMMA*FLUX(I,3))
         ENDIF
       ENDDO
-100   CONTINUE
 !
 !     TO TAKE INTO ACCOUNT FRICTION 
 !     *****************************
       IF (KFROT.NE.0) THEN
 !
-         DO 20 I = 1,NPOIN
+         DO I = 1,NPOIN
 !
            IF((W(1,I).GT.EPS/10.D0).AND.(CF(I).GT.1.D-12)) THEN
              ST2D = CF(I)
@@ -118,7 +117,7 @@
              W(3,I) = ALPHAF * W(3,I)
            ENDIF
 !
-20       CONTINUE
+         ENDDO ! I 
 ! 
       ENDIF
 !

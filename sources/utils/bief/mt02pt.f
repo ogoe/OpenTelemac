@@ -249,7 +249,7 @@
 !
 !   LOOP ON THE PRISMS
 !
-      DO 20 IELEM=1,NELEM
+      DO IELEM=1,NELEM
 !
       IGLOB(1)=IKLE(IELEM,1)
       IGLOB(2)=IKLE(IELEM,2)
@@ -311,7 +311,7 @@
 !-----------------------------------------------------------------------
 !     LOOP OVER  TI
 !
-      DO 40 I=1,3
+      DO I=1,3
 !
 !     TETRAHEDRON POINTS NUMBERS IN THE PRISM NUMBERING
 !
@@ -401,11 +401,11 @@
       XM(IELEM,STO(NUM2,NUM4))=XM(IELEM,STO(NUM2,NUM4))+EXTR24
       XM(IELEM,STO(NUM3,NUM4))=XM(IELEM,STO(NUM3,NUM4))+EXTR34
 !
-40    CONTINUE
+      ENDDO ! I
 !
 !---------------------------------------------------------------
 !
-20    CONTINUE
+      ENDDO ! IELEM
 !
       ELSEIF(SF%ELM.EQ.40.AND.SG%ELM.EQ.40.AND.SH%ELM.EQ.40) THEN
 !
@@ -416,7 +416,7 @@
 !
 !   LOOP ON THE PRISMS
 !
-      DO 21 IELEM=1,NELEM
+      DO IELEM=1,NELEM
 !
       IGLOB(1)=IKLE(IELEM,1)
       IGLOB(2)=IKLE(IELEM,2)
@@ -478,7 +478,7 @@
 !-----------------------------------------------------------------------
 !     LOOP OVER  TI
 !
-      DO 41 I=1,3
+      DO I=1,3
 !
 !     TETRAHEDRON POINTS NUMBERS IN THE PRISM NUMBERING
 !
@@ -568,11 +568,11 @@
       XM(IELEM,STO(NUM2,NUM4))=XM(IELEM,STO(NUM2,NUM4))+EXTR24
       XM(IELEM,STO(NUM3,NUM4))=XM(IELEM,STO(NUM3,NUM4))+EXTR34
 !
-41    CONTINUE
+      ENDDO ! I
 !
 !---------------------------------------------------------------
 !
-21    CONTINUE
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -596,7 +596,7 @@
 !
       IF(INCHYD) THEN
 !
-      DO 22 IELEM=1,NELEM
+      DO IELEM=1,NELEM
 !
          I1=IKLE(IELEM,1)
          I2=IKLE(IELEM,2)
@@ -631,7 +631,7 @@
 !
          ENDIF
 !
-22    CONTINUE
+      ENDDO ! IELEM
 !
       ENDIF
 !

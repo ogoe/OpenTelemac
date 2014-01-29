@@ -1665,7 +1665,6 @@ CONTAINS
                                            l_def
     !
     INTEGER                             :: par_nr
-    INTEGER                             :: i
     !
     !
     ! Initialisierungen

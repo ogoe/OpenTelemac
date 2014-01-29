@@ -1186,8 +1186,6 @@ CONTAINS
     INTEGER, INTENT(INOUT) :: id ! 
     !! Name der Subroutine
     CHARACTER (LEN=10), PARAMETER :: c_upname='new_ipds_0' 
-    !! Statusvariable
-    INTEGER :: stat ! 
     !
     IF ( ok_initialised( c_upname ) ) THEN ! Modul muss initialisiert sein
        CALL new_ipds_object ( id )
@@ -1311,8 +1309,6 @@ CONTAINS
   SUBROUTINE print_ipds_static_d ( )
     !! Name der Function
     CHARACTER (LEN=19), PARAMETER :: c_upname='print_ipds_static_d' 
-    !! Statusvariable
-    INTEGER :: stat ! 
     !
     IF ( ok_initialised( c_upname ) .AND. prn_op ) THEN
        CALL print_ipds_global ( )
@@ -3804,7 +3800,7 @@ CONTAINS
        l2 = LEN_TRIM(l_region_name)
        IF ( l1 == l2 ) THEN
           IF ( region_name(1:l1) .EQ. l_region_name(1:l2) ) THEN
-			 res         = .TRUE.
+             res         = .TRUE.
           END IF
        END IF
     END DO

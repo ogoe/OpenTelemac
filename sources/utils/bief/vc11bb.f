@@ -123,7 +123,7 @@
 !
       IF(ICOORD.EQ.1) THEN
 !
-      DO 1 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1 = F(IKLE1(IELEM))
         F2 = F(IKLE2(IELEM)) - F1
@@ -140,13 +140,13 @@
         W3(IELEM)=(14*G3+5*G2+5*G1)*AUX*XSU216
         W4(IELEM)=(G3+G2+G1)       *AUX*XSUR18
 !
-1     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
 !  Y COORDINATE
 !
-      DO 2 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1 = F(IKLE1(IELEM))
         F2 = F(IKLE2(IELEM)) - F1
@@ -163,7 +163,7 @@
         W3(IELEM)=AUX*(14*G3+5*G2+5*G1)*XSU216
         W4(IELEM)=AUX*(G3+G2+G1)       *XSUR18
 !
-2     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !
@@ -188,7 +188,7 @@
 !
       IF(ICOORD.EQ.1) THEN
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1 = F(IKLE1(IELEM))
         F2 = F(IKLE2(IELEM)) - F1
@@ -213,13 +213,13 @@
      &   Y3+Y2)*G1-(Y3-2*Y2)*G2+3*G3*Y2+6*G4*Y2)*F3+3*((Y3-Y2)
      &   *G1+G3*Y2-G2*Y3)*F4)*XSUR72
 !
-3     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
 !  Y COORDINATE
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
         F1 = F(IKLE1(IELEM))
         F2 = F(IKLE2(IELEM)) - F1
@@ -243,7 +243,7 @@
      &   6*G4+3*G2+G1)*X3-(G3-G1)*X2)*F2-3*((G3-G1)*X2-(G2-G1)*
      &   X3)*F4)*XSUR72
 !
-4     CONTINUE
+      ENDDO ! IELEM 
 !
       ELSE
 !

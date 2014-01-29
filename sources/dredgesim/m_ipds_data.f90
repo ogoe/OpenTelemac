@@ -2611,9 +2611,9 @@ CONTAINS
     '# Ueberblick ueber die implementierten Dateivarianten ',/ &
     '# -- Nr -- -- Access -- --  Form  -- -- Delim -- -- Type ----------')
 8001 FORMAT( '#',I6,5X,A10,3X,A11,2X,A10,3X,A )
-8002 FORMAT( &
-    '# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -',/ &
-    '#------------------------------------------------------------') 
+!8002 FORMAT( &
+!    '# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -',/ &
+!    '#------------------------------------------------------------') 
     !
   END SUBROUTINE print_ipds_global_0
   !
@@ -3636,8 +3636,6 @@ CONTAINS
     CHARACTER (LEN=19), PARAMETER :: c_upname='print_ipds_physet_0'
     !! Statusvariable
     INTEGER :: stat ! 
-    !! Z&auml;hler
-    INTEGER :: i ! 
     !
     WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
     IF ( stat /= 0 ) CALL setup_error_act ( all_errors(:), 7020, c_upname, c_modname, stat )
@@ -3667,8 +3665,6 @@ CONTAINS
     CHARACTER (LEN=19), PARAMETER :: c_upname='print_ipds_region_0'
     !! Statusvariable
     INTEGER :: stat ! 
-    !! Z&auml;hler
-    INTEGER :: i ! 
     !
     WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
     IF ( stat /= 0 ) CALL setup_error_act ( all_errors(:), 7030, c_upname, c_modname, stat )
@@ -3698,8 +3694,6 @@ CONTAINS
     CHARACTER (LEN=19), PARAMETER :: c_upname='print_ipds_mespos_0'
     !! Statusvariable
     INTEGER :: stat ! 
-    !! Z&auml;hler
-    INTEGER :: i ! 
     !
     WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
     IF ( stat /= 0 ) CALL setup_error_act ( all_errors(:), 7040, c_upname, c_modname, stat )
@@ -3729,8 +3723,6 @@ CONTAINS
     CHARACTER (LEN=22), PARAMETER :: c_upname='print_ipds_regphyset_0'
     !! Statusvariable
     INTEGER :: stat ! 
-    !! Z&auml;hler
-    INTEGER :: i ! 
     !
     WRITE ( UNIT=prn_lun, FMT=8000, IOSTAT=stat )
     IF ( stat /= 0 ) CALL setup_error_act ( all_errors(:), 7050, c_upname, c_modname, stat )

@@ -98,25 +98,25 @@
 ! COMPUTES THE NUMBER OF NEIGHBOURING POINTS AND ELEMENTS
 !=======================================================================
 !
-         DO 100 IPOIN = 1,NPOIN
+         DO IPOIN = 1,NPOIN
             T1(IPOIN) = 0
-100      CONTINUE
+         ENDDO ! IPOIN 
 !
 !        NUMBER OF ELEMENTS NEIGHBOURING A POINT
 !
-         DO 110 IELEM = 1,NELEM
+         DO IELEM = 1,NELEM
             T1(IKLE(IELEM,1)) = T1(IKLE(IELEM,1)) + 1
             T1(IKLE(IELEM,2)) = T1(IKLE(IELEM,2)) + 1
             T1(IKLE(IELEM,3)) = T1(IKLE(IELEM,3)) + 1
-110      CONTINUE
+         ENDDO ! IELEM 
 !
 !        NUMBER OF POINTS NEIGHBOURING A POINT
 !     =  NUMBER OF ELEMENTS NEIGHBOURING A POINT
 !     +  1 ON BOUNDARIES
 !
-         DO 112 IPTFR = 1,NPTFR
+         DO IPTFR = 1,NPTFR
             T1(NBOR(IPTFR)) = T1(NBOR(IPTFR)) + 1
-112      CONTINUE
+         ENDDO ! IPTFR 
 !
 !=======================================================================
 ! CHECKS THAT THE RENUMBERING WAS MADE CORRECTLY IN STBTEL
@@ -131,7 +131,7 @@
            STOP
          ENDIF
 !
-         DO 120 IPOIN = 2,NPOIN
+         DO IPOIN = 2,NPOIN
           IF(T1(IPOIN).LT.T1(IPOIN-1)) THEN
             IF(LNG.EQ.1) WRITE(LU,98)
             IF(LNG.EQ.2) WRITE(LU,99)
@@ -147,7 +147,7 @@
 95          FORMAT(1X,'FROPRO: POINT ',1I6,' HAS TOO MANY NEIGHBOURS')
             STOP
           ENDIF
-120      CONTINUE
+         ENDDO ! IPOIN 
 !
 !  BUILDS ARRAY LIMVOI
 !  LIMVOI(K,1) : BEGINNING OF SERIES WITH K NEIGHBOURS
@@ -174,9 +174,9 @@
 !
 !   ARRAYS FOR FRONTAL MATRIX-VECTOR PRODUCT :
 !
-         DO 130 IPOIN = 1,NPOIN
+         DO IPOIN = 1,NPOIN
            T1(IPOIN) = 1
-130      CONTINUE
+         ENDDO ! IPOIN 
 !
          IF(OPTASS.EQ.3) THEN
 !

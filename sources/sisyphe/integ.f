@@ -258,7 +258,7 @@
       DATA  AEIN / 0.D0,.1D0,.2D0,.4D0,.6D0,.8D0,1.D0,1.2D0,1.5D0,
      &            2.D0 ,2.5D0,3.D0,4.D0,7.D0,15.D0 /
 !
-      DO 20 I=1,NPOIN
+      DO I=1,NPOIN
 !
 !
               IF (B(I).LT.BEIN(LNB)) B(I)=BEIN(LNB)
@@ -332,13 +332,15 @@
                INF = 1
                SUP = LNA
 !----START OF THE DO WHILE LOOP----
- 52            MIL = (INF + SUP ) / 2
+               DO 
+               MIL = (INF + SUP ) / 2
                  IF (AEIN(MIL).LT.A(I)) THEN
                    INF = MIL
                  ELSE
                    SUP = MIL
                  ENDIF
-               IF ((SUP - INF).NE.1) GOTO 52
+               IF ((SUP - INF).EQ.1) EXIT
+               ENDDO
 !----END OF THE DO WHILE LOOP----
                IT=SUP
                A1 = AEIN(INF)
@@ -358,7 +360,7 @@
 !
             ENDIF
 !
- 20      CONTINUE
+         ENDDO !I
 !
       RETURN
       END SUBROUTINE INTEG
