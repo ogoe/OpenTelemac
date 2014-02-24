@@ -2,9 +2,9 @@
                      SUBROUTINE SED3D
 !                    ****************
 !
-     &(MASSE1,WC,TA,EPAI,HDEP,CONC,FLUER,PDEPOT,TRA02,
+     &(MASBED, MASBED0, MASDEP,WC,TA,EPAI,HDEP,CONC,FLUER,FLUDP,TRA02,
      & NELEM2,NPOIN2,NPOIN3,NPFMAX,NCOUCH,
-     & NPF,DT,TASSE,GIBSON,RHOS,CFDEP,VOLU2D)
+     & NPF,AT,TASSE,GIBSON,RHOS,VOLU2D)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P1                                   21/08/2010
@@ -83,6 +83,7 @@
 !
       USE BIEF
 !
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -92,22 +93,23 @@
       INTEGER, INTENT(IN) :: NPFMAX,NCOUCH,NELEM2,NPOIN2,NPOIN3
       INTEGER, INTENT(IN) :: NPF(NPOIN2)
 !
-      DOUBLE PRECISION, INTENT(IN) :: MASSE1
+      DOUBLE PRECISION, INTENT(INOUT) :: MASBED,MASDEP
       DOUBLE PRECISION, INTENT(IN) :: WC(NPOIN3)
       DOUBLE PRECISION, INTENT(IN) :: TA(NPOIN3),VOLU2D(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN) :: EPAI(NPFMAX-1,NPOIN2)
+      DOUBLE PRECISION, INTENT(IN) :: EPAI(NCOUCH,NPOIN2)
       DOUBLE PRECISION, INTENT(IN) :: HDEP(NPOIN2),FLUER(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN) :: PDEPOT(NPOIN2),CONC(NCOUCH)
+      DOUBLE PRECISION, INTENT(IN) :: FLUDP(NPOIN2),CONC(NCOUCH)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: TRA02(NPOIN2)
 !
-      DOUBLE PRECISION, INTENT(IN)    :: DT,RHOS,CFDEP
+      DOUBLE PRECISION, INTENT(IN)    :: AT,RHOS
+      DOUBLE PRECISION, INTENT(IN)    :: MASBED0
 !
       LOGICAL, INTENT(IN)             :: TASSE , GIBSON
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION MASSE3,MASSE4,MASSE5,FLUX
+      DOUBLE PRECISION ERROR
 !
       INTEGER I
 !
@@ -121,14 +123,14 @@
 !
 !=======================================================================
 !
-      FLUX=0.D0
+!      FLUX=0.D0
 !
-      DO I=1,NPOIN2
-        FLUX=FLUX+FLUER(I)*VOLU2D(I)
-      ENDDO
+!      DO I=1,NPOIN2
+!        FLUX=FLUX+FLUER(I)*VOLU2D(I)
+!      ENDDO
 !
-      MASSE3=FLUX*DT
-      IF(NCSIZE.GT.1) MASSE3=P_DSUM(MASSE3)
+!      MASSE3=FLUX*DT
+!      IF(NCSIZE.GT.1) MASSE3=P_DSUM(MASSE3)
 !
 !=======================================================================
 !
@@ -136,14 +138,14 @@
 !
 !=======================================================================
 !
-      FLUX=0.D0
+!      FLUX=0.D0
+! FLUDP calculated in FONVAS (or MURD3D_POS) FLUDP>0
+!      DO I=1,NPOIN2
+!            FLUX=FLUX+FLUDP(I)*VOLU2D(I)
+!      ENDDO
 !
-      DO I=1,NPOIN2
-        FLUX=FLUX-PDEPOT(I)*WC(I)*TA(I)*VOLU2D(I)
-      ENDDO
-!
-      MASSE4=FLUX*DT
-      IF(NCSIZE.GT.1) MASSE4=P_DSUM(MASSE4)
+!      MASSE4=FLUX*DT
+!      IF(NCSIZE.GT.1) MASSE4=P_DSUM(MASSE4)
 !
 !=======================================================================
 !
@@ -152,31 +154,65 @@
 !
 !=======================================================================
 !
-      MASSE5=MASSE4-MASSE3
-      IF(MASSE5.LE.1.D-8) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'MASSE NETTE DE SEDIMENT ERODE        : ',-MASSE5
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'NET MASS OF ERODED SEDIMENT          : ',-MASSE5
-        ENDIF
-      ELSE
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'MASSE NETTE DE SEDIMENTS DEPOSES     : ',MASSE5
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'NET MASS OF DEPOSIT                  : ',MASSE5
-        ENDIF
+!      MASSE5=MASSE4-MASSE3
+!      
+!=======================================================================
+!
+! CUMULATED MASS OF SEDIMENT DEPOSITED (MASDEP =0 t=0)
+!
+!=======================================================================
+! MASDEP calculated in  fonvas
+!      MASDEP= MASDEP + MASSE5
+!=======================================================================
+!
+! COMPUTES THE MASS OF SEDIMENT BED
+!
+!=======================================================================
+!
+      CALL MASSED(MASBED,EPAI,CONC,HDEP,TRA02,NPOIN2,NPFMAX,NCOUCH,
+     &            NPF,TASSE,GIBSON,RHOS,VOLU2D)
+!
+!=======================================================================
+! PRINTOUT
+!=======================================================================
+!
+         ERROR = MASBED-(MASBED0 + MASDEP)
+!
+      IF(LNG.EQ.1) THEN
+        WRITE(LU,*) 'BILAN MASSE DE SEDIMENTS (SED3D)  TEMPS : ',AT
+        WRITE(LU,*) 'MASSE DU LIT                         : ',MASBED
+!
+!        IF(MASSE5.GT.0) THEN
+!          WRITE(LU,*) 'MASSE DEPOSEE AU COURS DU PAS DE TEMPS:',MASSE5
+!        ELSE
+!	  WRITE(LU,*) 'MASSE ERODEE AU COURS DU PAS DE TEMPS:',-MASSE5
+!        ENDIF
+        IF(MASDEP.GT.0) THEN
+	   WRITE(LU,*) 'MASSE TOTALE  DEPOSEE               :', MASDEP
+	ELSE
+           WRITE(LU,*) 'MASSE TOTALE ERODEE                 : ',-MASDEP
+        ENDIF 
+         WRITE(LU,*) 'BILAN MASSE DU LIT (GAIN>0-  PERTE <0)  :', ERROR
       ENDIF
+      
+      IF(LNG.EQ.2) THEN
+        WRITE(LU,*) 'SEDIMENT BED MASS BALANCE AT TIME=',AT
+        WRITE(LU,*) 'MASSE OF BED                        : ',MASBED
 !
-!=======================================================================
-!
-! COMPUTES THE MASS OF MUDDY DEPOSITS ON THE RIGID BOTTOM AND PRINTS IT
-!
-!=======================================================================
-!
-      CALL MASSED(MASSE1,EPAI,CONC,HDEP,TRA02,NPOIN2,NPFMAX,NCOUCH,
-     &            NPF,TASSE,GIBSON,RHOS,CFDEP,VOLU2D)
+!        IF(MASSE5.LT.0) THEN
+!          WRITE(LU,*) 'DEPOSITED MASS PER TIME STEP:', MASSE5
+!        ELSE
+!	  WRITE(LU,*) 'ERODED MASS PER TIME STEP:',MASSE5
+!        ENDIF
+
+        IF(MASDEP.GT.0) THEN
+	   WRITE(LU,*) 'TOTAL DEPOSITED MASS               :', MASDEP
+	ELSE
+           WRITE(LU,*) 'TOTAL ERODED MASS                : ',-MASDEP
+        ENDIF 
+        WRITE(LU,*) 'SEDIMENT BED MASS BALANCE  (GAIN>0 LOSS<0):', ERROR
+
+      ENDIF
 !
 !=======================================================================
 !

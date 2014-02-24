@@ -1,0 +1,343 @@
+! volu2, v2dpar NOT USEFUL
+!                    *********************
+                     SUBROUTINE SET_DIF
+!                    *********************
+!
+     &(FC,FN,VOLU2,VOLU2D,V2DPAR, MESH3D, 
+     & NPOIN2,NPOIN3,DT,FLUX, OPTBAN,NPLAN,
+     & WCC,FLUDPT,FLUDP, FLUER,IPBOT,VISCTA)
+!
+!***********************************************************************
+! TELEMAC3D   V6P2                                   21/08/2010
+!***********************************************************************
+!
+!brief    ADVECTION OF A VARIABLE WITH AN UPWIND FINITE
+!+                VOLUME SCHEME.
+!+
+!+           (THE ADVECTION IS DONE EDGE BY EDGE, WHICH ENABLES
+!+                LOCAL DEPTHS EQUAL TO ZERO).
+!
+!warning  HERE FLUXES IN FLODEL ARE FROM POINT 2 TO POINT 1.
+!+
+!+        SEE FLUX3D (HORIZONTAL FLUXES BASED ON FLUINT)
+!+            AND PRECON (VERTICAL FLUXES BASED ON WSCONV)
+!
+!history  J-M HERVOUET (LNHE)
+!+        19/04/2010
+!+        V6P0
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        28/10/2011
+!+        V6P2
+!+   Updated for element 51 (prisms cut into tetrahedra). Better memory
+!+   allocation of INDIC.
+!
+!history  J-M HERVOUET (LNHE)
+!+        23/04/2012
+!+        V6P2
+!+   Values of tracers in rain taken into account.
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| DT             |-->| TIME STEP
+!| FC             |<->| VARIABLE AFTER CONVECTION
+!| FLUER          |-->| EROSION FLUX (SEDIMENT)
+!| FLUDPT         |-->| DEPOSITION FLUX - IMPLICIT PART (SEDIMENT)
+!| FLUDP          |-->| DEPOSITION FLUX  (SEDIMENT)
+!| FLUX           |<->| GLOBAL FLUXES TO BE CHANGED
+!| FN             |-->| VARIABLE AT TIME N
+!| IPBOT          |-->| PLANE NUMBER OF LAST CRUSHED PLANE (0 IF NONE)
+!| MESH3          |<->| 3D MESH
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE
+!|                |   | MODIFIED AND PIECE-WISE LINEAR
+!| VOLU2          |<->| CONTROL VOLUME, ASSEMBLED IN PARALLEL
+!| VOLU2D         |-->| INTEGRAL OF TEST FUNCTIONS IN 2D (SURFACE OF ELEMENTS) 
+!| V2DPAR         |-->| IDEM FOR PARALLEL
+!| WCC            |-->|  SETTLING VELOCITY (SEDIMENT)
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+      USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_TELEMAC3D, ONLY: ITURBV,NLAYMAX
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)             :: NPOIN3,NPOIN2
+      INTEGER, INTENT(IN)             :: OPTBAN,NPLAN
+!      
+      INTEGER, INTENT(IN)             :: IPBOT(NPOIN2)
+!
+      DOUBLE PRECISION, INTENT(INOUT) :: FC(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN)    :: FN(NPOIN3)
+!
+      DOUBLE PRECISION, INTENT(IN) :: VOLU2(NPOIN3)
+      DOUBLE PRECISION, INTENT(INOUT) :: FLUX
+      DOUBLE PRECISION, INTENT(IN)    :: DT
+!
+      TYPE(BIEF_OBJ), INTENT(IN)      :: WCC, FLUDPT,V2DPAR, VOLU2D
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLUDP, FLUER
+      TYPE(BIEF_OBJ), INTENT(IN)      :: VISCTA
+!
+      TYPE(BIEF_MESH), INTENT(IN)  :: MESH3D
+
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IPOIN,NITER,IS,IIS,I,OPT,IR
+      INTEGER I1,I2,IPLAN,ISEG3D,I2D,I3D,IPTFR,SIZEINDIC
+      INTEGER REMAIN_SEG,NEWREMAIN,REMAIN_TOT
+!
+!-----------------------------------------------------------------------
+!
+      DOUBLE PRECISION P_DSUM
+      EXTERNAL         P_DSUM
+      INTEGER  P_ISUM
+      EXTERNAL P_ISUM
+!
+      DOUBLE PRECISION RINIT,C,C2
+      DOUBLE PRECISION VOLSEG1,VOLSEG2
+!
+      INTEGER:: IP
+      DOUBLE PRECISION :: FLUSET,FLUERO,FLUDEP,FLUNET
+      DOUBLE PRECISION :: MASSREM, MASSMIN, HI
+!
+      DOUBLE PRECISION :: DCDZ,FLUDIF, Z1,Z2,NUT,FCMASS
+      DOUBLE PRECISION :: SETLOSS(NLAYMAX),DIFLOSS(NLAYMAX)
+      DOUBLE PRECISION :: TOTLOSS, FLUSETIMP, FLUDIFIMP
+      DOUBLE PRECISION :: DELTAF
+!
+! CV vertical grid finite volume SCHEME  
+!
+      DOUBLE PRECISION :: dz(NLAYMAX),Vol(NLAYMAX)
+!
+      DOUBLE PRECISION EPS
+!      DATA EPS /1.D-6/
+       DATA EPS /1.D-6/
+      DOUBLE PRECISION ALLOW
+      DATA ALLOW /1.D-5/
+      DOUBLE PRECISION REDUC
+      DATA REDUC /1.D-9/
+      DOUBLE PRECISION EPS_VOLUME
+      DATA EPS_VOLUME /1.D-8/
+!
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+!
+! NOTE 1: Work from bottom layer up, compute settling flux, and take 
+!    material from the layer above. Use volumes (in VOLU2) to effect 
+!    correct mass balance. 
+! NOTE 2: the warning above regarding VOLU2 has not been addressed yet
+!    so if there are sources or exiting fluxes at nodes there could be a problem.
+!
+!
+        DO IPOIN = 1,NPOIN2   ! we loop through horizontal just once
+!
+!   TIDAL FLATS
+! ??           IF(HN%R(IPOIN).LE. HMIN) THEN
+          IF(IPBOT(IPOIN).EQ.(NPLAN-1)) THEN
+             FLUER%R(IPOIN) = 0.d0
+             FLUDP%R(IPOIN) = 0.d0
+! SKIP THIS NODE
+             GO TO 20                  
+           ENDIF  
+!           
+! Changes in concentration
+          DO IPLAN=1,NPLAN
+             SETLOSS(IPLAN)=0.D0
+             DIFLOSS(IPLAN)=0.D0 
+          ENDDO
+!          
+! FINITE VOLUME SCHEME
+!Vertical grid definition          
+!
+          DO IPLAN = 1,NPLAN-1
+            I1 = IPOIN + (IPLAN-1)*NPOIN2
+            I2 = IPOIN + IPLAN*NPOIN2
+            Z1=MESH3D%Z%R(I1)
+            Z2=MESH3D%Z%R(I2)
+            DZ(iplan)= Z2-Z1
+            IF(IPLAN.EQ.1) THEN 
+               VOL(1)=DZ(1)/2.D0
+            ELSE
+              vol(IPLAN)= (DZ(iplan)+ DZ(iPLAN-1))/2.d0
+            ENDIF  
+          enddo
+          VOL(NPLAN)=DZ(NPLAN-1)/2.D0
+!
+! BOTTOM POINT (IPLAN = 1)
+!
+! NET EROSION - DEPOSITION FLUX
+!
+          FLUERO = FLUER%R(IPOIN)*DT
+!
+          FLUDEP =  FLUDPT%R(IPOIN)*FC(IPOIN) *DT
+!          
+          ! apply net erosion/deposition immediately (before settling and diffusion)
+          ! NOTE: SETLOSS(1) could be set to FLUDEP...and FC updated at the end
+          !       it gives the same answer for steady state (I tried it) n.b. if
+          !       this is done then FLUDP needs to be set later (see below)
+          SETLOSS(1)= FLUDEP
+!
+          DO IPLAN = 1,NPLAN-1
+!              
+! ### SETTLING ###
+!
+            I1 = IPOIN + (IPLAN-1)*NPOIN2
+            I2 = IPOIN + IPLAN*NPOIN2
+!            
+            ! Positive (downward) settling flux --> FLUSET > 0
+            ! WCC >0 (6.3)
+            FLUSET = WCC%R(I2)*FC(I2)
+            FLUSET = FLUSET*DT
+!            
+!
+            ! not here! We need correct proportions of potential up/down flux
+            ! so it gets done further down
+!            
+            ! apply to settling loss array
+            SETLOSS(IPLAN+1)=FLUSET
+!           
+! ### DIFFUSIVITY ###       
+!           
+! Positive (upwards) Diffusion flux ---> FLUDIF >0
+!           
+! First calculate the concentration gradient
+            IF(IPLAN.EQ.1) THEN      
+               DCDZ=  (Log(MAX(FC(I2),EPS))-Log(MAX(FC(I1),EPS)))
+     &            *(FC(I1)+FC(I2))/2.0/DZ(iplan) 
+             ELSE
+              DCDZ=(FC(I2)-FC(I1))/DZ(iplan)            
+            ENDIF
+! viscosity (n.b. for mixing length it is already calculated at mid point)
+             IF(ITURBV.EQ.2) THEN
+                NUT=VISCTA%R(I1)
+             ELSE  
+! K-EPS  viscosity is calculated at each node
+               NUT=(VISCTA%R(I1)+ VISCTA%R(I2))/2.d0
+             ENDIF
+! Diffusion flux
+            FLUDIF= -NUT*DCDZ 
+! Mass exchange
+             FLUDIF = FLUDIF*DT
+!
+! if positive then add it to diffusion loss of lower plane (iplan) 
+            if (FLUDIF>0.d0) then
+                DIFLOSS(IPLAN)=FLUDIF
+! if negative add it to settling loss of upper plane (iplan+1)
+            else 
+               SETLOSS(IPLAN+1)  =SETLOSS(IPLAN+1)-FLUDIF
+            endif
+!            
+          ENDDO ! end of layer loop
+!            
+! Now adjust the fluxes depending on the available mass in each plane
+         do iplan=1,nplan
+             I = IPOIN + (IPLAN-1)*NPOIN2   
+!
+             FCMASS=FC(I)*VOL(IPLAN)
+!             
+             !if (FCMASS>1.e-9) FCMASS=FCMASS*0.5d0
+             ! combine the losses and gains for settling/depo and diffusion/ero
+             TOTLOSS=SETLOSS(IPLAN)+DIFLOSS(IPLAN)
+             ! modify the settling and diffusion proportionaly
+             if(TOTLOSS>FCMASS) then
+                   !write(*,*) 'Warning: Limiting mass exchange!'
+                   ! Perhaps we need to look at the concentrations 
+                   ! in planes above and below then
+                   ! make sure we don't fall below the average of the two
+                   ! (or just one if at surface or bed)
+                   ! although tricky because the concentrations have changed
+                 ! QUESTION: can we do subiterations somehow?
+                 SETLOSS(IPLAN)=FCMASS*SETLOSS(IPLAN)/TOTLOSS
+                 DIFLOSS(IPLAN)=FCMASS-SETLOSS(IPLAN)
+             endif
+         enddo           
+!
+! These 2 lines should be uncommented if SETLOSS(1)=FLUDEP above
+          FLUDEP=SETLOSS(1)
+          FLUNET=FLUERO - FLUDEP ! recalc flunet
+!
+! Record the net deposition flux onto the bed 
+! (FLUDP > 0 => net increase of bed sediment)
+!           FLUDP%R(IPOIN) =  FLUDEP/V2DPAR%R(IPOIN)/DT
+           FLUDP%R(IPOIN) =  FLUDEP/DT
+!             
+! Update the flux summation out of the domain 
+!
+!          IF(NCSIZE.GT.1) THEN
+!            FLUX = FLUX - FLUNET*VOLU2D%R(IPOIN)/V2DPAR%R(IPOIN)
+!          ELSE
+!            FLUX = FLUX-FLUNET
+!          ENDIF 
+           FLUX = FLUX - FLUNET*VOLU2D%R(IPOIN)
+!
+! Now simply pass all the masses between the planes using the up/down fluxes
+! to give the final concentration
+!
+         I = IPOIN        
+         ! mass in bottom plane
+               FCMASS=FC(I)*VOL(1)
+         ! add erosion to bottom plane (if using SETLOSS(1)=FLUDEP above)
+         FCMASS = FCMASS + (FLUERO - FLUDEP)
+         ! contribution to/from plane above
+         FCMASS = FCMASS+(SETLOSS(2)-DIFLOSS(1))
+         ! convert back to conc
+!         
+         FC(I)=FCMASS/VOL(1)
+         ! now apply the fluxes to internal
+         DO IPLAN = 2,NPLAN-1
+            I = IPOIN + (IPLAN-1)*NPOIN2 
+!
+            FCMASS=FC(I)*VOL(IPLAN)
+!
+         ! contributions to/from top plane
+            FCMASS = FCMASS+(SETLOSS(IPLAN+1)-DIFLOSS(IPLAN))
+            ! contributions to/from bottom plane
+            FCMASS = FCMASS+(DIFLOSS(IPLAN-1)-SETLOSS(IPLAN) )
+            ! convert back to conc
+!
+            FC(I)=FCMASS/VOL(IPLAN)
+!
+         ENDDO       
+         ! apply fluxes to top plane
+         I = IPOIN + (NPLAN-1)*NPOIN2   
+!
+         FCMASS=FC(I)*VOL(NPLAN)
+!
+         ! contribution to/from plane below
+         FCMASS = FCMASS + (DIFLOSS(NPLAN-1)-SETLOSS(NPLAN))
+         ! convert back to conc
+!
+          FC(I)=FCMASS/VOL(NPLAN)
+!
+!
+! add on erosion at the end     
+!
+20     CONTINUE ! FOR SKIPPING H<HMIN NODES
+       ENDDO  ! END OF NODE LOOP
+!
+
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END

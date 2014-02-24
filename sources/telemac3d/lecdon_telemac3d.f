@@ -389,6 +389,8 @@
 !     R3D2D     =     MOTINT(ADRESS(1,63))
 ! JMH 29/09/99:
       KFROT     =     MOTINT(ADRESS(1,64))
+! CV 2013      
+      NCOUCH=         MOTINT(ADRESS(1,65))
 !
 ! NON-HYDROSTATIC
 !
@@ -525,6 +527,9 @@ C     KEYWORD: STAGE-DISCHARGE CURVES
       OPTCHA = MOTINT(ADRESS(1,116))
 !     MAXIMUM NUMBER OF GAUSS POINTS FOR WEAK CHARACTERISTICS
       NGAUSS = MOTINT(ADRESS(1,117))
+! TBE + CV
+      HIND_TYPE = MOTINT(ADRESS(1,125))
+      FLOC_TYPE= MOTINT(ADRESS(1,126))
 !
 ! REAL KEYWORDS
 !
@@ -634,6 +639,7 @@ C     KEYWORD: STAGE-DISCHARGE CURVES
         ENDDO
       ENDIF
       HLIM          = MOTREA(ADRESS(2,24))
+      HSED          = MOTREA(ADRESS(2,36)) ! CV
       SLVDKE%EPS    = MOTREA(ADRESS(2,25))
       SLVPRO%EPS    = MOTREA(ADRESS(2,26))
       SLVW%EPS      = MOTREA(ADRESS(2,27))
@@ -693,6 +699,12 @@ C     KEYWORD: STAGE-DISCHARGE CURVES
         CALL PLANTE(1)
         STOP
       ENDIF
+!
+! CV : TURBULENCE MODEL CONSTANTS
+!  7.0
+      KARMAN= MOTREA( ADRESS(2, 65) )
+      PRANDTL= MOTREA( ADRESS(2, 66) )
+      FICT = MOTREA( ADRESS(2, 67) )
 !
 ! NON-HYDROSTATIC
 !
@@ -785,6 +797,9 @@ C         TRACER WILL BE TRACER(NFRLIQ,NTRAC) BUT NFRLIQ UNKNOWN
       MSL       = MOTREA( ADRESS(2,101) )
 !     MASS-LUMPING FOR WEAK CHARACTERISTICS
       AGGLOW    = MOTREA( ADRESS(2,102) )
+! TBE
+      CGEL= MOTREA( ADRESS(2,103) )
+      CINI= MOTREA( ADRESS(2,104) )
 !
 ! LOGICAL KEYWORDS
 !
@@ -823,7 +838,8 @@ C         TRACER WILL BE TRACER(NFRLIQ,NTRAC) BUT NFRLIQ UNKNOWN
       VALID        = MOTLOG(ADRESS(3,19))
       RESTART_MODE = MOTLOG(ADRESS(3,20))
       TASSE        = MOTLOG(ADRESS(3,51))
-      GIBSON       = MOTLOG(ADRESS(3,52))
+! OBSOLE REPLACED BY ITASS      
+!      GIBSON       = MOTLOG(ADRESS(3,52))
       TURBWC       = MOTLOG(ADRESS(3,53))
       LISTIN       = MOTLOG(ADRESS(3,61))
 !
@@ -861,6 +877,10 @@ C         TRACER WILL BE TRACER(NFRLIQ,NTRAC) BUT NFRLIQ UNKNOWN
       SPILL_MODEL=MOTLOG( ADRESS(3,85) )
 !     INFERENCE OF MINOR CONSTITUENTS OF TPXO TIDAL DATABASE
       INTMICON  = MOTLOG( ADRESS(3,86) )
+! TBE + CV
+        READ_TOCE=  MOTLOG( ADRESS(3,87)) 
+        HINDER=  MOTLOG( ADRESS(3,90)) 
+        FLOC =  MOTLOG( ADRESS(3,91)) 
 !
 !     FOR NEXT LOGICAL, USE 21 TO 50 AND OTHER AVAILABLE NUMBERS !!!!!!!!!!!!
 !
@@ -1018,32 +1038,62 @@ C         TRACER WILL BE TRACER(NFRLIQ,NTRAC) BUT NFRLIQ UNKNOWN
 ! SEDIMENT - EX-LECSED.F
 !
 ! INTEGERS
+! CV OBSOLETE FOR CONSILATION MODEL USE NCOUCH, NLAYMAX
 !
-      NPFMAX        = MOTINT(ADRESS(1,51))
+!     NPFMAX        = MOTINT(ADRESS(1,51))
+!
+      ITASS        = MOTINT(ADRESS(1,51))
+!
       SLVDSE%SLV    = MOTINT(ADRESS(1,52))
       SLVDSE%PRECON = MOTINT(ADRESS(1,53))
+!
+! CV : VERTICAL SCHME 
+!
+        SETDEP = MOTINT( ADRESS(1,54)) 
 !
 ! REALS
 !
       RHOS      = MOTREA(ADRESS(2,51))
       TOCD      = MOTREA(ADRESS(2,52))
-      CFDEP     = MOTREA(ADRESS(2,53))
       EPAI0     = MOTREA(ADRESS(2,54))
       DTC       = MOTREA(ADRESS(2,55))
       CFMAX     = MOTREA(ADRESS(2,56))
       MPART     = MOTREA(ADRESS(2,57))
-      TOCE      = MOTREA(ADRESS(2,58))
+!
       TURBA     = MOTREA(ADRESS(2,59))
       TURBB     = MOTREA(ADRESS(2,60))
       WCHU0     = MOTREA(ADRESS(2,61))
-!
-      NCOUCH    = DIMEN(2,62)
-      IF(NCOUCH.NE.0) THEN
-        DO K = 1, NCOUCH
-          TREST(K) = MOTREA(ADRESS(2,62)+K-1)
-        ENDDO
+      IF(SEDI.AND.WCHU0.LT.0.D0) THEN
+         PRINT*,'CHANGE SETTLING VELOCITY TO BECOME POSITIVE '
+         CALL PLANTE(1)
+         STOP
       ENDIF
 !
+!CV...
+!      TOCE      = MOTREA(ADRESS(2,58))
+!      CFDEP     = MOTREA(ADRESS(2,53))
+       XKV =   MOTREA(ADRESS(2,63))
+!
+! sediment bed layers initialization        
+!
+  
+           DO K = 1, DIMEN(2,53)
+             CONC_LAYER(K)=MOTREA( ADRESS(2,53) + K-1 )  
+             TOCE_LAYER(K)=MOTREA( ADRESS(2,58) + K-1 )
+             ES_LAYER(K)=MOTREA( ADRESS(2,64) + K-1 ) 
+! multilayer consolidation
+             IF(TASSE) TREST(K) = MOTREA(ADRESS(2,62)+K-1)
+           ENDDO
+!
+! CFDEP no longer used, replaced by CONC(1)
+!
+!        IF(SEDCO) THEN
+!          CFDEP=CONC_LAYER(NCOUCH)        
+!        ELSE
+!           CFDEP=(1.D0-XKV)* RHOS  
+!        ENDIF
+!....CV
+!       
 ! CHARACTERS
 !
       T3D_FILES(T3DSED)%NAME=MOTCAR( ADRESS(4,51) )
@@ -2237,6 +2287,25 @@ C  CHECKS THE EXISTENCE OF RELEVANT TRACERS FOR THE DENSITY LAW
       ENDIF
 !
 !-----------------------------------------------------------------------
+! This may not be useful anymore ..
+!      IF(SEDI.AND.SETDEP.EQ.1) THEN
+!        IF((SCHCTA(1).NE.ADV_LPO_TF).AND.(SCHCTA(1).NE.ADV_NSC_TF)) THEN
+! error message        
+!          IF(LNG.EQ.1) WRITE(LU,153) ADV_NSC_TF
+!          IF(LNG.EQ.2) WRITE(LU,154) ADV_NSC_TF
+! change value          
+!          SCHCTA(1)=ADV_NSC_TF
+!        ENDIF 
+!      ENDIF 
 !
+153      FORMAT(1X,'LECDON : FOR EXPLICIT SETTLING SCHEME',/,10X,
+     &  'USE CONVECTION SCHEME ',I2/)
+154      FORMAT(1X,'LECDON : POUR SCHEMA EXPLICITE',/,10X,
+     &  'UTILISER CONVECTION SCHEME ',I2/)
+
+
+!-----------------------------------------------------------------------
+!
+
       RETURN
       END

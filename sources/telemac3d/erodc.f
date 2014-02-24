@@ -3,7 +3,7 @@
 !                    ****************
 !
      &( CONC  , EPAI   , FLUER  , TOB    , DENSI  ,
-     &  MPART , DT     , NPOIN2 , NCOUCH )
+     &  MPART , DT     , NPOIN2 , NCOUCH ,TOCE,HN,HMIN)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P1                                   21/08/2010
@@ -55,6 +55,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+!
+!      
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -63,95 +65,106 @@
 !
       INTEGER, INTENT(IN) :: NPOIN2, NCOUCH
 !
-      DOUBLE PRECISION, INTENT(IN)    :: CONC(NCOUCH)
-      DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NCOUCH,NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: CONC(NPOIN2,NCOUCH), HN(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: TOCE(NPOIN2,NCOUCH)
+      DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPOIN2,NCOUCH)
       DOUBLE PRECISION, INTENT(INOUT) :: FLUER(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: TOB(NPOIN2),DENSI(NPOIN2)
 !
-      DOUBLE PRECISION, INTENT(IN)    :: MPART, DT
-!
+      DOUBLE PRECISION, INTENT(IN)    :: MPART, DT, HMIN
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IC, IPOIN
-      DOUBLE PRECISION VITCE, TOCE , QS, TEMPS , QERODE
+      DOUBLE PRECISION   QS, TEMPS , QERODE
       INTRINSIC MIN , MAX
 !
+      DOUBLE PRECISION FLUER_LOC
 !-----------------------------------------------------------------------
+
 !
-      DO IPOIN=1,NPOIN2
+!CV UNIFORM BED
 !
+!      IF(NCOUCH.EQ.1) THEN
+!
+!        DO IPOIN=1,NPOIN2
+!
+!          FLUER(IPOIN) = 0.D0
+!###>TBE
+!          IF (HN(IPOIN)<HMIN) THEN
+!             GOTO 10
+!          ENDIF
+!###<TBE
+!
+!         TESTS IF TOB > CRITICAL EROSION FRICTION OF SURFACE LAYER
+!
+!          IF ((TOB(IPOIN)-TOCE(IPOIN,1)).GE.1.D-8) THEN  
+!
+!            FLUER(IPOIN)=MPART*((TOB(IPOIN)/TOCE(IPOIN,1))-1.D0)
+!            FLUER(IPOIN)=MIN(FLUER(IPOIN),
+!     &               EPAI(IPOIN,1)*CONC(IPOIN,1)/DT)
+!
+!          ENDIF
+!###>TBE
+!10      CONTINUE
+!###<TBE
+!        ENDDO
+!
+!      ELSE
+!CV
 !     ---- TEMPS:TIME COUNTER FOR EROSION ----
 !
+        DO IPOIN=1,NPOIN2
+            
+!###>TBE
+        FLUER(IPOIN) = 0.D0
+        IF (HN(IPOIN)<HMIN) THEN
+             GOTO 30
+        ENDIF
+!###<TBE
+!
+! initialisation
            TEMPS=DT
-!
-!     ---- QERODE: ERODED QUANTITY ----
-!
            QERODE=0.D0
 !
-          DO IC=NCOUCH,1,-1
+           DO IC=1, NCOUCH
 !
-            IF (TEMPS.LE.1.D-6) GO TO 20
+            IF (TEMPS.LE.1.D-12) GO TO 20
 !
 !     ---- EROSION OF TOP LAYER IF TOB > CRITICAL SHEAR STRESS ----
+
+           IF (TOB(IPOIN).GT.TOCE(IPOIN,IC)) THEN
 !
-!   *******    COMPUTES CRITICAL FRICTION VELOCITY
-!              AS A FUNCTION OF CONCENTRATION
-!             (EMPIRICAL RELATION : TO BE MODIFIED BY USER)
-!
-            IF (CONC(IC).LT.240.D0) THEN
-              VITCE=3.2D-5*(CONC(IC)**1.175D0)
-            ELSE
-              VITCE=5.06D-8*(CONC(IC)**2.35D0)
-            ENDIF
-!
-! THE 4 LINES ARE ERROR MESSAGES TO BE SUPPRESSED
-!
-         WRITE(LU,*)
-         IF (LNG.EQ.1) WRITE(LU,11)
-         IF (LNG.EQ.2) WRITE(LU,12)
-         CALL PLANTE(1)
-         STOP
-!
-11    FORMAT('SOUS PROGRAMME ERODC : DONNER LA VITESSE CRITIQUE',/,
-     &       'D''EROSION FONCTION DE LA CONCENTRATION')
-12    FORMAT('SUBROUTINE ERODC : EXPRESS THE CRITICAL SHEAR STRESS',/,
-     &       'FUNCTION OF THE CONCENTRATION')
-!
-!    ---- CRITICAL BED SHEAR STRENGTH -----
-!
-            TOCE=DENSI(IPOIN)*VITCE**2
-            IF (TOB(IPOIN).LE.TOCE) GOTO 20
-!
-!    ---- EROSION FLUX COMPUTATION ------
-!
-            FLUER(IPOIN)=MPART*((TOB(IPOIN)/TOCE)-1.D0)
-!
-!    ---- SOLID QUANTITY WITHIN THE LAYER BEFORE EROSION ----
-!
-            QS=CONC(IC)*EPAI(IC,IPOIN)
-!
+            FLUER_LOC=MPART*((TOB(IPOIN)/TOCE(IPOIN,IC))-1.D0)
+            QS=CONC(IPOIN,IC)*EPAI(IPOIN,IC)
+!CV ...
 !    ---- LAYER THICKNESS AFTER EROSION ----
 !
-            EPAI(IC,IPOIN)=MAX(0.D0,EPAI(IC,IPOIN)-
-     &                             (FLUER(IPOIN)*TEMPS/CONC(IC)))
+!            EPAI(IC,IPOIN)=MAX(0.D0,EPAI(IC,IPOIN)-
+!     &                             (FLUER(IPOIN)*TEMPS/CONC(IC)))
 !
-!    ---- ERODED QUANTITY ----
+! ...CV : done in fonvas
 !
-            QERODE=QERODE+MIN(FLUER(IPOIN)*TEMPS,QS)
+            QS=MIN(FLUER_LOC*TEMPS,CONC(IPOIN,IC)*EPAI(IPOIN,IC))
+            QERODE=QERODE+QS
+            TEMPS= TEMPS-(QS/FLUER_LOC)
+
+           ENDIF
 !
-!    ---- TIME LEFT AFTER EROSION OF LAYER ----
-!
-            TEMPS=DMAX1(0.D0,TEMPS-(QS/FLUER(IPOIN)))
-!
-         ENDDO
+  
+        ENDDO
 !
 20     CONTINUE
 !
 !     -----END OF THE EROSION STEP-----
 !
        FLUER(IPOIN)=QERODE/DT
-!
-      END DO
+!###>TBE
+30     CONTINUE
+!###<TBE
+  
+      ENDDO
+!     
+!      ENDIF
 !
       RETURN
       END SUBROUTINE ERODC

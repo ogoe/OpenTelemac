@@ -5,14 +5,13 @@
      &( ATABOF , BTABOF , ATABOS , BTABOS , TA     ,
      &  WC     , GRADZFX, GRADZFY, GRADZSX, GRADZSY,
      &  X      , Y      , Z      , HN     , DELTAR ,
-     &  TOB    , DENSI  , TRA03  ,  IVIDE  , EPAI   ,
-     &  CONC   , HDEP   , FLUER  , PDEPOT , LITABF ,
+     &  TOB    , DENSI  , TRA03  ,   EPAI   ,CFDEP,
+     &  CONC   , HDEP   , FLUER  , FLUDPT , LITABF ,
      &  LITABS , KLOG   , NPOIN3 , NPOIN2 , NPLAN  ,
-     &  NPFMAX , NCOUCH , NPF    , ITURBV , DT     , RHO0   ,
-     &  RHOS   , CFDEP  , TOCD   , MPART  , TOCE   , TASSE  ,
-     &  GIBSON , PRIVE  , UETCAR ,
+     &  NCOUCH , ITURBV , DT     , RHO0   ,
+     &  RHOS   ,  TOCD   , MPART  , TOCE   , UETCAR ,
      &  GRAV   , SEDCO  , DMOY   , CREF   ,ZREF, CF,
-     &  AC     , KSPRATIO,ICR,ICQ,RUGOF)
+     &  AC     , KSPRATIO,ICR,ICQ,RUGOF, SETDEP,HMIN)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P0                                   21/08/2010
@@ -64,6 +63,7 @@
 !| DT             |-->| HYDRODYNAMICS TIME STEP 
 !| EPAI           |<->| THICKNESS OF BOTTOM LAYERS IN 
 !|                |   | MATERIAL COORDINATES (EPAI=DZ/(1+IVIDE))
+!| SETDEP         |-->| SETTLING SCHEME (0 or 1)
 !| FLUER          |<--| EROSION FLUX FOR POINTS IN 2D
 !| GIBSON         |-->| LOGICAL, FOR GIBSON'S MODEL
 !| GRADZFX        |-->| GRADIENT-X OF BOTTOM 
@@ -72,7 +72,9 @@
 !| GRADZSY        |-->| GRADIENT-Y OF SURFACE   
 !| GRAV           |-->| ACCELERATION OF GRAVITY
 !| HDEP           |<->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER) 
+!| HMIN           |-->| THRESHOLD FOR EROSION FLUXES ON TIDAL FLATS 
 !| HN             |-->| WATER DEPTH AT TIME N
+!| ICR            |-->| FLAG FOR THE SKIN FRICTION OPTION
 !| ICQ            |-->| FLAG FOR THE REFERENCE CONCENTRATION FORMULA
 !| ITURBV         |-->| VERTICAL TURBULENCE MODEL
 !| IVIDE          |<->| VOID RATIO
@@ -82,20 +84,15 @@
 !| LITABS         |<->| FOR BOUNDARY CONDITION SURFACE
 !| MPART          |-->| EROSION COEFFICIENT (PARTHENIADES'S LAW)
 !| NCOUCH         |-->| NUMBER OF LAYERS FOR THE COHESIVE MULTILAYER MODEL 
-!| NPF            |-->| NUMBER OF POINTS WITHIN THE BED
-!| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES 
-!|                |   | FOR THE GIBSON'S MODEL
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS 
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPOIN3         |-->| NUMBER OF POINTS IN 3D
 !| PDEPOT         |<--| PROBABILITY OF DEPOSITION FOR EVERY POINT 2D
-!| PRIVE          |-->| BLOCK OF PRIVATE ARRAYS FOR USER 
 !| RHO0           |-->| WATER DENSITY (REFERENCE)
 !| RHOS           |-->| MASSE VOLUMIQUE DU SEDIMENT
 !| RUGOF          |-->| FRICTION COEFFICIENT
 !| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT 
 !| TA             |-->| SEDIMENT CONCENTRATION
-!| TASSE          |-->| LOGICAL, CONSOLIDATION TAKEN INTO ACCOUNT OR NOT
 !| TOB            |-->| BED SHEAR STRESS (TOTAL FRICTION)
 !| TOCD           |-->| CRITICAL DEPOSITION SHEAR STRESS 
 !| TOCE           |-->| CRITICAL EROSION SHEAR STRESS 
@@ -113,38 +110,36 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NPOIN2,NPOIN3,KLOG,NPFMAX,ICQ
+      INTEGER, INTENT(IN) :: NPOIN2,NPOIN3,KLOG,ICQ
       INTEGER, INTENT(IN) :: NCOUCH,ITURBV,NPLAN,ICR
 !
       DOUBLE PRECISION, INTENT(INOUT) :: ATABOF(NPOIN2), BTABOF(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: ATABOS(NPOIN2), BTABOS(NPOIN2)
 !
       DOUBLE PRECISION, INTENT(IN) :: X(NPOIN3), Y(NPOIN3), Z(NPOIN3)
-      DOUBLE PRECISION, INTENT(IN) :: TA(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN) :: TA(NPOIN3),CFDEP
       DOUBLE PRECISION, INTENT(IN) :: WC(NPOIN3), DELTAR(NPOIN3)
 !
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: PRIVE,TOB,CREF,ZREF,RUGOF
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: TOB,CREF,ZREF,RUGOF
       TYPE(BIEF_OBJ), INTENT(IN)    :: DMOY,HN,CF
 !
-      DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPFMAX-1,NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: IVIDE(NPFMAX,NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: CONC(NCOUCH)
+      DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPOIN2,NCOUCH)
+      DOUBLE PRECISION, INTENT(IN)    :: CONC(NPOIN2,NCOUCH)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: DENSI(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TRA03(NPOIN2),UETCAR(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2),FLUER(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: PDEPOT(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: FLUDPT(NPOIN2)
       DOUBLE PRECISION, INTENT(IN) :: GRADZFX(NPOIN2),GRADZFY(NPOIN2)
       DOUBLE PRECISION, INTENT(IN) :: GRADZSX(NPOIN2),GRADZSY(NPOIN2)
 !
-      DOUBLE PRECISION, INTENT(IN) :: DT    , RHO0 , RHOS
-      DOUBLE PRECISION, INTENT(IN) :: CFDEP , TOCD , GRAV
-      DOUBLE PRECISION, INTENT(IN) :: MPART , TOCE
+      DOUBLE PRECISION, INTENT(IN) :: DT    , RHO0 , RHOS, HMIN
+      DOUBLE PRECISION, INTENT(IN) ::  TOCD , GRAV
+      DOUBLE PRECISION, INTENT(IN) :: MPART , TOCE(NPOIN2,NCOUCH)
 !
       INTEGER, INTENT(INOUT) :: LITABF(NPOIN2), LITABS(NPOIN2)
-      INTEGER, INTENT(INOUT) :: NPF(NPOIN2)
-!
-      LOGICAL, INTENT(IN)          :: TASSE , GIBSON , SEDCO
+      LOGICAL, INTENT(IN)          :: SEDCO
+      INTEGER, INTENT(IN)          :: SETDEP
       DOUBLE PRECISION, INTENT(IN) :: AC, KSPRATIO
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -184,24 +179,25 @@
 !
       IF(SEDCO) THEN
 !
-        IF(TASSE) THEN
 !
           CALL ERODC(CONC,EPAI,FLUER,TOB%R,DENSI,
-     &               MPART,DT,NPOIN2,NCOUCH)
+     &               MPART,DT,NPOIN2,NCOUCH,TOCE,
+     &               HN%R,HMIN)
 !
-        ELSE
+!        ELSE
 !
-          CALL ERODE(IVIDE,EPAI,HDEP,FLUER,TOB%R,DENSI,
-     &               NPOIN2,NPFMAX,NPF,MPART,TOCE,
-     &               CFDEP,RHOS,DT,GIBSON)
+!          CALL ERODE(IVIDE,EPAI,HDEP,FLUER,TOB%R,DENSI,
+!     &               NPOIN2,NPFMAX,NPF,MPART,TOCE,
+!     &               CFDEP,RHOS,DT,GIBSON)
 !
-        ENDIF
+!        ENDIF
 
       ELSE
 !
           CALL ERODNC(CFDEP,WC,HDEP,FLUER,TOB,DT,
      &                NPOIN2,NPOIN3,KSPRATIO,AC,RHOS,RHO0,HN,
-     &                GRAV,DMOY,CREF,ZREF,CF,ICQ,RUGOF)
+     &                GRAV,DMOY,CREF,ZREF,CF,ICQ,RUGOF,
+     &                Z, UETCAR)
 !
       ENDIF
 !
@@ -212,8 +208,9 @@
      &            LITABF , LITABS , TA     , WC     ,
      &            X      , Y      , Z      , HN%R   ,
      &            GRADZFX, GRADZFY, GRADZSX, GRADZSY,
-     &            TOB%R  , PDEPOT , FLUER  , TOCD   ,
-     &            NPOIN3 , NPOIN2 , NPLAN  , KLOG   , SEDCO)
+     &            TOB%R  , FLUDPT , FLUER  , TOCD   ,
+     &            NPOIN3 , NPOIN2 , NPLAN  , KLOG   , 
+     &            HMIN,SEDCO, SETDEP)
 !
 !-----------------------------------------------------------------------
 !

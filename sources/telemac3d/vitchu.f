@@ -2,7 +2,10 @@
                      SUBROUTINE VITCHU
 !                    *****************
 !
-     & (W_SED, WCHU_CONST)
+     & (WCHU,WCHU0,TURBWC,U,V,W,H,RUGOF,LISRUF,TURBA,TURBB,
+     &  TRAV1,TRAV2,TRAV3,S,MESH3D,IELM3,NPOIN2,NPOIN3,NPLAN,NTRAC,
+     &  MSK,MASKEL,UETCAR,TA,HN,HMIN,
+     &  FLOC, FLOC_TYPE, HINDER,HIND_TYPE,CGEL, CINI)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P1                                  21/08/2010
@@ -35,13 +38,36 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| WCHU_CONST     |-->| CONSTANT SEDIMENT SETTLING VELOCITY (M/S)
-!| W_SED          |<->| SEDIMENT SETTLING VELOCITY (M/S)
+!| WCHU           |<--| SEDIMENT SETTLING VELOCITY (M/S)
+!| WCHU0          |-->| CONSTANT SEDIMENT SETTLING VELOCITY (M/S)
+!| TURBWC         |-->| SWITCH FOR TURBULENT FLOC BREAKUP
+!| SOULSBYWC      |-->| SWITCH FOR SOULSBY FLOCCULATION FORMULA
+!| U,V,W          |-->|
+!| H              |-->|
+!| RUGOF          |-->|
+!| LISRUF         |-->|
+!| TURBA          |-->|
+!| TURBB          |-->|
+!| TRAV1          |<->|
+!| TRAV2          |<->|
+!| TRAV3          |<->|
+!| S              |-->|
+!| MESH3D         |<->|
+!| IELM3          |-->|
+!| NPOIN2         |-->|
+!| NPOIN3         |-->|
+!| NPLAN          |-->|
+!| NTRAC          |-->|
+!| MSK            |-->|
+!| MASKEL         |-->|
+!| UETCAR         |-->|
+!| TA             |-->| TRACER CONCENTRATION (LAST ONE, NTRAC, IS SED)
+!| HN             |-->|
+!| HMIN           |-->|
+!| TOB            |-->| BED SHEAR STRESS (INCLUDES TURBULENCE DAMPING)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC3D
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -49,14 +75,80 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION, INTENT(IN)  :: WCHU_CONST
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: W_SED
-!
+      TYPE(BIEF_MESH),INTENT(INOUT) :: MESH3D
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: WCHU,TRAV1,TRAV2,TRAV3
+      TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,S,H,HN,RUGOF,U,V,W
+      TYPE(BIEF_OBJ), INTENT(IN)    :: TA,UETCAR
+      LOGICAL, INTENT(IN)           :: TURBWC,MSK,HINDER, FLOC
+      INTEGER, INTENT(IN)           :: NPOIN2,NPOIN3,NPLAN,IELM3,LISRUF
+      INTEGER, INTENT(IN)           :: NTRAC,HIND_TYPE, FLOC_TYPE
+      DOUBLE PRECISION, INTENT(IN)  :: WCHU0,TURBA,TURBB,HMIN,CGEL
+      DOUBLE PRECISION, INTENT(IN)  :: CINI
+
+!     
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!     LOCAL:
+      INTEGER          :: I
+      DOUBLE PRECISION :: QRWC
+      DOUBLE PRECISION :: PHI,PHI_P,PHI_STAR
+!      
+!     CONSTANTS:
+! CV : CINI IS NOW A  KEYWORD...
+!      DOUBLE PRECISION, PARAMETER :: CINI=2.D0 
+!      
+!!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !     CONSTANT VALUE GIVEN HERE
 !
-      CALL OS( 'X=C     ' , X=W_SED , C=WCHU_CONST )
+          CALL OS( 'X=C     ' , X=WCHU , C=WCHU0 )   
+!
+!1. FLOCULATION 
+!
+       IF (FLOC) THEN
+        IF (FLOC_TYPE.EQ.1) THEN
+!
+! SOULSBY FLOC MODEL
+!
+          IF (HINDER) THEN
+              CALL OS('X=-(Y,C)',X=TRAV1,Y=TA%ADR(NTRAC)%P,C=CINI)
+          ELSE
+              CALL OS('X=Y     ',X=TRAV1,Y=TA%ADR(NTRAC)%P)
+          ENDIF
+!
+	  CALL SOULSBYFLOC3D(WCHU, TRAV1%R, MESH3D, NPOIN2, 
+     &               NPOIN3, NPLAN, HN, HMIN, UETCAR%R)
+!
+        ELSE IF(FLOC_TYPE.EQ.2) THEN 
+!        
+! APPLY REDUCTION DUE TO TURBULENT BREAKUP OF FLOCS
+!
+          CALL WCTURB(WCHU,WCHU0,U,V,W,H,RUGOF,LISRUF,
+     &      TRAV1,TRAV2,TRAV3, S,MESH3D,IELM3,NPOIN2,        
+     &      NPLAN,TURBA,TURBB,MSK,MASKEL,UETCAR)
+!
+        ELSE
+!
+! ERROR MESSAGE       
+!
+        ENDIF       
+      ENDIF
+ 
+!
+! 2. HINDERED SETTLING
+!
+ 
+ ! LIMIT THE CONCENTRATION TO CINI (IF HINDERED SETTLING IS ON) (tbe comment: no! It only gets limited for the floc model)
+ !
+         IF (HINDER) THEN
+!###>TBE - we don't limit the concentration here, otherwise hindering won't happen
+              !CALL OS('X=-(Y,C)',X=TRAV1,Y=TA%ADR(NTRAC)%P,C=CINI)
+!###<TBE
+              ! this copy of concentration is a bit unecessary. Would be better to pass
+              ! a pointer and use double array in WCHIND
+              CALL  OS('X=Y     ',X=TRAV1,Y=TA%ADR(NTRAC)%P)
+              CALL WCHIND(WCHU, TRAV1, CINI, CGEL, NPOIN3,HIND_TYPE)
+          ENDIF
 !
       RETURN
       END SUBROUTINE VITCHU

@@ -424,9 +424,11 @@
             IF(IPROF.NE.1) THEN
               PROFZ=TRA_PROF_Z(IFRLIQ,NBOR2%I(K),
      &                         AT,LT,NP,INFOGR,IPROF,ITRAC)
-              IF(IPROF.EQ.2.OR.IPROF.EQ.3) THEN
+! CV Rouse concentrations profiles (IPROF=2)
+              IF(IPROF.EQ.2) THEN
                 TABORL%ADR(ITRAC)%P%R(IBORD)=PROFZ
               ELSE
+! CV normalised concentrations profiles (IPROF=3)
                 TABORL%ADR(ITRAC)%P%R(IBORD)=
      &          TABORL%ADR(ITRAC)%P%R(IBORD)*PROFZ
               ENDIF

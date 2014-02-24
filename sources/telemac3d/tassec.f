@@ -60,9 +60,10 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN2, NCOUCH
-      DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NCOUCH,NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPOIN2,NCOUCH)
       DOUBLE PRECISION, INTENT(INOUT) :: TEMP(NCOUCH,NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: CONC(NCOUCH), TREST(NCOUCH)
+      DOUBLE PRECISION, INTENT(IN)    :: CONC(NPOIN2,NCOUCH)
+      DOUBLE PRECISION, INTENT(IN)    ::TREST(NCOUCH)
       DOUBLE PRECISION, INTENT(IN)    :: DTC
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -73,12 +74,12 @@
 !
        DO IPOIN=1,NPOIN2
          DO IC=2,NCOUCH
-           IF (EPAI(IC,IPOIN).GT.0.D0)
+           IF (EPAI(IPOIN,IC).GT.0.D0)
      &       TEMP(IC,IPOIN) = TEMP(IC,IPOIN) +DTC
            IF (TEMP(IC,IPOIN).GE.TREST(IC)) THEN
-             EPAI(IC-1,IPOIN) = EPAI(IC-1,IPOIN) +
-     &                EPAI(IC,IPOIN)*CONC(IC)/CONC(IC-1)
-             EPAI(IC,IPOIN)=0.D0
+             EPAI(IPOIN,IC-1) = EPAI(IPOIN,IC-1) +
+     &                EPAI(IC,IPOIN)*CONC(IPOIN,IC)/CONC(IPOIN,IC-1)
+             EPAI(IPOIN,IC)=0.D0
              TEMP(IC,IPOIN)=0.D0
           ENDIF
          END DO

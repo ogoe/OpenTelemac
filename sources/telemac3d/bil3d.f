@@ -201,24 +201,23 @@
 !             WITH MASS-LUMPING LIKE IN DIFF3D
 !             CORRECTION CV+JMH 28/10/2013  SEE ALSO DIFF3D
               IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
-!               HERE ATABOF TAKEN INTO ACCOUNT ALSO ON TIDAL FLATS
-!               FOR THE CASE OF VELOCITIES. IN OTHER CASES (E.G. SETTLING
-!               VELOCITY) ATABOF SHOULD BE CANCELLED WHEN BUILT)
                 DO I=1,NPOIN2
-!                 TRACER AT ACTUAL BOTTOM PLANE TAKEN INTO ACCOUNT, HENCE IPBOT IN
-!                 ADDRESS OF TA.
-                  FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
-     &             + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
-!                                     HERE NOT I !!!!!!!!
-     &             *TA%ADR(ITRAC)%P%R(IPBOT%I(I)*NPOIN2+I)
+!                 1) FLUX THROUGH THE BOTTOM NOT TAKEN INTO ACCOUNT FOR TIDAL FLATS
+!                 2) TRACER AT ACTUAL BOTTOM PLANE TAKEN INTO ACCOUNT, HEN IPBOT IN
+!                    ADDRESS OF TA.
+                  IF(IPBOT%I(I).NE.NPLAN-1) THEN
+ 	             FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
+     &                + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
+     &                *TA%ADR(ITRAC)%P%R(IPBOT%I(I)*NPOIN2+I)
+                  ENDIF
                 ENDDO
-              ELSE
+               ELSE
                 DO I=1,NPOIN2
                   FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
      &            + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
      &                               *TA%ADR(ITRAC)%P%R(I)
                 ENDDO
-              ENDIF
+               ENDIF
             ENDIF
 !
             IF(ATABOS%ADR(ITRAC)%P%TYPR.NE.'0') THEN

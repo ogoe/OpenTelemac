@@ -185,6 +185,7 @@
       INTEGER, ALLOCATABLE :: INDIC(:)
       SAVE
 !
+!
       CALL CPSTVC(SVOLU2,STRA01)
       CALL CPSTVC(SVOLU2,STRA02)
       CALL CPSTVC(SVOLU2,STRA03)
@@ -333,6 +334,7 @@
           ENDDO
         ENDIF
       ENDIF
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -819,3 +821,4 @@
 !
       RETURN
       END
+

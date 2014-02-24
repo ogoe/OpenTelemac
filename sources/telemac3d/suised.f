@@ -3,7 +3,7 @@
 !                    *****************
 !
      &(IVIDE,EPAI,HDEP,CONC,TEMP,FLUER,PDEPOT,ZR,ZF,NPF,
-     & NPOIN2,NPOIN3,NPFMAX,NCOUCH,TASSE,GIBSON,NSUIS,BISUIS)
+     & NPOIN2,NPOIN3,NPFMAX,NCOUCH,TASSE,ITASS,NSUIS,BISUIS)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P1                                   21/08/2010
@@ -85,12 +85,9 @@
       INTEGER, INTENT(IN)           :: NPOIN2, NPOIN3, NPFMAX, NCOUCH
 !#####> SEB-CHANGES
 !@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-!      DOUBLE PRECISION, INTENT(OUT) :: IVIDE(NPFMAX*NPOIN2)
-      DOUBLE PRECISION, INTENT(OUT) :: IVIDE(NPFMAX,NPOIN2)
-!      DOUBLE PRECISION, INTENT(OUT) :: EPAI((NPFMAX-1)*NPOIN2)
-      DOUBLE PRECISION, INTENT(OUT) :: EPAI(NPFMAX-1,NPOIN2)
-      DOUBLE PRECISION, INTENT(OUT) :: CONC(NCOUCH)
-!      DOUBLE PRECISION, INTENT(OUT) :: TEMP(NCOUCH*NPOIN2)
+      DOUBLE PRECISION, INTENT(OUT) :: IVIDE(NPOIN2,NCOUCH+1)
+      DOUBLE PRECISION, INTENT(OUT) :: EPAI(NPOIN2,NCOUCH)
+      DOUBLE PRECISION, INTENT(OUT) :: CONC(NPOIN2,NCOUCH)
       DOUBLE PRECISION, INTENT(INOUT) :: TEMP(NCOUCH,NPOIN2)
 !@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 !#####< SEB-CHANGES
@@ -100,7 +97,8 @@
       INTEGER, INTENT(OUT)          :: NPF(NPOIN2)
       INTEGER, INTENT(IN)           :: NSUIS
       CHARACTER(LEN=3), INTENT(IN)  :: BISUIS
-      LOGICAL, INTENT(IN)           :: TASSE, GIBSON
+      LOGICAL, INTENT(IN)           :: TASSE 
+      INTEGER, INTENT(IN)           :: ITASS
 !
 !----------------------------------------------------------------------
 !
@@ -133,7 +131,8 @@
       IF(LNG.EQ.2) WRITE(LU,*) 'NUMBER OF VARIABLES: ',IB(1)
       IF(LNG.EQ.1) WRITE(LU,*) 'ET DE VARIABLES CLANDESTINES: ',IB(2)
       IF(LNG.EQ.2) WRITE(LU,*) 'AND OF CLANDESTINE VARIABLES: ',IB(2)
-      IF( (IB(1).NE.4 .AND.GIBSON).OR.(IB(1).NE.4 .AND.TASSE) ) THEN
+      IF( (IB(1).NE.4 .AND.ITASS.EQ.1).OR.(IB(1).NE.4 .AND.ITASS.EQ.2) )
+     &   THEN
          IF(LNG.EQ.1) WRITE(LU,*)
      &'SUISED : CONSOLIDATION NON COMPATIBLE AVEC NOMBRE DE VARIABLES'
          IF(LNG.EQ.2) WRITE(LU,*)
@@ -152,8 +151,8 @@
 !   LEC/ECR 4: LIST OF 10 INTEGER PARAMETERS (AND DATE)
       CALL LIT(XB,RB,IB,CB,10,'I',NSUIS,BISUIS,ISTAT)
       WRITE(LU,*) IB(1),IB(1),IB(2),IB(3),IB(4),IB(5),IB(6),IB(7),IB(8)
-      IF( (IB(7).NE.NPFMAX .AND.GIBSON).OR.
-     &                           (IB(7).NE.NCOUCH .AND.TASSE) ) THEN
+      IF( (IB(7).NE.NPFMAX .AND.ITASS.EQ.2).OR.
+     &                   (IB(7).NE.NCOUCH .AND.ITASS.EQ.1) ) THEN
          IF(LNG.EQ.1) WRITE(LU,*)
      &'SUISED : NOMBRE DE COUCHES NON COMPATIBLE AVEC CONSOLIDATION'
          IF(LNG.EQ.2) WRITE(LU,*)
@@ -191,14 +190,16 @@
 ! ALLOCATES A (SIMPLE) REAL VECTOR, LENGTH N
 !
 !#####> SEB-CHANGES
-      IF (TASSE) THEN
+      IF(TASSE) THEN
+        IF (ITASS.EQ.1) THEN
          ALLOCATE(XB(NCOUCH*NPOIN2),STAT=ERR)
          ALLOCATE(RB(NCOUCH*NPOIN2),STAT=ERR)
-      ELSEIF (GIBSON) THEN
+        ELSEIF (ITASS.EQ.2) THEN
          ALLOCATE(XB(NPFMAX*NPOIN2),STAT=ERR)
          ALLOCATE(RB(NPFMAX*NPOIN2),STAT=ERR)
+        ENDIF
       ENDIF
-!      N = MAX(NPFMAX*NPOIN2, NPOIN3)
+!     N = MAX(NPFMAX*NPOIN2, NPOIN3)
 !      ALLOCATE(RB(N),STAT=ERR)
 !#####< SEB-CHANGES
       IF(ERR.NE.0) THEN
@@ -245,7 +246,8 @@
       READ(NSUIS)             ! AT
 !@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 !  /!\ THIS PART SHOULD BE ENTIRELY REVISITED ...
-      IF (TASSE) THEN
+      IF(TASSE) THEN
+         IF(ITASS.EQ.1) THEN
 ! ELEVATION Z (MOSTLY FOR PLOTTING PURPOSES)
          CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
          DO IPOIN = 1,NPOIN2
@@ -262,8 +264,10 @@
          ENDDO
 ! CONCENTRATION
          CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
+         DO I=1,NPOIN2
          DO IPLAN = 1,NCOUCH
-            CONC(IPLAN) = DBLE( RB(1+(IPLAN-1)*NPOIN2) ) * UNITCONV
+            CONC(IPOIN,IPLAN) = DBLE( RB(1+(IPLAN-1)*NPOIN2))* UNITCONV
+         ENDDO
          ENDDO
 ! TIME OF CONSOLIDATION
          CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
@@ -272,16 +276,16 @@
          ENDDO
          DEALLOCATE(XB)
 !@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-      ELSEIF (GIBSON) THEN
+      ELSEIF (ITASS.EQ.2) THEN
 !> ELEVATION Z (TEMPORARILY STORES TRUE LAYER THICKNESS)
          CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
          DO IPOIN = 1,NPOIN2
             ZR(IPOIN) = DBLE( RB(IPOIN) )
             ZPLAN = ZR(IPOIN)
             DO IPLAN = 1,NPFMAX-1
-               EPAI(IPLAN,IPOIN) =
+               EPAI(IPOIN,IPLAN) =
      &            DBLE( RB(IPOIN+(IPLAN-1)*NPOIN2) ) - ZPLAN
-               ZPLAN = ZPLAN + EPAI(IPLAN,IPOIN)
+               ZPLAN = ZPLAN + EPAI(IPOIN,IPLAN)
             ENDDO
             ZF(IPOIN) = DBLE( RB(IPOIN+(NPFMAX-1)*NPOIN2) )
 !            HDEB(IPOIN) = ZF(IPOIN) - ZPLAN
@@ -291,16 +295,16 @@
          DO IPOIN = 1,NPOIN2
             NPF(IPOIN) = INT( RB(IPOIN) )
             IF( NPF(IPOIN).GT.NPFMAX ) THEN
-         IF(LNG.EQ.1) THEN
-           WRITE(LU,*) 'SUISED : NOMBRE DE COUCHE MAXIMAL NON VALIDE'
-         ENDIF
-         IF(LNG.EQ.2) THEN
-           WRITE(LU,*) 'SUISED: MAXIMUM NUMBER OF LAYERS NOT VALID'
-         ENDIF
-           CALL PLANTE(1)
-           STOP
-           ENDIF
-           HDEP(IPOIN)=DBLE(RB(IPOIN+(NPFMAX-1)*NPOIN2))*UNITCONV
+              IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'SUISED : NOMBRE DE COUCHE MAXIMAL NON VALIDE'
+              ENDIF
+              IF(LNG.EQ.2) THEN
+               WRITE(LU,*) 'SUISED: MAXIMUM NUMBER OF LAYERS NOT VALID'
+              ENDIF
+              CALL PLANTE(1)
+              STOP
+            ENDIF
+            HDEP(IPOIN)=DBLE(RB(IPOIN+(NPFMAX-1)*NPOIN2))*UNITCONV
          ENDDO
 !> TRUE DENSITY AND RENUMBERING
          CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
@@ -314,23 +318,24 @@
      &            RHOS/DBLE( RB(IPOIN+(JPLAN-1)*NPOIN2) ) - 1.D0
                JPLAN = JPLAN - 1
             ENDDO
-         ENDDO
+        ENDDO
 !> VIRTUAL THICKNESS EPAI AND RENUMBERING
-         DO IPOIN = 1,NPOIN2
+        DO IPOIN = 1,NPOIN2
             JPLAN = NPFMAX-NPF(IPOIN)+1
-            DO IPLAN = 1,NPF(IPOIN)-1
+            DO IPLAN = 1,NPF(IPOIN)
                ECOUCH =
      &         ( IVIDE(IPLAN,IPOIN) + IVIDE(IPLAN+1,IPOIN) )/2.D0
-               EPAI(IPLAN,IPOIN) = EPAI(JPLAN,IPOIN)/( 1.D0+ECOUCH )
+               EPAI(IPOIN,IPLAN) = EPAI(IPOIN,IPLAN)/( 1.D0+ECOUCH )
                JPLAN = JPLAN + 1
             ENDDO
-            DO IPLAN = NPF(IPOIN),NPFMAX-1
-               EPAI(IPLAN,IPOIN) = 0.D0
+            DO IPLAN = NPF(IPOIN),NCOUCH
+               EPAI(IPOIN,IPLAN) = 0.D0
             ENDDO
          ENDDO
 !> LAYER IPF: ONLY USEFUL FOR PLOTTING PURPOSES
 !         CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
          DEALLOCATE(XB)
+        ENDIF
       ENDIF
 !#####< SEB-CHANGES
 !#####> SEB-CHANGES

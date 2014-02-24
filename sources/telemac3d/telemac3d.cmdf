@@ -794,6 +794,11 @@ files: declarations_telemac3d.f
   condis.f
   telemac3d.f
   homere_telemac3d.f
+  mudstress3d.f
+  wchind.f
+  soulsbyfloc3d.f
+  set_dif.f
+  diffv.f
 
 [tomawac]
 path: <root>|sources|tomawac

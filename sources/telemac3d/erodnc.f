@@ -1,10 +1,12 @@
+
 !                    *****************
                      SUBROUTINE ERODNC
 !                    *****************
 !
      &(CFDEP  , WC     , HDEP     , FLUER , TOB   , DT    ,
      & NPOIN2 , NPOIN3 , KSPRATIO , AC    , RHOS  , RHO0  , HN ,
-     & GRAV   , DMOY   , CREF     , ZREF  , CF    , ICQ   ,RUGOF)
+     & GRAV   , DMOY   , CREF     , ZREF  , CF    , ICQ   ,RUGOF,
+     & Z, UETCAR)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P1                                   21/08/2010
@@ -42,6 +44,7 @@
 !| CREF           |<->| EQUILIBRIUM CONCENTRATION
 !| DMOY           |-->| MEAN DIAMETER OF GRAINS
 !| DT             |-->| TIME STEP
+!| SETDEP         |-->| EXPLICIT SETTLING (INTEGER)
 !| FLUER          |<->| EROSION  FLUX
 !| GRAV           |-->| GRAVITY ACCELERATION
 !| HDEP           |<->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
@@ -54,11 +57,15 @@
 !| RHOS           |-->| SEDIMENT DENSITY
 !| RUGOF          |<->| FRICTION COEFFICIENT ON THE BOTTOM
 !| TOB            |-->| BOTTOM FRICTION
+!| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY
 !| WC             |-->| SETTLING VELOCITY
+!|     Z          |-->| NODE COORDINATES 
 !| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC3D, ONLY: KARMAN,PRANDTL,FICT
+!      
       USE INTERFACE_TELEMAC3D, EX_ERODNC => ERODNC
 !     TRIGGERS A PGI COMPILER ERROR
       USE INTERFACE_SISYPHE,ONLY:SUSPENSION_FREDSOE,SUSPENSION_VANRIJN
@@ -80,8 +87,13 @@ C
 !
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: DMOY,TOB,CF,HN
       TYPE(BIEF_OBJ)  , INTENT(INOUT) :: CREF,ZREF,RUGOF
-C
+!      
+      DOUBLE PRECISION, INTENT(IN)    :: Z(NPOIN3), UETCAR(NPOIN2)
+C 
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+C
+      INTEGER IPOIN
+      DOUBLE PRECISION USTAR, ROUSE, ROUSE_Z, DELTAZ
 C
       INTEGER I
       DOUBLE PRECISION QS
@@ -93,6 +105,9 @@ C
 !  ---------------------------------------------------------------------
 !  ------- COMPUTES THE REFERENCE CONCENTRATION CREF (IN G/L) ----------
 !  ---------------------------------------------------------------------
+! CV depth to extrapolate the near bed concentrations (see also KEPLC)
+! For FV scheme use delta= Dz1/4
+!     FE scheme          = Dz1/2
 !
 !
 !     ZYSERMAN & FREDSOE (1994) (BY DEFAULT)
@@ -113,6 +128,21 @@ C
 !     UNITS FOR CREF G/L, NOT LIKE IN SISYPHE
 !
       CALL OS('X=CX    ',X=CREF,C=RHOS)
+!      
+! CV: Extrapolation of Rouse profile from ZREF to 1/2 or 1/4 of first grid mesh
+!
+        do IPOIN =1,NPOIN2
+           USTAR=MAX(SQRT(UETCAR(IPOIN)),1.D-6) 
+!
+           ROUSE=PRANDTL*WC(IPOIN)/KARMAN/USTAR
+          ! rouse profile extrapolation up to 1/4 of the first layer
+!          DELTAZ=(MESH3D%Z%R(IPOIN +NPOIN2)-MESH3D%Z%R(IPOIN))/4.D0
+         DELTAZ=(Z(IPOIN +NPOIN2)-Z(IPOIN))/FICT
+!
+           ROUSE_Z=ZREF%R(IPOIN)/(HN%R(IPOIN)-ZREF%R(IPOIN))
+     &       *(HN%R(IPOIN)-DELTAZ)/DELTAZ
+            CREF%R(IPOIN)=CREF%R(IPOIN)*ROUSE_Z**ROUSE
+        enddo            
 !
 !  ------------------------------------------------------------
 !  -----------------     EROSION STEP    ----------------------
@@ -122,7 +152,8 @@ C
 !
 !       COMPUTES THE EROSION FLUX
 !
-        FLUER(I)=-WC(I)*CREF%R(I)
+!CV        FLUER(I)=-WC(I)*CREF%R(I)
+        FLUER(I)= WC(I)*CREF%R(I)
 !
 !       QUANTITY OF SOLID IN THE LAYER BEFORE EROSION
 !
@@ -131,7 +162,7 @@ C
 !
 !       LAYER THICKNESS AFTER EROSION
 !
-        HDEP(I)=MAX(0.D0,HDEP(I)-(FLUER(I)*DT/CFDEP))
+!CV        HDEP(I)=MAX(0.D0,HDEP(I)-(FLUER(I)*DT/CFDEP))
 !
 !       LIMITS THE EROSION FLUX
 !

@@ -596,9 +596,11 @@ INDEX = 24
 MNEMO = 'SCHDTA'
 TAILLE = 0
 CHOIX = '0="PAS DE DIFFUSION"';
-        '1="IMPLICITE"'
+        '1="IMPLICITE"';
+        '2 ="VERTICAL DIFFUSION ONLY"'
 CHOIX1 = '0="NO DIFFUSION"';
-         '1="IMPLICIT"'
+         '1="IMPLICIT"';
+         '2 ="VERTICAL DIFFUSION ONLY"'
 CONTROLE = 0 ; 1
 DEFAUT = 1
 DEFAUT1 = 1
@@ -1722,6 +1724,23 @@ progressivement reduite. Voir le sous-programme VISCLIP'
 AIDE1 = 'Below the threshold, viscosity will be progressively
 cancelled. See subroutine VISCLIP'
 
+NOM = 'SEUIL LIMITE POUR EROSION SUR BANCS DECOUVRANTS'
+NOM1 = 'THRESHOLD FOR SEDIMENT FLUX CORRECTION ON TIDAL FLATS'
+TYPE = REEL
+INDEX = 36
+MNEMO = 'HSED'
+TAILLE = 0
+DEFAUT = 0.2
+DEFAUT1 = 0.2
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Pour les profondeurs inferieures a cette valeur limite, la viscosite sera
+progressivement reduite. Voir le sous-programme FLUSED'
+AIDE1 = 'Below this limiting depth, all sediment erosion rates are set to zero.
+See subroutine FLUSED'
+
+
 NOM = 'PRECISION POUR LA DIFFUSION DU K-EPSILON'
 NOM1 = 'ACCURACY FOR DIFFUSION OF K-EPSILON'
 TYPE = REEL
@@ -1938,7 +1957,7 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'NAX="viscosites pour les tr. suivant l''axe des x (m2/s)"';
 'NAY="viscosites pour les tr. suivant l''axe des y (m2/s)"';
 'NAZ="viscosites pour les tr. suivant l''axe des z (m2/s)"';
-'RI="nombre de Richardson en cas de modele de longueur de melange"';
+	'RI="nombre de Richardson en cas de modele de longueur de melange"';
 'K="energie turbulente du modele k-epsilon (J/kg)"';
 'EPS="dissipation de l''energie turbulente (W/kg)"';
 'DP="pression dynamique (multipliee par DT/RHO)"';
@@ -2052,9 +2071,10 @@ CHOIX = 'U="vitesse moyenne suivant l''axe des x (m/s)"';
         'P="pression atmospherique (Pa)"';
         'W="coefficient de frottement"';
         'RB="cote des fonds non erodables (m)"';
-        'FD="epaisseur des depots frais (m)"';
+        'HD="epaisseur du lit de sediment (m)"';
         'EF="flux d''erosion (kg/m3/s)"';
-        'DP="probabilite de depot"';
+        'DF="flux de Depot (kg/m3/s)"';
+        'DZF=" bed evolution "';
         'PRIVE1="tableau de travail PRIVE 1"';
         'PRIVE2="tableau de travail PRIVE 2"';
         'PRIVE3="tableau de travail PRIVE 3"';
@@ -2083,9 +2103,10 @@ CHOIX1 = 'U="depth averaged velocity along x axis (m/s)"';
         'P="atmospheric pressure (Pa)"';
         'W="friction coefficient"';
         'RB="non erodible bottom elevation (m)"';
-        'FD="thickness of the fresh deposits (m)"';
+        'HD="thickness of the sediment bed layer (m)"';
         'EF="erosion rate (kg/m3/s)"';
-        'DP="probability of deposition"';
+        'DF="deposition flux (kg/m3/s)"';
+        'DZF=" evolution du lit"';  
         'PRIVE1="work array PRIVE 1"';
         'PRIVE2="work array PRIVE 2"';
         'PRIVE3="work array PRIVE 3"';
@@ -2958,24 +2979,6 @@ so as to include, for example,a comparison with an exact solution.'
 
 / DEFINITIONS DES MOTS CLES POUR LA SEDIMENTOLOGIE (DEBUTE A L INDEX 51)
 
-NOM = 'NOMBRE MAXIMUM DE PLANS DISCRETISANT LE FOND'
-NOM1 = 'MAXIMUM NUMBER OF LEVELS DISCRETIZING THE BOTTOM'
-TYPE = ENTIER
-INDEX = 51
-MNEMO = 'NPFMAX'
-TAILLE = 0
-DEFAUT = 2
-DEFAUT1 = 2
-RUBRIQUE = 'SEDIMENT'
-RUBRIQUE1 = 'SEDIMENT'
-NIVEAU = 1
-AIDE = 'nombre maximum de plans discretisant le fond vaseux .
-Parametre necessaire si MODELE DE TASSEMENT DE GIBSON = OUI.
-En effet lors de la prise en compte du depot de nouvelles couches sont
-crees et ce parametre permet si besoin est d''en limiter le nombre.'
-AIDE1 = 'This key word is used when GIBSON CONSOLIDATION MODEL= YES.
-Indeed, with this model,new mud layers are formed when sediment settles 
-onto the bottom and this parameter limit the number of new layers.'
 
 NOM = 'SOLVEUR POUR LA DIFFUSION DU SEDIMENT'
 NOM1 = 'SOLVER FOR DIFFUSION OF THE SEDIMENT'
@@ -3086,24 +3089,45 @@ au dessous de laquelle se produit le depot.'
 AIDE1 = 'Value of the critical bottom shear stress under which 
 deposition occurs.'
 
-NOM = 'CONCENTRATION DES DEPOTS FRAIS'
-NOM1 = 'CONCENTRATION OF FRESH DEPOSITS'
-TYPE = REEL
-INDEX = 53
-MNEMO = 'CFDEP'
-TAILLE = 0
-DEFAUT = 160.
-DEFAUT1 = 160.
-RUBRIQUE = 'SEDIMENT'
-RUBRIQUE1 = 'SEDIMENT'
-NIVEAU = 1
-AIDE = 'concentration de la couche tampon ou sont stockes 
-les depots frais EN KG/M3. Ce parametre n''est pas utilise lorsque:
-MODELE DE TASSEMENT MULTICOUCHES = OUI.'
-AIDE1 = 'concentration of the mud layer where the fresh deposits 
-are stocked.The value of this key word is not used when 
-MULTILAYER CONSOLIDATION MODEL=YES.'
+/ CV
+/v6pr1 now obsolete and replaced by concentration of the mud bed layer for cohesive sediments
+/ / FOR COHESIVE SED ONLY
+/NOM = 'CONCENTRATION DES DEPOTS FRAIS'
+/NOM1 = 'CONCENTRATION OF FRESH DEPOSITS'
+/TYPE = REEL
+/INDEX = 53
+/MNEMO = 'CFDEP'
+/TAILLE = 0
+/DEFAUT = 160.
+/DEFAUT1 = 160.
+/RUBRIQUE = 'SEDIMENT'
+/RUBRIQUE1 = 'SEDIMENT'
+/NIVEAU = 1
+/AIDE = 'concentration de la couche tampon ou sont stockes 
+/les depots frais EN KG/M3. Ce parametre n''est pas utilise lorsque'
+/AIDE1 = 'concentration of the mud layer where the fresh deposits 
+/are stocked.The value of this key word is not used 
+/ CFDEP = CONC_VASE(NCOUCH) 
 
+/ FOR NON COHESIVE SEDIMENTS USE NOW 
+/ 
+NOM = 'POROSITE DU LIT NON COHESIF'
+NOM1 = 'NON COHESIVE BED POROSITY'
+TYPE = REEL
+INDEX = 63
+TAILLE = 1
+MNEMO = 'XKV'
+DEFAUT = 0.4
+DEFAUT1 = 0.4
+RUBRIQUE = 'PHYSIQUE'
+RUBRIQUE1 = 'PHYSICS'
+NIVEAU = 1
+AIDE = 'la concentration massique  du lit (CFDEP) est definie par 
+	CFDEP= (1-porosite)* RHOS
+Ce paramètre est utilisé  pour les sediments non-cohesifs.'
+AIDE1 = 'The bed volume concentration CFDEP=(1-porosity)*RHOS is used to calculate 
+the bed evolution of non-cohesive sand transport.'
+/ 
 NOM = 'EPAISSEUR DES COUCHES DU FOND VASEUX'
 NOM1 = 'BED LAYERS THICKNESS'
 TYPE = REEL
@@ -3180,76 +3204,9 @@ RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
 AIDE = 'valeur du coefficient d''erosion utilise dans la formule
-de Partheniades'
-AIDE1 = 'value of the erosion coefficient used in Partheniades formula'
-
-NOM = 'CONTRAINTE CRITIQUE D''EROSION'
-NOM1 = 'CRITICAL SHEAR STRESS FOR EROSION'
-TYPE = REEL
-INDEX = 58
-MNEMO = 'TOCE'
-TAILLE = 0
-DEFAUT = 0.2
-DEFAUT1 = 0.2
-RUBRIQUE = 'SEDIMENT'
-RUBRIQUE1 = 'SEDIMENT'
-NIVEAU = 1
-AIDE = 'Fixe la contrainte critique d''erosion des depots frais.
-Elle correspond a la valeur de la contrainte de cisaillement au 
-fond au dessusde laquelle se produit l''erosion de la couche des
-depots frais.
-attention : ce mot-cle n''est pas utilise lorsque l''on choisit
-le modele de tassement multicouches.'
-AIDE1 = 'Value of the critical bottom shear stress above which 
-erosion of the fresh deposits occurs.
-warning : this key-word is not used when the multi-layer model
-for consolidation is chosen.'
-
-NOM = 'COEFFICIENT TRADUISANT LA FORMATION DES FLOCS'
-NOM1 = 'FLOCULATION COEFFICIENT'
-TYPE = REEL
-INDEX = 59
-MNEMO = 'TURBA'
-TAILLE = 0
-DEFAUT = 0.3
-DEFAUT1 = 0.3
-RUBRIQUE = 'SEDIMENT'
-RUBRIQUE1 = 'SEDIMENT'
-NIVEAU = 1
-AIDE = 'coefficient intervenant dans la modelisation de l''influence de 
-la turbulence sur la floculation, il intervient plus precisement dans 
-le terme de formation des flocs par les contraintes turbulentes
-(coefficient a de la formulede Van Leussen).
-Valeur a imposer si INFLUENCE DE LA TURBULENCE SUR LA VITESSE
-DE CHUTE = OUI.'
-AIDE1 = 'When the influence of turbulence on the settling velocity 
-is modelled,this coefficient traduces the formation of flocs by 
-turbulence ( coefficient a of Van Leussen formula).
-Value to be imposed if 
-INFLUENCE OF TURBULENCE ON SETTLING VELOCITY = YES.'
-
-NOM = 'COEFFICIENT TRADUISANT LA DESTRUCTION DES FLOCS'
-NOM1 = 'COEFFICIENT RELATIVE TO FLOC DESTRUCTION'
-TYPE = REEL
-INDEX = 60
-MNEMO = 'TURBB'
-TAILLE = 0
-DEFAUT = 0.09
-DEFAUT1 = 0.09
-RUBRIQUE = 'SEDIMENT'
-RUBRIQUE1 = 'SEDIMENT'
-NIVEAU = 1
-AIDE = 'coefficient intervenant dans la modelisation de l''influence de 
-la turbulence sur la floculation, il intervient plus precisement dans 
-le terme de destruction des flocs par les contraintes turbulentes
-(coefficient b de la formulede Van Leussen).
-Valeur a imposer si INFLUENCE DE LA TURBULENCE SUR LA VITESSE
-DE CHUTE = OUI.'
-AIDE1 = 'When the influence of turbulence on the settling velocity 
-is modelled,this coefficient traduces the breaking of flocs by 
-turbulence ( coefficient b of Van Leussen formula.
-Value to be imposed if 
-INFLUENCE OF TURBULENCE ON SETTLING VELOCITY = YES.'
+de Partheniades en Kg/m2/s'
+AIDE1 = 'value of the erosion coefficient used in Partheniades 
+formula in Kg/m/s'
 
 
 NOM = 'VITESSE DE CHUTE CONSTANT'
@@ -3258,18 +3215,17 @@ TYPE = REEL
 INDEX = 61
 MNEMO = 'WCHU0'
 TAILLE = 0
-DEFAUT = 0.0
-DEFAUT1 = 0.0
+DEFAUT = 0.01
+DEFAUT1 = 0.01
 RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
-AIDE = 'Vitesse de chute constant.
-Valeur a imposer si INFLUENCE DE LA TURBULENCE SUR LA VITESSE
+AIDE = 'Vitesse de chute constant en m/s(>0 since 6.3).
+Valeur imposee si INFLUENCE DE LA TURBULENCE SUR LA VITESSE
 DE CHUTE = NON.'
-AIDE1 = 'Constant sediment settling velocity
-Value to be imposed if 
+AIDE1 = 'Constant sediment settling velocity in m/s(>0 since 6.3)
+Value to imposed if 
 INFLUENCE OF TURBULENCE ON SETTLING VELOCITY = NO.'
-
 
 NOM = 'TEMPS DE SEJOUR DE LA VASE'
 NOM1 = 'RESIDENCE TIME FOR MUD'
@@ -3382,67 +3338,6 @@ AIDE1 = 'Binary file type used for writing the sedimentological file.
 This type depends on the machine on which the file was generated.
 The possible values are the same as for the geometry file.'
 
-NOM = 'MODELE DE TASSEMENT MULTICOUCHES'
-NOM1 = 'MULTILAYER CONSOLIDATION MODEL'
-TYPE = LOGIQUE
-INDEX = 51
-MNEMO = 'TASSE'
-TAILLE = 0
-DEFAUT = NON
-DEFAUT1 = NO
-RUBRIQUE = 'SEDIMENT'
-RUBRIQUE1 = 'SEDIMENT'
-NIVEAU = 1
-AIDE = 'logique pour la prise en compte du tassement des depots vaseux
-a l''aide d''un modele multicouches : les couches discretisant le fond
-sont caracterisees par leur temps de sejour, temps au bout duquel la
-vase presente dans cette couche bascule dans la couche suivante plus
-consolidee'
-AIDE1 = 'if this key word is equal to yes, consolidation is simulated 
-thanks to a multi-layers model : the bed layers are characterized by 
-their residence time which is the time after which the quantity of 
-mud which remains in a layer goes into a more consolidated layer'
-
-NOM = 'MODELE DE TASSEMENT DE GIBSON'
-NOM1 = 'GIBSON CONSOLIDATION MODEL'
-TYPE = LOGIQUE
-INDEX = 52
-MNEMO = 'GIBSON'
-TAILLE = 0
-DEFAUT = NON
-DEFAUT1 = NO
-RUBRIQUE = 'SEDIMENT'
-RUBRIQUE1 = 'SEDIMENT'
-NIVEAU = 1
-AIDE = 'logique pour la prise en compte du tassement des depots vaseux
-a l''aide du modele de Gibson : les couches discretisant le fond sont
-caracterisees par leur epaisseur et leur indice des vides.Ce modele
-necessite de connaitre les lois constitutives du sol (permeabilite et
-contrainte effective).Par defaut,des lois experimentales sont donnees
-dans le code mais l''utilisateur peut les modifier(sous-programme 
-TASSEM) car elles different selon la vase consideree.'
-AIDE1 = 'if this key word is equal to yes, consolidation is simulated 
-thanks to Gibson model : the bed layers are characterized by their 
-thickness and their void ratio. For this model, one need to know 
-the varaiations of permeability and effective stress with the void
-ratio. By default, experimentallaws are given but users can modify 
-them (subroutine TASSEM) as they vary depending on the mud studied'
-
-NOM = 'INFLUENCE DE LA TURBULENCE SUR LA VITESSE DE CHUTE'
-NOM1 = 'INFLUENCE OF TURBULENCE ON SETTLING VELOCITY'
-TYPE = LOGIQUE
-INDEX = 53
-MNEMO = 'TURBWC'
-TAILLE = 0
-DEFAUT = NON
-DEFAUT1 = NO
-RUBRIQUE = 'SEDIMENT'
-RUBRIQUE1 = 'SEDIMENT'
-NIVEAU = 1
-AIDE = 'logique pour la prise en compte de l''influence de la 
-turbulence sur la vitesse de chute '
-AIDE1 = 'if this key word is equal to yes, the influence of 
-turbulence on the settling velocity is taken into account'
 
 /----------------------------------------------------------
 / a few additions required by the f95 hydrostatic version.
@@ -4524,8 +4419,8 @@ DEFAUT1 = 1
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
-AIDE = '1 : diffusion implicite   2 : decouplee horizontale-verticale'
-AIDE1= '1 : implicit diffusion    2 : splitting horizontal-vertical'
+AIDE = '1 : diffusion implicite   2 : decouplee horizontale-verticale '
+AIDE1= '1 : implicit diffusion    2 : splitting horizontal-vertical   '
 /
 NOM = 'IMPLICITATION POUR LA DIFFUSION'
 NOM1 = 'IMPLICITATION FOR DIFFUSION'
@@ -4739,12 +4634,15 @@ TAILLE = 2
 CHOIX='0="Programmation utilisateur"';
 '1="Constant"';'2="Constant ou Rouse si sediment"'
 CHOIX1='0="User defined"';'1="Constant"';
-'2="Constant or Rouse if sediment"'
+'2="Constant or Rouse if sediment"';
+'3= "Normalized Rouse profile and imposed conc"'
 RUBRIQUE = 'EQUATIONS, CONDITIONS LIMITES'
 RUBRIQUE1 = 'EQUATIONS, BOUNDARY CONDITIONS'
 NIVEAU = 1
-AIDE = '0=Programmation utilisateur 1=Constant 2=Logarithmique'
-AIDE1= '0=User defined 1=Constant 2=Logarithmic'
+AIDE = '0=Programmation utilisateur 1=Constant 2=Rouse equilibrium conc
+3 = Rouse (normalized) and imposed conc'
+AIDE1= '0=User defined 1=Constant 2=Rouse equilibrium 
+3 = Rouse (normalized)'
 /
 NOM = 'OPTION DE SUPG'
 NOM1 = 'SUPG OPTION'
@@ -6332,3 +6230,400 @@ NIVEAU = 1
 AIDE  = 'Executable parallele par defaut de T3D'
 AIDE1 = 'Default parallel executable for T3D'
 
+/
+/ TBE +cv
+/
+NOM = 'SCHEMA DE CONVECTION DIFFUSION AVEC VITESSE DE CHUTE'
+NOM1 = 'ADVECTION-DIFFUSION SCHEME WITH SETTLING VELOCITY'
+TYPE = ENTIER
+INDEX = 54
+MNEMO = 'SETDEP'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'SEDIMENT'
+RUBRIQUE1 = 'SEDIMENT'
+NIVEAU = 1
+AIDE = 'Choix de schema vertical pour la diffusion et le depot du sediment
+: 0 Diffusion implicite
+: 1 schema explicite de convection'
+AIDE1 = 'Choice of vertical scheme for diffusion and settling of sediment
+: 0 Implicit-diffusion scheme 
+: 1 Explicit- convection scheme'
+/
+/ CV
+/ 
+/
+/ ATTENTION : IN SISYPHE ,  LAYERS ARE NUMBERED FROM TOP TO BOTTOM
+/             IN TEL3D , LAYERS ARE NUMBERED FROM  BOTTOM TO TOP
+/
+NOM = 'NOMBRE DE COUCHES DU LIT COHESIF'
+NOM1 = 'NUMBER OF SEDIMENT BED LAYERS' 
+TYPE = ENTIER   
+INDEX = 65
+MNEMO = 'NCOUCH'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'TASSEMENT'
+RUBRIQUE1 = 'CONSOLIDATION'
+NIVEAU = 2
+COMPORT = 'DISPLAY %TASSEMENT DU LIT COHESIF% = OUI'
+AIDE = 'Structure verticale du lit cohesif- le nombre de couche doit 
+       etre inferieur à 20'
+AIDE1 = 'Number of cohesive sediment bed layers,  should be less
+       than 20'
+/
+NOM = 'CONCENTRATIONS DES COUCHES DE VASE'
+NOM1 = 'MUD CONCENTRATIONS PER LAYER'
+TYPE = REEL
+INDEX = 53
+TAILLE = 2
+MNEMO = 'CONC_LAYER'
+DEFAUT  = 100.; 500
+DEFAUT1  = 100.; 500
+RUBRIQUE = 'COHESIVE SEDIMENT'
+RUBRIQUE1 = 'COHESIVE SEDIMENT'
+NIVEAU = 2
+AIDE = 'Concentration du lit de vase en g/ l (défini par couches) en commencant  
+par la couche du fond '
+AIDE1 = 'Dry density of the mud-bed layers in g per l starting 
+form the bottom upwards'
+/
+/
+NOM = 'CONTRAINTE CRITIQUE D''EROSION DES COUCHES DE VASE'
+NOM1 = 'CRITICAL EROSION SHEAR STRESS OF THE MUD LAYERS'
+TYPE = REEL
+INDEX = 58
+TAILLE = 2
+MNEMO = 'TOCE_LAYER'
+DEFAUT  = 0.05D0
+DEFAUT1 = 0.050D0
+RUBRIQUE = 'COHESIVE SEDIMENT'
+RUBRIQUE1 = 'COHESIVE SEDIMENT'
+NIVEAU = 2
+COMPORT = 'DISPLAY %TASSEMENT DU LIT COHESIF% = OUI'
+AIDE = 'Taux critique d erosion de la vase (N/m2) - 
+Doit etre defini pour chaque couche
+en commencant par la couche de fond '
+AIDE1 = 'Critical erosion shear stress of the mud per layer (N per m2). 
+Needs to be defined  for each layer (N par m2), 
+starting from the condolidated bottom layer upwards'
+/
+/
+NOM = 'EPAISSEURS INITIALES DES COUCHES'
+NOM1 = 'INITIAL THICKNESS OF MUD LAYERS'
+TYPE = REEL
+INDEX = 64
+TAILLE = 2
+MNEMO = 'ES_LAYER'
+DEFAUT  = 10.D0
+DEFAUT1  = 10.D0
+RUBRIQUE = 'COHESIVE SEDIMENT'
+RUBRIQUE1 = 'COHESIVE SEDIMENT'
+NIVEAU = 2
+AIDE = 'Epaisseurs initiles du lit de vase (m)'
+AIDE1 = 'Mud-bed layer thickness (m) for initialisation'
+/ 
+/ 
+/ New Initialization of TOCE
+NOM = 'LECTURE CONTRAINTE CRITIQUE POUR CHAQUE COUCHE'
+NOM1 = 'READ CRITICAL BED SHEAR STRESS PER LAYER'
+TYPE = LOGIQUE
+INDEX = 87
+MNEMO = 'READ_TOCE'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'PHYSICS'
+RUBRIQUE1 = 'PHYSICS'
+NIVEAU = 1
+AIDE = 'lecture contrainte critique d erosion a partir 
+        du  fichier de geometrie'
+AIDE1 = 'Decides if erosion shear stress at each layer is
+        read from selafin GEOMETRY FILE'
+/
+/ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/ 
+NOM = 'VITESSE DE CHUTE ENTRAVEE'
+NOM1 = 'HINDERED SETTLING'
+TYPE = LOGIQUE
+INDEX = 90
+MNEMO = 'HINDER'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'SEDIMENT'
+RUBRIQUE1 = 'SEDIMENT'
+NIVEAU = 1
+AIDE = 'Decides if hindered formulation is to be used to
+        compute settling velocity for mud'
+AIDE1 = 'Decides if hindered formulation is to be used to
+        compute settling velocity for mud'
+/
+NOM = 'CONCENTRATION LIMITE FLUIDE-SOLIDE'
+NOM1 = 'WEAK SOIL CONCENTRATION FOR MUD'
+TYPE = REEL
+INDEX = 103
+MNEMO = 'CGEL'
+TAILLE = 0
+DEFAUT = 0.0 
+DEFAUT1 = 0.0
+RUBRIQUE = 'SEDIMENT'
+RUBRIQUE1 = 'SEDIMENT'
+NIVEAU = 1
+AIDE = 'The sediment concentration at which sediment 
+        forms a weak soil in kg/m3. These values are
+	needed when HINDERED SETTLING = YES'
+AIDE1 = 'Concentration limite en kg/m3 au dela de la quelle la couche de vase fluide devient solide. 
+Cette valeur est demandee losque la HINDERED SETTLING = YES'
+/
+NOM = 'CONCENTRATION LIMITE POUR VITESSE DE CHUTE ENTRAVEE'
+NOM1 = 'THRESHOLD CONCENTRATION FOR HINDERED SETTLING'
+TYPE = REEL
+INDEX = 104
+MNEMO = 'CINI'
+TAILLE = 0
+DEFAUT = 0.0 
+DEFAUT1 = 0.0
+RUBRIQUE = 'SEDIMENT'
+RUBRIQUE1 = 'SEDIMENT'
+NIVEAU = 1
+AIDE = 'The sediment concentration at which hindered 
+        settling is initiated. These values are
+	needed when HINDERED SETTLING = YES'
+AIDE1= 'The sediment concentration at which hindered 
+        settling is initiated. These values are
+	needed when HINDERED SETTLING = YES'
+/		
+NOM = 'FORMULE POUR VITESSE DE CHUTE ENTRAVEE'
+NOM1 = 'HINDERED SETTLING FORMULA'
+TYPE = ENTIER
+INDEX = 125
+MNEMO = 'HIND_TYPE'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'SEDIMENT'
+RUBRIQUE1 = 'SEDIMENT'
+NIVEAU = 1
+AIDE = 'TYPE OF HINDERED SETTLING
+        1. WHITEHOUSE ET AL. (2000) - working
+        2. WINTERWERP (1999) - not currently working'
+AIDE1 = 'TYPE OF HINDERED SETTLING
+         1. WHITEHOUSE ET AL. (2000) - working
+         2. WINTERWERP (1999) - not currently working'
+/
+/ FLOCULATION
+/ 
+NOM = 'FLOCULATION'
+NOM1 = 'FLOCULATION'
+TYPE = LOGIQUE
+INDEX = 91
+MNEMO = 'FLOC'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'SEDIMENT'
+RUBRIQUE1 = 'SEDIMENT'
+NIVEAU = 1
+AIDE = 'Decides if hindered formulation is to be used to
+        compute settling velocity for mud'
+AIDE1 = 'Decides if hindered formulation is to be used to
+        compute settling velocity for mud'
+        
+NOM = 'FORMULE POUR FLOCULATION'
+NOM1 = 'FLOCULATION FORMULA'
+TYPE = ENTIER
+INDEX = 126
+MNEMO = 'FLOC_TYPE'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'SEDIMENT'
+RUBRIQUE1 = 'SEDIMENT'
+NIVEAU = 1
+AIDE = 'FORMULE POUR FLOCULATION
+        1. Van Leussen (_
+        2. SOULSBY ET  AL. (2013) '
+AIDE1 = 'TYPE OF FLOCULATION FORMULA
+         1. Van Leussen
+         2. SOULSBY ET  AL. (2013) '
+/
+/NOM = 'INFLUENCE DE LA TURBULENCE SUR LA VITESSE DE CHUTE'
+/NOM1 = 'INFLUENCE OF TURBULENCE ON SETTLING VELOCITY'
+/TYPE = LOGIQUE
+/INDEX = 53
+/MNEMO = 'TURBWC'
+/TAILLE = 0
+/DEFAUT = NON
+/DEFAUT1 = NO
+/RUBRIQUE = 'SEDIMENT'
+/RUBRIQUE1 = 'SEDIMENT'
+/NIVEAU = 1
+/AIDE = 'logique pour la prise en compte de l''influence de la 
+/turbulence sur la vitesse de chute '
+/AIDE1 = 'if this key word is equal to yes, the influence of 
+/turbulence on the settling velocity is taken into account'
+/
+/ This is now replaced by Floculation Type = 1
+/
+NOM = 'COEFFICIENT TRADUISANT LA FORMATION DES FLOCS'
+NOM1 = 'FLOCULATION COEFFICIENT'
+TYPE = REEL
+INDEX = 59
+MNEMO = 'TURBA'
+TAILLE = 0
+DEFAUT = 0.3
+DEFAUT1 = 0.3
+RUBRIQUE = 'SEDIMENT'
+RUBRIQUE1 = 'SEDIMENT'
+NIVEAU = 1
+AIDE = 'coefficient intervenant dans la modelisation de l''influence de 
+la turbulence sur la floculation, il intervient plus precisement dans 
+le terme de formation des flocs par les contraintes turbulentes
+(coefficient a de la formulede Van Leussen).
+Valeur a imposer si INFLUENCE DE LA TURBULENCE SUR LA VITESSE
+DE CHUTE = OUI.'
+AIDE1 = 'When the influence of turbulence on the settling velocity 
+is modelled,this coefficient traduces the formation of flocs by 
+turbulence ( coefficient a of Van Leussen formula).
+Value to be imposed if 
+INFLUENCE OF TURBULENCE ON SETTLING VELOCITY = YES.'
+
+NOM = 'COEFFICIENT TRADUISANT LA DESTRUCTION DES FLOCS'
+NOM1 = 'COEFFICIENT RELATIVE TO FLOC DESTRUCTION'
+TYPE = REEL
+INDEX = 60
+MNEMO = 'TURBB'
+TAILLE = 0
+DEFAUT = 0.09
+DEFAUT1 = 0.09
+RUBRIQUE = 'SEDIMENT'
+RUBRIQUE1 = 'SEDIMENT'
+NIVEAU = 1
+AIDE = 'coefficient intervenant dans la modelisation de l''influence de 
+la turbulence sur la floculation, il intervient plus precisement dans 
+le terme de destruction des flocs par les contraintes turbulentes
+(coefficient b de la formulede Van Leussen).
+Valeur a imposer si INFLUENCE DE LA TURBULENCE SUR LA VITESSE
+DE CHUTE = OUI.'
+AIDE1 = 'When the influence of turbulence on the settling velocity 
+is modelled,this coefficient traduces the breaking of flocs by 
+turbulence ( coefficient b of Van Leussen formula.
+Value to be imposed if 
+INFLUENCE OF TURBULENCE ON SETTLING VELOCITY = YES.'
+/
+/ CV
+/ TURBULENCE MODEL CONSTANTS
+/ UP TO 7.0 : SET IN CSTEKEP
+NOM = 'CONSTANTE DE KARMAN'
+NOM1 = 'KARMAN CONSTANT'
+TYPE = REEL
+INDEX = 65
+MNEMO = 'KARMAN'
+TAILLE = 0
+DEFAUT = 0.4
+DEFAUT1 = 0.4
+RUBRIQUE = 'TURBULENCE'
+RUBRIQUE1 = 'TURBULENCE'
+AIDE = ''
+AIDE1 = ''
+/
+NOM = 'NOMBRE DE PRANDTL'
+NOM1 = 'PRANDTL NUMBER'
+TYPE = REEL
+INDEX = 66
+MNEMO = 'PRANDTL'
+TAILLE = 0
+DEFAUT = 1.0
+DEFAUT1 = 1.0
+RUBRIQUE = 'TURBULENCE'
+RUBRIQUE1 = 'TURBULENCE'
+AIDE = 'Ratio between  eddy viscosity and eddy diffusivity'
+AIDE1 = 'Rapport entre viscosite  et diffusivite turbulente'
+/ 
+NOM = 'HAUTEUR DU LIT FICTIF'
+NOM1 = 'FICTITIOUS BED LEVEL'
+TYPE = REEL
+INDEX = 67
+MNEMO = 'FICT'
+TAILLE = 0
+DEFAUT = 2.0
+DEFAUT1 = 2.0
+RUBRIQUE = 'TURBULENCE'
+RUBRIQUE1 = 'TURBULENCE'
+AIDE = 'rapport entre le fond ficitif et la hauteur de 
+la premiere  maille utilisee par le modele de turbulence 
+k-eps et pour le transport du sable'
+AIDE1 = 'Ratio between  the ficitious bed and 
+the grid size above the bed'
+/
+/ CONSOLIDATION
+/ 
+/ replaced by NCOUCHE
+/NOM = 'NOMBRE MAXIMUM DE PLANS DISCRETISANT LE FOND'
+/NOM1 = 'MAXIMUM NUMBER OF LEVELS DISCRETIZING THE BOTTOM'
+/TYPE = ENTIER
+/INDEX = 51
+/MNEMO = 'NPFMAX'
+/TAILLE = 0
+/DEFAUT = 2
+/DEFAUT1 = 2
+/RUBRIQUE = 'SEDIMENT'
+/RUBRIQUE1 = 'SEDIMENT'
+/NIVEAU = 1
+/AIDE = 'nombre maximum de plans discretisant le fond vaseux .
+/Parametre necessaire si MODELE DE TASSEMENT DE GIBSON = OUI.
+/En effet lors de la prise en compte du depot de nouvelles couches sont
+/crees et ce parametre permet si besoin est d''en limiter le nombre.'
+/AIDE1 = 'This key word is used when GIBSON CONSOLIDATION MODEL= YES.
+/Indeed, with this model,new mud layers are formed when sediment settles 
+/onto the bottom and this parameter limit the number of new layers.'
+/
+/
+/NOM = 'MODELE DE TASSEMENT MULTICOUCHES'
+/NOM1 = 'MULTILAYER CONSOLIDATION MODEL'
+NOM = 'TASSEMENT DE LA VASE'
+NOM1 = 'CONSOLIDATION'
+TYPE = LOGIQUE
+INDEX = 51
+MNEMO = 'TASSE'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'SEDIMENT'
+RUBRIQUE1 = 'SEDIMENT'
+NIVEAU = 1
+AIDE = 'logique pour la prise en compte du tassement des depots vaseux
+a l''aide d''un modele multicouches : les couches discretisant le fond
+sont caracterisees par leur temps de sejour, temps au bout duquel la
+vase presente dans cette couche bascule dans la couche suivante plus
+consolidee'
+AIDE1 = 'if this key word is equal to yes, consolidation is simulated 
+thanks to a multi-layers model : the bed layers are characterized by 
+their residence time which is the time after which the quantity of 
+mud which remains in a layer goes into a more consolidated layer'
+
+/NOM = 'MODELE DE TASSEMENT DE GIBSON'
+/NOM1 = 'GIBSON CONSOLIDATION MODEL'
+/TYPE = LOGIQUE
+/INDEX = 52
+/MNEMO = 'GIBSON'
+/TAILLE = 0
+
+NOM = 'OPTION DU MODELE DE TASSEMENT'
+NOM1 = 'CONSOLIDATION MODEL'
+TYPE = INTEGER
+INDEX = 51 
+MNEMO = 'ITASS'
+TAILLE = 1
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'TASSEMENT'
+RUBRIQUE1 = 'CONSOLIDATION'
+NIVEAU = 2
+AIDE = '1 : Modele multicouches empirique,
+2: Modele de Gibson (Lenormant)'
+AIDE1 ='1: Empirical multilayer model, 2: Gibson model '
+/

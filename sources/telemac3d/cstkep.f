@@ -61,9 +61,9 @@
 !| VIRT           |<->| VIRTUAL ORIGIN FOR EPSILON
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_TELEMAC3D, ONLY : KARMAN,CMU,C1,C2,SIGMAK,SIGMAE,
+      USE DECLARATIONS_TELEMAC3D, ONLY : CMU,C1,C2,SIGMAK,SIGMAE,
      &                                   VIRT,SCHMIT,KMIN,KMAX,
-     &                                   EMIN,EMAX,PRANDTL,ALPHA,
+     &                                   EMIN,EMAX,ALPHA,
      &                                   BETA,BETAS,OMSTAR,ITURBV,
      &                                   CLIPK,CLIPE,WSIK,YAP,
      &                                   PERNORM2,PERPROD,RIMIN,RIMAX,
@@ -93,16 +93,19 @@
 !     VON KARMAN CONSTANT
 !
 !     UP TO VERSION 6.0, 0.41  FROM NOW ON : 0.40
+!     FROM 7.0 USE KEYWORDS
+!      KARMAN = 0.40D0
 !
-      KARMAN = 0.40D0
-!
-!     SCHMIDT NUMBER
-!
-      SCHMIT = 1.D0
+!     SCHMIDT NUMBER (not used)
+!  
+!      SCHMIT = 1.D0
 !
 !     PRANDTL NUMBER (BETWEEN 0.8 AND 0.9 FOR TEMPERATURE)
 !
-      PRANDTL = 0.71D0
+!###>TBE - Prandtl number should be 1 by default for sediment
+ccc      PRANDTL = 0.71D0
+!      PRANDTL = 1.D0
+!###<TBE
 !
 !     K-EPSILON OR K-OMEGA MODEL
 !

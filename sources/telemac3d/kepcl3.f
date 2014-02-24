@@ -8,7 +8,7 @@
      & DISBOR,AK,U,V,H,Z,NBOR,NPOIN2,NPLAN,NPTFR,
      & DNUVIH,DNUVIV,KARMAN,CMU,LISRUF,LISRUL,
      & VIRT,KMIN,KMAX,EMIN,EMAX,KENT,KENTU,KSORT,KADH,KLOG,
-     & UETCAR,UETCAL)
+     & UETCAR,UETCAL,FICTIF)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P1                                   21/08/2010
@@ -88,7 +88,7 @@
 !| Z              |-->| ELEVATION OF REAL 3D MESH POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_TELEMAC3D, ONLY : IPBOT,AEBORF,BEBORF,SIGMAE
+      USE DECLARATIONS_TELEMAC3D, ONLY: IPBOT,AEBORF,BEBORF,SIGMAE,RUGOF
 !
       IMPLICIT NONE
 !
@@ -125,6 +125,7 @@
       DOUBLE PRECISION, INTENT(IN) :: VIRT, DNUVIH, DNUVIV, KARMAN
       DOUBLE PRECISION, INTENT(IN) :: CMU
       DOUBLE PRECISION, INTENT(IN) :: KMIN, KMAX, EMIN, EMAX
+      DOUBLE PRECISION, INTENT(IN) :: FICTIF
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -137,15 +138,19 @@
       DOUBLE PRECISION ESURF, HAUT
       DOUBLE PRECISION SSQCMU, DIST, PROPNU
       DOUBLE PRECISION DISTFOND
-!                                    VINCENT BOYER'S CHOICE
-      DOUBLE PRECISION, PARAMETER :: FICTIFUET = 2.D0
-      DOUBLE PRECISION, PARAMETER :: FICTIFEPS = 2.D0
+! CV 7.0 : KEYWORD  FICTIF
+!      VINCENT BOYER'S CHOICE
+!      DOUBLE PRECISION, PARAMETER :: FICTIFUET = 2.D0
+!      DOUBLE PRECISION, PARAMETER :: FICTIFEPS = 2.D0
+!
       DOUBLE PRECISION, PARAMETER :: NIVTURB = 0.005D0
       DOUBLE PRECISION, PARAMETER :: TESTREICH = 1.D-4
       INTEGER, PARAMETER :: MAXITEREICH = 30
 !
       INTRINSIC SQRT,MAX,LOG
 !
+! CV
+      double precision z0   
 !-----------------------------------------------------------------------
 !
       SSQCMU = 1.D0 /SQRT(CMU)
@@ -165,7 +170,7 @@
 !
         IF(IPBOT%I(IPOIN2).EQ.0) THEN
 !         NORMAL CASE
-          DIST =(Z(IPOIN2,2)-Z(IPOIN2,1))/FICTIFUET
+          DIST =(Z(IPOIN2,2)-Z(IPOIN2,1))/FICTIF
           IF(LIEBOF(IPOIN2).EQ.KENT) THEN
             EBORF(IPOIN2)=MAX(UETCAR(IPOIN2)*SQRT(UETCAR(IPOIN2))
      &                                             /(KARMAN*DIST),EMIN)
@@ -186,7 +191,7 @@
             IF(LIKBOF(IPOIN2).EQ.KENT) KBORF(IPOIN2)=KMIN
           ELSE
 !           CASE OF SMASHED PLANES : DIST COMPUTED ON FIRST FREE LAYER
-            DIST =(Z(IPOIN2,IPLAN+1)-Z(IPOIN2,IPLAN))/FICTIFUET
+            DIST =(Z(IPOIN2,IPLAN+1)-Z(IPOIN2,IPLAN))/FICTIF
             IF(LIEBOF(IPOIN2).EQ.KENT) THEN
               EBORF(IPOIN2)=MAX(UETCAR(IPOIN2)*
      &                         SQRT(UETCAR(IPOIN2))/(KARMAN*DIST),EMIN)
@@ -233,8 +238,10 @@
       DO IPTFR=1,NPTFR
 !
          IPOIN2 = NBOR(IPTFR)
-         DIST   = DISBOR(IPTFR) / FICTIFUET
+         DIST   = DISBOR(IPTFR) / FICTIF
          HAUT   = MAX(H(IPOIN2),1.D-7)
+! CV
+        Z0=RUGOF%R(IPOIN2)/30.D0
 !
          DO IPLAN=1,NPLAN
 !
@@ -261,7 +268,13 @@
 !
 !            NO TURBULENCE
 !
-             KBORL(IPTFR,IPLAN) = KMIN
+!             KBORL(IPTFR,IPLAN) = KMIN
+! CV  HANS AND BURCHARD CL FOR K
+                 KBORL(IPTFR,IPLAN)=UETCAR(IPOIN2)
+     &                              *(1.D0-DISTFOND/HAUT)
+     &                              /SQRT(CMU)
+!...CV
+
 !
 !              ****************************************
                ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG .OR.
@@ -308,7 +321,13 @@
 !                 EBORL(IPTFR,IPLAN)=CMU**0.75*SQRT(KBORL(IPTFR,1)**3)
 !    &                              /KARMAN/MAX(DISTFOND,1.D-6)
 !                 EBORL(IPTFR,IPLAN)= MAX(EBORL(IPTFR,IPLAN),EMIN)
-                  EBORL(IPTFR,IPLAN)=EMIN
+!                  EBORL(IPTFR,IPLAN)=EMIN
+! Hans et Burchard
+! CV ...
+                 EBORL(IPTFR,IPLAN)=SQRT(UETCAR(IPOIN2))**3
+     &                            *(1.D0-DISTFOND/HAUT)
+     &                            /KARMAN/MAX(DISTFOND,Z0)
+! ... CV
 !
 !              ****************************************
                ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG .OR.

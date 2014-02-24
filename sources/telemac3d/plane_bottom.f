@@ -68,7 +68,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
+       IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
 !
         DO IPOIN2=1,NPOIN2
           IPBOT(IPOIN2)=0

@@ -1,3 +1,5 @@
+! now WCC is positive downwards
+!
 !                    *****************
                      SUBROUTINE DIFF3D
 !                    *****************
@@ -158,7 +160,7 @@
 !|                |   | VISCF(*,1 OU 2) HORIZONTAL VISCOSITY
 !|                |   | VISCF(*,3)      VERTICAL VISCOSITY
 !| VOLU           |-->| VOLUME AROUND POINTS AT TIME N+1
-!| WCC            |-->| VELOCITY (NEGATIVE IF SEDIMENT SETTLING VELOCITY)
+!| WCC            |-->| VELOCITY (POSITIVE IN 6.3 IF SEDIMENT SETTLING VELOCITY)
 !| YAS0F          |-->| LOGICAL TO TAKE INTO ACCOUNT S0F TERM IN DIFF3D
 !| YAS1F          |-->| LOGICAL TO TAKE INTO ACCOUNT S1F TERM IN DIFF3D
 !| YASCE          |-->| IF TRUE, THERE IS SOURCE
@@ -462,12 +464,20 @@
            CALL OV('X=XY    ',T2_03%R,AFBORF%R,AFBORF%R,0.D0,NPOIN2)
 !          DRY ZONES OR CRUSHED ELEMENTS
 !          SEE EQUIVALENT TREATMENT IN WAVE_EQUATION
+!          JMH CORRECTION TIDAL FLATS 05/11/2013
            IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
              DO IPOIN2 = 1,NPOIN2
-               DO NP=0,IPBOT(IPOIN2)
-                 I=NP*NPOIN2+IPOIN2
-                 MTRA2%D%R(I)=MTRA2%D%R(I)+T2_03%R(IPOIN2)
-               ENDDO
+!              FLUXES ON THE BOTTOM MUST NOT BE TAKEN INTO ACCOUNT ON TIDAL FLATS
+!              E.G. NO SETTLING VELOCITY IF NO WATER!
+!              IF(IPBOT(IPOIN2).NE.NPLAN-1) THEN
+!                IF NOT A TIDAL FLAT... WE CAN HOWEVER HAVE CRUSHED POINTS
+!                SAME TREATMENT FROM PLANE 1 UP TO ACTUAL BOTTOM PLANE
+!                THE CRUSHED POINTS ARE TREATED AS THE POINT ON ACTUAL BOTTOM PLANE ABOVE THEM
+                 DO NP=0,IPBOT(IPOIN2)
+                   I=NP*NPOIN2+IPOIN2
+                   MTRA2%D%R(I)=MTRA2%D%R(I)+T2_03%R(IPOIN2)
+                 ENDDO
+!              ENDIF
              ENDDO
            ELSE
              DO IPOIN2 = 1,NPOIN2
@@ -505,7 +515,7 @@
      &                   MSK,MASKBR,MASKEL)
 !
 !=======================================================================
-!   SEDIMENT-SPECIFIC
+!   SEDIMENT-SPECIFIC ++++ This is for WC <0 downwards
 !                                D
 !   THE MATRIX - PSI1(J) * WCC * --( PSI2(I) ) IS ADDED
 !                                DZ
@@ -536,13 +546,17 @@
 !
         IF(YAWCC) THEN
 !       FOR BOUNDARY TERMS, SEE SUBROUTINE FLUSED
+!CV..        CALL MATRIX
+!     &      (MTRA1, 'M=N     ', 'MATFGR         Z', IELM3, IELM3, -1.D0,
+!     &       WCC, SVIDE, SVIDE, SVIDE, SVIDE, SVIDE, MESH3D,MSK, MASKEL)
         CALL MATRIX
-     &      (MTRA1, 'M=N     ', 'MATFGR         Z', IELM3, IELM3, -1.D0,
+     &      (MTRA1, 'M=N     ', 'MATFGR         Z', IELM3, IELM3, +1.D0,
      &       WCC, SVIDE, SVIDE, SVIDE, SVIDE, SVIDE, MESH3D,MSK, MASKEL)
+! ..CV     
 !       UPWINDING VERTICAL ADVECTION (HERE UPWIND COEFFICIENT 1.D0)
-!       MTRA2 MUST STILL BE SYMMETRIC HERE
+! ?? ...     MTRA2 MUST STILL BE SYMMETRIC HERE
         CALL UPWIND(MTRA2,WCC,1.D0,MESH2D,MESH3D,NPLAN)
-!       MTRA2 TRANSFORMED INTO NON SYMMETRIC MATRIX
+! ..??       MTRA2 TRANSFORMED INTO NON SYMMETRIC MATRIX
         CALL OM('M=X(M)  ',MTRA2,MTRA2,SVIDE,C,MESH3D)
         CALL OM('M=M+N   ',MTRA2,MTRA1,SVIDE,C,MESH3D)
         ENDIF
