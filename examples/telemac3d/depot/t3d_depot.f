@@ -280,365 +280,331 @@
 !
       RETURN
       END 
-C                       ***************************
-                        SUBROUTINE PRERES_TELEMAC3D
-C                       ***************************
-C
-     *(LT)
-C
-C***********************************************************************
-! TELEMAC 3D VERSION 5.1    07/09/00    J-M HERVOUET (LNH) 30 87 80 18
-C
-C***********************************************************************
-C
-C     FONCTION  : PREPARATION DE VARIABLES QUI SERONT ECRITES SUR
-C                 LE FICHIER DE RESULTATS OU SUR LE LISTING.
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C |      NOM       |MODE|                   ROLE                       |
-C |________________|____|______________________________________________|
-C |      LT        | -->| NUMERO D'ITERATION
-C |________________|____|______________________________________________|
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C  APPELE PAR : TELMAC
-C
-C  SOUS-PROGRAMME APPELE : OV
-C
-C***********************************************************************
-C
-      USE BIEF
-      USE DECLARATIONS_TELEMAC3D
-C
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-      INTEGER, INTENT(IN) :: LT
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C     
-      LOGICAL LEO
-C
-      INTEGER LTT,I,NODE,N
-      DOUBLE PRECISION C
-C
-C-----------------------------------------------------------------------
-C
-C LOGIQUES POUR DECIDER DES SORTIES
-C
-      LEO=.FALSE.
-      LTT=(LT/GRAPRD)*GRAPRD
-      IF((LT.EQ.LTT.OR.LT.EQ.NIT).AND.LT.GE.GRADEB) LEO=.TRUE.
-C
-C     PAS D'IMPRESSION, PAS DE SORTIE SUR FICHIER, ON RESSORT
-      IF(.NOT.LEO) GO TO 1000
-C
-C-----------------------------------------------------------------------
-C
-C VARIABLES POUR LES RESULTATS 2D
-C
-C-----------------------------------------------------------------------
-C
-C SPECIFIQUE PROFIL DE ROUSE
-C
-C ESSAI JMH
-C
-      NODE=GLOBAL_TO_LOCAL_POINT(46,MESH2D)
-      IF(LT.EQ.NIT.AND.NODE.GT.0) THEN
-      WRITE(LU,*)
-     &  ' Z          U         C            NUT TRAC      NUT VIT '
-      C=0.D0
-      DO I=1,NPLAN
-       WRITE(LU,*) MESH3D%Z%R(NODE+(I-1)*NPOIN2),U%R(NODE+(I-1)*NPOIN2), 
-     &         TA%ADR(NTRAC)%P%R(NODE+(I-1)*NPOIN2),
-     &         VISCTA%ADR(NTRAC)%P%ADR(3)%P%R(NODE+(I-1)*NPOIN2), 
-     &         VISCVI%ADR(3)%P%R(NODE+(I-1)*NPOIN2) 
-        C=C+TA%ADR(NTRAC)%P%R(NODE+(I-1)*NPOIN2)  
-      ENDDO
-       C=(C-0.5D0*(TA%ADR(NTRAC)%P%R(NODE)+
-     &             TA%ADR(NTRAC)%P%R(NODE+(NPLAN-1)*NPOIN2)))/
-     &             FLOAT(NPLAN-1)
-       WRITE(LU,*) 'C VOLUMIQUE MOYEN EN SORTIE : ',C/2650.D0
-      ENDIF
-C
-C FIN ESSAI JMH
-C
-C=======================================================================
-C CALCUL DE LA CELERITE (= SQRT(GH) T2_10
-C=======================================================================
-C
-      IF (LEO.AND.SORG2D(3)) THEN
-         CALL OS( 'X=CY    ' , T2_10 , H     , H  , GRAV )
-         CALL OS( 'X=SQR(Y)' , T2_10 , T2_10 , H  , GRAV )
-      ENDIF
-C
-C=======================================================================
-C CALCUL DE LA SURFACE LIBRE (= H + ZF) : T2_01
-C=======================================================================
-C
-      IF (LEO.AND.SORG2D(5)) THEN
-         CALL OS( 'X=Y+Z   ' , T2_01 , H  , ZF , 0.0D0 )
-      ENDIF
-C
-C=======================================================================
-C CALCUL DU NOMBRE DE FROUDE T2_02
-C=======================================================================
-C
-      IF (LEO.AND.SORG2D(7)) THEN
-         CALL OS( 'X=YZ    ' , T2_02 , U2D , U2D , 0.0D0 )
-         CALL OS( 'X=X+YZ  ' , T2_02 , V2D , V2D , 0.0D0 )
-         CALL OS( 'X=CY/Z  ' , T2_02 , T2_02 , H  , 1.D0/GRAV )
-         CALL OS( 'X=SQR(Y)' , T2_02 , T2_02 , ZF , 0.0D0 )
-      ENDIF
-C
-C=======================================================================
-C CALCUL DU DEBIT SCALAIRE T2_03
-C=======================================================================
-C
-      IF (LEO.AND.SORG2D(8)) THEN
-         CALL OS( 'X=N(Y,Z)' , T2_03 , U2D, V2D, 0.0D0 )
-         CALL OS( 'X=XY    ' , T2_03 , H  , ZF , 0.0D0 )
-      ENDIF
-C
-C=======================================================================
-C CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT X T2_04
-C=======================================================================
-C
-      IF (LEO.AND.SORG2D(13)) THEN
-         CALL OS( 'X=YZ    ' , T2_04 , H , U2D , 0.0D0 )
-      ENDIF
-C
-C=======================================================================
-C CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT Y T2_05
-C=======================================================================
-C
-      IF (LEO.AND.SORG2D(14)) THEN
-         CALL OS( 'X=YZ    ' , T2_05 , H , V2D , 0.0D0 )
-      ENDIF
-C
-C=======================================================================
-C CALCUL DE LA VITESSE SCALAIRE T2_06
-C=======================================================================
-C
-      IF (LEO.AND.SORG2D(15)) THEN
-         CALL OS( 'X=N(Y,Z)' , T2_06 , U2D , V2D , 0.0D0 )
-      ENDIF
-C
-C=======================================================================
-C SEDIMENT RELATED VARIABLES THAT ARE ONLY KNOWN AT THE END OF THE
-C FIRST TIME-STEP : SET HERE TO 0 IF LT=0
-C=======================================================================
-C
-      IF(LEO.AND.SORG2D(24).AND.LT.EQ.0) CALL OS( 'X=0     ' , X=EPAI)
-      IF(LEO.AND.SORG2D(25).AND.LT.EQ.0) CALL OS( 'X=0     ' , X=FLUER)
-      IF(LEO.AND.SORG2D(26).AND.LT.EQ.0) CALL OS( 'X=0     ' , X=PDEPO)
-C
-C=======================================================================
-C CALCUL DE LA VITESSE DE FROTTEMENT
-C=======================================================================
-C
-      IF(LEO.AND.SORG2D(31)) THEN
-         CALL OS( 'X=SQR(Y)' , X=T2_07 , Y=UETCAR )
-      ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C VARIABLES POUR LES RESULTATS 3D
-C
-C-----------------------------------------------------------------------
-C
-      IF (NONHYD.AND.LEO.AND.SORG3D(12)) THEN 
-         CALL PHSTAT(PH%R,DELTAR%R,Z,T3_01%R,T3_02%R,RHO0,GRAV,
-     *               NPOIN3,NPOIN2,NPLAN,PRIVE)
-      ENDIF
-C
-C=======================================================================
-C
-1000  CONTINUE
-      RETURN
-      END
-!                       *****************
-                        SUBROUTINE CONDIS
-!                       *****************
+!                   
+!                    *****************
+                     SUBROUTINE CONDIS
+!                    *****************
 !
      &(IVIDE, EPAI  , TREST , CONC , TEMP   , HDEP   ,
      & ZR   , ZF    , X     , Y    , NPOIN2 , NPOIN3 ,
-     & NPF  , NPFMAX, NCOUCH, TASSE, GIBSON , PRIVE  , CONSOL)
+     & NPF  , NCOUCH, TASSE, ITASS  , RHOS, XKV, CFDEP, 
+     & ESOMT, TOCE, SEDCO,CONC_LAYER, TOCE_LAYER, ES_LAYER)
 !
 !***********************************************************************
-! TELEMAC 3D VERSION 5.4      12/06/92      C LE NORMANT (LNH) 30 87 78 54
-! FORTRAN95 VERSION         MARCH 1999        JACEK A. JANKOWSKI PINXIT
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES (TABLEAUX)
-!                 SEDIMENTOLOGIQUES
+!brief    INITIALISES THE SEDIMENT VARIABLES.
 !
-!-----------------------------------------------------------------------
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/99
+!+
+!+   FORTRAN95 VERSION
 !
-!     FUNCTION  : INITIALIZATION OF SEDIMENT VARIABLES
+!history  NOEMIE DURAND (CHC-NRC); C LE NORMANT (LNH)
+!+        18/07/06
+!+        V5P7
+!+
 !
-!-----------------------------------------------------------------------
-!                       ARGUMENTS
-! .________________.____._______________________________________________
-! |      NOM       |MODE|                 ROLE
-! |________________|____|_______________________________________________
-! |    IVIDE       |<-- | VOID RATIO
-! |                |    |  (GIBSON MODEL ONLY)                         
-! |    EPAI        |<-- | THICKNESS OF SOLID FRACTION oF THE BED LAYER
-! |                |    | (EPAI=DZ/(1+IVIDE), DZ BED LAYER THICKNESS)
-! |    TREST       |<-- | CONSOLIDATION TIME SCALE 
-! |                |    |        (ONLY FOR MULTILAYER MODEL) 
-! |    CONC        |<-- | CONCENTRATION OF MUD BED LAYER
-! |                |    |         (MULTILAYER MODEL) 
-! |    TEMP        |<-- |  TIME COUNTER FOR CONSOLIDATION MODEL
-! |                |    |         (MULTILAYER MODEL) 
-! |    HDEP        |<-- | THICKNESS OF FRESH DEPOSIT(FLUID MUD LAYER)
-! |    ZR          |<-- | ELEVATION OF RIDIG BED
-! |    ZF          | -->| BOTTOM ELEVATION
-! |    X,Y         | -->| COORDINATES OF 2D MESH
-! |    NPOIN2      | -->| NUMBER OF POINTS IN 2D
-! |    NPOIN3      | -->| NUMBER OF POINTS IN 3D
-! |    NPF         |<-- | NUMBER OF POINTS WITHIN THE BED ALONG THE VERTICAL  
-! |    NPFMAX      | -->| MAXIMUM NUMBER OF HORIZONTAL PLANES WITHIN THE BED       
-! |                |    |        (GIBSON MODEL)
-! |    NCOUCH      | -->| NUMBER OF LAYERS WITHIN THE BED
-! |                |    |        (GIBSON MODEL)
-! |    TASSE       | -->| MULTILAYER SETTLING MODEL
-! |    GIBSON      | -->| GIBSON SETTLING MODEL
-! |    PRIVE       | -->| BLOCK OF PRIVATE ARRAYS FOR USER
-! |    NPRIV       | -->| NUMBER OR ARRAYS IN BLOCK PRIVE
-! |________________|____|_______________________________________________
-! MODE : -->(INPUT PARAMETER OR VARIABLE), <--(RESULT), 
-!       <-->(MODIFIED PARAMETER OR VARIABLE)
-!-----------------------------------------------------------------------
-!**********************************************************************
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| CONC           |<--| CONCENTRATION OF MUD BED LAYER
+!| CONC_LAYER     |-->| INPUT CONCENTRATION OF MUD BED LAYER
+!|                |   | (MULTILAYER MODEL)
+!| CONSOL         |-->|
+!| EPAI           |<--| THICKNESS OF SOLID FRACTION oF THE BED LAYER
+!|                |   | (EPAI=DZ/(1+IVIDE), DZ BED LAYER THICKNESS)
+!| ES_LAYER       |-->| INPUT BED LAYER THICKNESS
+!| ESOMT          |<--| CUMULATED BED EVOLUTION
+!| GIBSON         |-->| GIBSON SETTLING MODEL
+!| HDEP           |<--| THICKNESS OF FRESH DEPOSIT(FLUID MUD LAYER)
+!| IVIDE          |<--| VOID RATIO
+!|                |   | (GIBSON MODEL ONLY)
+!| NCOUCH         |-->| NUMBER OF LAYERS WITHIN THE BED
+!|                |   | (GIBSON MODEL)
+!| NPF            |<--| NUMBER OF POINTS WITHIN THE BED ALONG THE VERTICAL
+!| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES WITHIN THE BED
+!|                |   | (GIBSON MODEL)
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPOIN3         |-->| NUMBER OF POINTS IN 3D
+!| PRIVE          |-->| BLOCK OF PRIVATE ARRAYS FOR USER
+!| SEDCO          |-->| COHESIVE SEDIMENT (LOGICAL)
+!| TASSE          |-->| MULTILAYER SETTLING MODEL
+!| TEMP           |<--| TIME COUNTER FOR CONSOLIDATION MODEL
+!|                |   | (MULTILAYER MODEL)
+!| TOCE           |<--| BED SHEAR STRESS OF MUD BED LAYER
+!| TOCE_LAYER     |-->| INPUT BED SHEAR STRESS
+!| TREST          |<->| CONSOLIDATION TIME SCALE
+!|                |   | (ONLY FOR MULTILAYER MODEL)
+!| X,Y            |-->| COORDINATES OF 2D MESH
+!| ZF             |-->| BOTTOM ELEVATION
+!| ZR             |<--| ELEVATION OF RIDIG BED
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       IMPLICIT NONE
 !
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
 !-----------------------------------------------------------------------
 !
-      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3,NPFMAX,NCOUCH
-      DOUBLE PRECISION, INTENT(INOUT) :: IVIDE(NPFMAX,NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPFMAX-1,NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: CONC(NCOUCH)
-      DOUBLE PRECISION, INTENT(INOUT) :: TEMP(NCOUCH,NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: ZR(NPOIN2)
+      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3,NCOUCH
+      DOUBLE PRECISION, INTENT(OUT)   :: IVIDE(NPOIN2,NCOUCH+1)
+!
+      DOUBLE PRECISION, INTENT(INOUT)   :: EPAI(NPOIN2,NCOUCH)
+      DOUBLE PRECISION, INTENT(INOUT)   :: CONC(NPOIN2,NCOUCH),CFDEP
+!      
+      DOUBLE PRECISION, INTENT(OUT)   :: TEMP(NCOUCH,NPOIN2)
+!      
+      DOUBLE PRECISION, INTENT(OUT)   :: HDEP(NPOIN2)
+      DOUBLE PRECISION, INTENT(OUT)   :: ZR(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: ZF(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TREST(NCOUCH)
-      INTEGER, INTENT(INOUT)          :: NPF(NPOIN2)
-      TYPE(BIEF_OBJ)                  :: PRIVE
-      LOGICAL, INTENT(IN)             :: TASSE, GIBSON,CONSOL
-!
+      DOUBLE PRECISION, INTENT(INOUT) ::  TOCE(NPOIN2,NCOUCH)
+      DOUBLE PRECISION, INTENT(IN)    :: CONC_LAYER(NCOUCH)
+      DOUBLE PRECISION, INTENT(IN)    :: ES_LAYER(NCOUCH)
+      DOUBLE PRECISION, INTENT(IN)    :: TOCE_LAYER(NCOUCH)
+      INTEGER, INTENT(OUT)            :: NPF(NPOIN2)
+      TYPE(BIEF_OBJ), INTENT (INOUT)  :: ESOMT      
+      LOGICAL, INTENT(IN)             :: TASSE
+      LOGICAL, INTENT(IN)             :: SEDCO
+      INTEGER, INTENT(IN)             :: ITASS
+      DOUBLE PRECISION, INTENT(IN)    :: RHOS,XKV
+
 !-----------------------------------------------------------------------
 !
       DOUBLE PRECISION ECOUCH , TCAR
       INTEGER IPOIN, IC, IPF
 !
-      INTRINSIC LOG10
+      INTRINSIC LOG10,MAX
+! CV
+      DOUBLE PRECISION P_DSUM
+      EXTERNAL         P_DSUM
+      DOUBLE PRECISION MB
+!   
+!#####> NOE-CHANGES
+!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+!      LOGICAL CVGCSL
+!      INTEGER ERR 
+!     INTEGER NITCSL, ITCSL
+!      DOUBLE PRECISION DTCSL,RESCSL
+!      DOUBLE PRECISION, ALLOCATABLE :: TRA01(:,:)
+!      DOUBLE PRECISION, ALLOCATABLE :: TRA02(:),TRA03(:),ZNOE(:)
+!
+! ALLOCATES MEMORY AND SETS INITIAL INTERFACE BETWEEN HDEP AND EPAI
+!      ALLOCATE(TRA01(NPFMAX,6),STAT=ERR)
+!      IF(ERR.NE.0) THEN
+!        IF(LNG.EQ.1) WRITE(LU,*) 'CONDIS : MAUVAISE ALLOCATION DE TRA01'
+!        IF(LNG.EQ.2) WRITE(LU,*) 'CONDIS: WRONG ALLOCATION OF TRA01'
+!        STOP
+!      ENDIF
+!      ALLOCATE(TRA02(NPFMAX),STAT=ERR)
+!      IF(ERR.NE.0) THEN
+!        IF(LNG.EQ.1) WRITE(LU,*) 'CONDIS : MAUVAISE ALLOCATION DE TRA02'
+!        IF(LNG.EQ.2) WRITE(LU,*) 'CONDIS: WRONG ALLOCATION OF TRA02'
+!        STOP
+!      ENDIF
+!      ALLOCATE(TRA03(NPFMAX),STAT=ERR)
+!      IF(ERR.NE.0) THEN
+!        IF(LNG.EQ.1) WRITE(LU,*) 'CONDIS : MAUVAISE ALLOCATION DE TRA03'
+!        IF(LNG.EQ.2) WRITE(LU,*) 'CONDIS: WRONG ALLOCATION OF TRA03'
+!        STOP
+!      ENDIF
+!      ALLOCATE(ZNOE(NPOIN2),STAT=ERR)
+!      IF(ERR.NE.0) THEN
+!        IF(LNG.EQ.1) WRITE(LU,*) 'CONDIS : MAUVAISE ALLOCATION DE ZNOE'
+!        IF(LNG.EQ.2) WRITE(LU,*) 'CONDIS: WRONG ALLOCATION OF ZNOE'
+!        STOP
+!      ENDIF
+!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+!#####< NOE-CHANGES
 !
 !=======================================================================
 !
-!     -----        INITIALIZATION OF HDEP               -----
-!     -----      NOT USED BY THE MULTILAYER MODEL       -----
+!     -----  INITIALISES HDEP                  -----
+!     -----  NOT USED BY THE MULTILAYER MODEL  -----
 !
-!     ICI PAS DE DEPOTS INITIAUX
+!     HERE, THE DEFAULT ACTION IS TO SET HDEP TO 100., HENCE ENABLE THE
+!     EROSION PROCESS. THIS VALUE IS COMPATIBLE WITH SUBROUTINE NOEROD
+!     IN SISYPHE.
 !
-      CALL OV( 'X=C     ' , HDEP , HDEP , HDEP , 0.D0 , NPOIN2)
+      CALL OV('X=C     ',HDEP,HDEP,HDEP,0.D0,NPOIN2)
 !
-!     -----    INITIALIZATION OF ZR    ---
+!  -----  INITIALISES BED EVOLUTION ESOMT -----
 !
-      CALL OV( 'X=Y-Z   ' , ZR   , ZF   , HDEP , 0.D0 , NPOIN2)
+       CALL OS('X=0     ',X=ESOMT)
+
+!     -------------------------------------------
+!     INITIAL CONDITIONS FOR THE MULTILAYER COHESIVE BED MODEL
+!     -------------------------------------------
 !
-!     -------------------------------------------------------
-!           INITIAL CONDITIONS FOR THE MULTILAYER MODEL
-!     -------------------------------------------------------
+      IF(SEDCO) THEN
 !
-      IF (TASSE) THEN
-!
-!       -----  INITIALIZATION OF EPAI   ---
-!
-        CALL OV( 'X=C     ' , EPAI ,EPAI ,EPAI  , 0.D0 , NPOIN2*NCOUCH)
-!
-!       ----- INITIALIZATION OF CONC    -----
-!
-        CALL OV( 'X=C     ' , CONC , CONC  , CONC  , 0.D0 , NCOUCH)
-!
-!       DEFAULT OPTION:  
-!             CONCENTRATIONS ARE CALCULATED AS A FUNCTION 
-!             OF CONSOLIDATION TIME SCALE
-!             (EMPIRICAL RELATION, LOIRE ESTUARY , Fristch et al. 1989)
-! 
-        TCAR = TREST(NCOUCH)/2.D0
-        DO IC = NCOUCH , 1 , -1
-          IF (IC.LT.NCOUCH) TCAR = TCAR + (TREST(IC+1)+TREST(IC))/2.D0
-          IF (TCAR.LT.24.D0) THEN
-            CONC(IC) = 136.2D0*LOG10(TCAR+5.424D0)
-          ELSE
-            CONC(IC) = 200.D0+70.D0*LOG10(TCAR/24.D0)
-          ENDIF
-        END DO
-!
-!       -----   HOURS CHANGED INTO SECONDS  ------
-!
-        CALL OV( 'X=CX    ' , TREST, TREST, TREST, 3600.D0, NCOUCH)
-!
-!       -----    INITIALIZATION OF TEMP    ------
-!
-        CALL OV( 'X=C     ' , TEMP, TEMP, TEMP, 0.D0 , NPOIN2*NCOUCH)
-!
-!       --------  MODIFYING ZR   --------
+! COHESIVE SEDIMENT
 !
         DO IPOIN=1,NPOIN2
-          DO IC=1,NCOUCH
-            ZR(IPOIN)=ZR(IPOIN)-EPAI(IC,IPOIN)
+          DO IC=1, NCOUCH
+            CONC(IPOIN,IC)= CONC_LAYER(IC)
+            TOCE(IPOIN,IC)= TOCE_LAYER(IC)
           ENDDO
-        ENDDO
-!
-!     ---------------------------------------
-!     INITIAL CONDITIONS FOR THE GIBSON MODEL
-!     ---------------------------------------
-!
-      ELSEIF (GIBSON) THEN
-!
-!       -----  INITIALIZATION OF NPF -----
-!
+        ENDDO  
+! Bed layer thickness
         DO IPOIN=1,NPOIN2
-          NPF(IPOIN)=0
-        ENDDO
-!
-!       -----  INITIALIZATION OF IVIDE  ----
-!
-        CALL OV( 'X=C     ', IVIDE ,IVIDE , IVIDE, 0.D0, NPOIN2*NPFMAX)
-!
-!       -----  INITIALIZATION OF EPAI  -----
-!
-        CALL OV( 'X=C     ', EPAI, EPAI, EPAI, 0.D0, NPOIN2*(NPFMAX-1))
-!
-!       -----  MODIFICATION OF ZR -----
-!
+          HDEP(IPOIN) = 0.D0 
+          DO IC=1, NCOUCH
+             EPAI(IPOIN,IC) = ES_LAYER(IC)
+             HDEP(IPOIN) = HDEP(IPOIN) + EPAI(IPOIN,IC)  
+          ENDDO        
+        ENDDO   
+      ELSE
+!-----------------------------------------------
+! NON COHESIVE SEDIMENT
+! EPAI NOT DEFINED replaced by HDEP
+! -----------------------------------------------
+! ONLY ONE LAYER 
+        CFDEP= (1.D0-XKV)*RHOS
         DO IPOIN=1,NPOIN2
-          DO IPF=1,NPF(IPOIN)-1
-            ZR(IPOIN)=ZR(IPOIN)-EPAI(IPF,IPOIN)
-            ECOUCH=(IVIDE(IPF,IPOIN)+IVIDE(IPF+1,IPOIN))*0.5D0
-            EPAI(IPF,IPOIN)=EPAI(IPF,IPOIN)/(1.D0+ECOUCH)
+          CONC(IPOIN,1)= CFDEP
+          EPAI(IPOIN,1)=HDEP(IPOIN)
+        ENDDO  
+      ENDIF  
+!
+!     -----  INITIALISES ZR  -----
+!
+      CALL OV('X=Y-Z   ' ,ZR,ZF,HDEP,0.D0,NPOIN2)
+!
+!  -----------------------------------------
+!  INITIAL CONDITIONS FOR CONSOLIDATION MODEL
+!  ------------------------------------------
+      IF(TASSE) THEN
+!      
+! -------------------------
+! SIMPLE MULTI-LAYER MODEL
+!-------------------------
+        IF (ITASS.EQ.1) THEN
+!     
+!       -----  CHANGES HOURS INTO SECONDS  -----
+!
+          CALL OV( 'X=CX    ',TREST,TREST,TREST,3600.D0,NCOUCH)
+!
+!       -----  INITIALISES TEMP  -----
+!
+          CALL OV( 'X=C     ',TEMP,TEMP,TEMP,0.D0,NPOIN2*NCOUCH)
+!
+
+!   
+!      GIBSON MODEL
+!     -------------
+
+        ELSEIF (ITASS.EQ.2) THEN
+!
+          DO IPOIN=1,NPOIN2
+            NPF(IPOIN) =NCOUCH
+            DO IPF= 1, NCOUCH
+              ECOUCH=(RHOS-CONC(IPOIN,IPF))/CONC(IPOIN,IPF)
+              IF(IPF.EQ.1) THEN 
+                IVIDE(IPOIN,IPF)=ECOUCH 
+              ELSE
+                IVIDE(IPOIN,IPF)= 2.D0*ECOUCH-IVIDE(IPOIN,IPF-1)
+              ENDIF
+            ENDDO
+            IVIDE(IPOIN,NCOUCH+1)= 2.D0*ECOUCH-IVIDE(IPOIN,NCOUCH)
           ENDDO
-        ENDDO
+        ENDIF
+      ENDIF 
 !
-      ENDIF
+!#####> NOE-CHANGES
 !
-!-----------------------------------------------------------------------
+!       HERE IS OUR CHANCE TO SET
+!       IVIDE AND (TRUE) EPAI REPRESENTATIVE OF CONSOLIDATED MATTER
+!
+!       CONSOL SHOULD BE .TRUE. IF THE LAYER DISTRIBUTION IS NOT KNOWN
+!       AND THE USER WANTS TO LET THE MODEL CONSOLIDATE THE BED
+!
+! This part is cancelled 
+!
+!        IF(CONSOL) THEN
+!
+! TIME FOR CONSOLIDATION, WHICH COULD ALSO BE READ FROM PRIVE%ADR(2)
+!          DTCSL = DT*10.D0
+!          NITCSL = 100
+!
+! START PAST TIME LOOP
+!
+!          DO ITCSL = 1,NITCSL
+!          CVGCSL = .FALSE.
+!          DO WHILE(.NOT.CVGCSL)
+!
+!     -----  MANAGES THE DEPOSITED SEDIMENT:   -----
+!     -----  ADDS NEW LAYERS TO THE MUDDY BED  -----
+!
+!            CALL GESTDP( IVIDE,EPAI,HDEP,
+!     &        NPOIN2,NPFMAX,NPF, EPAI0,CONC(1),RHOS )
+!
+!     -----  CONSOLIDATES THE MUDDY BED  -----
+!     -----  USING GIBSON EQUATION       -----
+!
+!            CALL TASSEM( IVIDE,EPAI, NPOIN2,NPFMAX,NPF, GRAV,RHOS,
+!     &        DTCSL, CFMAX, TRA01,TRA02,TRA03 )
+!
+!     -----  UPDATES THE BOTTOM LAYER  -----
+!     -----  RECOMPUTES THE INTERFACE  -----
+!
+!      RESCSL = 0.D0
+!      DO IPOIN = 1,NPOIN2
+!        ZNOE(IPOIN) = ZR(IPOIN)
+!        DO IPF = 1,NPF(IPOIN)-1
+!          ECOUCH=(IVIDE(IPF,IPOIN)+IVIDE(IPF+1,IPOIN))/2.D0
+!          ZNOE(IPOIN) = ZNOE(IPOIN)+(1.D0+ECOUCH)*EPAI(IPF,IPOIN)
+!        ENDDO
+!        IF(ZF(IPOIN).LT.ZNOE(IPOIN)) THEN
+!        RESCSL = RESCSL + ( MAX(
+!     & ZF(IPOIN)-(ZNOE(IPOIN)-(1.D0+ECOUCH)*EPAI(NPF(IPOIN)-1,IPOIN)),
+!     &  0.D0) - HDEP(IPOIN) )**2
+!      ECOUCH =(IVIDE(NPF(IPOIN)-1,IPOIN)+IVIDE(NPF(IPOIN),IPOIN))/2.D0
+!        HDEP(IPOIN) = MAX(
+!     &  ZF(IPOIN)-(ZNOE(IPOIN)-(1.D0+ECOUCH)*EPAI(NPF(IPOIN)-1,IPOIN)),
+!     &        0.D0)
+!            EPAI(NPF(IPOIN)-1,IPOIN) = 0.D0
+!            NPF(IPOIN) = NPF(IPOIN)-1
+!          ELSE
+!            RESCSL = RESCSL + (ZF(IPOIN)-ZNOE(IPOIN)-HDEP(IPOIN))**2
+!            HDEP(IPOIN) = ZF(IPOIN) - ZNOE(IPOIN)
+!          ENDIF
+!        ENDDO
+!        CVGCSL = RESCSL.LT.(1.D-8)
+!      ENDDO
+!
+! END PAST TIME LOOP
+!
+!        ENDIF
+!
+! END IF CONSOL
+!
+!      ENDIF
+!
+! END IF TASSE/GIBSON
+!
+!      DEALLOCATE(TRA01)
+!      DEALLOCATE(TRA02)
+!      DEALLOCATE(TRA03)
+!      DEALLOCATE(ZNOE)
+!      
 !
       RETURN
-      END SUBROUTINE CONDIS
+      END
 
 
