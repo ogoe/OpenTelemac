@@ -11,7 +11,7 @@
      & UETCAR,UETCAL,FICTIF)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES KBOR, EBOR AND AUBOR WHEN THE TURBULENCE
@@ -38,6 +38,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments in sediment merged on 25/02/2014.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |-->| TURBULENT ENERGY
@@ -135,13 +140,7 @@
 !
       INTEGER IPTFR,IPLAN,IPOIN2,IP,IBOT
 !
-      DOUBLE PRECISION ESURF, HAUT
-      DOUBLE PRECISION SSQCMU, DIST, PROPNU
-      DOUBLE PRECISION DISTFOND
-! CV 7.0 : KEYWORD  FICTIF
-!      VINCENT BOYER'S CHOICE
-!      DOUBLE PRECISION, PARAMETER :: FICTIFUET = 2.D0
-!      DOUBLE PRECISION, PARAMETER :: FICTIFEPS = 2.D0
+      DOUBLE PRECISION ESURF,HAUT,Z0,SSQCMU,DIST,PROPNU,DISTFOND
 !
       DOUBLE PRECISION, PARAMETER :: NIVTURB = 0.005D0
       DOUBLE PRECISION, PARAMETER :: TESTREICH = 1.D-4
@@ -149,8 +148,6 @@
 !
       INTRINSIC SQRT,MAX,LOG
 !
-! CV
-      double precision z0   
 !-----------------------------------------------------------------------
 !
       SSQCMU = 1.D0 /SQRT(CMU)
@@ -241,7 +238,7 @@
          DIST   = DISBOR(IPTFR) / FICTIF
          HAUT   = MAX(H(IPOIN2),1.D-7)
 ! CV
-        Z0=RUGOF%R(IPOIN2)/30.D0
+         Z0=RUGOF%R(IPOIN2)/30.D0
 !
          DO IPLAN=1,NPLAN
 !
@@ -270,11 +267,8 @@
 !
 !             KBORL(IPTFR,IPLAN) = KMIN
 ! CV  HANS AND BURCHARD CL FOR K
-                 KBORL(IPTFR,IPLAN)=UETCAR(IPOIN2)
-     &                              *(1.D0-DISTFOND/HAUT)
-     &                              /SQRT(CMU)
-!...CV
-
+              KBORL(IPTFR,IPLAN)=UETCAR(IPOIN2)
+     &                          *(1.D0-DISTFOND/HAUT)/SQRT(CMU)
 !
 !              ****************************************
                ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG .OR.
@@ -325,9 +319,8 @@
 ! Hans et Burchard
 ! CV ...
                  EBORL(IPTFR,IPLAN)=SQRT(UETCAR(IPOIN2))**3
-     &                            *(1.D0-DISTFOND/HAUT)
-     &                            /KARMAN/MAX(DISTFOND,Z0)
-! ... CV
+     &                             *(1.D0-DISTFOND/HAUT)
+     &                             /KARMAN/MAX(DISTFOND,Z0)
 !
 !              ****************************************
                ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG .OR.
@@ -364,8 +357,6 @@
 !
 !-----------------------------------------------------------------------
 !
-!101   FORMAT(' KEPCL3 : REGIME DE TURBULENCE INCONNU : ',I6)
-!102   FORMAT(' KEPCL3 : UNKNOWN TURBULENCE MODEL : ',I6)
 111   FORMAT(' KEPCL3 : POINT DE BORD',I6,
      &       ' - CAS NON PREVU POUR KBOR : LIUBOR =',I6)
 112   FORMAT(' KEPCL3 : BOUNDARY NODE',I6,

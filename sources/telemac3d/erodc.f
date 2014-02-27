@@ -6,7 +6,7 @@
      &  MPART , DT     , NPOIN2 , NCOUCH ,TOCE,HN,HMIN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODELS EROSION
@@ -40,6 +40,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments in sediment merged on 25/02/2014.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CONC           |-->| CONCENTRATION OF BED LAYER
 !| DENSI          |-->| FLUID DENSITY
@@ -55,8 +60,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-!
-!      
+!     
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -72,6 +76,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: TOB(NPOIN2),DENSI(NPOIN2)
 !
       DOUBLE PRECISION, INTENT(IN)    :: MPART, DT, HMIN
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IC, IPOIN
@@ -79,8 +84,9 @@
       INTRINSIC MIN , MAX
 !
       DOUBLE PRECISION FLUER_LOC
+!
 !-----------------------------------------------------------------------
-
+!
 !
 !CV UNIFORM BED
 !
@@ -114,12 +120,10 @@
 !     ---- TEMPS:TIME COUNTER FOR EROSION ----
 !
         DO IPOIN=1,NPOIN2
-            
+!            
 !###>TBE
         FLUER(IPOIN) = 0.D0
-        IF (HN(IPOIN)<HMIN) THEN
-             GOTO 30
-        ENDIF
+        IF(HN(IPOIN).LT.HMIN) GOTO 30
 !###<TBE
 !
 ! initialisation
@@ -167,4 +171,4 @@
 !      ENDIF
 !
       RETURN
-      END SUBROUTINE ERODC
+      END

@@ -2,11 +2,10 @@
                      SUBROUTINE TASSEC
 !                    *****************
 !
-     &( CONC   , EPAI , TREST , TEMP , DTC ,
-     &  NPOIN2 , NCOUCH )
+     &(CONC,EPAI,TREST,TEMP,DTC,NPOIN2,NCOUCH)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    MULTI-LAYER MODEL FOR CONSOLIDATION OF THE MUDDY BED.
@@ -42,6 +41,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments in sediment merged on 25/02/2014.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CONC           |-->| CONCENTRATION OF MUD BED LAYERS
 !| DTC            |-->| TIME STEP FOR CONSOLIDATION PHENOMENON
@@ -72,18 +76,20 @@
 !
 !======================================================================
 !
-       DO IPOIN=1,NPOIN2
-         DO IC=2,NCOUCH
-           IF (EPAI(IPOIN,IC).GT.0.D0)
-     &       TEMP(IC,IPOIN) = TEMP(IC,IPOIN) +DTC
-           IF (TEMP(IC,IPOIN).GE.TREST(IC)) THEN
-             EPAI(IPOIN,IC-1) = EPAI(IPOIN,IC-1) +
-     &                EPAI(IC,IPOIN)*CONC(IPOIN,IC)/CONC(IPOIN,IC-1)
-             EPAI(IPOIN,IC)=0.D0
-             TEMP(IC,IPOIN)=0.D0
+      DO IPOIN=1,NPOIN2
+        DO IC=2,NCOUCH
+          IF(EPAI(IPOIN,IC).GT.0.D0)
+     &      TEMP(IC,IPOIN) = TEMP(IC,IPOIN) +DTC
+          IF(TEMP(IC,IPOIN).GE.TREST(IC)) THEN
+            EPAI(IPOIN,IC-1) = EPAI(IPOIN,IC-1) +
+     &      EPAI(IPOIN,IC)*CONC(IPOIN,IC)/CONC(IPOIN,IC-1)
+            EPAI(IPOIN,IC)=0.D0
+            TEMP(IC,IPOIN)=0.D0
           ENDIF
-         END DO
-       END DO
+        ENDDO
+      ENDDO
+!
+!----------------------------------------------------------------------
 !
        RETURN
-       END SUBROUTINE TASSEC
+       END

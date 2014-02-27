@@ -20,7 +20,7 @@
      & VOLU2D, V2DPAR, SETDEP)
 !
 !***********************************************************************
-! TELEMAC3D   V6P3                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE ADVECTION-DIFFUSION STEP.
@@ -57,6 +57,11 @@
 !+        V6P3
 !+   S0F%TYPR now restored at the end, for a possible new use if there
 !+   iterations for non linearities.
+!
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments in sediment merged on 25/02/2014.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
@@ -509,11 +514,13 @@ CV
 !
 ! vertical diffusion is already accounted for then set to 0
 ! pour appel a diff3d
+!
          IF(SCHDF.EQ.1) THEN  
            CALL OS('X=0     ', VISCF%ADR(3)%P)
-            YAWCC=.FALSE.
+           YAWCC=.FALSE.
 !         ELSE 
-! FOR VERTICAL DIFFUSION ONLY SET SCHDF TO 0 (pas d'appel a DIFF3D)         
+!           FOR VERTICAL DIFFUSION ONLY SET SCHDF TO 0
+!           (NO CALL TO DIFF3D)         
 !           SCHDF=0
          ENDIF
 !

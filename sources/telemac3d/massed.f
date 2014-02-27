@@ -6,7 +6,7 @@
      & NPFMAX,NCOUCH,NPF,TASSE,GIBSON,RHOS,VOLU2D)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    PERFORMS INITIAL RELATIVE MASS BALANCE FOR
@@ -38,6 +38,11 @@
 !+        17/03/2011
 !+        V6P1
 !+   Rewritten (formula changed, parallelism,...)
+!
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments in sediment merged on 25/02/2014.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CFDEP          |-->| CONCENTRATION OF MUD DEPOSIT (G/L)
@@ -86,28 +91,27 @@
       DOUBLE PRECISION P_DSUM
       EXTERNAL         P_DSUM
 !   
-!
 !=======================================================================
 !
 ! MASS OF MUDDY DEPOSITS ON THE RIGID BED (MASSE6)
 ! 
-! ---> MASBED
 !=======================================================================
 !
-        DO IPOIN=1,NPOIN2
-          TRA02(IPOIN)=0.D0
-          DO IPF=1,NCOUCH
-            TRA02(IPOIN)=TRA02(IPOIN)+CONC(IPOIN,IPF)*EPAI(IPOIN,IPF)
-          ENDDO
+      DO IPOIN=1,NPOIN2
+        TRA02(IPOIN)=0.D0
+        DO IPF=1,NCOUCH
+          TRA02(IPOIN)=TRA02(IPOIN)+CONC(IPOIN,IPF)*EPAI(IPOIN,IPF)
         ENDDO
-
+      ENDDO
+!
       MASSE6=0.D0
       DO IPOIN=1,NPOIN2
         MASSE6=MASSE6+VOLU2D(IPOIN)*TRA02(IPOIN)
       ENDDO
       IF(NCSIZE.GT.1) MASSE6=P_DSUM(MASSE6)
       MASBED = MASSE6      
-!   
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

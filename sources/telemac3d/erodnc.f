@@ -1,4 +1,3 @@
-
 !                    *****************
                      SUBROUTINE ERODNC
 !                    *****************
@@ -12,8 +11,7 @@
 ! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!brief    MODELS EROSION
-!+                FOR NON-COHESIVE SEDIMENTS.
+!brief    MODELS EROSION FOR NON-COHESIVE SEDIMENTS.
 !
 !history  CAMILLE LEQUETTE
 !+        **/06/2003
@@ -36,6 +34,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments in sediment merged on 25/02/2014.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |-->| CRITICAL SHIELDS PARAMETER
@@ -73,9 +76,9 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3, ICQ
 !
       DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2),FLUER(NPOIN2)
@@ -89,14 +92,11 @@ C
       TYPE(BIEF_OBJ)  , INTENT(INOUT) :: CREF,ZREF,RUGOF
 !      
       DOUBLE PRECISION, INTENT(IN)    :: Z(NPOIN3), UETCAR(NPOIN2)
-C 
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-      INTEGER IPOIN
-      DOUBLE PRECISION USTAR, ROUSE, ROUSE_Z, DELTAZ
-C
-      INTEGER I
-      DOUBLE PRECISION QS
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IPOIN,I
+      DOUBLE PRECISION USTAR, ROUSE, ROUSE_Z, DELTAZ,QS
 !
       INTRINSIC MIN,MAX
 !
@@ -105,10 +105,10 @@ C
 !  ---------------------------------------------------------------------
 !  ------- COMPUTES THE REFERENCE CONCENTRATION CREF (IN G/L) ----------
 !  ---------------------------------------------------------------------
-! CV depth to extrapolate the near bed concentrations (see also KEPLC)
-! For FV scheme use delta= Dz1/4
-!     FE scheme          = Dz1/2
 !
+!     CV depth to extrapolate the near bed concentrations (see also KEPLC)
+!     For FV scheme use delta= Dz1/4
+!     FE scheme          = Dz1/2
 !
 !     ZYSERMAN & FREDSOE (1994) (BY DEFAULT)
 ! 
@@ -120,8 +120,8 @@ C
      &                        GRAV,RHO0,RHOS,1.D-6,AC,CREF)
         CALL OS('X=CY    ', X=ZREF, Y=DMOY, C=2.D0)
       ELSEIF(ICQ.EQ.3) THEN
-         CALL OS('X=CY    ', X=ZREF, Y=RUGOF, C=0.5D0)      
-         CALL SUSPENSION_VANRIJN(DMOY%R(1),TOB,NPOIN2,
+        CALL OS('X=CY    ', X=ZREF, Y=RUGOF, C=0.5D0)      
+        CALL SUSPENSION_VANRIJN(DMOY%R(1),TOB,NPOIN2,
      &                 GRAV,RHO0,RHOS,1.D-06,1.D-06,AC,CREF,ZREF)
       ENDIF
 !
@@ -129,20 +129,18 @@ C
 !
       CALL OS('X=CX    ',X=CREF,C=RHOS)
 !      
-! CV: Extrapolation of Rouse profile from ZREF to 1/2 or 1/4 of first grid mesh
+!     CV: Extrapolation of Rouse profile from ZREF to 1/2 or 1/4 of first grid mesh
 !
-        do IPOIN =1,NPOIN2
-           USTAR=MAX(SQRT(UETCAR(IPOIN)),1.D-6) 
-!
-           ROUSE=PRANDTL*WC(IPOIN)/KARMAN/USTAR
-          ! rouse profile extrapolation up to 1/4 of the first layer
-!          DELTAZ=(MESH3D%Z%R(IPOIN +NPOIN2)-MESH3D%Z%R(IPOIN))/4.D0
-         DELTAZ=(Z(IPOIN +NPOIN2)-Z(IPOIN))/FICT
-!
-           ROUSE_Z=ZREF%R(IPOIN)/(HN%R(IPOIN)-ZREF%R(IPOIN))
-     &       *(HN%R(IPOIN)-DELTAZ)/DELTAZ
-            CREF%R(IPOIN)=CREF%R(IPOIN)*ROUSE_Z**ROUSE
-        enddo            
+      DO IPOIN =1,NPOIN2
+        USTAR=MAX(SQRT(UETCAR(IPOIN)),1.D-6) 
+        ROUSE=PRANDTL*WC(IPOIN)/KARMAN/USTAR
+!       rouse profile extrapolation up to 1/4 of the first layer
+!       DELTAZ=(MESH3D%Z%R(IPOIN +NPOIN2)-MESH3D%Z%R(IPOIN))/4.D0
+        DELTAZ=(Z(IPOIN +NPOIN2)-Z(IPOIN))/FICT
+        ROUSE_Z=ZREF%R(IPOIN)/(HN%R(IPOIN)-ZREF%R(IPOIN))
+     &      *(HN%R(IPOIN)-DELTAZ)/DELTAZ
+        CREF%R(IPOIN)=CREF%R(IPOIN)*ROUSE_Z**ROUSE
+      ENDDO            
 !
 !  ------------------------------------------------------------
 !  -----------------     EROSION STEP    ----------------------

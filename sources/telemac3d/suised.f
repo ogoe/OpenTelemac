@@ -6,7 +6,7 @@
      & NPOIN2,NPOIN3,NPFMAX,NCOUCH,TASSE,ITASS,NSUIS,BISUIS)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS SEDIMENTOLOGICAL DATA
@@ -40,6 +40,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments in sediment merged on 25/02/2014.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BISUIS         |-->| BINARY OF PREVIOUS SEDIMENT COMPUTATION FILE

@@ -15,49 +15,16 @@
      & SIGMAG,IPBOT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
-!brief    SOLVES THE DIFFUSION AND SUPG ADVECTION STEPS
-!+               (IF REQUIRED).
+!brief    ?????????
 !
-!history  JACEK A. JANKOWSKI PINXIT
-!+        **/03/1999
-!+
-!+   FORTRAN95 VERSION
 !
-!history  JMH
-!+        14/12/2009
-!+
-!+   DIRICHLET POINTS ON THE BOTTOM
-!
-!history  J.M. HERVOUET (LNHE)
-!+        18/03/2010
-!+        V6P0
-!+
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!history  J.M. HERVOUET (LNHE)
-!+        093/04/2012
-!+        V6P2
-!+   Void volumes tested up to free point (which may be also crushed
-!+   in case of tidal flats).
-!
-!history  J-M HERVOUET (LNHE)
-!+        23/04/2012
-!+        V6P2
-!+   Values of tracers in rain taken into account.
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments in sediment merged on 25/02/2014.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:

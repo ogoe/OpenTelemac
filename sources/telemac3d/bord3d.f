@@ -5,7 +5,7 @@
      &(TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    SPECIFIC BOUNDARY CONDITIONS.
@@ -50,6 +50,11 @@
 !+        11/03/2013
 !+        V6P3
 !+   Test IFRLIQ.NE.0 line 210.
+!
+!history  C. VILLARET & T. BENSON (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   Case IPROF.EQ.3 added to test IPROF.EQ.2.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS
@@ -424,13 +429,25 @@
             IF(IPROF.NE.1) THEN
               PROFZ=TRA_PROF_Z(IFRLIQ,NBOR2%I(K),
      &                         AT,LT,NP,INFOGR,IPROF,ITRAC)
-! CV Rouse concentrations profiles (IPROF=2)
               IF(IPROF.EQ.2) THEN
+!               CV: Rouse concentrations profiles (IPROF=2)
                 TABORL%ADR(ITRAC)%P%R(IBORD)=PROFZ
-              ELSE
-! CV normalised concentrations profiles (IPROF=3)
+              ELSEIF(IPROF.EQ.3) THEN
+!               CV: normalised concentrations profiles (IPROF=3)
                 TABORL%ADR(ITRAC)%P%R(IBORD)=
      &          TABORL%ADR(ITRAC)%P%R(IBORD)*PROFZ
+              ELSE
+                WRITE(LU,*) 'BORD3D : IPROF=',IPROF
+                IF(LNG.EQ.1) THEN
+                  WRITE(LU,*) 'OPTION INCONNUE POUR LES'
+                  WRITE(LU,*) 'PROFILS DES TRACEURS SUR LA VERTICALE'
+                ENDIF
+                IF(LNG.EQ.2) THEN
+                  WRITE(LU,*) 'UNKNOWN OPTION FOR THE'
+                  WRITE(LU,*) 'TRACERS VERTICAL PROFILES'
+                ENDIF
+                CALL PLANTE(1)
+                STOP
               ENDIF
             ENDIF
           ENDIF

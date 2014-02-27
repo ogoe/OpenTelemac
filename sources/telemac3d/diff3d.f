@@ -1,5 +1,3 @@
-! now WCC is positive downwards
-!
 !                    *****************
                      SUBROUTINE DIFF3D
 !                    *****************
@@ -65,6 +63,11 @@
 !+        24/12/2013
 !+        V7P0
 !+   With SUPG, upwinding of time derivative now done.
+!
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments in sediment merged on 25/02/2014.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:

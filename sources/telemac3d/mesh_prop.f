@@ -91,8 +91,7 @@
 !
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
       DOUBLE PRECISION MINIMUM_VOLUME
-! change minimum value to work with small grid size      
-      MINIMUM_VOLUME=1.D-8
+      MINIMUM_VOLUME=1.D-6
 !
 !-----------------------------------------------------------------------
 !

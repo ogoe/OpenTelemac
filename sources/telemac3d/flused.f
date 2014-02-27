@@ -2,13 +2,13 @@
                      SUBROUTINE FLUSED
 !                    *****************
 !
-     & (ATABOF , BTABOF , ATABOS , BTABOS ,
-     &  LITABF , LITABS , TA     , WC     ,
-     &  X      , Y      , Z      , HN     ,
-     &  GRADZFX, GRADZFY, GRADZSX, GRADZSY,
-     &  TOB    , FLUDPT , FLUER  , TOCD   ,
-     &  NPOIN3 , NPOIN2 , NPLAN  , KLOG   , 
-     &  HMIN, SEDCO, SETDEP)
+     &(ATABOF , BTABOF , ATABOS , BTABOS ,
+     & LITABF , LITABS , TA     , WC     ,
+     & X      , Y      , Z      , HN     ,
+     & GRADZFX, GRADZFY, GRADZSX, GRADZSY,
+     & TOB    , FLUDPT , FLUER  , TOCD   ,
+     & NPOIN3 , NPOIN2 , NPLAN  , KLOG   , 
+     & HMIN, SEDCO, SETDEP)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                   21/08/2010
@@ -80,7 +80,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC3D, ONLY: NPTFR2,NBOR2,LIHBOR
+      USE DECLARATIONS_TELEMAC3D, ONLY: NPTFR2,NBOR2,LIHBOR,
+     &                                  IPBOT,SIGMAG,OPTBAN
       USE DECLARATIONS_TELEMAC, ONLY: KENT, KSORT
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -132,7 +133,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I, IPTFR,I3D,IPLAN
+      INTEGER I,IPTFR,I3D,IPLAN
 !     DOUBLE PRECISION NZ
 !
       INTRINSIC MAX
@@ -146,7 +147,7 @@
 !       COHESIVE SEDIMENT (Here FLUDPT >0)
 !
         DO I=1,NPOIN2
-            FLUDPT(I)= WC(I)*MAX(1.D0-(TOB(I)/MAX(TOCD,1.D-6)),0.D0)
+          FLUDPT(I)= WC(I)*MAX(1.D0-(TOB(I)/MAX(TOCD,1.D-6)),0.D0)
         ENDDO
 !
       ELSE
@@ -154,70 +155,84 @@
 !       NON COHESIVE SEDIMENT : PDEPOT = 1.
 !
         DO I=1,NPOIN2
-            FLUDPT(I)= WC(I)
+          FLUDPT(I)= WC(I)
         ENDDO
 !
       ENDIF
+!
 !-----------------------------------------------------------------------
 !
 !     CORRECTION OF EROSION FLUXES ON TIDAL FLATS
-! 
-        DO I=1,NPOIN2
-           IF(HN(I).LE.HMIN) THEN
-              FLUER(I)= 0.D0
-! allowing deposition on tidal flats
-!              FLUDPT(I) = 0.D0
-           ENDIF   
-!         
-        ENDDO
+!     NOTE JMH: HMIN NOT DONE FOR THAT... 
+!
+      DO I=1,NPOIN2
+        IF(HN(I).LE.HMIN) THEN
+          FLUER(I)= 0.D0
+        ENDIF            
+      ENDDO
+!
 !-----------------------------------------------------------------------
-! PREVENTING EROSION AND DEPOSITION ON THE EXIT BOUNDARY (Fixed water depth)
+!
+!     PREVENTING EROSION AND DEPOSITION ON THE EXIT BOUNDARY
+!     (Fixed water depth)
+!
       DO IPTFR = 1,NPTFR2
-          IF(LIHBOR%I(IPTFR).EQ.KENT) THEN
-            I = NBOR2%I(IPTFR)
-            FLUDPT(I)=0.D0
-            FLUER(I)=0.D0
-            DO IPLAN=1, NPLAN
-              I3D= I + (IPLAN-1)*NPOIN2
-              WC(I3D)=0.D0
-            ENDDO
-          ENDIF
+        IF(LIHBOR%I(IPTFR).EQ.KENT) THEN
+          I = NBOR2%I(IPTFR)
+          FLUDPT(I)=0.D0
+          FLUER(I)=0.D0
+          DO IPLAN=1, NPLAN
+            I3D= I + (IPLAN-1)*NPOIN2
+            WC(I3D)=0.D0
+          ENDDO
+        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------
 !
 !     COMMON COMPUTATION OF THE TRACER FLUX ON THE BOTTOM
 !
+      IF(SETDEP.EQ.1) THEN
 !
-!
-      DO I=1,NPOIN2
-       IF(LITABF(I).EQ.KLOG) THEN
-
-!         NZ = 1.D0+GRADZFX(I)**2+GRADZFY(I)**2
-!         NZ = -1.D0/SQRT(NZ)
-!         WC
-!         ATABOF(I) = - WC(I) * PDEPOT(I) * NZ
-!         BTABOF(I) = - FLUER(I) * NZ
-!         JMH: BEWARE, IN DIFF3D NZ IS CONSIDERED AS -1. 
-!              HENCE WRONG FORMULA BELOW IS ACTUALLY CORRECT
-!          ATABOF(I) = WC(I) * PDEPOT(I)  
-          ATABOF(I) = - FLUDPT(I) 
-          BTABOF(I) = FLUER(I)  
-!   
-         IF(SETDEP.EQ.1) THEN
-! TOM : erosion and depostition are treated in MURD3D_POS         
-           ATABOF(I) = 0.D0
-           BTABOF(I) = 0.D0
-! 
-         ENDIF
-         
-        ENDIF 
-!   
-!
-!
+        DO I=1,NPOIN2
+          IF(LITABF(I).EQ.KLOG) THEN
+!           TOM : erosion and deposition are treated in MURD3D_POS  
+            ATABOF(I) = 0.D0
+            BTABOF(I) = 0.D0     
+          ENDIF    
         ENDDO
 !
-!      ENDIF
+      ELSEIF(SIGMAG.OR.OPTBAN.EQ.1) THEN
+!
+        DO I=1,NPOIN2
+          ATABOF(I)=0.D0
+          BTABOF(I)=0.D0
+          IF(LITABF(I).EQ.KLOG) THEN
+!           NO EROSION AND DEPOSITION ON TIDAL FLATS
+            IF(IPBOT%I(I).NE.NPLAN-1) THEN
+              ATABOF(I) = - FLUDPT(I)  
+              BTABOF(I) = FLUER(I) 
+            ENDIF
+          ENDIF
+        ENDDO
+!
+      ELSE
+!
+        DO I=1,NPOIN2
+          IF(LITABF(I).EQ.KLOG) THEN
+!           NZ = 1.D0+GRADZFX(I)**2+GRADZFY(I)**2
+!           NZ = -1.D0/SQRT(NZ)
+!           WC
+!           ATABOF(I) = - WC(I) * PDEPOT(I) * NZ
+!           BTABOF(I) = - FLUER(I) * NZ
+!           JMH: BEWARE, IN DIFF3D NZ IS CONSIDERED AS -1. 
+!                HENCE WRONG FORMULA BELOW IS ACTUALLY CORRECT
+            ATABOF(I) = - FLUDPT(I) 
+            BTABOF(I) = FLUER(I)         
+          ENDIF    
+        ENDDO
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

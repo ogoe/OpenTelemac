@@ -3,7 +3,7 @@
 !                    *****************
 !
 !***********************************************************************
-! TELEMAC3D   V6P3                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    SETS CONSTANTS OF K-EPSILON AND K-OMEGA MODELS.
@@ -39,6 +39,11 @@
 !+        164/12/2012
 !+        V6P3
 !+   New parameters for monitoring k-epsilon, all arguments suppressed.
+!
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments in sediment merged on 25/02/2014.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALPHA          |<->| K-OMEGA CONSTANT

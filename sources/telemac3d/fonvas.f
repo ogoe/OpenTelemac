@@ -11,10 +11,9 @@
      & NPF    , LT     , DT     , DTC   , GRAV   , RHOS  ,
      & CFMAX, TASSE  , ITASS, 
      & ZF_S, ESOMT,  VOLU2D, MASDEP, SETDEP)
-!     & ,IPBOT, OPTBAN, NPLAN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODELS THE MUD BED EVOLUTION.
@@ -40,6 +39,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments in sediment merged on 25/02/2014.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CFDEP          |-->| CONCENTRATION OF MUD DEPOSIT (G/L)
@@ -121,6 +125,7 @@
       INTEGER, INTENT(IN) :: ITASS
 !
       TYPE(BIEF_OBJ), INTENT(IN) :: VOLU2D
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION C, TOTMASS, QERODE, QS,DELTAF, FLUX, SEDBED
@@ -128,21 +133,21 @@
       INTRINSIC MOD
       DOUBLE PRECISION P_DSUM
       EXTERNAL         P_DSUM
-
+!
 !=======================================================================
 ! FIRST STEP
 !     COMPUTES THE DEPOSITED QUANTITY (IN MATERIAL COORDINATES)
 !     CFDEP=CONC(NCOUCH)
 !     COMPUTES THE ERODED QUANTITY 
 !=======================================================================
-
+!
 ! Multi layer model      
 ! +++++++++++++++++++
 ! deposition in the first top layer
 ! calculate the layers thicknesses and deposited thicknes:  HDEP = sum ( EPAI)
 !
 !       
-      FLUX=0.d0
+      FLUX=0.D0
 !
 !Schema explicite (EXPTSED) FLUDP calcule dans MURD3D_POS
 !
@@ -152,30 +157,29 @@
 ! Ipbot = nplan-1 : dry element
 ! CV 01/2014 ....
 !
-        IF(SETDEP.EQ.0) THEN
-           IF(OPTBAN.EQ.1) THEN
-              DO IPOIN=1,NPOIN2
-                IF(IPBOT%I(IPOIN).NE.NPLAN-1) THEN
-                  FLUDP(IPOIN)= FLUDPT(IPOIN)*
+      IF(SETDEP.EQ.0) THEN
+        IF(OPTBAN.EQ.1) THEN
+          DO IPOIN=1,NPOIN2
+            IF(IPBOT%I(IPOIN).NE.NPLAN-1) THEN
+              FLUDP(IPOIN)= FLUDPT(IPOIN)*
      &                TA(IPBOT%I(IPOIN)*NPOIN2+IPOIN)
-               ELSE
-                 FLUDP(IPOIN)=0.D0
-               ENDIF  
-             ENDDO
-           ELSE
-             DO IPOIN=1,NPOIN2
-                 FLUDP(IPOIN)= FLUDPT(IPOIN)*TA(IPOIN)
-             ENDDO     
-           ENDIF
-       ENDIF    
-!...CV
+            ELSE
+              FLUDP(IPOIN)=0.D0
+            ENDIF  
+          ENDDO
+        ELSE
+          DO IPOIN=1,NPOIN2
+            FLUDP(IPOIN)= FLUDPT(IPOIN)*TA(IPOIN)
+          ENDDO     
+        ENDIF
+      ENDIF    
 !
-!  BED EVOLUTION
+!     BED EVOLUTION
 !
-       DO IPOIN=1,NPOIN2
+      DO IPOIN=1,NPOIN2
 !
-         DELTAF=FLUDP(IPOIN) -FLUER(IPOIN)
-         FLUX=FLUX + DELTAF*VOLU2D%R(IPOIN)          
+        DELTAF=FLUDP(IPOIN) -FLUER(IPOIN)
+        FLUX=FLUX + DELTAF*VOLU2D%R(IPOIN)          
 !
 !
 !!+++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -197,7 +201,6 @@
 ! Recalculate the erosion of layers by adding up the mass in each layer
 !
             TOTMASS = 0.D0
-!
             QERODE  = FLUER(IPOIN)*DT
 !
             DO IC=1,NCOUCH
@@ -205,11 +208,9 @@
                 QS = CONC(IPOIN,IC)*EPAI(IPOIN,IC)
 !               
                 TOTMASS = TOTMASS + QS
-!  check if we have eroded enough entire layers
-                IF (TOTMASS.LT.QERODE) THEN
-!
-                    EPAI(IPOIN,IC) = 0.d0
-!
+!               check if we have eroded enough entire layers
+                IF(TOTMASS.LT.QERODE) THEN
+                  EPAI(IPOIN,IC) = 0.D0
                 ELSE
 !
                     ! we have got to the correct layer. 
@@ -220,7 +221,7 @@
                     EPAI(IPOIN,IC) = QS/CONC(IPOIN,IC)
 !
                     ! jump out of layer loop
-                    GOTO 10!
+                    GOTO 10
                 ENDIF     
 ! Check : if IC=1 and all layers are empty 
 ! -> add a message error
@@ -248,14 +249,16 @@
         HDEP(IPOIN) = SEDBED
 !
 !        ENDIF
-  
+!  
        ENDDO
-
-!+++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+!
+!+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+! 
 !     UPDATE THE CUMULATED BED EVOLUTION : ESOMT
 !     BOTTOM ELEVATION : ZF 
 !                 
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+!
       CALL OV( 'X=Y+Z   ' , ESOMT,ESOMT, ZF_S, C, NPOIN2)
       CALL OV( 'X=Y+Z   ' , ZF, ZF, ZF_S, C, NPOIN2)
 !
@@ -263,7 +266,7 @@
 ! TASSEMENT HERE
 ! ---> add the other models here
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+!
 !      IF (TASS) THEN
 !
 !     -----CHECKS THE TIMESTEP TO TAKE CONSOLIDATION-----
@@ -307,7 +310,7 @@
 !     &    CALL TASSEC( CONC   , EPAI , TREST , TEMP , DTC ,
 !     &                 NPOIN2 , NCOUCH )
 !
-
+!
 !
 !     -----UPDATES THE BOTTOM ELEVATION-----
 !
@@ -321,18 +324,23 @@
 !
 !      ENDIF
 !      ENDIF
+!
 !!+++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 ! COMPUTES HERE DEPOSITED MASS
 !
-! TOTAL DEPOSITED MASS --> MASDEP
+!      TOTAL DEPOSITED MASS --> MASDEP
 !
-         MASDEP = MASDEP + FLUX *DT
+       MASDEP = MASDEP + FLUX*DT
+!
 ! CV   Check for parallel
-       IF(NCSIZE.GT.1) MASDEP=P_DSUM(MASDEP)
+! note JMH: questionable (if you do it at every time-step
+!                         P_DSUM should be done only at the end
+!                         or on FLUX only)
+!      IF(NCSIZE.GT.1) MASDEP=P_DSUM(MASDEP)
 ! ..CV        
-
+!
 !=======================================================================
 !
-       RETURN
-      END SUBROUTINE FONVAS
+      RETURN
+      END
       

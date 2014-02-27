@@ -2,13 +2,13 @@
                      SUBROUTINE VITCHU
 !                    *****************
 !
-     & (WCHU,WCHU0,TURBWC,U,V,W,H,RUGOF,LISRUF,TURBA,TURBB,
-     &  TRAV1,TRAV2,TRAV3,S,MESH3D,IELM3,NPOIN2,NPOIN3,NPLAN,NTRAC,
-     &  MSK,MASKEL,UETCAR,TA,HN,HMIN,
-     &  FLOC, FLOC_TYPE, HINDER,HIND_TYPE,CGEL, CINI)
+     &(WCHU,WCHU0,TURBWC,U,V,W,H,RUGOF,LISRUF,TURBA,TURBB,
+     & TRAV1,TRAV2,TRAV3,S,MESH3D,IELM3,NPOIN2,NPOIN3,NPLAN,NTRAC,
+     & MSK,MASKEL,UETCAR,TA,HN,HMIN,
+     & FLOC, FLOC_TYPE, HINDER,HIND_TYPE,CGEL,CINI)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                  21/08/2010
+! TELEMAC3D   V7P0                                  21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE SETTLING VELOCITY AS A FUNCTION
@@ -94,61 +94,66 @@
       DOUBLE PRECISION :: PHI,PHI_P,PHI_STAR
 !      
 !     CONSTANTS:
-! CV : CINI IS NOW A  KEYWORD...
-!      DOUBLE PRECISION, PARAMETER :: CINI=2.D0 
+!     CV : CINI IS NOW A  KEYWORD...
+!     DOUBLE PRECISION, PARAMETER :: CINI=2.D0 
 !      
-!!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !     CONSTANT VALUE GIVEN HERE
 !
-          CALL OS( 'X=C     ' , X=WCHU , C=WCHU0 )   
+      CALL OS( 'X=C     ' , X=WCHU , C=WCHU0 )   
 !
 !1. FLOCULATION 
 !
-       IF (FLOC) THEN
-        IF (FLOC_TYPE.EQ.1) THEN
+      IF(FLOC) THEN
+        IF(FLOC_TYPE.EQ.1) THEN
 !
 ! SOULSBY FLOC MODEL
 !
-          IF (HINDER) THEN
-              CALL OS('X=-(Y,C)',X=TRAV1,Y=TA%ADR(NTRAC)%P,C=CINI)
+          IF(HINDER) THEN
+            CALL OS('X=-(Y,C)',X=TRAV1,Y=TA%ADR(NTRAC)%P,C=CINI)
           ELSE
-              CALL OS('X=Y     ',X=TRAV1,Y=TA%ADR(NTRAC)%P)
+            CALL OS('X=Y     ',X=TRAV1,Y=TA%ADR(NTRAC)%P)
           ENDIF
 !
 	  CALL SOULSBYFLOC3D(WCHU, TRAV1%R, MESH3D, NPOIN2, 
      &               NPOIN3, NPLAN, HN, HMIN, UETCAR%R)
 !
-        ELSE IF(FLOC_TYPE.EQ.2) THEN 
+        ELSEIF(FLOC_TYPE.EQ.2) THEN 
 !        
-! APPLY REDUCTION DUE TO TURBULENT BREAKUP OF FLOCS
+!         APPLY REDUCTION DUE TO TURBULENT BREAKUP OF FLOCS
 !
           CALL WCTURB(WCHU,WCHU0,U,V,W,H,RUGOF,LISRUF,
-     &      TRAV1,TRAV2,TRAV3, S,MESH3D,IELM3,NPOIN2,        
-     &      NPLAN,TURBA,TURBB,MSK,MASKEL,UETCAR)
+     &                TRAV1,TRAV2,TRAV3, S,MESH3D,IELM3,NPOIN2,        
+     &                NPLAN,TURBA,TURBB,MSK,MASKEL,UETCAR)
 !
         ELSE
 !
-! ERROR MESSAGE       
+!         ERROR MESSAGE MISSING !!!!!!!!
+!   
+          CALL PLANTE(1)
+          STOP
 !
         ENDIF       
-      ENDIF
- 
+      ENDIF 
 !
 ! 2. HINDERED SETTLING
+! 
+! LIMIT THE CONCENTRATION TO CINI (IF HINDERED SETTLING IS ON) (tbe comment: no! 
+!                                  It only gets limited for the floc model)
 !
- 
- ! LIMIT THE CONCENTRATION TO CINI (IF HINDERED SETTLING IS ON) (tbe comment: no! It only gets limited for the floc model)
- !
-         IF (HINDER) THEN
+      IF(HINDER) THEN
 !###>TBE - we don't limit the concentration here, otherwise hindering won't happen
-              !CALL OS('X=-(Y,C)',X=TRAV1,Y=TA%ADR(NTRAC)%P,C=CINI)
+        !CALL OS('X=-(Y,C)',X=TRAV1,Y=TA%ADR(NTRAC)%P,C=CINI)
 !###<TBE
-              ! this copy of concentration is a bit unecessary. Would be better to pass
-              ! a pointer and use double array in WCHIND
-              CALL  OS('X=Y     ',X=TRAV1,Y=TA%ADR(NTRAC)%P)
-              CALL WCHIND(WCHU, TRAV1, CINI, CGEL, NPOIN3,HIND_TYPE)
-          ENDIF
+        ! this copy of concentration is a bit unecessary.
+        ! Would be better to pass
+        ! a pointer and use double array in WCHIND
+        CALL OS('X=Y     ',X=TRAV1,Y=TA%ADR(NTRAC)%P)
+        CALL WCHIND(WCHU, TRAV1, CINI, CGEL, NPOIN3,HIND_TYPE)
+      ENDIF
+!
+!-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE VITCHU
+      END 
