@@ -7,7 +7,7 @@
      & LIHBOR,LIUBOR,LIVBOR,LITBOR)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/08/2010
+! TELEMAC2D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    DEFINES THE DEPTHS, VELOCITIES, ... TO BE IMPOSED
@@ -47,6 +47,10 @@
 !+        V6P3
 !+   Adaptation to the dynamic allocation of weirs
 !
+!history  J.-M. HERVOUET (EDF LAB, LNHE)
+!+        11/02/2014
+!+        V7P0
+!+   All formulas involving P_DMAX and P_DMIN simplified.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHESTR         |-->| FRICTION COEFFICIENT.
@@ -183,14 +187,14 @@
           ENDIF
 !
           IF(NCSIZE.GT.1) THEN
-            H0 =P_DMAX(MAX( H0,0.D0))-P_DMIN(MAX( -H0,0.D0))
-            H2 =P_DMAX(MAX( H2,0.D0))-P_DMIN(MAX( -H2,0.D0))
-            X0 =P_DMAX(MAX( X0,0.D0))-P_DMIN(MAX( -X0,0.D0))
-            X2 =P_DMAX(MAX( X2,0.D0))-P_DMIN(MAX( -X2,0.D0))
-            Y0 =P_DMAX(MAX( Y0,0.D0))-P_DMIN(MAX( -Y0,0.D0))
-            Y2 =P_DMAX(MAX( Y2,0.D0))-P_DMIN(MAX( -Y2,0.D0))
-            ZF0=P_DMAX(MAX(ZF0,0.D0))-P_DMIN(MAX(-ZF0,0.D0))
-            ZF2=P_DMAX(MAX(ZF2,0.D0))-P_DMIN(MAX(-ZF2,0.D0))
+            H0 =P_DMAX(H0)+P_DMIN(H0)
+            H2 =P_DMAX(H2)+P_DMIN(H2)
+            X0 =P_DMAX(X0)+P_DMIN(X0)
+            X2 =P_DMAX(X2)+P_DMIN(X2)
+            Y0 =P_DMAX(Y0)+P_DMIN(Y0)
+            Y2 =P_DMAX(Y2)+P_DMIN(Y2)
+            ZF0=P_DMAX(ZF0)+P_DMIN(ZF0)
+            ZF2=P_DMAX(ZF2)+P_DMIN(ZF2)
           ENDIF
 !
 !         CALCULATES THE NORMAL VECTOR, OUTGOING CREST 1, ENTERING CREST 2
@@ -288,7 +292,7 @@
         ENDIF
 !
         IF(NCSIZE.GT.1) THEN
-          UNORM1 =P_DMAX(MAX(UNORM1,0.D0))-P_DMIN(MAX(-UNORM1,0.D0))
+          UNORM1 =P_DMAX(UNORM1)+P_DMIN(UNORM1)
         ENDIF 
 !
         I2=NDGB1%ADR(N)%P%I(I)
@@ -334,7 +338,7 @@
                 T1=0.D0
               ENDIF
               IF(NCSIZE.GT.1) THEN
-                T1=P_DMAX(MAX(T1,0.D0))-P_DMIN(MAX(-T1,0.D0))
+                T1=P_DMAX(T1)+P_DMIN(T1)
               ENDIF 
               IF(I2.GT.0) THEN
                 LITBOR%ADR(ITRAC)%P%I(I2)=5
@@ -351,7 +355,7 @@
                 T2=0.D0
               ENDIF
               IF(NCSIZE.GT.1) THEN
-                T2=P_DMAX(MAX(T2,0.D0))-P_DMIN(MAX(-T2,0.D0))
+                T2=P_DMAX(T2)+P_DMIN(T2)
               ENDIF 
               IF(I1.GT.0) THEN
                 LITBOR%ADR(ITRAC)%P%I(I1)=5

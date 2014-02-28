@@ -7,7 +7,7 @@
      & UBOR,VBOR,TBOR,LIHBOR,LIUBOR,LIVBOR,LITBOR,GRAV)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/08/2010
+! TELEMAC2D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    MANAGES THE COMPUTATION OF DISCHARGES AND
@@ -44,6 +44,11 @@
 !+        12/06/2013
 !+        V6P3
 !+   Adaptation to the dynamic allocation of weirs
+!
+!history  J.-M. HERVOUET (EDF LAB, LNHE)
+!+        11/02/2014
+!+        V7P0
+!+   All formulas involving P_DMAX and P_DMIN simplified.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHESTR         |-->| FRICTION COEFFICIENT
@@ -137,10 +142,10 @@
         ENDIF
 !
         IF(NCSIZE.GT.1) THEN
-          HB =P_DMAX(MAX( HB,0.D0))-P_DMIN(MAX( -HB,0.D0))
-          HA =P_DMAX(MAX( HA,0.D0))-P_DMIN(MAX( -HA,0.D0))
-          ZFA=P_DMAX(MAX(ZFA,0.D0))-P_DMIN(MAX(-ZFA,0.D0))
-          ZFB=P_DMAX(MAX(ZFB,0.D0))-P_DMIN(MAX(-ZFB,0.D0))
+          HB =P_DMAX(HB)+P_DMIN(HB)
+          HA =P_DMAX(HA)+P_DMIN(HA)
+          ZFA=P_DMAX(ZFA)+P_DMIN(ZFA)
+          ZFB=P_DMAX(ZFB)+P_DMIN(ZFB)
         ENDIF
 !
         YAA=HA+ZFA
