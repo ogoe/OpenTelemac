@@ -1,6 +1,6 @@
-!                    ***************** 
+!                    ****************
                      SUBROUTINE DIFFV 
-!                    ***************** 
+!                    **************** 
 ! 
      &(FD,FC,FN,VISCF,SIGMAF,S0F,YAS0F,S1F,YAS1F, 
      & FBORL,FBORF,FBORS,AFBORL,AFBORF,AFBORS, 
@@ -20,6 +20,8 @@
 ! 
 !brief    ???????????
 ! 
+!warning: a copy of diff3d with very little differences, should be done
+!+        with an option in diff3d.
 ! 
 !history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
 !+        27/02/2014
@@ -132,8 +134,7 @@
       USE BIEF 
       USE DECLARATIONS_TELEMAC 
 ! 
-      USE DECLARATIONS_TELEMAC3D, ONLY: T3_05 
- 
+      USE DECLARATIONS_TELEMAC3D, ONLY: T3_05  
 ! 
       IMPLICIT NONE 
       INTEGER LNG,LU 

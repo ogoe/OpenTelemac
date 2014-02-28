@@ -163,7 +163,6 @@
 !-----------------------------------------------------------------------
 !
 !     CORRECTION OF EROSION FLUXES ON TIDAL FLATS
-!     NOTE JMH: HMIN NOT DONE FOR THAT... 
 !
       DO I=1,NPOIN2
         IF(HN(I).LE.HMIN) THEN
@@ -173,20 +172,23 @@
 !
 !-----------------------------------------------------------------------
 !
+!     COMMENTED BY JMH ON 28/02/2014 (IF IT IS REALLY A PROBLEM
+!                                     WE NEED TO FIND A CLEANER SOLUTION)
+!
 !     PREVENTING EROSION AND DEPOSITION ON THE EXIT BOUNDARY
 !     (Fixed water depth)
 !
-      DO IPTFR = 1,NPTFR2
-        IF(LIHBOR%I(IPTFR).EQ.KENT) THEN
-          I = NBOR2%I(IPTFR)
-          FLUDPT(I)=0.D0
-          FLUER(I)=0.D0
-          DO IPLAN=1, NPLAN
-            I3D= I + (IPLAN-1)*NPOIN2
-            WC(I3D)=0.D0
-          ENDDO
-        ENDIF
-      ENDDO
+!     DO IPTFR = 1,NPTFR2
+!       IF(LIHBOR%I(IPTFR).EQ.KENT) THEN
+!         I = NBOR2%I(IPTFR)
+!         FLUDPT(I)=0.D0
+!         FLUER(I)=0.D0
+!         DO IPLAN=1, NPLAN
+!           I3D= I + (IPLAN-1)*NPOIN2
+!           WC(I3D)=0.D0
+!         ENDDO
+!       ENDIF
+!     ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -196,7 +198,7 @@
 !
         DO I=1,NPOIN2
           IF(LITABF(I).EQ.KLOG) THEN
-!           TOM : erosion and deposition are treated in MURD3D_POS  
+!           TOM : erosion and deposition are treated with advection  
             ATABOF(I) = 0.D0
             BTABOF(I) = 0.D0     
           ENDIF    

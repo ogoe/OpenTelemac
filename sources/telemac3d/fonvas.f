@@ -1,16 +1,13 @@
-! ZR not used anymore
-! ZF_S et ESOMT added
-! CALCUL DE MASDEP : MASSE TOTALE DEPOSE 
-!                   *****************
+!                    *****************
                      SUBROUTINE FONVAS
 !                    *****************
 !
      &(IVIDE  , EPAI   , CONC  , TREST  , TEMP   , HDEP  ,
-     & FLUDP, FLUDPT ,FLUER, ZF    , TA     , WC     , TRA01 ,
+     & FLUDP  , FLUDPT , FLUER , ZF     , TA     , WC    , TRA01 ,
      & TRA02  , TRA03  , NPOIN2, NPOIN3 , NPFMAX , NCOUCH,
-     & NPF    , LT     , DT     , DTC   , GRAV   , RHOS  ,
-     & CFMAX, TASSE  , ITASS, 
-     & ZF_S, ESOMT,  VOLU2D, MASDEP, SETDEP)
+     & NPF    , LT     , DT    , DTC    , GRAV   , RHOS  ,
+     & CFMAX  , TASSE  , ITASS , 
+     & ZF_S   , ESOMT  , VOLU2D, MASDEP, SETDEP)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                   21/08/2010
@@ -44,7 +41,9 @@
 !+        27/02/2014
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
-!
+!+   ZR not used anymore, ZF_S and ESOMT added.
+!+   MASDEP computed: total deposited mass.
+! 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CFDEP          |-->| CONCENTRATION OF MUD DEPOSIT (G/L)
 !| CFMAX          |<->| CONCENTRATION OF CONSOLIDATED MUD (G/L)
@@ -149,12 +148,11 @@
 !       
       FLUX=0.D0
 !
-!Schema explicite (EXPTSED) FLUDP calcule dans MURD3D_POS
+! Schema explicite (EXPTSED) FLUDP calcule dans MURD3D_POS
 !
-!Schema implicite  CONSTRUCTION OF FLUDP:  
+! Schema implicite  CONSTRUCTION OF FLUDP:  
 ! correction for tidal flats: take the first point above crushed planes
-! IPBOT =0  :  no tidal flats
-! Ipbot = nplan-1 : dry element
+! IPBOT =0  :  no tidal flats  IPBOT = NPLAN-1 : dry element
 ! CV 01/2014 ....
 !
       IF(SETDEP.EQ.0) THEN
@@ -205,24 +203,25 @@
 !
             DO IC=1,NCOUCH
 !                   
-                QS = CONC(IPOIN,IC)*EPAI(IPOIN,IC)
+              QS = CONC(IPOIN,IC)*EPAI(IPOIN,IC)
 !               
-                TOTMASS = TOTMASS + QS
-!               check if we have eroded enough entire layers
-                IF(TOTMASS.LT.QERODE) THEN
-                  EPAI(IPOIN,IC) = 0.D0
-                ELSE
+              TOTMASS = TOTMASS + QS
+!             check if we have eroded enough entire layers
+              IF(TOTMASS.LT.QERODE) THEN
+                EPAI(IPOIN,IC) = 0.D0
+              ELSE
 !
-                    ! we have got to the correct layer. 
-                    ! How much of it do we need to erode?
-                    QS = TOTMASS - QERODE
+!               we have got to the correct layer. 
+!               How much of it do we need to erode?
+                QS = TOTMASS - QERODE
 ! 
-                    ! calculate new thickness
-                    EPAI(IPOIN,IC) = QS/CONC(IPOIN,IC)
+!               calculate new thickness
+                EPAI(IPOIN,IC) = QS/CONC(IPOIN,IC)
 !
-                    ! jump out of layer loop
-                    GOTO 10
-                ENDIF     
+!               jump out of layer loop (note JMH: EXIT ?)
+                GOTO 10
+              ENDIF
+!     
 ! Check : if IC=1 and all layers are empty 
 ! -> add a message error
 !
@@ -230,17 +229,17 @@
 !
 10      CONTINUE
 ! 
-!Then Deposition in Top layer
+!       Then Deposition in Top layer
 !  
-          EPAI(IPOIN,1)=EPAI(IPOIN,1)+
+        EPAI(IPOIN,1)=EPAI(IPOIN,1)+
      &         FLUDP(IPOIN)*DT/CONC(IPOIN,1)
 !
-! Recalucate the sediment bed thickness
+! Recalculate the sediment bed thickness
 ! 
-         SEDBED= 0.D0
-         DO IC=1,NCOUCH
-           SEDBED =  SEDBED+EPAI(IPOIN,IC)
-         ENDDO
+        SEDBED= 0.D0
+        DO IC=1,NCOUCH
+          SEDBED =  SEDBED+EPAI(IPOIN,IC)
+        ENDDO
 !         
 ! BED  EVOLUTION 
 ! AND BED THICKNESS : HDEP
@@ -248,9 +247,9 @@
         ZF_S(IPOIN)=  SEDBED -HDEP(IPOIN)
         HDEP(IPOIN) = SEDBED
 !
-!        ENDIF
+!      ENDIF
 !  
-       ENDDO
+      ENDDO
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ! 
@@ -331,13 +330,6 @@
 !      TOTAL DEPOSITED MASS --> MASDEP
 !
        MASDEP = MASDEP + FLUX*DT
-!
-! CV   Check for parallel
-! note JMH: questionable (if you do it at every time-step
-!                         P_DSUM should be done only at the end
-!                         or on FLUX only)
-!      IF(NCSIZE.GT.1) MASDEP=P_DSUM(MASDEP)
-! ..CV        
 !
 !=======================================================================
 !
