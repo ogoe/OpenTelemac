@@ -112,6 +112,11 @@
 !+   After second call to bief_suite, checking that Z has been found,
 !+   otherwise stop
 !
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments in sediment merged on 25/02/2014.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

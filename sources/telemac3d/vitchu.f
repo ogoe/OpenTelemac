@@ -5,7 +5,7 @@
      &(WCHU,WCHU0,TURBWC,U,V,W,H,RUGOF,LISRUF,TURBA,TURBB,
      & TRAV1,TRAV2,TRAV3,S,MESH3D,IELM3,NPOIN2,NPOIN3,NPLAN,NTRAC,
      & MSK,MASKEL,UETCAR,TA,HN,HMIN,
-     & FLOC, FLOC_TYPE, HINDER,HIND_TYPE,CGEL,CINI)
+     & FLOC,FLOC_TYPE,HINDER,HIND_TYPE,CGEL,CINI)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                  21/08/2010
@@ -36,6 +36,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments in sediment merged on 25/02/2014.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| WCHU           |<--| SEDIMENT SETTLING VELOCITY (M/S)
@@ -84,31 +89,23 @@
       INTEGER, INTENT(IN)           :: NTRAC,HIND_TYPE, FLOC_TYPE
       DOUBLE PRECISION, INTENT(IN)  :: WCHU0,TURBA,TURBB,HMIN,CGEL
       DOUBLE PRECISION, INTENT(IN)  :: CINI
-
 !     
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!     LOCAL:
-      INTEGER          :: I
-      DOUBLE PRECISION :: QRWC
-      DOUBLE PRECISION :: PHI,PHI_P,PHI_STAR
-!      
-!     CONSTANTS:
-!     CV : CINI IS NOW A  KEYWORD...
-!     DOUBLE PRECISION, PARAMETER :: CINI=2.D0 
-!      
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      INTEGER I
+!         
+!-----------------------------------------------------------------------
 !
 !     CONSTANT VALUE GIVEN HERE
 !
       CALL OS( 'X=C     ' , X=WCHU , C=WCHU0 )   
 !
-!1. FLOCULATION 
+! 1. FLOCULATION 
 !
       IF(FLOC) THEN
         IF(FLOC_TYPE.EQ.1) THEN
 !
-! SOULSBY FLOC MODEL
+!         SOULSBY FLOC MODEL
 !
           IF(HINDER) THEN
             CALL OS('X=-(Y,C)',X=TRAV1,Y=TA%ADR(NTRAC)%P,C=CINI)
@@ -129,8 +126,12 @@
 !
         ELSE
 !
-!         ERROR MESSAGE MISSING !!!!!!!!
-!   
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'FORMULE POUR FLOCULATION INCONNUE : ',FLOC_TYPE
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'UNKNOWN FLOCULATION FORMULA: ',FLOC_TYPE
+          ENDIF      
           CALL PLANTE(1)
           STOP
 !
@@ -150,7 +151,7 @@
         ! Would be better to pass
         ! a pointer and use double array in WCHIND
         CALL OS('X=Y     ',X=TRAV1,Y=TA%ADR(NTRAC)%P)
-        CALL WCHIND(WCHU, TRAV1, CINI, CGEL, NPOIN3,HIND_TYPE)
+        CALL WCHIND(WCHU,TRAV1,CINI,CGEL,NPOIN3,HIND_TYPE)
       ENDIF
 !
 !-----------------------------------------------------------------------

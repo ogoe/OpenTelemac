@@ -2,7 +2,7 @@
                      SUBROUTINE WCHIND 
 !                    ***************** 
 ! 
-     & (WC, C, CINI, CGEL, NPOIN3, HIND_TYPE) 
+     &(WC,C,CINI,CGEL,NPOIN3,HIND_TYPE) 
 ! 
 !*********************************************************************** 
 ! TELEMAC3D   V7P0                                   21/08/2010 
@@ -26,7 +26,7 @@
 !| HN             |-->| WATER DEPTH 
 !| NPOIN3         |-->| TOTAL NUMBER OF POINTS IN 3D MESH 
 !| WC             |<->| SEDIMENT SETTLING VELOCITY  
-!| C              |-->| CONETRATION OF SED AT NODES (actually TRAV1) 
+!| C              |-->| CONCENTRATION OF SED AT NODES (actually TRAV1) 
 !| CINI           |-->| THRESHOLD CONCENTATION FOR HINDERING TO START 
 !| CGEL           |<--| SEDIMENT CONCENTRATION AT WHICH SEDIMENT FORMS
 !|                |   | A WEAK SOIL (KG/M3) 
@@ -63,7 +63,7 @@
             PHI = (C%R(I)-CINI) / CGEL 
             QRWC = 1.D0-PHI 
 !           CV: WC now positive   
-            WC%R(I) = max(WC%R(I)*QRWC**5,0.D0)
+            WC%R(I) = MAX(WC%R(I)*QRWC**5,0.D0)
           ELSEIF(HIND_TYPE.EQ.2) THEN  
             WRITE(LU,*) 'WINTERWERP HINDRED SETTLING DOES NOT WORK YET'
             CALL PLANTE(1)

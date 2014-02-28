@@ -17,7 +17,7 @@
      & YAWCC,WCC,AGGLOD,NSCE,SOURCES,FSCE,NUMLIQ,DIRFLU,NFRLIQ,
      & VOLUT,ZT,ZPROP,RAIN,PLUIE,PARAPLUIE,TRAIN,
      & FLODEL,FLOPAR,SIGMAG,IPBOT,MAXADV,FLUDPT,FLUDP,FLUER,
-     & VOLU2D, V2DPAR, SETDEP)
+     & VOLU2D,V2DPAR,SETDEP)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                   21/08/2010
@@ -512,19 +512,21 @@ CV
      &   NPOIN2,NPOIN3,DT,FLUXF, OPTBAN,NPLAN,
      &   WCC,FLUDPT,FLUDP, FLUER,IPBOT,VISCF%ADR(3)%P)
 !
-! vertical diffusion is already accounted for then set to 0
-! pour appel a diff3d
+!        VERTICAL DIFFUSION HAS ALREADY BEEN TREATED THEN IT IS SET
+!        TO 0. HERE FOR CALLING DIFF3D
+!
+!        NOTE JMH: WILL BE CANCELLED FOR OTHER TRACERS !!!!
+!                  LUCKILY SEDIMENT IS THE LAST
+!                  TO BE DONE WITH %TYPR (BUT MT02PP TO BE MODIFIED
+!                  ACCORDINGLY)
 !
          IF(SCHDF.EQ.1) THEN  
            CALL OS('X=0     ', VISCF%ADR(3)%P)
            YAWCC=.FALSE.
-!         ELSE 
-!           FOR VERTICAL DIFFUSION ONLY SET SCHDF TO 0
-!           (NO CALL TO DIFF3D)         
-!           SCHDF=0
          ENDIF
 !
        ENDIF
+!
 !-----------------------------------------------------------------------
 !
 !     RE-ENFORCES DIRICHLET POINTS (MAY CAUSE MASS ERRORS)
