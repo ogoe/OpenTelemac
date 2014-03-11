@@ -117,6 +117,11 @@
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
 !
+!history  J-M HERVOUET (LNHE)
+!+        11/03/2014
+!+        V7P0  
+!+   CALL BIL3D put out of the IF(SEDI) test.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -2509,31 +2514,28 @@
 !
         IF(SEDI) THEN
 !           
-! CV  POUR BILAN
-! DETERMINE MASSUSP: MASS IN SUSPENSION
-!            MASBED: MASS OF SEDIMENT BED
-!            MASDEP: DEPOSITED MASS
-         MASSUSP = MASSE%R(5+NTRAC)
-! INNITIALISZATION
-         IF(LT.EQ.1) MASSUSP0 = MASSUSP
+!         DETERMINE MASSUSP: MASS IN SUSPENSION
+!         MASBED: MASS OF SEDIMENT BED
+!         MASDEP: DEPOSITED MASS
+          MASSUSP = MASSE%R(5+NTRAC)
+!         INITIALISATION
+          IF(LT.EQ.1) MASSUSP0 = MASSUSP
 !
-         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SED3D'
+          IF(INFOGR) THEN
+            IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SED3D'
+            CALL SED3D(MASBED,MASBED0, MASDEP, WCHU%R,TA%ADR(NTRAC)%P%R,
+     &                 EPAI,HDEP%R,CONC,FLUER%R,FLUDP%R,T2_01%R,
+     &                 NELEM2,NPOIN2,NPOIN3,NPFMAX,NCOUCH,
+     &                 NPF%I,AT,TASSE,GIBSON,RHOS,VOLU2D%R)
 !
-         IF(INFOGR) THEN
-           CALL SED3D(MASBED,MASBED0, MASDEP, WCHU%R,TA%ADR(NTRAC)%P%R,
-     &               EPAI,HDEP%R,CONC,FLUER%R,FLUDP%R,T2_01%R,
-     &               NELEM2,NPOIN2,NPOIN3,NPFMAX,NCOUCH,
-     &               NPF%I,AT,TASSE,GIBSON,RHOS,VOLU2D%R)
+            IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SED3D'
+          ENDIF
 !
-          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SED3D'
         ENDIF
-!            
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIL3D'
         CALL BIL3D(LT,MESH3D%IKLBOR%I,NPTFR2,NETAGE,NELEM2)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIL3D'
-!
-!
-       ENDIF
 !
       ENDIF
 !
