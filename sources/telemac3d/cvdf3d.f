@@ -63,6 +63,12 @@
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
 !
+!history  J.M. HERVOUET (LNHE)
+!+        11/03/2014
+!+        V6P3
+!+   Call to DIFFV removed (other solution prepared to remove
+!+   horizontal diffusion if necessary).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
 !|                |   |  NU*DF/DN = AFBORF*U + BFBORF
@@ -595,9 +601,8 @@
 !         RAIN HAS ALREADY BEEN TREATED BY DISTRIBUTIVE SCHEMES
           YARAIN=.FALSE.
         ENDIF
-! 3D DIFFUSION 
-        IF(SCHDF.EQ.1) THEN
-           CALL DIFF3D(FD,FC,FN,VISCF,SIGMAF,
+! 
+        CALL DIFF3D(FD,FC,FN,VISCF,SIGMAF,
      &              S0F,YAS0F,S1F,YAS1F,
      &              FBORL,FBORF,FBORS,AFBORL,AFBORF,AFBORS,
      &              BFBORL,BFBORF,BFBORS,LIFBOF,LIFBOL,LIFBOS,
@@ -611,30 +616,7 @@
      &              NPLAN,OPTBAN,OPTDIF,TETADI,YAWCC,WCC,AGGLOD,
      &              VOLUME,YASCE,NSCE,FSCE,SOURCES,TETASUPG,
      &              VELOCITY,YARAIN,PLUIE%R,TRAIN,SIGMAG,IPBOT)
-         ELSE
 !
-! VERTICAL DIFFUSION (ONLY FOR EXPLICIT SCHEME)
-!
-          IF(SETDEP.EQ.0) THEN      
-           CALL DIFFV(FD,FC,FN,VISCF,SIGMAF,
-     &              S0F,YAS0F,S1F,YAS1F,
-     &              FBORL,FBORF,FBORS,AFBORL,AFBORF,AFBORS,
-     &              BFBORL,BFBORF,BFBORS,LIFBOF,LIFBOL,LIFBOS,
-     &              FMIN,CLIMIN,FMAX,CLIMAX,
-     &              SCHCF,SCHDF,SLVDIF,TRBAF,INFOR,NEWDIF,
-     &              DT,T2_01,T2_02,T2_03,T3_01,T3_02,T3_03,T3_04,
-     &              NPOIN2,NPOIN3,INCHYD,SEM3D,YASEM3D,IT1,
-     &              NPTFR3,NBOR3,MASKPT,TRAV3,MESH2D,
-     &              MESH3D,MTRA1,MTRA2,IELM3,MSUPG,IELM2H,IELM2V,
-     &              MDIFF,MATR2H,MASKBR,SVIDE,MSK,MASKEL,H,
-     &              NPLAN,OPTBAN,OPTDIF,TETADI,YAWCC,WCC,AGGLOD,
-     &              VOLUME,YASCE,NSCE,FSCE,SOURCES,TETASUPG,
-     &              VELOCITY,YARAIN,PLUIE%R,TRAIN,SIGMAG,IPBOT)
-         ELSE
-! FOR EXPLICIT CONVECTION SCHEME : vertical diffusion is already accounted for
-           CALL OS ( 'X=Y     ', X=FD, Y=FC )         
-         ENDIF
-      ENDIF
         IF(SCHCF.EQ.ADV_SUP.AND..NOT.VELOCITY) THEN
 !         MESH3D%Z RESTORED
           MESH3D%Z%R=>SAVEZ
