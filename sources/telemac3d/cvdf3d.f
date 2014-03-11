@@ -67,7 +67,9 @@
 !+        11/03/2014
 !+        V6P3
 !+   Call to DIFFV removed (other solution prepared to remove
-!+   horizontal diffusion if necessary).
+!+   horizontal diffusion if necessary). To remove vertical diffusion
+!+   now component TYPR used (with corresponding implementation in
+!+   MT02PP.F.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
@@ -253,7 +255,7 @@
       INTEGER IP,K,NPTFR,IPLAN,IPTFR,IS,IPTFR2,I,IIS,PARA,DIM1X
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
       DOUBLE PRECISION STOFD,TETASUPG
-      CHARACTER(LEN=1) :: S0FTYPR
+      CHARACTER(LEN=1) :: S0FTYPR,NUZTYPR
       TYPE(BIEF_OBJ), POINTER :: VOLUME,S0F2
 !
 !     FUNCTIONS
@@ -269,9 +271,10 @@
 !
       DIM1X=BIEF_DIM2_EXT(IELM3,IELM3,1,'Q',MESH3D)
 !
-!     SAVING S0F%TYPR
+!     SAVING S0F%TYPR AND NUZ%TYPR
 !
       S0FTYPR=S0F%TYPR
+      NUZTYPR=VISCF%ADR(3)%P%TYPR
 !
 !     DEALING WITH A VELOCITY ?
 !      
@@ -508,8 +511,9 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-! EXPLICIT VERTICAL DIFFUSION SCHEME FOR SEDIMENTS ADDED HERE
-! VOLU2: T3_01%R
+!
+!     EXPLICIT VERTICAL DIFFUSION SCHEME FOR SEDIMENTS ADDED HERE
+!     VOLU2: T3_01%R
 !
       IF(YAWCC.AND.SETDEP.EQ.1) THEN
 !
@@ -518,15 +522,11 @@
      &               WCC,FLUDPT,FLUDP, FLUER,IPBOT,VISCF%ADR(3)%P)
 !
 !       VERTICAL DIFFUSION HAS ALREADY BEEN TREATED THEN IT IS SET
-!       TO 0. HERE FOR CALLING DIFF3D
-!
-!       NOTE JMH: WILL BE CANCELLED FOR OTHER TRACERS !!!!
-!                 LUCKILY SEDIMENT IS THE LAST.
-!                 TO BE DONE WITH %TYPR (BUT MT02PP TO BE MODIFIED
-!                 ACCORDINGLY)
+!       TO 0 (VIRTUALLY, WITH COMPONENT TYPR, SEE HOW MT02PP IS WRITTEN).
 !
         IF(SCHDF.EQ.1) THEN  
-          CALL OS('X=0     ', VISCF%ADR(3)%P)
+!         CALL OS('X=0     ', VISCF%ADR(3)%P)
+          VISCF%ADR(3)%P%TYPR='0'
           YAWCC=.FALSE.
         ENDIF
 !
@@ -616,7 +616,7 @@
      &              NPLAN,OPTBAN,OPTDIF,TETADI,YAWCC,WCC,AGGLOD,
      &              VOLUME,YASCE,NSCE,FSCE,SOURCES,TETASUPG,
      &              VELOCITY,YARAIN,PLUIE%R,TRAIN,SIGMAG,IPBOT)
-!
+! 
         IF(SCHCF.EQ.ADV_SUP.AND..NOT.VELOCITY) THEN
 !         MESH3D%Z RESTORED
           MESH3D%Z%R=>SAVEZ
@@ -719,6 +719,10 @@
 !                        SUB ITERATION)
 !
       S0F%TYPR=S0FTYPR
+!
+!     RESTORING NUZ FOR FURTHER USES
+!
+      VISCF%ADR(3)%P%TYPR=NUZTYPR
 !
 !-----------------------------------------------------------------------
 !
