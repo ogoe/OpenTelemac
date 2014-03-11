@@ -74,6 +74,11 @@
 !+        V6P2
 !+   Replaced EPSILON with EPSI due to nag compiler problems
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)     
+!+        11/03/2014
+!+        V7P0
+!+   Now SH%TYPR checked to cancel vertical diffusion.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
 !| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
@@ -143,10 +148,27 @@
       DOUBLE PRECISION EPSI
       DATA EPSI/1.D-4/
 !
-!***********************************************************************
+!-----------------------------------------------------------------------
 !
       XS06=XMUL/6.D0
       XS2880=XMUL/2880.D0
+!
+!-----------------------------------------------------------------------
+!
+!     VERY IMPORTANT !!!!!!!!!
+!
+!     SH%TYPR CHECKED TO CANCEL DIFFUSION ALONG Z
+!
+!     NOTE: XS06 ONLY USED WITH DIFFUSION ALONG Z !!!!!!!!!
+!
+      IF(SH%TYPR.EQ.'0') THEN
+        XS06=0.D0
+      ENDIF
+!
+!     COULD BE OPTIMISED MORE BUT WOULD REQUEST SPLITTING LOOPS
+!     INTO HORIZONTAL AND VERTICAL
+!
+!-----------------------------------------------------------------------
 !
       IF(SF%ELM.NE.41) THEN
         IF (LNG.EQ.1) WRITE(LU,1000) SF%ELM
