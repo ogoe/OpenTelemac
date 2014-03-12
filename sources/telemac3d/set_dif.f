@@ -1,10 +1,8 @@
-! volu2, v2dpar NOT USEFUL 
 !                    ******************
                      SUBROUTINE SET_DIF 
 !                    ****************** 
 ! 
-     &(FC,FN,VOLU2,VOLU2D,V2DPAR, MESH3D,  
-     & NPOIN2,NPOIN3,DT,FLUX,OPTBAN,NPLAN, 
+     &(FC,VOLU2D,MESH3D,NPOIN2,NPOIN3,DT,FLUX,NPLAN, 
      & WCC,FLUDPT,FLUDP,FLUER,IPBOT,VISCTA) 
 ! 
 !*********************************************************************** 
@@ -34,18 +32,13 @@
 !| FLUDPT         |-->| DEPOSITION FLUX - IMPLICIT PART (SEDIMENT) 
 !| FLUDP          |-->| DEPOSITION FLUX  (SEDIMENT) 
 !| FLUX           |<->| GLOBAL FLUXES TO BE CHANGED 
-!| FN             |-->| VARIABLE AT TIME N 
 !| IPBOT          |-->| PLANE NUMBER OF LAST CRUSHED PLANE (0 IF NONE) 
 !| MESH3          |<->| 3D MESH 
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS 
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D 
 !| NPOIN3         |-->| NUMBER OF 3D POINTS 
-!| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE 
-!|                |   | MODIFIED AND PIECE-WISE LINEAR 
-!| VOLU2          |<->| CONTROL VOLUME, ASSEMBLED IN PARALLEL 
-!| VOLU2D         |-->| INTEGRAL OF TEST FUNCTIONS IN 2D (SURFACE OF ELEMENTS)  
-!| V2DPAR         |-->| IDEM FOR PARALLEL 
-!| WCC            |-->|  SETTLING VELOCITY (SEDIMENT) 
+!| VOLU2D         |-->| INTEGRAL OF TEST FUNCTIONS IN 2D
+!| WCC            |-->| SETTLING VELOCITY (SEDIMENT) 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
       USE BIEF 
@@ -58,48 +51,28 @@
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER, INTENT(IN)             :: NPOIN3,NPOIN2 
-      INTEGER, INTENT(IN)             :: OPTBAN,NPLAN 
-!       
+      INTEGER, INTENT(IN)             :: NPOIN3,NPOIN2,NPLAN       
       INTEGER, INTENT(IN)             :: IPBOT(NPOIN2) 
 ! 
       DOUBLE PRECISION, INTENT(INOUT) :: FC(NPOIN3) 
-      DOUBLE PRECISION, INTENT(IN)    :: FN(NPOIN3) 
 ! 
-      DOUBLE PRECISION, INTENT(IN) :: VOLU2(NPOIN3) 
       DOUBLE PRECISION, INTENT(INOUT) :: FLUX 
       DOUBLE PRECISION, INTENT(IN)    :: DT 
 ! 
-      TYPE(BIEF_OBJ), INTENT(IN)      :: WCC, FLUDPT,V2DPAR, VOLU2D 
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLUDP, FLUER 
+      TYPE(BIEF_OBJ), INTENT(IN)      :: WCC,FLUDPT,VOLU2D 
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLUDP,FLUER 
       TYPE(BIEF_OBJ), INTENT(IN)      :: VISCTA 
 ! 
-      TYPE(BIEF_MESH), INTENT(IN)  :: MESH3D 
+      TYPE(BIEF_MESH), INTENT(IN)     :: MESH3D 
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER IPOIN,NITER,IS,IIS,I,OPT,IR 
-      INTEGER I1,I2,IPLAN,ISEG3D,I2D,I3D,IPTFR,SIZEINDIC 
-      INTEGER REMAIN_SEG,NEWREMAIN,REMAIN_TOT 
+      INTEGER IPOIN,I,I1,I2,IPLAN 
 ! 
-!----------------------------------------------------------------------- 
-! 
-      DOUBLE PRECISION P_DSUM 
-      EXTERNAL         P_DSUM 
-      INTEGER  P_ISUM 
-      EXTERNAL P_ISUM 
-! 
-      DOUBLE PRECISION RINIT,C,C2 
-      DOUBLE PRECISION VOLSEG1,VOLSEG2 
-! 
-      INTEGER          :: IP 
       DOUBLE PRECISION :: FLUSET,FLUERO,FLUDEP,FLUNET 
-      DOUBLE PRECISION :: MASSREM, MASSMIN, HI 
-! 
       DOUBLE PRECISION :: DCDZ,FLUDIF, Z1,Z2,NUT,FCMASS 
       DOUBLE PRECISION :: SETLOSS(NLAYMAX),DIFLOSS(NLAYMAX) 
-      DOUBLE PRECISION :: TOTLOSS, FLUSETIMP, FLUDIFIMP 
-      DOUBLE PRECISION :: DELTAF 
+      DOUBLE PRECISION :: TOTLOSS
 ! 
 !     CV vertical grid finite volume SCHEME   
 ! 

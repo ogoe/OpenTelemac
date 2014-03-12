@@ -92,10 +92,6 @@
 !     
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I
-!         
-!-----------------------------------------------------------------------
-!
 !     CONSTANT VALUE GIVEN HERE
 !
       CALL OS( 'X=C     ' , X=WCHU , C=WCHU0 )   
@@ -113,7 +109,7 @@
             CALL OS('X=Y     ',X=TRAV1,Y=TA%ADR(NTRAC)%P)
           ENDIF
 !
-	  CALL SOULSBYFLOC3D(WCHU,TRAV1%R,MESH3D,NPOIN2, 
+          CALL SOULSBYFLOC3D(WCHU,TRAV1%R,MESH3D,NPOIN2, 
      &                       NPOIN3,NPLAN,HN,HMIN,UETCAR%R)
 !
         ELSEIF(FLOC_TYPE.EQ.2) THEN 

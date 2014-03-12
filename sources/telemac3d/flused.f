@@ -80,18 +80,15 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC3D, ONLY: NPTFR2,NBOR2,LIHBOR,
-     &                                  IPBOT,SIGMAG,OPTBAN
-      USE DECLARATIONS_TELEMAC, ONLY: KENT, KSORT
+      USE DECLARATIONS_TELEMAC3D, ONLY: IPBOT,SIGMAG,OPTBAN
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NPOIN3, NPOIN2, NPLAN, KLOG
+      INTEGER, INTENT(IN) :: NPOIN3,NPOIN2,NPLAN,KLOG,SETDEP
       LOGICAL, INTENT(IN) :: SEDCO
-      INTEGER, INTENT(IN) :: SETDEP
 !
 !     BOTTOM
 !     ****
@@ -133,8 +130,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,IPTFR,I3D,IPLAN
-!     DOUBLE PRECISION NZ
+      INTEGER I
 !
       INTRINSIC MAX
 !

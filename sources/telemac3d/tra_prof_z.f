@@ -90,8 +90,8 @@
             IPOIN3=IPOIN2+(IPLAN-1)*NPOIN2
             USTAR=MAX(SQRT(UETCAR%R(IPOIN2)),1.D-6)
             ROUSE= WCHU0*PRANDTL/KARMAN/USTAR
-!            ZREFE=KSPRATIO*DMOY%R(IPOIN2)
-	    ZREFE=ZREF%R(IPOIN2)
+!           ZREFE=KSPRATIO*DMOY%R(IPOIN2)
+            ZREFE=ZREF%R(IPOIN2)
             HH=MAX( MESH3D%Z%R(IPOIN2+(NPLAN-1)*NPOIN2)
      &             -MESH3D%Z%R(IPOIN2)  , 1.D-4)
             DELTAZ=MESH3D%Z%R(IPOIN3)-MESH3D%Z%R(IPOIN2)
@@ -113,9 +113,9 @@
 !         HERE VALID ONLY FOR SEDIMENT : ROUSE PROFILE
           HH=MAX( MESH3D%Z%R(IPOIN2+(NPLAN-1)*NPOIN2)
      &           -MESH3D%Z%R(IPOIN2)  , 1.D-4)
-           USTAR=MAX(SQRT(UETCAR%R(IPOIN2)),1.D-6)
+          USTAR=MAX(SQRT(UETCAR%R(IPOIN2)),1.D-6)
           ROUSE= WCHU0*PRANDTL/KARMAN/USTAR
-	  ZREFE=ZREF%R(IPOIN2)
+          ZREFE=ZREF%R(IPOIN2)
           B=ZREFE/HH
 !         CMEAN : Mean value (cf Sisyphe User Manual, 
 !                 subroutine suspension_Rouse)

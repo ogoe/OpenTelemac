@@ -7,7 +7,7 @@
      & NPF,AT,TASSE,GIBSON,RHOS,VOLU2D)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE RELATIVE MASS BALANCE FOR THE
@@ -40,6 +40,10 @@
 !+        V6P1
 !+   Call to massed replaces the old (and duplicated) formula.
 !
+!history  C. VILLARET & T. BENSON (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   New developments for sediment, merged on 25/02/2014.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
@@ -83,7 +87,6 @@
 !
       USE BIEF
 !
-!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -111,11 +114,6 @@
 !
       DOUBLE PRECISION ERROR
 !
-      INTEGER I
-!
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
-!
 !=======================================================================
 !
 ! COMPUTES THE MASS OF ERODED SEDIMENTS (MASSE3)
@@ -139,9 +137,9 @@
 !=======================================================================
 !
 !      FLUX=0.D0
-! FLUDP calculated in FONVAS (or MURD3D_POS) FLUDP>0
+!      FLUDP calculated in FONVAS (or MURD3D_POS) FLUDP>0
 !      DO I=1,NPOIN2
-!            FLUX=FLUX+FLUDP(I)*VOLU2D(I)
+!        FLUX=FLUX+FLUDP(I)*VOLU2D(I)
 !      ENDDO
 !
 !      MASSE4=FLUX*DT
@@ -161,7 +159,7 @@
 ! CUMULATED MASS OF SEDIMENT DEPOSITED (MASDEP =0 t=0)
 !
 !=======================================================================
-! MASDEP calculated in  fonvas
+!      MASDEP calculated in  fonvas
 !      MASDEP= MASDEP + MASSE5
 !=======================================================================
 !
@@ -176,45 +174,31 @@
 ! PRINTOUT
 !=======================================================================
 !
-         ERROR = MASBED-(MASBED0 + MASDEP)
+      ERROR = MASBED-(MASBED0 + MASDEP)
 !
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'BILAN MASSE DE SEDIMENTS (SED3D)  TEMPS : ',AT
         WRITE(LU,*) 'MASSE DU LIT                         : ',MASBED
-!
-!        IF(MASSE5.GT.0) THEN
-!          WRITE(LU,*) 'MASSE DEPOSEE AU COURS DU PAS DE TEMPS:',MASSE5
-!        ELSE
-!	  WRITE(LU,*) 'MASSE ERODEE AU COURS DU PAS DE TEMPS:',-MASSE5
-!        ENDIF
         IF(MASDEP.GT.0) THEN
-	   WRITE(LU,*) 'MASSE TOTALE  DEPOSEE               :', MASDEP
-	ELSE
-           WRITE(LU,*) 'MASSE TOTALE ERODEE                 : ',-MASDEP
+          WRITE(LU,*) 'MASSE TOTALE  DEPOSEE               :', MASDEP
+        ELSE
+          WRITE(LU,*) 'MASSE TOTALE ERODEE                 : ',-MASDEP
         ENDIF 
-         WRITE(LU,*) 'BILAN MASSE DU LIT (GAIN>0-  PERTE <0)  :', ERROR
+        WRITE(LU,*) 'BILAN MASSE DU LIT (GAIN>0-  PERTE <0)  :', ERROR
       ENDIF
-      
+!      
       IF(LNG.EQ.2) THEN
         WRITE(LU,*) 'SEDIMENT BED MASS BALANCE AT TIME=',AT
         WRITE(LU,*) 'MASSE OF BED                        : ',MASBED
-!
-!        IF(MASSE5.LT.0) THEN
-!          WRITE(LU,*) 'DEPOSITED MASS PER TIME STEP:', MASSE5
-!        ELSE
-!	  WRITE(LU,*) 'ERODED MASS PER TIME STEP:',MASSE5
-!        ENDIF
-
         IF(MASDEP.GT.0) THEN
-	   WRITE(LU,*) 'TOTAL DEPOSITED MASS               :', MASDEP
-	ELSE
-           WRITE(LU,*) 'TOTAL ERODED MASS                : ',-MASDEP
+          WRITE(LU,*) 'TOTAL DEPOSITED MASS               :', MASDEP
+        ELSE
+          WRITE(LU,*) 'TOTAL ERODED MASS                : ',-MASDEP
         ENDIF 
         WRITE(LU,*) 'SEDIMENT BED MASS BALANCE  (GAIN>0 LOSS<0):', ERROR
-
       ENDIF
 !
-!=======================================================================
+!-----------------------------------------------------------------------
 !
       RETURN
       END

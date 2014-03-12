@@ -1608,25 +1608,21 @@ C-----------------------------------------------------------------------
 C
       INTERFACE
         SUBROUTINE SET_DIF
-     &(FC,FN,VOLU2,VOLU2D,V2DPAR, MESH3D, 
-     & NPOIN2,NPOIN3,DT,FLUX, OPTBAN,NPLAN,
-     & WCC,FLUDPT,FLUDP, FLUER,IPBOT,VISCTA)
+     &(FC,VOLU2D,MESH3D,NPOIN2,NPOIN3,DT,FLUX,NPLAN,
+     & WCC,FLUDPT,FLUDP,FLUER,IPBOT,VISCTA)
 !
       USE BIEF_DEF
       IMPLICIT NONE
 !      
-      INTEGER, INTENT(IN)             :: NPOIN3,NPOIN2
-      INTEGER, INTENT(IN)             :: OPTBAN,NPLAN     
+      INTEGER, INTENT(IN)             :: NPOIN3,NPOIN2,NPLAN     
       INTEGER, INTENT(IN)             :: IPBOT(NPOIN2)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: FC(NPOIN3)
-      DOUBLE PRECISION, INTENT(IN)    :: FN(NPOIN3)
 !
-      DOUBLE PRECISION, INTENT(IN)    :: VOLU2(NPOIN3)
       DOUBLE PRECISION, INTENT(INOUT) :: FLUX
       DOUBLE PRECISION, INTENT(IN)    :: DT
 !
-      TYPE(BIEF_OBJ), INTENT(IN)      :: WCC, FLUDPT,V2DPAR, VOLU2D
+      TYPE(BIEF_OBJ), INTENT(IN)      :: WCC,FLUDPT,VOLU2D
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLUDP, FLUER
       TYPE(BIEF_OBJ), INTENT(IN)      :: VISCTA
 !
@@ -1634,6 +1630,7 @@ C
 !
         END SUBROUTINE
       END INTERFACE
+C
 C-----------------------------------------------------------------------
 C
       INTERFACE

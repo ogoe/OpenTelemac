@@ -44,12 +44,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 !  
-!     LOCAL 
       INTEGER                         :: IPOIN,IP,IPLAN 
-      DOUBLE PRECISION                :: DENS, UB, USTAR, EPS, DI4, DM4 
-      DOUBLE PRECISION                :: WS_MIC, WS_MAC, RR, DLC, BIGX 
-      DOUBLE PRECISION                :: EXP1, HAB, NU_WCUB, ETA 
-      DOUBLE PRECISION                :: DZ1,DZ2,Z 
+      DOUBLE PRECISION                :: DENS,USTAR,EPS,DI4,DM4 
+      DOUBLE PRECISION                :: WS_MIC,WS_MAC,RR,DLC,BIGX 
+      DOUBLE PRECISION                :: EXP1,NU_WCUB,ETA,Z 
  
 !     CONSTANTS: 
       DOUBLE PRECISION, PARAMETER     :: KAPPA=0.4D0 
