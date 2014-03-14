@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V6P3                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief
@@ -118,9 +118,10 @@
 !+   New developments in sediment merged on 25/02/2014.
 !
 !history  J-M HERVOUET (LNHE)
-!+        11/03/2014
+!+        14/03/2014
 !+        V7P0  
-!+   CALL BIL3D put out of the IF(SEDI) test.
+!+   CALL BIL3D put out of the IF(SEDI) test. Address of depth-averaged
+!+   tracers from 38 to 37+NTRAC in ALIRE2D.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -178,6 +179,7 @@
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
 !
       DOUBLE PRECISION ERROR
+!
 !=======================================================================
 !
 !  VARIABLES TO BE READ WHEN SUITE IS CALLED:
@@ -207,13 +209,12 @@
         DO I=ADR_TRAC,ADR_TRAC+NTRAC-1
           ALIRE3D(I)=1
         ENDDO
-! CV ??? lecture evolution variable 37 
-        DO I=37,36+NTRAC
-!        DO I=38,37+NTRAC
+        DO I=38,37+NTRAC
           ALIRE2D(I)=1
         ENDDO
 !
-!       IF(SEDI)ALIRE2D(37)=1
+!       THIS IS ESOMT...
+!       IF(SEDI) ALIRE2D(37)=1
 !
       ENDIF
 !
@@ -960,55 +961,47 @@
 !
       IF(BILMAS) THEN
 !
-         CALL MITTIT(10,AT,LT)
+        CALL MITTIT(10,AT,LT)
 !
-         CALL MASS3D(.TRUE.,LT)
+        CALL MASS3D(.TRUE.,LT)
 !
-         CALL OS ( 'X=Y     ', X=MASINI, Y=MASSE)
-         CALL OS ( 'X=0     ', X=FLUCUM         )
-         MASINI_WATER=MASSE_WATER
-         FLUXTOTCUM=0.D0
-!        MAYBE NOT USEFUL
-         CALL OS ( 'X=0     ', X=FLUX           )
+        CALL OS ( 'X=Y     ', X=MASINI, Y=MASSE)
+        CALL OS ( 'X=0     ', X=FLUCUM         )
+        MASINI_WATER=MASSE_WATER
+        FLUXTOTCUM=0.D0
+!       MAYBE NOT USEFUL
+        CALL OS ( 'X=0     ', X=FLUX           )
 !
-!CV INITIALIZATION OF BED PROPERTIES
+!       INITIALIZATION OF BED PROPERTIES
 ! 	MASBED0 INITIAL MASS
 !       ESOMT : CUMULATED BED EVOLUTION 
-!             --> Set to Zero but could be read from 2D file
+!       --> Set to Zero but could be read from 2D file
 !       MASDEP : Set to Zero 
 !
-      IF(SEDI) THEN
-      
-         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE MASSED'
-         CALL MASSED(MASBED0,EPAI,CONC,HDEP%R,T2_01%R,NPOIN2,NPFMAX,
-     &    NCOUCH, NPF%I,TASSE,GIBSON,RHOS,VOLU2D%R)
-!
-          MASDEP = 0.D0
-          
-         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE MASSED'
+        IF(SEDI) THEN      
+          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE MASSED'
+          CALL MASSED(MASBED0,EPAI,CONC,HDEP%R,T2_01%R,NPOIN2,NPFMAX,
+     &                NCOUCH,NPF%I,TASSE,GIBSON,RHOS,VOLU2D%R)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE MASSED'
+          MASDEP = 0.D0        
           CALL OS('X=0     ',X=ESOMT)
-!
-! PRINT INITIAL MASS 
-!
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'MASSE INITIALE DU LIT :',
-     &                MASBED0
+!         PRINT INITIAL MASS 
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'MASSE INITIALE DU LIT :',MASBED0
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'INITIAL MASS OF SEDIMENT BED :',MASBED0
+          ENDIF
         ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'INITIAL MASS OF SEDIMENT BED :',
-     &                MASBED0
-        ENDIF
-      ENDIF
-
-!...CV
+!
       ENDIF
 !
 !-----------------------------------------------------------------------
 ! RETURNS WHEN THE NUMBER OF REQUIRED TIMESTEPS IS 0
 !
       IF(NIT.EQ.0) THEN
-        IF (LNG == 1) WRITE(LU,11)
-        IF (LNG == 2) WRITE(LU,12)
+        IF(LNG.EQ.1) WRITE(LU,11)
+        IF(LNG.EQ.2) WRITE(LU,12)
         RETURN
       ENDIF
 !
@@ -2578,4 +2571,3 @@ C     ENDIF
 !
       RETURN
       END
-

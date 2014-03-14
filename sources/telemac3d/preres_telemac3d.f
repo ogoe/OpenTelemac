@@ -39,9 +39,9 @@
 !+   DH and HN added in a 3D array for a clean restart.
 !
 !history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
-!+        27/02/2014
+!+        14/03/2014
 !+        V7P0
-!+   New developments in sediment merged on 25/02/2014.
+!+   New developments in sediment merged on 14/03/2014.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LT             |-->| ITERATION NUMBER
@@ -69,9 +69,6 @@
       DATA DEJA/.FALSE./
 !
       INTRINSIC SQRT,MAX
-!
-!-----------------------------------------------------------------------
-!
 !
 !-----------------------------------------------------------------------
 !
@@ -222,52 +219,53 @@
 !=======================================================================
 !
       IF(LEO.AND.(SORG2D(32).OR.SORG2D(33).OR.SORG2D(34))) THEN
-!        QS IN T2_11, QSX IN T2_12, QSY IN T2_13
-!        GIVING A STRUCTURE OF LINEAR 2D VECTOR, LIKE H
-         CALL CPSTVC(H,T2_11)
-         CALL CPSTVC(H,T2_12)
-         CALL CPSTVC(H,T2_13)
-!        INITIALISES QSX AND QSY
-         CALL OS('X=0     ',X=T2_12)
-         CALL OS('X=0     ',X=T2_13)
-         DO IPLAN=1,NPLAN-1
-           DO I=1,NPOIN2
-             I3=I+NPOIN2*(IPLAN-1)
-             DELTAZ=Z(I3+NPOIN2)-Z(I3)
-!            INTEGRATES U*C ON THE VERTICAL
-             U_0=U%R(I3)
-             U_1=U%R(I3+NPOIN2)
-             V_0=V%R(I3)
-             V_1=V%R(I3+NPOIN2)
-             C_0=TA%ADR(NTRAC)%P%R(I3)
-             C_1=TA%ADR(NTRAC)%P%R(I3+NPOIN2)
-             T2_12%R(I)=T2_12%R(I)+DELTAZ*((U_0*C_1+U_1*C_0)/2.D0
-     &                                    +(U_1-U_0)*(C_1-C_0)/3.D0)
-             T2_13%R(I)=T2_13%R(I)+DELTAZ*((V_0*C_1+V_1*C_0)/2.D0
-     &                                    +(V_1-V_0)*(C_1-C_0)/3.D0)
-           ENDDO
-         ENDDO
-!        SOLID DISCHARGE IN M2/S (AS IN SISYPHE, FOR COMPARISON)
-         CALL OS('X=CX    ',X=T2_12,C=1.D0/RHOS)
-         CALL OS('X=CX    ',X=T2_13,C=1.D0/RHOS)
-!        QS AS NORM OF QSX AND QSY
-         IF(SORG2D(32)) THEN
-           CALL OS( 'X=N(Y,Z)' , X=T2_11 , Y=T2_12 , Z=T2_13 )
-         ENDIF
+!       QS IN T2_11, QSX IN T2_12, QSY IN T2_13
+!       GIVING A STRUCTURE OF LINEAR 2D VECTOR, LIKE H
+        CALL CPSTVC(H,T2_11)
+        CALL CPSTVC(H,T2_12)
+        CALL CPSTVC(H,T2_13)
+!       INITIALISES QSX AND QSY
+        CALL OS('X=0     ',X=T2_12)
+        CALL OS('X=0     ',X=T2_13)
+        DO IPLAN=1,NPLAN-1
+          DO I=1,NPOIN2
+            I3=I+NPOIN2*(IPLAN-1)
+            DELTAZ=Z(I3+NPOIN2)-Z(I3)
+!           INTEGRATES U*C ON THE VERTICAL
+            U_0=U%R(I3)
+            U_1=U%R(I3+NPOIN2)
+            V_0=V%R(I3)
+            V_1=V%R(I3+NPOIN2)
+            C_0=TA%ADR(NTRAC)%P%R(I3)
+            C_1=TA%ADR(NTRAC)%P%R(I3+NPOIN2)
+            T2_12%R(I)=T2_12%R(I)+DELTAZ*((U_0*C_1+U_1*C_0)/2.D0
+     &                                   +(U_1-U_0)*(C_1-C_0)/3.D0)
+            T2_13%R(I)=T2_13%R(I)+DELTAZ*((V_0*C_1+V_1*C_0)/2.D0
+     &                                   +(V_1-V_0)*(C_1-C_0)/3.D0)
+          ENDDO
+        ENDDO
+!       SOLID DISCHARGE IN M2/S (AS IN SISYPHE, FOR COMPARISON)
+        CALL OS('X=CX    ',X=T2_12,C=1.D0/RHOS)
+        CALL OS('X=CX    ',X=T2_13,C=1.D0/RHOS)
+!       QS AS NORM OF QSX AND QSY
+        IF(SORG2D(32)) THEN
+          CALL OS( 'X=N(Y,Z)' , X=T2_11 , Y=T2_12 , Z=T2_13 )
+        ENDIF
       ENDIF
 !
 !=======================================================================
-! DEPTH-AVERAGED TRACERS (VARIABLES 34 TO 34+NTRAC)
+! DEPTH-AVERAGED TRACERS (VARIABLES 38 TO 37+NTRAC)
 !=======================================================================
 !
       IF(NTRAC.GT.0) THEN
-      DO I=1,NTRAC
-      IF(LEO.AND.SORG2D(36+I)) THEN
-        CALL VERMOY(TRAV2%ADR(13+I)%P%R,TRAV2%ADR(13+I)%P%R,
-     &              TA%ADR(I)%P%R,TA%ADR(I)%P%R,1,Z,
-     &              T3_01%R,T3_02%R,T3_03%R,1,NPLAN,NPOIN2,NPLAN,OPTBAN)
-      ENDIF
-      ENDDO
+        DO I=1,NTRAC
+          IF(LEO.AND.SORG2D(37+I)) THEN
+            CALL VERMOY(TRAV2%ADR(13+I)%P%R,TRAV2%ADR(13+I)%P%R,
+     &                  TA%ADR(I)%P%R,TA%ADR(I)%P%R,1,Z,
+     &                  T3_01%R,T3_02%R,T3_03%R,1,NPLAN,NPOIN2,
+     &                  NPLAN,OPTBAN)
+          ENDIF
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
