@@ -89,6 +89,7 @@
         IF(LNG.EQ.2) WRITE(LU,901) IELM
 900     FORMAT(1X,'FROPRO : IELM=',1I6,' TYPE D''ELEMENT INCONNU')
 901     FORMAT(1X,'FROPRO: IELM=',1I6,' UNKNOWN TYPE OF ELEMENT')
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -99,24 +100,24 @@
 !=======================================================================
 !
          DO IPOIN = 1,NPOIN
-            T1(IPOIN) = 0
-         ENDDO ! IPOIN 
+           T1(IPOIN) = 0
+         ENDDO  
 !
 !        NUMBER OF ELEMENTS NEIGHBOURING A POINT
 !
          DO IELEM = 1,NELEM
-            T1(IKLE(IELEM,1)) = T1(IKLE(IELEM,1)) + 1
-            T1(IKLE(IELEM,2)) = T1(IKLE(IELEM,2)) + 1
-            T1(IKLE(IELEM,3)) = T1(IKLE(IELEM,3)) + 1
-         ENDDO ! IELEM 
+           T1(IKLE(IELEM,1)) = T1(IKLE(IELEM,1)) + 1
+           T1(IKLE(IELEM,2)) = T1(IKLE(IELEM,2)) + 1
+           T1(IKLE(IELEM,3)) = T1(IKLE(IELEM,3)) + 1
+         ENDDO  
 !
 !        NUMBER OF POINTS NEIGHBOURING A POINT
 !     =  NUMBER OF ELEMENTS NEIGHBOURING A POINT
 !     +  1 ON BOUNDARIES
 !
          DO IPTFR = 1,NPTFR
-            T1(NBOR(IPTFR)) = T1(NBOR(IPTFR)) + 1
-         ENDDO ! IPTFR 
+           T1(NBOR(IPTFR)) = T1(NBOR(IPTFR)) + 1
+         ENDDO  
 !
 !=======================================================================
 ! CHECKS THAT THE RENUMBERING WAS MADE CORRECTLY IN STBTEL
@@ -128,6 +129,7 @@
            IF(LNG.EQ.2) WRITE(LU,97)
 96         FORMAT(1X,'FROPRO : LE POINT 1 N''A PAS DE VOISIN')
 97         FORMAT(1X,'FROPRO: POINT NUMBER 1 HAS NO NEIGHBOUR')
+           CALL PLANTE(1)
            STOP
          ENDIF
 !
@@ -139,15 +141,17 @@
      &                'RENUMEROTATION DES POINTS AVEC STBTEL')
 99          FORMAT(1X,'FROPRO: FRONTAL PRODUCT REQUIRES A',/,1X,
      &                'RENUMBERING OF POINTS WITH STBTEL')
+            CALL PLANTE(1)
             STOP
           ELSEIF(T1(IPOIN).GT.MXPTVS) THEN
             IF(LNG.EQ.1) WRITE(LU,94) IPOIN
             IF(LNG.EQ.2) WRITE(LU,95) IPOIN
 94          FORMAT(1X,'FROPRO : LE POINT ',1I6,' A TROP DE VOISINS')
 95          FORMAT(1X,'FROPRO: POINT ',1I6,' HAS TOO MANY NEIGHBOURS')
+            CALL PLANTE(1)
             STOP
           ENDIF
-         ENDDO ! IPOIN 
+         ENDDO  
 !
 !  BUILDS ARRAY LIMVOI
 !  LIMVOI(K,1) : BEGINNING OF SERIES WITH K NEIGHBOURS
@@ -176,7 +180,7 @@
 !
          DO IPOIN = 1,NPOIN
            T1(IPOIN) = 1
-         ENDDO ! IPOIN 
+         ENDDO
 !
          IF(OPTASS.EQ.3) THEN
 !
