@@ -198,7 +198,14 @@
       DOUBLE PRECISION :: XA, YA, DISTB, DISTE, DMINB, DMINE
       DOUBLE PRECISION :: DIST1, DIST2, DIST3, DIST
       CHARACTER(LEN=MAXLENHARD) :: NAMESEC
-      LOGICAL :: WITH_SECTIONS=.FALSE.
+      LOGICAL :: WITH_SECTIONS=.FALSE., DONE_SECTIONS=.FALSE.
+!
+! #### FOR ZONES 
+!
+      LOGICAL :: WITH_ZONES=.FALSE., DONE_ZONES=.FALSE.
+      INTEGER, ALLOCATABLE :: FRICTION(:)
+      CHARACTER(LEN=MAXLENHARD) :: NAMEZFI
+      INTEGER :: NZFI,I_GLOB,VAL_ZFI
 !
 !     CD: FLAG FOR SERAFIN FORMAT (.TRUE. IF DOUBLE PRECISION)
 !
@@ -284,7 +291,7 @@
       INQUIRE (FILE=NAMEINP,EXIST=IS)
       IF (.NOT.IS) THEN 
         WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEINP
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
         STOP
       END IF  
 !
@@ -307,7 +314,7 @@
       INQUIRE (FILE=NAMECLI,EXIST=IS)
       IF (.NOT.IS) THEN 
         WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMECLI
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
         STOP
       END IF  
 !
@@ -389,10 +396,60 @@
         INQUIRE (FILE=NAMESEC,EXIST=IS)
         IF (.NOT.IS) THEN
           WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMESEC
-          CALL PLANTE(-1)
+          CALL PLANTE(1)
           STOP
         ENDIF  
       ENDIF
+      ! Not recalculating section if already done in previous run of partel
+      INQUIRE(FILE=TRIM(NAMESEC)//EXTENS(NPARTS,0),EXIST=DONE_SECTIONS)
+      WITH_SECTIONS = WITH_SECTIONS .AND. (.NOT. DONE_SECTIONS)
+!
+! #### THE ZONES FILE NAME 
+!
+      DO
+        IF( FOUND ) THEN                      
+           READ(72,*) I                       
+        ELSE                                  
+           WRITE(LU, ADVANCE='NO',FMT=
+     &    '(/,'' WITH ZONES? [1:YES 0:NO]: '')') 
+           READ(LI,*) I
+        ENDIF                                
+        IF ( I<0 .OR. I>1 ) THEN
+          WRITE(LU,'('' PLEASE ANSWER 1:YES OR 0:NO '')') 
+        ELSE
+          WRITE(LU,'('' INPUT: '',I4)') I
+          EXIT
+        END IF 
+      END DO
+      IF (I==1) WITH_ZONES=.TRUE.
+!
+      IF (WITH_ZONES) THEN 
+        DO
+          WRITE(LU, ADVANCE='NO', FMT=
+     &      '(/,'' FRICTION ZONES FILE NAME (OR RETURN) : '')')
+          IF(FOUND) THEN
+            READ(72,'(A)') NAMEZFI
+          ELSE
+            READ(LI,'(A)') NAMEZFI
+          ENDIF
+          IF (NAMEZFI.EQ.' ') THEN
+            WRITE (LU,'('' NO FILENAME '')') 
+          ELSE
+            WRITE(LU,*) 'INPUT: ',NAMEZFI
+            EXIT
+          ENDIF
+        ENDDO
+!  
+        INQUIRE (FILE=NAMEZFI,EXIST=IS)
+        IF (.NOT.IS) THEN
+          WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEZFI
+          CALL PLANTE(1)
+          STOP
+        ENDIF  
+      ENDIF
+      ! Not recalculating zone if already done in previous run of partel
+      INQUIRE(FILE=TRIM(NAMEZFI)//EXTENS(NPARTS-1,0),EXIST=DONE_ZONES)
+      WITH_ZONES = WITH_ZONES .AND. (.NOT. DONE_ZONES)
 !
       IF( FOUND ) CLOSE(72)
 !
@@ -415,7 +472,7 @@
         WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS' 
         WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
         WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -476,12 +533,12 @@
         WRITE(LU,*) 'NELEM NUMBER OF 3D MESH ELEMENTS:  ',NELEM
         IF (MOD(NPOIN,NPLAN).NE.0) THEN 
           WRITE (LU,*) 'BUT NPOIN2 /= NPOIN3/NPLAN!'
-          CALL PLANTE(-1)
+          CALL PLANTE(1)
           STOP   
         ENDIF
         IF (MOD(NELEM,(NPLAN-1)).NE.0) THEN 
           WRITE (LU,*) 'BUT NELEM2 /= NELEM3/NPLAN!'
-          CALL PLANTE(-1)
+          CALL PLANTE(1)
           STOP
         ENDIF
         WRITE(LU,*) ' '
@@ -503,7 +560,7 @@
       ELSE   
         WRITE(LU,*) 'THE ELEMENTS ARE NEITHER TRIANGLES NOR PRISMS!'
         WRITE(LU,*) 'NDP = ',NDP
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -666,7 +723,7 @@
         WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS' 
         WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
         WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -1065,7 +1122,7 @@
                IF(POS.GT.NBMAXNSHARE-1) THEN
                  WRITE(LU,*)  'ERROR : AN INTERFACE NODE BELONGS TO 
      &                 MORE THAN NBMAXNSHARE-1 SUBDOMAINS'
-                  CALL PLANTE(-1)
+                  CALL PLANTE(1)
                   STOP 
                ENDIF
                PART_P(NOEUD,POS)=I
@@ -1097,7 +1154,7 @@
                NHALO(I)=NHALO(I)+1
                IF(NHALO(I) > NBMAXHALO) THEN
                  WRITE(LU,*)  'ERROR : NBMAXHALO TOO SMALL'
-                 CALL PLANTE(-1)
+                 CALL PLANTE(1)
                  STOP 
                ENDIF
                IFAPAR(I,1,NHALO(I))=EF_II(J)
@@ -1118,7 +1175,7 @@
       IF(MAX_N_NEIGH.GT.MAXNPROC) THEN
          WRITE (LU,*) 'THERE IS A NODE WHICH BELONGS TO MORE THAN ',
      &        MAXNPROC,' PROCESSORS, HOW COME?'
-         CALL PLANTE(-1)
+         CALL PLANTE(1)
           STOP 
       ENDIF
       IF (MAX_N_NEIGH.LT.NBMAXNSHARE-1) MAX_N_NEIGH = NBMAXNSHARE-1
@@ -1537,6 +1594,7 @@ CD   -------------------------------------------------------------------
           CHAIN(ISEC)%NPAIR(:)=0
         ENDDO 
       ENDIF
+      CLOSE(NSCT)
 ! 
 !     IF TERMINAL POINTS GIVEN BY COORDINATES, FIND NEAREST NODES FIRST
 !
@@ -1645,7 +1703,7 @@ CD   -------------------------------------------------------------------
 !
         IF (IGBEST.EQ.PT) THEN
           WRITE(LU,*)'FLUSEC : ALGORITHM FAILED'
-          CALL PLANTE(-1)
+          CALL PLANTE(1)
           STOP
         ELSE
           PT = IGBEST
@@ -1653,7 +1711,7 @@ CD   -------------------------------------------------------------------
           IF (ISEG.GT.NSEMAX) THEN
             WRITE(LU,*) 'TOO MANY SEGMENTS IN A   '
             WRITE(LU,*) 'SECTION. INCREASE  NSEMAX'
-            CALL PLANTE(-1)
+            CALL PLANTE(1)
             STOP
           ENDIF
           LISTE(ISEG,1) = IKLE(ELBEST,ILPREC)
@@ -1685,7 +1743,7 @@ CD   -------------------------------------------------------------------
           IF (NPBEG>NBMAXNSHARE .OR. NPEND>NBMAXNSHARE) THEN 
             WRITE(LU,*) 'NPBEG OR NPEND: ',NPBEG,NPEND
             WRITE(LU,*) 'ARE LARGER THAN NBMAXNSHARE: ',NBMAXNSHARE
-            CALL PLANTE(-1) 
+            CALL PLANTE(1) 
             STOP
           ENDIF 
 !
@@ -1698,7 +1756,7 @@ CD   -------------------------------------------------------------------
                CHAIN(ISEC)%LISTE(ISEG,3)=IM(1) 
              ELSE ! THEY BELONG TO DIFFERENT SUBDOMAINS? HOW COME?
                WRITE(LU,*) 'IMPOSSIBLE CASE (1) BY SECTIONS'
-               CALL PLANTE(-1)
+               CALL PLANTE(1)
                STOP
              ENDIF 
           ! AT LEAST ONE OF THE TERMINAL NODES IS ON THE INTERFACE
@@ -1710,7 +1768,7 @@ CD   -------------------------------------------------------------------
                 CHAIN(ISEC)%LISTE(ISEG,3) = IM(1) 
               ELSE 
                 WRITE(LU,*) 'IMPOSSIBLE CASE (2) BY SECTIONS'
-                CALL PLANTE(-1)
+                CALL PLANTE(1)
                 STOP
               ENDIF 
             ELSE IF (NPBEG>1 .AND. NPEND==1) THEN ! THE SEGMENT'S BEG. TOUCHES THE INTERFACE
@@ -1719,7 +1777,7 @@ CD   -------------------------------------------------------------------
                 CHAIN(ISEC)%LISTE(ISEG,3) = IN(1) 
               ELSE 
                 WRITE(LU,*) 'IMPOSSIBLE CASE (3) BY SECTIONS'
-                CALL PLANTE(-1)
+                CALL PLANTE(1)
                 STOP
               ENDIF 
             ELSE ! I.E. (NPBEG>1 .AND. NPEND>1) - LIES JUST ON THE INTERFACE OR "A SHORTCUT" 
@@ -1760,7 +1818,7 @@ CD   -------------------------------------------------------------------
                 WRITE(LU,*) 'BY SECTION WITH NODES: ',
      &            CHAIN(ISEC)%LISTE(ISEG,1),CHAIN(ISEC)%LISTE(ISEG,2)
                 WRITE(LU,*) 'IMPOSSIBLE CASE (4) BY SECTIONS'
-                CALL PLANTE(-1)
+                CALL PLANTE(1)
                 STOP
               ENDIF 
 
@@ -1800,6 +1858,43 @@ CD   -------------------------------------------------------------------
 !
       WRITE(LU,*) 'FINISHED DEALING WITH SECTIONS'
       ENDIF ! NPLAN==0
+
+! !YA #### DEAL WITH ZONES 
+!
+!----------------------------------------------------------------------
+!
+      ! TODO: Handle 3d 
+      IF (NPLAN.NE.0) WITH_ZONES = .FALSE.
+      IF(WITH_ZONES) THEN 
+!
+      WRITE(LU,*) 'DEALING WITH ZONES WITH FILE ',TRIM(NAMEZFI)
+!     Reading the friction informations
+      OPEN(NZFI,FILE=TRIM(NAMEZFI),FORM='FORMATTED',STATUS='OLD') 
+      ALLOCATE (FRICTION(NPOIN), STAT=ERR) 
+      CALL CHECK_ALLOCATE(ERR, 'FRICTION') 
+      FRICTION(:) = 0
+      DO J=1,NPOIN
+        READ(NZFI,*,END=304,ERR=303) I, VAL_ZFI
+        FRICTION(I) = VAL_ZFI 
+      ENDDO
+      CLOSE(NZFI)
+
+      DO N=1,NPARTS
+        NAMEOUT=TRIM(NAMEZFI)//EXTENS(NPARTS-1,N-1)
+
+        WRITE(LU,*) 'WRITING: ', TRIM(NAMEOUT) 
+
+        OPEN (NOUT,FILE=TRIM(NAMEOUT),FORM='FORMATTED',STATUS='NEW')
+        DO I=1,NPOIN_P(N)
+          I_GLOB = KNOLG(I,N)
+          WRITE(NOUT,*) I, FRICTION(I_GLOB)
+        END DO
+        CLOSE(NOUT) 
+      END DO 
+      DEALLOCATE(FRICTION)
+
+      WRITE(LU,*) 'FINISHED DEALING WITH ZONES'
+      ENDIF ! WITH_ZONES
 !
 !----------------------------------------------------------------------
 !
@@ -1858,6 +1953,12 @@ CD   -------------------------------------------------------------------
       GO TO 998
  302  WRITE(LU,*) 'ERROR WHEN READING VARIABLES IN SECOND LOOP'
       GO TO 998
+! Error handling for zones
+ 303  WRITE(LU,*) 'ERROR WITH ZONE FILE FORMAT'
+      GO TO 999
+ 304  WRITE(LU,*) 'ABNORMAL END OF FILE'
+      GO TO 999
+      
 !
 !     CASE WITH ERROR
 !
@@ -1870,7 +1971,7 @@ CD   -------------------------------------------------------------------
       ELSE
         WRITE(LU,*) 'LAST TIME READ WAS ',TIMES,' ILOOP=',ILOOP
       ENDIF  
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
 !
  999  STOP  
 !

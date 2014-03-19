@@ -51,6 +51,8 @@
       INTEGER            :: I,K,IVAL1,IVAL2,NFILE
       INTEGER            :: NPOIN_GLOB,P_ISUM
       CHARACTER(LEN=144) :: NOMFILE
+      CHARACTER(LEN=144) :: tmp_name
+      integer,allocatable :: test(:)
 !
       EXTERNAL P_ISUM
 !
@@ -68,25 +70,12 @@
 !     this information is unknown for a parallel computation
 ! 
 !      
-      NPOIN_GLOB = 0
-      DO 
-        READ(NFILE,*,END=666)
-        NPOIN_GLOB = NPOIN_GLOB + 1
-      ENDDO
-666   CONTINUE      
-      WRITE(LU,*) 'FRICTION_USER: ',NPOIN_GLOB,' POINTS IN FILE'
-      REWIND(NFILE)
 !
 !     Reading File
 ! 
-      DO I = 1,NPOIN_GLOB
-         READ(NFILE,*,END=999,ERR=998) IVAL1, IVAL2
-         IF(NCSIZE.GT.1) THEN
-           K = GLOBAL_TO_LOCAL_POINT(I,MESH)
-         ELSE
-           K = I
-         ENDIF
-         IF(K.GT.0) KFROPT%I(K) = IVAL2
+      DO K=1,NPOIN
+        READ(NFILE,*,END=997,ERR=998) I, IVAL2
+        KFROPT%I(I) = IVAL2
       ENDDO
       GOTO 997
 !

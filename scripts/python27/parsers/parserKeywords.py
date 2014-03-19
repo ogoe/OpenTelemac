@@ -375,6 +375,10 @@ def getIOFilesSubmit(frgb,dico):
          if 'LIT' in dico[key]['SUBMIT'][0]:
             iFiles.update({key:dico[key]['SUBMIT'][0]})
             iFiles.update({frgb['FR'][key]:dico[key]['SUBMIT'][0]})
+            # File can be both read and write
+            if 'ECR' in dico[key]['SUBMIT'][0]:
+               oFiles.update({key:dico[key]['SUBMIT'][0]})
+               oFiles.update({frgb['FR'][key]:dico[key]['SUBMIT'][0]})
          elif 'ECR' in dico[key]['SUBMIT'][0]:
             oFiles.update({key:dico[key]['SUBMIT'][0]})
             oFiles.update({frgb['FR'][key]:dico[key]['SUBMIT'][0]})

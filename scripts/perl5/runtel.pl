@@ -640,6 +640,10 @@ for($i=0;$i<@vals;$i++)
     if (@valsd[0]=~/;SECTION/) 
      {printf $FH "push(\@sectionDSC,\"@valsd[0]\");\n"; }
     
+#Cas d'un fichier de type ZONES : le repÃÂ©rer pour PARTEL #### !YA
+    if (@valsd[0]=~/;ZONES/) 
+     {printf $FH "push(\@zoneDSC,\"@valsd[0]\");\n"; }
+
 #Cas d'un fichier de type SELAFIN-GEOM : le repÃÂ©rer pour GRETEL
     if (@valsd[0]=~/;SELAFIN-GEOM/) 
      {printf $FH "push(\@selgeomDSC,\"@valsd[0]\");\n"; }
@@ -880,7 +884,7 @@ $FFLAGS       = " ";
 $MPICONF       = "mpi_telemac.conf";
 
 @FORTRANS=(); @FORTINC=();
-@conlimDSC=(); @selgeomDSC=(); @sectionDSC=();
+@conlimDSC=(); @selgeomDSC=(); @sectionDSC=(); @zoneDSC=();
 $i0fic=1; #numero du premier fichier acqui/resti
 
 $CRAY         = "";

@@ -497,6 +497,7 @@ sub lecture_fichier_dictionnaire
   my ($motCourant,$ligneComplete)  =();
 
   # ouverture du fichier
+  print "$filedico";
   unless (open (FDICO, $filedico) ){
     info::info(10,"Ouverture impossible du fichier dictionnaire.");
     return;

@@ -271,6 +271,7 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
 
    xcpt = []                            # try all files for full report
    section_name = ''
+   zone_name    = ''
    # ~~ copy input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k,v in zip(*cas):
       if k in iFiles:
@@ -321,7 +322,15 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
                else:
                   print '    copying: ', path.basename(cref),crun
                   putFileContent(crun,getFileContent(cref)+[''])
-             
+            elif iFiles[k].split(';')[5][0:5] == 'ZONES':
+               # Giving zone name means that we have to give it to partel
+               zone_name = path.basename(crun)
+               if use_link:
+                  print '    linking: ', path.basename(cref),crun
+                  symlinkFile(path.join(getcwd(),cref), crun)
+               else:
+                  print '    copying: ', path.basename(cref),crun
+                  putFileContent(crun,getFileContent(cref)+[''])
             else:
                if use_link:
                   print '    linking: ', path.basename(cref),crun
@@ -338,7 +347,7 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
                shutil.copy2(path.join(getcwd(),cref), crun)
 
    if xcpt != []: raise Exception(xcpt) # raise full report
-   return section_name
+   return section_name,zone_name
 
 def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
 
@@ -478,7 +487,6 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
    if path.exists(f90Name) and not path.exists(useName):
    # ~~ requires compilation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       objCmd = objCmd.replace('<f95name>',f90Name)
-      print objCmd
       mes = MESSAGES(size=10)
       try:
          tail,code = mes.runCmd(objCmd,bypass)
@@ -487,7 +495,6 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
       if code != 0: raise Exception([{'name':'processExecutable','msg':'could not compile your FORTRAN (runcode='+str(code)+').\n      '+tail}])
       exeCmd = exeCmd.replace('<objs>',objName)
       exeCmd = exeCmd.replace('<exename>',path.basename(useName))
-      print exeCmd
       try:
          tail,code = mes.runCmd(exeCmd,bypass)
       except Exception as e:
@@ -548,7 +555,7 @@ def getGLOGEO(cas,iFiles):
          if iFiles[k].split(';')[5][-4:] == 'GEOM': GLOGEO = iFiles[k].split(';')[1]
    return GLOGEO
 
-def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,section_name,use_link):
+def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,section_name,zone_name,use_link):
 
    if ncsize < 2: return True
    # ~~ split input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -558,7 +565,7 @@ def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,section_name,use_link):
          if iFiles[k].split(';')[5][0:7] == 'SELAFIN':
             print ' partitioning: ', path.basename(crun)
             try:
-               runPARTEL(partel,crun,conlim,ncsize,bypass,section_name)
+               runPARTEL(partel,crun,conlim,ncsize,bypass,section_name,zone_name)
             except Exception as e:
                raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
          elif iFiles[k].split(';')[5][0:5] == 'PARAL':
@@ -571,11 +578,11 @@ def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,section_name,use_link):
 
    return True
 
-def runPARTEL(partel,file,conlim,ncsize,bypass,section_name):
+def runPARTEL(partel,file,conlim,ncsize,bypass,section_name,zone_name):
 
    has_section = str(0) if section_name == "" else str(1)
-   print has_section,section_name
-   putFileContent('PARTEL.PAR',[file,conlim,str(ncsize),str(1),has_section,section_name])
+   has_zone = str(0) if zone_name == "" else str(1)
+   putFileContent('PARTEL.PAR',[file,conlim,str(ncsize),str(1),has_section,section_name,has_zone,zone_name])
    parCmd = partel.replace('<partel.log>','partel_'+file+'.log').split(';')
    mes = MESSAGES(size=10)
    for p in parCmd:
@@ -835,6 +842,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    #    - if options.split, obvisouly this is PART I of the main file pre-processing
    #    - if options.compileonly, you also need to copy the FORTRAN FILE
    section_name = ''
+   zone_name = ''
    if not options.merge and not options.run and not hpcpass:
       print '\n... first pass at copying all input files'
       for name in CASFiles:
@@ -843,13 +851,13 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          chdir(CASFiles[name]['dir'])
          # >>> Copy INPUT files into wdir
          try:
-            section_name = processLIT(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'],
+            section_name,zone_name = processLIT(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'],
                        CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],options.use_link)
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
          for cplage in CASFiles[name]['with']:
             try:
-               section_name = processLIT(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],
+               section_name,zone_name = processLIT(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],
                           CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],options.use_link)
             except Exception as e:
                raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
@@ -917,7 +925,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS','msg':'could not compile: ' + path.basename(useFile)},e,options.bypass)])  # only one item here
          print ' re-copying: ',path.basename(useFile),exename
-         shutil.copy2(path.basename(useFile),useFile)
+         #shutil.copy2(path.basename(useFile),useFile) # Why ???
          shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
    
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1004,14 +1012,14 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          CONLIM = getCONLIM(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    # Global CONLIM file
          try:
             runPartition(parcmd,CASFiles[name]['cas'],CONLIM,MODFiles[CASFiles[name]['code']]['iFS'],
-                         ncsize,options.bypass,section_name,options.use_link)
+                         ncsize,options.bypass,section_name,zone_name,options.use_link)
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS','msg':'Partioning primary input files of the CAS file: '+name},e,options.bypass)])
          for cplage in CASFiles[name]['with']:
             CONLIM = getCONLIM(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
             try:
                runPartition(parcmd,CASFiles[name]['with'][cplage]['cas'],CONLIM,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],
-                            ncsize,options.bypass,section_name,options.use_link)
+                            ncsize,options.bypass,section_name,zone_name,options.use_link)
             except Exception as e:
                raise Exception([filterMessage({'name':'runCAS','msg':'Partioning coupling input files'},e,options.bypass)])
    

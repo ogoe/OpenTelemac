@@ -359,7 +359,7 @@ sub acquihpextens {
 } #acquihpextens
 
 #jaj number of parameters changed, added secFIC
-sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, secFICname)
+sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, secFICname, zonFIC, zonFICname)
 #_______________________________________________________________________
 #
 #  Acquisition des fichiers en mode PARALLEL  ($NCSIZE > 1)
@@ -373,6 +373,8 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
  my $autopar =@_[4];    #mode parallelisme automatique ou non
  my $secFIC=@_[5];      #the sections input file workdir name #jaj
  my $secFICname=@_[6];  #the sections input file real name #jaj
+ my $zfiFIC=@_[7];      #the zones input file workdir name #ya
+ my $zfiFICname=@_[8];  #the zones input file real name #ya
 #
  my @lfic=();
 #
@@ -409,7 +411,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
    	  else
    	    { acquihp   ( $FIL1, $FIL2);
    	      chdir($REP);
-   	      $rcp = RunPartel ($FIL2, $conlimFIC, $NCSIZE, $secFIC, $secFICname); #jaj
+   	      $rcp = RunPartel ($FIL2, $conlimFIC, $NCSIZE, $secFIC, $secFICname, $zfiFIC, $zfiFICname); #jaj
               if ( $rcp != 0 )  
                 {
                   open(F, ">>$REPLANCE$ps"."$PARA$WORKING"."_error.log");
@@ -927,7 +929,7 @@ sub restihpPARAL    # (ficnamcode, ficnam, ficGEOM, modepar, autopar)
 
 
 
-sub RunPartel       # (geo, cli, NCSIZE, sec, secname); #jaj added sec, secname)
+sub RunPartel       # (geo, cli, NCSIZE, sec, secname, zon, zonname); #jaj added sec, secname)
 #_______________________________________________________________________
 #
 #  Partitionnement automatique avec PARTEL
@@ -938,9 +940,9 @@ sub RunPartel       # (geo, cli, NCSIZE, sec, secname); #jaj added sec, secname)
  #Arguments de PARTEL dans "partel.par"
   open(FPAR,">partel.par") or die "File \'partel.par\' cannot be opened!";
  #PARTEL parameters (METIS_PartMeshDual method always choosen [=1])
-  #print FPAR "@_[0]\n@_[1]\n@_[2]\n1\n0\n\n";           #jaj without sec
-  if (@_[4] eq "") {$ifsec=0;} else {$ifsec=1;}          #jaj
-  print FPAR "@_[0]\n@_[1]\n@_[2]\n1\n$ifsec\n@_[3]\n";  #jaj
+  if (@_[4] eq "") {$ifsec=0;$ifsecname=""} else {$ifsec=1;$ifsecname=@_[3]}          #jaj
+  if (@_[6] eq "") {$ifzon=0;$ifzonname=""} else {$ifzon=1;$ifzonname=@_[5]}          #jaj
+  print FPAR "@_[0]\n@_[1]\n@_[2]\n1\n$ifsec\n$ifsecname\n$ifzon\n$ifzonname\n";  #jaj
   close(FPAR) or die "File \'partel.par\' cannot be closed!";
 # partel outputs redirected to a file
   $command=join "",$PROJECT,$ps,"builds$ps$dirlib$ps","bin$ps","partel$VERS[$0].exe < partel.par >> partel.log";
@@ -1440,23 +1442,42 @@ print "\n";
           }
         }
     }
+#ya similar procedure for zones input file
+  if ( ( $NCSIZE > 1) && (scalar(@zoneDSC) >=1 )  )
+    {
+     foreach $zoDSC (@zoneDSC)
+        { my @v=split(";", $zoDSC);
+          my $f=$v[0]; 
+          $zoneF=$v[1]; push (@zoF, $zoneF);
+          push (@zoF2, $$f);
+          if ($$f ne "")
+          {
+            if ($AUTOPAR eq "1") {acquihp( $$f, $zoneF);}
+                            else {acquihpextens( $$f, $zoneF);}
+          }
+        }
+    }
 
 # Autres fichiers decrits dans le dictionnaire du code :
 $i=0; 
 $iclCOD=0; $conlimF=@clF[$iclCOD];
-$iseCOD=0; $sectionF=@seF[$iseCOD]; #jaj
-           $sectionFname=@seF2[$iseCOD]; #jaj
+           $sectionF=@seF[$iclCOD]; #jaj
+           $sectionFname=@seF2[$iclCOD]; #jaj
+           $zoneF=@zoF[$iclCOD]; #ya
+           $zoneFname=@zoF2[$iclCOD]; #ya
 
 foreach (@FDESC)
 {
     ($varnam,$ficnamcod,$oblig,$fictyp,$ficmod,$modepar) = split (/;/,$_);
 
-#detecter le changement de code (couplage) et changer de fichier C.L. et sections #jaj
+#detecter le changement de code (couplage) et changer de fichier C.L. et sections et zones #jaj
     if ($varnam eq "NEWCODE") 
        {$iclCOD++; 
         $conlimF=@clF[$iclCOD]; 
         $sectionF=@seF[$iclCOD];  #jaj
         $sectionFname=@seF2[$iclCOD]; #jaj
+        $zoneF=@zoF[$iclCOD];  #ya
+        $zoneFname=@zoF2[$iclCOD]; #ya
         next;
        }
     
@@ -1467,7 +1488,7 @@ foreach (@FDESC)
       ecrire_FicTitrVal($FLNG1[$i],$FLNG2[$i], $$varnam);
 #
       if ( $NCSIZE > 1)
-        { acquihpPARAL  ( $$varnam, "$ficnamcod", $modepar, $conlimF, $AUTOPAR, $sectionF, $sectionFname);} #jaj
+        { acquihpPARAL  ( $$varnam, "$ficnamcod", $modepar, $conlimF, $AUTOPAR, $sectionF, $sectionFname, $zoneF, $zoneFname);} #jaj
       else
         { acquihp       ( $$varnam, "$ficnamcod");}
 
