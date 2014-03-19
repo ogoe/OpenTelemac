@@ -158,7 +158,8 @@ CONTAINS
     REAL (KIND=Double), ALLOCATABLE :: delta_dredge_node_depth_tc(:,:)
     !! variables
     LOGICAL :: l1 ! 
-    INTEGER :: i, j, k, n, m, p, crit_type ! 
+    INTEGER :: i, j, k, n, m, p, crit_type, ierror, stat ! 
+    REAL (KIND=Double) :: mm
     !! array for checking for minimum volume in sector
     REAL (KIND=Double), ALLOCATABLE :: total_volume_in_sector(:,:)
     !! array mastering information whether a node needs to be dredged or not
@@ -214,6 +215,8 @@ CONTAINS
     REAL (KIND=Double), ALLOCATABLE :: dredged_fractions_to_disp_tc(:,:)
     !! volume array for calculating the volume disposed on a node within a scour    
     REAL (KIND=Double), ALLOCATABLE :: check_node_total_volume(:)
+    !! local arrays supporting automatic disposal operations
+    REAL (KIND=Double), ALLOCATABLE :: scour_node_depth(:,:)
     !! sum of all evolutions when disposing in scours
     REAL (KIND=Double)              :: sum_of_evolutions
     !! total volume disposed in a scour
@@ -223,16 +226,28 @@ CONTAINS
     REAL (KIND=Double)              :: sum_porosity_inside
     REAL (KIND=Double)              :: nof_nodes_inside
     !! multi-used variable to detect values on interface nodes taken into account more than once
-    REAL (KIND=Double)              :: doppelt
+    REAL (KIND=Double)              :: doppelt, doppelt1, doppelt2, doppelt3, doppelt4
     !! little helpers for iteration when disposing in scours
     REAL (KIND=Double)              :: little_helper_1
     REAL (KIND=Double)              :: little_helper_2
     REAL (KIND=Double)              :: little_helper_3
     !!
     LOGICAL :: any_disp_poly_to_disp
+    REAL*4 :: real_time0, cpu_time0
+    REAL*4 :: real_time, cpu_time
+    integer start, ende, rate, cmax
+    real time
+    INTEGER :: restart_unit, status
+    CHARACTER (LEN=31) :: restart_filename
+    
+     REAL (KIND=Double), ALLOCATABLE :: T13_leo(:) ,T14_leo(:)
 
     TYPE(BIEF_OBJ) :: T13, T14
     !
+    !
+    IF (.NOT. ALLOCATED(T13_leo)) ALLOCATE(T13_leo(get_nof_nodes()))
+    IF (.NOT. ALLOCATED(T14_leo)) ALLOCATE(T14_leo(get_nof_nodes()))
+    
     !LEO BUG!!! check if dredge_criterion exists l1 is not used :-(
     IF (get_nof_dredge_poly() .GT. 0) THEN
       l1 = ALL( get_criterion_crit_type(dredge_criterion(:)) == 1 ) 
@@ -337,7 +352,7 @@ CONTAINS
        crit_type = get_criterion_crit_type( dredge_criterion(n) )
        !! calculating next time for observing the bottom
        IF ( time_to_observe(n) == initial_time) THEN
-          time_to_observe(n) = time_to_observe(n)+observing_period(n)
+       	  time_to_observe(n) = time_to_observe(n)+observing_period(n)
        END IF       
        !! checking  whether time for observation is reached
        IF ( time_to_observe(n) <= act_time .AND. navigation_possible(n) ) THEN
@@ -524,7 +539,7 @@ CONTAINS
     END DO
     !
     !! declarations for a format how to write dredging information on the screen
-!   7110 FORMAT (A27,' ',A52)
+    7110 FORMAT (A27,' ',A52)
     7120 FORMAT (A4,' ',G15.8,' ',F8.3,' ',I6,' ',G15.8,' ',G15.8,' ',G15.8)    
     !
 !    call system_clock(ende)
@@ -627,34 +642,34 @@ CONTAINS
        DO n=1,get_nof_dredge_poly( )
           DO i=1,get_nof_nodes( )
              IF (dredge_node_index(i,n) == 1 .AND. node_clean(i) == 1.D0) THEN
-                node_total_volume(i,n)     = node_total_volume(i,n)+ABS(node_depth_dredge(i)&
-                                             -node_depth(i))*node_area(i)
-!               node_sediment_volume(i,n)  = node_sediment_volume(i,n)+ABS(node_depth_dredge(i)&
-!                                            -node_depth(i))*node_area(i)*(1-node_porosity(i))
-!               node_water_volume(i,n)     = node_water_volume(i,n)+ABS(node_depth_dredge(i)&
-!                                            -node_depth(i))*node_area(i)*node_porosity(i)
-!               node_fraction_volume(i,:,n)= node_fraction_volume(i,:,n)+ABS(node_depth_dredge(i)&
-!                                            -node_depth(i))*node_area(i)*node_sediment_fraction(i,:)*(1-node_porosity(i))
-             ELSE
-                node_total_volume(i,n)      = 0.0_Double
-!               node_sediment_volume(i,n)   = 0.0_Double
-!               node_water_volume(i,n)      = 0.0_Double
-!               node_fraction_volume(i,:,n) = 0.0_Double
-             END IF
+       	        node_total_volume(i,n)     = node_total_volume(i,n)+ABS(node_depth_dredge(i)&
+       	                                     -node_depth(i))*node_area(i)
+!       	        node_sediment_volume(i,n)  = node_sediment_volume(i,n)+ABS(node_depth_dredge(i)&
+!       	                                     -node_depth(i))*node_area(i)*(1-node_porosity(i))
+!       	        node_water_volume(i,n)     = node_water_volume(i,n)+ABS(node_depth_dredge(i)&
+!       	                                     -node_depth(i))*node_area(i)*node_porosity(i)
+!       	        node_fraction_volume(i,:,n)= node_fraction_volume(i,:,n)+ABS(node_depth_dredge(i)&
+!       	                                     -node_depth(i))*node_area(i)*node_sediment_fraction(i,:)*(1-node_porosity(i))
+       	     ELSE
+       	     	node_total_volume(i,n)      = 0.0_Double
+!       	     	node_sediment_volume(i,n)   = 0.0_Double
+!       	     	node_water_volume(i,n)      = 0.0_Double
+!       	     	node_fraction_volume(i,:,n) = 0.0_Double
+       	     END IF
           END DO
 !          !NEU: Berechnung des fraktionierten Baggervolumens an dieser Stelle
 !          DO m=1,SIZE(node_sediment_fraction,2)
 !             DO i=1,get_nof_nodes( )
 !                IF (dredge_node_index(i,n) == 1 .AND. node_clean(i) == 1.D0) THEN
 !                   node_fraction_volume(i,m,n)= node_fraction_volume(i,m,n)+ABS(node_depth_dredge(i)&
-!                                             -node_depth(i))*node_area(i)*node_sediment_fraction(i,m)*(1-node_porosity(i))
-!                ELSE
-!                   node_fraction_volume(i,m,n) = 0.0_Double
-!                END IF
-!            END DO
+!       	                                     -node_depth(i))*node_area(i)*node_sediment_fraction(i,m)*(1-node_porosity(i))
+!       	        ELSE
+!       	           node_fraction_volume(i,m,n) = 0.0_Double
+!       	        END IF
+!       	     END DO
 !          END DO
        END DO
-    END IF   
+    END IF   	
     !
 !    call system_clock(ende)
 !    time=float(ende-start)/float(rate) ! evtl. cmax beachten!
@@ -713,7 +728,7 @@ CONTAINS
           IF ( node_total_volume(i,n) > 0.0_Double .AND. delta_dredge_node_depth(i,n) == 0.0_Double) THEN
              IF (crit_type == 3) THEN
                 IF (NCSIZE.GT.1) THEN
-                   WRITE(6 , FMT = 9120)    &
+             	   WRITE(6 , FMT = 9120)    &
                    '$%%$',&
                    time_to_real_seconds(old_time_to_observe(n)-initial_time),&
 !                   time_to_real_seconds(time_to_observe(n)-initial_time),&
@@ -768,19 +783,23 @@ CONTAINS
     END IF
     !
     !! declarations for a format how to write information on a screen
-!   9110 FORMAT (A27,' ',A52)
+    9110 FORMAT (A27,' ',A52)
     9120 FORMAT (A4,' ',G15.8,' ',G15.8,' ',F8.3,' ',I6,' ',G15.8,' ',G15.8,' ',G15.8,' ',A16,' ',F8.3)    
     !
 !    call system_clock(ende)
 !    time=float(ende-start)/float(rate) ! evtl. cmax beachten!
 !    write(6,*) "Zeit in Sekunden 8: ",time
     !
+
+    !LS LEO DEBUG for node_neighb
+    !write(*,*) "LS LEODEBUG node Neighb ", node_neighb(1)
+
 !    call system_clock(start,rate,cmax)
     !
     !! calculating the total amount of actually dredged material
     !! ... includes parallel routines
     DO n=1,get_nof_dredge_poly( )
-       IF(ANY(node_total_volume_loc(:,n) > 0.0_Double)) THEN
+       IF(ANY(node_total_volume_loc(:,n) > 0.0_Double)) THEN       	  
           IF (NCSIZE.GT.1) THEN
              ! different procedure from above - here the volume of dredged material of interface nodes
              ! ... is divided by the number of parallel processors the node is belonging to
@@ -995,13 +1014,13 @@ CONTAINS
           END DO
           !
           IF (.NOT. ALLOCATED(diff_array)) THEN
-             ALLOCATE(diff_array(get_nof_nodes( )))
+       	     ALLOCATE(diff_array(get_nof_nodes( )))
              diff_array=c_undef_dp
           END IF
           IF (.NOT. ALLOCATED(check_node_total_volume)) THEN
              ALLOCATE(check_node_total_volume(get_nof_nodes( )))
              check_node_total_volume=0.0_Double
-             check_total_volume=0.0_Double
+       	     check_total_volume=0.0_Double
           END IF
           !
           !! calculating aim node depths (called disp_node_depth)
@@ -1040,7 +1059,7 @@ CONTAINS
                       x_Factor(n,k)=1000000.0
                    ELSE
                       IF (x_Factor_Denom /= 0.0_Double) x_Factor(n,k) = x_Factor_Num/x_Factor_Denom
-!                     READ (dispose_poly_name(n,k),*) x_Factor(n,k)
+!				   READ (dispose_poly_name(n,k),*) x_Factor(n,k)
                    END IF
                 END DO
                 DO i=1,get_nof_nodes( )
@@ -1075,12 +1094,12 @@ CONTAINS
           END DO
           DO n=1, nof_dispose_poly
              IF (ALL(delta_disp_node_depth(:,k,n)==0.0_Double)) THEN
-                dredged_sediment_volume_to_disp(k,n) = dredged_sediment_volume_to_disp_loc(k,n)
-                dredged_fraction_volume_to_disp(k,n,:) = dredged_fraction_volume_to_disp_loc(k,n,:)
+             	dredged_sediment_volume_to_disp(k,n) = dredged_sediment_volume_to_disp_loc(k,n)
+             	dredged_fraction_volume_to_disp(k,n,:) = dredged_fraction_volume_to_disp_loc(k,n,:)
              ELSE
-                dredged_sediment_volume_to_disp(k,n) = dredged_sediment_volume_to_disp(k,n)+ &
+             	dredged_sediment_volume_to_disp(k,n) = dredged_sediment_volume_to_disp(k,n)+ &
                   dredged_sediment_volume_to_disp_loc(k,n)
-                dredged_fraction_volume_to_disp(k,n,:) = dredged_fraction_volume_to_disp(k,n,:)+ &
+             	dredged_fraction_volume_to_disp(k,n,:) = dredged_fraction_volume_to_disp(k,n,:)+ &
                   dredged_fraction_volume_to_disp_loc(k,n,:)
              END IF
           END DO
@@ -1095,7 +1114,7 @@ CONTAINS
           DO n=1, nof_dispose_poly
              !! calculation of disp_node_depths
              IF (dredged_sediment_volume_to_disp_loc(k,n) > 0.0_Double) THEN
-!             PRINT*, 'dredged_sediment_volume_to_disp_loc(k,n)', dredged_sediment_volume_to_disp_loc(k,n)
+!             	PRINT*, 'dredged_sediment_volume_to_disp_loc(k,n)', dredged_sediment_volume_to_disp_loc(k,n)
 !                PRINT*, 'dredged_sediment_volume_to_disp(k,n)', dredged_sediment_volume_to_disp(k,n)
 !                PRINT*, 'dredged_fraction_volume_to_disp_loc(k,n,:)', dredged_fraction_volume_to_disp_loc(k,n,:)
 !                PRINT*, 'dredged_fraction_volume_to_disp(k,n,:)', dredged_fraction_volume_to_disp(k,n,:)
@@ -1144,9 +1163,9 @@ CONTAINS
                    scour_node_depth_loc = 0.0_Double
                    DO i=1,get_nof_nodes( )
                       IF (delta_disp_node_depth(i,k,n)/=0.0_Double) THEN
-                         scour_node_depth_loc(i) = disp_node_depth(i,k,n)
+                      	 scour_node_depth_loc(i) = disp_node_depth(i,k,n)
                       ELSE
-                         scour_node_depth_loc(i) = node_depth(i)
+                      	 scour_node_depth_loc(i) = node_depth(i)
                          disp_node_depth(i,k,n) = node_depth(i)
                       END IF
                    END DO
@@ -1235,7 +1254,7 @@ CONTAINS
                          !! calculating depth below reference surface level
                          act_depo_depth_disp_scours=(ABS(little_helper_1-little_helper_2)-&
                                                       dredged_sediment_volume_to_disp_loc(k,n)&
-                                                      /(1-average_porosity))/little_helper_3
+			      	                                    /(1-average_porosity))/little_helper_3
                          !
                          DO i=1,get_nof_nodes( )
                             IF (dispose_node_index(i,k,n) == 1 .AND. scour_node_depth_loc(i) < free_surface_node_depth(i)&
@@ -1333,7 +1352,7 @@ CONTAINS
           DO i=1,get_nof_nodes( )
              j=0
              DO k=1,get_nof_dredge_poly( )
-                DO n=1,nof_dispose_poly
+		DO n=1,nof_dispose_poly
                    IF (dispose_node_index(i,k,n) == 1 .AND. dredged_sediment_volume_to_disp(k,n) > 0.0_Double) THEN
                       dredged_fractions_to_disp(i,:) = dredged_fractions_to_disp(i,:)+dredged_fraction_volume_to_disp(k,n,:)/&
                                                     dredged_sediment_volume_to_disp(k,n)&
@@ -1347,8 +1366,8 @@ CONTAINS
              IF (j>1 .AND. ANY(delta_disp_node_depth(i,:,:) > 0.0_Double)) THEN
                 node_sediment_fraction(i,:) = dredged_fractions_to_disp(i,:)
              ELSEIF (j==1) THEN
-                DO k=1,get_nof_dredge_poly( )
-                   DO n=1,nof_dispose_poly
+             	DO k=1,get_nof_dredge_poly( )
+             	   DO n=1,nof_dispose_poly
                       IF (delta_disp_node_depth(i,k,n) /= 0.0_Double) &
                          node_sediment_fraction(i,:) = dredged_fraction_volume_to_disp(k,n,:)/dredged_sediment_volume_to_disp(k,n)
                    END DO
@@ -1361,7 +1380,7 @@ CONTAINS
                       delta_disp_node_depth(i,k,n)  = 0.0_Double
                       disp_node_depth(i,k,n) = node_depth(i)
                    END IF
-                END DO
+		END DO
              END DO
           END DO
        END IF
@@ -1378,15 +1397,15 @@ CONTAINS
              DO i=1,get_nof_nodes( )
                 IF (dispose_node_index(i,k,n) == 1 .AND. disp_node_total_volume_loc(i,k,n)/=0.0_Double) THEN
                    disp_node_total_volume(i,k,n) = disp_node_total_volume(i,k,n)+disp_node_total_volume_loc(i,k,n)
-!                  disp_node_total_volume(i,k,n) = disp_node_total_volume(i,k,n)+ABS(node_depth_supply(i)&
-!                                               -node_depth(i))*node_area(i)
-!                  disp_node_total_volume_loc(i,k,n) = ABS(node_depth_supply(i)-node_depth(i))*node_area(i)
-!                  disp_total_volume(n,k)     = disp_total_volume(n,k)+disp_node_total_volume_loc(i,n,k)
-!                  disp_sediment_volume(n,k)  = disp_sediment_volume(n,k)+disp_node_total_volume_loc(i,n,k)*(1-node_porosity(i))
-!                  disp_fraction_volume(:,n,k)= disp_fraction_volume(:,n,k)+dredged_fraction_volume_to_disp(k,n,:)/dredged_sediment_volume_to_disp(k,n)&
+!       	           disp_node_total_volume(i,k,n) = disp_node_total_volume(i,k,n)+ABS(node_depth_supply(i)&
+!       	                                        -node_depth(i))*node_area(i)
+!       	           disp_node_total_volume_loc(i,k,n) = ABS(node_depth_supply(i)-node_depth(i))*node_area(i)
+!       	           disp_total_volume(n,k)     = disp_total_volume(n,k)+disp_node_total_volume_loc(i,n,k)
+!                   disp_sediment_volume(n,k)  = disp_sediment_volume(n,k)+disp_node_total_volume_loc(i,n,k)*(1-node_porosity(i))
+!                   disp_fraction_volume(:,n,k)= disp_fraction_volume(:,n,k)+dredged_fraction_volume_to_disp(k,n,:)/dredged_sediment_volume_to_disp(k,n)&
 !                                                *disp_node_total_volume_loc(i,n,k)*(1-node_porosity(i))
-                ELSE
-                   disp_node_total_volume(i,k,n)      = 0.0_Double
+       	        ELSE
+       	     	   disp_node_total_volume(i,k,n)      = 0.0_Double
                 END IF
              END DO
              !
@@ -1430,9 +1449,9 @@ CONTAINS
              END IF
              !
              IF (disp_total_volume_loc(n,k)/=0.0_Double) THEN
-                disp_total_volume(n,k)=disp_total_volume(n,k)+disp_total_volume_loc(n,k)
-                disp_sediment_volume(n,k)=disp_sediment_volume(n,k)+disp_sediment_volume_loc(n,k)
-                disp_fraction_volume(:,n,k)=disp_fraction_volume(:,n,k)+disp_fraction_volume_loc(:,n,k)
+             	disp_total_volume(n,k)=disp_total_volume(n,k)+disp_total_volume_loc(n,k)
+             	disp_sediment_volume(n,k)=disp_sediment_volume(n,k)+disp_sediment_volume_loc(n,k)
+             	disp_fraction_volume(:,n,k)=disp_fraction_volume(:,n,k)+disp_fraction_volume_loc(:,n,k)
              END IF
              !
 !             IF (ALL(disp_node_total_volume_loc(:,k,n)==0.0_Double) .AND. dredged_sediment_volume_to_disp(k,n) /= 0.0_Double .AND. &
@@ -1491,9 +1510,9 @@ CONTAINS
              sum_of_evolutions = SUM(delta_disp_node_depth(:,k,n))
              IF (NCSIZE.GT.1) sum_of_evolutions = p_dsum(sum_of_evolutions)
              IF (sum_of_evolutions == 0.0_Double) THEN
-!               disp_sediment_volume(n,k)=disp_sediment_volume(n,k)+dredged_sediment_volume_to_disp(k,n)
-!               disp_fraction_volume(:,n,k)=disp_fraction_volume(:,n,k)+dredged_fraction_volume_to_disp(k,n,:)
-!               disp_total_volume(n,k)=disp_sediment_volume(n,k)/(1-MAXVAL(node_porosity(:)))
+!             	disp_sediment_volume(n,k)=disp_sediment_volume(n,k)+dredged_sediment_volume_to_disp(k,n)
+!             	disp_fraction_volume(:,n,k)=disp_fraction_volume(:,n,k)+dredged_fraction_volume_to_disp(k,n,:)
+!             	disp_total_volume(n,k)=disp_sediment_volume(n,k)/(1-MAXVAL(node_porosity(:)))
                 disp_sediment_volume_loc(n,k) = disp_sediment_volume_loc(n,k)+dredged_sediment_volume_to_disp(k,n)
                 IF (ALLOCATED(dredged_fraction_volume_to_disp)) dredged_fraction_volume_to_disp(k,n,:) = 0.0_Double
                 IF (ALLOCATED(dredged_sediment_volume_to_disp)) dredged_sediment_volume_to_disp(k,n)   = 0.0_Double
@@ -1550,7 +1569,7 @@ CONTAINS
        DO n=1,nof_dredge_poly_tc
           DO i=1,get_nof_nodes( )
              IF (dredge_node_index_tc(i,n)==1) node_areas_inside(i,n)=node_area(i)
-          END DO
+	  END DO
           sum_node_areas_inside(n) = SUM(node_areas_inside(:,n))
           !! for parallel computation
           IF (NCSIZE.GT.1) THEN
@@ -1648,9 +1667,9 @@ CONTAINS
           dredged_fractions_to_disp_tc = 0.0_Double
           !       
           IF (.NOT. ALLOCATED(check_node_total_volume)) THEN
-             ALLOCATE(check_node_total_volume(get_nof_nodes( )))
-             check_node_total_volume=0.0_Double
-             check_total_volume=0.0_Double
+       	      ALLOCATE(check_node_total_volume(get_nof_nodes( )))
+       	      check_node_total_volume=0.0_Double
+       	      check_total_volume=0.0_Double
           END IF
           !
           !! transfering values in dispose_node_index to calculate on nodes
@@ -1683,7 +1702,7 @@ CONTAINS
           IF (disp_scours_tc(n) == 'YES') THEN
              disposing_scours=.true.
           ELSE
-             disposing_scours=.false.
+       	     disposing_scours=.false.
           END IF
           !! disposal action initiated
           IF (act_time >= disposal_time_tc(n,1) .AND. act_time < disposal_time_tc(n,2)) THEN
@@ -1711,7 +1730,7 @@ CONTAINS
                     IF (NCSIZE.GT.1) sum_of_evolutions = p_dsum(sum_of_evolutions) 
                     IF (sum_of_evolutions == 0.0_Double) THEN
                        !! iterative procedure to find act_depo_depth_disp_scours
-                       act_depo_depth_disp_scours = min_depo_depth_disp_scours  
+	               act_depo_depth_disp_scours = min_depo_depth_disp_scours  
                        DO m=1,nof_iterations_disp_scours
                           little_helper_1            = 0.0_Double
                           little_helper_2            = 0.0_Double
@@ -1719,14 +1738,14 @@ CONTAINS
                           check_total_volume         = 0.0_Double
                           check_node_total_volume(:) = 0.0_Double
                           DO i=1,get_nof_nodes( )
-                             IF (dispose_node_index_tc(i,n) == 1 .AND. node_depth(i) < free_surface_node_depth(i)&
-                                                                   -act_depo_depth_disp_scours) THEN
+	                     IF (dispose_node_index_tc(i,n) == 1 .AND. node_depth(i) < free_surface_node_depth(i)&
+		                                                   -act_depo_depth_disp_scours) THEN
                                 little_helper_1 = little_helper_1+free_surface_node_depth(i)*node_area(i)
                                 little_helper_2 = little_helper_2+node_depth(i)*node_area(i)
                                 little_helper_3 = little_helper_3+node_area(i)
                              END IF
                           END DO
-                          !! parallel routines
+                          !! parallel routines	
                           IF (NCSIZE.GT.1) THEN
                              doppelt = 0.D0
                              DO i=1,NBMAXNSHARE*NPTIR,NBMAXNSHARE
@@ -1773,8 +1792,8 @@ CONTAINS
                           act_depo_depth_disp_scours = (little_helper_1-little_helper_2-dispose_sed_vol_tc(n))/little_helper_3
                           !
                           DO i=1,get_nof_nodes( )
-                             IF (dispose_node_index_tc(i,n)==1 .AND. node_depth(i) < free_surface_node_depth(i)&
-                                                                     -act_depo_depth_disp_scours) THEN
+		             IF (dispose_node_index_tc(i,n)==1 .AND. node_depth(i) < free_surface_node_depth(i)&
+		                                                     -act_depo_depth_disp_scours) THEN
                                 !! calculation of aim node depths, differential depths and disposed volumes 
                                 aim_node_depth_tc(i,n)        = free_surface_node_depth(i)-act_depo_depth_disp_scours
                                 delta_disp_node_depth_tc(i,n) = aim_node_depth_tc(i,n)-node_depth(i)
@@ -1847,7 +1866,7 @@ CONTAINS
                  PRINT*, '***Es existiert kein Baggergut zum Verbringen.'
               END IF
           ELSE
-              delta_disp_node_depth_tc(:,n) = 0.0_Double
+       	      delta_disp_node_depth_tc(:,n) = 0.0_Double
           END IF
        END DO
        !! transfering sediment distribution to dispose
@@ -1868,7 +1887,7 @@ CONTAINS
                    node_sediment_fraction(i,k) = SUM(dredged_fractions_to_disp_tc(:,k))/SUM(delta_disp_node_depth_tc(i,:))
                 END DO
              END IF
-          END DO
+          END DO       	
        END IF
     END IF
     ! deallocating local data
@@ -1908,9 +1927,9 @@ CONTAINS
        dredged_fractions_to_disp_abl = 0.0_Double
        !
        IF (.NOT. ALLOCATED(check_node_total_volume)) THEN
-           ALLOCATE(check_node_total_volume(get_nof_nodes( )))
-           check_node_total_volume=0.0_Double
-           check_total_volume=0.0_Double
+       	   ALLOCATE(check_node_total_volume(get_nof_nodes( )))
+       	   check_node_total_volume=0.0_Double
+       	   check_total_volume=0.0_Double
        END IF
        !
        !! transfering values from art_bed_load_poly_index to associated nodes in art_bed_load_node_index to calculate on nodes
@@ -1941,14 +1960,14 @@ CONTAINS
     !! 2. computation of disposal action on nodes of the disposal polygon
     DO n=1,nof_predef_disp_poly
        IF (disp_scours_abl(n) == 'YES') THEN
-          disposing_scours=.true.
+       	  disposing_scours=.true.
        ELSE
-          disposing_scours=.false.
+       	  disposing_scours=.false.
        END IF
        !! initiation of artificial bed load supply
        IF (act_time >= art_bl_time(n,1) .AND. act_time < art_bl_time(n,2)) THEN
-          !! calculation of depostion depth if not disposing in scours
-          IF (.NOT. disposing_scours) THEN
+       	  !! calculation of depostion depth if not disposing in scours
+       	  IF (.NOT. disposing_scours) THEN
              DO i=1,get_nof_nodes( )
                 IF (art_bed_load_node_index(i,n)==1) THEN
                     node_supply(i)            = 1.D0
@@ -1967,11 +1986,11 @@ CONTAINS
              END DO
           !! calculation of depostion depth if disposing in scours
           ELSEIF (disposing_scours) THEN
-             sum_of_evolutions = 0.0_Double
+	     sum_of_evolutions = 0.0_Double
              sum_of_evolutions = SUM(delta_node_depth_abl(:,n))
              IF (NCSIZE.GT.1) sum_of_evolutions = p_dsum(sum_of_evolutions)
              IF (sum_of_evolutions==0.0_Double) THEN
-                !! iterative procedure to find act_depo_depth_disp_scours   
+	        !! iterative procedure to find act_depo_depth_disp_scours		   
                 act_depo_depth_disp_scours = min_depo_depth_disp_scours
                 DO m=1,nof_iterations_disp_scours
                    little_helper_1            = 0.0_Double
@@ -1980,9 +1999,9 @@ CONTAINS
                    check_total_volume         = 0.0_Double
                    check_node_total_volume(:) = 0.0_Double
                    DO i=1,get_nof_nodes( )
-                      IF (art_bed_load_node_index(i,n)==1) THEN
-                         IF (node_depth(i) < free_surface_node_depth(i)&
-                                                                     -act_depo_depth_disp_scours) THEN
+		      IF (art_bed_load_node_index(i,n)==1) THEN
+		      	 IF (node_depth(i) < free_surface_node_depth(i)&
+		                                                     -act_depo_depth_disp_scours) THEN
                          little_helper_1 = little_helper_1+free_surface_node_depth(i)*node_area(i)
                          little_helper_2 = little_helper_2+node_depth(i)*node_area(i)
                          little_helper_3 = little_helper_3+node_area(i)
@@ -2036,8 +2055,8 @@ CONTAINS
                    act_depo_depth_disp_scours=(little_helper_1-little_helper_2-predef_disp_sed_vol(n))/little_helper_3
                    !
                    DO i=1,get_nof_nodes( )
-                      IF (art_bed_load_node_index(i,n)==1 .AND. node_depth(i) < free_surface_node_depth(i)&
-                                                                -act_depo_depth_disp_scours) THEN
+		      IF (art_bed_load_node_index(i,n)==1 .AND. node_depth(i) < free_surface_node_depth(i)&
+		                                                -act_depo_depth_disp_scours) THEN
                          !! calculation of aim node depths, differential depths and disposed volumes 
                          aim_node_depth_abl(i,n)    = free_surface_node_depth(i)-act_depo_depth_disp_scours
                          delta_node_depth_abl(i,n)  = aim_node_depth_abl(i,n)-node_depth(i)
@@ -2048,7 +2067,7 @@ CONTAINS
                       END IF
                    END DO
                    !
-                   check_total_volume = SUM(check_node_total_volume(:))
+		   check_total_volume = SUM(check_node_total_volume(:))
                    !! parallel routines
                    IF (NCSIZE.GT.1) THEN
                       doppelt = 0.D0
@@ -2104,9 +2123,9 @@ CONTAINS
                                                  /delta_t_art_bed_load(n)*delta_node_depth_abl(i,n)
                   END IF
                   !
-                  node_sediment_fraction(i,:)=0.0_Double 
+                  node_sediment_fraction(i,:)=0.0_Double				 				 
                   DO k=1,SIZE(node_sediment_fraction,2)
-                     !! transfer of sediment fractions    
+                     !! transfer of sediment fractions			    
                      DO j=1, SIZE(predef_disp_sed_class,2)
                         IF (fraction_name(k)==predef_disp_sed_class(n,j)) THEN
                             node_sediment_fraction(i,k)=predef_sed_distrib(n,j)
@@ -2168,19 +2187,21 @@ CONTAINS
     !LEO TODO this is not nice since it cauese a dependency on bief for the parallel case
     !an should be replaced
     IF (NCSIZE.GT.1) THEN
-        T13%TYPE=2 ! vector structure
-        T13%N=1
-        T13%R=node_depth
+!LS LEO make it better ;-)
+        !T13%TYPE=2 ! vector structure
+        !T13%N=1
+        !T13%R=node_depth
+        T13_leo = node_depth
 !RK        CALL PARCOM (T13,4,MESH)
 ! das ist der Aufruf aus parcom, wenn vector structure icom=2 und 
 ! kein quasi bubble
-        CALL PARCOM2_DS(T13%R,T13%R,T13%R,get_nof_nodes(),1,4,1, &
+        CALL PARCOM2_DS(T13_leo,T13_leo,T13_leo,get_nof_nodes(),1,4,1, &
    NB_NEIGHB,NB_NEIGHB_PT,LIST_SEND, NH_COM,DIMNHCOM,BUF_SEND,BUF_RECV,DIMBUF)
 !!        CALL PARCOM2(X%R,X%R,X%R,NPOIN,NPLAN,ICOM,IAN,MESH)
 
 !      IAN = 1
 
-        node_depth=T13%R    
+        node_depth=T13_leo    
     END IF
     !
 !    IF (ANY(node_supply(:).GE.1.D0)) THEN
@@ -2191,22 +2212,25 @@ CONTAINS
     END DO
 !    END IF
     IF (NCSIZE.GT.1) THEN
-        T14%TYPE=2
-        T14%N=1
-        T14%R=node_depth
+!LS LEO make it better or more worse we will see
+!        T14%TYPE=2
+!        T14%N=1
+!        T14%R=node_depth
+         T14_leo = node_depth
 !!        CALL PARCOM (T14,3,MESH)
-        CALL PARCOM2_DS(T14%R,T14%R,T14%R,get_nof_nodes(),1,3,1, &
+
+        CALL PARCOM2_DS(T14_leo,T14_leo,T14_leo,get_nof_nodes(),1,3,1, &
    NB_NEIGHB,NB_NEIGHB_PT,LIST_SEND, NH_COM,DIMNHCOM,BUF_SEND,BUF_RECV,DIMBUF)
 !!        CALL PARCOM2(X%R,X%R,X%R,NPOIN,NPLAN,ICOM,IAN,MESH)
 
 
-        node_depth=T14%R    
+        node_depth=T14_leo    
     END IF
     !
     !! writing real amounts of dredged material to an output file for every observing period 
     DO n=1, get_nof_dredge_poly( )
        IF ( old_time_to_observe(n) <= act_time) THEN
-          IF (upd_out_volumes(n)) THEN
+       	  IF (upd_out_volumes(n)) THEN
              IF (NCSIZE.GT.1) THEN
                 IF (ipid==0) THEN
                    CALL write_dredged_volumes_pop ()
@@ -2233,22 +2257,22 @@ CONTAINS
     !
     ! writing restart data
     IF (output_time_restart < time_to_real_seconds(act_time-initial_time)) THEN
-        output_time_restart = time_to_real_seconds(act_time-initial_time)
+    	output_time_restart = time_to_real_seconds(act_time-initial_time)
     END IF
     IF(output_time_restart == time_to_real_seconds(act_time-initial_time)) THEN
-        last_obs_time_rs=datetime_to_string(old_time_to_observe(:))
-        next_obs_time_rs=datetime_to_string(time_to_observe(:))
-        last_act_time_rs=datetime_to_string(act_time)
-        CALL write_restart_data ( )
-        IF (LEOPR_ds > 1) THEN
-           IF (act_time-initial_time==act_timestep) THEN
-              output_time_restart = output_time_restart+LEOPR_ds*time_to_real_seconds(act_timestep)*1.0_Double-&
+    	last_obs_time_rs=datetime_to_string(old_time_to_observe(:))
+    	next_obs_time_rs=datetime_to_string(time_to_observe(:))
+    	last_act_time_rs=datetime_to_string(act_time)
+    	CALL write_restart_data ( )
+    	IF (LEOPR_ds > 1) THEN
+    	   IF (act_time-initial_time==act_timestep) THEN
+    	      output_time_restart = output_time_restart+LEOPR_ds*time_to_real_seconds(act_timestep)*1.0_Double-&
             time_to_real_seconds(act_timestep)*1.0_Double
-           ELSE
-              output_time_restart = output_time_restart+LEOPR_ds*time_to_real_seconds(act_timestep)*1.0_Double
-           END IF
-        ELSE
-           output_time_restart = output_time_restart+time_to_real_seconds(act_timestep)*1.0_Double
+    	   ELSE
+    	      output_time_restart = output_time_restart+LEOPR_ds*time_to_real_seconds(act_timestep)*1.0_Double
+    	   END IF
+    	ELSE
+    	   output_time_restart = output_time_restart+time_to_real_seconds(act_timestep)*1.0_Double
         END IF
     END IF
     !
@@ -2347,9 +2371,16 @@ CONTAINS
 !     STRUCTURES: VECTORS OR BLOCKS
 !
 !RK      TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
-      DOUBLE PRECISION, INTENT(INOUT) :: X1(NPOIN,NPLAN)
-      DOUBLE PRECISION, INTENT(INOUT) :: X2(NPOIN,NPLAN)
-      DOUBLE PRECISION, INTENT(INOUT) :: X3(NPOIN,NPLAN)
+!      DOUBLE PRECISION, INTENT(INOUT) :: X1(NPOIN,NPLAN)
+!      DOUBLE PRECISION, INTENT(INOUT) :: X2(NPOIN,NPLAN)
+!      DOUBLE PRECISION, INTENT(INOUT) :: X3(NPOIN,NPLAN)
+!LS LEO this was wrong i expect an array
+      DOUBLE PRECISION, INTENT(INOUT) :: X1(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: X2(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: X3(NPOIN)
+
+
+
       INTEGER  :: NB_NEIGHB,NB_NEIGHB_PT(NB_NEIGHB),LIST_SEND(NB_NEIGHB)
       INTEGER :: DIMNHCOM
       INTEGER  ::  NH_COM(DIMNHCOM,NB_NEIGHB),DIMBUF
@@ -2358,6 +2389,13 @@ CONTAINS
 !
 !-----------------------------------------------------------------------
 !
+      !WRITE(*,*) "LEODEBUG m_dredgesim_compute in PARCOM2_ds NB_NEIGHB  " , NB_NEIGHB
+      !WRITE(*,*) "LEODEBUG NCSIZE AND ICOM ", NCSIZE, ICOM, X1
+    
+      !WRITE(*,*) "X1, X2, X3, NPOIN ", X1, X2, X3, NPOIN
+      !WRITE(*,*) "ICOM, IAN, NPLAN " , ICOM, IAN, NPLAN
+      !WRITE(*,*) "NB_NEIGHB, NB_NEIGHB_PT, LIST_SEND ", NB_NEIGHB, NB_NEIGHB_PT, LIST_SEND
+      !WRITE(*,*) "NH_COM, DIMNHCOM, BUF_SEND; BUF_RECV, DIMBUF ", NH_COM, DIMNHCOM, BUF_SEND, BUF_RECV, DIMBUF
       CALL PARACO(X1,X2,X3,NPOIN,ICOM,IAN,NPLAN, &
              NB_NEIGHB,NB_NEIGHB_PT,LIST_SEND, &
              NH_COM,DIMNHCOM,BUF_SEND,BUF_RECV,DIMBUF)
@@ -2371,6 +2409,8 @@ CONTAINS
 !
       IF(ICOM.EQ.2.AND.NCSIZE.GT.2) THEN
 !
+      !WRITE(*,*) "LEODEBUG m_dredgesim_compute in PARCOM2_ds NB_NEIGHB 2nd. " , NB_NEIGHB
+
       CALL PARACO(X1,X2,X3,NPOIN,1,IAN,NPLAN,&
             NB_NEIGHB,NB_NEIGHB_PT,LIST_SEND, &
              NH_COM,DIMNHCOM,BUF_SEND,BUF_RECV,DIMBUF)

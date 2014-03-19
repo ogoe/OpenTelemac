@@ -110,8 +110,8 @@ MODULE m_dredgesim_data
   INTEGER, PUBLIC, SAVE :: leopr_ds
   INTEGER, PUBLIC, SAVE :: ptinig_ds
   INTEGER, PUBLIC, SAVE :: NB_NEIGHB
-  INTEGER, PUBLIC, SAVE :: dimbuf
-  INTEGER, PUBLIC, SAVE :: dimnhcom
+  INTEGER, PUBLIC, POINTER :: dimbuf
+  INTEGER, PUBLIC, POINTER :: dimnhcom
   !
   ! [B.2.3] scalars and arrays (original data) to point at
   !
@@ -415,16 +415,16 @@ MODULE m_dredgesim_data
   LOGICAL            , PUBLIC , SAVE                        :: upd_node_fraction_volume_rs  !
   !! timestamp for last observing time dependent on the dredge polygon for a restart
   !! last_obs_time_rs : timestamp for last observing time of dredge polygon n
-  CHARACTER (LEN=34) , PUBLIC , ALLOCATABLE , SAVE , TARGET :: last_obs_time_rs(:) !
+  CHARACTER (LEN=19) , PUBLIC , ALLOCATABLE , SAVE , TARGET :: last_obs_time_rs(:) !
   !! timestamp for next observing time dependent on the dredge polygon for a restart
   !! last_obs_time_rs : timestamp for next observing time of dredge polygon n
-  CHARACTER (LEN=34) , PUBLIC , ALLOCATABLE , SAVE , TARGET :: next_obs_time_rs(:) !
+  CHARACTER (LEN=19) , PUBLIC , ALLOCATABLE , SAVE , TARGET :: next_obs_time_rs(:) !
   !! timestamp for last act time
   !! last_act_time_rs : timestamp for last act time
-  CHARACTER (LEN=34) , PUBLIC , SAVE :: last_act_time_rs !
+  CHARACTER (LEN=19) , PUBLIC , SAVE :: last_act_time_rs !
   !! timestamp for initial time
   !! ini_time_rs : timestamp for initial time
-  CHARACTER (LEN=34) , PUBLIC , SAVE :: ini_time_rs !
+  CHARACTER (LEN=19) , PUBLIC , SAVE :: ini_time_rs !
   !
   !! sum of dredged sediment volume dependent on the dredge polygon and the sediment fraction
   !! fraction_volume(m,n) : summed sediment volume for sediment fraction m and dredge polygon n
@@ -599,11 +599,11 @@ MODULE m_dredgesim_data
  !! list_send(i) : list of processor number (i)
   INTEGER , PUBLIC , POINTER , SAVE :: list_send(:)  !
  !! nh_com(i,j) : global number of point i in list of shared points with processor j
-  INTEGER , PUBLIC , POINTER , SAVE :: nh_com(:,:)  !
+  INTEGER , PUBLIC , POINTER , SAVE :: nh_com(:)  !
   !! buf_send(i,j) : buffer for sending data
-  REAL (KIND=Double) , PUBLIC , POINTER , SAVE :: buf_send(:,:)  !
+  REAL (KIND=Double) , PUBLIC , POINTER , SAVE :: buf_send(:)  !
  !! buf_recv(i,j) : buffer for receiving data
-  REAL (KIND=Double) , PUBLIC , POINTER , SAVE :: buf_recv(:,:)  !
+  REAL (KIND=Double) , PUBLIC , POINTER , SAVE :: buf_recv(:)  !
   !! node depths
   !! node_depth(l) : depth of node l
   REAL (KIND=Double) , PUBLIC , POINTER , SAVE :: node_depth(:)  ! 
@@ -793,7 +793,7 @@ MODULE m_dredgesim_data
           '                          ',&
           '                          ',&
           '                          '/), &! B6
-          (/ max_key, max_blo /) )
+	  (/ max_key, max_blo /) )
   !
   !! package names used to read file
   CHARACTER (LEN=c_max_len_pac) , PUBLIC , PARAMETER :: pac(max_key,max_blo) = RESHAPE( (/'io_ipds   ', &
@@ -838,13 +838,13 @@ MODULE m_dredgesim_data
           1,0, 1,1, 4,0, 1,0, 1,1, 4,0, 1,0, 0,0, 0,0, 0,0, 0,0, 0,0,  & ! B4
           1,0, 1,4, 4,0, 1,1, 1,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0,  &
           2,0, 4,0, 4,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0/), &
-          (/ max_par, max_key, max_blo /) )
+	  (/ max_par, max_key, max_blo /) )
   !! list of physical parameters being necessary in input files
   INTEGER , PUBLIC , parameter :: input_code(max_input_pg,max_key_in_blo(ptr_input_files)) = RESHAPE( (/ & ! 
           0,    0,    0,   & ! B1/1 : ...
-          0,    0,    0,   & ! B1/2 : ...
-          0,    0,    0,   & ! B1/3 : ...
-          0,    0,    0/), & ! B1/4 : ... 
+	  0,    0,    0,   & ! B1/2 : ...
+	  0,    0,    0,   & ! B1/3 : ...
+	  0,    0,    0/), & ! B1/4 : ... 
        (/ max_input_pg,max_key_in_blo(ptr_input_files) /) )
   !! list of pointers on position of grid file in input data files ( 0 no information )
   INTEGER , PUBLIC , parameter :: input_grid_ptr(max_key_in_blo(ptr_input_files)) = (/ & ! 
@@ -944,7 +944,14 @@ MODULE m_dredgesim_data
   INTERFACE set_ds_poly_area_ref
      MODULE PROCEDURE set_ds_poly_area_ref_d
   END INTERFACE
-  !! setting a pointer on external data for array node_area(:)
+!LS LEO 13.12.2013 add two new set funtions for dimbuf and dimnhcom
+  INTERFACE set_ds_dimbuf_ref
+     MODULE PROCEDURE set_ds_dimbuf_i
+  END INTERFACE
+  INTERFACE set_ds_dimnhcom_ref
+     MODULE PROCEDURE set_ds_dimnhcom_i
+  END INTERFACE
+!  !! setting a pointer on external data for array node_area(:)
   INTERFACE set_ds_node_area_ref
      MODULE PROCEDURE set_ds_node_area_ref_d
   END INTERFACE
@@ -1187,6 +1194,9 @@ MODULE m_dredgesim_data
   PUBLIC :: set_ds_poly_area_ref
   PUBLIC :: set_ds_node_area_ref
   PUBLIC :: set_ds_knolg_ref
+!LS LEO ADD dimbuf_and_dimnhcom
+  PUBLIC :: set_ds_dimbuf_ref
+  PUBLIC :: set_ds_dimnhcom_ref
   PUBLIC :: set_ds_node_neighb_ref
   PUBLIC :: set_ds_nb_neighb_pt_ref 
   PUBLIC :: set_ds_list_send_ref         
@@ -2557,7 +2567,7 @@ CONTAINS
     END IF
     IF ( no_error( ) ) THEN
        IF ( ASSOCIATED(buf_recv) ) THEN
-          CALL print_array_shape( buf_recv, 'buf_recv(:,:)',   & ! 
+          CALL print_array_shape( buf_recv, 'buf_recv(:)',   & ! 
                'buf_recv' )
        ELSE
           CALL print_array_not_alloc( 'buf_recv(:,:)' )
@@ -2565,10 +2575,10 @@ CONTAINS
     END IF
     IF ( no_error( ) ) THEN
        IF ( ASSOCIATED(buf_send) ) THEN
-          CALL print_array_shape( buf_send, 'buf_send(:,:)',   & ! 
+          CALL print_array_shape( buf_send, 'buf_send(:)',   & ! 
                'buf_send' )
        ELSE
-          CALL print_array_not_alloc( 'buf_send(:,:)' )
+          CALL print_array_not_alloc( 'buf_send(:)' )
        END IF
     END IF
     IF ( no_error( ) ) THEN
@@ -3265,17 +3275,17 @@ CONTAINS
     END IF
     IF ( no_error( ) ) THEN
        IF ( ASSOCIATED(nh_com) ) THEN
-          CALL print_array_contents( nh_com, 'nh_com(:,:)' )
+          CALL print_array_contents( nh_com, 'nh_com(:)' )
        END IF
     END IF
     IF ( no_error( ) ) THEN
        IF ( ASSOCIATED(buf_recv) ) THEN
-          CALL print_array_contents( buf_recv, 'buf_recv(:,:)' )
+          CALL print_array_contents( buf_recv, 'buf_recv(:)' )
        END IF
     END IF
     IF ( no_error( ) ) THEN
        IF ( ASSOCIATED(buf_send) ) THEN
-          CALL print_array_contents( buf_recv, 'buf_send(:,:)' )
+          CALL print_array_contents( buf_send, 'buf_send(:)' )
        END IF
     END IF
     IF ( no_error( ) ) THEN
@@ -3776,6 +3786,28 @@ CONTAINS
     !
   END SUBROUTINE set_ds_node_area_ref_d
 
+!===========================================================
+!LS LEO dimbuf dimnhcom
+
+  SUBROUTINE set_ds_dimbuf_i (var) 
+    !! 
+    INTEGER, Pointer  :: var 
+    !
+    dimbuf => var
+    !
+  END SUBROUTINE set_ds_dimbuf_i
+
+  SUBROUTINE set_ds_dimnhcom_i (var) 
+    !! 
+    INTEGER, Pointer  :: var 
+    !
+    dimnhcom => var
+    !
+  END SUBROUTINE set_ds_dimnhcom_i
+
+
+!==========================================================
+
   !! setting a pointer on external data for array knolg(:) 
   !! subroutine does not throw error messages
   SUBROUTINE set_ds_knolg_ref_i ( arr ) 
@@ -3783,6 +3815,7 @@ CONTAINS
     INTEGER , POINTER :: arr(:) ! 
     !
     knolg => arr
+    write(*,*) "LEOdebug knolg" , knolg
     !
   END SUBROUTINE set_ds_knolg_ref_i
 
@@ -3817,7 +3850,7 @@ CONTAINS
   !! subroutine does not throw error messages
   SUBROUTINE set_ds_nh_com_ref_i ( arr ) 
     !! 
-    INTEGER , POINTER :: arr(:,:) ! 
+    INTEGER , POINTER :: arr(:) ! 
     !
     nh_com => arr
     !
@@ -3826,7 +3859,7 @@ CONTAINS
   !! subroutine does not throw error messages
   SUBROUTINE set_ds_buf_recv_ref_d ( arr ) 
     !! 
-    DOUBLE PRECISION , POINTER :: arr(:,:) ! 
+    DOUBLE PRECISION , POINTER :: arr(:) ! 
     !
     buf_recv => arr
     !
@@ -3835,7 +3868,7 @@ CONTAINS
   !! subroutine does not throw error messages
   SUBROUTINE set_ds_buf_send_ref_d ( arr ) 
     !! 
-    DOUBLE PRECISION , POINTER :: arr(:,:) ! 
+    DOUBLE PRECISION , POINTER :: arr(:) ! 
     !
     buf_send => arr
     !
@@ -3906,7 +3939,7 @@ CONTAINS
     CHARACTER (LEN=17) , parameter  :: c_arr_name='dredge_poly_index' !
     !
     IF ( ALLOCATED(dredge_poly_index) ) THEN       
-           dredge_poly_index(:,:)  = arr(:,:)
+	   dredge_poly_index(:,:)  = arr(:,:)
        upd_dredge_poly_index = .true. 
     END IF
     !
@@ -3923,7 +3956,7 @@ CONTAINS
     CHARACTER (LEN=17) , parameter  :: c_arr_name='dredge_node_index' !
     !
     IF ( ALLOCATED(dredge_node_index) ) THEN       
-           dredge_node_index(:,:)  = arr(:,:)
+	   dredge_node_index(:,:)  = arr(:,:)
        upd_dredge_node_index = .true. 
     END IF
     !
@@ -3940,7 +3973,7 @@ CONTAINS
     CHARACTER (LEN=18) , parameter  :: c_arr_name='dispose_poly_index' !
     !
     IF ( ALLOCATED(dispose_poly_index) ) THEN       
-           dispose_poly_index(:,:)  = arr(:,:)
+	   dispose_poly_index(:,:)  = arr(:,:)
        upd_dispose_poly_index = .true. 
     END IF
     !
@@ -4008,7 +4041,7 @@ CONTAINS
     CHARACTER (LEN=21) , parameter  :: c_arr_name='dispose_poly_index_tc' !
     !
     IF ( ALLOCATED(dispose_poly_index_tc) ) THEN       
-           dispose_poly_index_tc(:,:)  = arr(:,:)
+	   dispose_poly_index_tc(:,:)  = arr(:,:)
        upd_dispose_poly_index_tc = .true. 
     END IF
     !
@@ -4042,7 +4075,7 @@ CONTAINS
     CHARACTER (LEN=23) , parameter  :: c_arr_name='art_bed_load_poly_index' !
     !
     IF ( ALLOCATED(art_bed_load_poly_index) ) THEN       
-           art_bed_load_poly_index(:,:)  = arr(:,:)
+	   art_bed_load_poly_index(:,:)  = arr(:,:)
        upd_art_bed_load_poly_index = .true. 
     END IF
     !
@@ -4670,7 +4703,7 @@ CONTAINS
           IF ( stat /= 0 ) EXIT
        END DO
     END DO
-!
+	!
     IF ( stat /= 0 ) THEN
        CALL setup_error_act ( all_errors, -7120, c_upname, c_modname, stat )
        CALL setup_error_act ( '<name>', TRIM(name) )
@@ -4941,7 +4974,7 @@ CONTAINS
        CALL setup_error_act ( all_errors(:), -3200, c_upname, c_modname, stat )
        CALL setup_error_act ( '<name>', 'dispose_poly_index(:,:)' )
        WRITE(l_char,'(I10)') idim1 ; CALL setup_error_act ( '<idim1>', l_char )
-       WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
+	   WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
     ELSE
        dispose_poly_index = c_undef_in
     END IF
@@ -4996,7 +5029,7 @@ CONTAINS
        CALL setup_error_act ( all_errors(:), -3200, c_upname, c_modname, stat )
        CALL setup_error_act ( '<name>', 'dredge_poly_index_tc(:,:)' )
        WRITE(l_char,'(I10)') idim1 ; CALL setup_error_act ( '<idim1>', l_char )
-       WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
+	   WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
     ELSE
        dredge_poly_index_tc = c_undef_in
     END IF
@@ -5022,7 +5055,7 @@ CONTAINS
        CALL setup_error_act ( all_errors(:), -3200, c_upname, c_modname, stat )
        CALL setup_error_act ( '<name>', 'dredge_node_index_tc(:,:)' )
        WRITE(l_char,'(I10)') idim1 ; CALL setup_error_act ( '<idim1>', l_char )
-       WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
+	   WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
     ELSE
        dredge_node_index_tc = c_undef_in
     END IF
@@ -5048,7 +5081,7 @@ CONTAINS
        CALL setup_error_act ( all_errors(:), -3200, c_upname, c_modname, stat )
        CALL setup_error_act ( '<name>', 'dispose_poly_index_tc(:,:)' )
        WRITE(l_char,'(I10)') idim1 ; CALL setup_error_act ( '<idim1>', l_char )
-       WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
+	   WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
     ELSE
        dispose_poly_index_tc = c_undef_in
     END IF
@@ -5074,7 +5107,7 @@ CONTAINS
        CALL setup_error_act ( all_errors(:), -3200, c_upname, c_modname, stat )
        CALL setup_error_act ( '<name>', 'dispose_node_index_tc(:,:)' )
        WRITE(l_char,'(I10)') idim1 ; CALL setup_error_act ( '<idim1>', l_char )
-       WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
+	   WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
     ELSE
        dispose_node_index_tc = c_undef_in
     END IF
@@ -5152,7 +5185,7 @@ CONTAINS
        CALL setup_error_act ( all_errors(:), -3200, c_upname, c_modname, stat )
        CALL setup_error_act ( '<name>', 'dispose_poly_name(:,:)' )
        WRITE(l_char,'(I10)') idim1 ; CALL setup_error_act ( '<idim1>', l_char )
-       WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
+	   WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
     ELSE
        dispose_poly_name = c_undef_ch
     END IF
@@ -5267,7 +5300,7 @@ CONTAINS
        CALL setup_error_act ( all_errors(:), -3200, c_upname, c_modname, stat )
        CALL setup_error_act ( '<name>', 'predef_disp_sed_class(:,:)' )
        WRITE(l_char,'(I10)') idim1 ; CALL setup_error_act ( '<idim1>', l_char )
-       WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
+	   WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
     ELSE
        predef_disp_sed_class = c_undef_ch
     END IF
@@ -5323,7 +5356,7 @@ CONTAINS
     !! first dimension of the array "sector_radius"
     INTEGER          , INTENT(IN)   :: idim1 !
     !! name of the subroutine
-    CHARACTER (LEN=21) , PARAMETER  :: c_upname='alloc_sector_radius_d' ! 
+    CHARACTER (LEN=11) , PARAMETER  :: c_upname='alloc_sector_radius_d' ! 
     !! stat variable
     INTEGER :: stat ! 
     CHARACTER (LEN=10) :: l_char ! 
@@ -5366,7 +5399,7 @@ CONTAINS
   SUBROUTINE alloc_dispose_weighting_fac_d ( idim1, idim2 )
     !! first dimension of the array "dispose_weighting_factor"
     INTEGER          , INTENT(IN)   :: idim1 !
-    !! second dimension of the array "dispose_weighting_factor"
+	!! second dimension of the array "dispose_weighting_factor"
     INTEGER          , INTENT(IN)   :: idim2 ! 
     !! name of the subroutine
     CHARACTER (LEN=29) , parameter  :: c_upname='alloc_dispose_weighting_fac_d' ! 
@@ -5380,7 +5413,7 @@ CONTAINS
        CALL setup_error_act ( all_errors(:), -3200, c_upname, c_modname, stat )
        CALL setup_error_act ( '<name>', 'dispose_weighting_factor(:,:)' )
        WRITE(l_char,'(I10)') idim1 ; CALL setup_error_act ( '<idim1>', l_char )
-       WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
+	   WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
     ELSE
        dispose_weighting_factor = c_undef_dp
     END IF
@@ -5545,7 +5578,7 @@ CONTAINS
   SUBROUTINE alloc_predef_sed_distrib_d ( idim1, idim2 )
     !! first dimension of the array "predef_sed_distrib"
     INTEGER          , INTENT(IN)   :: idim1 !
-    !! second dimension of the array "predef_sed_distrib"
+	!! second dimension of the array "predef_sed_distrib"
     INTEGER          , INTENT(IN)   :: idim2 ! 
     !! name of the subroutine
     CHARACTER (LEN=26) , parameter  :: c_upname='alloc_predef_sed_distrib_d' ! 
@@ -5559,7 +5592,7 @@ CONTAINS
        CALL setup_error_act ( all_errors(:), -3200, c_upname, c_modname, stat )
        CALL setup_error_act ( '<name>', 'predef_sed_distrib(:,:)' )
        WRITE(l_char,'(I10)') idim1 ; CALL setup_error_act ( '<idim1>', l_char )
-       WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
+	   WRITE(l_char,'(I10)') idim2 ; CALL setup_error_act ( '<idim2>', l_char )
     ELSE
        predef_sed_distrib = c_undef_dp
     END IF
@@ -6212,7 +6245,7 @@ CONTAINS
     !! first dimension of the array "all_water_volume_old"
     INTEGER          , INTENT(IN)   :: idim1 ! 
     !! name of the subroutine
-    CHARACTER (LEN=28) , parameter  :: c_upname='alloc_all_water_volume_old_d' ! 
+    CHARACTER (LEN=24) , parameter  :: c_upname='alloc_all_water_volume_old_d' ! 
     !! stat variable
     INTEGER :: stat ! 
     CHARACTER (LEN=10) :: l_char ! 
@@ -7205,8 +7238,8 @@ CONTAINS
     !! number of dredge polygons for start_dredge_time
     INTEGER            , INTENT(IN) :: idim ! 
     CHARACTER (LEN=25) , parameter  :: c_upname='alloc_start_dredge_time_d'
-    INTEGER :: stat
-    CHARACTER (LEN=10) :: l_char
+	INTEGER :: stat
+	CHARACTER (LEN=10) :: l_char
     !
     CALL dealloc_start_dredge_time ( )
     IF ( no_error( ) ) THEN
@@ -7230,8 +7263,8 @@ CONTAINS
     !! number of dredge polygons for end_dredge_time
     INTEGER            , INTENT(IN) :: idim ! 
     CHARACTER (LEN=23) , parameter  :: c_upname='alloc_end_dredge_time_d'
-    INTEGER :: stat
-    CHARACTER (LEN=10) :: l_char
+	INTEGER :: stat
+	CHARACTER (LEN=10) :: l_char
     !
     CALL dealloc_end_dredge_time ( )
     IF ( no_error( ) ) THEN
@@ -7255,8 +7288,8 @@ CONTAINS
     !! number of dredge polygons for time_to_observe
     INTEGER            , INTENT(IN) :: idim ! 
     CHARACTER (LEN=23) , parameter  :: c_upname='alloc_time_to_observe_d'
-    INTEGER :: stat
-    CHARACTER (LEN=10) :: l_char
+	INTEGER :: stat
+	CHARACTER (LEN=10) :: l_char
     !
     CALL dealloc_time_to_observe ( )
     IF ( no_error( ) ) THEN
@@ -7280,8 +7313,8 @@ CONTAINS
     !! number of dredge polygons for old_time_to_observe
     INTEGER            , INTENT(IN) :: idim ! 
     CHARACTER (LEN=27) , parameter  :: c_upname='alloc_old_time_to_observe_d'
-    INTEGER :: stat
-    CHARACTER (LEN=10) :: l_char
+	INTEGER :: stat
+	CHARACTER (LEN=10) :: l_char
     !
     CALL dealloc_old_time_to_observe ( )
     IF ( no_error( ) ) THEN
@@ -7305,8 +7338,8 @@ CONTAINS
     !! number of dredge polygons for initial_time_to_observe
     INTEGER            , INTENT(IN) :: idim ! 
     CHARACTER (LEN=27) , parameter  :: c_upname='alloc_ini_time_to_observe_d'
-    INTEGER :: stat
-    CHARACTER (LEN=10) :: l_char
+	INTEGER :: stat
+	CHARACTER (LEN=10) :: l_char
     !
     CALL dealloc_ini_time_to_observe ( )
     IF ( no_error( ) ) THEN
@@ -7330,8 +7363,8 @@ CONTAINS
     !! number of dredge polygons for dredge_time_tc
     INTEGER            , INTENT(IN) :: idim ! 
     CHARACTER (LEN=22) , parameter  :: c_upname='alloc_dredge_time_tc_d'
-    INTEGER :: stat
-    CHARACTER (LEN=10) :: l_char
+	INTEGER :: stat
+	CHARACTER (LEN=10) :: l_char
     !
     CALL dealloc_dredge_time_tc ( )
     IF ( no_error( ) ) THEN
@@ -7355,8 +7388,8 @@ CONTAINS
     !! number of dredge polygons for disposal_time_tc
     INTEGER            , INTENT(IN) :: idim ! 
     CHARACTER (LEN=24) , parameter  :: c_upname='alloc_disposal_time_tc_d'
-    INTEGER :: stat
-    CHARACTER (LEN=10) :: l_char
+	INTEGER :: stat
+	CHARACTER (LEN=10) :: l_char
     !
     CALL dealloc_disposal_time_tc ( )
     IF ( no_error( ) ) THEN
@@ -7380,8 +7413,8 @@ CONTAINS
     !! number of dredge polygons for art_bl_time
     INTEGER            , INTENT(IN) :: idim ! 
     CHARACTER (LEN=19) , parameter  :: c_upname='alloc_art_bl_time_d'
-    INTEGER :: stat
-    CHARACTER (LEN=10) :: l_char
+	INTEGER :: stat
+	CHARACTER (LEN=10) :: l_char
     !
     CALL dealloc_art_bl_time ( )
     IF ( no_error( ) ) THEN
@@ -7405,8 +7438,8 @@ CONTAINS
     !! number of sediment classes for used_sediment_classes
     INTEGER            , INTENT(IN) :: idim ! 
     CHARACTER (LEN=29) , parameter  :: c_upname='alloc_used_sediment_classes_d'
-    INTEGER :: stat
-    CHARACTER (LEN=10) :: l_char
+	INTEGER :: stat
+	CHARACTER (LEN=10) :: l_char
     !
     CALL dealloc_used_sediment_classes ( )
     IF ( no_error( ) ) THEN
@@ -7791,7 +7824,7 @@ CONTAINS
   !! subroutine generates error messages
   SUBROUTINE dealloc_minimum_volume_d ( )
     !! name of the subroutine
-    CHARACTER (LEN=24), PARAMETER  :: c_upname='dealloc_minimum_volume_d' ! 
+    CHARACTER (LEN=23), PARAMETER  :: c_upname='dealloc_minimum_volume_d' ! 
     !! stat variable
     INTEGER :: stat ! 
     !
@@ -7927,7 +7960,7 @@ CONTAINS
   !! subroutine generates error messages
   SUBROUTINE dealloc_navigation_possible_d ( )
     !! name of the subroutine
-    CHARACTER (LEN=29), PARAMETER  :: c_upname='dealloc_navigation_possible_d' ! 
+    CHARACTER (LEN=28), PARAMETER  :: c_upname='dealloc_navigation_possible_d' ! 
     !! stat variable
     INTEGER :: stat ! 
     !
@@ -9148,7 +9181,7 @@ CONTAINS
        ( )
     !
     CHARACTER (LEN=27) , parameter  :: c_upname='dealloc_start_dredge_time_d'
-    INTEGER :: stat
+	INTEGER :: stat
     !
     IF ( ALLOCATED( start_dredge_time ) ) THEN
        CALL kill_datetime( start_dredge_time(:) )
@@ -9168,7 +9201,7 @@ CONTAINS
        ( )
     !
     CHARACTER (LEN=25) , parameter  :: c_upname='dealloc_end_dredge_time_d'
-    INTEGER :: stat
+	INTEGER :: stat
     !
     IF ( ALLOCATED( end_dredge_time ) ) THEN
        CALL kill_datetime( end_dredge_time(:) )
@@ -9188,7 +9221,7 @@ CONTAINS
        ( )
     !
     CHARACTER (LEN=25) , parameter  :: c_upname='dealloc_time_to_observe_d'
-    INTEGER :: stat
+	INTEGER :: stat
     !
     IF ( ALLOCATED( time_to_observe ) ) THEN
        CALL kill_datetime( time_to_observe(:) )
@@ -9207,8 +9240,8 @@ CONTAINS
   SUBROUTINE dealloc_old_time_to_observe_d &
        ( )
     !
-    CHARACTER (LEN=29) , parameter  :: c_upname='dealloc_old_time_to_observe_d'
-    INTEGER :: stat
+    CHARACTER (LEN=25) , parameter  :: c_upname='dealloc_old_time_to_observe_d'
+	INTEGER :: stat
     !
     IF ( ALLOCATED( old_time_to_observe ) ) THEN
        CALL kill_datetime( old_time_to_observe(:) )
@@ -9228,7 +9261,7 @@ CONTAINS
        ( )
     !
     CHARACTER (LEN=29) , parameter  :: c_upname='dealloc_ini_time_to_observe_d'
-    INTEGER :: stat
+	INTEGER :: stat
     !
     IF ( ALLOCATED( initial_time_to_observe ) ) THEN
        CALL kill_datetime( initial_time_to_observe(:) )
@@ -9248,7 +9281,7 @@ CONTAINS
        ( )
     !
     CHARACTER (LEN=24) , parameter  :: c_upname='dealloc_dredge_time_tc_d'
-    INTEGER :: stat
+	INTEGER :: stat
     !
     IF ( ALLOCATED( dredge_time_tc ) ) THEN
        CALL kill_datetime( dredge_time_tc(:,2) )
@@ -9268,7 +9301,7 @@ CONTAINS
        ( )
     !
     CHARACTER (LEN=26) , parameter  :: c_upname='dealloc_disposal_time_tc_d'
-    INTEGER :: stat
+	INTEGER :: stat
     !
     IF ( ALLOCATED( disposal_time_tc ) ) THEN
        CALL kill_datetime( disposal_time_tc(:,2) )
@@ -9288,7 +9321,7 @@ CONTAINS
        ( )
     !
     CHARACTER (LEN=21) , parameter  :: c_upname='dealloc_art_bl_time_d'
-    INTEGER :: stat
+	INTEGER :: stat
     !
     IF ( ALLOCATED( art_bl_time ) ) THEN
        CALL kill_datetime( art_bl_time(:,2) )
@@ -9308,7 +9341,7 @@ CONTAINS
        ( )
     !
     CHARACTER (LEN=31) , parameter  :: c_upname='dealloc_used_sediment_classes_d'
-    INTEGER :: stat
+	INTEGER :: stat
     !
     IF ( ALLOCATED( used_sediment_classes ) ) THEN
        CALL kill_grain( used_sediment_classes(:) )

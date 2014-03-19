@@ -19,6 +19,7 @@ MODULE p_sisyphe_ui
     t_grain
 !RK
   use bief, only : bief_obj, bief_mesh
+
   !
   !
   IMPLICIT NONE
@@ -128,6 +129,16 @@ MODULE p_sisyphe_ui
 !LEO remove test  INTERFACE get_sm_debug
 !LEO remove test    MODULE PROCEDURE get_sm_debug_i
 !LEO remove test END INTERFACE
+
+!LS LEO dimbuf and dimnhcom
+  INTERFACE get_sm_dimbuf
+     MODULE PROCEDURE get_sm_dimbuf_i 
+  END INTERFACE
+  INTERFACE get_sm_dimnhcom
+     MODULE PROCEDURE get_sm_dimnhcom_i 
+  END INTERFACE
+
+
   !! getting the node area
   INTERFACE get_sm_node_area
      MODULE PROCEDURE get_sm_node_area_d
@@ -349,6 +360,7 @@ END INTERFACE
     ! hint: dummy values as no names in Sisyphe but needed for DredgeSim
     CHARACTER (LEN=40) :: varname
     CHARACTER (LEN=20), dimension(:), allocatable :: var
+    CHARACTER (LEN=4) :: cdum
     !
 
     ALLOCATE (var(NSICLA))
@@ -454,7 +466,7 @@ END INTERFACE
     DO i=1,NELEM
        nofp(i) = 3
     END DO
-    ! 
+    ! 	
     var => nofp
     !
   END FUNCTION get_sm_nodes_of_poly_ref_d
@@ -584,7 +596,7 @@ END INTERFACE
     INTEGER , INTENT(IN) :: nof_nodes
     !! number of sediment fractions
     INTEGER , INTENT(IN) :: nof_sediment_fractions ! 
-    INTEGER :: ipoin, isicla
+    INTEGER :: ipoin, isicla, ilayer
     DOUBLE PRECISION :: var(nof_nodes, nof_sediment_fractions)
     DOUBLE PRECISION :: avai_dr(nof_nodes, nof_sediment_fractions)
     !
@@ -594,7 +606,7 @@ END INTERFACE
 !        avai_dr(ipoin+(ilayer-1)*npoin, isicla) = &
         avai_dr (ipoin,isicla) = &
 !RK bis v5p9        AVAIL(1,isicla,ipoin)
-!ab v6p0
+! ab v6p0
         AVAIL(ipoin,1,isicla)
 !      END DO
      END DO
@@ -612,7 +624,7 @@ END INTERFACE
     !
     DOUBLE PRECISION, POINTER :: var(:,:)
     DOUBLE PRECISION  ::   avai_dr(npoin,nsicla)
-    INTEGER :: ipoin, isicla
+    INTEGER :: ipoin, isicla, ilayer
     !
     DO ipoin=1,NPOIN
      DO isicla=1,nsicla
@@ -734,6 +746,36 @@ END INTERFACE
   !! getting the number of points shared with a sub-domain
   !! data is copied
   !! function does not throw error messages
+
+!LS LEO add dimbuf and dimnhcom
+     !dimbuf = MESH%BUF_SEND%DIM1
+    ! Dimension?!?
+    ! dimnhcom = MESH%NH_COM%DIM1
+
+  FUNCTION get_sm_dimbuf_i &
+       ( ) &
+       RESULT( var )
+    !
+    ! result value
+    INTEGER, POINTER  :: var
+    !
+    var => MESH%BUF_SEND%DIM1
+
+    WRITE(*,*) "LEODEBUG Dimbuf ", var, MESH%BUF_SEND%DIM1
+    !
+  END FUNCTION get_sm_dimbuf_i
+
+  FUNCTION get_sm_dimnhcom_i &
+       ( ) &
+       RESULT( var )
+    !
+    ! result value
+    INTEGER, POINTER  :: var
+    !
+    var => MESH%NH_COM%DIM1
+    !
+  END FUNCTION get_sm_dimnhcom_i
+
   FUNCTION get_sm_nb_neighb_pt_i &
        ( ) &
        RESULT( var )
@@ -767,19 +809,19 @@ END INTERFACE
    !
     use m_dredgesim_data, only : dimbuf, nb_neighb
     ! result value
-   INTEGER, POINTER  :: var(:,:)
+   INTEGER, POINTER  :: var(:)
    INTEGER :: i,j,k
   !
-    k=0
-    do i=1,dimbuf
-     do j=1,nb_neighb
-      k=k+1
-      mesh_nh_com(i,j) = MESH%NH_COM%I(k)
-     end do
-    end do
-    var => mesh_nh_com
+!    k=0
+!    do i=1,dimbuf
+!     do j=1,nb_neighb
+!      k=k+1
+!      mesh_nh_com(i,j) = MESH%NH_COM%I(k)
+!     end do
+!    end do
+!    var => mesh_nh_com
 ! geht leider nicht
-!   var => MESH%NH_COM%I%P
+   var => MESH%NH_COM%I
     !
   END FUNCTION get_sm_nh_com_i
   !! getting buffer for received data
@@ -791,19 +833,19 @@ END INTERFACE
     !
     use m_dredgesim_data, only : dimbuf, nb_neighb
     ! result value
-    DOUBLE PRECISION, POINTER  :: var(:,:)
+    DOUBLE PRECISION, POINTER  :: var(:)
    INTEGER :: i,j,k
   !
-    k=0
-    do i=1,dimbuf
-     do j=1,nb_neighb
-      k=k+1
-      mesh_buf_recv(i,j) = MESH%BUF_RECV%R(k)
-     end do
-    end do
-    var => mesh_buf_recv
+!    k=0
+!    do i=1,dimbuf
+!     do j=1,nb_neighb
+!      k=k+1
+!      mesh_buf_recv(i,j) = MESH%BUF_RECV%R(k)
+!     end do
+!    end do
+!    var => mesh_buf_recv
 
-!    var => MESH%BUF_RECV%R
+    var => MESH%BUF_RECV%R
     !
   END FUNCTION get_sm_buf_recv_d
   !! getting the buffer for sending data
@@ -814,18 +856,17 @@ END INTERFACE
        RESULT( var )
      use m_dredgesim_data, only : dimbuf, nb_neighb
     ! result value
-    DOUBLE PRECISION, POINTER  :: var(:,:)
+    DOUBLE PRECISION, POINTER  :: var(:)
    INTEGER :: i,j,k
   !
-    k=0
-    do i=1,dimbuf
-     do j=1,nb_neighb
-      k=k+1
-      mesh_buf_send(i,j) = MESH%BUF_SEND%R(k)
-     end do
-    end do
-!    var => mesh_buf_send   !
-    nullify(var)
+!    k=0
+!    do i=1,dimbuf
+!     do j=1,nb_neighb
+!      k=k+1
+!      mesh_buf_send(i,j) = MESH%BUF_SEND%R(k)
+!     end do
+!    end do
+    var => MESH%BUF_SEND%R  !
 
     !
   END FUNCTION get_sm_buf_send_d
@@ -895,7 +936,7 @@ END INTERFACE
        ! [6]
        ! -----------------------------------------------------------------
        IF (DEBUG_ds > 0) THEN
-          WRITE(*,*) ' ... printing array shapes '
+       	  WRITE(*,*) ' ... printing array shapes '
        END IF
        IF ( no_error( ) ) CALL print_dredgesim_shape ( )
        IF (DEBUG_ds > 0) THEN
@@ -1243,7 +1284,9 @@ END INTERFACE
             set_ds_nodes_of_poly, set_ds_grav_center_coord, set_ds_node_coord, set_ds_poly_depth, set_ds_node_water_depth, &
             set_ds_poly_area, set_ds_node_area, set_ds_node_depth, set_ds_poly_depth, set_ds_edge_depth, &
             set_ds_node_porosity, set_ds_node_sediment_fraction, set_ds_cell_sediment_fraction, &
-            set_ds_edgelist_of_poly, set_ds_nodelist_of_poly, set_ds_node_noero_depth
+            set_ds_edgelist_of_poly, set_ds_nodelist_of_poly, set_ds_node_noero_depth, &
+            set_ds_node_neighb, set_ds_nb_neighb_pt,set_ds_list_send,set_ds_nh_com,set_ds_buf_recv,set_ds_buf_send,&
+            set_ds_dimbuf,set_ds_dimnhcom,set_ds_knolg
       ! 
       ! [B.2] methods from other packages to get required data from
       !LEO USE p_sisyphe_ui, ONLY :          &
@@ -1270,6 +1313,9 @@ END INTERFACE
          IF (DEBUG_ds > 0) THEN
             WRITE(*,*) ' name = "'//TRIM( c_upname_b )//'"'
          END IF
+         !LS LEO allready set
+         !CALL set_ds_dimbuf(get_sm_dimbuf())
+         !CALL set_ds_dimnhcom(get_sm_dimnhcom())
          CALL set_ds_nodes_of_poly ( get_sm_nodes_of_poly( ))
          CALL set_ds_edgelist_of_poly ( get_sm_edgelist_of_poly( ))
          CALL set_ds_nodelist_of_poly ( get_sm_nodelist_of_poly( ))
@@ -1279,12 +1325,23 @@ END INTERFACE
          !LEO TODO here is a critical bug node_area was not correct
          CALL set_ds_node_area ( get_sm_node_area( ))
          CALL set_ds_node_depth ( get_sm_node_depth( ))
+         !LS LEO 12.12.2013 add two variables for parallel run
+         CALL set_ds_node_neighb( get_sm_node_neighb())
+         CALL set_ds_nb_neighb_pt(get_sm_nb_neighb_pt())
+         CALL set_ds_list_send(get_sm_list_send())
+         CALL set_ds_buf_send (get_sm_buf_send())
+         CALL set_ds_nh_com(get_sm_nh_com())
+         CALL set_ds_buf_recv(get_sm_buf_recv())
+
          CALL set_ds_poly_depth ( get_sm_poly_depth( ))
          CALL set_ds_node_water_depth ( get_sm_node_water_depth( ))
          CALL set_ds_node_porosity ( get_sm_node_porosity( ))
          CALL set_ds_node_sediment_fraction ( get_sm_node_sediment_fraction( ))
          CALL set_ds_cell_sediment_fraction ( get_sm_cell_sediment_fraction( ))
          CALL set_ds_node_noero_depth ( get_sm_node_noero_depth( ))
+         !LS LEO 09.01.2014 set knolg
+         CALL set_ds_knolg(get_sm_knolg())
+
 
       END IF
       !
@@ -1328,6 +1385,8 @@ END INTERFACE
       !LEO raus CHARACTER (LEN=15) , PARAMETER :: c_modname='externe Routine'     ! 
       !! name of external subroutine
       CHARACTER (LEN=20) , PARAMETER :: c_upname_c='ext_ds_fraction_name' !  
+      ! variables
+      INTEGER :: nof_c ! 
       !
       !LEO OLD:
       !IF ( no_error( ) ) nof_c = get_sm_nof_sediment_fractions ( )
@@ -1416,7 +1475,7 @@ END INTERFACE
       TYPE (t_error) , ALLOCATABLE :: all_errors_le(:)                     ! 
       CHARACTER (LEN=c_max_len_pac) , PARAMETER :: c_pac_le(1)= (/ &       ! 
            'io_ipds   ' /)    ! 
-      INTEGER :: i_le, j_le, nn_le, idx_le ! 
+      INTEGER :: i_le, j_le, n_le, nn_le, idx_le ! 
       !
       ! ------------------------------------------------------------------
       ! [1] generate temporary required local error messages
@@ -1708,11 +1767,24 @@ END INTERFACE
    USE p_dredgesim_ui, ONLY : init_dredgesim, setup_ds_steering_file, &
       start_dredgesim, setup_dredgesim_prn_lun, &
       setup_dredgesim_trc_lun,& !,prepare_dredgesim
-      set_ds_knolg !LEO added knolg
+      set_ds_knolg, & !LEO added knolg
+      set_ds_dimbuf,&  !LS LEO added 
+      set_ds_dimnhcom  !LS LEO added
 
     use bief, only : bief_obj, bief_mesh
-    use m_dredgesim_data, ONLY : leopr_ds, debug_ds , nb_neighb, dimbuf, dimnhcom,set_ds_node_area_ref
+    use m_dredgesim_data, ONLY : leopr_ds, debug_ds , nb_neighb, dimbuf, dimnhcom,set_ds_node_area_ref 
     
+    INTEGER, POINTER :: ikp1d(:), ikm1d(:), nachb1d(:), indpu1d(:)
+    INTEGER, POINTER ::  nhp1d(:), nhm1d(:)
+    INTEGER, POINTER :: gtproc_nachb_ids(:), ltproc_nachb_ids(:)
+    INTEGER, POINTER :: nodelist_of_nachb_nodes(:), nachb_nodelist_of_nodes(:)
+    INTEGER, POINTER :: gtproc_nof_nachb_nodes(:), ltproc_nof_nachb_nodes(:)
+    INTEGER, POINTER :: gtproc_nodelist_of_nachb_nodes(:,:), ltproc_nodelist_of_nachb_nodes(:,:)
+    INTEGER, POINTER :: edgelist_of_nachb_edges(:), nachb_edgelist_of_edges(:)
+    INTEGER, POINTER :: gtproc_nof_nachb_edges(:), ltproc_nof_nachb_edges(:)
+    INTEGER, POINTER :: gtproc_edgelist_of_nachb_edges(:,:), ltproc_edgelist_of_nachb_edges(:,:)
+    INTEGER :: nof_nachb_gtproc, nof_nachb_ltproc, nof_nachb_nodes
+    INTEGER :: iproc, inode
     INTEGER :: idx_slash
     !
     ! DredgeSim trace
@@ -1724,7 +1796,7 @@ END INTERFACE
     ! h_grid variable
     TYPE (t_file) :: dredgesim_mesh
 !RK Sisyphe variables
-     INTEGER :: ipid, NCSIZE
+     INTEGER :: ipid, ilmax, NCSIZE
      INTEGER :: ncou !,NOMBLAY
      CHARACTER(LEN=250) :: dredgeinp, ngeo_name
 
@@ -1737,6 +1809,13 @@ END INTERFACE
      TYPE(BIEF_MESH) :: MESH_S
      TYPE (BIEF_OBJ) :: ZF_S, ZR_S, HN_S, E_S, NLAYER_S, NODE_AREA_S ! MASKEL
      
+     LOGICAL :: MSK
+
+    !INTEGER :: NACHB(NBMAXNSHARE,NPTIR)
+    !LS LEOD TODO set the node_neighb correct!!! we have to allocate this field
+    !INTEGER, Pointer :: nachbar_var(:)
+    !NACHB => MESH_S%NACHB%I
+
     !LS workaround to set variables global
     NELEM = NELEM_S
     NSICLA = NSICLA_S
@@ -1780,15 +1859,17 @@ END INTERFACE
     ! MESH%NB_NEIGHB: NUMBER OF NEIGHBOURING SUB-DOMAINS
      nb_neighb = MESH%NB_NEIGHB
     ! FIRST DIMENSION OF BUFFERS
-     dimbuf = MESH%BUF_SEND%DIM1
+     !dimbuf = MESH%BUF_SEND%DIM1
     ! Dimension?!?
-     dimnhcom = MESH%NH_COM%DIM1
+    ! dimnhcom = MESH%NH_COM%DIM1
     !LEO end removed upwards
 !LEO
 
     !LEO set knolg if ncsize larger than 1
     IF (NCSIZE .GT. 1) THEN
-      CALL set_ds_knolg(get_sm_knolg())
+      !LS LEO REMOVED it CALL set_ds_knolg(get_sm_knolg())
+      CALL set_ds_dimbuf(get_sm_dimbuf())
+      CALL set_ds_dimnhcom(get_sm_dimnhcom())
     END IF 
 
     OPEN (sed_prn_lun, FILE='DredgeSim.sdr')
@@ -1855,15 +1936,23 @@ END INTERFACE
     ! allocating local data
 
     WRITE(*,*) "Nelem_s , Npoin" ,nelem_s,npoin
+
+
     !LEO reactivate the outcommented out ALLOCAT (ZF_poly(nelem_s))
     ALLOCATE (ZF_poly(nelem_s))
     !LEO switched poro(nelem_S) to poro(npoin)
     ALLOCATE (poro(npoin))
     ALLOCATE (avai_dr_node(npoin,nsicla))
     ALLOCATE (avai_dr_poly(nelem_S,nsicla))
-    ALLOCATE (MESH_buf_recv(dimbuf,nb_neighb))
-    ALLOCATE (MESH_buf_send(dimbuf,nb_neighb))
-    ALLOCATE (MESH_nh_com(dimnhcom,nb_neighb))
+    WRITE(*,*) "LEODEBUG ALIVE", ncsize
+    IF (ncsize > 1) THEN
+       ALLOCATE (MESH_buf_recv(dimbuf,nb_neighb))
+       ALLOCATE (MESH_buf_send(dimbuf,nb_neighb))
+       ALLOCATE (MESH_nh_com(dimnhcom,nb_neighb))
+    ENDIF
+
+    WRITE(*,*) "LEODEBUG ALIVE", ncsize
+    
     ALLOCATE (nofp(nelem_S))
     ALLOCATE (used_sediment(NSICLA))
     ALLOCATE (node_depth_dummy(npoin))
@@ -1871,6 +1960,7 @@ END INTERFACE
     !
     ! for parallel computing
     !
+    WRITE(*,*) "LEODEBUG ALIVE", ncsize
 
     IF ( ncsize > 1 ) THEN
        CALL new_h_grid (h_grid_id)
@@ -1881,7 +1971,8 @@ END INTERFACE
        CLOSE (ngeo)
        CALL read_h_grid ( dredgesim_mesh, ncsize)
     END IF
-
+    
+    WRITE(*,*) "LEODEBUG ALIVE"
     !DredgeSim starten
     IF (debug_ds > 0) THEN
        print*,'vor start dredgesim',no_error()
@@ -1922,9 +2013,23 @@ END INTERFACE
   !
   IMPLICIT NONE
   !
+  !LS LEO 13.02.2014 Changed DEALLOCTAION 
   DEALLOCATE( ZF_poly, poro, avai_dr_node, avai_dr_poly, nofp, &
-               used_sediment, node_depth_dummy, mesh_buf_send, & 
-               mesh_buf_recv, mesh_nh_com, zf_node_depth,node_area) !LEO added ZF_NODE_DEPTH, node_area
+               used_sediment, node_depth_dummy,  & 
+                zf_node_depth,node_area) !LEO added ZF_NODE_DEPTH, node_area
+  
+  
+  IF (ALLOCATED(mesh_buf_send)) THEN
+    DEALLOCATE(mesh_buf_send)
+  ENDIF 
+  
+  IF (ALLOCATED(mesh_nh_com)) THEN
+    DEALLOCATE(mesh_nh_com)
+  ENDIF 
+  
+  IF (ALLOCATED(mesh_buf_recv)) THEN
+    DEALLOCATE(mesh_buf_recv)
+  ENDIF 
   !
   END SUBROUTINE clear_sisydredge_d
   !

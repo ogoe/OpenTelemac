@@ -319,6 +319,13 @@ MODULE p_dredgesim_ui
   INTERFACE set_ds_buf_send
      MODULE PROCEDURE set_ds_buf_send_d
   END INTERFACE
+!!LS LEO Introduce new set for dimbuf and dimnhcom
+  INTERFACE set_ds_dimbuf
+     MODULE PROCEDURE set_ds_dimbuf_i
+  END INTERFACE
+  INTERFACE set_ds_dimnhcom
+     MODULE PROCEDURE set_ds_dimnhcom_i
+  END INTERFACE
   !! setting the buffer received
   INTERFACE set_ds_buf_recv
      MODULE PROCEDURE set_ds_buf_recv_d
@@ -601,6 +608,9 @@ MODULE p_dredgesim_ui
   PUBLIC :: set_ds_nh_com                   ! global number of shared points
   PUBLIC :: set_ds_buf_recv                 ! buffer for receiving data
   PUBLIC :: set_ds_buf_send                 ! buffer for sending data
+!LS LEO Intorduce dimbuf_and_dimnhcom
+  PUBLIC :: set_ds_dimnhcom 
+  PUBLIC :: set_ds_dimbuf 
   PUBLIC :: set_ds_node_depth
   PUBLIC :: set_ds_node_noero_depth
   PUBLIC :: set_ds_edge_depth
@@ -709,7 +719,7 @@ CONTAINS
     IF ( .NOT. initialised ) THEN
        !
        IF (DEBUG_ds > 0) THEN
-          WRITE(*,*) ' '
+       	  WRITE(*,*) ' '
           WRITE(*,*) ' "p_dredgesim_ui" version ... <'
           WRITE(*,*) ' Copyright (C) 2007 Bundesanstalt fuer Wasserbau '
           WRITE(*,*)
@@ -1149,17 +1159,37 @@ CONTAINS
   SUBROUTINE set_ds_nh_com_i (nh_com)
    USE m_dredgesim_data, ONLY : set_ds_nh_com_ref
 
-   INTEGER, POINTER  :: nh_com(:,:)
+   INTEGER, POINTER  :: nh_com(:)
    !
   CALL set_ds_nh_com_ref(nh_com)
     !
   END SUBROUTINE set_ds_nh_com_i
+!===========================
+!LS LEO dimbuf_and_dimnhcom
+    SUBROUTINE set_ds_dimbuf_i(dimbuf)
+        USE m_dredgesim_data, ONLY : set_ds_dimbuf_ref
+    
+        INTEGER, POINTER  :: dimbuf
+        !
+        CALL set_ds_dimbuf_ref(dimbuf)
+
+    END SUBROUTINE set_ds_dimbuf_i
+
+   SUBROUTINE set_ds_dimnhcom_i(dimnhcom)
+        USE m_dredgesim_data, ONLY : set_ds_dimnhcom_ref
+    
+        INTEGER, POINTER :: dimnhcom
+     
+        CALL set_ds_dimnhcom_ref(dimnhcom)
+
+    END SUBROUTINE set_ds_dimnhcom_i
+!===========================
   !! getting buffer for received data
   !! pointer on external data
   SUBROUTINE set_ds_buf_recv_d(buf_recv)
    USE m_dredgesim_data, ONLY : set_ds_buf_recv_ref
 
-   DOUBLE PRECISION, POINTER  :: buf_recv(:,:)
+   DOUBLE PRECISION, POINTER  :: buf_recv(:)
    !
     CALL set_ds_buf_recv_ref(buf_recv)
     !
@@ -1169,7 +1199,7 @@ CONTAINS
   SUBROUTINE set_ds_buf_send_d (buf_send)
    USE m_dredgesim_data, ONLY : set_ds_buf_send_ref
     !
-    DOUBLE PRECISION,POINTER  :: buf_send(:,:)
+    DOUBLE PRECISION,POINTER  :: buf_send(:)
     !
    CALL set_ds_buf_send_ref (buf_send)
     !
@@ -1935,7 +1965,7 @@ CONTAINS
 !LEO       ! [6]
 !LEO       ! -----------------------------------------------------------------
 !LEO       IF (DEBUG_ds > 0) THEN
-!LEO          WRITE(*,*) ' ... printing array shapes '
+!LEO       	  WRITE(*,*) ' ... printing array shapes '
 !LEO       END IF
 !LEO       IF ( no_error( ) ) CALL print_dredgesim_shape ( )
 !LEO       IF (DEBUG_ds > 0) THEN
@@ -1977,12 +2007,15 @@ CONTAINS
     CHARACTER (LEN=c_len_datetime_to_string) :: l_string ! 
     
 !     DOUBLE PRECISION :: AVAIL(get_nof_nodes(), 1,size(node_sediment_fraction,2))
-     DOUBLE PRECISION, POINTER :: AVAIL(:,:,:)
+     DOUBLE PRECISION, POINTER :: avai_dr(:,:),AVAIL(:,:,:)
 
     TYPE (BIEF_OBJ) :: ZF
     !LEO TODO check if it is ok. I changed 
     !DOUBLE PRECISION :: ipoin, isicla
+    ! to
+    INTEGER :: ipoin, isicla
     !
+
 
     IF ( ok_initialised( c_upname ) ) THEN
        !
@@ -1994,7 +2027,7 @@ CONTAINS
        act_time     = time
        act_timestep = su_datetime( act_time, old_time )
        l_string     = datetime_to_string( act_time )
-       WRITE(*,*) ' +++ dredgesim-Time = ',TRIM(l_string)   
+       WRITE(*,*) ' +++ dredgesim-Time = ',TRIM(l_string)	   
 ! update botom elevation:
 !       CALL set_ds_node_depth ( get_sm_node_depth( ))
        !LEO TODO set_ds_node_depth here? It should be
@@ -2039,7 +2072,7 @@ CONTAINS
      node_sediment_fraction, get_nof_nodes
 
     use bief, ONLY : bief_obj
-!
+	!
     !! current timestep in seconds
     INTEGER :: ipoin, isicla, NSICLA, NPOIN
     REAL (KIND=Double) , INTENT(IN) :: timestep_in_sec ! 
@@ -2070,7 +2103,7 @@ CONTAINS
     var => tds_node_sediment_fraction
     var2 => tds_sis_node_depth
     var3 => tds_hn
-
+    
     IF ( ok_initialised( c_upname ) ) THEN
        !
        IF (DEBUG_ds > 0) THEN
@@ -2151,6 +2184,7 @@ CONTAINS
     !! name of subroutine
     CHARACTER (LEN=16), PARAMETER  :: c_upname='stop_dredgesim_d' ! 
     !! variables
+    INTEGER :: crit_type, i
     !
     IF ( ok_initialised( c_upname ) ) THEN
        WRITE(*,*) ' >>> STOP dredgesim simulation '
@@ -2164,8 +2198,8 @@ CONTAINS
        IF (NCSIZE.GT.1) THEN
           IF (ipid==0) THEN
               IF (ALLOCATED(dredge_criterion)) THEN
-                 CALL write_final_dredged_volume ()
-                 CALL write_final_disposed_volume ()
+              	 CALL write_final_dredged_volume ()
+              	 CALL write_final_disposed_volume ()
               END IF
 !             IF (ANY(all_total_volume(:) /= 0.0_Double))CALL write_final_dredged_volume ()
 !             IF (ANY(disp_total_volume(:,:) /= 0.0_Double))CALL write_final_disposed_volume ()
