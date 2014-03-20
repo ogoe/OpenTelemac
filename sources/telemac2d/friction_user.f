@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                   21/08/2010
+! TELEMAC2D   V7P0                                   20/03/2014
 !***********************************************************************
 !
 !brief    DEFINES FRICTION ZONES (BY NODE).
@@ -35,6 +35,12 @@
 !+   Provisionnal version, with ZONES FILE, but this file has yet to be
 !+   treated in partel. KNOGL replaced by GLOBAL_TO_LOCAL_POINT.
 !
+!history  Y AUDOUIN (EDF LAB, LNHE)
+!+        19/03/2014
+!+        V7P0
+!+   Zones file now written in local numbering. Plus checking of point
+!+   numbers added by JMH and 2 trailing temporary arrays removed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -51,10 +57,6 @@
       INTEGER            :: I,K,IVAL1,IVAL2,NFILE
       INTEGER            :: NPOIN_GLOB,P_ISUM
       CHARACTER(LEN=144) :: NOMFILE
-      CHARACTER(LEN=144) :: tmp_name
-      integer,allocatable :: test(:)
-!
-      EXTERNAL P_ISUM
 !
 !=======================================================================!
 !=======================================================================!
@@ -65,17 +67,24 @@
       NFILE   = T2D_FILES(T2DZFI)%LU
       NOMFILE = T2D_FILES(T2DZFI)%NAME
 !
-!
-!     File Read in order to know the number of node in the mesh
-!     this information is unknown for a parallel computation
-! 
-!      
-!
-!     Reading File
+!     Reading File (which is now written in local numbering)
 ! 
       DO K=1,NPOIN
         READ(NFILE,*,END=997,ERR=998) I, IVAL2
-        KFROPT%I(I) = IVAL2
+        IF(K.EQ.I) THEN
+          KFROPT%I(I) = IVAL2
+        ELSE
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'ERREUR DANS LE FICHIER DES ZONES : ',NOMFILE
+            WRITE(LU,*) 'POINT ',K,' ATTENDU, POINT ',I,' TROUVE'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'ERROR IN THE ZONES FILE: ',NOMFILE
+            WRITE(LU,*) 'POINT ',K,' EXPECTED, POINT ',I,' FOUND'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ENDDO
       GOTO 997
 !

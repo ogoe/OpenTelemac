@@ -16,8 +16,9 @@
 ! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
-!brief    TREATS LIQUID BOUNDARIES USING THOMPSON METHOD
-!+                BASED ON CHARACTERISTICS.
+!brief    Treats liquid boundaries with the Thompson method based
+!+        on characteristics. See XVIIIth Telemac User Club proceedings
+!+        page 142.
 !
 !warning  This is probably not correct with spherical coordinates,
 !+        because in this case with characteristics we divide the 
@@ -698,6 +699,8 @@
             IF(HBOR(K).GT.HMIN) THEN
 !             BEWARE TIDAL FLATS, AND HIDDEN PARAMETER 0.1
               HHBOR=MAX(0.1D0,HBOR(K))
+!             formulas 37 and 38 of proceedings but coefficient 0.5
+!             is missing in this document.
               UBOR(K)=(       DETADY* W1R(K)
      &                 +0.5D0*DETADX*(W2R(K)-W3R(K)))/HHBOR+U%R(N)
               VBOR(K)=(      -DETADX* W1R(K)
