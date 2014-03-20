@@ -505,7 +505,11 @@ class actionRUN(ACTION):
       outputs = self.dids[self.active["xref"]][self.active['cfg']]['output']
       if matchSafe(casFile,self.active["target"]+'_*??h??min??s*.sortie',self.active['safe'],rebuild):
          print '     +> running cas file: ' + self.active["target"]
-         for k in outputs: matchSafe('',path.basename(k[1][0]),self.active['safe'],2)
+         for k in outputs: 
+           # In case k is read and write
+           if 'LIT' in k[2]:
+             continue
+           matchSafe('',path.basename(k[1][0]),self.active['safe'],2)
          try:
             sortieFiles = runCAS(self.active['cfg'],cfg,self.active["code"],[sacFile],specs)
          except Exception as e:
