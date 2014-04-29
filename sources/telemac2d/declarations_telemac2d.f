@@ -213,10 +213,6 @@
 !
       TYPE(BIEF_OBJ), TARGET :: FXWAVE,FYWAVE
 !
-!     INITIAL CELERITY OF WAVES
-!
-      TYPE(BIEF_OBJ), TARGET :: C0
-!
 !     INITIAL DEPTH
 !
       TYPE(BIEF_OBJ), TARGET :: H0
@@ -224,10 +220,6 @@
 !     MASK FOR TRACERS
 !
       TYPE(BIEF_OBJ), TARGET :: MASKTR
-!
-!     FREE SURFACE ELEVATION OF INCIDENT WAVE
-! 
-      TYPE(BIEF_OBJ), TARGET :: COTOND
 !
 !     ATMOSPHERIC PRESSURE
 ! 
@@ -737,8 +729,9 @@
       INTEGER NIT
 !
 !     TYPE OF ADVECTION (1:u and v, 2:h, 3:tracers, 4:k and epsilon)
+!     SCHEME FOR ADVECTION OF TRACERS
 !
-      INTEGER ICONVF(4)
+      INTEGER ICONVF(4),ICONVFT(MAXTRA)
 !
 !     TURBULENCE MODEL
 ! 
@@ -1080,6 +1073,15 @@
 !     STORAGE OF MAXIMUM NUMBER OF ELEMENTS ON ALL WEIRS
 !
       INTEGER MAXNPS
+!
+!     PSI SCHEME OPTION
+!
+      INTEGER OPTPSI
+!
+!     ADVECTION SCHEME OPTIONS FOR VARIOUS VARIABLES
+!     VELOCITY, K-EPSILON AND TRACERS
+!
+      INTEGER OPTADV_VI,OPTADV_KE,OPTADV_TR(MAXTRA)
 !
 !-----------------------------------------------------------------------
 !
@@ -1604,7 +1606,7 @@
 !
 !     SOLVER FOR DIFFUSION OF TRACERS
 ! 
-      TYPE(SLVCFG) :: SLVTRA
+      TYPE(SLVCFG) :: SLVTRA(MAXTRA)
 !
 !-----------------------------------------------------------------------
 !

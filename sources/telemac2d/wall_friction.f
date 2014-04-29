@@ -3,10 +3,11 @@
 !                    ************************
 !
      &(UETUTA,AUBOR,CFBOR,DISBOR,UN,VN,LIMPRO,NBOR,NPTFR,
-     & KARMAN,PROPNU,LISRUG,KNEU,KDIR,KENT,KENTU,KADH,KLOG,IELMU,KP1BOR)
+     & KARMAN,PROPNU,LISRUG,KNEU,KDIR,KENT,KENTU,KADH,KLOG,IELMU,IKLBOR,
+     & NELEB,NELEBX)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V7P0                                   27/03/2014
 !***********************************************************************
 !
 !brief    COMPUTES AUBOR, FRICTION ON BOUNDARIES.
@@ -28,11 +29,16 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/03/2014
+!+   Adaptation to new numbering of boundary segments in parallel.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AUBOR          |<--| LAW OF FRICTION ON BOUNDARIES
 !|                |   | NUT*DU/DN=AUBOR*U+BUBOR
 !| CFBOR          |-->| ADIMENSIONAL FRICTION COEFFICIENT ON BOUNDARIES
 !| DISBOR         |-->| DISTANCE BETWEEN BOUNDARY AND NEAREST POINTS INSIDE
+!| IKLBOR         |-->| CONNECTIVITY OF BOUNDARY SEGMENTS
 !| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
 !| KARMAN         |-->| VON KARMAN CONSTANT
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
@@ -43,6 +49,8 @@
 !| LIMPRO         |-->| BOUNDARY CONDITIONS FOR PROPAGATION (SEE PROPIN)
 !| LISRUG         |-->| TURBULENCE REGIME (1: SMOOTH 2: ROUGH)
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELEB          |-->| NUMBER OF BOUNDARY SEGMENTS
+!| NELEBX         |-->| MAXIMUM NUMBER OF BOUNDARY SEGMENTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| PROPNU         |-->| LAMINAR DIFFUSION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,15 +62,16 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NPTFR,LISRUG,KNEU,KDIR,KENT,KADH,KLOG,KENTU
-      INTEGER, INTENT(IN) :: IELMU
-      INTEGER, INTENT(IN) :: LIMPRO(NPTFR,6),NBOR(NPTFR),KP1BOR(NPTFR)
+      INTEGER, INTENT(IN) :: IELMU,NELEB,NELEBX
+      INTEGER, INTENT(IN) :: LIMPRO(NPTFR,6),NBOR(NPTFR)
+      INTEGER, INTENT(IN) :: IKLBOR(NELEBX,2)
       DOUBLE PRECISION, INTENT(IN)    :: CFBOR(*),UN(*),VN(*),DISBOR(*)
       DOUBLE PRECISION, INTENT(INOUT) :: AUBOR(*),UETUTA(*)
       DOUBLE PRECISION, INTENT(IN)    :: KARMAN,PROPNU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N,K,IT
+      INTEGER N,K,KP1,IT,IELEB
 !
       DOUBLE PRECISION UTANG,DIST
 !
@@ -135,7 +144,7 @@
 ! COMPUTES AUBOR
 ! --------------
 !
-!  AUBOR COUNTS FOR THE SEGMENT BETWEEN K AND KP1BOR(K)
+!  AUBOR COUNTS FOR THE SEGMENT BETWEEN K AND THE FOLLOWING BOUNDARY POINT
 !
 !  LAW        : NUT * DU/DN = UETOIL**2 = -AUBOR*U(N+1)
 !  CHANGED TO : NUT * DU/DN = UETOIL**2  *  U(N+1) / U(N)
@@ -156,8 +165,10 @@
 !     QUADRATIC ELEMENT HAS EXTRA POINTS ON THE BOUNDARY
 !
       IF(IELMU.EQ.13) THEN
-        DO K=1,NPTFR
-          AUBOR(K+NPTFR) = (AUBOR(K)+AUBOR(KP1BOR(K)))*0.5D0
+        DO IELEB=1,NELEB
+          K  =IKLBOR(IELEB,1)
+          KP1=IKLBOR(IELEB,2)
+          AUBOR(K+NPTFR) = (AUBOR(K)+AUBOR(KP1))*0.5D0
         ENDDO
       ENDIF
 !

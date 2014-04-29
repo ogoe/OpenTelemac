@@ -2,24 +2,24 @@
                      SUBROUTINE BEDLOAD_MAIN
 !                    ***********************
 !
-     &  (ACLADM,KSP,KSR, V2DPAR,UNSV2D,CF,EBOR,FW,HN,LIQBOR,
-     &   MASK, MASKEL, MASKPT, Q, QBOR, U2D,
-     &   V2D, S,UNLADM,UW,THETAW,MU,TOB,TOBW,TW,ZF,
-     &   DEBUG, HIDFAC, ICF, IELMT, ISOUS, KDDL, KDIR,
-     &   KENT, KINC, KLOG, KNEU, KSORT, LOADMETH, LT,
-     &   NPOIN, NPTFR, NSICLA, OPTBAN, LS0, BETA, FD90, FDM,
-     &   GRAV, HIDI, HMIN, VCE, CSF_SABLE, XMVE, XMVS, XWC,
-     &   PI, KARMAN, ZERO, KARIM_HOLLY_YANG,MSK, SUSP, VF,
-     &   ENTET, CONST_ALAYER, LCONDIS, LGRAFED, MESH,
-     &   ELAY, LIEBOR, LIMTEC, MASKTR,
-     &   IT1, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
-     &   T12,T13,UNORM,AC, AT0, DTS, ELAY0, FRACSED_GF,
-     &   AVAIL, BREACH, CALFA, COEFPN,
-     &   DZF_GF, HIDING, QSCL_C, QSCL_S, QS_C,
-     &   QSCLXC, QSXC, QSCLYC, QSYC, SALFA, ZF_C, ZFCL_C, NSOUS,
-     &   ENTETS, SECCURRENT, SLOPEFF,
-     &   PHISED, DEVIA, BETA2, BIJK,SEDCO,HOULE,
-     &   U3D,V3D,CODE,FLBCLA,MAXADV)
+     &(ACLADM,KSP,KSR, V2DPAR,UNSV2D,CF,EBOR,FW,HN,LIQBOR,
+     & MASK, MASKEL, MASKPT, Q, QBOR, U2D,
+     & V2D, S,UNLADM,UW,THETAW,MU,TOB,TOBW,TW,ZF,
+     & DEBUG, HIDFAC, ICF, IELMT, ISOUS, KDDL, KDIR,
+     & KENT, KINC, KLOG, KNEU, KSORT, LOADMETH, LT,
+     & NPOIN, NPTFR, NSICLA, OPTBAN, LS0, BETA, FD90, FDM,
+     & GRAV, HIDI, HMIN, VCE, CSF_SABLE, XMVE, XMVS, XWC,
+     & PI, KARMAN, ZERO, KARIM_HOLLY_YANG,MSK, SUSP, VF,
+     & ENTET, CONST_ALAYER, LCONDIS, LGRAFED, MESH,
+     & ELAY, LIEBOR, LIMTEC, MASKTR,
+     & IT1, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
+     & T12,T13,UNORM,AC, AT0, DTS, ELAY0, FRACSED_GF,
+     & AVAIL, BREACH, CALFA, COEFPN,
+     & DZF_GF, HIDING, QSCL_C, QSCL_S, QS_C,
+     & QSCLXC, QSXC, QSCLYC, QSYC, SALFA, ZF_C, ZFCL_C, NSOUS,
+     & ENTETS, SECCURRENT, SLOPEFF,
+     & PHISED, DEVIA, BETA2, BIJK,SEDCO,HOULE,
+     & U3D,V3D,CODE,FLBCLA,MAXADV)
 !
 !***********************************************************************
 ! SISYPHE   V6P1                                   21/07/2011
@@ -54,6 +54,11 @@
 !+        V6P1
 !+  Name of variables   
 !+   
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        28/03/2014
+!+        V7P0
+!+  Call to bedload_diffin changed. 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
@@ -187,8 +192,8 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      ! 2/ GLOBAL VARIABLES
-      ! -------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ACLADM, KSR,V2DPAR,UNSV2D
       TYPE(BIEF_OBJ),   INTENT(IN)    :: CF,FW,KSP,HN,LIQBOR
       TYPE(BIEF_OBJ),   INTENT(IN)    :: MASK, MASKEL, MASKPT
@@ -233,9 +238,10 @@
       DOUBLE PRECISION, INTENT(IN)    :: BIJK
       TYPE(BIEF_OBJ),    INTENT(IN)    :: U3D,V3D
       CHARACTER(LEN=24), INTENT(IN)    :: CODE
-      ! 3/ LOCAL VARIABLES
-      ! ------------------
-      INTEGER :: I
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER I
 !
 !
 !======================================================================!
@@ -250,9 +256,9 @@
       IF (DEBUG > 0) WRITE(LU,*) 'BEDLOAD_DIFFIN'
       CALL BEDLOAD_DIFFIN
      &        (U2D, V2D, MESH%NBOR, MESH%XNEBOR, MESH%YNEBOR,
-     &         MESH%KP1BOR,
-     &         MASKEL, MESH%NELBOR, NPTFR, KENT, KSORT, KLOG, KINC,
-     &         KDIR, KDDL, KNEU, MSK, IT1, LIEBOR, MASKTR, LIMTEC)
+     &         MASKEL, MESH%NELBOR, NPTFR, KENT, KSORT, KLOG, 
+     &         KDIR, KDDL, KNEU, MSK, IT1, LIEBOR, MASKTR,LIMTEC,
+     &         MESH%IKLBOR%I,MESH%NELEB,MESH%NELEBX)
       IF (DEBUG > 0) WRITE(LU,*) 'END_BEDLOAD_DIFFIN'
 !
       DO I = 1, NSICLA
@@ -334,7 +340,6 @@
       ! ----------------------
       !
       DO I=1,NSICLA      
-! V6P1 inutile decorriger les taux de transport !
          IF(.NOT.SEDCO(I)) THEN
            CALL OS('X=X+Y   ', X=QS_C, Y=QSCL_C%ADR(I)%P)
            CALL OS('X=X+Y   ', X=ZF_C, Y=ZFCL_C%ADR(I)%P)
@@ -350,7 +355,9 @@
       ! QS : COEFPN ALREADY ADDED IN QSCL_C
       CALL OS('X=YZ    ', X=QSXC, Y=QS_C, Z=CALFA)
       CALL OS('X=YZ    ', X=QSYC, Y=QS_C, Z=SALFA)
+!
 !======================================================================!
 !======================================================================!
+!
       RETURN
       END

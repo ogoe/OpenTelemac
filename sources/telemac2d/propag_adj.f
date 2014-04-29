@@ -2,7 +2,7 @@
                      SUBROUTINE PROPAG_ADJ
 !                    *********************
 !
-     &(UCONV,VCONV,CONVV,H0,C0,COTOND,PATMOS,ATMOS,
+     &(UCONV,VCONV,CONVV,H0,PATMOS,ATMOS,
      & HPROP,UN,VN,HN,UTILD,VTILD,HTILD,DH,DU,DV,DHN,VISC,VISC_S,FU,FV,
      & SMH,MESH,ZF,AM1,AM2,AM3,BM1,BM2,CM1,CM2,TM1,A23,A32,MBOR,
      & CV1,CV2,CV3,W1,UBOR,VBOR,AUBOR,HBOR,DIRBOR,
@@ -86,7 +86,6 @@
 !| BD             |---| ??????  NOT USED
 !| BILMAS         |-->| LOGICAL TRIGGERING A MASS BALANCE INFORMATION
 !| BM2            |<->| MATRIX
-!| C0             |-->| REFERENCE CELERITY
 !| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
 !| CFBOR          |<--| ADIMENSIONAL FRICTION COEFFICIENT ON BOUNDARY
 !| CFLMAX         |<--| MAXIMUM CFL NUMBER (OBSERVED IN CURRENT TIME STEP)
@@ -99,7 +98,6 @@
 !|                |   | CONVV(1):U,V CONVV(2):H
 !| CORCON         |-->| CONTINUITY CORRECTION ON POINTS WITH
 !|                |   | IMPOSED DEPTH (COMPATIBLE FLUX IS COMPUTED)
-!| COTOND         |<--| ELEVATION USED FOR INCIDENT WAVES CONDITIONS
 !| CV1            |<->| RIGHT-HAND SIDE OF LINEAR SYSTEM
 !| CV2            |<->| RIGHT-HAND SIDE OF LINEAR SYSTEM
 !| CV3            |<->| RIGHT-HAND SIDE OF LINEAR SYSTEM
@@ -282,7 +280,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: DU,DV,FU,FV,VISC,VISC_S,HTILD
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: UBOR,VBOR,HBOR,AUBOR
       TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL,MASKPT,ZF
-      TYPE(BIEF_OBJ), INTENT(IN)      :: HPROP,H0,C0,COTOND,LIMPRO
+      TYPE(BIEF_OBJ), INTENT(IN)      :: HPROP,H0,LIMPRO
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,T5,T6,T7,T8,T9,T10
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T11
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TE1,TE2,TE3,TE4,TE5
@@ -310,7 +308,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER ITER,I,IELMU,IELMH
-      INTEGER UDIR,UDDL,UNEU,HOND,UNONNEU,VDIR,VDDL
+      INTEGER UDIR,UDDL,VDIR,VDDL
 !
       DOUBLE PRECISION C,AT1,HIST(1)
 !
@@ -332,10 +330,6 @@
       VDIR = 2
       UDDL = 3
       VDDL = 4
-      UNEU = 5
-!     VNEU = 6
-      HOND = 7
-      UNONNEU = 8
 !
 !-----------------------------------------------------------------------
 !

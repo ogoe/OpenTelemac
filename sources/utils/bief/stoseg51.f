@@ -3,11 +3,11 @@
 !                    *******************
 !
      &(IFABOR,NELMAX,IELM,IKLE,NBOR,
-     & GLOSEG,MAXSEG,ELTSEG,ORISEG,KP1BOR,NELBOR,NULONE,NELMAX2,
-     & NELEM2,NPTFR2,NPOIN2,NPLAN,KNOLG,NSEG2D)
+     & GLOSEG,MAXSEG,ELTSEG,ORISEG,NELBOR,NULONE,NELMAX2,
+     & NELEM2,NPTFR2,NPOIN2,NPLAN,KNOLG,NSEG2D,IKLBOR,NELEB,NELEBX)
 !
 !***********************************************************************
-! BIEF   V6P2                                   05/09/2011
+! BIEF   V7P0                                   25/03/2014
 !***********************************************************************
 !
 !brief    BUILDS THE DATA STRUCTURE FOR EDGE-BASED STORAGE
@@ -55,6 +55,12 @@
 !+        V6P2
 !+   Copied from STOSEG41 and modified.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        26/03/2014
+!+        V7P0
+!+   Boundary segments have now their own numbering, independent of
+!+   boundary points numbering.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTSEG         |<--| SEGMENTS OF EVERY TRIANGLE.
 !| GLOSEG         |<--| GLOBAL NUMBERS OF POINTS OF SEGMENTS.
@@ -63,13 +69,15 @@
 !| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
 !|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
 !|                |   | BOUNDARY
+!| IKLBOR         |-->| CONNECTIVITY OF BOUNDARY SEGMENTS IN 2D
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| KNOLG          |-->| GLOBAL NUMBER OF A LOCAL POINT IN PARALLEL
-!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
 !| MAXSEG         |<--| MAXIMUM NUMBER OF SEGMENTS
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS.
 !| NELBOR         |-->| NUMBER OF ELEMENT CONTAINING SEGMENT K OF
 !|                |   | THE BOUNDARY.
+!| NELEB          |-->| NUMBER OF BOUNDARY ELEMENTS IN 2D.
+!| NELEBX         |-->| MAXIMUM NUMBER OF BOUNDARY ELEMENTS IN 2D.
 !| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 3D
 !| NELMAX2        |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
@@ -84,7 +92,7 @@
 !| ORISEG         |<--| ORIENTATION OF SEGMENTS OF EVERY TRIANGLE.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF    !, EX_STOSEG51 => STOSEG51
+      USE BIEF, EX_STOSEG51 => STOSEG51
       USE DECLARATIONS_TELEMAC, ONLY : ISEGT
 !
       IMPLICIT NONE
@@ -93,11 +101,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)    :: NELMAX,NELMAX2,MAXSEG,IELM
+      INTEGER, INTENT(IN)    :: NELMAX,NELMAX2,MAXSEG,IELM,NELEBX,NELEB
       INTEGER, INTENT(IN)    :: NELEM2,NPTFR2,NPOIN2,NPLAN,NSEG2D
-      INTEGER, INTENT(IN)    :: NBOR(NPTFR2),KP1BOR(NPTFR2)
+      INTEGER, INTENT(IN)    :: NBOR(NPTFR2)
+      INTEGER, INTENT(IN)    :: IKLBOR(NELEBX,2)
       INTEGER, INTENT(IN)    :: IFABOR(NELMAX2,*),IKLE(NELMAX,4)
-      INTEGER, INTENT(IN)    :: NELBOR(NPTFR2),NULONE(NPTFR2)
+      INTEGER, INTENT(IN)    :: NELBOR(NELEBX),NULONE(NELEBX)
       INTEGER, INTENT(INOUT) :: GLOSEG(MAXSEG,2)
       INTEGER, INTENT(INOUT) :: ELTSEG(NELMAX,6),ORISEG(NELMAX,6)
       INTEGER, INTENT(IN)    :: KNOLG(*)
@@ -116,8 +125,8 @@
 !-----------------------------------------------------------------------
 !
       IF(IELM.NE.51) THEN
-        IF (LNG.EQ.1) WRITE(LU,500) IELM
-        IF (LNG.EQ.2) WRITE(LU,501) IELM
+        IF(LNG.EQ.1) WRITE(LU,500) IELM
+        IF(LNG.EQ.2) WRITE(LU,501) IELM
 500     FORMAT(1X,'STOSEG51 (BIEF) : ELEMENT NON PREVU : ',1I6)
 501     FORMAT(1X,'STOSEG51 (BIEF): UNEXPECTED ELEMENT: ',1I6)
         CALL PLANTE(1)
@@ -128,8 +137,6 @@
 !
 !     BUILDS 2D SEGMENTS (THE FIRST IN THE NUMBERING)
 !
-!     NOTE:
-!     IN PARALLEL MODE, THE NUMBER OF SEGMENTS IN THE CONTOUR LINE IS NOT NPTFR2
       NSEGH=NSEG2D*NPLAN
       NSEGV=(NPLAN-1)*NPOIN2
 !
@@ -139,11 +146,11 @@
 !     IN STOSEG, SO THAT AFTER THE 3D ORISEG WILL BE PARTLY BUT CORRECTLY 
 !     FILLED. THE SAME IS DONE WITH GLOSEG, WITH DIMENSION MAXSEG
 !
-!     NELBOR AND NULONE ARE HERE THE 2D VALUES (SEE CALL IN INBIEF)
+!     IKLBOR, NELBOR AND NULONE ARE HERE THE 2D VALUES (SEE INBIEF)
 !
       CALL STOSEG(IFABOR,NELEM2,NELMAX,NELMAX2,11,IKLE,NBOR,NPTFR2,
      &            GLOSEG,MAXSEG,ELTSEG,ORISEG,NSEG2D,
-     &            KP1BOR,NELBOR,NULONE,KNOLG)
+     &            NELBOR,NULONE,KNOLG,IKLBOR,NELEBX,NELEB)
 !
 !-----------------------------------------------------------------------
 !

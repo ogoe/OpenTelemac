@@ -2,7 +2,7 @@
                      SUBROUTINE PROPAG
 !                    *****************
 !
-     &(U,V,H,UCONV,VCONV,CONVV,H0,C0,COTOND,PATMOS,ATMOS,
+     &(U,V,H,UCONV,VCONV,CONVV,H0,PATMOS,ATMOS,
      & HPROP,UN,VN,HN,UTILD,VTILD,HTILD,DH,DU,DV,DHN,VISC,VISC_S,FU,FV,
      & SMH,MESH,ZF,AM1,AM2,AM3,BM1,BM2,CM1,CM2,TM1,A23,A32,MBOR,
      & CV1,CV2,CV3,W1,UBOR,VBOR,AUBOR,HBOR,DIRBOR,
@@ -16,10 +16,10 @@
      & NFRLIQ,SLVPRO,EQUA,VERTIC,ADJO,ZFLATS,TETAZCOMP,UDEL,VDEL,DM1,
      & ZCONV,COUPLING,FLBOR,BM1S,BM2S,CV1S,VOLU2D,V2DPAR,UNSV2D,
      & NDGA1,NDGB1,NWEIRS,NPSING,HFROT,FLULIM,YAFLULIM,RAIN,PLUIE,
-     & MAXADV)
+     & MAXADV,OPTADV_VI)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/08/2010
+! TELEMAC2D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    PROPAGATION - DIFFUSION - SOURCE TERMS STEP TO SOLVE
@@ -137,6 +137,20 @@
 !+        V6P3
 !+   Adaptation to the dynamic allocation of weirs
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/03/2014
+!+        V7P0
+!+   Now written to enable different numbering of boundary points and
+!+   boundary segments. Arguments C0 and COTOND removed. Incident wave
+!+   removed.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        17/04/2014
+!+        V7P0
+!+   Correction for weirs. The function P_DSUM for weirs must be called
+!+   in all processors, so it must be called outside the test:
+!+   IF(MESH%NPTFR.GT0) where it was in previous versions.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23            |<->| MATRIX
 !| A32            |<->| MATRIX
@@ -155,7 +169,6 @@
 !| BM1S           |<->| MATRIX
 !| BM2            |<->| MATRIX
 !| BM2S           |<->| MATRIX
-!| C0             |-->| REFERENCE CELERITY
 !| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
 !| CFLMAX         |<--| MAXIMUM CFL NUMBER (OBSERVED IN CURRENT TIME STEP)
 !| CM1            |<->| MATRIX
@@ -165,7 +178,6 @@
 !|                |   | CONVV(1):U,V CONVV(2):H
 !| CORCON         |-->| CONTINUITY CORRECTION ON POINTS WITH
 !|                |   | IMPOSED DEPTH (COMPATIBLE FLUX IS COMPUTED)
-!| COTOND         |<--| ELEVATION USED FOR INCIDENT WAVES CONDITIONS
 !| COUPLING       |-->| STRING WITH THE LIST OF COUPLED PROGRAMMES
 !| CV1            |<->| RIGHT-HAND SIDE OF LINEAR SYSTEM
 !| CV2            |<->| RIGHT-HAND SIDE OF LINEAR SYSTEM
@@ -233,6 +245,7 @@
 !|                |   | OF WEIR I (side2)
 !| NWEIRS         |-->| NUMBER OF SINGULARITIES
 !| OPDVIT         |-->| OPTION FOR DIFFUSION OF VELOCITIES
+!| OPTADV_VI      |-->| OPTION FOR THE ADVECTION SCHEME OF VELOCITIES
 !| OPTBAN         |-->| KEYWORD: 'OPTION FOR THE TREATMENT OF TIDAL FLATS' 
 !| OPTSOU         |-->| KEYWORD: 'TYPE OF SOURCES'
 !| OPTSUP         |-->| KEYWORD: 'SUPG OPTION'
@@ -312,7 +325,7 @@
 !
       INTEGER, INTENT(IN) :: LT,OPTSUP(4),KDIR,KFROT,ICONVF(4),NWEIRS
       INTEGER, INTENT(IN) :: IORDRH,IORDRU,ISOUSI,OPTBAN,OPTSOU,SOLSYS
-      INTEGER, INTENT(IN)             :: OPDVIT,NFRLIQ,HFROT,MAXADV
+      INTEGER, INTENT(IN) :: OPDVIT,NFRLIQ,HFROT,MAXADV,OPTADV_VI
       DOUBLE PRECISION, INTENT(IN)    :: TETAU,TETAD,TETAH,AGGLOH,AGGLOU
       DOUBLE PRECISION, INTENT(IN)    :: TETAHC,AT,DT,GRAV,ROEAU
       DOUBLE PRECISION, INTENT(IN)    :: TETAZCOMP
@@ -334,9 +347,9 @@
       TYPE(BIEF_OBJ), INTENT(INOUT) :: U,V,H,CV1,CV2,CV3,PRIVE,DH,DHN
       TYPE(BIEF_OBJ), INTENT(INOUT) :: CV1S
       TYPE(BIEF_OBJ), INTENT(INOUT) :: DU,DV,FU,FV,VISC,VISC_S,HTILD
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: UBOR,VBOR,HBOR,AUBOR,COTOND
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: UBOR,VBOR,HBOR,AUBOR
       TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,MASKPT,ZF,PLUIE
-      TYPE(BIEF_OBJ), INTENT(IN)    :: HPROP,H0,C0,LIMPRO
+      TYPE(BIEF_OBJ), INTENT(IN)    :: HPROP,H0,LIMPRO
 !
 !     TE : BY ELEMENT               TE4,TE5 ONLY IF OPTBAN=3
       TYPE(BIEF_OBJ), INTENT(INOUT) :: TE1,TE2,TE3,TE4,TE5,ZFLATS
@@ -367,7 +380,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,IELMU,IELMH,UDIR,UDDL,UNEU,HOND,UNONNEU,IELEM,NELEM
+      INTEGER I,IELMU,IELMH,UDIR,UDDL,UNEU,UNONNEU,IELEM,NELEM
       INTEGER I1,I2,I3,DIMLIM,DIMGLO,N,IOPT,DISCLIN
 !
       DOUBLE PRECISION Z(1),SL1,SL1U,C,FL1,FL2
@@ -395,7 +408,6 @@
 !     VDDL = 4
       UNEU = 5
 !     VNEU = 6
-      HOND = 7
       UNONNEU = 8
 !
 !  CONVENTION FOR LINEAR DISCRETISATION
@@ -512,7 +524,8 @@
         ENDIF
 !
 !       'IF' ADDED ON 23/07/2002 BY JMH (MAY HAPPEN IN PARALLEL MODE)
-        IF(MESH%NPTFR.GT.0) THEN
+!  
+        IF(MESH%NELEB.GT.0) THEN
          CALL MATRIX(MBOR,'M=N     ','FMATMA          ',
      &               IELBOR(IELMU,1),IELBOR(IELMU,1),
      &               -1.D0,AUBOR,S,S,S,S,S,MESH,.TRUE.,MASK%ADR(UNEU)%P)
@@ -645,6 +658,7 @@
       ENDIF
 !
       ELSEIF(SOLSYS.EQ.2) THEN
+!
         IF(IELMU.NE.IELMH) THEN
           CALL VECTOR(AM2%D,'=','MASBAS          ',IELMU,
      &                SL1,S,S,S,S,S,S,MESH,MSK,MASKEL)
@@ -653,6 +667,7 @@
         ENDIF
         AM2%TYPDIA='Q'
         AM2%TYPEXT='0'
+!
       ENDIF
 !
 ! MASS-LUMPING OF AM1 :
@@ -873,7 +888,7 @@
      &              1,MSK,MASKEL,S,C,1,LIMPRO%I(1+DIMLIM:2*DIMLIM),
      &              KDIR,3,MESH%NPTFR,FLBOR,.FALSE.,
      &              V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT,RAIN,PLUIE,
-     &              0.D0)
+     &              0.D0,OPTADV_VI)
         CALL CVTRVF(T2,VN,S,.FALSE.,.TRUE.,H,HN,
      &              HPROP,UCONV,VCONV,S,S,
      &              1,S,S,FV,S,.FALSE.,S,.FALSE.,VBOR,MASK,MESH,
@@ -884,7 +899,7 @@
      &              1,MSK,MASKEL,S,C,1,LIMPRO%I(1+2*DIMLIM:3*DIMLIM),
      &              KDIR,3,MESH%NPTFR,FLBOR,.FALSE.,
      &              V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT,RAIN,PLUIE,
-     &              0.D0)
+     &              0.D0,OPTADV_VI)
         IF(IELMU.NE.11) THEN
           CALL CHGDIS(T1,DISCLIN,IELMU,MESH)
           CALL CHGDIS(T2,DISCLIN,IELMU,MESH)
@@ -1170,6 +1185,9 @@
         ENDDO
       ENDIF
 !
+!     END OF: IF(MESH%NPTFR.GT.0) THEN
+      ENDIF
+!
 !     IMPOSING EQUALITY OF FLUXES ON EITHER SIDE OF A WEIR
 !     HERE ALL PROCESSORS DO ALL WEIRS...
 !
@@ -1207,53 +1225,8 @@
 !
 !     BOUNDARY TERMS IN THE RIGHT HAND SIDE
 !
-      CALL OSDB( 'X=X-Y   ' , CV1 , FLBOR , FLBOR , C , MESH )
-!
-!  TAKES INTO ACCOUNT THE TERMS  SUM(PSI HN U(N+1) . N ) AT THE BOUNDARY
-!  HOND : 1 FOR THE INCIDENT WAVE SEGMENTS, 0 OTHERWISE
-!
-      CALL INCIDE(COTOND,HN,C0,PATMOS,ATMOS,ZF,MESH,
-     &            LT,AT,GRAV,ROEAU,PRIVE)
-!
-      CALL CPSTVC(COTOND,T5)
-      CALL CPSTVC(T5,T6)
-      CALL CPSTVC(T5,T2)
-!  COMPUTES CPROP (T5) AND CN (T2)
-      CALL OSBD( 'X=CY    ' , T5 , HPROP , S , GRAV , MESH )
-      CALL OS  ( 'X=+(Y,C)' , T5 , T5    , S , 0.D0        )
-      CALL OS  ( 'X=SQR(Y)' , T5 , T5    , S , C           )
-      CALL OSBD( 'X=CY    ' , T2 , HN    , S , GRAV , MESH )
-      CALL OS  ( 'X=+(Y,C)' , T2 , T2    , S , 0.D0        )
-      CALL OS  ( 'X=SQR(Y)' , T2 , T2    , S , C           )
-!
-      CALL OS  ( 'X=Y-Z   ' , T6 , T2    , C0     , C      )
-      CALL OSBD( 'X=CXY   ' , T6 , HPROP , S      , -2.D0 , MESH )
-      CALL OS  ( 'X=X+YZ  ' , T6 , T5    , COTOND , C      )
-!
-      CALL VECTOR(T2,'=','MASVEC          ',IELBOR(IELMH,1),
-     &            1.D0,T6,S,S,S,S,S,MESH,.TRUE.,MASK%ADR(HOND)%P)
-      IF(OPTBAN.EQ.3) THEN
-        DO I=1,MESH%NPTFR
-          N=MESH%NELBOR%I(I)
-!         N MAY BE 0 IN PARALLELISM
-          IF(N.GT.0) THEN
-            T2%R(I)=T2%R(I)*TE5%R(N)
-            T5%R(I)=T5%R(I)*TE5%R(N)
-          ENDIF
-        ENDDO
-      ENDIF
-      CALL OSDB( 'X=X+Y   ' , CV1 , T2 , S , C , MESH )
-!
-!  IMPLICIT INCIDENT WAVE : ADDS TERMS TO THE MATRIX AM1
-!  MASK(MSK7): 1 FOR INCIDENT WAVE SEGMENTS, 0 OTHERWISE
-!
-      CALL MATRIX(MBOR,'M=N     ','FMATMA          ',
-     &            IELBOR(IELMH,1),IELBOR(IELMH,1),
-     &            1.D0,T5,S,S,S,S,S,
-     &            MESH,.TRUE.,MASK%ADR(HOND)%P)
-      CALL OM( 'M=M+N   ' , AM1 , MBOR , S , C , MESH )
-!
-!     END OF: IF(MESH%NPTFR.GT.0) THEN
+      IF(MESH%NPTFR.GT.0) THEN
+        CALL OSDB( 'X=X-Y   ' , CV1 , FLBOR , FLBOR , C , MESH )
       ENDIF
 !
 ! END OF BOUNDARY TERMS
@@ -1602,7 +1575,7 @@
           CALL OS('X=Y     ',X=BM2%D,Y=CV1)
         ENDIF
 !
-        CALL DIRICH(DH,AM1,CV1,HBOR,LIMPRO%I,TB,MESH,KDIR,MSK,MASKPT)
+        CALL DIRICH(DH,AM1,CV1,HBOR,LIMPRO%I,TB,MESH,KDIR,MSK,MASKPT)       
         CALL SOLVE(DH,AM1,CV1,TB,SLVPRO,INFOGR,MESH,TM1)
 !
         NELEM=MESH%NELEM
@@ -1720,3 +1693,4 @@
 !
       RETURN
       END
+

@@ -2,13 +2,14 @@
                      SUBROUTINE PROPIN_TELEMAC2D
 !                    ***************************
 !
-     &(LIMPRO,LIMDIM,MASK,LIUBOR,LIVBOR,LIHBOR,KP1BOR,NBOR,NPTFR,
-     & KENT,KENTU,KSORT,KADH,KLOG,KINC,KNEU,KDIR,KDDL,KOND,
+     &(LIMPRO,LIMDIM,MASK,LIUBOR,LIVBOR,LIHBOR,NBOR,NPTFR,
+     & KENT,KENTU,KSORT,KADH,KLOG,KNEU,KDIR,KDDL,
      & CLH,CLU,CLV,IELMU,U,V,GRAV,H,LT,NPOIN,NELBOR,NELMAX,MSK,MASKEL,
-     & NFRLIQ,THOMFR,NUMLIQ,FRTYPE,XNEBOR,YNEBOR,IKLBOR,ENTET)
+     & NFRLIQ,THOMFR,NUMLIQ,FRTYPE,XNEBOR,YNEBOR,IKLBOR,ENTET,
+     & NELEBX,NELEB)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    1) CHECKS THE COMPATIBILITY OF BOUNDARY CONDITIONS.
@@ -37,6 +38,12 @@
 !+        V6P2
 !+   Security added in LIMPRO in parallel, look for -9999.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/03/2014
+!+        V7P0
+!+   New implementation that enables a different numbering of boundary
+!+   points and boundary segments.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CLH            |<->| COPY OF LIHBOR
 !| CLU            |<->| COPY OF LIUBOR
@@ -51,13 +58,8 @@
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
 !| KENTU          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
-!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
 !| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
 !| KNEU           |-->| CONVENTION FOR NEUMANN CONDITION
-!| KOND           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
-!|                |   | (TECHNICAL BOUNDARY CONDITIONS, AS OPPOSED
-!|                |   |  TO KINC: PHYSICAL BOUNDARY CONDITION)
-!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
 !| KSORT          |-->| CONVENTION FOR FREE OUTPUT
 !| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
 !| LIMDIM         |-->| FIRST DIMENSION OF LIMPRO
@@ -74,7 +76,7 @@
 !|                |   | MASK(NPTFR,4) : 1. IF KDDL ON V 0. SINON
 !|                |   | MASK(NPTFR,5) : 1. IF KNEU ON U 0. SINON
 !|                |   | MASK(NPTFR,6) : 1. IF KNEU ON V 0. SINON
-!|                |   | MASK(NPTFR,7) : 1. IF KOND 0. SINON
+!|                |   | MASK(NPTFR,7) : NOT USED
 !|                |   | MASK(NPTFR,8) : 1. - MASK( ,5)
 !|                |   | MASK(NPTFR,9) : 1. IF H DIRICHLET
 !|                |   | MASK(NPTFR,10): 1. IF H NEUMANN
@@ -85,6 +87,8 @@
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
 !|                |   | ELEMENT.
+!| NELEB          |-->| NUMBER OF BOUNDARY ELEMENTS
+!| NELEBX         |-->| MAXIMUM NUMBER OF BOUNDARY ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
 !| NPOIN          |-->| NUMBER OF POINTS
@@ -102,14 +106,14 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NPOIN,NELMAX,NPTFR,KOND,KENTU,LT,NFRLIQ
-      INTEGER, INTENT(IN) :: KENT,KSORT,KADH,KLOG,KINC,KNEU,KDIR,KDDL
-      INTEGER, INTENT(IN) :: LIMDIM,IELMU
-      INTEGER, INTENT(IN) :: NELBOR(NPTFR),LIVBOR(NPTFR),LIHBOR(NPTFR)
+      INTEGER, INTENT(IN) :: NPOIN,NELMAX,NPTFR,KENTU,LT,NFRLIQ
+      INTEGER, INTENT(IN) :: KENT,KSORT,KADH,KLOG,KNEU,KDIR,KDDL
+      INTEGER, INTENT(IN) :: LIMDIM,IELMU,NELEBX,NELEB
+      INTEGER, INTENT(IN) :: NELBOR(NELEBX),LIVBOR(NPTFR),LIHBOR(NPTFR)
       INTEGER, INTENT(IN) :: LIUBOR(NPTFR),FRTYPE(NFRLIQ)
-      INTEGER, INTENT(IN) :: IKLBOR(NPTFR,*)
+      INTEGER, INTENT(IN) :: IKLBOR(NELEBX,*)
       INTEGER, INTENT(INOUT) :: LIMPRO(LIMDIM,6)
-      INTEGER, INTENT(IN) :: KP1BOR(NPTFR),NBOR(NPTFR),NUMLIQ(NPTFR)
+      INTEGER, INTENT(IN) :: NBOR(NPTFR),NUMLIQ(NPTFR)
       INTEGER, INTENT(INOUT) :: CLH(NPTFR),CLU(NPTFR),CLV(NPTFR)
       LOGICAL, INTENT(IN) :: MSK,THOMFR,ENTET
       DOUBLE PRECISION, INTENT(IN)   :: XNEBOR(NPTFR),YNEBOR(NPTFR)
@@ -127,7 +131,6 @@
       INTEGER, PARAMETER :: VDDL    =  4
       INTEGER, PARAMETER :: UNEU    =  5
       INTEGER, PARAMETER :: VNEU    =  6
-      INTEGER, PARAMETER :: HOND    =  7
       INTEGER, PARAMETER :: UNONNEU =  8
       INTEGER, PARAMETER :: HDIR    =  9
       INTEGER, PARAMETER :: HNEU    = 10
@@ -147,7 +150,7 @@
         CLH(K) = LIHBOR(K)
         CLU(K) = LIUBOR(K)
         CLV(K) = LIVBOR(K)
-      ENDDO ! K
+      ENDDO
 !
 !     FOR THOMPSON TREATMENT
 !
@@ -168,8 +171,6 @@
 !
 !  CHECKS AND MODIFIES THE CONDITIONS (IF REQUIRED) TO AVOID NON
 !  PHYSICAL CASES : COMPLETELY FREE EXIT IN RIVER FLOW
-!                   INCIDENT WAVE IN SUPERCRITICAL OUTGOING FLOW
-!                   INCIDENT WAVE IN SUPERCRITICAL INCOMING FLOW
 !
       ALERTE1=.FALSE.
       ALERTE2=.FALSE.
@@ -178,26 +179,6 @@
 !
         N = NBOR(K)
         F2 = (U(N)**2+V(N)**2) / GRAV / MAX(H(N),1.D-8)
-!
-!       INCIDENT WAVE IN SUPERCRITICAL OUTGOING FLOW
-!       INCIDENT WAVE IN SUPERCRITICAL INCOMING FLOW
-!
-        IF(CLU(K).EQ.KINC.AND.
-     &     CLV(K).EQ.KINC.AND.
-     &     F2.GE.1.D0) THEN
-          CLU(K) = KSORT
-          CLV(K) = KSORT
-        ENDIF
-!
-!       COMPLETELY FREE EXIT IN RIVER FLOW
-!
-        IF(CLH(K).EQ.KSORT.AND.
-     &     CLU(K).EQ.KSORT.AND.
-     &     CLV(K).EQ.KSORT.AND.
-     &     F2.LE.1.D0) THEN
-          CLU(K) = KINC
-          CLV(K) = KINC
-        ENDIF
 !
 !       INCOMING FREE VELOCITY
 !
@@ -219,7 +200,7 @@
           ENDIF
         ENDIF
 !
-      ENDDO ! K
+      ENDDO
 !
       IF(ALERTE1.AND.ENTET) THEN
         IF(LNG.EQ.1) THEN
@@ -249,303 +230,213 @@
 !
 !-----------------------------------------------------------------------
 !
-! INITIALISES THE BOUNDARY CONDITIONS FOR PROPAGATION:
+!     INITIALISES THE BOUNDARY CONDITIONS FOR PROPAGATION:
+!
+!-----------------------------------------------------------------------
+!
+!     NODAL VALUES: LIMPRO(K,1 2 AND 3)
+!
+      DO K=1,NPTFR
+        IF(CLH(K).EQ.KENT) THEN
+          LIMPRO(K,1) = KDIR
+        ELSEIF(CLH(K).EQ.KSORT) THEN
+          LIMPRO(K,1) = KDDL
+        ELSEIF(CLH(K).EQ.KLOG ) THEN
+          LIMPRO(K,1) = KNEU
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,10) K
+          IF(LNG.EQ.2) WRITE(LU,11) K
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        IF(CLU(K).EQ.KENT.OR.CLU(K).EQ.KENTU.OR.CLU(K).EQ.KADH) THEN
+          LIMPRO(K,2) = KDIR
+        ELSEIF(CLU(K).EQ.KSORT.OR.CLU(K).EQ.KLOG) THEN
+          LIMPRO(K,2) = KDDL
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,20) K
+          IF(LNG.EQ.2) WRITE(LU,21) K
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        IF(CLV(K).EQ.KENT.OR.CLV(K).EQ.KENTU.OR.CLV(K).EQ.KADH) THEN
+          LIMPRO(K,3) = KDIR
+        ELSEIF(CLV(K).EQ.KSORT.OR.CLV(K).EQ.KLOG) THEN
+          LIMPRO(K,3) = KDDL
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,30) K
+          IF(LNG.EQ.2) WRITE(LU,31) K
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ENDDO
+!
+!     SEGMENT VALUES
 !
 !     INITIALISES ALL THE VECTORS OF THE BLOCK TO 0
 !
       CALL OS('X=0     ',X=MASK)
 !
-      DO K=1,NPTFR
+      DO ISEG=1,NELEB
 !
-!     IF THE NODE FOLLOWING K IS NOT IN THE SUB-DOMAIN IN PARALLEL MODE
-!     WILL HAVE KP1=K
-      KP1=KP1BOR(K)
+      K=  IKLBOR(ISEG,1)
+      KP1=IKLBOR(ISEG,2)
 !
 !-----------------------------------------------------------------------
 !
 !     BOUNDARY CONDITIONS ON ELEVATION
 !
       IF(CLH(K).EQ.KENT) THEN
-        LIMPRO(K,1) = KDIR
-        IF(KP1.NE.K) THEN
-          IF(CLH(KP1).EQ.KENT) THEN
-            MASK%ADR(HDIR)%P%R(K)=1.D0
-          ELSEIF(CLH(KP1).EQ.KLOG) THEN
-            MASK%ADR(HNEU)%P%R(K)=1.D0
-          ELSEIF(CLH(KP1).EQ.KSORT) THEN
-            MASK%ADR(HDDL)%P%R(K)=1.D0
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,10) K
-            IF(LNG.EQ.2) WRITE(LU,11) K
-            CALL PLANTE(1)
-            STOP
-          ENDIF
+        IF(CLH(KP1).EQ.KENT) THEN
+          MASK%ADR(HDIR)%P%R(ISEG)=1.D0
+        ELSEIF(CLH(KP1).EQ.KLOG) THEN
+          MASK%ADR(HNEU)%P%R(ISEG)=1.D0
+        ELSEIF(CLH(KP1).EQ.KSORT) THEN
+          MASK%ADR(HDDL)%P%R(ISEG)=1.D0
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,10) K
+          IF(LNG.EQ.2) WRITE(LU,11) K
+          CALL PLANTE(1)
+          STOP
         ENDIF
       ELSEIF(CLH(K).EQ.KSORT) THEN
-        LIMPRO(K,1) = KDDL
-        IF(KP1.NE.K) THEN
-          IF(CLH(KP1).EQ.KSORT) THEN
-            MASK%ADR(HDDL)%P%R(K)=1.D0
-          ELSEIF(CLH(KP1).EQ.KLOG) THEN
-            MASK%ADR(HNEU)%P%R(K)=1.D0
-          ELSEIF(CLH(KP1).EQ.KENT) THEN
-            MASK%ADR(HDDL)%P%R(K)=1.D0
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,10) K
-            IF(LNG.EQ.2) WRITE(LU,11) K
-            CALL PLANTE(1)
-            STOP
-          ENDIF
+        IF(CLH(KP1).EQ.KSORT) THEN
+          MASK%ADR(HDDL)%P%R(ISEG)=1.D0
+        ELSEIF(CLH(KP1).EQ.KLOG) THEN
+          MASK%ADR(HNEU)%P%R(ISEG)=1.D0
+        ELSEIF(CLH(KP1).EQ.KENT) THEN
+          MASK%ADR(HDDL)%P%R(ISEG)=1.D0
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,10) K
+          IF(LNG.EQ.2) WRITE(LU,11) K
+          CALL PLANTE(1)
+          STOP
         ENDIF
       ELSEIF(CLH(K).EQ.KLOG ) THEN
-        LIMPRO(K,1) = KNEU
-        IF(KP1.NE.K) MASK%ADR(HNEU)%P%R(K)=1.D0
-      ELSE
-        IF(LNG.EQ.1) WRITE(LU,10) K
-        IF(LNG.EQ.2) WRITE(LU,11) K
-        CALL PLANTE(1)
-        STOP
+        MASK%ADR(HNEU)%P%R(ISEG)=1.D0
       ENDIF
 !
-!   BOUNDARY CONDITIONS ON U
+!     BOUNDARY CONDITIONS ON U
 !
       IF(CLU(K).EQ.KENT.OR.CLU(K).EQ.KENTU) THEN
-        LIMPRO(K,2) = KDIR
-        IF(KP1.NE.K) THEN
-          IF(CLU(KP1).EQ.KENT.OR.CLU(KP1).EQ.KENTU) THEN
-            MASK%ADR(UDIR)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KADH) THEN
-            MASK%ADR(UDIR)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KLOG) THEN
-            MASK%ADR(UNEU)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KINC) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KSORT) THEN
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,20) K
-            IF(LNG.EQ.2) WRITE(LU,21) K
-            CALL PLANTE(1)
-            STOP
-          ENDIF
+        IF(CLU(KP1).EQ.KENT.OR.CLU(KP1).EQ.KENTU) THEN
+          MASK%ADR(UDIR)%P%R(ISEG)=1.D0
+        ELSEIF(CLU(KP1).EQ.KADH) THEN
+          MASK%ADR(UDIR)%P%R(ISEG)=1.D0
+        ELSEIF(CLU(KP1).EQ.KLOG) THEN
+          MASK%ADR(UNEU)%P%R(ISEG)=1.D0
+        ELSEIF(CLU(KP1).EQ.KSORT) THEN
+          MASK%ADR(UDDL)%P%R(ISEG)=1.D0
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,20) K
+          IF(LNG.EQ.2) WRITE(LU,21) K
+          CALL PLANTE(1)
+          STOP
         ENDIF
       ELSEIF(CLU(K).EQ.KADH) THEN
-        LIMPRO(K,2) = KDIR
-        IF(KP1.NE.K) MASK%ADR(UNEU)%P%R(K)=1.D0
+        MASK%ADR(UNEU)%P%R(ISEG)=1.D0
       ELSEIF(CLU(K).EQ.KSORT) THEN
-        LIMPRO(K,2) = KDDL
-        IF(KP1.NE.K) THEN
-          IF(CLU(KP1).EQ.KSORT) THEN
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KLOG) THEN
-            MASK%ADR(UNEU)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KINC) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KENT) THEN
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KENTU) THEN
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KADH) THEN
-            MASK%ADR(UNEU)%P%R(K)=1.D0
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,20) K
-            IF(LNG.EQ.2) WRITE(LU,21) K
-            CALL PLANTE(1)
-            STOP
-          ENDIF
+        IF(CLU(KP1).EQ.KSORT) THEN
+          MASK%ADR(UDDL)%P%R(ISEG)=1.D0
+        ELSEIF(CLU(KP1).EQ.KLOG) THEN
+          MASK%ADR(UNEU)%P%R(ISEG)=1.D0
+        ELSEIF(CLU(KP1).EQ.KENT) THEN
+          MASK%ADR(UDDL)%P%R(ISEG)=1.D0
+        ELSEIF(CLU(KP1).EQ.KENTU) THEN
+          MASK%ADR(UDDL)%P%R(ISEG)=1.D0
+        ELSEIF(CLU(KP1).EQ.KADH) THEN
+          MASK%ADR(UNEU)%P%R(ISEG)=1.D0
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,20) K
+          IF(LNG.EQ.2) WRITE(LU,21) K
+          CALL PLANTE(1)
+          STOP
         ENDIF
       ELSEIF(CLU(K).EQ.KLOG) THEN
-        LIMPRO(K,2) = KDDL
-        IF(KP1.NE.K) MASK%ADR(UNEU)%P%R(K)=1.D0
-      ELSEIF(CLU(K).EQ.KINC ) THEN
-        LIMPRO(K,2) = KDDL
-        IF(KP1.NE.K) THEN
-          IF(CLU(KP1).EQ.KINC) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KLOG) THEN
-            MASK%ADR(UNEU)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KSORT) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KENT) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KENTU) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLU(KP1).EQ.KADH) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,20) K
-            IF(LNG.EQ.2) WRITE(LU,21) K
-            CALL PLANTE(1)
-            STOP
-          ENDIF
-        ENDIF
-      ELSE
-        IF(LNG.EQ.1) WRITE(LU,20) K
-        IF(LNG.EQ.2) WRITE(LU,21) K
-        CALL PLANTE(1)
-        STOP
+        MASK%ADR(UNEU)%P%R(ISEG)=1.D0
       ENDIF
 !
-!   BOUNDARY CONDITIONS ON V
+!     BOUNDARY CONDITIONS ON V
 !
       IF(CLV(K).EQ.KENT.OR.CLV(K).EQ.KENTU) THEN
-        LIMPRO(K,3) = KDIR
-        IF(KP1.NE.K) THEN
-          IF(CLV(KP1).EQ.KENT.OR.CLV(KP1).EQ.KENTU) THEN
-            MASK%ADR(VDIR)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KADH) THEN
-            MASK%ADR(VDIR)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KLOG) THEN
-            MASK%ADR(VNEU)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KINC) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KSORT) THEN
-            MASK%ADR(VDDL)%P%R(K)=1.D0
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,30) K
-            IF(LNG.EQ.2) WRITE(LU,31) K
-            CALL PLANTE(1)
-            STOP
-          ENDIF
+        IF(CLV(KP1).EQ.KENT.OR.CLV(KP1).EQ.KENTU) THEN
+          MASK%ADR(VDIR)%P%R(ISEG)=1.D0
+        ELSEIF(CLV(KP1).EQ.KADH) THEN
+          MASK%ADR(VDIR)%P%R(ISEG)=1.D0
+        ELSEIF(CLV(KP1).EQ.KLOG) THEN
+          MASK%ADR(VNEU)%P%R(ISEG)=1.D0
+        ELSEIF(CLV(KP1).EQ.KSORT) THEN
+          MASK%ADR(VDDL)%P%R(ISEG)=1.D0
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,30) K
+          IF(LNG.EQ.2) WRITE(LU,31) K
+          CALL PLANTE(1)
+          STOP
         ENDIF
       ELSEIF(CLV(K).EQ.KADH) THEN
-        LIMPRO(K,3) = KDIR
-        IF(KP1.NE.K) MASK%ADR(VNEU)%P%R(K)=1.D0
+        MASK%ADR(VNEU)%P%R(ISEG)=1.D0
       ELSEIF(CLV(K).EQ.KSORT) THEN
-        LIMPRO(K,3) = KDDL
-        IF(KP1.NE.K) THEN
-          IF(CLV(KP1).EQ.KSORT) THEN
-            MASK%ADR(VDDL)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KLOG) THEN
-            MASK%ADR(VNEU)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KINC) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KENT) THEN
-            MASK%ADR(VDDL)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KENTU) THEN
-            MASK%ADR(VDDL)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KADH) THEN
-            MASK%ADR(VDDL)%P%R(K)=1.D0
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,30) K
-            IF(LNG.EQ.2) WRITE(LU,31) K
-            CALL PLANTE(1)
-            STOP
-          ENDIF
+        IF(CLV(KP1).EQ.KSORT) THEN
+          MASK%ADR(VDDL)%P%R(ISEG)=1.D0
+        ELSEIF(CLV(KP1).EQ.KLOG) THEN
+          MASK%ADR(VNEU)%P%R(ISEG)=1.D0
+        ELSEIF(CLV(KP1).EQ.KENT) THEN
+          MASK%ADR(VDDL)%P%R(ISEG)=1.D0
+        ELSEIF(CLV(KP1).EQ.KENTU) THEN
+          MASK%ADR(VDDL)%P%R(ISEG)=1.D0
+        ELSEIF(CLV(KP1).EQ.KADH) THEN
+          MASK%ADR(VDDL)%P%R(ISEG)=1.D0
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,30) K
+          IF(LNG.EQ.2) WRITE(LU,31) K
+          CALL PLANTE(1)
+          STOP
         ENDIF
       ELSEIF(CLV(K).EQ.KLOG ) THEN
-        LIMPRO(K,3) = KDDL
-        IF(KP1.NE.K) MASK%ADR(VNEU)%P%R(K)=1.D0
-      ELSEIF(CLV(K).EQ.KINC ) THEN
-        LIMPRO(K,3) = KDDL
-        IF(KP1.NE.K) THEN
-          IF(CLV(KP1).EQ.KINC) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KLOG) THEN
-            MASK%ADR(VNEU)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KSORT) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KENT) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KENTU) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSEIF(CLV(KP1).EQ.KADH) THEN
-            MASK%ADR(HOND)%P%R(K)=1.D0
-            MASK%ADR(UDDL)%P%R(K)=1.D0
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,30) K
-            IF(LNG.EQ.2) WRITE(LU,31) K
-            CALL PLANTE(1)
-            STOP
-          ENDIF
-        ENDIF
-      ELSE
-        IF(LNG.EQ.1) WRITE(LU,30) K
-        IF(LNG.EQ.2) WRITE(LU,31) K
-        CALL PLANTE(1)
-        STOP
+        MASK%ADR(VNEU)%P%R(ISEG)=1.D0
       ENDIF
 !
-      ENDDO ! K
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
 !     LIQUID BOUNDARIES MASK
 !
-      DO K=1,NPTFR
-        KP1=KP1BOR(K)
-        IF(KP1.NE.K) MASK%ADR(UNONNEU)%P%R(K)=1.D0-MASK%ADR(UNEU)%P%R(K)
+      DO ISEG=1,NELEB
+        MASK%ADR(UNONNEU)%P%R(ISEG)=1.D0-MASK%ADR(UNEU)%P%R(ISEG)
       ENDDO
 !
-!     DEDUCES ARRAYS LIMPRO (. , 4 5 AND 6) FROM THE MASKS
+!     DEDUCES ARRAYS LIMPRO (K, 4 5 AND 6) FROM THE MASKS
+!     SEGMENTS WHICH ARE NOT IN THE DOMAIN WILL GET 0
 !
       DO K=1,NPTFR
-        IF(MASK%ADR(HDIR)%P%R(K).GT.0.5D0) THEN
+        LIMPRO(K,4)=0
+        LIMPRO(K,5)=0
+        LIMPRO(K,6)=0
+      ENDDO
+!
+      DO ISEG=1,NELEB
+        K=IKLBOR(ISEG,1)
+        IF(MASK%ADR(HDIR)%P%R(ISEG).GT.0.5D0) THEN
           LIMPRO(K,4)=KDIR
-        ELSEIF(MASK%ADR(HDDL)%P%R(K).GT.0.5D0) THEN
+        ELSEIF(MASK%ADR(HDDL)%P%R(ISEG).GT.0.5D0) THEN
           LIMPRO(K,4)=KDDL
-        ELSEIF(MASK%ADR(HNEU)%P%R(K).GT.0.5D0) THEN
+        ELSEIF(MASK%ADR(HNEU)%P%R(ISEG).GT.0.5D0) THEN
           LIMPRO(K,4)=KNEU
-        ELSEIF(MASK%ADR(HOND)%P%R(K).GT.0.5D0) THEN
-          LIMPRO(K,4)=KOND
-        ELSE
-          IF(NCSIZE.GT.1) THEN
-            LIMPRO(K,4)=0
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,10) K
-            IF(LNG.EQ.2) WRITE(LU,11) K
-            CALL PLANTE(1)
-            STOP
-          ENDIF
         ENDIF
-        IF(MASK%ADR(UDIR)%P%R(K).GT.0.5D0) THEN
+        IF(MASK%ADR(UDIR)%P%R(ISEG).GT.0.5D0) THEN
           LIMPRO(K,5)=KDIR
-        ELSEIF(MASK%ADR(UDDL)%P%R(K).GT.0.5D0) THEN
+        ELSEIF(MASK%ADR(UDDL)%P%R(ISEG).GT.0.5D0) THEN
           LIMPRO(K,5)=KDDL
-        ELSEIF(MASK%ADR(UNEU)%P%R(K).GT.0.5D0) THEN
+        ELSEIF(MASK%ADR(UNEU)%P%R(ISEG).GT.0.5D0) THEN
           LIMPRO(K,5)=KNEU
-        ELSEIF(MASK%ADR(HOND)%P%R(K).GT.0.5D0) THEN
-          LIMPRO(K,5)=KOND
-        ELSE
-          IF(NCSIZE.GT.1) THEN
-            LIMPRO(K,5)=0
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,20) K
-            IF(LNG.EQ.2) WRITE(LU,21) K
-            CALL PLANTE(1)
-            STOP
-          ENDIF
         ENDIF
-        IF(MASK%ADR(VDIR)%P%R(K).GT.0.5D0) THEN
+        IF(MASK%ADR(VDIR)%P%R(ISEG).GT.0.5D0) THEN
           LIMPRO(K,6)=KDIR
-        ELSEIF(MASK%ADR(VDDL)%P%R(K).GT.0.5D0) THEN
+        ELSEIF(MASK%ADR(VDDL)%P%R(ISEG).GT.0.5D0) THEN
           LIMPRO(K,6)=KDDL
-        ELSEIF(MASK%ADR(VNEU)%P%R(K).GT.0.5D0) THEN
+        ELSEIF(MASK%ADR(VNEU)%P%R(ISEG).GT.0.5D0) THEN
           LIMPRO(K,6)=KNEU
-        ELSEIF(MASK%ADR(HOND)%P%R(K).GT.0.5D0) THEN
-          LIMPRO(K,6)=KOND
-        ELSE
-          IF(NCSIZE.GT.1) THEN
-            LIMPRO(K,6)=0
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,30) K
-            IF(LNG.EQ.2) WRITE(LU,31) K
-            CALL PLANTE(1)
-            STOP
-          ENDIF
         ENDIF
       ENDDO
 !
@@ -554,40 +445,30 @@
 !
       IF(IELMU.EQ.13) THEN
 !       LOOP ON BOUNDARY SEGMENTS
-        DO ISEG=1,NPTFR
-          K=IKLBOR(ISEG,1)
-          KP1=KP1BOR(K)
-          IF(KP1.EQ.K) THEN
-!           SEGMENT IN ANOTHER SUB-DOMAIN
-!           FANCY VALUE TO GET A WARNING IN PARALLEL IF IT IS USED
-            LIMPRO(IKLBOR(ISEG,3),2)=-9999
-            LIMPRO(IKLBOR(ISEG,3),3)=-9999
-          ELSE
-            LIMPRO(IKLBOR(ISEG,3),2)=LIMPRO(K,5)
-            LIMPRO(IKLBOR(ISEG,3),3)=LIMPRO(K,6)
-          ENDIF
+        DO ISEG=1,NELEB
+          K=  IKLBOR(ISEG,1)
+          KP1=IKLBOR(ISEG,2)
+          LIMPRO(IKLBOR(ISEG,3),2)=LIMPRO(K,5)
+          LIMPRO(IKLBOR(ISEG,3),3)=LIMPRO(K,6)
         ENDDO
       ENDIF
 !
 !     MASKS USING THE MASK OF THE ELEMENTS
 !
       IF(MSK) THEN
-        DO K=1,NPTFR
-          IELEM=NELBOR(K)
-          IF(IELEM.GT.0) THEN
-            YY = MASKEL(IELEM)
-            MASK%ADR(UDIR   )%P%R(K) = MASK%ADR(UDIR   )%P%R(K) * YY
-            MASK%ADR(VDIR   )%P%R(K) = MASK%ADR(VDIR   )%P%R(K) * YY
-            MASK%ADR(UDDL   )%P%R(K) = MASK%ADR(UDDL   )%P%R(K) * YY
-            MASK%ADR(VDDL   )%P%R(K) = MASK%ADR(VDDL   )%P%R(K) * YY
-            MASK%ADR(UNEU   )%P%R(K) = MASK%ADR(UNEU   )%P%R(K) * YY
-            MASK%ADR(VNEU   )%P%R(K) = MASK%ADR(VNEU   )%P%R(K) * YY
-            MASK%ADR(HOND   )%P%R(K) = MASK%ADR(HOND   )%P%R(K) * YY
-            MASK%ADR(HDIR   )%P%R(K) = MASK%ADR(HDIR   )%P%R(K) * YY
-            MASK%ADR(HNEU   )%P%R(K) = MASK%ADR(HNEU   )%P%R(K) * YY
-            MASK%ADR(HDDL   )%P%R(K) = MASK%ADR(HDDL   )%P%R(K) * YY
-            MASK%ADR(UNONNEU)%P%R(K) = MASK%ADR(UNONNEU)%P%R(K) * YY
-          ENDIF
+        DO ISEG=1,NELEB
+          IELEM=NELBOR(ISEG)
+          YY = MASKEL(IELEM)
+          MASK%ADR(UDIR   )%P%R(ISEG) = MASK%ADR(UDIR   )%P%R(ISEG) * YY
+          MASK%ADR(VDIR   )%P%R(ISEG) = MASK%ADR(VDIR   )%P%R(ISEG) * YY
+          MASK%ADR(UDDL   )%P%R(ISEG) = MASK%ADR(UDDL   )%P%R(ISEG) * YY
+          MASK%ADR(VDDL   )%P%R(ISEG) = MASK%ADR(VDDL   )%P%R(ISEG) * YY
+          MASK%ADR(UNEU   )%P%R(ISEG) = MASK%ADR(UNEU   )%P%R(ISEG) * YY
+          MASK%ADR(VNEU   )%P%R(ISEG) = MASK%ADR(VNEU   )%P%R(ISEG) * YY
+          MASK%ADR(HDIR   )%P%R(ISEG) = MASK%ADR(HDIR   )%P%R(ISEG) * YY
+          MASK%ADR(HNEU   )%P%R(ISEG) = MASK%ADR(HNEU   )%P%R(ISEG) * YY
+          MASK%ADR(HDDL   )%P%R(ISEG) = MASK%ADR(HDDL   )%P%R(ISEG) * YY
+          MASK%ADR(UNONNEU)%P%R(ISEG) = MASK%ADR(UNONNEU)%P%R(ISEG) * YY
         ENDDO
       ENDIF
 !

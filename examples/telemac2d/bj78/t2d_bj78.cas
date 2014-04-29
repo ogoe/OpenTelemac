@@ -52,7 +52,8 @@ SOLVEUR : 7  OPTION DU SOLVEUR : 2
 MAXIMUM D'ITERATIONS POUR LE SOLVEUR : 100
 PRECISION DU SOLVEUR = 1.E-5      
 BILAN DE MASSE : OUI     VALIDATION : OUI                               
-CONDITIONS INITIALES = 'COTE CONSTANTE'  COTE INITIALE = 0.                                                        
+CONDITIONS INITIALES = 'COTE CONSTANTE'  COTE INITIALE = 0.  
+OPTION POUR LES FRONTIERES LIQUIDES : 2                                                      
 /
 
  

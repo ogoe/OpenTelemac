@@ -6,7 +6,7 @@
      & KP1BOR,EQUA)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V7P0                                   19/03/2014
 !***********************************************************************
 !
 !brief    IMPOSES FLUX BOUNDARY CONDITIONS,
@@ -39,6 +39,12 @@
 !+        15/09/2013
 !+        V6P3
 !+   fixing bug with FV (imposed discharge)
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        19/03/2014
+!+        V7P0
+!+   Boundary segments have now their own numbering, independent of
+!+   boundary points numbering.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| STRING DESCRIBING THE EQUATIONS SOLVED
@@ -77,7 +83,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,IELM,N
+      INTEGER K,IELM,N,IELEB
 !
       DOUBLE PRECISION Q1
 !
@@ -98,25 +104,10 @@
 !
       CALL OS( 'X=0     ' , X=WORK1 )
 !
-      DO K=1,NPTFR
-        IF(NUMLIQ(K).EQ.IFRLIQ) THEN
-           WORK1%R(K)=MASK(K)
-        ENDIF
-      ENDDO 
-!
-!       FINITE VOLUMES INCLUDE SOLID SEGMENTS NEIGHBOURING LIQUID
-!       BOUNDARIES
-!
-      IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
-        DO K=1,NPTFR
-          IF(NUMLIQ(K).EQ.IFRLIQ.AND.MASK(K).GT.0.5D0) THEN ! TO AVOID TO ERASE
-                                    ! LAST NODES
-            WORK1%R(K)          =MASK(K)
-            WORK1%R(KP1BOR(K,1))=MASK(K)
-            WORK1%R(KP1BOR(K,2))=MASK(K)
-          ENDIF
-        ENDDO
-      ENDIF
+      DO IELEB=1,MESH%NELEB
+        K=MESH%IKLBOR%I(IELEB)
+        IF(NUMLIQ(K).EQ.IFRLIQ) WORK1%R(IELEB)=MASK(IELEB)
+      ENDDO
 !
       IELM=11
       CALL VECTOR(WORK2,'=','FLUBDF          ',IELBOR(IELM,1),
@@ -129,19 +120,30 @@
 !
       IF(ABS(Q1).LT.1.D-10) THEN
 !
-! ZERO FLUX: WARNING MESSAGE
+!       ZERO FLUX: WARNING MESSAGE
 !
         IF(ABS(Q).GT.1.D-10) THEN
           IF(LNG.EQ.1) WRITE(LU,30) IFRLIQ
           IF(LNG.EQ.2) WRITE(LU,31) IFRLIQ
-30        FORMAT(1X,'DEBIMP : PROBLEME SUR LA FRONTIERE ',1I6,/,1X,
-     &     '         DONNER UN PROFIL DE VITESSES        ',/,1X,
-     &     '         DANS LE FICHIER DES CONDITIONS AUX LIMITES',/,1X,
-     &     '         OU VERIFIER LES HAUTEURS D''EAU')
-31        FORMAT(1X,'DEBIMP : PROBLEM ON BOUNDARY NUMBER ',1I6,/,1X,
-     &     '         GIVE A VELOCITY PROFILE  ',/,1X,
-     &     '         IN THE BOUNDARY CONDITIONS FILE',/,1X,
-     &     '         OR CHECK THE WATER DEPTHS')
+30        FORMAT(1X,'DEBIMP : PROBLEME SUR LA FRONTIERE ',1I6     ,/,1X,
+     &              '         DONNER UN PROFIL DE VITESSES       ',/,1X,
+     &              '         DANS LE :                          ',/,1X,
+     &              '         FICHIER DES CONDITIONS AUX LIMITES ',/,1X,
+     &              '         OU VERIFIER LES HAUTEURS D''EAU.   ',/,1X,
+     &              '         AUTRE CAUSE POSSIBLE :             ',/,1X,
+     &              '         ENTREE TORRENTIELLE A HAUTEUR LIBRE',/,1X,
+     &              '         METTRE UNE HAUTEUR NON NULLE       ',/,1X,
+     &              '         DANS LES CONDITIONS INITIALES      ',/,1X,
+     &              '         OU IMPOSER LA HAUTEUR D''EAU EN ENTREE.')
+31        FORMAT(1X,'DEBIMP: PROBLEM ON BOUNDARY NUMBER ',1I6     ,/,1X,
+     &              '        GIVE A VELOCITY PROFILE             ',/,1X,
+     &              '        IN THE BOUNDARY CONDITIONS FILE     ',/,1X,
+     &              '        OR CHECK THE WATER DEPTHS.          ',/,1X,
+     &              '        OTHER POSSIBLE CAUSE:               ',/,1X,
+     &              '        SUPERCRITICAL ENTRY WITH FREE DEPTH ',/,1X,
+     &              '        IN THIS CASE GIVE A POSITIVE DEPTH  ',/,1X,
+     &              '        IN THE INITIAL CONDITIONS           ',/,1X,
+     &              '        OR PRESCRIBE THE DEPTH AT THE ENTRANCE.')
           CALL PLANTE(1)
           STOP
         ELSE
@@ -163,8 +165,8 @@
 !         WE DO NOT LET THE PREVIOUS UBOR WHICH IS ONLY A PROFILE
 !         THIS HAS AN EFFECT AT LEAST IN PROPIN_TELEMAC2D
 !         WHICH IS CALLED BEFORE THE TREATMENT OF DIRICHLET CONDITIONS
-          U%R(N)  = UBOR(K)
-          V%R(N)  = VBOR(K)
+          U%R(N) = UBOR(K)
+          V%R(N) = VBOR(K)
         ENDIF
 !
       ENDDO

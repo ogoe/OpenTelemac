@@ -120,7 +120,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,MSK8,IFRLIQ,YADEB(MAXFRO),IERR,ITRAC,IFR,N
+      INTEGER K,MSK8,IFRLIQ,YADEB(MAXFRO),IERR,ITRAC,IFR,N,IELEB,KP1
 !
       DOUBLE PRECISION Z,QIMP,ZMIN(MAXFRO)
 !
@@ -317,14 +317,18 @@
 !  QUADRATIC VELOCITIES
 !
       IF(U%ELM .EQ.13)THEN
-        DO K=1,NPTFR
+        DO IELEB=1,MESH%NELEB
+          K  =MESH%IKLBOR%I(IELEB)
+          KP1=MESH%IKLBOR%I(IELEB+MESH%NELEBX)
           IF(LIUBOR(K+NPTFR).EQ.KENT.AND.
-     &  (NDEBIT.GT.0.OR.NOMIMP(1:1).NE.' ')) THEN
-        U%R(NBOR(K+NPTFR)) = (UBOR(K,1)+UBOR(MESH%KP1BOR%I(K),1))/2.D0
-        V%R(NBOR(K+NPTFR)) = (VBOR(K,1)+VBOR(MESH%KP1BOR%I(K),1))/2.D0
+     &      (NDEBIT.GT.0.OR.NOMIMP(1:1).NE.' ')) THEN
+            U%R(NBOR(K+NPTFR)) = (UBOR(K,1)+UBOR(KP1,1))*0.5D0
+            V%R(NBOR(K+NPTFR)) = (VBOR(K,1)+VBOR(KP1,1))*0.5D0
           ENDIF
         ENDDO
       ENDIF
+!
+!-----------------------------------------------------------------------
 !
 !  CASE OF DISCHARGE IMPOSED:
 !
@@ -332,45 +336,47 @@
 !
       IF(NFRLIQ.NE.0) THEN
 !
-      DO IFRLIQ = 1 , NFRLIQ
+        DO IFRLIQ = 1 , NFRLIQ
 !
-      IF(NDEBIT.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
+          IF(NDEBIT.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
 !
-!       ONE TAKES THE MASK OF LIQUID BOUNDARIES MSK8, WHICH IS
-!       EQUAL TO THE MASK OF THE DISCHARGE IMPOSED ON A DISCHARGE
-!       IMPOSED BOUNDARY. THIS MAKES IT POSSIBLE TO CHANGE A FREE
-!       VELOCITY BOUNDARY TO A DISCHARGE IMPOSED TO A LEVEL IMPOSED
-!       BOUNDARY, IN SPITE OF THE FACT THAT THE MASKS ARE MADE IN
-!       PROPIN BEFORE THE CALL TO BORD
+!           ONE TAKES THE MASK OF LIQUID BOUNDARIES MSK8, WHICH IS
+!           EQUAL TO THE MASK OF THE DISCHARGE IMPOSED ON A DISCHARGE
+!           IMPOSED BOUNDARY. THIS MAKES IT POSSIBLE TO CHANGE A FREE
+!           VELOCITY BOUNDARY TO A DISCHARGE IMPOSED TO A LEVEL IMPOSED
+!           BOUNDARY, IN SPITE OF THE FACT THAT THE MASKS ARE MADE IN
+!           PROPIN BEFORE THE CALL TO BORD
 !
-        IF(NCSIZE.GT.1) YADEB(IFRLIQ)=P_IMAX(YADEB(IFRLIQ))
-        IF(YADEB(IFRLIQ).EQ.1) THEN
-          IF(STA_DIS_CURVES(IFRLIQ).EQ.2) THEN
-            QIMP=DIS_STA_CUR(IFRLIQ,PTS_CURVES(IFRLIQ),QZ,NFRLIQ,
-     &                       ZMIN(IFRLIQ))
-          ELSE
-            QIMP=Q(IFRLIQ)
+            IF(NCSIZE.GT.1) YADEB(IFRLIQ)=P_IMAX(YADEB(IFRLIQ))
+            IF(YADEB(IFRLIQ).EQ.1) THEN
+              IF(STA_DIS_CURVES(IFRLIQ).EQ.2) THEN
+                QIMP=DIS_STA_CUR(IFRLIQ,PTS_CURVES(IFRLIQ),QZ,NFRLIQ,
+     &                           ZMIN(IFRLIQ))
+              ELSE
+                QIMP=Q(IFRLIQ)
+              ENDIF
+              CALL DEBIMP(QIMP,UBOR,VBOR,U,V,H,NUMLIQ,
+     &                    IFRLIQ,TRA05,TRA06,
+     &                    NPTFR,MASK%ADR(MSK8)%P%R,MESH,MESH%KP1BOR%I,
+     &                    EQUA)
+            ENDIF
+!
           ENDIF
-          CALL DEBIMP(QIMP,UBOR,VBOR,U,V,H,NUMLIQ,
-     &                IFRLIQ,TRA05,TRA06,
-     &                NPTFR,MASK%ADR(MSK8)%P%R,MESH,MESH%KP1BOR%I,
-     &                EQUA)
-        ENDIF
+!
+        ENDDO
 !
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-      ENDDO ! IFRLIQ
-!
-      ENDIF
-!
-! QUADRATIC VELOCITIES
+!  QUADRATIC VELOCITIES
 !
       IF(U%ELM.EQ.13) THEN
-        DO K=1,NPTFR
-          UBOR(K+NPTFR,1) =(UBOR(K,1)+UBOR(MESH%KP1BOR%I(K),1))*0.5D0
-          VBOR(K+NPTFR,1) =(VBOR(K,1)+VBOR(MESH%KP1BOR%I(K),1))*0.5D0
+        DO IELEB=1,MESH%NELEB
+          K  =MESH%IKLBOR%I(IELEB)
+          KP1=MESH%IKLBOR%I(IELEB+MESH%NELEBX)
+          UBOR(K+NPTFR,1) =(UBOR(K,1)+UBOR(KP1,1))*0.5D0
+          VBOR(K+NPTFR,1) =(VBOR(K,1)+VBOR(KP1,1))*0.5D0
         ENDDO
       ENDIF
 !

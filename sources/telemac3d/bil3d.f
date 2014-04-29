@@ -206,9 +206,9 @@
 !                 2) TRACER AT ACTUAL BOTTOM PLANE TAKEN INTO ACCOUNT, HEN IPBOT IN
 !                    ADDRESS OF TA.
                   IF(IPBOT%I(I).NE.NPLAN-1) THEN
- 	             FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
-     &                + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
-     &                *TA%ADR(ITRAC)%P%R(IPBOT%I(I)*NPOIN2+I)
+                    FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
+     &              + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
+     &              *TA%ADR(ITRAC)%P%R(IPBOT%I(I)*NPOIN2+I)
                   ENDIF
                 ENDDO
                ELSE

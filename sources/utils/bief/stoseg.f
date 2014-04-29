@@ -3,10 +3,11 @@
 !                    *****************
 !
      &(IFABOR,NELEM,NELMAX,NELMAX2,IELM,IKLE,NBOR,NPTFR,
-     & GLOSEG,MAXSEG,ELTSEG,ORISEG,NSEG,KP1BOR,NELBOR,NULONE,KNOLG)
+     & GLOSEG,MAXSEG,ELTSEG,ORISEG,NSEG,NELBOR,NULONE,KNOLG,
+     & IKLBOR,NELEBX,NELEB)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE DATA STRUCTURE FOR EDGE-BASED STORAGE.
@@ -28,6 +29,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/03/2014
+!+        V7P0
+!+   Now written to enable different numbering of boundary points and
+!+   boundary segments.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTSEG         |<--| SEGMENTS OF EVERY TRIANGLE.
 !| GLOSEG         |<--| GLOBAL NUMBERS OF POINTS OF SEGMENTS.
@@ -38,7 +45,6 @@
 !|                |   | BOUNDARY
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| KNOLG          |-->| GLOBAL NUMBER OF A LOCAL POINT IN PARALLEL
-!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
 !| MAXSEG         |<--| MAXIMUM NUMBER OF SEGMENTS
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS.
 !| NELBOR         |-->| NUMBER OF ELEMENT CONTAINING SEGMENT K OF
@@ -62,17 +68,18 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)    :: NELMAX,NELMAX2,NPTFR,NSEG,MAXSEG,IELM
-      INTEGER, INTENT(IN)    :: NELEM
-      INTEGER, INTENT(IN)    :: NBOR(NPTFR),KP1BOR(NPTFR)
+      INTEGER, INTENT(IN)    :: NELEM,NELEBX,NELEB
+      INTEGER, INTENT(IN)    :: NBOR(NPTFR)
       INTEGER, INTENT(IN)    :: IFABOR(NELMAX2,*),IKLE(NELMAX,*)
-      INTEGER, INTENT(IN)    :: NELBOR(NPTFR),NULONE(NPTFR)
+      INTEGER, INTENT(IN)    :: NELBOR(NELEBX),NULONE(NELEBX)
+      INTEGER, INTENT(IN)    :: IKLBOR(NELEBX,2)
       INTEGER, INTENT(INOUT) :: GLOSEG(MAXSEG,2)
       INTEGER, INTENT(INOUT) :: ELTSEG(NELMAX,*),ORISEG(NELMAX,3)
       INTEGER, INTENT(IN)    :: KNOLG(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IPTFR,NSE
+      INTEGER IPTFR,NSE,IELEB
 !
       INTEGER NEL,IFA,I1,I2,J1,J2,IFACE,JFACE,IG1,IG2
       INTEGER IELEM,IELEM1,IELEM2
@@ -103,30 +110,20 @@
 !
 !     LOOP ON BOUNDARY POINTS :
 !
-      NSE = 0
-      DO IPTFR = 1 , NPTFR
+      DO IELEB = 1 , NELEB
 !
-!       IN PARALLEL MODE, IF THE BOUNDARY POINT FOLLOWING IPTFR IS IN
-!       ANOTHER SUB-DOMAIN, KP1BOR(IPTFR)=IPTFR.
-!       IN THIS CASE THE SEGMENT
-!       BASED ON IPTFR AND THIS POINT IS NOT IN THE LOCAL DOMAIN.
-!       A CONSEQUENCE IS THAT NSE IS NOT EQUAL TO IPTFR.
-!
-        IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-!
-          NSE = NSE + 1
 !         NOTE: ON BOUNDARIES, SEGMENTS ARE NOT ORIENTED LOWER RANK
 !               TO HIGHER RANK, AS IS DONE FOR INTERNAL SEGMENTS
-          GLOSEG(NSE,1) = NBOR(IPTFR)
-          GLOSEG(NSE,2) = NBOR(KP1BOR(IPTFR))
-          NEL = NELBOR(IPTFR)
-          IFA = NULONE(IPTFR)
-          ELTSEG(NEL,IFA) = NSE
+          GLOSEG(IELEB,1) = NBOR(IKLBOR(IELEB,1))
+          GLOSEG(IELEB,2) = NBOR(IKLBOR(IELEB,2))
+          NEL = NELBOR(IELEB)
+          IFA = NULONE(IELEB)
+          ELTSEG(NEL,IFA) = IELEB
           ORISEG(NEL,IFA) = 1
 !
-        ENDIF
-!
       ENDDO
+!
+      NSE=NELEB
 !
 !-----------------------------------------------------------------------
 !
@@ -170,7 +167,7 @@
               GLOSEG(NSE,1) = I2
               GLOSEG(NSE,2) = I1
               ORISEG(IELEM1,IFACE) = 2
-            ENDIF
+            ENDIF       
 !           OTHER ELEMENT NEIGHBOURING THIS SEGMENT
             IELEM2 = IFABOR(IELEM1,IFACE)
 !           IELEM2 = 0 OR -1 MAY OCCUR IN PARALLEL MODE

@@ -71,6 +71,11 @@
 !+   now component TYPR used (with corresponding implementation in
 !+   MT02PP.F.
 !
+!history  J.M. HERVOUET (EDF LAB, LNHE)
+!+        29/04/2014
+!+        V7P0
+!+   Argument SETDEP added to diff3d.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
 !|                |   |  NU*DF/DN = AFBORF*U + BFBORF
@@ -611,7 +616,8 @@
      &              MDIFF,MATR2H,MASKBR,SVIDE,MSK,MASKEL,H,
      &              NPLAN,OPTBAN,OPTDIF,TETADI,YAWCC,WCC,AGGLOD,
      &              VOLUME,YASCE,NSCE,FSCE,SOURCES,TETASUPG,
-     &              VELOCITY,YARAIN,PLUIE%R,TRAIN,SIGMAG,IPBOT)
+     &              VELOCITY,YARAIN,PLUIE%R,TRAIN,SIGMAG,IPBOT,
+     &              SETDEP)
 ! 
         IF(SCHCF.EQ.ADV_SUP.AND..NOT.VELOCITY) THEN
 !         MESH3D%Z RESTORED

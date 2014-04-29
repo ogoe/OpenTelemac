@@ -5,7 +5,7 @@
      &(IOPTAN,IFIC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/08/2010
+! TELEMAC2D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE DATA DEFINING SINGULARITIES
@@ -51,10 +51,15 @@
 !+        V6P3
 !+   Modification for new treatment of weirs and dynamic allocation
 !
-!history  J.-M. HERVOUET (LNH)
+!history  J.-M. HERVOUET (EDF LAB, LNHE)
 !+        05/08/2013
 !+        V6P3
 !+   Setting QP0 to 0 must be protected by a test on TYPSEUIL
+!
+!history  J.-M. HERVOUET (EDF LAB, LNHE)
+!+        01/04/2014
+!+        V7P0
+!+   ERR= statements added in READ commands.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFIC           |-->| LOGICAL UNIT OF FORMATED DATA FILE 1
@@ -87,8 +92,10 @@
 !-----------------------------------------------------------------------
 !
       MAXNPS=0
-      READ(IFIC,*,END=900) ! COMMENT LINE
-      READ(IFIC,*,ERR=998) NNWEIRS,IOPTAN
+!     COMMENT LINE
+      READ(IFIC,*,END=900,ERR=900)
+!     NUMBER OF WEIRS, OPTION FOR TANGENTIAL VELOCITY 
+      READ(IFIC,*,END=900,ERR=998) NNWEIRS,IOPTAN
 !
 !     COHERENCE WITH THE STEERING FILE
 !
@@ -146,9 +153,9 @@
       ENDIF
 !
       DO N=1,NWEIRS
-        READ(IFIC,*,END=900)
-        READ(IFIC,*,END=900)
-        READ(IFIC,*,ERR=997) NPSING%I(N)
+        READ(IFIC,*,ERR=900,END=900)
+        READ(IFIC,*,ERR=900,END=900)
+        READ(IFIC,*,END=900,ERR=997) NPSING%I(N)
         MAXNPS = MAX(MAXNPS,NPSING%I(N))
 !
 !     ALLOCATIONS IN EACH BLOCK

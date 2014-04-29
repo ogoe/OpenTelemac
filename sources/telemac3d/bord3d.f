@@ -427,13 +427,13 @@
 !           CASE OF A PROFILE ON THE VERTICAL
             IPROF=VERPROTRA(ITRAC+(IFRLIQ-1)*NTRAC)
             IF(IPROF.NE.1) THEN
-              PROFZ=TRA_PROF_Z(IFRLIQ,NBOR2%I(K),
-     &                         AT,LT,NP,INFOGR,IPROF,ITRAC)
-              IF(IPROF.EQ.2) THEN
-!               CV: Rouse concentrations profiles (IPROF=2)
+              PROFZ=TRA_PROF_Z(IFRLIQ,NBOR2%I(K),AT,LT,NP,
+     &                         INFOGR,IPROF,ITRAC)
+              IF(IPROF.EQ.2.OR.IPROF.EQ.0) THEN
+!               Rouse concentrations profiles (IPROF=2) or values given by user (IPROF=0)
                 TABORL%ADR(ITRAC)%P%R(IBORD)=PROFZ
               ELSEIF(IPROF.EQ.3) THEN
-!               CV: normalised concentrations profiles (IPROF=3)
+!               Normalised concentrations profiles (IPROF=3)
                 TABORL%ADR(ITRAC)%P%R(IBORD)=
      &          TABORL%ADR(ITRAC)%P%R(IBORD)*PROFZ
               ELSE

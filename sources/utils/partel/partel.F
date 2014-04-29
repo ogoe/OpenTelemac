@@ -37,7 +37,6 @@
 !+     CORRECTED A WRONG DIMENSION OF THE ARRAY CUT, AN ERROR
 !+     OCCURING BY A LARGER NUMBER OF PROCESSORS
 !
-!
 !history  J-M HERVOUET
 !+       12/03/2003
 !+      SEVENTH VERSION
@@ -61,6 +60,10 @@
 !+        25/06/2012
 !+        V6P2
 !+      Interface for latest release of METIS (>= Version 5)
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/03/2014
+!+    Arguments added to the call elebd.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -818,7 +821,9 @@
       CALL ELEBD (NELBOR, NULONE, KP1BOR, IFABOR, NBOR(1:NPTFR), IKLE, 
      &                   NELEM2, IKLBOR, NELEM2, NELEM2, 
      &                   NPOIN2, NPTFR, 11, LIHBOR, 2, IFANUM,
-     &                   1, ISEGF, IT1, IT2, IT3 )
+     &                   1, ISEGF, IT1, IT2, IT3 ,
+     &                   NPTFR ,NPTFR)
+!                        NELEBX,NELEB (EQUAL NPTFR HERE)
 !
       IF (NAMEINP(1:3)== 'ART') THEN
          OPEN(UNIT=89,FILE='FRONT_GLOB.DAT')

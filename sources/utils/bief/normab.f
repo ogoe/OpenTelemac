@@ -3,10 +3,10 @@
 !                    *****************
 !
      &(XNEBOR,YNEBOR,XSGBOR,YSGBOR,DISBOR,SURFAC,NELMAX,
-     & KP1BOR,NELBOR,NULONE,LGSEG,NPTFR,MESH,T1,XEL,YEL)
+     & NELBOR,NULONE,LGSEG,NPTFR,MESH,T1,XEL,YEL,IKLBOR,NELEBX,NELEB)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    1) COMPUTES THE COMPONENTS OF THE OUTGOING NORMAL VECTOR
@@ -57,10 +57,16 @@
 !+   LGSEG now computed with coordinates per element (XEL and YEL)
 !+   This is important in spherical coordinates.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/03/2014
+!+        V7P0
+!+   Now written to enable different numbering of boundary points and
+!+   boundary segments.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DISBOR         |<--| DISTANCE FROM BOUNDARY POINT TO CLOSER 
 !|                |   | INNER POINT
-!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
+!| IKLBOR         |-->| CONNECTIVITY TABLE FOR BOUNDARY ELEMENTS
 !| LGSEG          |<--| LENGTH OF BOUNDARY SEGMENTS
 !| MESH           |-->| MESH STRUCTURE
 !| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
@@ -86,12 +92,14 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NPTFR,NELMAX
-      INTEGER, INTENT(IN) :: KP1BOR(NPTFR),NELBOR(NPTFR),NULONE(NPTFR,2)
+      INTEGER, INTENT(IN) :: NPTFR,NELMAX,NELEBX,NELEB
+      INTEGER, INTENT(IN) :: NELBOR(NELEBX)
+      INTEGER, INTENT(IN) :: NULONE(NELEBX,2),IKLBOR(NELEBX,2)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: XNEBOR(NPTFR,2),YNEBOR(NPTFR,2)
-      DOUBLE PRECISION, INTENT(INOUT) :: XSGBOR(NPTFR,4),YSGBOR(NPTFR,4)
-      DOUBLE PRECISION, INTENT(INOUT) :: DISBOR(NPTFR),LGSEG(NPTFR)
+      DOUBLE PRECISION, INTENT(INOUT) :: XSGBOR(NELEBX,4)
+      DOUBLE PRECISION, INTENT(INOUT) :: YSGBOR(NELEBX,4)
+      DOUBLE PRECISION, INTENT(INOUT) :: DISBOR(NPTFR),LGSEG(NELEBX)
       DOUBLE PRECISION, INTENT(IN)    :: SURFAC(NELMAX)
       DOUBLE PRECISION, INTENT(IN)    :: XEL(NELMAX,3),YEL(NELMAX,3)
 !
@@ -100,7 +108,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K1,K2,IELEM,I1,I2
+      INTEGER K1,K2,IELEM,I1,I2,IELEB
       DOUBLE PRECISION X12,Y12,XNORM,X1,X2,Y1,Y2,Z(1)
 !
       INTRINSIC SQRT
@@ -113,40 +121,41 @@
 !
       IF(NPTFR.GT.0) THEN
 !
+!       TO START WITH XSGBOR AND YSGBOR IN BOUNDARY NODES NUMBERING
+!
         DO K1=1,NPTFR
-          LGSEG(K1)    = 0.D0
           XSGBOR(K1,1) = 0.D0
           YSGBOR(K1,1) = 0.D0
           XSGBOR(K1,2) = 0.D0
           YSGBOR(K1,2) = 0.D0
         ENDDO
 !
-!       1) NORMALS BY SEGMENT AND LENGTH OF THE BOUNDARY SEGMENT
+!       1) NORMALS TO SEGMENTS AND LENGTH OF THE BOUNDARY SEGMENT
 !          COMMON VERSION FOR SCALAR/PARALLEL MODES
+!          STILL WITH BOUNDARY NODES NUMBERING
 !
-        DO K1=1,NPTFR
+        DO IELEB=1,NELEB
 !
-          K2=KP1BOR(K1)
-!         IF SEGMENT IN THE DOMAIN (IN PARALLEL IT MAY NOT BE)
-          IF(K2.NE.K1) THEN
-            IELEM=NELBOR(K1)
-            I1=NULONE(K1,1)
-            I2=NULONE(K1,2)
-            X1=XEL(IELEM,I1)
-            Y1=YEL(IELEM,I1)
-            X2=XEL(IELEM,I2)
-            Y2=YEL(IELEM,I2)
-            X12 = X2 - X1
-            Y12 = Y2 - Y1
-!           LENGTH OF THE BOUNDARY SEGMENT
-            LGSEG(K1) = SQRT( X12**2 + Y12**2 )
-!           NORMAL TO THE SEGMENT FOLLOWING K1:
-            XSGBOR(K1,1) =  Y12
-            YSGBOR(K1,1) = -X12
-!           NORMAL TO THE SEGMENT PRECEDING THE ONE FOLLOWING K1:
-            XSGBOR(K2,2) =  Y12
-            YSGBOR(K2,2) = -X12
-          ENDIF
+          K1=IKLBOR(IELEB,1)
+          K2=IKLBOR(IELEB,2)
+!
+          IELEM=NELBOR(IELEB)
+          I1=NULONE(IELEB,1)
+          I2=NULONE(IELEB,2)
+          X1=XEL(IELEM,I1)
+          Y1=YEL(IELEM,I1)
+          X2=XEL(IELEM,I2)
+          Y2=YEL(IELEM,I2)
+          X12 = X2 - X1
+          Y12 = Y2 - Y1
+!         LENGTH OF THE BOUNDARY SEGMENT
+          LGSEG(IELEB) = SQRT( X12**2 + Y12**2 )
+!         NORMAL TO THE SEGMENT FOLLOWING K1:
+          XSGBOR(K1,1) =  Y12
+          YSGBOR(K1,1) = -X12
+!         NORMAL TO THE SEGMENT PRECEDING THE ONE FOLLOWING K1:
+          XSGBOR(K2,2) =  Y12
+          YSGBOR(K2,2) = -X12
 !
         ENDDO
 !
@@ -157,7 +166,7 @@
 !
       IF(NCSIZE.GT.1) THEN
         IF(NPTFR.GT.0) THEN
-          CALL PARCOM_BORD(LGSEG            ,1,MESH)
+!         CALL PARCOM_BORD(LGSEG            ,1,MESH)
           CALL PARCOM_BORD(XSGBOR(1:NPTFR,1),1,MESH)
           CALL PARCOM_BORD(XSGBOR(1:NPTFR,2),1,MESH)
           CALL PARCOM_BORD(YSGBOR(1:NPTFR,1),1,MESH)
@@ -166,7 +175,7 @@
 !         THIS DOES NOTHING FOR THE SUB-DOMAIN, BUT IS
 !         NECESSARY TO THE PARALLEL COMMUNICATION
 !         IN CASE OF CALL PARCOM_BORD, ALL PROCESSORS MUST CALL IT
-          CALL PARCOM_BORD(Z,1,MESH)
+!         CALL PARCOM_BORD(Z,1,MESH)
           CALL PARCOM_BORD(Z,1,MESH)
           CALL PARCOM_BORD(Z,1,MESH)
           CALL PARCOM_BORD(Z,1,MESH)
@@ -210,14 +219,21 @@
         XSGBOR(K1,2)=XSGBOR(K1,2)/XNORM
         YSGBOR(K1,2)=YSGBOR(K1,2)/XNORM
 !
+!       INITIALISATION FOR NEXT LOOP
+!
+        DISBOR(K1)=0.D0
+!
+      ENDDO
+!
+!     DISTANCE TO BOUNDARY
+!
+      DO IELEB=1,NELEB
+!
+        K1=IKLBOR(IELEB,1)
+!
 !       THIS CAN BE APPROXIMATION OF THE MESH SIZE AT THE BOUNDARY
 !       AND IS USED FOR LOG LAW AT THE BOUNDARIES
-        IELEM=NELBOR(K1)
-        IF(IELEM.GT.0) THEN
-          DISBOR(K1) = 2.D0*SURFAC(NELBOR(K1))/LGSEG(K1)
-        ELSE
-          DISBOR(K1) = 0.D0
-        ENDIF
+        DISBOR(K1) = 2.D0*SURFAC(NELBOR(IELEB))/LGSEG(IELEB)
 !
       ENDDO
 !
@@ -226,6 +242,35 @@
 !     DISBOR IS POSITIVE, CAN TAKE THE MAX
       IF(NCSIZE.GT.1) THEN
         CALL PARCOM_BORD(DISBOR,3,MESH)
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     NOW, XSGBOR, YSGBOR AND DISBOR ARE GIVEN THEIR SEGMENT NUMBERING
+!
+!     IN THIS LOOP IELEB ALWAYS SMALLER OR EQUAL TO K1
+!     SO NOTHING IS ERASED PREMATURELY
+!
+!     IN SCALAR MODE THE NUMBERING IS THE SAME SO NOTHING TO DO
+!
+      IF(NCSIZE.GT.1) THEN
+!
+        DO IELEB=1,NELEB
+!
+          K1=IKLBOR(IELEB,1)
+!
+          XSGBOR(IELEB,1)= XSGBOR(K1,1)
+          XSGBOR(IELEB,2)= XSGBOR(K1,2)
+          XSGBOR(IELEB,3)= XSGBOR(K1,3)
+          XSGBOR(IELEB,4)= XSGBOR(K1,4)
+          YSGBOR(IELEB,1)= YSGBOR(K1,1)
+          YSGBOR(IELEB,2)= YSGBOR(K1,2)
+          YSGBOR(IELEB,3)= YSGBOR(K1,3)
+          YSGBOR(IELEB,4)= YSGBOR(K1,4)
+!         DISBOR(IELEB)  = DISBOR(K1) 
+!
+        ENDDO
+!
       ENDIF
 !
 !-----------------------------------------------------------------------

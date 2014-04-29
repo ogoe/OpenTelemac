@@ -349,7 +349,9 @@ files: bief_def.f
   matrix.f
   flux_mask.f
   flux_ef_vf.f
+  flux_ef_vf_2.f
   tvf.f
+  tvf_2.f
   hvf.f
   tracvf.f
   cflvf.f

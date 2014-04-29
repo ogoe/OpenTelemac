@@ -3,10 +3,11 @@
 !                    *******************
 !
      &(OP ,  DM,TYPDIM,XM,TYPEXM,   DN,TYPDIN,XN,TYPEXN,   D,C,
-     & NDIAG,NSEG1,NSEG2,NBOR,KP1BOR,NPTFR,IELM1,IELN1,NSEG11)
+     & NDIAG,NSEG1,NSEG2,NBOR,NPTFR,IELM1,IELN1,NSEG11,
+     & IKLBOR,NELEBX,NELEB)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS BETWEEN A MATRIX WITH EDGE-BASED STORAGE
@@ -51,6 +52,12 @@
 !+        V6P2
 !+   Bug corrected in the quadratic case.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/03/2014
+!+        V7P0
+!+   Now written to enable different numbering of boundary points and
+!+   boundary segments.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
 !| D              |-->| A DIAGONAL MATRIX
@@ -58,7 +65,6 @@
 !| DN             |-->| DIAGONAL OF N
 !| IELM1          |-->| TYPE OF ELEMENT OF M
 !| IELN1          |-->| TYPE OF ELEMENT OF N
-!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NDIAG          |-->| NUMBER OF TERMS IN THE DIAGONAL
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
@@ -95,16 +101,17 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NDIAG,NSEG1,NSEG2,NPTFR,IELM1,IELN1,NSEG11
-      INTEGER, INTENT(IN) :: NBOR(NPTFR,*),KP1BOR(NPTFR)
+      INTEGER, INTENT(IN) :: NELEBX,NELEB
+      INTEGER, INTENT(IN) :: NBOR(*),IKLBOR(NELEBX,*)
       CHARACTER(LEN=8), INTENT(IN)    :: OP
-      DOUBLE PRECISION, INTENT(IN)    :: DN(*),D(*),XN(NPTFR,*)
+      DOUBLE PRECISION, INTENT(IN)    :: DN(*),D(*),XN(NELEBX,*)
       DOUBLE PRECISION, INTENT(INOUT) :: DM(*),XM(NSEG1,*)
       CHARACTER(LEN=1), INTENT(INOUT) :: TYPDIM,TYPEXM,TYPDIN,TYPEXN
       DOUBLE PRECISION, INTENT(IN)    :: C
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IPTFR,NSE
+      INTEGER NSE,IELEB,K
       DOUBLE PRECISION Z(1)
 !
 !-----------------------------------------------------------------------
@@ -115,13 +122,14 @@
           CALL OVDB( 'X=X+Y   ' , DM , DN , Z , C , NBOR , NPTFR )
 !         QUADRATIC POINTS IN THE MIDDLE OF SEGMENTS
           IF(IELM1.EQ.13.AND.IELN1.EQ.2) THEN
-            DO IPTFR=1,NPTFR
-              DM(NBOR(IPTFR,2))=DM(NBOR(IPTFR,2))+DN(IPTFR+NPTFR)
+            DO IELEB=1,NELEB
+              K=IKLBOR(IELEB,3)
+              DM(NBOR(K))=DM(NBOR(K))+DN(K)
             ENDDO
           ENDIF
         ELSE
-          IF (LNG.EQ.1) WRITE(LU,198) TYPDIM(1:1),OP(1:8),TYPDIN(1:1)
-          IF (LNG.EQ.2) WRITE(LU,199) TYPDIM(1:1),OP(1:8),TYPDIN(1:1)
+          IF(LNG.EQ.1) WRITE(LU,198) TYPDIM(1:1),OP(1:8),TYPDIN(1:1)
+          IF(LNG.EQ.2) WRITE(LU,199) TYPDIM(1:1),OP(1:8),TYPDIN(1:1)
 198       FORMAT(1X,'OMSEGBOR (BIEF) : TYPDIM = ',A1,' NON PROGRAMME',
      &      /,1X,'POUR L''OPERATION : ',A8,' AVEC TYPDIN = ',A1)
 199       FORMAT(1X,'OMSEGBOR (BIEF) : TYPDIM = ',A1,' NOT IMPLEMENTED',
@@ -140,122 +148,48 @@
 !
 !          CASE WHERE BOTH MATRICES ARE NON SYMMETRICAL
            IF(IELM1.EQ.13.AND.IELN1.EQ.2) THEN
-!            HERE XN(NPTFR,6) IN SEGMENTS POINT 3 IS THE MIDDLE
+!            HERE XN(NELEBX,6) IN SEGMENTS POINT 3 IS THE MIDDLE
 !            STORING IN XN  :  1-2  1-3  2-3  2-1  3-1  2-3
-             IF(NCSIZE.GT.1) THEN
-               NSE = 0
-               DO IPTFR = 1 , NPTFR
-                 IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-                   NSE = NSE + 1
-                   XM(         NSE,1)=XM(         NSE,1)+XN(IPTFR,1)
-                   XM(         NSE,2)=XM(         NSE,2)+XN(IPTFR,4)
-                   XM(  NSEG11+NSE,1)=XM(  NSEG11+NSE,1)+XN(IPTFR,2)
-                   XM(  NSEG11+NSE,2)=XM(  NSEG11+NSE,2)+XN(IPTFR,5)
-                   XM(2*NSEG11+NSE,1)=XM(2*NSEG11+NSE,1)+XN(IPTFR,3)
-                   XM(2*NSEG11+NSE,2)=XM(2*NSEG11+NSE,2)+XN(IPTFR,6)
-                 ENDIF
-               ENDDO
-             ELSE
-               CALL OV('X=X+Y   ',XM(         1,1),XN(1,1),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(         1,2),XN(1,4),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(  NSEG11+1,1),XN(1,2),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(  NSEG11+1,2),XN(1,5),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(2*NSEG11+1,1),XN(1,3),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(2*NSEG11+1,2),XN(1,6),Z,0.D0,NPTFR)
-             ENDIF
+             CALL OV('X=X+Y   ',XM(         1,1),XN(1,1),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(         1,2),XN(1,4),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(  NSEG11+1,1),XN(1,2),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(  NSEG11+1,2),XN(1,5),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(2*NSEG11+1,1),XN(1,3),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(2*NSEG11+1,2),XN(1,6),Z,0.D0,NELEB)
            ELSE
-!            HERE XN(NPTFR,2)
-             IF(NCSIZE.GT.1) THEN
-               NSE = 0
-               DO IPTFR = 1 , NPTFR
-                 IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-                   NSE = NSE + 1
-                   XM(NSE,1)=XM(NSE,1)+XN(IPTFR,1)
-                   XM(NSE,2)=XM(NSE,2)+XN(IPTFR,2)
-                 ENDIF
-               ENDDO
-             ELSE
-               CALL OV('X=X+Y   ',XM(1,1),XN(1,1),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(1,2),XN(1,2),Z,0.D0,NPTFR)
-             ENDIF
+!            HERE XN(NELEBX,2)
+             CALL OV('X=X+Y   ',XM(1,1),XN(1,1),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(1,2),XN(1,2),Z,0.D0,NELEB)
            ENDIF
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE M CAN BE ANYTHING AND N IS SYMMETRICAL
            IF(IELM1.EQ.13.AND.IELN1.EQ.2) THEN
-!            HERE XN(NPTFR,3)
-             IF(NCSIZE.GT.1) THEN
-               NSE = 0
-               DO IPTFR = 1 , NPTFR
-                 IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-                   NSE = NSE + 1
-                   XM(         NSE,1)=XM(         NSE,1)+XN(IPTFR,1)
-                   XM(         NSE,2)=XM(         NSE,2)+XN(IPTFR,1)
-                   XM(  NSEG11+NSE,1)=XM(  NSEG11+NSE,1)+XN(IPTFR,2)
-                   XM(  NSEG11+NSE,2)=XM(  NSEG11+NSE,2)+XN(IPTFR,2)
-                   XM(2*NSEG11+NSE,1)=XM(2*NSEG11+NSE,1)+XN(IPTFR,3)
-                   XM(2*NSEG11+NSE,2)=XM(2*NSEG11+NSE,2)+XN(IPTFR,3)
-                 ENDIF
-               ENDDO
-             ELSE
-               CALL OV('X=X+Y   ',XM(         1,1),XN(1,1),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(         1,2),XN(1,1),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(  NSEG11+1,1),XN(1,2),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(  NSEG11+1,2),XN(1,2),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(2*NSEG11+1,1),XN(1,3),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(2*NSEG11+1,2),XN(1,3),Z,0.D0,NPTFR)
-             ENDIF
+!            HERE XN(NELEBX,3)
+             CALL OV('X=X+Y   ',XM(         1,1),XN(1,1),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(         1,2),XN(1,1),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(  NSEG11+1,1),XN(1,2),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(  NSEG11+1,2),XN(1,2),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(2*NSEG11+1,1),XN(1,3),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(2*NSEG11+1,2),XN(1,3),Z,0.D0,NELEB)
            ELSE
 !            HERE XN(NPTFR,1)
-             IF(NCSIZE.GT.1) THEN
-               NSE = 0
-               DO IPTFR = 1 , NPTFR
-                 IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-                   NSE = NSE + 1
-                   XM(NSE,1)=XM(NSE,1)+XN(IPTFR,1)
-                   XM(NSE,2)=XM(NSE,2)+XN(IPTFR,1)
-                 ENDIF
-               ENDDO
-             ELSE
-               CALL OV('X=X+Y   ',XM(1,1),XN(1,1),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(1,2),XN(1,1),Z,0.D0,NPTFR)
-             ENDIF
+             CALL OV('X=X+Y   ',XM(1,1),XN(1,1),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(1,2),XN(1,1),Z,0.D0,NELEB)
            ENDIF
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE BOTH MATRICES ARE SYMMETRICAL
            IF(IELM1.EQ.13.AND.IELN1.EQ.2) THEN
-!            HERE XN(NPTFR,3)
-             IF(NCSIZE.GT.1) THEN
-               NSE = 0
-               DO IPTFR = 1 , NPTFR
-                 IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-                   NSE = NSE + 1
-                   XM(         NSE,1)=XM(         NSE,1)+XN(IPTFR,1)
-                   XM(  NSEG11+NSE,1)=XM(  NSEG11+NSE,1)+XN(IPTFR,2)
-                   XM(2*NSEG11+NSE,1)=XM(2*NSEG11+NSE,1)+XN(IPTFR,3)
-                 ENDIF
-               ENDDO
-             ELSE
-               CALL OV('X=X+Y   ',XM(         1,1),XN(1,1),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(  NSEG11+1,1),XN(1,2),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(2*NSEG11+1,1),XN(1,3),Z,0.D0,NPTFR)
-             ENDIF
+!            HERE XN(NELEBX,3)
+             CALL OV('X=X+Y   ',XM(         1,1),XN(1,1),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(  NSEG11+1,1),XN(1,2),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(2*NSEG11+1,1),XN(1,3),Z,0.D0,NELEB)
            ELSE
-!            HERE XN(NPTFR,1)
-             IF(NCSIZE.GT.1) THEN
-               NSE = 0
-               DO IPTFR = 1 , NPTFR
-                 IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-                   NSE = NSE + 1
-                   XM(NSE,1)=XM(NSE,1)+XN(IPTFR,1)
-                 ENDIF
-               ENDDO
-             ELSE
-               CALL OV('X=X+Y   ',XM(1,1),XN(1,1),Z,0.D0,NPTFR)
-             ENDIF
+!            HERE XN(NELEBX,1)
+             CALL OV('X=X+Y   ',XM(1,1),XN(1,1),Z,0.D0,NELEB)
            ENDIF
 !
         ELSE
@@ -280,8 +214,9 @@
           CALL OVDB( 'X=X+Y   ' , DM , DN , Z , C , NBOR , NPTFR )
 !         QUADRATIC POINTS IN THE MIDDLE OF SEGMENTS
           IF(IELM1.EQ.13.AND.IELN1.EQ.2) THEN
-            DO IPTFR=1,NPTFR
-              DM(NBOR(IPTFR,2))=DM(NBOR(IPTFR,2))+DN(IPTFR+NPTFR)
+            DO IELEB=1,NELEB
+              K=IKLBOR(IELEB,3)
+              DM(NBOR(K))=DM(NBOR(K))+DN(K)
             ENDDO
           ENDIF
         ELSE
@@ -295,118 +230,44 @@
 !
 !          CASE WHERE BOTH MATRICES ARE NONSYMMETRICAL
            IF(IELM1.EQ.13.AND.IELN1.EQ.2) THEN
-!            HERE XN(NPTFR,6)
-             IF(NCSIZE.GT.1) THEN
-               NSE = 0
-               DO IPTFR = 1 , NPTFR
-                 IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-                   NSE = NSE + 1
-                   XM(         NSE,1)=XM(         NSE,1)+XN(IPTFR,4)
-                   XM(         NSE,2)=XM(         NSE,2)+XN(IPTFR,1)
-                   XM(  NSEG11+NSE,1)=XM(  NSEG11+NSE,1)+XN(IPTFR,5)
-                   XM(  NSEG11+NSE,2)=XM(  NSEG11+NSE,2)+XN(IPTFR,2)
-                   XM(2*NSEG11+NSE,1)=XM(2*NSEG11+NSE,1)+XN(IPTFR,6)
-                   XM(2*NSEG11+NSE,2)=XM(2*NSEG11+NSE,2)+XN(IPTFR,3)
-                 ENDIF
-               ENDDO
-             ELSE
-               CALL OV('X=X+Y   ',XM(         1,1),XN(1,4),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(         1,2),XN(1,1),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(  NSEG11+1,1),XN(1,5),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(  NSEG11+1,2),XN(1,2),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(2*NSEG11+1,1),XN(1,6),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(2*NSEG11+1,2),XN(1,3),Z,0.D0,NPTFR)
-             ENDIF
+!            HERE XN(NELEBX,6)
+             CALL OV('X=X+Y   ',XM(         1,1),XN(1,4),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(         1,2),XN(1,1),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(  NSEG11+1,1),XN(1,5),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(  NSEG11+1,2),XN(1,2),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(2*NSEG11+1,1),XN(1,6),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(2*NSEG11+1,2),XN(1,3),Z,0.D0,NELEB)
            ELSE
-             IF(NCSIZE.GT.1) THEN
-               NSE = 0
-               DO IPTFR = 1 , NPTFR
-                 IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-                   NSE = NSE + 1
-                   XM(NSE,1)=XM(NSE,1)+XN(IPTFR,2)
-                   XM(NSE,2)=XM(NSE,2)+XN(IPTFR,1)
-                 ENDIF
-               ENDDO
-             ELSE
-               CALL OV('X=X+Y   ',XM(1,1),XN(1,2),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(1,2),XN(1,1),Z,0.D0,NPTFR)
-             ENDIF
+             CALL OV('X=X+Y   ',XM(1,1),XN(1,2),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(1,2),XN(1,1),Z,0.D0,NELEB)
            ENDIF
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE M CAN BE ANYTHING AND N IS SYMMETRICAL
            IF(IELM1.EQ.13.AND.IELN1.EQ.2) THEN
-!            HERE XN(NPTFR,3)
-             IF(NCSIZE.GT.1) THEN
-               NSE = 0
-               DO IPTFR = 1 , NPTFR
-                 IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-                   NSE = NSE + 1
-                   XM(         NSE,1)=XM(         NSE,1)+XN(IPTFR,1)
-                   XM(         NSE,2)=XM(         NSE,2)+XN(IPTFR,1)
-                   XM(  NSEG11+NSE,1)=XM(  NSEG11+NSE,1)+XN(IPTFR,2)
-                   XM(  NSEG11+NSE,2)=XM(  NSEG11+NSE,2)+XN(IPTFR,2)
-                   XM(2*NSEG11+NSE,1)=XM(2*NSEG11+NSE,1)+XN(IPTFR,3)
-                   XM(2*NSEG11+NSE,2)=XM(2*NSEG11+NSE,2)+XN(IPTFR,3)
-                 ENDIF
-               ENDDO
-             ELSE
-               CALL OV('X=X+Y   ',XM(         1,1),XN(1,1),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(         1,2),XN(1,1),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(  NSEG11+1,1),XN(1,2),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(  NSEG11+1,2),XN(1,2),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(2*NSEG11+1,1),XN(1,3),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(2*NSEG11+1,2),XN(1,3),Z,0.D0,NPTFR)
-             ENDIF
+!            HERE XN(NELEBX,3)
+             CALL OV('X=X+Y   ',XM(         1,1),XN(1,1),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(         1,2),XN(1,1),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(  NSEG11+1,1),XN(1,2),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(  NSEG11+1,2),XN(1,2),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(2*NSEG11+1,1),XN(1,3),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(2*NSEG11+1,2),XN(1,3),Z,0.D0,NELEB)
            ELSE
-             IF(NCSIZE.GT.1) THEN
-               NSE = 0
-               DO IPTFR = 1 , NPTFR
-                 IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-                   NSE = NSE + 1
-                   XM(NSE,1)=XM(NSE,1)+XN(IPTFR,1)
-                   XM(NSE,2)=XM(NSE,2)+XN(IPTFR,1)
-                 ENDIF
-               ENDDO
-             ELSE
-               CALL OV('X=X+Y   ',XM(1,1),XN(1,1),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(1,2),XN(1,1),Z,0.D0,NPTFR)
-             ENDIF
+             CALL OV('X=X+Y   ',XM(1,1),XN(1,1),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(1,2),XN(1,1),Z,0.D0,NELEB)
            ENDIF
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE BOTH MATRICES ARE SYMMETRICAL
            IF(IELM1.EQ.13.AND.IELN1.EQ.2) THEN
-!            HERE XN(NPTFR,3)
-             IF(NCSIZE.GT.1) THEN
-               NSE = 0
-               DO IPTFR = 1 , NPTFR
-                 IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-                   NSE = NSE + 1
-                   XM(         NSE,1)=XM(         NSE,1)+XN(IPTFR,1)
-                   XM(  NSEG11+NSE,1)=XM(  NSEG11+NSE,1)+XN(IPTFR,2)
-                   XM(2*NSEG11+NSE,1)=XM(2*NSEG11+NSE,1)+XN(IPTFR,3)
-                 ENDIF
-               ENDDO
-             ELSE
-               CALL OV('X=X+Y   ',XM(         1,1),XN(1,1),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(  NSEG11+1,1),XN(1,2),Z,0.D0,NPTFR)
-               CALL OV('X=X+Y   ',XM(2*NSEG11+1,1),XN(1,3),Z,0.D0,NPTFR)
-             ENDIF
+!            HERE XN(NELEBX,3)
+             CALL OV('X=X+Y   ',XM(         1,1),XN(1,1),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(  NSEG11+1,1),XN(1,2),Z,0.D0,NELEB)
+             CALL OV('X=X+Y   ',XM(2*NSEG11+1,1),XN(1,3),Z,0.D0,NELEB)
            ELSE
-             IF(NCSIZE.GT.1) THEN
-               NSE = 0
-               DO IPTFR = 1 , NPTFR
-                 IF(KP1BOR(IPTFR).NE.IPTFR) THEN
-                   NSE = NSE + 1
-                   XM(NSE,1)=XM(NSE,1)+XN(IPTFR,1)
-                 ENDIF
-               ENDDO
-             ELSE
-               CALL OV('X=X+Y   ',XM(1,1),XN(1,1),Z,0.D0,NPTFR)
-             ENDIF
+             CALL OV('X=X+Y   ',XM(1,1),XN(1,1),Z,0.D0,NELEB)
            ENDIF
 !
         ELSE

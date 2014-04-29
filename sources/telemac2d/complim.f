@@ -4,10 +4,11 @@
 !
      &(LIUBOR,LIVBOR,LITBOR,UBOR,VBOR,TBOR,
      & AUBOR,ATBOR,BTBOR,NBOR,NPTFR,NPOIN,TRAC,
-     & KENT,KENTU,KSORT,KADH,KLOG,KINC,IELMU,IELMV,IELMT,MESH)
+     & KENT,KENTU,KSORT,KADH,KLOG,IELMU,IELMV,IELMT,MESH,
+     & IKLBOR,NELEB,NELEBX)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V7P0                                   27/03/2014
 !***********************************************************************
 !
 !brief    SUPPLEMENTS THE BOUNDARY CONDITION FILE
@@ -30,6 +31,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/03/2014
+!+        V7P0
+!+   Adaptation to new numbering of boundary segments in parallel.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATBOR          |<->| BOUNDARY CONDITIONS FOR TRACERS
 !|                |   | NU*DT/DN=ATBOR*T+BTBOR
@@ -39,10 +45,10 @@
 !| IELMT          |-->| TYPE OF ELEMENT OF TRACERS
 !| IELMU          |-->| TYPE OF ELEMENT OF VELOCITY U
 !| IELMV          |-->| TYPE OF ELEMENT OF VELOCITY V
+!| IKLBOR         |-->| CONNECTIVITY OF BOUNDARY SEGMENTS
 !| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
 !| KENTU          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
-!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
 !| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
 !| KSORT          |-->| CONVENTION FOR FREE OUTPUT
 !| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON VELOCITY U
@@ -50,6 +56,8 @@
 !| LITBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON TRACERS
 !| MESH           |-->| MESH STRUCTURE
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELEB          |-->| NUMBER OF BOUNDARY SEGMENTS
+!| NELEBX         |-->| MAXIMUM NUMBER OF BOUNDARY SEGMENTS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| TBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON TRACER
@@ -66,12 +74,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NPTFR,NPOIN,KENT,KSORT,KADH,KLOG,KINC,KENTU
-      INTEGER, INTENT(IN) :: IELMU,IELMV,IELMT
+      INTEGER, INTENT(IN) :: NPTFR,NPOIN,KENT,KSORT,KADH,KLOG,KENTU
+      INTEGER, INTENT(IN) :: IELMU,IELMV,IELMT,NELEB,NELEBX
       LOGICAL, INTENT(IN) :: TRAC
       INTEGER, INTENT(INOUT) :: LIUBOR(*),LIVBOR(*)
-      INTEGER, INTENT(INOUT) :: LITBOR(*)!,NBOR(2*NPTFR)
-      INTEGER, INTENT(INOUT) :: NBOR(*)
+      INTEGER, INTENT(INOUT) :: LITBOR(*)
+      INTEGER, INTENT(IN)    :: IKLBOR(NELEBX,2)
+      INTEGER, INTENT(INOUT) :: NBOR(2*NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: UBOR(2*NPTFR,2),VBOR(2*NPTFR,2)
       DOUBLE PRECISION, INTENT(INOUT) :: AUBOR(*)
       DOUBLE PRECISION, INTENT(INOUT) :: TBOR(*),ATBOR(*)
@@ -80,7 +89,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,KP1
+      INTEGER K,KP1,IELEB
 !
 !----------------------------------------------------------------------
 !
@@ -88,9 +97,10 @@
 !
       IF(IELMU.EQ.13) THEN
 !
-        DO K=1,NPTFR
+        DO IELEB=1,NELEB
 !
-        KP1=MESH%KP1BOR%I(K)
+        K  =IKLBOR(IELEB,1)
+        KP1=IKLBOR(IELEB,2)
 !
         IF(KP1.NE.K) THEN
         IF(LIUBOR(K).EQ.LIUBOR(KP1)) THEN
@@ -107,13 +117,10 @@
         ELSEIF( LIUBOR(K  ).EQ.KSORT .OR.
      &          LIUBOR(KP1).EQ.KSORT      ) THEN
           LIUBOR(K+NPTFR) = KSORT
-        ELSEIF( LIUBOR(K  ).EQ.KINC .OR.
-     &          LIUBOR(KP1).EQ.KINC       ) THEN
-          LIUBOR(K+NPTFR) = KINC
         ELSE
           WRITE(LU,*) 'CONDITION INITIALE QUADRATIQUE DE U ','K ',K,
      &                ' NON PREVUE POUR LIUBOR = ',LIUBOR(K),
-     &                ' ET LIUBOR(K+1) = ',LIUBOR(MESH%KP1BOR%I(K))
+     &                ' ET LIUBOR(K+1) = ',LIUBOR(KP1)
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -129,9 +136,10 @@
 !
       IF(IELMV.EQ.13) THEN
 !
-        DO K=1,NPTFR
+        DO IELEB=1,NELEB
 !
-        KP1=MESH%KP1BOR%I(K)
+        K  =IKLBOR(IELEB,1)
+        KP1=IKLBOR(IELEB,2)
 !
         IF(KP1.NE.K) THEN
         IF(LIVBOR(K).EQ.LIVBOR(KP1)) THEN
@@ -148,13 +156,10 @@
         ELSEIF( LIVBOR(K  ).EQ.KSORT .OR.
      &          LIVBOR(KP1).EQ.KSORT      ) THEN
           LIVBOR(K+NPTFR) = KSORT
-        ELSEIF( LIVBOR(K  ).EQ.KINC .OR.
-     &          LIVBOR(KP1).EQ.KINC       ) THEN
-          LIVBOR(K+NPTFR) = KINC
         ELSE
           WRITE(LU,*) 'CONDITION INITIALE QUADRATIQUE DE U ','K ',K,
      &                ' NON PREVUE POUR LIUBOR = ',LIUBOR(K),
-     &                ' ET LIUBOR(K+1) = ',LIUBOR(MESH%KP1BOR%I(K))
+     &                ' ET LIUBOR(K+1) = ',LIUBOR(KP1)
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -166,8 +171,10 @@
       ENDIF
 !
       IF(IELMV.EQ.13.OR.IELMU.EQ.13) THEN
-        DO K=1,NPTFR
-          AUBOR(K+NPTFR) = (AUBOR(K)+AUBOR(MESH%KP1BOR%I(K)))*0.5D0
+        DO IELEB=1,NELEB
+          K  =IKLBOR(IELEB,1)
+          KP1=IKLBOR(IELEB,2)
+          AUBOR(K+NPTFR) = (AUBOR(K)+AUBOR(KP1))*0.5D0
         ENDDO
       ENDIF
 !
@@ -175,9 +182,10 @@
 !
       IF(TRAC.AND.IELMT.EQ.13) THEN
 !
-        DO K=1,NPTFR
+        DO IELEB=1,NELEB
 !
-        KP1=MESH%KP1BOR%I(K)
+        K  =IKLBOR(IELEB,1)
+        KP1=IKLBOR(IELEB,2)
 !
         IF(KP1.NE.K) THEN
         IF(LITBOR(K).EQ.LITBOR(KP1)) THEN
@@ -194,13 +202,10 @@
         ELSEIF( LITBOR(K  ).EQ.KSORT .OR.
      &          LITBOR(KP1).EQ.KSORT      ) THEN
           LITBOR(K+NPTFR) = KSORT
-        ELSEIF( LITBOR(K  ).EQ.KINC  .OR.
-     &          LITBOR(KP1).EQ.KINC       ) THEN
-          LITBOR(K+NPTFR) = KINC
         ELSE
           WRITE(LU,*) 'CONDITION INITIALE QUADRATIQUE DE U ','K ',K,
      &                ' NON PREVUE POUR LIUBOR = ',LIUBOR(K),
-     &                ' ET LIUBOR(K+1) = ',LIUBOR(MESH%KP1BOR%I(K))
+     &                ' ET LIUBOR(K+1) = ',LIUBOR(KP1)
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -263,3 +268,4 @@
 !
       RETURN
       END
+ 

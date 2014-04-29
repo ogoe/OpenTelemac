@@ -137,6 +137,7 @@ files: bief_def.f
   somme.f
   bief_sum.f
   flux_ef_vf.f
+  flux_ef_vf_2.f
   clip.f
   mv0403.f
   mv0404.f
@@ -383,6 +384,7 @@ files: bief_def.f
   vgfpsi.f
   flux_mask.f
   tvf.f
+  tvf_2.f
   hvf.f
   tracvf.f
   cflvf.f
@@ -728,7 +730,6 @@ files: friction_def.f
   vusce.f
   prosou.f
   cornor.f
-  incide.f
   rotne0.f
   propag.f
   masbas2d.f
@@ -811,7 +812,6 @@ files: friction_def.f
   friction_bubble.f
   friction_zones.f
   friction_choice.f
-  celerite.f
   telemac2d.f
   point_adj_t2d.f
   homere_adj_t2d.f

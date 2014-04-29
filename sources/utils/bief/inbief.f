@@ -6,32 +6,12 @@
      & LAMBD0,SPHERI,MESH,T1,T2,OPTASS,PRODUC,EQUA,MESH2D)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                   28/03/2014
 !***********************************************************************
 !
 !brief    PREPARES THE DATA STRUCTURE FOR BIEF.
 !+                THE INTEGER AND REAL ARRAYS DESCRIBING THE MESH
 !+                ARE BUILT AND STORED IN MESH.
-!
-!history
-!+        22/01/2008
-!+
-!+   DYNAMIC ALLOCATION OF IKLESTR DELETED
-!
-!history
-!+        29/02/2008
-!+
-!+   NORMAB MODIFIED; XSEG, YSEG NO LONGER USED
-!
-!history
-!+        20/03/2008
-!+
-!+   NBOR, IKLBOR ADAPTED FOR QUADRATIC TRIANGLES
-!
-!history
-!+        14/08/2008
-!+
-!+   PARINI MODIFIED
 !
 !history  J-M HERVOUET (LNHE) ; REGINA NEBAUER; LAM MINH PHUONG; EMILE RAZAFINDRAKOTO
 !+        05/02/2010
@@ -71,6 +51,12 @@
 !+        21/05/2013
 !+        V6P3
 !+   add centre_mass_seg, new infcel, hloc.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        28/03/2014
+!+        V7P0
+!+   Now written to enable different numbering of boundary points and
+!+   boundary segments.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
@@ -221,11 +207,14 @@
         MXPTVS = MESH%MXPTVS
 !       HERE IFABOR FOR IELM=51 MUST STILL BE 2D
 !       SO VOISIN31 CALLED LATER
+!
+!       NOTE: IN 3D IKLBOR BUILT HERE WITH NELEB 2D AND NELEBX 3D.
+!
         CALL ELEBD(MESH%NELBOR%I,MESH%NULONE%I,MESH%KP1BOR%I,
      &             MESH%IFABOR%I,MESH%NBOR%I,MESH%IKLE%I,MESH%IKLE%DIM1,
      &             MESH%IKLBOR%I,NELEM2,NELMAX2,NPOIN2,NPTFR2,IELM,
      &             LIHBOR,KLOG,MESH%IFANUM%I,OPTASS,MESH%ISEG%I,
-     &             IT1%I,IT2%I,IT3%I)
+     &             IT1%I,IT2%I,IT3%I,MESH%NELEBX,MESH%NELEB)  
 !
       ENDIF
 !
@@ -247,7 +236,7 @@
 !
 !       COMPLETES ARRAYS FOR PRISMS
 !
-        CALL ELEB3D(MESH%IKLE%I,MESH%NBOR%I,MESH%KP1BOR%I,
+        CALL ELEB3D(MESH%IKLE%I,MESH%NBOR%I,
      &              MESH%NELBOR%I,MESH%IKLBOR%I,
      &              MESH%NELEB,MESH%NELEBX,
      &              MESH%NULONE%I,NELEM2,NPOIN2,NPLAN,NPLAN-1,NPTFR2)
@@ -256,11 +245,20 @@
 !
 !       COMPLETES ARRAYS FOR PRISMS SPLIT INTO TETRAHEDRONS
 !
-        CALL ELEB3DT(MESH%IKLE%I,MESH%NBOR%I,MESH%KP1BOR%I,
-     &               MESH%NELBOR%I,MESH%IKLBOR%I,
-     &               MESH%NELEB,MESH%NELEBX,
-     &               MESH%NULONE%I,NELEM2,NELMAX2,
-     &               NPOIN2,NPLAN,NPLAN-1,NPTFR2)
+        IF(PRESENT(MESH2D)) THEN
+!         NOTE THE USE OF MESH2D FOR NELBOR AND NULONE
+!         THIS IS FOR CALLING STOSEG
+          CALL ELEB3DT(MESH%IKLE%I,MESH%NBOR%I,MESH%NELBOR%I,
+     &                 MESH2D%NELBOR%I,MESH%IKLBOR%I,
+     &                 MESH%NELEB,MESH%NELEBX,MESH%NULONE%I,NELEM2,
+     &                 NPOIN2,NPLAN,NPLAN-1,NPTFR2,
+     &                 MESH2D%IKLBOR%I,MESH2D%NELEB,MESH2D%NELEBX) 
+        ELSE
+          WRITE(LU,*) 'ARGUMENT MESH2D SHOULD BE ADDED TO INBIEF'
+          WRITE(LU,*) 'FOR A CALL WITH IELM=51'
+          CALL PLANTE(1)
+          STOP
+        ENDIF      
 !
       ELSEIF(IELM.NE.11) THEN
 !
@@ -446,10 +444,10 @@
 !
       CALL NORMAB(MESH%XNEBOR%R,MESH%YNEBOR%R,
      &            MESH%XSGBOR%R,MESH%YSGBOR%R,
-     &            MESH%DISBOR%R,MESH%SURFAC%R,NELMAX,
-     &            MESH%KP1BOR%I,MESH%NELBOR%I,
+     &            MESH%DISBOR%R,MESH%SURFAC%R,NELMAX,MESH%NELBOR%I,
      &            MESH%NULONE%I,MESH%LGSEG%R,NPTFR,MESH,T1,
-     &            MESH%XEL%R,MESH%YEL%R)
+     &            MESH%XEL%R,MESH%YEL%R,MESH%IKLBOR%I,
+     &            MESH%NELEBX,MESH%NELEB)
 !
       ENDIF
 !
@@ -462,21 +460,20 @@
       IF(IELM.EQ.11) THEN
 !
       CALL STOSEG(MESH%IFABOR%I,NELEM,NELMAX,NELMAX,IELMX,MESH%IKLE%I,
-     &            MESH%NBOR%I,NPTFR,
-     &            MESH%GLOSEG%I,MESH%GLOSEG%MAXDIM1,
+     &            MESH%NBOR%I,NPTFR,MESH%GLOSEG%I,MESH%GLOSEG%MAXDIM1,
      &            MESH%ELTSEG%I,MESH%ORISEG%I,MESH%NSEG,
-     &            MESH%KP1BOR%I,MESH%NELBOR%I,MESH%NULONE%I,
-     &            MESH%KNOLG%I)
+     &            MESH%NELBOR%I,MESH%NULONE%I,
+     &            MESH%KNOLG%I,MESH%IKLBOR%I,MESH%NELEBX,MESH%NELEB)
 !
       ELSEIF(IELM.EQ.41) THEN
 !
-      CALL STOSEG41(MESH%IFABOR%I,NELEM,NELMAX,IELMX,MESH%IKLE%I,
-     &              MESH%NBOR%I,NPTFR,
+      CALL STOSEG41(MESH%IFABOR%I,NELMAX,IELMX,MESH%IKLE%I,MESH%NBOR%I,
      &              MESH%GLOSEG%I,MESH%GLOSEG%MAXDIM1,
-     &              MESH%ELTSEG%I,MESH%ORISEG%I,MESH%NSEG,
-     &              MESH%KP1BOR%I,MESH%NELBOR%I,MESH%NULONE%I,
+     &              MESH%ELTSEG%I,MESH%ORISEG%I,
+     &              MESH%NELBOR%I,MESH%NULONE%I,
      &              NELMAX2,NELEM2,NPTFR2,NPOIN2,NPLAN,MESH%KNOLG%I,
-     &              BIEF_NBSEG(11,MESH))
+     &              BIEF_NBSEG(11,MESH),
+     &              MESH%IKLBOR%I,MESH%NELEBX,MESH%NELEB)
 !
       ELSEIF(IELM.EQ.51) THEN
 !
@@ -487,9 +484,10 @@
      &                MESH%IKLE%I,MESH%NBOR%I,
      &                MESH%GLOSEG%I,MESH%GLOSEG%MAXDIM1,
      &                MESH%ELTSEG%I,MESH%ORISEG%I,
-     &                MESH%KP1BOR%I,MESH2D%NELBOR%I,MESH2D%NULONE%I,
+     &                MESH2D%NELBOR%I,MESH2D%NULONE%I,
      &                NELMAX2,NELEM2,NPTFR2,NPOIN2,NPLAN,MESH%KNOLG%I,
-     &                BIEF_NBSEG(11,MESH))
+     &                MESH2D%NSEG,MESH2D%IKLBOR%I,MESH2D%NELEB,
+     &                MESH2D%NELEBX)
       ELSE
         WRITE(LU,*) 'ARGUMENT MESH2D SHOULD BE ADDED TO INBIEF'
         WRITE(LU,*) 'FOR A CALL WITH IELM=51'
@@ -565,8 +563,8 @@
         ENDIF
         CALL COMP_IKLE(MESH%IKLE%I,MESH%IKLBOR%I,
      &                 MESH%ELTSEG%I,MESH%NBOR%I,MESH%NELBOR%I,
-     &                 MESH%NULONE%I,
-     &                 IELMX,NELEM,NELMAX,NPOIN,NPTFR)
+     &                 MESH%NULONE%I,IELMX,NELEM,NELMAX,NPOIN,NPTFR,
+     &                 MESH%NELEB,MESH%NELEBX)
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -637,4 +635,3 @@
 !
       RETURN
       END
-

@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! PARALLEL   V6P2                                   21/08/2010
+! PARALLEL   V7P0                                   27/03/2014
 !***********************************************************************
 !
 !brief    MERGES THE RESULTS OF A PARALLEL COMPUTATION (COUPLING
@@ -36,6 +36,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/03/2014
+!+        V7P0
+!+   Calls of stoseg and elebd modified.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -346,14 +351,15 @@
         CALL CHECK_ALLOCATE(ERR, 'IFANUM')
         ALLOCATE(ISEGF(NPTFR),STAT=ERR)
         CALL CHECK_ALLOCATE(ERR, 'ISEG')
-
+!
         CALL ELEBD(NELBOR,NULONE,KP1BOR,
      &             IFABOR,NBOR,IKLE,NELEM,
      &             IKLBOR,NELEM2,NELMAX2,
      &             NPOIN2,NPTFR2,IELM,
      &             LIHBOR,KLOG,
      &             IFANUM,1,ISEGF,
-     &             IADR,NVOIS,T3)
+     &             IADR,NVOIS,T3,NPTFR2,NPTFR2)
+!                                NELEBX,NELEB (HERE EQUAL TO NPTFR2)
         DEALLOCATE(IFANUM)
         DEALLOCATE(ISEGF)
       ELSE
@@ -397,7 +403,7 @@
      &            NBOR,NPTFR,
      &            GLOSEG,NSEG2,    ! GLOSEG%MAXDIM1,
      &            ELTSEG,ORISEG,NSEG2,
-     &            KP1BOR,NELBOR,NULONE,KNOLG(:,1))
+     &            NELBOR,NULONE,KNOLG(:,1),IKLBOR,NPTFR,NPTFR)
       DEALLOCATE(KNOLG)
       ENDIF
 !
@@ -455,20 +461,20 @@
       NSEGMAX = MAXVAL(NSEG)
       NOQMAX = MAXVAL(NOQ)
       NPTFRMAX = MAXVAL(NPTFRL)
-! ARRAY FOR LOCAL-GLOBAL NUMBERS, 2D-FIELD
+!     ARRAY FOR LOCAL-GLOBAL NUMBERS, 2D-FIELD
       ALLOCATE (GLOSEGLOC(NSEGMAX,2,NPROC),STAT=ERR)
       IF(NPLAN.EQ.0) THEN
-         ALLOCATE (KNOLG(NPOINMAX,NPROC),STAT=ERR)
-         ALLOCATE (KSEGLG(NSEGMAX,NPROC),STAT=ERR)
-         ALLOCATE (NODENRSLOC(NPOINMAX,NPROC),STAT=ERR)
-         ALLOCATE (NBORLOC(NPTFRMAX,NPROC),STAT=ERR)
-         ALLOCATE (LIHBORLOC(NPTFRMAX,NPROC),STAT=ERR)
+        ALLOCATE(KNOLG(NPOINMAX,NPROC),STAT=ERR)
+        ALLOCATE(KSEGLG(NSEGMAX,NPROC),STAT=ERR)
+        ALLOCATE(NODENRSLOC(NPOINMAX,NPROC),STAT=ERR)
+        ALLOCATE(NBORLOC(NPTFRMAX,NPROC),STAT=ERR)
+        ALLOCATE(LIHBORLOC(NPTFRMAX,NPROC),STAT=ERR)
       ELSE
-         ALLOCATE (KNOLG(NPOINMAX/NPLAN,NPROC),STAT=ERR)
-         ALLOCATE (KSEGLG(NOQMAX,NPROC),STAT=ERR)
-         ALLOCATE (NODENRSLOC(NPOINMAX/NPLAN,NPROC),STAT=ERR)
-         ALLOCATE (NBORLOC(NPTFRMAX,NPROC),STAT=ERR)
-         ALLOCATE (LIHBORLOC(NPTFRMAX,NPROC),STAT=ERR)
+        ALLOCATE(KNOLG(NPOINMAX/NPLAN,NPROC),STAT=ERR)
+        ALLOCATE(KSEGLG(NOQMAX,NPROC),STAT=ERR)
+        ALLOCATE(NODENRSLOC(NPOINMAX/NPLAN,NPROC),STAT=ERR)
+        ALLOCATE(NBORLOC(NPTFRMAX,NPROC),STAT=ERR)
+        ALLOCATE(LIHBORLOC(NPTFRMAX,NPROC),STAT=ERR)
       ENDIF
       CALL CHECK_ALLOCATE(ERR, 'KNOLG')
       CALL CHECK_ALLOCATE(ERR, 'KSEGLG')
@@ -479,7 +485,6 @@
       CALL CHECK_ALLOCATE(ERR, 'LOCAL_VALUE')
 !
 ! READS KNOLG(NPOIN,NPROC)
-!
 !
       IF(NPLAN.EQ.0) THEN
         DO I=1,NSEG2+MBND2
@@ -515,7 +520,7 @@
            IL2 = GLOSEGLOC(ISEG,2,IPID+1)
            IG1 = KNOLG(IL1,IPID+1)
            IG2 = KNOLG(IL2,IPID+1)
-! GLOBAL NUMBER IN INCREASING ORDER
+!          GLOBAL NUMBER IN INCREASING ORDER
            IF(IG1.GT.IG2) THEN
              IGTEMP = IG1
              IG1 = IG2
@@ -531,7 +536,7 @@
            ENDIF
          ENDDO
 !
-      END DO
+      ENDDO
 !
 ! FURTHER VERIFICATIONS
 !
@@ -565,11 +570,11 @@
 !
       DO IPID = 0,NPROC-1
          FU = IPID +10
-! READS LOCAL X INSTEAD OF GREDELSEG_READ_DATASET
+!        READS LOCAL X INSTEAD OF GREDELSEG_READ_DATASET
          CALL GREDELPTS_READ_DATASET
      &   (LOCAL_VALUE,NOQMAX,NOQ(IPID+1),IT,FU,ENDE)
          IF (ENDE) GOTO 3000
-! STORES EACH DATASET
+!        STORES EACH DATASET
          IF(NPLAN.EQ.0) THEN
             NSEG2LOC  = NSEG(IPID+1)
             NPTFRLOC  = NPTFRL(IPID+1)
@@ -578,7 +583,7 @@
      &        GLOBAL_VALUE(KSEGLG(I,IPID+1)) + LOCAL_VALUE(I)
               VERIF(KSEGLG(I,IPID+1)) =   VERIF(KSEGLG(I,IPID+1))
      &                                     + 1
-            END DO
+            ENDDO
 !
            DO I=1,NPTFRLOC
              IF(LIHBORLOC(I,IPID+1).NE.2) THEN
@@ -605,7 +610,7 @@
                  STOP
                ENDIF
              ENDIF
-           END DO
+           ENDDO
 !
          ELSE
            NPOIN2LOC = NPOIN(IPID+1)/NPLAN
@@ -647,9 +652,9 @@
                    WRITE(LU,*) 'CAS NON PREVU'
                    STOP
                  ENDIF
-               END DO
+               ENDDO
              ENDIF
-           END DO
+           ENDDO
 !
            DO I=1,NPOIN2LOC
              DO J=1,NPLAN-1
@@ -673,17 +678,17 @@
                  WRITE(LU,*) 'CAS NON PREVU'
                  STOP
                ENDIF
-             END DO
-           END DO
+             ENDDO
+           ENDDO
          ENDIF
-      END DO
+      ENDDO
 ! WRITES GLOBAL DATASET
       WRITE(LU,*)'WRITING DATASET NO.',NRESU,' TIME =',IT
 !
       IF(NPLAN.EQ.0) THEN
-         WRITE(3) IT, (GLOBAL_VALUE(I),I=1,NSEG2+MBND2)
+        WRITE(3) IT, (GLOBAL_VALUE(I),I=1,NSEG2+MBND2)
       ELSE
-         WRITE(3) IT, (GLOBAL_VALUE(I),I=1,NOQ2)
+        WRITE(3) IT, (GLOBAL_VALUE(I),I=1,NOQ2)
       ENDIF
 ! CHECKS ...
       IF(NPLAN.EQ.0) THEN
@@ -691,13 +696,13 @@
           IF(VERIF(I).EQ.0) THEN
             WRITE(LU,*) 'ERROR, SEGMENT I=',I,' FALSE FOR NRESU=',NRESU
           ENDIF
-        END DO
+        ENDDO
       ELSE
         DO I=1,NOQ2
           IF(VERIF(I).EQ.0) THEN
             WRITE(LU,*) 'ERROR, SEGMENT I=',I,' FALSE FOR NRESU=',NRESU
           ENDIF
-        END DO
+        ENDDO
       ENDIF
 !
       GO TO 2000
@@ -708,12 +713,10 @@
       CLOSE(3)
 !
       DO IPID = 0,NPROC-1
-         FU = IPID +10
-         CLOSE (FU)
-      END DO
+        FU = IPID +10
+        CLOSE (FU)
+      ENDDO
 !
         !!!FABS
       STOP
       END PROGRAM GREDELSEG_AUTOP
-!
-!

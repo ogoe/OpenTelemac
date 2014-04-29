@@ -3,10 +3,10 @@
 !                    *****************
 !
      &(OP ,  DM,TYPDIM,XM,TYPEXM,   DN,TYPDIN,XN,TYPEXN,   C,
-     & NULONE,NELBOR,NBOR,NELMAX,NDIAG,NPTFR,NPTFRX)
+     & NULONE,NELBOR,NBOR,NELMAX,NDIAG,NPTFR,NELEBX,NELEB)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS ON MATRICES
@@ -74,6 +74,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/03/2014
+!+        V7P0
+!+   Now written to enable different numbering of boundary points and
+!+   boundary segments.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
 !| DM             |<->| DIAGONAL OF M
@@ -82,9 +88,10 @@
 !| NDIAG          |-->| NUMBER OF TERMS IN THE DIAGONAL
 !| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
 !|                |   | ELEMENT.
+!| NELEB          |-->| NUMBER OF BOUNDARY ELEMENTS
+!| NELEBX         |-->| MAXIMUM NUMBER OF BOUNDARY ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| NPTFRX         |-->| MAXIMUM NUMBER OF BOUNDARY POINTS
 !| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
 !|                |   | ADJACENT ELEMENT, NULONE GIVES THE LOCAL
 !|                |   | NUMBER OF THE FIRST NODE OF THE BOUNDARY EDGE
@@ -110,7 +117,7 @@
 !| XN             |-->| OFF-DIAGONAL TERMS OF N
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF!, EX_OM1302 => OM1302
+      USE BIEF, EX_OM1302 => OM1302
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -118,9 +125,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NELMAX,NDIAG,NPTFR,NPTFRX
+      INTEGER, INTENT(IN)             :: NELMAX,NDIAG,NPTFR,NELEBX,NELEB
       CHARACTER(LEN=8), INTENT(IN)    :: OP
-      INTEGER, INTENT(IN)             :: NULONE(*),NELBOR(*),NBOR(*)
+      INTEGER, INTENT(IN)             :: NULONE(NELEBX),NELBOR(NELEBX)
+      INTEGER, INTENT(IN)             :: NBOR(*)
       DOUBLE PRECISION, INTENT(IN)    :: DN(*),XN(*)
       DOUBLE PRECISION, INTENT(INOUT) :: DM(*),XM(NELMAX,*)
       CHARACTER(LEN=1), INTENT(INOUT) :: TYPDIM,TYPEXM,TYPDIN,TYPEXN
@@ -177,20 +185,20 @@
 !
 !          CASE WHERE BOTH MATRICES ARE NONSYMMETRICAL
 !
-           DO K = 1 , NPTFR
+           DO K = 1 , NELEB
              IEL = NELBOR(K)
              XM( IEL , CORNSY(NULONE(K),1) ) =
      &       XM( IEL , CORNSY(NULONE(K),1) ) + XN(K)
              XM( IEL , CORNSY(NULONE(K),2) ) =
-     &       XM( IEL , CORNSY(NULONE(K),2) ) + XN(K+NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),2) ) + XN(K+NELEBX)
              XM( IEL , CORNSY(NULONE(K),3) ) =
-     &       XM( IEL , CORNSY(NULONE(K),3) ) + XN(K+2*NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),3) ) + XN(K+2*NELEBX)
              XM( IEL , CORNSY(NULONE(K),4) ) =
-     &       XM( IEL , CORNSY(NULONE(K),4) ) + XN(K+3*NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),4) ) + XN(K+3*NELEBX)
              XM( IEL , CORNSY(NULONE(K),5) ) =
-     &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+4*NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+4*NELEBX)
              XM( IEL , CORNSY(NULONE(K),6) ) =
-     &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+5*NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+5*NELEBX)
 !
            ENDDO ! K 
 !
@@ -198,34 +206,34 @@
 !
 !          CASE WHERE M CAN BE ANYTHING AND N IS SYMMETRICAL
 !
-           DO K = 1 , NPTFR
+           DO K = 1 , NELEB
              IEL = NELBOR(K)
              XM( IEL , CORNSY(NULONE(K),1) ) =
      &       XM( IEL , CORNSY(NULONE(K),1) ) + XN(K)
              XM( IEL , CORNSY(NULONE(K),2) ) =
-     &       XM( IEL , CORNSY(NULONE(K),2) ) + XN(K+NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),2) ) + XN(K+NELEBX)
              XM( IEL , CORNSY(NULONE(K),3) ) =
-     &       XM( IEL , CORNSY(NULONE(K),3) ) + XN(K+2*NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),3) ) + XN(K+2*NELEBX)
              XM( IEL , CORNSY(NULONE(K),4) ) =
      &       XM( IEL , CORNSY(NULONE(K),4) ) + XN(K)
              XM( IEL , CORNSY(NULONE(K),5) ) =
-     &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+NELEBX)
              XM( IEL , CORNSY(NULONE(K),6) ) =
-     &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+2*NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+2*NELEBX)
            ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE BOTH MATRICES ARE SYMMETRICAL
 !
-           DO K = 1 , NPTFR
+           DO K = 1 , NELEB
              IEL = NELBOR(K)
              XM( IEL , CORSYM(NULONE(K),1) ) =
      &       XM( IEL , CORSYM(NULONE(K),1) ) + XN(K)
              XM( IEL , CORSYM(NULONE(K),2) ) =
-     &       XM( IEL , CORSYM(NULONE(K),2) ) + XN(K+NPTFRX)
+     &       XM( IEL , CORSYM(NULONE(K),2) ) + XN(K+NELEBX)
              XM( IEL , CORSYM(NULONE(K),3) ) =
-     &       XM( IEL , CORSYM(NULONE(K),3) ) + XN(K+2*NPTFRX)
+     &       XM( IEL , CORSYM(NULONE(K),3) ) + XN(K+2*NELEBX)
            ENDDO ! K 
         ELSE
            IF (LNG.EQ.1) WRITE(LU,99) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
@@ -248,54 +256,54 @@
 !
 !          CASE WHERE BOTH MATRICES ARE NONSYMMETRICAL
 !
-           DO K = 1 , NPTFR
+           DO K = 1 , NELEB
              IEL = NELBOR(K)
              XM( IEL , CORNSY(NULONE(K),1) ) =
-     &       XM( IEL , CORNSY(NULONE(K),1) ) + XN(K+3*NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),1) ) + XN(K+3*NELEBX)
              XM( IEL , CORNSY(NULONE(K),2) ) =
-     &       XM( IEL , CORNSY(NULONE(K),2) ) + XN(K+4*NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),2) ) + XN(K+4*NELEBX)
              XM( IEL , CORNSY(NULONE(K),3) ) =
-     &       XM( IEL , CORNSY(NULONE(K),3) ) + XN(K+5*NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),3) ) + XN(K+5*NELEBX)
              XM( IEL , CORNSY(NULONE(K),4) ) =
      &       XM( IEL , CORNSY(NULONE(K),4) ) + XN(K)
              XM( IEL , CORNSY(NULONE(K),5) ) =
-     &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+NELEBX)
              XM( IEL , CORNSY(NULONE(K),6) ) =
-     &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+2*NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+2*NELEBX)
            ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE M CAN BE ANYTHING AND N IS SYMMETRICAL
 !
-           DO K = 1 , NPTFR
+           DO K = 1 , NELEB
              IEL = NELBOR(K)
              XM( IEL , CORNSY(NULONE(K),1) ) =
      &       XM( IEL , CORNSY(NULONE(K),1) ) + XN(K)
              XM( IEL , CORNSY(NULONE(K),2) ) =
-     &       XM( IEL , CORNSY(NULONE(K),2) ) + XN(K+NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),2) ) + XN(K+NELEBX)
              XM( IEL , CORNSY(NULONE(K),3) ) =
-     &       XM( IEL , CORNSY(NULONE(K),3) ) + XN(K+2*NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),3) ) + XN(K+2*NELEBX)
              XM( IEL , CORNSY(NULONE(K),4) ) =
      &       XM( IEL , CORNSY(NULONE(K),4) ) + XN(K)
              XM( IEL , CORNSY(NULONE(K),5) ) =
-     &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+NELEBX)
              XM( IEL , CORNSY(NULONE(K),6) ) =
-     &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+2*NPTFRX)
+     &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+2*NELEBX)
            ENDDO ! K 
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
 !          CASE WHERE BOTH MATRICES ARE SYMMETRICAL
 !
-           DO K = 1 , NPTFR
+           DO K = 1 , NELEB
              IEL = NELBOR(K)
              XM( IEL , CORSYM(NULONE(K),1) ) =
      &       XM( IEL , CORSYM(NULONE(K),1) ) + XN(K)
              XM( IEL , CORSYM(NULONE(K),2) ) =
-     &       XM( IEL , CORSYM(NULONE(K),2) ) + XN(K+NPTFRX)
+     &       XM( IEL , CORSYM(NULONE(K),2) ) + XN(K+NELEBX)
              XM( IEL , CORSYM(NULONE(K),3) ) =
-     &       XM( IEL , CORSYM(NULONE(K),3) ) + XN(K+2*NPTFRX)
+     &       XM( IEL , CORSYM(NULONE(K),3) ) + XN(K+2*NELEBX)
            ENDDO ! K 
 !
         ELSE

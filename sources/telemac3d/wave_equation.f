@@ -99,8 +99,6 @@
       INTEGER           :: I3D,IP
       LOGICAL           :: MSKGRA
       DOUBLE PRECISION  :: C
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM  
 !
 !-----------------------------------------------------------------------
 !

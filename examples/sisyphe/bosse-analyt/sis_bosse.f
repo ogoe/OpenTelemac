@@ -413,13 +413,12 @@
 !
       RETURN
       END
-
 C                       *************************
                         SUBROUTINE CONDIM_SISYPHE
 C                       *************************
 C
      * (U      , V   , QU    , QV  , H   , ZF , Z ,
-     *  ESOMT  , THETAW   , Q     , HW  , TW  ,
+     *  ESOMT  , THETAWR  , Q     , HWR  , TWR  ,
      *  X      , Y   , NPOIN , AT  , PMAREE)
 C
 C***********************************************************************
@@ -469,24 +468,36 @@ C
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-      INTEGER NPOIN , I
-C
-      DOUBLE PRECISION   U(NPOIN) , V(NPOIN)     , H(NPOIN)
-      DOUBLE PRECISION   QU(NPOIN), QV(NPOIN)    , Q(NPOIN)
-      DOUBLE PRECISION   ESOMT(NPOIN)
-      DOUBLE PRECISION   HW(NPOIN), TW(NPOIN), THETAW(NPOIN)
-      DOUBLE PRECISION   Z(NPOIN) , ZF(NPOIN)
-      DOUBLE PRECISION   X(NPOIN) , Y(NPOIN)
-      DOUBLE PRECISION   AT       , PMAREE 
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)::NPOIN
+!
+      DOUBLE PRECISION, INTENT(IN):: X(NPOIN),Y(NPOIN)
+      DOUBLE PRECISION, INTENT(IN):: AT , PMAREE
+! SEDIMENT
+      DOUBLE PRECISION, INTENT(INOUT) ::  ZF(NPOIN)
+      DOUBLE PRECISION, INTENT (INOUT)::  ESOMT(NPOIN)
+! HYDRODYNAMICS
+      DOUBLE PRECISION, INTENT(INOUT):: Z(NPOIN) , H(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT):: U(NPOIN) , V(NPOIN)
+      DOUBLE PRECISION, INTENT (INOUT)::QU(NPOIN), QV(NPOIN), Q(NPOIN)
+! WAVES
+      DOUBLE PRECISION, INTENT (INOUT):: HWR(NPOIN) , TWR(NPOIN)
+      DOUBLE PRECISION, INTENT (INOUT):: THETAWR(NPOIN)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER I
       DOUBLE PRECISION   PI
-C-----------------------------------------------------------------------
-C
-C  --------------------------------------------------------------
-C  INITIALISATION DES TABLEAUX NON LUS DANS LE FICHIER RESULTATS:
-C  --------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
+!
+!  --------------------------------------------------------------
+!  INITIALISATION DES TABLEAUX NON LUS DANS LE FICHIER RESULTATS:
+!  --------------------------------------------------------------
+!
       DO I=1,NPOIN
          QU(I)=.25D0
          Q(I)=.25D0
@@ -511,22 +522,24 @@ C-----------------------------------------------------------------------
 C
       RETURN
       END SUBROUTINE CONDIM_SISYPHE
-C                       **************************
+!                       **************************
                         SUBROUTINE CARACTERISTIQUE
-C                       **************************
-C
+!                       **************************
+!
      *(X,Y,NPOIN,HFINAL,TEMPS)
-C
-C----------------------------------------------------------------
-C
+!
+!----------------------------------------------------------------
+!
+      IMPLICIT NONE
       INTEGER, PARAMETER :: NN = 1600
+      INTEGER, INTENT(IN) :: NPOIN
       DOUBLE PRECISION   X(NPOIN),Y(NPOIN),HFINAL(NPOIN)
       DOUBLE PRECISION   ZF0(NN), H0(NN)
       DOUBLE PRECISION   DIST,DIST1,DIST2
       DOUBLE PRECISION   XFICTIF(NN)
       DOUBLE PRECISION   XNEW(NN)
-      INTEGER            NPOIN,I,II,compteur,QUOT,RESTE,KK
-      DOUBLE PRECISION   GRAV,D,S,STRICKLER,CFROT,DEBIT,pi,PAS
+      INTEGER            I,J,II,compteur,QUOT,RESTE,KK
+      DOUBLE PRECISION   GRAV,D,S,STRICKLER,CFROT,DEBIT,PI,PAS
       DOUBLE PRECISION   K1,K2,K,MOYENNE_H,TEMPS,DX
 C
       DX=0.01D0

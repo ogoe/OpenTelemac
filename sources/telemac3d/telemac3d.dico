@@ -3861,10 +3861,10 @@ NIVEAU = 1
 COMPORT = 
 'Foreground ("EQUATIONS")
 IS BRUT (brown)'
-AIDE = 'Utilise un resultat 2D dans 
- FICHIER DE DONNEES BINAIRE 1
+AIDE = 'Utilise un resultat 2D stocke dans le 
+ FICHIER POUR SUITE 2D
  comme fichier de conditions initiales'
-AIDE1 = 'Uses a 2D results file in BINARY DATA FILE 1 FORMAT
+AIDE1 = 'Uses a 2D results file in FILE FOR 2D CONTINUATION
  as initial conditions file'
 
 

@@ -6,7 +6,8 @@
      & VISC,VISC_S,SM,SMH,YASMH,SMI,YASMI,FBOR,MASKTR,MESH,
      & T1,T2,T3,T4,T5,T6,T7,T8,HNT,HT,AGGLOH,TE1,DT,ENTET,BILAN,
      & OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,LIMTRA,KDIR,KDDL,NPTFR,FLBOR,
-     & YAFLBOR,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,RAIN,PLUIE,TRAIN)
+     & YAFLBOR,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,RAIN,PLUIE,TRAIN,
+     & OPTADV)
 !
 !***********************************************************************
 ! BIEF   V7P0                                   21/08/2010
@@ -46,10 +47,10 @@
 !+        V6P3
 !+   New call to CFLVF, for new monotonicity criterion.
 !
-!history  SARA PAVAN & J-M HERVOUET (LNHE)
-!+        24/10/2013
+!history  SARA PAVAN & J-M HERVOUET (EDF LAB, LNHE)
+!+        29/04/2014
 !+        V7P0
-!+   T3 changed into T2 in the call to in use).
+!+   New predictor-corrector PSI scheme (OPTADV=2)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -93,6 +94,7 @@
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| OPDADV         |-->| SCHEME OPTION FOR THE ADVECTION OF TRACERS
 !| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
 !| OPTSOU         |-->| TYPE OF SOURCES
 !|                |   | 1: NORMAL
@@ -135,7 +137,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: OPDTRA,OPTSOU,KDIR,NPTFR,SOLSYS
-      INTEGER, INTENT(IN)             :: LIMTRA(NPTFR),KDDL,IOPT
+      INTEGER, INTENT(IN)             :: LIMTRA(NPTFR),KDDL,IOPT,OPTADV
       DOUBLE PRECISION, INTENT(IN)    :: DT,AGGLOH,TRAIN
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
       LOGICAL, INTENT(IN)             :: BILAN,CONV,YASMH,YAFLBOR
@@ -156,20 +158,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION DT_REMAIN,DDT,TDT
+      DOUBLE PRECISION DT_REMAIN,DDT,TDT,SECU
+!
       CHARACTER(LEN=16) FORMUL
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVE_HT,SAVE_HNT
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: FXMAT,FXMATPAR
 !
-      DOUBLE PRECISION P_DMIN,P_DSUM
-      EXTERNAL         P_DMIN,P_DSUM
+      DOUBLE PRECISION P_DMIN
+      EXTERNAL         P_DMIN
 !
       INTEGER NITMAX,NIT
       DATA NITMAX/200/
-!     INTEGER IELEM,I1,I2,I3
-!     LOGICAL YACSTE
-!     DOUBLE PRECISION MASSET,MASSETN,TSOU
-!     DOUBLE PRECISION FXT2
 !
 !-----------------------------------------------------------------------
 !
@@ -278,9 +277,9 @@
 100   CONTINUE
       NIT=NIT+1
 !
-!----------------------------------------
+!---------------------------------------
 ! VARIOUS OPTIONS TO COMPUTE THE FLUXES
-!----------------------------------------
+!---------------------------------------
 !
       IF(NIT.EQ.1.OR.IOPT1.EQ.3) THEN
         CALL FLUX_EF_VF(FXMAT,MESH%W%R,MESH%NSEG,MESH%NELEM,
@@ -300,9 +299,9 @@
         ENDIF
       ENDIF
 !
-!---------------------------------------------
+!--------------------------------------------
 ! DETERMINES THE LARGEST ADMISSIBLE TIMESTEP
-!---------------------------------------------
+!--------------------------------------------
 !
 !     THIS COULD BE PUT OUTSIDE THE LOOP, BUT T7 USED LATER IN THE LOOP...
 !
@@ -321,6 +320,11 @@
 !
 !     COMPUTES THE MAXIMUM TIMESTEP ENSURING MONOTONICITY
 !
+      IF(OPTADV.EQ.2) THEN
+        SECU=0.5D0
+      ELSE
+        SECU=1.D0
+      ENDIF
       CALL CFLVF(DDT,T5%R,HT%R,FXMAT,FXMATPAR,
 !                                   FLBOR%R(NPOIN)
      &           V2DPAR%R,DT_REMAIN,T7%R   ,SMH%R,
@@ -328,7 +332,7 @@
      &           MESH%GLOSEG%I,MESH%GLOSEG%DIM1,MESH,MSK,MASKPT,
      &           RAIN,PLUIE%R,T4%R,MESH%NELEM,MESH%IKLE%I,
      &           LIMTRA,KDIR,FBOR%R,FSCEXP%R,TRAIN,MESH%NBOR%I,
-     &           T2,T6)
+     &           T2,T6,SECU)
 !
       IF(NCSIZE.GT.1) DDT=P_DMIN(DDT)
 !
@@ -349,9 +353,9 @@
         ENDDO
       ENDIF
 !
-!-----------------
-! FINAL RESOLUTION
-!-----------------
+!------------------------------------
+!  FINAL RESOLUTION OR PREDICTOR STEP
+!------------------------------------
 !
       IF(YAFLBOR) THEN
         CALL TRACVF(F,FN,FSCEXP,HT,HNT,FXMAT,FXMATPAR,V2DPAR,UNSV2D,
@@ -365,7 +369,44 @@
      &              RAIN,PLUIE,TRAIN)
       ENDIF
 !
+!--------------------------------
+!  CORRECTOR STEP FOR PSI SCHEME
+!--------------------------------
+!
+      IF(OPTADV.EQ.2)THEN
+!
+        CALL FLUX_EF_VF_2(MESH%W%R,MESH%NELEM,
+     &                    MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
+!    &                    FI_I,FSTAR,
+     &                    T8%R,F%R,T5%R,MESH%SURFAC%R,DDT)
+        IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH)  
+!
+!       COMPUTE THE SECOND ORDER CORRECTION FORM
+!
+        IF(YAFLBOR) THEN
+          CALL TVF_2(F%R,FN%R,T4%R,UNSV2D%R,DDT,
+     &           FLBOR%R,T7%R,FBOR%R,SMH%R,YASMH,FSCEXP%R,
+     &           MESH%NPOIN,MESH%NPTFR,MESH%NBOR%I,LIMTRA,KDIR,KDDL,
+     &           OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,RAIN,
+     &           PLUIE%R,TRAIN,T8%R)
+!                              FI_I
+        ELSE
+          CALL TVF_2(F%R,FN%R,T4%R,UNSV2D%R,DDT,
+     &           T3%R,T7%R,FBOR%R,SMH%R,YASMH,FSCEXP%R,
+     &           MESH%NPOIN,MESH%NPTFR,MESH%NBOR%I,LIMTRA,KDIR,KDDL,
+     &           OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,RAIN,
+     &           PLUIE%R,TRAIN,T8%R)
+!                              FI_I
+        ENDIF
+!
+      ENDIF
+!
+!-----------------
+! END CORRECTOR STEP
+!-----------------
+!
       DO I=1,HN%DIM1
+!       T4 IS F(N+1)
         T4%R(I)=F%R(I)
       ENDDO
       IF(IOPT2.EQ.1) THEN

@@ -6,7 +6,7 @@
      & ELAY, AVA, AFBOR, BFBOR, LIMDIF, CLT, MASKEL, MASKTR,
      & MASKPT, IFAMAS, NPOIN, IELM, NPTFR, ITRA, LT, NIT, RESOL,
      & OPTBAN, KENT,KDDL,KDIR,KSORT,KLOG,KINC,KNEU,
-     & OPTSUP, OPDTRA, DEBUG,CSF_SABLE,
+     & OPTADV, OPDTRA, DEBUG,CSF_SABLE,
      & TETA_SUSP, DT, MASED0, ZERO, XWC, KARMAN, XMVE, XMVS, VCE,GRAV,
      & HMIN, VITCD, VITCE,PARTHENIADES, ENTETS,
      & BILMA,MSK,CHARR,IMP_INFLOW_C,MESH,ZF,CS,
@@ -23,7 +23,7 @@
      & MAXADV)
 !
 !***********************************************************************
-! SISYPHE   V6P3                                   18/06/2012
+! SISYPHE   V7P0                                   18/06/2012
 !***********************************************************************
 !
 !brief    MAIN SUBROUTINE FOR THE COMPUTATION OF THE
@@ -143,6 +143,13 @@
 !+   Pointers GLOSEG1 and GLOSEG2 added to avoid an unwanted copy of
 !+   arrays in call to suspension_conv (after message by Intel compiler) 
 !
+!history  J.-M. HERVOUET (LNHE)
+!+        28/04/2014
+!+        V7P0
+!+   Call to diffin modified. 
+!+   OPTSUP replaced by OPTADV in the call to cvdftr.
+!+   (see keyword SCHME OPTION FOR ADVECTION)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
@@ -246,7 +253,7 @@
 !| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
 !| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
 !| OPTDIF         |-->| OPTION FOR THE DISPERSION 
-!| OPTSUP         |-->| SUPG OPTION
+!| OPTADV         |-->| SCHEME OPTION FOR ADVECTION
 !| PARTHENIADES   |-->| CONSTANT OF THE KRONE AND PARTHENIADES EROSION LAW (M/S)
 !| PASS           |<->| IN FACT PASS_SUSP IN SISYPHE.F, ARRIVES AS .TRUE.
 !|                |   | AT FIRST CALL AND IS CHANGED INTO .FALSE. BELOW
@@ -336,7 +343,7 @@
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: MASKTR,LIMDIF,CLT
       INTEGER,          INTENT(IN)    :: NPOIN,IELM,NPTFR,ITRA,LT
       INTEGER,          INTENT(IN)    :: NIT,RESOL,OPTBAN,KENT,KDDL
-      INTEGER,          INTENT(IN)    :: KDIR,OPTSUP,OPDTRA,SOLSYS
+      INTEGER,          INTENT(IN)    :: KDIR,OPTADV,OPDTRA,SOLSYS
       INTEGER,          INTENT(IN)    :: KSORT,KLOG,KINC,KNEU
       INTEGER,          INTENT(IN)    :: NFRLIQ,NSICLA,NOMBLAY
       INTEGER,          INTENT(IN)    :: DEBUG,DIRFLU,MAXADV
@@ -619,13 +626,14 @@
       IF (DEBUG > 0) WRITE(LU,*) 'DIFFIN'
       CALL DIFFIN(MASKTR,LIMDIF%I,LICBOR%I,CLT%I,U2D%R,V2D%R,
      &            MESH%XNEBOR%R,MESH%YNEBOR%R,
-     &            MESH%NBOR%I,MESH%KP1BOR%I,NPTFR,
-     &            KENT,KSORT,KLOG,KINC,KNEU,KDIR,KDDL,RESOL_MOD,
+     &            MESH%NBOR%I,NPTFR,
+     &            KENT,KSORT,KLOG,KNEU,KDIR,KDDL,RESOL_MOD,
      &            MESH%NELBOR%I,NPOIN,MESH%NELMAX,
 !                              NFRLIQ
      &            MSK,MASKEL%R,0,
 !                  THOMFR FRTYPE
-     &            .FALSE.,BID,    CS,CBOR,MESH,NUMLIQ)
+     &            .FALSE.,BID,    CS,CBOR,MESH,NUMLIQ,
+     &            MESH%IKLBOR%I,MESH%NELEB,MESH%NELEBX)
       IF (DEBUG > 0) WRITE(LU,*) 'END DIFFIN'
 !
 !+++++++++++++++++++++++++++++++++++ELEVATION OF BOTTOM++++++++++++++++++++++++++++++++++++
@@ -769,7 +777,7 @@
      &  W1, TB, T8, T12, T3, T4, T5, T6, T7, T10, TE1, TE2, TE3,
      &  KDIR,KDDL,KENT,DT,ENTETS,TETA_SUSP,
 !                      BILAN
-     &  AGGLOT,ENTETS,.FALSE.,OPTSUP,
+     &  AGGLOT,ENTETS,.FALSE.,OPTADV,
      &  1, LT, NIT, OPDTRA, OPTBAN, MSK, MASKEL, MASKPT, MBOR, S,
 !               OPTSOU
      &  MASSOU, 1,     SLVTRA,FLBOR_SIS,V2DPAR,UNSV2D,OPTVF,FLBORTRA,

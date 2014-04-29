@@ -7,14 +7,14 @@
      & VISC,VISC_S,SM,SMH,YASMH,SMI,YASMI,AM1,AM2,
      & ZF,FBOR,AFBOR,BFBOR,LIMTRA,MASKTR,MESH,W,TB,
      & T1,T2,T3,T4,T5,T6,T7,T10,TE1,TE2,TE3,KDIR,KDDL,KENT,DT,ENTET,
-     & TETAT,AGGLOT,INFOGT,BILAN,OPTSUP,
+     & TETAT,AGGLOT,INFOGT,BILAN,OPTADV,
      & ISOUSI,LT,NIT,OPDTRA,OPTBAN,MSK,MASKEL,MASKPT,MBOR,
      & S,MASSOU,OPTSOU,SLVTRA,FLBOR,V2DPAR,UNSV2D,OPTVF,FLBORTRA,
      & FLULIM,YAFLULIM,DIRFLU,RAIN,PLUIE,TRAIN,
      & GIVEN_FLUX,FLUX_GIVEN,MAXADV)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    DIFFUSION, ADVECTION AND SOURCE TERMS FOR A TRACER.
@@ -114,6 +114,13 @@
 !+   DIMGLO=MESH%GLOSEG%DIM1 used in call to CVTRVF_POS. Strangely 
 !+   avoids an "array temporary created" with Intel compiler.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        01/04/2014
+!+        V7P0
+!+   Now written to enable different numbering of boundary points and
+!+   boundary segments.
+!+   OPTSUP changed into OPTADV for a more general use.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR,BFBOR    |-->| COEFFICIENTS OF NEUMANN CONDITION
 !|                |   | VISC*DF/DN = AFBOR*F + BFBOR
@@ -174,14 +181,20 @@
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
+!| OPTADV         |-->| ADVECTION SCHEME OPTION, THE MEANING DEPENDS ON
+!|                |   | ICONVF
+!|                |   | IF SCHEME IS SUPG:
+!|                |   | 0: NO SUPG UPWIND
+!|                |   | 1: CLASSIC SUPG
+!|                |   | 2: MODIFIED SUPG
+!|                |   | IF SCHEME IS PSI:
+!|                |   | 1: EXPLICIT
+!|                |   | 2: PREDICTOR-CORRECTOR
 !| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
 !|                |   | 1:NORMAL   2:WITH MASKING
 !| OPTSOU         |-->| TYPE OF SOURCES
 !|                |   | 1: NORMAL
 !|                |   | 2: DIRAC
-!| OPTSUP         |-->| SUPG OPTION
-!|                |   | 1: CLASSIC SUPG
-!|                |   | 2: MODIFIED SUPG
 !| OPTVF          |-->| OPTIONS FOR FINITE VOLUMES (SEE CVTRVF)
 !| PLUIE          |-->| RAIN OR EVAPORATION, IN M/S
 !| RAIN           |-->| IF YES: RAIN OR EVAPORATION
@@ -231,7 +244,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)           :: ICONVF,ISOUSI,OPTSUP,OPDTRA,KENT
+      INTEGER, INTENT(IN)           :: ICONVF,ISOUSI,OPTADV,OPDTRA,KENT
       INTEGER, INTENT(IN)           :: LT,NIT,OPTBAN,OPTSOU,KDIR,SOLSYS
       INTEGER, INTENT(IN)           :: KDDL,OPTVF,DIRFLU,MAXADV
       DOUBLE PRECISION, INTENT(IN)  :: TETAT,AGGLOT,TETAH,DT,TRAIN
@@ -331,16 +344,25 @@
 !
 !       ADDS SUPG CONTRIBUTION TO AM2
 !
-        IF(OPTSUP.EQ.1) THEN
+        IF(OPTADV.EQ.1) THEN
 !         CLASSICAL SUPG
           CALL KSUPG(TE1,TE2,1.D0,UCONV,VCONV,MESH)
           CALL MATRIX(AM2,'M=M+N   ','MASUPG          ',IELMF,IELMF,
      &                1.D0,TE1,TE2,S,UCONV,VCONV,S,MESH,MSK,MASKEL)
 !
-        ELSEIF(OPTSUP.EQ.2) THEN
+        ELSEIF(OPTADV.EQ.2) THEN
 !         MODIFIED SUPG
           CALL MATRIX(AM2,'M=M+N   ','MAUGUG          ',IELMF,IELMF,
      &                0.5D0*DT,S,S,S,UCONV,VCONV,S,MESH,MSK,MASKEL)
+        ELSEIF(OPTADV.NE.0) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'CVDFTR : OPTION POUR SUPG INCONNUE =',OPTADV
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'CVDFTR: UNKNOWN OPTION FOR SUPG =',OPTADV
+          ENDIF
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !
 !     NON CONSERVATIVE, IMPLICIT N-SCHEME EQUATION
@@ -444,16 +466,25 @@
 !
 !       SUPG CONTRIBUTION TO THE MASS MATRIX
 !
-        IF(OPTSUP.EQ.1) THEN
+        IF(OPTADV.EQ.1) THEN
 !         CLASSICAL SUPG
 !         TE1 AND TE2 ALREADY COMPUTED
           CALL MATRIX(AM1,'M=M+TN    ','MATVGR          ',IELMF,IELMF,
      &                1.D0/DT,S,S,S,TE1,TE2,S,MESH,MSK,MASKEL)
 !
-        ELSEIF(OPTSUP.EQ.2) THEN
+        ELSEIF(OPTADV.EQ.2) THEN
 !         MODIFIED SUPG
           CALL MATRIX(AM1,'M=M+TN    ','MATVGR          ',IELMF,IELMF,
      &                0.5D0,S,S,S,UCONV,VCONV,S,MESH,MSK,MASKEL)
+        ELSEIF(OPTADV.NE.0) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'CVDFTR : OPTION POUR SUPG INCONNUE =',OPTADV
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'CVDFTR: UNKNOWN OPTION FOR SUPG =',OPTADV
+          ENDIF
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !
 !       END OF THE SUPG CONTRIBUTION TO THE MASS MATRIX
@@ -541,7 +572,8 @@
      &              OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,
 !                                                       YAFLBOR
      &              LIMTRA%I,KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
-     &              V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,RAIN,PLUIE,TRAIN)
+     &              V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,RAIN,PLUIE,TRAIN,
+     &              OPTADV)
 !       IF EXITS AT THIS POINT, THE DIRICHLET ARE NOT DONE, ALSO WORKS
 !       CAN THEN CHECK THE MASS CONSERVATION EXACTLY
         IF(.NOT.DIFT) RETURN
@@ -648,11 +680,14 @@
 !   TAKES THE BOUNDARY TERMS INTO ACCOUNT IN THE DIFFUSION MATRIX
 !
         MSKNEU=3
-        CALL MATRIX(MBOR,'M=N     ','FMATMA          ',
-     &              IELBOR(IELMF,1),IELBOR(IELMF,1),
-     &              -1.D0,AFBOR,S,S,S,S,S,
-     &              MESH,.TRUE.,MASKTR%ADR(MSKNEU)%P)
-        CALL OM( 'M=M+N   ' , AM2 , MBOR , S , C , MESH )
+!
+        IF(MESH%NELEB.GT.0) THEN
+          CALL MATRIX(MBOR,'M=N     ','FMATMA          ',
+     &                IELBOR(IELMF,1),IELBOR(IELMF,1),
+     &                -1.D0,AFBOR,S,S,S,S,S,
+     &                MESH,.TRUE.,MASKTR%ADR(MSKNEU)%P)
+          CALL OM( 'M=M+N   ' , AM2 , MBOR , S , C , MESH )
+        ENDIF
 !
 !       EXPLICIT DIFFUSION TERM
 !

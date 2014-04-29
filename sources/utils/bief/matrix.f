@@ -69,6 +69,11 @@
 !+        V6P3
 !+   Arguments added to MATRIY
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/03/2014
+!+        V7P0
+!+   Cases where there is no boundary element secured.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
 !| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
@@ -199,7 +204,7 @@
 !
 !  ASSEMBLES THE DIAGONAL (POSSIBLY)
 !
-      IF(LEGO.AND.MESH%M%TYPDIA.EQ.'Q') THEN
+      IF(LEGO.AND.MESH%M%TYPDIA.EQ.'Q'.AND.NELEM.GT.0) THEN
 !
             CALL ASSVEC(MESH%M%D%R,
      &                  IKLE,NPT,NELEM,NELMAX,MESH%M%D%ELM,
@@ -214,7 +219,9 @@
 !           THEY SHOULD BE BUT DOES NOT AFFECT THE MULTIPLICATION
 !           BY MASKEL
 !
-      IF(MSK) CALL OM( 'M=MSK(M)',MESH%M,MESH%M,MASKEL,C,MESH)
+      IF(MSK.AND.NELEM.GT.0) THEN
+        CALL OM( 'M=MSK(M)',MESH%M,MESH%M,MASKEL,C,MESH)
+      ENDIF
 !
 !  ASSEMBLES EXTRA-DIAGONAL TERMS (POSSIBLY)
 !
@@ -279,13 +286,18 @@
 !  UPDATES M AFTER WORK ON MESH%M IS COMPLETE
 !-----------------------------------------------------------------------
 !
-      IF(M%STO.EQ.1) THEN
-        CALL OM( OP , M , MESH%M , F , C , MESH )
-      ELSEIF(M%STO.EQ.3) THEN
-        CALL OM( OP , M , MESH%MSEG , F , C , MESH )
-      ELSE
-        WRITE(LU,*) 'MATRIX, STOCKAGE INCONNU : ',M%STO
-        STOP
+      IF(NELEM.GT.0) THEN
+!
+        IF(M%STO.EQ.1) THEN
+          CALL OM( OP , M , MESH%M , F , C , MESH )
+        ELSEIF(M%STO.EQ.3) THEN
+          CALL OM( OP , M , MESH%MSEG , F , C , MESH )
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,*) 'MATRIX : STOCKAGE INCONNU : ',M%STO
+          IF(LNG.EQ.2) WRITE(LU,*) 'MATRIX: UNKNOWN STORAGE : ',M%STO
+          STOP
+        ENDIF
+!
       ENDIF
 !
 !-----------------------------------------------------------------------

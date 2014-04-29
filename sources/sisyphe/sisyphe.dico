@@ -1729,6 +1729,7 @@ NOM = 'FORME DE LA CONVECTION'
 NOM1 = 'TYPE OF ADVECTION'             
 TYPE = ENTIER   
 INDEX = 25
+MNEMO = 'RESOL'
 TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
@@ -3465,6 +3466,34 @@ COMPORT = 'DISPLAY %DREDGESIM% = OUI'
 AIDE = 'Nom du fichier de reference surface de DredgeSim'
 AIDE1 = 'Name of the DredgeSim file which contains the reference 
          water surface'
+         
+/
+/  Version 7.0
+/
+
+NOM = 'OPTION DU SCHEMA POUR LA CONVECTION'
+NOM1 = 'SCHEME OPTION FOR ADVECTION'
+TYPE = ENTIER
+INDEX = 55
+MNEMO = 'OPTADV'
+TAILLE = 1
+CONTROLE = 0 ; 2
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
+RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
+NIVEAU = 1
+AIDE = 'Si present remplace et a priorite sur :
+OPTION POUR LES CARACTERISTIQUES (pas programme)
+OPTION DE SUPG
+Avec schema PSI : 1=explicit 2=predicteur-correcteur
+pour les traceurs'
+AIDE1 = 'If present replaces and has priority over:
+OPTION FOR CHARACTERISTICS (not yet implemented)
+SUPG OPTION
+IF PSI SCHEME: 1=explicit 2=predictor-corrector
+for tracers'
+
 /
 / FOR PERL OR PYTHON SCRIPTS
 /

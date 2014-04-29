@@ -2,10 +2,11 @@
                      SUBROUTINE CPIK13
 !                    *****************
 !
-     &(IKLE,IKLBOR,ELTSEG,NBOR,NELBOR,NULONE,NELEM,NELMAX,NPOIN,NPTFR)
+     &(IKLE,IKLBOR,ELTSEG,NBOR,NELBOR,NULONE,NELEM,NELMAX,NPOIN,NPTFR,
+     & NELEB,NELEBX)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V7P0                                     28/03/2014
 !***********************************************************************
 !
 !brief    EXTENDS THE CONNECTIVITY TABLE.
@@ -33,12 +34,19 @@
 !+        V6P2
 !+   Bug corrected in parallel
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        28/03/2014
+!+        V7P0
+!+   Adapted to new numbering of boundary segments.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTSEG         |-->| SEGMENTS NUMBERS IN EVERY ELEMENT
 !| IKLBOR         |-->| CONNECTIVITY TABLE OF BOUNDARY ELEMENTS
 !| IKLE           |<->| CONNECTIVITY TABLE
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS
 !| NELBOR         |-->| BOUNDARY ELEMENT THAT CONTAINS SEGMENT K
+!| NELEB          |-->| NUMBER OF BOUNDARY SEGMENTS
+!| NELEBX         |-->| MAXIMUM NUMBER OF BOUNDARY SEGMENTS
 !| NULONE         |-->| LOCAL NUMBER OF K IN ELEMENT NELBOR
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
@@ -54,14 +62,14 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)    :: NELEM,NELMAX,NPOIN,NPTFR
+      INTEGER, INTENT(IN)    :: NELEM,NELMAX,NPOIN,NPTFR,NELEB,NELEBX
       INTEGER, INTENT(IN)    :: ELTSEG(NELMAX,3)
-      INTEGER, INTENT(IN)    :: NELBOR(NPTFR),NULONE(NPTFR)
-      INTEGER, INTENT(INOUT) :: IKLE(NELMAX,6),IKLBOR(NPTFR,*),NBOR(*)
+      INTEGER, INTENT(IN)    :: NELBOR(NELEBX),NULONE(NELEBX)
+      INTEGER, INTENT(INOUT) :: IKLE(NELMAX,6),IKLBOR(NELEBX,3),NBOR(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,K
+      INTEGER IELEM,K,IELEB
 !
 !-----------------------------------------------------------------------
 !
@@ -82,22 +90,12 @@
 !     CONNECTIVITY TABLE OF QUADRATIC BOUNDARY POINTS
 !     GLOBAL NUMBERS OF BOUNDARY QUADRATIC POINTS
 !
-      DO K=1,NPTFR
-!       IN PARALLEL, SOME SEGMENTS MAY NOT BE IN THE SUB-DOMAIN
-!       THUS SOME QUADRATIC BOUNDARY POINTS MAY NOT BE EITHER
-!       THEY ARE GIVEN A NUMBER WITH THE GENERAL FORMULA HOWEVER
-        IKLBOR(K,3)=K+NPTFR
-!       IN SCALAR MODE SEGMENTS 1 TO NPTFR ARE THE BOUNDARY SEGMENTS
-!       NBOR(IKLBOR(K,3))=NPOIN+K
-!       NOW VERSION THAT WILL WORK ALSO IN PARALLEL
-        IELEM=NELBOR(K)
-        IF(IELEM.GT.0) THEN
-          NBOR(IKLBOR(K,3))=IKLE(IELEM,NULONE(K)+3)
-        ELSE
-!         FALSE VALUE, BUT K+NPTFR IS NOT A BOUNDARY POINT AND SHOULD
-!         NOT BE USED
-          NBOR(IKLBOR(K,3))=1
-        ENDIF
+      DO IELEB=1,NELEB
+        K=IKLBOR(IELEB,1)
+!       WE DECIDE HERE THE BOUNDARY NUMBERING OF QUADRATIC POINTS
+        IKLBOR(IELEB,3)=K+NPTFR
+        IELEM=NELBOR(IELEB)
+        NBOR(IKLBOR(IELEB,3))=IKLE(IELEM,NULONE(IELEB)+3)
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -105,8 +103,9 @@
 !     SECURITY CHECK IN SCALAR MODE
 !
       IF(NCSIZE.LE.1) THEN
-        DO K=1,NPTFR
-          IF(NBOR(IKLBOR(K,3)).NE.K+NPOIN) THEN
+        DO IELEB=1,NELEB
+          K=IKLBOR(IELEB,1)
+          IF(NBOR(IKLBOR(IELEB,3)).NE.K+NPOIN) THEN
             WRITE(LU,*) 'CPIK13: PROBLEM OF NUMBERING FOR K=',K
             CALL PLANTE(1)
             STOP

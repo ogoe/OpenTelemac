@@ -89,6 +89,14 @@
 !+        V7P0
 !+   KNOGL removed from call to flusec_sisyphe.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE) 
+!+        28/04/2014 
+!+        V7P0
+!+   Use of KP1BOR removed, replaced by IKLBOR.
+!+   TPREC replaced by (TPREC-AT0) in formulas giving NUMEN0.
+!+   OPTSUP replaced by OPTADV in the call to suspension_main
+!+   (see keyword SCHME OPTION FOR ADVECTION)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
 !| CHARR_TEL      |<->| LOGICAL, BED LOAD OR NOT: Sent to TELEMAC-2D
@@ -164,7 +172,7 @@
       INTEGER, PARAMETER :: NHIST = 0
       INTEGER, PARAMETER :: NSOR = 100
       INTEGER            :: VALNIT,NLISS
-      INTEGER            :: I,J,K,MN,MT,ISOUS,NIDT,NIT,IMA,IMI
+      INTEGER            :: I,J,K,MN,MT,ISOUS,NIDT,NIT,IMA,IMI,IELEB,KP1
       INTEGER            :: IMIN,IMAX,NCALCU,NUMEN,NUMENX,NUMDEB
       INTEGER            :: ALIRE(MAXVAR),ALIRV(MAXVAR),ALIRH(MAXVAR)
       INTEGER            :: ALIR0(MAXVAR)
@@ -188,7 +196,7 @@
       SAVE NIDT, NCALCU, NUMEN, NIT, VALNIT !
       SAVE AT0                 ! TIME
 !     NUMEN0 : 1ST RECORD TO READ
-      INTEGER :: NUMEN0
+      INTEGER NUMEN0
 !
 !     VARIABLES TO READ IF COMPUTATION IS CONTINUED
 !     --------------------------------
@@ -398,11 +406,13 @@
 !       BUILDING THE MASK FOR LIQUID BOUNDARIES
 !       A SEGMENT IS LIQUID IF BOTH ENDS ARE NOT SOLID
 !
-        DO K = 1, MESH%NPTFR
-          IF(LIEBOR%I(K).NE.2.AND.LIEBOR%I(MESH%KP1BOR%I(K)).NE.2) THEN
-            MASK%R(K) = 1.D0
+        DO IELEB = 1, MESH%NELEB
+          K=MESH%IKLBOR%I(IELEB)
+          KP1=MESH%IKLBOR%I(IELEB+MESH%NELEBX)
+          IF(LIEBOR%I(K).NE.2.AND.LIEBOR%I(KP1).NE.2) THEN
+            MASK%R(IELEB) = 1.D0
           ELSE
-            MASK%R(K) = 0.D0
+            MASK%R(IELEB) = 0.D0
           ENDIF
         ENDDO
 !
@@ -451,26 +461,34 @@
           ENDIF
         ENDIF
 !
-! UNSTEADY MODE : DT IS COMPUTED FROM THE HYDRO FILE
-!                 NUMEN: TOTAL NUMBER OF RECORDS
+!       GETTING NUMEN: TOTAL NUMBER OF RECORDS, AND THE TIME STEP
+!
         IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
+          IF(PERMA) THEN
+!           STEADY MODE
+!           TO GET NUMEN ONLY
             IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_SUITE'
-            WRITE(LU,*) 'APPEL DE BIEF_SUITE'
-!           JUST TO GET NUMEN AND DT (SEE ALIR0)
             CALL BIEF_SUITE(VARSOR,VARCL,NUMEN,SIS_FILES(SISHYD)%LU,
-     &                    SIS_FILES(SISHYD)%FMT,HIST,0,NPOIN,AT,
-     &                    TEXTPR,VARCLA,
-     &                    0,TROUVE,ALIR0,.TRUE.,.TRUE.,MAXVAR,DT=DT)
+     &                      SIS_FILES(SISHYD)%FMT,HIST,0,NPOIN,AT,
+     &                      TEXTPR,VARCLA,
+     &                      0,TROUVE,ALIR0,.TRUE.,.TRUE.,MAXVAR)
+            DT=DELT
             IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE BIEF_SUITE'
-            WRITE(LU,*) 'LECTURE FICHIER HYDRODYNAMIQUE:'
-          IF(PERMA) DT = DELT
-          IF(.NOT.PERMA) THEN
-             NIDT =  NINT ( PMAREE / DT + 0.1D0 )
-             IF(ABS(NIDT*DT-PMAREE) > 1.D-3) THEN
-               IF (LNG == 1) WRITE(LU,101) NIDT*DT
-               IF (LNG == 2) WRITE(LU,102) NIDT*DT
-             ENDIF
-             NIT  = NCALCU * NIDT
+          ELSE
+!           UNSTEADY MODE : DT IS TAKEN FROM THE HYDRO FILE
+!           TO GET NUMEN AND DT
+            IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_SUITE'
+            CALL BIEF_SUITE(VARSOR,VARCL,NUMEN,SIS_FILES(SISHYD)%LU,
+     &                      SIS_FILES(SISHYD)%FMT,HIST,0,NPOIN,AT,
+     &                      TEXTPR,VARCLA,
+     &                      0,TROUVE,ALIR0,.TRUE.,.TRUE.,MAXVAR,DT=DT)
+            IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE BIEF_SUITE'
+            NIDT =  NINT ( PMAREE / DT + 0.1D0 )
+            IF(ABS(NIDT*DT-PMAREE) > 1.D-3) THEN
+              IF(LNG.EQ.1) WRITE(LU,101) NIDT*DT
+              IF(LNG.EQ.2) WRITE(LU,102) NIDT*DT
+            ENDIF
+            NIT  = NCALCU * NIDT
           ENDIF
         ENDIF
 !
@@ -488,39 +506,34 @@
 !
 !  SISYPHE ONLY
 !  -----------------------------------------------------------------------
-!  ---- READS
-!       THE PREVIOUS HYDRODYNAMIC FILE
 !
-!
-! NUMEN : NUMBER OF RECORDS IN THE HYDRODYNAMIC FILE
-! DT    : TIMESTEP OF THE HYDRODYNAMIC RECORDS
-! NUMEN0: 1ST RECORD TO READ FROM HYDRODYNAMIC FILE
-! TPREC : START TIME
-!
-!
-! V5P9      NUMEN0 = INT( (TPREC - ATDEB)/DT + 1.1D0 )
+!  NUMEN : NUMBER OF RECORDS IN THE HYDRODYNAMIC FILE
+!  DT    : TIMESTEP OF THE HYDRODYNAMIC RECORDS
+!  NUMEN0: 1ST RECORD TO READ FROM HYDRODYNAMIC FILE
+!  TPREC : START TIME
 !
         IF(PART.EQ.-1) THEN
           IF(.NOT.PERMA) THEN
             IF(TPREC.GE.0.D0) THEN
-                NUMEN0 = INT( TPREC /DT + 1.1D0 )
+              NUMEN0 = NINT((TPREC-AT0)/DT)+1
             ELSE
-                NUMEN0 = NUMEN-INT(PMAREE/DT+1.1D0)
+              NUMEN0 = NUMEN-INT(PMAREE/DT+1.1D0)
             ENDIF
           ELSE
             IF(TPREC.GE.0.D0) THEN
-               NUMEN0 = INT( TPREC /DT + 1.1D0 )
+              NUMEN0 = NINT((TPREC-AT0)/DT)+1
             ELSE
-               NUMEN0 = NUMEN
+              NUMEN0 = NUMEN
             ENDIF
           ENDIF
 !
           IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
             IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_SUITE'
             CALL BIEF_SUITE(VARSOR,VARCL,NUMEN0,SIS_FILES(SISHYD)%LU,
-     &                    SIS_FILES(SISHYD)%FMT,HIST,0,NPOIN,AT,
-     &                    TEXTPR,VARCLA,
-     &                    0,TROUVE,ALIRE,.TRUE.,PERMA,MAXVAR)
+     &                      SIS_FILES(SISHYD)%FMT,HIST,0,NPOIN,AT,
+     &                      TEXTPR,VARCLA,
+     &                      0,TROUVE,ALIRE,.TRUE.,PERMA,MAXVAR)
+            IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_SUITE'
 !
 !           TRACES IF WAVE DATA HAVE BEEN FOUND
 !
@@ -533,14 +546,15 @@
                 WRITE(LU,*)
                 WRITE(LU,*) 'WAVE RESULTS IN :',SIS_FILES(SISHYD)%NAME
                 WRITE(LU,*)
-      WRITE(LU,*) 'BOTTOM VELOCITY FOUND; THESE WILL BE USED DIRECTLY'
+                WRITE(LU,*) 'BOTTOM VELOCITY FOUND'
+                WRITE(LU,*) 'THESE WILL BE USED DIRECTLY'
                 WRITE(LU,*)
               ELSEIF(HW%TYPR=='Q'.AND.TW%TYPR=='Q') THEN
                 WRITE(LU,*)
                 WRITE(LU,*) 'WAVE RESULTS IN :',SIS_FILES(SISHYD)%NAME
                 WRITE(LU,*)
-      WRITE(LU,*) 'WAVE HEIGHT AND PERIOD FOUND; BOTTOM VELOCITY'
-                WRITE(LU,*) 'WILL BE COMPUTED IN CALCUW'
+                WRITE(LU,*) 'WAVE HEIGHT AND PERIOD FOUND'
+                WRITE(LU,*) 'BOTTOM VELOCITY WILL BE COMPUTED IN CALCUW'
                 WRITE(LU,*)
               ENDIF
             ENDIF
@@ -1250,7 +1264,7 @@
      &(SLVTRA,HN,HN_TEL,MU,TOB,FDM,FD90,KSP,KSR,KS,
      & VOLU2D,V2DPAR,UNSV2D,AFBOR,BFBOR,ZF,LICBOR,
      & IFAMAS,MASKEL,MASKPT,U2D,V2D,NSICLA,
-     & NPOIN,NPTFR,IELMT,OPTDIF,RESOL,LT,NIT,OPTBAN,OPTSUP,
+     & NPOIN,NPTFR,IELMT,OPTDIF,RESOL,LT,NIT,OPTBAN,OPTADV,
      & OPDTRA,KENT,KSORT,KLOG,KINC,KNEU,KDIR,KDDL,
      & DEBUG,DTS,CSF_SABLE,ZERO,GRAV,XKX,XKY,
      & KARMAN,XMVE,XMVS,VCE,HMIN,XWC,VITCD,VITCE,PARTHENIADES,

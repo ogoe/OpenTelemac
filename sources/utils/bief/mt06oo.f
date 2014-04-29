@@ -101,53 +101,53 @@
 !
       IF(IELMF.EQ.0) THEN
 !
-      DO IELEM = 1 , NELEM
-!  TO BE OPTIMISED
-      F1 = F(IELEM)
-      F2 = F(IELEM)
+        DO IELEM = 1 , NELEM
+!         TO BE OPTIMISED...
+          F1 = F(IELEM)
+          F2 = F(IELEM)
 !
-      F12 = F1 + F2
+          F12 = F1 + F2
 !
-      DET1 = LGSEG(IELEM) * SUR12
+          DET1 = LGSEG(IELEM) * SUR12
 !
-      A11(IELEM) = DET1 * (F12+2*F1)
-      A12(IELEM) = DET1 * F12
-      A22(IELEM) = DET1 * (F12+2*F2)
+          A11(IELEM) = DET1 * (F12+2*F1)
+          A12(IELEM) = DET1 * F12
+          A22(IELEM) = DET1 * (F12+2*F2)
 !
-      ENDDO ! IELEM 
+        ENDDO 
 !
 !     F LINEAR BY SEGMENT, IN A BOUNDARY ARRAY
 !     NOTE: IKLE IS HERE A BOUNDARY IKLE
 !
       ELSEIF(IELMF.EQ.1) THEN
 !
-      DO IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
-      F1 = F(IKLE1(IELEM))
-      F2 = F(IKLE2(IELEM))
-      F12 = F1 + F2
-      DET1 = LGSEG(IELEM) * SUR12
-      A11(IELEM) = DET1 * (F12+2*F1)
-      A12(IELEM) = DET1 * F12
-      A22(IELEM) = DET1 * (F12+2*F2)
+          F1 = F(IKLE1(IELEM))
+          F2 = F(IKLE2(IELEM))
+          F12 = F1 + F2
+          DET1 = LGSEG(IELEM) * SUR12
+          A11(IELEM) = DET1 * (F12+2*F1)
+          A12(IELEM) = DET1 * F12
+          A22(IELEM) = DET1 * (F12+2*F2)
 !
-      ENDDO ! IELEM 
+        ENDDO 
 !
 !     F LINEAR, IN AN ARRAY DEFINED ON THE DOMAIN
 !
       ELSEIF(IELMF.EQ.11.OR.IELMF.EQ.21) THEN
 !
-      DO IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
-      F1 = F(NBOR(IKLE1(IELEM)))
-      F2 = F(NBOR(IKLE2(IELEM)))
-      F12 = F1 + F2
-      DET1 = LGSEG(IELEM) * SUR12
-      A11(IELEM) = DET1 * (F12+2*F1)
-      A12(IELEM) = DET1 * F12
-      A22(IELEM) = DET1 * (F12+2*F2)
+          F1 = F(NBOR(IKLE1(IELEM)))
+          F2 = F(NBOR(IKLE2(IELEM)))
+          F12 = F1 + F2
+          DET1 = LGSEG(IELEM) * SUR12
+          A11(IELEM) = DET1 * (F12+2*F1)
+          A12(IELEM) = DET1 * F12
+          A22(IELEM) = DET1 * (F12+2*F2)
 !
-      ENDDO ! IELEM 
+        ENDDO 
 !
 !     OTHER TYPES OF DISCRETISATION OF F
 !

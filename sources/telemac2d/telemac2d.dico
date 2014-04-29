@@ -193,19 +193,21 @@ l''execution du code.'
 AIDE1 = 'Specifies the number of time steps performed when running 
 the code.' 
  
-NOM = 'ENTIER LIBRE 1' 
-NOM1 = 'FREE INTEGER 1' 
-TYPE = ENTIER 
-INDEX = 4 
-MNEMO = 'ICONV' 
-TAILLE = 0 
-DEFAUT = 1 
-DEFAUT1 = 1 
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
-NIVEAU = -13 
-AIDE = 'Non active pour l''instant' 
-AIDE1 = 'So far not implemented' 
+NOM = 'OPTION DU SCHEMA PSI'
+NOM1 = 'PSI SCHEME OPTION'
+TYPE = ENTIER
+INDEX = 4
+MNEMO = 'OPTCHA'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+CHOIX='1="explicite"';'2="predicteur-correcteur"'
+CHOIX1='1="explicit"';'2="predictor-corrector"'
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS' 
+NIVEAU = 2
+AIDE = '1: explicite 2: predicteur-correcteur'
+AIDE1 = '1: explicit 2: predictor-corrector'
  
 NOM = 'FORME DE LA CONVECTION' 
 NOM1 = 'TYPE OF ADVECTION' 
@@ -5520,6 +5522,174 @@ AIDE = 'Fichier des zones avec sur chaque ligne
 numero de point  numero de zone' 
 AIDE1 = 'Zones file, with on every line:
 point number   zone number' 
+
+NOM = 'SCHEMA POUR LA CONVECTION DES VITESSES'
+NOM1 = 'SCHEME FOR ADVECTION OF VELOCITIES'
+TYPE = ENTIER
+INDEX = 88
+MNEMO = 'ICONVF(1)'
+TAILLE = 0
+CHOIX = '0="PAS DE CONVECTION"';
+        '1="CARACTERISTIQUES"';
+        '2="EXPLICITE + SUPG"';
+        '3="EXPLICITE LEO POSTMA"';
+        '4="EXPLICITE + MURD SCHEMA N"';
+        '5="EXPLICITE + MURD SCHEMA PSI"';
+        '13="SCHEMA N POUR BANCS DECOUVRANTS"';
+        '14="SCHEMA N POUR BANCS DECOUVRANTS"'
+CHOIX1 = '0="NO ADVECTION"';
+         '1="CHARACTERISTICS"';
+         '2="EXPLICIT + SUPG"';
+         '3="EXPLICIT LEO POSTMA"';
+         '4="EXPLICIT + MURD SCHEME N"';
+         '5="EXPLICIT + MURD SCHEME PSI"';
+         '13="N-SCHEME FOR TIDAL FLATS"';
+         '14="N-SCHEME FOR TIDAL FLATS"'
+CONTROLE = 0 ; 15
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
+RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
+NIVEAU = 1
+AIDE = 'Choix du schema de convection pour les vitesses,
+remplace FORME DE LA CONVECTION'
+AIDE1 = 'Choice of the advection scheme for the velocities,
+replaces TYPE OF ADVECTION'
+
+NOM = 'SCHEMA POUR LA CONVECTION DES TRACEURS'
+NOM1 = 'SCHEME FOR ADVECTION OF TRACERS'
+TYPE = ENTIER
+INDEX = 89
+MNEMO = 'ICONVFT'
+TAILLE = 1
+CHOIX = '0="PAS DE CONVECTION"';
+        '1="CARACTERISTIQUES"';
+        '2="EXPLICITE + SUPG"';
+        '3="EXPLICITE LEO POSTMA"';
+        '4="EXPLICITE + MURD SCHEMA N"';
+        '5="EXPLICITE + MURD SCHEMA PSI"';
+        '13="LEO POSTMA POUR BANCS DECOUVRANTS"';
+        '14="SCHEMA N POUR BANCS DECOUVRANTS"'
+CHOIX1 = '0="NO ADVECTION"';
+         '1="CHARACTERISTICS"';
+         '2="EXPLICIT + SUPG"';
+         '3="EXPLICIT LEO POSTMA"';
+         '4="EXPLICIT + MURD SCHEME N"';
+         '5="EXPLICIT + MURD SCHEME PSI"';
+         '13="LEO POSTMA FOR TIDAL FLATS"';
+         '14="N-SCHEME FOR TIDAL FLATS"'
+CONTROLE = 0 ; 14
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
+RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
+NIVEAU = 1
+AIDE = 'Choix du schema de convection pour les traceurs,
+remplace FORME DE LA CONVECTION'
+AIDE1 = 'Choice of the advection scheme for the tracers,
+replaces TYPE OF ADVECTION'
+
+NOM = 'SCHEMA POUR LA CONVECTION DU K-EPSILON'
+NOM1 = 'SCHEME FOR ADVECTION OF K-EPSILON'
+TYPE = ENTIER
+INDEX = 90
+MNEMO = 'ICONVF(4)'
+TAILLE = 0
+CHOIX = '0="PAS DE CONVECTION"';
+        '1="CARACTERISTIQUES"';
+        '2="EXPLICITE + SUPG"';
+        '3="EXPLICITE LEO POSTMA"';
+        '4="EXPLICITE + MURD SCHEMA N"';
+        '5="EXPLICITE + MURD SCHEMA PSI"';
+        '13="LEO POSTMA POUR BANCS DECOUVRANTS"';
+        '14="SCHEMA N POUR BANCS DECOUVRANTS"'
+CHOIX1 = '0="NO ADVECTION"';
+         '1="CHARACTERISTICS"';
+         '2="EXPLICIT + SUPG"';
+         '3="EXPLICIT LEO POSTMA"';
+         '4="EXPLICIT + MURD SCHEME N"';
+         '5="EXPLICIT + MURD SCHEME PSI"';
+         '13="LEO POSTMA FOR TIDAL FLATS"';
+         '14="N-SCHEME FOR TIDAL FLATS"'
+CONTROLE = 0 ; 5
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
+RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
+NIVEAU = 1
+AIDE = 'Choix du schema de convection pour k et epsilon,
+remplace FORME DE LA CONVECTION'
+AIDE1 = 'Choice of the advection scheme for k and epsilon,
+replaces TYPE OF ADVECTION'
+
+NOM = 'OPTION DU SCHEMA POUR LA CONVECTION DES TRACEURS'
+NOM1 = 'SCHEME OPTION FOR ADVECTION OF TRACERS'
+TYPE = ENTIER
+INDEX = 91
+MNEMO = 'OPTADV_TR'
+TAILLE = 1
+CONTROLE = 0 ; 2
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
+RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
+NIVEAU = 1
+AIDE = 'Si present remplace et a priorite sur :
+OPTION POUR LES CARACTERISTIQUES
+OPTION DE SUPG
+Si schema PSI : 1=explicite 2=predicteur-correcteur
+pour les traceurs'
+AIDE1 = 'If present replaces and has priority over:
+OPTION FOR CHARACTERISTICS
+SUPG OPTION
+IF PSI SCHEME: 1=explicit 2=predictor-corrector
+for tracers'
+
+NOM = 'OPTION DU SCHEMA POUR LA CONVECTION DES VITESSES'
+NOM1 = 'SCHEME OPTION FOR ADVECTION OF VELOCITIES'
+TYPE = ENTIER
+INDEX = 92
+MNEMO = 'OPTADV_VI'
+TAILLE = 1
+CONTROLE = 0 ; 2
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
+RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
+NIVEAU = 1
+AIDE = 'Si present remplace et a priorite sur :
+OPTION POUR LES CARACTERISTIQUES
+OPTION DE SUPG
+Si schema PSI : 1=explicite 2=predicteur-correcteur
+pour les traceurs'
+AIDE1 = 'If present replaces and has priority over:
+OPTION FOR CHARACTERISTICS
+SUPG OPTION
+IF PSI SCHEME: 1=explicit 2=predictor-corrector
+for velocities'
+
+NOM = 'OPTION DU SCHEMA POUR LA CONVECTION DU K-EPSILON'
+NOM1 = 'SCHEME OPTION FOR ADVECTION OF K-EPSILON'
+TYPE = ENTIER
+INDEX = 93
+MNEMO = 'OPTADV_KE'
+TAILLE = 1
+CONTROLE = 0 ; 2
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
+RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
+NIVEAU = 1
+AIDE = 'Si present remplace et a priorite sur :
+OPTION POUR LES CARACTERISTIQUES
+OPTION DE SUPG
+Si schema PSI : 1=explicite 2=predicteur-correcteur
+pour k et epsilon'
+AIDE1 = 'If present replaces and has priority over:
+OPTION FOR CHARACTERISTICS
+SUPG OPTION
+IF PSI SCHEME: 1=explicit 2=predictor-corrector
+for k and epsilon'
 
 / 
 / POUR LES LANCEURS PERL : 

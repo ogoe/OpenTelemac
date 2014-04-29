@@ -5,7 +5,7 @@
      &(NS,G,H,U,V,DTHAUT,DT,AT,TMAX,CFL,ICIN,DTVARI,LISTIN)
 !
 !***********************************************************************
-!TELEMAC-2D VERSION 6.3                                 30/06/13
+!TELEMAC-2D VERSION 7.0                                 30/06/13
 !***********************************************************************
 !
 !brief  COMPUTES THE TIME STEP UNDER CFL CONDITION
@@ -52,7 +52,6 @@
 !
       USE BIEF_DEF, ONLY:NCSIZE
       USE INTERFACE_TELEMAC2D, EX_CALDT => CALDT 
-    ! USE MODULE,             LOCAL_NAME => NAME_AT_THE_INTERFACE 
       IMPLICIT NONE
       INTEGER LNG,LU                                                    
       COMMON/INFO/LNG,LU 
@@ -82,13 +81,12 @@
       DEJA=.FALSE.
       DT = 1.E+12
       EPSL = 0.01D0
-
+!
       IF(ICIN.EQ.1) THEN
 !       KINETIC SCHEME
 !
         RA3 = SQRT(1.5D0*G)
-        DO IS=1,NS
-          
+        DO IS=1,NS          
           IF(H(IS).LT.0.D0.AND.LISTIN.AND..NOT.DEJA)THEN
             WRITE(LU,*) 'CALDT WARNING : NEGATIVE WATER DEPTH'
             WRITE(LU,*) ' SEE NODE:',IS,' FOR EXAMPLE'
@@ -138,35 +136,38 @@
 !
 !     CASE DT <=0 
 !
-      IF(DT.LE.0.D0)THEN
-        IF(LISTIN.AND.LNG.EQ.1)
-     &      WRITE(LU,*) 'PAS DE TEMPS NEGATIF OU NUL: ',DT
-            WRITE(LU,*) 'PROBABLEMENT A CAUSE D UNE HAUTEUR'
-            WRITE(LU,*) 'D EAU NULLE PARTOUR ...'
-        IF(LISTIN.AND.LNG.EQ.2) 
-     &      WRITE(LU,*) 'NEGATIVE (OR NIL) TIME-STEP: ',DT
-            WRITE(LU,*) 'PROBABLY DUE TO NIL WATER'
-            WRITE(LU,*) 'DEPTH EVERYWHERE IN THE DOMAIN ...'
+      IF(DT.LE.0.D0) THEN
+        IF(LISTIN.AND.LNG.EQ.1) THEN
+          WRITE(LU,*) 'PAS DE TEMPS NEGATIF OU NUL: ',DT
+          WRITE(LU,*) 'PROBABLEMENT A CAUSE D UNE HAUTEUR'
+          WRITE(LU,*) 'D EAU NULLE PARTOUT ...'
+        ENDIF
+        IF(LISTIN.AND.LNG.EQ.2) THEN 
+          WRITE(LU,*) 'NEGATIVE (OR NIL) TIME-STEP: ',DT
+          WRITE(LU,*) 'PROBABLY DUE TO NIL WATER'
+          WRITE(LU,*) 'DEPTH EVERYWHERE IN THE DOMAIN ...'
+        ENDIF
         CALL PLANTE(1)
         STOP
       ENDIF
 !
       IF(DTVARI) THEN
+!
         IF(TMAX.LT.DT)DT=TMAX !REALLY CRAZY CASES
         DTT=TMAX-AT
-        IF(CFL.GE.1.D0)DT=0.9D0*DT/CFL
-        IF(DTT.LT.DT.AND.DTT.GT.0.D0)DT=DTT !LAST TIME STEP        
-        IF(AT.GT.TMAX)THEN
-           IF(LNG.EQ.1)THEN
-             WRITE(LU,*)'CALDT: MAUVAIS CHOIX DE PARAMETRES DE TEMPS '
-             WRITE(LU,*)'TEMPS ET TEMPS MAX',AT,TMAX
-           ENDIF
-           IF(LNG.EQ.2) THEN 
-             WRITE(LU,*)'CALDT: BAD TIME PARAMETERS'
-             WRITE(LU,*)'TIME AND TMAX',AT,TMAX
-           ENDIF
-           CALL PLANTE(1)
-           STOP
+        IF(CFL.GE.1.D0) DT=0.9D0*DT/CFL
+        IF(DTT.LT.DT.AND.DTT.GT.0.D0) DT=DTT !LAST TIME STEP        
+        IF(AT.GT.TMAX) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*)'CALDT: MAUVAIS CHOIX DE PARAMETRES DE TEMPS '
+            WRITE(LU,*)'TEMPS ET TEMPS MAX',AT,TMAX
+          ENDIF
+          IF(LNG.EQ.2) THEN 
+            WRITE(LU,*)'CALDT: BAD TIME PARAMETERS'
+            WRITE(LU,*)'TIME AND TMAX',AT,TMAX
+          ENDIF
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !
 !       FOR PARALLELISM
@@ -184,11 +185,10 @@
             WRITE(LU,*) 'TIME-STEP (WITH CFL = 0.9): ',DT
           ENDIF
         ENDIF
-      ENDIF
 !
-      IF(.NOT.DTVARI) THEN
+      ELSE
 !       
-!     DT NOT VARIABLE
+!       DT NOT VARIABLE
 !
         IF(LISTIN.AND.LNG.EQ.1) THEN 
           WRITE(LU,*) 'ATTENTION: PAS DE TEMPS FIXE ET CFL NON FOURNI.!'
@@ -197,6 +197,7 @@
           WRITE(LU,*) 'WARNING: FIXED TIME-STEP AND CFL NOT GIVEN!...! '
           WRITE(LU,*) 'TIME-STEP MAY NOT SATISFY CFL CONDITION: ',DT
         ENDIF
+!
       ENDIF
 !
 !-----------------------------------------------------------------------

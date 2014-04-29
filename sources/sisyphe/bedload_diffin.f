@@ -1,13 +1,13 @@
-!                    ***************************
-                     SUBROUTINE BEDLOAD_DIFFIN !
-!                    ***************************
+!                    *************************
+                     SUBROUTINE BEDLOAD_DIFFIN
+!                    *************************
 !
-     &  (U, V, NBOR, XNEBOR, YNEBOR, KP1BOR, MASKEL, NELBOR, NPTFR,
-     &   KENT, KSORT, KLOG, KINC, KDIR, KDDL, KNEU, MSK, CLT, LITBOR,
-     &   MASKTR, LIMTRA)
+     &(U, V, NBOR, XNEBOR, YNEBOR, MASKEL, NELBOR, NPTFR,
+     & KENT, KSORT, KLOG, KDIR, KDDL, KNEU, MSK, CLT, LITBOR,
+     & MASKTR, LIMTRA,IKLBOR,NELEB,NELEBX)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V7P0                                   27/03/2014
 !***********************************************************************
 !
 !brief    INITIALISES THE BOUNDARY CONDITIONS.
@@ -33,17 +33,21 @@
 !+        19/07/2011
 !+        V6P1
 !+  Name of variables   
-!+   
+! 
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/03/2014
+!+        V7P0
+!+  Adaptation to different numbering of boundary elements.     
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CLT            |<->| TYPE OF BOUNDARY CONDITIONS FOR TRACER (MODIFIED LITBOR)
+!| IKLBOR         |-->| CONNECTIVITY OF BOUNDARY ELEMENTS.
 !| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
 !| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
 !| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
 !| KNEU           |-->| CONVENTION FOR NEUMANN CONDITION
-!| KP1BOR         |-->| NEXT POINT ON THE BOUNDARY 
 !| KSORT          |-->| CONVENTION FOR FREE OUTPUT  
 !| LIMTRA         |<->| TYPE OF BOUNDARY CONDITION FOR TRACER
 !| LITBOR         |<->| TYPE OF BOUNDARY CONDITIONS FOR TRACER (***)
@@ -51,7 +55,9 @@
 !| MASKTR         |<->| MASKING FOR TRACERS, PER POINT
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| NBOR           |-->| NUMBER OF BOUDARY POINTS
-!| NELBOR         |-->| NUMBER OF BOUDARY ELEMENTS
+!| NELBOR         |-->| NUMBERS OF ELEMENTS TOUCHING THE BORDER
+!| NELEB          |-->| NUMBER OF BOUDARY ELEMENTS
+!| NELEBX         |-->| MAXIMUM NUMBER OF BOUDARY ELEMENTS
 !| NPTFR          |-->| NUMBER OF BOUDARIES
 !| U              |-->| FLOW VELOCITY IN THE X DIRECTION
 !| V              |-->| FLOW VELOCITY IN THE Y DIRECTION
@@ -65,38 +71,40 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      ! 2/ GLOBAL VARIABLES
-      ! -------------------
-      TYPE(BIEF_OBJ), INTENT(IN)    :: U, V, NBOR, XNEBOR, YNEBOR
-      TYPE(BIEF_OBJ), INTENT(IN)    :: KP1BOR, MASKEL, NELBOR
-      INTEGER,        INTENT(IN)    :: NPTFR, KENT, KSORT, KLOG
-      INTEGER,        INTENT(IN)    :: KINC, KDIR, KDDL, KNEU
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      TYPE(BIEF_OBJ), INTENT(IN)    :: U,V,NBOR,XNEBOR,YNEBOR
+      TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,NELBOR
+      INTEGER,        INTENT(IN)    :: NPTFR,KENT,KSORT,KLOG
+      INTEGER,        INTENT(IN)    :: KDIR,KDDL,KNEU,NELEB,NELEBX
+      INTEGER,        INTENT(IN)    :: IKLBOR(NELEBX,2)
       LOGICAL,        INTENT(IN)    :: MSK
       TYPE(BIEF_OBJ), INTENT(INOUT) :: CLT
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: LITBOR, MASKTR, LIMTRA
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: LITBOR, MASKTR, LIMTRA
 !
-      ! 3/ LOCAL VARIABLES
-      ! ------------------
-      INTEGER            :: K, K1, K2
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER            :: K,K1,K2,IELEB
       DOUBLE PRECISION   :: USCALN,C
       INTEGER, PARAMETER :: DIR = 1
       INTEGER, PARAMETER :: DDL = 2
       INTEGER, PARAMETER :: NEU = 3
-      INTEGER, PARAMETER :: OND = 4
 !
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
+!
       ! ****************************************************** !
-      ! I - TYPES OF BOUNDARY CONDITIONS FOR THE TRACER        ! (_IMP_)
-      !     MAY BE MODIFIED DEPENDING ON THE SIGN OF U.N       ! (_IMP_)
-      !     FOR THE LIQUID BOUNDARIES (N : OUTGOING NORMAL)    ! (_IMP_)
+      ! I - TYPES OF BOUNDARY CONDITIONS FOR THE TRACER        ! 
+      !     MAY BE MODIFIED DEPENDING ON THE SIGN OF U.N       ! 
+      !     FOR THE LIQUID BOUNDARIES (N : OUTGOING NORMAL)    ! 
       ! ****************************************************** !
+!
       DO K = 1, NPTFR
          CLT%I(K) = LITBOR%I(K)
-         ! I.1 - LIQUID BOUNDARIES (_IMP_)
+         ! I.1 - LIQUID BOUNDARIES 
          ! --------------------------------------
          IF (CLT%I(K) == KENT) THEN
             USCALN = U%R(NBOR%I(K))*XNEBOR%R(K)
@@ -114,67 +122,70 @@
       ENDDO
 !
       ! **************************************************************** !
-      ! II - MASKTR ARRAY DEFINED AS A FUNCTION OF CLT                   ! (_IMP_)
-      !      EQUALS 1 FOR A SEGMENT OF NEUMANN TYPE, AND 0 OTHERWISE     ! (_IMP_)
-      !      A SEGMENT IS OF NEUMANN TYPE IF THE USER SPECIFIES AT LEAST ! (_IMP_)
-      !      ONE OF ITS NODES AS NEUMANN.                                ! (_IMP_)
+      ! II - MASKTR ARRAY DEFINED AS A FUNCTION OF CLT                   ! 
+      !      EQUALS 1 FOR A SEGMENT OF NEUMANN TYPE, AND 0 OTHERWISE     !
+      !      A SEGMENT IS OF NEUMANN TYPE IF THE USER SPECIFIES AT LEAST ! 
+      !      ONE OF ITS NODES AS NEUMANN.                                !
       ! **************************************************************** !
+!
       CALL OS('X=0     ', X=MASKTR)
-      DO K1 = 1 , NPTFR
-         K2 = KP1BOR%I(K1)
-         ! II.1 - NEUMANN TYPE SEGMENTS
-         ! -------------------------------
-         IF (CLT%I(K1).EQ.KLOG.OR.CLT%I(K2).EQ.KLOG) THEN
-            MASKTR%ADR(NEU)%P%R(K1) = 1.D0
-         ! II.2 - OUTGOING TYPE SEGMENTS (_IMP_)
-         ! ------------------------------
-         ELSEIF ((CLT%I(K1) == KENT) .AND. (CLT%I(K2) == KSORT)) THEN
-            MASKTR%ADR(DDL)%P%R(K1) = 1.D0
-         ELSEIF ((CLT%I(K1) == KSORT) .OR. (CLT%I(K2) == KSORT)) THEN
-            MASKTR%ADR(DDL)%P%R(K1) = 1.D0
-         ! II.3 - OUTGOING TYPE SEGMENTS (_IMP_)
-         ! ------------------------------
-         ELSEIF ((CLT%I(K1) == KSORT) .AND. (CLT%I(K2) == KENT)) THEN
-            MASKTR%ADR(DDL)%P%R(K1) = 1.D0
-         ELSEIF ((CLT%I(K1) == KENT) .OR. (CLT%I(K2) == KENT)) THEN
-            MASKTR%ADR(DIR)%P%R(K1) = 1.D0
-         ELSEIF ((CLT%I(K1) == KINC) .OR. (CLT%I(K2) == KINC)) THEN
-            MASKTR%ADR(OND)%P%R(K1)=1.D0
-         ELSE
-            IF (LNG == 1) WRITE(LU,101)
-            IF (LNG == 2) WRITE(LU,102)
-            CALL PLANTE(1)
-         ENDIF
+!
+      DO IELEB = 1 , NELEB
+        K1=IKLBOR(IELEB,1)
+        K2=IKLBOR(IELEB,2)
+        ! II.1 - NEUMANN TYPE SEGMENTS
+        ! -------------------------------
+        IF(CLT%I(K1).EQ.KLOG.OR.CLT%I(K2).EQ.KLOG) THEN
+          MASKTR%ADR(NEU)%P%R(IELEB) = 1.D0
+        ! II.2 - OUTGOING TYPE SEGMENTS
+        ! ------------------------------
+        ELSEIF(CLT%I(K1).EQ.KENT.AND.CLT%I(K2).EQ.KSORT) THEN
+          MASKTR%ADR(DDL)%P%R(IELEB) = 1.D0
+        ELSEIF (CLT%I(K1).EQ.KSORT.OR.CLT%I(K2).EQ.KSORT) THEN
+          MASKTR%ADR(DDL)%P%R(IELEB) = 1.D0
+        ! II.3 - OUTGOING TYPE SEGMENTS 
+        ! ------------------------------
+        ELSEIF(CLT%I(K1).EQ.KSORT.AND.CLT%I(K2).EQ.KENT) THEN
+          MASKTR%ADR(DDL)%P%R(IELEB) = 1.D0
+        ELSEIF(CLT%I(K1).EQ.KENT.OR.CLT%I(K2).EQ.KENT) THEN
+          MASKTR%ADR(DIR)%P%R(IELEB) = 1.D0
+        ELSE
+          IF (LNG == 1) WRITE(LU,101)
+          IF (LNG == 2) WRITE(LU,102)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ENDDO
 !
       ! *********************** !
       ! III - POTENTIAL MASKING !
       ! *********************** !
+!
       IF(MSK) THEN
-        DO K1 = 1 , NPTFR
-          C=MASKEL%R(NELBOR%I(K1))
-          MASKTR%ADR(DIR)%P%R(K1) = MASKTR%ADR(DIR)%P%R(K1)*C
-          MASKTR%ADR(DDL)%P%R(K1) = MASKTR%ADR(DDL)%P%R(K1)*C
-          MASKTR%ADR(NEU)%P%R(K1) = MASKTR%ADR(NEU)%P%R(K1)*C
-          MASKTR%ADR(OND)%P%R(K1) = MASKTR%ADR(OND)%P%R(K1)*C
+        DO IELEB = 1 , NELEB
+          C=MASKEL%R(NELBOR%I(IELEB))
+          MASKTR%ADR(DIR)%P%R(IELEB) = MASKTR%ADR(DIR)%P%R(IELEB)*C
+          MASKTR%ADR(DDL)%P%R(IELEB) = MASKTR%ADR(DDL)%P%R(IELEB)*C
+          MASKTR%ADR(NEU)%P%R(IELEB) = MASKTR%ADR(NEU)%P%R(IELEB)*C
         ENDDO
       ENDIF
 !
       ! ************************************************************** !
       ! IV - FROM PHYSICAL CONDITION TO TECHNICAL CONDITIONS           !
       ! ************************************************************** !
+!
       DO K = 1, NPTFR
-         ! IV.1 - 'INCOMING' BOUNDARY : IMPOSED TRACER (_IMP_)
+         ! IV.1 - 'INCOMING' BOUNDARY : IMPOSED TRACER
          ! -----------------------------------------
          IF(CLT%I(K).EQ.KENT) THEN
             LIMTRA%I(K) = KDIR
          ELSEIF(CLT%I(K).EQ.KSORT) THEN
             LIMTRA%I(K) = KDDL
-         ! IV.2 - SOLID BOUNDARY : NEUMANN CONDITIONS (_IMP_)
+         ! IV.2 - SOLID BOUNDARY : NEUMANN CONDITIONS 
          ! ------------------------------------
          ELSEIF(CLT%I(K).EQ.KLOG ) THEN
             LIMTRA%I(K) = KNEU
-         ! IV.3 - ERROR: UNKNOWN LITBOR VALUE (_IMP_)
+         ! IV.3 - ERROR: UNKNOWN LITBOR VALUE 
          ! ----------------------------------------
          ELSE
             IF (LNG == 1) WRITE(LU,11) K, LITBOR%I(K)
@@ -184,14 +195,15 @@
          ENDIF
       ENDDO
       !----------------------------------------------------------------!
-101   FORMAT(' DIFFIN_SISYPHE : CAS NON PREVU')
-11    FORMAT(' DIFFIN_SISYPHE : POINT ',1I8,' LITBOR= ',1I8,' ?')
+101   FORMAT(' BEDLOAD_DIFFIN : CAS NON PREVU')
+11    FORMAT(' BEDLOAD_DIFFIN : POINT ',1I8,' LITBOR= ',1I8,' ?')
       !----------------------------------------------------------------!
-102   FORMAT(' DIFFIN_SISYPHE: UNEXPECTED CASE')
-12    FORMAT(' DIFFIN_SISYPHE : POINT ',1I8,' LITBOR= ',1I8,' ?')
+102   FORMAT(' BEDLOAD_DIFFIN: UNEXPECTED CASE')
+12    FORMAT(' BEDLOAD_DIFFIN: POINT ',1I8,' LITBOR= ',1I8,' ?')
       !----------------------------------------------------------------!
 !
 !======================================================================!
 !======================================================================!
+!
       RETURN
       END

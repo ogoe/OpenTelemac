@@ -127,20 +127,21 @@
 !
       !================================================================!
       SUBROUTINE BEDLOAD_DIFFIN
-      !----------------------------------------------------------------!
-     &  (U, V, NBOR, XNEBOR, YNEBOR, KP1BOR, MASKEL, NELBOR, NPTFR,
-     &   KENT, KSORT, KLOG, KINC, KDIR, KDDL, KNEU, MSK, CLT, LITBOR,
-     &   MASKTR, LIMTRA)
-      !----------------------------------------------------------------!
-      USE BIEF
+!     *************************
+!
+     &(U, V, NBOR, XNEBOR, YNEBOR, MASKEL, NELBOR, NPTFR,
+     & KENT, KSORT, KLOG, KDIR, KDDL, KNEU, MSK, CLT, LITBOR,
+     & MASKTR, LIMTRA,IKLBOR,NELEB,NELEBX)
+      USE BIEF_DEF
       IMPLICIT NONE
-      TYPE(BIEF_OBJ), INTENT(IN)    :: U, V, NBOR, XNEBOR, YNEBOR
-      TYPE(BIEF_OBJ), INTENT(IN)    :: KP1BOR, MASKEL, NELBOR
-      INTEGER,        INTENT(IN)    :: NPTFR, KENT, KSORT, KLOG
-      INTEGER,        INTENT(IN)    :: KINC, KDIR, KDDL, KNEU
+      TYPE(BIEF_OBJ), INTENT(IN)    :: U,V,NBOR,XNEBOR,YNEBOR
+      TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,NELBOR
+      INTEGER,        INTENT(IN)    :: NPTFR,KENT,KSORT,KLOG
+      INTEGER,        INTENT(IN)    :: KDIR,KDDL,KNEU,NELEB,NELEBX
+      INTEGER,        INTENT(IN)    :: IKLBOR(NELEBX,2)
       LOGICAL,        INTENT(IN)    :: MSK
       TYPE(BIEF_OBJ), INTENT(INOUT) :: CLT
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: LITBOR, MASKTR, LIMTRA
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: LITBOR, MASKTR, LIMTRA
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_DIFFIN
       !================================================================!

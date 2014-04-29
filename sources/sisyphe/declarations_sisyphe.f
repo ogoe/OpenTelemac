@@ -827,6 +827,10 @@ C
 !
       INTEGER MAXADV
 !
+!     SCHEME OPTION FOR ADVECTION
+!
+      INTEGER OPTADV
+!
 !-----------------------------------------------------------------------
 !
 !       5) LOGICAL VALUES

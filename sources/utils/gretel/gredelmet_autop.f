@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! PARALLEL   V6P2                                   21/08/2010
+! PARALLEL   V7P0                                   27/03/2014
 !***********************************************************************
 !
 !brief    MERGES THE RESULTS OF A PARALLEL COMPUTATION (COUPLING
@@ -37,6 +37,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/03/2014
+!+        V7P0
+!+   Calls of stoseg and elebd modified.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -56,12 +61,12 @@
       INTEGER IDUM, NPTFR
       INTEGER IELM,NELEM2,NELMAX2,NPTFR2,NSEG2,KLOG
       INTEGER MAXNVOIS,ISEG
-      INTEGER IELEM,ND1,ND2,ND3,MBND,IFROM,ITO,IFRM1,ITOP1
+      INTEGER IELEM,ND1,ND2,ND3,MBND,IFROM,ITO,IFRM1,ITOP1,KNOLG(1)
 !
       INTEGER, DIMENSION(:)  , ALLOCATABLE :: NPOIN,IPOBO,NOQ,NSEG
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: IKLESA
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: NACHB,IFANUM
-      INTEGER, DIMENSION(:), ALLOCATABLE :: ISEGF,KNOLG
+      INTEGER, DIMENSION(:),   ALLOCATABLE :: ISEGF
 !
 !
       REAL   , DIMENSION(:)  , ALLOCATABLE :: XORIG,YORIG
@@ -351,14 +356,15 @@
         CALL CHECK_ALLOCATE(ERR, 'IFANUM')
         ALLOCATE(ISEGF(NPTFR),STAT=ERR)
         CALL CHECK_ALLOCATE(ERR, 'ISEG')
-
+!
         CALL ELEBD(NELBOR,NULONE,KP1BOR,
      &             IFABOR,NBOR,IKLE,NELEM,
      &             IKLBOR,NELEM2,NELMAX2,
      &             NPOIN2,NPTFR2,IELM,
      &             LIHBOR,KLOG,
      &             IFANUM,1,ISEGF,
-     &             IADR,NVOIS,T3)
+     &             IADR,NVOIS,T3,NPTFR2,NPTFR2)
+!                                NELEBX, NELEB (HERE EQUAL TO NPTFR2)
         DEALLOCATE(IFANUM)
         DEALLOCATE(ISEGF)
       ELSE
@@ -374,26 +380,22 @@
 !
       IF(IELM.EQ.11) THEN
 !
-         NSEG2 = (3*NELEM+NPTFR)/2
-         ALLOCATE(LENGTH(2,NSEG2+MBND),STAT=ERR)
-         CALL CHECK_ALLOCATE(ERR, 'LENGTH')
-         ALLOCATE(GLOSEG(NSEG2,2),STAT=ERR)
-         CALL CHECK_ALLOCATE(ERR, 'GLOSEG')
-         ALLOCATE(IFROM1(NSEG2),STAT=ERR)
-         CALL CHECK_ALLOCATE(ERR, 'IFROM1')
-         ALLOCATE(ITOPL1(NSEG2),STAT=ERR)
-         CALL CHECK_ALLOCATE(ERR, 'ITOPL1')
+        NSEG2 = (3*NELEM+NPTFR)/2
+        ALLOCATE(LENGTH(2,NSEG2+MBND),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR, 'LENGTH')
+        ALLOCATE(GLOSEG(NSEG2,2),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR, 'GLOSEG')
+        ALLOCATE(IFROM1(NSEG2),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR, 'IFROM1')
+        ALLOCATE(ITOPL1(NSEG2),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR, 'ITOPL1')
 !
-      ! DUMMY ARRAY
-         ALLOCATE(KNOLG(1),STAT=ERR)
-         CALL CHECK_ALLOCATE(ERR, 'KNOLG')
-!
-      CALL STOSEG(IFABOR,NELEM,NELMAX2,NELMAX2,IELM,IKLE,
-     &            NBOR,NPTFR,
-     &            GLOSEG,NSEG2,    ! GLOSEG%MAXDIM1,
-     &            ELTSEG,ORISEG,NSEG2,
-     &            KP1BOR,NELBOR,NULONE,KNOLG)
-      DEALLOCATE(KNOLG)
+        CALL STOSEG(IFABOR,NELEM,NELMAX2,NELMAX2,IELM,IKLE,
+     &              NBOR,NPTFR,
+     &              GLOSEG,NSEG2,    ! GLOSEG%MAXDIM1,
+     &              ELTSEG,ORISEG,NSEG2,
+     &              NELBOR,NULONE,KNOLG,IKLBOR,NPTFR ,NPTFR)
+!                                              NELENX,NELEB (HERE EQUAL TO NPTFR)
       ENDIF
 !
       IF(FILETYPE(1:6).EQ.'AREA2D') THEN

@@ -123,6 +123,12 @@
 !+   CALL BIL3D put out of the IF(SEDI) test. Address of depth-averaged
 !+   tracers from 38 to 37+NTRAC in ALIRE2D.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        19/03/2014
+!+        V7P0
+!+   Boundary segments have now their own numbering, independent of
+!+   boundary points numbering. Differents calls changed accordingly.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -304,8 +310,9 @@
 !
       CALL CORNOR(MESH2D%XNEBOR%R,MESH2D%YNEBOR%R,
      &            MESH2D%XSGBOR%R,MESH2D%YSGBOR%R,
-     &            MESH2D%KP1BOR%I,NPTFR2,KLOG,LIHBOR%I,
-     &            T2_01,T2_02,MESH2D)
+     &            NPTFR2,KLOG,LIHBOR%I,
+     &            T2_01,T2_02,MESH2D,MESH2D%IKLBOR%I,
+     &            MESH2D%NELEB,MESH2D%NELEBX)
 !
 ! 3D BOUNDARY CONDITIONS (SO FAR SAME FILE AS 2D)
 ! T2_02 IS AUBOR IN T2D, COULD BE KEPT
@@ -419,7 +426,7 @@
 !     3D EXTENSION OF NUMLIQ
 !
       CALL NUMLIQ_3D(NUMLIQ%I,NUMLIQ_ELM,NPLAN,MESH2D%NPTFR,
-     &               MESH2D%KP1BOR%I)
+     &               MESH2D%IKLBOR%I,MESH2D%NELEB,MESH2D%NELEBX)
 !
 !     SAVING AND MODIFYING BOUNDARY CONDITIONS FOR THOMPSON METHOD
 !
@@ -650,7 +657,8 @@
 ! INITIALISES BOUNDARY CONDITIONS FOR TELEMAC
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LICHEK'
-      CALL LICHEK(LIMPRO%I,NPTFR2)
+      CALL LICHEK(LIMPRO%I,NPTFR2,
+     &            MESH2D%IKLBOR%I,MESH2D%NELEB,MESH2D%NELEBX)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LICHEK'
 !
 !-----------------------------------------------------------------------
@@ -1370,7 +1378,8 @@
 ! CHECKS AND HARMONISES THE BOUNDARY CONDITION TYPES
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LICHEK'
-      CALL LICHEK(LIMPRO%I,NPTFR2)
+      CALL LICHEK(LIMPRO%I,NPTFR2,
+     &             MESH2D%IKLBOR%I,MESH2D%NELEB,MESH2D%NELEBX)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LICHEK'
 !
 ! BOUNDARY CONDITIONS FOR THE K-EPSILON MODEL

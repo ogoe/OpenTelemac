@@ -3,10 +3,10 @@
 !                    ********************
 !
      &(IKLE,IKLBOR,ELTSEG,NBOR,NELBOR,NULONE,
-     & IELM,NELEM,NELMAX,NPOIN,NPTFR)
+     & IELM,NELEM,NELMAX,NPOIN,NPTFR,NELEB,NELEBX)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V7P0                                    28/03/2014
 !***********************************************************************
 !
 !brief    EXTENDS THE CONNECTIVITY TABLES AND ARRAY NBOR.
@@ -33,6 +33,11 @@
 !+        V6P2
 !+   New arguments passed to CPIK13.
 !
+!history  J-M HERVOUET (LNHE)
+!+        28/03/2014
+!+        V7P0
+!+   Adaoted to new numbering of boundary segments.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTSEG         |-->| SEGMENT NUMBERS OF AN ELEMENT
 !| IELM           |-->| TYPE OF ELEMENT
@@ -40,6 +45,8 @@
 !| IKLE           |<->| CONNECTIVITY TABLE FOR ALL POINTS
 !| NBOR           |<->| GLOBAL NUMBERS OF BOUNDARY POINTS
 !| NELBOR         |-->| BOUNDARY ELEMENT THAT CONTAINS SEGMENT K
+!| NELEB          |-->| NUMBER OF BOUNDARY SEGMENTS
+!| NELEBX         |-->| MAXIMUM NUMBER OF BOUNDARY SEGMENTS
 !| NELEM          |-->| NOMBRE D'ELEMENTS
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS
 !| NPOIN          |-->| NOMBRE DE SOMMETS DU MAILLAGE
@@ -56,9 +63,10 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)    :: NELEM,NELMAX,IELM,NPOIN,NPTFR
+      INTEGER, INTENT(IN)    :: NELEB,NELEBX
       INTEGER, INTENT(IN)    :: ELTSEG(NELMAX,3)
-      INTEGER, INTENT(IN)    :: NELBOR(NPTFR),NULONE(NPTFR)
-      INTEGER, INTENT(INOUT) :: IKLE(NELMAX,*),IKLBOR(NPTFR,*),NBOR(*)
+      INTEGER, INTENT(IN)    :: NELBOR(NELEBX),NULONE(NELEBX)
+      INTEGER, INTENT(INOUT) :: IKLE(NELMAX,*),IKLBOR(NELEBX,*),NBOR(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -69,7 +77,7 @@
       ELSEIF(IELM.EQ.13.OR.IELM.EQ.14) THEN
 !
         CALL CPIK13(IKLE,IKLBOR,ELTSEG,NBOR,NELBOR,NULONE,
-     &              NELEM,NELMAX,NPOIN,NPTFR)
+     &              NELEM,NELMAX,NPOIN,NPTFR,NELEB,NELEBX)
 !
       ELSE
 !

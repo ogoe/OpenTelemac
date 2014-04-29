@@ -3,10 +3,11 @@
 !                    ****************
 !
      &(NELBOR,NULONE,KP1BOR,IFABOR,NBOR,IKLE,SIZIKL,IKLBOR,NELEM,NELMAX,
-     & NPOIN,NPTFR,IELM,LIHBOR,KLOG,IFANUM,OPTASS,ISEG,T1,T2,T3)
+     & NPOIN,NPTFR,IELM,LIHBOR,KLOG,IFANUM,OPTASS,ISEG,T1,T2,T3,NELEBX,
+     & NELEB)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDING DATA STRUCTURES TO NAVIGATE IN A 2D MESH.
@@ -41,6 +42,12 @@
 !+        18/03/2013
 !+        V6P3
 !+   Error messages more accurate.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/03/2014
+!+        V7P0
+!+   Now written to enable different numbering of boundary points and
+!+   boundary segments.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| TYPE D'ELEMENT.
@@ -77,18 +84,19 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)    :: KLOG,NELMAX,NELEM,SIZIKL
+      INTEGER, INTENT(IN)    :: KLOG,NELMAX,NELEM,SIZIKL,NELEBX
+      INTEGER, INTENT(INOUT) :: NELEB
       INTEGER, INTENT(IN)    :: NPOIN,NPTFR,IELM,OPTASS
-      INTEGER, INTENT(OUT)   :: NELBOR(NPTFR),NULONE(NPTFR,2)
-      INTEGER, INTENT(OUT)   :: KP1BOR(NPTFR,2)
+      INTEGER, INTENT(INOUT) :: NELBOR(NELEBX),NULONE(NELEBX,2)
+      INTEGER, INTENT(INOUT) :: KP1BOR(NPTFR,2)
       INTEGER, INTENT(INOUT) :: NBOR(*)
       INTEGER, INTENT(INOUT) :: IFABOR(NELMAX,*)
       INTEGER, INTENT(IN)    :: IKLE(SIZIKL,*)
       INTEGER, INTENT(IN)    :: LIHBOR(NPTFR)
-      INTEGER, INTENT(OUT)   :: IKLBOR(NPTFR,2)
+      INTEGER, INTENT(INOUT) :: IKLBOR(NELEBX,2)
       INTEGER, INTENT(INOUT) :: IFANUM(NELMAX,*)
       INTEGER, INTENT(IN)    :: ISEG(NPTFR)
-      INTEGER, INTENT(OUT)   :: T1(NPOIN),T2(NPOIN),T3(NPOIN)
+      INTEGER, INTENT(INOUT) :: T1(NPOIN),T2(NPOIN),T3(NPOIN)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -196,7 +204,7 @@
           ELSEIF(ISEG(K1).LT.0) THEN
             KP1BOR(K1,2)=K1
           ENDIF
-        ENDDO ! K1
+        ENDDO
       ENDIF
 !
 ! COMPUTES ARRAY NULONE
@@ -249,16 +257,38 @@
 !
       ENDDO ! K1
 !
-!  COMPUTES IKLBOR : LIKE IKLE FOR BOUNDARY POINTS, WITH BOUNDARY
-!                    POINTS NUMBERING
+!     COMPUTES IKLBOR : LIKE IKLE FOR BOUNDARY POINTS, WITH BOUNDARY
+!                       POINTS NUMBERING
 !
-!                    IN 3D WILL BE REDONE IN OTHER ELEB.. ROUTINES
+!                       IN 3D WILL BE REDONE IN OTHER ELEB.. ROUTINES
 !
-      IF(IELM.NE.41.AND.IELM.NE.51) THEN
+!     IF(IELM.NE.41.AND.IELM.NE.51) THEN
+      DO K=1,NPTFR
+        IKLBOR(K,1) = K
+        IKLBOR(K,2) = KP1BOR(K,1)
+      ENDDO
+!     ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     VERSION 7.0: NOW RENUMBERING IN PARALLEL TO AVOID HOLES IN SEGMENT
+!                  NUMBERING. NELEB BECOMES THE REAL NUMBER OF BOUNDARY
+!                  ELEMENTS
+!
+      IF(NCSIZE.GT.1) THEN
+        NELEB=0
         DO K=1,NPTFR
-          IKLBOR(K,1) = K
-          IKLBOR(K,2) = KP1BOR(K,1)
+          IF(KP1BOR(K,1).NE.K) THEN
+            NELEB=NELEB+1
+            NELBOR(NELEB)  =NELBOR(K)
+            NULONE(NELEB,1)=NULONE(K,1)
+            NULONE(NELEB,2)=NULONE(K,2)
+            IKLBOR(NELEB,1)=IKLBOR(K,1)
+            IKLBOR(NELEB,2)=IKLBOR(K,2)            
+          ENDIF
         ENDDO
+      ELSE
+        NELEB=NPTFR       
       ENDIF
 !
 !-----------------------------------------------------------------------

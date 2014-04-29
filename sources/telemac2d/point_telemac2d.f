@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/08/2010
+! TELEMAC2D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    Memory allocation of structures, aliases, blocks...
@@ -72,6 +72,11 @@
 !+        18/06/2013
 !+        V6P3
 !+   Size of IT1,2,3,4 modified in case of weak characteristics.
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        31/03/2014
+!+        V7P0
+!+   SLVTRA is now an array.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -318,10 +323,8 @@
 !
       CALL BIEF_ALLVEC(1,CHESTR,'CHESTR',IELMU,1,1,MESH)
 !
-!  ARRAYS FOR ATMOSPHERIC AND INCIDENT WAVE CONDITIONS
+!  ARRAYS FOR ATMOSPHERIC PRESSURE
 !
-      CALL BIEF_ALLVEC(1,C0    ,'C0    ',IELBH,1,1,MESH)
-      CALL BIEF_ALLVEC(1,COTOND,'COTOND',IELBH,1,1,MESH)
       CALL BIEF_ALLVEC(1,PATMOS,'PATMOS',IELMH,1,1,MESH)
       IF(ROVAR) THEN
         CALL BIEF_ALLVEC(1,RO,'RO    ',IELMH,1,1,MESH)
@@ -520,7 +523,11 @@
 !       BECAUSE OF THE POSITION OF TRACERS IN VARSOR (WILL BE
 !       THE SAME IN TB, USED BY VALIDA)
         NTRT = 31+NTRAC
-        IF(SLVTRA%SLV.EQ.7) NTRT = MAX(2+2*SLVTRA%KRYLOV,NTRT)
+        DO ITRAC=1,NTRAC
+          IF(SLVTRA(ITRAC)%SLV.EQ.7) THEN
+            NTRT = MAX(2+2*SLVTRA(ITRAC)%KRYLOV,NTRT)
+          ENDIF
+        ENDDO
         NTR = MAX(NTR,NTRT)
       ENDIF
       NTRKE=0
@@ -834,10 +841,12 @@
           CALL ADDBLO(FNCAR,UN   )
           CALL ADDBLO(FNCAR,VN   )
         ENDIF
-        IF(CONVV(3).AND.NTRAC.GT.0.AND.ICONVF(3).EQ.ADV_CAR) THEN
+        IF(NTRAC.GT.0.AND.CONVV(3)) THEN
           DO ITRAC=1,NTRAC
-            CALL ADDBLO(FTILD,TTILD%ADR(ITRAC)%P)
-            CALL ADDBLO(FNCAR,TN%ADR(ITRAC)%P)
+            IF(ICONVFT(ITRAC).EQ.ADV_CAR) THEN
+              CALL ADDBLO(FTILD,TTILD%ADR(ITRAC)%P)
+              CALL ADDBLO(FNCAR,TN%ADR(ITRAC)%P)
+            ENDIF
           ENDDO
         ENDIF
       ENDIF

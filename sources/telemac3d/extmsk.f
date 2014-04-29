@@ -2,10 +2,10 @@
                      SUBROUTINE EXTMSK
 !                    *****************
 !
-     &(MASKBR,MASK,NPTFR,NETAGE)
+     &(MASKBR,MASK,NETAGE,NELEB)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    EXTRUDES THE 2D MASK ON THE VERTICAL FOR LATERAL
@@ -28,11 +28,17 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        19/03/2014
+!+        V7P0
+!+   Boundary segments have now their own numbering, independent of
+!+   boundary points numbering.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MASK           |-->| 2D MASK
 !| MASKBR         |<->| 3D MASK ON LATERAL BOUNDARIES
+!| NELEB          |-->| NUMBER OF BOUNDARY ELEMENTS
 !| NETAGE         |-->| NUMBER OF PLANES - 1
-!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS IN 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -43,13 +49,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)           :: NPTFR,NETAGE
+      INTEGER, INTENT(IN)           :: NETAGE,NELEB
       DOUBLE PRECISION, INTENT(IN)  :: MASK(*)
       TYPE(BIEF_OBJ), INTENT(INOUT) :: MASKBR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,IETAGE
+      INTEGER IETAGE,IELEB
 !
 !=======================================================================
 !
@@ -57,24 +63,24 @@
 !
       IF(MASKBR%ELM.EQ.70) THEN
 !
-!         QUADRILATERAL ON THE LATERAL BOUNDARIES
+!       QUADRILATERAL ON THE LATERAL BOUNDARIES
 !
-          DO K = 1,NPTFR
-            DO IETAGE = 1,NETAGE
-              MASKBR%R((IETAGE-1)*NPTFR+K)=MASK(K)
-            ENDDO
+        DO IELEB = 1,NELEB
+          DO IETAGE = 1,NETAGE
+            MASKBR%R((IETAGE-1)*NELEB+IELEB)=MASK(IELEB)
           ENDDO
+        ENDDO
 !
       ELSEIF(MASKBR%ELM.EQ.60) THEN
 !
-!         TRIANGLES ON THE LATERAL BOUNDARIES
+!       TRIANGLES ON THE LATERAL BOUNDARIES
 !
-          DO K = 1,NPTFR
-            DO IETAGE = 1,NETAGE
-              MASKBR%R((IETAGE-1)*2*NPTFR+K      )=MASK(K)
-              MASKBR%R((IETAGE-1)*2*NPTFR+K+NPTFR)=MASK(K)
-            ENDDO
+        DO IELEB = 1,NELEB
+          DO IETAGE = 1,NETAGE
+            MASKBR%R((IETAGE-1)*2*NELEB+IELEB      )=MASK(IELEB)
+            MASKBR%R((IETAGE-1)*2*NELEB+IELEB+NELEB)=MASK(IELEB)
           ENDDO
+        ENDDO
 !
       ELSE
 !

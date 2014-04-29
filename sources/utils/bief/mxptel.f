@@ -5,7 +5,7 @@
      &(MXPTVS,MXELVS,IKLES,IELM,NPOIN,NELEM,NDP,IPOBO,LISTIN)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE MAXIMUM NUMBER OF POINTS AND ELEMENTS
@@ -32,6 +32,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        18/04/2014
+!+        V7P0
+!+   Automatic array ITRAV now allocatable.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| TYPE OF ELEMENT
@@ -60,8 +65,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!                       ITRAV(NPOIN): AUTOMATIC ARRAY
-      INTEGER I,J,IELEM,ITRAV(NPOIN)
+      INTEGER I,J,IELEM
+      INTEGER, ALLOCATABLE :: ITRAV(:)
+      ALLOCATE(ITRAV(NPOIN))
 !
 !-----------------------------------------------------------------------
 !
@@ -90,7 +96,7 @@
 !                                   FOR BOUNDARY NODES.
 !    SIMULTANEOUSLY LOOKS FOR THE MAXIMUM
 !
-      IF (IELM.EQ.31) THEN
+      IF(IELM.EQ.31) THEN
         CALL MXPTEL31(NELEM,NPOIN,MXELVS,IKLES,MXPTVS)
       ELSE
         MXPTVS = MXELVS
@@ -113,6 +119,10 @@
      &NT: ',1I3,/,1X,
      &          '                MAXIMUM NUMBER OF POINTS AROUND A POINT
      &: ',1I3)
+!
+!-----------------------------------------------------------------------
+!
+      DEALLOCATE(ITRAV)
 !
 !-----------------------------------------------------------------------
 !

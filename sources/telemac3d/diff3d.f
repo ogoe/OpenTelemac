@@ -12,7 +12,7 @@
      & MDIFF,MATR2H,MASKBR,SVIDE,MSK,MASKEL,H,
      & NPLAN,OPTBAN,OPTDIF,TETADI,YAWCC,WCC,AGGLOD,VOLU,
      & YASCE,NSCE,FSCE,SOURCES,TETASUPG,VELOCITY,RAIN,PLUIE,TRAIN,
-     & SIGMAG,IPBOT)
+     & SIGMAG,IPBOT,SETDEP)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                  21/08/2010
@@ -68,6 +68,11 @@
 !+        27/02/2014
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        29/04/2014
+!+        V7P0
+!+   Argument SETDEP added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
@@ -138,6 +143,9 @@
 !| SCHDF          |-->| DIFFUSION SCHEME OF F
 !| SEM3D          |<->| SECOND MEMBERS (RIGHT HAND SIDE)
 !|                |   | FOR THE LINEAR EQUATIONS 3D
+!| SETDEP         |-->| ADVECTION-DIFFUSION SCHEME WITH SETTLING VELOCITY
+!|                |   | 0 : IMPLICIT TREATED IN DIFFUSION
+!|                |   | 1 : EXPLICIT TREATED IN ADVECTION
 !| SIGMAF         |-->| COEFFICIENT OF VISCOSITY REDUCTION
 !|                |   | ONLY USED FOR K AND EPSILON
 !| SIGMAG         |-->| LOGICAL FOR GENERALISED SIGMA TRANSFORMATION
@@ -186,7 +194,7 @@
 !-----------------------------------------------------------------------
 !
       INTEGER, INTENT(IN)             :: SCHCF,SCHDF,TRBAF,OPTDIF,NSCE
-      INTEGER, INTENT(IN)             :: NPOIN2
+      INTEGER, INTENT(IN)             :: NPOIN2,SETDEP
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FD,FC,FN,S0F,S1F,VISCF
       TYPE(BIEF_OBJ), INTENT(IN)      :: LIFBOL,LIFBOF,LIFBOS
       TYPE(BIEF_OBJ), INTENT(IN)      :: FBORL,FBORF,FBORS

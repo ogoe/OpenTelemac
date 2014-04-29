@@ -365,6 +365,7 @@ files: declarations_telemac.f
   find_in_sel.f
   na_flux3d_lim.f
   flux_ef_vf.f
+  flux_ef_vf_2.f
   flux_ef_vf_3d.f
   asseg_3d.f
   gtsh41.f
@@ -446,6 +447,7 @@ files: declarations_telemac.f
   vgfpsi.f
   flux_mask.f
   tvf.f
+  tvf_2.f
   hvf.f
   tracvf.f
   cflvf.f

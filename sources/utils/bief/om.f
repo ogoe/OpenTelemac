@@ -5,7 +5,7 @@
      &( OP , M , N , D , C , MESH )
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                     21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS ON MATRICES.
@@ -60,6 +60,12 @@
 !+   omborseg added : operations on matrices with an edge-based storage
 !         where N is a boundary matrix
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/03/2014
+!+        V7P0
+!+   Now written to enable different numbering of boundary points and
+!+   boundary segments.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
 !| D              |-->| A DIAGONAL MATRIX
@@ -88,12 +94,12 @@
 !
       INTEGER IELM1,IELM2,IELN1,IELN2,NELEM,NELMAX
       INTEGER NDIAGM,NDIAGN,NDIAGX,MSEG1,MSEG2,NSEG1,NSEG2
-      INTEGER STOM,STON,NPOIN,NPTFR,NPTFX,MDIAGX
+      INTEGER STOM,STON,NPTFR,MDIAGX
       INTEGER SIZXN,SZMXN,NETAGE
 !
       TYPE(BIEF_OBJ), POINTER :: NN
 !
-      CHARACTER*1 TYPDIM,TYPEXM,TYPDIN,TYPEXN
+      CHARACTER(LEN=1) TYPDIM,TYPEXM,TYPDIN,TYPEXN
 !
       INTEGER, DIMENSION(:), POINTER :: IKLE
 !
@@ -146,13 +152,14 @@
 !
 !-----------------------------------------------------------------------
 !
-!  EXTRACTS THE CHARACTERISTICS OF MATRIX N (OPTIONAL)
+!     EXTRACTS THE CHARACTERISTICS OF MATRIX N (OPTIONAL)
+!
       IF(INCLUS(OP,'0')) THEN
-         NN => M
+        NN => M
       ELSE
-         NN => N
+        NN => N
       ENDIF
-         
+!         
       IF(INCLUS(OP,'N')) THEN
         TYPDIN = NN%TYPDIA
         TYPEXN = NN%TYPEXT
@@ -175,11 +182,11 @@
         IELN1 = NN%ELMLIN
         IELN2 = NN%ELMCOL
         IF(NDIAGN.GT.MDIAGX) THEN
-         IF(LNG.EQ.1) WRITE(LU,400) M%NAME
-         IF(LNG.EQ.2) WRITE(LU,401) M%NAME
-400      FORMAT(1X,'OM (BIEF) : M (NOM REEL : ',A6,') TROP PETITE')
-401      FORMAT(1X,'OM (BIEF) : M (REAL NAME: ',A6,') TOO SMALL')
-         STOP
+          IF(LNG.EQ.1) WRITE(LU,400) M%NAME
+          IF(LNG.EQ.2) WRITE(LU,401) M%NAME
+400       FORMAT(1X,'OM (BIEF) : M (NOM REEL : ',A6,') TROP PETITE')
+401       FORMAT(1X,'OM (BIEF) : M (REAL NAME: ',A6,') TOO SMALL')
+          STOP
         ENDIF
       ELSE
         IELN1 = IELM1
@@ -203,9 +210,7 @@
         NELMAX = MESH%NELEBX
       ENDIF
 !
-      NPOIN= MESH%NPOIN
       NPTFR= MESH%NPTFR
-      NPTFX= MESH%NPTFRX
 !
 !-----------------------------------------------------------------------
 !
@@ -244,7 +249,8 @@
      &                     NN%D%R,TYPDIN,NN%X%R,TYPEXN, C,
      &                     MESH%NULONE%I,MESH%NELBOR%I,
      &                     MESH%NBOR%I,
-     &                     NELMAX,NDIAGM,NDIAGN,NDIAGX)
+     &                     NELMAX,NDIAGM,NDIAGN,MESH%NELEBX,
+     &                     MESH%NELEB)
 !
         ELSE
           IF (LNG.EQ.1) WRITE(LU,100) M%NAME
@@ -285,7 +291,8 @@
      &                     NN%D%R,TYPDIN,NN%X%R,TYPEXN, C,
      &                     MESH%NULONE%I,MESH%NELBOR%I,
      &                     MESH%NBOR%I,
-     &                     NELMAX,NDIAGM,NDIAGN,NDIAGX)
+     &                     NELMAX,NDIAGM,NDIAGN,MESH%NELEBX,
+     &                     MESH%NELEB)
         ELSEIF(( (IELM1.EQ.51.AND.IELM2.EQ.51) .AND.
      &           (IELN1.EQ.61.AND.IELN2.EQ.61))   ) THEN
 !         PRISMS SPLIT IN TETRAHEDRONS M INTERIOR MATRIX
@@ -408,7 +415,8 @@
      &                     NN%D%R,TYPDIN,NN%X%R,TYPEXN, C,
      &                     MESH%NULONE%I,MESH%NELBOR%I,
      &                     MESH%NBOR%I,
-     &                     NELMAX,NDIAGM,NPTFR,NPTFX)
+     &                     NELMAX,NDIAGM,NPTFR,MESH%NELEBX,
+     &                     MESH%NELEB)
 !
         ELSE
           IF (LNG.EQ.1) WRITE(LU,100) M%NAME
@@ -497,7 +505,7 @@
 !          CALL PLANTE(1)
 !          STOP
 !
-!     EDGE-BASED STORAGE FOR M AN N
+!     EDGE-BASED STORAGE FOR M AND N
 !     THIS CAN HAPPEN ONLY WHEN N IS A BOUNDARY MATRIX (FD : REALLY?)
 !     TESTED SO FAR FOR TETRA (81) AND TRIANGLES (31)  
 !     BORDER SEGMENTS ARE LINKED TO THE NSEGBOR FIRST SEGMENTS
@@ -554,12 +562,12 @@
           NSEG1 = BIEF_NBSEG(M%ELMLIN,MESH)
           NSEG2 = BIEF_NBSEG(M%ELMCOL,MESH)
 !
-          CALL OMSEGBOR(OP , M%D%R,TYPDIM,M%X%R,TYPEXM,
-     &                       NN%D%R,TYPDIN,NN%X%R,TYPEXN,D%R,C,
-     &                       NDIAGM,NSEG1,NSEG2,MESH%NBOR%I,
-     &                       MESH%KP1BOR%I,NPTFR,
-     &                       M%ELMLIN,NN%ELMLIN,
-     &                       BIEF_NBSEG(11,MESH))
+          CALL OMSEGBOR(OP,M%D%R,TYPDIM,M%X%R,TYPEXM,
+     &                     NN%D%R,TYPDIN,NN%X%R,TYPEXN,D%R,C,
+     &                     NDIAGM,NSEG1,NSEG2,MESH%NBOR%I,
+     &                     NPTFR,M%ELMLIN,NN%ELMLIN,
+     &                     BIEF_NBSEG(11,MESH),
+     &                     MESH%IKLBOR%I,MESH%NELEBX,MESH%NELEB)
 !
         ELSE
           WRITE(LU,*) 'OM : UNEXPECTED CASE IN SEGMENT STORAGE'

@@ -2,12 +2,12 @@
                      SUBROUTINE STOSEG41
 !                    *******************
 !
-     &(IFABOR,NELEM,NELMAX,IELM,IKLE,NBOR,NPTFR,
-     & GLOSEG,MAXSEG,ELTSEG,ORISEG,NSEG,KP1BOR,NELBOR,NULONE,NELMAX2,
-     & NELEM2,NPTFR2,NPOIN2,NPLAN,KNOLG,NSEG2D)
+     &(IFABOR,NELMAX,IELM,IKLE,NBOR,
+     & GLOSEG,MAXSEG,ELTSEG,ORISEG,NELBOR,NULONE,NELMAX2,
+     & NELEM2,NPTFR2,NPOIN2,NPLAN,KNOLG,NSEG2D,IKLBOR,NELEBX,NELEB)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   19/03/2014
 !***********************************************************************
 !
 !brief    BUILDS THE DATA STRUCTURE FOR EDGE-BASED STORAGE
@@ -66,6 +66,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        19/03/2014
+!+        V7P0
+!+   Boundary segments have now their own numbering, independent of
+!+   boundary points numbering.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTSEG         |<--| SEGMENTS OF EVERY TRIANGLE.
 !| GLOSEG         |<--| GLOBAL NUMBERS OF POINTS OF SEGMENTS.
@@ -74,22 +80,21 @@
 !| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
 !|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
 !|                |   | BOUNDARY
+!| IKLBOR         |-->| CONNECTIVITY OF BOUNDARY SEGMENTS IN D
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| KNOLG          |-->| GLOBAL NUMBER OF A LOCAL POINT IN PARALLEL
-!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
 !| MAXSEG         |<--| MAXIMUM NUMBER OF SEGMENTS
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS.
 !| NELBOR         |-->| NUMBER OF ELEMENT CONTAINING SEGMENT K OF
 !|                |   | THE BOUNDARY.
-!| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
+!| NELEB          |-->| NUMBER OF BOUNDARY ELEMENTS
+!| NELEBX         |-->| MAXIMUM NUMBER OF BOUNDARY ELEMENTS
 !| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 3D
 !| NELMAX2        |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
-!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NPTFR2         |-->| NUMBER OF BOUNDARY POINTS IN 2D
-!| NSEG           |<--| NUMBER OF SEGMENTS OF THE MESH.
 !| NULONE         |-->| LOCAL NUMBER OF BOUNDARY POINTS IN A BOUNDARY
 !|                |   | ELEMENT.
 !|                |   | HERE THE 3D NULONE IS PASSED THOUGH IT IS HERE
@@ -106,11 +111,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)    :: NELMAX,NELMAX2,NPTFR,NSEG,MAXSEG,IELM
-      INTEGER, INTENT(IN)    :: NELEM,NELEM2,NPTFR2,NPOIN2,NPLAN,NSEG2D
-      INTEGER, INTENT(IN)    :: NBOR(NPTFR2),KP1BOR(NPTFR2)
+      INTEGER, INTENT(IN)    :: NELMAX,NELMAX2,MAXSEG,IELM
+      INTEGER, INTENT(IN)    :: NELEM2,NPTFR2,NPOIN2,NPLAN,NSEG2D
+      INTEGER, INTENT(IN)    :: NELEB,NELEBX
+      INTEGER, INTENT(IN)    :: NBOR(NPTFR2)
       INTEGER, INTENT(IN)    :: IFABOR(NELMAX2,*),IKLE(NELMAX,6)
       INTEGER, INTENT(IN)    :: NELBOR(NPTFR2),NULONE(NPTFR2)
+      INTEGER, INTENT(IN)    :: IKLBOR(NELEBX,2)
       INTEGER, INTENT(INOUT) :: GLOSEG(MAXSEG,2)
       INTEGER, INTENT(INOUT) :: ELTSEG(NELMAX,15),ORISEG(NELMAX,15)
       INTEGER, INTENT(IN)    :: KNOLG(*)
@@ -118,7 +125,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I1,I2,I3,IELEM,I,ONE,TWO
-      INTEGER IPLAN,ISEG2D,ISEG3D,IELEM3D,NSEGH,NSEGV
+      INTEGER IPLAN,ISEG2D,ISEG3D,IELEM3D,NSEGH,NSEGV,NELEB2D
 !
 !-----------------------------------------------------------------------
 !
@@ -140,10 +147,11 @@
 !     NSEG2D=(3*NELEM2+NPTFR2)/2
       NSEGH=NSEG2D*NPLAN
       NSEGV=(NPLAN-1)*NPOIN2
+      NELEB2D=NELEB/(NPLAN-1)
 !
       CALL STOSEG(IFABOR,NELEM2,NELMAX,NELMAX2,11,IKLE,NBOR,NPTFR2,
      &            GLOSEG,MAXSEG,ELTSEG,ORISEG,NSEG2D,
-     &            KP1BOR,NELBOR,NULONE,KNOLG)
+     &            NELBOR,NULONE,KNOLG,IKLBOR,NELEBX,NELEB2D)
 !
 !-----------------------------------------------------------------------
 !

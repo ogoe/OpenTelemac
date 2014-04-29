@@ -6,7 +6,7 @@
      & NPTFR,NETAGE,MASK,MESH,FORMUL,IELM2V,SVIDE,MASKBR,NELEB)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   19/09/2011
+! TELEMAC3D   V7P0                                   19/03/2014
 !***********************************************************************
 !
 !brief    IMPOSES FLUX BOUNDARY CONDITIONS,
@@ -33,12 +33,16 @@
 !+      DISCONTINUITY (CASE WHERE THIS SEGMENT CONTAINS THE NODE
 !+      NUMBER 1) IS TREATED.
 !
-!note     JMH : T3_01, SIGMAG NOT USED.
-!
 !history  J-M HERVOUET
 !+        19/09/2011
 !+        V6P2
 !+   3D VERSION OF THE 2D DEBIMP, TO REPLACE DEBIMP3D
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        19/03/2014
+!+        V7P0
+!+   Boundary segments have now their own numbering, independent of
+!+   boundary points numbering.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FORMUL         |---| 'FLUBOR          ' ONLY IN PRACTICE
@@ -88,7 +92,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,IETAGE,IPTFR,I3D
+      INTEGER K,IETAGE,IPTFR,I3D,IELEB
       DOUBLE PRECISION Q1
 !
       INTRINSIC ABS
@@ -120,8 +124,8 @@
 !
 !     LOOP ON BOUNDARY ELEMENTS
 !
-      DO K=1,NELEB
-        IF(NUMLIQ_ELM(K).EQ.IFRLIQ) MASKBR%R(K)=MASK%R(K)
+      DO IELEB=1,NELEB
+        IF(NUMLIQ_ELM(IELEB).EQ.IFRLIQ) MASKBR%R(IELEB)=MASK%R(IELEB)
       ENDDO
 !
       FORMUL = 'FLUBOR          '
@@ -142,11 +146,15 @@
 30        FORMAT(1X,'DEBIMP_3D : PROBLEME SUR LA FRONTIERE ',1I6,/,1X,
      &     '         DONNER UN PROFIL DE VITESSES        ',/,1X,
      &     '         DANS LE FICHIER DES CONDITIONS AUX LIMITES',/,1X,
-     &     '         OU VERIFIER LES HAUTEURS D''EAU')
+     &     '         OU VERIFIER LES HAUTEURS D''EAU',/,1X,
+     &     '         AUTRE CAUSE POSSIBLE :',/,1X,
+     &     '         ENTREE TORRENTIELLE A HAUTEUR LIBRE')
 31        FORMAT(1X,'DEBIMP_3D: PROBLEM ON BOUNDARY NUMBER ',1I6,/,1X,
      &     '         GIVE A VELOCITY PROFILE  ',/,1X,
      &     '         IN THE BOUNDARY CONDITIONS FILE',/,1X,
-     &     '         OR CHECK THE WATER DEPTHS')
+     &     '         OR CHECK THE WATER DEPTHS',/,1X,
+     &     '         OTHER POSSIBLE CAUSE:',/,1X,
+     &     '         SUPERCRITICAL ENTRANCE WITH FREE DEPTH')
           CALL PLANTE(1)
           STOP
         ELSE

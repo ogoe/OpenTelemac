@@ -5,7 +5,7 @@
      &(NPOIN,NSEGB,GLOSEG,MAXSEG,DA,XA,XINC,RHS,INFOGR,TYPEXT)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/07/2011
+! BIEF   V7P0                                    21/07/2011
 !***********************************************************************
 !
 !brief    DIRECT RESOLUTION OF A SYMMETRICAL LINEAR SYSTEM WITH
@@ -176,6 +176,13 @@
 !+        23/08/2012
 !+        V6P2
 !+   Size of ISP doubled in non symmetric cases.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        18/04/2014
+!+        V7P0
+!+   Checking that 2*NSP is less than HUGE(1). Meshes with about 
+!+   2 millions of points will trigger memory allocations of numbers
+!+   greater than the largest I4 integer.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DA             |-->| MATRIX DIAGONAL COEFFICIENTS
@@ -354,23 +361,33 @@
 !
         IF(SIZE_ISP.EQ.0) THEN
           ALLOCATE(ISP(NSP))
-          SIZE_ISP=    NSP
         ELSEIF(        NSP.GT.SIZE_ISP) THEN
           DEALLOCATE(ISP)
           ALLOCATE(ISP(NSP))
-          SIZE_ISP=    NSP
         ENDIF
+        SIZE_ISP=    NSP
 !
       ELSE
 !
+        IF(2*NSP.LT.NSP) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'PLUS GRAND ENTIER      ',HUGE(1)
+            WRITE(LU,*) 'DEPASSE PAR 2*NSP, NSP=',NSP
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'SIZE OF LARGEST INTEGER  ',HUGE(1)
+            WRITE(LU,*) 'TRESPASSED BY 2*NSP, NSP=',NSP
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!
         IF(SIZE_ISP.EQ.0) THEN
           ALLOCATE(ISP(2*NSP))
-          SIZE_ISP=    2*NSP
         ELSEIF(      2*NSP.GT.SIZE_ISP) THEN
           DEALLOCATE(ISP)
           ALLOCATE(ISP(2*NSP))
-          SIZE_ISP=    2*NSP
         ENDIF
+        SIZE_ISP=    2*NSP
 !
       ENDIF
 !

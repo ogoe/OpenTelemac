@@ -21,7 +21,7 @@ VALIDATION               : YES
 /----------------------------------------------------------------------/
 / 
 TITLE = 'TELEMAC-2D: ROTATING CONE TEST'                                                              
-VARIABLES FOR GRAPHIC PRINTOUTS: 'U,V,H,T1'                        
+VARIABLES FOR GRAPHIC PRINTOUTS: 'U,V,H,T*'                        
 /
 /TIME STEP = 0.392699082    NUMBER OF TIME STEPS = 16 
 /TIME STEP = 0.785398164    NUMBER OF TIME STEPS = 8 
@@ -52,16 +52,32 @@ VELOCITY DIFFUSIVITY = 0.D0
 MASS-BALANCE : YES                                  
 INITIAL CONDITIONS : PARTICULIERES                                         
 / 
-TYPE OF ADVECTION:3;5;1 
+/TYPE OF ADVECTION:3;5;1 
+SCHEME FOR ADVECTION OF VELOCITIES : 3
 OPTION FOR CHARACTERISTICS : 2
 NUMBER OF GAUSS POINTS FOR WEAK CHARACTERISTICS : 12
 /
 /----------------------------------------------------------------------/
 /
-NUMBER OF TRACERS : 1 
-INITIAL VALUES OF TRACERS : 0.
-COEFFICIENT FOR DIFFUSION OF TRACERS : 0.
+/ NOTE: THE COMBINATION OF STRONG AND WEAK CHARACTERISTICS
+/       IS NOT IMPLEMENTED YET, THOUGH ASKED BELOW
+/
+NUMBER OF TRACERS : 6 
+INITIAL VALUES OF TRACERS              : 0.;0.;0.;0.;0.;0.
+COEFFICIENT FOR DIFFUSION OF TRACERS   : 0.;0.;0.;0.;0.;0.
+SCHEME FOR ADVECTION OF TRACERS        : 1 ; 1;4 ; 5; 5;13
+SCHEME OPTION FOR ADVECTION OF TRACERS : 1 ; 2;1 ; 1; 2;1
+SOLVER FOR DIFFUSION OF TRACERS        : 1 ; 1;1 ; 1; 1;1
+/PRECONDITIONING FOR DIFFUSION OF TRACERS : 5
+NAMES OF TRACERS : 'CHARACT. STRONG TRACER 1        ';
+                   'CHARACT. WEAK   TRACER 2        ';
+                   'N SCHEME        TRACER 3        ';
+                   'PSI SCHEME      TRACER 4        ';
+                   'PSI SCHEME  COR.TRACER 5        ';
+                   'NERD SCHEME     TRACER 6        '
+TREATMENT OF NEGATIVE DEPTHS : 2
+MASS-LUMPING ON H : 1.
+CONTINUITY CORRECTION : YES
 /
 /----------------------------------------------------------------------/ 
-/
- 
+/   

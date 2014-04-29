@@ -4,7 +4,7 @@
 !
      &(DTMAX,HSTART,H,FXMAT,FXMATPAR,MAS,DT,FXBOR,SMH,YASMH,TAB1,NSEG,
      & NPOIN,NPTFR,GLOSEG,SIZGLO,MESH,MSK,MASKPT,RAIN,PLUIE,FC,
-     & NELEM,IKLE,LIMTRA,KDIR,FBOR,FSCEXP,TRAIN,NBOR,MINFC,MAXFC)
+     & NELEM,IKLE,LIMTRA,KDIR,FBOR,FSCEXP,TRAIN,NBOR,MINFC,MAXFC,SECU)
 !
 !***********************************************************************
 ! BIEF   V7P0                                   21/08/2010
@@ -62,6 +62,11 @@
 !+        V7P0
 !+   Old stability criterion simplified.
 !
+!history  S. PAVAN & J-M HERVOUET (EDF R&D, LNHE)
+!+        29/04/2014
+!+        V7P0
+!+   Security coefficient added (for predictor-corrector scheme).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
 !| DTMAX          |<--| MAXIMUM TIME STEP FOR STABILITY
@@ -107,7 +112,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: FXMAT(NSEG),FXMATPAR(NSEG)
       DOUBLE PRECISION, INTENT(INOUT) :: FC(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FSCEXP(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: FBOR(NPTFR),TRAIN
+      DOUBLE PRECISION, INTENT(IN)    :: FBOR(NPTFR),TRAIN,SECU
       LOGICAL, INTENT(IN)             :: YASMH,MSK,RAIN
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TAB1,MINFC,MAXFC
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
@@ -284,28 +289,28 @@
             DENOM=TAB1%R(I)+MAX(FXBOR(I),0.D0)
      &                     -MIN(SMH(I)+PLUIE(I),0.D0)
             IF(DENOM.GT.1.D-20) THEN
-              DTMAX = MIN(DTMAX,MAS(I)*HSTART(I)/DENOM)
+              DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
             ENDIF 
           ENDDO
         ELSEIF(YASMH) THEN
           DO I = 1,NPOIN
             DENOM=TAB1%R(I)+MAX(FXBOR(I),0.D0)-MIN(SMH(I),0.D0)
             IF(DENOM.GT.1.D-20) THEN
-              DTMAX = MIN(DTMAX,MAS(I)*HSTART(I)/DENOM)
+              DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
             ENDIF 
           ENDDO
         ELSEIF(RAIN) THEN
           DO I = 1,NPOIN
             DENOM=TAB1%R(I)+MAX(FXBOR(I),0.D0)-MIN(PLUIE(I),0.D0)
             IF(DENOM.GT.1.D-20) THEN
-              DTMAX = MIN(DTMAX,MAS(I)*HSTART(I)/DENOM)
+              DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
             ENDIF
           ENDDO
         ELSE
           DO I = 1,NPOIN
             DENOM=TAB1%R(I)+MAX(FXBOR(I),0.D0)
             IF(DENOM.GT.1.D-20) THEN
-              DTMAX = MIN(DTMAX,MAS(I)*HSTART(I)/DENOM)
+              DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
             ENDIF
           ENDDO  
         ENDIF

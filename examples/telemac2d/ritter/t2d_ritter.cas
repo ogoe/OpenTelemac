@@ -65,5 +65,6 @@ IMPLICITATION FOR VELOCITY      = 0.6
 INITIAL GUESS FOR H             = 1   
 /
 VALIDATION                      = YES
+OPTION FOR LIQUID BOUNDARIES    = 2
 /           
 &FIN

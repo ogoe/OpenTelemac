@@ -3,12 +3,12 @@
 !                    *****************
 !
      &(MASKTR,LIMTRA,LITBOR,CLT,U,V,XNEBOR,YNEBOR,NBOR,
-     & KP1BOR,NPTFR,KENT,KSORT,KLOG,KINC,KNEU,KDIR,KDDL,
+     & NPTFR,KENT,KSORT,KLOG,KNEU,KDIR,KDDL,
      & ICONV,NELBOR,NPOIN,NELMAX,MSK,MASKEL,
-     & NFRLIQ,THOMFR,FRTYPE,TN,TBOR,MESH,NUMLIQ)
+     & NFRLIQ,THOMFR,FRTYPE,TN,TBOR,MESH,NUMLIQ,IKLBOR,NELEB,NELEBX)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE BOUNDARY CONDITIONS FOR TRACER DIFFUSION.
@@ -37,20 +37,24 @@
 !+   CALL PARCOM_BORD DELETED (NOT USEFUL, WE DEAL HERE WITH SEGMENTS
 !+   WHICH BELONG TO A SINGLE PROCESSOR)
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/03/2014
+!+        V7P0
+!+   Now written to enable different numbering of boundary points and
+!+   boundary segments.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CLT            |<--| A MODIFIED COPY OF LITBOR.
 !| FRTYPE         |-->| TYPE OF BOUNDARY CONDITIONS
 !|                |   | 1: NORMAL   2: THOMPSON
 !| ICONV          |-->| OPTION FOR ADVECTION : 1) CHARACTERISTICS
 !|                |   |                        2) SUPG, ETC.
+!| IKLBOR         |-->| CONNECTIVITY TABLE FOR BOUNDARY ELEMENTS
 !| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
-!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
 !| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
 !| KNEU           |-->| CONVENTION FOR NEUMANN CONDITION
-!| KP1BOR         |-->| KP1BOR(K,1) NEXT POINT ON THE 2D BOUNDARY
-!|                |   | KP1BOR(K,2) PREVIOUS POINT ON THE 2D BOUNDARY
 !| KSORT          |-->| CONVENTION FOR LIQUID OUTPUT WITH FREE VALUE
 !| LIMTRA         |<--| TECHNICAL BOUNDARY CONDITIONS FOR TRACERS
 !| LITBOR         |-->| PHYSICAL BOUNDARY CONDITIONS FOR TRACERS
@@ -61,6 +65,8 @@
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
 !|                |   | ELEMENT.
+!| NELEB          |-->| NUMBER OF BOUNDARY ELEMENTS
+!| NELEBX         |-->| MAXIMUM NUMBER OF BOUNDARY ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
 !| NPOIN          |-->| NUMBER OF POINTS
@@ -84,11 +90,13 @@
 !
       TYPE(BIEF_OBJ), INTENT(INOUT) :: MASKTR,TBOR
       TYPE(BIEF_OBJ), INTENT(IN)    :: TN
-      INTEGER, INTENT(IN)           :: NPOIN,NPTFR,NELMAX,ICONV,NFRLIQ
-      INTEGER, INTENT(IN)    :: LITBOR(NPTFR),KP1BOR(NPTFR),NBOR(NPTFR)
+      INTEGER, INTENT(IN)    :: NELEB,NELEBX
+      INTEGER, INTENT(IN)    :: NPOIN,NPTFR,NELMAX,ICONV,NFRLIQ
+      INTEGER, INTENT(IN)    :: LITBOR(NPTFR),NBOR(NPTFR)
       INTEGER, INTENT(INOUT) :: LIMTRA(NPTFR),CLT(NPTFR)
-      INTEGER, INTENT(IN)    :: KENT,KSORT,KLOG,KDIR,KDDL,KNEU,KINC
-      INTEGER, INTENT(IN)    :: NELBOR(NPTFR),NUMLIQ(NPTFR)
+      INTEGER, INTENT(IN)    :: IKLBOR(NELEBX,2)
+      INTEGER, INTENT(IN)    :: KENT,KSORT,KLOG,KDIR,KDDL,KNEU
+      INTEGER, INTENT(IN)    :: NELBOR(NELEBX),NUMLIQ(NPTFR)
       INTEGER, INTENT(IN)    :: FRTYPE(NFRLIQ)
 !
       DOUBLE PRECISION, INTENT(IN) :: U(NPOIN), V(NPOIN)
@@ -101,7 +109,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,K1,K2,IELEM,DIR,DDL,NEU,OND,NONEU,IFRLIQ
+      INTEGER K,K1,K2,IELEM,DIR,DDL,NEU,OND,NONEU,IFRLIQ,IELEB
       DOUBLE PRECISION USCALN
 !
 !-----------------------------------------------------------------------
@@ -144,84 +152,55 @@
 !     INITIALISES THE MASKS TO 0
 !
       CALL OS('X=0     ',MASKTR)
-      DO K1 = 1 , NPTFR
-        K2 = KP1BOR(K1)
-!       K2=K1 => IN PARALLEL MODE, NEXT IN OTHER SUB-DOMAIN
-!                                  IN SUCH A CASE THE MASK BY
-!                                  SEGMENT SHOULD NOT BE USED
-        IF(K2.NE.K1) THEN
-          IF(CLT(K1).EQ.KLOG.OR.CLT(K2).EQ.KLOG) THEN
-!           SEGMENTS OF TYPE NEUMANN
-            MASKTR%ADR(NEU)%P%R(K1)=1.D0
-          ELSEIF(CLT(K1).EQ.KENT.AND.CLT(K2).EQ.KSORT) THEN
-!           SEGMENTS OF TYPE EXIT
-            MASKTR%ADR(DDL)%P%R(K1)=1.D0
-          ELSEIF(CLT(K1).EQ.KSORT.OR.CLT(K2).EQ.KSORT) THEN
-            MASKTR%ADR(DDL)%P%R(K1)=1.D0
-          ELSEIF(CLT(K1).EQ.KSORT.AND.CLT(K2).EQ.KENT) THEN
-!           SEGMENTS OF TYPE EXIT
-            MASKTR%ADR(DDL)%P%R(K1)=1.D0
-          ELSEIF(CLT(K1).EQ.KENT.OR.CLT(K2).EQ.KENT) THEN
-            MASKTR%ADR(DIR)%P%R(K1)=1.D0
-          ELSEIF(CLT(K1).EQ.KINC.OR.CLT(K2).EQ.KINC) THEN
-            MASKTR%ADR(OND)%P%R(K1)=1.D0
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,100)
-            IF(LNG.EQ.2) WRITE(LU,101)
-100         FORMAT(1X,'DIFFIN : CAS NON PREVU')
-101         FORMAT(1X,'DIFFIN : UNEXPECTED CASE')
-            CALL PLANTE(1)
-            STOP
-          ENDIF
+      DO IELEB = 1 , NELEB
+        K1=IKLBOR(IELEB,1)
+        K2=IKLBOR(IELEB,2)
+        IF(CLT(K1).EQ.KLOG.OR.CLT(K2).EQ.KLOG) THEN
+!         SEGMENTS OF TYPE NEUMANN
+          MASKTR%ADR(NEU)%P%R(IELEB)=1.D0
+        ELSEIF(CLT(K1).EQ.KENT.AND.CLT(K2).EQ.KSORT) THEN
+!         SEGMENTS OF TYPE EXIT
+          MASKTR%ADR(DDL)%P%R(IELEB)=1.D0
+        ELSEIF(CLT(K1).EQ.KSORT.OR.CLT(K2).EQ.KSORT) THEN
+          MASKTR%ADR(DDL)%P%R(IELEB)=1.D0
+        ELSEIF(CLT(K1).EQ.KSORT.AND.CLT(K2).EQ.KENT) THEN
+!         SEGMENTS OF TYPE EXIT
+          MASKTR%ADR(DDL)%P%R(IELEB)=1.D0
+        ELSEIF(CLT(K1).EQ.KENT.OR.CLT(K2).EQ.KENT) THEN
+          MASKTR%ADR(DIR)%P%R(IELEB)=1.D0
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,100)
+          IF(LNG.EQ.2) WRITE(LU,101)
+100       FORMAT(1X,'DIFFIN : CAS NON PREVU')
+101       FORMAT(1X,'DIFFIN : UNEXPECTED CASE')
+          CALL PLANTE(1)
+          STOP
         ENDIF
       ENDDO
-!
-!     IN PARALLEL MODE, RETRIEVES THE 1 GIVEN BY ANOTHER
-!     SUB-DOMAIN (I.E. TAKES THE MAX OF EACH POINT)
-!
-C     IF(NCSIZE.GT.1) THEN
-C       CALL PARCOM_BORD(MASKTR%ADR(NEU)%P%R,3,MESH)
-C       CALL PARCOM_BORD(MASKTR%ADR(DDL)%P%R,3,MESH)
-C       CALL PARCOM_BORD(MASKTR%ADR(DIR)%P%R,3,MESH)
-C       CALL PARCOM_BORD(MASKTR%ADR(OND)%P%R,3,MESH)
-C     ENDIF
 !
 !  POSSIBLE MASKING
 !
       IF(MSK) THEN
-        DO K1 = 1 , NPTFR
-          IELEM=NELBOR(K1)
-          IF(IELEM.GT.0) THEN
-            MASKTR%ADR(DIR)%P%R(K1) = MASKTR%ADR(DIR)%P%R(K1) *
-     &                                                     MASKEL(IELEM)
-            MASKTR%ADR(DDL)%P%R(K1) = MASKTR%ADR(DDL)%P%R(K1) *
-     &                                                     MASKEL(IELEM)
-            MASKTR%ADR(NEU)%P%R(K1) = MASKTR%ADR(NEU)%P%R(K1) *
-     &                                                     MASKEL(IELEM)
-            MASKTR%ADR(OND)%P%R(K1) = MASKTR%ADR(OND)%P%R(K1) *
-     &                                                     MASKEL(IELEM)
-          ENDIF
+        DO IELEB = 1 , NELEB
+          K1=IKLBOR(IELEB,1)
+          IELEM=NELBOR(IELEB)
+          MASKTR%ADR(DIR)%P%R(IELEB) = MASKTR%ADR(DIR)%P%R(IELEB) *
+     &                                                   MASKEL(IELEM)
+          MASKTR%ADR(DDL)%P%R(IELEB) = MASKTR%ADR(DDL)%P%R(IELEB) *
+     &                                                   MASKEL(IELEM)
+          MASKTR%ADR(NEU)%P%R(IELEB) = MASKTR%ADR(NEU)%P%R(IELEB) *
+     &                                                   MASKEL(IELEM)
+          MASKTR%ADR(OND)%P%R(IELEB) = MASKTR%ADR(OND)%P%R(IELEB) *
+     &                                                   MASKEL(IELEM)
         ENDDO
-!
-!       IN PARALLEL MODE, RETRIEVES THE 0S GIVEN BY ANOTHER
-!       SUB-DOMAIN (I.E. TAKES THE MIN OF EACH POINT)
-!
-C       IF(NCSIZE.GT.1) THEN
-C         CALL PARCOM_BORD(MASKTR%ADR(NEU)%P%R,4,MESH)
-C         CALL PARCOM_BORD(MASKTR%ADR(DDL)%P%R,4,MESH)
-C         CALL PARCOM_BORD(MASKTR%ADR(DIR)%P%R,4,MESH)
-C         CALL PARCOM_BORD(MASKTR%ADR(OND)%P%R,4,MESH)
-C       ENDIF
-!
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
 !     LIQUID BOUNDARIES MASK
 !
-      DO K=1,NPTFR
-        K2=KP1BOR(K)
-        IF(K2.NE.K) MASKTR%ADR(NONEU)%P%R(K)=1.D0-MASKTR%ADR(NEU)%P%R(K)
+      DO IELEB=1,NELEB
+        MASKTR%ADR(NONEU)%P%R(IELEB)=1.D0-MASKTR%ADR(NEU)%P%R(IELEB)
       ENDDO
 !
 !-----------------------------------------------------------------------

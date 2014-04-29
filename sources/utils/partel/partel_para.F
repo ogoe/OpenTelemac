@@ -69,6 +69,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET
+!+        27/03/2014
+!+    Arguments added to the call elebd.
+!+    Note that all the history before this is wrong...
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -576,7 +581,9 @@
       CALL ELEBD (NELBOR, NULONE, KP1BOR, IFABOR, NBOR(1:NPTFR), IKLE,
      &                   NELEM2, IKLBOR, NELEM2, NELEM2,
      &                   NPOIN2, NPTFR, 11, LIHBOR, 2, IFANUM,
-     &                   1, ISEGF, IT1, IT2, IT3 )
+     &                   1, ISEGF, IT1, IT2, IT3 ,
+     &                   NPTFR ,NPTFR)
+!                        NELEBX,NELEB (EQUAL NPTFR HERE)
 !
 !      WRITE(LU,'(/,'' BOUNDARY TYPE NUMBERING USING FRONT2'')')
 !
