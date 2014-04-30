@@ -52,6 +52,11 @@
 !+        V7P0
 !+   Adding a zones data file.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        30/04/2014
+!+        V7P0
+!+   Adding 2 blocks FTILD2 and FNCAR2 for weak characteristics.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -534,13 +539,13 @@
 !
       TYPE(BIEF_OBJ), TARGET :: F,FN
 !
-!     BLOCKS OF VARIABLES AFTER ADVECTION BY CHARACTERISTICS
+!     BLOCKS OF VARIABLES AFTER ADVECTION BY CHARACTERISTICS (STRONG AND WEAK)
 !
-      TYPE(BIEF_OBJ), TARGET :: FTILD
+      TYPE(BIEF_OBJ), TARGET :: FTILD,FTILD2
 !
-!     BLOCK OF VARIABLES TO BE ADVECTED BY CHARACTERISTICS
+!     BLOCK OF VARIABLES TO BE ADVECTED BY CHARACTERISTICS (STRONG AND WEAK)
 !
-      TYPE(BIEF_OBJ), TARGET :: FNCAR
+      TYPE(BIEF_OBJ), TARGET :: FNCAR,FNCAR2
 !
 !     BLOCKS OF MATRICES FOR LINEAR SYSTEMS
 !

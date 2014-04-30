@@ -204,6 +204,12 @@
 !+   2) Incident wave suppressed.
 !+   3) Different advection schemes for different tracers allowed.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        30/04/2014
+!+        V7P0
+!+   Now 2 calls to charac
+!+   one for strong and one for weak characteristics.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep          [in] starting time when called for coupling
 !param code           [in] calling program (if coupling)
@@ -1776,7 +1782,7 @@
 !
 !=======================================================================
 !
-      IF(CONV.AND.FTILD%N.GT.0) THEN
+      IF(CONV.AND.(FTILD%N.GT.0.OR.FTILD2%N.GT.0)) THEN
 !
         IF(ENTET) CALL ENTETE(3,AT,LT)
 !
@@ -1785,18 +1791,35 @@
           CALL OS('X=Y/Z   ',VCONV,VCONV,MESH%COSLAT,C)
         ENDIF
 !
-!       COMPUTATION OF CHARACTERISTICS AND INTERPOLATION
+!       COMPUTATION OF STRONG CHARACTERISTICS AND INTERPOLATION
 !
-        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING CHARAC'
-        CALL CHARAC(FNCAR , FTILD  , FTILD%N  , UCONV , VCONV,S,S,S,S,
-     &              DT    , IFAMAS , IELM     , NPOIN , 1,1,1,
-     &              MSK   , MASKEL , BM1%X    , BM1%D , BM1%D , TB   ,
-     &              IT1%I , IT2%I  , IT2%I    ,IT3%I  , IT4%I , IT2%I,
-     &              MESH  , MESH%NELEM        ,MESH%NELMAX    ,
-     &              MESH%IKLE,MESH%SURDET,
-!                   FOR WEAK FORM OF ADVECTION
-     &              AM1,CV1,SLVPRO,AGGLOW,ENTET,NGAUSS,UNSV2D,OPTCHA)
-        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CHARAC'
+        IF(FTILD%N.GT.0) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING CHARAC OPTION STRONG'
+          CALL CHARAC(FNCAR , FTILD  , FTILD%N  , UCONV , VCONV,S,S,S,S,
+     &                DT    , IFAMAS , IELM     , NPOIN , 1,1,1,
+     &                MSK   , MASKEL , BM1%X    , BM1%D , BM1%D , TB   ,
+     &                IT1%I , IT2%I  , IT2%I    ,IT3%I  , IT4%I , IT2%I,
+     &                MESH  , MESH%NELEM        ,MESH%NELMAX    ,
+     &                MESH%IKLE,MESH%SURDET,
+!                     FOR WEAK FORM OF ADVECTION                OPTCHA
+     &                AM1,CV1,SLVPRO,AGGLOW,ENTET,NGAUSS,UNSV2D,1)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CHARAC OPTION STRONG'
+        ENDIF
+!
+!       COMPUTATION OF WEAK CHARACTERISTICS AND INTERPOLATION
+!
+        IF(FTILD2%N.GT.0) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING CHARAC OPTION STRONG'
+          CALL CHARAC(FNCAR2, FTILD2 , FTILD2%N , UCONV , VCONV,S,S,S,S,
+     &                DT    , IFAMAS , IELM     , NPOIN , 1,1,1,
+     &                MSK   , MASKEL , BM1%X    , BM1%D , BM1%D , TB   ,
+     &                IT1%I , IT2%I  , IT2%I    ,IT3%I  , IT4%I , IT2%I,
+     &                MESH  , MESH%NELEM        ,MESH%NELMAX    ,
+     &                MESH%IKLE,MESH%SURDET,
+!                     FOR WEAK FORM OF ADVECTION                OPTCHA
+     &                AM1,CV1,SLVPRO,AGGLOW,ENTET,NGAUSS,UNSV2D,2)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CHARAC OPTION STRONG'
+        ENDIF
 !
         IF(SPHERI) THEN
           CALL OS('X=XY    ',UCONV,MESH%COSLAT,S,C)

@@ -78,6 +78,12 @@
 !+        V7P0
 !+   SLVTRA is now an array.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        30/04/2014
+!+        V7P0
+!+   Mixing strong and weak characteristics now possible, two new blocks
+!+   FTILD2 and FNCAR2 for this.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -828,34 +834,93 @@
 !
 !-----------------------------------------------------------------------
 ! 
-!     FUNCTIONS TO ADVECT BY CHARACTERISTICS
+!     FUNCTIONS TO ADVECT BY CHARACTERISTICS: STRONG OR WEAK (INDEX 2)
+!
+!-----------------------------------------------------------------------
 !
       CALL ALLBLO(FTILD , 'FTILD ')
       CALL ALLBLO(FNCAR , 'FNCAR ')
+      CALL ALLBLO(FTILD2, 'FTILD2')
+      CALL ALLBLO(FNCAR2, 'FNCAR2')
 !
 !     WITH FINITE VOLUMES OR KINETIC SCHEMES ADVECTION IS DONE IN VOLFIN
       IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
+!       VELOCITIES
         IF(CONVV(1).AND.ICONVF(1).EQ.ADV_CAR) THEN
-          CALL ADDBLO(FTILD,UTILD)
-          CALL ADDBLO(FTILD,VTILD)
-          CALL ADDBLO(FNCAR,UN   )
-          CALL ADDBLO(FNCAR,VN   )
+          IF(OPTADV_VI.EQ.1) THEN
+            CALL ADDBLO(FTILD,UTILD)
+            CALL ADDBLO(FTILD,VTILD)
+            CALL ADDBLO(FNCAR,UN   )
+            CALL ADDBLO(FNCAR,VN   )
+          ELSEIF(OPTADV_VI.EQ.2) THEN
+            CALL ADDBLO(FTILD2,UTILD)
+            CALL ADDBLO(FTILD2,VTILD)
+            CALL ADDBLO(FNCAR2,UN   )
+            CALL ADDBLO(FNCAR2,VN   )
+          ELSE
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'POINT_TELEMAC2D : ',OPTADV_VI
+              WRITE(LU,*) 'OPTION OPTADV_VI INCONNUE'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'POINT_TELEMAC2D : ',OPTADV_VI
+              WRITE(LU,*) 'UNKNOWN OPTION OPTADV_VI'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
         ENDIF
         IF(NTRAC.GT.0.AND.CONVV(3)) THEN
           DO ITRAC=1,NTRAC
             IF(ICONVFT(ITRAC).EQ.ADV_CAR) THEN
-              CALL ADDBLO(FTILD,TTILD%ADR(ITRAC)%P)
-              CALL ADDBLO(FNCAR,TN%ADR(ITRAC)%P)
+              IF(OPTADV_TR(ITRAC).EQ.1) THEN
+                CALL ADDBLO(FTILD,TTILD%ADR(ITRAC)%P)
+                CALL ADDBLO(FNCAR,TN%ADR(ITRAC)%P)
+              ELSEIF(OPTADV_TR(ITRAC).EQ.2) THEN
+                CALL ADDBLO(FTILD2,TTILD%ADR(ITRAC)%P)
+                CALL ADDBLO(FNCAR2,TN%ADR(ITRAC)%P)
+              ELSE
+                IF(LNG.EQ.1) THEN
+                  WRITE(LU,*) 'POINT_TELEMAC2D : ',OPTADV_TR(ITRAC)
+                  WRITE(LU,*) 'OPTION OPTADV_TR INCONNUE'
+                  WRITE(LU,*) 'POUR LE TRACEUR ',ITRAC
+                ENDIF
+                IF(LNG.EQ.2) THEN
+                  WRITE(LU,*) 'POINT_TELEMAC2D: ',OPTADV_TR(ITRAC)
+                  WRITE(LU,*) 'UNKNOWN OPTION OPTADV_TR'
+                  WRITE(LU,*) 'FOR TRACER ',ITRAC
+                ENDIF
+                CALL PLANTE(1)
+                STOP              
+              ENDIF
             ENDIF
           ENDDO
         ENDIF
       ENDIF
 !
       IF(CONVV(4).AND.ITURB.EQ.3.AND.ICONVF(4).EQ.ADV_CAR) THEN
-        CALL ADDBLO(FTILD,AKTILD)
-        CALL ADDBLO(FTILD,EPTILD)
-        CALL ADDBLO(FNCAR,AKN   )
-        CALL ADDBLO(FNCAR,EPN   )
+        IF(OPTADV_KE.EQ.1) THEN
+          CALL ADDBLO(FTILD,AKTILD)
+          CALL ADDBLO(FTILD,EPTILD)
+          CALL ADDBLO(FNCAR,AKN   )
+          CALL ADDBLO(FNCAR,EPN   )
+        ELSEIF(OPTADV_KE.EQ.2) THEN
+          CALL ADDBLO(FTILD2,AKTILD)
+          CALL ADDBLO(FTILD2,EPTILD)
+          CALL ADDBLO(FNCAR2,AKN   )
+          CALL ADDBLO(FNCAR2,EPN   )
+        ELSE
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'POINT_TELEMAC2D : ',OPTADV_KE
+            WRITE(LU,*) 'OPTION OPTADV_KE INCONNUE'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'POINT_TELEMAC2D : ',OPTADV_KE
+            WRITE(LU,*) 'UNKNOWN OPTION OPTADV_KE'
+          ENDIF           
+          CALL PLANTE(1)
+          STOP        
+        ENDIF
       ENDIF
 !
 !_______________________________________________________________________
