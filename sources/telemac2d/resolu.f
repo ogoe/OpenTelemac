@@ -390,11 +390,11 @@
 !
        WRITE(LU,*) ' '
        WRITE(LU,*) '          **************************'
-       WRITE(LU,*) '          * *** KINETIC SCHEME *** *'
+       WRITE(LU,*) '          *     KINETIC SCHEME     *'
        IF(NORDRE.EQ.1)THEN
-          WRITE(LU,*) '          *  FIRST ORDRE IN SPACE  * '
+          WRITE(LU,*) '          *  FIRST ORDER IN SPACE  * '
        ELSE
-          WRITE(LU,*)'          *  SECOND ORDRE IN SPACE * '
+          WRITE(LU,*)'          *  SECOND ORDER IN SPACE * '
        ENDIF
        WRITE(LU,*) '          **************************'
        WRITE(LU,*) ' '

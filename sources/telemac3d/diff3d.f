@@ -72,7 +72,9 @@
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        29/04/2014
 !+        V7P0
-!+   Argument SETDEP added.
+!+   Argument SETDEP added. New option SETDEP = 2 corresponds to a
+!+   vertical advection of sediment done by SED_FALL (based on the
+!+   forward method of characteristics in weak form).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
@@ -263,6 +265,18 @@
 !       CALL LUMP(T3_01,MTRA2,MESH3D,AGGLO)
         CALL OM( 'M=CN    ',MTRA2,MTRA2 , SVIDE , 1.D0-AGGLO , MESH3D )
         CALL OM( 'M=M+D   ',MTRA2,MTRA2 , T3_01 , 0.D0       , MESH3D )
+      ENDIF
+!
+!=======================================================================
+!   CASES OF ADVECTION OF SETTLING VELOCITY WITH EXPLICIT SCHEME
+!   FC IS AT THE BEGINNING THE RESULT OF ADVECTION WITHOUT SETTLING
+!   VELOCITY, THEN THE EFFECT OF SETTLING VELOCITY IS ADDED 
+!=======================================================================
+!
+      IF(SETDEP.EQ.2) THEN
+        CALL OS('X=Y     ',X=T3_02,Y=FC)
+        CALL SED_FALL(FC,T3_02,WCC,MESH2D,MESH3D,DT,VOLU,
+     &                IPBOT,NPOIN2,NPOIN3,NPLAN,T3_01)     
       ENDIF
 !
 !=======================================================================
@@ -555,21 +569,16 @@
 !
 !       RELEASE 5.6 (UPWINDING VERTICAL ADVECTION)
 !
-        IF(YAWCC) THEN
-!       FOR BOUNDARY TERMS, SEE SUBROUTINE FLUSED
-!CV..        CALL MATRIX
-!     &      (MTRA1, 'M=N     ', 'MATFGR         Z', IELM3, IELM3, -1.D0,
-!     &       WCC, SVIDE, SVIDE, SVIDE, SVIDE, SVIDE, MESH3D,MSK, MASKEL)
-        CALL MATRIX
-     &      (MTRA1, 'M=N     ', 'MATFGR         Z', IELM3, IELM3, +1.D0,
-     &       WCC, SVIDE, SVIDE, SVIDE, SVIDE, SVIDE, MESH3D,MSK, MASKEL)
-! ..CV     
-!       UPWINDING VERTICAL ADVECTION (HERE UPWIND COEFFICIENT 1.D0)
-! ?? ...     MTRA2 MUST STILL BE SYMMETRIC HERE
-        CALL UPWIND(MTRA2,WCC,1.D0,MESH2D,MESH3D,NPLAN)
-! ..??       MTRA2 TRANSFORMED INTO NON SYMMETRIC MATRIX
-        CALL OM('M=X(M)  ',MTRA2,MTRA2,SVIDE,C,MESH3D)
-        CALL OM('M=M+N   ',MTRA2,MTRA1,SVIDE,C,MESH3D)
+        IF(YAWCC.AND.SETDEP.EQ.0) THEN
+!         FOR BOUNDARY TERMS, SEE SUBROUTINE FLUSED
+          CALL MATRIX(MTRA1,'M=N     ','MATFGR         Z',
+     &                IELM3,IELM3,1.D0,WCC,
+     &                SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,MSK,MASKEL)    
+!         UPWINDING VERTICAL ADVECTION (HERE UPWIND COEFFICIENT 1.D0)
+!         ABS(WCC) USED IN UPWIND, SO NO EFFECT IF SIGN OF WCC CHANGED
+          CALL UPWIND(MTRA2,WCC,1.D0,MESH2D,MESH3D,NPLAN)
+          CALL OM('M=X(M)  ',MTRA2,MTRA2,SVIDE,C,MESH3D)
+          CALL OM('M=M+N   ',MTRA2,MTRA1,SVIDE,C,MESH3D)
         ENDIF
 !
       ENDIF

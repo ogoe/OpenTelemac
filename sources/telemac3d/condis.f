@@ -2,10 +2,10 @@
                      SUBROUTINE CONDIS
 !                    *****************
 !
-     &(IVIDE, EPAI  , TREST , CONC , TEMP   , HDEP   ,
-     & ZR   , ZF    , X     , Y    , NPOIN2 , NPOIN3 ,
-     & NPF  , NCOUCH, TASSE, ITASS  , RHOS, XKV, CFDEP, 
-     & ESOMT, TOCE, SEDCO,CONC_LAYER, TOCE_LAYER, ES_LAYER)
+     &(IVIDE, EPAI  , TREST , CONC      , TEMP   , HDEP   ,
+     & ZR   , ZF    , X     , Y         , NPOIN2 , NPOIN3 ,
+     & NPF  , NCOUCH, TASSE , ITASS     , RHOS   , XKV, CFDEP, 
+     & ESOMT, TOCE  , SEDCO , CONC_LAYER, TOCE_LAYER, ES_LAYER)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                   21/08/2010
@@ -39,6 +39,12 @@
 !+        27/02/2014
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        02/05/2014
+!+        V7P0
+!+   Call to NOEROD of Sisyphe for non erodable bed in the case of non
+!+   sediments.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CONC           |<--| CONCENTRATION OF MUD BED LAYER
@@ -75,18 +81,19 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC3D, ONLY : H,Z,NPLAN
       IMPLICIT NONE
 !
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3,NCOUCH
       DOUBLE PRECISION, INTENT(OUT)   :: IVIDE(NPOIN2,NCOUCH+1)
 !
-      DOUBLE PRECISION, INTENT(INOUT)   :: EPAI(NPOIN2,NCOUCH)
-      DOUBLE PRECISION, INTENT(INOUT)   :: CONC(NPOIN2,NCOUCH),CFDEP
+      DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPOIN2,NCOUCH)
+      DOUBLE PRECISION, INTENT(INOUT) :: CONC(NPOIN2,NCOUCH),CFDEP
 !      
       DOUBLE PRECISION, INTENT(OUT)   :: TEMP(NCOUCH,NPOIN2)
 !      
@@ -95,7 +102,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: ZF(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TREST(NCOUCH)
-      DOUBLE PRECISION, INTENT(INOUT) ::  TOCE(NPOIN2,NCOUCH)
+      DOUBLE PRECISION, INTENT(INOUT) :: TOCE(NPOIN2,NCOUCH)
       DOUBLE PRECISION, INTENT(IN)    :: CONC_LAYER(NCOUCH)
       DOUBLE PRECISION, INTENT(IN)    :: ES_LAYER(NCOUCH)
       DOUBLE PRECISION, INTENT(IN)    :: TOCE_LAYER(NCOUCH)
@@ -106,76 +113,29 @@
       INTEGER, INTENT(IN)             :: ITASS
       DOUBLE PRECISION, INTENT(IN)    :: RHOS,XKV
 !
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      DOUBLE PRECISION ECOUCH,TCAR,MB
+      INTEGER IPOIN,IC,IPF,CHOIX,NLISS
+      DOUBLE PRECISION, POINTER :: ZS(:)
+!
+!     A POINTER TO THE FREE SURFACE IN Z.
+!
+      ZS => Z(1+(NPLAN-1)*NPOIN2:NPLAN*NPOIN2) 
+!
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION ECOUCH , TCAR
-      INTEGER IPOIN, IC, IPF
+!     INITIALISES BED EVOLUTION ESOMT -----
 !
-      INTRINSIC LOG10,MAX
-! CV
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
-      DOUBLE PRECISION MB
-!   
-!#####> NOE-CHANGES
-!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-!      LOGICAL CVGCSL
-!      INTEGER ERR 
-!     INTEGER NITCSL, ITCSL
-!      DOUBLE PRECISION DTCSL,RESCSL
-!      DOUBLE PRECISION, ALLOCATABLE :: TRA01(:,:)
-!      DOUBLE PRECISION, ALLOCATABLE :: TRA02(:),TRA03(:),ZNOE(:)
+      CALL OS('X=0     ',X=ESOMT)
 !
-! ALLOCATES MEMORY AND SETS INITIAL INTERFACE BETWEEN HDEP AND EPAI
-!      ALLOCATE(TRA01(NPFMAX,6),STAT=ERR)
-!      IF(ERR.NE.0) THEN
-!        IF(LNG.EQ.1) WRITE(LU,*) 'CONDIS : MAUVAISE ALLOCATION DE TRA01'
-!        IF(LNG.EQ.2) WRITE(LU,*) 'CONDIS: WRONG ALLOCATION OF TRA01'
-!        STOP
-!      ENDIF
-!      ALLOCATE(TRA02(NPFMAX),STAT=ERR)
-!      IF(ERR.NE.0) THEN
-!        IF(LNG.EQ.1) WRITE(LU,*) 'CONDIS : MAUVAISE ALLOCATION DE TRA02'
-!        IF(LNG.EQ.2) WRITE(LU,*) 'CONDIS: WRONG ALLOCATION OF TRA02'
-!        STOP
-!      ENDIF
-!      ALLOCATE(TRA03(NPFMAX),STAT=ERR)
-!      IF(ERR.NE.0) THEN
-!        IF(LNG.EQ.1) WRITE(LU,*) 'CONDIS : MAUVAISE ALLOCATION DE TRA03'
-!        IF(LNG.EQ.2) WRITE(LU,*) 'CONDIS: WRONG ALLOCATION OF TRA03'
-!        STOP
-!      ENDIF
-!      ALLOCATE(ZNOE(NPOIN2),STAT=ERR)
-!      IF(ERR.NE.0) THEN
-!        IF(LNG.EQ.1) WRITE(LU,*) 'CONDIS : MAUVAISE ALLOCATION DE ZNOE'
-!        IF(LNG.EQ.2) WRITE(LU,*) 'CONDIS: WRONG ALLOCATION OF ZNOE'
-!        STOP
-!      ENDIF
-!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-!#####< NOE-CHANGES
-!
-!=======================================================================
-!
-!     -----  INITIALISES HDEP                  -----
-!     -----  NOT USED BY THE MULTILAYER MODEL  -----
-!
-!     HERE, THE DEFAULT ACTION IS TO SET HDEP TO 100., HENCE ENABLE THE
-!     EROSION PROCESS. THIS VALUE IS COMPATIBLE WITH SUBROUTINE NOEROD
-!     IN SISYPHE.
-!
-      CALL OV('X=C     ',HDEP,HDEP,HDEP,100.D0,NPOIN2)
-!
-!  -----  INITIALISES BED EVOLUTION ESOMT -----
-!
-       CALL OS('X=0     ',X=ESOMT)
-
-!     -------------------------------------------
+!     --------------------------------------------------------
 !     INITIAL CONDITIONS FOR THE MULTILAYER COHESIVE BED MODEL
-!     -------------------------------------------
+!     --------------------------------------------------------
 !
       IF(SEDCO) THEN
 !
-! COHESIVE SEDIMENT
+!       COHESIVE SEDIMENT
 !
         DO IPOIN=1,NPOIN2
           DO IC=1, NCOUCH
@@ -183,56 +143,61 @@
             TOCE(IPOIN,IC)= TOCE_LAYER(IC)
           ENDDO
         ENDDO  
-! Bed layer thickness
+!       Bed layer thickness HDEP
         DO IPOIN=1,NPOIN2
           HDEP(IPOIN) = 0.D0 
           DO IC=1, NCOUCH
-             EPAI(IPOIN,IC) = ES_LAYER(IC)
-             HDEP(IPOIN) = HDEP(IPOIN) + EPAI(IPOIN,IC)  
+            EPAI(IPOIN,IC) = ES_LAYER(IC)
+            HDEP(IPOIN) = HDEP(IPOIN) + EPAI(IPOIN,IC)  
           ENDDO        
-        ENDDO   
+        ENDDO
+!
+!       INITIALISES ZR TO ZF-HDEP
+        CALL OV('X=Y-Z   ' ,ZR,ZF,HDEP,0.D0,NPOIN2)
+!   
       ELSE
-!-----------------------------------------------
-! NON COHESIVE SEDIMENT
-! EPAI NOT DEFINED replaced by HDEP
-! -----------------------------------------------
-! ONLY ONE LAYER 
+!
+!       NON ERODABLE BED: CALLING NOEROD OF SISYPHE
+!
+!       ZS, CHOIX AND NLISS ARE NOT USED IN DEFAULT NOEROD
+!       NOEROD IS IN LIBRARY SISYPHE
+        CALL NOEROD(H%R,ZF,ZR,ZS,X,Y,NPOIN2,CHOIX,NLISS)
+!
+!       INITIALISES HDEP=ZF-ZR (NOT USED BY THE MULTILAYER MODEL)
+!
+        CALL OV('X=Y-Z   ',HDEP,ZF,ZR,0.D0,NPOIN2)
+!
+!       NON COHESIVE SEDIMENT (DIFFERENCE BETWEEN HDEP AND EPAI ?????)
+!                              WHY KEEPING BOTH ??
+!
+!       ONLY ONE LAYER 
         CFDEP= (1.D0-XKV)*RHOS
         DO IPOIN=1,NPOIN2
           CONC(IPOIN,1)= CFDEP
           EPAI(IPOIN,1)=HDEP(IPOIN)
-        ENDDO  
+        ENDDO
+!  
       ENDIF  
 !
-!     -----  INITIALISES ZR  -----
+!     ------------------------------------------
+!     INITIAL CONDITIONS FOR CONSOLIDATION MODEL
+!     ------------------------------------------
 !
-      CALL OV('X=Y-Z   ' ,ZR,ZF,HDEP,0.D0,NPOIN2)
-!
-!  -----------------------------------------
-!  INITIAL CONDITIONS FOR CONSOLIDATION MODEL
-!  ------------------------------------------
       IF(TASSE) THEN
+!
+        IF(ITASS.EQ.1) THEN
 !      
-! -------------------------
-! SIMPLE MULTI-LAYER MODEL
-!-------------------------
-        IF (ITASS.EQ.1) THEN
-!     
-!       -----  CHANGES HOURS INTO SECONDS  -----
-!
+!         SIMPLE MULTI-LAYER MODEL
+!   
+!         CHANGES HOURS INTO SECONDS  -----
           CALL OV( 'X=CX    ',TREST,TREST,TREST,3600.D0,NCOUCH)
-!
-!       -----  INITIALISES TEMP  -----
-!
+!         INITIALISES TEMP
           CALL OV( 'X=C     ',TEMP,TEMP,TEMP,0.D0,NPOIN2*NCOUCH)
 !
-
+        ELSEIF(ITASS.EQ.2) THEN
 !   
-!      GIBSON MODEL
-!     -------------
-
-        ELSEIF (ITASS.EQ.2) THEN
-!
+!         GIBSON MODEL
+! 
           DO IPOIN=1,NPOIN2
             NPF(IPOIN) =NCOUCH
             DO IPF= 1, NCOUCH
@@ -245,85 +210,21 @@
             ENDDO
             IVIDE(IPOIN,NCOUCH+1)= 2.D0*ECOUCH-IVIDE(IPOIN,NCOUCH)
           ENDDO
+!
+        ELSE
+!
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'CONDIS : MODELE DE TASSEMENT INCONNU : ',ITASS
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'CONDIS: UNKNOWN SETTLING MODEL: ',ITASS
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+!
         ENDIF
+!
       ENDIF 
-!
-!#####> NOE-CHANGES
-!
-!       HERE IS OUR CHANCE TO SET
-!       IVIDE AND (TRUE) EPAI REPRESENTATIVE OF CONSOLIDATED MATTER
-!
-!       CONSOL SHOULD BE .TRUE. IF THE LAYER DISTRIBUTION IS NOT KNOWN
-!       AND THE USER WANTS TO LET THE MODEL CONSOLIDATE THE BED
-!
-! This part is cancelled 
-!
-!        IF(CONSOL) THEN
-!
-! TIME FOR CONSOLIDATION, WHICH COULD ALSO BE READ FROM PRIVE%ADR(2)
-!          DTCSL = DT*10.D0
-!          NITCSL = 100
-!
-! START PAST TIME LOOP
-!
-!          DO ITCSL = 1,NITCSL
-!          CVGCSL = .FALSE.
-!          DO WHILE(.NOT.CVGCSL)
-!
-!     -----  MANAGES THE DEPOSITED SEDIMENT:   -----
-!     -----  ADDS NEW LAYERS TO THE MUDDY BED  -----
-!
-!            CALL GESTDP( IVIDE,EPAI,HDEP,
-!     &        NPOIN2,NPFMAX,NPF, EPAI0,CONC(1),RHOS )
-!
-!     -----  CONSOLIDATES THE MUDDY BED  -----
-!     -----  USING GIBSON EQUATION       -----
-!
-!            CALL TASSEM( IVIDE,EPAI, NPOIN2,NPFMAX,NPF, GRAV,RHOS,
-!     &        DTCSL, CFMAX, TRA01,TRA02,TRA03 )
-!
-!     -----  UPDATES THE BOTTOM LAYER  -----
-!     -----  RECOMPUTES THE INTERFACE  -----
-!
-!      RESCSL = 0.D0
-!      DO IPOIN = 1,NPOIN2
-!        ZNOE(IPOIN) = ZR(IPOIN)
-!        DO IPF = 1,NPF(IPOIN)-1
-!          ECOUCH=(IVIDE(IPF,IPOIN)+IVIDE(IPF+1,IPOIN))/2.D0
-!          ZNOE(IPOIN) = ZNOE(IPOIN)+(1.D0+ECOUCH)*EPAI(IPF,IPOIN)
-!        ENDDO
-!        IF(ZF(IPOIN).LT.ZNOE(IPOIN)) THEN
-!        RESCSL = RESCSL + ( MAX(
-!     & ZF(IPOIN)-(ZNOE(IPOIN)-(1.D0+ECOUCH)*EPAI(NPF(IPOIN)-1,IPOIN)),
-!     &  0.D0) - HDEP(IPOIN) )**2
-!      ECOUCH =(IVIDE(NPF(IPOIN)-1,IPOIN)+IVIDE(NPF(IPOIN),IPOIN))/2.D0
-!        HDEP(IPOIN) = MAX(
-!     &  ZF(IPOIN)-(ZNOE(IPOIN)-(1.D0+ECOUCH)*EPAI(NPF(IPOIN)-1,IPOIN)),
-!     &        0.D0)
-!            EPAI(NPF(IPOIN)-1,IPOIN) = 0.D0
-!            NPF(IPOIN) = NPF(IPOIN)-1
-!          ELSE
-!            RESCSL = RESCSL + (ZF(IPOIN)-ZNOE(IPOIN)-HDEP(IPOIN))**2
-!            HDEP(IPOIN) = ZF(IPOIN) - ZNOE(IPOIN)
-!          ENDIF
-!        ENDDO
-!        CVGCSL = RESCSL.LT.(1.D-8)
-!      ENDDO
-!
-! END PAST TIME LOOP
-!
-!        ENDIF
-!
-! END IF CONSOL
-!
-!      ENDIF
-!
-! END IF TASSE/GIBSON
-!
-!      DEALLOCATE(TRA01)
-!      DEALLOCATE(TRA02)
-!      DEALLOCATE(TRA03)
-!      DEALLOCATE(ZNOE)
 !
 !-----------------------------------------------------------------------      
 !

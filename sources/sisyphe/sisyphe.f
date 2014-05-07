@@ -3,7 +3,7 @@
 !                    ******************
 !
      &(PART,LOOPCOUNT,GRAFCOUNT,LISTCOUNT,TELNIT,
-     & U_TEL,V_TEL,H_TEL,HN_TEL,ZF_SIS,UETCAR,CF_TEL,KS_TEL,
+     & U_TEL,V_TEL,H_TEL,HN_TEL,ZF_TEL,UETCAR,CF_TEL,KS_TEL,
      & CONSTFLOW,NSIS_CFD,SISYPHE_CFD,CODE,PERICOU,
      & U3D,V3D,T_TEL,VISC_TEL,DT_TEL,CHARR_TEL,SUSP_TEL,
      & FLBOR_TEL,SOLSYS,DM1,UCONV_TEL,VCONV_TEL,ZCONV,
@@ -97,6 +97,15 @@
 !+   OPTSUP replaced by OPTADV in the call to suspension_main
 !+   (see keyword SCHME OPTION FOR ADVECTION)
 !
+!history  J-M HERVOUET (EDF R&D, LNHE) 
+!+        02/05/2014 
+!+        V7P0
+!+   ZF_SIS renamed ZF_TEL (it is ZF in the memory of Telemac-2D or 3D
+!+   so clearer like this isn't it?
+!+   When a new ZF is received from Telemac, ELAY updated consequently,
+!+   this was a long time overlooked bug, that can be seen when coupling
+!+   with Telemac-3D with non-erodable beds.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
 !| CHARR_TEL      |<->| LOGICAL, BED LOAD OR NOT: Sent to TELEMAC-2D
@@ -132,7 +141,7 @@
 !| V_TEL          |-->| V VELOCITY FROM TELEMAC
 !| ZCONV          |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
 !|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
-!| ZF_SIS         |<->| BOTTOM ELEVATION SENT TO TELEMAC
+!| ZF_TEL         |<->| BOTTOM ELEVATION OF THE CALLING TELEMAC 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_SISYPHE => SISYPHE
@@ -150,7 +159,7 @@
       INTEGER,           INTENT(IN)    :: LISTCOUNT,TELNIT,PERICOU
       CHARACTER(LEN=24), INTENT(IN)    :: CODE
       TYPE(BIEF_OBJ),    INTENT(IN)    :: U_TEL,V_TEL,H_TEL,HN_TEL
-      TYPE(BIEF_OBJ),    INTENT(INOUT) :: ZF_SIS,UETCAR,KS_TEL
+      TYPE(BIEF_OBJ),    INTENT(INOUT) :: ZF_TEL,UETCAR,KS_TEL
       INTEGER,           INTENT(INOUT) :: NSIS_CFD
       LOGICAL,           INTENT(INOUT) :: CONSTFLOW,SISYPHE_CFD
       TYPE(BIEF_OBJ),    INTENT(IN)    :: U3D,V3D,VISC_TEL
@@ -637,7 +646,8 @@
           CALL OV( 'X=Y     ', U2D%R, U_TEL%R, U_TEL%R, 0.D0, NPOIN)
           CALL OV( 'X=Y     ', V2D%R, V_TEL%R, V_TEL%R, 0.D0, NPOIN)
           CALL OV( 'X=Y     ', HN%R , H_TEL%R, H_TEL%R, 0.D0, NPOIN)
-          CALL OS( 'X=Y     ', X=ZF,Y=ZF_SIS)
+!         BOTTOM GIVEN BY CALLING PROGRAMME
+          CALL OS( 'X=Y     ', X=ZF,Y=ZF_TEL)
 !
 !         CLIPS NEGATIVE DEPTHS
 !
@@ -1066,7 +1076,7 @@
 !
 !       COUPLING
 !
-        IF(CODE(1:7) == 'TELEMAC') THEN
+        IF(CODE(1:7).EQ.'TELEMAC') THEN
 !
 !         OV INSTEAD OF OS IN ORDER TO AVOID PROBLEMS WITH QUASI-BUBBLE ELEMENTS
 !         OPERATES ONLY ON THE (1:NPOIN) RANGE OF THE TELEMAC FIELDS
@@ -1076,7 +1086,9 @@
           CALL OV( 'X=Y     ',V2D%R, V_TEL%R, V_TEL%R, 0.D0, NPOIN)
           CALL OV( 'X=Y     ', HN%R, H_TEL%R, H_TEL%R, 0.D0, NPOIN)
 !         ADDED BY JMH 01/07/2004 (ZF MAY BE MODIFIED BY CALLING PROGRAM)
-          CALL OS('X=Y     ', X=ZF, Y=ZF_SIS)
+          CALL OS('X=Y     ', X=ZF, Y=ZF_TEL)
+!         ELAY MUST BE UPDATED CONSEQUENTLY (ADDED BY JMH 02/05/2014)
+          CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
 !         CLIPS NEGATIVE DEPTHS
           IF(OPTBAN.GT.0) THEN
             DO I = 1,HN%DIM1
@@ -1228,12 +1240,9 @@
 !
 !         UPDATES THE BOTTOM
 !
-! mak:
           IF(.NOT.STAT_MODE) THEN
             CALL OS('X=X+Y   ',X=ZF,Y=ZF_C)
           ENDIF
-! end mak
-!     CALL OS('X=X+Y   ',X=ZF,Y=ZF_C)
 !
 !         UPDATES THE LAYERS  --> ELAY
 !
@@ -1683,7 +1692,7 @@ C!!! ONLY FOR ONE CLASS
 !       SENDS THE NEW ZF TO TELEMAC-2D OR 3D
 !
         IF(CODE(1:7).EQ.'TELEMAC') THEN
-          CALL OV ('X=Y     ', ZF_SIS%R, ZF%R, ZF%R, 0.D0, NPOIN)
+          CALL OV ('X=Y     ', ZF_TEL%R, ZF%R, ZF%R, 0.D0, NPOIN)
         ENDIF
 !
 !       THE SUBROUTINE VALIDA FROM THE LIBRARY IS STANDARD
@@ -1717,7 +1726,7 @@ C!!! ONLY FOR ONE CLASS
 !-----------------------------------------------------------------------
 !
       IF(DREDGESIM.AND.(LOOPCOUNT.EQ.TELNIT.AND.PART.EQ.1.
-     &                                            .OR.PART.EQ.-1)) THEN
+     &                                      .OR.PART.EQ.-1)) THEN
         CALL DREDGESIM_INTERFACE(3)
       ENDIF
 !

@@ -48,9 +48,17 @@
 !+   New call to CFLVF, for new monotonicity criterion.
 !
 !history  SARA PAVAN & J-M HERVOUET (EDF LAB, LNHE)
-!+        29/04/2014
+!+        05/05/2014
 !+        V7P0
-!+   New predictor-corrector PSI scheme (OPTADV=2)
+!+   New predictor-corrector PSI scheme (OPTADV=2). Security coefficient
+!+   on maximum time step to avoid truncation errors that would give
+!+   negative values.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        06/05/2014
+!+        V7P0
+!+   Boundary conditions LIMTRA redone (they may have been done with
+!+   U.N in diffin.f, which is different from flbor here.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -137,7 +145,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: OPDTRA,OPTSOU,KDIR,NPTFR,SOLSYS
-      INTEGER, INTENT(IN)             :: LIMTRA(NPTFR),KDDL,IOPT,OPTADV
+      INTEGER, INTENT(IN)             :: KDDL,IOPT,OPTADV
+      INTEGER, INTENT(INOUT)          :: LIMTRA(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: DT,AGGLOH,TRAIN
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
       LOGICAL, INTENT(IN)             :: BILAN,CONV,YASMH,YAFLBOR
@@ -145,7 +154,8 @@
       TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL,H,HN,DM1,ZCONV,MASKPT
       TYPE(BIEF_OBJ), INTENT(IN)      :: V2DPAR,UNSV2D,HPROP
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: F,SM,HNT,HT
-      TYPE(BIEF_OBJ), INTENT(IN)      :: FBOR,UCONV,VCONV,FN,SMI,SMH
+      TYPE(BIEF_OBJ), INTENT(IN)      :: UCONV,VCONV,FN,SMI,SMH
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: FBOR
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TE1,FLBORTRA
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,T5,T6,T7,T8
       TYPE(BIEF_OBJ), INTENT(IN)      :: FSCEXP,S,MASKTR,FLBOR
@@ -154,7 +164,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELMF,I,IOPT1,IOPT2
+      INTEGER IELMF,I,IOPT1,IOPT2,N
 !
 !-----------------------------------------------------------------------
 !
@@ -225,6 +235,45 @@
      &              UCONV,VCONV,VCONV,MESH,.TRUE.,MASKTR%ADR(5)%P)
       ENDIF
 !
+!-----------------------------------------------------------------------
+!
+!     CORRECTION OF THE BOUNDARY CONDITIONS
+!
+!-----------------------------------------------------------------------
+!
+!     A SIMILAR CORRECTION IS DONE IN DIFFIN, BUT IT MAY BE INCOMPATIBLE
+!     AS U*N MAY NOT BE OF THE SAME SIGN AS FLBOR HERE (RARE BUT ALREADY
+!     SEEN).
+!
+      CALL CPSTVC(HN,T7)
+!     JUST IN CASE INTERNAL POINTS HAVE NON INITIALISED VALUES
+      CALL OS('X=0     ',X=T7)
+      IF(YAFLBOR) THEN
+        DO I=1,MESH%NPTFR
+          N=MESH%NBOR%I(I)
+          T7%R(N)=FLBOR%R(I)
+        ENDDO
+      ELSE
+        DO I=1,MESH%NPTFR
+          N=MESH%NBOR%I(I)
+          T7%R(N)=T3%R(I)
+        ENDDO
+      ENDIF
+      IF(NCSIZE.GT.1) CALL PARCOM(T7,2,MESH)
+      DO I=1,MESH%NPTFR
+        N=MESH%NBOR%I(I)
+        IF(LIMTRA(I).EQ.KDIR.AND.T7%R(N).GT.0.D0) THEN
+          LIMTRA(I)=KDDL
+        ELSEIF(LIMTRA(I).EQ.KDDL.AND.T7%R(N).LT.0.D0) THEN
+          LIMTRA(I)=KDIR
+          FBOR%R(I)=FN%R(N)
+        ENDIF
+      ENDDO
+!
+!     T7 MAY NOW BE REUSED
+!
+!-----------------------------------------------------------------------
+!
 !     INITIALISES THE TRACER FLUX AT THE BOUNDARY
 !
       DO I=1,MESH%NPTFR
@@ -252,7 +301,6 @@
       NIT=0
       DT_REMAIN=DT
       TDT=0.D0
-      CALL CPSTVC(HN,T7)
       CALL CPSTVC(H ,T5)
       CALL CPSTVC(H ,T4)
       CALL CPSTVC(F,T8)
@@ -319,12 +367,19 @@
       IF(MSK) CALL OS('X=XY    ',X=T7,Y=MASKPT)
 !
 !     COMPUTES THE MAXIMUM TIMESTEP ENSURING MONOTONICITY
+!     ACCORDING TO THEORY
 !
       IF(OPTADV.EQ.2) THEN
         SECU=0.5D0
       ELSE
         SECU=1.D0
       ENDIF
+!
+!     NOW SECURITY TO AVOID SLIGHTLY NEGATIVE VALUES DUE
+!     TO TRUNCATION ERRORS
+!
+      SECU=SECU*0.99D0
+!
       CALL CFLVF(DDT,T5%R,HT%R,FXMAT,FXMATPAR,
 !                                   FLBOR%R(NPOIN)
      &           V2DPAR%R,DT_REMAIN,T7%R   ,SMH%R,

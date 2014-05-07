@@ -184,25 +184,16 @@
 !
       IF(SEDCO) THEN
 !
+        CALL ERODC(CONC,EPAI,FLUER,TOB%R,DENSI,
+     &             MPART,DT,NPOIN2,NCOUCH,TOCE,
+     &             HN%R,HMIN)
 !
-          CALL ERODC(CONC,EPAI,FLUER,TOB%R,DENSI,
-     &               MPART,DT,NPOIN2,NCOUCH,TOCE,
-     &               HN%R,HMIN)
-!
-!        ELSE
-!
-!          CALL ERODE(IVIDE,EPAI,HDEP,FLUER,TOB%R,DENSI,
-!     &               NPOIN2,NPFMAX,NPF,MPART,TOCE,
-!     &               CFDEP,RHOS,DT,GIBSON)
-!
-!        ENDIF
-
       ELSE
 !
-          CALL ERODNC(CFDEP,WC,HDEP,FLUER,TOB,DT,
-     &                NPOIN2,NPOIN3,KSPRATIO,AC,RHOS,RHO0,HN,
-     &                GRAV,DMOY,CREF,ZREF,CF,ICQ,RUGOF,
-     &                Z, UETCAR)
+        CALL ERODNC(CFDEP,WC,HDEP,FLUER,TOB,DT,
+     &              NPOIN2,NPOIN3,KSPRATIO,AC,RHOS,RHO0,HN,
+     &              GRAV,DMOY,CREF,ZREF,CF,ICQ,RUGOF,Z,UETCAR,
+     &              SETDEP)
 !
       ENDIF
 !

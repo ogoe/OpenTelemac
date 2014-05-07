@@ -7,7 +7,7 @@
      & TRA02  , TRA03  , NPOIN2, NPOIN3 , NPFMAX , NCOUCH,
      & NPF    , LT     , DT    , DTC    , GRAV   , RHOS  ,
      & CFMAX  , TASSE  , ITASS , 
-     & ZF_S   , ESOMT  , VOLU2D, MASDEP, SETDEP)
+     & ZF_S   , ESOMT  , VOLU2D, MASDEP , SETDEP , ZR)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                   21/08/2010
@@ -42,8 +42,22 @@
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
 !+   ZR not used anymore, ZF_S and ESOMT added.
+!+   (note JMH: not a good idea, see next but one history)
 !+   MASDEP computed: total deposited mass.
 ! 
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        30/04/2014
+!+        V7P0
+!+   IF(SETDEP.EQ.0) changed into IF(SETDEP.NE.1) to allow options
+!+   other than 0 and 1.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        02/05/2014
+!+        V7P0
+!+   Argument ZR added again. It is important to write:
+!+   ZF=ZR+HDEP, not ZF=ZF+evolution, otherwise we find cases where
+!+   ZF<ZR, due to truncation errors.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CFDEP          |-->| CONCENTRATION OF MUD DEPOSIT (G/L)
 !| CFMAX          |<->| CONCENTRATION OF CONSOLIDATED MUD (G/L)
@@ -54,7 +68,7 @@
 !| EPAI           |<->| THICKNESS OF SOLID FRACTION OF THE BED LAYER
 !|                |   | (EPAI=DZ/(1+IVIDE), DZ BED LAYER THICKNESS
 !| EPAI0          |<->| REFERENCE THICKNESS TP CREATE NEW ELEMENTS
-!|    SETDEP      |-->| CHOICE OF CONVECTION SCHEME FOR VERTICAL SETTLING
+!| SETDEP         |-->| CHOICE OF ADVECTION SCHEME FOR VERTICAL SETTLING
 !| GIBSON         |-->| LOGICAL FOR GIBSON SETTLING MODEL
 !| GRAV           |-->| GRAVITY ACCELERATION
 !| HDEP           |<->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
@@ -94,7 +108,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) ::  LT, NPOIN2, NPOIN3
+      INTEGER, INTENT(IN) ::  LT,NPOIN2,NPOIN3
       INTEGER, INTENT(IN) ::  NCOUCH,NPFMAX
 !
       DOUBLE PRECISION, INTENT(INOUT) :: IVIDE(NPOIN2,NCOUCH+1)
@@ -104,18 +118,17 @@
 !
       DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPOIN2,NCOUCH)
 !
-      DOUBLE PRECISION, INTENT(IN)    :: CONC(NPOIN2,NCOUCH)
+      DOUBLE PRECISION, INTENT(IN)    :: CONC(NPOIN2,NCOUCH),ZR(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: ZF(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: TA(NPOIN3), WC(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN)    :: TA(NPOIN3),WC(NPOIN3)
       DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPFMAX,6)
       DOUBLE PRECISION, INTENT(INOUT) :: TRA02(NPFMAX),TRA03(NPFMAX)
-      DOUBLE PRECISION, INTENT(IN)    :: FLUDPT(NPOIN2), FLUER(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: FLUDP(NPOIN2) , ZF_S(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: FLUDPT(NPOIN2),FLUER(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: FLUDP(NPOIN2),ZF_S(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: ESOMT(NPOIN2)
 !
-      DOUBLE PRECISION, INTENT(IN)    :: DT, RHOS, GRAV, DTC
-      DOUBLE PRECISION, INTENT(INOUT) ::  CFMAX 
-      DOUBLE PRECISION, INTENT(INOUT) :: MASDEP
+      DOUBLE PRECISION, INTENT(IN)    :: DT,RHOS,GRAV,DTC
+      DOUBLE PRECISION, INTENT(INOUT) :: CFMAX,MASDEP
 !
       INTEGER, INTENT(INOUT) ::  NPF(NPOIN2)
 !
@@ -144,30 +157,32 @@
 ! +++++++++++++++++++
 ! deposition in the first top layer
 ! calculate the layers thicknesses and deposited thicknes:  HDEP = sum ( EPAI)
-!
 !       
       FLUX=0.D0
 !
-! Schema explicite (EXPTSED) FLUDP calcule dans MURD3D_POS
+!     EXPLICIT SCHEME (SETDEP=1) FLUDP COMPUTED IN SET_DIF
 !
-! Schema implicite  CONSTRUCTION OF FLUDP:  
-! correction for tidal flats: take the first point above crushed planes
-! IPBOT =0  :  no tidal flats  IPBOT = NPLAN-1 : dry element
-! CV 01/2014 ....
+!     OTHER SCHEMES : FLUDP BUILT HERE
 !
-      IF(SETDEP.EQ.0) THEN
+      IF(SETDEP.NE.1) THEN
         IF(OPTBAN.EQ.1) THEN
           DO IPOIN=1,NPOIN2
+!           correction for tidal flats: take the first point above crushed planes
+!           IPBOT =0  :  no tidal flats  IPBOT = NPLAN-1 : dry element
             IF(IPBOT%I(IPOIN).NE.NPLAN-1) THEN
-              FLUDP(IPOIN)= FLUDPT(IPOIN)*
-     &                TA(IPBOT%I(IPOIN)*NPOIN2+IPOIN)
+              FLUDP(IPOIN)=FLUDPT(IPOIN)*
+     &        TA(IPBOT%I(IPOIN)*NPOIN2+IPOIN)
+              FLUDP(IPOIN)=MAX(FLUDP(IPOIN),0.D0)
             ELSE
               FLUDP(IPOIN)=0.D0
             ENDIF  
           ENDDO
         ELSE
           DO IPOIN=1,NPOIN2
-            FLUDP(IPOIN)= FLUDPT(IPOIN)*TA(IPOIN)
+            FLUDP(IPOIN)=FLUDPT(IPOIN)*TA(IPOIN)
+!           FLUDP MUST BE POSITIVE, EVEN IF TA<0 DUE TO TRUNCATION ERRORS
+!           PROBLEM SEEN WITH TA=-1.D-87 !!!!!
+            FLUDP(IPOIN)=MAX(FLUDP(IPOIN),0.D0)
           ENDDO     
         ENDIF
       ENDIF    
@@ -176,78 +191,49 @@
 !
       DO IPOIN=1,NPOIN2
 !
-        DELTAF=FLUDP(IPOIN) -FLUER(IPOIN)
-        FLUX=FLUX + DELTAF*VOLU2D%R(IPOIN)          
+        DELTAF=FLUDP(IPOIN)-FLUER(IPOIN)
+        FLUX=FLUX+DELTAF*VOLU2D%R(IPOIN)          
+        TOTMASS=0.D0
+        QERODE = FLUER(IPOIN)*DT
 !
-!
-!!+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-! Uniform bed and non cohesif (NCOUCH = 1) 
-! simulatenous treatment of erosion and deposition flux
-!+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-! 
-!         IF(NCOUCH.EQ.1) THEN  
-!            ZF_S(IPOIN)=   DELTAF*DT/CONC(IPOIN,1)
-!            HDEP(IPOIN)=   HDEP(IPOIN)+ZF_S(IPOIN)
-!            EPAI(IPOIN,1)= HDEP(IPOIN)
-!            
-! HDEP< 0. 
-! ---> message error
-!         ELSE
-
-! Erosiion first   
-! modification of layer thickness due to erosion is now done here (not ERODC)
-! Recalculate the erosion of layers by adding up the mass in each layer
-!
-            TOTMASS = 0.D0
-            QERODE  = FLUER(IPOIN)*DT
-!
-            DO IC=1,NCOUCH
+        DO IC=1,NCOUCH
 !                   
-              QS = CONC(IPOIN,IC)*EPAI(IPOIN,IC)
+          QS = CONC(IPOIN,IC)*EPAI(IPOIN,IC)
 !               
-              TOTMASS = TOTMASS + QS
-!             check if we have eroded enough entire layers
-              IF(TOTMASS.LT.QERODE) THEN
-                EPAI(IPOIN,IC) = 0.D0
-              ELSE
-!
-!               we have got to the correct layer. 
-!               How much of it do we need to erode?
-                QS = TOTMASS - QERODE
-! 
-!               calculate new thickness
-                EPAI(IPOIN,IC) = QS/CONC(IPOIN,IC)
-!
-!               jump out of layer loop (note JMH: EXIT ?)
-                GOTO 10
-              ENDIF
+          TOTMASS = TOTMASS + QS
+!         check if we have eroded enough entire layers
+          IF(TOTMASS.LT.QERODE) THEN
+            EPAI(IPOIN,IC) = 0.D0
+          ELSE
+!           we have got to the correct layer. 
+!           How much of it do we need to erode?
+            QS = TOTMASS - QERODE
+!           calculate new thickness
+            EPAI(IPOIN,IC) = QS/CONC(IPOIN,IC)        
+!           jump out of layer loop
+            EXIT
+          ENDIF
 !     
-! Check : if IC=1 and all layers are empty 
-! -> add a message error
-!
-            ENDDO
-!
-10      CONTINUE
+        ENDDO
 ! 
 !       Then Deposition in Top layer
 !  
-        EPAI(IPOIN,1)=EPAI(IPOIN,1)+
-     &         FLUDP(IPOIN)*DT/CONC(IPOIN,1)
+        EPAI(IPOIN,1)=EPAI(IPOIN,1)+FLUDP(IPOIN)*DT/CONC(IPOIN,1)   
 !
-! Recalculate the sediment bed thickness
-! 
+!       COMPUTING THE NEW SEDIMENT BED THICKNESS
+!
         SEDBED= 0.D0
         DO IC=1,NCOUCH
-          SEDBED =  SEDBED+EPAI(IPOIN,IC)
+          SEDBED=SEDBED+EPAI(IPOIN,IC)
         ENDDO
-!         
-! BED  EVOLUTION 
-! AND BED THICKNESS : HDEP
+!        
+!       EVOLUTION OBTAINED FROM OLD AND NEW SEDIMENT HEIGHT
 !
-        ZF_S(IPOIN)=  SEDBED -HDEP(IPOIN)
+        ZF_S(IPOIN)=SEDBED-HDEP(IPOIN)
+!
+!       SEDIMENT HEIGHT UPDATED
+!
         HDEP(IPOIN) = SEDBED
-!
-!      ENDIF
 !  
       ENDDO
 !
@@ -258,8 +244,14 @@
 !                 
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
-      CALL OV( 'X=Y+Z   ' , ESOMT,ESOMT, ZF_S, C, NPOIN2)
-      CALL OV( 'X=Y+Z   ' , ZF, ZF, ZF_S, C, NPOIN2)
+      CALL OV( 'X=Y+Z   ',ESOMT,ESOMT,ZF_S,C,NPOIN2)
+!
+!     NOTE JMH: THIS WAY OF WRITING THE NEW ZF ENSURES
+!               THAT ZF ABOVE ZR EVEN WITH TRUNCATION
+!               ERRORS, IF HDEP >0, THIS IS IMPORTANT
+!                  
+!     CALL OV( 'X=Y+Z   ' , ZF   ,   ZF, ZF_S, C, NPOIN2)
+      CALL OV( 'X=Y+Z   ' , ZF   ,   ZR, HDEP, C, NPOIN2)
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ! TASSEMENT HERE
@@ -335,4 +327,3 @@
 !
       RETURN
       END
-      

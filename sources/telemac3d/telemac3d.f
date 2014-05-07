@@ -129,6 +129,12 @@
 !+   Boundary segments have now their own numbering, independent of
 !+   boundary points numbering. Differents calls changed accordingly.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        02/05/2014
+!+        V7P0
+!+   Argument ZR added to FONVAS. HDEP updated differently after calling
+!+   Sisyphe, to avoid truncation errors that would give HDEP<0.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -1215,19 +1221,22 @@
 !     INITIALISES THE SEDIMENT SETTLING VELOCITY
 !     NEGLECTS TURBULENCE HERE
 !     WCHU COMPUTED HERE IS USED IN BORD3D FOR ROUSE PROFILES
-! CV
-! Floculation and  hindered settling
-! Soulsby flocculation and hindered settling is now coded in VITCHU along with all the previous telemac methods
-! NOTE: moved settling calculation to after CLSEDI since soulsby floc requires bed shear stress
+!     CV:Floculation and  hindered settling
+!        Soulsby flocculation and hindered settling is now coded in VITCHU
+!        along with all the previous telemac methods
+!        NOTE: moved settling calculation to after CLSEDI since 
+!        soulsby floc requires bed shear stress
 !
-        IF(SEDI) THEN
+      IF(SEDI) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE VITCHU'
-         CALL VITCHU(WCHU,WCHU0,TURBWC,U,V,W,H,RUGOF,LISRUF,
-     &   TURBA,TURBB,T3_01,T3_02,T3_03,SVIDE,MESH3D,IELM3,NPOIN2,NPOIN3,
-     &   NPLAN,NTRAC,MSK,MASKEL,UETCAR,TA,HN,HMIN,FLOC, FLOC_TYPE,
-     &   HINDER,HIND_TYPE,CGEL,CINI)
+        CALL VITCHU(WCHU,WCHU0,TURBWC,U,V,W,H,RUGOF,LISRUF,
+     &              TURBA,TURBB,T3_01,T3_02,T3_03,SVIDE,MESH3D,
+     &              IELM3,NPOIN2,NPOIN3,NPLAN,NTRAC,MSK,MASKEL,
+     &              UETCAR,TA,HN,HMIN,FLOC, FLOC_TYPE,
+     &              HINDER,HIND_TYPE,CGEL,CINI)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE VITCHU'
-        ENDIF 
+      ENDIF
+! 
 !=======================================================================
 ! THE TIME LOOP BEGINS HERE
 !=======================================================================
@@ -1282,14 +1291,11 @@
         CALL CPSTVC(U2D,U)
         CALL CPSTVC(V2D,V)
 !
-!       HDEP MUST INCLUDE BEDLOAD AND SUSPENSION
-        IF(SEDI) CALL OS('X=X-Y   ',X=HDEP,Y=ZF)
-!
 !       NOW RUNS ONE TURN OF SISYPHE'S TIME LOOP AND RETURNS
         CALL CONFIG_CODE(2)
         IBID=1
         LBID=.FALSE.
-        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SISYPHE'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SISYPHE'     
         CALL SISYPHE(1,LT,GRAPRD,LISPRD,NIT,U2D,V2D,H,HN,ZF,UETCAR,
      &               CF,RUGOF,LBID,IBID,LBID,CODE1,PERCOU_SIS,
      &               U,V,AT,VISCVI,DT*PERCOU_SIS,CHARR,SUSP,
@@ -1300,8 +1306,8 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SISYPHE'
         CALL CONFIG_CODE(1)
 !
-!       HDEP MUST INCLUDE BEDLOAD AND SUSPENSION
-        IF(SEDI) CALL OS('X=X+Y   ',X=HDEP,Y=ZF)
+!       HDEP MUST BE UPDATED BECAUSE SISYPHE CHANGED ZF
+        IF(SEDI) CALL OS('X=Y-Z   ',X=HDEP,Y=ZF,Z=ZR)     
 !
 !       RETRIEVES ORIGINAL U AND V STRUCTURE
         CALL CPSTVC(UN,U)
@@ -2328,7 +2334,7 @@
         CALL DRSURR(DELTAR,TA,BETAC,T0AC,T3_01,RHO0,RHOS,DENLAW,
      &              SEDI,NTRAC,IND_T,IND_S)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DRSURR'
-
+!
       ENDIF
 !
       END DO SUBITER
@@ -2340,15 +2346,13 @@
       IF(SEDI) THEN
 !
 !       FONVAS DOES ZF=ZR+HDEP, THUS HDEP MUST INCLUDE BEDLOAD
-!       EROSION HAS BEEN TAKEN INTO ACCOUNT INTO CLSEDI ABOVE
+!       EROSION, HAS BEEN TAKEN INTO ACCOUNT INTO CLSEDI ABOVE
 !
-        CALL FONVAS
-     &  (IVIDE%R, EPAI, CONC, TREST, TEMP%R, HDEP%R, 
-     &   FLUDP%R, FLUDPT%R,    FLUER%R,
-     &   ZF%R,TA%ADR(NTRAC)%P%R, WCHU%R,
-     &   T3_01%R, T3_02%R, T3_03%R, NPOIN2, NPOIN3, NPFMAX, NCOUCH,
-     &   NPF%I, LT, DT, DTC, GRAV, RHOS, CFMAX, 
-     &   TASSE,ITASS,ZF_S%R, ESOMT%R, VOLU2D, MASDEP, SETDEP)
+        CALL FONVAS(IVIDE%R,EPAI,CONC,TREST,TEMP%R,HDEP%R, 
+     &              FLUDP%R,FLUDPT%R,FLUER%R,ZF%R,TA%ADR(NTRAC)%P%R,
+     &              WCHU%R,T3_01%R,T3_02%R,T3_03%R,NPOIN2,NPOIN3,NPFMAX,
+     &              NCOUCH,NPF%I,LT,DT,DTC,GRAV,RHOS,CFMAX,TASSE,ITASS,
+     &              ZF_S%R,ESOMT%R,VOLU2D,MASDEP,SETDEP,ZR%R)  
 !
       ENDIF
 !

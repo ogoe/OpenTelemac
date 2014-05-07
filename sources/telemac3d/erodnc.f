@@ -5,23 +5,18 @@
      &(CFDEP  , WC     , HDEP     , FLUER , TOB   , DT    ,
      & NPOIN2 , NPOIN3 , KSPRATIO , AC    , RHOS  , RHO0  , HN ,
      & GRAV   , DMOY   , CREF     , ZREF  , CF    , ICQ   ,RUGOF,
-     & Z, UETCAR)
+     & Z      , UETCAR , SETDEP)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODELS EROSION FOR NON-COHESIVE SEDIMENTS.
 !
 !history  CAMILLE LEQUETTE
-!+        **/06/2003
-!+
-!+
-!
-!history  J.-M. HERVOUET
-!+        12/09/2007
-!+        V6P0
-!+
+!+        06/06/2003
+!+        V5P3
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -39,6 +34,13 @@
 !+        27/02/2014
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        05/05/2014
+!+        V7P0
+!+   New extrapolation of Rouse profile removed. It spoils the test case
+!+   depot, which is so far the only official test case of Telemac-3D
+!+   with erosion and deposition. This must be clarified.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |-->| CRITICAL SHIELDS PARAMETER
@@ -59,6 +61,7 @@
 !| RHO0           |-->| WATER DENSITY AT REFERENCE CONCENTRATION
 !| RHOS           |-->| SEDIMENT DENSITY
 !| RUGOF          |<->| FRICTION COEFFICIENT ON THE BOTTOM
+!| SETDEP         |-->| OPTION FOR THE TREATMENT OF SETTLING VELOCITY
 !| TOB            |-->| BOTTOM FRICTION
 !| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY
 !| WC             |-->| SETTLING VELOCITY
@@ -79,7 +82,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3, ICQ
+      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3,ICQ,SETDEP
 !
       DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2),FLUER(NPOIN2)
 !
@@ -128,19 +131,29 @@
 !     UNITS FOR CREF G/L, NOT LIKE IN SISYPHE
 !
       CALL OS('X=CX    ',X=CREF,C=RHOS)
-!      
+!
+!     JMH ON 05/05/2014 
+!     Following lines put under condition of SETDEP=1, they change a
+!     lot the test case depot (76 cm of deposition at the 
+!     entrance, while the bed should not evolve too much, as
+!     we simulate a Rouse profile. Lines below are probably compatible
+!     with FLUDPT done when SETDEP=1.    
+!     
 !     CV: Extrapolation of Rouse profile from ZREF to 1/2 or 1/4 of first grid mesh
 !
-      DO IPOIN =1,NPOIN2
-        USTAR=MAX(SQRT(UETCAR(IPOIN)),1.D-6) 
-        ROUSE=PRANDTL*WC(IPOIN)/KARMAN/USTAR
-!       rouse profile extrapolation up to 1/4 of the first layer
-!       DELTAZ=(MESH3D%Z%R(IPOIN +NPOIN2)-MESH3D%Z%R(IPOIN))/4.D0
-        DELTAZ=(Z(IPOIN +NPOIN2)-Z(IPOIN))/FICT
-        ROUSE_Z=ZREF%R(IPOIN)/(HN%R(IPOIN)-ZREF%R(IPOIN))
-     &      *(HN%R(IPOIN)-DELTAZ)/DELTAZ
-        CREF%R(IPOIN)=CREF%R(IPOIN)*ROUSE_Z**ROUSE
-      ENDDO            
+      IF(SETDEP.EQ.1) THEN
+!
+        DO IPOIN =1,NPOIN2
+          USTAR=MAX(SQRT(UETCAR(IPOIN)),1.D-6) 
+          ROUSE=PRANDTL*WC(IPOIN)/KARMAN/USTAR
+!         rouse profile extrapolation up to 1/4 of the first layer
+          DELTAZ=(Z(IPOIN +NPOIN2)-Z(IPOIN))/FICT
+          ROUSE_Z=ZREF%R(IPOIN)/(HN%R(IPOIN)-ZREF%R(IPOIN))
+     &           *(HN%R(IPOIN)-DELTAZ)/DELTAZ
+          CREF%R(IPOIN)=CREF%R(IPOIN)*ROUSE_Z**ROUSE
+        ENDDO
+!
+      ENDIF            
 !
 !  ------------------------------------------------------------
 !  -----------------     EROSION STEP    ----------------------
@@ -150,7 +163,6 @@
 !
 !       COMPUTES THE EROSION FLUX
 !
-!CV        FLUER(I)=-WC(I)*CREF%R(I)
         FLUER(I)= WC(I)*CREF%R(I)
 !
 !       QUANTITY OF SOLID IN THE LAYER BEFORE EROSION
@@ -160,7 +172,7 @@
 !
 !       LAYER THICKNESS AFTER EROSION
 !
-!CV        HDEP(I)=MAX(0.D0,HDEP(I)-(FLUER(I)*DT/CFDEP))
+!CV     HDEP(I)=MAX(0.D0,HDEP(I)-(FLUER(I)*DT/CFDEP))
 !
 !       LIMITS THE EROSION FLUX
 !

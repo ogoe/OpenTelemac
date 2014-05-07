@@ -6,7 +6,7 @@
      & FLXS,VOLNEGS,VOLPOSS,SUSP,FLXC,VOLNEGC,VOLPOSC,CHARR)
 !
 !***********************************************************************
-! SISYPHE   V6P3                                   21/07/2011
+! SISYPHE   V7P0                                         21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES FLUXES THROUGH CONTROL SECTIONS
@@ -33,10 +33,17 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
-!history  R. KOPMANN (EDF R&D, LNHE)
-!+        16/04/2013
-!+        V6P3
-!+   Modifications for parallelism, marked !RK
+!history  C. VILLARET & J-M HERVOUET (EDF LAB, LNHE)
+!+        18/04/2014
+!+        V7P0
+!+   Printing information on bedload and suspension, and writing the
+!+   sections output file with both old and new methods.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        06/05/2014
+!+        V7P0
+!+   A use of P_DSUM removed in the scalar section (caused a stop with
+!+   some compilers).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHARR          |-->| LOGICAL, BEDLOAD OR NOT
@@ -59,8 +66,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF, ONLY: IPID
-      USE DECLARATIONS_SISYPHE, ONLY:
-     &          SIS_FILES,SISSEO,CHAIN,TITCA
+      USE DECLARATIONS_SISYPHE, ONLY: SIS_FILES,SISSEO,CHAIN
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -79,161 +85,222 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION, ALLOCATABLE, SAVE :: WORK(:)
+      DOUBLE PRECISION, ALLOCATABLE, SAVE :: WORK(:),WORKB(:)
       DOUBLE PRECISION P_DMAX,P_DMIN,P_DSUM
+
       INTEGER                        P_IMIN
       EXTERNAL         P_DMAX,P_DMIN,P_DSUM,P_IMIN
 !
-      INTEGER ISEC,II,ERR
+      INTEGER ISEC,II,ERR,NSEO
       CHARACTER(LEN=16) :: FMTZON='(4(1X,1PG21.14))'
       LOGICAL :: OLD_METHOD=.FALSE.
       LOGICAL, SAVE :: INIT=.TRUE.
-      INTEGER, SAVE :: NSEO
 !
 !-----------------------------------------------------------------------
 !
-      IF (.NOT.ALLOCATED(CHAIN)) OLD_METHOD=.TRUE.
+      NSEO=SIS_FILES(SISSEO)%LU
+!
+!-----------------------------------------------------------------------
+!
+      IF(.NOT.ALLOCATED(CHAIN)) OLD_METHOD=.TRUE.
+!
+!     DONE ONCE FOR ALL
+!
+      IF(INIT.AND.(TRIM(SIS_FILES(SISSEO)%NAME).NE.'') ) THEN
+!
+        IF(NCSIZE.GT.1) THEN
+          ALLOCATE (WORK(NSEC), STAT=ERR)
+          IF(ERR.NE.0) THEN
+            WRITE(LU,*) 'FLUXPR_SISYPHE: ERROR ALLOCATING WORK:',ERR
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          IF(CHARR.AND.SUSP) THEN
+            ALLOCATE (WORKB(NSEC), STAT=ERR)
+            IF(ERR.NE.0) THEN
+              WRITE(LU,*) 'FLUXPR_SISYPHE: ERROR ALLOCATING WORK:',ERR
+              CALL PLANTE(1)
+              STOP
+            ENDIF
+          ENDIF
+        ENDIF
+!
+        INIT=.FALSE.
+!
+        IF(CHARR.AND..NOT.SUSP) THEN 
+          WRITE(NSEO,*) ' INTEGRATED BEDLOAD DISCHARGES '
+          WRITE(NSEO,*) ' VARIABLES = TIME(S) QC(M3/S) FOR',
+     &           (' '//TRIM(CHAIN(ISEC)%DESCR), ISEC=1,NSEC)
+        ENDIF
+!
+        IF(SUSP.AND..NOT.CHARR) THEN 
+          WRITE(NSEO,*) ' INTEGRATED SUSPENDED LOAD DISCHARGES '
+          WRITE(NSEO,*) ' VARIABLES = TIME   QS (M3/S) FOR SECTIONS '
+     &           ,(II,II=1,NSEC)
+        ENDIF
+!
+        IF(CHARR.AND.SUSP) THEN 
+          WRITE(NSEO,*) ' INTEGRATED BEDLOAD AND SUSPENDED LOAD '
+          WRITE(NSEO,*) 'VARIABLES = TIME , QC FOR ',
+     &           (' '//TRIM(CHAIN(ISEC)%DESCR), ISEC=1,NSEC), ' QS FOR',
+     &           (' '//TRIM(CHAIN(ISEC)%DESCR), ISEC=1,NSEC)
+        ENDIF
+!
+	WRITE(NSEO,100)(II , II= 1 ,NSEC)
+100     FORMAT(' TIME',' SECTION:',I2, 'SECTION: ',I2)
+!
+      ENDIF
 !
       IF(INFO) THEN
+!      
+      IF(OLD_METHOD) THEN 
 !
-      IF (OLD_METHOD) THEN !JAJ #### FOLLOW FLUXPR.F OF BIEF BLINDLY
+        IF(NCSIZE.LE.1) THEN
 !
-      IF(NCSIZE.LE.1) THEN
+!         SCALAR MODE
 !
-      DO ISEC = 1,NSEC
+          DO ISEC = 1,NSEC
 !
-      IF(LNG.EQ.1) WRITE(LU,130) ISEC,CTRLSC(1+2*(ISEC-1)),
-     &                                CTRLSC(2+2*(ISEC-1)),
-     &                                FLX(ISEC),
-     &                                VOLNEG(ISEC),
-     &                                VOLPOS(ISEC)
-      IF(LNG.EQ.2) WRITE(LU,131) ISEC,CTRLSC(1+2*(ISEC-1)),
-     &                                CTRLSC(2+2*(ISEC-1)),
-     &                                FLX(ISEC),
-     &                                VOLNEG(ISEC),
-     &                                VOLPOS(ISEC)
-130   FORMAT(1X,/,1X,'SECTION DE CONTROLE ',1I2,
+            IF(LNG.EQ.1) WRITE(LU,130) ISEC,CTRLSC(1+2*(ISEC-1)),
+     &                                 CTRLSC(2+2*(ISEC-1)),
+     &                                 FLX(ISEC),VOLNEG(ISEC),
+     &                                 VOLPOS(ISEC)
+            IF(LNG.EQ.2) WRITE(LU,131) ISEC,CTRLSC(1+2*(ISEC-1)),
+     &                                 CTRLSC(2+2*(ISEC-1)),
+     &                                 FLX(ISEC),VOLNEG(ISEC),
+     &                                 VOLPOS(ISEC)
+!    
+130         FORMAT(1X,/,1X,'SECTION DE CONTROLE ',1I2,
      &               ' (ENTRE LES POINTS ',1I5,' ET ',1I5,')',//,5X,
      &               'DEBIT :                     ',G16.7,/,5X,
      &               'CUMUL DES DEBITS NEGATIFS : ',G16.7,/,5X,
      &               'CUMUL DES DEBITS POSITIFS : ',G16.7)
-131   FORMAT(1X,/,1X,'CONTROL SECTION NUMBER ',1I2,
+131         FORMAT(1X,/,1X,'CONTROL SECTION NUMBER ',1I2,
      &               ' (BETWEEN POINTS ',1I5,' AND ',1I5,')',//,5X,
      &               'DISCHARGE:                 ',G16.7,/,5X,
      &               'CUMULATED NEGATIVE VOLUME: ',G16.7,/,5X,
      &               'CUMULATED POSITIVE VOLUME: ',G16.7)
-      IF(SUSP) THEN
-        IF(LNG.EQ.1) WRITE(LU,1301) FLXS(ISEC),
-     &                              VOLNEGS(ISEC),
-     &                              VOLPOSS(ISEC)
-        IF(LNG.EQ.2) WRITE(LU,1302) FLXS(ISEC),
-     &                              VOLNEGS(ISEC),
-     &                              VOLPOSS(ISEC)
-1301    FORMAT(5X,'DEBIT EN SUSPENSION :       ',G16.7,/,5X,
-     &            'CUMUL DES DEBITS NEGATIFS : ',G16.7,/,5X,
-     &            'CUMUL DES DEBITS POSITIFS : ',G16.7)
-1302    FORMAT(5X,'DISCHARGE IN SUSPENSION:   ',G16.7,/,5X,
-     &            'CUMULATED NEGATIVE VOLUME: ',G16.7,/,5X,
-     &            'CUMULATED POSITIVE VOLUME: ',G16.7)
-      ENDIF
-      IF(CHARR) THEN
-        IF(LNG.EQ.1) WRITE(LU,1303) FLXC(ISEC),
-     &                              VOLNEGC(ISEC),
-     &                              VOLPOSC(ISEC)
-        IF(LNG.EQ.2) WRITE(LU,1304) FLXC(ISEC),
-     &                              VOLNEGC(ISEC),
-     &                              VOLPOSC(ISEC)
-1303    FORMAT(5X,'DEBIT EN CHARRIAGE :        ',G16.7,/,5X,
-     &            'CUMUL DES DEBITS NEGATIFS : ',G16.7,/,5X,
-     &            'CUMUL DES DEBITS POSITIFS : ',G16.7)
-1304    FORMAT(5X,'BEDLOAD DISCHARGE:         ',G16.7,/,5X,
-     &            'CUMULATED NEGATIVE VOLUME: ',G16.7,/,5X,
-     &            'CUMULATED POSITIVE VOLUME: ',G16.7)
-      ENDIF
+            IF(SUSP) THEN
+              IF(LNG.EQ.1) WRITE(LU,1301) FLXS(ISEC),
+     &                                    VOLNEGS(ISEC),
+     &                                    VOLPOSS(ISEC)
+              IF(LNG.EQ.2) WRITE(LU,1302) FLXS(ISEC),
+     &                                    VOLNEGS(ISEC),
+     &                                    VOLPOSS(ISEC)
+            ENDIF
 !
-      ENDDO
+1301        FORMAT(5X,'DEBIT EN SUSPENSION :       ',G16.7,/,5X,
+     &                'CUMUL DES DEBITS NEGATIFS : ',G16.7,/,5X,
+     &                'CUMUL DES DEBITS POSITIFS : ',G16.7)
+1302        FORMAT(5X,'DISCHARGE IN SUSPENSION:   ',G16.7,/,5X,
+     &                'CUMULATED NEGATIVE VOLUME: ',G16.7,/,5X,
+     &                'CUMULATED POSITIVE VOLUME: ',G16.7)
+            IF(CHARR) THEN
+              IF(LNG.EQ.1) WRITE(LU,1303) FLXC(ISEC),
+     &                                    VOLNEGC(ISEC),
+     &                                    VOLPOSC(ISEC)
+              IF(LNG.EQ.2) WRITE(LU,1304) FLXC(ISEC),
+     &                                    VOLNEGC(ISEC),
+     &                                    VOLPOSC(ISEC)
+1303          FORMAT(5X,'DEBIT EN CHARRIAGE :        ',G16.7,/,5X,
+     &                  'CUMUL DES DEBITS NEGATIFS : ',G16.7,/,5X,
+     &                  'CUMUL DES DEBITS POSITIFS : ',G16.7)
+1304          FORMAT(5X,'BEDLOAD DISCHARGE:         ',G16.7,/,5X,
+     &                  'CUMULATED NEGATIVE VOLUME: ',G16.7,/,5X,
+     &                  'CUMULATED POSITIVE VOLUME: ',G16.7)
+            ENDIF
 !
-      ELSE
+          ENDDO
+!    
+        ELSE
 !
-      DO ISEC = 1,NSEC
-!     SECTIONS ACROSS 2 SUB-DOMAINS WILL HAVE NSEG=0 OR -1
-!     AND -1 WANTED HERE FOR RELEVANT MESSAGE
-      II=P_IMIN(NSEG(ISEC))
+!         PARALLEL MODE
 !
-      IF(II.GE.0) THEN
+          DO ISEC = 1,NSEC
 !
-      IF(LNG.EQ.1) WRITE(LU,130) ISEC,CTRLSC(1+2*(ISEC-1)),
-     &                                CTRLSC(2+2*(ISEC-1)),
+!           SECTIONS ACROSS 2 SUB-DOMAINS WILL HAVE NSEG=0 OR -1
+!           AND -1 WANTED HERE FOR RELEVANT MESSAGE
+!
+            II=P_IMIN(NSEG(ISEC))
+            IF(II.GE.0) THEN
+!
+              IF(LNG.EQ.1) WRITE(LU,130) ISEC,CTRLSC(1+2*(ISEC-1)),
+     &                                   CTRLSC(2+2*(ISEC-1)),
      &                 P_DMIN(FLX(ISEC))+P_DMAX(FLX(ISEC)),
-     &                                P_DMIN(VOLNEG(ISEC)),
-     &                                P_DMAX(VOLPOS(ISEC))
-      IF(LNG.EQ.2) WRITE(LU,131) ISEC,CTRLSC(1+2*(ISEC-1)),
-     &                                CTRLSC(2+2*(ISEC-1)),
+     &                                   P_DMIN(VOLNEG(ISEC)),
+     &                                   P_DMAX(VOLPOS(ISEC))
+              IF(LNG.EQ.2) WRITE(LU,131) ISEC,CTRLSC(1+2*(ISEC-1)),
+     &                                   CTRLSC(2+2*(ISEC-1)),
      &                 P_DMIN(FLX(ISEC))+P_DMAX(FLX(ISEC)),
-     &                                P_DMIN(VOLNEG(ISEC)),
-     &                                P_DMAX(VOLPOS(ISEC))
-      IF(SUSP) THEN
-        IF(LNG.EQ.1) WRITE(LU,1301)
+     &                                   P_DMIN(VOLNEG(ISEC)),
+     &                                   P_DMAX(VOLPOS(ISEC))
+! 
+              IF(SUSP) THEN
+                IF(LNG.EQ.1) WRITE(LU,1301)
      &              P_DMIN(FLXS(ISEC))+P_DMAX(FLXS(ISEC)),
-     &                              P_DMIN(VOLNEGS(ISEC)),
-     &                              P_DMAX(VOLPOSS(ISEC))
-        IF(LNG.EQ.2) WRITE(LU,1302)
+     &                                 P_DMIN(VOLNEGS(ISEC)),
+     &                                 P_DMAX(VOLPOSS(ISEC))
+                IF(LNG.EQ.2) WRITE(LU,1302)
      &              P_DMIN(FLXS(ISEC))+P_DMAX(FLXS(ISEC)),
-     &                              P_DMIN(VOLNEGS(ISEC)),
-     &                              P_DMAX(VOLPOSS(ISEC))
-      ENDIF
-      IF(CHARR) THEN
-        IF(LNG.EQ.1) WRITE(LU,1303)
-     &              P_DMIN(FLXC(ISEC))+P_DMAX(FLXC(ISEC)),
-     &                              P_DMIN(VOLNEGC(ISEC)),
-     &                              P_DMAX(VOLPOSC(ISEC))
-        IF(LNG.EQ.2) WRITE(LU,1304)
-     &              P_DMIN(FLXC(ISEC))+P_DMAX(FLXC(ISEC)),
-     &                              P_DMIN(VOLNEGC(ISEC)),
-     &                              P_DMAX(VOLPOSC(ISEC))
-      ENDIF
+     &                                 P_DMIN(VOLNEGS(ISEC)),
+     &                                 P_DMAX(VOLPOSS(ISEC))
+              ENDIF
+              IF(CHARR) THEN
+                IF(LNG.EQ.1) WRITE(LU,1303)
+     &               P_DMIN(FLXC(ISEC))+P_DMAX(FLXC(ISEC)),
+     &                                  P_DMIN(VOLNEGC(ISEC)),
+     &                                  P_DMAX(VOLPOSC(ISEC))
+                IF(LNG.EQ.2) WRITE(LU,1304)
+     &               P_DMIN(FLXC(ISEC))+P_DMAX(FLXC(ISEC)),
+     &                                  P_DMIN(VOLNEGC(ISEC)),
+     &                                  P_DMAX(VOLPOSC(ISEC))
+              ENDIF
+! 
+!           OLD METHOD AND SECTION ON SEVERAL SUB-DOMAIN
+!           IN THIS CASE NOTHING IS COMPUTED
 !
-      ELSE
+            ELSE
 !
-      IF(LNG.EQ.1) WRITE(LU,134) ISEC,CTRLSC(1+2*(ISEC-1)),
-     &                                CTRLSC(2+2*(ISEC-1))
-      IF(LNG.EQ.2) WRITE(LU,135) ISEC,CTRLSC(1+2*(ISEC-1)),
-     &                                CTRLSC(2+2*(ISEC-1))
-134   FORMAT(1X,/,1X,'SECTION DE CONTROLE ',1I2,
+              IF(LNG.EQ.1) WRITE(LU,134) ISEC,CTRLSC(1+2*(ISEC-1)),
+     &                                        CTRLSC(2+2*(ISEC-1))
+              IF(LNG.EQ.2) WRITE(LU,135) ISEC,CTRLSC(1+2*(ISEC-1)),
+     &                                        CTRLSC(2+2*(ISEC-1))
+134           FORMAT(1X,/,1X,'SECTION DE CONTROLE ',1I2,
      &               ' (ENTRE LES POINTS ',1I5,' ET ',1I5,')',//,5X,
      &               'A CHEVAL SUR DEUX SOUS-DOMAINES, PAS DE CALCUL')
-135   FORMAT(1X,/,1X,'CONTROL SECTION NUMBER ',1I2,
+135           FORMAT(1X,/,1X,'CONTROL SECTION NUMBER ',1I2,
      &               ' (BETWEEN POINTS ',1I5,' AND ',1I5,')',//,5X,
      &               'ACROSS TWO SUB-DOMAINS, NO COMPUTATION')
-      ENDIF
 !
-      ENDDO
+            ENDIF
 !
-      ENDIF ! NCSIZE
+          ENDDO
+!  
+        ENDIF
 !
 !-----------------------------------------------------------------------
-! CHAIN ALLOCATED, I.E. SERIAL OR PARALLEL CASE FROM SECTIONS INPUT FILE
+!
+      ELSE 
+!
+!       NEW METHOD
+!       CHAIN ALLOCATED, I.E. SERIAL OR PARALLEL CASE FROM SECTIONS INPUT FILE
 !       WE CAN APPLY CO-ORDINATES INSTEAD AND/OR NAMES OF SECTIONS
-      ELSE ! .NOT.OLD_METHOD
 !
         DO ISEC = 1,NSEC
-
-!RK parallel writing
-          IF (NCSIZE.GT.1) THEN 
-          IF(LNG.EQ.1) WRITE(LU,230) ISEC,TRIM(CHAIN(ISEC)%DESCR),
-     &                 P_DSUM(FLX(ISEC)),P_DSUM(VOLNEG(ISEC)),
-     &                                   P_DSUM(VOLPOS(ISEC))
-          IF(LNG.EQ.2) WRITE(LU,231) ISEC,TRIM(CHAIN(ISEC)%DESCR),
-     &                 P_DSUM(FLX(ISEC)),P_DSUM(VOLNEG(ISEC)),
-     &                                   P_DSUM(VOLPOS(ISEC))
-!RK serial writing
-          ELSE !NCSIZE = < 1
-          IF(LNG.EQ.1) WRITE(LU,230) ISEC,TRIM(CHAIN(ISEC)%DESCR),
-     &                 FLX(ISEC),VOLNEG(ISEC),VOLPOS(ISEC)
-          IF(LNG.EQ.2) WRITE(LU,231) ISEC,TRIM(CHAIN(ISEC)%DESCR),
-     &                 FLX(ISEC),VOLNEG(ISEC),VOLPOS(ISEC)
-          ENDIF ! NCSIZE
-
+!
+          IF(NCSIZE.GT.1) THEN
+            IF(LNG.EQ.1) WRITE(LU,230) ISEC,TRIM(CHAIN(ISEC)%DESCR),
+     &                   P_DSUM(FLX(ISEC)),P_DSUM(VOLNEG(ISEC)),
+     &                                     P_DSUM(VOLPOS(ISEC))
+            IF(LNG.EQ.2) WRITE(LU,231) ISEC,TRIM(CHAIN(ISEC)%DESCR),
+     &                   P_DSUM(FLX(ISEC)),P_DSUM(VOLNEG(ISEC)),
+     &                                     P_DSUM(VOLPOS(ISEC))
+          ELSE
+            IF(LNG.EQ.1) WRITE(LU,230) ISEC,TRIM(CHAIN(ISEC)%DESCR),
+     &                   FLX(ISEC),VOLNEG(ISEC),VOLPOS(ISEC)
+            IF(LNG.EQ.2) WRITE(LU,231) ISEC,TRIM(CHAIN(ISEC)%DESCR),
+     &                   FLX(ISEC),VOLNEG(ISEC),VOLPOS(ISEC)
+          ENDIF
 230       FORMAT(1X,/,1X,'SECTION DE CONTROLE ',1I2,
      &               ' (NOM ',A,')',//,5X,
      &               'DEBIT :                     ',G16.7,/,5X,
@@ -245,44 +312,42 @@
      &               'CUMULATED NEGATIVE VOLUME: ',G16.7,/,5X,
      &               'CUMULATED POSITIVE VOLUME: ',G16.7)
           IF(SUSP) THEN
-!RK parallel writing
-          IF (NCSIZE.GT.1) THEN
-            IF(LNG.EQ.1) WRITE(LU,2301)
-     &              P_DSUM(FLXS(ISEC)),P_DSUM(VOLNEGS(ISEC)),
-     &                                 P_DSUM(VOLPOSS(ISEC))
-            IF(LNG.EQ.2) WRITE(LU,2302)
-     &              P_DSUM(FLXS(ISEC)),P_DSUM(VOLNEGS(ISEC)),
-     &                                 P_DSUM(VOLPOSS(ISEC))
-!RK serial writing
-          ELSE !NCSIZE < 1
-            IF(LNG.EQ.1) WRITE(LU,2301) FLXS(ISEC),VOLNEGS(ISEC),
-     &                                  VOLPOSS(ISEC)
-            IF(LNG.EQ.2) WRITE(LU,2302) FLXS(ISEC),VOLNEGS(ISEC),
-     &                                  VOLPOSS(ISEC)
-          ENDIF ! NCSIZE
+            IF(NCSIZE.GT.1) THEN
+              IF(LNG.EQ.1) WRITE(LU,2301)
+     &                P_DSUM(FLXS(ISEC)),P_DSUM(VOLNEGS(ISEC)),
+     &                                   P_DSUM(VOLPOSS(ISEC))
+              IF(LNG.EQ.2) WRITE(LU,2302)
+     &                P_DSUM(FLXS(ISEC)),P_DSUM(VOLNEGS(ISEC)),
+     &                                   P_DSUM(VOLPOSS(ISEC))
+            ELSE
+              IF(LNG.EQ.1) WRITE(LU,2301)
+     &                FLXS(ISEC),VOLNEGS(ISEC),VOLPOSS(ISEC)
+              IF(LNG.EQ.2) WRITE(LU,2302)
+     &                FLXS(ISEC),VOLNEGS(ISEC),VOLPOSS(ISEC)
+            ENDIF
 2301        FORMAT(5X,'DEBIT EN SUSPENSION :       ',G16.7,/,5X,
      &            'CUMUL DES DEBITS NEGATIFS : ',G16.7,/,5X,
      &            'CUMUL DES DEBITS POSITIFS : ',G16.7)
 2302        FORMAT(5X,'DISCHARGE IN SUSPENSION:   ',G16.7,/,5X,
      &            'CUMULATED NEGATIVE VOLUME: ',G16.7,/,5X,
+
      &            'CUMULATED POSITIVE VOLUME: ',G16.7)
           ENDIF
+!
           IF(CHARR) THEN
-!RK parallel writing
-          IF (NCSIZE.GT.1) THEN
-            IF(LNG.EQ.1) WRITE(LU,2303)
-     &              P_DSUM(FLXC(ISEC)),P_DSUM(VOLNEGC(ISEC)),
-     &                                 P_DSUM(VOLPOSC(ISEC))
-            IF(LNG.EQ.2) WRITE(LU,2304)
-     &              P_DSUM(FLXC(ISEC)),P_DSUM(VOLNEGC(ISEC)),
-     &                                 P_DSUM(VOLPOSC(ISEC))
-!RK serial writing
-          ELSE !NCSIZE < 1
-            IF(LNG.EQ.1) WRITE(LU,2303) FLXC(ISEC),VOLNEGC(ISEC),
-     &                                  VOLPOSC(ISEC)
-            IF(LNG.EQ.2) WRITE(LU,2304) FLXC(ISEC),VOLNEGC(ISEC),
-     &                                  VOLPOSC(ISEC)
-          ENDIF ! NCSIZE
+            IF(NCSIZE.GT.1) THEN
+              IF(LNG.EQ.1) WRITE(LU,2303)
+     &                P_DSUM(FLXC(ISEC)),P_DSUM(VOLNEGC(ISEC)),
+     &                                   P_DSUM(VOLPOSC(ISEC))
+              IF(LNG.EQ.2) WRITE(LU,2304)
+     &                P_DSUM(FLXC(ISEC)),P_DSUM(VOLNEGC(ISEC)),
+     &                                   P_DSUM(VOLPOSC(ISEC))
+            ELSE
+              IF(LNG.EQ.1) WRITE(LU,2303)
+     &                FLXC(ISEC),VOLNEGC(ISEC),VOLPOSC(ISEC)
+              IF(LNG.EQ.2) WRITE(LU,2304)
+     &                FLXC(ISEC),VOLNEGC(ISEC),VOLPOSC(ISEC)
+            ENDIF
 2303        FORMAT(5X,'DEBIT EN CHARRIAGE :        ',G16.7,/,5X,
      &            'CUMUL DES DEBITS NEGATIFS : ',G16.7,/,5X,
      &            'CUMUL DES DEBITS POSITIFS : ',G16.7)
@@ -293,48 +358,69 @@
 !
         ENDDO
 !
+!
       ENDIF ! IF OLD_METHOD
+! 
+!     A SECTIONS OUTPUT FILE HAS BEEN GIVEN, IT IS FILLED
+! 
+      IF(TRIM(SIS_FILES(SISSEO)%NAME).NE.'') THEN
 !
-      ENDIF ! IF INFO
-! !JAJ ####
-!-----------------------------------------------------------------------
-! MASTER WRITES A NICE SECTIONS OUTPUT FILE, THE HEADER ONLY ONCE
-! NOTE: PROGRAMMED FOR THE BEDL LOAD DISCHARGE ONLY (IF CHARR IMPLIED)
+!       ONLY BEDLOAD
 !
-      IF ( (.NOT.OLD_METHOD) .AND. CHARR .AND.
-     &     (TRIM(SIS_FILES(SISSEO)%NAME).NE.'') ) THEN
-        IF (INIT) THEN
-          INIT=.FALSE.
-          IF ((NCSIZE.GT.1 .AND. IPID.EQ.0).OR.(NCSIZE.LE.1)) THEN
-            NSEO=SIS_FILES(SISSEO)%LU
-            WRITE(NSEO,*) 'TITLE = "BEDLOAD DISCHARGES FOR ',
-     &                     TRIM(TITCA),'"'
-            WRITE(NSEO,*) 'VARIABLES = T',
-     &           (' '//TRIM(CHAIN(ISEC)%DESCR), ISEC=1,NSEC)
-          ENDIF
-          IF (NCSIZE.GT.1) THEN
-            ALLOCATE (WORK(NSEC), STAT=ERR)
-            IF (ERR.NE.0) THEN
-              WRITE(LU,*) 'FLUXPR_SISYPHE: ERROR ALLOCATING WORK:',ERR
-              CALL PLANTE(1)
-              STOP
+        IF(CHARR.AND..NOT.SUSP) THEN  
+          IF(NCSIZE.GT.1) THEN
+            DO ISEC=1,NSEC
+              WORK(ISEC)=P_DSUM(FLXC(ISEC))
+            ENDDO 
+!           IN // ONLY PROCESSOR 0 WRITES THE FILE
+            IF(IPID.EQ.0) THEN
+              WRITE(NSEO,FMT=FMTZON) TPS,(WORK(ISEC),ISEC=1,NSEC)
             ENDIF
+          ELSE
+            WRITE(NSEO,FMT=FMTZON) TPS,(FLXC(ISEC),ISEC=1,NSEC)
           ENDIF
         ENDIF
-        ! DEADLOCK WITH WRITE AND P_DSUM IN AN IMPLIED WRITE LOOP
-        ! BECAUSE IT IS ONLY MASTER TO WRITE THE MESSAGE...
-        IF (NCSIZE.GT.1) THEN
-          DO ISEC=1,NSEC
-            WORK(ISEC)=P_DSUM(FLXC(ISEC))
-          END DO
-          IF (IPID.EQ.0)
-     &      WRITE (NSEO, FMT=FMTZON) TPS, (WORK(ISEC), ISEC=1,NSEC)
-        ELSE
-          WRITE (NSEO, FMT=FMTZON) TPS, (FLXC(ISEC), ISEC=1,NSEC)
+! 
+!       ONLY SUSPENSION
+!
+        IF(SUSP.AND..NOT.CHARR) THEN
+          IF(NCSIZE.GT.1) THEN
+            DO ISEC=1,NSEC
+              WORK(ISEC)=P_DSUM(FLXS(ISEC))
+            ENDDO
+!           IN // ONLY PROCESSOR 0 WRITES THE FILE
+            IF(IPID.EQ.0) THEN
+              WRITE (NSEO,FMT=FMTZON) TPS,(WORK(ISEC),ISEC=1,NSEC)
+            ENDIF
+          ELSE
+            WRITE(NSEO,FMT=FMTZON) TPS,(FLXS(ISEC),ISEC=1,NSEC)
+          ENDIF         
         ENDIF
+!
+!       BOTH BEDLOAD AND SUSPENSION
+!
+        IF(SUSP.AND.CHARR) THEN
+          IF(NCSIZE.GT.1) THEN
+            DO ISEC=1,NSEC
+              WORK(ISEC) = P_DSUM(FLXC(ISEC))
+              WORKB(ISEC)= P_DSUM(FLXS(ISEC))
+            ENDDO
+            IF(IPID.EQ.0) THEN
+              WRITE (NSEO,FMT=FMTZON) TPS,(WORK(ISEC),ISEC=1,NSEC),
+     &                                    (WORKB(ISEC), ISEC=1,NSEC) 
+            ENDIF 
+          ELSE
+            WRITE (NSEO,FMT=FMTZON) TPS,(FLXC(ISEC),ISEC=1,NSEC),
+     &                                  (FLXS(ISEC),ISEC=1,NSEC)
+          ENDIF
+        ENDIF
+!
+      ENDIF
+!
+!     IF(INFO)...
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE FLUXPR_SISYPHE
+      END SUBROUTINE FLUXPR_SISYPHE 

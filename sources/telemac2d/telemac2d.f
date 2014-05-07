@@ -209,18 +209,19 @@
 !+        V7P0
 !+   Now 2 calls to charac
 !+   one for strong and one for weak characteristics.
+!+   Second call to DIFFIN: U and V replaced by UCONV and VCONV.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!param atdep          [in] starting time when called for coupling
-!param code           [in] calling program (if coupling)
-!param doprint        [in] for overwriting the keyword on listing
-!param dtdep          [in] time step to use when coupling with estel-3d
-!param newtime        [in] are we starting a new time step or just iterating?
-!+                      this is for coupling with estel-3d
-!param niter          [in] number of iterations when called for coupling
-!param pass           [in] -1 : all steps
-!+                      0 : only initialisation
-!+                      1 : only time-steps steps
+!param atdep     [in] starting time when called for coupling
+!param code      [in] calling program (if coupling)
+!param doprint   [in] for overwriting the keyword on listing
+!param dtdep     [in] time step to use when coupling with estel-3d
+!param newtime   [in] are we starting a new time step or just iterating?
+!+                    this is for coupling with estel-3d
+!param niter     [in] number of iterations when called for coupling
+!param pass      [in] -1 : all steps
+!+                     0 : only initialisation
+!+                     1 : only time-steps steps
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -1568,7 +1569,8 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING DIFFIN'
         DO ITRAC=1,NTRAC
         CALL DIFFIN(MASKTR,LIMTRA%I,LITBOR%ADR(ITRAC)%P%I,
-     &              IT1%I,U%R,V%R,MESH%XNEBOR%R,MESH%YNEBOR%R,
+     &              IT1%I,UCONV%R,VCONV%R,
+     &              MESH%XNEBOR%R,MESH%YNEBOR%R,
      &              MESH%NBOR%I,NPTFR,
      &              KENT,KSORT,KLOG,KNEU,KDIR,KDDL,
      &              ICONVFT(ITRAC),
