@@ -2,7 +2,7 @@
 path: <root>|sources|artemis
 module: artemis
 liborder: special parallel damocles bief artemis
-version: v6p3
+version: v7p0
 name: HOMERE_ARTEMIS
 
 [artemis]
@@ -431,6 +431,13 @@ files: bief_def.f
   bief_open_files.f
   time_in_seconds.f
   bief_close_files.f
+  double_to_integer.f
+  integer_to_double.f
+  assve1i8.f
+  parcom2i8.f
+  paracoi8.f
+  mini.f
+  maxi.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -465,11 +472,16 @@ files: declarations_parallel.F
   p_dmax.F
   p_ireadi.F
   p_iwriti.F
+  p_ireadi8.F
+  p_iwriti8.F
   p_dmin.F
   p_exit.F
+  interface_parallel.f
 
 [special]
 path: <root>|sources|utils|special
-files: plante.f
-  gracestop.f
+files: declarations_special.f
+  plante.f
+  check_allocate.f
   extens.f
+  gracestop.f

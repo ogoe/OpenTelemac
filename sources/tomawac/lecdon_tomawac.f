@@ -5,7 +5,7 @@
      & (FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! TOMAWAC   V6P3                                   25/06/2012
+! TOMAWAC   V7P0                                  25/06/2012
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
@@ -48,6 +48,11 @@
 !+        V6P3
 !+   New keywords added. Call to tomawac_constants added.
 !
+!history  J-M HERVOUET (EDF R&D LNHE)
+!+        09/05/2014
+!+        V7P03
+!+   Retrieving MODASS for new parallel assembly with integers.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| NAME OF CALLING PROGRAMME
 !| FILE_DESC      |-->| STORES THE FILES 'SUBMIT' ATTRIBUTES
@@ -76,14 +81,14 @@
 !
       INTEGER, PARAMETER :: NMAX = 300
 !
-      INTEGER          ADRESS(4,NMAX),DIMEN(4,NMAX)
-      DOUBLE PRECISION MOTREA(NMAX)
-      INTEGER          MOTINT(NMAX)
-      LOGICAL          MOTLOG(NMAX)
-      CHARACTER*144    MOTCAR(NMAX)
-      CHARACTER*72     MOTCLE(4,NMAX,2)
-      INTEGER          TROUVE(4,NMAX)
-      LOGICAL          DOC
+      INTEGER            ADRESS(4,NMAX),DIMEN(4,NMAX)
+      DOUBLE PRECISION   MOTREA(NMAX)
+      INTEGER            MOTINT(NMAX)
+      LOGICAL            MOTLOG(NMAX)
+      CHARACTER(LEN=144) MOTCAR(NMAX)
+      CHARACTER(LEN=72)  MOTCLE(4,NMAX,2)
+      INTEGER            TROUVE(4,NMAX)
+      LOGICAL            DOC
       CHARACTER(LEN=250) :: NOM_CAS
       CHARACTER(LEN=250) :: NOM_DIC
 ! ARGUMENTS
@@ -284,6 +289,12 @@
 !     OPTION FOR SECOND DERIVATIVES
 !
       OPTDER = MOTINT( ADRESS(1, 48) )
+!
+!     49 IS PARALLEL PROCESSORS
+!
+!     PARALLEL ASSEMBLY MODE
+!
+      MODASS = MOTINT( ADRESS(1, 50) )
 !
 ! REAL KEYWORDS
 !

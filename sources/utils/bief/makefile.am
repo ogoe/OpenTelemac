@@ -3,7 +3,7 @@ bief_def.f declarations_telemac.f bief.f \
 streamline.f algae_transp.f  m_med.F \
 addblo.f  allblo.f allblo_in_block.f             \
 almesh.f     appdots.f      asmve1.f       attend.f  \
-asmvec.f     asseg_3d.f     assex3.f      assve1.f      assvec.f \
+asmvec.f     asseg_3d.f     assex3.f      assve1.f   assve1i8.f  assvec.f \
 as3_1111_q.f as3_1111_s.f   as3_1313_q.f  as3_1313_s.f  as3_1113.f    as3_1311.f    as3_1212_q.f  as3_1212_s.f \
 as3_1112.f   as3_1211.f     as3_3131_s.f  as3_3131_q.f  as3_4141_s.f  as3_4141_q.f as3_8181_s.f as3_8181_q.f \
 atanc.f  bief_allmat.f bief_allvec.f bief_allvec_in_block.f bief_close_files.f \
@@ -24,7 +24,7 @@ des11.f      des21.f        des41.f       descen.f  \
 diffcl.f     diffin.f       dimens.f  \
 diraux.f     diri01.f       diri04.f      diri09.f  \
 dirich.f     dlduseg.f      dldu11.f      dldu21.f      dldu41.f  \
-dmo.f        dot.f          dots.f        downup.f  \
+dmo.f        dot.f          dots.f        double_to_integer.f downup.f  \
 dwnup1.f     ecrgeo.f       ecri2.f       elapse.f      elebd.f       eleb3d.f eleb3dt.f \
 elebd31.f    bief_eof.f     equnor.f      errmin.f      errmax.f    fasp.f  \
 filp10.f     filp11.f       filp12.f      filpol.f      flux_ef_vf.f  flux_ef_vf_2.f flux_ef_vf_3d.f \
@@ -34,7 +34,7 @@ global_to_local_point.f     gmres.f      godown.f       godwn1.f      goup.f    
 goup1.f      gracjg.f       gradp.f       gregtim.f     gsebe.f   \
 gtsh11.f     gtsh31.f       gtsh41.f       hloc.f        hvf.f ielbor.f  \
 impvec.f     inbief.f       inclu2.f      inclus.f  \
-infcel.f     inpoly.f  \
+infcel.f     inpoly.f       integer_to_double.f \
 invmtx.f     jultim.f      kspg11.f   ksupg.f   \
 latitu.f     leclim.f       lit.f         litenr.f   lubksb.f   ludcmp.f  lump.f  make_eltcar.f  maskbd.f \
 masktf.f     maskto.f       matrbl.f      matrix.f   matriy.f  \
@@ -58,8 +58,8 @@ om1112.f     om1113.f       om1201.f      om1211.f  om1302.f  om1311.f  om2121.f
 om4111.f     om4121.f       om4141.f      om5111.f  om5161.f  opass.f \
 os.f         osbd.f         osdb.f \
 osdbif.f     ov.f           ovbd.f        ovd.f \
-ovdb.f       ovd_2.f        ov_2.f        paraco.f paracoi.f  \
-paragl.f     parcom.f       parcom2.f     parcom2i.f parcom2_seg.f parcom2i_seg.f parcom_bord.f parini.f  parmoy.f \
+ovdb.f       ovd_2.f        ov_2.f        paraco.f paracoi.f paracoi8.f \
+paragl.f     parcom.f       parcom2.f     parcom2i.f parcom2i8.f parcom2_seg.f parcom2i_seg.f parcom_bord.f parini.f  parmoy.f \
 positive_depths.f    \
 prebd4.f     prebd9.f       prebdt.f \
 precd1.f     precd4.f       precd9.f      precdt.f  preverseg.f  preverebe.f \

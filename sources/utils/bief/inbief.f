@@ -58,6 +58,12 @@
 !+   Now written to enable different numbering of boundary points and
 !+   boundary segments.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        09/05/2014
+!+        V7P0
+!+   Allocation of new vectors of I8 integers MESH%WI8 and MESH%TI8
+!+   for finite element assembly with integers.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
 !| IELMX          |-->| THE MORE COMPLEX ELEMENT USED (FOR MEMORY)
@@ -79,6 +85,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_INBIEF => INBIEF
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -139,12 +146,19 @@
         STOP
       ENDIF
 !
-!  PARALLEL MODE : 1) BUILDS KNOGL AND CONVERTS NBOR AND NACHB
-!                     TO SUB-DOMAIN GLOBAL NUMBERS
-!                  2) INITIALISES THE ARRAYS NHP,NHM
-!                     INDPU,FAC, ETC.
+!     FINITE ELEMENT ASSEMBLY WITH I8 INTEGERS
 !
+      IF(MODASS.EQ.2) THEN
+        ALLOCATE(MESH%WI8(NELMAX*NDP))
+        ALLOCATE(MESH%TI8(NPOIN))
+      ENDIF 
 !
+!     PARALLEL MODE : 1) BUILDS KNOGL AND CONVERTS NBOR AND NACHB
+!                        TO SUB-DOMAIN GLOBAL NUMBERS
+!                     2) INITIALISES THE ARRAYS NHP,NHM
+!                        INDPU,FAC, ETC.
+!
+!  
       IF(NCSIZE.GT.1) THEN
 !       1)
         CALL PARAGL(MESH%KNOGL%I,MESH%KNOGL%DIM1,MESH%KNOLG%I,

@@ -2,15 +2,15 @@
                      SUBROUTINE VECTOS
 !                    *****************
 !
-     &(VEC,OP,FORMUL,
+     &(SVEC,VEC,OP,FORMUL,
      & XMUL,F,G,H,U,V,W,SF,SG,SH,SU,SV,SW,
      & T,LEGO,
      & XEL,YEL,ZEL,XPT,YPT,ZPT,SURFAC,LGSEG,IKLE,IKLBOR,NBOR,
      & XNOR,YNOR,ZNOR,NPT,NELEM,NELEB,NELMAX,NELEBX,
-     & IELM1,LV,MSK,MASKEL,MESH,DIM1T,NELBOR,NULONE)
+     & IELM1,LV,MSK,MASKEL,MESH,DIM1T,NELBOR,NULONE,ASSPAR)
 !
 !***********************************************************************
-! BIEF   V6P3                                  21/08/2010
+! BIEF   V7P0                                  21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES VECTORS.
@@ -60,6 +60,11 @@
 !+        V6P3
 !+   Arguments XPT, YPT and ZPT added, various XEL, YEL and ZEL changed
 !+   into XPT, etc. in the calls to 3D vectors.
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        09/05/2014
+!+        V7P0
+!+   Adaptation to assembly with I8 integers.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM1T          |-->| FIRST DIMENSION OF T (NELMAX OR NELEBX)
@@ -111,6 +116,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_VECTOS => VECTOS
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -134,18 +141,29 @@
 !
       DOUBLE PRECISION, INTENT(IN) :: F(*),G(*),H(*),U(*),V(*),W(*)
 !
-      TYPE(BIEF_OBJ), INTENT(IN) :: SF,SG,SH,SU,SV,SW
+      TYPE(BIEF_OBJ), INTENT(IN)     :: SF,SG,SH,SU,SV,SW
+      TYPE(BIEF_OBJ), INTENT(INOUT)  :: SVEC
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
 !
-      LOGICAL, INTENT(IN) :: MSK,LEGO
+      LOGICAL, INTENT(IN) :: MSK,LEGO,ASSPAR
 !
       CHARACTER(LEN=16), INTENT(IN) :: FORMUL
       CHARACTER(LEN=1), INTENT(IN) ::  OP
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ICOORD
+      INTEGER ICOORD,IDP,NDP,I
       LOGICAL INIT,SPECAD
+!
+      INTEGER(KIND=K8), POINTER :: PWI8(:)
+!
+      DOUBLE PRECISION QT
+      INTEGER NPLAN
+      IF(MESH%DIM.EQ.2) THEN
+        NPLAN=1
+      ELSE
+        NPLAN=BIEF_NBPTS(41,MESH)/BIEF_NBPTS(11,MESH)
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -1352,15 +1370,52 @@
           STOP
         ENDIF
 !
+        NDP=BIEF_NBPEL(IELM1,MESH)
+!
         IF(DIMENS(IELM1).EQ.MESH%DIM) THEN
-          CALL ASSVEC(VEC, IKLE, NPT ,NELEM,NELMAX,IELM1,
-     &                T,INIT,LV,MSK,MASKEL,BIEF_NBPEL(IELM1,MESH))
+          IF(MODASS.EQ.1) THEN
+            CALL ASSVEC(VEC, IKLE, NPT ,NELEM,NELMAX,IELM1,
+     &                  T,INIT,LV,MSK,MASKEL,NDP)
+          ELSEIF(MODASS.EQ.2) THEN                                                          
+            CALL DOUBLE_TO_INTEGER(T,MESH%WI8,NDP*NELEM,QT,MESH%MXELVS)
+            DO I=1,NPT
+              MESH%TI8(I)=0
+            ENDDO
+            DO IDP = 1 , NDP
+              PWI8=>MESH%WI8(1+(IDP-1)*NELMAX:IDP*NELMAX)
+              CALL ASSVE1I8(MESH%TI8,IKLE(1,IDP),PWI8,NELEM)
+            ENDDO
+            IF(ASSPAR) THEN
+              CALL PARCOM2I8(MESH%TI8,MESH%TI8,MESH%TI8,
+     &                       NPT,NPLAN,2,1,MESH)
+            ENDIF 
+            IF(INIT) THEN
+              CALL INTEGER_TO_DOUBLE('=',MESH%TI8,VEC,NPT,QT)
+            ELSE
+              CALL INTEGER_TO_DOUBLE('+',MESH%TI8,VEC,NPT,QT)
+            ENDIF
+          ELSE
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'VECTOS : MODASS=',MODASS,' CAS NON PREVU'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'VECTOS: MODASS=',MODASS,' UNEXPECTED CASE'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
         ELSEIF(NELEB.GT.0) THEN
           CALL ASSVEC(VEC, IKLBOR, NPT ,NELEB,NELEBX,IELM1,
-     &                T,INIT,LV,MSK,MASKEL,BIEF_NBPEL(IELM1,MESH))
+     &                T,INIT,LV,MSK,MASKEL,NDP)
         ENDIF
 !
       ENDIF
+!
+!-----------------------------------------------------------------------
+!     OPTIONAL ASSEMBLY IN PARALLEL (ASSPAR DONE IN VECTOR)
+!-----------------------------------------------------------------------
+!
+      IF(ASSPAR.AND.MODASS.EQ.1) CALL PARCOM(SVEC,2,MESH)
 !
 !-----------------------------------------------------------------------
 !

@@ -2,6 +2,7 @@
 #------- Sources Fortran
 #
 SRCS= \
+declarations_special.f\
 gracestop.f\
 special_plante.f extens.f\
 check_allocate.f plante.f

@@ -52,6 +52,9 @@
 !| NPOIN          |-->| NUMBER OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE BIEF, EX_MXPTEL => MXPTEL
+      USE INTERFACE_PARALLEL
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -107,9 +110,20 @@
 !
 !-----------------------------------------------------------------------
 !
+      IF(NCSIZE.GT.1) THEN
+        MXPTVS=P_IMAX(MXPTVS)
+        MXELVS=P_IMAX(MXELVS)
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
       IF(LISTIN) THEN
         IF(LNG.EQ.1) WRITE(LU,97) MXELVS,MXPTVS
         IF(LNG.EQ.2) WRITE(LU,98) MXELVS,MXPTVS
+        IF(NCSIZE.GT.1) THEN
+          IF(LNG.EQ.1) WRITE(LU,*) '(MAILLAGE GLOBAL)'
+          IF(LNG.EQ.2) WRITE(LU,*) '(GLOBAL MESH)'
+        ENDIF
       ENDIF
 97    FORMAT(1X,'MXPTEL (BIEF) : NOMBRE MAXIMUM D''ELEMENTS VOISINS D''
      &UN POINT : ',1I3,/,1X,

@@ -10,10 +10,18 @@
 !brief    DEFINITION OF THE BIEF STRUCTURES
 !+
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        09/05/2014
+!+        V7P0
+!+   Integer I8 buffers added in the mesh structure.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
+!
       IMPLICIT NONE
+!
 !=======================================================================
 !
 !     COMMON VALUES FOR PARALLEL MODE
@@ -395,8 +403,14 @@
 !         W: WORKING ARRAY FOR A NON-ASSEMBLED VECTOR
           TYPE(BIEF_OBJ), POINTER :: W
 !
+!         WI8: WORKING ARRAY FOR A NON-ASSEMBLED VECTOR STORED IN INTEGERS
+          INTEGER(KIND=K8), POINTER :: WI8(:)
+!
 !         T: WORKING ARRAY FOR AN ASSEMBLED VECTOR
           TYPE(BIEF_OBJ), POINTER :: T
+!
+!         TI8: WORKING ARRAY FOR AN ASSEMBLED VECTOR STORED IN INTEGERS
+          INTEGER(KIND=K8), POINTER :: TI8(:)
 !
 !         VNOIN: FOR FINITE VOLUMES
           TYPE(BIEF_OBJ), POINTER :: VNOIN
@@ -444,6 +458,8 @@
 !
           TYPE(BIEF_OBJ), POINTER :: BUF_SEND
           TYPE(BIEF_OBJ), POINTER :: BUF_RECV
+          INTEGER(KIND=K8), POINTER :: BUF_SENDI8(:)
+          INTEGER(KIND=K8), POINTER :: BUF_RECVI8(:)
 !
 !         FOR FINITE VOLUMES AND KINETIC SCHEMES
 !

@@ -2,7 +2,7 @@
 path: <root>|sources|stbtel
 module: stbtel
 liborder: special parallel damocles bief stbtel
-version: v6p3
+version: v7p0
 name: HOMERE_STBTEL
 
 [bief]
@@ -51,10 +51,13 @@ path: <root>|sources|utils|parallel
 files: declarations_parallel.F
   p_exit.F
   p_init.F
+  interface_parallel.f
+  p_imax.F
 
 [special]
 path: <root>|sources|utils|special
-files: plante.f
+files: declarations_special.f
+  plante.f
 
 [stbtel]
 path: <root>|sources|stbtel

@@ -2,7 +2,7 @@
 path: <root>|sources|telemac2d
 module: telemac2d
 liborder: special parallel damocles bief sisyphe tomawac telemac2d
-version: v6p3
+version: v7p0
 name: HOMERE_TELEMAC2D
 
 [bief]
@@ -466,6 +466,11 @@ files: bief_def.f
   bief_gammp.f
   bief_erf.f
   masktf.f
+  double_to_integer.f
+  integer_to_double.f
+  assve1i8.f
+  parcom2i8.f
+  paracoi8.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -514,7 +519,10 @@ files: declarations_parallel.F
   p_dmax.F
   p_ireadi.F
   p_iwriti.F
+  p_ireadi8.F
+  p_iwriti8.F
   p_imin.F
+  interface_parallel.f
 
 [sisyphe]
 path: <root>|sources|sisyphe
@@ -632,7 +640,8 @@ files: declarations_sisyphe.f
 
 [special]
 path: <root>|sources|utils|special
-files: plante.f
+files: declarations_special.f
+  plante.f
   extens.f
   gracestop.f
 

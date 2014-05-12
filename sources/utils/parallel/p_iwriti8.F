@@ -1,6 +1,6 @@
-!                    *******************
-                     SUBROUTINE P_IWRITI
-!                    *******************
+!                    ********************
+                     SUBROUTINE P_IWRITI8
+!                    ********************
 !
      &(BUFFER,NVAL,DEST,ITAG,IREQ)
 !
@@ -11,7 +11,7 @@
 !brief    EXCHANGES VALUES BETWEEN PROCESSORS.
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
-!+        19/11/2013
+!+        09/05/2014
 !+        V7P0
 !+     A mere copy of P_IWRIT by Pascal Vezolles for integers. However
 !+     NBYTES changed into NVAL to avoid *4 in the calls.
@@ -25,6 +25,7 @@
 !| NVAL           |-->| NUMBER OF VALUES TO BE TRANSMITTED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_PARALLEL
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -33,7 +34,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NVAL,DEST,ITAG,IREQ
-      INTEGER, INTENT(IN) :: BUFFER(NVAL)
+      INTEGER(KIND=K8), INTENT(IN) :: BUFFER(NVAL)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -42,19 +43,19 @@
 !
 !-----------------------------------------------------------------------
 !
-!                                4: TO BE PARAMETERISED ????
-      CALL MPI_ISEND(BUFFER,NVAL*4,MPI_BYTE,DEST,ITAG,
+!                                8: TO BE PARAMETERISED ????
+      CALL MPI_ISEND(BUFFER,NVAL*8,MPI_BYTE,DEST,ITAG,
      &               MPI_COMM_WORLD,IREQ,IER)
 !
       IF(IER.NE.0) THEN
-        IF(LNG.EQ.1) WRITE(LU,*) 'P_IWRITI: ERREUR IN MPI_ISEND'
-        IF(LNG.EQ.2) WRITE(LU,*) 'P_IWRITI: ERROR IN MPI_ISEND'
+        IF(LNG.EQ.1) WRITE(LU,*) 'P_IWRITI8: ERREUR IN MPI_ISEND'
+        IF(LNG.EQ.2) WRITE(LU,*) 'P_IWRITI8: ERROR IN MPI_ISEND'
         WRITE(LU,*) 'MPI ERROR ',IER
         STOP
       ENDIF
 #else
-      IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_IWRITI VERSION VIDE'
-      IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_IWRITI IN ITS VOID VERSION'
+      IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_IWRITI8 VERSION VIDE'
+      IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_IWRITI8 IN ITS VOID VERSION'
 #endif
 !
 !----------------------------------------------------------------------

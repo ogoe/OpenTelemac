@@ -2,7 +2,7 @@
 path: <root>|sources|tomawac
 module: tomawac
 liborder: special parallel damocles bief tomawac
-version: v6p3
+version: v7p0
 name: HOMERE_TOMAWAC
 
 [bief]
@@ -396,6 +396,13 @@ files: bief_def.f
   read_submit.f
   sortie.f
   bief_close_files.f
+  double_to_integer.f
+  integer_to_double.f
+  assve1i8.f
+  parcom2i8.f
+  paracoi8.f
+  mini.f
+  maxi.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -442,11 +449,16 @@ files: declarations_parallel.F
   p_dmax.F
   p_ireadi.F
   p_iwriti.F
+  p_ireadi8.F
+  p_iwriti8.F
   p_exit.F
+  interface_parallel.f
+  p_dmin.F
 
 [special]
 path: <root>|sources|utils|special
-files: plante.f
+files: declarations_special.f
+  plante.f
   extens.f
 
 [tomawac]

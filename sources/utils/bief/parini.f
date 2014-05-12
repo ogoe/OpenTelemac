@@ -2,7 +2,7 @@
                      SUBROUTINE PARINI
 !                    *****************
 !
-     &(NHP,NHM,INDPU,FAC,NPOIN,NACHB,NPLAN,MESH,NB_NEIGHB,
+     &(NHP,NHM,INDPU,FAC,NPOIN2,NACHB,NPLAN,MESH,NB_NEIGHB,
      & NB_NEIGHB_SEG,NELEM2,IFAPAR)
 !
 !***********************************************************************
@@ -10,10 +10,6 @@
 !***********************************************************************
 !
 !brief    INITIALISES THE ARRAYS USED IN PARALLEL MODE.
-!
-!history  REINHARD HINKELMANN (HANNOVER UNI.); PASCAL VEZOLLE (IBM)
-!+        ??/??/????
-!         V5P9
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -28,9 +24,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
-!+        19/11/2013
+!+        09/05/2014
 !+        V7P0
-!+   Adding an allocation of BUF_SEND%I and BUF_RECV%I  
+!+   Adding an allocation of BUF_SEND%I and BUF_RECV%I 
+!+   Adding an allocation of BUF_SENDI8 and BUF_RECVI8
+!+   for I4 and I8 integer communications.  
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FAC              |<--| 1/(NUMBER OF NEIGHBOURING SUB-DOMAINS)
@@ -57,10 +55,11 @@
 !| NHM              |<--| NODE NUMBERS OF PROCESSORS WITH SMALLER RANK
 !| NHP              |<--| NODE NUMBERS OF PROCESSORS WITH LARGER RANK
 !| NPLAN            |-->| NUMBER OF PLANES IN 3D
-!| NPOIN            |-->| NUMBER OF POINTS
+!| NPOIN2           |-->| NUMBER OF POINTS IN 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PARINI => PARINI
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -68,13 +67,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)            :: NPOIN,NPLAN,NELEM2
+      INTEGER, INTENT(IN)            :: NPOIN2,NPLAN,NELEM2
       INTEGER, INTENT(INOUT)         :: NB_NEIGHB,NB_NEIGHB_SEG
       INTEGER, INTENT(INOUT)         :: NHP(NBMAXDSHARE,NPTIR)
       INTEGER, INTENT(INOUT)         :: NHM(NBMAXDSHARE,NPTIR)
       INTEGER, INTENT(IN)            :: NACHB(NBMAXNSHARE,NPTIR)
       INTEGER, INTENT(IN)            :: IFAPAR(6,NELEM2)
-      INTEGER, INTENT(INOUT)         :: INDPU(NPOIN)
+      INTEGER, INTENT(INOUT)         :: INDPU(NPOIN2)
       TYPE(BIEF_OBJ), INTENT(INOUT)  :: FAC
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
 !
@@ -183,9 +182,6 @@
 !
 !-----------------------------------------------------------------------
 !
-!  PASCAL VEZOLLE CODE:
-!
-!
 !====   COMPUTES THE NUMBER OF NEIGHBOURS
 !
         NB_PT_MX  = 0
@@ -279,21 +275,17 @@
         CALL BIEF_ALLVEC(1,MESH%BUF_SEND,'BUSEND',IL*3,NB_NEIGHB,0,MESH)
         CALL BIEF_ALLVEC(1,MESH%BUF_RECV,'BURECV',IL*3,NB_NEIGHB,0,MESH)
 !
-!       ADDED FOR INTEGER COMMUNICATIONS
+!       ADDED FOR INTEGER I4 COMMUNICATIONS
+!
         ALLOCATE(MESH%BUF_SEND%I(IL*3*NB_NEIGHB))
-        ALLOCATE(MESH%BUF_RECV%I(IL*3*NB_NEIGHB))       
+        ALLOCATE(MESH%BUF_RECV%I(IL*3*NB_NEIGHB))   
 !
-!       NOTE JMH: IS THIS USEFUL ?
+!       ADDED FOR INTEGER I8 COMMUNICATIONS
 !
-        DO I=1,IL*3*NB_NEIGHB
-          MESH%BUF_SEND%R(I) = 0.D0
-          MESH%BUF_RECV%R(I) = 0.D0
-          MESH%BUF_SEND%I(I) = 0
-          MESH%BUF_RECV%I(I) = 0
-        ENDDO
-!
-!
-!  END OF PASCAL VEZOLLE CODE
+        IF(MODASS.EQ.2) THEN
+          ALLOCATE(MESH%BUF_SENDI8(IL*3*NB_NEIGHB))
+          ALLOCATE(MESH%BUF_RECVI8(IL*3*NB_NEIGHB))
+        ENDIF       
 !
 !-----------------------------------------------------------------------
 !
@@ -385,7 +377,7 @@
 !     IDENTIFIES INTERNAL NODES/PROCESSORS
 !     INDEX TABLE FOR BUFFER IN COMMUNICATION
 !
-      DO I=1,NPOIN
+      DO I=1,NPOIN2
         INDPU(I)=0
       ENDDO
 !

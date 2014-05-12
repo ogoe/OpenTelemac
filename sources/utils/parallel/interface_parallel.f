@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! PARALLEL VERSION 6.2                                  31/07/2012
+! PARALLEL VERSION 7.0                                  31/07/2012
 !***********************************************************************
 !
 !brief    INTERFACES OF PARALLEL LIBRARY PUBLIC SUBROUTINES
@@ -14,6 +14,11 @@
 !+        31/07/2012
 !+        V6P2
 !+   Original version.
+!
+!history  J-M HERVOUET (LNHE)
+!+        09/05/2014
+!+        V7P0
+!+   Adding MPI communications by integers.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,6 +91,19 @@
         DOUBLE PRECISION, INTENT(OUT) :: BUFFER(*)
       END SUBROUTINE
 !
+      SUBROUTINE P_IREADI(BUFFER,NVAL,SOURCE,ITAG,IREQ)
+        IMPLICIT NONE
+        INTEGER, INTENT(IN) :: NVAL,SOURCE,ITAG,IREQ
+        INTEGER, INTENT(OUT) :: BUFFER(NVAL)
+      END SUBROUTINE
+!
+      SUBROUTINE P_IREADI8(BUFFER,NVAL,SOURCE,ITAG,IREQ)
+        USE DECLARATIONS_SPECIAL
+        IMPLICIT NONE
+        INTEGER, INTENT(IN) :: NVAL,SOURCE,ITAG,IREQ
+        INTEGER(KIND=K8), INTENT(OUT) :: BUFFER(NVAL)
+      END SUBROUTINE
+!
       SUBROUTINE P_IREAD_C(BUFFER,NBYTES,SOURCE,ITAG,IREQ)
         IMPLICIT NONE
         INTEGER, INTENT(IN)           :: NBYTES,SOURCE,ITAG,IREQ
@@ -96,6 +114,19 @@
         IMPLICIT NONE
         INTEGER, INTENT(IN)          :: NBYTES,DEST,ITAG,IREQ
         DOUBLE PRECISION, INTENT(IN) :: BUFFER(*)
+      END SUBROUTINE
+!
+      SUBROUTINE P_IWRITI(BUFFER,NVAL,DEST,ITAG,IREQ)
+        IMPLICIT NONE
+        INTEGER, INTENT(IN)          :: NVAL,DEST,ITAG,IREQ
+        INTEGER, INTENT(IN) :: BUFFER(NVAL)
+      END SUBROUTINE
+!
+      SUBROUTINE P_IWRITI8(BUFFER,NVAL,DEST,ITAG,IREQ)
+        USE DECLARATIONS_SPECIAL
+        IMPLICIT NONE
+        INTEGER, INTENT(IN)          :: NVAL,DEST,ITAG,IREQ
+        INTEGER(KIND=K8), INTENT(IN) :: BUFFER(NVAL)
       END SUBROUTINE
 !
       SUBROUTINE P_IWRIT_C(BUFFER,NBYTES,DEST,ITAG,IREQ)

@@ -108,7 +108,7 @@
 !
       INTEGER  :: NPT                  ! NUMBER OF POINTS PER ELEMENT
       INTEGER  :: DIM1T                ! FIRST DIMENSION OF T IN VECTOS
-      LOGICAL  :: LLEGO                ! ASSEMBLY OR NOT
+      LOGICAL  :: LLEGO,AASSPAR        ! ASSEMBLY OR NOT
       INTEGER  :: IELM0                ! P0 DISCRETISATION
 !
       IF(PRESENT(LEGO)) THEN
@@ -188,9 +188,20 @@
         DIM1T=MESH%NELEBX
       ENDIF
 !
+!-----------------------------------------------------------------------
+!  OPTIONAL ASSEMBLY: VALUES OF VEC SUMMED AT INTERFACE POINTS
+!-----------------------------------------------------------------------
+!
+      AASSPAR=.FALSE.
+      IF(NCSIZE.GT.1) THEN
+        IF(PRESENT(ASSPAR).AND.DIMENS(IELM1).EQ.MESH%DIM) THEN
+          AASSPAR=ASSPAR
+        ENDIF
+      ENDIF
+!
       IF(DIMENS(IELM1).EQ.MESH%DIM.OR.MESH%NELEB.GT.0) THEN
 !
-        CALL VECTOS(VEC%R,OP,FORMUL,XMUL,
+        CALL VECTOS(VEC,VEC%R,OP,FORMUL,XMUL,
      &              F%R,G%R,H%R,U%R,V%R,W%R,
      &              F,G,H,U,V,W,MESH%W%R,LLEGO,
      &              MESH%XEL%R   , MESH%YEL%R   , MESH%ZEL%R  ,
@@ -201,18 +212,8 @@
      &              NPT,MESH%NELEM,MESH%NELEB,
      &              MESH%NELMAX,MESH%NELEBX,
      &              IELM1,MESH%LV,MSK,MASKEL%R,MESH,DIM1T,
-     &              MESH%NELBOR%I,MESH%NULONE%I)
+     &              MESH%NELBOR%I,MESH%NULONE%I,AASSPAR)
 !
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!  OPTIONAL ASSEMBLY: VALUES OF VEC SUMMED AT INTERFACE POINTS
-!-----------------------------------------------------------------------
-!
-      IF(NCSIZE.GT.1) THEN
-        IF(PRESENT(ASSPAR).AND.DIMENS(IELM1).EQ.MESH%DIM) THEN
-          IF(ASSPAR) CALL PARCOM(VEC,2,MESH)
-        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------

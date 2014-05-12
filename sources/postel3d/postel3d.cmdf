@@ -2,7 +2,7 @@
 path: <root>|sources|postel3d
 module: postel3d
 liborder: special parallel damocles bief postel3d
-version: v6p3
+version: v7p0
 name: HOMERE_POSTEL3D
 
 [bief]
@@ -73,6 +73,7 @@ files: declarations_parallel.F
   p_imax.F
   p_init.F
   p_exit.F
+  interface_parallel.f
 
 [postel3d]
 path: <root>|sources|postel3d
@@ -92,5 +93,6 @@ files: declarations_postel3d.f
 
 [special]
 path: <root>|sources|utils|special
-files: plante.f
+files: declarations_special.f
+  plante.f
   extens.f

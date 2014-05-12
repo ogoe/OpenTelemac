@@ -192,6 +192,18 @@
       NDS(14,5) = NPMAX+(3*NELMAX+NSEGBOR)/2
 !     3 LINEAR SEGMENTS FOLLOWED BY THE 9 P1-ISO P1
       NDS(14,6) = 12
+!     NDS(10,6) = ??????
+!
+!-----------------------------------------------------------------------
+!
+!     15) PIECE-WISE P1 ELEMENT ON TRIANGLES (DISCONTINUOUS ELEMENT)
+!
+      NDS(15,1) = 3*NELEM
+      NDS(15,2) = (3*NELEM+NSEGBOR)/2
+      NDS(15,3) = 3
+      NDS(15,4) = 3
+      NDS(15,5) = 3*NELMAX
+      NDS(15,6) = 3
 !
 !-----------------------------------------------------------------------
 !

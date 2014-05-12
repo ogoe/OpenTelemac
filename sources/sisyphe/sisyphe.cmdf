@@ -2,7 +2,7 @@
 path: <root>|sources|sisyphe
 module: sisyphe
 liborder: special parallel damocles bief sisyphe
-version: v6p3
+version: v7p0
 name: HOMERE_SISYPHE
 
 [bief]
@@ -436,6 +436,11 @@ files: bief_def.f
   write_mesh_serafin.f
   write_mesh.f
   bief_close_files.f
+  double_to_integer.f
+  integer_to_double.f
+  assve1i8.f
+  parcom2i8.f
+  paracoi8.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -483,8 +488,11 @@ files: declarations_parallel.F
   org_charac_type_alg.F
   p_ireadi.F
   p_iwriti.F
+  p_ireadi8.F
+  p_iwriti8.F
   p_imin.F
   p_exit.F
+  interface_parallel.f
 
 [sisyphe]
 path: <root>|sources|sisyphe
@@ -603,5 +611,6 @@ files: declarations_sisyphe.f
 
 [special]
 path: <root>|sources|utils|special
-files: plante.f
+files: declarations_special.f
+  plante.f
   extens.f

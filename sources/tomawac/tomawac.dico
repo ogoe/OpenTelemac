@@ -5015,6 +5015,20 @@ NIVEAU = 2
 AIDE = 'Remet le temps a zero en cas de suite de calcul' 
 AIDE1 = 'Initial time set to zero in case of restart' 
 /
+NOM = 'ASSEMBLAGE EN ELEMENTS FINIS' 
+NOM1 = 'FINITE ELEMENT ASSEMBLY' 
+TYPE = ENTIER 
+INDEX = 50
+MNEMO = 'MODASS' 
+TAILLE= 0 
+DEFAUT = 1 
+DEFAUT1 = 1
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 2 
+AIDE = '1 : normal 2 : avec des entiers I8' 
+AIDE1 = '1: normal 2: with I8 integers'  
+/
 / Various keywords for scripts
 /
 NOM = 'DESCRIPTION DES LIBRAIRIES' 
