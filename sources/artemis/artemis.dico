@@ -130,9 +130,9 @@ NIVEAU= 2
 AIDE = '1 : Ancien Produit  2 : Nouveau Produit Frontal' 
 AIDE1 = '1 : Classical Product  2 : New Frontal Product' 
  
-NOM = 'USER CRAY' 
+NOM = 'USER CRAY'  
 NOM1 = 'USER CRAY' 
-TYPE = CARACTERE 
+TYPE = CARACTERE   
 INDEX = 4 
 TAILLE = 0 
 DEFAUT = ' ' 
@@ -1774,8 +1774,8 @@ Possible values are :
            the machine on which the user is working. 
            It then concerns usual READ and WRITE instructiions.' 
  
-NOM = 'PRECISION SUR LES SOUS-ITERATIONS' 
-NOM1 = 'SUB-ITERATIONS ACCURACY' 
+NOM = 'PRECISION SUR LES SOUS-ITERATIONS POUR LA DISSIPATION' 
+NOM1 = 'SUB-ITERATIONS ACCURACY FOR DISSIPATION' 
 TYPE = REEL 
 INDEX = 18 
 MNEMO = 'EPSDIS' 
@@ -1794,6 +1794,43 @@ du coefficient de dissipation.'
 AIDE1 = ' 
 Fixes the accuracy requested for sub-iterations necessary to 
 determine the dissipation coefficients.' 
+ 
+NOM = 'PRECISION SUR LES SOUS-ITERATIONS POUR COURANT' 
+NOM1 = 'SUB-ITERATIONS ACCURACY FOR CURRENT' 
+TYPE = REEL 
+INDEX = 36 
+MNEMO = 'EPSDIR' 
+TAILLE = 0 
+DEFAUT = 1.E-2 
+DEFAUT1 = 1.E-2 
+RUBRIQUE = 'COURANT';'GENERALITES' 
+RUBRIQUE1 = 'CURRENT';'INFORMATION' 
+NIVEAU= 3 
+AIDE = ' 
+Donne la precision requise pour les sous-iterations du calcul 
+du nombre d''onde en presencede courant (vecteur d''onde).' 
+AIDE1 = ' 
+Fixes the accuracy requested for sub-iterations necessary to 
+determine the wave vector.' 
+ 
+NOM = 'PRECISION SUR LES SOUS-ITERATIONS POUR TETAP' 
+NOM1 = 'SUB-ITERATIONS ACCURACY FOR TETAP' 
+TYPE = REEL 
+INDEX = 37 
+MNEMO = 'EPSTP' 
+TAILLE = 0 
+DEFAUT = 1.E-2 
+DEFAUT1 = 1.E-2 
+RUBRIQUE = 'TETAP CONVERGENCE';'GENERALITES' 
+RUBRIQUE1 = 'TETAP CONVERGENCE';'INFORMATION' 
+NIVEAU= 3 
+AIDE = ' 
+Donne la precision requise pour les sous-iterations du calcul 
+automatique de cos(TETAP).                                   ' 
+AIDE1 = ' 
+Fixes the accuracy requested for sub-iterations necessary to 
+determine value of TETAP (criterion on cos(TETAP).           ' 
+ 
  
 NOM = 'DEFERLEMENT' 
 NOM1 = 'BREAKING' 
@@ -1857,7 +1894,84 @@ AIDE =
 AIDE1 = 
  'TRUE : WAVE REFRACTION DUE TO CURRENT IS
   DESCRIBED USING KOSTENSE MODEL (1988)'
- 
+
+NOM = 'CALCUL AUTOMATIQUE DE TETAP' 
+NOM1 = 'AUTOMATIC TETAP CALCULATION' 
+TYPE = LOGIQUE 
+INDEX = 14 
+MNEMO = 'LANGAUTO' 
+TAILLE = 0 
+DEFAUT = NON 
+DEFAUT1 = NON 
+RUBRIQUE = 'ANGLE DE REFLEXION';'TETAP' 
+RUBRIQUE1 = 'REFLEXION ANGLE';'TETAP' 
+NIVEAU= 1 
+AIDE = 
+ 'TRUE : CALCUL AUTO DES ANGLES TETAP
+ (basee sur la direction de la vitesse)'
+AIDE1 = 
+ 'TRUE : AUTOMATIC CALCULATION OF TETAP
+  (based on velocity direction)        '
+
+NOM =  'CALCUL AUTOMATIQUE DE LA PHASE' 
+NOM1 = 'AUTOMATIC CALCULATION OF PHASE' 
+TYPE = LOGIQUE 
+INDEX = 15 
+MNEMO = 'LPHASEAUTO' 
+TAILLE = 0 
+DEFAUT = NON 
+DEFAUT1 = NON 
+RUBRIQUE = 'PHASE DE L ONDE INCIDENTE';'PHASE' 
+RUBRIQUE1 = 'INCIDENT WAVE PHASE';'PHASE' 
+NIVEAU= 1 
+AIDE = 
+ 'TRUE : CALCUL AUTOMATIQUE DE LA PHASE
+ (basee sur une profondeur de reference)'
+AIDE1 = 
+ 'TRUE : AUTOMATIC CALCULATION OF INCIDENTE PHASE
+  (based on reference water depth)        '
+
+
+NOM  = 'PROFONDEUR DE REFERENCE POUR LA PHASE AUTOMATIQUE' 
+NOM1 = 'REFERENCE WATER DEPTH FOR AUTOMATIC PHASE' 
+TYPE = REEL 
+INDEX = 34 
+MNEMO = 'DEPREF' 
+TAILLE = 0 
+DEFAUT = -1.0 
+DEFAUT1 = -1.0 
+RUBRIQUE  = 'DEFINITION DE LA PHASE';' PROFONDEUR DE REFERENCE' 
+RUBRIQUE1 = 'PHASE DEFINITION';'REFERENCE WATER DEPTH' 
+NIVEAU = 1 
+AIDE = 
+'PROFONDEUR DE REFERENCE POUR LE CALCUL DE LA PHASE.
+ ESSAYEZ DE METTRE LA FRONTIERE INCIDENTE SUR UNE ZONE
+ DE BATHYMETRIE HOMOGENE. LA PROFONDEUR A RENSEIGNER 
+ DOIT ETRE REPRESENTATIVE DE LA PROFONDEUR D EAU SUR
+ LA FRONTIERE'
+AIDE1 = 
+'WATER DEPTH FOR AUTOMATIC INCIDENT PHASE CALCULATION.
+ TRY TO PUT THE INCIDENT WAVE BOUNDARY ON A REGULAR 
+ TOPOGRAPHY ZONE. THE REFERENCE WATER DEPTH SHOULD BE
+ REPRESENTATIVE OF THE WATER DEPTH ON THE BOUNDARY'
+
+NOM = 'COORDONNEES DE REFERENCE POUR LA PHASE' 
+NOM1 = 'PHASE REFERENCE COORDINATES' 
+TYPE = REEL 
+INDEX = 35 
+MNEMO = 'X_PHREF,Y_PHREF' 
+TAILLE = 2 
+DEFAUT  = 0;0 
+DEFAUT1 = 0;0 
+RUBRIQUE = 'GENERALITES';'DEFINITION DE LA PHASE' 
+RUBRIQUE1 = 'INFORMATION';'PHASE DEFINITION' 
+NIVEAU = 1 
+AIDE = 'Coordonnees pour l origine des phases. Ne change rien
+        aux hauteurs de vagues calculees' 
+AIDE1 = 'Coordinates of reference point for phase.Will 
+         not change the wave height computed' 
+
+
 NOM = 'KDALLY' 
 NOM1 = 'KDALLY'  
 TYPE = REEL 

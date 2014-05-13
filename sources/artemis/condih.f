@@ -31,6 +31,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.PEYRARD (EDF)
+!+        18/03/2014
+!+        V7P0
+!+   Computation of reference wave number for automatic 
+!+   phase calculation
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -45,7 +50,7 @@
       INTEGER I
 !
       DOUBLE PRECISION COTE
-      DOUBLE PRECISION PI,BID,DHTEST
+      DOUBLE PRECISION PI,BID,DHTEST,T1REF,T2REF
       PARAMETER( PI = 3.1415926535897932384626433D0 )
 !
       INTRINSIC SINH, SQRT
@@ -128,6 +133,39 @@
          DHTEST  = MIN( DHTEST , H%R(I) )
       ENDDO
 !
+!     COMPUTE REFERENCE WAVE NUMBER KPHREF FOR AUTOMATIC PHASE CALCULATION
+      IF (LPHASEAUTO) THEN
+!      CHECKS THE REFERENCE DEPTH HAS BEEN GIVEN 
+       IF (DEPREF.LT.0D0) THEN
+        IF(LNG.EQ.1) THEN
+         WRITE(LU,220)
+        ENDIF
+        IF(LNG.EQ.2) THEN
+         WRITE(LU,221)
+        ENDIF
+220      FORMAT(1X,'CONDIH : ERREUR. SI VOUS UTILISEZ LE CALCUL      '  
+     &          ,/,'         AUTOMATIQUE DES PHASES, IL FAUT         '
+     &          ,/,'         RENSEIGNER UNE PROFONDEUR DE REFERENCE  '
+     &          ,/,'         MOT CLEF : PROFONDEUR DE REFERENCE POUR '
+     &          ,/,'         LA PHASE AUTOMATIQUE                    ')
+
+221      FORMAT(1X,'CONDIH : ERROR. IF YOU USE AUTOMATIC PHASE       '
+     &          ,/,'         CALCULATION, YOU HAVE TO GIVE A         '      
+     &          ,/,'         REFERENCE WATER DEPTH                   '
+     &          ,/,'         KEY WORD :                              '
+     &          ,/,'        REFERENCE WATER DEPTH FOR AUTOMATIC PHASE')
+ 
+       STOP               
+       ENDIF
+       T1REF= OMEGA**2/GRAV * DEPREF
+       T2REF = 1.D0 + T1REF *( 0.6522D0 +
+     &                T1REF *( 0.4622D0 +
+     &                T1REF *
+     &                T1REF *( 0.0864D0 +
+     &                T1REF *( 0.0675D0 ) )))
+       T2REF = SQRT( T1REF*(T1REF + 1.D0/T2REF) )
+       KPHREF  = T2REF/DEPREF
+      ENDIF
 !   CHECKS WHETHER H HAS BEEN CLIPPED OR NOT
 !
       IF (DHTEST.LE.1.01D-2) THEN
@@ -166,7 +204,7 @@
 !   => DEFINE YOUR CURRENT VALUES IN THE FOLLOWING LOOP
       IF(COURANT) THEN
         AMPLC=0D0
-        DO I=1,NPOIN!
+        DO I=1,NPOIN
         UC%R(I)=AMPLC
         VC%R(I)=AMPLC
         ENDDO
@@ -178,7 +216,7 @@
 !      IF(COURANT) THEN
 !
 !       AMPLC=1.D0
-!       DO I=1,NPOIN!
+!       DO I=1,NPOIN
 !        UC%R(I)=0.D0
 !        VC%R(I)=0.D0
 !        IF(X(I).GE.5.D0.AND.X(I).LT.13.D0)THEN

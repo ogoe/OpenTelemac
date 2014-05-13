@@ -137,6 +137,7 @@
          LIHBOR%I(I)=KSORT
          TETAP%R(I)=66.D0
       ENDDO
+
 !
 !
 !
@@ -149,7 +150,6 @@
       Y0=Y(IG0)
 !
       DO I=1,244
-
          LIHBOR%I(I)=KINC
          TETAB%R(I)=114.D0
          AUXIC =COS(TETAB%R(I)*DEGRAD)

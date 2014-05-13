@@ -1,0 +1,79 @@
+/---------------------------------------------------------------------
+/ ARTEMIS Version v7p0  mars 2014
+/ PHASE AUTOMATIQUE + TEST SANS FRONTIERE SOLIDE 
+/---------------------------------------------------------------------
+
+
+
+
+/---------------------------------------------------------------------
+/ FILES NAME
+/---------------------------------------------------------------------
+
+RESULTS FILE             = 'phase.res'
+
+
+BOUNDARY CONDITIONS FILE = 'phase.cli'
+
+FORTRAN FILE             = 'phase.f'
+
+GEOMETRY FILE            = 'phase.sel'
+
+VALIDATION               =   YES
+REFERENCE FILE           =  'ref_phase_S3.res'
+/                            obtained with solver direct in seq.
+
+/---------------------------------------------------------------------
+/ GENERAL SETTINGS
+/---------------------------------------------------------------------
+
+TITLE ='AUTOMATIC PHASE CALCULATION FOR OFFSHORE -45deg INCIDENT WAVES'
+
+
+/---------------------------------------------------------------------
+/ LISTING
+/---------------------------------------------------------------------
+
+WAVE HEIGHTS SMOOTHING          = NON
+
+VARIABLES FOR GRAPHIC PRINTOUTS ='HS,PHAS,ZF,INC,QB,C,PHIR,PHII'
+
+
+/---------------------------------------------------------------------
+/ INITIAL CONDITIONS
+/---------------------------------------------------------------------
+
+INITIAL CONDITIONS ='CONSTANT ELEVATION'
+
+INITIAL WATER LEVEL        =0.
+
+
+/--------------------------------------------------------------------/
+/ OPTIONS 
+/--------------------------------------------------------------------/
+MATRIX STORAGE =3
+
+
+/---------------------------------------------------------------------
+/ NUMERICAL PARAMETERS
+/---------------------------------------------------------------------
+/SOLVER =8
+
+PARALLEL PROCESSORS : 4
+SOLVER =3
+/AUTOMATIC TETAP CALCULATION : YES
+/SUB-ITERATIONS ACCURACY FOR TETAP=1E-4
+AUTOMATIC CALCULATION OF PHASE            : YES
+REFERENCE WATER DEPTH FOR AUTOMATIC PHASE = 100.
+PHASE REFERENCE COORDINATES               = 0.;0.
+
+
+/---------------------------------------------------------------------
+/ PHYSICAL PARAMETERS
+/---------------------------------------------------------------------
+
+BREAKING =NON
+
+WAVE PERIOD = 8.
+
+

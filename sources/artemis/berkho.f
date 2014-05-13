@@ -121,7 +121,7 @@
 !
       INTEGER, INTENT(IN) :: LT
 !
-      INTEGER I,ITERMU
+      INTEGER I,ITERMU,IG
 
       DOUBLE PRECISION HM,HMUE,HEFF,ECRHMU,MODHMU
       DOUBLE PRECISION Q1,Q2,Q3
@@ -129,12 +129,14 @@
       DOUBLE PRECISION CBID,FFW
       DOUBLE PRECISION PI,DEGRAD,RADDEG
 !
-!--> VARIABLES FOR CURRENT IN BERKHO
-      DOUBLE PRECISION ERREUR1,ERREUR2,ERRMAX1,KNORM
+!--> VARIABLES FOR CURRENT AND TETAP LOOP
+      DOUBLE PRECISION ERREUR1,ERREURT
       DOUBLE PRECISION XMUL,XK,ZERO
-      
+      DOUBLE PRECISION TETA(NPTFR)   , ANGDIR(NPTFR)   
       
       INTEGER ITERKN
+
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -143,10 +145,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTRINSIC ABS,MIN,MAX,LOG
+      INTRINSIC ABS,MIN,MAX,LOG,COS,SIN
       DOUBLE PRECISION P_DMAX
       EXTERNAL P_DMAX
-!
+     
+
+!--------------------------
+!      LANGAUTO=.FALSE.
 !----------------------------------------------------------------------
 !
 ! INITIALISES MU AND FW: SET TO 0
@@ -174,18 +179,18 @@
 !98 : DISSIPATION : ITERATIVE LOOP : ON THE VARIABLE MU R ON THE WAVE VECTOR  
 98    CONTINUE
 !
-      IF (COURANT) THEN
-!     COMPUTE WAVE VECTOR       
-!
-!       --> CURRENT FIRST ITERATION : U=0  
-        IF(ITERKN.GT.0) THEN
-!
-!       COMPUTE WR AND WAVE NUMBER AMPLITUDE
-!       ------------------------------------
+!   ITERATIVE LOOP ON TETAP (AUTOMATIC CALCULATION) AND WAVE VECTOR (WAVE-CURRENT)
+      IF (    ((COURANT).AND.(ITERKN.GT.0))
+     &    .OR.((LANGAUTO ).AND.(ITERKN.GT.0))  ) THEN
+
+!   ==> CURRENT : 
+       IF (COURANT) THEN 
+!      COMPUTE WAVE VECTOR (FIRST ITERATION U=0, SO NO NEED TO DO THAT)      
+!      ---------------------------------------------------------------
         DO I=1,NPOIN
          XK =K%R(I)
          CALL SOLVELAMBDA(XK,
-     *                    UC%R(I),VC%R(I),KANCX%R(I),KANCY%R(I),H%R(I))
+     *                   UC%R(I),VC%R(I),KANCX%R(I),KANCY%R(I),H%R(I))
          K%R(I) =XK
          
          WR%R(I)=SQRT(GRAV*K%R(I)*TANH(K%R(I)*H%R(I)))
@@ -194,14 +199,30 @@
      &           (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
         ENDDO
 !
-!       ACTUALIZATION OF BOUNDARY CONDITIONS : K AS CHANGED !!
-!       ------------------------------------------------------
-!        ----------
-         CALL PHBOR       
-!        ----------
        ENDIF
-      
-!     END OF WAVE-CURRENT FIRST STEP : NEXT STEP IS COMPUTING AM AND BM     
+!      ------------------------------------------------------
+!   ==> AUTOMATIC ANGLES
+       IF (LANGAUTO) THEN 
+!      COMPUTE TETAP ON THE BOUNDARY (FIRST ITERATION TETAP GIVEN BY USER, SO NO NEED TO DO THAT)
+!      ---------------------------------------------------------------
+!       ==> ADD RELAXATION ON TETAP IF NECESARY : TETAP=1/2*TETAP + (1/2)*TETAPM
+!          DO I=1,NPTFR
+!           TETAP%R(I)=0.5D0*TETAP%R(I)+0.5D0*TETAPM%R(I)
+!          ENDDO
+!         DID'NT SEEMED TO BE USEFUL DURING VALIDATION PRECESS
+       ENDIF   
+!      ------------------------------------------------------
+!
+!      ACTUALIZATION OF BOUNDARY CONDITIONS 
+!           1/ CURRENT     : K HAS CHANGED
+!           2/ AUTO ANGLES : TETAP HAS CHANGED 
+!      ------------------------------------------------------
+!
+!      ----------
+       CALL PHBOR       
+!      ----------
+!      ------------------------------------------------------
+!     END OF FIRST STEP : NEXT STEP IS COMPUTING AM AND BM     
       ENDIF
 !
 !     =========================================
@@ -453,14 +474,11 @@
             CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
          END IF
 !
-
 !CP
 !         IF (NCSIZE.GT.1) THEN
 !           CALL PARCOM(CV1,2,MESH)
 !         ENDIF
 !CP
-
-
 !     ---------------------
 !     SECOND MEMBERS : CV2
 !     ---------------------
@@ -743,10 +761,11 @@
       CALL SOLVE(UNK,MAT,RHS,TB,SLVART,INFOGR,MESH,AM3)
 !
 !     ============================================================
-!     WAVE-CURRENT :  
-!     CHECKS CONVERGENCE ON THE WAVE VECTOR                    (<-- to integrate with the dissipation loop?)
+!     DIRECTION LOOP     
+!      - WAVE-CURRENT :checks convergence on the wave vector    (<-- to integrate with the dissipation loop?)
+!      - AUTO ANGLES  :checks convergence on TETAP
 !     ============================================================
-      IF (COURANT) THEN  
+      IF (COURANT.OR.LANGAUTO) THEN  
 !      COMPUTE WAVE INCIDENCE USING SPEED AT THE FREE SURFACE
 !      ------------------------------------------------------
 !
@@ -756,8 +775,6 @@
 !          --> PHIR,PHII
 !          --  T1,T2,T3,T4
 !         <--  INCI
-
-!
 !       --- DIRECTION OF VECTOR K : INCI
        CALL OS( 'X=COS(Y)' , T5,INCI,SBID,0.D0)
        CALL OS( 'X=SIN(Y)' , T6,INCI,SBID,0.D0)
@@ -767,63 +784,100 @@
        CALL OS( 'X=XY    ' , X=T6 , Y=K)      
 !      ------------------------------------------------------
 !
-!     ----------------------
-!     CONVERGENCE CRITERION
-!     ---------------------
-!      Error Initialisation 
-       ERRMAX1=0.D0
-       ERREUR1=0.D0
-!      CONVERGENCE CRITERION ON WAVE NUMBER : 1%
-       EPSDIS =1.D-02
-!                                     ->    ->
-!      MAX ERROR CALCULATION : NORM( Kn - Kn-1 )/NORM(Kn) < EPSDIS
-!      ----------------------
-       IF (ITERKN.GT.0) THEN
-         DO I=1,NPOIN
-          KNORM=SQRT(T5%R(I)**2+T6%R(I)**2)
-          ERREUR1=(KANCX%R(I)-T5%R(I))**2
-          ERREUR2=(KANCY%R(I)-T6%R(I))**2
-          ERREUR1=ERREUR1+ERREUR2
-          ERREUR1=SQRT(ERREUR1)/KNORM
-          IF (ERREUR1.GT.ERRMAX1) THEN
-           ERRMAX1=ERREUR1
-          ENDIF
-         ENDDO
-         ERREUR1=ERRMAX1
-!        MAX ERROR OUTPUTS
-!        -----------------
-         WRITE(LU,*) '-----------------------------------------------'
-         WRITE(LU,*) 'WAVE-CURRENT : DIFF. BETWEEN 2 ITER. =',ERREUR1
-         WRITE(LU,*) 'LOOP FOR WAVE-CURRENT : TOLERANCE    =',EPSDIS
-        ELSE
-         WRITE(LU,*) 'INITIAL LOOP FOR WAVE-CURRENT TERMINATED'
+!       Error Initialisation 
+        ERREUR1=0.D0
+        ERREURT=0.D0
+!     --------------------------------------------------
+!     CONVERGENCE CRITERION FOR WAVE-CURRENT INTERACTION
+!     --------------------------------------------------
+       IF (COURANT) THEN
+!       MAX ERROR CALCULATION : NORM( Kn - Kn-1 )/NORM(Kn) < EPSDIR
+!       ----------------------
+        IF (ITERKN.GT.0) THEN
+          DO I=1,NPOIN
+           ERREUR1=MAX(ERREUR1,
+     &          SQRT((KANCX%R(I)-T5%R(I))**2+(KANCY%R(I)-T6%R(I))**2)/
+     &          SQRT(T5%R(I)**2+T6%R(I)**2)
+     &               )
+          ENDDO
+          WRITE(LU,*) '-----------------------------------------------'
+          WRITE(LU,*) 'WAVE-CURRENT : DIFF. BETWEEN 2 ITER. =',ERREUR1
+          WRITE(LU,*) 'LOOP FOR WAVE-CURRENT : TOLERANCE    =',EPSDIR
+         ELSE
+          WRITE(LU,*) 'INITIAL LOOP FOR WAVE-CURRENT COMPLETED'
+        ENDIF
+        WRITE(LU,*) '-----------------------------------------------'
+!       OLD WAVE VECTOR STORAGE
+!       -----------------------
+        CALL OS( 'X=Y     ' , X=KANCX , Y=T5 ) 
+        CALL OS( 'X=Y     ' , X=KANCY , Y=T6 )      
        ENDIF
-       WRITE(LU,*) '-----------------------------------------------'
 !
-!      OLD WAVE VECTOR STORAGE
-!      -----------------------
-       CALL OS( 'X=Y     ' , X=KANCX , Y=T5 ) 
-       CALL OS( 'X=Y     ' , X=KANCY , Y=T6 )      
-
-       IF ( (ERREUR1.GT.EPSDIS).OR.(ITERKN.EQ.0) ) THEN
-!         NEW ITERATION FOR WAVE INCIDENCE AND WAVE NUMBER
-!         -----------------------
+!     -----------------------------------------------------
+!     CONVERGENCE CRITERION FOR TETAP AUTOMATIC CALCULATION
+!     -----------------------------------------------------
+       IF (LANGAUTO) THEN
+!       STORAGE OF INCIDENCE ANGLE ON THE BOUNDARY IN A TABLE                              
+        DO I=1,NPTFR
+         IG       = MESH%NBOR%I(I)           
+         ANGDIR(I)=INCI%R(IG)
+        ENDDO
+!       TETAP COMPUTATION   
+        CALL CALTETAP(TETA,MESH%XNEBOR%R,MESH%YNEBOR%R,
+     &                     MESH%XSGBOR%R,MESH%YSGBOR%R,ANGDIR,NPTFR)
+!       MAX ERROR CALCULATION : MAX(cos(TETAPnew) - cos(TETAPold)) < EPSTP
+!       ----------------------
+        IF (ITERKN.GT.0) THEN
+          DO I=1,NPTFR
+           TETAP%R(I)=TETA(I)
+!          ADD FACTOR 1-R%P EXP(iALFA) ?
+           ERREURT=MAX(ERREURT,
+     &             ABS(COS(TETAP%R(I)*DEGRAD)-COS(TETAPM%R(I)*DEGRAD))
+     &                ) 
+         ENDDO
+         WRITE(LU,*) '-----------------------------------------------'
+         WRITE(LU,*) 'AUTO-ANGLES : DIFF. BETWEEN 2 ITER. =',ERREURT
+         WRITE(LU,*) 'LOOP FOR AUTO-ANGLE  : TOLERANCE    =',EPSTP
+        ELSE
+         DO I=1,NPTFR
+           TETAP%R(I)=TETA(I)
+         ENDDO
+         WRITE(LU,*) ' INITIAL LOOP FOR AUTOMATIC ANGLES COMPLETED '
+        ENDIF
+        WRITE(LU,*) '-----------------------------------------------'
+!       OLD TETAP STORAGE : TETAPM
+!       --------------------------
+        CALL OS( 'X=Y     ' , X=TETAPM , Y=TETAP ) 
+       ENDIF
+!
+!
+!      MAX ERROR FOR N PROC
+       IF (NCSIZE.GT.1) THEN
+         ERREURT = P_DMAX(ERREURT)
+         ERREUR1 = P_DMAX(ERREUR1)
+       END IF
+!
+!      ------------------------------------
+!      CHECK CONVERGENCE FOR DIRECTION LOOP
+!      ------------------------------------
+       IF ( (ERREUR1.GT.EPSDIR).OR.(ERREURT.GT.EPSTP) 
+     &                         .OR.(ITERKN.EQ.0)     ) THEN
+!         NEW ITERATION 
           ITERKN = ITERKN + 1
           GOTO 98
        ENDIF
        IF (LNG.EQ.1) WRITE(LU,202) ITERKN
        IF (LNG.EQ.2) WRITE(LU,203) ITERKN
-202    FORMAT(/,1X,'NOMBRE DE SOUS-ITERATIONS POUR LA DIRECTION DE K:',
+202    FORMAT(/,1X,'NOMBRE DE SOUS-ITERATIONS DIRECTION / COURANT :',
      *   1X,I3)  
-203    FORMAT(/,1X,'NUMBER OF SUB-ITERATIONS FOR DIRECTION OF K:',
+203    FORMAT(/,1X,'NUMBER OF SUB-ITERATIONS DIRECTION / CURRENT :',
      *   1X,I3)
-!      REMISE A 1 DU NOMBRE d'ITERATION SUR LE COURRANT
+!      REMISE A 1 DU NOMBRE d'ITERATION SUR LE COURRANT ET LA DIRECTION
        ITERKN=1
 !     =================================================
-!     END OF THE LOOP ON WAVE DIRECTION AND WAVE NUMBER
+!     END OF THE LOOP ON DIRECTIONS AND WAVE NUMBER
 !     =================================================
       ENDIF
-
 !
 !     ============================================================
 !

@@ -355,7 +355,7 @@
 !      WRITE(6,*) 'ENTREE DANS BERKHO'
       CALL BERKHO (LT)
 !      WRITE(6,*) 'SORTIE  DE  BERKHO'
-
+!
 !
 !=======================================================================
 !
@@ -572,7 +572,11 @@
 !
       ENDIF
 !
-!      WRITE(6,*) 'SORTIE  DE  ARTEMIS'
+! CCP : USEFUL FOR TETAP CHECK, OR TETAP PRINT FOR FURTHER USE
+!      DO I=1,NPTFR
+!        WRITE(LU,*) 'TETAP=',I,TETAP%R(I)
+!      ENDDO
+! CCP
 !-----------------------------------------------------------------------
 !
       RETURN

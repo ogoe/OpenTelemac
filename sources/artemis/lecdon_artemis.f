@@ -32,6 +32,10 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C/PEYRARD (EDF)
+!+        18/03/2014
+!+        V6P1 - V7P0
+!+   NEW KEY WORDS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| CALLING CODE
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -236,6 +240,11 @@
          FFON      = MOTREA( ADRESS(2,31) )
          PMIN      = MOTREA( ADRESS(2,32) )
          PMAX      = MOTREA( ADRESS(2,33) )
+         DEPREF    = MOTREA( ADRESS(2,34) )
+         X_PHREF   = MOTREA( ADRESS(2,35) )
+         Y_PHREF   = MOTREA( ADRESS(2,35)+1 )
+         EPSDIR    = MOTREA( ADRESS(2,36) )
+         EPSTP     = MOTREA( ADRESS(2,37) )
 !
 ! LOGICAL KEYWORDS :
 !
@@ -252,6 +261,8 @@
          LISHOU    = MOTLOG( ADRESS(3, 11) )
          VALID     = MOTLOG( ADRESS(3, 12) )
          COURANT   = MOTLOG( ADRESS(3, 13) )
+         LANGAUTO  = MOTLOG( ADRESS(3, 14) )
+         LPHASEAUTO= MOTLOG( ADRESS(3, 15) )
 !        SPHERICAL EQUATIONS, HARD-CODED
          SPHERI    = .FALSE.
 !

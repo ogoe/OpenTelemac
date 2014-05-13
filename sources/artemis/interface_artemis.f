@@ -58,6 +58,28 @@
 !
 !-----------------------------------------------------------------------
 !
+!      INTERFACE
+!        SUBROUTINE CALDIR()
+!       USE BIEF_DEF
+!       IMPLICIT NONE
+!        END SUBROUTINE
+!      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE CALTETAP(TETA,XNEBOR,YNEBOR,XSGBOR,YSGBOR,ADIR,NPTFR)
+       USE BIEF_DEF
+       IMPLICIT NONE
+       INTEGER                      :: NPTFR
+       DOUBLE PRECISION, INTENT(IN) :: XSGBOR(NPTFR,4),YSGBOR(NPTFR,4)
+       DOUBLE PRECISION, INTENT(IN) :: XNEBOR(NPTFR,2),YNEBOR(NPTFR,2)
+       DOUBLE PRECISION TETA(NPTFR),ADIR(NPTFR)
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE CNTPRE
      &(DAM,NPOIN,IPRECO,IPREC2)

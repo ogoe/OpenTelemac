@@ -43,6 +43,7 @@ files: declarations_artemis.f
   perale.f
   artemis.f
   homere_artemis.f
+  caltetap.f
 
 [bief]
 path: <root>|sources|utils|bief

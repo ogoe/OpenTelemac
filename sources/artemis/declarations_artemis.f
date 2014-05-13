@@ -107,8 +107,8 @@
 !brief REFLEXION COEFFICIENT
 ! coefficient de reflexion des parois
       TYPE(BIEF_OBJ), TARGET :: RP
-!brief ANGLE OF WAVE ATTACK (FROM X AXIS)
-! angle d'attaque de la houle sur les limites - pas seulement les parois (compte par rapport a a la normale exterieure dans le sens direct)some sources say (compte par rapport a l'axe des x)
+!brief ANGLE OF WAVE ATTACK (FROM NORMAL AXIS)
+! angle d'attaque de la houle sur les limites - pas seulement les parois (compte par rapport a a la normale , inclut dans [0;90]) 
       TYPE(BIEF_OBJ), TARGET :: TETAP
 !brief DEPHASING CAUSED BY THE WALLS
 ! dephasage induit par la paroi entre l'onde reflechie et l'onde incidente (si alfap est positif, l'onde reflechie est en retard)
@@ -116,7 +116,7 @@
 !brief INCIDENT WAVE HEIGHT AT THE BOUNDARY
 ! hauteur de la houle aux frontieres ouvertes
       TYPE(BIEF_OBJ), TARGET :: HB
-!brief INCIDENT WAVE DIRECTION AT THE BOUNDARY
+!brief INCIDENT WAVE DIRECTION AT THE BOUNDARY (FROM X AXIS)
 ! angle d'attaque de la houle aux frontieres ouvertes (compte par rapport a l'axe des x dans le sens direct)
       TYPE(BIEF_OBJ), TARGET :: TETAB
 !brief REAL PART OF INCIDENT WAVE AT THE BOUNDARY
@@ -198,6 +198,13 @@
 !brief COEFFICIENT FOR BOUNDARY CONDITIONS
 ! coefficient pour les conditions aux limites
       TYPE(BIEF_OBJ), TARGET :: DPHI4B
+!brief STORAGE OF ANGLE OF WAVE ATTACK (FROM NORMAL AXIS)
+! angle d'attaque de la houle sur les limites - pas seulement les parois (compte par rapport a a la normale , inclut dans [0;90]) 
+      TYPE(BIEF_OBJ), TARGET :: TETAPS
+!brief ANGLE OF WAVE ATTACK - IN LOOP STORAGE (FROM NORMAL AXIS)
+! angle d'attaque de la houle sur les limites - pas seulement les parois (compte par rapport a a la normale , inclut dans [0;90]) 
+      TYPE(BIEF_OBJ), TARGET :: TETAPM
+!
 !brief WORKING ARRAY
 ! tableau de travail
       TYPE(BIEF_OBJ), TARGET :: W1
@@ -566,10 +573,15 @@
 !brief VALIDATION
 ! si oui, validation
       LOGICAL VALID
-!brief
-!
+!brief COURANT
+! Yes = current taken into account (defined in condih.f)
       LOGICAL COURANT
-!
+!!brief AUTOMATIC ANGLES 
+! si oui,calcul automatique des angles de sortie TETAP
+      LOGICAL LANGAUTO
+!!brief AUTOMATIC PHASES ON INCIDENT WAVE BOUNDARY
+! si oui, calcul automatique des phases sur la frontière de type onde incidente (KINC)
+      LOGICAL LPHASEAUTO
 !-----------------------------------------------------------------------
 !
 !       6) REALS
@@ -672,6 +684,24 @@
 !brief MAXIMUM SPECTRAL PERIOD
 ! periode maximum du spectre
       DOUBLE PRECISION PMAX
+!brief REFERENCE WATER DEPTH FOR AUTOMATIC PHASE
+! Profondeur d'eau de référence pour le calcul automatique des phases
+      DOUBLE PRECISION DEPREF
+!brief REFERENCE WAVE NUMBER FOR AUTOMATIC PHASE
+! Nombre d'onde de référence pour le calcul automatique des phases
+      DOUBLE PRECISION KPHREF
+!brief X COORDINATE OF REFERENCE POINT FOR PHASE DEFINITION
+! coordonee en x du point de reference pour les phases
+      DOUBLE PRECISION X_PHREF
+!brief Y COORDINATE OF REFERENCE POINT FOR PHASE DEFINITION
+! coordonee en y du point de reference pour les phases
+      DOUBLE PRECISION Y_PHREF
+!brief SUB-ITERATIONS ACCURACY FOR CURRENT(WAVE VECTOR DIRECTION)
+! precision sur les sous-iterations pour le courant (direction vecteur d'onde)
+      DOUBLE PRECISION EPSDIR
+!brief SUB-ITERATIONS ACCURACY FOR TETAP 
+! precision sur les sous-iterations sur le TETAP
+      DOUBLE PRECISION EPSTP
 !
 !-----------------------------------------------------------------------
 !
