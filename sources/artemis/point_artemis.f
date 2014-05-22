@@ -31,6 +31,26 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.PEYRARD(EDF)
+!+        2011
+!+        V6P1
+!+        NEW WORK TABLES 
+!
+!history  C.PEYRARD(EDF)
+!+        2012
+!+        V6P2
+!+        VARIABLES FOR INCIDENT POTENTIAL ADDED
+!
+!history  C.PEYRARD(EDF)
+!+        2013
+!+        V6P3
+!+        VARIABLES FOR CURRENT ADDED
+!
+!history  C.PEYRARD(EDF)
+!+        2014
+!+        V7P0
+!+        VARIABLES FOR AUTOMATIC TETAP CALCULATION ADDED
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

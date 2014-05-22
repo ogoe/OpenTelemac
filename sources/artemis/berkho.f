@@ -106,6 +106,28 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.PEYRARD (EDF)
+!+        2011
+!+        V6P1
+!+        2ND ORDER BOTTOM EFFECTS ADDED TO BERKHOF EQUATION
+!
+!history  C.PEYRARD (EDF)
+!+        2012
+!+        V6P2
+!+        NEW TYPE OF BOUNDARY CONDITIONS ADDED
+!+        DIFFERENT IMPLEMENTATION OF CV1/CV2 
+!
+!history  C.PEYRARD (EDF)
+!+        2013
+!+        V6P3
+!+        INTEGRATION OF WAVE/CURRENT INTERACTION
+!+        AND LOOP ON WAVE VECTOR DIRECTION ADDED
+!
+!history  C.PEYRARD (EDF)
+!+        2014
+!+        V7P0
+!+        AUTOMATIC ANGLE CALCULATION
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LT             |-->| INDICE OF THE CURRENT CALCULATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -209,7 +231,7 @@
 !          DO I=1,NPTFR
 !           TETAP%R(I)=0.5D0*TETAP%R(I)+0.5D0*TETAPM%R(I)
 !          ENDDO
-!         DID'NT SEEMED TO BE USEFUL DURING VALIDATION PRECESS
+!         DID'NT SEEM TO BE USEFUL DURING VALIDATION PRECESS
        ENDIF   
 !      ------------------------------------------------------
 !

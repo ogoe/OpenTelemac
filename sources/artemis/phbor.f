@@ -116,7 +116,6 @@
          CGRY1B%R(I) = 0.D0
          DGRX1B%R(I) = 0.D0
          DGRY1B%R(I) = 0.D0
-
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -150,116 +149,103 @@
 !        -------------------------------------------------
 !
          IF (LIHBOR%I(I).EQ.KINC) THEN
-!          WRITE(LU,*) 'ENTREE TETAP, I =',TETAP%R(I),I
-          AUXIC      = COS(TETAB%R(I)*DEGRAD)
-          AUXIS      = SIN(TETAB%R(I)*DEGRAD)
-          AUXI1      = GRAV/OMEGA * HB%R(I)/2.D0 
+!
+           AUXIC = COS(TETAB%R(I)*DEGRAD)
+           AUXIS = SIN(TETAB%R(I)*DEGRAD)
+           AUXI1 = GRAV/OMEGA * HB%R(I)/2.D0 
 
 !---------- AUTOMATIC PHASE CALCULATION (TETAB HAVE TO BE UNIFORM ON THE BOUNDARY)
-          IF (LPHASEAUTO) THEN
-           PHASEOI = KPHREF*AUXIC*(X(IG)-X0)+KPHREF*AUXIS*(Y(IG)-Y0)
-          ENDIF
+           IF(LPHASEAUTO) THEN
+             PHASEOI = KPHREF*AUXIC*(X(IG)-X0)+KPHREF*AUXIS*(Y(IG)-Y0)
+           ENDIF
 !---------- INCIDENT WAVE --> INCIDENT POTENTIAL  (REAL, IMAGINAR)
-          GRE= AUXI1*SIN( ALFAP%R(I)*DEGRAD + PHASEOI)
-          GIM=-AUXI1*COS( ALFAP%R(I)*DEGRAD + PHASEOI)
+           GRE= AUXI1*SIN( ALFAP%R(I)*DEGRAD + PHASEOI)
+           GIM=-AUXI1*COS( ALFAP%R(I)*DEGRAD + PHASEOI)
 ! --------- INCIDENT WAVE --> GRADIENTS           (REAL, IMAGINAR)
-          DDXGRE= AUXI1*COS(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIC*K%R(IG)
-          DDYGRE= AUXI1*COS(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIS*K%R(IG)
-          DDXGIM= AUXI1*SIN(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIC*K%R(IG)
-          DDYGIM= AUXI1*SIN(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIS*K%R(IG)
-
+           DDXGRE= AUXI1*COS(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIC*K%R(IG)
+           DDYGRE= AUXI1*COS(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIS*K%R(IG)
+           DDXGIM= AUXI1*SIN(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIC*K%R(IG)
+           DDYGIM= AUXI1*SIN(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIS*K%R(IG)
+!
 ! --------- COEFFICIENTS
 ! -- MATRIX AM AND BM COEFFICIENTS
-          APHI1B%R(I) = - K%R(IG) * C%R(IG) * CG%R(IG)
-     &                 * COS(TETAP%R(I)*DEGRAD)
-          BPHI1B%R(I) = 0.D0
+           APHI1B%R(I) = - K%R(IG) * C%R(IG) * CG%R(IG)
+     &                  * COS(TETAP%R(I)*DEGRAD)
+           BPHI1B%R(I) = 0.D0
 
 ! -- SECOND MEMBER CV1 AND CV2 COEFFICIENTS
 ! ----  i * K * Gamma (multiplied by "- cos THETAP" in BERKHO)
-          CPHI1B%R(I)  = ( -GIM*K%R(IG) ) *C%R(IG)*CG%R(IG)
-          DPHI1B%R(I)  = (  GRE*K%R(IG) ) *C%R(IG)*CG%R(IG)
-
+           CPHI1B%R(I)  = ( -GIM*K%R(IG) ) *C%R(IG)*CG%R(IG)
+           DPHI1B%R(I)  = (  GRE*K%R(IG) ) *C%R(IG)*CG%R(IG)
+!
 ! ---- GRAD(Gamma) will be used in BERKHO...
-          CGRX1B%R(I)=   ( DDXGRE ) *C%R(IG)*CG%R(IG)
-          CGRY1B%R(I)=   ( DDYGRE ) *C%R(IG)*CG%R(IG)
-          DGRX1B%R(I)=   ( DDXGIM ) *C%R(IG)*CG%R(IG) 
-          DGRY1B%R(I)=   ( DDYGIM ) *C%R(IG)*CG%R(IG)
+           CGRX1B%R(I)=   ( DDXGRE ) *C%R(IG)*CG%R(IG)
+           CGRY1B%R(I)=   ( DDYGRE ) *C%R(IG)*CG%R(IG)
+           DGRX1B%R(I)=   ( DDXGIM ) *C%R(IG)*CG%R(IG) 
+           DGRY1B%R(I)=   ( DDYGIM ) *C%R(IG)*CG%R(IG)
          ENDIF
-
 !
 !        -------------------------------------------------
 !             COEFFICIENTS FOR AN INCIDENT POTENTIAL
 !        -------------------------------------------------
 !
          IF (LIHBOR%I(I).EQ.KPOT) THEN
-!          WRITE(LU,*) 'ENTREE TETAP, I =',TETAP%R(I),I
+!
 !------------ POTENTIAL (REAL, IMAGINAR)            
-          GRE=PRB%R(I)
-          GIM=PIB%R(I)
+           GRE=PRB%R(I)
+           GIM=PIB%R(I)
 ! ----------- GRADIENTS (REAL, IMAGINAR)
-          DDXGRE= DDXPRB%R(I)
-          DDYGRE= DDYPRB%R(I)
-          DDXGIM= DDXPIB%R(I)
-          DDYGIM= DDYPIB%R(I)
-! ----------- COEFFICIENTS
-! -- MATRIX AM AND BM COEFFICIENTS
-          APHI1B%R(I) = - K%R(IG) * C%R(IG) * CG%R(IG)
-     &                 * COS(TETAP%R(I)*DEGRAD)
-          BPHI1B%R(I) = 0.D0
-! -- SECOND MEMBER CV1 AND CV2 COEFFICIENTS
-! ----  i * K * Gamma (multiplied by "- cos THETAP" in BERKHO)
-          CPHI1B%R(I)  = ( -GIM*K%R(IG) ) *C%R(IG)*CG%R(IG)
-          DPHI1B%R(I)  = (  GRE*K%R(IG) ) *C%R(IG)*CG%R(IG)
-! ---- GRAD(Gamma) will be used in BERKHO...
-          CGRX1B%R(I)=   ( DDXGRE ) *C%R(IG)*CG%R(IG)
-          CGRY1B%R(I)=   ( DDYGRE ) *C%R(IG)*CG%R(IG)
-          DGRX1B%R(I)=   ( DDXGIM ) *C%R(IG)*CG%R(IG) 
-          DGRY1B%R(I)=   ( DDYGIM ) *C%R(IG)*CG%R(IG)
+           DDXGRE= DDXPRB%R(I)
+           DDYGRE= DDYPRB%R(I)
+           DDXGIM= DDXPIB%R(I)
+           DDYGIM= DDYPIB%R(I)
+! -------- COEFFICIENTS
+! --       MATRIX AM AND BM COEFFICIENTS
+           APHI1B%R(I) = - K%R(IG) * C%R(IG) * CG%R(IG)
+     &                  * COS(TETAP%R(I)*DEGRAD)
+           BPHI1B%R(I) = 0.D0
+! --       SECOND MEMBER CV1 AND CV2 COEFFICIENTS
+! ----     i * K * Gamma (multiplied by "- cos THETAP" in BERKHO)
+           CPHI1B%R(I)  = ( -GIM*K%R(IG) ) *C%R(IG)*CG%R(IG)
+           DPHI1B%R(I)  = (  GRE*K%R(IG) ) *C%R(IG)*CG%R(IG)
+! ----     GRAD(Gamma) will be used in BERKHO...
+           CGRX1B%R(I)=   ( DDXGRE ) *C%R(IG)*CG%R(IG)
+           CGRY1B%R(I)=   ( DDYGRE ) *C%R(IG)*CG%R(IG)
+           DGRX1B%R(I)=   ( DDXGIM ) *C%R(IG)*CG%R(IG) 
+           DGRY1B%R(I)=   ( DDYGIM ) *C%R(IG)*CG%R(IG)
          ENDIF
-!        -------------------------------------------------
-!        COEFFICIENTS FOR A FREE EXIT BOUNDARY SEGMENT
-!        -------------------------------------------------
+!         -------------------------------------------------
+!         COEFFICIENTS FOR A FREE EXIT BOUNDARY SEGMENT
+!         -------------------------------------------------
 !
-         IF (LIHBOR%I(I).EQ.KSORT) THEN
-!          WRITE(LU,*) 'SORTIE TETAP, I =',TETAP%R(I),I
-            APHI2B%R(I)  = - K%R(IG) * C%R(IG) * CG%R(IG)
+         IF(LIHBOR%I(I).EQ.KSORT) THEN
+!       
+           APHI2B%R(I)  = - K%R(IG) * C%R(IG) * CG%R(IG)
      &                   * COS(TETAP%R(I)*DEGRAD)
+           BPHI2B%R(I)  = 0.D0
+           CPHI2B%R(I)  = 0.D0
+           DPHI2B%R(I)  = 0.D0
 !
-            BPHI2B%R(I)  = 0.D0
-!
-            CPHI2B%R(I)  = 0.D0
-!
-            DPHI2B%R(I)  = 0.D0
-!
-        ELSEIF (LIHBOR%I(MESH%KP1BOR%I(I)).EQ.KSORT) THEN
-            APHI2B%R(I)  = - K%R(IG) * C%R(IG) * CG%R(IG)
+         ELSEIF (LIHBOR%I(MESH%KP1BOR%I(I)).EQ.KSORT) THEN
+           APHI2B%R(I)  = - K%R(IG) * C%R(IG) * CG%R(IG)
      &                   * COS(TETAP%R(MESH%KP1BOR%I(I))*DEGRAD)
-
-            BPHI2B%R(I)  = 0.D0
-
-            CPHI2B%R(I)  = 0.D0
-
-            DPHI2B%R(I)  = 0.D0
+           BPHI2B%R(I)  = 0.D0
+           CPHI2B%R(I)  = 0.D0
+           DPHI2B%R(I)  = 0.D0
 !
-        ELSEIF (LIHBOR%I(MESH%KP1BOR%I(I+NPTFR)).EQ.KSORT) THEN
-            APHI2B%R(I)  = - K%R(IG) * C%R(IG) * CG%R(IG)
+         ELSEIF (LIHBOR%I(MESH%KP1BOR%I(I+NPTFR)).EQ.KSORT) THEN
+           APHI2B%R(I)  = - K%R(IG) * C%R(IG) * CG%R(IG)
      &                  * COS(TETAP%R(MESH%KP1BOR%I(I+NPTFR))*DEGRAD)
 
-            BPHI2B%R(I)  = 0.D0
-
-            CPHI2B%R(I)  = 0.D0
-
-            DPHI2B%R(I)  = 0.D0
+           BPHI2B%R(I)  = 0.D0
+           CPHI2B%R(I)  = 0.D0
+           DPHI2B%R(I)  = 0.D0
 !
          ELSE
-            APHI2B%R(I)  = 0.D0
-!
-            BPHI2B%R(I)  = 0.D0
-!
-            CPHI2B%R(I)  = 0.D0
-!
-            DPHI2B%R(I)  = 0.D0
-!
+           APHI2B%R(I)  = 0.D0
+           BPHI2B%R(I)  = 0.D0
+           CPHI2B%R(I)  = 0.D0
+           DPHI2B%R(I)  = 0.D0
          ENDIF
 !
 !        -------------------------------------------
@@ -267,63 +253,63 @@
 !        -------------------------------------------
 !
          IF (LIHBOR%I(I).EQ.KLOG) THEN
-!          WRITE(LU,*) 'TETAP, I =',TETAP%R(I),I,X(IG),Y(IG)
-          AUXI1 = K%R(IG) * C%R(IG) * CG%R(IG) *
-     &      COS(TETAP%R(I)*DEGRAD) /
-     &      ( 1.D0 + RP%R(I)*RP%R(I) +
-     &        2.D0*RP%R(I)*COS(ALFAP%R(I)*DEGRAD) )
 !
-          APHI3B%R(I) = - (1.D0 - RP%R(I) * RP%R(I) ) * AUXI1
+           AUXI1 = K%R(IG) * C%R(IG) * CG%R(IG) *
+     &             COS(TETAP%R(I)*DEGRAD) /
+     &             (1.D0 + RP%R(I)*RP%R(I) +
+     &             2.D0*RP%R(I)*COS(ALFAP%R(I)*DEGRAD))
 !
-          BPHI3B%R(I) = 2.D0*RP%R(I)*SIN(ALFAP%R(I)*DEGRAD) * AUXI1
+           APHI3B%R(I) = - (1.D0 - RP%R(I) * RP%R(I) ) * AUXI1
 !
-          CPHI3B%R(I)  = 0.D0
+           BPHI3B%R(I) = 2.D0*RP%R(I)*SIN(ALFAP%R(I)*DEGRAD) * AUXI1
 !
-          DPHI3B%R(I)  = 0.D0
+           CPHI3B%R(I)  = 0.D0
+!
+           DPHI3B%R(I)  = 0.D0
 !
          ELSEIF (LIHBOR%I(MESH%KP1BOR%I(I)).EQ.KLOG) THEN
-          AUXI1 = K%R(IG) * C%R(IG) * CG%R(IG) *
+           AUXI1 = K%R(IG) * C%R(IG) * CG%R(IG) *
      &      COS(TETAP%R(MESH%KP1BOR%I(I))*DEGRAD) /
      &      (1.D0 + RP%R(MESH%KP1BOR%I(I))*RP%R(MESH%KP1BOR%I(I))
      &      +2.D0 * RP%R(MESH%KP1BOR%I(I))*
      &       COS(ALFAP%R(MESH%KP1BOR%I(I))*DEGRAD))
 !
-          APHI3B%R(I) = - (1.D0-RP%R(MESH%KP1BOR%I(I))*
+           APHI3B%R(I) = - (1.D0-RP%R(MESH%KP1BOR%I(I))*
      &      RP%R(MESH%KP1BOR%I(I))) * AUXI1
 !
-          BPHI3B%R(I) = 2.D0*RP%R(MESH%KP1BOR%I(I))
+           BPHI3B%R(I) = 2.D0*RP%R(MESH%KP1BOR%I(I))
      &                * SIN(ALFAP%R(MESH%KP1BOR%I(I))*DEGRAD) * AUXI1
 !
-          CPHI3B%R(I)  = 0.D0
+           CPHI3B%R(I)  = 0.D0
 !
-          DPHI3B%R(I)  = 0.D0
+           DPHI3B%R(I)  = 0.D0
 !
          ELSEIF (LIHBOR%I(MESH%KP1BOR%I(I+NPTFR)).EQ.KLOG) THEN
-          AUXI1 = K%R(IG) * C%R(IG) * CG%R(IG) *
+           AUXI1 = K%R(IG) * C%R(IG) * CG%R(IG) *
      &     COS(TETAP%R(MESH%KP1BOR%I(I+NPTFR))*DEGRAD) /
      &     (1.D0 + RP%R(MESH%KP1BOR%I(I+NPTFR))
      &      *RP%R(MESH%KP1BOR%I(I+NPTFR))
      &      +2.D0 * RP%R(MESH%KP1BOR%I(I+NPTFR))*
      &       COS(ALFAP%R(MESH%KP1BOR%I(I+NPTFR))*DEGRAD))
 !
-          APHI3B%R(I) = - (1.D0-RP%R(MESH%KP1BOR%I(I+NPTFR))*
-     &      RP%R(MESH%KP1BOR%I(I+NPTFR))) * AUXI1
+           APHI3B%R(I) = - (1.D0-RP%R(MESH%KP1BOR%I(I+NPTFR))*
+     &       RP%R(MESH%KP1BOR%I(I+NPTFR))) * AUXI1
 !
-          BPHI3B%R(I) = 2.D0*RP%R(MESH%KP1BOR%I(I+NPTFR))
+           BPHI3B%R(I) = 2.D0*RP%R(MESH%KP1BOR%I(I+NPTFR))
      &      * SIN(ALFAP%R(MESH%KP1BOR%I(I+NPTFR))*DEGRAD) * AUXI1
 !
-          CPHI3B%R(I)  = 0.D0
+           CPHI3B%R(I)  = 0.D0
 !
-          DPHI3B%R(I)  = 0.D0
+           DPHI3B%R(I)  = 0.D0
 !
          ELSE
-          APHI3B%R(I)  = 0.D0
+           APHI3B%R(I)  = 0.D0
 !
-          BPHI3B%R(I)  = 0.D0
+           BPHI3B%R(I)  = 0.D0
 !
-          CPHI3B%R(I)  = 0.D0
+           CPHI3B%R(I)  = 0.D0
 !
-          DPHI3B%R(I)  = 0.D0
+           DPHI3B%R(I)  = 0.D0
 !
          ENDIF
 !
