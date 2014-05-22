@@ -95,7 +95,7 @@
           ELSE
              WRITE(LU,*) 'PARMETIS: IMPLEMENTED FOR ',
      &                   'TRIANGLES OR PRISMS ONLY'
-             CALL PLANTE(-1)
+             CALL PLANTE(1)
              STOP
           ENDIF 
 !         
@@ -180,7 +180,7 @@
           ELSE
              WRITE(LU,*) 'PTSCOTCH: IMPLEMENTED FOR ',
      &                   'TRIANGLES OR PRISMS ONLY'
-             CALL PLANTE(-1)
+             CALL PLANTE(1)
              STOP
           ENDIF 
 !         
@@ -241,13 +241,13 @@
           CALL SCOTCHFSTRATINIT(PTSCOTCHSTRAT,ERR)
           IF (ERR.EQ.0) THEN
             WRITE(LU,*) 'PTSCOTCH ERROR: CANNOT INITIALIZE STRAT'
-            CALL PLANTE(-1)
+            CALL PLANTE(1)
           ENDIF   
 !         
           CALL SCOTCHFDGRAPHINIT(PTSCOTCHGRAPH,MPI_COMM_WORLD,ERR)
           IF (ERR.EQ.0) THEN
             WRITE(LU,*) 'PTSCOTCH ERROR: CANNOT INITIALIZE GRAPH'
-            CALL PLANTE(-1)
+            CALL PLANTE(1)
           ENDIF
 !         
           CALL SCOTCHFDGRAPHBUILD ( PTSCOTCHGRAPH,     ! GRAFDAT
@@ -267,13 +267,13 @@
      &                              ERR)
           IF (ERR.EQ.0) THEN
             WRITE(LU,*) 'PTSCOTCH ERROR: CANNOT BUILD GRAPH'
-            CALL PLANTE(-1)
+            CALL PLANTE(1)
           ENDIF
 !         
           CALL SCOTCHFDGRAPHCHECK(PTSCOTCHGRAPH,ERR)
           IF (ERR.EQ.0) THEN
             WRITE(LU,*) 'PTSCOTCH ERROR: GRAPH NOT CONSISTANT'
-            CALL PLANTE(-1)
+            CALL PLANTE(1)
           ENDIF
 !          
           CALL SCOTCHFDGRAPHPART ( PTSCOTCHGRAPH, 
@@ -284,7 +284,7 @@
 !         
           IF (ERR.EQ.0) THEN
             WRITE(LU,*) 'PTSCOTCH ERROR: CANNOT PARTITION GRAPH'
-            CALL PLANTE(-1)
+            CALL PLANTE(1)
           END IF
 !!!! CHA! NGING EPART NUMBERING TO 1-NPART
           DO I=1,NELEM_LOC
@@ -304,7 +304,7 @@
 #else
           WRITE(LU,*) "TRYING TO PARTITIONNE WITH PTSCOTCH WHEN",
      &                "PTSCOTCH IS NOT INSTALLED" 
-          CALL PLANTE(-1)
+          CALL PLANTE(1)
 #endif        
         ELSEIF(PMETHOD.EQ.3) THEN
           WRITE(LU,*) 'BEGIN PARTITIONING WITH METIS'
@@ -339,7 +339,7 @@
              NCOMMONNODES = 2 ! FOR TRIANGLE OR RECTANGLE
           ELSE
            WRITE(LU,*) 'METIS: IMPLEMENTED FOR TRIANGLES OR PRISMS ONLY'
-             CALL PLANTE(-1)
+             CALL PLANTE(1)
              STOP
           ENDIF 
           
@@ -354,7 +354,7 @@
 #else
         WRITE(LU,*) 'ERROR: TRY TO RUN PARTEL_PARA WITH A '//
      &              'SERIAL CONFIGURATION'
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
 #endif
 !         
 !         

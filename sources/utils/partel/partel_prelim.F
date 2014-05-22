@@ -149,7 +149,7 @@
 !      INQUIRE (FILE='PARTEL.PAR',EXIST=IS)
 !      IF (.NOT.IS) THEN 
 !        WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') 
-!        CALL PLANTE2(-1)
+!        CALL PLANTE2(1)
 !        STOP
 !      END IF  
 !###> SEB@HRW: SO YOU DO THIS ONLY ONCE
@@ -173,7 +173,7 @@
       INQUIRE (FILE=NAMEINP,EXIST=IS)
       IF (.NOT.IS) THEN 
          WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEINP
-         CALL PLANTE(-1)
+         CALL PLANTE(1)
          STOP
       END IF
 !
@@ -193,7 +193,7 @@
          WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS' 
          WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
          WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
-         CALL PLANTE(-1)
+         CALL PLANTE(1)
          STOP
       ENDIF
 !
@@ -213,7 +213,7 @@
          IF (ISTOP.GT.MAXALLVARLENGTH) THEN
             WRITE(LU,*) 'VARIABLE NAMES TOO LONG FOR STRIN ALLVAR'
             WRITE(LU,*) 'STOPPED.'
-            CALL PLANTE(-1)
+            CALL PLANTE(1)
             STOP
          ENDIF
          ISTART=ISTOP+1
@@ -239,12 +239,12 @@
          NELEM2 = NELEM/(NPLAN-1)
          IF (MOD(NPOIN,NPLAN).NE.0) THEN 
             WRITE (LU,*) 'BUT NPOIN2 /= NPOIN3/NPLAN!'
-            CALL PLANTE(-1)
+            CALL PLANTE(1)
             STOP   
          ENDIF
          IF (MOD(NELEM,(NPLAN-1)).NE.0) THEN 
             WRITE (LU,*) 'BUT NELEM2 /= NELEM3/NPLAN!'
-            CALL PLANTE(-1)
+            CALL PLANTE(1)
             STOP
          ENDIF
       ELSE
@@ -259,7 +259,7 @@
       ELSE   
 !         WRITE(LU,*) 'THE ELEMENTS ARE NEITHER TRIANGLES NOR PRISMS!'
 !         WRITE(LU,*) 'NDP = ',NDP
-         CALL PLANTE(-1)
+         CALL PLANTE(1)
          STOP
       ENDIF
 !

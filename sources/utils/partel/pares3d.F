@@ -475,7 +475,7 @@
       READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
       IF (IOS .NE. 0) THEN
          WRITE(LU,*)'! PROBLEM WITH THE NUMBER OF COLOR !'
-         CALL PLANTE(-1)
+         CALL PLANTE(1)
       ENDIF
       POS = INDEX(LINE,':') + 1
       READ(UNIT=LINE(POS:), FMT=*, IOSTAT=IOS) NBCOLOR
@@ -490,7 +490,7 @@
       WRITE(LU,94) NBCOLOR
       IF (NBCOLOR.EQ.0) THEN
          WRITE(LU,*) 'VOUS AVEZ OUBLIE DE REMPLIR LE FICHIER LOG...'
-         CALL PLANTE(-1)
+         CALL PLANTE(1)
          STOP
       ENDIF
 
@@ -502,7 +502,7 @@
       IF (IOS .NE. 0) THEN
         !         '!------------------------------------------!'
         WRITE(LU,*)'! PROBLEM WITH THE PRIORITY OF COLOR NODES !'
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
       ENDIF
 
       POS = INDEX(LINE,':') + 1
@@ -510,7 +510,7 @@
       IF (IOS .NE. 0) THEN
         !         '!------------------------------------------!'
         WRITE(LU,*)'! PROBLEM WITH THE PRIORITY OF COLOR NODES !'
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
       ENDIF
       ! END MODIFICATION JP RENAUD
       WRITE(LU,*) (PRIORITY(J),J=1,NBCOLOR)

@@ -243,7 +243,7 @@
       INQUIRE (FILE='PARTEL.PAR',EXIST=IS)
       IF( .NOT.IS ) THEN
          WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') 'PARTEL.PAR'
-         CALL PLANTE(-1)
+         CALL PLANTE(1)
          STOP
       END IF
 !
@@ -260,14 +260,14 @@
       INQUIRE (FILE=NAMEINP,EXIST=IS)
       IF( .NOT.IS ) THEN
          WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEINP
-         CALL PLANTE(-1)
+         CALL PLANTE(1)
          STOP
       END IF
 !
       INQUIRE (FILE=NAMECLI,EXIST=IS)
       IF (.NOT.IS) THEN
          WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMECLI
-         CALL PLANTE(-1)
+         CALL PLANTE(1)
          STOP
       END IF
 !
@@ -289,7 +289,7 @@
           WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS'
           WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC'
           WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
-          CALL PLANTE(-1)
+          CALL PLANTE(1)
           STOP
       ENDIF
 !
@@ -313,7 +313,7 @@
          IF (ISTOP.GT.MAXALLVARLENGTH) THEN
             WRITE(LU,*) 'VARIABLE NAMES TOO LONG FOR STRING ALLVAR'
             WRITE(LU,*) 'STOPPED.'
-            CALL PLANTE(-1)
+            CALL PLANTE(1)
             STOP
          ENDIF
          ISTART=ISTOP+1
@@ -340,12 +340,12 @@
          NELEM2 = NELEM/(NPLAN-1)
          IF (MOD(NPOIN,NPLAN).NE.0) THEN
             WRITE (LU,*) 'BUT NPOIN2 /= NPOIN3/NPLAN!'
-            CALL PLANTE(-1)
+            CALL PLANTE(1)
             STOP
          ENDIF
          IF (MOD(NELEM,(NPLAN-1)).NE.0) THEN
             WRITE (LU,*) 'BUT NELEM2 /= NELEM3/NPLAN!'
-            CALL PLANTE(-1)
+            CALL PLANTE(1)
             STOP
          ENDIF
       ELSE
@@ -361,7 +361,7 @@
       ELSE
 !         WRITE(LU,*) 'THE ELEMENTS ARE NEITHER TRIANGLES NOR PRISMS!'
 !         WRITE(LU,*) 'NDP = ',NDP
-         CALL PLANTE(-1)
+         CALL PLANTE(1)
          STOP
       ENDIF
 !
@@ -484,7 +484,7 @@
          WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS'
          WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
          WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
-         CALL PLANTE(-1)
+         CALL PLANTE(1)
          STOP
       ENDIF
 !
@@ -503,7 +503,7 @@
 !   NOW CHECK IS THE BOUNDARY NODE COLOUR
 !     IF(CHECK(K).NE.K) THEN
 !        WRITE(LU,*) 'ERROR IN BOUNDARY CONDITIONS FILE AT LINE ',K
-!        CALL PLANTE(-1)
+!        CALL PLANTE(1)
 !        STOP
 !     ENDIF
       K=K+1
@@ -943,7 +943,7 @@
       IF (MAX_N_NEIGH > MAXNPROC) THEN
          WRITE (LU,*) 'THERE IS A NODE WHICH BELONGS TO MORE THAN ',
      &        MAXNPROC,' PROCESSORS, HOW COME?'
-         CALL PLANTE(-1)
+         CALL PLANTE(1)
           STOP
        ENDIF
        IF (MAX_N_NEIGH < NBMAXNSHARE-1) MAX_N_NEIGH = NBMAXNSHARE-1
