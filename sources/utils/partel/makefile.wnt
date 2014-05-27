@@ -80,19 +80,19 @@ exedef:         $(PARTEL) $(PARTEL_PARA) $(PARTEL_PRELIM)
 "$(PARTEL)":	$(OBJS_PARTEL)
 	@echo  -
 	@echo ---------------------Link executable par defaut
-	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL) $(OBJS_PARTEL) $(LKLIB)
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(PARTEL) $(OBJS_PARTEL) $(LKLIB)
 	echo "Termine."
 
 "$(PARTEL_PRELIM)":	$(OBJS_PARTEL_PRELIM)
 	@echo  -
 	@echo ---------------------Link executable par defaut
-	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL_PRELIM) $(OBJS_PARTEL_PRELIM) $(LKLIB)
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(PARTEL_PRELIM) $(OBJS_PARTEL_PRELIM) $(LKLIB)
 	echo "Termine."
 
 "$(PARTEL_PARA)":	$(OBJS_PARTEL_PARA)
 	@echo  -
 	@echo ---------------------Link executable par defaut
-	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL_PARA) $(OBJS_PARTEL_PARA) $(LKLIB)
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(PARTEL_PARA) $(OBJS_PARTEL_PARA) $(LKLIB)
 	echo "Termine."
 
 #--- Suppression des ".obj" (existants) + ".lib"
@@ -109,8 +109,12 @@ menage:  $(SRCS)
 install:  $(PARTEL) $(PARTEL_PARA) $(PARTEL_PRELIM) 
 	@echo  -
 	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
-	@echo ---------------------Installe $(EXEDEF) dans $(DEST).
-	copy $(EXEDEF)  $(DEST)\bin\$(EXEDEF)
+	@echo ---------------------Installe $(PARTEL) dans $(DEST).
+	copy $(PARTEL)  $(DEST)\bin\$(PARTEL)
+	@echo ---------------------Installe $(PARTEL_PARA) dans $(DEST).
+	copy $(PARTEL_PARA)  $(DEST)\bin\$(PARTEL_PARA)
+	@echo ---------------------Installe $(PARTEL_PRELIM) dans $(DEST).
+	copy $(PARTEL_PRELIM)  $(DEST)\bin\$(PARTEL_PRELIM)
 
 #--- Librairie en DEBUG
 libdebug:
