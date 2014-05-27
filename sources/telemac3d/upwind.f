@@ -5,7 +5,7 @@
      &(M,WCC,DELTA,MESH2D,MESH3D,NPLAN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    UPWINDS THE ADVECTION TERM OF VERTICAL VELOCITY.
@@ -35,6 +35,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J.M. HERVOUET (EDF LAB, LNHE)
+!+        15/05/2014
+!+        V7P0
+!+   Checking that we are duly in prisms.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DELTA          |-->| UPWIND COEFFICIENT (BETWEEN 0 AND 1)
 !| M              |<->| MATRIX
@@ -61,19 +66,30 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !
-      IF(M%STO.EQ.1) THEN
+      IF(M%STO.EQ.1.AND.WCC%ELM.EQ.41) THEN
         CALL UPWINDEBE(M%D%R,M%X%R,MESH3D%IKLE%I,
      &                 MESH3D%NELMAX,
      &                 MESH3D%NELEM,MESH2D%NELEM,
      &                 MESH2D%SURFAC%R,NPLAN,WCC%R,M%TYPEXT,DELTA)
-      ELSEIF(M%STO.EQ.3) THEN
+      ELSEIF(M%STO.EQ.3.AND.WCC%ELM.EQ.41) THEN
         CALL UPWINDSEG(M%D%R,M%X%R,
      &                 MESH3D%IKLE%I,MESH3D%NELMAX,
      &                 MESH3D%NELEM,MESH2D%NELEM,MESH2D%SURFAC%R,
      &                 NPLAN,WCC%R,MESH2D%NSEG,MESH3D%NSEG,M%TYPEXT,
      &                 DELTA)
       ELSE
-        WRITE(LU,*) 'UNEXPECTED STORAGE FOR MATRIX M IN UPWIND'
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'UPWIND : STOCKAGE DE M INCONNU : ',M%STO
+          WRITE(LU,*) '         SEULS 1 ET 3 SONT TRAITES'
+          WRITE(LU,*) 'OU LE MAILLAGE A DES ELEMENTS DE TYPE ',WCC%ELM
+          WRITE(LU,*) 'CE DEVRAIT ETRE 41 (PRISMES)'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'UPWIND: UNEXPECTED STORAGE FOR MATRIX M:',M%STO
+          WRITE(LU,*) '        ONLY 1 AND 3 ARE TREATED'
+          WRITE(LU,*) 'OR THE MESH HAS ELEMENTS OF TYPE:',WCC%ELM
+          WRITE(LU,*) 'IT SHOULD BE 41 (PRISMS)'
+        ENDIF
         CALL PLANTE(1)
         STOP
       ENDIF

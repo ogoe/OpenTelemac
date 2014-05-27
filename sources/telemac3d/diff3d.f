@@ -76,6 +76,14 @@
 !+   vertical advection of sediment done by SED_FALL (based on the
 !+   forward method of characteristics in weak form).
 !
+!history  J.M. HERVOUET (EDF LAB, LNHE)
+!+        15/05/2014
+!+        V7P0
+!+   Implicit upwind treatment of settling velocity modified. Now a
+!+   single matrix is called (MATWC) and upwind is not called.
+!+   Positivity is ensured without any condition, and stability 
+!+   if the solver can resist to non dominant diagonals...
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
 !|                |   |  NU*DF/DN = AFBORF*U + BFBORF
@@ -240,7 +248,7 @@
 !   MASS MATRIX
 !=======================================================================
 !
-!   COMPUTES MTRA2 : MASS MATRIX DIVIDED BY DT
+!     COMPUTES MTRA2 : MASS MATRIX DIVIDED BY DT
 !
       FORMUL='MATMAS          '
       CALL MATRIX(MTRA2, 'M=N     ', FORMUL, IELM3, IELM3, 1.D0/DT,
@@ -322,19 +330,19 @@
 !     SOURCES INSIDE THE DOMAIN
 !
       IF(YASCE.AND.NSCE.GT.0) THEN
-      DO IS=1,NSCE
-!       IF INTAKE FSCE=F, SO NO EXTRA TERM
-        IIS=IS
-!       IN PARALLEL MODE SOURCES WITHOUT PARCOM
-        IF(NCSIZE.GT.1) IIS=IIS+NSCE
-        DO I=1,NPOIN3
-!         EXPLICIT SOURCE TERM
-          SEM3D%R(I) = SEM3D%R(I)
-     &               + MAX(SOURCES%ADR(IIS)%P%R(I),0.D0)*
+        DO IS=1,NSCE
+!         IF INTAKE FSCE=F, SO NO EXTRA TERM
+          IIS=IS
+!         IN PARALLEL MODE SOURCES WITHOUT PARCOM
+          IF(NCSIZE.GT.1) IIS=IIS+NSCE
+          DO I=1,NPOIN3
+!           EXPLICIT SOURCE TERM
+            SEM3D%R(I) = SEM3D%R(I)
+     &                 + MAX(SOURCES%ADR(IIS)%P%R(I),0.D0)*
      &            (FSCE(IS)-(1.D0-TETASUPG)*FN%R(I))
-!         IMPLICIT SOURCE TERM : SEE BELOW
+!           IMPLICIT SOURCE TERM : SEE BELOW
+          ENDDO
         ENDDO
-      ENDDO
       ENDIF
 !
 !=======================================================================
@@ -356,7 +364,7 @@
 !
 !=======================================================================
 !
-!   EXPLICIT ADVECTION TERM:
+!     EXPLICIT ADVECTION TERM:
 !
       IF(SCHCF.EQ.ADV_SUP) THEN
         CALL MATVEC('X=X+CAY ',SEM3D,MSUPG,FN,TETASUPG-1.D0,MESH3D)
@@ -382,17 +390,17 @@
 !     SOURCES INSIDE THE DOMAIN
 !
       IF(YASCE.AND.NSCE.GT.0) THEN
-      DO IS=1,NSCE
-!       IF INTAKE FSCE=T, SO NO EXTRA TERM
-        IIS=IS
-!       IN PARALLEL MODE SOURCES WITHOUT PARCOM
-        IF(NCSIZE.GT.1) IIS=IIS+NSCE
-        DO I=1,NPOIN3
-!         IMPLICIT SOURCE TERM
-          MTRA2%D%R(I)=MTRA2%D%R(I)+
-     &                 MAX(SOURCES%ADR(IIS)%P%R(I),0.D0)*TETASUPG
+        DO IS=1,NSCE
+!         IF INTAKE FSCE=T, SO NO EXTRA TERM
+          IIS=IS
+!         IN PARALLEL MODE SOURCES WITHOUT PARCOM
+          IF(NCSIZE.GT.1) IIS=IIS+NSCE
+          DO I=1,NPOIN3
+!           IMPLICIT SOURCE TERM
+            MTRA2%D%R(I)=MTRA2%D%R(I)+
+     &                   MAX(SOURCES%ADR(IIS)%P%R(I),0.D0)*TETASUPG
+          ENDDO
         ENDDO
-      ENDDO
       ENDIF
 !
 !     RAIN (ALL TRACERS) - IMPLICIT PART
@@ -410,56 +418,46 @@
 !
       IF(SCHDF.NE.0) THEN
 !
-         IF(INFO) THEN
-           IF(SCHCF.EQ.ADV_SUP) THEN
-             IF(LNG.EQ.1) WRITE(LU,*) 'DIFFUSION DE ',FN%NAME,
-     &                                ' AVEC CONVECTION PAR SUPG'
-             IF(LNG.EQ.2) WRITE(LU,*) 'DIFFUSION OF ',FN%NAME,
-     &                                ' WITH SUPG ADVECTION'
-           ELSE
-             IF(LNG.EQ.1) WRITE(LU,*) 'DIFFUSION DE ',FN%NAME
-             IF(LNG.EQ.2) WRITE(LU,*) 'DIFFUSION OF ',FN%NAME
-           ENDIF
-         ENDIF
+        IF(INFO) THEN
+          IF(SCHCF.EQ.ADV_SUP) THEN
+            IF(LNG.EQ.1) WRITE(LU,*) 'DIFFUSION DE ',FN%NAME,
+     &                               ' AVEC CONVECTION PAR SUPG'
+            IF(LNG.EQ.2) WRITE(LU,*) 'DIFFUSION OF ',FN%NAME,
+     &                               ' WITH SUPG ADVECTION'
+          ELSE
+            IF(LNG.EQ.1) WRITE(LU,*) 'DIFFUSION DE ',FN%NAME
+            IF(LNG.EQ.2) WRITE(LU,*) 'DIFFUSION OF ',FN%NAME
+          ENDIF
+        ENDIF
 !
-         IF(NEWDIF) THEN
-!
-!           RELEASE 5.7
-!           FORMUL='MATDIF          '
-!           RELEASE 5.8 : MONOTONICITY ENSURED
-            FORMUL='MATDIF       MON'
-            IF (INCHYD) FORMUL(7:7)='2'
-!
-             CALL MATRIX
-     &      (MDIFF, 'M=N     ', FORMUL, IELM3, IELM3, 1.D0,
-     &       VISCF%ADR(1)%P, VISCF%ADR(2)%P, VISCF%ADR(3)%P,
-     &       SVIDE, SVIDE, SVIDE, MESH3D, MSK, MASKEL)
-!
-         ENDIF
+        IF(NEWDIF) THEN
+!         RELEASE 5.7
+!         FORMUL='MATDIF          '
+!         RELEASE 5.8 : MONOTONICITY ENSURED
+          FORMUL='MATDIF       MON'
+          IF(INCHYD) FORMUL(7:7)='2'
+          CALL MATRIX(MDIFF,'M=N     ',FORMUL,IELM3,IELM3,1.D0,
+     &                VISCF%ADR(1)%P,VISCF%ADR(2)%P,VISCF%ADR(3)%P,
+     &                SVIDE,SVIDE,SVIDE,MESH3D,MSK,MASKEL)
+        ENDIF
 !
 !=======================================================================
 !
-         IF(OPTDIF.EQ.1) THEN
+        IF(OPTDIF.EQ.1) THEN
 !
-!        SEMI-IMPLICITATION OF THE DIFFUSION
+!         SEMI-IMPLICITATION OF THE DIFFUSION
 !
-         IF(TETADI.LT.0.999D0) THEN
-!          IF(TETADI.GT.0.001) THEN
-           CALL MATVEC ('X=X+CAY  ',SEM3D,MDIFF,FN,(TETADI-1.D0)/SIGMAF,
-     &                              MESH3D)
-!          ELSE
-!          CALL VECTOR
-!    *      (SEM3D, '+', 'VECDIF          ',IELM3,(TETADI-1.D0)/SIGMAF,
-!    *       VISCF%ADR(1)%P,VISCF%ADR(2)%P,VISCF%ADR(3)%P,
-!    *       FN, SVIDE, SVIDE, MESH3D,MSK, MASKEL)
-!          ENDIF
-         ENDIF
-!        IF TETADI=0, NO NEED TO ADD MDIFF
-         IF(TETADI.GT.0.001D0) THEN
-           CALL OM('M=M+CN  ',MTRA2,MDIFF,SVIDE,TETADI/SIGMAF,MESH3D)
-         ENDIF
+          IF(TETADI.LT.0.999D0) THEN
+!           IF(TETADI.GT.0.001) THEN
+            CALL MATVEC ('X=X+CAY  ',SEM3D,MDIFF,FN,
+     &                   (TETADI-1.D0)/SIGMAF,MESH3D)
+          ENDIF
+!         IF TETADI=0, NO NEED TO ADD MDIFF
+          IF(TETADI.GT.0.001D0) THEN
+            CALL OM('M=M+CN  ',MTRA2,MDIFF,SVIDE,TETADI/SIGMAF,MESH3D)
+          ENDIF
 !
-         ENDIF
+        ENDIF
 !
 ! TAKES THE IMPLICIT BOUNDARY TERMS INTO ACCOUNT (FRICTION FOR EXAMPLE)
 ! ---------------------------------------------
@@ -467,12 +465,12 @@
 !   LATERAL FACES : (MASKBR SET ACCORDING TO MASKEL IN MASK3D)
 !  (MASS-LUMPED FORM)
 !
-         IF(AFBORL%TYPR.NE.'0') THEN
-           CALL VECTOR(T3_02,'=','MASBAS          ',IELM2V,-1.D0,SVIDE,
-     &                 SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,MSK,MASKEL)
-           CALL OS('X=XY    ',T3_02,AFBORL,AFBORL,0.D0)
-           CALL OSDB( 'X=X+Y   ' , MTRA2%D , T3_02 , T3_02, C , MESH3D )
-         ENDIF
+        IF(AFBORL%TYPR.NE.'0') THEN
+          CALL VECTOR(T3_02,'=','MASBAS          ',IELM2V,-1.D0,SVIDE,
+     &                SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,MSK,MASKEL)
+          CALL OS('X=XY    ',T3_02,AFBORL,AFBORL,0.D0)
+          CALL OSDB( 'X=X+Y   ' , MTRA2%D , T3_02 , T3_02, C , MESH3D )
+        ENDIF
 !
 !  (NON MASS-LUMPED FORM, BUT MATR2V NOW SUPPRESSED)
 !        FORMUL='FMATMA          '
@@ -483,66 +481,60 @@
 !
 !   BOTTOM (MASS-LUMPED FORM AS IN 2D):
 !
-         IF(AFBORF%TYPR.NE.'0') THEN
-           CALL VECTOR(T2_03, '=','MASBAS          ',IELM2H,-1.D0,SVIDE,
-     &                 SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH2D,MSK,MASKEL)
-           CALL OV('X=XY    ',T2_03%R,AFBORF%R,AFBORF%R,0.D0,NPOIN2)
-!          DRY ZONES OR CRUSHED ELEMENTS
-!          SEE EQUIVALENT TREATMENT IN WAVE_EQUATION
-!          JMH CORRECTION TIDAL FLATS 05/11/2013
-           IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
-             DO IPOIN2 = 1,NPOIN2
-!              FLUXES ON THE BOTTOM MUST NOT BE TAKEN INTO ACCOUNT ON TIDAL FLATS
-!              E.G. NO SETTLING VELOCITY IF NO WATER!
-!              IF(IPBOT(IPOIN2).NE.NPLAN-1) THEN
-!                IF NOT A TIDAL FLAT... WE CAN HOWEVER HAVE CRUSHED POINTS
-!                SAME TREATMENT FROM PLANE 1 UP TO ACTUAL BOTTOM PLANE
-!                THE CRUSHED POINTS ARE TREATED AS THE POINT ON ACTUAL BOTTOM PLANE ABOVE THEM
-                 DO NP=0,IPBOT(IPOIN2)
-                   I=NP*NPOIN2+IPOIN2
-                   MTRA2%D%R(I)=MTRA2%D%R(I)+T2_03%R(IPOIN2)
-                 ENDDO
-!              ENDIF
-             ENDDO
-           ELSE
-             DO IPOIN2 = 1,NPOIN2
-               MTRA2%D%R(IPOIN2)=MTRA2%D%R(IPOIN2)+T2_03%R(IPOIN2)
-             ENDDO
-           ENDIF
-         ENDIF
+        IF(AFBORF%TYPR.NE.'0') THEN
+          CALL VECTOR(T2_03, '=','MASBAS          ',IELM2H,-1.D0,SVIDE,
+     &                SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH2D,MSK,MASKEL)
+          CALL OV('X=XY    ',T2_03%R,AFBORF%R,AFBORF%R,0.D0,NPOIN2)
+!         DRY ZONES OR CRUSHED ELEMENTS
+!         SEE EQUIVALENT TREATMENT IN WAVE_EQUATION
+!         JMH CORRECTION TIDAL FLATS 05/11/2013
+          IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
+            DO IPOIN2 = 1,NPOIN2
+!             FLUXES ON THE BOTTOM MUST NOT BE TAKEN INTO ACCOUNT ON TIDAL FLATS
+!             E.G. NO SETTLING VELOCITY IF NO WATER!
+!             IF(IPBOT(IPOIN2).NE.NPLAN-1) THEN
+!               IF NOT A TIDAL FLAT... WE CAN HOWEVER HAVE CRUSHED POINTS
+!               SAME TREATMENT FROM PLANE 1 UP TO ACTUAL BOTTOM PLANE
+!               THE CRUSHED POINTS ARE TREATED AS THE POINT ON ACTUAL BOTTOM PLANE ABOVE THEM
+                DO NP=0,IPBOT(IPOIN2)
+                  I=NP*NPOIN2+IPOIN2
+                  MTRA2%D%R(I)=MTRA2%D%R(I)+T2_03%R(IPOIN2)
+                ENDDO
+!             ENDIF
+            ENDDO
+          ELSE
+            DO IPOIN2 = 1,NPOIN2
+              MTRA2%D%R(IPOIN2)=MTRA2%D%R(IPOIN2)+T2_03%R(IPOIN2)
+            ENDDO
+          ENDIF
+        ENDIF
 !
-!   SURFACE (MASS-LUMPED FORM):
+!       SURFACE (MASS-LUMPED FORM):
 !
-         IF(AFBORS%TYPR.NE.'0') THEN
-           CALL VECTOR(T2_03, '=','MASBAS          ',IELM2H,-1.D0,SVIDE,
-     &                 SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH2D,MSK,MASKEL)
-           CALL OV('X=XY    ',T2_03%R,AFBORS%R,AFBORS%R,0.D0,NPOIN2)
-           DO I=1,NPOIN2
-             MTRA2%D%R(NPOIN3-NPOIN2+I)=
-     &       MTRA2%D%R(NPOIN3-NPOIN2+I)+T2_03%R(I)
-           ENDDO
-!          CALL OV('X=X+Y   ',MTRA2%D%R(NPOIN3-NPOIN2+1:NPOIN3),
-!    &                        T2_03%R,T2_03%R,0.D0,NPOIN2)
-         ENDIF
-!           (NON MASS-LUMPED FORM):
-!        FORMUL='FMATMA          '
-!        CALL MATRIX
-!    *   (MATR2H, 'M=N     ',FORMUL, IELM2H, IELM2H, -1.D0, AFBORS,
-!    *    SVIDE, SVIDE, SVIDE, SVIDE, SVIDE, MESH2D, MSK, MASKEL)
-!        CALL OM('M=M+NS  ', MTRA2, MATR2H, SVIDE, C, MESH3D)
+        IF(AFBORS%TYPR.NE.'0') THEN
+          CALL VECTOR(T2_03, '=','MASBAS          ',IELM2H,-1.D0,SVIDE,
+     &                SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH2D,MSK,MASKEL)
+          CALL OV('X=XY    ',T2_03%R,AFBORS%R,AFBORS%R,0.D0,NPOIN2)
+          DO I=1,NPOIN2
+            MTRA2%D%R(NPOIN3-NPOIN2+I)=
+     &      MTRA2%D%R(NPOIN3-NPOIN2+I)+T2_03%R(I)
+          ENDDO
+!         CALL OV('X=X+Y   ',MTRA2%D%R(NPOIN3-NPOIN2+1:NPOIN3),
+!    &                       T2_03%R,T2_03%R,0.D0,NPOIN2)
+        ENDIF
 !
-!   TAKES THE EXPLICIT BOUNDARY TERMS INTO ACCOUNT
-!   ---------------------------------------------
+!       TAKES THE EXPLICIT BOUNDARY TERMS INTO ACCOUNT
+!       ---------------------------------------------
 !
-         CALL T3D_STRESS(SEM3D,'X=X+Y   ',T2_01,T3_02,
-     &                   BFBORL,BFBORF,BFBORS,NPOIN2,NPOIN3,MESH2D,
-     &                   MESH3D,IELM3,IELM2H,IELM2V,SVIDE,
-     &                   MSK,MASKBR,MASKEL)
+        CALL T3D_STRESS(SEM3D,'X=X+Y   ',T2_01,T3_02,
+     &                  BFBORL,BFBORF,BFBORS,NPOIN2,NPOIN3,MESH2D,
+     &                  MESH3D,IELM3,IELM2H,IELM2V,SVIDE,
+     &                  MSK,MASKBR,MASKEL)
 !
 !=======================================================================
-!   SEDIMENT-SPECIFIC ++++ This is for WC <0 downwards
+!   SEDIMENT-SPECIFIC ++++ This is for WC > 0 downwards
 !                                D
-!   THE MATRIX - PSI1(J) * WCC * --( PSI2(I) ) IS ADDED
+!   THE MATRIX + PSI1(J) * WCC * --( PSI2(I) ) IS ADDED
 !                                DZ
 !                                                     D          N+1
 !   IT IS AN INTEGRATION BY PART OF TERM :  PSI2(I) * --( WCC * C    )
@@ -554,32 +546,19 @@
 !   NOTE: IT IS DONE IF AND ONLY IF SED. DIFFUSION IS REQUIRED !
 !=======================================================================
 !
-!
-!       RELEASE 5.5
-!
-!       IF(YAWCC) THEN
-!       FOR BOUNDARY TERMS, SEE SUBROUTINE FLUSED
-!       CALL MATRIX
-!    &      (MTRA1, 'M=N     ', 'MATFGR         Z', IELM3, IELM3, -1.D0,
-!    &       WCC, SVIDE, SVIDE, SVIDE, SVIDE, SVIDE, MESH3D,MSK, MASKEL)
-!
-!       CALL OM('M=X(M)  ',MTRA2,MTRA2,SVIDE,C,MESH3D)
-!       CALL OM('M=M+N   ',MTRA2,MTRA1,SVIDE,C,MESH3D)
-!       ENDIF
-!
-!       RELEASE 5.6 (UPWINDING VERTICAL ADVECTION)
-!
         IF(YAWCC.AND.SETDEP.EQ.0) THEN
-!         FOR BOUNDARY TERMS, SEE SUBROUTINE FLUSED
-          CALL MATRIX(MTRA1,'M=N     ','MATFGR         Z',
+!         FOR BOUNDARY TERMS, SEE SUBROUTINE FLUSED 
+!         NOTE: MATWC IS NOT PROGRAMMED WITH TETRAHEDRA...                
+          CALL MATRIX(MTRA1,'M=N     ','MATWC           ',
      &                IELM3,IELM3,1.D0,WCC,
-     &                SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,MSK,MASKEL)    
-!         UPWINDING VERTICAL ADVECTION (HERE UPWIND COEFFICIENT 1.D0)
-!         ABS(WCC) USED IN UPWIND, SO NO EFFECT IF SIGN OF WCC CHANGED
-          CALL UPWIND(MTRA2,WCC,1.D0,MESH2D,MESH3D,NPLAN)
+     &                SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,MSK,MASKEL)          
           CALL OM('M=X(M)  ',MTRA2,MTRA2,SVIDE,C,MESH3D)
           CALL OM('M=M+N   ',MTRA2,MTRA1,SVIDE,C,MESH3D)
         ENDIF
+!
+!=======================================================================
+!   END OF DIFFUSION MATRIX + BOUNDARY TERMS
+!=======================================================================
 !
       ENDIF
 !
@@ -588,7 +567,6 @@
 !   ADDS SUPG MATRIX IF SCHCF=ADV_SUP
 !
 !=======================================================================
-!
 !
       IF(SCHCF.EQ.ADV_SUP.AND.OPTDIF.EQ.1) THEN
         IF(MTRA2%TYPEXT.EQ.'S') THEN

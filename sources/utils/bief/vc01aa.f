@@ -7,7 +7,7 @@
      &  W1,W2,W3 )
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -39,6 +39,13 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        12/05/2014
+!+        V7P0
+!+   Discontinuous elements better treated: new types 15, 16 and 17 for
+!+   discontinuous linear, quasi-bubble, and quadratic, rather than
+!+   using component DIMDISC=11, 12 or 13.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -107,7 +114,7 @@
         W2(IELEM) = COEF * ( F123 + F2 )
         W3(IELEM) = COEF * ( F123 + F3 )
 !
-      ENDDO ! IELEM 
+      ENDDO 
 !
 !-----------------------------------------------------------------------
 !
@@ -123,13 +130,13 @@
         W2(IELEM) = W1(IELEM)
         W3(IELEM) = W1(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO 
 !
 !-----------------------------------------------------------------------
 !
 !     F IS DISCONTINUOUS P1
 !
-      ELSEIF(IELMF.EQ.10.AND.SF%DIM2.EQ.3.AND.SF%DIMDISC.EQ.11) THEN
+      ELSEIF(IELMF.EQ.15) THEN
 !
       XSUR12 = XMUL / 12.D0
 !
@@ -146,7 +153,7 @@
         W2(IELEM) = COEF * ( F123 + F2 )
         W3(IELEM) = COEF * ( F123 + F3 )
 !
-      ENDDO ! IELEM 
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

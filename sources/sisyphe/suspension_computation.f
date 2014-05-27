@@ -764,7 +764,7 @@
         HOLD=>HN
       ENDIF
 !
-      IF (DEBUG > 0) WRITE(LU,*) 'APPEL DE CVDFTR'
+      IF(DEBUG > 0) WRITE(LU,*) 'APPEL DE CVDFTR'
 !      
       CALL CVDFTR
      & (CST, CTILD, CS, T2,
@@ -780,14 +780,15 @@
      &  AGGLOT,ENTETS,.FALSE.,OPTADV,
      &  1, LT, NIT, OPDTRA, OPTBAN, MSK, MASKEL, MASKPT, MBOR, S,
 !               OPTSOU
-     &  MASSOU, 1,     SLVTRA,FLBOR_SIS,V2DPAR,UNSV2D,OPTVF,FLBORTRA,
+     &  MASSOU, 1,     SLVTRA,FLBOR_SIS,VOLU2D,V2DPAR,UNSV2D,
+     &  OPTVF,FLBORTRA,
      &  FLULIM,YAFLULIM,DIRFLU,.FALSE.,T8    ,0.D0,
 !                               RAIN  ,PLUIE ,TRAIN
      &  FLULIM     ,.FALSE.,MAXADV)
 !       GIVEN_FLUX   FLUX_GIVEN (NOW THE FLUX CAN BE GIVEN, THIS COULD
 !       BE AN OPTIMISATION, AS HERE IT IS RECOMPUTED FOR EVERY CLASS...)
 !
-      IF (DEBUG > 0) WRITE(LU,*) 'END_CVDFTR'
+      IF(DEBUG > 0) WRITE(LU,*) 'END_CVDFTR'
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ! 10. BED EVOLUTION DUE TO NET EROSION/DEPOSITUON FLUX

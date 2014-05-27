@@ -6,7 +6,7 @@
      & IKLE1,IKLE2,IKLE3,NELEM,NELMAX,W1,W2,W3,SPECAD)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -44,6 +44,13 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        12/05/2014
+!+        V7P0
+!+   Discontinuous elements better treated: new types 15, 16 and 17 for
+!+   discontinuous linear, quasi-bubble, and quadratic, rather than
+!+   using component DIMDISC=11, 12 or 13.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE1          |-->| FIRST POINT OF TRIANGLES
@@ -145,7 +152,7 @@
 !       VELOCITY EQUALS U * GRAD(V)
 !       WITH VARIOUS DISCRETISATIONS OF U AND V
 !
-        IF(SV%DIMDISC.EQ.0) THEN
+        IF(IELMV.EQ.11) THEN
 !
         IF(IELMU.EQ.11) THEN
 !       V LINEAR, U LINEAR
@@ -201,7 +208,7 @@
           STOP
         ENDIF
 !
-        ELSEIF(SV%DIMDISC.EQ.11) THEN
+        ELSEIF(IELMV.EQ.15) THEN
 !
         IF(IELMU.EQ.11) THEN
 !       V PIECE-WISE LINEAR, U LINEAR

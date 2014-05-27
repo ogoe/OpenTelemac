@@ -66,6 +66,13 @@
 !+        V7P0
 !+   Adaptation to assembly with I8 integers.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        12/05/2014
+!+        V7P0
+!+   Discontinuous elements better treated: new types 15, 16 and 17 for
+!+   discontinuous linear, quasi-bubble, and quadratic, rather than
+!+   using component DIMDISC=11, 12 or 13.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM1T          |-->| FIRST DIMENSION OF T (NELMAX OR NELEBX)
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA 
@@ -881,23 +888,23 @@
 !
         IF(IELM1.EQ.11) THEN
 !
-! CHECKS IF G IS DISCONTINUOUS P1
+!         CHECKS IF G IS DISCONTINUOUS P1
 !
-         IF (SG%DIM1.EQ.NELEM.AND.SG%DIM2.EQ.3.AND.
-     &       SG%DIMDISC.EQ.11) THEN
+          IF(SG%ELM.EQ.15) THEN
 !
             CALL VC11AA2(XMUL,SF,SG,SH,F,G,H,XEL,YEL,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),NELEM,NELMAX,
      &                   T(1,1),T(1,2),T(1,3) , ICOORD )
 !
-! CLASSICAL CASE: G IS P1
+!         CLASSICAL CASE: G IS P1
 !
-         ELSE
+          ELSE
 !
-             CALL VC11AA(XMUL,SF,SG,F,G,XEL,YEL,
-     &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),NELEM,NELMAX,
-     &                   T(1,1),T(1,2),T(1,3) , ICOORD )
-         ENDIF
+            CALL VC11AA(XMUL,SF,SG,F,G,XEL,YEL,
+     &                  IKLE(1,1),IKLE(1,2),IKLE(1,3),NELEM,NELMAX,
+     &                  T(1,1),T(1,2),T(1,3) , ICOORD )
+!
+          ENDIF
 !
 !-----------------------------------------------------------------------
 !

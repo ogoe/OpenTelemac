@@ -7,7 +7,7 @@
      & W1,W2,W3,W4,W5,W6,ICOORD)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -42,6 +42,13 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        12/05/2014
+!+        V7P0
+!+   Discontinuous elements better treated: new types 15, 16 and 17 for
+!+   discontinuous linear, quasi-bubble, and quadratic, rather than
+!+   using component DIMDISC=11, 12 or 13.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -92,7 +99,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,IELMF,DISCF
+      INTEGER IELEM,IELMF
       DOUBLE PRECISION F1,F2,F3,F4,F5,F6
       DOUBLE PRECISION X2,X3,Y2,Y3
       DOUBLE PRECISION XSUR6,XSUR30
@@ -100,7 +107,6 @@
 !-----------------------------------------------------------------------
 !
       IELMF=SF%ELM
-      DISCF = SF%DIMDISC
       XSUR6 = XMUL / 6.D0
       XSUR30= XMUL / 30.D0
 !
@@ -170,7 +176,7 @@
 !
 !     BEWARE: HERE F IS LINEAR BUT DISCONTINUOUS BETWEEN THE ELEMENTS
 !
-      ELSEIF(IELMF.EQ.10.AND.DISCF.EQ.11) THEN
+      ELSEIF(IELMF.EQ.15) THEN
 !
 !  X COORDINATE
 !
@@ -302,13 +308,14 @@
           IF (LNG.EQ.2) WRITE(LU,201) ICOORD
           CALL PLANTE(1)
           STOP
+!
         ENDIF
 !
 !-----------------------------------------------------------------------
 !     F IS P2 BUT DISCONTINUOUS BETWEEN THE ELEMENTS
 !-----------------------------------------------------------------------
 !
-      ELSEIF(IELMF.EQ.10.AND.DISCF.EQ.13) THEN
+      ELSEIF(IELMF.EQ.17) THEN
 !
 !================================
 !  DERIVATIVE WRT X  =
@@ -341,7 +348,7 @@
         W6(IELEM) = ((4.D0*(F4-F5)+3.D0*(F1-F3)       )*Y2
      &            +  (4.D0*F4-3.D0*F1+8.D0*(F5-F6)-F2 )*Y3) * XSUR30
 !
-      ENDDO ! IELEM 
+      ENDDO
 !
 !================================
 !  DERIVATIVE WRT Y  =
@@ -374,13 +381,15 @@
         W6(IELEM) = ((3.D0*(F3-F1)-4.D0*(F4-F5)      )*X2
      &            +  (8.D0*(F6-F5)+3.D0*F1+F2-4.D0*F4)*X3) * XSUR30
 !
-      ENDDO ! IELEM 
+      ENDDO 
 !
         ELSE
-          IF (LNG.EQ.1) WRITE(LU,200) ICOORD
-          IF (LNG.EQ.2) WRITE(LU,201) ICOORD
+!
+          IF(LNG.EQ.1) WRITE(LU,200) ICOORD
+          IF(LNG.EQ.2) WRITE(LU,201) ICOORD
           CALL PLANTE(1)
           STOP
+!
         ENDIF
 !
 !-----------------------------------------------------------------------
@@ -403,10 +412,10 @@
 !
       ENDIF
 !
-200       FORMAT(1X,'VC13CC (BIEF) : COMPOSANTE IMPOSSIBLE ',
-     &              1I6,' VERIFIER ICOORD')
-201       FORMAT(1X,'VC13CC (BIEF) : IMPOSSIBLE COMPONENT ',
-     &              1I6,' CHECK ICOORD')
+200   FORMAT(1X,'VC13CC (BIEF) : COMPOSANTE IMPOSSIBLE ',
+     &       1I6,' VERIFIER ICOORD')
+201   FORMAT(1X,'VC13CC (BIEF) : IMPOSSIBLE COMPONENT ',
+     &       1I6,' CHECK ICOORD')
 !
 !-----------------------------------------------------------------------
 !

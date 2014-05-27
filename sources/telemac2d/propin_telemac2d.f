@@ -14,7 +14,7 @@
 !
 !brief    1) CHECKS THE COMPATIBILITY OF BOUNDARY CONDITIONS.
 !+
-!+            2) FILLS ARRAYS LIMPRO AND MASK.
+!+        2) FILLS ARRAYS LIMPRO AND MASK.
 !
 !history  J-M HERVOUET (LNHE)
 !+        27/06/2008
@@ -43,6 +43,14 @@
 !+        V7P0
 !+   New implementation that enables a different numbering of boundary
 !+   points and boundary segments.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        16/05/2014
+!+        V7P0
+!+   Velocity points KLOG now treated in LIMPRO as KNEU (they were
+!+   before quoted KDDL because the treatment was the same, but some
+!+   advection schemes may now then change the KDDL into KDIR if the
+!+   flux corresponds to an entrance)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CLH            |<->| COPY OF LIHBOR
@@ -251,8 +259,10 @@
         ENDIF
         IF(CLU(K).EQ.KENT.OR.CLU(K).EQ.KENTU.OR.CLU(K).EQ.KADH) THEN
           LIMPRO(K,2) = KDIR
-        ELSEIF(CLU(K).EQ.KSORT.OR.CLU(K).EQ.KLOG) THEN
+        ELSEIF(CLU(K).EQ.KSORT) THEN
           LIMPRO(K,2) = KDDL
+        ELSEIF(CLU(K).EQ.KLOG) THEN
+          LIMPRO(K,2) = KNEU
         ELSE
           IF(LNG.EQ.1) WRITE(LU,20) K
           IF(LNG.EQ.2) WRITE(LU,21) K
@@ -261,8 +271,10 @@
         ENDIF
         IF(CLV(K).EQ.KENT.OR.CLV(K).EQ.KENTU.OR.CLV(K).EQ.KADH) THEN
           LIMPRO(K,3) = KDIR
-        ELSEIF(CLV(K).EQ.KSORT.OR.CLV(K).EQ.KLOG) THEN
+        ELSEIF(CLV(K).EQ.KSORT) THEN
           LIMPRO(K,3) = KDDL
+        ELSEIF(CLV(K).EQ.KLOG) THEN
+          LIMPRO(K,3) = KNEU
         ELSE
           IF(LNG.EQ.1) WRITE(LU,30) K
           IF(LNG.EQ.2) WRITE(LU,31) K

@@ -9,7 +9,7 @@
      & SIZEXMT)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS BETWEEN MATRICES.
@@ -82,6 +82,11 @@
 !+   Arguments XPT, YPT and ZPT added, various XEL, YEL and ZEL changed
 !+   into XPT, etc. in the calls to 3D matrices. Arguments NELEBD,
 !+   NELEBX,IKLBOR,NELBOR,NULONE.
+!
+!history  J.M. HERVOUET (EDF LAB, LNHE)
+!+        15/05/2014
+!+        V7P0
+!+   Call to mt15pp (settling velocity matrix) added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
@@ -2928,7 +2933,6 @@
           STOP
         ENDIF
 !
-!>>>>
 !=======================================================================
 !     MURD MATRIX
 !=======================================================================
@@ -3033,7 +3037,59 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-!<<<<
+!
+!=======================================================================
+!     SETTLING VELOCITY MATRIX
+!=======================================================================
+!
+      ELSEIF(FORMUL(1:6).EQ.'MATWC ') THEN
+!
+!-----------------------------------------------------------------------
+!
+!       P1 PRISM ROW ELEMENT
+        IF(IELM1.EQ.41) THEN
+!
+!.......................................................................
+!         P1 PRISM COLUMN ELEMENT
+          IF(IELM2.EQ.41) THEN
+            CALL MT15PP(T,XM,PPQ(1,1,S),
+     &                  XMUL,SF,F,SURFAC,IKLE,NELEM,NELMAX)
+!
+            TYPDIA='Q'
+            TYPEXT='Q'
+!
+!.......................................................................
+!         OTHER
+!.......................................................................
+!
+!
+!.......................................................................
+!         ERROR ON THE COLUMN ELEMENT
+!.......................................................................
+!
+          ELSE
+            IF (LNG.EQ.1) WRITE(LU,1000) FORMUL
+            IF (LNG.EQ.2) WRITE(LU,1001) FORMUL
+            IF (LNG.EQ.1) WRITE(LU,2000) IELM1
+            IF (LNG.EQ.2) WRITE(LU,2001) IELM1
+            IF (LNG.EQ.1) WRITE(LU,3000) IELM2
+            IF (LNG.EQ.2) WRITE(LU,3001) IELM2
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+!
+!-----------------------------------------------------------------------
+!       ERROR ON THE ROW ELEMENT
+!-----------------------------------------------------------------------
+!
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,1000) FORMUL
+          IF (LNG.EQ.2) WRITE(LU,1001) FORMUL
+          IF (LNG.EQ.1) WRITE(LU,2000) IELM1
+          IF (LNG.EQ.2) WRITE(LU,2001) IELM1
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !=======================================================================
 !     BOUSSINESQ MATRIX

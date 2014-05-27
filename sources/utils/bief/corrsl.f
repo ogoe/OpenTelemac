@@ -5,7 +5,7 @@
      &(NEWSL,OLDSL,ZF,MESH)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    CORRECTS THE FREE SURFACE COMPUTATION BY ELEMENTS
@@ -27,6 +27,13 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        12/05/2014
+!+        V7P0
+!+   Discontinuous elements better treated: new types 15, 16 and 17 for
+!+   discontinuous linear, quasi-bubble, and quadratic, rather than
+!+   using component DIMDISC=11, 12 or 13.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MESH           |-->| MESH STRUCTURE
@@ -60,33 +67,26 @@
 !
 !-----------------------------------------------------------------------
 !
-!     VECTOR NEWSL IS MARKED AS BEING DISCONTINUOUS
-      NEWSL%DIMDISC=IELM
-!
-!-----------------------------------------------------------------------
-!
       IF(IELM.EQ.11) THEN
 !
         CALL CRSL11(NEWSL%R,OLDSL%R,ZF%R,MESH%IKLE%I,NELEM,NELMAX)
-        NEWSL%ELM=10
 !
 !-----------------------------------------------------------------------
 !
       ELSEIF(IELM.EQ.12) THEN
 !
         CALL CRSL12(NEWSL%R,OLDSL%R,ZF%R,MESH%IKLE%I,NELEM,NELMAX)
-        NEWSL%ELM=10
 !
 !-----------------------------------------------------------------------
 !
       ELSE
 !
-         IF(LNG.EQ.1) WRITE(LU,10) IELM
-         IF(LNG.EQ.2) WRITE(LU,11) IELM
-10       FORMAT(1X,'CORRSL : DISCRETISATION INCONNUE :',I6)
-11       FORMAT(1X,'CORRSL : UNKNOWN DISCRETIZATION :',I6)
-         CALL PLANTE(1)
-         STOP
+        IF(LNG.EQ.1) WRITE(LU,10) IELM
+        IF(LNG.EQ.2) WRITE(LU,11) IELM
+10      FORMAT(1X,'CORRSL : DISCRETISATION INCONNUE :',I6)
+11      FORMAT(1X,'CORRSL: UNKNOWN DISCRETIZATION :',I6)
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

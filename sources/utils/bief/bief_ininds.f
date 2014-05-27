@@ -5,7 +5,7 @@
      &(NPOIN,NPTFR,NELEM,NPMAX,NPTFX,NELMAX,NPLAN,NSEGBOR,NDS,NELEB)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE ARRAY NDS, WHICH IS USED BY
@@ -56,6 +56,14 @@
 !+        V6P3
 !+   NBSEG added for elements 31 and 81
 !+
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        12/05/2014
+!+        V7P0
+!+   Discontinuous elements better treated: new types 15, 16 and 17 for
+!+   discontinuous linear, quasi-bubble, and quadratic, rather than
+!+   using component DIMDISC=11, 12 or 13.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NDS            |<--| ARRAY IN BIEF_MESH STRUCTURE FOR STORING
 !|                |   | NUMBERS
@@ -197,6 +205,7 @@
 !-----------------------------------------------------------------------
 !
 !     15) PIECE-WISE P1 ELEMENT ON TRIANGLES (DISCONTINUOUS ELEMENT)
+!         ONLY NUMBER OF POINTS REALLY LOOKED AT, THE REST UNSURE
 !
       NDS(15,1) = 3*NELEM
       NDS(15,2) = (3*NELEM+NSEGBOR)/2
@@ -204,6 +213,30 @@
       NDS(15,4) = 3
       NDS(15,5) = 3*NELMAX
       NDS(15,6) = 3
+!
+!-----------------------------------------------------------------------
+!
+!     16) PIECE-WISE QUASI-BUBBLE ON TRIANGLES (DISCONTINUOUS ELEMENT)
+!         ONLY NUMBER OF POINTS REALLY LOOKED AT, THE REST UNSURE
+!
+      NDS(16,1) = 4*NELEM
+      NDS(16,2) = (9*NELEM+NSEGBOR)/2
+      NDS(16,3) = 4
+      NDS(16,4) = 3
+      NDS(16,5) = 4*NELMAX
+      NDS(16,6) = 6
+!
+!-----------------------------------------------------------------------
+!
+!     17) PIECE-WISE QUADRATIC ELEMENT ON TRIANGLES (DISCONTINUOUS ELEMENT)
+!         ONLY NUMBER OF POINTS REALLY LOOKED AT, THE REST UNSURE
+!
+      NDS(17,1) = 6*NELEM
+      NDS(17,2) = 6*NELEM+3*NDS(11,2)
+      NDS(17,3) = 6
+      NDS(17,4) = 3
+      NDS(17,5) = 6*NELMAX
+      NDS(17,6) = 15
 !
 !-----------------------------------------------------------------------
 !

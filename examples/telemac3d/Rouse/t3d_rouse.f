@@ -694,7 +694,7 @@ C FIN ESSAI JMH
      &(CFDEP  , WC     , HDEP     , FLUER , TOB   , DT    ,
      & NPOIN2 , NPOIN3 , KSPRATIO , AC    , RHOS  , RHO0  , HN ,
      & GRAV   , DMOY   , CREF     , ZREF  , CF    , ICQ   ,RUGOF,
-     & Z, UETCAR)
+     & Z, UETCAR, SETDEP)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P1                                   21/08/2010
@@ -768,7 +768,7 @@ C FIN ESSAI JMH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3, ICQ
+      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3,ICQ,SETDEP
 !
       DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2),FLUER(NPOIN2)
 !
@@ -820,16 +820,18 @@ C FIN ESSAI JMH
 !      
 !     CV: Extrapolation of Rouse profile from ZREF to 1/2 or 1/4 of first grid mesh
 !
-      DO IPOIN =1,NPOIN2
-        USTAR=MAX(SQRT(UETCAR(IPOIN)),1.D-6) 
-        ROUSE=PRANDTL*WC(IPOIN)/KARMAN/USTAR
-!       rouse profile extrapolation up to 1/4 of the first layer
-!       DELTAZ=(MESH3D%Z%R(IPOIN +NPOIN2)-MESH3D%Z%R(IPOIN))/4.D0
-        DELTAZ=(Z(IPOIN +NPOIN2)-Z(IPOIN))/FICT
-        ROUSE_Z=ZREF%R(IPOIN)/(HN%R(IPOIN)-ZREF%R(IPOIN))
-     &      *(HN%R(IPOIN)-DELTAZ)/DELTAZ
-        CREF%R(IPOIN)=CREF%R(IPOIN)*ROUSE_Z**ROUSE
-      ENDDO            
+      IF(SETDEP.EQ.1) THEN
+        DO IPOIN =1,NPOIN2
+          USTAR=MAX(SQRT(UETCAR(IPOIN)),1.D-6) 
+          ROUSE=PRANDTL*WC(IPOIN)/KARMAN/USTAR
+!         rouse profile extrapolation up to 1/4 of the first layer
+!         DELTAZ=(MESH3D%Z%R(IPOIN +NPOIN2)-MESH3D%Z%R(IPOIN))/4.D0
+          DELTAZ=(Z(IPOIN +NPOIN2)-Z(IPOIN))/FICT
+          ROUSE_Z=ZREF%R(IPOIN)/(HN%R(IPOIN)-ZREF%R(IPOIN))
+     &        *(HN%R(IPOIN)-DELTAZ)/DELTAZ
+          CREF%R(IPOIN)=CREF%R(IPOIN)*ROUSE_Z**ROUSE
+        ENDDO
+      ENDIF           
 !
 !  ------------------------------------------------------------
 !  -----------------     EROSION STEP    ----------------------
@@ -986,7 +988,7 @@ C FIN ESSAI JMH
 !
       DOUBLE PRECISION, INTENT(IN) :: X(NPOIN3), Y(NPOIN3), Z(NPOIN3)
       DOUBLE PRECISION, INTENT(IN) :: TA(NPOIN3)
-      DOUBLE PRECISION, INTENT(INOUT) :: WC(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN) :: WC(NPOIN3)
       DOUBLE PRECISION, INTENT(IN) :: GRADZFX(NPOIN2), GRADZFY(NPOIN2)
       DOUBLE PRECISION, INTENT(IN) :: GRADZSX(NPOIN2), GRADZSY(NPOIN2)
       DOUBLE PRECISION, INTENT(IN) :: HN(NPOIN2)

@@ -84,6 +84,13 @@
 !+   Mixing strong and weak characteristics now possible, two new blocks
 !+   FTILD2 and FNCAR2 for this.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        12/05/2014
+!+        V7P0
+!+   Discontinuous elements better treated: new types 15, 16 and 17 for
+!+   discontinuous linear, quasi-bubble, and quadratic, rather than
+!+   using component DIMDISC=11, 12 or 13. Here case of ZFLATS.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -588,10 +595,10 @@
       CALL BIEF_ALLVEC(1,TE2,'TE2   ',IELM0,1,1,MESH)
       CALL BIEF_ALLVEC(1,TE3,'TE3   ',IELM0,1,1,MESH)
       IF(OPTBAN.EQ.1.OR.OPTBAN.EQ.3) THEN
-!       PIECE-WISE LINEAR FREE SURFACE
-        CALL BIEF_ALLVEC(1,ZFLATS, 'ZFLATS',IELM0,3,1,MESH)
+!       PIECE-WISE LINEAR FREE SURFACE (ELEMENT NUMBER 15)
+        CALL BIEF_ALLVEC(1,ZFLATS, 'ZFLATS',15,3,1,MESH)
       ELSE
-        CALL BIEF_ALLVEC(1,ZFLATS, 'ZFLATS',    0,1,1,MESH)
+        CALL BIEF_ALLVEC(1,ZFLATS, 'ZFLATS', 0,1,1,MESH)
       ENDIF
       IF(OPTBAN.EQ.3) THEN
         CALL BIEF_ALLVEC(1,TE4,'TE4   ',IELM0,1,1,MESH)
@@ -780,7 +787,8 @@
       CALL BIEF_ALLVEC(1,UDEL   ,'UDEL  ',    IELMU,1,1,MESH)
       CALL BIEF_ALLVEC(1,VDEL   ,'VDEL  ',    IELMU,1,1,MESH)
       CALL BIEF_ALLVEC(1,DM1    ,'DM1   ',    IELMU,1,2,MESH)
-      CALL BIEF_ALLVEC(1,ZCONV  ,'ZCONV ',       10,3,1,MESH)
+!                                         PIECE-WISE LINEAR DISCONTINUOUS
+      CALL BIEF_ALLVEC(1,ZCONV  ,'ZCONV ',       15,1,1,MESH)
       CALL BIEF_ALLVEC(1,FLODEL ,'FLODEL',MESH%NSEG,1,0,MESH)
       CALL BIEF_ALLVEC(1,FLULIM ,'FLULIM',MESH%NSEG,1,0,MESH)
 !

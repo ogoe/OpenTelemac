@@ -6,7 +6,7 @@
      &  IKLE1,IKLE2,IKLE3,IKLE4,NELEM,NELMAX,W1,W2,W3 , ICOORD )
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -46,6 +46,13 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        12/05/2014
+!+        V7P0
+!+   Discontinuous elements better treated: new types 15, 16 and 17 for
+!+   discontinuous linear, quasi-bubble, and quadratic, rather than
+!+   using component DIMDISC=11, 12 or 13.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -88,7 +95,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,IELMF,DISCF
+      INTEGER IELEM,IELMF
       DOUBLE PRECISION XSUR6,XSUR18,F1,F2,F3,F4,X2,X3,Y2,Y3
 !
 !-----------------------------------------------------------------------
@@ -99,7 +106,6 @@
 !-----------------------------------------------------------------------
 !
       IELMF=SF%ELM
-      DISCF = SF%DIMDISC
 !
 !-----------------------------------------------------------------------
 !
@@ -107,7 +113,7 @@
 !
       IF(IELMF.EQ.11) THEN
 !
-!  X COORDINATE
+!     X COORDINATE
 !
       IF(ICOORD.EQ.1) THEN
 !
@@ -120,33 +126,33 @@
         W2(IELEM) = W1(IELEM)
         W3(IELEM) = W1(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
-!  Y COORDINATE
+!     Y COORDINATE
 !
       DO IELEM = 1 , NELEM
 !
-         W1(IELEM) = ( XEL(IELEM,2) *
-     &                 (F(IKLE3(IELEM))-F(IKLE1(IELEM)))
-     &               + XEL(IELEM,3) *
-     &                 (F(IKLE1(IELEM))-F(IKLE2(IELEM))) ) * XSUR6
-         W2(IELEM)  =  W1(IELEM)
-         W3(IELEM)  =  W1(IELEM)
+        W1(IELEM) = ( XEL(IELEM,2) *
+     &                (F(IKLE3(IELEM))-F(IKLE1(IELEM)))
+     &              + XEL(IELEM,3) *
+     &                (F(IKLE1(IELEM))-F(IKLE2(IELEM))) ) * XSUR6
+        W2(IELEM)  =  W1(IELEM)
+        W3(IELEM)  =  W1(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO
 !
       ELSE
 !
-          IF (LNG.EQ.1) WRITE(LU,200) ICOORD
-          IF (LNG.EQ.2) WRITE(LU,201) ICOORD
-200       FORMAT(1X,'VC13AA (BIEF) : COMPOSANTE IMPOSSIBLE ',
-     &              1I6,' VERIFIER ICOORD')
-201       FORMAT(1X,'VC13AA (BIEF) : IMPOSSIBLE COMPONENT ',
-     &              1I6,' CHECK ICOORD')
-          CALL PLANTE(0)
-          STOP
+        IF(LNG.EQ.1) WRITE(LU,200) ICOORD
+        IF(LNG.EQ.2) WRITE(LU,201) ICOORD
+200     FORMAT(1X,'VC13AA (BIEF) : COMPOSANTE IMPOSSIBLE ',
+     &            1I6,' VERIFIER ICOORD')
+201     FORMAT(1X,'VC13AA (BIEF) : IMPOSSIBLE COMPONENT ',
+     &            1I6,' CHECK ICOORD')
+        CALL PLANTE(0)
+        STOP
 !
       ENDIF
 !
@@ -156,7 +162,7 @@
 !
       ELSEIF(IELMF.EQ.12) THEN
 !
-!  X COORDINATE
+!     X COORDINATE
 !
       IF(ICOORD.EQ.1) THEN
 !
@@ -174,11 +180,11 @@
         W2(IELEM)=(-3*Y2*F3+Y3*(-3*F4+F3+4*F2)) * XSUR18
         W3(IELEM)=(Y2*(3*F4-4*F3-F2)+3*Y3*F2) * XSUR18
 !
-      ENDDO ! IELEM 
+      ENDDO 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
-!  Y COORDINATE
+!     Y COORDINATE
 !
       DO IELEM = 1 , NELEM
 !
@@ -194,77 +200,79 @@
         W2(IELEM)=(3*X2*F3+X3*(3*F4-F3-4*F2)) * XSUR18
         W3(IELEM)=(X2*(-3*F4+4*F3+F2)-3*X3*F2) * XSUR18
 !
-      ENDDO ! IELEM 
+      ENDDO 
 !
       ELSE
 !
-          IF (LNG.EQ.1) WRITE(LU,200) ICOORD
-          IF (LNG.EQ.2) WRITE(LU,201) ICOORD
-          CALL PLANTE(0)
-          STOP
+        IF (LNG.EQ.1) WRITE(LU,200) ICOORD
+        IF (LNG.EQ.2) WRITE(LU,201) ICOORD
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !
 !-----------------------------------------------------------------------
+!
+!     BEWARE: HERE F IS QUASI-BUBBLE BUT DISCONTINUOUS BETWEEN THE ELEMENTS
+!
+      ELSEIF(IELMF.EQ.16) THEN
+!
+!     X COORDINATE
+!
+      IF(ICOORD.EQ.1) THEN
+!
+      DO IELEM = 1 , NELEM
+!
+        Y2 = YEL(IELEM,2)
+        Y3 = YEL(IELEM,3)
+!
+        F1 = F(IELEM)
+        F2 = F(IELEM+  NELMAX)-F1
+        F3 = F(IELEM+2*NELMAX)-F1
+        F4 = F(IELEM+3*NELMAX)-F1
+!
+        W1(IELEM)=(Y2*(-3*F4-2*F3+F2)+Y3*(3*F4-F3+2*F2)) * XSUR18
+        W2(IELEM)=(-3*Y2*F3+Y3*(-3*F4+F3+4*F2)) * XSUR18
+        W3(IELEM)=(Y2*(3*F4-4*F3-F2)+3*Y3*F2) * XSUR18
+!
+      ENDDO
+!
+      ELSEIF(ICOORD.EQ.2) THEN
+!
+!     Y COORDINATE
+!
+      DO IELEM = 1 , NELEM
+!
+        X2 = XEL(IELEM,2)
+        X3 = XEL(IELEM,3)
+!
+        F1 = F(IELEM)
+        F2 = F(IELEM+  NELMAX)-F1
+        F3 = F(IELEM+2*NELMAX)-F1
+        F4 = F(IELEM+3*NELMAX)-F1
+!
+        W1(IELEM)=(X2*(3*F4+2*F3-F2)+X3*(-3*F4+F3-2*F2)) * XSUR18
+        W2(IELEM)=(3*X2*F3+X3*(3*F4-F3-4*F2)) * XSUR18
+        W3(IELEM)=(X2*(-3*F4+4*F3+F2)-3*X3*F2) * XSUR18
+!
+      ENDDO 
+!
+      ELSE
+!
+        IF (LNG.EQ.1) WRITE(LU,200) ICOORD
+        IF (LNG.EQ.2) WRITE(LU,200) ICOORD
+        CALL PLANTE(1)
+        STOP
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      ELSEIF(IELMF.EQ.15) THEN
 !
 !     BEWARE: HERE F IS LINEAR BUT DISCONTINUOUS BETWEEN THE ELEMENTS
 !
-      ELSEIF(IELMF.EQ.10.AND.DISCF.EQ.12) THEN
-!
-!  X COORDINATE
-!
-      IF(ICOORD.EQ.1) THEN
-!
-      DO IELEM = 1 , NELEM
-!
-        Y2 = YEL(IELEM,2)
-        Y3 = YEL(IELEM,3)
-!
-        F1 = F(IELEM)
-        F2 = F(IELEM+  NELMAX)-F1
-        F3 = F(IELEM+2*NELMAX)-F1
-        F4 = F(IELEM+3*NELMAX)-F1
-!
-        W1(IELEM)=(Y2*(-3*F4-2*F3+F2)+Y3*(3*F4-F3+2*F2)) * XSUR18
-        W2(IELEM)=(-3*Y2*F3+Y3*(-3*F4+F3+4*F2)) * XSUR18
-        W3(IELEM)=(Y2*(3*F4-4*F3-F2)+3*Y3*F2) * XSUR18
-!
-      ENDDO ! IELEM 
-!
-      ELSEIF(ICOORD.EQ.2) THEN
-!
-!  Y COORDINATE
-!
-      DO IELEM = 1 , NELEM
-!
-        X2 = XEL(IELEM,2)
-        X3 = XEL(IELEM,3)
-!
-        F1 = F(IELEM)
-        F2 = F(IELEM+  NELMAX)-F1
-        F3 = F(IELEM+2*NELMAX)-F1
-        F4 = F(IELEM+3*NELMAX)-F1
-!
-        W1(IELEM)=(X2*(3*F4+2*F3-F2)+X3*(-3*F4+F3-2*F2)) * XSUR18
-        W2(IELEM)=(3*X2*F3+X3*(3*F4-F3-4*F2)) * XSUR18
-        W3(IELEM)=(X2*(-3*F4+4*F3+F2)-3*X3*F2) * XSUR18
-!
-      ENDDO ! IELEM 
-!
-      ELSE
-!
-          IF (LNG.EQ.1) WRITE(LU,200) ICOORD
-          IF (LNG.EQ.2) WRITE(LU,200) ICOORD
-          CALL PLANTE(0)
-          STOP
-!
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      ELSEIF(IELMF.EQ.10.AND.DISCF.EQ.11) THEN
-!
-!  X COORDINATE
+!     X COORDINATE
 !
       IF(ICOORD.EQ.1) THEN
 !
@@ -275,27 +283,27 @@
         W2(IELEM) = W1(IELEM)
         W3(IELEM) = W1(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
-!  Y COORDINATE
+!     Y COORDINATE
 !
       DO IELEM = 1 , NELEM
 !
-         W1(IELEM) = ( XEL(IELEM,2) * (F(IELEM+2*NELMAX)-F(IELEM))
-     &               + XEL(IELEM,3) * (F(IELEM)-F(IELEM+NELMAX)))*XSUR6
-         W2(IELEM)  =  W1(IELEM)
-         W3(IELEM)  =  W1(IELEM)
+        W1(IELEM) = ( XEL(IELEM,2) * (F(IELEM+2*NELMAX)-F(IELEM))
+     &              + XEL(IELEM,3) * (F(IELEM)-F(IELEM+NELMAX)))*XSUR6
+        W2(IELEM) =  W1(IELEM)
+        W3(IELEM) =  W1(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO 
 !
       ELSE
 !
-          IF (LNG.EQ.1) WRITE(LU,200) ICOORD
-          IF (LNG.EQ.2) WRITE(LU,200) ICOORD
-          CALL PLANTE(0)
-          STOP
+        IF(LNG.EQ.1) WRITE(LU,200) ICOORD
+        IF(LNG.EQ.2) WRITE(LU,200) ICOORD
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !
@@ -305,15 +313,15 @@
 !
 !-----------------------------------------------------------------------
 !
-       IF (LNG.EQ.1) WRITE(LU,101) IELMF,SF%NAME
-       IF (LNG.EQ.2) WRITE(LU,102) IELMF,SF%NAME
+       IF(LNG.EQ.1) WRITE(LU,101) IELMF,SF%NAME
+       IF(LNG.EQ.2) WRITE(LU,102) IELMF,SF%NAME
 101    FORMAT(1X,'VC13AA (BIEF) :',/,
      &        1X,'DISCRETISATION DE F : ',1I6,' CAS NON PREVU',/,
      &        1X,'NOM REEL DE F : ',A6)
 102    FORMAT(1X,'VC13AA (BIEF) :',/,
      &        1X,'DISCRETISATION OF F : ',1I6,' NOT IMPLEMENTED',/,
      &        1X,'REAL NAME OF F: ',A6)
-       CALL PLANTE(0)
+       CALL PLANTE(1)
        STOP
 !
       ENDIF

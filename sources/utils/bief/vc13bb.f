@@ -6,7 +6,7 @@
      & IKLE1,IKLE2,IKLE3,IKLE4,NELEM,NELMAX,W1,W2,W3,W4,ICOORD)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -41,6 +41,13 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        12/05/2014
+!+        V7P0
+!+   Discontinuous elements better treated: new types 15, 16 and 17 for
+!+   discontinuous linear, quasi-bubble, and quadratic, rather than
+!+   using component DIMDISC=11, 12 or 13.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -86,13 +93,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,IELMF,DISCF
+      INTEGER IELEM,IELMF
       DOUBLE PRECISION F1,F2,F3,F4,X2,X3,Y2,Y3,XSUR9,XSUR6,XSUR18
 !
 !-----------------------------------------------------------------------
 !
       IELMF=SF%ELM
-      DISCF = SF%DIMDISC
       XSUR9 = XMUL / 9.D0
       XSUR6 = XMUL / 6.D0
       XSUR18= XMUL /18.D0
@@ -129,7 +135,7 @@
 !  DERIVATIVE WRT Y  =
 !================================
 !
-      ELSEIF(ICOORD.EQ.2) THEN
+        ELSEIF(ICOORD.EQ.2) THEN
 !
         DO IELEM = 1 , NELEM
 !
@@ -145,23 +151,24 @@
         W3(IELEM) = W1(IELEM)
         W4(IELEM) = 1.5D0*W1(IELEM)
 !
-      ENDDO ! IELEM 
+        ENDDO 
 !
         ELSE
 !
-          IF (LNG.EQ.1) WRITE(LU,200) ICOORD
-          IF (LNG.EQ.2) WRITE(LU,201) ICOORD
+          IF(LNG.EQ.1) WRITE(LU,200) ICOORD
+          IF(LNG.EQ.2) WRITE(LU,201) ICOORD
           CALL PLANTE(1)
           STOP
+!
         ENDIF
 !
 !-----------------------------------------------------------------------
 !
 !     BEWARE: HERE F IS LINEAR BUT DISCONTINUOUS BETWEEN THE ELEMENTS
 !
-      ELSEIF(IELMF.EQ.10.AND.DISCF.EQ.11) THEN
+      ELSEIF(IELMF.EQ.15) THEN
 !
-!  X COORDINATE
+!     X COORDINATE
 !
       IF(ICOORD.EQ.1) THEN
 !
@@ -179,11 +186,11 @@
         W3(IELEM) = W1(IELEM)
         W4(IELEM) = 1.5D0*W1(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
-!  Y COORDINATE
+!     Y COORDINATE
 !
       DO IELEM = 1 , NELEM
 !
@@ -199,7 +206,7 @@
         W3(IELEM) = W1(IELEM)
         W4(IELEM) = 1.5D0*W1(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO 
 !
         ELSE
 !
@@ -207,6 +214,7 @@
           IF (LNG.EQ.2) WRITE(LU,201) ICOORD
           CALL PLANTE(1)
           STOP
+!
         ENDIF
 !
 !-----------------------------------------------------------------------
@@ -259,21 +267,22 @@
         W3(IELEM)=((X2-2*X3)*(F2-F1)-3*X2*(F4-F3))*XSUR18
         W4(IELEM)=(X2*(F3-F1)-X3*(F2-F1))*XSUR6
 !
-      ENDDO ! IELEM 
+      ENDDO
 !
         ELSE
 !
-          IF (LNG.EQ.1) WRITE(LU,200) ICOORD
-          IF (LNG.EQ.2) WRITE(LU,201) ICOORD
+          IF(LNG.EQ.1) WRITE(LU,200) ICOORD
+          IF(LNG.EQ.2) WRITE(LU,201) ICOORD
           CALL PLANTE(1)
           STOP
+!
         ENDIF
 !
 !-----------------------------------------------------------------------
 !     F IS QUASI-BUBBLE BUT DISCONTINUOUS BETWEEN THE ELEMENTS
 !-----------------------------------------------------------------------
 !
-      ELSEIF(IELMF.EQ.10.AND.DISCF.EQ.12) THEN
+      ELSEIF(IELMF.EQ.16) THEN
 !
 !================================
 !  DERIVATIVE WRT X  =
@@ -296,7 +305,7 @@
         W3(IELEM)=((2*Y3-Y2)*(F2-F1)+3*(F4-F3)*Y2)*XSUR18
         W4(IELEM)=(-((Y3-Y2)*F1+F3*Y2-F2*Y3))*XSUR6
 !
-      ENDDO ! IELEM 
+      ENDDO 
 !
 !================================
 !  DERIVATIVE WRT Y  =
@@ -319,14 +328,15 @@
         W3(IELEM)=((X2-2*X3)*(F2-F1)-3*X2*(F4-F3))*XSUR18
         W4(IELEM)=(X2*(F3-F1)-X3*(F2-F1))*XSUR6
 !
-      ENDDO ! IELEM 
+      ENDDO 
 !
         ELSE
 !
-          IF (LNG.EQ.1) WRITE(LU,200) ICOORD
-          IF (LNG.EQ.2) WRITE(LU,201) ICOORD
+          IF(LNG.EQ.1) WRITE(LU,200) ICOORD
+          IF(LNG.EQ.2) WRITE(LU,201) ICOORD
           CALL PLANTE(1)
           STOP
+!
         ENDIF
 !
 !-----------------------------------------------------------------------
@@ -336,8 +346,8 @@
 !
       ELSE
 !
-       IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
-       IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
+       IF(LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
+       IF(LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
 100    FORMAT(1X,'VC13BB (BIEF) :',/,
      &        1X,'DISCRETISATION DE F NON PREVUE : ',1I6,
      &        1X,'NOM REEL : ',A6)
@@ -349,10 +359,10 @@
 !
       ENDIF
 !
-200       FORMAT(1X,'VC13BB (BIEF) : COMPOSANTE IMPOSSIBLE ',
-     &              1I6,' VERIFIER ICOORD')
-201       FORMAT(1X,'VC13BB (BIEF) : IMPOSSIBLE COMPONENT ',
-     &              1I6,' CHECK ICOORD')
+200   FORMAT(1X,'VC13BB (BIEF) : COMPOSANTE IMPOSSIBLE ',
+     &       1I6,' VERIFIER ICOORD')
+201   FORMAT(1X,'VC13BB (BIEF) : IMPOSSIBLE COMPONENT ',
+     &       1I6,' CHECK ICOORD')
 !
 !-----------------------------------------------------------------------
 !

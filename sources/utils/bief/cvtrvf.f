@@ -6,8 +6,8 @@
      & VISC,VISC_S,SM,SMH,YASMH,SMI,YASMI,FBOR,MASKTR,MESH,
      & T1,T2,T3,T4,T5,T6,T7,T8,HNT,HT,AGGLOH,TE1,DT,ENTET,BILAN,
      & OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,LIMTRA,KDIR,KDDL,NPTFR,FLBOR,
-     & YAFLBOR,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,RAIN,PLUIE,TRAIN,
-     & OPTADV)
+     & YAFLBOR,VOLU2D,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
+     & RAIN,PLUIE,TRAIN,OPTADV)
 !
 !***********************************************************************
 ! BIEF   V7P0                                   21/08/2010
@@ -55,10 +55,11 @@
 !+   negative values.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        06/05/2014
+!+        16/05/2014
 !+        V7P0
 !+   Boundary conditions LIMTRA redone (they may have been done with
-!+   U.N in diffin.f, which is different from flbor here.
+!+   U.N in diffin.f, which is different from flbor here. Argument
+!+   VOLU2D added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -124,6 +125,7 @@
 !| TRAIN          |-->| VALUE OF TRACER IN THE RAIN
 !| UCONV,VCONV    |-->| ADVECTION VELOCITY FIELD
 !| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!| VOLU2D         |-->| INTEGRAL OF TEST FUNCTIONS, NOT ASSEMBLED IN PARALLEL
 !| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS, ASSEMBLED IN PARALLEL
 !| VISC           |-->| VISCOSITY COEFFICIENTS ALONG X,Y AND Z .
 !|                |   | IF P0 : PER ELEMENT
@@ -152,15 +154,17 @@
       LOGICAL, INTENT(IN)             :: BILAN,CONV,YASMH,YAFLBOR
       LOGICAL, INTENT(IN)             :: DIFT,MSK,ENTET,YASMI,RAIN
       TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL,H,HN,DM1,ZCONV,MASKPT
-      TYPE(BIEF_OBJ), INTENT(IN)      :: V2DPAR,UNSV2D,HPROP
+      TYPE(BIEF_OBJ), INTENT(IN)      :: VOLU2D,V2DPAR,UNSV2D,HPROP
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: F,SM,HNT,HT
       TYPE(BIEF_OBJ), INTENT(IN)      :: UCONV,VCONV,FN,SMI,SMH
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FBOR
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TE1,FLBORTRA
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,T5,T6,T7,T8
-      TYPE(BIEF_OBJ), INTENT(IN)      :: FSCEXP,S,MASKTR,FLBOR
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T4,T5,T6,T7,T8
+      TYPE(BIEF_OBJ), INTENT(IN)      :: FSCEXP,S,MASKTR
       TYPE(BIEF_OBJ), INTENT(IN)      :: VISC_S,VISC,PLUIE
       TYPE(BIEF_MESH) :: MESH
+      TYPE(BIEF_OBJ), INTENT(IN),    TARGET :: FLBOR
+      TYPE(BIEF_OBJ), INTENT(INOUT), TARGET :: T3
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

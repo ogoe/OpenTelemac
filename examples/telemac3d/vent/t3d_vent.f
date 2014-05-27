@@ -190,7 +190,7 @@ C
 !  CLIPPING OF H
 !
       DO I=1,NPOIN2
-        H%R(I)=MAX(H%R(I),HMIN)
+        H%R(I)=MAX(H%R(I),0.D0)
       ENDDO
 !
 ! INITIALISATION OF THE FREE SURFACE 

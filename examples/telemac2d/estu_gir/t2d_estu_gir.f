@@ -2,11 +2,11 @@
                      SUBROUTINE OIL_FLOT
 !                    *******************
 !
-     &(PARTICULES,NFLOT,NFLOT_MAX,MESH,LT,VOLDEV,RHO_OIL,
-     &NB_COMPO,NB_HAP,FMCOMPO,TBCOMPO,FMHAP,TBHAP,SOLU,ETAL,AREA)
+     &(PARTICULES,NFLOT,NFLOT_MAX,MESH,LT,VOLDEV,RHO_OIL,NB_COMPO,
+     &NB_HAP,FMCOMPO,TBCOMPO,FMHAP,TBHAP,SOLU,ETAL,AREA,NPLAN,GRAV)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/08/2010
+! TELEMAC2D & TELEMAC3D  V6P3                               21/08/2010
 !***********************************************************************
 !
 !brief    THE USER MUST GIVE :
@@ -45,23 +45,27 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TIME
-!| ELTFLO         |-->| NUMBERS OF ELEMENTS WHERE ARE THE FLOATS
+!| ELTFLO         |<->| NUMBERS OF ELEMENTS WHERE ARE THE FLOATS
+!| ETAFLO         |<->| LEVELS WHERE ARE THE FLOATS
 !| LT             |-->| CURRENT TIME STEP
 !| MESH           |<->| MESH STRUCTURE
 !| NFLOT          |-->| NUMBER OF FLOATS
 !| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
 !| NIT            |-->| NUMBER OF TIME STEPS
+!| NPLAN          |-->| NUMBER OF PLANES
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
-!| PARTICULES     |<->| OIL STRUCTURE DEFINED IN BIEF DEF
-!| SHPFLO         |-->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
 !|                |   | ELEMENTS.
-!| X,Y            |-->| COORDINATES OF POINTS IN THE MESH
-!| XFLOT,YFLOT    |-->| POSITIONS OF FLOATING BODIES
+!| SHZFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR LEVEL
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| Z              |-->| ELEVATIONS OF POINTS IN THE MESH
+!| XFLOT          |<->| ABSCISSAE OF FLOATING BODIES
+!| YFLOT          |<->| ORDINATES OF FLOATING BODIES
+!| ZFLOT          |<->| ELEVATIONS OF FLOATING BODIES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC2D, ONLY : GRAV
       USE STREAMLINE, ONLY : ADD_PARTICLE
 !
       IMPLICIT NONE
@@ -70,11 +74,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NFLOT_MAX,LT
+      INTEGER, INTENT(INOUT)          :: NFLOT
+      INTEGER, INTENT(IN)             :: NFLOT_MAX,LT,NPLAN
       INTEGER, INTENT(IN)             :: NB_COMPO,NB_HAP
       INTEGER, INTENT(IN)             :: ETAL
-      INTEGER, INTENT(INOUT)          :: NFLOT
       DOUBLE PRECISION, INTENT(IN)    :: VOLDEV,RHO_OIL,AREA
+      DOUBLE PRECISION, INTENT(IN)    :: GRAV
       DOUBLE PRECISION, INTENT(IN)    :: FMCOMPO(NB_COMPO)
       DOUBLE PRECISION, INTENT(IN)    :: TBCOMPO(NB_COMPO)
       DOUBLE PRECISION, INTENT(IN)    :: FMHAP(NB_HAP)
@@ -90,10 +95,12 @@
       DOUBLE PRECISION                :: RHO_EAU,PI,COEF1
       DOUBLE PRECISION                :: COEF2,DELTA,NU,NU2
       DOUBLE PRECISION                :: COORD_X, COORD_Y
-      DOUBLE PRECISION                :: XFLOT(1), YFLOT(1)
+      DOUBLE PRECISION                :: XFLOT(1), YFLOT(1),ZFLOT(1)
       DOUBLE PRECISION                :: SHPFLO(3,1)
+      DOUBLE PRECISION                :: SHZFLO(1)
       INTEGER                         :: TAGFLO(1)
       INTEGER                         :: ELTFLO(1)
+      INTEGER                         :: ETAFLO(1)     
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -122,9 +129,15 @@
                COORD_Y=371000.D0+REAL(k)
                NUM_GLO=NUM_GLO+1
                NFLOT_OIL = 0
-               CALL ADD_PARTICLE(COORD_X,COORD_Y,0.D0,NUM_GLO,NFLOT_OIL,
-     &              1,XFLOT,YFLOT,YFLOT,TAGFLO,SHPFLO,SHPFLO,ELTFLO,
-     &              ELTFLO,MESH,1,0.D0,0.D0,0.D0,0.D0,0,0)
+               IF(MESH%DIM.EQ.3)THEN
+                  CALL ADD_PARTICLE(COORD_X,COORD_Y,COORD_Y,NUM_GLO,
+     &               NFLOT_OIL,1,XFLOT,YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,
+     &               ELTFLO,ETAFLO,MESH,NPLAN,0.D0,0.D0,0.D0,0.D0,0,0)
+               ELSEIF(MESH%DIM.EQ.2)THEN
+                  CALL ADD_PARTICLE(COORD_X,COORD_Y,0.D0,NUM_GLO,
+     &               NFLOT_OIL,1,XFLOT,YFLOT,YFLOT,TAGFLO,SHPFLO,SHPFLO,
+     &               ELTFLO,ELTFLO,MESH,NPLAN,0.D0,0.D0,0.D0,0.D0,0,0)
+               END IF
                IF(NFLOT_OIL.EQ.1)THEN
                   NUM_LOC = NUM_LOC+1
 !=========================================================================
@@ -137,6 +150,11 @@
                   PARTICULES(NUM_LOC)%SHPOIL(2) = SHPFLO(2,1)
                   PARTICULES(NUM_LOC)%SHPOIL(3) = SHPFLO(3,1)
                   PARTICULES(NUM_LOC)%ELTOIL = ELTFLO(1)
+                  IF(MESH%DIM.EQ.3)THEN
+                     PARTICULES(NUM_LOC)%ZOIL = ZFLOT(1)
+                     PARTICULES(NUM_LOC)%ETAOIL = ETAFLO(1)
+                     PARTICULES(NUM_LOC)%SHZOIL = SHZFLO(1)
+                  END IF
 !=========================================================================
 !-----------INITIALIZATION PARAMETERS FOR THE CALCULATION OF OIL----------
 !---------------------------WEATHERING PROCESSES--------------------------
@@ -942,8 +960,11 @@ C
       ENDDO
 C
       ENDIF
+
+      IF(NCSIZE.GT.1) CALL PARCOM_BORD(HBOR,1,MESH)
 C
 CMB===============================================================
 C                                                               
       RETURN                                                   
       END
+

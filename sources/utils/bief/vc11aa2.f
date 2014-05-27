@@ -6,7 +6,7 @@
      & IKLE1,IKLE2,IKLE3,NELEM,NELMAX,W1,W2,W3,ICOORD)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING TERMS:
@@ -43,6 +43,13 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        12/05/2014
+!+        V7P0
+!+   Discontinuous elements better treated: new types 15, 16 and 17 for
+!+   discontinuous linear, quasi-bubble, and quadratic, rather than
+!+   using component DIMDISC=11, 12 or 13.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -105,11 +112,9 @@
 !
 !     F IS P1, G IS DISCONTINUOUS P1, H IS P0
 !
-      IF (IELMG.EQ.10.AND.SG%DIMDISC.EQ.11.AND.SG%DIM2.EQ.3
-     &   .AND.IELMF.EQ.11.AND.
-     &   IELMH.EQ.10) THEN
+      IF(IELMG.EQ.15.AND.IELMF.EQ.11.AND.IELMH.EQ.10) THEN
 !
-!  X COORDINATE
+!     X COORDINATE
 !
       IF(ICOORD.EQ.1) THEN
 !
@@ -136,11 +141,11 @@
         W2(IELEM)=KSAT*W2(IELEM)
         W3(IELEM)=KSAT*W3(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO 
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
-!  Y COORDINATE
+!     Y COORDINATE
 !
       DO IELEM = 1 , NELEM
 !
@@ -165,7 +170,7 @@
         W2(IELEM)=KSAT*W2(IELEM)
         W3(IELEM)=KSAT*W3(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO
 !
       ELSE
 !
@@ -207,7 +212,7 @@
 201    FORMAT(1X,'DISCRETIZATION OF G:',1I6,
      &        1X,'REAL NAME: ',A6)
 301    FORMAT(1X,'CASE NOT IMPLEMENTED')
-       CALL PLANTE(0)
+       CALL PLANTE(1)
        STOP
 !
       ENDIF

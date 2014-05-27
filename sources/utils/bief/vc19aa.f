@@ -2,11 +2,11 @@
                      SUBROUTINE VC19AA
 !                    *****************
 !
-     &( XMUL,SF,SG,SH,SU,SV,F,G,H,U,V,
-     &  XEL,YEL,SURFAC,IKLE1,IKLE2,IKLE3,NELEM,NELMAX,W1,W2,W3,FORMUL)
+     &(XMUL,SF,SG,SH,SU,SV,F,G,H,U,V,
+     & XEL,YEL,SURFAC,IKLE1,IKLE2,IKLE3,NELEM,NELMAX,W1,W2,W3,FORMUL)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -44,6 +44,13 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/05/2014
+!+        V7P0
+!+   Discontinuous elements better treated: new types 15, 16 and 17 for
+!+   discontinuous linear, quasi-bubble, and quadratic, rather than
+!+   using component DIMDISC=11, 12 or 13.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -117,7 +124,8 @@
 !
       IF(FORMUL(1:8).EQ.'HUGRADP ') THEN
 !
-!     F, U, V ARE LINEAR
+!     F LINEAR, U AND V ARE LINEAR OR QUASI-BIBBLE
+!               BUT THE FOURTH POINT DISCARDED
 !
       IF(        IELMF.EQ.11
      &     .AND.(IELMU.EQ.11.OR.IELMU.EQ.12)
@@ -209,11 +217,12 @@
 !-----------------------------------------------------------------------
 !
 !
-!     F, G, U, V ARE LINEAR; H IS PIECEWISE LINEAR
+!     F AND G ARE LINEAR, U, V ARE LINEAR OR QUASI-BUBBLE
+!     H IS PIECEWISE LINEAR
 !
       IF(       IELMF.EQ.11
      &     .AND.IELMG.EQ.11
-     &     .AND.IELMH.EQ.10
+     &     .AND.IELMH.EQ.15
      &     .AND.(IELMU.EQ.11.OR.IELMU.EQ.12)
      &     .AND.(IELMV.EQ.11.OR.IELMV.EQ.12)  ) THEN
 !
@@ -259,7 +268,7 @@
 !
        ENDDO
 !
-!     F, G, H, U, V ARE LINEAR
+!     F, G AND H ARE LINEAR, U AND V ARE LINEAR OR QUASI-BUBBLE
 !
       ELSEIF(       IELMF.EQ.11
      &         .AND.IELMG.EQ.11
@@ -339,12 +348,9 @@
 !-----------------------------------------------------------------------
 !
 !
-!     F, G, H ARE PIECEWISE LINEAR; U AND V NOT TAKEN INTO ACCOUNT
-!              OR LINEAR
+!     F AND G ARE LINEAR, H IS PIECEWISE LINEAR
 !
-      IF(       IELMF.EQ.11
-     &     .AND.IELMG.EQ.11
-     &     .AND.IELMH.EQ.10  ) THEN
+      IF(IELMF.EQ.11.AND.IELMG.EQ.11.AND.IELMH.EQ.15) THEN
 !
         DO IELEM = 1 , NELEM
 !
@@ -392,6 +398,8 @@
      &          .AND.IELMG.EQ.11
      &          .AND.IELMH.EQ.11  ) THEN
 !
+!       F, G AND H ARE LINEAR
+!
         DO IELEM = 1 , NELEM
 !
           X2 = XEL(IELEM,2)
@@ -432,7 +440,7 @@
           W3(IELEM) = (    -Y2 *(H123*U123+HU123)
      &                     +X2 *(H123*V123+HV123) )*XSUR24
 !
-       ENDDO
+        ENDDO
 !
        ELSE
         IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME

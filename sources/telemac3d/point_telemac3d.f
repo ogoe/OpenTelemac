@@ -46,6 +46,11 @@
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        14/05/2014
+!+        V7P0
+!+   ZCONV and ZFLATS now declared as type 15, discontinuous linear.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -1203,10 +1208,8 @@ C K-EPSILON MODEL
 !
 !     PIECE-WISE LINEAR FREE SURFACE
 !
-      CALL BIEF_ALLVEC(1,ZFLATS, 'ZFLATS', 10, 3, 1,MESH2D)
-      CALL BIEF_ALLVEC(1,ZCONV , 'ZCONV ', 10, 3, 1,MESH2D)
-      ZFLATS%DIMDISC=11
-      ZCONV%DIMDISC =11
+      CALL BIEF_ALLVEC(1,ZFLATS, 'ZFLATS', 15, 1, 1,MESH2D)
+      CALL BIEF_ALLVEC(1,ZCONV , 'ZCONV ', 15, 1, 1,MESH2D)
 !
 !     TWO COMPONENTS OF ZCONV HORIZONTAL GRADIENT    
 !

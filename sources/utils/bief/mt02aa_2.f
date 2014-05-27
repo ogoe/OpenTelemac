@@ -9,7 +9,7 @@
      &  XEL,YEL,SURFAC,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE DIFFUSION TERM FOR ESTEL2D.
@@ -32,6 +32,13 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/05/2014
+!+        V7P0
+!+   Discontinuous elements better treated: new types 15, 16 and 17 for
+!+   discontinuous linear, quasi-bubble, and quadratic, rather than
+!+   using component DIMDISC=11, 12 or 13.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A11            |<--| ELEMENTS OF MATRIX
@@ -75,21 +82,16 @@
 !
 !     DECLARATIONS SPECIFIC TO THIS SUBROUTINE
 !
-      INTEGER IELEM,IELMNU,IELMNV,ISOU,ISOV
+      INTEGER IELEM,IELMNU,IELMNV
 !
-      DOUBLE PRECISION X2,X3,Y2,Y3
-      DOUBLE PRECISION KSAT1,KSAT2,KSAT3
-      DOUBLE PRECISION SOM,XSUR12
+      DOUBLE PRECISION X2,X3,Y2,Y3,KSAT1,KSAT2,KSAT3,SOM,XSUR12
 !
 !=======================================================================
 !
 !     EXTRACTS THE TYPE OF ELEMENT FOR VISCOSITY
 !
       IELMNU = SU%ELM
-      ISOU   = SU%DIM2
-!
       IELMNV = SV%ELM
-      ISOV   = SV%DIM2
 !
       XSUR12 = XMUL / 12.D0
 !
@@ -98,9 +100,7 @@
 ! U (KR) : P0 AND DIM 3 (BECAUSE DISCONTINUOUS P1) - V (KS) : P0 AND DIM 3
 !-----------------------------------------------------------------------
 !
-      IF(IELMNU.EQ.10.AND.ISOU.EQ.3.AND.SU%DIMDISC.EQ.11
-     &   .AND.
-     &   IELMNV.EQ.10.AND.ISOV.EQ.3) THEN
+      IF(IELMNU.EQ.15.AND.IELMNV.EQ.15) THEN
 !
       DO IELEM = 1 , NELEM
 !
@@ -147,7 +147,8 @@
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !
-      ENDDO ! IELEM 
+      ENDDO 
+!
 !-----------------------------------------------------------------------
 !
       ELSE
@@ -155,8 +156,7 @@
         IF (LNG.EQ.1) WRITE(LU,10)
         IF (LNG.EQ.2) WRITE(LU,11)
 10      FORMAT(1X,'MT02AA_2 (BIEF) : TYPES NON PREVUS')
-11      FORMAT(1X,
-     &  'MT02AA_2 (BIEF) : TYPES NOT AVAILABLE')
+11      FORMAT(1X,'MT02AA_2 (BIEF) : TYPES NOT AVAILABLE')
         CALL PLANTE(1)
         STOP
 !

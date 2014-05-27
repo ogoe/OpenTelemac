@@ -168,6 +168,7 @@ files: declarations_telemac.f
   mt08pp.f
   mt08aa.f
   mt14pp.f
+  mt15pp.f
   mt13ca.f
   mt11ba.f
   mt13cc.f
@@ -649,6 +650,8 @@ path: <root>|sources|telemac2d
 files: friction_def.f
   declarations_telemac2d.f
   interface_telemac2d.f
+  oil_flot.f
+  oilspill.f
   grad_zconv.f
   meteo.f
   read_fic_frliq.f
@@ -799,7 +802,6 @@ files: declarations_telemac3d.f
   drsurr.f
   ifab3dt.f
   source_trac.f
-  oil_spill_3d.f
   condim.f
   sed3d.f
   mass3d.f

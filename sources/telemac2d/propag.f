@@ -151,6 +151,11 @@
 !+   in all processors, so it must be called outside the test:
 !+   IF(MESH%NPTFR.GT0) where it was in previous versions.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        16/05/2014
+!+        V7P0
+!+   A copy of LIMPRO is done to be sent to cvtrvf (that may change it).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23            |<->| MATRIX
 !| A32            |<->| MATRIX
@@ -312,8 +317,10 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC, ONLY : ADV_CAR,ADV_SUP,ADV_NSC,ADV_PSI,
-     &   ADV_PSI_NC,ADV_NSC_NC,ADV_LPO,ADV_NSC_TF,ADV_PSI_TF,ADV_LPO_TF
-      USE DECLARATIONS_TELEMAC2D, ONLY : TYPSEUIL
+     &                                 ADV_PSI_NC,ADV_NSC_NC,ADV_LPO,
+     &                                 ADV_NSC_TF,ADV_PSI_TF,ADV_LPO_TF,
+     &                                 KDDL
+      USE DECLARATIONS_TELEMAC2D, ONLY : TYPSEUIL,IT1,IT2
 !
       USE INTERFACE_TELEMAC2D, EX_PROPAG => PROPAG
 !
@@ -878,6 +885,11 @@
           CALL PLANTE(1)
           STOP
         ENDIF
+!       USING A COPY OF LIMPRO (IT MAY BE CHANGED BY CVTRVF)
+        DO I=1,MESH%NPTFR
+          IT1%I(I)=LIMPRO%I(DIMLIM+I)
+          IT2%I(I)=LIMPRO%I(2*DIMLIM+I)
+        ENDDO
         CALL CVTRVF(T1,UN,S,.FALSE.,.TRUE.,H,HN,
      &              HPROP,UCONV,VCONV,S,S,
      &              1,S,S,FU,S,.FALSE.,S,.FALSE.,UBOR,MASK,MESH,
@@ -885,10 +897,10 @@
      &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
      &              TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
      &              TB%ADR(22)%P,AGGLOH,TE1,DT,INFOGR,BILMAS,
-     &              1,MSK,MASKEL,S,C,1,LIMPRO%I(1+DIMLIM:2*DIMLIM),
-     &              KDIR,3,MESH%NPTFR,FLBOR,.FALSE.,
-     &              V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT,RAIN,PLUIE,
-     &              0.D0,OPTADV_VI)
+     &              1,MSK,MASKEL,S,C,1,IT1%I,
+     &              KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
+     &              VOLU2D,V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT,
+     &              RAIN,PLUIE,0.D0,OPTADV_VI)
         CALL CVTRVF(T2,VN,S,.FALSE.,.TRUE.,H,HN,
      &              HPROP,UCONV,VCONV,S,S,
      &              1,S,S,FV,S,.FALSE.,S,.FALSE.,VBOR,MASK,MESH,
@@ -896,10 +908,10 @@
      &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
      &              TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
      &              TB%ADR(22)%P,AGGLOH,TE1,DT,INFOGR,BILMAS,
-     &              1,MSK,MASKEL,S,C,1,LIMPRO%I(1+2*DIMLIM:3*DIMLIM),
-     &              KDIR,3,MESH%NPTFR,FLBOR,.FALSE.,
-     &              V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT,RAIN,PLUIE,
-     &              0.D0,OPTADV_VI)
+     &              1,MSK,MASKEL,S,C,1,IT2%I,
+     &              KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
+     &              VOLU2D,V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT,
+     &              RAIN,PLUIE,0.D0,OPTADV_VI)
         IF(IELMU.NE.11) THEN
           CALL CHGDIS(T1,DISCLIN,IELMU,MESH)
           CALL CHGDIS(T2,DISCLIN,IELMU,MESH)
@@ -1693,4 +1705,3 @@
 !
       RETURN
       END
-

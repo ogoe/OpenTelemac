@@ -141,6 +141,7 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
+      USE OILSPILL
       USE INTERFACE_TELEMAC3D
       USE INTERFACE_TELEMAC2D
       USE INTERFACE_SISYPHE, ONLY: SISYPHE
@@ -2262,7 +2263,16 @@
 !
       IF(SPILL_MODEL) THEN
 !
-        CALL OIL_SPILL_3D
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE OIL_SPILL_3D'
+          CALL OIL_SPILL_3D(LT,IELM2H,MESH2D,NFLOT_MAX,T3D_FILES,
+     &                     MAXLU_T3D,NPOIN2,T3DMIG,UCONV,VCONV,WCONV,
+     &                     NFLOT,NPLAN,MESH3D,AT,DT,GRAV,CF,X,Y,Z,H,HN,
+     &                     IELM3,NPOIN3,NELEM2,XFLOT,YFLOT,ZFLOT,SHPFLO,
+     &                     SHZFLO,TAGFLO,ELTFLO,ETAFLO,FLOPRD,T3DFLO,
+     &                     IT1,IT2,T3_01,T3_02,T3_03,MTRA1,MTRA2,VISCVI,
+     &                     WIND,UNSV3D,NTRAC,TRN,TRAV3,ATABOS,T2_17,
+     &                     T2_18,VENT)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE OIL_SPILL_3D'
 !
       ENDIF
 !
@@ -2462,7 +2472,7 @@
 ! DROGUES/FLOATS/BUOYS
 !=======================================================================
 !
-      IF(NFLOT_MAX.GT.0) THEN
+      IF(NFLOT_MAX.GT.0.AND..NOT.SPILL_MODEL) THEN
 !
         IF(SPHERI) THEN
           CALL OS('X=Y/Z   ',UCONV,UCONV,MESH2D%COSLAT)

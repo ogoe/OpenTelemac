@@ -9,6 +9,9 @@
 ! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
+!warning  XSGBOR(*,2) and XSGBOR(*,4) should not be used anymore
+!+        could be removed (with care...).
+!
 !brief    1) COMPUTES THE COMPONENTS OF THE OUTGOING NORMAL VECTOR
 !+
 !+               - FOR THE BOUNDARY POINTS      (XNEBOR,YNEBOR)
