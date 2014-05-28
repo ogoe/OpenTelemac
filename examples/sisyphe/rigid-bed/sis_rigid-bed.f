@@ -2,9 +2,9 @@ C                       *************************
                         SUBROUTINE CONDIM_SISYPHE
 C                       *************************
 C
-     * (U      , V   , QU    , QV  , H   , ZF , Z ,
-     *  ESOMT  ,THETAW , Q   , HW  , TW  , 
-     *  X      , Y   , NPOIN , AT  , PMAREE)
+     *(U      , V   , QU    , QV  , H   , ZF , Z ,
+     * ESOMT  ,THETAWR, Q   , HWR , TWR , 
+     * X      , Y   , NPOIN , AT  , PMAREE)
 C
 C***********************************************************************
 C SISYPHE VERSION 5.3                             E. PELTIER    11/09/95
@@ -53,16 +53,27 @@ C
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-      INTEGER NPOIN , I
-C
-      DOUBLE PRECISION   U(NPOIN) , V(NPOIN)     , H(NPOIN)
-      DOUBLE PRECISION   QU(NPOIN), QV(NPOIN)    , Q(NPOIN)
-      DOUBLE PRECISION   ESOMT(NPOIN)
-      DOUBLE PRECISION   HW(NPOIN), TW(NPOIN) , THETAW(NPOIN)
-      DOUBLE PRECISION   Z(NPOIN) , ZF(NPOIN)
-      DOUBLE PRECISION   X(NPOIN) , Y(NPOIN)
-      DOUBLE PRECISION   AT       , PMAREE 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)::NPOIN
+!
+      DOUBLE PRECISION, INTENT(IN):: X(NPOIN),Y(NPOIN)
+      DOUBLE PRECISION, INTENT(IN):: AT , PMAREE
+! SEDIMENT
+      DOUBLE PRECISION, INTENT(INOUT) ::  ZF(NPOIN)
+      DOUBLE PRECISION, INTENT (INOUT)::  ESOMT(NPOIN)
+! HYDRODYNAMICS
+      DOUBLE PRECISION, INTENT(INOUT):: Z(NPOIN) , H(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT):: U(NPOIN) , V(NPOIN)
+      DOUBLE PRECISION, INTENT (INOUT)::QU(NPOIN), QV(NPOIN), Q(NPOIN)
+! WAVES
+      DOUBLE PRECISION, INTENT (INOUT):: HWR(NPOIN) , TWR(NPOIN)
+      DOUBLE PRECISION, INTENT (INOUT):: THETAWR(NPOIN)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER I
 C
 C-----------------------------------------------------------------------
 C
@@ -135,11 +146,19 @@ C
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN):: NPOIN , CHOIX
+      INTEGER, INTENT(INOUT):: NLISS
+      DOUBLE PRECISION, INTENT(IN)::  Z(NPOIN) , ZF(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)::  X(NPOIN) , Y(NPOIN), H(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT)::  ZR(NPOIN)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER I
 C
-      INTEGER NPOIN , CHOIX , NLISS , I
-C
-      DOUBLE PRECISION   Z(NPOIN) , ZF(NPOIN)    , ZR(NPOIN)
-      DOUBLE PRECISION   X(NPOIN) , Y(NPOIN), H(NPOIN)
       DOUBLE PRECISION   PI,XMAX,ZEMAX
 C
 C-----------------------------------------------------------------------
