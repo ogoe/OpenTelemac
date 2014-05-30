@@ -44,7 +44,7 @@
 !+        02/05/2014
 !+        V7P0
 !+   Call to NOEROD of Sisyphe for non erodable bed in the case of non
-!+   sediments.
+!+   cohesive sediments.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CONC           |<--| CONCENTRATION OF MUD BED LAYER
