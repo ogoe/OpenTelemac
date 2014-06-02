@@ -27,6 +27,9 @@
 """@history 31/05/2012 -- Sebastien E. Bourban
          Addition of a simple unzipping method (unzip)
 """
+"""@history 15/04/20124-- Sebastien E. Bourban
+         function isNewer now processes files within a directory also.
+"""
 """@brief
 """
 
@@ -94,10 +97,19 @@ def getTheseFiles(root,exts):
 """
    Evaluate whether one file is more recent than the other
    Return 1 is ofile exists and is more recent than nfile, 0 otherwise
+   > newer(nfile,ofile) is False if ofile exists and is more recent than nfile
 """
 def isNewer(nfile,ofile):
-   if newer(nfile,ofile): return 0
-   return 1
+   i = 1
+   if path.isfile(ofile):
+      if not newer(nfile,ofile): i = 0
+   elif path.isdir(ofile):
+      for file in listdir(ofile):
+         print i,path.join(ofile,file)
+         if path.isfile(path.join(ofile,file)):
+            if not newer(nfile,path.join(ofile,file)): i *= 0
+      print i
+   return 1 - min(i,1)
 
 """
 

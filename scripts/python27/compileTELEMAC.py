@@ -578,11 +578,38 @@ if __name__ == "__main__":
                if not path.exists(ForCmd) or rebuild == 2: putScanContent(ForCmd,cfg['root'],FileList)
                else:
                   FixeList = getScanContent(ForCmd,cfg['root'],options.bypass)
+                  # ~~> check the update for new libraries
+                  if FileList['general']['liborder'] != FixeList['general']['liborder']:
+                     FixeList['general']['liborder'] = FileList['general']['liborder']
+                     print '         The number of elements linked together has changed: ' + ' | '.join(FileList['general']['liborder'])
+                     fixes = FixeList.keys()
+                     for lib in fixes:
+                        if lib == 'general': continue
+                        if lib not in FileList: del FixeList[lib]
+                     for lib in FileList:
+                        if lib == 'general': continue
+                        if lib not in FixeList: FixeList.update({lib:{'path':FileList[lib]['path'],'files':FileList[lib]['files']}})
+                  # ~~> add new files
+                  mes = ''
                   for lib in FileList:
                      if lib == 'general': continue
                      if lib in FixeList:
                         for fic in FileList[lib]['files']:
-                           if fic not in FixeList[lib]['files']: FixeList[lib]['files'].append(fic)
+                           if fic not in FixeList[lib]['files']:
+                              mes += '\n         ~ ' + lib + ' | ' + fic
+                              FixeList[lib]['files'].append(fic)
+                  if mes != '': print '         The following have been added to the CMDF file: ' + ForCmd + mes
+                  # ~~> remove inexistant files
+                  mes = ''
+                  for lib in FixeList:
+                     if lib == 'general': continue
+                     fixes = FixeList[lib]['files']
+                     for fix in fixes:
+                        if not path.exists(path.join(FixeList[lib]['path'],fix.replace('|',sep))):
+                           mes += '\n         ~ ' + lib + ' | ' + fix
+                           del FixeList[lib]['files'][ FixeList[lib]['files'].index(fix) ]
+                  if mes != '': print '         The following will be removed from the CMDF file: ' + ForCmd + mes
+                  # ~~> put content as CMDF file
                   putScanContent(ForCmd,cfg['root'],FixeList)
 
          options.rescan = False

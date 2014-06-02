@@ -264,7 +264,7 @@ class HYCOM():
       self.slf2d.fole.update({ 'hook': open('t2d_'+rootName,'wb') })
       self.slf2d.fole.update({ 'name': 't2d_'+rootName })
       self.slf2d.fole.update({ 'endian': ">" })     # big endian
-      self.slfd.fole.update({ 'float': ('f',4) })  # single precision
+      self.slf2d.fole.update({ 'float': ('f',4) })  # single precision
       self.slf2d.appendHeaderSLF()
       # ~~~~ Time loop(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       var3d = np.zeros(self.slf3d.NPOIN3,dtype=np.float)

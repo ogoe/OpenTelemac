@@ -122,10 +122,10 @@ class CSV:
                self.colcore = np.vstack((self.colcore,y0[i]))
          elif dim == 4:
             n0,n1,n2,n3,y0 = y
-            print len(y0),n1
+            #print len(y0),n1
             # i is likely to vary with the extracted location
             for i in range(len(y0)):
-               print len(y0[i]),n2
+               #print len(y0[i]),n2
                # j is likely to vary with the extracted layers
                for j in range(len(y0[i])):
                   # Debug lines ???

@@ -90,13 +90,21 @@ dicokeys = ['AIDE','AIDE1','APPARENCE','CHOIX','CHOIX1','COMPORT','COMPOSE',
 # _____             ________________________________________________
 # ____/ CAS FILES  /_______________________________________________/
 #
-def scanCAS(cas):
+def scanCAS(lines):
    keylist = []; vallist = []
-   casLines = getFileContent(cas)
+   # ~~ clean ending empty lines
+   lines = (''.join(lines).rstrip('\n ')).split('\n')
+   # ~~ clean lines' endings
+   core = []
+   for line in lines:
+      proc = re.match(key_none,line)
+      if proc: line = line.lstrip()
+      core.append(line.rstrip(' '))
+   lines = core
    # ~~ clean comments
    core = []
-   for i in range(len(casLines)):
-      line = casLines[i].replace('"""',"'''").replace('"',"'").replace("''",'"')
+   for i in range(len(lines)):
+      line = lines[i].replace('"""',"'''").replace('"',"'").replace("''",'"')
       proc = re.match(key_comment,line+'/')
       line = proc.group('before').strip() + ' '
       proc = re.match(emptyline,line)
@@ -131,12 +139,13 @@ def scanCAS(cas):
          keylist.append(kw)
          vallist.append(val)
    
-   return (keylist,vallist)
+   return lines,(keylist,vallist)
 
-def readCAS(keywords,dico,frgb):
+def readCAS(cas,dico,frgb):
 
    vint = re.compile(r'\d+\Z')
    vflt = re.compile(r'(-)?\d*(|\.)\d*([dDeE](\+|\-)?\d+|)\Z')
+   lines,keywords = cas
    keylist,vallist = keywords
    for key,value in zip(*keywords):
       kw = key
@@ -169,12 +178,12 @@ def readCAS(keywords,dico,frgb):
          for val in value: vals.append(repr(val))
          vallist[keylist.index(key)] = vals
 
-   return (keylist,vallist)
+   return lines,(keylist,vallist)
 
 def rewriteCAS(cas):
 
    lines = []
-   for key,val in zip(*cas):
+   for key,val in zip(*cas[1]):
       if val == []: raise Exception([{'name':'rewriteCAS','msg':'... inapropriate value set for keyword: '+key}])
 
       # ~~~> Special keys starting with '&'
@@ -185,18 +194,15 @@ def rewriteCAS(cas):
          line = ''; lcur = ' ' + key + ' : ' + str(val[0])
       else:
          line = ' ' + key + ' :\n'
-         if len('    ' + str(val[0])) < 73: lcur = '    ' + str(val[0])
-         else:
-            lcur = ''
-            for i in range(len(str(val[0]))/72+1):
-               lcur = lcur + ( str(val[0])+72*' ' )[72*i:72*i+72] + '\n'
+         if len('   ' + str(val[0])) < 73: lcur = '   ' + str(val[0])
+         else: lcur = '\n' + format72(str(val[0]))
       for v in val[1:]:
          if len(lcur + ';'+str(v)) < 72:
             lcur = lcur + ';'+str(v)
          else:
             if len(lcur) < 72:
                line = line + lcur + ';\n'
-               lcur = '    '+str(v)
+               lcur = '   '+str(v)
             else:  print '... warning: CAS file cannot read this value: ',lcur
       lines.append(line+lcur)
 
@@ -392,7 +398,7 @@ def getIOFilesSubmit(frgb,dico):
 def getKeyWord(key,cas,dico,frgb):
 
    value = []; defaut = []
-   kl,vl = cas
+   kl,vl = cas[1]
    if key in frgb['GB']:
       defaut = dico[frgb['GB'][key]]['DEFAUT1']
       if key in kl: value = vl[kl.index(key)]
@@ -406,7 +412,7 @@ def getKeyWord(key,cas,dico,frgb):
 
 def getSubmitWord(key,cas,iFS,oFS):
 
-   value = []; kl,vl = cas
+   value = []; kl,vl = cas[1]
    for i in iFS:
       if key == iFS[i].split(';')[1]:
          if i in kl: value = vl[kl.index(i)]
@@ -416,23 +422,76 @@ def getSubmitWord(key,cas,iFS,oFS):
 
    return value
 
+def getCASLang(cas,frgb):
+   # ~~> add DICTIONARY and STEERING FILE to the CAS file
+   lang = 1
+   kl = cas[1][0]
+   # Look to find the first key that is different in both language
+   i = 0
+   while kl[i][0] == '&' or \
+      ( kl[i] in frgb['FR'] and kl[i] in frgb['GB'] ):
+      i+=1
+   if kl[i] not in frgb['FR']: lang = 2
+
+   return lang
+
 def setKeyValue(key,cas,frgb,value):
-
-   kl,vl = cas
+#~ detail:
+#~+   maintains both the list of key / value and the lines
+#~+      from the original file.
+#~+   add new key at the end of lines just in case the key exists already
+#~+      but in anycase, before $FIN
+#~assumption:
+#~+   single value is assumed at this stage
+#
+   lines,keys = cas
+   lang = getCASLang(cas,frgb)
+   if key in frgb['GB'] and lang == 1: key =  frgb['GB'][key]
+   if key in frgb['FR'] and lang == 2: key =  frgb['FR'][key]
+   kl,vl = keys
+   # ~~> Identify where is &FIN for possible insertion of new key before it
+   try:
+      jndex = lines.index('&FIN')
+      kndex = kl.index('&FIN')
+   except:
+      jndex = len(lines)
+      kndex = len(kl)
+   # English keys
    if key in frgb['GB']:
-      if key in kl: vl[kl.index(key)] = [value]
-      elif frgb['GB'][key] in kl: vl[kl.index(frgb['GB'][key])] = [value]
+      if key in kl:
+         vl[kl.index(key)] = [value]
+         lines.insert(jndex,format72(key+' : '+str(value)))
+      elif frgb['GB'][key] in kl:
+         vl[kl.index(frgb['GB'][key])] = [value]
+         lines.insert(jndex,format72(frgb['GB'][key]+' : '+str(value)))
       else:
-         kl.insert(0,key)      # insert instead of append so before &FIN
-         vl.insert(0,[value])
+         kl.insert(kndex,key)
+         vl.insert(kndex,[value])
+         lines.insert(jndex,format72(key+' : '+str(value)))
+   # French keys
    if key in frgb['FR']:
-      if key in kl: vl[kl.index(key)] = [value]
-      elif frgb['FR'][key] in kl: vl[kl.index(frgb['FR'][key])] = [value]
+      if key in kl:
+         vl[kl.index(key)] = [value]
+         lines.insert(jndex,format72(key+' : '+str(value)))
+      elif frgb['FR'][key] in kl:
+         vl[kl.index(frgb['FR'][key])] = [value]
+         lines.insert(jndex,format72(frgb['FR'][key]+' : '+str(value)))
       else:
-         kl.insert(0,key)      # insert instead of append so before &FIN
-         vl.insert(0,[value])
+         kl.insert(kndex,key)
+         vl.insert(kndex,[value])
+         lines.insert(jndex,format72(key+' : '+str(value)))
 
-   return (kl,vl)
+   return lines,(kl,vl)
+# _____             ________________________________________________
+# ____/ SPECIFICS  /_______________________________________________/
+#
+def format72(value):
+
+   val72 = ''
+   for i in range(len(value)/72+1):
+      val72 = val72 + ( value+72*' ' )[72*i:72*i+72] + '\n'
+
+   return val72.rstrip()
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -510,8 +569,9 @@ if __name__ == "__main__":
          frgb,dico = scanDICO(path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['version']+'.dico'))
          for casFile in cfg['VALIDATION'][mod]:
             print '... CAS file: ',casFile
-            casKeys = readCAS(scanCAS(casFile),dico,frgb)
+            casKeys = readCAS(scanCAS(getFileContent(casFile)),dico,frgb)
                #/!\ for testing purposes ... no real use.
+               #/!\ Note that casKeys is made of lines,(keys,values)
 
    sys.exit(0)
 

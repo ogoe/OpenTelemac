@@ -98,6 +98,10 @@
       valid configurations in an array. Testing for validity is now done
       within config.py
 """
+"""@history 15/04/2014 -- Sebastien E. Bourban
+   FORTRAN file can now be refered to as directories, in which case, all files
+      within it will be bundled together as one FORTRAn file.
+"""
 """@brief
          runcode is the execution launcher for all TELEMAC modules
 """
@@ -117,7 +121,7 @@ from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
 from utils.files import checkSymLink,symlinkFile,getFileContent,putFileContent,removeDirectories,isNewer
 from utils.messages import MESSAGES,filterMessage
-from parsers.parserKeywords import scanCAS,readCAS,rewriteCAS,scanDICO,getKeyWord,setKeyValue,getIOFilesSubmit
+from parsers.parserKeywords import scanCAS,readCAS,rewriteCAS,scanDICO, getCASLang,getKeyWord,setKeyValue,getIOFilesSubmit
 from parsers.parserSortie import getLatestSortieFiles
 
 # _____                   __________________________________________
@@ -206,19 +210,6 @@ def checkParaTilling(onctile,oncnode,oncsize,ncruns,ncsize):
    
    return True
 
-def getCASLang(cas,frgb):
-   # ~~> add DICTIONARY and STEERING FILE to the CAS file
-   lang = 1
-   kl = cas[0]
-   # Look to find the first key that is different in both language
-   i = 0
-   while kl[i][0] == '&' or \
-      ( kl[i] in frgb['FR'] and kl[i] in frgb['GB'] ):
-      i+=1
-   if kl[i] not in frgb['FR']: lang = 2
-
-   return lang
-
 def processCAS(casFiles,dico,frgb):
 
    # ~~ Aquire CAS Files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -231,7 +222,7 @@ def processCAS(casFiles,dico,frgb):
             '    +> or you may have forgotten an option key in your command line'}])
 
       # ~~> extract keywords
-      cas = readCAS(scanCAS(casFile),dico,frgb)
+      cas = readCAS(scanCAS(getFileContent(casFile)),dico,frgb)
 
       # ~~> extract language and set extra keywords
       lang = getCASLang(cas,frgb)
@@ -241,7 +232,7 @@ def processCAS(casFiles,dico,frgb):
       if lang == 2:
          cas = setKeyValue('STEERING FILE',cas,frgb,repr(path.basename(casFile)))
          cas = setKeyValue('DICTIONARY',cas,frgb,repr(path.normpath(frgb['DICO'])))
-      
+
       # ~~> Store the CAS File
       cases.append( cas ); langs.append( lang )
 
@@ -273,10 +264,10 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
    section_name = ''
    zone_name    = ''
    # ~~ copy input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for k,v in zip(*cas):
+   for k,v in zip(*cas[1]):
       if k in iFiles:
          cref = v[0].strip("'\"") 
-         if not path.isfile(cref):
+         if not ( path.isfile(cref) or path.isdir(cref) ):
             xcpt.append({'name':'processLIT','msg':'file does not exist: '+path.basename(cref)})
             continue
          crun = path.join(TMPDir,iFiles[k].split(';')[1])
@@ -291,19 +282,31 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
                   if found: iFiles[k] = iFiles[k].replace('SELAFIN','DONE').replace('PARAL','DONE')
                # special case for FORTRAN and CAS files in case of update
                if iFiles[k].split(';')[5][0:7] == 'FORTRAN':
-                  print ' re-copying: ', path.basename(cref),crun
-                  putFileContent(crun,getFileContent(cref)+[''])
+                  if path.isdir(cref):
+                     cdir = path.join(getcwd(),cref)
+                     cfor = []
+                     for file in listdir(cdir):
+                        if path.isfile(path.join(cdir,file)): cfor.extend(getFileContent(path.join(cdir,file)))
+                     print 're-bundling: ', path.basename(cref),crun
+                     putFileContent(crun,cfor+[''])
+                  else:
+                     print ' re-copying: ', path.basename(cref),crun
+                     putFileContent(crun,getFileContent(cref)+[''])
                elif iFiles[k].split(';')[5][0:3] == 'CAS':
-                  print ' re-writing: ', crun
-                  putFileContent(crun,rewriteCAS(cas))
+                  #print ' re-writing: ', crun
+                  #putFileContent(crun,rewriteCAS(cas))
+                  print ' re-copying: ', crun
+                  putFileContent(crun,cas[0])
                else:
                   print '   ignoring: ', path.basename(cref),crun
                   #putFileContent(crun,getFileContent(cref)+[''])
                continue
          if iFiles[k].split(';')[3] == 'ASC':
             if iFiles[k].split(';')[5][0:3] == 'CAS':
-               print ' re-writing: ', crun
-               putFileContent(crun,rewriteCAS(cas))
+               #print ' re-writing: ', crun
+               #putFileContent(crun,rewriteCAS(cas))
+               print ' re-copying: ', crun
+               putFileContent(crun,cas[0])
                # An input mesh may be a binary or an ascii file
                # It depends on the selected format (Selafin, Ideas, Med)
             elif iFiles[k].split(';')[5][0:12] == 'SELAFIN-GEOM':
@@ -331,6 +334,13 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
                else:
                   print '    copying: ', path.basename(cref),crun
                   putFileContent(crun,getFileContent(cref)+[''])
+            elif path.isdir(cref):
+               cdir = path.join(getcwd(),cref)
+               cfor = []
+               for file in listdir(cdir):
+                  if path.isfile(path.join(cdir,file)): cfor.extend(getFileContent(path.join(cdir,file)))
+               print '   bundling: ', path.basename(cref),crun
+               putFileContent(crun,cfor+[''])
             else:
                if use_link:
                   print '    linking: ', path.basename(cref),crun
@@ -353,7 +363,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
 
    xcpt = []                            # try all files for full report
    # ~~ copy output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for k,v in zip(*cas):
+   for k,v in zip(*cas[1]):
       if  k in oFiles:
          if oFiles[k].split(';')[5] == 'MULTI':   # POSTEL3D
             npsize = 1
@@ -541,7 +551,7 @@ def getCONLIM(cas,iFiles):
 
    # ~~ look for CONLIM ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    CONLIM = ''
-   for k in cas[0]:
+   for k in cas[1][0]:
       if k in iFiles:
          if iFiles[k].split(';')[5] == 'CONLIM': CONLIM = iFiles[k].split(';')[1]
    return CONLIM
@@ -550,7 +560,7 @@ def getGLOGEO(cas,iFiles):
 
    # ~~ look for GLOBAL GEO ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    GLOGEO = ''
-   for k in cas[0]:
+   for k in cas[1][0]:
       if k in iFiles:
          if iFiles[k].split(';')[5][-4:] == 'GEOM': GLOGEO = iFiles[k].split(';')[1]
    return GLOGEO
@@ -559,7 +569,7 @@ def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,section_name,zone_name,u
 
    if ncsize < 2: return True
    # ~~ split input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for k in cas[0]:
+   for k in cas[1][0]:
       if k in iFiles:
          crun = iFiles[k].split(';')[1]
          if iFiles[k].split(';')[5][0:7] == 'SELAFIN':
@@ -591,7 +601,7 @@ def runPARTEL(partel,file,conlim,ncsize,bypass,section_name,zone_name):
          tail,code = mes.runCmd(p,bypass)
       except Exception as e:
          raise Exception([filterMessage({'name':'runPARTEL','msg':'Could not execute the following partition task:\n      '+p},e,bypass)])
-      if code != 0: raise Exception([{'name':'runPARTEL','msg':'Could not complete partition (runcode='+str(code)+').\n      '+tail}])
+      if code != 0: raise Exception([{'name':'runPARTEL','msg':'Could not complete partition (runcode='+str(code)+').\n      '+tail+'\n      You may have forgotten to compile PARTEL with the appropriate compiler directive\n        (add -DHAVE_MPI to your cmd_obj in your configuration file).'}])
    return
 
 # ~~~ CCW: amended runCode to include optional listing file        ~~~
@@ -648,7 +658,7 @@ def runRecollection(gretel,cas,glogeo,oFiles,ncsize,bypass):
 
    if ncsize < 2: return True
    # ~~ aggregate output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for k in cas[0]:
+   for k in cas[1][0]:
       if  k in oFiles:
          crun = oFiles[k].split(';')[1]
          tpe = oFiles[k].split(';')[5]
@@ -749,16 +759,12 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    if options.mpi and cfg.has_key('HPC'): cfg['HPC'] = {}
    print '\n... checking parallelisation'
    nctile,ncnode,ncsize = checkParaTilling(options.nctile,options.ncnode,options.ncsize,ncruns,ncsize)
-   if ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize == 0:
-      #raise Exception([{'name':'runCAS','msg':'parallel inconsistency: '
-      print 'Warning: parallel inconsistency: ' + \
-         '\n    +> you may be using an inappropriate configuration: '+cfgName+ \
-         '\n    +> or may be wishing for parallel mode while setting to no processor' #}])
-      return []
-   if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize > 0:
+   if ( cfg['MPI'] != {} or cfg['HPC'] != {} ): ncsize = max( 1, ncsize )
+   if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize > 1:
       raise Exception([{'name':'runCAS','msg':'parallel inconsistency: ' \
          '\n    +> you may be using an inappropriate configuration: '+cfgName+ \
          '\n    +> or may be wishing for scalar mode while setting to '+str(ncsize)+' processors'}])
+   if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ): ncsize = 0
    hpcpass = False
    if cfg['HPC'] != {}: hpcpass = ( cfg['HPC'].has_key('PYCODE') )
    # ~~ Forces keyword if parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -925,7 +931,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS','msg':'could not compile: ' + path.basename(useFile)},e,options.bypass)])  # only one item here
          print ' re-copying: ',path.basename(useFile),exename
-         #shutil.copy2(path.basename(useFile),useFile) # Why ???
+         shutil.copy2(path.basename(useFile),useFile) # Why -- because we avoid having to re-compile, and we make sure we can re-create the exact same simulation
          shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
    
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1201,6 +1207,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if options.tmpdirectory:
+      chdir(casdir)
       for name in CASFiles:
          try:
             removeDirectories(CASFiles[name]['wir'])
@@ -1353,7 +1360,7 @@ def main(module=None):
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Run the Code from the CAS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   try:
+   try: 
       runCAS(cfgname,cfg,codeName,casFiles,options)
    except Exception as e:
       xcpts.addMessages(filterMessage({'name':'_____________\nruncode::main:\n'},e,options.bypass))

@@ -164,6 +164,7 @@ from socket import gethostname
 import ConfigParser
 from optparse import OptionParser
 from utils.files import removeDirectories
+from utils.messages import MESSAGES,filterMessage
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -187,13 +188,12 @@ def getConfigs(file,name,bypass=False):
    cfgfile = ConfigParser.RawConfigParser()
    try:
       cfgfile.read(file)
-   except:
-      parser.error("Could not access required parameters in config file")
-      sys.exit(1)
+   except Exception as e:
+      raise Exception([filterMessage({'name':'getConfigs','msg':' ... Some of the lines may not start with a comment #.'},e,bypass)])
    # ~~ Read Config Names ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfgs = cfgfile.get('Configurations','configs')
    if cfgs == '' :
-      print '\nPlease specify appropriate configuration names for key Configuration in config file\n'
+      print '\nPlease specify appropriate configuration names for key [Configurations] in the config file\n'
       sys.exit(1)
    # ~~ Filter Config Names ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfgnames = cfgs.split()
@@ -1024,7 +1024,7 @@ if __name__ == "__main__":
             if tail == '.cfg' : print '    +> ',fle
       sys.exit(1)
 
-   cfgs = parseConfigFile(options.configFile,options.configName,True)
+   cfgs = parseConfigFile(options.configFile,options.configName,False)
 
    for cfgname in cfgs:
       print '\n\n\

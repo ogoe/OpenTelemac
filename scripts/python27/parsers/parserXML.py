@@ -49,6 +49,11 @@
          Addition of a rank at the level of the XML file, in the top
             "validation" key.
 """
+"""@history 27/05/2014 -- Sebastien E. Bourban:
+         Major modification to the looping logic of the XML file.
+         Instead of split ACTIONs, GETs, PLOTs, ... it now does these in order
+            of appreance in the XML file.
+"""
 """@brief
 """
 
@@ -65,17 +70,19 @@ from scipy import linalg as la
 from types import StringTypes
 from fractions import gcd
 # ~~> dependencies from within pytel/parsers
-from parserKeywords import scanDICO,scanCAS,readCAS,translateCAS, getKeyWord,setKeyValue, getIOFilesSubmit
+from parserKeywords import scanDICO,scanCAS,readCAS,translateCAS, getCASLang,getKeyWord,setKeyValue, getIOFilesSubmit
 from parserSortie import getLatestSortieFiles
 #from parserCSV import getVariableCSV,putDataCSV,addColumnCSV
 from parserFortran import getPrincipalWrapNames,filterPrincipalWrapNames
 # ~~> dependencies towards the root of pytel
-from runcode import runCAS,getCASLang,getNCSIZE,compilePRINCI
+from runcode import runCAS,getNCSIZE,compilePRINCI
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import getFileContent,putFileContent,addFileContent,createDirectories,copyFile,moveFile, matchSafe,diffTextFiles
 from utils.messages import filterMessage, MESSAGES
-from mtlplots.plotTELEMAC import Figure1D,Figure2D
+from mtlplots.myplot1d import Figure1D,Dumper1D
+from mtlplots.myplot2d import Figure2D,Dumper2D
+from mtlplots.myplot3d import Figure3D,Dumper3D
 
 # _____                           __________________________________
 # ____/ Specific TELEMAC Toolbox /_________________________________/
@@ -129,7 +136,7 @@ def setSafe(casFile,cas,idico,odico,safe):
 
    # ~~> process input / output
    iFS = []; oFS = []
-   for k,v in zip(*cas):
+   for k,v in zip(*cas[1]):
       if k in idico:
          copyFile(path.join(wDir,v[0].strip("'\"")),safe)
          ifile = path.join(safe,v[0].strip("'\""))
@@ -638,19 +645,70 @@ class actionRUN(ACTION):
       mes = MESSAGES(size=10)
 
       # ~~> copy of inputs
-      if path.isfile(path.join(self.active['path'],self.active["target"])):
-         copyFile(path.join(self.active['path'],self.active["target"]),self.active['safe'])
-      for iFile in self.active["deprefs"]:
-         if iFile in self.dids:
-            if self.active['cfg'] in self.dids[iFile]:
-               layer = findTargets(self.dids[iFile][self.active['cfg']],self.active["deprefs"][iFile])
-               if layer != []: copyFile(layer[0][0],self.active['safe'])
-            else : raise Exception([{'name':'runXML','msg':'could not find the configuration '+self.active['cfg']+'for the dependant: '+iFile}])
+      iFile = path.join(self.active['path'],self.active["target"])
+      if path.isfile(iFile):
+         try:
+            copyFile(iFile,self.active['safe'])
+         except Exception as e:
+            raise Exception([filterMessage({'name':'runCommand','msg':'I can see your input file '+iFile+'but cannot copy it'},e,True)])
+      else: raise Exception([{'name':'runCommand','msg':'could not find reference to the target: '+iFile}])
+
+      for oFile in self.active["deprefs"]:
+         if oFile in self.dids:
+            if self.active['cfg'] in self.dids[oFile]:
+               layer = findTargets(self.dids[oFile][self.active['cfg']],self.active["deprefs"][oFile])
+               if layer != []:
+                  if path.isfile(layer[0][0]):
+                     try:
+                        copyFile(layer[0][0],self.active['safe'])
+                     except Exception as e:
+                        raise Exception([filterMessage({'name':'runCommand','msg':'I can see your input file '+layer[0][0]+'but cannot copy it'},e,True)])
+                  else: raise Exception([{'name':'runCommand','msg':'could not find reference to the dependant: '+layer[0][0]}])
+            else : raise Exception([{'name':'runCommand','msg':'could not find the configuration '+self.active['cfg']+'for the dependant: '+oFile}])
          else:
             if self.active["where"] != '':
-               if path.exists(path.join(self.active["where"],iFile)): copyFile(path.join(self.active["where"],iFile),self.active['safe'])
-            elif path.exists(path.join(self.path,iFile)): copyFile(path.join(self.path,iFile),self.active['safe'])
-            else: raise Exception([{'name':'runXML','msg':'could not find reference to the dependant: '+iFile}])
+               if path.exists(path.join(self.active["where"],oFile)): copyFile(path.join(self.active["where"],oFile),self.active['safe'])
+            elif path.exists(path.join(self.path,oFile)): copyFile(path.join(self.path,oFile),self.active['safe'])
+            else: raise Exception([{'name':'runCommand','msg':'could not find reference to the dependant: '+oFile}])
+            
+      # ~~> associated secondary inputs
+      for xref in self.active["deprefs"]:
+         if xref in self.dids.keys():
+            cfgname = self.active['cfg']
+            if cfgname in self.dids[xref]:
+               active = self.dids[xref][cfgname]
+               if self.active["deprefs"][xref].lower() == "sortie":
+                  if path.isfile(active["sortie"]): copyFile(active["sortie"],self.active['safe'])
+                  else: raise Exception([{'name':'runCommand','msg':'could not find reference to the sortie: '+active["sortie"]}])
+               elif self.active["deprefs"][xref] in active["outrefs"]:
+                  if path.exists(path.join(active['safe'],active["outrefs"][self.active["deprefs"][xref]])):
+                     try:
+                        copyFile(path.join(active['safe'],active["outrefs"][self.active["deprefs"][xref]]),self.active['safe'])
+                     except Exception as e:
+                        raise Exception([filterMessage({'name':'runCommand','msg':'I can see your file '+self.active["deprefs"][xref]+'but cannot copy it'},e,True)])
+                  else: raise Exception([{'name':'runCommand','msg':'I cannot see your output file '+self.active["deprefs"][xref]}])
+               else:
+                  layer = []
+                  for oFile in active["output"]:
+                     layer = findTargets(active,self.active["deprefs"][xref])
+                     if layer != []:
+                        if path.isfile(layer[0][0]):
+                           try:
+                              copyFile(layer[0][0],self.active['safe'])
+                           except Exception as e:
+                              raise Exception([filterMessage({'name':'runCommand','msg':'I can see your input file '+layer[0][0]+'but cannot copy it'},e,True)])
+                        else: raise Exception([{'name':'runCommand','msg':'could not find reference to the dependant: '+layer[0][0]}])
+                  for mod in active["links"]:
+                     for iFile in active["links"][mod]["oFS"]:
+                        layer = findTargets({'code':mod,'output':active["links"][mod]["oFS"]},self.active["deprefs"][xref])
+                        if layer != []:
+                           if path.isfile(layer[0][0]):
+                              try:
+                                 copyFile(layer[0][0],self.active['safe'])
+                              except Exception as e:
+                                 raise Exception([filterMessage({'name':'runCommand','msg':'I can see your input file '+layer[0][0]+'but cannot copy it'},e,True)])
+                           else: raise Exception([{'name':'runCommand','msg':'could not find reference to the dependant: '+layer[0][0]}])
+                  if layer == []: raise Exception([{'name':'runCommand','msg':'could not find reference to the linked file: '+self.active["deprefs"][xref]}])
       
       # ~~> execute command locally
       chdir(self.active['safe'])
@@ -668,7 +726,7 @@ class actionRUN(ACTION):
             except Exception as e:
                raise Exception([filterMessage({'name':'runCommand','msg':'I can see your file '+oFile+': '+self.active["outrefs"][oFile]+'but cannot copy it'},e,True)])
          else: raise Exception([{'name':'runCommand','msg':'I cannot see your output file '+oFile+': '+self.active["outrefs"][oFile]}])
-   
+
 # _____                            __________________________________
 # ____/ Secondary Class actionGET /_________________________________/
 #
@@ -724,6 +782,7 @@ class groupPLOT(GROUPS):
       # those you reset
       self.path = path.dirname(xmlFile)
       self.safe = self.path
+      self.order = []
 
    def addDraw(self,draw,rank=''):
       GROUPS.addGroup(self,draw)
@@ -733,6 +792,7 @@ class groupPLOT(GROUPS):
       if self.dids[self.active['type']][self.tasks["xref"]]['rank'] == '': self.dids[self.active['type']][self.tasks["xref"]]['rank'] = '953'
       self.dids[self.active['type']][self.tasks["xref"]]['rank'] = int(self.dids[self.active['type']][self.tasks["xref"]]['rank'])
       self.dids[self.active['type']][self.tasks["xref"]]['deco'] = self.tasks["deco"]
+      self.order.append(self.tasks["xref"])
 
    def distributeDeco(self,subtask):
       # ~~> distribute decoration
@@ -763,6 +823,7 @@ class groupGET(GROUPS):
       # those you reset
       self.path = path.dirname(xmlFile)
       self.safe = self.path
+      self.order = []
 
    def addGroup(self,draw,rank=''):
       GROUPS.addGroup(self,draw)
@@ -772,6 +833,7 @@ class groupGET(GROUPS):
       if self.dids[self.active['type']][self.tasks["xref"]]['rank'] == '': self.dids[self.active['type']][self.tasks["xref"]]['rank'] = '953'
       self.dids[self.active['type']][self.tasks["xref"]]['rank'] = int(self.dids[self.active['type']][self.tasks["xref"]]['rank'])
       #self.active['deco'] = self.tasks["deco"]
+      self.order.append(self.tasks["xref"])
 
    def distributeDeco(self,subtask):
       # ~~> distribute decoration
@@ -998,7 +1060,16 @@ def runXML(xmlFile,xmlConfig,bypass):
    if xcpt != []: raise Exception({'name':'runXML','msg':'looking at deco in xmlFile: '+xmlFile,'tree':xcpt})
    display = False
 
-   # ~~ Main action process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~ Looping logic in order of appearance ~~~~~~~~~~~~~~~~~~~~~~~
+   do = actionRUN(xmlFile,title,bypass)
+   ex = groupGET(xmlFile,title,bypass)
+   for typeSave in ["save1d","save2d","save3d"]: ex.addGroupType(typeSave)
+   plot = groupPLOT(xmlFile,title,bypass)
+   for typePlot in ["plot1d","plot2d","plot3d","plotpv"]: plot.addGroupType(typePlot)
+
+   for xmlChild in xmlRoot:
+
+   # ~~ Main action process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #
    #    Whether an action is carried out or not, it is known through:
    #       xmlConfig[cfgname]['options'].todos['act']['todo']
@@ -1006,175 +1077,178 @@ def runXML(xmlFile,xmlConfig,bypass):
    #       for possible subsequent extraction, plotting or analysis
    #    TODO: limit the number of path / safe duplication
    #
-   do = actionRUN(xmlFile,title,bypass)
-   for action in xmlRoot.findall("action"):
+   #for action in xmlRoot.findall("action"):      
+      if xmlChild.tag == "action":
+         action = xmlChild
 
-      # ~~ Step 1. Common check for keys and driving file ~~~~~~~~~~
-      try:
-         targetFile = do.addAction(action,rank)
-      except Exception as e:
-         xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
-         continue    # bypass rest of the loop
-      else:
-         oneFound = False
-         if path.isfile(path.join(do.active['path'],targetFile)): oneFound = True
-         for d in sys.path:
-            if path.isfile(path.join(d,targetFile)): oneFound = True
-         if not oneFound:
-            xcpt.append({'name':'runXML','msg':'could not find your target file'+targetFile})
+         # ~~ Step 1. Common check for keys and driving file ~~~~~~~
+         try:
+            targetFile = do.addAction(action,rank)
+         except Exception as e:
+            xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
             continue    # bypass rest of the loop
+         else:
+            oneFound = False
+            if path.isfile(path.join(do.active['path'],targetFile)): oneFound = True
+            for d in sys.path:
+               if path.isfile(path.join(d,targetFile)): oneFound = True
+            if not oneFound:
+               xcpt.append({'name':'runXML','msg':'could not find your target file'+targetFile})
+               continue    # bypass rest of the loop
 
-      # ~~ Step 2. Loop over configurations ~~~~~~~~~~~~~~~~~~~~~~~~
-      for cfgname in xmlConfig:
-         cfg = xmlConfig[cfgname]['cfg']
-         do.addCFG(cfgname,cfg) #if not : continue
-         
-         # ~~> Temper with rank but still gather intelligence
-         dodo = True
-         rankdo = do.active['rank']
-         rankdont = xmlConfig[cfgname]['options'].todos['act']['rank']
-         if rankdont == 1: dodo = False
-         if gcd(rankdont,rankdo) == 1: dodo = False
-         do.updateCFG({'dodo':dodo})
+         # ~~ Step 2. Loop over configurations ~~~~~~~~~~~~~~~~~~~~~
+         for cfgname in xmlConfig:
+            cfg = xmlConfig[cfgname]['cfg']
+            do.addCFG(cfgname,cfg) #if not : continue
 
-         # ~~> Create the safe
-         createDirectories(do.active['safe'])
+            # ~~> Temper with rank but still gather intelligence
+            dodo = True
+            rankdo = do.active['rank']
+            rankdont = xmlConfig[cfgname]['options'].todos['act']['rank']
+            if rankdont == 1: dodo = False
+            if gcd(rankdont,rankdo) == 1: dodo = False
+            do.updateCFG({'dodo':dodo})
 
-         # ~~ Step 3a. Deals with TELEMAC launchers ~~~~~~~~~~~~~~~~
-         if do.active["code"] in cfg['MODULES']:
+            # ~~> Create the safe
+            createDirectories(do.active['safe'])
 
-            do.availacts = "translate;run;compile;princi"
+            # ~~ Step 3a. Deals with TELEMAC launchers ~~~~~~~~~~~~~
+            if do.active["code"] in cfg['MODULES']:
 
-            # ~~> Manage targetFile and other inputs
-            casFile = path.join(do.active['path'],targetFile)
-            # ~~> Parse DICO File and its IO Files default (only once)
-            dicoFile = getDICO(cfg,do.active["code"])
-            do.updateCFG({'dico':dicoFile})
-            dico = DICOS[dicoFile]['dico']
-            frgb = DICOS[dicoFile]['frgb']
-            cas = readCAS(scanCAS(casFile),dico,frgb)
-            lang = getCASLang(cas,frgb)
-            if lang == 1:
-               cas = setKeyValue('FICHIER DES PARAMETRES',cas,frgb,repr(path.basename(casFile)))
-               cas = setKeyValue('DICTIONNAIRE',cas,frgb,repr(path.normpath(frgb['DICO'])))
-            if lang == 2:
-               cas = setKeyValue('STEERING FILE',cas,frgb,repr(path.basename(casFile)))
-               cas = setKeyValue('DICTIONARY',cas,frgb,repr(path.normpath(frgb['DICO'])))
-            if do.active["ncsize"] != '': cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(do.active["ncsize"]))
-            ncsize = getNCSIZE(cas,dico,frgb)
-            do.updateCFG({'cas':cas})
-            if ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize == 0: continue
-            if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize > 0: continue
+               do.availacts = "translate;run;compile;princi"
 
-            idico = DICOS[dicoFile]['input']
-            odico = DICOS[dicoFile]['output']
+               # ~~> Manage targetFile and other inputs
+               casFile = path.join(do.active['path'],targetFile)
+               # ~~> Parse DICO File and its IO Files default (only once)
+               dicoFile = getDICO(cfg,do.active["code"])
+               do.updateCFG({'dico':dicoFile})
+               dico = DICOS[dicoFile]['dico']
+               frgb = DICOS[dicoFile]['frgb']
+               cas = readCAS(scanCAS(getFileContent(casFile)),dico,frgb)
+               lang = getCASLang(cas,frgb)
+               if lang == 1:
+                  cas = setKeyValue('FICHIER DES PARAMETRES',cas,frgb,repr(path.basename(casFile)))
+                  cas = setKeyValue('DICTIONNAIRE',cas,frgb,repr(path.normpath(frgb['DICO'])))
+               if lang == 2:
+                  cas = setKeyValue('STEERING FILE',cas,frgb,repr(path.basename(casFile)))
+                  cas = setKeyValue('DICTIONARY',cas,frgb,repr(path.normpath(frgb['DICO'])))
+               if do.active["ncsize"] != '': cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(do.active["ncsize"]))
+               ncsize = getNCSIZE(cas,dico,frgb)
+               do.updateCFG({'cas':cas})
+               if ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize == 0: continue
+               if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize > 0: continue
 
-            # ~~> Define config-split storage
-            sortieFiles,iFS,oFS = setSafe(casFile,cas,idico,odico,do.active['safe'])   # TODO: look at relative paths
-            if sortieFiles != []: do.updateCFG({ 'sortie': sortieFiles })
-            do.updateCFG({ 'input':iFS })
-            do.updateCFG({ 'output':oFS })
+               idico = DICOS[dicoFile]['input']
+               odico = DICOS[dicoFile]['output']
 
-            # ~~> Case of coupling
-            cplages,defaut = getKeyWord('COUPLING WITH',cas,dico,frgb)
-            links = {}
-            for cplage in cplages:
-               for mod in cfg['MODULES']:
-                  if mod in cplage.lower():
-                     # ~~> Extract the CAS File name
-                     casFilePlage,defaut = getKeyWord(mod.upper()+' STEERING FILE',cas,dico,frgb)
-                     if casFilePlage == []: casFilePlage = defaut[0]
-                     else: casFilePlage = casFilePlage[0].strip("'\"")
-                     casFilePlage = path.join(path.dirname(casFile),casFilePlage)
-                     if not path.isfile(casFilePlage): raise Exception([{'name':'runCAS','msg':'missing coupling CAS file for '+mod+': '+casFilePlage}])
-                     # ~~> Read the DICO File
-                     dicoFilePlage = getDICO(cfg,mod)
-                     dicoPlage = DICOS[dicoFilePlage]['dico']
-                     frgbPlage = DICOS[dicoFilePlage]['frgb']
-                     # ~~> Read the coupled CAS File
-                     casPlage = readCAS(scanCAS(casFilePlage),dicoPlage,frgbPlage)
-                     # ~~> Fill-in the safe
-                     idicoPlage = DICOS[dicoFilePlage]['input']
-                     odicoPlage = DICOS[dicoFilePlage]['output']
-                     sortiePlage,iFSPlage,oFSPlage = setSafe(casFilePlage,casPlage,idicoPlage,odicoPlage,do.active['safe'])   # TODO: look at relative paths
-                     links.update({mod:{}})
-                     links[mod].update({ 'code':mod, 'target':path.basename(casFilePlage),
-                        'cas':casPlage, 'frgb':frgbPlage, 'dico':dicoFilePlage,
-                        'iFS':iFSPlage, 'oFS':oFSPlage, 'sortie':sortiePlage })
-                     if sortiePlage != []: links[mod].update({ 'sortie':sortiePlage })
-            if links != {}: do.updateCFG({ "links":links })
+               # ~~> Define config-split storage
+               sortieFiles,iFS,oFS = setSafe(casFile,cas,idico,odico,do.active['safe'])   # TODO: look at relative paths
+               if sortieFiles != []: do.updateCFG({ 'sortie': sortieFiles })
+               do.updateCFG({ 'input':iFS })
+               do.updateCFG({ 'output':oFS })
 
-            # ~~> Complete all actions
-            # options.todos['act']['todo'] takes: translate;run;compile and none
-            doable = xmlConfig[cfgname]['options'].todos['act']['todo']
-            if doable == '': doable = do.active["do"]
-            if doable == '' or doable == 'all': doable = do.availacts
-            display = display or xmlConfig[cfgname]['options'].display
+               # ~~> Case of coupling
+               cplages,defaut = getKeyWord('COUPLING WITH',cas,dico,frgb)
+               links = {}
+               for cplage in cplages:
+                  for mod in cfg['MODULES']:
+                     if mod in cplage.lower():
+                        # ~~> Extract the CAS File name
+                        casFilePlage,defaut = getKeyWord(mod.upper()+' STEERING FILE',cas,dico,frgb)
+                        if casFilePlage == []: casFilePlage = defaut[0]
+                        else: casFilePlage = casFilePlage[0].strip("'\"")
+                        casFilePlage = path.join(path.dirname(casFile),casFilePlage)
+                        if not path.isfile(casFilePlage): raise Exception([{'name':'runCAS','msg':'missing coupling CAS file for '+mod+': '+casFilePlage}])
+                        # ~~> Read the DICO File
+                        dicoFilePlage = getDICO(cfg,mod)
+                        dicoPlage = DICOS[dicoFilePlage]['dico']
+                        frgbPlage = DICOS[dicoFilePlage]['frgb']
+                        # ~~> Read the coupled CAS File
+                        casPlage = readCAS(scanCAS(getFileContent(casFilePlage)),dicoPlage,frgbPlage)
+                        # ~~> Fill-in the safe
+                        idicoPlage = DICOS[dicoFilePlage]['input']
+                        odicoPlage = DICOS[dicoFilePlage]['output']
+                        sortiePlage,iFSPlage,oFSPlage = setSafe(casFilePlage,casPlage,idicoPlage,odicoPlage,do.active['safe'])   # TODO: look at relative paths
+                        links.update({mod:{}})
+                        links[mod].update({ 'code':mod, 'target':path.basename(casFilePlage),
+                           'cas':casPlage, 'frgb':frgbPlage, 'dico':dicoFilePlage,
+                           'iFS':iFSPlage, 'oFS':oFSPlage, 'sortie':sortiePlage })
+                        if sortiePlage != []: links[mod].update({ 'sortie':sortiePlage })
+               if links != {}: do.updateCFG({ "links":links })
 
-            # ~~> Action type A. Translate the CAS file
-            if "translate" in doable.split(';') and dodo:
-               try:
-                  # - exchange keywords between dictionaries
-                  do.translateCAS(cfg['REBUILD'])
-               except Exception as e:
-                  xcpt.append(filterMessage({'name':'runXML','msg':'   +> translate'},e,bypass))
+               # ~~> Complete all actions
+               # options.todos['act']['todo'] takes: translate;run;compile and none
+               doable = xmlConfig[cfgname]['options'].todos['act']['todo']
+               if doable == '': doable = do.active["do"]
+               if doable == '' or doable == 'all': doable = do.availacts
+               display = display or xmlConfig[cfgname]['options'].display
 
-            # ~~> Action type B. Analysis of the CAS file
-            # TODO:
-            # - comparison with DEFAULT values of the DICTIONARY
-            #if "cas" in doable.split(';') and dodo:
-            # - comparison of dictionnaries betwen configurations
-            #if "dico" in doable.split(';') and dodo:
+               # ~~> Action type A. Translate the CAS file
+               if "translate" in doable.split(';') and dodo:
+                  try:
+                     # - exchange keywords between dictionaries
+                     do.translateCAS(cfg['REBUILD'])
+                  except Exception as e:
+                     xcpt.append(filterMessage({'name':'runXML','msg':'   +> translate'},e,bypass))
 
-            # ~~> Action type C. Analysis of the PRINCI file
-            if "princi" in doable.split(';') and dodo:
-               #try:
-                  # - comparison with standard source files
-                  specs = Values()
-                  specs.unified = False
-                  specs.ndiff = False
-                  specs.html = True
-                  specs.ablines = True
-                  specs.context = False
-                  do.diffPRINCI(specs,cfg,cfg['REBUILD'])
-               #except Exception as e:
-               #   xcpt.append(filterMessage({'name':'runXML','msg':'   +> diff(princi)'},e,bypass))
-            # TODO: - comparison of subroutines between action items
+               # ~~> Action type B. Analysis of the CAS file
+               # TODO:
+               # - comparison with DEFAULT values of the DICTIONARY
+               #if "cas" in doable.split(';') and dodo:
+               # - comparison of dictionnaries betwen configurations
+               #if "dico" in doable.split(';') and dodo:
 
-            # ~~> Action type E. Running CAS files
-            if "run" in doable.split(';') and dodo:
-               try:
-                  do.runCAS(xmlConfig[cfgname]['options'],cfg,cfg['REBUILD'])
-               except Exception as e:
-                  xcpt.append(filterMessage({'name':'runXML','msg':'   +> run'},e,bypass))
+               # ~~> Action type C. Analysis of the PRINCI file
+               if "princi" in doable.split(';') and dodo:
+                  #try:
+                     # - comparison with standard source files
+                     specs = Values()
+                     specs.unified = False
+                     specs.ndiff = False
+                     specs.html = True
+                     specs.ablines = True
+                     specs.context = False
+                     do.diffPRINCI(specs,cfg,cfg['REBUILD'])
+                  #except Exception as e:
+                  #   xcpt.append(filterMessage({'name':'runXML','msg':'   +> diff(princi)'},e,bypass))
+               # TODO: - comparison of subroutines between action items
 
-         # ~~ Step 3b. Deals with execute launchers ~~~~~~~~~~~~~~~~
-         elif do.active["code"] == 'exec':
+               # ~~> Action type E. Running CAS files
+               if "run" in doable.split(';') and dodo:
+                  try:
+                     do.runCAS(xmlConfig[cfgname]['options'],cfg,cfg['REBUILD'])
+                  except Exception as e:
+                     xcpt.append(filterMessage({'name':'runXML','msg':'   +> run'},e,bypass))
 
-            do.availacts = "exec"
+            # ~~ Step 3b. Deals with execute launchers ~~~~~~~~~~~~~
+            elif do.active["code"] == 'exec':
 
-            # ~~> Complete all actions
-            # options.todos['act']['todo'] takes: exec and none
-            doable = xmlConfig[cfgname]['options'].todos['act']['todo']
-            if doable == '': doable = do.active["code"]
-            if doable == '' or doable == 'all': doable = do.availacts
+               do.availacts = "exec"
 
-            # ~~> Action type E. Running exec
-            if "exec" in doable.split(';') and dodo:
-               try:
-                  # - simply run the exec as stated
-                  do.runCommand(cfg['REBUILD'])
-               except Exception as e:
-                  xcpt.append(filterMessage({'name':'runXML::runCommand','msg':'   +> '+do.active["do"]},e,bypass))
+               # ~~> Complete all actions
+               # options.todos['act']['todo'] takes: exec and none
+               doable = xmlConfig[cfgname]['options'].todos['act']['todo']
+               if doable == '': doable = do.active["code"]
+               if doable == '' or doable == 'all': doable = do.availacts
 
-   if xcpt != []: raise Exception({'name':'runXML','msg':'looking at actions in xmlFile: '+xmlFile,'tree':xcpt})
+               # ~~> Action type E. Running exec
+               if "exec" in doable.split(';') and dodo:
+                  try:
+                     # - simply run the exec as stated
+                     do.runCommand(cfg['REBUILD'])
+                  except Exception as e:
+                     xcpt.append(filterMessage({'name':'runXML::runCommand','msg':'   +> '+do.active["do"]},e,bypass))
 
-   # ~~ Save As ... targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         if xcpt != []: raise Exception({'name':'runXML','msg':'looking at actions in xmlFile: '+xmlFile,'tree':xcpt})
+
+   # ~~ Save As ... targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # did has all the IO references and the latest sortie files
-   ex = groupGET(xmlFile,title,bypass)
-   for typeSave in ["save1d","save2d","save3d"]:
-      ex.addGroupType(typeSave)
-      for extracting in xmlRoot.findall(typeSave):
+   #for extracting in xmlRoot.findall(typeSave):
+      if xmlChild.tag[0:4] == "save":
+         typeSave = xmlChild.tag
+         ex.active['type'] = typeSave
+         extracting = xmlChild
+
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          try:
             ex.addGroup(extracting,rank)
@@ -1252,12 +1326,13 @@ def runXML(xmlFile,xmlConfig,bypass):
 
          ex.update(ex.tasks)
 
-   if xcpt != []: raise Exception({'name':'runXML','msg':'looking at extractions in xmlFile: '+xmlFile,'tree':xcpt})
+         if xcpt != []: raise Exception({'name':'runXML','msg':'looking at extractions in xmlFile: '+xmlFile,'tree':xcpt})
 
    # ~~ Matrix distribution by extraction types ~~~~~~~~~~~~~~~~~~~~
-   for typeSave in ex.dids:
-      for xref in ex.dids[typeSave]:
-
+   #for xref in ex.order:
+   #   for did in ex.dids:
+   #      if xref in ex.dids[did]: typeSave = did
+         xref = ex.tasks['xref']
          task = ex.dids[typeSave][xref]
          if not "layers" in task: continue
          oneFound = False
@@ -1299,34 +1374,36 @@ def runXML(xmlFile,xmlConfig,bypass):
             print '       ~> saved as: ',extractName
             extractName = path.join(path.dirname(xmlFile),extractName)
             # ~~> Create Figure
-            if typeSave == "save1d": figure = Figure1D(typeSave,task,extractName)
-            if typeSave == "save2d": figure = Figure2D(typeSave,task,extractName)
-            if typeSave == "save3d": figure = Figure3D(typeSave,task,extractName)
+            if typeSave == "save1d": figure = Dumper1D(task)
+            if typeSave == "save2d": figure = Dumper2D(task)
+            if typeSave == "save3d": figure = Dumper3D(task)
 
             for layer,cfgs in zip(task["layers"],cfglist.split(';')):
                for cfg in cfgs.split(':'):
                   for fle in layer['fileName'][cfg][0]:
-                     figure.draw( layer['fileName'][cfg][2], { 'file': fle,
+                     figure.add( layer['fileName'][cfg][2], { 'file': fle,
                         'deco': {},
                         'vars': layer["vars"], 'extract':layer["extract"], 'sample':layer["sample"],
                         'type': task['type'], 'time':layer["time"] } )
 
-            figure.dump()
+            figure.save(extractName)
 
-   if xcpt != []: raise Exception({'name':'runXML','msg':'looking at savings in xmlFile: '+xmlFile,'tree':xcpt})
+         if xcpt != []: raise Exception({'name':'runXML','msg':'looking at savings in xmlFile: '+xmlFile,'tree':xcpt})
 
-   """      if "L2error" in doaddtask["do"]:
+      """      if "L2error" in doaddtask["do"]:
                chdir(racine)
                try:
                   ex.CalcL2error(doaddtask)
                except Exception as e:
                   xcpt.append(filterMessage({'name':'runXML','msg':'   +> CalcL2error'},e,bypass))"""
-   
+
    # ~~ Gathering targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   plot = groupPLOT(xmlFile,title,bypass)
-   for typePlot in ["plot1d","plot2d","plot3d","plotpv"]:
-      plot.addGroupType(typePlot)
-      for ploting in xmlRoot.findall(typePlot):
+   #for ploting in xmlRoot.findall(typePlot):
+      if xmlChild.tag[0:4] == "plot":
+         typePlot = xmlChild.tag
+         plot.active['type'] = typePlot
+         ploting = xmlChild
+         
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          try:
             plot.addDraw(ploting,rank)
@@ -1419,13 +1496,15 @@ def runXML(xmlFile,xmlConfig,bypass):
 
          plot.update(plot.tasks)
 
-   if xcpt != []: raise Exception({'name':'runXML','msg':'looking at targets in xmlFile: '+xmlFile,'tree':xcpt})
+         if xcpt != []: raise Exception({'name':'runXML','msg':'looking at targets in xmlFile: '+xmlFile,'tree':xcpt})
 
    # ~~ Matrix distribution by plot types ~~~~~~~~~~~~~~~~~~~~~~~~~~
    # /!\ configurations cannot be called "together" or "distinct" or "oneofall"
-   for typePlot in plot.dids:
-
-      for xref in plot.dids[typePlot]:
+   #for xref in plot.order:
+   #   for did in plot.dids:
+   #      if xref in plot.dids[did]: typePlot = did
+         xref = plot.tasks['xref']
+         task = plot.dids[typePlot][xref]
 
          draw = plot.dids[typePlot][xref]
          if not "layers" in draw: continue
@@ -1471,9 +1550,9 @@ def runXML(xmlFile,xmlConfig,bypass):
             print '       ~> saved as: ',figureName
             figureName = path.join(path.dirname(xmlFile),figureName)
             # ~~> Create Figure
-            if typePlot == "plot1d": figure = Figure1D(typePlot,draw,figureName,display)
-            if typePlot == "plot2d": figure = Figure2D(typePlot,draw,figureName,display)
-            if typePlot == "plot3d": figure = Figure3D(typePlot,draw,figureName,display)
+            if typePlot == "plot1d": figure = Figure1D(draw)
+            if typePlot == "plot2d": figure = Figure2D(draw)
+            if typePlot == "plot3d": figure = Figure3D(draw)
             # ~~> User Deco taken from 'look'
             #if layer['deco'].has_key('look'):
             #   for key in layer['deco']['look'][0]: layer['deco'].update({key:layer['deco']['look'][0][key]})
@@ -1481,14 +1560,15 @@ def runXML(xmlFile,xmlConfig,bypass):
             for layer,cfgs in zip(draw["layers"],cfglist.split(';')):
                for cfg in cfgs.split(':'):
                   for fle in layer['fileName'][cfg][0]:
-                     figure.draw( layer['fileName'][cfg][2], { 'file': fle,
+                     figure.add( layer['fileName'][cfg][2], { 'file': fle,
                         'deco': layer["deco"],
                         'vars': layer["vars"], 'extract':layer["extract"], 'sample':layer["sample"],
                         'type': draw['type'], 'time':layer["time"] } )
 
-            figure.show()
+            if display: figure.show()
+            else: figure.save(figureName)
 
-   if xcpt != []: raise Exception({'name':'runXML','msg':'looking at plotting in xmlFile: '+xmlFile,'tree':xcpt})
+         if xcpt != []: raise Exception({'name':'runXML','msg':'looking at plotting in xmlFile: '+xmlFile,'tree':xcpt})
 
    # ~~ Validation Criteria ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #

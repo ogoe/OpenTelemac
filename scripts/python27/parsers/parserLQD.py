@@ -137,11 +137,11 @@ def putLQD(fle,head,vrs,date0,time,xyz):
 class LQD:
    fileName = ''; head = []
 
-   def __init__(self,fileName='', vrs=[],date=[1972,07,13,17,24,27],times=[],series=[]):
+   def __init__(self,fileName='', vars=[],date=[1972,07,13,17,24,27],times=[],series=[]):
       if fileName != '': # read from file
          self.head,self.vrs,self.times,self.series = getLQD(self.fileName)
       else:              # set content values
-         self.vrs = vrs; self.times = times; self.series = series
+         self.vrs = vars; self.times = times; self.series = series
       self.date=date
 
    def putContent(self,fileName):

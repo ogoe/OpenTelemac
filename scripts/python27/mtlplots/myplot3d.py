@@ -20,15 +20,24 @@
 #
 # ~~> dependencies towards standard python
 import sys
-#import matplotlib
-import numpy as np
+
+# _____                         ____________________________________
+# ____/ Primary Classes:Dumper /___________________________________/
+#
+
+class Dumper3D:
+   def __init__(self,task):
+      pass
 
 # _____                          ___________________________________
 # ____/ Primary Classes: Drawer /__________________________________/
 #
 
-class Drawer3D:
-   pass
+class Figure3D:
+   def __init__(self,task):
+      pass
+   def draw(self,typl,what):
+      pass
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
