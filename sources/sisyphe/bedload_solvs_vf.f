@@ -3,10 +3,11 @@
 !                    ***************************
 !
      &(MESH,QSX,QSY,LIMTEC,UNSV2D,EBOR,BREACH,NSEG,NPTFR,NPOIN,
-     & KENT,KDIR,KDDL,DT,T10,ZFCL,FLUX,CSF_SABLE,FLBCLA,AVA,LIQBOR,QBOR)
+     & KENT,KDIR,KDDL,DT,T10,ZFCL,FLUX,CSF_SABLE,FLBCLA,AVA,LIQBOR,QBOR,
+     & NUBO,VNOIN)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/07/2011
+! SISYPHE   V7P0                                      03/06/2014
 !***********************************************************************
 !
 !brief    SOLVES EXNER EQUATION WITH THE FINITE VOLUME METHOD.
@@ -14,14 +15,9 @@
 !history  M. GONZALES DE LINARES
 !+        07/05/2002
 !+        V5P5
-!+
+!+   First version.
 !
-!history  F. HUVELIN
-!+        14/09/2004
-!+        V5P5
-!+
-!
-!history  J-M HERVOUET
+!history  J-M HERVOUET (EDF, LNHE)
 !+        30/10/2007
 !+        V5P8
 !+   UNSV2D +DIRICL DELETED
@@ -56,6 +52,12 @@
 !+  bilan_sisyphe, coefficient AVA added in Dirichlet value, QBOR
 !+  dealt with.    
 !
+!history  R.ATA (EDF-LNHE)
+!+        02/06/2014
+!+        V7P0
+!+  Corrections of normals and nubo tables 
+!+  after changes in FV data structure of Telemac2d
+!+  
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AVA            |-->| PERCENTAGE OF CLASS IN SEDIMENT
 !| BREACH         |<->| INDICATOR FOR NON ERODIBLE BED 
@@ -72,11 +74,13 @@
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSEG           |-->| NUMBER OF SEGMENTS
+!| NUBO           |-->| GLOBAL NUMBER OF EDGE EXTREMITIES         
 !| QBOR           |-->| PRESCRIBED BEDLOAD DISCHARGES
 !| QSX            |<->| BEDLOAD TRANSPORT RATE X-DIRECTION
 !| QSY            |<->| BEDLOAD TRANSPORT RATE Y-DIRECTION
 !| T10            |<->| WORK BIEF_OBJ STRUCTURE
 !| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!| VNOIN          |-->| OUTWARD UNIT NORMALS                        
 !| ZFCL           |<->| BEDLOAD EVOLUTION FOR EACH SEDIMENT CLASS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -95,12 +99,15 @@
       DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
       DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN)
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T10,FLBCLA,ZFCL,FLUX
+! RA
+      INTEGER, INTENT(IN)             :: NUBO(2,NSEG)
+      DOUBLE PRECISION, INTENT(IN)    :: VNOIN(3,NSEG)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER          :: ISEGIN,K,N,IEL,IEL1,IEL2
       DOUBLE PRECISION :: QSMOY1,QSMOY2,QSP,VNOIN1,VNOIN2,RNORM,XN,YN
-      DOUBLE PRECISION :: ZFCLDIR
+      DOUBLE PRECISION :: ZFCLDIR,PROD_SCAL
 !
 !======================================================================!
 !======================================================================!
@@ -115,13 +122,21 @@
 !     DETERMINES THE OUTGOING FLUX FOR EACH CELL 
 !
       DO ISEGIN = 1, NSEG
-         IEL1 = MESH%NUBO%I(2*ISEGIN - 1)
-         IEL2 = MESH%NUBO%I(2*ISEGIN    )
-         ! II.1 - RNORM : SEGMENT LENGTH
+!
+         IEL1 = NUBO(1,ISEGIN)
+         IEL2 = NUBO(2,ISEGIN)
+!
+         ! II.1 - SEGMENT LENGTH (RNORM)
          ! ----------------------------------
-         VNOIN1 = MESH%VNOIN%R(3*ISEGIN - 2)
-         VNOIN2 = MESH%VNOIN%R(3*ISEGIN - 1)
-         RNORM  = MESH%VNOIN%R(3*ISEGIN    )
+         VNOIN1 = VNOIN(1,ISEGIN)
+         VNOIN2 = VNOIN(2,ISEGIN)
+         RNORM  = VNOIN(3,ISEGIN)
+         PROD_SCAL= (MESH%X%R(IEL2)-MESH%X%R(IEL1))*VNOIN1+
+     &              (MESH%Y%R(IEL2)-MESH%Y%R(IEL1))*VNOIN2
+         IF(PROD_SCAL.LT.0.D0)THEN
+           IEL1 = NUBO(2,ISEGIN)
+           IEL2 = NUBO(1,ISEGIN)
+         ENDIF
          ! II.2 - QS FOR THE SEGMENT, BROKEN UP ACCORDING TO X AND Y
          ! ---------------------------------------------
          QSMOY1 = 0.5D0*(QSX%R(IEL1) + QSX%R(IEL2))
@@ -203,3 +218,4 @@
 !
       RETURN
       END
+

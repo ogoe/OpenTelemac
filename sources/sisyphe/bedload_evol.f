@@ -12,7 +12,7 @@
      & FLBCLA,LIQBOR,QBOR,MAXADV)
 !
 !***********************************************************************
-! SISYPHE   V6P3                                   21/07/2011
+! SISYPHE   V7P0                                    03/06/2014
 !***********************************************************************
 !
 !brief    COMPUTES THE EVOLUTION FOR THE BEDLOAD TRANSPORT.
@@ -49,6 +49,12 @@
 !+        V6P3
 !+  Pointer FLULIM added to avoid a hidden temporary array allocation    
 !
+!history  R.ATA (EDF-LNHE)
+!+        02/06/2014
+!+        V7P0
+!+  Corrections of normals and nubo tables 
+!+  after changes in FV data structure of Telemac2d
+!+  
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
 !| AVA            |-->| PERCENT AVAILABLE
@@ -166,7 +172,8 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING BEDLOAD_NERBED_VF'   
         CALL BEDLOAD_NERBED_VF
      &        (MESH,LIMTEC,KDDL,ELAY%R,V2DPAR%R,QSX,QSY,AVA,NPOIN,
-     &         MESH%NSEG,NPTFR,DTS,QS,T1,T2,T3,BREACH,CSF_SABLE)
+     &         MESH%NSEG,NPTFR,DTS,QS,T1,T2,T3,BREACH,CSF_SABLE,
+     &         MESH%NUBO%I,MESH%VNOIN%R)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETURN FROM BEDLOAD_NERBED_VF'
         CALL OS('X=YZ    ', X=QSX, Y=QS, Z=CALFA)
         CALL OS('X=YZ    ', X=QSY, Y=QS, Z=SALFA)
@@ -180,7 +187,7 @@
      &                        BREACH,MESH%NSEG,NPTFR,NPOIN,
      &                        KENT,KDIR,KDDL,DTS,T10,ZFCL,T11,
      &                        CSF_SABLE,FLBCLA%ADR(ICLA)%P,AVA,
-     &                        LIQBOR,QBOR)
+     &                        LIQBOR,QBOR,MESH%NUBO%I,MESH%VNOIN%R)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETURN FROM BEDLOAD_SOLVS_VF'
 ! 
 !     SOLVES THE BED-EVOLUTION EQUATION : F.E.    
@@ -207,3 +214,4 @@
 !
       RETURN
       END
+

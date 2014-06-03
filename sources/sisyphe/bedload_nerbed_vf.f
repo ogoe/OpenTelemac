@@ -3,10 +3,10 @@
 !                    ******************************
 !
      &(MESH,LIEBOR,KSORT,ELAY,V2DPAR,QSX,QSY,AVA,NPOIN,NSEG,NPTFR,
-     & DT,QS,T1,T2,T3,BREACH,CSF_SABLE)
+     & DT,QS,T1,T2,T3,BREACH,CSF_SABLE,NUBO,VNOIN)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V7P0                                   03/06/2014
 !***********************************************************************
 !
 !brief    NON ERODABLE METHOD FOR FINITE VOLUMES.
@@ -14,14 +14,9 @@
 !history  M. GONZALES DE LINARES
 !+        07/05/2002
 !+        V5P3
-!+
+!+  First version.
 !
-!history  F. HUVELIN
-!+        14/09/2004
-!+
-!+
-!
-!history  JMH
+!history  J-M HERVOUET (EDF,LNHE)
 !+        31/01/2008
 !+        V6P0
 !+   CORRECTED INITIALISATION ERROR FOR T1 AND T2
@@ -41,8 +36,14 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
+!+  Names of variables .  
 !+   
+!history  R.ATA (EDF-LNHE)
+!+        02/06/2014
+!+        V7P0
+!+  Corrections of normals and nubo tables 
+!+  after changes in FV data structure of Telemac-2D.
+!+  
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AVA            |-->| PERCENT AVAILABLE
@@ -55,6 +56,7 @@
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSEG           |-->| NUMBER OF SEGMENTS PER CONTROL SECTION 
+!| NUBO           |-->| GLOBAL NUMBER OF EDGE EXTREMITIES  
 !| QS             |<->| BEDLOAD TRANSPORT RATE
 !| QSX            |-->| SOLID DISCHARGE X 
 !| QSY            |-->| SOLID DISCHARGE Y 
@@ -62,6 +64,7 @@
 !| T2             |<->| WORK BIEF_OBJ STRUCTURE
 !| T3             |<->| WORK BIEF_OBJ STRUCTURE
 !| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS, ASSEMBLED IN PARALLEL
+!| VNOIN          |-->| OUTWARD UNIT NORMALS                        
 !| CSF_SABLE      |-->| VOLUME CONCENTRATION OF SAND (1-POROSITY)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -82,13 +85,16 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: BREACH
       DOUBLE PRECISION, INTENT(IN)    :: ELAY(NPOIN),V2DPAR(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN), CSF_SABLE
+! RA
+      INTEGER, INTENT(IN)             :: NUBO(2,NSEG)
+      DOUBLE PRECISION, INTENT(IN)    :: VNOIN(3,NSEG)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER          :: I, K
       INTEGER          :: IEL, IEL1, IEL2, ISEGIN
       DOUBLE PRECISION :: QSP1, QSP2, QSPC
-      DOUBLE PRECISION :: XN, YN, TEMP
+      DOUBLE PRECISION :: XN, YN, TEMP,PROD_SCAL
       DOUBLE PRECISION :: VNOIN1, VNOIN2, RNORM
 !
 !======================================================================!
@@ -127,14 +133,20 @@
 !
       DO ISEGIN = 1, NSEG
 !
-         IEL1 = MESH%NUBO%I(2*ISEGIN - 1)
-         IEL2 = MESH%NUBO%I(2*ISEGIN    )
+         IEL1 = NUBO(1,ISEGIN)
+         IEL2 = NUBO(2,ISEGIN)
 !
          ! II.1 - SEGMENT LENGTH (RNORM)
          ! ----------------------------------
-         VNOIN1 = MESH%VNOIN%R(3*ISEGIN - 2)
-         VNOIN2 = MESH%VNOIN%R(3*ISEGIN - 1)
-         RNORM  = MESH%VNOIN%R(3*ISEGIN    )
+         VNOIN1 = VNOIN(1,ISEGIN)
+         VNOIN2 = VNOIN(2,ISEGIN)
+         RNORM  = VNOIN(3,ISEGIN)
+         PROD_SCAL= (MESH%X%R(IEL2)-MESH%X%R(IEL1))*VNOIN1+
+     &              (MESH%Y%R(IEL2)-MESH%Y%R(IEL1))*VNOIN2
+         IF(PROD_SCAL.LT.0.D0)THEN
+           IEL1 = NUBO(2,ISEGIN)
+           IEL2 = NUBO(1,ISEGIN)
+         ENDIF
 !
          ! II.2 - PROJECTS QS FOR THE SEGMENT ONTO THE SEGMENT NORMAL
          ! ------------------------------------------------------------
@@ -215,3 +227,4 @@
 !
       RETURN
       END
+

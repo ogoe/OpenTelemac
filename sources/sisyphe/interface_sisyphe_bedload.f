@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/07/2011
+! SISYPHE   V7P0                                   03/06/2014
 !***********************************************************************
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,6 +33,7 @@
 !----------------------------------------------------------------------C
 !======================================================================!
 !======================================================================!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_BAILARD !
       !----------------------------------------------------------------!
@@ -498,10 +499,9 @@
 !
 !
       !================================================================!
-      SUBROUTINE BEDLOAD_NERBED_VF   !
-      !----------------------------------------------------------------!
-     &(MESH,LIEBOR,KSORT,ELAY,MASBAS,QSX,QSY,AVA,NPOIN,NSEG,NPTFR,
-     & DT,QS,T1,T2,T3,BREACH, CSF_SABLE)
+      SUBROUTINE BEDLOAD_NERBED_VF !
+     &(MESH,LIEBOR,KSORT,ELAY,V2DPAR,QSX,QSY,AVA,NPOIN,NSEG,NPTFR,
+     & DT,QS,T1,T2,T3,BREACH,CSF_SABLE,NUBO,VNOIN)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
@@ -511,8 +511,10 @@
       DOUBLE PRECISION, INTENT(IN)    :: DT
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: QS, T1, T2, T3
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: BREACH
-      DOUBLE PRECISION, INTENT(IN)    :: ELAY(NPOIN),MASBAS(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN),CSF_SABLE
+      DOUBLE PRECISION, INTENT(IN)    :: ELAY(NPOIN),V2DPAR(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN), CSF_SABLE
+      INTEGER, INTENT(IN)             :: NUBO(2,NSEG)
+      DOUBLE PRECISION, INTENT(IN)    :: VNOIN(3,NSEG)
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_NERBED_VF
       !================================================================!
@@ -613,19 +615,20 @@
 !
       !================================================================!
       SUBROUTINE BEDLOAD_SOLVS_VF
-      !----------------------------------------------------------------!
-     &(MESH,QSX,QSY,LIEBOR,UNSV2D,EBOR,BREACH,NSEG,NPTFR,NPOIN,
-     & KENT,KDIR,KDDL,DT,T10,ZFCL,FLUX,CSF_SABLE,FLBCLA,AVA,LIQBOR,QBOR)
+     &(MESH,QSX,QSY,LIMTEC,UNSV2D,EBOR,BREACH,NSEG,NPTFR,NPOIN,
+     & KENT,KDIR,KDDL,DT,T10,ZFCL,FLUX,CSF_SABLE,FLBCLA,AVA,LIQBOR,QBOR,
+     & NUBO,VNOIN)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
-      TYPE(BIEF_OBJ),   INTENT(IN)    :: QSX, QSY
-      TYPE(BIEF_OBJ),   INTENT(IN)    :: LIEBOR,UNSV2D, EBOR
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: QSX,QSY,LIMTEC,UNSV2D,EBOR
       TYPE(BIEF_OBJ),   INTENT(IN)    :: BREACH,LIQBOR,QBOR
       INTEGER,          INTENT(IN)    :: NSEG,NPTFR,NPOIN,KENT,KDIR,KDDL
-      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE,AVA(NPOIN)
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: T10,FLBCLA
-      TYPE(BIEF_OBJ),   INTENT(INOUT)   :: ZFCL, FLUX
+      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
+      DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN)
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: T10,FLBCLA,ZFCL,FLUX
+      INTEGER, INTENT(IN)             :: NUBO(2,NSEG)
+      DOUBLE PRECISION, INTENT(IN)    :: VNOIN(3,NSEG)
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_SOLVS_VF
       !================================================================!

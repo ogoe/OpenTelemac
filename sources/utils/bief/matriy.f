@@ -84,7 +84,7 @@
 !+   NELEBX,IKLBOR,NELBOR,NULONE.
 !
 !history  J.M. HERVOUET (EDF LAB, LNHE)
-!+        15/05/2014
+!+        03/06/2014
 !+        V7P0
 !+   Call to mt15pp (settling velocity matrix) added.
 !
@@ -3053,7 +3053,7 @@
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.41) THEN
             CALL MT15PP(T,XM,PPQ(1,1,S),
-     &                  XMUL,SF,F,SURFAC,IKLE,NELEM,NELMAX)
+     &                  XMUL,SF,F,ZPT,SURFAC,IKLE,NELEM,NELMAX)
 !
             TYPDIA='Q'
             TYPEXT='Q'
@@ -3218,3 +3218,4 @@
 !
       RETURN
       END
+
