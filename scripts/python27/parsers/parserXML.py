@@ -650,6 +650,7 @@ class actionRUN(ACTION):
 
       # ~~> copy of inputs
       iFile = ''
+      exeCmd = self.active["do"]
       if path.isfile(path.join(self.active['path'],self.active["target"])):
          iFile = path.join(self.active['path'],self.active["target"])
          try:
@@ -660,7 +661,7 @@ class actionRUN(ACTION):
          for dir in sys.path:   # /!\ in that case, you do not copy the target locally
             if path.isfile(path.join(dir,self.active["target"])): iFile = path.join(dir,self.active["target"])
          if iFile == '': raise Exception([{'name':'runCommand','msg':'could not find reference to the target: '+iFile}])
-         self.active["do"] = self.active["do"].replace(self.active["target"],iFile)
+         exeCmd = self.active["do"].replace(self.active["target"],iFile)
 
       for oFile in self.active["deprefs"]:
          if oFile in self.dids:
@@ -722,10 +723,10 @@ class actionRUN(ACTION):
       # ~~> execute command locally
       chdir(self.active['safe'])
       try:
-         tail,code = mes.runCmd(self.active["do"],self.bypass) # /!\ Do you really need True here ?
+         tail,code = mes.runCmd(exeCmd,self.bypass) # /!\ Do you really need True here ?
       except Exception as e:
          raise Exception([filterMessage({'name':'runCommand','msg':'something went wrong when executing you command.'},e,True)])
-      if code != 0: raise Exception([{'name':'runCommand','msg':'Could not run your command ('+self.active["do"]+').\n      '+tail}])
+      if code != 0: raise Exception([{'name':'runCommand','msg':'Could not run your command ('+exeCmd+').\n      '+tail}])
       
       # ~~> copy of outputs /!\ you are replacing one config by another
       for oFile in self.active["outrefs"]:
