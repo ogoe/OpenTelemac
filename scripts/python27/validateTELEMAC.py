@@ -219,6 +219,10 @@ if __name__ == "__main__":
    SYSTELCFG = path.join(PWD,'configs')
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
+   PYTELPATH = path.dirname(sys.argv[0])
+   if 'PYTELPATH' not in environ:
+      environ.update({'PYTELPATH':PYTELPATH})
+      sys.path.append( PYTELPATH ) # clever you !
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",type="string",dest="configName",default=USETELCFG,
       help="specify configuration name, default is the first found in the configuration file" )

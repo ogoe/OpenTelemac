@@ -61,7 +61,7 @@
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
-from os import path, remove, walk, chdir, getcwd, environ
+from os import path, remove, walk, chdir, getcwd
 from optparse import Values
 import sys
 from copy import deepcopy
@@ -110,6 +110,7 @@ def getDICO(cfg,code):
    Will read the xml's XML keys based on the template do.
    +: those with None are must have
    +: those without None are optional and reset if there
+   Will add extra keys even if it does ont know what to do.
 """
 def getXMLKeys(xml,do):
 
@@ -122,6 +123,9 @@ def getXMLKeys(xml,do):
       else:
          done[key] = xml.attrib[key]
    if xcpt != []: raise Exception(xcpt) # raise full report
+   for key in xml.keys():
+      if key not in done:
+         done[key] = xml.attrib[key]
 
    return done
 
@@ -645,13 +649,18 @@ class actionRUN(ACTION):
       mes = MESSAGES(size=10)
 
       # ~~> copy of inputs
-      iFile = path.join(self.active['path'],self.active["target"])
-      if path.isfile(iFile):
+      iFile = ''
+      if path.isfile(path.join(self.active['path'],self.active["target"])):
+         iFile = path.join(self.active['path'],self.active["target"])
          try:
             copyFile(iFile,self.active['safe'])
          except Exception as e:
             raise Exception([filterMessage({'name':'runCommand','msg':'I can see your input file '+iFile+'but cannot copy it'},e,True)])
-      else: raise Exception([{'name':'runCommand','msg':'could not find reference to the target: '+iFile}])
+      else:
+         for dir in sys.path:   # /!\ in that case, you do not copy the target locally
+            if path.isfile(path.join(dir,self.active["target"])): iFile = path.join(dir,self.active["target"])
+         if iFile == '': raise Exception([{'name':'runCommand','msg':'could not find reference to the target: '+iFile}])
+         self.active["do"] = self.active["do"].replace(self.active["target"],iFile)
 
       for oFile in self.active["deprefs"]:
          if oFile in self.dids:
