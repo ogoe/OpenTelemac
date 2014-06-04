@@ -203,8 +203,8 @@
               IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
                 DO I=1,NPOIN2
 !                 1) FLUX THROUGH THE BOTTOM NOT TAKEN INTO ACCOUNT FOR TIDAL FLATS
-!                 2) TRACER AT ACTUAL BOTTOM PLANE TAKEN INTO ACCOUNT, HEN IPBOT IN
-!                    ADDRESS OF TA.
+!                 2) TRACER AT ACTUAL BOTTOM PLANE TAKEN INTO ACCOUNT, THEN IPBOT
+!                    IN ADDRESS OF TA.
                   IF(IPBOT%I(I).NE.NPLAN-1) THEN
                     FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
      &              + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)

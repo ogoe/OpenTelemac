@@ -77,12 +77,13 @@
 !+   forward method of characteristics in weak form).
 !
 !history  J.M. HERVOUET (EDF LAB, LNHE)
-!+        15/05/2014
+!+        04/06/2014
 !+        V7P0
 !+   Implicit upwind treatment of settling velocity modified. Now a
 !+   single matrix is called (MATWC) and upwind is not called.
 !+   Positivity is ensured without any condition, and stability 
 !+   if the solver can resist to non dominant diagonals...
+!+   Call to t3d_stress changed (for treatment of tidal flats).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
@@ -529,7 +530,7 @@
         CALL T3D_STRESS(SEM3D,'X=X+Y   ',T2_01,T3_02,
      &                  BFBORL,BFBORF,BFBORS,NPOIN2,NPOIN3,MESH2D,
      &                  MESH3D,IELM3,IELM2H,IELM2V,SVIDE,
-     &                  MSK,MASKBR,MASKEL)
+     &                  MSK,MASKBR,MASKEL,IPBOT,SIGMAG,OPTBAN,NPLAN)
 !
 !=======================================================================
 !   SEDIMENT-SPECIFIC ++++ This is for WC > 0 downwards
@@ -805,3 +806,4 @@
 !
       RETURN
       END
+

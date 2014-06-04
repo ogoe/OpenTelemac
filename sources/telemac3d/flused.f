@@ -11,7 +11,7 @@
      & HMIN, SEDCO, SETDEP)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P0                                   03/06/2014
 !***********************************************************************
 !
 !brief    WRITES THE FLUXES AT THE BOTTOM AND FREE SURFACE
@@ -46,6 +46,11 @@
 !+        20/01/2014
 !+        V7P0
 !+   Erosion and deposition fluxes cancelled on tidal flats.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        03/06/2014
+!+        V7P0
+!+   Crushed planes treated with IPBOT.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM) 
@@ -130,7 +135,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I
+      INTEGER I,I3D
 !
       INTRINSIC MAX
 !
@@ -142,55 +147,57 @@
 !
 !       COHESIVE SEDIMENT (Here FLUDPT >0)
 !
-        DO I=1,NPOIN2
-          FLUDPT(I)= WC(I)*MAX(1.D0-(TOB(I)/MAX(TOCD,1.D-6)),0.D0)
-        ENDDO
+        IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
+          DO I=1,NPOIN2
+            IF(IPBOT%I(I).NE.NPLAN-1) THEN
+!             DEPOSITION ON THE FIRST FREE PLANE WITH LOCAL VELOCITY
+              I3D=I+IPBOT%I(I)*NPOIN2
+              FLUDPT(I)= WC(I3D)*MAX(1.D0-(TOB(I)/MAX(TOCD,1.D-6)),0.D0)
+            ELSE
+!             TIDAL FLAT
+              FLUDPT(I)= 0.D0
+            ENDIF
+          ENDDO
+        ELSE
+          DO I=1,NPOIN2
+            FLUDPT(I)= WC(I)*MAX(1.D0-(TOB(I)/MAX(TOCD,1.D-6)),0.D0)
+          ENDDO
+        ENDIF
 !
       ELSE
 !
-!       NON COHESIVE SEDIMENT : PDEPOT = 1.
+!       NON COHESIVE SEDIMENT
 !
-        DO I=1,NPOIN2
-          FLUDPT(I)= WC(I)
-        ENDDO
+        IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
+          DO I=1,NPOIN2
+            IF(IPBOT%I(I).NE.NPLAN-1) THEN
+!             DEPOSITION ON THE FIRST FREE PLANE WITH LOCAL VELOCITY
+              FLUDPT(I)= WC(I+IPBOT%I(I)*NPOIN2)
+            ELSE
+!             TIDAL FLAT
+              FLUDPT(I)= 0.D0
+            ENDIF
+          ENDDO
+        ELSE
+          DO I=1,NPOIN2
+            FLUDPT(I)= WC(I)
+          ENDDO
+        ENDIF
 !
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-!     CORRECTION OF EROSION FLUXES ON TIDAL FLATS
-!
-      DO I=1,NPOIN2
-        IF(HN(I).LE.HMIN) THEN
-          FLUER(I)= 0.D0
-        ENDIF            
-      ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!     COMMENTED BY JMH ON 28/02/2014 (IF IT IS REALLY A PROBLEM
-!                                     WE NEED TO FIND A CLEANER SOLUTION)
-!
-!     PREVENTING EROSION AND DEPOSITION ON THE EXIT BOUNDARY
-!     (Fixed water depth)
-!
-!     DO IPTFR = 1,NPTFR2
-!       IF(LIHBOR%I(IPTFR).EQ.KENT) THEN
-!         I = NBOR2%I(IPTFR)
-!         FLUDPT(I)=0.D0
-!         FLUER(I)=0.D0
-!         DO IPLAN=1, NPLAN
-!           I3D= I + (IPLAN-1)*NPOIN2
-!           WC(I3D)=0.D0
-!         ENDDO
-!       ENDIF
-!     ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!     COMMON COMPUTATION OF THE TRACER FLUX ON THE BOTTOM
+!     COMPUTATION OF THE TRACER FLUX ON THE BOTTOM
 !
       IF(SETDEP.EQ.1) THEN
+!
+!       USING HMIN TO CLIP EROSION (DIFFERENT FROM USING IPBOT)
+        DO I=1,NPOIN2
+          IF(HN(I).LE.HMIN) THEN
+            FLUER(I)= 0.D0
+          ENDIF            
+        ENDDO
 !
         DO I=1,NPOIN2
           IF(LITABF(I).EQ.KLOG) THEN
@@ -249,3 +256,4 @@
 !
       RETURN
       END
+
