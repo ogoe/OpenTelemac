@@ -139,7 +139,6 @@
 !     PREASSEMBLY
 !
       DO IT=1,3
-!DIR$ IVDEP
       DO IELEM = 1 , NELEM
 !
 !     ADDRESSES IN ARRAY (NELMAX,*)
