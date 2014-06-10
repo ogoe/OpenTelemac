@@ -96,7 +96,9 @@
       DOUBLE PRECISION ZMIN(MAXFRO)
 !
       INTEGER YADEB(MAXFRO),MSK1,IJK
+!
 !========================================================================
+!
       DOUBLE PRECISION ALF ,PI,y100,Ajul4,Nlun, ht
       DOUBLE PRECISION  Dd,JD,Tuniv,hsun,slun,plun,tlun,psun
       DOUBLE PRECISION Tondes (120) 
@@ -109,7 +111,11 @@
       INTEGER NSURF(NPTFR2)
       DOUBLE PRECISION TEMPS
       INTEGER compteur
-      SAVE AHN, PHN    
+!
+      INTRINSIC COS,SIN,INT,MOD,ACOS
+!
+      SAVE AHN, PHN 
+!   
 !=========================================================================
 !     DOUBLE PRECISION XB,YB,ZB,WW,TREEL,A,B,CP,LAMB,RO,RO0,SAL
 !     INTGER ITEMP
@@ -168,6 +174,7 @@
       END IF
 !
 !===================================================================
+!
       PI=ACOS(-1.D0)
       NPTFRLM = 28
       NFO1 = T3DFO1
@@ -183,35 +190,24 @@
       do IONDES =NONDES+1,NSPECTR
          read (NFO1,*) Tondes(IONDES)
       enddo
-          DO  IPTFRL = 1,NPTFRLM
-C
-c             READ(27,*)
-c	     READ(27,*)   NIVM(IPTFRL), ALF
-             
-             
-             IONDES=1
-             
-
-C          Lecture des Hn et gn des Nondes pour les differents noeuds frontières
-             READ(NFO1,*)
-             READ(NFO1,*)   NIVM(IPTFRL), ALF
-            do IONDES =1,NONDES
-       
-             READ(NFO1,*) AHN(IPTFRL,IONDES),PHN(IPTFRL,IONDES)
-             AHN(IPTFRL,IONDES)=0.01D0*AHN(IPTFRL,IONDES)
-c             print *,AHN(IPTFRL,IONDES),PHN(IPTFRL,IONDES)
-             enddo
- 
-             do IONDES =NONDES+1,NSPECTR
-       
-             READ(NFO1,*) AHN(IPTFRL,IONDES),PHN(IPTFRL,IONDES)
-             AHN(IPTFRL,IONDES)=0.01D0*AHN(IPTFRL,IONDES)
-
-             enddo
-
-             END DO
-
-             IONDES=1
+      DO  IPTFRL = 1,NPTFRLM           
+        IONDES=1
+C       Lecture des Hn et gn des Nondes pour les differents noeuds frontières
+        READ(NFO1,*)
+        READ(NFO1,*)   NIVM(IPTFRL), ALF
+        do IONDES =1,NONDES     
+          READ(NFO1,*) AHN(IPTFRL,IONDES),PHN(IPTFRL,IONDES)
+          AHN(IPTFRL,IONDES)=0.01D0*AHN(IPTFRL,IONDES)
+        enddo
+! 
+        do IONDES =NONDES+1,NSPECTR       
+          READ(NFO1,*) AHN(IPTFRL,IONDES),PHN(IPTFRL,IONDES)
+          AHN(IPTFRL,IONDES)=0.01D0*AHN(IPTFRL,IONDES)
+        enddo
+!
+      ENDDO
+!
+      IONDES=1
 C
 C les phases sont calcul�es de mani�re � se recaler en temps par rapport
 C au 06 avril 1999 22h (t=0 simu, TU)
@@ -247,45 +243,45 @@ c------------------------------------------------------------------
              MM=MM+12
              endif
              y100=YY/100.D0
-             Ajul=DINT(y100)
+             Ajul=INT(y100)
              Ajul4=Ajul/4.D0
-             Bjul=2.D0-Ajul+DINT(Ajul4)
+             Bjul=2.D0-Ajul+INT(Ajul4)
 c           reutilsation des var y100, ajul4
 
              y100=365.25D0*YY 
              Ajul4=30.6001D0*(MM+1)
 
-             JD= DINT(Y100)+DINT(Ajul4)+Dd +1720994.5D0+Bjul
+             JD= INT(Y100)+INT(Ajul4)+Dd +1720994.5D0+Bjul
         
              Tuniv=(JD-2415020.5D0)/36525.D0
 c-------------------------------------------------------
 c           calcul des variables fondamentales des astres
 c            tlun, slun, hsun, plun, Nlun, psun
 c----------------------------------------------------------
-             slun=DMOD(277.0248d0+481267.8906d0*Tuniv
+             slun=MOD(277.0248d0+481267.8906d0*Tuniv
      *       +0.002d0*Tuniv**2.d0,360.d0)
-             hsun=DMOD(280.1895d0+36000.7689d0*Tuniv
+             hsun=MOD(280.1895d0+36000.7689d0*Tuniv
      *		+0.0003d0*Tuniv**2d0,360.d0)
-             tlun=DMOD(15.d0*ht+hsun-slun,360.d0)
-             plun=DMOD(334.3853d0+4069.034d0*Tuniv
+             tlun=MOD(15.d0*ht+hsun-slun,360.d0)
+             plun=MOD(334.3853d0+4069.034d0*Tuniv
      *		-0.0103d0*Tuniv**2.d0,360.d0)
   
-             Nlun=DMOD(100.8432d0+1934.142d0*Tuniv
+             Nlun=MOD(100.8432d0+1934.142d0*Tuniv
      *		-0.0021d0*Tuniv**2.d0,360.d0) 
-             psun=DMOD(281.2209d0+1.7192d0*Tuniv
+             psun=MOD(281.2209d0+1.7192d0*Tuniv
      *		+0.0005d0*Tuniv**2.d0,360.d0)    
 c Calcul des un , facteurs nodaux de phases
 c    Sa,Q1,O1,K1,N2,M2,S2,MN4,M4,MS4
 c        Sa
           uondes(1)=0.D0
 c         Q1
-        uondes(2)=-10.8d0*dsin(PI*Nlun/180.d0)
+        uondes(2)=-10.8d0*sin(PI*Nlun/180.d0)
 c         O1
-        uondes(3)=-10.8d0*dsin(PI*Nlun/180.d0)
+        uondes(3)=-10.8d0*sin(PI*Nlun/180.d0)
 c            k1 à changer aussi
-             uondes(4)=11.36d0*dsin(PI*Nlun/180.d0)
+             uondes(4)=11.36d0*sin(PI*Nlun/180.d0)
 c            N2             
-             uondes(5)=2.1d0*dsin(PI*Nlun/180.d0)
+             uondes(5)=2.1d0*sin(PI*Nlun/180.d0)
 c            M2
              uondes(6)=uondes(5)
 c            S2
@@ -295,26 +291,26 @@ c            MN4
 c            M4
               uondes(9)=2.D0*uondes(6)
 c             MS4
-              uondes(10)=2.1d0*dsin(PI*Nlun/180.d0)
+              uondes(10)=2.1d0*sin(PI*Nlun/180.d0)
 
 c          old waves
 c           M3
-             uondes(20)=3.15D0*dsin(PI*Nlun/180.d0)
+             uondes(20)=3.15D0*sin(PI*Nlun/180.d0)
 c            K2 
-             uondes(11)=24.97d0*dsin(PI*Nlun/180.d0)
+             uondes(11)=24.97d0*sin(PI*Nlun/180.d0)
 
-             uondes(13)=2.1d0*dsin(PI*Nlun/180.d0)
+             uondes(13)=2.1d0*sin(PI*Nlun/180.d0)
 c       MU2
-              uondes(12)=2.1d0*dsin(PI*Nlun/180.d0)
+              uondes(12)=2.1d0*sin(PI*Nlun/180.d0)
            uondes(13)=uondes(5)
-           uondes(14)=1.43d0*dsin(PI*Nlun/180.d0)
-           uondes(15)=2.1d0*dsin(PI*Nlun/180.d0)
+           uondes(14)=1.43d0*sin(PI*Nlun/180.d0)
+           uondes(15)=2.1d0*sin(PI*Nlun/180.d0)
 
             uondes(16)=0.D0
             uondes(17)=0.D0
             uondes(18)=0.D0
            uondes(19)=0.D0
-           uondes(21)=6.22d0*dsin(PI*Nlun/180.d0)
+           uondes(21)=6.22d0*sin(PI*Nlun/180.d0)
 
 c Calcul de VN phase de l 'astre perturbateur
              
@@ -332,17 +328,18 @@ c Calcul de VN phase de l 'astre perturbateur
            Vondes (9)=MOD(4.d0*tlun,360.d0)
            Vondes (10)=MOD(4.d0*tlun+2.d0*slun-2.d0*hsun,360.d0)
 c old 14 waves
-c	     Vondes (11)=MOD(2.d0*tlun+2.d0*slun,360.d0)
-             Vondes (12)=MOD(2.d0*tlun-4.d0*slun+4.d0*hsun,360.d0)
-             Vondes (13)=MOD(2.d0*tlun-2.d0*slun+2.d0*plun,360.d0)
-             Vondes (14)=MOD(2.d0*tlun+slun-plun,360.d0)
-             Vondes (15)=MOD(2.d0*tlun-slun+2.d0*hsun-plun,360.d0)
-             Vondes (16)=MOD(2.d0*tlun+2.d0*slun-3.d0*hsun+plun,360.d0)
-             Vondes (17)=MOD(2.d0*tlun-slun-2.d0*hsun+plun,360.d0)
-	     Vondes (18)=MOD(tlun+slun-2.d0*hsun,360.d0)
-             Vondes (19)=MOD(2.d0*hsun,360.d0)
-             Vondes (20)=MOD(3.d0*tlun,360.d0)
-             Vondes (21)=MOD(6.d0*tlun,360.d0)
+!          next line uncommented on 10/06/2014 to avoid a crash
+ 	   Vondes (11)=MOD(2.d0*tlun+2.d0*slun,360.d0)
+           Vondes (12)=MOD(2.d0*tlun-4.d0*slun+4.d0*hsun,360.d0)
+           Vondes (13)=MOD(2.d0*tlun-2.d0*slun+2.d0*plun,360.d0)
+           Vondes (14)=MOD(2.d0*tlun+slun-plun,360.d0)
+           Vondes (15)=MOD(2.d0*tlun-slun+2.d0*hsun-plun,360.d0)
+           Vondes (16)=MOD(2.d0*tlun+2.d0*slun-3.d0*hsun+plun,360.d0)
+           Vondes (17)=MOD(2.d0*tlun-slun-2.d0*hsun+plun,360.d0)
+	   Vondes (18)=MOD(tlun+slun-2.d0*hsun,360.d0)
+           Vondes (19)=MOD(2.d0*hsun,360.d0)
+           Vondes (20)=MOD(3.d0*tlun,360.d0)
+           Vondes (21)=MOD(6.d0*tlun,360.d0)
 c     Calcul des fn, facteurs nodaux en amplitudes
              DO IONDES =1,NONDES       
                 fondes (IONDES)=1.D0
@@ -350,24 +347,25 @@ c     Calcul des fn, facteurs nodaux en amplitudes
              
              IONDES=1
              
-             fondes(2)=1.009D0+0.187D0*dcos(PI*Nlun/180.D0)  
-             fondes(3)=1.009D0+0.187D0*dcos(PI*Nlun/180.D0) 
-             fondes(4)=1.006+0.198*dcos(PI*Nlun/180.D0)         
-             fondes(5)=1.D0-0.037D0*dcos(PI*Nlun/180.D0)
+             fondes(2)=1.009D0+0.187D0*cos(PI*Nlun/180.D0)  
+             fondes(3)=1.009D0+0.187D0*cos(PI*Nlun/180.D0) 
+             fondes(4)=1.006+0.198*cos(PI*Nlun/180.D0)         
+             fondes(5)=1.D0-0.037D0*cos(PI*Nlun/180.D0)
              fondes(6)=fondes(5)
-c     fondes (7)=1.D0
-             fondes (8)=fondes(6)**2.D0            
-             fondes(9)=fondes(5)**2.D0
+!            uncommented on 10/06/2014 to avoid a crash
+             fondes(7)=1.D0
+             fondes(8)=fondes(6)**2            
+             fondes(9)=fondes(5)**2
              
-            fondes (9)=1.D0-0.056D0*dcos(PI*Nlun/180.D0)
-            fondes(10)=1.0D0-0.037d0*dcos(PI*Nlun/180.D0)
-            fondes(11)=1.0D0+0.436D0*dcos(PI*Nlun/180.D0)
+            fondes (9)=1.D0-0.056D0*cos(PI*Nlun/180.D0)
+            fondes(10)=1.0D0-0.037d0*cos(PI*Nlun/180.D0)
+            fondes(11)=1.0D0+0.436D0*cos(PI*Nlun/180.D0)
             fondes(12)=fondes(5)
             fondes(13)=fondes(5)
-            fondes(14)=1.0D0-0.037d0*dcos(PI*Nlun/180.D0)
-            fondes(15)=1.0D0-0.024d0*dcos(PI*Nlun/180.D0)
-            fondes(20)=1.D0-0.056D0*dcos(PI*Nlun/180.D0)
-            fondes(21)=1.0D0-0.108d0*dcos(PI*Nlun/180.D0)
+            fondes(14)=1.0D0-0.037d0*cos(PI*Nlun/180.D0)
+            fondes(15)=1.0D0-0.024d0*cos(PI*Nlun/180.D0)
+            fondes(20)=1.D0-0.056D0*cos(PI*Nlun/180.D0)
+            fondes(21)=1.0D0-0.108d0*cos(PI*Nlun/180.D0)
 C calcul des dephasages gn-Vn-un
               DO  IPTFRL = 1,NPTFRLM
             DO IONDES=1,NONDES
