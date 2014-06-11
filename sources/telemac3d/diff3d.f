@@ -21,6 +21,10 @@
 !brief    SOLVES THE DIFFUSION AND SUPG ADVECTION STEPS
 !+               (IF REQUIRED).
 !
+!warning  Two WARNING in text below propose alternative implementation
+!+        in the case of crushed planes. Not enough test cases yet to
+!+        decide.
+!
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/1999
 !+
@@ -49,7 +53,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J.M. HERVOUET (LNHE)
-!+        093/04/2012
+!+        09/04/2012
 !+        V6P2
 !+   Void volumes tested up to free point (which may be also crushed
 !+   in case of tidal flats).
@@ -497,11 +501,21 @@
 !               IF NOT A TIDAL FLAT... WE CAN HOWEVER HAVE CRUSHED POINTS
 !               SAME TREATMENT FROM PLANE 1 UP TO ACTUAL BOTTOM PLANE
 !               THE CRUSHED POINTS ARE TREATED AS THE POINT ON ACTUAL BOTTOM PLANE ABOVE THEM
+!               WARNING 1 (JMH ON 04/06/2014)
+!               THIS MAY NOT CORRECT FOR SEDIMENT, AS DEPOSITION WOULD BE TAKEN INTO ACCOUNT
+!               SEVERAL TIMES. TO BE INVESTIGATED ON MORE TESTS.
+!               THIS IS RATHER MEANT FOR VELOCITIES, TO STOP THEM ALL.
                 DO NP=0,IPBOT(IPOIN2)
                   I=NP*NPOIN2+IPOIN2
                   MTRA2%D%R(I)=MTRA2%D%R(I)+T2_03%R(IPOIN2)
-                ENDDO
+                ENDDO                      
 !             ENDIF
+!             PROPOSED ALTERNATIVE IMPLEMENTATION, ONLY FIRST FREE POINT TREATED
+!             AND NOTHING DONE ON TIDAL FLATS.
+C             IF(IPBOT(IPOIN2).NE.NPLAN-1) THEN
+C               I=IPBOT(IPOIN2)*NPOIN2+IPOIN2
+C               MTRA2%D%R(I)=MTRA2%D%R(I)+T2_03%R(IPOIN2)
+C             ENDIF
             ENDDO
           ELSE
             DO IPOIN2 = 1,NPOIN2
@@ -764,6 +778,13 @@
 !   HEAVY BUT SAVES TIME IN COMPLEX APPLICATIONS!
 !
 !=======================================================================
+!
+!     WARNING 2 (JMH 04/06/2014)
+!     THIS SECTION MAY CHANGE THE MASS-BALANCE, AS THE POINT TAKEN INTO
+!     ACCOUNT FOR ENTERING AFBORF WILL HAVE ITS VALUE CHANGED.
+!     TO SOLVE THE PROBLEM, EITHER WE REMOVE THIS OR WE HAVE A MORE
+!     SOPHISTICATED COMPUTATION OF THE MASS-BALANCE, WITH TERMS DEPENDING
+!     ON AFBORF TREATED BEFORE THIS SECTION.
 !
       IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
         IF(NCSIZE.GT.1) THEN

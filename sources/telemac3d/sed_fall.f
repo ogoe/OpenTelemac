@@ -5,7 +5,7 @@
      &(FC,FN,WCC,MESH2D,MESH3D,DT,VOLU,IPBOT,NPOIN2,NPOIN3,NPLAN,T1)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                    29/04/2014
+! TELEMAC3D   V7P0                                    04/06/2014
 !***********************************************************************
 !
 !brief    Advection of sediment with settling velocity, with a method
@@ -18,6 +18,11 @@
 !+        29/04/2014
 !+        V7P0
 !+   First version.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        04/06/2014
+!+        V7P0
+!+   Avoiding divisions by 0 on tidal flats (VOLU limited by 1.D-6).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
@@ -119,10 +124,11 @@
 !     INVERTING THE (LUMPED) MASS MATRIX (I.E. VOLU)
 !
       DO I3D=1,NPOIN3
-        FC%R(I3D)=FC%R(I3D)/T1%R(I3D)
+        FC%R(I3D)=FC%R(I3D)/MAX(T1%R(I3D),1.D-6)
       ENDDO     
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
+
