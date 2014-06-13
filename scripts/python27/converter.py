@@ -145,9 +145,9 @@ if __name__ == "__main__":
        extens=str(ndomains-1).zfill(5)+'-'+str(idom).zfill(5)
      # Writting the steering file
      fichier = open("stb%s.cas" % extens,"w")
-     fichier.write("CONVERTER : 'YES'\n")
+     fichier.write("CONVERTER : YES\n")
      if options.debug:
-       fichier.write("DEBUG : 'YES'\n")
+       fichier.write("DEBUG : YES\n")
      fichier.write("INPUT FILE FORMAT : '%s'\n" % inputFormat)
      fichier.write("INPUT FILE : '%s%s'\n" % (inputFile, extens))
      if options.boundaryFile != "":
