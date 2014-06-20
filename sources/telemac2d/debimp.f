@@ -3,7 +3,7 @@
 !                    *****************
 !
      &(Q,UBOR,VBOR,U,V,H,NUMLIQ,IFRLIQ,WORK1,WORK2,NPTFR,MASK,MESH,
-     & KP1BOR,EQUA)
+     & KP1BOR)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P0                                   19/03/2014
@@ -47,7 +47,6 @@
 !+   boundary points numbering.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| EQUA           |-->| STRING DESCRIBING THE EQUATIONS SOLVED
 !| IFRLIQ         |-->| RANK OF LIQUID BOUNDARY
 !| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
 !| MASK           |-->| BLOCK OF MASKS FOR BOUNDARY CONDITIONS
@@ -74,7 +73,6 @@
 !
       INTEGER, INTENT(IN)             :: NPTFR,IFRLIQ
       INTEGER, INTENT(IN)             :: NUMLIQ(NPTFR),KP1BOR(NPTFR,2)
-      CHARACTER(LEN=20), INTENT(IN)   :: EQUA
       DOUBLE PRECISION, INTENT(INOUT) :: UBOR(NPTFR),VBOR(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: MASK(*),Q
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH

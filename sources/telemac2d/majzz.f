@@ -50,6 +50,7 @@
 !|  W             |<--|  (H,HU,HV)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TELEMAC2D, EX_MAJZZ => MAJZZ
       IMPLICIT NONE
 !
       INTEGER LNG,LU

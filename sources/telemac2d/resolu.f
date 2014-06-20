@@ -73,6 +73,28 @@
 !+      remove unused variables
 !+      parallel version
 !
+!history  R. ATA 
+!+        28/01/2014
+!+        V7P0
+!+    change diemensions of CMI
+!+    from (2,nseg) to (nseg,2)
+!
+! history S.PAVAN
+!+        02/05/2014
+!+        V7P0
+!+    Initialization of flux_old
+!+    for kinetic schemes
+!
+! history R. ATA (EDF R&D-LNHE)
+!+        20/06/2014
+!+        V7P0
+!+    change winf values which are directly  
+!+    obtained by bord
+!+    add parcom_bor after cdl routines
+!+    change cdl routines to exactly impose boundary conditions
+!+    initiliaze QU,QV and Hn
+!+
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| ELEMENT AREA
 !| AIRS           |-->| CELL AREA
@@ -196,9 +218,9 @@
       DOUBLE PRECISION, INTENT(INOUT) :: W(3,NPOIN),FLUSORTN,FLUENTN   
       DOUBLE PRECISION, INTENT(IN)    :: AIRE(NPOIN),DTHAUT(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: HBOR(NPTFR),UBOR(NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: VBOR(NPTFR),HN(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: VBOR(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: SMH(NPOIN),ZF(NPOIN),CF(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN),V(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN),V(NPOIN),HN(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN),QU(NPOIN),QV(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: DPX(3,NELMAX),DPY(3,NELMAX)
       DOUBLE PRECISION, INTENT(INOUT) :: WINF(3,*)
@@ -210,7 +232,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU(*)
       DOUBLE PRECISION, INTENT(IN)    :: G,CFLWTD,AIRST(2,NSEG)
       DOUBLE PRECISION, INTENT(INOUT) :: HSTOK(*),HCSTOK(2,*),DTT
-      DOUBLE PRECISION, INTENT(INOUT) :: CMI(2,NSEG)
+      DOUBLE PRECISION, INTENT(INOUT) :: CMI(NSEG,2)
       DOUBLE PRECISION, INTENT(IN)    :: PROPNU,DIFNU,TMAX
       DOUBLE PRECISION, INTENT(INOUT) :: DJX(3,NELMAX),DJY(3,NELMAX)
       DOUBLE PRECISION, INTENT(INOUT) :: DX(3,NPOIN),DY(3,NPOIN)
@@ -265,17 +287,30 @@
 !                                                                       
 !  * WINF CONTAINS BC COMPUTED BY BORD                   
 !                                                                       
+!      DO K=1,NPTFR
+!        IF(LIMPRO(K,1).EQ.KDIR) THEN                              
+!          WINF(1,K) =  HBOR(K)                                  
+!          WINF(2,K) =  HBOR(K)*UBOR(K)                      
+!          WINF(3,K) =  HBOR(K)*VBOR(K)
+!        ELSE
+!          WINF(1,K) =  H(NBOR(K))                              
+!          WINF(2,K) =  H(NBOR(K))*UBOR(K)                 
+!          WINF(3,K) =  H(NBOR(K))*VBOR(K)
+!        ENDIF 
+!       ENDDO
+! ================================
+! VALUES COMPUTED BY BORD ARE GOOD
+!=================================
       DO K=1,NPTFR
-        IF(LIMPRO(K,1).EQ.KDIR) THEN                              
-          WINF(1,K) =  HBOR(K)                                  
-          WINF(2,K) =  HBOR(K)*UBOR(K)                      
-          WINF(3,K) =  HBOR(K)*VBOR(K)
-        ELSE
-          WINF(1,K) =  H(NBOR(K))                              
-          WINF(2,K) =  H(NBOR(K))*UBOR(K)                 
-          WINF(3,K) =  H(NBOR(K))*VBOR(K)
-        ENDIF 
-       ENDDO
+        WINF(1,K) =  H(NBOR(K))                              
+        WINF(2,K) =  H(NBOR(K))*U(NBOR(K))                 
+        WINF(3,K) =  H(NBOR(K))*V(NBOR(K))
+      ENDDO
+      IF(LT.EQ.1) THEN
+!       INITIALIZE QU AND QV
+        CALL OV('X=YZ    ',QU,HN,U,1.D0,NPOIN)
+        CALL OV('X=YZ    ',QV,HN,V,1.D0,NPOIN)
+      ENDIF
                                         
        IF(ICIN .EQ.0) THEN
 !-----------------------------------------------------------------------
@@ -398,6 +433,12 @@
        ENDIF
        WRITE(LU,*) '          **************************'
        WRITE(LU,*) ' '
+!      INITIALIZATION OF FLUX_OLD
+       DO I=1,NPOIN
+        FLUX_OLD(I,1) = 0.0D0
+        FLUX_OLD(I,2) = 0.0D0
+        FLUX_OLD(I,3) = 0.0D0
+       ENDDO     
 !
 !     COMPUTE GRADIENT OF ZF FOR ORDRE2
 !
@@ -572,6 +613,8 @@ C
 !
 ! TIME STEP UNDER CFL CONDITION (ORDRE 1)
 !
+!  we may use H and not HN for DT computing !!!!  to be verified
+! 
       CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DTN,AT,TMAX,
      &           CFLWTD,ICIN,DTVARI,LISTIN)
 !
@@ -777,10 +820,10 @@ C-----------------------------------------------------------------------
      &           CFLWTD,ICIN,DTVARI,LISTIN)
 !
 !
-!INFLOW AND OUTFLOWS
+!INFLOW AND OUTFLOWS ! USELESS
 !
-      CALL FLUSEW(WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
-     &            NPTFR,LIMPRO,NBOR,KDIR,KDDL)  
+!      CALL FLUSEW(WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
+!     &            NPTFR,LIMPRO,NBOR,KDIR,KDDL)  
 !
 !-----------------------------------------------------------------------
 ! FLUX COMPUTATION
@@ -871,7 +914,7 @@ C-----------------------------------------------------------------------
       DO I=1,NPOIN 
           W(1,I)= HN(I) 
           W(2,I)= QU(I)
-          W(3,I)= QV(I) 
+          W(3,I)= QV(I)  
       ENDDO
 !
 !  TIME STEP UNDER CFL CONDITION
@@ -882,8 +925,8 @@ C-----------------------------------------------------------------------
 ! 
 ! INFLOW AND OUTFLOWS
 !
-      CALL FLUSEW(WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
-     &            NPTFR,LIMPRO,NBOR,KDIR,KDDL)  
+!      CALL FLUSEW(WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
+!     &            NPTFR,LIMPRO,NBOR,KDIR,KDDL)  
 !
 !-----------------------------------------------------------------------
 !  FLUX COMPUTATION
@@ -897,8 +940,17 @@ C-----------------------------------------------------------------------
 !
 ! BOUNDARY CONDITIONS
 !
-        CALL CDL_HLLC(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &                KDDL,W,FLUX,FLUENT,FLUSORT,FLBOR,EPS,WINF)
+        CALL CDL_HLLC(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,
+     &                W,FLUX,FLUENT,FLUSORT,FLBOR,EPS,WINF,
+     &                G,HBOR,UBOR,VBOR)
+!
+!     ASSEMBLY IN PARALLEL (EVEN IF NPTFR=0)
+!
+      IF(NCSIZE.GT.1) THEN
+        CALL PARCOM_BORD(FLUX(:,1),2,MESH)
+        CALL PARCOM_BORD(FLUX(:,2),2,MESH)
+        CALL PARCOM_BORD(FLUX(:,3),2,MESH)
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -906,7 +958,7 @@ C-----------------------------------------------------------------------
 !                                                                       
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)     
+     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G) 
 !
 !
 !-----------------------------------------------------------------------
@@ -922,7 +974,8 @@ C-----------------------------------------------------------------------
       ENDIF
 !                                                                       
       DO I=1,NPOIN                                                  
-        H(I)  = W(1,I)                                                
+        H(I)  = W(1,I)     
+        HN(I)  = W(1,I)                         
         QU(I) = W(2,I)                                                  
         QV(I) = W(3,I)
 !  SAVE FLUXES FOR NEXT TIME STEP

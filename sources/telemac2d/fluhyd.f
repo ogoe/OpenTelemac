@@ -38,6 +38,18 @@ C
 !+    INTRODUCTION OF FLBOR AND MASS BALANCE
 !+    CHANGE CE(3,NS) TO CE(NS,3)
 !
+!history  R. ATA 
+!+        28/01/2014
+!+        V7P0
+!+    change diemensions of CMI
+!+    from (2,nseg) to (nseg,2)
+!
+!history  R. ATA 
+!+        18/06/2014
+!+        V7P0
+!+    parcom_bord after cdl
+!+    
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| ELEMENT AREA
 !| AIRS           |-->| CELL AREA
@@ -101,7 +113,7 @@ C
       INTEGER, INTENT(IN)  :: ELTSEG(NT,3)
       DOUBLE PRECISION, INTENT(IN) :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
       DOUBLE PRECISION, INTENT(IN) :: HBOR(NPTFR),G,CFLWTD,DTHAUT(*)
-      DOUBLE PRECISION, INTENT(IN) :: UBOR(NPTFR),VBOR(NPTFR),CMI(2,*)
+      DOUBLE PRECISION, INTENT(IN) ::UBOR(NPTFR),VBOR(NPTFR),CMI(NSEG,2)
       DOUBLE PRECISION, INTENT(IN) :: AIRST(2,*),CVIS
       DOUBLE PRECISION, INTENT(IN) :: X(NS),Y(NS),AIRS(NS),AIRE(NT)
       DOUBLE PRECISION, INTENT(INOUT) :: BETA,DT,HC(2,*)
@@ -159,6 +171,16 @@ C
       CALL CDL(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
      &         G,HBOR,UBOR,VBOR,UA,CE,FLUENT,FLUSORT,FLBOR,
      &         DTHAUT,DT,CFLWTD,FLUHBTEMP,NTRAC)
+
+!
+!     ASSEMBLY IN PARALLEL (EVEN IF NPTFR=0)
+!
+      IF(NCSIZE.GT.1) THEN
+        CALL PARCOM_BORD(CE(:,1),2,MESH)
+        CALL PARCOM_BORD(CE(:,2),2,MESH)
+        CALL PARCOM_BORD(CE(:,3),2,MESH)
+      ENDIF
+!
 !
 !-----------------------------------------------------------------------
 !

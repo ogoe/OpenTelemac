@@ -211,6 +211,12 @@
 !+   one for strong and one for weak characteristics.
 !+   Second call to DIFFIN: U and V replaced by UCONV and VCONV.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        11/06/2014
+!+        V7P0
+!+   LIMTRA replaced by a copy in the call to cvdftr (some schemes may
+!+   change it and it may cause problems for the next tracers)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
 !param code      [in] calling program (if coupling)
@@ -1970,7 +1976,7 @@
 !      CM1%D%R : HT
 !
        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING VOLFIN'
-       CALL VOLFIN(W1%R,AT,DT,LT,NELEM,NPTFR,
+       CALL VOLFIN(W1%R,AT,DT,LT,NELEM,NPTFR,MESH%NSEG,
      &      TB,ZF%R,CHESTR%R,NPOIN,HN%R,H%R,U%R,V%R,QU%R,QV%R,
      &      GRAV,ENTET,MESH,LIMPRO%I,
      &      MESH%NBOR%I,KDIR,KNEU,KDDL,HBOR%R,UBOR%R,VBOR%R,
@@ -2115,6 +2121,13 @@
       INFOGT=INFOGR.AND.ENTET
 !     HTILD: WORKING ARRAY WHERE HPROP IS RE-COMPUTED
 !             (SAME ARRAY STRUCTURE)
+!
+!     LIMTRA REPLACED BY A COPY (IT MAY BE CHANGED BY THE ADVECTION SCHEME)
+!
+      DO I=1,NPTFR
+        IT1%I(I)=LIMTRA%I(I)
+      ENDDO
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING CVDFTR SOLSYS=',SOLSYS
       IF(SOLSYS.EQ.1) THEN
       CALL CVDFTR(T%ADR(ITRAC)%P,TTILD%ADR(ITRAC)%P,TN%ADR(ITRAC)%P,
@@ -2124,7 +2137,7 @@
      &            VISCT%ADR(ITRAC)%P,VISC_S,TEXP%ADR(ITRAC)%P,SMH,YASMH,
      &            TIMP%ADR(ITRAC)%P,YASMI(ITRAC),AM1,AM2,ZF,
      &            TBOR%ADR(ITRAC)%P,ATBOR%ADR(ITRAC)%P,
-     &            BTBOR%ADR(ITRAC)%P,LIMTRA,MASKTR,MESH,W1,TB,
+     &            BTBOR%ADR(ITRAC)%P,IT1,MASKTR,MESH,W1,TB,
      &            T1,T2,T3,T4,T5,T6,T7,T10,TE1,TE2,TE3,
      &            KDIR,KDDL,KENT,
      &            DT,ENTET,TETAT,AGGLOT,INFOGT,BILMAS,OPTADV_TR(ITRAC),
@@ -2143,7 +2156,7 @@
      &            VISCT%ADR(ITRAC)%P,VISC_S,TEXP%ADR(ITRAC)%P,SMH,YASMH,
      &            TIMP%ADR(ITRAC)%P,YASMI(ITRAC),AM1,AM2,ZF,
      &            TBOR%ADR(ITRAC)%P,ATBOR%ADR(ITRAC)%P,
-     &            BTBOR%ADR(ITRAC)%P,LIMTRA,MASKTR,MESH,W1,TB,
+     &            BTBOR%ADR(ITRAC)%P,IT1,MASKTR,MESH,W1,TB,
      &            T1,T2,T3,T4,T5,T6,T7,T10,TE1,TE2,TE3,
      &            KDIR,KDDL,KENT,
      &            DT,ENTET,TETAT,AGGLOT,INFOGT,BILMAS,OPTADV_TR(ITRAC),
@@ -2583,3 +2596,4 @@
 !
       RETURN
       END SUBROUTINE TELEMAC2D
+

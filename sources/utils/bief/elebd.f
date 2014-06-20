@@ -49,6 +49,11 @@
 !+   Now written to enable different numbering of boundary points and
 !+   boundary segments.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        16/06/2014
+!+        V7P0
+!+   New possible errors in the mesh now stopped.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| TYPE D'ELEMENT.
 !|                |   | 11 : TRIANGLES.
@@ -141,34 +146,56 @@
 !  LOOP ON ALL THE FACES OF ALL THE ELEMENTS:
 !
       DO IFACE = 1 , NFACE
-      DO IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
+          IF(IFABOR(IELEM,IFACE).EQ.-1) THEN
+!           THIS IS A TRUE BOUNDARY FACE
+!           INTERNAL FACES ARE MARKED WITH -2 IN PARALLELE MODE
+!           GLOBAL NUMBERS OF THE FACE POINTS :
+            I1 = IKLE( IELEM , SOMFAC(1,IFACE,KEL) )
+            I2 = IKLE( IELEM , SOMFAC(2,IFACE,KEL) )
+!           STORES IN T1 AND T2 (ADDRESS I1) : I2 AND IELEM
+            T1(I1) = I2
+            T2(I1) = IELEM
+!           A LIQUID FACE IS RECOGNIZED BY THE BOUNDARY CONDITION ON H
+            IF(NPTFR.GT.0) THEN
+              IF(T3(I1).NE.0.AND.T3(I2).NE.0) THEN
+                IF(LIHBOR(T3(I1)).NE.KLOG.AND.
+     &             LIHBOR(T3(I2)).NE.KLOG) THEN
+!                 LIQUID FACE : IFABOR=0  SOLID FACE : IFABOR=-1
+                  IFABOR(IELEM,IFACE)=0
+                ENDIF
+              ELSE
+                IF(LNG.EQ.1) THEN
+                  IF(T3(I1).EQ.0) THEN
+                    WRITE(LU,*) 'LE POINT ',I1,' EST SUR UN BORD'
+                  ENDIF
+                  IF(T3(I2).EQ.0) THEN
+                    WRITE(LU,*) 'LE POINT ',I2,' EST SUR UN BORD'
+                  ENDIF
+                  WRITE(LU,*) 'MAIS PAS DANS LA LISTE DES POINTS DE'
+                  WRITE(LU,*) 'BORD OU BIEN LE NOMBRE DE LIGNES DU'
+                  WRITE(LU,*) 'FICHIER DES CONDITIONS AUX LIMITES'
+                  WRITE(LU,*) 'EST PLUS GRAND QUE :',NPTFR
+                  WRITE(LU,*) 'TROUVE DANS LE FICHIER DE GEOMETRIE'
+                ELSEIF(LNG.EQ.2) THEN
+                  IF(T3(I1).EQ.0) THEN
+                    WRITE(LU,*) 'POINT ',I1,' IS ON A BOUNDARY'
+                  ENDIF
+                  IF(T3(I2).EQ.0) THEN
+                    WRITE(LU,*) 'POINT ',I2,' IS ON A BOUNDARY'
+                  ENDIF
+                  WRITE(LU,*) 'BUT NOT IN THE LIST OF BOUNDARY POINTS'
+                  WRITE(LU,*) 'OR THE NUMBER OF LINES IN THE BOUNDARY'
+                  WRITE(LU,*) 'CONDITIONS FILE IS GREATER THAN:',NPTFR
+                  WRITE(LU,*) 'NUMBER TAKEN IN THE GEOMETRY FILE'
+                ENDIF
+                CALL PLANTE(1)
+                STOP
+              ENDIF
+            ENDIF
 !
-      IF(IFABOR(IELEM,IFACE).EQ.-1) THEN
-!
-!      THIS IS A TRUE BOUNDARY FACE (INTERNAL FACES ARE MARKED WITH -2
-!                                    IN PARALLELE MODE)
-!      GLOBAL NUMBERS OF THE FACE POINTS :
-!
-       I1 = IKLE( IELEM , SOMFAC(1,IFACE,KEL) )
-       I2 = IKLE( IELEM , SOMFAC(2,IFACE,KEL) )
-!
-!      STORES IN T1 AND T2 (ADDRESS I1) : I2 AND IELEM
-!
-       T1(I1) = I2
-       T2(I1) = IELEM
-!
-!      A LIQUID FACE IS RECOGNIZED BY THE BOUNDARY CONDITION ON H
-!
-       IF(NPTFR.GT.0) THEN
-       IF(LIHBOR(T3(I1)).NE.KLOG.AND.LIHBOR(T3(I2)).NE.KLOG) THEN
-!        LIQUID FACE : IFABOR=0  SOLID FACE : IFABOR=-1
-         IFABOR(IELEM,IFACE)=0
-       ENDIF
-       ENDIF
-!
-      ENDIF
-!
-      ENDDO ! IELEM 
+          ENDIF
+        ENDDO ! IELEM 
       ENDDO ! IFACE 
 !
 !     LOOP ON ALL THE POINTS:
@@ -295,3 +322,4 @@
 !
       RETURN
       END
+

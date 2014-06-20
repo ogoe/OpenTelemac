@@ -2,7 +2,7 @@ C                       *****************
                         SUBROUTINE VOLFIN 
 !                       *****************
 !
-     & (W1,AT,DT,LT,NELEM,NPTFR,
+     & (W1,AT,DT,LT,NELEM,NPTFR,NSEG,
      &  TB,ZF,CF,NPOIN,HN,H,U,V,QU,QV,G,LISTIN,
      &  MESH,LIMPRO,NBOR,KDIR,KNEU,KDDL, 
      &  HBOR,UBOR,VBOR,MASSES,FLUENT,FLUSOR,CFLWTD,DTVARI,KFROT,
@@ -68,6 +68,12 @@ C                       *****************
 !+   NO MORE CALL FOR VECTOR TO BUILD TB
 !+   INSTEAD USE V2DPAR
 !+   CLEAN UNUSED VARIABLES
+!
+!history  R. ATA 
+!+        28/01/2014
+!+        V7P0
+!+    change diemensions of CMI
+!+    from (2,nseg) to (nseg,2)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| ELEMENT AREA
@@ -175,7 +181,7 @@ C                       *****************
       INTEGER, INTENT(IN)    :: NTRAC,MAXSCE,MAXTRA,MXPTVS
       INTEGER, INTENT(INOUT) :: LTT
       INTEGER, INTENT(IN)    :: LIMPRO(NPTFR,6),NBOR(NPTFR)
-      INTEGER, INTENT(IN)    :: ISCE(NREJET)
+      INTEGER, INTENT(IN)    :: ISCE(NREJET),NSEG
       INTEGER, INTENT(INOUT) :: JMI(*),LOGFR(NPOIN),NEISEG(2,*)
       LOGICAL, INTENT(IN)    :: DIFVIT,DIFT,LISTIN,DTVARI,YASMH
 
@@ -185,8 +191,8 @@ C                       *****************
       DOUBLE PRECISION, INTENT(INOUT) :: W1(*)
 
       DOUBLE PRECISION, INTENT(INOUT) :: DSZ(2,*),HC(2,*)
-      DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN),V(NPOIN) 
-      DOUBLE PRECISION, INTENT(IN)    :: HN(NPOIN),SMH(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN),V(NPOIN),HN(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: SMH(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN),ZF(NPOIN),G 
       DOUBLE PRECISION, INTENT(INOUT) :: HSTOK(DIMT),HCSTOK(2,*)
       DOUBLE PRECISION, INTENT(IN)    :: HBOR(NPTFR),UBOR(NPTFR)
@@ -195,7 +201,7 @@ C                       *****************
       DOUBLE PRECISION, INTENT(INOUT) :: DX(3,*),DY(3,*)
       DOUBLE PRECISION, INTENT(IN)    :: AIRST(2,*)
       DOUBLE PRECISION, INTENT(INOUT) :: DPX(3,*),DPY(3,*)
-      DOUBLE PRECISION, INTENT(INOUT) :: CMI(2,*),DJX(3,*),DJY(3,*)
+      DOUBLE PRECISION, INTENT(INOUT) :: CMI(NSEG,2),DJX(3,*),DJY(3,*)
       DOUBLE PRECISION, INTENT(IN)    :: CFLWTD,DTHAUT(NPOIN),TMAX 
       DOUBLE PRECISION, INTENT(INOUT) :: FLUSOR,FLUENT,DTN,MASSOU(*)
       DOUBLE PRECISION, INTENT(INOUT) :: FLUSORTN,FLUENTN

@@ -11,7 +11,7 @@
      & NITMAX)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                     13/06/2014
 !***********************************************************************
 !
 !brief    FINITE VOLUMES, UPWIND, EXPLICIT AND MONOTONIC
@@ -76,6 +76,12 @@
 !+        30/05/2013
 !+        V6P2
 !+   Argument NITMAX added.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/06/2014
+!+        V7P0
+!+   LIMTRA and FBOR corrected depending on the fluxes at boundaries,
+!+   their intent modified accordingly.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING UTILISE DANS L'EQUATION DE CONTINUITE
@@ -178,8 +184,9 @@
       INTEGER, INTENT(IN)             :: OPDTRA,OPTSOU,KDIR,NPTFR,SOLSYS
       INTEGER, INTENT(IN)             :: KDDL,IOPT,OPTION,NITMAX
       INTEGER, INTENT(IN)             :: GLOSEG1(*),GLOSEG2(*)
-      INTEGER, INTENT(IN)             :: LIMTRA(NPTFR),NBOR(NPTFR)
-!                                                         NSEG
+      INTEGER, INTENT(IN)             :: NBOR(NPTFR)
+      INTEGER, INTENT(INOUT)          :: LIMTRA(NPTFR)
+!                                                               NSEG
       DOUBLE PRECISION, INTENT(IN)    :: DT,AGGLOH,TRAIN,FLULIM(*)
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
       LOGICAL, INTENT(IN)             :: BILAN,CONV,YASMH,YAFLBOR,RAIN
@@ -188,8 +195,8 @@
       TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL,H,HN,DM1,ZCONV,MASKPT
       TYPE(BIEF_OBJ), INTENT(IN)      :: V2DPAR,UNSV2D,HPROP
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: F,SM,HNT,HT
-      TYPE(BIEF_OBJ), INTENT(IN)      :: FBOR,UDEL,VDEL,FN,SMI,SMH
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: TE1,FLBORTRA
+      TYPE(BIEF_OBJ), INTENT(IN)      :: UDEL,VDEL,FN,SMI,SMH
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: TE1,FLBORTRA,FBOR
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,T5,T6,T7,T8
       TYPE(BIEF_OBJ), INTENT(IN)      :: FSCEXP,S,MASKTR
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLBOR
@@ -202,7 +209,7 @@
       EXTERNAL         P_DSUM,P_DMIN,P_DMAX
 !
       INTEGER I,IOPT1,IOPT2,NPOIN,IPTFR,I1,I2,NITER,REMAIN_SEG,NEWREMAIN
-      INTEGER IR
+      INTEGER IR,N
 !
 !-----------------------------------------------------------------------
 !
@@ -400,6 +407,18 @@
       CALL OSDB( 'X=Y     ' ,T2,FLBOR,FLBOR,0.D0,MESH)
 !     ASSEMBLING T2 (FLBOR IS NOT ASSEMBLED)
       IF(NCSIZE.GT.1) CALL PARCOM(T2,2,MESH)
+!     POSSIBLE CORRECTION OF LIMTRA AND FBOR (LIMTRA HAS BEEN DONE BY
+!     DIFFIN WITH U.N)
+      DO I=1,MESH%NPTFR
+        N=MESH%NBOR%I(I)
+        IF(LIMTRA(I).EQ.KDIR.AND.T2%R(N).GT.0.D0) THEN
+          LIMTRA(I)=KDDL
+        ELSEIF(LIMTRA(I).EQ.KDDL.AND.T2%R(N).LT.0.D0) THEN
+          LIMTRA(I)=KDIR
+          FBOR%R(I)=FN%R(N)
+        ENDIF
+      ENDDO
+!
       DO IPTFR=1,NPTFR
         I=NBOR(IPTFR)
         HT%R(I)=HT%R(I)-DT*UNSV2D%R(I)*MIN(T2%R(I),0.D0)
@@ -407,12 +426,10 @@
 !       THE FINAL DEPTH IS TAKEN
         IF(LIMTRA(IPTFR).EQ.KDIR) THEN
           F%R(I)=FN%R(I)-DT/MAX(HT%R(I),1.D-4)*
-     &       UNSV2D%R(I)*MIN(T2%R(I),0.D0)*(FBOR%R(IPTFR)-FN%R(I))
+     &       UNSV2D%R(I)*T2%R(I)*(FBOR%R(IPTFR)-FN%R(I))
         ELSEIF(LIMTRA(IPTFR).EQ.KDDL) THEN
-          IF(T2%R(I).LE.0.D0) THEN
-!           FLBORTRA IS NOT ASSEMBLED
-            FLBORTRA%R(IPTFR)=FLBOR%R(IPTFR)*FN%R(I)
-          ENDIF
+!         FLBORTRA IS NOT ASSEMBLED
+          FLBORTRA%R(IPTFR)=FLBOR%R(IPTFR)*FN%R(I)
         ENDIF
       ENDDO
 !
@@ -753,9 +770,7 @@
      &           (FBOR%R(IPTFR)-F%R(I))
           FLBORTRA%R(IPTFR)=FLBOR%R(IPTFR)*FBOR%R(IPTFR)
         ELSEIF(LIMTRA(IPTFR).EQ.KDDL) THEN
-          IF(T2%R(I).GT.0.D0) THEN
-            FLBORTRA%R(IPTFR)=FLBOR%R(IPTFR)*F%R(I)
-          ENDIF
+          FLBORTRA%R(IPTFR)=FLBOR%R(IPTFR)*F%R(I)
         ELSE
           FLBORTRA%R(IPTFR)=0.D0
         ENDIF
@@ -831,3 +846,4 @@
 !
       RETURN
       END
+

@@ -5,7 +5,7 @@
      & XNN,YNN,ROT,HLLCFLX)
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.3                                         R. ATA
+! TELEMAC 2D VERSION 7.0                                         R. ATA
 !
 !***********************************************************************
 !brief 
@@ -32,6 +32,12 @@
 !+  BUG FIXED IN COMPUTING U*
 !+  THANKS TO L. STADLER (BAW)
 !
+!history  RIADH ATA & S. PAVAN (EDF R&D-LNHE)
+!+        10/04/2014
+!+        V7P0
+!+  IMPROVEMENT OF S* COMPUTATION FOR DRY CASES (GOTO ADDED)
+!+  USE OF ANALYTICAL FORMULA FOR THESE CASES
+!+  ADD TEST TO CHECK DIVISION BY ZERO
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  FLX           | <--|  FLUX COMPONENTS AT THE INTERFACE            |
@@ -73,7 +79,7 @@
       DOUBLE PRECISION                :: QL(4),QR(4),FL(4),FR(4)
       DOUBLE PRECISION                :: FSTARL(4),FSTARR(4)
 !
-      DOUBLE PRECISION                :: GSUR2,EPS
+      DOUBLE PRECISION                :: GSUR2,EPS,DENOM
       DOUBLE PRECISION                :: FLU2X,FLU2Y
       DOUBLE PRECISION                :: U0,POND,SSTAR
       DOUBLE PRECISION                :: FLX(4)
@@ -161,6 +167,9 @@
       ELSE
          SL = UR - 2.0D0*AR
          SR = UR + AR
+! RA+SP: USE OF ANALYTICAL FORMULA FOR SSTAR
+!         SSTAR = SL
+         GOTO 35        
       ENDIF
 !
       IF(HR.GT.EPS)THEN
@@ -168,8 +177,19 @@
       ELSE
          SL = UL - AL
          SR = UL + 2.0D0*AL
+! RA+SP: USE OF ANALYTICAL FORMULA FOR SSTAR
+!         SSTAR = SR
+         GOTO 35      
       ENDIF
-      SSTAR = USTAR
+!RA      SSTAR = USTAR
+35    CONTINUE
+      DENOM = HR*(UR-SR)-HL*(UL-SL)
+      IF(ABS(DENOM).LT.EPS)THEN
+        SSTAR = USTAR
+      ELSE
+        SSTAR = (SL*HR*(UR-SR)-SR*HL*(UL-SL))/DENOM
+      ENDIF
+!END RA
 !
 ! COMPUTE QL AND QR
       QL(1)     = HL

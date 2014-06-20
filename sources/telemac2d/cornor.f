@@ -132,8 +132,8 @@
           XNORM=SQRT(XNEBOR(K,1)**2+YNEBOR(K,1)**2)
           IF(XNORM.GT.1.D-10) THEN
 !           SAVING THE NON-NORMED VERSION
-            XNEBOR(K,2)=XNEBOR(K,1)
-            YNEBOR(K,2)=YNEBOR(K,1)
+            XNEBOR(K,2)=0.5D0*XNEBOR(K,1)
+            YNEBOR(K,2)=0.5D0*YNEBOR(K,1)
 !           NOW NORMALISE
             XNEBOR(K,1)=XNEBOR(K,1)/XNORM
             YNEBOR(K,1)=YNEBOR(K,1)/XNORM
