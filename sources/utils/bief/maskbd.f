@@ -90,54 +90,54 @@
       FLAG = .FALSE.
 !
       DO IELEM = 1,NELEM
-         I1 = IKLE(IELEM,1)
-         I2 = IKLE(IELEM,2)
-         I3 = IKLE(IELEM,3)
-         ZSE = (ZF(I1)+HN(I1)+ZF(I2)+HN(I2)+ZF(I3)+HN(I3))/3.D0
-         IF (ZFE(IELEM)+HMIN+EPSILO.GT.ZSE) THEN
-            FLAG = .TRUE.
-            MASKEL(IELEM) = 0.D0
-         ENDIF
+        I1 = IKLE(IELEM,1)
+        I2 = IKLE(IELEM,2)
+        I3 = IKLE(IELEM,3)
+        ZSE = (ZF(I1)+HN(I1)+ZF(I2)+HN(I2)+ZF(I3)+HN(I3))/3.D0
+        IF (ZFE(IELEM)+HMIN+EPSILO.GT.ZSE) THEN
+          FLAG = .TRUE.
+          MASKEL(IELEM) = 0.D0
+        ENDIF
       ENDDO ! IELEM 
 !
 20    CONTINUE
 !
       IF (FLAG) THEN
 !
-         FLAG = .FALSE.
-         DO IELEM = 1,NELEM
+        FLAG = .FALSE.
+        DO IELEM = 1,NELEM
 !
-            ITRA01(IELEM) = 0
-            IF (MASKEL(IELEM).GT.0.5D0) THEN
+          ITRA01(IELEM) = 0
+          IF (MASKEL(IELEM).GT.0.5D0) THEN
 !
-               N=IFABOR(IELEM,1)
-               IF (N.GT.0) THEN
-                  IF (MASKEL(N).LT.0.5D0.AND.ZFE(IELEM).GT.
-     &                ZFE(N)-EPSILO) ITRA01(IELEM) = 1
-               ENDIF
-               N=IFABOR(IELEM,2)
-               IF (N.GT.0) THEN
-                  IF (MASKEL(N).LT.0.5D0.AND.ZFE(IELEM).GT.
-     &                ZFE(N)-EPSILO) ITRA01(IELEM) = 1
-               ENDIF
-               N=IFABOR(IELEM,3)
-               IF (N.GT.0) THEN
-                  IF (MASKEL(N).LT.0.5D0.AND.ZFE(IELEM).GT.
-     &                ZFE(N)-EPSILO) ITRA01(IELEM) = 1
-               ENDIF
-!
+            N=IFABOR(IELEM,1)
+            IF (N.GT.0) THEN
+              IF (MASKEL(N).LT.0.5D0.AND.ZFE(IELEM).GT.
+     &            ZFE(N)-EPSILO) ITRA01(IELEM) = 1
+            ENDIF
+            N=IFABOR(IELEM,2)
+            IF (N.GT.0) THEN
+              IF (MASKEL(N).LT.0.5D0.AND.ZFE(IELEM).GT.
+     &            ZFE(N)-EPSILO) ITRA01(IELEM) = 1
+            ENDIF
+            N=IFABOR(IELEM,3)
+            IF (N.GT.0) THEN
+              IF (MASKEL(N).LT.0.5D0.AND.ZFE(IELEM).GT.
+     &            ZFE(N)-EPSILO) ITRA01(IELEM) = 1
             ENDIF
 !
-         ENDDO ! IELEM 
+          ENDIF
 !
-         DO IELEM = 1,NELEM
-            IF (ITRA01(IELEM).EQ.1) THEN
-               FLAG = .TRUE.
-               MASKEL(IELEM) = 0.D0
-            ENDIF
-         ENDDO ! IELEM 
+        ENDDO ! IELEM 
 !
-         GOTO 20
+        DO IELEM = 1,NELEM
+          IF (ITRA01(IELEM).EQ.1) THEN
+            FLAG = .TRUE.
+            MASKEL(IELEM) = 0.D0
+          ENDIF
+        ENDDO ! IELEM 
+!
+        GOTO 20
 !
       ENDIF
 !

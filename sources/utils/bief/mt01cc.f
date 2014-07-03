@@ -100,30 +100,30 @@
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM) = - SURFAC(IELEM) * XSUR180
-         A13(IELEM) =          A12(IELEM)
-         A14(IELEM) =   0.D0
-         A15(IELEM) =   4.D0 * A12(IELEM)
-         A16(IELEM) =   0.D0
-         A23(IELEM) =          A12(IELEM)
-         A24(IELEM) =   0.D0
-         A25(IELEM) =   0.D0
-         A26(IELEM) =          A15(IELEM)
-         A34(IELEM) =          A15(IELEM)
-         A35(IELEM) =   0.D0
-         A36(IELEM) =   0.D0
-         A45(IELEM) = - 4.D0 * A15(IELEM)
-         A46(IELEM) =          A45(IELEM)
-         A56(IELEM) =          A45(IELEM)
+        A12(IELEM) = - SURFAC(IELEM) * XSUR180
+        A13(IELEM) =          A12(IELEM)
+        A14(IELEM) =   0.D0
+        A15(IELEM) =   4.D0 * A12(IELEM)
+        A16(IELEM) =   0.D0
+        A23(IELEM) =          A12(IELEM)
+        A24(IELEM) =   0.D0
+        A25(IELEM) =   0.D0
+        A26(IELEM) =          A15(IELEM)
+        A34(IELEM) =          A15(IELEM)
+        A35(IELEM) =   0.D0
+        A36(IELEM) =   0.D0
+        A45(IELEM) = - 4.D0 * A15(IELEM)
+        A46(IELEM) =          A45(IELEM)
+        A56(IELEM) =          A45(IELEM)
 !
 !  DIAGONAL TERMS
 !
-         A11(IELEM) = - 6.D0 * A12(IELEM)
-         A22(IELEM) =          A11(IELEM)
-         A33(IELEM) =          A11(IELEM)
-         A44(IELEM) = - 8.D0 * A15(IELEM)
-         A55(IELEM) =          A44(IELEM)
-         A66(IELEM) =          A44(IELEM)
+        A11(IELEM) = - 6.D0 * A12(IELEM)
+        A22(IELEM) =          A11(IELEM)
+        A33(IELEM) =          A11(IELEM)
+        A44(IELEM) = - 8.D0 * A15(IELEM)
+        A55(IELEM) =          A44(IELEM)
+        A66(IELEM) =          A44(IELEM)
 !
       ENDDO
 !

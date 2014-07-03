@@ -141,14 +141,14 @@
 !     TO MAKE SURE THAT TAU_X_GES/TAU_GES IS IN RANGE [-1,1]
 !
       DO I=1,NPOIN
-         IF(T1%R(I).LT.-1.D0.OR.T1%R(I).GT.1.D0.OR.
-     &      T2%R(I).LT.-1.D0.OR.T2%R(I).GT.1.D0) THEN
-            WRITE(LU,*) 'NOT ACCEPTABLE BORDER CROSSING',I
-         ENDIF
-         T1%R(I) = MIN(T1%R(I),1.D0)
-         T1%R(I) = MAX(T1%R(I),-1.D0)
-         T2%R(I) = MIN(T2%R(I),1.D0)
-         T2%R(I) = MAX(T2%R(I),-1.D0)
+        IF(T1%R(I).LT.-1.D0.OR.T1%R(I).GT.1.D0.OR.
+     &     T2%R(I).LT.-1.D0.OR.T2%R(I).GT.1.D0) THEN
+          WRITE(LU,*) 'NOT ACCEPTABLE BORDER CROSSING',I
+        ENDIF
+        T1%R(I) = MIN(T1%R(I),1.D0)
+        T1%R(I) = MAX(T1%R(I),-1.D0)
+        T2%R(I) = MIN(T2%R(I),1.D0)
+        T2%R(I) = MAX(T2%R(I),-1.D0)
       ENDDO
 !
 !     COEFPN_NEW = TAU_GES / TOB

@@ -198,14 +198,14 @@
 !-----------------------------------------------------------------------
 !
       ELSE
-       IF (LNG.EQ.1) WRITE(LU,100) IELMF
-       IF (LNG.EQ.2) WRITE(LU,101) IELMF
-100    FORMAT(1X,'MT11AA (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F : ',1I6,' NON PREVUE')
-101    FORMAT(1X,'MT11AA (BIEF) :',/,
-     &        1X,'DISCRETISATION OF F: ',1I6,' NOT AVAILABLE')
-       CALL PLANTE(0)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF
+100     FORMAT(1X,'MT11AA (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,' NON PREVUE')
+101     FORMAT(1X,'MT11AA (BIEF) :',/,
+     &         1X,'DISCRETISATION OF F: ',1I6,' NOT AVAILABLE')
+        CALL PLANTE(0)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

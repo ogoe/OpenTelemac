@@ -445,25 +445,25 @@
 !-----------------------------------------------------------------------
 !
       ELSE
-       IF (LNG.EQ.1) WRITE(LU,100) IELMF
-       IF (LNG.EQ.2) WRITE(LU,101) IELMF
-100    FORMAT(1X,'MT12AC (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F : ',1I6,' NON PREVUE')
-101    FORMAT(1X,'MT12AC (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF F : ',1I6,' NOT AVAILABLE')
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF
+100     FORMAT(1X,'MT12AC (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,' NON PREVUE')
+101     FORMAT(1X,'MT12AC (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F : ',1I6,' NOT AVAILABLE')
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
-200       FORMAT(1X,'MT12AC (BIEF) : COMPOSANTE IMPOSSIBLE ',
-     &              1I6,' VERIFIER ICOORD')
-201       FORMAT(1X,'MT12AC (BIEF) : IMPOSSIBLE COMPONENT ',
-     &              1I6,' CHECK ICOORD')
+200   FORMAT(1X,'MT12AC (BIEF) : COMPOSANTE IMPOSSIBLE ',
+     &          1I6,' VERIFIER ICOORD')
+201   FORMAT(1X,'MT12AC (BIEF) : IMPOSSIBLE COMPONENT ',
+     &          1I6,' CHECK ICOORD')
 !
-300    FORMAT(1X,'MT12AC (BIEF) :',/,
-     &        1X,'DISCRETISATION DE U : ',1I6,' NON PREVUE')
-301    FORMAT(1X,'MT12AC (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF U : ',1I6,' NOT AVAILABLE')
+300   FORMAT(1X,'MT12AC (BIEF) :',/,
+     &       1X,'DISCRETISATION DE U : ',1I6,' NON PREVUE')
+301   FORMAT(1X,'MT12AC (BIEF) :',/,
+     &       1X,'DISCRETIZATION OF U : ',1I6,' NOT AVAILABLE')
 !
 !-----------------------------------------------------------------------
 !

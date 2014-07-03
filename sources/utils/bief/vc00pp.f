@@ -101,19 +101,19 @@
 !
       DO IELEM = 1 , NELEM
 !
-         H1 = Z(IKLE4(IELEM)) - Z(IKLE1(IELEM))
-         H2 = Z(IKLE5(IELEM)) - Z(IKLE2(IELEM))
-         H3 = Z(IKLE6(IELEM)) - Z(IKLE3(IELEM))
-         SHT = H1 + H2 + H3
+        H1 = Z(IKLE4(IELEM)) - Z(IKLE1(IELEM))
+        H2 = Z(IKLE5(IELEM)) - Z(IKLE2(IELEM))
+        H3 = Z(IKLE6(IELEM)) - Z(IKLE3(IELEM))
+        SHT = H1 + H2 + H3
 !
-         COEF = XSUR24 * SURFAC(IELEM)
+        COEF = XSUR24 * SURFAC(IELEM)
 !
-         W1(IELEM) = COEF * (SHT+H1)
-         W2(IELEM) = COEF * (SHT+H2)
-         W3(IELEM) = COEF * (SHT+H3)
-         W4(IELEM) = W1(IELEM)
-         W5(IELEM) = W2(IELEM)
-         W6(IELEM) = W3(IELEM)
+        W1(IELEM) = COEF * (SHT+H1)
+        W2(IELEM) = COEF * (SHT+H2)
+        W3(IELEM) = COEF * (SHT+H3)
+        W4(IELEM) = W1(IELEM)
+        W5(IELEM) = W2(IELEM)
+        W6(IELEM) = W3(IELEM)
 !
       ENDDO
 !
@@ -127,18 +127,18 @@
 !
       DO IELEM = 1 , NELEM
 !
-         H1 = Z(IKLE4(IELEM)) - Z(IKLE1(IELEM))
-         H2 = Z(IKLE5(IELEM)) - Z(IKLE2(IELEM))
-         H3 = Z(IKLE6(IELEM)) - Z(IKLE3(IELEM))
+        H1 = Z(IKLE4(IELEM)) - Z(IKLE1(IELEM))
+        H2 = Z(IKLE5(IELEM)) - Z(IKLE2(IELEM))
+        H3 = Z(IKLE6(IELEM)) - Z(IKLE3(IELEM))
 !
-         COEF = XSUR6 * SURFAC(IELEM)
+        COEF = XSUR6 * SURFAC(IELEM)
 !
-         W1(IELEM) = COEF * H1
-         W2(IELEM) = COEF * H2
-         W3(IELEM) = COEF * H3
-         W4(IELEM) = W1(IELEM)
-         W5(IELEM) = W2(IELEM)
-         W6(IELEM) = W3(IELEM)
+        W1(IELEM) = COEF * H1
+        W2(IELEM) = COEF * H2
+        W3(IELEM) = COEF * H3
+        W4(IELEM) = W1(IELEM)
+        W5(IELEM) = W2(IELEM)
+        W6(IELEM) = W3(IELEM)
 !
       ENDDO
 !

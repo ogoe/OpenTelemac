@@ -1,13 +1,13 @@
-C                       *****************
+!                       *****************
                         SUBROUTINE FLUHYD
-C                       *****************
-C
-     *(NS,NT,NSEG,NPTFR,NUBO,G,DT,X,Y,AIRS,NU,AIRE,
-     * UA,ZF,VNOIN,CE,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     * HBOR,UBOR,VBOR,FLUENT,FLUSORT,NORDRE,CMI,JMI,
-     * DJX,DJY,DX,DY,DTHAUT,CFLWTD,FLBOR,
-     * DPX,DPY,IVIS,CVIS,FLUHBTEMP,BETA,DSZ,AIRST,HC,FLUXTEMP,
-     * NTRAC,ELTSEG,IFABOR,MESH)
+!                       *****************
+!
+     &(NS,NT,NSEG,NPTFR,NUBO,G,DT,X,Y,AIRS,NU,AIRE,
+     & UA,ZF,VNOIN,CE,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
+     & HBOR,UBOR,VBOR,FLUENT,FLUSORT,NORDRE,CMI,JMI,
+     & DJX,DJY,DX,DY,DTHAUT,CFLWTD,FLBOR,
+     & DPX,DPY,IVIS,CVIS,FLUHBTEMP,BETA,DSZ,AIRST,HC,FLUXTEMP,
+     & NTRAC,ELTSEG,IFABOR,MESH)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P1                                   03/15/2011
@@ -133,9 +133,9 @@ C
 !-----------------------------------------------------------------------
 !
 !    INITIALISATION
-       CE(:,1)=(/(0.D0,IS=1,NS)/)
-       CE(:,2)=(/(0.D0,IS=1,NS)/)
-       CE(:,3)=(/(0.D0,IS=1,NS)/)
+      CE(:,1)=(/(0.D0,IS=1,NS)/)
+      CE(:,2)=(/(0.D0,IS=1,NS)/)
+      CE(:,3)=(/(0.D0,IS=1,NS)/)
 !
 !-----------------------------------------------------------------------
 !

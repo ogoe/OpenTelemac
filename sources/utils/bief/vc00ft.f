@@ -81,42 +81,42 @@
 !
 !***********************************************************************
 !
-         XSUR3 = XMUL/3.D0
+      XSUR3 = XMUL/3.D0
 !
 !   LOOP ON THE BOUNDARY SIDES
 !
-         DO IELEM = 1,NELEM
+      DO IELEM = 1,NELEM
 !
-!           GLOBAL NUMBERING OF THE SIDE NODES
+!       GLOBAL NUMBERING OF THE SIDE NODES
 !
-            I1 = NBOR(IKLE1(IELEM))
-            I2 = NBOR(IKLE2(IELEM))
-            I3 = NBOR(IKLE3(IELEM))
+        I1 = NBOR(IKLE1(IELEM))
+        I2 = NBOR(IKLE2(IELEM))
+        I3 = NBOR(IKLE3(IELEM))
 !
-            X1 = X(I1)
-            Y1 = Y(I1)
-            Z1 = Z(I1)
+        X1 = X(I1)
+        Y1 = Y(I1)
+        Z1 = Z(I1)
 !
-            X2 = X(I2)-X1
-            X3 = X(I3)-X1
-            Y2 = Y(I2)-Y1
-            Y3 = Y(I3)-Y1
-            Z2 = Z(I2)-Z1
-            Z3 = Z(I3)-Z1
+        X2 = X(I2)-X1
+        X3 = X(I3)-X1
+        Y2 = Y(I2)-Y1
+        Y3 = Y(I3)-Y1
+        Z2 = Z(I2)-Z1
+        Z3 = Z(I3)-Z1
 !
-!           COMPUTES THE AREA OF THE TRIANGLE (BY VECTOR PRODUCT)
+!       COMPUTES THE AREA OF THE TRIANGLE (BY VECTOR PRODUCT)
 !
-            S=0.5D0*SQRT(  (Y2*Z3-Y3*Z2)**2
-     &                    +(X3*Z2-X2*Z3)**2  )
-!    *                    +(X2*Y3-X3*Y2)**2  )  THIS TERM IS 0
+        S=0.5D0*SQRT(  (Y2*Z3-Y3*Z2)**2
+     &                +(X3*Z2-X2*Z3)**2  )
+!    &                +(X2*Y3-X3*Y2)**2  )  THIS TERM IS 0
 !
-            COEF=XSUR3*S
+        COEF=XSUR3*S
 !
-            W1(IELEM) = COEF
-            W2(IELEM) = COEF
-            W3(IELEM) = COEF
+        W1(IELEM) = COEF
+        W2(IELEM) = COEF
+        W3(IELEM) = COEF
 !
-         ENDDO ! IELEM 
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

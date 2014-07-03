@@ -69,6 +69,7 @@
       IF(IERR.NE.0) THEN
         WRITE(LU,*) 'P_MPI_ALLTOALLV:'
         WRITE(LU,*) 'MPI ERROR ',IERR
+        CALL PLANTE(1)
         STOP
       ENDIF
       RETURN
@@ -76,7 +77,6 @@
       RECV_BUFFER(1)%MYPID=0
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE  P_MPI_ALLTOALLV  VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_MPI_ALLTOALLV VOID VERSION'
-      STOP
 #endif
 !
 !-----------------------------------------------------------------------

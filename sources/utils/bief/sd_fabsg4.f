@@ -89,8 +89,8 @@
 !-------------------
 !
       DO I=1,NPOIN
-         DA(I) = DAB1(I)
-         DA(I+NPOIN) = DAB4(I)
+        DA(I) = DAB1(I)
+        DA(I+NPOIN) = DAB4(I)
       ENDDO
 !
 !---------------------------
@@ -132,9 +132,9 @@
 !     BLOCKS 2 AND 3 (EXTRA-DIAG)
 !     ------------------------
       DO I=1,NPOIN
-         JSEG=JSEG+1
-         XA(JSEG)        =DAB2(I)
-         XA(JSEG+NSEGBLK)=DAB3(I)
+        JSEG=JSEG+1
+        XA(JSEG)        =DAB2(I)
+        XA(JSEG+NSEGBLK)=DAB3(I)
       ENDDO
 !
       IF(TYPEXT2.EQ.'S'.AND.TYPEXT3.EQ.'S') THEN

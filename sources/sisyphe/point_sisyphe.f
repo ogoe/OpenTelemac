@@ -90,9 +90,9 @@
       INTEGER :: I,K,NTR,IELM0,IELM1,IELBT,IELM0_SUB
       INTEGER :: CFG(2),CFGBOR(2)
 
-C-----------------------------------------------------------------------
-C
-C-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+!-----------------------------------------------------------------------
 
       IF (LNG == 1) WRITE(LU,11)
       IF (LNG == 2) WRITE(LU,12)
@@ -207,7 +207,7 @@ C-----------------------------------------------------------------------
       CALL BIEF_ALLVEC(1,BFBOR , 'BFBOR ', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,FLBOR , 'FLBOR ', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,Q2BOR , 'Q2BOR ', IELBT, 1, 1,MESH)
-C     BOUNDARY FLUX FOR CALL TO CVDFTR
+!     BOUNDARY FLUX FOR CALL TO CVDFTR
       CALL BIEF_ALLVEC(1,FLBOR_SIS , 'FLBORS', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,FLBORTRA  , 'FLBTRA', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,CSTAEQ, 'CSTAEQ', IELMT, 1, 2,MESH)
@@ -232,7 +232,7 @@ C     BOUNDARY FLUX FOR CALL TO CVDFTR
         CALL BIEF_ALLVEC(1,MASKPT,'MASKPT', 0 , 1 , 0 ,MESH)
       ENDIF
 !
-C     FOR MIXED SEDIMENTS
+!     FOR MIXED SEDIMENTS
 !
       IF(SEDCO(1).OR.SEDCO(2)) THEN
 !      IF(MIXTE.OR.TASS) THEN
@@ -284,7 +284,7 @@ C     FOR MIXED SEDIMENTS
 
       IF(MSK) THEN
         CALL BIEF_ALLVEC(2,IFAMAS,'IFAMAS',
-     *                   IELM0,BIEF_NBFEL(IELM0,MESH),1,MESH)
+     &                   IELM0,BIEF_NBFEL(IELM0,MESH),1,MESH)
       ELSE
         CALL BIEF_ALLVEC(2,IFAMAS,'IFAMAS',0,1,0,MESH)
       ENDIF
@@ -348,7 +348,7 @@ C     FOR MIXED SEDIMENTS
 !                  RELEVANT SECTIONS OF AVAIL
 !
       CALL BIEF_ALLVEC_IN_BLOCK(AVAI,NOMBLAY*NSICLA,
-     *                          1,'AVAI  ',0,1,0,MESH)
+     &                          1,'AVAI  ',0,1,0,MESH)
       DO I=1,NSICLA
         DO K=1,NOMBLAY
           AVAI%ADR(K+(I-1)*NOMBLAY)%P%R=>AVAIL(1:NPOIN,K,I)
@@ -397,10 +397,10 @@ C     FOR MIXED SEDIMENTS
 !
       IF(SLIDE) THEN
         CALL BIEF_ALLVEC_IN_BLOCK(ZFCL_MS,NSICLA,1,
-     *                            'ZFCLMS',IELMT,1,2,MESH)
+     &                            'ZFCLMS',IELMT,1,2,MESH)
       ELSE
         CALL BIEF_ALLVEC_IN_BLOCK(ZFCL_MS,NSICLA,1,
-     *                            'ZFCLMS',    0,1,0,MESH)
+     &                            'ZFCLMS',    0,1,0,MESH)
       ENDIF
 !
 !     ************* 
@@ -442,7 +442,7 @@ C     FOR MIXED SEDIMENTS
       CALL BIEF_ALLVEC_IN_BLOCK(VARCL,NVARCL,1,'CL    ',IELMT,1,2,MESH)
       IF(NPRIV.GT.0) THEN
         CALL BIEF_ALLVEC_IN_BLOCK(PRIVE,MAX(NPRIV,4),
-     *                            1,'PRIV  ',IELMT,1,2,MESH)
+     &                            1,'PRIV  ',IELMT,1,2,MESH)
       ELSE
         CALL BIEF_ALLVEC_IN_BLOCK(PRIVE,4,1,'PRIV  ',0,1,0,MESH)
       ENDIF
@@ -608,8 +608,8 @@ C     FOR MIXED SEDIMENTS
 22    FORMAT(1X,///,21X,'*************************************',/,
      &21X,              '*    END OF MEMORY ORGANIZATION:    *',/,
      &21X,              '*************************************',/)
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END

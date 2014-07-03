@@ -81,38 +81,38 @@
 ! <=
 ! FH : 2004/03/01
 ! FH : FOR QUASI-BUBBLE
-         ! NO FRICTION ZONE DEFINED
-         ! ------------------------
-         IF (KFROPT%I(I) == -1) THEN
-            FRICTION_ERR = .TRUE.
-            IF(NCSIZE>1) THEN
-              K = MESH%KNOLG%I(I)
-            ELSE
-              K = I
-            ENDIF
-            IF(LNG == 1) WRITE(LU,10) K
-            IF(LNG == 2) WRITE(LU,11) K
+        ! NO FRICTION ZONE DEFINED
+        ! ------------------------
+        IF (KFROPT%I(I) == -1) THEN
+          FRICTION_ERR = .TRUE.
+          IF(NCSIZE>1) THEN
+            K = MESH%KNOLG%I(I)
+          ELSE
+            K = I
+          ENDIF
+          IF(LNG == 1) WRITE(LU,10) K
+          IF(LNG == 2) WRITE(LU,11) K
 !
-         ! LOCAL NUMBERING OF THE ZONE
-         ! ---------------------------
-         ELSE
-            DO J = 1, NZONES
-               IF(KFROPT%I(I) == FRTAB%ADR(J)%P%GNUMB(1)) THEN
-                  KFROPT%I(I) = J
-                  EXIT
-               ENDIF
-               IF(J==NZONES) THEN
-                  FRICTION_ERR = .TRUE.
-                  IF (NCSIZE>1) THEN
-                      K = MESH%KNOLG%I(I)
-                  ELSE
-                      K=I
-                  ENDIF
-                  IF (LNG==1) WRITE(LU,20) K,KFROPT%I(I)
-                  IF (LNG==2) WRITE(LU,21) K,KFROPT%I(I)
-               ENDIF
-            ENDDO
-         ENDIF
+        ! LOCAL NUMBERING OF THE ZONE
+        ! ---------------------------
+        ELSE
+          DO J = 1, NZONES
+            IF(KFROPT%I(I) == FRTAB%ADR(J)%P%GNUMB(1)) THEN
+              KFROPT%I(I) = J
+              EXIT
+            ENDIF
+            IF(J==NZONES) THEN
+              FRICTION_ERR = .TRUE.
+              IF (NCSIZE>1) THEN
+                K = MESH%KNOLG%I(I)
+              ELSE
+                K=I
+              ENDIF
+              IF (LNG==1) WRITE(LU,20) K,KFROPT%I(I)
+              IF (LNG==2) WRITE(LU,21) K,KFROPT%I(I)
+            ENDIF
+          ENDDO
+        ENDIF
 !
       ENDDO
 !
@@ -138,30 +138,30 @@
       ! (FOR QUASI_BUBBLE, SEE FRICTION_CHOICE.F : CALL FRICTION_BUBBLE)
       ! ----------------------------------------------------------------
       IF (LINDNER) THEN
-         DO I = 1, NPOIN
-            CHESTR%R(I) = FRTAB%ADR(KFROPT%I(I))%P%RCOEF(1)
-            NDEFMA%R(I) = FRTAB%ADR(KFROPT%I(I))%P%NDEF (1)
-            NKFROT%I(I) = FRTAB%ADR(KFROPT%I(I))%P%RTYPE(1)
-            LINDDP%R(I) = FRTAB%ADR(KFROPT%I(I))%P%DP
-            LINDSP%R(I) = FRTAB%ADR(KFROPT%I(I))%P%SP
-         ENDDO
+        DO I = 1, NPOIN
+          CHESTR%R(I) = FRTAB%ADR(KFROPT%I(I))%P%RCOEF(1)
+          NDEFMA%R(I) = FRTAB%ADR(KFROPT%I(I))%P%NDEF (1)
+          NKFROT%I(I) = FRTAB%ADR(KFROPT%I(I))%P%RTYPE(1)
+          LINDDP%R(I) = FRTAB%ADR(KFROPT%I(I))%P%DP
+          LINDSP%R(I) = FRTAB%ADR(KFROPT%I(I))%P%SP
+        ENDDO
       ELSE
-         DO I = 1, NPOIN
-            CHESTR%R(I) = FRTAB%ADR(KFROPT%I(I))%P%RCOEF(1)
-            NDEFMA%R(I) = FRTAB%ADR(KFROPT%I(I))%P%NDEF (1)
-            NKFROT%I(I) = FRTAB%ADR(KFROPT%I(I))%P%RTYPE(1)
-         ENDDO
+        DO I = 1, NPOIN
+          CHESTR%R(I) = FRTAB%ADR(KFROPT%I(I))%P%RCOEF(1)
+          NDEFMA%R(I) = FRTAB%ADR(KFROPT%I(I))%P%NDEF (1)
+          NKFROT%I(I) = FRTAB%ADR(KFROPT%I(I))%P%RTYPE(1)
+        ENDDO
       ENDIF
 !
       ! VECTOR INITIALIZATION : BOUNDARY CONDITIONS
       ! -------------------------------------------
       IF(LISRUG.EQ.2) THEN
-         DO J = 1, MESH%NPTFR
-            I = MESH%NBOR%I(J)
-            CHBORD%R(J) = FRTAB%ADR(KFROPT%I(I))%P%RCOEF(2)
-            NDEF_B%R(J) = FRTAB%ADR(KFROPT%I(I))%P%NDEF (2)
-            KFRO_B%I(J) = FRTAB%ADR(KFROPT%I(I))%P%RTYPE(2)
-         ENDDO
+        DO J = 1, MESH%NPTFR
+          I = MESH%NBOR%I(J)
+          CHBORD%R(J) = FRTAB%ADR(KFROPT%I(I))%P%RCOEF(2)
+          NDEF_B%R(J) = FRTAB%ADR(KFROPT%I(I))%P%NDEF (2)
+          KFRO_B%I(J) = FRTAB%ADR(KFROPT%I(I))%P%RTYPE(2)
+        ENDDO
       ENDIF
 !
 ! <=

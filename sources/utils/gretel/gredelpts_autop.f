@@ -99,14 +99,14 @@
       INQUIRE (FILE=GEO,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
-        CALL PLANTE (-1)
+        CALL PLANTE(1)
         STOP
       END IF
 !
       I_S  = LEN (RES)
       I_SP = I_S + 1
       DO I=1,I_S
-         IF(RES(I_SP-I:I_SP-I) .NE. ' ') EXIT
+        IF(RES(I_SP-I:I_SP-I) .NE. ' ') EXIT
       ENDDO
       I_LEN=I_SP - I
 !
@@ -120,7 +120,7 @@
       ENDDO ! I
       GO TO 992
 990   WRITE(LU,*) 'ERROR WHEN OPENING OR READING FILE: ',GEO
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 992   CONTINUE
 !     READS THE 10 PARAMETERS AND THE DATE
@@ -132,7 +132,7 @@
       OPEN(3,FILE=RES,FORM='UNFORMATTED',ERR=991)
       GO TO 993
 991   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RES
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 993   CONTINUE
 !
@@ -147,14 +147,14 @@
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', RESPAR
         WRITE (LU,*) 'CHECK THE NUMBER OF PROCESSORS'
         WRITE (LU,*) 'AND THE RESULT FILE CORE NAME'
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
         STOP
       END IF
 !
       OPEN(4,FILE=RESPAR,FORM='UNFORMATTED',ERR=994)
       GO TO 995
 994   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 995   CONTINUE
 !
@@ -198,25 +198,25 @@
 ! OPENS FILES AND READS/SKIPS HEADERS -> NPOIN(NPROC), NPOINMAX
 !
       DO IPID = 0,NPROC-1
-         FU = IPID +10
-         RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,IPID)
-         OPEN (FU,FILE=RESPAR,FORM='UNFORMATTED',ERR=998)
-         GO TO 999
-998      WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR,
-     &                      ' USING FILE UNIT: ', FU
-         CALL PLANTE(-1)
-         STOP
-999      REWIND(FU)
-         READ(FU) NPOIN(IPID+1)
-         READ(FU) NPLANLOC
+        FU = IPID +10
+        RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,IPID)
+        OPEN (FU,FILE=RESPAR,FORM='UNFORMATTED',ERR=998)
+        GO TO 999
+998     WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR,
+     &                     ' USING FILE UNIT: ', FU
+        CALL PLANTE(1)
+        STOP
+999     REWIND(FU)
+        READ(FU) NPOIN(IPID+1)
+        READ(FU) NPLANLOC
       END DO
 !
       NPOINMAX = MAXVAL(NPOIN)
 ! ARRAY FOR LOCAL-GLOBAL NUMBERS, 2D-FIELD
       IF(NPLAN.EQ.0) THEN
-         ALLOCATE (KNOLG(NPOINMAX,NPROC),STAT=ERR)
+        ALLOCATE (KNOLG(NPOINMAX,NPROC),STAT=ERR)
       ELSE
-         ALLOCATE (KNOLG(NPOINMAX/NPLAN,NPROC),STAT=ERR)
+        ALLOCATE (KNOLG(NPOINMAX/NPLAN,NPROC),STAT=ERR)
       ENDIF
       CALL CHECK_ALLOCATE(ERR, 'KNOLG')
 !  LOCAL_VALUES, STORES THE WHOLE DATASET (NBV1-VALUES)
@@ -226,12 +226,12 @@
 ! READS KNOLG(NPOIN,NPROC)
 !
       DO IPID = 0,NPROC-1
-         FU = IPID +10
-         IF(NPLAN.EQ.0) THEN
-            READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1))
-         ELSE
-            READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1)/NPLAN)
-         ENDIF
+        FU = IPID +10
+        IF(NPLAN.EQ.0) THEN
+          READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1))
+        ELSE
+          READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1)/NPLAN)
+        ENDIF
       END DO
 !
 ! READS DATASETS
@@ -253,34 +253,34 @@
       WRITE(LU,*)'TRY TO READ DATASET NO.',NRESU
 !
       DO IPID = 0,NPROC-1
-         FU = IPID +10
-         CALL GREDELPTS_READ_DATASET
-     &   (LOCAL_VALUE,NPOINMAX,NPOIN(IPID+1),IT,FU,ENDE)
-         IF (ENDE) GOTO 3000
+        FU = IPID +10
+        CALL GREDELPTS_READ_DATASET
+     &  (LOCAL_VALUE,NPOINMAX,NPOIN(IPID+1),IT,FU,ENDE)
+        IF (ENDE) GOTO 3000
 ! STORES EACH DATASET
-         IF(NPLAN.EQ.0) THEN
-            DO I=1,NPOIN(IPID+1)
-              GLOBAL_VALUE(KNOLG(I,IPID+1)) = LOCAL_VALUE(I)
-              VERIF(KNOLG(I,IPID+1))   = 1
-            END DO
-         ELSE
-            NPOIN2LOC = NPOIN(IPID+1)/NPLAN
-            DO I=1,NPOIN2LOC
-            DO J=1,NPLAN
-            GLOBAL_VALUE(KNOLG(I,IPID+1) + NPOIN2   *(J-1)) =
-     &       LOCAL_VALUE(      I         + NPOIN2LOC*(J-1))
-                   VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1)) = 1
-            END DO
-            END DO
-         ENDIF
+        IF(NPLAN.EQ.0) THEN
+          DO I=1,NPOIN(IPID+1)
+            GLOBAL_VALUE(KNOLG(I,IPID+1)) = LOCAL_VALUE(I)
+            VERIF(KNOLG(I,IPID+1))   = 1
+          END DO
+        ELSE
+          NPOIN2LOC = NPOIN(IPID+1)/NPLAN
+          DO I=1,NPOIN2LOC
+          DO J=1,NPLAN
+          GLOBAL_VALUE(KNOLG(I,IPID+1) + NPOIN2   *(J-1)) =
+     &     LOCAL_VALUE(      I         + NPOIN2LOC*(J-1))
+          VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1)) = 1
+          END DO
+          END DO
+        ENDIF
       END DO
 ! WRITES GLOBAL DATASET
       WRITE(LU,*)'WRITING DATASET NO.',NRESU,' TIME =',IT
 !
       IF(NPLAN.EQ.0) THEN
-         WRITE(3) IT, (GLOBAL_VALUE(I),I=1,NPOIN2)
+        WRITE(3) IT, (GLOBAL_VALUE(I),I=1,NPOIN2)
       ELSE
-         WRITE(3) IT, (GLOBAL_VALUE(I),I=1,NPOIN2*NPLAN)
+        WRITE(3) IT, (GLOBAL_VALUE(I),I=1,NPOIN2*NPLAN)
       ENDIF
 ! CHECKS ...
       IF(NPLAN.EQ.0) THEN
@@ -305,9 +305,9 @@
       CLOSE(3)
 !
       DO IPID = 0,NPROC-1
-         FU = IPID +10
-         CLOSE (FU)
+        FU = IPID +10
+        CLOSE (FU)
       END DO
 !
-      STOP
+      STOP 0
       END PROGRAM GREDELPTS_AUTOP

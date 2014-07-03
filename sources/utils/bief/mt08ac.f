@@ -239,21 +239,21 @@
 !
 !   EXTRADIAGONAL TERMS
 !
-       A12(IELEM) = (-Y3+Y2) *(F1-6.D0*F2+F3+4.D0*F6) * (XMUL/360.D0)
-       A13(IELEM) = (-Y3+Y2) *(F1+F2-6.D0*F3+4.D0*F4) * (XMUL/360.D0)
-       A14(IELEM) = (-Y3+Y2) *(F3-8.D0*F4-4.D0*F6-4.D0*F5) *(XMUL/90.D0)
-       A15(IELEM) = (-Y3+Y2) *(F1-4.D0*F4-4.D0*F6-8.D0*F5) *(XMUL/90.D0)
-       A16(IELEM) = (F2-4.D0*F4-8.D0*F6-4.D0*F5) *(-Y3+Y2) *(XMUL/90.D0)
-       A21(IELEM) =-Y3       *(6.D0*F1-F2-F3-4.D0*F5) * (XMUL/360.D0)
-       A23(IELEM) = Y3       *(F1+F2-6.D0*F3+4.D0*F4) * (XMUL/360.D0)
-       A24(IELEM) = Y3       *(F3-8.D0*F4-4.D0*F6-4.D0*F5) *(XMUL/90.D0)
-       A25(IELEM) = Y3       *(F1-4.D0*F4-4.D0*F6-8.D0*F5) *(XMUL/90.D0)
-       A26(IELEM) = Y3       *(F2-4.D0*F4-8.D0*F6-4.D0*F5) *(XMUL/90.D0)
-       A31(IELEM) = Y2       *(6.D0*F1-F2-F3-4.D0*F5) * (XMUL/360.D0)
-       A32(IELEM) =-Y2       *(F1-6.D0*F2+F3+4.D0*F6) * (XMUL/360.D0)
-       A34(IELEM) =-Y2       *(F3-8.D0*F4-4.D0*F6-4.D0*F5) *(XMUL/90.D0)
-       A35(IELEM) =-Y2*(F1-4.D0*F4-4.D0*F6-8.D0*F5) *( XMUL/90.D0)
-       A36(IELEM) =-Y2*(F2-4.D0*F4-8.D0*F6-4.D0*F5) * (XMUL/90.D0)
+      A12(IELEM) = (-Y3+Y2) *(F1-6.D0*F2+F3+4.D0*F6) * (XMUL/360.D0)
+      A13(IELEM) = (-Y3+Y2) *(F1+F2-6.D0*F3+4.D0*F4) * (XMUL/360.D0)
+      A14(IELEM) = (-Y3+Y2) *(F3-8.D0*F4-4.D0*F6-4.D0*F5) *(XMUL/90.D0)
+      A15(IELEM) = (-Y3+Y2) *(F1-4.D0*F4-4.D0*F6-8.D0*F5) *(XMUL/90.D0)
+      A16(IELEM) = (F2-4.D0*F4-8.D0*F6-4.D0*F5) *(-Y3+Y2) *(XMUL/90.D0)
+      A21(IELEM) =-Y3       *(6.D0*F1-F2-F3-4.D0*F5) * (XMUL/360.D0)
+      A23(IELEM) = Y3       *(F1+F2-6.D0*F3+4.D0*F4) * (XMUL/360.D0)
+      A24(IELEM) = Y3       *(F3-8.D0*F4-4.D0*F6-4.D0*F5) *(XMUL/90.D0)
+      A25(IELEM) = Y3       *(F1-4.D0*F4-4.D0*F6-8.D0*F5) *(XMUL/90.D0)
+      A26(IELEM) = Y3       *(F2-4.D0*F4-8.D0*F6-4.D0*F5) *(XMUL/90.D0)
+      A31(IELEM) = Y2       *(6.D0*F1-F2-F3-4.D0*F5) * (XMUL/360.D0)
+      A32(IELEM) =-Y2       *(F1-6.D0*F2+F3+4.D0*F6) * (XMUL/360.D0)
+      A34(IELEM) =-Y2       *(F3-8.D0*F4-4.D0*F6-4.D0*F5) *(XMUL/90.D0)
+      A35(IELEM) =-Y2*(F1-4.D0*F4-4.D0*F6-8.D0*F5) *( XMUL/90.D0)
+      A36(IELEM) =-Y2*(F2-4.D0*F4-8.D0*F6-4.D0*F5) * (XMUL/90.D0)
 !
 !   DIAGONAL TERMS
 !   (SUM OF EACH LINE IN THE MATRIX IS 0)
@@ -322,15 +322,15 @@
 !-----------------------------------------------------------------------
 !
       ELSE
-       IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
-       IF (LNG.EQ.2) WRITE(LU,101) IELMF
-100    FORMAT(1X,'MT08AC (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F : ',1I6,' NON PREVUE',
-     &        1X,'NOM REEL DE F : ',A6)
-101    FORMAT(1X,'MT08AC (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF F : ',1I6,' NOT AVAILABLE')
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF
+100     FORMAT(1X,'MT08AC (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,' NON PREVUE',
+     &         1X,'NOM REEL DE F : ',A6)
+101     FORMAT(1X,'MT08AC (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F : ',1I6,' NOT AVAILABLE')
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 200       FORMAT(1X,'MT08AC (BIEF) : COMPOSANTE IMPOSSIBLE ',

@@ -83,15 +83,15 @@
 !
       IF (Q2P3 > 0.D0) THEN
 !
-         REALS = 1
-         EXPO  = 1.D0/3.D0
-         TMP   = -Q + SQRT(Q2P3)
-         SIGNUM  = TMP / ABS(TMP)
-         U     = SIGNUM * ABS(TMP)**(EXPO)
-         TMP   = -Q - SQRT(Q2P3)
-         SIGNUM  = TMP / ABS(TMP)
-         V     = SIGNUM * ABS(TMP)**EXPO
-         X(1)  = (U + V) - BA
+        REALS = 1
+        EXPO  = 1.D0/3.D0
+        TMP   = -Q + SQRT(Q2P3)
+        SIGNUM  = TMP / ABS(TMP)
+        U     = SIGNUM * ABS(TMP)**(EXPO)
+        TMP   = -Q - SQRT(Q2P3)
+        SIGNUM  = TMP / ABS(TMP)
+        V     = SIGNUM * ABS(TMP)**EXPO
+        X(1)  = (U + V) - BA
 !
       ELSE
 !
@@ -99,9 +99,9 @@
         TMP = -Q / (-P)**(1.5D0)
 !
         IF (TMP >= 1.D0) THEN
-           PHI = 0.D0
+          PHI = 0.D0
         ELSE IF (TMP <= -1.D0) THEN
-           PHI = PI
+          PHI = PI
         ELSE
           PHI = ACOS (TMP)
         ENDIF

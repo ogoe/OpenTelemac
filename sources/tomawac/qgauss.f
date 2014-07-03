@@ -72,18 +72,18 @@
       DA = (A3-A2)/DBLE(NFOIS)
 !
       DO I=1,NFOIS
-         A1 = A2
-         A2 = A2+DA
-         XB = 0.5D0*(A1+A2)
-         XR = 0.5D0*(A2-A1)
-         SS = 0.D0
-         DO J=1,5
-            DX = XR*X(J)
-            SS = SS + W(J)*(FONCRO(XB+DX,B,N,A,XM)
-     &                     +FONCRO(XB-DX,B,N,A,XM))
-         ENDDO
-         Y2 = XR*SS
-         QGAUSS = QGAUSS + Y2
+        A1 = A2
+        A2 = A2+DA
+        XB = 0.5D0*(A1+A2)
+        XR = 0.5D0*(A2-A1)
+        SS = 0.D0
+        DO J=1,5
+          DX = XR*X(J)
+          SS = SS + W(J)*(FONCRO(XB+DX,B,N,A,XM)
+     &                   +FONCRO(XB-DX,B,N,A,XM))
+        ENDDO
+        Y2 = XR*SS
+        QGAUSS = QGAUSS + Y2
       ENDDO
 !
       RETURN

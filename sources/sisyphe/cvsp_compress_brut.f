@@ -89,17 +89,17 @@
       SECHIGHT = (PRO_D(J,PRO_MAX(J),1)-PRO_D(J,1,1)) / (NEWPRO_MAX - 1)
 !
       DO K = 1, NEWPRO_MAX
-         DO I = 1, NSICLA
-            PRO_DNEW(K,I) = (K-1)*SECHIGHT + PRO_D(J,1,1)            
-            Z_LOW  = PRO_DNEW(K,1) - 0.5D0*SECHIGHT
-            Z_HIGH = PRO_DNEW(K,1) + 0.5D0*SECHIGHT
-            IF(K.EQ.1) Z_LOW = PRO_D(J,1,1)
-            IF(K.EQ.NEWPRO_MAX) Z_HIGH = PRO_D(J,PRO_MAX(J),1)          
-            PRO_FNEW(K,I)=CVSP_INTEGRATE_VOLUME(J,I, Z_HIGH, Z_LOW,T1%R)
-     &           / SECHIGHT            
-            IF(K.EQ.1) PRO_FNEW(K,I) = PRO_FNEW(K,I) * 2.0D0
-            IF(K.EQ.NEWPRO_MAX) PRO_FNEW(K,I) = PRO_FNEW(K,I) * 2.0D0
-         ENDDO
+        DO I = 1, NSICLA
+          PRO_DNEW(K,I) = (K-1)*SECHIGHT + PRO_D(J,1,1)            
+          Z_LOW  = PRO_DNEW(K,1) - 0.5D0*SECHIGHT
+          Z_HIGH = PRO_DNEW(K,1) + 0.5D0*SECHIGHT
+          IF(K.EQ.1) Z_LOW = PRO_D(J,1,1)
+          IF(K.EQ.NEWPRO_MAX) Z_HIGH = PRO_D(J,PRO_MAX(J),1)          
+          PRO_FNEW(K,I)=CVSP_INTEGRATE_VOLUME(J,I, Z_HIGH, Z_LOW,T1%R)
+     &         / SECHIGHT            
+          IF(K.EQ.1) PRO_FNEW(K,I) = PRO_FNEW(K,I) * 2.0D0
+          IF(K.EQ.NEWPRO_MAX) PRO_FNEW(K,I) = PRO_FNEW(K,I) * 2.0D0
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------      

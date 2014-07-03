@@ -118,27 +118,27 @@
       C1 = BIJK*DM
       C2 = DENS*DM*XMVE*GRAV
       DO I = 1, NPOIN
-         IF (T4%R(I)*MU%R(I)> ZERO) THEN
-            QSC%R(I) = C1*SQRT(TOB%R(I)/XMVE )
-     &               * EXP(-0.27D0*(C2/(T4%R(I)*MU%R(I))))
-         ELSE
-            QSC%R(I) = 0.D0
-         ENDIF
+        IF (T4%R(I)*MU%R(I)> ZERO) THEN
+          QSC%R(I) = C1*SQRT(TOB%R(I)/XMVE )
+     &             * EXP(-0.27D0*(C2/(T4%R(I)*MU%R(I))))
+        ELSE
+          QSC%R(I) = 0.D0
+        ENDIF
       ENDDO
       ! *********************************************************** !
       ! IV- ROUSE NUMBER AND LOWER BOUND OF EINSTEIN INTEGRAL       ! 
       ! *********************************************************** !
       DO I = 1, NPOIN
-         IF (T4%R(I) > 0.D0) THEN
-            UCF     = SQRT( T4%R(I) / XMVE)
-            T7%R(I) = XWC / ( KARMAN * UCF )
-!            AUX     = 1.D0 + KARMAN*SQRT(2.D0/MAX(CF%R(I),ZERO))
-!            T8%R(I) = 30.D0*EXP(-AUX)
-             T8%R(I) = MAX(KSR%R(I),KSP%R(I))/MAX(HN%R(I),ZERO)
-         ELSE
-            T7%R(I)= 100001.D0
-            T8%R(I)= 100001.D0
-         ENDIF
+        IF (T4%R(I) > 0.D0) THEN
+          UCF     = SQRT( T4%R(I) / XMVE)
+          T7%R(I) = XWC / ( KARMAN * UCF )
+!         AUX     = 1.D0 + KARMAN*SQRT(2.D0/MAX(CF%R(I),ZERO))
+!         T8%R(I) = 30.D0*EXP(-AUX)
+          T8%R(I) = MAX(KSR%R(I),KSP%R(I))/MAX(HN%R(I),ZERO)
+        ELSE
+          T7%R(I)= 100001.D0
+          T8%R(I)= 100001.D0
+        ENDIF
       ENDDO
       ! ************************************ !
       ! V - EINSTEIN INTEGRAL                !

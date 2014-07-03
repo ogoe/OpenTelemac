@@ -129,54 +129,54 @@
 !
       DO IELEM = 1 , NELEM
 !
-         X2 = XEL(IELEM+NELMAX)
-         X3 = XEL(IELEM+2*NELMAX)
-         Y2 = YEL(IELEM+NELMAX)
-         Y3 = YEL(IELEM+2*NELMAX)
+        X2 = XEL(IELEM+NELMAX)
+        X3 = XEL(IELEM+2*NELMAX)
+        Y2 = YEL(IELEM+NELMAX)
+        Y3 = YEL(IELEM+2*NELMAX)
 !
-         F1 = F(IKLE1(IELEM))
-         F2 = F(IKLE2(IELEM))
-         F3 = F(IKLE3(IELEM))
+        F1 = F(IKLE1(IELEM))
+        F2 = F(IKLE2(IELEM))
+        F3 = F(IKLE3(IELEM))
 !
-         U1 = U(IKLE1(IELEM))
-         U2 = U(IKLE2(IELEM))
-         U3 = U(IKLE3(IELEM))
-         V1 = V(IKLE1(IELEM))
-         V2 = V(IKLE2(IELEM))
-         V3 = V(IKLE3(IELEM))
+        U1 = U(IKLE1(IELEM))
+        U2 = U(IKLE2(IELEM))
+        U3 = U(IKLE3(IELEM))
+        V1 = V(IKLE1(IELEM))
+        V2 = V(IKLE2(IELEM))
+        V3 = V(IKLE3(IELEM))
 !
-         USUR2 = (U1+U2+U3)*SUR6
-         VSUR2 = (V1+V2+V3)*SUR6
+        USUR2 = (U1+U2+U3)*SUR6
+        VSUR2 = (V1+V2+V3)*SUR6
 !
-         K1 = USUR2 * (Y2-Y3) - VSUR2 * (X2-X3)
-         K2 = USUR2 * (Y3   ) - VSUR2 * (X3   )
-         K3 = USUR2 * (  -Y2) - VSUR2 * (  -X2)
+        K1 = USUR2 * (Y2-Y3) - VSUR2 * (X2-X3)
+        K2 = USUR2 * (Y3   ) - VSUR2 * (X3   )
+        K3 = USUR2 * (  -Y2) - VSUR2 * (  -X2)
 !
-         L12 = MAX(  MIN(K1,-K2) , 0.D0 )
-         L13 = MAX(  MIN(K1,-K3) , 0.D0 )
-         L21 = MAX(  MIN(K2,-K1) , 0.D0 )
-         L23 = MAX(  MIN(K2,-K3) , 0.D0 )
-         L31 = MAX(  MIN(K3,-K1) , 0.D0 )
-         L32 = MAX(  MIN(K3,-K2) , 0.D0 )
+        L12 = MAX(  MIN(K1,-K2) , 0.D0 )
+        L13 = MAX(  MIN(K1,-K3) , 0.D0 )
+        L21 = MAX(  MIN(K2,-K1) , 0.D0 )
+        L23 = MAX(  MIN(K2,-K3) , 0.D0 )
+        L31 = MAX(  MIN(K3,-K1) , 0.D0 )
+        L32 = MAX(  MIN(K3,-K2) , 0.D0 )
 !
-         BETAN1 = L12*(F1-F2) + L13*(F1-F3)
-         BETAN2 = L21*(F2-F1) + L23*(F2-F3)
-         BETAN3 = L31*(F3-F1) + L32*(F3-F2)
+        BETAN1 = L12*(F1-F2) + L13*(F1-F3)
+        BETAN2 = L21*(F2-F1) + L23*(F2-F3)
+        BETAN3 = L31*(F3-F1) + L32*(F3-F2)
 !
-         PHIT = BETAN1 + BETAN2 + BETAN3
+        PHIT = BETAN1 + BETAN2 + BETAN3
 !
-         IF(PHIT.GT.0.D0) THEN
-           W1(IELEM) =   XMUL * MAX( MIN( BETAN1, PHIT),0.D0 )
-           W2(IELEM) =   XMUL * MAX( MIN( BETAN2, PHIT),0.D0 )
-           W3(IELEM) =   XMUL * MAX( MIN( BETAN3, PHIT),0.D0 )
-         ELSE
-           W1(IELEM) = - XMUL * MAX( MIN(-BETAN1,-PHIT),0.D0 )
-           W2(IELEM) = - XMUL * MAX( MIN(-BETAN2,-PHIT),0.D0 )
-           W3(IELEM) = - XMUL * MAX( MIN(-BETAN3,-PHIT),0.D0 )
-         ENDIF
-         W4(IELEM) =   (W1(IELEM)+ W2(IELEM))/2.D0
-         W5(IELEM) =   (W2(IELEM)+ W3(IELEM))/2.D0
-         W6(IELEM) =   (W3(IELEM)+ W1(IELEM))/2.D0
+        IF(PHIT.GT.0.D0) THEN
+          W1(IELEM) =   XMUL * MAX( MIN( BETAN1, PHIT),0.D0 )
+          W2(IELEM) =   XMUL * MAX( MIN( BETAN2, PHIT),0.D0 )
+          W3(IELEM) =   XMUL * MAX( MIN( BETAN3, PHIT),0.D0 )
+        ELSE
+          W1(IELEM) = - XMUL * MAX( MIN(-BETAN1,-PHIT),0.D0 )
+          W2(IELEM) = - XMUL * MAX( MIN(-BETAN2,-PHIT),0.D0 )
+          W3(IELEM) = - XMUL * MAX( MIN(-BETAN3,-PHIT),0.D0 )
+        ENDIF
+        W4(IELEM) =   (W1(IELEM)+ W2(IELEM))/2.D0
+        W5(IELEM) =   (W2(IELEM)+ W3(IELEM))/2.D0
+        W6(IELEM) =   (W3(IELEM)+ W1(IELEM))/2.D0
 !
       ENDDO ! IELEM 
 !
@@ -186,31 +186,31 @@
 !
       DO IELEM = 1 , NELEM
 !
-         X2 = XEL(IELEM+NELMAX)
-         X3 = XEL(IELEM+2*NELMAX)
-         Y2 = YEL(IELEM+NELMAX)
-         Y3 = YEL(IELEM+2*NELMAX)
+        X2 = XEL(IELEM+NELMAX)
+        X3 = XEL(IELEM+2*NELMAX)
+        Y2 = YEL(IELEM+NELMAX)
+        Y3 = YEL(IELEM+2*NELMAX)
 !
-         U1 = U(IKLE1(IELEM))
-         U2 = U(IKLE2(IELEM))
-         U3 = U(IKLE3(IELEM))
-         U4 = U(IKLE4(IELEM))
-         U5 = U(IKLE5(IELEM))
-         U6 = U(IKLE6(IELEM))
+        U1 = U(IKLE1(IELEM))
+        U2 = U(IKLE2(IELEM))
+        U3 = U(IKLE3(IELEM))
+        U4 = U(IKLE4(IELEM))
+        U5 = U(IKLE5(IELEM))
+        U6 = U(IKLE6(IELEM))
 !
-         V1 = V(IKLE1(IELEM))
-         V2 = V(IKLE2(IELEM))
-         V3 = V(IKLE3(IELEM))
-         V4 = V(IKLE4(IELEM))
-         V5 = V(IKLE5(IELEM))
-         V6 = V(IKLE6(IELEM))
+        V1 = V(IKLE1(IELEM))
+        V2 = V(IKLE2(IELEM))
+        V3 = V(IKLE3(IELEM))
+        V4 = V(IKLE4(IELEM))
+        V5 = V(IKLE5(IELEM))
+        V6 = V(IKLE6(IELEM))
 !
-         F1 = F(IKLE1(IELEM))
-         F2 = F(IKLE2(IELEM)) - F1
-         F3 = F(IKLE3(IELEM)) - F1
-         F4 = F(IKLE4(IELEM)) - F1
-         F5 = F(IKLE5(IELEM)) - F1
-         F6 = F(IKLE6(IELEM)) - F1
+        F1 = F(IKLE1(IELEM))
+        F2 = F(IKLE2(IELEM)) - F1
+        F3 = F(IKLE3(IELEM)) - F1
+        F4 = F(IKLE4(IELEM)) - F1
+        F5 = F(IKLE5(IELEM)) - F1
+        F6 = F(IKLE6(IELEM)) - F1
 !
       ANS1 =-20.D0*Y2*F3*U5-64.D0*X2*F6*V4+16.D0*Y2*F4*U6+
      &       16.D0*X3*F6*V4+4.D0*Y2*F5*U3-32.D0*Y3*F4*U5-16.D0*X2*F4*V6-
@@ -399,54 +399,54 @@
 !
       DO IELEM = 1 , NELEM
 !
-         X2 = XEL(IELEM+NELMAX)
-         X3 = XEL(IELEM+2*NELMAX)
-         Y2 = YEL(IELEM+NELMAX)
-         Y3 = YEL(IELEM+2*NELMAX)
+        X2 = XEL(IELEM+NELMAX)
+        X3 = XEL(IELEM+2*NELMAX)
+        Y2 = YEL(IELEM+NELMAX)
+        Y3 = YEL(IELEM+2*NELMAX)
 !
-         F1 = F(IKLE1(IELEM))
-         F2 = F(IKLE2(IELEM))
-         F3 = F(IKLE3(IELEM))
+        F1 = F(IKLE1(IELEM))
+        F2 = F(IKLE2(IELEM))
+        F3 = F(IKLE3(IELEM))
 !
-         U1 = U(IKLE1(IELEM))
-         U2 = U(IKLE2(IELEM))
-         U3 = U(IKLE3(IELEM))
-         V1 = V(IKLE1(IELEM))
-         V2 = V(IKLE2(IELEM))
-         V3 = V(IKLE3(IELEM))
+        U1 = U(IKLE1(IELEM))
+        U2 = U(IKLE2(IELEM))
+        U3 = U(IKLE3(IELEM))
+        V1 = V(IKLE1(IELEM))
+        V2 = V(IKLE2(IELEM))
+        V3 = V(IKLE3(IELEM))
 !
-         USUR2 = (U1+U2+U3)*SUR6
-         VSUR2 = (V1+V2+V3)*SUR6
+        USUR2 = (U1+U2+U3)*SUR6
+        VSUR2 = (V1+V2+V3)*SUR6
 !
-         K1 = USUR2 * (Y2-Y3) - VSUR2 * (X2-X3)
-         K2 = USUR2 * (Y3   ) - VSUR2 * (X3   )
-         K3 = USUR2 * (  -Y2) - VSUR2 * (  -X2)
+        K1 = USUR2 * (Y2-Y3) - VSUR2 * (X2-X3)
+        K2 = USUR2 * (Y3   ) - VSUR2 * (X3   )
+        K3 = USUR2 * (  -Y2) - VSUR2 * (  -X2)
 !
-         L12 = MAX(  MIN(K1,-K2) , 0.D0 )
-         L13 = MAX(  MIN(K1,-K3) , 0.D0 )
-         L21 = MAX(  MIN(K2,-K1) , 0.D0 )
-         L23 = MAX(  MIN(K2,-K3) , 0.D0 )
-         L31 = MAX(  MIN(K3,-K1) , 0.D0 )
-         L32 = MAX(  MIN(K3,-K2) , 0.D0 )
+        L12 = MAX(  MIN(K1,-K2) , 0.D0 )
+        L13 = MAX(  MIN(K1,-K3) , 0.D0 )
+        L21 = MAX(  MIN(K2,-K1) , 0.D0 )
+        L23 = MAX(  MIN(K2,-K3) , 0.D0 )
+        L31 = MAX(  MIN(K3,-K1) , 0.D0 )
+        L32 = MAX(  MIN(K3,-K2) , 0.D0 )
 !
-         BETAN1 = L12*(F1-F2) + L13*(F1-F3)
-         BETAN2 = L21*(F2-F1) + L23*(F2-F3)
-         BETAN3 = L31*(F3-F1) + L32*(F3-F2)
+        BETAN1 = L12*(F1-F2) + L13*(F1-F3)
+        BETAN2 = L21*(F2-F1) + L23*(F2-F3)
+        BETAN3 = L31*(F3-F1) + L32*(F3-F2)
 !
-         PHIT = BETAN1 + BETAN2 + BETAN3
+        PHIT = BETAN1 + BETAN2 + BETAN3
 !
-         IF(PHIT.GT.0.D0) THEN
-           W1(IELEM) =   XMUL * MAX( MIN( BETAN1, PHIT),0.D0 )
-           W2(IELEM) =   XMUL * MAX( MIN( BETAN2, PHIT),0.D0 )
-           W3(IELEM) =   XMUL * MAX( MIN( BETAN3, PHIT),0.D0 )
-         ELSE
-           W1(IELEM) = - XMUL * MAX( MIN(-BETAN1,-PHIT),0.D0 )
-           W2(IELEM) = - XMUL * MAX( MIN(-BETAN2,-PHIT),0.D0 )
-           W3(IELEM) = - XMUL * MAX( MIN(-BETAN3,-PHIT),0.D0 )
-         ENDIF
-         W4(IELEM) =   (W1(IELEM)+ W2(IELEM))/2.D0
-         W5(IELEM) =   (W2(IELEM)+ W3(IELEM))/2.D0
-         W6(IELEM) =   (W3(IELEM)+ W1(IELEM))/2.D0
+        IF(PHIT.GT.0.D0) THEN
+          W1(IELEM) =   XMUL * MAX( MIN( BETAN1, PHIT),0.D0 )
+          W2(IELEM) =   XMUL * MAX( MIN( BETAN2, PHIT),0.D0 )
+          W3(IELEM) =   XMUL * MAX( MIN( BETAN3, PHIT),0.D0 )
+        ELSE
+          W1(IELEM) = - XMUL * MAX( MIN(-BETAN1,-PHIT),0.D0 )
+          W2(IELEM) = - XMUL * MAX( MIN(-BETAN2,-PHIT),0.D0 )
+          W3(IELEM) = - XMUL * MAX( MIN(-BETAN3,-PHIT),0.D0 )
+        ENDIF
+        W4(IELEM) =   (W1(IELEM)+ W2(IELEM))/2.D0
+        W5(IELEM) =   (W2(IELEM)+ W3(IELEM))/2.D0
+        W6(IELEM) =   (W3(IELEM)+ W1(IELEM))/2.D0
 !
       ENDDO ! IELEM 
 !
@@ -456,24 +456,24 @@
 !
       DO IELEM = 1 , NELEM
 !
-         X2 = XEL(IELEM+NELMAX)
-         X3 = XEL(IELEM+2*NELMAX)
-         Y2 = YEL(IELEM+NELMAX)
-         Y3 = YEL(IELEM+2*NELMAX)
+        X2 = XEL(IELEM+NELMAX)
+        X3 = XEL(IELEM+2*NELMAX)
+        Y2 = YEL(IELEM+NELMAX)
+        Y3 = YEL(IELEM+2*NELMAX)
 !
-         U1 = U(IKLE1(IELEM))
-         U2 = U(IKLE2(IELEM))
-         U3 = U(IKLE3(IELEM))
-         V1 = V(IKLE1(IELEM))
-         V2 = V(IKLE2(IELEM))
-         V3 = V(IKLE3(IELEM))
+        U1 = U(IKLE1(IELEM))
+        U2 = U(IKLE2(IELEM))
+        U3 = U(IKLE3(IELEM))
+        V1 = V(IKLE1(IELEM))
+        V2 = V(IKLE2(IELEM))
+        V3 = V(IKLE3(IELEM))
 !
-         F1 = F(IKLE1(IELEM))
-         F2 = F(IKLE2(IELEM)) - F1
-         F3 = F(IKLE3(IELEM)) - F1
-         F4 = F(IKLE4(IELEM)) - F1
-         F5 = F(IKLE5(IELEM)) - F1
-         F6 = F(IKLE6(IELEM)) - F1
+        F1 = F(IKLE1(IELEM))
+        F2 = F(IKLE2(IELEM)) - F1
+        F3 = F(IKLE3(IELEM)) - F1
+        F4 = F(IKLE4(IELEM)) - F1
+        F5 = F(IKLE5(IELEM)) - F1
+        F6 = F(IKLE6(IELEM)) - F1
 !
       W1(IELEM) = (-4.D0*X3*F6*V2-4.D0*Y3*F5*U2-4.D0*Y2*F6*U2-
      &             8.D0*Y2*F4*U2-4.D0*X2*F5*V3-4.D0*Y2*F4*U3+
@@ -568,26 +568,26 @@
 !
 !-----------------------------------------------------------------------
 !
-       IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
-       IF (LNG.EQ.1) WRITE(LU,200) IELMU,SU%NAME
-       IF (LNG.EQ.1) WRITE(LU,300)
-       IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
-       IF (LNG.EQ.1) WRITE(LU,201) IELMU,SU%NAME
-       IF (LNG.EQ.1) WRITE(LU,301)
-100    FORMAT(1X,'VC08CC (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F : ',1I6,
-     &        1X,'NOM REEL : ',A6)
-200    FORMAT(1X,'DISCRETISATION DE U : ',1I6,
-     &        1X,'NOM REEL : ',A6)
-300    FORMAT(1X,'CAS NON PREVU')
-101    FORMAT(1X,'VC08CC (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF F:',1I6,
-     &        1X,'REAL NAME: ',A6)
-201    FORMAT(1X,'DISCRETIZATION OF U:',1I6,
-     &        1X,'REAL NAME: ',A6)
-301    FORMAT(1X,'CASE NOT IMPLEMENTED')
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
+        IF (LNG.EQ.1) WRITE(LU,200) IELMU,SU%NAME
+        IF (LNG.EQ.1) WRITE(LU,300)
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
+        IF (LNG.EQ.1) WRITE(LU,201) IELMU,SU%NAME
+        IF (LNG.EQ.1) WRITE(LU,301)
+100     FORMAT(1X,'VC08CC (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+200     FORMAT(1X,'DISCRETISATION DE U : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+300     FORMAT(1X,'CAS NON PREVU')
+101     FORMAT(1X,'VC08CC (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F:',1I6,
+     &         1X,'REAL NAME: ',A6)
+201     FORMAT(1X,'DISCRETIZATION OF U:',1I6,
+     &         1X,'REAL NAME: ',A6)
+301     FORMAT(1X,'CASE NOT IMPLEMENTED')
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

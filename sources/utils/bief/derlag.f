@@ -164,17 +164,17 @@
 !  ============
 !
           CALL SCARACT(SVOID,SVOID,U,V,V,V,X,Y,
-     *                 ZSTAR,ZSTAR,XLAG(1,ILAG),YLAG(1,ILAG),
-     *                 ZCONV,ZCONV,
-     *                 DX,DY,DY,DY,Z,SHPLAG(1,1,ILAG),SHZ,SHF,
-     *                 MESH%SURDET%R,
-     *                 DT,MESH%IKLE%I,MESH%IFABOR%I,ELTLAG(1,ILAG),
-     *                 ETA,FRE,NSP,ISPDONE,IELM,IELMU,NELEM,NELMAX,
-     *                 0,NPOIN,NPOIN,NDP,NPLAN,1,
-     *                 MESH,NPOIN,BIEF_NBPTS(IELMU,MESH),SENS,
+     &                 ZSTAR,ZSTAR,XLAG(1,ILAG),YLAG(1,ILAG),
+     &                 ZCONV,ZCONV,
+     &                 DX,DY,DY,DY,Z,SHPLAG(1,1,ILAG),SHZ,SHF,
+     &                 MESH%SURDET%R,
+     &                 DT,MESH%IKLE%I,MESH%IFABOR%I,ELTLAG(1,ILAG),
+     &                 ETA,FRE,NSP,ISPDONE,IELM,IELMU,NELEM,NELMAX,
+     &                 0,NPOIN,NPOIN,NDP,NPLAN,1,
+     &                 MESH,NPOIN,BIEF_NBPTS(IELMU,MESH),SENS,
 !                      PROVISIONAL, THIS WILL NOT WORK IN PARALLEL            
-     *                 SHPBUF,SHZBUF,SHZBUF,FREBUF,1,
-     *                 .FALSE.,.FALSE.,.FALSE.)
+     &                 SHPBUF,SHZBUF,SHZBUF,FREBUF,1,
+     &                 .FALSE.,.FALSE.,.FALSE.)
 !
         ENDIF
 !

@@ -549,36 +549,36 @@
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !
       IF(VENT) THEN
-         ROEAU = 1000.D0
-         ROAIR = 1.3D0
-         DO IPOIN2 = 1,NPOIN2
-!          RELATIVE WIND
-           WINDRELX=WIND%ADR(1)%P%R(IPOIN2)-U%R(NPOIN3-NPOIN2+IPOIN2)
-           WINDRELY=WIND%ADR(2)%P%R(IPOIN2)-V%R(NPOIN3-NPOIN2+IPOIN2)
-           VITV=SQRT(WINDRELX**2+WINDRELY**2)
-!          A MORE ACCURATE TREATMENT
-!          IF(VITV.LE.5.D0) THEN
-!            FAIR = ROAIR/ROEAU*0.565D-3
-!          ELSEIF (VITV.LE.19.22D0) THEN
-!            FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3
-!          ELSE
-!            FAIR = ROAIR/ROEAU*2.513D-3
-!          ENDIF
-!          BEWARE : BUBORS IS VISCVI*DU/DN, NOT DU/DN
-           IF(H%R(IPOIN2).GT.HWIND) THEN
-!            EXPLICIT PART
-             BUBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2)
-             BVBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2)
-!            IMPLICIT PART
-             AUBORS%R(IPOIN2) = -FAIR*VITV
-             AVBORS%R(IPOIN2) = -FAIR*VITV
-           ELSE
-             BUBORS%R(IPOIN2) = 0.D0
-             BVBORS%R(IPOIN2) = 0.D0
-             AUBORS%R(IPOIN2) = 0.D0
-             AVBORS%R(IPOIN2) = 0.D0
-           ENDIF
-         ENDDO
+        ROEAU = 1000.D0
+        ROAIR = 1.3D0
+        DO IPOIN2 = 1,NPOIN2
+!         RELATIVE WIND
+          WINDRELX=WIND%ADR(1)%P%R(IPOIN2)-U%R(NPOIN3-NPOIN2+IPOIN2)
+          WINDRELY=WIND%ADR(2)%P%R(IPOIN2)-V%R(NPOIN3-NPOIN2+IPOIN2)
+          VITV=SQRT(WINDRELX**2+WINDRELY**2)
+!         A MORE ACCURATE TREATMENT
+!         IF(VITV.LE.5.D0) THEN
+!           FAIR = ROAIR/ROEAU*0.565D-3
+!         ELSEIF (VITV.LE.19.22D0) THEN
+!           FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3
+!         ELSE
+!           FAIR = ROAIR/ROEAU*2.513D-3
+!         ENDIF
+!         BEWARE : BUBORS IS VISCVI*DU/DN, NOT DU/DN
+          IF(H%R(IPOIN2).GT.HWIND) THEN
+!           EXPLICIT PART
+            BUBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2)
+            BVBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2)
+!           IMPLICIT PART
+            AUBORS%R(IPOIN2) = -FAIR*VITV
+            AVBORS%R(IPOIN2) = -FAIR*VITV
+          ELSE
+            BUBORS%R(IPOIN2) = 0.D0
+            BVBORS%R(IPOIN2) = 0.D0
+            AUBORS%R(IPOIN2) = 0.D0
+            AVBORS%R(IPOIN2) = 0.D0
+          ENDIF
+        ENDDO
       ENDIF
 !
 !

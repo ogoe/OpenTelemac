@@ -92,14 +92,14 @@
 !          K=IMAX+1-I
 !          IVIDE(K)=0.D0
 !          IVIDE(K)=(TRA01(K,6)-TRA01(K,5)*IVIDE(K+1))/TRA01(K,4)
-       DO K = IMAX-1,NDEB,-1
-         IF( ABS(TRA01(K,4)).LT.EPS ) THEN
-           WRITE(LU,*) 'DIVISION BY ZERO IN BISSEL (CALLED BY TASSEM)'
-           CALL PLANTE(1)
-           STOP
-         ENDIF
-         IVIDE(K) = ( TRA01(K,6) - TRA01(K,5)*IVIDE(K+1) )/TRA01(K,4)
-       ENDDO
+      DO K = IMAX-1,NDEB,-1
+        IF( ABS(TRA01(K,4)).LT.EPS ) THEN
+          WRITE(LU,*) 'DIVISION BY ZERO IN BISSEL (CALLED BY TASSEM)'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        IVIDE(K) = ( TRA01(K,6) - TRA01(K,5)*IVIDE(K+1) )/TRA01(K,4)
+      ENDDO
 !#####
 !
 !-----------------------------------------------------------------------

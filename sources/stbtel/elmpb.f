@@ -84,14 +84,14 @@
  20   CONTINUE
         IF ((IKLE(IEL, 1).EQ.0).AND.(IKLE(IEL, 2).EQ.0).AND.
      &     (IKLE(IEL, 3).EQ.0)) THEN
-         NELI = NELI + 1
-         DO I = IEL, NELEM - NELI
-           IKLE(I,1) = IKLE(I+1, 1)
-           IKLE(I,2) = IKLE(I+1, 2)
-           IKLE(I,3) = IKLE(I+1, 3)
-         ENDDO
+          NELI = NELI + 1
+          DO I = IEL, NELEM - NELI
+            IKLE(I,1) = IKLE(I+1, 1)
+            IKLE(I,2) = IKLE(I+1, 2)
+            IKLE(I,3) = IKLE(I+1, 3)
+          ENDDO
         ELSE
-         IEL = IEL + 1
+          IEL = IEL + 1
         ENDIF
       IF (IEL .LE. NELEM-NELI) GOTO 20
 !     FIN POUR CHAQUE ELEMENT
@@ -104,68 +104,65 @@
 !      ELIMINATION DES POINTS NE FAISANT PLUS PARTIE DU MAILLAGE
 !      REUTILISATION DE ISDRY POUR MARQUER LES POINTS NON UTILISEES
 !      ---------------------------------------------
-       DO I = 1, NPOIN
-         ISDRY(I) = 0
-         NEW(I) = 0
-       ENDDO
+      DO I = 1, NPOIN
+        ISDRY(I) = 0
+        NEW(I) = 0
+      ENDDO
 !
-       DO IEL = 1, NELEM
-        ISDRY(IKLE(IEL,1)) = IKLE(IEL,1)
-        ISDRY(IKLE(IEL,2)) = IKLE(IEL,2)
-        ISDRY(IKLE(IEL,3)) = IKLE(IEL,3)
-       ENDDO
+      DO IEL = 1, NELEM
+      ENDDO
 !
-       NELI = 0
-       I = 1
-!      POUR CHAQUE POINT FAIRE
-       DO I = 1, NPOIN
-         IF (ISDRY(I) .EQ.0) THEN
-           NELI = NELI + 1
-           NEW(I) = 0
-         ELSE
-           NEW(I) = I - NELI
-         ENDIF
-       ENDDO
-!      FIN POUR CHAQUE POINT
+      NELI = 0
+      I = 1
+!     POUR CHAQUE POINT FAIRE
+      DO I = 1, NPOIN
+        IF (ISDRY(I) .EQ.0) THEN
+          NELI = NELI + 1
+          NEW(I) = 0
+        ELSE
+          NEW(I) = I - NELI
+        ENDIF
+      ENDDO
+!     FIN POUR CHAQUE POINT
 !
-       NELI = 0
-       I = 1
-!      POUR CHAQUE POINT FAIRE
- 30    CONTINUE
-         IF (ISDRY(I) .EQ.0) THEN
-!          POINT I  A ELIMINER
-           NELI = NELI + 1
-!          DECALAGE DANS LE TABLEAU DES POINTS
-           DO J = I, NPOIN - NELI
-             X(J) = X(J+1)
-             Y(J) = Y(J+1)
-             NCOLOR(J) = NCOLOR(J+1)
-             IF (ISDRY(J+1).GT.0) THEN
-               ISDRY(J) = ISDRY(J+1) - 1
-             ELSE
-               ISDRY(J) = 0
-             ENDIF
-           ENDDO
-         ELSE
-           I = I + 1
-         ENDIF
-       IF (I .LE. NPOIN - NELI) GOTO 30
-!      FIN POUR CHAQUE POINT
-       IF (LNG.EQ.1) WRITE(LU,1011) NELI
-       IF (LNG.EQ.2) WRITE(LU,2011) NELI
-       NPOIN = NPOIN - NELI
+      NELI = 0
+      I = 1
+!     POUR CHAQUE POINT FAIRE
+ 30   CONTINUE
+        IF (ISDRY(I) .EQ.0) THEN
+!         POINT I  A ELIMINER
+          NELI = NELI + 1
+!         DECALAGE DANS LE TABLEAU DES POINTS
+          DO J = I, NPOIN - NELI
+            X(J) = X(J+1)
+            Y(J) = Y(J+1)
+            NCOLOR(J) = NCOLOR(J+1)
+            IF (ISDRY(J+1).GT.0) THEN
+              ISDRY(J) = ISDRY(J+1) - 1
+            ELSE
+              ISDRY(J) = 0
+            ENDIF
+          ENDDO
+        ELSE
+          I = I + 1
+        ENDIF
+      IF (I .LE. NPOIN - NELI) GOTO 30
+!     FIN POUR CHAQUE POINT
+      IF (LNG.EQ.1) WRITE(LU,1011) NELI
+      IF (LNG.EQ.2) WRITE(LU,2011) NELI
+      NPOIN = NPOIN - NELI
 !
-!      ON REPERCUTE LA RENUMEROTATION DANS IKLE
-!      ----------------------------------------
-       DO IEL = 1, NELEM
-         J = IKLE(IEL,1)
-         IKLE(IEL,1) = NEW(J)
-         J = IKLE(IEL,2)
-         IKLE(IEL,2) = NEW(J)
-         J = IKLE(IEL,3)
-         IKLE(IEL,3) = NEW(J)
-       ENDDO
-       RETURN
+!     ON REPERCUTE LA RENUMEROTATION DANS IKLE
+!     ----------------------------------------
+      DO IEL = 1, NELEM
+        J = IKLE(IEL,1)
+        IKLE(IEL,1) = NEW(J)
+        J = IKLE(IEL,2)
+        IKLE(IEL,2) = NEW(J)
+        J = IKLE(IEL,3)
+        IKLE(IEL,3) = NEW(J)
+      ENDDO
+      RETURN
 !***********************************************************************
  1009 FORMAT(1X,'ELEMENTS SUPPRIMES DU MAILLAGE :',I8)
  2009 FORMAT(1X,'ELEMENTS CANCELLED IN THE MESH:',I8)

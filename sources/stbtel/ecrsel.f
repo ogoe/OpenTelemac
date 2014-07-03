@@ -80,12 +80,12 @@
 !
       A(1) = 0.D0
       IF(NVARIN.GT.0) THEN
-         IF (BIEF_EOF(NGEO)) GOTO 40
-         IF (OK2) THEN
-            IF (BIEF_EOF(NFO1)) OK2 = .FALSE.
-            IF (OK2) CALL LIT(A,W,IBID,CBID,1,'R4',NFO1,STD,ISTAT)
-         ENDIF
-         CALL LIT(A,W,IBID,CBID,1,'R4',NGEO,STD,ISTAT)
+        IF (BIEF_EOF(NGEO)) GOTO 40
+        IF (OK2) THEN
+          IF (BIEF_EOF(NFO1)) OK2 = .FALSE.
+          IF (OK2) CALL LIT(A,W,IBID,CBID,1,'R4',NFO1,STD,ISTAT)
+        ENDIF
+        CALL LIT(A,W,IBID,CBID,1,'R4',NGEO,STD,ISTAT)
       ENDIF
 !
       CALL ECRI2(A,IBID,CBID,1,'R4',NRES,STD,ISTAT)
@@ -95,48 +95,48 @@
 !  ECRITURE DES VARIABLES
 !
       IF (NVARIN.GT.0) THEN
-         DO IVAR = 1,NVARIN
+        DO IVAR = 1,NVARIN
 !
-!           ZF DEJA LU AVEC ADCIRC
-            IF(MAILLE.NE.'ADCIRC') THEN
-             CALL LIT(VAINIT,W,IBID,CBID,NPOIN1,'R4',NGEO,STD,ISTAT)
-            ENDIF
+!         ZF DEJA LU AVEC ADCIRC
+          IF(MAILLE.NE.'ADCIRC') THEN
+            CALL LIT(VAINIT,W,IBID,CBID,NPOIN1,'R4',NGEO,STD,ISTAT)
+          ENDIF
 !
-            IF (FUSION) THEN
-               IF (OK2.AND.IVAR.LE.NVAR2) THEN
-                  CALL LIT(VAINIT(NPOIN1+1),W,IBID,CBID,NPOIN2,'R4',
-     &                     NFO1,STD,ISTAT)
-               ELSE
-                  DO I = NPOIN1+1,NPINIT
-                     VAINIT(I) = 0.D0
-                  ENDDO
-               ENDIF
-            ENDIF
-!
-            IF (IVAR.EQ.NSFOND) THEN
-               CALL ECRI2(ZF,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
+          IF (FUSION) THEN
+            IF (OK2.AND.IVAR.LE.NVAR2) THEN
+              CALL LIT(VAINIT(NPOIN1+1),W,IBID,CBID,NPOIN2,'R4',
+     &                 NFO1,STD,ISTAT)
             ELSE
-               DO IPOIN = 1,NPOIN
-                  VAR(IPOIN) = VAINIT(IKINIT(ELT(IPOIN),1))*SHP(IPOIN,1)
-     &                       + VAINIT(IKINIT(ELT(IPOIN),2))*SHP(IPOIN,2)
-     &                       + VAINIT(IKINIT(ELT(IPOIN),3))*SHP(IPOIN,3)
-               ENDDO
-               CALL ECRI2(VAR,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
+              DO I = NPOIN1+1,NPINIT
+                VAINIT(I) = 0.D0
+              ENDDO
             ENDIF
-         ENDDO
+          ENDIF
 !
-         IF (OK2) THEN
-            IF (NVARIN.LT.NVAR2) THEN
-               DO IVAR = NVARIN+1,NVAR2
-                  CALL LIT(VAINIT,W,IBID,CBID,2,'R4',NFO1,STD,ISTAT)
-               ENDDO
-            ENDIF
-         ENDIF
+          IF (IVAR.EQ.NSFOND) THEN
+            CALL ECRI2(ZF,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
+          ELSE
+            DO IPOIN = 1,NPOIN
+              VAR(IPOIN) = VAINIT(IKINIT(ELT(IPOIN),1))*SHP(IPOIN,1)
+     &                   + VAINIT(IKINIT(ELT(IPOIN),2))*SHP(IPOIN,2)
+     &                   + VAINIT(IKINIT(ELT(IPOIN),3))*SHP(IPOIN,3)
+            ENDDO
+            CALL ECRI2(VAR,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
+          ENDIF
+        ENDDO
+!
+        IF (OK2) THEN
+          IF (NVARIN.LT.NVAR2) THEN
+            DO IVAR = NVARIN+1,NVAR2
+              CALL LIT(VAINIT,W,IBID,CBID,2,'R4',NFO1,STD,ISTAT)
+            ENDDO
+          ENDIF
+        ENDIF
 !
       ENDIF
 !
       IF(NSFOND.EQ.NVARIN+1.OR.MAILLE.EQ.'ADCIRC') THEN
-          CALL ECRI2(ZF,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
+        CALL ECRI2(ZF,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
       ENDIF
       IF(COLOR) THEN
         CALL ECRI2(XBID,NCOLOR,CBID,NPOIN,'I ',NRES,STD,ISTAT)

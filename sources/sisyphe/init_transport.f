@@ -336,12 +336,12 @@
                 ELSEIF(ICQ.EQ.3) THEN
                   CALL SUSPENSION_VANRIJN(FDM(I),T8,NPOIN,
      &               GRAV,XMVE,XMVS,VCE,ZERO,AC(I), CSTAEQ,ZREF)
-               ELSEIF(ICQ.EQ.4) THEN
-                  CSRATIO%R=1D0;   
+                ELSEIF(ICQ.EQ.4) THEN
+                  CSRATIO%R=1D0   
                   CALL SUSPENSION_SANDFLOW(FDM(I),FD90(I),T8,NPOIN,
-!     mak     &                GRAV,XMVE,XMVS,ZERO,AC(I),CSTAEQ,ZREF,HN,U2D,V2D,T2)
-     &         GRAV,XMVE,XMVS,ZERO,AC(I),CSTAEQ,ZREF,HN,U2D,V2D,CSRATIO)
-!      Cannot initialise to non-zero values as T2 not computed yet! 
+     &                                     GRAV,XMVE,XMVS,ZERO,AC(I),
+     &                                     CSTAEQ,ZREF,HN,U2D,V2D,
+     &                                     CSRATIO)
                 ENDIF
 !               ROUSE CONCENTRATION PROFILE IS ASSUMED BASED ON TOTAL FRICTION
 !               VELOCITY

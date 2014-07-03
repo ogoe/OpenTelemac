@@ -166,28 +166,28 @@
 !
 !      COMPUTES THE ADVECTION FIELD
 !
-         CALL CONWAC
+          CALL CONWAC
      &( CX%R  , CY%R  , CT%R , XK    , CG    , COSF  , TGF   , DEPTH ,
      &  DZX   , DZY   , FREQ%R , COSTET, SINTET, NPOIN2, NPLAN , JF  ,
      &  NF    , PROINF, SPHE , PROMIN, TRA01)
 !
 !      ----------------------------------------------------------------         
 !
-      DO IEL=1,NELEM2
-        I1=IKLE2(IEL,1)
-        I2=IKLE2(IEL,2)
-        I3=IKLE2(IEL,3)
-        IF(DEPTH(I1).LT.PROMIN.AND.DEPTH(I2).LT.PROMIN.AND.
-     &     IFABOR(IEL,1).GT.0) IFABOR(IEL,1)=-1
-        IF(DEPTH(I2).LT.PROMIN.AND.DEPTH(I3).LT.PROMIN.AND.
-     &     IFABOR(IEL,2).GT.0) IFABOR(IEL,2)=-1
-        IF(DEPTH(I3).LT.PROMIN.AND.DEPTH(I1).LT.PROMIN.AND.
-     &     IFABOR(IEL,3).GT.0) IFABOR(IEL,3)=-1
-      ENDDO
+          DO IEL=1,NELEM2
+            I1=IKLE2(IEL,1)
+            I2=IKLE2(IEL,2)
+            I3=IKLE2(IEL,3)
+            IF(DEPTH(I1).LT.PROMIN.AND.DEPTH(I2).LT.PROMIN.AND.
+     &         IFABOR(IEL,1).GT.0) IFABOR(IEL,1)=-1
+            IF(DEPTH(I2).LT.PROMIN.AND.DEPTH(I3).LT.PROMIN.AND.
+     &         IFABOR(IEL,2).GT.0) IFABOR(IEL,2)=-1
+            IF(DEPTH(I3).LT.PROMIN.AND.DEPTH(I1).LT.PROMIN.AND.
+     &         IFABOR(IEL,3).GT.0) IFABOR(IEL,3)=-1
+          ENDDO
 !
-      WRITE(LU,*) 'FREQUENCE :',JF
+          WRITE(LU,*) 'FREQUENCE :',JF
 !
-      CALL CHARAC(SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,0,
+          CALL CHARAC(SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,0,
      &            CX,CY,CT,CT,TETA,TETA,DT,MESH3D%IFABOR,IELM3,
      &            NPOIN2,NPLAN,1,1,.FALSE.,BID,SHP%ADR(JF)%P,
      &            SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,TB,
@@ -201,7 +201,7 @@
 !                 AND PERIODICITY 
      &            .TRUE.)
 !
-      ENDDO ! JF
+        ENDDO ! JF
 !
       ELSE
 !
@@ -210,33 +210,33 @@
 !   IN A RELATIVE REFERENCE SYSTEM => ADVECTION IN 4D
 !   IT IS NO LONGER POSSIBLE TO SEPARATE THE FREQUENCIES OUT
 !
-      DO JF=1,NF
-!
-        CALL CONW4D(CX%R,CY%R,CT%R,CF%R,
-     &              U,V,XK,CG,COSF,TGF,DEPTH,DZHDT,DZY,DZX,DVY,DVX,
-     &              DUY,DUX,FREQ%R,COSTET,SINTET,NPOIN2,NPLAN,
-     &              JF,NF,PROINF,SPHE,MAREE,TRA01)
-!
-      ENDDO
-!
-      DO JF=1,NF       
-!
-        CALL CHARAC(SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,0,
-     &              CX,CY,CT,CF,TETA,FREQ,DT,MESH3D%IFABOR,IELM3,
-     &              NPOIN2,NPLAN,JF,NF,.FALSE.,BID,SHP%ADR(JF)%P,
-     &              SHZ%ADR(JF)%P,SHF%ADR(JF)%P,TB,
-     &              ELT(1,JF),ETA(1,JF),FRE(1,JF),ITR01,
-     &              ISUB(1,JF),ITR01(1,2),MESH3D,NELEM2,NELEM2,
-     &              SIKLE2,MESH%SURDET,
-     &              BID,BID,SLVBID,0.D0,.FALSE.,3,BID,1,
-!                   A POSTERIORI INTERPOLATION
-     &              .TRUE.,
-!                   AND PERIODICITY 
-     &              .TRUE.,
-!                   AND 4D
-     &              .TRUE.) 
-!
-      ENDDO
+        DO JF=1,NF
+!       
+          CALL CONW4D(CX%R,CY%R,CT%R,CF%R,
+     &                U,V,XK,CG,COSF,TGF,DEPTH,DZHDT,DZY,DZX,DVY,DVX,
+     &                DUY,DUX,FREQ%R,COSTET,SINTET,NPOIN2,NPLAN,
+     &                JF,NF,PROINF,SPHE,MAREE,TRA01)
+!       
+        ENDDO
+!       
+        DO JF=1,NF       
+!       
+          CALL CHARAC(SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,0,
+     &                CX,CY,CT,CF,TETA,FREQ,DT,MESH3D%IFABOR,IELM3,
+     &                NPOIN2,NPLAN,JF,NF,.FALSE.,BID,SHP%ADR(JF)%P,
+     &                SHZ%ADR(JF)%P,SHF%ADR(JF)%P,TB,
+     &                ELT(1,JF),ETA(1,JF),FRE(1,JF),ITR01,
+     &                ISUB(1,JF),ITR01(1,2),MESH3D,NELEM2,NELEM2,
+     &                SIKLE2,MESH%SURDET,
+     &                BID,BID,SLVBID,0.D0,.FALSE.,3,BID,1,
+!                     A POSTERIORI INTERPOLATION
+     &                .TRUE.,
+!                     AND PERIODICITY 
+     &                .TRUE.,
+!                     AND 4D
+     &                .TRUE.) 
+!       
+        ENDDO
 !
       ENDIF
 !

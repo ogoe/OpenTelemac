@@ -49,14 +49,14 @@
       C(2) = '|'
       LONG = LEN(INT_LIST)
       IF(LONG.EQ.0) THEN
-        WRITE(LU,*) 'Lecdon_SPLIT String Error'
+        WRITE(LU,*) 'LECDON_SPLIT STRING ERROR'
         CALL PLANTE(1)
         STOP
       ENDIF
 !
       DO I=1,LONG
         DO J=1,2
-          if(INT_LIST(I:I).EQ.C(J)) INT_LIST(I:I) = ' '
+          IF(INT_LIST(I:I).EQ.C(J)) INT_LIST(I:I) = ' '
         ENDDO
       ENDDO
 !
@@ -90,7 +90,7 @@
         POINT_ARRAY(J) = -1
       ENDDO
       DO J=1,NMOT
-        READ(Mot(j),* ) POINT_ARRAY(j)
+        READ(MOT(J),* ) POINT_ARRAY(J)
         IF (POINT_ARRAY(J).EQ.0) FULLOUTPUT = .TRUE.
       ENDDO
 !
@@ -98,4 +98,3 @@
 !
       RETURN
       END
-

@@ -125,15 +125,15 @@
       ENDDO
 ! 
       IF(NCSIZE.GT.1) THEN
-       CALL PARCOM2_SEG(COORD_G(1,1),
-     &                  COORD_G(1,2),
-     &                  COORD_G(1,2), ! NO EFFECT FOR THIS ONE
-     &                  NSEG,1,1,2,MESH,1,11)
-!
-       CALL PARCOM2_SEG(COORD_G(1,3),
-     &                  COORD_G(1,4),
-     &                  COORD_G(1,4), ! NO EFFECT FOR THIS ONE
-     &                  NSEG,1,1,2,MESH,1,11)
+        CALL PARCOM2_SEG(COORD_G(1,1),
+     &                   COORD_G(1,2),
+     &                   COORD_G(1,2), ! NO EFFECT FOR THIS ONE
+     &                   NSEG,1,1,2,MESH,1,11)
+!       
+        CALL PARCOM2_SEG(COORD_G(1,3),
+     &                   COORD_G(1,4),
+     &                   COORD_G(1,4), ! NO EFFECT FOR THIS ONE
+     &                   NSEG,1,1,2,MESH,1,11)
 
       ENDIF
 ! 
@@ -235,14 +235,14 @@
 ! TO VERIFY THAT IT IS WELL DONE
 !
       IF(NCSIZE.LE.1)THEN
-       DO ISEG=1,NSEG
-         IF(JMI(ISEG).EQ.0)THEN
-           WRITE(LU,*)'CENTRE_MASS_SEG: PROBLEM JMI NOT GOOD'
-           WRITE(LU,*)'FOR SEGMENT :',ISEG
-           CALL PLANTE(1)
-           STOP
-         ENDIF
-       ENDDO
+        DO ISEG=1,NSEG
+          IF(JMI(ISEG).EQ.0)THEN
+            WRITE(LU,*)'CENTRE_MASS_SEG: PROBLEM JMI NOT GOOD'
+            WRITE(LU,*)'FOR SEGMENT :',ISEG
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+        ENDDO
       ENDIF
 !
 !---------------------------------------------------------------------

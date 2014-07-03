@@ -210,20 +210,20 @@
 !=======================================================================
 !
       IF(NCSIZE.GT.1) THEN
-         NFRLIQ=0
-         DO I=1,NPTFR
-            NFRLIQ=MAX(NFRLIQ,NUMLIQ%I(I))
-         ENDDO
-         NFRLIQ=P_IMAX(NFRLIQ)
-         WRITE(LU,*) ' '
-         IF(LNG.EQ.1) WRITE(LU,*) 'NOMBRE DE FRONTIERES LIQUIDES :',
-     &        NFRLIQ
-         IF(LNG.EQ.2) WRITE(LU,*) 'NUMBER OF LIQUID BOUNDARIES:',NFRLIQ
+        NFRLIQ=0
+        DO I=1,NPTFR
+          NFRLIQ=MAX(NFRLIQ,NUMLIQ%I(I))
+        ENDDO
+        NFRLIQ=P_IMAX(NFRLIQ)
+        WRITE(LU,*) ' '
+        IF(LNG.EQ.1) WRITE(LU,*) 'NOMBRE DE FRONTIERES LIQUIDES :',
+     &       NFRLIQ
+        IF(LNG.EQ.2) WRITE(LU,*) 'NUMBER OF LIQUID BOUNDARIES:',NFRLIQ
       ELSE
-         CALL FRONT2(NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,
-     &        LIHBOR%I,LIUBOR%I,
-     &        MESH%X%R,MESH%Y%R,MESH%NBOR%I,MESH%KP1BOR%I,
-     &        IT1%I,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ%I,MAXFRO)
+        CALL FRONT2(NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,
+     &       LIHBOR%I,LIUBOR%I,
+     &       MESH%X%R,MESH%Y%R,MESH%NBOR%I,MESH%KP1BOR%I,
+     &       IT1%I,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ%I,MAXFRO)
       ENDIF
 ! LOCATES THE BOUNDARIES
 !
@@ -241,16 +241,16 @@
 ! INITIALISES THE WAVE HEIGHT FOR RANDOM SEAS AT 0.
 !
       IF (ALEMON .OR. ALEMUL) THEN
-       CALL OS('X=C     ', HALE , SBID , SBID , 0.D0 )
+        CALL OS('X=C     ', HALE , SBID , SBID , 0.D0 )
       ENDIF
 !
 !
 ! DETERMINES THE DIFFERENT PERIODS FOR A RANDOM SEA COMPUTATION
 !
       IF (ALEMON.OR.ALEMUL) THEN
-         CALL PERALE(PALE%R,GAMMA,PERPIC,NPALE,T1%R,NPOIN,PRIVE,
-     &               NPRIV,PMIN,PMAX)
-         PER = PALE%R(1)
+        CALL PERALE(PALE%R,GAMMA,PERPIC,NPALE,T1%R,NPOIN,PRIVE,
+     &              NPRIV,PMIN,PMAX)
+        PER = PALE%R(1)
       ENDIF
 !
 !
@@ -258,8 +258,8 @@
 ! SEA COMPUTATION
 !
       IF (ALEMUL) THEN
-         CALL DIRALE(DALE%R,EXPOS,TETAH,TETMIN,TETMAX,NDALE,
-     &               T1%R,NPOIN,PRIVE,NPRIV)
+        CALL DIRALE(DALE%R,EXPOS,TETAH,TETMIN,TETMAX,NDALE,
+     &              T1%R,NPOIN,PRIVE,NPRIV)
       ENDIF
 !
 !
@@ -301,9 +301,9 @@
 100   CONTINUE
 !
       IF (BALAYE) THEN
-         CALL ENTART(1,PER,LT,LPER,NPERBA,ALEMON,ALEMUL,BALAYE)
+        CALL ENTART(1,PER,LT,LPER,NPERBA,ALEMON,ALEMUL,BALAYE)
       ELSE
-         CALL ENTART(1,PER,LT,LPER,NPALE,ALEMON,ALEMUL,BALAYE)
+        CALL ENTART(1,PER,LT,LPER,NPALE,ALEMON,ALEMUL,BALAYE)
       ENDIF
 !
 !=======================================================================
@@ -329,8 +329,8 @@
 ! (AT THE BOUNDARY) HAVE BEEN CALCULATED IN DALE.
 !
 200   IF (ALEMUL) THEN
-         CALL OS('X=C     ', TETAB ,SBID,SBID, DALE%R(LDIR) )
-         CALL ENTART(2,DALE%R(LDIR),LT,LDIR,NDALE,ALEMON,ALEMUL,BALAYE)
+        CALL OS('X=C     ', TETAB ,SBID,SBID, DALE%R(LDIR) )
+        CALL ENTART(2,DALE%R(LDIR),LT,LDIR,NDALE,ALEMON,ALEMUL,BALAYE)
       ENDIF
 !
 ! CALLS THE USER SUBROUTINE
@@ -374,7 +374,7 @@
 !        STORED UNTIL THE LAST COMPUTATION IN T01, T02, AND TM
 !
 !
-         CALL CALCMN
+        CALL CALCMN
 !
       ENDIF
 !
@@ -388,17 +388,17 @@
 !
       IF (.NOT.ALEMON .AND. .NOT.ALEMUL) THEN
 !
-       IF (LISHOU) THEN
-         CALL DISMOY
-     &   (NPOIN,NELEM,MESH%X%R,MESH%Y%R,MESH%IKLE%I,K%R,LISHHO)
-       ELSE
-         LISHHO = 0
-       ENDIF
+        IF (LISHOU) THEN
+          CALL DISMOY
+     &    (NPOIN,NELEM,MESH%X%R,MESH%Y%R,MESH%IKLE%I,K%R,LISHHO)
+        ELSE
+          LISHHO = 0
+        ENDIF
 !
-         CALL RADIA1 (LISHHO)
+        CALL RADIA1 (LISHHO)
 !
       ELSE
-         LISHHO = 0
+        LISHHO = 0
       ENDIF
 !=======================================================================
 !
@@ -432,14 +432,14 @@
 !
 !=======================================================================
 !
-         CALL OS('X=CX    ', INCI , SBID , SBID , RADDEG )
+        CALL OS('X=CX    ', INCI , SBID , SBID , RADDEG )
 !
 ! RUBENS FILE
 !
-         CALL BIEF_DESIMP(ART_FILES(ARTRES)%FMT,VARSOR,
-     &            HIST,0,NPOIN,ART_FILES(ARTRES)%LU,'STD',PER,0,
-     &            LISPRD,LEOPRD,
-     &            SORLEO,SORIMP,MAXVAR,TEXTE,0,0)
+        CALL BIEF_DESIMP(ART_FILES(ARTRES)%FMT,VARSOR,
+     &           HIST,0,NPOIN,ART_FILES(ARTRES)%LU,'STD',PER,0,
+     &           LISPRD,LEOPRD,
+     &           SORLEO,SORIMP,MAXVAR,TEXTE,0,0)
 !
 !=======================================================================
 !
@@ -451,13 +451,13 @@
 !     IT CAN BE MODIFIED BY THE USER FOR THEIR PARTICULAR CASE.
 !     BUT THE CALL TO THE SUBROUTINE MUST STAY IN THE TIME LOOP.
 !
-         IF(VALID) THEN
-           CALL BIEF_VALIDA(TB,TEXTE,
-     &                      ART_FILES(ARTREF)%LU,ART_FILES(ARTREF)%FMT,
-     &                      VARSOR,TEXTE,
-     &                      ART_FILES(ARTRES)%LU,ART_FILES(ARTRES)%FMT,
-     &                      MAXVAR,NPOIN,LT,LT,ALIRE)
-         ENDIF
+        IF(VALID) THEN
+          CALL BIEF_VALIDA(TB,TEXTE,
+     &                     ART_FILES(ARTREF)%LU,ART_FILES(ARTREF)%FMT,
+     &                     VARSOR,TEXTE,
+     &                     ART_FILES(ARTRES)%LU,ART_FILES(ARTRES)%FMT,
+     &                     MAXVAR,NPOIN,LT,LT,ALIRE)
+        ENDIF
 !
       ENDIF
 !
@@ -470,10 +470,10 @@
 ! IF SWEEPS A RANGE OF PERIODS
 !
       IF (BALAYE) THEN
-         LT   = LT  + 1
-         LPER = LPER + 1
-         PER  = PER + PERPAS
-         IF (PER.LE.PERFIN) GOTO 100
+        LT   = LT  + 1
+        LPER = LPER + 1
+        PER  = PER + PERPAS
+        IF (PER.LE.PERFIN) GOTO 100
       ENDIF
 !
 !
@@ -485,73 +485,73 @@
 !
       IF (ALEMON .OR. ALEMUL) THEN
 !
-         LT  = LT  + 1
+        LT  = LT  + 1
 !
-         IF (LT.LT.NPALE*NDALE) THEN
+        IF (LT.LT.NPALE*NDALE) THEN
 !
-!           REACTUALISES THE ENERGY OF THE RANDOM SEA
-            CALL OS('X=X+CYZ ',HALE,HHO,HHO,1.D0/DBLE(NPALE*NDALE))
+!         REACTUALISES THE ENERGY OF THE RANDOM SEA
+          CALL OS('X=X+CYZ ',HALE,HHO,HHO,1.D0/DBLE(NPALE*NDALE))
 !
-!           GOES TO NEXT DIRECTION
-            LDIR = LDIR + 1
-            IF (LDIR.LE.NDALE) GOTO 200
+!         GOES TO NEXT DIRECTION
+          LDIR = LDIR + 1
+          IF (LDIR.LE.NDALE) GOTO 200
 !
-!           GOES TO NEXT PERIOD
-            LDIR = 1
-            LPER = LPER + 1
-            PER = PALE%R(LPER)
-            GOTO 100
+!         GOES TO NEXT PERIOD
+          LDIR = 1
+          LPER = LPER + 1
+          PER = PALE%R(LPER)
+          GOTO 100
 !
-         ELSE
+        ELSE
 !
-!           LAST COMPUTATION: DETERMINES THE MEAN PERIODS
-!           (T01 AND T02), AND THE MEAN DIRECTION (INCI)
+!         LAST COMPUTATION: DETERMINES THE MEAN PERIODS
+!         (T01 AND T02), AND THE MEAN DIRECTION (INCI)
 !
 !
-            CALL CALCTM
+          CALL CALCTM
 !
-!           DETERMINES MEAN K, C AND CG
+!         DETERMINES MEAN K, C AND CG
 !
-            CALL CALRE2
+          CALL CALRE2
 !
-!           TAKES INTO ACCOUNT THE LAST WAVE HEIGHT
-!           FOR RANDOM SEAS
+!         TAKES INTO ACCOUNT THE LAST WAVE HEIGHT
+!         FOR RANDOM SEAS
 !
-            CALL OS('X=X+CYZ ',HALE,HHO,HHO,1.D0/DBLE(NPALE*NDALE))
-            CALL OS('X=SQR(Y)', HALE , HALE , SBID , BID )
-            CALL OS('X=CX    ',QB,SBID,SBID,1.D0/DBLE(NPALE*NDALE))
-!
-!=======================================================================
-!
-!           COMPUTES RADIATION STRESSES
-!           AND DRIVING FORCES FOR RANDOM SEAS
+          CALL OS('X=X+CYZ ',HALE,HHO,HHO,1.D0/DBLE(NPALE*NDALE))
+          CALL OS('X=SQR(Y)', HALE , HALE , SBID , BID )
+          CALL OS('X=CX    ',QB,SBID,SBID,1.D0/DBLE(NPALE*NDALE))
 !
 !=======================================================================
 !
-            CALL RADIA2 (LISHHO)
+!         COMPUTES RADIATION STRESSES
+!         AND DRIVING FORCES FOR RANDOM SEAS
 !
 !=======================================================================
 !
-!          CONVERTS INCI INTO DEGREES
+          CALL RADIA2 (LISHHO)
 !
 !=======================================================================
 !
-            CALL OS('X=CX    ', INCI , SBID , SBID , RADDEG )
+!         CONVERTS INCI INTO DEGREES
 !
 !=======================================================================
 !
-!           RUBENS FILE
+          CALL OS('X=CX    ', INCI , SBID , SBID , RADDEG )
 !
 !=======================================================================
 !
-            CALL BIEF_DESIMP(ART_FILES(ARTRES)%FMT,VARSOR,
-     &            HIST,0,NPOIN,ART_FILES(ARTRES)%LU,'STD',PERPIC,0,
-     &            LISPRD,LEOPRD,
-     &            SORLEO,SORIMP,MAXVAR,TEXTE,0,0)
+!         RUBENS FILE
 !
 !=======================================================================
 !
-!              COMPARISON AGAINST A REFERENCE FILE
+          CALL BIEF_DESIMP(ART_FILES(ARTRES)%FMT,VARSOR,
+     &          HIST,0,NPOIN,ART_FILES(ARTRES)%LU,'STD',PERPIC,0,
+     &          LISPRD,LEOPRD,
+     &          SORLEO,SORIMP,MAXVAR,TEXTE,0,0)
+!
+!=======================================================================
+!
+!         COMPARISON AGAINST A REFERENCE FILE
 !
 !=======================================================================
 !
@@ -560,15 +560,15 @@
 !     IT CAN BE MODIFIED BY THE USER FOR THEIR PARTICULAR CASE.
 !     BUT THE CALL TO THE SUBROUTINE MUST STAY IN THE TIME LOOP.
 !
-            IF(VALID) THEN
-              CALL BIEF_VALIDA(TB,TEXTE,
-     &                       ART_FILES(ARTREF)%LU,ART_FILES(ARTREF)%FMT,
-     &                       VARSOR,TEXTE,
-     &                       ART_FILES(ARTRES)%LU,ART_FILES(ARTRES)%FMT,
-     &                       MAXVAR,NPOIN,LT,LT,ALIRE)
-            ENDIF
+          IF(VALID) THEN
+            CALL BIEF_VALIDA(TB,TEXTE,
+     &                     ART_FILES(ARTREF)%LU,ART_FILES(ARTREF)%FMT,
+     &                     VARSOR,TEXTE,
+     &                     ART_FILES(ARTRES)%LU,ART_FILES(ARTRES)%FMT,
+     &                     MAXVAR,NPOIN,LT,LT,ALIRE)
+          ENDIF
 !
-         ENDIF
+        ENDIF
 !
       ENDIF
 !
@@ -581,16 +581,3 @@
 !
       RETURN
       END
-      
-
-
-
-
-
-
-
-
-
-
-
-

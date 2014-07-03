@@ -227,142 +227,142 @@
 !
       DO IELEM=1,NELEM
 !
-         I1=IKLE(IELEM,1)
-         I2=IKLE(IELEM,2)
-         I3=IKLE(IELEM,3)
-         I4=IKLE(IELEM,4)
-         I5=IKLE(IELEM,5)
-         I6=IKLE(IELEM,6)
-!        DEPENDING ON NPOU0, II4 WILL BE I4 OR I1, ETC
-         II4=I1+NPOU0
-         II5=I2+NPOU0
-         II6=I3+NPOU0
+        I1=IKLE(IELEM,1)
+        I2=IKLE(IELEM,2)
+        I3=IKLE(IELEM,3)
+        I4=IKLE(IELEM,4)
+        I5=IKLE(IELEM,5)
+        I6=IKLE(IELEM,6)
+!       DEPENDING ON NPOU0, II4 WILL BE I4 OR I1, ETC
+        II4=I1+NPOU0
+        II5=I2+NPOU0
+        II6=I3+NPOU0
 !
-         H1=Z(I4)-Z(I1)
-         H2=Z(I5)-Z(I2)
-         H3=Z(I6)-Z(I3)
+        H1=Z(I4)-Z(I1)
+        H2=Z(I5)-Z(I2)
+        H3=Z(I6)-Z(I3)
 !
-         SH1=H1+H2+H3
-         SHH=H1*H1+H2*H2+H3*H3
+        SH1=H1+H2+H3
+        SHH=H1*H1+H2*H2+H3*H3
 !
-         D1=Y(IELEM,2)-Y(IELEM,3)
-!        D2=Y(IELEM,3)-Y(IELEM,1)
-         D2=Y(IELEM,3)
-!        D3=Y(IELEM,1)-Y(IELEM,2)
-         D3=          -Y(IELEM,2)
+        D1=Y(IELEM,2)-Y(IELEM,3)
+!       D2=Y(IELEM,3)-Y(IELEM,1)
+        D2=Y(IELEM,3)
+!       D3=Y(IELEM,1)-Y(IELEM,2)
+        D3=          -Y(IELEM,2)
 !
-         D=XS2880/SURFAC(IELEM)
+        D=XS2880/SURFAC(IELEM)
 !
-         RI=-(Z(I1)*D1+Z(I2)*D2+Z(I3)*D3)
-         RS=-(Z(I4)*D1+Z(I5)*D2+Z(I6)*D3)
-         R=RI+RS
-         RRI=R+RI+RI
-         RRS=R+RS+RS
-         RRRI=R*R+2*RI*RI
-         RRRS=R*R+2*RS*RS
+        RI=-(Z(I1)*D1+Z(I2)*D2+Z(I3)*D3)
+        RS=-(Z(I4)*D1+Z(I5)*D2+Z(I6)*D3)
+        R=RI+RS
+        RRI=R+RI+RI
+        RRS=R+RS+RS
+        RRRI=R*R+2*RI*RI
+        RRRS=R*R+2*RS*RS
 !
-         D12=D1*D2
-         D13=D1*D3
-         D23=D2*D3
+        D12=D1*D2
+        D13=D1*D3
+        D23=D2*D3
 !
-         IF(MAX(Z(I1),Z(I2),Z(I3)).GT.MIN(Z(I4),Z(I5),Z(I6)).OR.
-     &      H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
-           NF1=0.D0
-           NF2=0.D0
-           NF3=0.D0
-           NF4=0.D0
-           NF5=0.D0
-           NF6=0.D0
-           NG1=0.D0
-           NG2=0.D0
-           NG3=0.D0
-           NG4=0.D0
-           NG5=0.D0
-           NG6=0.D0
-           NH1=0.D0
-           NH2=0.D0
-           NH3=0.D0
-         ELSE
-           NF1=F(I1)/H1
-           NF2=F(I2)/H2
-           NF3=F(I3)/H3
-           NF4=F(I4)/H1
-           NF5=F(I5)/H2
-           NF6=F(I6)/H3
-           NG1=G(I1)/H1
-           NG2=G(I2)/H2
-           NG3=G(I3)/H3
-           NG4=G(I4)/H1
-           NG5=G(I5)/H2
-           NG6=G(I6)/H3
-!          DEPENDING ON THE CASE (II4=I1 OR I4, ETC.)
-!          ALTERNATIVE WITH VERTICAL LINEAR VISCOSITY (II4=I4)
-!          ALTERNATIVE WITH P0 VERTICAL VISCOSITY ON THE VERTICAL (II4=I1)
-           NH1=(H(I1)+H(II4))/H1
-           NH2=(H(I2)+H(II5))/H2
-           NH3=(H(I3)+H(II6))/H3
-         ENDIF
+        IF(MAX(Z(I1),Z(I2),Z(I3)).GT.MIN(Z(I4),Z(I5),Z(I6)).OR.
+     &     H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
+          NF1=0.D0
+          NF2=0.D0
+          NF3=0.D0
+          NF4=0.D0
+          NF5=0.D0
+          NF6=0.D0
+          NG1=0.D0
+          NG2=0.D0
+          NG3=0.D0
+          NG4=0.D0
+          NG5=0.D0
+          NG6=0.D0
+          NH1=0.D0
+          NH2=0.D0
+          NH3=0.D0
+        ELSE
+          NF1=F(I1)/H1
+          NF2=F(I2)/H2
+          NF3=F(I3)/H3
+          NF4=F(I4)/H1
+          NF5=F(I5)/H2
+          NF6=F(I6)/H3
+          NG1=G(I1)/H1
+          NG2=G(I2)/H2
+          NG3=G(I3)/H3
+          NG4=G(I4)/H1
+          NG5=G(I5)/H2
+          NG6=G(I6)/H3
+!         DEPENDING ON THE CASE (II4=I1 OR I4, ETC.)
+!         ALTERNATIVE WITH VERTICAL LINEAR VISCOSITY (II4=I4)
+!         ALTERNATIVE WITH P0 VERTICAL VISCOSITY ON THE VERTICAL (II4=I1)
+          NH1=(H(I1)+H(II4))/H1
+          NH2=(H(I2)+H(II5))/H2
+          NH3=(H(I3)+H(II6))/H3
+        ENDIF
 !
-         SNI=NF1+NF2+NF3
-         SNS=NF4+NF5+NF6
-         SNHI=NF1*H1+NF2*H2+NF3*H3
-         SNHS=NF4*H1+NF5*H2+NF6*H3
-         SNHHI=(SNI*SH1+SNHI+SNHI)*SH1+SNI*SHH
-     &        +2*(NF1*H1*H1+NF2*H2*H2+NF3*H3*H3)
-         SNHHS=(SNS*SH1+SNHS+SNHS)*SH1+SNS*SHH
-     &        +2*(NF4*H1*H1+NF5*H2*H2+NF6*H3*H3)
-         SNHH=SNHHI+SNHHS
-         SNHHI=SNHH+SNHHI+SNHHI
-         SNHHS=SNHH+SNHHS+SNHHS
+        SNI=NF1+NF2+NF3
+        SNS=NF4+NF5+NF6
+        SNHI=NF1*H1+NF2*H2+NF3*H3
+        SNHS=NF4*H1+NF5*H2+NF6*H3
+        SNHHI=(SNI*SH1+SNHI+SNHI)*SH1+SNI*SHH
+     &       +2*(NF1*H1*H1+NF2*H2*H2+NF3*H3*H3)
+        SNHHS=(SNS*SH1+SNHS+SNHS)*SH1+SNS*SHH
+     &       +2*(NF4*H1*H1+NF5*H2*H2+NF6*H3*H3)
+        SNHH=SNHHI+SNHHS
+        SNHHI=SNHH+SNHHI+SNHHI
+        SNHHS=SNHH+SNHHS+SNHHS
 !
-         HHI12=SNHHI*D12
-         HHI13=SNHHI*D13
-         HHI23=SNHHI*D23
-         HHS12=SNHHS*D12
-         HHS13=SNHHS*D13
-         HHS23=SNHHS*D23
-         HH12=SNHH*D12
-         HH13=SNHH*D13
-         HH23=SNHH*D23
+        HHI12=SNHHI*D12
+        HHI13=SNHHI*D13
+        HHI23=SNHHI*D23
+        HHS12=SNHHS*D12
+        HHS13=SNHHS*D13
+        HHS23=SNHHS*D23
+        HH12=SNHH*D12
+        HH13=SNHH*D13
+        HH23=SNHH*D23
 !
-         SNHI1=(SNI+NF1)*(SH1+H1)+SNHI+NF1*H1
-         SNHS1=(SNS+NF4)*(SH1+H1)+SNHS+NF4*H1
-         SNHI2=(SNI+NF2)*(SH1+H2)+SNHI+NF2*H2
-         SNHS2=(SNS+NF5)*(SH1+H2)+SNHS+NF5*H2
-         SNHI3=(SNI+NF3)*(SH1+H3)+SNHI+NF3*H3
-         SNHS3=(SNS+NF6)*(SH1+H3)+SNHS+NF6*H3
+        SNHI1=(SNI+NF1)*(SH1+H1)+SNHI+NF1*H1
+        SNHS1=(SNS+NF4)*(SH1+H1)+SNHS+NF4*H1
+        SNHI2=(SNI+NF2)*(SH1+H2)+SNHI+NF2*H2
+        SNHS2=(SNS+NF5)*(SH1+H2)+SNHS+NF5*H2
+        SNHI3=(SNI+NF3)*(SH1+H3)+SNHI+NF3*H3
+        SNHS3=(SNS+NF6)*(SH1+H3)+SNHS+NF6*H3
 !
-         HRI1=RRI*SNHI1+R*SNHS1
-         HRS1=RRS*SNHS1+R*SNHI1
-         HRI2=RRI*SNHI2+R*SNHS2
-         HRS2=RRS*SNHS2+R*SNHI2
-         HRI3=RRI*SNHI3+R*SNHS3
-         HRS3=RRS*SNHS3+R*SNHI3
+        HRI1=RRI*SNHI1+R*SNHS1
+        HRS1=RRS*SNHS1+R*SNHI1
+        HRI2=RRI*SNHI2+R*SNHS2
+        HRS2=RRS*SNHS2+R*SNHI2
+        HRI3=RRI*SNHI3+R*SNHS3
+        HRS3=RRS*SNHS3+R*SNHI3
 !
-         RR11=2*(RRRI*(SNI+NF1+NF1)+RRRS*(SNS+NF4+NF4))
-         RR22=2*(RRRI*(SNI+NF2+NF2)+RRRS*(SNS+NF5+NF5))
-         RR33=2*(RRRI*(SNI+NF3+NF3)+RRRS*(SNS+NF6+NF6))
-         RR12=   RRRI*(SNI+NF1+NF2)+RRRS*(SNS+NF4+NF5)
-         RR13=   RRRI*(SNI+NF1+NF3)+RRRS*(SNS+NF4+NF6)
-         RR23=   RRRI*(SNI+NF2+NF3)+RRRS*(SNS+NF5+NF6)
+        RR11=2*(RRRI*(SNI+NF1+NF1)+RRRS*(SNS+NF4+NF4))
+        RR22=2*(RRRI*(SNI+NF2+NF2)+RRRS*(SNS+NF5+NF5))
+        RR33=2*(RRRI*(SNI+NF3+NF3)+RRRS*(SNS+NF6+NF6))
+        RR12=   RRRI*(SNI+NF1+NF2)+RRRS*(SNS+NF4+NF5)
+        RR13=   RRRI*(SNI+NF1+NF3)+RRRS*(SNS+NF4+NF6)
+        RR23=   RRRI*(SNI+NF2+NF3)+RRRS*(SNS+NF5+NF6)
 !
-!        EXTRA-DIAGONAL TERMS
+!       EXTRA-DIAGONAL TERMS
 !
-         XM(IELEM, 1)=D*( HHI12  -D1*HRI2-D2*HRI1 +RR12)
-         XM(IELEM, 2)=D*( HHI13  -D1*HRI3-D3*HRI1 +RR13)
-         XM(IELEM, 3)=D*(-HH12-HH13+D1*(HRI1-HRS1)-RR11)
-         XM(IELEM, 4)=D*( HH12   +D1*HRI2-D2*HRS1 -RR12)
-         XM(IELEM, 5)=D*( HH13   +D1*HRI3-D3*HRS1 -RR13)
-         XM(IELEM, 6)=D*( HHI23  -D2*HRI3-D3*HRI2 +RR23)
-         XM(IELEM, 7)=D*( HH12   +D2*HRI1-D1*HRS2 -RR12)
-         XM(IELEM, 8)=D*(-HH12-HH23+D2*(HRI2-HRS2)-RR22)
-         XM(IELEM, 9)=D*( HH23   +D2*HRI3-D3*HRS2 -RR23)
-         XM(IELEM,10)=D*( HH13   +D3*HRI1-D1*HRS3 -RR13)
-         XM(IELEM,11)=D*( HH23   +D3*HRI2-D2*HRS3 -RR23)
-         XM(IELEM,12)=D*(-HH13-HH23+D3*(HRI3-HRS3)-RR33)
-         XM(IELEM,13)=D*( HHS12  +D1*HRS2+D2*HRS1 +RR12)
-         XM(IELEM,14)=D*( HHS13  +D1*HRS3+D3*HRS1 +RR13)
-         XM(IELEM,15)=D*( HHS23  +D2*HRS3+D3*HRS2 +RR23)
+        XM(IELEM, 1)=D*( HHI12  -D1*HRI2-D2*HRI1 +RR12)
+        XM(IELEM, 2)=D*( HHI13  -D1*HRI3-D3*HRI1 +RR13)
+        XM(IELEM, 3)=D*(-HH12-HH13+D1*(HRI1-HRS1)-RR11)
+        XM(IELEM, 4)=D*( HH12   +D1*HRI2-D2*HRS1 -RR12)
+        XM(IELEM, 5)=D*( HH13   +D1*HRI3-D3*HRS1 -RR13)
+        XM(IELEM, 6)=D*( HHI23  -D2*HRI3-D3*HRI2 +RR23)
+        XM(IELEM, 7)=D*( HH12   +D2*HRI1-D1*HRS2 -RR12)
+        XM(IELEM, 8)=D*(-HH12-HH23+D2*(HRI2-HRS2)-RR22)
+        XM(IELEM, 9)=D*( HH23   +D2*HRI3-D3*HRS2 -RR23)
+        XM(IELEM,10)=D*( HH13   +D3*HRI1-D1*HRS3 -RR13)
+        XM(IELEM,11)=D*( HH23   +D3*HRI2-D2*HRS3 -RR23)
+        XM(IELEM,12)=D*(-HH13-HH23+D3*(HRI3-HRS3)-RR33)
+        XM(IELEM,13)=D*( HHS12  +D1*HRS2+D2*HRS1 +RR12)
+        XM(IELEM,14)=D*( HHS13  +D1*HRS3+D3*HRS1 +RR13)
+        XM(IELEM,15)=D*( HHS23  +D2*HRS3+D3*HRS2 +RR23)
 !
 !-----------------------------------------------------------------------
 !
@@ -370,84 +370,84 @@
 !
 !-----------------------------------------------------------------------
 !
-         D1=X(IELEM,3)-X(IELEM,2)
-!        D2=X(IELEM,1)-X(IELEM,3)
-         D2=          -X(IELEM,3)
-!        D3=X(IELEM,2)-X(IELEM,1)
-         D3=X(IELEM,2)
+        D1=X(IELEM,3)-X(IELEM,2)
+!       D2=X(IELEM,1)-X(IELEM,3)
+        D2=          -X(IELEM,3)
+!       D3=X(IELEM,2)-X(IELEM,1)
+        D3=X(IELEM,2)
 !
-         RI=-(Z(I1)*D1+Z(I2)*D2+Z(I3)*D3)
-         RS=-(Z(I4)*D1+Z(I5)*D2+Z(I6)*D3)
-         R=RI+RS
-         RRI=R+RI+RI
-         RRS=R+RS+RS
-         RRRI=R*R+2*RI*RI
-         RRRS=R*R+2*RS*RS
+        RI=-(Z(I1)*D1+Z(I2)*D2+Z(I3)*D3)
+        RS=-(Z(I4)*D1+Z(I5)*D2+Z(I6)*D3)
+        R=RI+RS
+        RRI=R+RI+RI
+        RRS=R+RS+RS
+        RRRI=R*R+2*RI*RI
+        RRRS=R*R+2*RS*RS
 !
-         D12=D1*D2
-         D13=D1*D3
-         D23=D2*D3
+        D12=D1*D2
+        D13=D1*D3
+        D23=D2*D3
 !
-         SNI=NG1+NG2+NG3
-         SNS=NG4+NG5+NG6
-         SNHI=NG1*H1+NG2*H2+NG3*H3
-         SNHS=NG4*H1+NG5*H2+NG6*H3
-         SNHHI=(SNI*SH1+SNHI+SNHI)*SH1+SNI*SHH
-     &        +2*(NG1*H1*H1+NG2*H2*H2+NG3*H3*H3)
-         SNHHS=(SNS*SH1+SNHS+SNHS)*SH1+SNS*SHH
-     &        +2*(NG4*H1*H1+NG5*H2*H2+NG6*H3*H3)
-         SNHH=SNHHI+SNHHS
-         SNHHI=SNHH+SNHHI+SNHHI
-         SNHHS=SNHH+SNHHS+SNHHS
+        SNI=NG1+NG2+NG3
+        SNS=NG4+NG5+NG6
+        SNHI=NG1*H1+NG2*H2+NG3*H3
+        SNHS=NG4*H1+NG5*H2+NG6*H3
+        SNHHI=(SNI*SH1+SNHI+SNHI)*SH1+SNI*SHH
+     &       +2*(NG1*H1*H1+NG2*H2*H2+NG3*H3*H3)
+        SNHHS=(SNS*SH1+SNHS+SNHS)*SH1+SNS*SHH
+     &       +2*(NG4*H1*H1+NG5*H2*H2+NG6*H3*H3)
+        SNHH=SNHHI+SNHHS
+        SNHHI=SNHH+SNHHI+SNHHI
+        SNHHS=SNHH+SNHHS+SNHHS
 !
-         HHI12=SNHHI*D12
-         HHI13=SNHHI*D13
-         HHI23=SNHHI*D23
-         HHS12=SNHHS*D12
-         HHS13=SNHHS*D13
-         HHS23=SNHHS*D23
-         HH12=SNHH*D12
-         HH13=SNHH*D13
-         HH23=SNHH*D23
+        HHI12=SNHHI*D12
+        HHI13=SNHHI*D13
+        HHI23=SNHHI*D23
+        HHS12=SNHHS*D12
+        HHS13=SNHHS*D13
+        HHS23=SNHHS*D23
+        HH12=SNHH*D12
+        HH13=SNHH*D13
+        HH23=SNHH*D23
 !
-         SNHI1=(SNI+NG1)*(SH1+H1)+SNHI+NG1*H1
-         SNHS1=(SNS+NG4)*(SH1+H1)+SNHS+NG4*H1
-         SNHI2=(SNI+NG2)*(SH1+H2)+SNHI+NG2*H2
-         SNHS2=(SNS+NG5)*(SH1+H2)+SNHS+NG5*H2
-         SNHI3=(SNI+NG3)*(SH1+H3)+SNHI+NG3*H3
-         SNHS3=(SNS+NG6)*(SH1+H3)+SNHS+NG6*H3
+        SNHI1=(SNI+NG1)*(SH1+H1)+SNHI+NG1*H1
+        SNHS1=(SNS+NG4)*(SH1+H1)+SNHS+NG4*H1
+        SNHI2=(SNI+NG2)*(SH1+H2)+SNHI+NG2*H2
+        SNHS2=(SNS+NG5)*(SH1+H2)+SNHS+NG5*H2
+        SNHI3=(SNI+NG3)*(SH1+H3)+SNHI+NG3*H3
+        SNHS3=(SNS+NG6)*(SH1+H3)+SNHS+NG6*H3
 !
-         HRI1=RRI*SNHI1+R*SNHS1
-         HRS1=RRS*SNHS1+R*SNHI1
-         HRI2=RRI*SNHI2+R*SNHS2
-         HRS2=RRS*SNHS2+R*SNHI2
-         HRI3=RRI*SNHI3+R*SNHS3
-         HRS3=RRS*SNHS3+R*SNHI3
+        HRI1=RRI*SNHI1+R*SNHS1
+        HRS1=RRS*SNHS1+R*SNHI1
+        HRI2=RRI*SNHI2+R*SNHS2
+        HRS2=RRS*SNHS2+R*SNHI2
+        HRI3=RRI*SNHI3+R*SNHS3
+        HRS3=RRS*SNHS3+R*SNHI3
 !
-         RR11=2*(RRRI*(SNI+NG1+NG1)+RRRS*(SNS+NG4+NG4))
-         RR22=2*(RRRI*(SNI+NG2+NG2)+RRRS*(SNS+NG5+NG5))
-         RR33=2*(RRRI*(SNI+NG3+NG3)+RRRS*(SNS+NG6+NG6))
-         RR12=   RRRI*(SNI+NG1+NG2)+RRRS*(SNS+NG4+NG5)
-         RR13=   RRRI*(SNI+NG1+NG3)+RRRS*(SNS+NG4+NG6)
-         RR23=   RRRI*(SNI+NG2+NG3)+RRRS*(SNS+NG5+NG6)
+        RR11=2*(RRRI*(SNI+NG1+NG1)+RRRS*(SNS+NG4+NG4))
+        RR22=2*(RRRI*(SNI+NG2+NG2)+RRRS*(SNS+NG5+NG5))
+        RR33=2*(RRRI*(SNI+NG3+NG3)+RRRS*(SNS+NG6+NG6))
+        RR12=   RRRI*(SNI+NG1+NG2)+RRRS*(SNS+NG4+NG5)
+        RR13=   RRRI*(SNI+NG1+NG3)+RRRS*(SNS+NG4+NG6)
+        RR23=   RRRI*(SNI+NG2+NG3)+RRRS*(SNS+NG5+NG6)
 !
-!        EXTRA-DIAGONAL TERMS
+!       EXTRA-DIAGONAL TERMS
 !
-         XM(IELEM, 1)=XM(IELEM, 1)+D*( HHI12  -D1*HRI2-D2*HRI1 +RR12)
-         XM(IELEM, 2)=XM(IELEM, 2)+D*( HHI13  -D1*HRI3-D3*HRI1 +RR13)
-         XM(IELEM, 3)=XM(IELEM, 3)+D*(-HH12-HH13+D1*(HRI1-HRS1)-RR11)
-         XM(IELEM, 4)=XM(IELEM, 4)+D*( HH12   +D1*HRI2-D2*HRS1 -RR12)
-         XM(IELEM, 5)=XM(IELEM, 5)+D*( HH13   +D1*HRI3-D3*HRS1 -RR13)
-         XM(IELEM, 6)=XM(IELEM, 6)+D*( HHI23  -D2*HRI3-D3*HRI2 +RR23)
-         XM(IELEM, 7)=XM(IELEM, 7)+D*( HH12   +D2*HRI1-D1*HRS2 -RR12)
-         XM(IELEM, 8)=XM(IELEM, 8)+D*(-HH12-HH23+D2*(HRI2-HRS2)-RR22)
-         XM(IELEM, 9)=XM(IELEM, 9)+D*( HH23   +D2*HRI3-D3*HRS2 -RR23)
-         XM(IELEM,10)=XM(IELEM,10)+D*( HH13   +D3*HRI1-D1*HRS3 -RR13)
-         XM(IELEM,11)=XM(IELEM,11)+D*( HH23   +D3*HRI2-D2*HRS3 -RR23)
-         XM(IELEM,12)=XM(IELEM,12)+D*(-HH13-HH23+D3*(HRI3-HRS3)-RR33)
-         XM(IELEM,13)=XM(IELEM,13)+D*( HHS12  +D1*HRS2+D2*HRS1 +RR12)
-         XM(IELEM,14)=XM(IELEM,14)+D*( HHS13  +D1*HRS3+D3*HRS1 +RR13)
-         XM(IELEM,15)=XM(IELEM,15)+D*( HHS23  +D2*HRS3+D3*HRS2 +RR23)
+        XM(IELEM, 1)=XM(IELEM, 1)+D*( HHI12  -D1*HRI2-D2*HRI1 +RR12)
+        XM(IELEM, 2)=XM(IELEM, 2)+D*( HHI13  -D1*HRI3-D3*HRI1 +RR13)
+        XM(IELEM, 3)=XM(IELEM, 3)+D*(-HH12-HH13+D1*(HRI1-HRS1)-RR11)
+        XM(IELEM, 4)=XM(IELEM, 4)+D*( HH12   +D1*HRI2-D2*HRS1 -RR12)
+        XM(IELEM, 5)=XM(IELEM, 5)+D*( HH13   +D1*HRI3-D3*HRS1 -RR13)
+        XM(IELEM, 6)=XM(IELEM, 6)+D*( HHI23  -D2*HRI3-D3*HRI2 +RR23)
+        XM(IELEM, 7)=XM(IELEM, 7)+D*( HH12   +D2*HRI1-D1*HRS2 -RR12)
+        XM(IELEM, 8)=XM(IELEM, 8)+D*(-HH12-HH23+D2*(HRI2-HRS2)-RR22)
+        XM(IELEM, 9)=XM(IELEM, 9)+D*( HH23   +D2*HRI3-D3*HRS2 -RR23)
+        XM(IELEM,10)=XM(IELEM,10)+D*( HH13   +D3*HRI1-D1*HRS3 -RR13)
+        XM(IELEM,11)=XM(IELEM,11)+D*( HH23   +D3*HRI2-D2*HRS3 -RR23)
+        XM(IELEM,12)=XM(IELEM,12)+D*(-HH13-HH23+D3*(HRI3-HRS3)-RR33)
+        XM(IELEM,13)=XM(IELEM,13)+D*( HHS12  +D1*HRS2+D2*HRS1 +RR12)
+        XM(IELEM,14)=XM(IELEM,14)+D*( HHS13  +D1*HRS3+D3*HRS1 +RR13)
+        XM(IELEM,15)=XM(IELEM,15)+D*( HHS23  +D2*HRS3+D3*HRS2 +RR23)
 !
 !-----------------------------------------------------------------------
 !
@@ -455,48 +455,48 @@
 !
 !-----------------------------------------------------------------------
 !
-!        VERSION WITH SIMPLIFICATIONS TO ACHIEVE MONOTONY OF THE MATRIX
+!       VERSION WITH SIMPLIFICATIONS TO ACHIEVE MONOTONY OF THE MATRIX
 !
-         D=SURFAC(IELEM)*XS06
+        D=SURFAC(IELEM)*XS06
 !
-!        EXTRA-DIAGONAL TERMS
+!       EXTRA-DIAGONAL TERMS
 !
-         XM(IELEM, 3)=XM(IELEM, 3)-D*NH1
-         XM(IELEM, 8)=XM(IELEM, 8)-D*NH2
-         XM(IELEM,12)=XM(IELEM,12)-D*NH3
+        XM(IELEM, 3)=XM(IELEM, 3)-D*NH1
+        XM(IELEM, 8)=XM(IELEM, 8)-D*NH2
+        XM(IELEM,12)=XM(IELEM,12)-D*NH3
 !
 !-----------------------------------------------------------------------
 !
-!        OLD VERSION OF DIFFUSION ALONG Z
+!       OLD VERSION OF DIFFUSION ALONG Z
 !
-!        R=NH1+NH2+NH3+NH4+NH5+NH6
-!        D=((X(I2)-X(I1))*(Y(I3)-Y(I1))-(X(I3)-X(I1))*(Y(I2)-Y(I1)))
-!    *    *XMUL/240.D0
+!       R=NH1+NH2+NH3+NH4+NH5+NH6
+!       D=((X(I2)-X(I1))*(Y(I3)-Y(I1))-(X(I3)-X(I1))*(Y(I2)-Y(I1)))
+!    *   *XMUL/240.D0
 !
-!        RR11=(R+NH1+NH1+NH4+NH4)*(D+D)
-!        RR22=(R+NH2+NH2+NH5+NH5)*(D+D)
-!        RR33=(R+NH3+NH3+NH6+NH6)*(D+D)
-!        RR12=(R+NH1+NH2+NH4+NH5)*D
-!        RR13=(R+NH1+NH3+NH4+NH6)*D
-!        RR23=(R+NH2+NH3+NH5+NH6)*D
+!       RR11=(R+NH1+NH1+NH4+NH4)*(D+D)
+!       RR22=(R+NH2+NH2+NH5+NH5)*(D+D)
+!       RR33=(R+NH3+NH3+NH6+NH6)*(D+D)
+!       RR12=(R+NH1+NH2+NH4+NH5)*D
+!       RR13=(R+NH1+NH3+NH4+NH6)*D
+!       RR23=(R+NH2+NH3+NH5+NH6)*D
 !
-!        EXTRA-DIAGONAL TERMS
+!       EXTRA-DIAGONAL TERMS
 !
-!        XM(IELEM, 1)=XM(IELEM, 1)+RR12
-!        XM(IELEM, 2)=XM(IELEM, 2)+RR13
-!        XM(IELEM, 3)=XM(IELEM, 3)-RR11
-!        XM(IELEM, 4)=XM(IELEM, 4)-RR12
-!        XM(IELEM, 5)=XM(IELEM, 5)-RR13
-!        XM(IELEM, 6)=XM(IELEM, 6)+RR23
-!        XM(IELEM, 7)=XM(IELEM, 7)-RR12
-!        XM(IELEM, 8)=XM(IELEM, 8)-RR22
-!        XM(IELEM, 9)=XM(IELEM, 9)-RR23
-!        XM(IELEM,10)=XM(IELEM,10)-RR13
-!        XM(IELEM,11)=XM(IELEM,11)-RR23
-!        XM(IELEM,12)=XM(IELEM,12)-RR33
-!        XM(IELEM,13)=XM(IELEM,13)+RR12
-!        XM(IELEM,14)=XM(IELEM,14)+RR13
-!        XM(IELEM,15)=XM(IELEM,15)+RR23
+!       XM(IELEM, 1)=XM(IELEM, 1)+RR12
+!       XM(IELEM, 2)=XM(IELEM, 2)+RR13
+!       XM(IELEM, 3)=XM(IELEM, 3)-RR11
+!       XM(IELEM, 4)=XM(IELEM, 4)-RR12
+!       XM(IELEM, 5)=XM(IELEM, 5)-RR13
+!       XM(IELEM, 6)=XM(IELEM, 6)+RR23
+!       XM(IELEM, 7)=XM(IELEM, 7)-RR12
+!       XM(IELEM, 8)=XM(IELEM, 8)-RR22
+!       XM(IELEM, 9)=XM(IELEM, 9)-RR23
+!       XM(IELEM,10)=XM(IELEM,10)-RR13
+!       XM(IELEM,11)=XM(IELEM,11)-RR23
+!       XM(IELEM,12)=XM(IELEM,12)-RR33
+!       XM(IELEM,13)=XM(IELEM,13)+RR12
+!       XM(IELEM,14)=XM(IELEM,14)+RR13
+!       XM(IELEM,15)=XM(IELEM,15)+RR23
 !
 !
 !-----------------------------------------------------------------------
@@ -519,141 +519,141 @@
 !
       DO IELEM=1,NELEM
 !
-         I1=IKLE(IELEM,1)
-         I2=IKLE(IELEM,2)
-         I3=IKLE(IELEM,3)
-         I4=IKLE(IELEM,4)
-         I5=IKLE(IELEM,5)
-         I6=IKLE(IELEM,6)
-!        DEPENDING ON NPOU0, II4 WILL BE I4 OR I1, ETC
-         II4=I1+NPOU0
-         II5=I2+NPOU0
-         II6=I3+NPOU0
+        I1=IKLE(IELEM,1)
+        I2=IKLE(IELEM,2)
+        I3=IKLE(IELEM,3)
+        I4=IKLE(IELEM,4)
+        I5=IKLE(IELEM,5)
+        I6=IKLE(IELEM,6)
+!       DEPENDING ON NPOU0, II4 WILL BE I4 OR I1, ETC
+        II4=I1+NPOU0
+        II5=I2+NPOU0
+        II6=I3+NPOU0
 !
-         H1=Z(I4)-Z(I1)
-         H2=Z(I5)-Z(I2)
-         H3=Z(I6)-Z(I3)
+        H1=Z(I4)-Z(I1)
+        H2=Z(I5)-Z(I2)
+        H3=Z(I6)-Z(I3)
 !
-         SH1=H1+H2+H3
-         SHH=H1*H1+H2*H2+H3*H3
+        SH1=H1+H2+H3
+        SHH=H1*H1+H2*H2+H3*H3
 !
-         D1=Y(IELEM,2)-Y(IELEM,3)
-!        D2=Y(IELEM,3)-Y(IELEM,1)
-         D2=Y(IELEM,3)
-!        D3=Y(IELEM,1)-Y(IELEM,2)
-         D3=          -Y(IELEM,2)
+        D1=Y(IELEM,2)-Y(IELEM,3)
+!       D2=Y(IELEM,3)-Y(IELEM,1)
+        D2=Y(IELEM,3)
+!       D3=Y(IELEM,1)-Y(IELEM,2)
+        D3=          -Y(IELEM,2)
 !
-         D=XS2880/SURFAC(IELEM)
+        D=XS2880/SURFAC(IELEM)
 !
-         RI=-(Z(I1)*D1+Z(I2)*D2+Z(I3)*D3)
-         RS=-(Z(I4)*D1+Z(I5)*D2+Z(I6)*D3)
-         R=RI+RS
-         RRI=R+RI+RI
-         RRS=R+RS+RS
-         RRRI=R*R+2*RI*RI
-         RRRS=R*R+2*RS*RS
+        RI=-(Z(I1)*D1+Z(I2)*D2+Z(I3)*D3)
+        RS=-(Z(I4)*D1+Z(I5)*D2+Z(I6)*D3)
+        R=RI+RS
+        RRI=R+RI+RI
+        RRS=R+RS+RS
+        RRRI=R*R+2*RI*RI
+        RRRS=R*R+2*RS*RS
 !
-         D12=D1*D2
-         D13=D1*D3
-         D23=D2*D3
+        D12=D1*D2
+        D13=D1*D3
+        D23=D2*D3
 !
-         IF(H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI) THEN
-           NF1=0.D0
-           NF2=0.D0
-           NF3=0.D0
-           NF4=0.D0
-           NF5=0.D0
-           NF6=0.D0
-           NG1=0.D0
-           NG2=0.D0
-           NG3=0.D0
-           NG4=0.D0
-           NG5=0.D0
-           NG6=0.D0
-           NH1=0.D0
-           NH2=0.D0
-           NH3=0.D0
-         ELSE
-           NF1=F(I1)/H1
-           NF2=F(I2)/H2
-           NF3=F(I3)/H3
-           NF4=F(I4)/H1
-           NF5=F(I5)/H2
-           NF6=F(I6)/H3
-           NG1=G(I1)/H1
-           NG2=G(I2)/H2
-           NG3=G(I3)/H3
-           NG4=G(I4)/H1
-           NG5=G(I5)/H2
-           NG6=G(I6)/H3
-!          DEPENDING ON THE CASE (II4=I1 OR I4, ETC.)
-!          ALTERNATIVE WITH VERTICAL LINEAR VISCOSITY (II4=I4)
-!          ALTERNATIVE WITH P0 VERTICAL VISCOSITY ON THE VERTICAL (II4=I1)
-           NH1=(H(I1)+H(II4))/H1
-           NH2=(H(I2)+H(II5))/H2
-           NH3=(H(I3)+H(II6))/H3
-         ENDIF
+        IF(H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI) THEN
+          NF1=0.D0
+          NF2=0.D0
+          NF3=0.D0
+          NF4=0.D0
+          NF5=0.D0
+          NF6=0.D0
+          NG1=0.D0
+          NG2=0.D0
+          NG3=0.D0
+          NG4=0.D0
+          NG5=0.D0
+          NG6=0.D0
+          NH1=0.D0
+          NH2=0.D0
+          NH3=0.D0
+        ELSE
+          NF1=F(I1)/H1
+          NF2=F(I2)/H2
+          NF3=F(I3)/H3
+          NF4=F(I4)/H1
+          NF5=F(I5)/H2
+          NF6=F(I6)/H3
+          NG1=G(I1)/H1
+          NG2=G(I2)/H2
+          NG3=G(I3)/H3
+          NG4=G(I4)/H1
+          NG5=G(I5)/H2
+          NG6=G(I6)/H3
+!         DEPENDING ON THE CASE (II4=I1 OR I4, ETC.)
+!         ALTERNATIVE WITH VERTICAL LINEAR VISCOSITY (II4=I4)
+!         ALTERNATIVE WITH P0 VERTICAL VISCOSITY ON THE VERTICAL (II4=I1)
+          NH1=(H(I1)+H(II4))/H1
+          NH2=(H(I2)+H(II5))/H2
+          NH3=(H(I3)+H(II6))/H3
+        ENDIF
 !
-         SNI=NF1+NF2+NF3
-         SNS=NF4+NF5+NF6
-         SNHI=NF1*H1+NF2*H2+NF3*H3
-         SNHS=NF4*H1+NF5*H2+NF6*H3
-         SNHHI=(SNI*SH1+SNHI+SNHI)*SH1+SNI*SHH
-     &        +2*(NF1*H1*H1+NF2*H2*H2+NF3*H3*H3)
-         SNHHS=(SNS*SH1+SNHS+SNHS)*SH1+SNS*SHH
-     &        +2*(NF4*H1*H1+NF5*H2*H2+NF6*H3*H3)
-         SNHH=SNHHI+SNHHS
-         SNHHI=SNHH+SNHHI+SNHHI
-         SNHHS=SNHH+SNHHS+SNHHS
+        SNI=NF1+NF2+NF3
+        SNS=NF4+NF5+NF6
+        SNHI=NF1*H1+NF2*H2+NF3*H3
+        SNHS=NF4*H1+NF5*H2+NF6*H3
+        SNHHI=(SNI*SH1+SNHI+SNHI)*SH1+SNI*SHH
+     &       +2*(NF1*H1*H1+NF2*H2*H2+NF3*H3*H3)
+        SNHHS=(SNS*SH1+SNHS+SNHS)*SH1+SNS*SHH
+     &       +2*(NF4*H1*H1+NF5*H2*H2+NF6*H3*H3)
+        SNHH=SNHHI+SNHHS
+        SNHHI=SNHH+SNHHI+SNHHI
+        SNHHS=SNHH+SNHHS+SNHHS
 !
-         HHI12=SNHHI*D12
-         HHI13=SNHHI*D13
-         HHI23=SNHHI*D23
-         HHS12=SNHHS*D12
-         HHS13=SNHHS*D13
-         HHS23=SNHHS*D23
-         HH12=SNHH*D12
-         HH13=SNHH*D13
-         HH23=SNHH*D23
+        HHI12=SNHHI*D12
+        HHI13=SNHHI*D13
+        HHI23=SNHHI*D23
+        HHS12=SNHHS*D12
+        HHS13=SNHHS*D13
+        HHS23=SNHHS*D23
+        HH12=SNHH*D12
+        HH13=SNHH*D13
+        HH23=SNHH*D23
 !
-         SNHI1=(SNI+NF1)*(SH1+H1)+SNHI+NF1*H1
-         SNHS1=(SNS+NF4)*(SH1+H1)+SNHS+NF4*H1
-         SNHI2=(SNI+NF2)*(SH1+H2)+SNHI+NF2*H2
-         SNHS2=(SNS+NF5)*(SH1+H2)+SNHS+NF5*H2
-         SNHI3=(SNI+NF3)*(SH1+H3)+SNHI+NF3*H3
-         SNHS3=(SNS+NF6)*(SH1+H3)+SNHS+NF6*H3
+        SNHI1=(SNI+NF1)*(SH1+H1)+SNHI+NF1*H1
+        SNHS1=(SNS+NF4)*(SH1+H1)+SNHS+NF4*H1
+        SNHI2=(SNI+NF2)*(SH1+H2)+SNHI+NF2*H2
+        SNHS2=(SNS+NF5)*(SH1+H2)+SNHS+NF5*H2
+        SNHI3=(SNI+NF3)*(SH1+H3)+SNHI+NF3*H3
+        SNHS3=(SNS+NF6)*(SH1+H3)+SNHS+NF6*H3
 !
-         HRI1=RRI*SNHI1+R*SNHS1
-         HRS1=RRS*SNHS1+R*SNHI1
-         HRI2=RRI*SNHI2+R*SNHS2
-         HRS2=RRS*SNHS2+R*SNHI2
-         HRI3=RRI*SNHI3+R*SNHS3
-         HRS3=RRS*SNHS3+R*SNHI3
+        HRI1=RRI*SNHI1+R*SNHS1
+        HRS1=RRS*SNHS1+R*SNHI1
+        HRI2=RRI*SNHI2+R*SNHS2
+        HRS2=RRS*SNHS2+R*SNHI2
+        HRI3=RRI*SNHI3+R*SNHS3
+        HRS3=RRS*SNHS3+R*SNHI3
 !
-         RR11=2*(RRRI*(SNI+NF1+NF1)+RRRS*(SNS+NF4+NF4))
-         RR22=2*(RRRI*(SNI+NF2+NF2)+RRRS*(SNS+NF5+NF5))
-         RR33=2*(RRRI*(SNI+NF3+NF3)+RRRS*(SNS+NF6+NF6))
-         RR12=   RRRI*(SNI+NF1+NF2)+RRRS*(SNS+NF4+NF5)
-         RR13=   RRRI*(SNI+NF1+NF3)+RRRS*(SNS+NF4+NF6)
-         RR23=   RRRI*(SNI+NF2+NF3)+RRRS*(SNS+NF5+NF6)
+        RR11=2*(RRRI*(SNI+NF1+NF1)+RRRS*(SNS+NF4+NF4))
+        RR22=2*(RRRI*(SNI+NF2+NF2)+RRRS*(SNS+NF5+NF5))
+        RR33=2*(RRRI*(SNI+NF3+NF3)+RRRS*(SNS+NF6+NF6))
+        RR12=   RRRI*(SNI+NF1+NF2)+RRRS*(SNS+NF4+NF5)
+        RR13=   RRRI*(SNI+NF1+NF3)+RRRS*(SNS+NF4+NF6)
+        RR23=   RRRI*(SNI+NF2+NF3)+RRRS*(SNS+NF5+NF6)
 !
-!        EXTRA-DIAGONAL TERMS
+!       EXTRA-DIAGONAL TERMS
 !
-         XM(IELEM, 1)=D*( HHI12  -D1*HRI2-D2*HRI1 +RR12)
-         XM(IELEM, 2)=D*( HHI13  -D1*HRI3-D3*HRI1 +RR13)
-         XM(IELEM, 3)=D*(-HH12-HH13+D1*(HRI1-HRS1)-RR11)
-         XM(IELEM, 4)=D*( HH12   +D1*HRI2-D2*HRS1 -RR12)
-         XM(IELEM, 5)=D*( HH13   +D1*HRI3-D3*HRS1 -RR13)
-         XM(IELEM, 6)=D*( HHI23  -D2*HRI3-D3*HRI2 +RR23)
-         XM(IELEM, 7)=D*( HH12   +D2*HRI1-D1*HRS2 -RR12)
-         XM(IELEM, 8)=D*(-HH12-HH23+D2*(HRI2-HRS2)-RR22)
-         XM(IELEM, 9)=D*( HH23   +D2*HRI3-D3*HRS2 -RR23)
-         XM(IELEM,10)=D*( HH13   +D3*HRI1-D1*HRS3 -RR13)
-         XM(IELEM,11)=D*( HH23   +D3*HRI2-D2*HRS3 -RR23)
-         XM(IELEM,12)=D*(-HH13-HH23+D3*(HRI3-HRS3)-RR33)
-         XM(IELEM,13)=D*( HHS12  +D1*HRS2+D2*HRS1 +RR12)
-         XM(IELEM,14)=D*( HHS13  +D1*HRS3+D3*HRS1 +RR13)
-         XM(IELEM,15)=D*( HHS23  +D2*HRS3+D3*HRS2 +RR23)
+        XM(IELEM, 1)=D*( HHI12  -D1*HRI2-D2*HRI1 +RR12)
+        XM(IELEM, 2)=D*( HHI13  -D1*HRI3-D3*HRI1 +RR13)
+        XM(IELEM, 3)=D*(-HH12-HH13+D1*(HRI1-HRS1)-RR11)
+        XM(IELEM, 4)=D*( HH12   +D1*HRI2-D2*HRS1 -RR12)
+        XM(IELEM, 5)=D*( HH13   +D1*HRI3-D3*HRS1 -RR13)
+        XM(IELEM, 6)=D*( HHI23  -D2*HRI3-D3*HRI2 +RR23)
+        XM(IELEM, 7)=D*( HH12   +D2*HRI1-D1*HRS2 -RR12)
+        XM(IELEM, 8)=D*(-HH12-HH23+D2*(HRI2-HRS2)-RR22)
+        XM(IELEM, 9)=D*( HH23   +D2*HRI3-D3*HRS2 -RR23)
+        XM(IELEM,10)=D*( HH13   +D3*HRI1-D1*HRS3 -RR13)
+        XM(IELEM,11)=D*( HH23   +D3*HRI2-D2*HRS3 -RR23)
+        XM(IELEM,12)=D*(-HH13-HH23+D3*(HRI3-HRS3)-RR33)
+        XM(IELEM,13)=D*( HHS12  +D1*HRS2+D2*HRS1 +RR12)
+        XM(IELEM,14)=D*( HHS13  +D1*HRS3+D3*HRS1 +RR13)
+        XM(IELEM,15)=D*( HHS23  +D2*HRS3+D3*HRS2 +RR23)
 !
 !-----------------------------------------------------------------------
 !
@@ -661,100 +661,100 @@
 !
 !-----------------------------------------------------------------------
 !
-         D1=X(IELEM,3)-X(IELEM,2)
-!        D2=X(IELEM,1)-X(IELEM,3)
-         D2=          -X(IELEM,3)
-!        D3=X(IELEM,2)-X(IELEM,1)
-         D3=X(IELEM,2)
+        D1=X(IELEM,3)-X(IELEM,2)
+!       D2=X(IELEM,1)-X(IELEM,3)
+        D2=          -X(IELEM,3)
+!       D3=X(IELEM,2)-X(IELEM,1)
+        D3=X(IELEM,2)
 !
-         RI=-(Z(I1)*D1+Z(I2)*D2+Z(I3)*D3)
-         RS=-(Z(I4)*D1+Z(I5)*D2+Z(I6)*D3)
-         R=RI+RS
-         RRI=R+RI+RI
-         RRS=R+RS+RS
-         RRRI=R*R+2*RI*RI
-         RRRS=R*R+2*RS*RS
+        RI=-(Z(I1)*D1+Z(I2)*D2+Z(I3)*D3)
+        RS=-(Z(I4)*D1+Z(I5)*D2+Z(I6)*D3)
+        R=RI+RS
+        RRI=R+RI+RI
+        RRS=R+RS+RS
+        RRRI=R*R+2*RI*RI
+        RRRS=R*R+2*RS*RS
 !
-         D12=D1*D2
-         D13=D1*D3
-         D23=D2*D3
+        D12=D1*D2
+        D13=D1*D3
+        D23=D2*D3
 !
-         SNI=NG1+NG2+NG3
-         SNS=NG4+NG5+NG6
-         SNHI=NG1*H1+NG2*H2+NG3*H3
-         SNHS=NG4*H1+NG5*H2+NG6*H3
-         SNHHI=(SNI*SH1+SNHI+SNHI)*SH1+SNI*SHH
-     &        +2*(NG1*H1*H1+NG2*H2*H2+NG3*H3*H3)
-         SNHHS=(SNS*SH1+SNHS+SNHS)*SH1+SNS*SHH
-     &        +2*(NG4*H1*H1+NG5*H2*H2+NG6*H3*H3)
-         SNHH=SNHHI+SNHHS
-         SNHHI=SNHH+SNHHI+SNHHI
-         SNHHS=SNHH+SNHHS+SNHHS
+        SNI=NG1+NG2+NG3
+        SNS=NG4+NG5+NG6
+        SNHI=NG1*H1+NG2*H2+NG3*H3
+        SNHS=NG4*H1+NG5*H2+NG6*H3
+        SNHHI=(SNI*SH1+SNHI+SNHI)*SH1+SNI*SHH
+     &       +2*(NG1*H1*H1+NG2*H2*H2+NG3*H3*H3)
+        SNHHS=(SNS*SH1+SNHS+SNHS)*SH1+SNS*SHH
+     &       +2*(NG4*H1*H1+NG5*H2*H2+NG6*H3*H3)
+        SNHH=SNHHI+SNHHS
+        SNHHI=SNHH+SNHHI+SNHHI
+        SNHHS=SNHH+SNHHS+SNHHS
 !
-         HHI12=SNHHI*D12
-         HHI13=SNHHI*D13
-         HHI23=SNHHI*D23
-         HHS12=SNHHS*D12
-         HHS13=SNHHS*D13
-         HHS23=SNHHS*D23
-         HH12=SNHH*D12
-         HH13=SNHH*D13
-         HH23=SNHH*D23
+        HHI12=SNHHI*D12
+        HHI13=SNHHI*D13
+        HHI23=SNHHI*D23
+        HHS12=SNHHS*D12
+        HHS13=SNHHS*D13
+        HHS23=SNHHS*D23
+        HH12=SNHH*D12
+        HH13=SNHH*D13
+        HH23=SNHH*D23
 !
-         SNHI1=(SNI+NG1)*(SH1+H1)+SNHI+NG1*H1
-         SNHS1=(SNS+NG4)*(SH1+H1)+SNHS+NG4*H1
-         SNHI2=(SNI+NG2)*(SH1+H2)+SNHI+NG2*H2
-         SNHS2=(SNS+NG5)*(SH1+H2)+SNHS+NG5*H2
-         SNHI3=(SNI+NG3)*(SH1+H3)+SNHI+NG3*H3
-         SNHS3=(SNS+NG6)*(SH1+H3)+SNHS+NG6*H3
+        SNHI1=(SNI+NG1)*(SH1+H1)+SNHI+NG1*H1
+        SNHS1=(SNS+NG4)*(SH1+H1)+SNHS+NG4*H1
+        SNHI2=(SNI+NG2)*(SH1+H2)+SNHI+NG2*H2
+        SNHS2=(SNS+NG5)*(SH1+H2)+SNHS+NG5*H2
+        SNHI3=(SNI+NG3)*(SH1+H3)+SNHI+NG3*H3
+        SNHS3=(SNS+NG6)*(SH1+H3)+SNHS+NG6*H3
 !
-         HRI1=RRI*SNHI1+R*SNHS1
-         HRS1=RRS*SNHS1+R*SNHI1
-         HRI2=RRI*SNHI2+R*SNHS2
-         HRS2=RRS*SNHS2+R*SNHI2
-         HRI3=RRI*SNHI3+R*SNHS3
-         HRS3=RRS*SNHS3+R*SNHI3
+        HRI1=RRI*SNHI1+R*SNHS1
+        HRS1=RRS*SNHS1+R*SNHI1
+        HRI2=RRI*SNHI2+R*SNHS2
+        HRS2=RRS*SNHS2+R*SNHI2
+        HRI3=RRI*SNHI3+R*SNHS3
+        HRS3=RRS*SNHS3+R*SNHI3
 !
-         RR11=2*(RRRI*(SNI+NG1+NG1)+RRRS*(SNS+NG4+NG4))
-         RR22=2*(RRRI*(SNI+NG2+NG2)+RRRS*(SNS+NG5+NG5))
-         RR33=2*(RRRI*(SNI+NG3+NG3)+RRRS*(SNS+NG6+NG6))
-         RR12=   RRRI*(SNI+NG1+NG2)+RRRS*(SNS+NG4+NG5)
-         RR13=   RRRI*(SNI+NG1+NG3)+RRRS*(SNS+NG4+NG6)
-         RR23=   RRRI*(SNI+NG2+NG3)+RRRS*(SNS+NG5+NG6)
+        RR11=2*(RRRI*(SNI+NG1+NG1)+RRRS*(SNS+NG4+NG4))
+        RR22=2*(RRRI*(SNI+NG2+NG2)+RRRS*(SNS+NG5+NG5))
+        RR33=2*(RRRI*(SNI+NG3+NG3)+RRRS*(SNS+NG6+NG6))
+        RR12=   RRRI*(SNI+NG1+NG2)+RRRS*(SNS+NG4+NG5)
+        RR13=   RRRI*(SNI+NG1+NG3)+RRRS*(SNS+NG4+NG6)
+        RR23=   RRRI*(SNI+NG2+NG3)+RRRS*(SNS+NG5+NG6)
 !
-!        EXTRA-DIAGONAL TERMS
+!       EXTRA-DIAGONAL TERMS
 !
-         XM(IELEM, 1)=XM(IELEM, 1)+D*( HHI12  -D1*HRI2-D2*HRI1 +RR12)
-         XM(IELEM, 2)=XM(IELEM, 2)+D*( HHI13  -D1*HRI3-D3*HRI1 +RR13)
-         XM(IELEM, 3)=XM(IELEM, 3)+D*(-HH12-HH13+D1*(HRI1-HRS1)-RR11)
-         XM(IELEM, 4)=XM(IELEM, 4)+D*( HH12   +D1*HRI2-D2*HRS1 -RR12)
-         XM(IELEM, 5)=XM(IELEM, 5)+D*( HH13   +D1*HRI3-D3*HRS1 -RR13)
-         XM(IELEM, 6)=XM(IELEM, 6)+D*( HHI23  -D2*HRI3-D3*HRI2 +RR23)
-         XM(IELEM, 7)=XM(IELEM, 7)+D*( HH12   +D2*HRI1-D1*HRS2 -RR12)
-         XM(IELEM, 8)=XM(IELEM, 8)+D*(-HH12-HH23+D2*(HRI2-HRS2)-RR22)
-         XM(IELEM, 9)=XM(IELEM, 9)+D*( HH23   +D2*HRI3-D3*HRS2 -RR23)
-         XM(IELEM,10)=XM(IELEM,10)+D*( HH13   +D3*HRI1-D1*HRS3 -RR13)
-         XM(IELEM,11)=XM(IELEM,11)+D*( HH23   +D3*HRI2-D2*HRS3 -RR23)
-         XM(IELEM,12)=XM(IELEM,12)+D*(-HH13-HH23+D3*(HRI3-HRS3)-RR33)
-         XM(IELEM,13)=XM(IELEM,13)+D*( HHS12  +D1*HRS2+D2*HRS1 +RR12)
-         XM(IELEM,14)=XM(IELEM,14)+D*( HHS13  +D1*HRS3+D3*HRS1 +RR13)
-         XM(IELEM,15)=XM(IELEM,15)+D*( HHS23  +D2*HRS3+D3*HRS2 +RR23)
-!
-!-----------------------------------------------------------------------
-!
-!        DIFFUSION ALONG Z
+        XM(IELEM, 1)=XM(IELEM, 1)+D*( HHI12  -D1*HRI2-D2*HRI1 +RR12)
+        XM(IELEM, 2)=XM(IELEM, 2)+D*( HHI13  -D1*HRI3-D3*HRI1 +RR13)
+        XM(IELEM, 3)=XM(IELEM, 3)+D*(-HH12-HH13+D1*(HRI1-HRS1)-RR11)
+        XM(IELEM, 4)=XM(IELEM, 4)+D*( HH12   +D1*HRI2-D2*HRS1 -RR12)
+        XM(IELEM, 5)=XM(IELEM, 5)+D*( HH13   +D1*HRI3-D3*HRS1 -RR13)
+        XM(IELEM, 6)=XM(IELEM, 6)+D*( HHI23  -D2*HRI3-D3*HRI2 +RR23)
+        XM(IELEM, 7)=XM(IELEM, 7)+D*( HH12   +D2*HRI1-D1*HRS2 -RR12)
+        XM(IELEM, 8)=XM(IELEM, 8)+D*(-HH12-HH23+D2*(HRI2-HRS2)-RR22)
+        XM(IELEM, 9)=XM(IELEM, 9)+D*( HH23   +D2*HRI3-D3*HRS2 -RR23)
+        XM(IELEM,10)=XM(IELEM,10)+D*( HH13   +D3*HRI1-D1*HRS3 -RR13)
+        XM(IELEM,11)=XM(IELEM,11)+D*( HH23   +D3*HRI2-D2*HRS3 -RR23)
+        XM(IELEM,12)=XM(IELEM,12)+D*(-HH13-HH23+D3*(HRI3-HRS3)-RR33)
+        XM(IELEM,13)=XM(IELEM,13)+D*( HHS12  +D1*HRS2+D2*HRS1 +RR12)
+        XM(IELEM,14)=XM(IELEM,14)+D*( HHS13  +D1*HRS3+D3*HRS1 +RR13)
+        XM(IELEM,15)=XM(IELEM,15)+D*( HHS23  +D2*HRS3+D3*HRS2 +RR23)
 !
 !-----------------------------------------------------------------------
 !
-!        VERSION WITH SIMPLIFICATIONS TO ACHIEVE MONOTONY OF THE MATRIX
+!       DIFFUSION ALONG Z
 !
-         D=SURFAC(IELEM)*XS06
+!-----------------------------------------------------------------------
 !
-!        EXTRA-DIAGONAL TERMS
+!       VERSION WITH SIMPLIFICATIONS TO ACHIEVE MONOTONY OF THE MATRIX
 !
-         XM(IELEM, 3)=XM(IELEM, 3)-D*NH1
-         XM(IELEM, 8)=XM(IELEM, 8)-D*NH2
-         XM(IELEM,12)=XM(IELEM,12)-D*NH3
+        D=SURFAC(IELEM)*XS06
+!
+!       EXTRA-DIAGONAL TERMS
+!
+        XM(IELEM, 3)=XM(IELEM, 3)-D*NH1
+        XM(IELEM, 8)=XM(IELEM, 8)-D*NH2
+        XM(IELEM,12)=XM(IELEM,12)-D*NH3
 !
 !-----------------------------------------------------------------------
 !
@@ -818,36 +818,36 @@
 !
       DO IELEM=1,NELEM
 !
-         T(IELEM,1)= -XM(IELEM,01)
-     &               -XM(IELEM,02)
-     &               -XM(IELEM,03)
-     &               -XM(IELEM,04)
-     &               -XM(IELEM,05)
-         T(IELEM,2)= -XM(IELEM,01)
-     &               -XM(IELEM,06)
-     &               -XM(IELEM,07)
-     &               -XM(IELEM,08)
-     &               -XM(IELEM,09)
-         T(IELEM,3)= -XM(IELEM,02)
-     &               -XM(IELEM,06)
-     &               -XM(IELEM,10)
-     &               -XM(IELEM,11)
-     &               -XM(IELEM,12)
-         T(IELEM,4)= -XM(IELEM,03)
-     &               -XM(IELEM,07)
-     &               -XM(IELEM,10)
-     &               -XM(IELEM,13)
-     &               -XM(IELEM,14)
-         T(IELEM,5)= -XM(IELEM,04)
-     &               -XM(IELEM,08)
-     &               -XM(IELEM,11)
-     &               -XM(IELEM,13)
-     &               -XM(IELEM,15)
-         T(IELEM,6)= -XM(IELEM,05)
-     &               -XM(IELEM,09)
-     &               -XM(IELEM,12)
-     &               -XM(IELEM,14)
-     &               -XM(IELEM,15)
+        T(IELEM,1)= -XM(IELEM,01)
+     &              -XM(IELEM,02)
+     &              -XM(IELEM,03)
+     &              -XM(IELEM,04)
+     &              -XM(IELEM,05)
+        T(IELEM,2)= -XM(IELEM,01)
+     &              -XM(IELEM,06)
+     &              -XM(IELEM,07)
+     &              -XM(IELEM,08)
+     &              -XM(IELEM,09)
+        T(IELEM,3)= -XM(IELEM,02)
+     &              -XM(IELEM,06)
+     &              -XM(IELEM,10)
+     &              -XM(IELEM,11)
+     &              -XM(IELEM,12)
+        T(IELEM,4)= -XM(IELEM,03)
+     &              -XM(IELEM,07)
+     &              -XM(IELEM,10)
+     &              -XM(IELEM,13)
+     &              -XM(IELEM,14)
+        T(IELEM,5)= -XM(IELEM,04)
+     &              -XM(IELEM,08)
+     &              -XM(IELEM,11)
+     &              -XM(IELEM,13)
+     &              -XM(IELEM,15)
+        T(IELEM,6)= -XM(IELEM,05)
+     &              -XM(IELEM,09)
+     &              -XM(IELEM,12)
+     &              -XM(IELEM,14)
+     &              -XM(IELEM,15)
 !
       ENDDO
 !

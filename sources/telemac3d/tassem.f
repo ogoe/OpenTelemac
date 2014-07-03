@@ -58,35 +58,35 @@
 !| TRA01          |<->| WORK ARRAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-       USE INTERFACE_TELEMAC3D, EX_TASSEM => TASSEM
-       IMPLICIT NONE
+      USE INTERFACE_TELEMAC3D, EX_TASSEM => TASSEM
+      IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-       INTEGER, INTENT(IN)             :: NPOIN2,NPFMAX
-       INTEGER, INTENT(IN)             :: NPF(NPOIN2)
-       DOUBLE PRECISION, INTENT(IN)    :: EPAI(NPFMAX-1,NPOIN2)
-       DOUBLE PRECISION, INTENT(INOUT) :: IVIDE(NPFMAX,NPOIN2)
-       DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPFMAX,6)
-       DOUBLE PRECISION, INTENT(INOUT) :: SIGMA(NPFMAX)
-       DOUBLE PRECISION, INTENT(INOUT) :: CHARGE(NPFMAX)
-       DOUBLE PRECISION, INTENT(IN)    :: RHOS,GRAV,DTC,CFMAX
+      INTEGER, INTENT(IN)             :: NPOIN2,NPFMAX
+      INTEGER, INTENT(IN)             :: NPF(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: EPAI(NPFMAX-1,NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: IVIDE(NPFMAX,NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPFMAX,6)
+      DOUBLE PRECISION, INTENT(INOUT) :: SIGMA(NPFMAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: CHARGE(NPFMAX)
+      DOUBLE PRECISION, INTENT(IN)    :: RHOS,GRAV,DTC,CFMAX
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-       DOUBLE PRECISION DSIGMA,DSIG1,PE,DPE
-       INTEGER  IPOIN,IPF,NDEB
+      DOUBLE PRECISION DSIGMA,DSIG1,PE,DPE
+      INTEGER  IPOIN,IPF,NDEB
 !
-       INTRINSIC DLOG
+      INTRINSIC DLOG
 !
 !=======================================================================
 !
 !   ----- LOOP ON 2D MESH POINTS-----
 !
-       DO IPOIN=1,NPOIN2
-         IF (NPF(IPOIN).GE.5) THEN
+      DO IPOIN=1,NPOIN2
+        IF (NPF(IPOIN).GE.5) THEN
 !
-           CHARGE(NPF(IPOIN))=0.D0
+          CHARGE(NPF(IPOIN))=0.D0
 !
 !   ----- COMPUTES EQUATION COEFFICIENTS -----
 !
@@ -97,7 +97,7 @@
 !     BED PERMEABILITY: LOG K=0.24*E-7.86
 !                       PE=K/(1+IVIDE)) :
             PE=10.D0**(0.24D0*IVIDE(IPF,IPOIN)-7.86D0)/
-     &                 (1.D0+IVIDE(IPF,IPOIN))
+     &                (1.D0+IVIDE(IPF,IPOIN))
 !
 !     DERIVATIVE OF PE RELATIVE TO IVIDE :
 !
@@ -122,26 +122,26 @@
 !
 !   ------ NON LINEAR CHARGE INCREASE -----
 !
-           DO IPF=NPF(IPOIN)-1,1,-1
+          DO IPF=NPF(IPOIN)-1,1,-1
 !
 !     WEIGHT SUPPORTED BY SOLID SKELETON
 !
-           CHARGE(IPF)=(2650.D0-1000.D0)*9.81D0
-     &     * EPAI(IPF,IPOIN)+CHARGE(IPF+1)
-           END DO
+            CHARGE(IPF)=(2650.D0-1000.D0)*9.81D0
+     &          * EPAI(IPF,IPOIN)+CHARGE(IPF+1)
+          END DO
 !
-           NDEB=1
-           DO IPF=2,NPF(IPOIN)
-           IF ((SIGMA(IPF)-CHARGE(IPF)).GT.1.D-3) THEN
-           NDEB=IPF
-           ELSE
+          NDEB=1
+          DO IPF=2,NPF(IPOIN)
+            IF ((SIGMA(IPF)-CHARGE(IPF)).GT.1.D-3) THEN
+              NDEB=IPF
+            ELSE
 !
 ! ARGH, OUT OF A LOOP
 !
-          GOTO 50
-            ENDIF
-           END DO
-50         CONTINUE
+              GOTO 50
+             ENDIF
+          END DO
+50        CONTINUE
 !
           IF (NDEB.LT.(NPF(IPOIN)-1)) THEN
 !
@@ -157,8 +157,8 @@
 !
           ENDIF
 !
-         ENDIF
-       END DO
+        ENDIF
+      END DO
 !
       RETURN
       END SUBROUTINE TASSEM

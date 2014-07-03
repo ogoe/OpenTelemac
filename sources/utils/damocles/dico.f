@@ -152,14 +152,14 @@
           IF(LONIGN(I).EQ.ILONG) THEN
             IF(CHAINE(1:ILONG).EQ.MOTIGN(I)(1:ILONG)) THEN
               ITYP = TYPIGN(I)
-               LUIGN = .TRUE.
+              LUIGN = .TRUE.
               GO TO 1000
             ENDIF
           ENDIF
         ENDDO ! I
 !
 ! END OF SEARCH THROUGH THE USER KEYWORDS
-       GO TO 910
+        GO TO 910
       ENDIF
 !
 !
@@ -175,16 +175,16 @@
       IF (CHAINE(ILONG:ILONG).EQ.'1') GOTO 125
 !
       DO I=1,15
-       IF (ILONG.EQ.LONPRO(I)) THEN
-         IF (CHAINE(1:ILONG).EQ.MOTPRO(I)(1:ILONG)) THEN
+        IF (ILONG.EQ.LONPRO(I)) THEN
+          IF (CHAINE(1:ILONG).EQ.MOTPRO(I)(1:ILONG)) THEN
 !           IF 'AIDE' AND LNG=FRANCAIS, WILL EDIT THE HELP IF DOC
             IF (I.EQ.6 .AND. LNGINT .EQ. 0) AIDLNG = .TRUE.
             LANGUE = .TRUE.
             NUMERO = I
             ITYP   = 5
             GO TO 1000
-         ENDIF
-       ENDIF
+          ENDIF
+        ENDIF
       ENDDO ! I
 !
 !  IF NOT: LOOKS FOR IT AMONG THE RESERVED WORDS FOR LANGUAGES

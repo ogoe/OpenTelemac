@@ -507,13 +507,13 @@
         COURAN=.FALSE.
       ENDIF
       IF(.NOT.VENT.AND.SVENT.NE.0) THEN
-         IF(LNG.EQ.1)
-     &         WRITE(LU,*)
-     &      'INCOHERENCE DES MOTS CLES DU VENT => PAS DE VENT'
-         IF(LNG.EQ.2)
-     &         WRITE(LU,*)
-     &      'INCOMPATIBILITY OF KEY-WORDS CONCERNING WIND => NO
-     & WIND'
+        IF(LNG.EQ.1)
+     &        WRITE(LU,*)
+     &     'INCOHERENCE DES MOTS CLES DU VENT => PAS DE VENT'
+        IF(LNG.EQ.2)
+     &        WRITE(LU,*)
+     &     'INCOMPATIBILITY OF KEY-WORDS CONCERNING WIND => NO
+     &      WIND'
         SVENT=0
       ENDIF
       IF(TRIGO) THEN

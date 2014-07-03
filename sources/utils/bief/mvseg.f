@@ -112,66 +112,66 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-!          SQUARE PART
+!         SQUARE PART
 !
-           DO ISEG = 1 , MINSEG
-             X(GLOSEG1(ISEG))=
-     &       X(GLOSEG1(ISEG))+XA1(ISEG)*Y(GLOSEG2(ISEG))
-             X(GLOSEG2(ISEG))=
-     &       X(GLOSEG2(ISEG))+XA2(ISEG)*Y(GLOSEG1(ISEG))
-           ENDDO
+          DO ISEG = 1 , MINSEG
+            X(GLOSEG1(ISEG))=
+     &      X(GLOSEG1(ISEG))+XA1(ISEG)*Y(GLOSEG2(ISEG))
+            X(GLOSEG2(ISEG))=
+     &      X(GLOSEG2(ISEG))+XA2(ISEG)*Y(GLOSEG1(ISEG))
+          ENDDO
 !
-!          THE REST OF THE RECTANGULAR MATRIX
+!         THE REST OF THE RECTANGULAR MATRIX
 !
-           IF(NSEG1.GT.NSEG2) THEN
-!            PART OF X HAS NOT BEEN INITIALISED
-!            BY THE CONTRIBUTION OF THE DIAGONAL
-             IF(IELM1.EQ.12.OR.IELM2.EQ.12) THEN
-!              OPTIMISATION FOR QUASI-BUBBLE ELEMENT
-               DO I = NPOIN+1,NPOIN+NELEM
-                 X(I)=0.D0
-               ENDDO
-             ELSE
-               DO ISEG = MINSEG+1,MAXSEG
-                 X(GLOSEG2(ISEG))=0.D0
-               ENDDO
-             ENDIF
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG2(ISEG))=
-     &         X(GLOSEG2(ISEG))+XA2(ISEG)*Y(GLOSEG1(ISEG))
-             ENDDO
-           ELSEIF(NSEG2.GT.NSEG1) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG1(ISEG))=
-     &         X(GLOSEG1(ISEG))+XA2(ISEG)*Y(GLOSEG2(ISEG))
-             ENDDO
-           ENDIF
+          IF(NSEG1.GT.NSEG2) THEN
+!           PART OF X HAS NOT BEEN INITIALISED
+!           BY THE CONTRIBUTION OF THE DIAGONAL
+            IF(IELM1.EQ.12.OR.IELM2.EQ.12) THEN
+!             OPTIMISATION FOR QUASI-BUBBLE ELEMENT
+              DO I = NPOIN+1,NPOIN+NELEM
+                X(I)=0.D0
+              ENDDO
+            ELSE
+              DO ISEG = MINSEG+1,MAXSEG
+                X(GLOSEG2(ISEG))=0.D0
+              ENDDO
+            ENDIF
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG2(ISEG))=
+     &        X(GLOSEG2(ISEG))+XA2(ISEG)*Y(GLOSEG1(ISEG))
+            ENDDO
+          ELSEIF(NSEG2.GT.NSEG1) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG1(ISEG))=
+     &        X(GLOSEG1(ISEG))+XA2(ISEG)*Y(GLOSEG2(ISEG))
+            ENDDO
+          ENDIF
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF(LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF(LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(1)
-           STOP
+          IF(LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF(LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(1)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -179,59 +179,59 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=CYZ   ', X , Y , DA , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=CY    ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=CYZ   ', X , Y , DA , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=CY    ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO ISEG = 1 , MINSEG
-             X(GLOSEG1(ISEG))=
-     &       X(GLOSEG1(ISEG))+C*XA1(ISEG)*Y(GLOSEG2(ISEG))
-             X(GLOSEG2(ISEG))=
-     &       X(GLOSEG2(ISEG))+C*XA2(ISEG)*Y(GLOSEG1(ISEG))
-           ENDDO
-           IF(NSEG1.GT.NSEG2) THEN
-             IF(IELM1.EQ.12.OR.IELM2.EQ.12) THEN
-!              OPTIMISATION FOR QUASI-BUBBLE ELEMENT
-               DO I = NPOIN+1,NPOIN+NELEM
-                 X(I)=0.D0
-               ENDDO
-             ELSE
-               DO ISEG = MINSEG+1,MAXSEG
-                 X(GLOSEG2(ISEG))=0.D0
-               ENDDO
-             ENDIF
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG2(ISEG))=
-     &         X(GLOSEG2(ISEG))+C*XA2(ISEG)*Y(GLOSEG1(ISEG))
-             ENDDO
-           ELSEIF(NSEG2.GT.NSEG1) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG1(ISEG))=
-     &         X(GLOSEG1(ISEG))+C*XA2(ISEG)*Y(GLOSEG2(ISEG))
-             ENDDO
-           ENDIF
+          DO ISEG = 1 , MINSEG
+            X(GLOSEG1(ISEG))=
+     &      X(GLOSEG1(ISEG))+C*XA1(ISEG)*Y(GLOSEG2(ISEG))
+            X(GLOSEG2(ISEG))=
+     &      X(GLOSEG2(ISEG))+C*XA2(ISEG)*Y(GLOSEG1(ISEG))
+          ENDDO
+          IF(NSEG1.GT.NSEG2) THEN
+            IF(IELM1.EQ.12.OR.IELM2.EQ.12) THEN
+!             OPTIMISATION FOR QUASI-BUBBLE ELEMENT
+              DO I = NPOIN+1,NPOIN+NELEM
+                X(I)=0.D0
+              ENDDO
+            ELSE
+              DO ISEG = MINSEG+1,MAXSEG
+                X(GLOSEG2(ISEG))=0.D0
+              ENDDO
+            ENDIF
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG2(ISEG))=
+     &        X(GLOSEG2(ISEG))+C*XA2(ISEG)*Y(GLOSEG1(ISEG))
+            ENDDO
+          ELSEIF(NSEG2.GT.NSEG1) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG1(ISEG))=
+     &        X(GLOSEG1(ISEG))+C*XA2(ISEG)*Y(GLOSEG2(ISEG))
+            ENDDO
+          ENDIF
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(1)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -239,60 +239,60 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
 !
-           DO ISEG = 1 , MINSEG
-             X(GLOSEG1(ISEG))=
-     &       X(GLOSEG1(ISEG))-XA1(ISEG)*Y(GLOSEG2(ISEG))
-             X(GLOSEG2(ISEG))=
-     &       X(GLOSEG2(ISEG))-XA2(ISEG)*Y(GLOSEG1(ISEG))
-           ENDDO
-           IF(NSEG1.GT.NSEG2) THEN
-             IF(IELM1.EQ.12.OR.IELM2.EQ.12) THEN
-!              OPTIMISATION FOR QUASI-BUBBLE ELEMENT
-               DO I = NPOIN+1,NPOIN+NELEM
-                 X(I)=0.D0
-               ENDDO
-             ELSE
-               DO ISEG = MINSEG+1,MAXSEG
-                 X(GLOSEG2(ISEG))=0.D0
-               ENDDO
-             ENDIF
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG2(ISEG))=
-     &         X(GLOSEG2(ISEG))-XA2(ISEG)*Y(GLOSEG1(ISEG))
-             ENDDO
-           ELSEIF(NSEG2.GT.NSEG1) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG1(ISEG))=
-     &         X(GLOSEG1(ISEG))-XA2(ISEG)*Y(GLOSEG2(ISEG))
-             ENDDO
-           ENDIF
+          DO ISEG = 1 , MINSEG
+            X(GLOSEG1(ISEG))=
+     &      X(GLOSEG1(ISEG))-XA1(ISEG)*Y(GLOSEG2(ISEG))
+            X(GLOSEG2(ISEG))=
+     &      X(GLOSEG2(ISEG))-XA2(ISEG)*Y(GLOSEG1(ISEG))
+          ENDDO
+          IF(NSEG1.GT.NSEG2) THEN
+            IF(IELM1.EQ.12.OR.IELM2.EQ.12) THEN
+!             OPTIMISATION FOR QUASI-BUBBLE ELEMENT
+              DO I = NPOIN+1,NPOIN+NELEM
+                X(I)=0.D0
+              ENDDO
+            ELSE
+              DO ISEG = MINSEG+1,MAXSEG
+                X(GLOSEG2(ISEG))=0.D0
+              ENDDO
+            ENDIF
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG2(ISEG))=
+     &        X(GLOSEG2(ISEG))-XA2(ISEG)*Y(GLOSEG1(ISEG))
+            ENDDO
+          ELSEIF(NSEG2.GT.NSEG1) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG1(ISEG))=
+     &        X(GLOSEG1(ISEG))-XA2(ISEG)*Y(GLOSEG2(ISEG))
+            ENDDO
+          ENDIF
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(1)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -300,47 +300,47 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO ISEG = 1 , MINSEG
-             X(GLOSEG1(ISEG))=
-     &       X(GLOSEG1(ISEG))+XA1(ISEG)*Y(GLOSEG2(ISEG))
-             X(GLOSEG2(ISEG))=
-     &       X(GLOSEG2(ISEG))+XA2(ISEG)*Y(GLOSEG1(ISEG))
-           ENDDO
-           IF(NSEG1.GT.NSEG2) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG2(ISEG))=
-     &         X(GLOSEG2(ISEG))+XA2(ISEG)*Y(GLOSEG1(ISEG))
-             ENDDO
-           ELSEIF(NSEG2.GT.NSEG1) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG1(ISEG))=
-     &         X(GLOSEG1(ISEG))+XA2(ISEG)*Y(GLOSEG2(ISEG))
-             ENDDO
-           ENDIF
+          DO ISEG = 1 , MINSEG
+            X(GLOSEG1(ISEG))=
+     &      X(GLOSEG1(ISEG))+XA1(ISEG)*Y(GLOSEG2(ISEG))
+            X(GLOSEG2(ISEG))=
+     &      X(GLOSEG2(ISEG))+XA2(ISEG)*Y(GLOSEG1(ISEG))
+          ENDDO
+          IF(NSEG1.GT.NSEG2) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG2(ISEG))=
+     &        X(GLOSEG2(ISEG))+XA2(ISEG)*Y(GLOSEG1(ISEG))
+            ENDDO
+          ELSEIF(NSEG2.GT.NSEG1) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG1(ISEG))=
+     &        X(GLOSEG1(ISEG))+XA2(ISEG)*Y(GLOSEG2(ISEG))
+            ENDDO
+          ENDIF
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(1)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -348,47 +348,47 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO ISEG = 1 , MINSEG
-             X(GLOSEG1(ISEG))=
-     &       X(GLOSEG1(ISEG))-XA1(ISEG)*Y(GLOSEG2(ISEG))
-             X(GLOSEG2(ISEG))=
-     &       X(GLOSEG2(ISEG))-XA2(ISEG)*Y(GLOSEG1(ISEG))
-           ENDDO
-           IF(NSEG1.GT.NSEG2) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG2(ISEG))=
-     &         X(GLOSEG2(ISEG))-XA2(ISEG)*Y(GLOSEG1(ISEG))
-             ENDDO
-           ELSEIF(NSEG2.GT.NSEG1) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG1(ISEG))=
-     &         X(GLOSEG1(ISEG))-XA2(ISEG)*Y(GLOSEG2(ISEG))
-             ENDDO
-           ENDIF
+          DO ISEG = 1 , MINSEG
+            X(GLOSEG1(ISEG))=
+     &      X(GLOSEG1(ISEG))-XA1(ISEG)*Y(GLOSEG2(ISEG))
+            X(GLOSEG2(ISEG))=
+     &      X(GLOSEG2(ISEG))-XA2(ISEG)*Y(GLOSEG1(ISEG))
+          ENDDO
+          IF(NSEG1.GT.NSEG2) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG2(ISEG))=
+     &        X(GLOSEG2(ISEG))-XA2(ISEG)*Y(GLOSEG1(ISEG))
+            ENDDO
+          ELSEIF(NSEG2.GT.NSEG1) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG1(ISEG))=
+     &        X(GLOSEG1(ISEG))-XA2(ISEG)*Y(GLOSEG2(ISEG))
+            ENDDO
+          ENDIF
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(1)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -396,47 +396,47 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X+CYZ ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X+CY  ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X+CYZ ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X+CY  ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO ISEG = 1 , MINSEG
-             X(GLOSEG1(ISEG))=
-     &       X(GLOSEG1(ISEG))+C*XA1(ISEG)*Y(GLOSEG2(ISEG))
-             X(GLOSEG2(ISEG))=
-     &       X(GLOSEG2(ISEG))+C*XA2(ISEG)*Y(GLOSEG1(ISEG))
-           ENDDO
-           IF(NSEG1.GT.NSEG2) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG2(ISEG))=
-     &         X(GLOSEG2(ISEG))+C*XA2(ISEG)*Y(GLOSEG1(ISEG))
-             ENDDO
-           ELSEIF(NSEG2.GT.NSEG1) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG1(ISEG))=
-     &         X(GLOSEG1(ISEG))+C*XA2(ISEG)*Y(GLOSEG2(ISEG))
-             ENDDO
-           ENDIF
+          DO ISEG = 1 , MINSEG
+            X(GLOSEG1(ISEG))=
+     &      X(GLOSEG1(ISEG))+C*XA1(ISEG)*Y(GLOSEG2(ISEG))
+            X(GLOSEG2(ISEG))=
+     &      X(GLOSEG2(ISEG))+C*XA2(ISEG)*Y(GLOSEG1(ISEG))
+          ENDDO
+          IF(NSEG1.GT.NSEG2) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG2(ISEG))=
+     &        X(GLOSEG2(ISEG))+C*XA2(ISEG)*Y(GLOSEG1(ISEG))
+            ENDDO
+          ELSEIF(NSEG2.GT.NSEG1) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG1(ISEG))=
+     &        X(GLOSEG1(ISEG))+C*XA2(ISEG)*Y(GLOSEG2(ISEG))
+            ENDDO
+          ENDIF
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(1)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -444,59 +444,59 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO ISEG = 1 , MINSEG
-             X(GLOSEG1(ISEG))=
-     &       X(GLOSEG1(ISEG))+XA2(ISEG)*Y(GLOSEG2(ISEG))
-             X(GLOSEG2(ISEG))=
-     &       X(GLOSEG2(ISEG))+XA1(ISEG)*Y(GLOSEG1(ISEG))
-           ENDDO
-           IF(NSEG1.GT.NSEG2) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG1(ISEG))=
-     &         X(GLOSEG1(ISEG))+XA2(ISEG)*Y(GLOSEG2(ISEG))
-             ENDDO
-           ELSEIF(NSEG2.GT.NSEG1) THEN
-             IF(IELM1.EQ.12.OR.IELM2.EQ.12) THEN
-!              OPTIMISATION FOR QUASI-BUBBLE ELEMENT
-               DO I = NPOIN+1,NPOIN+NELEM
-                 X(I)=0.D0
-               ENDDO
-             ELSE
-               DO ISEG = MINSEG+1,MAXSEG
-                 X(GLOSEG2(ISEG))=0.D0
-               ENDDO
-             ENDIF
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG2(ISEG))=
-     &         X(GLOSEG2(ISEG))+XA2(ISEG)*Y(GLOSEG1(ISEG))
-             ENDDO
-           ENDIF
+          DO ISEG = 1 , MINSEG
+            X(GLOSEG1(ISEG))=
+     &      X(GLOSEG1(ISEG))+XA2(ISEG)*Y(GLOSEG2(ISEG))
+            X(GLOSEG2(ISEG))=
+     &      X(GLOSEG2(ISEG))+XA1(ISEG)*Y(GLOSEG1(ISEG))
+          ENDDO
+          IF(NSEG1.GT.NSEG2) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG1(ISEG))=
+     &        X(GLOSEG1(ISEG))+XA2(ISEG)*Y(GLOSEG2(ISEG))
+            ENDDO
+          ELSEIF(NSEG2.GT.NSEG1) THEN
+            IF(IELM1.EQ.12.OR.IELM2.EQ.12) THEN
+!             OPTIMISATION FOR QUASI-BUBBLE ELEMENT
+              DO I = NPOIN+1,NPOIN+NELEM
+                X(I)=0.D0
+              ENDDO
+            ELSE
+              DO ISEG = MINSEG+1,MAXSEG
+                X(GLOSEG2(ISEG))=0.D0
+              ENDDO
+            ENDIF
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG2(ISEG))=
+     &        X(GLOSEG2(ISEG))+XA2(ISEG)*Y(GLOSEG1(ISEG))
+            ENDDO
+          ENDIF
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(1)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -504,59 +504,59 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO ISEG = 1 , MINSEG
-             X(GLOSEG1(ISEG))=
-     &       X(GLOSEG1(ISEG))-XA2(ISEG)*Y(GLOSEG2(ISEG))
-             X(GLOSEG2(ISEG))=
-     &       X(GLOSEG2(ISEG))-XA1(ISEG)*Y(GLOSEG1(ISEG))
-           ENDDO
-           IF(NSEG1.GT.NSEG2) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG1(ISEG))=
-     &         X(GLOSEG1(ISEG))-XA2(ISEG)*Y(GLOSEG2(ISEG))
-             ENDDO
-           ELSEIF(NSEG2.GT.NSEG1) THEN
-             IF(IELM1.EQ.12.OR.IELM2.EQ.12) THEN
-!              OPTIMISATION FOR QUASI-BUBBLE ELEMENT
-               DO I = NPOIN+1,NPOIN+NELEM
-                 X(I)=0.D0
-               ENDDO
-             ELSE
-               DO ISEG = MINSEG+1,MAXSEG
-                 X(GLOSEG2(ISEG))=0.D0
-               ENDDO
-             ENDIF
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG2(ISEG))=
-     &         X(GLOSEG2(ISEG))-XA2(ISEG)*Y(GLOSEG1(ISEG))
-             ENDDO
-           ENDIF
+          DO ISEG = 1 , MINSEG
+            X(GLOSEG1(ISEG))=
+     &      X(GLOSEG1(ISEG))-XA2(ISEG)*Y(GLOSEG2(ISEG))
+            X(GLOSEG2(ISEG))=
+     &      X(GLOSEG2(ISEG))-XA1(ISEG)*Y(GLOSEG1(ISEG))
+          ENDDO
+          IF(NSEG1.GT.NSEG2) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG1(ISEG))=
+     &        X(GLOSEG1(ISEG))-XA2(ISEG)*Y(GLOSEG2(ISEG))
+            ENDDO
+          ELSEIF(NSEG2.GT.NSEG1) THEN
+            IF(IELM1.EQ.12.OR.IELM2.EQ.12) THEN
+!             OPTIMISATION FOR QUASI-BUBBLE ELEMENT
+              DO I = NPOIN+1,NPOIN+NELEM
+                X(I)=0.D0
+              ENDDO
+            ELSE
+              DO ISEG = MINSEG+1,MAXSEG
+                X(GLOSEG2(ISEG))=0.D0
+              ENDDO
+            ENDIF
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG2(ISEG))=
+     &        X(GLOSEG2(ISEG))-XA2(ISEG)*Y(GLOSEG1(ISEG))
+            ENDDO
+          ENDIF
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(1)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -564,47 +564,47 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO ISEG = 1 , MINSEG
-             X(GLOSEG1(ISEG))=
-     &       X(GLOSEG1(ISEG))+XA2(ISEG)*Y(GLOSEG2(ISEG))
-             X(GLOSEG2(ISEG))=
-     &       X(GLOSEG2(ISEG))+XA1(ISEG)*Y(GLOSEG1(ISEG))
-           ENDDO
-           IF(NSEG1.GT.NSEG2) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG1(ISEG))=
-     &         X(GLOSEG1(ISEG))+XA2(ISEG)*Y(GLOSEG2(ISEG))
-             ENDDO
-           ELSEIF(NSEG2.GT.NSEG1) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG2(ISEG))=
-     &         X(GLOSEG2(ISEG))+XA2(ISEG)*Y(GLOSEG1(ISEG))
-             ENDDO
-           ENDIF
+          DO ISEG = 1 , MINSEG
+            X(GLOSEG1(ISEG))=
+     &      X(GLOSEG1(ISEG))+XA2(ISEG)*Y(GLOSEG2(ISEG))
+            X(GLOSEG2(ISEG))=
+     &      X(GLOSEG2(ISEG))+XA1(ISEG)*Y(GLOSEG1(ISEG))
+          ENDDO
+          IF(NSEG1.GT.NSEG2) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG1(ISEG))=
+     &        X(GLOSEG1(ISEG))+XA2(ISEG)*Y(GLOSEG2(ISEG))
+            ENDDO
+          ELSEIF(NSEG2.GT.NSEG1) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG2(ISEG))=
+     &        X(GLOSEG2(ISEG))+XA2(ISEG)*Y(GLOSEG1(ISEG))
+            ENDDO
+          ENDIF
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(1)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -612,47 +612,47 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO ISEG = 1 , MINSEG
-             X(GLOSEG1(ISEG))=
-     &       X(GLOSEG1(ISEG))-XA2(ISEG)*Y(GLOSEG2(ISEG))
-             X(GLOSEG2(ISEG))=
-     &       X(GLOSEG2(ISEG))-XA1(ISEG)*Y(GLOSEG1(ISEG))
-           ENDDO
-           IF(NSEG1.GT.NSEG2) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG1(ISEG))=
-     &         X(GLOSEG1(ISEG))-XA2(ISEG)*Y(GLOSEG2(ISEG))
-             ENDDO
-           ELSEIF(NSEG2.GT.NSEG1) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG2(ISEG))=
-     &         X(GLOSEG2(ISEG))-XA2(ISEG)*Y(GLOSEG1(ISEG))
-             ENDDO
-           ENDIF
+          DO ISEG = 1 , MINSEG
+            X(GLOSEG1(ISEG))=
+     &      X(GLOSEG1(ISEG))-XA2(ISEG)*Y(GLOSEG2(ISEG))
+            X(GLOSEG2(ISEG))=
+     &      X(GLOSEG2(ISEG))-XA1(ISEG)*Y(GLOSEG1(ISEG))
+          ENDDO
+          IF(NSEG1.GT.NSEG2) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG1(ISEG))=
+     &        X(GLOSEG1(ISEG))-XA2(ISEG)*Y(GLOSEG2(ISEG))
+            ENDDO
+          ELSEIF(NSEG2.GT.NSEG1) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG2(ISEG))=
+     &        X(GLOSEG2(ISEG))-XA2(ISEG)*Y(GLOSEG1(ISEG))
+            ENDDO
+          ENDIF
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(1)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -660,47 +660,47 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X+CYZ ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X+CY  ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X+CYZ ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X+CY  ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'Q'.OR.TYPEXT(1:1).EQ.'S') THEN
 !
-           DO ISEG = 1 , MINSEG
-             X(GLOSEG1(ISEG))=
-     &       X(GLOSEG1(ISEG))+C*XA2(ISEG)*Y(GLOSEG2(ISEG))
-             X(GLOSEG2(ISEG))=
-     &       X(GLOSEG2(ISEG))+C*XA1(ISEG)*Y(GLOSEG1(ISEG))
-           ENDDO
-           IF(NSEG1.GT.NSEG2) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG1(ISEG))=
-     &         X(GLOSEG1(ISEG))+C*XA2(ISEG)*Y(GLOSEG2(ISEG))
-             ENDDO
-           ELSEIF(NSEG2.GT.NSEG1) THEN
-             DO ISEG = MINSEG+1,MAXSEG
-               X(GLOSEG2(ISEG))=
-     &         X(GLOSEG2(ISEG))+C*XA2(ISEG)*Y(GLOSEG1(ISEG))
-             ENDDO
-           ENDIF
+          DO ISEG = 1 , MINSEG
+            X(GLOSEG1(ISEG))=
+     &      X(GLOSEG1(ISEG))+C*XA2(ISEG)*Y(GLOSEG2(ISEG))
+            X(GLOSEG2(ISEG))=
+     &      X(GLOSEG2(ISEG))+C*XA1(ISEG)*Y(GLOSEG1(ISEG))
+          ENDDO
+          IF(NSEG1.GT.NSEG2) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG1(ISEG))=
+     &        X(GLOSEG1(ISEG))+C*XA2(ISEG)*Y(GLOSEG2(ISEG))
+            ENDDO
+          ELSEIF(NSEG2.GT.NSEG1) THEN
+            DO ISEG = MINSEG+1,MAXSEG
+              X(GLOSEG2(ISEG))=
+     &        X(GLOSEG2(ISEG))+C*XA2(ISEG)*Y(GLOSEG1(ISEG))
+            ENDDO
+          ENDIF
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(1)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !

@@ -135,13 +135,13 @@
 !
       IF(NPOIN.NE.NPLAN*NPOIN2) THEN
         IF(LNG.EQ.1) THEN
-         WRITE(LU,*) 'LECSUI : MAUVAIS NOMBRE DE POINTS DANS LE FICHIER'
-         WRITE(LU,*) '         DU CALCUL PRECEDENT : ',NPOIN,' TROUVE'
-         WRITE(LU,*) '                               ',NPOIN2,' ATTENDU'
+          WRITE(LU,*)'LECSUI : MAUVAIS NOMBRE DE POINTS DANS LE FICHIER'
+          WRITE(LU,*)'         DU CALCUL PRECEDENT : ',NPOIN,' TROUVE'
+          WRITE(LU,*)'                               ',NPOIN2,' ATTENDU'
         ELSEIF(LNG.EQ.2) THEN
-         WRITE(LU,*) 'LECSUI: BAD NUMBER OF POINTS IN THE PREVIOUS'
-         WRITE(LU,*) '        COMPUTATION FILE : ',NPOIN,' FOUND'
-         WRITE(LU,*) '                           ',NPOIN2,' EXPECTED'
+          WRITE(LU,*)'LECSUI: BAD NUMBER OF POINTS IN THE PREVIOUS'
+          WRITE(LU,*)'        COMPUTATION FILE : ',NPOIN,' FOUND'
+          WRITE(LU,*)'                           ',NPOIN2,' EXPECTED'
         ENDIF
         CALL PLANTE(1)
         STOP

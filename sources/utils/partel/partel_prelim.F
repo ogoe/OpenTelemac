@@ -146,55 +146,43 @@
 !     
 !----------------------------------------------------------------------
 ! NAMES OF THE INPUT FILES:
-!      INQUIRE (FILE='PARTEL.PAR',EXIST=IS)
-!      IF (.NOT.IS) THEN 
-!        WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') 
-!        CALL PLANTE2(1)
-!        STOP
-!      END IF  
-!###> SEB@HRW: SO YOU DO THIS ONLY ONCE
       INQUIRE (FILE='RESULT_SEQ_METIS',EXIST=IS)
       IF (IS) THEN 
         CALL PLANTE(0)
         STOP
       END IF  
-!###< SEB@HRW
-!
-!###> SEB@HRW: EASIER TO DO WITH ONE FILE ONLY
-!      OPEN(UNIT=74,FILE='PARTEL_PRELIM.PAR')
       OPEN(UNIT=72,FILE='PARTEL.PAR')
       READ(72,*) NAMEINP
       READ(72,*) 
       READ(72,*) NPARTS
       READ(72,*) 
       CLOSE(72)
-!###< SEB@HRW
 !
       INQUIRE (FILE=NAMEINP,EXIST=IS)
       IF (.NOT.IS) THEN 
-         WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEINP
-         CALL PLANTE(1)
-         STOP
+        WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEINP
+        CALL PLANTE(1)
+        STOP
       END IF
 !
       I_S  = LEN(NAMEINP)
       I_SP = I_S + 1
       DO I=1,I_S
-         IF (NAMEINP(I_SP-I:I_SP-I) .NE. ' ') EXIT
+        IF (NAMEINP(I_SP-I:I_SP-I) .NE. ' ') EXIT
       ENDDO
       I_LEN=I_SP - I
       I_LENINP = I_LEN
 !
       IF (I_LENINP > MAXLENSOFT) THEN
-         WRITE(LU,*) ' '
-         WRITE(LU,*) 'ATTENTION:'
-         WRITE(LU,*) 'THE NAME OF THE INPUT FILE:'
-         WRITE(LU,*) NAMEINP
-         WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS' 
-         WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
-         WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
-         CALL PLANTE(1)
-         STOP
+        WRITE(LU,*) ' '
+        WRITE(LU,*) 'ATTENTION:'
+        WRITE(LU,*) 'THE NAME OF THE INPUT FILE:'
+        WRITE(LU,*) NAMEINP
+        WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS' 
+        WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
+        WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       OPEN(NINP,FILE=NAMEINP,STATUS='OLD',FORM='UNFORMATTED')
@@ -205,18 +193,18 @@
       NVAR = I + J 
       ISTART = 42
       DO I=1,NVAR
-         READ(NINP) VARI
-         DO J=1,32
-            IF(VARI(J:J).EQ.' ') VARI(J:J) = '-'
-         END DO
-         ISTOP = ISTART+20
-         IF (ISTOP.GT.MAXALLVARLENGTH) THEN
-            WRITE(LU,*) 'VARIABLE NAMES TOO LONG FOR STRIN ALLVAR'
-            WRITE(LU,*) 'STOPPED.'
-            CALL PLANTE(1)
-            STOP
-         ENDIF
-         ISTART=ISTOP+1
+        READ(NINP) VARI
+        DO J=1,32
+          IF(VARI(J:J).EQ.' ') VARI(J:J) = '-'
+        END DO
+        ISTOP = ISTART+20
+        IF (ISTOP.GT.MAXALLVARLENGTH) THEN
+          WRITE(LU,*) 'VARIABLE NAMES TOO LONG FOR STRIN ALLVAR'
+          WRITE(LU,*) 'STOPPED.'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        ISTART=ISTOP+1
       ENDDO
 !
 !  READ THE REST OF THE SELAFIN FILE
@@ -224,32 +212,32 @@
 !
       READ (NINP) (IB(I), I=1,10)
       IF (IB(8).NE.0.OR.IB(9).NE.0) THEN
-         WRITE(LU,*) 'THIS IS A PARTIAL OUTPUT FILE'
-         WRITE(LU,*) 'MAYBE MEET GRETEL BEFORE...'
+        WRITE(LU,*) 'THIS IS A PARTIAL OUTPUT FILE'
+        WRITE(LU,*) 'MAYBE MEET GRETEL BEFORE...'
       ENDIF 
       NPLAN = IB(7)
 !
       IF (IB(10).EQ.1) THEN
-         READ(NINP) DATE(1), DATE(2), DATE(3), TIME(1), TIME(2), TIME(3)
+        READ(NINP) DATE(1), DATE(2), DATE(3), TIME(1), TIME(2), TIME(3)
       ENDIF 
 !
       READ (NINP) NELEM,NPOIN,NDP,NDUM
       IF (NPLAN.GT.1) THEN
-         NPOIN2 = NPOIN/NPLAN
-         NELEM2 = NELEM/(NPLAN-1)
-         IF (MOD(NPOIN,NPLAN).NE.0) THEN 
-            WRITE (LU,*) 'BUT NPOIN2 /= NPOIN3/NPLAN!'
-            CALL PLANTE(1)
-            STOP   
-         ENDIF
-         IF (MOD(NELEM,(NPLAN-1)).NE.0) THEN 
-            WRITE (LU,*) 'BUT NELEM2 /= NELEM3/NPLAN!'
-            CALL PLANTE(1)
-            STOP
-         ENDIF
+        NPOIN2 = NPOIN/NPLAN
+        NELEM2 = NELEM/(NPLAN-1)
+        IF (MOD(NPOIN,NPLAN).NE.0) THEN 
+          WRITE (LU,*) 'BUT NPOIN2 /= NPOIN3/NPLAN!'
+          CALL PLANTE(1)
+          STOP   
+        ENDIF
+        IF (MOD(NELEM,(NPLAN-1)).NE.0) THEN 
+          WRITE (LU,*) 'BUT NELEM2 /= NELEM3/NPLAN!'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ELSE
-         NPOIN2 = NPOIN
-         NELEM2 = NELEM
+        NPOIN2 = NPOIN
+        NELEM2 = NELEM
       ENDIF
 !
       IF (NDP.EQ.3) THEN  
@@ -259,8 +247,8 @@
       ELSE   
 !         WRITE(LU,*) 'THE ELEMENTS ARE NEITHER TRIANGLES NOR PRISMS!'
 !         WRITE(LU,*) 'NDP = ',NDP
-         CALL PLANTE(1)
-         STOP
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 ! NOW LET US ALLOCATE 
@@ -268,8 +256,8 @@
       ALLOCATE (IKLES(NELEM2*3),STAT=ERR)
       CALL CHECK_ALLOCATE (ERR, 'IKLES')
       IF(NPLAN.GT.1) THEN
-         ALLOCATE (IKLES3D(NELEM*NDP),STAT=ERR)
-         CALL CHECK_ALLOCATE (ERR, 'IKLES3D')
+        ALLOCATE (IKLES3D(NELEM*NDP),STAT=ERR)
+        CALL CHECK_ALLOCATE (ERR, 'IKLES3D')
       ENDIF 
       ALLOCATE (IRAND(NPOIN),STAT=ERR)
       CALL CHECK_ALLOCATE (ERR, 'IRAND')
@@ -281,14 +269,14 @@
 ! CONNECTIVITY TABLE:
 !
       IF(NPLAN.EQ.0) THEN
-         READ(NINP) ((IKLES((K-1)*NDP+J),J=1,NDP),K=1,NELEM)
+        READ(NINP) ((IKLES((K-1)*NDP+J),J=1,NDP),K=1,NELEM)
       ELSE
-         READ(NINP) ((IKLES3D((K-1)*NDP+J),J=1,NDP),K=1,NELEM)
-         DO J=1,3
-            DO K=1,NELEM2
-               IKLES((K-1)*3+J)=IKLES3D((K-1)*6+J)
-            ENDDO
-         ENDDO
+        READ(NINP) ((IKLES3D((K-1)*NDP+J),J=1,NDP),K=1,NELEM)
+        DO J=1,3
+          DO K=1,NELEM2
+            IKLES((K-1)*3+J)=IKLES3D((K-1)*6+J)
+          ENDDO
+        ENDDO
       ENDIF
 !
       READ(NINP) (IRAND(J),J=1,NPOIN)
@@ -306,7 +294,7 @@
 ! READ THE TIME VARIABLES; NO 1 AND 2 ARE X,Y
 !
       DO K=3,NVAR+2
-         READ(NINP) (F(J,K), J=1,NPOIN)
+        READ(NINP) (F(J,K), J=1,NPOIN)
       END DO
 !     END DO
 !     STOP
@@ -322,7 +310,7 @@
 !
       OPEN(UNIT=256,FILE='RESULT_SEQ_METIS')
       DO I=1,NELEM2
-         WRITE(256,*) EPART(I)
+        WRITE(256,*) EPART(I)
       END DO 
 
       !WRITE(*,*) 'END OF THE PRELIMINARY PART OF PARTEL'

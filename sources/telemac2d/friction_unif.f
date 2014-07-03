@@ -104,24 +104,24 @@
       ! SAME DISCRETIZATION FOR WATER DEPTH AND FRICTION COEFFICIENT IF NEEDED
       ! ----------------------------------------------------------------------
       IF (KFROT.NE.0.AND.KFROT.NE.2) THEN
-         !
-         ! MAXIMUM BETWEEN WATER DEPTH AND 1.D-4
-         ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         CALL CPSTVC(H,T1)
-         CALL OS('X=Y     ', T1, H, S, C)
-         IF(IELMC.NE.IELMH) CALL CHGDIS( T1 , IELMH , IELMC , MESH )
-!        NIKURADSE LAW WILL DO ITS OWN CLIPPING
-         IF(KFROT.NE.5) THEN
-           CALL OS('X=+(Y,C)', T1, T1, S, 1.D-4)
-         ENDIF
+        !
+        ! MAXIMUM BETWEEN WATER DEPTH AND 1.D-4
+        ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        CALL CPSTVC(H,T1)
+        CALL OS('X=Y     ', T1, H, S, C)
+        IF(IELMC.NE.IELMH) CALL CHGDIS( T1 , IELMH , IELMC , MESH )
+!       NIKURADSE LAW WILL DO ITS OWN CLIPPING
+        IF(KFROT.NE.5) THEN
+          CALL OS('X=+(Y,C)', T1, T1, S, 1.D-4)
+        ENDIF
       ENDIF
 !
       ! RESULTANT VELOCITY IN T2
       ! ------------------------
       IF (KFROT.EQ.1.OR.KFROT.EQ.6.OR.KFROT.EQ.7) THEN
-         CALL CPSTVC(CF,T2)
-         CALL OS('X=N(Y,Z)', T2,  U, V, C)
-         CALL OS('X=+(Y,C)', T2, T2, S, 1.D-6)
+        CALL CPSTVC(CF,T2)
+        CALL OS('X=N(Y,Z)', T2,  U, V, C)
+        CALL OS('X=+(Y,C)', T2, T2, S, 1.D-6)
       ENDIF
 !
       ! =============== !
@@ -137,18 +137,18 @@
       ! -------------------------------------------------
       IF(LINDNER) THEN
 !
-         DO I = 1, CF%DIM1
-            CALL FRICTION_LINDNER
-     &           (T2%R(I), T1%R(I), CF%R(I),
-     &            VK, GRAV, DP, SP, CP)
+        DO I = 1, CF%DIM1
+          CALL FRICTION_LINDNER
+     &         (T2%R(I), T1%R(I), CF%R(I),
+     &          VK, GRAV, DP, SP, CP)
 !
-            IF (CP< -0.9) THEN
-               CP = 0.75*T1%R(I)*DP/(SP**2)
-            ENDIF
+          IF (CP< -0.9) THEN
+            CP = 0.75*T1%R(I)*DP/(SP**2)
+          ENDIF
 !
-            CF%R(I) = (CF%R(I)+2.D0*CP)
+          CF%R(I) = (CF%R(I)+2.D0*CP)
 !
-         ENDDO
+        ENDDO
       ENDIF
 !
 ! ============= !

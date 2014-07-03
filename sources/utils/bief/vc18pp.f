@@ -126,110 +126,110 @@
 !
 !        LOOP ON THE ELEMENTS
 !
-         DO IELEM = 1,NELEM
+        DO IELEM = 1,NELEM
 !
-            I1 = IKLE1(IELEM)
-            I2 = IKLE2(IELEM)
-            I3 = IKLE3(IELEM)
-            I4 = IKLE4(IELEM)
-            I5 = IKLE5(IELEM)
-            I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-!           X2  =   X(I2) - X(I1)
-!           X3  =   X(I3) - X(I1)
-!           Y2  =   Y(I2) - Y(I1)
-!           Y3  =   Y(I3) - Y(I1)
+!         X2  =   X(I2) - X(I1)
+!         X3  =   X(I3) - X(I1)
+!         Y2  =   Y(I2) - Y(I1)
+!         Y3  =   Y(I3) - Y(I1)
 !
-            X2 = X(IELEM,2)
-            X3 = X(IELEM,3)
-            Y2 = Y(IELEM,2)
-            Y3 = Y(IELEM,3)
+          X2 = X(IELEM,2)
+          X3 = X(IELEM,3)
+          Y2 = Y(IELEM,2)
+          Y3 = Y(IELEM,3)
 !
-            U1  =  U(I1)
-            U2  =  U(I2)
-            U3  =  U(I3)
-            U4  =  U(I4)
-            U5  =  U(I5)
-            U6  =  U(I6)
-            V1  =  V(I1)
-            V2  =  V(I2)
-            V3  =  V(I3)
-            V4  =  V(I4)
-            V5  =  V(I5)
-            V6  =  V(I6)
-            F1  =  F(I1)
-            F2  =  F(I2)
-            F3  =  F(I3)
-            F4  =  F(I4)
-            F5  =  F(I5)
-            F6  =  F(I6)
+          U1  =  U(I1)
+          U2  =  U(I2)
+          U3  =  U(I3)
+          U4  =  U(I4)
+          U5  =  U(I5)
+          U6  =  U(I6)
+          V1  =  V(I1)
+          V2  =  V(I2)
+          V3  =  V(I3)
+          V4  =  V(I4)
+          V5  =  V(I5)
+          V6  =  V(I6)
+          F1  =  F(I1)
+          F2  =  F(I2)
+          F3  =  F(I3)
+          F4  =  F(I4)
+          F5  =  F(I5)
+          F6  =  F(I6)
 !
 !    INTERMEDIATE COMPUTATIONS
 !
-            PX2=Y3*DEN
-            PX3=-Y2*DEN
-            PX1=-PX2-PX3
-            PY2=-X3*DEN
-            PY3=X2*DEN
-            PY1=-PY3-PY2
+          PX2=Y3*DEN
+          PX3=-Y2*DEN
+          PX1=-PX2-PX3
+          PY2=-X3*DEN
+          PY3=X2*DEN
+          PY1=-PY3-PY2
 !
-            SUS    = U6+U5+U4
-            SUI    = U3+U2+U1
-            SHUS1  = 5 * (SUS+U4)
-            SHUI1  = 5 * (SUI+U1)
-            SHUS2  = 5 * (SUS+U5)
-            SHUI2  = 5 * (SUI+U2)
-            SHUS3  = 5 * (SUS+U6)
-            SHUI3  = 5 * (SUI+U3)
-            HU1S3I = SHUS1 + 3*SHUI1
-            HU1I3S = SHUI1 + 3*SHUS1
-            HU1SI  = SHUS1 +   SHUI1
-            HU2S3I = SHUS2 + 3*SHUI2
-            HU2I3S = SHUI2 + 3*SHUS2
-            HU2SI  = SHUS2 +   SHUI2
-            HU3S3I = SHUS3 + 3*SHUI3
-            HU3I3S = SHUI3 + 3*SHUS3
-            HU3SI  = SHUS3 +   SHUI3
+          SUS    = U6+U5+U4
+          SUI    = U3+U2+U1
+          SHUS1  = 5 * (SUS+U4)
+          SHUI1  = 5 * (SUI+U1)
+          SHUS2  = 5 * (SUS+U5)
+          SHUI2  = 5 * (SUI+U2)
+          SHUS3  = 5 * (SUS+U6)
+          SHUI3  = 5 * (SUI+U3)
+          HU1S3I = SHUS1 + 3*SHUI1
+          HU1I3S = SHUI1 + 3*SHUS1
+          HU1SI  = SHUS1 +   SHUI1
+          HU2S3I = SHUS2 + 3*SHUI2
+          HU2I3S = SHUI2 + 3*SHUS2
+          HU2SI  = SHUS2 +   SHUI2
+          HU3S3I = SHUS3 + 3*SHUI3
+          HU3I3S = SHUI3 + 3*SHUS3
+          HU3SI  = SHUS3 +   SHUI3
 !
-            SVS    = V6+V5+V4
-            SVI    = V3+V2+V1
-            SHVS1  = 5 * (SVS+V4)
-            SHVI1  = 5 * (SVI+V1)
-            SHVS2  = 5 * (SVS+V5)
-            SHVI2  = 5 * (SVI+V2)
-            SHVS3  = 5 * (SVS+V6)
-            SHVI3  = 5 * (SVI+V3)
-            HV1S3I = SHVS1 + 3*SHVI1
-            HV1I3S = SHVI1 + 3*SHVS1
-            HV1SI  = SHVS1 +   SHVI1
-            HV2S3I = SHVS2 + 3*SHVI2
-            HV2I3S = SHVI2 + 3*SHVS2
-            HV2SI  = SHVS2 +   SHVI2
-            HV3S3I = SHVS3 + 3*SHVI3
-            HV3I3S = SHVI3 + 3*SHVS3
-            HV3SI  = SHVS3 +   SHVI3
+          SVS    = V6+V5+V4
+          SVI    = V3+V2+V1
+          SHVS1  = 5 * (SVS+V4)
+          SHVI1  = 5 * (SVI+V1)
+          SHVS2  = 5 * (SVS+V5)
+          SHVI2  = 5 * (SVI+V2)
+          SHVS3  = 5 * (SVS+V6)
+          SHVI3  = 5 * (SVI+V3)
+          HV1S3I = SHVS1 + 3*SHVI1
+          HV1I3S = SHVI1 + 3*SHVS1
+          HV1SI  = SHVS1 +   SHVI1
+          HV2S3I = SHVS2 + 3*SHVI2
+          HV2I3S = SHVI2 + 3*SHVS2
+          HV2SI  = SHVS2 +   SHVI2
+          HV3S3I = SHVS3 + 3*SHVI3
+          HV3I3S = SHVI3 + 3*SHVS3
+          HV3SI  = SHVS3 +   SHVI3
 !
-            PXFI=PX1*F1+PX2*F2+PX3*F3
-            PXFS=PX1*F4+PX2*F5+PX3*F6
-            PYFI=PY1*F1+PY2*F2+PY3*F3
-            PYFS=PY1*F4+PY2*F5+PY3*F6
+          PXFI=PX1*F1+PX2*F2+PX3*F3
+          PXFS=PX1*F4+PX2*F5+PX3*F6
+          PYFI=PY1*F1+PY2*F2+PY3*F3
+          PYFS=PY1*F4+PY2*F5+PY3*F6
 !
-            W1(IELEM)= PXFI * (HU1S3I+HU1SI)
-     &               + PYFI * (HV1S3I+HV1SI)
-     &               + PXFS * (HU1SI+HU1I3S)
-     &               + PYFS * (HV1SI+HV1I3S)
+          W1(IELEM)= PXFI * (HU1S3I+HU1SI)
+     &             + PYFI * (HV1S3I+HV1SI)
+     &             + PXFS * (HU1SI+HU1I3S)
+     &             + PYFS * (HV1SI+HV1I3S)
 !
-            W2(IELEM)= PXFI * (HU2S3I+HU2SI)
-     &               + PYFI * (HV2S3I+HV2SI)
-     &               + PXFS * (HU2SI+HU2I3S)
-     &               + PYFS * (HV2SI+HV2I3S)
+          W2(IELEM)= PXFI * (HU2S3I+HU2SI)
+     &             + PYFI * (HV2S3I+HV2SI)
+     &             + PXFS * (HU2SI+HU2I3S)
+     &             + PYFS * (HV2SI+HV2I3S)
 !
-            W3(IELEM)= PXFI * (HU3S3I+HU3SI)
-     &               + PYFI * (HV3S3I+HV3SI)
-     &               + PXFS * (HU3SI+HU3I3S)
-     &               + PYFS * (HV3SI+HV3I3S)
+          W3(IELEM)= PXFI * (HU3S3I+HU3SI)
+     &             + PYFI * (HV3S3I+HV3SI)
+     &             + PXFS * (HU3SI+HU3I3S)
+     &             + PYFS * (HV3SI+HV3I3S)
 !
-         ENDDO ! IELEM 
+        ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -237,26 +237,26 @@
 !
 !-----------------------------------------------------------------------
 !
-         IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
-         IF (LNG.EQ.1) WRITE(LU,200) IELMU,SU%NAME
-         IF (LNG.EQ.1) WRITE(LU,300)
-         IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
-         IF (LNG.EQ.2) WRITE(LU,201) IELMU,SU%NAME
-         IF (LNG.EQ.2) WRITE(LU,301)
-100      FORMAT(1X,'VC18PP (BIEF) :',/,
-     &          1X,'DISCRETISATION DE F : ',1I6,
-     &          1X,'NOM REEL : ',A6)
-200      FORMAT(1X,'DISCRETISATION DE U : ',1I6,
-     &          1X,'NOM REEL : ',A6)
-300      FORMAT(1X,'CAS NON PREVU')
-101      FORMAT(1X,'VC18PP (BIEF) :',/,
-     &          1X,'DISCRETIZATION OF F:',1I6,
-     &          1X,'REAL NAME: ',A6)
-201      FORMAT(1X,'DISCRETIZATION OF U:',1I6,
-     &          1X,'REAL NAME: ',A6)
-301      FORMAT(1X,'CASE NOT IMPLEMENTED')
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
+        IF (LNG.EQ.1) WRITE(LU,200) IELMU,SU%NAME
+        IF (LNG.EQ.1) WRITE(LU,300)
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,201) IELMU,SU%NAME
+        IF (LNG.EQ.2) WRITE(LU,301)
+100     FORMAT(1X,'VC18PP (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+200     FORMAT(1X,'DISCRETISATION DE U : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+300     FORMAT(1X,'CAS NON PREVU')
+101     FORMAT(1X,'VC18PP (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F:',1I6,
+     &         1X,'REAL NAME: ',A6)
+201     FORMAT(1X,'DISCRETIZATION OF U:',1I6,
+     &         1X,'REAL NAME: ',A6)
+301     FORMAT(1X,'CASE NOT IMPLEMENTED')
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

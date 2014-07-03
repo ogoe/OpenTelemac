@@ -95,15 +95,15 @@
 !
 !      ---- TEMPS: TIME COUNTER FOR EROSION ----
 !
-           TEMPS = DT
+        TEMPS = DT
 !
 !      ---- QERODE : ERODED QUANTITY OF SEDIMENT ----
 !
-           QERODE = 0.D0
+        QERODE = 0.D0
 !
 !      ---- NERODE : NUMBER OF ERODED LAYERS ----
 !
-          NERODE = 0
+        NERODE = 0
 !
 !      ---- EROSION OF FRESH DEPOSIT ----
 !
@@ -129,14 +129,14 @@
 !
 !      ---- EROSION OF MUD BED ----
 !
-         IF (GIBSON) THEN
+        IF (GIBSON) THEN
           DO IPF=2,NPF(IPOIN)
 !
 !      ---- NCOUCH: NUMBER OF SUPERFICIAL LAYER ----
 !
 !         BUG CORRECTED 29/06/2006 AFTER WARNING BY CHC-NRC (THANKS)
-!         NCOUCH=-IPF+NPF(NPOIN2)+1
-          NCOUCH=-IPF+NPF(IPOIN)+1
+!           NCOUCH=-IPF+NPF(NPOIN2)+1
+            NCOUCH=-IPF+NPF(IPOIN)+1
 !
             IF (TEMPS.LE.1.D-8) GOTO 20
 !
@@ -156,16 +156,20 @@
 !
 ! SUPPRESS 4 FOLLOWING LINES TO ACTIVATE THE SUBROUTINE
 !
-         WRITE(LU,*)
-         IF (LNG.EQ.1) WRITE(LU,11)
-         IF (LNG.EQ.2) WRITE(LU,12)
-         CALL PLANTE(1)
-         STOP
+            WRITE(LU,*)
+            IF (LNG.EQ.1) WRITE(LU,11)
+            IF (LNG.EQ.2) WRITE(LU,12)
+            CALL PLANTE(1)
+            STOP
 !
-11    FORMAT('SOUS-PROGRAMME ERODE : DONNER LA VITESSE CRITIQUE',/,
-     &       'D''EROSION DU LIT CONSOLIDE FONCTION DE LA CONCENTRATION')
-12    FORMAT('SUBROUTINE ERODE : EXPRESS THE CRITICAL SHEAR STRESS FOR',
-     & /, 'EROSION (CONSOLIDATED BED) FUNCTION OF THE CONCENTRATION')
+11          FORMAT('SOUS-PROGRAMME ERODE : DONNER LA VITESSE 
+     &             CRITIQUE',/,
+     &             'D''EROSION DU LIT CONSOLIDE FONCTION DE LA 
+     &             CONCENTRATION')
+12          FORMAT('SUBROUTINE ERODE : EXPRESS THE CRITICAL 
+     &             SHEAR STRESS FOR',
+     &             /, 'EROSION (CONSOLIDATED BED) FUNCTION OF 
+     &             THE CONCENTRATION')
 !
 !-----------------------------------------------------------------------
 !
@@ -185,38 +189,38 @@
 !
 !        ---- EROSION OF THE WHOLE BED LAYER
 !
-             EPAI(NCOUCH,IPOIN)=0.D0
+              EPAI(NCOUCH,IPOIN)=0.D0
 !
 !        ---- ERODED QUANTITY
 !
-             QERODE=QERODE+QS
+              QERODE=QERODE+QS
 !
 !        ---- TIME LEFT AFTER EROSION OF LAYER
 !
-             TEMPS=TEMPS-(QS/FLUER(IPOIN))
+              TEMPS=TEMPS-(QS/FLUER(IPOIN))
 !
 !        ---- NUMBER OF ERODED LAYERS
 !
-             NERODE=NERODE+1
+              NERODE=NERODE+1
 !
             ELSE
 !
 !        ---- PARTIAL EROSION OF BED LAYER
 !
-             EPAI(NCOUCH,IPOIN)=EPAI(NCOUCH,IPOIN)-
-     &                                        (FLUER(IPOIN)*TEMPS/RHOS)
+              EPAI(NCOUCH,IPOIN)=EPAI(NCOUCH,IPOIN)-
+     &                                      (FLUER(IPOIN)*TEMPS/RHOS)
 !
 !        ---- ERODED QUANTITY
 !
-             QERODE=QERODE+(FLUER(IPOIN)*TEMPS)
+              QERODE=QERODE+(FLUER(IPOIN)*TEMPS)
 !
-             GOTO 20
+              GOTO 20
 !
             ENDIF
-           ENDDO
-         ENDIF
+          ENDDO
+        ENDIF
 !
-20     CONTINUE
+20      CONTINUE
 ! GOTO TARGET
 !
 !     ----- END OF EROSION STEP -----

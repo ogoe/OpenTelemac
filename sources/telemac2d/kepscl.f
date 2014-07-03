@@ -112,116 +112,116 @@
 !
       DO K=1,NPTFR
 !
-         KBOR(K) = 0.D0
-         EBOR(K) = 0.D0
-         N     = NBOR(K)
-         UTANG = SQRT( UN(N)**2 + VN(N)**2 )
-!        BEWARE : MODIFIED FROM PRINCIPLE NOTE
-!        DIST  = DISBOR(K)*0.1D0
-         DIST  = DISBOR(K)*0.33D0
+        KBOR(K) = 0.D0
+        EBOR(K) = 0.D0
+        N     = NBOR(K)
+        UTANG = SQRT( UN(N)**2 + VN(N)**2 )
+!       BEWARE : MODIFIED FROM PRINCIPLE NOTE
+!       DIST  = DISBOR(K)*0.1D0
+        DIST  = DISBOR(K)*0.33D0
 !
 !  DIRICHLET ON K
 !  ---------------
 !
-         IF(LIMKEP(K,1).EQ.KDIR) THEN
-!        ----------------------------
+        IF(LIMKEP(K,1).EQ.KDIR) THEN
+!       ----------------------------
 !
-!           ************************************************
-            IF(LIUBOR(K).EQ.KENT.OR.LIUBOR(K).EQ.KENTU) THEN
-!           ************************************************
+!         ************************************************
+          IF(LIUBOR(K).EQ.KENT.OR.LIUBOR(K).EQ.KENTU) THEN
+!         ************************************************
 !
-!              INPUT BOUNDARY: TURBULENCE DUE TO THE BOTTOM
+!           INPUT BOUNDARY: TURBULENCE DUE TO THE BOTTOM
 !
-               CEPS    = C2*SQRT(CMU)/SQRT(ESTAR*SCHMIT) /
-     &                   (0.5D0*CF(N))**0.75D0
-               DENOM   = CEPS * 0.5D0*CF(N)
-               USTAR = SQRT( 0.5D0 * CF(N) * ( UN(N)**2 + VN(N)**2 ) )
-               KBOR(K) = C2 * USTAR**2 / MAX(DENOM,1.D-10)
+            CEPS    = C2*SQRT(CMU)/SQRT(ESTAR*SCHMIT) /
+     &                (0.5D0*CF(N))**0.75D0
+            DENOM   = CEPS * 0.5D0*CF(N)
+            USTAR = SQRT( 0.5D0 * CF(N) * ( UN(N)**2 + VN(N)**2 ) )
+            KBOR(K) = C2 * USTAR**2 / MAX(DENOM,1.D-10)
 !
-!           ***************************************************
-            ELSEIF(LIUBOR(K).EQ.KLOG.OR.LIUBOR(K).EQ.KADH) THEN
-!           ***************************************************
+!         ***************************************************
+          ELSEIF(LIUBOR(K).EQ.KLOG.OR.LIUBOR(K).EQ.KADH) THEN
+!         ***************************************************
 !
-!              WALL
+!           WALL
 !
-               CEPS    = C2*SQRT(CMU)/SQRT(ESTAR*SCHMIT) /
-     &                   (0.5D0*CF(N))**0.75D0
-               DENOM   = CEPS * 0.5D0*CF(N)
-               USTAR = SQRT( 0.5D0 * CF(N) * ( UN(N)**2 + VN(N)**2 ) )
-               KFOND   = C2 * USTAR**2 / MAX(DENOM,1.D-10)
-               KBORD   = SSQCMU*(UETUTA(K)*UTANG)**2
-               KBOR(K) = KBORD + KFOND
+            CEPS    = C2*SQRT(CMU)/SQRT(ESTAR*SCHMIT) /
+     &                (0.5D0*CF(N))**0.75D0
+            DENOM   = CEPS * 0.5D0*CF(N)
+            USTAR = SQRT( 0.5D0 * CF(N) * ( UN(N)**2 + VN(N)**2 ) )
+            KFOND   = C2 * USTAR**2 / MAX(DENOM,1.D-10)
+            KBORD   = SSQCMU*(UETUTA(K)*UTANG)**2
+            KBOR(K) = KBORD + KFOND
 !
-!           ****
-            ELSE
-!           ****
+!         ****
+          ELSE
+!         ****
 !
-               IF(LNG.EQ.1) WRITE(LU,500) K,LIUBOR(K)
-               IF(LNG.EQ.2) WRITE(LU,501) K,LIUBOR(K)
-500            FORMAT(1X,'KEPSCL: POINT DE BORD ',1I6,
-     &                   'CAS NON PREVU POUR KBOR',1X,'LIUBOR=',1I6)
-501            FORMAT(1X,'KEPSCL: BOUNDARY POINT ',1I6,
-     &                   'UNKNOWN CASE FOR KBOR',1X,'LIUBOR=',1I6)
-               CALL PLANTE(1)
-               STOP
+            IF(LNG.EQ.1) WRITE(LU,500) K,LIUBOR(K)
+            IF(LNG.EQ.2) WRITE(LU,501) K,LIUBOR(K)
+500         FORMAT(1X,'KEPSCL: POINT DE BORD ',1I6,
+     &                'CAS NON PREVU POUR KBOR',1X,'LIUBOR=',1I6)
+501         FORMAT(1X,'KEPSCL: BOUNDARY POINT ',1I6,
+     &                'UNKNOWN CASE FOR KBOR',1X,'LIUBOR=',1I6)
+            CALL PLANTE(1)
+            STOP
 !
-!           *****
-            ENDIF
-!           *****
+!         *****
+          ENDIF
+!         *****
 !
-         ENDIF
-!        -----
+        ENDIF
+!       -----
 !
 !  DIRICHLET ON EPSILON
 !  ---------------------
 !
-         IF(LIMKEP(K,2).EQ.KDIR) THEN
-!        ----------------------------
+        IF(LIMKEP(K,2).EQ.KDIR) THEN
+!       ----------------------------
 !
-!           ************************************************
-            IF(LIUBOR(K).EQ.KENT.OR.LIUBOR(K).EQ.KENTU) THEN
-!           ************************************************
+!         ************************************************
+          IF(LIUBOR(K).EQ.KENT.OR.LIUBOR(K).EQ.KENTU) THEN
+!         ************************************************
 !
-!              INPUT BOUNDARY: TURBULENCE DUE TO THE BOTTOM
+!           INPUT BOUNDARY: TURBULENCE DUE TO THE BOTTOM
 !
-               DENOM   = SQRT(0.5D0*CF(N)) * HN(N)
-               USTAR   = SQRT(0.5D0*CF(N) * ( UN(N)**2 + VN(N)**2 ) )
-               EFOND   = USTAR**3 / MAX(DENOM,1.D-10)
-               EBOR(K) = MAX( EFOND , EMIN )
+            DENOM   = SQRT(0.5D0*CF(N)) * HN(N)
+            USTAR   = SQRT(0.5D0*CF(N) * ( UN(N)**2 + VN(N)**2 ) )
+            EFOND   = USTAR**3 / MAX(DENOM,1.D-10)
+            EBOR(K) = MAX( EFOND , EMIN )
 !
-!           ***************************************************
-            ELSEIF(LIUBOR(K).EQ.KLOG.OR.LIUBOR(K).EQ.KADH) THEN
-!           ***************************************************
+!         ***************************************************
+          ELSEIF(LIUBOR(K).EQ.KLOG.OR.LIUBOR(K).EQ.KADH) THEN
+!         ***************************************************
 !
-!              WALL
+!           WALL
 !
-               DENOM   = SQRT(0.5D0*CF(N)) * HN(N)
-               USTAR   = SQRT(0.5D0*CF(N) * ( UN(N)**2 + VN(N)**2 ) )
-               EFOND   = USTAR**3 / MAX(DENOM,1.D-10)
-               EBORD   = (UETUTA(K)*UTANG)**3 / ( KARMAN*DIST )
-               EBOR(K) = MAX( EBORD + EFOND, EMIN )
+            DENOM   = SQRT(0.5D0*CF(N)) * HN(N)
+            USTAR   = SQRT(0.5D0*CF(N) * ( UN(N)**2 + VN(N)**2 ) )
+            EFOND   = USTAR**3 / MAX(DENOM,1.D-10)
+            EBORD   = (UETUTA(K)*UTANG)**3 / ( KARMAN*DIST )
+            EBOR(K) = MAX( EBORD + EFOND, EMIN )
 !
-!           ****
-            ELSE
-!           ****
+!         ****
+          ELSE
+!         ****
 !
-!              OTHER
+!           OTHER
 !
-               IF(LNG.EQ.1) WRITE(LU,600) K,LIUBOR(K)
-               IF(LNG.EQ.2) WRITE(LU,601) K,LIUBOR(K)
-600            FORMAT(1X,'KEPSCL: POINT DE BORD ',1I6,
-     &                   'CAS NON PREVU POUR EBOR',1X,'LIUBOR=',1I6)
-601            FORMAT(1X,'KEPSCL: BOUNDARY POINT ',1I6,
-     &                   'UNKNOWN CASE FOR EBOR',1X,'LIUBOR=',1I6)
-               CALL PLANTE(1)
-               STOP
+            IF(LNG.EQ.1) WRITE(LU,600) K,LIUBOR(K)
+            IF(LNG.EQ.2) WRITE(LU,601) K,LIUBOR(K)
+600         FORMAT(1X,'KEPSCL: POINT DE BORD ',1I6,
+     &                'CAS NON PREVU POUR EBOR',1X,'LIUBOR=',1I6)
+601         FORMAT(1X,'KEPSCL: BOUNDARY POINT ',1I6,
+     &                'UNKNOWN CASE FOR EBOR',1X,'LIUBOR=',1I6)
+            CALL PLANTE(1)
+            STOP
 !
-!           *****
-            ENDIF
-!           *****
+!         *****
+          ENDIF
+!         *****
 !
-         ENDIF
-!        -----
+        ENDIF
+!       -----
 !
       ENDDO
 !

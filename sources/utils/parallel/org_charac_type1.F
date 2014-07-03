@@ -48,15 +48,15 @@
       IMPLICIT NONE 
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! 
       INTEGER, INTENT(IN)    :: NOMB 
       INTEGER, INTENT(INOUT) :: CHARACTERISTIC 
       LOGICAL, INTENT(IN)    :: TRACE 
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
 #if defined (HAVE_MPI)
       INTEGER, PARAMETER :: MAX_BASKET_SIZE=10 
 !

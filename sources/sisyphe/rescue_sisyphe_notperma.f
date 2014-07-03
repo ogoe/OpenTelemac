@@ -159,7 +159,7 @@
 !  FLOWRATE (M2/S)
 !
       IF ((ALIRE(6).EQ.1).AND.(TROUVE(6).EQ.0))  THEN
-       CALL OV( 'X=N(Y,Z)' , Q  , QU  , QV  , 0.D0 , NPOIN )
+        CALL OV( 'X=N(Y,Z)' , Q  , QU  , QV  , 0.D0 , NPOIN )
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -168,32 +168,32 @@
       IF ((ICF==4).OR.(ICF==5).OR.
      &    (ICF==8).OR.(ICF==9)    ) THEN
 !
-         IF ((ALIRE(12).EQ.1).AND.(TROUVE(12).EQ.0)) THEN
-            IF(LNG.EQ.1) WRITE(LU,900)
-            IF(LNG.EQ.2) WRITE(LU,901)
-           CALL OV( 'X=C     ' , HW , U , V , 0.D0 , NPOIN )
-         ENDIF
+        IF ((ALIRE(12).EQ.1).AND.(TROUVE(12).EQ.0)) THEN
+          IF(LNG.EQ.1) WRITE(LU,900)
+          IF(LNG.EQ.2) WRITE(LU,901)
+          CALL OV( 'X=C     ' , HW , U , V , 0.D0 , NPOIN )
+        ENDIF
 !
 900     FORMAT(1X,'CALCUL PRECEDENT SANS LA HAUTEUR DE HOULE : ON',
      &          ' PREND ZERO')
 901     FORMAT(1X,'PREVIOUS COMPUTATION WITHOUT WAVE HEIGHT : IT IS',
      &          ' FIXED TO ZERO')
 !
-         IF ((ALIRE(13).EQ.1).AND.(TROUVE(13).EQ.0)) THEN
-            IF(LNG.EQ.1) WRITE(LU,902)
-            IF(LNG.EQ.2) WRITE(LU,903)
-            CALL OV( 'X=C     ' , TW , U , V , 0.D0 , NPOIN )
-         ENDIF
+        IF ((ALIRE(13).EQ.1).AND.(TROUVE(13).EQ.0)) THEN
+          IF(LNG.EQ.1) WRITE(LU,902)
+          IF(LNG.EQ.2) WRITE(LU,903)
+          CALL OV( 'X=C     ' , TW , U , V , 0.D0 , NPOIN )
+        ENDIF
 902     FORMAT(1X,'CALCUL PRECEDENT SANS LA PERIODE DE HOULE : ON',
      &          ' PREND ZERO')
 903     FORMAT(1X,'PREVIOUS COMPUTATION WITHOUT WAVE PERIOD : IT IS',
      &          ' FIXED TO ZERO')
 !
-         IF ((ALIRE(14).EQ.1).AND.(TROUVE(14).EQ.0)) THEN
-            IF(LNG.EQ.1) WRITE(LU,902)
-            IF(LNG.EQ.2) WRITE(LU,903)
-            CALL OV( 'X=C     ' , THETAW , U , V , 90.D0  , NPOIN )
-         ENDIF
+        IF ((ALIRE(14).EQ.1).AND.(TROUVE(14).EQ.0)) THEN
+          IF(LNG.EQ.1) WRITE(LU,902)
+          IF(LNG.EQ.2) WRITE(LU,903)
+          CALL OV( 'X=C     ' , THETAW , U , V , 90.D0  , NPOIN )
+        ENDIF
       ENDIF
 !909     FORMAT(1X,'CALCUL PRECEDENT SANS ANGLE DE HOULE : ON',
 !     &          ' PREND ZERO')

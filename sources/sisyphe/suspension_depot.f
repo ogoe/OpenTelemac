@@ -137,7 +137,7 @@
         ELSEIF (SET_LAG) THEN
 
           IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BETAFACTOR' 
-        CALL SUSPENSION_MILES(HN,NPOIN,KARMAN,HMIN,ZERO,
+          CALL SUSPENSION_MILES(HN,NPOIN,KARMAN,HMIN,ZERO,
      &                  FDM,FD90,XWC,ZREF,T2)
           IF (DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_BETAFACTOR'
 
@@ -151,7 +151,7 @@
             !  COMPUTES THE DEPOSITION FLUX --> FLUDPT = XWC * T2    !
             ! *****************************************************  !
 !
-         CALL OS('X=CY    ', X=FLUDPT, Y=T2, C=XWC)
+        CALL OS('X=CY    ', X=FLUDPT, Y=T2, C=XWC)
 !
       ENDIF
 !

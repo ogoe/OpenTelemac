@@ -2,7 +2,7 @@
                         SUBROUTINE GAULEG
 !                       *****************
 !
-     *( W_LEG , X_LEG , NPOIN )
+     &( W_LEG , X_LEG , NPOIN )
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   15/06/2011
@@ -41,7 +41,7 @@
 !     """""""""""""""""
       INTEGER           I     , M     , J
       DOUBLE PRECISION  EPS   , Z     , P1    , P2    , P3    ,
-     *                  PP    , Z1
+     &                  PP    , Z1
       PARAMETER        (EPS=3.D-14)
 !
 !

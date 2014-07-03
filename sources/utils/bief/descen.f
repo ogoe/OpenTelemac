@@ -130,12 +130,12 @@
 !
       ELSE
 !
-       IF (LNG.EQ.1) WRITE(LU,100) IELM
-       IF (LNG.EQ.2) WRITE(LU,101) IELM
-100    FORMAT(1X,'DESCEN (BIEF) : IELM = ',1I6,' ELEMENT NON PREVU')
-101    FORMAT(1X,'DESCEN (BIEF) : IELM = ',1I6,' ELEMENT NOT AVAILABLE')
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELM
+        IF (LNG.EQ.2) WRITE(LU,101) IELM
+100   FORMAT(1X,'DESCEN (BIEF) : IELM = ',1I6,' ELEMENT NON PREVU')
+101   FORMAT(1X,'DESCEN (BIEF) : IELM = ',1I6,' ELEMENT NOT AVAILABLE')
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !
@@ -167,24 +167,24 @@
 !
       ELSE
 !
-       IF (LNG.EQ.1) WRITE(LU,100) IELM
-       IF (LNG.EQ.2) WRITE(LU,101) IELM
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELM
+        IF (LNG.EQ.2) WRITE(LU,101) IELM
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !
 !     2.3) CASE NOT IMPLEMENTED
 !
       ELSE
-         IF (LNG.EQ.1) WRITE(LU,200) TYPEXA(1:1),DITR(1:1)
-         IF (LNG.EQ.2) WRITE(LU,201) TYPEXA(1:1),DITR(1:1)
-200      FORMAT(1X,'DESCEN (BIEF) : TYPE DE MATRICE NON PREVU :',A1,/,
-     &          1X,'AVEC DITR=',A1)
-201      FORMAT(1X,'DESCEN (BIEF) : UNEXPECTED TYPE OF MATRIX :',A1,/,
-     &          1X,'WITH DITR=',A1)
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,200) TYPEXA(1:1),DITR(1:1)
+        IF (LNG.EQ.2) WRITE(LU,201) TYPEXA(1:1),DITR(1:1)
+200     FORMAT(1X,'DESCEN (BIEF) : TYPE DE MATRICE NON PREVU :',A1,/,
+     &         1X,'AVEC DITR=',A1)
+201     FORMAT(1X,'DESCEN (BIEF) : UNEXPECTED TYPE OF MATRIX :',A1,/,
+     &         1X,'WITH DITR=',A1)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

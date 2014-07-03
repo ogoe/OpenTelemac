@@ -260,27 +260,27 @@
 !     NOTE JMH: WE SHOULD SET COURAN=.TRUE. WHEN COUPLING
 !               THIS WOULD SIMPLIFY TESTS
       IF(COURAN.OR.NAMECODE(1:7).EQ.'TELEMAC') THEN
-         IF(WAC_FILES(WACCOB)%NAME.NE.' '.OR.
-     &      WAC_FILES(WACCOF)%NAME.NE.' ') THEN
-           CALL BIEF_ALLVEC(1,SVC1,'SVC1  ',IELM2 , 1 , 2 ,MESH)
-           CALL BIEF_ALLVEC(1,SUC1,'SUC1  ',IELM2 , 1 , 2 ,MESH)
-           CALL BIEF_ALLVEC(1,SVC2,'SVC2  ',IELM2 , 1 , 2 ,MESH)
-           CALL BIEF_ALLVEC(1,SUC2,'SUC2  ',IELM2 , 1 , 2 ,MESH)
-         ELSE
-           CALL BIEF_ALLVEC(1,SVC1  ,'SVC1  ', 1, 1, 0 ,MESH)
-           CALL BIEF_ALLVEC(1,SUC1  ,'SUC1  ', 1, 1, 0 ,MESH)
-           CALL BIEF_ALLVEC(1,SVC2  ,'SVC2  ', 1, 1, 0 ,MESH)
-           CALL BIEF_ALLVEC(1,SUC2  ,'SUC2  ', 1, 1, 0 ,MESH)
-         ENDIF
-         CALL BIEF_ALLVEC(1,SZM1,'SZM1  ',IELM2 , 1 , 2 ,MESH)
-         CALL BIEF_ALLVEC(1,SZM2,'SZM2  ',IELM2 , 1 , 2 ,MESH)
+        IF(WAC_FILES(WACCOB)%NAME.NE.' '.OR.
+     &     WAC_FILES(WACCOF)%NAME.NE.' ') THEN
+          CALL BIEF_ALLVEC(1,SVC1,'SVC1  ',IELM2 , 1 , 2 ,MESH)
+          CALL BIEF_ALLVEC(1,SUC1,'SUC1  ',IELM2 , 1 , 2 ,MESH)
+          CALL BIEF_ALLVEC(1,SVC2,'SVC2  ',IELM2 , 1 , 2 ,MESH)
+          CALL BIEF_ALLVEC(1,SUC2,'SUC2  ',IELM2 , 1 , 2 ,MESH)
+        ELSE
+          CALL BIEF_ALLVEC(1,SVC1  ,'SVC1  ', 1, 1, 0 ,MESH)
+          CALL BIEF_ALLVEC(1,SUC1  ,'SUC1  ', 1, 1, 0 ,MESH)
+          CALL BIEF_ALLVEC(1,SVC2  ,'SVC2  ', 1, 1, 0 ,MESH)
+          CALL BIEF_ALLVEC(1,SUC2  ,'SUC2  ', 1, 1, 0 ,MESH)
+        ENDIF
+        CALL BIEF_ALLVEC(1,SZM1,'SZM1  ',IELM2 , 1 , 2 ,MESH)
+        CALL BIEF_ALLVEC(1,SZM2,'SZM2  ',IELM2 , 1 , 2 ,MESH)
       ELSE
-         CALL BIEF_ALLVEC(1,SVC1  ,'SVC1  ', 1, 1, 0 ,MESH)
-         CALL BIEF_ALLVEC(1,SUC1  ,'SUC1  ', 1, 1, 0 ,MESH)
-         CALL BIEF_ALLVEC(1,SVC2  ,'SVC2  ', 1, 1, 0 ,MESH)
-         CALL BIEF_ALLVEC(1,SUC2  ,'SUC2  ', 1, 1, 0 ,MESH)
-         CALL BIEF_ALLVEC(1,SZM1  ,'SZM1  ', 1, 1, 0 ,MESH)
-         CALL BIEF_ALLVEC(1,SZM2  ,'SZM2  ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC(1,SVC1  ,'SVC1  ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC(1,SUC1  ,'SUC1  ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC(1,SVC2  ,'SVC2  ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC(1,SUC2  ,'SUC2  ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC(1,SZM1  ,'SZM1  ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC(1,SZM2  ,'SZM2  ', 1, 1, 0 ,MESH)
       ENDIF
       DZHDT   =>SDZHDT%R
       UC1     =>SUC1%R
@@ -291,27 +291,27 @@
       ZM2     =>SZM2%R
 !
       IF (VENT) THEN
-         CALL BIEF_ALLVEC(1,SUV,'SUV   ',IELM2 , 1 , 2 ,MESH)
-         CALL BIEF_ALLVEC(1,SVV,'SVV   ',IELM2 , 1 , 2 ,MESH)
-         IF (WAC_FILES(WACVEB)%NAME.NE.' '.OR.
-     &       WAC_FILES(WACVEF)%NAME.NE.' ') THEN
-           CALL BIEF_ALLVEC(1,SVV1,'SVV1  ',IELM2 , 1 , 2 ,MESH)
-           CALL BIEF_ALLVEC(1,SUV1,'SUV1  ',IELM2 , 1 , 2 ,MESH)
-           CALL BIEF_ALLVEC(1,SVV2,'SVV2  ',IELM2 , 1 , 2 ,MESH)
-           CALL BIEF_ALLVEC(1,SUV2,'SUV2  ',IELM2 , 1 , 2 ,MESH)
-         ELSE
-           CALL BIEF_ALLVEC(1,SVV1  ,'SVV1  ', 1, 1, 0 ,MESH)
-           CALL BIEF_ALLVEC(1,SUV1  ,'SUV1  ', 1, 1, 0 ,MESH)
-           CALL BIEF_ALLVEC(1,SVV2  ,'SVV2  ', 1, 1, 0 ,MESH)
-           CALL BIEF_ALLVEC(1,SUV2  ,'SUV2  ', 1, 1, 0 ,MESH)
-         ENDIF
+        CALL BIEF_ALLVEC(1,SUV,'SUV   ',IELM2 , 1 , 2 ,MESH)
+        CALL BIEF_ALLVEC(1,SVV,'SVV   ',IELM2 , 1 , 2 ,MESH)
+        IF (WAC_FILES(WACVEB)%NAME.NE.' '.OR.
+     &      WAC_FILES(WACVEF)%NAME.NE.' ') THEN
+          CALL BIEF_ALLVEC(1,SVV1,'SVV1  ',IELM2 , 1 , 2 ,MESH)
+          CALL BIEF_ALLVEC(1,SUV1,'SUV1  ',IELM2 , 1 , 2 ,MESH)
+          CALL BIEF_ALLVEC(1,SVV2,'SVV2  ',IELM2 , 1 , 2 ,MESH)
+          CALL BIEF_ALLVEC(1,SUV2,'SUV2  ',IELM2 , 1 , 2 ,MESH)
+        ELSE
+          CALL BIEF_ALLVEC(1,SVV1  ,'SVV1  ', 1, 1, 0 ,MESH)
+          CALL BIEF_ALLVEC(1,SUV1  ,'SUV1  ', 1, 1, 0 ,MESH)
+          CALL BIEF_ALLVEC(1,SVV2  ,'SVV2  ', 1, 1, 0 ,MESH)
+          CALL BIEF_ALLVEC(1,SUV2  ,'SUV2  ', 1, 1, 0 ,MESH)
+        ENDIF
       ELSE
-         CALL BIEF_ALLVEC(1,SUV   ,'SUV   ', 1, 1, 0 ,MESH)
-         CALL BIEF_ALLVEC(1,SVV   ,'SVV   ', 1, 1, 0 ,MESH)
-         CALL BIEF_ALLVEC(1,SVV1  ,'SVV1  ', 1, 1, 0 ,MESH)
-         CALL BIEF_ALLVEC(1,SUV1  ,'SUV1  ', 1, 1, 0 ,MESH)
-         CALL BIEF_ALLVEC(1,SVV2  ,'SVV2  ', 1, 1, 0 ,MESH)
-         CALL BIEF_ALLVEC(1,SUV2  ,'SUV2  ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC(1,SUV   ,'SUV   ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC(1,SVV   ,'SVV   ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC(1,SVV1  ,'SVV1  ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC(1,SUV1  ,'SUV1  ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC(1,SVV2  ,'SVV2  ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC(1,SUV2  ,'SUV2  ', 1, 1, 0 ,MESH)
       ENDIF
       UV      =>SUV%R
       VV      =>SVV%R

@@ -76,7 +76,7 @@
 ! 
         WRITE(VARNAME,'(A9,I0)')  'ERO SHEAR',I  
 !           
-        CALL FIND_IN_SEL(LAYTOCE%ADR(i)%P, 
+        CALL FIND_IN_SEL(LAYTOCE%ADR(I)%P, 
      &                   VARNAME,NGEO,FFORMAT,W,OK,TIME=BID) 
 !       
         IF (OK) WRITE(LU,*)  

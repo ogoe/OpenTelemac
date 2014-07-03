@@ -128,19 +128,19 @@
 !  TEST TO CHECK CORRECT VALUES FOR TIDALTYPE
 !
       IF(.NOT.DEJA) THEN
-c$$$        IF(TIDALTYPE.LT.1.OR.TIDALTYPE.GT.6) THEN
+!$$$        IF(TIDALTYPE.LT.1.OR.TIDALTYPE.GT.6) THEN
         IF(TIDALTYPE.NE.1) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'MAUVAISE VALEUR POUR TIDALTYPE =',TIDALTYPE
             WRITE(LU,*) 'ELLE DOIT ETRE EGALE A 1 ACTUELLEMENT'
             WRITE(LU,*) 'AVEC LA BASE DE DONNEES DE MAREE LEGOS-NEA'
-c$$$            WRITE(LU,*) 'ELLE DOIT ETRE COMPRISE ENTRE 1 ET 6'
+!$$$            WRITE(LU,*) 'ELLE DOIT ETRE COMPRISE ENTRE 1 ET 6'
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'UNEXPECTED VALUE FOR TIDALTYPE=',TIDALTYPE
             WRITE(LU,*) 'IT MUST BE CHOSEN EQUAL TO 1 CURRENTLY'
             WRITE(LU,*) 'WITH LEGOS-NEA TIDAL DATA BASE'
-c$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
+!$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -247,8 +247,8 @@ c$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
           INDW(K) = 0
           DO I = 1,LEGOS_NCMX
             IF(NAMEWAVE(K).EQ.LEGOS_CONSTID(I)) THEN
-               INDW(K) = I
-               EXIT
+              INDW(K) = I
+              EXIT
             ENDIF
           ENDDO
           IF(INDW(K).EQ.0) THEN
@@ -366,7 +366,7 @@ c$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
      &                         *COS( TEMPS*OMEGA(J)-PH(IPTFRL,I)+UPV(J))
                 ENDIF
               ENDDO
-c$$$            ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+!$$$            ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
             ELSEIF(TIDALTYPE.EQ.2) THEN
               SUMH = 0.D0
               DO I=1,NWAVES
@@ -380,7 +380,7 @@ c$$$            ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
 !
             IF(TIDALTYPE.EQ.1.OR.TIDALTYPE.EQ.2) THEN
               HBTIDE%R(K) = -ZF(NBOR(K)) + CTIDE*SUMH + MSL
-c$$$            ELSEIF(TIDALTYPE.EQ.2.AND.TIDALTYPE.LE.6) THEN
+!$$$            ELSEIF(TIDALTYPE.EQ.2.AND.TIDALTYPE.LE.6) THEN
             ENDIF
 !
           ENDIF
@@ -421,7 +421,7 @@ c$$$            ELSEIF(TIDALTYPE.EQ.2.AND.TIDALTYPE.LE.6) THEN
      &                         *COS( TEMPS*OMEGA(J)-PV(IPTFRL,I)+UPV(J))
                 ENDIF
               ENDDO
-c$$$            ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+!$$$            ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
             ELSEIF(TIDALTYPE.EQ.2) THEN
               SUMU = 0.D0
               SUMV = 0.D0
@@ -439,7 +439,7 @@ c$$$            ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
             IF(TIDALTYPE.EQ.1.OR.TIDALTYPE.EQ.2) THEN
               UBTIDE%R(K) = CTIDEV*SUMU
               VBTIDE%R(K) = CTIDEV*SUMV
-c$$$            ELSEIF(TIDALTYPE.EQ.2.AND.TIDALTYPE.LE.6) THEN
+!$$$            ELSEIF(TIDALTYPE.EQ.2.AND.TIDALTYPE.LE.6) THEN
             ENDIF
 !
           ENDIF

@@ -64,13 +64,13 @@
       DENS  = (XMVS - XMVE )/ XMVE
 
       DO I=1,NPOIN
-         ! ***************** !
-         ! IV - EROSION FLUX ! (_IMP_)
-         ! ***************** !
+        ! ***************** !
+        ! IV - EROSION FLUX ! (_IMP_)
+        ! ***************** !
         DSTAR = FDM*(GRAV*DENS/(VCE*VCE))**(1.D0/3.D0)
         COEFF = (DENS*GRAV*FDM)**1.2D0
         IF(DSTAR.LE. ZERO) THEN
-         PRINT*,'ERROR SUSPENSION_SANDFLOW:DSTAR = ',DSTAR,FDM,VCE,GRAV
+          PRINT*,'ERROR SUSPENSION_SANDFLOW:DSTAR = ',DSTAR,FDM,VCE,GRAV
           CALL PLANTE(1)
         ENDIF
         IF ((HN%R(I).GT.ZERO).AND.(COEFF.GT.ZERO)) THEN

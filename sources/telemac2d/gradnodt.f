@@ -89,36 +89,36 @@
 !
       DO JT=1,NT
 !
-         NUBO1 = NU(JT,1)
-         NUBO2 = NU(JT,2)
-         NUBO3 = NU(JT,3)
+        NUBO1 = NU(JT,1)
+        NUBO2 = NU(JT,2)
+        NUBO3 = NU(JT,3)
 !
-         AIRJ=   AIRT(JT)
+        AIRJ=   AIRT(JT)
 !
-!        COMPUTES THE P1-GRADIENTS
+!       COMPUTES THE P1-GRADIENTS
 !
-         UA1=T(NUBO1)
-         UA2=T(NUBO2)
-         UA3=T(NUBO3)
+        UA1=T(NUBO1)
+        UA2=T(NUBO2)
+        UA3=T(NUBO3)
 !
 !  GRADIENTS BY TRIANGLES
 !
-         DJX(JT) = UA1*DPX(1,JT) +
-     &             UA2*DPX(2,JT) + UA3*DPX(3,JT)
-         DJY(JT) = UA1*DPY(1,JT) +
-     &             UA2*DPY(2,JT) + UA3*DPY(3,JT)
+        DJX(JT) = UA1*DPX(1,JT) +
+     &            UA2*DPX(2,JT) + UA3*DPX(3,JT)
+        DJY(JT) = UA1*DPY(1,JT) +
+     &            UA2*DPY(2,JT) + UA3*DPY(3,JT)
 !
 !  GRADIENTS BY NODES
 !
-         TEMPOR    = AIRJ*DJX(JT)
-         DX(NUBO1) = DX(NUBO1) + TEMPOR
-         DX(NUBO2) = DX(NUBO2) + TEMPOR
-         DX(NUBO3) = DX(NUBO3) + TEMPOR
+        TEMPOR    = AIRJ*DJX(JT)
+        DX(NUBO1) = DX(NUBO1) + TEMPOR
+        DX(NUBO2) = DX(NUBO2) + TEMPOR
+        DX(NUBO3) = DX(NUBO3) + TEMPOR
 !
-         TEMPOR    = AIRJ*DJY(JT)
-         DY(NUBO1) = DY(NUBO1) + TEMPOR
-         DY(NUBO2) = DY(NUBO2) + TEMPOR
-         DY(NUBO3) = DY(NUBO3) + TEMPOR
+        TEMPOR    = AIRJ*DJY(JT)
+        DY(NUBO1) = DY(NUBO1) + TEMPOR
+        DY(NUBO2) = DY(NUBO2) + TEMPOR
+        DY(NUBO3) = DY(NUBO3) + TEMPOR
       ENDDO ! RA: SEPARATION OF LOOPS TO EXECUTE PARCOM 
       IF(NCSIZE.GT.1)THEN
         CALL PARCOM2(DX,DY,DY,NS,1,2,2,MESH)
@@ -127,36 +127,36 @@
 !   DIFFUSION TERM
 !
       IF(DIFT.AND.CVIST.NE.0.) THEN
-         DO JT=1,NT
+        DO JT=1,NT
 !
-           NUBO1 = NU(JT,1)
-           NUBO2 = NU(JT,2)
-           NUBO3 = NU(JT,3)
+          NUBO1 = NU(JT,1)
+          NUBO2 = NU(JT,2)
+          NUBO3 = NU(JT,3)
 !
-           AIRJ =  AIRT(JT)
-           HTT  = H(NUBO1)+H(NUBO2)+H(NUBO3)
-           AUX  =  CVIST*DTT*AIRJ*HTT/3.
+          AIRJ =  AIRT(JT)
+          HTT  = H(NUBO1)+H(NUBO2)+H(NUBO3)
+          AUX  =  CVIST*DTT*AIRJ*HTT/3.
 !
-           CE(NUBO1)       = CE(NUBO1) -AUX*
-     &     (DJX(JT)*DPX(1,JT)+DJY(JT)*DPY(1,JT))
-           CE(NUBO2)       = CE(NUBO2) -AUX*
-     &     (DJX(JT)*DPX(2,JT)+DJY(JT)*DPY(2,JT))
-           CE(NUBO3)       = CE(NUBO3) -AUX*
-     &     (DJX(JT)*DPX(3,JT)+DJY(JT)*DPY(3,JT))
-         ENDDO
+          CE(NUBO1)       = CE(NUBO1) -AUX*
+     &    (DJX(JT)*DPX(1,JT)+DJY(JT)*DPY(1,JT))
+          CE(NUBO2)       = CE(NUBO2) -AUX*
+     &    (DJX(JT)*DPX(2,JT)+DJY(JT)*DPY(2,JT))
+          CE(NUBO3)       = CE(NUBO3) -AUX*
+     &    (DJX(JT)*DPX(3,JT)+DJY(JT)*DPY(3,JT))
+        ENDDO
 !
-!        FOR PARALLELILSM
-         IF(NCSIZE.GT.1)THEN
-           CALL PARCOM2(CE,CE,CE,NS,1,2,1,MESH)
-         ENDIF
+!       FOR PARALLELILSM
+        IF(NCSIZE.GT.1)THEN
+          CALL PARCOM2(CE,CE,CE,NS,1,2,1,MESH)
+        ENDIF
       ENDIF
 !
 !     COMPLETES THE COMPUTATION OF THE NODAL GRADIENTS
 !
       DO IS=1,NS
-         AIS     = TIERS/AIRS(IS)
-         DX(IS)  = DX(IS)*AIS
-         DY(IS)  = DY(IS)*AIS
+        AIS     = TIERS/AIRS(IS)
+        DX(IS)  = DX(IS)*AIS
+        DY(IS)  = DY(IS)*AIS
       ENDDO
 !
 !-----------------------------------------------------------------------

@@ -86,15 +86,15 @@
 !     INITIALISES ELTSEG, ORISEG, GLOSEG
 !
       DO IELEB = 1, NELEB
-         DO ISEG = 1, 3 ! BIEF_NBSEGEL(IELM2, MESH) ie. IELM2 = 81
-            ELTSEGBOR(IELEB,ISEG) = 0
-            ORISEGBOR(IELEB,ISEG) = 0
-         ENDDO
+        DO ISEG = 1, 3 ! BIEF_NBSEGEL(IELM2, MESH) ie. IELM2 = 81
+          ELTSEGBOR(IELEB,ISEG) = 0
+          ORISEGBOR(IELEB,ISEG) = 0
+        ENDDO
       ENDDO
 !
       DO ISEG = 1, NSEGBOR
-         GLOSEGBOR(ISEG,1) = 0
-         GLOSEGBOR(ISEG,2) = 0
+        GLOSEGBOR(ISEG,1) = 0
+        GLOSEGBOR(ISEG,2) = 0
       ENDDO
 !
       ALLOCATE(IND_ELEM(NPOIN,MXELVS+1))
@@ -112,46 +112,46 @@
       DO I = 1, NPOIN
         IND_ELEB(I,1) = 0
         DO J = 2, MXELVS+1
-           IND_ELEB(I,J) = -99
+          IND_ELEB(I,J) = -99
         ENDDO
       ENDDO
 !
       DO I = 1, 4
-         DO IELEM = 1, NELEM
-            IKL = IKLE(IELEM,I)
-            IND_ELEM(IKL,1)=IND_ELEM(IKL,1)+1
-            IND_ELEM(IKL,IND_ELEM(IKL,1)+1)=IELEM
-         ENDDO
+        DO IELEM = 1, NELEM
+          IKL = IKLE(IELEM,I)
+          IND_ELEM(IKL,1)=IND_ELEM(IKL,1)+1
+          IND_ELEM(IKL,IND_ELEM(IKL,1)+1)=IELEM
+        ENDDO
       ENDDO
 !
       DO I = 1, 3
-         DO IELEB = 1, NELEB
-            IKL = NBOR(IKLBOR(IELEB,I))
-            IND_ELEB(IKL,1)=IND_ELEB(IKL,1)+1
-            IND_ELEB(IKL,IND_ELEB(IKL,1)+1)=IELEB
-         ENDDO
+        DO IELEB = 1, NELEB
+          IKL = NBOR(IKLBOR(IELEB,I))
+          IND_ELEB(IKL,1)=IND_ELEB(IKL,1)+1
+          IND_ELEB(IKL,IND_ELEB(IKL,1)+1)=IELEB
+        ENDDO
       ENDDO
 !
       DO IELEB = 1 , NELEB
-         DO ISEG = 1 , 3
-            I1=NBOR(IKLBOR(IELEB,ISEGT(ISEG,1)))
-            I2=NBOR(IKLBOR(IELEB,ISEGT(ISEG,2)))
-            FOUND = .FALSE.
-            DO I = 2, IND_ELEB(I1,1)+1
-               IVOISB = IND_ELEB(I1,I)
-               DO J = 2, IND_ELEB(I2,1)+1
-                  IF (IVOISB.NE.IND_ELEB(I2,J)) THEN
-                     CYCLE
-                  ELSE
-                     FOUND = .TRUE.
-                  ENDIF
-               ENDDO
+        DO ISEG = 1 , 3
+          I1=NBOR(IKLBOR(IELEB,ISEGT(ISEG,1)))
+          I2=NBOR(IKLBOR(IELEB,ISEGT(ISEG,2)))
+          FOUND = .FALSE.
+          DO I = 2, IND_ELEB(I1,1)+1
+            IVOISB = IND_ELEB(I1,I)
+            DO J = 2, IND_ELEB(I2,1)+1
+              IF (IVOISB.NE.IND_ELEB(I2,J)) THEN
+                CYCLE
+              ELSE
+                FOUND = .TRUE.
+              ENDIF
             ENDDO
-            IF (.NOT. FOUND) THEN     
-               call plante(1)
-               STOP
-            ENDIF
-         ENDDO
+          ENDDO
+          IF (.NOT. FOUND) THEN     
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -162,7 +162,7 @@
         IPOBO(I) = 0
       ENDDO
       DO I = 1, NPTFR
-         IPOBO(NBOR(I)) = I
+        IPOBO(NBOR(I)) = I
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -173,129 +173,129 @@
       NSEBOR = 0
       COUNT = 0
       DO IELEB = 1, NELEB
-         !
-         DO ISEG = 1, 3 ! BIEF_NBSEGEL(IELM2, 
-            !
-            IF(ELTSEGBOR(IELEB,ISEG).EQ.0) THEN
+        !
+        DO ISEG = 1, 3 ! BIEF_NBSEGEL(IELM2, 
+          !
+          IF(ELTSEGBOR(IELEB,ISEG).EQ.0) THEN
 !     BOTH NEIGHBOURING ELEBENTS ARE TREATED FOR THIS SEGMENT
-               I1=NBOR(IKLBOR(IELEB,ISEGT(ISEG,1)))
-               I2=NBOR(IKLBOR(IELEB,ISEGT(ISEG,2)))
+            I1=NBOR(IKLBOR(IELEB,ISEGT(ISEG,1)))
+            I2=NBOR(IKLBOR(IELEB,ISEGT(ISEG,2)))
 !     
-               IF(I1.EQ.I2) THEN
-                  IF(LNG.EQ.1) THEN
+            IF(I1.EQ.I2) THEN
+              IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'STOSEG31 : BORDER SEGMENT AVEC UN SEUL POINT'
             WRITE(LU,*) '         ELEMENT ',IELEB,' SEGMENT ',ISEG
-                  ENDIF
-                  IF(LNG.EQ.2) THEN
+              ENDIF
+              IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'STOSEG31 : BORDER EDGE MADE OF ONLY ONE POINT'
             WRITE(LU,*) '         ELEMENT ',IELEB,' SEGMENT ',ISEG
-                  ENDIF
-                  CALL PLANTE(1)
-                  STOP
-               ENDIF
+              ENDIF
+              CALL PLANTE(1)
+              STOP
+            ENDIF
 !     
 !     INTERNAL SEGMENT
-               NSEBOR = NSEBOR + 1
-               ELTSEGBOR(IELEB,ISEG) = NSEBOR
+            NSEBOR = NSEBOR + 1
+            ELTSEGBOR(IELEB,ISEG) = NSEBOR
 !     
 !     STORE LOCAL SEGMENT NUMBER (LOCAL BORDER NODE) BUT SORT ACCORDING TO GLOBAL NUMBER
-               IF(NCSIZE.GT.1) THEN
-                  IG1=KNOLG(I1)
-                  IG2=KNOLG(I2)
-               ELSE
-                  IG1=I1
-                  IG2=I2
-               ENDIF
+            IF(NCSIZE.GT.1) THEN
+              IG1=KNOLG(I1)
+              IG2=KNOLG(I2)
+            ELSE
+              IG1=I1
+              IG2=I2
+            ENDIF
 !     
 !     SEGMENT ORIENTED LOWER RANK TO HIGHER RANK
 !     SORTING EVEN FOR BORDER SEGMENT (SLIGHT DIFFERENCE WITH STOSEG.f)
-               IF(IG1.LT.IG2) THEN
-                  GLOSEGBOR(NSEBOR,1) = I1
-                  GLOSEGBOR(NSEBOR,2) = I2
-                  ORISEGBOR(IELEB,ISEG) = 1
-               ELSE
-                  GLOSEGBOR(NSEBOR,1) = I2
-                  GLOSEGBOR(NSEBOR,2) = I1
-                  ORISEGBOR(IELEB,ISEG) = 2
-               ENDIF
+            IF(IG1.LT.IG2) THEN
+              GLOSEGBOR(NSEBOR,1) = I1
+              GLOSEGBOR(NSEBOR,2) = I2
+              ORISEGBOR(IELEB,ISEG) = 1
+            ELSE
+              GLOSEGBOR(NSEBOR,1) = I2
+              GLOSEGBOR(NSEBOR,2) = I1
+              ORISEGBOR(IELEB,ISEG) = 2
+            ENDIF
 !     
 !     LOOKING FOR THE NEIGHBOUR ELEMENTS WHERE BOTH I1 & I2 BELONG TO
 !     FIRST STEP : I1 BELONGS TO IVOIS
-               FOUND = .FALSE.
-               DO I = 2, IND_ELEB(I1,1)+1
-                  IVOISB = IND_ELEB(I1,I)
+            FOUND = .FALSE.
+            DO I = 2, IND_ELEB(I1,1)+1
+              IVOISB = IND_ELEB(I1,I)
 !     IVOIS <= IELEB IS ALREADY SET         
-                  IF (IVOISB.LE.IELEB) CYCLE
+              IF (IVOISB.LE.IELEB) CYCLE
 !     SECOND STEP : I1 BELONGS TO IVOISB
-                  DO J = 2, IND_ELEB(I2,1)+1
-                     IF (IVOISB.EQ.IND_ELEB(I2,J)) THEN
+              DO J = 2, IND_ELEB(I2,1)+1
+                IF (IVOISB.EQ.IND_ELEB(I2,J)) THEN
 !     GOT IT : [I1;I2] BELONGS TO IVOISB
 !     
-                        DO JSEG= 1, 3 ! BIEF_NBSEGEL(IELM2, MESH)
+                  DO JSEG= 1, 3 ! BIEF_NBSEGEL(IELM2, MESH)
 !     LOOKS FOR THE RIGHT VERTICE OF ELEMENT IVOISB
-                           J1=NBOR(IKLBOR(IVOISB,ISEGT(JSEG,1)))
-                           J2=NBOR(IKLBOR(IVOISB,ISEGT(JSEG,2)))
+                    J1=NBOR(IKLBOR(IVOISB,ISEGT(JSEG,1)))
+                    J2=NBOR(IKLBOR(IVOISB,ISEGT(JSEG,2)))
 !     IN STOSEG : ALL ELEMENTS HAVE A COUNTER-CLOCKWISE NUMBERING
 !     HOWEVER, IT DOESN'T WORK HERE...
-                           IF ( (I1.EQ.J1.AND.I2.EQ.J2) .OR.
-     &                          (I1.EQ.J2.AND.I2.EQ.J1)) THEN
+                    IF ( (I1.EQ.J1.AND.I2.EQ.J2) .OR.
+     &                   (I1.EQ.J2.AND.I2.EQ.J1)) THEN
 !     
-                              IF(ELTSEGBOR(IVOISB,JSEG).EQ.0) THEN
-                                 ELTSEGBOR(IVOISB,JSEG) = NSEBOR
-                              ENDIF
+                      IF(ELTSEGBOR(IVOISB,JSEG).EQ.0) THEN
+                        ELTSEGBOR(IVOISB,JSEG) = NSEBOR
+                      ENDIF
 !     
-                              IF(NCSIZE.GT.1) THEN
-                                 IK1=KNOLG(J1)
-                                 IK2=KNOLG(J2)
-                              ELSE
-                                 IK1=J1
-                                 IK2=J2
-                              ENDIF
+                      IF(NCSIZE.GT.1) THEN
+                        IK1=KNOLG(J1)
+                        IK2=KNOLG(J2)
+                      ELSE
+                        IK1=J1
+                        IK2=J2
+                      ENDIF
 !
 !     SEGMENT ORIENTED LOWER RANK TO HIGHER RANK
-                              IF(IK1.LT.IK2) THEN
-                                 ORISEGBOR(IVOISB,JSEG) = 1
-                              ELSE
-                                 ORISEGBOR(IVOISB,JSEG) = 2
-                              ENDIF
-                              FOUND = .TRUE.
-                           ENDIF ! IF I1.EQ.J1...
-                        ENDDO   ! JSEG = 1, 6
+                      IF(IK1.LT.IK2) THEN
+                        ORISEGBOR(IVOISB,JSEG) = 1
+                      ELSE
+                        ORISEGBOR(IVOISB,JSEG) = 2
+                      ENDIF
+                      FOUND = .TRUE.
+                    ENDIF ! IF I1.EQ.J1...
+                  ENDDO   ! JSEG = 1, 6
 !     
 !-----------------------------------------------------------------------
 !     
 !     VERTICE NOT FOUND, THIS IS AN ERROR
-                        IF (.NOT. FOUND) THEN
-                           IF(LNG.EQ.1) THEN
-               WRITE(LU,*) 'STOSEG31 : MAILLAGE DEFECTUEUX'
-               WRITE(LU,*) '         ELEMENTS ',IELEB,' ET ',IVOISB
-               WRITE(LU,*) '         LIES PAR LES POINTS ',I1,' ET ',I2
-               WRITE(LU,*) '         MAIS CES POINTS NE FONT PAS UN'
-               WRITE(LU,*) '         SEGMENT DE L''ELEMENT ',IVOISB
-                           ENDIF
-                           IF(LNG.EQ.2) THEN
-               WRITE(LU,*) 'STOSEG31 : WRONG MESH'
-               WRITE(LU,*) '         ELEMENTS ',IELEB,' AND ',IVOISB
-               WRITE(LU,*) '         LINKED BY POINTS ',I1,' AND ',I2
-               WRITE(LU,*) '         BUT THESE POINTS ARE NOT AN EDGE'
-               WRITE(LU,*) '         OF ELEMENT ',IVOISB
-                           ENDIF
-                           CALL PLANTE(1)
-                           STOP
-                        ENDIF   ! IF .NOT. FOUND
-                     ENDIF      ! IF FOUND THE GOOD NEIGHBOUR (IVOISB.EQ.IELEB...)
-                  ENDDO         ! 
-               ENDDO
-               !IF ( (.NOT. FOUND).AND.(NCSIZE.LE.1) ) THEN
+                  IF (.NOT. FOUND) THEN
+                    IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'STOSEG31 : MAILLAGE DEFECTUEUX'
+              WRITE(LU,*) '         ELEMENTS ',IELEB,' ET ',IVOISB
+              WRITE(LU,*) '         LIES PAR LES POINTS ',I1,' ET ',I2
+              WRITE(LU,*) '         MAIS CES POINTS NE FONT PAS UN'
+              WRITE(LU,*) '         SEGMENT DE L''ELEMENT ',IVOISB
+                    ENDIF
+                    IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'STOSEG31 : WRONG MESH'
+              WRITE(LU,*) '         ELEMENTS ',IELEB,' AND ',IVOISB
+              WRITE(LU,*) '         LINKED BY POINTS ',I1,' AND ',I2
+              WRITE(LU,*) '         BUT THESE POINTS ARE NOT AN EDGE'
+              WRITE(LU,*) '         OF ELEMENT ',IVOISB
+                    ENDIF
+                    CALL PLANTE(1)
+                    STOP
+                  ENDIF   ! IF .NOT. FOUND
+                ENDIF      ! IF FOUND THE GOOD NEIGHBOUR (IVOISB.EQ.IELEB...)
+              ENDDO         ! 
+            ENDDO
+            !IF ( (.NOT. FOUND).AND.(NCSIZE.LE.1) ) THEN
 !     PATHOLOGIC CASE (AT THIS TIME BEING AT LEAST)
 !     FOUND A BORDER VERTICE WHICH IS NOT CONNECTED TO ANY OTHER ONE
-               !   CALL PLANTE(1)
-               !   STOP
-               !ELSE
-               COUNT = COUNT + 1
-               !ENDIF
-            ENDIF
-         ENDDO
+            !   CALL PLANTE()
+            !   STOP
+            !ELSE
+            COUNT = COUNT + 1
+            !ENDIF
+          ENDIF
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -305,38 +305,38 @@
 !     LOOP ON TETRAHEDRA
       DO IELEB = 1, NELEB
 !     LOOP ON LOCAL SEGMENTS
-         DO ISEG = 1, 3
+        DO ISEG = 1, 3
 !     GLOBAL POINTS SEEN BY TRIANGLES
-            J1=NBOR(IKLBOR(IELEB,ISEGT(ISEG,1)))
-            J2=NBOR(IKLBOR(IELEB,ISEGT(ISEG,2)))
+          J1=NBOR(IKLBOR(IELEB,ISEGT(ISEG,1)))
+          J2=NBOR(IKLBOR(IELEB,ISEGT(ISEG,2)))
 !     GLOBAL POINTS SEEN BY GLOSEG
-            JSEG=ELTSEGBOR(IELEB,ISEG)
-            I1=GLOSEGBOR(JSEG,1)
-            I2=GLOSEGBOR(JSEG,2)
-            IF(ORISEGBOR(IELEB,ISEG).EQ.1) THEN
-               IF(J1.NE.I1.OR.J2.NE.I2) THEN
-                  WRITE(LU,*) ' '
-                  WRITE(LU,*) 'ERROR IN STOSEG31'
-                  WRITE(LU,*) 'ELEMENT ',IELEB,' SEGMENT ',ISEG
-                  WRITE(LU,*) 'POINTS ',J1,J2 
-                  WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG 
-                  WRITE(LU,*) 'POINTS ',I1,I2 
-                  CALL PLANTE(1)
-                  STOP              
-               ENDIF
-            ELSE IF(ORISEGBOR(IELEB,ISEG).EQ.2) THEN
-               IF(J1.NE.I2.OR.J2.NE.I1) THEN
-                  WRITE(LU,*) ' '
-                  WRITE(LU,*) 'ERROR IN STOSEG31'
-                  WRITE(LU,*) 'ELEMENT ',IELEB,' SEGMENT ',ISEG
-                  WRITE(LU,*) 'POINTS ',J1,J2 
-                  WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG 
-                  WRITE(LU,*) 'POINTS ',I1,I2 
-                  CALL PLANTE(1)
-                  STOP                    
-               ENDIF
+          JSEG=ELTSEGBOR(IELEB,ISEG)
+          I1=GLOSEGBOR(JSEG,1)
+          I2=GLOSEGBOR(JSEG,2)
+          IF(ORISEGBOR(IELEB,ISEG).EQ.1) THEN
+            IF(J1.NE.I1.OR.J2.NE.I2) THEN
+              WRITE(LU,*) ' '
+              WRITE(LU,*) 'ERROR IN STOSEG31'
+              WRITE(LU,*) 'ELEMENT ',IELEB,' SEGMENT ',ISEG
+              WRITE(LU,*) 'POINTS ',J1,J2 
+              WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG 
+              WRITE(LU,*) 'POINTS ',I1,I2 
+              CALL PLANTE(1)
+              STOP              
             ENDIF
-         ENDDO
+          ELSE IF(ORISEGBOR(IELEB,ISEG).EQ.2) THEN
+            IF(J1.NE.I2.OR.J2.NE.I1) THEN
+              WRITE(LU,*) ' '
+              WRITE(LU,*) 'ERROR IN STOSEG31'
+              WRITE(LU,*) 'ELEMENT ',IELEB,' SEGMENT ',ISEG
+              WRITE(LU,*) 'POINTS ',J1,J2 
+              WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG 
+              WRITE(LU,*) 'POINTS ',I1,I2 
+              CALL PLANTE(1)
+              STOP                    
+            ENDIF
+          ENDIF
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -344,15 +344,15 @@
 !     INITIALISES ELTSEG, ORISEG, GLOSEG
 !
       DO IELEM = 1, NELEM
-         DO ISEG = 1, 6 ! BIEF_NBSEGEL(IELM1, MESH) ie. IELM1 = 31
-            ELTSEG(IELEM,ISEG) = 0
-            ORISEG(IELEM,ISEG) = 0
-         ENDDO
+        DO ISEG = 1, 6 ! BIEF_NBSEGEL(IELM1, MESH) ie. IELM1 = 31
+          ELTSEG(IELEM,ISEG) = 0
+          ORISEG(IELEM,ISEG) = 0
+        ENDDO
       ENDDO
 !     
       DO ISEG = 1, NSEG
-         GLOSEG(ISEG,1) = 0
-         GLOSEG(ISEG,2) = 0
+        GLOSEG(ISEG,1) = 0
+        GLOSEG(ISEG,2) = 0
       ENDDO
 !     
 !     LOOP ON ELEMENTS FOR NUMBERING INTERNAL SEGMENTS AND FILLING:
@@ -361,152 +361,152 @@
       NSE     = NSEBOR
       NSEBOR2 = 0
       DO IELEM = 1, NELEM
-         DO ISEG = 1, 6         ! BIEF_NBSEGEL(IELM, MESH)
-            !
-            FOUND = .FALSE.
-            !
-            IF(ELTSEG(IELEM,ISEG).EQ.0) THEN
+        DO ISEG = 1, 6         ! BIEF_NBSEGEL(IELM, MESH)
+          !
+          FOUND = .FALSE.
+          !
+          IF(ELTSEG(IELEM,ISEG).EQ.0) THEN
 !     BOTH NEIGHBOURING ELEMENTS ARE TREATED FOR THIS SEGMENT
-               I1=IKLE(IELEM,ISEGT(ISEG,1))
-               I2=IKLE(IELEM,ISEGT(ISEG,2))
+            I1=IKLE(IELEM,ISEGT(ISEG,1))
+            I2=IKLE(IELEM,ISEGT(ISEG,2))
 !     
-               IF(I1.EQ.I2) THEN
-                IF(LNG.EQ.1) THEN
-                 WRITE(LU,*) 'STOSEG31 : SEGMENT AVEC UN SEUL POINT'
-                 WRITE(LU,*) '         ELEMENT ',IELEM,' SEGMENT ',ISEG
-                ENDIF
-                IF(LNG.EQ.2) THEN
-                 WRITE(LU,*) 'STOSEG31 : EDGE MADE OF ONLY ONE POINT'
-                 WRITE(LU,*) '         ELEMENT ',IELEM,' SEGMENT ',ISEG
-                ENDIF
-                CALL PLANTE(1)
-                STOP
-               ENDIF
+            IF(I1.EQ.I2) THEN
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) 'STOSEG31 : SEGMENT AVEC UN SEUL POINT'
+                WRITE(LU,*) '         ELEMENT ',IELEM,' SEGMENT ',ISEG
+              ENDIF
+              IF(LNG.EQ.2) THEN
+                WRITE(LU,*) 'STOSEG31 : EDGE MADE OF ONLY ONE POINT'
+                WRITE(LU,*) '         ELEMENT ',IELEM,' SEGMENT ',ISEG
+              ENDIF
+              CALL PLANTE(1)
+              STOP
+            ENDIF
 !
 !     THIS SEGMENT IS A BORDER SEGMENT ? PATHOLOGIC CASES ?
-               IF (IPOBO(I1).NE.0 .AND. IPOBO(I2).NE.0) THEN
-                  FOUND = .FALSE.
+            IF (IPOBO(I1).NE.0 .AND. IPOBO(I2).NE.0) THEN
+              FOUND = .FALSE.
 !     FOR DOUBLE CHECKING COUNTING OF BORDER SEGMENT
-                  DO I = 2, IND_ELEB(I1,1)+1
-                     IELEB = IND_ELEB(I1,I)
-                     DO J = 2, IND_ELEB(I2,1)+1
-                        IF (IELEB.NE.IND_ELEB(I2,J)) CYCLE
-                        DO JSEG = 1, 3
-                           J1=NBOR(IKLBOR(IELEB,ISEGT(JSEG,1)))
-                           J2=NBOR(IKLBOR(IELEB,ISEGT(JSEG,2)))
-                           IF ( (I1.EQ.J1.AND.I2.EQ.J2)   .OR.
-     &                          (I1.EQ.J2.AND.I2.EQ.J1) ) THEN
-                              XSEG = ELTSEGBOR(IELEB,JSEG)
-                              FOUND = .TRUE.
-                              NSEBOR2 = NSEBOR2 + 1
-                              FOUND = .TRUE.
-                           ENDIF
-                           IF (FOUND) EXIT
-                        ENDDO
-                     ENDDO
-                     IF (FOUND) EXIT
+              DO I = 2, IND_ELEB(I1,1)+1
+                IELEB = IND_ELEB(I1,I)
+                DO J = 2, IND_ELEB(I2,1)+1
+                  IF (IELEB.NE.IND_ELEB(I2,J)) CYCLE
+                  DO JSEG = 1, 3
+                    J1=NBOR(IKLBOR(IELEB,ISEGT(JSEG,1)))
+                    J2=NBOR(IKLBOR(IELEB,ISEGT(JSEG,2)))
+                    IF ( (I1.EQ.J1.AND.I2.EQ.J2)   .OR.
+     &                   (I1.EQ.J2.AND.I2.EQ.J1) ) THEN
+                      XSEG = ELTSEGBOR(IELEB,JSEG)
+                      FOUND = .TRUE.
+                      NSEBOR2 = NSEBOR2 + 1
+                      FOUND = .TRUE.
+                    ENDIF
+                    IF (FOUND) EXIT
                   ENDDO
-                  IF (.NOT. FOUND) THEN
-                     NSE  = NSE + 1
-                     XSEG = NSE
-                  ENDIF
-               ELSE
-                  NSE  = NSE + 1
-                  XSEG = NSE
-               ENDIF
+                ENDDO
+                IF (FOUND) EXIT
+              ENDDO
+              IF (.NOT. FOUND) THEN
+                NSE  = NSE + 1
+                XSEG = NSE
+              ENDIF
+            ELSE
+              NSE  = NSE + 1
+              XSEG = NSE
+            ENDIF
 !
 !     INTERNAL SEGMENT
-               ELTSEG(IELEM,ISEG) = XSEG
+            ELTSEG(IELEM,ISEG) = XSEG
 !     
 !     STORE LOCAL SEGMENT NUMBER BUT SORT ACCORDING TO GLOBAL NUMBER
-               IF(NCSIZE.GT.1) THEN
-                  IG1=KNOLG(I1)
-                  IG2=KNOLG(I2)
-               ELSE
-                  IG1=I1
-                  IG2=I2
-               ENDIF
+            IF(NCSIZE.GT.1) THEN
+              IG1=KNOLG(I1)
+              IG2=KNOLG(I2)
+            ELSE
+              IG1=I1
+              IG2=I2
+            ENDIF
 !     
 !     SEGMENT ORIENTED LOWER RANK TO HIGHER RANK
-               IF(IG1.LT.IG2) THEN
-                  GLOSEG(XSEG,1) = I1
-                  GLOSEG(XSEG,2) = I2
-                  ORISEG(IELEM,ISEG) = 1
-               ELSE
-                  GLOSEG(XSEG,1) = I2
-                  GLOSEG(XSEG,2) = I1
-                  ORISEG(IELEM,ISEG) = 2
-               ENDIF
+            IF(IG1.LT.IG2) THEN
+              GLOSEG(XSEG,1) = I1
+              GLOSEG(XSEG,2) = I2
+              ORISEG(IELEM,ISEG) = 1
+            ELSE
+              GLOSEG(XSEG,1) = I2
+              GLOSEG(XSEG,2) = I1
+              ORISEG(IELEM,ISEG) = 2
+            ENDIF
 !     
 !     LOOKING FOR THE NEIGHBOUR ELEMENTS WHERE BOTH I1 & I2 BELONG TO
 !     FIRST STEP : I1 BELONGS TO IVOIS
-               DO I = 2, IND_ELEM(I1,1)+1
-                  IVOIS = IND_ELEM(I1,I)
+            DO I = 2, IND_ELEM(I1,1)+1
+              IVOIS = IND_ELEM(I1,I)
 ! IVOIS <= IELEM IS ALREADY SET
-                  IF (IVOIS.LE.IELEM) CYCLE
+              IF (IVOIS.LE.IELEM) CYCLE
 ! SECOND STEP : I1 BELONGS TO IVOIS
-                  DO J = 2, IND_ELEM(I2,1)+1
-                     IF (IVOIS.EQ.IND_ELEM(I2,J)) THEN
+              DO J = 2, IND_ELEM(I2,1)+1
+                IF (IVOIS.EQ.IND_ELEM(I2,J)) THEN
 !     GOT IT : [I1;I2] BELONGS TO IVOIS
 !     
-                        FOUND = .FALSE.
-                        DO JSEG= 1, 6                       
+                  FOUND = .FALSE.
+                  DO JSEG= 1, 6                       
 !     LOOKS FOR THE RIGHT VERTICE OF ELEMENT IVOIS
-                           J1=IKLE(IVOIS,ISEGT(JSEG,1))
-                           J2=IKLE(IVOIS,ISEGT(JSEG,2))
+                    J1=IKLE(IVOIS,ISEGT(JSEG,1))
+                    J2=IKLE(IVOIS,ISEGT(JSEG,2))
 !     IN STOSEG : ALL ELEMENTS HAVE A COUNTER-CLOCKWISE NUMBERING
 !     HOWEVER, IT DOESN'T WORK HERE...
-                           IF ( (I1.EQ.J1.AND.I2.EQ.J2) .OR.
-     &                          (I1.EQ.J2.AND.I2.EQ.J1)) THEN
+                    IF ( (I1.EQ.J1.AND.I2.EQ.J2) .OR.
+     &                   (I1.EQ.J2.AND.I2.EQ.J1)) THEN
 !
-                              ELTSEG(IVOIS,JSEG) = XSEG
+                      ELTSEG(IVOIS,JSEG) = XSEG
 !   
-                              IF(NCSIZE.GT.1) THEN
-                                 IG1=KNOLG(J1)
-                                 IG2=KNOLG(J2)
-                              ELSE
-                                 IG1=J1
-                                 IG2=J2
-                              ENDIF
+                      IF(NCSIZE.GT.1) THEN
+                        IG1=KNOLG(J1)
+                        IG2=KNOLG(J2)
+                      ELSE
+                        IG1=J1
+                        IG2=J2
+                      ENDIF
 !     
 !     SEGMENT ORIENTED LOWER RANK TO HIGHER RANK
-                              IF(IG1.LT.IG2) THEN
-                                 ORISEG(IVOIS,JSEG) = 1
-                              ELSE
-                                 ORISEG(IVOIS,JSEG) = 2
-                              ENDIF
+                      IF(IG1.LT.IG2) THEN
+                         ORISEG(IVOIS,JSEG) = 1
+                      ELSE
+                         ORISEG(IVOIS,JSEG) = 2
+                      ENDIF
 !     
-                              FOUND = .TRUE.
-                              EXIT
-                           ENDIF ! IF I1.EQ.J1...
-                        ENDDO   ! JSEG = 1, 6
+                      FOUND = .TRUE.
+                      EXIT
+                    ENDIF ! IF I1.EQ.J1...
+                  ENDDO   ! JSEG = 1, 6
 !
 !-----------------------------------------------------------------------
 !     
 !     VERTICE NOT FOUND, THIS IS AN ERROR
-                        IF (.NOT. FOUND) THEN
+                  IF (.NOT. FOUND) THEN
             IF(LNG.EQ.1) THEN
-               WRITE(LU,*) 'STOSEG31 : MAILLAGE DEFECTUEUX'
-               WRITE(LU,*) '         ELEMENTS ',IELEM,' ET ',IVOIS
-               WRITE(LU,*) '         LIES PAR LES POINTS ',I1,' ET ',I2
-               WRITE(LU,*) '         MAIS CES POINTS NE FONT PAS UN'
-               WRITE(LU,*) '         SEGMENT DE L''ELEMENT ',IVOIS
-                           ENDIF
+              WRITE(LU,*) 'STOSEG31 : MAILLAGE DEFECTUEUX'
+              WRITE(LU,*) '         ELEMENTS ',IELEM,' ET ',IVOIS
+              WRITE(LU,*) '         LIES PAR LES POINTS ',I1,' ET ',I2
+              WRITE(LU,*) '         MAIS CES POINTS NE FONT PAS UN'
+              WRITE(LU,*) '         SEGMENT DE L''ELEMENT ',IVOIS
+            ENDIF
             IF(LNG.EQ.2) THEN
-               WRITE(LU,*) 'STOSEG31 : WRONG MESH'
-               WRITE(LU,*) '         ELEMENTS ',IELEM,' AND ',IVOIS
-               WRITE(LU,*) '         LINKED BY POINTS ',I1,' AND ',I2
-               WRITE(LU,*) '         BUT THESE POINTS ARE NOT AN EDGE'
-               WRITE(LU,*) '         OF ELEMENT ',IVOIS
+              WRITE(LU,*) 'STOSEG31 : WRONG MESH'
+              WRITE(LU,*) '         ELEMENTS ',IELEM,' AND ',IVOIS
+              WRITE(LU,*) '         LINKED BY POINTS ',I1,' AND ',I2
+              WRITE(LU,*) '         BUT THESE POINTS ARE NOT AN EDGE'
+              WRITE(LU,*) '         OF ELEMENT ',IVOIS
             ENDIF
             CALL PLANTE(1)
             STOP
-                        ENDIF   ! IF .NOT. FOUND
-                     ENDIF      ! IF FOUND THE GOOD NEIGHBOUR (IVOIS.EQ.IELEM...)
-                  ENDDO         ! 
-               ENDDO
-            ENDIF
-         ENDDO
+                  ENDIF   ! IF .NOT. FOUND
+                ENDIF      ! IF FOUND THE GOOD NEIGHBOUR (IVOIS.EQ.IELEM...)
+              ENDDO         ! 
+            ENDDO
+          ENDIF
+        ENDDO
       ENDDO
 !
       DEALLOCATE (IND_ELEM)
@@ -544,8 +544,8 @@
       ENDIF
 
       IF (ERR) THEN
-         CALL PLANTE(1)
-         STOP
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !     UPDATE MESH/BIEF STRUCTURE WITH PRECISE SEGMENTS NUMBERS
@@ -563,49 +563,49 @@
 !     LOOP ON TETRAHEDRA
       DO IELEM = 1, NELEM
 !     LOOP ON LOCAL SEGMENTS
-         DO ISEG = 1, 6
+        DO ISEG = 1, 6
 !     GLOBAL POINTS SEEN BY TETRAHEDRON
-            J1=IKLE(IELEM,ISEGT(ISEG,1))
-            J2=IKLE(IELEM,ISEGT(ISEG,2))
+          J1=IKLE(IELEM,ISEGT(ISEG,1))
+          J2=IKLE(IELEM,ISEGT(ISEG,2))
 !     GLOBAL POINTS SEEN BY GLOSEG
-            JSEG=ELTSEG(IELEM,ISEG)
-            I1=GLOSEG(JSEG,1)
-            I2=GLOSEG(JSEG,2)
-            IF (JSEG.LE.NSEBOR) THEN
-               IG1=GLOSEGBOR(JSEG,1)
-               IG2=GLOSEGBOR(JSEG,2)
-            ELSE
-               IG1 = 0
-               IG2 = 0
+          JSEG=ELTSEG(IELEM,ISEG)
+          I1=GLOSEG(JSEG,1)
+          I2=GLOSEG(JSEG,2)
+          IF (JSEG.LE.NSEBOR) THEN
+            IG1=GLOSEGBOR(JSEG,1)
+            IG2=GLOSEGBOR(JSEG,2)
+          ELSE
+            IG1 = 0
+            IG2 = 0
+          ENDIF
+          IF(ORISEG(IELEM,ISEG).EQ.1) THEN
+            IF(J1.NE.I1.OR.J2.NE.I2) THEN
+              WRITE(LU,*) ' '
+              WRITE(LU,*) 'ERROR IN STOSEG31'
+              WRITE(LU,*) 'ELEMENT ',IELEM,' SEGMENT ',ISEG
+              WRITE(LU,*) 'POINTS ',J1,J2 
+              WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG 
+              WRITE(LU,*) 'POINTS ',I1,I2
+              WRITE(LU,*) 'BORDER POINTS  ',IG1,IG2
+              WRITE(LU,*) 'BORDER POINTS2 ',IPOBO(I1),IPOBO(I2)
+              CALL PLANTE(1)
+              STOP              
             ENDIF
-            IF(ORISEG(IELEM,ISEG).EQ.1) THEN
-               IF(J1.NE.I1.OR.J2.NE.I2) THEN
-                  WRITE(LU,*) ' '
-                  WRITE(LU,*) 'ERROR IN STOSEG31'
-                  WRITE(LU,*) 'ELEMENT ',IELEM,' SEGMENT ',ISEG
-                  WRITE(LU,*) 'POINTS ',J1,J2 
-                  WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG 
-                  WRITE(LU,*) 'POINTS ',I1,I2
-                  WRITE(LU,*) 'BORDER POINTS  ',IG1,IG2
-                  WRITE(LU,*) 'BORDER POINTS2 ',IPOBO(I1),IPOBO(I2)
-                  CALL PLANTE(1)
-                  STOP              
-               ENDIF
-            ELSE
-               IF(J1.NE.I2.OR.J2.NE.I1) THEN
-                  WRITE(LU,*) ' '
-                  WRITE(LU,*) 'ERROR IN STOSEG31'
-                  WRITE(LU,*) 'ELEMENT ',IELEM,' SEGMENT ',ISEG
-                  WRITE(LU,*) 'POINTS ',J1,J2 
-                  WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG 
-                  WRITE(LU,*) 'POINTS ',I1,I2 
-                  WRITE(LU,*) 'POINTS BORD  ',IG1,IG2
-                  WRITE(LU,*) 'POINTS BORD2 ',IPOBO(I1),IPOBO(I2)
-                  CALL PLANTE(1)
-                  STOP                   
-               ENDIF
+          ELSE
+            IF(J1.NE.I2.OR.J2.NE.I1) THEN
+              WRITE(LU,*) ' '
+              WRITE(LU,*) 'ERROR IN STOSEG31'
+              WRITE(LU,*) 'ELEMENT ',IELEM,' SEGMENT ',ISEG
+              WRITE(LU,*) 'POINTS ',J1,J2 
+              WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG 
+              WRITE(LU,*) 'POINTS ',I1,I2 
+              WRITE(LU,*) 'POINTS BORD  ',IG1,IG2
+              WRITE(LU,*) 'POINTS BORD2 ',IPOBO(I1),IPOBO(I2)
+              CALL PLANTE(1)
+              STOP                   
             ENDIF
-         ENDDO
+          ENDIF
+        ENDDO
       ENDDO     
 !
 !-----------------------------------------------------------------------

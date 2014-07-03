@@ -73,20 +73,20 @@
       C1 = DENS * GRAV * DM
       C2 = 0.053D0 * SQRT(DM**3*DENS*GRAV) * DSTAR**(-0.3D0)
       DO I = 1, NPOIN
-         ! ****************************** !
-         ! I - TRANSPORT STAGE PARAMETER  !
-         ! ****************************** !
-         IF(TETAP%R(I) .LE. AC) THEN
-           T = 0.D0
-         ELSE
-           T = (TETAP%R(I)-AC)/MAX(AC,1.D-06)
-         ENDIF
+        ! ****************************** !
+        ! I - TRANSPORT STAGE PARAMETER  !
+        ! ****************************** !
+        IF(TETAP%R(I) .LE. AC) THEN
+          T = 0.D0
+        ELSE
+          T = (TETAP%R(I)-AC)/MAX(AC,1.D-06)
+        ENDIF
 !
-         ! ***************************** !
-         ! II - BEDLOAD TRANSPORT RATE   !
-         ! ***************************** !
-         QSC%R(I) = C2 * T**2.1D0
-       ENDDO
+        ! ***************************** !
+        ! II - BEDLOAD TRANSPORT RATE   !
+        ! ***************************** !
+        QSC%R(I) = C2 * T**2.1D0
+      ENDDO
 !======================================================================!
 !======================================================================!
       RETURN

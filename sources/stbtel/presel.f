@@ -45,9 +45,9 @@
 !  LE RESULTAT EST MIS DANS TRAV1.
 !
       DO IELEM = 1 , NELEM
-         DO IDP = 1 , NDP
-           TRAV1(IELEM,IDP) = IKLE(IELEM,IDP)
-         ENDDO
+        DO IDP = 1 , NDP
+          TRAV1(IELEM,IDP) = IKLE(IELEM,IDP)
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -56,14 +56,14 @@
 !  TABLEAUX INDIQUANT SI ELLES SERONT ECRITES.
 !
       DO I = 1 , 26
-         SORLEO(I) = .FALSE.
+        SORLEO(I) = .FALSE.
       ENDDO
 !
       NVAROU = NVARIN
       IF (NVAROU.GT.0) THEN
-         DO I = 1 , NVAROU
-            SORLEO(I) = .TRUE.
-         ENDDO
+        DO I = 1 , NVAROU
+          SORLEO(I) = .TRUE.
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -72,27 +72,27 @@
 !  BIDON SI NECESSAIRE DANS LES VARIABLES DE SORTIE
 !
       IF (NBFOND.GT.0.AND.NSFOND.EQ.0.AND.NVAROU.LT.26) THEN
-         NVAROU = NVAROU + 1
-         SORLEO(NVAROU) = .TRUE.
-         IF (LNG.EQ.1) TEXTE(NVAROU)='FOND                            '
-         IF (LNG.EQ.2) TEXTE(NVAROU)='BOTTOM                          '
-         NSFOND = NVAROU
+        NVAROU = NVAROU + 1
+        SORLEO(NVAROU) = .TRUE.
+        IF (LNG.EQ.1) TEXTE(NVAROU)='FOND                            '
+        IF (LNG.EQ.2) TEXTE(NVAROU)='BOTTOM                          '
+        NSFOND = NVAROU
       ELSEIF (NBFOND.EQ.0) THEN
-         NSFOND = 0
+        NSFOND = 0
       ENDIF
 !
       IF (COLOR) THEN
-         IF (NVAROU.LT.26) THEN
-            NVAROU = NVAROU + 1
-            SORLEO(NVAROU) = .TRUE.
-            TEXTE(NVAROU) = 'COULEUR                         '
-         ELSE
-            COLOR = .FALSE.
-         ENDIF
+        IF (NVAROU.LT.26) THEN
+          NVAROU = NVAROU + 1
+          SORLEO(NVAROU) = .TRUE.
+          TEXTE(NVAROU) = 'COULEUR                         '
+        ELSE
+          COLOR = .FALSE.
+        ENDIF
       ENDIF
 !
       IF(NVAROU.EQ.0) THEN
-         SORLEO(1) = .TRUE.
+        SORLEO(1) = .TRUE.
         IF(MAILLE.NE.'ADCIRC') THEN
           TEXTE(1) = 'MAILLAGE                        '
         ELSE

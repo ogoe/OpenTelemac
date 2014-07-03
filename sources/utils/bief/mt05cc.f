@@ -140,123 +140,123 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
-         U1 = U(IELEM)
-         U2 = U(IELEM)
-         U3 = U(IELEM)
-         V1 = V(IELEM)
-         V2 = V(IELEM)
-         V3 = V(IELEM)
+        U1 = U(IELEM)
+        U2 = U(IELEM)
+        U3 = U(IELEM)
+        V1 = V(IELEM)
+        V2 = V(IELEM)
+        V3 = V(IELEM)
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM)=(( 5.D0*V2+V3+V1*6.D0)*X3 +
-     &              ( -U1*6.D0-U3-U2*5.D0)*Y3) * XSU360
-         A13(IELEM)=((-V2-V3*5.D0-V1*6.D0)*X2 +
-     &              (  U1*6.D0+U3*5.D0+U2)*Y2) * XSU360
-         A14(IELEM)=(( V2*2.D0+V3)*X2+(-V2*2.D0-V3-V1*6.D0)*X3 +
-     &              ( -U2*2.D0-U3)*Y2+(U1*6.D0+U3+U2*2.D0)*Y3) * XSUR90
-         A15(IELEM)=((-V3-V2*2.D0)*X2+(V2+V3*2.D0)*X3 +
-     &              (U2*2.D0+U3)*Y2+(-U2-U3*2.D0)*Y3) * XSUR90
-         A16(IELEM)=((V2+V3*2.D0+V1*6.D0)*X2+(-V2-V3*2.D0)*X3 +
-     &              (-U2-U3*2.D0-U1*6.D0)*Y2+(U2+U3*2.D0)*Y3) * XSUR90
+        A12(IELEM)=(( 5.D0*V2+V3+V1*6.D0)*X3 +
+     &             ( -U1*6.D0-U3-U2*5.D0)*Y3) * XSU360
+        A13(IELEM)=((-V2-V3*5.D0-V1*6.D0)*X2 +
+     &             (  U1*6.D0+U3*5.D0+U2)*Y2) * XSU360
+        A14(IELEM)=(( V2*2.D0+V3)*X2+(-V2*2.D0-V3-V1*6.D0)*X3 +
+     &             ( -U2*2.D0-U3)*Y2+(U1*6.D0+U3+U2*2.D0)*Y3) * XSUR90
+        A15(IELEM)=((-V3-V2*2.D0)*X2+(V2+V3*2.D0)*X3 +
+     &             (U2*2.D0+U3)*Y2+(-U2-U3*2.D0)*Y3) * XSUR90
+        A16(IELEM)=((V2+V3*2.D0+V1*6.D0)*X2+(-V2-V3*2.D0)*X3 +
+     &             (-U2-U3*2.D0-U1*6.D0)*Y2+(U2+U3*2.D0)*Y3) * XSUR90
 !
-         A21(IELEM)=((V2*6.D0+V3+V1*5.D0)*X2 +
-     &              (-V2*6.D0-V3-V1*5.D0)*X3 +
-     &              (-U2*6.D0-U3-U1*5.D0)*Y2 +
-     &              (U1*5.D0+U3+U2*6.D0)*Y3) * XSU360
-         A23(IELEM)=((-V2*6.D0-V3*5.D0-V1)*X2 +
-     &              (  U1+U3*5.D0+U2*6.D0)*Y2) * XSU360
-         A24(IELEM)=(-V2*X2*6.D0+(V2*6.D0+V3+V1*2.D0)*X3+U2*Y2*6.D0 +
-     &              (-U2*6.D0-U3-U1*2.D0)*Y3) * XSUR90
-         A25(IELEM)=(V2*X2*6.D0+(V3*2.D0+V1)*X3-U2*Y2*6.D0 +
-     &              (-U3*2.D0-U1)*Y3) * XSUR90
-         A26(IELEM)=((V3-V1)*X2+(-V3*2.D0-V1)*X3+(-U3+U1)*Y2 +
-     &              (U1+U3*2.D0)*Y3) * XSUR90
+        A21(IELEM)=((V2*6.D0+V3+V1*5.D0)*X2 +
+     &             (-V2*6.D0-V3-V1*5.D0)*X3 +
+     &             (-U2*6.D0-U3-U1*5.D0)*Y2 +
+     &             (U1*5.D0+U3+U2*6.D0)*Y3) * XSU360
+        A23(IELEM)=((-V2*6.D0-V3*5.D0-V1)*X2 +
+     &             (  U1+U3*5.D0+U2*6.D0)*Y2) * XSU360
+        A24(IELEM)=(-V2*X2*6.D0+(V2*6.D0+V3+V1*2.D0)*X3+U2*Y2*6.D0 +
+     &             (-U2*6.D0-U3-U1*2.D0)*Y3) * XSUR90
+        A25(IELEM)=(V2*X2*6.D0+(V3*2.D0+V1)*X3-U2*Y2*6.D0 +
+     &             (-U3*2.D0-U1)*Y3) * XSUR90
+        A26(IELEM)=((V3-V1)*X2+(-V3*2.D0-V1)*X3+(-U3+U1)*Y2 +
+     &             (U1+U3*2.D0)*Y3) * XSUR90
 !
-         A31(IELEM)=((V2+V3*6.D0+V1*5.D0)*X2 +
-     &              (-V2-V3*6.D0-V1*5.D0)*X3 +
-     &              (-U2-U3*6.D0-U1*5.D0)*Y2 +
-     &              (U1*5.D0+U3*6.D0+U2)*Y3) * XSU360
-         A32(IELEM)=((V2*5.D0+V3*6.D0+V1)*X3 +
-     &              (-U1-U3*6.D0-U2*5.D0)*Y3) * XSU360
-         A34(IELEM)=((V2*2.D0+V1)*X2+(-V2+V1)*X3+(-U1-U2*2.D0)*Y2+
-     &              (U2-U1)*Y3)*XSUR90
-         A35(IELEM)=((-V2*2.D0-V1)*X2-V3*X3*6.D0 +
-     &               ( U2*2.D0+U1)*Y2+U3*Y3*6.D0) * XSUR90
-         A36(IELEM)=((-V3*6.D0-V2-V1*2.D0)*X2+V3*X3*6.D0 +
-     &               ( U2+U3*6.D0+U1*2.D0)*Y2-U3*Y3*6.D0) * XSUR90
+        A31(IELEM)=((V2+V3*6.D0+V1*5.D0)*X2 +
+     &             (-V2-V3*6.D0-V1*5.D0)*X3 +
+     &             (-U2-U3*6.D0-U1*5.D0)*Y2 +
+     &             (U1*5.D0+U3*6.D0+U2)*Y3) * XSU360
+        A32(IELEM)=((V2*5.D0+V3*6.D0+V1)*X3 +
+     &             (-U1-U3*6.D0-U2*5.D0)*Y3) * XSU360
+        A34(IELEM)=((V2*2.D0+V1)*X2+(-V2+V1)*X3+(-U1-U2*2.D0)*Y2+
+     &             (U2-U1)*Y3)*XSUR90
+        A35(IELEM)=((-V2*2.D0-V1)*X2-V3*X3*6.D0 +
+     &              ( U2*2.D0+U1)*Y2+U3*Y3*6.D0) * XSUR90
+        A36(IELEM)=((-V3*6.D0-V2-V1*2.D0)*X2+V3*X3*6.D0 +
+     &              ( U2+U3*6.D0+U1*2.D0)*Y2-U3*Y3*6.D0) * XSUR90
 !
-         A41(IELEM)=((-V2*2.D0-V3-V1*6.D0)*X2 +
-     &               ( V2*2.D0+V3+V1*6.D0)*X3 +
-     &               ( U1*6.D0+U3+U2*2.D0)*Y2 +
-     &               (-U1*6.D0-U3-U2*2.D0)*Y3) * XSUR90
-         A42(IELEM)=((-V2*6.D0-V3-V1*2.D0)*X3 +
-     &               ( U1*2.D0+U3+U2*6.D0)*Y3) * XSUR90
-         A43(IELEM)=((-V2*2.D0+V3-V1*2.D0)*X2 +
-     &               ( U1*2.D0-U3+U2*2.D0)*Y2) * XSUR90
-         A45(IELEM)=(( 6.D0*V2+2.D0*V3+4.D0*V1)*X2 +
-     &               (-2.D0*V2-2.D0*V3-2.D0*V1)*X3 +
-     &               (-6.D0*U2-2.D0*U3-4.D0*U1)*Y2 +
-     &               (2.D0*U1+2.D0*U3+2.D0*U2)*Y3) * XSUR45
-         A46(IELEM)=((2.D0*V2+4.D0*V1)*X2 +
-     &               (2.D0*V3+2.D0*V2+2.D0*V1)*X3 +
-     &               (-4.D0*U1-2.D0*U2)*Y2 +
-     &               (-2.D0*U2-2.D0*U3-2.D0*U1)*Y3) * XSUR45
+        A41(IELEM)=((-V2*2.D0-V3-V1*6.D0)*X2 +
+     &              ( V2*2.D0+V3+V1*6.D0)*X3 +
+     &              ( U1*6.D0+U3+U2*2.D0)*Y2 +
+     &              (-U1*6.D0-U3-U2*2.D0)*Y3) * XSUR90
+        A42(IELEM)=((-V2*6.D0-V3-V1*2.D0)*X3 +
+     &              ( U1*2.D0+U3+U2*6.D0)*Y3) * XSUR90
+        A43(IELEM)=((-V2*2.D0+V3-V1*2.D0)*X2 +
+     &              ( U1*2.D0-U3+U2*2.D0)*Y2) * XSUR90
+        A45(IELEM)=(( 6.D0*V2+2.D0*V3+4.D0*V1)*X2 +
+     &              (-2.D0*V2-2.D0*V3-2.D0*V1)*X3 +
+     &              (-6.D0*U2-2.D0*U3-4.D0*U1)*Y2 +
+     &              (2.D0*U1+2.D0*U3+2.D0*U2)*Y3) * XSUR45
+        A46(IELEM)=((2.D0*V2+4.D0*V1)*X2 +
+     &              (2.D0*V3+2.D0*V2+2.D0*V1)*X3 +
+     &              (-4.D0*U1-2.D0*U2)*Y2 +
+     &              (-2.D0*U2-2.D0*U3-2.D0*U1)*Y3) * XSUR45
 !
-         A51(IELEM)=((V2*2.D0+V3*2.D0-V1)*X2 +
-     &              (-V2*2.D0-V3*2.D0+V1)*X3 +
-     &              (-U2*2.D0-U3*2.D0+U1)*Y2 +
-     &              (-U1+U3*2.D0+U2*2.D0)*Y3) * XSUR90
-         A52(IELEM)=((-V2*6.D0-V3*2.D0-V1)*X3 +
-     &              (U1+U3*2.D0+U2*6.D0)*Y3) * XSUR90
-         A53(IELEM)=((V2*2.D0+V3*6.D0+V1)*X2 +
-     &              (-U1-U3*6.D0-U2*2.D0)*Y2) * XSUR90
-         A54(IELEM)=((-6.D0*V2-4.D0*V3-2.D0*V1)*X2 +
-     &              (4.D0*V2+2.D0*V3)*X3 +
-     &              (6.D0*U2+4.D0*U3+2.D0*U1)*Y2 +
-     &              (-4.D0*U2-2.D0*U3)*Y3) * XSUR45
-         A56(IELEM)=((-2.D0*V2-4.D0*V3)*X2 +
-     &              (4.D0*V2+6.D0*V3+2.D0*V1)*X3 +
-     &              (2.D0*U2+4.D0*U3)*Y2 +
-     &              (-2.D0*U1-6.D0*U3-4.D0*U2)*Y3) * XSUR45
+        A51(IELEM)=((V2*2.D0+V3*2.D0-V1)*X2 +
+     &             (-V2*2.D0-V3*2.D0+V1)*X3 +
+     &             (-U2*2.D0-U3*2.D0+U1)*Y2 +
+     &             (-U1+U3*2.D0+U2*2.D0)*Y3) * XSUR90
+        A52(IELEM)=((-V2*6.D0-V3*2.D0-V1)*X3 +
+     &             (U1+U3*2.D0+U2*6.D0)*Y3) * XSUR90
+        A53(IELEM)=((V2*2.D0+V3*6.D0+V1)*X2 +
+     &             (-U1-U3*6.D0-U2*2.D0)*Y2) * XSUR90
+        A54(IELEM)=((-6.D0*V2-4.D0*V3-2.D0*V1)*X2 +
+     &             (4.D0*V2+2.D0*V3)*X3 +
+     &             (6.D0*U2+4.D0*U3+2.D0*U1)*Y2 +
+     &             (-4.D0*U2-2.D0*U3)*Y3) * XSUR45
+        A56(IELEM)=((-2.D0*V2-4.D0*V3)*X2 +
+     &             (4.D0*V2+6.D0*V3+2.D0*V1)*X3 +
+     &             (2.D0*U2+4.D0*U3)*Y2 +
+     &             (-2.D0*U1-6.D0*U3-4.D0*U2)*Y3) * XSUR45
 !
-         A61(IELEM)=((-V2-V3*2.D0-V1*6.D0)*X2 +
-     &              (V2+V3*2.D0+V1*6.D0)*X3 +
-     &              (U2+U3*2.D0+U1*6.D0)*Y2 +
-     &              (-U2-U3*2.D0-U1*6.D0)*Y3) * XSUR90
-         A62(IELEM)=((-V2+V3*2.D0+V1*2.D0)*X3 +
-     &              (-U1*2.D0-U3*2.D0+U2)*Y3) * XSUR90
-         A63(IELEM)=((V2+V3*6.D0+V1*2.D0)*X2 +
-     &              (-U1*2.D0-U3*6.D0-U2)*Y2) * XSUR90
-         A64(IELEM)=((-2.D0*V2-2.D0*V3-2.D0*V1)*X2 +
-     &              (-4.D0*V1-2.D0*V3)*X3 +
-     &              (2.D0*U1+2.D0*U3+2.D0*U2)*Y2 +
-     &              (4.D0*U1+2.D0*U3)*Y3) * XSUR45
-         A65(IELEM)=((2.D0*V3+2.D0*V2+2.D0*V1)*X2 +
-     &              (-2.D0*V2-6.D0*V3-4.D0*V1)*X3 +
-     &              (-2.D0*U2-2.D0*U3-2.D0*U1)*Y2 +
-     &              (4.D0*U1+6.D0*U3+2.D0*U2)*Y3) * XSUR45
+        A61(IELEM)=((-V2-V3*2.D0-V1*6.D0)*X2 +
+     &             (V2+V3*2.D0+V1*6.D0)*X3 +
+     &             (U2+U3*2.D0+U1*6.D0)*Y2 +
+     &             (-U2-U3*2.D0-U1*6.D0)*Y3) * XSUR90
+        A62(IELEM)=((-V2+V3*2.D0+V1*2.D0)*X3 +
+     &             (-U1*2.D0-U3*2.D0+U2)*Y3) * XSUR90
+        A63(IELEM)=((V2+V3*6.D0+V1*2.D0)*X2 +
+     &             (-U1*2.D0-U3*6.D0-U2)*Y2) * XSUR90
+        A64(IELEM)=((-2.D0*V2-2.D0*V3-2.D0*V1)*X2 +
+     &             (-4.D0*V1-2.D0*V3)*X3 +
+     &             (2.D0*U1+2.D0*U3+2.D0*U2)*Y2 +
+     &             (4.D0*U1+2.D0*U3)*Y3) * XSUR45
+        A65(IELEM)=((2.D0*V3+2.D0*V2+2.D0*V1)*X2 +
+     &             (-2.D0*V2-6.D0*V3-4.D0*V1)*X3 +
+     &             (-2.D0*U2-2.D0*U3-2.D0*U1)*Y2 +
+     &             (4.D0*U1+6.D0*U3+2.D0*U2)*Y3) * XSUR45
 !
 !  DIAGONAL TERMS:
 !
-         A11(IELEM) = - A12(IELEM) - A13(IELEM) - A14(IELEM)
-     &                - A15(IELEM) - A16(IELEM)
-         A22(IELEM) = - A21(IELEM) - A23(IELEM) - A24(IELEM)
-     &                - A25(IELEM) - A26(IELEM)
-         A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
-     &                - A35(IELEM) - A36(IELEM)
-         A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
-     &                - A45(IELEM) - A46(IELEM)
-         A55(IELEM) = - A51(IELEM) - A52(IELEM) - A53(IELEM)
-     &                - A54(IELEM) - A56(IELEM)
-         A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
-     &                - A64(IELEM) - A65(IELEM)
+        A11(IELEM) = - A12(IELEM) - A13(IELEM) - A14(IELEM)
+     &               - A15(IELEM) - A16(IELEM)
+        A22(IELEM) = - A21(IELEM) - A23(IELEM) - A24(IELEM)
+     &               - A25(IELEM) - A26(IELEM)
+        A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
+     &               - A35(IELEM) - A36(IELEM)
+        A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
+     &               - A45(IELEM) - A46(IELEM)
+        A55(IELEM) = - A51(IELEM) - A52(IELEM) - A53(IELEM)
+     &               - A54(IELEM) - A56(IELEM)
+        A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
+     &               - A64(IELEM) - A65(IELEM)
 !
       ENDDO ! IELEM 
 !
@@ -274,123 +274,123 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
-         U1 = U(IKLE1(IELEM))
-         U2 = U(IKLE2(IELEM))
-         U3 = U(IKLE3(IELEM))
-         V1 = V(IKLE1(IELEM))
-         V2 = V(IKLE2(IELEM))
-         V3 = V(IKLE3(IELEM))
+        U1 = U(IKLE1(IELEM))
+        U2 = U(IKLE2(IELEM))
+        U3 = U(IKLE3(IELEM))
+        V1 = V(IKLE1(IELEM))
+        V2 = V(IKLE2(IELEM))
+        V3 = V(IKLE3(IELEM))
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM)=(( 5.D0*V2+V3+V1*6.D0)*X3 +
-     &              ( -U1*6.D0-U3-U2*5.D0)*Y3) * XSU360
-         A13(IELEM)=((-V2-V3*5.D0-V1*6.D0)*X2 +
-     &              (  U1*6.D0+U3*5.D0+U2)*Y2) * XSU360
-         A14(IELEM)=(( V2*2.D0+V3)*X2+(-V2*2.D0-V3-V1*6.D0)*X3 +
-     &              ( -U2*2.D0-U3)*Y2+(U1*6.D0+U3+U2*2.D0)*Y3) * XSUR90
-         A15(IELEM)=((-V3-V2*2.D0)*X2+(V2+V3*2.D0)*X3 +
-     &              (U2*2.D0+U3)*Y2+(-U2-U3*2.D0)*Y3) * XSUR90
-         A16(IELEM)=((V2+V3*2.D0+V1*6.D0)*X2+(-V2-V3*2.D0)*X3 +
-     &              (-U2-U3*2.D0-U1*6.D0)*Y2+(U2+U3*2.D0)*Y3) * XSUR90
+        A12(IELEM)=(( 5.D0*V2+V3+V1*6.D0)*X3 +
+     &             ( -U1*6.D0-U3-U2*5.D0)*Y3) * XSU360
+        A13(IELEM)=((-V2-V3*5.D0-V1*6.D0)*X2 +
+     &             (  U1*6.D0+U3*5.D0+U2)*Y2) * XSU360
+        A14(IELEM)=(( V2*2.D0+V3)*X2+(-V2*2.D0-V3-V1*6.D0)*X3 +
+     &             ( -U2*2.D0-U3)*Y2+(U1*6.D0+U3+U2*2.D0)*Y3) * XSUR90
+        A15(IELEM)=((-V3-V2*2.D0)*X2+(V2+V3*2.D0)*X3 +
+     &             (U2*2.D0+U3)*Y2+(-U2-U3*2.D0)*Y3) * XSUR90
+        A16(IELEM)=((V2+V3*2.D0+V1*6.D0)*X2+(-V2-V3*2.D0)*X3 +
+     &             (-U2-U3*2.D0-U1*6.D0)*Y2+(U2+U3*2.D0)*Y3) * XSUR90
 !
-         A21(IELEM)=((V2*6.D0+V3+V1*5.D0)*X2 +
-     &              (-V2*6.D0-V3-V1*5.D0)*X3 +
-     &              (-U2*6.D0-U3-U1*5.D0)*Y2 +
-     &              (U1*5.D0+U3+U2*6.D0)*Y3) * XSU360
-         A23(IELEM)=((-V2*6.D0-V3*5.D0-V1)*X2 +
-     &              (  U1+U3*5.D0+U2*6.D0)*Y2) * XSU360
-         A24(IELEM)=(-V2*X2*6.D0+(V2*6.D0+V3+V1*2.D0)*X3+U2*Y2*6.D0 +
-     &              (-U2*6.D0-U3-U1*2.D0)*Y3) * XSUR90
-         A25(IELEM)=(V2*X2*6.D0+(V3*2.D0+V1)*X3-U2*Y2*6.D0 +
-     &              (-U3*2.D0-U1)*Y3) * XSUR90
-         A26(IELEM)=((V3-V1)*X2+(-V3*2.D0-V1)*X3+(-U3+U1)*Y2 +
-     &              (U1+U3*2.D0)*Y3) * XSUR90
+        A21(IELEM)=((V2*6.D0+V3+V1*5.D0)*X2 +
+     &             (-V2*6.D0-V3-V1*5.D0)*X3 +
+     &             (-U2*6.D0-U3-U1*5.D0)*Y2 +
+     &             (U1*5.D0+U3+U2*6.D0)*Y3) * XSU360
+        A23(IELEM)=((-V2*6.D0-V3*5.D0-V1)*X2 +
+     &             (  U1+U3*5.D0+U2*6.D0)*Y2) * XSU360
+        A24(IELEM)=(-V2*X2*6.D0+(V2*6.D0+V3+V1*2.D0)*X3+U2*Y2*6.D0 +
+     &             (-U2*6.D0-U3-U1*2.D0)*Y3) * XSUR90
+        A25(IELEM)=(V2*X2*6.D0+(V3*2.D0+V1)*X3-U2*Y2*6.D0 +
+     &             (-U3*2.D0-U1)*Y3) * XSUR90
+        A26(IELEM)=((V3-V1)*X2+(-V3*2.D0-V1)*X3+(-U3+U1)*Y2 +
+     &             (U1+U3*2.D0)*Y3) * XSUR90
 !
-         A31(IELEM)=((V2+V3*6.D0+V1*5.D0)*X2 +
-     &              (-V2-V3*6.D0-V1*5.D0)*X3 +
-     &              (-U2-U3*6.D0-U1*5.D0)*Y2 +
-     &              (U1*5.D0+U3*6.D0+U2)*Y3) * XSU360
-         A32(IELEM)=((V2*5.D0+V3*6.D0+V1)*X3 +
-     &              (-U1-U3*6.D0-U2*5.D0)*Y3) * XSU360
-         A34(IELEM)=((V2*2.D0+V1)*X2+(-V2+V1)*X3+(-U1-U2*2.D0)*Y2+
-     &              (U2-U1)*Y3)*XSUR90
-         A35(IELEM)=((-V2*2.D0-V1)*X2-V3*X3*6.D0 +
-     &               ( U2*2.D0+U1)*Y2+U3*Y3*6.D0) * XSUR90
-         A36(IELEM)=((-V3*6.D0-V2-V1*2.D0)*X2+V3*X3*6.D0 +
-     &               ( U2+U3*6.D0+U1*2.D0)*Y2-U3*Y3*6.D0) * XSUR90
+        A31(IELEM)=((V2+V3*6.D0+V1*5.D0)*X2 +
+     &             (-V2-V3*6.D0-V1*5.D0)*X3 +
+     &             (-U2-U3*6.D0-U1*5.D0)*Y2 +
+     &             (U1*5.D0+U3*6.D0+U2)*Y3) * XSU360
+        A32(IELEM)=((V2*5.D0+V3*6.D0+V1)*X3 +
+     &             (-U1-U3*6.D0-U2*5.D0)*Y3) * XSU360
+        A34(IELEM)=((V2*2.D0+V1)*X2+(-V2+V1)*X3+(-U1-U2*2.D0)*Y2+
+     &             (U2-U1)*Y3)*XSUR90
+        A35(IELEM)=((-V2*2.D0-V1)*X2-V3*X3*6.D0 +
+     &              ( U2*2.D0+U1)*Y2+U3*Y3*6.D0) * XSUR90
+        A36(IELEM)=((-V3*6.D0-V2-V1*2.D0)*X2+V3*X3*6.D0 +
+     &              ( U2+U3*6.D0+U1*2.D0)*Y2-U3*Y3*6.D0) * XSUR90
 !
-         A41(IELEM)=((-V2*2.D0-V3-V1*6.D0)*X2 +
-     &               ( V2*2.D0+V3+V1*6.D0)*X3 +
-     &               ( U1*6.D0+U3+U2*2.D0)*Y2 +
-     &               (-U1*6.D0-U3-U2*2.D0)*Y3) * XSUR90
-         A42(IELEM)=((-V2*6.D0-V3-V1*2.D0)*X3 +
-     &               ( U1*2.D0+U3+U2*6.D0)*Y3) * XSUR90
-         A43(IELEM)=((-V2*2.D0+V3-V1*2.D0)*X2 +
-     &               ( U1*2.D0-U3+U2*2.D0)*Y2) * XSUR90
-         A45(IELEM)=(( 6.D0*V2+2.D0*V3+4.D0*V1)*X2 +
-     &               (-2.D0*V2-2.D0*V3-2.D0*V1)*X3 +
-     &               (-6.D0*U2-2.D0*U3-4.D0*U1)*Y2 +
-     &               (2.D0*U1+2.D0*U3+2.D0*U2)*Y3) * XSUR45
-         A46(IELEM)=((2.D0*V2+4.D0*V1)*X2 +
-     &               (2.D0*V3+2.D0*V2+2.D0*V1)*X3 +
-     &               (-4.D0*U1-2.D0*U2)*Y2 +
-     &               (-2.D0*U2-2.D0*U3-2.D0*U1)*Y3) * XSUR45
+        A41(IELEM)=((-V2*2.D0-V3-V1*6.D0)*X2 +
+     &              ( V2*2.D0+V3+V1*6.D0)*X3 +
+     &              ( U1*6.D0+U3+U2*2.D0)*Y2 +
+     &              (-U1*6.D0-U3-U2*2.D0)*Y3) * XSUR90
+        A42(IELEM)=((-V2*6.D0-V3-V1*2.D0)*X3 +
+     &              ( U1*2.D0+U3+U2*6.D0)*Y3) * XSUR90
+        A43(IELEM)=((-V2*2.D0+V3-V1*2.D0)*X2 +
+     &              ( U1*2.D0-U3+U2*2.D0)*Y2) * XSUR90
+        A45(IELEM)=(( 6.D0*V2+2.D0*V3+4.D0*V1)*X2 +
+     &              (-2.D0*V2-2.D0*V3-2.D0*V1)*X3 +
+     &              (-6.D0*U2-2.D0*U3-4.D0*U1)*Y2 +
+     &              (2.D0*U1+2.D0*U3+2.D0*U2)*Y3) * XSUR45
+        A46(IELEM)=((2.D0*V2+4.D0*V1)*X2 +
+     &              (2.D0*V3+2.D0*V2+2.D0*V1)*X3 +
+     &              (-4.D0*U1-2.D0*U2)*Y2 +
+     &              (-2.D0*U2-2.D0*U3-2.D0*U1)*Y3) * XSUR45
 !
-         A51(IELEM)=((V2*2.D0+V3*2.D0-V1)*X2 +
-     &              (-V2*2.D0-V3*2.D0+V1)*X3 +
-     &              (-U2*2.D0-U3*2.D0+U1)*Y2 +
-     &              (-U1+U3*2.D0+U2*2.D0)*Y3) * XSUR90
-         A52(IELEM)=((-V2*6.D0-V3*2.D0-V1)*X3 +
-     &              (U1+U3*2.D0+U2*6.D0)*Y3) * XSUR90
-         A53(IELEM)=((V2*2.D0+V3*6.D0+V1)*X2 +
-     &              (-U1-U3*6.D0-U2*2.D0)*Y2) * XSUR90
-         A54(IELEM)=((-6.D0*V2-4.D0*V3-2.D0*V1)*X2 +
-     &              (4.D0*V2+2.D0*V3)*X3 +
-     &              (6.D0*U2+4.D0*U3+2.D0*U1)*Y2 +
-     &              (-4.D0*U2-2.D0*U3)*Y3) * XSUR45
-         A56(IELEM)=((-2.D0*V2-4.D0*V3)*X2 +
-     &              (4.D0*V2+6.D0*V3+2.D0*V1)*X3 +
-     &              (2.D0*U2+4.D0*U3)*Y2 +
-     &              (-2.D0*U1-6.D0*U3-4.D0*U2)*Y3) * XSUR45
+        A51(IELEM)=((V2*2.D0+V3*2.D0-V1)*X2 +
+     &             (-V2*2.D0-V3*2.D0+V1)*X3 +
+     &             (-U2*2.D0-U3*2.D0+U1)*Y2 +
+     &             (-U1+U3*2.D0+U2*2.D0)*Y3) * XSUR90
+        A52(IELEM)=((-V2*6.D0-V3*2.D0-V1)*X3 +
+     &             (U1+U3*2.D0+U2*6.D0)*Y3) * XSUR90
+        A53(IELEM)=((V2*2.D0+V3*6.D0+V1)*X2 +
+     &             (-U1-U3*6.D0-U2*2.D0)*Y2) * XSUR90
+        A54(IELEM)=((-6.D0*V2-4.D0*V3-2.D0*V1)*X2 +
+     &             (4.D0*V2+2.D0*V3)*X3 +
+     &             (6.D0*U2+4.D0*U3+2.D0*U1)*Y2 +
+     &             (-4.D0*U2-2.D0*U3)*Y3) * XSUR45
+        A56(IELEM)=((-2.D0*V2-4.D0*V3)*X2 +
+     &             (4.D0*V2+6.D0*V3+2.D0*V1)*X3 +
+     &             (2.D0*U2+4.D0*U3)*Y2 +
+     &             (-2.D0*U1-6.D0*U3-4.D0*U2)*Y3) * XSUR45
 !
-         A61(IELEM)=((-V2-V3*2.D0-V1*6.D0)*X2 +
-     &              (V2+V3*2.D0+V1*6.D0)*X3 +
-     &              (U2+U3*2.D0+U1*6.D0)*Y2 +
-     &              (-U2-U3*2.D0-U1*6.D0)*Y3) * XSUR90
-         A62(IELEM)=((-V2+V3*2.D0+V1*2.D0)*X3 +
-     &              (-U1*2.D0-U3*2.D0+U2)*Y3) * XSUR90
-         A63(IELEM)=((V2+V3*6.D0+V1*2.D0)*X2 +
-     &              (-U1*2.D0-U3*6.D0-U2)*Y2) * XSUR90
-         A64(IELEM)=((-2.D0*V2-2.D0*V3-2.D0*V1)*X2 +
-     &              (-4.D0*V1-2.D0*V3)*X3 +
-     &              (2.D0*U1+2.D0*U3+2.D0*U2)*Y2 +
-     &              (4.D0*U1+2.D0*U3)*Y3) * XSUR45
-         A65(IELEM)=((2.D0*V3+2.D0*V2+2.D0*V1)*X2 +
-     &              (-2.D0*V2-6.D0*V3-4.D0*V1)*X3 +
-     &              (-2.D0*U2-2.D0*U3-2.D0*U1)*Y2 +
-     &              (4.D0*U1+6.D0*U3+2.D0*U2)*Y3) * XSUR45
+        A61(IELEM)=((-V2-V3*2.D0-V1*6.D0)*X2 +
+     &             (V2+V3*2.D0+V1*6.D0)*X3 +
+     &             (U2+U3*2.D0+U1*6.D0)*Y2 +
+     &             (-U2-U3*2.D0-U1*6.D0)*Y3) * XSUR90
+        A62(IELEM)=((-V2+V3*2.D0+V1*2.D0)*X3 +
+     &             (-U1*2.D0-U3*2.D0+U2)*Y3) * XSUR90
+        A63(IELEM)=((V2+V3*6.D0+V1*2.D0)*X2 +
+     &             (-U1*2.D0-U3*6.D0-U2)*Y2) * XSUR90
+        A64(IELEM)=((-2.D0*V2-2.D0*V3-2.D0*V1)*X2 +
+     &             (-4.D0*V1-2.D0*V3)*X3 +
+     &             (2.D0*U1+2.D0*U3+2.D0*U2)*Y2 +
+     &             (4.D0*U1+2.D0*U3)*Y3) * XSUR45
+        A65(IELEM)=((2.D0*V3+2.D0*V2+2.D0*V1)*X2 +
+     &             (-2.D0*V2-6.D0*V3-4.D0*V1)*X3 +
+     &             (-2.D0*U2-2.D0*U3-2.D0*U1)*Y2 +
+     &             (4.D0*U1+6.D0*U3+2.D0*U2)*Y3) * XSUR45
 !
 !  DIAGONAL TERMS:
 !
-         A11(IELEM) = - A12(IELEM) - A13(IELEM) - A14(IELEM)
-     &                - A15(IELEM) - A16(IELEM)
-         A22(IELEM) = - A21(IELEM) - A23(IELEM) - A24(IELEM)
-     &                - A25(IELEM) - A26(IELEM)
-         A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
-     &                - A35(IELEM) - A36(IELEM)
-         A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
-     &                - A45(IELEM) - A46(IELEM)
-         A55(IELEM) = - A51(IELEM) - A52(IELEM) - A53(IELEM)
-     &                - A54(IELEM) - A56(IELEM)
-         A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
-     &                - A64(IELEM) - A65(IELEM)
+        A11(IELEM) = - A12(IELEM) - A13(IELEM) - A14(IELEM)
+     &               - A15(IELEM) - A16(IELEM)
+        A22(IELEM) = - A21(IELEM) - A23(IELEM) - A24(IELEM)
+     &               - A25(IELEM) - A26(IELEM)
+        A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
+     &               - A35(IELEM) - A36(IELEM)
+        A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
+     &               - A45(IELEM) - A46(IELEM)
+        A55(IELEM) = - A51(IELEM) - A52(IELEM) - A53(IELEM)
+     &               - A54(IELEM) - A56(IELEM)
+        A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
+     &               - A64(IELEM) - A65(IELEM)
       ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
@@ -417,24 +417,24 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
-         U1 = U(IKLE1(IELEM))
-         U2 = U(IKLE2(IELEM))
-         U3 = U(IKLE3(IELEM))
-         U4 = U(IKLE4(IELEM))
-         U5 = U(IKLE5(IELEM))
-         U6 = U(IKLE6(IELEM))
-         V1 = V(IKLE1(IELEM))
-         V2 = V(IKLE2(IELEM))
-         V3 = V(IKLE3(IELEM))
-         V4 = V(IKLE4(IELEM))
-         V5 = V(IKLE5(IELEM))
-         V6 = V(IKLE6(IELEM))
+        U1 = U(IKLE1(IELEM))
+        U2 = U(IKLE2(IELEM))
+        U3 = U(IKLE3(IELEM))
+        U4 = U(IKLE4(IELEM))
+        U5 = U(IKLE5(IELEM))
+        U6 = U(IKLE6(IELEM))
+        V1 = V(IKLE1(IELEM))
+        V2 = V(IKLE2(IELEM))
+        V3 = V(IKLE3(IELEM))
+        V4 = V(IKLE4(IELEM))
+        V5 = V(IKLE5(IELEM))
+        V6 = V(IKLE6(IELEM))
 !
 !  EXTRADIAGONAL TERMS
 !
@@ -581,18 +581,18 @@
 !
 !  THE DIAGONAL TERMS ARE OBTAINED BY MEANS OF THE 'MAGIC SQUARE':
 !
-         A11(IELEM) = - A12(IELEM) - A13(IELEM) - A14(IELEM)
-     &                - A15(IELEM) - A16(IELEM)
-         A22(IELEM) = - A21(IELEM) - A23(IELEM) - A24(IELEM)
-     &                - A25(IELEM) - A26(IELEM)
-         A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
-     &                - A35(IELEM) - A36(IELEM)
-         A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
-     &                - A45(IELEM) - A46(IELEM)
-         A55(IELEM) = - A51(IELEM) - A52(IELEM) - A53(IELEM)
-     &                - A54(IELEM) - A56(IELEM)
-         A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
-     &                - A64(IELEM) - A65(IELEM)
+        A11(IELEM) = - A12(IELEM) - A13(IELEM) - A14(IELEM)
+     &               - A15(IELEM) - A16(IELEM)
+        A22(IELEM) = - A21(IELEM) - A23(IELEM) - A24(IELEM)
+     &               - A25(IELEM) - A26(IELEM)
+        A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
+     &               - A35(IELEM) - A36(IELEM)
+        A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
+     &               - A45(IELEM) - A46(IELEM)
+        A55(IELEM) = - A51(IELEM) - A52(IELEM) - A53(IELEM)
+     &               - A54(IELEM) - A56(IELEM)
+        A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
+     &               - A64(IELEM) - A65(IELEM)
 !
       ENDDO ! IELEM 
 !
@@ -604,12 +604,12 @@
 !
         IF (LNG.EQ.1) WRITE(LU,10) IELMU,IELMV
         IF (LNG.EQ.2) WRITE(LU,11) IELMU,IELMV
-10     FORMAT(1X,'MT05CC (BIEF) : TYPES DE VITESSES NON PREVU : ',2I6)
-11     FORMAT(1X,
-     &  'MT05CC (BIEF) : TYPES OF VELOCITIES NOT AVAILABLE : ',2I6)
-12     FORMAT(1X,'MT05CC (BIEF) : SCHEMA N NON PREVU  ')
-13     FORMAT(1X,
-     &  'MT05CC (BIEF) : N SCHEMES NOT AVAILABLE  ')
+10    FORMAT(1X,'MT05CC (BIEF) : TYPES DE VITESSES NON PREVU : ',2I6)
+11    FORMAT(1X,
+     & 'MT05CC (BIEF) : TYPES OF VELOCITIES NOT AVAILABLE : ',2I6)
+12    FORMAT(1X,'MT05CC (BIEF) : SCHEMA N NON PREVU  ')
+13    FORMAT(1X,
+     & 'MT05CC (BIEF) : N SCHEMES NOT AVAILABLE  ')
         CALL PLANTE(1)
         STOP
 !

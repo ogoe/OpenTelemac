@@ -103,22 +103,22 @@
       ! ****************************************************** !
 !
       DO K = 1, NPTFR
-         CLT%I(K) = LITBOR%I(K)
-         ! I.1 - LIQUID BOUNDARIES 
-         ! --------------------------------------
-         IF (CLT%I(K) == KENT) THEN
-            USCALN = U%R(NBOR%I(K))*XNEBOR%R(K)
-     &             + V%R(NBOR%I(K))*YNEBOR%R(K)
-            ! OUTGOING VELOCITY, FREE TRACER
-            ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            IF (USCALN >= 0.D0) CLT%I(K) = KSORT
-         ELSEIF(CLT%I(K) == KSORT) THEN
-            USCALN = U%R(NBOR%I(K))*XNEBOR%R(K)
-     &             + V%R(NBOR%I(K))*YNEBOR%R(K)
-            ! ENTERING VELOCITY, FREE TRACER
-            ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            IF (USCALN <= 0.D0) CLT%I(K) = KENT
-         ENDIF
+        CLT%I(K) = LITBOR%I(K)
+        ! I.1 - LIQUID BOUNDARIES 
+        ! --------------------------------------
+        IF (CLT%I(K) == KENT) THEN
+          USCALN = U%R(NBOR%I(K))*XNEBOR%R(K)
+     &           + V%R(NBOR%I(K))*YNEBOR%R(K)
+          ! OUTGOING VELOCITY, FREE TRACER
+          ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          IF (USCALN >= 0.D0) CLT%I(K) = KSORT
+        ELSEIF(CLT%I(K) == KSORT) THEN
+          USCALN = U%R(NBOR%I(K))*XNEBOR%R(K)
+     &           + V%R(NBOR%I(K))*YNEBOR%R(K)
+          ! ENTERING VELOCITY, FREE TRACER
+          ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          IF (USCALN <= 0.D0) CLT%I(K) = KENT
+        ENDIF
       ENDDO
 !
       ! **************************************************************** !
@@ -175,24 +175,24 @@
       ! ************************************************************** !
 !
       DO K = 1, NPTFR
-         ! IV.1 - 'INCOMING' BOUNDARY : IMPOSED TRACER
-         ! -----------------------------------------
-         IF(CLT%I(K).EQ.KENT) THEN
-            LIMTRA%I(K) = KDIR
-         ELSEIF(CLT%I(K).EQ.KSORT) THEN
-            LIMTRA%I(K) = KDDL
-         ! IV.2 - SOLID BOUNDARY : NEUMANN CONDITIONS 
-         ! ------------------------------------
-         ELSEIF(CLT%I(K).EQ.KLOG ) THEN
-            LIMTRA%I(K) = KNEU
-         ! IV.3 - ERROR: UNKNOWN LITBOR VALUE 
-         ! ----------------------------------------
-         ELSE
-            IF (LNG == 1) WRITE(LU,11) K, LITBOR%I(K)
-            IF (LNG == 2) WRITE(LU,12) K, LITBOR%I(K)
-            CALL PLANTE(1)
-            STOP
-         ENDIF
+        ! IV.1 - 'INCOMING' BOUNDARY : IMPOSED TRACER
+        ! -----------------------------------------
+        IF(CLT%I(K).EQ.KENT) THEN
+          LIMTRA%I(K) = KDIR
+        ELSEIF(CLT%I(K).EQ.KSORT) THEN
+          LIMTRA%I(K) = KDDL
+        ! IV.2 - SOLID BOUNDARY : NEUMANN CONDITIONS 
+        ! ------------------------------------
+        ELSEIF(CLT%I(K).EQ.KLOG ) THEN
+          LIMTRA%I(K) = KNEU
+        ! IV.3 - ERROR: UNKNOWN LITBOR VALUE 
+        ! ----------------------------------------
+        ELSE
+          IF (LNG == 1) WRITE(LU,11) K, LITBOR%I(K)
+          IF (LNG == 2) WRITE(LU,12) K, LITBOR%I(K)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ENDDO
       !----------------------------------------------------------------!
 101   FORMAT(' BEDLOAD_DIFFIN : CAS NON PREVU')

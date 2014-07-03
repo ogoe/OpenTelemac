@@ -56,22 +56,22 @@
 !
       IF(IMAX.GE.0) THEN
 !
-         DO I = 0,IMAX
-            IF(C1(I+1:I+LC2).EQ.C2(1:LC2)) THEN
-               FLAG = .TRUE.
-               IF (I.NE.0) THEN
-                  IC1 = ICHAR(C1(I:I))
-                  IF ((IC1.GE.48.AND.IC1.LE.57).OR.
-     &                (IC1.GE.65.AND.IC1.LE.90)) FLAG = .FALSE.
-               ENDIF
-               IF (I.NE.IMAX) THEN
-                  IC1 = ICHAR(C1(I+LC2+1:I+LC2+1))
-                  IF ((IC1.GE.48.AND.IC1.LE.57).OR.
-     &                (IC1.GE.65.AND.IC1.LE.90)) FLAG = .FALSE.
-               ENDIF
-               INCLU2 = INCLU2.OR.FLAG
+        DO I = 0,IMAX
+          IF(C1(I+1:I+LC2).EQ.C2(1:LC2)) THEN
+            FLAG = .TRUE.
+            IF (I.NE.0) THEN
+              IC1 = ICHAR(C1(I:I))
+              IF ((IC1.GE.48.AND.IC1.LE.57).OR.
+     &            (IC1.GE.65.AND.IC1.LE.90)) FLAG = .FALSE.
             ENDIF
-         ENDDO ! I 
+            IF (I.NE.IMAX) THEN
+              IC1 = ICHAR(C1(I+LC2+1:I+LC2+1))
+              IF ((IC1.GE.48.AND.IC1.LE.57).OR.
+     &            (IC1.GE.65.AND.IC1.LE.90)) FLAG = .FALSE.
+            ENDIF
+            INCLU2 = INCLU2.OR.FLAG
+          ENDIF
+        ENDDO ! I 
 !
       ENDIF
 !

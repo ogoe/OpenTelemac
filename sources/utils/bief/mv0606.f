@@ -114,148 +114,148 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) =
-     &                   + XA(IELEM,1) * Y(I2)
-     &                   + XA(IELEM,2) * Y(I3)
-     &                   + XA(IELEM,3) * Y(I4)
-     &                   + XA(IELEM,4) * Y(I5)
-     &                   + XA(IELEM,5) * Y(I6)
+          W1(IELEM) =
+     &                  + XA(IELEM,1) * Y(I2)
+     &                  + XA(IELEM,2) * Y(I3)
+     &                  + XA(IELEM,3) * Y(I4)
+     &                  + XA(IELEM,4) * Y(I5)
+     &                  + XA(IELEM,5) * Y(I6)
 !
-           W2(IELEM) =
-     &                   + XA(IELEM,1) * Y(I1)
-     &                   + XA(IELEM,6) * Y(I3)
-     &                   + XA(IELEM,7) * Y(I4)
-     &                   + XA(IELEM,8) * Y(I5)
-     &                   + XA(IELEM,9) * Y(I6)
+          W2(IELEM) =
+     &                  + XA(IELEM,1) * Y(I1)
+     &                  + XA(IELEM,6) * Y(I3)
+     &                  + XA(IELEM,7) * Y(I4)
+     &                  + XA(IELEM,8) * Y(I5)
+     &                  + XA(IELEM,9) * Y(I6)
 !
-           W3(IELEM) =
-     &                   + XA(IELEM,2)  * Y(I1)
-     &                   + XA(IELEM,6)  * Y(I2)
-     &                   + XA(IELEM,10) * Y(I4)
-     &                   + XA(IELEM,11) * Y(I5)
-     &                   + XA(IELEM,12) * Y(I6)
+          W3(IELEM) =
+     &                  + XA(IELEM,2)  * Y(I1)
+     &                  + XA(IELEM,6)  * Y(I2)
+     &                  + XA(IELEM,10) * Y(I4)
+     &                  + XA(IELEM,11) * Y(I5)
+     &                  + XA(IELEM,12) * Y(I6)
 !
-           W4(IELEM) =
-     &                   + XA(IELEM,3)  * Y(I1)
-     &                   + XA(IELEM,7)  * Y(I2)
-     &                   + XA(IELEM,10) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I5)
-     &                   + XA(IELEM,14) * Y(I6)
+          W4(IELEM) =
+     &                  + XA(IELEM,3)  * Y(I1)
+     &                  + XA(IELEM,7)  * Y(I2)
+     &                  + XA(IELEM,10) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I5)
+     &                  + XA(IELEM,14) * Y(I6)
 !
-           W5(IELEM) =
-     &                   + XA(IELEM,4)  * Y(I1)
-     &                   + XA(IELEM,8)  * Y(I2)
-     &                   + XA(IELEM,11) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I6)
+          W5(IELEM) =
+     &                  + XA(IELEM,4)  * Y(I1)
+     &                  + XA(IELEM,8)  * Y(I2)
+     &                  + XA(IELEM,11) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I6)
 !
-           W6(IELEM) =
-     &                   + XA(IELEM,5)  * Y(I1)
-     &                   + XA(IELEM,9)  * Y(I2)
-     &                   + XA(IELEM,12) * Y(I3)
-     &                   + XA(IELEM,14) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I5)
+          W6(IELEM) =
+     &                  + XA(IELEM,5)  * Y(I1)
+     &                  + XA(IELEM,9)  * Y(I2)
+     &                  + XA(IELEM,12) * Y(I3)
+     &                  + XA(IELEM,14) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) =
-     &                   + XA(IELEM, 1) * Y(I2)
-     &                   + XA(IELEM, 2) * Y(I3)
-     &                   + XA(IELEM, 3) * Y(I4)
-     &                   + XA(IELEM, 4) * Y(I5)
-     &                   + XA(IELEM, 5) * Y(I6)
+          W1(IELEM) =
+     &                  + XA(IELEM, 1) * Y(I2)
+     &                  + XA(IELEM, 2) * Y(I3)
+     &                  + XA(IELEM, 3) * Y(I4)
+     &                  + XA(IELEM, 4) * Y(I5)
+     &                  + XA(IELEM, 5) * Y(I6)
 !
-           W2(IELEM) =
-     &                   + XA(IELEM,16) * Y(I1)
-     &                   + XA(IELEM, 6) * Y(I3)
-     &                   + XA(IELEM, 7) * Y(I4)
-     &                   + XA(IELEM, 8) * Y(I5)
-     &                   + XA(IELEM, 9) * Y(I6)
+          W2(IELEM) =
+     &                  + XA(IELEM,16) * Y(I1)
+     &                  + XA(IELEM, 6) * Y(I3)
+     &                  + XA(IELEM, 7) * Y(I4)
+     &                  + XA(IELEM, 8) * Y(I5)
+     &                  + XA(IELEM, 9) * Y(I6)
 !
-           W3(IELEM) =
-     &                   + XA(IELEM,17) * Y(I1)
-     &                   + XA(IELEM,21) * Y(I2)
-     &                   + XA(IELEM,10) * Y(I4)
-     &                   + XA(IELEM,11) * Y(I5)
-     &                   + XA(IELEM,12) * Y(I6)
+          W3(IELEM) =
+     &                  + XA(IELEM,17) * Y(I1)
+     &                  + XA(IELEM,21) * Y(I2)
+     &                  + XA(IELEM,10) * Y(I4)
+     &                  + XA(IELEM,11) * Y(I5)
+     &                  + XA(IELEM,12) * Y(I6)
 !
-           W4(IELEM) =
-     &                   + XA(IELEM,18) * Y(I1)
-     &                   + XA(IELEM,22) * Y(I2)
-     &                   + XA(IELEM,25) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I5)
-     &                   + XA(IELEM,14) * Y(I6)
+          W4(IELEM) =
+     &                  + XA(IELEM,18) * Y(I1)
+     &                  + XA(IELEM,22) * Y(I2)
+     &                  + XA(IELEM,25) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I5)
+     &                  + XA(IELEM,14) * Y(I6)
 !
-           W5(IELEM) =
-     &                   + XA(IELEM,19) * Y(I1)
-     &                   + XA(IELEM,23) * Y(I2)
-     &                   + XA(IELEM,26) * Y(I3)
-     &                   + XA(IELEM,28) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I6)
+          W5(IELEM) =
+     &                  + XA(IELEM,19) * Y(I1)
+     &                  + XA(IELEM,23) * Y(I2)
+     &                  + XA(IELEM,26) * Y(I3)
+     &                  + XA(IELEM,28) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I6)
 !
-           W6(IELEM) =
-     &                   + XA(IELEM,20) * Y(I1)
-     &                   + XA(IELEM,24) * Y(I2)
-     &                   + XA(IELEM,27) * Y(I3)
-     &                   + XA(IELEM,29) * Y(I4)
-     &                   + XA(IELEM,30) * Y(I5)
+          W6(IELEM) =
+     &                  + XA(IELEM,20) * Y(I1)
+     &                  + XA(IELEM,24) * Y(I2)
+     &                  + XA(IELEM,27) * Y(I3)
+     &                  + XA(IELEM,29) * Y(I4)
+     &                  + XA(IELEM,30) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
-           CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W4 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W5 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W6 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W4 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W5 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W6 , Y , Z , 0.D0 , NELEM )
 !
-         ELSE
+        ELSE
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -263,148 +263,148 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) =
-     &                   - XA(IELEM,1) * Y(I2)
-     &                   - XA(IELEM,2) * Y(I3)
-     &                   - XA(IELEM,3) * Y(I4)
-     &                   - XA(IELEM,4) * Y(I5)
-     &                   - XA(IELEM,5) * Y(I6)
+          W1(IELEM) =
+     &                  - XA(IELEM,1) * Y(I2)
+     &                  - XA(IELEM,2) * Y(I3)
+     &                  - XA(IELEM,3) * Y(I4)
+     &                  - XA(IELEM,4) * Y(I5)
+     &                  - XA(IELEM,5) * Y(I6)
 !
-           W2(IELEM) =
-     &                   - XA(IELEM,1) * Y(I1)
-     &                   - XA(IELEM,6) * Y(I3)
-     &                   - XA(IELEM,7) * Y(I4)
-     &                   - XA(IELEM,8) * Y(I5)
-     &                   - XA(IELEM,9) * Y(I6)
+          W2(IELEM) =
+     &                  - XA(IELEM,1) * Y(I1)
+     &                  - XA(IELEM,6) * Y(I3)
+     &                  - XA(IELEM,7) * Y(I4)
+     &                  - XA(IELEM,8) * Y(I5)
+     &                  - XA(IELEM,9) * Y(I6)
 !
-           W3(IELEM) =
-     &                   - XA(IELEM,2)  * Y(I1)
-     &                   - XA(IELEM,6)  * Y(I2)
-     &                   - XA(IELEM,10) * Y(I4)
-     &                   - XA(IELEM,11) * Y(I5)
-     &                   - XA(IELEM,12) * Y(I6)
+          W3(IELEM) =
+     &                  - XA(IELEM,2)  * Y(I1)
+     &                  - XA(IELEM,6)  * Y(I2)
+     &                  - XA(IELEM,10) * Y(I4)
+     &                  - XA(IELEM,11) * Y(I5)
+     &                  - XA(IELEM,12) * Y(I6)
 !
-           W4(IELEM) =
-     &                   - XA(IELEM,3)  * Y(I1)
-     &                   - XA(IELEM,7)  * Y(I2)
-     &                   - XA(IELEM,10) * Y(I3)
-     &                   - XA(IELEM,13) * Y(I5)
-     &                   - XA(IELEM,14) * Y(I6)
+          W4(IELEM) =
+     &                  - XA(IELEM,3)  * Y(I1)
+     &                  - XA(IELEM,7)  * Y(I2)
+     &                  - XA(IELEM,10) * Y(I3)
+     &                  - XA(IELEM,13) * Y(I5)
+     &                  - XA(IELEM,14) * Y(I6)
 !
-           W5(IELEM) =
-     &                   - XA(IELEM,4)  * Y(I1)
-     &                   - XA(IELEM,8)  * Y(I2)
-     &                   - XA(IELEM,11) * Y(I3)
-     &                   - XA(IELEM,13) * Y(I4)
-     &                   - XA(IELEM,15) * Y(I6)
+          W5(IELEM) =
+     &                  - XA(IELEM,4)  * Y(I1)
+     &                  - XA(IELEM,8)  * Y(I2)
+     &                  - XA(IELEM,11) * Y(I3)
+     &                  - XA(IELEM,13) * Y(I4)
+     &                  - XA(IELEM,15) * Y(I6)
 !
-           W6(IELEM) =
-     &                   - XA(IELEM,5)  * Y(I1)
-     &                   - XA(IELEM,9)  * Y(I2)
-     &                   - XA(IELEM,12) * Y(I3)
-     &                   - XA(IELEM,14) * Y(I4)
-     &                   - XA(IELEM,15) * Y(I5)
+          W6(IELEM) =
+     &                  - XA(IELEM,5)  * Y(I1)
+     &                  - XA(IELEM,9)  * Y(I2)
+     &                  - XA(IELEM,12) * Y(I3)
+     &                  - XA(IELEM,14) * Y(I4)
+     &                  - XA(IELEM,15) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) =
-     &                   - XA(IELEM, 1) * Y(I2)
-     &                   - XA(IELEM, 2) * Y(I3)
-     &                   - XA(IELEM, 3) * Y(I4)
-     &                   - XA(IELEM, 4) * Y(I5)
-     &                   - XA(IELEM, 5) * Y(I6)
+          W1(IELEM) =
+     &                  - XA(IELEM, 1) * Y(I2)
+     &                  - XA(IELEM, 2) * Y(I3)
+     &                  - XA(IELEM, 3) * Y(I4)
+     &                  - XA(IELEM, 4) * Y(I5)
+     &                  - XA(IELEM, 5) * Y(I6)
 !
-           W2(IELEM) =
-     &                   - XA(IELEM,16) * Y(I1)
-     &                   - XA(IELEM, 6) * Y(I3)
-     &                   - XA(IELEM, 7) * Y(I4)
-     &                   - XA(IELEM, 8) * Y(I5)
-     &                   - XA(IELEM, 9) * Y(I6)
+          W2(IELEM) =
+     &                  - XA(IELEM,16) * Y(I1)
+     &                  - XA(IELEM, 6) * Y(I3)
+     &                  - XA(IELEM, 7) * Y(I4)
+     &                  - XA(IELEM, 8) * Y(I5)
+     &                  - XA(IELEM, 9) * Y(I6)
 !
-           W3(IELEM) =
-     &                   - XA(IELEM,17) * Y(I1)
-     &                   - XA(IELEM,21) * Y(I2)
-     &                   - XA(IELEM,10) * Y(I4)
-     &                   - XA(IELEM,11) * Y(I5)
-     &                   - XA(IELEM,12) * Y(I6)
+          W3(IELEM) =
+     &                  - XA(IELEM,17) * Y(I1)
+     &                  - XA(IELEM,21) * Y(I2)
+     &                  - XA(IELEM,10) * Y(I4)
+     &                  - XA(IELEM,11) * Y(I5)
+     &                  - XA(IELEM,12) * Y(I6)
 !
-           W4(IELEM) =
-     &                   - XA(IELEM,18) * Y(I1)
-     &                   - XA(IELEM,22) * Y(I2)
-     &                   - XA(IELEM,25) * Y(I3)
-     &                   - XA(IELEM,13) * Y(I5)
-     &                   - XA(IELEM,14) * Y(I6)
+          W4(IELEM) =
+     &                  - XA(IELEM,18) * Y(I1)
+     &                  - XA(IELEM,22) * Y(I2)
+     &                  - XA(IELEM,25) * Y(I3)
+     &                  - XA(IELEM,13) * Y(I5)
+     &                  - XA(IELEM,14) * Y(I6)
 !
-           W5(IELEM) =
-     &                   - XA(IELEM,19) * Y(I1)
-     &                   - XA(IELEM,23) * Y(I2)
-     &                   - XA(IELEM,26) * Y(I3)
-     &                   - XA(IELEM,28) * Y(I4)
-     &                   - XA(IELEM,15) * Y(I6)
+          W5(IELEM) =
+     &                  - XA(IELEM,19) * Y(I1)
+     &                  - XA(IELEM,23) * Y(I2)
+     &                  - XA(IELEM,26) * Y(I3)
+     &                  - XA(IELEM,28) * Y(I4)
+     &                  - XA(IELEM,15) * Y(I6)
 !
-           W6(IELEM) =
-     &                   - XA(IELEM,20) * Y(I1)
-     &                   - XA(IELEM,24) * Y(I2)
-     &                   - XA(IELEM,27) * Y(I3)
-     &                   - XA(IELEM,29) * Y(I4)
-     &                   - XA(IELEM,30) * Y(I5)
+          W6(IELEM) =
+     &                  - XA(IELEM,20) * Y(I1)
+     &                  - XA(IELEM,24) * Y(I2)
+     &                  - XA(IELEM,27) * Y(I3)
+     &                  - XA(IELEM,29) * Y(I4)
+     &                  - XA(IELEM,30) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
-           CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W4 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W5 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W6 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W4 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W5 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W6 , Y , Z , 0.D0 , NELEM )
 !
-         ELSE
+        ELSE
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -412,137 +412,137 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) = W1(IELEM)
-     &                   + XA(IELEM,1) * Y(I2)
-     &                   + XA(IELEM,2) * Y(I3)
-     &                   + XA(IELEM,3) * Y(I4)
-     &                   + XA(IELEM,4) * Y(I5)
-     &                   + XA(IELEM,5) * Y(I6)
+          W1(IELEM) = W1(IELEM)
+     &                  + XA(IELEM,1) * Y(I2)
+     &                  + XA(IELEM,2) * Y(I3)
+     &                  + XA(IELEM,3) * Y(I4)
+     &                  + XA(IELEM,4) * Y(I5)
+     &                  + XA(IELEM,5) * Y(I6)
 !
-           W2(IELEM) = W2(IELEM)
-     &                   + XA(IELEM,1) * Y(I1)
-     &                   + XA(IELEM,6) * Y(I3)
-     &                   + XA(IELEM,7) * Y(I4)
-     &                   + XA(IELEM,8) * Y(I5)
-     &                   + XA(IELEM,9) * Y(I6)
+          W2(IELEM) = W2(IELEM)
+     &                  + XA(IELEM,1) * Y(I1)
+     &                  + XA(IELEM,6) * Y(I3)
+     &                  + XA(IELEM,7) * Y(I4)
+     &                  + XA(IELEM,8) * Y(I5)
+     &                  + XA(IELEM,9) * Y(I6)
 !
-           W3(IELEM) = W3(IELEM)
-     &                   + XA(IELEM,2)  * Y(I1)
-     &                   + XA(IELEM,6)  * Y(I2)
-     &                   + XA(IELEM,10) * Y(I4)
-     &                   + XA(IELEM,11) * Y(I5)
-     &                   + XA(IELEM,12) * Y(I6)
+          W3(IELEM) = W3(IELEM)
+     &                  + XA(IELEM,2)  * Y(I1)
+     &                  + XA(IELEM,6)  * Y(I2)
+     &                  + XA(IELEM,10) * Y(I4)
+     &                  + XA(IELEM,11) * Y(I5)
+     &                  + XA(IELEM,12) * Y(I6)
 !
-           W4(IELEM) = W4(IELEM)
-     &                   + XA(IELEM,3)  * Y(I1)
-     &                   + XA(IELEM,7)  * Y(I2)
-     &                   + XA(IELEM,10) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I5)
-     &                   + XA(IELEM,14) * Y(I6)
+          W4(IELEM) = W4(IELEM)
+     &                  + XA(IELEM,3)  * Y(I1)
+     &                  + XA(IELEM,7)  * Y(I2)
+     &                  + XA(IELEM,10) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I5)
+     &                  + XA(IELEM,14) * Y(I6)
 !
-           W5(IELEM) = W5(IELEM)
-     &                   + XA(IELEM,4)  * Y(I1)
-     &                   + XA(IELEM,8)  * Y(I2)
-     &                   + XA(IELEM,11) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I6)
+          W5(IELEM) = W5(IELEM)
+     &                  + XA(IELEM,4)  * Y(I1)
+     &                  + XA(IELEM,8)  * Y(I2)
+     &                  + XA(IELEM,11) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I6)
 !
-           W6(IELEM) = W6(IELEM)
-     &                   + XA(IELEM,5)  * Y(I1)
-     &                   + XA(IELEM,9)  * Y(I2)
-     &                   + XA(IELEM,12) * Y(I3)
-     &                   + XA(IELEM,14) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I5)
+          W6(IELEM) = W6(IELEM)
+     &                  + XA(IELEM,5)  * Y(I1)
+     &                  + XA(IELEM,9)  * Y(I2)
+     &                  + XA(IELEM,12) * Y(I3)
+     &                  + XA(IELEM,14) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) = W1(IELEM)
-     &                   + XA(IELEM, 1) * Y(I2)
-     &                   + XA(IELEM, 2) * Y(I3)
-     &                   + XA(IELEM, 3) * Y(I4)
-     &                   + XA(IELEM, 4) * Y(I5)
-     &                   + XA(IELEM, 5) * Y(I6)
+          W1(IELEM) = W1(IELEM)
+     &                  + XA(IELEM, 1) * Y(I2)
+     &                  + XA(IELEM, 2) * Y(I3)
+     &                  + XA(IELEM, 3) * Y(I4)
+     &                  + XA(IELEM, 4) * Y(I5)
+     &                  + XA(IELEM, 5) * Y(I6)
 !
-           W2(IELEM) = W2(IELEM)
-     &                   + XA(IELEM,16) * Y(I1)
-     &                   + XA(IELEM, 6) * Y(I3)
-     &                   + XA(IELEM, 7) * Y(I4)
-     &                   + XA(IELEM, 8) * Y(I5)
-     &                   + XA(IELEM, 9) * Y(I6)
+          W2(IELEM) = W2(IELEM)
+     &                  + XA(IELEM,16) * Y(I1)
+     &                  + XA(IELEM, 6) * Y(I3)
+     &                  + XA(IELEM, 7) * Y(I4)
+     &                  + XA(IELEM, 8) * Y(I5)
+     &                  + XA(IELEM, 9) * Y(I6)
 !
-           W3(IELEM) = W3(IELEM)
-     &                   + XA(IELEM,17) * Y(I1)
-     &                   + XA(IELEM,21) * Y(I2)
-     &                   + XA(IELEM,10) * Y(I4)
-     &                   + XA(IELEM,11) * Y(I5)
-     &                   + XA(IELEM,12) * Y(I6)
+          W3(IELEM) = W3(IELEM)
+     &                  + XA(IELEM,17) * Y(I1)
+     &                  + XA(IELEM,21) * Y(I2)
+     &                  + XA(IELEM,10) * Y(I4)
+     &                  + XA(IELEM,11) * Y(I5)
+     &                  + XA(IELEM,12) * Y(I6)
 !
-           W4(IELEM) = W4(IELEM)
-     &                   + XA(IELEM,18) * Y(I1)
-     &                   + XA(IELEM,22) * Y(I2)
-     &                   + XA(IELEM,25) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I5)
-     &                   + XA(IELEM,14) * Y(I6)
+          W4(IELEM) = W4(IELEM)
+     &                  + XA(IELEM,18) * Y(I1)
+     &                  + XA(IELEM,22) * Y(I2)
+     &                  + XA(IELEM,25) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I5)
+     &                  + XA(IELEM,14) * Y(I6)
 !
-           W5(IELEM) = W5(IELEM)
-     &                   + XA(IELEM,19) * Y(I1)
-     &                   + XA(IELEM,23) * Y(I2)
-     &                   + XA(IELEM,26) * Y(I3)
-     &                   + XA(IELEM,28) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I6)
+          W5(IELEM) = W5(IELEM)
+     &                  + XA(IELEM,19) * Y(I1)
+     &                  + XA(IELEM,23) * Y(I2)
+     &                  + XA(IELEM,26) * Y(I3)
+     &                  + XA(IELEM,28) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I6)
 !
-           W6(IELEM) = W6(IELEM)
-     &                   + XA(IELEM,20) * Y(I1)
-     &                   + XA(IELEM,24) * Y(I2)
-     &                   + XA(IELEM,27) * Y(I3)
-     &                   + XA(IELEM,29) * Y(I4)
-     &                   + XA(IELEM,30) * Y(I5)
+          W6(IELEM) = W6(IELEM)
+     &                  + XA(IELEM,20) * Y(I1)
+     &                  + XA(IELEM,24) * Y(I2)
+     &                  + XA(IELEM,27) * Y(I3)
+     &                  + XA(IELEM,29) * Y(I4)
+     &                  + XA(IELEM,30) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -550,137 +550,137 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) = W1(IELEM)
-     &                   - XA(IELEM,1) * Y(I2)
-     &                   - XA(IELEM,2) * Y(I3)
-     &                   - XA(IELEM,3) * Y(I4)
-     &                   - XA(IELEM,4) * Y(I5)
-     &                   - XA(IELEM,5) * Y(I6)
+          W1(IELEM) = W1(IELEM)
+     &                  - XA(IELEM,1) * Y(I2)
+     &                  - XA(IELEM,2) * Y(I3)
+     &                  - XA(IELEM,3) * Y(I4)
+     &                  - XA(IELEM,4) * Y(I5)
+     &                  - XA(IELEM,5) * Y(I6)
 !
-           W2(IELEM) = W2(IELEM)
-     &                   - XA(IELEM,1) * Y(I1)
-     &                   - XA(IELEM,6) * Y(I3)
-     &                   - XA(IELEM,7) * Y(I4)
-     &                   - XA(IELEM,8) * Y(I5)
-     &                   - XA(IELEM,9) * Y(I6)
+          W2(IELEM) = W2(IELEM)
+     &                  - XA(IELEM,1) * Y(I1)
+     &                  - XA(IELEM,6) * Y(I3)
+     &                  - XA(IELEM,7) * Y(I4)
+     &                  - XA(IELEM,8) * Y(I5)
+     &                  - XA(IELEM,9) * Y(I6)
 !
-           W3(IELEM) = W3(IELEM)
-     &                   - XA(IELEM,2)  * Y(I1)
-     &                   - XA(IELEM,6)  * Y(I2)
-     &                   - XA(IELEM,10) * Y(I4)
-     &                   - XA(IELEM,11) * Y(I5)
-     &                   - XA(IELEM,12) * Y(I6)
+          W3(IELEM) = W3(IELEM)
+     &                  - XA(IELEM,2)  * Y(I1)
+     &                  - XA(IELEM,6)  * Y(I2)
+     &                  - XA(IELEM,10) * Y(I4)
+     &                  - XA(IELEM,11) * Y(I5)
+     &                  - XA(IELEM,12) * Y(I6)
 !
-           W4(IELEM) = W4(IELEM)
-     &                   - XA(IELEM,3)  * Y(I1)
-     &                   - XA(IELEM,7)  * Y(I2)
-     &                   - XA(IELEM,10) * Y(I3)
-     &                   - XA(IELEM,13) * Y(I5)
-     &                   - XA(IELEM,14) * Y(I6)
+          W4(IELEM) = W4(IELEM)
+     &                  - XA(IELEM,3)  * Y(I1)
+     &                  - XA(IELEM,7)  * Y(I2)
+     &                  - XA(IELEM,10) * Y(I3)
+     &                  - XA(IELEM,13) * Y(I5)
+     &                  - XA(IELEM,14) * Y(I6)
 !
-           W5(IELEM) = W5(IELEM)
-     &                   - XA(IELEM,4)  * Y(I1)
-     &                   - XA(IELEM,8)  * Y(I2)
-     &                   - XA(IELEM,11) * Y(I3)
-     &                   - XA(IELEM,13) * Y(I4)
-     &                   - XA(IELEM,15) * Y(I6)
+          W5(IELEM) = W5(IELEM)
+     &                  - XA(IELEM,4)  * Y(I1)
+     &                  - XA(IELEM,8)  * Y(I2)
+     &                  - XA(IELEM,11) * Y(I3)
+     &                  - XA(IELEM,13) * Y(I4)
+     &                  - XA(IELEM,15) * Y(I6)
 !
-           W6(IELEM) = W6(IELEM)
-     &                   - XA(IELEM,5)  * Y(I1)
-     &                   - XA(IELEM,9)  * Y(I2)
-     &                   - XA(IELEM,12) * Y(I3)
-     &                   - XA(IELEM,14) * Y(I4)
-     &                   - XA(IELEM,15) * Y(I5)
+          W6(IELEM) = W6(IELEM)
+     &                  - XA(IELEM,5)  * Y(I1)
+     &                  - XA(IELEM,9)  * Y(I2)
+     &                  - XA(IELEM,12) * Y(I3)
+     &                  - XA(IELEM,14) * Y(I4)
+     &                  - XA(IELEM,15) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) = W1(IELEM)
-     &                   - XA(IELEM, 1) * Y(I2)
-     &                   - XA(IELEM, 2) * Y(I3)
-     &                   - XA(IELEM, 3) * Y(I4)
-     &                   - XA(IELEM, 4) * Y(I5)
-     &                   - XA(IELEM, 5) * Y(I6)
+          W1(IELEM) = W1(IELEM)
+     &                  - XA(IELEM, 1) * Y(I2)
+     &                  - XA(IELEM, 2) * Y(I3)
+     &                  - XA(IELEM, 3) * Y(I4)
+     &                  - XA(IELEM, 4) * Y(I5)
+     &                  - XA(IELEM, 5) * Y(I6)
 !
-           W2(IELEM) = W2(IELEM)
-     &                   - XA(IELEM,16) * Y(I1)
-     &                   - XA(IELEM, 6) * Y(I3)
-     &                   - XA(IELEM, 7) * Y(I4)
-     &                   - XA(IELEM, 8) * Y(I5)
-     &                   - XA(IELEM, 9) * Y(I6)
+          W2(IELEM) = W2(IELEM)
+     &                  - XA(IELEM,16) * Y(I1)
+     &                  - XA(IELEM, 6) * Y(I3)
+     &                  - XA(IELEM, 7) * Y(I4)
+     &                  - XA(IELEM, 8) * Y(I5)
+     &                  - XA(IELEM, 9) * Y(I6)
 !
-           W3(IELEM) = W3(IELEM)
-     &                   - XA(IELEM,17) * Y(I1)
-     &                   - XA(IELEM,21) * Y(I2)
-     &                   - XA(IELEM,10) * Y(I4)
-     &                   - XA(IELEM,11) * Y(I5)
-     &                   - XA(IELEM,12) * Y(I6)
+          W3(IELEM) = W3(IELEM)
+     &                  - XA(IELEM,17) * Y(I1)
+     &                  - XA(IELEM,21) * Y(I2)
+     &                  - XA(IELEM,10) * Y(I4)
+     &                  - XA(IELEM,11) * Y(I5)
+     &                  - XA(IELEM,12) * Y(I6)
 !
-           W4(IELEM) = W4(IELEM)
-     &                   - XA(IELEM,18) * Y(I1)
-     &                   - XA(IELEM,22) * Y(I2)
-     &                   - XA(IELEM,25) * Y(I3)
-     &                   - XA(IELEM,13) * Y(I5)
-     &                   - XA(IELEM,14) * Y(I6)
+          W4(IELEM) = W4(IELEM)
+     &                  - XA(IELEM,18) * Y(I1)
+     &                  - XA(IELEM,22) * Y(I2)
+     &                  - XA(IELEM,25) * Y(I3)
+     &                  - XA(IELEM,13) * Y(I5)
+     &                  - XA(IELEM,14) * Y(I6)
 !
-           W5(IELEM) = W5(IELEM)
-     &                   - XA(IELEM,19) * Y(I1)
-     &                   - XA(IELEM,23) * Y(I2)
-     &                   - XA(IELEM,26) * Y(I3)
-     &                   - XA(IELEM,28) * Y(I4)
-     &                   - XA(IELEM,15) * Y(I6)
+          W5(IELEM) = W5(IELEM)
+     &                  - XA(IELEM,19) * Y(I1)
+     &                  - XA(IELEM,23) * Y(I2)
+     &                  - XA(IELEM,26) * Y(I3)
+     &                  - XA(IELEM,28) * Y(I4)
+     &                  - XA(IELEM,15) * Y(I6)
 !
-           W6(IELEM) = W6(IELEM)
-     &                   - XA(IELEM,20) * Y(I1)
-     &                   - XA(IELEM,24) * Y(I2)
-     &                   - XA(IELEM,27) * Y(I3)
-     &                   - XA(IELEM,29) * Y(I4)
-     &                   - XA(IELEM,30) * Y(I5)
+          W6(IELEM) = W6(IELEM)
+     &                  - XA(IELEM,20) * Y(I1)
+     &                  - XA(IELEM,24) * Y(I2)
+     &                  - XA(IELEM,27) * Y(I3)
+     &                  - XA(IELEM,29) * Y(I4)
+     &                  - XA(IELEM,30) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -688,137 +688,137 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) = W1(IELEM) + C * (
-     &                   + XA(IELEM,1) * Y(I2)
-     &                   + XA(IELEM,2) * Y(I3)
-     &                   + XA(IELEM,3) * Y(I4)
-     &                   + XA(IELEM,4) * Y(I5)
-     &                   + XA(IELEM,5) * Y(I6)  )
+          W1(IELEM) = W1(IELEM) + C * (
+     &                  + XA(IELEM,1) * Y(I2)
+     &                  + XA(IELEM,2) * Y(I3)
+     &                  + XA(IELEM,3) * Y(I4)
+     &                  + XA(IELEM,4) * Y(I5)
+     &                  + XA(IELEM,5) * Y(I6)  )
 !
-           W2(IELEM) = W2(IELEM) + C * (
-     &                   + XA(IELEM,1) * Y(I1)
-     &                   + XA(IELEM,6) * Y(I3)
-     &                   + XA(IELEM,7) * Y(I4)
-     &                   + XA(IELEM,8) * Y(I5)
-     &                   + XA(IELEM,9) * Y(I6)  )
+          W2(IELEM) = W2(IELEM) + C * (
+     &                  + XA(IELEM,1) * Y(I1)
+     &                  + XA(IELEM,6) * Y(I3)
+     &                  + XA(IELEM,7) * Y(I4)
+     &                  + XA(IELEM,8) * Y(I5)
+     &                  + XA(IELEM,9) * Y(I6)  )
 !
-           W3(IELEM) = W3(IELEM) + C * (
-     &                   + XA(IELEM,2)  * Y(I1)
-     &                   + XA(IELEM,6)  * Y(I2)
-     &                   + XA(IELEM,10) * Y(I4)
-     &                   + XA(IELEM,11) * Y(I5)
-     &                   + XA(IELEM,12)*  Y(I6) )
+          W3(IELEM) = W3(IELEM) + C * (
+     &                  + XA(IELEM,2)  * Y(I1)
+     &                  + XA(IELEM,6)  * Y(I2)
+     &                  + XA(IELEM,10) * Y(I4)
+     &                  + XA(IELEM,11) * Y(I5)
+     &                  + XA(IELEM,12)*  Y(I6) )
 !
-           W4(IELEM) = W4(IELEM) + C * (
-     &                   + XA(IELEM,3)  * Y(I1)
-     &                   + XA(IELEM,7)  * Y(I2)
-     &                   + XA(IELEM,10) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I5)
-     &                   + XA(IELEM,14) * Y(I6) )
+          W4(IELEM) = W4(IELEM) + C * (
+     &                  + XA(IELEM,3)  * Y(I1)
+     &                  + XA(IELEM,7)  * Y(I2)
+     &                  + XA(IELEM,10) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I5)
+     &                  + XA(IELEM,14) * Y(I6) )
 !
-           W5(IELEM) = W5(IELEM) + C * (
-     &                   + XA(IELEM,4)  * Y(I1)
-     &                   + XA(IELEM,8)  * Y(I2)
-     &                   + XA(IELEM,11) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I6) )
+          W5(IELEM) = W5(IELEM) + C * (
+     &                  + XA(IELEM,4)  * Y(I1)
+     &                  + XA(IELEM,8)  * Y(I2)
+     &                  + XA(IELEM,11) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I6) )
 !
-           W6(IELEM) = W6(IELEM) + C * (
-     &                   + XA(IELEM,5)  * Y(I1)
-     &                   + XA(IELEM,9)  * Y(I2)
-     &                   + XA(IELEM,12) * Y(I3)
-     &                   + XA(IELEM,14) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I5) )
+          W6(IELEM) = W6(IELEM) + C * (
+     &                  + XA(IELEM,5)  * Y(I1)
+     &                  + XA(IELEM,9)  * Y(I2)
+     &                  + XA(IELEM,12) * Y(I3)
+     &                  + XA(IELEM,14) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I5) )
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) = W1(IELEM) + C * (
-     &                   + XA(IELEM, 1) * Y(I2)
-     &                   + XA(IELEM, 2) * Y(I3)
-     &                   + XA(IELEM, 3) * Y(I4)
-     &                   + XA(IELEM, 4) * Y(I5)
-     &                   + XA(IELEM, 5) * Y(I6) )
+          W1(IELEM) = W1(IELEM) + C * (
+     &                  + XA(IELEM, 1) * Y(I2)
+     &                  + XA(IELEM, 2) * Y(I3)
+     &                  + XA(IELEM, 3) * Y(I4)
+     &                  + XA(IELEM, 4) * Y(I5)
+     &                  + XA(IELEM, 5) * Y(I6) )
 !
-           W2(IELEM) = W2(IELEM) + C * (
-     &                   + XA(IELEM,16) * Y(I1)
-     &                   + XA(IELEM, 6) * Y(I3)
-     &                   + XA(IELEM, 7) * Y(I4)
-     &                   + XA(IELEM, 8) * Y(I5)
-     &                   + XA(IELEM, 9) * Y(I6) )
+          W2(IELEM) = W2(IELEM) + C * (
+     &                  + XA(IELEM,16) * Y(I1)
+     &                  + XA(IELEM, 6) * Y(I3)
+     &                  + XA(IELEM, 7) * Y(I4)
+     &                  + XA(IELEM, 8) * Y(I5)
+     &                  + XA(IELEM, 9) * Y(I6) )
 !
-           W3(IELEM) = W3(IELEM) + C * (
-     &                   + XA(IELEM,17) * Y(I1)
-     &                   + XA(IELEM,21) * Y(I2)
-     &                   + XA(IELEM,10) * Y(I4)
-     &                   + XA(IELEM,11) * Y(I5)
-     &                   + XA(IELEM,12) * Y(I6) )
+          W3(IELEM) = W3(IELEM) + C * (
+     &                  + XA(IELEM,17) * Y(I1)
+     &                  + XA(IELEM,21) * Y(I2)
+     &                  + XA(IELEM,10) * Y(I4)
+     &                  + XA(IELEM,11) * Y(I5)
+     &                  + XA(IELEM,12) * Y(I6) )
 !
-           W4(IELEM) = W4(IELEM) + C * (
-     &                   + XA(IELEM,18) * Y(I1)
-     &                   + XA(IELEM,22) * Y(I2)
-     &                   + XA(IELEM,25) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I5)
-     &                   + XA(IELEM,14) * Y(I6) )
+          W4(IELEM) = W4(IELEM) + C * (
+     &                  + XA(IELEM,18) * Y(I1)
+     &                  + XA(IELEM,22) * Y(I2)
+     &                  + XA(IELEM,25) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I5)
+     &                  + XA(IELEM,14) * Y(I6) )
 !
-           W5(IELEM) = W5(IELEM) + C * (
-     &                   + XA(IELEM,19) * Y(I1)
-     &                   + XA(IELEM,23) * Y(I2)
-     &                   + XA(IELEM,26) * Y(I3)
-     &                   + XA(IELEM,28) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I6) )
+          W5(IELEM) = W5(IELEM) + C * (
+     &                  + XA(IELEM,19) * Y(I1)
+     &                  + XA(IELEM,23) * Y(I2)
+     &                  + XA(IELEM,26) * Y(I3)
+     &                  + XA(IELEM,28) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I6) )
 !
-           W6(IELEM) = W6(IELEM) + C * (
-     &                   + XA(IELEM,20) * Y(I1)
-     &                   + XA(IELEM,24) * Y(I2)
-     &                   + XA(IELEM,27) * Y(I3)
-     &                   + XA(IELEM,29) * Y(I4)
-     &                   + XA(IELEM,30) * Y(I5) )
+          W6(IELEM) = W6(IELEM) + C * (
+     &                  + XA(IELEM,20) * Y(I1)
+     &                  + XA(IELEM,24) * Y(I2)
+     &                  + XA(IELEM,27) * Y(I3)
+     &                  + XA(IELEM,29) * Y(I4)
+     &                  + XA(IELEM,30) * Y(I5) )
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X+CYZ ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X+CY  ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X+CYZ ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X+CY  ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -826,148 +826,148 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) =
-     &                   + XA(IELEM,1) * Y(I2)
-     &                   + XA(IELEM,2) * Y(I3)
-     &                   + XA(IELEM,3) * Y(I4)
-     &                   + XA(IELEM,4) * Y(I5)
-     &                   + XA(IELEM,5) * Y(I6)
+          W1(IELEM) =
+     &                  + XA(IELEM,1) * Y(I2)
+     &                  + XA(IELEM,2) * Y(I3)
+     &                  + XA(IELEM,3) * Y(I4)
+     &                  + XA(IELEM,4) * Y(I5)
+     &                  + XA(IELEM,5) * Y(I6)
 !
-           W2(IELEM) =
-     &                   + XA(IELEM,1) * Y(I1)
-     &                   + XA(IELEM,6) * Y(I3)
-     &                   + XA(IELEM,7) * Y(I4)
-     &                   + XA(IELEM,8) * Y(I5)
-     &                   + XA(IELEM,9) * Y(I6)
+          W2(IELEM) =
+     &                  + XA(IELEM,1) * Y(I1)
+     &                  + XA(IELEM,6) * Y(I3)
+     &                  + XA(IELEM,7) * Y(I4)
+     &                  + XA(IELEM,8) * Y(I5)
+     &                  + XA(IELEM,9) * Y(I6)
 !
-           W3(IELEM) =
-     &                   + XA(IELEM,2)  * Y(I1)
-     &                   + XA(IELEM,6)  * Y(I2)
-     &                   + XA(IELEM,10) * Y(I4)
-     &                   + XA(IELEM,11) * Y(I5)
-     &                   + XA(IELEM,12) * Y(I6)
+          W3(IELEM) =
+     &                  + XA(IELEM,2)  * Y(I1)
+     &                  + XA(IELEM,6)  * Y(I2)
+     &                  + XA(IELEM,10) * Y(I4)
+     &                  + XA(IELEM,11) * Y(I5)
+     &                  + XA(IELEM,12) * Y(I6)
 !
-           W4(IELEM) =
-     &                   + XA(IELEM,3)  * Y(I1)
-     &                   + XA(IELEM,7)  * Y(I2)
-     &                   + XA(IELEM,10) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I5)
-     &                   + XA(IELEM,14) * Y(I6)
+          W4(IELEM) =
+     &                  + XA(IELEM,3)  * Y(I1)
+     &                  + XA(IELEM,7)  * Y(I2)
+     &                  + XA(IELEM,10) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I5)
+     &                  + XA(IELEM,14) * Y(I6)
 !
-           W5(IELEM) =
-     &                   + XA(IELEM,4)  * Y(I1)
-     &                   + XA(IELEM,8)  * Y(I2)
-     &                   + XA(IELEM,11) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I6)
+          W5(IELEM) =
+     &                  + XA(IELEM,4)  * Y(I1)
+     &                  + XA(IELEM,8)  * Y(I2)
+     &                  + XA(IELEM,11) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I6)
 !
-           W6(IELEM) =
-     &                   + XA(IELEM,5)  * Y(I1)
-     &                   + XA(IELEM,9)  * Y(I2)
-     &                   + XA(IELEM,12) * Y(I3)
-     &                   + XA(IELEM,14) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I5)
+          W6(IELEM) =
+     &                  + XA(IELEM,5)  * Y(I1)
+     &                  + XA(IELEM,9)  * Y(I2)
+     &                  + XA(IELEM,12) * Y(I3)
+     &                  + XA(IELEM,14) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) =
-     &                   + XA(IELEM,16) * Y(I2)
-     &                   + XA(IELEM,17) * Y(I3)
-     &                   + XA(IELEM,18) * Y(I4)
-     &                   + XA(IELEM,19) * Y(I5)
-     &                   + XA(IELEM,20) * Y(I6)
+          W1(IELEM) =
+     &                  + XA(IELEM,16) * Y(I2)
+     &                  + XA(IELEM,17) * Y(I3)
+     &                  + XA(IELEM,18) * Y(I4)
+     &                  + XA(IELEM,19) * Y(I5)
+     &                  + XA(IELEM,20) * Y(I6)
 !
-           W2(IELEM) =
-     &                   + XA(IELEM, 1) * Y(I1)
-     &                   + XA(IELEM,21) * Y(I3)
-     &                   + XA(IELEM,22) * Y(I4)
-     &                   + XA(IELEM,23) * Y(I5)
-     &                   + XA(IELEM,24) * Y(I6)
+          W2(IELEM) =
+     &                  + XA(IELEM, 1) * Y(I1)
+     &                  + XA(IELEM,21) * Y(I3)
+     &                  + XA(IELEM,22) * Y(I4)
+     &                  + XA(IELEM,23) * Y(I5)
+     &                  + XA(IELEM,24) * Y(I6)
 !
-           W3(IELEM) =
-     &                   + XA(IELEM, 2) * Y(I1)
-     &                   + XA(IELEM, 6) * Y(I2)
-     &                   + XA(IELEM,25) * Y(I4)
-     &                   + XA(IELEM,26) * Y(I5)
-     &                   + XA(IELEM,27) * Y(I6)
+          W3(IELEM) =
+     &                  + XA(IELEM, 2) * Y(I1)
+     &                  + XA(IELEM, 6) * Y(I2)
+     &                  + XA(IELEM,25) * Y(I4)
+     &                  + XA(IELEM,26) * Y(I5)
+     &                  + XA(IELEM,27) * Y(I6)
 !
-           W4(IELEM) =
-     &                   + XA(IELEM, 3) * Y(I1)
-     &                   + XA(IELEM, 7) * Y(I2)
-     &                   + XA(IELEM,10) * Y(I3)
-     &                   + XA(IELEM,28) * Y(I5)
-     &                   + XA(IELEM,29) * Y(I6)
+          W4(IELEM) =
+     &                  + XA(IELEM, 3) * Y(I1)
+     &                  + XA(IELEM, 7) * Y(I2)
+     &                  + XA(IELEM,10) * Y(I3)
+     &                  + XA(IELEM,28) * Y(I5)
+     &                  + XA(IELEM,29) * Y(I6)
 !
-           W5(IELEM) =
-     &                   + XA(IELEM, 4) * Y(I1)
-     &                   + XA(IELEM, 8) * Y(I2)
-     &                   + XA(IELEM,11) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I4)
-     &                   + XA(IELEM,30) * Y(I6)
+          W5(IELEM) =
+     &                  + XA(IELEM, 4) * Y(I1)
+     &                  + XA(IELEM, 8) * Y(I2)
+     &                  + XA(IELEM,11) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I4)
+     &                  + XA(IELEM,30) * Y(I6)
 !
-           W6(IELEM) =
-     &                   + XA(IELEM, 5) * Y(I1)
-     &                   + XA(IELEM, 9) * Y(I2)
-     &                   + XA(IELEM,12) * Y(I3)
-     &                   + XA(IELEM,14) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I5)
+          W6(IELEM) =
+     &                  + XA(IELEM, 5) * Y(I1)
+     &                  + XA(IELEM, 9) * Y(I2)
+     &                  + XA(IELEM,12) * Y(I3)
+     &                  + XA(IELEM,14) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
-           CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W4 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W5 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W6 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W4 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W5 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W6 , Y , Z , 0.D0 , NELEM )
 !
-         ELSE
+        ELSE
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -975,148 +975,148 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) =
-     &                   - XA(IELEM,1) * Y(I2)
-     &                   - XA(IELEM,2) * Y(I3)
-     &                   - XA(IELEM,3) * Y(I4)
-     &                   - XA(IELEM,4) * Y(I5)
-     &                   - XA(IELEM,5) * Y(I6)
+          W1(IELEM) =
+     &                  - XA(IELEM,1) * Y(I2)
+     &                  - XA(IELEM,2) * Y(I3)
+     &                  - XA(IELEM,3) * Y(I4)
+     &                  - XA(IELEM,4) * Y(I5)
+     &                  - XA(IELEM,5) * Y(I6)
 !
-           W2(IELEM) =
-     &                   - XA(IELEM,1) * Y(I1)
-     &                   - XA(IELEM,6) * Y(I3)
-     &                   - XA(IELEM,7) * Y(I4)
-     &                   - XA(IELEM,8) * Y(I5)
-     &                   - XA(IELEM,9) * Y(I6)
+          W2(IELEM) =
+     &                  - XA(IELEM,1) * Y(I1)
+     &                  - XA(IELEM,6) * Y(I3)
+     &                  - XA(IELEM,7) * Y(I4)
+     &                  - XA(IELEM,8) * Y(I5)
+     &                  - XA(IELEM,9) * Y(I6)
 !
-           W3(IELEM) =
-     &                   - XA(IELEM,2)  * Y(I1)
-     &                   - XA(IELEM,6)  * Y(I2)
-     &                   - XA(IELEM,10) * Y(I4)
-     &                   - XA(IELEM,11) * Y(I5)
-     &                   - XA(IELEM,12) * Y(I6)
+          W3(IELEM) =
+     &                  - XA(IELEM,2)  * Y(I1)
+     &                  - XA(IELEM,6)  * Y(I2)
+     &                  - XA(IELEM,10) * Y(I4)
+     &                  - XA(IELEM,11) * Y(I5)
+     &                  - XA(IELEM,12) * Y(I6)
 !
-           W4(IELEM) =
-     &                   - XA(IELEM,3)  * Y(I1)
-     &                   - XA(IELEM,7)  * Y(I2)
-     &                   - XA(IELEM,10) * Y(I3)
-     &                   - XA(IELEM,13) * Y(I5)
-     &                   - XA(IELEM,14) * Y(I6)
+          W4(IELEM) =
+     &                  - XA(IELEM,3)  * Y(I1)
+     &                  - XA(IELEM,7)  * Y(I2)
+     &                  - XA(IELEM,10) * Y(I3)
+     &                  - XA(IELEM,13) * Y(I5)
+     &                  - XA(IELEM,14) * Y(I6)
 !
-           W5(IELEM) =
-     &                   - XA(IELEM,4)  * Y(I1)
-     &                   - XA(IELEM,8)  * Y(I2)
-     &                   - XA(IELEM,11) * Y(I3)
-     &                   - XA(IELEM,13) * Y(I4)
-     &                   - XA(IELEM,15) * Y(I6)
+          W5(IELEM) =
+     &                  - XA(IELEM,4)  * Y(I1)
+     &                  - XA(IELEM,8)  * Y(I2)
+     &                  - XA(IELEM,11) * Y(I3)
+     &                  - XA(IELEM,13) * Y(I4)
+     &                  - XA(IELEM,15) * Y(I6)
 !
-           W6(IELEM) =
-     &                   - XA(IELEM,5)  * Y(I1)
-     &                   - XA(IELEM,9)  * Y(I2)
-     &                   - XA(IELEM,12) * Y(I3)
-     &                   - XA(IELEM,14) * Y(I4)
-     &                   - XA(IELEM,15) * Y(I5)
+          W6(IELEM) =
+     &                  - XA(IELEM,5)  * Y(I1)
+     &                  - XA(IELEM,9)  * Y(I2)
+     &                  - XA(IELEM,12) * Y(I3)
+     &                  - XA(IELEM,14) * Y(I4)
+     &                  - XA(IELEM,15) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) =
-     &                   - XA(IELEM,16) * Y(I2)
-     &                   - XA(IELEM,17) * Y(I3)
-     &                   - XA(IELEM,18) * Y(I4)
-     &                   - XA(IELEM,19) * Y(I5)
-     &                   - XA(IELEM,20) * Y(I6)
+          W1(IELEM) =
+     &                  - XA(IELEM,16) * Y(I2)
+     &                  - XA(IELEM,17) * Y(I3)
+     &                  - XA(IELEM,18) * Y(I4)
+     &                  - XA(IELEM,19) * Y(I5)
+     &                  - XA(IELEM,20) * Y(I6)
 !
-           W2(IELEM) =
-     &                   - XA(IELEM, 1) * Y(I1)
-     &                   - XA(IELEM,21) * Y(I3)
-     &                   - XA(IELEM,22) * Y(I4)
-     &                   - XA(IELEM,23) * Y(I5)
-     &                   - XA(IELEM,24) * Y(I6)
+          W2(IELEM) =
+     &                  - XA(IELEM, 1) * Y(I1)
+     &                  - XA(IELEM,21) * Y(I3)
+     &                  - XA(IELEM,22) * Y(I4)
+     &                  - XA(IELEM,23) * Y(I5)
+     &                  - XA(IELEM,24) * Y(I6)
 !
-           W3(IELEM) =
-     &                   - XA(IELEM, 2) * Y(I1)
-     &                   - XA(IELEM, 6) * Y(I2)
-     &                   - XA(IELEM,25) * Y(I4)
-     &                   - XA(IELEM,26) * Y(I5)
-     &                   - XA(IELEM,27) * Y(I6)
+          W3(IELEM) =
+     &                  - XA(IELEM, 2) * Y(I1)
+     &                  - XA(IELEM, 6) * Y(I2)
+     &                  - XA(IELEM,25) * Y(I4)
+     &                  - XA(IELEM,26) * Y(I5)
+     &                  - XA(IELEM,27) * Y(I6)
 !
-           W4(IELEM) =
-     &                   - XA(IELEM, 3) * Y(I1)
-     &                   - XA(IELEM, 7) * Y(I2)
-     &                   - XA(IELEM,10) * Y(I3)
-     &                   - XA(IELEM,28) * Y(I5)
-     &                   - XA(IELEM,29) * Y(I6)
+          W4(IELEM) =
+     &                  - XA(IELEM, 3) * Y(I1)
+     &                  - XA(IELEM, 7) * Y(I2)
+     &                  - XA(IELEM,10) * Y(I3)
+     &                  - XA(IELEM,28) * Y(I5)
+     &                  - XA(IELEM,29) * Y(I6)
 !
-           W5(IELEM) =
-     &                   - XA(IELEM, 4) * Y(I1)
-     &                   - XA(IELEM, 8) * Y(I2)
-     &                   - XA(IELEM,11) * Y(I3)
-     &                   - XA(IELEM,13) * Y(I4)
-     &                   - XA(IELEM,30) * Y(I6)
+          W5(IELEM) =
+     &                  - XA(IELEM, 4) * Y(I1)
+     &                  - XA(IELEM, 8) * Y(I2)
+     &                  - XA(IELEM,11) * Y(I3)
+     &                  - XA(IELEM,13) * Y(I4)
+     &                  - XA(IELEM,30) * Y(I6)
 !
-           W6(IELEM) =
-     &                   - XA(IELEM, 5) * Y(I1)
-     &                   - XA(IELEM, 9) * Y(I2)
-     &                   - XA(IELEM,12) * Y(I3)
-     &                   - XA(IELEM,14) * Y(I4)
-     &                   - XA(IELEM,15) * Y(I5)
+          W6(IELEM) =
+     &                  - XA(IELEM, 5) * Y(I1)
+     &                  - XA(IELEM, 9) * Y(I2)
+     &                  - XA(IELEM,12) * Y(I3)
+     &                  - XA(IELEM,14) * Y(I4)
+     &                  - XA(IELEM,15) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
-           CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W4 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W5 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W6 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W4 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W5 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W6 , Y , Z , 0.D0 , NELEM )
 !
-         ELSE
+        ELSE
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -1124,137 +1124,137 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) = W1(IELEM)
-     &                   + XA(IELEM,1) * Y(I2)
-     &                   + XA(IELEM,2) * Y(I3)
-     &                   + XA(IELEM,3) * Y(I4)
-     &                   + XA(IELEM,4) * Y(I5)
-     &                   + XA(IELEM,5) * Y(I6)
+          W1(IELEM) = W1(IELEM)
+     &                  + XA(IELEM,1) * Y(I2)
+     &                  + XA(IELEM,2) * Y(I3)
+     &                  + XA(IELEM,3) * Y(I4)
+     &                  + XA(IELEM,4) * Y(I5)
+     &                  + XA(IELEM,5) * Y(I6)
 !
-           W2(IELEM) = W2(IELEM)
-     &                   + XA(IELEM,1) * Y(I1)
-     &                   + XA(IELEM,6) * Y(I3)
-     &                   + XA(IELEM,7) * Y(I4)
-     &                   + XA(IELEM,8) * Y(I5)
-     &                   + XA(IELEM,9) * Y(I6)
+          W2(IELEM) = W2(IELEM)
+     &                  + XA(IELEM,1) * Y(I1)
+     &                  + XA(IELEM,6) * Y(I3)
+     &                  + XA(IELEM,7) * Y(I4)
+     &                  + XA(IELEM,8) * Y(I5)
+     &                  + XA(IELEM,9) * Y(I6)
 !
-           W3(IELEM) = W3(IELEM)
-     &                   + XA(IELEM,2)  * Y(I1)
-     &                   + XA(IELEM,6)  * Y(I2)
-     &                   + XA(IELEM,10) * Y(I4)
-     &                   + XA(IELEM,11) * Y(I5)
-     &                   + XA(IELEM,12) * Y(I6)
+          W3(IELEM) = W3(IELEM)
+     &                  + XA(IELEM,2)  * Y(I1)
+     &                  + XA(IELEM,6)  * Y(I2)
+     &                  + XA(IELEM,10) * Y(I4)
+     &                  + XA(IELEM,11) * Y(I5)
+     &                  + XA(IELEM,12) * Y(I6)
 !
-           W4(IELEM) = W4(IELEM)
-     &                   + XA(IELEM,3)  * Y(I1)
-     &                   + XA(IELEM,7)  * Y(I2)
-     &                   + XA(IELEM,10) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I5)
-     &                   + XA(IELEM,14) * Y(I6)
+          W4(IELEM) = W4(IELEM)
+     &                  + XA(IELEM,3)  * Y(I1)
+     &                  + XA(IELEM,7)  * Y(I2)
+     &                  + XA(IELEM,10) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I5)
+     &                  + XA(IELEM,14) * Y(I6)
 !
-           W5(IELEM) = W5(IELEM)
-     &                   + XA(IELEM,4)  * Y(I1)
-     &                   + XA(IELEM,8)  * Y(I2)
-     &                   + XA(IELEM,11) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I6)
+          W5(IELEM) = W5(IELEM)
+     &                  + XA(IELEM,4)  * Y(I1)
+     &                  + XA(IELEM,8)  * Y(I2)
+     &                  + XA(IELEM,11) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I6)
 !
-           W6(IELEM) = W6(IELEM)
-     &                   + XA(IELEM,5)  * Y(I1)
-     &                   + XA(IELEM,9)  * Y(I2)
-     &                   + XA(IELEM,12) * Y(I3)
-     &                   + XA(IELEM,14) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I5)
+          W6(IELEM) = W6(IELEM)
+     &                  + XA(IELEM,5)  * Y(I1)
+     &                  + XA(IELEM,9)  * Y(I2)
+     &                  + XA(IELEM,12) * Y(I3)
+     &                  + XA(IELEM,14) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I5)
 !
-         ENDDO ! IELEM 
+        ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) = W1(IELEM)
-     &                   + XA(IELEM,16) * Y(I2)
-     &                   + XA(IELEM,17) * Y(I3)
-     &                   + XA(IELEM,18) * Y(I4)
-     &                   + XA(IELEM,19) * Y(I5)
-     &                   + XA(IELEM,20) * Y(I6)
+          W1(IELEM) = W1(IELEM)
+     &                  + XA(IELEM,16) * Y(I2)
+     &                  + XA(IELEM,17) * Y(I3)
+     &                  + XA(IELEM,18) * Y(I4)
+     &                  + XA(IELEM,19) * Y(I5)
+     &                  + XA(IELEM,20) * Y(I6)
 !
-           W2(IELEM) = W2(IELEM)
-     &                   + XA(IELEM, 1) * Y(I1)
-     &                   + XA(IELEM,21) * Y(I3)
-     &                   + XA(IELEM,22) * Y(I4)
-     &                   + XA(IELEM,23) * Y(I5)
-     &                   + XA(IELEM,24) * Y(I6)
+          W2(IELEM) = W2(IELEM)
+     &                  + XA(IELEM, 1) * Y(I1)
+     &                  + XA(IELEM,21) * Y(I3)
+     &                  + XA(IELEM,22) * Y(I4)
+     &                  + XA(IELEM,23) * Y(I5)
+     &                  + XA(IELEM,24) * Y(I6)
 !
-           W3(IELEM) = W3(IELEM)
-     &                   + XA(IELEM, 2) * Y(I1)
-     &                   + XA(IELEM, 6) * Y(I2)
-     &                   + XA(IELEM,25) * Y(I4)
-     &                   + XA(IELEM,26) * Y(I5)
-     &                   + XA(IELEM,27) * Y(I6)
+          W3(IELEM) = W3(IELEM)
+     &                  + XA(IELEM, 2) * Y(I1)
+     &                  + XA(IELEM, 6) * Y(I2)
+     &                  + XA(IELEM,25) * Y(I4)
+     &                  + XA(IELEM,26) * Y(I5)
+     &                  + XA(IELEM,27) * Y(I6)
 !
-           W4(IELEM) = W4(IELEM)
-     &                   + XA(IELEM, 3) * Y(I1)
-     &                   + XA(IELEM, 7) * Y(I2)
-     &                   + XA(IELEM,10) * Y(I3)
-     &                   + XA(IELEM,28) * Y(I5)
-     &                   + XA(IELEM,29) * Y(I6)
+          W4(IELEM) = W4(IELEM)
+     &                  + XA(IELEM, 3) * Y(I1)
+     &                  + XA(IELEM, 7) * Y(I2)
+     &                  + XA(IELEM,10) * Y(I3)
+     &                  + XA(IELEM,28) * Y(I5)
+     &                  + XA(IELEM,29) * Y(I6)
 !
-           W5(IELEM) = W5(IELEM)
-     &                   + XA(IELEM, 4) * Y(I1)
-     &                   + XA(IELEM, 8) * Y(I2)
-     &                   + XA(IELEM,11) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I4)
-     &                   + XA(IELEM,30) * Y(I6)
+          W5(IELEM) = W5(IELEM)
+     &                  + XA(IELEM, 4) * Y(I1)
+     &                  + XA(IELEM, 8) * Y(I2)
+     &                  + XA(IELEM,11) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I4)
+     &                  + XA(IELEM,30) * Y(I6)
 !
-           W6(IELEM) = W6(IELEM)
-     &                   + XA(IELEM, 5) * Y(I1)
-     &                   + XA(IELEM, 9) * Y(I2)
-     &                   + XA(IELEM,12) * Y(I3)
-     &                   + XA(IELEM,14) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I5)
+          W6(IELEM) = W6(IELEM)
+     &                  + XA(IELEM, 5) * Y(I1)
+     &                  + XA(IELEM, 9) * Y(I2)
+     &                  + XA(IELEM,12) * Y(I3)
+     &                  + XA(IELEM,14) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -1262,137 +1262,137 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) = W1(IELEM)
-     &                   - XA(IELEM,1) * Y(I2)
-     &                   - XA(IELEM,2) * Y(I3)
-     &                   - XA(IELEM,3) * Y(I4)
-     &                   - XA(IELEM,4) * Y(I5)
-     &                   - XA(IELEM,5) * Y(I6)
+          W1(IELEM) = W1(IELEM)
+     &                  - XA(IELEM,1) * Y(I2)
+     &                  - XA(IELEM,2) * Y(I3)
+     &                  - XA(IELEM,3) * Y(I4)
+     &                  - XA(IELEM,4) * Y(I5)
+     &                  - XA(IELEM,5) * Y(I6)
 !
-           W2(IELEM) = W2(IELEM)
-     &                   - XA(IELEM,1) * Y(I1)
-     &                   - XA(IELEM,6) * Y(I3)
-     &                   - XA(IELEM,7) * Y(I4)
-     &                   - XA(IELEM,8) * Y(I5)
-     &                   - XA(IELEM,9) * Y(I6)
+          W2(IELEM) = W2(IELEM)
+     &                  - XA(IELEM,1) * Y(I1)
+     &                  - XA(IELEM,6) * Y(I3)
+     &                  - XA(IELEM,7) * Y(I4)
+     &                  - XA(IELEM,8) * Y(I5)
+     &                  - XA(IELEM,9) * Y(I6)
 !
-           W3(IELEM) = W3(IELEM)
-     &                   - XA(IELEM,2)  * Y(I1)
-     &                   - XA(IELEM,6)  * Y(I2)
-     &                   - XA(IELEM,10) * Y(I4)
-     &                   - XA(IELEM,11) * Y(I5)
-     &                   - XA(IELEM,12) * Y(I6)
+          W3(IELEM) = W3(IELEM)
+     &                  - XA(IELEM,2)  * Y(I1)
+     &                  - XA(IELEM,6)  * Y(I2)
+     &                  - XA(IELEM,10) * Y(I4)
+     &                  - XA(IELEM,11) * Y(I5)
+     &                  - XA(IELEM,12) * Y(I6)
 !
-           W4(IELEM) = W4(IELEM)
-     &                   - XA(IELEM,3)  * Y(I1)
-     &                   - XA(IELEM,7)  * Y(I2)
-     &                   - XA(IELEM,10) * Y(I3)
-     &                   - XA(IELEM,13) * Y(I5)
-     &                   - XA(IELEM,14) * Y(I6)
+          W4(IELEM) = W4(IELEM)
+     &                  - XA(IELEM,3)  * Y(I1)
+     &                  - XA(IELEM,7)  * Y(I2)
+     &                  - XA(IELEM,10) * Y(I3)
+     &                  - XA(IELEM,13) * Y(I5)
+     &                  - XA(IELEM,14) * Y(I6)
 !
-           W5(IELEM) = W5(IELEM)
-     &                   - XA(IELEM,4)  * Y(I1)
-     &                   - XA(IELEM,8)  * Y(I2)
-     &                   - XA(IELEM,11) * Y(I3)
-     &                   - XA(IELEM,13) * Y(I4)
-     &                   - XA(IELEM,15) * Y(I6)
+          W5(IELEM) = W5(IELEM)
+     &                  - XA(IELEM,4)  * Y(I1)
+     &                  - XA(IELEM,8)  * Y(I2)
+     &                  - XA(IELEM,11) * Y(I3)
+     &                  - XA(IELEM,13) * Y(I4)
+     &                  - XA(IELEM,15) * Y(I6)
 !
-           W6(IELEM) = W6(IELEM)
-     &                   - XA(IELEM,5)  * Y(I1)
-     &                   - XA(IELEM,9)  * Y(I2)
-     &                   - XA(IELEM,12) * Y(I3)
-     &                   - XA(IELEM,14) * Y(I4)
-     &                   - XA(IELEM,15) * Y(I5)
+          W6(IELEM) = W6(IELEM)
+     &                  - XA(IELEM,5)  * Y(I1)
+     &                  - XA(IELEM,9)  * Y(I2)
+     &                  - XA(IELEM,12) * Y(I3)
+     &                  - XA(IELEM,14) * Y(I4)
+     &                  - XA(IELEM,15) * Y(I5)
 !
-         ENDDO ! IELEM 
+        ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) = W1(IELEM)
-     &                   - XA(IELEM,16) * Y(I2)
-     &                   - XA(IELEM,17) * Y(I3)
-     &                   - XA(IELEM,18) * Y(I4)
-     &                   - XA(IELEM,19) * Y(I5)
-     &                   - XA(IELEM,20) * Y(I6)
+          W1(IELEM) = W1(IELEM)
+     &                  - XA(IELEM,16) * Y(I2)
+     &                  - XA(IELEM,17) * Y(I3)
+     &                  - XA(IELEM,18) * Y(I4)
+     &                  - XA(IELEM,19) * Y(I5)
+     &                  - XA(IELEM,20) * Y(I6)
 !
-           W2(IELEM) = W2(IELEM)
-     &                   - XA(IELEM, 1) * Y(I1)
-     &                   - XA(IELEM,21) * Y(I3)
-     &                   - XA(IELEM,22) * Y(I4)
-     &                   - XA(IELEM,23) * Y(I5)
-     &                   - XA(IELEM,24) * Y(I6)
+          W2(IELEM) = W2(IELEM)
+     &                  - XA(IELEM, 1) * Y(I1)
+     &                  - XA(IELEM,21) * Y(I3)
+     &                  - XA(IELEM,22) * Y(I4)
+     &                  - XA(IELEM,23) * Y(I5)
+     &                  - XA(IELEM,24) * Y(I6)
 !
-           W3(IELEM) = W3(IELEM)
-     &                   - XA(IELEM, 2) * Y(I1)
-     &                   - XA(IELEM, 6) * Y(I2)
-     &                   - XA(IELEM,25) * Y(I4)
-     &                   - XA(IELEM,26) * Y(I5)
-     &                   - XA(IELEM,27) * Y(I6)
+          W3(IELEM) = W3(IELEM)
+     &                  - XA(IELEM, 2) * Y(I1)
+     &                  - XA(IELEM, 6) * Y(I2)
+     &                  - XA(IELEM,25) * Y(I4)
+     &                  - XA(IELEM,26) * Y(I5)
+     &                  - XA(IELEM,27) * Y(I6)
 !
-           W4(IELEM) = W4(IELEM)
-     &                   - XA(IELEM, 3) * Y(I1)
-     &                   - XA(IELEM, 7) * Y(I2)
-     &                   - XA(IELEM,10) * Y(I3)
-     &                   - XA(IELEM,28) * Y(I5)
-     &                   - XA(IELEM,29) * Y(I6)
+          W4(IELEM) = W4(IELEM)
+     &                  - XA(IELEM, 3) * Y(I1)
+     &                  - XA(IELEM, 7) * Y(I2)
+     &                  - XA(IELEM,10) * Y(I3)
+     &                  - XA(IELEM,28) * Y(I5)
+     &                  - XA(IELEM,29) * Y(I6)
 !
-           W5(IELEM) = W5(IELEM)
-     &                   - XA(IELEM, 4) * Y(I1)
-     &                   - XA(IELEM, 8) * Y(I2)
-     &                   - XA(IELEM,11) * Y(I3)
-     &                   - XA(IELEM,13) * Y(I4)
-     &                   - XA(IELEM,30) * Y(I6)
+          W5(IELEM) = W5(IELEM)
+     &                  - XA(IELEM, 4) * Y(I1)
+     &                  - XA(IELEM, 8) * Y(I2)
+     &                  - XA(IELEM,11) * Y(I3)
+     &                  - XA(IELEM,13) * Y(I4)
+     &                  - XA(IELEM,30) * Y(I6)
 !
-           W6(IELEM) = W6(IELEM)
-     &                   - XA(IELEM, 5) * Y(I1)
-     &                   - XA(IELEM, 9) * Y(I2)
-     &                   - XA(IELEM,12) * Y(I3)
-     &                   - XA(IELEM,14) * Y(I4)
-     &                   - XA(IELEM,15) * Y(I5)
+          W6(IELEM) = W6(IELEM)
+     &                  - XA(IELEM, 5) * Y(I1)
+     &                  - XA(IELEM, 9) * Y(I2)
+     &                  - XA(IELEM,12) * Y(I3)
+     &                  - XA(IELEM,14) * Y(I4)
+     &                  - XA(IELEM,15) * Y(I5)
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -1400,137 +1400,137 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'S') THEN
+        IF(TYPEXT(1:1).EQ.'S') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) = W1(IELEM) + C * (
-     &                   + XA(IELEM,1) * Y(I2)
-     &                   + XA(IELEM,2) * Y(I3)
-     &                   + XA(IELEM,3) * Y(I4)
-     &                   + XA(IELEM,4) * Y(I5)
-     &                   + XA(IELEM,5) * Y(I6)  )
+          W1(IELEM) = W1(IELEM) + C * (
+     &                  + XA(IELEM,1) * Y(I2)
+     &                  + XA(IELEM,2) * Y(I3)
+     &                  + XA(IELEM,3) * Y(I4)
+     &                  + XA(IELEM,4) * Y(I5)
+     &                  + XA(IELEM,5) * Y(I6)  )
 !
-           W2(IELEM) = W2(IELEM) + C * (
-     &                   + XA(IELEM,1) * Y(I1)
-     &                   + XA(IELEM,6) * Y(I3)
-     &                   + XA(IELEM,7) * Y(I4)
-     &                   + XA(IELEM,8) * Y(I5)
-     &                   + XA(IELEM,9) * Y(I6)  )
+          W2(IELEM) = W2(IELEM) + C * (
+     &                  + XA(IELEM,1) * Y(I1)
+     &                  + XA(IELEM,6) * Y(I3)
+     &                  + XA(IELEM,7) * Y(I4)
+     &                  + XA(IELEM,8) * Y(I5)
+     &                  + XA(IELEM,9) * Y(I6)  )
 !
-           W3(IELEM) = W3(IELEM) + C * (
-     &                   + XA(IELEM,2)  * Y(I1)
-     &                   + XA(IELEM,6)  * Y(I2)
-     &                   + XA(IELEM,10) * Y(I4)
-     &                   + XA(IELEM,11) * Y(I5)
-     &                   + XA(IELEM,12)*  Y(I6) )
+          W3(IELEM) = W3(IELEM) + C * (
+     &                  + XA(IELEM,2)  * Y(I1)
+     &                  + XA(IELEM,6)  * Y(I2)
+     &                  + XA(IELEM,10) * Y(I4)
+     &                  + XA(IELEM,11) * Y(I5)
+     &                  + XA(IELEM,12)*  Y(I6) )
 !
-           W4(IELEM) = W4(IELEM) + C * (
-     &                   + XA(IELEM,3)  * Y(I1)
-     &                   + XA(IELEM,7)  * Y(I2)
-     &                   + XA(IELEM,10) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I5)
-     &                   + XA(IELEM,14) * Y(I6) )
+          W4(IELEM) = W4(IELEM) + C * (
+     &                  + XA(IELEM,3)  * Y(I1)
+     &                  + XA(IELEM,7)  * Y(I2)
+     &                  + XA(IELEM,10) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I5)
+     &                  + XA(IELEM,14) * Y(I6) )
 !
-           W5(IELEM) = W5(IELEM) + C * (
-     &                   + XA(IELEM,4)  * Y(I1)
-     &                   + XA(IELEM,8)  * Y(I2)
-     &                   + XA(IELEM,11) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I6) )
+          W5(IELEM) = W5(IELEM) + C * (
+     &                  + XA(IELEM,4)  * Y(I1)
+     &                  + XA(IELEM,8)  * Y(I2)
+     &                  + XA(IELEM,11) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I6) )
 !
-           W6(IELEM) = W6(IELEM) + C * (
-     &                   + XA(IELEM,5)  * Y(I1)
-     &                   + XA(IELEM,9)  * Y(I2)
-     &                   + XA(IELEM,12) * Y(I3)
-     &                   + XA(IELEM,14) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I5) )
+          W6(IELEM) = W6(IELEM) + C * (
+     &                  + XA(IELEM,5)  * Y(I1)
+     &                  + XA(IELEM,9)  * Y(I2)
+     &                  + XA(IELEM,12) * Y(I3)
+     &                  + XA(IELEM,14) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I5) )
 !
-         ENDDO ! IELEM 
+        ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
-           I5 = IKLE5(IELEM)
-           I6 = IKLE6(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+          I5 = IKLE5(IELEM)
+          I6 = IKLE6(IELEM)
 !
-           W1(IELEM) = W1(IELEM) + C * (
-     &                   + XA(IELEM,16) * Y(I2)
-     &                   + XA(IELEM,17) * Y(I3)
-     &                   + XA(IELEM,18) * Y(I4)
-     &                   + XA(IELEM,19) * Y(I5)
-     &                   + XA(IELEM,20) * Y(I6) )
+          W1(IELEM) = W1(IELEM) + C * (
+     &                  + XA(IELEM,16) * Y(I2)
+     &                  + XA(IELEM,17) * Y(I3)
+     &                  + XA(IELEM,18) * Y(I4)
+     &                  + XA(IELEM,19) * Y(I5)
+     &                  + XA(IELEM,20) * Y(I6) )
 !
-           W2(IELEM) = W2(IELEM) + C * (
-     &                   + XA(IELEM, 1) * Y(I1)
-     &                   + XA(IELEM,21) * Y(I3)
-     &                   + XA(IELEM,22) * Y(I4)
-     &                   + XA(IELEM,23) * Y(I5)
-     &                   + XA(IELEM,24) * Y(I6) )
+          W2(IELEM) = W2(IELEM) + C * (
+     &                  + XA(IELEM, 1) * Y(I1)
+     &                  + XA(IELEM,21) * Y(I3)
+     &                  + XA(IELEM,22) * Y(I4)
+     &                  + XA(IELEM,23) * Y(I5)
+     &                  + XA(IELEM,24) * Y(I6) )
 !
-           W3(IELEM) = W3(IELEM) + C * (
-     &                   + XA(IELEM, 2) * Y(I1)
-     &                   + XA(IELEM, 6) * Y(I2)
-     &                   + XA(IELEM,25) * Y(I4)
-     &                   + XA(IELEM,26) * Y(I5)
-     &                   + XA(IELEM,27) * Y(I6) )
+          W3(IELEM) = W3(IELEM) + C * (
+     &                  + XA(IELEM, 2) * Y(I1)
+     &                  + XA(IELEM, 6) * Y(I2)
+     &                  + XA(IELEM,25) * Y(I4)
+     &                  + XA(IELEM,26) * Y(I5)
+     &                  + XA(IELEM,27) * Y(I6) )
 !
-           W4(IELEM) = W4(IELEM) + C * (
-     &                   + XA(IELEM, 3) * Y(I1)
-     &                   + XA(IELEM, 7) * Y(I2)
-     &                   + XA(IELEM,10) * Y(I3)
-     &                   + XA(IELEM,28) * Y(I5)
-     &                   + XA(IELEM,29) * Y(I6) )
+          W4(IELEM) = W4(IELEM) + C * (
+     &                  + XA(IELEM, 3) * Y(I1)
+     &                  + XA(IELEM, 7) * Y(I2)
+     &                  + XA(IELEM,10) * Y(I3)
+     &                  + XA(IELEM,28) * Y(I5)
+     &                  + XA(IELEM,29) * Y(I6) )
 !
-           W5(IELEM) = W5(IELEM) + C * (
-     &                   + XA(IELEM, 4) * Y(I1)
-     &                   + XA(IELEM, 8) * Y(I2)
-     &                   + XA(IELEM,11) * Y(I3)
-     &                   + XA(IELEM,13) * Y(I4)
-     &                   + XA(IELEM,30) * Y(I6) )
+          W5(IELEM) = W5(IELEM) + C * (
+     &                  + XA(IELEM, 4) * Y(I1)
+     &                  + XA(IELEM, 8) * Y(I2)
+     &                  + XA(IELEM,11) * Y(I3)
+     &                  + XA(IELEM,13) * Y(I4)
+     &                  + XA(IELEM,30) * Y(I6) )
 !
-           W6(IELEM) = W6(IELEM) + C * (
-     &                   + XA(IELEM, 5) * Y(I1)
-     &                   + XA(IELEM, 9) * Y(I2)
-     &                   + XA(IELEM,12) * Y(I3)
-     &                   + XA(IELEM,14) * Y(I4)
-     &                   + XA(IELEM,15) * Y(I5) )
+          W6(IELEM) = W6(IELEM) + C * (
+     &                  + XA(IELEM, 5) * Y(I1)
+     &                  + XA(IELEM, 9) * Y(I2)
+     &                  + XA(IELEM,12) * Y(I3)
+     &                  + XA(IELEM,14) * Y(I4)
+     &                  + XA(IELEM,15) * Y(I5) )
 !
-           ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X+CYZ ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X+CY  ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X+CYZ ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X+CY  ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !

@@ -186,10 +186,10 @@
       !         FOR BEDLOAD ONLY    !
       ! =========================== !
       ELSEIF(ICF == 2) THEN
-         CALL BEDLOAD_EINST(TETAP,NPOIN,DENS,GRAV,DM,DSTAR,QSC)
-         DO I=1,NPOIN
-           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
-         ENDDO
+        CALL BEDLOAD_EINST(TETAP,NPOIN,DENS,GRAV,DM,DSTAR,QSC)
+        DO I=1,NPOIN
+          QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+        ENDDO
 !
       ! =================================== !
       ! IV(30) - ENGELUND-HANSEN FORMULATION!
@@ -200,11 +200,11 @@
 ! BEWARE: DIFFERENCES
 !         CALL BEDLOAD_ENGEL(TETAP,DENS,GRAV,DM,QSC)
 ! BACK TO EARLIER VERSION OF BEDLOAD_ENGEL
-         CALL BEDLOAD_ENGEL(TOB,CF,DENS,GRAV,DM,XMVE,T1,QSC)
-!        ARBITRARY DISTRIBUTION
-         DO I=1,NPOIN
-           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
-         ENDDO
+        CALL BEDLOAD_ENGEL(TOB,CF,DENS,GRAV,DM,XMVE,T1,QSC)
+!       ARBITRARY DISTRIBUTION
+        DO I=1,NPOIN
+          QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+        ENDDO
 !
       ! ======================================== !
       ! IV(3) - ENGELUND-HANSEN FORMULATION      !
@@ -212,51 +212,51 @@
       !         FOR TOTAL TRANSPORT              !
       ! ======================================== !
       ELSEIF(ICF == 3) THEN
-!        KSP IS USED INSTEAD OF CFP
-         CALL BEDLOAD_ENGEL_CC
-     &        (TETAP,CF,NPOIN,GRAV,DM,DENS,T1,QSC)
-!        ARBITRARY DISTRIBUTION
-         DO I=1,NPOIN
-           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
-         ENDDO
+!       KSP IS USED INSTEAD OF CFP
+        CALL BEDLOAD_ENGEL_CC
+     &       (TETAP,CF,NPOIN,GRAV,DM,DENS,T1,QSC)
+!       ARBITRARY DISTRIBUTION
+        DO I=1,NPOIN
+          QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+        ENDDO
 !
       ! ============================== !
       ! IV(4) - BIJKER FORMULATION     !
       !         FOR BEDLOAD + SUSPENSION !
       ! ============================== !
       ELSEIF (ICF == 4) THEN
-         CALL BEDLOAD_BIJKER
-     &    (TOBW,TOB,MU,KSP,KSR,HN,NPOIN,DM,DENS,XMVE,GRAV,
-     &     XWC,KARMAN,ZERO,T4,T7,T8,T9,QSC,QSS,BIJK,HOULE)
-         DO I=1,NPOIN
-           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
-           QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
-         ENDDO
+        CALL BEDLOAD_BIJKER
+     &   (TOBW,TOB,MU,KSP,KSR,HN,NPOIN,DM,DENS,XMVE,GRAV,
+     &    XWC,KARMAN,ZERO,T4,T7,T8,T9,QSC,QSS,BIJK,HOULE)
+        DO I=1,NPOIN
+          QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+          QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
+        ENDDO
 !
       ! ============================== !
       ! IV(5) - SOULSBY FORMULATION    !
       !         FOR BEDLOAD + SUSPENSION !
       ! ============================== !
       ELSEIF (ICF == 5) THEN
-         CALL BEDLOAD_SOULSBY
-     &        (UCMOY,HN,UW,NPOIN,DENS,GRAV,DM,DSTAR,HMIN,
-     &         D90,QSC,QSS)
-         DO I=1,NPOIN
-           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
-           QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
-         ENDDO
+        CALL BEDLOAD_SOULSBY
+     &       (UCMOY,HN,UW,NPOIN,DENS,GRAV,DM,DSTAR,HMIN,
+     &        D90,QSC,QSS)
+        DO I=1,NPOIN
+          QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+          QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
+        ENDDO
 !
       ! ================================================== !
       ! IV(6) - HUNZIKER / MEYER-PETER & MULLER FORMULATION!
       !         FOR BEDLOAD ONLY                           !
       ! ================================================== !
       ELSEIF (ICF == 6) THEN
-         CALL BEDLOAD_HUNZ_MEYER
-     &        (TOB, MU, ACLADM, UNLADM, NPOIN, DENS, XMVE, GRAV,
-     &         DM, AC, T1, T2, T3, HIDING, QSC)
-         DO I=1,NPOIN
-           QSC%R(I)=QSC%R(I)*AVA(I)
-         ENDDO
+        CALL BEDLOAD_HUNZ_MEYER
+     &       (TOB, MU, ACLADM, UNLADM, NPOIN, DENS, XMVE, GRAV,
+     &        DM, AC, T1, T2, T3, HIDING, QSC)
+        DO I=1,NPOIN
+          QSC%R(I)=QSC%R(I)*AVA(I)
+        ENDDO
 !
       ! =========================== !
       ! IV(7) - VAN RIJN FORMULATION!
@@ -264,12 +264,12 @@
       ! =========================== !
       ELSEIF (ICF == 7) THEN
 !
-         CALL BEDLOAD_VANRIJN
-!     &        (TOB,MU,NPOIN,DM,DENS,GRAV,DSTAR,AC,QSC)
-     &        (TETAP,MU,NPOIN,DM,DENS,GRAV,DSTAR,AC,QSC)
-         DO I=1,NPOIN
-           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
-         ENDDO
+        CALL BEDLOAD_VANRIJN
+!     &       (TOB,MU,NPOIN,DM,DENS,GRAV,DSTAR,AC,QSC)
+     &       (TETAP,MU,NPOIN,DM,DENS,GRAV,DSTAR,AC,QSC)
+        DO I=1,NPOIN
+          QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+        ENDDO
 !
       ! ============================== !
       ! IV(8) - BAILARD FORMULATION    !
@@ -277,14 +277,14 @@
       ! ============================== !
       ELSEIF (ICF == 8) THEN
 !
-         CALL BEDLOAD_BAILARD
-     &        (U2D,V2D,UCMOY,TOB,TOBW,THETAW,UW,FW,CF,NPOIN,
-     &         PI,XMVE,GRAV,DENS,XWC,T1,T2,T3,T4,T5,T6,T7,
-     &         T8,T9,T10,T11,QSC,QSS,HOULE)
-         DO I=1,NPOIN
-           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
-           QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
-         ENDDO
+        CALL BEDLOAD_BAILARD
+     &       (U2D,V2D,UCMOY,TOB,TOBW,THETAW,UW,FW,CF,NPOIN,
+     &        PI,XMVE,GRAV,DENS,XWC,T1,T2,T3,T4,T5,T6,T7,
+     &        T8,T9,T10,T11,QSC,QSS,HOULE)
+        DO I=1,NPOIN
+          QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+          QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
+        ENDDO
 !
       ! ======================================= !
       ! IV(9) - DIBAJNIA AND WATANABE FORMULATION!
@@ -292,26 +292,26 @@
       ! ======================================= !
       ELSEIF(ICF == 9) THEN
 !
-         CALL BEDLOAD_DIBWAT
-     &        (U2D,V2D,UCMOY, CF, TOB, TOBW, UW, TW, FW, THETAW,
-     &         NPOIN, XMVE, DENS, GRAV, DM, XWC, PI, T1, T2, T3, T4,
-     &         T5, T6, T7, T8, T9, T10, T11, QSC,HOULE)
-!        ARBITRARY DISTRIBUTION
-         DO I=1,NPOIN
-           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
-         ENDDO
+        CALL BEDLOAD_DIBWAT
+     &       (U2D,V2D,UCMOY, CF, TOB, TOBW, UW, TW, FW, THETAW,
+     &        NPOIN, XMVE, DENS, GRAV, DM, XWC, PI, T1, T2, T3, T4,
+     &        T5, T6, T7, T8, T9, T10, T11, QSC,HOULE)
+!       ARBITRARY DISTRIBUTION
+        DO I=1,NPOIN
+          QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+        ENDDO
 !
       ! ============================================ !
       ! IV(0) - USER-DEFINED FORMULATION             !
       ! ============================================ !
       ELSEIF (ICF == 0) THEN
-         CALL QSFORM
-     &        (U2D, V2D, TOB, HN, XMVE, TETAP, MU, NPOIN, DM, 
-     &        DENS, GRAV, DSTAR, AC, QSC, QSS)
-         DO I=1,NPOIN
-            QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
-            QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
-         ENDDO
+        CALL QSFORM
+     &       (U2D, V2D, TOB, HN, XMVE, TETAP, MU, NPOIN, DM, 
+     &       DENS, GRAV, DSTAR, AC, QSC, QSS)
+        DO I=1,NPOIN
+           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+           QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
+        ENDDO
       ! ================= !
       ! IV(ELSE) - ERROR  !
       ! ================= !

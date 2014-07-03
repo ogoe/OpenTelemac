@@ -99,16 +99,16 @@
 !-----------------------------------------------------------------------
 !
       IF( (DIMENS(IELM1).NE.MESH%DIM) .AND. 
-     &    (IELM1.NE.81.AND.IELM2.NE.81) ) THEN
-!        BOUNDARY MATRIX : NOT TREATED HERE
-         IF (LNG.EQ.1) WRITE(LU,100) NAME
-         IF (LNG.EQ.2) WRITE(LU,101) NAME
-         IF (LNG.EQ.1) WRITE(LU,200) IELM1,IELM2
-         IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
-         IF (LNG.EQ.1) WRITE(LU,300)
-         IF (LNG.EQ.2) WRITE(LU,301)
-         CALL PLANTE(1)
-         STOP
+     &   (IELM1.NE.81.AND.IELM2.NE.81) ) THEN
+!       BOUNDARY MATRIX : NOT TREATED HERE
+        IF (LNG.EQ.1) WRITE(LU,100) NAME
+        IF (LNG.EQ.2) WRITE(LU,101) NAME
+        IF (LNG.EQ.1) WRITE(LU,200) IELM1,IELM2
+        IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
+        IF (LNG.EQ.1) WRITE(LU,300)
+        IF (LNG.EQ.2) WRITE(LU,301)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       IF(DIMENS(IELM1).EQ.MESH%DIM) THEN
@@ -260,16 +260,16 @@
 !
       ELSE
 !
-!        IELM1 / IELM2 COMBINATION NOT IMPLEMENTED: ERROR
+!       IELM1 / IELM2 COMBINATION NOT IMPLEMENTED: ERROR
 !
-         IF (LNG.EQ.1) WRITE(LU,100) NAME
-         IF (LNG.EQ.2) WRITE(LU,101) NAME
-         IF (LNG.EQ.1) WRITE(LU,200) IELM1,IELM2
-         IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
-         IF (LNG.EQ.1) WRITE(LU,300)
-         IF (LNG.EQ.2) WRITE(LU,301)
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,100) NAME
+        IF (LNG.EQ.2) WRITE(LU,101) NAME
+        IF (LNG.EQ.1) WRITE(LU,200) IELM1,IELM2
+        IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
+        IF (LNG.EQ.1) WRITE(LU,300)
+        IF (LNG.EQ.2) WRITE(LU,301)
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

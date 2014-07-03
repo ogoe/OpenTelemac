@@ -99,80 +99,80 @@
 !
       DO IELEM=1,NELEM
 !
-         I1 = IKLE(IELEM,1)
-         I2 = IKLE(IELEM,2)
-         I3 = IKLE(IELEM,3)
-         I4 = IKLE(IELEM,4)
+        I1 = IKLE(IELEM,1)
+        I2 = IKLE(IELEM,2)
+        I3 = IKLE(IELEM,3)
+        I4 = IKLE(IELEM,4)
 !
-         X2 = X(I2)-X(I1)
-         X3 = X(I3)-X(I1)
-         X4 = X(I4)-X(I1)
+        X2 = X(I2)-X(I1)
+        X3 = X(I3)-X(I1)
+        X4 = X(I4)-X(I1)
 !
-         Y2 = Y(I2)-Y(I1)
-         Y3 = Y(I3)-Y(I1)
-         Y4 = Y(I4)-Y(I1)
+        Y2 = Y(I2)-Y(I1)
+        Y3 = Y(I3)-Y(I1)
+        Y4 = Y(I4)-Y(I1)
 !
-         F1 = F(I1)
-         F2 = F(I2)
-         F3 = F(I3)
-         F4 = F(I4)
+        F1 = F(I1)
+        F2 = F(I2)
+        F3 = F(I3)
+        F4 = F(I4)
 !
-         T(IELEM,1)=(
+        T(IELEM,1)=(
      & X2*Y4*F3-X3*Y4*F3+X4*Y3*F2-Y2*X4*F2+X2*Y4*F2+2*Y2*X3*F1
      &-2*X3*Y4*F1+Y2*X3*F2+Y2*X3*F3+2*X4*Y3*F1+2*X2*Y4*F1-2*Y2*X4*F1
      &-2*X2*Y3*F1-Y2*X4*F3-X2*Y3*F2-X2*Y3*F3+X4*Y3*F3-X3*Y4*F4
      &+X2*Y4*F4-Y2*X4*F4-X2*Y3*F4+Y2*X3*F4+X4*Y3*F4-X3*Y4*F2 )*XSUR120
 !
-         T(IELEM,2)=(
+        T(IELEM,2)=(
      & X3*Y4*F3-2*X4*Y3*F2+X3*Y4*F1-X4*Y3*F1-X4*Y3*F3+X3*Y4*F4
      &-X4*Y3*F4+2*X3*Y4*F2                        )*XSUR120
 !
-         T(IELEM,3)=(-X2*Y4+Y2*X4)*(F1+2*F3+F2+F4) *XSUR120
+        T(IELEM,3)=(-X2*Y4+Y2*X4)*(F1+2*F3+F2+F4) *XSUR120
 !
-         T(IELEM,4)=(
+        T(IELEM,4)=(
      & -Y2*X3*F1-Y2*X3*F2-Y2*X3*F3+X2*Y3*F1+X2*Y3*F2+X2*Y3*F3+
      &2*X2*Y3*F4-2*Y2*X3*F4                       )*XSUR120
 !
-         XM(IELEM,01)=(
+        XM(IELEM,01)=(
      & X2*Y4*F3-X3*Y4*F3+2*X4*Y3*F2-2*Y2*X4*F2+2*X2*Y4*F2+Y2*X3*F1
      &-X3*Y4*F1+2*Y2*X3*F2+Y2*X3*F3+X4*Y3*F1+X2*Y4*F1-Y2*X4*F1-X2*Y3
      &*F1-Y2*X4*F3-2*X2*Y3*F2-X2*Y3*F3+X4*Y3*F3
      &-X3*Y4*F4+X2*Y4*F4-Y2*X4*F4
      &-X2*Y3*F4+Y2*X3*F4+X4*Y3*F4-2*X3*Y4*F2    )*XSUR120
 !
-         XM(IELEM,02)=(
+        XM(IELEM,02)=(
      &-X3*Y4+X4*Y3+X2*Y4-Y2*X4-X2*Y3+Y2*X3)*(F1+2*F3+F2+F4)*XSUR120
 !
-         XM(IELEM,03)=(
+        XM(IELEM,03)=(
      & X2*Y4*F3-X3*Y4*F3+X4*Y3*F2-Y2*X4*F2+X2*Y4*F2+Y2*X3*F1-X3*Y4*F1
      &+Y2*X3*F2+Y2*X3*F3+X4*Y3*F1+X2*Y4*F1-Y2*X4*F1-X2*Y3*F1-Y2*X4*F3
      &-X2*Y3*F2-X2*Y3*F3+X4*Y3*F3-2*X3*Y4*F4+2*X2*Y4*F4-2*Y2*X4*F4-2
      &*X2*Y3*F4+2*Y2*X3*F4+2*X4*Y3*F4-X3*Y4*F2)*XSUR120
 !
-         XM(IELEM,04)= -(-X3*Y4+X4*Y3)*(F1+2*F3+F2+F4)*XSUR120
+        XM(IELEM,04)= -(-X3*Y4+X4*Y3)*(F1+2*F3+F2+F4)*XSUR120
 !
-         XM(IELEM,05)=( X3*Y4*F3-X4*Y3*F2+X3*Y4*F1-X4*Y3*F1-X4*Y3*F3
-     &                  +2*X3*Y4*F4-2*X4*Y3*F4+X3*Y4*F2)*XSUR120
+        XM(IELEM,05)=( X3*Y4*F3-X4*Y3*F2+X3*Y4*F1-X4*Y3*F1-X4*Y3*F3
+     &                 +2*X3*Y4*F4-2*X4*Y3*F4+X3*Y4*F2)*XSUR120
 !
-         XM(IELEM,06)=( -X2*Y4*F3+Y2*X4*F2-X2*Y4*F2-X2*Y4*F1+Y2*X4*F1
-     &                  +Y2*X4*F3-2*X2*Y4*F4+2*Y2*X4*F4)*XSUR120
+        XM(IELEM,06)=( -X2*Y4*F3+Y2*X4*F2-X2*Y4*F2-X2*Y4*F1+Y2*X4*F1
+     &                 +Y2*X4*F3-2*X2*Y4*F4+2*Y2*X4*F4)*XSUR120
 !
-         XM(IELEM,07)=( X3*Y4*F3-X4*Y3*F2+2*X3*Y4*F1-2*X4*Y3*F1
-     &                 -X4*Y3*F3+X3*Y4*F4-X4*Y3*F4+X3*Y4*F2)*XSUR120
+        XM(IELEM,07)=( X3*Y4*F3-X4*Y3*F2+2*X3*Y4*F1-2*X4*Y3*F1
+     &                -X4*Y3*F3+X3*Y4*F4-X4*Y3*F4+X3*Y4*F2)*XSUR120
 !
-         XM(IELEM,08)=( -X2*Y4*F3+Y2*X4*F2-X2*Y4*F2-2*X2*Y4*F1
-     &                  +2*Y2*X4*F1+Y2*X4*F3-X2*Y4*F4+Y2*X4*F4)*XSUR120
+        XM(IELEM,08)=( -X2*Y4*F3+Y2*X4*F2-X2*Y4*F2-2*X2*Y4*F1
+     &                 +2*Y2*X4*F1+Y2*X4*F3-X2*Y4*F4+Y2*X4*F4)*XSUR120
 !
-         XM(IELEM,09)=( -X2*Y4*F3+2*Y2*X4*F2-2*X2*Y4*F2-X2*Y4*F1
-     &                  +Y2*X4*F1+Y2*X4*F3-X2*Y4*F4+Y2*X4*F4 )*XSUR120
+        XM(IELEM,09)=( -X2*Y4*F3+2*Y2*X4*F2-2*X2*Y4*F2-X2*Y4*F1
+     &                 +Y2*X4*F1+Y2*X4*F3-X2*Y4*F4+Y2*X4*F4 )*XSUR120
 !
-         XM(IELEM,10)=( -2*Y2*X3*F1-Y2*X3*F2-Y2*X3*F3+2*X2*Y3*F1
-     &                  +X2*Y3*F2+X2*Y3*F3+X2*Y3*F4-Y2*X3*F4)*XSUR120
+        XM(IELEM,10)=( -2*Y2*X3*F1-Y2*X3*F2-Y2*X3*F3+2*X2*Y3*F1
+     &                 +X2*Y3*F2+X2*Y3*F3+X2*Y3*F4-Y2*X3*F4)*XSUR120
 !
-         XM(IELEM,11)=(-Y2*X3*F1-2*Y2*X3*F2-Y2*X3*F3+X2*Y3*F1
-     &                 +2*X2*Y3*F2+X2*Y3*F3+X2*Y3*F4-Y2*X3*F4)*XSUR120
+        XM(IELEM,11)=(-Y2*X3*F1-2*Y2*X3*F2-Y2*X3*F3+X2*Y3*F1
+     &                +2*X2*Y3*F2+X2*Y3*F3+X2*Y3*F4-Y2*X3*F4)*XSUR120
 !
-         XM(IELEM,12)= -(-X2*Y3+Y2*X3)*(F1+2*F3+F2+F4)*XSUR120
+        XM(IELEM,12)= -(-X2*Y3+Y2*X3)*(F1+2*F3+F2+F4)*XSUR120
 !
       ENDDO ! IELEM
 !

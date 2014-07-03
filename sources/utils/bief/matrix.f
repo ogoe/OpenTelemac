@@ -295,6 +295,7 @@
         ELSE
           IF(LNG.EQ.1) WRITE(LU,*) 'MATRIX : STOCKAGE INCONNU : ',M%STO
           IF(LNG.EQ.2) WRITE(LU,*) 'MATRIX: UNKNOWN STORAGE : ',M%STO
+          CALL PLANTE(1)
           STOP
         ENDIF
 !

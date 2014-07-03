@@ -312,101 +312,101 @@
         CALL OV('X=YZ    ',QV,HN,V,1.D0,NPOIN)
       ENDIF
                                         
-       IF(ICIN .EQ.0) THEN
+      IF(ICIN .EQ.0) THEN
 !-----------------------------------------------------------------------
 !        ROE SCHEME
 !-----------------------------------------------------------------------
 !
-      IF(LT.EQ.1) THEN
-       WRITE(LU,*) ' '
-       WRITE(LU,*) '          ***************** '
-       WRITE(LU,*) '          *   ROE SCHEME  * '              
-       WRITE(LU,*) '          ***************** '
-       WRITE(LU,*) ' '
+        IF(LT.EQ.1) THEN
+          WRITE(LU,*) ' '
+          WRITE(LU,*) '          ***************** '
+          WRITE(LU,*) '          *   ROE SCHEME  * '              
+          WRITE(LU,*) '          ***************** '
+          WRITE(LU,*) ' '
 
 !INITIALIZATION OF FLUX_OLD
-       DO I=1,NPOIN
-        FLUX_OLD(I,1) = 0.0D0
-        FLUX_OLD(I,2) = 0.0D0
-        FLUX_OLD(I,3) = 0.0D0
-       ENDDO                  
-      ENDIF
+          DO I=1,NPOIN
+            FLUX_OLD(I,1) = 0.0D0
+            FLUX_OLD(I,2) = 0.0D0
+            FLUX_OLD(I,3) = 0.0D0
+          ENDDO                  
+        ENDIF
 
 !
-!    COPY  VARIABLES INTO W
-!
-      DO I=1,NPOIN
-        W(1,I)= HN(I)
-        W(2,I)= QU(I)
-        W(3,I)= QV(I)
-      ENDDO ! I
+!      COPY  VARIABLES INTO W
+!     
+        DO I=1,NPOIN
+          W(1,I)= HN(I)
+          W(2,I)= QU(I)
+          W(3,I)= QV(I)
+        ENDDO ! I
 !
 !CALCUL DU DT QUI SATISFAIT CFL
 !
-      CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,AT,TMAX,
-     &           CFLWTD,ICIN,DTVARI,LISTIN)
-!
-!    WINF CONTAINS BORDVALUE AFTER THE USE OF RIEMANN INVARIANTS
-!
-      CALL FLUSEW
-!
-     &   (WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
-     &    NPTFR,LIMPRO,NBOR,KDIR,KDDL)    
-!
-!
-      CALL FLUROE(W,FLUSCE,NUBO,VNOIN,
-     &            WINF,FLUX,FLUSORT,FLUENT,NELEM,NSEG,NPTFR,   
-     &            NPOIN,X,Y,AIRS,ZF,EPS,DMIN,G,
-     &            XNEBOR,YNEBOR,LIMPRO,NBOR,KDIR,KNEU,KDDL,FLBOR,
-     &            ELTSEG,IFABOR,MESH)             
+        CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,AT,TMAX,
+     &             CFLWTD,ICIN,DTVARI,LISTIN)
+!       
+!      WINF CONTAINS BORDVALUE AFTER THE USE OF RIEMANN INVARIANTS
+!       
+        CALL FLUSEW
+!       
+     &     (WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
+     &      NPTFR,LIMPRO,NBOR,KDIR,KDDL)    
+!       
+!       
+        CALL FLUROE(W,FLUSCE,NUBO,VNOIN,
+     &              WINF,FLUX,FLUSORT,FLUENT,NELEM,NSEG,NPTFR,   
+     &              NPOIN,X,Y,AIRS,ZF,EPS,DMIN,G,
+     &              XNEBOR,YNEBOR,LIMPRO,NBOR,KDIR,KNEU,KDDL,FLBOR,
+     &              ELTSEG,IFABOR,MESH)             
 !
 ! INTEGRATION IN TIME
 ! 
-      CALL INTEMP(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,ZF,CF,EPS,KFROT,
-     &           SMH,HN,QU,QV,LT,GAMMA)  
+        CALL INTEMP(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,ZF,CF,EPS,KFROT,
+     &             SMH,HN,QU,QV,LT,GAMMA)  
 !
 ! VOLUME ADDEED BY SOURCES
 !
-      IF(YASMH) THEN
-        MASSES=0.D0
-        DO I=1,NPOIN
-          MASSES = MASSES + SMH(I)
-        ENDDO
-        MASSES = DT * MASSES
-      ENDIF
-!
-      DO  I=1,NPOIN 
-        H(I)  = W(1,I) 
-        QU(I) = W(2,I)
-        QV(I) = W(3,I)
-! SAVE FLUXES FOR NEXT TIME STEP
-        FLUX_OLD(I,1) = FLUX(I,1)
-        FLUX_OLD(I,2) = FLUX(I,2)
-        FLUX_OLD(I,3) = FLUX(I,3)
-!
-!      COMPUTE U,V 
-!
-        IF (H(I).GT.EPS) THEN
-          U(I)  = W(2,I) / H(I)
-          V(I)  = W(3,I) / H(I) 
-        ELSE
-          U(I) = 0.D0
-          V(I) = 0.D0
+        IF(YASMH) THEN
+          MASSES=0.D0
+          DO I=1,NPOIN
+            MASSES = MASSES + SMH(I)
+          ENDDO
+          MASSES = DT * MASSES
         ENDIF
-      ENDDO
-!
-!
-      XNC = 0.D0
-      DO I=1,NPOIN 
-         IF(H(I).GT.EPS) THEN    
-          W1=SQRT((QU(I)/H(I))**2+(QV(I)/H(I))**2)+SQRT(G*H(I))         
-          IF(W1.GE.XNC) XNC = W1
-          IF(W1.GE.50.D0) THEN
-            QU(I) = 0.D0
-            QV(I) = 0.D0
+!      
+        DO  I=1,NPOIN 
+          H(I)  = W(1,I) 
+          QU(I) = W(2,I)
+          QV(I) = W(3,I)
+! SAVE FLUXES FOR NEXT TIME STEP
+          FLUX_OLD(I,1) = FLUX(I,1)
+          FLUX_OLD(I,2) = FLUX(I,2)
+          FLUX_OLD(I,3) = FLUX(I,3)
+!      
+!        COMPUTE U,V 
+!      
+          IF (H(I).GT.EPS) THEN
+            U(I)  = W(2,I) / H(I)
+            V(I)  = W(3,I) / H(I) 
+          ELSE
+            U(I) = 0.D0
+            V(I) = 0.D0
           ENDIF
-         ENDIF
-      ENDDO
+        ENDDO
+!
+!
+        XNC = 0.D0
+        DO I=1,NPOIN 
+          IF(H(I).GT.EPS) THEN    
+           W1=SQRT((QU(I)/H(I))**2+(QV(I)/H(I))**2)+SQRT(G*H(I))
+           IF(W1.GE.XNC) XNC = W1
+           IF(W1.GE.50.D0) THEN
+             QU(I) = 0.D0
+             QV(I) = 0.D0
+           ENDIF
+          ENDIF
+        ENDDO
 !
       ELSE IF(ICIN.EQ.1) THEN
 !     ************************
@@ -415,24 +415,30 @@
 !            KINETIC SCHEME
 !-----------------------------------------------------------------------
 !
-      IVIS=0
-      IF(DIFVIT.AND.ITURB.EQ.1) IVIS=1
-!
-      IF(LT.EQ.1) THEN
+        IVIS=0
+        IF(DIFVIT.AND.ITURB.EQ.1) IVIS=1
+!      
+        IF(LT.EQ.1) THEN
 !
 !             INITIALIZATIONS FOR THE 1ST TIME STEP
 !             *************************************
 !
-       WRITE(LU,*) ' '
-       WRITE(LU,*) '          **************************'
-       WRITE(LU,*) '          *     KINETIC SCHEME     *'
-       IF(NORDRE.EQ.1)THEN
-          WRITE(LU,*) '          *  FIRST ORDER IN SPACE  * '
-       ELSE
-          WRITE(LU,*)'          *  SECOND ORDER IN SPACE * '
-       ENDIF
-       WRITE(LU,*) '          **************************'
-       WRITE(LU,*) ' '
+          WRITE(LU,*) ' '
+          WRITE(LU,*) '          **************************'
+          WRITE(LU,*) '          *     KINETIC SCHEME     *'
+          IF(NORDRE.EQ.1)THEN
+            WRITE(LU,*) '          *  FIRST ORDER IN SPACE  * '
+          ELSE
+            WRITE(LU,*)'          *  SECOND ORDER IN SPACE * '
+          ENDIF
+          WRITE(LU,*) '          **************************'
+          WRITE(LU,*) ' '
+!      INITIALIZATION OF FLUX_OLD
+          DO I=1,NPOIN
+            FLUX_OLD(I,1) = 0.0D0
+            FLUX_OLD(I,2) = 0.0D0
+            FLUX_OLD(I,3) = 0.0D0
+          ENDDO     
 !      INITIALIZATION OF FLUX_OLD
        DO I=1,NPOIN
         FLUX_OLD(I,1) = 0.0D0
@@ -442,81 +448,81 @@
 !
 !     COMPUTE GRADIENT OF ZF FOR ORDRE2
 !
-       IF(NORDRE.EQ.2) THEN
-        CALL GRADZ(NPOIN,NELMAX,NSEG,IKLE,NUBO,X,Y,AIRE,AIRS,CMI,
-     &           JMI,ZF,DPX,DPY,DSZ,BETA,AIRST,T1,T2,T3,T4,T5,
-     &           ELTSEG,IFABOR,MESH)
-       ENDIF
+          IF(NORDRE.EQ.2) THEN
+            CALL GRADZ(NPOIN,NELMAX,NSEG,IKLE,NUBO,X,Y,AIRE,AIRS,CMI,
+     &               JMI,ZF,DPX,DPY,DSZ,BETA,AIRST,T1,T2,T3,T4,T5,
+     &               ELTSEG,IFABOR,MESH)
+          ENDIF
 !
 !    INITIALIZATION FOR TRACER
 !
 
-       IF(NTRAC.GT.0) THEN
-         DO ITRAC=1,NTRAC
-           MASSOU(ITRAC) = 0.D0
-           FLUTENT(ITRAC)= 0.D0
-           FLUTSOR(ITRAC)= 0.D0
-           DO IS=1,NPOIN
-             HTN%ADR(ITRAC)%P%R(IS) = HN(IS) * TN%ADR(ITRAC)%P%R(IS)
-           ENDDO
-           CALL OS('X=Y     ',X=T%ADR(ITRAC)%P,Y=TN%ADR(ITRAC)%P)
-         ENDDO
-       ENDIF
-!
-!       DEFINITION OF A REFERENCE TO DISTINGUISH INTERIOR
-!       AND BOUNDARY NODES FOR TRACER ORDRE 2
-! 
-       DO IS=1,NPOIN
-         LOGFR(IS)=0
-       ENDDO
-!
-       IF(NPTFR.GT.0)THEN !FOR PARALLLEL CASES
-         DO K=1,NPTFR
-           IS=NBOR(K)
-           IF(LIMPRO(K,2).EQ.KDIR) LOGFR(IS)=1
-           IF(LIMPRO(K,1).EQ.KDIR) LOGFR(IS)=3
-           IF(LIMPRO(K,1).EQ.KNEU) LOGFR(IS)=2     
-         ENDDO
-       ENDIF 
-      ENDIF
+          IF(NTRAC.GT.0) THEN
+            DO ITRAC=1,NTRAC
+              MASSOU(ITRAC) = 0.D0
+              FLUTENT(ITRAC)= 0.D0
+              FLUTSOR(ITRAC)= 0.D0
+              DO IS=1,NPOIN
+                HTN%ADR(ITRAC)%P%R(IS) = HN(IS) * TN%ADR(ITRAC)%P%R(IS)
+              ENDDO
+              CALL OS('X=Y     ',X=T%ADR(ITRAC)%P,Y=TN%ADR(ITRAC)%P)
+            ENDDO
+          ENDIF
+!         
+!          DEFINITION OF A REFERENCE TO DISTINGUISH INTERIOR
+!          AND BOUNDARY NODES FOR TRACER ORDRE 2
+!         
+          DO IS=1,NPOIN
+            LOGFR(IS)=0
+          ENDDO
+!         
+          IF(NPTFR.GT.0)THEN !FOR PARALLLEL CASES
+            DO K=1,NPTFR
+              IS=NBOR(K)
+              IF(LIMPRO(K,2).EQ.KDIR) LOGFR(IS)=1
+              IF(LIMPRO(K,1).EQ.KDIR) LOGFR(IS)=3
+              IF(LIMPRO(K,1).EQ.KNEU) LOGFR(IS)=2     
+            ENDDO
+          ENDIF 
+        ENDIF
 !-----------------------------------------------------------------------
 !
-      IF(LT.EQ.1.OR.NTRAC.EQ.0) THEN
-C                                                                       
-C     REWRITE VARIABLES IN W                                      
-C                                                                       
-      DO I=1,NPOIN                                                  
-          W(1,I)= HN(I) 
-        IF (HN(I).GT.EPS) THEN
-          W(2,I) = QU(I) / HN(I)                                       
-          W(3,I) = QV(I) / HN(I)     
-        ELSE
-          W(2,I) = 0.D0
-          W(3,I) = 0.D0
-        ENDIF
-      ENDDO
+        IF(LT.EQ.1.OR.NTRAC.EQ.0) THEN
+!                                                                         
+!       REWRITE VARIABLES IN W                                      
+!                                                                         
+        DO I=1,NPOIN                                                  
+            W(1,I)= HN(I) 
+          IF (HN(I).GT.EPS) THEN
+            W(2,I) = QU(I) / HN(I)
+            W(3,I) = QV(I) / HN(I)     
+          ELSE
+            W(2,I) = 0.D0
+            W(3,I) = 0.D0
+          ENDIF
+        ENDDO
 !
 !  TIME STEP UNDER CFL CONDITION (ORDRE 1)
 !
-       DTN = DT
-       CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DTN,AT,TMAX,
-     &           CFLWTD,ICIN,DTVARI,LISTIN)
+        DTN = DT
+        CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DTN,AT,TMAX,
+     &            CFLWTD,ICIN,DTVARI,LISTIN)
 !
 ! COMPUTE HYDRAULIC FLUXES
 !
-       CALL FLUHYD
-     &       (NPOIN,NELMAX,NSEG,NPTFR,NUBO,G,DTN,X,Y,AIRS,IKLE,AIRE,
-     &        W,ZF,VNOIN,FLUX,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &        HBOR,UBOR,VBOR,FLUENTN,FLUSORTN,NORDRE,CMI,JMI,
-     &        DJX,DJY,DX,DY,DTHAUT,CFLWTD,FLBOR,
-     &        DPX,DPY,IVIS,PROPNU,FLUHBTEMP,BETA,DSZ,AIRST,HC,FLUXTEMP,
-     &        NTRAC,ELTSEG,IFABOR,MESH)
+        CALL FLUHYD
+     &        (NPOIN,NELMAX,NSEG,NPTFR,NUBO,G,DTN,X,Y,AIRS,IKLE,AIRE,
+     &         W,ZF,VNOIN,FLUX,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
+     &         HBOR,UBOR,VBOR,FLUENTN,FLUSORTN,NORDRE,CMI,JMI,
+     &         DJX,DJY,DX,DY,DTHAUT,CFLWTD,FLBOR,
+     &         DPX,DPY,IVIS,PROPNU,FLUHBTEMP,BETA,DSZ,AIRST,HC,FLUXTEMP,
+     &         NTRAC,ELTSEG,IFABOR,MESH)
 !
-      IF(NTRAC.GT.0) THEN
-!       INITIALIZATION FOR TRACER
-        CALL REINIT(NPOIN,NSEG,NPTFR,HN,
-     &              SMTR,HSTOK,HC,HCSTOK,FLUXT,FLUHBOR,DTT,NTRAC)
-      ENDIF
+        IF(NTRAC.GT.0) THEN
+!         INITIALIZATION FOR TRACER
+          CALL REINIT(NPOIN,NSEG,NPTFR,HN,
+     &                SMTR,HSTOK,HC,HCSTOK,FLUXT,FLUHBOR,DTT,NTRAC)
+        ENDIF
 !
       ENDIF
 !-----------------------------------------------------------------------
@@ -563,11 +569,11 @@ C
 ! VOLUME ADDEED BY SOURCES
 !
       IF(YASMH) THEN
-      MASSES=0.D0
-      DO  I=1,NPOIN
-      MASSES = MASSES + SMH(I)
-      ENDDO
-       MASSES = DT * MASSES
+        MASSES=0.D0
+        DO  I=1,NPOIN
+          MASSES = MASSES + SMH(I)
+        ENDDO
+        MASSES = DT * MASSES
       ENDIF
 !
       DO I=1,NPOIN
@@ -694,11 +700,11 @@ C
         WRITE(LU,*) '          *********************** '
         WRITE(LU,*) ' '
 !INITIALIZATION OF FLUX_OLD
-       DO I=1,NPOIN
-        FLUX_OLD(I,1) = 0.0D0
-        FLUX_OLD(I,2) = 0.0D0
-        FLUX_OLD(I,3) = 0.0D0
-       ENDDO     
+        DO I=1,NPOIN
+          FLUX_OLD(I,1) = 0.0D0
+          FLUX_OLD(I,2) = 0.0D0
+          FLUX_OLD(I,3) = 0.0D0
+        ENDDO     
 
       ENDIF
 
@@ -707,9 +713,9 @@ C
 !    COPY VARIABLES INTO W
 !
       DO I=1,NPOIN
-          W(1,I)= HN(I) 
-          W(2,I)= QU(I)
-          W(3,I)= QV(I)
+        W(1,I)= HN(I) 
+        W(2,I)= QU(I)
+        W(3,I)= QV(I)
       ENDDO
 !
 ! TIME STEP UNDER CFL CONDITION
@@ -731,9 +737,9 @@ C
         CALL PARCOM2(FLUX(:,1),FLUX(:,2),FLUX(:,3),NPOIN,1,2,3,MESH)
       ENDIF
 !BOUNDARY CONDITIONS
-         CALL CDLZZ(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &              KDDL,G,W,FLUX,FLUENT,FLUSORT,
-     &              FLBOR,ZF,WINF)
+      CALL CDLZZ(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
+     &           KDDL,G,W,FLUX,FLUENT,FLUSORT,
+     &           FLBOR,ZF,WINF)
 !
 !-----------------------------------------------------------------------
 !
@@ -782,7 +788,7 @@ C
 !
 !-----------------------------------------------------------------------
 !             TCHAMEN SCHEME
-C-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
 !
       IF(LT.EQ.1) THEN
@@ -809,9 +815,9 @@ C-----------------------------------------------------------------------
 !   CPY VARIABLES INTO W
 !
       DO I=1,NPOIN
-          W(1,I)= HN(I) 
-          W(2,I)= QU(I)
-          W(3,I)= QV(I)
+        W(1,I)= HN(I) 
+        W(2,I)= QU(I)
+        W(3,I)= QV(I)
       ENDDO
 !
 ! TIME STEP UNDER CFL CONDITION
@@ -894,17 +900,17 @@ C-----------------------------------------------------------------------
 !             INITIALIZATION FOR THE 1ST TIME STEP
 !             *************************************
 !
-       WRITE(LU,*) ' '
-       WRITE(LU,*) '          *********************** '
-       WRITE(LU,*) '          *     HLLC  SCHEME    * '              
-       WRITE(LU,*) '          *********************** '
-       WRITE(LU,*) ' '
+        WRITE(LU,*) ' '
+        WRITE(LU,*) '          *********************** '
+        WRITE(LU,*) '          *     HLLC  SCHEME    * '              
+        WRITE(LU,*) '          *********************** '
+        WRITE(LU,*) ' '
 ! INITIALIZATION OF FLUX_OLD
-      DO I=1,NPOIN
-        FLUX_OLD(I,1) = 0.0D0
-        FLUX_OLD(I,2) = 0.0D0
-        FLUX_OLD(I,3) = 0.0D0
-       ENDDO  
+        DO I=1,NPOIN
+          FLUX_OLD(I,1) = 0.0D0
+          FLUX_OLD(I,2) = 0.0D0
+          FLUX_OLD(I,3) = 0.0D0
+        ENDDO  
 
       ENDIF
 
@@ -912,9 +918,9 @@ C-----------------------------------------------------------------------
 !     COPY VARIABLES INTO W
 !
       DO I=1,NPOIN 
-          W(1,I)= HN(I) 
-          W(2,I)= QU(I)
-          W(3,I)= QV(I)  
+        W(1,I)= HN(I) 
+        W(2,I)= QU(I)
+        W(3,I)= QV(I)  
       ENDDO
 !
 !  TIME STEP UNDER CFL CONDITION
@@ -940,9 +946,9 @@ C-----------------------------------------------------------------------
 !
 ! BOUNDARY CONDITIONS
 !
-        CALL CDL_HLLC(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,
-     &                W,FLUX,FLUENT,FLUSORT,FLBOR,EPS,WINF,
-     &                G,HBOR,UBOR,VBOR)
+      CALL CDL_HLLC(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,
+     &              W,FLUX,FLUENT,FLUSORT,FLBOR,EPS,WINF,
+     &              G,HBOR,UBOR,VBOR)
 !
 !     ASSEMBLY IN PARALLEL (EVEN IF NPTFR=0)
 !
@@ -1015,29 +1021,29 @@ C-----------------------------------------------------------------------
         WRITE(LU,*) ' '
 ! INITIALIZATION OF FLUX_OLD
         DO I=1,NPOIN
-         FLUX_OLD(I,1) = 0.0D0
-         FLUX_OLD(I,2) = 0.0D0
-         FLUX_OLD(I,3) = 0.0D0
+          FLUX_OLD(I,1) = 0.0D0
+          FLUX_OLD(I,2) = 0.0D0
+          FLUX_OLD(I,3) = 0.0D0
         ENDDO
 ! INITIALIZATION OF NEISEG
         DO I=1,NSEG
-         NEISEG(1,I) = 0
-         NEISEG(2,I) = 0
+          NEISEG(1,I) = 0
+          NEISEG(2,I) = 0
         ENDDO
 ! SEARCH FOR NEIGHBORS OF SEGMENT (FOR LIMITER)
-!        CALL SEG_NEIGHBORS
-!     &       (X,Y,NPOIN,NVMAX,NELEM,NSEG,
-!     &        ELTSEG,NUBO,IFABOR,KNOLG,NEISEG)
-         CALL SEG_NEIGHBORS
-     &       (X,Y,IKLE,NPOIN,NVMAX,NELEM,NELMAX,NSEG,NEISEG)
+!       CALL SEG_NEIGHBORS
+!    &       (X,Y,NPOIN,NVMAX,NELEM,NSEG,
+!    &        ELTSEG,NUBO,IFABOR,KNOLG,NEISEG)
+        CALL SEG_NEIGHBORS
+     &      (X,Y,IKLE,NPOIN,NVMAX,NELEM,NELMAX,NSEG,NEISEG)
       ENDIF
 !-----------------------------------------------------------------------
 !     COPY VARIABLES INTO W
 !
       DO I=1,NPOIN 
-          W(1,I)= HN(I) 
-          W(2,I)= QU(I)
-          W(3,I)= QV(I) 
+        W(1,I)= HN(I) 
+        W(2,I)= QU(I)
+        W(3,I)= QV(I) 
       ENDDO
 !
 !  TIME STEP UNDER CFL CONDITION
@@ -1054,16 +1060,15 @@ C-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
 !  FLUX COMPUTATION
-       CALL HYD_WAF
-!
-     &    (NPOIN,NSEG,NELEM,NUBO,G,W,ZF,VNOIN,DT,DTHAUT,
-     &     X,Y,FLUX,ELTSEG,NEISEG)
+      CALL HYD_WAF
+     &   (NPOIN,NSEG,NELEM,NUBO,G,W,ZF,VNOIN,DT,DTHAUT,
+     &    X,Y,FLUX,ELTSEG,NEISEG)
 !
 ! BOUNDARY CONDITIONS
 !
-        CALL CDL_WAF(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &               KDDL,W,FLUX,FLUENT,FLUSORT,FLBOR,DTHAUT,DT,
-     &               EPS,WINF)
+      CALL CDL_WAF(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
+     &             KDDL,W,FLUX,FLUENT,FLUSORT,FLBOR,DTHAUT,DT,
+     &             EPS,WINF)
 !
 !-----------------------------------------------------------------------
 !
@@ -1103,7 +1108,7 @@ C-----------------------------------------------------------------------
           U(I) = 0.D0
           V(I) = 0.D0
         ENDIF
-       ENDDO ! I
+      ENDDO ! I
 !
 !-----------------------------------------------------------------------
 !

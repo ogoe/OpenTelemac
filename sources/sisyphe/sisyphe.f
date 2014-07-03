@@ -602,9 +602,9 @@
 !
           IF(SUSP.AND.UNIT) THEN
             DO I=1,NSICLA
-             IF(TROUVE(21+(NOMBLAY+1)*NSICLA+I).EQ.1) THEN
-               CALL OS('X=CX    ',X=CS%ADR(I)%P,C=1.D0/XMVS)
-             ENDIF
+              IF(TROUVE(21+(NOMBLAY+1)*NSICLA+I).EQ.1) THEN
+                CALL OS('X=CX    ',X=CS%ADR(I)%P,C=1.D0/XMVS)
+              ENDIF
             ENDDO
           ENDIF
 !
@@ -653,11 +653,11 @@
 !
           IF(OPTBAN.GT.0) THEN
             DO I = 1,NPOIN
-             IF(HN%R(I).LT.HMIN) THEN
-               U2D%R(I)=0.D0
-               V2D%R(I)=0.D0
-               HN%R(I) = HMIN
-             ENDIF
+              IF(HN%R(I).LT.HMIN) THEN
+                U2D%R(I)=0.D0
+                V2D%R(I)=0.D0
+                HN%R(I) = HMIN
+              ENDIF
             ENDDO
           ENDIF
 !
@@ -709,11 +709,11 @@
 !       CHECKS THE WAVE DATA
 !
         IF(HOULE) THEN
-         IF(UW%TYPR.EQ.'Q') THEN
-!          IF(HW%TYPR    .NE.'Q'.OR.
-         ELSEIF(HW%TYPR    .NE.'Q'.OR.
-     &       TW%TYPR    .NE.'Q'.OR.
-     &       THETAW%TYPR.NE.'Q') THEN
+          IF(UW%TYPR.EQ.'Q') THEN
+!           IF(HW%TYPR    .NE.'Q'.OR.
+          ELSEIF(HW%TYPR    .NE.'Q'.OR.
+     &      TW%TYPR    .NE.'Q'.OR.
+     &      THETAW%TYPR.NE.'Q') THEN
             WRITE(LU,*) ' '
             WRITE(LU,*) ' '
             IF(LNG.EQ.1) THEN
@@ -738,43 +738,43 @@
 !
 !        COMPUTES AREAS (WITHOUT MASKING)
 !
-         IF(DEBUG.GT.0) WRITE(LU,*) 'VECTOR FOR VOLU2D'
-         CALL VECTOR(VOLU2D,'=','MASBAS          ',
-     &               IELMH_SIS,1.D0,
-     &               T1,T1,T1,T1,T1,T1,MESH,.FALSE.,MASKEL)
-         IF(DEBUG.GT.0) WRITE(LU,*) 'END VECTOR FOR VOLU2D'
-!        V2DPAR : LIKE VOLU2D BUT IN PARALLEL VALUES COMPLETED AT
-!                 INTERFACES BETWEEN SUBDOMAINS
-         CALL OS('X=Y     ',X=V2DPAR,Y=VOLU2D)
-         IF(NCSIZE.GT.1) CALL PARCOM(V2DPAR,2,MESH)
-!        INVERSE OF VOLUMES (DONE WITHOUT MASKING)
-         CALL OS('X=1/Y   ',X=UNSV2D,Y=V2DPAR,
-     &           IOPT=2,INFINI=0.D0,ZERO=1.D-12)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'VECTOR FOR VOLU2D'
+        CALL VECTOR(VOLU2D,'=','MASBAS          ',
+     &              IELMH_SIS,1.D0,
+     &              T1,T1,T1,T1,T1,T1,MESH,.FALSE.,MASKEL)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'END VECTOR FOR VOLU2D'
+!       V2DPAR : LIKE VOLU2D BUT IN PARALLEL VALUES COMPLETED AT
+!                INTERFACES BETWEEN SUBDOMAINS
+        CALL OS('X=Y     ',X=V2DPAR,Y=VOLU2D)
+        IF(NCSIZE.GT.1) CALL PARCOM(V2DPAR,2,MESH)
+!       INVERSE OF VOLUMES (DONE WITHOUT MASKING)
+        CALL OS('X=1/Y   ',X=UNSV2D,Y=V2DPAR,
+     &          IOPT=2,INFINI=0.D0,ZERO=1.D-12)
 !
-!        START OF MODIFICATIONS FOR MIXED SEDIMENTS
+!       START OF MODIFICATIONS FOR MIXED SEDIMENTS
 !
-!        SETTING THE NON-ERODABLE BED (IT CAN BE SET BEFORE
-!                                      IF COMPUTATION CONTINUED, I.E. DEBU)
+!       SETTING THE NON-ERODABLE BED (IT CAN BE SET BEFORE
+!                                     IF COMPUTATION CONTINUED, I.E. DEBU)
 !
-         IF(.NOT.DEBU.OR..NOT.YAZR) THEN
-           IF(DEBUG.GT.0) WRITE(LU,*) 'NOEROD'
-           CALL NOEROD(HN%R,ZF%R,ZR%R,Z%R,MESH%X%R,
-     &                 MESH%Y%R,NPOIN,CHOIX,NLISS)
-           IF(DEBUG.GT.0) WRITE(LU,*) 'END NOEROD'
-         ENDIF
+        IF(.NOT.DEBU.OR..NOT.YAZR) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) 'NOEROD'
+          CALL NOEROD(HN%R,ZF%R,ZR%R,Z%R,MESH%X%R,
+     &                MESH%Y%R,NPOIN,CHOIX,NLISS)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'END NOEROD'
+        ENDIF
 !
-!        INITIALISATION FOR SEDIMENT
+!       INITIALISATION FOR SEDIMENT
 !
-         IF(DEBUG.GT.0) WRITE(LU,*) 'INIT_SEDIMENT'
-         CALL INIT_SEDIMENT(NSICLA,ELAY,ZF,ZR,NPOIN,
-     &                      AVAIL,FRACSED_GF,AVA0,LGRAFED,CALWC,
-     &                      XMVS,XMVE,GRAV,VCE,XWC,FDM,CALAC,AC,
-     &                      SEDCO,ES,ES_SABLE,ES_VASE,
-     &                      NCOUCH_TASS,CONC_VASE,
-     &                      MS_SABLE, MS_VASE,ACLADM,
-     &                      UNLADM,TOCE_SABLE,
-     &                      CONC,NLAYER,DEBU,MIXTE)
-         IF(DEBUG.GT.0) WRITE(LU,*) 'END INIT_SEDIMENT'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'INIT_SEDIMENT'
+        CALL INIT_SEDIMENT(NSICLA,ELAY,ZF,ZR,NPOIN,
+     &                     AVAIL,FRACSED_GF,AVA0,LGRAFED,CALWC,
+     &                     XMVS,XMVE,GRAV,VCE,XWC,FDM,CALAC,AC,
+     &                     SEDCO,ES,ES_SABLE,ES_VASE,
+     &                     NCOUCH_TASS,CONC_VASE,
+     &                     MS_SABLE, MS_VASE,ACLADM,
+     &                     UNLADM,TOCE_SABLE,
+     &                     CONC,NLAYER,DEBU,MIXTE)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'END INIT_SEDIMENT'
 !
 !
 ! END OF MODIFICATIONS CV
@@ -829,55 +829,55 @@
 !
         IF(UNIT) CALL OS('X=CX    ',X=CS,C=XMVS)
         CALL PREDES(0,AT0)
-!
+!       
 !       PRINTS OUT THE RESULTS
-!
+!       
         IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_DESIMP'
         CALL BIEF_DESIMP(SIS_FILES(SISRES)%FMT,VARSOR,
      &                   HIST,0,NPOIN,SIS_FILES(SISRES)%LU,'STD',
      &                   AT0,0,LISPR,LEOPR,SORLEO,SORIMP,MAXVAR,
      &                   TEXTE,PTINIG,PTINIL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END BIEF_DESIMP'
-!
+!       
         IF(UNIT) CALL OS('X=CX    ',X=CS,C=1.D0/XMVS)
 !
 !===============FIN IMPRESSION CONDITIONS INITIALES =================
 !
 !      COUPLING
 !
-       IF(DREDGESIM) THEN
-         CALL DREDGESIM_INTERFACE(1)
-         IF(LNG.EQ.1) WRITE(LU,*) 'SISYPHE COUPLE AVEC DREDGESIM'
-         IF(LNG.EQ.2) WRITE(LU,*) 'SISYPHE COUPLED WITH DREDGESIM'
-       ENDIF
-!
-       IF(CODE(1:7).NE.'SISYPHE') THEN
-         IF(LNG.EQ.1) WRITE(LU,*) 'SISYPHE COUPLE AVEC : ',CODE
-         IF(LNG.EQ.2) WRITE(LU,*) 'SISYPHE COUPLED WITH: ',CODE
-       ENDIF
+        IF(DREDGESIM) THEN
+          CALL DREDGESIM_INTERFACE(1)
+          IF(LNG.EQ.1) WRITE(LU,*) 'SISYPHE COUPLE AVEC DREDGESIM'
+          IF(LNG.EQ.2) WRITE(LU,*) 'SISYPHE COUPLED WITH DREDGESIM'
+        ENDIF
+!      
+        IF(CODE(1:7).NE.'SISYPHE') THEN
+          IF(LNG.EQ.1) WRITE(LU,*) 'SISYPHE COUPLE AVEC : ',CODE
+          IF(LNG.EQ.2) WRITE(LU,*) 'SISYPHE COUPLED WITH: ',CODE
+        ENDIF
 !
 !      COUPLING WITH TELEMAC-2D OR 3D
 !
-       IF(CODE(1:7).EQ.'TELEMAC') NCALCU = 1
+        IF(CODE(1:7).EQ.'TELEMAC') NCALCU = 1
 !
 !=======================================================================
 !
 !     INITIAL CONDITION FOR CONSTANT FLOW DISCHARGE
 !
-      IF(LCONDIS) THEN
-        SISYPHE_CFD = LCONDIS
-        NSIS_CFD    = NCONDIS
-        CONSTFLOW   = .FALSE.
-      ELSE
-        SISYPHE_CFD = .FALSE.
-        NSIS_CFD    = 1
-        CONSTFLOW   = .FALSE.
-      ENDIF
+        IF(LCONDIS) THEN
+          SISYPHE_CFD = LCONDIS
+          NSIS_CFD    = NCONDIS
+          CONSTFLOW   = .FALSE.
+        ELSE
+          SISYPHE_CFD = .FALSE.
+          NSIS_CFD    = 1
+          CONSTFLOW   = .FALSE.
+        ENDIF
 !
 !=======================================================================
 !
 !     END OF INITIALISATIONS
-         IF(DEBUG.GT.0) WRITE(LU,*) 'END_INITIALIZATION'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'END_INITIALIZATION'
       ENDIF ! IF (PART==0 OR PART = -1)
 !
 !=======================================================================
@@ -981,90 +981,90 @@
 !
             IF(.NOT.PERMA.OR.PASS) THEN
 !
-             IF(DEBUG.GT.0) WRITE(LU,*) 'CONDIM_SISYPHE'
-             CALL CONDIM_SISYPHE
-     &       (U2D%R,V2D%R,QU%R,QV%R,HN%R,ZF%R,Z%R,ESOMT%R,THETAW%R,
-     &       Q%R,HW%R,TW%R,MESH%X%R,MESH%Y%R,NPOIN,AT0,PMAREE)
-             IF(DEBUG.GT.0) WRITE(LU,*) 'END_CONDIM_SISYPHE'
+              IF(DEBUG.GT.0) WRITE(LU,*) 'CONDIM_SISYPHE'
+              CALL CONDIM_SISYPHE
+     &        (U2D%R,V2D%R,QU%R,QV%R,HN%R,ZF%R,Z%R,ESOMT%R,THETAW%R,
+     &        Q%R,HW%R,TW%R,MESH%X%R,MESH%Y%R,NPOIN,AT0,PMAREE)
+              IF(DEBUG.GT.0) WRITE(LU,*) 'END_CONDIM_SISYPHE'
+!             
+!             BEWARE : THE VALUE FOR ESOMT IS NOT READ FROM THE FILE SISHYD
+!             NOTE : NAME FOR SISHYD SET TO ' ' IF COUPLING
 !
-!            BEWARE : THE VALUE FOR ESOMT IS NOT READ FROM THE FILE SISHYD
-!            NOTE : NAME FOR SISHYD SET TO ' ' IF COUPLING
-!
-             IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
-!
-!              WORK ON ZF,QU,QV,Z WILL BE IN FACT DONE ON:
-!              T4,DEL_QU,DEL_QV AND DEL_Z
-!              BY PLAYING WITH POINTERS
-               SAVEZF=>ZF%R
-               SAVEQU=>QU%R
-               SAVEQV=>QV%R
-               SAVEZ =>Z%R
-               IF(HOULE.AND.UW%TYPR=='Q') SAVEUW=>UW%R
-               ZF%R  =>T4%R
-               QU%R  =>DEL_QU%R
-               QV%R  =>DEL_QV%R
-               Z%R   =>DEL_Z%R
-               IF(HOULE.AND.UW%TYPR=='Q') UW%R  =>DEL_UW%R
-!
-               NUMDEB=NUMDEB+1
-!
-               IF(ENTET) WRITE(LU,*) 'DEFINITION INITIALE DES VITESSES'
-!
-               CALL BIEF_SUITE(VARSOR,VARCL,NUMDEB,
-     &            SIS_FILES(SISHYD)%LU,SIS_FILES(SISHYD)%FMT,
-     &            HIST,0,NPOIN,BID,TEXTPR,VARCLA,0,
-     &            TROUVE,ALIRE,ENTET,PERMA,MAXVAR)
-!
-               IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE_NOTPERMA'
-               CALL RESCUE_SISYPHE_NOTPERMA
-     &              (QU%R,QV%R,Q%R,U2D%R,V2D%R,HN%R,Z%R,T4%R,
-     &               HW%R,TW%R,THETAW%R,NPOIN,TROUVE,ALIRE,ICF,ENTET,
-     &               MAXVAR)
-               IF(DEBUG.GT.0) WRITE(LU,*) 'END_RESCUE_SISYPHE_NOTPERMA'
-!
-!              BACK TO ORIGINAL ADDRESSES
-               ZF%R=>SAVEZF
-               QU%R=>SAVEQU
-               QV%R=>SAVEQV
-               Z%R=>SAVEZ
-               IF(HOULE.AND.UW%TYPR=='Q') UW%R=>SAVEUW
-!
-!              INCREMENT OF QU, QV AND Z PER SUB-TIME-STEP
-               DO I = 1,NPOIN
-                 DEL_QU%R(I) = (DEL_QU%R(I)-QU%R(I))/NSOUS
-                 DEL_QV%R(I) = (DEL_QV%R(I)-QV%R(I))/NSOUS
-                 DEL_Z%R(I)  = (DEL_Z%R(I) -Z%R(I)) /NSOUS
-                 IF(HOULE.AND.UW%TYPR=='Q') THEN
-                   DEL_UW%R(I) = (DEL_UW%R(I)-UW%R(I))/NSOUS
-                 ENDIF
-               ENDDO
-!
-!              UPDATES UNSTEADY HYDRO
-!              (TO BE MOVED TO RESCUE_SISYPHE_NOTPERMA)
-!              -----------------------------------
-!              CLIPS NEGATIVE DEPTHS
-!              COMPUTES U2D AND V2D
-!
-               CALL OS('X=Y-Z   ', X=HN, Y=Z, Z=ZF)
-!
-               IF(OPTBAN.GT.0) THEN
-                 DO I = 1,NPOIN
-                   IF(HN%R(I).LT.HMIN) THEN
-                     U2D%R(I)=0.D0
-                     V2D%R(I)=0.D0
-                     HN%R(I) = MAX(HN%R(I),HMIN)
-                   ELSE
-                     U2D%R(I)=QU%R(I)/HN%R(I)
-                     V2D%R(I)=QV%R(I)/HN%R(I)
-                   ENDIF
-                 ENDDO
-               ELSE
-                 CALL OS('X=Y/Z   ', X=U2D, Y=QU,   Z=HN)
-                 CALL OS('X=Y/Z   ', X=V2D, Y=QV,   Z=HN)
-               ENDIF
-!
-             ENDIF ! (SIS_FILES(SISHYD)%NAME(1:1) /=' ')
-           ENDIF ! (NOT.PERMA.OR.PASS)
+              IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
+!             
+!               WORK ON ZF,QU,QV,Z WILL BE IN FACT DONE ON:
+!               T4,DEL_QU,DEL_QV AND DEL_Z
+!               BY PLAYING WITH POINTERS
+                SAVEZF=>ZF%R
+                SAVEQU=>QU%R
+                SAVEQV=>QV%R
+                SAVEZ =>Z%R
+                IF(HOULE.AND.UW%TYPR=='Q') SAVEUW=>UW%R
+                ZF%R  =>T4%R
+                QU%R  =>DEL_QU%R
+                QV%R  =>DEL_QV%R
+                Z%R   =>DEL_Z%R
+                IF(HOULE.AND.UW%TYPR=='Q') UW%R  =>DEL_UW%R
+!             
+                NUMDEB=NUMDEB+1
+!             
+                IF(ENTET) WRITE(LU,*) 'DEFINITION INITIALE DES VITESSES'
+!             
+                CALL BIEF_SUITE(VARSOR,VARCL,NUMDEB,
+     &             SIS_FILES(SISHYD)%LU,SIS_FILES(SISHYD)%FMT,
+     &             HIST,0,NPOIN,BID,TEXTPR,VARCLA,0,
+     &             TROUVE,ALIRE,ENTET,PERMA,MAXVAR)
+!             
+                IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE_NOTPERMA'
+                CALL RESCUE_SISYPHE_NOTPERMA
+     &               (QU%R,QV%R,Q%R,U2D%R,V2D%R,HN%R,Z%R,T4%R,
+     &                HW%R,TW%R,THETAW%R,NPOIN,TROUVE,ALIRE,ICF,ENTET,
+     &                MAXVAR)
+                IF(DEBUG.GT.0) WRITE(LU,*) 'END_RESCUE_SISYPHE_NOTPERMA'
+!             
+!               BACK TO ORIGINAL ADDRESSES
+                ZF%R=>SAVEZF
+                QU%R=>SAVEQU
+                QV%R=>SAVEQV
+                Z%R=>SAVEZ
+                IF(HOULE.AND.UW%TYPR=='Q') UW%R=>SAVEUW
+!             
+!               INCREMENT OF QU, QV AND Z PER SUB-TIME-STEP
+                DO I = 1,NPOIN
+                  DEL_QU%R(I) = (DEL_QU%R(I)-QU%R(I))/NSOUS
+                  DEL_QV%R(I) = (DEL_QV%R(I)-QV%R(I))/NSOUS
+                  DEL_Z%R(I)  = (DEL_Z%R(I) -Z%R(I)) /NSOUS
+                  IF(HOULE.AND.UW%TYPR=='Q') THEN
+                    DEL_UW%R(I) = (DEL_UW%R(I)-UW%R(I))/NSOUS
+                  ENDIF
+                ENDDO
+!             
+!               UPDATES UNSTEADY HYDRO
+!               (TO BE MOVED TO RESCUE_SISYPHE_NOTPERMA)
+!               -----------------------------------
+!               CLIPS NEGATIVE DEPTHS
+!               COMPUTES U2D AND V2D
+!             
+                CALL OS('X=Y-Z   ', X=HN, Y=Z, Z=ZF)
+!             
+                IF(OPTBAN.GT.0) THEN
+                  DO I = 1,NPOIN
+                    IF(HN%R(I).LT.HMIN) THEN
+                      U2D%R(I)=0.D0
+                      V2D%R(I)=0.D0
+                      HN%R(I) = MAX(HN%R(I),HMIN)
+                    ELSE
+                      U2D%R(I)=QU%R(I)/HN%R(I)
+                      V2D%R(I)=QV%R(I)/HN%R(I)
+                    ENDIF
+                  ENDDO
+                ELSE
+                  CALL OS('X=Y/Z   ', X=U2D, Y=QU,   Z=HN)
+                  CALL OS('X=Y/Z   ', X=V2D, Y=QV,   Z=HN)
+                ENDIF
+!             
+              ENDIF ! (SIS_FILES(SISHYD)%NAME(1:1) /=' ')
+            ENDIF ! (NOT.PERMA.OR.PASS)
 !
         IF(PASS) THEN
 !         IN STEADY STATE LOGICAL FOR READING SET TO FALSE
@@ -1093,9 +1093,9 @@
           IF(OPTBAN.GT.0) THEN
             DO I = 1,HN%DIM1
               IF(HN%R(I).LT.HMIN) THEN
-               U2D%R(I)=0.D0
-               V2D%R(I)=0.D0
-               HN%R(I)=HMIN
+                U2D%R(I)=0.D0
+                V2D%R(I)=0.D0
+                HN%R(I)=HMIN
               ENDIF
             ENDDO
           ENDIF
@@ -1161,12 +1161,12 @@
 !
 ! ------------------------------------------------------------------
 !
-702      CONTINUE
+702     CONTINUE
 !
-         ISOUS = ISOUS + 1
-         IF(CODE(1:7).NE.'TELEMAC') AT0=AT0+DTS
-         IF(ENTET.AND.ISOUS.EQ.1) CALL ENTETE_SISYPHE(2,AT0,LT)
-         IF(ENTET.AND.ISOUS.EQ.NSOUS) ENTETS=.TRUE.
+        ISOUS = ISOUS + 1
+        IF(CODE(1:7).NE.'TELEMAC') AT0=AT0+DTS
+        IF(ENTET.AND.ISOUS.EQ.1) CALL ENTETE_SISYPHE(2,AT0,LT)
+        IF(ENTET.AND.ISOUS.EQ.NSOUS) ENTETS=.TRUE.
 !
 !---------------------------------------------------------------------
 !        FRICTION COEFFICIENT VARIABLE IN TIME
@@ -1182,32 +1182,32 @@
 !
 ! =======================================================================
 !
-!        IF 'VARIABLE TIME-STEP = YES' NSOUS WILL BE COMPUTED FURTHER DOWN
-!        THE CONPUTATION OF THE TIMESTEP SIS HAS BEEN MOVED BEFORE READING
-!        THE HYDRO CONDITIONS
+!       IF 'VARIABLE TIME-STEP = YES' NSOUS WILL BE COMPUTED FURTHER DOWN
+!       THE CONPUTATION OF THE TIMESTEP SIS HAS BEEN MOVED BEFORE READING
+!       THE HYDRO CONDITIONS
 !
-!  ---   MEAN DIAMETER FOR THE ACTIVE-LAYER AND UNDER-LAYER
+!  ---  MEAN DIAMETER FOR THE ACTIVE-LAYER AND UNDER-LAYER
 !
-         IF(.NOT.MIXTE.AND.NSICLA.GT.1) CALL MEAN_GRAIN_SIZE
+        IF(.NOT.MIXTE.AND.NSICLA.GT.1) CALL MEAN_GRAIN_SIZE
 !
-!  ---   MEAN VELOCITY UNORM
+!  ---  MEAN VELOCITY UNORM
 !
-         CALL OS('X=N(Y,Z)',X=UNORM,Y=U2D,Z=V2D)
+        CALL OS('X=N(Y,Z)',X=UNORM,Y=U2D,Z=V2D)
 !
-!  ---   WAVE ORBITAL VELOCITY --> UW
+!  ---  WAVE ORBITAL VELOCITY --> UW
 !
-         IF(HOULE) THEN
-           IF(UW%TYPR.NE.'Q') THEN
-             CALL CALCUW(UW%R,HN%R,HW%R,TW%R,GRAV,NPOIN)
-           ENDIF
-         ENDIF
+        IF(HOULE) THEN
+          IF(UW%TYPR.NE.'Q') THEN
+            CALL CALCUW(UW%R,HN%R,HW%R,TW%R,GRAV,NPOIN)
+          ENDIF
+        ENDIF
 !
-          CALL TOB_SISYPHE
-     &     (TOB,TOBW, MU, KS, KSP,KSR,CF, FW,
-     &      CHESTR, UETCAR, CF_TEL,KS_TEL, CODE ,
-     &      KFROT, ICR, KSPRATIO,HOULE,
-     &      GRAV,XMVE,  XMVS, VCE, KARMAN,ZERO,
-     &      HMIN,HN, ACLADM, UNORM,UW, TW, NPOIN,KSPRED,IKS)
+        CALL TOB_SISYPHE
+     &    (TOB,TOBW, MU, KS, KSP,KSR,CF, FW,
+     &     CHESTR, UETCAR, CF_TEL,KS_TEL, CODE ,
+     &     KFROT, ICR, KSPRATIO,HOULE,
+     &     GRAV,XMVE,  XMVS, VCE, KARMAN,ZERO,
+     &     HMIN,HN, ACLADM, UNORM,UW, TW, NPOIN,KSPRED,IKS)
 !
 !  END OF INITIALISATION
 !
@@ -1262,7 +1262,7 @@
             CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
           ENDIF
 ! END OF BEDLOAD
-        endif
+        ENDIF
       ! ********************** !
       ! SUSPENSION COMPUTATION !
       ! ********************** !
@@ -1289,38 +1289,38 @@
      & ZCONV,SOLSYS,FLBOR_TEL,FLBOR_SIS,FLBORTRA,NUMLIQ%I,NFRLIQ,
      & MIXTE,NCOUCH_TASS,CONC,TOCE_VASE,TOCE_SABLE,
      & FLUER_VASE,TOCE_MIXTE,MS_SABLE,MS_VASE,TASS,DIRFLU,MAXADV)
-         IF(DEBUG.GT.0) WRITE(LU,*) 'END_SUSPENSION_MAIN'
+          IF(DEBUG.GT.0) WRITE(LU,*) 'END_SUSPENSION_MAIN'
 !
 !      UPDATES THE BOTTOM
 !
 ! mak:
-       IF(.NOT.STAT_MODE) THEN
-         CALL OS('X=X+Y   ',X=ZF,Y=ZF_S)
-       ENDIF
+          IF(.NOT.STAT_MODE) THEN
+            CALL OS('X=X+Y   ',X=ZF,Y=ZF_S)
+          ENDIF
 ! end mak
-!       CALL OS('X=X+Y   ',X=ZF,Y=ZF_S)
+!        CALL OS('X=X+Y   ',X=ZF,Y=ZF_S)
 !
 !      UPDATES THE LAYERS
 !      REDEFINES THE LAYER OF ERODABLE SEDIMENT
 !      EXTENDED GRANULOMETRY (TO BE REPLACED WITH NOMBLAY>1
 !
-        IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
-          IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER AFTER SUSPENSION'
-          IF(VSMTYPE.EQ.0) THEN 
-            CALL LAYER(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
-     &                 ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
-     &                 AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-          ELSE 
-            CALL CVSP_MAIN(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
-     &                     ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
-     &                     AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-          ENDIF 
-          IF(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
-        ELSE
-          CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
-        ENDIF
+          IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
+            IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER AFTER SUSPENSION'
+            IF(VSMTYPE.EQ.0) THEN 
+              CALL LAYER(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+     &                   ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
+     &                   AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
+            ELSE 
+              CALL CVSP_MAIN(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+     &                       ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
+     &                       AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
+            ENDIF 
+            IF(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
+          ELSE
+            CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
+          ENDIF
 ! END OF SUSPENSION
-      ENDIF
+        ENDIF
 !
 ! RECONSTITUTES THE BEDLOAD AND/OR SUSPENSION DATA
 ! -----------------------------------------------------
@@ -1395,12 +1395,12 @@
      &                 ES,XMVS,XKV,TRANS_MASS,CONC_VASE,NCOUCH_TASS,
      &                 MS_SABLE%R,MS_VASE%R)
         ELSEIF(ITASS.EQ.2.OR.ITASS.EQ.3) THEN
-C!!! ONLY FOR ONE CLASS
+!!!! ONLY FOR ONE CLASS
           CALL TASSEMENT_2(ZF,NPOIN,DTS,ELAY,T3,T2,LT,XMVS,XMVE,GRAV,
-     *        NOMBLAY,ES,CONC_VASE,MS_VASE%R,XWC(1),
-     *        COEF_N,CONC_GEL,CONC_MAX)
+     &        NOMBLAY,ES,CONC_VASE,MS_VASE%R,XWC(1),
+     &        COEF_N,CONC_GEL,CONC_MAX)
 !        ELSEIF(ITASS.EQ.3) THEN
-C!!! ONLY FOR ONE CLASS
+!!!! ONLY FOR ONE CLASS
 !          CALL TASSEMENT_3(ZF,NPOIN,DTS,ELAY,
 !     &               T3,T2,LT,XMVS,XMVE,GRAV,NOMBLAY,
 !     &               ES,CONC_VASE,CONC,IVIDE,MS_VASE%R,XWC(1),
@@ -1411,9 +1411,9 @@ C!!! ONLY FOR ONE CLASS
 !       UPDATES ZF (ELAY HAS BEEN UPDATED IN TASSEMENT)
 !
 ! mak:
-       IF(.NOT.STAT_MODE) THEN
-          CALL OS('X=X+Y   ',X=ZF,Y=T3)
-       ENDIF
+        IF(.NOT.STAT_MODE) THEN
+           CALL OS('X=X+Y   ',X=ZF,Y=T3)
+        ENDIF
 ! end mak
 !        CALL OS('X=X+Y   ',X=ZF,Y=T3)
 !
@@ -1439,12 +1439,12 @@ C!!! ONLY FOR ONE CLASS
 !
 !  UPDATES
 !
-        IF(PART.EQ.-1) THEN
+      IF(PART.EQ.-1) THEN
 !
 ! mak:
-       IF(.NOT.STAT_MODE) THEN
-         CALL OS('X=X-Y   ',X=HN,Y=E)
-       ENDIF
+        IF(.NOT.STAT_MODE) THEN
+          CALL OS('X=X-Y   ',X=HN,Y=E)
+        ENDIF
 ! end mak
 !      CALL OS('X=X-Y   ',X=HN,Y=E)
         IF(OPTBAN.GT.0) THEN
@@ -1531,28 +1531,28 @@ C!!! ONLY FOR ONE CLASS
         IF(.NOT.PERMA.AND.SIS_FILES(SISHYD)%NAME(1:1).NE.' ') THEN
 !
 !         UPDATES THE HYDRO
-!
+!         
 !         IF READING ON HYDRODYNAMIC FILE, INCREMENTS QU, QV AND Z
           IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
             CALL OS('X=X+Y   ', X=QU, Y=DEL_QU)
             CALL OS('X=X+Y   ', X=QV, Y=DEL_QV)
             CALL OS('X=X+Y   ', X=Z , Y=DEL_Z)
 ! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
-            IF(HOULE.AND.UW%TYPR=='Q') CALL OS('X=X+Y   ',X=UW,Y=DEL_UW)
+          IF(HOULE.AND.UW%TYPR=='Q') CALL OS('X=X+Y   ',X=UW,Y=DEL_UW)
 ! JWI END
           ENDIF
           CALL OS('X=Y-Z   ', X=HN, Y=Z, Z=ZF)
 !         CLIPS NEGATIVE DEPTHS
           IF(OPTBAN.GT.0) THEN
             DO I = 1, NPOIN
-             IF(HN%R(I).LT.HMIN) THEN
-               U2D%R(I)=0.D0
-               V2D%R(I)=0.D0
-               HN%R(I) = MAX(HN%R(I),HMIN)
-             ELSE
-               U2D%R(I)= QU%R(I)/HN%R(I)
-               V2D%R(I)= QV%R(I)/HN%R(I)
-             ENDIF
+              IF(HN%R(I).LT.HMIN) THEN
+                U2D%R(I)=0.D0
+                V2D%R(I)=0.D0
+                HN%R(I) = MAX(HN%R(I),HMIN)
+              ELSE
+                U2D%R(I)= QU%R(I)/HN%R(I)
+                V2D%R(I)= QV%R(I)/HN%R(I)
+              ENDIF
             ENDDO
           ELSE
             CALL OS('X=Y/Z   ', X=U2D, Y=QU,   Z=HN)

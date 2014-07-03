@@ -249,7 +249,7 @@
       !================================================================!
 
       !================================!
-       SUBROUTINE SUSPENSION_EROSION_COH
+      SUBROUTINE SUSPENSION_EROSION_COH
       ! ****************************** !
      &(TAUP,NPOIN,XMVS,PARTHENIADES,ZERO,
      & FLUER, TOCE_VASE, NOMBLAY, DT, MS_VASE)
@@ -472,8 +472,8 @@
      &(ZFCL_S,FLUDP,FLUER,DT, NPOIN,XMVS, QFLUX,MS_VASE,ES_VASE,
      & CONC,NOMBLAY)
 !
-       USE BIEF
-       IMPLICIT NONE
+      USE BIEF
+      IMPLICIT NONE
       TYPE (BIEF_OBJ),  INTENT(INOUT)   :: ZFCL_S,FLUDP,FLUER,QFLUX
       DOUBLE PRECISION, INTENT(IN)      :: DT, XMVS
       INTEGER, INTENT(IN)               :: NPOIN,NOMBLAY
@@ -537,6 +537,6 @@
      
       END INTERFACE
       END MODULE INTERFACE_SISYPHE_SUSPENSION
-C
-C#######################################################################
-C
+!
+!#######################################################################
+!

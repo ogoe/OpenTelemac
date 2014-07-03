@@ -87,55 +87,61 @@
 !
       IF(BLO%N+N.LE.BLO%MAXBLOCK) THEN
 !
-      IF(N.GT.0) THEN
+        IF(N.GT.0) THEN
+!       
+          DO I = BLO%N+1 , BLO%N+N
+!         
+!           NAME OF THE VECTOR
+!         
+            NOM=NOMGEN
+            IF(I.LT.10) THEN
+              IDEB = MIN(6,IDEB)
+              NOM(IDEB:IDEB) = CHIFFRE(I)
+            ELSEIF(I.LT.100) THEN
+              IDEB = MIN(5,IDEB)
+              NOM(IDEB  :IDEB  ) = CHIFFRE(I/10)
+              NOM(IDEB+1:IDEB+1) = CHIFFRE(I-10*(I/10))
+            ELSEIF(I.LT.1000) THEN
+              IDEB = MIN(4,IDEB)
+              NOM(IDEB  :IDEB  ) = CHIFFRE(I/100)
+              II=I-100*(I/100)
+              NOM(IDEB+1:IDEB+1) = CHIFFRE(II/10)
+              NOM(IDEB+2:IDEB+2) = CHIFFRE(II-10*(II/10))
+            ELSE
+              IF(LNG.EQ.1) WRITE(LU,*) 'PLUS DE 999 VECTEURS DEMANDER 
+     &                                  DANS ALLVEC_IN_BLOCK'
+              IF(LNG.EQ.2) WRITE(LU,*) 'MORE THAN 999 VECTORS ASKED 
+     &                                  IN ALLVEC_IN_BLOCK'
+              CALL PLANTE(1)
+              STOP
+            ENDIF
+!         
+!           ALLOCATES THE VECTOR
+!         
+            ALLOCATE(BLO%ADR(I)%P)
+            CALL BIEF_ALLVEC(NAT,BLO%ADR(I)%P,NOM,IELM,NDIM,STATUT,MESH)
+!         
+          ENDDO ! I 
+!         
+          BLO%N=BLO%N+N
 !
-      DO I = BLO%N+1 , BLO%N+N
-!
-!  NAME OF THE VECTOR
-!
-        NOM=NOMGEN
-        IF(I.LT.10) THEN
-          IDEB = MIN(6,IDEB)
-          NOM(IDEB:IDEB) = CHIFFRE(I)
-        ELSEIF(I.LT.100) THEN
-          IDEB = MIN(5,IDEB)
-          NOM(IDEB  :IDEB  ) = CHIFFRE(I/10)
-          NOM(IDEB+1:IDEB+1) = CHIFFRE(I-10*(I/10))
-        ELSEIF(I.LT.1000) THEN
-          IDEB = MIN(4,IDEB)
-          NOM(IDEB  :IDEB  ) = CHIFFRE(I/100)
-          II=I-100*(I/100)
-          NOM(IDEB+1:IDEB+1) = CHIFFRE(II/10)
-          NOM(IDEB+2:IDEB+2) = CHIFFRE(II-10*(II/10))
-        ELSE
-          STOP 'MORE THAN 999 VECTORS ASKED IN ALLVEC_IN_BLOCK'
         ENDIF
-!
-!  ALLOCATES THE VECTOR
-!
-        ALLOCATE(BLO%ADR(I)%P)
-        CALL BIEF_ALLVEC(NAT,BLO%ADR(I)%P,NOM,IELM,NDIM,STATUT,MESH)
-!
-      ENDDO ! I 
-!
-      BLO%N=BLO%N+N
-!
-      ENDIF
 !
       ELSE
 !
-      IF(LNG.EQ.1) THEN
-        WRITE(LU,*) 'BIEF_ALLVEC_IN_BLOCK :'
-        WRITE(LU,*) 'PLUS DE ',BLO%MAXBLOCK,' (',N,')'
-        WRITE(LU,*) 'VECTEURS DEMANDES, CHANGER MAXBLOCK DANS ALLBLO.'
-      ENDIF
-      IF(LNG.EQ.2) THEN
-        WRITE(LU,*) 'BIEF_ALLVEC_IN_BLOCK:'
-        WRITE(LU,*) 'MORE THAN ',BLO%MAXBLOCK,'(',N,')'
-        WRITE(LU,*) 'VECTORS TO BE ALLOCATED'
-        WRITE(LU,*) 'CHANGE MAXBLOCK IN ALLBLO.'
-      ENDIF
-      STOP
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'BIEF_ALLVEC_IN_BLOCK :'
+          WRITE(LU,*) 'PLUS DE ',BLO%MAXBLOCK,' (',N,')'
+          WRITE(LU,*) 'VECTEURS DEMANDES, CHANGER MAXBLOCK DANS ALLBLO.'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'BIEF_ALLVEC_IN_BLOCK:'
+          WRITE(LU,*) 'MORE THAN ',BLO%MAXBLOCK,'(',N,')'
+          WRITE(LU,*) 'VECTORS TO BE ALLOCATED'
+          WRITE(LU,*) 'CHANGE MAXBLOCK IN ALLBLO.'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

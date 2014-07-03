@@ -158,32 +158,32 @@
 !
 !-----------------------------------------------------------------------
 !
-       IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
-       IF (LNG.EQ.1) WRITE(LU,110) IELMG,SG%NAME
-       IF (LNG.EQ.1) WRITE(LU,200) IELMU,SU%NAME
-       IF (LNG.EQ.1) WRITE(LU,300)
-       IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
-       IF (LNG.EQ.2) WRITE(LU,111) IELMG,SG%NAME
-       IF (LNG.EQ.1) WRITE(LU,201) IELMU,SU%NAME
-       IF (LNG.EQ.1) WRITE(LU,301)
-100    FORMAT(1X,'VC03AA (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F : ',1I6,
-     &        1X,'NOM REEL : ',A6)
-110    FORMAT(1X,'DISCRETISATION DE G : ',1I6,
-     &        1X,'NOM REEL : ',A6)
-200    FORMAT(1X,'DISCRETISATION DE U : ',1I6,
-     &        1X,'NOM REEL : ',A6)
-300    FORMAT(1X,'CAS NON PREVU')
-101    FORMAT(1X,'VC03AA (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF F:',1I6,
-     &        1X,'REAL NAME: ',A6)
-111    FORMAT(1X,'DISCRETIZATION OF G:',1I6,
-     &        1X,'REAL NAME: ',A6)
-201    FORMAT(1X,'DISCRETIZATION OF U:',1I6,
-     &        1X,'REAL NAME: ',A6)
-301    FORMAT(1X,'CASE NOT IMPLEMENTED')
-       CALL PLANTE(0)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
+        IF (LNG.EQ.1) WRITE(LU,110) IELMG,SG%NAME
+        IF (LNG.EQ.1) WRITE(LU,200) IELMU,SU%NAME
+        IF (LNG.EQ.1) WRITE(LU,300)
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,111) IELMG,SG%NAME
+        IF (LNG.EQ.1) WRITE(LU,201) IELMU,SU%NAME
+        IF (LNG.EQ.1) WRITE(LU,301)
+100     FORMAT(1X,'VC03AA (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+110     FORMAT(1X,'DISCRETISATION DE G : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+200     FORMAT(1X,'DISCRETISATION DE U : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+300     FORMAT(1X,'CAS NON PREVU')
+101     FORMAT(1X,'VC03AA (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F:',1I6,
+     &         1X,'REAL NAME: ',A6)
+111     FORMAT(1X,'DISCRETIZATION OF G:',1I6,
+     &         1X,'REAL NAME: ',A6)
+201     FORMAT(1X,'DISCRETIZATION OF U:',1I6,
+     &         1X,'REAL NAME: ',A6)
+301     FORMAT(1X,'CASE NOT IMPLEMENTED')
+        CALL PLANTE(0)
+        STOP
 !
       ENDIF
 !

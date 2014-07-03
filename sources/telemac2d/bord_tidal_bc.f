@@ -165,7 +165,7 @@
           XBTIDE(I) = MESH%X%R(NBOR(K))
           YBTIDE(I) = MESH%Y%R(NBOR(K))
 !
-c$$$            IF(BOUNDARY_COLOUR%I(K).EQ.1) THEN
+!$$$            IF(BOUNDARY_COLOUR%I(K).EQ.1) THEN
           IF(    K.EQ.1
      &       .OR.(LIHBOR(K-1).NE.KENT.AND.LIUBOR(K-1).NE.KENTU)) THEN
             J = J + 1

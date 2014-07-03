@@ -232,18 +232,18 @@
 !
 ! RK no slope effect at the open boundaries
       DO K = 1, NPTFR
-         IF (LIQBOR%I(K) == KENT) THEN 
-            COEF%R(MESH%NBOR%I(K)) = 1.D0
-            CALFA%R(MESH%NBOR%I(K)) = CTETA%R(MESH%NBOR%I(K))
-            SALFA%R(MESH%NBOR%I(K)) = STETA%R(MESH%NBOR%I(K))
-         ENDIF
+        IF (LIQBOR%I(K) == KENT) THEN 
+          COEF%R(MESH%NBOR%I(K)) = 1.D0
+          CALFA%R(MESH%NBOR%I(K)) = CTETA%R(MESH%NBOR%I(K))
+          SALFA%R(MESH%NBOR%I(K)) = STETA%R(MESH%NBOR%I(K))
+        ENDIF
 !     R.K. MAY 2007
 !     KSORT = 4
-         IF (LIQBOR%I(K) == 4) THEN
-            COEF%R(MESH%NBOR%I(K)) = 1.D0
-            CALFA%R(MESH%NBOR%I(K)) = CTETA%R(MESH%NBOR%I(K))
-            SALFA%R(MESH%NBOR%I(K)) = STETA%R(MESH%NBOR%I(K))
-         ENDIF
+        IF (LIQBOR%I(K) == 4) THEN
+          COEF%R(MESH%NBOR%I(K)) = 1.D0
+          CALFA%R(MESH%NBOR%I(K)) = CTETA%R(MESH%NBOR%I(K))
+          SALFA%R(MESH%NBOR%I(K)) = STETA%R(MESH%NBOR%I(K))
+        ENDIF
       ENDDO
 !     
 !======================================================================
@@ -251,5 +251,3 @@
 !
       RETURN
       END SUBROUTINE BEDLOAD_EFFPNT
-
-

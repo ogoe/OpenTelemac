@@ -105,8 +105,10 @@
           NPOIN2=NPOIN_PREV/NPLAN_PREV
           NPLAN=NPOIN/NPOIN2
           IF(.NOT.PRESENT(WD)) THEN
+            IF(LNG.EQ.1) WRITE(LU,*) 'WD N EST PAS DANS LITENR'
+            IF(LNG.EQ.2) WRITE(LU,*) 'WD NOT PRESENT IN LITENR'
             CALL PLANTE(1)
-            STOP 'WD NOT PRESENT IN LITENR'
+            STOP
           ENDIF
         ENDIF
       ENDIF

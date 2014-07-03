@@ -512,10 +512,10 @@
 !             ENDIF
 !             PROPOSED ALTERNATIVE IMPLEMENTATION, ONLY FIRST FREE POINT TREATED
 !             AND NOTHING DONE ON TIDAL FLATS.
-C             IF(IPBOT(IPOIN2).NE.NPLAN-1) THEN
-C               I=IPBOT(IPOIN2)*NPOIN2+IPOIN2
-C               MTRA2%D%R(I)=MTRA2%D%R(I)+T2_03%R(IPOIN2)
-C             ENDIF
+!             IF(IPBOT(IPOIN2).NE.NPLAN-1) THEN
+!               I=IPBOT(IPOIN2)*NPOIN2+IPOIN2
+!               MTRA2%D%R(I)=MTRA2%D%R(I)+T2_03%R(IPOIN2)
+!             ENDIF
             ENDDO
           ELSE
             DO IPOIN2 = 1,NPOIN2

@@ -88,13 +88,13 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'P_WRITE: ERREUR IN MPI_SEND'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_WRITE: ERROR IN MPI_SEND'
         WRITE(LU,*) 'MPI ERROR ',IER
+        CALL PLANTE(1)
         STOP
       ENDIF
       RETURN
 #else
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_WRIT VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_WRIT IN ITS VOID VERSION'
-      STOP
 #endif
 !
 !----------------------------------------------------------------------

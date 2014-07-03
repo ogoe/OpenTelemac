@@ -134,233 +134,235 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      IF(IELMU.EQ.51.AND.IELMV.EQ.51) THEN
+        IF(IELMU.EQ.51.AND.IELMV.EQ.51) THEN
 !
 !-----------------------------------------------------------------------
 !
 !  U AND V DISCRETISED IN P1 PRISM:
 !
-      IF(.NOT.SPECAD) THEN
+          IF(.NOT.SPECAD) THEN
 !
 !     STANDARD CASE
 !
-      DO IELEM = 1 , NELEM
+            DO IELEM = 1 , NELEM
+!         
+              I1 = IKLE1(IELEM)
+              I2 = IKLE2(IELEM)
+              I3 = IKLE3(IELEM)
+              I4 = IKLE4(IELEM)
+!         
+              X2 = X(I2) - X(I1)
+              X3 = X(I3) - X(I1)
+              X4 = X(I4) - X(I1)
+!         
+              Y2 = Y(I2) - Y(I1)
+              Y3 = Y(I3) - Y(I1)
+              Y4 = Y(I4) - Y(I1)
+!         
+!             REAL MESH
+!         
+!             Z2 = Z(I2) - Z(I1)
+!             Z3 = Z(I3) - Z(I1)
+!             Z4 = Z(I4) - Z(I1)
+!         
+              U1 = U(I1)
+              U2 = U(I2)
+              U3 = U(I3)
+              U4 = U(I4)
+              V1 = V(I1)
+              V2 = V(I2)
+              V3 = V(I3)
+              V4 = V(I4)
+!         
+!             RETRIEVING THE LOWER PLANE NUMBER
+!         
+              IP=(MIN(I1,I2,I3,I4)-1)/NPOIN2 +1
+!         
+!             TRANSFORMED MESH, 0 FOR LOWER POINTS, 1 FOR UPPER POINTS                          
+!         
+              Z1=DBLE((I1-1)/NPOIN2+1-IP) 
+              Z2=DBLE((I2-1)/NPOIN2+1-IP)-Z1
+              Z3=DBLE((I3-1)/NPOIN2+1-IP)-Z1
+              Z4=DBLE((I4-1)/NPOIN2+1-IP)-Z1        
+!         
+!             RETRIEVING THE 2D POINTS NUMBERS ON THE SAME VERTICAL
+!         
+              I12D=MOD(I1-1,NPOIN2)+1
+              I22D=MOD(I2-1,NPOIN2)+1
+              I32D=MOD(I3-1,NPOIN2)+1
+              I42D=MOD(I4-1,NPOIN2)+1
+!         
+!             RETRIEVING THE ORIGINAL PRISM HEIGHTS ON THE VERTICAL 
+!             TWO OF THE FOUR HEIGHTS WILL BE EQUAL, THE TWO CORRESPONDING
+!             POINTS OF THE TETRAHEDRON BEING ON THE SAME VERTICAL
+!         
+              H1=Z(IP*NPOIN2+I12D)-Z((IP-1)*NPOIN2+I12D)
+              H2=Z(IP*NPOIN2+I22D)-Z((IP-1)*NPOIN2+I22D)
+              H3=Z(IP*NPOIN2+I32D)-Z((IP-1)*NPOIN2+I32D)
+              H4=Z(IP*NPOIN2+I42D)-Z((IP-1)*NPOIN2+I42D)
+!         
+!             EACH CONTRIBUTION IS THE EXITING FLUX THROUGH ADJACENT FACES / 3
+!             THE TOTAL FLUX IS ZERO, SO THE RESULT IS THE ENTERING FLUX 
+!             THROUGH THE OPPOSITE FACE /3
+!             POINT 1 :   (FACE 123 + FACE 134 + FACE 142) /3 = - (FACE 243) /3
+!             POINT 2 : - (FACE 134) /3
+!             POINT 3 : - (FACE 142) /3
+!             POINT 4 : - (FACE 123) /3
+!           
+!             FIJK IS IN FACT 8 TIMES THE REAL FLUX THROUGH FACE IJK
+!         
+!             IN THE REAL MESH (WITH COEFFICIENT XSUR24)
+!         
+!             UUUU=U1+U2+U3+U4
+!             VVVV=V1+V2+V3+V4
+!         
+!             IN THE TRANSFORMED MESH (WITH COEFFICIENT XSUR120)
+!         
+              UUUU=(H1*U1+H2*U2+H3*U3+H4*U4+(H1+H2+H3+H4)*(U1+U2+U3+U4))
+              VVVV=(H1*V1+H2*V2+H3*V3+H4*V4+(H1+H2+H3+H4)*(V1+V2+V3+V4))
+!         
+!             FLUXES WITH OUTWARD NORMAL VECTOR
+!         
+              F123=(Z2*Y3-Z3*Y2)*UUUU+(X2*Z3-Z2*X3)*VVVV 
+              F134=(Z3*Y4-Z4*Y3)*UUUU+(X3*Z4-Z3*X4)*VVVV
+              F142=(Z4*Y2-Z2*Y4)*UUUU+(X4*Z2-Z4*X2)*VVVV
+              F243=-F123-F134-F142
+!         
+!             REAL MESH
+!         
+!             W1(IELEM) = -F243*XSUR24
+!             W2(IELEM) = -F134*XSUR24
+!             W3(IELEM) = -F142*XSUR24
+!             W4(IELEM) = -F123*XSUR24
+!         
+!             TRANSFORMED MESH
+!         
+              W1(IELEM) = -F243*XSUR120
+              W2(IELEM) = -F134*XSUR120
+              W3(IELEM) = -F142*XSUR120
+              W4(IELEM) = -F123*XSUR120
+!         
+            ENDDO
+!         
+          ELSE
+!         
+!           CASE WITH SPECIFIC ADVECTING FIELD
+!         
+            DO IELEM = 1 , NELEM
+!         
+!             CORRESPONDING 2D ELEMENT ON THE VERTICAL
+!             SEE NUMBERING OF ELEMENTS WHEN PRISMS ARE
+!             CUT INTO TETRAHEDRONS
+!         
+              IELEM2 = MOD(IELEM-1,NELEM2) + 1
+!         
+              I1 = IKLE1(IELEM)
+              I2 = IKLE2(IELEM)
+              I3 = IKLE3(IELEM)
+              I4 = IKLE4(IELEM)
+!         
+              X2 = X(I2) - X(I1)
+              X3 = X(I3) - X(I1)
+              X4 = X(I4) - X(I1)
+!         
+              Y2 = Y(I2) - Y(I1)
+              Y3 = Y(I3) - Y(I1)
+              Y4 = Y(I4) - Y(I1)
+!         
+!             REAL MESH
+!         
+!             Z2 = Z(I2) - Z(I1)
+!             Z3 = Z(I3) - Z(I1)
+!             Z4 = Z(I4) - Z(I1)
+!         
+!         
+!             RETRIEVING THE LOWER PLANE NUMBER
+!         
+              IP=(MIN(I1,I2,I3,I4)-1)/NPOIN2 +1
+!         
+!             TRANSFORMED MESH, 0 FOR LOWER POINTS, 1 FOR UPPER POINTS                          
+!         
+              Z1=DBLE((I1-1)/NPOIN2+1-IP) 
+              Z2=DBLE((I2-1)/NPOIN2+1-IP)-Z1
+              Z3=DBLE((I3-1)/NPOIN2+1-IP)-Z1
+              Z4=DBLE((I4-1)/NPOIN2+1-IP)-Z1    
+!         
+!             SPECIFIC ADVECTION FIELD
+!         
+              U1 = U(I1)+F(I1)*H(IELEM2,1)
+              U2 = U(I2)+F(I2)*H(IELEM2,1)
+              U3 = U(I3)+F(I3)*H(IELEM2,1)
+              U4 = U(I4)+F(I4)*H(IELEM2,1)
+              V1 = V(I1)+F(I1)*H(IELEM2,2)
+              V2 = V(I2)+F(I2)*H(IELEM2,2)
+              V3 = V(I3)+F(I3)*H(IELEM2,2)
+              V4 = V(I4)+F(I4)*H(IELEM2,2)    
+!         
+!             RETRIEVING THE 2D POINTS NUMBERS ON THE SAME VERTICAL
+!         
+              I12D=MOD(I1-1,NPOIN2)+1
+              I22D=MOD(I2-1,NPOIN2)+1
+              I32D=MOD(I3-1,NPOIN2)+1
+              I42D=MOD(I4-1,NPOIN2)+1
+!         
+!             RETRIEVING THE ORIGINAL PRISM HEIGHTS ON THE VERTICAL 
+!             TWO OF THE FOUR HEIGHTS WILL BE EQUAL, THE TWO CORRESPONDING
+!             POINTS OF THE TETRAHEDRON BEING ON THE SAME VERTICAL
+!         
+              H1=Z(IP*NPOIN2+I12D)-Z((IP-1)*NPOIN2+I12D)
+              H2=Z(IP*NPOIN2+I22D)-Z((IP-1)*NPOIN2+I22D)
+              H3=Z(IP*NPOIN2+I32D)-Z((IP-1)*NPOIN2+I32D)
+              H4=Z(IP*NPOIN2+I42D)-Z((IP-1)*NPOIN2+I42D)
+!         
+!             EACH CONTRIBUTION IS THE EXITING FLUX THROUGH ADJACENT FACES / 3
+!             THE TOTAL FLUX IS ZERO, SO THE RESULT IS THE ENTERING FLUX 
+!             THROUGH THE OPPOSITE FACE /3
+!             POINT 1 :   (FACE 123 + FACE 134 + FACE 142) /3 = - (FACE 243) /3
+!             POINT 2 : - (FACE 134) /3
+!             POINT 3 : - (FACE 142) /3
+!             POINT 4 : - (FACE 123) /3
+!           
+!             FIJK IS IN FACT 8 TIMES THE REAL FLUX THROUGH FACE IJK
+!         
+!             IN THE REAL MESH (WITH COEFFICIENT XSUR24)
+!         
+!             UUUU=U1+U2+U3+U4
+!             VVVV=V1+V2+V3+V4
+!         
+!             IN THE TRANSFORMED MESH (WITH COEFFICIENT XSUR120)
+!             SIMPLIFYING BY TAKING AVERAGE DEPTH * AVERAGE VELOCITY
+!             WITH AVERAGE DEPTH = REAL VOLUME / TRANSFORMED VOLUME
+!             DOES NOT SEEM TO WORK VERY WELL (NON LINEAR WAVES, BUMPRES)
+!         
+              UUUU=(H1*U1+H2*U2+H3*U3+H4*U4+(H1+H2+H3+H4)
+     &            *(U1+U2+U3+U4))
+              VVVV=(H1*V1+H2*V2+H3*V3+H4*V4+(H1+H2+H3+H4)
+     &            *(V1+V2+V3+V4))
+!         
+!             FLUXES WITH OUTWARD NORMAL VECTOR
+!         
+              F123=(Z2*Y3-Z3*Y2)*UUUU+(X2*Z3-Z2*X3)*VVVV 
+              F134=(Z3*Y4-Z4*Y3)*UUUU+(X3*Z4-Z3*X4)*VVVV
+              F142=(Z4*Y2-Z2*Y4)*UUUU+(X4*Z2-Z4*X2)*VVVV
+              F243=-F123-F134-F142
+!         
+!             REAL MESH
+!         
+!             W1(IELEM) = -F243*XSUR24
+!             W2(IELEM) = -F134*XSUR24
+!             W3(IELEM) = -F142*XSUR24
+!             W4(IELEM) = -F123*XSUR24
+!         
+!             TRANSFORMED MESH
+!         
+              W1(IELEM) = -F243*XSUR120
+              W2(IELEM) = -F134*XSUR120
+              W3(IELEM) = -F142*XSUR120
+              W4(IELEM) = -F123*XSUR120
+!         
+            ENDDO
 !
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
-!
-         X2 = X(I2) - X(I1)
-         X3 = X(I3) - X(I1)
-         X4 = X(I4) - X(I1)
-!
-         Y2 = Y(I2) - Y(I1)
-         Y3 = Y(I3) - Y(I1)
-         Y4 = Y(I4) - Y(I1)
-!
-!        REAL MESH
-!
-!        Z2 = Z(I2) - Z(I1)
-!        Z3 = Z(I3) - Z(I1)
-!        Z4 = Z(I4) - Z(I1)
-!
-         U1 = U(I1)
-         U2 = U(I2)
-         U3 = U(I3)
-         U4 = U(I4)
-         V1 = V(I1)
-         V2 = V(I2)
-         V3 = V(I3)
-         V4 = V(I4)
-!
-!        RETRIEVING THE LOWER PLANE NUMBER
-!
-         IP=(MIN(I1,I2,I3,I4)-1)/NPOIN2 +1
-!
-!        TRANSFORMED MESH, 0 FOR LOWER POINTS, 1 FOR UPPER POINTS                          
-!
-         Z1=DBLE((I1-1)/NPOIN2+1-IP) 
-         Z2=DBLE((I2-1)/NPOIN2+1-IP)-Z1
-         Z3=DBLE((I3-1)/NPOIN2+1-IP)-Z1
-         Z4=DBLE((I4-1)/NPOIN2+1-IP)-Z1        
-!
-!        RETRIEVING THE 2D POINTS NUMBERS ON THE SAME VERTICAL
-!
-         I12D=MOD(I1-1,NPOIN2)+1
-         I22D=MOD(I2-1,NPOIN2)+1
-         I32D=MOD(I3-1,NPOIN2)+1
-         I42D=MOD(I4-1,NPOIN2)+1
-!
-!        RETRIEVING THE ORIGINAL PRISM HEIGHTS ON THE VERTICAL 
-!        TWO OF THE FOUR HEIGHTS WILL BE EQUAL, THE TWO CORRESPONDING
-!        POINTS OF THE TETRAHEDRON BEING ON THE SAME VERTICAL
-!
-         H1=Z(IP*NPOIN2+I12D)-Z((IP-1)*NPOIN2+I12D)
-         H2=Z(IP*NPOIN2+I22D)-Z((IP-1)*NPOIN2+I22D)
-         H3=Z(IP*NPOIN2+I32D)-Z((IP-1)*NPOIN2+I32D)
-         H4=Z(IP*NPOIN2+I42D)-Z((IP-1)*NPOIN2+I42D)
-!
-!        EACH CONTRIBUTION IS THE EXITING FLUX THROUGH ADJACENT FACES / 3
-!        THE TOTAL FLUX IS ZERO, SO THE RESULT IS THE ENTERING FLUX 
-!        THROUGH THE OPPOSITE FACE /3
-!        POINT 1 :   (FACE 123 + FACE 134 + FACE 142) /3 = - (FACE 243) /3
-!        POINT 2 : - (FACE 134) /3
-!        POINT 3 : - (FACE 142) /3
-!        POINT 4 : - (FACE 123) /3
-!     
-!        FIJK IS IN FACT 8 TIMES THE REAL FLUX THROUGH FACE IJK
-!
-!        IN THE REAL MESH (WITH COEFFICIENT XSUR24)
-!
-!        UUUU=U1+U2+U3+U4
-!        VVVV=V1+V2+V3+V4
-!
-!        IN THE TRANSFORMED MESH (WITH COEFFICIENT XSUR120)
-!
-         UUUU=(H1*U1+H2*U2+H3*U3+H4*U4+(H1+H2+H3+H4)*(U1+U2+U3+U4))
-         VVVV=(H1*V1+H2*V2+H3*V3+H4*V4+(H1+H2+H3+H4)*(V1+V2+V3+V4))
-!
-!        FLUXES WITH OUTWARD NORMAL VECTOR
-!
-         F123=(Z2*Y3-Z3*Y2)*UUUU+(X2*Z3-Z2*X3)*VVVV 
-         F134=(Z3*Y4-Z4*Y3)*UUUU+(X3*Z4-Z3*X4)*VVVV
-         F142=(Z4*Y2-Z2*Y4)*UUUU+(X4*Z2-Z4*X2)*VVVV
-         F243=-F123-F134-F142
-!
-!        REAL MESH
-!
-!        W1(IELEM) = -F243*XSUR24
-!        W2(IELEM) = -F134*XSUR24
-!        W3(IELEM) = -F142*XSUR24
-!        W4(IELEM) = -F123*XSUR24
-!
-!        TRANSFORMED MESH
-!
-         W1(IELEM) = -F243*XSUR120
-         W2(IELEM) = -F134*XSUR120
-         W3(IELEM) = -F142*XSUR120
-         W4(IELEM) = -F123*XSUR120
-!
-      ENDDO
-!
-      ELSE
-!
-!     CASE WITH SPECIFIC ADVECTING FIELD
-!
-      DO IELEM = 1 , NELEM
-!
-!        CORRESPONDING 2D ELEMENT ON THE VERTICAL
-!        SEE NUMBERING OF ELEMENTS WHEN PRISMS ARE
-!        CUT INTO TETRAHEDRONS
-!
-         IELEM2 = MOD(IELEM-1,NELEM2) + 1
-!
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
-!
-         X2 = X(I2) - X(I1)
-         X3 = X(I3) - X(I1)
-         X4 = X(I4) - X(I1)
-!
-         Y2 = Y(I2) - Y(I1)
-         Y3 = Y(I3) - Y(I1)
-         Y4 = Y(I4) - Y(I1)
-!
-!        REAL MESH
-!
-!        Z2 = Z(I2) - Z(I1)
-!        Z3 = Z(I3) - Z(I1)
-!        Z4 = Z(I4) - Z(I1)
-!
-!
-!        RETRIEVING THE LOWER PLANE NUMBER
-!
-         IP=(MIN(I1,I2,I3,I4)-1)/NPOIN2 +1
-!
-!        TRANSFORMED MESH, 0 FOR LOWER POINTS, 1 FOR UPPER POINTS                          
-!
-         Z1=DBLE((I1-1)/NPOIN2+1-IP) 
-         Z2=DBLE((I2-1)/NPOIN2+1-IP)-Z1
-         Z3=DBLE((I3-1)/NPOIN2+1-IP)-Z1
-         Z4=DBLE((I4-1)/NPOIN2+1-IP)-Z1    
-!
-!        SPECIFIC ADVECTION FIELD
-!
-         U1 = U(I1)+F(I1)*H(IELEM2,1)
-         U2 = U(I2)+F(I2)*H(IELEM2,1)
-         U3 = U(I3)+F(I3)*H(IELEM2,1)
-         U4 = U(I4)+F(I4)*H(IELEM2,1)
-         V1 = V(I1)+F(I1)*H(IELEM2,2)
-         V2 = V(I2)+F(I2)*H(IELEM2,2)
-         V3 = V(I3)+F(I3)*H(IELEM2,2)
-         V4 = V(I4)+F(I4)*H(IELEM2,2)    
-!
-!        RETRIEVING THE 2D POINTS NUMBERS ON THE SAME VERTICAL
-!
-         I12D=MOD(I1-1,NPOIN2)+1
-         I22D=MOD(I2-1,NPOIN2)+1
-         I32D=MOD(I3-1,NPOIN2)+1
-         I42D=MOD(I4-1,NPOIN2)+1
-!
-!        RETRIEVING THE ORIGINAL PRISM HEIGHTS ON THE VERTICAL 
-!        TWO OF THE FOUR HEIGHTS WILL BE EQUAL, THE TWO CORRESPONDING
-!        POINTS OF THE TETRAHEDRON BEING ON THE SAME VERTICAL
-!
-         H1=Z(IP*NPOIN2+I12D)-Z((IP-1)*NPOIN2+I12D)
-         H2=Z(IP*NPOIN2+I22D)-Z((IP-1)*NPOIN2+I22D)
-         H3=Z(IP*NPOIN2+I32D)-Z((IP-1)*NPOIN2+I32D)
-         H4=Z(IP*NPOIN2+I42D)-Z((IP-1)*NPOIN2+I42D)
-!
-!        EACH CONTRIBUTION IS THE EXITING FLUX THROUGH ADJACENT FACES / 3
-!        THE TOTAL FLUX IS ZERO, SO THE RESULT IS THE ENTERING FLUX 
-!        THROUGH THE OPPOSITE FACE /3
-!        POINT 1 :   (FACE 123 + FACE 134 + FACE 142) /3 = - (FACE 243) /3
-!        POINT 2 : - (FACE 134) /3
-!        POINT 3 : - (FACE 142) /3
-!        POINT 4 : - (FACE 123) /3
-!     
-!        FIJK IS IN FACT 8 TIMES THE REAL FLUX THROUGH FACE IJK
-!
-!        IN THE REAL MESH (WITH COEFFICIENT XSUR24)
-!
-!        UUUU=U1+U2+U3+U4
-!        VVVV=V1+V2+V3+V4
-!
-!        IN THE TRANSFORMED MESH (WITH COEFFICIENT XSUR120)
-!        SIMPLIFYING BY TAKING AVERAGE DEPTH * AVERAGE VELOCITY
-!        WITH AVERAGE DEPTH = REAL VOLUME / TRANSFORMED VOLUME
-!        DOES NOT SEEM TO WORK VERY WELL (NON LINEAR WAVES, BUMPRES)
-!
-         UUUU=(H1*U1+H2*U2+H3*U3+H4*U4+(H1+H2+H3+H4)*(U1+U2+U3+U4))
-         VVVV=(H1*V1+H2*V2+H3*V3+H4*V4+(H1+H2+H3+H4)*(V1+V2+V3+V4))
-!
-!        FLUXES WITH OUTWARD NORMAL VECTOR
-!
-         F123=(Z2*Y3-Z3*Y2)*UUUU+(X2*Z3-Z2*X3)*VVVV 
-         F134=(Z3*Y4-Z4*Y3)*UUUU+(X3*Z4-Z3*X4)*VVVV
-         F142=(Z4*Y2-Z2*Y4)*UUUU+(X4*Z2-Z4*X2)*VVVV
-         F243=-F123-F134-F142
-!
-!        REAL MESH
-!
-!        W1(IELEM) = -F243*XSUR24
-!        W2(IELEM) = -F134*XSUR24
-!        W3(IELEM) = -F142*XSUR24
-!        W4(IELEM) = -F123*XSUR24
-!
-!        TRANSFORMED MESH
-!
-         W1(IELEM) = -F243*XSUR120
-         W2(IELEM) = -F134*XSUR120
-         W3(IELEM) = -F142*XSUR120
-         W4(IELEM) = -F123*XSUR120
-!
-      ENDDO
-!
-      ENDIF
+          ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -368,137 +370,137 @@
 !
 !-----------------------------------------------------------------------
 !
-      ELSE
+        ELSE
 !
 !-----------------------------------------------------------------------
 !
-       IF (LNG.EQ.1) WRITE(LU,101) IELMU,SU%NAME
-       IF (LNG.EQ.2) WRITE(LU,102) IELMU,SU%NAME
-101    FORMAT(1X,'VC04TT (BIEF) :',/,
+          IF (LNG.EQ.1) WRITE(LU,101) IELMU,SU%NAME
+          IF (LNG.EQ.2) WRITE(LU,102) IELMU,SU%NAME
+101       FORMAT(1X,'VC04TT (BIEF) :',/,
      &        1X,'DISCRETISATION DE U ET V : ',1I6,' CAS NON PREVU',/,
      &        1X,'NOM REEL DE U : ',A6)
-102    FORMAT(1X,'VC04TT (BIEF) :',/,
+102       FORMAT(1X,'VC04TT (BIEF) :',/,
      &        1X,'DISCRETISATION OF U ET V : ',1I6,' NOT IMPLEMENTED',/,
      &        1X,'REAL NAME OF U : ',A6)
-       CALL PLANTE(1)
-       STOP
+          CALL PLANTE(1)
+          STOP
 !
-      ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
       ELSEIF(FORMUL(14:16).EQ.'TOT') THEN
 !
-      IF(IELMW.NE.31.AND.IELMW.NE.51) THEN
-        IF (LNG.EQ.1) WRITE(LU,301)
-        IF (LNG.EQ.2) WRITE(LU,302)
-301     FORMAT(1X,'VC04TT (BIEF) :',/,
-     &         1X,'CAS NON PREVU (IELMW.NE.31 ET .NE.51)')
-302     FORMAT(1X,'VC04TT (BIEF) :',/,
-     &         1X,'UNEXPECTED CASE (IELMW.NE.31 AND .NE.51)')
-        CALL PLANTE(1)
-        STOP
-      ENDIF
+        IF(IELMW.NE.31.AND.IELMW.NE.51) THEN
+          IF (LNG.EQ.1) WRITE(LU,301)
+          IF (LNG.EQ.2) WRITE(LU,302)
+301       FORMAT(1X,'VC04TT (BIEF) :',/,
+     &           1X,'CAS NON PREVU (IELMW.NE.31 ET .NE.51)')
+302       FORMAT(1X,'VC04TT (BIEF) :',/,
+     &           1X,'UNEXPECTED CASE (IELMW.NE.31 AND .NE.51)')
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
-      DO IELEM = 1 , NELEM
-!
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
-!
-         X2 = X(I2) - X(I1)
-         X3 = X(I3) - X(I1)
-         X4 = X(I4) - X(I1)
-!
-         Y2 = Y(I2) - Y(I1)
-         Y3 = Y(I3) - Y(I1)
-         Y4 = Y(I4) - Y(I1)
-!
-         Z2 = Z(I2) - Z(I1)
-         Z3 = Z(I3) - Z(I1)
-         Z4 = Z(I4) - Z(I1)
-!
-         UUUU=U(I1)+U(I2)+U(I3)+U(I4)
-         VVVV=V(I1)+V(I2)+V(I3)+V(I4)
-         WWWW=W(I1)+W(I2)+W(I3)+W(I4)
-!
-         F123=(Z2*Y3-Z3*Y2)*UUUU+(X2*Z3-Z2*X3)*VVVV+(X3*Y2-X2*Y3)*WWWW 
-         F134=(Z3*Y4-Z4*Y3)*UUUU+(X3*Z4-Z3*X4)*VVVV+(X4*Y3-X3*Y4)*WWWW
-         F142=(Z4*Y2-Z2*Y4)*UUUU+(X4*Z2-Z4*X2)*VVVV+(X2*Y4-X4*Y2)*WWWW
-         F243=-F123-F134-F142
-!
-         W1(IELEM) = -F243*XSUR24
-         W2(IELEM) = -F134*XSUR24
-         W3(IELEM) = -F142*XSUR24
-         W4(IELEM) = -F123*XSUR24
-!
-!
-!        ORIGINAL MAPLE FORMULAS FOR HORIZONTAL PART
-!
-!        W1(IELEM) = XSUR24*(
-!    &U3*Z2*Y3+V4*X3*Z4-U4*Y3*Z4+U4*Z2*Y3+U4*Y4*Z3-U4*Z2*Y4-U4*
-!    &Y2*Z3+U1*Y4*Z3+V1*Z2*X4-V4*X2*Z4-U3*Z2*Y4-U2*Y2*Z3+V4*X2*Z3+V4*Z2*
-!    &X4-V4*X4*Z3+V2*Z2*X4-U2*Z2*Y4+U2*Y2*Z4+U2*Y4*Z3+U2*Z2*Y3-V1*Z2*X3+
-!    &V1*X2*Z3-V1*X4*Z3+V1*X3*Z4+U3*Y2*Z4+U3*Y4*Z3-V3*X2*Z4-V3*X4*Z3+V3*
-!    &X3*Z4-V3*Z2*X3+V3*X2*Z3+V3*Z2*X4+U1*Z2*Y3-U1*Y2*Z3+U1*Y2*Z4-V2*X2*
-!    &Z4-V2*X4*Z3-V2*Z2*X3+V2*X2*Z3-U3*Y2*Z3+V2*X3*Z4-V4*Z2*X3-U1*Y3*Z4+
-!    &U4*Y2*Z4-U3*Y3*Z4-V1*X2*Z4-U1*Z2*Y4-U2*Y3*Z4)
-!
-!        W2(IELEM) = XSUR24*(
-!    &-U4*Y4*Z3+U4*Y3*Z4-V4*X3*Z4+V4*X4*Z3+U1*Y3*Z4-U1*Y4*Z3-V3
-!    &*X3*Z4+V3*X4*Z3+U3*Y3*Z4-U3*Y4*Z3-V1*X3*Z4+V1*X4*Z3+U2*Y3*Z4-U2*Y4
-!    &*Z3-V2*X3*Z4+V2*X4*Z3)
-!
-!        W3(IELEM) = XSUR24*(
-!    &U4*Z2*Y4-U4*Y2*Z4-V4*Z2*X4+U3*Z2*Y4+V4*X2*Z4-V1*Z2*X4-U1*
-!    &Y2*Z4-V3*Z2*X4+V3*X2*Z4-U3*Y2*Z4+V1*X2*Z4-U2*Y2*Z4+U2*Z2*Y4-V2*Z2*
-!    &X4+V2*X2*Z4+U1*Z2*Y4)
-!
-!        W4(IELEM) = XSUR24*(
-!    &U4*Y2*Z3-U4*Z2*Y3+V4*Z2*X3-V4*X2*Z3+U1*Y2*Z3-U1*Z2*Y3+U3*
-!    &Y2*Z3-U3*Z2*Y3-V3*X2*Z3+V3*Z2*X3-V1*X2*Z3+V1*Z2*X3-U2*Z2*Y3+U2*Y2*
-!    &Z3-V2*X2*Z3+V2*Z2*X3)
-!
-!        ORIGINAL MAPLE FORMULAS FOR VERTICAl PART
-!
-!        Q1 = W(I1)
-!        Q2 = W(I2)
-!        Q3 = W(I3)
-!        Q4 = W(I4)
-!
-!        W1(IELEM) = (
-!    &         X4*Y3*Q4-Y2*X4*Q4+X2*Y4*Q4-X2*Y3*Q4-X3*Y4*Q4+Y2*X3*Q4-X2*
-!    &Y3*Q3-Y2*X4*Q3+X2*Y4*Q1-X3*Y4*Q3+X2*Y4*Q3+Y2*X3*Q3-X3*Y4*Q2+X4*Y3*
-!    &Q2+X2*Y4*Q2-Y2*X4*Q2-X2*Y3*Q2+Y2*X3*Q2+Y2*X3*Q1-Y2*X4*Q1-X2*Y3*Q1+
-!    &X4*Y3*Q3+X4*Y3*Q1-X3*Y4*Q1 )*XSUR24
-!
-!        W2(IELEM) = (
-!    &         -X4*Y3*Q4+X3*Y4*Q4+X3*Y4*Q3+X3*Y4*Q2-X4*Y3*Q2-X4*Y3*Q3-X4
-!    &*Y3*Q1+X3*Y4*Q1 )*XSUR24
-!
-!        W3(IELEM) = (
-!    &         Y2*X4*Q4-X2*Y4*Q4+Y2*X4*Q3-X2*Y4*Q1-X2*Y4*Q3-X2*Y4*Q2+Y2*
-!    &X4*Q2+Y2*X4*Q1 )*XSUR24
-!
-!        W4(IELEM) = (
-!    &         X2*Y3*Q4-Y2*X3*Q4+X2*Y3*Q3-Y2*X3*Q3+X2*Y3*Q2-Y2*X3*Q2-Y2*
-!    &X3*Q1+X2*Y3*Q1 )*XSUR24
-!
-      ENDDO
+        DO IELEM = 1 , NELEM
+!      
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
+!      
+          X2 = X(I2) - X(I1)
+          X3 = X(I3) - X(I1)
+          X4 = X(I4) - X(I1)
+!      
+          Y2 = Y(I2) - Y(I1)
+          Y3 = Y(I3) - Y(I1)
+          Y4 = Y(I4) - Y(I1)
+!      
+          Z2 = Z(I2) - Z(I1)
+          Z3 = Z(I3) - Z(I1)
+          Z4 = Z(I4) - Z(I1)
+!      
+          UUUU=U(I1)+U(I2)+U(I3)+U(I4)
+          VVVV=V(I1)+V(I2)+V(I3)+V(I4)
+          WWWW=W(I1)+W(I2)+W(I3)+W(I4)
+!      
+          F123=(Z2*Y3-Z3*Y2)*UUUU+(X2*Z3-Z2*X3)*VVVV+(X3*Y2-X2*Y3)*WWWW 
+          F134=(Z3*Y4-Z4*Y3)*UUUU+(X3*Z4-Z3*X4)*VVVV+(X4*Y3-X3*Y4)*WWWW
+          F142=(Z4*Y2-Z2*Y4)*UUUU+(X4*Z2-Z4*X2)*VVVV+(X2*Y4-X4*Y2)*WWWW
+          F243=-F123-F134-F142
+!      
+          W1(IELEM) = -F243*XSUR24
+          W2(IELEM) = -F134*XSUR24
+          W3(IELEM) = -F142*XSUR24
+          W4(IELEM) = -F123*XSUR24
+!      
+!      
+!              ORIGINAL MAPLE FORMULAS FOR HORIZONTAL PART
+!         
+!              W1(IELEM) = XSUR24*(
+!          &U3*Z2*Y3+V4*X3*Z4-U4*Y3*Z4+U4*Z2*Y3+U4*Y4*Z3-U4*Z2*Y4-U4*
+!          &Y2*Z3+U1*Y4*Z3+V1*Z2*X4-V4*X2*Z4-U3*Z2*Y4-U2*Y2*Z3+V4*X2*Z3+V4*Z2*
+!          &X4-V4*X4*Z3+V2*Z2*X4-U2*Z2*Y4+U2*Y2*Z4+U2*Y4*Z3+U2*Z2*Y3-V1*Z2*X3+
+!          &V1*X2*Z3-V1*X4*Z3+V1*X3*Z4+U3*Y2*Z4+U3*Y4*Z3-V3*X2*Z4-V3*X4*Z3+V3*
+!          &X3*Z4-V3*Z2*X3+V3*X2*Z3+V3*Z2*X4+U1*Z2*Y3-U1*Y2*Z3+U1*Y2*Z4-V2*X2*
+!          &Z4-V2*X4*Z3-V2*Z2*X3+V2*X2*Z3-U3*Y2*Z3+V2*X3*Z4-V4*Z2*X3-U1*Y3*Z4+
+!          &U4*Y2*Z4-U3*Y3*Z4-V1*X2*Z4-U1*Z2*Y4-U2*Y3*Z4)
+!         
+!              W2(IELEM) = XSUR24*(
+!          &-U4*Y4*Z3+U4*Y3*Z4-V4*X3*Z4+V4*X4*Z3+U1*Y3*Z4-U1*Y4*Z3-V3
+!          &*X3*Z4+V3*X4*Z3+U3*Y3*Z4-U3*Y4*Z3-V1*X3*Z4+V1*X4*Z3+U2*Y3*Z4-U2*Y4
+!          &*Z3-V2*X3*Z4+V2*X4*Z3)
+!         
+!              W3(IELEM) = XSUR24*(
+!          &U4*Z2*Y4-U4*Y2*Z4-V4*Z2*X4+U3*Z2*Y4+V4*X2*Z4-V1*Z2*X4-U1*
+!          &Y2*Z4-V3*Z2*X4+V3*X2*Z4-U3*Y2*Z4+V1*X2*Z4-U2*Y2*Z4+U2*Z2*Y4-V2*Z2*
+!          &X4+V2*X2*Z4+U1*Z2*Y4)
+!         
+!              W4(IELEM) = XSUR24*(
+!          &U4*Y2*Z3-U4*Z2*Y3+V4*Z2*X3-V4*X2*Z3+U1*Y2*Z3-U1*Z2*Y3+U3*
+!          &Y2*Z3-U3*Z2*Y3-V3*X2*Z3+V3*Z2*X3-V1*X2*Z3+V1*Z2*X3-U2*Z2*Y3+U2*Y2*
+!          &Z3-V2*X2*Z3+V2*Z2*X3)
+!         
+!              ORIGINAL MAPLE FORMULAS FOR VERTICAl PART
+!         
+!              Q1 = W(I1)
+!              Q2 = W(I2)
+!              Q3 = W(I3)
+!              Q4 = W(I4)
+!         
+!              W1(IELEM) = (
+!          &         X4*Y3*Q4-Y2*X4*Q4+X2*Y4*Q4-X2*Y3*Q4-X3*Y4*Q4+Y2*X3*Q4-X2*
+!          &Y3*Q3-Y2*X4*Q3+X2*Y4*Q1-X3*Y4*Q3+X2*Y4*Q3+Y2*X3*Q3-X3*Y4*Q2+X4*Y3*
+!          &Q2+X2*Y4*Q2-Y2*X4*Q2-X2*Y3*Q2+Y2*X3*Q2+Y2*X3*Q1-Y2*X4*Q1-X2*Y3*Q1+
+!          &X4*Y3*Q3+X4*Y3*Q1-X3*Y4*Q1 )*XSUR24
+!         
+!              W2(IELEM) = (
+!          &         -X4*Y3*Q4+X3*Y4*Q4+X3*Y4*Q3+X3*Y4*Q2-X4*Y3*Q2-X4*Y3*Q3-X4
+!          &*Y3*Q1+X3*Y4*Q1 )*XSUR24
+!         
+!              W3(IELEM) = (
+!          &         Y2*X4*Q4-X2*Y4*Q4+Y2*X4*Q3-X2*Y4*Q1-X2*Y4*Q3-X2*Y4*Q2+Y2*
+!          &X4*Q2+Y2*X4*Q1 )*XSUR24
+!         
+!              W4(IELEM) = (
+!          &         X2*Y3*Q4-Y2*X3*Q4+X2*Y3*Q3-Y2*X3*Q3+X2*Y3*Q2-Y2*X3*Q2-Y2*
+!          &X3*Q1+X2*Y3*Q1 )*XSUR24
+!      
+        ENDDO
 !
       ELSE
 !
 !-----------------------------------------------------------------------
 !
-       IF (LNG.EQ.1) WRITE(LU,201) FORMUL
-       IF (LNG.EQ.2) WRITE(LU,202) FORMUL
-201    FORMAT(1X,'VC04TT (BIEF) :',/,
-     &        1X,'IL MANQUE HOR OU VER EN FIN DE FORMULE : ',A16)
-202    FORMAT(1X,'VC04TT (BIEF):',/,
-     &        1X,'HOR OR VER LACKING AT THE END OF THE FORMULA : ',A16)
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,201) FORMUL
+        IF (LNG.EQ.2) WRITE(LU,202) FORMUL
+201     FORMAT(1X,'VC04TT (BIEF) :',/,
+     &         1X,'IL MANQUE HOR OU VER EN FIN DE FORMULE : ',A16)
+202     FORMAT(1X,'VC04TT (BIEF):',/,
+     &         1X,'HOR OR VER LACKING AT THE END OF THE FORMULA : ',A16)
+        CALL PLANTE(1)
+        STOP
 !
 !-----------------------------------------------------------------------
 !

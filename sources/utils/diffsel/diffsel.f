@@ -72,9 +72,11 @@
         READ (1) TIT1
         READ (2) TIT2
         IF ( TIT1 .EQ. TIT2 ) THEN
-        PRINT *, ' #1 ... OK'
+          PRINT *, ' #1 ... OK'
         ELSE
-        STOP ' #2 ... ERREUR : DIFFERENT'
+          WRITE(*,*) ' #2 ... ERREUR : DIFFERENT'
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !
 !------ #2 : NBV_1 AND NBV_2
@@ -98,6 +100,7 @@
         IF (C1_32 .NE. C2_32) THEN
           PRINT*, ' #3 ... ERREUR C1_32=',C1_32,
      &                      ', C2_32=',C2_32
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -112,6 +115,7 @@
         IF (IT1(K) .NE.IT2(K)) THEN
           PRINT*, ' #4 ... ERREUR IT1=',IT1(K),
      &                     ',   IT2=',IT2(K)
+          CALL PLANTE(1)
           STOP
         ENDIF
         ENDDO ! K
@@ -123,6 +127,7 @@
         IF (IT1(K) .NE. IT2(K)) THEN
           PRINT*, ' #4 ... ERREUR IT1=',IT1(K),
      &                     ',   IT2=',IT2(K)
+          CALL PLANTE(1)
           STOP
         ENDIF
         ENDDO ! K
@@ -134,13 +139,21 @@
       READ (1) NELEM1, NPOIN1, NDP1, II1
       READ (2) NELEM2, NPOIN2, NDP2, II2
         IF ( NELEM1 .NE. NELEM2 )
-     &     STOP ' #5 ... ERREUR : NELEM1<>NELEM2'
+     &    WRITE(*,*) ' #5 ... ERREUR : NELEM1<>NELEM2'
+          CALL PLANTE(1)
+          STOP
         IF ( NPOIN1 .NE. NPOIN2 )
-     &     STOP ' #5 ... ERREUR : NPOIN1<>NPOIN2'
+     &    WRITE(*,*) ' #5 ... ERREUR : NPOIN1<>NPOIN2'
+          CALL PLANTE(1)
+          STOP
         IF ( NDP1 .NE. NDP2 )
-     &     STOP ' #5 ... ERREUR : NDP1<>NDP2'
+     &    WRITE(*,*) ' #5 ... ERREUR : NDP1<>NDP2'
+          CALL PLANTE(1)
+          STOP
         IF ( II1 .NE. II2 )
-     &     STOP ' #5 ... ERREUR : II1<>II2'
+     &    WRITE(*,*) ' #5 ... ERREUR : II1<>II2'
+          CALL PLANTE(1)
+          STOP
         PRINT *,' #5 ... OK,  NELEM=',NELEM1,',  NPOINT=',NPOIN1
 !
 !------ #6 : IKLE
@@ -190,6 +203,7 @@
         ENDDO ! K
         IF (EPSILON .GT. EPSREF) THEN
           PRINT*, ' #8 ... ERREUR : EPSILON = ', EPSILON
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -208,6 +222,7 @@
         ENDDO ! K
         IF (EPSILON .GT. EPSREF) THEN
           PRINT*, ' #9 ... ERREUR : EPSILON = ', EPSILON
+          CALL PLANTE(1)
           STOP
         ENDIF
         PRINT *, ' #9 ... OK'
@@ -216,14 +231,15 @@
 !
 800   CONTINUE
 !
-       READ(1, END=9999) R1
-       READ(2) R2
-         IF (ABS(R1-R2) .GT. EPSREF) THEN
-           PRINT*, '# 10 ... ERREUR : EPSILON = ', ABS(R1-R2), ',
-     &           T1=', R1, ', T2=',R2
-           STOP
-         ENDIF
-         PRINT*, '#10 ... T1=T2=', R1
+      READ(1, END=9999) R1
+      READ(2) R2
+      IF (ABS(R1-R2) .GT. EPSREF) THEN
+        PRINT*, '# 10 ... ERREUR : EPSILON = ', ABS(R1-R2), ',
+     &        T1=', R1, ', T2=',R2
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+      PRINT*, '#10 ... T1=T2=', R1
 !
 !------ #9 : NVAR VECTORS
 !
@@ -239,7 +255,7 @@
      &    EPSILON = ABS(XTAB(K)-YTAB(K) )
         ENDDO ! K
         IF (EPSILON .GT. EPSREF) THEN
-         PRINT*, ' #11 ... ERREUR : EPSILON = ', EPSILON, ', T = ', R1
+          PRINT*, ' #11 ... ERREUR : EPSILON = ', EPSILON, ', T = ', R1
         ENDIF
       ENDDO ! J
 !
@@ -247,8 +263,12 @@
 !
 !------ ERRORS
 !
-8000  STOP 'ERREUR OUVERTURE FICHIER 1'
-8010  STOP 'ERREUR OUVERTURE FICHIER 2'
+8000  WRITE(*,*) 'ERREUR OUVERTURE FICHIER 1'
+      CALL PLANTE(1)
+      STOP
+8010  WRITE(*,*) 'ERREUR OUVERTURE FICHIER 2'
+      CALL PLANTE(1)
+      STOP
 !
 !------- END : CLOSES THE FILES
 !

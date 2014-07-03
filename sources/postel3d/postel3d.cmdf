@@ -2,7 +2,7 @@
 path: <root>|sources|postel3d
 module: postel3d
 liborder: special parallel damocles bief postel3d
-version: v7p0
+version: v6p3
 name: HOMERE_POSTEL3D
 
 [bief]
@@ -21,7 +21,7 @@ files: bief_def.f
   cpstvc.f
   bief_nbsegel.f
   segbor.f
-  readgeo1.f
+  cpikle3.f
   bief_nbpel.f
   bief_dim2_ext.f
   bief_nbseg.f
@@ -29,10 +29,10 @@ files: bief_def.f
   bief_allmat.f
   bief_ininds.f
   ielbor.f
+  readgeo1.f
   corrxy.f
   readgeo3.f
   readgeo2.f
-  cpikle3.f
   mxptel31.f
   mxptel.f
   bief_nbfel.f
@@ -58,12 +58,12 @@ files: preval.f
   precar.f
   carlu.f
   influ.f
-  dico.f
   loglu.f
   classe.f
+  dico.f
   aidelu.f
-  prev.f
   realu.f
+  prev.f
   damoc.f
   damocle.f
 
@@ -71,9 +71,9 @@ files: preval.f
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
   p_imax.F
+  interface_parallel.f
   p_init.F
   p_exit.F
-  interface_parallel.f
 
 [postel3d]
 path: <root>|sources|postel3d
@@ -95,4 +95,5 @@ files: declarations_postel3d.f
 path: <root>|sources|utils|special
 files: declarations_special.f
   plante.f
+  check_allocate.f
   extens.f

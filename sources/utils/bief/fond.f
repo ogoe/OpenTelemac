@@ -86,6 +86,7 @@
 19    FORMAT(1X,'FOND (BIEF)'
      &      ,/,1X,'ERROR IN THE BOTTOM FILE'
      &      ,/,1X,'AT LINE ',I7)
+      CALL PLANTE(1)
       STOP
 24    CONTINUE
 !
@@ -104,6 +105,7 @@
 11      FORMAT(1X,'FOND (BIEF)'
      &      ,/,1X,'ERROR DURING ALLOCATION OF 3 ARRAYS'
      &      ,/,1X,'OF SIZE ',I7)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -128,6 +130,7 @@
 13    FORMAT(1X,'FOND (BIEF)'
      &      ,/,1X,'ERROR IN THE BOTTOM FILE'
      &      ,/,1X,'AT LINE ',I7)
+      CALL PLANTE(1)
       STOP
 !
 22    CONTINUE

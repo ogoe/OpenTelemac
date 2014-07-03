@@ -94,72 +94,72 @@
 !
       IF(NOMRBI(1:1).NE.' ') THEN
 !
-         NELFLO= 0
+        NELFLO= 0
 !
-         DO IFLOT=1,NFLOT
-            IF (DEBFLO(IFLOT).LT.NIT) THEN
-               IDEB=(DEBFLO(IFLOT)-1)/FLOPRD + 1
-               IFIN=(MIN0(FINFLO(IFLOT),NIT)-1)/FLOPRD + 1
-               DO IIT=IDEB,IFIN
-                  NELFLO = NELFLO + 1
-                  XFLOT (NELFLO) = XFLOT (NITFLO*(IFLOT-1)+IIT)
-                  YFLOT (NELFLO) = YFLOT (NITFLO*(IFLOT-1)+IIT)
-                  IKLFLO(NELFLO) = NELFLO + 1
-               ENDDO ! IIT
-               IKLFLO(NELFLO) = NELFLO - 1
-            ENDIF
-         ENDDO ! IFLOT
+        DO IFLOT=1,NFLOT
+          IF (DEBFLO(IFLOT).LT.NIT) THEN
+            IDEB=(DEBFLO(IFLOT)-1)/FLOPRD + 1
+            IFIN=(MIN0(FINFLO(IFLOT),NIT)-1)/FLOPRD + 1
+            DO IIT=IDEB,IFIN
+              NELFLO = NELFLO + 1
+              XFLOT (NELFLO) = XFLOT (NITFLO*(IFLOT-1)+IIT)
+              YFLOT (NELFLO) = YFLOT (NITFLO*(IFLOT-1)+IIT)
+              IKLFLO(NELFLO) = NELFLO + 1
+            ENDDO ! IIT
+            IKLFLO(NELFLO) = NELFLO - 1
+          ENDIF
+        ENDDO ! IFLOT
 !
-         IF(NELFLO.NE.0) THEN
+        IF(NELFLO.NE.0) THEN
 !
-            DO IELFLO=1,NELFLO
-               IKLFLO(  NELFLO+IELFLO) = IKLFLO(IELFLO)
-               IKLFLO(2*NELFLO+IELFLO) = IKLFLO(IELFLO)
-               IKLFLO(IELFLO) = IELFLO
-            ENDDO ! IELFLO
+          DO IELFLO=1,NELFLO
+            IKLFLO(  NELFLO+IELFLO) = IKLFLO(IELFLO)
+            IKLFLO(2*NELFLO+IELFLO) = IKLFLO(IELFLO)
+            IKLFLO(IELFLO) = IELFLO
+          ENDDO ! IELFLO
 !
-!           SELAFIN FORMAT
+!         SELAFIN FORMAT
 !
-            CALL ECRGEO(XFLOT,YFLOT,NELFLO,IKLFLO,
-     &                  NRBI,NVAR,TEXTE,BID32,0,TITCAS,DRAPO,26,
-     &                  IKLFLO,NELFLO,NELFLO,3,DATE,TIME,
-     &                  NCSIZE,NPTIR,MESH%KNOLG%I,
-     &                  I3=I_ORIG,I4=J_ORIG)
+          CALL ECRGEO(XFLOT,YFLOT,NELFLO,IKLFLO,
+     &                NRBI,NVAR,TEXTE,BID32,0,TITCAS,DRAPO,26,
+     &                IKLFLO,NELFLO,NELFLO,3,DATE,TIME,
+     &                NCSIZE,NPTIR,MESH%KNOLG%I,
+     &                I3=I_ORIG,I4=J_ORIG)
 !
-!           WRITES OUT THE TIME STEP
+!         WRITES OUT THE TIME STEP
 !
-            A(1) = 0.D0
-            CALL ECRI2(A,BIDI,BIDC,1,'R4',NRBI,BINRES,ISTAT)
+          A(1) = 0.D0
+          CALL ECRI2(A,BIDI,BIDC,1,'R4',NRBI,BINRES,ISTAT)
 !
-!           WRITES OUT DUMMY RECORDS IN PLACE OF SIMULATION RESULTS
-!           (USES XFLOT BECAUSE NEEDS AN ARRAY OF REALS)
+!         WRITES OUT DUMMY RECORDS IN PLACE OF SIMULATION RESULTS
+!         (USES XFLOT BECAUSE NEEDS AN ARRAY OF REALS)
 !
-            CALL ECRI2 (XFLOT,BIDI,BIDC,NELFLO,'R4',NRBI,BINRES,ISTAT)
+          CALL ECRI2 (XFLOT,BIDI,BIDC,NELFLO,'R4',NRBI,BINRES,ISTAT)
 !
-         ELSE
+        ELSE
 !
-            IF(LNG.EQ.1) WRITE(LU,11) NFLOT
-            IF(LNG.EQ.2) WRITE(LU,12) NFLOT
-11          FORMAT(1X,'ATTENTION : VOUS AVEZ PREVU',I4,' FLOTTEURS',/,
-     &             1X,'MAIS AUCUN N''A ETE LARGUE',/,
-     &             1X,'AVANT LE DERNIER PAS DE TEMPS')
-12          FORMAT(1X,'ATTENTION : YOU ASKED FOR',I4,' FLOATS',/,
-     &             1X,'BUT NONE OF THEM HAS BEEN RELEASED',/,
-     &             1X,'SINCE THE LAST TIME STEP')
+          IF(LNG.EQ.1) WRITE(LU,11) NFLOT
+          IF(LNG.EQ.2) WRITE(LU,12) NFLOT
+11        FORMAT(1X,'ATTENTION : VOUS AVEZ PREVU',I4,' FLOTTEURS',/,
+     &           1X,'MAIS AUCUN N''A ETE LARGUE',/,
+     &           1X,'AVANT LE DERNIER PAS DE TEMPS')
+12        FORMAT(1X,'ATTENTION : YOU ASKED FOR',I4,' FLOATS',/,
+     &           1X,'BUT NONE OF THEM HAS BEEN RELEASED',/,
+     &           1X,'SINCE THE LAST TIME STEP')
 !
-         ENDIF
+        ENDIF
 !
       ELSE
 !
-         IF(LNG.EQ.1) WRITE(LU,21)
-         IF(LNG.EQ.2) WRITE(LU,22)
-21       FORMAT(1X,'LE FICHIER DE DERIVES DE FLOTTEURS',/,
-     &          1X,'N''A PU ETRE CONSTITUE,',/,
-     &          1X,'IL FAUT FOURNIR DANS LE FICHIER DES PARAMETRES',/,
-     &          1X,'UN NOM DE FICHIER DE RESULTATS BINAIRE')
-22       FORMAT(1X,'THE FILE OF FLOAT DRIFTS COULD NOT BE FIELD,',/,
-     &          1X,'YOU SHOULD INCLUDE IN THE STEERING FILE',/,
-     &          1X,'A NAME OF BINARY RESULTS FILE')
+        IF(LNG.EQ.1) WRITE(LU,21)
+        IF(LNG.EQ.2) WRITE(LU,22)
+21      FORMAT(1X,'LE FICHIER DE DERIVES DE FLOTTEURS',/,
+     &         1X,'N''A PU ETRE CONSTITUE,',/,
+     &         1X,'IL FAUT FOURNIR DANS LE FICHIER DES PARAMETRES',/,
+     &         1X,'UN NOM DE FICHIER DE RESULTATS BINAIRE')
+22      FORMAT(1X,'THE FILE OF FLOAT DRIFTS COULD NOT BE FIELD,',/,
+     &         1X,'YOU SHOULD INCLUDE IN THE STEERING FILE',/,
+     &         1X,'A NAME OF BINARY RESULTS FILE')
 !
       ENDIF
 !

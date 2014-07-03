@@ -76,39 +76,39 @@
 !
 ! LOOP OVER BOUNDARY NODES
       DO K=1,NPTFR
-       IS=NBOR(K)
+        IS=NBOR(K)
 !
 ! INITIALIZATION
-       FLUENT  = 0.D0
-       FLUSORT = 0.0D0
-       INFLOW  = 0.0D0
-       OUTFLOW = 0.0D0
-       FLXI(1)  = 0.0D0
-       FLXI(2)  = 0.0D0
-       FLXI(3)  = 0.0D0
-       FLXJ(1)  = 0.0D0
-       FLXJ(2)  = 0.0D0
-       FLXJ(3)  = 0.0D0
+        FLUENT  = 0.D0
+        FLUSORT = 0.0D0
+        INFLOW  = 0.0D0
+        OUTFLOW = 0.0D0
+        FLXI(1)  = 0.0D0
+        FLXI(2)  = 0.0D0
+        FLXI(3)  = 0.0D0
+        FLXJ(1)  = 0.0D0
+        FLXJ(2)  = 0.0D0
+        FLXJ(3)  = 0.0D0
 ! INDICATOR FOR DRY CELLS
-       IDRY=0
+        IDRY=0
 !   NORMALIZED NORMAL    
-       XNN=XNEBOR(K)
-       YNN=YNEBOR(K)
+        XNN=XNEBOR(K)
+        YNN=YNEBOR(K)
 !   NON NORMALIZED NORMAL
-       VNX=XNEBOR(K+NPTFR)
-       VNY=YNEBOR(K+NPTFR)
-       VNL=SQRT(VNX**2+VNY**2)
-!
-       H1   = W(1,IS)
-       ETA1=H1+ZF(IS)
-       IF(H1.GT.EPS)THEN
+        VNX=XNEBOR(K+NPTFR)
+        VNY=YNEBOR(K+NPTFR)
+        VNL=SQRT(VNX**2+VNY**2)
+!       
+        H1   = W(1,IS)
+        ETA1=H1+ZF(IS)
+        IF(H1.GT.EPS)THEN
           U1   = W(2,IS)/H1
           V1   = W(3,IS)/H1
-       ELSE
+        ELSE
           U1   = 0.0D0
           V1   = 0.0D0
           IDRY=IDRY+1
-       ENDIF
+        ENDIF
 !************************
 !    SOLID WALL
 !************************
@@ -116,26 +116,26 @@
 !    PERFECT SLIPPING CONDITION
 !===============================
 !
-       IF(LIMPRO(K,1).EQ.KNEU) THEN 
+        IF(LIMPRO(K,1).EQ.KNEU) THEN 
 !
 ! DEFINITION OF THE GOST STATE Ue
-         H2=H1
-         ETA2=ETA1
-!        ROTATION 
-         U10 = U1
-         U1  = XNN*U10+YNN*V1
-         V1  =-YNN*U10+XNN*V1
+          H2=H1
+          ETA2=ETA1
+!         ROTATION 
+          U10 = U1
+          U1  = XNN*U10+YNN*V1
+          V1  =-YNN*U10+XNN*V1
 ! SET NORMAL COMPONENT = 0        
-         U1 =  0.0D0
-         U2 =  U1
-         V2 =  V1
+          U1 =  0.0D0
+          U2 =  U1
+          V2 =  V1
 ! INVERSE ROTATION
-         U10 = U1
-         U1  = -YNN*V1
-         V1  =  XNN*V1
-!
-         U2  = -YNN*V2
-         V2  =  XNN*V2
+          U10 = U1
+          U1  = -YNN*V1
+          V1  =  XNN*V1
+!         
+          U2  = -YNN*V2
+          V2  =  XNN*V2
 ! not necesary  
 !          CALL FLU_TCHAMEN(H2,H1,ETA2,ETA1,U2,U1,
 !      &                    V2,V1,XNN,YNN,FLXI,FLXJ,G)
@@ -143,67 +143,67 @@
 !**************************************************
 !        LIQUID BOUNDARY
 !**************************************************
-       ELSEIF((LIMPRO(K,1).EQ.KDIR).OR.(LIMPRO(K,1).EQ.KDDL))THEN 
+        ELSEIF((LIMPRO(K,1).EQ.KDIR).OR.(LIMPRO(K,1).EQ.KDDL))THEN 
 !
 !    IMPOSED H 
 !===============================
 !
-        IF(LIMPRO(K,1).EQ.KDIR) THEN
-!
-          H2 = WINF(1,K)
-          ETA2 = H2 + ZF(IS)
-          IF(H2 .GT.EPS)THEN
-            U2 = WINF(2,K) / H2
-            V2 = WINF(3,K) / H2
-          ELSE
-            U2 = 0.0D0
-            V2 = 0.0D0
-            IDRY = IDRY + 1
+          IF(LIMPRO(K,1).EQ.KDIR) THEN
+!         
+            H2 = WINF(1,K)
+            ETA2 = H2 + ZF(IS)
+            IF(H2 .GT.EPS)THEN
+              U2 = WINF(2,K) / H2
+              V2 = WINF(3,K) / H2
+            ELSE
+              U2 = 0.0D0
+              V2 = 0.0D0
+              IDRY = IDRY + 1
+            ENDIF
+!         
+            IF(IDRY.LT.2)THEN
+!           AT LEAST ONE WET CELL
+              CALL FLU_TCHAMEN(H1,H2,ETA1,ETA2,U1,U2,
+     &                         V1,V2,XNN,YNN,FLXI,FLXJ,G)
+            ENDIF 
+            OUTFLOW    = FLXI(1)*VNL
+            FLUSORT    = FLUSORT + OUTFLOW
+            FLBOR%R(K) = OUTFLOW
+          
+!         LIMPRO(K,1).NE.KDIR    
+          ELSE 
+          
+            H2 = H1
+            U2 = U1
+            V2 = V1
+            ETA2=ETA1
+!         
+            H1 = WINF(1,K)
+            ETA1=H1+ZF(IS)
+            IF(H1.GT.EPS)THEN
+              U1 = WINF(2,K) / H1
+              V1 = WINF(3,K) / H1
+            ELSE
+              U1 = 0.0D0
+              V1 = 0.0D0
+              IDRY = IDRY + 1
+            ENDIF
+!         
+            IF(IDRY.LT.2)THEN
+!           AT LEAST ONE WET CELL
+              CALL FLU_TCHAMEN(H2,H1,ETA2,ETA1,U2,U1,
+     &                         V2,V1,XNN,YNN,FLXI,FLXJ,G)
+            ENDIF 
+            INFLOW     = FLXI(1)*VNL
+            FLUENT     = FLUENT + INFLOW
+            FLBOR%R(K) = INFLOW  
+
           ENDIF
+        ENDIF
 !
-          IF(IDRY.LT.2)THEN
-!         AT LEAST ONE WET CELL
-            CALL FLU_TCHAMEN(H1,H2,ETA1,ETA2,U1,U2,
-     &                       V1,V2,XNN,YNN,FLXI,FLXJ,G)
-          ENDIF 
-          OUTFLOW    = FLXI(1)*VNL
-          FLUSORT    = FLUSORT + OUTFLOW
-          FLBOR%R(K) = OUTFLOW
-
-!       LIMPRO(K,1).NE.KDIR    
-        ELSE 
-
-          H2 = H1
-          U2 = U1
-          V2 = V1
-          ETA2=ETA1
-!
-          H1 = WINF(1,K)
-          ETA1=H1+ZF(IS)
-          IF(H1.GT.EPS)THEN
-            U1 = WINF(2,K) / H1
-            V1 = WINF(3,K) / H1
-          ELSE
-            U1 = 0.0D0
-            V1 = 0.0D0
-            IDRY = IDRY + 1
-          ENDIF
-!
-          IF(IDRY.LT.2)THEN
-!         AT LEAST ONE WET CELL
-            CALL FLU_TCHAMEN(H2,H1,ETA2,ETA1,U2,U1,
-     &                       V2,V1,XNN,YNN,FLXI,FLXJ,G)
-          ENDIF 
-          INFLOW     = FLXI(1)*VNL
-          FLUENT     = FLUENT + INFLOW
-          FLBOR%R(K) = INFLOW  
-
-      ENDIF
-      ENDIF
-!
-      CE(IS,1)  = CE(IS,1) - VNL*FLXI(1)
-      CE(IS,2)  = CE(IS,2) - VNL*FLXI(2)
-      CE(IS,3)  = CE(IS,3) - VNL*FLXI(3)
+        CE(IS,1)  = CE(IS,1) - VNL*FLXI(1)
+        CE(IS,2)  = CE(IS,2) - VNL*FLXI(2)
+        CE(IS,3)  = CE(IS,3) - VNL*FLXI(3)
 !
       ENDDO
 !

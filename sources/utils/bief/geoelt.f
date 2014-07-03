@@ -64,33 +64,34 @@
 !
       IF(IELM.EQ.11) THEN
 !
-         DO IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
-         XSOM(1,1) = XEL(IELEM,1)
-         XSOM(2,1) = XEL(IELEM,2)
-         XSOM(3,1) = XEL(IELEM,3)
-         XSOM(1,2) = YEL(IELEM,1)
-         XSOM(2,2) = YEL(IELEM,2)
-         XSOM(3,2) = YEL(IELEM,3)
+        XSOM(1,1) = XEL(IELEM,1)
+        XSOM(2,1) = XEL(IELEM,2)
+        XSOM(3,1) = XEL(IELEM,3)
+        XSOM(1,2) = YEL(IELEM,1)
+        XSOM(2,2) = YEL(IELEM,2)
+        XSOM(3,2) = YEL(IELEM,3)
 !
-         T12 = - XSOM(1,1) + XSOM(2,1)
-         T13 = - XSOM(1,1) + XSOM(3,1)
-         T22 = - XSOM(1,2) + XSOM(2,2)
-         T23 = - XSOM(1,2) + XSOM(3,2)
+        T12 = - XSOM(1,1) + XSOM(2,1)
+        T13 = - XSOM(1,1) + XSOM(3,1)
+        T22 = - XSOM(1,2) + XSOM(2,2)
+        T23 = - XSOM(1,2) + XSOM(3,2)
 !
-         DET = T12*T23 - T22*T13
+        DET = T12*T23 - T22*T13
 !
-         IF(DET.LT.1.D-20) THEN
-           IF(LNG.EQ.1) WRITE(LU,98) IELEM
-           IF(LNG.EQ.2) WRITE(LU,99) IELEM
-98         FORMAT(1X,'GEOELT: ELEMENT ',1I6,' : DETERMINANT NEGATIF')
-99         FORMAT(1X,'GEOELT: ELEMENT ',1I6,' : NEGATIVE DETERMINANT')
-           STOP
-         ENDIF
+        IF(DET.LT.1.D-20) THEN
+          IF(LNG.EQ.1) WRITE(LU,98) IELEM
+          IF(LNG.EQ.2) WRITE(LU,99) IELEM
+98        FORMAT(1X,'GEOELT: ELEMENT ',1I6,' : DETERMINANT NEGATIF')
+99        FORMAT(1X,'GEOELT: ELEMENT ',1I6,' : NEGATIVE DETERMINANT')
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
-         SURDET(IELEM) = 1.D0/DET
+        SURDET(IELEM) = 1.D0/DET
 !
-         ENDDO
+        ENDDO
 !
       ELSE
 !

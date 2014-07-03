@@ -77,10 +77,10 @@
 ! -------------------------------------------------------------
 !
       IF(LISHHO.GT.0) THEN
-         MAS = .TRUE.
-         CALL FILTER(T3,MAS,T1,T2,AM1,'MATMAS          ',
-     &               1.D0,SBID,SBID,SBID,SBID,SBID,SBID,
-     &               MESH,MSK,MASKEL,LISHHO)
+        MAS = .TRUE.
+        CALL FILTER(T3,MAS,T1,T2,AM1,'MATMAS          ',
+     &              1.D0,SBID,SBID,SBID,SBID,SBID,SBID,
+     &              MESH,MSK,MASKEL,LISHHO)
       ENDIF
 !
       CALL OS('X=Y     ',HHO,T3,SBID,BID)
@@ -91,17 +91,17 @@
 !
       CALL OS('X=Y/Z   ' , T1 , CG , C  , BID )
       DO I=1,NPOIN
-         COCO=COS(INCI%R(I))*COS(INCI%R(I))
-         COSI=COS(INCI%R(I))*SIN(INCI%R(I))
-         SISI=SIN(INCI%R(I))*SIN(INCI%R(I))
-         COE=GRAV*HALE%R(I)*HALE%R(I)/16.D0
+        COCO=COS(INCI%R(I))*COS(INCI%R(I))
+        COSI=COS(INCI%R(I))*SIN(INCI%R(I))
+        SISI=SIN(INCI%R(I))*SIN(INCI%R(I))
+        COE=GRAV*HALE%R(I)*HALE%R(I)/16.D0
 !
 ! THE COEFFICIENT 1/16 ABOVE STEMS FROM HHO REPRESENTING THE
 ! SIGNIFICANT WAVE HEIGHT (ENERGY) IN RANDOM SEAS
 !
-         SXX%R(I)= (T1%R(I)*(1.D0+COCO)-0.5D0)*COE
-         SXY%R(I)= (T1%R(I)*COSI)*COE
-         SYY%R(I)= (T1%R(I)*(1.D0+SISI)-0.5D0)*COE
+        SXX%R(I)= (T1%R(I)*(1.D0+COCO)-0.5D0)*COE
+        SXY%R(I)= (T1%R(I)*COSI)*COE
+        SYY%R(I)= (T1%R(I)*(1.D0+SISI)-0.5D0)*COE
       END DO
 !
 !
@@ -117,28 +117,28 @@
 !
       CALL OS('X=Y     ',T3,SXX,SBID,BID)
       IF(LISRAD.GT.0) THEN
-         MAS = .TRUE.
-         CALL FILTER(T3,MAS,T1,T2,AM1,'MATMAS          ',
-     &               1.D0,SBID,SBID,SBID,SBID,SBID,SBID,
-     &               MESH,MSK,MASKEL,LISRAD)
+        MAS = .TRUE.
+        CALL FILTER(T3,MAS,T1,T2,AM1,'MATMAS          ',
+     &              1.D0,SBID,SBID,SBID,SBID,SBID,SBID,
+     &              MESH,MSK,MASKEL,LISRAD)
       ENDIF
       CALL OS('X=Y     ',SXX,T3,SBID,BID)
 !
       CALL OS('X=Y     ',T3,SXY,SBID,BID)
       IF(LISRAD.GT.0) THEN
-         MAS = .TRUE.
-         CALL FILTER(T3,MAS,T1,T2,AM1,'MATMAS          ',
-     &               1.D0,SBID,SBID,SBID,SBID,SBID,SBID,
-     &               MESH,MSK,MASKEL,LISRAD)
+        MAS = .TRUE.
+        CALL FILTER(T3,MAS,T1,T2,AM1,'MATMAS          ',
+     &              1.D0,SBID,SBID,SBID,SBID,SBID,SBID,
+     &              MESH,MSK,MASKEL,LISRAD)
       ENDIF
       CALL OS('X=Y     ',SXY,T3,SBID,BID)
 !
       CALL OS('X=Y     ',T3,SYY,SBID,BID)
       IF(LISRAD.GT.0) THEN
-         MAS = .TRUE.
-         CALL FILTER(T3,MAS,T1,T2,AM1,'MATMAS          ',
-     &               1.D0,SBID,SBID,SBID,SBID,SBID,SBID,
-     &               MESH,MSK,MASKEL,LISRAD)
+        MAS = .TRUE.
+        CALL FILTER(T3,MAS,T1,T2,AM1,'MATMAS          ',
+     &              1.D0,SBID,SBID,SBID,SBID,SBID,SBID,
+     &              MESH,MSK,MASKEL,LISRAD)
       ENDIF
       CALL OS('X=Y     ',SYY,T3,SBID,BID)
 !

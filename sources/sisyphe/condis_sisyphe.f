@@ -72,29 +72,29 @@
       NZFMAX = 0
 !
       IF(CONSTFLOW) THEN
-         CALL OS('X=X+Y   ', ECPL, E, S, C)
+        CALL OS('X=X+Y   ', ECPL, E, S, C)
 !
-         DO I=1,NPOIN
-            ZFMAX = ABS(ECPL%R(I)) - CRIT_CFD*HCPL%R(I)
-            IF (ZFMAX.GT.1.D-8) NZFMAX=NZFMAX+1
-         ENDDO
+        DO I=1,NPOIN
+          ZFMAX = ABS(ECPL%R(I)) - CRIT_CFD*HCPL%R(I)
+          IF (ZFMAX.GT.1.D-8) NZFMAX=NZFMAX+1
+        ENDDO
 !
-         IF (NCSIZE.GT.1) THEN
-            NZFMAX=P_ISUM(NZFMAX)
-            CALL PARCOM(ECPL,2,MESH)
-         ENDIF
+        IF (NCSIZE.GT.1) THEN
+          NZFMAX=P_ISUM(NZFMAX)
+          CALL PARCOM(ECPL,2,MESH)
+        ENDIF
 !
-         IF (NZFMAX.GE.1) CONSTFLOW = .FALSE.
+        IF (NZFMAX.GE.1) CONSTFLOW = .FALSE.
       ENDIF
 !
       IF(.NOT.CONSTFLOW) THEN
-         CALL OS('X=C     ', ECPL,  S, S, 0.D0)
-         CALL OS('X=Y     ', HCPL, HN, S,    C)
+        CALL OS('X=C     ', ECPL,  S, S, 0.D0)
+        CALL OS('X=Y     ', HCPL, HN, S,    C)
 !
-         IF (NCSIZE.GT.1) THEN
-            CALL PARCOM(ECPL,2,MESH)
-            CALL PARCOM(HCPL,2,MESH)
-         ENDIF
+        IF (NCSIZE.GT.1) THEN
+          CALL PARCOM(ECPL,2,MESH)
+          CALL PARCOM(HCPL,2,MESH)
+        ENDIF
       ENDIF
 !
 !=======================================================================!

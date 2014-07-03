@@ -86,45 +86,45 @@
 !
       DO IELEM = 1,NELEM
 !
-         COEF = SURFAC(IELEM) * SUR360
+        COEF = SURFAC(IELEM) * SUR360
 !
-!        TREATS HERE THE DRY ZONES
+!       TREATS HERE THE DRY ZONES
 !
-         H1 = MAX(Z(IKLE(IELEM,4)) - Z(IKLE(IELEM,1)),EPSI) * COEF
-         H2 = MAX(Z(IKLE(IELEM,5)) - Z(IKLE(IELEM,2)),EPSI) * COEF
-         H3 = MAX(Z(IKLE(IELEM,6)) - Z(IKLE(IELEM,3)),EPSI) * COEF
-         HT = H1 + H2 + H3
+        H1 = MAX(Z(IKLE(IELEM,4)) - Z(IKLE(IELEM,1)),EPSI) * COEF
+        H2 = MAX(Z(IKLE(IELEM,5)) - Z(IKLE(IELEM,2)),EPSI) * COEF
+        H3 = MAX(Z(IKLE(IELEM,6)) - Z(IKLE(IELEM,3)),EPSI) * COEF
+        HT = H1 + H2 + H3
 !
 !-----------------------------------------------------------------------
 !
 !  EXTRA-DIAGONAL TERMS
 !
-         XM(IELEM,4)  = H1 + H2 + HT
-         XM(IELEM,5)  = H1 + H3 + HT
-         XM(IELEM,9)  = H2 + H3 + HT
-         XM(IELEM,7)  = XM(IELEM,4)
-         XM(IELEM,10) = XM(IELEM,5)
-         XM(IELEM,11) = XM(IELEM,9)
+        XM(IELEM,4)  = H1 + H2 + HT
+        XM(IELEM,5)  = H1 + H3 + HT
+        XM(IELEM,9)  = H2 + H3 + HT
+        XM(IELEM,7)  = XM(IELEM,4)
+        XM(IELEM,10) = XM(IELEM,5)
+        XM(IELEM,11) = XM(IELEM,9)
 !
-         XM(IELEM,3)  =  4*H1 + HT + HT
-         XM(IELEM,8)  =  4*H2 + HT + HT
-         XM(IELEM,12) =  4*H3 + HT + HT
+        XM(IELEM,3)  =  4*H1 + HT + HT
+        XM(IELEM,8)  =  4*H2 + HT + HT
+        XM(IELEM,12) =  4*H3 + HT + HT
 !
-         XM(IELEM,1)  = XM(IELEM,4) + XM(IELEM,4)
-         XM(IELEM,2)  = XM(IELEM,5) + XM(IELEM,5)
-         XM(IELEM,6)  = XM(IELEM,9) + XM(IELEM,9)
-         XM(IELEM,13) = XM(IELEM,1)
-         XM(IELEM,14) = XM(IELEM,2)
-         XM(IELEM,15) = XM(IELEM,6)
+        XM(IELEM,1)  = XM(IELEM,4) + XM(IELEM,4)
+        XM(IELEM,2)  = XM(IELEM,5) + XM(IELEM,5)
+        XM(IELEM,6)  = XM(IELEM,9) + XM(IELEM,9)
+        XM(IELEM,13) = XM(IELEM,1)
+        XM(IELEM,14) = XM(IELEM,2)
+        XM(IELEM,15) = XM(IELEM,6)
 !
 !  DIAGONAL TERMS
 !
-         T(IELEM,1) = XM(IELEM,3)  + XM(IELEM,3)
-         T(IELEM,2) = XM(IELEM,8)  + XM(IELEM,8)
-         T(IELEM,3) = XM(IELEM,12) + XM(IELEM,12)
-         T(IELEM,4) = T(IELEM,1)
-         T(IELEM,5) = T(IELEM,2)
-         T(IELEM,6) = T(IELEM,3)
+        T(IELEM,1) = XM(IELEM,3)  + XM(IELEM,3)
+        T(IELEM,2) = XM(IELEM,8)  + XM(IELEM,8)
+        T(IELEM,3) = XM(IELEM,12) + XM(IELEM,12)
+        T(IELEM,4) = T(IELEM,1)
+        T(IELEM,5) = T(IELEM,2)
+        T(IELEM,6) = T(IELEM,3)
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !

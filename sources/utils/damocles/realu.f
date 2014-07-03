@@ -112,43 +112,43 @@
 !     CASE WHERE THE REAL DOES NOT FINISH ON THE LINE                                                                                                                                                                                                                                                                                                                                                                                                                                              LINE
 !
       IF (I2.GT.LONGLI) THEN
-         LUFIC=.TRUE.
-         READ(NFIC,END=900,ERR=998,FMT='(A)') LIGNE2
-         CDEB = LIGNE2(1:1)
-         CDEB2 = LIGNE2(2:2)
+        LUFIC=.TRUE.
+        READ(NFIC,END=900,ERR=998,FMT='(A)') LIGNE2
+        CDEB = LIGNE2(1:1)
+        CDEB2 = LIGNE2(2:2)
 !
-         IF ((CDEB.EQ.'0'.OR.CDEB.EQ.'1'.OR.CDEB.EQ.'2'.OR.
-     &        CDEB.EQ.'3'.OR.CDEB.EQ.'4'.OR.CDEB.EQ.'5'.OR.
-     &        CDEB.EQ.'6'.OR.CDEB.EQ.'7'.OR.CDEB.EQ.'8'.OR.
-     &        CDEB.EQ.'9'.OR.CDEB.EQ.'.'.OR.CDEB.EQ.'+'.OR.
-     &        CDEB.EQ.'-'.OR.CDEB.EQ.',')
+        IF ((CDEB.EQ.'0'.OR.CDEB.EQ.'1'.OR.CDEB.EQ.'2'.OR.
+     &       CDEB.EQ.'3'.OR.CDEB.EQ.'4'.OR.CDEB.EQ.'5'.OR.
+     &       CDEB.EQ.'6'.OR.CDEB.EQ.'7'.OR.CDEB.EQ.'8'.OR.
+     &       CDEB.EQ.'9'.OR.CDEB.EQ.'.'.OR.CDEB.EQ.'+'.OR.
+     &       CDEB.EQ.'-'.OR.CDEB.EQ.',')
 !
-     &      .OR.
+     &     .OR.
 !
 ! CASE WHERE IT DEPENDS ON THE SECOND CHARACTER OF THE FOLLOWING LINE
 !
-     &      ( (CDEB.EQ.'E'.OR.CDEB.EQ.'D')
-     &      .AND.
-     &      ( CDEB2.EQ.'0'.OR.CDEB2.EQ.'1'.OR.CDEB2.EQ.'2'.OR.
-     &        CDEB2.EQ.'3'.OR.CDEB2.EQ.'4'.OR.CDEB2.EQ.'5'.OR.
-     &        CDEB2.EQ.'6'.OR.CDEB2.EQ.'7'.OR.CDEB2.EQ.'8'.OR.
-     &        CDEB2.EQ.'9'.OR.CDEB2.EQ.'+'.OR.CDEB2.EQ.'-'    )))
+     &     ( (CDEB.EQ.'E'.OR.CDEB.EQ.'D')
+     &     .AND.
+     &     ( CDEB2.EQ.'0'.OR.CDEB2.EQ.'1'.OR.CDEB2.EQ.'2'.OR.
+     &       CDEB2.EQ.'3'.OR.CDEB2.EQ.'4'.OR.CDEB2.EQ.'5'.OR.
+     &       CDEB2.EQ.'6'.OR.CDEB2.EQ.'7'.OR.CDEB2.EQ.'8'.OR.
+     &       CDEB2.EQ.'9'.OR.CDEB2.EQ.'+'.OR.CDEB2.EQ.'-'    )))
 !
-     &      THEN
+     &     THEN
 !
-            LISUIV = .TRUE.
-            I3=1
-            I3=PREVAL(I3,LIGNE2 , ' ' , ';' ,TABUL)
-            IF (I1.LE.LONGLI) THEN
-              LIGNE = LIGNE(I1:LONGLI)//LIGNE2(1:I3)
-            ELSE
-              LIGNE = LIGNE2(1:I3)
-            ENDIF
-            I2 = LONGLI-I1+1+I3
-            I1 = 1
-         ENDIF
-       ENDIF
-       GOTO 910
+          LISUIV = .TRUE.
+          I3=1
+          I3=PREVAL(I3,LIGNE2 , ' ' , ';' ,TABUL)
+          IF (I1.LE.LONGLI) THEN
+            LIGNE = LIGNE(I1:LONGLI)//LIGNE2(1:I3)
+          ELSE
+            LIGNE = LIGNE2(1:I3)
+          ENDIF
+          I2 = LONGLI-I1+1+I3
+          I1 = 1
+        ENDIF
+      ENDIF
+      GOTO 910
 !
  900  CONTINUE
       RETOUR = .TRUE.
@@ -159,23 +159,23 @@
       IPOINT = I2 - 1
       IFDECI = I2 - 1
       DO I = I1 , I2-1
-!          ACCEPTS '.' AND ','
-           IF ( LIGNE(I:I).EQ.'.' ) THEN
-                IPOINT = I
-                VUPOIN=.TRUE.
-           ELSEIF ( LIGNE(I:I).EQ.',' ) THEN
-                LIGNE(I:I)='.'
-                IPOINT = I
-                VUPOIN=.TRUE.
-           ELSEIF (LIGNE(I:I).EQ.'E') THEN
-!          ACCEPTS BOTH FORMATS E AND D
-                FORMAE = .TRUE.
-                IFDECI = I-1
-           ELSEIF (LIGNE(I:I).EQ.'D') THEN
-                LIGNE(I:I)='E'
-                FORMAE = .TRUE.
-                IFDECI = I-1
-           ENDIF
+!       ACCEPTS '.' AND ','
+        IF ( LIGNE(I:I).EQ.'.' ) THEN
+          IPOINT = I
+          VUPOIN=.TRUE.
+        ELSEIF ( LIGNE(I:I).EQ.',' ) THEN
+          LIGNE(I:I)='.'
+          IPOINT = I
+          VUPOIN=.TRUE.
+        ELSEIF (LIGNE(I:I).EQ.'E') THEN
+!       ACCEPTS BOTH FORMATS E AND D
+          FORMAE = .TRUE.
+          IFDECI = I-1
+        ELSEIF (LIGNE(I:I).EQ.'D') THEN
+          LIGNE(I:I)='E'
+          FORMAE = .TRUE.
+          IFDECI = I-1
+        ENDIF
       ENDDO ! I 
 !
 !     //// NUMBER OF DECIMAL POINTS ///
@@ -196,9 +196,9 @@
       IF ( ILDECI.GT.0 ) JD2 = 3-INT(DLOG10(DBLE(ILDECI)))
       WRITE (LLDECI,'(I3)') ILDECI
       IF ( I1.GT.1 ) THEN
-           WRITE ( FORMA , 1010 )  I1-1,CODE,LLONG(JD1:3),LLDECI(JD2:3)
+        WRITE ( FORMA , 1010 )  I1-1,CODE,LLONG(JD1:3),LLDECI(JD2:3)
       ELSE
-           WRITE ( FORMA , 1020 )  CODE,LLONG(JD1:3),LLDECI(JD2:3)
+        WRITE ( FORMA , 1020 )  CODE,LLONG(JD1:3),LLDECI(JD2:3)
       ENDIF
 !
 1010  FORMAT('(',I3,'X,',A1,A,'.',A,')' )

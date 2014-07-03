@@ -2,12 +2,12 @@
                         SUBROUTINE QNLIN3
 !                       *****************
 !
-     *( TSTOT , TSDER , F     , NB_NOD, FREQ  , TETA  , NT    , NF    ,
-     *  RAISF , TAILF , SEUIL , FSEUIL, LBUF  , DIMBUF, F_POIN, F_COEF,
-     *  F_PROJ, T_POIN, TB_SCA, NQ_TE1, NQ_OM2, NF1   , NT1   , DFREQ ,
-     *  K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , K_1M  ,
-     *  K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M, K_1M3P,
-     *  TB_TPM, TB_TMP, TB_FAC, NCONF , NCONFM, IDCONF)
+     &( TSTOT , TSDER , F     , NB_NOD, FREQ  , TETA  , NT    , NF    ,
+     &  RAISF , TAILF , SEUIL , FSEUIL, LBUF  , DIMBUF, F_POIN, F_COEF,
+     &  F_PROJ, T_POIN, TB_SCA, NQ_TE1, NQ_OM2, NF1   , NT1   , DFREQ ,
+     &  K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , K_1M  ,
+     &  K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M, K_1M3P,
+     &  TB_TPM, TB_TMP, TB_FAC, NCONF , NCONFM, IDCONF)
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   24/06/2011
@@ -107,13 +107,13 @@
       INTEGER           NQ_TE1, NQ_OM2, NF1   , NT1
       INTEGER           K_IF1(NF1), K_1P(NT1,NF1), K_1M(NT1,NF1)
       INTEGER           K_IF2 (NQ_OM2,NT1,NF1), K_IF3 (NQ_OM2,NT1,NF1),
-     *                  K_1P2P(NQ_OM2,NT1,NF1), K_1P3M(NQ_OM2,NT1,NF1),
-     *                  K_1P2M(NQ_OM2,NT1,NF1), K_1P3P(NQ_OM2,NT1,NF1),
-     *                  K_1M2P(NQ_OM2,NT1,NF1), K_1M3M(NQ_OM2,NT1,NF1),
-     *                  K_1M2M(NQ_OM2,NT1,NF1), K_1M3P(NQ_OM2,NT1,NF1)
+     &                  K_1P2P(NQ_OM2,NT1,NF1), K_1P3M(NQ_OM2,NT1,NF1),
+     &                  K_1P2M(NQ_OM2,NT1,NF1), K_1P3P(NQ_OM2,NT1,NF1),
+     &                  K_1M2P(NQ_OM2,NT1,NF1), K_1M3M(NQ_OM2,NT1,NF1),
+     &                  K_1M2M(NQ_OM2,NT1,NF1), K_1M3P(NQ_OM2,NT1,NF1)
       DOUBLE PRECISION  TB_V14(NF1)           , TB_FAC(NQ_OM2,NT1,NF1),
-     *                  TB_V24(NQ_OM2,NT1,NF1), TB_V34(NQ_OM2,NT1,NF1),
-     *                  TB_TPM(NQ_OM2,NT1,NF1), TB_TMP(NQ_OM2,NT1,NF1)
+     &                  TB_V24(NQ_OM2,NT1,NF1), TB_V34(NQ_OM2,NT1,NF1),
+     &                  TB_TPM(NQ_OM2,NT1,NF1), TB_TMP(NQ_OM2,NT1,NF1)
 !
 !.....Variables related to the configuration selection
       INTEGER           NCONF , NCONFM, IDCONF(NCONFM,3)
@@ -121,21 +121,21 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER           IP    , JF    , JT    , JF1   , JT1   , IQ_OM2,
-     *                  JFM0  , JFM1  , JFM2  , JFM3  , IXF1  , IXF2  ,
-     *                  IXF3  , JFMIN , JFMAX , ICONF
+     &                  JFM0  , JFM1  , JFM2  , JFM3  , IXF1  , IXF2  ,
+     &                  IXF3  , JFMIN , JFMAX , ICONF
       INTEGER           KT1P  , KT1M  , JT1P  , JT1M  , KT1P2P, KT1P2M, 
-     *                  KT1P3P, KT1P3M, KT1M2P, KT1M2M, KT1M3P, KT1M3M,
-     *                  JT1P2P, JT1P2M, JT1P3P, JT1P3M, JT1M2P, JT1M2M,
-     *                  JT1M3P, JT1M3M
+     &                  KT1P3P, KT1P3M, KT1M2P, KT1M2M, KT1M3P, KT1M3M,
+     &                  JT1P2P, JT1P2M, JT1P3P, JT1P3M, JT1M2P, JT1M2M,
+     &                  JT1M3P, JT1M3M
       DOUBLE PRECISION  V1_4  , V2_4  , V3_4  , Q_2P3M, Q_2M3P, FACTOR,
-     *                  T_2P3M, T_2M3P, S_2P3M, S_2M3P, SCAL_T, T2P3M ,
-     *                  T2M3P , SP0   , SP1P  , SP1M  , SP1P2P, SP1P2M,
-     *                  SP1P3P, SP1P3M, SP1M2P, SP1M2M, SP1M3P, SP1M3M,
-     *                  CF0   , CP0   , CF1   , CP1   , CF2   , CP2   ,
-     *                  CF3   , CP3   , Q2PD0 , Q2PD1 , Q2PD2P, Q2PD3M,
-     *                  Q2MD0 , Q2MD1 , Q2MD2M, Q2MD3P,
-     *                  AUX00 , AUX01 , AUX02 , AUX03 , AUX04 , AUX05 ,
-     *                  AUX06 , AUX07 , AUX08 , AUX09 , AUX10
+     &                  T_2P3M, T_2M3P, S_2P3M, S_2M3P, SCAL_T, T2P3M ,
+     &                  T2M3P , SP0   , SP1P  , SP1M  , SP1P2P, SP1P2M,
+     &                  SP1P3P, SP1P3M, SP1M2P, SP1M2M, SP1M3P, SP1M3M,
+     &                  CF0   , CP0   , CF1   , CP1   , CF2   , CP2   ,
+     &                  CF3   , CP3   , Q2PD0 , Q2PD1 , Q2PD2P, Q2PD3M,
+     &                  Q2MD0 , Q2MD1 , Q2MD2M, Q2MD3P,
+     &                  AUX00 , AUX01 , AUX02 , AUX03 , AUX04 , AUX05 ,
+     &                  AUX06 , AUX07 , AUX08 , AUX09 , AUX10
 !
 !=======================================================================
 !     COMPUTES THE GENERALIZED MIN AND MAX FREQUENCIES : INSTEAD OF GOING

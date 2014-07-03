@@ -1,7 +1,7 @@
       MODULE DECLARATIONS_PARALLEL
         IMPLICIT NONE
 #if defined (HAVE_MPI)
-        include 'mpif.h'
+        INCLUDE 'mpif.h'
 #endif
          
 #if !defined (HAVE_MPI)

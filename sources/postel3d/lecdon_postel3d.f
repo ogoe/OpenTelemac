@@ -64,15 +64,7 @@
 ! allocate a (simple) REAL vector
 !
       ALLOCATE(RB(50000),STAT=ERR)
-      IF(ERR.NE.0) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'LECDON : ALLOCATION DE RB DEFECTUEUSE'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'LECDON : WRONG ALLOCATION OF RB'
-        ENDIF
-        STOP
-      ENDIF
+      CALL CHECK_ALLOCATE(ERR,'LECDON_POSTEL3D:RB')
 !
 !***********************************************************************
 !
@@ -91,12 +83,12 @@
 !    UN FICHIER NON DONNE PAR DAMOCLES SERA RECONNU PAR UN BLANC
 !    (IL N'EST PAS SUR QUE TOUS LES COMPILATEURS INITIALISENT AINSI)
 !
-         MOTCAR(K)(1:1)=' '
+        MOTCAR(K)(1:1)=' '
 !
-         DIMENS(1,K) = 0
-         DIMENS(2,K) = 0
-         DIMENS(3,K) = 0
-         DIMENS(4,K) = 0
+        DIMENS(1,K) = 0
+        DIMENS(2,K) = 0
+        DIMENS(3,K) = 0
+        DIMENS(4,K) = 0
 !
       ENDDO
 !
@@ -197,31 +189,31 @@
       ENDIF
 !
 !
-          CALL LIT(XB,RB,I,CB,10,'I ',POS_FILES(POSPRE)%LU,BINPRE,ISTAT)
+      CALL LIT(XB,RB,I,CB,10,'I ',POS_FILES(POSPRE)%LU,BINPRE,ISTAT)
 !
-          NPLAN = I(7)
+      NPLAN = I(7)
 !
-          if (i(6).eq.1) then
-          varsub=.true.
-          else
-          varsub=.false.
-          endif
+      IF (I(6).EQ.1) THEN
+      VARSUB=.TRUE.
+      ELSE
+      VARSUB=.FALSE.
+      ENDIF
 !
       DO K = 1,5
-         READ(POS_FILES(POSPRE)%LU)
+        READ(POS_FILES(POSPRE)%LU)
       ENDDO
       NENRE = 0
 43    CONTINUE
 !th   +1 car il y a dt
-      DO K = 1,nva3+1
-         READ(POS_FILES(POSPRE)%LU,ERR=48,END=48)
+      DO K = 1,NVA3+1
+        READ(POS_FILES(POSPRE)%LU,ERR=48,END=48)
       ENDDO
 !
-       if (varsub) then
-      DO K = 1,4
-         READ(POS_FILES(POSPRE)%LU,ERR=48,END=48)
-      ENDDO
-       endif
+      IF (VARSUB) THEN
+        DO K = 1,4
+          READ(POS_FILES(POSPRE)%LU,ERR=48,END=48)
+        ENDDO
+      ENDIF
 !
       NENRE = NENRE + 1
       GOTO 43
@@ -235,15 +227,15 @@
       NC2DH = MIN(MAX(MOTINT(ADRESS(1,1)),0),9)
 !
       IF(NC2DH.GE.1) THEN
-         DO K=1,NC2DH
-            NPLREF(K) = K-1
-            IF (K.LE.DIMENS(1,5)) NPLREF(K) = MOTINT(ADRESS(1,5)+K-1)
+        DO K=1,NC2DH
+          NPLREF(K) = K-1
+          IF (K.LE.DIMENS(1,5)) NPLREF(K) = MOTINT(ADRESS(1,5)+K-1)
 !th un controle que l'on peut pour l'instant enlever
 !th (on ne connait pas nplan actuellement
-!th            NPLREF(K) = MIN(MAX(NPLREF(K),0),NPLAN)
-            HREF(K) = 0.D0
-            IF (K.LE.DIMENS(2,1)) HREF(K) = MOTREA(ADRESS(2,1)+K-1)
-         ENDDO
+!th          NPLREF(K) = MIN(MAX(NPLREF(K),0),NPLAN)
+          HREF(K) = 0.D0
+          IF (K.LE.DIMENS(2,1)) HREF(K) = MOTREA(ADRESS(2,1)+K-1)
+        ENDDO
       ENDIF
 !
 ! MOTS CLES LIES AUX COUPES VERTICALES
@@ -254,29 +246,30 @@
       JM = NPLAN
 !
       IF(NC2DV.GE.1) THEN
-         DO K=1,NC2DV
-            NSEG(K) = MIN(DIMENS(2,2*K),DIMENS(2,2*K+1)) - 1
-            IF (NSEG(K).LT.1) THEN
-               IF (LNG.EQ.1) WRITE(LU,91) K
-               IF (LNG.EQ.2) WRITE(LU,92) K
-               CALL PLANTE(0)
-            ENDIF
-            DO J=0,NSEG(K)
-               X2DV(J+1,K) = MOTREA(ADRESS(2,2*K  )+J)
-               Y2DV(J+1,K) = MOTREA(ADRESS(2,2*K+1)+J)
-            ENDDO
-            DISTOR(K) = 1.D0
-            IF (K.LE.DIMENS(2,20)) DISTOR(K) = MOTREA(ADRESS(2,20)+K-1)
-            IM = MAX(IM,NSEG(K)+1)
-         ENDDO !K
+        DO K=1,NC2DV
+          NSEG(K) = MIN(DIMENS(2,2*K),DIMENS(2,2*K+1)) - 1
+          IF (NSEG(K).LT.1) THEN
+            IF (LNG.EQ.1) WRITE(LU,91) K
+            IF (LNG.EQ.2) WRITE(LU,92) K
+            CALL PLANTE(0)
+          ENDIF
+          DO J=0,NSEG(K)
+            X2DV(J+1,K) = MOTREA(ADRESS(2,2*K  )+J)
+            Y2DV(J+1,K) = MOTREA(ADRESS(2,2*K+1)+J)
+          ENDDO
+          DISTOR(K) = 1.D0
+          IF (K.LE.DIMENS(2,20)) DISTOR(K) = MOTREA(ADRESS(2,20)+K-1)
+          IM = MAX(IM,NSEG(K)+1)
+        ENDDO !K
       ENDIF
 !
 ! ARRET EN CAS DE DEMANDE DE COUPES NULLE
 !
       IF (NC2DH+NC2DV.EQ.0) THEN
-         IF (LNG.EQ.1) WRITE(LU,101)
-         IF (LNG.EQ.2) WRITE(LU,102)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,101)
+        IF (LNG.EQ.2) WRITE(LU,102)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

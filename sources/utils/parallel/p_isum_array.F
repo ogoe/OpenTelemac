@@ -50,13 +50,12 @@
      &           'P_ISUM_ARRAY: ERREUR DANS MPI_ALLREDUCE'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_ISUM_ARRAY: ERROR IN MPI_ALLREDUCE'
         WRITE (LU,*) 'MPI ERROR ',IERR
+        CALL PLANTE(1)
         STOP
       ENDIF
-      RETURN
 #else
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_ISUM_ARRAY VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*)'CALL OF P_ISUM_ARRAY IN ITS VOID VERSION'
-      STOP
 !
 !-----------------------------------------------------------------------
 !
@@ -64,5 +63,6 @@
 !
 !-----------------------------------------------------------------------
 !
+      RETURN
       END
 

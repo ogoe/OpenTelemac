@@ -99,34 +99,34 @@
 !-----------------------------------------------------------------------
 !
       DO NNN = 1,1              !4
-         IF (NNN > 1) WRITE(LU,*) 'COMPRESS', J, NNN
-!         
-         THRESH = THRESH * (10**(1-NNN))
-         MARKERMAXVERYOLD = MARKERMAX
+        IF (NNN > 1) WRITE(LU,*) 'COMPRESS', J, NNN
+!        
+        THRESH = THRESH * (10**(1-NNN))
+        MARKERMAXVERYOLD = MARKERMAX
 !         
 !--------------------------------------------------------------------------
 ! ITERATE UNTIL NOTHING CHANGES ANYMORE
 !-----------------------------------------------------------------------
 !
-         DO TTT = 1, PRO_MAX(J) - 2 ! THEROTICAL MAXIMUM NUMBER OF ITERATIONS
-            MARKERMAXOLD = MARKERMAX
-            MARKERCNT = 1
-            MARKERTEMP(MARKERCNT) = 1
+        DO TTT = 1, PRO_MAX(J) - 2 ! THEROTICAL MAXIMUM NUMBER OF ITERATIONS
+          MARKERMAXOLD = MARKERMAX
+          MARKERCNT = 1
+          MARKERTEMP(MARKERCNT) = 1
 !
 !--------------------------------------------------------------------------
 ! LOOP OVER ALL SECTIONS BETWEEN 2 MARKED NODES
 !-----------------------------------------------------------------------
 !
-            DO I = 1, MARKERMAX-1
-               MAXDIST = 0      !INITS THE MAXIMUM FRACTION ERROR
-               MAXPOS = -1      !INITS THE NODE WHICH PRODUCES THE MAXIMUM FRACTION ERROR
-               IF (MARKER(I+1)-MARKER(I) >= 2 ) THEN
+          DO I = 1, MARKERMAX-1
+            MAXDIST = 0      !INITS THE MAXIMUM FRACTION ERROR
+            MAXPOS = -1      !INITS THE NODE WHICH PRODUCES THE MAXIMUM FRACTION ERROR
+            IF (MARKER(I+1)-MARKER(I) >= 2 ) THEN
 !         
 !--------------------------------------------------------------------------                  
 ! LOOP OVER ALL UNMARKED NODES IN BETWEEN 2 MARKED NODES
 !-----------------------------------------------------------------------
 !
-                  DO M = MARKER(I) + 1 , MARKER(I + 1) - 1
+              DO M = MARKER(I) + 1 , MARKER(I + 1) - 1
 !         
 !--------------------------------------------------------------------------                     
 ! HOW MUCH VOLUME=FRACTION IS LOST IF WE ELIMINATE THIS PROFILEPOINT
@@ -134,67 +134,67 @@
 ! "ERROR TRIANGLE VOLUME" IS CALCULATED BY GAUSSIAN POLYGON FORMULA!
 !-----------------------------------------------------------------------
 !
-                     LOSS(M) = 0.D0
-!                    
-                     DO K = 1, NSICLA
-                        IF (NNN.GE.5) THEN
-                           FI = PRO_F(J,M-1,K)
-                           FJ = PRO_F(J,M+1,K)
-                           FK = PRO_F(J,M,K)
-                           DI = PRO_D(J,M-1,K)
-                           DJ = PRO_D(J,M+1,K)
-                           DK = PRO_D(J,M,K)
-                        ELSE
-                           FI = PRO_F(J,MARKER(I),K)
-                           FJ = PRO_F(J,MARKER(I+1),K)
-                           FK = PRO_F(J,M,K)
-                           DI = PRO_D(J,MARKER(I),K)
-                           DJ = PRO_D(J,MARKER(I+1),K)
-                           DK = PRO_D(J,M,K)
-                        ENDIF
-!                        
-                        LOSS(M) = LOSS(M) +
-     &                       ABS(0.5D0 * ((FI+FJ) * (DI-DJ) +
-     &                       (FJ+FK) * (DJ-DK) +
-     &                       (FK+FI) * (DK-DI)))
-                        
-                     ENDDO      !K
-!                                          
-                     IF(LOSS(M).GT.MAXDIST) THEN
-                        MAXDIST = LOSS(M)
-                        MAXPOS = M
-                     ENDIF
-!                     
-                  ENDDO         !M
+                LOSS(M) = 0.D0
+!               
+                DO K = 1, NSICLA
+                  IF (NNN.GE.5) THEN
+                    FI = PRO_F(J,M-1,K)
+                    FJ = PRO_F(J,M+1,K)
+                    FK = PRO_F(J,M,K)
+                    DI = PRO_D(J,M-1,K)
+                    DJ = PRO_D(J,M+1,K)
+                    DK = PRO_D(J,M,K)
+                  ELSE
+                    FI = PRO_F(J,MARKER(I),K)
+                    FJ = PRO_F(J,MARKER(I+1),K)
+                    FK = PRO_F(J,M,K)
+                    DI = PRO_D(J,MARKER(I),K)
+                    DJ = PRO_D(J,MARKER(I+1),K)
+                    DK = PRO_D(J,M,K)
+                  ENDIF
+!                  
+                  LOSS(M) = LOSS(M) +
+     &                 ABS(0.5D0 * ((FI+FJ) * (DI-DJ) +
+     &                 (FJ+FK) * (DJ-DK) +
+     &                 (FK+FI) * (DK-DI)))
+                   
+                ENDDO      !K
+!                                     
+                IF(LOSS(M).GT.MAXDIST) THEN
+                  MAXDIST = LOSS(M)
+                  MAXPOS = M
+                ENDIF
+!                 
+              ENDDO         !M
 !
 !-----------------------------------------------------------------------                   
 ! IF ANY POINT IS TO FAR OUT OF RANGE: ADD IT TO THE MARKER LIST
 !-----------------------------------------------------------------------
 !
-                  IF(MAXPOS > -1 .AND. MAXDIST > THRESH) THEN
-                     MARKERCNT = MARKERCNT + 1
-                     MARKERTEMP(MARKERCNT) = MAXPOS
-                  ENDIF
-                                 
-               ENDIF
+              IF(MAXPOS > -1 .AND. MAXDIST > THRESH) THEN
+                MARKERCNT = MARKERCNT + 1
+                MARKERTEMP(MARKERCNT) = MAXPOS
+              ENDIF
+                              
+            ENDIF
 !
 !-----------------------------------------------------------------------                
 ! ADD THE ENDPOINT OF THIS SECTION
 !-----------------------------------------------------------------------
 !
-               MARKERCNT = MARKERCNT + 1
-               MARKERTEMP(MARKERCNT) = MARKER(I+1)
-!               
-            ENDDO               !I
-!            
-            DO I = 1, MARKERCNT
-               MARKER(I) = MARKERTEMP(I)
-            ENDDO
-            MARKERMAX = MARKERCNT
-!            
-            IF (MARKERMAX - MARKERMAXOLD == 0 ) EXIT !STOP ITERATION, AS NOTHING CHANGED!
-         ENDDO                  ! TTT
-         IF (MARKERMAX - MARKERMAXVERYOLD == 0 ) EXIT !STOP ITERATION, AS NOTHING CHANGED!
+            MARKERCNT = MARKERCNT + 1
+            MARKERTEMP(MARKERCNT) = MARKER(I+1)
+!             
+          ENDDO               !I
+!          
+          DO I = 1, MARKERCNT
+            MARKER(I) = MARKERTEMP(I)
+          ENDDO
+          MARKERMAX = MARKERCNT
+!          
+          IF (MARKERMAX - MARKERMAXOLD == 0 ) EXIT !STOP ITERATION, AS NOTHING CHANGED!
+        ENDDO                  ! TTT
+        IF (MARKERMAX - MARKERMAXVERYOLD == 0 ) EXIT !STOP ITERATION, AS NOTHING CHANGED!
       ENDDO                     ! NNN
 !      
 !--------------------------------------------------------------------------
@@ -202,10 +202,10 @@
 !-----------------------------------------------------------------------
 !
       DO K = 1, NSICLA
-         DO I = 1, MARKERMAX
-             PRO_F(J,I,K) = PRO_F(J,MARKER(I),K)
-            PRO_D(J,I,K) = PRO_D(J,MARKER(I),K)
-          ENDDO                  !I
+        DO I = 1, MARKERMAX
+          PRO_F(J,I,K) = PRO_F(J,MARKER(I),K)
+          PRO_D(J,I,K) = PRO_D(J,MARKER(I),K)
+        ENDDO                  !I
       ENDDO                     !K
 !      
       PRO_MAX(J) = MARKERMAX
@@ -215,8 +215,8 @@
 !-----------------------------------------------------------------------
 !
       IF(PRO_MAX(J) > PRO_MAX_MAX-4*NSICLA-4) THEN
-         WRITE(LU,*) 'CVSP_COMPRESS_DP RESIGNS AND CALLS COMPRESS_BRUT:'
-         CALL CVSP_COMPRESS_BRUT(J)
+        WRITE(LU,*) 'CVSP_COMPRESS_DP RESIGNS AND CALLS COMPRESS_BRUT:'
+        CALL CVSP_COMPRESS_BRUT(J)
       ENDIF
 !
 !--------------------------------------------------------------------------
@@ -229,4 +229,3 @@
 !      
       RETURN
       END SUBROUTINE CVSP_COMPRESS_DP
-      

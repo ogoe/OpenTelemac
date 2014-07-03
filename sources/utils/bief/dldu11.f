@@ -92,12 +92,12 @@
 ! REQUIRES THAT THE DIAGONAL OF A BE THE IDENTITY (EXCEPT IN PARALLEL MODE)
 !
       IF(TYPDIA(1:1).NE.'I'.AND.NCSIZE.LE.1) THEN
-         IF (LNG.EQ.1) WRITE(LU,100) TYPDIA(1:1)
-         IF (LNG.EQ.2) WRITE(LU,101) TYPDIA(1:1)
-100      FORMAT(1X,'DLDU11 (BIEF) : DIAGONALE DE A NON EGALE A I :',A1)
-101      FORMAT(1X,'DLDU11 (BIEF) : DIAGONAL OF A NOT EQUAL TO I :',A1)
-         CALL PLANTE(0)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,100) TYPDIA(1:1)
+        IF (LNG.EQ.2) WRITE(LU,101) TYPDIA(1:1)
+100     FORMAT(1X,'DLDU11 (BIEF) : DIAGONALE DE A NON EGALE A I :',A1)
+101     FORMAT(1X,'DLDU11 (BIEF) : DIAGONAL OF A NOT EQUAL TO I :',A1)
+        CALL PLANTE(0)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -107,9 +107,9 @@
         IF(COPY) CALL OV('X=Y     ' , XB , XA , Z , C  , NELMAX*3 )
 !
         DO IELEM = 1 , NELEM
-         W(IELEM,2) = 1.D0 - XB(IELEM,1)**2
-         XB(IELEM,3) = (XB(IELEM,3)-XB(IELEM,1)*XB(IELEM,2))/W(IELEM,2)
-         W(IELEM,3) = 1.D0 - XB(IELEM,2)**2 -XB(IELEM,3)**2
+          W(IELEM,2) = 1.D0 - XB(IELEM,1)**2
+          XB(IELEM,3) = (XB(IELEM,3)-XB(IELEM,1)*XB(IELEM,2))/W(IELEM,2)
+          W(IELEM,3) = 1.D0 - XB(IELEM,2)**2 -XB(IELEM,3)**2
         ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
@@ -120,23 +120,24 @@
 !
         DO IELEM = 1 , NELEM
 ! L U FACTORISATION
-         W(IELEM,2)=1.D0 - XB(IELEM,1)*XB(IELEM,4)
-         XB(IELEM,6) = (XB(IELEM,6)-XB(IELEM,1)*XB(IELEM,5))/W(IELEM,2)
-         XB(IELEM,3) =  XB(IELEM,3)-XB(IELEM,4)*XB(IELEM,2)
-         W(IELEM,3)=1.D0-XB(IELEM,2)*XB(IELEM,5)-XB(IELEM,3)*XB(IELEM,6)
+          W(IELEM,2)=1.D0 - XB(IELEM,1)*XB(IELEM,4)
+          XB(IELEM,6) = (XB(IELEM,6)-XB(IELEM,1)*XB(IELEM,5))/W(IELEM,2)
+          XB(IELEM,3) =  XB(IELEM,3)-XB(IELEM,4)*XB(IELEM,2)
+          W(IELEM,3)  = 1.D0-XB(IELEM,2)*XB(IELEM,5) 
+     &                - XB(IELEM,3)*XB(IELEM,6)
 ! L D U FACTORISATION
-         XB(IELEM,3) = XB(IELEM,3) / W(IELEM,2)
+          XB(IELEM,3) = XB(IELEM,3) / W(IELEM,2)
         ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
       ELSE
-         IF (LNG.EQ.1) WRITE(LU,200) TYPEXA(1:1)
-         IF (LNG.EQ.2) WRITE(LU,201) TYPEXA(1:1)
-200      FORMAT(1X,'DLDU11 (BIEF) : TYPE DE MATRICE NON PREVU :',A1)
-201      FORMAT(1X,'DLDU11 (BIEF) : TYPE OF MATRIX NOT AVAILABLE :',A1)
-         CALL PLANTE(0)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,200) TYPEXA(1:1)
+        IF (LNG.EQ.2) WRITE(LU,201) TYPEXA(1:1)
+200     FORMAT(1X,'DLDU11 (BIEF) : TYPE DE MATRICE NON PREVU :',A1)
+201     FORMAT(1X,'DLDU11 (BIEF) : TYPE OF MATRIX NOT AVAILABLE :',A1)
+        CALL PLANTE(0)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

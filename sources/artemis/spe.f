@@ -65,10 +65,10 @@
 !     DELTA IS COMPUTED IN PERALE
 !
       IF ( F.GE.1.D-4*FP) THEN
-         SPE = DELTA/F**5 * EXP(-1.25D0*(FP/F)**4) *
-     &         GAM** ( EXP( -0.5D0*( ( (F-FP)/(SIGMA*FP) ) **2 ) ) )
+        SPE = DELTA/F**5 * EXP(-1.25D0*(FP/F)**4) *
+     &        GAM** ( EXP( -0.5D0*( ( (F-FP)/(SIGMA*FP) ) **2 ) ) )
       ELSE
-         SPE = 0.D0
+        SPE = 0.D0
       ENDIF
 !
 !-----------------------------------------------------------------------

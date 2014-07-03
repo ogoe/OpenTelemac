@@ -275,69 +275,69 @@
 !     BLOCKS
 !-----------------------------------------------------------------------
 !
-       DO IBL = 1 , X%N
-         IF(YAY) THEN
-           IF(.NOT.CMPOBJ(X%ADR(IBL)%P,Y%ADR(IBL)%P)) THEN
-             CALL CPSTVC(Y%ADR(IBL)%P,X%ADR(IBL)%P)
-           ENDIF
-         ENDIF
-!
-!        CHECKS MEMORY
-!
-         N = X%ADR(IBL)%P%DIM1
-         NMAX = X%ADR(IBL)%P%MAXDIM1
-         IF(N.GT.NMAX) THEN
-           IF (LNG.EQ.1) WRITE(LU,100) X%ADR(IBL)%P%NAME
-           IF (LNG.EQ.2) WRITE(LU,101) X%ADR(IBL)%P%NAME
-           IF (LNG.EQ.1) WRITE(LU,200) X%NAME
-           IF (LNG.EQ.2) WRITE(LU,201) X%NAME
-200        FORMAT(1X,'            CE VECTEUR EST DANS LE BLOC : ',A6)
-201        FORMAT(1X,'            THIS VECTOR IS IN BLOCK: ',A6)
-           CALL PLANTE(1)
-           STOP
-         ENDIF
-!
-         IF(.NOT.PRESENT(IOPT)) THEN
-!
-         IF(X%ADR(IBL)%P%DIM2.GT.1) THEN
-!
-         DO IDIM = 1 , X%ADR(IBL)%P%DIM2
-           CALL OV_2(OP,X%ADR(IBL)%P%R,IDIM,
-     &                 YY%ADR(IBL)%P%R,IDIM,
-     &                 ZZ%ADR(IBL)%P%R,IDIM, CC , NMAX , N )
-         END DO
-!
-         ELSE
-!
-           CALL OV(OP,X%ADR(IBL)%P%R,
-     &               YY%ADR(IBL)%P%R,
-     &               ZZ%ADR(IBL)%P%R, CC , N )
-!
-         ENDIF
-!
-         ELSE
-!
-         IF(X%ADR(IBL)%P%DIM2.GT.1) THEN
-!
-         DO IDIM = 1 , X%ADR(IBL)%P%DIM2
-           CALL OVD_2(OP,X%ADR(IBL)%P%R,IDIM,
+        DO IBL = 1 , X%N
+          IF(YAY) THEN
+            IF(.NOT.CMPOBJ(X%ADR(IBL)%P,Y%ADR(IBL)%P)) THEN
+              CALL CPSTVC(Y%ADR(IBL)%P,X%ADR(IBL)%P)
+            ENDIF
+          ENDIF
+!       
+!         CHECKS MEMORY
+!       
+          N = X%ADR(IBL)%P%DIM1
+          NMAX = X%ADR(IBL)%P%MAXDIM1
+          IF(N.GT.NMAX) THEN
+            IF (LNG.EQ.1) WRITE(LU,100) X%ADR(IBL)%P%NAME
+            IF (LNG.EQ.2) WRITE(LU,101) X%ADR(IBL)%P%NAME
+            IF (LNG.EQ.1) WRITE(LU,200) X%NAME
+            IF (LNG.EQ.2) WRITE(LU,201) X%NAME
+200         FORMAT(1X,'            CE VECTEUR EST DANS LE BLOC : ',A6)
+201         FORMAT(1X,'            THIS VECTOR IS IN BLOCK: ',A6)
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+!       
+          IF(.NOT.PRESENT(IOPT)) THEN
+!       
+          IF(X%ADR(IBL)%P%DIM2.GT.1) THEN
+!       
+          DO IDIM = 1 , X%ADR(IBL)%P%DIM2
+            CALL OV_2(OP,X%ADR(IBL)%P%R,IDIM,
      &                  YY%ADR(IBL)%P%R,IDIM,
-     &                  ZZ%ADR(IBL)%P%R,IDIM, CC , NMAX , N ,
-     &                  IOPT,INFINI,ZERO)
-         END DO
-!
-         ELSE
-!
-           CALL OVD(OP,X%ADR(IBL)%P%R,
+     &                  ZZ%ADR(IBL)%P%R,IDIM, CC , NMAX , N )
+          END DO
+!       
+          ELSE
+!       
+            CALL OV(OP,X%ADR(IBL)%P%R,
      &                YY%ADR(IBL)%P%R,
-     &                ZZ%ADR(IBL)%P%R, CC , N ,IOPT,INFINI,ZERO)
-!
-         ENDIF
-!
-         ENDIF
-!
-!
-       ENDDO ! IBL 
+     &                ZZ%ADR(IBL)%P%R, CC , N )
+!       
+          ENDIF
+!       
+          ELSE
+!       
+          IF(X%ADR(IBL)%P%DIM2.GT.1) THEN
+!       
+          DO IDIM = 1 , X%ADR(IBL)%P%DIM2
+            CALL OVD_2(OP,X%ADR(IBL)%P%R,IDIM,
+     &                   YY%ADR(IBL)%P%R,IDIM,
+     &                   ZZ%ADR(IBL)%P%R,IDIM, CC , NMAX , N ,
+     &                   IOPT,INFINI,ZERO)
+          END DO
+!       
+          ELSE
+!       
+            CALL OVD(OP,X%ADR(IBL)%P%R,
+     &                 YY%ADR(IBL)%P%R,
+     &                 ZZ%ADR(IBL)%P%R, CC , N ,IOPT,INFINI,ZERO)
+!       
+          ENDIF
+!       
+          ENDIF
+!       
+!       
+        ENDDO ! IBL 
 !
 !-----------------------------------------------------------------------
 !
@@ -348,9 +348,9 @@
         IF (LNG.EQ.1) WRITE(LU,1000) X%TYPE,X%NAME
         IF (LNG.EQ.2) WRITE(LU,1001) X%TYPE,X%NAME
 1000    FORMAT(1X,'OS (BIEF) : TYPE D''OBJET NON TRAITE: ',1I3,/,
-     *         1X,'NOM : ',1A6)
+     &         1X,'NOM : ',1A6)
 1001    FORMAT(1X,'OS (BIEF): OBJECT TYPE NOT IMPLEMENTED: ',1I3,/,
-     *         1X,'NAME: ',1A6)
+     &         1X,'NAME: ',1A6)
         CALL PLANTE(1)
         STOP
 !

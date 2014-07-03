@@ -84,28 +84,28 @@
 !
       DO I=1,NPOIN
 !
-!        ROUSE NUMBER
+!       ROUSE NUMBER
 !
-         ROUSE=  XWC / (KARMAN*MAX(USTAR%R(I),ZERO))
+        ROUSE=  XWC / (KARMAN*MAX(USTAR%R(I),ZERO))
 !
-!        MINIMUM BOUND OF THE EINSTEIN INTEGRAL -->  B = KS/H
+!       MINIMUM BOUND OF THE EINSTEIN INTEGRAL -->  B = KS/H
 !
-!        JMH MODIFICATION 16/12/2009    B ALWAYS LESS THAN 1.
-!        B = ZREF%R(I)/MAX(HN%R(I),HMIN)
-         B = ZREF%R(I)/MAX(HN%R(I),ZREF%R(I))
+!       JMH MODIFICATION 16/12/2009    B ALWAYS LESS THAN 1.
+!       B = ZREF%R(I)/MAX(HN%R(I),HMIN)
+        B = ZREF%R(I)/MAX(HN%R(I),ZREF%R(I))
 !
-!        RATIO BETWEEN REFERENCE CONC. ON BOTTOM AND MEAN CONC.
-!        ASSUMING EXPONENTIAL PROFILE WITH EXPONENT ROUSE NUMBER --> T2
+!       RATIO BETWEEN REFERENCE CONC. ON BOTTOM AND MEAN CONC.
+!       ASSUMING EXPONENTIAL PROFILE WITH EXPONENT ROUSE NUMBER --> T2
 !
-         EXP=ROUSE-1.D0
-         IF(ABS(EXP).GT.1.D-4) THEN
-!          ADDED BY JMH 12/07/2007
-           EXP=MIN(EXP,3.D0)
-           T2%R(I)=B*(1.D0-B**EXP)/EXP
-         ELSE
-           T2%R(I)=-B*LOG(B)
-         ENDIF
-         T2%R(I)=MAX(1.D0/MAX(T2%R(I),ZERO),1.D0)
+        EXP=ROUSE-1.D0
+        IF(ABS(EXP).GT.1.D-4) THEN
+!         ADDED BY JMH 12/07/2007
+          EXP=MIN(EXP,3.D0)
+          T2%R(I)=B*(1.D0-B**EXP)/EXP
+        ELSE
+          T2%R(I)=-B*LOG(B)
+        ENDIF
+        T2%R(I)=MAX(1.D0/MAX(T2%R(I),ZERO),1.D0)
       ENDDO
 !
 !======================================================================!

@@ -191,124 +191,124 @@
 !
       IF(NTRAC.NE.0) THEN
 !
-         DO ITRAC=1,NTRAC
+        DO ITRAC=1,NTRAC
 !
-            FLUDI(5+ITRAC) = 0.D0
+          FLUDI(5+ITRAC) = 0.D0
 !
-!           BOTTOM AND FREE SURFACE
+!         BOTTOM AND FREE SURFACE
 !
-            IF(ATABOF%ADR(ITRAC)%P%TYPR.NE.'0') THEN
-!             WITH MASS-LUMPING LIKE IN DIFF3D
-!             CORRECTION CV+JMH 28/10/2013  SEE ALSO DIFF3D
-              IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
-                DO I=1,NPOIN2
-!                 1) FLUX THROUGH THE BOTTOM NOT TAKEN INTO ACCOUNT FOR TIDAL FLATS
-!                 2) TRACER AT ACTUAL BOTTOM PLANE TAKEN INTO ACCOUNT, THEN IPBOT
-!                    IN ADDRESS OF TA.
-                  IF(IPBOT%I(I).NE.NPLAN-1) THEN
-                    FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
-     &              + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
-     &              *TA%ADR(ITRAC)%P%R(IPBOT%I(I)*NPOIN2+I)
-                  ENDIF
-                ENDDO
-               ELSE
-                DO I=1,NPOIN2
+          IF(ATABOF%ADR(ITRAC)%P%TYPR.NE.'0') THEN
+!           WITH MASS-LUMPING LIKE IN DIFF3D
+!           CORRECTION CV+JMH 28/10/2013  SEE ALSO DIFF3D
+            IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
+              DO I=1,NPOIN2
+!               1) FLUX THROUGH THE BOTTOM NOT TAKEN INTO ACCOUNT FOR TIDAL FLATS
+!               2) TRACER AT ACTUAL BOTTOM PLANE TAKEN INTO ACCOUNT, THEN IPBOT
+!                  IN ADDRESS OF TA.
+                IF(IPBOT%I(I).NE.NPLAN-1) THEN
                   FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
      &            + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
-     &                               *TA%ADR(ITRAC)%P%R(I)
-                ENDDO
-               ENDIF
-            ENDIF
-!
-            IF(ATABOS%ADR(ITRAC)%P%TYPR.NE.'0') THEN
-!             WITH MASS-LUMPING LIKE IN DIFF3D
+     &            *TA%ADR(ITRAC)%P%R(IPBOT%I(I)*NPOIN2+I)
+                ENDIF
+              ENDDO
+             ELSE
               DO I=1,NPOIN2
                 FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
-     &          + ATABOS%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
-     &          * TA%ADR(ITRAC)%P%R(I+NETAG*NPOIN2)
+     &          + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
+     &                             *TA%ADR(ITRAC)%P%R(I)
               ENDDO
-            ENDIF
+             ENDIF
+          ENDIF
 !
-            IF(BTABOF%ADR(ITRAC)%P%TYPR.NE.'0') THEN
-              DO I=1,NPOIN2
-                FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
-     &          + VOLU2D%R(I)*BTABOF%ADR(ITRAC)%P%R(I)
-              ENDDO
-            ENDIF
-!
-            IF(BTABOS%ADR(ITRAC)%P%TYPR.NE.'0') THEN
-              DO I=1,NPOIN2
-                FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
-     &          +VOLU2D%R(I)*BTABOS%ADR(ITRAC)%P%R(I)
-              ENDDO
-            ENDIF
-!
-!           VALUE OF TRACER IN RAIN
-!
-            IF(RAIN) THEN
-              REALRAIN=0.D0
-              DO I=1,NPOIN2
-                REALRAIN=REALRAIN+MAX(PLUIE%R(I),0.D0)
-              ENDDO
-              FLUDI(5+ITRAC)=FLUDI(5+ITRAC)+REALRAIN*TRAIN(ITRAC)
-            ENDIF
-!
-!        LATERAL BOUNDARIES
-!
-            DO IETAGE=1,NETAG
-!
-               IF(ATABOL%ADR(ITRAC)%P%TYPR.NE.'0') THEN
-                 DO IPTFR=1,NPTFR
-!
-                  IELEB=(IETAGE-1)*NPTFR+IPTFR
-                  L1 = IKLBORL(IELEB,1)
-                  L2 = IKLBORL(IELEB,2)
-                  L3 = IKLBORL(IELEB,3)
-                  L4 = IKLBORL(IELEB,4)
-                  N1 = NBOR3%I(L1)
-                  N2 = NBOR3%I(L2)
-                  N3 = NBOR3%I(L3)
-                  N4 = NBOR3%I(L4)
-!
-                  FLUDI(5+ITRAC) = FLUDI(5+ITRAC) + SUR12 *
-     &            ( ATABOL%ADR(ITRAC)%P%R(L1)*TA%ADR(ITRAC)%P%R(N1)
-     &            + ATABOL%ADR(ITRAC)%P%R(L2)*TA%ADR(ITRAC)%P%R(N2)
-     &            + ATABOL%ADR(ITRAC)%P%R(L3)*TA%ADR(ITRAC)%P%R(N3)
-     &            + ATABOL%ADR(ITRAC)%P%R(L4)*TA%ADR(ITRAC)%P%R(N4) )
-!
-                 ENDDO
-               ENDIF
-!
-               IF(BTABOL%ADR(ITRAC)%P%TYPR.NE.'0') THEN
-                 DO IPTFR=1,NPTFR
-!
-                  IELEB=(IETAGE-1)*NPTFR+IPTFR
-                  L1 = IKLBORL(IELEB,1)
-                  L2 = IKLBORL(IELEB,2)
-                  L3 = IKLBORL(IELEB,3)
-                  L4 = IKLBORL(IELEB,4)
-                  N1 = NBOR3%I(L1)
-                  N2 = NBOR3%I(L2)
-                  N3 = NBOR3%I(L3)
-                  N4 = NBOR3%I(L4)
-                  D = SQRT((X(N2)-X(N1))**2 + (Y(N2)-Y(N1))**2)
-                  Z_1 = ZPROP%R(N4) - ZPROP%R(N1)
-                  Z_2 = ZPROP%R(N3) - ZPROP%R(N2)
-                  A1 = D * (Z_1+Z_1+Z_2)
-                  A2 = D * (Z_2+Z_2+Z_1)
-!
-                  FLUDI(5+ITRAC) = FLUDI(5+ITRAC) + SUR12 *
-     &            ( BTABOL%ADR(ITRAC)%P%R(L1)*A1
-     &             +BTABOL%ADR(ITRAC)%P%R(L2)*A2
-     &             +BTABOL%ADR(ITRAC)%P%R(L3)*A2
-     &             +BTABOL%ADR(ITRAC)%P%R(L4)*A1)
-!
-                 ENDDO
-               ENDIF
-!
+          IF(ATABOS%ADR(ITRAC)%P%TYPR.NE.'0') THEN
+!           WITH MASS-LUMPING LIKE IN DIFF3D
+            DO I=1,NPOIN2
+              FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
+     &        + ATABOS%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
+     &        * TA%ADR(ITRAC)%P%R(I+NETAG*NPOIN2)
             ENDDO
+          ENDIF
 !
-            IF(NCSIZE.GT.1) FLUDI(5+ITRAC) = P_DSUM(FLUDI(5+ITRAC))
+          IF(BTABOF%ADR(ITRAC)%P%TYPR.NE.'0') THEN
+            DO I=1,NPOIN2
+              FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
+     &        + VOLU2D%R(I)*BTABOF%ADR(ITRAC)%P%R(I)
+            ENDDO
+          ENDIF
+!
+          IF(BTABOS%ADR(ITRAC)%P%TYPR.NE.'0') THEN
+            DO I=1,NPOIN2
+              FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
+     &        +VOLU2D%R(I)*BTABOS%ADR(ITRAC)%P%R(I)
+            ENDDO
+          ENDIF
+!
+!         VALUE OF TRACER IN RAIN
+!
+          IF(RAIN) THEN
+            REALRAIN=0.D0
+            DO I=1,NPOIN2
+              REALRAIN=REALRAIN+MAX(PLUIE%R(I),0.D0)
+            ENDDO
+            FLUDI(5+ITRAC)=FLUDI(5+ITRAC)+REALRAIN*TRAIN(ITRAC)
+          ENDIF
+!
+!         LATERAL BOUNDARIES
+!
+          DO IETAGE=1,NETAG
+!
+            IF(ATABOL%ADR(ITRAC)%P%TYPR.NE.'0') THEN
+              DO IPTFR=1,NPTFR
+!
+                IELEB=(IETAGE-1)*NPTFR+IPTFR
+                L1 = IKLBORL(IELEB,1)
+                L2 = IKLBORL(IELEB,2)
+                L3 = IKLBORL(IELEB,3)
+                L4 = IKLBORL(IELEB,4)
+                N1 = NBOR3%I(L1)
+                N2 = NBOR3%I(L2)
+                N3 = NBOR3%I(L3)
+                N4 = NBOR3%I(L4)
+!               
+                FLUDI(5+ITRAC) = FLUDI(5+ITRAC) + SUR12 *
+     &          ( ATABOL%ADR(ITRAC)%P%R(L1)*TA%ADR(ITRAC)%P%R(N1)
+     &          + ATABOL%ADR(ITRAC)%P%R(L2)*TA%ADR(ITRAC)%P%R(N2)
+     &          + ATABOL%ADR(ITRAC)%P%R(L3)*TA%ADR(ITRAC)%P%R(N3)
+     &          + ATABOL%ADR(ITRAC)%P%R(L4)*TA%ADR(ITRAC)%P%R(N4) )
+!
+              ENDDO
+            ENDIF
+!
+            IF(BTABOL%ADR(ITRAC)%P%TYPR.NE.'0') THEN
+              DO IPTFR=1,NPTFR
+!
+                IELEB=(IETAGE-1)*NPTFR+IPTFR
+                L1 = IKLBORL(IELEB,1)
+                L2 = IKLBORL(IELEB,2)
+                L3 = IKLBORL(IELEB,3)
+                L4 = IKLBORL(IELEB,4)
+                N1 = NBOR3%I(L1)
+                N2 = NBOR3%I(L2)
+                N3 = NBOR3%I(L3)
+                N4 = NBOR3%I(L4)
+                D = SQRT((X(N2)-X(N1))**2 + (Y(N2)-Y(N1))**2)
+                Z_1 = ZPROP%R(N4) - ZPROP%R(N1)
+                Z_2 = ZPROP%R(N3) - ZPROP%R(N2)
+                A1 = D * (Z_1+Z_1+Z_2)
+                A2 = D * (Z_2+Z_2+Z_1)
+!               
+                FLUDI(5+ITRAC) = FLUDI(5+ITRAC) + SUR12 *
+     &          ( BTABOL%ADR(ITRAC)%P%R(L1)*A1
+     &           +BTABOL%ADR(ITRAC)%P%R(L2)*A2
+     &           +BTABOL%ADR(ITRAC)%P%R(L3)*A2
+     &           +BTABOL%ADR(ITRAC)%P%R(L4)*A1)
+!
+              ENDDO
+            ENDIF
+!
+          ENDDO
+!
+          IF(NCSIZE.GT.1) FLUDI(5+ITRAC) = P_DSUM(FLUDI(5+ITRAC))
 !
         ENDDO
 !
@@ -354,22 +354,22 @@
 !
           IF(INFOGR) THEN
             IF(SEDI.AND.(IVBIL.EQ.NTRAC+5)) THEN
-               IF(LNG.EQ.1) WRITE(LU,611) FLUX%R(IVBIL),
-     &         -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
-     &                       MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
-               IF(LNG.EQ.2) WRITE(LU,612) FLUX%R(IVBIL),
-     &         -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
-     &                       MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
+              IF(LNG.EQ.1) WRITE(LU,611) FLUX%R(IVBIL),
+     &        -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
+     &                      MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
+              IF(LNG.EQ.2) WRITE(LU,612) FLUX%R(IVBIL),
+     &        -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
+     &                      MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
             ELSE
               IF(LNG.EQ.1) THEN
-               WRITE(LU,621) IVBIL-5,FLUX%R(IVBIL),
-     &         -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
-     &                       MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
+                WRITE(LU,621) IVBIL-5,FLUX%R(IVBIL),
+     &          -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
+     &                        MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
               ENDIF
               IF(LNG.EQ.2) THEN
-                 WRITE(LU,622) IVBIL-5,FLUX%R(IVBIL),
-     &         -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
-     &                       MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
+                WRITE(LU,622) IVBIL-5,FLUX%R(IVBIL),
+     &          -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
+     &                        MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
               ENDIF
             ENDIF
           ENDIF
@@ -439,42 +439,42 @@
 !
       IF(LT.EQ.NIT) THEN
 !
-         WRITE(LU,*)
-         CALL MITTIT(11,AT,LT)
-         WRITE (LU,'(A4,F16.4)') 'T = ',AT
+        WRITE(LU,*)
+        CALL MITTIT(11,AT,LT)
+        WRITE (LU,'(A4,F16.4)') 'T = ',AT
 !
-         IF(LNG.EQ.1) WRITE(LU,701) MASINI_WATER,MASSE_WATER,
-     &      DT*FLUXTOTCUM, MASINI_WATER-MASSE_WATER-DT*FLUXTOTCUM
-         IF(LNG.EQ.2) WRITE(LU,702) MASINI_WATER,MASSE_WATER,
-     &      DT*FLUXTOTCUM, MASINI_WATER-MASSE_WATER-DT*FLUXTOTCUM
+        IF(LNG.EQ.1) WRITE(LU,701) MASINI_WATER,MASSE_WATER,
+     &     DT*FLUXTOTCUM, MASINI_WATER-MASSE_WATER-DT*FLUXTOTCUM
+        IF(LNG.EQ.2) WRITE(LU,702) MASINI_WATER,MASSE_WATER,
+     &     DT*FLUXTOTCUM, MASINI_WATER-MASSE_WATER-DT*FLUXTOTCUM
 !
 !-----------------------------------------------------------------------
 !
-         IF (NTRAC.GT.0) THEN
+        IF (NTRAC.GT.0) THEN
 !
-            DO IVBIL=6,5+NTRAC
+          DO IVBIL=6,5+NTRAC
 !
-             IF(SEDI.AND.(IVBIL.EQ.NTRAC+5)) THEN
-               IF(LNG.EQ.1) WRITE(LU,711)
-     &               MASINI%R(IVBIL),MASSE%R(IVBIL),DT*FLUCUM%R(IVBIL),
-     &               MASINI%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUCUM%R(IVBIL)
-               IF(LNG.EQ.2) WRITE(LU,712)
-     &               MASINI%R(IVBIL),MASSE%R(IVBIL),DT*FLUCUM%R(IVBIL),
-     &               MASINI%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUCUM%R(IVBIL)
-             ELSE
-               IF(LNG.EQ.1) WRITE(LU,721) IVBIL-5,
-     &               MASINI%R(IVBIL),MASSE%R(IVBIL),DT*FLUCUM%R(IVBIL),
-     &               MASINI%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUCUM%R(IVBIL)
-               IF(LNG.EQ.2) WRITE(LU,722) IVBIL-5,
-     &               MASINI%R(IVBIL),MASSE%R(IVBIL),DT*FLUCUM%R(IVBIL),
-     &               MASINI%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUCUM%R(IVBIL)
-             ENDIF
+            IF(SEDI.AND.(IVBIL.EQ.NTRAC+5)) THEN
+              IF(LNG.EQ.1) WRITE(LU,711)
+     &              MASINI%R(IVBIL),MASSE%R(IVBIL),DT*FLUCUM%R(IVBIL),
+     &              MASINI%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUCUM%R(IVBIL)
+              IF(LNG.EQ.2) WRITE(LU,712)
+     &              MASINI%R(IVBIL),MASSE%R(IVBIL),DT*FLUCUM%R(IVBIL),
+     &              MASINI%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUCUM%R(IVBIL)
+            ELSE
+              IF(LNG.EQ.1) WRITE(LU,721) IVBIL-5,
+     &              MASINI%R(IVBIL),MASSE%R(IVBIL),DT*FLUCUM%R(IVBIL),
+     &              MASINI%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUCUM%R(IVBIL)
+              IF(LNG.EQ.2) WRITE(LU,722) IVBIL-5,
+     &              MASINI%R(IVBIL),MASSE%R(IVBIL),DT*FLUCUM%R(IVBIL),
+     &              MASINI%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUCUM%R(IVBIL)
+            ENDIF
 !
-            ENDDO
+          ENDDO
 !
-         ENDIF
+        ENDIF
 !
-       ENDIF
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

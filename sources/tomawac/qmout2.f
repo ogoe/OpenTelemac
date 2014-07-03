@@ -2,9 +2,9 @@
                         SUBROUTINE QMOUT2
 !                       *****************
 !
-     *( TSTOT , TSDER , F     , XK    , ENRJ  , FREQ  , FMOY  , XKMOY , 
-     *  USOLD , USNEW , DEPTH , PROINF, CMOUT3, CMOUT4, CMOUT5, CMOUT6,
-     *  NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 ,F_INT  , BETOTO, BETOTN)
+     &( TSTOT , TSDER , F     , XK    , ENRJ  , FREQ  , FMOY  , XKMOY , 
+     &  USOLD , USNEW , DEPTH , PROINF, CMOUT3, CMOUT4, CMOUT5, CMOUT6,
+     &  NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 ,F_INT  , BETOTO, BETOTN)
 !
 !**********************************************************************
 ! TOMAWAC   V6P3                                  23/06/2011
@@ -205,7 +205,7 @@
         DO JP = 1,NPLAN
           DO IP = 1,NPOIN2
             TSTOT(IP,JP,IFF)=TSTOT(IP,JP,IFF)
-     *      +(BETOTO(IP)+CIMPLI*(BETOTN(IP)-BETOTO(IP)))*F(IP,JP,IFF)
+     &      +(BETOTO(IP)+CIMPLI*(BETOTN(IP)-BETOTO(IP)))*F(IP,JP,IFF)
             TSDER(IP,JP,IFF)=TSDER(IP,JP,IFF) + BETOTN(IP)
           ENDDO
         ENDDO

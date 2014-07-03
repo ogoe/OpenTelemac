@@ -64,24 +64,24 @@
 !
 !-----------------------------------------------------------------------
 !
-         DO IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
-           X2 = XEL(IELEM,2)
-           X3 = XEL(IELEM,3)
-!         
-           Y2 = YEL(IELEM,2)
-           Y3 = YEL(IELEM,3)
-!         
-           Z2 = Z(IKLE(IELEM,2)) -  Z(IKLE(IELEM,1))
-           Z3 = Z(IKLE(IELEM,3)) -  Z(IKLE(IELEM,1))
-!         
-           A = (X2*Y3-X3*Y2)**2
-           B = (Y2*Z3-Z2*Y3)**2
-           C = (X3*Z2-Z3*X2)**2
-!         
-           COEF(IELEM) = SQRT( (A+B+C)/A )
-!         
-         ENDDO ! IELEM 
+        X2 = XEL(IELEM,2)
+        X3 = XEL(IELEM,3)
+!      
+        Y2 = YEL(IELEM,2)
+        Y3 = YEL(IELEM,3)
+!      
+        Z2 = Z(IKLE(IELEM,2)) -  Z(IKLE(IELEM,1))
+        Z3 = Z(IKLE(IELEM,3)) -  Z(IKLE(IELEM,1))
+!      
+        A = (X2*Y3-X3*Y2)**2
+        B = (Y2*Z3-Z2*Y3)**2
+        C = (X3*Z2-Z3*X2)**2
+!      
+        COEF(IELEM) = SQRT( (A+B+C)/A )
+!      
+      ENDDO ! IELEM 
 !         
 !-----------------------------------------------------------------------
 !

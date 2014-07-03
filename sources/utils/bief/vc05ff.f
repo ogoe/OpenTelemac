@@ -118,68 +118,68 @@
 !
 !        LOOP ON THE BOUNDARY SIDES
 !
-         DO IELEM = 1,NELEB
+        DO IELEM = 1,NELEB
 !
-            IEL=NELBOR(IELEM)
+          IEL=NELBOR(IELEM)
 !
-            IF(IEL.GT.0) THEN
+          IF(IEL.GT.0) THEN
 !
-!             ELEMENT IN THE DOMAIN
+!           ELEMENT IN THE DOMAIN
 ! 
-!             LOCAL NUMBERING OF THE SIDE NODES
-!           
-              I1 = IKLE1(IELEM)
-              I2 = IKLE2(IELEM)
-              I3 = IKLE3(IELEM)
-              I4 = IKLE4(IELEM)
+!           LOCAL NUMBERING OF THE SIDE NODES
+!         
+            I1 = IKLE1(IELEM)
+            I2 = IKLE2(IELEM)
+            I3 = IKLE3(IELEM)
+            I4 = IKLE4(IELEM)
 !
-!             GLOBAL NUMBERING OF THE SIDE NODES
+!           GLOBAL NUMBERING OF THE SIDE NODES
 !
-              N1 = NBOR(I1)
-              N2 = NBOR(I2)
-              N3 = NBOR(I3)
-              N4 = NBOR(I4)
+            N1 = NBOR(I1)
+            N2 = NBOR(I2)
+            N3 = NBOR(I3)
+            N4 = NBOR(I4)
 !
-              H1 = Z(N4) - Z(N1)
-              H2 = Z(N3) - Z(N2)
-              HT = H1 + H2
-              H1 = H1 + H1 + HT
-              H2 = H2 + H2 + HT
+            H1 = Z(N4) - Z(N1)
+            H2 = Z(N3) - Z(N2)
+            HT = H1 + H2
+            H1 = H1 + H1 + HT
+            H2 = H2 + H2 + HT
 !
-              J1=NULONE(IELEM,1)
-              J2=NULONE(IELEM,2)
-              AX = (Y(IEL,J2)-Y(IEL,J1)) * XSUR72
-              AY = (X(IEL,J1)-X(IEL,J2)) * XSUR72
-!             AX = (Y(N2)-Y(N1)) * XSUR72
-!             AY = (X(N1)-X(N2)) * XSUR72
+            J1=NULONE(IELEM,1)
+            J2=NULONE(IELEM,2)
+            AX = (Y(IEL,J2)-Y(IEL,J1)) * XSUR72
+            AY = (X(IEL,J1)-X(IEL,J2)) * XSUR72
+!           AX = (Y(N2)-Y(N1)) * XSUR72
+!           AY = (X(N1)-X(N2)) * XSUR72
 !
-              U1 = U(I1) + U(I1) + U(I4)
-              U2 = U(I2) + U(I2) + U(I3)
-              U3 = U(I2) + U(I3) + U(I3)
-              U4 = U(I1) + U(I4) + U(I4)
+            U1 = U(I1) + U(I1) + U(I4)
+            U2 = U(I2) + U(I2) + U(I3)
+            U3 = U(I2) + U(I3) + U(I3)
+            U4 = U(I1) + U(I4) + U(I4)
 !
-              V1 = V(I1) + V(I1) + V(I4)
-              V2 = V(I2) + V(I2) + V(I3)
-              V3 = V(I2) + V(I3) + V(I3)
-              V4 = V(I1) + V(I4) + V(I4)
+            V1 = V(I1) + V(I1) + V(I4)
+            V2 = V(I2) + V(I2) + V(I3)
+            V3 = V(I2) + V(I3) + V(I3)
+            V4 = V(I1) + V(I4) + V(I4)
 !
-              W1(IELEM) = (U1*H1+U2*HT)*AX + (V1*H1+V2*HT)*AY
-              W2(IELEM) = (U1*HT+U2*H2)*AX + (V1*HT+V2*H2)*AY
-              W3(IELEM) = (U4*HT+U3*H2)*AX + (V4*HT+V3*H2)*AY
-              W4(IELEM) = (U4*H1+U3*HT)*AX + (V4*H1+V3*HT)*AY
+            W1(IELEM) = (U1*H1+U2*HT)*AX + (V1*H1+V2*HT)*AY
+            W2(IELEM) = (U1*HT+U2*H2)*AX + (V1*HT+V2*H2)*AY
+            W3(IELEM) = (U4*HT+U3*H2)*AX + (V4*HT+V3*H2)*AY
+            W4(IELEM) = (U4*H1+U3*HT)*AX + (V4*H1+V3*HT)*AY
 !
-            ELSE
+          ELSE
 !
-!             ELEMENT NOT IN THE DOMAIN (POSSIBLE IN PARALLELISM)
+!           ELEMENT NOT IN THE DOMAIN (POSSIBLE IN PARALLELISM)
 !
-              W1(IELEM) = 0.D0
-              W2(IELEM) = 0.D0
-              W3(IELEM) = 0.D0
-              W4(IELEM) = 0.D0
+            W1(IELEM) = 0.D0
+            W2(IELEM) = 0.D0
+            W3(IELEM) = 0.D0
+            W4(IELEM) = 0.D0
 !
-            ENDIF
+          ENDIF
 !
-         ENDDO
+        ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -190,61 +190,61 @@
 !
 !-----------------------------------------------------------------------
 !
-!        LOOP ON THE BOUNDARY SIDES
+!       LOOP ON THE BOUNDARY SIDES
 !
-         DO IELEM = 1,NELEB
+        DO IELEM = 1,NELEB
 !
-            IEL=NELBOR(IELEM)
+          IEL=NELBOR(IELEM)
 !
-            IF(IEL.GT.0) THEN   
+          IF(IEL.GT.0) THEN   
 !
-!             GLOBAL NUMBERING OF THE SIDE NODES
+!           GLOBAL NUMBERING OF THE SIDE NODES
 !
-              N1 = NBOR(IKLE1(IELEM))
-              N2 = NBOR(IKLE2(IELEM))
-              N3 = NBOR(IKLE3(IELEM))
-              N4 = NBOR(IKLE4(IELEM))
+            N1 = NBOR(IKLE1(IELEM))
+            N2 = NBOR(IKLE2(IELEM))
+            N3 = NBOR(IKLE3(IELEM))
+            N4 = NBOR(IKLE4(IELEM))
 !
-              H1 = Z(N4) - Z(N1)
-              H2 = Z(N3) - Z(N2)
-              HT = H1 + H2
-              H1 = H1 + H1 + HT
-              H2 = H2 + H2 + HT
+            H1 = Z(N4) - Z(N1)
+            H2 = Z(N3) - Z(N2)
+            HT = H1 + H2
+            H1 = H1 + H1 + HT
+            H2 = H2 + H2 + HT
 !       
-              J1=NULONE(IELEM,1)
-              J2=NULONE(IELEM,2)
-              AX = (Y(IEL,J2)-Y(IEL,J1)) * XSUR72
-              AY = (X(IEL,J1)-X(IEL,J2)) * XSUR72
-!             AX = (Y(N2)-Y(N1)) * XSUR72
-!             AY = (X(N1)-X(N2)) * XSUR72
+            J1=NULONE(IELEM,1)
+            J2=NULONE(IELEM,2)
+            AX = (Y(IEL,J2)-Y(IEL,J1)) * XSUR72
+            AY = (X(IEL,J1)-X(IEL,J2)) * XSUR72
+!           AX = (Y(N2)-Y(N1)) * XSUR72
+!           AY = (X(N1)-X(N2)) * XSUR72
 !
-              U1 = U(N1) + U(N1) + U(N4)
-              U2 = U(N2) + U(N2) + U(N3)
-              U3 = U(N2) + U(N3) + U(N3)
-              U4 = U(N1) + U(N4) + U(N4)
+            U1 = U(N1) + U(N1) + U(N4)
+            U2 = U(N2) + U(N2) + U(N3)
+            U3 = U(N2) + U(N3) + U(N3)
+            U4 = U(N1) + U(N4) + U(N4)
 !
-              V1 = V(N1) + V(N1) + V(N4)
-              V2 = V(N2) + V(N2) + V(N3)
-              V3 = V(N2) + V(N3) + V(N3)
-              V4 = V(N1) + V(N4) + V(N4)
+            V1 = V(N1) + V(N1) + V(N4)
+            V2 = V(N2) + V(N2) + V(N3)
+            V3 = V(N2) + V(N3) + V(N3)
+            V4 = V(N1) + V(N4) + V(N4)
 !
-              W1(IELEM) = (U1*H1+U2*HT)*AX + (V1*H1+V2*HT)*AY
-              W2(IELEM) = (U1*HT+U2*H2)*AX + (V1*HT+V2*H2)*AY
-              W3(IELEM) = (U4*HT+U3*H2)*AX + (V4*HT+V3*H2)*AY
-              W4(IELEM) = (U4*H1+U3*HT)*AX + (V4*H1+V3*HT)*AY
+            W1(IELEM) = (U1*H1+U2*HT)*AX + (V1*H1+V2*HT)*AY
+            W2(IELEM) = (U1*HT+U2*H2)*AX + (V1*HT+V2*H2)*AY
+            W3(IELEM) = (U4*HT+U3*H2)*AX + (V4*HT+V3*H2)*AY
+            W4(IELEM) = (U4*H1+U3*HT)*AX + (V4*H1+V3*HT)*AY
 !
-           ELSE
+          ELSE
 !
-!             ELEMENT NOT IN THE DOMAIN (PARALLELISM)
+!           ELEMENT NOT IN THE DOMAIN (PARALLELISM)
 !
-              W1(IELEM) = 0.D0
-              W2(IELEM) = 0.D0
-              W3(IELEM) = 0.D0
-              W4(IELEM) = 0.D0
+            W1(IELEM) = 0.D0
+            W2(IELEM) = 0.D0
+            W3(IELEM) = 0.D0
+            W4(IELEM) = 0.D0
 !
-           ENDIF
+          ENDIF
 !
-         ENDDO
+        ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -252,16 +252,16 @@
 !
 !-----------------------------------------------------------------------
 !
-         IF (LNG.EQ.1) WRITE(LU,100) IELMU,SU%NAME
-         IF (LNG.EQ.2) WRITE(LU,101) IELMU,SU%NAME
-100      FORMAT(1X,'VC05FF (BIEF) :',/,
-     &          1X,'DISCRETISATION DE U NON PREVUE : ',1I6,
-     &          1X,'NOM REEL : ',A6)
-101      FORMAT(1X,'VC05FF (BIEF) :',/,
-     &          1X,'DISCRETIZATION OF U NOT AVAILABLE:',1I6,
-     &          1X,'REAL NAME: ',A6)
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMU,SU%NAME
+        IF (LNG.EQ.2) WRITE(LU,101) IELMU,SU%NAME
+100     FORMAT(1X,'VC05FF (BIEF) :',/,
+     &         1X,'DISCRETISATION DE U NON PREVUE : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+101     FORMAT(1X,'VC05FF (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF U NOT AVAILABLE:',1I6,
+     &         1X,'REAL NAME: ',A6)
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

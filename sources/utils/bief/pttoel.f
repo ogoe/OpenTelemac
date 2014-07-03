@@ -72,12 +72,12 @@
         CALL PTEL41(XEL%R,X%R,MESH%IKLE%I,MESH%NELMAX,MESH%NELEM)
 !
       ELSE
-       IF (LNG.EQ.1) WRITE(LU,100) X%ELM
-       IF (LNG.EQ.2) WRITE(LU,101) X%ELM
-100    FORMAT(1X,'PTTOEL (BIEF) : IELM = ',1I6,' ELEMENT NON PREVU')
-101    FORMAT(1X,'PTTOEL (BIEF) : IELM = ',1I6,' ELEMENT NOT AVAILABLE')
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) X%ELM
+        IF (LNG.EQ.2) WRITE(LU,101) X%ELM
+100   FORMAT(1X,'PTTOEL (BIEF) : IELM = ',1I6,' ELEMENT NON PREVU')
+101   FORMAT(1X,'PTTOEL (BIEF) : IELM = ',1I6,' ELEMENT NOT AVAILABLE')
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

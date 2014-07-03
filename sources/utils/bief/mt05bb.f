@@ -147,64 +147,64 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
-         U1 = U(IELEM)
-         U2 = U(IELEM)
-         U3 = U(IELEM)
-         V1 = V(IELEM)
-         V2 = V(IELEM)
-         V3 = V(IELEM)
+        U1 = U(IELEM)
+        U2 = U(IELEM)
+        U3 = U(IELEM)
+        V1 = V(IELEM)
+        V2 = V(IELEM)
+        V3 = V(IELEM)
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM)= (X2*(-V3-4*V2-7*V1)+X3*(-V3-4*V2-7*V1)+Y2*(
-     &               U3+4*U2+7*U1)+Y3*(U3+4*U2+7*U1))*XSU216
+        A12(IELEM)= (X2*(-V3-4*V2-7*V1)+X3*(-V3-4*V2-7*V1)+Y2*(
+     &              U3+4*U2+7*U1)+Y3*(U3+4*U2+7*U1))*XSU216
 !
-         A13(IELEM)= (X2*(4*V3+V2+7*V1)+X3*(4*V3+V2+7*V1)+Y2*(-
-     &               4*U3-U2-7*U1)+Y3*(-4*U3-U2-7*U1))*XSU216
+        A13(IELEM)= (X2*(4*V3+V2+7*V1)+X3*(4*V3+V2+7*V1)+Y2*(-
+     &              4*U3-U2-7*U1)+Y3*(-4*U3-U2-7*U1))*XSU216
 !
-         A14(IELEM)= (X2*(V3+4*V2+7*V1)+X3*(-4*V3-V2-7*V1)+Y2*(-
-     &               U3-4*U2-7*U1)+Y3*(4*U3+U2+7*U1))*XSUR72
+        A14(IELEM)= (X2*(V3+4*V2+7*V1)+X3*(-4*V3-V2-7*V1)+Y2*(-
+     &              U3-4*U2-7*U1)+Y3*(4*U3+U2+7*U1))*XSUR72
 !
-         A21(IELEM)= (2*X2*(-V3-7*V2-4*V1)+X3*(V3+7*V2+4*V1)+2
-     &               *Y2*(U3+7*U2+4*U1)+Y3*(-U3-7*U2-4*U1))*XSU216
+        A21(IELEM)= (2*X2*(-V3-7*V2-4*V1)+X3*(V3+7*V2+4*V1)+2
+     &              *Y2*(U3+7*U2+4*U1)+Y3*(-U3-7*U2-4*U1))*XSU216
 !
-         A23(IELEM)= (2*X2*(4*V3+7*V2+V1)+X3*(-4*V3-7*V2-V1)+2
-     &               *Y2*(-4*U3-7*U2-U1)+Y3*(4*U3+7*U2+U1))*XSU216
+        A23(IELEM)= (2*X2*(4*V3+7*V2+V1)+X3*(-4*V3-7*V2-V1)+2
+     &              *Y2*(-4*U3-7*U2-U1)+Y3*(4*U3+7*U2+U1))*XSU216
 !
-         A24(IELEM)= (3*X2*(-V3+V1)+X3*(4*V3+7*V2+V1)+3*Y2*(U3-
-     &               U1)+Y3*(-4*U3-7*U2-U1))*XSUR72
+        A24(IELEM)= (3*X2*(-V3+V1)+X3*(4*V3+7*V2+V1)+3*Y2*(U3-
+     &              U1)+Y3*(-4*U3-7*U2-U1))*XSUR72
 !
-         A31(IELEM)= (X2*(-7*V3-V2-4*V1)+2*X3*(7*V3+V2+4*V1)+Y2
-     &               *(7*U3+U2+4*U1)+2*Y3*(-7*U3-U2-4*U1))*XSU216
+        A31(IELEM)= (X2*(-7*V3-V2-4*V1)+2*X3*(7*V3+V2+4*V1)+Y2
+     &              *(7*U3+U2+4*U1)+2*Y3*(-7*U3-U2-4*U1))*XSU216
 !
-         A32(IELEM)= (X2*(7*V3+4*V2+V1)+2*X3*(-7*V3-4*V2-V1)+Y2
-     &               *(-7*U3-4*U2-U1)+2*Y3*(7*U3+4*U2+U1))*XSU216
+        A32(IELEM)= (X2*(7*V3+4*V2+V1)+2*X3*(-7*V3-4*V2-V1)+Y2
+     &              *(-7*U3-4*U2-U1)+2*Y3*(7*U3+4*U2+U1))*XSU216
 !
-         A34(IELEM)= (X2*(-7*V3-4*V2-V1)+3*X3*(V2-V1)+Y2*(7*U3+
-     &               4*U2+U1)+3*Y3*(-U2+U1))*XSUR72
+        A34(IELEM)= (X2*(-7*V3-4*V2-V1)+3*X3*(V2-V1)+Y2*(7*U3+
+     &              4*U2+U1)+3*Y3*(-U2+U1))*XSUR72
 !
-         A41(IELEM)= (X2*(-3*V3-4*V2-5*V1)+X3*(4*V3+3*V2+5*V1)
-     &               +Y2*(3*U3+4*U2+5*U1)
-     &               +Y3*(-4*U3-3*U2-5*U1))*XSUR72
+        A41(IELEM)= (X2*(-3*V3-4*V2-5*V1)+X3*(4*V3+3*V2+5*V1)
+     &              +Y2*(3*U3+4*U2+5*U1)
+     &              +Y3*(-4*U3-3*U2-5*U1))*XSUR72
 !
-         A42(IELEM)= (X2*(V3-V1)+X3*(-4*V3-5*V2-3*V1)+Y2*(-U3+U1)
-     &               +Y3*(4*U3+5*U2+3*U1))*XSUR72
+        A42(IELEM)= (X2*(V3-V1)+X3*(-4*V3-5*V2-3*V1)+Y2*(-U3+U1)
+     &              +Y3*(4*U3+5*U2+3*U1))*XSUR72
 !
-         A43(IELEM)= (X2*(5*V3+4*V2+3*V1)+X3*(-V2+V1)+Y2*(-5*U3-
-     &               4*U2-3*U1)+Y3*(U2-U1))*XSUR72
+        A43(IELEM)= (X2*(5*V3+4*V2+3*V1)+X3*(-V2+V1)+Y2*(-5*U3-
+     &              4*U2-3*U1)+Y3*(U2-U1))*XSUR72
 !
 !  THE DIAGONAL TERMS ARE OBTAINED BY MEANS OF THE 'MAGIC SQUARE':
 !
-         A11(IELEM) = - A12(IELEM) - A13(IELEM) - A14(IELEM)
-         A22(IELEM) = - A21(IELEM) - A23(IELEM) - A24(IELEM)
-         A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
-         A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
+        A11(IELEM) = - A12(IELEM) - A13(IELEM) - A14(IELEM)
+        A22(IELEM) = - A21(IELEM) - A23(IELEM) - A24(IELEM)
+        A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
+        A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
 !
       ENDDO ! IELEM 
 !
@@ -222,64 +222,64 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
-         U1 = U(IKLE1(IELEM))
-         U2 = U(IKLE2(IELEM))
-         U3 = U(IKLE3(IELEM))
-         V1 = V(IKLE1(IELEM))
-         V2 = V(IKLE2(IELEM))
-         V3 = V(IKLE3(IELEM))
+        U1 = U(IKLE1(IELEM))
+        U2 = U(IKLE2(IELEM))
+        U3 = U(IKLE3(IELEM))
+        V1 = V(IKLE1(IELEM))
+        V2 = V(IKLE2(IELEM))
+        V3 = V(IKLE3(IELEM))
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM)= (X2*(-V3-4*V2-7*V1)+X3*(-V3-4*V2-7*V1)+Y2*(
-     &               U3+4*U2+7*U1)+Y3*(U3+4*U2+7*U1))*XSU216
+        A12(IELEM)= (X2*(-V3-4*V2-7*V1)+X3*(-V3-4*V2-7*V1)+Y2*(
+     &              U3+4*U2+7*U1)+Y3*(U3+4*U2+7*U1))*XSU216
 !
-         A13(IELEM)= (X2*(4*V3+V2+7*V1)+X3*(4*V3+V2+7*V1)+Y2*(-
-     &               4*U3-U2-7*U1)+Y3*(-4*U3-U2-7*U1))*XSU216
+        A13(IELEM)= (X2*(4*V3+V2+7*V1)+X3*(4*V3+V2+7*V1)+Y2*(-
+     &              4*U3-U2-7*U1)+Y3*(-4*U3-U2-7*U1))*XSU216
 !
-         A14(IELEM)= (X2*(V3+4*V2+7*V1)+X3*(-4*V3-V2-7*V1)+Y2*(-
-     &               U3-4*U2-7*U1)+Y3*(4*U3+U2+7*U1))*XSUR72
+        A14(IELEM)= (X2*(V3+4*V2+7*V1)+X3*(-4*V3-V2-7*V1)+Y2*(-
+     &              U3-4*U2-7*U1)+Y3*(4*U3+U2+7*U1))*XSUR72
 !
-         A21(IELEM)= (2*X2*(-V3-7*V2-4*V1)+X3*(V3+7*V2+4*V1)+2
-     &               *Y2*(U3+7*U2+4*U1)+Y3*(-U3-7*U2-4*U1))*XSU216
+        A21(IELEM)= (2*X2*(-V3-7*V2-4*V1)+X3*(V3+7*V2+4*V1)+2
+     &              *Y2*(U3+7*U2+4*U1)+Y3*(-U3-7*U2-4*U1))*XSU216
 !
-         A23(IELEM)= (2*X2*(4*V3+7*V2+V1)+X3*(-4*V3-7*V2-V1)+2
-     &               *Y2*(-4*U3-7*U2-U1)+Y3*(4*U3+7*U2+U1))*XSU216
+        A23(IELEM)= (2*X2*(4*V3+7*V2+V1)+X3*(-4*V3-7*V2-V1)+2
+     &              *Y2*(-4*U3-7*U2-U1)+Y3*(4*U3+7*U2+U1))*XSU216
 !
-         A24(IELEM)= (3*X2*(-V3+V1)+X3*(4*V3+7*V2+V1)+3*Y2*(U3-
-     &               U1)+Y3*(-4*U3-7*U2-U1))*XSUR72
+        A24(IELEM)= (3*X2*(-V3+V1)+X3*(4*V3+7*V2+V1)+3*Y2*(U3-
+     &              U1)+Y3*(-4*U3-7*U2-U1))*XSUR72
 !
-         A31(IELEM)= (X2*(-7*V3-V2-4*V1)+2*X3*(7*V3+V2+4*V1)+Y2
-     &               *(7*U3+U2+4*U1)+2*Y3*(-7*U3-U2-4*U1))*XSU216
+        A31(IELEM)= (X2*(-7*V3-V2-4*V1)+2*X3*(7*V3+V2+4*V1)+Y2
+     &              *(7*U3+U2+4*U1)+2*Y3*(-7*U3-U2-4*U1))*XSU216
 !
-         A32(IELEM)= (X2*(7*V3+4*V2+V1)+2*X3*(-7*V3-4*V2-V1)+Y2
-     &               *(-7*U3-4*U2-U1)+2*Y3*(7*U3+4*U2+U1))*XSU216
+        A32(IELEM)= (X2*(7*V3+4*V2+V1)+2*X3*(-7*V3-4*V2-V1)+Y2
+     &              *(-7*U3-4*U2-U1)+2*Y3*(7*U3+4*U2+U1))*XSU216
 !
-         A34(IELEM)= (X2*(-7*V3-4*V2-V1)+3*X3*(V2-V1)+Y2*(7*U3+
-     &               4*U2+U1)+3*Y3*(-U2+U1))*XSUR72
+        A34(IELEM)= (X2*(-7*V3-4*V2-V1)+3*X3*(V2-V1)+Y2*(7*U3+
+     &              4*U2+U1)+3*Y3*(-U2+U1))*XSUR72
 !
-         A41(IELEM)= (X2*(-3*V3-4*V2-5*V1)+X3*(4*V3+3*V2+5*V1)
-     &               +Y2*(3*U3+4*U2+5*U1)
-     &               +Y3*(-4*U3-3*U2-5*U1))*XSUR72
+        A41(IELEM)= (X2*(-3*V3-4*V2-5*V1)+X3*(4*V3+3*V2+5*V1)
+     &              +Y2*(3*U3+4*U2+5*U1)
+     &              +Y3*(-4*U3-3*U2-5*U1))*XSUR72
 !
-         A42(IELEM)= (X2*(V3-V1)+X3*(-4*V3-5*V2-3*V1)+Y2*(-U3+U1)
-     &               +Y3*(4*U3+5*U2+3*U1))*XSUR72
+        A42(IELEM)= (X2*(V3-V1)+X3*(-4*V3-5*V2-3*V1)+Y2*(-U3+U1)
+     &              +Y3*(4*U3+5*U2+3*U1))*XSUR72
 !
-         A43(IELEM)= (X2*(5*V3+4*V2+3*V1)+X3*(-V2+V1)+Y2*(-5*U3-
-     &               4*U2-3*U1)+Y3*(U2-U1))*XSUR72
+        A43(IELEM)= (X2*(5*V3+4*V2+3*V1)+X3*(-V2+V1)+Y2*(-5*U3-
+     &              4*U2-3*U1)+Y3*(U2-U1))*XSUR72
 !
 !  THE DIAGONAL TERMS ARE OBTAINED BY MEANS OF THE 'MAGIC SQUARE':
 !
-         A11(IELEM) = - A12(IELEM) - A13(IELEM) - A14(IELEM)
-         A22(IELEM) = - A21(IELEM) - A23(IELEM) - A24(IELEM)
-         A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
-         A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
+        A11(IELEM) = - A12(IELEM) - A13(IELEM) - A14(IELEM)
+        A22(IELEM) = - A21(IELEM) - A23(IELEM) - A24(IELEM)
+        A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
+        A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
 !
       ENDDO ! IELEM 
 !
@@ -402,66 +402,66 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
-         U1 = U(IKLE1(IELEM))
-         U2 = U(IKLE2(IELEM))
-         U3 = U(IKLE3(IELEM))
-         U4 = U(IKLE4(IELEM))
-         V1 = V(IKLE1(IELEM))
-         V2 = V(IKLE2(IELEM))
-         V3 = V(IKLE3(IELEM))
-         V4 = V(IKLE4(IELEM))
+        U1 = U(IKLE1(IELEM))
+        U2 = U(IKLE2(IELEM))
+        U3 = U(IKLE3(IELEM))
+        U4 = U(IKLE4(IELEM))
+        V1 = V(IKLE1(IELEM))
+        V2 = V(IKLE2(IELEM))
+        V3 = V(IKLE3(IELEM))
+        V4 = V(IKLE4(IELEM))
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM)= (X2*(-V4-V2-2*V1)+X3*(-V4-V2-2*V1)+Y2*(U4+U2+
-     &               2*U1)+Y3*(U4+U2+2*U1))*XSUR72
+        A12(IELEM)= (X2*(-V4-V2-2*V1)+X3*(-V4-V2-2*V1)+Y2*(U4+U2+
+     &              2*U1)+Y3*(U4+U2+2*U1))*XSUR72
 !
-         A13(IELEM)= (X2*(V3+V4+2*V1)+X3*(V3+V4+2*V1)+Y2*(-U3-U4-
-     &               2*U1)+Y3*(-U3-U4-2*U1))*XSUR72
+        A13(IELEM)= (X2*(V3+V4+2*V1)+X3*(V3+V4+2*V1)+Y2*(-U3-U4-
+     &              2*U1)+Y3*(-U3-U4-2*U1))*XSUR72
 !
-         A14(IELEM)= (X2*(V4+V2+2*V1)+X3*(-V3-V4-2*V1)+Y2*(-U4-U2-
-     &               2*U1)+Y3*(U3+U4+2*U1))*XSUR24
+        A14(IELEM)= (X2*(V4+V2+2*V1)+X3*(-V3-V4-2*V1)+Y2*(-U4-U2-
+     &              2*U1)+Y3*(U3+U4+2*U1))*XSUR24
 !
-         A21(IELEM)= (2*X2*(-V4-2*V2-V1)+X3*(V4+2*V2+V1)+2*Y2*(
-     &               U4+2*U2+U1)+Y3*(-U4-2*U2-U1))*XSUR72
+        A21(IELEM)= (2*X2*(-V4-2*V2-V1)+X3*(V4+2*V2+V1)+2*Y2*(
+     &              U4+2*U2+U1)+Y3*(-U4-2*U2-U1))*XSUR72
 !
-         A23(IELEM)= (2*X2*(V3+V4+2*V2)+X3*(-V3-V4-2*V2)+2*Y2*(-
-     &               U3-U4-2*U2)+Y3*(U3+U4+2*U2))*XSUR72
+        A23(IELEM)= (2*X2*(V3+V4+2*V2)+X3*(-V3-V4-2*V2)+2*Y2*(-
+     &              U3-U4-2*U2)+Y3*(U3+U4+2*U2))*XSUR72
 !
-         A24(IELEM)= (X2*(-V3+V1)+X3*(V3+V4+2*V2)+Y2*(U3-U1)+Y3*(-
-     &               U3-U4-2*U2))*XSUR24
+        A24(IELEM)= (X2*(-V3+V1)+X3*(V3+V4+2*V2)+Y2*(U3-U1)+Y3*(-
+     &              U3-U4-2*U2))*XSUR24
 !
-         A31(IELEM)= (X2*(-2*V3-V4-V1)+2*X3*(2*V3+V4+V1)+Y2*(2*
-     &               U3+U4+U1)+2*Y3*(-2*U3-U4-U1))*XSUR72
+        A31(IELEM)= (X2*(-2*V3-V4-V1)+2*X3*(2*V3+V4+V1)+Y2*(2*
+     &              U3+U4+U1)+2*Y3*(-2*U3-U4-U1))*XSUR72
 !
-         A32(IELEM)= (X2*(2*V3+V4+V2)+2*X3*(-2*V3-V4-V2)+Y2*(-2*
-     &               U3-U4-U2)+2*Y3*(2*U3+U4+U2))*XSUR72
+        A32(IELEM)= (X2*(2*V3+V4+V2)+2*X3*(-2*V3-V4-V2)+Y2*(-2*
+     &              U3-U4-U2)+2*Y3*(2*U3+U4+U2))*XSUR72
 !
-         A34(IELEM)= (X2*(-2*V3-V4-V2)+X3*(V2-V1)+Y2*(2*U3+U4+U2)+
-     &               Y3*(-U2+U1))*XSUR24
+        A34(IELEM)= (X2*(-2*V3-V4-V2)+X3*(V2-V1)+Y2*(2*U3+U4+U2)+
+     &              Y3*(-U2+U1))*XSUR24
 !
-         A41(IELEM)= (X2*(-V3-6*V4-2*V2-3*V1)+X3*(2*V3+6*V4+V2+
-     &               3*V1)+Y2*(U3+6*U4+2*U2+3*U1)
-     &               +Y3*(-2*U3-6*U4-U2-3*U1))*XSUR72
+        A41(IELEM)= (X2*(-V3-6*V4-2*V2-3*V1)+X3*(2*V3+6*V4+V2+
+     &              3*V1)+Y2*(U3+6*U4+2*U2+3*U1)
+     &              +Y3*(-2*U3-6*U4-U2-3*U1))*XSUR72
 !
-         A42(IELEM)= (X2*(V3-V1)+X3*(-2*V3-6*V4-3*V2-V1)+Y2*(-U3+
-     &               U1)+Y3*(2*U3+6*U4+3*U2+U1))*XSUR72
+        A42(IELEM)= (X2*(V3-V1)+X3*(-2*V3-6*V4-3*V2-V1)+Y2*(-U3+
+     &              U1)+Y3*(2*U3+6*U4+3*U2+U1))*XSUR72
 !
-         A43(IELEM)= (X2*(3*V3+6*V4+2*V2+V1)+X3*(-V2+V1)+Y2*(-3*
-     &               U3-6*U4-2*U2-U1)+Y3*(U2-U1))*XSUR72
+        A43(IELEM)= (X2*(3*V3+6*V4+2*V2+V1)+X3*(-V2+V1)+Y2*(-3*
+     &              U3-6*U4-2*U2-U1)+Y3*(U2-U1))*XSUR72
 !
 !  THE DIAGONAL TERMS ARE OBTAINED BY MEANS OF THE 'MAGIC SQUARE':
 !
-         A11(IELEM) = - A12(IELEM) - A13(IELEM) - A14(IELEM)
-         A22(IELEM) = - A21(IELEM) - A23(IELEM) - A24(IELEM)
-         A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
-         A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
+        A11(IELEM) = - A12(IELEM) - A13(IELEM) - A14(IELEM)
+        A22(IELEM) = - A21(IELEM) - A23(IELEM) - A24(IELEM)
+        A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
+        A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
 !
       ENDDO ! IELEM 
 !

@@ -70,40 +70,40 @@
 !
       IF (MOD(IPRECO,2).EQ.0.OR.MOD(IPRECO,3).EQ.0) THEN
 !
-         DO I=1,NPOIN
-            IF (DAM(I).LE.0.D0) THEN
-               DO WHILE(MOD(IPREC2,2).EQ.0)
-                 IPREC2 = IPREC2/2
-               ENDDO
-               DO WHILE(MOD(IPREC2,3).EQ.0)
-                 IPREC2 = IPREC2/3
-               ENDDO
-               IF (LNG.EQ.1) WRITE(LU,100)
-               IF (LNG.EQ.2) WRITE(LU,101)
+        DO I=1,NPOIN
+          IF (DAM(I).LE.0.D0) THEN
+            DO WHILE(MOD(IPREC2,2).EQ.0)
+              IPREC2 = IPREC2/2
+            ENDDO
+            DO WHILE(MOD(IPREC2,3).EQ.0)
+              IPREC2 = IPREC2/3
+            ENDDO
+            IF (LNG.EQ.1) WRITE(LU,100)
+            IF (LNG.EQ.2) WRITE(LU,101)
 100     FORMAT(1X,'CNTPRE (ARTEMIS) : PRECONDITIONNEMENT DIAGONAL NON AP
      &PLIQUE (UN ELEMENT DIAGONAL DE LA MATRICE EST NEGATIF OU NUL)')
 101     FORMAT(1X,'CNTPRE (ARTEMIS) : DIAGONAL SCALING NOT APPLIED (ONE
      &COEFFICIENT OF THE MATRIX DIAGONAL IS NEGATIVE OR ZERO)')
-               EXIT
-            ENDIF
-         ENDDO
+            EXIT
+          ENDIF
+        ENDDO
 !
       ELSEIF (MOD(IPRECO,5).EQ.0) THEN
 !
-         DO I=1,NPOIN
-            IF (ABS(DAM(I)).LE.1.D-6) THEN
-               DO WHILE(MOD(IPREC2,5).EQ.0)
-                 IPREC2 = IPREC2/5
-               ENDDO
-               IF (LNG.EQ.1) WRITE(LU,200)
-               IF (LNG.EQ.2) WRITE(LU,201)
+        DO I=1,NPOIN
+          IF (ABS(DAM(I)).LE.1.D-6) THEN
+            DO WHILE(MOD(IPREC2,5).EQ.0)
+              IPREC2 = IPREC2/5
+            ENDDO
+            IF (LNG.EQ.1) WRITE(LU,200)
+            IF (LNG.EQ.2) WRITE(LU,201)
 200     FORMAT(1X,'CNTPRE (ARTEMIS) : PRECONDITIONNEMENT DIAGONAL NON AP
      &PLIQUE (UN ELEMENT DIAGONAL DE LA MATRICE EST NUL)')
 201     FORMAT(1X,'CNTPRE (ARTEMIS) : DIAGONAL SCALING NOT APPLIED (ONE
      &COEFFICIENT OF THE MATRIX DIAGONAL IS ZERO)')
-               EXIT
-            ENDIF
-         ENDDO
+            EXIT
+          ENDIF
+        ENDDO
 !
       ENDIF
 !

@@ -123,8 +123,8 @@
 !     DUPLICATES THE 2D VARIABLE IN A 3D ARRAY
 !
       DO IPLAN=1,NPLAN
-         IADR = 1 + (IPLAN-1)*NPOIN2
-         CALL OV( 'X=Y     ' , TRA01(IADR) , HN , Z , C , NPOIN2 )
+        IADR = 1 + (IPLAN-1)*NPOIN2
+        CALL OV( 'X=Y     ' , TRA01(IADR) , HN , Z , C , NPOIN2 )
       END DO
 !
 !     COORDINATES OF ENDS OF CROSS-SECTION
@@ -174,18 +174,18 @@
 !CX   WRITE (NSCO,'(A)') '''VARIABLE 4'''
 !
       DO IPOIN=1,NPO1
-         IF (FINT1(IPOIN).LT.1.D+50 .OR. SCURV1(IPOIN).LT.1.D+50) THEN
-            WRITE (NSCO,'(2(1X,G14.6),7X,A1,14X,A1,14X,A1)')
-     &      SCURV1(IPOIN),FINT1(IPOIN),'X','X','X'
-         ENDIF
+        IF (FINT1(IPOIN).LT.1.D+50 .OR. SCURV1(IPOIN).LT.1.D+50) THEN
+          WRITE (NSCO,'(2(1X,G14.6),7X,A1,14X,A1,14X,A1)')
+     &    SCURV1(IPOIN),FINT1(IPOIN),'X','X','X'
+        ENDIF
       END DO
 !
       DO IPOIN=1,NPO2
-         IF (FINT2(IPOIN).LT.1.D+50 .OR. SCURV2(IPOIN).LT.1.D+50) THEN
-            WRITE
-     &      (NSCO,'(1X,G14.6,7X,A1,7X,1X,G14.6,7X,A1,14X,A1)')
-     &      SCURV2(IPOIN),'X',FINT2(IPOIN),'X','X'
-         ENDIF
+        IF (FINT2(IPOIN).LT.1.D+50 .OR. SCURV2(IPOIN).LT.1.D+50) THEN
+          WRITE
+     &    (NSCO,'(1X,G14.6,7X,A1,7X,1X,G14.6,7X,A1,14X,A1)')
+     &    SCURV2(IPOIN),'X',FINT2(IPOIN),'X','X'
+        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------

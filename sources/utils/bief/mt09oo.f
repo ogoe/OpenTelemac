@@ -96,41 +96,41 @@
 !
       IF (IELMF.EQ.11) THEN
 !
-       DO IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
+!        
+        U1 = U(NBOR(IKLE1(IELEM)))
+        U2 = U(NBOR(IKLE2(IELEM)))
 !       
-       U1 = U(NBOR(IKLE1(IELEM)))
-       U2 = U(NBOR(IKLE2(IELEM)))
-!
-       V1 = V(NBOR(IKLE1(IELEM)))
-       V2 = V(NBOR(IKLE2(IELEM)))
-!      
-       U1N=SQRT(U1**2+V1**2)
-       U2N=SQRT(U2**2+V2**2)
-!
-       IF(U1N.GT.1.D-5.AND.U2N.GT.1.D-5) THEN
-!
-!
-         TETA1= ASIN((U1*F(IELEM)+V1*G(IELEM))/U1N)
-         TETA2= ASIN((U2*F(IELEM)+V2*G(IELEM))/U2N)
-!
-!
-         A11(IELEM) = SUR24*(3.D0*SIN(2*TETA1)*(U1N**2)
-     &                +        SIN(2*TETA2)*(U2N**2)
-     &                + 2.D0*U1N*U2N*SIN(TETA1+TETA2))              
-         A12(IELEM) = -A11(IELEM)
-         A21(IELEM) = SUR24*(SIN(2*TETA1)*(U1N**2)
-     &                +   3.D0*SIN(2*TETA2)*(U2N**2)
-     &                + 2.D0*U1N*U2N*SIN(TETA1+TETA2)) 
-         A22(IELEM) = -A21(IELEM)
+        V1 = V(NBOR(IKLE1(IELEM)))
+        V2 = V(NBOR(IKLE2(IELEM)))
+!       
+        U1N=SQRT(U1**2+V1**2)
+        U2N=SQRT(U2**2+V2**2)
+!       
+        IF(U1N.GT.1.D-5.AND.U2N.GT.1.D-5) THEN
+!       
+!       
+          TETA1= ASIN((U1*F(IELEM)+V1*G(IELEM))/U1N)
+          TETA2= ASIN((U2*F(IELEM)+V2*G(IELEM))/U2N)
+!       
+!       
+          A11(IELEM) = SUR24*(3.D0*SIN(2*TETA1)*(U1N**2)
+     &                 +        SIN(2*TETA2)*(U2N**2)
+     &                 + 2.D0*U1N*U2N*SIN(TETA1+TETA2))              
+          A12(IELEM) = -A11(IELEM)
+          A21(IELEM) = SUR24*(SIN(2*TETA1)*(U1N**2)
+     &                 +   3.D0*SIN(2*TETA2)*(U2N**2)
+     &                 + 2.D0*U1N*U2N*SIN(TETA1+TETA2)) 
+          A22(IELEM) = -A21(IELEM)
 !
 !    SI COURANT NUL
 !
         ELSE
-         A11(IELEM) = 0.D0
-         A12(IELEM) = 0.D0
-         A21(IELEM) = 0.D0
-         A22(IELEM) = 0.D0
-       ENDIF
+          A11(IELEM) = 0.D0
+          A12(IELEM) = 0.D0
+          A21(IELEM) = 0.D0
+          A22(IELEM) = 0.D0
+        ENDIF
 !
       ENDDO
 !
@@ -138,16 +138,16 @@
 !
       ELSE
 !
-       IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
-       IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
-100    FORMAT(1X,'MT0900 (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F NON PREVUE : ',1I6,
-     &        1X,'NOM REEL : ',A6)
-101    FORMAT(1X,'MT0900 (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF F NOT AVAILABLE:',1I6,
-     &        1X,'REAL NAME: ',A6)
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
+100     FORMAT(1X,'MT0900 (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F NON PREVUE : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+101     FORMAT(1X,'MT0900 (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F NOT AVAILABLE:',1I6,
+     &         1X,'REAL NAME: ',A6)
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

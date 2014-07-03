@@ -75,6 +75,7 @@
       ELSE
         IF(LNG.EQ.1) WRITE(LU,*) F%NAME,' N''EST PAS UN VECTEUR'
         IF(LNG.EQ.2) WRITE(LU,*) F%NAME,' IS NOT A VECTOR'
+        CALL PLANTE(1)
         STOP
       ENDIF
 !

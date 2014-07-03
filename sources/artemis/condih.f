@@ -123,60 +123,60 @@
       DHTEST = 1.D6
 !
       DO I=1,NPOIN
-         T2%R(I) = 1.D0 + T1%R(I) *( 0.6522D0 +
-     &                    T1%R(I) *( 0.4622D0 +
-     &                    T1%R(I) *
-     &                    T1%R(I) *( 0.0864D0 +
-     &                    T1%R(I) *( 0.0675D0 ) )))
-         T2%R(I) = SQRT( T1%R(I)*(T1%R(I) + 1.D0/T2%R(I)) )
-         K%R(I)  = T2%R(I)/H%R(I)
-         DHTEST  = MIN( DHTEST , H%R(I) )
+        T2%R(I) = 1.D0 + T1%R(I) *( 0.6522D0 +
+     &                   T1%R(I) *( 0.4622D0 +
+     &                   T1%R(I) *
+     &                   T1%R(I) *( 0.0864D0 +
+     &                   T1%R(I) *( 0.0675D0 ) )))
+        T2%R(I) = SQRT( T1%R(I)*(T1%R(I) + 1.D0/T2%R(I)) )
+        K%R(I)  = T2%R(I)/H%R(I)
+        DHTEST  = MIN( DHTEST , H%R(I) )
       ENDDO
 !
 !     COMPUTE REFERENCE WAVE NUMBER KPHREF FOR AUTOMATIC PHASE CALCULATION
       IF (LPHASEAUTO) THEN
-!      CHECKS THE REFERENCE DEPTH HAS BEEN GIVEN 
-       IF (DEPREF.LT.0D0) THEN
-        IF(LNG.EQ.1) THEN
-         WRITE(LU,220)
+!       CHECKS THE REFERENCE DEPTH HAS BEEN GIVEN 
+        IF (DEPREF.LT.0D0) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,220)
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,221)
+          ENDIF
+220       FORMAT(1X,'CONDIH : ERREUR. SI VOUS UTILISEZ LE CALCUL      '
+     &           ,/,'         AUTOMATIQUE DES PHASES, IL FAUT         '
+     &           ,/,'         RENSEIGNER UNE PROFONDEUR DE REFERENCE  '
+     &           ,/,'         MOT CLEF : PROFONDEUR DE REFERENCE POUR '
+     &           ,/,'         LA PHASE AUTOMATIQUE                    ')
+         
+221       FORMAT(1X,'CONDIH : ERROR. IF YOU USE AUTOMATIC PHASE       '
+     &           ,/,'         CALCULATION, YOU HAVE TO GIVE A         '
+     &           ,/,'         REFERENCE WATER DEPTH                   '
+     &           ,/,'         KEY WORD :                              '
+     &           ,/,'        REFERENCE WATER DEPTH FOR AUTOMATIC PHASE')
+          CALL PLANTE(1)
+          STOP               
         ENDIF
-        IF(LNG.EQ.2) THEN
-         WRITE(LU,221)
-        ENDIF
-220      FORMAT(1X,'CONDIH : ERREUR. SI VOUS UTILISEZ LE CALCUL      '  
-     &          ,/,'         AUTOMATIQUE DES PHASES, IL FAUT         '
-     &          ,/,'         RENSEIGNER UNE PROFONDEUR DE REFERENCE  '
-     &          ,/,'         MOT CLEF : PROFONDEUR DE REFERENCE POUR '
-     &          ,/,'         LA PHASE AUTOMATIQUE                    ')
-
-221      FORMAT(1X,'CONDIH : ERROR. IF YOU USE AUTOMATIC PHASE       '
-     &          ,/,'         CALCULATION, YOU HAVE TO GIVE A         '      
-     &          ,/,'         REFERENCE WATER DEPTH                   '
-     &          ,/,'         KEY WORD :                              '
-     &          ,/,'        REFERENCE WATER DEPTH FOR AUTOMATIC PHASE')
- 
-       STOP               
-       ENDIF
-       T1REF= OMEGA**2/GRAV * DEPREF
-       T2REF = 1.D0 + T1REF *( 0.6522D0 +
-     &                T1REF *( 0.4622D0 +
-     &                T1REF *
-     &                T1REF *( 0.0864D0 +
-     &                T1REF *( 0.0675D0 ) )))
-       T2REF = SQRT( T1REF*(T1REF + 1.D0/T2REF) )
-       KPHREF  = T2REF/DEPREF
+        T1REF= OMEGA**2/GRAV * DEPREF
+        T2REF = 1.D0 + T1REF *( 0.6522D0 +
+     &                 T1REF *( 0.4622D0 +
+     &                 T1REF *
+     &                 T1REF *( 0.0864D0 +
+     &                 T1REF *( 0.0675D0 ) )))
+        T2REF = SQRT( T1REF*(T1REF + 1.D0/T2REF) )
+        KPHREF  = T2REF/DEPREF
       ENDIF
 !   CHECKS WHETHER H HAS BEEN CLIPPED OR NOT
 !
       IF (DHTEST.LE.1.01D-2) THEN
-         IF(LNG.EQ.1) WRITE(LU,120)
-         IF(LNG.EQ.2) WRITE(LU,121)
-120      FORMAT(1X,'CONDIH : ATTENTION !! VOUS AVEZ ATTEINT LE SEUIL '
-     &          ,/,'         MINI DE HAUTEUR D''EAU (1 CM).'
-     &          ,/,'         VERIFIEZ BATHY OU CONDITIONS INITIALES')
-121      FORMAT(1X,'CONDIH : WARNING !! YOU REACHED MINIMUM THRESHOLD'
-     &          ,/,'         FOR WATER DEPTH (1 CM). CHECK THE'
-     &          ,/,'         BATHYMETRY OR INITIAL CONDITIONS')
+        IF(LNG.EQ.1) WRITE(LU,120)
+        IF(LNG.EQ.2) WRITE(LU,121)
+120     FORMAT(1X,'CONDIH : ATTENTION !! VOUS AVEZ ATTEINT LE SEUIL '
+     &         ,/,'         MINI DE HAUTEUR D''EAU (1 CM).'
+     &         ,/,'         VERIFIEZ BATHY OU CONDITIONS INITIALES')
+121     FORMAT(1X,'CONDIH : WARNING !! YOU REACHED MINIMUM THRESHOLD'
+     &         ,/,'         FOR WATER DEPTH (1 CM). CHECK THE'
+     &         ,/,'         BATHYMETRY OR INITIAL CONDITIONS')
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -191,8 +191,8 @@
 !   COMPUTES GROUP VELOCITY
 !
       DO I=1,NPOIN
-         CG%R(I) = C%R(I)/2.D0 *
-     &             (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
+        CG%R(I) = C%R(I)/2.D0 *
+     &            (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
       ENDDO
 !
 !
@@ -230,8 +230,6 @@
 
 
 !-----------------------------------------------------------------------
-
-
 !
       RETURN
       END SUBROUTINE

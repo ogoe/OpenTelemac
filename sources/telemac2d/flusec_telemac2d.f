@@ -230,6 +230,7 @@
               WRITE(LU,*) 'FLUSEC_TELEMAC2D: TOO MANY SEGMENTS IN A   '
               WRITE(LU,*) '                  SECTION. INCREASE  NSEMAX'
             ENDIF
+            CALL PLANTE(1)
             STOP
           ENDIF
           LISTE(ISEC,ISEG,1) = IKLE(ELBEST,ILPREC)
@@ -290,39 +291,42 @@
         DO 
           OK=.TRUE.
           DO IEL=1,NELEM
-           J1=IKLE(IEL,1)
-           J2=IKLE(IEL,2)
-           J3=IKLE(IEL,3)
-           DO ISEG=1,NSEG(ISEC)
-             I1 = LISTE(ISEC,ISEG,1)
-             I2 = LISTE(ISEC,ISEG,2)
-             IF((J1.EQ.I1.OR.J2.EQ.I1.OR.J3.EQ.I1.OR.
-     &           J1.EQ.I2.OR.J2.EQ.I2.OR.J3.EQ.I2).AND.
-     &           ABS(MSKSEC%ADR(ISEC)%P%R(IEL)).LT.0.5D0) THEN
-!              LOOKING AT NEIGHBOURS
-               IF(IFABOR(IEL,1).GT.0) THEN
-                 IELEM=IFABOR(IEL,1)
-                 IF(ABS(MSKSEC%ADR(ISEC)%P%R(IELEM)).GT.0.5D0) THEN
-                   MSKSEC%ADR(ISEC)%P%R(IEL)=MSKSEC%ADR(ISEC)%P%R(IELEM)
-                 ENDIF
-               ENDIF
-               IF(IFABOR(IEL,2).GT.0) THEN
-                 IELEM=IFABOR(IEL,2)
-                 IF(ABS(MSKSEC%ADR(ISEC)%P%R(IELEM)).GT.0.5D0) THEN
-                   MSKSEC%ADR(ISEC)%P%R(IEL)=MSKSEC%ADR(ISEC)%P%R(IELEM)
-                 ENDIF
-               ENDIF
-               IF(IFABOR(IEL,3).GT.0) THEN
-                 IELEM=IFABOR(IEL,3)
-                 IF(ABS(MSKSEC%ADR(ISEC)%P%R(IELEM)).GT.0.5D0) THEN
-                   MSKSEC%ADR(ISEC)%P%R(IEL)=MSKSEC%ADR(ISEC)%P%R(IELEM)
-                 ENDIF
-               ENDIF
-!              CORRECTION JMH 11/01/2008
-!              IF(MSKSEC%ADR(ISEC)%P%R(IEL).LT.0.5D0) OK=.FALSE.
-               IF(ABS(MSKSEC%ADR(ISEC)%P%R(IEL)).LT.0.5D0) OK=.FALSE.
-             ENDIF
-           ENDDO
+            J1=IKLE(IEL,1)
+            J2=IKLE(IEL,2)
+            J3=IKLE(IEL,3)
+            DO ISEG=1,NSEG(ISEC)
+              I1 = LISTE(ISEC,ISEG,1)
+              I2 = LISTE(ISEC,ISEG,2)
+              IF((J1.EQ.I1.OR.J2.EQ.I1.OR.J3.EQ.I1.OR.
+     &            J1.EQ.I2.OR.J2.EQ.I2.OR.J3.EQ.I2).AND.
+     &            ABS(MSKSEC%ADR(ISEC)%P%R(IEL)).LT.0.5D0) THEN
+!               LOOKING AT NEIGHBOURS
+                IF(IFABOR(IEL,1).GT.0) THEN
+                  IELEM=IFABOR(IEL,1)
+                  IF(ABS(MSKSEC%ADR(ISEC)%P%R(IELEM)).GT.0.5D0) THEN
+                    MSKSEC%ADR(ISEC)%P%R(IEL)=
+     &                           MSKSEC%ADR(ISEC)%P%R(IELEM)
+                  ENDIF
+                ENDIF
+                IF(IFABOR(IEL,2).GT.0) THEN
+                  IELEM=IFABOR(IEL,2)
+                  IF(ABS(MSKSEC%ADR(ISEC)%P%R(IELEM)).GT.0.5D0) THEN
+                    MSKSEC%ADR(ISEC)%P%R(IEL)=
+     &                           MSKSEC%ADR(ISEC)%P%R(IELEM)
+                  ENDIF
+                ENDIF
+                IF(IFABOR(IEL,3).GT.0) THEN
+                  IELEM=IFABOR(IEL,3)
+                  IF(ABS(MSKSEC%ADR(ISEC)%P%R(IELEM)).GT.0.5D0) THEN
+                    MSKSEC%ADR(ISEC)%P%R(IEL)=
+     &                           MSKSEC%ADR(ISEC)%P%R(IELEM)
+                  ENDIF
+                ENDIF
+!               CORRECTION JMH 11/01/2008
+!               IF(MSKSEC%ADR(ISEC)%P%R(IEL).LT.0.5D0) OK=.FALSE.
+                IF(ABS(MSKSEC%ADR(ISEC)%P%R(IEL)).LT.0.5D0) OK=.FALSE.
+              ENDIF
+            ENDDO
           ENDDO
           IF(OK) EXIT
         ENDDO

@@ -118,26 +118,26 @@
 !
         DO J=1,NOMBLAY
           IF(J.EQ.NOMBLAY) THEN
-             MS_VASE(I,J)=MAX(0.D0,MS_VASE(I,J)
-     &            +TRANSFERT_MASSE_VASE(J-1))
-             IF(NSICLA.GT.1) THEN
-                MS_SABLE(I,J)=MAX(0.D0,MS_SABLE(I,J)
-     &                                  +TRANSFERT_MASSE_SABLE(J-1))
-             ENDIF
+            MS_VASE(I,J)=MAX(0.D0,MS_VASE(I,J)
+     &           +TRANSFERT_MASSE_VASE(J-1))
+            IF(NSICLA.GT.1) THEN
+              MS_SABLE(I,J)=MAX(0.D0,MS_SABLE(I,J)
+     &                                +TRANSFERT_MASSE_SABLE(J-1))
+            ENDIF
           ELSEIF(J.EQ.1) THEN
-             MS_VASE(I,J)=MAX(0.D0,MS_VASE(I,J)
+            MS_VASE(I,J)=MAX(0.D0,MS_VASE(I,J)
      &            -TRANSFERT_MASSE_VASE(J))
             IF(NSICLA.GT.1) THEN
               MS_SABLE(I,J)=MAX(0.D0,MS_SABLE(I,J)
      &            -TRANSFERT_MASSE_SABLE(J))
             ENDIF
           ELSE
-             MS_VASE(I,J)=MAX(0.D0,MS_VASE(I,J)
-     &            +TRANSFERT_MASSE_VASE(J-1)-TRANSFERT_MASSE_VASE(J))
-             IF(NSICLA.GT.1) THEN
-               MS_SABLE(I,J)=MAX(0.D0,MS_SABLE(I,J)
-     &         +TRANSFERT_MASSE_SABLE(J-1)-TRANSFERT_MASSE_SABLE(J))
-             ENDIF
+            MS_VASE(I,J)=MAX(0.D0,MS_VASE(I,J)
+     &           +TRANSFERT_MASSE_VASE(J-1)-TRANSFERT_MASSE_VASE(J))
+            IF(NSICLA.GT.1) THEN
+              MS_SABLE(I,J)=MAX(0.D0,MS_SABLE(I,J)
+     &        +TRANSFERT_MASSE_SABLE(J-1)-TRANSFERT_MASSE_SABLE(J))
+            ENDIF
           ENDIF
         ENDDO
 !

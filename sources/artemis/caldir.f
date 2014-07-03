@@ -142,14 +142,14 @@
 ! POSITIVE.
 !
       DO I=1,NPOIN
-         A1 = -(PHII%R(I)*COS(T2%R(I))-PHIR%R(I)*SIN(T2%R(I)))
-         IF (A1.LT.0.D0) THEN
-           IF (INCI%R(I).GE.0.D0) THEN
-             INCI%R(I) = INCI%R(I) - PI
-           ELSE
-             INCI%R(I) = INCI%R(I) + PI
-           ENDIF
-         ENDIF
+        A1 = -(PHII%R(I)*COS(T2%R(I))-PHIR%R(I)*SIN(T2%R(I)))
+        IF (A1.LT.0.D0) THEN
+          IF (INCI%R(I).GE.0.D0) THEN
+            INCI%R(I) = INCI%R(I) - PI
+          ELSE
+            INCI%R(I) = INCI%R(I) + PI
+          ENDIF
+        ENDIF
       ENDDO
 
  

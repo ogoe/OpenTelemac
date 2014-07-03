@@ -121,7 +121,7 @@
             ALPHAN=USN(IP,JP)*EXP( -FPMN(IP)*SURFREQ4 )
 !           TAKES THE SOURCE TERM INTO ACCOUNT        
             TSTOT(IP,JP,JF) = TSTOT(IP,JP,JF)
-     *                      + (ALPHAO + CIMPLI*(ALPHAN-ALPHAO))
+     &                      + (ALPHAO + CIMPLI*(ALPHAN-ALPHAO))
           ENDDO
         ENDDO
       ENDDO

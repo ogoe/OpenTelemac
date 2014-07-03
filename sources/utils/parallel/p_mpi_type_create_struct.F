@@ -66,6 +66,7 @@
       IF(IERR.NE.0) THEN
         WRITE(LU,*) 'P_MPI_TYPE_STRUCT:'
         WRITE(LU,*) 'MPI ERROR ',IERR
+        CALL PLANTE(1)
         STOP
       ENDIF
       RETURN
@@ -74,7 +75,6 @@
      &                         'VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_MPI_TYPE_CREATE_STRUCT IN '//
      &                         'ITS VOID VERSION'
-      STOP
 #endif
 !
 !-----------------------------------------------------------------------

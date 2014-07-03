@@ -65,6 +65,7 @@
       IF(IERR.NE.0) THEN
         WRITE(LU,*) 'P_MPI_ALLTOALLV_I:'
         WRITE(LU,*) 'MPI ERROR ',IERR
+        CALL PLANTE(1)
         STOP
       ENDIF
 #else

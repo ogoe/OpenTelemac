@@ -261,106 +261,106 @@
       DO I=1,NPOIN
 !
 !
-              IF (B(I).LT.BEIN(LNB)) B(I)=BEIN(LNB)
+        IF (B(I).LT.BEIN(LNB)) B(I)=BEIN(LNB)
 ! TREATS B AND A
 ! =======================
 !
 ! CASE WHERE SUSPENSION IS NEGLIGIBLE
 !
 !
-            IF (A(I).GT.AEIN(LNA).OR.(B(I).GE.1.D0)) THEN
-               IEIN(I) = 0.D0
+        IF (A(I).GT.AEIN(LNA).OR.(B(I).GE.1.D0)) THEN
+          IEIN(I) = 0.D0
 !
 ! VALUES OUTSIDE OF THE TABLE
 !
-            ELSEIF ((B(I).GT.1.D0).OR.(B(I).LT.BEIN(LNB)).OR.
-     &              (A(I).LT.AEIN(1))) THEN
+        ELSEIF ((B(I).GT.1.D0).OR.(B(I).LT.BEIN(LNB)).OR.
+     &          (A(I).LT.AEIN(1))) THEN
 !
- 100  FORMAT(/,1X,'TBIJFR : B EST SUPERIEUR A 1',/,
-     &         3X,'B     = ',G10.4,/,
-     &         3X,'NOEUD = ',I5,/,
-     &         3X,'VERIFIER LA PERTINENCE DE LA FORMULE DE BIJKER'
-     &           ,' DANS VOTRE CAS',/)
- 101  FORMAT(/,1X,'TBIJFR : B EST INFERIEUR A ',G10.4,
-     &            ' LIMITE DE LA ZONE TABULEE',/,
-     &         3X,'B     = ',G10.4,/,
-     &         3X,'NOEUD = ',I5,/,
-     &         3X,'VERIFIER LA PERTINENCE DE LA FORMULE DE BIJKER'
-     &           ,' DANS VOTRE CAS',/)
- 102  FORMAT(/,1X,'TBIJFR : A EST INFERIEUR A ',G10.4,
-     &            ' LIMITE DE LA ZONE TABULEE',/,
-     &         3X,'A     = ',G10.4,/,
-     &         3X,'NOEUD = ',I5,/,
-     &         3X,'VERIFIER LA PERTINENCE DE LA FORMULE DE BIJKER'
-     &           ,' DANS VOTRE CAS',/)
+ 100      FORMAT(/,1X,'TBIJFR : B EST SUPERIEUR A 1',/,
+     &             3X,'B     = ',G10.4,/,
+     &             3X,'NOEUD = ',I5,/,
+     &             3X,'VERIFIER LA PERTINENCE DE LA FORMULE DE BIJKER'
+     &               ,' DANS VOTRE CAS',/)
+ 101      FORMAT(/,1X,'TBIJFR : B EST INFERIEUR A ',G10.4,
+     &                ' LIMITE DE LA ZONE TABULEE',/,
+     &             3X,'B     = ',G10.4,/,
+     &             3X,'NOEUD = ',I5,/,
+     &             3X,'VERIFIER LA PERTINENCE DE LA FORMULE DE BIJKER'
+     &               ,' DANS VOTRE CAS',/)
+ 102      FORMAT(/,1X,'TBIJFR : A EST INFERIEUR A ',G10.4,
+     &                ' LIMITE DE LA ZONE TABULEE',/,
+     &             3X,'A     = ',G10.4,/,
+     &             3X,'NOEUD = ',I5,/,
+     &             3X,'VERIFIER LA PERTINENCE DE LA FORMULE DE BIJKER'
+     &               ,' DANS VOTRE CAS',/)
 !
-               IF (B(I).GT.1.D0) THEN
-                  WRITE(6,100) B(I),I
-               ELSEIF (B(I).LT.BEIN(LNB)) THEN
-                  WRITE(6,101) BEIN(LNB),B(I),I
-               ELSEIF (A(I).LT.AEIN(1)) THEN
-                  WRITE(6,102) AEIN(1),A(I),I
-               ENDIF
-               CALL PLANTE(0)
-               STOP
+          IF (B(I).GT.1.D0) THEN
+             WRITE(6,100) B(I),I
+          ELSEIF (B(I).LT.BEIN(LNB)) THEN
+             WRITE(6,101) BEIN(LNB),B(I),I
+          ELSEIF (A(I).LT.AEIN(1)) THEN
+             WRITE(6,102) AEIN(1),A(I),I
+          ENDIF
+          CALL PLANTE(0)
+          STOP
 !
 ! VALUES IN THE TABLE
 !
-            ELSE
+        ELSE
 !
 ! LOOKS FOR THE BOUNDS FOR B
 ! ===============================
 !
-               INF = 1
-               SUP = LNB
+          INF = 1
+          SUP = LNB
 !----START OF THE DO WHILE LOOP----
- 51            MIL = (INF + SUP ) / 2
-                 IF (BEIN(MIL).GT.B(I)) THEN
-                   INF = MIL
-                 ELSE
-                   SUP = MIL
-                 ENDIF
-               IF ((SUP - INF).NE.1)  GOTO 51
+ 51       MIL = (INF + SUP ) / 2
+            IF (BEIN(MIL).GT.B(I)) THEN
+              INF = MIL
+            ELSE
+              SUP = MIL
+            ENDIF
+          IF ((SUP - INF).NE.1)  GOTO 51
 !----END OF THE DO WHILE LOOP----
-               JT=SUP
-               B1 = BEIN(INF)
-               B2 = BEIN(SUP)
+          JT=SUP
+          B1 = BEIN(INF)
+          B2 = BEIN(SUP)
 !
 ! LOOKS FOR THE BOUNDS FOR A
 ! ===============================
 !
-               INF = 1
-               SUP = LNA
+          INF = 1
+          SUP = LNA
 !----START OF THE DO WHILE LOOP----
-               DO 
-               MIL = (INF + SUP ) / 2
-                 IF (AEIN(MIL).LT.A(I)) THEN
-                   INF = MIL
-                 ELSE
-                   SUP = MIL
-                 ENDIF
-               IF ((SUP - INF).EQ.1) EXIT
-               ENDDO
+          DO 
+          MIL = (INF + SUP ) / 2
+            IF (AEIN(MIL).LT.A(I)) THEN
+              INF = MIL
+            ELSE
+              SUP = MIL
+            ENDIF
+          IF ((SUP - INF).EQ.1) EXIT
+          ENDDO
 !----END OF THE DO WHILE LOOP----
-               IT=SUP
-               A1 = AEIN(INF)
-               A2 = AEIN(SUP)
+          IT=SUP
+          A1 = AEIN(INF)
+          A2 = AEIN(SUP)
 !
 ! COMPUTES THE IEIN INTEGRAL
 ! ==========================
 !
 ! INTERPOLATION WITH CONSTANT A1
-               INT1 = (EINJ3(JT-1,IT-1)-EINJ3(JT,IT-1))/(B1-B2)*
-     &                (B(I)-B1) + EINJ3(JT-1,IT-1)
+          INT1 = (EINJ3(JT-1,IT-1)-EINJ3(JT,IT-1))/(B1-B2)*
+     &           (B(I)-B1) + EINJ3(JT-1,IT-1)
 ! INTERPOLATION WITH CONSTANT A2
-               INT2 = (EINJ3(JT-1,IT)  -EINJ3(JT,IT)  )/(B1-B2)*
-     &                (B(I)-B1) + EINJ3(JT-1,IT)
+          INT2 = (EINJ3(JT-1,IT)  -EINJ3(JT,IT)  )/(B1-B2)*
+     &           (B(I)-B1) + EINJ3(JT-1,IT)
 ! RE-INTERPOLATION BETWEEN THE TWO PRECEDING VALUES
-               IEIN(I) = (INT1-INT2)/(A1-A2)*(A(I)-A1) + INT1
+          IEIN(I) = (INT1-INT2)/(A1-A2)*(A(I)-A1) + INT1
 !
-            ENDIF
+        ENDIF
 !
-         ENDDO !I
+      ENDDO !I
 !
       RETURN
       END SUBROUTINE INTEG

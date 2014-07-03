@@ -8,16 +8,16 @@
 ! SISYPHE   V6P2                                   21/06/2011
 !***********************************************************************
 !
-!brief   .CSV-file output of a LAYER Profile in Point J
+!BRIEF   .CSV-FILE OUTPUT OF A LAYER PROFILE IN POINT J
 !
-!history  UWE MERKEL
+!HISTORY  UWE MERKEL
 !+        2011-07-20
 !+
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| JG             |<--| GLOBAL POINT NUMBER
-!| PATH_PRE       |<--| Where to save
+!| PATH_PRE       |<--| WHERE TO SAVE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SISYPHE
@@ -29,70 +29,70 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER,          INTENT(IN)    :: JG
-      character(*),        INTENT(IN )    :: PATH_PRE
+      CHARACTER(*),        INTENT(IN )    :: PATH_PRE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      character*100, debugfile
-      integer  I,K,J
-      doubleprecision depth, AT, myfra, bsum
+      CHARACTER*100, DEBUGFILE
+      INTEGER  I,K,J
+      DOUBLEPRECISION DEPTH, AT, MYFRA, BSUM
 !
 !----------------------------------------------------------------
 !
       AT = DT*LT/PERCOU
 !
-!     global NUMBERS TO global NUMBERS
+!     GLOBAL NUMBERS TO GLOBAL NUMBERS
       J = JG
-!     NOTE JMH : KNOGL will be suppressed in future
-      if(NCSIZE>1) J = mesh%knogl%I(JG)
+!     NOTE JMH : KNOGL WILL BE SUPPRESSED IN FUTURE
+      IF(NCSIZE>1) J = MESH%KNOGL%I(JG)
 !
-      write(unit=debugfile, fmt='(A,I8,A,G15.8,A)')
+      WRITE(UNIT=DEBUGFILE, FMT='(A,I8,A,G15.8,A)')
      &      PATH_PRE,JG,'_T_',AT,'.LAY.CSV'
-      do I=1,38
-        if(debugfile(i:i)==' ') debugfile(i:i)='_'
-      end do
+      DO I=1,38
+        IF(DEBUGFILE(I:I)==' ') DEBUGFILE(I:I)='_'
+      END DO
 !
-      if(J > 0) THEN !0 if node is not on this partition
-      open(80, file=debugfile , status='UNKNOWN')
-        rewind 80
-        write(80,*)"J K FD50(I) AT Z AVAIL(J,K,I) X Y D50 TAU H"
+      IF(J > 0) THEN !0 IF NODE IS NOT ON THIS PARTITION
+      OPEN(80, FILE=DEBUGFILE , STATUS='UNKNOWN')
+        REWIND 80
+        WRITE(80,*)"J K FD50(I) AT Z AVAIL(J,K,I) X Y D50 TAU H"
 !
-        depth = ZF%R(J)
+        DEPTH = ZF%R(J)
 !
         !LAYER TOP
-        do K=1,NLAYER%I(J)
+        DO K=1,NLAYER%I(J)
 !
-          Bsum = 0.D0
-          do I=1,NSICLA
-            bsum = FDM(I)*AVAIL(J,K,I) + bsum
-          enddo
+          BSUM = 0.D0
+          DO I=1,NSICLA
+            BSUM = FDM(I)*AVAIL(J,K,I) + BSUM
+          ENDDO
 !
-          do I=1,NSICLA
-            write (80,'(I8,1X,I4,1X,7(G15.8,1X))')
-     &      JG,(NLAYER%I(J)-K+1),FDM(I),AT,depth,
-     &      AVAIL(J,K,I),X(J),Y(J), bsum, TOB%R(J), Z%R(J)
-          enddo
-            depth = depth - ES(J,K)
+          DO I=1,NSICLA
+            WRITE (80,'(I8,1X,I4,1X,7(G15.8,1X))')
+     &      JG,(NLAYER%I(J)-K+1),FDM(I),AT,DEPTH,
+     &      AVAIL(J,K,I),X(J),Y(J), BSUM, TOB%R(J), Z%R(J)
+          ENDDO
+            DEPTH = DEPTH - ES(J,K)
 
-        enddo
+        ENDDO
 !
 !     RIGID BED
 !
-      do I=1,NSICLA
-        bsum = FDM(I)*AVAIL(J,NLAYER%I(J),I) + bsum
-      enddo
+      DO I=1,NSICLA
+        BSUM = FDM(I)*AVAIL(J,NLAYER%I(J),I) + BSUM
+      ENDDO
 !
-      do I=1,NSICLA
-            myfra = 0.D0
-            if (I==1) myfra = 1.D0
-            write (80,'(I8,1X,I4,1X,7(G15.8,1X))')
-     &      JG,0,FDM(I),AT,depth,myfra,X(J),Y(J),BSUM
-      enddo
+      DO I=1,NSICLA
+            MYFRA = 0.D0
+            IF (I==1) MYFRA = 1.D0
+            WRITE (80,'(I8,1X,I4,1X,7(G15.8,1X))')
+     &      JG,0,FDM(I),AT,DEPTH,MYFRA,X(J),Y(J),BSUM
+      ENDDO
 !
-      close(80)
-      endif
-C
-C----------------------------------------------------------------
-C
+      CLOSE(80)
+      ENDIF
+!
+!----------------------------------------------------------------
+!
       RETURN
       END SUBROUTINE LAYERS_P

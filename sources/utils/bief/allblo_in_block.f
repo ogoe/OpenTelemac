@@ -86,7 +86,10 @@
           NOM(IDEB+1:IDEB+1) = CHIFFRE(II/10)
           NOM(IDEB+2:IDEB+2) = CHIFFRE(II-10*(II/10))
         ELSE
-          STOP 'TOO MANY BLOCKS IN ALLBLO_IN_BLOCK'
+          IF(LNG.EQ.1) WRITE(LU,*) 'TROP DE BLOCK DANS ALLBLO_IN_BLOCK'
+          IF(LNG.EQ.2) WRITE(LU,*) 'TOO MANY BLOCKS IN ALLBLO_IN_BLOCK'
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !
 !  ALLOCATES THE BLOCK
@@ -110,6 +113,7 @@
         WRITE(LU,*) '                  BLOCKS TO BE ALLOCATED'
         WRITE(LU,*) '                  CHANGE MAXBLOCK IN ALLBLO'
       ENDIF
+      CALL PLANTE(1)
       STOP
 !
       ENDIF

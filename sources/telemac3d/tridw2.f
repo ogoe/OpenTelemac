@@ -130,36 +130,36 @@
       IAD3=0
       DO IETAGE = 1,NETAGE
 !
-         DO I=1,NPOIN2
-           IAD1=IAD1+1
-           SEM2D%ADR(1)%P%R(I) = FLUINT%R(IAD1)-FLUEXT%R(IAD1)
-     &                          +SURDT*(VOLUN%R(IAD1)-VOLU%R(IAD1))
-         ENDDO
+        DO I=1,NPOIN2
+          IAD1=IAD1+1
+          SEM2D%ADR(1)%P%R(I) = FLUINT%R(IAD1)-FLUEXT%R(IAD1)
+     &                         +SURDT*(VOLUN%R(IAD1)-VOLU%R(IAD1))
+        ENDDO
 !
-!        PARALLELISM
+!       PARALLELISM
 !
-         IF(NCSIZE.GT.1) CALL PARCOM(SEM2D%ADR(1)%P,2,MESH2D)
+        IF(NCSIZE.GT.1) CALL PARCOM(SEM2D%ADR(1)%P,2,MESH2D)
 !
-!        WITH SOURCES (DONE AFTER CALL PARCOM BECAUSE
-!        CALL PARCOM ON SOURCES IS ALREADY DONE IN SOURCES_SINKS)
+!       WITH SOURCES (DONE AFTER CALL PARCOM BECAUSE
+!       CALL PARCOM ON SOURCES IS ALREADY DONE IN SOURCES_SINKS)
 !
-         IF(NSCE.GT.0) THEN
-!          WITH SOURCES
-           DO IS=1,NSCE
-           DO I=1,NPOIN2
-             IAD2=(IETAGE-1)*NPOIN2+I
-             SEM2D%ADR(1)%P%R(I)
-     &      =SEM2D%ADR(1)%P%R(I)+SOURCES%ADR(IS)%P%R(IAD2)
-           ENDDO
-           ENDDO
-         ENDIF
+        IF(NSCE.GT.0) THEN
+!         WITH SOURCES
+          DO IS=1,NSCE
+          DO I=1,NPOIN2
+            IAD2=(IETAGE-1)*NPOIN2+I
+            SEM2D%ADR(1)%P%R(I) = SEM2D%ADR(1)%P%R(I)
+     &                            + SOURCES%ADR(IS)%P%R(IAD2)
+          ENDDO
+          ENDDO
+        ENDIF
 !
-!        SOLVES THE SYSTEM (JUST A DIVISION BY DIAGONAL)
+!       SOLVES THE SYSTEM (JUST A DIVISION BY DIAGONAL)
 !
-         DO I=1,NPOIN2
-           IAD3=IAD3+1
-           WSCONV%R(IAD3)=SEM2D%ADR(1)%P%R(I)*UNSV2D%R(I)
-         ENDDO
+        DO I=1,NPOIN2
+          IAD3=IAD3+1
+          WSCONV%R(IAD3)=SEM2D%ADR(1)%P%R(I)*UNSV2D%R(I)
+        ENDDO
 !
       ENDDO
 !

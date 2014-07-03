@@ -281,24 +281,24 @@
 !-----------------------------------------------------------------------
 !  FINAL MASS BALANCE
 !
-       IF(LT.EQ.NIT) THEN
+      IF(LT.EQ.NIT) THEN
 !
-          IF(LNG.EQ.1) WRITE(LU,600) ITRAC
-          IF(LNG.EQ.2) WRITE(LU,601) ITRAC
+        IF(LNG.EQ.1) WRITE(LU,600) ITRAC
+        IF(LNG.EQ.2) WRITE(LU,601) ITRAC
 !
-          PERDUE = MASTR0(ITRAC)+MASTEN(ITRAC)+
-     &             MASBOR+MASTOU(ITRAC)-MASTR2(ITRAC)
+        PERDUE = MASTR0(ITRAC)+MASTEN(ITRAC)+
+     &           MASBOR+MASTOU(ITRAC)-MASTR2(ITRAC)
 !
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,1160) MASTR0(ITRAC),MASTR2(ITRAC)
-            WRITE(LU,1165) PERDUE
-          ENDIF
-          IF(LNG.EQ.2) THEN
-            WRITE(LU,2160) MASTR0(ITRAC),MASTR2(ITRAC)
-            WRITE(LU,2165) PERDUE
-          ENDIF
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,1160) MASTR0(ITRAC),MASTR2(ITRAC)
+          WRITE(LU,1165) PERDUE
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,2160) MASTR0(ITRAC),MASTR2(ITRAC)
+          WRITE(LU,2165) PERDUE
+        ENDIF
 !
-       ENDIF
+      ENDIF
 !
 !  END OF PRINTS
 !

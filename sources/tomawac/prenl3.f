@@ -2,12 +2,12 @@
                         SUBROUTINE PRENL3
 !                       *****************
 !
-     *( NF    , NT    , RAISF , TAILF , FREQ  , TB_SCA, LBUF  , DIMBUF,
-     *  F_POIN, F_COEF, T_POIN, F_PROJ, IQ_OM1, NQ_TE1, NQ_OM2, NF1   ,
-     *  NT1   , K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , 
-     *  K_1M  , K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M,
-     *  K_1M3P, TB_TPM, TB_TMP, TB_FAC, SEUIL1, SEUIL2, ELIM  , NCONF ,
-     *  NCONFM, IDCONF)
+     &( NF    , NT    , RAISF , TAILF , FREQ  , TB_SCA, LBUF  , DIMBUF,
+     &  F_POIN, F_COEF, T_POIN, F_PROJ, IQ_OM1, NQ_TE1, NQ_OM2, NF1   ,
+     &  NT1   , K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , 
+     &  K_1M  , K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M,
+     &  K_1M3P, TB_TPM, TB_TMP, TB_FAC, SEUIL1, SEUIL2, ELIM  , NCONF ,
+     &  NCONFM, IDCONF)
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   24/06/2011
@@ -113,13 +113,13 @@
 !
 !.....Variables related to freq. F2 et F3 et direc. THETA2 et THETA3
       INTEGER           K_IF2 (NQ_OM2,NT1,NF1), K_IF3 (NQ_OM2,NT1,NF1),
-     *                  K_1P2P(NQ_OM2,NT1,NF1), K_1P3M(NQ_OM2,NT1,NF1),
-     *                  K_1P2M(NQ_OM2,NT1,NF1), K_1P3P(NQ_OM2,NT1,NF1),
-     *                  K_1M2P(NQ_OM2,NT1,NF1), K_1M3M(NQ_OM2,NT1,NF1),
-     *                  K_1M2M(NQ_OM2,NT1,NF1), K_1M3P(NQ_OM2,NT1,NF1)
+     &                  K_1P2P(NQ_OM2,NT1,NF1), K_1P3M(NQ_OM2,NT1,NF1),
+     &                  K_1P2M(NQ_OM2,NT1,NF1), K_1P3P(NQ_OM2,NT1,NF1),
+     &                  K_1M2P(NQ_OM2,NT1,NF1), K_1M3M(NQ_OM2,NT1,NF1),
+     &                  K_1M2M(NQ_OM2,NT1,NF1), K_1M3P(NQ_OM2,NT1,NF1)
       DOUBLE PRECISION  TB_V24(NQ_OM2,NT1,NF1), TB_V34(NQ_OM2,NT1,NF1),
-     *                  TB_TPM(NQ_OM2,NT1,NF1), TB_TMP(NQ_OM2,NT1,NF1),
-     *                  TB_FAC(NQ_OM2,NT1,NF1)
+     &                  TB_TPM(NQ_OM2,NT1,NF1), TB_TMP(NQ_OM2,NT1,NF1),
+     &                  TB_FAC(NQ_OM2,NT1,NF1)
 !
 !.....Variables related to the configuration selection
       DOUBLE PRECISION  SEUIL1, SEUIL2, ELIM
@@ -143,7 +143,7 @@
 !.....Variables related to the Gaussian quadratures
       DOUBLE PRECISION  W_CHE_TE1, W_CHE_OM2, C_LEG_OM2
       DOUBLE PRECISION, ALLOCATABLE :: X_CHE_TE1(:),X_CHE_OM2(:),
-     *                                 X_LEG_OM2(:),W_LEG_OM2(:)
+     &                                 X_LEG_OM2(:),W_LEG_OM2(:)
 !
 !.....Variables related to the configuration selection
       DOUBLE PRECISION  TEST1 , TEST2
@@ -231,7 +231,7 @@
 !
 !.....Abscissa et weight for Gauss-Legendre
       CALL GAULEG
-     *( W_LEG_OM2 , X_LEG_OM2 , NQ_OM2 )
+     &( W_LEG_OM2 , X_LEG_OM2 , NQ_OM2 )
       DO IQ_OM2=1,NQ_OM2
         X_LEG_OM2(IQ_OM2)=0.25D0*(1.D0+X_LEG_OM2(IQ_OM2))**2
       ENDDO
@@ -250,218 +250,240 @@
 !     STARTS LOOP 1 OVER THE RATIOS F1/F0
 !     ==================================================
       DO JF1=1,NF1
-!      ---------Computes and stores v1=f1/f0 and v1**4
-       V1=(F1SF(JF1+1)+F1SF(JF1))/2.0D0
-         K_IF1(JF1)=NINT(DBLE(LBUF)+DLOG(V1)/DLOG(RAISF))
-       V1_4=V1**4
-       TB_V14(JF1)=V1_4
-!      ---------Computes and stores dv1=df1/f0
-       DV1=F1SF(JF1+1)-F1SF(JF1) 
-!      ---------Computes the A parameter
-       AAA=((1.D0+V1)**4-4.D0*(1.D0+V1_4))/(8.D0*V1*V1)
-!
-!
-!
-!      =================================================
-!      STARTS LOOP 2 OVER THE DELTA_1+ VALUES
-!      =================================================
-       DO JT1=1,NT1
+!       ---------Computes and stores v1=f1/f0 and v1**4
+        V1=(F1SF(JF1+1)+F1SF(JF1))/2.0D0
+          K_IF1(JF1)=NINT(DBLE(LBUF)+DLOG(V1)/DLOG(RAISF))
+        V1_4=V1**4
+        TB_V14(JF1)=V1_4
+!       ---------Computes and stores dv1=df1/f0
+        DV1=F1SF(JF1+1)-F1SF(JF1) 
+!       ---------Computes the A parameter
+        AAA=((1.D0+V1)**4-4.D0*(1.D0+V1_4))/(8.D0*V1*V1)
+!       
+!       
+!       
+!       =================================================
+!       STARTS LOOP 2 OVER THE DELTA_1+ VALUES
+!       =================================================
+        DO JT1=1,NT1
 !
 !......Computes the Delta1+ values (=Theta_1-Theta_0) between 0 and Pi.
-        IF (JT1.LE.NQ_TE1) THEN
-!         ---------First interval : X from -1 to A
-          IQ_TE1=JT1
-          C_D01P=(-1.D0+AAA)/2.D0+(1.D0+AAA)/2.D0*X_CHE_TE1(IQ_TE1)
-          CCC=DV1*DSQRT((AAA-C_D01P)/(1.D0-C_D01P))*W_CHE_TE1
-        ELSE
-!         ---------Second interval : X from A to 1
-          IQ_TE1=JT1-NQ_TE1
-          C_D01P=( 1.D0+AAA)/2.D0+(1.D0-AAA)/2.D0*X_CHE_TE1(IQ_TE1)
-          CCC=DV1*DSQRT((C_D01P-AAA)/(1.D0+C_D01P))*W_CHE_TE1
-        ENDIF
-        S_D01P=DSQRT(1.D0-C_D01P*C_D01P)
-        D01P  =ACOS(C_D01P)
-        K_1P(JT1,JF1)=LBUF+NINT(D01P/DTETAR)
-        K_1M(JT1,JF1)=LBUF-NINT(D01P/DTETAR)
-!
-!       ---------Computes Epsilon_a
-        EPSI_A=2.D0*DSQRT(1.D0+V1_4+2.D0*V1*V1*C_D01P)/(1.D0+V1)**2
-!       ---------Computes Delta_A+ and its cosinus
-        C_D0AP=(1.D0-V1_4+0.25D0*EPSI_A**2*(1.D0+V1)**4)
-     *         /(EPSI_A*(1.D0+V1)**2)
-        S_D0AP=DSQRT(1.0D0-C_D0AP*C_D0AP)
-        D0AP  = ACOS(C_D0AP)
+          IF (JT1.LE.NQ_TE1) THEN
+!           ---------First interval : X from -1 to A
+            IQ_TE1=JT1
+            C_D01P=(-1.D0+AAA)/2.D0+(1.D0+AAA)/2.D0*X_CHE_TE1(IQ_TE1)
+            CCC=DV1*DSQRT((AAA-C_D01P)/(1.D0-C_D01P))*W_CHE_TE1
+          ELSE
+!           ---------Second interval : X from A to 1
+            IQ_TE1=JT1-NQ_TE1
+            C_D01P=( 1.D0+AAA)/2.D0+(1.D0-AAA)/2.D0*X_CHE_TE1(IQ_TE1)
+            CCC=DV1*DSQRT((C_D01P-AAA)/(1.D0+C_D01P))*W_CHE_TE1
+          ENDIF
+          S_D01P=DSQRT(1.D0-C_D01P*C_D01P)
+          D01P  =ACOS(C_D01P)
+          K_1P(JT1,JF1)=LBUF+NINT(D01P/DTETAR)
+          K_1M(JT1,JF1)=LBUF-NINT(D01P/DTETAR)
+!        
+!         ---------Computes Epsilon_a
+          EPSI_A=2.D0*DSQRT(1.D0+V1_4+2.D0*V1*V1*C_D01P)/(1.D0+V1)**2
+!         ---------Computes Delta_A+ and its cosinus
+          C_D0AP=(1.D0-V1_4+0.25D0*EPSI_A**2*(1.D0+V1)**4)
+     &           /(EPSI_A*(1.D0+V1)**2)
+          S_D0AP=DSQRT(1.0D0-C_D0AP*C_D0AP)
+          D0AP  = ACOS(C_D0AP)
 !
 !.......Integration over OMEGA2 depending on EPS_A
-        IF (EPSI_A.LT.1.D0) THEN
+          IF (EPSI_A.LT.1.D0) THEN
 !        - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !........Case of a single singularity (in OMEGA2-)
 !        - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-         W2_M=0.5D0*(1.D0-EPSI_A/2.D0)
-         W2_1=0.5D0
-!
-         W_RAD=W2_1-W2_M
-         C_LEG_OM2=DSQRT(W_RAD)
+            W2_M=0.5D0*(1.D0-EPSI_A/2.D0)
+            W2_1=0.5D0
+!           
+            W_RAD=W2_1-W2_M
+            C_LEG_OM2=DSQRT(W_RAD)
 !
 !        ----------------------------------------------------
 !........STARTS LOOP 3 OVER OMEGA_2 (CASE Epsilon_A < 1)
 !........Case of a single singularity (in OMEGA2-)
 !........Integration over OMEGA2 via GAUSS-LEGENDRE quadrature
 !        ----------------------------------------------------
-         DO IQ_OM2=1,NQ_OM2
-!         ---------Computes W2, V2, W3 et V3
-          W2=W2_M+W_RAD*X_LEG_OM2(IQ_OM2)
-          V2=W2*(1.D0+V1)
-          V2_4=V2**4
-          TB_V24(IQ_OM2,JT1,JF1)=V2_4
-          K_IF2 (IQ_OM2,JT1,JF1)=NINT(DBLE(LBUF)+DLOG(V2)/DLOG(RAISF))
-          W3=1.D0-W2
-          V3=1.D0+V1-V2
-          V3_4=V3**4
-          TB_V34(IQ_OM2,JT1,JF1)=V3_4
-          K_IF3 (IQ_OM2,JT1,JF1)=NINT(DBLE(LBUF)+DLOG(V3)/DLOG(RAISF))
-!         ---------Computes Gamma_2+ et Gamma_3+ angles
-          C_GA2P=(EPSI_A**2/4.D0+W2**4-(1.D0-W2)**4)/(EPSI_A*W2*W2)
-          C_GA2P=MAX(MIN(C_GA2P,1.D0),-1.D0)
-          S_GA2P=DSQRT(1.0D0-C_GA2P*C_GA2P)
-          GA2P  =ACOS(C_GA2P)
-          C_GA3P=(EPSI_A**2/4.D0-W2**4+(1.D0-W2)**4)/EPSI_A/(1.D0-W2)**2
-          C_GA3P=MAX(MIN(C_GA3P,1.D0),-1.D0)
-          S_GA3P=DSQRT(1.0D0-C_GA3P*C_GA3P)
-          GA3P  =ACOS(C_GA3P)
-!         Shifting of the direction indexes - Config. +Delta1 (SIG=1)
-          K_1P2P(IQ_OM2,JT1,JF1)=NINT(( D0AP+GA2P)/DTETAR+DBLE(LBUF))
-          K_1P3M(IQ_OM2,JT1,JF1)=NINT(( D0AP-GA3P)/DTETAR+DBLE(LBUF))
-          K_1P2M(IQ_OM2,JT1,JF1)=NINT(( D0AP-GA2P)/DTETAR+DBLE(LBUF))
-          K_1P3P(IQ_OM2,JT1,JF1)=NINT(( D0AP+GA3P)/DTETAR+DBLE(LBUF))
-!         Shifting of the direction indexes - Config. -Delta1 (SIG=-1)
-          K_1M2P(IQ_OM2,JT1,JF1)=NINT((-D0AP+GA2P)/DTETAR+DBLE(LBUF))
-          K_1M3M(IQ_OM2,JT1,JF1)=NINT((-D0AP-GA3P)/DTETAR+DBLE(LBUF))
-          K_1M2M(IQ_OM2,JT1,JF1)=NINT((-D0AP-GA2P)/DTETAR+DBLE(LBUF))
-          K_1M3P(IQ_OM2,JT1,JF1)=NINT((-D0AP+GA3P)/DTETAR+DBLE(LBUF))
+            DO IQ_OM2=1,NQ_OM2
+!             ---------Computes W2, V2, W3 et V3
+              W2=W2_M+W_RAD*X_LEG_OM2(IQ_OM2)
+              V2=W2*(1.D0+V1)
+              V2_4=V2**4
+              TB_V24(IQ_OM2,JT1,JF1)=V2_4
+              K_IF2 (IQ_OM2,JT1,JF1) = NINT(DBLE(LBUF) 
+     &                               + DLOG(V2)/DLOG(RAISF))
+              W3=1.D0-W2
+              V3=1.D0+V1-V2
+              V3_4=V3**4
+              TB_V34(IQ_OM2,JT1,JF1)=V3_4
+              K_IF3 (IQ_OM2,JT1,JF1) = NINT(DBLE(LBUF)
+     &                               + DLOG(V3)/DLOG(RAISF))
+!             ---------Computes Gamma_2+ et Gamma_3+ angles
+              C_GA2P=(EPSI_A**2/4.D0+W2**4-(1.D0-W2)**4)/(EPSI_A*W2*W2)
+              C_GA2P=MAX(MIN(C_GA2P,1.D0),-1.D0)
+              S_GA2P=DSQRT(1.0D0-C_GA2P*C_GA2P)
+              GA2P  =ACOS(C_GA2P)
+              C_GA3P=(EPSI_A**2/4.D0-W2**4+(1.D0-W2)**4)/EPSI_A
+     &              /(1.D0-W2)**2
+              C_GA3P=MAX(MIN(C_GA3P,1.D0),-1.D0)
+              S_GA3P=DSQRT(1.0D0-C_GA3P*C_GA3P)
+              GA3P  =ACOS(C_GA3P)
+!             Shifting of the direction indexes - Config. +Delta1 (SIG=1)
+              K_1P2P(IQ_OM2,JT1,JF1)=NINT(( D0AP+GA2P)/DTETAR
+     &                              +DBLE(LBUF))
+              K_1P3M(IQ_OM2,JT1,JF1)=NINT(( D0AP-GA3P)/DTETAR
+     &                              +DBLE(LBUF))
+              K_1P2M(IQ_OM2,JT1,JF1)=NINT(( D0AP-GA2P)/DTETAR
+     &                              +DBLE(LBUF))
+              K_1P3P(IQ_OM2,JT1,JF1)=NINT(( D0AP+GA3P)/DTETAR
+     &                              +DBLE(LBUF))
+!             Shifting of the direction indexes - Config. -Delta1 (SIG=-1)
+              K_1M2P(IQ_OM2,JT1,JF1)=NINT((-D0AP+GA2P)/DTETAR
+     &                              +DBLE(LBUF))
+              K_1M3M(IQ_OM2,JT1,JF1)=NINT((-D0AP-GA3P)/DTETAR
+     &                              +DBLE(LBUF))
+              K_1M2M(IQ_OM2,JT1,JF1)=NINT((-D0AP-GA2P)/DTETAR
+     &                              +DBLE(LBUF))
+              K_1M3P(IQ_OM2,JT1,JF1)=NINT((-D0AP+GA3P)/DTETAR
+     &                              +DBLE(LBUF))
 !
 !.........Computes the coupling coefficients (only for Delta_1+ )
-          RK0=1.D0
-          RK1=V1*V1
-          RK2=V2*V2
-          RK3=(1.D0+V1-V2)**2
-          XK0  = RK0
-          YK0  = 0.0D0
-          XK1  = RK1*C_D01P
-          YK1  = RK1*S_D01P
-          XK2P = RK2*(C_D0AP*C_GA2P-S_D0AP*S_GA2P)
-          YK2P = RK2*(S_D0AP*C_GA2P+C_D0AP*S_GA2P)
-          XK2M = RK2*(C_D0AP*C_GA2P+S_D0AP*S_GA2P)
-          YK2M = RK2*(S_D0AP*C_GA2P-C_D0AP*S_GA2P)
-          XK3P = RK3*(C_D0AP*C_GA3P-S_D0AP*S_GA3P)
-          YK3P = RK3*(S_D0AP*C_GA3P+C_D0AP*S_GA3P)
-          XK3M = RK3*(C_D0AP*C_GA3P+S_D0AP*S_GA3P)
-          YK3M = RK3*(S_D0AP*C_GA3P-C_D0AP*S_GA3P)
-          TB_TPM(IQ_OM2,JT1,JF1)=COUPLE
-     *( XK0   , YK0   , XK1   , YK1   , XK2P  , YK2P  , XK3M  , YK3M  ,
-     *  GRAVIT, PI    )
-          TB_TMP(IQ_OM2,JT1,JF1)=COUPLE
-     *( XK0   , YK0   , XK1   , YK1   , XK2M  , YK2M  , XK3P  , YK3P  ,
-     *  GRAVIT, PI    )
+              RK0=1.D0
+              RK1=V1*V1
+              RK2=V2*V2
+              RK3=(1.D0+V1-V2)**2
+              XK0  = RK0
+              YK0  = 0.0D0
+              XK1  = RK1*C_D01P
+              YK1  = RK1*S_D01P
+              XK2P = RK2*(C_D0AP*C_GA2P-S_D0AP*S_GA2P)
+              YK2P = RK2*(S_D0AP*C_GA2P+C_D0AP*S_GA2P)
+              XK2M = RK2*(C_D0AP*C_GA2P+S_D0AP*S_GA2P)
+              YK2M = RK2*(S_D0AP*C_GA2P-C_D0AP*S_GA2P)
+              XK3P = RK3*(C_D0AP*C_GA3P-S_D0AP*S_GA3P)
+              YK3P = RK3*(S_D0AP*C_GA3P+C_D0AP*S_GA3P)
+              XK3M = RK3*(C_D0AP*C_GA3P+S_D0AP*S_GA3P)
+              YK3M = RK3*(S_D0AP*C_GA3P-C_D0AP*S_GA3P)
+              TB_TPM(IQ_OM2,JT1,JF1)=COUPLE
+     &( XK0   , YK0   , XK1   , YK1   , XK2P  , YK2P  , XK3M  , YK3M  ,
+     &  GRAVIT, PI    )
+              TB_TMP(IQ_OM2,JT1,JF1)=COUPLE
+     &( XK0   , YK0   , XK1   , YK1   , XK2M  , YK2M  , XK3P  , YK3P  ,
+     &  GRAVIT, PI    )
 !
 !.........Computes the multiplicative coefficient for QNL4
-          DENO=2.D0*DSQRT( (0.5D0*(1.D0+EPSI_A/2.D0)-W2)
-     *                   *((W2-0.5D0)**2+0.25D0*(1.D0+EPSI_A))
-     *                   *((W2-0.5D0)**2+0.25D0*(1.D0-EPSI_A)) )
-          TB_FAC(IQ_OM2,JT1,JF1)=1.D0/(DENO*V1*W2*(1.D0-W2))
-     *              /(1.D0+V1)**5 * W_LEG_OM2(IQ_OM2)*C_LEG_OM2* CCC
-         ENDDO
+              DENO=2.D0*DSQRT( (0.5D0*(1.D0+EPSI_A/2.D0)-W2)
+     &                       *((W2-0.5D0)**2+0.25D0*(1.D0+EPSI_A))
+     &                       *((W2-0.5D0)**2+0.25D0*(1.D0-EPSI_A)) )
+              TB_FAC(IQ_OM2,JT1,JF1)=1.D0/(DENO*V1*W2*(1.D0-W2))
+     &                  /(1.D0+V1)**5 * W_LEG_OM2(IQ_OM2)*C_LEG_OM2* CCC
+            ENDDO
 !        -----------------------------------------------
 !........END OF THE LOOP 3 OVER OMEGA_2 (CASE Epsilon_A < 1)
 !        -----------------------------------------------
 !
-        ELSE
+          ELSE
 !        - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !........STARTS LOOP 3 OVER OMEGA_2 (CASE Epsilon_A > 1)
 !........Case of two singularities (in OMEGA2- and OMEGA2_1)
 !........Integration over OMEGA2 via GAUSS-CHEBYSCHEV quadrature
 !        - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-         W2_M=0.5D0*(1.D0-EPSI_A/2.D0)
-         W2_1=0.5D0*(1.D0-DSQRT(EPSI_A-1.D0))
-!
-         W_MIL=(W2_M+W2_1)/2.D0
-         W_RAD=(W2_1-W2_M)/2.D0
-!
-         DO IQ_OM2=1,NQ_OM2
-!         ---------Computes W2, V2, W3 et V3
-          W2=W_MIL+W_RAD*X_CHE_OM2(IQ_OM2)
-          V2=W2*(1.D0+V1)
-          V2_4=V2**4
-          TB_V24(IQ_OM2,JT1,JF1)=V2_4
-            K_IF2 (IQ_OM2,JT1,JF1)=NINT(DBLE(LBUF)+DLOG(V2)/DLOG(RAISF))
-          W3=1.D0-W2
-          V3=1.D0+V1-V2
-          V3_4=V3**4
-          TB_V34(IQ_OM2,JT1,JF1)=V3_4
-          K_IF3 (IQ_OM2,JT1,JF1)=NINT(DBLE(LBUF)+DLOG(V3)/DLOG(RAISF))
-!         ---------Computes Gamma_2+ et Gamma_3+ angles
-          C_GA2P=(EPSI_A**2/4.D0+W2**4-(1.D0-W2)**4)/(EPSI_A*W2*W2)
-          C_GA2P=MAX(MIN(C_GA2P,1.D0),-1.D0)
-          S_GA2P=DSQRT(1.0D0-C_GA2P*C_GA2P)
-          GA2P  =ACOS(C_GA2P)
-          C_GA3P=(EPSI_A**2/4.D0-W2**4+(1.D0-W2)**4)/EPSI_A/(1.D0-W2)**2
-          C_GA3P=MAX(MIN(C_GA3P,1.D0),-1.D0)
-          S_GA3P=DSQRT(1.0D0-C_GA3P*C_GA3P)
-          GA3P  =ACOS(C_GA3P)
-!         Shifts the direction indexes - Config. +Delta1 (SIG=1)
-          K_1P2P(IQ_OM2,JT1,JF1)=NINT(( D0AP+GA2P)/DTETAR+DBLE(LBUF))
-          K_1P3M(IQ_OM2,JT1,JF1)=NINT(( D0AP-GA3P)/DTETAR+DBLE(LBUF))
-          K_1P2M(IQ_OM2,JT1,JF1)=NINT(( D0AP-GA2P)/DTETAR+DBLE(LBUF))
-          K_1P3P(IQ_OM2,JT1,JF1)=NINT(( D0AP+GA3P)/DTETAR+DBLE(LBUF))
-!         Shifts the direction indexes - Config. -Delta1 (SIG=-1)
-          K_1M2P(IQ_OM2,JT1,JF1)=NINT((-D0AP+GA2P)/DTETAR+DBLE(LBUF))
-          K_1M3M(IQ_OM2,JT1,JF1)=NINT((-D0AP-GA3P)/DTETAR+DBLE(LBUF))
-          K_1M2M(IQ_OM2,JT1,JF1)=NINT((-D0AP-GA2P)/DTETAR+DBLE(LBUF))
-          K_1M3P(IQ_OM2,JT1,JF1)=NINT((-D0AP+GA3P)/DTETAR+DBLE(LBUF))
+            W2_M=0.5D0*(1.D0-EPSI_A/2.D0)
+            W2_1=0.5D0*(1.D0-DSQRT(EPSI_A-1.D0))
+!          
+            W_MIL=(W2_M+W2_1)/2.D0
+            W_RAD=(W2_1-W2_M)/2.D0
+!          
+            DO IQ_OM2=1,NQ_OM2
+!             ---------Computes W2, V2, W3 et V3
+              W2=W_MIL+W_RAD*X_CHE_OM2(IQ_OM2)
+              V2=W2*(1.D0+V1)
+              V2_4=V2**4
+              TB_V24(IQ_OM2,JT1,JF1)=V2_4
+                K_IF2 (IQ_OM2,JT1,JF1)=NINT(DBLE(LBUF)
+     &                                +DLOG(V2)/DLOG(RAISF))
+              W3=1.D0-W2
+              V3=1.D0+V1-V2
+              V3_4=V3**4
+              TB_V34(IQ_OM2,JT1,JF1)=V3_4
+              K_IF3 (IQ_OM2,JT1,JF1)=NINT(DBLE(LBUF)
+     &                              +DLOG(V3)/DLOG(RAISF))
+!             ---------Computes Gamma_2+ et Gamma_3+ angles
+              C_GA2P=(EPSI_A**2/4.D0+W2**4-(1.D0-W2)**4)/(EPSI_A*W2*W2)
+              C_GA2P=MAX(MIN(C_GA2P,1.D0),-1.D0)
+              S_GA2P=DSQRT(1.0D0-C_GA2P*C_GA2P)
+              GA2P  =ACOS(C_GA2P)
+              C_GA3P=(EPSI_A**2/4.D0-W2**4+(1.D0-W2)**4)/EPSI_A
+     &              /(1.D0-W2)**2
+              C_GA3P=MAX(MIN(C_GA3P,1.D0),-1.D0)
+              S_GA3P=DSQRT(1.0D0-C_GA3P*C_GA3P)
+              GA3P  =ACOS(C_GA3P)
+!             Shifts the direction indexes - Config. +Delta1 (SIG=1)
+              K_1P2P(IQ_OM2,JT1,JF1)=NINT(( D0AP+GA2P)/DTETAR
+     &                              +DBLE(LBUF))
+              K_1P3M(IQ_OM2,JT1,JF1)=NINT(( D0AP-GA3P)/DTETAR
+     &                              +DBLE(LBUF))
+              K_1P2M(IQ_OM2,JT1,JF1)=NINT(( D0AP-GA2P)/DTETAR
+     &                              +DBLE(LBUF))
+              K_1P3P(IQ_OM2,JT1,JF1)=NINT(( D0AP+GA3P)/DTETAR
+     &                              +DBLE(LBUF))
+!             Shifts the direction indexes - Config. -Delta1 (SIG=-1)
+              K_1M2P(IQ_OM2,JT1,JF1)=NINT((-D0AP+GA2P)/DTETAR
+     &                              +DBLE(LBUF))
+              K_1M3M(IQ_OM2,JT1,JF1)=NINT((-D0AP-GA3P)/DTETAR
+     &                              +DBLE(LBUF))
+              K_1M2M(IQ_OM2,JT1,JF1)=NINT((-D0AP-GA2P)/DTETAR
+     &                              +DBLE(LBUF))
+              K_1M3P(IQ_OM2,JT1,JF1)=NINT((-D0AP+GA3P)/DTETAR
+     &                              +DBLE(LBUF))
 !
 !.........Computes the coupling coefficients (only for Delta_1+ )
-          RK0=1.D0
-          RK1=V1*V1
-          RK2=V2*V2
-          RK3=(1.D0+V1-V2)**2
-          XK0  = RK0
-          YK0  = 0.0D0
-          XK1  = RK1*C_D01P
-          YK1  = RK1*S_D01P
-          XK2P = RK2*(C_D0AP*C_GA2P-S_D0AP*S_GA2P)
-          YK2P = RK2*(S_D0AP*C_GA2P+C_D0AP*S_GA2P)
-          XK2M = RK2*(C_D0AP*C_GA2P+S_D0AP*S_GA2P)
-          YK2M = RK2*(S_D0AP*C_GA2P-C_D0AP*S_GA2P)
-          XK3P = RK3*(C_D0AP*C_GA3P-S_D0AP*S_GA3P)
-          YK3P = RK3*(S_D0AP*C_GA3P+C_D0AP*S_GA3P)
-          XK3M = RK3*(C_D0AP*C_GA3P+S_D0AP*S_GA3P)
-          YK3M = RK3*(S_D0AP*C_GA3P-C_D0AP*S_GA3P)
-          TB_TPM(IQ_OM2,JT1,JF1)=COUPLE
-     *( XK0   , YK0   , XK1   , YK1   , XK2P  , YK2P  , XK3M  , YK3M  ,
-     *  GRAVIT, PI    )
-          TB_TMP(IQ_OM2,JT1,JF1)=COUPLE
-     *( XK0   , YK0   , XK1   , YK1   , XK2M  , YK2M  , XK3P  , YK3P  ,
-     *  GRAVIT, PI    )
+              RK0=1.D0
+              RK1=V1*V1
+              RK2=V2*V2
+              RK3=(1.D0+V1-V2)**2
+              XK0  = RK0
+              YK0  = 0.0D0
+              XK1  = RK1*C_D01P
+              YK1  = RK1*S_D01P
+              XK2P = RK2*(C_D0AP*C_GA2P-S_D0AP*S_GA2P)
+              YK2P = RK2*(S_D0AP*C_GA2P+C_D0AP*S_GA2P)
+              XK2M = RK2*(C_D0AP*C_GA2P+S_D0AP*S_GA2P)
+              YK2M = RK2*(S_D0AP*C_GA2P-C_D0AP*S_GA2P)
+              XK3P = RK3*(C_D0AP*C_GA3P-S_D0AP*S_GA3P)
+              YK3P = RK3*(S_D0AP*C_GA3P+C_D0AP*S_GA3P)
+              XK3M = RK3*(C_D0AP*C_GA3P+S_D0AP*S_GA3P)
+              YK3M = RK3*(S_D0AP*C_GA3P-C_D0AP*S_GA3P)
+              TB_TPM(IQ_OM2,JT1,JF1)=COUPLE
+     &( XK0   , YK0   , XK1   , YK1   , XK2P  , YK2P  , XK3M  , YK3M  ,
+     &  GRAVIT, PI    )
+              TB_TMP(IQ_OM2,JT1,JF1)=COUPLE
+     &( XK0   , YK0   , XK1   , YK1   , XK2M  , YK2M  , XK3P  , YK3P  ,
+     &  GRAVIT, PI    )
 !
 !.........Computes the multiplicative coefficient for QNL4
-          DENO=2.D0*DSQRT( (0.5D0*(1.D0+EPSI_A/2.D0)-W2)
-     *                   *((W2-0.5D0)**2+0.25D0*(1.D0+EPSI_A))
-     *                   *(0.5D0*(1.D0+DSQRT(EPSI_A-1.D0))-W2) )
-          TB_FAC(IQ_OM2,JT1,JF1)=1.D0/(DENO*V1*W2*(1.D0-W2))
-     *              /(1.D0+V1)**5 * W_CHE_OM2* CCC
+              DENO=2.D0*DSQRT( (0.5D0*(1.D0+EPSI_A/2.D0)-W2)
+     &                       *((W2-0.5D0)**2+0.25D0*(1.D0+EPSI_A))
+     &                       *(0.5D0*(1.D0+DSQRT(EPSI_A-1.D0))-W2) )
+              TB_FAC(IQ_OM2,JT1,JF1)=1.D0/(DENO*V1*W2*(1.D0-W2))
+     &              /(1.D0+V1)**5 * W_CHE_OM2* CCC
 !
-         ENDDO
+            ENDDO
 !        -----------------------------------------------
 !........END OF LOOP 3 OVER OMEGA_2 (CASE Epsilon_A > 1)
 !        -----------------------------------------------
 !
-        ENDIF
+          ENDIF
 !
 !
-       ENDDO
-!      =================================================
-!      END OF LOOP 2 OVER THE DELTA_1+ VALUES
-!      =================================================
+        ENDDO
+!       =================================================
+!       END OF LOOP 2 OVER THE DELTA_1+ VALUES
+!       =================================================
 !
       ENDDO
 !     ==================================================
@@ -515,11 +537,11 @@
             AAA=TB_FAC(IQ_OM2,JT1,JF1)*TB_TPM(IQ_OM2,JT1,JF1)
             CCC=TB_FAC(IQ_OM2,JT1,JF1)*TB_TMP(IQ_OM2,JT1,JF1)
             IF ((AAA.GT.TEST1.OR.AAA.GT.TEST2).OR.
-     *          (CCC.GT.TEST1.OR.CCC.GT.TEST2)) THEN
-                 NCONF=NCONF+1
-                 IDCONF(NCONF,1)=JF1
-                 IDCONF(NCONF,2)=JT1
-                 IDCONF(NCONF,3)=IQ_OM2
+     &          (CCC.GT.TEST1.OR.CCC.GT.TEST2)) THEN
+              NCONF=NCONF+1
+              IDCONF(NCONF,1)=JF1
+              IDCONF(NCONF,2)=JT1
+              IDCONF(NCONF,3)=IQ_OM2
             ENDIF
           ENDDO
         ENDDO

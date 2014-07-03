@@ -140,55 +140,55 @@
 !-----------------------------------------------------------------
 !
       IF (ENTREG) THEN
-         REGIME = REGIDO
+        REGIME = REGIDO
       ELSE
 !
 !     INITIALIZES THE REGIME (SETS TO 0) BEFORE EACH NEW ITERATION
 !
-         REGIME = 0
-         LL1 = 0.D0
+        REGIME = 0
+        LL1 = 0.D0
 !
-         IF (RAP1 .LE. 10250.D0) THEN
-            LL1 = 0.0322D0*RAP1+3.33D0
-            IF (RAP2 .GE. LL1) THEN
-              REGIME = 1
-!             WRITE(*,*) 'LE REGIME HYDRAULIQUE EST LAMINAIRE'
-!             WRITE(*,*) 'THE HYDRAULIC REGIME IS LAMINAR'
-            ENDIF
-         ENDIF
+        IF (RAP1 .LE. 10250.D0) THEN
+          LL1 = 0.0322D0*RAP1+3.33D0
+          IF (RAP2 .GE. LL1) THEN
+            REGIME = 1
+!           WRITE(*,*) 'LE REGIME HYDRAULIQUE EST LAMINAIRE'
+!           WRITE(*,*) 'THE HYDRAULIC REGIME IS LAMINAR'
+          ENDIF
+        ENDIF
 !
-         IF (RAP1 .GE. 3.D4) THEN
-            LL1 = 0.009792D0*RAP1+208.33D0
-            IF (RAP2 .GE. LL1) THEN
-              REGIME = 2
-!             WRITE(*,*) 'LE REGIME HYDRAULIQUE EST TURBULENT LISSE'
-!             WRITE(*,*) 'THE HYDRAULIC REGIME IS SMOOTH TURBULENT'
-            ENDIF
-         ENDIF
+        IF (RAP1 .GE. 3.D4) THEN
+          LL1 = 0.009792D0*RAP1+208.33D0
+          IF (RAP2 .GE. LL1) THEN
+            REGIME = 2
+!           WRITE(*,*) 'LE REGIME HYDRAULIQUE EST TURBULENT LISSE'
+!           WRITE(*,*) 'THE HYDRAULIC REGIME IS SMOOTH TURBULENT'
+          ENDIF
+        ENDIF
 !
-         IF (RAP1 .GE. 5.D3 .AND. RAP1 .LE. 2.D4) THEN
-            LL1 = 0.026D0*RAP1-12.D0
-            IF (RAP2 .LE. LL1) THEN
-              REGIME = 3
-!             WRITE(*,*) 'LE REGIME HYDRAULIQUE EST TURBULENT RUGUEUX'
-!             WRITE(*,*) 'THE HYDRAULIC REGIME IS ROUGH TURBULENT'
-            ENDIF
-         ENDIF
-!
-         IF (RAP1 .GT. 2.D4) THEN
-            LL1 = 0.00099D0*RAP1+30.30D0
-            IF (RAP2 .LE. LL1) THEN
-              REGIME = 3
-!             WRITE(*,*) 'LE REGIME HYDRAULIQUE EST TURBULENT RUGUEUX'
-!             WRITE(*,*) 'THE HYDRAULIC REGIME IS ROUGH TURBULENT'
-            ENDIF
-         ENDIF
-!
-         IF (REGIME .EQ. 0) THEN
+        IF (RAP1 .GE. 5.D3 .AND. RAP1 .LE. 2.D4) THEN
+          LL1 = 0.026D0*RAP1-12.D0
+          IF (RAP2 .LE. LL1) THEN
             REGIME = 3
-!           WRITE(*,*) 'LE REGIME EST TURBULENT RUGEUX'
-!             WRITE(*,*) 'THE HYDRAULIC REGIME IS ROUGH TURBULENT'
-         ENDIF
+!           WRITE(*,*) 'LE REGIME HYDRAULIQUE EST TURBULENT RUGUEUX'
+!           WRITE(*,*) 'THE HYDRAULIC REGIME IS ROUGH TURBULENT'
+          ENDIF
+        ENDIF
+!
+        IF (RAP1 .GT. 2.D4) THEN
+          LL1 = 0.00099D0*RAP1+30.30D0
+          IF (RAP2 .LE. LL1) THEN
+            REGIME = 3
+!           WRITE(*,*) 'LE REGIME HYDRAULIQUE EST TURBULENT RUGUEUX'
+!           WRITE(*,*) 'THE HYDRAULIC REGIME IS ROUGH TURBULENT'
+          ENDIF
+        ENDIF
+!
+        IF (REGIME .EQ. 0) THEN
+          REGIME = 3
+!         WRITE(*,*) 'LE REGIME EST TURBULENT RUGEUX'
+!           WRITE(*,*) 'THE HYDRAULIC REGIME IS ROUGH TURBULENT'
+        ENDIF
 !
       ENDIF
 !
@@ -198,86 +198,86 @@
 !--------------------------------------------------------------
 !
       IF (REGIME .EQ. 1) THEN
-         FFW = 2.D0*(((AEX*UEX)/VISCO)**(-0.5D0))
+        FFW = 2.D0*(((AEX*UEX)/VISCO)**(-0.5D0))
       ENDIF
 !
       IF (REGIME .EQ. 2) THEN
-         FFW = 0.09*(((AEX*UEX)/VISCO)**(-0.2D0))
+        FFW = 0.09*(((AEX*UEX)/VISCO)**(-0.2D0))
       ENDIF
 !
       IF (REGIME .EQ. 3) THEN
 !
-         IF (ENTRUG) THEN
+        IF (ENTRUG) THEN
 !
-             KSRUGO = 3.D0 * DIAM90
+           KSRUGO = 3.D0 * DIAM90
 !
-         ELSE
+        ELSE
 !
-            SP = MVSED/MVEAU
-            PSI = (UEX**2.D0)/((SP-1.D0)*GRAV*DIAM50)
+          SP = MVSED/MVEAU
+          PSI = (UEX**2.D0)/((SP-1.D0)*GRAV*DIAM50)
 !
-            IF (PSI .LT. 250.D0) THEN
-                 KS1 = 3.D0*DIAM90
+          IF (PSI .LT. 250.D0) THEN
+            KS1 = 3.D0*DIAM90
 !
-                 IF (PSI .LT. 10.D0) THEN
-                      RH = 0.22D0*AEX
-                      RS = 0.18D0
-                 ELSE
-                      RH = AEX*(2.4D-13)*((250.D0-PSI)**5.D0)
-                      RS = (2.D-7)*((250.D0-PSI)**2.5D0)
-                 ENDIF
+            IF (PSI .LT. 10.D0) THEN
+              RH = 0.22D0*AEX
+              RS = 0.18D0
+            ELSE
+              RH = AEX*(2.4D-13)*((250.D0-PSI)**5.D0)
+              RS = (2.D-7)*((250.D0-PSI)**2.5D0)
+            ENDIF
 !
-                 KS2 = 20.D0*RICOEF*RH*RS
+            KS2 = 20.D0*RICOEF*RH*RS
 !
 !  RICOEF = 1     RIPPLES ONLY
 !  RICOEF = 0.7D0 RIPPLES AND SAND WAVES
 !
-            ELSE
-                 KS1 = 3.D0*(0.04D0*PSI-9.D0)*DIAM90
-                 KS2 = 0.D0
-                 IF (KS1 .LT. 0.01D0) THEN
-                      KS1 = 3.D0*DIAM90
-                 ENDIF
+          ELSE
+            KS1 = 3.D0*(0.04D0*PSI-9.D0)*DIAM90
+            KS2 = 0.D0
+            IF (KS1 .LT. 0.01D0) THEN
+              KS1 = 3.D0*DIAM90
             ENDIF
+          ENDIF
 !
-            KSRUGO = KS1+KS2
-            KS1 = (AEX/KSRUGO)
+          KSRUGO = KS1+KS2
+          KS1 = (AEX/KSRUGO)
 !
-         ENDIF
+        ENDIF
 !
-         FFW = EXP(-6.D0+5.2D0*((AEX/KSRUGO)**(-0.19D0)))
-         IF (FFW .GT. 0.3D0) THEN
-             FFW = 0.3D0
-         ENDIF
+        FFW = EXP(-6.D0+5.2D0*((AEX/KSRUGO)**(-0.19D0)))
+        IF (FFW .GT. 0.3D0) THEN
+          FFW = 0.3D0
+        ENDIF
       ENDIF
 !
       IF (REGIME .EQ. 4) THEN
 !
 !     TRANSIENT STATE NOT TAKEN INTO ACCOUNT
 !
-         IF (ENTRUG) THEN
+        IF (ENTRUG) THEN
 !
-             KSRUGO = 3.D0 * DIAM90
+          KSRUGO = 3.D0 * DIAM90
 !
-         ELSE
+        ELSE
 !
-            DIAMAD = (((MVSED/MVEAU)-1.D0)*GRAV)/(VISCO**2.D0)
-            DIAMAD = DIAMAD**(1/3)
-            DIAMAD = DIAMAD * DIAM50
+          DIAMAD = (((MVSED/MVEAU)-1.D0)*GRAV)/(VISCO**2.D0)
+          DIAMAD = DIAMAD**(1/3)
+          DIAMAD = DIAMAD * DIAM50
 !
-            TETACR = 0.14D0*(DIAMAD**(-0.64D0))
+          TETACR = 0.14D0*(DIAMAD**(-0.64D0))
 !
-            TAUCR = TETACR*(MVSED-MVEAU)*GRAV*DIAM50
+          TAUCR = TETACR*(MVSED-MVEAU)*GRAV*DIAM50
 !
-            KSRUGO = (3.D0*DIAM90)+((3.3D0*VISCO)/
-     &               ((TAUCR/MVEAU)**0.5D0))
+          KSRUGO = (3.D0*DIAM90)+((3.3D0*VISCO)/
+     &             ((TAUCR/MVEAU)**0.5D0))
 !
-         ENDIF
+        ENDIF
 !
-         FFW = EXP(-6.D0+5.2D0*((AEX/KSRUGO)**(-0.19D0)))
-         IF (FFW .GT. 0.3D0) THEN
-              FFW = 0.3D0
-         ENDIF
+        FFW = EXP(-6.D0+5.2D0*((AEX/KSRUGO)**(-0.19D0)))
+        IF (FFW .GT. 0.3D0) THEN
+          FFW = 0.3D0
+        ENDIF
 !
       ENDIF
 !

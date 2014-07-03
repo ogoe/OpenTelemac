@@ -97,186 +97,190 @@
 !
 !***********************************************************************
 !
-                IF (LUIGN) GO TO 1600
+      IF (LUIGN) GO TO 1600
 !
-!               GLOBAL TREATMENT OF THE KEYWORD
+!     GLOBAL TREATMENT OF THE KEYWORD
 !
-                IF (INDX .GT. NMAX) THEN
-                  WRITE(LU,*) '****************************************'
-                  IF(LNG.EQ.1) THEN
-                    WRITE(LU,*) 'ERREUR A LA LIGNE :',NLIGN,
-     &                          ' DU DICTIONNAIRE'
-                    WRITE(LU,*) 'INDEX INVALIDE : ',INDX,' MAX = ',NMAX
-                  ELSEIF(LNG.EQ.2) THEN
-                    WRITE(LU,*) 'ERROR AT LINE:',NLIGN,
-     &                          ' OF THE DICTIONARY'
-                    WRITE(LU,*) 'INVALID INDEX: ',INDX,' MAX = ',NMAX
-                  ENDIF
-                  WRITE(LU,*) '****************************************'
-                  STOP 'ERREUR DAMOCLES 6'
-                ENDIF
+      IF (INDX .GT. NMAX) THEN
+        WRITE(LU,*) '****************************************'
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'ERREUR A LA LIGNE :',NLIGN,
+     &                ' DU DICTIONNAIRE'
+          WRITE(LU,*) 'INDEX INVALIDE : ',INDX,' MAX = ',NMAX
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'ERROR AT LINE:',NLIGN,
+     &                ' OF THE DICTIONARY'
+          WRITE(LU,*) 'INVALID INDEX: ',INDX,' MAX = ',NMAX
+        ENDIF
+        WRITE(LU,*) '****************************************'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
-                IF (NMOT(NTYP) .GT. NMAX) THEN
-                  WRITE(LU,*)'*****************************************'
-                  IF(LNG.EQ.1) THEN
-                    WRITE(LU,*) 'ERREUR A LA LIGNE :',NLIGN,
-     &                          ' DU DICTIONNAIRE'
-                    WRITE(LU,*)'TROP DE MOTS CLES. MAXIMUM : ',NMAX
-                  ELSEIF(LNG.EQ.2) THEN
-                    WRITE(LU,*) 'ERROR AT LINE:',NLIGN,
-     &                          ' OF THE DICTIONARY'
-                    WRITE(LU,*) 'TOO MANY KEY-WORDS, MAXIMUM : ',NMAX
-                  ENDIF
-                  WRITE(LU,*)'*****************************************'
-                  STOP 'ERREUR DAMOCLES 7'
-                ENDIF
+      IF (NMOT(NTYP) .GT. NMAX) THEN
+        WRITE(LU,*)'*****************************************'
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'ERREUR A LA LIGNE :',NLIGN,
+     &                ' DU DICTIONNAIRE'
+          WRITE(LU,*)'TROP DE MOTS CLES. MAXIMUM : ',NMAX
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'ERROR AT LINE:',NLIGN,
+     &                ' OF THE DICTIONARY'
+          WRITE(LU,*) 'TOO MANY KEY-WORDS, MAXIMUM : ',NMAX
+        ENDIF
+        WRITE(LU,*)'*****************************************'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 ! REDUNDANT WITH LUIGN? KEPT BY DEFAULT - TO BE CHECKED
-                IF (INDX .LE. 0) GO TO 1600
+      IF (INDX .LE. 0) GO TO 1600
 !
-                IF (UTINDX(NTYP,INDX)) THEN
-                  WRITE(LU,*)'*****************************'
-                  IF(LNG.EQ.1) THEN
-                    WRITE(LU,*) 'ERREUR A LA LIGNE : ',NLIGN
-                    WRITE(LU,*) 'L''INDEX  : ',INDX,
-     &             ' A DEJA ETE UTILISE POUR LE TYPE : ',NTYP
-                  ELSEIF(LNG.EQ.2) THEN
-                    WRITE(LU,*) 'ERROR AT LINE: ',NLIGN
-                    WRITE(LU,*) 'THE INDEX: ',INDX,
-     &             ' IS USED TWO TIMES FOR THE TYPE : ',NTYP
-                  ENDIF
-                  WRITE(LU,*)'*****************************'
-                  STOP 'ERREUR DAMOCLES 8'
-                ELSE
-                   UTINDX(NTYP,INDX) = .TRUE.
-                ENDIF
+      IF (UTINDX(NTYP,INDX)) THEN
+        WRITE(LU,*)'*****************************'
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'ERREUR A LA LIGNE : ',NLIGN
+          WRITE(LU,*) 'L''INDEX  : ',INDX,
+     &   ' A DEJA ETE UTILISE POUR LE TYPE : ',NTYP
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'ERROR AT LINE: ',NLIGN
+          WRITE(LU,*) 'THE INDEX: ',INDX,
+     &   ' IS USED TWO TIMES FOR THE TYPE : ',NTYP
+        ENDIF
+        WRITE(LU,*)'*****************************'
+        CALL PLANTE(1)
+        STOP
+      ELSE
+        UTINDX(NTYP,INDX) = .TRUE.
+      ENDIF
 !
-                IF (ITAI .LE. 0) THEN
-                   ITAI = 1
-                ELSE
+      IF (ITAI .LE. 0) THEN
+        ITAI = 1
+      ELSE
 ! PREVENTS DYNAMIC ALLOCATION FOR SOMETHING ELSE THAN AN ARRAY
                    INDIC(NTYP,INDX)=INDIC(NTYP,INDX)+1
-                ENDIF
+      ENDIF
 !
 ! ADDITION CF JMH - ISSUES A WARNING FOR ESTET - N3S DICO FILES
 ! WHEN THE DEFAULT VALUES ARE DEFINED IN INSUFFICIENT NUMBER
 ! COMPARED TO THE DIMENSIONS
 !
-               IF(DEFLU.GT.0.AND.DEFLU.NE.ITAI) THEN
-                  WRITE(LU,*) ' '
-                  IF(LNG.EQ.1) THEN
-                    WRITE(LU,*)'ATTENTION ! A LA LIGNE ',NLIGN,
-     &                         ' DU DICTIONNAIRE :'
-                    WRITE(LU,*)'LE NOMBRE DE VALEURS PAR DEFAUT ',
-     &                          DEFLU,' EST DIFFERENT DE LA TAILLE ',
-     &                          'ANNONCEE ',ITAI
-                  ELSEIF(LNG.EQ.2) THEN
-                    WRITE(LU,*) 'WARNING !  AT LINE ',NLIGN,
-     &                          ' OF THE DICTIONARY :'
-                    WRITE(LU,*) 'NUMBER OF DEFAULT VALUES ',DEFLU,
-     &                           ' IS DIFFERENT FROM THE SIZE ',ITAI
-                  ENDIF
-                  WRITE(LU,*) ' '
-               ENDIF
+      IF(DEFLU.GT.0.AND.DEFLU.NE.ITAI) THEN
+        WRITE(LU,*) ' '
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*)'ATTENTION ! A LA LIGNE ',NLIGN,
+     &               ' DU DICTIONNAIRE :'
+          WRITE(LU,*)'LE NOMBRE DE VALEURS PAR DEFAUT ',
+     &                DEFLU,' EST DIFFERENT DE LA TAILLE ',
+     &                'ANNONCEE ',ITAI
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'WARNING !  AT LINE ',NLIGN,
+     &                ' OF THE DICTIONARY :'
+          WRITE(LU,*) 'NUMBER OF DEFAULT VALUES ',DEFLU,
+     &                 ' IS DIFFERENT FROM THE SIZE ',ITAI
+        ENDIF
+        WRITE(LU,*) ' '
+      ENDIF
 !
-                IF (DEFLU .EQ. 0) THEN
-                   IF     (NTYP .EQ. 1) THEN
-                      DEFINT(1) = 0
-                   ELSEIF (NTYP .EQ. 2) THEN
-                      DEFREA(1) = 0.0
-                   ELSEIF (NTYP .EQ. 3)THEN
-                      DEFLOG(1) = .FALSE.
-                   ELSEIF (NTYP .EQ. 4) THEN
-                      DEFCAR(1) = ' '
-                   ENDIF
-                ENDIF
+      IF (DEFLU .EQ. 0) THEN
+        IF     (NTYP .EQ. 1) THEN
+          DEFINT(1) = 0
+        ELSEIF (NTYP .EQ. 2) THEN
+          DEFREA(1) = 0.0
+        ELSEIF (NTYP .EQ. 3)THEN
+          DEFLOG(1) = .FALSE.
+        ELSEIF (NTYP .EQ. 4) THEN
+          DEFCAR(1) = ' '
+        ENDIF
+      ENDIF
 !
-                IF (ITAI .NE. DEFLU) THEN
-                   IF (ITAI .GT. DEFLU) THEN
-                      DO I = DEFLU + 1 , ITAI
-                         IF     (NTYP .EQ. 1) THEN
-                            DEFINT(I) = DEFINT(MAX(1,DEFLU))
-                         ELSEIF (NTYP .EQ. 2) THEN
-                            DEFREA(I) = DEFREA(MAX(1,DEFLU))
-                         ELSEIF (NTYP .EQ. 3) THEN
-                            DEFLOG(I) = DEFLOG(MAX(1,DEFLU))
-                         ELSEIF (NTYP .EQ. 4) THEN
-                            DEFCAR(I) = DEFCAR(MAX(1,DEFLU))
-                         ENDIF
-!                        DEFATT(NYTP,I) = DEFATT(NYTP,MAX(1,DEFLU))
-                      ENDDO ! I 
-                   ENDIF
-                   DEFLU = ITAI
-                ENDIF
+      IF (ITAI .NE. DEFLU) THEN
+        IF (ITAI .GT. DEFLU) THEN
+          DO I = DEFLU + 1 , ITAI
+            IF     (NTYP .EQ. 1) THEN
+              DEFINT(I) = DEFINT(MAX(1,DEFLU))
+            ELSEIF (NTYP .EQ. 2) THEN
+              DEFREA(I) = DEFREA(MAX(1,DEFLU))
+            ELSEIF (NTYP .EQ. 3) THEN
+              DEFLOG(I) = DEFLOG(MAX(1,DEFLU))
+            ELSEIF (NTYP .EQ. 4) THEN
+              DEFCAR(I) = DEFCAR(MAX(1,DEFLU))
+            ENDIF
+!           DEFATT(NYTP,I) = DEFATT(NYTP,MAX(1,DEFLU))
+          ENDDO ! I 
+        ENDIF
+        DEFLU = ITAI
+      ENDIF
 !
 !   STORES THE KEYWORD ATTRIBUTES IN THE ARRAYS
 !   NUMBER OF KEYWORDS OF TYPE NTYP
 !
-                NMOT(NTYP) = NMOT(NTYP) + 1
+      NMOT(NTYP) = NMOT(NTYP) + 1
 !
 !   NEXT FREE ADDRESS FOR THE KEYWORD OF TYPE NTYP
 !
-                ADRESS(NTYP,INDX) = OFFSET(NTYP)
+      ADRESS(NTYP,INDX) = OFFSET(NTYP)
 !
 !   STORED KEYWORD
 !
-                MOTCLE(NTYP,INDX) = PARAM(1:LONGU)
+      MOTCLE(NTYP,INDX) = PARAM(1:LONGU)
 !
 !   NUNBER OF VALUES ASSOCIATED WITH THE KEYWORD OF TYPE NTYP
 !
-                DIMENS(NTYP,INDX) = ITAI
+      DIMENS(NTYP,INDX) = ITAI
 !
 !   LENGTH OF THE KEYWORD (CHARACTERS)
 !
-                SIZE(NTYP,INDX) = LONGU
+      SIZE(NTYP,INDX) = LONGU
 !
 !   STORES THE VALUES IN THE ARRAYS
 !
-                IF (((ADRESS(NTYP,INDX)+ITAI-1) .GT. NMAX)
-     &             .OR. (OFFSET(NTYP) .GT. NMAX)) THEN
-                     IF(LNG.EQ.1) THEN
-                       WRITE(LU,*) 'ADRESSE SUPERIEURE A NMAX = ',NMAX
-                       WRITE(LU,*) 'TROP DE VALEURS DE TYPE : ',NTYP
-     &                             ,' DECLAREES.'
-                       WRITE(LU,*) 'ARRET AU MOT CLE D''INDEX : ',INDX
-                     ELSEIF(LNG.EQ.2) THEN
-                       WRITE(LU,*) 'ADRESS GREATER THAN NMAX = ',NMAX
-                       WRITE(LU,*) 'TOO MANY VALUES OF TYPE : ',NTYP
-     &                             ,' DECLARED.'
-                       WRITE(LU,*) 'STOP AT KEY-WORD OF INDEX: ',INDX
-                     ENDIF
-                     STOP 'ERREUR DAMOCLES 9'
-                   ENDIF
+      IF (((ADRESS(NTYP,INDX)+ITAI-1) .GT. NMAX)
+     &   .OR. (OFFSET(NTYP) .GT. NMAX)) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'ADRESSE SUPERIEURE A NMAX = ',NMAX
+          WRITE(LU,*) 'TROP DE VALEURS DE TYPE : ',NTYP
+     &                ,' DECLAREES.'
+          WRITE(LU,*) 'ARRET AU MOT CLE D''INDEX : ',INDX
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'ADRESS GREATER THAN NMAX = ',NMAX
+          WRITE(LU,*) 'TOO MANY VALUES OF TYPE : ',NTYP
+     &                ,' DECLARED.'
+          WRITE(LU,*) 'STOP AT KEY-WORD OF INDEX: ',INDX
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
-                DO I = 1 , ITAI
-                   IF (NTYP .EQ. 1) THEN
-                      MOTINT(ADRESS(NTYP,INDX)+I-1) = DEFINT(I)
-                   ELSE IF (NTYP .EQ. 2) THEN
-                      MOTREA(ADRESS(NTYP,INDX)+I-1) = DEFREA(I)
-                   ELSE IF (NTYP .EQ. 3) THEN
-                      MOTLOG(ADRESS(NTYP,INDX)+I-1) = DEFLOG(I)
-                   ELSE IF (NTYP .EQ. 4) THEN
-                      MOTCAR(ADRESS(NTYP,INDX)+I-1) = DEFCAR(I)
-                   ENDIF
-                   IF (INDIC(NTYP,INDX).GE.2)
-     &                 MOTATT(NTYP,ADRESS(NTYP,INDX)+I-1) = DEFATT(I)
-                ENDDO ! I 
+      DO I = 1 , ITAI
+        IF (NTYP .EQ. 1) THEN
+          MOTINT(ADRESS(NTYP,INDX)+I-1) = DEFINT(I)
+        ELSE IF (NTYP .EQ. 2) THEN
+          MOTREA(ADRESS(NTYP,INDX)+I-1) = DEFREA(I)
+        ELSE IF (NTYP .EQ. 3) THEN
+          MOTLOG(ADRESS(NTYP,INDX)+I-1) = DEFLOG(I)
+        ELSE IF (NTYP .EQ. 4) THEN
+          MOTCAR(ADRESS(NTYP,INDX)+I-1) = DEFCAR(I)
+        ENDIF
+        IF (INDIC(NTYP,INDX).GE.2)
+     &    MOTATT(NTYP,ADRESS(NTYP,INDX)+I-1) = DEFATT(I)
+      ENDDO ! I 
 !
 !   UPDATES THE NEXT FREE ADDRESS
 !
-                OFFSET(NTYP) = OFFSET(NTYP) + ITAI
+      OFFSET(NTYP) = OFFSET(NTYP) + ITAI
 !
 !   INITIALISES THE TEMPORARY VARIABLES
 !
-1600            CONTINUE
-                PARAM  = ' '
-                LONGU  = 0
-                NTYP   = -100
-                INDX   = 123456
-                ITAI   = -100
-                DEFLU  = 0
+1600  CONTINUE
+      PARAM  = ' '
+      LONGU  = 0
+      NTYP   = -100
+      INDX   = 123456
+      ITAI   = -100
+      DEFLU  = 0
 !
 !-----------------------------------------------------------------------
 !
-       RETURN
-       END
+      RETURN
+      END

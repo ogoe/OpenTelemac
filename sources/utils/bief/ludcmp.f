@@ -87,48 +87,48 @@
 !     LOOP OVER COLUMNS OF CROUT'S METHOD
 !
       DO J=1,N
-         DO I=1,J-1 ! EQUATION (2.3.12) EXCEPT FOR I = J
-            XSOM=A(I,J)
-            DO K=1,I-1
-               XSOM=XSOM-A(I,K)*A(K,J)
-            ENDDO
-            A(I,J)=XSOM
-         ENDDO
-         AAMAX=0.D0 ! INITIALISES FOR THE SEARCH OF LARGEST PIVOT ELEMENT
-         DO I=J,N   ! THIS IS I = J OF EQUATION (2.3.12) AND
-                    ! I = J +1 : : : N OF EQUATION (2.3.13)
-            XSOM=A(I,J)
-            DO K=1,J-1
-               XSOM=XSOM-A(I,K)*A(K,J)
-            ENDDO
-            A(I,J)=XSOM
-            DUM=VV(I)*ABS(XSOM) ! FIGURE OF MERIT FOR THE PIVOT
-            IF (DUM.GE.AAMAX) THEN ! IS IT BETTER THAN THE BEST SO FAR?
-               IMAX=I
-               AAMAX=DUM
-            ENDIF
-         ENDDO
-         IF (J.NE.IMAX) THEN ! NEEDS TO INTERCHANGE ROWS?
-            DO K=1,N
-              DUM=A(IMAX,K)
-              A(IMAX,K)=A(J,K)
-              A(J,K)=DUM
-            ENDDO
-            D=-D !...AND CHANGES THE PARITY OF D
-            VV(IMAX)=VV(J) ! ALSO INTERCHANGES THE SCALE FACTOR
-         ENDIF
-         INDX(J)=IMAX
-         IF(ABS(A(J,J)).LT.TINY) A(J,J)=TINY
+        DO I=1,J-1 ! EQUATION (2.3.12) EXCEPT FOR I = J
+          XSOM=A(I,J)
+          DO K=1,I-1
+             XSOM=XSOM-A(I,K)*A(K,J)
+          ENDDO
+          A(I,J)=XSOM
+        ENDDO
+        AAMAX=0.D0 ! INITIALISES FOR THE SEARCH OF LARGEST PIVOT ELEMENT
+        DO I=J,N   ! THIS IS I = J OF EQUATION (2.3.12) AND
+                  ! I = J +1 : : : N OF EQUATION (2.3.13)
+          XSOM=A(I,J)
+          DO K=1,J-1
+            XSOM=XSOM-A(I,K)*A(K,J)
+          ENDDO
+          A(I,J)=XSOM
+          DUM=VV(I)*ABS(XSOM) ! FIGURE OF MERIT FOR THE PIVOT
+          IF (DUM.GE.AAMAX) THEN ! IS IT BETTER THAN THE BEST SO FAR?
+            IMAX=I
+            AAMAX=DUM
+          ENDIF
+        ENDDO
+        IF (J.NE.IMAX) THEN ! NEEDS TO INTERCHANGE ROWS?
+          DO K=1,N
+            DUM=A(IMAX,K)
+            A(IMAX,K)=A(J,K)
+            A(J,K)=DUM
+          ENDDO
+          D=-D !...AND CHANGES THE PARITY OF D
+          VV(IMAX)=VV(J) ! ALSO INTERCHANGES THE SCALE FACTOR
+        ENDIF
+        INDX(J)=IMAX
+        IF(ABS(A(J,J)).LT.TINY) A(J,J)=TINY
 !
 !  IF THE PIVOT ELEMENT IS 0 THE MATRIX IS SINGULAR (AT LEAST TO THE
 !  PRECISION OF THE ALGORITHM)
 !
-         IF(J.NE.N) THEN ! DIVIDES BY THE PIVOT ELEMENT
-           DUM=1.D0/A(J,J)
-           DO I=J+1,N
-             A(I,J)=A(I,J)*DUM
-           ENDDO
-         ENDIF
+        IF(J.NE.N) THEN ! DIVIDES BY THE PIVOT ELEMENT
+          DUM=1.D0/A(J,J)
+          DO I=J+1,N
+            A(I,J)=A(I,J)*DUM
+          ENDDO
+        ENDIF
 !
       ENDDO
 !

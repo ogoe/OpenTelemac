@@ -69,20 +69,20 @@
 !-----------------------------------------------------------------------
 !
       DO WHILE ((EROSUM > 0.D0.OR.CNTR==-1).AND.(CNTR.LT.PRO_MAX(J)-2))
-         CNTR  =  CNTR + 1
-!         
-         F1 = PRO_F(J,PRO_MAX(J)-CNTR,I)
-         F2 = PRO_F(J,PRO_MAX(J)-(CNTR+1),I)
-!         
-         D1 = PRO_D(J,PRO_MAX(J)-CNTR,I)
-         D2 = PRO_D(J,PRO_MAX(J)-(CNTR+1),I)
-!         
-         PROF  = (F1 + F2) * 0.5D0 ! MEAN FRACTION
-         PROTH = D1 - D2           ! PROFILE SECTION THICKNESS
-         PROV  =  PROF * PROTH     ! PROFILE SECTION VOLUME ( EQ. THICKNESS OF FRACTION)
-         DFRAC =  F1 - F2          ! DELTA FRACTION = CHANGE OF FRACTION OVER THIS SECTION
-!         
-         IF (PROTH.GT.0.D0) THEN
+        CNTR  =  CNTR + 1
+!        
+        F1 = PRO_F(J,PRO_MAX(J)-CNTR,I)
+        F2 = PRO_F(J,PRO_MAX(J)-(CNTR+1),I)
+!        
+        D1 = PRO_D(J,PRO_MAX(J)-CNTR,I)
+        D2 = PRO_D(J,PRO_MAX(J)-(CNTR+1),I)
+!        
+        PROF  = (F1 + F2) * 0.5D0 ! MEAN FRACTION
+        PROTH = D1 - D2           ! PROFILE SECTION THICKNESS
+        PROV  =  PROF * PROTH     ! PROFILE SECTION VOLUME ( EQ. THICKNESS OF FRACTION)
+        DFRAC =  F1 - F2          ! DELTA FRACTION = CHANGE OF FRACTION OVER THIS SECTION
+!        
+        IF (PROTH.GT.0.D0) THEN
 !
 !-----------------------------------------------------------------------     
 ! CASE 2
@@ -92,89 +92,90 @@
 ! => MAKES CASE 2 TO CASE 1
 !-----------------------------------------------------------------------
 !
-            IF(EROSUM < PROV) THEN
-              IF(DB(JG,0)) CALL CVSP_P('./VSP/','RFT_C2_',JG)
+          IF(EROSUM < PROV) THEN
+            IF(DB(JG,0)) CALL CVSP_P('./VSP/','RFT_C2_',JG)
 !     
 !----------------------------------------------------------------------- 
 ! MAXIMUM DEPTH OF EROSION: SOLVING QUADRATIC PROBLEM BY CROSS-MULTIPLICATION    
 ! LINEAR OR QUATRATIC ? PREVENTS RUNNING INTO FLOATING POINT CANCELLATION PROBLEMS
 !-----------------------------------------------------------------------
 !
-               ST_M = ABS(DFRAC / PROTH)
+            ST_M = ABS(DFRAC / PROTH)
 !-QUADRATIC
-               IF(ST_M.GT.1.D-7.AND.ABS(DFRAC).GT.1.D-12) THEN
-                 ST_C = F1 / ST_M
-                 ST_A = EROSUM + 0.5D0 * ST_M * ST_C**2
-                 ST_S = SQRT(2.D0 * ST_A / ST_M)
-                 EROSTRENGTH = ST_S - ST_C
+            IF(ST_M.GT.1.D-7.AND.ABS(DFRAC).GT.1.D-12) THEN
+              ST_C = F1 / ST_M
+              ST_A = EROSUM + 0.5D0 * ST_M * ST_C**2
+              ST_S = SQRT(2.D0 * ST_A / ST_M)
+              EROSTRENGTH = ST_S - ST_C
 !
 !-LINEAR (SAVE MODE) FOR ALMOST NO CHANGE IN FRACTION OVER DEPTH
 ! = ACCEPTAPLE FRACTION SHIFT TO OTHER FRACTIONS (ILLEGAL!!)...
-               ELSE
-                 EROSTRENGTH = EROSUM / PROV * PROTH
-               ENDIF
-!             
-               ERODEPTH = D1 - EROSTRENGTH
+            ELSE
+              EROSTRENGTH = EROSUM / PROV * PROTH
+            ENDIF
+!            
+            ERODEPTH = D1 - EROSTRENGTH
 !            
 !     ATTENTION
-               IF((ERODEPTH-D2).LT.0.D0) ERODEPTH = D2
+            IF((ERODEPTH-D2).LT.0.D0) ERODEPTH = D2
 !
-               IF(DB(JG,0)) THEN
-!     PRINT*, '  '
-               ENDIF
+            IF(DB(JG,0)) THEN
+!             PRINT*, '  '
+            ENDIF
 !
 !----------------------------------------------------------------------- 
 ! INSERT A NEW BREAKPOINT TO SPLIT THE VSP AND SHIFT THE REST
 ! SHIFT
 !-----------------------------------------------------------------------
 !
-           DO KK = 0,CNTR
-             DO II=1,NSICLA
-               PRO_F(J,PRO_MAX(J)-KK+1,II) = PRO_F(J,PRO_MAX(J)-KK,II)
-               PRO_D(J,PRO_MAX(J)-KK+1,II) = PRO_D(J,PRO_MAX(J)-KK,II)
-             ENDDO
-           ENDDO
-!
-           DO II=1,NSICLA
-             PRO_D(J,PRO_MAX(J)-CNTR,II) = ERODEPTH
-             PRO_F(J,PRO_MAX(J)-CNTR,II) = PRO_F(J,PRO_MAX(J)-CNTR,II)
-     &            - ( PRO_F(J,PRO_MAX(J)-CNTR,II)
-     &            -PRO_F(J,PRO_MAX(J)-(CNTR+1),II))/PROTH*EROSTRENGTH
-           ENDDO
+            DO KK = 0,CNTR
+              DO II=1,NSICLA
+                PRO_F(J,PRO_MAX(J)-KK+1,II) = PRO_F(J,PRO_MAX(J)-KK,II)
+                PRO_D(J,PRO_MAX(J)-KK+1,II) = PRO_D(J,PRO_MAX(J)-KK,II)
+              ENDDO
+            ENDDO
 !           
-           IF(PRO_D(J,PRO_MAX(J)-CNTR,1).LT.
-     &        PRO_D(J,PRO_MAX(J)-CNTR-1,1)) THEN
-          WRITE(LU,*) 'DEPTHINVERSION!!!',JG,PRO_MAX(J)-CNTR,PRO_MAX(J),
-     &             PROTH, EROSTRENGTH
-          CALL PLANTE(1)
-          STOP
-       ENDIF
+            DO II=1,NSICLA
+              PRO_D(J,PRO_MAX(J)-CNTR,II) = ERODEPTH
+              PRO_F(J,PRO_MAX(J)-CNTR,II) = PRO_F(J,PRO_MAX(J)-CNTR,II)
+     &             - ( PRO_F(J,PRO_MAX(J)-CNTR,II)
+     &             -PRO_F(J,PRO_MAX(J)-(CNTR+1),II))/PROTH*EROSTRENGTH
+            ENDDO
+!            
+            IF(PRO_D(J,PRO_MAX(J)-CNTR,1).LT.
+     &         PRO_D(J,PRO_MAX(J)-CNTR-1,1)) THEN
+              WRITE(LU,*) 'DEPTHINVERSION!!!',JG,PRO_MAX(J)-CNTR,
+     &             PRO_MAX(J), PROTH, EROSTRENGTH
+              CALL PLANTE(1)
+              STOP
+            ENDIF
 !       
-       PRO_MAX(J) = PRO_MAX(J) + 1
-!       
-       IF(DB(JG,0)) CALL CVSP_P('./VSP/','RFT_C3_',JG)
-!       
-       IF(CVSP_CHECK_F(J,PRO_MAX(J)-CNTR,'RMF:CAS2 B')) THEN
-       ENDIF
+            PRO_MAX(J) = PRO_MAX(J) + 1
+!            
+            IF(DB(JG,0)) CALL CVSP_P('./VSP/','RFT_C3_',JG)
+!            
+            IF(CVSP_CHECK_F(J,PRO_MAX(J)-CNTR,'RMF:CAS2 B')) THEN
+            ENDIF
 !     
 !----------------------------------------------------------------------- 
 ! AFTER SPLITTING: UPDATE SECTION PROPERTIES
 !-----------------------------------------------------------------------
 !
-       PROF  = (PRO_F(J,PRO_MAX(J)-CNTR,I) + !PROFILE SECTION FRACTION
-     &      PRO_F(J,PRO_MAX(J)-(CNTR+1),I)) * 0.5D0
-       
-       PROTH = (PRO_D(J,PRO_MAX(J)-CNTR,I) -
-     &      PRO_D(J,PRO_MAX(J)-(CNTR+1),I)) !PROFILE SECTION THICKNESS
-       
-       PROV  =  PROF * PROTH    !PROFILE SECTION VOLUME ( EQ. THICKNESS OF FRACTION)
+            PROF  = (PRO_F(J,PRO_MAX(J)-CNTR,I) + !PROFILE SECTION FRACTION
+     &           PRO_F(J,PRO_MAX(J)-(CNTR+1),I)) * 0.5D0
+            
+            PROTH = (PRO_D(J,PRO_MAX(J)-CNTR,I) -
+     &           PRO_D(J,PRO_MAX(J)-(CNTR+1),I)) !PROFILE SECTION THICKNESS
+            
+            PROV  =  PROF * PROTH    !PROFILE SECTION VOLUME ( EQ. THICKNESS OF FRACTION)
+!            
+            !DELTA FRACTION = CHANGE OF FRACTION OVER THIS SECTION
+            DFRAC = PRO_F(J,PRO_MAX(J)-CNTR,I) - 
+     &              PRO_F(J,PRO_MAX(J)-(CNTR+1),I)
+            
+            EROSUM = PROV            !NECESSARY! TO AVOID PROBLEMS WITH SLIVER POLYGONS
 !       
-       DFRAC =  PRO_F(J,PRO_MAX(J)-CNTR,I) - !DELTA FRACTION = CHANGE OF FRACTION OVER THIS SECTION
-     &      PRO_F(J,PRO_MAX(J)-(CNTR+1),I)
-       
-       EROSUM = PROV            !NECESSARY! TO AVOID PROBLEMS WITH SLIVER POLYGONS
-!       
-      ENDIF                     ! CASE 2 CONVERSION
+          ENDIF                     ! CASE 2 CONVERSION
 !
 !-----------------------------------------------------------------------    
 ! CASE 1 (NOW ALL CASES, AS CASE II IS ALREADY CONVERTED)
@@ -182,8 +183,8 @@
 ! MEANS. IT IS REMOVED COMPLETLY 
 !-----------------------------------------------------------------------
 !
-      EROSUM = - PROV + EROSUM
-      ENDIF
+        EROSUM = - PROV + EROSUM
+        ENDIF
 !     END LOOP THROUGH VSP SECTION
       END DO
 !      
@@ -207,9 +208,9 @@
       DO KK = 0,CNTRB
 !       DEBUG
         IF(PRO_MAX(J)-KK+1 > PRO_MAX_MAX-1) THEN
-           WRITE(LU,*) 'PRO_MAX_MAX_: ',J,PRO_MAX(J)
-           CALL CVSP_P('./ERR/','MAX_I',JG)
-           CALL PLANTE(1)
+          WRITE(LU,*) 'PRO_MAX_MAX_: ',J,PRO_MAX(J)
+          CALL CVSP_P('./ERR/','MAX_I',JG)
+          CALL PLANTE(1)
         ENDIF
 !                              
         DO II=1,NSICLA
@@ -234,34 +235,34 @@
       PROV_TOTAL = 0.D0             ! ACCUMULATING THE EROSION THE HIGHER WE GO
 !
       DO KK = LOWPNT+1,PRO_MAX(J)                     ! LOOP OVER UPPER SECTION POINT
-         PROF  = ( PRO_F(J,KK,I) + PRO_F_LOW) * 0.5D0 ! PROFILE SECTION FRACTION
-         PROTH = ( PRO_D(J,KK,I) - PRO_D_LOW)         ! PROFILE SECTION THICKNESS
-         PROV  =  PROF * PROTH                        ! PROFILE SECTION VOLUME (EQ. THICKNESS OF FRACTION)
-!         
-         IF (PROV < ZERO) PROV = 0.D0
-         PROV_TOTAL = PROV + PROV_TOTAL
-         REST1 = ( - PRO_F(J,KK,I) + 1.D0) ! SUM OF FRACTIONS AFTER EROSION
-         PRO_D_LOW = PRO_D(J,KK,I)         ! REMEMBER THIS FOR NEXT SECTION STEP
-                                           ! CAUSE PRO_D(J,KK,II) IS NOT AVAILABEL ANY MORE
-         PRO_F_LOW = PRO_F(J,KK,I)         ! KEEP THIS FOR THE NEXT SECTION !
-!         
-         DO II=1,NSICLA
-            PRO_D(J,KK,II) = -PROV_TOTAL + PRO_D(J,KK,II) ! SHIFT DEPTH
-            IF (PRO_D(J,KK,II).LE.PRO_D(J,KK-1,II)) THEN  ! CORRECTING 1D-15 ERRORS WHICH PRODUCE UNSTEADY PDFS
-               PRO_D(J,KK,II) = PRO_D(J,KK-1,II)
-            ENDIF            
-            IF (REST1.GT.ZERO) THEN
-               PRO_F(J,KK,II) = PRO_F(J,KK,II)/ REST1 ! NORMALIZE FRACTION
-            ELSE
-               PRO_F(J,KK,II) = 1.D0 / NSICLA         ! IN CASE OF ALMOST TOTAL LOSS
-            ENDIF            
-         ENDDO
-!         
-         IF(REST1.GT.ZERO) THEN
-           PRO_F(J,KK,I) = 0.D0          ! FRACTION I IS REMOVED
-         ELSE
-           PRO_F(J,KK,I) = 1.D0 / NSICLA ! IN CASE OF ALMOST TOTAL LOSS
-         ENDIF
+        PROF  = ( PRO_F(J,KK,I) + PRO_F_LOW) * 0.5D0 ! PROFILE SECTION FRACTION
+        PROTH = ( PRO_D(J,KK,I) - PRO_D_LOW)         ! PROFILE SECTION THICKNESS
+        PROV  =  PROF * PROTH                        ! PROFILE SECTION VOLUME (EQ. THICKNESS OF FRACTION)
+!        
+        IF (PROV < ZERO) PROV = 0.D0
+        PROV_TOTAL = PROV + PROV_TOTAL
+        REST1 = ( - PRO_F(J,KK,I) + 1.D0) ! SUM OF FRACTIONS AFTER EROSION
+        PRO_D_LOW = PRO_D(J,KK,I)         ! REMEMBER THIS FOR NEXT SECTION STEP
+                                          ! CAUSE PRO_D(J,KK,II) IS NOT AVAILABEL ANY MORE
+        PRO_F_LOW = PRO_F(J,KK,I)         ! KEEP THIS FOR THE NEXT SECTION !
+!        
+        DO II=1,NSICLA
+          PRO_D(J,KK,II) = -PROV_TOTAL + PRO_D(J,KK,II) ! SHIFT DEPTH
+          IF (PRO_D(J,KK,II).LE.PRO_D(J,KK-1,II)) THEN  ! CORRECTING 1D-15 ERRORS WHICH PRODUCE UNSTEADY PDFS
+            PRO_D(J,KK,II) = PRO_D(J,KK-1,II)
+          ENDIF            
+          IF (REST1.GT.ZERO) THEN
+            PRO_F(J,KK,II) = PRO_F(J,KK,II)/ REST1 ! NORMALIZE FRACTION
+          ELSE
+            PRO_F(J,KK,II) = 1.D0 / NSICLA         ! IN CASE OF ALMOST TOTAL LOSS
+          ENDIF            
+        ENDDO
+!        
+        IF(REST1.GT.ZERO) THEN
+          PRO_F(J,KK,I) = 0.D0          ! FRACTION I IS REMOVED
+        ELSE
+          PRO_F(J,KK,I) = 1.D0 / NSICLA ! IN CASE OF ALMOST TOTAL LOSS
+        ENDIF
 !         
       ENDDO
 !      
@@ -274,12 +275,12 @@
       REST1 = (-PRO_F(J,LOWPNT,I)+1.D0)
 !      
       DO II=1,NSICLA
-         IF (REST1.GT.ZERO) THEN
-            PRO_F(J,LOWPNT,II) =
-     &           PRO_F(J,LOWPNT,II) / REST1    ! NORMALIZE FRACTION
-         ELSE
-            PRO_F(J,LOWPNT,II) = 1.D0 / NSICLA ! IN CASE OF ALMOST TOTAL LOSS
-         ENDIF
+        IF (REST1.GT.ZERO) THEN
+          PRO_F(J,LOWPNT,II) =
+     &         PRO_F(J,LOWPNT,II) / REST1    ! NORMALIZE FRACTION
+        ELSE
+          PRO_F(J,LOWPNT,II) = 1.D0 / NSICLA ! IN CASE OF ALMOST TOTAL LOSS
+        ENDIF
       ENDDO
 !      
       PRO_F(J,LOWPNT,I) = 0.D0                 ! FRACTION I IS REMOVED
@@ -294,4 +295,3 @@
 !
       RETURN
       END SUBROUTINE CVSP_RM_FRACTION
-

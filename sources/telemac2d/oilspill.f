@@ -1113,7 +1113,7 @@
                   PARTICULES(IFLOT)%ID = TAGFLO(IFLOT)
                 ENDIF
               END IF
-               IR = IR - 1
+              IR = IR - 1
             END IF
           END DO
           IF(IR.NE.0)THEN
@@ -1488,53 +1488,53 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-       INTEGER IFLOT
-       DOUBLE PRECISION PI,RHO_EAU,DELTA,VOL,NU,NU2,COEF1,COEF2
+      INTEGER IFLOT
+      DOUBLE PRECISION PI,RHO_EAU,DELTA,VOL,NU,NU2,COEF1,COEF2
 !
-       SAVE
+      SAVE
 !
 !-----------------------------------------------------------------------
 !
-       IF(NFLOT.GT.0) THEN
-         RHO_EAU=1000.D0
-         PI=ACOS(-1.D0)
-!        HARDCODED WATER MOLECULAR VISCOSITY
-         NU=1.D-6
-         NU2=NU**2
+      IF(NFLOT.GT.0) THEN
+        RHO_EAU=1000.D0
+        PI=ACOS(-1.D0)
+!       HARDCODED WATER MOLECULAR VISCOSITY
+        NU=1.D-6
+        NU2=NU**2
 !
-         COEF1=1.21D0**4
-         COEF2=COEF1/1.53D0**2
-         DELTA=(RHO_EAU-RHO_OIL)/(RHO_EAU)
-         DO IFLOT = 1,NFLOT
-           IF(PARTICULES(IFLOT)%MASS.GT.0.D0)THEN
-               VOL=(PARTICULES(IFLOT)%MASS/RHO_OIL) 
-           ELSE
-               VOL=(PARTICULES(IFLOT)%MASS0/RHO_OIL) 
-           ENDIF
-           IF(PARTICULES(IFLOT)%STATE.EQ.1.AND.ETAL.EQ.1) THEN
-             PARTICULES(IFLOT)%SURFACE =
-     &             SQRT((PARTICULES(IFLOT)%SURFACE-
-     &             PI*COEF2*
-     &             (DELTA*GRAV/(VOLDEV*NU2))
-     &             **(1.D0/6.D0)*(VOLDEV/NFLOT_MAX))**2
-     &             +(PI*COEF1*((GRAV*DELTA)                 
-     &             /(VOLDEV*SQRT(NU)))**(1.D0/3.D0)
-     &             *VOL)**2*DT)
-     &             +PI*COEF2*
-     &             (DELTA*GRAV/(VOLDEV*NU2))                 
-     &             **(1.D0/6.D0)*VOLDEV/NFLOT_MAX
-           ELSEIF(PARTICULES(IFLOT)%STATE.EQ.1.AND.ETAL.EQ.2)THEN
-                PARTICULES(IFLOT)%SURFACE=(PARTICULES(IFLOT)%SURFACE**4
-     &               +((13.5D0*PI*GRAV*DELTA*DT)/            
-     &               (ETA_OIL*VOLDEV))*VOL**4)**0.25D0
-           ENDIF
-         ENDDO
-       ENDIF
+        COEF1=1.21D0**4
+        COEF2=COEF1/1.53D0**2
+        DELTA=(RHO_EAU-RHO_OIL)/(RHO_EAU)
+        DO IFLOT = 1,NFLOT
+          IF(PARTICULES(IFLOT)%MASS.GT.0.D0)THEN
+              VOL=(PARTICULES(IFLOT)%MASS/RHO_OIL) 
+          ELSE
+              VOL=(PARTICULES(IFLOT)%MASS0/RHO_OIL) 
+          ENDIF
+          IF(PARTICULES(IFLOT)%STATE.EQ.1.AND.ETAL.EQ.1) THEN
+            PARTICULES(IFLOT)%SURFACE =
+     &            SQRT((PARTICULES(IFLOT)%SURFACE-
+     &            PI*COEF2*
+     &            (DELTA*GRAV/(VOLDEV*NU2))
+     &            **(1.D0/6.D0)*(VOLDEV/NFLOT_MAX))**2
+     &            +(PI*COEF1*((GRAV*DELTA)                 
+     &            /(VOLDEV*SQRT(NU)))**(1.D0/3.D0)
+     &            *VOL)**2*DT)
+     &            +PI*COEF2*
+     &            (DELTA*GRAV/(VOLDEV*NU2))                 
+     &            **(1.D0/6.D0)*VOLDEV/NFLOT_MAX
+          ELSEIF(PARTICULES(IFLOT)%STATE.EQ.1.AND.ETAL.EQ.2)THEN
+            PARTICULES(IFLOT)%SURFACE=(PARTICULES(IFLOT)%SURFACE**4
+     &           +((13.5D0*PI*GRAV*DELTA*DT)/            
+     &           (ETA_OIL*VOLDEV))*VOL**4)**0.25D0
+          ENDIF
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !       
-       RETURN
-       END SUBROUTINE OIL_SPREADING
+      RETURN
+      END SUBROUTINE OIL_SPREADING
 !
 !                       *******************
                         SUBROUTINE OIL_EVAP
@@ -1948,10 +1948,10 @@
 !
             TOTALE=0.D0
             DO K=1,NB_COMPO
-               TOTALE=TOTALE+PARTICULES(IFLOT)%COMPO(K)%MASS/MW_COMPO(K)
+              TOTALE=TOTALE+PARTICULES(IFLOT)%COMPO(K)%MASS/MW_COMPO(K)
             END DO
             DO K=1,NB_HAP
-               TOTALE=TOTALE+PARTICULES(IFLOT)%HAP(K)%MASS/MW_HAP(K)
+              TOTALE=TOTALE+PARTICULES(IFLOT)%HAP(K)%MASS/MW_HAP(K)
             END DO
 
             HAUT(1)=HN(I1)
@@ -2523,7 +2523,7 @@
               END IF               
               PREF=1.D0-EXP(-KF*(LT-PARTICULES(IFLOT)%TPSECH)*DT)
               CALL RANDOM_NUMBER(RAND)
-              IF(RAND.LT.Pref)THEN
+              IF(RAND.LT.PREF)THEN
                 PARTICULES(IFLOT)%STATE=1
                 PARTICULES(IFLOT)%TPSECH=0
                 IF(PRESENT(Z))THEN
@@ -2637,9 +2637,9 @@
 !--------------------------------------------------------------------------
 !
       IF(NCSIZE.GT.1) THEN
-         TOTAL=P_IMAX(NFLOT)
+        TOTAL=P_IMAX(NFLOT)
       ELSE
-         TOTAL=NFLOT
+        TOTAL=NFLOT
       ENDIF
 !
       IF(MODULO(LT,FLOPRD).EQ.0.AND.TOTAL.GT.0) THEN 

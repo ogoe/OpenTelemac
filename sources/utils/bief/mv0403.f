@@ -120,52 +120,52 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', X , Y , Z  , 0.D0 , NPOIN )
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', X , Y , Z  , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q') THEN
+        IF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
-             W1(IELEM) =     XA12(IELEM) * Y(IKLE2(IELEM))
-     &                     + XA13(IELEM) * Y(IKLE3(IELEM))
-             W2(IELEM) =     XA21(IELEM) * Y(IKLE1(IELEM))
-     &                     + XA23(IELEM) * Y(IKLE3(IELEM))
-             W3(IELEM) =     XA31(IELEM) * Y(IKLE1(IELEM))
-     &                     + XA32(IELEM) * Y(IKLE2(IELEM))
-             W4(IELEM) =     XA41(IELEM) * Y(IKLE1(IELEM))
-     &                     + XA42(IELEM) * Y(IKLE2(IELEM))
-     &                     + XA43(IELEM) * Y(IKLE3(IELEM))
-             X(NPOIN+IELEM)=0.D0
-           ENDDO ! IELEM 
+          DO IELEM = 1 , NELEM
+            W1(IELEM) =     XA12(IELEM) * Y(IKLE2(IELEM))
+     &                    + XA13(IELEM) * Y(IKLE3(IELEM))
+            W2(IELEM) =     XA21(IELEM) * Y(IKLE1(IELEM))
+     &                    + XA23(IELEM) * Y(IKLE3(IELEM))
+            W3(IELEM) =     XA31(IELEM) * Y(IKLE1(IELEM))
+     &                    + XA32(IELEM) * Y(IKLE2(IELEM))
+            W4(IELEM) =     XA41(IELEM) * Y(IKLE1(IELEM))
+     &                    + XA42(IELEM) * Y(IKLE2(IELEM))
+     &                    + XA43(IELEM) * Y(IKLE3(IELEM))
+            X(NPOIN+IELEM)=0.D0
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
-           CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W4 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', X(NPOIN+1) , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W4 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', X(NPOIN+1) , Y , Z , 0.D0 , NELEM )
 !
-         ELSE
+        ELSE
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -173,52 +173,52 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', X , Y , Z  , 0.D0 , NPOIN )
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', X , Y , Z  , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q') THEN
+        IF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
-             W1(IELEM) =   - XA12(IELEM) * Y(IKLE2(IELEM))
-     &                     - XA13(IELEM) * Y(IKLE3(IELEM))
-             W2(IELEM) =   - XA21(IELEM) * Y(IKLE1(IELEM))
-     &                     - XA23(IELEM) * Y(IKLE3(IELEM))
-             W3(IELEM) =   - XA31(IELEM) * Y(IKLE1(IELEM))
-     &                     - XA32(IELEM) * Y(IKLE2(IELEM))
-             W4(IELEM) =   - XA41(IELEM) * Y(IKLE1(IELEM))
-     &                     - XA42(IELEM) * Y(IKLE2(IELEM))
-     &                     - XA43(IELEM) * Y(IKLE3(IELEM))
-             X(NPOIN+IELEM)=0.D0
-           ENDDO ! IELEM 
+          DO IELEM = 1 , NELEM
+            W1(IELEM) =   - XA12(IELEM) * Y(IKLE2(IELEM))
+     &                    - XA13(IELEM) * Y(IKLE3(IELEM))
+            W2(IELEM) =   - XA21(IELEM) * Y(IKLE1(IELEM))
+     &                    - XA23(IELEM) * Y(IKLE3(IELEM))
+            W3(IELEM) =   - XA31(IELEM) * Y(IKLE1(IELEM))
+     &                    - XA32(IELEM) * Y(IKLE2(IELEM))
+            W4(IELEM) =   - XA41(IELEM) * Y(IKLE1(IELEM))
+     &                    - XA42(IELEM) * Y(IKLE2(IELEM))
+     &                    - XA43(IELEM) * Y(IKLE3(IELEM))
+            X(NPOIN+IELEM)=0.D0
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
-           CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W4 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', X(NPOIN+1) , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W4 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', X(NPOIN+1) , Y , Z , 0.D0 , NELEM )
 !
-         ELSE
+        ELSE
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -226,41 +226,41 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q') THEN
+        IF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
-             W1(IELEM) = W1(IELEM) + XA12(IELEM) * Y(IKLE2(IELEM))
-     &                             + XA13(IELEM) * Y(IKLE3(IELEM))
-             W2(IELEM) = W2(IELEM) + XA21(IELEM) * Y(IKLE1(IELEM))
-     &                             + XA23(IELEM) * Y(IKLE3(IELEM))
-             W3(IELEM) = W3(IELEM) + XA31(IELEM) * Y(IKLE1(IELEM))
-     &                             + XA32(IELEM) * Y(IKLE2(IELEM))
-             W4(IELEM) = W4(IELEM) + XA41(IELEM) * Y(IKLE1(IELEM))
-     &                             + XA42(IELEM) * Y(IKLE2(IELEM))
-     &                             + XA43(IELEM) * Y(IKLE3(IELEM))
-           ENDDO ! IELEM 
+          DO IELEM = 1 , NELEM
+            W1(IELEM) = W1(IELEM) + XA12(IELEM) * Y(IKLE2(IELEM))
+     &                            + XA13(IELEM) * Y(IKLE3(IELEM))
+            W2(IELEM) = W2(IELEM) + XA21(IELEM) * Y(IKLE1(IELEM))
+     &                            + XA23(IELEM) * Y(IKLE3(IELEM))
+            W3(IELEM) = W3(IELEM) + XA31(IELEM) * Y(IKLE1(IELEM))
+     &                            + XA32(IELEM) * Y(IKLE2(IELEM))
+            W4(IELEM) = W4(IELEM) + XA41(IELEM) * Y(IKLE1(IELEM))
+     &                            + XA42(IELEM) * Y(IKLE2(IELEM))
+     &                            + XA43(IELEM) * Y(IKLE3(IELEM))
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -268,41 +268,41 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q') THEN
+        IF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
-             W1(IELEM) = W1(IELEM) - XA12(IELEM) * Y(IKLE2(IELEM))
-     &                             - XA13(IELEM) * Y(IKLE3(IELEM))
-             W2(IELEM) = W2(IELEM) - XA21(IELEM) * Y(IKLE1(IELEM))
-     &                             - XA23(IELEM) * Y(IKLE3(IELEM))
-             W3(IELEM) = W3(IELEM) - XA31(IELEM) * Y(IKLE1(IELEM))
-     &                             - XA32(IELEM) * Y(IKLE2(IELEM))
-             W4(IELEM) = W4(IELEM) - XA41(IELEM) * Y(IKLE1(IELEM))
-     &                             - XA42(IELEM) * Y(IKLE2(IELEM))
-     &                             - XA43(IELEM) * Y(IKLE3(IELEM))
-           ENDDO ! IELEM 
+          DO IELEM = 1 , NELEM
+            W1(IELEM) = W1(IELEM) - XA12(IELEM) * Y(IKLE2(IELEM))
+     &                            - XA13(IELEM) * Y(IKLE3(IELEM))
+            W2(IELEM) = W2(IELEM) - XA21(IELEM) * Y(IKLE1(IELEM))
+     &                            - XA23(IELEM) * Y(IKLE3(IELEM))
+            W3(IELEM) = W3(IELEM) - XA31(IELEM) * Y(IKLE1(IELEM))
+     &                            - XA32(IELEM) * Y(IKLE2(IELEM))
+            W4(IELEM) = W4(IELEM) - XA41(IELEM) * Y(IKLE1(IELEM))
+     &                            - XA42(IELEM) * Y(IKLE2(IELEM))
+     &                            - XA43(IELEM) * Y(IKLE3(IELEM))
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -310,45 +310,45 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q') THEN
+        IF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
-             W1(IELEM) = W1(IELEM)
-     &               + C * (      XA12(IELEM) * Y(IKLE2(IELEM))
-     &                          + XA13(IELEM) * Y(IKLE3(IELEM)) )
-             W2(IELEM) = W2(IELEM)
-     &               + C * (      XA21(IELEM) * Y(IKLE1(IELEM))
-     &                          + XA23(IELEM) * Y(IKLE3(IELEM)) )
-             W3(IELEM) = W3(IELEM)
-     &               + C * (      XA31(IELEM) * Y(IKLE1(IELEM))
-     &                          + XA32(IELEM) * Y(IKLE2(IELEM)) )
-             W4(IELEM) = W4(IELEM)
-     &               + C * (      XA41(IELEM) * Y(IKLE1(IELEM))
-     &                          + XA42(IELEM) * Y(IKLE2(IELEM))
-     &                          + XA43(IELEM) * Y(IKLE3(IELEM)) )
-           ENDDO ! IELEM 
+          DO IELEM = 1 , NELEM
+            W1(IELEM) = W1(IELEM)
+     &              + C * (      XA12(IELEM) * Y(IKLE2(IELEM))
+     &                         + XA13(IELEM) * Y(IKLE3(IELEM)) )
+            W2(IELEM) = W2(IELEM)
+     &              + C * (      XA21(IELEM) * Y(IKLE1(IELEM))
+     &                         + XA23(IELEM) * Y(IKLE3(IELEM)) )
+            W3(IELEM) = W3(IELEM)
+     &              + C * (      XA31(IELEM) * Y(IKLE1(IELEM))
+     &                         + XA32(IELEM) * Y(IKLE2(IELEM)) )
+            W4(IELEM) = W4(IELEM)
+     &              + C * (      XA41(IELEM) * Y(IKLE1(IELEM))
+     &                         + XA42(IELEM) * Y(IKLE2(IELEM))
+     &                         + XA43(IELEM) * Y(IKLE3(IELEM)) )
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL:
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X+CYZ  ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X+CY   ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X+CYZ  ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X+CY   ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -356,49 +356,49 @@
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q') THEN
+        IF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
-             W1(IELEM) =   + XA21(IELEM) * Y(IKLE2(IELEM))
-     &                     + XA31(IELEM) * Y(IKLE3(IELEM))
-     &                     + XA41(IELEM) * Y(IKLE4(IELEM))
-             W2(IELEM) =   + XA12(IELEM) * Y(IKLE1(IELEM))
-     &                     + XA32(IELEM) * Y(IKLE3(IELEM))
-     &                     + XA42(IELEM) * Y(IKLE4(IELEM))
-             W3(IELEM) =   + XA13(IELEM) * Y(IKLE1(IELEM))
-     &                     + XA23(IELEM) * Y(IKLE2(IELEM))
-     &                     + XA43(IELEM) * Y(IKLE4(IELEM))
-           ENDDO ! IELEM 
+          DO IELEM = 1 , NELEM
+            W1(IELEM) =   + XA21(IELEM) * Y(IKLE2(IELEM))
+     &                    + XA31(IELEM) * Y(IKLE3(IELEM))
+     &                    + XA41(IELEM) * Y(IKLE4(IELEM))
+            W2(IELEM) =   + XA12(IELEM) * Y(IKLE1(IELEM))
+     &                    + XA32(IELEM) * Y(IKLE3(IELEM))
+     &                    + XA42(IELEM) * Y(IKLE4(IELEM))
+            W3(IELEM) =   + XA13(IELEM) * Y(IKLE1(IELEM))
+     &                    + XA23(IELEM) * Y(IKLE2(IELEM))
+     &                    + XA43(IELEM) * Y(IKLE4(IELEM))
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
-           CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
 !
-         ELSE
+        ELSE
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -406,49 +406,49 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q') THEN
+        IF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
-             W1(IELEM) =   - XA21(IELEM) * Y(IKLE2(IELEM))
-     &                     - XA31(IELEM) * Y(IKLE3(IELEM))
-     &                     - XA41(IELEM) * Y(IKLE4(IELEM))
-             W2(IELEM) =   - XA12(IELEM) * Y(IKLE1(IELEM))
-     &                     - XA32(IELEM) * Y(IKLE3(IELEM))
-     &                     - XA42(IELEM) * Y(IKLE4(IELEM))
-             W3(IELEM) =   - XA13(IELEM) * Y(IKLE1(IELEM))
-     &                     - XA23(IELEM) * Y(IKLE2(IELEM))
-     &                     - XA43(IELEM) * Y(IKLE4(IELEM))
-           ENDDO ! IELEM 
+          DO IELEM = 1 , NELEM
+            W1(IELEM) =   - XA21(IELEM) * Y(IKLE2(IELEM))
+     &                    - XA31(IELEM) * Y(IKLE3(IELEM))
+     &                    - XA41(IELEM) * Y(IKLE4(IELEM))
+            W2(IELEM) =   - XA12(IELEM) * Y(IKLE1(IELEM))
+     &                    - XA32(IELEM) * Y(IKLE3(IELEM))
+     &                    - XA42(IELEM) * Y(IKLE4(IELEM))
+            W3(IELEM) =   - XA13(IELEM) * Y(IKLE1(IELEM))
+     &                    - XA23(IELEM) * Y(IKLE2(IELEM))
+     &                    - XA43(IELEM) * Y(IKLE4(IELEM))
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
+        ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
-           CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
-           CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W1 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W2 , Y , Z , 0.D0 , NELEM )
+          CALL OV ('X=C     ', W3 , Y , Z , 0.D0 , NELEM )
 !
-         ELSE
+        ELSE
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', X , Y , DA , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -456,41 +456,41 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q') THEN
+        IF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
-             W1(IELEM) = W1(IELEM) + XA21(IELEM) * Y(IKLE2(IELEM))
-     &                             + XA31(IELEM) * Y(IKLE3(IELEM))
-     &                             + XA41(IELEM) * Y(IKLE4(IELEM))
-             W2(IELEM) = W2(IELEM) + XA12(IELEM) * Y(IKLE1(IELEM))
-     &                             + XA32(IELEM) * Y(IKLE3(IELEM))
-     &                             + XA42(IELEM) * Y(IKLE4(IELEM))
-             W3(IELEM) = W3(IELEM) + XA13(IELEM) * Y(IKLE1(IELEM))
-     &                             + XA23(IELEM) * Y(IKLE2(IELEM))
-     &                             + XA43(IELEM) * Y(IKLE4(IELEM))
-           ENDDO ! IELEM 
+          DO IELEM = 1 , NELEM
+            W1(IELEM) = W1(IELEM) + XA21(IELEM) * Y(IKLE2(IELEM))
+     &                            + XA31(IELEM) * Y(IKLE3(IELEM))
+     &                            + XA41(IELEM) * Y(IKLE4(IELEM))
+            W2(IELEM) = W2(IELEM) + XA12(IELEM) * Y(IKLE1(IELEM))
+     &                            + XA32(IELEM) * Y(IKLE3(IELEM))
+     &                            + XA42(IELEM) * Y(IKLE4(IELEM))
+            W3(IELEM) = W3(IELEM) + XA13(IELEM) * Y(IKLE1(IELEM))
+     &                            + XA23(IELEM) * Y(IKLE2(IELEM))
+     &                            + XA43(IELEM) * Y(IKLE4(IELEM))
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -498,41 +498,41 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q') THEN
+        IF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
-             W1(IELEM) = W1(IELEM) - XA21(IELEM) * Y(IKLE2(IELEM))
-     &                             - XA31(IELEM) * Y(IKLE3(IELEM))
-     &                             - XA41(IELEM) * Y(IKLE4(IELEM))
-             W2(IELEM) = W2(IELEM) - XA12(IELEM) * Y(IKLE1(IELEM))
-     &                             - XA32(IELEM) * Y(IKLE3(IELEM))
-     &                             - XA42(IELEM) * Y(IKLE4(IELEM))
-             W3(IELEM) = W3(IELEM) - XA13(IELEM) * Y(IKLE1(IELEM))
-     &                             - XA23(IELEM) * Y(IKLE2(IELEM))
-     &                             - XA43(IELEM) * Y(IKLE4(IELEM))
-           ENDDO ! IELEM 
+          DO IELEM = 1 , NELEM
+            W1(IELEM) = W1(IELEM) - XA21(IELEM) * Y(IKLE2(IELEM))
+     &                            - XA31(IELEM) * Y(IKLE3(IELEM))
+     &                            - XA41(IELEM) * Y(IKLE4(IELEM))
+            W2(IELEM) = W2(IELEM) - XA12(IELEM) * Y(IKLE1(IELEM))
+     &                            - XA32(IELEM) * Y(IKLE3(IELEM))
+     &                            - XA42(IELEM) * Y(IKLE4(IELEM))
+            W3(IELEM) = W3(IELEM) - XA13(IELEM) * Y(IKLE1(IELEM))
+     &                            - XA23(IELEM) * Y(IKLE2(IELEM))
+     &                            - XA43(IELEM) * Y(IKLE4(IELEM))
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -540,44 +540,44 @@
 !
 !   CONTRIBUTION OF EXTRADIAGONAL TERMS:
 !
-         IF(TYPEXT(1:1).EQ.'Q') THEN
+        IF(TYPEXT(1:1).EQ.'Q') THEN
 !
-           DO IELEM = 1 , NELEM
-             W1(IELEM) = W1(IELEM)
-     &                 + C * (    + XA21(IELEM) * Y(IKLE2(IELEM))
-     &                            + XA31(IELEM) * Y(IKLE3(IELEM))
-     &                            + XA41(IELEM) * Y(IKLE4(IELEM)) )
-             W2(IELEM) = W2(IELEM)
-     &                 + C * (    + XA12(IELEM) * Y(IKLE1(IELEM))
-     &                            + XA32(IELEM) * Y(IKLE3(IELEM))
-     &                            + XA42(IELEM) * Y(IKLE4(IELEM)) )
-             W3(IELEM) = W3(IELEM)
-     &                 + C * (    + XA13(IELEM) * Y(IKLE1(IELEM))
-     &                            + XA23(IELEM) * Y(IKLE2(IELEM))
-     &                            + XA43(IELEM) * Y(IKLE4(IELEM)) )
-           ENDDO ! IELEM 
+          DO IELEM = 1 , NELEM
+            W1(IELEM) = W1(IELEM)
+     &                + C * (    + XA21(IELEM) * Y(IKLE2(IELEM))
+     &                           + XA31(IELEM) * Y(IKLE3(IELEM))
+     &                           + XA41(IELEM) * Y(IKLE4(IELEM)) )
+            W2(IELEM) = W2(IELEM)
+     &                + C * (    + XA12(IELEM) * Y(IKLE1(IELEM))
+     &                           + XA32(IELEM) * Y(IKLE3(IELEM))
+     &                           + XA42(IELEM) * Y(IKLE4(IELEM)) )
+            W3(IELEM) = W3(IELEM)
+     &                + C * (    + XA13(IELEM) * Y(IKLE1(IELEM))
+     &                           + XA23(IELEM) * Y(IKLE2(IELEM))
+     &                           + XA43(IELEM) * Y(IKLE4(IELEM)) )
+          ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXT(1:1).NE.'0') THEN
+        ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
-           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+          CALL PLANTE(0)
+          STOP
 !
-         ENDIF
+        ENDIF
 !
 !   CONTRIBUTION OF THE DIAGONAL
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=X+CYZ ', X , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=X+CY  ', X , Y , Z  , C  , NPOIN )
-         ELSEIF(TYPDIA(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
-           STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=X+CYZ ', X , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=X+CY  ', X , Y , Z  , C  , NPOIN )
+        ELSEIF(TYPDIA(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !

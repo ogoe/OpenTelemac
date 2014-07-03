@@ -71,16 +71,16 @@
 !
       ELSE
 !
-         IF (LNG.EQ.1) WRITE(LU,50) X%NAME,X%TYPE
-         IF (LNG.EQ.1) WRITE(LU,53)
-         IF (LNG.EQ.2) WRITE(LU,60) X%NAME,X%TYPE
-         IF (LNG.EQ.2) WRITE(LU,63)
-50       FORMAT(1X,'BIEF_SUM (BIEF) : NOM DE X : ',A6,'  TYPE : ',1I6)
-53       FORMAT(1X,'                  CAS NON PREVU')
-60       FORMAT(1X,'BIEF_SUM (BIEF): NAME OF X : ',A6,'  TYPE : ',1I6)
-63       FORMAT(1X,'                 CASE NOT IMPLEMENTED')
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,50) X%NAME,X%TYPE
+        IF (LNG.EQ.1) WRITE(LU,53)
+        IF (LNG.EQ.2) WRITE(LU,60) X%NAME,X%TYPE
+        IF (LNG.EQ.2) WRITE(LU,63)
+50      FORMAT(1X,'BIEF_SUM (BIEF) : NOM DE X : ',A6,'  TYPE : ',1I6)
+53      FORMAT(1X,'                  CAS NON PREVU')
+60      FORMAT(1X,'BIEF_SUM (BIEF): NAME OF X : ',A6,'  TYPE : ',1I6)
+63      FORMAT(1X,'                 CASE NOT IMPLEMENTED')
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

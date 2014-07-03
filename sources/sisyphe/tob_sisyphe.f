@@ -125,13 +125,13 @@
 !
       IF(KSPRED) THEN
 !
-!        bed roughness predictor
+!       bed roughness predictor
 !
-         CALL KS_SISYPHE(IKS,KS,KSP,KSR,KSPRATIO,HOULE,
-     &                   GRAV,XMVE,XMVS,VCE,
-     &                   HMIN,HN,ACLADM,UNORM,UW,TW,NPOIN)
-         CALL COEFRO_SISYPHE(CF,HN,KFROT,KS,GRAV,NPOIN,HMIN,KARMAN)
-         IF(CODE(1:7).EQ.'TELEMAC') CALL OS('X=Y     ', X=KS_TEL, Y=KS)
+        CALL KS_SISYPHE(IKS,KS,KSP,KSR,KSPRATIO,HOULE,
+     &                  GRAV,XMVE,XMVS,VCE,
+     &                  HMIN,HN,ACLADM,UNORM,UW,TW,NPOIN)
+        CALL COEFRO_SISYPHE(CF,HN,KFROT,KS,GRAV,NPOIN,HMIN,KARMAN)
+        IF(CODE(1:7).EQ.'TELEMAC') CALL OS('X=Y     ', X=KS_TEL, Y=KS)
 !
       ELSE
 !

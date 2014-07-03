@@ -107,75 +107,75 @@
 !
       IF(NOMRBI(1:1).NE.' ') THEN
 !
-         DEPAR = .FALSE.
-         SUIT  = .FALSE.
-         ECRI  = .TRUE.
-         NELFLO= 0
+        DEPAR = .FALSE.
+        SUIT  = .FALSE.
+        ECRI  = .TRUE.
+        NELFLO= 0
 !
-         DO IFLOT=1,NFLOT
-           IF(DEBFLO(IFLOT).LT.NIT) THEN
-             IDEB=(DEBFLO(IFLOT)-1)/FLOPRD + 1
-             IFIN=(MIN0(FINFLO(IFLOT),NIT)-1)/FLOPRD + 1
-             DO IIT=IDEB,IFIN
-               NELFLO = NELFLO + 1
-               XFLOT (NELFLO) = XFLOT (NITFLO*(IFLOT-1)+IIT)
-               YFLOT (NELFLO) = YFLOT (NITFLO*(IFLOT-1)+IIT)
-               ZFLOT (NELFLO) = ZFLOT (NITFLO*(IFLOT-1)+IIT)
-               IKLFLO(NELFLO) = NELFLO + 1
-             ENDDO
-             IKLFLO(NELFLO) = NELFLO - 1
-           ENDIF
-         ENDDO
-!
-         IF(NELFLO.NE.0) THEN
-!
-            DO IELFLO=1,NELFLO
-               IKLFLO(  NELFLO+IELFLO) = IKLFLO(IELFLO)
-               IKLFLO(2*NELFLO+IELFLO) = IKLFLO(IELFLO)
-               IKLFLO(IELFLO) = IELFLO
+        DO IFLOT=1,NFLOT
+          IF(DEBFLO(IFLOT).LT.NIT) THEN
+            IDEB=(DEBFLO(IFLOT)-1)/FLOPRD + 1
+            IFIN=(MIN0(FINFLO(IFLOT),NIT)-1)/FLOPRD + 1
+            DO IIT=IDEB,IFIN
+              NELFLO = NELFLO + 1
+              XFLOT (NELFLO) = XFLOT (NITFLO*(IFLOT-1)+IIT)
+              YFLOT (NELFLO) = YFLOT (NITFLO*(IFLOT-1)+IIT)
+              ZFLOT (NELFLO) = ZFLOT (NITFLO*(IFLOT-1)+IIT)
+              IKLFLO(NELFLO) = NELFLO + 1
             ENDDO
+            IKLFLO(NELFLO) = NELFLO - 1
+          ENDIF
+        ENDDO
+!
+        IF(NELFLO.NE.0) THEN
+!
+          DO IELFLO=1,NELFLO
+            IKLFLO(  NELFLO+IELFLO) = IKLFLO(IELFLO)
+            IKLFLO(2*NELFLO+IELFLO) = IKLFLO(IELFLO)
+            IKLFLO(IELFLO) = IELFLO
+          ENDDO
 !
 !  STANDARD SELAFIN
 !
-            DATE(1) = 0
-            DATE(2) = 0
-            DATE(3) = 0
-            TIME(1) = 0
-            TIME(2) = 0
-            TIME(3) = 0
+          DATE(1) = 0
+          DATE(2) = 0
+          DATE(3) = 0
+          TIME(1) = 0
+          TIME(2) = 0
+          TIME(3) = 0
 !
 !   NOTE JMH: THERE IS CONFUSION BETWEEN NBOR AND IKLE, BOTH GIVEN AS
 !   IKLFLO. NBOR IS ACTUALLY ONLY USED TO BUILD IPOBO FOR SELAFIN FORMAT,
 !   NOT USED BY RUBENS. IE MUST WORK BY LUCK.
 !   AND NELFLO,NELFLO REPRESENTS NELEM,NPTFR !!!
-            CALL ECRGEO(XFLOT,YFLOT,NELFLO,IKLFLO,
-     &                  NREBI,NVAR,TEXTE,BIDC,0,
-     &                  TITCAS,DRAPO,26,IKLFLO,NELFLO,
-     &                  NELFLO,3,DATE,TIME,
-     &                  0     ,0     ,BIDI,
-!    *                  NCSIZE,NPTIR,KNOLG)  PARALLELISM NOT IMPLEMENTED
-     &                  I3=I_ORIG,I4=J_ORIG)
+          CALL ECRGEO(XFLOT,YFLOT,NELFLO,IKLFLO,
+     &                 NREBI,NVAR,TEXTE,BIDC,0,
+     &                 TITCAS,DRAPO,26,IKLFLO,NELFLO,
+     &                 NELFLO,3,DATE,TIME,
+     &                 0     ,0     ,BIDI,
+!    &                 NCSIZE,NPTIR,KNOLG)  PARALLELISM NOT IMPLEMENTED
+     &                 I3=I_ORIG,I4=J_ORIG)
 !
 ! WRITES THE TIME
 !
-            A(1) = 0.D0
-            CALL ECRI2(A,BIDI,BIDC2,1,'R4',NREBI,BINRES,ISTAT)
+          A(1) = 0.D0
+          CALL ECRI2(A,BIDI,BIDC2,1,'R4',NREBI,BINRES,ISTAT)
 !
 ! WRITES THE ELEVATION
 !
-            CALL ECRI2(ZFLOT,BIDI,BIDC2,NELFLO,'R4',NREBI,BINRES,ISTAT)
+          CALL ECRI2(ZFLOT,BIDI,BIDC2,NELFLO,'R4',NREBI,BINRES,ISTAT)
 !
-         ELSE
+        ELSE
 !
-            IF (LNG.EQ.1) WRITE(LU,11) NFLOT
-            IF (LNG.EQ.2) WRITE(LU,12) NFLOT
+          IF (LNG.EQ.1) WRITE(LU,11) NFLOT
+          IF (LNG.EQ.2) WRITE(LU,12) NFLOT
 !
-         ENDIF
+        ENDIF
 !
       ELSE
 !
-         IF (LNG.EQ.1) WRITE(LU,21)
-         IF (LNG.EQ.2) WRITE(LU,22)
+        IF (LNG.EQ.1) WRITE(LU,21)
+        IF (LNG.EQ.2) WRITE(LU,22)
 !
       ENDIF
 !

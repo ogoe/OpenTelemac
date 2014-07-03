@@ -138,19 +138,20 @@
       IF(LNG.EQ.2) WRITE(LU,*) 'AND OF CLANDESTINE VARIABLES: ',IB(2)
       IF( (IB(1).NE.4 .AND.ITASS.EQ.1).OR.(IB(1).NE.4 .AND.ITASS.EQ.2) )
      &   THEN
-         IF(LNG.EQ.1) WRITE(LU,*)
+        IF(LNG.EQ.1) WRITE(LU,*)
      &'SUISED : CONSOLIDATION NON COMPATIBLE AVEC NOMBRE DE VARIABLES'
-         IF(LNG.EQ.2) WRITE(LU,*)
+        IF(LNG.EQ.2) WRITE(LU,*)
      &'SUISED: CONSOLIDATION NOT COMPATIBLE WITH NUMBER OF VARIABLES'
-         STOP
+        CALL PLANTE(1)
+        STOP
       ENDIF
       NVAR = IB(1)+IB(2)
 !
 !   LEC/ECR 3: VARIABLES NAMES AND UNITS
       DO I = 1,NVAR
-         CALL LIT(XB,RB,IB,CB,32,'CH',NSUIS,BISUIS,ISTAT)
-         IF(LNG.EQ.1) WRITE(LU,*) I,".- ",CB(1:16)
-         IF(LNG.EQ.2) WRITE(LU,*) I,".- ",CB(1:16)
+        CALL LIT(XB,RB,IB,CB,32,'CH',NSUIS,BISUIS,ISTAT)
+        IF(LNG.EQ.1) WRITE(LU,*) I,".- ",CB(1:16)
+        IF(LNG.EQ.2) WRITE(LU,*) I,".- ",CB(1:16)
       ENDDO
 !
 !   LEC/ECR 4: LIST OF 10 INTEGER PARAMETERS (AND DATE)
@@ -158,25 +159,26 @@
       WRITE(LU,*) IB(1),IB(1),IB(2),IB(3),IB(4),IB(5),IB(6),IB(7),IB(8)
       IF( (IB(7).NE.NPFMAX .AND.ITASS.EQ.2).OR.
      &                   (IB(7).NE.NCOUCH .AND.ITASS.EQ.1) ) THEN
-         IF(LNG.EQ.1) WRITE(LU,*)
+        IF(LNG.EQ.1) WRITE(LU,*)
      &'SUISED : NOMBRE DE COUCHES NON COMPATIBLE AVEC CONSOLIDATION'
-         IF(LNG.EQ.2) WRITE(LU,*)
+        IF(LNG.EQ.2) WRITE(LU,*)
      &'SUISED: NUMBER OF LAYERS NOT COMPATIBLE WITH CONSOLIDATION'
-         STOP
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !   LEC/ECR 5: 4 INTEGERS
       CALL LIT(XB,RB,IB,CB,4,'I',NSUIS,BISUIS,ISTAT)
       WRITE(LU,*) IB(1),IB(1),IB(2),IB(3),IB(4)
       IF( (IB(2).NE.(IB(7)*NPOIN2)) .OR. (IB(3).NE.6) ) THEN
-       IF(LNG.EQ.1) THEN
-         WRITE(LU,*) 'SUISED : NOMBRE DE NOEUDS NON COMPATIBLE'
-       ENDIF
-       IF(LNG.EQ.2) THEN
-         WRITE(LU,*) 'SUISED: NUMBER OF NODES NOT COMPATIBLE'
-       ENDIF
-       CALL PLANTE(1)
-       STOP
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'SUISED : NOMBRE DE NOEUDS NON COMPATIBLE'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'SUISED: NUMBER OF NODES NOT COMPATIBLE'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !   LEC/ECR 6: IKLE
@@ -197,11 +199,11 @@
 !#####> SEB-CHANGES
       IF(TASSE) THEN
         IF (ITASS.EQ.1) THEN
-         ALLOCATE(XB(NCOUCH*NPOIN2),STAT=ERR)
-         ALLOCATE(RB(NCOUCH*NPOIN2),STAT=ERR)
+          ALLOCATE(XB(NCOUCH*NPOIN2),STAT=ERR)
+          ALLOCATE(RB(NCOUCH*NPOIN2),STAT=ERR)
         ELSEIF (ITASS.EQ.2) THEN
-         ALLOCATE(XB(NPFMAX*NPOIN2),STAT=ERR)
-         ALLOCATE(RB(NPFMAX*NPOIN2),STAT=ERR)
+          ALLOCATE(XB(NPFMAX*NPOIN2),STAT=ERR)
+          ALLOCATE(RB(NPFMAX*NPOIN2),STAT=ERR)
         ENDIF
       ENDIF
 !     N = MAX(NPFMAX*NPOIN2, NPOIN3)
@@ -222,23 +224,23 @@
 ! CASE OF SELAFIN 3D FORMAT - THE HEADER HAS ALREADY BEEN READ
       NENRE = 0
       DO
-         READ(NSUIS,END=1901)          ! AT
-         DO I = 1,NVAR
-            READ(NSUIS)
-         ENDDO
-         NENRE = NENRE + 1
+        READ(NSUIS,END=1901)          ! AT
+        DO I = 1,NVAR
+           READ(NSUIS)
+        ENDDO
+        NENRE = NENRE + 1
       ENDDO
  1901 CONTINUE
 !                          > MOVE TO BEFORE-LAST RECORD
       REWIND NSUIS
       DO I = 1,2+NVAR+4+2     ! HEADER
-         READ(NSUIS)
+        READ(NSUIS)
       ENDDO
       DO ITER = 1,NENRE-1     ! RECORDS
-         READ(NSUIS)
-         DO I = 1,NVAR
-            READ(NSUIS)
-         ENDDO
+        READ(NSUIS)
+        DO I = 1,NVAR
+          READ(NSUIS)
+        ENDDO
       ENDDO
       UNITCONV = 1.D0                      ! VARIABLES ARE SCALED
 !                          > READS LAST RECORD
@@ -252,94 +254,94 @@
 !@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 !  /!\ THIS PART SHOULD BE ENTIRELY REVISITED ...
       IF(TASSE) THEN
-         IF(ITASS.EQ.1) THEN
+        IF(ITASS.EQ.1) THEN
 ! ELEVATION Z (MOSTLY FOR PLOTTING PURPOSES)
-         CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
-         DO IPOIN = 1,NPOIN2
-!>            EPAI(IPOIN) = DBLE( RB(IPOIN) ) - ZR(IPOIN)
-!            ZF(IPOIN) = DBLE( RB(IPOIN+(NCOUCH-1)*NPOIN2) )
-         ENDDO
+        CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
+        DO IPOIN = 1,NPOIN2
+!>        EPAI(IPOIN) = DBLE( RB(IPOIN) ) - ZR(IPOIN)
+!         ZF(IPOIN) = DBLE( RB(IPOIN+(NCOUCH-1)*NPOIN2) )
+        ENDDO
 ! THICKNESS
-         CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
-         DO IPOIN = 1,(NCOUCH-1)*NPOIN2
-!>            EPAI(IPOIN+NPOIN2) = DBLE( RB(IPOIN) ) * UNITCONV
-         ENDDO
-         DO IPOIN = 1,NPOIN2
-            HDEP(IPOIN) = DBLE( RB(IPOIN+(NCOUCH-1)*NPOIN2) )*UNITCONV
-         ENDDO
+        CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
+        DO IPOIN = 1,(NCOUCH-1)*NPOIN2
+!>        EPAI(IPOIN+NPOIN2) = DBLE( RB(IPOIN) ) * UNITCONV
+        ENDDO
+        DO IPOIN = 1,NPOIN2
+          HDEP(IPOIN) = DBLE( RB(IPOIN+(NCOUCH-1)*NPOIN2) )*UNITCONV
+        ENDDO
 ! CONCENTRATION
-         CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
-         DO I=1,NPOIN2
-         DO IPLAN = 1,NCOUCH
+        CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
+        DO I=1,NPOIN2
+          DO IPLAN = 1,NCOUCH
             CONC(IPOIN,IPLAN) = DBLE( RB(1+(IPLAN-1)*NPOIN2))* UNITCONV
-         ENDDO
-         ENDDO
+          ENDDO
+        ENDDO
 ! TIME OF CONSOLIDATION
-         CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
-         DO IPOIN = 1,NCOUCH*NPOIN2
-!>            TEMP(IPOIN) = DBLE( RB(IPOIN) )
-         ENDDO
-         DEALLOCATE(XB)
+        CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
+        DO IPOIN = 1,NCOUCH*NPOIN2
+!>        TEMP(IPOIN) = DBLE( RB(IPOIN) )
+        ENDDO
+        DEALLOCATE(XB)
 !@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       ELSEIF (ITASS.EQ.2) THEN
 !> ELEVATION Z (TEMPORARILY STORES TRUE LAYER THICKNESS)
-         CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
-         DO IPOIN = 1,NPOIN2
-            ZR(IPOIN) = DBLE( RB(IPOIN) )
-            ZPLAN = ZR(IPOIN)
-            DO IPLAN = 1,NPFMAX-1
-               EPAI(IPOIN,IPLAN) =
-     &            DBLE( RB(IPOIN+(IPLAN-1)*NPOIN2) ) - ZPLAN
-               ZPLAN = ZPLAN + EPAI(IPOIN,IPLAN)
-            ENDDO
-            ZF(IPOIN) = DBLE( RB(IPOIN+(NPFMAX-1)*NPOIN2) )
-!            HDEB(IPOIN) = ZF(IPOIN) - ZPLAN
-         ENDDO
+        CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
+        DO IPOIN = 1,NPOIN2
+          ZR(IPOIN) = DBLE( RB(IPOIN) )
+          ZPLAN = ZR(IPOIN)
+          DO IPLAN = 1,NPFMAX-1
+            EPAI(IPOIN,IPLAN) =
+     &         DBLE( RB(IPOIN+(IPLAN-1)*NPOIN2) ) - ZPLAN
+            ZPLAN = ZPLAN + EPAI(IPOIN,IPLAN)
+          ENDDO
+          ZF(IPOIN) = DBLE( RB(IPOIN+(NPFMAX-1)*NPOIN2) )
+!         HDEB(IPOIN) = ZF(IPOIN) - ZPLAN
+        ENDDO
 !> TRUE THICKNESS AND NUMBER OF LAYERS
-         CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
-         DO IPOIN = 1,NPOIN2
-            NPF(IPOIN) = INT( RB(IPOIN) )
-            IF( NPF(IPOIN).GT.NPFMAX ) THEN
-              IF(LNG.EQ.1) THEN
+        CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
+        DO IPOIN = 1,NPOIN2
+          NPF(IPOIN) = INT( RB(IPOIN) )
+          IF( NPF(IPOIN).GT.NPFMAX ) THEN
+            IF(LNG.EQ.1) THEN
               WRITE(LU,*) 'SUISED : NOMBRE DE COUCHE MAXIMAL NON VALIDE'
-              ENDIF
-              IF(LNG.EQ.2) THEN
-               WRITE(LU,*) 'SUISED: MAXIMUM NUMBER OF LAYERS NOT VALID'
-              ENDIF
-              CALL PLANTE(1)
-              STOP
             ENDIF
-            HDEP(IPOIN)=DBLE(RB(IPOIN+(NPFMAX-1)*NPOIN2))*UNITCONV
-         ENDDO
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'SUISED: MAXIMUM NUMBER OF LAYERS NOT VALID'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          HDEP(IPOIN)=DBLE(RB(IPOIN+(NPFMAX-1)*NPOIN2))*UNITCONV
+        ENDDO
 !> TRUE DENSITY AND RENUMBERING
-         CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
-         DO IPOIN = 1, NPOIN2
-            DO IPLAN = NPFMAX,NPF(IPOIN)+1,-1
-               IVIDE(IPLAN,IPOIN) = 0.D0
-            ENDDO
-            JPLAN = NPFMAX
-            DO IPLAN = NPF(IPOIN),1,-1
-               IVIDE(IPLAN,IPOIN) =
-     &            RHOS/DBLE( RB(IPOIN+(JPLAN-1)*NPOIN2) ) - 1.D0
-               JPLAN = JPLAN - 1
-            ENDDO
+        CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
+        DO IPOIN = 1, NPOIN2
+          DO IPLAN = NPFMAX,NPF(IPOIN)+1,-1
+            IVIDE(IPLAN,IPOIN) = 0.D0
+          ENDDO
+          JPLAN = NPFMAX
+          DO IPLAN = NPF(IPOIN),1,-1
+            IVIDE(IPLAN,IPOIN) =
+     &         RHOS/DBLE( RB(IPOIN+(JPLAN-1)*NPOIN2) ) - 1.D0
+            JPLAN = JPLAN - 1
+          ENDDO
         ENDDO
 !> VIRTUAL THICKNESS EPAI AND RENUMBERING
         DO IPOIN = 1,NPOIN2
-            JPLAN = NPFMAX-NPF(IPOIN)+1
-            DO IPLAN = 1,NPF(IPOIN)
-               ECOUCH =
-     &         ( IVIDE(IPLAN,IPOIN) + IVIDE(IPLAN+1,IPOIN) )/2.D0
-               EPAI(IPOIN,IPLAN) = EPAI(IPOIN,IPLAN)/( 1.D0+ECOUCH )
-               JPLAN = JPLAN + 1
-            ENDDO
-            DO IPLAN = NPF(IPOIN),NCOUCH
-               EPAI(IPOIN,IPLAN) = 0.D0
-            ENDDO
-         ENDDO
+          JPLAN = NPFMAX-NPF(IPOIN)+1
+          DO IPLAN = 1,NPF(IPOIN)
+            ECOUCH =
+     &      ( IVIDE(IPLAN,IPOIN) + IVIDE(IPLAN+1,IPOIN) )/2.D0
+            EPAI(IPOIN,IPLAN) = EPAI(IPOIN,IPLAN)/( 1.D0+ECOUCH )
+            JPLAN = JPLAN + 1
+          ENDDO
+          DO IPLAN = NPF(IPOIN),NCOUCH
+            EPAI(IPOIN,IPLAN) = 0.D0
+          ENDDO
+        ENDDO
 !> LAYER IPF: ONLY USEFUL FOR PLOTTING PURPOSES
 !         CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,BISUIS,ISTAT)
-         DEALLOCATE(XB)
+        DEALLOCATE(XB)
         ENDIF
       ENDIF
 !#####< SEB-CHANGES

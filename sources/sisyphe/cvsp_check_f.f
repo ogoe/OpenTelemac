@@ -60,16 +60,16 @@
 !-----------------------------------------------------------------------
 !
       DO I=1,NSICLA
-         IF (PRO_F(J,K,I).LT.0.D0) THEN
-            IF(PRO_F(J,K,I).GE.-1.D-8) THEN
-              PRO_F(J,K,I) = 0.D0
-            ELSE
-              WRITE(LU,*) 'CF:,PRO_F <0: BAD !!'
-     &                    ,SOMETEXT,JG,K,I,PRO_F(J,K,I)
-            ENDIF
-         ENDIF
-!         
-         TEMP = TEMP + PRO_F(J,K,I)
+        IF (PRO_F(J,K,I).LT.0.D0) THEN
+          IF(PRO_F(J,K,I).GE.-1.D-8) THEN
+            PRO_F(J,K,I) = 0.D0
+          ELSE
+            WRITE(LU,*) 'CF:,PRO_F <0: BAD !!'
+     &                  ,SOMETEXT,JG,K,I,PRO_F(J,K,I)
+          ENDIF
+        ENDIF
+!        
+        TEMP = TEMP + PRO_F(J,K,I)
       ENDDO
 !
 !-----------------------------------------------------------------------        
@@ -86,16 +86,16 @@
               EXIT
             ENDIF
           ENDDO          
-         ELSE
-!          SLIGHT DIFFERENCES TO 0 ARE CORRECTED BY CHANGING ONLY 
-!          THE FIRST FRACTION BIG ENOUGH
-           DO I=1,NSICLA
-             IF(PRO_F(J,K,I).GT.ZERO) THEN
-               PRO_F(J,K,I) = 1.D0-(TEMP-PRO_F(J,K,I))
-               EXIT
-             ENDIF
-           ENDDO            
-         ENDIF
+        ELSE
+!         SLIGHT DIFFERENCES TO 0 ARE CORRECTED BY CHANGING ONLY 
+!         THE FIRST FRACTION BIG ENOUGH
+          DO I=1,NSICLA
+            IF(PRO_F(J,K,I).GT.ZERO) THEN
+              PRO_F(J,K,I) = 1.D0-(TEMP-PRO_F(J,K,I))
+              EXIT
+            ENDIF
+          ENDDO            
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------

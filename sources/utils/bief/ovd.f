@@ -359,23 +359,23 @@
 !
       ELSE
 !
-         IF (LNG.EQ.1) WRITE(LU,3000) OP
-         IF (LNG.EQ.2) WRITE(LU,4000) OP
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,3000) OP
+        IF (LNG.EQ.2) WRITE(LU,4000) OP
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-1000     FORMAT(1X,'OVD (BIEF) : DIVISION PAR ZERO AU POINT ',1I6,
-     &             ' LORS DE L''OPERATION ',A8,/,1X,
-     &             'LE CRITERE EST ',G16.7)
-2000     FORMAT(1X,'OVD (BIEF) : DIVIDE BY ZERO AT POINT ',1I6,
-     &             ' FOR OPERATION ',A8,/,1X,
-     &             'THE CRITERION IS ',G16.7)
-3000     FORMAT(1X,'OVD (BIEF) : OPERATION INCONNUE : ',A8)
-4000     FORMAT(1X,'OVD (BIEF) : UNKNOWN OPERATION: ',A8)
+1000  FORMAT(1X,'OVD (BIEF) : DIVISION PAR ZERO AU POINT ',1I6,
+     &          ' LORS DE L''OPERATION ',A8,/,1X,
+     &          'LE CRITERE EST ',G16.7)
+2000  FORMAT(1X,'OVD (BIEF) : DIVIDE BY ZERO AT POINT ',1I6,
+     &          ' FOR OPERATION ',A8,/,1X,
+     &          'THE CRITERION IS ',G16.7)
+3000  FORMAT(1X,'OVD (BIEF) : OPERATION INCONNUE : ',A8)
+4000  FORMAT(1X,'OVD (BIEF) : UNKNOWN OPERATION: ',A8)
 !
 !-----------------------------------------------------------------------
 !

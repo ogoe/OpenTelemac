@@ -64,6 +64,7 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'P_DSUM: ERREUR DANS MPI_ALLREDUCE'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_DSUM: ERROR IN MPI_ALLREDUCE'
         WRITE(LU,*) 'MPI ERROR: ',IER
+        CALL PLANTE(1)
         STOP
       ENDIF
       RETURN
@@ -72,7 +73,6 @@
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_DSUM IN ITS VOID VERSION'
 !
       P_DSUM=MYPART
-      STOP
 #endif
 !
 !-----------------------------------------------------------------------

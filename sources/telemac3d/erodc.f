@@ -95,11 +95,9 @@
 !        DO IPOIN=1,NPOIN2
 !
 !          FLUER(IPOIN) = 0.D0
-!###>TBE
 !          IF (HN(IPOIN)<HMIN) THEN
 !             GOTO 10
 !          ENDIF
-!###<TBE
 !
 !         TESTS IF TOB > CRITICAL EROSION FRICTION OF SURFACE LAYER
 !
@@ -110,36 +108,32 @@
 !     &               EPAI(IPOIN,1)*CONC(IPOIN,1)/DT)
 !
 !          ENDIF
-!###>TBE
 !10      CONTINUE
-!###<TBE
 !        ENDDO
 !
 !      ELSE
 !CV
 !     ---- TEMPS:TIME COUNTER FOR EROSION ----
 !
-        DO IPOIN=1,NPOIN2
+      DO IPOIN=1,NPOIN2
 !            
-!###>TBE
         FLUER(IPOIN) = 0.D0
         IF(HN(IPOIN).LT.HMIN) GOTO 30
-!###<TBE
 !
 ! initialisation
-           TEMPS=DT
-           QERODE=0.D0
+          TEMPS=DT
+          QERODE=0.D0
 !
-           DO IC=1, NCOUCH
+          DO IC=1, NCOUCH
 !
             IF (TEMPS.LE.1.D-12) GO TO 20
 !
 !     ---- EROSION OF TOP LAYER IF TOB > CRITICAL SHEAR STRESS ----
 
-           IF (TOB(IPOIN).GT.TOCE(IPOIN,IC)) THEN
+            IF (TOB(IPOIN).GT.TOCE(IPOIN,IC)) THEN
 !
-            FLUER_LOC=MPART*((TOB(IPOIN)/TOCE(IPOIN,IC))-1.D0)
-            QS=CONC(IPOIN,IC)*EPAI(IPOIN,IC)
+              FLUER_LOC=MPART*((TOB(IPOIN)/TOCE(IPOIN,IC))-1.D0)
+              QS=CONC(IPOIN,IC)*EPAI(IPOIN,IC)
 !CV ...
 !    ---- LAYER THICKNESS AFTER EROSION ----
 !
@@ -148,27 +142,24 @@
 !
 ! ...CV : done in fonvas
 !
-            QS=MIN(FLUER_LOC*TEMPS,CONC(IPOIN,IC)*EPAI(IPOIN,IC))
-            QERODE=QERODE+QS
-            TEMPS= TEMPS-(QS/FLUER_LOC)
+              QS=MIN(FLUER_LOC*TEMPS,CONC(IPOIN,IC)*EPAI(IPOIN,IC))
+              QERODE=QERODE+QS
+              TEMPS= TEMPS-(QS/FLUER_LOC)
 
-           ENDIF
+            ENDIF
 !
   
-        ENDDO
+          ENDDO
 !
-20     CONTINUE
+20      CONTINUE
 !
 !     -----END OF THE EROSION STEP-----
 !
-       FLUER(IPOIN)=QERODE/DT
-!###>TBE
-30     CONTINUE
-!###<TBE
-  
+        FLUER(IPOIN)=QERODE/DT
+!
+30      CONTINUE
+!
       ENDDO
 !     
-!      ENDIF
-!
       RETURN
       END

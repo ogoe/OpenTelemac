@@ -66,6 +66,7 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'P_IREAD: ERREUR IN MPI_IRECV'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_IREAD: ERROR IN MPI_IRECV'
         WRITE(LU,*) 'MPI ERROR ',IER
+        CALL PLANTE(1)
         STOP
       ENDIF
 #else

@@ -181,17 +181,17 @@
 !
       ITERMU=0
       IF (LT.EQ.0) THEN
-         CALL OS( 'X=C     ' , MU , SBID , SBID , 0.D0 )
-         CALL OS( 'X=C     ' , FW , SBID , SBID , 0.D0 )
+        CALL OS( 'X=C     ' , MU , SBID , SBID , 0.D0 )
+        CALL OS( 'X=C     ' , FW , SBID , SBID , 0.D0 )
       ENDIF
 !
 !-----------------------------------------------------------------------
       ITERKN=0
       IF (COURANT) THEN
-       ZERO=1E-10
+        ZERO=1E-10
 !      INITIALISATION OF WAVE VECTOR COMPONENTS X&Y : T5 , T6 
-       CALL OS('X=0     ',X=KANCX)
-       CALL OS('X=0     ',X=KANCY)
+        CALL OS('X=0     ',X=KANCX)
+        CALL OS('X=0     ',X=KANCY)
       ENDIF
 
 !
@@ -206,44 +206,44 @@
      &    .OR.((LANGAUTO ).AND.(ITERKN.GT.0))  ) THEN
 
 !   ==> CURRENT : 
-       IF (COURANT) THEN 
-!      COMPUTE WAVE VECTOR (FIRST ITERATION U=0, SO NO NEED TO DO THAT)      
-!      ---------------------------------------------------------------
-        DO I=1,NPOIN
-         XK =K%R(I)
-         CALL SOLVELAMBDA(XK,
-     *                   UC%R(I),VC%R(I),KANCX%R(I),KANCY%R(I),H%R(I))
-         K%R(I) =XK
-         
-         WR%R(I)=SQRT(GRAV*K%R(I)*TANH(K%R(I)*H%R(I)))
-         C%R(I) =WR%R(I)/K%R(I)
-         CG%R(I)=0.5D0*C%R(I)*
-     &           (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
-        ENDDO
-!
-       ENDIF
-!      ------------------------------------------------------
-!   ==> AUTOMATIC ANGLES
-       IF (LANGAUTO) THEN 
-!      COMPUTE TETAP ON THE BOUNDARY (FIRST ITERATION TETAP GIVEN BY USER, SO NO NEED TO DO THAT)
-!      ---------------------------------------------------------------
-!       ==> ADD RELAXATION ON TETAP IF NECESARY : TETAP=1/2*TETAP + (1/2)*TETAPM
-!          DO I=1,NPTFR
-!           TETAP%R(I)=0.5D0*TETAP%R(I)+0.5D0*TETAPM%R(I)
-!          ENDDO
-!         DID'NT SEEM TO BE USEFUL DURING VALIDATION PRECESS
-       ENDIF   
-!      ------------------------------------------------------
-!
-!      ACTUALIZATION OF BOUNDARY CONDITIONS 
-!           1/ CURRENT     : K HAS CHANGED
-!           2/ AUTO ANGLES : TETAP HAS CHANGED 
-!      ------------------------------------------------------
-!
-!      ----------
-       CALL PHBOR       
-!      ----------
-!      ------------------------------------------------------
+        IF (COURANT) THEN 
+!       COMPUTE WAVE VECTOR (FIRST ITERATION U=0, SO NO NEED TO DO THAT)      
+!       ---------------------------------------------------------------
+          DO I=1,NPOIN
+            XK =K%R(I)
+            CALL SOLVELAMBDA(XK,
+     &                     UC%R(I),VC%R(I),KANCX%R(I),KANCY%R(I),H%R(I))
+            K%R(I) =XK
+            
+            WR%R(I)=SQRT(GRAV*K%R(I)*TANH(K%R(I)*H%R(I)))
+            C%R(I) =WR%R(I)/K%R(I)
+            CG%R(I)=0.5D0*C%R(I)*
+     &              (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
+          ENDDO
+!       
+        ENDIF
+!       ------------------------------------------------------
+!   ==>  AUTOMATIC ANGLES
+        IF (LANGAUTO) THEN 
+!       COMPUTE TETAP ON THE BOUNDARY (FIRST ITERATION TETAP GIVEN BY USER, SO NO NEED TO DO THAT)
+!       ---------------------------------------------------------------
+!        ==> ADD RELAXATION ON TETAP IF NECESARY : TETAP=1/2*TETAP + (1/2)*TETAPM
+!           DO I=1,NPTFR
+!            TETAP%R(I)=0.5D0*TETAP%R(I)+0.5D0*TETAPM%R(I)
+!           ENDDO
+!          DID'NT SEEM TO BE USEFUL DURING VALIDATION PRECESS
+        ENDIF   
+!       ------------------------------------------------------
+!       
+!       ACTUALIZATION OF BOUNDARY CONDITIONS 
+!            1/ CURRENT     : K HAS CHANGED
+!            2/ AUTO ANGLES : TETAP HAS CHANGED 
+!       ------------------------------------------------------
+!       
+!       ----------
+        CALL PHBOR       
+!       ----------
+!       ------------------------------------------------------
 !     END OF FIRST STEP : NEXT STEP IS COMPUTING AM AND BM     
       ENDIF
 !
@@ -278,40 +278,41 @@
 !     -----------------------
 !     (WARNING : CAN'T USE CURRENT AND SECOND ORDER BOTTOM EFFECTS AT THE SAME TIME)
       IF (COURANT) THEN
-         XMUL=1.D0
-         CALL OS( 'X=YZ    ' , X=T1,Y=CG,Z=C)
-         CALL OS( 'X=YZ    ' , X=T2 , Y=K , Z=K)
-         CALL OS( 'X=XY    ' , X=T1 , Y=T2)      
-         CALL OS( 'X=C     ' , X=T2 , C=OMEGA**2)
-         IF(ITERKN.EQ.0)THEN
+        XMUL=1.D0
+        CALL OS( 'X=YZ    ' , X=T1,Y=CG,Z=C)
+        CALL OS( 'X=YZ    ' , X=T2 , Y=K , Z=K)
+        CALL OS( 'X=XY    ' , X=T1 , Y=T2)      
+        CALL OS( 'X=C     ' , X=T2 , C=OMEGA**2)
+        IF(ITERKN.EQ.0)THEN
           CALL OS( 'X=C     ' , X=T3 , C=OMEGA**2)
-         ELSE      
+        ELSE      
           CALL OS( 'X=YZ    ' , X=T3 , Y=WR , Z=WR )
-         ENDIF
-         CALL OS( 'X=Y+Z   ' , X=T1 , Y=T1 , Z=T2)
-         CALL OS( 'X=Y-Z   ' , X=T1 , Y=T1 , Z=T3)  
-         IF (IPENTCO.GT.(0.5)) THEN
-           WRITE(LU,*) 'IT IS NOT POSSIBLE TO USE '
-           WRITE(LU,*) 'CURRENT + BOTTOM EFFECTS AT THE SAME TIME'
-           WRITE(LU,*) '- FOR CURRENT ALONE, FIX IPENTO=0'
-           WRITE(LU,*) '- FOR BOTTOM EFFECTS ALONE, DON T USE CURRENT'
-           WRITE(LU,*) '-------------------------'
-           WRITE(LU,*) 'THE CODE IS GOING TO STOP'
-           WRITE(LU,*) '-------------------------'
-           STOP
-         ENDIF
+        ENDIF
+        CALL OS( 'X=Y+Z   ' , X=T1 , Y=T1 , Z=T2)
+        CALL OS( 'X=Y-Z   ' , X=T1 , Y=T1 , Z=T3)  
+        IF (IPENTCO.GT.(0.5)) THEN
+          WRITE(LU,*) 'IT IS NOT POSSIBLE TO USE '
+          WRITE(LU,*) 'CURRENT + BOTTOM EFFECTS AT THE SAME TIME'
+          WRITE(LU,*) '- FOR CURRENT ALONE, FIX IPENTO=0'
+          WRITE(LU,*) '- FOR BOTTOM EFFECTS ALONE, DON T USE CURRENT'
+          WRITE(LU,*) '-------------------------'
+          WRITE(LU,*) 'THE CODE IS GOING TO STOP'
+          WRITE(LU,*) '-------------------------'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ELSE
-         CALL OS( 'X=Y/Z   ' , X=T1,Y=CG,Z=C)
-         XMUL=OMEGA**2
-!        SECOND ORDER BOTTOM EFFECTS ?    
-!          (IPENTCO > 0 --> T1 = T1*(1+F) )
-!           0 : NO EFFECT /  1 : GRADIENT / 2 : CURVATURE /  3 : GRADIENT+CURVATURE
-          IF ( (IPENTCO.GT.(0.5)).AND.(IPENTCO.LT.(3.5)) ) THEN
-              CALL PENTCO(IPENTCO)
-!             <--T3 = 1+F  
-!             -- T2 T4 T5 T6 T7 T9 T8 T11 T12
-              CALL OS( 'X=YZ    ' , T1 , T1 , T3 , CBID )
-          ENDIF
+        CALL OS( 'X=Y/Z   ' , X=T1,Y=CG,Z=C)
+        XMUL=OMEGA**2
+!       SECOND ORDER BOTTOM EFFECTS ?    
+!         (IPENTCO > 0 --> T1 = T1*(1+F) )
+!          0 : NO EFFECT /  1 : GRADIENT / 2 : CURVATURE /  3 : GRADIENT+CURVATURE
+        IF ( (IPENTCO.GT.(0.5)).AND.(IPENTCO.LT.(3.5)) ) THEN
+          CALL PENTCO(IPENTCO)
+!         <--T3 = 1+F  
+!         -- T2 T4 T5 T6 T7 T9 T8 T11 T12
+          CALL OS( 'X=YZ    ' , T1 , T1 , T3 , CBID )
+        ENDIF
       ENDIF
 
       CALL MATRIX(AM2,'M=N     ','FMATMA          ', IELM , IELM ,
@@ -330,10 +331,10 @@
 !     ADDS CURRENT - CONVECTION MATRIX
 !     --------------------------------------------------
 !
-       CALL MATRIX(AM2,'M=N     ','MAUGUG          ', IELM , IELM ,
-     &            1.D0 , S,S,S,UC,VC,S,MESH,MSK,MASKEL)
-!
-       CALL OM( 'M=M+CN  ' , AM1 , AM2 , C , -1.D0 , MESH )
+        CALL MATRIX(AM2,'M=N     ','MAUGUG          ', IELM , IELM ,
+     &             1.D0 , S,S,S,UC,VC,S,MESH,MSK,MASKEL)
+!       
+        CALL OM( 'M=M+CN  ' , AM1 , AM2 , C , -1.D0 , MESH )
 !
       ENDIF
 !     --------------------------------
@@ -341,76 +342,76 @@
 !     --------------------------------
 !
 !      AM1 et AM2 --> NON-SYMETRIQUES
-       CALL OM( 'M=X(M)  ' , AM1 , AM1 , SBID , CBID , MESH )
-       CALL OM( 'M=X(M)  ' , AM2 , AM2 , SBID , CBID , MESH )
+      CALL OM( 'M=X(M)  ' , AM1 , AM1 , SBID , CBID , MESH )
+      CALL OM( 'M=X(M)  ' , AM2 , AM2 , SBID , CBID , MESH )
 !
-!        ----------------------------
-!        BOUNDARY TERM: INCIDENT WAVE
-!        ----------------------------
+!       ----------------------------
+!       BOUNDARY TERM: INCIDENT WAVE
+!       ----------------------------
 !
-       IF (NPTFR .GT. 0) THEN
-         CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
-     &        -1.D0,BPHI1B,S,S,S,S,S,MESH,.TRUE.,MASK1)
-         CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
+      IF (NPTFR .GT. 0) THEN
+        CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
+     &       -1.D0,BPHI1B,S,S,S,S,S,MESH,.TRUE.,MASK1)
+        CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
 !
 !
-         IF(COURANT) THEN
+        IF(COURANT) THEN
           CALL MATRIX(MBOR,'M=N     ','MATFGUG         ',IELMB,IELMB,
      &        1.D0,MESH%XSGBOR,MESH%YSGBOR,S,UC,VC,S,
      &        MESH,.TRUE.,MASK1)
           CALL OM( 'M=M+N   ' , AM1 , MBOR , SBID , CBID , MESH )
-         ENDIF
+        ENDIF
 !  
-       ENDIF
-!     ------------------------------
-!     BOUNDARY TERM: FREE EXIT
-!     ------------------------------
-       IF (NPTFR .GT. 0) THEN
-         CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
-     &        -1.D0,BPHI2B,S,S,S,S,S,MESH,.TRUE.,MASK2)
-         CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
+      ENDIF
+!     -----------------------------
+!     OUNDARY TERM: FREE EXIT
+!     -----------------------------
+      IF (NPTFR .GT. 0) THEN
+        CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
+     &       -1.D0,BPHI2B,S,S,S,S,S,MESH,.TRUE.,MASK2)
+        CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
 !
-         IF(COURANT) THEN
+        IF(COURANT) THEN
           CALL MATRIX(MBOR,'M=N     ','MATFGUG         ',IELMB,IELMB,
      &        1.D0,MESH%XSGBOR,MESH%YSGBOR,S,UC,VC,S,
      &        MESH,.TRUE.,MASK2)
           CALL OM( 'M=M+N   ' , AM1 , MBOR , SBID , CBID , MESH )
-         ENDIF
-       ENDIF
+        ENDIF
+      ENDIF
 !     ------------------------------
 !     BOUNDARY TERM : SOLID BOUNDARY
 !     ------------------------------
       IF (NPTFR .GT. 0) THEN
-         CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
-     &        -1.D0,BPHI3B,S,S,S,S,S,MESH,.TRUE.,MASK3)
-         CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
+        CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
+     &       -1.D0,BPHI3B,S,S,S,S,S,MESH,.TRUE.,MASK3)
+        CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
       END IF
 !     --------------------- ---------
 !     BOUNDARY TERM: IMPOSED WAVE
 !     ------------------------------
       IF (NPTFR .GT. 0) THEN
-         CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
-     &        -1.D0,BPHI4B,S,S,S,S,S,MESH,.TRUE.,MASK4)
-         CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
+        CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
+     &       -1.D0,BPHI4B,S,S,S,S,S,MESH,.TRUE.,MASK4)
+        CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
       END IF
 !
 !     ------------------------------
 !      BOUNDARY TERM: INCIDENT POTENTIAL
 !     ------------------------------
 !
-       IF (NPTFR .GT. 0) THEN
-         CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
-     &        -1.D0,BPHI1B,S,S,S,S,S,MESH,.TRUE.,MASK5)
-         CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
+      IF (NPTFR .GT. 0) THEN
+        CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
+     &       -1.D0,BPHI1B,S,S,S,S,S,MESH,.TRUE.,MASK5)
+        CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
 !
-         IF(COURANT) THEN
+        IF(COURANT) THEN
           CALL MATRIX(MBOR,'M=N     ','MATFGUG         ',IELMB,IELMB,
      &        1.D0,MESH%XSGBOR,MESH%YSGBOR,S,UC,VC,S,
      &        MESH,.TRUE.,MASK5)
           CALL OM( 'M=M+N   ' , AM1 , MBOR , SBID , CBID , MESH )
-         ENDIF
+        ENDIF
 !
-       ENDIF
+      ENDIF
 !
 !     =========================================
 !                   SECOND MEMBERS
@@ -419,172 +420,172 @@
 !     SECOND MEMBERS : CV1
 !     ---------------------
 !
-         CALL OS( 'X=C     ' , CV1, SBID , SBID , 0.D0 )
+      CALL OS( 'X=C     ' , CV1, SBID , SBID , 0.D0 )
 !     ------------------------------
 !     BOUNDARY TERM: INCIDENT WAVE
 !     ------------------------------
-!       --- CALCUL DE i COS(TETAP) GAMMA         
-         CALL OS( 'X=CY    ' , T1,TETAP,SBID,DEGRAD)
-         CALL OS( 'X=COS(Y)' , T2,T1,SBID,0.D0)
-         CALL OS( 'X=YZ    ' , T3,CPHI1B,T2,0.D0)
-         CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
-         
-         IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','MASVEC          ',IELMB,
-     &           -1.D0,T3,S,S,S,S,S,MESH,.TRUE.,MASK1)
-         END IF
-         CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
+!     --- CALCUL DE i COS(TETAP) GAMMA         
+      CALL OS( 'X=CY    ' , T1,TETAP,SBID,DEGRAD)
+      CALL OS( 'X=COS(Y)' , T2,T1,SBID,0.D0)
+      CALL OS( 'X=YZ    ' , T3,CPHI1B,T2,0.D0)
+      CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
+      
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','MASVEC          ',IELMB,
+     &       -1.D0,T3,S,S,S,S,S,MESH,.TRUE.,MASK1)
+      END IF
+      CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
 
-!        --- CALCUL DE GRAD(Gamma).n : REEL
-          CALL OS( 'X=Y     ' , T2,CGRX1B,SBID,0.D0)
-          CALL OS( 'X=Y     ' , T3,CGRY1B,SBID,0.D0)
-          CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
-          CALL OS( 'X=C     ' , T4, SBID , SBID , 1.D0 )
-          IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','FLUBDF          ',IELMB,
-     &           1.D0,T4,S,S,T2,T3,S,MESH,.TRUE.,MASK1)
-          END IF
-          CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
-!     ---------------------------------
-!     BOUNDARY TERM: INCIDENT POTENTIAL
-!     ---------------------------------
-!       --- CALCUL DE i COS(TETAP) GAMMA         
-         CALL OS( 'X=CY    ' , T1,TETAP,SBID,DEGRAD)
-         CALL OS( 'X=COS(Y)' , T2,T1,SBID,0.D0)
-         CALL OS( 'X=YZ    ' , T3,CPHI1B,T2,0.D0)
-         CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
-         IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','MASVEC          ',IELMB,
-     &           -1.D0,T3,S,S,S,S,S,MESH,.TRUE.,MASK5)
-         END IF
-         CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
+!     --- CALCUL DE GRAD(Gamma).n : REEL
+      CALL OS( 'X=Y     ' , T2,CGRX1B,SBID,0.D0)
+      CALL OS( 'X=Y     ' , T3,CGRY1B,SBID,0.D0)
+      CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
+      CALL OS( 'X=C     ' , T4, SBID , SBID , 1.D0 )
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','FLUBDF          ',IELMB,
+     &       1.D0,T4,S,S,T2,T3,S,MESH,.TRUE.,MASK1)
+      END IF
+      CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
+!     ------------------------------
+!     NDARY TERM: INCIDENT POTENTIAL
+!     ------------------------------
+!     -- CALCUL DE i COS(TETAP) GAMMA         
+      CALL OS( 'X=CY    ' , T1,TETAP,SBID,DEGRAD)
+      CALL OS( 'X=COS(Y)' , T2,T1,SBID,0.D0)
+      CALL OS( 'X=YZ    ' , T3,CPHI1B,T2,0.D0)
+      CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','MASVEC          ',IELMB,
+     &       -1.D0,T3,S,S,S,S,S,MESH,.TRUE.,MASK5)
+      END IF
+      CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
 
-!       --- CALCUL DE GRAD(Gamma).n : REEL
-          CALL OS( 'X=Y     ' , T2,CGRX1B,SBID,0.D0)
-          CALL OS( 'X=Y     ' , T3,CGRY1B,SBID,0.D0)
-          CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
-          CALL OS( 'X=C     ' , T4, SBID , SBID , 1.D0 )
-          IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','FLUBDF          ',IELMB,
-     &           1.D0,T4,S,S,T2,T3,S,MESH,.TRUE.,MASK5)
-          END IF
-          CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
+!     -- CALCUL DE GRAD(Gamma).n : REEL
+      CALL OS( 'X=Y     ' , T2,CGRX1B,SBID,0.D0)
+      CALL OS( 'X=Y     ' , T3,CGRY1B,SBID,0.D0)
+      CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
+      CALL OS( 'X=C     ' , T4, SBID , SBID , 1.D0 )
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','FLUBDF          ',IELMB,
+     &       1.D0,T4,S,S,T2,T3,S,MESH,.TRUE.,MASK5)
+      END IF
+      CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
 
 
 !     ------------------------------
 !     BOUNDARY TERM: FREE EXIT
 !     ------------------------------
-         IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','MASVEC          ',IELMB,
-     &           1.D0,CPHI2B,S,S,S,S,S,MESH,.TRUE.,MASK2)
-            CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
-         END IF
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','MASVEC          ',IELMB,
+     &       1.D0,CPHI2B,S,S,S,S,S,MESH,.TRUE.,MASK2)
+        CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
+      END IF
 !     ------------------------------
 !     BOUNDARY TERM: SOLID BOUNDARY
 !     ------------------------------
-         IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','MASVEC          ',IELMB,
-     &           1.D0,CPHI3B,S,S,S,S,S,MESH,.TRUE.,MASK3)
-            CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
-         END IF
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','MASVEC          ',IELMB,
+     &       1.D0,CPHI3B,S,S,S,S,S,MESH,.TRUE.,MASK3)
+        CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
+      END IF
 !     ------------------------------
 !     BOUNDARY TERM: IMPOSED WAVE
 !     ------------------------------
-         IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','MASVEC          ',IELMB,
-     &           1.D0,CPHI4B,S,S,S,S,S,MESH,.TRUE.,MASK4)
-            CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
-         END IF
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','MASVEC          ',IELMB,
+     &       1.D0,CPHI4B,S,S,S,S,S,MESH,.TRUE.,MASK4)
+        CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
+      END IF
 !
 !CP
-!         IF (NCSIZE.GT.1) THEN
-!           CALL PARCOM(CV1,2,MESH)
-!         ENDIF
+!     IF (NCSIZE.GT.1) THEN
+!       CALL PARCOM(CV1,2,MESH)
+!     ENDIF
 !CP
 !     ---------------------
 !     SECOND MEMBERS : CV2
 !     ---------------------
 !
-         CALL OS( 'X=C     ' , CV2, SBID , SBID , 0.D0 )
+      CALL OS( 'X=C     ' , CV2, SBID , SBID , 0.D0 )
 !     ------------------------------
 !     BOUNDARY TERM: INCIDENT WAVE
 !     ------------------------------
 !     --- CALCUL DE i COS(TETAP) GAMMA : IMAGINAIRE
-         CALL OS( 'X=CY    ' , T1,TETAP,SBID,DEGRAD)
-         CALL OS( 'X=COS(Y)' , T2,T1,SBID,0.D0)
-         CALL OS( 'X=YZ    ' , T3,DPHI1B,T2,0.D0)
-         CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
-         IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','MASVEC          ',IELMB,
-     &           -1.D0,T3,S,S,S,S,S,MESH,.TRUE.,MASK1)
-         END IF
-         CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
-         
-!        --- CALCUL DE GRAD(Gamma).n : IMAGINAIRE
-          CALL OS( 'X=Y     ' , T2,DGRX1B,SBID,0.D0)
-          CALL OS( 'X=Y     ' , T3,DGRY1B,SBID,0.D0)
-          CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
-          CALL OS( 'X=C     ' , T4, SBID , SBID , 1.D0 )
+      CALL OS( 'X=CY    ' , T1,TETAP,SBID,DEGRAD)
+      CALL OS( 'X=COS(Y)' , T2,T1,SBID,0.D0)
+      CALL OS( 'X=YZ    ' , T3,DPHI1B,T2,0.D0)
+      CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','MASVEC          ',IELMB,
+     &       -1.D0,T3,S,S,S,S,S,MESH,.TRUE.,MASK1)
+      END IF
+      CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
+      
+!     --- CALCUL DE GRAD(Gamma).n : IMAGINAIRE
+      CALL OS( 'X=Y     ' , T2,DGRX1B,SBID,0.D0)
+      CALL OS( 'X=Y     ' , T3,DGRY1B,SBID,0.D0)
+      CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
+      CALL OS( 'X=C     ' , T4, SBID , SBID , 1.D0 )
 
-          IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','FLUBDF          ',IELMB,
-     &           1.D0,T4,S,S,T2,T3,S,MESH,.TRUE.,MASK1)
-          END IF
-          CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','FLUBDF          ',IELMB,
+     &       1.D0,T4,S,S,T2,T3,S,MESH,.TRUE.,MASK1)
+      END IF
+      CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
 !     ---------------------------------
 !     BOUNDARY TERM: INCIDENT POTENTIAL
 !     ---------------------------------
 !     --- CALCUL DE i COS(TETAP) GAMMA : IMAGINAIRE
-         CALL OS( 'X=CY    ' , T1,TETAP,SBID,DEGRAD)
-         CALL OS( 'X=COS(Y)' , T2,T1,SBID,0.D0)
-         CALL OS( 'X=YZ    ' , T3,DPHI1B,T2,0.D0)
-         CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
-         IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','MASVEC          ',IELMB,
-     &           -1.D0,T3,S,S,S,S,S,MESH,.TRUE.,MASK5)
-         END IF
-         CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
-         
+      CALL OS( 'X=CY    ' , T1,TETAP,SBID,DEGRAD)
+      CALL OS( 'X=COS(Y)' , T2,T1,SBID,0.D0)
+      CALL OS( 'X=YZ    ' , T3,DPHI1B,T2,0.D0)
+      CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','MASVEC          ',IELMB,
+     &       -1.D0,T3,S,S,S,S,S,MESH,.TRUE.,MASK5)
+      END IF
+      CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
+      
 !     --- CALCUL DE GRAD(Gamma).n : IMAGINAIRE
-          CALL OS( 'X=Y     ' , T2,DGRX1B,SBID,0.D0)
-          CALL OS( 'X=Y     ' , T3,DGRY1B,SBID,0.D0)
-          CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
-          CALL OS( 'X=C     ' , T4, SBID , SBID , 1.D0 )
+      CALL OS( 'X=Y     ' , T2,DGRX1B,SBID,0.D0)
+      CALL OS( 'X=Y     ' , T3,DGRY1B,SBID,0.D0)
+      CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
+      CALL OS( 'X=C     ' , T4, SBID , SBID , 1.D0 )
 
-          IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','FLUBDF          ',IELMB,
-     &           1.D0,T4,S,S,T2,T3,S,MESH,.TRUE.,MASK5)
-          END IF
-          CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','FLUBDF          ',IELMB,
+     &       1.D0,T4,S,S,T2,T3,S,MESH,.TRUE.,MASK5)
+      END IF
+      CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
 !
 !    ------------------------------
 !    BOUNDARY TERM: FREE EXIT
 !    ------------------------------
-         IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','MASVEC          ',IELMB,
-     &           1.D0,DPHI2B,S,S,S,S,S,MESH,.TRUE.,MASK2)
-         END IF
-         CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','MASVEC          ',IELMB,
+     &       1.D0,DPHI2B,S,S,S,S,S,MESH,.TRUE.,MASK2)
+      END IF
+      CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
 !     ------------------------------
 !     BOUNDARY TERM: SOLID BOUNDARY
 !     ------------------------------
-         IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','MASVEC          ',IELMB,
-     &           1.D0,DPHI3B,S,S,S,S,S,MESH,.TRUE.,MASK3)
-            CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
-         END IF
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','MASVEC          ',IELMB,
+     &       1.D0,DPHI3B,S,S,S,S,S,MESH,.TRUE.,MASK3)
+        CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
+      END IF
 !     ------------------------------
 !     BOUNDARY TERM: IMPOSED WAVE
 !     ------------------------------
-         IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','MASVEC          ',IELMB,
-     &           1.D0,DPHI4B,S,S,S,S,S,MESH,.TRUE.,MASK4)
-            CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
-         END IF
+      IF (NPTFR .GT. 0) THEN
+        CALL VECTOR(T1,'=','MASVEC          ',IELMB,
+     &       1.D0,DPHI4B,S,S,S,S,S,MESH,.TRUE.,MASK4)
+        CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
+      END IF
 !CP
-!          IF (NCSIZE.GT.1) THEN
-!           CALL PARCOM(CV2,2,MESH)
-!         ENDIF
+!     IF (NCSIZE.GT.1) THEN
+!       CALL PARCOM(CV2,2,MESH)
+!     ENDIF
 !CP
 !     =========================================
 !                   MATRIX BM
@@ -605,39 +606,39 @@
 !     ----------------------------------------------------------
 !     ADD TERMS TO BM1 FOR THE CURRENT 2*OMEGA.U TERM
 !     ----------------------------------------------------------
-!          ON DESYMETRISE BM1
-           CALL OM( 'M=X(M)  ' , BM1 , BM1 , SBID , CBID , MESH )
+!       ON DESYMETRISE BM1
+        CALL OM( 'M=X(M)  ' , BM1 , BM1 , SBID , CBID , MESH )
 !
-           CALL MATRIX(BM2,'M=N     ','MATVGR          ',IELM ,IELM ,
-     *            2D0*OMEGA , S,S,S,UC,VC,S,
-     *            MESH,MSK,MASKEL)  
+        CALL MATRIX(BM2,'M=N     ','MATVGR          ',IELM ,IELM ,
+     &         2D0*OMEGA , S,S,S,UC,VC,S,
+     &         MESH,MSK,MASKEL)  
 !
-           CALL OM( 'M=M+N   ' , BM1 , BM2 , T1 , CBID , MESH )
+        CALL OM( 'M=M+N   ' , BM1 , BM2 , T1 , CBID , MESH )
 !
 !     ----------------------------------------------------------
 !     ADD TERMS TO THE MATRIX BM1 FOR THE CURRENT : DIV(U) TERM
 !     ----------------------------------------------------------
 !
-           CALL VECTOR(T2 , '=' , 'MASBAS          ' , IELM ,
-     *            1.D0 , S , S , S , S , S , S ,
-     *            MESH , MSK  , MASKEL )
+        CALL VECTOR(T2 , '=' , 'MASBAS          ' , IELM ,
+     &         1.D0 , S , S , S , S , S , S ,
+     &         MESH , MSK  , MASKEL )
 !
-           CALL VECTOR(T13 , '=' , 'GRADF          X' , IELM ,
-     *            1.D0 , UC , S , S , S , S , S ,
-     *            MESH , MSK , MASKEL)
+        CALL VECTOR(T13 , '=' , 'GRADF          X' , IELM ,
+     &         1.D0 , UC , S , S , S , S , S ,
+     &         MESH , MSK , MASKEL)
 !
-           CALL VECTOR(T14 , '=' , 'GRADF          Y' , IELM ,
-     *            1.D0 , VC , S , S , S , S , S ,
-     *            MESH , MSK , MASKEL)
+        CALL VECTOR(T14 , '=' , 'GRADF          Y' , IELM ,
+     &         1.D0 , VC , S , S , S , S , S ,
+     &         MESH , MSK , MASKEL)
 !
-           CALL OS( 'X=Y+Z   ' , X=T15 , Y=T14 , Z=T13 )
-           CALL OS( 'X=Y/Z   ' , X=T16 , Y=T15 , Z=T2 )  
+        CALL OS( 'X=Y+Z   ' , X=T15 , Y=T14 , Z=T13 )
+        CALL OS( 'X=Y/Z   ' , X=T16 , Y=T15 , Z=T2 )  
 !
-           CALL MATRIX(BM2,'M=N     ','FMATMA          ',IELM ,IELM ,
-     *            OMEGA , T16,S,S,S,S,S,
-     *            MESH,MSK,MASKEL)
+        CALL MATRIX(BM2,'M=N     ','FMATMA          ',IELM ,IELM ,
+     &         OMEGA , T16,S,S,S,S,S,
+     &         MESH,MSK,MASKEL)
 !
-           CALL OM( 'M=M+N   ' , BM1 , BM2 , SBID , CBID , MESH )
+        CALL OM( 'M=M+N   ' , BM1 , BM2 , SBID , CBID , MESH )
       ENDIF
 
 
@@ -646,45 +647,45 @@
 !     -------------------------------------------
 !
       IF (NPTFR .GT. 0) THEN
-!        ------------------------------
-!        BOUNDARY TERM: INCIDENT WAVE
-!        ------------------------------
-         CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
-     &        -1.D0,APHI1B,S,S,S,S,S,MESH,.TRUE.,MASK1)
-!         WRITE (*,*)'MBOR = ', MBOR%TYPEXT
-         CALL OM( 'M=M+N   ' , BM1 , MBOR , T1 , CBID , MESH )
+!       ------------------------------
+!       BOUNDARY TERM: INCIDENT WAVE
+!       ------------------------------
+        CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
+     &       -1.D0,APHI1B,S,S,S,S,S,MESH,.TRUE.,MASK1)
+!        WRITE (*,*)'MBOR = ', MBOR%TYPEXT
+        CALL OM( 'M=M+N   ' , BM1 , MBOR , T1 , CBID , MESH )
       END IF
 !        ------------------------------
 !        BOUNDARY TERM: FREE EXIT
 !        ------------------------------
       IF (NPTFR .GT. 0) THEN
-            CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
+        CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
      &           -1.D0,APHI2B,S,S,S,S,S,MESH,.TRUE.,MASK2)
-         CALL OM( 'M=M+N   ' , BM1 , MBOR , T1 , CBID , MESH )
+        CALL OM( 'M=M+N   ' , BM1 , MBOR , T1 , CBID , MESH )
       END IF
 !        ------------------------------
 !        BOUNDARY TERM: SOLID BOUNDARY
 !        ------------------------------
       IF (NPTFR .GT. 0) THEN
-         CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
-     &        -1.D0,APHI3B,S,S,S,S,S,MESH,.TRUE.,MASK3)
-         CALL OM( 'M=M+N   ' , BM1 , MBOR , T1 , CBID , MESH )
+        CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
+     &       -1.D0,APHI3B,S,S,S,S,S,MESH,.TRUE.,MASK3)
+        CALL OM( 'M=M+N   ' , BM1 , MBOR , T1 , CBID , MESH )
       END IF
 !        ------------------------------
 !        BOUNDARY TERM: IMPOSED WAVE
 !        ------------------------------
       IF (NPTFR .GT. 0) THEN
-            CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
-     &           -1.D0,APHI4B,S,S,S,S,S,MESH,.TRUE.,MASK4)
-            CALL OM( 'M=M+N   ' , BM1 , MBOR , T1 , CBID , MESH )
+        CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
+     &       -1.D0,APHI4B,S,S,S,S,S,MESH,.TRUE.,MASK4)
+        CALL OM( 'M=M+N   ' , BM1 , MBOR , T1 , CBID , MESH )
       END IF
 !        ------------------------------
 !        BOUNDARY TERM: INCIDENT POTENTIAL
 !        ------------------------------
       IF (NPTFR .GT. 0) THEN
-         CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
-     &        -1.D0,APHI1B,S,S,S,S,S,MESH,.TRUE.,MASK5)
-         CALL OM( 'M=M+N   ' , BM1 , MBOR , T1 , CBID , MESH )
+        CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
+     &       -1.D0,APHI1B,S,S,S,S,S,MESH,.TRUE.,MASK5)
+        CALL OM( 'M=M+N   ' , BM1 , MBOR , T1 , CBID , MESH )
       END IF
 
 !     ---------
@@ -700,7 +701,7 @@
 !     SI ON N'A PAS DE COURANT OU SI ON NE L'A PAS ENCORE PRIS EN COMPTE
 !
       IF ((.NOT.COURANT).OR.ITERKN.EQ.0) THEN
-       CALL OM( 'M=X(M)  ' , BM1 , BM1 , SBID , CBID , MESH )
+        CALL OM( 'M=X(M)  ' , BM1 , BM1 , SBID , CBID , MESH )
       ENDIF
 
 !
@@ -726,10 +727,10 @@
 !     =======================================
 !
       IF (DEFERL .OR. FROTTE) THEN
-         IF (LNG.EQ.1) WRITE(LU,220) ITERMU+1
-         IF (LNG.EQ.2) WRITE(LU,221) ITERMU+1
- 220     FORMAT(/,1X,'SOUS-ITERATION NUMERO :',1X,I3,/)
- 221     FORMAT(/,1X,'SUB-ITERATION NUMBER :',1X,I3,/)
+        IF (LNG.EQ.1) WRITE(LU,220) ITERMU+1
+        IF (LNG.EQ.2) WRITE(LU,221) ITERMU+1
+ 220    FORMAT(/,1X,'SOUS-ITERATION NUMERO :',1X,I3,/)
+ 221    FORMAT(/,1X,'SUB-ITERATION NUMBER :',1X,I3,/)
       ENDIF
       CALL DIRICH(UNK,MAT,RHS,PHIB,LIDIR%I,TB,MESH,KENT,MSK,MASKEL)
 !
@@ -788,22 +789,22 @@
 !      - AUTO ANGLES  :checks convergence on TETAP
 !     ============================================================
       IF (COURANT.OR.LANGAUTO) THEN  
-!      COMPUTE WAVE INCIDENCE USING SPEED AT THE FREE SURFACE
-!      ------------------------------------------------------
-!
-!      -----------
-       CALL CALDIR()
-!      -----------
-!          --> PHIR,PHII
-!          --  T1,T2,T3,T4
-!         <--  INCI
-!       --- DIRECTION OF VECTOR K : INCI
-       CALL OS( 'X=COS(Y)' , T5,INCI,SBID,0.D0)
-       CALL OS( 'X=SIN(Y)' , T6,INCI,SBID,0.D0)
-!      T5 = K  COS(INCIDENCE)
-       CALL OS( 'X=XY    ' , X=T5 , Y=K)      
-!      T6 = K  SIN(INCIDENCE)
-       CALL OS( 'X=XY    ' , X=T6 , Y=K)      
+!       COMPUTE WAVE INCIDENCE USING SPEED AT THE FREE SURFACE
+!       ------------------------------------------------------
+!       
+!       -----------
+        CALL CALDIR()
+!       -----------
+!           --> PHIR,PHII
+!           --  T1,T2,T3,T4
+!          <--  INCI
+!        --- DIRECTION OF VECTOR K : INCI
+        CALL OS( 'X=COS(Y)' , T5,INCI,SBID,0.D0)
+        CALL OS( 'X=SIN(Y)' , T6,INCI,SBID,0.D0)
+!       T5 = K  COS(INCIDENCE)
+        CALL OS( 'X=XY    ' , X=T5 , Y=K)      
+!       T6 = K  SIN(INCIDENCE)
+        CALL OS( 'X=XY    ' , X=T6 , Y=K)      
 !      ------------------------------------------------------
 !
 !       Error Initialisation 
@@ -812,7 +813,7 @@
 !     --------------------------------------------------
 !     CONVERGENCE CRITERION FOR WAVE-CURRENT INTERACTION
 !     --------------------------------------------------
-       IF (COURANT) THEN
+      IF (COURANT) THEN
 !       MAX ERROR CALCULATION : NORM( Kn - Kn-1 )/NORM(Kn) < EPSDIR
 !       ----------------------
         IF (ITERKN.GT.0) THEN
@@ -825,7 +826,7 @@
           WRITE(LU,*) '-----------------------------------------------'
           WRITE(LU,*) 'WAVE-CURRENT : DIFF. BETWEEN 2 ITER. =',ERREUR1
           WRITE(LU,*) 'LOOP FOR WAVE-CURRENT : TOLERANCE    =',EPSDIR
-         ELSE
+        ELSE
           WRITE(LU,*) 'INITIAL LOOP FOR WAVE-CURRENT COMPLETED'
         ENDIF
         WRITE(LU,*) '-----------------------------------------------'
@@ -833,16 +834,16 @@
 !       -----------------------
         CALL OS( 'X=Y     ' , X=KANCX , Y=T5 ) 
         CALL OS( 'X=Y     ' , X=KANCY , Y=T6 )      
-       ENDIF
+      ENDIF
 !
 !     -----------------------------------------------------
 !     CONVERGENCE CRITERION FOR TETAP AUTOMATIC CALCULATION
 !     -----------------------------------------------------
-       IF (LANGAUTO) THEN
+      IF (LANGAUTO) THEN
 !       STORAGE OF INCIDENCE ANGLE ON THE BOUNDARY IN A TABLE                              
         DO I=1,NPTFR
-         IG       = MESH%NBOR%I(I)           
-         ANGDIR(I)=INCI%R(IG)
+          IG       = MESH%NBOR%I(I)           
+          ANGDIR(I)=INCI%R(IG)
         ENDDO
 !       TETAP COMPUTATION   
         CALL CALTETAP(TETA,MESH%XNEBOR%R,MESH%YNEBOR%R,
@@ -851,51 +852,51 @@
 !       ----------------------
         IF (ITERKN.GT.0) THEN
           DO I=1,NPTFR
-           TETAP%R(I)=TETA(I)
-!          ADD FACTOR 1-R%P EXP(iALFA) ?
-           ERREURT=MAX(ERREURT,
-     &             ABS(COS(TETAP%R(I)*DEGRAD)-COS(TETAPM%R(I)*DEGRAD))
-     &                ) 
-         ENDDO
-         WRITE(LU,*) '-----------------------------------------------'
-         WRITE(LU,*) 'AUTO-ANGLES : DIFF. BETWEEN 2 ITER. =',ERREURT
-         WRITE(LU,*) 'LOOP FOR AUTO-ANGLE  : TOLERANCE    =',EPSTP
+            TETAP%R(I)=TETA(I)
+!           ADD FACTOR 1-R%P EXP(iALFA) ?
+            ERREURT=MAX(ERREURT,
+     &              ABS(COS(TETAP%R(I)*DEGRAD)-COS(TETAPM%R(I)*DEGRAD))
+     &                 ) 
+          ENDDO
+          WRITE(LU,*) '-----------------------------------------------'
+          WRITE(LU,*) 'AUTO-ANGLES : DIFF. BETWEEN 2 ITER. =',ERREURT
+          WRITE(LU,*) 'LOOP FOR AUTO-ANGLE  : TOLERANCE    =',EPSTP
         ELSE
-         DO I=1,NPTFR
-           TETAP%R(I)=TETA(I)
-         ENDDO
-         WRITE(LU,*) ' INITIAL LOOP FOR AUTOMATIC ANGLES COMPLETED '
+          DO I=1,NPTFR
+            TETAP%R(I)=TETA(I)
+          ENDDO
+          WRITE(LU,*) ' INITIAL LOOP FOR AUTOMATIC ANGLES COMPLETED '
         ENDIF
         WRITE(LU,*) '-----------------------------------------------'
 !       OLD TETAP STORAGE : TETAPM
 !       --------------------------
         CALL OS( 'X=Y     ' , X=TETAPM , Y=TETAP ) 
-       ENDIF
+      ENDIF
 !
 !
 !      MAX ERROR FOR N PROC
-       IF (NCSIZE.GT.1) THEN
-         ERREURT = P_DMAX(ERREURT)
-         ERREUR1 = P_DMAX(ERREUR1)
-       END IF
+      IF (NCSIZE.GT.1) THEN
+        ERREURT = P_DMAX(ERREURT)
+        ERREUR1 = P_DMAX(ERREUR1)
+      END IF
 !
 !      ------------------------------------
 !      CHECK CONVERGENCE FOR DIRECTION LOOP
 !      ------------------------------------
-       IF ( (ERREUR1.GT.EPSDIR).OR.(ERREURT.GT.EPSTP) 
-     &                         .OR.(ITERKN.EQ.0)     ) THEN
-!         NEW ITERATION 
-          ITERKN = ITERKN + 1
-          GOTO 98
-       ENDIF
-       IF (LNG.EQ.1) WRITE(LU,202) ITERKN
-       IF (LNG.EQ.2) WRITE(LU,203) ITERKN
-202    FORMAT(/,1X,'NOMBRE DE SOUS-ITERATIONS DIRECTION / COURANT :',
-     *   1X,I3)  
-203    FORMAT(/,1X,'NUMBER OF SUB-ITERATIONS DIRECTION / CURRENT :',
-     *   1X,I3)
-!      REMISE A 1 DU NOMBRE d'ITERATION SUR LE COURRANT ET LA DIRECTION
-       ITERKN=1
+      IF ( (ERREUR1.GT.EPSDIR).OR.(ERREURT.GT.EPSTP) 
+     &                        .OR.(ITERKN.EQ.0)     ) THEN
+!       NEW ITERATION 
+        ITERKN = ITERKN + 1
+        GOTO 98
+      ENDIF
+      IF (LNG.EQ.1) WRITE(LU,202) ITERKN
+      IF (LNG.EQ.2) WRITE(LU,203) ITERKN
+202   FORMAT(/,1X,'NOMBRE DE SOUS-ITERATIONS DIRECTION / COURANT :',
+     &  1X,I3)  
+203   FORMAT(/,1X,'NUMBER OF SUB-ITERATIONS DIRECTION / CURRENT :',
+     &  1X,I3)
+!     REMISE A 1 DU NOMBRE d'ITERATION SUR LE COURRANT ET LA DIRECTION
+      ITERKN=1
 !     =================================================
 !     END OF THE LOOP ON DIRECTIONS AND WAVE NUMBER
 !     =================================================
@@ -910,7 +911,7 @@
 !
 !
       IF (DEFERL .OR. FROTTE) THEN
-         ECRHMU = 0.D0
+        ECRHMU = 0.D0
 !
 !     --------------------------------------------
 !     INITIALISES MU2 AND T3: SET TO 0
@@ -918,314 +919,314 @@
 !     T3: QB FOR THE CURRENT PERIOD
 !     --------------------------------------------
 !
-         CALL OS( 'X=C     ' , MU2 , SBID , SBID , 0.D0 )
-         CALL OS( 'X=C     ' , T3  , SBID , SBID , 0.D0 )
+        CALL OS( 'X=C     ' , MU2 , SBID , SBID , 0.D0 )
+        CALL OS( 'X=C     ' , T3  , SBID , SBID , 0.D0 )
 !
-!        ----------------------------------------------------
-!        COMPUTES THE WAVE HEIGHT HMU CORRESPONDING TO
-!        THE SOLUTION OF THE SYSTEM
+!       ----------------------------------------------------
+!       COMPUTES THE WAVE HEIGHT HMU CORRESPONDING TO
+!       THE SOLUTION OF THE SYSTEM
 !
-         CALL OS( 'X=N(Y,Z)', T1  , PHIR , PHII , CBID )
-         CALL OS( 'X=CY    ', HMU , T1   , SBID , 2.D0*OMEGA/GRAV )
+        CALL OS( 'X=N(Y,Z)', T1  , PHIR , PHII , CBID )
+        CALL OS( 'X=CY    ', HMU , T1   , SBID , 2.D0*OMEGA/GRAV )
 !
-!        --------------
-!        IF BREAKING
-!        --------------
+!       --------------
+!       IF BREAKING
+!       --------------
 !
-         IF (DEFERL) THEN
+        IF (DEFERL) THEN
 !
-!        ------------------------------------------------------
-!        TESTS IF HMU > HM (THERE IS BREAKING) OR NOT,
-!        AND CALCULATES MU2 ACCORDING TO DALLY OR BATTJES & JANSSEN
-!        (IF REGULAR WAVES)
-!        ------------------------------------------------------
+!       ------------------------------------------------------
+!       TESTS IF HMU > HM (THERE IS BREAKING) OR NOT,
+!       AND CALCULATES MU2 ACCORDING TO DALLY OR BATTJES & JANSSEN
+!       (IF REGULAR WAVES)
+!       ------------------------------------------------------
 !
-            IF (.NOT. ALEMON .AND. .NOT. ALEMUL) THEN
-               DO I = 1,NPOIN
-                  HM = 0.88D0/K%R(I)*TANH(GAMMAS*K%R(I)*H%R(I)/0.88D0)
+          IF (.NOT. ALEMON .AND. .NOT. ALEMUL) THEN
+            DO I = 1,NPOIN
+              HM = 0.88D0/K%R(I)*TANH(GAMMAS*K%R(I)*H%R(I)/0.88D0)
 !
 !     HMUE = HMU/SQRT(2)
 !
-                  HMUE = HMU%R(I)/1.4142D0
-                  HEFF=MIN(HMUE,HM)
-                  HEFF=MAX(HEFF,1.D-5)
-                  Q1 = 1.D-10
-                  Q2 = (HEFF/HM)**2
+              HMUE = HMU%R(I)/1.4142D0
+              HEFF=MIN(HMUE,HM)
+              HEFF=MAX(HEFF,1.D-5)
+              Q1 = 1.D-10
+              Q2 = (HEFF/HM)**2
 !     ADDED BY JMH BECAUSE OF THE LOG FUNCTION, LATER ON
-                  Q2 = MAX(Q2,1.D-9)
+              Q2 = MAX(Q2,1.D-9)
 !
 !     ------------
 !     COMPUTES QB
 !     ------------
 !
-                  CALL CALCQB(Q1,Q2,Q3)
+              CALL CALCQB(Q1,Q2,Q3)
 !
 !     ALGORITHM SPECIFIC TO REGULAR WAVES
 !     FOR THE COMPUTATION OF THE RATE OF BREAKING
 !
-                  IF (ITERMU.EQ.0) THEN
-                     IF (Q3.LT.0.19D0) THEN
-                        T3%R(I) = 0.D0
-                     ELSE
-                        T3%R(I) = 1.D0
-                     ENDIF
+              IF (ITERMU.EQ.0) THEN
+                IF (Q3.LT.0.19D0) THEN
+                  T3%R(I) = 0.D0
+                ELSE
+                  T3%R(I) = 1.D0
+                ENDIF
 !
-!                 T3 COMPUTED AT ITERMU = 0
-!                 IS TEMPORARILY STORED IN QB
+!             T3 COMPUTED AT ITERMU = 0
+!             IS TEMPORARILY STORED IN QB
 !
-                     QB%R(I) = T3%R(I)
+                QB%R(I) = T3%R(I)
+              ELSE
+                IF (QB%R(I).EQ.1.D0) THEN
+                  IF (Q3.LT.0.1D0) THEN
+                    T3%R(I) = 0.D0
                   ELSE
-                     IF (QB%R(I).EQ.1.D0) THEN
-                        IF (Q3.LT.0.1D0) THEN
-                           T3%R(I) = 0.D0
-                        ELSE
-                           T3%R(I) = 1.D0
-                        ENDIF
-                     ENDIF
+                    T3%R(I) = 1.D0
                   ENDIF
-               ENDDO
+                ENDIF
+              ENDIF
+            ENDDO
 !
 !
 !           --------------------------------
 !           DALLY AND AL 1985
 !           --------------------------------
 !
-               IF (IBREAK.EQ.2) THEN
-                  DO I = 1,NPOIN
-                    HM = 0.88D0/K%R(I)*TANH(GAMMAS*K%R(I)*H%R(I)/0.88D0)
-                     HEFF=MIN(HMU%R(I),HM)
-                     HEFF=MAX(HEFF,1.D-5)
-                     MU2%R(I)=T3%R(I)*KDALLY*
-     &                    (1.D0-(GDALLY*H%R(I)/HEFF)**2)/H%R(I)
-                  ENDDO
-               ENDIF
+            IF (IBREAK.EQ.2) THEN
+              DO I = 1,NPOIN
+                HM = 0.88D0/K%R(I)*TANH(GAMMAS*K%R(I)*H%R(I)/0.88D0)
+                HEFF=MIN(HMU%R(I),HM)
+                HEFF=MAX(HEFF,1.D-5)
+                MU2%R(I)=T3%R(I)*KDALLY*
+     &               (1.D0-(GDALLY*H%R(I)/HEFF)**2)/H%R(I)
+              ENDDO
+            ENDIF
 !
 !     -------------------------------------
 !     BATTJES & JANSSEN 1978
 !     -------------------------------------
 !
-               IF (IBREAK.EQ.1) THEN
-                  DO I = 1,NPOIN
-                   HM = 0.88D0/K%R(I)*TANH(GAMMAS*K%R(I)*H%R(I)/0.88D0)
-                     HEFF=MIN(HMU%R(I),HM)
-                     HEFF=MAX(HEFF,1.D-5)
-                     MU2%R(I) = T3%R(I)*2.D0*HEFF/(H%R(I)*CG%R(I)*PER)
-                  ENDDO
-               ENDIF
+            IF (IBREAK.EQ.1) THEN
+              DO I = 1,NPOIN
+                HM = 0.88D0/K%R(I)*TANH(GAMMAS*K%R(I)*H%R(I)/0.88D0)
+                HEFF=MIN(HMU%R(I),HM)
+                HEFF=MAX(HEFF,1.D-5)
+                MU2%R(I) = T3%R(I)*2.D0*HEFF/(H%R(I)*CG%R(I)*PER)
+              ENDDO
+            ENDIF
 !
 !     -------------------------------------------------------------
 !     COMPUTES FIRST QB=T3, PROPORTION OF BREAKING OR BROKEN WAVES,
 !     THEN MU2 ACCORDING TO B&J 78 (RANDOM SEAS)
 !     -------------------------------------------------------------
 !
-            ELSE
-               DO I = 1,NPOIN
-                  HM = 0.88D0/K%R(I)*TANH(GAMMAS*K%R(I)*H%R(I)/0.88D0)
+          ELSE
+            DO I = 1,NPOIN
+              HM = 0.88D0/K%R(I)*TANH(GAMMAS*K%R(I)*H%R(I)/0.88D0)
 !
 !     HMUE = HMU/SQRT (2)
 !
-               HMUE = HMU%R(I)/1.4142D0
-               HEFF=MIN(HMUE,HM)
-               HEFF=MAX(HEFF,1.D-5)
-               Q1 = 1.D-10
-               Q2 = (HEFF/HM)**2
+              HMUE = HMU%R(I)/1.4142D0
+              HEFF=MIN(HMUE,HM)
+              HEFF=MAX(HEFF,1.D-5)
+              Q1 = 1.D-10
+              Q2 = (HEFF/HM)**2
 !     ADDED BY JMH BECAUSE OF THE LOG FUNCTION, LATER ON
-               Q2 = MAX(Q2,1.D-9)
+              Q2 = MAX(Q2,1.D-9)
 !
-!              ------------
-!              COMPUTES QB
-!              ------------
+!             ------------
+!             COMPUTES QB
+!             ------------
 !
-               CALL CALCQB(Q1,Q2,Q3)
-               T3%R(I) = Q3
+              CALL CALCQB(Q1,Q2,Q3)
+              T3%R(I) = Q3
 !
-!              -------------------------
-!              COMPUTES MU2
-!              -------------------------
+!             -------------------------
+!             COMPUTES MU2
+!             -------------------------
 !
-               HEFF = MIN((HMU%R(I)/1.4142D0),HM)
-               HEFF=MAX(HEFF,1.D-5)
-               MU2%R(I)=ALFABJ*OMEGA*T3%R(I)*((HM/HEFF)**2)/
-     &                (3.141592653589D0*CG%R(I))
+              HEFF = MIN((HMU%R(I)/1.4142D0),HM)
+              HEFF=MAX(HEFF,1.D-5)
+              MU2%R(I)=ALFABJ*OMEGA*T3%R(I)*((HM/HEFF)**2)/
+     &               (3.141592653589D0*CG%R(I))
             ENDDO
 !
-         END IF
+          ENDIF
 !
-!        ------------------
-!        END 'IF BREAKING'
-!        ------------------
+!       ------------------
+!       END 'IF BREAKING'
+!       ------------------
 !
-         ENDIF
+        ENDIF
 !
-!        --------------------------------
-!        RE-INITIALISES T1 = 0 BECAUSE
-!        T1 REPRESENTS MU_FROTTEMENT IN THE FOLLOWING
-!        --------------------------------
+!       --------------------------------
+!       RE-INITIALISES T1 = 0 BECAUSE
+!       T1 REPRESENTS MU_FROTTEMENT IN THE FOLLOWING
+!       --------------------------------
 !
-         CALL OS( 'X=C     ' , T1 , C , CG , 0.D0 )
+        CALL OS( 'X=C     ' , T1 , C , CG , 0.D0 )
 !
-!        ---------------------
-!        IF BOTTOM FRICTION
-!        ---------------------
+!       ---------------------
+!       IF BOTTOM FRICTION
+!       ---------------------
 !
-         IF (FROTTE) THEN
+        IF (FROTTE) THEN
 !
-!           ------------------------------------------------
-!           IF ENTFW=TRUE, THE FRICTION COEFFICIENT FW
-!           IS THE SAME EVERYWHERE IN THE DOMAIN
-!           ------------------------------------------------
+!         ------------------------------------------------
+!         IF ENTFW=TRUE, THE FRICTION COEFFICIENT FW
+!         IS THE SAME EVERYWHERE IN THE DOMAIN
+!         ------------------------------------------------
 !
-            IF (ENTFW) THEN
-               CALL FWSPEC(FW%R,FWCOEF,MESH%X%R,MESH%Y%R,
-     &                     NPOIN,PRIVE,ZF%R)
-            ELSE
-               DO I = 1,NPOIN
-                  CALL CALCFW
-     &                   (I,H%R,C%R,CG%R,K%R,HMU%R,
-     &                    NPOIN,OMEGA,GRAV,
-     &                    VISCO,DIAM90,DIAM50,MVSED,MVEAU,
-     &                    FORMFR,REGIDO,RICOEF,
-     &                    ENTREG,ENTRUG,FFW)
-                  FW%R(I) = FFW
-               ENDDO
-            ENDIF
+          IF (ENTFW) THEN
+            CALL FWSPEC(FW%R,FWCOEF,MESH%X%R,MESH%Y%R,
+     &                  NPOIN,PRIVE,ZF%R)
+          ELSE
+            DO I = 1,NPOIN
+              CALL CALCFW
+     &               (I,H%R,C%R,CG%R,K%R,HMU%R,
+     &                NPOIN,OMEGA,GRAV,
+     &                VISCO,DIAM90,DIAM50,MVSED,MVEAU,
+     &                FORMFR,REGIDO,RICOEF,
+     &                ENTREG,ENTRUG,FFW)
+              FW%R(I) = FFW
+            ENDDO
+          ENDIF
 !
-!           -----------------------------------------
-!           COMPUTES THE DISSIPATION COEFFICIENT FOR
-!           BOTTOM FRICTION
-!           -----------------------------------------
+!         -----------------------------------------
+!         COMPUTES THE DISSIPATION COEFFICIENT FOR
+!         BOTTOM FRICTION
+!         -----------------------------------------
 !
-            IF (FORMFR .EQ. 1) THEN
+          IF (FORMFR .EQ. 1) THEN
 !
-!           ---------------------------------------------------
-!           COMPUTES AN EFFECTIVE SPEED
-!           UE = 1.2D0*(0.5*((DPHIR/DX)**2 + (DPHIR/DY)**2
-!                         +(DPHII/DX)**2 + (DPHII/DY)**2))**0.5
-!           UE IS STORED IN T4 HERE
-!           ---------------------------------------------------
+!         ---------------------------------------------------
+!         COMPUTES AN EFFECTIVE SPEED
+!         UE = 1.2D0*(0.5*((DPHIR/DX)**2 + (DPHIR/DY)**2
+!                       +(DPHII/DX)**2 + (DPHII/DY)**2))**0.5
+!         UE IS STORED IN T4 HERE
+!         ---------------------------------------------------
 !
-               CALL CALCUE
+            CALL CALCUE
 !
-!              ----------------------------------------
-!              THE DISSIPATION COEFFICIENT MU FOR
-!              FRICTION IS STORED IN T1
-!              ----------------------------------------
+!           ----------------------------------------
+!           THE DISSIPATION COEFFICIENT MU FOR
+!           FRICTION IS STORED IN T1
+!           ----------------------------------------
 !
-               CALL OS( 'X=C     ' , T1 , SBID , SBID , 0.D0 )
+            CALL OS( 'X=C     ' , T1 , SBID , SBID , 0.D0 )
 !
-               DO I = 1,NPOIN
-                  T1%R(I) = (0.5D0*FW%R(I)*T4%R(I))/
-     &                    (H%R(I)*((COSH(K%R(I)*H%R(I)))**2))
-                  T1%R(I) = T1%R(I)/CG%R(I)
-               ENDDO
-            ENDIF
+            DO I = 1,NPOIN
+              T1%R(I) = (0.5D0*FW%R(I)*T4%R(I))/
+     &                (H%R(I)*((COSH(K%R(I)*H%R(I)))**2))
+              T1%R(I) = T1%R(I)/CG%R(I)
+            ENDDO
+          ENDIF
 !
-            IF (FORMFR .EQ. 2) THEN
-               CALL OS( 'X=C     ' , T1 , SBID , SBID , 0.D0 )
-               DO I = 1,NPOIN
-                  T1%R(I) = (2*FW%R(I)*HMU%R(I)*
-     &                    ((OMEGA/SINH(K%R(I)*H%R(I)))**3))
-                  T1%R(I) = T1%R(I)/(3.D0*3.14159D0*GRAV)
-                  T1%R(I) = T1%R(I)/CG%R(I)
-               ENDDO
-            ENDIF
+          IF (FORMFR .EQ. 2) THEN
+            CALL OS( 'X=C     ' , T1 , SBID , SBID , 0.D0 )
+            DO I = 1,NPOIN
+              T1%R(I) = (2*FW%R(I)*HMU%R(I)*
+     &                ((OMEGA/SINH(K%R(I)*H%R(I)))**3))
+              T1%R(I) = T1%R(I)/(3.D0*3.14159D0*GRAV)
+              T1%R(I) = T1%R(I)/CG%R(I)
+            ENDDO
+          ENDIF
 !
-!        -------------------------
-!        END 'IF BOTTOM FRICTION'
-!        -------------------------
+!       -------------------------
+!       END 'IF BOTTOM FRICTION'
+!       -------------------------
 !
-         END IF
+        END IF
 !
-!        -------------------------------------------------------
-!        RELAXATION ON MU2 TO TRY AND AVOID OSCILLATIONS IN THE
-!        CONVERGENCE OF THE SOLVEUR
-!        -------------------------------------------------------
-!
-!
-         MODHMU = 1.D-9
-         DO I = 1,NPOIN
-!
-!           --------------------------
-!           MU = MU_DEFERL + MU_FROTTE
-!           --------------------------
-!
-            MU2%R(I) = MU2%R(I) + T1%R(I)
-!
-!           ----------
-!           RELAXATION
-!           ----------
-!
-            MU2%R(I) = MU%R(I) + RELDIS * (MU2%R(I) - MU%R(I))
-            IF(ITERMU.EQ.0) THEN
-               HMUANC%R(I) = HMU%R(I)
-               ECRHMU = 1.D0
-               MU%R(I) = MU2%R(I)
-            ELSE
-               ECRHMU = MAX(ECRHMU,ABS(HMU%R(I)-HMUANC%R(I)))
-               MODHMU = MAX(MODHMU,ABS(HMU%R(I)))
-               MU%R(I) = MU2%R(I)
-               HMUANC%R(I) = HMU%R(I)
-            ENDIF
-         ENDDO
+!       -------------------------------------------------------
+!       RELAXATION ON MU2 TO TRY AND AVOID OSCILLATIONS IN THE
+!       CONVERGENCE OF THE SOLVEUR
+!       -------------------------------------------------------
 !
 !
-!        RELAXES THE RELAXATION AT EACH SUB-ITERATION
-!        TO FACILITATE CONVERGENCE OF THE ALGORITHM USED TO
-!        COMPUTE DISSIPATION (REGULAR WAVES)
+        MODHMU = 1.D-9
+        DO I = 1,NPOIN
 !
-         IF (.NOT. ALEMON .AND. .NOT. ALEMUL) THEN
-            RELDIS = RELDIS * 0.85D0
-         ENDIF
+!         --------------------------
+!         MU = MU_DEFERL + MU_FROTTE
+!         --------------------------
 !
-         IF (NCSIZE .GT. 1) THEN
-            ECRHMU = P_DMAX(ECRHMU)
-            MODHMU = P_DMAX(MODHMU)
-         END IF
-         IF (LNG.EQ.1) WRITE(LU,*) 'ECART ENTRE DEUX
-     &        SOUS-ITERATIONS (%)',
-     &        100*ECRHMU/MODHMU
-         IF (LNG.EQ.2) WRITE(LU,*) 'DIFF. BETWEEN TWO
-     &        SUB-ITERATIONS (%) ',
-     &        100*ECRHMU/MODHMU
-         ITERMU = ITERMU + 1
+          MU2%R(I) = MU2%R(I) + T1%R(I)
+!
+!         ----------
+!         RELAXATION
+!         ----------
+!
+          MU2%R(I) = MU%R(I) + RELDIS * (MU2%R(I) - MU%R(I))
+          IF(ITERMU.EQ.0) THEN
+            HMUANC%R(I) = HMU%R(I)
+            ECRHMU = 1.D0
+            MU%R(I) = MU2%R(I)
+          ELSE
+            ECRHMU = MAX(ECRHMU,ABS(HMU%R(I)-HMUANC%R(I)))
+            MODHMU = MAX(MODHMU,ABS(HMU%R(I)))
+            MU%R(I) = MU2%R(I)
+            HMUANC%R(I) = HMU%R(I)
+          ENDIF
+        ENDDO
 !
 !
-!        -----------------------------------------------------------
-!        IF NUMBER OF SUB-ITERATIONS FOR MU >= MAX NUMBER OF SUB-ITERATIONS
-!        EXITS THE LOOP OVER MU AND SETS THE RELATIVE DIFFERENCE
-!        ECRHMU/MODHMU TO 10 % OF EPSDIS
-!        -----------------------------------------------------------
+!       RELAXES THE RELAXATION AT EACH SUB-ITERATION
+!       TO FACILITATE CONVERGENCE OF THE ALGORITHM USED TO
+!       COMPUTE DISSIPATION (REGULAR WAVES)
 !
-         IF(ITERMU.GE.NITDIS) THEN
-            IF (LNG.EQ.1) WRITE(LU,100) ITERMU
-            IF (LNG.EQ.2) WRITE(LU,101) ITERMU
- 100        FORMAT(/,1X,'BERKHO (ARTEMIS): NOMBRE DE SOUS-ITERATIONS',
+        IF (.NOT. ALEMON .AND. .NOT. ALEMUL) THEN
+          RELDIS = RELDIS * 0.85D0
+        ENDIF
+!
+        IF (NCSIZE .GT. 1) THEN
+          ECRHMU = P_DMAX(ECRHMU)
+          MODHMU = P_DMAX(MODHMU)
+        END IF
+        IF (LNG.EQ.1) WRITE(LU,*) 'ECART ENTRE DEUX
+     &       SOUS-ITERATIONS (%)',
+     &       100*ECRHMU/MODHMU
+        IF (LNG.EQ.2) WRITE(LU,*) 'DIFF. BETWEEN TWO
+     &       SUB-ITERATIONS (%) ',
+     &       100*ECRHMU/MODHMU
+        ITERMU = ITERMU + 1
+!
+!
+!       -----------------------------------------------------------
+!       IF NUMBER OF SUB-ITERATIONS FOR MU >= MAX NUMBER OF SUB-ITERATIONS
+!       EXITS THE LOOP OVER MU AND SETS THE RELATIVE DIFFERENCE
+!       ECRHMU/MODHMU TO 10 % OF EPSDIS
+!       -----------------------------------------------------------
+!
+        IF(ITERMU.GE.NITDIS) THEN
+          IF (LNG.EQ.1) WRITE(LU,100) ITERMU
+          IF (LNG.EQ.2) WRITE(LU,101) ITERMU
+ 100      FORMAT(/,1X,'BERKHO (ARTEMIS): NOMBRE DE SOUS-ITERATIONS',
      & 1X,'MAXIMUM ATTEINT :',1X,I3)
- 101        FORMAT(/,1X,'BERKHO (ARTEMIS): YOU REACHED THE MAXIMUM',
+ 101      FORMAT(/,1X,'BERKHO (ARTEMIS): YOU REACHED THE MAXIMUM',
      & 1X,'NUMBER OF SUB-ITERATIONS :)',1X,I3)
-            ECRHMU = EPSDIS*MODHMU/10.D0
-         ENDIF
+          ECRHMU = EPSDIS*MODHMU/10.D0
+        ENDIF
 !
-!        ------------------------------------------------
-!        CHECKS CONVERGENCE ON THE DISSIPATION LOOP
-!        ------------------------------------------------
+!       ------------------------------------------------
+!       CHECKS CONVERGENCE ON THE DISSIPATION LOOP
+!       ------------------------------------------------
 !
-         WRITE(LU,*) ' '
-         WRITE(LU,*) '----------------------------------------------- '
-         IF (ECRHMU.GT.EPSDIS*MODHMU) GOTO 98
+        WRITE(LU,*) ' '
+        WRITE(LU,*) '----------------------------------------------- '
+        IF (ECRHMU.GT.EPSDIS*MODHMU) GOTO 98
 !
-         IF (.NOT. ALEMON .AND. .NOT. ALEMUL) THEN
-            CALL OS( 'X=Y     ', QB,T3,SBID,CBID)
-         ELSE
-            CALL OS( 'X=X+Y   ', QB,T3,SBID,CBID)
-         ENDIF
+        IF (.NOT. ALEMON .AND. .NOT. ALEMUL) THEN
+          CALL OS( 'X=Y     ', QB,T3,SBID,CBID)
+        ELSE
+          CALL OS( 'X=X+Y   ', QB,T3,SBID,CBID)
+        ENDIF
 !
-         IF (LNG.EQ.1) WRITE(LU,200) ITERMU
-         IF (LNG.EQ.2) WRITE(LU,201) ITERMU
- 200     FORMAT(/,1X,'NOMBRE DE SOUS-ITERATIONS POUR LA DISSIPATION:',
-     &   1X,I3)
- 201     FORMAT(/,1X,'NUMBER OF SUB-ITERATIONS FOR DISSIPATION:',
-     &   1X,I3)
+        IF (LNG.EQ.1) WRITE(LU,200) ITERMU
+        IF (LNG.EQ.2) WRITE(LU,201) ITERMU
+ 200    FORMAT(/,1X,'NOMBRE DE SOUS-ITERATIONS POUR LA DISSIPATION:',
+     &  1X,I3)
+ 201    FORMAT(/,1X,'NUMBER OF SUB-ITERATIONS FOR DISSIPATION:',
+     &  1X,I3)
 !
 !     ========================================
 !

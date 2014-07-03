@@ -2,7 +2,7 @@
 path: <root>|sources|telemac3d
 module: telemac3d
 liborder: special parallel damocles bief sisyphe tomawac telemac2d telemac3d
-version: v7p0
+version: v6p3
 name: HOMERE_TELEMAC3D
 
 [bief]
@@ -34,13 +34,13 @@ files: declarations_telemac.f
   cpstvc.f
   bief_nbsegel.f
   segbor.f
+  cpikle3.f
+  bief_ininds.f
   lit.f
   readgeo1.f
-  bief_ininds.f
   corrxy.f
   readgeo3.f
   readgeo2.f
-  cpikle3.f
   mxptel31.f
   mxptel.f
   bief_nbfel.f
@@ -54,11 +54,12 @@ files: declarations_telemac.f
   ovd_2.f
   os.f
   bief_close_files.f
-  mult_interface_seg.f
+  streamline.f
   paraco.f
   parcom2.f
   parcom2_seg.f
   parcom.f
+  mult_interface_seg.f
   mv0403.f
   mv0404.f
   mv0304.f
@@ -168,13 +169,13 @@ files: declarations_telemac.f
   mt08pp.f
   mt08aa.f
   mt14pp.f
-  mt15pp.f
   mt13ca.f
   mt11ba.f
   mt13cc.f
   mt13ab.f
   mt13aa.f
   mt06bb.f
+  mt15pp.f
   mt04bb.f
   mt06ft.f
   mt03bb.f
@@ -194,6 +195,8 @@ files: declarations_telemac.f
   vc04tt.f
   vc01tt0.f
   vc01aa.f
+  paracoi8.f
+  parcom2i8.f
   vc13aa.f
   vc08pp.f
   vc04pp.f
@@ -218,7 +221,9 @@ files: declarations_telemac.f
   vc10oo.f
   vc01ft2.f
   vc13bb.f
+  assve1i8.f
   vc05ff.f
+  integer_to_double.f
   vc00ff.f
   vc11tt0.f
   vc13tt.f
@@ -237,13 +242,15 @@ files: declarations_telemac.f
   vc01pp.f
   vc05oo.f
   vc14aa.f
+  mini.f
+  maxi.f
+  double_to_integer.f
   vc03aa.f
   vc15aa.f
   vectos.f
   vector.f
   somme.f
   bief_sum.f
-  streamline.f
   algae_transp.f
   derive.f
   osdbif.f
@@ -352,6 +359,7 @@ files: declarations_telemac.f
   clip.f
   share_3d_fluxes.f
   flux3dlim.f
+  find_in_sel.f
   write_mesh_serafin.f
   write_mesh.f
   bief_valida.f
@@ -363,10 +371,8 @@ files: declarations_telemac.f
   jultim.f
   dmo.f
   tsloc.f
-  find_in_sel.f
   na_flux3d_lim.f
   flux_ef_vf.f
-  flux_ef_vf_2.f
   flux_ef_vf_3d.f
   asseg_3d.f
   gtsh41.f
@@ -444,19 +450,18 @@ files: declarations_telemac.f
   cflp12.f
   cflp11.f
   cflpsi.f
-  maxi.f
   vgfpsi.f
   flux_mask.f
+  flux_ef_vf_2.f
   tvf.f
-  tvf_2.f
   hvf.f
   tracvf.f
+  tvf_2.f
   cflvf.f
   cvtrvf.f
   cvtrvf_pos.f
   cvdftr.f
   diffin.f
-  mini.f
   bief_gammln.f
   bief_gser.f
   bief_gcf.f
@@ -465,11 +470,6 @@ files: declarations_telemac.f
   masktf.f
   global_to_local_point.f
   gregtim.f
-  double_to_integer.f
-  integer_to_double.f
-  assve1i8.f
-  parcom2i8.f
-  paracoi8.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -482,12 +482,12 @@ files: majus.f
   precar.f
   carlu.f
   influ.f
-  dico.f
   loglu.f
   classe.f
+  dico.f
   aidelu.f
-  prev.f
   realu.f
+  prev.f
   damoc.f
   damocle.f
 
@@ -496,12 +496,8 @@ path: <root>|sources|utils|parallel
 files: declarations_parallel.F
   p_init.F
   p_imax.F
+  interface_parallel.f
   p_exit.F
-  p_wait_paraco.F
-  p_iwrit.F
-  p_iread.F
-  p_dsum.F
-  p_dmin.F
   p_mpi_type_get_extent.F
   p_mpi_type_create_struct.F
   p_mpi_type_commit.F
@@ -516,14 +512,16 @@ files: declarations_parallel.F
   p_mpi_type_free.F
   org_charac_type_alg.F
   p_dmax.F
-  p_ireadi.F
-  p_iwriti.F
-  p_ireadi.F
-  p_iwriti.F
+  p_wait_paraco.F
+  p_iwrit.F
+  p_iread.F
+  p_dsum.F
   p_ireadi8.F
   p_iwriti8.F
+  p_dmin.F
+  p_ireadi.F
+  p_iwriti.F
   p_imin.F
-  interface_parallel.f
 
 [sisyphe]
 path: <root>|sources|sisyphe
@@ -643,6 +641,7 @@ files: declarations_sisyphe.f
 path: <root>|sources|utils|special
 files: declarations_special.f
   plante.f
+  check_allocate.f
   extens.f
 
 [telemac2d]
@@ -729,25 +728,20 @@ files: declarations_telemac3d.f
   dessed.f
   plane_bottom.f
   murd3d.f
-  upwindebe.f
-  upwindseg.f
-  upwind.f
+  set_dif.f
+  sed_fall.f
   diff3d.f
   murd3d_pos.f
   cvdf3d.f
-  gestdp.f
-  actuzf.f
-  tassec.f
-  bissel.f
-  coef.f
-  tassem.f
   fonvas.f
-  calcg.f
-  wcturb.f
-  mesh_prop.f
+  mudstress3d.f
   limi3d.f
   numliq_3d.f
   soukom.f
+  calcg.f
+  wcturb.f
+  wchind.f
+  soulsbyfloc3d.f
   vitchu.f
   thomps_bc.f
   trisou.f
@@ -757,6 +751,9 @@ files: declarations_telemac3d.f
   tridw3.f
   flux3d.f
   bypass_crushed_points_ebe.f
+  upwindebe.f
+  upwindseg.f
+  upwind.f
   bypass_crushed_points_seg.f
   diag_murd.f
   wstar.f
@@ -781,7 +778,6 @@ files: declarations_telemac3d.f
   sources_sinks.f
   erodc.f
   erodnc.f
-  erode.f
   flused.f
   clsedi.f
   mittit.f
@@ -789,7 +785,6 @@ files: declarations_telemac3d.f
   soukep.f
   phstat.f
   preres_telemac3d.f
-  suised.f
   correction_depth_3d.f
   kepcl3.f
   longml.f
@@ -799,9 +794,11 @@ files: declarations_telemac3d.f
   visclm.f
   extmsk.f
   lichek.f
+  mesh_prop.f
   drsurr.f
   ifab3dt.f
   source_trac.f
+  oil_spill_3d.f
   condim.f
   sed3d.f
   mass3d.f
@@ -809,12 +806,6 @@ files: declarations_telemac3d.f
   condis.f
   telemac3d.f
   homere_telemac3d.f
-  mudstress3d.f
-  wchind.f
-  soulsbyfloc3d.f
-  set_dif.f
-  sed_fall.f
-
 
 [tomawac]
 path: <root>|sources|tomawac

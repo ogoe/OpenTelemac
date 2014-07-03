@@ -159,49 +159,49 @@
 ! 
         DO IFF=1,NF 
 ! 
-!        COMPUTES THE ADVECTION FIELD 
-!
-         CALL CONWAC
+!         COMPUTES THE ADVECTION FIELD 
+!         
+          CALL CONWAC
      &( CX%R  , CY%R  , CT%R , XK    , CG    , COSF  , TGF   , DEPTH ,
      &  DZX   , DZY   , FREQ , COSTET, SINTET, NPOIN2, NPLAN , IFF  ,
      &  NF    , PROINF, SPHE , PROMIN, TRA01) 
 ! 
-!        MODIFIESS THE ADVECTION FIELD WITH DIFFRACTION 
-!
-         CALL DIFFRAC 
+!         MODIFIESS THE ADVECTION FIELD WITH DIFFRACTION 
+!         
+          CALL DIFFRAC 
      &  (CX%R,CY%R,CT%R,XK,CG,DEPTH,DZX,DZY,FREQ,COSTET,SINTET, 
      &   NPOIN2,NPLAN,IFF,NF,PROINF,SPHE,A,DFREQ, 
      &   F,CCG,DIV,DELTA,DDX,DDY,EPS,NBOR,NPTFR,XKONPT, 
      &   RK,RX,RY,RXX,RYY,NEIGB,NB_CLOSE,DIFFRA,MAXNSP,FLTDIF,OPTDER)  
 !
-      DO IEL=1,NELEM2
-        I1=IKLE2(IEL,1)
-        I2=IKLE2(IEL,2)
-        I3=IKLE2(IEL,3)
-        IF(DEPTH(I1).LT.PROMIN.AND.DEPTH(I2).LT.PROMIN.AND.
-     &     IFABOR(IEL,1).GT.0) IFABOR(IEL,1)=-1
-        IF(DEPTH(I2).LT.PROMIN.AND.DEPTH(I3).LT.PROMIN.AND.
-     &     IFABOR(IEL,2).GT.0) IFABOR(IEL,2)=-1
-        IF(DEPTH(I3).LT.PROMIN.AND.DEPTH(I1).LT.PROMIN.AND.
-     &     IFABOR(IEL,3).GT.0) IFABOR(IEL,3)=-1
-      ENDDO
-!
-      WRITE(LU,*) 'FREQUENCE :',IFF
-!
-      CALL CHARAC(SHZ%ADR(IFF)%P,SHZ%ADR(IFF)%P,0,
-     &            CX,CY,CT,CT,TETA,TETA,DT,MESH3D%IFABOR,IELM3,
-     &            NPOIN2,NPLAN,1,1,.FALSE.,BID,SHP%ADR(IFF)%P,
-     &            SHZ%ADR(IFF)%P,SHZ%ADR(IFF)%P,TB,
-     &            ELT(1,IFF),ETA(1,IFF),ETA(1,IFF),ITR01,
-     &            ISUB(1,IFF),ITR01(1,2),MESH3D,NELEM2,NELEM2,
-     &            SIKLE2,
-     &            MESH%SURDET,BID,BID,SLVBID,0.D0,.FALSE.,3,BID,1,
-!                 A POSTERIORI INTERPOLATION
-     &            .TRUE.,
-!                 AND PERIODICITY 
-     &            .TRUE.) 
+          DO IEL=1,NELEM2
+            I1=IKLE2(IEL,1)
+            I2=IKLE2(IEL,2)
+            I3=IKLE2(IEL,3)
+            IF(DEPTH(I1).LT.PROMIN.AND.DEPTH(I2).LT.PROMIN.AND.
+     &         IFABOR(IEL,1).GT.0) IFABOR(IEL,1)=-1
+            IF(DEPTH(I2).LT.PROMIN.AND.DEPTH(I3).LT.PROMIN.AND.
+     &         IFABOR(IEL,2).GT.0) IFABOR(IEL,2)=-1
+            IF(DEPTH(I3).LT.PROMIN.AND.DEPTH(I1).LT.PROMIN.AND.
+     &         IFABOR(IEL,3).GT.0) IFABOR(IEL,3)=-1
+          ENDDO
+!         
+          WRITE(LU,*) 'FREQUENCE :',IFF
+!         
+          CALL CHARAC(SHZ%ADR(IFF)%P,SHZ%ADR(IFF)%P,0,
+     &                CX,CY,CT,CT,TETA,TETA,DT,MESH3D%IFABOR,IELM3,
+     &                NPOIN2,NPLAN,1,1,.FALSE.,BID,SHP%ADR(IFF)%P,
+     &                SHZ%ADR(IFF)%P,SHZ%ADR(IFF)%P,TB,
+     &                ELT(1,IFF),ETA(1,IFF),ETA(1,IFF),ITR01,
+     &                ISUB(1,IFF),ITR01(1,2),MESH3D,NELEM2,NELEM2,
+     &                SIKLE2,
+     &                MESH%SURDET,BID,BID,SLVBID,0.D0,.FALSE.,3,BID,1,
+!                     A POSTERIORI INTERPOLATION
+     &                .TRUE.,
+!                     AND PERIODICITY 
+     &                .TRUE.) 
 ! 
-       ENDDO !  IFF
+        ENDDO !  IFF
 ! 
       ELSE 
 ! 
@@ -209,26 +209,26 @@
 !     
 !   IN A RELATIVE REFERENCE SYSTEM => ADVECTION IN 4D 
 !   IT IS NO LONGER POSSIBLE TO SEPARATE THE FREQUENCIES OUT 
-           IF(LNG.EQ.1) THEN 
-             WRITE(LU,*) '' 
-             WRITE(LU,*) '***************************************' 
-             WRITE(LU,*) ' ATTENTION : LA DIFFRACTION N''EST PAS ' 
-             WRITE(LU,*) ' PRISE EN COMPTE EN PRESENCE D''UN     ' 
-             WRITE(LU,*) ' COURANT OU D''UNE HAUTEUR D''EAU      ' 
-             WRITE(LU,*) ' VARIABLE                              ' 
-             WRITE(LU,*) '***************************************' 
-           ELSE 
-             WRITE(LU,*) '' 
-             WRITE(LU,*) '***************************************' 
-             WRITE(LU,*) ' ATTENTION : DIFFRACTION IS NOT TAKEN  ' 
-             WRITE(LU,*) ' INTO ACCOUNT IF CURRENTS OF VARYING   ' 
-             WRITE(LU,*) ' WATER LEVELS ARE CONSIDERED           ' 
-             WRITE(LU,*) '***************************************' 
-           ENDIF 
-           CALL PLANTE(1) 
-           STOP 
+        IF(LNG.EQ.1) THEN 
+          WRITE(LU,*) '' 
+          WRITE(LU,*) '***************************************' 
+          WRITE(LU,*) ' ATTENTION : LA DIFFRACTION N''EST PAS ' 
+          WRITE(LU,*) ' PRISE EN COMPTE EN PRESENCE D''UN     ' 
+          WRITE(LU,*) ' COURANT OU D''UNE HAUTEUR D''EAU      ' 
+          WRITE(LU,*) ' VARIABLE                              ' 
+          WRITE(LU,*) '***************************************' 
+        ELSE 
+          WRITE(LU,*) '' 
+          WRITE(LU,*) '***************************************' 
+          WRITE(LU,*) ' ATTENTION : DIFFRACTION IS NOT TAKEN  ' 
+          WRITE(LU,*) ' INTO ACCOUNT IF CURRENTS OF VARYING   ' 
+          WRITE(LU,*) ' WATER LEVELS ARE CONSIDERED           ' 
+          WRITE(LU,*) '***************************************' 
+        ENDIF 
+        CALL PLANTE(1) 
+        STOP 
 ! 
-       ENDIF 
+      ENDIF 
 ! 
 !---------------------------------------------------------------------- 
 ! 

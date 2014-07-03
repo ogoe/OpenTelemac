@@ -63,9 +63,9 @@
 !  USING A POLYNOMIAL FUNCTION (HUNT METHOD - 9TH ORDER)
 !
       DO I=1,NPOIN
-       IF ( (TW(I) .GT. 0.D0).AND.(HW(I).GT.0.D0) ) THEN
-         Y = DPI2 / GRAV * H(I) / (TW(I) * TW(I))
-         POL = 1.D0 + Y * ( 0.66667D0 +
+        IF ( (TW(I) .GT. 0.D0).AND.(HW(I).GT.0.D0) ) THEN
+          Y = DPI2 / GRAV * H(I) / (TW(I) * TW(I))
+          POL = 1.D0 + Y * ( 0.66667D0 +
      &                Y * ( 0.35550D0 +
      &                Y * ( 0.16084D0 +
      &                Y * ( 0.06320D0 +
@@ -74,16 +74,16 @@
      &                Y * ( 0.00171D0 +
      &                Y * ( 0.00039D0 +
      &                Y * ( 0.00011D0 ) ))))))))
-         X = SQRT( Y*Y + Y / POL )
+          X = SQRT( Y*Y + Y / POL )
 !
-         IF ( X .GT. 10.D0) THEN
+          IF ( X .GT. 10.D0) THEN
             UW(I) = 0.D0
-         ELSE
+          ELSE
             UW(I) = PI / TW(I) * HW(I) / (SINH(X))
-         ENDIF
-       ELSE
-         UW(I) = 0.D0
-       ENDIF
+          ENDIF
+        ELSE
+          UW(I) = 0.D0
+        ENDIF
       ENDDO
       RETURN
       END SUBROUTINE CALCUW

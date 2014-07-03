@@ -173,59 +173,59 @@
       IF (LUIGN) GO TO 1300
 !
       IF (DEFLU .LT. ITAI) THEN
-         ERREUR = .TRUE.
-         IF(LNG.EQ.1) THEN
-           WRITE(LU,*)'POUR LE MOT CLE : ',PARAM(1:LONGU)
-           WRITE(LU,*)'PAS ASSEZ DE VALEURS DEFINIES POUR SUBMIT...'
-         ELSEIF(LNG.EQ.2) THEN
-           WRITE(LU,*)'FOR THE KEY-WORD : ', PARAM(1:LONGU)
-           WRITE(LU,*)'NOT ENOUGH DATAS DEFINED FOR SUBMIT...'
-         ENDIF
-         WRITE(LU,*)' '
-         GO TO 1300
+        ERREUR = .TRUE.
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*)'POUR LE MOT CLE : ',PARAM(1:LONGU)
+          WRITE(LU,*)'PAS ASSEZ DE VALEURS DEFINIES POUR SUBMIT...'
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*)'FOR THE KEY-WORD : ', PARAM(1:LONGU)
+          WRITE(LU,*)'NOT ENOUGH DATAS DEFINED FOR SUBMIT...'
+        ENDIF
+        WRITE(LU,*)' '
+        GO TO 1300
       ENDIF
 !
 !  EXAMINES THE SUBMIT FIELDS
 !
       DO I = 1 , DEFLU
- 200     ICOLA = 0
-         ANALYS = DEFATT(I)
+ 200    ICOLA = 0
+        ANALYS = DEFATT(I)
 !
 !   *** FIELD 1 ***
 !
-         LGA = MAX(LONGLU(ANALYS),1)
-         IF (ANALYS(ICOLA+1:ICOLA+1).EQ.';') THEN
-           LCAR = 0
-         ELSE
-           JCOLA = PRECAR(ICOLA+1,ANALYS,';',';',';')
-           LCAR = LONGLU(ANALYS(ICOLA+1:JCOLA-1))
-           IF (LCAR.GT.0) THEN
-             FIELD0 = CARLU(LCAR,ICOLA,ANALYS,GUILLT,MOTCLE,SIZE,MOTIGN,
-     &                      LONIGN,NMAXR,NFICDA,LEN(FIELD0))
-             LCAR = LONGLU(FIELD0(1:LCAR))
+        LGA = MAX(LONGLU(ANALYS),1)
+        IF (ANALYS(ICOLA+1:ICOLA+1).EQ.';') THEN
+          LCAR = 0
+        ELSE
+          JCOLA = PRECAR(ICOLA+1,ANALYS,';',';',';')
+          LCAR = LONGLU(ANALYS(ICOLA+1:JCOLA-1))
+          IF (LCAR.GT.0) THEN
+            FIELD0 = CARLU(LCAR,ICOLA,ANALYS,GUILLT,MOTCLE,SIZE,MOTIGN,
+     &                     LONIGN,NMAXR,NFICDA,LEN(FIELD0))
+            LCAR = LONGLU(FIELD0(1:LCAR))
           ENDIF
-         ENDIF
-         IF (LCAR.LE.0) THEN
-           IF (LNG.EQ.1) THEN
-              WRITE(LU,*)'POUR LE MOT CLE : ',PARAM(1:LONGU)
-              WRITE(LU,*)'SUBMIT INCORRECT : ',ANALYS(1:LGA)
-              WRITE(LU,*)'PAS DE PREMIER CHAMP !!'
-           ELSEIF (LNG.EQ.2) THEN
-              WRITE(LU,*)'FOR THE KEY-WORD : ', PARAM(1:LONGU)
-              WRITE(LU,*)'INVALID SUBMIT : ',ANALYS(1:LGA)
-              WRITE(LU,*)'NO FIRST FIELD !!'
-           ENDIF
-           ERREUR = .TRUE.
-           GO TO 1300
-         ENDIF
-         IF (ERREUR) GO TO 1300
-         FIELD = FIELD0
-         CALL MAJUS(FIELD)
+        ENDIF
+        IF (LCAR.LE.0) THEN
+          IF (LNG.EQ.1) THEN
+            WRITE(LU,*)'POUR LE MOT CLE : ',PARAM(1:LONGU)
+            WRITE(LU,*)'SUBMIT INCORRECT : ',ANALYS(1:LGA)
+            WRITE(LU,*)'PAS DE PREMIER CHAMP !!'
+          ELSEIF (LNG.EQ.2) THEN
+            WRITE(LU,*)'FOR THE KEY-WORD : ', PARAM(1:LONGU)
+            WRITE(LU,*)'INVALID SUBMIT : ',ANALYS(1:LGA)
+            WRITE(LU,*)'NO FIRST FIELD !!'
+          ENDIF
+          ERREUR = .TRUE.
+          GO TO 1300
+        ENDIF
+        IF (ERREUR) GO TO 1300
+        FIELD = FIELD0
+        CALL MAJUS(FIELD)
 !
-         CHAMP(1)=100
-         DO II=1,NBCHP1
-         IF (LCAR.EQ.LGMOTG(II).AND.
-     &       FIELD(1:MIN(LCAR,10)).EQ.MOTCH1(II)(1:MIN(LCAR,10))) THEN
+        CHAMP(1)=100
+        DO II=1,NBCHP1
+          IF (LCAR.EQ.LGMOTG(II).AND.
+     &        FIELD(1:MIN(LCAR,10)).EQ.MOTCH1(II)(1:MIN(LCAR,10))) THEN
             IF (GESTD.AND.GECHP1(II).EQ.1) THEN
               DEFATT(I) = 'NUL;FOR'//DEFATT(I)(JCOLA+4:MAX(LGA,JCOLA+4))
               GO TO 200
@@ -234,70 +234,70 @@
               CHAMP(1)=II
               GOTO 400
             ENDIF
-         ENDIF
-         ENDDO ! II
+          ENDIF
+        ENDDO ! II
 !
 !   *** FIELD 2 ***
 !
-400      ICOLA = JCOLA
-         IF (ICOLA.GE.LONGLI) THEN
-           LCAR = 0
-         ELSEIF (ANALYS(ICOLA+1:ICOLA+1).EQ.';') THEN
-           LCAR = 0
-         ELSE
-           JCOLA = PRECAR(ICOLA+1,ANALYS,';',';',';')
-           LCAR = LONGLU(ANALYS(ICOLA+1:JCOLA-1))
-           IF (LCAR.GT.0) THEN
-             FIELD0 = CARLU(LCAR,ICOLA,ANALYS,GUILLT,MOTCLE,SIZE,MOTIGN,
-     &                      LONIGN,NMAXR,NFICDA,LEN(FIELD0))
-             LCAR = LONGLU(FIELD0(1:LCAR))
-           ENDIF
-         ENDIF
-         IF (LCAR.LE.0) THEN
-           IF (LNG.EQ.1) THEN
-              WRITE(LU,*)'POUR LE MOT CLE : ',PARAM(1:LONGU)
-              WRITE(LU,*)'SUBMIT INCORRECT : ',ANALYS(1:LGA)
-              WRITE(LU,*)'PAS DE DEUXIEME CHAMP !!'
-           ELSEIF (LNG.EQ.2) THEN
-              WRITE(LU,*)'FOR THE KEY-WORD : ', PARAM(1:LONGU)
-              WRITE(LU,*)'INVALID SUBMIT : ',ANALYS(1:LGA)
-              WRITE(LU,*)'NO SECOND FIELD !! '
-           ENDIF
-           ERREUR = .TRUE.
-           GO TO 1300
-         ENDIF
+400     ICOLA = JCOLA
+        IF (ICOLA.GE.LONGLI) THEN
+          LCAR = 0
+        ELSEIF (ANALYS(ICOLA+1:ICOLA+1).EQ.';') THEN
+          LCAR = 0
+        ELSE
+          JCOLA = PRECAR(ICOLA+1,ANALYS,';',';',';')
+          LCAR = LONGLU(ANALYS(ICOLA+1:JCOLA-1))
+          IF (LCAR.GT.0) THEN
+            FIELD0 = CARLU(LCAR,ICOLA,ANALYS,GUILLT,MOTCLE,SIZE,MOTIGN,
+     &                     LONIGN,NMAXR,NFICDA,LEN(FIELD0))
+            LCAR = LONGLU(FIELD0(1:LCAR))
+          ENDIF
+        ENDIF
+        IF (LCAR.LE.0) THEN
+          IF (LNG.EQ.1) THEN
+            WRITE(LU,*)'POUR LE MOT CLE : ',PARAM(1:LONGU)
+            WRITE(LU,*)'SUBMIT INCORRECT : ',ANALYS(1:LGA)
+            WRITE(LU,*)'PAS DE DEUXIEME CHAMP !!'
+          ELSEIF (LNG.EQ.2) THEN
+            WRITE(LU,*)'FOR THE KEY-WORD : ', PARAM(1:LONGU)
+            WRITE(LU,*)'INVALID SUBMIT : ',ANALYS(1:LGA)
+            WRITE(LU,*)'NO SECOND FIELD !! '
+          ENDIF
+          ERREUR = .TRUE.
+          GO TO 1300
+        ENDIF
 !
-         IF (ERREUR) GO TO 1300
-         FIELD = FIELD0
-         CALL MAJUS(FIELD)
+        IF (ERREUR) GO TO 1300
+        FIELD = FIELD0
+        CALL MAJUS(FIELD)
 !
 !  NOTE JMH 13/11/2001 : SUPPRESSION OF AN OBSOLETE CONTROL
 !  THE 2ND SUBMIT FIELD CAN BE DIFFERENT FROM FOR...
 !  (CASE OF SUBIEF)
 !
-         IF (FIELD(1:3).EQ.'OPT') THEN
-            CHAMP(2) = 1
-         ELSEIF (FIELD(1:3).EQ.'REQ') THEN
-            CHAMP(2) = 2
-!        ELSEIF (FIELD(1:3).EQ.'FOR') THEN
-         ELSE
-            CHAMP(2) = 3
-!        ELSE
-!           ERREUR = .TRUE.
-!           IF (LNG.EQ.1) THEN
-!             WRITE(LU,*)'POUR LE MOT CLE : ',PARAM(1:LONGU)
-!             WRITE(LU,*)'SUBMIT INCORRECT : ',ANALYS(1:LGA)
-!             WRITE(LU,*)'DEUXIEME CHAMP INCONNU : ',FIELD0(1:LCAR)
-!           ELSEIF (LNG.EQ.2) THEN
-!             WRITE(LU,*)'FOR THE KEY-WORD : ', PARAM(1:LONGU)
-!             WRITE(LU,*)'INVALID SUBMIT : ',ANALYS(1:LGA)
-!             WRITE(LU,*)'SECOND FIELD UNKNOWN : ',FIELD0(1:LCAR)
-!           ENDIF
-!           GO TO 1300
-         ENDIF
+        IF (FIELD(1:3).EQ.'OPT') THEN
+          CHAMP(2) = 1
+        ELSEIF (FIELD(1:3).EQ.'REQ') THEN
+          CHAMP(2) = 2
+!       ELSEIF (FIELD(1:3).EQ.'FOR') THEN
+        ELSE
+          CHAMP(2) = 3
+!       ELSE
+!         ERREUR = .TRUE.
+!         IF (LNG.EQ.1) THEN
+!           WRITE(LU,*)'POUR LE MOT CLE : ',PARAM(1:LONGU)
+!           WRITE(LU,*)'SUBMIT INCORRECT : ',ANALYS(1:LGA)
+!           WRITE(LU,*)'DEUXIEME CHAMP INCONNU : ',FIELD0(1:LCAR)
+!         ELSEIF (LNG.EQ.2) THEN
+!           WRITE(LU,*)'FOR THE KEY-WORD : ', PARAM(1:LONGU)
+!           WRITE(LU,*)'INVALID SUBMIT : ',ANALYS(1:LGA)
+!           WRITE(LU,*)'SECOND FIELD UNKNOWN : ',FIELD0(1:LCAR)
+!         ENDIF
+!         GO TO 1300
+        ENDIF
 !
 ! ASSIGNS THE INITIAL VALUE TO TROUVE ACCORDING TO CHAMP(1)
-         IF (ITAI.LE.1.AND.I.LE.MAX(ITAI,1)) THEN
+        IF (ITAI.LE.1.AND.I.LE.MAX(ITAI,1)) THEN
           IF (CHAMP(2) .EQ. 1) TROUVE(NTYP,INDX)=3
           IF (CHAMP(2) .EQ. 3) TROUVE(NTYP,INDX)=6
 !         IF (CHAMP(1) .EQ. 3) TROUVE(NTYP,INDX)=10
@@ -312,17 +312,17 @@
 !
         ICOLA = JCOLA
         IF (JCOLA.GE.LONGLI) THEN
-           IF (LNG.EQ.1) THEN
-              WRITE(LU,*)'POUR LE MOT CLE : ',PARAM(1:LONGU)
-              WRITE(LU,*)'SUBMIT INCORRECT : ',ANALYS(1:LGA)
-              WRITE(LU,*)'PAS DE TROISIEME CHAMP !!'
-           ELSEIF (LNG.EQ.2) THEN
-              WRITE(LU,*)'FOR THE KEY-WORD : ', PARAM(1:LONGU)
-              WRITE(LU,*)'INVALID SUBMIT : ',ANALYS(1:LGA)
-              WRITE(LU,*)'NO THIRD FIELD !! '
-           ENDIF
-           ERREUR = .TRUE.
-           GO TO 1300
+          IF (LNG.EQ.1) THEN
+            WRITE(LU,*)'POUR LE MOT CLE : ',PARAM(1:LONGU)
+            WRITE(LU,*)'SUBMIT INCORRECT : ',ANALYS(1:LGA)
+            WRITE(LU,*)'PAS DE TROISIEME CHAMP !!'
+          ELSEIF (LNG.EQ.2) THEN
+            WRITE(LU,*)'FOR THE KEY-WORD : ', PARAM(1:LONGU)
+            WRITE(LU,*)'INVALID SUBMIT : ',ANALYS(1:LGA)
+            WRITE(LU,*)'NO THIRD FIELD !! '
+          ENDIF
+          ERREUR = .TRUE.
+          GO TO 1300
         ENDIF
         JCOLA = PRECAR(ICOLA+1,ANALYS,';',';',';')
 !
@@ -338,18 +338,18 @@
            LCAR = LONGLU(ANALYS(ICOLA+1:JCOLA-1))
         ENDIF
         IF (LCAR.LE.0) THEN
-             IF (LNG.EQ.1) THEN
-              WRITE(LU,*)'POUR LE MOT CLE : ',PARAM(1:LONGU)
-              WRITE(LU,*)'SUBMIT INCORRECT : ',ANALYS(1:LGA)
-            ELSEIF (LNG.EQ.2) THEN
-              WRITE(LU,*)'FOR THE KEY-WORD : ', PARAM(1:LONGU)
-              WRITE(LU,*)'INVALID SUBMIT : ',ANALYS(1:LGA)
-            ENDIF
-            ERREUR = .TRUE.
+          IF (LNG.EQ.1) THEN
+            WRITE(LU,*)'POUR LE MOT CLE : ',PARAM(1:LONGU)
+            WRITE(LU,*)'SUBMIT INCORRECT : ',ANALYS(1:LGA)
+          ELSEIF (LNG.EQ.2) THEN
+            WRITE(LU,*)'FOR THE KEY-WORD : ', PARAM(1:LONGU)
+            WRITE(LU,*)'INVALID SUBMIT : ',ANALYS(1:LGA)
+          ENDIF
+          ERREUR = .TRUE.
 !
 ! WRITES THE CORRESPONDING ERROR MESSAGE
-            WRITE(LU,*) MESERR(2*(CHAMP(1)-1)+LNG)
-            GO TO 1300
+          WRITE(LU,*) MESERR(2*(CHAMP(1)-1)+LNG)
+          GO TO 1300
         ENDIF
       ENDDO ! I 
 !

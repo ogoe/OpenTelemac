@@ -113,11 +113,11 @@
       SUMME = AVAIL(J,1,1)
       D90 = 0.D0
       DO I=2,NSICLA
-         SUMME = AVAIL(J,1,I) + SUMME
-         IF(SUMME.GE.0.9D0.AND.D90.EQ.0.D0) THEN
-            D90 = (0.9D0 - (SUMME-AVAIL(J,1,I)))/AVAIL(J,1,I)*
-     &           (FDM(I)-FDM(I-1)) + FDM(I-1)
-         ENDIF
+        SUMME = AVAIL(J,1,I) + SUMME
+        IF(SUMME.GE.0.9D0.AND.D90.EQ.0.D0) THEN
+          D90 = (0.9D0 - (SUMME-AVAIL(J,1,I)))/AVAIL(J,1,I)*
+     &         (FDM(I)-FDM(I-1)) + FDM(I-1)
+        ENDIF
       ENDDO
             
       D = D50
@@ -177,9 +177,9 @@
 !-----------------------------------------------------------------------
 !
       IF(TAUB.LT.TAUC) THEN
-         CVSP_ALT = 0.D0
+        CVSP_ALT = 0.D0
       ELSE
-         CVSP_ALT = 0.3D0*(DSTAR**0.7D0)*((TAUB-TAUC)/TAUC)**0.5*D50
+        CVSP_ALT = 0.3D0*(DSTAR**0.7D0)*((TAUB-TAUC)/TAUC)**0.5*D50
       ENDIF
 !      
       A3 = CVSP_ALT

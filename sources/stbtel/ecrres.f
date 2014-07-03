@@ -87,12 +87,12 @@
       REWIND NGEO
       CALL LIT(XBID,W ,IBID,CBID,72,'CH',NGEO,STD,ISTAT)
       CALL LIT(XBID,W ,IB  ,CBID, 2,'I ',NGEO,STD,ISTAT)
-      DO  5 I=1,NVARIN
-         CALL LIT(XBID,W ,IBID,NOMVAR,32,'CH',NGEO,STD,ISTAT)
- 5    CONTINUE
+      DO  I=1,NVARIN
+        CALL LIT(XBID,W ,IBID,NOMVAR,32,'CH',NGEO,STD,ISTAT)
+      ENDDO ! I
       CALL LIT(XBID,W ,IB  ,CBID,10,'I ',NGEO,STD,ISTAT)
       IF (IB(10).EQ.1) THEN
-       CALL LIT(XBID,W ,IB  ,CBID, 6,'I ',NGEO,STD,ISTAT)
+        CALL LIT(XBID,W ,IB  ,CBID, 6,'I ',NGEO,STD,ISTAT)
       ENDIF
       CALL LIT(XBID,W ,IB  ,CBID, 4,'I ',NGEO,STD,ISTAT)
       CALL LIT(XBID,W,IKLES,CBID,NEINIT*NDP,'I ',NGEO,STD,ISTAT)
@@ -106,18 +106,18 @@
 !
       A(1) = 0.D0
       IF (NVARIN.GT.0) THEN
-         IF (BIEF_EOF(NGEO)) GOTO 40
-         CALL LIT(A,W,IBID,CBID,1,'R4',NGEO,STD,ISTAT)
+        IF (BIEF_EOF(NGEO)) GOTO 40
+        CALL LIT(A,W,IBID,CBID,1,'R4',NGEO,STD,ISTAT)
       ENDIF
       IF (STOTOT.OR.A(1).EQ.TPSFIN(1)) THEN
 !
         IF (LNG.EQ.1) WRITE (LU,9000) A(1)
         IF (LNG.EQ.2) WRITE (LU,9001) A(1)
         IF (STD(1:3).EQ.'IBM') THEN
-           A(2) = 0.D0
-           CALL ECRI2(A,IBID,CBID,2,'R4',NRES,STD,ISTAT)
+          A(2) = 0.D0
+          CALL ECRI2(A,IBID,CBID,2,'R4',NRES,STD,ISTAT)
         ELSE
-           CALL ECRI2(A,IBID,CBID,1,'R4',NRES,STD,ISTAT)
+          CALL ECRI2(A,IBID,CBID,1,'R4',NRES,STD,ISTAT)
         ENDIF
       ENDIF
 !
@@ -127,22 +127,22 @@
 !
       IF(NVARIN.GT.0) THEN
 !
-         DO IVAR = 1,NVARIN
-            CALL LIT(VAINIT,W,IBID,CBID,NPOIN1,'R4',NGEO,STD,ISTAT)
+        DO IVAR = 1,NVARIN
+          CALL LIT(VAINIT,W,IBID,CBID,NPOIN1,'R4',NGEO,STD,ISTAT)
 !
-            IF (STOTOT.OR.A(1).EQ.TPSFIN(1)) THEN
-              IF (IVAR.EQ.NSFOND) THEN
-               CALL ECRI2(ZF,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
-              ELSE
-               DO IPOIN = 1,NPOIN
-                  VAR(IPOIN) = VAINIT(IKINIT(ELT(IPOIN),1))*SHP(IPOIN,1)
-     &                       + VAINIT(IKINIT(ELT(IPOIN),2))*SHP(IPOIN,2)
-     &                       + VAINIT(IKINIT(ELT(IPOIN),3))*SHP(IPOIN,3)
-               ENDDO
-               CALL ECRI2(VAR,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
-              ENDIF
+          IF (STOTOT.OR.A(1).EQ.TPSFIN(1)) THEN
+            IF (IVAR.EQ.NSFOND) THEN
+              CALL ECRI2(ZF,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
+            ELSE
+              DO IPOIN = 1,NPOIN
+                 VAR(IPOIN) = VAINIT(IKINIT(ELT(IPOIN),1))*SHP(IPOIN,1)
+     &                      + VAINIT(IKINIT(ELT(IPOIN),2))*SHP(IPOIN,2)
+     &                      + VAINIT(IKINIT(ELT(IPOIN),3))*SHP(IPOIN,3)
+              ENDDO
+              CALL ECRI2(VAR,IBID,CBID,NPOIN,'R4',NRES,STD,ISTAT)
             ENDIF
-         ENDDO
+          ENDIF
+        ENDDO
 !
       ENDIF
 !

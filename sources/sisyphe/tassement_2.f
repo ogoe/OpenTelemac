@@ -2,20 +2,20 @@
                          SUBROUTINE TASSEMENT_2
 !                        **********************
 !
-     *(ZF,NPOIN,DTS,ELAY,DZF_TASS,T2,LT,XMVS,XMVE,GRAV,NOMBLAY,
-     * ES,CONC_VASE,MS_VASE,XWC,COEF_N,CONC_GEL,CONC_MAX)
+     &(ZF,NPOIN,DTS,ELAY,DZF_TASS,T2,LT,XMVS,XMVE,GRAV,NOMBLAY,
+     & ES,CONC_VASE,MS_VASE,XWC,COEF_N,CONC_GEL,CONC_MAX)
 !
 !***********************************************************************
 ! SISYPHE   V6P2                                   13/01/2012
 !***********************************************************************
 !
-!brief    COMPUTES THE CONSOLIDATION BASED ON GIBSON THEORY
+!BRIEF    COMPUTES THE CONSOLIDATION BASED ON GIBSON THEORY
 !+               
 !
-!history  Lan Anh Van (LHSV)
+!HISTORY  LAN ANH VAN (LHSV)
 !+        10/01/2011
 !+        V6P2
-!+   First version in test (not yet called in current version 6.2)  
+!+   FIRST VERSION IN TEST (NOT YET CALLED IN CURRENT VERSION 6.2)  
 !+       
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,97 +76,96 @@
 !     * PROGRAM SIMULATING THE SEDIMENTATION-CONSOLIDATION             *
 !     ******************************************************************
 !  
-        DO I =1,NPOIN 
-          T2%R(I)=0.D0
-          DO J=1,NOMBLAY
-            T2%R(I)=T2%R(I)+ES(I,J)
-          ENDDO
-c 
-c        EFFECTIVE STRESS
-c        ------------------------
-          DO J = 1,NOMBLAY
-            SIG_EFF(J)=119033.d0*(CONC_VASE(J)/XMVS)**14
-          ENDDO
+      DO I =1,NPOIN 
+        T2%R(I)=0.D0
+        DO J=1,NOMBLAY
+          T2%R(I)=T2%R(I)+ES(I,J)
+        ENDDO
+! 
+!       EFFECTIVE STRESS
+!       ------------------------
+        DO J = 1,NOMBLAY
+          SIG_EFF(J)=119033.D0*(CONC_VASE(J)/XMVS)**14
+        ENDDO
 
-c        PERMEABILITY
-c        --------------          
-          DO J=1,NOMBLAY-1
-C        SEDIMENTATION 
-             KSED(J)=XWC*(1.D0-CONC_VASE(J)/XMVS)*
-     &               (1.D0-(CONC_VASE(J)/CONC_GEL))**COEF_N/
-     &               ((XMVS-XMVE)*(CONC_VASE(J)/XMVS)/XMVE)
-C        CONSOLIDATION  
-             KCONSO(J)=XWC*(1.D0-CONC_VASE(J)/XMVS)*
-     &               (1.D0-(CONC_VASE(J)/CONC_MAX))**COEF_N/
-     &               ((XMVS-XMVE)*(CONC_VASE(J)/XMVS)/XMVE)
-c
-!          IF (CONC_VASE(J).gt.CONC_GEL) THEN
-            IF(LT.GT.11000.D0) THEN
-c
-c      SEDIMENTATION AND CONSOLIDATION :      
-c      --------------------------------
-            IF ((ES(I,J+1) + ES(I,J)).gt.1.d-8) THEN
-              V_S(J) =
-     &            KCONSO(J) * CONC_VASE(J) * (1.D0/XMVS - 1.D0/XMVE)
-     &            + ( KCONSO(J) / (XMVE * GRAV)) *
-     &            (SIG_EFF(J+1) - SIG_EFF(J)) / 
-     &            (0.5D0 * (ES(I,J+1) + ES(I,J)))
-            ELSE
-              V_S(J) = 1.d8
-            ENDIF
+!       PERMEABILITY
+!       --------------          
+        DO J=1,NOMBLAY-1
+!       SEDIMENTATION 
+          KSED(J)=XWC*(1.D0-CONC_VASE(J)/XMVS)*
+     &            (1.D0-(CONC_VASE(J)/CONC_GEL))**COEF_N/
+     &            ((XMVS-XMVE)*(CONC_VASE(J)/XMVS)/XMVE)
+!       CONSOLIDATION  
+          KCONSO(J)=XWC*(1.D0-CONC_VASE(J)/XMVS)*
+     &            (1.D0-(CONC_VASE(J)/CONC_MAX))**COEF_N/
+     &            ((XMVS-XMVE)*(CONC_VASE(J)/XMVS)/XMVE)
+!
+!       IF (CONC_VASE(J).GT.CONC_GEL) THEN
+        IF(LT.GT.11000.D0) THEN
+!
+!     SEDIMENTATION AND CONSOLIDATION :      
+!     --------------------------------
+          IF ((ES(I,J+1) + ES(I,J)).GT.1.D-8) THEN
+            V_S(J) =
+     &          KCONSO(J) * CONC_VASE(J) * (1.D0/XMVS - 1.D0/XMVE)
+     &          + ( KCONSO(J) / (XMVE * GRAV)) *
+     &          (SIG_EFF(J+1) - SIG_EFF(J)) / 
+     &          (0.5D0 * (ES(I,J+1) + ES(I,J)))
           ELSE
-c       PURE SEDIMENTATION :
-c      ---------------        
-                  V_S(J) = KSED(J)*CONC_VASE(J)*(1.D0/XMVS-1.D0/XMVE)
+            V_S(J) = 1.D8
+          ENDIF
+        ELSE
+!      PURE SEDIMENTATION :
+!     ---------------        
+          V_S(J) = KSED(J)*CONC_VASE(J)*(1.D0/XMVS-1.D0/XMVE)
+        ENDIF
+      ENDDO
+!
+        DO J=1,NOMBLAY
+          IF (V_S(J).GT.0.D0) V_S(J) = 0.D0 
+        ENDDO
+!
+!      FALLVING VELOCITY AT THE LEVEL OF ZR (AT THE BED)
+          V_S(NOMBLAY) = 0.D0
+!      SEDIMENT FLUX :
+!     --------------             
+        DO J=NOMBLAY-1,1,-1
+          FLUX(J) =
+     &    (V_S(J)-V_S(J+1))*CONC_VASE(J+1)*CONC_VASE(J)/
+     &          (CONC_VASE(J+1)-CONC_VASE(J)) 
+          IF (FLUX(J).GT.0.D0) FLUX(J) = 0.D0
+        ENDDO
+!      SEDIMENT FLUX AT THE RIGID BED
+        FLUX(NOMBLAY) = 0.D0
+!
+!      REDISTRIBUTE THE MASS :
+!      ----------------------------------
+!      RECALCULATE THE FLUX FROM LAYER 1 TO NCOUCH_TASS       
+        IF ((MS_VASE(I,1)+DTS*FLUX(1)).LT.0.D0) THEN
+          FLUX(1) = -MS_VASE(I,1)/DTS
+        ENDIF
+        DO J=2,NOMBLAY
+          IF ((MS_VASE(I,J)-DTS*(FLUX(J-1)-FLUX(J))).LT.0.D0) THEN
+            FLUX(J) = -MS_VASE(I,J)/DTS + FLUX(J-1)
           ENDIF
         ENDDO
-C
-          DO J=1,NOMBLAY
-           IF (V_S(J).gt.0.d0) V_S(J) = 0.d0 
-          ENDDO
-C
-c        FALLVING VELOCITY AT THE LEVEL OF ZR (AT THE BED)
-            V_S(NOMBLAY) = 0.D0
-C        SEDIMENT FLUX :
-c      ---------------             
-          DO J=NOMBLAY-1,1,-1
-            FLUX(J) =
-     *      (V_S(J)-V_S(J+1))*CONC_VASE(J+1)*CONC_VASE(J)/
-     *            (CONC_VASE(J+1)-CONC_VASE(J)) 
-            IF (FLUX(J).gt.0.D0) FLUX(J) = 0.D0
-          ENDDO
-c        SEDIMENT FLUX AT THE RIGID BED
-          FLUX(NOMBLAY) = 0.D0
-c
-c        REDISTRIBUTE THE MASS :
-c        ----------------------------------
-C        RECALCULATE THE FLUX FROM LAYER 1 TO NCOUCH_TASS       
-          IF ((MS_VASE(I,1)+DTS*FLUX(1)).LT.0.D0) THEN
-                FLUX(1) = -MS_VASE(I,1)/DTS
-          ENDIF
-          DO J=2,NOMBLAY
-            IF ((MS_VASE(I,J)-DTS*(FLUX(J-1)-FLUX(J))).LT.0.D0) THEN
-                FLUX(J) = -MS_VASE(I,J)/DTS + FLUX(J-1)
-            ENDIF
-          ENDDO
-C        MASS OF FIRST LAYER        
-          MS_VASE(I,1)=MS_VASE(I,1)+DTS*FLUX(1)
-c        MASS OF LAYER 2 TO NCOUCH_TASS                
-          DO J=2,NOMBLAY
-            MS_VASE(I,J) = MS_VASE(I,J) - DTS * (FLUX(J-1)-FLUX(J))
-          ENDDO
-C                                                                                                                                                                      
-C        THICKNESSES
-          ELAY%R(I)=0.D0        
-C
-          DO J=1,NOMBLAY
-            ES(I,J) = MS_VASE(I,J) / CONC_VASE(J)
-            ELAY%R(I)=ELAY%R(I) + ES(I,J)
-          ENDDO 
-C        BED EVOLUTION DUE TO CONSOLIDATION
-          DZF_TASS%R(I)=ELAY%R(I)-T2%R(I)
-       ENDDO
-C  END SUBROUTINE TASSEMENT_2
-        RETURN 
-        END
-
+!      MASS OF FIRST LAYER        
+        MS_VASE(I,1)=MS_VASE(I,1)+DTS*FLUX(1)
+!      MASS OF LAYER 2 TO NCOUCH_TASS                
+        DO J=2,NOMBLAY
+          MS_VASE(I,J) = MS_VASE(I,J) - DTS * (FLUX(J-1)-FLUX(J))
+        ENDDO
+!
+!      THICKNESSES
+        ELAY%R(I)=0.D0        
+!
+        DO J=1,NOMBLAY
+          ES(I,J) = MS_VASE(I,J) / CONC_VASE(J)
+          ELAY%R(I)=ELAY%R(I) + ES(I,J)
+        ENDDO 
+!      BED EVOLUTION DUE TO CONSOLIDATION
+        DZF_TASS%R(I)=ELAY%R(I)-T2%R(I)
+      ENDDO
+!  END SUBROUTINE TASSEMENT_2
+      RETURN 
+      END

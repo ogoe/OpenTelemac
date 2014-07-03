@@ -138,41 +138,25 @@
 ! GOODBYE.
 !
       IF(IELM.EQ.31.OR.IELM.EQ.51) THEN
-       NFACE = 4
+        NFACE = 4
       ELSE
-       IF(LNG.EQ.1) WRITE(LU,98) IELM
-       IF(LNG.EQ.2) WRITE(LU,99) IELM
-98     FORMAT(1X,'VOISIN31: IELM=',1I6,' TYPE D''ELEMENT NON PREVU')
-99     FORMAT(1X,'VOISIN31: IELM=',1I6,' TYPE OF ELEMENT NOT AVAILABLE')
-       CALL PLANTE(1)
-       STOP
+        IF(LNG.EQ.1) WRITE(LU,98) IELM
+        IF(LNG.EQ.2) WRITE(LU,99) IELM
+98    FORMAT(1X,'VOISIN31: IELM=',1I6,' TYPE D''ELEMENT NON PREVU')
+99    FORMAT(1X,'VOISIN31: IELM=',1I6,' TYPE OF ELEMENT NOT AVAILABLE')
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 ! ALLOCATES TEMPORARY ARRAYS
 !
       ALLOCATE(NBOR_INV(NPOIN),STAT=ERR)
-      IF(ERR.NE.0) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'VOISIN31 : ALLOCATION DE NBOR_INV DEFECTUEUSE'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'VOISIN31 : WRONG ALLOCATION OF NBOR_INV'
-        ENDIF
-        STOP
-      ENDIF
+      CALL CHECK_ALLOCATE(ERR,'VOISIN31:NBOR_INV')
 !
 ! ALLOCATES TEMPORARY ARRAYS
 !
       ALLOCATE(NVOIS(NPOIN),STAT=ERR)
-      IF(ERR.NE.0) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'VOISIN31 : ALLOCATION DE NVOIS DEFECTUEUSE'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'VOISIN31 : WRONG ALLOCATION OF NVOIS'
-        ENDIF
-        STOP
-      ENDIF
+      CALL CHECK_ALLOCATE(ERR,'VOISIN31:NVOIS')
 !
 !-----------------------------------------------------------------------
 ! STEP 1: COUNTS THE NUMBER OF ELEMENTS NEIGHBOURING A NODE
@@ -220,12 +204,12 @@
       NMXVOISIN = NV
 !
       DO IPOIN = 2,NPOIN
-          ! ADDRESS FOR THE OTHER ENTRIES:
-          ADR         = ADR + NV
-          IADR(IPOIN) = ADR
-          NV          = NVOIS(IPOIN)
-          ! IDENTIFIES THE MAX. NUMBER OF NEIGHBOURS
-          NMXVOISIN   = MAX(NMXVOISIN,NV)
+        ! ADDRESS FOR THE OTHER ENTRIES:
+        ADR         = ADR + NV
+        IADR(IPOIN) = ADR
+        NV          = NVOIS(IPOIN)
+        ! IDENTIFIES THE MAX. NUMBER OF NEIGHBOURS
+        NMXVOISIN   = MAX(NMXVOISIN,NV)
       ENDDO
 !
       ! THE TOTAL NUMBER OF NEIGHBOURING ELEMENTS FOR ALL THE NODES
@@ -316,102 +300,102 @@
 !
       ! LOOP ON ALL THE NODES IN THE MESH
       DO IPOIN = 1, NPOIN
-          ! FOR EACH NODE, CHECKS THE NEIGHBOURING TETRAHEDRON ELEMENTS
-          ! (MORE PRECISELY: THE TRIANGULAR FACES THAT MAKE IT)
-          ! RE-INITIALISES THE CONNECTIVITY TABLE FOR THE TETRAHEDRON
-          ! TRIANGLES TO 0, AND THE NUMBER OF TRIANGLES WHICH HAVE BEEN
-          ! FOUND:
-          !
-          IKLE_TRI(:,:) = 0
-          ! SAME THING FOR THE ARRAY THAT IDENTIFIES WHICH ELEMENT HAS
-          ! ALREADY DEFINED THE TRIANGLE :
-          VOIS_TRI(:,:) = 0
-          ! STARTS COUNTING THE TRIANGLES AGAIN:
-          NBTRI         = 0
-          NV            = NVOIS(IPOIN)
-          ADR           = IADR(IPOIN)
-          DO IVOIS = 1, NV
-              ! THE IDENTIFIER OF THE NEIGHBOURING ELEMENT IVOIS TO
-              ! THE NODE IPOIN:
-              IELEM = NEIGH(ADR+IVOIS)
-              ! LOOP ON THE 4 SIDES OF THIS ELEMENT
-              DO IFACE = 1 , NFACE
-                  ! IF THIS SIDE ALREADY HAS A NEIGHBOUR, THAT'S
-                  ! ENOUGH AND GOES TO NEXT.
-                  ! OTHERWISE, LOOKS FOR IT...
-                  IF ( IFABOR(IELEM,IFACE) .LE. 0 ) THEN
-                  ! EACH FACE DEFINES A TRIANGLE. THE TRIANGLE IS
-                  ! GIVEN BY 3 NODES.
-                  I1 = IKLE(IELEM,SOMFAC(1,IFACE))
-                  I2 = IKLE(IELEM,SOMFAC(2,IFACE))
-                  I3 = IKLE(IELEM,SOMFAC(3,IFACE))
-                  ! THESE 3 NODES ARE ORDERED, M1 IS THE NODE WITH
-                  ! THE SMALLEST IDENTIFIER, M3 THAT WITH THE
-                  ! LARGEST IDENTIFIER AND M2 IS IN THE MIDDLE:
-                  M1 = MAX(I1,(MAX(I2,I3)))
-                  M3 = MIN(I1,(MIN(I2,I3)))
-                  M2 = I1+I2+I3-M1-M3
-                  ! GOES THROUGH THE ARRAY WITH TRIANGLES ALREADY DEFINED
-                  ! TO SEE IF ONE OF THEM BEGINS WITH M1.
-                  ! IF THAT'S THE CASE, CHECKS THAT IT ALSO HAS NODES
-                  ! M2 AND M3. IF THAT'S THE CASE, HAS FOUND A NEIGHBOUR.
-                  ! OTHERWISE, A NEW TRIANGLE ENTRY IS CREATED.
-                  !
-                  FOUND = .FALSE.
-                  DO ITRI = 1, NBTRI
-                      IF ( IKLE_TRI(ITRI,1) .EQ. M1 ) THEN
-                          IF ( IKLE_TRI(ITRI,2) .EQ. M2 .AND.
-     &                         IKLE_TRI(ITRI,3) .EQ. M3 ) THEN
-                               ! FOUND IT! ALL IS WELL.
-                               ! STORES THE INFORMATION IN VOIS_TRI.
-                               ! (I.E. THE ELEMENT THAT HAS ALREADY
-                               ! DEFINED THE TRIANGLE AND THE FACE)
-                               IELEM2 = VOIS_TRI(ITRI,1)
-                               IFACE2 = VOIS_TRI(ITRI,2)
-                               IF ( IELEM2 .EQ. IELEM ) THEN
-                                  IF(LNG.EQ.1) WRITE(LU,908) IELM
-                                  IF(LNG.EQ.2) WRITE(LU,909) IELM
-908                               FORMAT(1X,'VOISIN: IELM=',1I6,',
-     &                            PROBLEME DE VOISIN')
-909                               FORMAT(1X,'VOISIN: IELM=',1I6,',
-     &                            NEIGHBOUR PROBLEM')
-                                  CALL PLANTE(1)
-                                  STOP
-                               END IF
-                               ! TO BE SURE :
-                               IF ( IELEM2 .EQ. 0 .OR.
-     &                              IFACE2 .EQ. 0 ) THEN
-                                IF(LNG.EQ.1) WRITE(LU,918) IELEM2,IFACE2
-                                IF(LNG.EQ.2) WRITE(LU,919) IELEM2,IFACE2
-918                            FORMAT(1X,'VOISIN31:TRIANGLE NON DEFINI,
-     &                         IELEM=',1I6,'IFACE=',1I6)
-919                            FORMAT(1X,'VOISIN31:UNDEFINED TRIANGLE,
-     &                         IELEM=',1I6,'IFACE=',1I6)
-                                CALL PLANTE(1)
-                                STOP
-                               END IF
-                               ! THE ELEMENT AND ITS NEIGHBOUR : STORES
-                               ! THE CONNECTION IN IFABOR.
-                               IFABOR(IELEM ,IFACE ) = IELEM2
-                               IFABOR(IELEM2,IFACE2) = IELEM
-                               FOUND = .TRUE.
-                          END IF
-                      END IF
-                  END DO
-                  ! NO, THIS TRIANGLE WAS NOT ALREADY THERE; THEREFORE
-                  ! CREATES A NEW ENTRY.
-                  IF ( .NOT. FOUND) THEN
-                      NBTRI             = NBTRI + 1
-                      IKLE_TRI(NBTRI,1) = M1
-                      IKLE_TRI(NBTRI,2) = M2
-                      IKLE_TRI(NBTRI,3) = M3
-                      VOIS_TRI(NBTRI,1) = IELEM
-                      VOIS_TRI(NBTRI,2) = IFACE
-                  END IF
-              END IF ! IFABOR 0
-              END DO ! END OF LOOP ON FACES OF THE NEIGHBOURING ELEMENTS
+        ! FOR EACH NODE, CHECKS THE NEIGHBOURING TETRAHEDRON ELEMENTS
+        ! (MORE PRECISELY: THE TRIANGULAR FACES THAT MAKE IT)
+        ! RE-INITIALISES THE CONNECTIVITY TABLE FOR THE TETRAHEDRON
+        ! TRIANGLES TO 0, AND THE NUMBER OF TRIANGLES WHICH HAVE BEEN
+        ! FOUND:
+        !
+        IKLE_TRI(:,:) = 0
+        ! SAME THING FOR THE ARRAY THAT IDENTIFIES WHICH ELEMENT HAS
+        ! ALREADY DEFINED THE TRIANGLE :
+        VOIS_TRI(:,:) = 0
+        ! STARTS COUNTING THE TRIANGLES AGAIN:
+        NBTRI         = 0
+        NV            = NVOIS(IPOIN)
+        ADR           = IADR(IPOIN)
+        DO IVOIS = 1, NV
+          ! THE IDENTIFIER OF THE NEIGHBOURING ELEMENT IVOIS TO
+          ! THE NODE IPOIN:
+          IELEM = NEIGH(ADR+IVOIS)
+          ! LOOP ON THE 4 SIDES OF THIS ELEMENT
+          DO IFACE = 1 , NFACE
+            ! IF THIS SIDE ALREADY HAS A NEIGHBOUR, THAT'S
+            ! ENOUGH AND GOES TO NEXT.
+            ! OTHERWISE, LOOKS FOR IT...
+            IF ( IFABOR(IELEM,IFACE) .LE. 0 ) THEN
+            ! EACH FACE DEFINES A TRIANGLE. THE TRIANGLE IS
+            ! GIVEN BY 3 NODES.
+            I1 = IKLE(IELEM,SOMFAC(1,IFACE))
+            I2 = IKLE(IELEM,SOMFAC(2,IFACE))
+            I3 = IKLE(IELEM,SOMFAC(3,IFACE))
+            ! THESE 3 NODES ARE ORDERED, M1 IS THE NODE WITH
+            ! THE SMALLEST IDENTIFIER, M3 THAT WITH THE
+            ! LARGEST IDENTIFIER AND M2 IS IN THE MIDDLE:
+            M1 = MAX(I1,(MAX(I2,I3)))
+            M3 = MIN(I1,(MIN(I2,I3)))
+            M2 = I1+I2+I3-M1-M3
+            ! GOES THROUGH THE ARRAY WITH TRIANGLES ALREADY DEFINED
+            ! TO SEE IF ONE OF THEM BEGINS WITH M1.
+            ! IF THAT'S THE CASE, CHECKS THAT IT ALSO HAS NODES
+            ! M2 AND M3. IF THAT'S THE CASE, HAS FOUND A NEIGHBOUR.
+            ! OTHERWISE, A NEW TRIANGLE ENTRY IS CREATED.
+            !
+            FOUND = .FALSE.
+            DO ITRI = 1, NBTRI
+              IF ( IKLE_TRI(ITRI,1) .EQ. M1 ) THEN
+                IF ( IKLE_TRI(ITRI,2) .EQ. M2 .AND.
+     &             IKLE_TRI(ITRI,3) .EQ. M3 ) THEN
+                   ! FOUND IT! ALL IS WELL.
+                   ! STORES THE INFORMATION IN VOIS_TRI.
+                   ! (I.E. THE ELEMENT THAT HAS ALREADY
+                   ! DEFINED THE TRIANGLE AND THE FACE)
+                   IELEM2 = VOIS_TRI(ITRI,1)
+                   IFACE2 = VOIS_TRI(ITRI,2)
+                   IF ( IELEM2 .EQ. IELEM ) THEN
+                     IF(LNG.EQ.1) WRITE(LU,908) IELM
+                     IF(LNG.EQ.2) WRITE(LU,909) IELM
+908                  FORMAT(1X,'VOISIN: IELM=',1I6,',
+     &               PROBLEME DE VOISIN')
+909                  FORMAT(1X,'VOISIN: IELM=',1I6,',
+     &               NEIGHBOUR PROBLEM')
+                     CALL PLANTE(1)
+                     STOP
+                   END IF
+                   ! TO BE SURE :
+                   IF ( IELEM2 .EQ. 0 .OR.
+     &                  IFACE2 .EQ. 0 ) THEN
+                     IF(LNG.EQ.1) WRITE(LU,918) IELEM2,IFACE2
+                     IF(LNG.EQ.2) WRITE(LU,919) IELEM2,IFACE2
+918                  FORMAT(1X,'VOISIN31:TRIANGLE NON DEFINI,
+     &               IELEM=',1I6,'IFACE=',1I6)
+919                  FORMAT(1X,'VOISIN31:UNDEFINED TRIANGLE,
+     &               IELEM=',1I6,'IFACE=',1I6)
+                     CALL PLANTE(1)
+                     STOP
+                   END IF
+                   ! THE ELEMENT AND ITS NEIGHBOUR : STORES
+                   ! THE CONNECTION IN IFABOR.
+                   IFABOR(IELEM ,IFACE ) = IELEM2
+                   IFABOR(IELEM2,IFACE2) = IELEM
+                   FOUND = .TRUE.
+                END IF
+              END IF
+            END DO
+            ! NO, THIS TRIANGLE WAS NOT ALREADY THERE; THEREFORE
+            ! CREATES A NEW ENTRY.
+            IF ( .NOT. FOUND) THEN
+                NBTRI             = NBTRI + 1
+                IKLE_TRI(NBTRI,1) = M1
+                IKLE_TRI(NBTRI,2) = M2
+                IKLE_TRI(NBTRI,3) = M3
+                VOIS_TRI(NBTRI,1) = IELEM
+                VOIS_TRI(NBTRI,2) = IFACE
+            END IF
+          END IF ! IFABOR 0
+          END DO ! END OF LOOP ON FACES OF THE NEIGHBOURING ELEMENTS
 !
-          END DO ! END OF LOOP ON ELEMENTS NEIGHBOURING THE NODE
+        END DO ! END OF LOOP ON ELEMENTS NEIGHBOURING THE NODE
       END DO ! END OF LOOP ON NODES
 !
       DEALLOCATE(NEIGH)
@@ -423,33 +407,33 @@
 !-----------------------------------------------------------------------
 !
       IF(NCSIZE.GT.1) THEN
-         !
-         ! WHY A DIFFERENT ALGORITHM ?
-         ! a) Partitionning method : 51 submeshes are obtained from a 2D mesh
-         ! b) No iklestr is available 
-         ! c) Some pathological cases with 31
-         IF (IELM.EQ.51) THEN
-            !
-            DO IFACE=1,NFACE
-               DO IELEM=1,NELEM
+        !
+        ! WHY A DIFFERENT ALGORITHM ?
+        ! a) Partitionning method : 51 submeshes are obtained from a 2D mesh
+        ! b) No iklestr is available 
+        ! c) Some pathological cases with 31
+        IF (IELM.EQ.51) THEN
+          !
+          DO IFACE=1,NFACE
+            DO IELEM=1,NELEM
 !     IF A FACE HAS 3 POINTS WHICH ARE INTERFACES BETWEEN SUB-DOMAINS
 !     IT IS ASSIGNED A VALUE OF -2
 !     
-                  I1=IKLE(IELEM,SOMFAC(1,IFACE))
-                  I2=IKLE(IELEM,SOMFAC(2,IFACE))
-                  I3=IKLE(IELEM,SOMFAC(3,IFACE))
+              I1=IKLE(IELEM,SOMFAC(1,IFACE))
+              I2=IKLE(IELEM,SOMFAC(2,IFACE))
+              I3=IKLE(IELEM,SOMFAC(3,IFACE))
 !     
-                  IF( INDPU(I1).NE.0.AND.
-     &                INDPU(I2).NE.0.AND.
-     &                INDPU(I3).NE.0     ) IFABOR(IELEM,IFACE)=-2
+              IF( INDPU(I1).NE.0.AND.
+     &            INDPU(I2).NE.0.AND.
+     &            INDPU(I3).NE.0     ) IFABOR(IELEM,IFACE)=-2
 !     
-               ENDDO
             ENDDO
+          ENDDO
 !     
-         ELSE IF (IELM.EQ.31) THEN
+        ELSE IF (IELM.EQ.31) THEN
 !     
-            DO IFACE=1,NFACE
-               DO IELEM=1,NELEM
+          DO IFACE=1,NFACE
+            DO IELEM=1,NELEM
 !     IF A FACE HAS 3 POINTS WHICH ARE INTERFACES BETWEEN SUB-DOMAINS
 !     IT IS ASSIGNED A VALUE OF -2
                   
@@ -461,15 +445,15 @@
 !     c) 3 nodes of a triangle may be on the boundary and have INDPU /= 0
 !     this doesn't mean automatically that the triangle is on the boundary.
                   
-                  IF (IFABOR(IELEM,IFACE).EQ.-1) THEN
+              IF (IFABOR(IELEM,IFACE).EQ.-1) THEN
 !     
-                     I1=IKLE(IELEM,SOMFAC(1,IFACE))
-                     I2=IKLE(IELEM,SOMFAC(2,IFACE))
-                     I3=IKLE(IELEM,SOMFAC(3,IFACE))
-                     
-                     IF ( INDPU(I1).NE.0.AND.
-     &                    INDPU(I2).NE.0.AND.
-     &                    INDPU(I3).NE.0     ) THEN
+                I1=IKLE(IELEM,SOMFAC(1,IFACE))
+                I2=IKLE(IELEM,SOMFAC(2,IFACE))
+                I3=IKLE(IELEM,SOMFAC(3,IFACE))
+                
+                IF ( INDPU(I1).NE.0.AND.
+     &               INDPU(I2).NE.0.AND.
+     &               INDPU(I3).NE.0     ) THEN
                         
 !     THESE ARE INTERFACE NODES; DO THEY CORRESPOND TO A
 !     (VIRTUAL) INTERFACE TRIANGLE OR TO A BOUNDARY TRIANGLE ?
@@ -477,45 +461,45 @@
 !     THE FOLLOWING TEST IS NOT SUFFICIENT
 !     IF (.NOT. (IR5.EQ.1.AND.IR4.EQ.1.AND.IR6.EQ.1)) IFABOR(IELEM,IFACE)=-2
 !     
-                        BORD=.FALSE.
-                        IR4=0
-                        IR5=0
-                        IR6=0
-                        DO J=1,NPTFR
-                           IF (I1.EQ.NBOR(J)) IR5=1
-                           IF (I2.EQ.NBOR(J)) IR4=1
-                           IF (I3.EQ.NBOR(J)) IR6=1
-                        ENDDO ! J
+                  BORD=.FALSE.
+                  IR4=0
+                  IR5=0
+                  IR6=0
+                  DO J=1,NPTFR
+                    IF (I1.EQ.NBOR(J)) IR5=1
+                    IF (I2.EQ.NBOR(J)) IR4=1
+                    IF (I3.EQ.NBOR(J)) IR6=1
+                  ENDDO ! J
                         
 !     THEY ARE ALSO BOUNDARY NODES
-                        IF (IR5.EQ.1.AND.IR4.EQ.1.AND.IR6.EQ.1) THEN
+                  IF (IR5.EQ.1.AND.IR4.EQ.1.AND.IR6.EQ.1) THEN
 !     
-                           DO J=1,NELEB2
+                    DO J=1,NELEB2
 !     IT IS A BOUNDARY TRIANGLE
-                              COMPT=0
-                              DO I=1,3
-                                 IF (IKLESTR(J,I)==I1) COMPT=COMPT+1
-                                 IF (IKLESTR(J,I)==I2) COMPT=COMPT+10
-                                 IF (IKLESTR(J,I)==I3) COMPT=COMPT+100
-                              ENDDO
+                      COMPT=0
+                      DO I=1,3
+                        IF (IKLESTR(J,I)==I1) COMPT=COMPT+1
+                        IF (IKLESTR(J,I)==I2) COMPT=COMPT+10
+                        IF (IKLESTR(J,I)==I3) COMPT=COMPT+100
+                      ENDDO
 !     THESE 3 NODES INDEED BELONG TO THE SAME BOUNDARY TRIANGLE
-                              IF (COMPT==111) THEN
-                                 BORD=.TRUE.
+                      IF (COMPT==111) THEN
+                        BORD=.TRUE.
 !     PRINT*,'VERTICES OF A BOUNDARY TRIANGLE'
-                                 EXIT
-                              ENDIF                         
-                           ENDDO
-                        ENDIF                        
-                        IF (.NOT.BORD) THEN
+                        EXIT
+                      ENDIF                         
+                    ENDDO
+                  ENDIF                        
+                  IF (.NOT.BORD) THEN
 !     THESE 3 NODES BELONG TO AN INTERFACE MESH
 !     PRINT*, 'INTERFACE NODES'
-                           IFABOR(IELEM,IFACE)=-2
-                        ENDIF
-                     ENDIF
+                    IFABOR(IELEM,IFACE)=-2
                   ENDIF
-               ENDDO
+                ENDIF
+              ENDIF
             ENDDO
-         ENDIF
+          ENDDO
+        ENDIF
       ENDIF
 !
 !
@@ -551,27 +535,27 @@
 !
       IF(IFABOR(IELEM,IFACE).EQ.-1) THEN
 !
-!      IT IS A TRUE BOUNDARY SIDE (IN PARALLEL MODE THE INTERNAL SIDES
-!                                  ARE INDICATED WITH -2).
-!      GLOBAL NUMBERS OF THE NODES OF THE SIDE :
-!
-       I1 = IKLE( IELEM , SOMFAC(1,IFACE) )
-       I2 = IKLE( IELEM , SOMFAC(2,IFACE) )
-       I3 = IKLE( IELEM , SOMFAC(3,IFACE) )
-!
-!      A LIQUID SIDE IS IDENTIFIED WITH THE BOUNDARY CONDITION ON H
-!
-       IF(NPTFR.GT.0) THEN
-       IF(LIHBOR(NBOR_INV(I1)).NE.KLOG.AND.LIHBOR(NBOR_INV(I2)).NE.KLOG
-     &     .AND.LIHBOR(NBOR_INV(I3)).NE.KLOG  ) THEN
-!        LIQUID SIDE : IFABOR=0  SOLID SIDE : IFABOR=-1
-         IFABOR(IELEM,IFACE)=0
-       ENDIF
-       ENDIF
+!       IT IS A TRUE BOUNDARY SIDE (IN PARALLEL MODE THE INTERNAL SIDES
+!                                   ARE INDICATED WITH -2).
+!       GLOBAL NUMBERS OF THE NODES OF THE SIDE :
+!       
+        I1 = IKLE( IELEM , SOMFAC(1,IFACE) )
+        I2 = IKLE( IELEM , SOMFAC(2,IFACE) )
+        I3 = IKLE( IELEM , SOMFAC(3,IFACE) )
+!       
+!       A LIQUID SIDE IS IDENTIFIED WITH THE BOUNDARY CONDITION ON H
+!       
+        IF(NPTFR.GT.0) THEN
+        IF(LIHBOR(NBOR_INV(I1)).NE.KLOG.AND.LIHBOR(NBOR_INV(I2)).NE.KLOG
+     &      .AND.LIHBOR(NBOR_INV(I3)).NE.KLOG  ) THEN
+!         LIQUID SIDE : IFABOR=0  SOLID SIDE : IFABOR=-1
+          IFABOR(IELEM,IFACE)=0
+        ENDIF
+        ENDIF
 !
       ENDIF
 !
-       ENDDO ! IELEM 
+      ENDDO ! IELEM 
       ENDDO ! IFACE 
 !
 !

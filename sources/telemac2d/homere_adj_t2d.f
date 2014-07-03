@@ -123,23 +123,23 @@
 !
 !     INITIALISES SORLEOA AND SORIMPA
       DO I=1,MAXVAR
-         SORLEOA(I)=.FALSE.
-         SORIMPA(I)=.FALSE.
+        SORLEOA(I)=.FALSE.
+        SORIMPA(I)=.FALSE.
       ENDDO
 !
       IF(INCLU2(ESTIME,'DEBUG')) THEN
-!        CV1, CV2, CV3 (SECOND MEMBERS OF THE ADJOINT SYSTEMS)
-         SORLEOA(20)=.TRUE.
-         SORLEOA(21)=.TRUE.
-         SORLEOA(22)=.TRUE.
-!        OUTPUT OF ADJOINT VARIABLES PP, QQ, RR
-         SORLEOA(23)=.TRUE.
-         SORLEOA(24)=.TRUE.
-         SORLEOA(25)=.TRUE.
+!       CV1, CV2, CV3 (SECOND MEMBERS OF THE ADJOINT SYSTEMS)
+        SORLEOA(20)=.TRUE.
+        SORLEOA(21)=.TRUE.
+        SORLEOA(22)=.TRUE.
+!       OUTPUT OF ADJOINT VARIABLES PP, QQ, RR
+        SORLEOA(23)=.TRUE.
+        SORLEOA(24)=.TRUE.
+        SORLEOA(25)=.TRUE.
       ELSE
-!        OUTPUT OF BOTTOM TOPOGRAPHY (6) AND FRICTION (19)
-         SORLEOA(6)=.TRUE.
-         SORLEOA(19)=.TRUE.
+!       OUTPUT OF BOTTOM TOPOGRAPHY (6) AND FRICTION (19)
+        SORLEOA(6)=.TRUE.
+        SORLEOA(19)=.TRUE.
       ENDIF
 !
       CALL OS('X=C     ',PRIVE,PRIVE,PRIVE,0.D0)
@@ -150,17 +150,17 @@
 !
       WRITE(LU,*) 'OPTID = ',OPTID
       IF(OPTID.EQ.0) THEN
-         WRITE(LU,*) 'PLAN D''EXPERIENCE'
+        WRITE(LU,*) 'PLAN D''EXPERIENCE'
       ELSEIF(OPTID.EQ.1) THEN
-         WRITE(LU,*) 'GRADIENT METHOD'
+        WRITE(LU,*) 'GRADIENT METHOD'
       ELSEIF(OPTID.EQ.2) THEN
-         WRITE(LU,*) 'CONJUGATE GRADIENT METHOD'
+        WRITE(LU,*) 'CONJUGATE GRADIENT METHOD'
       ELSEIF(OPTID.EQ.3) THEN
-         WRITE(LU,*) 'LAGRANGE INTERPOLATION'
+        WRITE(LU,*) 'LAGRANGE INTERPOLATION'
       ELSE
-         WRITE(LU,*) 'WRONG OPTION FOR COMPUTATION OF RHO'
-         CALL PLANTE(1)
-         STOP
+        WRITE(LU,*) 'WRONG OPTION FOR COMPUTATION OF RHO'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       IF(OPTID.EQ.3) THEN
@@ -192,24 +192,24 @@
 !
 ! HEADER FOR ASCII OUTPUT (FORMAT SCOPT)
 !
-       IF(T2D_FILES(T2DRFO)%NAME.NE.' ') THEN
-         WRITE(T2D_FILES(T2DRFO)%LU,300) TITCAS
-300      FORMAT('''',A,'''',1I2)
-         WRITE(T2D_FILES(T2DRFO)%LU,300) 'PARAMETER ESTIMATION'
-         WRITE(T2D_FILES(T2DRFO)%LU,300) 'IDENTIFICATION OF FRICTION'
-         WRITE(T2D_FILES(T2DRFO)%LU,300) 'ITERATION'
-         WRITE(T2D_FILES(T2DRFO)%LU,300) 'COST'
-         WRITE(T2D_FILES(T2DRFO)%LU,300) 'ERROR ON H (M)'
-         WRITE(T2D_FILES(T2DRFO)%LU,300) 'ERROR ON U (M/S)'
-         WRITE(T2D_FILES(T2DRFO)%LU,300) 'ERROR ON V (M/S)'
-         IF(DEFZON) THEN
-           DO I=1,NZONE
-             WRITE(T2D_FILES(T2DRFO)%LU,300) 'FRICTION ZONE ',I
-           ENDDO
-         ELSE
-           WRITE(T2D_FILES(T2DRFO)%LU,300) 'FRICTION POINT 1'
-         ENDIF
-       ENDIF
+      IF(T2D_FILES(T2DRFO)%NAME.NE.' ') THEN
+        WRITE(T2D_FILES(T2DRFO)%LU,300) TITCAS
+300     FORMAT('''',A,'''',1I2)
+        WRITE(T2D_FILES(T2DRFO)%LU,300) 'PARAMETER ESTIMATION'
+        WRITE(T2D_FILES(T2DRFO)%LU,300) 'IDENTIFICATION OF FRICTION'
+        WRITE(T2D_FILES(T2DRFO)%LU,300) 'ITERATION'
+        WRITE(T2D_FILES(T2DRFO)%LU,300) 'COST'
+        WRITE(T2D_FILES(T2DRFO)%LU,300) 'ERROR ON H (M)'
+        WRITE(T2D_FILES(T2DRFO)%LU,300) 'ERROR ON U (M/S)'
+        WRITE(T2D_FILES(T2DRFO)%LU,300) 'ERROR ON V (M/S)'
+        IF(DEFZON) THEN
+          DO I=1,NZONE
+            WRITE(T2D_FILES(T2DRFO)%LU,300) 'FRICTION ZONE ',I
+          ENDDO
+        ELSE
+          WRITE(T2D_FILES(T2DRFO)%LU,300) 'FRICTION POINT 1'
+        ENDIF
+      ENDIF
 !
 ! ****************************************************************************
 ! LOOP OF CALIBRATION
@@ -262,6 +262,7 @@
           IF(LNG.EQ.1) WRITE(LU,*) 'PB. DANS LE PLAN D''EXPERIENCE',
      &                             ' ITER=',ITER
           IF(LNG.EQ.2) WRITE(LU,*)'PB. IN LIST OF TESTS AT ITER=',ITER
+          CALL PLANTE(1)
           STOP
         ENDIF
         CALL ASSIGNSTR(CHESTR,SETSTR,ZONE%I,NZONE,NPOIN)
@@ -271,23 +272,23 @@
 !
       DO ILAGR=1,NLAGR
 !
-         IF(OPTID.EQ.3) THEN
-           WRITE(LU,*) ' '
-           WRITE(LU,*) '------------------'
-           IF(LNG.EQ.1) WRITE(LU,*) 'SOUS-ITERATION : ',ILAGR
-           IF(LNG.EQ.2) WRITE(LU,*) 'SUB-ITERATION : ',ILAGR
-           WRITE(LU,*) '------------------'
-           WRITE(LU,*) ' '
-         ENDIF
+        IF(OPTID.EQ.3) THEN
+          WRITE(LU,*) ' '
+          WRITE(LU,*) '------------------'
+          IF(LNG.EQ.1) WRITE(LU,*) 'SOUS-ITERATION : ',ILAGR
+          IF(LNG.EQ.2) WRITE(LU,*) 'SUB-ITERATION : ',ILAGR
+          WRITE(LU,*) '------------------'
+          WRITE(LU,*) ' '
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
-         IF(LNG.EQ.1) WRITE(LU,100)
-         IF(LNG.EQ.2) WRITE(LU,101)
-         WRITE(LU,102)
-100      FORMAT(/////,1X,'LISTING DE TELEMAC-2D ',78('-'))
-101      FORMAT(/////,1X,'LISTING OF TELEMAC-2D ',78('-'))
-102      FORMAT(/////,
+        IF(LNG.EQ.1) WRITE(LU,100)
+        IF(LNG.EQ.2) WRITE(LU,101)
+        WRITE(LU,102)
+100     FORMAT(/////,1X,'LISTING DE TELEMAC-2D ',78('-'))
+101     FORMAT(/////,1X,'LISTING OF TELEMAC-2D ',78('-'))
+102     FORMAT(/////,
      &14X,'TTTTT  EEEEE  L      EEEEE  M   M  AAAAA  CCCCC',/,
      &14X,'  T    E      L      E      MM MM  A   A  C    ',/,
      &14X,'  T    EEE    L      EEE    M M M  AAAAA  C    ',/,
@@ -322,9 +323,9 @@
 ! SKIPS INITIAL CONDITION
 !
       IF(OUTINI) THEN
-       CALL LITENR(VARSOR,VARCL,T2D_FILES(T2DRES)%LU,'STD',HIST,0,
-     &             NPOIN,AT1,TEXTE,TEXRES,NVARRES,VARCLA,0,TROUVE,
-     &             ALIRRES,W,.FALSE.,MAXVAR)
+        CALL LITENR(VARSOR,VARCL,T2D_FILES(T2DRES)%LU,'STD',HIST,0,
+     &              NPOIN,AT1,TEXTE,TEXRES,NVARRES,VARCLA,0,TROUVE,
+     &              ALIRRES,W,.FALSE.,MAXVAR)
       ENDIF
 !
       ERRH=0.D0
@@ -338,38 +339,38 @@
 !
 !     IN STEADY STATE ONLY THE LAST TIMESTEP IS CONSIDERED
 !
-      IF(     INCLU2(ESTIME,'PERMANENT')
-     &    .OR.INCLU2(ESTIME,'STEADY'   )  ) THEN
+        IF(     INCLU2(ESTIME,'PERMANENT')
+     &      .OR.INCLU2(ESTIME,'STEADY'   )  ) THEN
 !
-        IF(LT.EQ.1) THEN
-          REWIND T2D_FILES(T2DRES)%LU
-          CALL BIEF_SUITE(VARSOR,VARCL,ITER,T2D_FILES(T2DRES)%LU,
-     &                    T2D_FILES(T2DRES)%FMT,
-     &                    HIST,0,NPOIN,AT1,TEXTE,VARCLA,
-     &                    NVARCL,TROUVE,ALIRRES,LISTIN,.TRUE.,MAXVAR)
-!         GETTING MEASUREMENTS AND WEIGHTS AT THE SAME TIME.
-!         HERE ALPHA1, ALPHA2 AND ALPHA3 ARE ALSO SET.
-!         ITER OF LAST RECORD GIVEN BY THE CALL TO SUITE
-          CALL MESURES(ITER,AT1)
-        ENDIF
+          IF(LT.EQ.1) THEN
+            REWIND T2D_FILES(T2DRES)%LU
+            CALL BIEF_SUITE(VARSOR,VARCL,ITER,T2D_FILES(T2DRES)%LU,
+     &                      T2D_FILES(T2DRES)%FMT,
+     &                      HIST,0,NPOIN,AT1,TEXTE,VARCLA,
+     &                      NVARCL,TROUVE,ALIRRES,LISTIN,.TRUE.,MAXVAR)
+!           GETTING MEASUREMENTS AND WEIGHTS AT THE SAME TIME.
+!           HERE ALPHA1, ALPHA2 AND ALPHA3 ARE ALSO SET.
+!           ITER OF LAST RECORD GIVEN BY THE CALL TO SUITE
+            CALL MESURES(ITER,AT1)
+          ENDIF
 !
-      ELSE
+        ELSE
 !
 !  READS TELEMAC2D RESULTS (RESULTS FILE - UNIT NRES)
 !
-        ITER=LT
-        IF(OUTINI) ITER=ITER+1
+          ITER=LT
+          IF(OUTINI) ITER=ITER+1
+!        
+          CALL LITENR(VARSOR,VARCL,T2D_FILES(T2DRES)%LU,'STD',HIST,0,
+     &                NPOIN,AT1,TEXTE,TEXRES,NVARRES,VARCLA,0,TROUVE,
+     &               ALIRRES,W,.FALSE.,MAXVAR)
+!        
+!         GETTING MEASUREMENTS AND WEIGHTS AT THE SAME TIME
+!        
+!         HERE ALPHA1, ALPHA2 AND ALPHA3 ARE ALSO SET.
+          CALL MESURES(ITER,AT1)
 !
-        CALL LITENR(VARSOR,VARCL,T2D_FILES(T2DRES)%LU,'STD',HIST,0,
-     &              NPOIN,AT1,TEXTE,TEXRES,NVARRES,VARCLA,0,TROUVE,
-     &             ALIRRES,W,.FALSE.,MAXVAR)
-!
-!       GETTING MEASUREMENTS AND WEIGHTS AT THE SAME TIME
-!
-!       HERE ALPHA1, ALPHA2 AND ALPHA3 ARE ALSO SET.
-        CALL MESURES(ITER,AT1)
-!
-      ENDIF
+        ENDIF
 !
 !       COMPUTES THE COST FUNCTION :
 !
@@ -407,17 +408,17 @@
 !
       IF(LNG.EQ.1) THEN
 !
-      WRITE(LU,*)'FONCTION COUT =',JCOUT,' VALEUR INITIALE:',JSTEP0
-      WRITE(LU,*)'ERREUR MAXIMUM SUR H =',ERRH
-      WRITE(LU,*)'ERREUR MAXIMUM SUR U =',ERRU
-      WRITE(LU,*)'ERREUR MAXIMUM SUR V =',ERRV
+        WRITE(LU,*)'FONCTION COUT =',JCOUT,' VALEUR INITIALE:',JSTEP0
+        WRITE(LU,*)'ERREUR MAXIMUM SUR H =',ERRH
+        WRITE(LU,*)'ERREUR MAXIMUM SUR U =',ERRU
+        WRITE(LU,*)'ERREUR MAXIMUM SUR V =',ERRV
 !
       ELSEIF(LNG.EQ.2) THEN
 !
-      WRITE(LU,*) 'COST FUNCTION =',JCOUT,' INITIAL VALUE :',JSTEP0
-      WRITE(LU,*) 'MAX ERROR ON H =',ERRH
-      WRITE(LU,*) 'MAX ERROR ON U =',ERRU
-      WRITE(LU,*) 'MAX ERROR ON V =',ERRV
+        WRITE(LU,*) 'COST FUNCTION =',JCOUT,' INITIAL VALUE :',JSTEP0
+        WRITE(LU,*) 'MAX ERROR ON H =',ERRH
+        WRITE(LU,*) 'MAX ERROR ON U =',ERRU
+        WRITE(LU,*) 'MAX ERROR ON V =',ERRV
 !
       ENDIF
 !
@@ -450,66 +451,66 @@
 !
 !     DECISIONAL STEP :
 !
-      IF(      JR.LE.TOLEST(4).OR.
-     &      (ERRH.LE.TOLEST(1).AND.
-     &       ERRU.LE.TOLEST(2).AND.
-     &       ERRV.LE.TOLEST(3))       ) THEN
+        IF(      JR.LE.TOLEST(4).OR.
+     &        (ERRH.LE.TOLEST(1).AND.
+     &         ERRU.LE.TOLEST(2).AND.
+     &         ERRV.LE.TOLEST(3))       ) THEN
+!       
+          IF(LISTIN) THEN
+            IF(LNG.EQ.1) WRITE(LU,395) NITERA
+            IF(LNG.EQ.2) WRITE(LU,396) NITERA
+          ENDIF
+!       
+395       FORMAT(/,1X,'------------------------------------------',/
+     &            ,1X,'    SOLUTION TROUVEE EN ',1I3,' ITERATIONS',/
+     &            ,1X,'------------------------------------------')
+396       FORMAT(/,1X,'-----------------------------------------',/
+     &            ,1X,'    SOLUTION FOUND IN ',1I3,' ITERATIONS',/
+     &            ,1X,'-----------------------------------------')
+          WRITE(LU,*) 'GRADIENT OF ZONE 1 : ',GRADJ%R(1)
+          WRITE(LU,*) 'STRICKLER OF POINT 10 : ',CHESTR%R(10)
+          GO TO 999
+!       
+        ELSEIF (NITERA.GT.MAXEST) THEN
+!       
+          IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'PAS DE CONVERGENCE EN ',NITERA,' ITERATIONS'
+          WRITE(LU,*) 'STRICKLER DU POINT 10 : ',CHESTR%R(10)
+          WRITE(LU,398) MAXEST,JCOUT
+398       FORMAT(1X,'SOLUTION NON TROUVEE APRES ',1I6,1X,
+     &            'ITERATIONS',/,1X,
+     &            'PRECISION  :',G16.7,1X,'JCOUTN/JCOUT1 :',G16.7)
+          ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'NO CONVERGENCE AFTER ',NITERA,' ITERATIONS'
+          WRITE(LU,*) 'STRICKLER OF POINT 10 : ',CHESTR%R(10)
+          WRITE(LU,399) MAXEST,JCOUT
+399       FORMAT(1X,'SOLUTION NOT FOUND AFTER ',1I6,1X,
+     &            'ITERATIONS',/,1X,
+     &            'PRECISION  :',G16.7,1X,'JCOUTN/JCOUT1 :',G16.7)
+          ENDIF
+          GO TO 999
+!       
+        ELSEIF (JCOUT.GT.JCOUTN.AND..NOT.RSTART) THEN
+!       
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'LA FONCTION COUT AUGMENTE : STOP'
+            WRITE(LU,*) 'STRICKLER DU POINT 10 : ',CHESTR%R(10)
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'COST FUNCTION INCREASES : STOP'
+            WRITE(LU,*) 'STRICKLER OF POINT 10 : ',CHESTR%R(10)
+          ENDIF
+!         GO TO 999
+!       
+        ENDIF
+!       
+! ADJO  INT SYSTEM
 !
-         IF(LISTIN) THEN
-           IF(LNG.EQ.1) WRITE(LU,395) NITERA
-           IF(LNG.EQ.2) WRITE(LU,396) NITERA
-         ENDIF
-!
-395      FORMAT(/,1X,'------------------------------------------',/
-     &           ,1X,'    SOLUTION TROUVEE EN ',1I3,' ITERATIONS',/
-     &           ,1X,'------------------------------------------')
-396      FORMAT(/,1X,'-----------------------------------------',/
-     &           ,1X,'    SOLUTION FOUND IN ',1I3,' ITERATIONS',/
-     &           ,1X,'-----------------------------------------')
-         WRITE(LU,*) 'GRADIENT OF ZONE 1 : ',GRADJ%R(1)
-         WRITE(LU,*) 'STRICKLER OF POINT 10 : ',CHESTR%R(10)
-         GO TO 999
-!
-      ELSEIF (NITERA.GT.MAXEST) THEN
-!
-         IF(LNG.EQ.1) THEN
-         WRITE(LU,*) 'PAS DE CONVERGENCE EN ',NITERA,' ITERATIONS'
-         WRITE(LU,*) 'STRICKLER DU POINT 10 : ',CHESTR%R(10)
-         WRITE(LU,398) MAXEST,JCOUT
-398      FORMAT(1X,'SOLUTION NON TROUVEE APRES ',1I6,1X,
-     &           'ITERATIONS',/,1X,
-     &           'PRECISION  :',G16.7,1X,'JCOUTN/JCOUT1 :',G16.7)
-         ELSEIF(LNG.EQ.2) THEN
-         WRITE(LU,*) 'NO CONVERGENCE AFTER ',NITERA,' ITERATIONS'
-         WRITE(LU,*) 'STRICKLER OF POINT 10 : ',CHESTR%R(10)
-         WRITE(LU,399) MAXEST,JCOUT
-399      FORMAT(1X,'SOLUTION NOT FOUND AFTER ',1I6,1X,
-     &           'ITERATIONS',/,1X,
-     &           'PRECISION  :',G16.7,1X,'JCOUTN/JCOUT1 :',G16.7)
-         ENDIF
-         GO TO 999
-!
-      ELSEIF (JCOUT.GT.JCOUTN.AND..NOT.RSTART) THEN
-!
-         IF(LNG.EQ.1) THEN
-           WRITE(LU,*) 'LA FONCTION COUT AUGMENTE : STOP'
-           WRITE(LU,*) 'STRICKLER DU POINT 10 : ',CHESTR%R(10)
-         ELSEIF(LNG.EQ.2) THEN
-           WRITE(LU,*) 'COST FUNCTION INCREASES : STOP'
-           WRITE(LU,*) 'STRICKLER OF POINT 10 : ',CHESTR%R(10)
-         ENDIF
-!        GO TO 999
-!
-      ENDIF
-!
-! ADJOINT SYSTEM
-!
-         IF(LNG.EQ.1) WRITE(LU,403)
-         IF(LNG.EQ.2) WRITE(LU,404)
-         WRITE(LU,405)
-403      FORMAT(/////,1X,'LISTING D" ESTIMATION',82('-'))
-404      FORMAT(/////,1X,'LISTING OF ESTIMATION',82('-'))
-405      FORMAT(/////,
+        IF(LNG.EQ.1) WRITE(LU,403)
+        IF(LNG.EQ.2) WRITE(LU,404)
+        WRITE(LU,405)
+403     FORMAT(/////,1X,'LISTING D" ESTIMATION',82('-'))
+404     FORMAT(/////,1X,'LISTING OF ESTIMATION',82('-'))
+405     FORMAT(/////,
      &14X,'TTTTT  EEEEE  L      EEEEE  M   M  AAAAA  CCCCC',/,
      &14X,'  T    E      L      E      MM MM  A   A  C    ',/,
      &14X,'  T    EEE    L      EEE    M M M  AAAAA  C    ',/,
@@ -521,23 +522,22 @@
      &14X,' ADJOINT MODE ADJOINT MODE ADJOINT MODE ADJOINT',/,
      &14X,/////)
 !
-!        INITIALISES THE GRADIENT WHICH WILL BE COMPUTED
-!        BY PROPAG_ADJ
+!       INITIALISES THE GRADIENT WHICH WILL BE COMPUTED
+!       BY PROPAG_ADJ
 !
-         CALL OV('X=C     ',GRADJ%R,GRADJ%R,GRADJ%R,0.D0,NPARAM)
+        CALL OV('X=C     ',GRADJ%R,GRADJ%R,GRADJ%R,0.D0,NPARAM)
 !
-!        SERIES OF ADJOINT SYSTEMS
+!       SERIES OF ADJOINT SYSTEMS
 !
-         ADJO=.TRUE.
-         CALL TELEMAC2D(PASS= -1,ATDEP=0.D0,
-     &                  NITER=0,CODE='       ')
+        ADJO=.TRUE.
+        CALL TELEMAC2D(PASS= -1,ATDEP=0.D0,
+     &                 NITER=0,CODE='       ')
 !
-         IF(NZONE.GT.0) THEN
-           DO I=1,NZONE
-             WRITE(LU,*) 'GRADJ(',I,')= ',GRADJ%R(I)
-!            'TEMPORARY' STOP
-           ENDDO
-         ENDIF
+        IF(NZONE.GT.0) THEN
+          DO I=1,NZONE
+            WRITE(LU,*) 'GRADJ(',I,')= ',GRADJ%R(I)
+          ENDDO
+        ENDIF
 !
 ! END OF: IF (ILAGR.EQ.1)
       ENDIF
@@ -557,13 +557,13 @@
         ENDIF
       ELSEIF (ILAGR.EQ.2) THEN
 ! JCOUT2 IS JCOUT FOR RHO=ROX
-         JCOUT2=JCOUT
-         CALL NEWSTR(SETSTR,SETSTR2,DESC,0.5D0*ROX,RSTART,NPARAM,
-     &               ESTIME,KFROT)
-         CALL ASSIGNSTR(CHESTR ,SETSTR,ZONE%I,NZONE,NPOIN)
+        JCOUT2=JCOUT
+        CALL NEWSTR(SETSTR,SETSTR2,DESC,0.5D0*ROX,RSTART,NPARAM,
+     &              ESTIME,KFROT)
+        CALL ASSIGNSTR(CHESTR ,SETSTR,ZONE%I,NZONE,NPOIN)
       ELSEIF (ILAGR.EQ.3) THEN
 ! JCOUT3 IS JCOUT FOR RHO=1/2 ROX
-         JCOUT3=JCOUT
+        JCOUT3=JCOUT
 !
       ENDIF
 !

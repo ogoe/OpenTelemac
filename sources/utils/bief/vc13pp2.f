@@ -132,36 +132,36 @@
 !
       DO IELEM = 1 , NELEM
 !
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
-         I5 = IKLE5(IELEM)
-         I6 = IKLE6(IELEM)
+        I1 = IKLE1(IELEM)
+        I2 = IKLE2(IELEM)
+        I3 = IKLE3(IELEM)
+        I4 = IKLE4(IELEM)
+        I5 = IKLE5(IELEM)
+        I6 = IKLE6(IELEM)
 !
-         F1 = F(I1)
-         F2 = F(I2)
-         F3 = F(I3)
+        F1 = F(I1)
+        F2 = F(I2)
+        F3 = F(I3)
 !
-!        REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
+!       REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-         Y2  =  Y(IELEM,2)
-         Y3  =  Y(IELEM,3)
+        Y2  =  Y(IELEM,2)
+        Y3  =  Y(IELEM,3)
 !
-         FX6 = Y2*(F1-F3) + Y3*(F2-F1)
+        FX6 = Y2*(F1-F3) + Y3*(F2-F1)
 !
-         H1 = Z(I4) - Z(I1)
-         H2 = Z(I5) - Z(I2)
-         H3 = Z(I6) - Z(I3)
-         H123 = H1 + H2 + H3
+        H1 = Z(I4) - Z(I1)
+        H2 = Z(I5) - Z(I2)
+        H3 = Z(I6) - Z(I3)
+        H123 = H1 + H2 + H3
 !
-         W1(IELEM) = XSUR48 * (H123+H1) * FX6
-         W2(IELEM) = XSUR48 * (H123+H2) * FX6
-         W3(IELEM) = XSUR48 * (H123+H3) * FX6
+        W1(IELEM) = XSUR48 * (H123+H1) * FX6
+        W2(IELEM) = XSUR48 * (H123+H2) * FX6
+        W3(IELEM) = XSUR48 * (H123+H3) * FX6
 !
-         W4(IELEM) = W1(IELEM)
-         W5(IELEM) = W2(IELEM)
-         W6(IELEM) = W3(IELEM)
+        W4(IELEM) = W1(IELEM)
+        W5(IELEM) = W2(IELEM)
+        W6(IELEM) = W3(IELEM)
 !
       ENDDO ! IELEM 
 !
@@ -173,51 +173,51 @@
 !
       DO IELEM = 1 , NELEM
 !
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
-         I5 = IKLE5(IELEM)
-         I6 = IKLE6(IELEM)
+        I1 = IKLE1(IELEM)
+        I2 = IKLE2(IELEM)
+        I3 = IKLE3(IELEM)
+        I4 = IKLE4(IELEM)
+        I5 = IKLE5(IELEM)
+        I6 = IKLE6(IELEM)
 !
-         F1 = F(I1)
-         F2 = F(I2)
-         F3 = F(I3)
+        F1 = F(I1)
+        F2 = F(I2)
+        F3 = F(I3)
 !
-!        REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
+!       REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-         X2  =  X(IELEM,2)
-         X3  =  X(IELEM,3)
+        X2  =  X(IELEM,2)
+        X3  =  X(IELEM,3)
 !
-         FY6 = X2*(F3-F1) + X3*(F1-F2)
+        FY6 = X2*(F3-F1) + X3*(F1-F2)
 !
-         H1 = Z(I4) - Z(I1)
-         H2 = Z(I5) - Z(I2)
-         H3 = Z(I6) - Z(I3)
-         H123 = H1 + H2 + H3
+        H1 = Z(I4) - Z(I1)
+        H2 = Z(I5) - Z(I2)
+        H3 = Z(I6) - Z(I3)
+        H123 = H1 + H2 + H3
 !
-         W1(IELEM) = XSUR48 * (H123+H1) * FY6
-         W2(IELEM) = XSUR48 * (H123+H2) * FY6
-         W3(IELEM) = XSUR48 * (H123+H3) * FY6
+        W1(IELEM) = XSUR48 * (H123+H1) * FY6
+        W2(IELEM) = XSUR48 * (H123+H2) * FY6
+        W3(IELEM) = XSUR48 * (H123+H3) * FY6
 !
-         W4(IELEM) = W1(IELEM)
-         W5(IELEM) = W2(IELEM)
-         W6(IELEM) = W3(IELEM)
+        W4(IELEM) = W1(IELEM)
+        W5(IELEM) = W2(IELEM)
+        W6(IELEM) = W3(IELEM)
 !
-         ENDDO
+        ENDDO
 !
       ELSE
 !
 !-----------------------------------------------------------------------
 !
-          IF (LNG.EQ.1) WRITE(LU,200) ICOORD
-          IF (LNG.EQ.2) WRITE(LU,201) ICOORD
-200       FORMAT(1X,'VC13PP2 (BIEF) : COMPOSANTE IMPOSSIBLE ',
-     &              1I6,' VERIFIER ICOORD')
-201       FORMAT(1X,'VC13PP2 (BIEF) : IMPOSSIBLE COMPONENT ',
-     &              1I6,' CHECK ICOORD')
-          CALL PLANTE(1)
-          STOP
+        IF (LNG.EQ.1) WRITE(LU,200) ICOORD
+        IF (LNG.EQ.2) WRITE(LU,201) ICOORD
+200     FORMAT(1X,'VC13PP2 (BIEF) : COMPOSANTE IMPOSSIBLE ',
+     &            1I6,' VERIFIER ICOORD')
+201     FORMAT(1X,'VC13PP2 (BIEF) : IMPOSSIBLE COMPONENT ',
+     &            1I6,' CHECK ICOORD')
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !
@@ -227,16 +227,16 @@
 !
 !=======================================================================
 !
-       IF (LNG.EQ.1) WRITE(LU,101) IELMF,SF%NAME
-       IF (LNG.EQ.2) WRITE(LU,102) IELMF,SF%NAME
-101    FORMAT(1X,'VC13PP2 (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F : ',1I6,' CAS NON PREVU',/,
-     &        1X,'NOM REEL DE F : ',A6)
-102    FORMAT(1X,'VC13PP2 (BIEF) :',/,
-     &        1X,'DISCRETISATION OF F : ',1I6,' NOT IMPLEMENTED',/,
-     &        1X,'REAL NAME OF F: ',A6)
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,101) IELMF,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,102) IELMF,SF%NAME
+101     FORMAT(1X,'VC13PP2 (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,' CAS NON PREVU',/,
+     &         1X,'NOM REEL DE F : ',A6)
+102     FORMAT(1X,'VC13PP2 (BIEF) :',/,
+     &         1X,'DISCRETISATION OF F : ',1I6,' NOT IMPLEMENTED',/,
+     &         1X,'REAL NAME OF F: ',A6)
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

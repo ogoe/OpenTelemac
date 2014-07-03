@@ -118,184 +118,184 @@
 !
 !** INITIALISES THE COMMUNICATION ARRAYS
 !
-       K = 1
-       IF(IAN.EQ.3) THEN
-            DO J=1,NPLAN
-              DO I=1,IKA
-                II=NH_COM(I,IL)
-                BUF_SEND(K,IL)  =V1(II,J)
-                BUF_SEND(K+1,IL)=V2(II,J)
-                BUF_SEND(K+2,IL)=V3(II,J)
-                K=K+3
-              ENDDO
+        K = 1
+        IF(IAN.EQ.3) THEN
+          DO J=1,NPLAN
+            DO I=1,IKA
+              II=NH_COM(I,IL)
+              BUF_SEND(K,IL)  =V1(II,J)
+              BUF_SEND(K+1,IL)=V2(II,J)
+              BUF_SEND(K+2,IL)=V3(II,J)
+              K=K+3
             ENDDO
-       ELSEIF(IAN.EQ.2) THEN
-            DO J=1,NPLAN
-              DO I=1,IKA
-                II=NH_COM(I,IL)
-                BUF_SEND(K,IL)  =V1(II,J)
-                BUF_SEND(K+1,IL)=V2(II,J)
-                K=K+2
-              ENDDO
+          ENDDO
+        ELSEIF(IAN.EQ.2) THEN
+          DO J=1,NPLAN
+            DO I=1,IKA
+              II=NH_COM(I,IL)
+              BUF_SEND(K,IL)  =V1(II,J)
+              BUF_SEND(K+1,IL)=V2(II,J)
+              K=K+2
             ENDDO
-       ELSEIF(IAN.EQ.1) THEN
-            DO J=1,NPLAN
-              DO I=1,IKA
-                II=NH_COM(I,IL)
-                BUF_SEND(K,IL)  =V1(II,J)
-                K=K+1
-              ENDDO
+          ENDDO
+        ELSEIF(IAN.EQ.1) THEN
+          DO J=1,NPLAN
+            DO I=1,IKA
+              II=NH_COM(I,IL)
+              BUF_SEND(K,IL)  =V1(II,J)
+              K=K+1
             ENDDO
-       ENDIF
-!
-       CALL P_IWRIT(BUF_SEND(1,IL),IAN*IKA*NPLAN*8,
-     &              IPA,PARACO_MSG_TAG,SEND_REQ(IL))
+          ENDDO
+        ENDIF
+!       
+        CALL P_IWRIT(BUF_SEND(1,IL),IAN*IKA*NPLAN*8,
+     &               IPA,PARACO_MSG_TAG,SEND_REQ(IL))
 !
       ENDDO
 !
 !== WAIT RECEIVED MESSAGES (POSSIBILITY OF COVERING)
 !
       DO IL=1,NB_NEIGHB
-       IKA = NB_NEIGHB_PT(IL)
-       IPA = LIST_SEND(IL)
-       CALL P_WAIT_PARACO(RECV_REQ(IL),1)
-!
-       K=1
-!
-       IF(ICOM.EQ.1) THEN
-            IF(IAN.EQ.3) THEN
-              DO J=1,NPLAN
-                DO I=1,IKA
-                  II=NH_COM(I,IL)
-                  IF(ABS(BUF_RECV(K,IL)).GT.ABS(V1(II,J)))
-     &                            V1(II,J)=BUF_RECV(K  ,IL)
-                  IF(ABS(BUF_RECV(K+1,IL)).GT.ABS(V2(II,J)))
-     &                            V2(II,J)=BUF_RECV(K+1,IL)
-                  IF(ABS(BUF_RECV(K+2,IL)).GT.ABS(V3(II,J)))
-     &                            V3(II,J)=BUF_RECV(K+2,IL)
-                  K=K+3
-                ENDDO
+        IKA = NB_NEIGHB_PT(IL)
+        IPA = LIST_SEND(IL)
+        CALL P_WAIT_PARACO(RECV_REQ(IL),1)
+!       
+        K=1
+!       
+        IF(ICOM.EQ.1) THEN
+          IF(IAN.EQ.3) THEN
+            DO J=1,NPLAN
+              DO I=1,IKA
+                II=NH_COM(I,IL)
+                IF(ABS(BUF_RECV(K,IL)).GT.ABS(V1(II,J)))
+     &                          V1(II,J)=BUF_RECV(K  ,IL)
+                IF(ABS(BUF_RECV(K+1,IL)).GT.ABS(V2(II,J)))
+     &                          V2(II,J)=BUF_RECV(K+1,IL)
+                IF(ABS(BUF_RECV(K+2,IL)).GT.ABS(V3(II,J)))
+     &                          V3(II,J)=BUF_RECV(K+2,IL)
+                K=K+3
               ENDDO
-            ELSEIF(IAN.EQ.2) THEN
-              DO J=1,NPLAN
-                DO I=1,IKA
-                  II=NH_COM(I,IL)
-                  IF(ABS(BUF_RECV(K,IL)).GT.ABS(V1(II,J)))
-     &                            V1(II,J)=BUF_RECV(K  ,IL)
-                  IF(ABS(BUF_RECV(K+1,IL)).GT.ABS(V2(II,J)))
-     &                            V2(II,J)=BUF_RECV(K+1,IL)
-                  K=K+2
-                ENDDO
+            ENDDO
+          ELSEIF(IAN.EQ.2) THEN
+            DO J=1,NPLAN
+              DO I=1,IKA
+                II=NH_COM(I,IL)
+                IF(ABS(BUF_RECV(K,IL)).GT.ABS(V1(II,J)))
+     &                          V1(II,J)=BUF_RECV(K  ,IL)
+                IF(ABS(BUF_RECV(K+1,IL)).GT.ABS(V2(II,J)))
+     &                          V2(II,J)=BUF_RECV(K+1,IL)
+                K=K+2
               ENDDO
-            ELSEIF(IAN.EQ.1) THEN
-              DO J=1,NPLAN
-                DO I=1,IKA
-                  II=NH_COM(I,IL)
-                  IF(ABS(BUF_RECV(K,IL)).GT.ABS(V1(II,J)))
-     &                            V1(II,J)=BUF_RECV(K  ,IL)
-                  K=K+1
-                ENDDO
+            ENDDO
+          ELSEIF(IAN.EQ.1) THEN
+            DO J=1,NPLAN
+              DO I=1,IKA
+                II=NH_COM(I,IL)
+                IF(ABS(BUF_RECV(K,IL)).GT.ABS(V1(II,J)))
+     &                          V1(II,J)=BUF_RECV(K  ,IL)
+                K=K+1
               ENDDO
-            ENDIF
-       ELSEIF(ICOM.EQ.2) THEN
-            IF(IAN.EQ.3) THEN
-              DO J=1,NPLAN
-                DO I=1,IKA
-                  II=NH_COM(I,IL)
-                  V1(II,J)=V1(II,J)+BUF_RECV(K  ,IL)
-                  V2(II,J)=V2(II,J)+BUF_RECV(K+1,IL)
-                  V3(II,J)=V3(II,J)+BUF_RECV(K+2,IL)
-                  K=K+3
-                ENDDO
+            ENDDO
+          ENDIF
+        ELSEIF(ICOM.EQ.2) THEN
+          IF(IAN.EQ.3) THEN
+            DO J=1,NPLAN
+              DO I=1,IKA
+                II=NH_COM(I,IL)
+                V1(II,J)=V1(II,J)+BUF_RECV(K  ,IL)
+                V2(II,J)=V2(II,J)+BUF_RECV(K+1,IL)
+                V3(II,J)=V3(II,J)+BUF_RECV(K+2,IL)
+                K=K+3
               ENDDO
-            ELSEIF(IAN.EQ.2) THEN
-              DO J=1,NPLAN
-                DO I=1,IKA
-                  II=NH_COM(I,IL)
-                  V1(II,J)=V1(II,J)+BUF_RECV(K  ,IL)
-                  V2(II,J)=V2(II,J)+BUF_RECV(K+1,IL)
-                  K=K+2
-                ENDDO
+            ENDDO
+          ELSEIF(IAN.EQ.2) THEN
+            DO J=1,NPLAN
+              DO I=1,IKA
+                II=NH_COM(I,IL)
+                V1(II,J)=V1(II,J)+BUF_RECV(K  ,IL)
+                V2(II,J)=V2(II,J)+BUF_RECV(K+1,IL)
+                K=K+2
               ENDDO
-            ELSEIF(IAN.EQ.1) THEN
-              DO J=1,NPLAN
-                DO I=1,IKA
-                  II=NH_COM(I,IL)
-                  V1(II,J)=V1(II,J)+BUF_RECV(K  ,IL)
-                  K=K+1
-                ENDDO
+            ENDDO
+          ELSEIF(IAN.EQ.1) THEN
+            DO J=1,NPLAN
+              DO I=1,IKA
+                II=NH_COM(I,IL)
+                V1(II,J)=V1(II,J)+BUF_RECV(K  ,IL)
+                K=K+1
               ENDDO
-            ENDIF
-       ELSEIF(ICOM.EQ.3) THEN
-            IF(IAN.EQ.3) THEN
-              DO J=1,NPLAN
-                DO I=1,IKA
-                  II=NH_COM(I,IL)
-                  IF(BUF_RECV(K  ,IL).GT.V1(II,J))
-     &              V1(II,J)=BUF_RECV(K  ,IL)
-                  IF(BUF_RECV(K+1,IL).GT.V2(II,J))
-     &              V2(II,J)=BUF_RECV(K+1,IL)
-                  IF(BUF_RECV(K+2,IL).GT.V3(II,J))
-     &              V3(II,J)=BUF_RECV(K+2,IL)
-                  K=K+3
-                ENDDO
+            ENDDO
+          ENDIF
+        ELSEIF(ICOM.EQ.3) THEN
+          IF(IAN.EQ.3) THEN
+            DO J=1,NPLAN
+              DO I=1,IKA
+                II=NH_COM(I,IL)
+                IF(BUF_RECV(K  ,IL).GT.V1(II,J))
+     &            V1(II,J)=BUF_RECV(K  ,IL)
+                IF(BUF_RECV(K+1,IL).GT.V2(II,J))
+     &            V2(II,J)=BUF_RECV(K+1,IL)
+                IF(BUF_RECV(K+2,IL).GT.V3(II,J))
+     &            V3(II,J)=BUF_RECV(K+2,IL)
+                K=K+3
               ENDDO
-            ELSEIF(IAN.EQ.2) THEN
-              DO J=1,NPLAN
-                DO I=1,IKA
-                  II=NH_COM(I,IL)
-                  IF(BUF_RECV(K  ,IL).GT.V1(II,J))
-     &              V1(II,J)=BUF_RECV(K  ,IL)
-                  IF(BUF_RECV(K+1,IL).GT.V2(II,J))
-     &              V2(II,J)=BUF_RECV(K+1,IL)
-                  K=K+2
-                ENDDO
+            ENDDO
+          ELSEIF(IAN.EQ.2) THEN
+            DO J=1,NPLAN
+              DO I=1,IKA
+                II=NH_COM(I,IL)
+                IF(BUF_RECV(K  ,IL).GT.V1(II,J))
+     &            V1(II,J)=BUF_RECV(K  ,IL)
+                IF(BUF_RECV(K+1,IL).GT.V2(II,J))
+     &            V2(II,J)=BUF_RECV(K+1,IL)
+                K=K+2
               ENDDO
-            ELSEIF(IAN.EQ.1) THEN
-              DO J=1,NPLAN
-                DO I=1,IKA
-                  II=NH_COM(I,IL)
-                  IF(BUF_RECV(K  ,IL).GT.V1(II,J))
-     &              V1(II,J)=BUF_RECV(K  ,IL)
-                  K=K+1
-                ENDDO
+            ENDDO
+          ELSEIF(IAN.EQ.1) THEN
+            DO J=1,NPLAN
+              DO I=1,IKA
+                II=NH_COM(I,IL)
+                IF(BUF_RECV(K  ,IL).GT.V1(II,J))
+     &            V1(II,J)=BUF_RECV(K  ,IL)
+                K=K+1
               ENDDO
-            ENDIF
+            ENDDO
+          ENDIF
         ELSEIF(ICOM.EQ.4) THEN
-            IF(IAN.EQ.3) THEN
-              DO J=1,NPLAN
-                DO I=1,IKA
-                  II=NH_COM(I,IL)
-                  IF(BUF_RECV(K  ,IL).LT.V1(II,J))
-     &              V1(II,J)=BUF_RECV(K  ,IL)
-                  IF(BUF_RECV(K+1,IL).LT.V2(II,J))
-     &              V2(II,J)=BUF_RECV(K+1,IL)
-                  IF(BUF_RECV(K+2,IL).LT.V3(II,J))
-     &              V3(II,J)=BUF_RECV(K+2,IL)
-                  K=K+3
-                ENDDO
+          IF(IAN.EQ.3) THEN
+            DO J=1,NPLAN
+              DO I=1,IKA
+                II=NH_COM(I,IL)
+                IF(BUF_RECV(K  ,IL).LT.V1(II,J))
+     &            V1(II,J)=BUF_RECV(K  ,IL)
+                IF(BUF_RECV(K+1,IL).LT.V2(II,J))
+     &            V2(II,J)=BUF_RECV(K+1,IL)
+                IF(BUF_RECV(K+2,IL).LT.V3(II,J))
+     &            V3(II,J)=BUF_RECV(K+2,IL)
+                K=K+3
               ENDDO
-            ELSEIF(IAN.EQ.2) THEN
-              DO J=1,NPLAN
-                DO I=1,IKA
-                  II=NH_COM(I,IL)
-                  IF(BUF_RECV(K  ,IL).LT.V1(II,J))
-     &              V1(II,J)=BUF_RECV(K  ,IL)
-                  IF(BUF_RECV(K+1,IL).LT.V2(II,J))
-     &              V2(II,J)=BUF_RECV(K+1,IL)
-                  K=K+2
-                ENDDO
+            ENDDO
+          ELSEIF(IAN.EQ.2) THEN
+            DO J=1,NPLAN
+              DO I=1,IKA
+                II=NH_COM(I,IL)
+                IF(BUF_RECV(K  ,IL).LT.V1(II,J))
+     &            V1(II,J)=BUF_RECV(K  ,IL)
+                IF(BUF_RECV(K+1,IL).LT.V2(II,J))
+     &            V2(II,J)=BUF_RECV(K+1,IL)
+                K=K+2
               ENDDO
-            ELSEIF(IAN.EQ.1) THEN
-              DO J=1,NPLAN
-                DO I=1,IKA
-                  II=NH_COM(I,IL)
-                  IF(BUF_RECV(K  ,IL).LT.V1(II,J))
-     &              V1(II,J)=BUF_RECV(K  ,IL)
-                  K=K+1
-                ENDDO
+            ENDDO
+          ELSEIF(IAN.EQ.1) THEN
+            DO J=1,NPLAN
+              DO I=1,IKA
+                II=NH_COM(I,IL)
+                IF(BUF_RECV(K  ,IL).LT.V1(II,J))
+     &            V1(II,J)=BUF_RECV(K  ,IL)
+                K=K+1
               ENDDO
-            ENDIF
+            ENDDO
+          ENDIF
         ENDIF
 !
       ENDDO

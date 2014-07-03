@@ -106,21 +106,21 @@
       CORTRI    = MOTREA  (ADRES(2,3))
 !>>>>
       IF (NSOM.GE.3) THEN
-         DO I=1,NSOM
-            SOM(I,1) = MOTREA  (ADRES(2,4)+I-1)
-            SOM(I,2) = MOTREA  (ADRES(2,5)+I-1)
-         ENDDO
-         SOM(NSOM+1,1) = SOM(1,1)
-         SOM(NSOM+1,2) = SOM(1,2)
+        DO I=1,NSOM
+          SOM(I,1) = MOTREA  (ADRES(2,4)+I-1)
+          SOM(I,2) = MOTREA  (ADRES(2,5)+I-1)
+        ENDDO
+        SOM(NSOM+1,1) = SOM(1,1)
+        SOM(NSOM+1,2) = SOM(1,2)
       ENDIF
 !
       IF (NSOM2.GE.3) THEN
-         DO I=1,NSOM2
-            SOM2(I,1) = MOTREA  (ADRES(2,6)+I-1)
-            SOM2(I,2) = MOTREA  (ADRES(2,7)+I-1)
-         ENDDO
-         SOM2(NSOM2+1,1) = SOM2(1,1)
-         SOM2(NSOM2+1,2) = SOM2(1,2)
+        DO I=1,NSOM2
+          SOM2(I,1) = MOTREA  (ADRES(2,6)+I-1)
+          SOM2(I,2) = MOTREA  (ADRES(2,7)+I-1)
+        ENDDO
+        SOM2(NSOM2+1,1) = SOM2(1,1)
+        SOM2(NSOM2+1,2) = SOM2(1,2)
       ENDIF
 !<<<<
       SEUSEC =  MOTREA  (ADRES(2,8))
@@ -154,25 +154,25 @@
 !
       NBFOND=0
       DO I=1,DIMENS(4,8)
-         IF (MOTCAR ( ADRES(4,8) + I-1).NE.' ') THEN
-            NBFOND = NBFOND + 1
-            IF(I.EQ.1) THEN
-              FOND(NBFOND) = MOTCAR ( ADRES(4,8) + I-1)
-              NOMFON = MOTCAR ( ADRES(4,8) + I-1)
-            ELSEIF(I.EQ.2) THEN
-              FOND(NBFOND) = MOTCAR ( ADRES(4,8) + I-1)
-              NOMFO2 = MOTCAR ( ADRES(4,8) + I-1)
-            ELSEIF(I.EQ.2) THEN
-              FOND(NBFOND) = MOTCAR ( ADRES(4,8) + I-1)
-              NOMIMP = MOTCAR ( ADRES(4,8) + I-1)
-            ELSEIF(I.EQ.2) THEN
-              FOND(NBFOND) = MOTCAR ( ADRES(4,8) + I-1)
-              NOMSOU = MOTCAR ( ADRES(4,8) + I-1)
-            ELSEIF(I.EQ.2) THEN
-              FOND(NBFOND) = MOTCAR ( ADRES(4,8) + I-1)
-              NOMFRC = MOTCAR ( ADRES(4,8) + I-1)
-            ENDIF
-         ENDIF
+        IF (MOTCAR ( ADRES(4,8) + I-1).NE.' ') THEN
+          NBFOND = NBFOND + 1
+          IF(I.EQ.1) THEN
+            FOND(NBFOND) = MOTCAR ( ADRES(4,8) + I-1)
+            NOMFON = MOTCAR ( ADRES(4,8) + I-1)
+          ELSEIF(I.EQ.2) THEN
+            FOND(NBFOND) = MOTCAR ( ADRES(4,8) + I-1)
+            NOMFO2 = MOTCAR ( ADRES(4,8) + I-1)
+          ELSEIF(I.EQ.2) THEN
+            FOND(NBFOND) = MOTCAR ( ADRES(4,8) + I-1)
+            NOMIMP = MOTCAR ( ADRES(4,8) + I-1)
+          ELSEIF(I.EQ.2) THEN
+            FOND(NBFOND) = MOTCAR ( ADRES(4,8) + I-1)
+            NOMSOU = MOTCAR ( ADRES(4,8) + I-1)
+          ELSEIF(I.EQ.2) THEN
+            FOND(NBFOND) = MOTCAR ( ADRES(4,8) + I-1)
+            NOMFRC = MOTCAR ( ADRES(4,8) + I-1)
+          ENDIF
+        ENDIF
       ENDDO
 !
       NOMGEO = MOTCAR( ADRES(4, 5) )
@@ -203,52 +203,55 @@
 !
       IF (FONTRI) NBFOND = 1
       IF (NBFOND.GT.5) THEN
-         IF (LNG.EQ.1) WRITE(LU,1000)
-         IF (LNG.EQ.2) WRITE(LU,4000)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,1000)
+        IF (LNG.EQ.2) WRITE(LU,4000)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       IF (STD.NE.'IBM'.AND.STD.NE.'I3E'.AND.STD.NE.'STD') THEN
-         IF (LNG.EQ.1) WRITE(LU,1100) STD
-         IF (LNG.EQ.2) WRITE(LU,4100) STD
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,1100) STD
+        IF (LNG.EQ.2) WRITE(LU,4100) STD
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       IF (MAILLE.NE.'SUPERTAB4'.AND.MAILLE.NE.'SUPERTAB6'.AND.
      &    MAILLE.NE.'SIMAIL'   .AND.MAILLE.NE.'SELAFIN'  .AND.
      &    MAILLE.NE.'TRIGRID'  .AND.MAILLE.NE.'MASTER2'  .AND.
      &    MAILLE.NE.'FASTTABS' .AND.MAILLE.NE.'ADCIRC'   ) THEN
-         IF (LNG.EQ.1) WRITE(LU,1200) MAILLE
-         IF (LNG.EQ.2) WRITE(LU,4200) MAILLE
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,1200) MAILLE
+        IF (LNG.EQ.2) WRITE(LU,4200) MAILLE
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       IF (MAILLE.EQ.'SUPERTAB4') THEN
 ! INDICATEUR DE DEBUT DE LA LISTE DES POINTS DU MAILLAGE
-         NSEC11 = 15
-         NSEC12 = 0
+        NSEC11 = 15
+        NSEC12 = 0
 ! INDICATEUR DE DEBUT DE LA LISTE DES IKLE
-         NSEC2  = 71
+        NSEC2  = 71
 ! INDICATEUR DE POSITION DU TITRE
-         NSEC3  = 151
+        NSEC3  = 151
       ELSEIF (MAILLE.EQ.'SUPERTAB6') THEN
 ! INDICATEUR DE DEBUT DE LA LISTE DES POINTS DU MAILLAGE
 ! LECTURE EN SIMPLE PRECISION
-         NSEC11 = 15
+        NSEC11 = 15
 ! LECTURE EN DOUBLE PRECISION
-         NSEC12 = 781
+        NSEC12 = 781
 ! INDICATEUR DE DEBUT DE LA LISTE DES IKLE
-         NSEC2  = 780
+        NSEC2  = 780
 ! INDICATEUR DE POSITION DU TITRE
-         NSEC3  = 151
+        NSEC3  = 151
       ELSEIF (MAILLE.EQ.'MASTER2') THEN
 ! INDICATEUR DE DEBUT DE LA LISTE DES POINTS DU MAILLAGE
-         NSEC11 = 0
-         NSEC12 = 2411
+        NSEC11 = 0
+        NSEC12 = 2411
 ! INDICATEUR DE DEBUT DE LA LISTE DES IKLE
-         NSEC2  = 2412
+        NSEC2  = 2412
 ! INDICATEUR DE POSITION DU TITRE
-         NSEC3  = 151
+        NSEC3  = 151
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -257,16 +260,19 @@
         IF (MAILLE.NE.'SELAFIN') THEN
           IF (LNG.EQ.1) WRITE(LU,1300)
           IF (LNG.EQ.2) WRITE(LU,4300)
+          CALL PLANTE(1)
           STOP
         ENDIF
         IF (NBFOND.GT.0) THEN
           IF (LNG.EQ.1) WRITE(LU,1301)
           IF (LNG.EQ.2) WRITE(LU,4301)
+          CALL PLANTE(1)
           STOP
         ENDIF
         IF (DIV4) THEN
           IF (LNG.EQ.1) WRITE(LU,1302)
           IF (LNG.EQ.2) WRITE(LU,4302)
+          CALL PLANTE(1)
           STOP
         ENDIF
         DIV4      = .FALSE.

@@ -120,78 +120,78 @@
 !
       IF(IELMF.EQ.71) THEN
 !
-         SUR720  = XMUL/720.D0
+        SUR720  = XMUL/720.D0
 !
-!        LOOP ON THE BOUNDARY SIDES
+!       LOOP ON THE BOUNDARY SIDES
 !
-         DO IELEM = 1,NELEB
+        DO IELEM = 1,NELEB
 !
-           IEL=NELBOR(IELEM)
+          IEL=NELBOR(IELEM)
 !
-           IF(IEL.GT.0) THEN
+          IF(IEL.GT.0) THEN
 !
-!            ELEMENT IN DOMAIN
+!           ELEMENT IN DOMAIN
 !      
-!            GLOBAL NUMBERING OF THE SIDE VERTICES
+!           GLOBAL NUMBERING OF THE SIDE VERTICES
 !
-             I1 = IKLE1(IELEM)
-             I2 = IKLE2(IELEM)
-             I3 = IKLE3(IELEM)
-             I4 = IKLE4(IELEM)
+            I1 = IKLE1(IELEM)
+            I2 = IKLE2(IELEM)
+            I3 = IKLE3(IELEM)
+            I4 = IKLE4(IELEM)
 !
-             J1=NULONE(IELEM,1)
-             J2=NULONE(IELEM,2)
-             AL = SQRT((X(IEL,J2)-X(IEL,J1))**2
-     &                +(Y(IEL,J2)-Y(IEL,J1))**2) * SUR720
+            J1=NULONE(IELEM,1)
+            J2=NULONE(IELEM,2)
+            AL = SQRT((X(IEL,J2)-X(IEL,J1))**2
+     &               +(Y(IEL,J2)-Y(IEL,J1))**2) * SUR720
 !
-             S1 = (Z(NBOR(I4)) - Z(NBOR(I1))) * AL
-             S2 = (Z(NBOR(I3)) - Z(NBOR(I2))) * AL
-             S11112 = S1 + S1 + S1 + S1 + S2
-             S11122 = S1 + S1 + S1 + S2 + S2
-             S11222 = S1 + S1 + S2 + S2 + S2
-             S12222 = S1 + S2 + S2 + S2 + S2
+            S1 = (Z(NBOR(I4)) - Z(NBOR(I1))) * AL
+            S2 = (Z(NBOR(I3)) - Z(NBOR(I2))) * AL
+            S11112 = S1 + S1 + S1 + S1 + S2
+            S11122 = S1 + S1 + S1 + S2 + S2
+            S11222 = S1 + S1 + S2 + S2 + S2
+            S12222 = S1 + S2 + S2 + S2 + S2
 !
-             F14 = F(I1) + F(I4)
-             F23 = F(I2) + F(I3)
-             F1114 = F(I1) + F(I1) + F14
-             F2223 = F(I2) + F(I2) + F23
-             F2333 = F23 + F(I3) + F(I3)
-             F1444 = F14 + F(I4) + F(I4)
+            F14 = F(I1) + F(I4)
+            F23 = F(I2) + F(I3)
+            F1114 = F(I1) + F(I1) + F14
+            F2223 = F(I2) + F(I2) + F23
+            F2333 = F23 + F(I3) + F(I3)
+            F1444 = F14 + F(I4) + F(I4)
 !
-!            DIAGONAL TERMS
+!           DIAGONAL TERMS
 !
-             A11(IELEM) = 3*F1114*S11112 + F2223*S11122
-             A22(IELEM) = 3*F2223*S12222 + F1114*S11222
-             A33(IELEM) = 3*F2333*S12222 + F1444*S11222
-             A44(IELEM) = 3*F1444*S11112 + F2333*S11122
+            A11(IELEM) = 3*F1114*S11112 + F2223*S11122
+            A22(IELEM) = 3*F2223*S12222 + F1114*S11222
+            A33(IELEM) = 3*F2333*S12222 + F1444*S11222
+            A44(IELEM) = 3*F1444*S11112 + F2333*S11122
 !
-!            ELEMENTS OFF THE DIAGONAL
+!           ELEMENTS OFF THE DIAGONAL
 !
-             A12(IELEM) = F1114*S11122 + F2223*S11222
-             A13(IELEM) =   F14*S11122 +   F23*S11222
-             A14(IELEM) = 3*F14*S11112 +   F23*S11122
-             A23(IELEM) = 3*F23*S12222 +   F14*S11222
-             A24(IELEM) = A13(IELEM)
-             A34(IELEM) = F2333*S11222 + F1444*S11122
+            A12(IELEM) = F1114*S11122 + F2223*S11222
+            A13(IELEM) =   F14*S11122 +   F23*S11222
+            A14(IELEM) = 3*F14*S11112 +   F23*S11122
+            A23(IELEM) = 3*F23*S12222 +   F14*S11222
+            A24(IELEM) = A13(IELEM)
+            A34(IELEM) = F2333*S11222 + F1444*S11122
 !
-           ELSE
+          ELSE
 !
-!            ELEMENT NOT IN DOMAIN (PARALLELISM)
+!           ELEMENT NOT IN DOMAIN (PARALLELISM)
 !
-             A11(IELEM) = 0.D0
-             A22(IELEM) = 0.D0
-             A33(IELEM) = 0.D0
-             A44(IELEM) = 0.D0
-             A12(IELEM) = 0.D0
-             A13(IELEM) = 0.D0
-             A14(IELEM) = 0.D0
-             A23(IELEM) = 0.D0
-             A24(IELEM) = 0.D0
-             A34(IELEM) = 0.D0
+            A11(IELEM) = 0.D0
+            A22(IELEM) = 0.D0
+            A33(IELEM) = 0.D0
+            A44(IELEM) = 0.D0
+            A12(IELEM) = 0.D0
+            A13(IELEM) = 0.D0
+            A14(IELEM) = 0.D0
+            A23(IELEM) = 0.D0
+            A24(IELEM) = 0.D0
+            A34(IELEM) = 0.D0
 !
-           ENDIF
+          ENDIF
 !
-         ENDDO ! IELEM 
+        ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -199,16 +199,16 @@
 !
       ELSE
 !
-         IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
-         IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
-100      FORMAT(1X,'MT06FF (BIEF) :',/,
-     &          1X,'DISCRETISATION DE F NON PREVUE : ',1I6,
-     &          1X,'NOM REEL : ',A6)
-101      FORMAT(1X,'MT06FF (BIEF) :',/,
-     &          1X,'DISCRETIZATION OF F NOT AVAILABLE:',1I6,
-     &          1X,'REAL NAME: ',A6)
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
+100     FORMAT(1X,'MT06FF (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F NON PREVUE : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+101     FORMAT(1X,'MT06FF (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F NOT AVAILABLE:',1I6,
+     &         1X,'REAL NAME: ',A6)
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

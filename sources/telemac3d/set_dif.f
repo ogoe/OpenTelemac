@@ -117,7 +117,7 @@
           I2 = IPOIN + IPLAN*NPOIN2 
           Z1=MESH3D%Z%R(I1) 
           Z2=MESH3D%Z%R(I2) 
-          DZ(iplan)= Z2-Z1 
+          DZ(IPLAN)= Z2-Z1 
 !         test JMH
 !         DZ(IPLAN)=MAX(DZ(IPLAN),EPS)
 !         end of test JMH
@@ -203,7 +203,7 @@
 !         combine the losses and gains for settling/depo and diffusion/ero 
           TOTLOSS=SETLOSS(IPLAN)+DIFLOSS(IPLAN) 
 !         modify the settling and diffusion proportionaly 
-          IF(TOTLOSS.GT.FCMASS) then 
+          IF(TOTLOSS.GT.FCMASS) THEN 
             !write(*,*) 'Warning: Limiting mass exchange!' 
             ! Perhaps we need to look at the concentrations  
             ! in planes above and below then 

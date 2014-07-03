@@ -184,10 +184,10 @@
 !=======================================================================
 !
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
-         CONTRIB = DT*( (1-GAMMA)*FLUX1_OLD + GAMMA*FLUX1)
-         MASENT = MASENT - CONTRIB
+        CONTRIB = DT*( (1-GAMMA)*FLUX1_OLD + GAMMA*FLUX1)
+        MASENT = MASENT - CONTRIB
       ELSE 
-         MASENT = MASENT - FLUX1*DT
+        MASENT = MASENT - FLUX1*DT
       ENDIF
 !
 !=======================================================================
@@ -195,10 +195,10 @@
 !   COMPUTES ERROR FOR THIS TIME STEP
 !
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
-         ERREUR = MASSE1 + MASSES - MASSE2 - CONTRIB
-         FLUX1_OLD = FLUX1
+        ERREUR = MASSE1 + MASSES - MASSE2 - CONTRIB
+        FLUX1_OLD = FLUX1
       ELSE
-         ERREUR = MASSE1 + MASSES - MASSE2 - DT*FLUX1
+        ERREUR = MASSE1 + MASSES - MASSE2 - DT*FLUX1
       ENDIF
 !
 !=======================================================================

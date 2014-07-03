@@ -440,20 +440,20 @@
 !
       ELSEIF(SCHCF.EQ.ADV_LPO) THEN
 !
-         CALL MURD3D(FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
-     &               MESH3D%M%D%R,MESH3D%M%X%R,DIM1X,
-     &               T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
-     &               IKLE3%I,MESH3D,
-     &               NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
-     &               CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
-     &               RAIN,PARAPLUIE%R,TRAIN,NPOIN2,
-     &               TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
-     &               FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
-     &               MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3)
+        CALL MURD3D(FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
+     &              MESH3D%M%D%R,MESH3D%M%X%R,DIM1X,
+     &              T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
+     &              IKLE3%I,MESH3D,
+     &              NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
+     &              CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
+     &              RAIN,PARAPLUIE%R,TRAIN,NPOIN2,
+     &              TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
+     &              FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
+     &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3)
 !
-!        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
-!        IF DIFF3D IS CALLED AFTER
-         S0F%TYPR='0'
+!       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
+!       IF DIFF3D IS CALLED AFTER
+        S0F%TYPR='0'
 !
 !-----------------------------------------------------------------------
 !
@@ -461,22 +461,22 @@
 !
       ELSEIF(SCHCF.EQ.ADV_LPO_TF) THEN
 !
-         CALL MURD3D_POS(FC%R,FN%R,VOLU%R,VOLU,VOLUN%R,VOLUN,
-     &                   T3_01%R,T3_01,MESH3D%M%X%R,
-     &                   T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
-     &                   MESH2D,MESH3D,
-     &                   NELEM3,NPOIN3,DT,SCHCF,MSK,MASKEL%R,INFOR,
-     &                   CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
-     &                   RAIN,PARAPLUIE%R,TRAIN,NPOIN2,OPTBAN,
-     &                   FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
-     &                   MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,
-     &                   TRAV3%ADR(6)%P,TRAV3%ADR(7)%P,
-     &                   TRAV3%ADR(8)%P,
-     &                   TRAV3%ADR(9)%P,2,IELM3,MAXADV)
+        CALL MURD3D_POS(FC%R,FN%R,VOLU%R,VOLU,VOLUN%R,VOLUN,
+     &                  T3_01%R,T3_01,MESH3D%M%X%R,
+     &                  T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
+     &                  MESH2D,MESH3D,
+     &                  NELEM3,NPOIN3,DT,SCHCF,MSK,MASKEL%R,INFOR,
+     &                  CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
+     &                  RAIN,PARAPLUIE%R,TRAIN,NPOIN2,OPTBAN,
+     &                  FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
+     &                  MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,
+     &                  TRAV3%ADR(6)%P,TRAV3%ADR(7)%P,
+     &                  TRAV3%ADR(8)%P,
+     &                  TRAV3%ADR(9)%P,2,IELM3,MAXADV)
 !
-!        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
-!        IF DIFF3D IS CALLED AFTER
-         S0F%TYPR='0'
+!       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
+!       IF DIFF3D IS CALLED AFTER
+        S0F%TYPR='0'
 !
 !-----------------------------------------------------------------------
 !
@@ -484,26 +484,26 @@
 !
       ELSEIF(SCHCF.EQ.ADV_NSC_TF) THEN
 !
-         PARA=0
-         IF(NCSIZE.GT.1) PARA=MESH3D%NSEG
-         CALL MURD3D_POS(FC%R,FN%R,VOLU%R,VOLU,VOLUN%R,VOLUN,
-     &                   T3_01%R,T3_01,MESH3D%M%X%R,
-     &                   T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
-     &                   MESH2D,MESH3D,
-     &                   NELEM3,NPOIN3,DT,SCHCF,MSK,MASKEL%R,INFOR,
-     &                   CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
-     &                   RAIN,PARAPLUIE%R,TRAIN,NPOIN2,OPTBAN,
-     &                   MURD_TF%X%R(1     :MESH3D%NSEG     ),
-     &                   MURD_TF%X%R(1+PARA:MESH3D%NSEG+PARA),
-     &                   MESH3D%GLOSEG%I,
-     &                   MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,
-     &                   TRAV3%ADR(6)%P,TRAV3%ADR(7)%P,
-     &                   TRAV3%ADR(8)%P,
-     &                   TRAV3%ADR(9)%P,2,IELM3,MAXADV)
+        PARA=0
+        IF(NCSIZE.GT.1) PARA=MESH3D%NSEG
+        CALL MURD3D_POS(FC%R,FN%R,VOLU%R,VOLU,VOLUN%R,VOLUN,
+     &                  T3_01%R,T3_01,MESH3D%M%X%R,
+     &                  T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
+     &                  MESH2D,MESH3D,
+     &                  NELEM3,NPOIN3,DT,SCHCF,MSK,MASKEL%R,INFOR,
+     &                  CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
+     &                  RAIN,PARAPLUIE%R,TRAIN,NPOIN2,OPTBAN,
+     &                  MURD_TF%X%R(1     :MESH3D%NSEG     ),
+     &                  MURD_TF%X%R(1+PARA:MESH3D%NSEG+PARA),
+     &                  MESH3D%GLOSEG%I,
+     &                  MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,
+     &                  TRAV3%ADR(6)%P,TRAV3%ADR(7)%P,
+     &                  TRAV3%ADR(8)%P,
+     &                  TRAV3%ADR(9)%P,2,IELM3,MAXADV)
 !
-!        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
-!        IF DIFF3D IS CALLED AFTER
-         S0F%TYPR='0'
+!       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
+!       IF DIFF3D IS CALLED AFTER
+        S0F%TYPR='0'
 !
 !-----------------------------------------------------------------------
 !
@@ -678,21 +678,19 @@
         DO IP=1,NPTFR3
           IF(DIRFLU(NUMLIQ(IP)).EQ.2) THEN
             IF(LIFBOL%I(IP+NPTFR3).EQ.KENT .OR.
-     &         LIFBOL%I(IP+NPTFR3).EQ.KENTU.OR.
-     &         LIFBOL%I(IP+NPTFR3).EQ.KADH     ) THEN
-!              ONLY ENTRANCES
-               I=NBOR3%I(IP)
-               IF(FLUEXTPAR%R(I).LT.0.D0) THEN
-                 STOFD=FD%R(I)
-                 LAMBDA=-FLUEXTPAR%R(I)*TETASUPG*DT/
-     &                   MAX(VOLUPAR%R(I),1.D-10)
-                 FD%R(I)=STOFD+LAMBDA*(FN%R(I)-STOFD)
-!                CORRECTION OF FLUX
-!                IF(CALFLU) THEN
-!                  A POSTERIORI ADDED MASS DUE TO CORRECTION
-                   FLUXF=FLUXF-VOLU%R(I)*(FD%R(I)-STOFD)
-!                ENDIF
-               ENDIF
+     &        LIFBOL%I(IP+NPTFR3).EQ.KENTU.OR.
+     &        LIFBOL%I(IP+NPTFR3).EQ.KADH     ) THEN
+!             ONLY ENTRANCES
+              I=NBOR3%I(IP)
+              IF(FLUEXTPAR%R(I).LT.0.D0) THEN
+                STOFD=FD%R(I)
+                LAMBDA=-FLUEXTPAR%R(I)*TETASUPG*DT/
+     &                  MAX(VOLUPAR%R(I),1.D-10)
+                FD%R(I)=STOFD+LAMBDA*(FN%R(I)-STOFD)
+!               CORRECTION OF FLUX
+!               A POSTERIORI ADDED MASS DUE TO CORRECTION
+                FLUXF=FLUXF-VOLU%R(I)*(FD%R(I)-STOFD)
+              ENDIF
             ENDIF
           ENDIF
         ENDDO

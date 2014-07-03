@@ -112,9 +112,9 @@
       IF(DEJAVU(K).EQ.0) THEN
         NS = X(NBOR(K)) + Y(NBOR(K))
         IF(NS.LT.MINNS) THEN
-         IDEP = K
-         MINNS = NS
-         YMIN = Y(NBOR(K))
+          IDEP = K
+          MINNS = NS
+          YMIN = Y(NBOR(K))
         ENDIF
         IF(NS.GT.MAXNS) MAXNS = NS
       ENDIF
@@ -129,8 +129,8 @@
         NS = X(NBOR(K)) + Y(NBOR(K))
         IF(ABS(MINNS-NS).LT.EPS) THEN
           IF(Y(NBOR(K)).LT.YMIN) THEN
-           IDEP = K
-           YMIN = Y(NBOR(K))
+            IDEP = K
+            YMIN = Y(NBOR(K))
           ENDIF
         ENDIF
       ENDIF

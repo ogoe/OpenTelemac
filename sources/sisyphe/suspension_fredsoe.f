@@ -102,25 +102,25 @@
 !
       DO I=1,NPOIN
 !
-         ! ****************** !
-         ! II - SKIN FRICTION !
-         ! ****************** !
+        ! ****************** !
+        ! II - SKIN FRICTION !
+        ! ****************** !
 !
-         TETAP = TAUP%R(I) / (GRAV*(XMVS-XMVE)*DM)
+        TETAP = TAUP%R(I) / (GRAV*(XMVS-XMVE)*DM)
 !
-         ! ***************** !
-         ! IV - EROSION FLUX ! (_IMP_)
-         ! ***************** !
-         ! CONCENTRATION INCREASED BY AVA BECAUSE IT IS COMPUTED
-         ! ONLY WITH ONE CLASS OF SEDIMENT (ASSUMPTION)
+        ! ***************** !
+        ! IV - EROSION FLUX ! (_IMP_)
+        ! ***************** !
+        ! CONCENTRATION INCREASED BY AVA BECAUSE IT IS COMPUTED
+        ! ONLY WITH ONE CLASS OF SEDIMENT (ASSUMPTION)
 !
-         IF(TETAP.GT.AC) THEN
-           AUX=(TETAP-AC)**1.75D0
-           CSTAEQ%R(I) = 0.331D0*AUX/(1.D0+0.72D0*AUX)
-           CSTAEQ%R(I) = MIN(CSTAEQ%R(I),CMAX)
-         ELSE
-           CSTAEQ%R(I) = 0.D0
-         ENDIF
+        IF(TETAP.GT.AC) THEN
+          AUX=(TETAP-AC)**1.75D0
+          CSTAEQ%R(I) = 0.331D0*AUX/(1.D0+0.72D0*AUX)
+          CSTAEQ%R(I) = MIN(CSTAEQ%R(I),CMAX)
+        ELSE
+          CSTAEQ%R(I) = 0.D0
+        ENDIF
 !
       ENDDO
 !

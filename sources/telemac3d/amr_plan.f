@@ -137,11 +137,11 @@
 ! --------------------------------------------------------------------
 !
       DO IPLAN = 1,NPLAN
-         DO IPOIN = 1,NPOIN2
-            Z0(IPOIN,IPLAN)     = ZVALS(IPOIN,IPLAN)
-            NEWZ(IPOIN,IPLAN)   = ZVALS(IPOIN,IPLAN)
-            INTSOL(IPOIN,IPLAN) = OBJSOL(IPOIN,IPLAN)
-         ENDDO                 ! IPOIN = 1,NPOIN2
+        DO IPOIN = 1,NPOIN2
+          Z0(IPOIN,IPLAN)     = ZVALS(IPOIN,IPLAN)
+          NEWZ(IPOIN,IPLAN)   = ZVALS(IPOIN,IPLAN)
+          INTSOL(IPOIN,IPLAN) = OBJSOL(IPOIN,IPLAN)
+        ENDDO                 ! IPOIN = 1,NPOIN2
       ENDDO                    ! IPLAN = 1,NPLAN
 !
 ! --------------------------------------------------------------------
@@ -149,17 +149,17 @@
 ! --------------------------------------------------------------------
 !
       DO IPOIN = 1,NPOIN2
-         NEXTR(IPOIN) = 0
-         DO IPLAN = 2,NPLAN-1
-            S1 = OBJSOL(IPOIN,IPLAN-1)
-            S2 = OBJSOL(IPOIN,IPLAN)
-            S3 = OBJSOL(IPOIN,IPLAN+1)
-            IF( (S1.LT.S2.AND.S3.LT.S2) .OR.
-     &          (S1.GT.S2.AND.S3.GT.S2) ) THEN
-               NEXTR(IPOIN) = NEXTR(IPOIN) + 1
-               ZEXT(IPOIN,NEXTR(IPOIN)) = Z0(IPOIN,IPLAN)
-            ENDIF              ! LOCAL EXTREMUM FOUND
-         ENDDO                 ! IPLAN = 2,NPLAN-1
+        NEXTR(IPOIN) = 0
+        DO IPLAN = 2,NPLAN-1
+          S1 = OBJSOL(IPOIN,IPLAN-1)
+          S2 = OBJSOL(IPOIN,IPLAN)
+          S3 = OBJSOL(IPOIN,IPLAN+1)
+          IF((S1.LT.S2.AND.S3.LT.S2) .OR.
+     &       (S1.GT.S2.AND.S3.GT.S2) ) THEN
+            NEXTR(IPOIN) = NEXTR(IPOIN) + 1
+            ZEXT(IPOIN,NEXTR(IPOIN)) = Z0(IPOIN,IPLAN)
+          ENDIF              ! LOCAL EXTREMUM FOUND
+        ENDDO                 ! IPLAN = 2,NPLAN-1
       ENDDO                    ! IPOIN = 1,NPOIN2
 !
 ! --------------------------------------------------------------------
@@ -171,28 +171,28 @@
 ! --------------------------------------------------------------------
 !
       IF(REFTYPE .EQ. 'A') THEN    ! REFINE BASED ON ARC LENGTH
-         DO IPOIN = 1,NPOIN2
-            MCOEFF(IPOIN) = 0.D0
-            DO IPLAN = 1,NPLAN-1
-               DSDZ = (OBJSOL(IPOIN,IPLAN+1)-OBJSOL(IPOIN,IPLAN)) / 
-     *                 (ZVALS(IPOIN,IPLAN+1)-ZVALS(IPOIN,IPLAN))
-               IF(ABS(DSDZ).GT.MCOEFF(IPOIN)) THEN
-                 MCOEFF(IPOIN) = ABS(DSDZ)
-               ENDIF
-            ENDDO              ! IPLAN = 1,NPLAN-1
-            IF( MCOEFF(IPOIN).GT.(0.01) ) THEN
-               MCOEFF(IPOIN) = 100.D0/(MCOEFF(IPOIN)**2)
+        DO IPOIN = 1,NPOIN2
+          MCOEFF(IPOIN) = 0.D0
+          DO IPLAN = 1,NPLAN-1
+            DSDZ = (OBJSOL(IPOIN,IPLAN+1)-OBJSOL(IPOIN,IPLAN)) / 
+     &             (ZVALS(IPOIN,IPLAN+1)-ZVALS(IPOIN,IPLAN))
+            IF(ABS(DSDZ).GT.MCOEFF(IPOIN)) THEN
+              MCOEFF(IPOIN) = ABS(DSDZ)
             ENDIF
-         ENDDO                 ! IPOIN = 1,NPOIN2
+          ENDDO              ! IPLAN = 1,NPLAN-1
+          IF( MCOEFF(IPOIN).GT.(0.01) ) THEN
+            MCOEFF(IPOIN) = 100.D0/(MCOEFF(IPOIN)**2)
+          ENDIF
+        ENDDO                 ! IPOIN = 1,NPOIN2
       ELSEIF (REFTYPE .EQ. 'C') THEN
-         WRITE(LU,*) 'AMR_PLAN: CURVATURE-BASED REFINEMENT NOT
-     *                YET IMPLEMENTED'
-         CALL PLANTE(1)
-         STOP
+        WRITE(LU,*) 'AMR_PLAN: CURVATURE-BASED REFINEMENT NOT
+     &               YET IMPLEMENTED'
+        CALL PLANTE(1)
+        STOP
       ELSE
-         WRITE(LU,*) 'AMR_PLAN: UNKNOWN REFINEMENT TYPE: ',REFTYPE
-         CALL PLANTE(1)
-         STOP
+        WRITE(LU,*) 'AMR_PLAN: UNKNOWN REFINEMENT TYPE: ',REFTYPE
+        CALL PLANTE(1)
+        STOP
       ENDIF                    ! CASE SPLITTING ON REFINEMENT TYPE
 !
 ! --------------------------------------------------------------------
@@ -212,18 +212,18 @@
           DO IPOIN = 1,NPOIN2
             DO IPLAN = 1,NPLAN-1
               DSDZ = (INTSOL(IPOIN,IPLAN+1)-INTSOL(IPOIN,IPLAN)) / 
-     *               (ZVALS(IPOIN,IPLAN+1)-ZVALS(IPOIN,IPLAN))
+     &               (ZVALS(IPOIN,IPLAN+1)-ZVALS(IPOIN,IPLAN))
               MONITOR(IPOIN,IPLAN)=SQRT(1.D0+MCOEFF(IPOIN)*DSDZ**2)
             ENDDO
           ENDDO              
         ELSEIF (REFTYPE.EQ.'C') THEN
           WRITE(LU,*) 'AMR_PLAN: CURVATURE-BASED REFINEMENT NOT
-     *                         YET IMPLEMENTED'
+     &                         YET IMPLEMENTED'
           CALL PLANTE(1)
           STOP
         ELSE
           WRITE(LU,*) 'AMR_PLAN: UNKNOWN REFINEMENT TYPE: ',
-     *                         REFTYPE
+     &                         REFTYPE
           CALL PLANTE(1)
           STOP
         ENDIF  
@@ -236,122 +236,122 @@
 !
 !        < VERTICAL SMOOTHING > 
 !
-         DO IPOIN = 1,NPOIN2
-            DO IPLAN = 2,NPLAN-2
-               SMONITOR(IPOIN,IPLAN) = 0.25*(MONITOR(IPOIN,IPLAN-1) + 
-     *                                     2*MONITOR(IPOIN,IPLAN  ) + 
-     *                                       MONITOR(IPOIN,IPLAN+1))
-            ENDDO              ! IPLAN = 2,NPLAN-2
-         ENDDO                 ! IPOIN = 1,NPOIN2
-         DO IPOIN = 1,NPOIN2
-            DO IPLAN = 2,NPLAN-2
-               MONITOR(IPOIN,IPLAN) = SMONITOR(IPOIN,IPLAN)
-            ENDDO              ! IPLAN = 2,NPLAN-2
-         ENDDO                 ! IPOIN = 1,NPOIN2
+        DO IPOIN = 1,NPOIN2
+          DO IPLAN = 2,NPLAN-2
+            SMONITOR(IPOIN,IPLAN) = 0.25*(MONITOR(IPOIN,IPLAN-1) + 
+     &                                  2*MONITOR(IPOIN,IPLAN  ) + 
+     &                                    MONITOR(IPOIN,IPLAN+1))
+          ENDDO              ! IPLAN = 2,NPLAN-2
+        ENDDO                 ! IPOIN = 1,NPOIN2
+        DO IPOIN = 1,NPOIN2
+          DO IPLAN = 2,NPLAN-2
+            MONITOR(IPOIN,IPLAN) = SMONITOR(IPOIN,IPLAN)
+          ENDDO              ! IPLAN = 2,NPLAN-2
+        ENDDO                 ! IPOIN = 1,NPOIN2
 !
-!        < HORIZONTAL SMOOTHING >
+!       < HORIZONTAL SMOOTHING >
 ! 
-         DO JPLAN = 1,20  ! 20 ITERATIONS
+        DO JPLAN = 1,20  ! 20 ITERATIONS
 ! 
-         DO IPOIN = 1,NPOIN2
-            NNEIGH(IPOIN) = 0.D0
+        DO IPOIN = 1,NPOIN2
+          NNEIGH(IPOIN) = 0.D0
+          DO IPLAN = 1,NPLAN
+            SMONITOR(IPOIN,IPLAN) = 0.D0
+          ENDDO              
+        ENDDO
+!               
+!       LOOP THROUGH SEGMENTS IN 2D MESH TO FIND NEIGHBOURS
+!       AND COMPUTE A WEIGHTED MEAN OF THE MONITOR FUNCTION ON EACH NODE
+!
+        IF(NCSIZE.GT.1) THEN
+          DO ISEG = 1,NSEG2
+            P1 = GLOSEG(ISEG,1)
+            P2 = GLOSEG(ISEG,2)
+!           A SEGMENT MAY APPEAR TWICE IN PARALLEL, HENCE COEF
+            NNEIGH(P1) = NNEIGH(P1)+COEF(ISEG)
+            NNEIGH(P2) = NNEIGH(P2)+COEF(ISEG)
             DO IPLAN = 1,NPLAN
-               SMONITOR(IPOIN,IPLAN) = 0.D0
+              SMONITOR(P1,IPLAN) = SMONITOR(P1,IPLAN)
+     &                           + COEF(ISEG)*MONITOR(P2,IPLAN)
+              SMONITOR(P2,IPLAN) = SMONITOR(P2,IPLAN)
+     &                           + COEF(ISEG)*MONITOR(P1,IPLAN)
             ENDDO              
-         ENDDO
-!                
-!        LOOP THROUGH SEGMENTS IN 2D MESH TO FIND NEIGHBOURS
-!        AND COMPUTE A WEIGHTED MEAN OF THE MONITOR FUNCTION ON EACH NODE
+          ENDDO 
+!         THE POINT ITSELF (MAY APPEAR SEVERAL TIMES IN PARALLEL, HENCE FAC)
+          DO IPOIN = 1,NPOIN2
+            NNEIGH(IPOIN)=NNEIGH(IPOIN)+MESH2D%FAC%R(IPOIN)
+            DO IPLAN = 1,NPLAN
+              SMONITOR(IPOIN,IPLAN)=SMONITOR(IPOIN,IPLAN)
+     &        + MONITOR(IPOIN,IPLAN)*MESH2D%FAC%R(IPOIN)
+            ENDDO    
+          ENDDO
+!         PARALLEL GATHERING AT INTERFACE NODES
+          CALL PARCOM(SNNEIGH  ,2,MESH2D)
+          CALL PARCOM(SSMONITOR,2,MESH3D)                        
+        ELSE
+          DO ISEG = 1,NSEG2
+            P1 = GLOSEG(ISEG,1)
+            P2 = GLOSEG(ISEG,2)
+            NNEIGH(P1) = NNEIGH(P1)+1.D0
+            NNEIGH(P2) = NNEIGH(P2)+1.D0
+            DO IPLAN = 1,NPLAN-1
+              SMONITOR(P1,IPLAN) = SMONITOR(P1,IPLAN)+MONITOR(P2,IPLAN)
+              SMONITOR(P2,IPLAN) = SMONITOR(P2,IPLAN)+MONITOR(P1,IPLAN)
+            ENDDO              ! IPLAN = 1,NPLAN-1
+          ENDDO                ! ISEG = 1,NSEG2
+!         THE POINT ITSELF
+          DO IPOIN = 1,NPOIN2
+            NNEIGH(IPOIN)=NNEIGH(IPOIN)+1.D0
+            DO IPLAN = 1,NPLAN
+              SMONITOR(IPOIN,IPLAN)=SMONITOR(IPOIN,IPLAN)
+     &                             + MONITOR(IPOIN,IPLAN)
+            ENDDO 
+          ENDDO
+        ENDIF
 !
-         IF(NCSIZE.GT.1) THEN
-           DO ISEG = 1,NSEG2
-             P1 = GLOSEG(ISEG,1)
-             P2 = GLOSEG(ISEG,2)
-!            A SEGMENT MAY APPEAR TWICE IN PARALLEL, HENCE COEF
-             NNEIGH(P1) = NNEIGH(P1)+COEF(ISEG)
-             NNEIGH(P2) = NNEIGH(P2)+COEF(ISEG)
-             DO IPLAN = 1,NPLAN
-               SMONITOR(P1,IPLAN) = SMONITOR(P1,IPLAN)
-     &                            + COEF(ISEG)*MONITOR(P2,IPLAN)
-               SMONITOR(P2,IPLAN) = SMONITOR(P2,IPLAN)
-     &                            + COEF(ISEG)*MONITOR(P1,IPLAN)
-             ENDDO              
-           ENDDO 
-!          THE POINT ITSELF (MAY APPEAR SEVERAL TIMES IN PARALLEL, HENCE FAC)
-           DO IPOIN = 1,NPOIN2
-             NNEIGH(IPOIN)=NNEIGH(IPOIN)+MESH2D%FAC%R(IPOIN)
-             DO IPLAN = 1,NPLAN
-               SMONITOR(IPOIN,IPLAN)=SMONITOR(IPOIN,IPLAN)
-     &         + MONITOR(IPOIN,IPLAN)*MESH2D%FAC%R(IPOIN)
-             ENDDO    
-           ENDDO
-!          PARALLEL GATHERING AT INTERFACE NODES
-           CALL PARCOM(SNNEIGH  ,2,MESH2D)
-           CALL PARCOM(SSMONITOR,2,MESH3D)                        
-         ELSE
-           DO ISEG = 1,NSEG2
-             P1 = GLOSEG(ISEG,1)
-             P2 = GLOSEG(ISEG,2)
-             NNEIGH(P1) = NNEIGH(P1)+1.D0
-             NNEIGH(P2) = NNEIGH(P2)+1.D0
-             DO IPLAN = 1,NPLAN-1
-               SMONITOR(P1,IPLAN) = SMONITOR(P1,IPLAN)+MONITOR(P2,IPLAN)
-               SMONITOR(P2,IPLAN) = SMONITOR(P2,IPLAN)+MONITOR(P1,IPLAN)
-             ENDDO              ! IPLAN = 1,NPLAN-1
-           ENDDO                ! ISEG = 1,NSEG2
-!          THE POINT ITSELF
-           DO IPOIN = 1,NPOIN2
-             NNEIGH(IPOIN)=NNEIGH(IPOIN)+1.D0
-             DO IPLAN = 1,NPLAN
-               SMONITOR(IPOIN,IPLAN)=SMONITOR(IPOIN,IPLAN)
-     &                              + MONITOR(IPOIN,IPLAN)
-             ENDDO 
-           ENDDO
-         ENDIF
+!       FINAL AVERAGING
 !
-!        FINAL AVERAGING
-!
-         DO IPOIN = 1,NPOIN2
-           DO IPLAN = 2,NPLAN-2
-             MONITOR(IPOIN,IPLAN)=SMONITOR(IPOIN,IPLAN)/NNEIGH(IPOIN)
-           ENDDO              
-         ENDDO 
-!                
-         ENDDO  ! JPLAN = 1,20 (20 ITERATION OF HORIZONTAL SMOOTHING)
+        DO IPOIN = 1,NPOIN2
+          DO IPLAN = 2,NPLAN-2
+            MONITOR(IPOIN,IPLAN)=SMONITOR(IPOIN,IPLAN)/NNEIGH(IPOIN)
+          ENDDO              
+        ENDDO 
+!               
+        ENDDO  ! JPLAN = 1,20 (20 ITERATION OF HORIZONTAL SMOOTHING)
 !     
 !      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !      3. FIND NEW POINT LOCATIONS USING A SINGLE STEP 
 !         OF A GAUSS-SIEDEL TYPE METHOD
 !      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-         DO IPOIN = 1,NPOIN2
-            DO IPLAN = 2,NPLAN-1
-               NEWZ(IPOIN,IPLAN) = (1.D0-RR)*ZVALS(IPOIN,IPLAN) + 
-     *           RR*( MONITOR(IPOIN,IPLAN  )*ZVALS(IPOIN,IPLAN+1) + 
-     *                MONITOR(IPOIN,IPLAN-1)*ZVALS(IPOIN,IPLAN-1) ) / 
-     *               (MONITOR(IPOIN,IPLAN)+MONITOR(IPOIN,IPLAN-1))
-            ENDDO              ! IPLAN = 2,NPLAN-1
-         ENDDO                 ! IPOIN = 1,NPOIN2
+        DO IPOIN = 1,NPOIN2
+          DO IPLAN = 2,NPLAN-1
+            NEWZ(IPOIN,IPLAN) = (1.D0-RR)*ZVALS(IPOIN,IPLAN) + 
+     &        RR*( MONITOR(IPOIN,IPLAN  )*ZVALS(IPOIN,IPLAN+1) + 
+     &             MONITOR(IPOIN,IPLAN-1)*ZVALS(IPOIN,IPLAN-1) ) / 
+     &            (MONITOR(IPOIN,IPLAN)+MONITOR(IPOIN,IPLAN-1))
+          ENDDO              ! IPLAN = 2,NPLAN-1
+        ENDDO                 ! IPOIN = 1,NPOIN2
 !
 !      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !      4. FOR EACH EXTREMUM, MOVE NEAREST NEW MESH POINT
 !         TO COINCIDE WITH LOCATION OF EXTREMUM
 !      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-         DO IPOIN = 1,NPOIN2
-            DO IEXTR = 1,NEXTR(IPOIN)
-               MINDIST = 1.E10
-               JPLAN = 0
-               DO IPLAN = 2,NPLAN-1
-                  IF( ABS(NEWZ(IPOIN,IPLAN)-ZEXT(IPOIN,IEXTR))
-     *                                          .LT. MINDIST ) THEN
-                     MINDIST = ABS(NEWZ(IPOIN,IPLAN)-ZEXT(IPOIN,IEXTR))
-                     JPLAN = IPLAN
-                  ENDIF        ! POINT IPLAN IS NEAREST YET TO EXTREMUM
-               ENDDO           ! IPLAN = 2,NPLAN-1
-               NEWZ(IPOIN,JPLAN) = ZEXT(IPOIN,IEXTR)
-            ENDDO              ! IEXTR = 1,NEXTR(IPOIN)
-         ENDDO                 ! IPOIN = 1,NPOIN2
+        DO IPOIN = 1,NPOIN2
+          DO IEXTR = 1,NEXTR(IPOIN)
+            MINDIST = 1.E10
+            JPLAN = 0
+            DO IPLAN = 2,NPLAN-1
+              IF( ABS(NEWZ(IPOIN,IPLAN)-ZEXT(IPOIN,IEXTR))
+     &                                     .LT. MINDIST ) THEN
+                MINDIST = ABS(NEWZ(IPOIN,IPLAN)-ZEXT(IPOIN,IEXTR))
+                JPLAN = IPLAN
+              ENDIF        ! POINT IPLAN IS NEAREST YET TO EXTREMUM
+            ENDDO           ! IPLAN = 2,NPLAN-1
+            NEWZ(IPOIN,JPLAN) = ZEXT(IPOIN,IEXTR)
+          ENDDO              ! IEXTR = 1,NEXTR(IPOIN)
+        ENDDO                 ! IPOIN = 1,NPOIN2
 !
 !      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !      5. INTERPOLATE ORIGINAL SOLUTION AT NEW MESH POINTS
@@ -393,11 +393,11 @@
 !      6. SET ZVALS = NEWZ
 !      ~~~~~~~~~~~~~~~~~~~
 !
-         DO IPOIN = 1,NPOIN2
-           DO IPLAN = 1,NPLAN
-             ZVALS(IPOIN,IPLAN) = NEWZ(IPOIN,IPLAN)
-           ENDDO              ! IPLAN = 1,NPLAN
-         ENDDO                ! IPOIN = 1,NPOIN2
+        DO IPOIN = 1,NPOIN2
+          DO IPLAN = 1,NPLAN
+            ZVALS(IPOIN,IPLAN) = NEWZ(IPOIN,IPLAN)
+          ENDDO              ! IPLAN = 1,NPLAN
+        ENDDO                ! IPOIN = 1,NPOIN2
 !
 !-----------------------------------------------------------------------
 !

@@ -49,17 +49,18 @@
 !
       BLOC%N = BLOC%N + 1
       IF(BLOC%N.GT.BLOC%MAXBLOCK) THEN
-       IF(LNG.EQ.1) THEN
-         WRITE(LU,*) 'ADDBLO : ',OBJ%NAME,' TROP PETIT'
-         WRITE(LU,*) '         AUGMENTER MAXBLOCK DANS ALLBLO'
-         WRITE(LU,*) '         (ACTUELLEMENT : ',BLOC%MAXBLOCK,')'
-       ENDIF
-       IF(LNG.EQ.2) THEN
-         WRITE(LU,*) 'ADDBLO : ',OBJ%NAME,' TOO SMALL'
-         WRITE(LU,*) '         INCREASE MAXBLOCK IN ALLBLO'
-         WRITE(LU,*) '         (CURRENTLY : ',BLOC%MAXBLOCK,')'
-       ENDIF
-       STOP
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'ADDBLO : ',OBJ%NAME,' TROP PETIT'
+          WRITE(LU,*) '         AUGMENTER MAXBLOCK DANS ALLBLO'
+          WRITE(LU,*) '         (ACTUELLEMENT : ',BLOC%MAXBLOCK,')'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'ADDBLO : ',OBJ%NAME,' TOO SMALL'
+          WRITE(LU,*) '         INCREASE MAXBLOCK IN ALLBLO'
+          WRITE(LU,*) '         (CURRENTLY : ',BLOC%MAXBLOCK,')'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !     ASSIGNS THE TARGET OBJ TO THE POINTER OF RANK BLOC%N

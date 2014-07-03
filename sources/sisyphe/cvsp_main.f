@@ -107,37 +107,37 @@
 !-----------------------------------------------------------------------
 !     
       DO J=1,NPOIN
-         JG = J
-         IF (NCSIZE.GT.1) JG = MESH%KNOLG%I(J)
-         EVL = 0.D0
-         DO ISICLA = 1,NSICLA
-         EVL = ZFCL_W%ADR(ISICLA)%P%R(J) + EVL
-      END DO
+        JG = J
+        IF (NCSIZE.GT.1) JG = MESH%KNOLG%I(J)
+        EVL = 0.D0
+        DO ISICLA = 1,NSICLA
+          EVL = ZFCL_W%ADR(ISICLA)%P%R(J) + EVL
+        END DO
 !      
 ! DEBUG INFO
-      IAMCASE = 0
-      IF (DB(JG,0)) CALL CVSP_P('./','V_A',JG)
+        IAMCASE = 0
+        IF (DB(JG,0)) CALL CVSP_P('./','V_A',JG)
 ! DEBUG INFO
 !     
 !-----------------------------------------------------------------------     
 ! DEPOSITION IN SUM OVER ALL CASES
 !-----------------------------------------------------------------------
 !
-      IF(EVL.GT.0) THEN
-        CALL CVSP_ADD_SECTION(J)
-      ENDIF
-!       
-      DO I=1,NSICLA
-         DZFCL = ZFCL_W%ADR(I)%P%R(J)
-         IF (EVL.GT.0D0) THEN
+        IF(EVL.GT.0) THEN
+          CALL CVSP_ADD_SECTION(J)
+        ENDIF
+!         
+        DO I=1,NSICLA
+          DZFCL = ZFCL_W%ADR(I)%P%R(J)
+          IF (EVL.GT.0D0) THEN
             IF (DZFCL.GT.0.D0) THEN
-               CALL CVSP_ADD_FRACTION(J,I,DZFCL,EVL)
-               IAMCASE = 1 + IAMCASE !DEBUG INFO
+              CALL CVSP_ADD_FRACTION(J,I,DZFCL,EVL)
+              IAMCASE = 1 + IAMCASE !DEBUG INFO
             ELSEIF( DZFCL.LT.0.D0) THEN
-               CALL CVSP_RM_FRACTION(J,I,DZFCL,EVL)
-               IAMCASE = 10 + IAMCASE !DEBUG INFO
+              CALL CVSP_RM_FRACTION(J,I,DZFCL,EVL)
+              IAMCASE = 10 + IAMCASE !DEBUG INFO
             ENDIF
-         ENDIF
+          ENDIF
 !     
 !-----------------------------------------------------------------------     
 ! END DEPOSITION
@@ -147,21 +147,21 @@
 ! START EROSION IN SUM OVER ALL CASES
 !-----------------------------------------------------------------------
 !
-         IF(EVL.LT.0.D0) THEN
+          IF(EVL.LT.0.D0) THEN
             IF (DZFCL.GT.0.D0) THEN
-               CALL CVSP_ADD_FRACTION(J,I,DZFCL,EVL)
-               IAMCASE = 100 + IAMCASE !DEBUG INFO
+              CALL CVSP_ADD_FRACTION(J,I,DZFCL,EVL)
+              IAMCASE = 100 + IAMCASE !DEBUG INFO
             ELSEIF(DZFCL.LT.0.D0) THEN
-               CALL CVSP_RM_FRACTION(J,I,DZFCL,EVL)
-               IAMCASE = 1000 + IAMCASE !DEBUG INFO
-            ENDIF                       ! DZFCL
-         ENDIF                          ! EVL < 0
+              CALL CVSP_RM_FRACTION(J,I,DZFCL,EVL)
+              IAMCASE = 1000 + IAMCASE !DEBUG INFO
+            ENDIF                      ! DZFCL
+          ENDIF                        ! EVL < 0
 !     
 !-----------------------------------------------------------------------     
 ! END EROSION
 !-----------------------------------------------------------------------
 !
-      ENDDO
+        ENDDO
 !
 !-----------------------------------------------------------------------     
 ! END FOR ALL CLASSES
@@ -171,34 +171,34 @@
 ! WE ARE RUNNING OUT OF SECTION MEMORY! COMPRESS NOW!
 !-----------------------------------------------------------------------
 !
-      IF ((PRO_MAX(J).GT.PRO_MAX_MAX/4*3).OR.
-     &     (PRO_MAX_MAX-PRO_MAX(J).LT.8*NSICLA)) THEN
-         CALL CVSP_COMPRESS_DP(J, 1.0D-5)
-      ENDIF
+        IF ((PRO_MAX(J).GT.PRO_MAX_MAX/4*3).OR.
+     &       (PRO_MAX_MAX-PRO_MAX(J).LT.8*NSICLA)) THEN
+           CALL CVSP_COMPRESS_DP(J, 1.0D-5)
+        ENDIF
 !     
 !-----------------------------------------------------------------------     
 ! SYNCHRONICE VSP WITH LAYER (FOR DEBUGGING ...)
 !-----------------------------------------------------------------------
 !
-      DELTA = ZF%R(J) - PRO_D(J, PRO_MAX(J), 1)
-!
-      IF (DELTA.NE.0.D0) THEN
-         DO I = 1 , NSICLA
+        DELTA = ZF%R(J) - PRO_D(J, PRO_MAX(J), 1)
+!      
+        IF (DELTA.NE.0.D0) THEN
+          DO I = 1 , NSICLA
             DO K = 1, PRO_MAX(J)
-               PRO_D(J, K, I) = PRO_D(J, K, I) + DELTA
+              PRO_D(J, K, I) = PRO_D(J, K, I) + DELTA
             ENDDO
-         ENDDO
-      ENDIF
+          ENDDO
+        ENDIF
 !     
 !-----------------------------------------------------------------------     
 !FINAL CHECK ON NEW FRACTIONS AND STEADY STADE
 !-----------------------------------------------------------------------
 !
-      DO K = 1, PRO_MAX(J)
-!       REMOVES NUMERIC INSTABILITIES
-        RET =  CVSP_CHECK_F(J,K,' FINAL:   ')
-      ENDDO
-      CALL CVSP_CHECK_STEADY(J)
+        DO K = 1, PRO_MAX(J)
+!         REMOVES NUMERIC INSTABILITIES
+          RET =  CVSP_CHECK_F(J,K,' FINAL:   ')
+        ENDDO
+        CALL CVSP_CHECK_STEADY(J)
 !      
 ! END FOR ALL POINTS
       ENDDO
@@ -209,13 +209,13 @@
 !
       IF((CVSM_OUT).OR.(DB(-1,-1).EQV..TRUE.)) THEN
 ! WRITES THE FULL VSP AS SERAFIN
-         IF (CVSM_OUT_FULL) CALL CVSP_WRITE_PROFILE()
+        IF (CVSM_OUT_FULL) CALL CVSP_WRITE_PROFILE()
 ! WRITES THE VSP FOR SINGLE POINTS
-         DO KK = 1, 100
-            IF (CVSMOUTPUT(KK).GT.0) THEN
-               CALL CVSP_P('./','V_', CVSMOUTPUT(KK))
-            ENDIF
-         ENDDO
+        DO KK = 1, 100
+          IF (CVSMOUTPUT(KK).GT.0) THEN
+            CALL CVSP_P('./','V_', CVSMOUTPUT(KK))
+          ENDIF
+        ENDDO
       END IF
 !     
 !-----------------------------------------------------------------------     
@@ -229,11 +229,11 @@
 !-----------------------------------------------------------------------
 !
       DO J=1,NPOIN
-         IF (Z%R(J)-ZF%R(J).LT.0.D0) THEN
-            WRITE(LU,*) 'UHM_Z.LT.ZF ', I,AT,Z%R(J),ZF%R(J),HN%R(J),
-     &           (Z%R(J)-ZF%R(J))-HN%R(J)
-            CALL CVSP_P('./','Z_', J)
-         END IF
+        IF (Z%R(J)-ZF%R(J).LT.0.D0) THEN
+          WRITE(LU,*) 'UHM_Z.LT.ZF ', I,AT,Z%R(J),ZF%R(J),HN%R(J),
+     &         (Z%R(J)-ZF%R(J))-HN%R(J)
+          CALL CVSP_P('./','Z_', J)
+        END IF
       ENDDO
 !     
 !-----------------------------------------------------------------------     
@@ -241,11 +241,11 @@
 !-----------------------------------------------------------------------
 !
       IF((CVSM_OUT).OR.(DB(-1,-1).EQV..TRUE.)) THEN
-         DO KK = 1,100
-            IF (CVSMOUTPUT(KK).GT.0) THEN
-               CALL LAYERS_P('./VSP_', CVSMOUTPUT(KK))
-            ENDIF
-         ENDDO
+        DO KK = 1,100
+          IF (CVSMOUTPUT(KK).GT.0) THEN
+            CALL LAYERS_P('./VSP_', CVSMOUTPUT(KK))
+          ENDIF
+        ENDDO
       END IF
 !
 !-----------------------------------------------------------------------     
@@ -255,14 +255,14 @@
       ARRET2=ARRET
       IF(NCSIZE.GT.1) ARRET2=P_ISUM(ARRET)
       IF(ARRET2.GT.0) THEN
-         IF(LNG.EQ.1) WRITE(LU,*) 'ARRET APRES ERREUR DANS LAYER'
-         IF(LNG.EQ.2) WRITE(LU,*) 'STOP AFTER AN ERROR IN LAYER'
-         IF(ARRET.EQ.0) THEN
-            IF(LNG.EQ.1) WRITE(LU,*) 'DANS ',ARRET2,' PROCESSEUR(S)'
-            IF(LNG.EQ.2) WRITE(LU,*) 'IN ',ARRET2,' PROCESSOR(S)'
-         ENDIF
-         CALL PLANTE(1)
-         STOP
+        IF(LNG.EQ.1) WRITE(LU,*) 'ARRET APRES ERREUR DANS LAYER'
+        IF(LNG.EQ.2) WRITE(LU,*) 'STOP AFTER AN ERROR IN LAYER'
+        IF(ARRET.EQ.0) THEN
+          IF(LNG.EQ.1) WRITE(LU,*) 'DANS ',ARRET2,' PROCESSEUR(S)'
+          IF(LNG.EQ.2) WRITE(LU,*) 'IN ',ARRET2,' PROCESSOR(S)'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

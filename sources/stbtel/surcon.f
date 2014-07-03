@@ -75,34 +75,35 @@
 !=======================================================================
 !
       DO K = 1 , NPMAX
-         IPO(K) = 0
+        IPO(K) = 0
       ENDDO
 !
       DO K = 1 , NPTFR
-         IPO(NBOR(K)) = 1
+        IPO(NBOR(K)) = 1
       ENDDO
 
       DO K = 1 , NELEM
-         IF (IPO(IKLE(K,1))+IPO(IKLE(K,2))+IPO(IKLE(K,3)).EQ.3) THEN
+        IF (IPO(IKLE(K,1))+IPO(IKLE(K,2))+IPO(IKLE(K,3)).EQ.3) THEN
 !
 ! LE TRIANGLE EST SURCONTRAINT, ON LE DECOUPE EN TROIS
 !
-            ITEST  = ITEST + 1
-            IF (ITEST.GT.INT(0.1*NELMAX)) THEN
-               IF (LNG.EQ.1) WRITE(LU,1000) INT(0.1*NELMAX)
-               IF (LNG.EQ.2) WRITE(LU,4000) INT(0.1*NELMAX)
-               STOP
-            ENDIF
+          ITEST  = ITEST + 1
+          IF (ITEST.GT.INT(0.1*NELMAX)) THEN
+            IF (LNG.EQ.1) WRITE(LU,1000) INT(0.1*NELMAX)
+            IF (LNG.EQ.2) WRITE(LU,4000) INT(0.1*NELMAX)
+            CALL PLANTE(1)
+            STOP
+          ENDIF
 !
-            IF (LNG.EQ.1) WRITE(LU,1070) X(IKLE(K,1)),Y(IKLE(K,1)),
-     &         X(IKLE(K,2)),Y(IKLE(K,2)),X(IKLE(K,3)),Y(IKLE(K,3))
-            IF (LNG.EQ.2) WRITE(LU,4070) X(IKLE(K,1)),Y(IKLE(K,1)),
-     &         X(IKLE(K,2)),Y(IKLE(K,2)),X(IKLE(K,3)),Y(IKLE(K,3))
+          IF (LNG.EQ.1) WRITE(LU,1070) X(IKLE(K,1)),Y(IKLE(K,1)),
+     &       X(IKLE(K,2)),Y(IKLE(K,2)),X(IKLE(K,3)),Y(IKLE(K,3))
+          IF (LNG.EQ.2) WRITE(LU,4070) X(IKLE(K,1)),Y(IKLE(K,1)),
+     &       X(IKLE(K,2)),Y(IKLE(K,2)),X(IKLE(K,3)),Y(IKLE(K,3))
 !
-            CALL DECOUP (K,X,Y,IKLE,NCOLOR,IFABOR,
-     &                   NELEM2,NPOIN2,COLOR)
+          CALL DECOUP (K,X,Y,IKLE,NCOLOR,IFABOR,
+     &                 NELEM2,NPOIN2,COLOR)
 !
-         ENDIF
+        ENDIF
       ENDDO !K
 !
 !=======================================================================
@@ -123,44 +124,44 @@
       ISWAP = 0
       KSWAP = 0
       DO IELEM = 1,NELEM
-         IP(1) = IKLE(IELEM,1)
-         IP(2) = IKLE(IELEM,2)
-         IP(3) = IKLE(IELEM,3)
-         DO I = 1,3
-            J = ISUI(I)
-            IF(IFABOR(IELEM,I).GT.0.AND.IPO(IP(I))+IPO(IP(J)).EQ.2) THEN
-               KELEM = IFABOR(IELEM,I)
+        IP(1) = IKLE(IELEM,1)
+        IP(2) = IKLE(IELEM,2)
+        IP(3) = IKLE(IELEM,3)
+        DO I = 1,3
+          J = ISUI(I)
+          IF(IFABOR(IELEM,I).GT.0.AND.IPO(IP(I))+IPO(IP(J)).EQ.2) THEN
+            KELEM = IFABOR(IELEM,I)
 !
 ! COMPTE TENU DU PREMIER DECOUPAGE, ON EST SUR QUE TOUT ELEMENT CONTIENT
 ! AU MOINS UN POINT INTERIEUR, ET DANS CE CAS UN SEUL.
 ! K EST SUR D'ETRE REMPLI.
 !
-               IF (IPO(IKLE(KELEM,1)).EQ.0) K=1
-               IF (IPO(IKLE(KELEM,2)).EQ.0) K=2
-               IF (IPO(IKLE(KELEM,3)).EQ.0) K=3
-               KP = IKLE(KELEM,K)
+            IF (IPO(IKLE(KELEM,1)).EQ.0) K=1
+            IF (IPO(IKLE(KELEM,2)).EQ.0) K=2
+            IF (IPO(IKLE(KELEM,3)).EQ.0) K=3
+            KP = IKLE(KELEM,K)
 !
-               IF ((X(KP)-X(IP(I)))*(Y(IP(ISUI(J)))-Y(IP(I))).GT.
-     &             (Y(KP)-Y(IP(I)))*(X(IP(ISUI(J)))-X(IP(I))).AND.
-     &             (X(KP)-X(IP(J)))*(Y(IP(ISUI(J)))-Y(IP(J))).LT.
-     &             (Y(KP)-Y(IP(J)))*(X(IP(ISUI(J)))-X(IP(J)))) THEN
+            IF ((X(KP)-X(IP(I)))*(Y(IP(ISUI(J)))-Y(IP(I))).GT.
+     &          (Y(KP)-Y(IP(I)))*(X(IP(ISUI(J)))-X(IP(I))).AND.
+     &          (X(KP)-X(IP(J)))*(Y(IP(ISUI(J)))-Y(IP(J))).LT.
+     &          (Y(KP)-Y(IP(J)))*(X(IP(ISUI(J)))-X(IP(J)))) THEN
 !
-                  ISWAP = ISWAP + 1
-                  IKLE(IELEM,I) = KP
-                  IKLE(KELEM,ISUI(K)) = IP(ISUI(J))
+              ISWAP = ISWAP + 1
+              IKLE(IELEM,I) = KP
+              IKLE(KELEM,ISUI(K)) = IP(ISUI(J))
 !
-                  IF (LNG.EQ.1) WRITE(LU,1080) X(IP(I)),Y(IP(I)),
-     &                                         X(IP(J)),Y(IP(J))
-                  IF (LNG.EQ.2) WRITE(LU,4080) X(IP(I)),Y(IP(I)),
-     &                                         X(IP(J)),Y(IP(J))
+              IF (LNG.EQ.1) WRITE(LU,1080) X(IP(I)),Y(IP(I)),
+     &                                     X(IP(J)),Y(IP(J))
+              IF (LNG.EQ.2) WRITE(LU,4080) X(IP(I)),Y(IP(I)),
+     &                                     X(IP(J)),Y(IP(J))
 !
-               ELSE
+            ELSE
 !
-                  KSWAP = KSWAP + 1
+              KSWAP = KSWAP + 1
 !
-               ENDIF
             ENDIF
-         ENDDO
+          ENDIF
+        ENDDO
       ENDDO
 !
 !=======================================================================
@@ -169,8 +170,8 @@
       IF (LNG.EQ.2) WRITE(LU,4100) ITEST,NPOIN,NELEM,ISWAP
 !
       IF (KSWAP.NE.0) THEN
-         IF (LNG.EQ.1) WRITE(LU,1200) KSWAP
-         IF (LNG.EQ.2) WRITE(LU,4200) KSWAP
+        IF (LNG.EQ.1) WRITE(LU,1200) KSWAP
+        IF (LNG.EQ.2) WRITE(LU,4200) KSWAP
       ENDIF
 !
  1000 FORMAT(//,1X,'**************************************************',

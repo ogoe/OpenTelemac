@@ -64,6 +64,7 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'P_IMAX: ERREUR DANS MPI_ALLREDUCE'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_IMAX: ERROR IN MPI_ALLREDUCE'
         WRITE(LU,*) 'MPI ERROR ', IER
+        CALL PLANTE(1)
         STOP
       ENDIF
       RETURN
@@ -75,7 +76,6 @@
 !
       P_IMAX=MYPART
 !
-      STOP
 #endif
 !
 !-----------------------------------------------------------------------

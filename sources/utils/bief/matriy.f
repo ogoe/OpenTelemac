@@ -1104,15 +1104,15 @@
 !.......................................................................
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.41) THEN
-             CALL MT04PP(T,XM,XMUL,SU,SV,SW,U,V,W,
-     &                   XEL,YEL,ZPT,SURFAC,IKLE,NELEM,NELMAX,FORMUL)
+            CALL MT04PP(T,XM,XMUL,SU,SV,SW,U,V,W,
+     &                  XEL,YEL,ZPT,SURFAC,IKLE,NELEM,NELMAX,FORMUL)
 !
-             TYPDIA='Q'
-             IF(FORMUL(7:7).EQ.'2') THEN
-               TYPEXT='S'
-             ELSE
-               TYPEXT='Q'
-             ENDIF
+            TYPDIA='Q'
+            IF(FORMUL(7:7).EQ.'2') THEN
+              TYPEXT='S'
+            ELSE
+              TYPEXT='Q'
+            ENDIF
 !
 !.......................................................................
 !         OTHER
@@ -1142,15 +1142,15 @@
 !.......................................................................
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.31.OR.IELM2.EQ.51) THEN
-             CALL MT04TT(T,XM,XMUL,SU,SV,SW,U,V,W,
-     &                   XPT,YPT,ZPT,IKLE,NELEM,NELMAX,FORMUL)
+            CALL MT04TT(T,XM,XMUL,SU,SV,SW,U,V,W,
+     &                  XPT,YPT,ZPT,IKLE,NELEM,NELMAX,FORMUL)
 !
-             TYPDIA='Q'
-             IF(FORMUL(7:7).EQ.'2') THEN
-               TYPEXT='S'
-             ELSE
-               TYPEXT='Q'
-             ENDIF
+            TYPDIA='Q'
+            IF(FORMUL(7:7).EQ.'2') THEN
+              TYPEXT='S'
+            ELSE
+              TYPEXT='Q'
+            ENDIF
 !
 !.......................................................................
 !         OTHER
@@ -1604,17 +1604,17 @@
 !         QUADRANGLE COLUMN ELEMENT FOR TELEMAC-3D PRISMS
           IF(IELM2.EQ.71) THEN
 !
-               CALL MT06FF
+            CALL MT06FF
      & (   T(1,1)   ,XM(1,FFS(1,2,S)),XM(1,FFS(1,3,S)),XM(1,FFS(1,4,S)),
      &                      T(1,2)   ,XM(1,FFS(2,3,S)),XM(1,FFS(2,4,S)),
      &                                       T(1,3)   ,XM(1,FFS(3,4,S)),
      &                                                        T(1,4)   ,
-     &         XMUL,SF,F,XEL,YEL,ZPT,
-     &         IKLBOR(1,1),IKLBOR(1,2),IKLBOR(1,3),IKLBOR(1,4),
-     &         NBOR,NELBOR,NULONE,NELEB,NELEBX,NELMAX)
+     &      XMUL,SF,F,XEL,YEL,ZPT,
+     &      IKLBOR(1,1),IKLBOR(1,2),IKLBOR(1,3),IKLBOR(1,4),
+     &      NBOR,NELBOR,NULONE,NELEB,NELEBX,NELMAX)
 !
-               TYPDIA='Q'
-               TYPEXT='S'
+            TYPDIA='Q'
+            TYPEXT='S'
 !
 !.......................................................................
 !         OTHER
@@ -1679,15 +1679,15 @@
 !.......................................................................
 !         P2 SEGMENT COLUMN ELEMENT
           IF(IELM2.EQ.2.AND.S.EQ.1) THEN
-               CALL MT06OC
+            CALL MT06OC
      & (   T(1,1)   ,XM(1,AAS(1,2,S)),XM(1,AAS(1,3,S)),
      &                      T(1,2)   ,XM(1,AAS(2,3,S)),
      &                                       T(1,3)   ,
      &        XMUL,SF,F,LGSEG,IKLBOR(1,1),IKLBOR(1,2),IKLBOR(1,3),
      &                   NBOR,NELEB,NELEBX)
 !
-             TYPDIA='Q'
-             TYPEXT='S'
+            TYPDIA='Q'
+            TYPEXT='S'
 !.......................................................................
 !         OTHER
 !.......................................................................

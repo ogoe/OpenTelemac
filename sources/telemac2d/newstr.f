@@ -77,14 +77,14 @@
 !
       RSTART=.FALSE.
       DO I=1,NPARAM
-         IF (SETSTR%R(I).LT.1.D0) THEN
-           SETSTR%R(I)=1.D0
-           RSTART=.TRUE.
-         ENDIF
-         IF (SETSTR%R(I).GT.100.D0) THEN
-           SETSTR%R(I)=100.D0
-           RSTART=.TRUE.
-         ENDIF
+        IF (SETSTR%R(I).LT.1.D0) THEN
+          SETSTR%R(I)=1.D0
+          RSTART=.TRUE.
+        ENDIF
+        IF (SETSTR%R(I).GT.100.D0) THEN
+          SETSTR%R(I)=100.D0
+          RSTART=.TRUE.
+        ENDIF
       ENDDO
 !
 !---------------------------------------------------------------------

@@ -86,8 +86,12 @@
           WRITE(FCT(5:6),FMT='(I2)') I
           FCT(7:7)=')'
         ELSE
+          IF (LNG.EQ.1) WRITE(LU,*) 'VIT3 NE PEUT PAS GERER PLUS 
+     &                               DE 99 FRONTIERES'
+          IF (LNG.EQ.2) WRITE(LU,*) 'VIT3 NOT PROGRAMMED FOR MORE 
+     &                               THAN 99 BOUNDARIES'
           CALL PLANTE(1)
-          STOP 'VIT NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
+          STOP 
         ENDIF
         CALL READ_FIC_FRLIQ(VIT3,FCT,TIME,T3D_FILES(T3DIMP)%LU,
      &                      ENTET,OK(I))

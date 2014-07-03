@@ -709,7 +709,7 @@
                 DO ITRAC=1,NTRAC
 !                 REMEMBER THAT W4 IS STORED INTO SECOND DIMENSION OF TBOR
                   TBOR%ADR(ITRAC)%P%R(K)=
-     *            TBOR%ADR(ITRAC)%P%R(K+NPTFR)/HHBOR+T%ADR(ITRAC)%P%R(N)
+     &            TBOR%ADR(ITRAC)%P%R(K+NPTFR)/HHBOR+T%ADR(ITRAC)%P%R(N)
                 ENDDO
               ENDIF
             ELSE

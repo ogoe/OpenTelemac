@@ -186,6 +186,7 @@
           IF(LNG.EQ.2) WRITE(LU,401) M%NAME
 400       FORMAT(1X,'OM (BIEF) : M (NOM REEL : ',A6,') TROP PETITE')
 401       FORMAT(1X,'OM (BIEF) : M (REAL NAME: ',A6,') TOO SMALL')
+          CALL PLANTE(1)
           STOP
         ENDIF
       ELSE
@@ -484,16 +485,16 @@
 !  COMBINATION OF IELM1 AND IELM2 NOT IMPLEMENTED: ERROR
 !
       ELSE
-         IF (LNG.EQ.1) WRITE(LU,100) M%NAME
-         IF (LNG.EQ.2) WRITE(LU,101) M%NAME
-         IF (LNG.EQ.1) WRITE(LU,200) IELM1,IELM2
-         IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
-         IF (LNG.EQ.1) WRITE(LU,410) STOM,STON
-         IF (LNG.EQ.2) WRITE(LU,411) STOM,STON
-         IF (LNG.EQ.1) WRITE(LU,300)
-         IF (LNG.EQ.2) WRITE(LU,301)
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,100) M%NAME
+        IF (LNG.EQ.2) WRITE(LU,101) M%NAME
+        IF (LNG.EQ.1) WRITE(LU,200) IELM1,IELM2
+        IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
+        IF (LNG.EQ.1) WRITE(LU,410) STOM,STON
+        IF (LNG.EQ.2) WRITE(LU,411) STOM,STON
+        IF (LNG.EQ.1) WRITE(LU,300)
+        IF (LNG.EQ.2) WRITE(LU,301)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       ELSEIF(STOM.EQ.3.AND.STON.EQ.3) THEN
@@ -601,14 +602,14 @@
 !
 !  STORAGE COMBINATION NOT IMPLEMENTED
 !
-         IF (LNG.EQ.1) WRITE(LU,100) M%NAME
-         IF (LNG.EQ.2) WRITE(LU,101) M%NAME
-         IF (LNG.EQ.1) WRITE(LU,410) STOM,STON
-         IF (LNG.EQ.2) WRITE(LU,411) STOM,STON
-         IF (LNG.EQ.1) WRITE(LU,300)
-         IF (LNG.EQ.2) WRITE(LU,301)
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,100) M%NAME
+        IF (LNG.EQ.2) WRITE(LU,101) M%NAME
+        IF (LNG.EQ.1) WRITE(LU,410) STOM,STON
+        IF (LNG.EQ.2) WRITE(LU,411) STOM,STON
+        IF (LNG.EQ.1) WRITE(LU,300)
+        IF (LNG.EQ.2) WRITE(LU,301)
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !
@@ -625,19 +626,19 @@
 !
 !-----------------------------------------------------------------------
 !
-100      FORMAT(1X,'OM (BIEF) : MATRICE M (NOM REEL : ',A6,')')
-150      FORMAT(1X,'OM (BIEF) : MATRICE N (NOM REEL : ',A6,')')
-200      FORMAT(1X,'            IELM1 = ',1I6,' IELM2 = ',1I6)
-250      FORMAT(1X,'            IELN1 = ',1I6,' IELN2 = ',1I6)
-300      FORMAT(1X,'            CAS NON PREVU')
-410      FORMAT(1X,'ET STOCKAGES   M  : ',1I6,'    N  : ',1I6)
+100   FORMAT(1X,'OM (BIEF) : MATRICE M (NOM REEL : ',A6,')')
+150   FORMAT(1X,'OM (BIEF) : MATRICE N (NOM REEL : ',A6,')')
+200   FORMAT(1X,'            IELM1 = ',1I6,' IELM2 = ',1I6)
+250   FORMAT(1X,'            IELN1 = ',1I6,' IELN2 = ',1I6)
+300   FORMAT(1X,'            CAS NON PREVU')
+410   FORMAT(1X,'ET STOCKAGES   M  : ',1I6,'    N  : ',1I6)
 !
-101      FORMAT(1X,'OM (BIEF) : MATRIX  M (REAL NAME:',A6,')')
-151      FORMAT(1X,'OM (BIEF) : MATRIX  N (REAL NAME:',A6,')')
-201      FORMAT(1X,'            IELM1 = ',1I6,' IELM2 = ',1I6)
-251      FORMAT(1X,'            IELN1 = ',1I6,' IELN2 = ',1I6)
-301      FORMAT(1X,'            THIS CASE IS NOT IMPLEMENTED')
-411      FORMAT(1X,'AND STORAGES   M  : ',1I6,' STON  : ',1I6)
+101   FORMAT(1X,'OM (BIEF) : MATRIX  M (REAL NAME:',A6,')')
+151   FORMAT(1X,'OM (BIEF) : MATRIX  N (REAL NAME:',A6,')')
+201   FORMAT(1X,'            IELM1 = ',1I6,' IELM2 = ',1I6)
+251   FORMAT(1X,'            IELN1 = ',1I6,' IELN2 = ',1I6)
+301   FORMAT(1X,'            THIS CASE IS NOT IMPLEMENTED')
+411   FORMAT(1X,'AND STORAGES   M  : ',1I6,' STON  : ',1I6)
 !
 !-----------------------------------------------------------------------
 !

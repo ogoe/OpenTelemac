@@ -77,13 +77,13 @@
 !  VALUE FOR IELM NOT PERMITTED : ERROR
 !
       ELSE
-         IF (LNG.EQ.1) WRITE(LU,100) IELM
-         IF (LNG.EQ.2) WRITE(LU,101) IELM
-100      FORMAT(1X,'SURVOL (BIEF) : IELM = ',1I6,' ELEMENT NON PREVU')
-101      FORMAT(1X,
-     &   'SURVOL (BIEF) : IELM = ',1I6,' ELEMENT NOT AVAILABLE')
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELM
+        IF (LNG.EQ.2) WRITE(LU,101) IELM
+100     FORMAT(1X,'SURVOL (BIEF) : IELM = ',1I6,' ELEMENT NON PREVU')
+101     FORMAT(1X,
+     &  'SURVOL (BIEF) : IELM = ',1I6,' ELEMENT NOT AVAILABLE')
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

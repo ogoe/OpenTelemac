@@ -112,17 +112,17 @@
             CPHAS = CONST / XK(IP,IFF)
             INTERO=USOLD(IP)/CPHAS
             BETAO(IP)=(COEFWD*INTERO**2*DIRO(IP)+COEFWE*INTERO*DIRO(IP)
-     *      +COEFWF*DIRO(IP)+COEFWH)*CONST
+     &      +COEFWF*DIRO(IP)+COEFWH)*CONST
             INTERN=USNEW(IP)/CPHAS
             BETAN(IP)=(COEFWD*INTERN**2*DIRN(IP)+COEFWE*INTERN*DIRN(IP)
-     *      +COEFWF*DIRN(IP)+COEFWH)*CONST
+     &      +COEFWF*DIRN(IP)+COEFWH)*CONST
           ENDDO
 !
 !.........TAKES INTO ACCOUNT THE SOURCE TERM
 !         """"""""""""""""""""""""""""""""
           DO IP = 1,NPOIN2
             TSTOT(IP,JP,IFF) = TSTOT(IP,JP,IFF)
-     *           + (DIMPLI*BETAO(IP)+CIMPLI*BETAN(IP)) * F(IP,JP,IFF)
+     &           + (DIMPLI*BETAO(IP)+CIMPLI*BETAN(IP)) * F(IP,JP,IFF)
             TSDER(IP,JP,IFF) = TSDER(IP,JP,IFF) + BETAN(IP)
           ENDDO
 !

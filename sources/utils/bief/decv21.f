@@ -70,23 +70,23 @@
 !
 !-----------------------------------------------------------------------
 !
-         DO IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
-           SL1 = SL(IKLE(IELEM,1))
-           SL2 = SL(IKLE(IELEM,2))
-           SL3 = SL(IKLE(IELEM,3))
-           SL4 = SL(IKLE(IELEM,4))
+        SL1 = SL(IKLE(IELEM,1))
+        SL2 = SL(IKLE(IELEM,2))
+        SL3 = SL(IKLE(IELEM,3))
+        SL4 = SL(IKLE(IELEM,4))
 !
-           ZF1 = ZF(IKLE(IELEM,1))
-           ZF2 = ZF(IKLE(IELEM,2))
-           ZF3 = ZF(IKLE(IELEM,3))
-           ZF4 = ZF(IKLE(IELEM,4))
+        ZF1 = ZF(IKLE(IELEM,1))
+        ZF2 = ZF(IKLE(IELEM,2))
+        ZF3 = ZF(IKLE(IELEM,3))
+        ZF4 = ZF(IKLE(IELEM,4))
 !
-           IF(MAX(ZF1,ZF2,ZF3,ZF4).GT.MIN(SL1,SL2,SL3,SL4)) THEN
-             TETA(IELEM) = 0.D0
-           ENDIF
+        IF(MAX(ZF1,ZF2,ZF3,ZF4).GT.MIN(SL1,SL2,SL3,SL4)) THEN
+          TETA(IELEM) = 0.D0
+        ENDIF
 !
-         ENDDO ! IELEM 
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

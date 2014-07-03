@@ -64,6 +64,7 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'P_DMAX : ERREUR DANS MPI_ALLREDUCE'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_DMAX: ERROR IN MPI_ALLREDUCE'
         WRITE(LU,*) 'MPI ERROR ',IER
+        CALL PLANTE(1)
         STOP
       ENDIF
       RETURN
@@ -73,7 +74,6 @@
 !
       P_DMAX=MYPART
 !
-      STOP
 #endif
 !
 !-----------------------------------------------------------------------

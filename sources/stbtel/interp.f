@@ -76,49 +76,49 @@
 !
       DO IPOIN = 1,NPOIN
 !
-         XP = X(IPOIN)
-         YP = Y(IPOIN)
-         C1 = -999999.D0
+        XP = X(IPOIN)
+        YP = Y(IPOIN)
+        C1 = -999999.D0
 !
-         DO IELEM = 1,NEINIT
-            X1 = XINIT(IKINIT(IELEM,1))
-            X2 = XINIT(IKINIT(IELEM,2))
-            X3 = XINIT(IKINIT(IELEM,3))
-            Y1 = YINIT(IKINIT(IELEM,1))
-            Y2 = YINIT(IKINIT(IELEM,2))
-            Y3 = YINIT(IKINIT(IELEM,3))
-            A1 = (X3-X2)*(YP-Y2) - (Y3-Y2)*(XP-X2)
-            A2 = (X1-X3)*(YP-Y3) - (Y1-Y3)*(XP-X3)
-            A3 = (X2-X1)*(YP-Y1) - (Y2-Y1)*(XP-X1)
-            IF (A1.GE.0.AND.A2.GE.0.AND.A3.GE.0) GOTO 30
-            C2 = MIN(A1,A2,A3) / ((X3-X2)*(Y1-Y2)-(Y3-Y2)*(X1-X2))
-            IF (C2.GT.C1) THEN
-               C1 = C2
-               JELEM = IELEM
-            ENDIF
-         ENDDO
+        DO IELEM = 1,NEINIT
+          X1 = XINIT(IKINIT(IELEM,1))
+          X2 = XINIT(IKINIT(IELEM,2))
+          X3 = XINIT(IKINIT(IELEM,3))
+          Y1 = YINIT(IKINIT(IELEM,1))
+          Y2 = YINIT(IKINIT(IELEM,2))
+          Y3 = YINIT(IKINIT(IELEM,3))
+          A1 = (X3-X2)*(YP-Y2) - (Y3-Y2)*(XP-X2)
+          A2 = (X1-X3)*(YP-Y3) - (Y1-Y3)*(XP-X3)
+          A3 = (X2-X1)*(YP-Y1) - (Y2-Y1)*(XP-X1)
+          IF (A1.GE.0.AND.A2.GE.0.AND.A3.GE.0) GOTO 30
+          C2 = MIN(A1,A2,A3) / ((X3-X2)*(Y1-Y2)-(Y3-Y2)*(X1-X2))
+          IF (C2.GT.C1) THEN
+            C1 = C2
+            JELEM = IELEM
+          ENDIF
+        ENDDO
 !
-         IF (LNG.EQ.1) WRITE(LU,*) 'EXTRAPOLATION NECESSAIRE POUR ',
-     &                             'LE POINT :',IPOIN
-         IF (LNG.EQ.2) WRITE(LU,*) 'EXTRAPOLATION REQUIRED FOR ',
-     &                             'THE NODE :',IPOIN
-         IELEM = JELEM
-         X1 = XINIT(IKINIT(IELEM,1))
-         X2 = XINIT(IKINIT(IELEM,2))
-         X3 = XINIT(IKINIT(IELEM,3))
-         Y1 = YINIT(IKINIT(IELEM,1))
-         Y2 = YINIT(IKINIT(IELEM,2))
-         Y3 = YINIT(IKINIT(IELEM,3))
-         A1 = (X3-X2)*(YP-Y2) - (Y3-Y2)*(XP-X2)
-         A2 = (X1-X3)*(YP-Y3) - (Y1-Y3)*(XP-X3)
-         A3 = (X2-X1)*(YP-Y1) - (Y2-Y1)*(XP-X1)
+        IF (LNG.EQ.1) WRITE(LU,*) 'EXTRAPOLATION NECESSAIRE POUR ',
+     &                            'LE POINT :',IPOIN
+        IF (LNG.EQ.2) WRITE(LU,*) 'EXTRAPOLATION REQUIRED FOR ',
+     &                            'THE NODE :',IPOIN
+        IELEM = JELEM
+        X1 = XINIT(IKINIT(IELEM,1))
+        X2 = XINIT(IKINIT(IELEM,2))
+        X3 = XINIT(IKINIT(IELEM,3))
+        Y1 = YINIT(IKINIT(IELEM,1))
+        Y2 = YINIT(IKINIT(IELEM,2))
+        Y3 = YINIT(IKINIT(IELEM,3))
+        A1 = (X3-X2)*(YP-Y2) - (Y3-Y2)*(XP-X2)
+        A2 = (X1-X3)*(YP-Y3) - (Y1-Y3)*(XP-X3)
+        A3 = (X2-X1)*(YP-Y1) - (Y2-Y1)*(XP-X1)
 !
-30       CONTINUE
-         C1 = (X3-X2)*(Y1-Y2)-(Y3-Y2)*(X1-X2)
-         SHP(IPOIN,1) = A1/C1
-         SHP(IPOIN,2) = A2/C1
-         SHP(IPOIN,3) = A3/C1
-         ELT(IPOIN) = IELEM
+30      CONTINUE
+        C1 = (X3-X2)*(Y1-Y2)-(Y3-Y2)*(X1-X2)
+        SHP(IPOIN,1) = A1/C1
+        SHP(IPOIN,2) = A2/C1
+        SHP(IPOIN,3) = A3/C1
+        ELT(IPOIN) = IELEM
 !
       ENDDO
 !

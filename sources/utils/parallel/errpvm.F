@@ -44,21 +44,20 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN) :: ERROR_NUMBER
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
 #if defined (HAVE_MPI)
       WRITE(LU,*) 'MPI ERROR NUMBER: ',ERROR_NUMBER
 !
-      RETURN
 #else
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE ERRPVM VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF ERRPVM IN ITS VOID VERSION'
 !
-      STOP
 #endif
+      RETURN
       END

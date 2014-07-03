@@ -222,314 +222,314 @@
 !
       IF(SCHCF.EQ.ADV_PSI) THEN
 !
-         DO IPOIN=1,NPOIN3
-           TRA02(IPOIN)=0.D0
-         ENDDO
+        DO IPOIN=1,NPOIN3
+          TRA02(IPOIN)=0.D0
+        ENDDO
 !
-         IF(IELM3.EQ.41) THEN
+        IF(IELM3.EQ.41) THEN
 !
-         DO IELEM = 1,NELEM3
+        DO IELEM = 1,NELEM3
 !
-            I1 = IKLE3(IELEM,1)
-            I2 = IKLE3(IELEM,2)
-            I3 = IKLE3(IELEM,3)
-            I4 = IKLE3(IELEM,4)
-            I5 = IKLE3(IELEM,5)
-            I6 = IKLE3(IELEM,6)
+          I1 = IKLE3(IELEM,1)
+          I2 = IKLE3(IELEM,2)
+          I3 = IKLE3(IELEM,3)
+          I4 = IKLE3(IELEM,4)
+          I5 = IKLE3(IELEM,5)
+          I6 = IKLE3(IELEM,6)
 !
-            T1 = FC(I1)
-            T2 = FC(I2)
-            T3 = FC(I3)
-            T4 = FC(I4)
-            T5 = FC(I5)
-            T6 = FC(I6)
+          T1 = FC(I1)
+          T2 = FC(I2)
+          T3 = FC(I3)
+          T4 = FC(I4)
+          T5 = FC(I5)
+          T6 = FC(I6)
 !
-            M12 = (XB(01,IELEM)-XB(16,IELEM)) * (T1-T2)
-            M13 = (XB(02,IELEM)-XB(17,IELEM)) * (T1-T3)
-            M14 = (XB(03,IELEM)-XB(18,IELEM)) * (T1-T4)
-            M15 = (XB(04,IELEM)-XB(19,IELEM)) * (T1-T5)
-            M16 = (XB(05,IELEM)-XB(20,IELEM)) * (T1-T6)
-            M23 = (XB(06,IELEM)-XB(21,IELEM)) * (T2-T3)
-            M24 = (XB(07,IELEM)-XB(22,IELEM)) * (T2-T4)
-            M25 = (XB(08,IELEM)-XB(23,IELEM)) * (T2-T5)
-            M26 = (XB(09,IELEM)-XB(24,IELEM)) * (T2-T6)
-            M34 = (XB(10,IELEM)-XB(25,IELEM)) * (T3-T4)
-            M35 = (XB(11,IELEM)-XB(26,IELEM)) * (T3-T5)
-            M36 = (XB(12,IELEM)-XB(27,IELEM)) * (T3-T6)
-            M45 = (XB(13,IELEM)-XB(28,IELEM)) * (T4-T5)
-            M46 = (XB(14,IELEM)-XB(29,IELEM)) * (T4-T6)
-            M56 = (XB(15,IELEM)-XB(30,IELEM)) * (T5-T6)
+          M12 = (XB(01,IELEM)-XB(16,IELEM)) * (T1-T2)
+          M13 = (XB(02,IELEM)-XB(17,IELEM)) * (T1-T3)
+          M14 = (XB(03,IELEM)-XB(18,IELEM)) * (T1-T4)
+          M15 = (XB(04,IELEM)-XB(19,IELEM)) * (T1-T5)
+          M16 = (XB(05,IELEM)-XB(20,IELEM)) * (T1-T6)
+          M23 = (XB(06,IELEM)-XB(21,IELEM)) * (T2-T3)
+          M24 = (XB(07,IELEM)-XB(22,IELEM)) * (T2-T4)
+          M25 = (XB(08,IELEM)-XB(23,IELEM)) * (T2-T5)
+          M26 = (XB(09,IELEM)-XB(24,IELEM)) * (T2-T6)
+          M34 = (XB(10,IELEM)-XB(25,IELEM)) * (T3-T4)
+          M35 = (XB(11,IELEM)-XB(26,IELEM)) * (T3-T5)
+          M36 = (XB(12,IELEM)-XB(27,IELEM)) * (T3-T6)
+          M45 = (XB(13,IELEM)-XB(28,IELEM)) * (T4-T5)
+          M46 = (XB(14,IELEM)-XB(29,IELEM)) * (T4-T6)
+          M56 = (XB(15,IELEM)-XB(30,IELEM)) * (T5-T6)
 !
-            PHIP = MAX( M12,0.D0) + MAX( M13,0.D0) + MAX( M14,0.D0)
-     &           + MAX( M15,0.D0) + MAX( M16,0.D0) + MAX( M23,0.D0)
-     &           + MAX( M24,0.D0) + MAX( M25,0.D0) + MAX( M26,0.D0)
-     &           + MAX( M34,0.D0) + MAX( M35,0.D0) + MAX( M36,0.D0)
-     &           + MAX( M45,0.D0) + MAX( M46,0.D0) + MAX( M56,0.D0)
-            PHIM = MAX(-M12,0.D0) + MAX(-M13,0.D0) + MAX(-M14,0.D0)
-     &           + MAX(-M15,0.D0) + MAX(-M16,0.D0) + MAX(-M23,0.D0)
-     &           + MAX(-M24,0.D0) + MAX(-M25,0.D0) + MAX(-M26,0.D0)
-     &           + MAX(-M34,0.D0) + MAX(-M35,0.D0) + MAX(-M36,0.D0)
-     &           + MAX(-M45,0.D0) + MAX(-M46,0.D0) + MAX(-M56,0.D0)
+          PHIP = MAX( M12,0.D0) + MAX( M13,0.D0) + MAX( M14,0.D0)
+     &         + MAX( M15,0.D0) + MAX( M16,0.D0) + MAX( M23,0.D0)
+     &         + MAX( M24,0.D0) + MAX( M25,0.D0) + MAX( M26,0.D0)
+     &         + MAX( M34,0.D0) + MAX( M35,0.D0) + MAX( M36,0.D0)
+     &         + MAX( M45,0.D0) + MAX( M46,0.D0) + MAX( M56,0.D0)
+          PHIM = MAX(-M12,0.D0) + MAX(-M13,0.D0) + MAX(-M14,0.D0)
+     &         + MAX(-M15,0.D0) + MAX(-M16,0.D0) + MAX(-M23,0.D0)
+     &         + MAX(-M24,0.D0) + MAX(-M25,0.D0) + MAX(-M26,0.D0)
+     &         + MAX(-M34,0.D0) + MAX(-M35,0.D0) + MAX(-M36,0.D0)
+     &         + MAX(-M45,0.D0) + MAX(-M46,0.D0) + MAX(-M56,0.D0)
 !
-            IF(PHIP.GE.PHIM) THEN
-               ALFA = (PHIP - PHIM) / MAX(PHIP,1.D-10)
-               IF(T2.GT.T1) THEN
-                 TRA02(I2)=TRA02(I2)+XB(16,IELEM)*ALFA*(FC(I1)-FC(I2))
-               ELSE
-                 TRA02(I1)=TRA02(I1)+XB(01,IELEM)*ALFA*(FC(I2)-FC(I1))
-               ENDIF
-               IF(T3.GT.T1) THEN
-                 TRA02(I3)=TRA02(I3)+XB(17,IELEM)*ALFA*(FC(I1)-FC(I3))
-               ELSE
-                 TRA02(I1)=TRA02(I1)+XB(02,IELEM)*ALFA*(FC(I3)-FC(I1))
-               ENDIF
-               IF(T4.GT.T1) THEN
-                 TRA02(I4)=TRA02(I4)+XB(18,IELEM)*ALFA*(FC(I1)-FC(I4))
-               ELSE
-                 TRA02(I1)=TRA02(I1)+XB(03,IELEM)*ALFA*(FC(I4)-FC(I1))
-               ENDIF
-               IF(T5.GT.T1) THEN
-                 TRA02(I5)=TRA02(I5)+XB(19,IELEM)*ALFA*(FC(I1)-FC(I5))
-               ELSE
-                 TRA02(I1)=TRA02(I1)+XB(04,IELEM)*ALFA*(FC(I5)-FC(I1))
-               ENDIF
-               IF(T6.GT.T1) THEN
-                 TRA02(I6)=TRA02(I6)+XB(20,IELEM)*ALFA*(FC(I1)-FC(I6))
-               ELSE
-                 TRA02(I1)=TRA02(I1)+XB(05,IELEM)*ALFA*(FC(I6)-FC(I1))
-               ENDIF
-               IF(T3.GT.T2) THEN
-                 TRA02(I3)=TRA02(I3)+XB(21,IELEM)*ALFA*(FC(I2)-FC(I3))
-               ELSE
-                 TRA02(I2)=TRA02(I2)+XB(06,IELEM)*ALFA*(FC(I3)-FC(I2))
-               ENDIF
-               IF(T4.GT.T2) THEN
-                 TRA02(I4)=TRA02(I4)+XB(22,IELEM)*ALFA*(FC(I2)-FC(I4))
-               ELSE
-                 TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*(FC(I4)-FC(I2))
-               ENDIF
-               IF(T5.GT.T2) THEN
-                 TRA02(I5)=TRA02(I5)+XB(23,IELEM)*ALFA*(FC(I2)-FC(I5))
-               ELSE
-                 TRA02(I2)=TRA02(I2)+XB(08,IELEM)*ALFA*(FC(I5)-FC(I2))
-               ENDIF
-               IF(T6.GT.T2) THEN
-                 TRA02(I6)=TRA02(I6)+XB(24,IELEM)*ALFA*(FC(I2)-FC(I6))
-               ELSE
-                 TRA02(I2)=TRA02(I2)+XB(09,IELEM)*ALFA*(FC(I6)-FC(I2))
-               ENDIF
-               IF(T4.GT.T3) THEN
-                 TRA02(I4)=TRA02(I4)+XB(25,IELEM)*ALFA*(FC(I3)-FC(I4))
-               ELSE
-                 TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*(FC(I4)-FC(I3))
-               ENDIF
-               IF(T5.GT.T3) THEN
-                 TRA02(I5)=TRA02(I5)+XB(26,IELEM)*ALFA*(FC(I3)-FC(I5))
-               ELSE
-                 TRA02(I3)=TRA02(I3)+XB(11,IELEM)*ALFA*(FC(I5)-FC(I3))
-               ENDIF
-               IF(T6.GT.T3) THEN
-                 TRA02(I6)=TRA02(I6)+XB(27,IELEM)*ALFA*(FC(I3)-FC(I6))
-               ELSE
-                 TRA02(I3)=TRA02(I3)+XB(12,IELEM)*ALFA*(FC(I6)-FC(I3))
-               ENDIF
-               IF(T5.GT.T4) THEN
-                 TRA02(I5)=TRA02(I5)+XB(28,IELEM)*ALFA*(FC(I4)-FC(I5))
-               ELSE
-                 TRA02(I4)=TRA02(I4)+XB(13,IELEM)*ALFA*(FC(I5)-FC(I4))
-               ENDIF
-               IF(T6.GT.T4) THEN
-                 TRA02(I6)=TRA02(I6)+XB(29,IELEM)*ALFA*(FC(I4)-FC(I6))
-               ELSE
-                 TRA02(I4)=TRA02(I4)+XB(14,IELEM)*ALFA*(FC(I6)-FC(I4))
-               ENDIF
-               IF(T6.GT.T5) THEN
-                 TRA02(I6)=TRA02(I6)+XB(30,IELEM)*ALFA*(FC(I5)-FC(I6))
-               ELSE
-                 TRA02(I5)=TRA02(I5)+XB(15,IELEM)*ALFA*(FC(I6)-FC(I5))
-               ENDIF
+          IF(PHIP.GE.PHIM) THEN
+            ALFA = (PHIP - PHIM) / MAX(PHIP,1.D-10)
+            IF(T2.GT.T1) THEN
+              TRA02(I2)=TRA02(I2)+XB(16,IELEM)*ALFA*(FC(I1)-FC(I2))
             ELSE
-               ALFA = (PHIM - PHIP) / MAX(PHIM,1.D-10)
-               IF(T2.GT.T1) THEN
-                 TRA02(I1)=TRA02(I1)+XB(01,IELEM)*ALFA*(FC(I2)-FC(I1))
-               ELSE
-                 TRA02(I2)=TRA02(I2)+XB(16,IELEM)*ALFA*(FC(I1)-FC(I2))
-               ENDIF
-               IF(T3.GT.T1) THEN
-                 TRA02(I1)=TRA02(I1)+XB(02,IELEM)*ALFA*(FC(I3)-FC(I1))
-               ELSE
-                 TRA02(I3)=TRA02(I3)+XB(17,IELEM)*ALFA*(FC(I1)-FC(I3))
-               ENDIF
-               IF(T4.GT.T1) THEN
-                 TRA02(I1)=TRA02(I1)+XB(03,IELEM)*ALFA*(FC(I4)-FC(I1))
-               ELSE
-                 TRA02(I4)=TRA02(I4)+XB(18,IELEM)*ALFA*(FC(I1)-FC(I4))
-               ENDIF
-               IF(T5.GT.T1) THEN
-                 TRA02(I1)=TRA02(I1)+XB(04,IELEM)*ALFA*(FC(I5)-FC(I1))
-               ELSE
-                 TRA02(I5)=TRA02(I5)+XB(19,IELEM)*ALFA*(FC(I1)-FC(I5))
-               ENDIF
-               IF(T6.GT.T1) THEN
-                 TRA02(I1)=TRA02(I1)+XB(05,IELEM)*ALFA*(FC(I6)-FC(I1))
-               ELSE
-                 TRA02(I6)=TRA02(I6)+XB(20,IELEM)*ALFA*(FC(I1)-FC(I6))
-               ENDIF
-               IF(T3.GT.T2) THEN
-                 TRA02(I2)=TRA02(I2)+XB(06,IELEM)*ALFA*(FC(I3)-FC(I2))
-               ELSE
-                 TRA02(I3)=TRA02(I3)+XB(21,IELEM)*ALFA*(FC(I2)-FC(I3))
-               ENDIF
-               IF(T4.GT.T2) THEN
-                 TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*(FC(I4)-FC(I2))
-               ELSE
-                 TRA02(I4)=TRA02(I4)+XB(22,IELEM)*ALFA*(FC(I2)-FC(I4))
-               ENDIF
-               IF(T5.GT.T2) THEN
-                 TRA02(I2)=TRA02(I2)+XB(08,IELEM)*ALFA*(FC(I5)-FC(I2))
-               ELSE
-                 TRA02(I5)=TRA02(I5)+XB(23,IELEM)*ALFA*(FC(I2)-FC(I5))
-               ENDIF
-               IF(T6.GT.T2) THEN
-                 TRA02(I2)=TRA02(I2)+XB(09,IELEM)*ALFA*(FC(I6)-FC(I2))
-               ELSE
-                 TRA02(I6)=TRA02(I6)+XB(24,IELEM)*ALFA*(FC(I2)-FC(I6))
-               ENDIF
-               IF(T4.GT.T3) THEN
-                 TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*(FC(I4)-FC(I3))
-               ELSE
-                 TRA02(I4)=TRA02(I4)+XB(25,IELEM)*ALFA*(FC(I3)-FC(I4))
-               ENDIF
-               IF(T5.GT.T3) THEN
-                 TRA02(I3)=TRA02(I3)+XB(11,IELEM)*ALFA*(FC(I5)-FC(I3))
-               ELSE
-                 TRA02(I5)=TRA02(I5)+XB(26,IELEM)*ALFA*(FC(I3)-FC(I5))
-               ENDIF
-               IF(T6.GT.T3) THEN
-                 TRA02(I3)=TRA02(I3)+XB(12,IELEM)*ALFA*(FC(I6)-FC(I3))
-               ELSE
-                 TRA02(I6)=TRA02(I6)+XB(27,IELEM)*ALFA*(FC(I3)-FC(I6))
-               ENDIF
-               IF(T5.GT.T4) THEN
-                 TRA02(I4)=TRA02(I4)+XB(13,IELEM)*ALFA*(FC(I5)-FC(I4))
-               ELSE
-                 TRA02(I5)=TRA02(I5)+XB(28,IELEM)*ALFA*(FC(I4)-FC(I5))
-               ENDIF
-               IF(T6.GT.T4) THEN
-                 TRA02(I4)=TRA02(I4)+XB(14,IELEM)*ALFA*(FC(I6)-FC(I4))
-               ELSE
-                 TRA02(I6)=TRA02(I6)+XB(29,IELEM)*ALFA*(FC(I4)-FC(I6))
-               ENDIF
-               IF(T6.GT.T5) THEN
-                 TRA02(I5)=TRA02(I5)+XB(15,IELEM)*ALFA*(FC(I6)-FC(I5))
-               ELSE
-                 TRA02(I6)=TRA02(I6)+XB(30,IELEM)*ALFA*(FC(I5)-FC(I6))
-               ENDIF
+              TRA02(I1)=TRA02(I1)+XB(01,IELEM)*ALFA*(FC(I2)-FC(I1))
             ENDIF
-!
-         ENDDO ! IELEM 
-!
-         ELSEIF(IELM3.EQ.51) THEN
-!
-         DO IELEM = 1,NELEM3
-!
-            I1 = IKLE3(IELEM,1)
-            I2 = IKLE3(IELEM,2)
-            I3 = IKLE3(IELEM,3)
-            I4 = IKLE3(IELEM,4)
-!
-            F1MF2 = FC(I1)-FC(I2)
-            F1MF3 = FC(I1)-FC(I3)
-            F1MF4 = FC(I1)-FC(I4)
-            F2MF3 = FC(I2)-FC(I3)
-            F2MF4 = FC(I2)-FC(I4)
-            F3MF4 = FC(I3)-FC(I4)
-!
-            M12 = (XB(01,IELEM)-XB(07,IELEM)) * F1MF2
-            M13 = (XB(02,IELEM)-XB(08,IELEM)) * F1MF3
-            M14 = (XB(03,IELEM)-XB(09,IELEM)) * F1MF4
-            M23 = (XB(04,IELEM)-XB(10,IELEM)) * F2MF3
-            M24 = (XB(05,IELEM)-XB(11,IELEM)) * F2MF4
-            M34 = (XB(06,IELEM)-XB(12,IELEM)) * F3MF4
-!
-            PHIP = MAX( M12,0.D0) + MAX( M13,0.D0) + MAX( M14,0.D0)
-     &           + MAX( M23,0.D0) + MAX( M24,0.D0) + MAX( M34,0.D0)
-            PHIM = MAX(-M12,0.D0) + MAX(-M13,0.D0) + MAX(-M14,0.D0)
-     &           + MAX(-M23,0.D0) + MAX(-M24,0.D0) + MAX(-M34,0.D0)
-!
-            IF(PHIP.GE.PHIM) THEN
-               ALFA = (PHIP - PHIM) / MAX(PHIP,1.D-10)
-               IF(F1MF2.LT.0.D0) THEN
-                 TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*F1MF2
-               ELSE
-                 TRA02(I1)=TRA02(I1)-XB(01,IELEM)*ALFA*F1MF2
-               ENDIF
-               IF(F1MF3.LT.0.D0) THEN
-                 TRA02(I3)=TRA02(I3)+XB(08,IELEM)*ALFA*F1MF3
-               ELSE
-                 TRA02(I1)=TRA02(I1)-XB(02,IELEM)*ALFA*F1MF3
-               ENDIF
-               IF(F1MF4.LT.0.D0) THEN
-                 TRA02(I4)=TRA02(I4)+XB(09,IELEM)*ALFA*F1MF4
-               ELSE
-                 TRA02(I1)=TRA02(I1)-XB(03,IELEM)*ALFA*F1MF4
-               ENDIF
-               IF(F2MF3.LT.0.D0) THEN
-                 TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*F2MF3
-               ELSE
-                 TRA02(I2)=TRA02(I2)-XB(04,IELEM)*ALFA*F2MF3
-               ENDIF
-               IF(F2MF4.LT.0.D0) THEN
-                 TRA02(I4)=TRA02(I4)+XB(11,IELEM)*ALFA*F2MF4
-               ELSE
-                 TRA02(I2)=TRA02(I2)-XB(05,IELEM)*ALFA*F2MF4
-               ENDIF
-               IF(F3MF4.LT.0.D0) THEN
-                 TRA02(I4)=TRA02(I4)+XB(12,IELEM)*ALFA*F3MF4
-               ELSE
-                 TRA02(I3)=TRA02(I3)-XB(06,IELEM)*ALFA*F3MF4
-               ENDIF
+            IF(T3.GT.T1) THEN
+              TRA02(I3)=TRA02(I3)+XB(17,IELEM)*ALFA*(FC(I1)-FC(I3))
             ELSE
-               ALFA = (PHIM - PHIP) / MAX(PHIM,1.D-10)
-               IF(F1MF2.LT.0.D0) THEN
-                 TRA02(I1)=TRA02(I1)-XB(01,IELEM)*ALFA*F1MF2
-               ELSE
-                 TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*F1MF2
-               ENDIF
-               IF(F1MF3.LT.0.D0) THEN
-                 TRA02(I1)=TRA02(I1)-XB(02,IELEM)*ALFA*F1MF3
-               ELSE
-                 TRA02(I3)=TRA02(I3)+XB(08,IELEM)*ALFA*F1MF3
-               ENDIF
-               IF(F1MF4.LT.0.D0) THEN
-                 TRA02(I1)=TRA02(I1)-XB(03,IELEM)*ALFA*F1MF4
-               ELSE
-                 TRA02(I4)=TRA02(I4)+XB(09,IELEM)*ALFA*F1MF4
-               ENDIF
-               IF(F2MF3.LT.0.D0) THEN
-                 TRA02(I2)=TRA02(I2)-XB(04,IELEM)*ALFA*F2MF3
-               ELSE
-                 TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*F2MF3
-               ENDIF
-               IF(F2MF4.LT.0.D0) THEN
-                 TRA02(I2)=TRA02(I2)-XB(05,IELEM)*ALFA*F2MF4
-               ELSE
-                 TRA02(I4)=TRA02(I4)+XB(11,IELEM)*ALFA*F2MF4
-               ENDIF
-               IF(F3MF4.LT.0.D0) THEN
-                 TRA02(I3)=TRA02(I3)-XB(06,IELEM)*ALFA*F3MF4
-               ELSE
-                 TRA02(I4)=TRA02(I4)+XB(12,IELEM)*ALFA*F3MF4
-               ENDIF
+              TRA02(I1)=TRA02(I1)+XB(02,IELEM)*ALFA*(FC(I3)-FC(I1))
             ENDIF
+            IF(T4.GT.T1) THEN
+              TRA02(I4)=TRA02(I4)+XB(18,IELEM)*ALFA*(FC(I1)-FC(I4))
+            ELSE
+              TRA02(I1)=TRA02(I1)+XB(03,IELEM)*ALFA*(FC(I4)-FC(I1))
+            ENDIF
+            IF(T5.GT.T1) THEN
+              TRA02(I5)=TRA02(I5)+XB(19,IELEM)*ALFA*(FC(I1)-FC(I5))
+            ELSE
+              TRA02(I1)=TRA02(I1)+XB(04,IELEM)*ALFA*(FC(I5)-FC(I1))
+            ENDIF
+            IF(T6.GT.T1) THEN
+              TRA02(I6)=TRA02(I6)+XB(20,IELEM)*ALFA*(FC(I1)-FC(I6))
+            ELSE
+              TRA02(I1)=TRA02(I1)+XB(05,IELEM)*ALFA*(FC(I6)-FC(I1))
+            ENDIF
+            IF(T3.GT.T2) THEN
+              TRA02(I3)=TRA02(I3)+XB(21,IELEM)*ALFA*(FC(I2)-FC(I3))
+            ELSE
+              TRA02(I2)=TRA02(I2)+XB(06,IELEM)*ALFA*(FC(I3)-FC(I2))
+            ENDIF
+            IF(T4.GT.T2) THEN
+              TRA02(I4)=TRA02(I4)+XB(22,IELEM)*ALFA*(FC(I2)-FC(I4))
+            ELSE
+              TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*(FC(I4)-FC(I2))
+            ENDIF
+            IF(T5.GT.T2) THEN
+              TRA02(I5)=TRA02(I5)+XB(23,IELEM)*ALFA*(FC(I2)-FC(I5))
+            ELSE
+              TRA02(I2)=TRA02(I2)+XB(08,IELEM)*ALFA*(FC(I5)-FC(I2))
+            ENDIF
+            IF(T6.GT.T2) THEN
+              TRA02(I6)=TRA02(I6)+XB(24,IELEM)*ALFA*(FC(I2)-FC(I6))
+            ELSE
+              TRA02(I2)=TRA02(I2)+XB(09,IELEM)*ALFA*(FC(I6)-FC(I2))
+            ENDIF
+            IF(T4.GT.T3) THEN
+              TRA02(I4)=TRA02(I4)+XB(25,IELEM)*ALFA*(FC(I3)-FC(I4))
+            ELSE
+              TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*(FC(I4)-FC(I3))
+            ENDIF
+            IF(T5.GT.T3) THEN
+              TRA02(I5)=TRA02(I5)+XB(26,IELEM)*ALFA*(FC(I3)-FC(I5))
+            ELSE
+              TRA02(I3)=TRA02(I3)+XB(11,IELEM)*ALFA*(FC(I5)-FC(I3))
+            ENDIF
+            IF(T6.GT.T3) THEN
+              TRA02(I6)=TRA02(I6)+XB(27,IELEM)*ALFA*(FC(I3)-FC(I6))
+            ELSE
+              TRA02(I3)=TRA02(I3)+XB(12,IELEM)*ALFA*(FC(I6)-FC(I3))
+            ENDIF
+            IF(T5.GT.T4) THEN
+              TRA02(I5)=TRA02(I5)+XB(28,IELEM)*ALFA*(FC(I4)-FC(I5))
+            ELSE
+              TRA02(I4)=TRA02(I4)+XB(13,IELEM)*ALFA*(FC(I5)-FC(I4))
+            ENDIF
+            IF(T6.GT.T4) THEN
+              TRA02(I6)=TRA02(I6)+XB(29,IELEM)*ALFA*(FC(I4)-FC(I6))
+            ELSE
+              TRA02(I4)=TRA02(I4)+XB(14,IELEM)*ALFA*(FC(I6)-FC(I4))
+            ENDIF
+            IF(T6.GT.T5) THEN
+              TRA02(I6)=TRA02(I6)+XB(30,IELEM)*ALFA*(FC(I5)-FC(I6))
+            ELSE
+              TRA02(I5)=TRA02(I5)+XB(15,IELEM)*ALFA*(FC(I6)-FC(I5))
+            ENDIF
+          ELSE
+            ALFA = (PHIM - PHIP) / MAX(PHIM,1.D-10)
+            IF(T2.GT.T1) THEN
+              TRA02(I1)=TRA02(I1)+XB(01,IELEM)*ALFA*(FC(I2)-FC(I1))
+            ELSE
+              TRA02(I2)=TRA02(I2)+XB(16,IELEM)*ALFA*(FC(I1)-FC(I2))
+            ENDIF
+            IF(T3.GT.T1) THEN
+              TRA02(I1)=TRA02(I1)+XB(02,IELEM)*ALFA*(FC(I3)-FC(I1))
+            ELSE
+              TRA02(I3)=TRA02(I3)+XB(17,IELEM)*ALFA*(FC(I1)-FC(I3))
+            ENDIF
+            IF(T4.GT.T1) THEN
+              TRA02(I1)=TRA02(I1)+XB(03,IELEM)*ALFA*(FC(I4)-FC(I1))
+            ELSE
+              TRA02(I4)=TRA02(I4)+XB(18,IELEM)*ALFA*(FC(I1)-FC(I4))
+            ENDIF
+            IF(T5.GT.T1) THEN
+              TRA02(I1)=TRA02(I1)+XB(04,IELEM)*ALFA*(FC(I5)-FC(I1))
+            ELSE
+              TRA02(I5)=TRA02(I5)+XB(19,IELEM)*ALFA*(FC(I1)-FC(I5))
+            ENDIF
+            IF(T6.GT.T1) THEN
+              TRA02(I1)=TRA02(I1)+XB(05,IELEM)*ALFA*(FC(I6)-FC(I1))
+            ELSE
+              TRA02(I6)=TRA02(I6)+XB(20,IELEM)*ALFA*(FC(I1)-FC(I6))
+            ENDIF
+            IF(T3.GT.T2) THEN
+              TRA02(I2)=TRA02(I2)+XB(06,IELEM)*ALFA*(FC(I3)-FC(I2))
+            ELSE
+              TRA02(I3)=TRA02(I3)+XB(21,IELEM)*ALFA*(FC(I2)-FC(I3))
+            ENDIF
+            IF(T4.GT.T2) THEN
+              TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*(FC(I4)-FC(I2))
+            ELSE
+              TRA02(I4)=TRA02(I4)+XB(22,IELEM)*ALFA*(FC(I2)-FC(I4))
+            ENDIF
+            IF(T5.GT.T2) THEN
+              TRA02(I2)=TRA02(I2)+XB(08,IELEM)*ALFA*(FC(I5)-FC(I2))
+            ELSE
+              TRA02(I5)=TRA02(I5)+XB(23,IELEM)*ALFA*(FC(I2)-FC(I5))
+            ENDIF
+            IF(T6.GT.T2) THEN
+              TRA02(I2)=TRA02(I2)+XB(09,IELEM)*ALFA*(FC(I6)-FC(I2))
+            ELSE
+              TRA02(I6)=TRA02(I6)+XB(24,IELEM)*ALFA*(FC(I2)-FC(I6))
+            ENDIF
+            IF(T4.GT.T3) THEN
+              TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*(FC(I4)-FC(I3))
+            ELSE
+              TRA02(I4)=TRA02(I4)+XB(25,IELEM)*ALFA*(FC(I3)-FC(I4))
+            ENDIF
+            IF(T5.GT.T3) THEN
+              TRA02(I3)=TRA02(I3)+XB(11,IELEM)*ALFA*(FC(I5)-FC(I3))
+            ELSE
+              TRA02(I5)=TRA02(I5)+XB(26,IELEM)*ALFA*(FC(I3)-FC(I5))
+            ENDIF
+            IF(T6.GT.T3) THEN
+              TRA02(I3)=TRA02(I3)+XB(12,IELEM)*ALFA*(FC(I6)-FC(I3))
+            ELSE
+              TRA02(I6)=TRA02(I6)+XB(27,IELEM)*ALFA*(FC(I3)-FC(I6))
+            ENDIF
+            IF(T5.GT.T4) THEN
+              TRA02(I4)=TRA02(I4)+XB(13,IELEM)*ALFA*(FC(I5)-FC(I4))
+            ELSE
+              TRA02(I5)=TRA02(I5)+XB(28,IELEM)*ALFA*(FC(I4)-FC(I5))
+            ENDIF
+            IF(T6.GT.T4) THEN
+              TRA02(I4)=TRA02(I4)+XB(14,IELEM)*ALFA*(FC(I6)-FC(I4))
+            ELSE
+              TRA02(I6)=TRA02(I6)+XB(29,IELEM)*ALFA*(FC(I4)-FC(I6))
+            ENDIF
+            IF(T6.GT.T5) THEN
+              TRA02(I5)=TRA02(I5)+XB(15,IELEM)*ALFA*(FC(I6)-FC(I5))
+            ELSE
+              TRA02(I6)=TRA02(I6)+XB(30,IELEM)*ALFA*(FC(I5)-FC(I6))
+            ENDIF
+          ENDIF
 !
-         ENDDO ! IELEM 
+        ENDDO ! IELEM 
 !
-         ELSE
-           WRITE(LU,*) 'ELEMENT ',IELM3,' NOT COMPUTED IN MURD3D'
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        ELSEIF(IELM3.EQ.51) THEN
+!
+        DO IELEM = 1,NELEM3
+!
+          I1 = IKLE3(IELEM,1)
+          I2 = IKLE3(IELEM,2)
+          I3 = IKLE3(IELEM,3)
+          I4 = IKLE3(IELEM,4)
+!
+          F1MF2 = FC(I1)-FC(I2)
+          F1MF3 = FC(I1)-FC(I3)
+          F1MF4 = FC(I1)-FC(I4)
+          F2MF3 = FC(I2)-FC(I3)
+          F2MF4 = FC(I2)-FC(I4)
+          F3MF4 = FC(I3)-FC(I4)
+!
+          M12 = (XB(01,IELEM)-XB(07,IELEM)) * F1MF2
+          M13 = (XB(02,IELEM)-XB(08,IELEM)) * F1MF3
+          M14 = (XB(03,IELEM)-XB(09,IELEM)) * F1MF4
+          M23 = (XB(04,IELEM)-XB(10,IELEM)) * F2MF3
+          M24 = (XB(05,IELEM)-XB(11,IELEM)) * F2MF4
+          M34 = (XB(06,IELEM)-XB(12,IELEM)) * F3MF4
+!
+          PHIP = MAX( M12,0.D0) + MAX( M13,0.D0) + MAX( M14,0.D0)
+     &         + MAX( M23,0.D0) + MAX( M24,0.D0) + MAX( M34,0.D0)
+          PHIM = MAX(-M12,0.D0) + MAX(-M13,0.D0) + MAX(-M14,0.D0)
+     &         + MAX(-M23,0.D0) + MAX(-M24,0.D0) + MAX(-M34,0.D0)
+!
+          IF(PHIP.GE.PHIM) THEN
+            ALFA = (PHIP - PHIM) / MAX(PHIP,1.D-10)
+            IF(F1MF2.LT.0.D0) THEN
+              TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*F1MF2
+            ELSE
+              TRA02(I1)=TRA02(I1)-XB(01,IELEM)*ALFA*F1MF2
+            ENDIF
+            IF(F1MF3.LT.0.D0) THEN
+              TRA02(I3)=TRA02(I3)+XB(08,IELEM)*ALFA*F1MF3
+            ELSE
+              TRA02(I1)=TRA02(I1)-XB(02,IELEM)*ALFA*F1MF3
+            ENDIF
+            IF(F1MF4.LT.0.D0) THEN
+              TRA02(I4)=TRA02(I4)+XB(09,IELEM)*ALFA*F1MF4
+            ELSE
+              TRA02(I1)=TRA02(I1)-XB(03,IELEM)*ALFA*F1MF4
+            ENDIF
+            IF(F2MF3.LT.0.D0) THEN
+              TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*F2MF3
+            ELSE
+              TRA02(I2)=TRA02(I2)-XB(04,IELEM)*ALFA*F2MF3
+            ENDIF
+            IF(F2MF4.LT.0.D0) THEN
+              TRA02(I4)=TRA02(I4)+XB(11,IELEM)*ALFA*F2MF4
+            ELSE
+              TRA02(I2)=TRA02(I2)-XB(05,IELEM)*ALFA*F2MF4
+            ENDIF
+            IF(F3MF4.LT.0.D0) THEN
+              TRA02(I4)=TRA02(I4)+XB(12,IELEM)*ALFA*F3MF4
+            ELSE
+              TRA02(I3)=TRA02(I3)-XB(06,IELEM)*ALFA*F3MF4
+            ENDIF
+          ELSE
+            ALFA = (PHIM - PHIP) / MAX(PHIM,1.D-10)
+            IF(F1MF2.LT.0.D0) THEN
+              TRA02(I1)=TRA02(I1)-XB(01,IELEM)*ALFA*F1MF2
+            ELSE
+              TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*F1MF2
+            ENDIF
+            IF(F1MF3.LT.0.D0) THEN
+              TRA02(I1)=TRA02(I1)-XB(02,IELEM)*ALFA*F1MF3
+            ELSE
+              TRA02(I3)=TRA02(I3)+XB(08,IELEM)*ALFA*F1MF3
+            ENDIF
+            IF(F1MF4.LT.0.D0) THEN
+              TRA02(I1)=TRA02(I1)-XB(03,IELEM)*ALFA*F1MF4
+            ELSE
+              TRA02(I4)=TRA02(I4)+XB(09,IELEM)*ALFA*F1MF4
+            ENDIF
+            IF(F2MF3.LT.0.D0) THEN
+              TRA02(I2)=TRA02(I2)-XB(04,IELEM)*ALFA*F2MF3
+            ELSE
+              TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*F2MF3
+            ENDIF
+            IF(F2MF4.LT.0.D0) THEN
+              TRA02(I2)=TRA02(I2)-XB(05,IELEM)*ALFA*F2MF4
+            ELSE
+              TRA02(I4)=TRA02(I4)+XB(11,IELEM)*ALFA*F2MF4
+            ENDIF
+            IF(F3MF4.LT.0.D0) THEN
+              TRA02(I3)=TRA02(I3)-XB(06,IELEM)*ALFA*F3MF4
+            ELSE
+              TRA02(I4)=TRA02(I4)+XB(12,IELEM)*ALFA*F3MF4
+            ENDIF
+          ENDIF
+!
+        ENDDO ! IELEM 
+!
+        ELSE
+          WRITE(LU,*) 'ELEMENT ',IELM3,' NOT COMPUTED IN MURD3D'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -823,7 +823,7 @@
       IGUILT=1
       IF(OPTBAN.EQ.2) THEN
         DO IPOIN = 1,NPOIN3
-         IF(TRA03(IPOIN).LT.0.D0.AND.MASKPT(IPOIN).GT.0.5D0) THEN
+          IF(TRA03(IPOIN).LT.0.D0.AND.MASKPT(IPOIN).GT.0.5D0) THEN
             IF(ABS(TRA01(IPOIN)-TRA03(IPOIN)).GT.EPS) THEN
 !             CONSIDERING THAT THE NEW TIME-STEP WILL BE ALFA*DTJ
 !             VOLU WILL BE AT THAT TIME ALFA*VOLU(N+1)+(1-ALFA)*VOLU(IN TRA01)
@@ -835,12 +835,12 @@
                 IGUILT=IPOIN
               ENDIF
             ENDIF
-         ENDIF
+          ENDIF
         ENDDO
       ELSE
         DO IPOIN = 1,NPOIN3
 !                                          TIDAL FLATS : VOLUN=0
-         IF(TRA03(IPOIN).LT.0.D0.AND.TRA01(IPOIN).GT.EPS) THEN
+          IF(TRA03(IPOIN).LT.0.D0.AND.TRA01(IPOIN).GT.EPS) THEN
             IF(ABS(TRA01(IPOIN)-TRA03(IPOIN)).GT.EPS) THEN
 !             CONSIDERING THAT THE NEW TIME-STEP WILL BE ALFA*DTJ
 !             VOLU WILL BE AT THAT TIME ALFA*VOLU(N+1)+(1-ALFA)*VOLU(IN TRA01)
@@ -852,7 +852,7 @@
                 IGUILT=IPOIN
               ENDIF
             ENDIF
-         ENDIF
+          ENDIF
         ENDDO   
       ENDIF
 !

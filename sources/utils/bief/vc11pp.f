@@ -141,41 +141,41 @@
 !
       DO IELEM = 1 , NELEM
 !
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
-         I5 = IKLE5(IELEM)
-         I6 = IKLE6(IELEM)
+        I1 = IKLE1(IELEM)
+        I2 = IKLE2(IELEM)
+        I3 = IKLE3(IELEM)
+        I4 = IKLE4(IELEM)
+        I5 = IKLE5(IELEM)
+        I6 = IKLE6(IELEM)
 !
-         F1 = F(I1)
-         F2 = F(I2)
-         F3 = F(I3)
-         F4 = F(I4)
-         F5 = F(I5)
-         F6 = F(I6)
+        F1 = F(I1)
+        F2 = F(I2)
+        F3 = F(I3)
+        F4 = F(I4)
+        F5 = F(I5)
+        F6 = F(I6)
 !
-         G1 = G(I1)
-         G2 = G(I2)
-         G3 = G(I3)
-         G4 = G(I4)
-         G5 = G(I5)
-         G6 = G(I6)
+        G1 = G(I1)
+        G2 = G(I2)
+        G3 = G(I3)
+        G4 = G(I4)
+        G5 = G(I5)
+        G6 = G(I6)
 !
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-!        Y2  =  Y(I2) - Y(I1)
-!        Y3  =  Y(I3) - Y(I1)
+!       Y2  =  Y(I2) - Y(I1)
+!       Y3  =  Y(I3) - Y(I1)
 !
-         Y2 = Y(IELEM,2)
-         Y3 = Y(IELEM,3)
+        Y2 = Y(IELEM,2)
+        Y3 = Y(IELEM,3)
 !
-         Z1  =  Z(I1)
-         Z2  =  Z(I2)
-         Z3  =  Z(I3)
-         Z4  =  Z(I4)
-         Z5  =  Z(I5)
-         Z6  =  Z(I6)
+        Z1  =  Z(I1)
+        Z2  =  Z(I2)
+        Z3  =  Z(I3)
+        Z4  =  Z(I4)
+        Z5  =  Z(I5)
+        Z6  =  Z(I6)
 !
 !     VC11PP_X (FROM MAPLE)
 !
@@ -392,41 +392,41 @@
 !
       DO IELEM = 1 , NELEM
 !
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
-         I5 = IKLE5(IELEM)
-         I6 = IKLE6(IELEM)
+        I1 = IKLE1(IELEM)
+        I2 = IKLE2(IELEM)
+        I3 = IKLE3(IELEM)
+        I4 = IKLE4(IELEM)
+        I5 = IKLE5(IELEM)
+        I6 = IKLE6(IELEM)
 !
-         F1 = F(I1)
-         F2 = F(I2)
-         F3 = F(I3)
-         F4 = F(I4)
-         F5 = F(I5)
-         F6 = F(I6)
+        F1 = F(I1)
+        F2 = F(I2)
+        F3 = F(I3)
+        F4 = F(I4)
+        F5 = F(I5)
+        F6 = F(I6)
 !
-         G1 = G(I1)
-         G2 = G(I2)
-         G3 = G(I3)
-         G4 = G(I4)
-         G5 = G(I5)
-         G6 = G(I6)
+        G1 = G(I1)
+        G2 = G(I2)
+        G3 = G(I3)
+        G4 = G(I4)
+        G5 = G(I5)
+        G6 = G(I6)
 !
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-!        X2  =  X(I2) - X(I1)
-!        X3  =  X(I3) - X(I1)
+!       X2  =  X(I2) - X(I1)
+!       X3  =  X(I3) - X(I1)
 !
-         X2 = X(IELEM,2)
-         X3 = X(IELEM,3)
+        X2 = X(IELEM,2)
+        X3 = X(IELEM,3)
 !
-         Z1  =  Z(I1)
-         Z2  =  Z(I2)
-         Z3  =  Z(I3)
-         Z4  =  Z(I4)
-         Z5  =  Z(I5)
-         Z6  =  Z(I6)
+        Z1  =  Z(I1)
+        Z2  =  Z(I2)
+        Z3  =  Z(I3)
+        Z4  =  Z(I4)
+        Z5  =  Z(I5)
+        Z6  =  Z(I6)
 !
 !     VC11PP_Y (FROM MAPLE)
 !
@@ -642,40 +642,40 @@
 !
       DO IELEM = 1 , NELEM
 !
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
-         I5 = IKLE5(IELEM)
-         I6 = IKLE6(IELEM)
+        I1 = IKLE1(IELEM)
+        I2 = IKLE2(IELEM)
+        I3 = IKLE3(IELEM)
+        I4 = IKLE4(IELEM)
+        I5 = IKLE5(IELEM)
+        I6 = IKLE6(IELEM)
 !
-         F1 = F(I1)
-         F2 = F(I2)
-         F3 = F(I3)
-         F4 = F(I4)
-         F5 = F(I5)
-         F6 = F(I6)
+        F1 = F(I1)
+        F2 = F(I2)
+        F3 = F(I3)
+        F4 = F(I4)
+        F5 = F(I5)
+        F6 = F(I6)
 !
-         G1 = G(I1)
-         G2 = G(I2)
-         G3 = G(I3)
-         G4 = G(I4)
-         G5 = G(I5)
-         G6 = G(I6)
+        G1 = G(I1)
+        G2 = G(I2)
+        G3 = G(I3)
+        G4 = G(I4)
+        G5 = G(I5)
+        G6 = G(I6)
 !
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT
 !
-!        X2  =  X(I2) - X(I1)
-!        X3  =  X(I3) - X(I1)
-!        Y2  =  Y(I2) - Y(I1)
-!        Y3  =  Y(I3) - Y(I1)
+!       X2  =  X(I2) - X(I1)
+!       X3  =  X(I3) - X(I1)
+!       Y2  =  Y(I2) - Y(I1)
+!       Y3  =  Y(I3) - Y(I1)
 !
-         X2 = X(IELEM,2)
-         X3 = X(IELEM,3)
-         Y2 = Y(IELEM,2)
-         Y3 = Y(IELEM,3)
+        X2 = X(IELEM,2)
+        X3 = X(IELEM,3)
+        Y2 = Y(IELEM,2)
+        Y3 = Y(IELEM,3)
 !
-         XMU  = XS720*(X2*Y3-X3*Y2)
+        XMU  = XS720*(X2*Y3-X3*Y2)
 !
 !     VC11PP_Z (FROM MAPLE)
 !
@@ -716,14 +716,14 @@
 !
 !-----------------------------------------------------------------------
 !
-         IF (LNG.EQ.1) WRITE(LU,200) ICOORD
-         IF (LNG.EQ.2) WRITE(LU,201) ICOORD
- 200     FORMAT(1X,'VC11PP (BIEF) : COMPOSANTE IMPOSSIBLE ',
-     &        1I6,' VERIFIER ICOORD')
- 201     FORMAT(1X,'VC11PP (BIEF) : IMPOSSIBLE COMPONENT ',
-     &        1I6,' CHECK ICOORD')
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,200) ICOORD
+        IF (LNG.EQ.2) WRITE(LU,201) ICOORD
+ 200    FORMAT(1X,'VC11PP (BIEF) : COMPOSANTE IMPOSSIBLE ',
+     &       1I6,' VERIFIER ICOORD')
+ 201    FORMAT(1X,'VC11PP (BIEF) : IMPOSSIBLE COMPONENT ',
+     &       1I6,' CHECK ICOORD')
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !-----------------------------------------------------------------------
@@ -731,26 +731,26 @@
 !
       ELSE
 !-----------------------------------------------------------------------
-         IF (LNG.EQ.1) WRITE(LU,1100) IELMF,SF%NAME
-         IF (LNG.EQ.1) WRITE(LU,1200) IELMG,SG%NAME
-         IF (LNG.EQ.1) WRITE(LU,1300)
-         IF (LNG.EQ.2) WRITE(LU,1101) IELMF,SF%NAME
-         IF (LNG.EQ.2) WRITE(LU,1201) IELMG,SG%NAME
-         IF (LNG.EQ.2) WRITE(LU,1301)
-         CALL PLANTE(1)
-         STOP
- 1100  FORMAT(1X,'VC11PP (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F : ',1I6,
-     &        1X,'NOM REEL : ',A6)
- 1200  FORMAT(1X,'DISCRETISATION DE G : ',1I6,
-     &        1X,'NOM REEL : ',A6)
- 1300  FORMAT(1X,'CAS NON PREVU')
- 1101  FORMAT(1X,'VC11PP (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF F:',1I6,
-     &        1X,'REAL NAME: ',A6)
- 1201  FORMAT(1X,'DISCRETIZATION OF G:',1I6,
-     &        1X,'REAL NAME: ',A6)
- 1301  FORMAT(1X,'CASE NOT IMPLEMENTED')
+        IF (LNG.EQ.1) WRITE(LU,1100) IELMF,SF%NAME
+        IF (LNG.EQ.1) WRITE(LU,1200) IELMG,SG%NAME
+        IF (LNG.EQ.1) WRITE(LU,1300)
+        IF (LNG.EQ.2) WRITE(LU,1101) IELMF,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,1201) IELMG,SG%NAME
+        IF (LNG.EQ.2) WRITE(LU,1301)
+        CALL PLANTE(1)
+        STOP
+ 1100   FORMAT(1X,'VC11PP (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+ 1200   FORMAT(1X,'DISCRETISATION DE G : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+ 1300   FORMAT(1X,'CAS NON PREVU')
+ 1101   FORMAT(1X,'VC11PP (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F:',1I6,
+     &         1X,'REAL NAME: ',A6)
+ 1201   FORMAT(1X,'DISCRETIZATION OF G:',1I6,
+     &         1X,'REAL NAME: ',A6)
+ 1301   FORMAT(1X,'CASE NOT IMPLEMENTED')
 !
       ENDIF
 !

@@ -62,7 +62,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SUSPENSION_BILAN_COH
-     *                    => SUSPENSION_BILAN_COH
+     &                    => SUSPENSION_BILAN_COH
       USE BIEF
 ! FOR MUD      
       USE DECLARATIONS_SISYPHE, ONLY: MASV0, MASVT
@@ -146,9 +146,9 @@
       ! **************************             !
 ! SAVE RESULT PAS DE TEMPS PRECEDENT : MASS_INIT
       IF(SEDCO) THEN
-         MASS_INIT = MASVT
+        MASS_INIT = MASVT
       ELSE
-         MASS_INIT = MASST
+        MASS_INIT = MASST
       ENDIF
 !
       DO I=1,NPOIN
@@ -156,14 +156,14 @@
         DO J=1,NOMBLAY
           T1%R(I)= T1%R(I)+MS_VASE(I,J)
         ENDDO
-       ENDDO
-       IF(SEDCO) THEN
-           MASVT=DOTS(T1,VOLU2D)      
-           IF(NCSIZE.GT.1) MASVT=P_DSUM(MASVT)
-       ELSE
-           MASST=DOTS(T1,VOLU2D)
-           IF(NCSIZE.GT.1) MASST=P_DSUM(MASST)
-       ENDIF    
+      ENDDO
+      IF(SEDCO) THEN
+        MASVT=DOTS(T1,VOLU2D)      
+        IF(NCSIZE.GT.1) MASVT=P_DSUM(MASVT)
+      ELSE
+        MASST=DOTS(T1,VOLU2D)
+        IF(NCSIZE.GT.1) MASST=P_DSUM(MASST)
+      ENDIF    
 !
 
 
@@ -171,13 +171,13 @@
       ! III - TOTAL MASS OF DEPOSITED (OR ERODED) SEDIMENTS (KG)!
       !                           ---> MASDEP                   !
       ! ***************************************************     !
-       IF(SEDCO)THEN
-         MASDEP = MASVT-MASV0
-         MASDEPT = MASVT - MASS_INIT
-       ELSE
-         MASDEP = MASST-MASS0
-         MASDEPT = MASST - MASS_INIT
-       ENDIF
+      IF(SEDCO)THEN
+        MASDEP = MASVT-MASV0
+        MASDEPT = MASVT - MASS_INIT
+      ELSE
+        MASDEP = MASST-MASS0
+        MASDEPT = MASST - MASS_INIT
+      ENDIF
 !
 !  MASS DEPOSITED DURING TIME STEP : MASDEPT
 !
@@ -227,8 +227,8 @@
 !
       ERREUR = (MASINI -MASFIN)*XMVS! (MASSE EN SUSP + BED at T-DT)
 !      *          + MASSOU *XMVS  ! (SOURCE TERM In KG)
-     *          - DT*FLUXT*XMVS ! (FLUX IN KG)
-     *          - MASDEPT    !(DEPOSITED MASS IN KG)
+     &          - DT*FLUXT*XMVS ! (FLUX IN KG)
+     &          - MASDEPT    !(DEPOSITED MASS IN KG)
 !
       ! *********** !
       ! X - LISTING !
@@ -262,34 +262,34 @@
       ! XI - LISTING OF THE FINAL MASS-BALANCE !
       ! ************************************** !
       IF(LT.EQ.NIT.AND.ENTET) THEN
-         IF(SEDCO)THEN
-         PERDUE = MASED0*XMVS + MASV0 
-     *          + MASTEN*XMVS 
-     *          - MASFIN*XMVS - MASVT
-!               + MASTOU*XMVS
-         ELSE
-           PERDUE = MASED0*XMVS + MASS0 
-     *          + MASTEN*XMVS 
-     *          - MASFIN*XMVS - MASST
-!               + MASTOU*XMVS
-         ENDIF
-         
-         IF(LNG.EQ.1) THEN
+        IF(SEDCO)THEN
+          PERDUE = MASED0*XMVS + MASV0 
+     &         + MASTEN*XMVS 
+     &         - MASFIN*XMVS - MASVT
+!              + MASTOU*XMVS
+        ELSE
+          PERDUE = MASED0*XMVS + MASS0 
+     &         + MASTEN*XMVS 
+     &         - MASFIN*XMVS - MASST
+!              + MASTOU*XMVS
+        ENDIF
+        
+        IF(LNG.EQ.1) THEN
 !
-            WRITE(LU,3000) ITRA
-            WRITE(LU,1160) ITRA, MASED0*XMVS, MASFIN*XMVS
-            IF(ABS(MASTEN) > 1.D-8) WRITE(LU,1161) MASTEN*XMVS
-            IF(ABS(MASTOU) > 1.D-8) WRITE(LU,1164) MASTOU*XMVS
-            IF(ABS(MASDEP) > 1.D-8) WRITE(LU,1167) MASDEP
-            WRITE(LU,1166) PERDUE
-         ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,3100) ITRA
-            WRITE(LU,2160) ITRA,MASED0*XMVS, MASFIN*XMVS
-            IF(ABS(MASTEN) > 1.D-8) WRITE(LU,2161) MASTEN*XMVS
-            IF(ABS(MASTOU) > 1.D-8) WRITE(LU,2164) MASTOU*XMVS
-            IF(ABS(MASDEP) > 1.D-8) WRITE(LU,2167) MASDEP
-            WRITE(LU,2166) PERDUE
-         ENDIF
+          WRITE(LU,3000) ITRA
+          WRITE(LU,1160) ITRA, MASED0*XMVS, MASFIN*XMVS
+          IF(ABS(MASTEN) > 1.D-8) WRITE(LU,1161) MASTEN*XMVS
+          IF(ABS(MASTOU) > 1.D-8) WRITE(LU,1164) MASTOU*XMVS
+          IF(ABS(MASDEP) > 1.D-8) WRITE(LU,1167) MASDEP
+          WRITE(LU,1166) PERDUE
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,3100) ITRA
+          WRITE(LU,2160) ITRA,MASED0*XMVS, MASFIN*XMVS
+          IF(ABS(MASTEN) > 1.D-8) WRITE(LU,2161) MASTEN*XMVS
+          IF(ABS(MASTOU) > 1.D-8) WRITE(LU,2164) MASTOU*XMVS
+          IF(ABS(MASDEP) > 1.D-8) WRITE(LU,2167) MASDEP
+          WRITE(LU,2166) PERDUE
+        ENDIF
       ENDIF
       ! *************************** !
       ! XII - UPDATES INITIAL MASS  !

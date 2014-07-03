@@ -1,7 +1,7 @@
                         SUBROUTINE LECR3D
 !                       *****************
 !
-     &(AT,Z,U,V,W,NPOIN3,NPOIN2,NPLAN,NRES,BINRES,RB,NVA3,TAB,varsub)
+     &(AT,Z,U,V,W,NPOIN3,NPOIN2,NPLAN,NRES,BINRES,RB,NVA3,TAB,VARSUB)
 !
 !***********************************************************************
 ! POSTEL3D VERSION 5.1   01/09/99   T. DENOT (LNH) 01 30 87 74 89

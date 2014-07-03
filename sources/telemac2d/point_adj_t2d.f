@@ -52,8 +52,8 @@
 !-----------------------------------------------------------------------
 !
       IF(LISTIN) THEN
-         IF(LNG.EQ.1) WRITE(LU,20)
-         IF(LNG.EQ.2) WRITE(LU,21)
+        IF(LNG.EQ.1) WRITE(LU,20)
+        IF(LNG.EQ.2) WRITE(LU,21)
       ENDIF
 20    FORMAT(1X,///,26X,'*************************************',/,
      &26X,              '* ALLOCATION DE LA MEMOIRE (ADJOINT)*',/,
@@ -223,8 +223,8 @@
 ! WRITES OUT TO LISTING :
 !
       IF(LISTIN) THEN
-         IF(LNG.EQ.1) WRITE(LU,22)
-         IF(LNG.EQ.2) WRITE(LU,23)
+        IF(LNG.EQ.1) WRITE(LU,22)
+        IF(LNG.EQ.2) WRITE(LU,23)
       ENDIF
 22    FORMAT(1X,///,21X,'***************************************',/,
      &21X,              '* FIN DE L''ALLOCATION DE LA MEMOIRE  *',/,

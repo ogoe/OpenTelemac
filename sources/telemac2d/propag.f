@@ -512,31 +512,31 @@
      &              1.D0,S,S,S,VISC,S,S,MESH,MSK,MASKEL)
 !
         IF(OPDVIT.EQ.2) THEN
-!          MULTIPLIES THE MATRIX BY 1/HPROP
-           CALL CPSTVC(HPROP,T4)
-           DO I=1,HPROP%DIM1
-!            BEWARE: HIDDEN PARAMETER 1.D-2, NO DIFFUSION BELOW 1 CM DEPTH
-!                                            WITH THIS OPTION
-             IF(HPROP%R(I).GT.1.D-2) THEN
-               T4%R(I)=1.D0/HPROP%R(I)
-             ELSE
-               T4%R(I)=0.D0
-             ENDIF
-           ENDDO
-           IF(T4%ELM.NE.IELMU) CALL CHGDIS(T4,T4%ELM,IELMU,MESH)
-           CALL OM( 'M=X(M)  ' , TM1 , TM1 , S  , C , MESH )
-           CALL OM( 'M=DM    ' , TM1 , TM1 , T4 , C , MESH )
-!          RESTORES DIFFUSION
-           CALL OS('X=Y     ',VISC,VISC_S,VISC_S,C)
+!         MULTIPLIES THE MATRIX BY 1/HPROP
+          CALL CPSTVC(HPROP,T4)
+          DO I=1,HPROP%DIM1
+!           BEWARE: HIDDEN PARAMETER 1.D-2, NO DIFFUSION BELOW 1 CM DEPTH
+!                                           WITH THIS OPTION
+            IF(HPROP%R(I).GT.1.D-2) THEN
+              T4%R(I)=1.D0/HPROP%R(I)
+            ELSE
+              T4%R(I)=0.D0
+            ENDIF
+          ENDDO
+          IF(T4%ELM.NE.IELMU) CALL CHGDIS(T4,T4%ELM,IELMU,MESH)
+          CALL OM( 'M=X(M)  ' , TM1 , TM1 , S  , C , MESH )
+          CALL OM( 'M=DM    ' , TM1 , TM1 , T4 , C , MESH )
+!         RESTORES DIFFUSION
+          CALL OS('X=Y     ',VISC,VISC_S,VISC_S,C)
         ENDIF
 !
 !       'IF' ADDED ON 23/07/2002 BY JMH (MAY HAPPEN IN PARALLEL MODE)
 !  
         IF(MESH%NELEB.GT.0) THEN
-         CALL MATRIX(MBOR,'M=N     ','FMATMA          ',
-     &               IELBOR(IELMU,1),IELBOR(IELMU,1),
+          CALL MATRIX(MBOR,'M=N     ','FMATMA          ',
+     &                IELBOR(IELMU,1),IELBOR(IELMU,1),
      &               -1.D0,AUBOR,S,S,S,S,S,MESH,.TRUE.,MASK%ADR(UNEU)%P)
-         CALL OM( 'M=M+N   ' , TM1 , MBOR , S , C , MESH )
+          CALL OM( 'M=M+N   ' , TM1 , MBOR , S , C , MESH )
         ENDIF
 !
 !       EXPLICIT PART DEALT WITH IN THE NEXT IF(DIFVIT...
@@ -590,7 +590,7 @@
         MSKGRA = .TRUE.
 !       IF OPTBAN=1 THE MASK USED HERE SHOULD HAVE VALUES
         IF(OPTBAN.NE.1.AND.OPTBAN.NE.3) THEN
-         CALL OV('X=Y     ',TE3%R,MASKEL%R,MASKEL%R,C,TE3%DIM1)
+          CALL OV('X=Y     ',TE3%R,MASKEL%R,MASKEL%R,C,TE3%DIM1)
         ENDIF
       ELSE
         MSKGRA = .FALSE.

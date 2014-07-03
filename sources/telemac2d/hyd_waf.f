@@ -101,15 +101,15 @@
       ENDIF
 !**************************************************************
 ! INITIALIZATION OF CE      
-       DO I=1,3
-         DO IVAR=1,NS
-           CE(IVAR,I) = 0.D0
-         ENDDO
-       ENDDO
+      DO I=1,3
+        DO IVAR=1,NS
+          CE(IVAR,I) = 0.D0
+        ENDDO
+      ENDDO
 ! INITIALIZATION OF YESNO
-       DO I=1,NSEG
-         YESNO(I)=.FALSE.
-       ENDDO
+      DO I=1,NSEG
+        YESNO(I)=.FALSE.
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !     LOOP OVER GLOBAL LIST OF EDGES
@@ -117,163 +117,162 @@
 !
       DO IEL=1,NELEM 
         DO I = 1,3
-         IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
-           NSG = ELTSEG(IEL,I) 
-!   INDICATOR FOR DRY CELLS
-           IDRY=0
-! INITIALIZATION
-           FLX(1) = 0.0D0
-           FLX(2) = 0.0D0
-           FLX(3) = 0.0D0
-           FLX(4) = 0.0D0
-!
-!    RECUPERATE NODES OF THE EDGE WITH THE GOOD ORIENTATION
-!     WITH RESPECT TO THE NORMAL
-           NUBO1 = NUBO(1,NSG)
-           NUBO2 = NUBO(2,NSG)
-           PROD_SCAL= ((X(NUBO2)-X(NUBO1))*VNOCL(1,NSG)+
-     &                 (Y(NUBO2)-Y(NUBO1))*VNOCL(2,NSG))
-           IF(PROD_SCAL.LT.0.D0)THEN
-             NUBO1 = NUBO(2,NSG)
-             NUBO2 = NUBO(1,NSG)
-           ENDIF
-! THEIR BATHYMETRIES
-           ZF1   =    ZF(NUBO1)
-           ZF2   =    ZF(NUBO2)
-! MEAN DISTANCE BETWEEN THEM (FOR CFL)
-           DX    = 0.5D0*(DTHAUT(NUBO1)+DTHAUT(NUBO2)) 
-! NORMAL COORDINATES NX, NY AND SEGMENT LENGTH
-           XNN       = VNOCL(1,NSG)
-           YNN       = VNOCL(2,NSG)
-           RNN       = VNOCL(3,NSG) 
-!
-! WATER DEPTH
-!
-           H1=W(1,NUBO1)
-           H2=W(1,NUBO2)
-!*****************************************************
-!    HYDROSTATIC RECONSTRUCTION !!!
-!
-!    BATHY AT THE INTERFACE
-!
-           DZIJ = MAX(0.D0,ZF2-ZF1)
-           HIJ  = MAX(0.D0,H1- DZIJ)
-!*****************************************************
-!    HYDROSTATIC RECONSTRUCTION !!!
-!
-           DZJI = MAX(0.D0,ZF1-ZF2)
-           HJI  = MAX(0.D0,H2- DZJI)
-!*****************************************************
-!
-! VELOCITY COMPONENTS 
-!
-           IF(H1.GT.EPS)THEN
-             V21 = W(2,NUBO1)/H1
-             V31 = W(3,NUBO1)/H1
-           ELSE
-             V21=0.0D0
-             V31=0.0D0
-             IDRY=IDRY+1
-           ENDIF
-!
-           IF(H2.GT.EPS)THEN
-             V22 = W(2,NUBO2)/H2 
-             V32 = W(3,NUBO2)/H2
-           ELSE
-             V22=0.0D0
-             V32=0.0D0
-             IDRY=IDRY+1
-           ENDIF
-!
-! SEGMENT NEIGHBORS (FOR LIMITER)
-!
-           SEG1 = NEISEG(1,NSG)
-           SEG2 = NEISEG(2,NSG)
-!   VERIFY THAT WE HAVE THE GOOD NEIGHBORS
-           IF((SEG1.LE.0.OR.SEG2.LE.0).AND.NCSIZE.LE.1)THEN
+          IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
+            NSG = ELTSEG(IEL,I) 
+!           INDICATOR FOR DRY CELLS
+            IDRY=0
+!           INITIALIZATION
+            FLX(1) = 0.0D0
+            FLX(2) = 0.0D0
+            FLX(3) = 0.0D0
+            FLX(4) = 0.0D0
+!           
+!           RECUPERATE NODES OF THE EDGE WITH THE GOOD ORIENTATION
+!           WITH RESPECT TO THE NORMAL
+            NUBO1 = NUBO(1,NSG)
+            NUBO2 = NUBO(2,NSG)
+            PROD_SCAL= ((X(NUBO2)-X(NUBO1))*VNOCL(1,NSG)+
+     &                  (Y(NUBO2)-Y(NUBO1))*VNOCL(2,NSG))
+            IF(PROD_SCAL.LT.0.D0)THEN
+              NUBO1 = NUBO(2,NSG)
+              NUBO2 = NUBO(1,NSG)
+            ENDIF
+!           THEIR BATHYMETRIES
+            ZF1   =    ZF(NUBO1)
+            ZF2   =    ZF(NUBO2)
+!           MEAN DISTANCE BETWEEN THEM (FOR CFL)
+            DX    = 0.5D0*(DTHAUT(NUBO1)+DTHAUT(NUBO2)) 
+!           NORMAL COORDINATES NX, NY AND SEGMENT LENGTH
+            XNN       = VNOCL(1,NSG)
+            YNN       = VNOCL(2,NSG)
+            RNN       = VNOCL(3,NSG) 
+!           
+!           WATER DEPTH
+!           
+            H1=W(1,NUBO1)
+            H2=W(1,NUBO2)
+!******************************************************
+!           HYDROSTATIC RECONSTRUCTION !!!
+!           
+!           BATHY AT THE INTERFACE
+!           
+            DZIJ = MAX(0.D0,ZF2-ZF1)
+            HIJ  = MAX(0.D0,H1- DZIJ)
+!******************************************************
+!           HYDROSTATIC RECONSTRUCTION !!!
+!           
+            DZJI = MAX(0.D0,ZF1-ZF2)
+            HJI  = MAX(0.D0,H2- DZJI)
+!******************************************************
+!           
+!           VELOCITY COMPONENTS 
+!           
+            IF(H1.GT.EPS)THEN
+              V21 = W(2,NUBO1)/H1
+              V31 = W(3,NUBO1)/H1
+            ELSE
+              V21=0.0D0
+              V31=0.0D0
+              IDRY=IDRY+1
+            ENDIF
+!           
+            IF(H2.GT.EPS)THEN
+              V22 = W(2,NUBO2)/H2 
+              V32 = W(3,NUBO2)/H2
+            ELSE
+              V22=0.0D0
+              V32=0.0D0
+              IDRY=IDRY+1
+            ENDIF
+!           
+!           SEGMENT NEIGHBORS (FOR LIMITER)
+!           
+            SEG1 = NEISEG(1,NSG)
+            SEG2 = NEISEG(2,NSG)
+!             VERIFY THAT WE HAVE THE GOOD NEIGHBORS
+            IF((SEG1.LE.0.OR.SEG2.LE.0).AND.NCSIZE.LE.1)THEN
               WRITE(LU,*)'PROBLEM TO FIND SEGMENT NEIGHBORS'
               WRITE(LU,*)'WE ARE IN HYD_WAF.F'
               WRITE(LU,*)'SEGMENT OF INTEREST  :',NSG
               WRITE(LU,*)'NEIGHBORS ARE  :',SEG1,SEG2
               CALL PLANTE(1)
               STOP
-           ENDIF
-!
-           NUBOL=0
-           NUBOR=0
-!
-           IF(NUBO(1,SEG1).EQ.NUBO1) THEN
-             NUBOL = NUBO(2,SEG1)
-           ELSE
-             NUBOL = NUBO(1,SEG1) 
-           ENDIF
-           IF(NUBO(1,SEG2).EQ.NUBO2) THEN
-             NUBOR = NUBO(2,SEG2)
-           ELSE
-             NUBOR = NUBO(1,SEG2) 
-           ENDIF
-!   VERIFY THAT WE HAVE THE GOOD NEIGHBORS
-           IF(NUBOL.LE.0.OR.NUBOR.LE.0) THEN
-             WRITE(LU,*)'PROBLEM TO FIND NEIGHBOR'
-             WRITE(LU,*)'WE ARE IN HYD_WAF.F'
-             WRITE(LU,*)'NODES ARE  :',NUBO1,NUBO2
-             WRITE(LU,*)'NEIGHBORS ARE  :', NUBOR,NUBOL
-             CALL PLANTE(1)
-             STOP
-           ENDIF
-!
-! WATER DEPTH, VELOCITY, TRACER OF NEIGHBORS
-!
-           HL_UP   = W(1,NUBOL)
-           HR_UP   = W(1,NUBOR)
-           IF(HL_UP.GT.EPS)THEN
-             VL_UP =  W(3,NUBOL)/HL_UP
-           ELSE
-             VL_UP = 0.0D0
-           ENDIF
-           IF(HR_UP.GT.EPS)THEN
-             VR_UP = W(3,NUBOR)/HR_UP
-           ELSE
-             VR_UP = 0.0D0
-           ENDIF
-           PSIL_UP = PSI1
-           PSIR_UP = PSI2
-!
-! LOCAL FLUX COMPUTATION
-!
-!       AT LEAST ONE WET CELL
-           IF(IDRY.LT.2)THEN
-!          CALL FLUX_WAF(XI,H1,H2,V21,V22,V31,V32,PSI1,PSI2,
-             CALL FLUX_WAF(XI,HIJ,HJI,V21,V22,V31,V32,PSI1,PSI2,
-     &                     HL_UP,HR_UP,VL_UP,VR_UP,PSIL_UP,PSIR_UP,
-     &                     XNN,YNN,DT,DX,FLX)
-!
-!       GEOMETRIC SOURCE TERMS
-!
-             HGZI =0.5D0*RNN*(HIJ+H1)*(HIJ-H1)
-             HGZJ =0.5D0*RNN*(HJI+H2)*(HJI-H2)
-!
-             HDXZ1  = G*XNN*HGZI
-             HDYZ1  = G*YNN*HGZI
-! 
-             HDXZ2  = G*XNN*HGZJ
-             HDYZ2  = G*YNN*HGZJ
-!
-! FLUX INCREMENT
-!
-             CE(NUBO1,1) = CE(NUBO1,1) - RNN*FLX(1)
-             CE(NUBO1,2) = CE(NUBO1,2) - RNN*FLX(2) + HDXZ1
-             CE(NUBO1,3) = CE(NUBO1,3) - RNN*FLX(3) + HDYZ1
-!
-             CE(NUBO2,1) = CE(NUBO2,1) + RNN*FLX(1)
-             CE(NUBO2,2) = CE(NUBO2,2) + RNN*FLX(2) - HDXZ2
-             CE(NUBO2,3) = CE(NUBO2,3) + RNN*FLX(3) - HDYZ2
-           ENDIF
-!
-           YESNO(NSG)=.TRUE. 
+            ENDIF
+!           
+            NUBOL=0
+            NUBOR=0
+!           
+            IF(NUBO(1,SEG1).EQ.NUBO1) THEN
+              NUBOL = NUBO(2,SEG1)
+            ELSE
+              NUBOL = NUBO(1,SEG1) 
+            ENDIF
+            IF(NUBO(1,SEG2).EQ.NUBO2) THEN
+              NUBOR = NUBO(2,SEG2)
+            ELSE
+              NUBOR = NUBO(1,SEG2) 
+            ENDIF
+!             VERIFY THAT WE HAVE THE GOOD NEIGHBORS
+            IF(NUBOL.LE.0.OR.NUBOR.LE.0) THEN
+              WRITE(LU,*)'PROBLEM TO FIND NEIGHBOR'
+              WRITE(LU,*)'WE ARE IN HYD_WAF.F'
+              WRITE(LU,*)'NODES ARE  :',NUBO1,NUBO2
+              WRITE(LU,*)'NEIGHBORS ARE  :', NUBOR,NUBOL
+              CALL PLANTE(1)
+              STOP
+            ENDIF
+!           
+!           WATER DEPTH, VELOCITY, TRACER OF NEIGHBORS
+!           
+            HL_UP   = W(1,NUBOL)
+            HR_UP   = W(1,NUBOR)
+            IF(HL_UP.GT.EPS)THEN
+              VL_UP =  W(3,NUBOL)/HL_UP
+            ELSE
+              VL_UP = 0.0D0
+            ENDIF
+            IF(HR_UP.GT.EPS)THEN
+              VR_UP = W(3,NUBOR)/HR_UP
+            ELSE
+              VR_UP = 0.0D0
+            ENDIF
+            PSIL_UP = PSI1
+            PSIR_UP = PSI2
+!           
+!           LOCAL FLUX COMPUTATION
+!           
+!           AT LEAST ONE WET CELL
+            IF(IDRY.LT.2)THEN
+!           CALL FLUX_WAF(XI,H1,H2,V21,V22,V31,V32,PSI1,PSI2,
+              CALL FLUX_WAF(XI,HIJ,HJI,V21,V22,V31,V32,PSI1,PSI2,
+     &                      HL_UP,HR_UP,VL_UP,VR_UP,PSIL_UP,PSIR_UP,
+     &                      XNN,YNN,DT,DX,FLX)
+!           
+!             GEOMETRIC SOURCE TERMS
+!           
+              HGZI =0.5D0*RNN*(HIJ+H1)*(HIJ-H1)
+              HGZJ =0.5D0*RNN*(HJI+H2)*(HJI-H2)
+!           
+              HDXZ1  = G*XNN*HGZI
+              HDYZ1  = G*YNN*HGZI
+!           
+              HDXZ2  = G*XNN*HGZJ
+              HDYZ2  = G*YNN*HGZJ
+!           
+!             FLUX INCREMENT
+!           
+              CE(NUBO1,1) = CE(NUBO1,1) - RNN*FLX(1)
+              CE(NUBO1,2) = CE(NUBO1,2) - RNN*FLX(2) + HDXZ1
+              CE(NUBO1,3) = CE(NUBO1,3) - RNN*FLX(3) + HDYZ1
+!           
+              CE(NUBO2,1) = CE(NUBO2,1) + RNN*FLX(1)
+              CE(NUBO2,2) = CE(NUBO2,2) + RNN*FLX(2) - HDXZ2
+              CE(NUBO2,3) = CE(NUBO2,3) + RNN*FLX(3) - HDYZ2
+            ENDIF
+!           
+            YESNO(NSG)=.TRUE. 
           ENDIF
-       ENDDO
-!
+        ENDDO
       ENDDO
 !
       DEALLOCATE(YESNO)

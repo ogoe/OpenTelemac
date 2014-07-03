@@ -323,7 +323,7 @@
      &                NPT,NELEM,
      &                W(1,1),W(1,2),W(1,3),W(1,4))
 !
-         ELSEIF(IELM2.EQ.13) THEN
+        ELSEIF(IELM2.EQ.13) THEN
 !
           NPT2=BIEF_NBPTS(IELM2,MESH)
           CALL MV0306(OP, X , DA,TYPDIA,

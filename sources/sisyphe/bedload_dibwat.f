@@ -135,72 +135,72 @@
 !
       DO I = 1, NPOIN
 !
-!        SHIELDS PARAMETER
-         UCW2    = UCMOY%R(I)**2 + 0.5D0 * UW%R(I)**2
-         SHIELDS = FCW%R(I)*UCW2/DENS/GRAV/DM
+!       SHIELDS PARAMETER
+        UCW2    = UCMOY%R(I)**2 + 0.5D0 * UW%R(I)**2
+        SHIELDS = FCW%R(I)*UCW2/DENS/GRAV/DM
 !
-!        CRITICAL OMEGA (TEMPERVILLE AND GUIZA,2000)  !
-         IF (SHIELDS <= 0.2D0) THEN
-            OMEGACR = 0.03D0
-         ELSEIF (SHIELDS <= 0.4D0) THEN
-            OMEGACR = 1.D0 - SQRT(1.D0-((SHIELDS-0.2D0)/0.58D0)**2)
-         ELSEIF (SHIELDS <= 1.5D0) THEN
-            OMEGACR = 0.8104D0 * SQRT(SHIELDS) - 0.4225D0
-         ELSE
-            OMEGACR = 0.7236D0 * SQRT(SHIELDS) - 0.3162D0
-         ENDIF
+!       CRITICAL OMEGA (TEMPERVILLE AND GUIZA,2000)  !
+        IF (SHIELDS <= 0.2D0) THEN
+          OMEGACR = 0.03D0
+        ELSEIF (SHIELDS <= 0.4D0) THEN
+          OMEGACR = 1.D0 - SQRT(1.D0-((SHIELDS-0.2D0)/0.58D0)**2)
+        ELSEIF (SHIELDS <= 1.5D0) THEN
+          OMEGACR = 0.8104D0 * SQRT(SHIELDS) - 0.4225D0
+        ELSE
+          OMEGACR = 0.7236D0 * SQRT(SHIELDS) - 0.3162D0
+        ENDIF
 !
-!        OMEGA1, OMEGA2  !
-         IF(TW1%R(I) > ZERO) THEN
-            OMEGA1 = UW1%R(I)**2 / (2.D0*DENS*GRAV*XWC*TW1%R(I))
-         ELSE
-            OMEGA1 = ZERO
-         ENDIF
+!       OMEGA1, OMEGA2  !
+        IF(TW1%R(I) > ZERO) THEN
+          OMEGA1 = UW1%R(I)**2 / (2.D0*DENS*GRAV*XWC*TW1%R(I))
+        ELSE
+          OMEGA1 = ZERO
+        ENDIF
 !
-         IF(TW2%R(I) > ZERO) THEN
-            OMEGA2 = UW2%R(I)**2 / (2.D0*DENS*GRAV*XWC*TW2%R(I))
-         ELSE
-            OMEGA2 = ZERO
-         ENDIF
+        IF(TW2%R(I) > ZERO) THEN
+          OMEGA2 = UW2%R(I)**2 / (2.D0*DENS*GRAV*XWC*TW2%R(I))
+        ELSE
+          OMEGA2 = ZERO
+        ENDIF
 !
-!        QUANTITIES OF SAND DEPOSITED AND
-!        IN SUSPENSION AT EACH PHASE OF THE CYCLE
+!       QUANTITIES OF SAND DEPOSITED AND
+!       IN SUSPENSION AT EACH PHASE OF THE CYCLE
 !
-!        PHASE 1
-         IF (OMEGA1 <= OMEGACR) THEN
-            W1  = 2.D0 * OMEGA1 * XWC * TW1%R(I) / DM
-            WP1 = 0.D0
-         ELSE
-            W1  = 2.D0 * OMEGACR * XWC * TW1%R(I) / DM
-            WP1 = 2.D0 * (OMEGA1-OMEGACR) * XWC * TW1%R(I) / DM
-         ENDIF
+!       PHASE 1
+        IF (OMEGA1 <= OMEGACR) THEN
+          W1  = 2.D0 * OMEGA1 * XWC * TW1%R(I) / DM
+          WP1 = 0.D0
+        ELSE
+          W1  = 2.D0 * OMEGACR * XWC * TW1%R(I) / DM
+          WP1 = 2.D0 * (OMEGA1-OMEGACR) * XWC * TW1%R(I) / DM
+        ENDIF
 !
-!        PHASE 2
-         IF (OMEGA2 <= OMEGACR) THEN
-            W2  = 2.D0 * OMEGA2 * XWC * TW2%R(I) / DM
-            WP2 = 0.D0
-         ELSE
-            W2  = 2.D0 * OMEGACR * XWC * TW2%R(I) / DM
-            WP2 = 2.D0 * (OMEGA2-OMEGACR) * XWC * TW2%R(I) / DM
-         ENDIF
+!       PHASE 2
+        IF (OMEGA2 <= OMEGACR) THEN
+          W2  = 2.D0 * OMEGA2 * XWC * TW2%R(I) / DM
+          WP2 = 0.D0
+        ELSE
+          W2  = 2.D0 * OMEGACR * XWC * TW2%R(I) / DM
+          WP2 = 2.D0 * (OMEGA2-OMEGACR) * XWC * TW2%R(I) / DM
+        ENDIF
 !
-!        GAMMAW, GAMMAN,GAMMA
-         IF ((UW2%R(I)*TW2%R(I) + UW1%R(I)*TW1%R(I)) > 0.D0 ) THEN
-            GAMMAW = (  UW1%R(I) * TW1%R(I) * (W1**3+WP2**3)
-     &                - UW2%R(I) * TW2%R(I) * (W2**3+WP1**3))
-     &             / ( UW1%R(I)*TW1%R(I)+UW2%R(I)*TW2%R(I)) 
-         ELSE
-            GAMMAW = (2.D0 * UCW%R(I)**2 / DENS / GRAV / DM)**3
-         ENDIF
-         GAMMAN = (2.D0 * UCN%R(I)**2 / DENS / GRAV / DM)**3
-         GAMMA  = MAX(SQRT(GAMMAW**2 + GAMMAN**2),1.D-10)
+!       GAMMAW, GAMMAN,GAMMA
+        IF ((UW2%R(I)*TW2%R(I) + UW1%R(I)*TW1%R(I)) > 0.D0 ) THEN
+          GAMMAW = (  UW1%R(I) * TW1%R(I) * (W1**3+WP2**3)
+     &              - UW2%R(I) * TW2%R(I) * (W2**3+WP1**3))
+     &           / ( UW1%R(I)*TW1%R(I)+UW2%R(I)*TW2%R(I)) 
+        ELSE
+          GAMMAW = (2.D0 * UCW%R(I)**2 / DENS / GRAV / DM)**3
+        ENDIF
+        GAMMAN = (2.D0 * UCN%R(I)**2 / DENS / GRAV / DM)**3
+        GAMMA  = MAX(SQRT(GAMMAW**2 + GAMMAN**2),1.D-10)
 !
-!        SOLID TRANSPORT IN THE WAVE DIRECTION : QSW
-!        AND IN THE NORMAL DIRECTION : QSN
+!       SOLID TRANSPORT IN THE WAVE DIRECTION : QSW
+!       AND IN THE NORMAL DIRECTION : QSN
 !
-         QSW      = ALPHA * GAMMAW * XWC * DM / GAMMA**(1.D0-BETA)
-         QSN      = ALPHA * GAMMAN * XWC * DM / GAMMA**(1.D0-BETA)
-         QSC%R(I) = SQRT(QSW**2 + QSN**2)
+        QSW      = ALPHA * GAMMAW * XWC * DM / GAMMA**(1.D0-BETA)
+        QSN      = ALPHA * GAMMAN * XWC * DM / GAMMA**(1.D0-BETA)
+        QSC%R(I) = SQRT(QSW**2 + QSN**2)
 !
       ENDDO
 !

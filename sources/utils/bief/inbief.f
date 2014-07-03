@@ -599,11 +599,11 @@
 !
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
 !
-       CALL CENTRE_MASS_SEG(MESH%X%R,MESH%Y%R,MESH%COORDG%R,
-     &                      MESH%IKLE%I,NPOIN,MESH%ELTSEG%I,
-     &                      MESH%ORISEG%I,NELEM,MESH%NSEG,
-     &                      MESH%JMI%I,MESH%CMI%R,MESH%GLOSEG%I,
-     &                      MESH%IFABOR%I,MESH)
+        CALL CENTRE_MASS_SEG(MESH%X%R,MESH%Y%R,MESH%COORDG%R,
+     &                       MESH%IKLE%I,NPOIN,MESH%ELTSEG%I,
+     &                       MESH%ORISEG%I,NELEM,MESH%NSEG,
+     &                       MESH%JMI%I,MESH%CMI%R,MESH%GLOSEG%I,
+     &                       MESH%IFABOR%I,MESH)
 !
       ENDIF
 !

@@ -533,18 +533,18 @@
 !       
       IF(.NOT.MIXTE) THEN
         IF(.NOT.SEDCO) THEN
-         IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_EROSION'
+          IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_EROSION'
           CALL SUSPENSION_EROSION(T4,HN,FDM,FD90,AVA,NPOIN,CHARR,XMVE,
      &                            XMVS,VCE,GRAV,HMIN,XWC,ZERO,
      &                            ZREF,AC,FLUER,CSTAEQ,QS_C,ICQ,U2D,V2D,
      &                            CSRATIO,T14,DEBUG)
-         IF (DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_EROSION'
-!
-!        NOTE JMH : THIS SHOULD BE INCLUDED IN SUSPENSION_EROSION
-!
-         DO I=1,NPOIN
-           FLUER%R(I)=MIN(FLUER%R(I),ELAY%R(I)*AVA(I)/DT*CSF_SABLE)
-         ENDDO
+          IF (DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_EROSION'
+!         
+!         NOTE JMH : THIS SHOULD BE INCLUDED IN SUSPENSION_EROSION
+!         
+          DO I=1,NPOIN
+            FLUER%R(I)=MIN(FLUER%R(I),ELAY%R(I)*AVA(I)/DT*CSF_SABLE)
+          ENDDO
 !
 !       MUD ONLY 
 !
@@ -563,8 +563,8 @@
      &                      PARTHENIADES,ZERO,FLUER,
      &                      TOCE_VASE,NOMBLAY,DT,MS_VASE)
 ! 
-           IF(NOMBLAY.EQ.1) THEN
-             DO I=1,NPOIN
+          IF(NOMBLAY.EQ.1) THEN
+            DO I=1,NPOIN
               FLUER%R(I)=MIN(FLUER%R(I),MS_VASE(I,1)/DT/XMVS)
             ENDDO
           ELSE
@@ -576,13 +576,13 @@
               FLUER%R(I)=MIN(FLUER%R(I),MSTOT/DT/XMVS)
             ENDDO
           ENDIF
-         ENDIF
+        ENDIF
 !
 !       MIXED SEDIMENT
 !       FIRST CLASS= SAND, SECOND CLASS = MUD
 !
-       ELSE
-         IF(.NOT.SEDCO) THEN
+      ELSE
+        IF(.NOT.SEDCO) THEN
           IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_FLUX_MIXTE'
           CALL SUSPENSION_FLUX_MIXTE(T4,HN,FDM,NPOIN,CHARR,XMVE,XMVS,
      &                               VCE,GRAV,HMIN,XWC,ZERO,
@@ -802,25 +802,25 @@
 !     TASS TO BE PASSED IN ARGUMENT
 !
 !       
-       IF(.NOT.SEDCO) THEN
-         IF(.NOT.MIXTE) THEN
-           CALL OS('X=Y-Z   ', X=ZFCL_S, Y=FLUDP, Z=FLUER)
-           CALL OS('X=CX    ', X=ZFCL_S, C=DT/CSF_SABLE)
-         ELSE 
+      IF(.NOT.SEDCO) THEN
+        IF(.NOT.MIXTE) THEN
+          CALL OS('X=Y-Z   ', X=ZFCL_S, Y=FLUDP, Z=FLUER)
+          CALL OS('X=CX    ', X=ZFCL_S, C=DT/CSF_SABLE)
+        ELSE 
           DO I=1, NPOIN
-             DO J= 1, NOMBLAY
-               CONC_SABLE(I,J)=XMVS
-             ENDDO
-           ENDDO
-           CALL SUSPENSION_EVOL(ZFCL_S,FLUDP,FLUER,DT,
+            DO J= 1, NOMBLAY
+              CONC_SABLE(I,J)=XMVS
+            ENDDO
+          ENDDO
+          CALL SUSPENSION_EVOL(ZFCL_S,FLUDP,FLUER,DT,
      &                NPOIN,XMVS,T3,MS_SABLE,ES_SABLE,
      &                   CONC_SABLE,NOMBLAY)           
         ENDIF                 
-       ELSE
-         CALL SUSPENSION_EVOL(ZFCL_S,FLUDP,FLUER,DT,
-     &       NPOIN,XMVS,T3,MS_VASE,ES_VASE,
-     &       CONC,NOMBLAY)
-       ENDIF
+      ELSE
+        CALL SUSPENSION_EVOL(ZFCL_S,FLUDP,FLUER,DT,
+     &      NPOIN,XMVS,T3,MS_VASE,ES_VASE,
+     &      CONC,NOMBLAY)
+      ENDIF
 !
 !     WRITES OUT THE MIN/MAX VALUES TO THE LISTING
 !
@@ -835,38 +835,37 @@
 !
       IF(BILMA) THEN
         IF(SEDCO) THEN
-         IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BILAN_COH'
-         CALL SUSPENSION_BILAN_COH
-     &        (MESH,CST,HN,ZFCL_S,MASKEL,IELMT,ITRA,LT,NIT,DT,XMVS,
-     &        MS_VASE,NOMBLAY,NPOIN,
-     &        MASSOU,MASED0,MSK,ENTETS,MASTEN,MASTOU,
-     &        MASINI,T1,T2,T3,MASFIN,MASDEPT,MASDEP,AGGLOT,VOLU2D,
-     &        NUMLIQ,NFRLIQ,NPTFR,FLBORTRA,SEDCO)     
-        IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN_COH'
-       ELSE
+          IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BILAN_COH'
+          CALL SUSPENSION_BILAN_COH
+     &         (MESH,CST,HN,ZFCL_S,MASKEL,IELMT,ITRA,LT,NIT,DT,XMVS,
+     &         MS_VASE,NOMBLAY,NPOIN,
+     &         MASSOU,MASED0,MSK,ENTETS,MASTEN,MASTOU,
+     &         MASINI,T1,T2,T3,MASFIN,MASDEPT,MASDEP,AGGLOT,VOLU2D,
+     &         NUMLIQ,NFRLIQ,NPTFR,FLBORTRA,SEDCO)     
+          IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN_COH'
+        ELSE
 !Modifs CVL       
-         IF(MIXTE) THEN
-         IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BILAN_COH'     
-         CALL SUSPENSION_BILAN_COH
-     &        (MESH,CST,HN,ZFCL_S,MASKEL,IELMT,ITRA,LT,NIT,DT,XMVS,
-     &        MS_SABLE,NOMBLAY,NPOIN,
-     &        MASSOU,MASED0,MSK,ENTETS,MASTEN,MASTOU,
-     &        MASINI,T1,T2,T3,MASFIN,MASDEPT,MASDEP,AGGLOT,VOLU2D,
-     &        NUMLIQ,NFRLIQ,NPTFR,FLBORTRA,SEDCO)
-        IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN_COH'    
-      
-        ELSE              
+          IF(MIXTE) THEN
+            IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BILAN_COH'     
+            CALL SUSPENSION_BILAN_COH
+     &           (MESH,CST,HN,ZFCL_S,MASKEL,IELMT,ITRA,LT,NIT,DT,XMVS,
+     &           MS_SABLE,NOMBLAY,NPOIN,
+     &           MASSOU,MASED0,MSK,ENTETS,MASTEN,MASTOU,
+     &           MASINI,T1,T2,T3,MASFIN,MASDEPT,MASDEP,AGGLOT,VOLU2D,
+     &           NUMLIQ,NFRLIQ,NPTFR,FLBORTRA,SEDCO)
+            IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN_COH'    
+          ELSE              
 ! fin modifs CVL        
-          IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BILAN'
-          CALL SUSPENSION_BILAN
-     &        (MESH,CST,HN,ZFCL_S,MASKEL,IELMT,ITRA,LT,NIT,
-     &         DT,CSF_SABLE,MASSOU,MASED0,MSK,ENTETS,MASTEN,MASTOU,
-     &         MASINI,T2,T3,MASFIN,MASDEPT,MASDEP,AGGLOT,VOLU2D,
-     &         NUMLIQ,NFRLIQ,NPTFR,FLBORTRA)
-          IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN'
-        ENDIF  
-       ENDIF
-       ENDIF    
+            IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BILAN'
+            CALL SUSPENSION_BILAN
+     &          (MESH,CST,HN,ZFCL_S,MASKEL,IELMT,ITRA,LT,NIT,
+     &           DT,CSF_SABLE,MASSOU,MASED0,MSK,ENTETS,MASTEN,MASTOU,
+     &           MASINI,T2,T3,MASFIN,MASDEPT,MASDEP,AGGLOT,VOLU2D,
+     &           NUMLIQ,NFRLIQ,NPTFR,FLBORTRA)
+            IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN'
+          ENDIF  
+        ENDIF
+      ENDIF    
 !
 !
       CALL OS('X=Y     ', X=CS, Y=CST)

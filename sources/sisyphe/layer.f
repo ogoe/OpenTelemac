@@ -205,8 +205,9 @@
 !    &                       +ZFCL_W%ADR(I)%P%R(J)     )/ELAY0
 !
               IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
-     *           AVAIL(J,1,I).LT.-ZERO) THEN
+     &           AVAIL(J,1,I).LT.-ZERO) THEN
                 WRITE(LU,*) 'ERROR IN LAYER CASE 1'
+                CALL PLANTE(1)
                 STOP
               ENDIF
             ENDDO
@@ -238,6 +239,7 @@
                   IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
      &               AVAIL(J,1,I).LT.-ZERO) THEN
                     WRITE(LU,*) 'ERROR IN LAYER CASE 2'
+                    CALL PLANTE(1)
                     STOP
                   ENDIF
                   AVAIL(J,2,I) = AVAIL(J,3,I)
@@ -281,6 +283,7 @@
                       WRITE(LU,*) 'ELAY%R(J)=',ELAY%R(J)
                       WRITE(LU,*) 'EVOL=',EVOL
                       WRITE(LU,*) 'ERROR IN LAYER CASE 3'
+                      CALL PLANTE(1)
                       STOP
                     ENDIF
                   ELSE
@@ -303,6 +306,7 @@
                 IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
      &             AVAIL(J,1,I).LT.-ZERO) THEN
                   WRITE(LU,*) 'ERROR IN LAYER CASE 4'
+                  CALL PLANTE(1)
                   STOP
                 ENDIF
               ENDDO
@@ -349,6 +353,7 @@
               IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
      &           AVAIL(J,1,I).LT.-ZERO) THEN
                  WRITE(LU,*) 'ERROR IN LAYER CASE 5'
+                 CALL PLANTE(1)
                  STOP
               ENDIF
             ENDDO
@@ -366,18 +371,18 @@
                 AVAIL(J,1,I) = (AVAIL(J,1,I)*ELAY%R(J)+
      &                          ZFCL_W%ADR(I)%P%R(J))
      &                          / (ELAY%R(J)+EVOL)
-C               IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
-C    &            AVAIL(J,1,I).LT.-ZERO) THEN
-C                 WRITE(LU,*) 'ERROR IN LAYER CASE 6'
-C                 WRITE(LU,*) 'INITIAL AVAIL=',AUX
-C                 WRITE(LU,*) 'J=',J,' CLASS ',I
-C                 WRITE(LU,*) 'EVOL=',EVOL,' ELAY=',ELAY%R(J)
-C                 WRITE(LU,*) 'EVOL+ELAY=',EVOL+ELAY%R(J)
-C                 WRITE(LU,*) 'ZFCL=',ZFCL_W%ADR(I)%P%R(J)
-C                 WRITE(LU,*) 'DENOMINATOR=',ELAY%R(J)+EVOL
-C                 WRITE(LU,*) 'NUMERATOR=',AUX*ELAY%R(J)+
-C    &                                     ZFCL_W%ADR(I)%P%R(J)
-C               ENDIF
+!               IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
+!    &            AVAIL(J,1,I).LT.-ZERO) THEN
+!                 WRITE(LU,*) 'ERROR IN LAYER CASE 6'
+!                 WRITE(LU,*) 'INITIAL AVAIL=',AUX
+!                 WRITE(LU,*) 'J=',J,' CLASS ',I
+!                 WRITE(LU,*) 'EVOL=',EVOL,' ELAY=',ELAY%R(J)
+!                 WRITE(LU,*) 'EVOL+ELAY=',EVOL+ELAY%R(J)
+!                 WRITE(LU,*) 'ZFCL=',ZFCL_W%ADR(I)%P%R(J)
+!                 WRITE(LU,*) 'DENOMINATOR=',ELAY%R(J)+EVOL
+!                 WRITE(LU,*) 'NUMERATOR=',AUX*ELAY%R(J)+
+!    &                                     ZFCL_W%ADR(I)%P%R(J)
+!               ENDIF
                 AVAIL(J,2,I) = 0.D0
               ENDDO
               IF(ELAY%R(J)+EVOL.LT.1.D-5) THEN

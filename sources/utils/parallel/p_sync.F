@@ -69,6 +69,7 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'P_SYNC : ERREUR DANS MPI_BARRIER'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_SYNC: ERROR IN MPI_BARRIER'
         WRITE(LU,*) 'MPI ERROR ',IER
+        CALL PLANTE(1)
         STOP
       ENDIF
       RETURN

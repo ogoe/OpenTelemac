@@ -81,7 +81,7 @@
       CALL LIT(XBID,W,IB  ,CBID , 2,'I ',NGEO,STD,ISTAT)
       NVARIN = IB(1) + IB(2)
       DO I=1,NVARIN
-         CALL LIT(XBID,W,IBID,TEXTE(I),32,'CH',NGEO,STD,ISTAT)
+        CALL LIT(XBID,W,IBID,TEXTE(I),32,'CH',NGEO,STD,ISTAT)
       ENDDO
 !     LECTURE ET STOCKAGE DU TABLEAU IPARAM
       CALL LIT(XBID,W,IPARAM  ,CBID,10,'I ',NGEO,STD,ISTAT)
@@ -113,25 +113,25 @@
 !
       IF (FUSION) THEN
 !
-         REWIND NFO1
+        REWIND NFO1
 !
-         CALL LIT(XBID,W,IBID,CBID,72,'CH',NFO1,STD,ISTAT)
-         CALL LIT(XBID,W,IB  ,CBID, 2,'I ',NFO1,STD,ISTAT)
-         NVAR2 = IB(1) + IB(2)
-         DO I=1,NVAR2
-            CALL LIT(XBID,W,IBID,CBID,32,'CH',NFO1,STD,ISTAT)
-         ENDDO
-         CALL LIT(XBID,W,IB  ,CBID,10,'I ',NFO1,STD,ISTAT)
-         CALL LIT(XBID,W,IB  ,CBID, 4,'I ',NFO1,STD,ISTAT)
+        CALL LIT(XBID,W,IBID,CBID,72,'CH',NFO1,STD,ISTAT)
+        CALL LIT(XBID,W,IB  ,CBID, 2,'I ',NFO1,STD,ISTAT)
+        NVAR2 = IB(1) + IB(2)
+        DO I=1,NVAR2
+          CALL LIT(XBID,W,IBID,CBID,32,'CH',NFO1,STD,ISTAT)
+        ENDDO
+        CALL LIT(XBID,W,IB  ,CBID,10,'I ',NFO1,STD,ISTAT)
+        CALL LIT(XBID,W,IB  ,CBID, 4,'I ',NFO1,STD,ISTAT)
 !
-         NELEM2 = IB(1)
-         NPOIN2 = IB(2)
+        NELEM2 = IB(1)
+        NPOIN2 = IB(2)
 !
-         CALL LIT(XBID,W,IKLES(1,NELEM1+1),CBID,NELEM2*NDP,'I ',
-     &            NFO1,STD,ISTAT)
-         CALL LIT(XBID,W,IB,CBID, 2,'I ',NFO1,STD,ISTAT)
-         CALL LIT(X(NPOIN1+1),W,IBID,CBID,NPOIN2,'R4',NFO1,STD,ISTAT)
-         CALL LIT(Y(NPOIN1+1),W,IBID,CBID,NPOIN2,'R4',NFO1,STD,ISTAT)
+        CALL LIT(XBID,W,IKLES(1,NELEM1+1),CBID,NELEM2*NDP,'I ',
+     &           NFO1,STD,ISTAT)
+        CALL LIT(XBID,W,IB,CBID, 2,'I ',NFO1,STD,ISTAT)
+        CALL LIT(X(NPOIN1+1),W,IBID,CBID,NPOIN2,'R4',NFO1,STD,ISTAT)
+        CALL LIT(Y(NPOIN1+1),W,IBID,CBID,NPOIN2,'R4',NFO1,STD,ISTAT)
 !
       ENDIF
 !
@@ -158,9 +158,9 @@
       ENDDO
 !
       DO I = 1,NPOIN
-         XINIT(I) = X(I)
-         YINIT(I) = Y(I)
-         NCOLOR(I) = 11
+        XINIT(I) = X(I)
+        YINIT(I) = Y(I)
+        NCOLOR(I) = 11
       ENDDO
 !
 !=======================================================================

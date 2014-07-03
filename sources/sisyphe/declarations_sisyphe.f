@@ -144,7 +144,7 @@
       TYPE(BIEF_OBJ), TARGET :: DEL_QV
 ! JWI 31/05/2012 - added lines to include wave orbital velocities
 !> @brief INCREMENTS OF WAVE ORBITAL VELOCITY WHEN READING AN HYDRO FILE
-C
+!
       TYPE(BIEF_OBJ), TARGET :: DEL_UW
 ! JWI END
 !
@@ -564,34 +564,34 @@ C
 !
       TYPE(BIEF_OBJ), TARGET :: LAYTHI
 !> @brief
-C
+!
       TYPE(BIEF_OBJ), TARGET :: LAYCONC
 !> @brief
-C
+!
       TYPE(BIEF_OBJ), TARGET :: QSCL
 !> @brief
-C
+!
       TYPE(BIEF_OBJ), TARGET :: QSCL_C
 !> @brief
-C
+!
       TYPE(BIEF_OBJ), TARGET :: QSCLXC, QSCLYC
 !> @brief
-C
+!
       TYPE(BIEF_OBJ), TARGET :: QSCL_S
 !> @brief
-C
+!
       TYPE(BIEF_OBJ), TARGET :: QSCLXS, QSCLYS
 !> @brief
-C
+!
       TYPE(BIEF_OBJ), TARGET :: ZFCL
 !> @brief
-C
+!
       TYPE(BIEF_OBJ), TARGET :: ZFCL_C
 !> @brief
-C
+!
       TYPE(BIEF_OBJ), TARGET :: ZFCL_S
 !> @brief
-C
+!
       TYPE(BIEF_OBJ), TARGET :: ZFCL_MS
 
 !> @brief MEYER PETER MUELLER factor
@@ -651,37 +651,37 @@ C
 !
       INTEGER OPDTRA
 !> @brief OPTION FOR THE DISPERSION
-C option pour la dispersion
+! option pour la dispersion
       INTEGER OPTDIF
 !> @brief 'SUPG OPTION'
-C
+!
       INTEGER OPTSUP
 !> @brief NUMBER OF ITERATIONS WITH CONSTANT FLOW DISCHARGE
-C nombre d'iterations pour telemac
+! nombre d'iterations pour telemac
       INTEGER :: NCONDIS
 !> @brief LAW OF BOTTOM FRICTION
-C loi de frottement sur le fond
+! loi de frottement sur le fond
       INTEGER KFROT
 !> @brief BED-LOAD TRANSPORT FORMULA
-C formule de transport solide
+! formule de transport solide
       INTEGER ICF
 !> @brief
-C
+!
       INTEGER NPAS
 !> @brief NUMBER OF TIDES OR FLOODS
-C nombre de marees ou crues
+! nombre de marees ou crues
       INTEGER NMAREE
 !> @brief
-C
+!
       INTEGER LEOPR
 !> @brief
-C
+!
       INTEGER LISPR
 !> @brief
-C
+!
       INTEGER NVARCL
 !> @brief
-C
+!
       INTEGER IELMT,IELMH_SIS,IELMU_SIS,IELMX
 !> @brief
 ! standard du fichier de geometrie
@@ -839,111 +839,111 @@ C
 !
 !
 !  C-VSM WRITES OUT (OR NOT) IN THIS TIMESTEP
-C
+!
       LOGICAL :: CVSM_OUT !UHM
 
 !  C-VSM_FULL WRITES OUT (OR NOT) EVER
-C
+!
       LOGICAL :: CVSM_OUT_FULL !UHM
 
 !> @brief GRAPHICAL OUTPUT
-C
+!
       LOGICAL :: SORLEO(MAXVAR)
 !> @brief LISTING OUTPUT
-C
+!
       LOGICAL :: SORIMP(MAXVAR)
 !> @brief MASKING
-C
+!
       LOGICAL :: MSK
 !> @brief WRITES OUT (OR NOT)
-C
+!
       LOGICAL :: ENTET
 !> @brief RESOLUTION FOR SUSPENSION IS IMPLICIT (OR NOT)
-C
+!
       LOGICAL :: YASMI
 !> @brief SPHERICAL EQUATIONS (HARD-CODED)
-C
+!
       LOGICAL :: SPHERI
 !> @brief STEADY HYDRODYNAMICS
-C
+!
       LOGICAL :: PERMA
 !> @brief TIDAL FLATS
-C
+!
       LOGICAL :: BANDEC
 !> @brief WAVE EFFECT
-C si oui, prise en compte de la houle
+! si oui, prise en compte de la houle
       LOGICAL :: HOULE
 !> @brief FALL VELOCITY (PARTIALLY HARD-CODED)
-C
+!
       LOGICAL :: CALWC
 !> @brief SHIELDS PARAMETER
-C
+!
       LOGICAL :: CALAC
 !> @brief BEDLOAD
-C
+!
       LOGICAL :: CHARR
 !> @brief LOADING LAW USED OR NOT
-C
+!
       LOGICAL :: NOEQUBED
 !> @brief FINITE VOLUMES
-C si oui, volumes finis
+! si oui, volumes finis
       LOGICAL :: VF
 !> @brief MASS-LUMPING
-C
+!
       LOGICAL :: LUMPI
 !> @brief CONSTANT FLOW DISCHARGE
-C
+!
       LOGICAL :: LCONDIS
 !> @brief GRAIN-FEEDING
-C si oui, grain-feeding
+! si oui, grain-feeding
       LOGICAL :: LGRAFED
 !> @brief CONSTANT ACTIVE LAYER THICKNESS
-C si oui, epaisseur de couche active constante
+! si oui, epaisseur de couche active constante
       LOGICAL :: CONST_ALAYER
 !> @brief SUSPENSION
-C si oui, prise en compte de la suspension
+! si oui, prise en compte de la suspension
       LOGICAL :: SUSP
 !> @brief MASS BALANCE
-C
+!
       LOGICAL :: BILMA
 !> @brief VALIDATION
-C si oui, validation
+! si oui, validation
       LOGICAL :: VALID
 !> @brief IMPOSED CONCENTRATION IN INFLOW
-C si oui, concentration d'equilibre en entree
+! si oui, concentration d'equilibre en entree
       LOGICAL :: IMP_INFLOW_C
 !> @brief SECONDARY CURRENTS
-C si oui, courants secondaires
+! si oui, courants secondaires
       LOGICAL :: SECCURRENT
 !> @brief MASS CONCENTRATIONS IN G/L
-C si oui, concentration massique
+! si oui, concentration massique
       LOGICAL :: UNIT
 !> @brief CORRECTION ON CONVECTION VELOCITY
-C si oui, correction du champ convecteur
+! si oui, correction du champ convecteur
       LOGICAL :: CORR_CONV
 !> @brief COMPUTATION CONTINUED
-C si oui, suite de calcul
+! si oui, suite de calcul
       LOGICAL :: DEBU
 !> @brief DIFFUSION OF SUSPENDED SEDIMENT CONCENTRATION
-C si oui, diffusion
+! si oui, diffusion
       LOGICAL :: DIFT
 !> @brief SEDIMENT SLIDE
-C si oui, glissement du sediment
+! si oui, glissement du sediment
       LOGICAL :: SLIDE
 !> @brief COHESIVE SEDIMENTS (FOR EACH CLASS)
-C si oui, sediments cohesifs
+! si oui, sediments cohesifs
       LOGICAL :: SEDCO(NSICLM)
 !> @brief CONSOLIDATION TAKEN INTO ACCOUNT
-C si oui, tassement du lit cohesif
+! si oui, tassement du lit cohesif
       LOGICAL :: TASS
 !> @brief MIXED SEDIMENTS
-C si oui, sediment mixte
+! si oui, sediment mixte
       LOGICAL :: MIXTE
 !> @brief COUPLING WITH DREDGESIM
-C si oui, couplage avec dredgesim
+! si oui, couplage avec dredgesim
       LOGICAL :: DREDGESIM
 !> @brief BED FRICTION PREDICTION
-C 
+! 
       LOGICAL :: KSPRED
 !
 ! MAK
@@ -954,156 +954,156 @@ C
       LOGICAL :: SET_LAG
 !     STATIONARY MODE: calculate sediment transport without updating the bed.
       LOGICAL :: STAT_MODE
-C
-C-----------------------------------------------------------------------
-C
-C       6) REALS
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
+!       6) REALS
+!
+!-----------------------------------------------------------------------
+!
 !> @brief
-C
+!
       DOUBLE PRECISION RC
 !> @brief WATER DENSITY
-C masse volumique de l'eau
+! masse volumique de l'eau
       DOUBLE PRECISION XMVE
 !> @brief SAND DENSITY
-C masse volumique du sediment
+! masse volumique du sediment
       DOUBLE PRECISION XMVS
 !> @brief COEFFICIENT FUNCTION OF THE POROSITY
-C coefficient fonction de la porosite
+! coefficient fonction de la porosite
       DOUBLE PRECISION XKV
 !> @brief GRAVITY ACCELERATION
-C acceleration de la pesanteur
+! acceleration de la pesanteur
       DOUBLE PRECISION GRAV
 !> @brief
-C
+!
       DOUBLE PRECISION SFON
 !> @brief FLOW VISCOSITY
-C viscosite de l'eau
+! viscosite de l'eau
       DOUBLE PRECISION VCE
 !> @brief
-C
+!
       DOUBLE PRECISION TETA
 !> @brief MINIMAL VALUE OF THE WATER HEIGHT
-C hauteur d'eau minimale
+! hauteur d'eau minimale
       DOUBLE PRECISION HMIN
 !> @brief
-C
+!
       DOUBLE PRECISION BETA ,DELT
 !> @brief TIDAL PERIOD
-C
+!
       DOUBLE PRECISION PMAREE
 !> @brief STARTING TIME OF THE HYDROGRAM
-C temps d'origine de l'hydrogramme
+! temps d'origine de l'hydrogramme
       DOUBLE PRECISION TPREC
 !> @brief
-C
+!
       DOUBLE PRECISION PHI0
 !> @brief
-C pas de temps
+! pas de temps
       DOUBLE PRECISION DT
 !> @brief CRITERION TO UPDATE THE FLOW (WITH CONSTANT FLOW DISCHARGE)
-C critere pour mettre a jour l'hydrodynamique
+! critere pour mettre a jour l'hydrodynamique
       DOUBLE PRECISION :: CRIT_CFD
 !> @brief
-C
+!
       DOUBLE PRECISION :: FRACSED_GF(NSICLM)
 !> @brief INITIAL SUSPENSION CONCENTRATIONS
-C concentrations initiales en suspension
+! concentrations initiales en suspension
       DOUBLE PRECISION :: CS0(NSICLM)
 !> @brief MASS EXCHANGED BY SOURCE TERM
-C
+!
       DOUBLE PRECISION MASSOU
 !> @brief
-C
+!
       DOUBLE PRECISION CSF_SABLE
 !> @brief SETTLING VELOCITIES
-C vitesses de chute
+! vitesses de chute
       DOUBLE PRECISION XWC(NSICLM)
 !> @brief CRITICAL SHIELDS PARAMETER
-C
+!
       DOUBLE PRECISION AC(NSICLM)
 !> @brief TETA SUSPENSION
-C
+!
       DOUBLE PRECISION TETA_SUSP
 !> @brief
-C
+!
       DOUBLE PRECISION  XKX, XKY
 !> @brief FRICTION ANGLE OF THE SEDIMENT
-C angle de frottement du sediment
+! angle de frottement du sediment
       DOUBLE PRECISION PHISED
 !> @brief PARAMETER FOR DEVIATION
-C parametre pour la deviation
+! parametre pour la deviation
       DOUBLE PRECISION BETA2
-C
-C NON-EQUILIBRIUM BEDLOAD AND NON-UNIFORM BED MATERIA (BMD AND MGDL)
-C --------
-C
+!
+! NON-EQUILIBRIUM BEDLOAD AND NON-UNIFORM BED MATERIA (BMD AND MGDL)
+! --------
+!
 !> @brief HIDING FACTOR FOR PARTICULAR SIZE CLASS WHEN THE USER SUBROUTINE INIT_HIDING IS NOT USED
-C hiding factor par classe granulo
+! hiding factor par classe granulo
       DOUBLE PRECISION HIDI(NSICLM)
 !> @brief D90
-C d90
+! d90
       DOUBLE PRECISION FD90(NSICLM)
 !> @brief SEDIMENT DIAMETERS
-C diametres des grains
+! diametres des grains
       DOUBLE PRECISION FDM(NSICLM)
 !> @brief INITIAL SEDIMENT COMPOSITION FOR PARTICULAR SIZE CLASS WHEN INIT_COMPO IS NOT USED
-C fraction initiale par classe sedimentologique
+! fraction initiale par classe sedimentologique
       DOUBLE PRECISION AVA0(NSICLM)
 !> @brief WANTED ACTIVE LAYER THICKNESS; ELAYO=FIXED VALUE, ELAY=REAL VALUE FOR EACH POINT; WHEN ENOUGH SEDIMENT ELAY = ELAY0
-C epaisseur de couche active
+! epaisseur de couche active
       DOUBLE PRECISION ELAY0
 !> @brief TOTAL VOLUME OF SEDIMENT IN EACH CLASS
-C
+!
       DOUBLE PRECISION VOLTOT(NSICLM)
 !> @brief CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION
-C vitesse critique de depot de la vase
+! vitesse critique de depot de la vase
       DOUBLE PRECISION :: VITCD
 !> @brief CRITICAL EROSION SHEAR VELOCITY OF THE MUD
-C vitesse critique d'erosion de la vase
+! vitesse critique d'erosion de la vase
       DOUBLE PRECISION :: VITCE
 !> @brief SUSPENDED MASS BALANCE
-C
+!
       DOUBLE PRECISION :: MASED0(NSICLM)
 !> @brief SUSPENDED MASS BALANCE
-C
+!
       DOUBLE PRECISION :: MASINI(NSICLM)
 !> @brief
-C
+!
       DOUBLE PRECISION :: MASTEN(NSICLM), MASTOU(NSICLM)
 !> @brief
-C
+!
       DOUBLE PRECISION :: MASTCP(NSICLM), MASFIN(NSICLM)
 !> @brief
-C
+!
       DOUBLE PRECISION :: MASDEP(NSICLM), MASDEPT(NSICLM)
 !> @brief
-C CV: masse du lit sedimentaire pour bilan mixte et cohesif
+! CV: masse du lit sedimentaire pour bilan mixte et cohesif
 !     FOR MASS BALANCE OF COHESIVE SEDIMENT AND MIXTE
       DOUBLE PRECISION :: MASVT,MASV0,MASST,MASS0
 !..
 !!> @brief FOR NON-EQUILIBIRUM BEDLOAD
-C
+!
       DOUBLE PRECISION :: LS0
 !> @brief RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER
-C ratio entre la rugosite de peau et le diametre moyen
+! ratio entre la rugosite de peau et le diametre moyen
       DOUBLE PRECISION :: KSPRATIO
 !> @brief KARIM, HOLLY & YANG CONSTANT
-C
+!
       DOUBLE PRECISION :: KARIM_HOLLY_YANG
 !> @brief KARMAN CONSTANT
-C constante de karman
+! constante de karman
       DOUBLE PRECISION :: KARMAN
 !> @brief PARTHENIADES CONSTANT
-C constante de partheniades
+! constante de partheniades
       DOUBLE PRECISION :: PARTHENIADES
 !> @brief MAXIMUM CONCENTRATION
-C
+!
       DOUBLE PRECISION :: CMAX
 !> @brief PI
-C
+!
       DOUBLE PRECISION :: PI
 !> @brief Meyer Peter Mueller-Coefficient 
       DOUBLE PRECISION :: MPM
@@ -1116,7 +1116,7 @@ C
 !
       DOUBLE PRECISION :: MOFAC
 !> @brief ZERO OF THE CODE
-C
+!
       DOUBLE PRECISION :: ZERO
 !
 !     B VALUE FOR THE BIJKER FORMULA
@@ -1165,35 +1165,35 @@ C
 !
       CHARACTER(LEN=72) TITCA,SORTIS,VARIM
 !> @brief
-C
+!
       CHARACTER(LEN=3) BINGEOSIS,BINPRESIS,BINHYDSIS
 !> @brief
-C
+!
       CHARACTER(LEN=3) BINRESSIS,BINREFSIS
 !> @brief
-C
+!
       CHARACTER(LEN=32) VARCLA(NSICLM),TEXTE(MAXVAR),TEXTPR(MAXVAR)
 !> @brief
-C
+!
       CHARACTER(LEN=20) EQUA
 !> @brief
-C
+!
       CHARACTER(LEN=8) MNEMO(MAXVAR)
 !> @brief
-C
+!
       CHARACTER(LEN=144) COUPLINGSIS
-C
-C-----------------------------------------------------------------------
-C
-C       8) SLVCFG STRUCTURES
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
+!       8) SLVCFG STRUCTURES
+!
+!-----------------------------------------------------------------------
+!
 !> @brief
-C
+!
       TYPE(SLVCFG) :: SLVSED
 !> @brief
-C
+!
       TYPE(SLVCFG) :: SLVTRA
 !
 !-----------------------------------------------------------------------
@@ -1227,43 +1227,43 @@ C
 !
       TYPE(BIEF_OBJ),   POINTER :: IKLE
 !> @brief 2D COORDINATES OF THE MESH
-C coordonnees des points du maillage
+! coordonnees des points du maillage
       DOUBLE PRECISION, DIMENSION(:), POINTER :: X
 !> @brief 2D COORDINATES OF THE MESH
-C coordonnees des points du maillage
+! coordonnees des points du maillage
       DOUBLE PRECISION, DIMENSION(:), POINTER :: Y
 !> @brief NUMBER OF ELEMENTS IN THE MESH
-C nombre d'elements du maillage
+! nombre d'elements du maillage
       INTEGER, POINTER:: NELEM
 !> @brief MAXIMUM NUMBER OF ELEMENTS IN THE MESH
-C nombre maximum d'elements du maillage
+! nombre maximum d'elements du maillage
       INTEGER, POINTER:: NELMAX
 !> @brief NUMBER OF BOUNDARY POINTS
-C nombre de points frontieres
+! nombre de points frontieres
       INTEGER, POINTER:: NPTFR
 !> @brief
-C
+!
       INTEGER, POINTER:: NPTFRX
 !> @brief
-C
+!
       INTEGER, POINTER:: DIM
 !> @brief
-C
+!
       INTEGER, POINTER:: TYPELM
 !> @brief NUMBER OF 2D POINTS IN THE MESH
-C nombre de points 2d du maillage
+! nombre de points 2d du maillage
       INTEGER, POINTER:: NPOIN
 !> @brief
-C
+!
       INTEGER, POINTER:: NPMAX
 !> @brief
-C
+!
       INTEGER, POINTER:: MXPTVS
 !> @brief
-C
+!
       INTEGER, POINTER:: MXELVS
 !> @brief
-C
+!
       INTEGER, POINTER:: LV
 !
 !-----------------------------------------------------------------------
@@ -1276,43 +1276,43 @@ C
 !
       INTEGER, PARAMETER :: MAXLU_SIS = 46
 !> @brief
-C
+!
       TYPE(BIEF_FILE) :: SIS_FILES(MAXLU_SIS)
 !> @brief
-C
+!
       INTEGER SISRES
 !> @brief
-C
+!
       INTEGER SISREF
 !> @brief
-C
+!
       INTEGER SISPRE
 !> @brief
-C
+!
       INTEGER SISHYD
 !> @brief
-C
+!
       INTEGER SISCOU
 !> @brief
-C
+!
       INTEGER SISGEO
 !> @brief
-C
+!
       INTEGER SISCLI
 !> @brief
-C
+!
       INTEGER SISCAS
 !> @brief
-C
+!
       INTEGER SISFON
 !> @brief
-C
+!
       INTEGER SISMAF
 !> @brief
-C
+!
       INTEGER SISSEC
 !> @brief
-C
+!
       INTEGER SISSEO
 !
 !     RANK OF 'FILE FOR LIQUID BOUNDARIES' IN SIS_FILES

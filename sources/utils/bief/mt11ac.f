@@ -253,7 +253,7 @@
 !  CASE WHERE F IS OF TYPE P2
 !-----------------------------------------------------------------------
 !
-       ELSEIF(IELMF.EQ.13) THEN
+      ELSEIF(IELMF.EQ.13) THEN
 !
 !================================
 !  DERIVATIVE WRT X  =
@@ -263,72 +263,72 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-        DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-        Y2 = YEL(IELEM,2)
-        Y3 = YEL(IELEM,3)
-!
-        F1  =  F(IKLE1(IELEM))
-        F2  =  F(IKLE2(IELEM))
-        F3  =  F(IKLE3(IELEM))
-        F4  =  F(IKLE4(IELEM))
-        F5  =  F(IKLE5(IELEM))
-        F6  =  F(IKLE6(IELEM))
+            Y2 = YEL(IELEM,2)
+            Y3 = YEL(IELEM,3)
+!           
+            F1  =  F(IKLE1(IELEM))
+            F2  =  F(IKLE2(IELEM))
+            F3  =  F(IKLE3(IELEM))
+            F4  =  F(IKLE4(IELEM))
+            F5  =  F(IKLE5(IELEM))
+            F6  =  F(IKLE6(IELEM))
 !
 !   EXTRADIAGONAL TERMS
 !
-       A12(IELEM) = ((3.D0*F2-6.D0*F1-8.D0*(F6-F4)-F3+4.D0*F5)*Y3
-     &            +   6.D0*(F1-F2)*Y2 ) * XSUR360
-       A13(IELEM) = ((8.D0*(F4-F6)-4.D0*F5+F2+6.D0*F1-3.D0*F3)*Y2
-     &            +   6.D0*(F3-F1)*Y3 ) * XSUR360
-       A14(IELEM) = ((-16.D0*F4+4.D0*(F5+F6)-6.D0*F1-F3      )*Y2
-     &            +  (6.D0*F1-2.D0*F2+4.D0*F4+8.D0*F6-F3)*Y3)
-     &             * XSUR90
-       A15(IELEM) = ((F3-8.D0*F4-4.D0*(F5+F6))*Y2
-     &            +  (4.D0*(F4+F5)+8.D0*F6-F2)*Y3) * XSUR90
-       A16(IELEM) = ((F2+6.D0*F1+16.D0*F6-4.D0*(F4+F5)       )*Y3
-     &            -  (8.D0*F4-F2+6.D0*F1-2.D0*F3+4.D0*F6)*Y2)
-     &             * XSUR90
-       A21(IELEM) = ((8.D0*(F4-F5)-3.D0*F1-F3+4.D0*F6        )*Y2
-     &            - (3.D0*F1-6.D0*F2+8.D0*(F4-F5)+4.D0*F6-F3 )*Y3)
-     &            * XSUR360
-       A23(IELEM) = ((8.D0*(F4-F5)+F1+3.D0*F3-4.D0*F6           )*Y2
-     &            +  6.D0*(F2-F3)*Y3 ) * XSUR360
-       A24(IELEM) = ((12.D0*(F5-F4)-2.D0*(F1+F3)+4.D0*F6     )*Y2
-     &            + (2.D0*F1-4.D0*F4+F3-6.D0*F2-8.D0*F5)*Y3 )
-     &            * XSUR90
-       A25(IELEM) = ((12.D0*(F5-F4)+2.D0*(F1+F3)-4.D0*F6     )*Y2
-     &            +  (-F1+4.D0*(F4+F6)-6.D0*F2-16.D0*F5)*Y3 )
-     &            * XSUR90
-       A26(IELEM) = ((F1-8.D0*F5-4.D0*(F6+F4)                )*Y3
-     &            - (4.D0*(F4-F5)+F1-F3)*Y2                 )
-     &            * XSUR90
-       A31(IELEM) = ((4.D0*F4-8.D0*(F5-F6)+3.D0*F1-F2-6.D0*F3)*Y2
-     &            +  (3.D0*F1-8.D0*(F6-F5)-4.D0*F4+F2)*Y3 )
-     &            * XSUR360
-       A32(IELEM) = ((4.D0*F4-F1-8.D0*(F6-F5)-3.D0*F2)*Y3
-     &            +  6.D0*(F2-F3)*Y2) * XSUR360
-       A34(IELEM) = ((4.D0*(F4+F6)-F1+8.D0*F5)*Y2
-     &            +  (F1-4.D0*(F5-F6)-F2)*Y3 ) * XSUR90
-       A35(IELEM) = ((16.D0*F5-4.D0*(F4+F6)+F1+6.D0*F3)*Y2
-     &            +  (-2.D0*(F1+F2)+4.D0*F4+12.D0*(F6-F5))*Y3)
-     &            * XSUR90
-       A36(IELEM) = ((8.D0*F5-F2-2.D0*F1+6.D0*F3+4.D0*F6)*Y2
-     &            +  (2.D0*(F2+F1)+12.D0*(F6-F5)-4.D0*F4)*Y3)
-     &            * XSUR90
+            A12(IELEM) = ((3.D0*F2-6.D0*F1-8.D0*(F6-F4)-F3+4.D0*F5)*Y3
+     &                 +   6.D0*(F1-F2)*Y2 ) * XSUR360
+            A13(IELEM) = ((8.D0*(F4-F6)-4.D0*F5+F2+6.D0*F1-3.D0*F3)*Y2
+     &                 +   6.D0*(F3-F1)*Y3 ) * XSUR360
+            A14(IELEM) = ((-16.D0*F4+4.D0*(F5+F6)-6.D0*F1-F3      )*Y2
+     &                 +  (6.D0*F1-2.D0*F2+4.D0*F4+8.D0*F6-F3)*Y3)
+     &                  * XSUR90
+            A15(IELEM) = ((F3-8.D0*F4-4.D0*(F5+F6))*Y2
+     &                 +  (4.D0*(F4+F5)+8.D0*F6-F2)*Y3) * XSUR90
+            A16(IELEM) = ((F2+6.D0*F1+16.D0*F6-4.D0*(F4+F5)       )*Y3
+     &                 -  (8.D0*F4-F2+6.D0*F1-2.D0*F3+4.D0*F6)*Y2)
+     &                  * XSUR90
+            A21(IELEM) = ((8.D0*(F4-F5)-3.D0*F1-F3+4.D0*F6        )*Y2
+     &                 - (3.D0*F1-6.D0*F2+8.D0*(F4-F5)+4.D0*F6-F3 )*Y3)
+     &                 * XSUR360
+            A23(IELEM) = ((8.D0*(F4-F5)+F1+3.D0*F3-4.D0*F6        )*Y2
+     &                 +  6.D0*(F2-F3)*Y3 ) * XSUR360
+            A24(IELEM) = ((12.D0*(F5-F4)-2.D0*(F1+F3)+4.D0*F6     )*Y2
+     &                 + (2.D0*F1-4.D0*F4+F3-6.D0*F2-8.D0*F5)*Y3 )
+     &                 * XSUR90
+            A25(IELEM) = ((12.D0*(F5-F4)+2.D0*(F1+F3)-4.D0*F6     )*Y2
+     &                 +  (-F1+4.D0*(F4+F6)-6.D0*F2-16.D0*F5)*Y3 )
+     &                 * XSUR90
+            A26(IELEM) = ((F1-8.D0*F5-4.D0*(F6+F4)                )*Y3
+     &                 - (4.D0*(F4-F5)+F1-F3)*Y2                 )
+     &                 * XSUR90
+            A31(IELEM) = ((4.D0*F4-8.D0*(F5-F6)+3.D0*F1-F2-6.D0*F3)*Y2
+     &                 +  (3.D0*F1-8.D0*(F6-F5)-4.D0*F4+F2)*Y3 )
+     &                 * XSUR360
+            A32(IELEM) = ((4.D0*F4-F1-8.D0*(F6-F5)-3.D0*F2)*Y3
+     &                 +  6.D0*(F2-F3)*Y2) * XSUR360
+            A34(IELEM) = ((4.D0*(F4+F6)-F1+8.D0*F5)*Y2
+     &                 +  (F1-4.D0*(F5-F6)-F2)*Y3 ) * XSUR90
+            A35(IELEM) = ((16.D0*F5-4.D0*(F4+F6)+F1+6.D0*F3)*Y2
+     &                 +  (-2.D0*(F1+F2)+4.D0*F4+12.D0*(F6-F5))*Y3)
+     &                 * XSUR90
+            A36(IELEM) = ((8.D0*F5-F2-2.D0*F1+6.D0*F3+4.D0*F6)*Y2
+     &                 +  (2.D0*(F2+F1)+12.D0*(F6-F5)-4.D0*F4)*Y3)
+     &                 * XSUR90
 !
 !   DIAGONAL TERMS
 !
-        A11(IELEM) = ((24.D0*(F6-F1)-5.D0*F3+4.D0*F5+F2)*Y2
-     &             +  (24.D0*(F1-F4)+5.D0*F2-4.D0*F5-F3)*Y3) * XSUR360
-        A22(IELEM) = ((6.D0*(F1-F3)+24.D0*(F5-F4)      )*Y2
-     &             +  (24.D0*(F4-F2)+4.D0*F6+F3-5.D0*F1)*Y3) * XSUR360
-        A33(IELEM) = ((24.D0*(F3-F6)+5.D0*F1-4.D0*F4-F2)*Y2
-     &             +  (6.D0*(F2-F1)+24.D0*(F6-F5)      )*Y3) * XSUR360
+            A11(IELEM) = ((24.D0*(F6-F1)-5.D0*F3+4.D0*F5+F2)*Y2
+     &                 +  (24.D0*(F1-F4)+5.D0*F2-4.D0*F5-F3)*Y3)*XSUR360
+            A22(IELEM) = ((6.D0*(F1-F3)+24.D0*(F5-F4)      )*Y2
+     &                 +  (24.D0*(F4-F2)+4.D0*F6+F3-5.D0*F1)*Y3)*XSUR360
+            A33(IELEM) = ((24.D0*(F3-F6)+5.D0*F1-4.D0*F4-F2)*Y2
+     &                 +  (6.D0*(F2-F1)+24.D0*(F6-F5)      )*Y3)*XSUR360
 !
-        ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -336,72 +336,72 @@
 !  DERIVATIVE WRT Y  =
 !================================
 !
-        DO IELEM = 1 , NELEM
+          DO IELEM = 1 , NELEM
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-        X2  =  XEL(IELEM,2)
-        X3  =  XEL(IELEM,3)
-!
-        F1  =  F(IKLE1(IELEM))
-        F2  =  F(IKLE2(IELEM))
-        F3  =  F(IKLE3(IELEM))
-        F4  =  F(IKLE4(IELEM))
-        F5  =  F(IKLE5(IELEM))
-        F6  =  F(IKLE6(IELEM))
+            X2  =  XEL(IELEM,2)
+            X3  =  XEL(IELEM,3)
+!          
+            F1  =  F(IKLE1(IELEM))
+            F2  =  F(IKLE2(IELEM))
+            F3  =  F(IKLE3(IELEM))
+            F4  =  F(IKLE4(IELEM))
+            F5  =  F(IKLE5(IELEM))
+            F6  =  F(IKLE6(IELEM))
 !
 !   EXTRADIAGONAL TERMS
 !
-       A12(IELEM) = ((F3+8.D0*(F6-F4)+6.D0*F1-3.D0*F2-4.D0*F5)*X3
-     &            +   6.D0*(F2-F1)*X2 ) * XSUR360
-       A13(IELEM) = ((8.D0*(F6-F4)-6.D0*F1+3.D0*F3+4.D0*F5-F2)*X2
-     &            -   6.D0*(F3-F1)*X3 ) * XSUR360
-       A14(IELEM) = ((6.D0*F1+F3-4.D0*(F6+F5)+16.D0*F4  )*X2
-     &            +  (F3-8.D0*F6-6.D0*F1+2.D0*F2-4.D0*F4)*X3)
-     &            *  XSUR90
-       A15(IELEM) = ((4.D0*(F6+F5)+8.D0*F4-F3)*X2
-     &            +  (F2-8.D0*F6-4.D0*(F4+F5))*X3 ) * XSUR90
-       A16(IELEM) = ((6.D0*F1-2.D0*F3+4.D0*F6+8.D0*F4-F2)*X2
-     &            +  (-16.D0*F6-6.D0*F1-F2+4.D0*(F5+F4) )*X3)
-     &             * XSUR90
-       A21(IELEM) = ((3.D0*F1+F3-4.D0*F6-8.D0*(F4-F5))*X2
-     &            +  (-F3+4.D0*F6+3.D0*F1-6.D0*F2+8.D0*(F4-F5))*X3)
-     &            *  XSUR360
-       A23(IELEM) = ((4.D0*F6-F1-3.D0*F3-8.D0*(F4-F5))*X2
-     &            -   6.D0*(F2-F3)*X3 ) * XSUR360
-       A24(IELEM) = ((2.D0*(F1+F3)-4.D0*F6+12.D0*(F4-F5) )*X2
-     &            +  (-F3-2.D0*F1+6.D0*F2+4.D0*F4+8.D0*F5)*X3)
-     &            * XSUR90
-       A25(IELEM) = ((4.D0*F6-2.D0*(F1+F3)+12.D0*(F4-F5) )*X2
-     &            -  (4.D0*F6-F1-6.D0*F2+4.D0*F4-16.D0*F5)*X3)
-     &            * XSUR90
-       A26(IELEM) = ((F1-F3+4.D0*(F4-F5)     )*X2
-     &            +  (4.D0*(F6+F4)-F1+8.D0*F5)*X3 )
-     &            * XSUR90
-       A31(IELEM) = ((F2-3.D0*F1+6.D0*F3-8.D0*(F6-F5)-4.D0*F4)*X2
-     &            -  (-8.D0*F6+3.D0*F1+F2-4.D0*F4+8.D0*F5    )*X3)
-     &            * XSUR360
-       A32(IELEM) = ((F1-8.D0*(F5-F6)+3.D0*F2-4.D0*F4)*X3
-     &            +   6.D0*(F3-F2)*X2 ) * XSUR360
-       A34(IELEM) = ((F1-4.D0*(F6+F4)-8.D0*F5)*X2
-     &            +  (-4.D0*(F6-F5)-F1+F2    )*X3 ) * XSUR90
-       A35(IELEM) = ((4.D0*(F6+F4)-F1-6.D0*F3-16.D0*F5  )*X2
-     &            -  (12.D0*(F6-F5)-2.D0*(F1+F2)+4.D0*F4)*X3)
-     &            * XSUR90
-       A36(IELEM) = ((2.D0*F1-6.D0*F3-4.D0*F6-8.D0*F5+F2)*X2
-     &            +  (12.D0*(F5-F6)-2.D0*(F1+F2)+4.D0*F4)*X3)
-     &            * XSUR90
+            A12(IELEM) = ((F3+8.D0*(F6-F4)+6.D0*F1-3.D0*F2-4.D0*F5)*X3
+     &                 +   6.D0*(F2-F1)*X2 ) * XSUR360
+            A13(IELEM) = ((8.D0*(F6-F4)-6.D0*F1+3.D0*F3+4.D0*F5-F2)*X2
+     &                 -   6.D0*(F3-F1)*X3 ) * XSUR360
+            A14(IELEM) = ((6.D0*F1+F3-4.D0*(F6+F5)+16.D0*F4  )*X2
+     &                 +  (F3-8.D0*F6-6.D0*F1+2.D0*F2-4.D0*F4)*X3)
+     &                 *  XSUR90
+            A15(IELEM) = ((4.D0*(F6+F5)+8.D0*F4-F3)*X2
+     &                 +  (F2-8.D0*F6-4.D0*(F4+F5))*X3 ) * XSUR90
+            A16(IELEM) = ((6.D0*F1-2.D0*F3+4.D0*F6+8.D0*F4-F2)*X2
+     &                 +  (-16.D0*F6-6.D0*F1-F2+4.D0*(F5+F4) )*X3)
+     &                  * XSUR90
+            A21(IELEM) = ((3.D0*F1+F3-4.D0*F6-8.D0*(F4-F5))*X2
+     &                 +  (-F3+4.D0*F6+3.D0*F1-6.D0*F2+8.D0*(F4-F5))*X3)
+     &                 *  XSUR360
+            A23(IELEM) = ((4.D0*F6-F1-3.D0*F3-8.D0*(F4-F5))*X2
+     &                 -   6.D0*(F2-F3)*X3 ) * XSUR360
+            A24(IELEM) = ((2.D0*(F1+F3)-4.D0*F6+12.D0*(F4-F5) )*X2
+     &                 +  (-F3-2.D0*F1+6.D0*F2+4.D0*F4+8.D0*F5)*X3)
+     &                 * XSUR90
+            A25(IELEM) = ((4.D0*F6-2.D0*(F1+F3)+12.D0*(F4-F5) )*X2
+     &                 -  (4.D0*F6-F1-6.D0*F2+4.D0*F4-16.D0*F5)*X3)
+     &                 * XSUR90
+            A26(IELEM) = ((F1-F3+4.D0*(F4-F5)     )*X2
+     &                 +  (4.D0*(F6+F4)-F1+8.D0*F5)*X3 )
+     &                 * XSUR90
+            A31(IELEM) = ((F2-3.D0*F1+6.D0*F3-8.D0*(F6-F5)-4.D0*F4)*X2
+     &                 -  (-8.D0*F6+3.D0*F1+F2-4.D0*F4+8.D0*F5    )*X3)
+     &                 * XSUR360
+            A32(IELEM) = ((F1-8.D0*(F5-F6)+3.D0*F2-4.D0*F4)*X3
+     &                 +   6.D0*(F3-F2)*X2 ) * XSUR360
+            A34(IELEM) = ((F1-4.D0*(F6+F4)-8.D0*F5)*X2
+     &                 +  (-4.D0*(F6-F5)-F1+F2    )*X3 ) * XSUR90
+            A35(IELEM) = ((4.D0*(F6+F4)-F1-6.D0*F3-16.D0*F5  )*X2
+     &                 -  (12.D0*(F6-F5)-2.D0*(F1+F2)+4.D0*F4)*X3)
+     &                 * XSUR90
+            A36(IELEM) = ((2.D0*F1-6.D0*F3-4.D0*F6-8.D0*F5+F2)*X2
+     &                 +  (12.D0*(F5-F6)-2.D0*(F1+F2)+4.D0*F4)*X3)
+     &                 * XSUR90
 !
 !   DIAGONAL TERMS
 !
-        A11(IELEM) = ((24.D0*(F1-F6)-4.D0*F5+5.D0*F3-F2)*X2
-     &             +  (24.D0*(F4-F1)-5.D0*F2+4.D0*F5+F3)*X3)*XSUR360
-        A22(IELEM) = ((24.D0*(F4-F5)+6.D0*(F3-F1)      )*X2
-     &             +  (5.D0*F1+24.D0*(F2-F4)-4.D0*F6-F3)*X3)*XSUR360
-        A33(IELEM) = ((4.D0*F4-5.D0*F1+24.D0*(F6-F3)+F2)*X2
-     &             +  (6.D0*(F1-F2)+24.D0*(F5-F6)      )*X3)*XSUR360
+            A11(IELEM) = ((24.D0*(F1-F6)-4.D0*F5+5.D0*F3-F2)*X2
+     &                 +  (24.D0*(F4-F1)-5.D0*F2+4.D0*F5+F3)*X3)*XSUR360
+            A22(IELEM) = ((24.D0*(F4-F5)+6.D0*(F3-F1)      )*X2
+     &                 +  (5.D0*F1+24.D0*(F2-F4)-4.D0*F6-F3)*X3)*XSUR360
+            A33(IELEM) = ((4.D0*F4-5.D0*F1+24.D0*(F6-F3)+F2)*X2
+     &                 +  (6.D0*(F1-F2)+24.D0*(F5-F6)      )*X3)*XSUR360
 !
-        ENDDO ! IELEM 
+          ENDDO ! IELEM 
 !
         ELSE
 !
@@ -414,20 +414,20 @@
 !-----------------------------------------------------------------------
 !
       ELSE
-       IF (LNG.EQ.1) WRITE(LU,100) IELMF
-       IF (LNG.EQ.2) WRITE(LU,101) IELMF
-100    FORMAT(1X,'MT11AC (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F : ',1I6,' NON PREVUE')
-101    FORMAT(1X,'MT11AC (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF F : ',1I6,' NOT AVAILABLE')
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF
+100     FORMAT(1X,'MT11AC (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,' NON PREVUE')
+101     FORMAT(1X,'MT11AC (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F : ',1I6,' NOT AVAILABLE')
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
-200       FORMAT(1X,'MT11AC (BIEF) : COMPOSANTE IMPOSSIBLE ',
-     &              1I6,' VERIFIER ICOORD')
-201       FORMAT(1X,'MT11AC (BIEF) : IMPOSSIBLE COMPONENT ',
-     &              1I6,' CHECK ICOORD')
+200   FORMAT(1X,'MT11AC (BIEF) : COMPOSANTE IMPOSSIBLE ',
+     &          1I6,' VERIFIER ICOORD')
+201   FORMAT(1X,'MT11AC (BIEF) : IMPOSSIBLE COMPONENT ',
+     &          1I6,' CHECK ICOORD')
 !
 !-----------------------------------------------------------------------
 !

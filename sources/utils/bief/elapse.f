@@ -59,11 +59,11 @@
       MONTH=TDEB(2)
       DAY=TDEB(3)
       IF(MONTH.GT.2) THEN
-       Y=YEAR
-       M=MONTH+1
+        Y=YEAR
+        M=MONTH+1
       ELSE
-       Y=YEAR-1
-       M=MONTH+13
+        Y=YEAR-1
+        M=MONTH+13
       ENDIF
 !
       J1=INT(365.25D0*Y)+INT(30.6001D0*M)+DAY+1720995
@@ -75,11 +75,11 @@
       MONTH=TFIN(2)
       DAY=TFIN(3)
       IF(MONTH.GT.2) THEN
-       Y=YEAR
-       M=MONTH+1
+        Y=YEAR
+        M=MONTH+1
       ELSE
-       Y=YEAR-1
-       M=MONTH+13
+        Y=YEAR-1
+        M=MONTH+13
       ENDIF
 !
       J2=INT(365.25D0*Y)+INT(30.6001D0*M)+DAY+1720995

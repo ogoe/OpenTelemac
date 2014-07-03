@@ -78,88 +78,88 @@
 !======================================================================!
 !======================================================================!
 !
-       ZERO = 1.D-08
+      ZERO = 1.D-08
 
 ! 
 ! COMPUTES THE SEDIMENT FLUX DURING EACH TIMESTEP
 !  QFLUX IS IN KG/M2 (MUD CONC ARE ALSO IN KG/M3) 
 ! 
-           CALL OS('X=Y-Z   ', X=QFLUX, Y=FLUDP, Z=FLUER)
-           CALL OS('X=CX    ', X=QFLUX, C=DT*XMVS)
+      CALL OS('X=Y-Z   ', X=QFLUX, Y=FLUDP, Z=FLUER)
+      CALL OS('X=CX    ', X=QFLUX, C=DT*XMVS)
 !
-!           PRINT*,'MASSE DEPOSEE: ', DOTS(QFLUX,VOLU2D)
-C
-         IF(NOMBLAY.EQ.1)  THEN
-CV             CALL OS('X=CY    ', X=ZFCL_S,Y= QFLUX,C=1.D0/CONC_VASE(1))
-             DO I = 1, NPOIN
-               ZFCL_S%R(I)=QFLUX%R(I)/CONC(I,1)
-               ES_VASE(I,1)= ES_VASE(I,1)+ZFCL_S%R(I)
-             ENDDO
+!     PRINT*,'MASSE DEPOSEE: ', DOTS(QFLUX,VOLU2D)
 !
-         ELSE
-             DO I = 1, NPOIN
+      IF(NOMBLAY.EQ.1)  THEN
+!V      CALL OS('X=CY    ', X=ZFCL_S,Y= QFLUX,C=1.D0/CONC_VASE(1))
+        DO I = 1, NPOIN
+          ZFCL_S%R(I)=QFLUX%R(I)/CONC(I,1)
+          ES_VASE(I,1)= ES_VASE(I,1)+ZFCL_S%R(I)
+        ENDDO
+!
+      ELSE
+        DO I = 1, NPOIN
 !
 ! DEPOSITION IN THE FIRST LAYER
 !
-             IF(QFLUX%R(I).GE.ZERO) THEN
-!                ZFCL_S%R(I) = QFLUX%R(I) / CONC_VASE(1)
-                ZFCL_S%R(I) = QFLUX%R(I) / CONC(I,1)
-                ES_VASE(I,1)=ES_VASE(I,1)+ZFCL_S%R(I)
-             ELSEIF(QFLUX%R(I).LT.ZERO) THEN
+          IF(QFLUX%R(I).GE.ZERO) THEN
+!           ZFCL_S%R(I) = QFLUX%R(I) / CONC_VASE(1)
+            ZFCL_S%R(I) = QFLUX%R(I) / CONC(I,1)
+            ES_VASE(I,1)=ES_VASE(I,1)+ZFCL_S%R(I)
+          ELSEIF(QFLUX%R(I).LT.ZERO) THEN
 !
 ! EROSION OF SUCCESSIVE LAYERS
 !
 !
-                ZFCL_S%R(I) = 0.D0
-!
-                DO J = 1, NOMBLAY
+            ZFCL_S%R(I) = 0.D0
+!           
+            DO J = 1, NOMBLAY
 !
 ! CONC ARE IN KG/M3
 !
-!                 IF(-QFLUX%R(I).LE.CONC_VASE(J)*ES(I,J)) THEN
-                 IF(-QFLUX%R(I).LE.CONC(I,J)*ES_VASE(I,J)) THEN
-!                  Last layer to be eroded
-!                   ZFCL_S%R(I)= ZFCL_S%R(I)+QFLUX%R(I)/CONC_VASE(J)
-                   ZFCL_S%R(I)= ZFCL_S%R(I)+QFLUX%R(I)/CONC(I,J)
-                   ES_VASE(I,J)=ES_VASE(I,J)-
-     *                    MAX(-QFLUX%R(I)/CONC(I,J),0.D0)    
-                    GO TO 40
-                 ELSE
-!                  EROSION OF THE WHOLE LAYER
-!                   QFLUX%R(I)=QFLUX%R(I)+CONC_VASE(J)*ES(I,J)
-                    QFLUX%R(I)=QFLUX%R(I)+CONC(I,J)*ES_VASE(I,J)
-                    ZFCL_S%R(I)=ZFCL_S%R(I) - ES_VASE(I,J)
-                    ES_VASE(I,J) = 0.D0
-                 ENDIF
+!             IF(-QFLUX%R(I).LE.CONC_VASE(J)*ES(I,J)) THEN
+              IF(-QFLUX%R(I).LE.CONC(I,J)*ES_VASE(I,J)) THEN
+!               Last layer to be eroded
+!               ZFCL_S%R(I)= ZFCL_S%R(I)+QFLUX%R(I)/CONC_VASE(J)
+                ZFCL_S%R(I)= ZFCL_S%R(I)+QFLUX%R(I)/CONC(I,J)
+                ES_VASE(I,J)=ES_VASE(I,J)-
+     &                MAX(-QFLUX%R(I)/CONC(I,J),0.D0)    
+                GO TO 40
+              ELSE
+!               EROSION OF THE WHOLE LAYER
+!               QFLUX%R(I)=QFLUX%R(I)+CONC_VASE(J)*ES(I,J)
+                QFLUX%R(I)=QFLUX%R(I)+CONC(I,J)*ES_VASE(I,J)
+                ZFCL_S%R(I)=ZFCL_S%R(I) - ES_VASE(I,J)
+                ES_VASE(I,J) = 0.D0
+              ENDIF
 ! END OF THE LOOP ON THE LAYERS
 !
-               ENDDO
-!
-!
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'ATTENTION COUCHES VIDES: NOEUD I=',I
-          ENDIF
-          IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'BEWARE, ALL LAYERS EMPTY, NODE I=',I
-          ENDIF
-          CALL PLANTE(1)
-          STOP
+            ENDDO ! J
+!          
+!          
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'ATTENTION COUCHES VIDES: NOEUD I=',I
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'BEWARE, ALL LAYERS EMPTY, NODE I=',I
+            ENDIF
+            CALL PLANTE(1)
+            STOP
 ! END EROSION
           ENDIF
    40     CONTINUE
 !
 ! END OF THE LOOP ON THE NODES
 !
-        ENDDO
+        ENDDO ! I
       ENDIF
 !
 !CV reactualisation des MS_VASE
 !
-           DO J = 1, NOMBLAY
-               DO I = 1, NPOIN
-                   MS_VASE(I,J)=CONC(I,J)*ES_VASE(I,J)
-              ENDDO
-           ENDDO
+      DO J = 1, NOMBLAY
+        DO I = 1, NPOIN
+          MS_VASE(I,J)=CONC(I,J)*ES_VASE(I,J)
+        ENDDO
+      ENDDO
 
 !======================================================================!
 !======================================================================!

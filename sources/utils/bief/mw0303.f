@@ -147,25 +147,25 @@
 !
       ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
-         IF(TYPDIA(1:1).EQ.'Q') THEN
-           CALL OV ('X=YZ    ', TRAV , Y , DA , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
-           CALL OV ('X=Y     ', TRAV , Y , Z , C , NPOIN )
-         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
-           CALL OV ('X=C     ', TRAV , Y , Z , 0.D0 , NPOIN )
-         ELSE
-            IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
-            IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-            CALL PLANTE(1)
-            STOP
-         ENDIF
+        IF(TYPDIA(1:1).EQ.'Q') THEN
+          CALL OV ('X=YZ    ', TRAV , Y , DA , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'I') THEN
+          CALL OV ('X=Y     ', TRAV , Y , Z , C , NPOIN )
+        ELSEIF(TYPDIA(1:1).EQ.'0') THEN
+          CALL OV ('X=C     ', TRAV , Y , Z , 0.D0 , NPOIN )
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
+          IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
       ELSE
 !
-         IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
-         IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
+        IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !
@@ -174,22 +174,22 @@
 !   IMPLEMENTED OPERATIONS:
 !
       IF(OP(1:8).EQ.'X=AY    '.OR.OP(1:8).EQ.'X=TAY   ') THEN
-         CALL OV ('X=Y     ', X , TRAV , Z , C , NPOIN )
+        CALL OV ('X=Y     ', X , TRAV , Z , C , NPOIN )
       ELSEIF(OP(1:8).EQ.'X=-AY   '.OR.OP(1:8).EQ.'X=-TAY  ') THEN
-         CALL OV ('X=-Y    ', X , TRAV , Z , C , NPOIN )
+        CALL OV ('X=-Y    ', X , TRAV , Z , C , NPOIN )
       ELSEIF(OP(1:8).EQ.'X=X+AY  '.OR.OP(1:8).EQ.'X=X+TAY ') THEN
-         CALL OV ('X=X+Y   ', X , TRAV , Z , C , NPOIN )
+        CALL OV ('X=X+Y   ', X , TRAV , Z , C , NPOIN )
       ELSEIF(OP(1:8).EQ.'X=X-AY  '.OR.OP(1:8).EQ.'X=X-TAY ') THEN
-         CALL OV ('X=X-Y   ', X , TRAV , Z , C , NPOIN )
+        CALL OV ('X=X-Y   ', X , TRAV , Z , C , NPOIN )
       ELSEIF(OP(1:8).EQ.'X=X+CAY '.OR.OP(1:8).EQ.'X=X+CTAY') THEN
-         CALL OV ('X=X+CY  ', X , TRAV , Z , C , NPOIN )
+        CALL OV ('X=X+CY  ', X , TRAV , Z , C , NPOIN )
       ELSEIF(OP(1:8).EQ.'X=CAY   ') THEN
-         CALL OV ('X=CY    ', X , TRAV , Z , C , NPOIN )
+        CALL OV ('X=CY    ', X , TRAV , Z , C , NPOIN )
       ELSE
-         IF (LNG.EQ.1) WRITE(LU,3000) OP
-         IF (LNG.EQ.2) WRITE(LU,3001) OP
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,3000) OP
+        IF (LNG.EQ.2) WRITE(LU,3001) OP
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

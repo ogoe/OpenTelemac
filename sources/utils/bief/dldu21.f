@@ -107,12 +107,12 @@
 ! REQUIRES THAT THE DIAGONAL OF A BE THE IDENTITY
 !
       IF(TYPDIA(1:1).NE.'I'.AND.NCSIZE.LE.1) THEN
-         IF (LNG.EQ.1) WRITE(LU,1000) TYPDIA(1:1)
-         IF (LNG.EQ.2) WRITE(LU,1001) TYPDIA(1:1)
-1000     FORMAT(1X,'DLDU21 (BIEF) : DIAGONALE DE A NON EGALE A I :',A1)
-1001     FORMAT(1X,'DLDU21 (BIEF) : DIAGONAL OF A NOT EQUAL TO I :',A1)
-         CALL PLANTE(0)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,1000) TYPDIA(1:1)
+        IF (LNG.EQ.2) WRITE(LU,1001) TYPDIA(1:1)
+1000    FORMAT(1X,'DLDU21 (BIEF) : DIAGONALE DE A NON EGALE A I :',A1)
+1001    FORMAT(1X,'DLDU21 (BIEF) : DIAGONAL OF A NOT EQUAL TO I :',A1)
+        CALL PLANTE(0)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -252,12 +252,12 @@
 !-----------------------------------------------------------------------
 !
       ELSE
-         IF (LNG.EQ.1) WRITE(LU,2000) TYPEXA(1:1)
-         IF (LNG.EQ.2) WRITE(LU,2001) TYPEXA(1:1)
-2000     FORMAT(1X,'DLDU21 (BIEF) : TYPE DE MATRICE NON PREVU :',A1)
-2001     FORMAT(1X,'DLDU21 (BIEF) : TYPE OF MATRIX NOT AVAILABLE :',A1)
-         CALL PLANTE(0)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,2000) TYPEXA(1:1)
+        IF (LNG.EQ.2) WRITE(LU,2001) TYPEXA(1:1)
+2000    FORMAT(1X,'DLDU21 (BIEF) : TYPE DE MATRICE NON PREVU :',A1)
+2001    FORMAT(1X,'DLDU21 (BIEF) : TYPE OF MATRIX NOT AVAILABLE :',A1)
+        CALL PLANTE(0)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

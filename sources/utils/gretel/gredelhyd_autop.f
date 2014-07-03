@@ -106,14 +106,14 @@
       INQUIRE (FILE=GEO,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
-        CALL PLANTE (-1)
+        CALL PLANTE(1)
         STOP
       END IF
 !
       I_S  = LEN (RES)
       I_SP = I_S + 1
       DO I=1,I_S
-         IF(RES(I_SP-I:I_SP-I) .NE. ' ') EXIT
+        IF(RES(I_SP-I:I_SP-I) .NE. ' ') EXIT
       ENDDO
       I_LEN=I_SP - I
 !
@@ -127,7 +127,7 @@
       ENDDO ! I
       GO TO 992
 990   WRITE(LU,*) 'ERROR WHEN OPENING OR READING FILE: ',GEO
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 992   CONTINUE
 !     READS THE 10 PARAMETERS AND THE DATE
@@ -139,7 +139,7 @@
       OPEN(3,FILE=RES,FORM='FORMATTED',ERR=991)
       GO TO 993
 991   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RES
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 993   CONTINUE
 !
@@ -154,14 +154,14 @@
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', RESPAR
         WRITE (LU,*) 'CHECK THE NUMBER OF PROCESSORS'
         WRITE (LU,*) 'AND THE RESULT FILE CORE NAME'
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
         STOP
       END IF
 !
       OPEN(4,FILE=RESPAR,FORM='FORMATTED',ERR=994)
       GO TO 995
 994   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 995   CONTINUE
 !
@@ -191,7 +191,7 @@
       OPEN(4,FILE=CONLIM,FORM='FORMATTED',ERR=996)
       GO TO 997
  996  WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',CONLIM
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
  997  CONTINUE
 !
@@ -230,7 +230,7 @@
       OPEN(4,FILE=RESPAR,FORM='FORMATTED',ERR=984)
       GO TO 985
 984   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 985   CONTINUE
 !
@@ -274,25 +274,25 @@
      &    "description                                          "
 !      J = LEN_TRIM(TITRE)
       IF ( J .GT. 40 ) THEN
-         WRITE (3, '(A,A,A)' ) "   '",TITRE(1:40),"'"
-         IF ( J .GT. 80 ) THEN
-            WRITE (3, '(A,A,A)' ) "   '",TITRE(41:80),"'"
-            IF ( J .GT. 120 ) THEN
-               WRITE (3, '(A,A,A)' ) "   '",TITRE(81:120),"'"
-            ELSE
-               WRITE (3, '(A,A,A)' ) "   '",TITRE(81:J),"'"
-            ENDIF
-         ELSE
-            WRITE (3, '(A,A,A)' ) "   '",TITRE(41:J),"'"
-            WRITE (3, '(A)' )
-     &    "   '                                    '            "
-         ENDIF
+        WRITE (3, '(A,A,A)' ) "   '",TITRE(1:40),"'"
+        IF ( J .GT. 80 ) THEN
+          WRITE (3, '(A,A,A)' ) "   '",TITRE(41:80),"'"
+          IF ( J .GT. 120 ) THEN
+            WRITE (3, '(A,A,A)' ) "   '",TITRE(81:120),"'"
+          ELSE
+            WRITE (3, '(A,A,A)' ) "   '",TITRE(81:J),"'"
+          ENDIF
+        ELSE
+           WRITE (3, '(A,A,A)' ) "   '",TITRE(41:J),"'"
+           WRITE (3, '(A)' )
+     &   "   '                                    '            "
+        ENDIF
       ELSE
-         WRITE (3, '(A,A,A)' ) "   '",TITRE(1:J),"'"
-         WRITE (3, '(A)' )
-     &    "   '                                    '            "
-         WRITE (3, '(A)' )
-     &    "   '                                    '            "
+        WRITE (3, '(A,A,A)' ) "   '",TITRE(1:J),"'"
+        WRITE (3, '(A)' )
+     &   "   '                                    '            "
+        WRITE (3, '(A)' )
+     &   "   '                                    '            "
       ENDIF
 !      WRITE(3, '(A,A,A)' )
 !     &    "   '",TITRE(1:J),"'"
@@ -484,16 +484,16 @@
       WRITE(3, '(A)' )
      &    "walking-discharges-file  none                        "
       IF ( NPLAN .GT. 1 ) THEN
-         WRITE(3, '(A)' )
-     &       "minimum-vert-diffusion                            "
-         WRITE(3, '(A)' )
-     &       "   upper-layer       0.0000E+00                   "
-         WRITE(3, '(A)' )
-     &       "   lower-layer       0.0000E+00                   "
-         WRITE(3, '(A)' )
-     &       "   interface-depth   0.0000E+00                   "
-         WRITE(3, '(A)' )
-     &       "end-minimum-vert-diffusion                        "
+        WRITE(3, '(A)' )
+     &      "minimum-vert-diffusion                            "
+        WRITE(3, '(A)' )
+     &      "   upper-layer       0.0000E+00                   "
+        WRITE(3, '(A)' )
+     &      "   lower-layer       0.0000E+00                   "
+        WRITE(3, '(A)' )
+     &      "   interface-depth   0.0000E+00                   "
+        WRITE(3, '(A)' )
+     &      "end-minimum-vert-diffusion                        "
       ENDIF
       WRITE(3, '(A)' )
      &    "constant-dispersion                                  "
@@ -511,14 +511,14 @@
         READ(4,'(F10.4)')F(I)
       ENDDO
       DO I=1,NPLAN
-         WRITE(3, '(F10.4)' ) F(I)
+        WRITE(3, '(F10.4)' ) F(I)
       ENDDO
       WRITE(3, '(A)' )
      &    "end-hydrodynamic-layers                           "
       WRITE(3, '(A)' )
      &    "water-quality-layers                              "
       DO I=1,NPLAN
-         WRITE(3, '(F10.4)' ) 1.0
+        WRITE(3, '(F10.4)' ) 1.0
       ENDDO
       WRITE(3, '(A)' )
      &    "end-water-quality-layers                          "
@@ -533,5 +533,5 @@
       CLOSE(3)
       CLOSE(4)
 !
-      STOP
+      STOP 0
       END PROGRAM GREDELHYD_AUTOP

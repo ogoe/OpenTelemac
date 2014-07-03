@@ -70,11 +70,12 @@
       NBPB = 0
       SOMSUI(NDP) = 1
       IF (MESH.NE.2.AND.MESH.NE.3) THEN
-         IF (LNG.EQ.1) WRITE(LU,1000) MESH
-         IF (LNG.EQ.2) WRITE(LU,4000) MESH
-1000     FORMAT(/,1X,'RANBO : CAS DE MAILLAGE NON PREVU, MESH = ',I4,/)
-4000     FORMAT(/,1X,'RANBO : MESH NOT ALLOWED , MESH = ',I4,/)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,1000) MESH
+        IF (LNG.EQ.2) WRITE(LU,4000) MESH
+1000    FORMAT(/,1X,'RANBO : CAS DE MAILLAGE NON PREVU, MESH = ',I4,/)
+4000    FORMAT(/,1X,'RANBO : MESH NOT ALLOWED , MESH = ',I4,/)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !=======================================================================
@@ -83,13 +84,13 @@
 !
       NPTFR = 0
       DO IELEM=1,NELEM
-         DO IFACE=1,NDP
-            IF (IFABOR(IELEM,IFACE).LE.0) THEN
-               NPTFR = NPTFR + 1
-               TRAV1(NPTFR,1) = IKLE(IELEM,       IFACE )
-               TRAV1(NPTFR,2) = IKLE(IELEM,SOMSUI(IFACE))
-            ENDIF
-         ENDDO
+        DO IFACE=1,NDP
+          IF (IFABOR(IELEM,IFACE).LE.0) THEN
+            NPTFR = NPTFR + 1
+            TRAV1(NPTFR,1) = IKLE(IELEM,       IFACE )
+            TRAV1(NPTFR,2) = IKLE(IELEM,SOMSUI(IFACE))
+          ENDIF
+        ENDDO
       ENDDO
 !
 !=======================================================================
@@ -118,6 +119,7 @@
               IF (NBPB.GT.100) THEN
                 IF (LNG.EQ.1) WRITE(LU,9000)
                 IF (LNG.EQ.2) WRITE(LU,9001)
+                CALL PLANTE(1)
                 STOP
               ENDIF
               NUMPB(NBPB) = TRAV1(I,1)
@@ -138,6 +140,7 @@
               IF (NBPB.GT.100) THEN
                 IF (LNG.EQ.1) WRITE(LU,9000)
                 IF (LNG.EQ.2) WRITE(LU,9001)
+                CALL PLANTE(1)
                 STOP
               ENDIF
               NUMPB(NBPB) = TRAV1(I,2)

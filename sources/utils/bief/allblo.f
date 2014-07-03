@@ -83,16 +83,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(ERR.EQ.0) THEN
-!       IF(LNG.EQ.1) WRITE(LU,*) 'BLOC : ',NOM,' ALLOUE'
-!       IF(LNG.EQ.2) WRITE(LU,*) 'BLOCK: ',NOM,' ALLOCATED'
-      ELSE
+      IF(ERR.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,10) NOM,ERR
         IF(LNG.EQ.2) WRITE(LU,20) NOM,ERR
 10      FORMAT(1X,'ERREUR A L''ALLOCATION DU BLOC : ',A6,/,1X,
      &            'CODE D''ERREUR : ',1I6)
 20      FORMAT(1X,'ERROR DURING ALLOCATION OF BLOCK: ',A6,/,1X,
      &            'ERROR CODE: ',1I6)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !

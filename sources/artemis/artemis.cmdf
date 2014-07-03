@@ -2,7 +2,7 @@
 path: <root>|sources|artemis
 module: artemis
 liborder: special parallel damocles bief artemis
-version: v7p0
+version: v6p3
 name: HOMERE_ARTEMIS
 
 [artemis]
@@ -18,14 +18,15 @@ files: declarations_artemis.f
   dismoy.f
   borh.f
   calcmn.f
+  caltetap.f
   calcqb.f
-  calcfw.f
   phbor.f
   fcte1.f
   fcte2.f
   pentco.f
-  cntpre.f
+  calcfw.f
   solvelambda.f
+  cntpre.f
   caldir.f
   calcue.f
   fwspec.f
@@ -43,7 +44,6 @@ files: declarations_artemis.f
   perale.f
   artemis.f
   homere_artemis.f
-  caltetap.f
 
 [bief]
 path: <root>|sources|utils|bief
@@ -51,9 +51,9 @@ files: bief_def.f
   bief.f
   declarations_telemac.f
   allblo.f
+  bief_nbmpts.f
   ov.f
   bief_nbpts.f
-  bief_nbmpts.f
   bief_allvec.f
   bief_nbpel.f
   bief_dim2_ext.f
@@ -66,14 +66,14 @@ files: bief_def.f
   cpstvc.f
   bief_nbsegel.f
   segbor.f
-  lit.f
-  readgeo1.f
+  cpikle3.f
   bief_ininds.f
   ielbor.f
+  lit.f
+  readgeo1.f
   corrxy.f
   readgeo3.f
   readgeo2.f
-  cpikle3.f
   mxptel31.f
   mxptel.f
   bief_nbfel.f
@@ -208,13 +208,13 @@ files: bief_def.f
   mt08pp.f
   mt08aa.f
   mt14pp.f
-  mt15pp.f
   mt13ca.f
   mt11ba.f
   mt13cc.f
   mt13ab.f
   mt13aa.f
   mt06bb.f
+  mt15pp.f
   mt04bb.f
   mt06ft.f
   mt03bb.f
@@ -229,6 +229,8 @@ files: bief_def.f
   vc04tt.f
   vc01tt0.f
   vc01aa.f
+  paracoi8.f
+  parcom2i8.f
   vc13aa.f
   vc08pp.f
   vc04pp.f
@@ -253,7 +255,9 @@ files: bief_def.f
   vc10oo.f
   vc01ft2.f
   vc13bb.f
+  assve1i8.f
   vc05ff.f
+  integer_to_double.f
   vc00ff.f
   vc11tt0.f
   vc13tt.f
@@ -272,6 +276,9 @@ files: bief_def.f
   vc01pp.f
   vc05oo.f
   vc14aa.f
+  mini.f
+  maxi.f
+  double_to_integer.f
   vc03aa.f
   vc15aa.f
   vectos.f
@@ -433,13 +440,6 @@ files: bief_def.f
   bief_open_files.f
   time_in_seconds.f
   bief_close_files.f
-  double_to_integer.f
-  integer_to_double.f
-  assve1i8.f
-  parcom2i8.f
-  paracoi8.f
-  mini.f
-  maxi.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -452,12 +452,12 @@ files: majus.f
   precar.f
   carlu.f
   influ.f
-  dico.f
   loglu.f
   classe.f
+  dico.f
   aidelu.f
-  prev.f
   realu.f
+  prev.f
   damoc.f
   damocle.f
 
@@ -465,25 +465,25 @@ files: majus.f
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
   p_imax.F
+  interface_parallel.f
   p_init.F
   p_wait_paraco.F
   p_iwrit.F
   p_iread.F
-  p_imin.F
-  p_dsum.F
-  p_dmax.F
-  p_ireadi.F
-  p_iwriti.F
   p_ireadi8.F
   p_iwriti8.F
+  p_dmax.F
   p_dmin.F
+  p_imin.F
+  p_dsum.F
+  p_ireadi.F
+  p_iwriti.F
   p_exit.F
-  interface_parallel.f
 
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
   plante.f
   check_allocate.f
-  extens.f
   gracestop.f
+  extens.f

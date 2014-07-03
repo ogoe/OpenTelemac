@@ -63,10 +63,10 @@
       SOMME2 = X(1)
       C = 0.D0
       DO I = 2 , NPX
-         Y = X(I) - C
-         T = SOMME2 + Y
-         C = (T - SOMME2) - Y
-         SOMME2 = T
+        Y = X(I) - C
+        T = SOMME2 + Y
+        C = (T - SOMME2) - Y
+        SOMME2 = T
       ENDDO
 !
 !-----------------------------------------------------------------------

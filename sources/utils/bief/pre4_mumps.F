@@ -153,22 +153,21 @@
       CALL SD_STRSG4(NPOIN,NSEGB,GLOSEGB,NPBLK,NSEGBLK,GLOSEG4)
 !     
       CALL SD_FABSG4(NPOIN,NSEGB,DAB1,DAB2,DAB3,DAB4,
-     *               XAB1,XAB2,XAB3,XAB4,NPBLK,NSEGBLK,DA,XA)
+     &               XAB1,XAB2,XAB3,XAB4,NPBLK,NSEGBLK,DA,XA)
 !
 !     3. RESOLUTION : APPEL A MUMPS
 !     ================================================== 
 ! 
      
       CALL SOLVE_MUMPS(NPBLK,NSEGBLK,GLOSEG4,NSEGBLK,DA,XA,
-     *     XINC,RHS,INFOGR,TYPEXT,KNOLG,NPOIN_TOT,IPID)
+     &     XINC,RHS,INFOGR,TYPEXT,KNOLG,NPOIN_TOT,IPID)
 !
 !     4. RECUPERATION DES INCONNUES
 !     ============================= 
 ! 
       DO I=1,NPOIN
-           
-         XX1(I)= XINC(I)
-         XX2(I)= XINC(I+NPOIN)
+        XX1(I)= XINC(I)
+        XX2(I)= XINC(I+NPOIN)
       ENDDO
 !   
       

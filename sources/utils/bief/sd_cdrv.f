@@ -293,16 +293,16 @@
    2    AR = NSP + 1 - N
 !CP        WRITE(LU,*) 'CCP : ON APPELLE SD_NROC_CP'
         CALL  SD_NROC
-     *     (N, IC, IA,JA,A, ISP(IL), RSP(AR), ISP(IU), FLAG)
+     &     (N, IC, IA,JA,A, ISP(IL), RSP(AR), ISP(IU), FLAG)
         IF (FLAG.NE.0)  GO TO 100
 !
 !CP        WRITE(LU,*) 'CCP : ON APPELLE SD_NSFC_CP'
    3    CALL  SD_NSFC
-     *     (N, R, IC, IA,JA,
-     *      JLMAX, ISP(IL), ISP(JL), ISP(IJL),
-     *      JUMAX, ISP(IU), ISP(JUTMP), ISP(IJU),
-     *      ISP(Q), ISP(IRA), ISP(JRA), ISP(IRAC),
-     *      ISP(IRL), ISP(JRL), ISP(IRU), ISP(JRU),  FLAG)
+     &     (N, R, IC, IA,JA,
+     &      JLMAX, ISP(IL), ISP(JL), ISP(IJL),
+     &      JUMAX, ISP(IU), ISP(JUTMP), ISP(IJU),
+     &      ISP(Q), ISP(IRA), ISP(JRA), ISP(IRAC),
+     &      ISP(IRL), ISP(JRL), ISP(IRU), ISP(JRU),  FLAG)
         IF(FLAG .NE. 0)  GO TO 100
 !  ******  MOVE JU NEXT TO JL  *****************************************
         JLMAX = ISP(IJL+N-1)
@@ -329,26 +329,26 @@
         IF (UMAX.LT.0)  GO TO 110
 !CP        WRITE(LU,*) 'CCP : ON APPELLE SD_NNFC_CP'
         CALL SD_NNFC
-     *     (N,  R, C, IC,  IA, JA, A, Z, B,
-     *      LMAX, ISP(IL), ISP(JL), ISP(IJL), RSP(L),  RSP(D),
-     *      UMAX, ISP(IU), ISP(JU), ISP(IJU), RSP(U),
-     *      RSP(ROW), RSP(TMP),  ISP(IRL), ISP(JRL),  FLAG)
+     &     (N,  R, C, IC,  IA, JA, A, Z, B,
+     &      LMAX, ISP(IL), ISP(JL), ISP(IJL), RSP(L),  RSP(D),
+     &      UMAX, ISP(IU), ISP(JU), ISP(IJU), RSP(U),
+     &      RSP(ROW), RSP(TMP),  ISP(IRL), ISP(JRL),  FLAG)
 !CP        WRITE(LU,*) 'FLAG=', FLAG
         IF(FLAG .NE. 0)  GO TO 100
 !
    6  IF ((PATH-3) .NE. 0)  GO TO 7
 !CP        WRITE(LU,*) 'CCP : ON APPELLE SD_NNSC_CP'
         CALL SD_NNSC
-     *     (N,  R, C,  ISP(IL), ISP(JL), ISP(IJL), RSP(L),
-     *      RSP(D),    ISP(IU), ISP(JU), ISP(IJU), RSP(U),
-     *      Z, B,  RSP(TMP))
+     &     (N,  R, C,  ISP(IL), ISP(JL), ISP(IJL), RSP(L),
+     &      RSP(D),    ISP(IU), ISP(JU), ISP(IJU), RSP(U),
+     &      Z, B,  RSP(TMP))
 !
    7  IF ((PATH-4) .NE. 0)  GO TO 8
 !CP        WRITE(LU,*) 'CCP : ON APPELLE SD_NNTC_CP'
         CALL SD_NNTC
-     *     (N,  R, C,  ISP(IL), ISP(JL), ISP(IJL), RSP(L),
-     *      RSP(D),    ISP(IU), ISP(JU), ISP(IJU), RSP(U),
-     *      Z, B,  RSP(TMP))
+     &     (N,  R, C,  ISP(IL), ISP(JL), ISP(IJL), RSP(L),
+     &      RSP(D),    ISP(IU), ISP(JU), ISP(IJU), RSP(U),
+     &      Z, B,  RSP(TMP))
         
    8  RETURN
 !

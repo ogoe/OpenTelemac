@@ -89,39 +89,39 @@
 !     J2 WILL BE THE ADDRESS IN AC
       J2=0
       DO I = 1, NPBLK
-         IPX(INX(I)) = I
-!        DIAGONAL AS FIRST COEFFICIENT OF THE LIST
-         J2=J2+1
-!        NOTE: HERE J2=INX(I)
-         AC(INX(I)) = DA(I)
-!        LOOP ON MATRIX COEFFICIENTS OF POINT I
-!        EXCLUDING DIAGONAL TERMS AT ADDRESS INX(I)
-         DO J1 = INX(I)+1, INX(I+1)-1
-!           BACK TO ADDRESS WITHOUT THE DIAGONAL
-            JN = J1-I
-            J = IP(JN)
-            J2=J2+1
-            ISEG = ISEGIP(JN)
-            IPX(J2) = J
-            IF(ISEG.LT.0) THEN
-              AC(J2) = XA1(-ISEG)
-            ELSEIF(ISEG.GT.0) THEN
-              AC(J2) = XA2(ISEG)
-            ENDIF
-         ENDDO
+        IPX(INX(I)) = I
+!       DIAGONAL AS FIRST COEFFICIENT OF THE LIST
+        J2=J2+1
+!       NOTE: HERE J2=INX(I)
+        AC(INX(I)) = DA(I)
+!       LOOP ON MATRIX COEFFICIENTS OF POINT I
+!       EXCLUDING DIAGONAL TERMS AT ADDRESS INX(I)
+        DO J1 = INX(I)+1, INX(I+1)-1
+!         BACK TO ADDRESS WITHOUT THE DIAGONAL
+          JN = J1-I
+          J = IP(JN)
+          J2=J2+1
+          ISEG = ISEGIP(JN)
+          IPX(J2) = J
+          IF(ISEG.LT.0) THEN
+            AC(J2) = XA1(-ISEG)
+          ELSEIF(ISEG.GT.0) THEN
+            AC(J2) = XA2(ISEG)
+          ENDIF
+        ENDDO
       ENDDO
       DO I = 1, NPBLK
-         ND = INX(I+1)-INX(I)
-         DO J = 1,ND
-            ISTRI(J) = IPX(INX(I)+J-1)
-            ACTRI(J) = AC(INX(I)+J-1)
-         ENDDO
-         CALL SD_STRTRI(ISTRI,ND,INDTRI)
-         DO J = 1,ND
-            J1 = INDTRI(J)
-            IPX(INX(I)+J-1) = ISTRI(J1)
-            AC(INX(I)+J-1) = ACTRI(J1)
-         ENDDO
+        ND = INX(I+1)-INX(I)
+        DO J = 1,ND
+          ISTRI(J) = IPX(INX(I)+J-1)
+          ACTRI(J) = AC(INX(I)+J-1)
+        ENDDO
+        CALL SD_STRTRI(ISTRI,ND,INDTRI)
+        DO J = 1,ND
+          J1 = INDTRI(J)
+          IPX(INX(I)+J-1) = ISTRI(J1)
+          AC(INX(I)+J-1) = ACTRI(J1)
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------

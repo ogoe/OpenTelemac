@@ -2,7 +2,7 @@
 path: <root>|sources|tomawac
 module: tomawac
 liborder: special parallel damocles bief tomawac
-version: v7p0
+version: v6p3
 name: HOMERE_TOMAWAC
 
 [bief]
@@ -139,13 +139,13 @@ files: bief_def.f
   mt08pp.f
   mt08aa.f
   mt14pp.f
-  mt15pp.f
   mt13ca.f
   mt11ba.f
   mt13cc.f
   mt13ab.f
   mt13aa.f
   mt06bb.f
+  mt15pp.f
   mt04bb.f
   mt06ft.f
   mt03bb.f
@@ -267,6 +267,8 @@ files: bief_def.f
   vc04tt.f
   vc01tt0.f
   vc01aa.f
+  paracoi8.f
+  parcom2i8.f
   vc13aa.f
   vc08pp.f
   vc04pp.f
@@ -291,7 +293,9 @@ files: bief_def.f
   vc10oo.f
   vc01ft2.f
   vc13bb.f
+  assve1i8.f
   vc05ff.f
+  integer_to_double.f
   vc00ff.f
   vc11tt0.f
   vc13tt.f
@@ -310,6 +314,9 @@ files: bief_def.f
   vc01pp.f
   vc05oo.f
   vc14aa.f
+  mini.f
+  maxi.f
+  double_to_integer.f
   vc03aa.f
   vc15aa.f
   vectos.f
@@ -383,12 +390,12 @@ files: bief_def.f
   ielbor.f
   bief_nbsegel.f
   segbor.f
-  readgeo1.f
+  cpikle3.f
   bief_ininds.f
+  readgeo1.f
   corrxy.f
   readgeo3.f
   readgeo2.f
-  cpikle3.f
   mxptel31.f
   mxptel.f
   bief_nbfel.f
@@ -397,31 +404,24 @@ files: bief_def.f
   read_submit.f
   sortie.f
   bief_close_files.f
-  double_to_integer.f
-  integer_to_double.f
-  assve1i8.f
-  parcom2i8.f
-  paracoi8.f
-  mini.f
-  maxi.f
 
 [damocles]
 path: <root>|sources|utils|damocles
 files: majus.f
-  longlu.f
   preval.f
+  longlu.f
   cmd.f
   precar.f
   next.f
   carlu.f
   influ.f
-  dico.f
   loglu.f
   classe.f
+  dico.f
   aidelu.f
   intlu.f
-  prev.f
   realu.f
+  prev.f
   damoc.f
   damocle.f
 
@@ -447,19 +447,20 @@ files: declarations_parallel.F
   p_iwrit.F
   p_iread.F
   p_dsum.F
-  p_dmax.F
-  p_ireadi.F
-  p_iwriti.F
   p_ireadi8.F
   p_iwriti8.F
-  p_exit.F
   interface_parallel.f
+  p_dmax.F
   p_dmin.F
+  p_ireadi.F
+  p_iwriti.F
+  p_exit.F
 
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
   plante.f
+  check_allocate.f
   extens.f
 
 [tomawac]

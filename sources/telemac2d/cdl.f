@@ -55,8 +55,8 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)             :: NS,NPTFR,KDIR,KNEU,NTRAC
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMPRO(NPTFR,6)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
@@ -95,61 +95,61 @@ C
       FLUSORT=0.D0
 !
       IF(NPTFR.GT.0)THEN ! USEFUL FOR PARALLEL 
-      DO K=1,NPTFR
-       IS=NBOR(K)
-       VNX1=XNEBOR(K)
-       VNY1=YNEBOR(K)
-       VNX=XNEBOR(K+NPTFR)
-       VNY=YNEBOR(K+NPTFR)
-       VNL=SQRT(VNX**2+VNY**2)
-!
-       H   = UA(1,IS)
-       RH  = SQRT(H)
-       U   = UA(2,IS)
-       V   = UA(3,IS)
-!
-!        SOLID WALLS
-!        **************
+        DO K=1,NPTFR
+          IS=NBOR(K)
+          VNX1=XNEBOR(K)
+          VNY1=YNEBOR(K)
+          VNX=XNEBOR(K+NPTFR)
+          VNY=YNEBOR(K+NPTFR)
+          VNL=SQRT(VNX**2+VNY**2)
+!         
+          H   = UA(1,IS)
+          RH  = SQRT(H)
+          U   = UA(2,IS)
+          V   = UA(3,IS)
+!      
+!         SOLID WALLS
+!         **************
 
 !     PERFECT SLIPPING CONDITION 
 !     **************************
 !
-       IF(LIMPRO(K,1).EQ.KNEU) THEN
-!
-         AUX=0.5D0*G*H**2
-         FLUH = 0.D0
-         FLUU = AUX*VNX
-         FLUV = AUX*VNY
-       ELSE
-!
-!       LIQUID BOUNDARY
-!       *******************
+          IF(LIMPRO(K,1).EQ.KNEU) THEN
+!         
+            AUX=0.5D0*G*H**2
+            FLUH = 0.D0
+            FLUU = AUX*VNX
+            FLUV = AUX*VNY
+          ELSE
+!       
+!        LIQUID BOUNDARY
+!        *******************
 !
 !    CALCULATION OF F+(H,U,V)
 !
-       HRH = RH * H
-!
-       IF(H.LE.0.D0) THEN
-         U=0.D0
-         V=0.D0
-         UNN=0.D0
-         VNN=0.D0
-         FHPLUS = 0.D0
-         FUPLUS = 0.D0
-       ELSE
-         UNN= +VNX1*U+VNY1*V
-         VNN= -VNY1*U+VNX1*V
-!
-         A=MIN(RA3,MAX(-RA3,-UNN/RH))
-         A2 =A * A
-         A3 =A2 * A
-         ALPHA0=ALP*(RA3-A)
-         ALPHA1=ALP2*(RA32-A2)
-         ALPHA2=ALP3*(RA33-A3)
-!
-         FHPLUS = H*UNN*ALPHA0 + HRH*ALPHA1
-         FUPLUS = UNN*(FHPLUS+HRH*ALPHA1) + H*H*ALPHA2
-       ENDIF
+            HRH = RH * H
+!        
+            IF(H.LE.0.D0) THEN
+              U=0.D0
+              V=0.D0
+              UNN=0.D0
+              VNN=0.D0
+              FHPLUS = 0.D0
+              FUPLUS = 0.D0
+            ELSE
+              UNN= +VNX1*U+VNY1*V
+              VNN= -VNY1*U+VNX1*V
+!        
+              A=MIN(RA3,MAX(-RA3,-UNN/RH))
+              A2 =A * A
+              A3 =A2 * A
+              ALPHA0=ALP*(RA3-A)
+              ALPHA1=ALP2*(RA32-A2)
+              ALPHA2=ALP3*(RA33-A3)
+!        
+              FHPLUS = H*UNN*ALPHA0 + HRH*ALPHA1
+              FUPLUS = UNN*(FHPLUS+HRH*ALPHA1) + H*H*ALPHA2
+            ENDIF
 !
 !
 !    CALCULATION OF FICTIVE STATE (HG,UG,VG)
@@ -158,209 +158,208 @@ C
 !    H GIVEN 
 !    ########
 !
-        IF(LIMPRO(K,1).EQ.KDIR) THEN
-!
-         C   = SG*RH
-         VP1 = UNN
-         VP2 = VP1  + C
-         VP3 = VP1  - C
-!
-         HG     =HBOR(K)
-         RHG    =SQRT (HG)
-         HRHG   =RHG*HG
-!
-        IF (VP2*VP3.LE.0.D0.OR. VP1.LE.0.D0) THEN
-!
-         IF(HG.EQ.0.D0) THEN
-           UG=0.D0
-           VG=0.D0
-           FHMOINS = 0.D0
-           FUMOINS = 0.D0
-           SIGMAX=1.D-2
-         ELSE
+            IF(LIMPRO(K,1).EQ.KDIR) THEN
+!         
+              C   = SG*RH
+              VP1 = UNN
+              VP2 = VP1  + C
+              VP3 = VP1  - C
+!             
+              HG     =HBOR(K)
+              RHG    =SQRT (HG)
+              HRHG   =RHG*HG
+!         
+              IF (VP2*VP3.LE.0.D0.OR. VP1.LE.0.D0) THEN
+!            
+                IF(HG.EQ.0.D0) THEN
+                  UG=0.D0
+                  VG=0.D0
+                  FHMOINS = 0.D0
+                  FUMOINS = 0.D0
+                  SIGMAX=1.D-2
+                ELSE
 !
 !   FLUVIAL REGIME
 !   --------------
 !
-          IF (VP2*VP3.LE.0.D0) THEN
-!
-           UG=UNN+2.D0*SG*(RH-RHG)
-           VG=VNN
+                  IF (VP2*VP3.LE.0.D0) THEN
+!                 
+                    UG=UNN+2.D0*SG*(RH-RHG)
+                    VG=VNN
 !
 !   TORRENTIAL REGIME 
 !   -----------------
 !
-          ELSE
+                  ELSE
 !
 !  IMPOSED FLUX
 !  -----------
-          IF(LIMPRO(K,2).EQ.KDIR) THEN
-!
-            UIN = UBOR(K)
-            VIN = VBOR(K)
-            HUIN = H*UIN
-            HVIN = H*VIN
-!
-            DEST=HUIN*VNX1+HVIN*VNY1
-            RVG =-HUIN*VNY1+HVIN*VNX1
-!
-            A1 = DEST-FHPLUS
-            CA1= SQ2*A1/(SG*HG*RHG)
-            CALL ZEROPHI(-1.D0,AM,NIT,CA1)
-!
-            UG= AM*SG*RHG
-            VG=RVG/HG
-!
-          ELSE  
+                    IF(LIMPRO(K,2).EQ.KDIR) THEN
+!                   
+                      UIN = UBOR(K)
+                      VIN = VBOR(K)
+                      HUIN = H*UIN
+                      HVIN = H*VIN
+!                   
+                      DEST=HUIN*VNX1+HVIN*VNY1
+                      RVG =-HUIN*VNY1+HVIN*VNX1
+!                   
+                      A1 = DEST-FHPLUS
+                      CA1= SQ2*A1/(SG*HG*RHG)
+                      CALL ZEROPHI(-1.D0,AM,NIT,CA1)
+!                   
+                      UG= AM*SG*RHG
+                      VG=RVG/HG
+!                   
+                    ELSE  
 !
 !  ONE DATUM IS MISSING, WE SUPPOSE "THE LAKE AT REST"
 
-            UG= 0.D0
-            VG= 0.D0
-!
-          ENDIF
-!
-           ENDIF
-!
-         GOTO 220
-      ENDIF
-      GOTO 200
+                      UG= 0.D0
+                      VG= 0.D0
+!              
+                    ENDIF
+!              
+                  ENDIF
+!              
+                  GOTO 220
+                ENDIF
+                GOTO 200
 !
 ! THE OUTFLOW IS TORRENTIAL SO WE HAVE NO NEED FOR THE GIVEN H
 !
-       ELSE
-       GOTO 100
-!
-      ENDIF
+              ELSE
+                GOTO 100
+              ENDIF
 !
 !
 !    GIVEN VELOCITY 
 !    ################
 !
-        ELSE IF(LIMPRO(K,2).EQ.KDIR) THEN
-!
-        UIN = UBOR(K)
-        VIN = VBOR(K)
-        HUIN = H*UIN
-        HVIN = H*VIN
-!
-         DEST=HUIN*VNX1+HVIN*VNY1
-         RVG =-HUIN*VNY1+HVIN*VNX1
-!    WARNING: SIGN CHANGE / INRIA REPORT
-            A1 = -DEST+FHPLUS
-            A2 = -UNN - 2.D0*SG*RH
-!
-         IF (A1.LE.0.D0) THEN
-!
-!    FH- =-A1 CANNOT BE SATISFIED
-!
-         FHMOINS = 0.D0
-         FUMOINS = 0.D0
-         VG=0.D0
-        SIGMAX=1.E-2
-           ELSE
-           CA1= 1.D0/(G*SQ2*A1)**(1.D0/3.D0)
-           CALL ZEROPSI(-0.5D0,AM,NIT,CA1,A2)
-!
-           RHG =A2/(SG*(AM-2.D0))
-           HG= RHG * RHG
-           HRHG= RHG * HG
-!
-         IF (HG.EQ.0.D0) THEN
-         UG=0.D0
-         VG=0.D0
-         FHMOINS = 0.D0
-         FUMOINS = 0.D0
-               SIGMAX=1.D-2
-         ELSE
-            UG=-AM*A2/(AM-2.D0)
-            VG=RVG/HG
-        GOTO 220
-      ENDIF
-      ENDIF
-        GOTO 200
+            ELSE IF(LIMPRO(K,2).EQ.KDIR) THEN
+!         
+              UIN = UBOR(K)
+              VIN = VBOR(K)
+              HUIN = H*UIN
+              HVIN = H*VIN
+!         
+              DEST=HUIN*VNX1+HVIN*VNY1
+              RVG =-HUIN*VNY1+HVIN*VNX1
+!             WARNING: SIGN CHANGE / INRIA REPORT
+              A1 = -DEST+FHPLUS
+              A2 = -UNN - 2.D0*SG*RH
+!            
+              IF (A1.LE.0.D0) THEN
+!          
+!               FH- =-A1 CANNOT BE SATISFIED
+!          
+                FHMOINS = 0.D0
+                FUMOINS = 0.D0
+                VG=0.D0
+                SIGMAX=1.E-2
+              ELSE
+                CA1= 1.D0/(G*SQ2*A1)**(1.D0/3.D0)
+                CALL ZEROPSI(-0.5D0,AM,NIT,CA1,A2)
+!               
+                RHG =A2/(SG*(AM-2.D0))
+                HG= RHG * RHG
+                HRHG= RHG * HG
+!            
+                IF (HG.EQ.0.D0) THEN
+                  UG=0.D0
+                  VG=0.D0
+                  FHMOINS = 0.D0
+                  FUMOINS = 0.D0
+                  SIGMAX=1.D-2
+                ELSE
+                  UG=-AM*A2/(AM-2.D0)
+                  VG=RVG/HG
+                  GOTO 220
+                ENDIF
+              ENDIF
+              GOTO 200
 !
 ! NO CONDITION 
 !
-        ELSE
-!
-        GOTO 100
-!
-        ENDIF
-       GOTO 1000
+            ELSE
+!         
+              GOTO 100
+!         
+            ENDIF
+            GOTO 1000
 !
 !
 !   CALCULATION OF F-(HG,UG,VG)
 !
- 220   CONTINUE
-!
-         A=MIN(RA3,MAX(-RA3,-UG/RHG))
-         A2 =A * A
-         A3 =A2 * A
-         ALPHA0=ALP*(A+RA3)
-         ALPHA1=ALP2*(A2-RA32)
-         ALPHA2=ALP3*(A3+RA33)
-!
-         FHMOINS = HG*UG*ALPHA0 + HRHG*ALPHA1
-         FUMOINS = UG*(FHMOINS + HRHG*ALPHA1) 
-     &  + HG*HG*ALPHA2
-!
+ 220        CONTINUE
+!           
+            A=MIN(RA3,MAX(-RA3,-UG/RHG))
+            A2 =A * A
+            A3 =A2 * A
+            ALPHA0=ALP*(A+RA3)
+            ALPHA1=ALP2*(A2-RA32)
+            ALPHA2=ALP3*(A3+RA33)
+!           
+            FHMOINS = HG*UG*ALPHA0 + HRHG*ALPHA1
+            FUMOINS = UG*(FHMOINS + HRHG*ALPHA1) 
+     &      + HG*HG*ALPHA2
+!           
             SIGMAX= RHG
             UNORM=SQRT(UG *UG + VG*VG)
             SIGMAX=MAX( 1.D-2, RA3 *SIGMAX +UNORM )
-!
-!    CALCUL DES FLUX ET ROTATION INVERSE
-!
- 200   CONTINUE
-         FLUH=(FHPLUS +FHMOINS)*VNL
-         FLUU=(FUPLUS +FUMOINS)*VNL
-!
-         IF (FLUH.GE.0.D0) THEN 
-         FLUV= VNN*FLUH 
-         ELSE
-         FLUV= VG*FLUH 
-         ENDIF
-!
-      FLUTMP=FLUU
-      FLUU = +VNX1*FLUTMP-VNY1*FLUV
-      FLUV = +VNY1*FLUTMP+VNX1*FLUV
-!
-!      CORRECTION OF THE TIME STEP
-!
-       DTL = CFL*DTHAUT(IS)/SIGMAX
-       DT  = MIN(DT, DTL)
-!
-       GOTO 1000
-100    CONTINUE
-       RUN     = H*UNN
-!
-       FLUH =  RUN* VNL
-       FLUU =  (U *RUN + 0.5D0*G*H**2* VNX)*VNL
-       FLUV =  (V *RUN + 0.5D0*G*H**2* VNY)*VNL
-!
-1000  CONTINUE
-       ENDIF
-!
-       IF(LIMPRO(K,1).EQ.KDIR)  FLUSORT = FLUSORT + FLUH
-       IF(LIMPRO(K,2).EQ.KDIR)  FLUENT = FLUENT +FLUH
-!RA
-       FLBOR%R(K)=FLUH       
-!
-       CE(IS,1)  = CE(IS,1) - FLUH
-       CE(IS,2)  = CE(IS,2) - FLUU
-       CE(IS,3)  = CE(IS,3) - FLUV
-!
-       IF(NTRAC.GT.0) THEN
-         DO ITRAC=1,NTRAC
-           FLUHBTEMP%ADR(ITRAC)%P%R(K)=FLUH
-         ENDDO
-       ENDIF
+!          
+!           CALCUL DES FLUX ET ROTATION INVERSE
+!         
+ 200        CONTINUE
+            FLUH=(FHPLUS +FHMOINS)*VNL
+            FLUU=(FUPLUS +FUMOINS)*VNL
+!         
+            IF (FLUH.GE.0.D0) THEN 
+              FLUV= VNN*FLUH 
+            ELSE
+              FLUV= VG*FLUH 
+            ENDIF
+!         
+            FLUTMP=FLUU
+            FLUU = +VNX1*FLUTMP-VNY1*FLUV
+            FLUV = +VNY1*FLUTMP+VNX1*FLUV
+!         
+!           CORRECTION OF THE TIME STEP
+!           
+            DTL = CFL*DTHAUT(IS)/SIGMAX
+            DT  = MIN(DT, DTL)
+!           
+            GOTO 1000
+100         CONTINUE
+            RUN     = H*UNN
+!           
+            FLUH =  RUN* VNL
+            FLUU =  (U *RUN + 0.5D0*G*H**2* VNX)*VNL
+            FLUV =  (V *RUN + 0.5D0*G*H**2* VNY)*VNL
+!         
+1000        CONTINUE
+          ENDIF
+!        
+          IF(LIMPRO(K,1).EQ.KDIR)  FLUSORT = FLUSORT + FLUH
+          IF(LIMPRO(K,2).EQ.KDIR)  FLUENT = FLUENT +FLUH
+!RA     
+          FLBOR%R(K)=FLUH       
+!       
+          CE(IS,1)  = CE(IS,1) - FLUH
+          CE(IS,2)  = CE(IS,2) - FLUU
+          CE(IS,3)  = CE(IS,3) - FLUV
+!       
+          IF(NTRAC.GT.0) THEN
+            DO ITRAC=1,NTRAC
+              FLUHBTEMP%ADR(ITRAC)%P%R(K)=FLUH
+            ENDDO
+          ENDIF
 ! 
-       ENDDO
-       ENDIF
-       IF(NCSIZE.GT.1)DT=P_DMIN(DT)
+        ENDDO
+      ENDIF
+      IF(NCSIZE.GT.1)DT=P_DMIN(DT)
 !
 !-----------------------------------------------------------------------
 !
-       RETURN
-       END
+      RETURN
+      END

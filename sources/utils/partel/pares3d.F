@@ -162,13 +162,13 @@
       INTEGER, DIMENSION(:), ALLOCATABLE :: NPART ! NUMERO DE PARTITION
                                                   ! PAR NOEUDS
       INTEGER, DIMENSION(:), ALLOCATABLE :: CONVTRI ! CONVERTISSEUR 
-         ! NUMERO LOCAL TRIA/TETRA NUMERO GLOBAL; INVERSE DE TYPELEM(:,2)
+      ! NUMERO LOCAL TRIA/TETRA NUMERO GLOBAL; INVERSE DE TYPELEM(:,2)
       INTEGER            ::  PARSEC  ! RUNTIME
       INTEGER, DIMENSION(:), ALLOCATABLE :: NPOINTSD, NELEMSD ! NBRE
-                            ! DE POINTS ET D'ELEMENTS PAR SOUS-DOMAINE
+      ! DE POINTS ET D'ELEMENTS PAR SOUS-DOMAINE
       INTEGER, DIMENSION(:), ALLOCATABLE :: NPOINTISD  ! NBRE
-                            ! DE POINTS D'INTERFACE PAR SOUS-DOMAINE
-                   ! VECTEURS LIES AUX CONNECTIVITEES NODALES INVERSES
+      ! DE POINTS D'INTERFACE PAR SOUS-DOMAINE
+      ! VECTEURS LIES AUX CONNECTIVITEES NODALES INVERSES
       INTEGER, DIMENSION(:), ALLOCATABLE :: NODES1,NODES2,NODES3,NODES4
       INTEGER, DIMENSION(:), ALLOCATABLE :: NODES1T,NODES2T,NODES3T
       INTEGER, DIMENSION(:), ALLOCATABLE :: TRIUNV ! BUFFER POUR ECRIRE
@@ -243,7 +243,7 @@
       INTEGER,  DIMENSION(:,:), ALLOCATABLE :: TRI_REF
 !     SIZE NPOINT*MAX_TRIA
 !     EXTENS
-      CHARACTER(len=11) :: EXTENS
+      CHARACTER(LEN=11) :: EXTENS
       EXTERNAL EXTENS
 !D********************************************************     
       INTEGER SOMFAC(3,4)
@@ -341,61 +341,62 @@
 
       IOS = 0
       DO WHILE (IOS .EQ. 0)
-         READ(UNIT=60,FMT='(A43)',IOSTAT=IOS) TYPE_INPUT
+        READ(UNIT=60,FMT='(A43)',IOSTAT=IOS) TYPE_INPUT
 
-         IF (TYPE_INPUT .EQ. (' FILE FORMAT FOR THE 3D INPUT MESH '
+        IF (TYPE_INPUT .EQ. (' FILE FORMAT FOR THE 3D INPUT MESH '
      & // 'FILE : 4')) THEN
-            FORMAT_MED = .TRUE.
-            EXIT
-         ENDIF
+          FORMAT_MED = .TRUE.
+          EXIT
+        ENDIF
       ENDDO
 #endif
 
 !     WRITE FILE FORMAT AND TEST MED LIBRARY
       IF (FORMAT_MED) THEN
 #if defined (HAVE_MED)
-         WRITE(LU,*) 'MED FORMAT IS USED FOR THE MESH'
+        WRITE(LU,*) 'MED FORMAT IS USED FOR THE MESH'
 #else
-         WRITE(LU,*) 'ERROR: MED FORMAT IS USED FOR THE MESH BUT MED 
+        WRITE(LU,*) 'ERROR: MED FORMAT IS USED FOR THE MESH BUT MED 
      & LIBRARY IS NOT INSTALLED'
-         STOP
+        CALL PLANTE(1)
+        STOP
 #endif
       ELSE
-         WRITE(LU,*) 'UNV FORMAT IS USED FOR THE MESH'
+        WRITE(LU,*) 'UNV FORMAT IS USED FOR THE MESH'
       ENDIF
 
 !     OPEN THE MESH FILE (MED)
 #if defined (HAVE_MED)
       IF (FORMAT_MED) THEN
 
-         ! CHECK IF THE FILE IS BOTH A MED & HDF5 FILE
-         CALL MFICOM (NAMEINP, HDFOK, MEDOK, CRET)
-         CALL MED_CHECK_CRET(CRET,'MFICOM')
+        ! CHECK IF THE FILE IS BOTH A MED & HDF5 FILE
+        CALL MFICOM (NAMEINP, HDFOK, MEDOK, CRET)
+        CALL MED_CHECK_CRET(CRET,'MFICOM')
 
-         IF (.NOT.HDFOK) WRITE(LU,*)'MESH FILE NOT COMPATIBLE WITH HDF5'
-         IF (.NOT.MEDOK) WRITE(LU,*)'MESH FILE NOT COMPATIBLE WITH MED'
+        IF (.NOT.HDFOK) WRITE(LU,*)'MESH FILE NOT COMPATIBLE WITH HDF5'
+        IF (.NOT.MEDOK) WRITE(LU,*)'MESH FILE NOT COMPATIBLE WITH MED'
 
-         ! OPEN
-         CALL MFIOPE(FID, NAMEINP, MED_ACC_RDONLY, CRET)
-         CALL MED_CHECK_CRET(CRET,'MFIOPE')
+        ! OPEN
+        CALL MFIOPE(FID, NAMEINP, MED_ACC_RDONLY, CRET)
+        CALL MED_CHECK_CRET(CRET,'MFIOPE')
 
-         ! PRINT THE MED VERSION OF THE FILE
-         CALL MFISVR (FID, VERSION, CRET)
-         CALL MED_CHECK_CRET(CRET,'MFISVR')
-         WRITE(LU,*) 'MED VERSION OF THE MESH FILE : '// TRIM(VERSION)
+        ! PRINT THE MED VERSION OF THE FILE
+        CALL MFISVR (FID, VERSION, CRET)
+        CALL MED_CHECK_CRET(CRET,'MFISVR')
+        WRITE(LU,*) 'MED VERSION OF THE MESH FILE : '// TRIM(VERSION)
 
-         ! CHECK COMPATIBILITY (EXPECTED)
-         CALL MFINVR (FID, MAJOR, MINOR, REL, CRET)
-         CALL MED_CHECK_CRET(CRET,'MFINVR')
-         IF (MAJOR.LT.3) WRITE(LU,*) 'MED FILE IS TOO ''OLD'' (' // 
-     &      TRIM(VERSION) // ') => PLEASE CONVERT IT WITH MEDIMPORT '
+        ! CHECK COMPATIBILITY (EXPECTED)
+        CALL MFINVR (FID, MAJOR, MINOR, REL, CRET)
+        CALL MED_CHECK_CRET(CRET,'MFINVR')
+        IF (MAJOR.LT.3) WRITE(LU,*) 'MED FILE IS TOO ''OLD'' (' // 
+     &     TRIM(VERSION) // ') => PLEASE CONVERT IT WITH MEDIMPORT '
       END IF
 #endif
 
 !     OPEN THE MESH FILE (UNV)
       IF (.NOT.FORMAT_MED) THEN
-         OPEN(NINP,FILE=NAMEINP,STATUS='OLD',FORM='FORMATTED',ERR=131)
-         REWIND(NINP)
+        OPEN(NINP,FILE=NAMEINP,STATUS='OLD',FORM='FORMATTED',ERR=131)
+        REWIND(NINP)
       ENDIF
 
 !     OPEN THE COMPLEMENTARY FILE
@@ -410,77 +411,77 @@
 ! We read a line, locate the colon ':' to then read the number.
       READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
       IF (IOS .NE. 0) THEN
-         WRITE(LU, *) 'Error reading the mesh complementary file.'
-         CALL PLANTE(1)
-      endif
+        WRITE(LU, *) 'ERROR READING THE MESH COMPLEMENTARY FILE.'
+        CALL PLANTE(1)
+      ENDIF
       POS =INDEX(LINE,':') + 1
       READ(UNIT=LINE(POS:),FMT=*, IOSTAT=IOS) NPOINT
       IF (IOS .NE. 0) THEN
-         WRITE(LU,*) 'FORMAT ERROR READING THE MESH COMPLEMENTARY FILE.'
-         CALL PLANTE(1)
+        WRITE(LU,*) 'FORMAT ERROR READING THE MESH COMPLEMENTARY FILE.'
+        CALL PLANTE(1)
       ENDIF
 
 ! The second line contains the number of elements after a text descriptor.
 ! We read a line, locate the colon ':' and then read the number.
       READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
       IF (IOS .NE. 0) THEN
-         WRITE(LU,*)'ERROR READING THE MESH COMPLEMENTARY FILE.'
-         CALL PLANTE(1)
+        WRITE(LU,*)'ERROR READING THE MESH COMPLEMENTARY FILE.'
+        CALL PLANTE(1)
       ENDIF
       POS =INDEX(LINE,':') + 1
       READ(UNIT=LINE(POS:),FMT=*, IOSTAT=IOS) NELEMTOTAL
       IF (IOS .NE. 0) THEN
-         WRITE(LU,*)'FORMAT ERROR READING THE MESH COMPLEMENTARY FILE.'
-         CALL PLANTE(1)
+        WRITE(LU,*)'FORMAT ERROR READING THE MESH COMPLEMENTARY FILE.'
+        CALL PLANTE(1)
       ENDIF    
 !     
 !     The third line contains the number of families after a text descripto.
 !     We read a line, locate the colon ':' and then read the number.
       READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
       IF (IOS .NE. 0) THEN
-         WRITE(LU,*)'ERROR READING THE MESH COMPLEMENTARY FILE.'
-         CALL PLANTE(1)
+        WRITE(LU,*)'ERROR READING THE MESH COMPLEMENTARY FILE.'
+        CALL PLANTE(1)
       ENDIF
       POS =INDEX(LINE,':') + 1
       READ(UNIT=LINE(POS:),FMT=*, IOSTAT=IOS) NBFAMILY
       IF (IOS .NE. 0) THEN
-         WRITE(LU,*)'FORMAT ERROR READING THE MESH COMPLEMENTARY FILE.'
-         CALL PLANTE(1)
+        WRITE(LU,*)'FORMAT ERROR READING THE MESH COMPLEMENTARY FILE.'
+        CALL PLANTE(1)
       ENDIF
 
 !     BEGIN MODIF V STOBIAC
 !     READ FAMILIES
 #if defined (HAVE_MED)
       IF (FORMAT_MED) THEN
-         ! IGNORE NBFAMILY+1 LINES
-         DO I=1,NBFAMILY+1
-            READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
-            IF (IOS .NE. 0) THEN
-               WRITE(LU,*)'! PROBLEM WITH THE NUMBER OF FAMILY!'
-            ENDIF
-         ENDDO
+        ! IGNORE NBFAMILY+1 LINES
+        DO I=1,NBFAMILY+1
+          READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
+          IF (IOS .NE. 0) THEN
+            WRITE(LU,*)'! PROBLEM WITH THE NUMBER OF FAMILY!'
+          ENDIF
+        ENDDO
       END IF
 #endif
 
       IF (.NOT.FORMAT_MED) THEN
-         NBFAMILY=NBFAMILY+1       ! POUR TITRE DU BLOC
-         ALLOCATE(LOGFAMILY(NBFAMILY),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' LOGFAMILY')
-         DO I=1,NBFAMILY
-            READ(NLOG,50,ERR=111,END=120)LOGFAMILY(I)
-         ENDDO
+        NBFAMILY=NBFAMILY+1       ! POUR TITRE DU BLOC
+        ALLOCATE(LOGFAMILY(NBFAMILY),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' LOGFAMILY')
+        DO I=1,NBFAMILY
+          READ(NLOG,50,ERR=111,END=120)LOGFAMILY(I)
+        ENDDO
       ENDIF
 !     END MODIF V STOBIAC
 
       READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
       IF (IOS .NE. 0) THEN
-         WRITE(LU,*)'! PROBLEM WITH THE NUMBER OF COLOR !'
-         CALL PLANTE(1)
+        WRITE(LU,*)'! PROBLEM WITH THE NUMBER OF COLOR !'
+        CALL PLANTE(1)
       ENDIF
       POS = INDEX(LINE,':') + 1
       READ(UNIT=LINE(POS:), FMT=*, IOSTAT=IOS) NBCOLOR
       IF (IOS .NE. 0) THEN
-         WRITE(LU,*)'! PROBLEM WITH THE NUMBER COLOR !'
+        WRITE(LU,*)'! PROBLEM WITH THE NUMBER COLOR !'
       ENDIF
 
       ALLOCATE(PRIORITY(NBCOLOR),STAT=IERR)
@@ -489,9 +490,9 @@
       WRITE(LU,93) NELEMTOTAL
       WRITE(LU,94) NBCOLOR
       IF (NBCOLOR.EQ.0) THEN
-         WRITE(LU,*) 'VOUS AVEZ OUBLIE DE REMPLIR LE FICHIER LOG...'
-         CALL PLANTE(1)
-         STOP
+        WRITE(LU,*) 'VOUS AVEZ OUBLIE DE REMPLIR LE FICHIER LOG...'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 
       ! MODIFICATION JP RENAUD 15/02/2007
@@ -531,439 +532,439 @@
 #if defined (HAVE_MED)
       IF (FORMAT_MED) THEN
 
-         ! DEBUG MODE : FOR DEBUGGING CRASH IN MED ROUTINES
-         ! READING THE NUMBER OF MESH IN THE FILE
-         CALL MMHNMH(FID, NBMESH, CRET)
-         CALL MED_CHECK_CRET(CRET,'MMHNMH')
-         IF (NBMESH .NE. 1) WRITE(LU,*)'! ONLY ONE MESH EXPECTED !'
+        ! DEBUG MODE : FOR DEBUGGING CRASH IN MED ROUTINES
+        ! READING THE NUMBER OF MESH IN THE FILE
+        CALL MMHNMH(FID, NBMESH, CRET)
+        CALL MED_CHECK_CRET(CRET,'MMHNMH')
+        IF (NBMESH .NE. 1) WRITE(LU,*)'! ONLY ONE MESH EXPECTED !'
 
-         ! LECTURE DES INFOS SUR LE MAILLAGE
-         CALL MMHMII(FID,1,MESH_NAME,NDIM,IDUM,STYPE,DESC,DTUNIT,IDUM,
-     &               IDUM,IDUM,NAMECOOR,UNITCOOR,CRET)
-         CALL MED_CHECK_CRET(CRET,'MMHMII')
+        ! LECTURE DES INFOS SUR LE MAILLAGE
+        CALL MMHMII(FID,1,MESH_NAME,NDIM,IDUM,STYPE,DESC,DTUNIT,IDUM,
+     &              IDUM,IDUM,NAMECOOR,UNITCOOR,CRET)
+        CALL MED_CHECK_CRET(CRET,'MMHMII')
 
-         ! GET NUMBER OF FAMILIES IN THE MESH
-         CALL MFANFA(FID,MESH_NAME,NBFAMILY2,CRET)
-         CALL MED_CHECK_CRET(CRET,'MFANFA')
+        ! GET NUMBER OF FAMILIES IN THE MESH
+        CALL MFANFA(FID,MESH_NAME,NBFAMILY2,CRET)
+        CALL MED_CHECK_CRET(CRET,'MFANFA')
 
-         ! AND THEN ALLOCATE...
-         ALLOCATE (FAM(NBFAMILY2))
+        ! AND THEN ALLOCATE...
+        ALLOCATE (FAM(NBFAMILY2))
 
-         ! READING FAMILIES, GROUPS, ATTRIBUTES IN THE MESH
-         ALLOCATE(ID_CHANGE_LOG2(NBFAMILY2,2))
-         ID_CHANGE_LOG2 = 0
-         NBFAMILY = 0
+        ! READING FAMILIES, GROUPS, ATTRIBUTES IN THE MESH
+        ALLOCATE(ID_CHANGE_LOG2(NBFAMILY2,2))
+        ID_CHANGE_LOG2 = 0
+        NBFAMILY = 0
 
-         DO I=1,NBFAMILY2
-            ! THERE CAN BE MORE THAN ONE GROUP
-            ! WE CONSIDER THERE ARE AT MAX 10 GROUPS
+        DO I=1,NBFAMILY2
+          ! THERE CAN BE MORE THAN ONE GROUP
+          ! WE CONSIDER THERE ARE AT MAX 10 GROUPS
+          !
+          ! GET THE NUMBER OF GROUPS IN THE FAMILIY
+          CALL MFANFG (FID,MESH_NAME,I,NBGRF,CRET)
+          CALL MED_CHECK_CRET(CRET,'MFANFG')
+
+          IF (NBGRF.NE.0) THEN
             !
-            ! GET THE NUMBER OF GROUPS IN THE FAMILIY
-            CALL MFANFG (FID,MESH_NAME,I,NBGRF,CRET)
-            CALL MED_CHECK_CRET(CRET,'MFANFG')
+            ! AND THEN ALLOCATE...
+            ALLOCATE(GR_FAMILY(NBGRF))
+            !
+            ! /! MED 3 ONLY !\ : GETTING INFORMATION FOR THE FAMILY
+            CALL MFAFAI(FID,MESH_NAME,I,FAM(I),NUM,GR_FAMILY,
+     &                  CRET)
+            CALL MED_CHECK_CRET(CRET,'MFAFAI')
+            !
+            ! WARNING (ASSUMPTION) : WE EXPECT ONLY 1 GROUP PER FAMILY...
+            ! WARNING (ASSUMPTION) : SYNTAX EXPECTED : <COLOR_ID>:<NAME_GROUP>
+            POS = INDEX(GR_FAMILY(1),':')-1
+            !
+            IF (POS.EQ.-1) THEN
+              ! COULD BE AN ERROR OR A GROUP OF NODE
+              ! (MAY HAPPEN WHEN THE MED FILE IS EXPORTED FROM AN UNV FILE)
+              POS = 0
+              NSOLS = -99
 
-            IF (NBGRF.NE.0) THEN
-               !
-               ! AND THEN ALLOCATE...
-               ALLOCATE(GR_FAMILY(NBGRF))
-               !
-               ! /! MED 3 ONLY !\ : GETTING INFORMATION FOR THE FAMILY
-               CALL MFAFAI(FID,MESH_NAME,I,FAM(I),NUM,GR_FAMILY,
-     &                     CRET)
-               CALL MED_CHECK_CRET(CRET,'MFAFAI')
-               !
-               ! WARNING (ASSUMPTION) : WE EXPECT ONLY 1 GROUP PER FAMILY...
-               ! WARNING (ASSUMPTION) : SYNTAX EXPECTED : <COLOR_ID>:<NAME_GROUP>
-               POS = INDEX(GR_FAMILY(1),':')-1
-               !
-               IF (POS.EQ.-1) THEN
-                  ! COULD BE AN ERROR OR A GROUP OF NODE
-                  ! (MAY HAPPEN WHEN THE MED FILE IS EXPORTED FROM AN UNV FILE)
-                  POS = 0
-                  NSOLS = -99
+!              WRITE(LU,*)'WARNING : ERROR WHEN READING GROUP NUMBER'
+!     &                // GR_FAMILY(1)//' SYNTAX : <COLOR_ID>:'
+!     &                // '<NAME_GROUP>'
 
-!                  WRITE(LU,*)'WARNING : ERROR WHEN READING GROUP NUMBER'
-!     &                    // GR_FAMILY(1)//' SYNTAX : <COLOR_ID>:'
-!     &                    // '<NAME_GROUP>'
-
-               ELSE
-                  !        
-                  READ(GR_FAMILY(1)(1:POS),FMT='(i3)',IOSTAT=IOS) NSOLS
-                  IF (IOS.NE.0) THEN
-                     NSOLS = -99
-!                     WRITE(LU,*)'CONVERTING ERROR, FROM GROUP:'//
-!     &                    TRIM(GR_FAMILY(1))//'TO COLOR:',NSOLS
-                  ENDIF
-               ENDIF
-               !
-               ! TABLE FOR INDEXING MED_ID (INTERN TO MED) TO USER'S COLOR
-               ID_CHANGE_LOG2(I,1) = NSOLS
-               ID_CHANGE_LOG2(I,2) = NUM
-               !
-               ! COUNT THE NUMBER OF USEFULL FAMILY
-               IF ((NSOLS.NE.-99).AND.(NSOLS.GT.0))
-     &            NBFAMILY = NBFAMILY + 1
-               DEALLOCATE(GR_FAMILY)
+            ELSE
+              !        
+              READ(GR_FAMILY(1)(1:POS),FMT='(I3)',IOSTAT=IOS) NSOLS
+              IF (IOS.NE.0) THEN
+                NSOLS = -99
+!                WRITE(LU,*)'CONVERTING ERROR, FROM GROUP:'//
+!     &               TRIM(GR_FAMILY(1))//'TO COLOR:',NSOLS
+              ENDIF
             ENDIF
-         ENDDO
+            !
+            ! TABLE FOR INDEXING MED_ID (INTERN TO MED) TO USER'S COLOR
+            ID_CHANGE_LOG2(I,1) = NSOLS
+            ID_CHANGE_LOG2(I,2) = NUM
+            !
+            ! COUNT THE NUMBER OF USEFULL FAMILY
+            IF ((NSOLS.NE.-99).AND.(NSOLS.GT.0))
+     &        NBFAMILY = NBFAMILY + 1
+            DEALLOCATE(GR_FAMILY)
+          ENDIF
+        ENDDO
 
-         ! PRINT A SUMMARY
-         PRINT*,'NBFAMILY2',NBFAMILY2
-         DO I=1,NBFAMILY2
-            WRITE(LU,*) 'MED_ID=',ID_CHANGE_LOG2(I,2),
-     &           ' <==> NCOLOR_ID=',ID_CHANGE_LOG2(I,1)
-         ENDDO
+        ! PRINT A SUMMARY
+        PRINT*,'NBFAMILY2',NBFAMILY2
+        DO I=1,NBFAMILY2
+          WRITE(LU,*) 'MED_ID=',ID_CHANGE_LOG2(I,2),
+     &         ' <==> NCOLOR_ID=',ID_CHANGE_LOG2(I,1)
+        ENDDO
 
-         ! CORRECTION OF ID_CHANGE_LOG TO ERASE USELESS FAMILY
-         ALLOCATE(ID_CHANGE_LOG(NBFAMILY,2))
-         J = 0
-         DO I = 1, NBFAMILY2
-            NSOLS = ID_CHANGE_LOG2(I,1)
-            IF ((NSOLS.NE.-99).AND.(NSOLS.GT.0)) THEN
-               J = J + 1
-               ID_CHANGE_LOG(J,:) = ID_CHANGE_LOG2(I,:)
-            ENDIF
-         ENDDO
-         DEALLOCATE(ID_CHANGE_LOG2)
-         DEALLOCATE(FAM)
+        ! CORRECTION OF ID_CHANGE_LOG TO ERASE USELESS FAMILY
+        ALLOCATE(ID_CHANGE_LOG(NBFAMILY,2))
+        J = 0
+        DO I = 1, NBFAMILY2
+          NSOLS = ID_CHANGE_LOG2(I,1)
+          IF ((NSOLS.NE.-99).AND.(NSOLS.GT.0)) THEN
+            J = J + 1
+            ID_CHANGE_LOG(J,:) = ID_CHANGE_LOG2(I,:)
+          ENDIF
+        ENDDO
+        DEALLOCATE(ID_CHANGE_LOG2)
+        DEALLOCATE(FAM)
 
-         ! PRINT A SUMMARY
-         PRINT*,'NBFAMILY',NBFAMILY
-         DO I=1,NBFAMILY
-            WRITE(LU,*) 'MED_ID=',ID_CHANGE_LOG(I,2),' <==> NCOLOR_ID=',
-     &           ID_CHANGE_LOG(I,1)
-         ENDDO
+        ! PRINT A SUMMARY
+        PRINT*,'NBFAMILY',NBFAMILY
+        DO I=1,NBFAMILY
+          WRITE(LU,*) 'MED_ID=',ID_CHANGE_LOG(I,2),' <==> NCOLOR_ID=',
+     &         ID_CHANGE_LOG(I,1)
+        ENDDO
  
-         ! READ MESH ENTITIES (AXIS, NODES)
-         !-------------------------------------------------------
+        ! READ MESH ENTITIES (AXIS, NODES)
+        !-------------------------------------------------------
 
-         ! READING THE NUMBER OF AXIS (HAVE BEEN ALREADY READEN IN MMHMII)
-         CALL MMHNAX(FID,1,NDIM,CRET)
-         CALL MED_CHECK_CRET(CRET,'MMHNAX')
+        ! READING THE NUMBER OF AXIS (HAVE BEEN ALREADY READEN IN MMHMII)
+        CALL MMHNAX(FID,1,NDIM,CRET)
+        CALL MED_CHECK_CRET(CRET,'MMHNAX')
 
-         IF (NDIM.NE.MDIM) THEN ! E.G. = 3
-            WRITE(LU,*) '3 DIMENSIONS MESH EXPECTED - FOUND ', NDIM
-         END IF
+        IF (NDIM.NE.MDIM) THEN ! E.G. = 3
+          WRITE(LU,*) '3 DIMENSIONS MESH EXPECTED - FOUND ', NDIM
+        END IF
 
-         ! READING THE NUMBER OF NODES
-         CALL MMHNME (FID, MESH_NAME, MED_NO_DT, MED_NO_IT, MED_NODE, 
-     &                MED_NONE, MED_COORDINATE, MED_NODAL, IDUM, IDUM, 
-     &                NPOINT, CRET)
-         CALL MED_CHECK_CRET(CRET,'MMHNME')
+        ! READING THE NUMBER OF NODES
+        CALL MMHNME (FID, MESH_NAME, MED_NO_DT, MED_NO_IT, MED_NODE, 
+     &               MED_NONE, MED_COORDINATE, MED_NODAL, IDUM, IDUM, 
+     &               NPOINT, CRET)
+        CALL MED_CHECK_CRET(CRET,'MMHNME')
 
-         ! ALLOCATING BEFORE READING THE COORDINATES
-         ALLOCATE(COOR(NPOINT*MDIM), STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' COOR')
+        ! ALLOCATING BEFORE READING THE COORDINATES
+        ALLOCATE(COOR(NPOINT*MDIM), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' COOR')
 
-         CALL MMHCOR(FID,TRIM(MESH_NAME),MED_NO_DT,MED_NO_IT,
-     &        MED_NO_INTERLACE, COOR, CRET)
-         CALL MED_CHECK_CRET(CRET,'MMHCOR')
+        CALL MMHCOR(FID,TRIM(MESH_NAME),MED_NO_DT,MED_NO_IT,
+     &       MED_NO_INTERLACE, COOR, CRET)
+        CALL MED_CHECK_CRET(CRET,'MMHCOR')
 
-         ALLOCATE(X1(NPOINT), STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' X1')
-         ALLOCATE(Y1(NPOINT), STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' Y1')
-         ALLOCATE(Z1(NPOINT), STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' Z1')
+        ALLOCATE(X1(NPOINT), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' X1')
+        ALLOCATE(Y1(NPOINT), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' Y1')
+        ALLOCATE(Z1(NPOINT), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' Z1')
 
-         DO I = 1, NPOINT
-            X1(I) = COOR(I)
-            Y1(I) = COOR(I+  NPOINT)
-            Z1(I) = COOR(I+2*NPOINT)
-         END DO
-         DEALLOCATE(COOR)
+        DO I = 1, NPOINT
+          X1(I) = COOR(I)
+          Y1(I) = COOR(I+  NPOINT)
+          Z1(I) = COOR(I+2*NPOINT)
+        END DO
+        DEALLOCATE(COOR)
 
-         ! READ MESH ENTITIES (2D & 3D ELEMENTS)
-         !---------------------------------------
+        ! READ MESH ENTITIES (2D & 3D ELEMENTS)
+        !---------------------------------------
 
-         ! ATTENTION : DIFFERENT FROM UNV FORMAT
-         ! GET TOTAL NUMBER OF TRIANGLES (TOTAL = INNER + BORDER MESH)
-         CALL MMHNME(FID,MESH_NAME,MED_NO_DT,MED_NO_IT,MED_CELL,
-     &              MED_TRIA3, MED_CONNECTIVITY,MED_NODAL,IDUM,IDUM,
-     &              NBTRI2,CRET)
-         CALL MED_CHECK_CRET(CRET,'MMHNME')
+        ! ATTENTION : DIFFERENT FROM UNV FORMAT
+        ! GET TOTAL NUMBER OF TRIANGLES (TOTAL = INNER + BORDER MESH)
+        CALL MMHNME(FID,MESH_NAME,MED_NO_DT,MED_NO_IT,MED_CELL,
+     &             MED_TRIA3, MED_CONNECTIVITY,MED_NODAL,IDUM,IDUM,
+     &             NBTRI2,CRET)
+        CALL MED_CHECK_CRET(CRET,'MMHNME')
 
-         ! GET NUMBER OF TETRA (3D MESH)
-         CALL MMHNME(FID,MESH_NAME,MED_NO_DT,MED_NO_IT,MED_CELL,
-     &              MED_TETRA4, MED_CONNECTIVITY,MED_NODAL,IDUM,IDUM,
-     &              NBTET,CRET)
-         CALL MED_CHECK_CRET(CRET,'MMHNME')
+        ! GET NUMBER OF TETRA (3D MESH)
+        CALL MMHNME(FID,MESH_NAME,MED_NO_DT,MED_NO_IT,MED_CELL,
+     &             MED_TETRA4, MED_CONNECTIVITY,MED_NODAL,IDUM,IDUM,
+     &             NBTET,CRET)
+        CALL MED_CHECK_CRET(CRET,'MMHNME')
 
-         ! ATTENTION : NBTRI = INNER + BORDER TRIANGLE
-         ! PRINT A SUMMARY
-         WRITE(LU,*)'Number of tetrahedrons in the mesh',NBTET
-         WRITE(LU,*)'Number of triangles in the mesh',   NBTRI2
-         WRITE(LU,*)'Number of points in the mesh',      NPOINT
-         WRITE(LU,*)'Number of external faces',          NBCOLOR
+        ! ATTENTION : NBTRI = INNER + BORDER TRIANGLE
+        ! PRINT A SUMMARY
+        WRITE(LU,*)'NUMBER OF TETRAHEDRONS IN THE MESH',NBTET
+        WRITE(LU,*)'NUMBER OF TRIANGLES IN THE MESH',   NBTRI2
+        WRITE(LU,*)'NUMBER OF POINTS IN THE MESH',      NPOINT
+        WRITE(LU,*)'NUMBER OF EXTERNAL FACES',          NBCOLOR
 
-         TXT = ' '
-         DO I=1, NBCOLOR
-            DATA_TEMP = I2CHAR(PRIORITY(I))
-            TXT_OLD = TXT
-            TXT = TRIM(TXT_OLD) // ' ' // TRIM(DATA_TEMP)
-         ENDDO
+        TXT = ' '
+        DO I=1, NBCOLOR
+          DATA_TEMP = I2CHAR(PRIORITY(I))
+          TXT_OLD = TXT
+          TXT = TRIM(TXT_OLD) // ' ' // TRIM(DATA_TEMP)
+        ENDDO
 
-         WRITE(LU,*)'Priorite des faces externes'//TRIM(TXT)
+        WRITE(LU,*)'PRIORITE DES FACES EXTERNES'//TRIM(TXT)
 
-         ALLOCATE(IKLESTET(NBTET*4), STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' IKLESTET')
-         ALLOCATE(NUFATETRA(NBTET), STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NUFATETRA')
-         ALLOCATE(DUMNAME(NBTET),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' DUMNAME')
-         ALLOCATE(DUMNUM(NBTET),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' DUMNUM')
+        ALLOCATE(IKLESTET(NBTET*4), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' IKLESTET')
+        ALLOCATE(NUFATETRA(NBTET), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NUFATETRA')
+        ALLOCATE(DUMNAME(NBTET),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' DUMNAME')
+        ALLOCATE(DUMNUM(NBTET),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' DUMNUM')
 
-         ! READ TETRA CONNECTIVITY AND TETRA FAMILIY
-         CALL MMHELR(FID,MESH_NAME,MED_NO_DT,MED_NO_IT,MED_CELL,
-     &              MED_TETRA4,MED_NODAL,MED_NO_INTERLACE,IKLESTET,IDUM,
-     &              DUMNAME,IDUM,DUMNUM,IDUM,NUFATETRA,CRET)
-         CALL MED_CHECK_CRET(CRET,'MMHELR')
-         DEALLOCATE(DUMNAME,DUMNUM)
+        ! READ TETRA CONNECTIVITY AND TETRA FAMILIY
+        CALL MMHELR(FID,MESH_NAME,MED_NO_DT,MED_NO_IT,MED_CELL,
+     &             MED_TETRA4,MED_NODAL,MED_NO_INTERLACE,IKLESTET,IDUM,
+     &             DUMNAME,IDUM,DUMNUM,IDUM,NUFATETRA,CRET)
+        CALL MED_CHECK_CRET(CRET,'MMHELR')
+        DEALLOCATE(DUMNAME,DUMNUM)
 
-         ! YA_PARA_MODIF
-         DO I=1,NBTET
-            DO J=1,NBFAMILY
-               IF (NUFATETRA(I).EQ.ID_CHANGE_LOG(J,2)) THEN
-                  NUFATETRA(I) = ID_CHANGE_LOG(J,1)
-                  EXIT
-               ENDIF
-            ENDDO
-         ENDDO
-         ! YA_PARA_MODIF FIN
-
-         ! READ TRIANGLES CONNECTIVITY AND TRIANGLES FAMILIY
-         ! S. FALAPPI : NBTRI2 MAY BE NULL IF WE TRY TO READ A MESH FILE 
-         ! WRITTEN BY ESTEL-3D WHERE NO BORDER CONNECTIVITY IS WRITTEN (DEBUG PURPOSES)
-         IF (NBTRI2.GT.0) THEN
-
-            ALLOCATE(IKLESTRI2(NBTRI2*3), STAT=IERR)
-            CALL CHECK_ALLOCATE(IERR,' IKLESTRI2')
-            ALLOCATE(NUFATRIA2(NBTRI2), STAT=IERR)
-            CALL CHECK_ALLOCATE(IERR,' NUFATRIA2')
-            ALLOCATE(DUMNAME(NBTRI2),STAT=IERR)
-            CALL CHECK_ALLOCATE(IERR,' DUMNAME')
-            ALLOCATE(DUMNUM(NBTRI2),STAT=IERR)
-            CALL CHECK_ALLOCATE(IERR,' DUMNUM')
-
-            CALL MMHELR(FID,MESH_NAME,MED_NO_DT,MED_NO_IT,MED_CELL,
-     &           MED_TRIA3,MED_NODAL,MED_NO_INTERLACE,IKLESTRI2,IDUM,
-     &           DUMNAME,IDUM,DUMNUM,IDUM,NUFATRIA2,CRET)
-            CALL MED_CHECK_CRET(CRET,'MMHELR')
-            DEALLOCATE(DUMNAME,DUMNUM)
-
-            ALLOCATE(IKLESTRIN(NBTRI2,3), STAT=IERR)
-            CALL CHECK_ALLOCATE(IERR,' IKLESTRIN')
-
-            ! CORRECTION OF ORDER TO MATCH UNV FORMAT
-            DO I = 1, NBTRI2
-               IKLESTRIN(I,1) = IKLESTRI2(I)
-               IKLESTRIN(I,2) = IKLESTRI2(I+NBTRI2)
-               IKLESTRIN(I,3) = IKLESTRI2(I+2*NBTRI2)
-            ENDDO
-            DO I = 1, NBTRI2
-               IKLESTRI2(3*(I-1)+1:3*I) = IKLESTRIN(I,1:3)
-            ENDDO
-            DEALLOCATE(IKLESTRIN)
-
-            DO I=1,NBTRI2
-               DO J=1,NBFAMILY
-                  IF (NUFATRIA2(I).EQ.ID_CHANGE_LOG(J,2)) THEN
-                     NUFATRIA2(I) = ID_CHANGE_LOG(J,1)
-                     EXIT
-                  ENDIF
-               ENDDO
-            ENDDO
-         ENDIF
-
-         !-----------------------------------------------------------------------
-         ! BUILD NUFANO (BORDER MESH COLOR)
-         ! On va reconstruire nufano a partir de la connectivite et des priorites.
-         ! On part de la priorite la moins elevee (la derniere) jusqu'a la premiere
-         ! Petit test pour savoir si on relit un maillage med de sortie de code ou 
-         ! un maillage med cree de toute piece.
-         ! Dans le premier cas, on a aucune information sur les faces 
-         ! et par contre nufano est juste
-         ALLOCATE(NUFANO(NPOINT), STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NUFANO')
-
-         IF (NBTRI2.GT.0) THEN
-            NUFANO = 0
-            DO I=NBCOLOR,1,-1
-               DO J=1,NBTRI2
-                  IF (NUFATRIA2(J)==PRIORITY(I)) THEN
-                     NUFANO(IKLESTRI2(3*(J-1)+1)) = PRIORITY(I)
-                     NUFANO(IKLESTRI2(3*(J-1)+2)) = PRIORITY(I)
-                     NUFANO(IKLESTRI2(3*J)) = PRIORITY(I)
-                  ENDIF
-               ENDDO
-            ENDDO
-
-            SIZE_FLUXIN(:) = 0
-            SIZE_FLUX = 0
-            NELIN = 0
-            NBTRI = 0
-
-            DO J=1,NBTRI2
-
-               IF (NUFATRIA2(J).GT.0) THEN
-
-                  ! NSOLS_OLD IS USED FOR SAVING USE OF A NEW VARIABLE
-                  NSOLS_OLD = NUFATRIA2(J)
-
-                  ! INNER SURFACE ARE SUPPOSED TO HAVE A NSOLS VALUE > 100
-                  IF (NSOLS_OLD.GT.MAXVAL(PRIORITY)) THEN
-                     NSOLS_OLD = NSOLS_OLD - 100 + MAXVAL(PRIORITY)
-                  ENDIF
-
-                  PRIO_NEW = SIZE_FLUXIN(NSOLS_OLD)
-                  IF (PRIO_NEW.EQ.0) THEN
-                     SIZE_FLUX = SIZE_FLUX + 1
-                     SIZE_FLUXIN(NSOLS_OLD) = 1
-                  ENDIF
-
-                  IF (NUFATRIA2(J).LT.100) NBTRI = NBTRI + 1
-
-                  IF (NUFATRIA2(J).GE.100) NELIN = NELIN + 1
-               ENDIF
-            ENDDO
-
-            ALLOCATE(IKLESTRIN(NELIN,4))
-            CALL CHECK_ALLOCATE(IERR,' IKLESTRIN')
-            IKLESTRIN(:,:)=-999
-
-            I = 0
-            DO J=1,NBTRI2
-
-               IF (NUFATRIA2(J).GE.100) THEN
-                  I = I + 1
-                  IKLE1 = IKLESTRI2(3*(J-1)+1)
-                  IKLE2 = IKLESTRI2(3*(J-1)+2)
-                  IKLE3 = IKLESTRI2(3*J)
-
-                  IKLESTRIN(I,1) = NUFATRIA2(J)
-                  IKLESTRIN(I,2) = IKLE1
-                  IKLESTRIN(I,3) = IKLE2
-                  IKLESTRIN(I,4) = IKLE3
-               ENDIF
-            ENDDO
-         ENDIF
-
-         ! WRITE THE REAL NUMBER OF BORDER AND INNER TRIANGLES
-         PRINT*,'CORRECTED NB OF BORDER TRIANGLES NBTRI',NBTRI
-         PRINT*,'NUMBER OF INNER TRIANGLES NELIN',NELIN
-
-         ! CORRECTION OF THE TOTAL NUMBER OF ELEMENT
-         NELEMTOTAL = NBTET + NBTRI
-         PRINT*,'CORRECTED TOTAL NUMBER OF ELEMENT',NELEMTOTAL
-
-         ! ALLOCTAION OF IKLESTRI WHICH MATCH UNV FORMAT
-         ALLOCATE(IKLESTRI(3*NBTRI))
-         CALL CHECK_ALLOCATE(IERR,' IKLESTRI')
-         ALLOCATE(NUFATRIA(NBTRI), STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NUFATRIA')
-
-         ! CORRECTION OF IKLESTRI TO REMOVE INNER TRIANGLES
-         I = 0
-         DO J=1,NBTRI2
-            ! ONLY BORDER TRIANGLES
-            IF ((NUFATRIA2(J).GT.0) .AND. (NUFATRIA2(J).LT.100)) THEN
-               I = I + 1
-               IKLESTRI(3*(I-1)+1) = IKLESTRI2(3*(J-1)+1)
-               IKLESTRI(3*(I-1)+2) = IKLESTRI2(3*(J-1)+2)
-               IKLESTRI(3*I)       = IKLESTRI2(3*J)
-               NUFATRIA(I)         = NUFATRIA2(J)
+        ! YA_PARA_MODIF
+        DO I=1,NBTET
+          DO J=1,NBFAMILY
+            IF (NUFATETRA(I).EQ.ID_CHANGE_LOG(J,2)) THEN
+              NUFATETRA(I) = ID_CHANGE_LOG(J,1)
+              EXIT
             ENDIF
-         ENDDO
-         DEALLOCATE(IKLESTRI2)
-         DEALLOCATE(NUFATRIA2)
+          ENDDO
+        ENDDO
+        ! YA_PARA_MODIF FIN
 
-         ALLOCATE(IKLE(NBTET,4), STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' IKLE')
-         IKLE = 0
-         DO I = 1, NBTET
-            ! CORRECTION OF ORDER TO MATCH UNV FORMAT
-            IKLE(I,1) = IKLESTET(I+NBTET)
-            IKLE(I,2) = IKLESTET(I)
-            IKLE(I,3) = IKLESTET(I+2*NBTET)
-            IKLE(I,4) = IKLESTET(I+3*NBTET)
-         ENDDO
+        ! READ TRIANGLES CONNECTIVITY AND TRIANGLES FAMILIY
+        ! S. FALAPPI : NBTRI2 MAY BE NULL IF WE TRY TO READ A MESH FILE 
+        ! WRITTEN BY ESTEL-3D WHERE NO BORDER CONNECTIVITY IS WRITTEN (DEBUG PURPOSES)
+        IF (NBTRI2.GT.0) THEN
 
-         ALLOCATE(TYPELEM(NELEMTOTAL,2),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' TYPELEM')
+          ALLOCATE(IKLESTRI2(NBTRI2*3), STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,' IKLESTRI2')
+          ALLOCATE(NUFATRIA2(NBTRI2), STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,' NUFATRIA2')
+          ALLOCATE(DUMNAME(NBTRI2),STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,' DUMNAME')
+          ALLOCATE(DUMNUM(NBTRI2),STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,' DUMNUM')
 
-         ! RESCAN TO CHANGE ORDER IN IKLESTET
-         ! AND FILE ELEMENT TABLE
-         DO I = 1, NBTET
-            IKLESTET(4*(I-1)+1:4*I) = IKLE(I,1:4)
-            TYPELEM(I,1) = 111
-            TYPELEM(I,2) = I
-         ENDDO
+          CALL MMHELR(FID,MESH_NAME,MED_NO_DT,MED_NO_IT,MED_CELL,
+     &         MED_TRIA3,MED_NODAL,MED_NO_INTERLACE,IKLESTRI2,IDUM,
+     &         DUMNAME,IDUM,DUMNUM,IDUM,NUFATRIA2,CRET)
+          CALL MED_CHECK_CRET(CRET,'MMHELR')
+          DEALLOCATE(DUMNAME,DUMNUM)
 
-         ALLOCATE(NBOR2(NPOINT), STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NBOR2')
-         ALLOCATE(GLOB_2_LOC(NPOINT))
-         CALL CHECK_ALLOCATE(IERR,' GLOB_2_LOC')
-         GLOB_2_LOC(:) = 0    ! GLOBAL TO LOCAL NUMBERING
-         IPTFR = 0
+          ALLOCATE(IKLESTRIN(NBTRI2,3), STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,' IKLESTRIN')
 
-         ! DEFINITION OF BOUNDARY NODE COLOR,
-         ! GLOBAL TO LOCAL CONVERTER AND
-         ! ELEMENT TABLE
-         DO I = 1, NBTRI
-            DO J = 1, 3
-               IKL = IKLESTRI(3*(I-1)+J)
-               K = GLOB_2_LOC(IKL)
-               IF ((K.EQ.0).AND.(NUFANO(IKL)>0)) THEN
-                  IPTFR = IPTFR + 1
-                  NBOR2(IPTFR) = IKL
-                  GLOB_2_LOC(IKL) = IPTFR
-               ENDIF
+          ! CORRECTION OF ORDER TO MATCH UNV FORMAT
+          DO I = 1, NBTRI2
+            IKLESTRIN(I,1) = IKLESTRI2(I)
+            IKLESTRIN(I,2) = IKLESTRI2(I+NBTRI2)
+            IKLESTRIN(I,3) = IKLESTRI2(I+2*NBTRI2)
+          ENDDO
+          DO I = 1, NBTRI2
+            IKLESTRI2(3*(I-1)+1:3*I) = IKLESTRIN(I,1:3)
+          ENDDO
+          DEALLOCATE(IKLESTRIN)
+
+          DO I=1,NBTRI2
+            DO J=1,NBFAMILY
+              IF (NUFATRIA2(I).EQ.ID_CHANGE_LOG(J,2)) THEN
+                NUFATRIA2(I) = ID_CHANGE_LOG(J,1)
+                EXIT
+              ENDIF
             ENDDO
-         ENDDO
-         NPTFR = IPTFR
-         DEALLOCATE(GLOB_2_LOC)
+          ENDDO
+        ENDIF
 
-         ALLOCATE(CONVTRI(NELEMTOTAL), STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' CONVTRI')
-         ! DEFINITION OF TYPE FOR TRIANGLE
-         DO I = 1,NBTRI
-            IDUM = NBTET + I
-            CONVTRI(I) = IDUM
-            TYPELEM(IDUM,1) = 91
-            TYPELEM(IDUM,2) = I
-         ENDDO
+        !-----------------------------------------------------------------------
+        ! BUILD NUFANO (BORDER MESH COLOR)
+        ! On va reconstruire nufano a partir de la connectivite et des priorites.
+        ! On part de la priorite la moins elevee (la derniere) jusqu'a la premiere
+        ! Petit test pour savoir si on relit un maillage med de sortie de code ou 
+        ! un maillage med cree de toute piece.
+        ! Dans le premier cas, on a aucune information sur les faces 
+        ! et par contre nufano est juste
+        ALLOCATE(NUFANO(NPOINT), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NUFANO')
 
-         ALLOCATE(ECOLOR(NELEMTOTAL), STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' ECOLOR')
+        IF (NBTRI2.GT.0) THEN
+          NUFANO = 0
+          DO I=NBCOLOR,1,-1
+            DO J=1,NBTRI2
+              IF (NUFATRIA2(J)==PRIORITY(I)) THEN
+                NUFANO(IKLESTRI2(3*(J-1)+1)) = PRIORITY(I)
+                NUFANO(IKLESTRI2(3*(J-1)+2)) = PRIORITY(I)
+                NUFANO(IKLESTRI2(3*J)) = PRIORITY(I)
+              ENDIF
+            ENDDO
+          ENDDO
 
-         ! DEFINITION OF ELEMENT COLOR (TETRA AND TRIANGLE)
-         ECOLOR = 0
-         DO I = 1, NBTET
-            ECOLOR(I) = NUFATETRA(I)
-         END DO
-         DEALLOCATE(NUFATETRA)
-         DO I = 1, NBTRI
-            ECOLOR(I+NBTET) = NUFATRIA(I)
-         END DO
-         DEALLOCATE(NUFATRIA)
+          SIZE_FLUXIN(:) = 0
+          SIZE_FLUX = 0
+          NELIN = 0
+          NBTRI = 0
 
-         ALLOCATE(NCOLOR2(NPOINT), STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NCOLOR2')
+          DO J=1,NBTRI2
 
-         NCOLOR2(:) = 0
-         DO I = 1, NPTFR
-            NCOLOR2(NBOR2(I)) = NUFANO(NBOR2(I))
-         END DO
-         DEALLOCATE(NUFANO)
+            IF (NUFATRIA2(J).GT.0) THEN
 
-         ! ALLOCATION REQUIRED FOR THE FUTUR
-         ALLOCATE(NPOINTSD(NPARTS),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NPOINTSD')
-         ALLOCATE(NELEMSD(NPARTS),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NELEMSD')
-         ALLOCATE(NPOINTISD(NPARTS),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NPOINTISD')
+              ! NSOLS_OLD IS USED FOR SAVING USE OF A NEW VARIABLE
+              NSOLS_OLD = NUFATRIA2(J)
+
+              ! INNER SURFACE ARE SUPPOSED TO HAVE A NSOLS VALUE > 100
+              IF (NSOLS_OLD.GT.MAXVAL(PRIORITY)) THEN
+                NSOLS_OLD = NSOLS_OLD - 100 + MAXVAL(PRIORITY)
+              ENDIF
+
+              PRIO_NEW = SIZE_FLUXIN(NSOLS_OLD)
+              IF (PRIO_NEW.EQ.0) THEN
+                SIZE_FLUX = SIZE_FLUX + 1
+                SIZE_FLUXIN(NSOLS_OLD) = 1
+              ENDIF
+
+              IF (NUFATRIA2(J).LT.100) NBTRI = NBTRI + 1
+
+              IF (NUFATRIA2(J).GE.100) NELIN = NELIN + 1
+            ENDIF
+          ENDDO
+
+          ALLOCATE(IKLESTRIN(NELIN,4))
+          CALL CHECK_ALLOCATE(IERR,' IKLESTRIN')
+          IKLESTRIN(:,:)=-999
+
+          I = 0
+          DO J=1,NBTRI2
+
+            IF (NUFATRIA2(J).GE.100) THEN
+              I = I + 1
+              IKLE1 = IKLESTRI2(3*(J-1)+1)
+              IKLE2 = IKLESTRI2(3*(J-1)+2)
+              IKLE3 = IKLESTRI2(3*J)
+
+              IKLESTRIN(I,1) = NUFATRIA2(J)
+              IKLESTRIN(I,2) = IKLE1
+              IKLESTRIN(I,3) = IKLE2
+              IKLESTRIN(I,4) = IKLE3
+            ENDIF
+          ENDDO
+        ENDIF
+
+        ! WRITE THE REAL NUMBER OF BORDER AND INNER TRIANGLES
+        PRINT*,'CORRECTED NB OF BORDER TRIANGLES NBTRI',NBTRI
+        PRINT*,'NUMBER OF INNER TRIANGLES NELIN',NELIN
+
+        ! CORRECTION OF THE TOTAL NUMBER OF ELEMENT
+        NELEMTOTAL = NBTET + NBTRI
+        PRINT*,'CORRECTED TOTAL NUMBER OF ELEMENT',NELEMTOTAL
+
+        ! ALLOCTAION OF IKLESTRI WHICH MATCH UNV FORMAT
+        ALLOCATE(IKLESTRI(3*NBTRI))
+        CALL CHECK_ALLOCATE(IERR,' IKLESTRI')
+        ALLOCATE(NUFATRIA(NBTRI), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NUFATRIA')
+
+        ! CORRECTION OF IKLESTRI TO REMOVE INNER TRIANGLES
+        I = 0
+        DO J=1,NBTRI2
+          ! ONLY BORDER TRIANGLES
+          IF ((NUFATRIA2(J).GT.0) .AND. (NUFATRIA2(J).LT.100)) THEN
+            I = I + 1
+            IKLESTRI(3*(I-1)+1) = IKLESTRI2(3*(J-1)+1)
+            IKLESTRI(3*(I-1)+2) = IKLESTRI2(3*(J-1)+2)
+            IKLESTRI(3*I)       = IKLESTRI2(3*J)
+            NUFATRIA(I)         = NUFATRIA2(J)
+          ENDIF
+        ENDDO
+        DEALLOCATE(IKLESTRI2)
+        DEALLOCATE(NUFATRIA2)
+
+        ALLOCATE(IKLE(NBTET,4), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' IKLE')
+        IKLE = 0
+        DO I = 1, NBTET
+          ! CORRECTION OF ORDER TO MATCH UNV FORMAT
+          IKLE(I,1) = IKLESTET(I+NBTET)
+          IKLE(I,2) = IKLESTET(I)
+          IKLE(I,3) = IKLESTET(I+2*NBTET)
+          IKLE(I,4) = IKLESTET(I+3*NBTET)
+        ENDDO
+
+        ALLOCATE(TYPELEM(NELEMTOTAL,2),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' TYPELEM')
+
+        ! RESCAN TO CHANGE ORDER IN IKLESTET
+        ! AND FILE ELEMENT TABLE
+        DO I = 1, NBTET
+          IKLESTET(4*(I-1)+1:4*I) = IKLE(I,1:4)
+          TYPELEM(I,1) = 111
+          TYPELEM(I,2) = I
+        ENDDO
+
+        ALLOCATE(NBOR2(NPOINT), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NBOR2')
+        ALLOCATE(GLOB_2_LOC(NPOINT))
+        CALL CHECK_ALLOCATE(IERR,' GLOB_2_LOC')
+        GLOB_2_LOC(:) = 0    ! GLOBAL TO LOCAL NUMBERING
+        IPTFR = 0
+
+        ! DEFINITION OF BOUNDARY NODE COLOR,
+        ! GLOBAL TO LOCAL CONVERTER AND
+        ! ELEMENT TABLE
+        DO I = 1, NBTRI
+          DO J = 1, 3
+            IKL = IKLESTRI(3*(I-1)+J)
+            K = GLOB_2_LOC(IKL)
+            IF ((K.EQ.0).AND.(NUFANO(IKL)>0)) THEN
+              IPTFR = IPTFR + 1
+              NBOR2(IPTFR) = IKL
+              GLOB_2_LOC(IKL) = IPTFR
+            ENDIF
+          ENDDO
+        ENDDO
+        NPTFR = IPTFR
+        DEALLOCATE(GLOB_2_LOC)
+
+        ALLOCATE(CONVTRI(NELEMTOTAL), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' CONVTRI')
+        ! DEFINITION OF TYPE FOR TRIANGLE
+        DO I = 1,NBTRI
+          IDUM = NBTET + I
+          CONVTRI(I) = IDUM
+          TYPELEM(IDUM,1) = 91
+          TYPELEM(IDUM,2) = I
+        ENDDO
+
+        ALLOCATE(ECOLOR(NELEMTOTAL), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' ECOLOR')
+
+        ! DEFINITION OF ELEMENT COLOR (TETRA AND TRIANGLE)
+        ECOLOR = 0
+        DO I = 1, NBTET
+          ECOLOR(I) = NUFATETRA(I)
+        END DO
+        DEALLOCATE(NUFATETRA)
+        DO I = 1, NBTRI
+          ECOLOR(I+NBTET) = NUFATRIA(I)
+        END DO
+        DEALLOCATE(NUFATRIA)
+
+        ALLOCATE(NCOLOR2(NPOINT), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NCOLOR2')
+
+        NCOLOR2(:) = 0
+        DO I = 1, NPTFR
+          NCOLOR2(NBOR2(I)) = NUFANO(NBOR2(I))
+        END DO
+        DEALLOCATE(NUFANO)
+
+        ! ALLOCATION REQUIRED FOR THE FUTUR
+        ALLOCATE(NPOINTSD(NPARTS),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NPOINTSD')
+        ALLOCATE(NELEMSD(NPARTS),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NELEMSD')
+        ALLOCATE(NPOINTISD(NPARTS),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NPOINTISD')
       ENDIF
 
 #endif
@@ -971,268 +972,268 @@
 !     READ THE MESH FILE (UNV)
       IF (.NOT.FORMAT_MED) THEN
 
-         ! ALLOCATIONS
-         ALLOCATE(X1(NPOINT),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' X1')
-         ALLOCATE(Y1(NPOINT),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' Y1')
-         ALLOCATE(Z1(NPOINT),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' Z1')
-         ALLOCATE(NCOLOR(NPOINT),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NCOLOR')
-         ALLOCATE(NCOLOR2(NPOINT),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NCOLOR2')
-         ALLOCATE(ECOLOR(NELEMTOTAL),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' ECOLOR')
-         ALLOCATE(IKLESTET(4*NELEMTOTAL),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' IKLESTET')
-         ALLOCATE(IKLESTRI(3*NELEMTOTAL),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' IKLESTRI')
-         ALLOCATE(IKLESTRIN(NELEMTOTAL,4),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' IKLESTRIN')
-         ALLOCATE(TYPELEM(NELEMTOTAL,2),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' TYPELEM')
-         ALLOCATE(CONVTRI(NELEMTOTAL),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' CONVTRI')
-         ALLOCATE(NPOINTSD(NPARTS),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NPOINTSD')
-         ALLOCATE(NELEMSD(NPARTS),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NELEMSD')
-         ALLOCATE(NPOINTISD(NPARTS),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NPOINTISD')
+        ! ALLOCATIONS
+        ALLOCATE(X1(NPOINT),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' X1')
+        ALLOCATE(Y1(NPOINT),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' Y1')
+        ALLOCATE(Z1(NPOINT),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' Z1')
+        ALLOCATE(NCOLOR(NPOINT),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NCOLOR')
+        ALLOCATE(NCOLOR2(NPOINT),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NCOLOR2')
+        ALLOCATE(ECOLOR(NELEMTOTAL),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' ECOLOR')
+        ALLOCATE(IKLESTET(4*NELEMTOTAL),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' IKLESTET')
+        ALLOCATE(IKLESTRI(3*NELEMTOTAL),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' IKLESTRI')
+        ALLOCATE(IKLESTRIN(NELEMTOTAL,4),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' IKLESTRIN')
+        ALLOCATE(TYPELEM(NELEMTOTAL,2),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' TYPELEM')
+        ALLOCATE(CONVTRI(NELEMTOTAL),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' CONVTRI')
+        ALLOCATE(NPOINTSD(NPARTS),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NPOINTSD')
+        ALLOCATE(NELEMSD(NPARTS),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NELEMSD')
+        ALLOCATE(NPOINTISD(NPARTS),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NPOINTISD')
 
 !F.D
-         ALLOCATE(NBOR2(NPOINT),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' NBOR2')
-         ALLOCATE(TEMPO(2*NPOINT),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' TEMPO')
-         ALLOCATE(FACE_CHECK(NBFAMILY),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' FACE_CHECK')
-         ALLOCATE(GLOB_2_LOC(NPOINT),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' GLOB_2_LOC')
-         ALLOCATE(IKLES(NELEMTOTAL,4),STAT=IERR)
+        ALLOCATE(NBOR2(NPOINT),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' NBOR2')
+        ALLOCATE(TEMPO(2*NPOINT),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' TEMPO')
+        ALLOCATE(FACE_CHECK(NBFAMILY),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' FACE_CHECK')
+        ALLOCATE(GLOB_2_LOC(NPOINT),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' GLOB_2_LOC')
+        ALLOCATE(IKLES(NELEMTOTAL,4),STAT=IERR)
 
-         READ_SEC1 = .TRUE.
-         READ_SEC2 = .TRUE.
-         READ_SEC3 = .TRUE.
+        READ_SEC1 = .TRUE.
+        READ_SEC2 = .TRUE.
+        READ_SEC3 = .TRUE.
 
-         DO WHILE ( READ_SEC1 .OR. READ_SEC2 .OR. READ_SEC3 )
+        DO WHILE ( READ_SEC1 .OR. READ_SEC2 .OR. READ_SEC3 )
 
-             MOINS1 = '  '
-             BLANC  = '1111'
-             DO WHILE (MOINS1/='-1' .OR. BLANC/='    ')
-                 READ(NINP,2000, ERR=1100, END=1200) BLANC, MOINS1
-             END DO
+          MOINS1 = '  '
+          BLANC  = '1111'
+          DO WHILE (MOINS1/='-1' .OR. BLANC/='    ')
+            READ(NINP,2000, ERR=1100, END=1200) BLANC, MOINS1
+          END DO
 
- 2000        FORMAT(A4,A2)
+ 2000     FORMAT(A4,A2)
 
-             NSEC = -1
+          NSEC = -1
 
-             DO WHILE (NSEC == -1)
-                 READ(NINP,*, ERR=1100, END=1200) NSEC
-             END DO
+          DO WHILE (NSEC == -1)
+            READ(NINP,*, ERR=1100, END=1200) NSEC
+          END DO
 
-             SELECT CASE (NSEC)
+          SELECT CASE (NSEC)
 
-             CASE ( NSEC1 )
+          CASE ( NSEC1 )
 
-                 READ_SEC1 = .FALSE.
+            READ_SEC1 = .FALSE.
 
-                 READ(NINP,25,ERR=1100, END=1200) TITRE
+            READ(NINP,25,ERR=1100, END=1200) TITRE
 
- 25              FORMAT(A80)
+ 25         FORMAT(A80)
 
-             CASE ( NSEC2 )
+          CASE ( NSEC2 )
 
-                 READ_SEC2 = .FALSE.
-                 NCOLOR(:) = -1
-                 TEMPO(:)  =  0
+            READ_SEC2 = .FALSE.
+            NCOLOR(:) = -1
+            TEMPO(:)  =  0
 
-                 DO IELEM = 1, NPOINT
-                    READ(NINP,*,ERR=1100,END=1200) N,N1,N2,NCOLOR(IELEM)
-                    READ(NINP,*,ERR=1100,END=1200) X1(IELEM), Y1(IELEM),
-     &                  Z1(IELEM)
-                    TEMPO(N) = IELEM
-                 ENDDO
+            DO IELEM = 1, NPOINT
+              READ(NINP,*,ERR=1100,END=1200) N,N1,N2,NCOLOR(IELEM)
+              READ(NINP,*,ERR=1100,END=1200) X1(IELEM), Y1(IELEM),
+     &            Z1(IELEM)
+              TEMPO(N) = IELEM
+            ENDDO
 
-             CASE (NSEC3 )
+          CASE (NSEC3 )
 
-                READ_SEC3 = .FALSE.
+            READ_SEC3 = .FALSE.
 
-                NBTET         = 0  ! NUMBER OF TETRA ELEMENTS TO 0
-                NBTRI         = 0  ! NUMBER OF BORDER ELEMENTS TO 0
-                NPTFR         = 0  ! NUMBER OF BORDER NODES TO 0.
-                NELIN         = 0  ! NUMBER OF INNER SURFACES TO 0.
-                SIZE_FLUX     = 0  ! NUMBER OF USER SURFACES TO 0.
-                NBOR2(:)      = 0  ! LOCAL TO GLOBAL NUMBERING
-                GLOB_2_LOC(:) = 0  ! GLOBAL TO LOCAL NUMBERING
+            NBTET         = 0  ! NUMBER OF TETRA ELEMENTS TO 0
+            NBTRI         = 0  ! NUMBER OF BORDER ELEMENTS TO 0
+            NPTFR         = 0  ! NUMBER OF BORDER NODES TO 0.
+            NELIN         = 0  ! NUMBER OF INNER SURFACES TO 0.
+            SIZE_FLUX     = 0  ! NUMBER OF USER SURFACES TO 0.
+            NBOR2(:)      = 0  ! LOCAL TO GLOBAL NUMBERING
+            GLOB_2_LOC(:) = 0  ! GLOBAL TO LOCAL NUMBERING
 
-!OB'S STUFF
-                ECOLOR(:)    = -1
-                IKLESTET(:)  = -1
-                IKLESTRI(:)  = -1
-                TYPELEM(:,:) = -1
-                CONVTRI(:)   = -1
+!OB'S STFF
+            ECOLOR(:)    = -1
+            IKLESTET(:)  = -1
+            IKLESTRI(:)  = -1
+            TYPELEM(:,:) = -1
+            CONVTRI(:)   = -1
 !
-                IKLESTRIN(:,:) = -1
-                       
-                FACE_CHECK(:) = .FALSE.
-                !
-                COLOR_PRIO(:)  = 0
-                SIZE_FLUXIN(:) = 0
-                !
-                DO K = 1, NBCOLOR
-                   COLOR_PRIO(PRIORITY(K)) = K
-                END DO
-
-                DO IELEM = 1, NELEMTOTAL
-
-                   READ(NINP,*,ERR=1100,END=1200) NSEC, ELEM, N1, N2,
-     &                 NSOLS,N3
-            
-                   IF (NSEC == -1) EXIT
-
-                   SELECT CASE ( ELEM )
-
-                   CASE ( 111 )
-
-                      NBTET        = NBTET + 1
-
-                      ECOLOR(IELEM) = NSOLS
-
-                      READ(NINP,*, ERR=1100, END=1200) IKLE1, IKLE2, 
-     &                    IKLE3,IKLE4
-
-                      IKLES(IELEM, 1) = TEMPO(IKLE1)
-                      IKLES(IELEM, 2) = TEMPO(IKLE2)
-                      IKLES(IELEM, 3) = TEMPO(IKLE3)
-                      IKLES(IELEM, 4) = TEMPO(IKLE4)
-
-!OB'S STUFF
-                      N=4*(NBTET-1)+1                       
-                      IKLESTET(N)=IKLE1    ! VECTEUR DE CONNECTIVITE
-                      IKLESTET(N+1)=IKLE2
-                      IKLESTET(N+2)=IKLE3
-                      IKLESTET(N+3)=IKLE4
-                      TYPELEM(IELEM,1)=ELEM    ! POUR TYPER LES ELTS
-                      TYPELEM(IELEM,2)=NBTET   ! POUR CONVERSION NUM ELT> NUM TETRA
+            IKLESTRIN(:,:) = -1
                    
-                   CASE ( 91 )
-             
-                      IF (NSOLS.GT.0.AND.NSOLS.LT.100) THEN
+            FACE_CHECK(:) = .FALSE.
+            !
+            COLOR_PRIO(:)  = 0
+            SIZE_FLUXIN(:) = 0
+            !
+            DO K = 1, NBCOLOR
+              COLOR_PRIO(PRIORITY(K)) = K
+            END DO
 
-                         IF ( NSOLS > NCOL ) THEN
-                            WRITE(LU,*) 'COLOR ID POUR SURFACES EXTERNE'
-     &                      // 'S TROP GRAND. LA LIMITE EST : ',NCOL
-                         END IF
+            DO IELEM = 1, NELEMTOTAL
 
-                         PRIO_NEW = COLOR_PRIO(NSOLS)
+              READ(NINP,*,ERR=1100,END=1200) NSEC, ELEM, N1, N2,
+     &            NSOLS,N3
+          
+              IF (NSEC == -1) EXIT
 
-                         IF ( PRIO_NEW .EQ. 0 ) THEN
-                            WRITE(LU,*) ' NUMERO DE FACE NON DECLARE',
-     &                         'DANS LE TABLEAU UTILISATEUR LOGFAMILY ',
-     &                         'VOIR LE FICHIER DES PARAMETRES '
-                            CALL PLANTE(1)
-                         END IF
-                     
-                         FACE_CHECK(PRIO_NEW) = .TRUE.
+              SELECT CASE ( ELEM )
 
-                         NBTRI = NBTRI + 1
+              CASE ( 111 )
 
-                         ECOLOR(IELEM) = NSOLS
+                NBTET        = NBTET + 1
 
-                         READ(NINP,*,ERR=1100,END=1200)IKLE1,IKLE2,IKLE3
-                         !
-                         PRIO_NEW = SIZE_FLUXIN(NSOLS)
-                         !
-                         IF (PRIO_NEW.EQ.0) THEN 
-                            SIZE_FLUX = SIZE_FLUX + 1
-                            SIZE_FLUXIN(NSOLS) = 1
-                         ENDIF
+                ECOLOR(IELEM) = NSOLS
 
-                         IKLES(IELEM, 1) = TEMPO(IKLE1)
-                         IKLES(IELEM, 2) = TEMPO(IKLE2)
-                         IKLES(IELEM, 3) = TEMPO(IKLE3)
+                READ(NINP,*, ERR=1100, END=1200) IKLE1, IKLE2, 
+     &              IKLE3,IKLE4
 
-!OB'S STUFF
-                         N=3*(NBTRI-1)+1
-                         IKLESTRI(N)=IKLE1
-                         IKLESTRI(N+1)=IKLE2
-                         IKLESTRI(N+2)=IKLE3
-                         TYPELEM(IELEM,1)=ELEM    ! IDEM QUE POUR TETRA
-                         TYPELEM(IELEM,2)=NBTRI
-                         CONVTRI(NBTRI)=IELEM
+                IKLES(IELEM, 1) = TEMPO(IKLE1)
+                IKLES(IELEM, 2) = TEMPO(IKLE2)
+                IKLES(IELEM, 3) = TEMPO(IKLE3)
+                IKLES(IELEM, 4) = TEMPO(IKLE4)
 
-                         DO J=1,3
-                                               
-                            IKL = IKLES(IELEM,J)
-                      
-                            IPTFR = GLOB_2_LOC(IKL)
-
-                            IF ( IPTFR .EQ. 0 ) THEN
-                            
-                               NPTFR           = NPTFR+1
-                               NBOR2(NPTFR)    = IKL
-                               GLOB_2_LOC(IKL) = NPTFR        
-                               IPTFR           = NPTFR
-
-                            END IF
-                         
-                         ENDDO  ! LOOP OVER THE NODES OF THE ELEMENT
-
-                      ELSE IF (NSOLS.GT.100) THEN
-                         !
-                         ! USER-DEFINED SURFACE FOR FLUXES COMPUTATION
-                         !                      
-                         ! NELIN IS THE COUNTER FOR THE INTERNAL ELEMENTS.
-                         ! ACTUALLY, WE ARE READING THE NEXT INTERNAL ELEMENT.
-
-                         ! NSOLS_OLD IS USED FOR SAVING USE OF A NEW VARIABLE
-                         NSOLS_OLD = NSOLS
-                         !
-                         ! PRIO_NEW IS USED FOR SAVING USE OF A NEW VARIABLE
-                         PRIO_NEW = SIZE_FLUXIN(NSOLS_OLD)
-                         !
-                         IF (PRIO_NEW.EQ.0) THEN
-                            SIZE_FLUX = SIZE_FLUX + 1
-                            SIZE_FLUXIN(NSOLS_OLD) = 1
-                         ENDIF
-                         !
-                         NELIN = NELIN + 1
-                         !
-                         READ(NINP,*,ERR=1100,END=1200)IKLE1,IKLE2,IKLE3
-                         !
-                         IKLESTRIN(NELIN,1) = NSOLS
-                         IKLESTRIN(NELIN,2) = TEMPO(IKLE1)
-                         IKLESTRIN(NELIN,3) = TEMPO(IKLE2)
-                         IKLESTRIN(NELIN,4) = TEMPO(IKLE3)
-                         !
-                      ELSE        ! THIS IS AN INNER SURFACE, JUST READ THE LINE.
-
-                         READ(NINP,*,ERR=1100,END=1200)IKLE1,IKLE2,IKLE3
-                    
-                      END IF
-                                  
-                   CASE DEFAULT      ! THIS IS AN UNKNOWN ELEMENT.
-                 
-                      WRITE(LU,*) 'ELEMENT INCONNU DANS LE MAILLAGE'
-                 
-                   END SELECT        ! THE TYPE OF THE MESH ELEMENT
+!OB'S STFF
+                N=4*(NBTET-1)+1                       
+                IKLESTET(N)=IKLE1    ! VECTEUR DE CONNECTIVITE
+                IKLESTET(N+1)=IKLE2
+                IKLESTET(N+2)=IKLE3
+                IKLESTET(N+3)=IKLE4
+                TYPELEM(IELEM,1)=ELEM    ! POUR TYPER LES ELTS
+                TYPELEM(IELEM,2)=NBTET   ! POUR CONVERSION NUM ELT> NUM TETRA
               
-                END DO               ! LOOP OVER ELEMENTS TO READ.
+              CASE ( 91 )
+           
+                IF (NSOLS.GT.0.AND.NSOLS.LT.100) THEN
 
-                DO K=1,NBCOLOR
-                   IF (.NOT. FACE_CHECK(K)) THEN
-                      WRITE(LU,*) ' LA COULEUR DE FACE ',K,
-     &                ' N''APPARAIT PAS DANS LE MAILLAGE.'
-                   END IF
-                END DO
+                  IF ( NSOLS > NCOL ) THEN
+                    WRITE(LU,*) 'COLOR ID POUR SURFACES EXTERNE'
+     &              // 'S TROP GRAND. LA LIMITE EST : ',NCOL
+                  END IF
+
+                  PRIO_NEW = COLOR_PRIO(NSOLS)
+
+                  IF ( PRIO_NEW .EQ. 0 ) THEN
+                    WRITE(LU,*) ' NUMERO DE FACE NON DECLARE',
+     &                 'DANS LE TABLEAU UTILISATEUR LOGFAMILY ',
+     &                 'VOIR LE FICHIER DES PARAMETRES '
+                    CALL PLANTE(1)
+                  END IF
+                
+                  FACE_CHECK(PRIO_NEW) = .TRUE.
+
+                  NBTRI = NBTRI + 1
+
+                  ECOLOR(IELEM) = NSOLS
+
+                  READ(NINP,*,ERR=1100,END=1200)IKLE1,IKLE2,IKLE3
+                  !
+                  PRIO_NEW = SIZE_FLUXIN(NSOLS)
+                  !
+                  IF (PRIO_NEW.EQ.0) THEN 
+                    SIZE_FLUX = SIZE_FLUX + 1
+                    SIZE_FLUXIN(NSOLS) = 1
+                  ENDIF
+
+                  IKLES(IELEM, 1) = TEMPO(IKLE1)
+                  IKLES(IELEM, 2) = TEMPO(IKLE2)
+                  IKLES(IELEM, 3) = TEMPO(IKLE3)
+
+!OB'S STFF
+                  N=3*(NBTRI-1)+1
+                  IKLESTRI(N)=IKLE1
+                  IKLESTRI(N+1)=IKLE2
+                  IKLESTRI(N+2)=IKLE3
+                  TYPELEM(IELEM,1)=ELEM    ! IDEM QUE POUR TETRA
+                  TYPELEM(IELEM,2)=NBTRI
+                  CONVTRI(NBTRI)=IELEM
+
+                  DO J=1,3
+                                        
+                    IKL = IKLES(IELEM,J)
+                
+                    IPTFR = GLOB_2_LOC(IKL)
+
+                    IF ( IPTFR .EQ. 0 ) THEN
+                    
+                      NPTFR           = NPTFR+1
+                      NBOR2(NPTFR)    = IKL
+                      GLOB_2_LOC(IKL) = NPTFR        
+                      IPTFR           = NPTFR
+
+                    END IF
+                  
+                  ENDDO  ! LOOP OVER THE NODES OF THE ELEMENT
+
+                ELSE IF (NSOLS.GT.100) THEN
+                  !
+                  ! USER-DEFINED SURFACE FOR FLUXES COMPUTATION
+                  !                      
+                  ! NELIN IS THE COUNTER FOR THE INTERNAL ELEMENTS.
+                  ! ACTUALLY, WE ARE READING THE NEXT INTERNAL ELEMENT.
+
+                  ! NSOLS_OLD IS USED FOR SAVING USE OF A NEW VARIABLE
+                  NSOLS_OLD = NSOLS
+                  !
+                  ! PRIO_NEW IS USED FOR SAVING USE OF A NEW VARIABLE
+                  PRIO_NEW = SIZE_FLUXIN(NSOLS_OLD)
+                  !
+                  IF (PRIO_NEW.EQ.0) THEN
+                    SIZE_FLUX = SIZE_FLUX + 1
+                    SIZE_FLUXIN(NSOLS_OLD) = 1
+                  ENDIF
+                  !
+                  NELIN = NELIN + 1
+                  !
+                  READ(NINP,*,ERR=1100,END=1200)IKLE1,IKLE2,IKLE3
+                  !
+                  IKLESTRIN(NELIN,1) = NSOLS
+                  IKLESTRIN(NELIN,2) = TEMPO(IKLE1)
+                  IKLESTRIN(NELIN,3) = TEMPO(IKLE2)
+                  IKLESTRIN(NELIN,4) = TEMPO(IKLE3)
+                  !
+                ELSE        ! THIS IS AN INNER SURFACE, JUST READ THE LINE.
+
+                  READ(NINP,*,ERR=1100,END=1200)IKLE1,IKLE2,IKLE3
+               
+                END IF
+                             
+              CASE DEFAULT      ! THIS IS AN UNKNOWN ELEMENT.
+            
+                WRITE(LU,*) 'ELEMENT INCONNU DANS LE MAILLAGE'
+            
+              END SELECT        ! THE TYPE OF THE MESH ELEMENT
+            
+            END DO               ! LOOP OVER ELEMENTS TO READ.
+
+            DO K=1,NBCOLOR
+              IF (.NOT. FACE_CHECK(K)) THEN
+                WRITE(LU,*) ' LA COULEUR DE FACE ',K,
+     &          ' N''APPARAIT PAS DANS LE MAILLAGE.'
+              END IF
+            END DO
            
 !-----------------------------------------------------------------------
 
-             END SELECT                ! TYPE OF THE SECTION
+          END SELECT                ! TYPE OF THE SECTION
       
-         END DO                    ! WHILE LOOP OVER SECTIONS TO READ
+        END DO                    ! WHILE LOOP OVER SECTIONS TO READ
 
 !------------------------------------------------------- FIN VERSION F.D
 
@@ -1262,30 +1263,30 @@
 !     BEGIN MODIF VSTOBIAC
       IF (.NOT. FORMAT_MED) THEN
 
-         ALLOCATE(IKLE(NBTET,4),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' IKLE')
+        ALLOCATE(IKLE(NBTET,4),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' IKLE')
 
-         DO IELEM = 1, NBTET
-            DO I = 1,4
-               IKLE(IELEM,I ) = IKLES (IELEM, I)
-            END DO
-         END DO
+        DO IELEM = 1, NBTET
+          DO I = 1,4
+            IKLE(IELEM,I ) = IKLES (IELEM, I)
+          END DO
+        END DO
 
-         DEALLOCATE(IKLES)
+        DEALLOCATE(IKLES)
 
       ENDIF
 !
       IF (NELIN .GT. 0) THEN
-         ALLOCATE(IKLEIN(NELIN,4),STAT=IERR)
-         CALL CHECK_ALLOCATE(IERR,' IKLEIN')
+        ALLOCATE(IKLEIN(NELIN,4),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,' IKLEIN')
 !
-         DO IELEM = 1, NELIN
-            DO I = 1,4
-               IKLEIN(IELEM,I ) = IKLESTRIN (IELEM, I)
-            END DO
-         END DO
+        DO IELEM = 1, NELIN
+          DO I = 1,4
+            IKLEIN(IELEM,I ) = IKLESTRIN (IELEM, I)
+          END DO
+        END DO
       ELSE
-         ALLOCATE(IKLEIN(1,4),STAT=IERR)
+        ALLOCATE(IKLEIN(1,4),STAT=IERR)
       ENDIF
       DEALLOCATE(IKLESTRIN)
 !
@@ -1328,14 +1329,14 @@
 !
       MAX_TRIA=0
       DO J = 1, NBTRI
-         K = 3*(J-1)+1  
-         IKLE1 = IKLESTRI(K)
-         IKLE2 = IKLESTRI(K+1)
-         IKLE3 = IKLESTRI(K+2)
-         THE_TRI=IKLE1
-         IF (IKLE2 < THE_TRI) THE_TRI=IKLE2 
-         IF (IKLE3< THE_TRI)  THE_TRI=IKLE3
-         NUMBER_TRIA(THE_TRI)=NUMBER_TRIA(THE_TRI)+1
+        K = 3*(J-1)+1  
+        IKLE1 = IKLESTRI(K)
+        IKLE2 = IKLESTRI(K+1)
+        IKLE3 = IKLESTRI(K+2)
+        THE_TRI=IKLE1
+        IF (IKLE2 < THE_TRI) THE_TRI=IKLE2 
+        IF (IKLE3< THE_TRI)  THE_TRI=IKLE3
+        NUMBER_TRIA(THE_TRI)=NUMBER_TRIA(THE_TRI)+1
       END DO
       MAX_TRIA=MAXVAL(NUMBER_TRIA)
 !    
@@ -1343,18 +1344,18 @@
 !
       ALLOCATE(TRI_REF(NPOINT,0:MAX_TRIA),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,' TRI_REF')
-       TRI_REF=0 
-       DO J = 1, NBTRI
-         K = 3*(J-1)+1  
-         IKLE1 = IKLESTRI(K)
-         IKLE2 = IKLESTRI(K+1)
-         IKLE3 = IKLESTRI(K+2)
-         THE_TRI=IKLE1
-         IF (IKLE2 < THE_TRI) THE_TRI=IKLE2 
-         IF (IKLE3< THE_TRI)  THE_TRI=IKLE3
-         TRI_REF(THE_TRI,0)=TRI_REF(THE_TRI,0)+1
-         POS=TRI_REF(THE_TRI,0)
-         TRI_REF(THE_TRI,POS)=J
+      TRI_REF=0 
+      DO J = 1, NBTRI
+        K = 3*(J-1)+1  
+        IKLE1 = IKLESTRI(K)
+        IKLE2 = IKLESTRI(K+1)
+        IKLE3 = IKLESTRI(K+2)
+        THE_TRI=IKLE1
+        IF (IKLE2 < THE_TRI) THE_TRI=IKLE2 
+        IF (IKLE3< THE_TRI)  THE_TRI=IKLE3
+        TRI_REF(THE_TRI,0)=TRI_REF(THE_TRI,0)+1
+        POS=TRI_REF(THE_TRI,0)
+        TRI_REF(THE_TRI,POS)=J
       END DO
       
       ALLOCATE(TETTRI(4*NBTET),STAT=IERR)
@@ -1365,63 +1366,63 @@
       TETTRI2(:) =0
 
       DO IELEB = 1,NBTRI
-         IELEM = NELBOR(IELEB)
-         IKLE1 = NBOR(IKLBOR(IELEB,1))
-         IKLE2 = NBOR(IKLBOR(IELEB,2))
-         IKLE3 = NBOR(IKLBOR(IELEB,3))
-         THE_TRI=IKLE1
-         IF (IKLE2 < THE_TRI) THE_TRI=IKLE2 
-         IF (IKLE3<THE_TRI)  THE_TRI=IKLE3
-         POS=TRI_REF(THE_TRI,0)
-         IS = .FALSE.
-          M  = -1
-         DO JJ = 1, POS
-            J=TRI_REF(THE_TRI,JJ)
-            K = 3*(J-1)+1            
-            IF ((IKLE1.EQ.IKLESTRI(K)).AND.
-     &          (IKLE2.EQ.IKLESTRI(K+1)).AND.
-     &          (IKLE3.EQ.IKLESTRI(K+2))) THEN
-               IS = .TRUE.
-            ELSE IF ((IKLE1.EQ.IKLESTRI(K)).AND.
-     &          (IKLE3.EQ.IKLESTRI(K+1)).AND.
-     &          (IKLE2.EQ.IKLESTRI(K+2))) THEN
-               IS = .TRUE.
-            ELSE IF ((IKLE2.EQ.IKLESTRI(K)).AND.
-     &          (IKLE1.EQ.IKLESTRI(K+1)).AND.
-     &              (IKLE3.EQ.IKLESTRI(K+2))) THEN
-               IS = .TRUE.
-            ELSE IF ((IKLE2.EQ.IKLESTRI(K)).AND.
-     &          (IKLE3.EQ.IKLESTRI(K+1)).AND.
-     &          (IKLE1.EQ.IKLESTRI(K+2))) THEN
-               IS = .TRUE.
-            ELSE IF ((IKLE3.EQ.IKLESTRI(K)).AND.
-     &          (IKLE1.EQ.IKLESTRI(K+1)).AND.
-     &          (IKLE2.EQ.IKLESTRI(K+2))) THEN
-               IS = .TRUE.
-            ELSE IF ((IKLE3.EQ.IKLESTRI(K)).AND.
-     &          (IKLE2.EQ.IKLESTRI(K+1)).AND.
-     &          (IKLE1.EQ.IKLESTRI(K+2))) THEN
-               IS = .TRUE.         
+        IELEM = NELBOR(IELEB)
+        IKLE1 = NBOR(IKLBOR(IELEB,1))
+        IKLE2 = NBOR(IKLBOR(IELEB,2))
+        IKLE3 = NBOR(IKLBOR(IELEB,3))
+        THE_TRI=IKLE1
+        IF (IKLE2 < THE_TRI) THE_TRI=IKLE2 
+        IF (IKLE3<THE_TRI)  THE_TRI=IKLE3
+        POS=TRI_REF(THE_TRI,0)
+        IS = .FALSE.
+        M  = -1
+        DO JJ = 1, POS
+          J=TRI_REF(THE_TRI,JJ)
+          K = 3*(J-1)+1            
+          IF ((IKLE1.EQ.IKLESTRI(K)).AND.
+     &        (IKLE2.EQ.IKLESTRI(K+1)).AND.
+     &        (IKLE3.EQ.IKLESTRI(K+2))) THEN
+            IS = .TRUE.
+          ELSE IF ((IKLE1.EQ.IKLESTRI(K)).AND.
+     &        (IKLE3.EQ.IKLESTRI(K+1)).AND.
+     &        (IKLE2.EQ.IKLESTRI(K+2))) THEN
+            IS = .TRUE.
+          ELSE IF ((IKLE2.EQ.IKLESTRI(K)).AND.
+     &        (IKLE1.EQ.IKLESTRI(K+1)).AND.
+     &            (IKLE3.EQ.IKLESTRI(K+2))) THEN
+            IS = .TRUE.
+          ELSE IF ((IKLE2.EQ.IKLESTRI(K)).AND.
+     &        (IKLE3.EQ.IKLESTRI(K+1)).AND.
+     &        (IKLE1.EQ.IKLESTRI(K+2))) THEN
+            IS = .TRUE.
+          ELSE IF ((IKLE3.EQ.IKLESTRI(K)).AND.
+     &        (IKLE1.EQ.IKLESTRI(K+1)).AND.
+     &        (IKLE2.EQ.IKLESTRI(K+2))) THEN
+            IS = .TRUE.
+          ELSE IF ((IKLE3.EQ.IKLESTRI(K)).AND.
+     &        (IKLE2.EQ.IKLESTRI(K+1)).AND.
+     &        (IKLE1.EQ.IKLESTRI(K+2))) THEN
+            IS = .TRUE.         
+          ENDIF
+          IF (IS) THEN
+            M = J
+            EXIT
+          ENDIF
+        ENDDO
+        DO I = 1,4
+          IF (IFABOR(IELEM,I).LE.0) THEN
+            IF ((IKLE1.EQ.(IKLE(NELBOR(IELEB),SOMFAC(1,I))))
+     &      .AND.(IKLE2.EQ.(IKLE(NELBOR(IELEB),SOMFAC(2,I))))  
+     &      .AND. (IKLE3.EQ.(IKLE(NELBOR(IELEB),SOMFAC(3,I)))))
+     &      THEN
+              NI = TETTRI2(IELEM)
+              N  = 4*(IELEM-1)+NI+1
+              TETTRI(N) = M
+!             WRITE(*,*) N, '---> ',M
+              TETTRI2(IELEM) = NI + 1
             ENDIF
-            IF (IS) THEN
-               M = J
-               EXIT
-            ENDIF
-         ENDDO
-         DO I = 1,4
-            IF (IFABOR(IELEM,I).LE.0) THEN
-               IF ((IKLE1.EQ.(IKLE(NELBOR(IELEB),SOMFAC(1,I))))
-     &         .AND.(IKLE2.EQ.(IKLE(NELBOR(IELEB),SOMFAC(2,I))))  
-     &         .AND. (IKLE3.EQ.(IKLE(NELBOR(IELEB),SOMFAC(3,I)))))
-     &         THEN
-                  NI = TETTRI2(IELEM)
-                  N  = 4*(IELEM-1)+NI+1
-                  TETTRI(N) = M
-!                  WRITE(*,*) N, '---> ',M
-                  TETTRI2(IELEM) = NI + 1
-               ENDIF
-            ENDIF
-         END DO
+          ENDIF
+        END DO
       ENDDO
 !
       DEALLOCATE(IFABOR)
@@ -1579,14 +1580,14 @@
 !D     COMPUTATION OF THE MAXIMUM NUMBER OF FINITE ELEMENTS ASSIGNED TO ONE SUBDOMAIN
       NELEM_P(:)=0
       NPOIN_P(:)=0
-       DO I=1,NBTET
-         NELEM_P(EPART(I))=NELEM_P(EPART(I))+1
+      DO I=1,NBTET
+        NELEM_P(EPART(I))=NELEM_P(EPART(I))+1
       END DO
       MAX_NELEM_P=MAXVAL(NELEM_P)
       WRITE(LU,*) 'NB MAX OF TETRAS PER SUBDOMAIN : ',MAX_NELEM_P
       WRITE(LU,*) 'NB OF TETRA PER SUBDOMAIN :'
       DO I=1,NPARTS
-         WRITE(LU,*) I, NELEM_P(I) 
+        WRITE(LU,*) I, NELEM_P(I) 
       ENDDO
       NELEM_P(:)=0
 !D     ALLOCATION OF THE ELEGL ARRAY 
@@ -1594,31 +1595,31 @@
 !D     ELEGL IS THE FILLED 
       CALL CHECK_ALLOCATE(IERR,'ELEGL')
       DO I=1,NBTET
-         NELEM_P(EPART(I))=NELEM_P(EPART(I))+1
-         ELEGL(NELEM_P(EPART(I)),EPART(I))=I
-       END DO
-!D     COMPUTE THE MAXIMUM OF NODES ASSIGNED TO ONE SUBDOMAIN
+        NELEM_P(EPART(I))=NELEM_P(EPART(I))+1
+        ELEGL(NELEM_P(EPART(I)),EPART(I))=I
+      END DO
+!D    COMPUTE THE MAXIMUM OF NODES ASSIGNED TO ONE SUBDOMAIN
 
-       ALLOCATE(NODELG(NPOINT),STAT=IERR)
-       CALL CHECK_ALLOCATE(IERR,'NODELG')
+      ALLOCATE(NODELG(NPOINT),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'NODELG')
 
-       NODELG(:)=0
-!D     FOR EACH SUBDOMAIN IDD
-       DO IDD=1,NPARTS  
-          NODELG(:)=0
-!D         LOOP ON THE FINITE ELEMENTS IELEM ASSIGNED TO SUBDOMAIN IDD
-          DO POS=1,NELEM_P(IDD)
-            IELEM=ELEGL(POS,IDD)
-            N=4*(IELEM-1)+1
-!D          LOOP OF THE NODE CONTAINED IN IELEM            
-            DO K=0,3
-               NODE=IKLESTET(N+K)
-               IF (NODELG(NODE) .EQ. 0) THEN
-                  NPOIN_P(IDD)=NPOIN_P(IDD)+1
-                  NODELG(NODE)=NPOIN_P(IDD)
-               END IF
-            END DO
-         END DO
+      NODELG(:)=0
+!D    FOR EACH SUBDOMAIN IDD
+      DO IDD=1,NPARTS  
+        NODELG(:)=0
+!D       LOOP ON THE FINITE ELEMENTS IELEM ASSIGNED TO SUBDOMAIN IDD
+        DO POS=1,NELEM_P(IDD)
+          IELEM=ELEGL(POS,IDD)
+          N=4*(IELEM-1)+1
+!D        LOOP OF THE NODE CONTAINED IN IELEM            
+          DO K=0,3
+            NODE=IKLESTET(N+K)
+            IF (NODELG(NODE) .EQ. 0) THEN
+              NPOIN_P(IDD)=NPOIN_P(IDD)+1
+              NODELG(NODE)=NPOIN_P(IDD)
+            END IF
+          END DO
+        END DO
       END DO
 !D    ALLOCATION AND FILLING OF  THE NODEGL ARRAY      
       MAX_NPOIN_P=MAXVAL(NPOIN_P)
@@ -1626,29 +1627,29 @@
       WRITE(LU,*) 'NB MAX OF POINT PER SUBDOMAIN :', MAX_NPOIN_P
       WRITE(LU,*) 'NB OF POINT PER SUBDOMAIN :'
       DO I=1,NPARTS
-         WRITE(LU,*) I, NPOIN_P(I)
+        WRITE(LU,*) I, NPOIN_P(I)
       ENDDO
 
       NPOIN_P(:)=0
       NODELG(:)=0
 !
       ALLOCATE(NODEGL(MAX_NPOIN_P,NPARTS),STAT=IERR)
-       CALL CHECK_ALLOCATE(IERR,'NODEGL')
-       DO IDD=1,NPARTS
-          NODELG(:)=0
-          DO POS=1,NELEM_P(IDD)
-             IELEM=ELEGL(POS,IDD)
-             N=4*(IELEM-1)+1
-             DO K=0,3
-                NODE=IKLESTET(N+K)
-                IF (NODELG(NODE) .EQ. 0) THEN
-                   NPOIN_P(IDD)=NPOIN_P(IDD)+1
-                   NODELG(NODE)=NPOIN_P(IDD)
-                   NODEGL(NPOIN_P(IDD),IDD)=NODE
-                END IF
-             END DO
+      CALL CHECK_ALLOCATE(IERR,'NODEGL')
+      DO IDD=1,NPARTS
+        NODELG(:)=0
+        DO POS=1,NELEM_P(IDD)
+          IELEM=ELEGL(POS,IDD)
+          N=4*(IELEM-1)+1
+          DO K=0,3
+            NODE=IKLESTET(N+K)
+            IF (NODELG(NODE) .EQ. 0) THEN
+              NPOIN_P(IDD)=NPOIN_P(IDD)+1
+              NODELG(NODE)=NPOIN_P(IDD)
+              NODEGL(NPOIN_P(IDD),IDD)=NODE
+            END IF
           END DO
-       END DO
+        END DO
+      END DO
 !            
 !----------------------------------------------------------------------
 ! 5A. ALLOCATIONS POUR ECRITURE DES FICHIERS .UNV/.LOG ASSOCIANT UN SOUS-DOMAINE
@@ -1810,9 +1811,9 @@
       IBID = 1
 !
       IF (NELIN .GT. 0) THEN
-         ALLOCATE(DEJA_TROUVE(NELIN),STAT=IERR)
+        ALLOCATE(DEJA_TROUVE(NELIN),STAT=IERR)
       ELSE
-         ALLOCATE(DEJA_TROUVE(1),STAT=IERR)
+        ALLOCATE(DEJA_TROUVE(1),STAT=IERR)
       ENDIF
       CALL CHECK_ALLOCATE(IERR,'DEJA_TROUVE')
       DEJA_TROUVE(:)=.FALSE.
@@ -1853,32 +1854,32 @@
         NODES4(:)=-1
 !D      NEW VERSION OF THE LOOP TO REDUCE THE COMPUTING TIME
         DO POS_NODE=1,NPOIN_P(IDD) ! BOUCLE SUR TOUS LES POINTS DU MAILLAGES
-           J=NODEGL(POS_NODE,IDD)
+          J=NODEGL(POS_NODE,IDD)
 !D       PREVIOUS VERSION OF THE LOOP
 !D       NI=NODES2(J)
 !D       NF=NI+NODES1(J)-1
 !D       DO N=NI,NF       ! BOUCLE SUR LES TETRA CONTENANT LE POINT J
 !D           NT=NODES3(N)   ! TETRA DE NUMERO LOCAL NT 
 !D           IF (EPART(NT)==IDD) THEN     ! C'EST UNE MAILLE DU SOUS-DOMAINE
-              WRITE(NINP2,63,ERR=112)COMPT,IBID,IBID,NCOLOR2(J)
-              WRITE(NINP2,64,ERR=112)X1(J),Y1(J),Z1(J)
-              NODES4(J)=COMPT   ! LE NOEUD J A LE NUMERO COMPT
+          WRITE(NINP2,63,ERR=112)COMPT,IBID,IBID,NCOLOR2(J)
+          WRITE(NINP2,64,ERR=112)X1(J),Y1(J),Z1(J)
+          NODES4(J)=COMPT   ! LE NOEUD J A LE NUMERO COMPT
                                 ! POUR LE SOUS-DOMAINE IDD
 ! POUR PARALLELISME TELEMAC
-              KNOLG(COMPT)=J ! CONVERSION SD (LOCAL)-->MAILLAGE ENTIER (GLOBAL)
-              K=NACHB(1,J)   ! NBRE DE SD CONTENANT LE NOEUD J
-              NACHBLOG=.TRUE.       
-              DO L=1,K     ! NOEUD DEJA CONCERNE PAR CE SD ?
-                IF (NACHB(1+L,J)==IDD) NACHBLOG=.FALSE.  ! OUI      
-              ENDDO
-              IF (NACHBLOG) THEN                         ! NON
-                K=NACHB(1,J)+1
-                IF (K.GT.NBSDOMVOIS-2) GOTO 151
-                NACHB(K+1,J)=IDD  ! NOEUD GLOBAL J CONCERNE PAR IDD
-                NACHB(1,J)=K      ! SA MULTIPLICITE
-              ENDIF 
-              COMPT=COMPT+1
-!              GOTO 10 ! ON PASSE AU NOEUD SUIVANT           
+          KNOLG(COMPT)=J ! CONVERSION SD (LOCAL)-->MAILLAGE ENTIER (GLOBAL)
+          K=NACHB(1,J)   ! NBRE DE SD CONTENANT LE NOEUD J
+          NACHBLOG=.TRUE.       
+          DO L=1,K     ! NOEUD DEJA CONCERNE PAR CE SD ?
+            IF (NACHB(1+L,J)==IDD) NACHBLOG=.FALSE.  ! OUI      
+          ENDDO
+          IF (NACHBLOG) THEN                         ! NON
+            K=NACHB(1,J)+1
+            IF (K.GT.NBSDOMVOIS-2) GOTO 151
+            NACHB(K+1,J)=IDD  ! NOEUD GLOBAL J CONCERNE PAR IDD
+            NACHB(1,J)=K      ! SA MULTIPLICITE
+          ENDIF 
+          COMPT=COMPT+1
+!          GOTO 10 ! ON PASSE AU NOEUD SUIVANT           
 !            ENDIF  ! EN EPART
 !          ENDDO ! EN N
 !   10     CONTINUE
@@ -1969,17 +1970,17 @@
         ELEM=91
 ! BOUCLE SURDIMENSIONNEE, ON BOUCLE SUR LE NOMBRE DE SURFACE INTERNE DU MAILLAGE GLOBAL...
         IF (NELIN .GT. 0) THEN 
-           DO J=1,NELIN
-              IF (DEJA_TROUVE(J)) CYCLE
-              IKLE1=NODES4(IKLEIN(J,2))
-              IKLE2=NODES4(IKLEIN(J,3))
-              IKLE3=NODES4(IKLEIN(J,4))
-              IF ((IKLE1.EQ.-1).OR.(IKLE2.EQ.-1).OR.(IKLE3.EQ.-1)) CYCLE
-              WRITE(NINP2,65,ERR=112) COMPT,ELEM,IBID,IBID,IKLEIN(J,1),3
-              WRITE(NINP2,67,ERR=112) IKLE1,IKLE2,IKLE3
-              COMPT = COMPT+1
-              DEJA_TROUVE(J) = .TRUE.
-           ENDDO ! EN J
+          DO J=1,NELIN
+            IF (DEJA_TROUVE(J)) CYCLE
+            IKLE1=NODES4(IKLEIN(J,2))
+            IKLE2=NODES4(IKLEIN(J,3))
+            IKLE3=NODES4(IKLEIN(J,4))
+            IF ((IKLE1.EQ.-1).OR.(IKLE2.EQ.-1).OR.(IKLE3.EQ.-1)) CYCLE
+            WRITE(NINP2,65,ERR=112) COMPT,ELEM,IBID,IBID,IKLEIN(J,1),3
+            WRITE(NINP2,67,ERR=112) IKLE1,IKLE2,IKLE3
+            COMPT = COMPT+1
+            DEJA_TROUVE(J) = .TRUE.
+          ENDDO ! EN J
         ENDIF
 !
 !$$$        WRITE(LU,*) 'SUBDOMAIN',IDD,'INNERTRI',COMPT
@@ -2002,17 +2003,17 @@
 !       READ FAMILIES
 #if defined (HAVE_MED)
         IF (FORMAT_MED) THEN
-           WRITE(NLOG2,53 ,ERR=113) NBFAMILY
-           DO J=1,NBFAMILY+1
-              WRITE(NLOG2,50,ERR=113)'--'
-           ENDDO
+          WRITE(NLOG2,53 ,ERR=113) NBFAMILY
+          DO J=1,NBFAMILY+1
+            WRITE(NLOG2,50,ERR=113)'--'
+          ENDDO
         ENDIF
 #endif 
         IF (.NOT.FORMAT_MED) THEN
-           WRITE(NLOG2,53 ,ERR=113) NBFAMILY-1
-           DO J=1,NBFAMILY
-              WRITE(NLOG2,50,ERR=113)'--'
-           ENDDO
+          WRITE(NLOG2,53 ,ERR=113) NBFAMILY-1
+          DO J=1,NBFAMILY
+            WRITE(NLOG2,50,ERR=113)'--'
+          ENDDO
         ENDIF
 !       END MODIF V STOBIAC
 
@@ -2105,25 +2106,25 @@
                 ENDIF
               ENDIF 
             ENDDO  ! EN K
-!            WRITE(NLOG2,561,ERR=113)J,(VECTNB(K),K=1,NBSDOMVOIS-3)
-             NT = NBSDOMVOIS-3
-             NI=NT/6
-             NF=NT-6*NI+1
-             WRITE(NLOG2,640,ERR=113)J,(VECTNB(K),K=1,5)
-             DO L=2,NI
-               WRITE(NLOG2,640,ERR=113)(VECTNB(6*(L-1)+K),K=0,5)
-             ENDDO
-             IF (NF.EQ.1) THEN
-               WRITE(NLOG2,641,ERR=113)VECTNB(6*NI)
-             ELSEIF (NF.EQ.2) THEN
-               WRITE(NLOG2,642,ERR=113)(VECTNB(6*NI+K),K=0,1)
-             ELSEIF (NF.EQ.3) THEN
-               WRITE(NLOG2,643,ERR=113)(VECTNB(6*NI+K),K=0,2)
-             ELSEIF (NF.EQ.4) THEN
-               WRITE(NLOG2,644,ERR=113)(VECTNB(6*NI+K),K=0,3)
-             ELSEIF (NF.EQ.5) THEN
-               WRITE(NLOG2,645,ERR=113)(VECTNB(6*NI+K),K=0,4)
-             ENDIF
+!           WRITE(NLOG2,561,ERR=113)J,(VECTNB(K),K=1,NBSDOMVOIS-3)
+            NT = NBSDOMVOIS-3
+            NI=NT/6
+            NF=NT-6*NI+1
+            WRITE(NLOG2,640,ERR=113)J,(VECTNB(K),K=1,5)
+            DO L=2,NI
+              WRITE(NLOG2,640,ERR=113)(VECTNB(6*(L-1)+K),K=0,5)
+            ENDDO
+            IF (NF.EQ.1) THEN
+              WRITE(NLOG2,641,ERR=113)VECTNB(6*NI)
+            ELSEIF (NF.EQ.2) THEN
+              WRITE(NLOG2,642,ERR=113)(VECTNB(6*NI+K),K=0,1)
+            ELSEIF (NF.EQ.3) THEN
+              WRITE(NLOG2,643,ERR=113)(VECTNB(6*NI+K),K=0,2)
+            ELSEIF (NF.EQ.4) THEN
+              WRITE(NLOG2,644,ERR=113)(VECTNB(6*NI+K),K=0,3)
+            ELSEIF (NF.EQ.5) THEN
+              WRITE(NLOG2,645,ERR=113)(VECTNB(6*NI+K),K=0,4)
+            ENDIF
           ENDIF
         ENDDO  ! FIN BOUCLE EN J
         WRITE(NLOG2,57,ERR=113)        
@@ -2300,4 +2301,3 @@
   999 WRITE(LU,*) TEXTERROR
 !
       END SUBROUTINE PARES3D
-

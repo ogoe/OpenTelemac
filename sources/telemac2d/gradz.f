@@ -181,8 +181,8 @@
 !
 !    EXTRAPOLATES AND CAPS  (EQUATION 5.4)
 !
-         DSZ(1,NSG)  =  EXLIM(ILIM,BETA,GRADI,GRIJ )
-         DSZ(2,NSG)  =  EXLIM(ILIM,BETA,GRADJ,GRJI )
+        DSZ(1,NSG)  =  EXLIM(ILIM,BETA,GRADI,GRIJ )
+        DSZ(2,NSG)  =  EXLIM(ILIM,BETA,GRADJ,GRJI )
 !   FOR PARALLELILSM nomore necessary while we use icom=1 in the next parcom2
 !         IF(NCSIZE.GT.1)THEN
 !          ! SEE IF WE ARE IN HALO REGION
@@ -193,16 +193,16 @@
 !          ENDIF
 !         ENDIF
 !
-         IF(DSZ(1,NSG).GE.0.D0) THEN
-           DSP(NUBO1) = DSP(NUBO1) + FACT*DSZ(1,NSG)
-         ELSE
-           DSM(NUBO1) = DSM(NUBO1) - FACT*DSZ(1,NSG)
-         ENDIF
-         IF(DSZ(2,NSG).GE.0.) THEN
-           DSP(NUBO2) = DSP(NUBO2) + FACT*DSZ(2,NSG)
-         ELSE
-           DSM(NUBO2) = DSM(NUBO2) - FACT*DSZ(2,NSG)
-         ENDIF
+        IF(DSZ(1,NSG).GE.0.D0) THEN
+          DSP(NUBO1) = DSP(NUBO1) + FACT*DSZ(1,NSG)
+        ELSE
+          DSM(NUBO1) = DSM(NUBO1) - FACT*DSZ(1,NSG)
+        ENDIF
+        IF(DSZ(2,NSG).GE.0.) THEN
+          DSP(NUBO2) = DSP(NUBO2) + FACT*DSZ(2,NSG)
+        ELSE
+          DSM(NUBO2) = DSM(NUBO2) - FACT*DSZ(2,NSG)
+        ENDIF
 !
       ENDDO
 !  FOR PARALLELILSM
@@ -213,34 +213,34 @@
 !  COMPUTES THE CORRECTIONS NECESSARY TO HAVE CONSERVATION
 !
       DO IS=1,NS
-         CORR(IS) =  DSM(IS) - DSP(IS)
-         AMDS =MAX(DSP(IS),DSM(IS))
-         IF(AMDS.GT.0.D0) THEN
-           CORR(IS) = CORR(IS)/AMDS
-         ENDIF
+        CORR(IS) =  DSM(IS) - DSP(IS)
+        AMDS =MAX(DSP(IS),DSM(IS))
+        IF(AMDS.GT.0.D0) THEN
+          CORR(IS) = CORR(IS)/AMDS
+        ENDIF
       ENDDO
 !
       DO NSG=1,NSEG
 !
-         NUBO1 = NUBO(1,NSG)
-         NUBO2 = NUBO(2,NSG)
+        NUBO1 = NUBO(1,NSG)
+        NUBO2 = NUBO(2,NSG)
 !
-         DSH        = DSZ(1,NSG)
-         DSZ(1,NSG) = DSH +
-     &                MIN(0.D0,CORR(NUBO1))*MAX(0.D0,DSH)+
-     &                MAX(0.D0,CORR(NUBO1))*MAX(0.D0,-DSH)
+        DSH        = DSZ(1,NSG)
+        DSZ(1,NSG) = DSH +
+     &               MIN(0.D0,CORR(NUBO1))*MAX(0.D0,DSH)+
+     &               MAX(0.D0,CORR(NUBO1))*MAX(0.D0,-DSH)
 !
-         DSH        = DSZ(2,NSG)
-         DSZ(2,NSG) = DSH +
-     &                MIN(0.D0,CORR(NUBO2))*MAX(0.D0,DSH)+
-     &                MAX(0.D0,CORR(NUBO2))*MAX(0.D0,-DSH)
+        DSH        = DSZ(2,NSG)
+        DSZ(2,NSG) = DSH +
+     &               MIN(0.D0,CORR(NUBO2))*MAX(0.D0,DSH)+
+     &               MAX(0.D0,CORR(NUBO2))*MAX(0.D0,-DSH)
       ENDDO
 !-----------------------------------------------------------------------
 !
 !  FOR PARALLELILSM
       IF(NCSIZE.GT.1)THEN  !  X1,X2,X3,NSEG,NPLAN,ICOM,IAN,MESH,OPT,IELM )
-       CALL PARCOM2_SEG(DSZ(1,1:NSEG),DSZ(2,1:NSEG),DSM,NSEG,1,2,2,
-     &                  MESH,1,11)
+        CALL PARCOM2_SEG(DSZ(1,1:NSEG),DSZ(2,1:NSEG),DSM,NSEG,1,2,2,
+     &                   MESH,1,11)
       ENDIF
 
       RETURN

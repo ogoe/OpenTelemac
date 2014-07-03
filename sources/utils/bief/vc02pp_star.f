@@ -151,200 +151,200 @@
 !
       DO IELEM = 1 , NELEM
 !
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
-         I5 = IKLE5(IELEM)
-         I6 = IKLE6(IELEM)
+        I1 = IKLE1(IELEM)
+        I2 = IKLE2(IELEM)
+        I3 = IKLE3(IELEM)
+        I4 = IKLE4(IELEM)
+        I5 = IKLE5(IELEM)
+        I6 = IKLE6(IELEM)
 !
-         H1 = Z(I4) - Z(I1)
-         H2 = Z(I5) - Z(I2)
-         H3 = Z(I6) - Z(I3)
+        H1 = Z(I4) - Z(I1)
+        H2 = Z(I5) - Z(I2)
+        H3 = Z(I6) - Z(I3)
 !
-!        X2 = X(I2)-X(I1)
-!        X3 = X(I3)-X(I1)
-!        Y2 = Y(I2)-Y(I1)
-!        Y3 = Y(I3)-Y(I1)
+!       X2 = X(I2)-X(I1)
+!       X3 = X(I3)-X(I1)
+!       Y2 = Y(I2)-Y(I1)
+!       Y3 = Y(I3)-Y(I1)
 !
-         X2=X(IELEM,2)
-         X3=X(IELEM,3)
-         Y2=Y(IELEM,2)
-         Y3=Y(IELEM,3)
+        X2=X(IELEM,2)
+        X3=X(IELEM,3)
+        Y2=Y(IELEM,2)
+        Y3=Y(IELEM,3)
 !
-         IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
-     &                  MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &       H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
-           AUX = 0.D0
-           NUXMOY=0.D0
-           NUYMOY=0.D0
-         ELSE
-           AUX = XS24 / SURFAC(IELEM)
-!          TAKING INTO ACCOUNT AN AVERAGE DIFFUSION ON THE PRISM
-           NUXMOY=(F(I1)+F(I2)+F(I3)+F(I4)+F(I5)+F(I6))/6.D0
-           NUYMOY=(G(I1)+G(I2)+G(I3)+G(I4)+G(I5)+G(I6))/6.D0
-         ENDIF
+        IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
+     &                 MIN(Z(I4),Z(I5),Z(I6)))    .OR.
+     &      H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
+          AUX = 0.D0
+          NUXMOY=0.D0
+          NUYMOY=0.D0
+        ELSE
+          AUX = XS24 / SURFAC(IELEM)
+!         TAKING INTO ACCOUNT AN AVERAGE DIFFUSION ON THE PRISM
+          NUXMOY=(F(I1)+F(I2)+F(I3)+F(I4)+F(I5)+F(I6))/6.D0
+          NUYMOY=(G(I1)+G(I2)+G(I3)+G(I4)+G(I5)+G(I6))/6.D0
+        ENDIF
 !
-         X2X3  = X2*X3
-         Y2Y3  = Y2*Y3
-         X2AUX = X2X3-X2**2
-         X3AUX = X3**2-X2X3
-         Y2AUX = Y2Y3-Y2**2
-         Y3AUX = Y3**2-Y2Y3
+        X2X3  = X2*X3
+        Y2Y3  = Y2*Y3
+        X2AUX = X2X3-X2**2
+        X3AUX = X3**2-X2X3
+        Y2AUX = Y2Y3-Y2**2
+        Y3AUX = Y3**2-Y2Y3
 !
-!        2D DIFFUSION, LOWER LEVEL (SEE MT02AA)
-!        LIKE IN 2D BUT MULTIPLIED BY DELTA(Z)/2
-         SOMVX = ( F(I1)*H1+F(I2)*H2+F(I3)*H3 ) * AUX
-         SOMVY = ( G(I1)*H1+G(I2)*H2+G(I3)*H3 ) * AUX
+!       2D DIFFUSION, LOWER LEVEL (SEE MT02AA)
+!       LIKE IN 2D BUT MULTIPLIED BY DELTA(Z)/2
+        SOMVX = ( F(I1)*H1+F(I2)*H2+F(I3)*H3 ) * AUX
+        SOMVY = ( G(I1)*H1+G(I2)*H2+G(I3)*H3 ) * AUX
 !
-!        OFF-DIAGONAL TERMS FOR POINTS OF LOWER LEVEL
-!        WITH MONOTONICITY ENSURED
+!       OFF-DIAGONAL TERMS FOR POINTS OF LOWER LEVEL
+!       WITH MONOTONICITY ENSURED
 !
-!        TERM 1
+!       TERM 1
 !
-         XM01 = - SOMVY * X3AUX - SOMVX * Y3AUX
-         XM02 =   SOMVY * X2AUX + SOMVX * Y2AUX
-         XM06 = - SOMVY * X2X3  - SOMVX * Y2Y3
-         XM16 = XM01
-         XM17 = XM02
-         XM21 = XM06
+        XM01 = - SOMVY * X3AUX - SOMVX * Y3AUX
+        XM02 =   SOMVY * X2AUX + SOMVX * Y2AUX
+        XM06 = - SOMVY * X2X3  - SOMVX * Y2Y3
+        XM16 = XM01
+        XM17 = XM02
+        XM21 = XM06
 !
-!        2D DIFFUSION, UPPER LEVEL
-         SOMVX = ( F(I4)*H1+F(I5)*H2+F(I6)*H3 ) * AUX
-         SOMVY = ( G(I4)*H1+G(I5)*H2+G(I6)*H3 ) * AUX
+!       2D DIFFUSION, UPPER LEVEL
+        SOMVX = ( F(I4)*H1+F(I5)*H2+F(I6)*H3 ) * AUX
+        SOMVY = ( G(I4)*H1+G(I5)*H2+G(I6)*H3 ) * AUX
 !
-!        OFF-DIAGONAL TERMS FOR POINTS OF UPPER LEVEL
-!        WITH MONOTONICITY ENSURED
+!       OFF-DIAGONAL TERMS FOR POINTS OF UPPER LEVEL
+!       WITH MONOTONICITY ENSURED
 !
-!        TERM 1
+!       TERM 1
 !
-         XM13 = - SOMVY * X3AUX - SOMVX * Y3AUX
-         XM14 =   SOMVY * X2AUX + SOMVX * Y2AUX
-         XM15 = - SOMVY * X2X3  - SOMVX * Y2Y3
-         XM28 = XM13
-         XM29 = XM14
-         XM30 = XM15
+        XM13 = - SOMVY * X3AUX - SOMVX * Y3AUX
+        XM14 =   SOMVY * X2AUX + SOMVX * Y2AUX
+        XM15 = - SOMVY * X2X3  - SOMVX * Y2Y3
+        XM28 = XM13
+        XM29 = XM14
+        XM30 = XM15
 !
-!        AVERAGE OF NORMAL VECTOR TO PLANES (NOT NORMED)
-!        ONE CAN CHECK THAT WE GET -1 0 OR 0 -1 WITH Z=X OR Z=Y
-!        NPX=-DZ/DX   NPY=-DZ/DY
+!       AVERAGE OF NORMAL VECTOR TO PLANES (NOT NORMED)
+!       ONE CAN CHECK THAT WE GET -1 0 OR 0 -1 WITH Z=X OR Z=Y
+!       NPX=-DZ/DX   NPY=-DZ/DY
 !
-         NPXL=-0.5D0*(Y2*(Z(I1)-Z(I3))+Y3*(Z(I2)-Z(I1)))
-         NPXU=-0.5D0*(Y2*(Z(I4)-Z(I6))+Y3*(Z(I5)-Z(I4)))
-         NPYL=-0.5D0*(X2*(Z(I3)-Z(I1))+X3*(Z(I1)-Z(I2)))
-         NPYU=-0.5D0*(X2*(Z(I6)-Z(I4))+X3*(Z(I4)-Z(I5)))
-         NPX=0.5D0*(NPXL+NPXU)/SURFAC(IELEM)
-         NPY=0.5D0*(NPYL+NPYU)/SURFAC(IELEM)
+        NPXL=-0.5D0*(Y2*(Z(I1)-Z(I3))+Y3*(Z(I2)-Z(I1)))
+        NPXU=-0.5D0*(Y2*(Z(I4)-Z(I6))+Y3*(Z(I5)-Z(I4)))
+        NPYL=-0.5D0*(X2*(Z(I3)-Z(I1))+X3*(Z(I1)-Z(I2)))
+        NPYU=-0.5D0*(X2*(Z(I6)-Z(I4))+X3*(Z(I4)-Z(I5)))
+        NPX=0.5D0*(NPXL+NPXU)/SURFAC(IELEM)
+        NPY=0.5D0*(NPYL+NPYU)/SURFAC(IELEM)
 !
-         NPX=NPX*NUXMOY
-         NPY=NPY*NUYMOY
+        NPX=NPX*NUXMOY
+        NPY=NPY*NUYMOY
 !
-!        2D GRADIENT MATRIX  GX(3,3) AND GY(3,3)
-!        BUT GX(1,J)=GX(2,J)=GX(3,J)
-!        AND GY(1,J)=GY(2,J)=GY(3,J), HENCE ONLY GX(3) AND GY(3)
+!       2D GRADIENT MATRIX  GX(3,3) AND GY(3,3)
+!       BUT GX(1,J)=GX(2,J)=GX(3,J)
+!       AND GY(1,J)=GY(2,J)=GY(3,J), HENCE ONLY GX(3) AND GY(3)
 !
-         GX(2) =   Y3*XS06
-         GX(3) = - Y2*XS06
-         GX(1) = - GX(2) - GX(3)
+        GX(2) =   Y3*XS06
+        GX(3) = - Y2*XS06
+        GX(1) = - GX(2) - GX(3)
 !
-         GY(2) = - X3 * XS06
-         GY(3) =   X2 * XS06
-         GY(1) = - GY(2) - GY(3)
+        GY(2) = - X3 * XS06
+        GY(3) =   X2 * XS06
+        GY(1) = - GY(2) - GY(3)
 !
-!        TERM 3
+!       TERM 3
 !
-!        TERM 1-2 (01)
-         XM01=XM01        +0.5D0*( - ( NPX*GX(1)+NPY*GY(1)) )
-!        TERM 1-3 (02)
-         XM02=XM02        +0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 1-4 (03)
-         XM03=            +0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 1-5 (04)
-         XM04=            +0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 1-6 (05)
-         XM05=            +0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 2-3 (06)
-         XM06=XM06        +0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 2-4 (07)
-         XM07=            +0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 2-5 (08)
-         XM08=            +0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 2-6 (09)
-         XM09=            +0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 3-4 (10)
-         XM10=            +0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 3-5 (11)
-         XM11=            +0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 3-6 (12)
-         XM12=            +0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERME 4-5 (13)
-         XM13=XM13        +0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 4-6 (14)
-         XM14=XM14        +0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 5-6 (15)
-         XM15=XM15        +0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 1-2 (01)
+        XM01=XM01        +0.5D0*( - ( NPX*GX(1)+NPY*GY(1)) )
+!       TERM 1-3 (02)
+        XM02=XM02        +0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 1-4 (03)
+        XM03=            +0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 1-5 (04)
+        XM04=            +0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 1-6 (05)
+        XM05=            +0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 2-3 (06)
+        XM06=XM06        +0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 2-4 (07)
+        XM07=            +0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 2-5 (08)
+        XM08=            +0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 2-6 (09)
+        XM09=            +0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 3-4 (10)
+        XM10=            +0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 3-5 (11)
+        XM11=            +0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 3-6 (12)
+        XM12=            +0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERME 4-5 (13)
+        XM13=XM13        +0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 4-6 (14)
+        XM14=XM14        +0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 5-6 (15)
+        XM15=XM15        +0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
 !
-!        TERM 2-1 (16)
-         XM16=XM16        +0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 3-1 (17)
-         XM17=XM17        +0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 4-1 (18)
-         XM18=             0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 5-1 (19)
-         XM19=             0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 6-1 (20)
-         XM20=             0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 3-2 (21)
-         XM21=XM21        +0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 4-2 (22)
-         XM22=             0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 5-2 (23)
-         XM23=             0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 6-2 (24)
-         XM24=             0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 4-3 (25)
-         XM25=             0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 5-3 (26)
-         XM26=             0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 5-4 (28)
-         XM28=XM28        +0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 6-3 (27)
-         XM27=             0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 6-4 (29)
-         XM29=XM29        +0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 6-5 (30)
-         XM30=XM30        +0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 2-1 (16)
+        XM16=XM16        +0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 3-1 (17)
+        XM17=XM17        +0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 4-1 (18)
+        XM18=             0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 5-1 (19)
+        XM19=             0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 6-1 (20)
+        XM20=             0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 3-2 (21)
+        XM21=XM21        +0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 4-2 (22)
+        XM22=             0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 5-2 (23)
+        XM23=             0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 6-2 (24)
+        XM24=             0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 4-3 (25)
+        XM25=             0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 5-3 (26)
+        XM26=             0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 5-4 (28)
+        XM28=XM28        +0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 6-3 (27)
+        XM27=             0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 6-4 (29)
+        XM29=XM29        +0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 6-5 (30)
+        XM30=XM30        +0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
 !
-         W1(IELEM) =  + XM01 * ( U(I2)-U(I1) )
-     &                + XM02 * ( U(I3)-U(I1) )
-     &                + XM03 * ( U(I4)-U(I1) )
-     &                + XM04 * ( U(I5)-U(I1) )
-     &                + XM05 * ( U(I6)-U(I1) )
-         W2(IELEM) =  + XM16 * ( U(I1)-U(I2) )
-     &                + XM06 * ( U(I3)-U(I2) )
-     &                + XM07 * ( U(I4)-U(I2) )
-     &                + XM08 * ( U(I5)-U(I2) )
-     &                + XM09 * ( U(I6)-U(I2) )
-         W3(IELEM) =  + XM17 * ( U(I1)-U(I3) )
-     &                + XM21 * ( U(I2)-U(I3) )
-     &                + XM10 * ( U(I4)-U(I3) )
-     &                + XM11 * ( U(I5)-U(I3) )
-     &                + XM12 * ( U(I6)-U(I3) )
-         W4(IELEM) =  + XM18 * ( U(I1)-U(I4) )
-     &                + XM22 * ( U(I2)-U(I4) )
-     &                + XM25 * ( U(I3)-U(I4) )
-     &                + XM13 * ( U(I5)-U(I4) )
-     &                + XM14 * ( U(I6)-U(I4) )
-         W5(IELEM) =  + XM19 * ( U(I1)-U(I5) )
-     &                + XM23 * ( U(I2)-U(I5) )
-     &                + XM26 * ( U(I3)-U(I5) )
-     &                + XM28 * ( U(I4)-U(I5) )
-     &                + XM15 * ( U(I6)-U(I5) )
-         W6(IELEM) =  + XM20 * ( U(I1)-U(I6) )
-     &                + XM24 * ( U(I2)-U(I6) )
-     &                + XM27 * ( U(I3)-U(I6) )
-     &                + XM29 * ( U(I4)-U(I6) )
-     &                + XM30 * ( U(I5)-U(I6) )
+        W1(IELEM) =  + XM01 * ( U(I2)-U(I1) )
+     &               + XM02 * ( U(I3)-U(I1) )
+     &               + XM03 * ( U(I4)-U(I1) )
+     &               + XM04 * ( U(I5)-U(I1) )
+     &               + XM05 * ( U(I6)-U(I1) )
+        W2(IELEM) =  + XM16 * ( U(I1)-U(I2) )
+     &               + XM06 * ( U(I3)-U(I2) )
+     &               + XM07 * ( U(I4)-U(I2) )
+     &               + XM08 * ( U(I5)-U(I2) )
+     &               + XM09 * ( U(I6)-U(I2) )
+        W3(IELEM) =  + XM17 * ( U(I1)-U(I3) )
+     &               + XM21 * ( U(I2)-U(I3) )
+     &               + XM10 * ( U(I4)-U(I3) )
+     &               + XM11 * ( U(I5)-U(I3) )
+     &               + XM12 * ( U(I6)-U(I3) )
+        W4(IELEM) =  + XM18 * ( U(I1)-U(I4) )
+     &               + XM22 * ( U(I2)-U(I4) )
+     &               + XM25 * ( U(I3)-U(I4) )
+     &               + XM13 * ( U(I5)-U(I4) )
+     &               + XM14 * ( U(I6)-U(I4) )
+        W5(IELEM) =  + XM19 * ( U(I1)-U(I5) )
+     &               + XM23 * ( U(I2)-U(I5) )
+     &               + XM26 * ( U(I3)-U(I5) )
+     &               + XM28 * ( U(I4)-U(I5) )
+     &               + XM15 * ( U(I6)-U(I5) )
+        W6(IELEM) =  + XM20 * ( U(I1)-U(I6) )
+     &               + XM24 * ( U(I2)-U(I6) )
+     &               + XM27 * ( U(I3)-U(I6) )
+     &               + XM29 * ( U(I4)-U(I6) )
+     &               + XM30 * ( U(I5)-U(I6) )
 !
       ENDDO
 !
@@ -356,191 +356,191 @@
 !
       DO IELEM = 1 , NELEM
 !
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
-         I5 = IKLE5(IELEM)
-         I6 = IKLE6(IELEM)
+        I1 = IKLE1(IELEM)
+        I2 = IKLE2(IELEM)
+        I3 = IKLE3(IELEM)
+        I4 = IKLE4(IELEM)
+        I5 = IKLE5(IELEM)
+        I6 = IKLE6(IELEM)
 !
-         H1 = Z(I4) - Z(I1)
-         H2 = Z(I5) - Z(I2)
-         H3 = Z(I6) - Z(I3)
+        H1 = Z(I4) - Z(I1)
+        H2 = Z(I5) - Z(I2)
+        H3 = Z(I6) - Z(I3)
 !
-!        X2 = X(I2)-X(I1)
-!        X3 = X(I3)-X(I1)
-!        Y2 = Y(I2)-Y(I1)
-!        Y3 = Y(I3)-Y(I1)
+!       X2 = X(I2)-X(I1)
+!       X3 = X(I3)-X(I1)
+!       Y2 = Y(I2)-Y(I1)
+!       Y3 = Y(I3)-Y(I1)
 !
-         X2=X(IELEM,2)
-         X3=X(IELEM,3)
-         Y2=Y(IELEM,2)
-         Y3=Y(IELEM,3)
+        X2=X(IELEM,2)
+        X3=X(IELEM,3)
+        Y2=Y(IELEM,2)
+        Y3=Y(IELEM,3)
 !
-         IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
-     &                  MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &       H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
-           NF1=0.D0
-           NF2=0.D0
-           NF3=0.D0
-           NG1=0.D0
-           NG2=0.D0
-           NG3=0.D0
-           NH1=0.D0
-           NH2=0.D0
-           NH3=0.D0
-           NUXMOY=0.D0
-           NUYMOY=0.D0
-         ELSE
-!          SUIVANT LES CAS (II4=I1 OU I4, ETC.)
-!          VARIANTE AVEC VISCOSITE VERTICALE LINEAIRE (II4=I4)
-!          VARIANTE AVEC VISCOSITE VERTICALE P0 SUR LA VERTICALE (II4=I1)
-           NF1=0.5D0*(F(I1)+F(I4))/H1
-           NF2=0.5D0*(F(I2)+F(I5))/H2
-           NF3=0.5D0*(F(I3)+F(I6))/H3
-           NG1=0.5D0*(G(I1)+G(I4))/H1
-           NG2=0.5D0*(G(I2)+G(I5))/H2
-           NG3=0.5D0*(G(I3)+G(I6))/H3
-           NH1=0.5D0*(H(I1)+H(I4))/H1
-           NH2=0.5D0*(H(I2)+H(I5))/H2
-           NH3=0.5D0*(H(I3)+H(I6))/H3
-!          TAKING INTO ACCOUNT AN AVERAGE DIFFUSION ON THE PRISM
-           NUXMOY=(F(I1)+F(I2)+F(I3)+F(I4)+F(I5)+F(I6))/6.D0
-           NUYMOY=(G(I1)+G(I2)+G(I3)+G(I4)+G(I5)+G(I6))/6.D0
-         ENDIF
+        IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
+     &                 MIN(Z(I4),Z(I5),Z(I6)))    .OR.
+     &      H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
+          NF1=0.D0
+          NF2=0.D0
+          NF3=0.D0
+          NG1=0.D0
+          NG2=0.D0
+          NG3=0.D0
+          NH1=0.D0
+          NH2=0.D0
+          NH3=0.D0
+          NUXMOY=0.D0
+          NUYMOY=0.D0
+        ELSE
+!         SUIVANT LES CAS (II4=I1 OU I4, ETC.)
+!         VARIANTE AVEC VISCOSITE VERTICALE LINEAIRE (II4=I4)
+!         VARIANTE AVEC VISCOSITE VERTICALE P0 SUR LA VERTICALE (II4=I1)
+          NF1=0.5D0*(F(I1)+F(I4))/H1
+          NF2=0.5D0*(F(I2)+F(I5))/H2
+          NF3=0.5D0*(F(I3)+F(I6))/H3
+          NG1=0.5D0*(G(I1)+G(I4))/H1
+          NG2=0.5D0*(G(I2)+G(I5))/H2
+          NG3=0.5D0*(G(I3)+G(I6))/H3
+          NH1=0.5D0*(H(I1)+H(I4))/H1
+          NH2=0.5D0*(H(I2)+H(I5))/H2
+          NH3=0.5D0*(H(I3)+H(I6))/H3
+!         TAKING INTO ACCOUNT AN AVERAGE DIFFUSION ON THE PRISM
+          NUXMOY=(F(I1)+F(I2)+F(I3)+F(I4)+F(I5)+F(I6))/6.D0
+          NUYMOY=(G(I1)+G(I2)+G(I3)+G(I4)+G(I5)+G(I6))/6.D0
+        ENDIF
 !
-!        AVERAGE OF NORMAL VECTOR TO PLANES (NOT NORMED)
-!        ONE CAN CHECK THAT WE GET -1 0 OR 0 -1 WITH Z=X OR Z=Y
-!        NPX=-DZ/DX   NPY=-DZ/DY
+!       AVERAGE OF NORMAL VECTOR TO PLANES (NOT NORMED)
+!       ONE CAN CHECK THAT WE GET -1 0 OR 0 -1 WITH Z=X OR Z=Y
+!       NPX=-DZ/DX   NPY=-DZ/DY
 !
-         NPXL=-0.5D0*(Y2*(Z(I1)-Z(I3))+Y3*(Z(I2)-Z(I1)))
-         NPXU=-0.5D0*(Y2*(Z(I4)-Z(I6))+Y3*(Z(I5)-Z(I4)))
-         NPYL=-0.5D0*(X2*(Z(I3)-Z(I1))+X3*(Z(I1)-Z(I2)))
-         NPYU=-0.5D0*(X2*(Z(I6)-Z(I4))+X3*(Z(I4)-Z(I5)))
-         NPX=0.5D0*(NPXL+NPXU)/SURFAC(IELEM)
-         NPY=0.5D0*(NPYL+NPYU)/SURFAC(IELEM)
-         NPX2=NPX**2
-         NPY2=NPY**2
+        NPXL=-0.5D0*(Y2*(Z(I1)-Z(I3))+Y3*(Z(I2)-Z(I1)))
+        NPXU=-0.5D0*(Y2*(Z(I4)-Z(I6))+Y3*(Z(I5)-Z(I4)))
+        NPYL=-0.5D0*(X2*(Z(I3)-Z(I1))+X3*(Z(I1)-Z(I2)))
+        NPYU=-0.5D0*(X2*(Z(I6)-Z(I4))+X3*(Z(I4)-Z(I5)))
+        NPX=0.5D0*(NPXL+NPXU)/SURFAC(IELEM)
+        NPY=0.5D0*(NPYL+NPYU)/SURFAC(IELEM)
+        NPX2=NPX**2
+        NPY2=NPY**2
 !
-         NPX=NPX*NUXMOY
-         NPY=NPY*NUYMOY
+        NPX=NPX*NUXMOY
+        NPY=NPY*NUYMOY
 !
-!        2D GRADIENT MATRIX  GX(3,3) AND GY(3,3)
-!        BUT GX(1,J)=GX(2,J)=GX(3,J)
-!        AND GY(1,J)=GY(2,J)=GY(3,J), HENCE ONLY GX(3) AND GY(3)
+!       2D GRADIENT MATRIX  GX(3,3) AND GY(3,3)
+!       BUT GX(1,J)=GX(2,J)=GX(3,J)
+!       AND GY(1,J)=GY(2,J)=GY(3,J), HENCE ONLY GX(3) AND GY(3)
 !
-         GX(2) =   Y3*XS06
-         GX(3) = - Y2*XS06
-         GX(1) = - GX(2) - GX(3)
+        GX(2) =   Y3*XS06
+        GX(3) = - Y2*XS06
+        GX(1) = - GX(2) - GX(3)
 !
-         GY(2) = - X3 * XS06
-         GY(3) =   X2 * XS06
-         GY(1) = - GY(2) - GY(3)
+        GY(2) = - X3 * XS06
+        GY(3) =   X2 * XS06
+        GY(1) = - GY(2) - GY(3)
 !
 !
-!        TERMS 2
+!       TERMS 2
 !
-!        TERM 1-2 (01)
-         XM01=0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 1-3 (02)
-         XM02=0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 1-4 (03)
-         XM03=0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 1-5 (04)
-         XM04=0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 1-6 (05)
-         XM05=0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 2-3 (06)
-         XM06=0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 2-4 (07)
-         XM07=0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 2-5 (08)
-         XM08=0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 2-6 (09)
-         XM09=0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 3-4 (10)
-         XM10=0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 3-5 (11)
-         XM11=0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 3-6 (12)
-         XM12=0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 4-5 (13)
-         XM13=0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 4-6 (14)
-         XM14=0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 5-6 (15)
-         XM15=0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 1-2 (01)
+        XM01=0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 1-3 (02)
+        XM02=0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 1-4 (03)
+        XM03=0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 1-5 (04)
+        XM04=0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 1-6 (05)
+        XM05=0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 2-3 (06)
+        XM06=0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 2-4 (07)
+        XM07=0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 2-5 (08)
+        XM08=0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 2-6 (09)
+        XM09=0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 3-4 (10)
+        XM10=0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 3-5 (11)
+        XM11=0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 3-6 (12)
+        XM12=0.5D0*( - ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 4-5 (13)
+        XM13=0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 4-6 (14)
+        XM14=0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 5-6 (15)
+        XM15=0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
 !
-!        TERM 2-1 (16)
-         XM16=0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 3-1 (17)
-         XM17=0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 4-1 (18)
-         XM18=0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 5-1 (19)
-         XM19=0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 6-1 (20)
-         XM20=0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 3-2 (21)
-         XM21=0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 4-2 (22)
-         XM22=0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 5-2 (23)
-         XM23=0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 6-2 (24)
-         XM24=0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
-!        TERM 4-3 (25)
-         XM25=0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 5-3 (26)
-         XM26=0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 6-3 (27)
-         XM27=0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
-!        TERM 5-4 (28)
-         XM28=0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 6-4 (29)
-         XM29=0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
-!        TERM 6-5 (30)
-         XM30=0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 2-1 (16)
+        XM16=0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 3-1 (17)
+        XM17=0.5D0*( - ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 4-1 (18)
+        XM18=0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 5-1 (19)
+        XM19=0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 6-1 (20)
+        XM20=0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 3-2 (21)
+        XM21=0.5D0*( - ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 4-2 (22)
+        XM22=0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 5-2 (23)
+        XM23=0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 6-2 (24)
+        XM24=0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
+!       TERM 4-3 (25)
+        XM25=0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 5-3 (26)
+        XM26=0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 6-3 (27)
+        XM27=0.5D0*( + ( NPX*GX(3)+NPY*GY(3) ) )
+!       TERM 5-4 (28)
+        XM28=0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 6-4 (29)
+        XM29=0.5D0*( + ( NPX*GX(1)+NPY*GY(1) ) )
+!       TERM 6-5 (30)
+        XM30=0.5D0*( + ( NPX*GX(2)+NPY*GY(2) ) )
 !
 !  TERM 4
 !
-         XM03=XM03-(NPX2*NF1+NPY2*NG1+NH1)*SURFAC(IELEM)*XS03
-         XM08=XM08-(NPX2*NF2+NPY2*NG2+NH2)*SURFAC(IELEM)*XS03
-         XM12=XM12-(NPX2*NF3+NPY2*NG3+NH3)*SURFAC(IELEM)*XS03
-         XM18=XM18-(NPX2*NF1+NPY2*NG1+NH1)*SURFAC(IELEM)*XS03
-         XM23=XM23-(NPX2*NF2+NPY2*NG2+NH2)*SURFAC(IELEM)*XS03
-         XM27=XM27-(NPX2*NF3+NPY2*NG3+NH3)*SURFAC(IELEM)*XS03
+        XM03=XM03-(NPX2*NF1+NPY2*NG1+NH1)*SURFAC(IELEM)*XS03
+        XM08=XM08-(NPX2*NF2+NPY2*NG2+NH2)*SURFAC(IELEM)*XS03
+        XM12=XM12-(NPX2*NF3+NPY2*NG3+NH3)*SURFAC(IELEM)*XS03
+        XM18=XM18-(NPX2*NF1+NPY2*NG1+NH1)*SURFAC(IELEM)*XS03
+        XM23=XM23-(NPX2*NF2+NPY2*NG2+NH2)*SURFAC(IELEM)*XS03
+        XM27=XM27-(NPX2*NF3+NPY2*NG3+NH3)*SURFAC(IELEM)*XS03
 !
-         W1(IELEM) =  + XM01 * ( U(I2)-U(I1) )
-     &                + XM02 * ( U(I3)-U(I1) )
-     &                + XM03 * ( U(I4)-U(I1) )
-     &                + XM04 * ( U(I5)-U(I1) )
-     &                + XM05 * ( U(I6)-U(I1) )
-         W2(IELEM) =  + XM16 * ( U(I1)-U(I2) )
-     &                + XM06 * ( U(I3)-U(I2) )
-     &                + XM07 * ( U(I4)-U(I2) )
-     &                + XM08 * ( U(I5)-U(I2) )
-     &                + XM09 * ( U(I6)-U(I2) )
-         W3(IELEM) =  + XM17 * ( U(I1)-U(I3) )
-     &                + XM21 * ( U(I2)-U(I3) )
-     &                + XM10 * ( U(I4)-U(I3) )
-     &                + XM11 * ( U(I5)-U(I3) )
-     &                + XM12 * ( U(I6)-U(I3) )
-         W4(IELEM) =  + XM18 * ( U(I1)-U(I4) )
-     &                + XM22 * ( U(I2)-U(I4) )
-     &                + XM25 * ( U(I3)-U(I4) )
-     &                + XM13 * ( U(I5)-U(I4) )
-     &                + XM14 * ( U(I6)-U(I4) )
-         W5(IELEM) =  + XM19 * ( U(I1)-U(I5) )
-     &                + XM23 * ( U(I2)-U(I5) )
-     &                + XM26 * ( U(I3)-U(I5) )
-     &                + XM28 * ( U(I4)-U(I5) )
-     &                + XM15 * ( U(I6)-U(I5) )
-         W6(IELEM) =  + XM20 * ( U(I1)-U(I6) )
-     &                + XM24 * ( U(I2)-U(I6) )
-     &                + XM27 * ( U(I3)-U(I6) )
-     &                + XM29 * ( U(I4)-U(I6) )
-     &                + XM30 * ( U(I5)-U(I6) )
+        W1(IELEM) =  + XM01 * ( U(I2)-U(I1) )
+     &               + XM02 * ( U(I3)-U(I1) )
+     &               + XM03 * ( U(I4)-U(I1) )
+     &               + XM04 * ( U(I5)-U(I1) )
+     &               + XM05 * ( U(I6)-U(I1) )
+        W2(IELEM) =  + XM16 * ( U(I1)-U(I2) )
+     &               + XM06 * ( U(I3)-U(I2) )
+     &               + XM07 * ( U(I4)-U(I2) )
+     &               + XM08 * ( U(I5)-U(I2) )
+     &               + XM09 * ( U(I6)-U(I2) )
+        W3(IELEM) =  + XM17 * ( U(I1)-U(I3) )
+     &               + XM21 * ( U(I2)-U(I3) )
+     &               + XM10 * ( U(I4)-U(I3) )
+     &               + XM11 * ( U(I5)-U(I3) )
+     &               + XM12 * ( U(I6)-U(I3) )
+        W4(IELEM) =  + XM18 * ( U(I1)-U(I4) )
+     &               + XM22 * ( U(I2)-U(I4) )
+     &               + XM25 * ( U(I3)-U(I4) )
+     &               + XM13 * ( U(I5)-U(I4) )
+     &               + XM14 * ( U(I6)-U(I4) )
+        W5(IELEM) =  + XM19 * ( U(I1)-U(I5) )
+     &               + XM23 * ( U(I2)-U(I5) )
+     &               + XM26 * ( U(I3)-U(I5) )
+     &               + XM28 * ( U(I4)-U(I5) )
+     &               + XM15 * ( U(I6)-U(I5) )
+        W6(IELEM) =  + XM20 * ( U(I1)-U(I6) )
+     &               + XM24 * ( U(I2)-U(I6) )
+     &               + XM27 * ( U(I3)-U(I6) )
+     &               + XM29 * ( U(I4)-U(I6) )
+     &               + XM30 * ( U(I5)-U(I6) )
 !
       ENDDO
 !
@@ -550,14 +550,14 @@
 !
 !-----------------------------------------------------------------------
 !
-       IF (LNG.EQ.1) WRITE(LU,201) FORMUL
-       IF (LNG.EQ.2) WRITE(LU,202) FORMUL
-201    FORMAT(1X,'VC02PP_STAR (BIEF) :',/,
-     &        1X,'IL MANQUE HOR OU VER EN FIN DE FORMULE : ',A16)
-202    FORMAT(1X,'VC02PP_STAR (BIEF) :',/,
-     &        1X,'HOR OR VER LACKING AT THE END OF THE FORMULA : ',A16)
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,201) FORMUL
+        IF (LNG.EQ.2) WRITE(LU,202) FORMUL
+201     FORMAT(1X,'VC02PP_STAR (BIEF) :',/,
+     &         1X,'IL MANQUE HOR OU VER EN FIN DE FORMULE : ',A16)
+202     FORMAT(1X,'VC02PP_STAR (BIEF) :',/,
+     &         1X,'HOR OR VER LACKING AT THE END OF THE FORMULA : ',A16)
+        CALL PLANTE(1)
+        STOP
 !
 !-----------------------------------------------------------------------
 !

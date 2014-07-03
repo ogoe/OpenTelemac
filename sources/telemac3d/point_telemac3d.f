@@ -173,8 +173,8 @@
      &            EQUA,NPLAN=NPLAN,FILE_FORMAT=T3D_FILES(T3DGEO)%FMT,
      &            PROJECTION=PROTYP,LATI0=LATIT,LONGI0=LONGIT)
 !
-C ALIAS FOR CERTAIN COMPONENTS OF THE 3D MESH STRUCTURE
-C THEY ARE DEFINED IN DECLARATIONS
+! ALIAS FOR CERTAIN COMPONENTS OF THE 3D MESH STRUCTURE
+! THEY ARE DEFINED IN DECLARATIONS
 !
       X       => MESH3D%X%R
       Y       => MESH3D%Y%R
@@ -529,47 +529,47 @@ C THEY ARE DEFINED IN DECLARATIONS
 !                                 AND CALL TO TEL4DEL
 !
       CALL BIEF_ALLVEC_IN_BLOCK(TRN,    NTRAC,
-     *                          1, 'TRN   ', IELM, 1, STATUT,MESH3D)
+     &                          1, 'TRN   ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TAC,    NTRAC,
-     *                          1, 'TAC   ', IELM, 1, STATUT,MESH3D)
+     &                          1, 'TAC   ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TA,     MAX(NTRAC,1),
-     *                          1, 'TA    ', IELM, 1, STATUT,MESH3D)
+     &                          1, 'TA    ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(S0TA,   NTRAC,
-     *                          1, 'S0TA  ', IELM, 1, STATUT,MESH3D)
+     &                          1, 'S0TA  ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(S1TA,   NTRAC,
-     *                          1, 'S1TA  ', IELM, 1, STATUT,MESH3D)
+     &                          1, 'S1TA  ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TABORF, NTRAC,
-     *                          1, 'TABF  ', IELH, 1, STATUT,MESH2D)
+     &                          1, 'TABF  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(TABORL, MAX(NTRAC,1) ,
-     *                          1, 'TABL  ', IELV, 1, STATUT,MESH3D)
+     &                          1, 'TABL  ', IELV, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TABORS, NTRAC,
-     *                          1, 'TABS  ', IELH, 1, STATUT,MESH2D)
+     &                          1, 'TABS  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(ATABOF, NTRAC,
-     *                          1, 'ATAF  ', IELH, 1, STATUT,MESH2D)
+     &                          1, 'ATAF  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(ATABOL, MAX(NTRAC,1),
-     *                          1, 'ATAL  ', IELV, 1, STATUT,MESH3D)
+     &                          1, 'ATAL  ', IELV, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(ATABOS, NTRAC,
-     *                          1, 'ATAS  ', IELH, 1, STATUT,MESH2D)
+     &                          1, 'ATAS  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(BTABOF, NTRAC,
-     *                          1, 'BTAF  ', IELH, 1, STATUT,MESH2D)
+     &                          1, 'BTAF  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(BTABOL, MAX(NTRAC,1),
-     *                          1, 'BTAL  ', IELV, 1, STATUT,MESH3D)
+     &                          1, 'BTAL  ', IELV, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(BTABOS, NTRAC,
-     *                          1, 'BTAS  ', IELH, 1, STATUT,MESH2D)
+     &                          1, 'BTAS  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(LITABF, NTRAC,
-     *                          2, 'LTAF  ', IELH, 1, STATUT,MESH2D)
+     &                          2, 'LTAF  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(LITABL, MAX(NTRAC,1) ,
-     *                          2, 'LTAL  ', IELV, 2, STATUT,MESH3D)
+     &                          2, 'LTAL  ', IELV, 2, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(LITABS, NTRAC,
-     *                          2, 'LTAS  ', IELH, 1, STATUT,MESH2D)
+     &                          2, 'LTAS  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(TRBORSAVE,NTRAC,
-     *                          1, 'TBSA  ', IELV, 1, STATUT,MESH3D)
+     &                          1, 'TBSA  ', IELV, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TA_SCE,NTRAC,
-     *                          1, 'TSCE  ', NSCE, 1, 0     ,MESH3D)
+     &                          1, 'TSCE  ', NSCE, 1, 0     ,MESH3D)
 !                                                     SIZE NSCE ALWAYS
 !
 !=======================================================================
-C K-EPSILON MODEL
+! K-EPSILON MODEL
 !
       IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
         IELM   = IELM3
@@ -862,7 +862,7 @@ C K-EPSILON MODEL
 !
       CALL ALLBLO (PRIVE,'PRIVE ')
       CALL BIEF_ALLVEC_IN_BLOCK(PRIVE,MAX(4,NPRIV),
-     *                          1,'PRIV  ',IELM3,1,2,MESH3D)
+     &                          1,'PRIV  ',IELM3,1,2,MESH3D)
 !
 ! INTEGER WORK FIELDS
 !
@@ -955,9 +955,9 @@ C K-EPSILON MODEL
         ENDIF
       ENDIF
       IF(SCHCKE.EQ.ADV_CAR.AND.(ITURBH.EQ.3.OR.
-     *                          ITURBH.EQ.7.OR.
-     *                          ITURBV.EQ.3.OR.
-     *                          ITURBV.EQ.7)) THEN  
+     &                          ITURBH.EQ.7.OR.
+     &                          ITURBV.EQ.3.OR.
+     &                          ITURBV.EQ.7)) THEN  
         CALL ADDBLO(FN3D,AKN)
         CALL ADDBLO(FC3D,AKC)
         CALL ADDBLO(FN3D,EPN)
@@ -996,7 +996,7 @@ C K-EPSILON MODEL
         TYPEXT = 'Q'
       ENDIF
       CALL BIEF_ALLMAT(MSUPG,'SUPG  ',
-     *                 IELM3,IELM3,CFG,TYPDIA,TYPEXT,MESH3D)
+     &                 IELM3,IELM3,CFG,TYPDIA,TYPEXT,MESH3D)
 !
 ! M.U.R.D.
 !
@@ -1007,7 +1007,7 @@ C K-EPSILON MODEL
         TYPEXT = 'Q'
       ENDIF
       CALL BIEF_ALLMAT(MMURD,'MURD  ',
-     *                 IELM3,IELM3,CFGMURD,TYPDIA,TYPEXT,MESH3D)
+     &                 IELM3,IELM3,CFGMURD,TYPDIA,TYPEXT,MESH3D)
 !
 ! M.U.R.D. (EDGE-BASED FOR TIDAL FLATS)
 !
@@ -1025,7 +1025,7 @@ C K-EPSILON MODEL
       TYPDIA = 'Q'
       TYPEXT = 'S'
       CALL BIEF_ALLMAT(MDIFF,'DIFF  ',
-     *                 IELM3,IELM3,CFG,TYPDIA,TYPEXT,MESH3D)
+     &                 IELM3,IELM3,CFG,TYPDIA,TYPEXT,MESH3D)
 !
 ! THE 3D WORK MATRICES (ALWAYS ALLOCATED AS NON SYMMETRICAL)
 !                       SEE USE OF MTRA2%X IN WAVE_EQUATION
@@ -1033,9 +1033,9 @@ C K-EPSILON MODEL
       TYPDIA = 'Q'
       TYPEXT = 'Q'
       CALL BIEF_ALLMAT (MTRA2, 'MTRA2 ',
-     *                  IELM3, IELM3, CFG   , TYPDIA, TYPEXT,MESH3D)
+     &                  IELM3, IELM3, CFG   , TYPDIA, TYPEXT,MESH3D)
       CALL BIEF_ALLMAT (MTRA1, 'MTRA1 ',
-     *                  IELM3, IELM3, CFG   , TYPDIA, TYPEXT,MESH3D)
+     &                  IELM3, IELM3, CFG   , TYPDIA, TYPEXT,MESH3D)
 !
 !-----------------------------------------------------------------------
 ! 3 2D MATRICES (IELM2H) - (EACH OF THEM ALLOCATED IN A
@@ -1055,7 +1055,7 @@ C K-EPSILON MODEL
 ! BOUNDARY MATRIX FOR 2D
 !
       CALL BIEF_ALLMAT(MBOR2D, 'MBOR2D',
-     *                 IELM1, IELM1, CFGBOR2D, 'Q','Q',MESH2D)
+     &                 IELM1, IELM1, CFGBOR2D, 'Q','Q',MESH2D)
 !
 ! 2D WORK MATRIX FOR IELMU.
 !
@@ -1218,10 +1218,10 @@ C K-EPSILON MODEL
 ! DELWAQ FLOWS BETWEEN POINTS
 !
       CALL BIEF_ALLVEC(1,FLODEL,'FLODEL',
-     *                 NSEG*NPLAN+NETAGE*NPOIN2, 1, 0,MESH3D)
+     &                 NSEG*NPLAN+NETAGE*NPOIN2, 1, 0,MESH3D)
 !     FULL SIZE OF FLOPAR PROBABLY NOT USEFUL IF NOT PARALLEL MODE
       CALL BIEF_ALLVEC(1,FLOPAR,'FLOPAR',
-     *                 NSEG*NPLAN+NETAGE*NPOIN2, 1, 0,MESH3D)
+     &                 NSEG*NPLAN+NETAGE*NPOIN2, 1, 0,MESH3D)
 ! LIMITATION OF 2D SEGMENT FLUXES
       CALL BIEF_ALLVEC(1,FLULIM,'FLULIM',NSEG,1,0,MESH3D)
 !
@@ -1293,25 +1293,26 @@ C K-EPSILON MODEL
 !      ENDIF
 ! 7.0 Big change
 
-      ALLOCATE(CONC(NPOIN2,NCOUCH))
-      ALLOCATE(EPAI(NPOIN2,NCOUCH))           ! MUD BED LAYER THICKNESS
-      ALLOCATE(TOCE(NPOIN2,NCOUCH))           ! CONCENTRATION OF MUD BED LAYER
-!
-      CALL ALLBLO(LAYTOCE, 'LAYTOCE') ! LAYER BED SHEAR STRESS
-      CALL BIEF_ALLVEC_IN_BLOCK(LAYTOCE,NCOUCH,1,'LAYTOCE',0,1,0,MESH2D)
-      DO K=1,NCOUCH
-            LAYTOCE%ADR(K)%P%R=>TOCE(1:NPOIN2,K)
-            LAYTOCE%ADR(K)%P%MAXDIM1=NPOIN2
-            LAYTOCE%ADR(K)%P%DIM1=NPOIN2
-      ENDDO
-!
-       CALL ALLBLO(LAYTHI, 'LAYTHI') ! LAYER BED THICKNESS
-       CALL BIEF_ALLVEC_IN_BLOCK(LAYTHI,NCOUCH,1,'LAYTHI',0,1,0,MESH2D)
-       DO K=1,NCOUCH
-            LAYTHI%ADR(K)%P%R=>EPAI(1:NPOIN2,K)
-            LAYTHI%ADR(K)%P%MAXDIM1=NPOIN2
-            LAYTHI%ADR(K)%P%DIM1=NPOIN2
-       ENDDO
+        ALLOCATE(CONC(NPOIN2,NCOUCH))
+        ALLOCATE(EPAI(NPOIN2,NCOUCH))           ! MUD BED LAYER THICKNESS
+        ALLOCATE(TOCE(NPOIN2,NCOUCH))           ! CONCENTRATION OF MUD BED LAYER
+!      
+        CALL ALLBLO(LAYTOCE, 'LAYTOCE') ! LAYER BED SHEAR STRESS
+        CALL BIEF_ALLVEC_IN_BLOCK(LAYTOCE,NCOUCH,1,'LAYTOCE',
+     &                            0,1,0,MESH2D)
+        DO K=1,NCOUCH
+          LAYTOCE%ADR(K)%P%R=>TOCE(1:NPOIN2,K)
+          LAYTOCE%ADR(K)%P%MAXDIM1=NPOIN2
+          LAYTOCE%ADR(K)%P%DIM1=NPOIN2
+        ENDDO
+!      
+        CALL ALLBLO(LAYTHI, 'LAYTHI') ! LAYER BED THICKNESS
+        CALL BIEF_ALLVEC_IN_BLOCK(LAYTHI,NCOUCH,1,'LAYTHI',0,1,0,MESH2D)
+        DO K=1,NCOUCH
+          LAYTHI%ADR(K)%P%R=>EPAI(1:NPOIN2,K)
+          LAYTHI%ADR(K)%P%MAXDIM1=NPOIN2
+          LAYTHI%ADR(K)%P%DIM1=NPOIN2
+        ENDDO
 !...CV
         CALL BIEF_ALLVEC(1, ZR,    'ZR    ', IELM2H, 1, 1,MESH2D)
         CALL BIEF_ALLVEC(2, NPF,   'NPF   ', IELM2H, 1, 1,MESH2D)

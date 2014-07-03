@@ -77,22 +77,22 @@
 ! je pense que ce test est inutile (cf apel dans conlit.f)
 !      IF(OK(I).AND.SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
 !
-!       FCT WILL BE CGL(1), CGL(2), ETC, CGL(9), DEPENDING ON I
-        FCT='CG(      '
-        IF(I.LT.10) THEN
-          WRITE(FCT(4:4),FMT='(I1)') I
-          FCT(5:5)=')'
-!        ELSEIF(I.LT.100) THEN
-!          WRITE(FCT(4:5),FMT='(I2)') I
-!          FCT(6:6)=')'
-        ELSE
-          PRINT*,'I=',I
-          WRITE(LU,*) 'CGL NOT PROGRAMMED FOR MORE THAN 9 BOUNDARIES'
-          CALL PLANTE(1)
-          STOP
-        ENDIF
+!     FCT WILL BE CGL(1), CGL(2), ETC, CGL(9), DEPENDING ON I
+      FCT='CG(      '
+      IF(I.LT.10) THEN
+        WRITE(FCT(4:4),FMT='(I1)') I
+        FCT(5:5)=')'
+!      ELSEIF(I.LT.100) THEN
+!        WRITE(FCT(4:5),FMT='(I2)') I
+!        FCT(6:6)=')'
+      ELSE
+        PRINT*,'I=',I
+        WRITE(LU,*) 'CGL NOT PROGRAMMED FOR MORE THAN 9 BOUNDARIES'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
-        CALL READ_FIC_CONC(CGL,FCT,AT,SIS_FILES(SISLIQ)%LU,ENTET,OK(I))
+      CALL READ_FIC_CONC(CGL,FCT,AT,SIS_FILES(SISLIQ)%LU,ENTET,OK(I))
 !
       IF(.NOT.OK(I).OR.SIS_FILES(SISLIQ)%NAME(1:1).EQ.' ') THEN
 !
@@ -100,17 +100,17 @@
 !     PROGRAMMABLE PART
 !     SL IS READ FROM THE STEERING FILE, BUT MAY BE CHANGED
 !
-          IF(LNG.EQ.1) WRITE(LU,10 0) I
-100       FORMAT(1X,/,1X,'CG : CONC IMPOSEES EN NOMBRE INSUFFISANT'
-     &             ,/,1X,'     DANS LE FICHIER DES PARAMETRES'
-     &             ,/,1X,'     IL EN FAUT AU MOINS : ',1I6)
-          IF(LNG.EQ.2) WRITE(LU,101) I
-101       FORMAT(1X,/,1X,'CG: MORE PRESCRIBED ELEVATIONS ARE REQUIRED'
-     &             ,/,1X,'     IN THE PARAMETER FILE'
-     &             ,/,1X,'     AT LEAST ',1I6,' MUST BE GIVEN')
-          CALL PLANTE(1)
-          STOP
-       ENDIF
+        IF(LNG.EQ.1) WRITE(LU,10 0) I
+100     FORMAT(1X,/,1X,'CG : CONC IMPOSEES EN NOMBRE INSUFFISANT'
+     &           ,/,1X,'     DANS LE FICHIER DES PARAMETRES'
+     &           ,/,1X,'     IL EN FAUT AU MOINS : ',1I6)
+        IF(LNG.EQ.2) WRITE(LU,101) I
+101     FORMAT(1X,/,1X,'CG: MORE PRESCRIBED ELEVATIONS ARE REQUIRED'
+     &           ,/,1X,'     IN THE PARAMETER FILE'
+     &           ,/,1X,'     AT LEAST ',1I6,' MUST BE GIVEN')
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 !
 !-----------------------------------------------------------------------

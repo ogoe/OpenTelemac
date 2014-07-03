@@ -65,7 +65,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      double precision dI_ORIG, dJ_ORIG
+      DOUBLE PRECISION DI_ORIG, DJ_ORIG
 
 !***********************************************************************
 !     IF(DEBUG) CALL PROC_BEGIN('WRITE_MESH')
@@ -81,9 +81,9 @@
      &                             I_ORIG,J_ORIG,
      &                             FFORMAT)
         CASE ('MED     ')
-           dI_ORIG = DBLE(I_ORIG)
-           dJ_ORIG = DBLE(J_ORIG)
-           CALL WRITE_MESH_MED(NFILE,MESH,dI_ORIG,dJ_ORIG)
+           DI_ORIG = DBLE(I_ORIG)
+           DJ_ORIG = DBLE(J_ORIG)
+           CALL WRITE_MESH_MED(NFILE,MESH,DI_ORIG,DJ_ORIG)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'WRITE_MESH : MAUVAIS FORMAT : ',FFORMAT

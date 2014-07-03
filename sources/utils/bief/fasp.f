@@ -149,36 +149,36 @@
       IF(OK4) CALL CROSFR(X(I),Y(I),X4,Y4,X,Y,NPOIN,NBOR,KP1BOR,
      &                    NPTFR,DM,OK4)
 !
-         ZNUM = 0.D0
-         ZDEN = 0.D0
-         INUM = 0
-         IF(OK1) THEN
-          ZNUM = ZNUM + ZCADR1/DIST1
-          ZDEN = ZDEN + 1.D0/DIST1
-          INUM = INUM + 1
-         ENDIF
-         IF(OK2) THEN
-          ZNUM = ZNUM + ZCADR2/DIST2
-          ZDEN = ZDEN + 1.D0/DIST2
-          INUM = INUM + 1
-         ENDIF
-         IF(OK3) THEN
-          ZNUM = ZNUM + ZCADR3/DIST3
-          ZDEN = ZDEN + 1.D0/DIST3
-          INUM = INUM + 1
-         ENDIF
-         IF(OK4) THEN
-          ZNUM = ZNUM + ZCADR4/DIST4
-          ZDEN = ZDEN + 1.D0/DIST4
-          INUM = INUM + 1
-         ENDIF
+      ZNUM = 0.D0
+      ZDEN = 0.D0
+      INUM = 0
+      IF(OK1) THEN
+        ZNUM = ZNUM + ZCADR1/DIST1
+        ZDEN = ZDEN + 1.D0/DIST1
+        INUM = INUM + 1
+      ENDIF
+      IF(OK2) THEN
+        ZNUM = ZNUM + ZCADR2/DIST2
+        ZDEN = ZDEN + 1.D0/DIST2
+        INUM = INUM + 1
+      ENDIF
+      IF(OK3) THEN
+        ZNUM = ZNUM + ZCADR3/DIST3
+        ZDEN = ZDEN + 1.D0/DIST3
+        INUM = INUM + 1
+      ENDIF
+      IF(OK4) THEN
+        ZNUM = ZNUM + ZCADR4/DIST4
+        ZDEN = ZDEN + 1.D0/DIST4
+        INUM = INUM + 1
+      ENDIF
 !
-         IF(INUM.NE.0) THEN
-!         ZF : WATER DEPTH AT THE POINT
-          ZF(I)=ZNUM/ZDEN
-         ELSE
-          ZF(I) = -1.D6
-         ENDIF
+      IF(INUM.NE.0) THEN
+!       ZF : WATER DEPTH AT THE POINT
+        ZF(I)=ZNUM/ZDEN
+      ELSE
+        ZF(I) = -1.D6
+      ENDIF
 !
       ENDDO ! I 
 !

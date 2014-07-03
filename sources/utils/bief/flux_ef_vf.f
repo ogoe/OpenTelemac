@@ -393,7 +393,7 @@
 !
       ELSE
 !
-       IF(LNG.EQ.1) THEN
+        IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'FLUX_EF_VF :'
           WRITE(LU,*) 'OPTION INCONNUE : ',IOPT
 !         IF(IOPT.EQ.3.AND..NOT.PRESENT(FN)) THEN

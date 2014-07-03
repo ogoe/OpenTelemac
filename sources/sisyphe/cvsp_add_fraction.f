@@ -56,26 +56,26 @@
 !-----------------------------------------------------------------------
 !
       IF (PRO_MAX(J).GT.2) THEN
-         IF (PRO_D(J,PRO_MAX(J)-1,1).GT.PRO_D(J,PRO_MAX(J)-2,1)) THEN
+        IF (PRO_D(J,PRO_MAX(J)-1,1).GT.PRO_D(J,PRO_MAX(J)-2,1)) THEN
 !
 !-----------------------------------------------------------------------     
 !INSERT
 !-----------------------------------------------------------------------
 !
-            PRO_MAX(J) = PRO_MAX(J) + 1
+          PRO_MAX(J) = PRO_MAX(J) + 1
 !
 !-----------------------------------------------------------------------     
 !SHIFTS BREAKPOINT
 !-----------------------------------------------------------------------
 !
-            DO II=1,NSICLA
-               PRO_F(J,PRO_MAX(J),II) = PRO_F(J,PRO_MAX(J)-1,II)
-               PRO_F(J,PRO_MAX(J)-1,II) = PRO_F(J,PRO_MAX(J)-2,II)
-               PRO_D(J,PRO_MAX(J),II) = PRO_D(J,PRO_MAX(J)-1,II)
-               PRO_D(J,PRO_MAX(J)-1,II) = PRO_D(J,PRO_MAX(J)-2,II)
-            ENDDO
+          DO II=1,NSICLA
+            PRO_F(J,PRO_MAX(J),II) = PRO_F(J,PRO_MAX(J)-1,II)
+            PRO_F(J,PRO_MAX(J)-1,II) = PRO_F(J,PRO_MAX(J)-2,II)
+            PRO_D(J,PRO_MAX(J),II) = PRO_D(J,PRO_MAX(J)-1,II)
+            PRO_D(J,PRO_MAX(J)-1,II) = PRO_D(J,PRO_MAX(J)-2,II)
+          ENDDO
             
-         ENDIF
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------     
@@ -116,43 +116,39 @@
 !-----------------------------------------------------------------------
 !
       DO II=1,NSICLA
-         IF (I /= II) THEN
+        IF (I /= II) THEN
 !
 !-----------------------------------------------------------------------      
 ! SUM OF FRACTIONS AFTER SEDIMENTATION /= I
 !-----------------------------------------------------------------------
 !
-            TEMP1 =
-     &           PRO_F(J,PRO_MAX(J),II) * STR_OLD / STR_NEW
-            TEMP2 =
-     &           PRO_F(J,PRO_MAX(J)-1,II) * STR_OLD / STR_NEW
+          TEMP1 = PRO_F(J,PRO_MAX(J),II) * STR_OLD / STR_NEW
+          TEMP2 = PRO_F(J,PRO_MAX(J)-1,II) * STR_OLD / STR_NEW
 !
 !-----------------------------------------------------------------------      
 ! ASSIGN NEW THICKNESS & CORRECTED FRACTIONS
 !-----------------------------------------------------------------------
 !
-            PRO_F(J,PRO_MAX(J),II) = TEMP1
-            PRO_D(J,PRO_MAX(J),II) = DZFCL + PRO_D(J,PRO_MAX(J),II)
-            PRO_F(J,PRO_MAX(J)-1,II) = TEMP2
-         ENDIF
+          PRO_F(J,PRO_MAX(J),II) = TEMP1
+          PRO_D(J,PRO_MAX(J),II) = DZFCL + PRO_D(J,PRO_MAX(J),II)
+          PRO_F(J,PRO_MAX(J)-1,II) = TEMP2
+        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------      
 ! REMOVES FLOATING POINT TRUCATIONS
 !-----------------------------------------------------------------------
 !
-      RET =  CVSP_CHECK_F(J,PRO_MAX(J),'ADF: MAX  ')
-      RET =  CVSP_CHECK_F(J,PRO_MAX(J)-1,'ADF: MAX+1')
+      RET = CVSP_CHECK_F(J,PRO_MAX(J),'ADF: MAX  ')
+      RET = CVSP_CHECK_F(J,PRO_MAX(J)-1,'ADF: MAX+1')
       IF (PRO_MAX(J).GT.2) THEN
-         RET =  CVSP_CHECK_F(J,PRO_MAX(J)-2,'ADF: MAX+2')
+        RET =  CVSP_CHECK_F(J,PRO_MAX(J)-2,'ADF: MAX+2')
       ENDIF
       IF (PRO_MAX(J).GT.3) THEN
-         RET =  CVSP_CHECK_F(J,PRO_MAX(J)-3,'ADF: MAX+3')
+        RET = CVSP_CHECK_F(J,PRO_MAX(J)-3,'ADF: MAX+3')
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END SUBROUTINE CVSP_ADD_FRACTION
-
-

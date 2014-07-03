@@ -86,6 +86,7 @@
             WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
             WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1  
           ENDIF
+          CALL PLANTE(1)
           STOP
         ENDIF
         F1SF( 1)=0.32D0
@@ -124,6 +125,7 @@
             WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
             WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1  
           ENDIF
+          CALL PLANTE(1)
           STOP
         ENDIF
         F1SF( 1)=0.30D0
@@ -147,6 +149,7 @@
             WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
             WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1
           ENDIF
+          CALL PLANTE(1)
           STOP
         ENDIF
         NF1=20

@@ -44,11 +44,11 @@
 !
       NIT=0
       K10=XK
-C Produit scalaire K.U
+! Produit scalaire K.U
       IF((XUC*XKX+XVC*XKY).GE.0D0)THEN
-       K20=1.D-04*K10
+        K20=1.D-04*K10
       ELSE
-       K20=10.D0*K10
+        K20=10.D0*K10
       ENDIF
       K30 =(K10+K20)*0.5D0
       AK01=(XUC*XKX)
@@ -97,7 +97,7 @@ C Produit scalaire K.U
       K30=(K10+K20)*0.5D0     
 !      
       IF(DELTA.GT.1D-06)THEN
-       GOTO 97
+        GOTO 97
       ELSE
         XK=K30
       ENDIF

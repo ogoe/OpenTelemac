@@ -123,25 +123,25 @@
       ! ---------------------------
       DO I = 1, CF%DIM1
 !
-         ! FRICTION COEFFICIENT FOR THE BOTTOM
-         ! -----------------------------------
-         CALL FRICTION_CALC
-     &        (I, I, NKFROT%I(I), NDEFMA%R(I), VK, GRAV,
-     &         KARMAN, CHESTR, T1, T1, T2, CF)
+        ! FRICTION COEFFICIENT FOR THE BOTTOM
+        ! -----------------------------------
+        CALL FRICTION_CALC
+     &       (I, I, NKFROT%I(I), NDEFMA%R(I), VK, GRAV,
+     &        KARMAN, CHESTR, T1, T1, T2, CF)
 !
-         ! FRICTION COEFFICIENT FOR NON-SUBMERGED VEGETATION
-         ! -------------------------------------------------
-         IF (LINDNER) THEN
-            CALL FRICTION_LINDNER
-     &           (T2%R(I), T1%R(I), CF%R(I), VK, GRAV,
-     &            LINDDP%R(I),LINDSP%R(I), CP)
+        ! FRICTION COEFFICIENT FOR NON-SUBMERGED VEGETATION
+        ! -------------------------------------------------
+        IF (LINDNER) THEN
+          CALL FRICTION_LINDNER
+     &         (T2%R(I), T1%R(I), CF%R(I), VK, GRAV,
+     &          LINDDP%R(I),LINDSP%R(I), CP)
 !
-            IF (CP < -0.9D0) THEN
-               CP = 0.75D0*T1%R(I)*LINDDP%R(I) / (LINDSP%R(I))**2
-            ENDIF
+          IF (CP < -0.9D0) THEN
+            CP = 0.75D0*T1%R(I)*LINDDP%R(I) / (LINDSP%R(I))**2
+          ENDIF
 !
-            CF%R(I) = (CF%R(I)+2.D0*CP)
-         ENDIF
+          CF%R(I) = (CF%R(I)+2.D0*CP)
+        ENDIF
 !
       END DO
 !
@@ -152,14 +152,14 @@
 !
       IF(LISRUG.EQ.2) THEN
 !
-         DO J = 1, MESH%NPTFR
-            I = MESH%NBOR%I(J)
-            ! BOTTOM FRICTION CALCULATION
-            ! ---------------------------
-            CALL FRICTION_CALC
-     &           (J,J,KFRO_B%I(J),NDEF_B%R(J),VK,GRAV,KARMAN,
-     &            CHBORD,MESH%DISBOR,T1,T2,CFBOR)
-         ENDDO
+        DO J = 1, MESH%NPTFR
+          I = MESH%NBOR%I(J)
+          ! BOTTOM FRICTION CALCULATION
+          ! ---------------------------
+          CALL FRICTION_CALC
+     &         (J,J,KFRO_B%I(J),NDEF_B%R(J),VK,GRAV,KARMAN,
+     &          CHBORD,MESH%DISBOR,T1,T2,CFBOR)
+        ENDDO
 !
       ENDIF
 !

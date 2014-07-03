@@ -437,7 +437,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PRENL2'
         DO K=1,MDIA
           CALL PRENL2(IANMDI(1,1,K),COEMDI(1,K),NPLAN,NF,RAISF,
-     *                XLAMDI(K),XMUMDI(K))
+     &                XLAMDI(K),XMUMDI(K))
         ENDDO
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PRENL2'
 !        
@@ -446,12 +446,12 @@
       ELSEIF(STRIF.EQ.3) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PRENL3'
         CALL PRENL3
-     *( NF    , NPLAN , RAISF , TAILF , FREQ  , TB_SCA, LBUF  , DIMBUF,
-     *  F_POIN, F_COEF, T_POIN, F_PROJ, IQ_OM1, NQ_TE1, NQ_OM2, NF1   ,
-     *  NT1   , K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , 
-     *  K_1M  , K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M,
-     *  K_1M3P, TB_TPM, TB_TMP, TB_FAC, SEUIL1, SEUIL2, ELIM  , NCONF ,
-     *  NCONFM, IDCONF)
+     &( NF    , NPLAN , RAISF , TAILF , FREQ  , TB_SCA, LBUF  , DIMBUF,
+     &  F_POIN, F_COEF, T_POIN, F_PROJ, IQ_OM1, NQ_TE1, NQ_OM2, NF1   ,
+     &  NT1   , K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , 
+     &  K_1M  , K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M,
+     &  K_1M3P, TB_TPM, TB_TMP, TB_FAC, SEUIL1, SEUIL2, ELIM  , NCONF ,
+     &  NCONFM, IDCONF)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PRENL3'
       ENDIF       
 !
@@ -548,7 +548,7 @@
      & SUV%R   , SVV%R   , SPEULI   , VENT  , VENSTA, GRAVIT ,
      & DEUPI   , SPRIVE%R, NPRIV    , STRA31%R , STRA32%R,
      & DEPTH   , FRABL   , BOUNDARY_COLOUR%I)
-       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LIMWAC'
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LIMWAC'
 !
 !=====C CALCUL DES NOMBRES D'ONDE (XK), DE LA VITESSE DE GROUPE (CG) ET
 !  8  C DU FACTEUR DE PASSAGE (B) EN SPECTRE DE VARIANCE EN (FR,TETA).
@@ -791,11 +791,11 @@
 !
         IF(PROP) THEN
 !
-         CALL IMPR(LISPRD,LT,AT,LT,1)
-         CALL IMPR(LISPRD,LT,AT,LT,2)
-         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREPRO 2'
-!
-         CALL PREPRO
+          CALL IMPR(LISPRD,LT,AT,LT,1)
+          CALL IMPR(LISPRD,LT,AT,LT,2)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREPRO 2'
+!         
+          CALL PREPRO
 !        EX-SCX      EX-SCY (MEMORY OPTIMISATION)
      & ( STSDER    , STSTOT     , SCT      , SCF     , DT  ,
      &   MESH%X%R , MESH%Y%R  , STETA    ,
@@ -811,7 +811,7 @@
      &   SPHE     , PROINF    , PROMIN,MESH,MESH3D,MESH%IKLE,TB,
      &   IELM3    , DIFFRA    , MAREE ,ISUB )
 !Fin COUPLAGE
-         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREPRO 2'
+          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREPRO 2'
         ENDIF
       ENDIF
 !Fin cycle IF((MAREE.AND.LT.EQ.LT1).OR.(PART.EQ.1.AND.LT_WAC.EQ.1))
@@ -843,7 +843,7 @@
      &   SRY%R    , SRXX%R    , SRYY%R   , SNEIGB%I,
      &   SNB_CLOSE%I, DIFFRA  , MAXNSP   , FLTDIF  ,
      &   MESH3D,MESH,IELM3,TB,ISUB,MESH%IKLE)
-         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREDIF'
+          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREDIF'
         ENDIF
       ENDIF
 !V6P2 End diffraction

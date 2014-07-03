@@ -351,14 +351,14 @@
 !-----------------------------------------------------------------------
 !
       ELSE
-       IF (LNG.EQ.1) WRITE(LU,100) IELMF,IELMU
-       IF (LNG.EQ.2) WRITE(LU,101) IELMF,IELMU
-100    FORMAT(1X,'MT12AA (BIEF) :',/,
-     &        1X,'COMBINAISON DE F ET U: ',1I6,2X,1I6,' NON PREVUE')
-101    FORMAT(1X,'MT12AA (BIEF) :',/,
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF,IELMU
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF,IELMU
+100     FORMAT(1X,'MT12AA (BIEF) :',/,
+     &         1X,'COMBINAISON DE F ET U: ',1I6,2X,1I6,' NON PREVUE')
+101     FORMAT(1X,'MT12AA (BIEF) :',/,
      &        1X,'COMBINATION OF F AND U: ',1I6,2X,1I6,' NOT AVAILABLE')
-       CALL PLANTE(0)
-       STOP
+        CALL PLANTE(0)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

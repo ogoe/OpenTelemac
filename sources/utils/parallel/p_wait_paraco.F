@@ -53,6 +53,7 @@
       IF(NB.GT.100) THEN
         WRITE(LU,*) 'WAIT_PARACO:'
         WRITE(LU,*) 'DIMENSION OF WAIT_REQ TOO SMALL'
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -61,6 +62,7 @@
       IF(IER.NE.0) THEN
         WRITE(LU,*) 'WAIT_PARACO:'
         WRITE(LU,*) 'MPI ERROR ',IER
+        CALL PLANTE(1)
         STOP
       ENDIF
 #else

@@ -247,22 +247,22 @@
       ! XI - LISTING OF THE FINAL MASS-BALANCE !
       ! ************************************** !
       IF(LT.EQ.NIT.AND.ENTET) THEN
-         PERDUE = MASED0 + MASTEN + MASTOU - MASFIN - MASDEP
-         IF(LNG.EQ.1) THEN
-            WRITE(LU,3000) ITRA
-            WRITE(LU,1160) ITRA, MASED0, MASFIN
-            IF(ABS(MASTEN) > 1.D-8) WRITE(LU,1161) MASTEN
-            IF(ABS(MASTOU) > 1.D-8) WRITE(LU,1164) MASTOU
-            IF(ABS(MASDEP) > 1.D-8) WRITE(LU,1167) MASDEP
-            WRITE(LU,1166) PERDUE
-         ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,3100) ITRA
-            WRITE(LU,2160) ITRA,MASED0, MASFIN
-            IF(ABS(MASTEN) > 1.D-8) WRITE(LU,2161) MASTEN
-            IF(ABS(MASTOU) > 1.D-8) WRITE(LU,2164) MASTOU
-            IF(ABS(MASDEP) > 1.D-8) WRITE(LU,2167) MASDEP
-            WRITE(LU,2166) PERDUE
-         ENDIF
+        PERDUE = MASED0 + MASTEN + MASTOU - MASFIN - MASDEP
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,3000) ITRA
+          WRITE(LU,1160) ITRA, MASED0, MASFIN
+          IF(ABS(MASTEN) > 1.D-8) WRITE(LU,1161) MASTEN
+          IF(ABS(MASTOU) > 1.D-8) WRITE(LU,1164) MASTOU
+          IF(ABS(MASDEP) > 1.D-8) WRITE(LU,1167) MASDEP
+          WRITE(LU,1166) PERDUE
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,3100) ITRA
+          WRITE(LU,2160) ITRA,MASED0, MASFIN
+          IF(ABS(MASTEN) > 1.D-8) WRITE(LU,2161) MASTEN
+          IF(ABS(MASTOU) > 1.D-8) WRITE(LU,2164) MASTOU
+          IF(ABS(MASDEP) > 1.D-8) WRITE(LU,2167) MASDEP
+          WRITE(LU,2166) PERDUE
+        ENDIF
       ENDIF
       ! *************************** !
       ! XII - UPDATES INITIAL MASS  !

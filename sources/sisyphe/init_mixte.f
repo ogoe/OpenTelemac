@@ -110,121 +110,121 @@
 !  INIT_COMPO_COH : composition of the sediment bed : thickness of layers 
 !                  and concentrations The number of sediment bed layers is fixed
  
-        IF(.NOT.DEBU) THEN
+      IF(.NOT.DEBU) THEN
 !    
-          CALL INIT_COMPO_COH(ES,CONC_VASE,CONC,NPOIN,
-     &       NOMBLAY,NSICLA,AVAIL,AVA0)
+        CALL INIT_COMPO_COH(ES,CONC_VASE,CONC,NPOIN,
+     &     NOMBLAY,NSICLA,AVAIL,AVA0)
 !
-!         Recalcul des epaisseurs pour satisfaire : Sum (ES)=ZF-ZR
+!       Recalcul des epaisseurs pour satisfaire : Sum (ES)=ZF-ZR
 ! 
-          DO I=1,NPOIN 
+        DO I=1,NPOIN 
 !
-            ELAY(I)=ZF(I)-ZR(I)
+          ELAY(I)=ZF(I)-ZR(I)
 !
 !
-!           THE HEIGHT OF SEDIMENT (SUM OF ES) MUST BE EQUAL TO ZF-ZR
-!           IF SO, THE HEIGHT OF THE LAST LAYER IS REDUCED
-!           IF THERE ARE LAYERS UNDER ZR, THEY ARE NOT TAKEN INTO ACCOUNT
+!         THE HEIGHT OF SEDIMENT (SUM OF ES) MUST BE EQUAL TO ZF-ZR
+!         IF SO, THE HEIGHT OF THE LAST LAYER IS REDUCED
+!         IF THERE ARE LAYERS UNDER ZR, THEY ARE NOT TAKEN INTO ACCOUNT
 !
-            HAUTSED = 0.D0
+          HAUTSED = 0.D0
 !
-            NK=NOMBLAY
-            DO K=1,NOMBLAY
+          NK=NOMBLAY
+          DO K=1,NOMBLAY
 !
-              IF(HAUTSED + ES(I,K) .GE. ELAY(I)) THEN
-                ES(I,K) = ELAY(I) -  HAUTSED
-                NK=K
-                HAUTSED = HAUTSED + ES(I,K)
-                GOTO 144
-              ENDIF
+            IF(HAUTSED + ES(I,K) .GE. ELAY(I)) THEN
+              ES(I,K) = ELAY(I) -  HAUTSED
+              NK=K
               HAUTSED = HAUTSED + ES(I,K)
-!             
-           ENDDO
-!          
-144        CONTINUE
-!
-!          FOR CLEAN OUTPUTS
-!
-           IF(NK.LT.NOMBLAY) THEN
-             DO K=NK+1,NOMBLAY
-               ES(I,K) = 0.D0
-             ENDDO
-           ENDIF
-!
-!          THE THICKNESS OF THE LAST LAYER IS ENLARGED SO THAT
-!          THE HEIGHT OF SEDIMENT (SUM OF ES) IS EQUAL TO ZF-ZR
-!
-           IF(HAUTSED.LT.ELAY(I)) THEN
-             ES(I,NOMBLAY)=ES(I,NOMBLAY)+ELAY(I)-HAUTSED
-           ENDIF
-!
-         ENDDO
-!
-       ELSE
-!
-!       En cas de suite de calcul       
-!       Check that sum of layers (simple precision) is equal to ZF-ZR 
-!
-         DO I=1,NPOIN
-!
-           ELAY(I)=ZF(I)-ZR(I)
-!
-           EST=0.D0
-!
-!           IF(NOMBLAY.GT.1) THEN
-!
-            DO J=1,NOMBLAY
-               EST=EST+ES(I,J)
+              GOTO 144
+            ENDIF
+            HAUTSED = HAUTSED + ES(I,K)
+!           
+          ENDDO
+!         
+144       CONTINUE
+!         
+!         FOR CLEAN OUTPUTS
+!         
+          IF(NK.LT.NOMBLAY) THEN
+            DO K=NK+1,NOMBLAY
+              ES(I,K) = 0.D0
             ENDDO
-!           ELSE
-!             EST=ES(I,1)
-!           ENDIF
+          ENDIF
+!         
+!         THE THICKNESS OF THE LAST LAYER IS ENLARGED SO THAT
+!         THE HEIGHT OF SEDIMENT (SUM OF ES) IS EQUAL TO ZF-ZR
+!         
+          IF(HAUTSED.LT.ELAY(I)) THEN
+            ES(I,NOMBLAY)=ES(I,NOMBLAY)+ELAY(I)-HAUTSED
+          ENDIF
 !
-           DIFF= ELAY(I) - EST
+        ENDDO
 !
-           IF(ABS(DIFF).GE.1.D-4) THEN
-             WRITE(LU,*) 'ERROR IN INIT-MIXTE:'
-             WRITE(LU,*) 'THE SUM OF THICKNESS OF BED LAYERS  
-     *      IS DIFFERENT FROM ERODIBLE BED THICKNESS'
-             CALL PLANTE(1)
-             STOP
-           ELSE 
-             ES(I,NOMBLAY) = MAX(ES(I,NOMBLAY)+ DIFF,0.D0)
-           ENDIF
+      ELSE
 !
-         ENDDO        
-!       
-       ENDIF
+!      En cas de suite de calcul       
+!      Check that sum of layers (simple precision) is equal to ZF-ZR 
+!
+        DO I=1,NPOIN
+!
+          ELAY(I)=ZF(I)-ZR(I)
+!
+          EST=0.D0
+!
+!          IF(NOMBLAY.GT.1) THEN
+!
+           DO J=1,NOMBLAY
+              EST=EST+ES(I,J)
+           ENDDO
+!          ELSE
+!            EST=ES(I,1)
+!          ENDIF
+!
+          DIFF= ELAY(I) - EST
+!
+          IF(ABS(DIFF).GE.1.D-4) THEN
+            WRITE(LU,*) 'ERROR IN INIT-MIXTE:'
+            WRITE(LU,*) 'THE SUM OF THICKNESS OF BED LAYERS  
+     &     IS DIFFERENT FROM ERODIBLE BED THICKNESS'
+            CALL PLANTE(1)
+            STOP
+          ELSE 
+            ES(I,NOMBLAY) = MAX(ES(I,NOMBLAY)+ DIFF,0.D0)
+          ENDIF
+!
+        ENDDO        
+!      
+      ENDIF
 !
 ! END LOOP  (initialization of layers)
 !
 ! Check sum ELAY = ZF-ZR
 !                = SUM (ES)
-       DO I = 1, NPOIN
-         EST=0.D0
-         DO J= 1, NOMBLAY
-           EST=EST+ES(I,J)
-         ENDDO
-         DIFF=ABS(EST-ELAY(I))
-         IF(DIFF.GT.1.D-08) THEN
-            WRITE(LU,*) 'ERREUR POINT I'   
-     *       , I, 'ELAY=',ELAY(I), 'EST=', EST
-            CALL PLANTE(1)
-            STOP
-         ENDIF    
-       ENDDO          
+      DO I = 1, NPOIN
+        EST=0.D0
+        DO J= 1, NOMBLAY
+          EST=EST+ES(I,J)
+        ENDDO
+        DIFF=ABS(EST-ELAY(I))
+        IF(DIFF.GT.1.D-08) THEN
+          WRITE(LU,*) 'ERREUR POINT I'   
+     &     , I, 'ELAY=',ELAY(I), 'EST=', EST
+          CALL PLANTE(1)
+          STOP
+        ENDIF    
+      ENDDO          
 !
  
 !  COMPUTING THE INITIAL MASSES OF MUD AND SAND
 !
-       DO I=1,NPOIN
+      DO I=1,NPOIN
         T1%R(I)=0.D0
         T2%R(I)=0.D0
         DO J=1,NOMBLAY
-           IF(NSICLA.EQ.1) THEN
-             ES_VASE(I,J) = ES(I,J)
-             MS_VASE(I,J) = ES(I,J)*CONC(I,J)
-           ELSE 
+          IF(NSICLA.EQ.1) THEN
+            ES_VASE(I,J) = ES(I,J)
+            MS_VASE(I,J) = ES(I,J)*CONC(I,J)
+          ELSE 
 ! FOR MIXTE SEDIMENTS : (MUD, second class )
 !....         FILLING VOIDS BETWEEN SAND GRAINS ....(XKV=1)
 !
@@ -243,30 +243,30 @@
 ! FOR MASS BALANCE
 ! 
       IF(BILMA) THEN
-          MASV0=DOTS(T1,VOLU2D)      
-         IF(MIXTE) MASS0= DOTS(T2,VOLU2D)        
-          IF(NCSIZE.GT.1) THEN
-             MASV0=P_DSUM(MASV0)
-             IF(MIXTE) MASS0=P_DSUM(MASS0)
-          ENDIF
+        MASV0=DOTS(T1,VOLU2D)      
+        IF(MIXTE) MASS0= DOTS(T2,VOLU2D)        
+        IF(NCSIZE.GT.1) THEN
+          MASV0=P_DSUM(MASV0)
+          IF(MIXTE) MASS0=P_DSUM(MASS0)
+        ENDIF
 !     
-          MASVT=MASV0
-          IF(MIXTE) MASST=MASS0
-          IF (.NOT.MIXTE) THEN 
-            IF(LNG.EQ.1) WRITE(LU,1) MASV0
-            IF(LNG.EQ.2) WRITE(LU,2) MASV0
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,10) MASV0, MASS0
-            IF(LNG.EQ.2) WRITE(LU,20) MASV0, MASS0
-          ENDIF  
-       ENDIF                   
+        MASVT=MASV0
+        IF(MIXTE) MASST=MASS0
+        IF (.NOT.MIXTE) THEN 
+          IF(LNG.EQ.1) WRITE(LU,1) MASV0
+          IF(LNG.EQ.2) WRITE(LU,2) MASV0
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,10) MASV0, MASS0
+          IF(LNG.EQ.2) WRITE(LU,20) MASV0, MASS0
+        ENDIF  
+      ENDIF                   
 !
 001   FORMAT(1X,'MASSE INITIALE DU LIT DE VASE  : ', G20.11, ' KG')
 002   FORMAT(1X,'INITIAL MASS OF THE MUD BED: ', G20.11, ' KG')
-010    FORMAT(1X,'MASSE INITIALE DU LIT DE VASE  : ', G20.11, ' KG',
-     *      /,1X,'MASSE INITIALE DU LIT DE SABLE : ', G20.11, ' KG')
+010   FORMAT(1X,'MASSE INITIALE DU LIT DE VASE  : ', G20.11, ' KG',
+     &     /,1X,'MASSE INITIALE DU LIT DE SABLE : ', G20.11, ' KG')
 020   FORMAT(1X,'INITIAL MASS OF THE MUD BED: ', G20.11, ' KG',
-     *     /,1X,'INITIAL MASS OF THE SAND BED: ', G20.11, ' KG')
+     &     /,1X,'INITIAL MASS OF THE SAND BED: ', G20.11, ' KG')
 !
 !-----------------------------------------------------------------------
 !
@@ -277,5 +277,3 @@
 !
       RETURN
       END
-
-

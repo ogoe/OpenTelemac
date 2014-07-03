@@ -66,6 +66,7 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'P_MAIL: PROBLEME DANS MPI_BCAST'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_MAIL: PROBLEM IN MPI_BCAST'
         WRITE (LU,*) 'MPI ERROR ',IER
+        CALL PLANTE(1)
         STOP
       ENDIF
 #else

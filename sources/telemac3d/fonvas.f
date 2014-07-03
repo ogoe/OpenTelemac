@@ -319,9 +319,9 @@
 !!+++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 ! COMPUTES HERE DEPOSITED MASS
 !
-!      TOTAL DEPOSITED MASS --> MASDEP
+!     TOTAL DEPOSITED MASS --> MASDEP
 !
-       MASDEP = MASDEP + FLUX*DT
+      MASDEP = MASDEP + FLUX*DT
 !
 !=======================================================================
 !

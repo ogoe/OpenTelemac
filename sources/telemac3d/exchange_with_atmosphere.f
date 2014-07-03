@@ -432,7 +432,7 @@
 !  0.378D0 = 1.D0-0.622D0
       HUMI_EAU  = 0.622D0*Q_SAT_EAU/(PATM-0.378D0*Q_SAT_EAU)
       HUMI_AIR  =        0.622D0*(HREL/100.D0)*Q_SAT_AIR
-     &          / (Patm-(0.378D0*(HREL/100.D0)*Q_SAT_AIR))
+     &          / (PATM-(0.378D0*(HREL/100.D0)*Q_SAT_AIR))
 !  HEAT FLUX BY EVAPORATION (SALENCON)
       FWW       = B*(1.D0+W2)
 !

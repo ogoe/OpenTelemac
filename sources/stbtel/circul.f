@@ -52,21 +52,21 @@
 !
       COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
-         X2 = X(IKLE(IELEM,I2))-X(IKLE(IELEM,I1))
-         X3 = X(IKLE(IELEM,I3))-X(IKLE(IELEM,I1))
+      X2 = X(IKLE(IELEM,I2))-X(IKLE(IELEM,I1))
+      X3 = X(IKLE(IELEM,I3))-X(IKLE(IELEM,I1))
 !
-         Y2 = Y(IKLE(IELEM,I2))-Y(IKLE(IELEM,I1))
-         Y3 = Y(IKLE(IELEM,I3))-Y(IKLE(IELEM,I1))
+      Y2 = Y(IKLE(IELEM,I2))-Y(IKLE(IELEM,I1))
+      Y3 = Y(IKLE(IELEM,I3))-Y(IKLE(IELEM,I1))
 !
-         AIRE = X2*Y3 - X3*Y2
+      AIRE = X2*Y3 - X3*Y2
 !
-         IF (AIRE.LT.0.D0) THEN
-            ITEST1 = ITEST1 + 1
-            I = IKLE(IELEM,I2)
+      IF (AIRE.LT.0.D0) THEN
+        ITEST1 = ITEST1 + 1
+        I = IKLE(IELEM,I2)
 !
-            IKLE(IELEM,I2) = IKLE(IELEM,I3)
-            IKLE(IELEM,I3) = I
-         ENDIF
+        IKLE(IELEM,I2) = IKLE(IELEM,I3)
+        IKLE(IELEM,I3) = I
+      ENDIF
 !
-         RETURN
-         END
+      RETURN
+      END

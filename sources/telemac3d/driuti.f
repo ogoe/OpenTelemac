@@ -60,22 +60,22 @@
 !
       IF(ITYP.EQ.1) THEN
 !
-!        DAMPING FUNCTION FOR VELOCITIES
+!       DAMPING FUNCTION FOR VELOCITIES
 !
-         CALL OV('X=C     ',FRI,FRI,FRI,1.D0,NPOIN3)
+        CALL OV('X=C     ',FRI,FRI,FRI,1.D0,NPOIN3)
 !
       ELSEIF(ITYP.EQ.2) THEN
 !
-!        DAMPING FUNCTION FOR TRACERS
+!       DAMPING FUNCTION FOR TRACERS
 !
-         CALL OV('X=C     ',FRI,FRI,FRI,1.D0,NPOIN3)
+        CALL OV('X=C     ',FRI,FRI,FRI,1.D0,NPOIN3)
 !
       ELSE
 !
-         IF (LNG.EQ.1) WRITE(LU,11) ITYP
-         IF (LNG.EQ.2) WRITE(LU,12) ITYP
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,11) ITYP
+        IF (LNG.EQ.2) WRITE(LU,12) ITYP
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

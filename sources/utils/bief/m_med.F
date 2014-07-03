@@ -341,13 +341,13 @@
 !     READWRITE. OTHER MODES ARE INVALID.
 
       SELECT CASE(OPENMODE)
-         CASE('READ     ')
-            MED_MODE = MED_ACC_RDONLY
-         CASE('READWRITE')
-            MED_MODE = MED_ACC_RDWR
-         CASE('WRITE    ')
-            MED_MODE = MED_ACC_CREAT
-         CASE DEFAULT
+        CASE('READ     ')
+          MED_MODE = MED_ACC_RDONLY
+        CASE('READWRITE')
+          MED_MODE = MED_ACC_RDWR
+        CASE('WRITE    ')
+          MED_MODE = MED_ACC_CREAT
+        CASE DEFAULT
           IF(LNG.EQ.1) THEN
             WRITE(LU,*)'ACTION ERRONEE DANS OPEN_FILE_MED :',OPENMODE
           ENDIF
@@ -367,7 +367,7 @@
 ! MED LIBRARY IS NOT AVAILABLE
 ! OR -DHAVE_MED HAS NOT BEEN SET IN CONFIG FILE
       WRITE(LU,*) 'ERROR : TRYING TO CALL MED FUNCTION WITHOUT ',
-     *            'MED LIBRARY INSTALLED'
+     &            'MED LIBRARY INSTALLED'
       CALL PLANTE(0)
 !
 #endif
@@ -417,7 +417,7 @@
 ! MED LIBRARY IS NOT AVAILABLE
 ! OR -DHAVE_MED HAS NOT BEEN SET IN CONFIG FILE
       WRITE(LU,*) 'ERROR : TRYING TO CALL MED FUNCTION WITHOUT ',
-     *            'MED LIBRARY INSTALLED'
+     &            'MED LIBRARY INSTALLED'
       CALL PLANTE(0)
 !
 #endif
@@ -497,29 +497,29 @@
       ! WRITE THE COORDINATES NAME AND UNIT
       ALLOCATE(COORD_NAME(MESH%DIM),COORD_UNIT(MESH%DIM))
       COORD_NAME(1) = 'X'
-      call blanc2_(COORD_NAME(1))
+      CALL BLANC2_(COORD_NAME(1))
       COORD_UNIT(1) = 'M'
-      call blanc2_(COORD_UNIT(1))
+      CALL BLANC2_(COORD_UNIT(1))
       COORD_NAME(2) = 'Y'
-      call blanc2_(COORD_NAME(2))
+      CALL BLANC2_(COORD_NAME(2))
       COORD_UNIT(2) = 'M'
-      call blanc2_(COORD_UNIT(2))
+      CALL BLANC2_(COORD_UNIT(2))
       IF(MESH%DIM .EQ. 3 ) THEN
         COORD_NAME(3) = 'Z'
-        call blanc2_(COORD_NAME(3))
+        CALL BLANC2_(COORD_NAME(3))
         COORD_UNIT(3) = 'M'
-        call blanc2_(COORD_UNIT(3))
+        CALL BLANC2_(COORD_UNIT(3))
       ENDIF
       ! THE NAME OF THE MESH IS SET TO MESH
-      MESHNAME = 'MESH' // char(0)
-      DESC = 'NO_DESCRIPTION'//char(0)
-      DTUNIT = 'S'//char(0)
+      MESHNAME = 'MESH' // CHAR(0)
+      DESC = 'NO_DESCRIPTION'//CHAR(0)
+      DTUNIT = 'S'//CHAR(0)
 
       CALL MMHCRE(RES_FILE,MESHNAME,MESH%DIM,MESH%DIM,
      &            MED_UNSTRUCTURED_MESH,DESC,DTUNIT,
      &            MED_SORT_DTIT,MED_CARTESIAN,COORD_NAME,
      &            COORD_UNIT,CRET)
-      call MED_CHECK_CRET(CRET,'MMHCRE')
+      CALL MED_CHECK_CRET(CRET,'MMHCRE')
 
       ! BUILDING THE COORDIANTES VALUE TABLES
       ALLOCATE(COOR(MESH%NPOIN*MESH%DIM))
@@ -534,14 +534,14 @@
       ENDIF
       DT = 0.0
       CALL MMHCOW(RES_FILE,         ! FILE UNIT
-     *            MESHNAME,         ! TITLE OF THE MESH
-     *            MED_NO_DT,        ! NO TIME STEP
-     *            MED_NO_IT,        ! NO ITERATION
-     *            DT,               ! NO TIME STEP VALUE
-     *            MED_NO_INTERLACE, ! STORAGE MODE FOR THE COORDINATES
-     *            MESH%NPOIN,       ! NUMBER OF NODES
-     *            COOR,             ! TABLE OF THE COORDIANTES
-     *            CRET)             ! RETURN CODE
+     &            MESHNAME,         ! TITLE OF THE MESH
+     &            MED_NO_DT,        ! NO TIME STEP
+     &            MED_NO_IT,        ! NO ITERATION
+     &            DT,               ! NO TIME STEP VALUE
+     &            MED_NO_INTERLACE, ! STORAGE MODE FOR THE COORDINATES
+     &            MESH%NPOIN,       ! NUMBER OF NODES
+     &            COOR,             ! TABLE OF THE COORDIANTES
+     &            CRET)             ! RETURN CODE
 
       CALL MED_CHECK_CRET(CRET,'MMHCOW')
 
@@ -564,36 +564,36 @@
       ALLOCATE(ELEMNAME(MESH%NELEM))
       ! WRITE THE CONNECTIVITY INTO THE MED DATA FILE :
       CALL MMHELW(RES_FILE,         ! FILE UNIT
-     *            MESHNAME,         ! TITLE OF THE MESH
-     *            MED_NO_DT,        ! NO TIME STEP
-     *            MED_NO_IT,        ! NO ITERATION
-     *            DT,               ! NO TIMESTEP VALUE
-     *            MED_CELL,         ! GEOMETRY TYPE
-     *            TYP_MED,          ! ENTITY TYPE
-     *            MED_NODAL,        ! CONNECTIVITY TYPE
-     *            MED_NO_INTERLACE, ! STORAGE MODE FOR THE CONNECTIVITY
-     *            MESH%NELEM,       ! NUMBER OF ELEMENTS
-     *            MESH%IKLE%I,      ! CONNECTIVITY TABLE
-     *            MED_FALSE,        ! NO NAME OF THE ELEMENT
-     *            ELEMNAME,         ! NAME OF THE ELEMENT
-     *            MED_FALSE,        ! NO NUMBER OF ELEMENT
-     *            I,                ! NUMBER OF ELEMENT
-     *            MED_FALSE,        ! NO FAMILY NUMBER
-     *            I,                ! FAMILY NUMBER
-     *            CRET)
+     &            MESHNAME,         ! TITLE OF THE MESH
+     &            MED_NO_DT,        ! NO TIME STEP
+     &            MED_NO_IT,        ! NO ITERATION
+     &            DT,               ! NO TIMESTEP VALUE
+     &            MED_CELL,         ! GEOMETRY TYPE
+     &            TYP_MED,          ! ENTITY TYPE
+     &            MED_NODAL,        ! CONNECTIVITY TYPE
+     &            MED_NO_INTERLACE, ! STORAGE MODE FOR THE CONNECTIVITY
+     &            MESH%NELEM,       ! NUMBER OF ELEMENTS
+     &            MESH%IKLE%I,      ! CONNECTIVITY TABLE
+     &            MED_FALSE,        ! NO NAME OF THE ELEMENT
+     &            ELEMNAME,         ! NAME OF THE ELEMENT
+     &            MED_FALSE,        ! NO NUMBER OF ELEMENT
+     &            I,                ! NUMBER OF ELEMENT
+     &            MED_FALSE,        ! NO FAMILY NUMBER
+     &            I,                ! FAMILY NUMBER
+     &            CRET)
       CALL MED_CHECK_CRET(CRET,'MMHELW')
       DEALLOCATE(ELEMNAME)
 
       ! We need a default familly called ZERO FAMILY
       NUMFAM = 0
-      NOMFAM="FAMILLE_ZERO"//char(0)
+      NOMFAM="FAMILLE_ZERO"//CHAR(0)
       CALL MFACRE(RES_FILE,MESHNAME,NOMFAM,NUMFAM,0,' ',CRET)
       CALL MED_CHECK_CRET(CRET,'MFACRE')
 !
 #else
 !
       WRITE(LU,*) 'ERROR : TRYING TO CALL MED FUNCTION WITHOUT ',
-     *            'MED LIBRARY INSTALLED'
+     &            'MED LIBRARY INSTALLED'
       CALL PLANTE(0)
 !
 #endif
@@ -607,7 +607,7 @@
                         SUBROUTINE CREATE_DATASET_MED
 !                       *****************************
 !
-     *(RES_FILE,TITLE,NVAR,NOMVAR,OUTVAR)
+     &(RES_FILE,TITLE,NVAR,NOMVAR,OUTVAR)
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -671,17 +671,17 @@
 !-----------------------------------------------------------------------
 !
       ! Set the mesh name
-      MESHNAME = 'MESH'//char(0)
+      MESHNAME = 'MESH'//CHAR(0)
       ! Set the tine unit
-      DTUNIT='S'//char(0)
+      DTUNIT='S'//CHAR(0)
       DIMVEC = 1
       ! Define the size of the vector variables 
       DO IVAR=1,NVAR
         IF (.NOT.OUTVAR(IVAR)) CYCLE
         NOMVAR2   = NOMVAR(IVAR)
         CALL BLANC2_(NOMVAR2)
-        call IFVECTOR_(NOMVAR2,COMP_NUM,ISVECTOR)
-        DIMVEC = max(DIMVEC,COMP_NUM)  
+        CALL IFVECTOR_(NOMVAR2,COMP_NUM,ISVECTOR)
+        DIMVEC = MAX(DIMVEC,COMP_NUM)  
       ENDDO
       NB_VAR=0
       ! Loop on all the variables
@@ -698,33 +698,33 @@
         NCOMP     = 1 
         TYP_MED   = MED_FLOAT64        
         ! Check if the varaible is the componant of a vector
-        call IFVECTOR_(FIELD_NAME,COMP_NUM,ISVECTOR)
+        CALL IFVECTOR_(FIELD_NAME,COMP_NUM,ISVECTOR)
         ! If we have a vector set the nuber of component to DIMVEC
         ! else set the componant number to 1
-        if (ISVECTOR) then
+        IF (ISVECTOR) THEN
           NCOMP = DIMVEC 
-        else
+        ELSE
           COMP_NUM = 1
-        endif
+        ENDIF
         ! If first time we meet the variable (multiple time for vector)
-        if (COMP_NUM.eq.1) then
-          allocate(VAR_NAME(NCOMP),VAR_UNIT(NCOMP))
-        endif
+        IF (COMP_NUM.EQ.1) THEN
+          ALLOCATE(VAR_NAME(NCOMP),VAR_UNIT(NCOMP))
+        ENDIF
         ! Add name and unit to the variable table
         VAR_NAME(COMP_NUM) = COMP_NAME
         VAR_UNIT(COMP_NUM) = COMP_UNIT
         ! If the variable is a scalar or if we are on the last componant
         ! of a vector we create a new field
-        if ((ISVECTOR.and.COMP_NUM==DIMVEC).or.(.not.ISVECTOR)) then
+        IF ((ISVECTOR.AND.COMP_NUM==DIMVEC).OR.(.NOT.ISVECTOR)) THEN
           CALL MFDCRE(RES_FILE,   ! FILE UNIT
-     *                FIELD_NAME, ! NAME OF THE DATA FIELD
-     *                TYP_MED,    ! TYPE (REAL,INTEGER)  
-     *                NCOMP,      ! NUMBER OF COMPONENT
-     *                VAR_NAME,   ! NAME OF THE COMPONENT
-     *                VAR_UNIT,   ! UNITS OF THE COMPONENT
-     *                DTUNIT,        ! UNIT OF THE TIME 
-     *                MESHNAME,   ! NAME OF THE MESH
-     *                CRET)       ! RETURN CODE
+     &                FIELD_NAME, ! NAME OF THE DATA FIELD
+     &                TYP_MED,    ! TYPE (REAL,INTEGER)  
+     &                NCOMP,      ! NUMBER OF COMPONENT
+     &                VAR_NAME,   ! NAME OF THE COMPONENT
+     &                VAR_UNIT,   ! UNITS OF THE COMPONENT
+     &                DTUNIT,        ! UNIT OF THE TIME 
+     &                MESHNAME,   ! NAME OF THE MESH
+     &                CRET)       ! RETURN CODE
           CALL MED_CHECK_CRET(CRET,'MFDCRE') 
           DEALLOCATE(VAR_NAME,VAR_UNIT)
         ENDIF
@@ -732,7 +732,7 @@
 
 ! Geeting reading to write scalar grid for deformed mesh
       IF (DIMVEC==3) THEN
-          allocate(NAME2((3+NB_VAR)),VUNIT2((3+NB_VAR)))
+          ALLOCATE(NAME2((3+NB_VAR)),VUNIT2((3+NB_VAR)))
           NOMVAR2   = 'MODIF FIELD'
           CALL BLANC2_(NOMVAR2)
           FIELD_NAME = NOMVAR2(1:16)//CHAR(0)
@@ -754,16 +754,16 @@
           NCOMP      = 3+NB_VAR
 
           CALL MFDCRE(RES_FILE,    ! FILE UNIT
-     *                FIELD_NAME,  ! NAME OF THE DATA FIELD
-     *                TYP_MED,     ! TYPE (REAL,INTEGER)  
-     *                NCOMP,       ! NUMBER OF COMPONENT
-     *                NAME2,       ! NAME OF THE COMPONENT
-     *                VUNIT2,      ! UNITS OF THE COMPONENT
-     *                DTUNIT,      ! UNIT OF THE TIME 
-     *                MESHNAME,    ! NAME OF THE MESH
-     *                CRET)        ! RETURN CODE
+     &                FIELD_NAME,  ! NAME OF THE DATA FIELD
+     &                TYP_MED,     ! TYPE (REAL,INTEGER)  
+     &                NCOMP,       ! NUMBER OF COMPONENT
+     &                NAME2,       ! NAME OF THE COMPONENT
+     &                VUNIT2,      ! UNITS OF THE COMPONENT
+     &                DTUNIT,      ! UNIT OF THE TIME 
+     &                MESHNAME,    ! NAME OF THE MESH
+     &                CRET)        ! RETURN CODE
         CALL MED_CHECK_CRET(CRET,'MFDCRE')
-         deallocate(NAME2,VUNIT2)
+        DEALLOCATE(NAME2,VUNIT2)
       ENDIF
 
 #else
@@ -771,8 +771,8 @@
 ! MED LIBRARY IS NOT AVAILABLE
 ! OR -DHAVE_MED HAS NOT BEEN SET IN CONFIG FILE
       WRITE(LU,*) 'ERROR : TRYING TO CALL MED FUNCTION WITHOUT ',
-     *            'MED LIBRARY INSTALLED'
-      CALL PLANTE(0)
+     &            'MED LIBRARY INSTALLED'
+      CALL PLANTE(1)
 !
 #endif
 !
@@ -785,7 +785,7 @@
                         SUBROUTINE WRITE_DATA_MED
 !                       *************************
 !
-     *(RES_FILE,NVARS,TIME,TIMESTEP,NOMVAR,OUTVAR,BVARSOR)
+     &(RES_FILE,NVARS,TIME,TIMESTEP,NOMVAR,OUTVAR,BVARSOR)
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -825,7 +825,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! 
       USE BIEF
-      USE DECLARATIONS_TELEMAC, only : NNAMECODE
+      USE DECLARATIONS_TELEMAC, ONLY : NNAMECODE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -867,7 +867,7 @@
 !-----------------------------------------------------------------------
 !
       ! Setting the meshname
-      MESHNAME = 'MESH'//char(0)
+      MESHNAME = 'MESH'//CHAR(0)
       ! Get the mesh dimension
       CALL MMHNAN(RES_FILE,MESHNAME,DIMMESH,CRET)
       CALL MED_CHECK_CRET(CRET,'MMHNAN')
@@ -925,8 +925,8 @@
         IF (.NOT. OUTVAR(IVAR)) CYCLE
         TYP_DISC = MED_NODE
         LME = BVARSOR%ADR(IVAR)%P%ELM
-        IF ((LME.GT.0) .and. ((LME-(LME/10)*10)==0)) 
-     *                            TYP_DISC = MED_CELL 
+        IF ((LME.GT.0) .AND. ((LME-(LME/10)*10)==0)) 
+     &                            TYP_DISC = MED_CELL 
         ! Defining the varaible name
         NB_VAR = NB_VAR+1
         NOMVAR2   = NOMVAR(IVAR)
@@ -934,52 +934,52 @@
         FIELD_NAME = NOMVAR2(1:16)//CHAR(0)
         NDATA   =  BVARSOR%ADR(IVAR)%P%DIM1
         ! Check if the varaible is part of a vector
-        call IFVECTOR_(FIELD_NAME(1:32),COMP_NUM,ISVECTOR)
+        CALL IFVECTOR_(FIELD_NAME(1:32),COMP_NUM,ISVECTOR)
         ! we allocate the result tables only on the first componant
-        if (COMP_NUM == 1) allocate(DATAVAR(DIMMESH*NDATA))
-        if (COMP_NUM == 1) allocate(IDATAVAR(DIMMESH*NDATA))
+        IF (COMP_NUM == 1) ALLOCATE(DATAVAR(DIMMESH*NDATA))
+        IF (COMP_NUM == 1) ALLOCATE(IDATAVAR(DIMMESH*NDATA))
         ! Filling the tables for real/integer values
-        if (BVARSOR%ADR(IVAR)%P%NAT == 1) then         !real
-          if (ISVECTOR)then
+        IF (BVARSOR%ADR(IVAR)%P%NAT == 1) THEN         !REAL
+          IF (ISVECTOR)THEN
             DATAVAR((COMP_NUM-1)*NDATA+1:(COMP_NUM)*NDATA)=
-     *                            BVARSOR%ADR(IVAR)%P%R(1:NDATA)
-          else
-            allocate(DATAVAR(1:NDATA))
-            allocate(IDATAVAR(1:NDATA))
+     &                            BVARSOR%ADR(IVAR)%P%R(1:NDATA)
+          ELSE
+            ALLOCATE(DATAVAR(1:NDATA))
+            ALLOCATE(IDATAVAR(1:NDATA))
             DATAVAR(1:NDATA)=BVARSOR%ADR(IVAR)%P%R(1:NDATA)
-          endif
-        elseif (BVARSOR%ADR(IVAR)%P%NAT == 2) then    ! integer
+          ENDIF
+        ELSEIF (BVARSOR%ADR(IVAR)%P%NAT == 2) THEN    ! INTEGER
           IF (ISVECTOR)THEN
             IDATAVAR((COMP_NUM-1)*NDATA+1:(COMP_NUM)*NDATA)=
-     *                          BVARSOR%ADR(IVAR)%P%I(1:NDATA)
+     &                          BVARSOR%ADR(IVAR)%P%I(1:NDATA)
           ELSE
-            allocate(DATAVAR(1:NDATA))
-            allocate(IDATAVAR(1:NDATA))
+            ALLOCATE(DATAVAR(1:NDATA))
+            ALLOCATE(IDATAVAR(1:NDATA))
             IDATAVAR(1:NDATA) = BVARSOR%ADR(IVAR)%P%I(1:NDATA)
             DATAVAR(1:NDATA) = DBLE(IDATAVAR(1:NDATA))
           ENDIF
-        endif
+        ENDIF
 
         ! If we are on the last componant of a vector
         ! or if the varaible is a scalar
         ! we write the data on the med file
-        if ((COMP_NUM==DIMMESH).or.(.not.ISVECTOR)) then
+        IF ((COMP_NUM==DIMMESH).OR.(.NOT.ISVECTOR)) THEN
           CALL MFDRVW(RES_FILE,            ! FILE UNIT
-     *                FIELD_NAME,          ! NAME OF THE FIELD
-     *                TIMESTEP2,      ! TIME STEP (INTEGER)
-     *                MED_NO_IT,           ! NO ITERATION
-     *                TIME,                ! TIME STEP (REAL)
-     *                MED_NODE,            ! GEOMETRY TYPE
-     *                MED_NONE,            ! ELEMENT TYPE
-     *                MED_NO_INTERLACE,    ! STORAGE MODE
-     *                MED_ALL_CONSTITUENT, ! COMPONENT TO WRITE
-     *                NDATA,               ! NUMBER OF VALUES
-     *                DATAVAR,             ! VALUES TABLE
-     *                CRET)                ! RETURN CODE
+     &                FIELD_NAME,          ! NAME OF THE FIELD
+     &                TIMESTEP2,      ! TIME STEP (INTEGER)
+     &                MED_NO_IT,           ! NO ITERATION
+     &                TIME,                ! TIME STEP (REAL)
+     &                MED_NODE,            ! GEOMETRY TYPE
+     &                MED_NONE,            ! ELEMENT TYPE
+     &                MED_NO_INTERLACE,    ! STORAGE MODE
+     &                MED_ALL_CONSTITUENT, ! COMPONENT TO WRITE
+     &                NDATA,               ! NUMBER OF VALUES
+     &                DATAVAR,             ! VALUES TABLE
+     &                CRET)                ! RETURN CODE
           CALL MED_CHECK_CRET(CRET,'MFDRVW')
-          deallocate(DATAVAR)
-          deallocate(IDATAVAR)
-        endif
+          DEALLOCATE(DATAVAR)
+          DEALLOCATE(IDATAVAR)
+        ENDIF
 
       END DO ! LOOP OVER ENTRIES IN BVARSOR
 
@@ -992,39 +992,39 @@
 !espace memoire suivant le nombre de variable et le type de cas de calcu
 ! This function is also called for the 2d mesh in telemac3d
       IF (NNAMECODE(1) == 'TELEMAC3D               '
-     * .AND. dimmesh.EQ.3)THEN
+     & .AND. DIMMESH.EQ.3)THEN
           NOMVAR2   = 'MODIF FIELD'
           CALL BLANC2_(NOMVAR2)
           FIELD_NAME = NOMVAR2(1:16)//CHAR(0)
           NDATA   =  BVARSOR%ADR(1)%P%DIM1
           IF (TIMESTEP==0) ALLOCATE(DEF_MAP(1:NDATA*3))
-          if (TIMESTEP==0) DEF_MAP(1:2*NDATA)        = 0.0d0  
-          if (TIMESTEP==0) DEF_MAP(2*NDATA+1:3*NDATA)= 
-     *                                BVARSOR%ADR(1)%P%R(1:NDATA)
-          allocate(DATAVAR(1:NDATA*(3+NB_VAR)))
+          IF (TIMESTEP==0) DEF_MAP(1:2*NDATA)        = 0.0D0  
+          IF (TIMESTEP==0) DEF_MAP(2*NDATA+1:3*NDATA)= 
+     &                                BVARSOR%ADR(1)%P%R(1:NDATA)
+          ALLOCATE(DATAVAR(1:NDATA*(3+NB_VAR)))
           DATAVAR(2*NDATA+1:3*NDATA)= BVARSOR%ADR(1)%P%R(1:NDATA)-
-     *            DEF_MAP(2*NDATA+1:3*NDATA)
-          DATAVAR(1:2*NDATA)        = 0.0d0
+     &            DEF_MAP(2*NDATA+1:3*NDATA)
+          DATAVAR(1:2*NDATA)        = 0.0D0
           NB_VAR=0
           DO IVAR = 1, NVARS
               IF (.NOT. OUTVAR(IVAR)) CYCLE
               NB_VAR=NB_VAR+1
               DATAVAR((2+NB_VAR)*NDATA+1:(3+NB_VAR)*NDATA)= 
-     *                                BVARSOR%ADR(IVAR)%P%R(1:NDATA)
+     &                                BVARSOR%ADR(IVAR)%P%R(1:NDATA)
           ENDDO
 
           CALL MFDRVW(RES_FILE,            ! FILE UNIT
-     *                FIELD_NAME,          ! NAME OF THE FIELD
-     *                TIMESTEP2,           ! TIME STEP (INTEGER)
-     *                MED_NO_IT,           ! NO ITERATION
-     *                TIME,                ! TIME STEP (REAL)
-     *                MED_NODE,            ! GEOMETRY TYPE
-     *                MED_NONE,            ! ELEMENT TYPE
-     *                MED_NO_INTERLACE,    ! STORAGE MODE
-     *                MED_ALL_CONSTITUENT, ! COMPONENT TO WRITE
-     *                NDATA,               ! NUMBER OF VALUES
-     *                DATAVAR,             ! VALUES TABLE
-     *                CRET)                ! RETURN CODE
+     &                FIELD_NAME,          ! NAME OF THE FIELD
+     &                TIMESTEP2,           ! TIME STEP (INTEGER)
+     &                MED_NO_IT,           ! NO ITERATION
+     &                TIME,                ! TIME STEP (REAL)
+     &                MED_NODE,            ! GEOMETRY TYPE
+     &                MED_NONE,            ! ELEMENT TYPE
+     &                MED_NO_INTERLACE,    ! STORAGE MODE
+     &                MED_ALL_CONSTITUENT, ! COMPONENT TO WRITE
+     &                NDATA,               ! NUMBER OF VALUES
+     &                DATAVAR,             ! VALUES TABLE
+     &                CRET)                ! RETURN CODE
           CALL MED_CHECK_CRET(CRET,'MFDRVW')
           DEALLOCATE(DATAVAR)          
       ENDIF
@@ -1034,7 +1034,7 @@
 ! MED LIBRARY IS NOT AVAILABLE
 ! OR -DHAVE_MED HAS NOT BEEN SET IN CONFIG FILE
       WRITE(LU,*) 'ERROR : TRYING TO CALL MED FUNCTION WITHOUT ',
-     *            'MED LIBRARY INSTALLED'
+     &            'MED LIBRARY INSTALLED'
       CALL PLANTE(0)
 !
 #endif
@@ -1048,9 +1048,9 @@
                         SUBROUTINE SUITE_MED
 !                       ********************
 !
-     *(VARSOR,CLAND,NUMDEB,
-     * RES_FILE,STD,HIST,NHIST,NPOIN,AT,TEXTPR,VARCLA,NVARCL,
-     * TROUVE,ALIRE,LISTIN,FIN,MAXVAR,NPLAN,DT,NDT)
+     &(VARSOR,CLAND,NUMDEB,
+     & RES_FILE,STD,HIST,NHIST,NPOIN,AT,TEXTPR,VARCLA,NVARCL,
+     & TROUVE,ALIRE,LISTIN,FIN,MAXVAR,NPLAN,DT,NDT)
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -1149,8 +1149,8 @@
       I=1
       ! Finding the 
       DO WHILE(IVAR == 0)
-       IF ((VARSOR%ADR(I)%P%ELM.GT.0)) IVAR=I
-       I=I+1
+        IF ((VARSOR%ADR(I)%P%ELM.GT.0)) IVAR=I
+        I=I+1
       ENDDO
       IF(VARSOR%ADR(IVAR)%P%ELM/10 .EQ. 1 ) THEN
         TYP_MED = MED_TRIA3
@@ -1182,12 +1182,12 @@
       ! Get the number of time step in the field
       ALLOCATE(UNIT(NCOMP),COMP(NCOMP))
       CALL MFDFIN(RES_FILE,FIELD_NAME,MESHNAME,IDUM,TYP,COMP,UNIT
-     *            ,DTUNIT,NTIME,CRET)
+     &            ,DTUNIT,NTIME,CRET)
       CALL MED_CHECK_CRET(CRET,'MFDFIN') 
       DEALLOCATE(COMP,UNIT)
       ! Get the time associated to the last time step
       CALL MFDCSI(RES_FILE,FIELD_NAME,NTIME,IDUM,IDUM,
-     *           DT,CRET)
+     &           DT,CRET)
       CALL MED_CHECK_CRET(CRET,'MFDCSI')
       NUMDEB = NTIME
       AT = DT
@@ -1233,36 +1233,36 @@
           ELSE
             ALLOCATE(DATAVAR(NDATA))
           ENDIF
-          write(lu,*) 'FIELD_NAME : ',FIELD_NAME 
-          write(lu,*) 'NUMDT : ',NUMDT 
-          write(lu,*) 'DT : ',DT 
-          write(lu,*) 'ISVECTOR : ',ISVECTOR 
-          write(lu,*) 'NDATA : ',NDATA 
-          write(lu,*) 'DIMVEC : ',DIMVEC 
+          WRITE(LU,*) 'FIELD_NAME : ',FIELD_NAME 
+          WRITE(LU,*) 'NUMDT : ',NUMDT 
+          WRITE(LU,*) 'DT : ',DT 
+          WRITE(LU,*) 'ISVECTOR : ',ISVECTOR 
+          WRITE(LU,*) 'NDATA : ',NDATA 
+          WRITE(LU,*) 'DIMVEC : ',DIMVEC 
          
           CALL MFDRVR(RES_FILE,           ! FILE UNIT
-     *                FIELD_NAME,         ! FIELD NAME
-     *                NUMDT,              ! TIME STEP (INTEGER)
-     *                MED_NO_IT,          ! NO ITERATION
-     *                MED_NODE,           ! GEOMETRY TYPE
-     *                MED_NONE,           ! NO ENTITY TYPE
-     *                MED_NO_INTERLACE,   ! STORGAE MODE
-     *                MED_ALL_CONSTITUENT,! COMPONENT
-     *                DATAVAR,            ! RESULT TABLE
-     *                CRET)               ! RETURN CODE
+     &                FIELD_NAME,         ! FIELD NAME
+     &                NUMDT,              ! TIME STEP (INTEGER)
+     &                MED_NO_IT,          ! NO ITERATION
+     &                MED_NODE,           ! GEOMETRY TYPE
+     &                MED_NONE,           ! NO ENTITY TYPE
+     &                MED_NO_INTERLACE,   ! STORGAE MODE
+     &                MED_ALL_CONSTITUENT,! COMPONENT
+     &                DATAVAR,            ! RESULT TABLE
+     &                CRET)               ! RETURN CODE
           CALL MED_CHECK_CRET(CRET,'EFCHAL')
           NDATA   =  VARSOR%ADR(IVAR)%P%DIM1
           IF (.NOT.ISVECTOR) VARSOR%ADR(IVAR)%P%R = DATAVAR
           IF (ISVECTOR) VARSOR%ADR(IVAR)%P%R(1:NDATA) =
-     *                DATAVAR((COMP_NUM-1)*NDATA+1:(COMP_NUM)*NDATA)
+     &                DATAVAR((COMP_NUM-1)*NDATA+1:(COMP_NUM)*NDATA)
           DEALLOCATE(DATAVAR)
         ELSE
           IF(LISTIN.AND.LNG.EQ.1) WRITE(LU,75) TEXTPR(IVAR)
           IF(LISTIN.AND.LNG.EQ.2) WRITE(LU,76) TEXTPR(IVAR)
 75        FORMAT(/,1X,'LA VARIABLE : ',A32,/,1X,
-     *              'EST DANS LE FICHIER MAIS ELLE N''EST PAS LUE')
+     &              'EST DANS LE FICHIER MAIS ELLE N''EST PAS LUE')
 76        FORMAT(/,1X,'VARIABLE : ',A32,/,1X,
-     *              'IS IN THE FILE BUT WILL NOT BE READ')
+     &              'IS IN THE FILE BUT WILL NOT BE READ')
         ENDIF
       END DO ! LOOP OVER ENTRIES IN VARSOR
 !
@@ -1276,11 +1276,11 @@
 301   FORMAT(1X,//,1X,'TITLE OF PREVIOUS COMPUTATION: ',A72,/)
 !
       DO IVAR=1,MAXVAR
-        IF ((TROUVE(IVAR) ==1).and.(ALIRE(IVAR) == 1)) THEN
+        IF ((TROUVE(IVAR) ==1).AND.(ALIRE(IVAR) == 1)) THEN
         IF(LISTIN.AND.LNG.EQ.1) WRITE(LU,11)
-     *    TEXTPR(IVAR)(1:16),TEXTPR(IVAR)(17:32)
+     &    TEXTPR(IVAR)(1:16),TEXTPR(IVAR)(17:32)
         IF(LISTIN.AND.LNG.EQ.2) WRITE(LU,111)
-     *    TEXTPR(IVAR)(1:16),TEXTPR(IVAR)(17:32)
+     &    TEXTPR(IVAR)(1:16),TEXTPR(IVAR)(17:32)
         ENDIF
 11      FORMAT(1X,'NOM: ' ,A16,'  UNITE: ',A16)
 111     FORMAT(1X,'NAME: ',A16,'  UNIT: ' ,A16)
@@ -1303,7 +1303,7 @@
 ! MED LIBRARY IS NOT AVAILABLE
 ! OR -DHAVE_MED HAS NOT BEEN SET IN CONFIG FILE
       WRITE(LU,*) 'ERROR : TRYING TO CALL MED FUNCTION WITHOUT ',
-     *            'MED LIBRARY INSTALLED'
+     &            'MED LIBRARY INSTALLED'
       CALL PLANTE(-1)
 !
 #endif
@@ -1317,7 +1317,7 @@
                         SUBROUTINE BLANC2_
 !                       ******************
 !
-     *(STRING)
+     &(STRING)
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -1356,7 +1356,7 @@
                         SUBROUTINE IFVECTOR_
 !                       ********************
 !
-     *(STRING,COMP_NUM,ISVECTOR)
+     &(STRING,COMP_NUM,ISVECTOR)
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -1390,7 +1390,7 @@
       ISVECTOR = .FALSE.
       COMP_NUM = 0
        
-      IF (STRING(1:6)/='COTE_Z') then
+      IF (STRING(1:6)/='COTE_Z') THEN
       DO J = 2,31
         IF (STRING(J-1:J+1) .EQ. '_U_') THEN
           STRING(J:J) = '*'
@@ -1416,33 +1416,33 @@
           STRING(J:J) = '*'
           COMP_NUM = 3
           ISVECTOR = .TRUE.
-         ELSEIF (STRING(J-1:J+1) .EQ. 'QX_') THEN
-           STRING(J-1:J) = 'Q*'
-           COMP_NUM = 1
-           ISVECTOR = .TRUE.
-         ELSEIF (STRING(J-1:J+1) .EQ. 'QY_') THEN
-           STRING(J-1:J) = 'Q*'
-           COMP_NUM = 2
-           ISVECTOR = .TRUE.
-         ELSEIF (STRING(J-1:J+1) .EQ. 'QZ_') THEN
-           STRING(J-1:J) = 'Q*'
-           COMP_NUM = 3
-           ISVECTOR = .TRUE.
-         ELSEIF (STRING(J-1:J+1) .EQ. 'U0_') THEN
-           STRING(J-1:J) = '*0'
-           COMP_NUM = 1
-           ISVECTOR = .TRUE.
-         ELSEIF (STRING(J-1:J+1) .EQ. 'V0_') THEN
-           STRING(J-1:J) = '*0'
-           COMP_NUM = 2
-           ISVECTOR = .TRUE.
-         ELSEIF (STRING(J-1:J+1) .EQ. 'W0_') THEN
-           STRING(J-1:J) = '*0'
-           COMP_NUM = 3
-           ISVECTOR = .TRUE.
+        ELSEIF (STRING(J-1:J+1) .EQ. 'QX_') THEN
+          STRING(J-1:J) = 'Q*'
+          COMP_NUM = 1
+          ISVECTOR = .TRUE.
+        ELSEIF (STRING(J-1:J+1) .EQ. 'QY_') THEN
+          STRING(J-1:J) = 'Q*'
+          COMP_NUM = 2
+          ISVECTOR = .TRUE.
+        ELSEIF (STRING(J-1:J+1) .EQ. 'QZ_') THEN
+          STRING(J-1:J) = 'Q*'
+          COMP_NUM = 3
+          ISVECTOR = .TRUE.
+        ELSEIF (STRING(J-1:J+1) .EQ. 'U0_') THEN
+          STRING(J-1:J) = '*0'
+          COMP_NUM = 1
+          ISVECTOR = .TRUE.
+        ELSEIF (STRING(J-1:J+1) .EQ. 'V0_') THEN
+          STRING(J-1:J) = '*0'
+          COMP_NUM = 2
+          ISVECTOR = .TRUE.
+        ELSEIF (STRING(J-1:J+1) .EQ. 'W0_') THEN
+          STRING(J-1:J) = '*0'
+          COMP_NUM = 3
+          ISVECTOR = .TRUE.
         ENDIF
       ENDDO
-      endif
+      ENDIF
 !
       RETURN
       END SUBROUTINE IFVECTOR_

@@ -64,13 +64,13 @@
       IF(IERR.NE.0) THEN
         WRITE(LU,*) 'P_MPI_ALLTOALL:'
         WRITE(LU,*) 'MPI ERROR ',IERR
+        CALL PLANTE(1)
         STOP
       ENDIF
       RETURN
 #else
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_MPI_ALLTOALL VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_MPI_ALLTOALL VOID VERSION'
-      STOP
 #endif
 !
 !-----------------------------------------------------------------------

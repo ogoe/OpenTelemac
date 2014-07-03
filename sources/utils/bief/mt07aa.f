@@ -127,16 +127,16 @@
 !
       ELSE
 !
-       IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
-       IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
-100    FORMAT(1X,'MT07AA (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F NON PREVUE : ',1I6,
-     &        1X,'NOM REEL : ',A6)
-101    FORMAT(1X,'MT07AA (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF F NOT AVAILABLE:',1I6,
-     &        1X,'REAL NAME: ',A6)
-       CALL PLANTE(0)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
+100     FORMAT(1X,'MT07AA (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F NON PREVUE : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+101     FORMAT(1X,'MT07AA (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F NOT AVAILABLE:',1I6,
+     &         1X,'REAL NAME: ',A6)
+        CALL PLANTE(0)
+        STOP
 !
       ENDIF
 !

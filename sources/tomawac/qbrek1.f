@@ -93,27 +93,27 @@
 !.....COMPUTES THE LINEAR COEFFICIENT BETA: QBREK1 = BETA * F
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""""
       DO IP = 1,NPOIN2
-         IF (VARIAN(IP).GT.SEUIL) THEN
+        IF (VARIAN(IP).GT.SEUIL) THEN
 !
 !..........COMPUTES THE MAXIMUM WAVE HEIGHT
 !          """""""""""""""""""""""""""""""""""""""
-           IF(IHMBJ.EQ.1) THEN
-             HM  = GAMBJ2*DEPTH(IP)
-           ELSEIF(IHMBJ.EQ.2) THEN
-             CALL WNSCOU(XKCAR,FCAR(IP),DEPTH(IP))
-             XK8 = GAMBJ1/XKCAR
-             HM  = XK8*DTANH(GAMBJ2*DEPTH(IP)/XK8)
-           ENDIF
+          IF(IHMBJ.EQ.1) THEN
+            HM  = GAMBJ2*DEPTH(IP)
+          ELSEIF(IHMBJ.EQ.2) THEN
+            CALL WNSCOU(XKCAR,FCAR(IP),DEPTH(IP))
+            XK8 = GAMBJ1/XKCAR
+            HM  = XK8*DTANH(GAMBJ2*DEPTH(IP)/XK8)
+          ENDIF
 !
 !..........COMPUTES THE FRACTION OF BREAKING WAVES
 !          """"""""""""""""""""""""""""""""""""""""""""
-           B   = SQRT(8.D0*VARIAN(IP))/HM
-           QB  = QBBJ78(B,IQBBJ)
+          B   = SQRT(8.D0*VARIAN(IP))/HM
+          QB  = QBBJ78(B,IQBBJ)
 !
-           BETA(IP) = COEF*QB*FCAR(IP)*HM**2/VARIAN(IP)
-         ELSE
-           BETA(IP) = 0.D0
-         ENDIF
+          BETA(IP) = COEF*QB*FCAR(IP)*HM**2/VARIAN(IP)
+        ELSE
+          BETA(IP) = 0.D0
+        ENDIF
       ENDDO ! IP 
 !
 !.....TAKES THE SOURCE TERM INTO ACCOUNT

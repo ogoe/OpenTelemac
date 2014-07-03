@@ -77,21 +77,21 @@
 !-----------------------------------------------------------------------
 !
       DO TTT = 2,PRO_MAX(J)
-         SUMF = 0.D0
-         SUMFERR = 0.D0
-         DO I = 1, NSICLA
-            SUMF = PRO_F(J,TTT, I) + SUMF
-            SUMFERR = ABS((PRO_F(J,TTT,I)-PRO_F(J,MARKER(MARKERCNT),I)))
-     &           + SUMFERR
-         ENDDO
-!         
-         IF (TTT > 1) THEN
-            DIST = ABS((PRO_D(J,TTT,1)-PRO_D(J,MARKER(MARKERCNT),1)))
-            IF ((DIST.GT.ZERO).OR.(SUMFERR.GT.0.D0)) THEN
-               MARKERCNT = MARKERCNT + 1
-               MARKER(MARKERCNT) = TTT
-            ENDIF
-         ENDIF
+        SUMF = 0.D0
+        SUMFERR = 0.D0
+        DO I = 1, NSICLA
+          SUMF = PRO_F(J,TTT, I) + SUMF
+          SUMFERR = ABS((PRO_F(J,TTT,I)-PRO_F(J,MARKER(MARKERCNT),I)))
+     &         + SUMFERR
+        ENDDO
+!        
+        IF (TTT > 1) THEN
+          DIST = ABS((PRO_D(J,TTT,1)-PRO_D(J,MARKER(MARKERCNT),1)))
+          IF ((DIST.GT.ZERO).OR.(SUMFERR.GT.0.D0)) THEN
+            MARKERCNT = MARKERCNT + 1
+            MARKER(MARKERCNT) = TTT
+          ENDIF
+        ENDIF
       ENDDO                     !TTT
 !
       MARKERMAX = MARKERCNT
@@ -101,10 +101,10 @@
 !-----------------------------------------------------------------------
 !
       DO K = 1, NSICLA
-         DO I = 1, MARKERMAX
-            PRO_F(J,I,K) = PRO_F(J,MARKER(I),K)
-            PRO_D(J,I,K) = PRO_D(J,MARKER(I),K)
-         ENDDO                  !I
+        DO I = 1, MARKERMAX
+          PRO_F(J,I,K) = PRO_F(J,MARKER(I),K)
+          PRO_D(J,I,K) = PRO_D(J,MARKER(I),K)
+        ENDDO                  !I
       ENDDO                     !K
       PRO_MAX(J) = MARKERMAX
 !
@@ -113,10 +113,10 @@
 !-----------------------------------------------------------------------
 !
       IF (PRO_MAX(J) > PRO_MAX_MAX-8*NSICLA) THEN
-         CALL CVSP_COMPRESS_DP(J, 1.D-5)
+        CALL CVSP_COMPRESS_DP(J, 1.D-5)
       ENDIF
       IF (PRO_MAX(J) < 4) THEN
-         CALL CVSP_COMPRESS_BRUT(J)
+        CALL CVSP_COMPRESS_BRUT(J)
       ENDIF
 !      
 !--------------------------------------------------------------------------
@@ -129,4 +129,3 @@
 !      
       RETURN
       END SUBROUTINE CVSP_COMPRESS_CLEAN
-

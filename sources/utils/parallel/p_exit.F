@@ -65,15 +65,15 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'P_EXIT: ERREUR DANS MPI_FINALIZE'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_EXIT: ERROR IN MPI_FINALIZE'
         WRITE(LU,*) 'MPI ERROR ',IER
+        CALL PLANTE(1)
         STOP
       ENDIF
-      RETURN
 #else
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_EXIT VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_EXIT IN ITS VOID VERSION'
-      STOP
 #endif
 !
 !-----------------------------------------------------------------------
 !
+      RETURN
       END

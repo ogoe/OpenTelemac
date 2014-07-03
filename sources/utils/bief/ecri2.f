@@ -73,26 +73,26 @@
 !
       IF(STD(1:3).EQ.'STD') THEN
 !
-         IF (TYPE(1:2).EQ.'R4') THEN
-            WRITE(CANAL)(REAL(X(J)),J=1,NVAL)
-         ELSEIF (TYPE(1:2).EQ.'R8') THEN
-            WRITE(CANAL)(X(J),J=1,NVAL)
-         ELSEIF (TYPE(1:1).EQ.'I') THEN
-            WRITE(CANAL)(I(J),J=1,NVAL)
-         ELSEIF (TYPE(1:2).EQ.'CH') THEN
-            WRITE(CANAL) C(1:NVAL)
-         ELSE
-            IF(LNG.EQ.1) THEN
-              WRITE(LU,20) TYPE
-20            FORMAT(1X,'ECRI2 : TYPE INCONNU :',A2)
-            ENDIF
-            IF(LNG.EQ.2) THEN
-              WRITE(LU,21) TYPE
-21            FORMAT(1X,'ECRI2 : UNKNOWN TYPE:',A2)
-            ENDIF
-            CALL PLANTE(0)
-            STOP
-         ENDIF
+        IF (TYPE(1:2).EQ.'R4') THEN
+          WRITE(CANAL)(REAL(X(J)),J=1,NVAL)
+        ELSEIF (TYPE(1:2).EQ.'R8') THEN
+          WRITE(CANAL)(X(J),J=1,NVAL)
+        ELSEIF (TYPE(1:1).EQ.'I') THEN
+          WRITE(CANAL)(I(J),J=1,NVAL)
+        ELSEIF (TYPE(1:2).EQ.'CH') THEN
+          WRITE(CANAL) C(1:NVAL)
+        ELSE
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,20) TYPE
+20          FORMAT(1X,'ECRI2 : TYPE INCONNU :',A2)
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,21) TYPE
+21          FORMAT(1X,'ECRI2 : UNKNOWN TYPE:',A2)
+          ENDIF
+          CALL PLANTE(0)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -150,6 +150,7 @@
           WRITE(LU,11) STD
 11        FORMAT(1X,'ECRI2 : UNKNOWN STANDARD:',A8)
         ENDIF
+        CALL PLANTE(1)
         STOP
 !
       ENDIF

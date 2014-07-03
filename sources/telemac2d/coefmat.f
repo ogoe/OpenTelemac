@@ -68,23 +68,23 @@
       ENDDO
 !
       DO I = 1, NPERIAF
-         DO J = 1, NPERIAF
-            AA = (W(I)+W(J))*DT
-            BB = (W(I)-W(J))*DT
-            A = (-1.D0+COS(AA)+COS(M*AA)-COS((M+1)*AA))/(2-2*COS(AA))
-            C = (SIN(AA)+SIN(M*AA)-SIN((M+1)*AA))/(2-2*COS(AA))
-            IF(I.EQ.J) THEN
-              B = M*1.D0
-              D = 0.D0
-            ELSE
-              B = (-1+COS(BB)+COS(M*BB)-COS((M+1)*BB))/(2-2*COS(BB))
-              D = (SIN(BB)+SIN(M*BB)-SIN((M+1)*BB))/(2-2*COS(BB))
-            ENDIF
-            AM(I,J) = (A+B)/(2*M)
-            AM(I,NPERIAF+J) = (C-D)/(2*M)
-            AM(I+NPERIAF,J) = (C+D)/(2*M)
-            AM(I+NPERIAF,NPERIAF+J) = (B-A)/(2*M)
-         ENDDO
+        DO J = 1, NPERIAF
+          AA = (W(I)+W(J))*DT
+          BB = (W(I)-W(J))*DT
+          A = (-1.D0+COS(AA)+COS(M*AA)-COS((M+1)*AA))/(2-2*COS(AA))
+          C = (SIN(AA)+SIN(M*AA)-SIN((M+1)*AA))/(2-2*COS(AA))
+          IF(I.EQ.J) THEN
+            B = M*1.D0
+            D = 0.D0
+          ELSE
+            B = (-1+COS(BB)+COS(M*BB)-COS((M+1)*BB))/(2-2*COS(BB))
+            D = (SIN(BB)+SIN(M*BB)-SIN((M+1)*BB))/(2-2*COS(BB))
+          ENDIF
+          AM(I,J) = (A+B)/(2*M)
+          AM(I,NPERIAF+J) = (C-D)/(2*M)
+          AM(I+NPERIAF,J) = (C+D)/(2*M)
+          AM(I+NPERIAF,NPERIAF+J) = (B-A)/(2*M)
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------

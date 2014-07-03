@@ -74,7 +74,7 @@
 ! REGULAR WAVES
 !
       IF (.NOT.ALEMON .AND. .NOT.ALEMUL .AND. .NOT.BALAYE) THEN
-         NBRTOT = 1
+        NBRTOT = 1
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -83,8 +83,8 @@
 !
 !
       IF (ITITRE.EQ.1) THEN
-         IF(LNG.EQ.1) WRITE(LU,100) TEXTFR(1),NBR,NBRTOT,X,TEXTFR(2)
-         IF(LNG.EQ.2) WRITE(LU,100) TEXTGB(1),NBR,NBRTOT,X,TEXTGB(2)
+        IF(LNG.EQ.1) WRITE(LU,100) TEXTFR(1),NBR,NBRTOT,X,TEXTFR(2)
+        IF(LNG.EQ.2) WRITE(LU,100) TEXTGB(1),NBR,NBRTOT,X,TEXTGB(2)
       ENDIF
 !
 100   FORMAT(/,80('='),/,7X,A8,I2,'/',I2,' : ',F12.4,A10,/)
@@ -96,8 +96,8 @@
 !
 !
       IF (ITITRE.EQ.2) THEN
-         IF(LNG.EQ.1) WRITE(LU,110) TEXTFR(3),NBR,NBRTOT,X,TEXTFR(4)
-         IF(LNG.EQ.2) WRITE(LU,110) TEXTGB(3),NBR,NBRTOT,X,TEXTGB(4)
+        IF(LNG.EQ.1) WRITE(LU,110) TEXTFR(3),NBR,NBRTOT,X,TEXTFR(4)
+        IF(LNG.EQ.2) WRITE(LU,110) TEXTGB(3),NBR,NBRTOT,X,TEXTGB(4)
       ENDIF
 !
 110   FORMAT(/,7X,A10,I2,'/',I2,' : ',F12.4,A10,/)

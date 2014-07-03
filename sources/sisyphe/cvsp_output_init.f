@@ -67,7 +67,7 @@
      &     FILE_FORMAT=SIS_FILES(SISGEO)%FMT)
       
       DO I =1,USRMSH%NPTFR
-         USRMSH%NBOR%I(I) = I
+        USRMSH%NBOR%I(I) = I
       END DO
 !     
 !-----------------------------------------------------------------------     
@@ -80,7 +80,7 @@
      &     FILE_FORMAT=SIS_FILES(SISGEO)%FMT)
       
       DO I =1,USRMSH_2DHYD%NPTFR
-         USRMSH_2DHYD%NBOR%I(I) = I
+        USRMSH_2DHYD%NBOR%I(I) = I
       END DO
 !
 !-----------------------------------------------------------------------     
@@ -88,13 +88,13 @@
 !-----------------------------------------------------------------------
 !
       DO I = 1,NUMVARUR3D2RES
-         IF (I.LE.3+NSICLA) THEN
-            UR3D_FILES_OUTVAR(I) = .TRUE.
-         ELSE
-            UR3D_FILES_OUTVAR(I) = .FALSE.
-         ENDIF
-         WRITE(UNIT=VLABEL, FMT='(A5,I2,A25)') 'FRACTION_CLASS_',I-3
-         UR3D_FILES_LABELS(I) = VLABEL
+        IF (I.LE.3+NSICLA) THEN
+          UR3D_FILES_OUTVAR(I) = .TRUE.
+        ELSE
+          UR3D_FILES_OUTVAR(I) = .FALSE.
+        ENDIF
+        WRITE(UNIT=VLABEL, FMT='(A5,I2,A25)') 'FRACTION_CLASS_',I-3
+        UR3D_FILES_LABELS(I) = VLABEL
       ENDDO
 ! EXAMPLE FOR MANUALLY OVERWRITTING LEN=32
       UR3D_FILES_LABELS(1)= 'Z [M]                           ' !'PROFILE_ELEVATION               '
@@ -106,7 +106,7 @@
 !-----------------------------------------------------------------------
 !
       DO I = 1,NUMVAR2DHYD
-         UR2DHYD_FILES_OUTVAR(I) = .TRUE.
+        UR2DHYD_FILES_OUTVAR(I) = .TRUE.
       ENDDO
       
       UR2DHYD_FILES_LABELS(1)= 'Z [M]                           ' !'Z [M] AND ZF [M]                '
@@ -128,25 +128,24 @@
 !-----------------------------------------------------------------------
 !
       DO I = 3, 4
-         IF(NCSIZE.LE.1) THEN
+        IF(NCSIZE.LE.1) THEN
 ! SCALAR
-            OPEN(CP_FILES(I)%LU,FILE=CP_FILES(I)%TELNAME,
-     &           ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
-         ELSE
+          OPEN(CP_FILES(I)%LU,FILE=CP_FILES(I)%TELNAME,
+     &         ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
+        ELSE
 ! PARALLEL, FILE TYPE: SCAL
-            IF(CP_FILES(I)%TYPE(1:4).EQ.'SCAL') THEN
-               OPEN(CP_FILES(I)%LU,
-     &              FILE=TRIM(CP_FILES(I)%TELNAME),
-     &              ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
+          IF(CP_FILES(I)%TYPE(1:4).EQ.'SCAL') THEN
+            OPEN(CP_FILES(I)%LU,
+     &           FILE=TRIM(CP_FILES(I)%TELNAME),
+     &           ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
 ! PARALLEL, OTHER FILE TYPE
-            ELSE
-               OPEN(CP_FILES(I)%LU,
-     &              FILE=TRIM(CP_FILES(I)%TELNAME)
-     &              //EXTENS(NCSIZE-1,IPID),
-     &              ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
-            ENDIF
-         ENDIF
-         
+          ELSE
+            OPEN(CP_FILES(I)%LU,
+     &           FILE=TRIM(CP_FILES(I)%TELNAME)
+     &           //EXTENS(NCSIZE-1,IPID),
+     &           ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
+          ENDIF
+        ENDIF
       ENDDO                     !CP_FILES
 !
 !-----------------------------------------------------------------------     
@@ -174,23 +173,23 @@
 !-----------------------------------------------------------------------
 !
       DO I = 3, 3               !UBOUND(CP_FILES)
-         CALL WRITE_MESH(CP_FILES(I)%FMT, ! RESULTS FILE FORMAT
-     &        CP_FILES(I)%LU,   ! LU FOR RESULTS FILE
-     &        USRMSH,           ! CHARACTERISES MESH
-     &        USRMSH_NPLAN,     ! NUMBER OF PLANES /NA/
-     &        MARDAT,           ! START DATE
-     &        MARTIM,           ! START TIME
-     &        I_ORIG,J_ORIG)    ! COORDINATES OF THE ORIGIN.
+        CALL WRITE_MESH(CP_FILES(I)%FMT, ! RESULTS FILE FORMAT
+     &       CP_FILES(I)%LU,   ! LU FOR RESULTS FILE
+     &       USRMSH,           ! CHARACTERISES MESH
+     &       USRMSH_NPLAN,     ! NUMBER OF PLANES /NA/
+     &       MARDAT,           ! START DATE
+     &       MARTIM,           ! START TIME
+     &       I_ORIG,J_ORIG)    ! COORDINATES OF THE ORIGIN.
       ENDDO
 
       DO I = 4, 4               !UBOUND(CP_FILES)
-         CALL WRITE_MESH(CP_FILES(I)%FMT, ! RESULTS FILE FORMAT
-     &        CP_FILES(I)%LU,   ! LU FOR RESULTS FILE
-     &        USRMSH_2DHYD,     ! CHARACTERISES MESH
-     &        USRMSH_2DHYD_NPLAN, ! NUMBER OF PLANES /NA/
-     &        MARDAT,           ! START DATE
-     &        MARTIM,           ! START TIME
-     &        I_ORIG,J_ORIG)    ! COORDINATES OF THE ORIGIN.
+        CALL WRITE_MESH(CP_FILES(I)%FMT, ! RESULTS FILE FORMAT
+     &       CP_FILES(I)%LU,   ! LU FOR RESULTS FILE
+     &       USRMSH_2DHYD,     ! CHARACTERISES MESH
+     &       USRMSH_2DHYD_NPLAN, ! NUMBER OF PLANES /NA/
+     &       MARDAT,           ! START DATE
+     &       MARTIM,           ! START TIME
+     &       I_ORIG,J_ORIG)    ! COORDINATES OF THE ORIGIN.
       ENDDO
 !
 !-----------------------------------------------------------------------     
@@ -199,7 +198,7 @@
 !
 ! VSPRES
       DO K = 1, NSICLA
-         CALL BIEF_ALLVEC(1,VSP_FRA(K),'VSPFRA',41,1,1,USRMSH)
+        CALL BIEF_ALLVEC(1,VSP_FRA(K),'VSPFRA',41,1,1,USRMSH)
       ENDDO
       
       CALL BIEF_ALLVEC(1,VSP_D,     'VSP__D',41,1,1,USRMSH)
@@ -208,7 +207,7 @@
       
 ! VSPHYD
       DO K = 1, NUMVAR2DHYD
-         CALL BIEF_ALLVEC(1,UR2DHYD(K),'VSPHYD',41,1,1,USRMSH_2DHYD)
+        CALL BIEF_ALLVEC(1,UR2DHYD(K),'VSPHYD',41,1,1,USRMSH_2DHYD)
       ENDDO
 !
 !-----------------------------------------------------------------------

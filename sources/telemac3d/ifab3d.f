@@ -105,12 +105,12 @@
 !  IFABOR ON THE VERTICAL FACES OF THE ELEMENTS OF THE FIRST LAYER
 !
       DO IELEM2 = 1,NELEM2
-!        ALREADY DONE BY 2D
-!        IFABOR(IELEM2,1,IETAGE) = IFABOR(IELEM2,1,1)
-!        IFABOR(IELEM2,2,IETAGE) = IFABOR(IELEM2,2,1)
-!        IFABOR(IELEM2,3,IETAGE) = IFABOR(IELEM2,3,1)
-         IFABOR(IELEM2,4,1) = LOC
-         IFABOR(IELEM2,5,1) = LOC
+!       ALREADY DONE BY 2D
+!       IFABOR(IELEM2,1,IETAGE) = IFABOR(IELEM2,1,1)
+!       IFABOR(IELEM2,2,IETAGE) = IFABOR(IELEM2,2,1)
+!       IFABOR(IELEM2,3,IETAGE) = IFABOR(IELEM2,3,1)
+        IFABOR(IELEM2,4,1) = LOC
+        IFABOR(IELEM2,5,1) = LOC
       ENDDO ! IELEM2 
       IF(NETAGE.GE.2) THEN
         DO IETAGE = 2,NETAGE
@@ -134,33 +134,33 @@
 !
       DO IPTFR1 = 1,NPTFR
 !
-         IPTFR2 = KP1BOR(IPTFR1)
-!        IF NEXT POINT IN THE SUBDOMAIN
-         IF(IPTFR2.NE.IPTFR1) THEN
-           IELBR = NELBOR(IPTFR1)
-           IFACE = NULONE(IPTFR1,1)
-           IF(IFABOR(IELBR,IFACE,1).NE.-2) THEN
-             FLAG = .FALSE.
-             IF(LIUBOL(IPTFR1,1).NE.KLOG .AND.
-     &          LIUBOL(IPTFR2,1).NE.KLOG) FLAG = .TRUE.
-             DO IETAGE = 1,NETAGE
-               IFABOR(IELBR,IFACE,IETAGE) = -1
-               IF(LIUBOL(IPTFR1,IETAGE+1).NE.KLOG .AND.
-     &            LIUBOL(IPTFR2,IETAGE+1).NE.KLOG) THEN
-                 IF(FLAG) IFABOR(IELBR,IFACE,IETAGE) = 0
-                 FLAG = .TRUE.
-               ELSE
-                 FLAG = .FALSE.
-               ENDIF
-             ENDDO
-           ELSE
-             IF(NETAGE.GT.1) THEN
-               DO IETAGE = 2,NETAGE
-                 IFABOR(IELBR,IFACE,IETAGE) = -2
-               ENDDO
-             ENDIF
-           ENDIF
-         ENDIF
+        IPTFR2 = KP1BOR(IPTFR1)
+!       IF NEXT POINT IN THE SUBDOMAIN
+        IF(IPTFR2.NE.IPTFR1) THEN
+          IELBR = NELBOR(IPTFR1)
+          IFACE = NULONE(IPTFR1,1)
+          IF(IFABOR(IELBR,IFACE,1).NE.-2) THEN
+            FLAG = .FALSE.
+            IF(LIUBOL(IPTFR1,1).NE.KLOG .AND.
+     &         LIUBOL(IPTFR2,1).NE.KLOG) FLAG = .TRUE.
+            DO IETAGE = 1,NETAGE
+              IFABOR(IELBR,IFACE,IETAGE) = -1
+              IF(LIUBOL(IPTFR1,IETAGE+1).NE.KLOG .AND.
+     &           LIUBOL(IPTFR2,IETAGE+1).NE.KLOG) THEN
+                IF(FLAG) IFABOR(IELBR,IFACE,IETAGE) = 0
+                FLAG = .TRUE.
+              ELSE
+                FLAG = .FALSE.
+              ENDIF
+            ENDDO
+          ELSE
+            IF(NETAGE.GT.1) THEN
+              DO IETAGE = 2,NETAGE
+                IFABOR(IELBR,IFACE,IETAGE) = -2
+              ENDDO
+            ENDIF
+          ENDIF
+        ENDIF
 !
       ENDDO
 !

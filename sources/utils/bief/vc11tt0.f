@@ -128,23 +128,23 @@
 ! THE POINTER POINTS TO THE ARRAYS OF THE COORDINATES THAT
 ! WILL BE USED.
       SELECT CASE (ICOORD )
-       CASE ( 1 )
-         PX => Y
-         PY => Z
-       CASE ( 2 )
-         PX => Z
-         PY => X
-       CASE ( 3 )
-         PX => X
-         PY => Y
-       CASE DEFAULT
-         IF (LNG.EQ.1) WRITE(LU,202) ICOORD
-         IF (LNG.EQ.2) WRITE(LU,203) ICOORD
- 202     FORMAT(1X,'VC11TT0 (BIEF) : COMPOSANTE IMPOSSIBLE ',
-     &        1I6,' VERIFIER ICOORD')
- 203     FORMAT(1X,'VC11TT0 (BIEF) : IMPOSSIBLE COMPONENT ',
-     &        1I6,' CHECK ICOORD')
-         CALL PLANTE(1)
+        CASE ( 1 )
+          PX => Y
+          PY => Z
+        CASE ( 2 )
+          PX => Z
+          PY => X
+        CASE ( 3 )
+          PX => X
+          PY => Y
+        CASE DEFAULT
+          IF (LNG.EQ.1) WRITE(LU,202) ICOORD
+          IF (LNG.EQ.2) WRITE(LU,203) ICOORD
+ 202      FORMAT(1X,'VC11TT0 (BIEF) : COMPOSANTE IMPOSSIBLE ',
+     &         1I6,' VERIFIER ICOORD')
+ 203      FORMAT(1X,'VC11TT0 (BIEF) : IMPOSSIBLE COMPONENT ',
+     &         1I6,' CHECK ICOORD')
+          CALL PLANTE(1)
       END SELECT
 !
       IF(IELMF.EQ.31.AND.IELMG.EQ.30) THEN
@@ -152,34 +152,34 @@
 ! LOOP ON THE ELEMENTS
       DO  IELEM = 1 , NELEM
 ! GETS THE ID OF THE FOUR NODES OF THE ELEMENT
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
+        I1 = IKLE1(IELEM)
+        I2 = IKLE2(IELEM)
+        I3 = IKLE3(IELEM)
+        I4 = IKLE4(IELEM)
 ! GETS THE FOUR NODAL VALUES OF THE VECTOR TO DIFFERENTIATE
-         F1 = F(I1)
-         F2 = F(I2)
-         F3 = F(I3)
-         F4 = F(I4)
+        F1 = F(I1)
+        F2 = F(I2)
+        F3 = F(I3)
+        F4 = F(I4)
 ! DIFFERENCES OF THE NODAL VALUES OF F
-         F2MF1 = F2-F1
-         F3MF1 = F3-F1
-         F4MF1 = F4-F1
+        F2MF1 = F2-F1
+        F3MF1 = F3-F1
+        F4MF1 = F4-F1
 !
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-         X1  =  PX(I1)
-         X2  =  PX(I2) - X1
-         X3  =  PX(I3) - X1
-         X4  =  PX(I4) - X1
-         Y1  =  PY(I1)
-         Y2  =  PY(I2) - Y1
-         Y3  =  PY(I3) - Y1
-         Y4  =  PY(I4) - Y1
-         DET =  (X3*Y4-X4*Y3)*F2MF1 + (Y2*X4-X2*Y4)*F3MF1+
-     &           (X2*Y3-Y2*X3)*F4MF1
+        X1  =  PX(I1)
+        X2  =  PX(I2) - X1
+        X3  =  PX(I3) - X1
+        X4  =  PX(I4) - X1
+        Y1  =  PY(I1)
+        Y2  =  PY(I2) - Y1
+        Y3  =  PY(I3) - Y1
+        Y4  =  PY(I4) - Y1
+        DET =  (X3*Y4-X4*Y3)*F2MF1 + (Y2*X4-X2*Y4)*F3MF1+
+     &          (X2*Y3-Y2*X3)*F4MF1
 ! RESULT
-         W(IELEM) = DET* G(IELEM) * XSUR24
+        W(IELEM) = DET* G(IELEM) * XSUR24
       ENDDO
 !
 !
@@ -189,26 +189,26 @@
       ELSE
 !-----------------------------------------------------------------------
 !
-         IF (LNG.EQ.1) WRITE(LU,1100) IELMF,SF%NAME
-         IF (LNG.EQ.1) WRITE(LU,1200) IELMG,SG%NAME
-         IF (LNG.EQ.1) WRITE(LU,1300)
-         IF (LNG.EQ.2) WRITE(LU,1101) IELMF,SF%NAME
-         IF (LNG.EQ.2) WRITE(LU,1201) IELMG,SG%NAME
-         IF (LNG.EQ.2) WRITE(LU,1301)
-         CALL PLANTE(1)
-         STOP
- 1100    FORMAT(1X,'VC11TT0 (BIEF) :',/,
-     &          1X,'DISCRETISATION DE F : ',1I6,
-     &          1X,'NOM REEL : ',A6)
- 1200    FORMAT(1X,'DISCRETISATION DE G : ',1I6,
-     &          1X,'NOM REEL : ',A6)
- 1300    FORMAT(1X,'CAS NON PREVU')
- 1101    FORMAT(1X,'VC11TT0 (BIEF) :',/,
-     &          1X,'DISCRETIZATION OF F:',1I6,
-     &          1X,'REAL NAME: ',A6)
- 1201    FORMAT(1X,'DISCRETIZATION OF G:',1I6,
-     &          1X,'REAL NAME: ',A6)
- 1301    FORMAT(1X,'CASE NOT IMPLEMENTED')
+        IF (LNG.EQ.1) WRITE(LU,1100) IELMF,SF%NAME
+        IF (LNG.EQ.1) WRITE(LU,1200) IELMG,SG%NAME
+        IF (LNG.EQ.1) WRITE(LU,1300)
+        IF (LNG.EQ.2) WRITE(LU,1101) IELMF,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,1201) IELMG,SG%NAME
+        IF (LNG.EQ.2) WRITE(LU,1301)
+        CALL PLANTE(1)
+        STOP
+ 1100   FORMAT(1X,'VC11TT0 (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+ 1200   FORMAT(1X,'DISCRETISATION DE G : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+ 1300   FORMAT(1X,'CAS NON PREVU')
+ 1101   FORMAT(1X,'VC11TT0 (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F:',1I6,
+     &         1X,'REAL NAME: ',A6)
+ 1201   FORMAT(1X,'DISCRETIZATION OF G:',1I6,
+     &         1X,'REAL NAME: ',A6)
+ 1301   FORMAT(1X,'CASE NOT IMPLEMENTED')
 !
       ENDIF
 !

@@ -169,35 +169,35 @@
 !
       DO I = 1,NPOIN
 ! IF POINT INSIDE ELLIPSE C0 x ( L x W )
-         XSPH =  CS2*( X(I)-XSPH0 ) + SN2*( Y(I)-YSPH0 )
-         YSPH = -SN2*( X(I)-XSPH0 ) + CS2*( Y(I)-YSPH0 )
-         DIST = (XSPH/MAJOR)**2 + (YSPH/MINOR)**2
-         IF( DIST.LT.1.D0 ) THEN
+        XSPH =  CS2*( X(I)-XSPH0 ) + SN2*( Y(I)-YSPH0 )
+        YSPH = -SN2*( X(I)-XSPH0 ) + CS2*( Y(I)-YSPH0 )
+        DIST = (XSPH/MAJOR)**2 + (YSPH/MINOR)**2
+        IF( DIST.LT.1.D0 ) THEN
 !
-            XI = X(I)/RR + LONG0
-            YJ = 2.D0*ATAN(CONST*EXP(Y(I)/RR)) - 0.5D0*PI
-            YY = RR*(YJ-Y0)
-            XX = RR*COS(YJ)*(XI-X0)
-            X1 = (XX-DEL_X)*SIN(TH)+(YY+DEL_Y)*COS(TH)
-            X2 = (XX-DEL_X)*COS(TH)-(YY+DEL_Y)*SIN(TH)
-            X2 = -X2
-            X3 = ZERO
-            P = X2*CS+HH*SN
+          XI = X(I)/RR + LONG0
+          YJ = 2.D0*ATAN(CONST*EXP(Y(I)/RR)) - 0.5D0*PI
+          YY = RR*(YJ-Y0)
+          XX = RR*COS(YJ)*(XI-X0)
+          X1 = (XX-DEL_X)*SIN(TH)+(YY+DEL_Y)*COS(TH)
+          X2 = (XX-DEL_X)*COS(TH)-(YY+DEL_Y)*SIN(TH)
+          X2 = -X2
+          X3 = ZERO
+          P = X2*CS+HH*SN
 !
-            F1 = OKADA_STRIKE_SLIP( X1,X2,X3,X1+HALFL,P,DL,HH )
-            F2 = OKADA_STRIKE_SLIP( X1,X2,X3,X1+HALFL,P-W,DL,HH )
-            F3 = OKADA_STRIKE_SLIP( X1,X2,X3,X1-HALFL,P,DL,HH )
-            F4 = OKADA_STRIKE_SLIP( X1,X2,X3,X1-HALFL,P-W,DL,HH )
-            G1 = OKADA_DIP_SLIP( X1,X2,X3,X1+HALFL,P,DL,HH )
-            G2 = OKADA_DIP_SLIP( X1,X2,X3,X1+HALFL,P-W,DL,HH )
-            G3 = OKADA_DIP_SLIP( X1,X2,X3,X1-HALFL,P,DL,HH )
-            G4 = OKADA_DIP_SLIP( X1,X2,X3,X1-HALFL,P-W,DL,HH )
+          F1 = OKADA_STRIKE_SLIP( X1,X2,X3,X1+HALFL,P,DL,HH )
+          F2 = OKADA_STRIKE_SLIP( X1,X2,X3,X1+HALFL,P-W,DL,HH )
+          F3 = OKADA_STRIKE_SLIP( X1,X2,X3,X1-HALFL,P,DL,HH )
+          F4 = OKADA_STRIKE_SLIP( X1,X2,X3,X1-HALFL,P-W,DL,HH )
+          G1 = OKADA_DIP_SLIP( X1,X2,X3,X1+HALFL,P,DL,HH )
+          G2 = OKADA_DIP_SLIP( X1,X2,X3,X1+HALFL,P-W,DL,HH )
+          G3 = OKADA_DIP_SLIP( X1,X2,X3,X1-HALFL,P,DL,HH )
+          G4 = OKADA_DIP_SLIP( X1,X2,X3,X1-HALFL,P-W,DL,HH )
 !
-            US = (F1-F2-F3+F4)*DS
-            UD = (G1-G2-G3+G4)*DD
-            H(I) = H(I) + (US+UD)
+          US = (F1-F2-F3+F4)*DS
+          UD = (G1-G2-G3+G4)*DD
+          H(I) = H(I) + (US+UD)
 !
-         ENDIF
+        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------

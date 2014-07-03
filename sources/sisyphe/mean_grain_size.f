@@ -51,12 +51,12 @@
         ACLADM%R(J) = 0.D0
         UNLADM%R(J) = 0.D0
         IF(NSICLA.GT.1) THEN
-         DO I=1,NSICLA
-          IF(AVAIL(J,1,I).GT.0.D0) THEN
-            ACLADM%R(J) = ACLADM%R(J) + FDM(I)*AVAIL(J,1,I)
-            UNLADM%R(J) = UNLADM%R(J) + FDM(I)*AVAIL(J,2,I)
-          ENDIF
-         ENDDO
+          DO I=1,NSICLA
+            IF(AVAIL(J,1,I).GT.0.D0) THEN
+              ACLADM%R(J) = ACLADM%R(J) + FDM(I)*AVAIL(J,1,I)
+              UNLADM%R(J) = UNLADM%R(J) + FDM(I)*AVAIL(J,2,I)
+            ENDIF
+          ENDDO
         ENDIF
         IF(ACLADM%R(J).LE.0.D0) ACLADM%R(J) = FDM(1)
         IF(UNLADM%R(J).LE.0.D0) UNLADM%R(J) = ACLADM%R(J)

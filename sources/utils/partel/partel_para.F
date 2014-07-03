@@ -164,7 +164,7 @@
 !
       INTEGER  TDEBP, TFINP, TEMPS, PARSEC
 !     EXTENS
-      CHARACTER(len=11) :: EXTENS
+      CHARACTER(LEN=11) :: EXTENS
       EXTERNAL EXTENS
 !
 !----------------------------------------------------------------------
@@ -202,7 +202,7 @@
       INTEGER DECOUP
       EXTERNAL P_TIME
       DOUBLE PRECISION P_TIME
-      CHARACTER(len=250) :: PATH
+      CHARACTER(LEN=250) :: PATH
       INTEGER :: NCAR, NCSIZE
       NDP_2D=3
       CALL P_INIT(PATH, NCAR, ID, NCSIZE)
@@ -220,20 +220,20 @@
 !
       IF (ID .EQ. 0) THEN
 !
-         WRITE(LU,*) ' '
-         WRITE(LU,*) '+----------------------------------------------+'
-         WRITE(LU,*) ' '
-         WRITE(LU,*) '  PARTEL //'
-         WRITE(LU,*) '  PARALLEL VERSION DEVELOPPED BY'
-         WRITE(LU,*) '  CHRISTOPHE DENIS (SINETICS)'
-         WRITE(LU,*) ' '
-         WRITE(LU,*) '  PARTEL'
-         WRITE(LU,*) '  BUNDESANSTALT FUER WASSERBAU, KARLSRUHE'
-         WRITE(LU,*) ' '
-         WRITE(LU,*) '  METIS 5.0.2'
-         WRITE(LU,*) '  REGENTS OF THE UNIVERSITY OF MINNESOTA'
-         WRITE(LU,*) ' '
-         WRITE(LU,*) '+----------------------------------------------+'
+        WRITE(LU,*) ' '
+        WRITE(LU,*) '+----------------------------------------------+'
+        WRITE(LU,*) ' '
+        WRITE(LU,*) '  PARTEL //'
+        WRITE(LU,*) '  PARALLEL VERSION DEVELOPPED BY'
+        WRITE(LU,*) '  CHRISTOPHE DENIS (SINETICS)'
+        WRITE(LU,*) ' '
+        WRITE(LU,*) '  PARTEL'
+        WRITE(LU,*) '  BUNDESANSTALT FUER WASSERBAU, KARLSRUHE'
+        WRITE(LU,*) ' '
+        WRITE(LU,*) '  METIS 5.0.2'
+        WRITE(LU,*) '  REGENTS OF THE UNIVERSITY OF MINNESOTA'
+        WRITE(LU,*) ' '
+        WRITE(LU,*) '+----------------------------------------------+'
 !
       END IF
 !
@@ -242,9 +242,9 @@
 !
       INQUIRE (FILE='PARTEL.PAR',EXIST=IS)
       IF( .NOT.IS ) THEN
-         WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') 'PARTEL.PAR'
-         CALL PLANTE(1)
-         STOP
+        WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') 'PARTEL.PAR'
+        CALL PLANTE(1)
+        STOP
       END IF
 !
       OPEN(UNIT=74,FILE='PARTEL.PAR')
@@ -259,16 +259,16 @@
 !
       INQUIRE (FILE=NAMEINP,EXIST=IS)
       IF( .NOT.IS ) THEN
-         WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEINP
-         CALL PLANTE(1)
-         STOP
+        WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEINP
+        CALL PLANTE(1)
+        STOP
       END IF
 !
       INQUIRE (FILE=NAMECLI,EXIST=IS)
       IF (.NOT.IS) THEN
-         WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMECLI
-         CALL PLANTE(1)
-         STOP
+        WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMECLI
+        CALL PLANTE(1)
+        STOP
       END IF
 !
       PMETHOD=DECOUP
@@ -282,19 +282,19 @@
       I_LENINP = I_LEN
 !
       IF (I_LENINP > MAXLENSOFT) THEN
-          WRITE(LU,*) ' '
-          WRITE(LU,*) 'ATTENTION:'
-          WRITE(LU,*) 'THE NAME OF THE INPUT FILE:'
-          WRITE(LU,*) NAMEINP
-          WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS'
-          WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC'
-          WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
-          CALL PLANTE(1)
-          STOP
+        WRITE(LU,*) ' '
+        WRITE(LU,*) 'ATTENTION:'
+        WRITE(LU,*) 'THE NAME OF THE INPUT FILE:'
+        WRITE(LU,*) NAMEINP
+        WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS'
+        WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC'
+        WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       IF (ID .EQ. 0)  THEN
-         STARTTIME=p_time()
+        STARTTIME=P_TIME()
       END IF
       OPEN(NINP,FILE=NAMEINP,STATUS='OLD',FORM='UNFORMATTED')
       REWIND NINP
@@ -304,19 +304,19 @@
       NVAR = I + J
       ISTART = 42
       DO I=1,NVAR
-         READ(NINP) VARI
-         VARIABLE(I) = VARI
-         DO J=1,32
-            IF(VARI(J:J).EQ.' ') VARI(J:J) = '-'
-         END DO
-         ISTOP = ISTART+20
-         IF (ISTOP.GT.MAXALLVARLENGTH) THEN
-            WRITE(LU,*) 'VARIABLE NAMES TOO LONG FOR STRING ALLVAR'
-            WRITE(LU,*) 'STOPPED.'
-            CALL PLANTE(1)
-            STOP
-         ENDIF
-         ISTART=ISTOP+1
+        READ(NINP) VARI
+        VARIABLE(I) = VARI
+        DO J=1,32
+          IF(VARI(J:J).EQ.' ') VARI(J:J) = '-'
+        END DO
+        ISTOP = ISTART+20
+        IF (ISTOP.GT.MAXALLVARLENGTH) THEN
+          WRITE(LU,*) 'VARIABLE NAMES TOO LONG FOR STRING ALLVAR'
+          WRITE(LU,*) 'STOPPED.'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        ISTART=ISTOP+1
       ENDDO
 !
 !   READ THE REST OF THE SELAFIN FILE
@@ -324,45 +324,45 @@
 !
       READ (NINP) (IB(I), I=1,10)
       IF (IB(8).NE.0.OR.IB(9).NE.0) THEN
-         WRITE(LU,*) 'THIS IS A PARTIAL OUTPUT FILE'
-         WRITE(LU,*) 'MAYBE MEET GRETEL BEFORE...'
+        WRITE(LU,*) 'THIS IS A PARTIAL OUTPUT FILE'
+        WRITE(LU,*) 'MAYBE MEET GRETEL BEFORE...'
       ENDIF
       NPLAN = IB(7)
 !
       IF (IB(10).EQ.1) THEN
-         READ(NINP) DATE(1), DATE(2), DATE(3), TIME(1), TIME(2), TIME(3)
+        READ(NINP) DATE(1), DATE(2), DATE(3), TIME(1), TIME(2), TIME(3)
       ENDIF
 !
       READ (NINP) NELEM,NPOIN,NDP,NDUM
       IF (NPLAN.GT.1) THEN
 !
-         NPOIN2 = NPOIN/NPLAN
-         NELEM2 = NELEM/(NPLAN-1)
-         IF (MOD(NPOIN,NPLAN).NE.0) THEN
-            WRITE (LU,*) 'BUT NPOIN2 /= NPOIN3/NPLAN!'
-            CALL PLANTE(1)
-            STOP
-         ENDIF
-         IF (MOD(NELEM,(NPLAN-1)).NE.0) THEN
-            WRITE (LU,*) 'BUT NELEM2 /= NELEM3/NPLAN!'
-            CALL PLANTE(1)
-            STOP
-         ENDIF
+        NPOIN2 = NPOIN/NPLAN
+        NELEM2 = NELEM/(NPLAN-1)
+        IF (MOD(NPOIN,NPLAN).NE.0) THEN
+          WRITE (LU,*) 'BUT NPOIN2 /= NPOIN3/NPLAN!'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        IF (MOD(NELEM,(NPLAN-1)).NE.0) THEN
+          WRITE (LU,*) 'BUT NELEM2 /= NELEM3/NPLAN!'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ELSE
 !
-         NPOIN2 = NPOIN
-         NELEM2 = NELEM
+        NPOIN2 = NPOIN
+        NELEM2 = NELEM
       ENDIF
 !
       IF (NDP.EQ.3) THEN
-         WRITE(LU,*) 'THE INPUT FILE ASSUMED TO BE 2D SELAFIN'
+        WRITE(LU,*) 'THE INPUT FILE ASSUMED TO BE 2D SELAFIN'
       ELSEIF (NDP.EQ.6) THEN
-         WRITE(LU,*) 'THE INPUT FILE ASSUMED TO BE 3D SELAFIN'
+        WRITE(LU,*) 'THE INPUT FILE ASSUMED TO BE 3D SELAFIN'
       ELSE
-!         WRITE(LU,*) 'THE ELEMENTS ARE NEITHER TRIANGLES NOR PRISMS!'
-!         WRITE(LU,*) 'NDP = ',NDP
-         CALL PLANTE(1)
-         STOP
+!       WRITE(LU,*) 'THE ELEMENTS ARE NEITHER TRIANGLES NOR PRISMS!'
+!       WRITE(LU,*) 'NDP = ',NDP
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !   NOW LET US ALLOCATE
@@ -370,8 +370,8 @@
       ALLOCATE (IKLES(NELEM2*3),STAT=ERR)
       CALL CHECK_ALLOCATE(ERR, 'IKLES')
       IF(NPLAN.GT.1) THEN
-         ALLOCATE (IKLES3D(NELEM*NDP),STAT=ERR)
-         CALL CHECK_ALLOCATE(ERR, 'IKLES3D')
+        ALLOCATE (IKLES3D(NELEM*NDP),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR, 'IKLES3D')
       ENDIF
       ALLOCATE (IRAND(NPOIN),STAT=ERR)
       CALL CHECK_ALLOCATE(ERR, 'IRAND')
@@ -383,15 +383,15 @@
 !   CONNECTIVITY TABLE:
 !
       IF(NPLAN.EQ.0) THEN
-         READ(NINP) ((IKLES((K-1)*NDP+J),J=1,NDP),K=1,NELEM)
+        READ(NINP) ((IKLES((K-1)*NDP+J),J=1,NDP),K=1,NELEM)
       ELSE
-         READ(NINP) ((IKLES3D((K-1)*NDP+J),J=1,NDP),K=1,NELEM)
-!        BUILDING IKLES
-         DO J=1,3
-            DO K=1,NELEM2
-               IKLES((K-1)*3+J)=IKLES3D((K-1)*6+J)
-            ENDDO
-         ENDDO
+        READ(NINP) ((IKLES3D((K-1)*NDP+J),J=1,NDP),K=1,NELEM)
+!       BUILDING IKLES
+        DO J=1,3
+          DO K=1,NELEM2
+            IKLES((K-1)*3+J)=IKLES3D((K-1)*6+J)
+          ENDDO
+        ENDDO
       ENDIF
 !
 !   BOUNDARY NODES INDICATIONS
@@ -407,26 +407,25 @@
 !
 !   READ THE TIME STEP
 !
-         READ(NINP) TIMES
+        READ(NINP) TIMES
 !         WRITE(NINPFORMAT,*) TIMES
-         ILOOP = ILOOP + 1
+        ILOOP = ILOOP + 1
 !
 !
 ! READ THE TIME VARIABLES; NO 1 AND 2 ARE X,Y
 !
-         DO K=3,NVAR+2
+        DO K=3,NVAR+2
 !            WRITE(LU,*) 'NOW READING VARIABLE',K-2
-            READ(NINP) (F(J,K), J=1,NPOIN)
+          READ(NINP) (F(J,K), J=1,NPOIN)
 !            WRITE(NINPFORMAT,*) (F(J,K), J=1,NPOIN)
 !            WRITE(LU,*) 'READING VARIABLE',K-2,' SUCCESSFUL'
-         END DO
+        END DO
 !      END DO
-!      STOP
       CLOSE (NINP)
       CALL P_SYNC()
       IF (ID .EQ. 0) THEN
-         STARTCTIME=p_time()
-         WRITE(LU,*) 'TEMPS LECTURE :',STARTCTIME-STARTTIME
+        STARTCTIME=P_TIME()
+        WRITE(LU,*) 'TEMPS LECTURE :',STARTCTIME-STARTTIME
       END IF
 
 !
@@ -471,21 +470,21 @@
       I_S  = LEN(NAMECLI)
       I_SP = I_S + 1
       DO I=1,I_S
-         IF (NAMECLI(I_SP-I:I_SP-I) .NE. ' ') EXIT
+        IF (NAMECLI(I_SP-I:I_SP-I) .NE. ' ') EXIT
       ENDDO
       I_LEN=I_SP - I
       I_LENCLI = I_LEN
 !
       IF (I_LENINP > MAXLENSOFT) THEN
-         WRITE(LU,*) ' '
-         WRITE(LU,*) 'ATTENTION:'
-         WRITE(LU,*) 'THE NAME OF THE BOUNDARY CONDITIONS FILE:'
-         WRITE(LU,*) NAMECLI
-         WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS'
-         WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
-         WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
-         CALL PLANTE(1)
-         STOP
+        WRITE(LU,*) ' '
+        WRITE(LU,*) 'ATTENTION:'
+        WRITE(LU,*) 'THE NAME OF THE BOUNDARY CONDITIONS FILE:'
+        WRITE(LU,*) NAMECLI
+        WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS'
+        WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
+        WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       OPEN(NCLI,FILE=NAMECLI,STATUS='OLD',FORM='FORMATTED')
@@ -566,9 +565,9 @@
 !   TRANSFORM IKLES--> IKLE FOR 2D ROUTINES  (AN OLD TELEMAC DISEASE)
 !
       DO I = 1,3
-         DO J  = 1,NELEM2
-            IKLE(J,I) = IKLES((J-1)*3+I)
-         ENDDO
+        DO J  = 1,NELEM2
+          IKLE(J,I) = IKLES((J-1)*3+I)
+        ENDDO
       ENDDO
 !
 !     Forcong voisn elebd and front2 to run on serila mode
@@ -594,8 +593,8 @@
       DEBLIQ(:) = 0
       FINLIQ(:) = 0
       DO I=1,NPOIN2
-        X_D(I) = dble(F(I,1))
-        Y_D(I) = dble(F(I,2))
+        X_D(I) = DBLE(F(I,1))
+        Y_D(I) = DBLE(F(I,2))
       ENDDO
       CALL FRONT2 (NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,
      &             LIHBOR,LIUBOR,X_D,Y_D,
@@ -641,7 +640,7 @@
       IF (DECOUP .EQ. 0) THEN
         OPEN(UNIT=32,FILE='RESULT_SEQ_METIS')
         DO I=1,NELEM2
-           READ(32,*) EPART(I)
+          READ(32,*) EPART(I)
         END DO
         CLOSE(32)
       ELSE
@@ -652,8 +651,8 @@
 !        
         WRITE(LU,*) ' THE MESH PARTITIONING STEP METIS STARTS'
         IF (TIMECOUNT) THEN 
-           CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
-           TDEBP = TEMPS
+          CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
+          TDEBP = TEMPS
         ENDIF
         CALL PARTITIONER_PARA(PMETHOD, NELEM2, NPOIN, NDP, NPARTS,
      &                           IKLES, EPART, NPART)
@@ -683,16 +682,16 @@
       CALL CHECK_ALLOCATE(ERR, 'NBRE_EF')
 !
       IF(NPLAN.EQ.0) THEN
-         ALLOCATE (F_P(NPOIN2,NVAR+2),STAT=ERR)
+        ALLOCATE (F_P(NPOIN2,NVAR+2),STAT=ERR)
       ELSE
-         ALLOCATE (F_P(NPOIN2*NPLAN,NVAR+2),STAT=ERR)
+        ALLOCATE (F_P(NPOIN2*NPLAN,NVAR+2),STAT=ERR)
       ENDIF
       CALL CHECK_ALLOCATE(ERR, 'F_P')
 !
-       ALLOCATE (GELEGL(NELEM2),STAT=ERR)
-       CALL CHECK_ALLOCATE(ERR, 'GELEGL')
-       ALLOCATE (GELEGL1(NELEM2),STAT=ERR)
-       CALL CHECK_ALLOCATE(ERR, 'GELEGL1')
+      ALLOCATE (GELEGL(NELEM2),STAT=ERR)
+      CALL CHECK_ALLOCATE(ERR, 'GELEGL')
+      ALLOCATE (GELEGL1(NELEM2),STAT=ERR)
+      CALL CHECK_ALLOCATE(ERR, 'GELEGL1')
 !
       ALLOCATE (SORT(NPOIN2),STAT=ERR)
       CALL CHECK_ALLOCATE(ERR, 'CUT_P')
@@ -717,10 +716,10 @@
 !   TO COMPUTE THE NUMBER OF FINITE ELEMENTS CONTAINING EACH POINT NOEUD
       NBRE_EF(:)=0
       DO EF=1,NELEM2
-         DO K=1,NDP_2D
-            NOEUD=IKLES((EF-1)*3+K)
-            NBRE_EF(NOEUD)=NBRE_EF(NOEUD)+1
-         END DO
+        DO K=1,NDP_2D
+          NOEUD=IKLES((EF-1)*3+K)
+          NBRE_EF(NOEUD)=NBRE_EF(NOEUD)+1
+        END DO
       END DO
 !
 !     THE PROCESS MPI ID  WORK ON THE SUBMESH ID+1
@@ -733,16 +732,16 @@
       NELEM_P=0
       NPOIN_P=0
       DO EF=1,NELEM2
-         IF (EPART(EF) .EQ. I) THEN
-            NELEM_P=NELEM_P+1
-            DO K=1,NDP_2D
-               NOEUD=IKLES((EF-1)*3+K)
-               IF (KNOGL(NOEUD) .EQ. 0) THEN
-                  NPOIN_P=NPOIN_P+1
-                  KNOGL(NOEUD)=NPOIN_P
-               END IF
-            END DO
-         END IF
+        IF (EPART(EF) .EQ. I) THEN
+          NELEM_P=NELEM_P+1
+          DO K=1,NDP_2D
+            NOEUD=IKLES((EF-1)*3+K)
+            IF (KNOGL(NOEUD) .EQ. 0) THEN
+              NPOIN_P=NPOIN_P+1
+              KNOGL(NOEUD)=NPOIN_P
+            END IF
+          END DO
+        END IF
       END DO
 !
 !======================================================================
@@ -758,9 +757,9 @@
 !   KNOLG(I) => GLOBAL LABEL OF THE POINT I
 !   I IS THE LOCAL LABEL ON SUBDOMAIN I
       IF(NPLAN.EQ.0) THEN
-         ALLOCATE (KNOLG(NPOIN_P),STAT=ERR)
+        ALLOCATE (KNOLG(NPOIN_P),STAT=ERR)
       ELSE
-         ALLOCATE (KNOLG(NPOIN_P*NPLAN),STAT=ERR)
+        ALLOCATE (KNOLG(NPOIN_P*NPLAN),STAT=ERR)
       ENDIF
       CALL CHECK_ALLOCATE(ERR, 'KNOLG')
       KNOLG(:)=0
@@ -786,18 +785,18 @@
       NELEM_P=0
       GELEGL(:)=0
       DO EF=1,NELEM2
-         IF (EPART(EF) .EQ. I) THEN
-            NELEM_P=NELEM_P+1
-            ELELG(NELEM_P)=EF
-            GELEGL(EF)=NELEM_P
-         END IF
+        IF (EPART(EF) .EQ. I) THEN
+          NELEM_P=NELEM_P+1
+          ELELG(NELEM_P)=EF
+          GELEGL(EF)=NELEM_P
+        END IF
       END DO
       CALL P_ISUM_ARRAY(GELEGL,GELEGL1,NELEM2,IER)
       DEALLOCATE(GELEGL)
       DEALLOCATE(NPART)
       NPTFR_P=0
       DO J=1,NPOIN_P
-         NBRE_EF_LOC(J)=0
+        NBRE_EF_LOC(J)=0
       END DO
 !
 !======================================================================
@@ -810,30 +809,30 @@
       NBRE_NOEUD_INTERNE=0
 !
       DO J=1,NELEM_P
-         EF=ELELG(J)
-         DO K=1,3
-            NOEUD=IKLES((EF-1)*3+K)
-            NBRE_EF_LOC(KNOGL(NOEUD))=NBRE_EF_LOC(KNOGL(NOEUD))+1
-            IF (NBRE_EF_LOC(KNOGL(NOEUD)) .EQ. 1) THEN
+        EF=ELELG(J)
+        DO K=1,3
+          NOEUD=IKLES((EF-1)*3+K)
+          NBRE_EF_LOC(KNOGL(NOEUD))=NBRE_EF_LOC(KNOGL(NOEUD))+1
+          IF (NBRE_EF_LOC(KNOGL(NOEUD)) .EQ. 1) THEN
 !   THE POINT NOEUD IS ENCOUNTERED FOR THE FIRST TIME
-               NPOIN_P=NPOIN_P+1
+            NPOIN_P=NPOIN_P+1
 !   IS NOEUD A BOUNDARY POINT ?
-               IF (IRAND(NOEUD) .NE. 0) THEN
-                  NPTFR_P= NPTFR_P+1
-               END IF
-!   MODIFICATION OF   KNOGL ET F_P
-               KNOLG(NPOIN_P)=NOEUD
-               DO L=1,NVAR+2
-                  F_P(NPOIN_P,L)=F(NOEUD,L)
-               END DO
+            IF (IRAND(NOEUD) .NE. 0) THEN
+              NPTFR_P= NPTFR_P+1
             END IF
+!   MODIFICATION OF   KNOGL ET F_P
+            KNOLG(NPOIN_P)=NOEUD
+            DO L=1,NVAR+2
+              F_P(NPOIN_P,L)=F(NOEUD,L)
+            END DO
+          END IF
 !
 !   NOEUD IS A INTERNAL POINT IF ALL FINITE ELEMENTS
 !   CONTAINING IT BELONGS TO THE SAME SUBMESH
-            IF (NBRE_EF_LOC(KNOGL(NOEUD)) .EQ. NBRE_EF(NOEUD)) THEN
-               NBRE_NOEUD_INTERNE=NBRE_NOEUD_INTERNE+1
-            END IF
-         END DO
+          IF (NBRE_EF_LOC(KNOGL(NOEUD)) .EQ. NBRE_EF(NOEUD)) THEN
+            NBRE_NOEUD_INTERNE=NBRE_NOEUD_INTERNE+1
+          END IF
+        END DO
       END DO
 !
 !======================================================================
@@ -849,35 +848,35 @@
       NPTIR_P=0 !THE NUMBER OF INTERFACE POINTS IS SET TO 0
 !   LOOP ON THE FINITE ELEMENT BELONGING TO SUBMESH I
       DO J=1,NELEM_P
-         INTERFACE=.FALSE.
-         EF=ELELG(J)         ! GLOBAL LABEL OF THE FINITE ELEMENT
-         DO K=1,NDP_2D       ! LOOP ON THE NODES CONTAINED IN EF
-            NOEUD=IKLES((EF-1)*3+K)
-            IF (ABS(NBRE_EF_LOC(KNOGL(NOEUD))) .NE. NBRE_EF(NOEUD))
+        INTERFACE=.FALSE.
+        EF=ELELG(J)         ! GLOBAL LABEL OF THE FINITE ELEMENT
+        DO K=1,NDP_2D       ! LOOP ON THE NODES CONTAINED IN EF
+          NOEUD=IKLES((EF-1)*3+K)
+          IF (ABS(NBRE_EF_LOC(KNOGL(NOEUD))) .NE. NBRE_EF(NOEUD))
      &         THEN
-               ! THE GLOBAL NUMBER OF FINITE ELEMENTS CONTAINING NOEUD
-               ! IS GREATER THAN THE LOCAL NUMBER OF FINITE ELEMENTS
-               ! CONTAINING NOEUD => NOEUD IS AN INTERFACE POINT
-               !    => EF IS AN INTERFACE FINITE ELEMENT
-               INTERFACE=.TRUE.
-            END IF
-            IF (NBRE_EF_LOC(KNOGL(NOEUD)) .NE.  NBRE_EF(NOEUD).AND.
+            ! THE GLOBAL NUMBER OF FINITE ELEMENTS CONTAINING NOEUD
+            ! IS GREATER THAN THE LOCAL NUMBER OF FINITE ELEMENTS
+            ! CONTAINING NOEUD => NOEUD IS AN INTERFACE POINT
+            !    => EF IS AN INTERFACE FINITE ELEMENT
+            INTERFACE=.TRUE.
+          END IF
+          IF (NBRE_EF_LOC(KNOGL(NOEUD)) .NE.  NBRE_EF(NOEUD).AND.
      &         NBRE_EF_LOC(KNOGL(NOEUD)) .GT. 0) THEN
-               ! IT IS THE FIRST TIME THAT NOEUD IS DETECTED AS INTERFACE POINT
-               ! AS AFTER  NBRE_EF_LOC(KNOGL(NOEUD))= -1*NBRE_EF_LOC(KNOGL(NOEUD))
-               INTERFACE=.TRUE.
-               NPTIR_P=NPTIR_P+1
-               CUT_P(NPTIR_P)=NOEUD
-               SORT(NOEUD)=1
-               NBRE_EF_LOC(KNOGL(NOEUD))=
+            ! IT IS THE FIRST TIME THAT NOEUD IS DETECTED AS INTERFACE POINT
+            ! AS AFTER  NBRE_EF_LOC(KNOGL(NOEUD))= -1*NBRE_EF_LOC(KNOGL(NOEUD))
+            INTERFACE=.TRUE.
+            NPTIR_P=NPTIR_P+1
+            CUT_P(NPTIR_P)=NOEUD
+            SORT(NOEUD)=1
+            NBRE_EF_LOC(KNOGL(NOEUD))=
      &            -1*NBRE_EF_LOC(KNOGL(NOEUD))
-            END IF
-         END DO
-         IF (INTERFACE .EQV. .TRUE.) THEN
-            NBRE_EF_I=NBRE_EF_I+1
-            EF_I(NBRE_EF_I)=EF
-            EF_II(NBRE_EF_I)=J
-         END IF
+          END IF
+        END DO
+        IF (INTERFACE .EQV. .TRUE.) THEN
+          NBRE_EF_I=NBRE_EF_I+1
+          EF_I(NBRE_EF_I)=EF
+          EF_II(NBRE_EF_I)=J
+        END IF
       END DO
       WRITE(22,*) 'NPTIR_P',NPTIR_P
       NB_INTER_GLOB=0
@@ -886,9 +885,9 @@
       CALL P_IMAX_ARRAY(SORT,CUT,NPOIN2,IER)
 !
       DO J=1,NPOIN2
-         IF (CUT(J) .NE. 0) THEN
-            NB_INTER_GLOB=NB_INTER_GLOB+1
-         END IF
+        IF (CUT(J) .NE. 0) THEN
+          NB_INTER_GLOB=NB_INTER_GLOB+1
+        END IF
       END DO
       ALLOCATE(GLOBAL_INTER_NODE_REORD(NB_INTER_GLOB),STAT=ERR)
       CALL CHECK_ALLOCATE(ERR, 'GLOBAL_INTER_REORD')
@@ -900,33 +899,33 @@
       CALL CHECK_ALLOCATE(ERR, 'PART_P_TMP2')
       NB_INTER_GLOB=0
       DO J=1,NPOIN2
-         IF (CUT(J) .NE. 0) THEN
-            NB_INTER_GLOB=NB_INTER_GLOB+1
-            GLOBAL_INTER_NODE_REORD( NB_INTER_GLOB)=J
+        IF (CUT(J) .NE. 0) THEN
+          NB_INTER_GLOB=NB_INTER_GLOB+1
+          GLOBAL_INTER_NODE_REORD( NB_INTER_GLOB)=J
 !            IF (NBRE_EF_LOC(KNOGL(NOEUD)) .LT. 0) THEN
 !               PART_P(NB_INTER_GLOB,I)=I
 !            END IF
-         END IF
+        END IF
       END DO
       PART_P=0
       DO J=1,NB_INTER_GLOB
-         PART_P_TMP1=0
-         PART_P_TMP2=0
-         COMPT=0
-         NOEUD=GLOBAL_INTER_NODE_REORD(J)
-         IF (SORT(NOEUD) .NE. 0) THEN
-            PART_P_TMP1(I)=I
-            PART_P_TMP1(NPARTS+1)=PART_P_TMP1(NPARTS+1)+1
-         END IF
-         CALL P_ISUM_ARRAY(PART_P_TMP1,PART_P_TMP2,NPARTS+1,
+        PART_P_TMP1=0
+        PART_P_TMP2=0
+        COMPT=0
+        NOEUD=GLOBAL_INTER_NODE_REORD(J)
+        IF (SORT(NOEUD) .NE. 0) THEN
+          PART_P_TMP1(I)=I
+          PART_P_TMP1(NPARTS+1)=PART_P_TMP1(NPARTS+1)+1
+        END IF
+        CALL P_ISUM_ARRAY(PART_P_TMP1,PART_P_TMP2,NPARTS+1,
      &        IER)
-         DO K=1,NPARTS
-            IF (PART_P_TMP2(K) .NE. 0 .AND. K .NE. I) THEN
-               COMPT=COMPT+1
-               PART_P(J,COMPT)=K
-               PART_P(J,NBMAXNSHARE+1)=PART_P_TMP2(NPARTS+1)
-            END IF
-         END DO
+        DO K=1,NPARTS
+          IF (PART_P_TMP2(K) .NE. 0 .AND. K .NE. I) THEN
+            COMPT=COMPT+1
+            PART_P(J,COMPT)=K
+            PART_P(J,NBMAXNSHARE+1)=PART_P_TMP2(NPARTS+1)
+          END IF
+        END DO
       END DO
       DEALLOCATE(PART_P_TMP1)
       DEALLOCATE(PART_P_TMP2)
@@ -934,81 +933,80 @@
       MAX_N_NEIGH=MAXVAL(PART_P(:,NBMAXNSHARE+1))
 !      WRITE(LU,*) 'MAX', MAX_N_NEIGH
       IF ( MAX_N_NEIGH > NBMAXNSHARE-1 ) THEN
-         WRITE(LU,*) 'SERIOUS WARNING: '
-         WRITE(LU,*)
+        WRITE(LU,*) 'SERIOUS WARNING: '
+        WRITE(LU,*)
      &        'AN INTERFACE NODE BELONGS TO ',
      &        'MORE THAN NBMAXNSHARE-1 SUBDOMAINS'
-         WRITE(LU,*) 'TELEMAC MAY PROTEST!'
+        WRITE(LU,*) 'TELEMAC MAY PROTEST!'
       END IF
       IF (MAX_N_NEIGH > MAXNPROC) THEN
-         WRITE (LU,*) 'THERE IS A NODE WHICH BELONGS TO MORE THAN ',
+        WRITE (LU,*) 'THERE IS A NODE WHICH BELONGS TO MORE THAN ',
      &        MAXNPROC,' PROCESSORS, HOW COME?'
-         CALL PLANTE(1)
-          STOP
-       ENDIF
-       IF (MAX_N_NEIGH < NBMAXNSHARE-1) MAX_N_NEIGH = NBMAXNSHARE-1
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+      IF (MAX_N_NEIGH < NBMAXNSHARE-1) MAX_N_NEIGH = NBMAXNSHARE-1
 !
 !======================================================================
 !     STEP 6 : COMPUTE THE HALO
 !
 !======================================================================
 !
-       NHALO=0
+      NHALO=0
 !   LOOP ON THE INTERFACE FINITE ELEMENT
-       DO J=1,NBRE_EF_I
-          EF=EF_I(J)
-          HALO=.FALSE.
-          IFALOC(:)=IFABOR(EF,:)
-          WHERE (IFALOC .GT. 0)
-             IFALOC=EPART(IFALOC)
-          END WHERE
-          HALO=ANY(IFALOC .GT. 0 .AND. IFALOC .NE. I)
-          IF (HALO .EQV. .TRUE.) THEN
-             NHALO=NHALO+1
-          END IF
-       END DO
-       ALLOCATE (IFAPAR(7,NHALO),STAT=ERR)
-       CALL CHECK_ALLOCATE(ERR, 'IFAPAR')
-       IFAPAR(:,:)=0
+      DO J=1,NBRE_EF_I
+        EF=EF_I(J)
+        HALO=.FALSE.
+        IFALOC(:)=IFABOR(EF,:)
+        WHERE (IFALOC .GT. 0)
+          IFALOC=EPART(IFALOC)
+        END WHERE
+        HALO=ANY(IFALOC .GT. 0 .AND. IFALOC .NE. I)
+        IF (HALO .EQV. .TRUE.) THEN
+          NHALO=NHALO+1
+        END IF
+      END DO
+      ALLOCATE (IFAPAR(7,NHALO),STAT=ERR)
+      CALL CHECK_ALLOCATE(ERR, 'IFAPAR')
+      IFAPAR(:,:)=0
 !
-       NHALO=0
+      NHALO=0
 !   LOOP ON THE INTERFACE FINITE ELEMENT
-       DO J=1,NBRE_EF_I
-          EF=EF_I(J)
-          HALO=.FALSE.
-          IFALOC(:)=IFABOR(EF,:)
-          WHERE (IFALOC .GT. 0)
-             IFALOC=EPART(IFALOC)
-          END WHERE
-          HALO=ANY(IFALOC .GT. 0 .AND. IFALOC .NE. I)
-          IF (HALO .EQV. .TRUE.) THEN
-             NHALO=NHALO+1
-             IFAPAR(1,NHALO)=EF_II(J)
-             IFAPAR(2:4,NHALO)=IFALOC(:)
-             IFAPAR(5:7,NHALO)=IFABOR(EF_I(J),:)
-!             DO K=1,3
-!                NPART(IFALOC(K))=NPART(IFALOC(K))+1
-!             END DO
-          END IF
-       END DO
+      DO J=1,NBRE_EF_I
+        EF=EF_I(J)
+        HALO=.FALSE.
+        IFALOC(:)=IFABOR(EF,:)
+        WHERE (IFALOC .GT. 0)
+          IFALOC=EPART(IFALOC)
+        END WHERE
+        HALO=ANY(IFALOC .GT. 0 .AND. IFALOC .NE. I)
+        IF (HALO .EQV. .TRUE.) THEN
+          NHALO=NHALO+1
+          IFAPAR(1,NHALO)=EF_II(J)
+          IFAPAR(2:4,NHALO)=IFALOC(:)
+          IFAPAR(5:7,NHALO)=IFABOR(EF_I(J),:)
+!            DO K=1,3
+!               NPART(IFALOC(K))=NPART(IFALOC(K))+1
+!            END DO
+        END IF
+      END DO
 !
 !       WRITE(LU,*) 'SOUS DOMAINE ',I,'NBRE POINTS',NPOIN_P,
 !     &        'NBRE NOEUD INTE',NBRE_NOEUD_INTERNE,'INTERFACE',
 !!     &        NPTIR_P,'NBRE FRONT',NPTFR_P, 'HALO',NHALO,
 !     &        'NBRE_EFRONT',NBRE_EF_I
 !
-       IF (.NOT. ALLOCATED(NBOR_P)) THEN
-          ALLOCATE(NBOR_P(NPOIN2),STAT=ERR)
-          CALL CHECK_ALLOCATE(ERR, 'NBOR_P')
-       END IF
-!       END DO
+      IF (.NOT. ALLOCATED(NBOR_P)) THEN
+        ALLOCATE(NBOR_P(NPOIN2),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR, 'NBOR_P')
+      END IF
+!     END DO
 
-!       STOP
-!       DO I=1,NPARTS
+!     DO I=1,NPARTS
       CALL P_SYNC()
       IF (ID .EQ. 0) THEN
-         STARTIOTIME=p_time()
-         WRITE(LU,*) 'TEMPS CALCUL :',STARTIOTIME-STARTCTIME
+        STARTIOTIME=P_TIME()
+        WRITE(LU,*) 'TEMPS CALCUL :',STARTIOTIME-STARTCTIME
       END IF
 !
 !-----------------------------------------------------------------------
@@ -1038,26 +1036,26 @@
 !
 !   BOUNDARY NODES BELONGING TO THIS PARTITION
 !
-         IF ( KNOGL(NBOR(K)) /= 0) THEN
-            J = J + 1
+        IF ( KNOGL(NBOR(K)) /= 0) THEN
+          J = J + 1
 !            NBOR_P(J) = NBOR(K)
-            ISEG = 0
-            XSEG = 0.0
-            YSEG = 0.0
+          ISEG = 0
+          XSEG = 0.0
+          YSEG = 0.0
 !
 !   IF THE ORIGINAL (GLOBAL) BOUNDARY LEADS FURTHER INTO
 !   ANOTHER PARTITION THEN ISEG IS SET NOT EQUAL TO ZERO
 !   THE NEXT NODE ALONG THE GLOBAL BOUNDARY HAS IPTFR = M
 !   (BUT CHECK THE CASE THE CIRCLE CLOSES)
 !
-            M = KP1BOR(K,1)
+          M = KP1BOR(K,1)
 !
 !   NBOR_P CANNOT BE USED, IT IS NOT FULLY FILLED WITH DATA
 !
-            ISO = 0
+          ISO = 0
 !   MODIF JMH ON 10/03/2003 : CHECKING IF THE ADJACENT ELEMENT IS NOT IN THE
 !                           SUB-DOMAIN
-            IF (EPART(NELBOR(K)).NE.I) THEN
+          IF (EPART(NELBOR(K)).NE.I) THEN
 !   THIS WAS A TEST : IF NEXT BOUNDARY POINT NOT IN THE SUBDOMAIN
 !   BUT IT CAN BE IN WHEREAS THE SEGMENT IS NOT.
 !      IF ( KNOGL(NBOR(M)) == 0 ) THEN
@@ -1066,42 +1064,42 @@
 !     &                 NBOR(K), KNOGL(NBOR(K)),
 !     &                 ' --> (#G) ', NBOR(M)
 !
-            ISEG = NBOR(M)
-            XSEG = F(ISEG,1)
-            YSEG = F(ISEG,2)
-C            NPTIR = NPTIR + 1
-C            CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
-             ISO = ISO + 1
-            ENDIF
+          ISEG = NBOR(M)
+          XSEG = F(ISEG,1)
+          YSEG = F(ISEG,2)
+!            NPTIR = NPTIR + 1
+!            CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
+           ISO = ISO + 1
+          ENDIF
 !
-            M = KP1BOR(K,2)
+          M = KP1BOR(K,2)
 !
 !     MODIF JMH ON 10/03/2003 : SAME AS ABOVE, BUT PREVIOUS SEGMENT ,THUS M, NOT K
-            IF (EPART(NELBOR(M)).NE.I) THEN
+          IF (EPART(NELBOR(M)).NE.I) THEN
 !     IF ( KNOGL(NBOR(M) ) == 0 ) THEN
 !               WRITE(LU,*)
 !     &              'GLOBAL BOUNDARY ENTERS @NODE (#G,#L): ',
 !!     &              NBOR(K), KNOGL(NBOR(K)),
 !     &              ' <-- (#G) ', NBOR(M)
 !
-               ISEG = -NBOR(M)
-               XSEG = F(-ISEG,1)
-               YSEG = F(-ISEG,2)
-               ISO = ISO + 1
-C               NPTIR = NPTIR + 1
-C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
-            ENDIF
+            ISEG = -NBOR(M)
+            XSEG = F(-ISEG,1)
+            YSEG = F(-ISEG,2)
+            ISO = ISO + 1
+!               NPTIR = NPTIR + 1
+!               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
+          ENDIF
 !
 !     WHEN BOTH NEIGHBOURS BOUNDARY NODES BELONG TO ANOTHER PARTITION
 !
-            IF (ISO == 2) THEN
-               ISEG = -9999
-               ISO = 0
+          IF (ISO == 2) THEN
+            ISEG = -9999
+            ISO = 0
 !               WRITE(LU,*) 'ISOLATED BOUNDARY POINT',
 !     &              NBOR(K), KNOGL(NBOR(K))
-            ENDIF
+          ENDIF
 !
-            WRITE (NCLM,4000)
+          WRITE (NCLM,4000)
      &         LIHBOR(K), LIUBOR(K), LIVBOR(K),
      &         HBOR(K), UBOR(K), VBOR(K),
      &          AUBOR(K), LITBOR(K), TBOR(K), ATBOR(K), BTBOR(K),
@@ -1114,7 +1112,7 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
  4000       FORMAT (1X,I2,1X,2(I1,1X),3(F24.12,1X),1X,
      &           F24.12,3X,I1,1X,3(F24.12,1X),1I15,1X,1I15,
      &           1X,I15,1X,2(F27.15,1X),I15)
-         ENDIF
+        ENDIF
 !
       END DO
 
@@ -1126,34 +1124,34 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
       WRITE (FMT4(2:4),'(I3)') MAX_N_NEIGH+1
 !
       DO J=1, NB_INTER_GLOB
-         NOEUD=GLOBAL_INTER_NODE_REORD(J)
-         IF (SORT(NOEUD) .NE. 0) THEN
+        NOEUD=GLOBAL_INTER_NODE_REORD(J)
+        IF (SORT(NOEUD) .NE. 0) THEN
 
-            WRITE(NCLM,FMT=FMT4) GLOBAL_INTER_NODE_REORD(J),
+          WRITE(NCLM,FMT=FMT4) GLOBAL_INTER_NODE_REORD(J),
      &        (PART_P(J,K)-1, K=1,MAX_N_NEIGH)
-         END IF
+        END IF
       END DO
 !
       DO J=1,NHALO
-         DO M=0,2
-            IF (IFAPAR(2+M,J)>0) THEN
-               IFAPAR(5+M,J)=GELEGL1(IFAPAR(5+M,J))
-            END IF
-         END DO
+        DO M=0,2
+          IF (IFAPAR(2+M,J)>0) THEN
+            IFAPAR(5+M,J)=GELEGL1(IFAPAR(5+M,J))
+          END IF
+        END DO
       END DO
 !      IFAPAR(2:4,:)=IFAPAR(2:4,:)-1
       DO J=1,NHALO
-         DO M=0,2
-            IF (IFAPAR(2+M,J)>0) THEN
-               IFAPAR(2+M,J)=IFAPAR(2+M,J)-1
-            END IF
-         END DO
+        DO M=0,2
+          IF (IFAPAR(2+M,J)>0) THEN
+            IFAPAR(2+M,J)=IFAPAR(2+M,J)-1
+          END IF
+        END DO
       END DO
 !
       WRITE(NCLM,'(I15)') NHALO
       DO K=1,NHALO
 
-         WRITE (NCLM,'(7(I15,1X))') IFAPAR(:,K)
+        WRITE (NCLM,'(7(I15,1X))') IFAPAR(:,K)
       END DO
       CLOSE(NCLM)
 !
@@ -1163,7 +1161,7 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
       CALL CHECK_ALLOCATE(ERR, 'F_P')
       ALLOCATE(IKLES_P(NELEM2*3),STAT=ERR)
       IF(NPLAN.GT.1) THEN
-         ALLOCATE(IKLES3D_P(6,NELEM2,NPLAN-1),STAT=ERR)
+        ALLOCATE(IKLES3D_P(6,NELEM2,NPLAN-1),STAT=ERR)
       ENDIF
       CALL CHECK_ALLOCATE(ERR, 'IKLES3D_P')
 !
@@ -1181,7 +1179,7 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
       WRITE(NOUT) NVAR,0
 !
       DO K=1,NVAR
-         WRITE(NOUT) VARIABLE(K)
+        WRITE(NOUT) VARIABLE(K)
       END DO
 !     WRITE(*,*) 'HERE '
 ! 10 INTEGERS...
@@ -1197,39 +1195,39 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
 !     &       NPTIR_P,'NHALO(I)',NHALO,NPOIN_P
       WRITE(NOUT) (IB(K), K=1,10)
       IF (IB(10).EQ.1) THEN
-         WRITE(NOUT) DATE(1), DATE(2), DATE(3),
+        WRITE(NOUT) DATE(1), DATE(2), DATE(3),
      &               TIME(1), TIME(2), TIME(3)
       ENDIF
       IF(NPLAN.LE.1) THEN
-         WRITE(NOUT) NELEM_P, NPOIN_P, NDP, NDUM
+        WRITE(NOUT) NELEM_P, NPOIN_P, NDP, NDUM
       ELSE
-         WRITE(NOUT) NELEM_P*(NPLAN-1),
+        WRITE(NOUT) NELEM_P*(NPLAN-1),
      &               NPOIN_P*NPLAN, NDP, NDUM
       ENDIF
       DO J=1,NELEM_P
-         EF=ELELG(J)
-         DO K=1,3
-            IKLES_P((J-1)*3+K) = KNOGL(IKLES((EF-1)*3+K))
-         END DO
+        EF=ELELG(J)
+        DO K=1,3
+          IKLES_P((J-1)*3+K) = KNOGL(IKLES((EF-1)*3+K))
+        END DO
       END DO
       IF(NPLAN > 1) THEN
-         DO K = 1,NPLAN-1
-            DO J = 1,NELEM_P
-               IKLES3D_P(1,J,K) = IKLES_P(1+(J-1)*3) + (K-1)*NPOIN_P
-               IKLES3D_P(2,J,K) = IKLES_P(2+(J-1)*3) + (K-1)*NPOIN_P
-               IKLES3D_P(3,J,K) = IKLES_P(3+(J-1)*3) + (K-1)*NPOIN_P
-               IKLES3D_P(4,J,K) = IKLES_P(1+(J-1)*3) +  K   *NPOIN_P
-               IKLES3D_P(5,J,K) = IKLES_P(2+(J-1)*3) +  K   *NPOIN_P
-               IKLES3D_P(6,J,K) = IKLES_P(3+(J-1)*3) +  K   *NPOIN_P
-            ENDDO
-         ENDDO
+        DO K = 1,NPLAN-1
+          DO J = 1,NELEM_P
+            IKLES3D_P(1,J,K) = IKLES_P(1+(J-1)*3) + (K-1)*NPOIN_P
+            IKLES3D_P(2,J,K) = IKLES_P(2+(J-1)*3) + (K-1)*NPOIN_P
+            IKLES3D_P(3,J,K) = IKLES_P(3+(J-1)*3) + (K-1)*NPOIN_P
+            IKLES3D_P(4,J,K) = IKLES_P(1+(J-1)*3) +  K   *NPOIN_P
+            IKLES3D_P(5,J,K) = IKLES_P(2+(J-1)*3) +  K   *NPOIN_P
+            IKLES3D_P(6,J,K) = IKLES_P(3+(J-1)*3) +  K   *NPOIN_P
+          ENDDO
+        ENDDO
       ENDIF
 !
       IF (NPLAN.LE.1) THEN
-         WRITE(NOUT)
+        WRITE(NOUT)
      &     ((IKLES_P((J-1)*3+K),K=1,3),J=1,NELEM_P)
       ELSE
-         WRITE(NOUT)
+        WRITE(NOUT)
      &     (((IKLES3D_P(L,J,K),L=1,6),J=1,NELEM_P),K=1,NPLAN-1)
       ENDIF
 !
@@ -1237,31 +1235,31 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
 !   I.E. THE TABLE PROCESSOR-LOCAL -> PROCESSOR-GLOBAL NODE NUMBERS
 !
       IF (NPLAN.EQ.0) THEN
-         WRITE(NOUT) (KNOLG(J), J=1,NPOIN_P)
+        WRITE(NOUT) (KNOLG(J), J=1,NPOIN_P)
       ELSE
 !   BEYOND NPOIN_P(I) : DUMMY VALUES IN KNOLG, NEVER USED
-         WRITE(NOUT) (KNOLG(J), J=1,NPOIN_P*NPLAN)
+        WRITE(NOUT) (KNOLG(J), J=1,NPOIN_P*NPLAN)
       ENDIF
 !
 ! COMPLETING PLANES OTHER THAN 1 FOR FUNCTIONS F_P
       IF (NPLAN.GT.1) THEN
-         DO L=2,NPLAN
-            DO J=1,NPOIN_P
-               DO K=1,NVAR+2
-      F_P(J+(L-1)*NPOIN_P,K) = F(KNOLG(J)+(L-1)*NPOIN2,K)
-               END DO
-            ENDDO
-         ENDDO
+        DO L=2,NPLAN
+          DO J=1,NPOIN_P
+            DO K=1,NVAR+2
+              F_P(J+(L-1)*NPOIN_P,K) = F(KNOLG(J)+(L-1)*NPOIN2,K)
+            END DO
+          ENDDO
+        ENDDO
       ENDIF
 !
 !   NODE COORDINATES X AND Y
 !
       IF (NPLAN.EQ.0) THEN
-         WRITE(NOUT) (F_P(J,1),J=1,NPOIN_P)
-         WRITE(NOUT) (F_P(J,2),J=1,NPOIN_P)
+        WRITE(NOUT) (F_P(J,1),J=1,NPOIN_P)
+        WRITE(NOUT) (F_P(J,2),J=1,NPOIN_P)
       ELSE
-         WRITE(NOUT) (F_P(J,1),J=1,NPOIN_P*NPLAN)
-         WRITE(NOUT) (F_P(J,2),J=1,NPOIN_P*NPLAN)
+        WRITE(NOUT) (F_P(J,1),J=1,NPOIN_P*NPLAN)
+        WRITE(NOUT) (F_P(J,2),J=1,NPOIN_P*NPLAN)
       ENDIF
 !
 !   TIME STAMP (SECONDS)
@@ -1269,11 +1267,11 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
 !   NOW THE TIME-DEPENDENT VARIABLES
 !
       DO K=3,NVAR+2
-         IF(NPLAN.EQ.0) THEN
-            WRITE(NOUT) (F_P(J,K),J=1,NPOIN_P)
-         ELSE
-            WRITE(NOUT) (F_P(J,K),J=1,NPOIN_P*NPLAN)
-         ENDIF
+        IF(NPLAN.EQ.0) THEN
+          WRITE(NOUT) (F_P(J,K),J=1,NPOIN_P)
+        ELSE
+          WRITE(NOUT) (F_P(J,K),J=1,NPOIN_P*NPLAN)
+        ENDIF
       END DO
       CLOSE (NOUT)
       CALL P_SYNC()
@@ -1336,13 +1334,13 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
 !
       CALL P_SYNC()
       IF (ID .EQ. 0) THEN
-         ENDTIME=p_time()
-         WRITE(LU,*) 'TEMPS ECRITURE :',ENDTIME-STARTIOTIME
-         WRITE(LU,*) 'TEMPS TOTAL :',ENDTIME-STARTTIME
-         WRITE(LU,*) '+---- PARTEL: NORMAL TERMINATION ----+'
+        ENDTIME=P_TIME()
+        WRITE(LU,*) 'TEMPS ECRITURE :',ENDTIME-STARTIOTIME
+        WRITE(LU,*) 'TEMPS TOTAL :',ENDTIME-STARTTIME
+        WRITE(LU,*) '+---- PARTEL: NORMAL TERMINATION ----+'
       END IF
 !
       CALL P_EXIT()
-      STOP
+      STOP 0
 !
       END PROGRAM PARTEL_PARA

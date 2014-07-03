@@ -94,6 +94,7 @@
      &        ,/,1X,'SUBROUTINE LECTRI :'
      &        ,/,1X,'ERROR READING TRIGRID FILE.'
      &        ,/,1X,'****************************')
+      CALL PLANTE(1)
       STOP
  9000 CONTINUE
       IF (LNG.EQ.1) WRITE (LU,4010)
@@ -106,6 +107,7 @@
      &        ,/,1X,'SUBROUTINE LECTRI : UNEXPECTED END OF'
      &        ,/,1X,'TRIGRID FILE ENCOUNTERED'
      &        ,/,1X,'***************************************')
+      CALL PLANTE(1)
       STOP
  8010 CONTINUE
       IF (LNG.EQ.1) WRITE (LU,4020)
@@ -118,6 +120,7 @@
      &        ,/,1X,'SUBROUTINE LECTRI : ERROR READING'
      &        ,/,1X,'TRIGRID TRIANGLE FILE'
      &        ,/,1X,'***************************************')
+      CALL PLANTE(1)
       STOP
  9010 CONTINUE
       IF (LNG.EQ.1) WRITE (LU,4030)
@@ -130,5 +133,6 @@
      &        ,/,1X,'SUBROUTINE LECTRI : END OF'
      &        ,/,1X,'TRIGRID TRIANGLE FILE ENCOUNTERED'
      &        ,/,1X,'***************************************')
+      CALL PLANTE(1)
       STOP
       END

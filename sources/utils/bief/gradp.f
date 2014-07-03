@@ -57,27 +57,27 @@
 !
       DO JT=1,NT
 !
-         NUBO1 = IKLE(JT,1)
-         NUBO2 = IKLE(JT,2)
-         NUBO3 = IKLE(JT,3)
+        NUBO1 = IKLE(JT,1)
+        NUBO2 = IKLE(JT,2)
+        NUBO3 = IKLE(JT,3)
 !
-         AIRJI = 0.5D0/AIRT(JT)
+        AIRJI = 0.5D0/AIRT(JT)
 !
-!        COMPUTES THE P1-GRADIENTS
+!       COMPUTES THE P1-GRADIENTS
 !
-         X1 = X(NUBO1)
-         Y1 = Y(NUBO1)
-         X2 = X(NUBO2)
-         Y2 = Y(NUBO2)
-         X3 = X(NUBO3)
-         Y3 = Y(NUBO3)
+        X1 = X(NUBO1)
+        Y1 = Y(NUBO1)
+        X2 = X(NUBO2)
+        Y2 = Y(NUBO2)
+        X3 = X(NUBO3)
+        Y3 = Y(NUBO3)
 !
-         DPX(1,JT) = AIRJI*(Y2-Y3)
-         DPX(2,JT) = AIRJI*(Y3-Y1)
-         DPX(3,JT) = AIRJI*(Y1-Y2)
-         DPY(1,JT) = AIRJI*(X3-X2)
-         DPY(2,JT) = AIRJI*(X1-X3)
-         DPY(3,JT) = AIRJI*(X2-X1)
+        DPX(1,JT) = AIRJI*(Y2-Y3)
+        DPX(2,JT) = AIRJI*(Y3-Y1)
+        DPX(3,JT) = AIRJI*(Y1-Y2)
+        DPY(1,JT) = AIRJI*(X3-X2)
+        DPY(2,JT) = AIRJI*(X1-X3)
+        DPY(3,JT) = AIRJI*(X2-X1)
 !
       ENDDO
 !

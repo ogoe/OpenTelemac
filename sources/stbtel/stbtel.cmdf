@@ -2,7 +2,7 @@
 path: <root>|sources|stbtel
 module: stbtel
 liborder: special parallel damocles bief stbtel
-version: v7p0
+version: v6p3
 name: HOMERE_STBTEL
 
 [bief]
@@ -28,21 +28,21 @@ files: bief_def.f
 
 [damocles]
 path: <root>|sources|utils|damocles
-files: longlu.f
-  preval.f
+files: preval.f
+  longlu.f
   cmd.f
   majus.f
   precar.f
   next.f
   carlu.f
   influ.f
-  dico.f
   loglu.f
   classe.f
+  dico.f
   aidelu.f
   intlu.f
-  prev.f
   realu.f
+  prev.f
   damoc.f
   damocles.f
 
@@ -50,14 +50,15 @@ files: longlu.f
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
   p_exit.F
-  p_init.F
   interface_parallel.f
   p_imax.F
+  p_init.F
 
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
   plante.f
+  check_allocate.f
 
 [stbtel]
 path: <root>|sources|stbtel

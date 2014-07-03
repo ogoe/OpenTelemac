@@ -97,47 +97,47 @@
 !
       IF(IELMF.EQ.61.OR.IELMF.EQ.81) THEN
 !
-         XSUR12 = XMUL/12.D0
+        XSUR12 = XMUL/12.D0
 !
 !   LOOP ON THE BOUNDARY SIDES
 !
-         DO IELEM = 1,NELEM
+        DO IELEM = 1,NELEM
 !
-!           GLOBAL NUMBERING OF THE SIDE NODES
+!         GLOBAL NUMBERING OF THE SIDE NODES
 !
-            I1 = NBOR(IKLE1(IELEM))
-            I2 = NBOR(IKLE2(IELEM))
-            I3 = NBOR(IKLE3(IELEM))
+          I1 = NBOR(IKLE1(IELEM))
+          I2 = NBOR(IKLE2(IELEM))
+          I3 = NBOR(IKLE3(IELEM))
 !
-            X1 = X(I1)
-            Y1 = Y(I1)
-            Z1 = Z(I1)
+          X1 = X(I1)
+          Y1 = Y(I1)
+          Z1 = Z(I1)
 !
-            X2 = X(I2)-X1
-            X3 = X(I3)-X1
-            Y2 = Y(I2)-Y1
-            Y3 = Y(I3)-Y1
-            Z2 = Z(I2)-Z1
-            Z3 = Z(I3)-Z1
+          X2 = X(I2)-X1
+          X3 = X(I3)-X1
+          Y2 = Y(I2)-Y1
+          Y3 = Y(I3)-Y1
+          Z2 = Z(I2)-Z1
+          Z3 = Z(I3)-Z1
 !
-            F1 = F(IKLE1(IELEM))
-            F2 = F(IKLE2(IELEM))
-            F3 = F(IKLE3(IELEM))
-            F123  = F1 + F2 + F3
+          F1 = F(IKLE1(IELEM))
+          F2 = F(IKLE2(IELEM))
+          F3 = F(IKLE3(IELEM))
+          F123  = F1 + F2 + F3
 !
-!           COMPUTES THE AREA OF THE TRIANGLE (BY VECTOR PRODUCT)
+!         COMPUTES THE AREA OF THE TRIANGLE (BY VECTOR PRODUCT)
 !
-            S=0.5D0*SQRT(  (Y2*Z3-Y3*Z2)**2
-     &                    +(X3*Z2-X2*Z3)**2
-     &                    +(X2*Y3-X3*Y2)**2  )
+          S=0.5D0*SQRT(  (Y2*Z3-Y3*Z2)**2
+     &                  +(X3*Z2-X2*Z3)**2
+     &                  +(X2*Y3-X3*Y2)**2  )
 !
-            COEF=XSUR12*S
+          COEF=XSUR12*S
 !
-            W1(IELEM) = COEF * ( F123 + F1 )
-            W2(IELEM) = COEF * ( F123 + F2 )
-            W3(IELEM) = COEF * ( F123 + F3 )
+          W1(IELEM) = COEF * ( F123 + F1 )
+          W2(IELEM) = COEF * ( F123 + F2 )
+          W3(IELEM) = COEF * ( F123 + F3 )
 !
-         ENDDO ! IELEM 
+        ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -145,16 +145,16 @@
 !
 !-----------------------------------------------------------------------
 !
-       IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
-       IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
-100    FORMAT(1X,'VC01FT (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F NON PREVUE : ',1I6,
-     &        1X,'NOM REEL : ',A6)
-101    FORMAT(1X,'VC01FT (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF F NOT AVAILABLE:',1I6,
-     &        1X,'REAL NAME: ',A6)
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
+100     FORMAT(1X,'VC01FT (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F NON PREVUE : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+101     FORMAT(1X,'VC01FT (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F NOT AVAILABLE:',1I6,
+     &         1X,'REAL NAME: ',A6)
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

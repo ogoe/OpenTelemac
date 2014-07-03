@@ -30,7 +30,7 @@
 !
       IMPLICIT NONE
 #if defined (HAVE_SCOTCH)
-      include 'scotchf.h'
+      INCLUDE 'scotchf.h'
 #endif
 !     
       INTEGER, INTENT(IN)  :: PMETHOD
@@ -74,13 +74,9 @@
 !       CF. DISCUSSION IN SECTION 4.3 (?)
 !       
         ALLOCATE(EPTR(NELEM+1),STAT=ERR)
-        IF(ERR.NE.0) THEN
-          WRITE(lu,*) 'ERROR: Bad allocation of EPTR'
-        ENDIF 
+        CALL CHECK_ALLOCATE(ERR,'EPTR')
         ALLOCATE(EIND(NELEM*NDP),STAT=ERR)
-        IF(ERR.NE.0) THEN
-          WRITE(lu,*) 'ERROR: Bad allocation of EIND'
-        ENDIF 
+        CALL CHECK_ALLOCATE(ERR,'EIND')
 !       
 !       CORRECTION JMH 04/07/2012 : BELOW NDP MUST BE 3
 !       IT WOULD NOT WORK IN 3D WITH NDP=6

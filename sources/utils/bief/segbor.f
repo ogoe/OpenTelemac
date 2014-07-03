@@ -156,45 +156,45 @@
       DO IFACE = 1 , NFACE
       DO IELEM = 1 , NELEM
 !
-         IFABOR(IELEM,IFACE) = 0
+        IFABOR(IELEM,IFACE) = 0
 !
-!        GLOBAL NUMBERS OF THE POINTS OF THE SIDE:
+!       GLOBAL NUMBERS OF THE POINTS OF THE SIDE:
 !
-         I1 = IKLES( SOMFAC(1,IFACE,KEL) , IELEM )
-         I2 = IKLES( SOMFAC(2,IFACE,KEL) , IELEM )
+        I1 = IKLES( SOMFAC(1,IFACE,KEL) , IELEM )
+        I2 = IKLES( SOMFAC(2,IFACE,KEL) , IELEM )
 !
-!        ORDERED GLOBAL NUMBERS :
+!       ORDERED GLOBAL NUMBERS :
 !
-         M1 = MIN(I1,I2)
-         M2 = MAX(I1,I2)
+        M1 = MIN(I1,I2)
+        M2 = MAX(I1,I2)
 !
-         DO IV = 1,NVOIS(M1)
+        DO IV = 1,NVOIS(M1)
 !
-           IF(MAT1(IADR(M1)+IV-1).EQ.0) THEN
-              MAT1(IADR(M1)+IV-1)=M2
-              MAT2(IADR(M1)+IV-1)=IELEM
-              MAT3(IADR(M1)+IV-1)=IFACE
-              GO TO 81
-           ELSEIF(MAT1(IADR(M1)+IV-1).EQ.M2) THEN
-              IELEM2 = MAT2(IADR(M1)+IV-1)
-              IFACE2 = MAT3(IADR(M1)+IV-1)
-              IFABOR(IELEM,IFACE) = IELEM2
-              IFABOR(IELEM2,IFACE2) = IELEM
-              GO TO 81
-           ENDIF
+          IF(MAT1(IADR(M1)+IV-1).EQ.0) THEN
+            MAT1(IADR(M1)+IV-1)=M2
+            MAT2(IADR(M1)+IV-1)=IELEM
+            MAT3(IADR(M1)+IV-1)=IFACE
+            GO TO 81
+          ELSEIF(MAT1(IADR(M1)+IV-1).EQ.M2) THEN
+            IELEM2 = MAT2(IADR(M1)+IV-1)
+            IFACE2 = MAT3(IADR(M1)+IV-1)
+            IFABOR(IELEM,IFACE) = IELEM2
+            IFABOR(IELEM2,IFACE2) = IELEM
+            GO TO 81
+          ENDIF
 !
-         ENDDO ! IV 
+        ENDDO ! IV 
 !
-         IF(LNG.EQ.1) WRITE(LU,82)
-         IF(LNG.EQ.2) WRITE(LU,83)
-82       FORMAT(1X,'SEGBOR : ERREUR DANS LE MAILLAGE       ',/,1X,
-     &             '         PEUT-ETRE DES POINTS CONFONDUS')
-83       FORMAT(1X,'SEGBOR : ERROR IN THE MESH             ',/,1X,
-     &             '         MAYBE SUPERIMPOSED POINTS     ')
-         CALL PLANTE(1)
-         STOP
+        IF(LNG.EQ.1) WRITE(LU,82)
+        IF(LNG.EQ.2) WRITE(LU,83)
+82      FORMAT(1X,'SEGBOR : ERREUR DANS LE MAILLAGE       ',/,1X,
+     &            '         PEUT-ETRE DES POINTS CONFONDUS')
+83      FORMAT(1X,'SEGBOR : ERROR IN THE MESH             ',/,1X,
+     &            '         MAYBE SUPERIMPOSED POINTS     ')
+        CALL PLANTE(1)
+        STOP
 !
-81       CONTINUE
+81      CONTINUE
 !
       ENDDO ! IELEM
       ENDDO ! IFACE

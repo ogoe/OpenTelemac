@@ -84,19 +84,19 @@
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM) =     SURFAC(IELEM)*XSUR36
-         A13(IELEM) =     A12(IELEM)
-         A23(IELEM) =     A12(IELEM)
-         A14(IELEM) = 2 * A12(IELEM)
-         A24(IELEM) =     A14(IELEM)
-         A34(IELEM) =     A14(IELEM)
+        A12(IELEM) =     SURFAC(IELEM)*XSUR36
+        A13(IELEM) =     A12(IELEM)
+        A23(IELEM) =     A12(IELEM)
+        A14(IELEM) = 2 * A12(IELEM)
+        A24(IELEM) =     A14(IELEM)
+        A34(IELEM) =     A14(IELEM)
 !
 !  DIAGONAL TERMS
 !
-         A11(IELEM) = 2 * A14(IELEM)
-         A22(IELEM) =     A11(IELEM)
-         A33(IELEM) =     A11(IELEM)
-         A44(IELEM) = 3 * A14(IELEM)
+        A11(IELEM) = 2 * A14(IELEM)
+        A22(IELEM) =     A11(IELEM)
+        A33(IELEM) =     A11(IELEM)
+        A44(IELEM) = 3 * A14(IELEM)
 !
       ENDDO ! IELEM 
 !

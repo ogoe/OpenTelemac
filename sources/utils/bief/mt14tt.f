@@ -143,6 +143,7 @@
 !
       IF(SW%ELM.NE.51) THEN
         WRITE(LU,*) 'MT14TT DISCRETISATION NON PREVUE' 
+        CALL PLANTE(1)
         STOP 
       ENDIF
 !

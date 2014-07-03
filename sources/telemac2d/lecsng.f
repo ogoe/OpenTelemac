@@ -172,7 +172,12 @@
           NOM(5:5) = CHIFFRE((N-100*(N/100))/10)
           NOM(6:6) = CHIFFRE((N-100*(N/100))-10*((N-100*(N/100))/10))
         ELSE
-          STOP 'MORE THAN 999 WEIRS ASKED IN LECSNG'
+          IF(LNG.EQ.1) WRITE(LU,*) 'PLUS DE 999 BARRAGES DEMANDEES 
+     &                              DANS LECBREACH'
+          IF(LNG.EQ.2) WRITE(LU,*) 'MORE THAN 999 BREACHS ASKED 
+     &                              IN LECBREACH'
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !       GEENRAL
         NOM(1:3) = 'NA1'
@@ -242,6 +247,7 @@
           WRITE(LU,*) 'VECTORS TO BE ALLOCATED'
           WRITE(LU,*) 'CHANGE MAXBLOCK IN ALLBLO.'
         ENDIF
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -267,11 +273,11 @@
           YDIG1=YDIG2
         ENDDO
       ELSE
-         IF(LNG.EQ.1) THEN
-           WRITE(LU,*)'LECSNG : TYPE DE SEUIL NON PROGRAMME '
-         ELSEIF(LNG.EQ.2) THEN
-           WRITE(LU,*)'LECSNG : TYPE OF WEIRS NOT IMPLEMENTED'
-         ENDIF
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*)'LECSNG : TYPE DE SEUIL NON PROGRAMME '
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*)'LECSNG : TYPE OF WEIRS NOT IMPLEMENTED'
+        ENDIF
       ENDIF
       ENDDO ! N
 !
@@ -392,11 +398,11 @@
 !
         ENDIF
       ELSE
-         IF(LNG.EQ.1) THEN
-           WRITE(LU,*)'LECSNG : TYPE DE SEUIL NON PROGRAMME '
-         ELSEIF(LNG.EQ.2) THEN
-           WRITE(LU,*)'LECSNG : TYPE OF WEIRS NOT IMPLEMENTED'
-         ENDIF
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*)'LECSNG : TYPE DE SEUIL NON PROGRAMME '
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*)'LECSNG : TYPE OF WEIRS NOT IMPLEMENTED'
+        ENDIF
       ENDIF
 !
 !     2) NOW PUTTING A POSITIVE NUMBER IF POINT IN DOMAIN

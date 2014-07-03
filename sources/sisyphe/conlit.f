@@ -200,15 +200,15 @@
           IFRLIQ=NUMLIQ%I(K)
           IF(LIEBOR%I(K).EQ.KENT.OR.LIEBOR%I(K).EQ.KSORT) THEN
             DO I=1,NSICLA
-               IRANK=I+(IFRLIQ-1)*NSICLA
-               CBOR%ADR(I)%P%R(K) = CBOR_CLASSE(IRANK)
+              IRANK=I+(IFRLIQ-1)*NSICLA
+              CBOR%ADR(I)%P%R(K) = CBOR_CLASSE(IRANK)
             ENDDO
           ENDIF
 !
 !         READING BOUNDARY CONDITION FILE 
 !
           IF(LICBOR%I(K).EQ.KENT.AND.
-     *                         SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
+     &                         SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
             IF(IFRLIQ.GT.0) THEN
               DO I=1,NSICLA           
                 CBOR%ADR(I)%P%R(K)=CGL(IFRLIQ,AT)/XMVS

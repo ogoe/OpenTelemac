@@ -79,18 +79,18 @@
       DOUBLE PRECISION                :: HL,UL,VL,PSI_L
       DOUBLE PRECISION                :: HR,UR,VR,PSI_R
       DOUBLE PRECISION                :: AL,AR,HSTAR,USTAR
-      DOUBLE PRECISION                :: pQL,pQR,SL,SR
+      DOUBLE PRECISION                :: PQL,PQR,SL,SR
       DOUBLE PRECISION                :: FL(4),FR(4)
 !
       DOUBLE PRECISION                :: GSUR2,EPS,DTDX
-      DOUBLE PRECISION                :: cL,cR,cSTAR,wL,wR
-      DOUBLE PRECISION                :: wLR,wLSTAR,wRSTAR
+      DOUBLE PRECISION                :: CL,CR,CSTAR,WL,WR
+      DOUBLE PRECISION                :: WLR,WLSTAR,WRSTAR
       DOUBLE PRECISION                :: FLU2X,FLU2Y
       DOUBLE PRECISION                :: U0,SSTAR
       DOUBLE PRECISION                :: FLX(4),HLLCFLX(4)
 !
       DOUBLE PRECISION                :: LIM_RL,LIM_RR,LIM_RSTAR
-      DOUBLE PRECISION                :: rL,rR,rSTAR,DELTA
+      DOUBLE PRECISION                :: RL,RR,RSTAR,DELTA
 !
       INTRINSIC SIGN
 !
@@ -101,8 +101,8 @@
       ROT   = .FALSE.
       TVD   = .TRUE.
       ILIM  = 4
-      pQL   = 0.D0
-      pQR   = 0.D0
+      PQL   = 0.D0
+      PQR   = 0.D0
       USTAR = 0.D0
       HSTAR = 0.D0
       AL    = 0.D0
@@ -158,29 +158,29 @@
 !     USTAR = 0.5D0*(UL+UR)-0.25D0*(HR-HL)*(AL+AR)/(HL+HR)
       USTAR = 0.5D0*(UL+UR)-       (HR-HL)*(AL+AR)/(HL+HR)
 
-! COMPUTE pQL AND pQR:
+! COMPUTE PQL AND PQR:
 ! IT DEPENDS IF WE ARE IN PRESENCE OF SHOCK OR RAREFACTION WAVE 
       IF(HSTAR.LT.HL)THEN
-!        RAREFACTION
-         pQL = 1.0D0
+!       RAREFACTION
+        PQL = 1.0D0
       ELSE
-!        SHOCK 
-         IF(HL.GT.EPS)THEN
-            pQL = SQRT(0.5D0*(HSTAR+HL)*HSTAR/HL**2)
-         ELSE
-            pQL = 0.0D0
-         ENDIF
+!       SHOCK 
+        IF(HL.GT.EPS)THEN
+          PQL = SQRT(0.5D0*(HSTAR+HL)*HSTAR/HL**2)
+        ELSE
+          PQL = 0.0D0
+        ENDIF
       ENDIF
       IF(HSTAR.LT.HR)THEN
-!        RAREFACTION
-         pQR = 1.0D0
+!       RAREFACTION
+        PQR = 1.0D0
       ELSE
-!        SHOCK
-         IF(HR.GT.EPS)THEN
-            pQR = SQRT(0.5D0*(HSTAR+HR)*HSTAR/HR**2)
-         ELSE
-            pQR = 0.0D0
-         ENDIF
+!       SHOCK
+        IF(HR.GT.EPS)THEN
+          PQR = SQRT(0.5D0*(HSTAR+HR)*HSTAR/HR**2)
+        ELSE
+          PQR = 0.0D0
+        ENDIF
       ENDIF
 !
 20    CONTINUE
@@ -200,7 +200,7 @@
 !     SL, SR AND SSTAR  (WE CONSIDER DRY CASES)
 !
       IF(HL.GT.EPS) THEN
-        SL    = UL-AL*pQL
+        SL    = UL-AL*PQL
       ELSE
         SL    = UR - 2.D0*AR
         SR    = UR + AR
@@ -208,7 +208,7 @@
       ENDIF
 !
       IF(HR.GT.EPS)THEN
-        SR    = UR + AR*pQR
+        SR    = UR + AR*PQR
       ELSE
         SL    = UL - AL
         SR    = UL + 2.D0*AL
@@ -219,13 +219,13 @@
 
 35    CONTINUE
 !
-! WEIGHTING COEFFICIENTS wL,wLR, wR wLSTAR AND wRSTAR
+! WEIGHTING COEFFICIENTS WL,WLR, WR WLSTAR AND WRSTAR
 !
 !     COURANT NUMBERS FOR ALL WAVES
       DTDX  = DT/DX 
-      cL    = SL*DTDX
-      cR    = SR*DTDX
-      cSTAR = SSTAR*DTDX
+      CL    = SL*DTDX
+      CR    = SR*DTDX
+      CSTAR = SSTAR*DTDX
 !
 !===================================================
 !   NON TVD WAF SCHEME
@@ -234,18 +234,18 @@
       IF(.NOT.TVD) THEN
 !
 !     COEFFICIENTS
-      wL     = 0.5D0*(1.D0 + cL)
-      wR     = 0.5D0*(1.D0 - cR)
-      wLR    = 0.5D0*(cR - cL)
-      wLSTAR = 0.5D0*(1.D0 + cSTAR)
-      wRSTAR = 0.5D0*(1.D0 - cSTAR)
+      WL     = 0.5D0*(1.D0 + CL)
+      WR     = 0.5D0*(1.D0 - CR)
+      WLR    = 0.5D0*(CR - CL)
+      WLSTAR = 0.5D0*(1.D0 + CSTAR)
+      WRSTAR = 0.5D0*(1.D0 - CSTAR)
 !
 !     FINAL FLUX (BEFORE ROTATION)
 !
-      FLX(1) = wL*FL(1) + wLR*HLLCFLX(1) + wR*FR(1)
-      FLX(2) = wL*FL(2) + wLR*HLLCFLX(2) + wR*FR(2)
-      FLX(3) = (wLSTAR*VL + wRSTAR*VR)*FLX(1)
-      FLX(4) = (wLSTAR*PSI_L + wRSTAR*PSI_R)*FLX(1)
+      FLX(1) = WL*FL(1) + WLR*HLLCFLX(1) + WR*FR(1)
+      FLX(2) = WL*FL(2) + WLR*HLLCFLX(2) + WR*FR(2)
+      FLX(3) = (WLSTAR*VL + WRSTAR*VR)*FLX(1)
+      FLX(4) = (WLSTAR*PSI_L + WRSTAR*PSI_R)*FLX(1)
 !
 !===================================================
 !    TVD WAF SCHEME
@@ -256,46 +256,46 @@
 !     LIMITERS
 !     PREPARE rK BEFORE CALLING LIMITER
 !     COMPUTE ALL rK (SEE LOUKILI ET AL. PAGE 4)
-!       rL
+!       RL
         IF(SL.GT.0.D0)THEN
           DELTA = HL-HL_UP
         ELSE
           DELTA = HR_UP-HR
         ENDIF
-        rL = DELTA/(HR-HL + EPS)
-!       rR
+        RL = DELTA/(HR-HL + EPS)
+!       RR
         IF(SR.GT.0.0D0)THEN
           DELTA = HL-HL_UP
         ELSE
           DELTA = HR_UP-HR
         ENDIF
-        rR = DELTA/(HR-HL + EPS)
+        RR = DELTA/(HR-HL + EPS)
 !       r*
         IF(SSTAR.GT.0.D0)THEN
           DELTA = VL-VL_UP
         ELSE
           DELTA = VR_UP-VR
         ENDIF
-        rSTAR = DELTA/(VR-VL+EPS)
+        RSTAR = DELTA/(VR-VL+EPS)
 ! 
-        LIM_RL    = LIMITER(ILIM,rL,cL)
-        LIM_RR    = LIMITER(ILIM,rR,cR)
-        LIM_RSTAR = LIMITER(ILIM,rSTAR,cSTAR)
+        LIM_RL    = LIMITER(ILIM,RL,CL)
+        LIM_RR    = LIMITER(ILIM,RR,CR)
+        LIM_RSTAR = LIMITER(ILIM,RSTAR,CSTAR)
 !
 !   TVD COEFFICIENTS
 !
-      wL     = 0.5D0*(1.D0 + SIGN(1.D0,cL)*LIM_RL) !DSIGN(A,B)=|A|*SIGN(B)
-      wR     = 0.5D0*(1.D0 - SIGN(1.D0,cR)*LIM_RR)
-      wLR    = 0.5D0*(SIGN(1.D0,cR)*LIM_RR - SIGN(1.D0,cL)*LIM_RL)
-      wLSTAR = 0.5D0*(1.D0 + SIGN(1.D0,cSTAR)*LIM_RSTAR)
-      wRSTAR = 0.5D0*(1.D0 - SIGN(1.D0,cSTAR)*LIM_RSTAR)
+      WL     = 0.5D0*(1.D0 + SIGN(1.D0,CL)*LIM_RL) !DSIGN(A,B)=|A|*SIGN(B)
+      WR     = 0.5D0*(1.D0 - SIGN(1.D0,CR)*LIM_RR)
+      WLR    = 0.5D0*(SIGN(1.D0,CR)*LIM_RR - SIGN(1.D0,CL)*LIM_RL)
+      WLSTAR = 0.5D0*(1.D0 + SIGN(1.D0,CSTAR)*LIM_RSTAR)
+      WRSTAR = 0.5D0*(1.D0 - SIGN(1.D0,CSTAR)*LIM_RSTAR)
 !
 ! FINAL FLUX (BEFORE ROTATION)
 !
-      FLX(1) = wL*FL(1) + wLR*HLLCFLX(1) + wR*FR(1)
-      FLX(2) = wL*FL(2) + wLR*HLLCFLX(2) + wR*FR(2)
-      FLX(3) = (wLSTAR*VL    + wRSTAR*VR   )*FLX(1)
-      FLX(4) = (wLSTAR*PSI_L + wRSTAR*PSI_R)*FLX(1)
+      FLX(1) = WL*FL(1) + WLR*HLLCFLX(1) + WR*FR(1)
+      FLX(2) = WL*FL(2) + WLR*HLLCFLX(2) + WR*FR(2)
+      FLX(3) = (WLSTAR*VL    + WRSTAR*VR   )*FLX(1)
+      FLX(4) = (WLSTAR*PSI_L + WRSTAR*PSI_R)*FLX(1)
 !
       ENDIF
 !

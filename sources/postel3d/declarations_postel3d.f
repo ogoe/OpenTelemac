@@ -1,191 +1,191 @@
 !                      ******************************
-                       module DECLARATIONS_POSTEL3D
+                       MODULE DECLARATIONS_POSTEL3D
 !                      ******************************
 !
 !***********************************************************************
 !  POSTEL3D VERSION 6.0
 !***********************************************************************
 !=======================================================================
-! Telemac-3D best version number
-! fortran95 version         march 1999        Jacek A. Jankowski pinxit
+! TELEMAC-3D BEST VERSION NUMBER
+! FORTRAN95 VERSION         MARCH 1999        JACEK A. JANKOWSKI PINXIT
 !=======================================================================
 !
-!  declaration of the global data structure in Telemac-3D
+!  DECLARATION OF THE GLOBAL DATA STRUCTURE IN TELEMAC-3D
 !
-        use BIEF_DEF
+        USE BIEF_DEF
 !
-!       note: this module is organised in 10 parts
+!       NOTE: THIS MODULE IS ORGANISED IN 10 PARTS
 !
-!       (1) vectors (will be declared as bief_obj structures)
-!       (2) matrices (will be declared as bief_obj structures)
-!       (3) blocks (will be declared as bief_obj structures)
-!       (4) integers
-!       (5) logical values
-!       (6) reals
-!       (7) strings
-!       (8) slvcfg structures
-!       (9) mesh structure
-!      (10) aliases
-!
-!-----------------------------------------------------------------------
-! (1) vectors (real and integer)
-!-----------------------------------------------------------------------
-!
-! 3D velocity components
-!
-        type(bief_obj), target :: u, v, w
+!       (1) VECTORS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
+!       (2) MATRICES (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
+!       (3) BLOCKS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
+!       (4) INTEGERS
+!       (5) LOGICAL VALUES
+!       (6) REALS
+!       (7) STRINGS
+!       (8) SLVCFG STRUCTURES
+!       (9) MESH STRUCTURE
+!      (10) ALIASES
 !
 !-----------------------------------------------------------------------
-! (2) matrices
-!-----------------------------------------------------------------------
-! none
-!-----------------------------------------------------------------------
-! (3) blocks
+! (1) VECTORS (REAL AND INTEGER)
 !-----------------------------------------------------------------------
 !
+! 3D VELOCITY COMPONENTS
 !
-        type(bief_obj), target :: tab
-!
-!
-! 2D output compatibility - output variables organised in blocks
-!th pour bientot, avec le nouveau format
-!th        type(bief_obj), target :: varsor, varcl
+        TYPE(BIEF_OBJ), TARGET :: U, V, W
 !
 !-----------------------------------------------------------------------
-! (4) integers
+! (2) MATRICES
 !-----------------------------------------------------------------------
-! key words and parameters
-!
-!       maximum de variables de sortie
-        integer, parameter :: maxvar = 100
-!
-! previous common mitint: integer steering parameters
-!
-      integer nplan  , ntrac  , ntrpa , nvar(2), nva3
-      integer nr3d , ncou2 , nenre
-!
-      integer ielm3, ielm2h, ielm2v
-      integer ielm0, ielmh, ielmu, ielm1, ielmx
-      integer sorg3d
-      integer im,jm,nplint
-      integer nuprso,pesogr,nc2dh,nc2dv
-      integer nplref(9),nseg(9)
-!
-!      nombre max de coupes
-        integer, parameter :: maxcou = 9
-!      nombre max de points pour les coupes verticales
-        integer, parameter :: maxpts = 50
-!
+! NONE
 !-----------------------------------------------------------------------
-! (5) logical values
+! (3) BLOCKS
 !-----------------------------------------------------------------------
 !
-      logical sigmag
-      logical spheri
-      logical varsub
+!
+        TYPE(BIEF_OBJ), TARGET :: TAB
+!
+!
+! 2D OUTPUT COMPATIBILITY - OUTPUT VARIABLES ORGANISED IN BLOCKS
+!TH POUR BIENTOT, AVEC LE NOUVEAU FORMAT
+!TH        TYPE(BIEF_OBJ), TARGET :: VARSOR, VARCL
 !
 !-----------------------------------------------------------------------
-! (6) reals
+! (4) INTEGERS
 !-----------------------------------------------------------------------
+! KEY WORDS AND PARAMETERS
 !
-! previous common mitrea, real steering parameters plus new ones
+!       MAXIMUM DE VARIABLES DE SORTIE
+        INTEGER, PARAMETER :: MAXVAR = 100
 !
-      double precision hmin,  cotint
+! PREVIOUS COMMON MITINT: INTEGER STEERING PARAMETERS
 !
-!th  a voir si on met le parametre
-!th  en dur pour l'instant
-!      double precision href(maxcou),distor(maxcou)
-!      double precision x2dv(maxpts,maxcou),y2dv(maxpts,maxcou)
-      double precision href(9),distor(9)
-!th      double precision zstar(5)
-      double precision x2dv(50,9),y2dv(50,9)
+      INTEGER NPLAN  , NTRAC  , NTRPA , NVAR(2), NVA3
+      INTEGER NR3D , NCOU2 , NENRE
 !
-!-----------------------------------------------------------------------
-! (7) strings
-!-----------------------------------------------------------------------
+      INTEGER IELM3, IELM2H, IELM2V
+      INTEGER IELM0, IELMH, IELMU, IELM1, IELMX
+      INTEGER SORG3D
+      INTEGER IM,JM,NPLINT
+      INTEGER NUPRSO,PESOGR,NC2DH,NC2DV
+      INTEGER NPLREF(9),NSEG(9)
 !
-! previous mitcar
-! changes: nomsui -> nompre ; nomr3d -> nomres ; nomr2d -> nomrbi
-!     (see module for Telemac definitions)
-! consequently binr3d -> binres ;  binsui -> binpre ; binr2d -> binrbi
-!
-!th  on laisse tout en attendant
-!
-      character(len=72) titcas, sort3d, sort2d, varimp
-      character(len=3)  bingeo, binres, binpre, binrbi , binr3d , bincou
-!
-      character(len=20) equa
-      character(len=32) varcla(10), texte(maxvar), textpr(maxvar)
-      character(len=32) textlu(100)
-!
+!      NOMBRE MAX DE COUPES
+        INTEGER, PARAMETER :: MAXCOU = 9
+!      NOMBRE MAX DE POINTS POUR LES COUPES VERTICALES
+        INTEGER, PARAMETER :: MAXPTS = 50
 !
 !-----------------------------------------------------------------------
-! (8) slvcfg structures
+! (5) LOGICAL VALUES
 !-----------------------------------------------------------------------
-! none
-!-----------------------------------------------------------------------
-! (9) mesh structure(s)
-!-----------------------------------------------------------------------
-! two separate meshes, 2D as usual and 3D with sigma-mesh specific
-! features, see almesh.f
 !
-        type(bief_mesh) :: mesh2D, mesh3D
+      LOGICAL SIGMAG
+      LOGICAL SPHERI
+      LOGICAL VARSUB
 !
 !-----------------------------------------------------------------------
-! (10) aliases
+! (6) REALS
 !-----------------------------------------------------------------------
-! declaration of pointers for aliases
-! targets are allocated and pointed to in POINT_POSTEL3D.
 !
-! useful pointers for often used components in 2d and 3D mesh structures
+! PREVIOUS COMMON MITREA, REAL STEERING PARAMETERS PLUS NEW ONES
 !
-! x,y,z node coordinates: base mesh and 3D sigma mesh
+      DOUBLE PRECISION HMIN,  COTINT
 !
-        type(bief_obj), pointer :: x2, y2, z2, x3, y3, z3
+!TH  A VOIR SI ON MET LE PARAMETRE
+!TH  EN DUR POUR L'INSTANT
+!      DOUBLE PRECISION HREF(MAXCOU),DISTOR(MAXCOU)
+!      DOUBLE PRECISION X2DV(MAXPTS,MAXCOU),Y2DV(MAXPTS,MAXCOU)
+      DOUBLE PRECISION HREF(9),DISTOR(9)
+!TH      DOUBLE PRECISION ZSTAR(5)
+      DOUBLE PRECISION X2DV(50,9),Y2DV(50,9)
 !
-!th surement plein de choses a virer
-!th
-        type(bief_obj), pointer :: xnebor2, ynebor2
-        type(bief_obj), pointer :: xnebor3, ynebor3, znebor3
+!-----------------------------------------------------------------------
+! (7) STRINGS
+!-----------------------------------------------------------------------
 !
-! 2D and 3D lateral boundary normal vectors defined
-! per boundary segment (2D) or boundary element (3D)
+! PREVIOUS MITCAR
+! CHANGES: NOMSUI -> NOMPRE ; NOMR3D -> NOMRES ; NOMR2D -> NOMRBI
+!     (SEE MODULE FOR TELEMAC DEFINITIONS)
+! CONSEQUENTLY BINR3D -> BINRES ;  BINSUI -> BINPRE ; BINR2D -> BINRBI
 !
-        type(bief_obj), pointer :: xsgbor2, ysgbor2
-        type(bief_obj), pointer :: xsgbor3, ysgbor3, zsgbor3
+!TH  ON LAISSE TOUT EN ATTENDANT
 !
-! connectivity tables 2D and 3D
-! (element number and local node number) --> global node number
+      CHARACTER(LEN=72) TITCAS, SORT3D, SORT2D, VARIMP
+      CHARACTER(LEN=3)  BINGEO, BINRES, BINPRE, BINRBI , BINR3D , BINCOU
 !
-        type(bief_obj), pointer :: ikle2, ikle3
+      CHARACTER(LEN=20) EQUA
+      CHARACTER(LEN=32) VARCLA(10), TEXTE(MAXVAR), TEXTPR(MAXVAR)
+      CHARACTER(LEN=32) TEXTLU(100)
 !
-! tables connecting (node boundary number) --> global node number
 !
-        type(bief_obj), pointer :: nbor2, nbor3
+!-----------------------------------------------------------------------
+! (8) SLVCFG STRUCTURES
+!-----------------------------------------------------------------------
+! NONE
+!-----------------------------------------------------------------------
+! (9) MESH STRUCTURE(S)
+!-----------------------------------------------------------------------
+! TWO SEPARATE MESHES, 2D AS USUAL AND 3D WITH SIGMA-MESH SPECIFIC
+! FEATURES, SEE ALMESH.F
 !
-! real field pointers for node coordinates
+        TYPE(BIEF_MESH) :: MESH2D, MESH3D
 !
-        double precision, dimension(:), pointer :: x,y,z
+!-----------------------------------------------------------------------
+! (10) ALIASES
+!-----------------------------------------------------------------------
+! DECLARATION OF POINTERS FOR ALIASES
+! TARGETS ARE ALLOCATED AND POINTED TO IN POINT_POSTEL3D.
 !
-! a number of extremely useful integers describing the mesh structure
-! see almesh.f and point_telemac3d.f
+! USEFUL POINTERS FOR OFTEN USED COMPONENTS IN 2D AND 3D MESH STRUCTURES
 !
-        integer, pointer :: nelem2, nelem3
+! X,Y,Z NODE COORDINATES: BASE MESH AND 3D SIGMA MESH
 !
-        integer, pointer :: nelmax2
-        integer, pointer :: nelmax3 ! previously nelma3
+        TYPE(BIEF_OBJ), POINTER :: X2, Y2, Z2, X3, Y3, Z3
 !
-        integer, pointer :: nptfr2  ! previously simply nptfr
-        integer, pointer :: nptfr3
-        integer, pointer :: neleb, nelebx
+!TH SUREMENT PLEIN DE CHOSES A VIRER
+!TH
+        TYPE(BIEF_OBJ), POINTER :: XNEBOR2, YNEBOR2
+        TYPE(BIEF_OBJ), POINTER :: XNEBOR3, YNEBOR3, ZNEBOR3
 !
-        integer, pointer :: nptfrx2, nptfrx3
-        integer, pointer :: dim2, dim3
-        integer, pointer :: typelm2, typelm3
-        integer, pointer :: npoin2, npoin3
-        integer, pointer :: npmax2, npmax3
-        integer, pointer :: mxptvs2, mxptvs3
-        integer, pointer :: mxelvs2, mxelvs3
+! 2D AND 3D LATERAL BOUNDARY NORMAL VECTORS DEFINED
+! PER BOUNDARY SEGMENT (2D) OR BOUNDARY ELEMENT (3D)
+!
+        TYPE(BIEF_OBJ), POINTER :: XSGBOR2, YSGBOR2
+        TYPE(BIEF_OBJ), POINTER :: XSGBOR3, YSGBOR3, ZSGBOR3
+!
+! CONNECTIVITY TABLES 2D AND 3D
+! (ELEMENT NUMBER AND LOCAL NODE NUMBER) --> GLOBAL NODE NUMBER
+!
+        TYPE(BIEF_OBJ), POINTER :: IKLE2, IKLE3
+!
+! TABLES CONNECTING (NODE BOUNDARY NUMBER) --> GLOBAL NODE NUMBER
+!
+        TYPE(BIEF_OBJ), POINTER :: NBOR2, NBOR3
+!
+! REAL FIELD POINTERS FOR NODE COORDINATES
+!
+        DOUBLE PRECISION, DIMENSION(:), POINTER :: X,Y,Z
+!
+! A NUMBER OF EXTREMELY USEFUL INTEGERS DESCRIBING THE MESH STRUCTURE
+! SEE ALMESH.F AND POINT_TELEMAC3D.F
+!
+        INTEGER, POINTER :: NELEM2, NELEM3
+!
+        INTEGER, POINTER :: NELMAX2
+        INTEGER, POINTER :: NELMAX3 ! PREVIOUSLY NELMA3
+!
+        INTEGER, POINTER :: NPTFR2  ! PREVIOUSLY SIMPLY NPTFR
+        INTEGER, POINTER :: NPTFR3
+        INTEGER, POINTER :: NELEB, NELEBX
+!
+        INTEGER, POINTER :: NPTFRX2, NPTFRX3
+        INTEGER, POINTER :: DIM2, DIM3
+        INTEGER, POINTER :: TYPELM2, TYPELM3
+        INTEGER, POINTER :: NPOIN2, NPOIN3
+        INTEGER, POINTER :: NPMAX2, NPMAX3
+        INTEGER, POINTER :: MXPTVS2, MXPTVS3
+        INTEGER, POINTER :: MXELVS2, MXELVS3
 !
 !     NEW FILE FORMATS
 !
@@ -193,7 +193,7 @@
       INTEGER POSPRE,POSHOR,POSVER,POSGEO
 !
 !-----------------------------------------------------------------------
-! save all - important
+! SAVE ALL - IMPORTANT
 !
       SAVE
 !

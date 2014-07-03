@@ -23,28 +23,28 @@
 !
 !-----------------------------------------------------------------------
 !
-         if(lng.eq.1) write(lu,20)
-         if(lng.eq.2) write(lu,21)
- 20   format(1x,/,1X,'POINT_TELEMAC3D: ALLOCATION DE LA MEMOIRE',/)
- 21   format(1x,/,1X,'POINT_TELEMAC3D: MEMORY ALLOCATION',/)
+      IF(LNG.EQ.1) WRITE(LU,20)
+      IF(LNG.EQ.2) WRITE(LU,21)
+ 20   FORMAT(1X,/,1X,'POINT_TELEMAC3D: ALLOCATION DE LA MEMOIRE',/)
+ 21   FORMAT(1X,/,1X,'POINT_TELEMAC3D: MEMORY ALLOCATION',/)
 !
 !-----------------------------------------------------------------------
 ! discretisation types are declared here
 !
-      ielm0 = 10*(ielmh/10) ! for Telemac2D
-      ielm1 = ielm0 + 1     ! for Telemac2D
+      IELM0 = 10*(IELMH/10) ! FOR TELEMAC2D
+      IELM1 = IELM0 + 1     ! FOR TELEMAC2D
 !
 ! Telemac3D discretisation types: 3D, 2D horizontal boundary,
 ! 2D vertical boundary
 !
-      ielm3  = 41     ! Telemac3D prisms
-      ielm2h = 11     ! prism triangular bottom and surface
-      ielm2v = 21     ! prism quadrilateral lateral boundaries
+      IELM3  = 41     ! TELEMAC3D PRISMS
+      IELM2H = 11     ! PRISM TRIANGULAR BOTTOM AND SURFACE
+      IELM2V = 21     ! PRISM QUADRILATERAL LATERAL BOUNDARIES
 !
-      ielmx=max(ielmu,ielm2h,ielmh) ! it will be max. discr. in 2D
+      IELMX=MAX(IELMU,IELM2H,IELMH) ! IT WILL BE MAX. DISCR. IN 2D
 !
-      cfg(1) = 1
-      cfg(2) = 1
+      CFG(1) = 1
+      CFG(2) = 1
 !
 !=======================================================================
 !
@@ -58,128 +58,129 @@
 ! discretisation ielmh given in lecdon
 ! ielmx = ielmu if quasi-bubble element required, otherwise ielmh
 !
-      equa = 'NO_EQUATION_IS_GIVEN'
+      EQUA = 'NO_EQUATION_IS_GIVEN'
 !
-      CALL ALMESH(mesh2D,'MESH2D',ielmx,spheri,cfg,ngeo,equa,nplan=1)
+      CALL ALMESH(MESH2D,'MESH2D',IELMX,SPHERI,CFG,NGEO,EQUA,NPLAN=1)
 !
 ! aliases for certain components of the 2D mesh structure
 !
-      x2      => mesh2d%x
-      y2      => mesh2d%y
-      z2      => mesh2d%z
-      xnebor2 => mesh2d%xnebor
-      ynebor2 => mesh2d%ynebor
-      xsgbor2 => mesh2d%xsgbor
-      ysgbor2 => mesh2d%ysgbor
-      ikle2   => mesh2d%ikle
-      nbor2   => mesh2d%nbor   ! prev. simply nbor
+      X2      => MESH2D%X
+      Y2      => MESH2D%Y
+      Z2      => MESH2D%Z
+      XNEBOR2 => MESH2D%XNEBOR
+      YNEBOR2 => MESH2D%YNEBOR
+      XSGBOR2 => MESH2D%XSGBOR
+      YSGBOR2 => MESH2D%YSGBOR
+      IKLE2   => MESH2D%IKLE
+      NBOR2   => MESH2D%NBOR   ! PREV. SIMPLY NBOR
 !
 !
-      nelem2  => mesh2d%nelem
-      nelmax2 => mesh2d%nelmax  ! previously nelma2 (adaptivity outlook)
-      nptfr2  => mesh2d%nptfr   ! previously simply nptfr
-      nptfrx2 => mesh2d%nptfrx
-      dim2    => mesh2d%dim
-      typelm2 => mesh2d%typelm
-      npoin2  => mesh2d%npoin
-      npmax2  => mesh2d%npmax
-      mxptvs2 => mesh2d%mxptvs
-      mxelvs2 => mesh2d%mxelvs
+      NELEM2  => MESH2D%NELEM
+      NELMAX2 => MESH2D%NELMAX  ! PREVIOUSLY NELMA2 (ADAPTIVITY OUTLOOK)
+      NPTFR2  => MESH2D%NPTFR   ! PREVIOUSLY SIMPLY NPTFR
+      NPTFRX2 => MESH2D%NPTFRX
+      DIM2    => MESH2D%DIM
+      TYPELM2 => MESH2D%TYPELM
+      NPOIN2  => MESH2D%NPOIN
+      NPMAX2  => MESH2D%NPMAX
+      MXPTVS2 => MESH2D%MXPTVS
+      MXELVS2 => MESH2D%MXELVS
 !
 !-----------------------------------------------------------------------
-! allocation of the 3D mesh structure (equa=empty) (read again?)
+! ALLOCATION OF THE 3D MESH STRUCTURE (EQUA=EMPTY) (READ AGAIN?)
 !
-      equa = 'NO_EQUATION_IS_GIVEN'
+      EQUA = 'NO_EQUATION_IS_GIVEN'
 !
-      CALL ALMESH(mesh3D,'MESH3D',ielm3,spheri,cfg,ngeo,equa,
-     &            nplan=nplan)
+      CALL ALMESH(MESH3D,'MESH3D',IELM3,SPHERI,CFG,NGEO,EQUA,
+     &            NPLAN=NPLAN)
 !
 ! alias for certain components of the 3D mesh structure
 ! they are defined in declarations
 !
-      x       => mesh3d%x%r  ! real value!!!
-      y       => mesh3d%y%r
-      z       => mesh3d%z%r
-      x3      => mesh3d%x    ! pointers
-      y3      => mesh3d%y
-      z3      => mesh3d%z
-      xnebor3 => mesh3d%xnebor
-      ynebor3 => mesh3d%ynebor
-      znebor3 => mesh3d%znebor
-      xsgbor3 => mesh3d%xsgbor
-      ysgbor3 => mesh3d%ysgbor
-      zsgbor3 => mesh3d%zsgbor
-      ikle3   => mesh3d%ikle
-      nbor3   => mesh3d%nbor
+      X       => MESH3D%X%R  ! REAL VALUE!!!
+      Y       => MESH3D%Y%R
+      Z       => MESH3D%Z%R
+      X3      => MESH3D%X    ! POINTERS
+      Y3      => MESH3D%Y
+      Z3      => MESH3D%Z
+      XNEBOR3 => MESH3D%XNEBOR
+      YNEBOR3 => MESH3D%YNEBOR
+      ZNEBOR3 => MESH3D%ZNEBOR
+      XSGBOR3 => MESH3D%XSGBOR
+      YSGBOR3 => MESH3D%YSGBOR
+      ZSGBOR3 => MESH3D%ZSGBOR
+      IKLE3   => MESH3D%IKLE
+      NBOR3   => MESH3D%NBOR
 !
-      nelem3  => mesh3d%nelem
-      nelmax3 => mesh3d%nelmax   ! previously nelma3 (adaptivity?)
-      neleb   => mesh3d%neleb
-      nelebx  => mesh3d%nelebx
-      nptfr3  => mesh3d%nptfr
-      nptfrx3 => mesh3d%nptfrx
-      dim3    => mesh3d%dim
-      typelm3 => mesh3d%typelm
-      npoin3  => mesh3d%npoin
-      npmax3  => mesh3d%npmax
-      mxptvs3 => mesh3d%mxptvs
-      mxelvs3 => mesh3d%mxelvs
+      NELEM3  => MESH3D%NELEM
+      NELMAX3 => MESH3D%NELMAX   ! PREVIOUSLY NELMA3 (ADAPTIVITY?)
+      NELEB   => MESH3D%NELEB
+      NELEBX  => MESH3D%NELEBX
+      NPTFR3  => MESH3D%NPTFR
+      NPTFRX3 => MESH3D%NPTFRX
+      DIM3    => MESH3D%DIM
+      TYPELM3 => MESH3D%TYPELM
+      NPOIN3  => MESH3D%NPOIN
+      NPMAX3  => MESH3D%NPMAX
+      MXPTVS3 => MESH3D%MXPTVS
+      MXELVS3 => MESH3D%MXELVS
 !
 !
-        if (lng.eq.1) write(lu,31)
-     &             typelm2,npoin2,nelem2,nptfr2,typelm3,npoin3,nelem3,
-     &             nplan,neleb,nptfr3+2*npoin2,nptfr3,npoin2,npoin2
-        if (lng.eq.2) write(lu,32)
-     &             typelm2,npoin2,nelem2,nptfr2,typelm3,npoin3,nelem3,
-     &             nplan,neleb,nptfr3+2*npoin2,nptfr3,npoin2,npoin2
+      IF (LNG.EQ.1) WRITE(LU,31)
+     &           TYPELM2,NPOIN2,NELEM2,NPTFR2,TYPELM3,NPOIN3,NELEM3,
+     &           NPLAN,NELEB,NPTFR3+2*NPOIN2,NPTFR3,NPOIN2,NPOIN2
+      IF (LNG.EQ.2) WRITE(LU,32)
+     &           TYPELM2,NPOIN2,NELEM2,NPTFR2,TYPELM3,NPOIN3,NELEM3,
+     &           NPLAN,NELEB,NPTFR3+2*NPOIN2,NPTFR3,NPOIN2,NPOIN2
 !
- 31   format(/,' MAILLAGE 2D',/,
+ 31   FORMAT(/,' MAILLAGE 2D',/,
      &         ' -----------',//,
-     &         ' 2D element type                : ',i8,/,
-     &         ' nombre de points 2D            : ',i8,/,
-     &         ' nombre d''elements 2D           : ',i8,/,
-     &         ' nombre de points de bord 2D    : ',i8,///,
+     &         ' 2D ELEMENT TYPE                : ',I8,/,
+     &         ' NOMBRE DE POINTS 2D            : ',I8,/,
+     &         ' NOMBRE D''ELEMENTS 2D           : ',I8,/,
+     &         ' NOMBRE DE POINTS DE BORD 2D    : ',I8,///,
      &         ' MAILLAGE 3D',/,
      &         ' -----------',//,
-     &         ' 3D element type                : ',i8,/,
-     &         ' nombre de points 3D            : ',i8,/,
-     &         ' nombre d''elements 3D           : ',i8,/,
-     &         ' nombre de plans                : ',i8,/,
-     &         ' nombre d''elements de bord      : ',i8,/,
-     &         ' nombre total de points de bord : ',i8,/,
-     &         ' dont            cotes lateraux : ',i8,/,
-     &         '                        surface : ',i8,/,
-     &         '                           fond : ',i8,/)
+     &         ' 3D ELEMENT TYPE                : ',I8,/,
+     &         ' NOMBRE DE POINTS 3D            : ',I8,/,
+     &         ' NOMBRE D''ELEMENTS 3D           : ',I8,/,
+     &         ' NOMBRE DE PLANS                : ',I8,/,
+     &         ' NOMBRE D''ELEMENTS DE BORD      : ',I8,/,
+     &         ' NOMBRE TOTAL DE POINTS DE BORD : ',I8,/,
+     &         ' DONT            COTES LATERAUX : ',I8,/,
+     &         '                        SURFACE : ',I8,/,
+     &         '                           FOND : ',I8,/)
 !
- 32   format(/,' 2D MESH',/,
+ 32   FORMAT(/,' 2D MESH',/,
      &         ' -------',//,
-     &         ' 2D element type                : ',i8,/,
-     &         ' number of 2D nodes             : ',i8,/,
-     &         ' number of 2D elements          : ',i8,/,
-     &         ' number of 2D boundary nodes    : ',i8,///,
+     &         ' 2D ELEMENT TYPE                : ',I8,/,
+     &         ' NUMBER OF 2D NODES             : ',I8,/,
+     &         ' NUMBER OF 2D ELEMENTS          : ',I8,/,
+     &         ' NUMBER OF 2D BOUNDARY NODES    : ',I8,///,
      &         ' 3D MESH',/,
      &         ' -------',//,
-     &         ' 3D element type                : ',i8,/,
-     &         ' number of 3D nodes             : ',i8,/,
-     &         ' number of 3D elements          : ',i8,/,
-     &         ' number of levels               : ',i8,/,
-     &         ' number of boundary elements    : ',i8,/,
-     &         ' total number of boundary nodes : ',i8,/,
-     &         ' including   lateral boundaries : ',i8,/,
-     &         '                        surface : ',i8,/,
-     &         '                         bottom : ',i8,/)
+     &         ' 3D ELEMENT TYPE                : ',I8,/,
+     &         ' NUMBER OF 3D NODES             : ',I8,/,
+     &         ' NUMBER OF 3D ELEMENTS          : ',I8,/,
+     &         ' NUMBER OF LEVELS               : ',I8,/,
+     &         ' NUMBER OF BOUNDARY ELEMENTS    : ',I8,/,
+     &         ' TOTAL NUMBER OF BOUNDARY NODES : ',I8,/,
+     &         ' INCLUDING   LATERAL BOUNDARIES : ',I8,/,
+     &         '                        SURFACE : ',I8,/,
+     &         '                         BOTTOM : ',I8,/)
 !
 !
 ! DEFINITION DES POINTEURS
 !
-      CALL BIEF_ALLVEC(1, u,      'U     ', ielm3,  1,1,MESH3D)
-      CALL BIEF_ALLVEC(1, v,      'V     ', ielm3,  1,1,MESH3D)
-      CALL BIEF_ALLVEC(1, w,      'W     ', ielm3,  1,1,MESH3D)
+      CALL BIEF_ALLVEC(1, U,      'U     ', IELM3,  1,1,MESH3D)
+      CALL BIEF_ALLVEC(1, V,      'V     ', IELM3,  1,1,MESH3D)
+      CALL BIEF_ALLVEC(1, W,      'W     ', IELM3,  1,1,MESH3D)
 !
       CALL ALLBLO(TAB,'TAB   ')
-      if (nva3.gt.4) then
-      CALL BIEF_ALLVEC_IN_BLOCK(tab,nva3-4,1,'TAB   ',ielm3,1,1,MESH3D)
-      endif
+      IF (NVA3.GT.4) THEN
+        CALL BIEF_ALLVEC_IN_BLOCK(TAB,NVA3-4,1,'TAB   ',IELM3,
+     &                            1,1,MESH3D)
+      ENDIF
 !
 !=======================================================================
 !

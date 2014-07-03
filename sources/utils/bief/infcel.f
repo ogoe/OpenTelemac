@@ -120,65 +120,65 @@
 !
       DO IEL=1, NELEM        
         DO I = 1,3
-         IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
-          FACT=1
-          ISEG = ELTSEG(IEL,I)
-!         LET S RECUPERATE NODE NUMBERS
-          NB1 = GLOSEG(ISEG,1)
-          NB2 = GLOSEG(ISEG,2)
-!         TO REMOVE REDUNDANT
-          NUBO(1,ISEG) = NB1
-          NUBO(2,ISEG) = NB2 
-!         THEIR COORDINATES
-          X1 = XX(NB1)
-          Y1 = YY(NB1)
-          X2 = XX(NB2)
-          Y2 = YY(NB2)
-!         CENTER OF GRAVITY OF NEIGHBORING ELEMENTS
-          XG1 = COORD_G(ISEG,1)
-          YG1 = COORD_G(ISEG,2)
-          XG2 = COORD_G(ISEG,3)
-          YG2 = COORD_G(ISEG,4)
-          IF(IFABOR(IEL,I).EQ.-1.OR.IFABOR(IEL,I).EQ.0)THEN  ! BOUNDARY SEGMENT 
-            IF(ABS(XG1).LT.EPS.AND.ABS(YG1).LT.EPS)THEN   !BOUNDARY SEGMENT (TO IMPROVE THE TEST!!!)     
-              XG1=CMI(1,ISEG)                   ! THIS CASE COULD REALLY HAPPEN ?!
-              YG1=CMI(2,ISEG)
-            ELSEIF(ABS(XG2).LT.EPS.AND.ABS(YG2).LT.EPS)THEN
-              XG2=CMI(1,ISEG)
-              YG2=CMI(2,ISEG)
+          IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
+            FACT=1
+            ISEG = ELTSEG(IEL,I)
+!           LET S RECUPERATE NODE NUMBERS
+            NB1 = GLOSEG(ISEG,1)
+            NB2 = GLOSEG(ISEG,2)
+!           TO REMOVE REDUNDANT
+            NUBO(1,ISEG) = NB1
+            NUBO(2,ISEG) = NB2 
+!           THEIR COORDINATES
+            X1 = XX(NB1)
+            Y1 = YY(NB1)
+            X2 = XX(NB2)
+            Y2 = YY(NB2)
+!           CENTER OF GRAVITY OF NEIGHBORING ELEMENTS
+            XG1 = COORD_G(ISEG,1)
+            YG1 = COORD_G(ISEG,2)
+            XG2 = COORD_G(ISEG,3)
+            YG2 = COORD_G(ISEG,4)
+            IF(IFABOR(IEL,I).EQ.-1.OR.IFABOR(IEL,I).EQ.0)THEN  ! BOUNDARY SEGMENT 
+              IF(ABS(XG1).LT.EPS.AND.ABS(YG1).LT.EPS)THEN   !BOUNDARY SEGMENT (TO IMPROVE THE TEST!!!)     
+                XG1=CMI(1,ISEG)                   ! THIS CASE COULD REALLY HAPPEN ?!
+                YG1=CMI(2,ISEG)
+              ELSEIF(ABS(XG2).LT.EPS.AND.ABS(YG2).LT.EPS)THEN
+                XG2=CMI(1,ISEG)
+                YG2=CMI(2,ISEG)
+              ENDIF
             ENDIF
-          ENDIF
-!         SURFACE OF TRIANGLES (NB1,G1,G2) AND (NB2,G1,G2)
-          AIRST(1,ISEG)=0.5D0*ABS((X1-XG1)*(Y1-YG2)-
-     &                            (Y1-YG1)*(X1-XG2))
-          AIRST(2,ISEG)=0.5D0*ABS((X2-XG1)*(Y2-YG2)-
-     &                            (Y2-YG1)*(X2-XG2))
-!         NORMAL VECTORS TO INTERFACES AND THEIR LENGHT
-          XGG = XG1-XG2
-          YGG = YG1-YG2 
-          RNORM=SQRT(XGG**2+YGG**2)
-          IF(RNORM.GT.EPS) THEN
-            IF(ORISEG(IEL,I).EQ.2) FACT=-FACT
-            VNOIN(1,ISEG) =  FACT*YGG/RNORM
-            VNOIN(2,ISEG) = -FACT*XGG/RNORM
-            VNOIN(3,ISEG) = RNORM
-          ELSE
-            WRITE(LU,*)'**************************************'
-            IF(LNG.EQ.1) THEN
-              WRITE(LU,*)'INFCEL: LONGUEUR D INTERFACE NULLE',RNORM
-              WRITE(LU,*)'POUR LE SEGMENT',ISEG
-              WRITE(LU,*)'AVEC LES NOEUDS GLOBAUX',NB1,NB2
+!           SURFACE OF TRIANGLES (NB1,G1,G2) AND (NB2,G1,G2)
+            AIRST(1,ISEG)=0.5D0*ABS((X1-XG1)*(Y1-YG2)-
+     &                              (Y1-YG1)*(X1-XG2))
+            AIRST(2,ISEG)=0.5D0*ABS((X2-XG1)*(Y2-YG2)-
+     &                              (Y2-YG1)*(X2-XG2))
+!           NORMAL VECTORS TO INTERFACES AND THEIR LENGHT
+            XGG = XG1-XG2
+            YGG = YG1-YG2 
+            RNORM=SQRT(XGG**2+YGG**2)
+            IF(RNORM.GT.EPS) THEN
+              IF(ORISEG(IEL,I).EQ.2) FACT=-FACT
+              VNOIN(1,ISEG) =  FACT*YGG/RNORM
+              VNOIN(2,ISEG) = -FACT*XGG/RNORM
+              VNOIN(3,ISEG) = RNORM
             ELSE
-              WRITE(LU,*)'INFCEL: INTERFACE LENGTH NIL',RNORM
-              WRITE(LU,*)'FOR SEGMENT',ISEG
-              WRITE(LU,*)'WITH GLOBAL NODES',NB1,NB2
+              WRITE(LU,*)'**************************************'
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*)'INFCEL: LONGUEUR D INTERFACE NULLE',RNORM
+                WRITE(LU,*)'POUR LE SEGMENT',ISEG
+                WRITE(LU,*)'AVEC LES NOEUDS GLOBAUX',NB1,NB2
+              ELSE
+                WRITE(LU,*)'INFCEL: INTERFACE LENGTH NIL',RNORM
+                WRITE(LU,*)'FOR SEGMENT',ISEG
+                WRITE(LU,*)'WITH GLOBAL NODES',NB1,NB2
+              ENDIF
+              WRITE(LU,*)'**************************************'
+              CALL PLANTE(1)
+              STOP
             ENDIF
-            WRITE(LU,*)'**************************************'
-            CALL PLANTE(1)
-            STOP
+            YESNO(ISEG)=.TRUE.
           ENDIF
-          YESNO(ISEG)=.TRUE.
-         ENDIF
         ENDDO
       ENDDO 
 !   

@@ -91,6 +91,7 @@
       IF(ERR.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'TOPOGR : MAUVAISE ALLOCATION DE W'
         IF(LNG.EQ.2) WRITE(LU,*) 'TOPOGR: WRONG ALLOCATION OF W'
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -120,7 +121,7 @@
 !
       DO I1    = 1 , MXPTVS+1
         DO IPOIN = 1 , NPOIN
-           ITRA01(IPOIN,I1) = 0
+          ITRA01(IPOIN,I1) = 0
         ENDDO ! IPOIN 
       ENDDO ! I1    
 !
@@ -128,41 +129,41 @@
 !
       DO IELEM = 1,NELEM
 !
-         I1 = IKLE(IELEM,1)
-         I2 = IKLE(IELEM,2)
-         I3 = IKLE(IELEM,3)
+        I1 = IKLE(IELEM,1)
+        I2 = IKLE(IELEM,2)
+        I3 = IKLE(IELEM,3)
 !
-         IFAN(IELEM,1) = 0
-         N1 = IFABOR(IELEM,1)
-         IF (N1.GT.0) THEN
-            IF(IKLE(N1,1).EQ.I1) IFAN(IELEM,1) = 3
-            IF(IKLE(N1,2).EQ.I1) IFAN(IELEM,1) = 1
-            IF(IKLE(N1,3).EQ.I1) IFAN(IELEM,1) = 2
-         ENDIF
+        IFAN(IELEM,1) = 0
+        N1 = IFABOR(IELEM,1)
+        IF (N1.GT.0) THEN
+          IF(IKLE(N1,1).EQ.I1) IFAN(IELEM,1) = 3
+          IF(IKLE(N1,2).EQ.I1) IFAN(IELEM,1) = 1
+          IF(IKLE(N1,3).EQ.I1) IFAN(IELEM,1) = 2
+        ENDIF
 !
-         IFAN(IELEM,2) = 0
-         N1 = IFABOR(IELEM,2)
-         IF (N1.GT.0) THEN
-            IF(IKLE(N1,1).EQ.I2) IFAN(IELEM,2) = 3
-            IF(IKLE(N1,2).EQ.I2) IFAN(IELEM,2) = 1
-            IF(IKLE(N1,3).EQ.I2) IFAN(IELEM,2) = 2
-         ENDIF
+        IFAN(IELEM,2) = 0
+        N1 = IFABOR(IELEM,2)
+        IF (N1.GT.0) THEN
+          IF(IKLE(N1,1).EQ.I2) IFAN(IELEM,2) = 3
+          IF(IKLE(N1,2).EQ.I2) IFAN(IELEM,2) = 1
+          IF(IKLE(N1,3).EQ.I2) IFAN(IELEM,2) = 2
+        ENDIF
 !
-         IFAN(IELEM,3) = 0
-         N1 = IFABOR(IELEM,3)
-         IF (N1.GT.0) THEN
-            IF(IKLE(N1,1).EQ.I3) IFAN(IELEM,3) = 3
-            IF(IKLE(N1,2).EQ.I3) IFAN(IELEM,3) = 1
-            IF(IKLE(N1,3).EQ.I3) IFAN(IELEM,3) = 2
-         ENDIF
+        IFAN(IELEM,3) = 0
+        N1 = IFABOR(IELEM,3)
+        IF (N1.GT.0) THEN
+          IF(IKLE(N1,1).EQ.I3) IFAN(IELEM,3) = 3
+          IF(IKLE(N1,2).EQ.I3) IFAN(IELEM,3) = 1
+          IF(IKLE(N1,3).EQ.I3) IFAN(IELEM,3) = 2
+        ENDIF
 !
-         ZFE(IELEM) = MAX(ZF(I1),ZF(I2),ZF(I3))
-         ITRA01(I1,1) = IELEM
-         ITRA02(I1)   = 1
-         ITRA01(I2,1) = IELEM
-         ITRA02(I2)   = 2
-         ITRA01(I3,1) = IELEM
-         ITRA02(I3)   = 3
+        ZFE(IELEM) = MAX(ZF(I1),ZF(I2),ZF(I3))
+        ITRA01(I1,1) = IELEM
+        ITRA02(I1)   = 1
+        ITRA01(I2,1) = IELEM
+        ITRA02(I2)   = 2
+        ITRA01(I3,1) = IELEM
+        ITRA02(I3)   = 3
 !
       ENDDO ! IELEM 
 !
@@ -177,8 +178,8 @@
 !-----------------------------------------------------------------------
 !
       DO IPTFR = 1,NPTFR
-         ITRA01(NBOR(IPTFR),1) = NELBOR(IPTFR)
-         ITRA02(NBOR(IPTFR))   = NULONE(IPTFR)
+        ITRA01(NBOR(IPTFR),1) = NELBOR(IPTFR)
+        ITRA02(NBOR(IPTFR))   = NULONE(IPTFR)
       ENDDO ! IPTFR 
 !
 !-----------------------------------------------------------------------
@@ -203,7 +204,7 @@
 !-----------------------------------------------------------------------
 !
       DO IPOIN = 1,NPOIN
-         ITRA03(IPOIN) = 0
+        ITRA03(IPOIN) = 0
       ENDDO ! IPOIN 
 !
       IMAX = 0
@@ -226,18 +227,18 @@
 !
       DO IPOIN = 1,NPOIN
 !
-         IF (ITRA03(IPOIN).EQ.0) THEN
-            N1 = ITRA01(IPOIN,IMAX)
-            IF(N1.NE.0) THEN
-              FLAG = .TRUE.
-              N2 = IFABOR(N1,IPREV(ITRA02(IPOIN)))
-!                          HERE IMAX IS NEVER AT ITS MAXIMUM
-              ITRA01(IPOIN,IMAX+1) = N2
-              ITRA02(IPOIN) = IFAN(N1,IPREV(ITRA02(IPOIN)))
-              IF (N2.LE.0)               ITRA03(IPOIN) = -IMAX
-              IF (N2.EQ.ITRA01(IPOIN,1)) ITRA03(IPOIN) =  IMAX
-            ENDIF
-         ENDIF
+        IF (ITRA03(IPOIN).EQ.0) THEN
+          N1 = ITRA01(IPOIN,IMAX)
+          IF(N1.NE.0) THEN
+            FLAG = .TRUE.
+            N2 = IFABOR(N1,IPREV(ITRA02(IPOIN)))
+!                        HERE IMAX IS NEVER AT ITS MAXIMUM
+            ITRA01(IPOIN,IMAX+1) = N2
+            ITRA02(IPOIN) = IFAN(N1,IPREV(ITRA02(IPOIN)))
+            IF (N2.LE.0)               ITRA03(IPOIN) = -IMAX
+            IF (N2.EQ.ITRA01(IPOIN,1)) ITRA03(IPOIN) =  IMAX
+          ENDIF
+        ENDIF
 !
       ENDDO ! IPOIN 
 !
@@ -258,45 +259,46 @@
 !-----------------------------------------------------------------------
 !
       DO IPOIN = 1,NPOIN
-         ITRA02(IPOIN) = 0
-         ITRA05(IPOIN) = 0
+        ITRA02(IPOIN) = 0
+        ITRA05(IPOIN) = 0
       ENDDO ! IPOIN 
 !
       DO I = 1,IMAX-1
 !
-         DO IPOIN = 1,NPOIN
+        DO IPOIN = 1,NPOIN
 !
-            IF (ITRA03(IPOIN).GE.I.OR.ITRA03(IPOIN).LT.-I) THEN
+          IF (ITRA03(IPOIN).GE.I.OR.ITRA03(IPOIN).LT.-I) THEN
 !
-               N1 = ITRA01(IPOIN,I)
-               N2 = ITRA01(IPOIN,I+1)
+            N1 = ITRA01(IPOIN,I)
+            N2 = ITRA01(IPOIN,I+1)
 !
-               IF (ZFE(N2).GT.ZFE(N1)+EPSILO) THEN
-                  IF (ITRA02(IPOIN).LT.0) ITRA04(IPOIN,-ITRA02(IPOIN))=I
-                  IF (ITRA02(IPOIN).LE.0) ITRA02(IPOIN)=-ITRA02(IPOIN)+1
-               ELSEIF (ZFE(N2).LT.ZFE(N1)-EPSILO) THEN
-                  IF (ITRA02(IPOIN).GT.0) ITRA04(IPOIN, ITRA02(IPOIN))=I
-                  IF (ITRA02(IPOIN).GE.0) ITRA02(IPOIN)=-ITRA02(IPOIN)-1
-               ENDIF
-!
+            IF (ZFE(N2).GT.ZFE(N1)+EPSILO) THEN
+              IF (ITRA02(IPOIN).LT.0) ITRA04(IPOIN,-ITRA02(IPOIN))=I
+              IF (ITRA02(IPOIN).LE.0) ITRA02(IPOIN)=-ITRA02(IPOIN)+1
+            ELSEIF (ZFE(N2).LT.ZFE(N1)-EPSILO) THEN
+              IF (ITRA02(IPOIN).GT.0) ITRA04(IPOIN, ITRA02(IPOIN))=I
+              IF (ITRA02(IPOIN).GE.0) ITRA02(IPOIN)=-ITRA02(IPOIN)-1
             ENDIF
 !
-         ENDDO ! IPOIN 
+          ENDIF
+!
+        ENDDO ! IPOIN 
 !
       ENDDO ! I 
 !
       DO IPOIN = 1,NPOIN
-         IF((ITRA03(IPOIN).LT.0.AND.(ITRA02(IPOIN).LE.-4.OR.
-     &       ITRA02(IPOIN).GE.5)).OR.ABS(ITRA02(IPOIN)).GE.6) THEN
-           IF (LNG.EQ.1) THEN
+        IF((ITRA03(IPOIN).LT.0.AND.(ITRA02(IPOIN).LE.-4.OR.
+     &      ITRA02(IPOIN).GE.5)).OR.ABS(ITRA02(IPOIN)).GE.6) THEN
+          IF (LNG.EQ.1) THEN
             WRITE(LU,*) 'LE MAILLAGE AUTOUR DU POINT ',IPOIN,' EST TROP'
             WRITE(LU,*) 'GROSSIER PAR RAPPORT A LA BATHYMETRIE'
-           ELSEIF(LNG.EQ.2) THEN
+          ELSEIF(LNG.EQ.2) THEN
             WRITE(LU,*) 'THE MESH AROUND THE NODE ',IPOIN,' HAS TO'
             WRITE(LU,*) 'BE REFINED BECAUSE OF THE BATHYMETRY'
-           ENDIF
-           STOP
-         ENDIF
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ENDDO ! IPOIN 
 !
 !-----------------------------------------------------------------------
@@ -309,9 +311,9 @@
 !
       DO IPOIN = 1,NPOIN
 !
-         I1 = ITRA03(IPOIN)
+        I1 = ITRA03(IPOIN)
 !
-         IF (I1.LT.0) THEN
+        IF (I1.LT.0) THEN
 !
 !-----------------------------------------------------------------------
 !
@@ -322,60 +324,60 @@
 !
 !-----------------------------------------------------------------------
 !
-            IF (ITRA02(IPOIN).EQ.-2) THEN
+          IF (ITRA02(IPOIN).EQ.-2) THEN
 !
-               FLAG = .TRUE.
-               IF (ZFE(ITRA01(IPOIN,-I1)).GT.ZFE(ITRA01(IPOIN,1))) THEN
-                  ITRA02(IPOIN) = ITRA04(IPOIN,1) + 1
-                  ITRA05(IPOIN) = -I1
-               ELSE
-                  ITRA02(IPOIN) = 1
-                  ITRA05(IPOIN) = ITRA04(IPOIN,1) - 1
-               ENDIF
-               ZREF(IPOIN) = ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1)))
-!
-            ELSEIF (ITRA02(IPOIN).EQ.3) THEN
-!
-               FLAG = .TRUE.
-               IF (ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2))).GT.
-     &             ZFE(ITRA01(IPOIN,1))) THEN
-                  ITRA02(IPOIN) = ITRA04(IPOIN,1) + 1
-                  ITRA05(IPOIN) = -I1
-               ELSE
-                  ITRA02(IPOIN) = 1
-                  ITRA05(IPOIN) = ITRA04(IPOIN,1) - 1
-               ENDIF
-               ZREF(IPOIN) = ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1)))
-!
-            ELSEIF (ITRA02(IPOIN).EQ.-3) THEN
-!
-               FLAG = .TRUE.
-               IF (ZFE(ITRA01(IPOIN,-I1)).GT.
-     &             ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1)))) THEN
-                  ITRA02(IPOIN) = ITRA04(IPOIN,2) + 1
-                  ITRA05(IPOIN) = -I1
-               ELSE
-                  ITRA02(IPOIN) = 1
-                  ITRA05(IPOIN) = ITRA04(IPOIN,2) - 1
-               ENDIF
-               ZREF(IPOIN) = ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2)))
-!
-            ELSEIF (ITRA02(IPOIN).EQ.4) THEN
-!
-               FLAG = .TRUE.
-               IF (ZFE(ITRA01(IPOIN,ITRA04(IPOIN,3))).GT.
-     &             ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1)))) THEN
-                  ITRA02(IPOIN) = ITRA04(IPOIN,2) + 1
-                  ITRA05(IPOIN) = -I1
-               ELSE
-                  ITRA02(IPOIN) = 1
-                  ITRA05(IPOIN) = ITRA04(IPOIN,2) - 1
-               ENDIF
-               ZREF(IPOIN) = ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2)))
-!
+            FLAG = .TRUE.
+            IF (ZFE(ITRA01(IPOIN,-I1)).GT.ZFE(ITRA01(IPOIN,1))) THEN
+              ITRA02(IPOIN) = ITRA04(IPOIN,1) + 1
+              ITRA05(IPOIN) = -I1
+            ELSE
+              ITRA02(IPOIN) = 1
+              ITRA05(IPOIN) = ITRA04(IPOIN,1) - 1
             ENDIF
+            ZREF(IPOIN) = ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1)))
 !
-         ELSE
+          ELSEIF (ITRA02(IPOIN).EQ.3) THEN
+!
+            FLAG = .TRUE.
+            IF (ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2))).GT.
+     &          ZFE(ITRA01(IPOIN,1))) THEN
+              ITRA02(IPOIN) = ITRA04(IPOIN,1) + 1
+              ITRA05(IPOIN) = -I1
+            ELSE
+              ITRA02(IPOIN) = 1
+              ITRA05(IPOIN) = ITRA04(IPOIN,1) - 1
+            ENDIF
+            ZREF(IPOIN) = ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1)))
+!
+          ELSEIF (ITRA02(IPOIN).EQ.-3) THEN
+!
+            FLAG = .TRUE.
+            IF (ZFE(ITRA01(IPOIN,-I1)).GT.
+     &          ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1)))) THEN
+              ITRA02(IPOIN) = ITRA04(IPOIN,2) + 1
+              ITRA05(IPOIN) = -I1
+            ELSE
+              ITRA02(IPOIN) = 1
+              ITRA05(IPOIN) = ITRA04(IPOIN,2) - 1
+            ENDIF
+            ZREF(IPOIN) = ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2)))
+!
+          ELSEIF (ITRA02(IPOIN).EQ.4) THEN
+!
+            FLAG = .TRUE.
+            IF (ZFE(ITRA01(IPOIN,ITRA04(IPOIN,3))).GT.
+     &          ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1)))) THEN
+              ITRA02(IPOIN) = ITRA04(IPOIN,2) + 1
+              ITRA05(IPOIN) = -I1
+            ELSE
+              ITRA02(IPOIN) = 1
+              ITRA05(IPOIN) = ITRA04(IPOIN,2) - 1
+            ENDIF
+            ZREF(IPOIN) = ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2)))
+!
+          ENDIF
+!
+        ELSE
 !
 !-----------------------------------------------------------------------
 !
@@ -386,92 +388,92 @@
 !
 !-----------------------------------------------------------------------
 !
-            IF (ITRA02(IPOIN).EQ.4) THEN
+          IF (ITRA02(IPOIN).EQ.4) THEN
 !
-               FLAG = .TRUE.
-               IF (ZFE(ITRA01(IPOIN,ITRA04(IPOIN,3))).GT.
-     &             ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1)))) THEN
-                  ITRA02(IPOIN) = ITRA04(IPOIN,2) + 1
-                  ITRA05(IPOIN) = I1
-               ELSE
-                  ITRA02(IPOIN) = 2
-                  ITRA05(IPOIN) = ITRA04(IPOIN,2) - 1
-               ENDIF
-               ZREF(IPOIN) = MIN(ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2))),
-     &                           ZFE(ITRA01(IPOIN,1)))
-!
-            ELSEIF (ITRA02(IPOIN).EQ.-4) THEN
-!
-               FLAG = .TRUE.
-               IF (ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2))).GT.
-     &             ZFE(ITRA01(IPOIN,1))) THEN
-                  ITRA02(IPOIN) = ITRA04(IPOIN,1) + 1
-                  ITRA05(IPOIN) = ITRA04(IPOIN,3) - 1
-               ELSE
-                  ITRA02(IPOIN) = MOD(ITRA04(IPOIN,3),I1) + 1
-                  ITRA05(IPOIN) = ITRA04(IPOIN,1) - 1
-               ENDIF
-               ZREF(IPOIN) = MIN(ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1))),
-     &                           ZFE(ITRA01(IPOIN,ITRA04(IPOIN,3))))
-!
-            ELSEIF (ITRA02(IPOIN).EQ.5) THEN
-!
-               FLAG = .TRUE.
-               IF (ZFE(ITRA01(IPOIN,ITRA04(IPOIN,4))).GT.
-     &             ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2)))) THEN
-                  ITRA02(IPOIN) = ITRA04(IPOIN,3) + 1
-                  ITRA05(IPOIN) = ITRA04(IPOIN,1) - 1
-               ELSE
-                  ITRA02(IPOIN) = ITRA04(IPOIN,1) + 1
-                  ITRA05(IPOIN) = ITRA04(IPOIN,3) - 1
-               ENDIF
-               ZREF(IPOIN) = MIN(ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1))),
-     &                           ZFE(ITRA01(IPOIN,ITRA04(IPOIN,3))))
-!
-            ELSEIF (ITRA02(IPOIN).EQ.-5) THEN
-!
-               FLAG = .TRUE.
-               IF (ZFE(ITRA01(IPOIN,ITRA04(IPOIN,3))).GT.
-     &             ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1)))) THEN
-                  ITRA02(IPOIN) = ITRA04(IPOIN,2) + 1
-                  ITRA05(IPOIN) = ITRA04(IPOIN,4) - 1
-               ELSE
-                  ITRA02(IPOIN) = MOD(ITRA04(IPOIN,4),I1) + 1
-                  ITRA05(IPOIN) = ITRA04(IPOIN,2) - 1
-               ENDIF
-               ZREF(IPOIN) = MIN(ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2))),
-     &                           ZFE(ITRA01(IPOIN,ITRA04(IPOIN,4))))
-!
+            FLAG = .TRUE.
+            IF (ZFE(ITRA01(IPOIN,ITRA04(IPOIN,3))).GT.
+     &          ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1)))) THEN
+              ITRA02(IPOIN) = ITRA04(IPOIN,2) + 1
+              ITRA05(IPOIN) = I1
+            ELSE
+              ITRA02(IPOIN) = 2
+              ITRA05(IPOIN) = ITRA04(IPOIN,2) - 1
             ENDIF
+            ZREF(IPOIN) = MIN(ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2))),
+     &                        ZFE(ITRA01(IPOIN,1)))
 !
-         ENDIF
+          ELSEIF (ITRA02(IPOIN).EQ.-4) THEN
+!
+            FLAG = .TRUE.
+            IF (ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2))).GT.
+     &          ZFE(ITRA01(IPOIN,1))) THEN
+              ITRA02(IPOIN) = ITRA04(IPOIN,1) + 1
+              ITRA05(IPOIN) = ITRA04(IPOIN,3) - 1
+            ELSE
+              ITRA02(IPOIN) = MOD(ITRA04(IPOIN,3),I1) + 1
+              ITRA05(IPOIN) = ITRA04(IPOIN,1) - 1
+            ENDIF
+            ZREF(IPOIN) = MIN(ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1))),
+     &                        ZFE(ITRA01(IPOIN,ITRA04(IPOIN,3))))
+!
+          ELSEIF (ITRA02(IPOIN).EQ.5) THEN
+!
+            FLAG = .TRUE.
+            IF (ZFE(ITRA01(IPOIN,ITRA04(IPOIN,4))).GT.
+     &          ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2)))) THEN
+              ITRA02(IPOIN) = ITRA04(IPOIN,3) + 1
+              ITRA05(IPOIN) = ITRA04(IPOIN,1) - 1
+            ELSE
+              ITRA02(IPOIN) = ITRA04(IPOIN,1) + 1
+              ITRA05(IPOIN) = ITRA04(IPOIN,3) - 1
+            ENDIF
+            ZREF(IPOIN) = MIN(ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1))),
+     &                        ZFE(ITRA01(IPOIN,ITRA04(IPOIN,3))))
+!
+          ELSEIF (ITRA02(IPOIN).EQ.-5) THEN
+!
+            FLAG = .TRUE.
+            IF (ZFE(ITRA01(IPOIN,ITRA04(IPOIN,3))).GT.
+     &          ZFE(ITRA01(IPOIN,ITRA04(IPOIN,1)))) THEN
+              ITRA02(IPOIN) = ITRA04(IPOIN,2) + 1
+              ITRA05(IPOIN) = ITRA04(IPOIN,4) - 1
+            ELSE
+              ITRA02(IPOIN) = MOD(ITRA04(IPOIN,4),I1) + 1
+              ITRA05(IPOIN) = ITRA04(IPOIN,2) - 1
+            ENDIF
+            ZREF(IPOIN) = MIN(ZFE(ITRA01(IPOIN,ITRA04(IPOIN,2))),
+     &                        ZFE(ITRA01(IPOIN,ITRA04(IPOIN,4))))
+!
+          ENDIF
+!
+        ENDIF
 !
       ENDDO ! IPOIN 
 !
       IF (FLAG) THEN
 !
-         DO IPOIN = 1,NPOIN
+        DO IPOIN = 1,NPOIN
 !
-            IF (ITRA05(IPOIN).NE.0) THEN
+          IF (ITRA05(IPOIN).NE.0) THEN
 !
-               IF (ITRA05(IPOIN).LT.ITRA02(IPOIN)) THEN
-                  DO I = ITRA02(IPOIN),ITRA03(IPOIN)
-                     ZFE(ITRA01(IPOIN,I)) = MAX(ZFE(ITRA01(IPOIN,I)),
-     &                                          ZREF(IPOIN))
-                  ENDDO ! I 
-                  ITRA02(IPOIN) = 1
-               ENDIF
-!
-               DO I = ITRA02(IPOIN),ITRA05(IPOIN)
-                  ZFE(ITRA01(IPOIN,I)) = MAX(ZFE(ITRA01(IPOIN,I)),
-     &                                       ZREF(IPOIN))
-               ENDDO ! I 
-!
+            IF (ITRA05(IPOIN).LT.ITRA02(IPOIN)) THEN
+              DO I = ITRA02(IPOIN),ITRA03(IPOIN)
+                ZFE(ITRA01(IPOIN,I)) = MAX(ZFE(ITRA01(IPOIN,I)),
+     &                                     ZREF(IPOIN))
+              ENDDO ! I 
+              ITRA02(IPOIN) = 1
             ENDIF
 !
-         ENDDO ! IPOIN 
+            DO I = ITRA02(IPOIN),ITRA05(IPOIN)
+              ZFE(ITRA01(IPOIN,I)) = MAX(ZFE(ITRA01(IPOIN,I)),
+     &                                   ZREF(IPOIN))
+            ENDDO ! I 
 !
-         GOTO 60
+          ENDIF
+!
+        ENDDO ! IPOIN 
+!
+        GOTO 60
 !
       ENDIF
 !

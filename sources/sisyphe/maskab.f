@@ -58,14 +58,11 @@
 !
 !  TREATS NEGATIVE VALUES IN THE DOMAIN
 !
-         IF(HN(I).LE.0.D0) THEN
-!
-            Q(I)  = 0.D0
-            QU(I) = 0.D0
-            QV(I) = 0.D0
-!
-         ENDIF
-!
+        IF(HN(I).LE.0.D0) THEN
+          Q(I)  = 0.D0
+          QU(I) = 0.D0
+          QV(I) = 0.D0
+        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------

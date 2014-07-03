@@ -92,37 +92,37 @@
 ! LOOP OVER BOUNDARY NODES
       IF(NPTFR.GT.0)THEN    ! FOR PARALLEL CASES
       DO K=1,NPTFR
-       IS=NBOR(K)
+        IS=NBOR(K)
 !
 ! INITIALIZATION
-       FLUENT  = 0.D0
-       FLUSORT = 0.0D0
-       INFLOW  = 0.0D0
-       OUTFLOW = 0.0D0
-       FLX(1)  = 0.0D0
-       FLX(2)  = 0.0D0
-       FLX(3)  = 0.0D0
-       FLX(4)  = 0.0D0
+        FLUENT  = 0.D0
+        FLUSORT = 0.0D0
+        INFLOW  = 0.0D0
+        OUTFLOW = 0.0D0
+        FLX(1)  = 0.0D0
+        FLX(2)  = 0.0D0
+        FLX(3)  = 0.0D0
+        FLX(4)  = 0.0D0
 ! INDICATOR FOR DRY CELLS
-       IDRY=0
+        IDRY=0
 !   NORMALIZED NORMAL    
-       XNN=XNEBOR(K)
-       YNN=YNEBOR(K)
+        XNN=XNEBOR(K)
+        YNN=YNEBOR(K)
 !   NON NORMALIZED NORMAL
-       VNX=XNEBOR(K+NPTFR)
-       VNY=YNEBOR(K+NPTFR)
+        VNX=XNEBOR(K+NPTFR)
+        VNY=YNEBOR(K+NPTFR)
 !
-       VNL=SQRT(VNX**2+VNY**2)
-!
-       H1 = W(1,IS)
-       IF(H1.GT.EPS)THEN
-         U1 = W(2,IS)/H1
-         V1 = W(3,IS)/H1
-       ELSE
-         U1 = 0.0D0
-         V1 = 0.0D0
-         IDRY=IDRY+1
-       ENDIF
+        VNL=SQRT(VNX**2+VNY**2)
+!       
+        H1 = W(1,IS)
+        IF(H1.GT.EPS)THEN
+          U1 = W(2,IS)/H1
+          V1 = W(3,IS)/H1
+        ELSE
+          U1 = 0.0D0
+          V1 = 0.0D0
+          IDRY=IDRY+1
+        ENDIF
 !**************************************************
 !         WALL BOUNDARY
 !**************************************************
@@ -130,28 +130,28 @@
 !    SLIPPING CONDITION
 !===============================
 !
-       IF(LIMPRO(K,1).EQ.KNEU) THEN 
+        IF(LIMPRO(K,1).EQ.KNEU) THEN 
 
 ! FIRST METHOD: STRONG IMPOSITION
 !********************************
 !    CE.n = 0  is done in cdlproj
 ! DEFINITION OF THE GHOST STATE Ue
-         H2=H1
-!        ROTATION 
-         U10 = U1
-         U1  = XNN*U10+YNN*V1
-         V1  =-YNN*U10+XNN*V1
+          H2=H1
+!         ROTATION 
+          U10 = U1
+          U1  = XNN*U10+YNN*V1
+          V1  =-YNN*U10+XNN*V1
 ! PUT NORMAL COMPONENT = 0        
-         U1 =  0.0D0
-         U2 =  U1
-         V2 =  V1
+          U1 =  0.0D0
+          U2 =  U1
+          V2 =  V1
 ! INVERSE ROTATION
-         U10 = U1
-         U1  = -YNN*V1
-         V1  =  XNN*V1
-!         
-         U2  = -YNN*V2
-         V2  =  XNN*V2
+          U10 = U1
+          U1  = -YNN*V1
+          V1  =  XNN*V1
+!          
+          U2  = -YNN*V2
+          V2  =  XNN*V2
 ! SECOND METHOD: WEAK IMPOSITION
 !********************************
 !DEFINITION OF THE GHOST STATE Ue
@@ -162,14 +162,22 @@
 !           U2 = U1 - U10*XNN
 !           V2 = V1 - U10*YNN
 !
-         CALL FLUX_HLLC(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
-     *                 XNN,YNN,ROT,FLX)
-         GOTO 100
+          CALL FLUX_HLLC(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
+     &                 XNN,YNN,ROT,FLX)
+          GOTO 100
 !
 !**************************************************
 !         LIQUID BOUNDARIES
 !**************************************************
-       ELSEIF((LIMPRO(K,1).EQ.KDIR).OR.(LIMPRO(K,1).EQ.KDDL))THEN 
+        ELSEIF((LIMPRO(K,1).EQ.KDIR).OR.(LIMPRO(K,1).EQ.KDDL))THEN 
+          ! PREPARE COMPUTATION OF RIEMANN INVARIANTS
+          IF(H1.LT.EPS)THEN
+            UNN = 0.D0
+            VNN = 0.D0
+          ELSE
+            UNN =  XNN*U1 + YNN*V1
+            VNN = -YNN*U1 + XNN*V1
+          ENDIF
        ! PREPARE COMPUTATION OF RIEMANN INVARIANTS
         IF(H1.LT.EPS)THEN
          UNN = 0.D0
@@ -182,50 +190,50 @@
 !    IF H IS IMPOSED
 !===============================
 !
-        IF(LIMPRO(K,1).EQ.KDIR) THEN
-!
-          HG = HBOR(K) ! THIS IS HG (GHOST STATE)
-          CG = SQRT(G*HG)
-          C1 = SQRT(G*H1) 
-          LAMBDA1 = UNN + C1 ! WE USE REAL H (H1) TO ASSESS THE REGIME
-          LAMBDA2 = UNN - C1
-          REGIME  = LAMBDA1*LAMBDA2
-!
-          IF(REGIME.LT.0.D0.OR.UNN.LE.0.D0) THEN ! SUBCRITICAL REGIME OR ENTRY
-            IF(HG.LT.EPS)THEN
-              UG = 0.D0 !  UG (GHOST)
-              VG = 0.D0 !  VG (GHOST)
-              IDRY = IDRY + 1
-            ELSE
-              IF(REGIME.LT.0.D0) THEN !SUBCRITICAL
-                UG = UNN +2.D0*(C1-CG)
-                VG = VNN
-!               INVERSE ROTATION
-                UGTEMP = UG 
-                UG = XNN*UGTEMP - YNN*VG 
-                VG = YNN*UGTEMP + XNN*VG 
-              ELSE                            ! SUPERCRITICAL
-                IF(LIUBOR%I(K).EQ.KENTU.OR.LIUBOR%I(K).EQ.KENT) THEN ! IMPOSED INFLOW
-                                                                 ! OR IMPOSED VELOCITY
-                  UG = UBOR(K)  ! FORCING H TO HG AND U TO UG (SUPERCRITICAL)
-                  VG = VBOR(K)
-                ELSE ! DATA MISSING
-                  UG = 0.D0 !THIS IS LAKE AT REST (HYPOTHESIS)
-                  VG = 0.D0
-                  IF(.NOT.DEJA.AND.ENTET)THEN
-                    IF(LNG.EQ.1) WRITE(LU,30) NUMLIQ%I(K)
-                    IF(LNG.EQ.2) WRITE(LU,31) NUMLIQ%I(K)
-                    DEJA=.TRUE.
+          IF(LIMPRO(K,1).EQ.KDIR) THEN
+!         
+            HG = HBOR(K) ! THIS IS HG (GHOST STATE)
+            CG = SQRT(G*HG)
+            C1 = SQRT(G*H1) 
+            LAMBDA1 = UNN + C1 ! WE USE REAL H (H1) TO ASSESS THE REGIME
+            LAMBDA2 = UNN - C1
+            REGIME  = LAMBDA1*LAMBDA2
+!         
+            IF(REGIME.LT.0.D0.OR.UNN.LE.0.D0) THEN ! SUBCRITICAL REGIME OR ENTRY
+              IF(HG.LT.EPS)THEN
+                UG = 0.D0 !  UG (GHOST)
+                VG = 0.D0 !  VG (GHOST)
+                IDRY = IDRY + 1
+              ELSE
+                IF(REGIME.LT.0.D0) THEN !SUBCRITICAL
+                  UG = UNN +2.D0*(C1-CG)
+                  VG = VNN
+!                 INVERSE ROTATION
+                  UGTEMP = UG 
+                  UG = XNN*UGTEMP - YNN*VG 
+                  VG = YNN*UGTEMP + XNN*VG 
+                ELSE                            ! SUPERCRITICAL
+                  IF(LIUBOR%I(K).EQ.KENTU.OR.LIUBOR%I(K).EQ.KENT) THEN ! IMPOSED INFLOW
+                                                                   ! OR IMPOSED VELOCITY
+                    UG = UBOR(K)  ! FORCING H TO HG AND U TO UG (SUPERCRITICAL)
+                    VG = VBOR(K)
+                  ELSE ! DATA MISSING
+                    UG = 0.D0 !THIS IS LAKE AT REST (HYPOTHESIS)
+                    VG = 0.D0
+                    IF(.NOT.DEJA.AND.ENTET)THEN
+                      IF(LNG.EQ.1) WRITE(LU,30) NUMLIQ%I(K)
+                      IF(LNG.EQ.2) WRITE(LU,31) NUMLIQ%I(K)
+                      DEJA=.TRUE.
+                    ENDIF
                   ENDIF
                 ENDIF
               ENDIF
-            ENDIF
-          ELSE !THIS IS A SUPERCRITICAL OUTFLOW (NO NEED FOR GIVEN H) 
-            IF(.NOT.DEJA.AND.ENTET)THEN 
-              IF(LNG.EQ.1) WRITE(LU,60) NUMLIQ%I(K)
-              IF(LNG.EQ.2) WRITE(LU,61) NUMLIQ%I(K)
-              DEJA=.TRUE.
-!             NO CONTRIBUTION
+            ELSE !THIS IS A SUPERCRITICAL OUTFLOW (NO NEED FOR GIVEN H) 
+              IF(.NOT.DEJA.AND.ENTET)THEN 
+                IF(LNG.EQ.1) WRITE(LU,60) NUMLIQ%I(K)
+                IF(LNG.EQ.2) WRITE(LU,61) NUMLIQ%I(K)
+                DEJA=.TRUE.
+!               NO CONTRIBUTION
             ENDIF
           ENDIF
 !
@@ -256,8 +264,8 @@
 !==========================================================
 !         ELSE IF(LIUBOR%I(K).EQ.KENT)THEN
 !         
+          ENDIF
         ENDIF
-       ENDIF
 !
 90      CONTINUE
 !       COMPUTE THE FLUX 
@@ -301,19 +309,19 @@
 !       
       ENDIF ! PARALLEL CASES
 !
-30        FORMAT(1X,'CDL_HLLC: ATTENTION SUR LA FRONTIERE ',1I6,/,1X,
-     &     '          ENTREE TORRENTIELLE        ',/,1X,
-     &     '          ET DEBIT NON FOURNI',/,1X)
-31        FORMAT(1X,'CDL_HLLC: WARNING, LIQUID BOUNDARY ',1I6,/,1X,
-     &     '          SUPERCRITICAL INLET        ',/,1X,
-     &     '          AND NO DISCHARGE PROVIDED',/,1X)
+30    FORMAT(1X,'CDL_HLLC: ATTENTION SUR LA FRONTIERE ',1I6,/,1X,
+     & '          ENTREE TORRENTIELLE        ',/,1X,
+     & '          ET DEBIT NON FOURNI',/,1X)
+31    FORMAT(1X,'CDL_HLLC: WARNING, LIQUID BOUNDARY ',1I6,/,1X,
+     & '          SUPERCRITICAL INLET        ',/,1X,
+     & '          AND NO DISCHARGE PROVIDED',/,1X)
 !
-60        FORMAT(1X,'CDL_HLLC: ATTENTION SUR LA FRONTIERE ',1I6,/,1X,
-     &     '          SORTIE TORRENTIELLE ET DONC       ',/,1X,
-     &     '          CONDITION AUX LIMITES NON IMPOSEE',/,1X)
-61        FORMAT(1X,'CDL_HLLC: WARNING, LIQUID BOUNDARY ',1I6,/,1X,
-     &     '          SUPERCRITICAL OUTLET        ',/,1X,
-     &     '          DESIRED BOUNDARY CONDITION MAY BE UNSATISFIED')
+60    FORMAT(1X,'CDL_HLLC: ATTENTION SUR LA FRONTIERE ',1I6,/,1X,
+     & '          SORTIE TORRENTIELLE ET DONC       ',/,1X,
+     & '          CONDITION AUX LIMITES NON IMPOSEE',/,1X)
+61    FORMAT(1X,'CDL_HLLC: WARNING, LIQUID BOUNDARY ',1I6,/,1X,
+     & '          SUPERCRITICAL OUTLET        ',/,1X,
+     & '          DESIRED BOUNDARY CONDITION MAY BE UNSATISFIED')
 !
 !-----------------------------------------------------------------------
 !

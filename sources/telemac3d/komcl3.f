@@ -166,11 +166,11 @@
 !
       DO IPOIN2=1,NPOIN2
 !
-!        DIRICHLET ON K
-!        ---------------
+!       DIRICHLET ON K
+!       ---------------
 !
-         IF(LIKBOF(IPOIN2).EQ.KENT) THEN
-!        -----------------------------
+        IF(LIKBOF(IPOIN2).EQ.KENT) THEN
+!       -----------------------------
 !
           IF(LIUBOF(IPOIN2).EQ.KLOG) THEN
             KBORF(IPOIN2) = MAX(SBETAS*UETCAR(IPOIN2),KMIN)
@@ -178,14 +178,14 @@
             KBORF(IPOIN2) = KMIN
           ENDIF
 !
-         ENDIF
+        ENDIF
 !
 !
-!        DIRICHLET ON EPSILON
-!        ---------------------
+!       DIRICHLET ON EPSILON
+!       ---------------------
 !
-         IF(LIEBOF(IPOIN2).EQ.KENT) THEN
-!        -------------------------------
+        IF(LIEBOF(IPOIN2).EQ.KENT) THEN
+!       -------------------------------
 !
           IF(LIUBOF(IPOIN2).EQ.KLOG) THEN
             IF(IPBOT%I(IPOIN2).EQ.0) THEN
@@ -208,7 +208,7 @@
             ENDIF
           ENDIF
 !
-         ENDIF
+        ENDIF
 !
       ENDDO
 !
@@ -220,17 +220,17 @@
 !
       DO IPOIN2=1,NPOIN2
 !
-         HAUT = MAX(H(IPOIN2),1.D-7)
+        HAUT = MAX(H(IPOIN2),1.D-7)
 !
-!        DIRICHLET ON EPSILON
-!        ---------------------
+!       DIRICHLET ON EPSILON
+!       ---------------------
 !
-         IF(LIEBOS(IPOIN2).EQ.KENT) THEN
-!        -------------------------------
+        IF(LIEBOS(IPOIN2).EQ.KENT) THEN
+!       -------------------------------
 !
-           EBORS(IPOIN2) = OMSTAR*SQRT(AK(IPOIN2,NPLAN))/HAUT
+          EBORS(IPOIN2) = OMSTAR*SQRT(AK(IPOIN2,NPLAN))/HAUT
 !
-         ENDIF
+        ENDIF
 !
       ENDDO
 !
@@ -245,123 +245,123 @@
 !
       DO IPTFR=1,NPTFR
 !
-         IPOIN2 = NBOR(IPTFR)
-         DIST   = DISBOR(IPTFR) / FICTIFUET
-         HAUT   = MAX( H(IPOIN2), 1.D-7 )
+        IPOIN2 = NBOR(IPTFR)
+        DIST   = DISBOR(IPTFR) / FICTIFUET
+        HAUT   = MAX( H(IPOIN2), 1.D-7 )
 !
-         DO IPLAN=1,NPLAN
+        DO IPLAN=1,NPLAN
 !
 !BOY COMPUTES THE DISTANCE TO THE BOTTOM
-            IF(IPLAN .EQ. 1) THEN
-              DISTFOND = (Z(IPOIN2,2)-Z(IPOIN2,1)) / FICTIFUET
-            ELSE
-              DISTFOND = (Z(IPOIN2,IPLAN)-Z(IPOIN2,1))
-            ENDIF
+          IF(IPLAN .EQ. 1) THEN
+            DISTFOND = (Z(IPOIN2,2)-Z(IPOIN2,1)) / FICTIFUET
+          ELSE
+            DISTFOND = (Z(IPOIN2,IPLAN)-Z(IPOIN2,1))
+          ENDIF
 ! COMPUTES THE TANGENTIAL SPEED
-            UTANG = SQRT(U(IPOIN2,IPLAN)**2+V(IPOIN2,IPLAN)**2)
+          UTANG = SQRT(U(IPOIN2,IPLAN)**2+V(IPOIN2,IPLAN)**2)
 !
-!           DIRICHLET ON K
-!           ---------------
+!         DIRICHLET ON K
+!         ---------------
 !
-            IF(LIKBOL(IPTFR,IPLAN).EQ.KENT) THEN
-!           ------------------------------------
-!              ************************************
-               IF(LIUBOL(IPTFR,IPLAN).EQ.KENT.OR.
-     &            LIUBOL(IPTFR,IPLAN).EQ.KENTU) THEN
-!              ************************************
+          IF(LIKBOL(IPTFR,IPLAN).EQ.KENT) THEN
+!         ------------------------------------
+!         ************************************
+            IF(LIUBOL(IPTFR,IPLAN).EQ.KENT.OR.
+     &         LIUBOL(IPTFR,IPLAN).EQ.KENTU) THEN
+!           ************************************
 !
-!              COMING INTO THE DOMAIN
+!             COMING INTO THE DOMAIN
+!            
+              KBORL(IPTFR,IPLAN) = MAX(NIVTURB*U(IPOIN2,IPLAN),KMIN)
 !
-               KBORL(IPTFR,IPLAN) = MAX(NIVTURB*U(IPOIN2,IPLAN),KMIN)
+!           ****************************************
+            ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG) THEN
+!           ****************************************
 !
-!              ****************************************
-               ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG) THEN
-!              ****************************************
+!             WALL
 !
-!                WALL
+              KBORL(IPTFR,IPLAN)=MAX(SBETAS*UETCAL(IPTFR,IPLAN),KMIN)
 !
-                 KBORL(IPTFR,IPLAN)=MAX(SBETAS*UETCAL(IPTFR,IPLAN),KMIN)
+!           ****************************************
+            ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KADH) THEN
+!           ****************************************
 !
-!              ****************************************
-               ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KADH) THEN
-!              ****************************************
+              KBORL(IPTFR,IPLAN) = KMIN
 !
-                  KBORL(IPTFR,IPLAN) = KMIN
+!           ****
+            ELSE
+!           ****
 !
-!              ****
-               ELSE
-!              ****
+              IF (LNG.EQ.1) WRITE(LU,111) IPTFR,LIUBOL(IPTFR,IPLAN)
+              IF (LNG.EQ.2) WRITE(LU,112) IPTFR,LIUBOL(IPTFR,IPLAN)
+              CALL PLANTE(1)
+              STOP
 !
-                  IF (LNG.EQ.1) WRITE(LU,111) IPTFR,LIUBOL(IPTFR,IPLAN)
-                  IF (LNG.EQ.2) WRITE(LU,112) IPTFR,LIUBOL(IPTFR,IPLAN)
-                  CALL PLANTE(1)
-                  STOP
-!
-!              *****
-               ENDIF
-!              *****
-!
+!           *****
             ENDIF
-!           -----
+!           *****
 !
-!           DIRICHLET ON EPSILON
-!           ---------------------
+          ENDIF
+!         -----
 !
-            IF(LIEBOL(IPTFR,IPLAN).EQ.KENT) THEN
-!           ------------------------------------
+!         DIRICHLET ON EPSILON
+!         ---------------------
 !
-!              ************************************
-               IF(LIUBOL(IPTFR,IPLAN).EQ.KENT.OR.
-     &            LIUBOL(IPTFR,IPLAN).EQ.KENTU) THEN
-!              ************************************
+          IF(LIEBOL(IPTFR,IPLAN).EQ.KENT) THEN
+!         ------------------------------------
 !
-!                 COMING INTO THE DOMAIN : TURBULENCE DUE TO BOTTOM
+!           ************************************
+            IF(LIUBOL(IPTFR,IPLAN).EQ.KENT.OR.
+     &         LIUBOL(IPTFR,IPLAN).EQ.KENTU) THEN
+!            ************************************
+!
+!             COMING INTO THE DOMAIN : TURBULENCE DUE TO BOTTOM
 !
 ! BOUNDARY CONDITIONS COMING RFOM THE K-EPSILON MODEL:
 !                  EBORL(IPTFR,IPLAN) = CMU**0.75*KBORL(IPTFR,1)**1.5
 !     &                      /KARMAN/DISTFOND
 ! AUXILIARY RELATION EPSILON=BETAS*K*OMEGA LEADS TO:
 !
-                  EBORL(IPTFR,IPLAN)=BETAS**(-0.25)*SQRT(KBORL(IPTFR,1))
-     &                              /KARMAN/MAX(DISTFOND,1.D-4)
-                  EBORL(IPTFR,IPLAN)= MAX(EBORL(IPTFR,IPLAN),EMIN)
+              EBORL(IPTFR,IPLAN)=BETAS**(-0.25)*SQRT(KBORL(IPTFR,1))
+     &                          /KARMAN/MAX(DISTFOND,1.D-4)
+              EBORL(IPTFR,IPLAN)= MAX(EBORL(IPTFR,IPLAN),EMIN)
 !
-!              ****************************************
-               ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG) THEN
-!              ****************************************
+!           ****************************************
+            ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG) THEN
+!           ****************************************
 !
-!               WALL
+!             WALL
 !
-                EBORL(IPTFR,IPLAN) =
-     &          MAX(SBETAS*SQRT(UETCAL(IPTFR,IPLAN))/(KARMAN*DIST),EMIN)
+              EBORL(IPTFR,IPLAN) =
+     &        MAX(SBETAS*SQRT(UETCAL(IPTFR,IPLAN))/(KARMAN*DIST),EMIN)
 !
-!              ****************************************
-               ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KADH) THEN
-!              ****************************************
+!           ****************************************
+            ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KADH) THEN
+!           ****************************************
 !
 !HOL OMEGA = USTAR**2*SR/NUE ...
 !
-                 EBORL(IPTFR,IPLAN) = 2500.D0
+              EBORL(IPTFR,IPLAN) = 2500.D0
 !HOL
-!              ****
-               ELSE
-!              ****
+!           ****
+            ELSE
+!           ****
 !
-!                 OTHER
+!             OTHER
 !
-                  IF (LNG.EQ.1) WRITE(LU,121) IPTFR,LIUBOL(IPTFR,IPLAN)
-                  IF (LNG.EQ.2) WRITE(LU,122) IPTFR,LIUBOL(IPTFR,IPLAN)
-                  CALL PLANTE(1)
-                  STOP
+              IF (LNG.EQ.1) WRITE(LU,121) IPTFR,LIUBOL(IPTFR,IPLAN)
+              IF (LNG.EQ.2) WRITE(LU,122) IPTFR,LIUBOL(IPTFR,IPLAN)
+              CALL PLANTE(1)
+              STOP
 !
-!              *****
-               ENDIF
-!              *****
-!
+!           *****
             ENDIF
-!           -----
+!           *****
 !
-         ENDDO
+          ENDIF
+!         -----
+!
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------

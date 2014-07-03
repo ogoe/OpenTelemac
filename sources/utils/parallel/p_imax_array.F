@@ -47,13 +47,13 @@
      &           'P_IMAX_ARRAY: ERREUR DANS MPI_ALLREDUCE'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_IMAX_ARRAY: ERROR IN MPI_ALLREDUCE'
         WRITE (LU,*) 'MPI ERROR ',IERR
+        CALL PLANTE(1)
         STOP
       ENDIF
       RETURN
 #else
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_IMAX_ARRAY VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*)'CALL OF P_IMAX_ARRAY IN ITS VOID VERSION'
-      STOP
 !
 !-----------------------------------------------------------------------
 !

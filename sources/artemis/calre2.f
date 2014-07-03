@@ -82,14 +82,14 @@
       DHTEST = 1.D6
 !
       DO I=1,NPOIN
-         T1%R(I) = 1.D0 + T2%R(I) *( 0.6522D0 +
-     &                    T2%R(I) *( 0.4622D0 +
-     &                    T2%R(I) *
-     &                    T2%R(I) *( 0.0864D0 +
-     &                    T2%R(I) *( 0.0675D0 ) )))
-         T1%R(I) = SQRT( T2%R(I)*(T2%R(I) + 1.D0/T1%R(I)) )
-         K%R(I)  = T1%R(I)/H%R(I)
-         DHTEST  = MIN( DHTEST , H%R(I) )
+        T1%R(I) = 1.D0 + T2%R(I) *( 0.6522D0 +
+     &                   T2%R(I) *( 0.4622D0 +
+     &                   T2%R(I) *
+     &                   T2%R(I) *( 0.0864D0 +
+     &                   T2%R(I) *( 0.0675D0 ) )))
+        T1%R(I) = SQRT( T2%R(I)*(T2%R(I) + 1.D0/T1%R(I)) )
+        K%R(I)  = T1%R(I)/H%R(I)
+        DHTEST  = MIN( DHTEST , H%R(I) )
       ENDDO
 !
 !
@@ -107,8 +107,8 @@
 !=======================================================================
 !
       DO I=1,NPOIN
-         CG%R(I) = C%R(I)/2.D0 *
-     &             (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
+        CG%R(I) = C%R(I)/2.D0 *
+     &            (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
       ENDDO
 !
       RETURN

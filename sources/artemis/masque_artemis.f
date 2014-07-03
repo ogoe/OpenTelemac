@@ -64,24 +64,24 @@
 !
       DO IK=1,NPTFR
 !
-         IF (LIHBOR%I(IK).EQ.KLOG) THEN
-            MASK3%R(IK) = 1.D0
-         ELSEIF (LIHBOR%I(MESH%KP1BOR%I(IK)).NE.KLOG) THEN
-            IF (LIHBOR%I(IK).EQ.KINC) THEN
-               MASK1%R(IK) = 1.D0
-            ENDIF
-            IF (LIHBOR%I(IK).EQ.KSORT) THEN
-               MASK2%R(IK) = 1.D0
-            ENDIF
-            IF (LIHBOR%I(IK).EQ.KENT) THEN
-               MASK4%R(IK) = 1.D0
-            ENDIF
-            IF (LIHBOR%I(IK).EQ.KPOT) THEN
-               MASK5%R(IK) = 1.D0
-            ENDIF
-         ELSE
-            MASK3%R(IK) = 1.D0
-         ENDIF
+        IF (LIHBOR%I(IK).EQ.KLOG) THEN
+          MASK3%R(IK) = 1.D0
+        ELSEIF (LIHBOR%I(MESH%KP1BOR%I(IK)).NE.KLOG) THEN
+          IF (LIHBOR%I(IK).EQ.KINC) THEN
+            MASK1%R(IK) = 1.D0
+          ENDIF
+          IF (LIHBOR%I(IK).EQ.KSORT) THEN
+            MASK2%R(IK) = 1.D0
+          ENDIF
+          IF (LIHBOR%I(IK).EQ.KENT) THEN
+            MASK4%R(IK) = 1.D0
+          ENDIF
+          IF (LIHBOR%I(IK).EQ.KPOT) THEN
+            MASK5%R(IK) = 1.D0
+          ENDIF
+        ELSE
+          MASK3%R(IK) = 1.D0
+        ENDIF
       ENDDO ! IK
 !
       RETURN

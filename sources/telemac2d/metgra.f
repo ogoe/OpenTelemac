@@ -91,32 +91,32 @@
 !
       IF(OPTID.EQ.1.OR.OPTID.EQ.3.OR.RSTART) THEN
 !
-            R02 = - JCOUT1 / DENOM
-            RO = R02
-            R03=0.5D0*R02
+        R02 = - JCOUT1 / DENOM
+        RO = R02
+        R03=0.5D0*R02
 !
-!           COMPUTES THE DIRECTION OF INITIAL DESCENT
+!       COMPUTES THE DIRECTION OF INITIAL DESCENT
 !
-            CALL OV('X=Y     ',DESC%R,GRADJ%R,GRADJ%R,0.D0,NPARAM)
+        CALL OV('X=Y     ',DESC%R,GRADJ%R,GRADJ%R,0.D0,NPARAM)
 !
 !-----------------------------------------------------------------------
 !
       ELSEIF(OPTID.EQ.2) THEN
 !
-            R02 = - JCOUT1 / DENOM
+        R02 = - JCOUT1 / DENOM
 !
-            R1 = GRAD_JN/DENOM
+        R1 = GRAD_JN/DENOM
 !
-!           COMPUTES THE DIRECTION OF DESCENT
+!       COMPUTES THE DIRECTION OF DESCENT
 !
-            CALL OV('X=Y+CZ  ',DESC%R,GRADJ%R,DESC%R,R1,NPARAM)
+        CALL OV('X=Y+CZ  ',DESC%R,GRADJ%R,DESC%R,R1,NPARAM)
 !
-            DENOM=0.D0
-            DO I=1,NPARAM
-               DENOM=DENOM+GRADJ%R(I)*DESC%R(I)
-            ENDDO
-            R03 = - JCOUT1/DENOM
-            RO =R03
+        DENOM=0.D0
+        DO I=1,NPARAM
+           DENOM=DENOM+GRADJ%R(I)*DESC%R(I)
+        ENDDO
+        R03 = - JCOUT1/DENOM
+        RO =R03
 !
       ENDIF
 !

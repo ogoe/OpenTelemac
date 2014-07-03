@@ -86,7 +86,7 @@
 !     SURFACE OF THE SPECTRUM
       SUMB = (SPD(TETMIN-TETAH) + SPD(TETMAX-TETAH))/2.D0
       DO I = 2,NPAS-1
-         SUMB = SUMB + SPD(TETMIN-TETAH+FLOAT(I)*DTETA)
+        SUMB = SUMB + SPD(TETMIN-TETAH+FLOAT(I)*DTETA)
       ENDDO
 !
 !     DIVIDES THE SPECTRUM INTO 2*NDALE BANDS OF EQUAL ENERGY
@@ -96,14 +96,14 @@
       SUMICI = SPD(TETMIN-TETAH)/2.D0
       I   = 1
       DO K=1,NPAS
-         VAR = SPD(TETMIN-TETAH+DTETA*FLOAT(K))
-         SUMICI = SUMICI + VAR/2.D0
-         IF (SUMICI.GE.SUMB*FLOAT(2*I-1)) THEN
-            DALE(I) =  TETMIN + DTETA*(FLOAT(K)-0.5D0)
-            I = I + 1
-            IF (I.GT.NDALE) RETURN
-         ENDIF
-         SUMICI = SUMICI + VAR/2.D0
+        VAR = SPD(TETMIN-TETAH+DTETA*FLOAT(K))
+        SUMICI = SUMICI + VAR/2.D0
+        IF (SUMICI.GE.SUMB*FLOAT(2*I-1)) THEN
+          DALE(I) =  TETMIN + DTETA*(FLOAT(K)-0.5D0)
+          I = I + 1
+          IF (I.GT.NDALE) RETURN
+        ENDIF
+        SUMICI = SUMICI + VAR/2.D0
       ENDDO
 !
 !-----------------------------------------------------------------------

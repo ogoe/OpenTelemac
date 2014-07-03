@@ -55,7 +55,7 @@
       GLN = BIEF_GAMMLN(A)
 !
       IF(X.LT.0.D0) THEN
-C       Cannot occur when used by ERF or ERFC
+!       Cannot occur when used by ERF or ERFC
         IF(LNG.EQ.1) WRITE(LU,*) 'BIEF_GSER : X NEGATIF NON PREVU'
         IF(LNG.EQ.2) WRITE(LU,*) 'BIEF_GSER: UNEXPECTED NEGATIVE X'
         CALL PLANTE(1)

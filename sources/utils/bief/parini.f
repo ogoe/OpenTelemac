@@ -190,23 +190,23 @@
         ILM = 1
 !**     PROCESSOR OF HIGHER RANK
         DO IL=1,ILMAX
-         IPA=IKP(ILP,1)
-         IKA=IKP(ILP,2)
-         IF(IPA.EQ.IPID+IL.AND.IKA.NE.0) THEN
-           NB_NEIGHB = NB_NEIGHB + 1
-           IF(IKA.GT.NB_PT_MX) NB_PT_MX=IKA
-         ENDIF
-         IF(IPA.EQ.IPID+IL) ILP=ILP+1
+          IPA=IKP(ILP,1)
+          IKA=IKP(ILP,2)
+          IF(IPA.EQ.IPID+IL.AND.IKA.NE.0) THEN
+            NB_NEIGHB = NB_NEIGHB + 1
+            IF(IKA.GT.NB_PT_MX) NB_PT_MX=IKA
+          ENDIF
+          IF(IPA.EQ.IPID+IL) ILP=ILP+1
         ENDDO
 !**      PROCESSOR OF LOWER RANK
         DO IL=1,ILMAX
-         IPB=IKM(ILM,1)
-         IKB=IKM(ILM,2)
-         IF(IPB.EQ.IPID-IL.AND.IKB.NE.0) THEN
-           NB_NEIGHB = NB_NEIGHB + 1
-           IF(IKB.GT.NB_PT_MX) NB_PT_MX=IKB
-         ENDIF
-         IF(IPB.EQ.IPID-IL) ILM=ILM+1
+          IPB=IKM(ILM,1)
+          IKB=IKM(ILM,2)
+          IF(IPB.EQ.IPID-IL.AND.IKB.NE.0) THEN
+            NB_NEIGHB = NB_NEIGHB + 1
+            IF(IKB.GT.NB_PT_MX) NB_PT_MX=IKB
+          ENDIF
+          IF(IPB.EQ.IPID-IL) ILM=ILM+1
         ENDDO
 !
 !====   ENDS COMPUTATION OF THE NUMBER OF NEIGHBOURS
@@ -233,30 +233,30 @@
         ILP = 1
         ILM = 1
         DO IL=1,ILMAX
-         IPA=IKP(ILP,1)
-         IKA=IKP(ILP,2)
-         IF(IPA.EQ.IPID+IL.AND.IKA.NE.0) THEN
-           NB_NEIGHB = NB_NEIGHB + 1
-           MESH%NB_NEIGHB_PT%I(NB_NEIGHB) = IKA
-           MESH%LIST_SEND%I(NB_NEIGHB) = IPA
-           DO I=1,IKA
-             MESH%NH_COM%I(DIM1HCOM*(NB_NEIGHB-1)+I)=NHP(ILP,I)
-           ENDDO
-         ENDIF
-         IF(IPA.EQ.IPID+IL) ILP=ILP+1
+          IPA=IKP(ILP,1)
+          IKA=IKP(ILP,2)
+          IF(IPA.EQ.IPID+IL.AND.IKA.NE.0) THEN
+            NB_NEIGHB = NB_NEIGHB + 1
+            MESH%NB_NEIGHB_PT%I(NB_NEIGHB) = IKA
+            MESH%LIST_SEND%I(NB_NEIGHB) = IPA
+            DO I=1,IKA
+              MESH%NH_COM%I(DIM1HCOM*(NB_NEIGHB-1)+I)=NHP(ILP,I)
+            ENDDO
+          ENDIF
+          IF(IPA.EQ.IPID+IL) ILP=ILP+1
         ENDDO
         DO IL=1,ILMAX
-         IPB=IKM(ILM,1)
-         IKB=IKM(ILM,2)
-         IF(IPB.EQ.IPID-IL.AND.IKB.NE.0) THEN
-           NB_NEIGHB = NB_NEIGHB + 1
-           MESH%NB_NEIGHB_PT%I(NB_NEIGHB) = IKB
-           MESH%LIST_SEND%I(NB_NEIGHB) = IPB
-           DO I=1,IKB
-             MESH%NH_COM%I(DIM1HCOM*(NB_NEIGHB-1)+I)=NHM(ILM,I)
-           ENDDO
-         ENDIF
-         IF(IPB.EQ.IPID-IL) ILM=ILM+1
+          IPB=IKM(ILM,1)
+          IKB=IKM(ILM,2)
+          IF(IPB.EQ.IPID-IL.AND.IKB.NE.0) THEN
+            NB_NEIGHB = NB_NEIGHB + 1
+            MESH%NB_NEIGHB_PT%I(NB_NEIGHB) = IKB
+            MESH%LIST_SEND%I(NB_NEIGHB) = IPB
+            DO I=1,IKB
+              MESH%NH_COM%I(DIM1HCOM*(NB_NEIGHB-1)+I)=NHM(ILM,I)
+            ENDDO
+          ENDIF
+          IF(IPB.EQ.IPID-IL) ILM=ILM+1
         ENDDO
 !
 !==== ENDS COMPUTATION OF THE NUMBER OF INTERFACE POINTS PER NEIGHBOUR

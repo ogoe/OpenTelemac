@@ -183,43 +183,43 @@
 !
       IFABOR(IELEM,IFACE) = -1
 !
-!        GLOBAL NODE NUMBERS FOR THE SIDE:
+!       GLOBAL NODE NUMBERS FOR THE SIDE:
 !
-         I1 = IKLE( IELEM , SOMFAC(1,IFACE,KEL) )
-         I2 = IKLE( IELEM , SOMFAC(2,IFACE,KEL) )
+        I1 = IKLE( IELEM , SOMFAC(1,IFACE,KEL) )
+        I2 = IKLE( IELEM , SOMFAC(2,IFACE,KEL) )
 !
-!        ORDERED GLOBAL NUMBERS:
+!       ORDERED GLOBAL NUMBERS:
 !
-         M1 = MIN0(I1,I2)
-         M2 = MAX0(I1,I2)
+        M1 = MIN0(I1,I2)
+        M2 = MAX0(I1,I2)
 !
-         DO IV = 1,NVOIS(M1)
+        DO IV = 1,NVOIS(M1)
 !
-           IF(MAT1(IADR(M1)+IV-1).EQ.0) THEN
-              MAT1(IADR(M1)+IV-1)=M2
-              MAT2(IADR(M1)+IV-1)=IELEM
-              MAT3(IADR(M1)+IV-1)=IFACE
-              GO TO 81
-           ELSEIF(MAT1(IADR(M1)+IV-1).EQ.M2) THEN
-              IELEM2 = MAT2(IADR(M1)+IV-1)
-              IFACE2 = MAT3(IADR(M1)+IV-1)
-              IFABOR(IELEM,IFACE) = IELEM2
-              IFABOR(IELEM2,IFACE2) = IELEM
-              GO TO 81
-           ENDIF
+          IF(MAT1(IADR(M1)+IV-1).EQ.0) THEN
+            MAT1(IADR(M1)+IV-1)=M2
+            MAT2(IADR(M1)+IV-1)=IELEM
+            MAT3(IADR(M1)+IV-1)=IFACE
+            GO TO 81
+          ELSEIF(MAT1(IADR(M1)+IV-1).EQ.M2) THEN
+            IELEM2 = MAT2(IADR(M1)+IV-1)
+            IFACE2 = MAT3(IADR(M1)+IV-1)
+            IFABOR(IELEM,IFACE) = IELEM2
+            IFABOR(IELEM2,IFACE2) = IELEM
+            GO TO 81
+          ENDIF
 !
-         ENDDO ! IV 
+        ENDDO ! IV 
 !
-         IF(LNG.EQ.1) WRITE(LU,82)
-         IF(LNG.EQ.2) WRITE(LU,83)
-82       FORMAT(1X,'VOISIN : ERREUR DANS LE MAILLAGE       ',/,1X,
-     &             '         PEUT-ETRE DES POINTS CONFONDUS')
-83       FORMAT(1X,'VOISIN : ERROR IN THE MESH             ',/,1X,
-     &             '         MAYBE SUPERIMPOSED POINTS     ')
-         CALL PLANTE(1)
-         STOP
+        IF(LNG.EQ.1) WRITE(LU,82)
+        IF(LNG.EQ.2) WRITE(LU,83)
+82      FORMAT(1X,'VOISIN : ERREUR DANS LE MAILLAGE       ',/,1X,
+     &            '         PEUT-ETRE DES POINTS CONFONDUS')
+83      FORMAT(1X,'VOISIN : ERROR IN THE MESH             ',/,1X,
+     &            '         MAYBE SUPERIMPOSED POINTS     ')
+        CALL PLANTE(1)
+        STOP
 !
-81       CONTINUE
+81      CONTINUE
 !
       ENDDO ! IELEM
       ENDDO ! IFACE
@@ -237,33 +237,33 @@
 !
       IF(IFABOR(IELEM,IFACE).EQ.-1) THEN
 !
-         I1 = IKLE( IELEM , SOMFAC(1,IFACE,KEL) )
-         I2 = IKLE( IELEM , SOMFAC(2,IFACE,KEL) )
+        I1 = IKLE( IELEM , SOMFAC(1,IFACE,KEL) )
+        I2 = IKLE( IELEM , SOMFAC(2,IFACE,KEL) )
 !
-         IR1=0
-         IR2=0
+        IR1=0
+        IR2=0
 !
-         IF(NPTIR.GT.0) THEN
-           DO J=1,NPTIR
-             IF(I1.EQ.NACHB(1,J)) IR1=1
-             IF(I2.EQ.NACHB(1,J)) IR2=1
-           ENDDO ! J
-         ENDIF
+        IF(NPTIR.GT.0) THEN
+          DO J=1,NPTIR
+            IF(I1.EQ.NACHB(1,J)) IR1=1
+            IF(I2.EQ.NACHB(1,J)) IR2=1
+          ENDDO ! J
+        ENDIF
 !
-         IF(IR1.EQ.1.AND.IR2.EQ.1) THEN
-!          INTERFACE SEGMENT DETECTED, CHECKS WHETHER IT IS NOT
-!          ALSO A TRUE BOUNDARY SIDE
-           IR3=0
-           IR4=0
-           DO J=1,NPTFR
-             IF(I1.EQ.NBOR(J)) IR3=1
-             IF(I2.EQ.NBOR(J)) IR4=1
-           ENDDO ! J
-!          PRIORITY TO THE TRUE BOUNDARY SIDES
-           IF(IR3.EQ.0.OR.IR4.EQ.0) THEN
-             IFABOR(IELEM,IFACE)=-2
-           ENDIF
-         ENDIF
+        IF(IR1.EQ.1.AND.IR2.EQ.1) THEN
+!         INTERFACE SEGMENT DETECTED, CHECKS WHETHER IT IS NOT
+!         ALSO A TRUE BOUNDARY SIDE
+          IR3=0
+          IR4=0
+          DO J=1,NPTFR
+            IF(I1.EQ.NBOR(J)) IR3=1
+            IF(I2.EQ.NBOR(J)) IR4=1
+          ENDDO ! J
+!         PRIORITY TO THE TRUE BOUNDARY SIDES
+          IF(IR3.EQ.0.OR.IR4.EQ.0) THEN
+            IFABOR(IELEM,IFACE)=-2
+          ENDIF
+        ENDIF
 !
       ENDIF
 !

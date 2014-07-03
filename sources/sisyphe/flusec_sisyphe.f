@@ -230,6 +230,7 @@
               WRITE(LU,*) 'FLUSEC: TOO MANY SEGMENTS IN A   '
               WRITE(LU,*) '        SECTION. INCREASE  NSEMAX'
             ENDIF
+            CALL PLANTE(1)
             STOP
           ENDIF
           LISTE(ISEC,ISEG,1) = IKLE(ELBEST,ILPREC)

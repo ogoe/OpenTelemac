@@ -257,43 +257,43 @@
 !
         ENDDO
 !
-         H(J+1,J)=P_DOTS(V%ADR(J+1)%P,V%ADR(J+1)%P,MESH)
-         H(J+1,J) = SQRT( H(J+1,J) )
+        H(J+1,J)=P_DOTS(V%ADR(J+1)%P,V%ADR(J+1)%P,MESH)
+        H(J+1,J) = SQRT( H(J+1,J) )
 !
-         IF(H(J+1,J).LT.1.D-20) THEN
-           IF(LNG.EQ.1) THEN
-             WRITE(LU,*) 'GMRES : ECHEC DE L''ALGORITHME, MATRICE'
-             WRITE(LU,*) 'DESORMAIS SUPPOSEE DIAGONALE'
-           ENDIF
-           IF(LNG.EQ.2) THEN
-             WRITE(LU,*) 'GMRES: ALGORITHM FAILS, MATRIX ASSUMED'
-             WRITE(LU,*) 'DIAGONAL'
-           ENDIF
-!          SIMPLE SOLUTION IF A DIAGONAL...
-!          HERE NOT DONE FOR BLOCKS...
-           IF(A%TYPE.EQ.3) THEN
-             CALL OS('X=Y/Z   ',X=X%ADR(1)%P,Y=B%ADR(1)%P,Z=A%D)
-           ELSE
-             WRITE(LU,*) 'CASE NOT IMPLEMENTED IN GMRES'
-             CALL PLANTE(1)
-             STOP
-           ENDIF
-           CALL MATRBL('X=AY    ',R0,A,X,BID,MESH)
-           CALL OS('X=X-Y   ', R0 , B , B , BID )
-           NR0=P_DOTS(R0,R0,MESH)
-           NR0=SQRT(NR0)
-           PREC = NR0/NB
-           IF(PREC.LE.CFG%EPS) THEN
-             GO TO 3000
-           ELSE
-             WRITE(LU,*) 'PREC=',PREC,' CFG%EPS=',CFG%EPS
-             WRITE(LU,*) 'GMRES: MATRIX NOT DIAGONAL,'
-             WRITE(LU,*) '       ALGORITHM FAILS.'
-             CALL PLANTE(1)
-             STOP
-           ENDIF
-         ENDIF
-         CALL OS('X=CX    ',V%ADR(J+1)%P, B, B, 1.D0/H(J+1,J))
+        IF(H(J+1,J).LT.1.D-20) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'GMRES : ECHEC DE L''ALGORITHME, MATRICE'
+            WRITE(LU,*) 'DESORMAIS SUPPOSEE DIAGONALE'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'GMRES: ALGORITHM FAILS, MATRIX ASSUMED'
+            WRITE(LU,*) 'DIAGONAL'
+          ENDIF
+!         SIMPLE SOLUTION IF A DIAGONAL...
+!         HERE NOT DONE FOR BLOCKS...
+          IF(A%TYPE.EQ.3) THEN
+            CALL OS('X=Y/Z   ',X=X%ADR(1)%P,Y=B%ADR(1)%P,Z=A%D)
+          ELSE
+            WRITE(LU,*) 'CASE NOT IMPLEMENTED IN GMRES'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          CALL MATRBL('X=AY    ',R0,A,X,BID,MESH)
+          CALL OS('X=X-Y   ', R0 , B , B , BID )
+          NR0=P_DOTS(R0,R0,MESH)
+          NR0=SQRT(NR0)
+          PREC = NR0/NB
+          IF(PREC.LE.CFG%EPS) THEN
+            GO TO 3000
+          ELSE
+            WRITE(LU,*) 'PREC=',PREC,' CFG%EPS=',CFG%EPS
+            WRITE(LU,*) 'GMRES: MATRIX NOT DIAGONAL,'
+            WRITE(LU,*) '       ALGORITHM FAILS.'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+        ENDIF
+        CALL OS('X=CX    ',V%ADR(J+1)%P, B, B, 1.D0/H(J+1,J))
 !
       ENDDO ! J
 !

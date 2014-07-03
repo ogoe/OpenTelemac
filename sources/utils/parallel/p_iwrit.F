@@ -62,6 +62,7 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'P_IWRIT: ERREUR IN MPI_ISEND'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_IWRIT: ERROR IN MPI_ISEND'
         WRITE(LU,*) 'MPI ERROR ',IER
+        CALL PLANTE(1)
         STOP
       ENDIF
 #else

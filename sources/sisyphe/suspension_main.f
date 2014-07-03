@@ -340,7 +340,7 @@
       ! ------------------
       INTEGER :: I,J
 !
-       DOUBLE PRECISION, EXTERNAL :: P_DSUM
+      DOUBLE PRECISION, EXTERNAL :: P_DSUM
 !
 !======================================================================!
 !                               PROGRAM                                !
@@ -349,12 +349,12 @@
 !
       IF(PASS) THEN
 !
-      ! *************************  !
-      ! III - INITIAL MASS-BALANCE !
-      ! *************************  !
-!
-      IF(BILMA) THEN
-         DO I = 1,NSICLA
+        ! *************************  !
+        ! III - INITIAL MASS-BALANCE !
+        ! *************************  !
+!       
+        IF(BILMA) THEN
+          DO I = 1,NSICLA
 !           JMH 18/04/2011: MUST BE DONE LIKE IN SUSPENSION_BILAN
 !                           I.E. WITH MASS-LUMPING AGGLOT=1. WHICH IS
 !                           SET LATER IN SUSPENSION_COMPUTATION...
@@ -362,7 +362,7 @@
 !           CALL VECTOR(T1, '=', 'MASVEC          ', IELMT, 1.D0,
 !    &                  CS%ADR(I)%P, T1, T1, T1, T1, T1, MESH, MSK,
 !    &                  MASKEL)
-!
+!       
 !           JMH 19/04/2011
             IF(CODE(1:7).EQ.'TELEMAC') THEN
 !             WITH COUPLING, HN-TEL IS THE OLD DEPTH
@@ -380,17 +380,17 @@
             MASTCP(I) = 0.D0
             IF(LNG.EQ.1) WRITE(LU,1) I, MASED0(I)
             IF(LNG.EQ.2) WRITE(LU,2) I, MASED0(I)
-         ENDDO
-      ENDIF
-!
-      !----------------------------------------------------------------!
-001   FORMAT(1X,'QUANTITE INITIALE EN SUSPENSION POUR LA CLASSE ',
-     &       I2,' : ', G16.7, ' M3')
-      !----------------------------------------------------------------!
-002   FORMAT(1X,'INITIAL QUANTITY IN SUSPENSION FOR CLASS ',
-     &       I2,' : ', G16.7, ' M3')
-      !----------------------------------------------------------------!
-!     END OF IF(PASS)
+          ENDDO
+        ENDIF
+!       
+        !----------------------------------------------------------------!
+001     FORMAT(1X,'QUANTITE INITIALE EN SUSPENSION POUR LA CLASSE ',
+     &         I2,' : ', G16.7, ' M3')
+        !----------------------------------------------------------------!
+002     FORMAT(1X,'INITIAL QUANTITY IN SUSPENSION FOR CLASS ',
+     &         I2,' : ', G16.7, ' M3')
+        !----------------------------------------------------------------!
+!       END OF IF(PASS)
       ENDIF
 !
       PASS = .FALSE.
@@ -407,57 +407,57 @@
       ! ************************************************ !
       ! VI  - COMPUTES THE CONCENTRATION AND EVOLUTION   !
       ! ************************************************ !
-       CALL OS('X=Y     ', X=HPROP, Y=HN)
-       DO I = 1, NSICLA
-         CALL OS('X=0     ', X=ZFCL_S%ADR(I)%P)
-         IF(DEBUG > 0) WRITE(LU,*)
-     &                'SUSPENSION_COMPUTATION : ',I,'/',NSICLA
-         CALL SUSPENSION_COMPUTATION(SLVTRA,HN,HN_TEL,UCONV,
-     & VCONV,MU,TOB,FDM(I),FD90(I),KSP,KSR,KS,ELAY,AVAIL(1:NPOIN,1,I),
-     & AFBOR,BFBOR,LIMDIF,CLT,MASKEL,MASKTR,MASKPT,IFAMAS,NPOIN,IELMT,
-     & NPTFR,I,LT,NIT,RESOL,OPTBAN,KENT,KDDL,KDIR,KSORT,KLOG,KINC,KNEU,
-     & OPTADV,OPDTRA,DEBUG, CSF_SABLE, TETA_SUSP,DTS,
-     & MASED0(I),ZERO,XWC(I),KARMAN,XMVE,XMVS,VCE,GRAV,HMIN,VITCD,
-     & VITCE,PARTHENIADES,ENTETS,BILMA,
-     & MSK,CHARR,IMP_INFLOW_C,MESH,ZF,CS%ADR(I)%P,
-     & CST%ADR(I)%P,CTILD%ADR(I)%P,CBOR%ADR(I)%P,DISP,IT1,IT2,
-     & IT3,IT4,TB,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T14,
-     & W1,TE1,TE2,TE3,S,AM1_S,AM2_S,MBOR,MASTEN(I),MASTOU(I),
-     & MASINI(I),AC(I),ZFCL_S%ADR(I)%P,FLUDPT%ADR(I)%P,FLUDP%ADR(I)%P,
-     & FLUER%ADR(I)%P, HPROP,DISP_C,CSTAEQ, CSRATIO,
-     & MASFIN(I),MASDEPT(I),MASDEP(I),MASSOU,QS_C,ICQ,ZREF,
-     & CORR_CONV,U2D,V2D,SEDCO(I),DIFT,DM1,ZCONV,UCONV_TEL,
-     & VCONV_TEL,SOLSYS,FLBOR_TEL,FLBOR_SIS,FLBORTRA,CODE,VOLU2D,
-     & V2DPAR,UNSV2D,NUMLIQ,NFRLIQ,LICBOR,MIXTE,AVAIL,NSICLA,ES,
-     & ES_SABLE,ES_VASE,NOMBLAY,CONC,TOCE_VASE,TOCE_SABLE,
-     & FLUER_VASE,TOCE_MIXTE,MS_SABLE%R,MS_VASE%R,TASS,DIRFLU,
-     & QSCLXS%ADR(I)%P,QSCLYS%ADR(I)%P,MAXADV)
-         IF (DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_COMPUTATION'
+      CALL OS('X=Y     ', X=HPROP, Y=HN)
+      DO I = 1, NSICLA
+        CALL OS('X=0     ', X=ZFCL_S%ADR(I)%P)
+        IF(DEBUG > 0) WRITE(LU,*)
+     &               'SUSPENSION_COMPUTATION : ',I,'/',NSICLA
+        CALL SUSPENSION_COMPUTATION(SLVTRA,HN,HN_TEL,UCONV,
+     &VCONV,MU,TOB,FDM(I),FD90(I),KSP,KSR,KS,ELAY,AVAIL(1:NPOIN,1,I),
+     &AFBOR,BFBOR,LIMDIF,CLT,MASKEL,MASKTR,MASKPT,IFAMAS,NPOIN,IELMT,
+     &NPTFR,I,LT,NIT,RESOL,OPTBAN,KENT,KDDL,KDIR,KSORT,KLOG,KINC,KNEU,
+     &OPTADV,OPDTRA,DEBUG, CSF_SABLE, TETA_SUSP,DTS,
+     &MASED0(I),ZERO,XWC(I),KARMAN,XMVE,XMVS,VCE,GRAV,HMIN,VITCD,
+     &VITCE,PARTHENIADES,ENTETS,BILMA,
+     &MSK,CHARR,IMP_INFLOW_C,MESH,ZF,CS%ADR(I)%P,
+     &CST%ADR(I)%P,CTILD%ADR(I)%P,CBOR%ADR(I)%P,DISP,IT1,IT2,
+     &IT3,IT4,TB,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T14,
+     &W1,TE1,TE2,TE3,S,AM1_S,AM2_S,MBOR,MASTEN(I),MASTOU(I),
+     &MASINI(I),AC(I),ZFCL_S%ADR(I)%P,FLUDPT%ADR(I)%P,FLUDP%ADR(I)%P,
+     &FLUER%ADR(I)%P, HPROP,DISP_C,CSTAEQ, CSRATIO,
+     &MASFIN(I),MASDEPT(I),MASDEP(I),MASSOU,QS_C,ICQ,ZREF,
+     &CORR_CONV,U2D,V2D,SEDCO(I),DIFT,DM1,ZCONV,UCONV_TEL,
+     &VCONV_TEL,SOLSYS,FLBOR_TEL,FLBOR_SIS,FLBORTRA,CODE,VOLU2D,
+     &V2DPAR,UNSV2D,NUMLIQ,NFRLIQ,LICBOR,MIXTE,AVAIL,NSICLA,ES,
+     &ES_SABLE,ES_VASE,NOMBLAY,CONC,TOCE_VASE,TOCE_SABLE,
+     &FLUER_VASE,TOCE_MIXTE,MS_SABLE%R,MS_VASE%R,TASS,DIRFLU,
+     &QSCLXS%ADR(I)%P,QSCLYS%ADR(I)%P,MAXADV)
+        IF (DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_COMPUTATION'
 !
       ENDDO
 !
 ! FOR MIXTE OR COHESIVE SEDIMENTS ELAY UPDATED
 !
 ! REACTUALISATION DU ELAY ET DES AVAI fait dans suspension_MAIN
-       IF(SEDCO(1).OR.MIXTE) THEN
-         DO I = 1, NPOIN
+      IF(SEDCO(1).OR.MIXTE) THEN
+        DO I = 1, NPOIN
           ELAY%R(I)= 0.D0
           DO J= 1, NOMBLAY
             ES(I,J) = ES_VASE(I,J)
             IF(MIXTE) THEN
-                ES(I,J)= ES_VASE (I,J) + ES_SABLE(I,J)
-                IF(ES(I,J).GT.1.D-04) THEN
-                  AVAIL(I,J,1)= ES_SABLE(I,J)/ES(I,J)
-                  AVAIL (I,J,2)= ES_VASE(I,J)/ES(I,J)    
-!CVL                ELSE
-!CVL                 AVAIL(I,J,1)=0.5 D0
-!CVL                 AVAIL(I,J,2)=0.5 D0  
-               ENDIF      
-          ENDIF
-          ELAY%R(I)=ELAY%R(I)+ES(I,J)
+              ES(I,J)= ES_VASE (I,J) + ES_SABLE(I,J)
+              IF(ES(I,J).GT.1.D-04) THEN
+                AVAIL(I,J,1)= ES_SABLE(I,J)/ES(I,J)
+                AVAIL (I,J,2)= ES_VASE(I,J)/ES(I,J)    
+!CVL          ELSE
+!CVL            AVAIL(I,J,1)=0.5 D0
+!CVL            AVAIL(I,J,2)=0.5 D0  
+              ENDIF      
+            ENDIF
+            ELAY%R(I)=ELAY%R(I)+ES(I,J)
           ENDDO 
-         ENDDO      
-       ENDIF
+        ENDDO      
+      ENDIF
 !
       ! *********************************************************** !
       ! VII  - UPDATES EVOLUTION, CONCENTRATION AND TRANSPORT RATE  !

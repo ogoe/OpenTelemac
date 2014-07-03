@@ -124,6 +124,7 @@
       ELSE
         IF (LNG.EQ.1) WRITE(LU,100)
         IF (LNG.EQ.2) WRITE(LU,3100)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !

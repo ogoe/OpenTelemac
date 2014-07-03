@@ -76,16 +76,16 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
       IF(.NOT.DEJA)THEN
-         ALLOCATE(ILM_POIN(NPOIN2,8))
-         ALLOCATE(CLM(NPOIN2))
-         ALLOCATE(KACC(NPOIN2))
-         ALLOCATE(NB_C(NPOIN2))
-         ALLOCATE(SUR_P(NPOIN2,8))
-         ALLOCATE(STACK(NPOIN2))
-         ALLOCATE(STACK2(NPOIN2))
-         ALLOCATE(ALREADY_POM(NPOIN2))
-         ALLOCATE(MINDIST(NPOIN2))
-         DEJA=.TRUE.
+        ALLOCATE(ILM_POIN(NPOIN2,8))
+        ALLOCATE(CLM(NPOIN2))
+        ALLOCATE(KACC(NPOIN2))
+        ALLOCATE(NB_C(NPOIN2))
+        ALLOCATE(SUR_P(NPOIN2,8))
+        ALLOCATE(STACK(NPOIN2))
+        ALLOCATE(STACK2(NPOIN2))
+        ALLOCATE(ALREADY_POM(NPOIN2))
+        ALLOCATE(MINDIST(NPOIN2))
+        DEJA=.TRUE.
       ENDIF
 !
 ! ILM_POIN array with the elements to which a point belongs 
@@ -107,53 +107,53 @@
           ENDIF 
         ENDDO 
         CLM(IPOIN)=ICLM   
-        IF(CLM(IPOIN).GT.8) write(6,*) '**** OUPS ', IPOIN,CLM(IPOIN) 
+        IF(CLM(IPOIN).GT.8) WRITE(6,*) '**** OUPS ', IPOIN,CLM(IPOIN) 
       ENDDO 
 ! 
 ! searching for the points which are around the point IPOIN  
 ! and add the to a look up array SUR_P(IPOIN,NB_C(IPOIN)) 
 ! 
 !    Initialize all the arrays  and logics for the new subdomain   
-       DO IP=1,NPOIN2 
-          ALREADY_POM(IP) =.FALSE. 
-       ENDDO 
+      DO IP=1,NPOIN2 
+        ALREADY_POM(IP) =.FALSE. 
+      ENDDO 
 ! 
-       DO IPOIN=1,NPOIN2 
+      DO IPOIN=1,NPOIN2 
         NB_C(IPOIN)=0 
         MINDIST(IPOIN)=1.E+6 
         DO ILM=1,CLM(IPOIN) 
           IELEM=ILM_POIN(IPOIN,ILM) 
-!      loop over 3 nodes of each triangle 
+!         loop over 3 nodes of each triangle 
           DO J=1,3 
 !           test if the selected node belongs to the triangle 
             IF (IKLE(IELEM,J).EQ.IPOIN) THEN 
-             IF (J.EQ.1) THEN 
-              L(1)=IKLE(IELEM,2) 
-              L(2)=IKLE(IELEM,3) 
-             ENDIF 
-             IF (J.EQ.2) THEN 
-              L(1)=IKLE(IELEM,1) 
-              L(2)=IKLE(IELEM,3) 
-             ENDIF 
-             IF (J.EQ.3) THEN 
-              L(1)=IKLE(IELEM,1) 
-              L(2)=IKLE(IELEM,2) 
-             ENDIF 
+              IF (J.EQ.1) THEN 
+                L(1)=IKLE(IELEM,2) 
+                L(2)=IKLE(IELEM,3) 
+              ENDIF 
+              IF (J.EQ.2) THEN 
+                L(1)=IKLE(IELEM,1) 
+                L(2)=IKLE(IELEM,3) 
+              ENDIF 
+              IF (J.EQ.3) THEN 
+                L(1)=IKLE(IELEM,1) 
+                L(2)=IKLE(IELEM,2) 
+              ENDIF 
             ENDIF 
           ENDDO 
 !           
           DO M=1,2 
-           IF (.NOT.ALREADY_POM(L(M))) THEN 
-            NB_C(IPOIN)=NB_C(IPOIN)+1 
-            SUR_P(IPOIN,NB_C(IPOIN)) =L(M)  
-            ALREADY_POM(L(M)) =.TRUE. 
-           ENDIF 
+            IF (.NOT.ALREADY_POM(L(M))) THEN 
+              NB_C(IPOIN)=NB_C(IPOIN)+1 
+              SUR_P(IPOIN,NB_C(IPOIN)) =L(M)  
+              ALREADY_POM(L(M)) =.TRUE. 
+            ENDIF 
           ENDDO 
 !    
         ENDDO 
 ! 
 !   CALCULATE DISTANCE of EVERY POINT TO THE NEIGHBOUR POINTS 
-         DO J=1,NB_C(IPOIN) 
+        DO J=1,NB_C(IPOIN) 
           IP=SUR_P(IPOIN,J) 
           RAD1=SQRT((X(IP)-X(IPOIN))**2+(Y(IP)-Y(IPOIN))**2) 
           IF(RAD1.LE.MINDIST(IPOIN)) MINDIST(IPOIN)=RAD1 
@@ -170,7 +170,7 @@
         ALREADY_POM(IPOIN) =.TRUE. 
         NCST=1 
         STACK(NCST)=IPOIN 
-!        WRITE(6,*) (SUR_P(STACK(NCST),j),j=1,7)         
+!       WRITE(6,*) (SUR_P(STACK(NCST),j),j=1,7)         
 ! 
 ! ipoin is the main point of domain ipoin 
 ! around the ipoin do a search in the elements it belongs 
@@ -203,22 +203,22 @@
 !subdomain (Ipoin) finish after initializing 
 ! logic goto to the next subdomain 
         DO J=1,NB_CLOSE(IPOIN)! initialize already for points logic 
-           IP2=NEIGB(IPOIN,J) 
-           ALREADY_POM(IP2) =.FALSE. ! initialize already for points logic 
+          IP2=NEIGB(IPOIN,J) 
+          ALREADY_POM(IP2) =.FALSE. ! initialize already for points logic 
         ENDDO 
       ENDDO  !1,NPOIN2 
 ! 
 ! CALCULATE THE RADIAL FUNCTION OF RPI 
 ! AND INVERSE MATRICES OF EACH SUB DOMAIN 
 !
-        QUO = 1.03D0 
-        AC = 8.D0 
-        DO I=1,NPOIN2 
-         CALL RPI_INVR(X, Y, NEIGB, NB_CLOSE, 
-     &      RK(1,I), RX(1,I), RY(1,I), RXX(1,I), RYY(1,I), 
-     &      NPOIN2, I, QUO, AC, MAXNSP, MINDIST) 
+      QUO = 1.03D0 
+      AC = 8.D0 
+      DO I=1,NPOIN2 
+        CALL RPI_INVR(X, Y, NEIGB, NB_CLOSE, 
+     &     RK(1,I), RX(1,I), RY(1,I), RXX(1,I), RYY(1,I), 
+     &     NPOIN2, I, QUO, AC, MAXNSP, MINDIST) 
 !      
-       ENDDO 
+      ENDDO 
 ! 
       RETURN 
       END                   

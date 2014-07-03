@@ -262,6 +262,7 @@
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'BEWARE, ALL LAYERS ARE EMPTY'
         ENDIF
+        CALL PLANTE(1)
 !       STOP
 10      CONTINUE
 !

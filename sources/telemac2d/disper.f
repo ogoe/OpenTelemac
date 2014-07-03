@@ -68,15 +68,15 @@
 !
       DO I=1,NPOIN
 !
-         NORMV = MAX(SQRT(U(I)**2+V(I)**2),1.D-6)
-         COST = U(I)/NORMV
-         SINT = V(I)/NORMV
-         USTAR = SQRT( 0.5D0 * CF(I) * ( U(I)**2 + V(I)**2 ) )
-         KL = ELDER(1) * USTAR * H(I)
-         KT = ELDER(2) * USTAR * H(I)
-         VISC%R(I      ) = PROPNU + ( KL - KT ) * COST**2    + KT
-         VISC%R(I+NPX  ) = PROPNU + ( KT - KL ) * COST**2    + KL
-         VISC%R(I+2*NPX) = PROPNU + ( KL - KT ) * COST*SINT
+        NORMV = MAX(SQRT(U(I)**2+V(I)**2),1.D-6)
+        COST = U(I)/NORMV
+        SINT = V(I)/NORMV
+        USTAR = SQRT( 0.5D0 * CF(I) * ( U(I)**2 + V(I)**2 ) )
+        KL = ELDER(1) * USTAR * H(I)
+        KT = ELDER(2) * USTAR * H(I)
+        VISC%R(I      ) = PROPNU + ( KL - KT ) * COST**2    + KT
+        VISC%R(I+NPX  ) = PROPNU + ( KT - KL ) * COST**2    + KL
+        VISC%R(I+2*NPX) = PROPNU + ( KL - KT ) * COST*SINT
 !
       ENDDO ! I
 !

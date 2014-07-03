@@ -92,38 +92,38 @@
 !
       IF (C2DH) THEN
 !
-         IF (LNG.EQ.1) TEXTE = 'INDICATEUR DOM.                 '
-         IF (LNG.EQ.2) TEXTE = 'DOMAIN INDICATOR                '
-         CALL ECRI2(XB,IB,TEXTE,32,'CH',CANAL,BINCOU,ISTAT)
+        IF (LNG.EQ.1) TEXTE = 'INDICATEUR DOM.                 '
+        IF (LNG.EQ.2) TEXTE = 'DOMAIN INDICATOR                '
+        CALL ECRI2(XB,IB,TEXTE,32,'CH',CANAL,BINCOU,ISTAT)
 !
       ELSE
 !
-         IF (LNG.EQ.1) TEXTE = 'VITESSE UT      M/S             '
-         IF (LNG.EQ.2) TEXTE = 'VELOCITY UT     M/S             '
-         CALL ECRI2(XB,IB,TEXTE,32,'CH',CANAL,BINCOU,ISTAT)
+        IF (LNG.EQ.1) TEXTE = 'VITESSE UT      M/S             '
+        IF (LNG.EQ.2) TEXTE = 'VELOCITY UT     M/S             '
+        CALL ECRI2(XB,IB,TEXTE,32,'CH',CANAL,BINCOU,ISTAT)
 !
-         IF (LNG.EQ.1) TEXTE = 'VITESSE W       M/S             '
-         IF (LNG.EQ.2) TEXTE = 'VELOCITY W      M/S             '
-         CALL ECRI2(XB,IB,TEXTE,32,'CH',CANAL,BINCOU,ISTAT)
+        IF (LNG.EQ.1) TEXTE = 'VITESSE W       M/S             '
+        IF (LNG.EQ.2) TEXTE = 'VELOCITY W      M/S             '
+        CALL ECRI2(XB,IB,TEXTE,32,'CH',CANAL,BINCOU,ISTAT)
 !
-         IF (LNG.EQ.1) TEXTE = 'VITESSE UN      M/S             '
-         IF (LNG.EQ.2) TEXTE = 'VELOCITY UN     M/S             '
-         CALL ECRI2(XB,IB,TEXTE,32,'CH',CANAL,BINCOU,ISTAT)
+        IF (LNG.EQ.1) TEXTE = 'VITESSE UN      M/S             '
+        IF (LNG.EQ.2) TEXTE = 'VELOCITY UN     M/S             '
+        CALL ECRI2(XB,IB,TEXTE,32,'CH',CANAL,BINCOU,ISTAT)
 !
       ENDIF
 !
 !th pas besoin de 1 car on ne veut pas z
-       if (c2dh) then
-         DO I=2,NBV(1)
-            CALL ECRI2(XB,IB,TEXTLU(I),32,'CH',CANAL,BINCOU,ISTAT)
-         ENDDO
-       else
-         if (nbv(1).gt.3) then
-         DO I=5,NBV(1)+1
-            CALL ECRI2(XB,IB,TEXTLU(I),32,'CH',CANAL,BINCOU,ISTAT)
-         ENDDO
-         endif
-       endif
+      IF (C2DH) THEN
+        DO I=2,NBV(1)
+          CALL ECRI2(XB,IB,TEXTLU(I),32,'CH',CANAL,BINCOU,ISTAT)
+        ENDDO
+      ELSE
+        IF (NBV(1).GT.3) THEN
+        DO I=5,NBV(1)+1
+          CALL ECRI2(XB,IB,TEXTLU(I),32,'CH',CANAL,BINCOU,ISTAT)
+        ENDDO
+        ENDIF
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

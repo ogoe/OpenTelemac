@@ -135,103 +135,103 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
-         NUX1 = U(IKLE1(IELEM))
-         NUX2 = U(IKLE2(IELEM))
-         NUX3 = U(IKLE3(IELEM))
+        NUX1 = U(IKLE1(IELEM))
+        NUX2 = U(IKLE2(IELEM))
+        NUX3 = U(IKLE3(IELEM))
 !
-         AUX1 = XMUL/(60.D0*SURFAC(IELEM))
-         AUX2 = 3.D0 * AUX1
-         AUX3 = 4.D0 * AUX1
-         AUX4 = 8.D0 * AUX1
+        AUX1 = XMUL/(60.D0*SURFAC(IELEM))
+        AUX2 = 3.D0 * AUX1
+        AUX3 = 4.D0 * AUX1
+        AUX4 = 8.D0 * AUX1
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM)= -(-Y3**2+Y3*Y2-X3**2+X3*X2) *
-     &                (2.D0*NUX1+2.D0*NUX2+NUX3) * AUX1
+        A12(IELEM)= -(-Y3**2+Y3*Y2-X3**2+X3*X2) *
+     &               (2.D0*NUX1+2.D0*NUX2+NUX3) * AUX1
 !
-         A13(IELEM)=  (-Y3*Y2+Y2**2-X3*X2+X2**2) *
-     &                (2.D0*NUX1+NUX2+2.D0*NUX3) * AUX1
+        A13(IELEM)=  (-Y3*Y2+Y2**2-X3*X2+X2**2) *
+     &               (2.D0*NUX1+NUX2+2.D0*NUX3) * AUX1
 !
-         A14(IELEM)= ((-11.D0*NUX1-4.D0*NUX3-5.D0*NUX2) * (Y3**2+X3**2)
-     &             +  (3.D0*NUX1-NUX3-2.D0*NUX2       ) * (Y2**2+X2**2)
-     &             +  (8.D0*NUX1+7.D0*NUX2+5.D0*NUX3  ) * (X3*X2+Y3*Y2))
-     &             *  AUX1
+        A14(IELEM)= ((-11.D0*NUX1-4.D0*NUX3-5.D0*NUX2) * (Y3**2+X3**2)
+     &            +  (3.D0*NUX1-NUX3-2.D0*NUX2       ) * (Y2**2+X2**2)
+     &            +  (8.D0*NUX1+7.D0*NUX2+5.D0*NUX3  ) * (X3*X2+Y3*Y2))
+     &            *  AUX1
 !
-         A15(IELEM)=-((3.D0*NUX1-2.D0*NUX3-NUX2       ) * (Y3**2+X3**2)
-     &             +  (3.D0*NUX1-NUX3-2.D0*NUX2       ) * (Y2**2+X2**2)
-     &             +  (-6.D0*NUX1+3.D0*NUX2+3.D0*NUX3 ) * (X3*X2+Y3*Y2))
-     &             *  AUX1
+        A15(IELEM)=-((3.D0*NUX1-2.D0*NUX3-NUX2       ) * (Y3**2+X3**2)
+     &            +  (3.D0*NUX1-NUX3-2.D0*NUX2       ) * (Y2**2+X2**2)
+     &            +  (-6.D0*NUX1+3.D0*NUX2+3.D0*NUX3 ) * (X3*X2+Y3*Y2))
+     &            *  AUX1
 !
-         A16(IELEM)=-((-3.D0*NUX1+2.D0*NUX3+NUX2      ) * (Y3**2+X3**2)
-     &             +  (11.D0*NUX1+5.D0*NUX3+4.D0*NUX2 ) * (Y2**2+X2**2)
-     &             +  (-8.D0*NUX1-5.D0*NUX2-7.D0*NUX3 ) * (X3*X2+Y3*Y2))
-     &             *  AUX1
+        A16(IELEM)=-((-3.D0*NUX1+2.D0*NUX3+NUX2      ) * (Y3**2+X3**2)
+     &            +  (11.D0*NUX1+5.D0*NUX3+4.D0*NUX2 ) * (Y2**2+X2**2)
+     &            +  (-8.D0*NUX1-5.D0*NUX2-7.D0*NUX3 ) * (X3*X2+Y3*Y2))
+     &            *  AUX1
 !
-         A23(IELEM)=  (Y3*Y2+X3*X2) * (NUX1+2.D0*NUX3+2.D0*NUX2) * AUX1
+        A23(IELEM)=  (Y3*Y2+X3*X2) * (NUX1+2.D0*NUX3+2.D0*NUX2) * AUX1
 !
-         A24(IELEM)= ((-5.D0*NUX1-4.D0*NUX3-11.D0*NUX2) * (Y3**2+X3**2)
-     &             +  (3.D0*NUX1+14.D0*NUX2+3.D0*NUX3 ) * (X3*X2+Y3*Y2))
-     &             *  AUX1
+        A24(IELEM)= ((-5.D0*NUX1-4.D0*NUX3-11.D0*NUX2) * (Y3**2+X3**2)
+     &            +  (3.D0*NUX1+14.D0*NUX2+3.D0*NUX3 ) * (X3*X2+Y3*Y2))
+     &            *  AUX1
 !
-         A25(IELEM)=-((NUX1+2.D0*NUX3-3.D0*NUX2       ) * (Y3**2+X3**2)
-     &             +  (3.D0*NUX1+3.D0*NUX3+14.D0*NUX2 ) * (Y3*Y2+X3*X2))
-     &             *   AUX1
+        A25(IELEM)=-((NUX1+2.D0*NUX3-3.D0*NUX2       ) * (Y3**2+X3**2)
+     &            +  (3.D0*NUX1+3.D0*NUX3+14.D0*NUX2 ) * (Y3*Y2+X3*X2))
+     &            *   AUX1
 !
-         A26(IELEM)= ((NUX1+2.D0*NUX3-3.D0*NUX2       ) * (Y3**2+X3**2)
-     &             +  (NUX1-NUX3)                       * (X3*X2+Y3*Y2))
-     &             *  AUX1
+        A26(IELEM)= ((NUX1+2.D0*NUX3-3.D0*NUX2       ) * (Y3**2+X3**2)
+     &            +  (NUX1-NUX3)                       * (X3*X2+Y3*Y2))
+     &            *  AUX1
 !
-         A34(IELEM)= ((NUX1-3.D0*NUX3+2.D0*NUX2      ) * (Y2**2+X2**2)
-     &             +  (NUX1-NUX2)                      * (X3*X2+Y3*Y2))
-     &             *  AUX1
+        A34(IELEM)= ((NUX1-3.D0*NUX3+2.D0*NUX2      ) * (Y2**2+X2**2)
+     &            +  (NUX1-NUX2)                      * (X3*X2+Y3*Y2))
+     &            *  AUX1
 !
-         A35(IELEM)=-((NUX1-3.D0*NUX3+2.D0*NUX2      ) * (Y2**2+X2**2)
-     &             +  (3.D0*NUX1+3.D0*NUX2+14.D0*NUX3) * (X3*X2+Y3*Y2))
-     &             *  AUX1
+        A35(IELEM)=-((NUX1-3.D0*NUX3+2.D0*NUX2      ) * (Y2**2+X2**2)
+     &            +  (3.D0*NUX1+3.D0*NUX2+14.D0*NUX3) * (X3*X2+Y3*Y2))
+     &            *  AUX1
 !
-         A36(IELEM)=-((5.D0*NUX1+11.D0*NUX3+4.D0*NUX2) * (Y2**2+X2**2)
-     &             +  (-3.D0*(NUX1+NUX2)-14.D0*NUX3  ) * (X3*X2+Y3*Y2))
-     &             *  AUX1
+        A36(IELEM)=-((5.D0*NUX1+11.D0*NUX3+4.D0*NUX2) * (Y2**2+X2**2)
+     &            +  (-3.D0*(NUX1+NUX2)-14.D0*NUX3  ) * (X3*X2+Y3*Y2))
+     &            *  AUX1
 !
-         A45(IELEM)=-((-NUX1+NUX2                    ) * (Y3**2+X3**2)
-     &             +  (-NUX1-6.D0*NUX2-3.D0*NUX3     ) * (X3*X2+Y3*Y2)
-     &             +  (6.D0*NUX2+2.D0*NUX1+2.D0*NUX3 ) * (Y2**2+X2**2))
-     &             *  AUX3
+        A45(IELEM)=-((-NUX1+NUX2                    ) * (Y3**2+X3**2)
+     &            +  (-NUX1-6.D0*NUX2-3.D0*NUX3     ) * (X3*X2+Y3*Y2)
+     &            +  (6.D0*NUX2+2.D0*NUX1+2.D0*NUX3 ) * (Y2**2+X2**2))
+     &            *  AUX3
 !
-         A46(IELEM)=-((NUX1-NUX2                     ) * (Y3**2+X3**2)
-     &             +  (NUX1-NUX3                     ) * (Y2**2+X2**2)
-     &             +  (4.D0*NUX1+3.D0*NUX2+3.D0*NUX3 ) * (X3*X2+Y3*Y2))
-     &             *  AUX3
+        A46(IELEM)=-((NUX1-NUX2                     ) * (Y3**2+X3**2)
+     &            +  (NUX1-NUX3                     ) * (Y2**2+X2**2)
+     &            +  (4.D0*NUX1+3.D0*NUX2+3.D0*NUX3 ) * (X3*X2+Y3*Y2))
+     &            *  AUX3
 !
-         A56(IELEM)= ((-2.D0*NUX1-2.D0*NUX2-6.D0*NUX3) * (Y3**2+X3**2)
-     &             +  (NUX1-NUX3                     ) * (Y2**2+X2**2)
-     &             +  (NUX1+3.D0*NUX2+6.D0*NUX3      ) * (X3*X2+Y3*Y2))
-     &             *  AUX3
+        A56(IELEM)= ((-2.D0*NUX1-2.D0*NUX2-6.D0*NUX3) * (Y3**2+X3**2)
+     &            +  (NUX1-NUX3                     ) * (Y2**2+X2**2)
+     &            +  (NUX1+3.D0*NUX2+6.D0*NUX3      ) * (X3*X2+Y3*Y2))
+     &            *  AUX3
 !
 !    DIAGONAL TERMS
 !
-         A11(IELEM)= ((Y3-Y2)**2+(X3-X2)**2)
-     &             * (3.D0*NUX1+NUX2+NUX3) * AUX2
+        A11(IELEM)= ((Y3-Y2)**2+(X3-X2)**2)
+     &            * (3.D0*NUX1+NUX2+NUX3) * AUX2
 !
-         A22(IELEM)=  (Y3**2+X3**2) * (NUX1+3.D0*NUX2+NUX3) * AUX2
+        A22(IELEM)=  (Y3**2+X3**2) * (NUX1+3.D0*NUX2+NUX3) * AUX2
 !
-         A33(IELEM)=  (Y2**2+X2**2) * (NUX1+NUX2+3.D0*NUX3) * AUX2
+        A33(IELEM)=  (Y2**2+X2**2) * (NUX1+NUX2+3.D0*NUX3) * AUX2
 !
-         A44(IELEM)=  ((2.D0*NUX1+NUX3+2.D0*NUX2) * (Y3**2+X3**2)
-     &             +   (NUX1+NUX3+3.D0*NUX2     ) * (Y2**2+X2**2)
-     &             +   (-4.D0*NUX2-NUX3         ) * (X3*X2+Y3*Y2))
-     &             *   AUX4
+        A44(IELEM)=  ((2.D0*NUX1+NUX3+2.D0*NUX2) * (Y3**2+X3**2)
+     &            +   (NUX1+NUX3+3.D0*NUX2     ) * (Y2**2+X2**2)
+     &            +   (-4.D0*NUX2-NUX3         ) * (X3*X2+Y3*Y2))
+     &            *   AUX4
 !
-         A55(IELEM)=  ((NUX1+NUX2+3.D0*NUX3     ) * (Y3**2+X3**2)
-     &             +   (NUX1+NUX3+3.D0*NUX2     ) * (Y2**2+X2**2)
-     &             +  (-NUX1-2.D0*NUX2-2.D0*NUX3) * (X3*X2+Y3*Y2))
-     &             *   AUX4
+        A55(IELEM)=  ((NUX1+NUX2+3.D0*NUX3     ) * (Y3**2+X3**2)
+     &            +   (NUX1+NUX3+3.D0*NUX2     ) * (Y2**2+X2**2)
+     &            +  (-NUX1-2.D0*NUX2-2.D0*NUX3) * (X3*X2+Y3*Y2))
+     &            *   AUX4
 !
         A66(IELEM) = ((NUX1+3.D0*NUX3+NUX2      ) * (Y3**2+X3**2)
      &             +  (2.D0*NUX1+2.D0*NUX3+NUX2 ) * (Y2**2+X2**2)
@@ -254,25 +254,25 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
-         NUX1 = U(IKLE1(IELEM))
-         NUX2 = U(IKLE2(IELEM))
-         NUX3 = U(IKLE3(IELEM))
-         NUY1 = U(IKLE1(IELEM) + IAD2)
-         NUY2 = U(IKLE2(IELEM) + IAD2)
-         NUY3 = U(IKLE3(IELEM) + IAD2)
-         NUZ1 = U(IKLE1(IELEM) + IAD3)
-         NUZ2 = U(IKLE2(IELEM) + IAD3)
-         NUZ3 = U(IKLE3(IELEM) + IAD3)
+        NUX1 = U(IKLE1(IELEM))
+        NUX2 = U(IKLE2(IELEM))
+        NUX3 = U(IKLE3(IELEM))
+        NUY1 = U(IKLE1(IELEM) + IAD2)
+        NUY2 = U(IKLE2(IELEM) + IAD2)
+        NUY3 = U(IKLE3(IELEM) + IAD2)
+        NUZ1 = U(IKLE1(IELEM) + IAD3)
+        NUZ2 = U(IKLE2(IELEM) + IAD3)
+        NUZ3 = U(IKLE3(IELEM) + IAD3)
 !
-         AUX1 = XMUL/(60.D0 * SURFAC(IELEM))
-         AUX2 = 4.D0 * AUX1
-         AUX3 = 3.D0 * AUX1
+        AUX1 = XMUL/(60.D0 * SURFAC(IELEM))
+        AUX2 = 4.D0 * AUX1
+        AUX3 = 3.D0 * AUX1
 !
 !  EXTRADIAGONAL TERMS
 !

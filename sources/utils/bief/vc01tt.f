@@ -97,42 +97,42 @@
 !
       IF(IELMF.EQ.31.OR.IELMF.EQ.51) THEN
 !
-         XSUR120 = XMUL / 120.D0
+        XSUR120 = XMUL / 120.D0
 !
-         DO IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
 !
-           X2 = X(I2)-X(I1)
-           X3 = X(I3)-X(I1)
-           X4 = X(I4)-X(I1)
+          X2 = X(I2)-X(I1)
+          X3 = X(I3)-X(I1)
+          X4 = X(I4)-X(I1)
 !
-           Y2 = Y(I2)-Y(I1)
-           Y3 = Y(I3)-Y(I1)
-           Y4 = Y(I4)-Y(I1)
+          Y2 = Y(I2)-Y(I1)
+          Y3 = Y(I3)-Y(I1)
+          Y4 = Y(I4)-Y(I1)
 !
-           Z2 = Z(I2)-Z(I1)
-           Z3 = Z(I3)-Z(I1)
-           Z4 = Z(I4)-Z(I1)
+          Z2 = Z(I2)-Z(I1)
+          Z3 = Z(I3)-Z(I1)
+          Z4 = Z(I4)-Z(I1)
 !
-           COEF = XSUR120*
-     &           (X2*Y3*Z4-X2*Y4*Z3-Y2*X3*Z4+Y2*X4*Z3+Z2*X3*Y4-Z2*X4*Y3)
+          COEF = XSUR120*
+     &          (X2*Y3*Z4-X2*Y4*Z3-Y2*X3*Z4+Y2*X4*Z3+Z2*X3*Y4-Z2*X4*Y3)
 !
-           F1  = F(IKLE1(IELEM))
-           F2  = F(IKLE2(IELEM))
-           F3  = F(IKLE3(IELEM))
-           F4  = F(IKLE4(IELEM))
+          F1  = F(IKLE1(IELEM))
+          F2  = F(IKLE2(IELEM))
+          F3  = F(IKLE3(IELEM))
+          F4  = F(IKLE4(IELEM))
 !
-           F1234 = F1+F2+F3+F4
-           W1(IELEM) = COEF * (F1234+F1)
-           W2(IELEM) = COEF * (F1234+F2)
-           W3(IELEM) = COEF * (F1234+F3)
-           W4(IELEM) = COEF * (F1234+F4)
+          F1234 = F1+F2+F3+F4
+          W1(IELEM) = COEF * (F1234+F1)
+          W2(IELEM) = COEF * (F1234+F2)
+          W3(IELEM) = COEF * (F1234+F3)
+          W4(IELEM) = COEF * (F1234+F4)
 !
-         ENDDO ! IELEM 
+        ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -143,59 +143,59 @@
 !
       ELSE IF(IELMF.EQ.30.OR.IELMF.EQ.50) THEN
 !
-         XSUR120 = XMUL / 120.D0
+        XSUR120 = XMUL / 120.D0
 !
-         DO IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
-           I1 = IKLE1(IELEM)
-           I2 = IKLE2(IELEM)
-           I3 = IKLE3(IELEM)
-           I4 = IKLE4(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
 !
-           X2 = X(I2)-X(I1)
-           X3 = X(I3)-X(I1)
-           X4 = X(I4)-X(I1)
+          X2 = X(I2)-X(I1)
+          X3 = X(I3)-X(I1)
+          X4 = X(I4)-X(I1)
 !
-           Y2 = Y(I2)-Y(I1)
-           Y3 = Y(I3)-Y(I1)
-           Y4 = Y(I4)-Y(I1)
+          Y2 = Y(I2)-Y(I1)
+          Y3 = Y(I3)-Y(I1)
+          Y4 = Y(I4)-Y(I1)
 !
-           Z2 = Z(I2)-Z(I1)
-           Z3 = Z(I3)-Z(I1)
-           Z4 = Z(I4)-Z(I1)
+          Z2 = Z(I2)-Z(I1)
+          Z3 = Z(I3)-Z(I1)
+          Z4 = Z(I4)-Z(I1)
 !
-           COEF = XSUR120*
-     &           (X2*Y3*Z4-X2*Y4*Z3-Y2*X3*Z4+Y2*X4*Z3+Z2*X3*Y4-Z2*X4*Y3)
+          COEF = XSUR120*
+     &          (X2*Y3*Z4-X2*Y4*Z3-Y2*X3*Z4+Y2*X4*Z3+Z2*X3*Y4-Z2*X4*Y3)
 !
 ! COULD BE SIMPLIFIED BUT IS NICE TO KEEP
 ! THE SAME FORM AS ABOVE
 !
-           F1  = F(IELEM)
-           F2  = F1
-           F3  = F1
-           F4  = F1
+          F1  = F(IELEM)
+          F2  = F1
+          F3  = F1
+          F4  = F1
 !
-           F1234 = F1+F2+F3+F4
-           W1(IELEM) = COEF * (F1234+F1)
-           W2(IELEM) = COEF * (F1234+F2)
-           W3(IELEM) = COEF * (F1234+F3)
-           W4(IELEM) = COEF * (F1234+F4)
+          F1234 = F1+F2+F3+F4
+          W1(IELEM) = COEF * (F1234+F1)
+          W2(IELEM) = COEF * (F1234+F2)
+          W3(IELEM) = COEF * (F1234+F3)
+          W4(IELEM) = COEF * (F1234+F4)
 !
-         ENDDO ! IELEM 
+        ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
       ELSE
 !
-       IF (LNG.EQ.1) WRITE(LU,101) IELMF,SF%NAME
-       IF (LNG.EQ.2) WRITE(LU,102) IELMF,SF%NAME
-101    FORMAT(1X,'VC01TT (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F : ',1I6,' CAS NON PREVU',/,
-     &        1X,'NOM REEL DE F : ',A6)
-102    FORMAT(1X,'VC01TT (BIEF):',/,
-     &        1X,'DISCRETISATION OF F : ',1I6,' NOT IMPLEMENTED',/,
-     &        1X,'REAL NAME OF F: ',A6)
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,101) IELMF,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,102) IELMF,SF%NAME
+101     FORMAT(1X,'VC01TT (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,' CAS NON PREVU',/,
+     &         1X,'NOM REEL DE F : ',A6)
+102     FORMAT(1X,'VC01TT (BIEF):',/,
+     &         1X,'DISCRETISATION OF F : ',1I6,' NOT IMPLEMENTED',/,
+     &         1X,'REAL NAME OF F: ',A6)
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

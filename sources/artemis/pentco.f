@@ -110,8 +110,8 @@
 ! MASS MATRIX
 !
       CALL VECTOR(T2 , '=' , 'MASBAS          ' , IELM ,
-     *            1.D0 , C , C , C , C , C , C ,
-     *            MESH , MSK  , MASKEL )
+     &            1.D0 , C , C , C , C , C , C ,
+     &            MESH , MSK  , MASKEL )
 !
       IF(II.EQ.1.OR.II.EQ.3) THEN
 ! --------------
@@ -123,15 +123,15 @@
 !  DX
 !
       CALL VECTOR(T7 , '=' , 'GRADF          X' , IELM ,
-     *            1.D0 , H , T1 , T1 , T1 , T1 , T1 ,
-     *            MESH , MSK , MASKEL)
+     &            1.D0 , H , T1 , T1 , T1 , T1 , T1 ,
+     &            MESH , MSK , MASKEL)
       CALL OS( 'X=YZ    ' , T4,T7,T7,0.D0) 
 !
 !  DY 
 !       
       CALL VECTOR(T7 , '=' , 'GRADF          Y' , IELM ,
-     *            1.D0 , H , T1 , T1 , T1 , T1 , T1 ,
-     *            MESH , MSK , MASKEL)
+     &            1.D0 , H , T1 , T1 , T1 , T1 , T1 ,
+     &            MESH , MSK , MASKEL)
       CALL OS( 'X=YZ    ' , T5,T7,T7,0.D0)
 !
 ! GRAD(H)**2  
@@ -165,13 +165,13 @@
 !---> E2/K0*LAPLACIAN(H)   ---> IN T9
 !  DX
       CALL VECTOR(T7 , '=' , 'GRADF          X' , IELM ,
-     *            1.D0 , H , T1 , T1 , T1 , T1 , T1 ,
-     *            MESH , MSK , MASKEL)
+     &            1.D0 , H , T1 , T1 , T1 , T1 , T1 ,
+     &            MESH , MSK , MASKEL)
       CALL OS( 'X=Y/Z    ' , T7,T7,T2,0.D0)   
 
       CALL VECTOR(T5 , '=' , 'GRADF          X' , IELM ,
-     *            1.D0 , T7 , T1 , T1 , T1 , T1 , T1 ,
-     *            MESH , MSK , MASKEL)
+     &            1.D0 , T7 , T1 , T1 , T1 , T1 , T1 ,
+     &            MESH , MSK , MASKEL)
 !
 ! COEFF DX
 !
@@ -180,13 +180,13 @@
 !  DY
 !
       CALL VECTOR(T7 , '=' , 'GRADF          Y' , IELM ,
-     *            1.D0 , H , T1 , T1 , T1 , T1 , T1 ,
-     *            MESH , MSK , MASKEL)
+     &            1.D0 , H , T1 , T1 , T1 , T1 , T1 ,
+     &            MESH , MSK , MASKEL)
       CALL OS( 'X=Y/Z    ' , T7,T7,T2,0.D0) 
 !       
       CALL VECTOR(T6 , '=' , 'GRADF          Y' , IELM ,
-     *            1.D0 , T7 , T1 , T1 , T1 , T1 , T1 ,
-     *            MESH , MSK , MASKEL)
+     &            1.D0 , T7 , T1 , T1 , T1 , T1 , T1 ,
+     &            MESH , MSK , MASKEL)
 !
 ! COEFF DY
 !
@@ -197,7 +197,7 @@
 !---> FUNCTION E2 * 2 H 
 !
       DO I=1,NPOIN
-       T12%R(I)=2.*H%R(I) * FCTE2(K%R(I)*H%R(I))
+        T12%R(I)=2.*H%R(I) * FCTE2(K%R(I)*H%R(I))
       END DO
 !      
 !---> E2/K0*LAPLACIAN(H)
@@ -210,18 +210,18 @@
 ! SUM OF GRADIENT AND CURVTURE EFFECTS, DEPENDING OF OPTION "IPENTCO"
 !
       IF(II.EQ.1)  THEN
-!      F= E1*GRAD(H)**2      
-       CALL OS( 'X=Y      ' , T3,T4,SBID,0.D0)
+!       F= E1*GRAD(H)**2      
+        CALL OS( 'X=Y      ' , T3,T4,SBID,0.D0)
       ENDIF
 !
       IF(II.EQ.2)  THEN
-!      F= E2/K0*LAPLACIAN(H)  
-       CALL OS( 'X=Y      ' , T3,T9,SBID,0.D0)
+!       F= E2/K0*LAPLACIAN(H)  
+        CALL OS( 'X=Y      ' , T3,T9,SBID,0.D0)
       ENDIF
 !      
       IF(II.EQ.3)  THEN
-!      F =  E1*grad(H)**2 + E2/K0*LAPLACIEN(H)
-       CALL OS( 'X=Y+Z    ' , T3,T4,T9,0.D0)
+!       F =  E1*grad(H)**2 + E2/K0*LAPLACIEN(H)
+        CALL OS( 'X=Y+Z    ' , T3,T4,T9,0.D0)
       ENDIF
 !
 ! ADD 1.,  T3 = 1 + F

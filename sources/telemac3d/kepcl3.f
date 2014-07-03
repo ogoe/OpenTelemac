@@ -234,125 +234,125 @@
 !
       DO IPTFR=1,NPTFR
 !
-         IPOIN2 = NBOR(IPTFR)
-         DIST   = DISBOR(IPTFR) / FICTIF
-         HAUT   = MAX(H(IPOIN2),1.D-7)
-! CV
-         Z0=RUGOF%R(IPOIN2)/30.D0
+        IPOIN2 = NBOR(IPTFR)
+        DIST   = DISBOR(IPTFR) / FICTIF
+        HAUT   = MAX(H(IPOIN2),1.D-7)
+!   
+        Z0=RUGOF%R(IPOIN2)/30.D0
 !
-         DO IPLAN=1,NPLAN
+        DO IPLAN=1,NPLAN
 !
-            IP=MAX(IPLAN,2)
-            IBOT=MIN(IPBOT%I(IPOIN2)+1,NPLAN-1)
-!           DISTANCE TO BOTTOM (WILL BE 0 WITH TIDAL FLATS)
-            DISTFOND = (Z(IPOIN2,IP)-Z(IPOIN2,IBOT))
+          IP=MAX(IPLAN,2)
+          IBOT=MIN(IPBOT%I(IPOIN2)+1,NPLAN-1)
+!         DISTANCE TO BOTTOM (WILL BE 0 WITH TIDAL FLATS)
+          DISTFOND = (Z(IPOIN2,IP)-Z(IPOIN2,IBOT))
 !
-!           DIRICHLET ON K
-!           ---------------
+!         DIRICHLET ON K
+!         ---------------
 !
-            IF(LIKBOL(IPTFR,IPLAN).EQ.KENT) THEN
-!           ------------------------------------
+          IF(LIKBOL(IPTFR,IPLAN).EQ.KENT) THEN
+!         ------------------------------------
 !
-!              ************************************
-               IF(LIUBOL(IPTFR,IPLAN).EQ.KENT.OR.
-     &            LIUBOL(IPTFR,IPLAN).EQ.KENTU.OR.
-     &            LIUBOL(IPTFR,IPLAN).EQ.KSORT     ) THEN
-!              ************************************
+!           ************************************
+            IF(LIUBOL(IPTFR,IPLAN).EQ.KENT.OR.
+     &         LIUBOL(IPTFR,IPLAN).EQ.KENTU.OR.
+     &         LIUBOL(IPTFR,IPLAN).EQ.KSORT     ) THEN
+!           ************************************
 !
-!            THEORY BY VINCENT BOYER (SEE ALSO KEPINI)
+!          THEORY BY VINCENT BOYER (SEE ALSO KEPINI)
 !
-!            KBORL(IPTFR,IPLAN) = MAX(NIVTURB*U(IPOIN2,IPLAN)**2,KMIN)
+!          KBORL(IPTFR,IPLAN) = MAX(NIVTURB*U(IPOIN2,IPLAN)**2,KMIN)
 !
-!            NO TURBULENCE
+!          NO TURBULENCE
 !
-!             KBORL(IPTFR,IPLAN) = KMIN
-! CV  HANS AND BURCHARD CL FOR K
-              KBORL(IPTFR,IPLAN)=UETCAR(IPOIN2)
-     &                          *(1.D0-DISTFOND/HAUT)/SQRT(CMU)
+!           KBORL(IPTFR,IPLAN) = KMIN
+!           CV  HANS AND BURCHARD CL FOR K
+            KBORL(IPTFR,IPLAN)=UETCAR(IPOIN2)
+     &                        *(1.D0-DISTFOND/HAUT)/SQRT(CMU)
 !
-!              ****************************************
-               ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG .OR.
-     &                LIUBOL(IPTFR,IPLAN).EQ.KADH) THEN
-!              ****************************************
+!            ****************************************
+            ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG .OR.
+     &             LIUBOL(IPTFR,IPLAN).EQ.KADH) THEN
+!           ****************************************
 !
-!                WALL
+!             WALL
 !
-!                KBORL(IPTFR,IPLAN)=MAX(SSQCMU*UETCAL(IPTFR,IPLAN),KMIN)
-                 KBORL(IPTFR,IPLAN)=KMIN
+!             KBORL(IPTFR,IPLAN)=MAX(SSQCMU*UETCAL(IPTFR,IPLAN),KMIN)
+              KBORL(IPTFR,IPLAN)=KMIN
 !
-!              ****
-               ELSE
-!              ****
+!           ****
+            ELSE
+!           ****
 !
-                 IF (LNG.EQ.1) WRITE(LU,111) IPTFR,LIUBOL(IPTFR,IPLAN)
-                 IF (LNG.EQ.2) WRITE(LU,112) IPTFR,LIUBOL(IPTFR,IPLAN)
-                 CALL PLANTE(1)
-                 STOP
+              IF (LNG.EQ.1) WRITE(LU,111) IPTFR,LIUBOL(IPTFR,IPLAN)
+              IF (LNG.EQ.2) WRITE(LU,112) IPTFR,LIUBOL(IPTFR,IPLAN)
+              CALL PLANTE(1)
+              STOP
 !
-!              *****
-               ENDIF
-!              *****
-!
+!           *****
             ENDIF
-!           -----
+!           *****
 !
-!           DIRICHLET ON EPSILON
-!           ---------------------
+          ENDIF
+!         -----
 !
-            IF(LIEBOL(IPTFR,IPLAN).EQ.KENT) THEN
-!           ------------------------------------
+!         DIRICHLET ON EPSILON
+!         ---------------------
 !
-!              ************************************
-               IF(LIUBOL(IPTFR,IPLAN).EQ.KENT.OR.
-     &            LIUBOL(IPTFR,IPLAN).EQ.KENTU.OR.
-     &            LIUBOL(IPTFR,IPLAN).EQ.KSORT     ) THEN
-!              ************************************
+          IF(LIEBOL(IPTFR,IPLAN).EQ.KENT) THEN
+!         ------------------------------------
 !
-!                 COMING IN THE DOMAIN: TURBULENCE DUE TO THE
-!                 BOTTOM AS IN KEPINI; COMPUTES EBORL ACCORDING
-!                 TO KBORL AT THE BOTTOM
+!           ************************************
+            IF(LIUBOL(IPTFR,IPLAN).EQ.KENT.OR.
+     &         LIUBOL(IPTFR,IPLAN).EQ.KENTU.OR.
+     &         LIUBOL(IPTFR,IPLAN).EQ.KSORT     ) THEN
+!           ************************************
 !
-!                 EBORL(IPTFR,IPLAN)=CMU**0.75*SQRT(KBORL(IPTFR,1)**3)
-!    &                              /KARMAN/MAX(DISTFOND,1.D-6)
-!                 EBORL(IPTFR,IPLAN)= MAX(EBORL(IPTFR,IPLAN),EMIN)
-!                  EBORL(IPTFR,IPLAN)=EMIN
-! Hans et Burchard
-! CV ...
-                 EBORL(IPTFR,IPLAN)=SQRT(UETCAR(IPOIN2))**3
-     &                             *(1.D0-DISTFOND/HAUT)
-     &                             /KARMAN/MAX(DISTFOND,Z0)
+!              COMING IN THE DOMAIN: TURBULENCE DUE TO THE
+!              BOTTOM AS IN KEPINI; COMPUTES EBORL ACCORDING
+!              TO KBORL AT THE BOTTOM
 !
-!              ****************************************
-               ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG .OR.
-     &                LIUBOL(IPTFR,IPLAN).EQ.KADH) THEN
-!              ****************************************
+!              EBORL(IPTFR,IPLAN)=CMU**0.75*SQRT(KBORL(IPTFR,1)**3)
+!    &                           /KARMAN/MAX(DISTFOND,1.D-6)
+!              EBORL(IPTFR,IPLAN)= MAX(EBORL(IPTFR,IPLAN),EMIN)
+!               EBORL(IPTFR,IPLAN)=EMIN
+!             Hans et Burchard
+!             CV ...
+              EBORL(IPTFR,IPLAN)=SQRT(UETCAR(IPOIN2))**3
+     &                          *(1.D0-DISTFOND/HAUT)
+     &                          /KARMAN/MAX(DISTFOND,Z0)
 !
-!                 WALL
+!           ****************************************
+            ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG .OR.
+     &             LIUBOL(IPTFR,IPLAN).EQ.KADH) THEN
+!           ****************************************
 !
-!                 EBORL(IPTFR,IPLAN) =
-!    &            MAX(UETCAL(IPTFR,IPLAN)*SQRT(UETCAL(IPTFR,IPLAN))/
-!    &            (KARMAN*DIST*FICTIFUET/FICTIFEPS),EMIN)
-                  EBORL(IPTFR,IPLAN)=EMIN
+!             WALL
 !
-!              ****
-               ELSE
-!              ****
+!             EBORL(IPTFR,IPLAN) =
+!    &        MAX(UETCAL(IPTFR,IPLAN)*SQRT(UETCAL(IPTFR,IPLAN))/
+!    &        (KARMAN*DIST*FICTIFUET/FICTIFEPS),EMIN)
+              EBORL(IPTFR,IPLAN)=EMIN
 !
-!                 OTHER
+!           ****
+            ELSE
+!           ****
 !
-                  IF (LNG.EQ.1) WRITE(LU,121) IPTFR,LIUBOL(IPTFR,IPLAN)
-                  IF (LNG.EQ.2) WRITE(LU,122) IPTFR,LIUBOL(IPTFR,IPLAN)
-                  CALL PLANTE(1)
-                  STOP
+!             OTHER
 !
-!              *****
-               ENDIF
-!              *****
+              IF (LNG.EQ.1) WRITE(LU,121) IPTFR,LIUBOL(IPTFR,IPLAN)
+              IF (LNG.EQ.2) WRITE(LU,122) IPTFR,LIUBOL(IPTFR,IPLAN)
+              CALL PLANTE(1)
+              STOP
 !
+!           *****
             ENDIF
-!           -----
+!           *****
 !
-         ENDDO
+          ENDIF
+!          -----
+!
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------

@@ -63,38 +63,38 @@
 !
 !-----------------------------------------------------------------------
 !
-         DO IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
-           IK(1) = IKLE(IELEM,1)
-           IK(2) = IKLE(IELEM,2)
-           IK(3) = IKLE(IELEM,3)
-           J(1) = 1
-           J(2) = 2
-           J(3) = 3
+        IK(1) = IKLE(IELEM,1)
+        IK(2) = IKLE(IELEM,2)
+        IK(3) = IKLE(IELEM,3)
+        J(1) = 1
+        J(2) = 2
+        J(3) = 3
 !
-!          SORTS THE 3 POINTS
+!       SORTS THE 3 POINTS
 !
-           IF(ZF(IK(2)).LT.ZF(IK(1)))  THEN
-              J(2)=1
-              J(1)=2
-           ENDIF
-           IF(ZF(IK(3)).LT.ZF(IK(J(2)))) THEN
-              J(3)=J(2)
-              J(2)=3
-              IF(ZF(IK(3)).LT.ZF(IK(J(1)))) THEN
-                 J(2)=J(1)
-                 J(1)=3
-              ENDIF
-           ENDIF
+        IF(ZF(IK(2)).LT.ZF(IK(1)))  THEN
+          J(2)=1
+          J(1)=2
+        ENDIF
+        IF(ZF(IK(3)).LT.ZF(IK(J(2)))) THEN
+          J(3)=J(2)
+          J(2)=3
+          IF(ZF(IK(3)).LT.ZF(IK(J(1)))) THEN
+            J(2)=J(1)
+            J(1)=3
+          ENDIF
+        ENDIF
 !
-!          CORRECTS
+!       CORRECTS
 !
-           NEWSL(IELEM,J(1))=MAX(ZF(IK(J(2))),OLDSL(IK(J(1))))
-           NEWSL(IELEM,J(2))=OLDSL(IK(J(2)))
-           NEWSL(IELEM,J(3))=
-     &      OLDSL(IK(J(3)))-MAX(0.D0,ZF(IK(J(3)))-OLDSL(IK(J(2))))
+        NEWSL(IELEM,J(1))=MAX(ZF(IK(J(2))),OLDSL(IK(J(1))))
+        NEWSL(IELEM,J(2))=OLDSL(IK(J(2)))
+        NEWSL(IELEM,J(3))=
+     &  OLDSL(IK(J(3)))-MAX(0.D0,ZF(IK(J(3)))-OLDSL(IK(J(2))))
 !
-         ENDDO ! IELEM 
+      ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !

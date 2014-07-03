@@ -64,6 +64,7 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'P_ISUM: ERREUR DANS MPI_ALLREDUCE'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_ISUM: ERROR IN MPI_ALLREDUCE'
         WRITE (LU,*) 'MPI ERROR ',IER
+        CALL PLANTE(1)
         STOP
       ENDIF
       RETURN
@@ -71,10 +72,7 @@
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_ISUM VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_ISUM IN ITS VOID VERSION'
 !
-!-----------------------------------------------------------------------
-!
       P_ISUM=MYPART
-      STOP
 #endif
 !
 !-----------------------------------------------------------------------

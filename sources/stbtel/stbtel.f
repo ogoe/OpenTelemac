@@ -166,6 +166,7 @@
      &            'CODE D''ERREUR : ',1I6)
 8000    FORMAT(1X,'STBTEL: ERROR DURING ALLOCATION OF MEMORY: ',/,1X,
      &            'ERROR CODE: ',1I6)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -194,6 +195,7 @@
       IF(ERR.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,7000) ERR
         IF(LNG.EQ.2) WRITE(LU,8000) ERR
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -205,30 +207,31 @@
       NVARIN = 0
 !
       IF (MAILLE.EQ.'SELAFIN') THEN
-         ALLOCATE(IPOBO(NPOIN)     ,STAT=ERR)
-         IF(ERR.NE.0) THEN
-           IF(LNG.EQ.1) WRITE(LU,7000) ERR
-           IF(LNG.EQ.2) WRITE(LU,8000) ERR
-           STOP
-         ENDIF
-         CALL LECSEL (XINIT,YINIT,IKINIT,NPINIT,NEINIT,X,Y,IKLE,TRAV1,
-     &                W,TITRE,TEXTE,NVARIN,NVAR2,STD,NCOLOR,FUSION,
-     &                NGEO,NFO1,IPOBO,IPARAM,DATE,TIME)
+        ALLOCATE(IPOBO(NPOIN)     ,STAT=ERR)
+        IF(ERR.NE.0) THEN
+          IF(LNG.EQ.1) WRITE(LU,7000) ERR
+          IF(LNG.EQ.2) WRITE(LU,8000) ERR
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        CALL LECSEL (XINIT,YINIT,IKINIT,NPINIT,NEINIT,X,Y,IKLE,TRAV1,
+     &               W,TITRE,TEXTE,NVARIN,NVAR2,STD,NCOLOR,FUSION,
+     &               NGEO,NFO1,IPOBO,IPARAM,DATE,TIME)
       ELSEIF (MAILLE.EQ.'ADCIRC') THEN
-         CALL LECADC (X,Y,ZF,IKLE,NGEO)
-         NSFOND=1
+        CALL LECADC (X,Y,ZF,IKLE,NGEO)
+        NSFOND=1
       ELSEIF (MAILLE.EQ.'SIMAIL') THEN
-         CALL LECSIM (X,Y,IKLE,NCOLOR,TITRE,NOP5,NGEO)
+        CALL LECSIM (X,Y,IKLE,NCOLOR,TITRE,NOP5,NGEO)
       ELSEIF (MAILLE.EQ.'TRIGRID') THEN
-         CALL LECTRI (X,Y,IKLE,NCOLOR,NGEO,NFO1)
-         TITRE = 'MAILLAGE TRIGRID'
+        CALL LECTRI (X,Y,IKLE,NCOLOR,NGEO,NFO1)
+        TITRE = 'MAILLAGE TRIGRID'
       ELSEIF (MAILLE.EQ.'FASTTABS') THEN
-         CALL LECFAS (X,Y,IKLE, NCOLOR, TFAST1, TFAST2, ADDFAS,
-     &                NGEO , NFO1)
-         TITRE = 'MAILLAGE FASTTABS'
+        CALL LECFAS (X,Y,IKLE, NCOLOR, TFAST1, TFAST2, ADDFAS,
+     &               NGEO , NFO1)
+        TITRE = 'MAILLAGE FASTTABS'
       ELSE
-         CALL LECSTB (X,Y,IKLE,NCOLOR,TITRE,NPOIN1,
-     &                NGEO,NSEC2,NSEC3,NSEC11,NSEC12)
+        CALL LECSTB (X,Y,IKLE,NCOLOR,TITRE,NPOIN1,
+     &               NGEO,NSEC2,NSEC3,NSEC11,NSEC12)
       ENDIF
 !
 !=======================================================================
@@ -249,11 +252,11 @@
 !=======================================================================
 !
       IF(MESH.EQ.3.AND.DIV4) THEN
-         CALL DIVISE (X,Y,IKLE,NCOLOR,NPOIN,NELEM,NELMAX,NSOM2,SOM2,
-     &                TRAV1,TRAV2)
+        CALL DIVISE (X,Y,IKLE,NCOLOR,NPOIN,NELEM,NELMAX,NSOM2,SOM2,
+     &               TRAV1,TRAV2)
       ELSE
-         IF (DIV4.AND.LNG.EQ.1) WRITE(LU,901)
-         IF (DIV4.AND.LNG.EQ.2) WRITE(LU,3901)
+        IF (DIV4.AND.LNG.EQ.1) WRITE(LU,901)
+        IF (DIV4.AND.LNG.EQ.2) WRITE(LU,3901)
       ENDIF
 !
 !
@@ -321,11 +324,11 @@
 !
       IF(MESH.EQ.3.AND.DECTRI) THEN
 !
-         CALL SURCON (X,Y,IKLE,TRAV1,NBOR,NPTFR,NCOLOR,IFABOR,COLOR)
+        CALL SURCON (X,Y,IKLE,TRAV1,NBOR,NPTFR,NCOLOR,IFABOR,COLOR)
 !
       ELSE
-         IF (DECTRI.AND.LNG.EQ.1) WRITE(LU,900)
-         IF (DECTRI.AND.LNG.EQ.2) WRITE(LU,3900)
+        IF (DECTRI.AND.LNG.EQ.1) WRITE(LU,900)
+        IF (DECTRI.AND.LNG.EQ.2) WRITE(LU,3900)
       ENDIF
 !
 !=======================================================================
@@ -343,13 +346,13 @@
 !
       IF (ELIDEP) THEN
 !
-         IF (LNG.EQ.1) WRITE(LU,3010)
-         IF (LNG.EQ.2) WRITE(LU,3011)
-         CALL SHUFLE (IKLE,X)
+        IF (LNG.EQ.1) WRITE(LU,3010)
+        IF (LNG.EQ.2) WRITE(LU,3011)
+        CALL SHUFLE (IKLE,X)
 !
-         NITER = 0
+        NITER = 0
 !
-10       CONTINUE
+10      CONTINUE
 !
         CALL CORDEP (IKLE,LGVEC)
 !
@@ -357,19 +360,20 @@
 ! VERIFICATION DES DEPENDANCES ARRIERES
 !=======================================================================
 !
-         CALL DEPARR (IKLE,NDEPAR,LGVEC)
-         IF(NDEPAR.NE.0) THEN
-            NITER = NITER + 1
-            IF (NITER.GT.50) THEN
-               IF (LNG.EQ.1) WRITE(LU,1000)
-               IF (LNG.EQ.2) WRITE(LU,4000)
-               STOP
-            ENDIF
-            GOTO 10
-         ENDIF
+        CALL DEPARR (IKLE,NDEPAR,LGVEC)
+        IF(NDEPAR.NE.0) THEN
+           NITER = NITER + 1
+           IF (NITER.GT.50) THEN
+              IF (LNG.EQ.1) WRITE(LU,1000)
+              IF (LNG.EQ.2) WRITE(LU,4000)
+              CALL PLANTE(1)
+              STOP
+           ENDIF
+           GOTO 10
+        ENDIF
 !
-         IF (LNG.EQ.1) WRITE(LU,1100) NITER
-         IF (LNG.EQ.2) WRITE(LU,4100) NITER
+        IF (LNG.EQ.1) WRITE(LU,1100) NITER
+        IF (LNG.EQ.2) WRITE(LU,4100) NITER
 !
       ENDIF
 !
@@ -441,10 +445,10 @@
 ! CONSTRUCTION DU FICHIER DYNAM DE TELEMAC
 !=======================================================================
 !
-       IF (LNG.EQ.1) WRITE(LU,3004)
-       IF (LNG.EQ.2) WRITE(LU,3005)
-       CALL DYNAMI (NPTFR,NBOR,LIHBOR,LIUBOR,LIVBOR,LITBOR,
-     &             NCOLFR,MAILLE,NLIM)
+      IF (LNG.EQ.1) WRITE(LU,3004)
+      IF (LNG.EQ.2) WRITE(LU,3005)
+      CALL DYNAMI (NPTFR,NBOR,LIHBOR,LIUBOR,LIVBOR,LITBOR,
+     &            NCOLFR,MAILLE,NLIM)
 !
   900 FORMAT(//,'********************************************',/,
      &          'L''ELIMINATION DES ELEMENTS SURCONTRAINTS EST',/,

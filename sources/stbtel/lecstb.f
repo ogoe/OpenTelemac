@@ -90,9 +90,9 @@
       REWIND NGEO
 !
       DO I=1,NPOIN
-         X(I) = 9999999.D0
-         Y(I) = 9999999.D0
-         NCOLOR(I) = 99999
+        X(I) = 9999999.D0
+        Y(I) = 9999999.D0
+        NCOLOR(I) = 99999
       ENDDO
 !
 !=======================================================================
@@ -106,16 +106,16 @@
 !
  20   READ(NGEO,2000,ERR=110,END=120) NSEC
       IF (NSEC.EQ.-1) THEN
-         GOTO 20
+        GOTO 20
 !
 !=======================================================================
 ! LECTURE DU TITRE DU MAILLAGE
 !=======================================================================
 !
       ELSE IF (NSEC.EQ.NSEC3) THEN
-         INDIC3 = 1
-         READ(NGEO,25,ERR=110,END=120) TITRE
- 25      FORMAT(A80)
+        INDIC3 = 1
+        READ(NGEO,25,ERR=110,END=120) TITRE
+ 25     FORMAT(A80)
 !
 !=======================================================================
 ! LECTURE DES COORDONNEES ET DE LA COULEUR DES POINTS
@@ -124,78 +124,81 @@
 ! LECTURE EN SIMPLE PRECISION
 !
       ELSE IF (NSEC.EQ.NSEC11) THEN
-         INDIC1 = 1
+        INDIC1 = 1
 !
-         DO I=1,NPOIN1
-            READ(NGEO,35,ERR=110,END=120) NSEC,N1,N2,NCOLOI,X1,Y1
+        DO I=1,NPOIN1
+          READ(NGEO,35,ERR=110,END=120) NSEC,N1,N2,NCOLOI,X1,Y1
 !
 ! PASSAGE EN DOUBLE PRECISION
 !
-            X(NSEC) = DBLE(X1)
-            Y(NSEC) = DBLE(Y1)
-            NCOLOR(NSEC) = NCOLOI
-         ENDDO
+          X(NSEC) = DBLE(X1)
+          Y(NSEC) = DBLE(Y1)
+          NCOLOR(NSEC) = NCOLOI
+        ENDDO
 !
- 35         FORMAT(4I10,2E13.5)
+ 35     FORMAT(4I10,2E13.5)
 !
-         GOTO 50
+        GOTO 50
 !
 ! LECTURE EN DOUBLE PRECISION
 !
       ELSE IF (NSEC.EQ.NSEC12) THEN
-         INDIC1 = 1
+        INDIC1 = 1
 !
-         DO I=1,NPOIN1
-            READ(NGEO,36,ERR=110,END=120) NSEC,N1,N2,NCOLOI
-            READ(NGEO,37,ERR=110,END=120) X2,Y2
-            X(NSEC) = X2
-            Y(NSEC) = Y2
-            NCOLOR(NSEC) = NCOLOI
-         ENDDO
+        DO I=1,NPOIN1
+          READ(NGEO,36,ERR=110,END=120) NSEC,N1,N2,NCOLOI
+          READ(NGEO,37,ERR=110,END=120) X2,Y2
+          X(NSEC) = X2
+          Y(NSEC) = Y2
+          NCOLOR(NSEC) = NCOLOI
+        ENDDO
 !
- 36         FORMAT(4I10)
- 37         FORMAT(2D25.16)
+ 36     FORMAT(4I10)
+ 37     FORMAT(2D25.16)
 !
-         GOTO 50
+        GOTO 50
 !
 !=======================================================================
 ! LECTURE DE IKLE
 !=======================================================================
 !
       ELSE IF (NSEC.EQ.NSEC2) THEN
-         INDIC2 = 1
-         DO I=1,NELEM
-            IF (MESH.EQ.2) THEN
-               READ(NGEO,2000,ERR=110,END=120) NSEC
-               READ(NGEO,4000,ERR=110,END=120) IKLE(I,1),IKLE(I,2),
-     &                                          IKLE(I,3),IKLE(I,4)
-            ELSE IF (MESH.EQ.3) THEN
-               READ(NGEO,2000,ERR=110,END=120) NSEC
-               READ(NGEO,4000,ERR=110,END=120) IKLE(I,1),IKLE(I,2),
-     &                                          IKLE(I,3)
-            ELSE
-               IF (LNG.EQ.1) WRITE(LU,1400) MESH
-               IF (LNG.EQ.2) WRITE(LU,4400) MESH
- 1400          FORMAT(2X,'TYPE DE MAILLAGE NON PREVU : MESH = ',I3)
- 4400          FORMAT(2X,'TYPE OF MESH NOT AVAILABLE : MESH = ',I3)
-               STOP
-            ENDIF
-         ENDDO
-         GOTO 50
+        INDIC2 = 1
+        DO I=1,NELEM
+          IF (MESH.EQ.2) THEN
+            READ(NGEO,2000,ERR=110,END=120) NSEC
+            READ(NGEO,4000,ERR=110,END=120) IKLE(I,1),IKLE(I,2),
+     &                                       IKLE(I,3),IKLE(I,4)
+          ELSE IF (MESH.EQ.3) THEN
+            READ(NGEO,2000,ERR=110,END=120) NSEC
+            READ(NGEO,4000,ERR=110,END=120) IKLE(I,1),IKLE(I,2),
+     &                                       IKLE(I,3)
+          ELSE
+            IF (LNG.EQ.1) WRITE(LU,1400) MESH
+            IF (LNG.EQ.2) WRITE(LU,4400) MESH
+ 1400       FORMAT(2X,'TYPE DE MAILLAGE NON PREVU : MESH = ',I3)
+ 4400       FORMAT(2X,'TYPE OF MESH NOT AVAILABLE : MESH = ',I3)
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+        ENDDO
+        GOTO 50
 !
       ENDIF
 !
  50   IF (INDIC1.EQ.1.AND.INDIC2.EQ.1.AND.INDIC3.EQ.1) THEN
-         GOTO 60
+        GOTO 60
       ELSE
-         GOTO 10
+        GOTO 10
       ENDIF
 !
  110  IF (LNG.EQ.1) WRITE(LU,1100)
       IF (LNG.EQ.2) WRITE(LU,4100)
+      CALL PLANTE(1)
       STOP
  120  IF (LNG.EQ.1) WRITE(LU,1200)
       IF (LNG.EQ.2) WRITE(LU,4200)
+      CALL PLANTE(1)
       STOP
 !
  60   CONTINUE

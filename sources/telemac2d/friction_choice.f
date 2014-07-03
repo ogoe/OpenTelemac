@@ -71,33 +71,33 @@
 ! ZONES INITIALIZATION
 ! --------------------
 !
-         IF (FRICTB) THEN
-            CALL FRICTION_INIT
-            CALL STRCHE
+        IF (FRICTB) THEN
+          CALL FRICTION_INIT
+          CALL STRCHE
 ! FH : FOR QUASI-BUBBLE
 ! FH : 2004/03/01
 !JAJ FOR QUADRATIC ELEMENTS
 ! =>
-            IF (CF%ELM /= H%ELM) THEN
-              IF(CF%ELM==12 .AND. H%ELM==11) THEN
-                CALL FRICTION_BUBBLE
-     &              (IKLE, NPOIN, NELEM, NELMAX, LINDNER, NKFROT,
-     &               CHESTR, NDEFMA, LINDDP, LINDSP)
-              ELSEIF (CF%ELM==13 .AND. H%ELM==11) THEN
-                CALL FRICTION_QUAD
-     &              (IKLE%I, NPOIN, NELEM, NELMAX, LINDNER, NKFROT,
-     &               CHESTR, NDEFMA, LINDDP, LINDSP)
-!                WRITE (LU,*)
-!     &           'FRICTION_CHOICE::QUADRATIC ELEMENTS NOT IMPLEMENTED.'
-!                CALL PLANTE(1)
-              ELSE
-                WRITE (LU,*)
-     &           'FRICTION_CHOICE::DISCRETISATION NOT IMPLEMENTED.'
-                WRITE (LU,*)
-     &           'CF%ELM, H%ELM: ',CF%ELM, H%ELM
-                CALL PLANTE(1)
-              ENDIF
+          IF (CF%ELM /= H%ELM) THEN
+            IF(CF%ELM==12 .AND. H%ELM==11) THEN
+              CALL FRICTION_BUBBLE
+     &            (IKLE, NPOIN, NELEM, NELMAX, LINDNER, NKFROT,
+     &             CHESTR, NDEFMA, LINDDP, LINDSP)
+            ELSEIF (CF%ELM==13 .AND. H%ELM==11) THEN
+              CALL FRICTION_QUAD
+     &            (IKLE%I, NPOIN, NELEM, NELMAX, LINDNER, NKFROT,
+     &             CHESTR, NDEFMA, LINDDP, LINDSP)
+!              WRITE (LU,*)
+!     &         'FRICTION_CHOICE::QUADRATIC ELEMENTS NOT IMPLEMENTED.'
+!              CALL PLANTE(1)
+            ELSE
+              WRITE (LU,*)
+     &         'FRICTION_CHOICE::DISCRETISATION NOT IMPLEMENTED.'
+              WRITE (LU,*)
+     &         'CF%ELM, H%ELM: ',CF%ELM, H%ELM
+              CALL PLANTE(1)
             ENDIF
+          ENDIF
 ! <=
 !JAJ FOR QUADRATIC ELEMENTS
 ! FH : 2004/03/01
@@ -106,80 +106,80 @@
 !        UNIFORM CASE
 !        ------------
 !
-         ELSE
-            ! CHESTR FOR BOUNDARY CONDITIONS INITIALIZATION
-            ! -----------------------------------------------
-            IF(LISRUG.EQ.2) THEN
-              IF(KFROTL.EQ.1) THEN
-                DO I = 1, NPTFR
-                  CHBORD%R(I) = CHESTR%R(MESH%NBOR%I(I))
-                ENDDO
-              ELSE
-!               JMH 21/12/2010
-!               BOUNDARY CONDITIONS FILE DATA IF ANY SUPERSEDE
-!               THE KEY-WORD ROUGHNESS COEFFICIENT OF BOUNDARIES
-                IF(P_DOTS(CHBORD,CHBORD,MESH).EQ.0.D0) THEN
-                  CALL OS('X=C     ', X=CHBORD, C=SB)
-                ENDIF
+        ELSE
+          ! CHESTR FOR BOUNDARY CONDITIONS INITIALIZATION
+          ! -----------------------------------------------
+          IF(LISRUG.EQ.2) THEN
+            IF(KFROTL.EQ.1) THEN
+              DO I = 1, NPTFR
+                CHBORD%R(I) = CHESTR%R(MESH%NBOR%I(I))
+              ENDDO
+            ELSE
+!             JMH 21/12/2010
+!             BOUNDARY CONDITIONS FILE DATA IF ANY SUPERSEDE
+!             THE KEY-WORD ROUGHNESS COEFFICIENT OF BOUNDARIES
+              IF(P_DOTS(CHBORD,CHBORD,MESH).EQ.0.D0) THEN
+                CALL OS('X=C     ', X=CHBORD, C=SB)
               ENDIF
             ENDIF
-            ! TYPE OF FRICTION LAW FOR EACH NODE
-            ! ----------------------------------
-            DO I=1, CF%DIM1
-              NKFROT%I(I) = KFROT
-            ENDDO
+          ENDIF
+          ! TYPE OF FRICTION LAW FOR EACH NODE
+          ! ----------------------------------
+          DO I=1, CF%DIM1
+            NKFROT%I(I) = KFROT
+          ENDDO
 !
-         ENDIF
+        ENDIF
 !
 !     COMPUTATION
 !     -----------
 !
       ELSE
 !
-         ! FRICTION BY ZONES
-         ! -----------------
-         IF (FRICTB) THEN
+        ! FRICTION BY ZONES
+        ! -----------------
+        IF (FRICTB) THEN
 ! FH : FOR QUASI-BUBBLE
 ! FH : 2004/03/01
 !JAJ FOR QUADRATIC ELEMENTS
 ! =>
-            IF (CF%ELM /= H%ELM) THEN
-              IF (CF%ELM==12 .AND. H%ELM==11) THEN
-                CALL FRICTION_BUBBLE
-     &              (IKLE, NPOIN, NELEM, NELMAX, LINDNER, NKFROT,
-     &               CHESTR, NDEFMA, LINDDP, LINDSP)
-              ELSE IF (CF%ELM==13 .AND. H%ELM==11) THEN
-                CALL FRICTION_QUAD
-     &              (IKLE%I, NPOIN, NELEM, NELMAX, LINDNER, NKFROT,
-     &               CHESTR, NDEFMA, LINDDP, LINDSP)
-              ELSE
-                WRITE (LU,*)
-     &           'FRICTION_CHOICE::DISCRETISATION NOT IMPLEMENTED.'
-                WRITE (LU,*)
-     &           'CF%ELM, H%ELM: ',CF%ELM, H%ELM
-                CALL PLANTE(1)
-                STOP
-              ENDIF
+          IF (CF%ELM /= H%ELM) THEN
+            IF (CF%ELM==12 .AND. H%ELM==11) THEN
+              CALL FRICTION_BUBBLE
+     &            (IKLE, NPOIN, NELEM, NELMAX, LINDNER, NKFROT,
+     &             CHESTR, NDEFMA, LINDDP, LINDSP)
+            ELSE IF (CF%ELM==13 .AND. H%ELM==11) THEN
+              CALL FRICTION_QUAD
+     &            (IKLE%I, NPOIN, NELEM, NELMAX, LINDNER, NKFROT,
+     &             CHESTR, NDEFMA, LINDDP, LINDSP)
+            ELSE
+              WRITE (LU,*)
+     &         'FRICTION_CHOICE::DISCRETISATION NOT IMPLEMENTED.'
+              WRITE (LU,*)
+     &         'CF%ELM, H%ELM: ',CF%ELM, H%ELM
+              CALL PLANTE(1)
+              STOP
             ENDIF
+          ENDIF
 !
-            CALL FRICTION_ZONES
-     &           (MESH, H, U, V, S, CHESTR, CHBORD, NKFROT, NDEFMA,
-     &            LINDDP, LINDSP, KFRO_B, NDEF_B, ITURB, LISRUG,
-     &            LINDNER, VK, KARMAN, GRAV, T1, T2, CF, CFBOR)
+          CALL FRICTION_ZONES
+     &         (MESH, H, U, V, S, CHESTR, CHBORD, NKFROT, NDEFMA,
+     &          LINDDP, LINDSP, KFRO_B, NDEF_B, ITURB, LISRUG,
+     &          LINDNER, VK, KARMAN, GRAV, T1, T2, CF, CFBOR)
 ! <=
 !JAJ FOR QUADRATIC ELEMENTS
 ! FH : 2004/03/01
 ! FH : FOR QUASI-BUBBLE
 !
-         ! UNIFORM FRICTION
-         ! ----------------
-         ELSE
-            CALL FRICTION_UNIF
-     &           (MESH,H,U,V,CHESTR,S,KFROT,KFROTL,ITURB, LISRUG,
-     &            LINDNER, SB, NDEF, DP, SP, VK, KARMAN, GRAV, T1,
-     &            T2, CHBORD, CF, CFBOR)
+        ! UNIFORM FRICTION
+        ! ----------------
+        ELSE
+          CALL FRICTION_UNIF
+     &         (MESH,H,U,V,CHESTR,S,KFROT,KFROTL,ITURB, LISRUG,
+     &          LINDNER, SB, NDEF, DP, SP, VK, KARMAN, GRAV, T1,
+     &          T2, CHBORD, CF, CFBOR)
 !
-         ENDIF
+        ENDIF
       ENDIF
 !
 !======================================================================!

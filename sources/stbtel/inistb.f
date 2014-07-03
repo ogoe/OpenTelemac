@@ -97,7 +97,7 @@
 !
  20   READ(NGEO,2000,ERR=110,END=120) NSEC
       IF (NSEC.EQ.-1) THEN
-         GOTO 20
+        GOTO 20
 !
 !=======================================================================
 ! NOMBRE DE POINTS
@@ -106,69 +106,70 @@
 ! LECTURE EN SIMPLE PRECISION
 !
       ELSE IF (NSEC.EQ.NSEC11) THEN
-         INDI11 = 1
+        INDI11 = 1
 !
- 30      CONTINUE
-         READ(NGEO,2000,ERR=110,END=120) NSEC
+ 30     CONTINUE
+        READ(NGEO,2000,ERR=110,END=120) NSEC
 !
-         IF (NSEC.NE.-1) THEN
-            NPOIN1 = NPOIN1+1
-            NPOIN2 = MAX0(NSEC,NPOIN1)
-            GOTO 30
-         ELSE
-            GOTO 50
-         ENDIF
+        IF (NSEC.NE.-1) THEN
+          NPOIN1 = NPOIN1+1
+          NPOIN2 = MAX0(NSEC,NPOIN1)
+          GOTO 30
+        ELSE
+          GOTO 50
+        ENDIF
 !
 ! LECTURE EN DOUBLE PRECISION
 !
       ELSE IF (NSEC.EQ.NSEC12) THEN
-         INDI12 = 1
+        INDI12 = 1
 !
- 31      CONTINUE
-         READ(NGEO,2000,ERR=110,END=120) NSEC
+ 31     CONTINUE
+        READ(NGEO,2000,ERR=110,END=120) NSEC
 !
-         IF (NSEC.NE.-1) THEN
-            NPOIN1 = NPOIN1+1
-            NPOIN2 = MAX0(NSEC,NPOIN1)
-         ELSE
-            GOTO 50
-         ENDIF
+        IF (NSEC.NE.-1) THEN
+          NPOIN1 = NPOIN1+1
+          NPOIN2 = MAX0(NSEC,NPOIN1)
+        ELSE
+          GOTO 50
+        ENDIF
 !
-         READ(NGEO,4000,ERR=110,END=120) X1
+        READ(NGEO,4000,ERR=110,END=120) X1
 !
-         GOTO 31
+        GOTO 31
 !
 !=======================================================================
 ! NOMBRE ET TYPE D'ELEMENTS
 !=======================================================================
 !
       ELSE IF (NSEC.EQ.NSEC2) THEN
-         INDIC2 = 1
-         IF (MAILLE.EQ.'SUPERTAB4') THEN
+        INDIC2 = 1
+        IF (MAILLE.EQ.'SUPERTAB4') THEN
 !  LECTURE AU FORMAT SUPERTAB VERSION 4
-            READ(NGEO,3000,ERR=110,END=120) N1,N2,MESH
-         ELSE
+          READ(NGEO,3000,ERR=110,END=120) N1,N2,MESH
+        ELSE
 !  LECTURE AU FORMAT SUPERTAB VERSION 6
-            READ(NGEO,3000,ERR=110,END=120) N1,MESH,N2
-         ENDIF
-         NELEM = 1
- 40      READ(NGEO,2000,ERR=110,END=120) NSEC
-         IF (NSEC.NE.-1) THEN
-            NELEM = NELEM+1
-            GOTO 40
-         ELSE
-            GOTO 50
-         ENDIF
+          READ(NGEO,3000,ERR=110,END=120) N1,MESH,N2
+        ENDIF
+        NELEM = 1
+ 40     READ(NGEO,2000,ERR=110,END=120) NSEC
+        IF (NSEC.NE.-1) THEN
+          NELEM = NELEM+1
+          GOTO 40
+        ELSE
+          GOTO 50
+        ENDIF
       ENDIF
 !
  50   IF ((INDI11.EQ.1.OR.INDI12.EQ.1).AND.INDIC2.EQ.1) THEN
-         GOTO 60
+        GOTO 60
       ELSE
-         GOTO 10
+        GOTO 10
       ENDIF
 !
  110  IF (LNG.EQ.1) WRITE(LU,1100)
       IF (LNG.EQ.2) WRITE(LU,4100)
+      CALL PLANTE(1)
       STOP
 !
  120  CONTINUE

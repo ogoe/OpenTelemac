@@ -128,12 +128,12 @@
         ELSEIF(TYPDIN(1:1).EQ.'I'.OR.TYPDIN(1:1).EQ.'0') THEN
 !         NOTHING TO DO, ONLY NEEDS TO COPY TYPDIN
         ELSE
-           IF (LNG.EQ.1) WRITE(LU,5) TYPDIN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,6) TYPDIN(1:1)
-5          FORMAT(1X,'OMSEG (BIEF) : TYPDIN INCONNU :',A1)
-6          FORMAT(1X,'OMSEG (BIEF) : TYPDIN UNKNOWN :',A1)
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,5) TYPDIN(1:1)
+          IF (LNG.EQ.2) WRITE(LU,6) TYPDIN(1:1)
+5         FORMAT(1X,'OMSEG (BIEF) : TYPDIN INCONNU :',A1)
+6         FORMAT(1X,'OMSEG (BIEF) : TYPDIN UNKNOWN :',A1)
+          CALL PLANTE(1)
+          STOP
         ENDIF
         TYPDIM(1:1)=TYPDIN(1:1)
 !
@@ -142,12 +142,12 @@
         ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
            CALL OV( 'X=Y     ' , XM , XN , Z , C , NSEG1+NSEG2 )
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-10         FORMAT(1X,'OMSEG (BIEF) : TYPEXN INCONNU :',A1)
-11         FORMAT(1X,'OMSEG (BIEF) : TYPEXN UNKNOWN :',A1)
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
+          IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
+10        FORMAT(1X,'OMSEG (BIEF) : TYPEXN INCONNU :',A1)
+11        FORMAT(1X,'OMSEG (BIEF) : TYPEXN UNKNOWN :',A1)
+          CALL PLANTE(1)
+          STOP
         ENDIF
         TYPEXM(1:1)=TYPEXN(1:1)
 !
@@ -158,14 +158,14 @@
         CALL OV( 'X=CY    ' , DM , DN , Z , C , NDIAG )
 !
         IF(TYPEXN(1:1).EQ.'S') THEN
-           CALL OV( 'X=CY    ' , XM , XN , Z , C , NSEG1 )
+          CALL OV( 'X=CY    ' , XM , XN , Z , C , NSEG1 )
         ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
-           CALL OV( 'X=CY    ' , XM , XN , Z , C , NSEG1+NSEG2 )
+          CALL OV( 'X=CY    ' , XM , XN , Z , C , NSEG1+NSEG2 )
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
+          IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !
         TYPDIM(1:1)=TYPDIN(1:1)
@@ -183,27 +183,27 @@
         ENDIF
 !
         IF(TYPEXN(1:1).EQ.'S') THEN
-           CALL OV( 'X=X+CY  ' , XM , XN , Z , C , NSEG1 )
-           IF(TYPEXM(1:1).EQ.'Q') THEN
-             CALL OV( 'X=X+CY  ' , XM(DIMX+1:DIMX+NSEG1) ,XN,Z,C,NSEG1)
-           ENDIF
+          CALL OV( 'X=X+CY  ' , XM , XN , Z , C , NSEG1 )
+          IF(TYPEXM(1:1).EQ.'Q') THEN
+            CALL OV( 'X=X+CY  ' , XM(DIMX+1:DIMX+NSEG1) ,XN,Z,C,NSEG1)
+          ENDIF
         ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
-           IF(TYPEXM(1:1).NE.'Q') THEN
-             IF (LNG.EQ.1) WRITE(LU,99) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
-             IF (LNG.EQ.2) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
-99          FORMAT(1X,'OMSEG (BIEF) : TYPEXM = ',A1,' NE CONVIENT PAS',
-     &       /,1X,'POUR L''OPERATION : ',A8,' AVEC TYPEXN = ',A1)
-98          FORMAT(1X,'OMSEG (BIEF) : TYPEXM = ',A1,' DOES NOT GO',
-     &       /,1X,'FOR THE OPERATION : ',A8,' WITH TYPEXN = ',A1)
-             CALL PLANTE(1)
-             STOP
-           ENDIF
-           CALL OV( 'X=X+CY  ' , XM , XN , Z , C , NSEG1+NSEG2 )
+          IF(TYPEXM(1:1).NE.'Q') THEN
+            IF (LNG.EQ.1) WRITE(LU,99) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
+            IF (LNG.EQ.2) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
+99         FORMAT(1X,'OMSEG (BIEF) : TYPEXM = ',A1,' NE CONVIENT PAS',
+     &      /,1X,'POUR L''OPERATION : ',A8,' AVEC TYPEXN = ',A1)
+98         FORMAT(1X,'OMSEG (BIEF) : TYPEXM = ',A1,' DOES NOT GO',
+     &      /,1X,'FOR THE OPERATION : ',A8,' WITH TYPEXN = ',A1)
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          CALL OV( 'X=X+CY  ' , XM , XN , Z , C , NSEG1+NSEG2 )
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
+          IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !
 !-----------------------------------------------------------------------
@@ -215,23 +215,27 @@
         CALL OV( 'X=X+CY  ' , DM , DN , Z , C , NDIAG )
 !
         IF(NSEG1.NE.NSEG2) THEN
-          WRITE(LU,*) 'M+CTN : RECTANGULAR MATRIX NOT IMPLEMENTED'
+          IF(LNG.EQ.1) WRITE(LU,*) 'M+CTN : MATRICE RECTANGULAIRE 
+     &                              NON IMPLEMENTE'
+          IF(LNG.EQ.2) WRITE(LU,*) 'M+CTN : RECTANGULAR MATRIX 
+     &                              NOT IMPLEMENTED'
+          CALL PLANTE(1)
           STOP
         ENDIF
         IF(TYPEXN(1:1).EQ.'Q') THEN
-           IF(TYPEXM(1:1).NE.'Q') THEN
-             IF (LNG.EQ.1) WRITE(LU,99) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
-             IF (LNG.EQ.2) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
-             CALL PLANTE(1)
-             STOP
-           ENDIF
-           CALL OV( 'X=X+CY  ' , XM , XN(DIMX+1:DIMX+NSEG1) ,Z,C,NSEG1)
-           CALL OV( 'X=X+CY  ' , XM(DIMX+1:DIMX+NSEG1) , XN ,Z,C,NSEG1)
+          IF(TYPEXM(1:1).NE.'Q') THEN
+            IF (LNG.EQ.1) WRITE(LU,99) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
+            IF (LNG.EQ.2) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          CALL OV( 'X=X+CY  ' , XM , XN(DIMX+1:DIMX+NSEG1) ,Z,C,NSEG1)
+          CALL OV( 'X=X+CY  ' , XM(DIMX+1:DIMX+NSEG1) , XN ,Z,C,NSEG1)
         ELSE
-           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
+          IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !
 !-----------------------------------------------------------------------
@@ -241,19 +245,23 @@
         CALL OV( 'X=Y     ' , DM , DN , Z , C , NDIAG )
 !
         IF(TYPEXN(1:1).EQ.'S') THEN
-           CALL OV( 'X=Y     ' , XM , XN , Z , C , NSEG1 )
+          CALL OV( 'X=Y     ' , XM , XN , Z , C , NSEG1 )
         ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
-           IF(TYPEXM(1:1).NE.'S'.AND.NSEG1.NE.NSEG2) THEN
-             WRITE(LU,*) 'TN : RECTANGULAR MATRIX NOT IMPLEMENTED'
-             STOP
-           ENDIF
-           CALL OV( 'X=Y     ' , XM , XN(DIMX+1:DIMX+NSEG1) ,Z,C,NSEG1)
-           CALL OV( 'X=Y     ' , XM(DIMX+1:DIMX+NSEG1) , XN ,Z,C,NSEG1)
+          IF(TYPEXM(1:1).NE.'S'.AND.NSEG1.NE.NSEG2) THEN
+            IF(LNG.EQ.1) WRITE(LU,*) 'TN : MATRICE RECTANGULAIRE 
+     &                                NON IMPLEMENTE'
+            IF(LNG.EQ.2) WRITE(LU,*) 'TN : RECTANGULAR MATRIX 
+     &                                NOT IMPLEMENTED'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          CALL OV( 'X=Y     ' , XM , XN(DIMX+1:DIMX+NSEG1) ,Z,C,NSEG1)
+          CALL OV( 'X=Y     ' , XM(DIMX+1:DIMX+NSEG1) , XN ,Z,C,NSEG1)
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
+          IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
+          CALL PLANTE(1)
+          STOP
         ENDIF
         TYPDIM(1:1)=TYPDIN(1:1)
         TYPEXM(1:1)=TYPEXN(1:1)
@@ -266,23 +274,23 @@
         CALL OV( 'X=X+Y   ' , DM , DN , Z , C , NDIAG )
 !
         IF(TYPEXN(1:1).EQ.'S') THEN
-           CALL OV( 'X=X+Y   ' , XM , XN , Z , C , NSEG1 )
-           IF(TYPEXM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=X+Y   ' , XM(DIMX+1:DIMX+NSEG1) , XN ,Z,C,NSEG1)
-           ENDIF
+          CALL OV( 'X=X+Y   ' , XM , XN , Z , C , NSEG1 )
+          IF(TYPEXM(1:1).EQ.'Q') THEN
+          CALL OV( 'X=X+Y   ' , XM(DIMX+1:DIMX+NSEG1) , XN ,Z,C,NSEG1)
+          ENDIF
         ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
-           IF(TYPEXM(1:1).NE.'Q') THEN
-             IF (LNG.EQ.1) WRITE(LU,99) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
-             IF (LNG.EQ.2) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
-             CALL PLANTE(1)
-             STOP
-           ENDIF
-           CALL OV( 'X=X+Y   ' , XM , XN , Z , C , NSEG1+NSEG2 )
+          IF(TYPEXM(1:1).NE.'Q') THEN
+            IF (LNG.EQ.1) WRITE(LU,99) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
+            IF (LNG.EQ.2) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          CALL OV( 'X=X+Y   ' , XM , XN , Z , C , NSEG1+NSEG2 )
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
+          IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !
 !-----------------------------------------------------------------------
@@ -294,17 +302,21 @@
         CALL OV( 'X=X+Y   ' , DM , DN , Z , C , NDIAG )
 !
         IF(NSEG1.NE.NSEG2) THEN
-          WRITE(LU,*) 'M+TN : RECTANGULAR MATRIX NOT IMPLEMENTED'
+          IF(LNG.EQ.1) WRITE(LU,*) 'M+TN : MATRICE RECTANGULAIRE 
+     &                              NON IMPLEMENTE'
+          IF(LNG.EQ.2) WRITE(LU,*) 'M+TN : RECTANGULAR MATRIX 
+     &                              NOT IMPLEMENTED'
+          CALL PLANTE(1)
           STOP
         ENDIF
         IF(TYPEXM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=X+Y   ' , XM , XN(DIMX+1:DIMX+NSEG1) ,Z,C,NSEG1)
-           CALL OV( 'X=X+Y   ' , XM(DIMX+1:DIMX+NSEG1) , XN ,Z,C,NSEG1)
+          CALL OV( 'X=X+Y   ' , XM , XN(DIMX+1:DIMX+NSEG1) ,Z,C,NSEG1)
+          CALL OV( 'X=X+Y   ' , XM(DIMX+1:DIMX+NSEG1) , XN ,Z,C,NSEG1)
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
+          IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
+          CALL PLANTE(1)
+          STOP
         ENDIF
         TYPDIM(1:1)=TYPDIN(1:1)
         TYPEXM(1:1)=TYPEXN(1:1)
@@ -315,51 +327,51 @@
 !
 !   DIAGONAL TERMS
 !
-         IF(TYPDIM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
-         ELSEIF(TYPDIM(1:1).EQ.'I') THEN
-           CALL OV( 'X=Y     ' , DM , D , Z , C , NDIAG )
-           TYPDIM(1:1)='Q'
-         ELSEIF(TYPDIM(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIM(1:1).EQ.'Q') THEN
+          CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
+        ELSEIF(TYPDIM(1:1).EQ.'I') THEN
+          CALL OV( 'X=Y     ' , DM , D , Z , C , NDIAG )
+          TYPDIM(1:1)='Q'
+        ELSEIF(TYPDIM(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
+          IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   EXTRADIAGONAL TERMS
 !
-         IF(TYPEXM(1:1).EQ.'Q') THEN
+        IF(TYPEXM(1:1).EQ.'Q') THEN
 !
-         DO ISEG = 1 , MIN(NSEG1,NSEG2)
-           XM(ISEG) = XM(ISEG) * D(GLOSEG(ISEG,2))
-           XM(ISEG+DIMX) = XM(ISEG+DIMX) * D(GLOSEG(ISEG,1))
-         ENDDO
-         IF(NSEG1.GT.NSEG2) THEN
-           DO ISEG = MIN(NSEG1,NSEG2)+1,MAX(NSEG1,NSEG2)
-             XM(ISEG+DIMX)=XM(ISEG+DIMX)*D(GLOSEG(ISEG,1))
-           ENDDO
-         ELSEIF(NSEG2.GT.NSEG1) THEN
-           DO ISEG = MIN(NSEG1,NSEG2)+1,MAX(NSEG1,NSEG2)
-             XM(ISEG+DIMX)=XM(ISEG+DIMX)*D(GLOSEG(ISEG,2))
-           ENDDO
-         ENDIF
+        DO ISEG = 1 , MIN(NSEG1,NSEG2)
+          XM(ISEG) = XM(ISEG) * D(GLOSEG(ISEG,2))
+          XM(ISEG+DIMX) = XM(ISEG+DIMX) * D(GLOSEG(ISEG,1))
+        ENDDO
+        IF(NSEG1.GT.NSEG2) THEN
+          DO ISEG = MIN(NSEG1,NSEG2)+1,MAX(NSEG1,NSEG2)
+            XM(ISEG+DIMX)=XM(ISEG+DIMX)*D(GLOSEG(ISEG,1))
+          ENDDO
+        ELSEIF(NSEG2.GT.NSEG1) THEN
+          DO ISEG = MIN(NSEG1,NSEG2)+1,MAX(NSEG1,NSEG2)
+            XM(ISEG+DIMX)=XM(ISEG+DIMX)*D(GLOSEG(ISEG,2))
+          ENDDO
+        ENDIF
 !
-         ELSEIF(TYPEXM(1:1).EQ.'S') THEN
+        ELSEIF(TYPEXM(1:1).EQ.'S') THEN
           IF (LNG.EQ.1) WRITE(LU,170)
           IF (LNG.EQ.2) WRITE(LU,171)
 170       FORMAT(1X,'OMSEG (BIEF) : M=MD , M DOIT ETRE NON SYMETRIQUE')
 171       FORMAT(1X,'OMSEG (BIEF) : M=MD , M MUST BE NON-SYMMETRIC')
           CALL PLANTE(1)
           STOP
-         ELSEIF(TYPEXM(1:1).NE.'0') THEN
+        ELSEIF(TYPEXM(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,172) TYPEXM(1:1)
           IF (LNG.EQ.2) WRITE(LU,173) TYPEXM(1:1)
 172       FORMAT(1X,'OMSEG (BIEF) : TYPEXM NON PREVU : ',A1)
 173       FORMAT(1X,'OMSEG (BIEF) : TYPEXM NOT AVAILABLE : ',A1)
           CALL PLANTE(1)
           STOP
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -367,49 +379,49 @@
 !
 !   DIAGONAL TERMS
 !
-         IF(TYPDIM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
-         ELSEIF(TYPDIM(1:1).EQ.'I') THEN
-           CALL OV( 'X=Y     ' , DM , D , Z , C , NDIAG )
-           TYPDIM(1:1)='Q'
-         ELSEIF(TYPDIM(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIM(1:1).EQ.'Q') THEN
+          CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
+        ELSEIF(TYPDIM(1:1).EQ.'I') THEN
+          CALL OV( 'X=Y     ' , DM , D , Z , C , NDIAG )
+          TYPDIM(1:1)='Q'
+        ELSEIF(TYPDIM(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
+          IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   EXTRADIAGONAL TERMS
 !
-         IF(TYPEXM(1:1).EQ.'Q') THEN
+        IF(TYPEXM(1:1).EQ.'Q') THEN
 !
-         DO ISEG = 1 , MIN(NSEG1,NSEG2)
-           XM(ISEG) = XM(ISEG) * D(GLOSEG(ISEG,1))
-           XM(ISEG+DIMX) = XM(ISEG+DIMX) * D(GLOSEG(ISEG,2))
-         ENDDO
-         IF(NSEG1.GT.NSEG2) THEN
-           DO ISEG = MIN(NSEG1,NSEG2)+1,MAX(NSEG1,NSEG2)
-             XM(ISEG+DIMX)=XM(ISEG+DIMX)*D(GLOSEG(ISEG,2))
-           ENDDO
-         ELSEIF(NSEG2.GT.NSEG1) THEN
-           DO ISEG = MIN(NSEG1,NSEG2)+1,MAX(NSEG1,NSEG2)
-             XM(ISEG+DIMX)=XM(ISEG+DIMX)*D(GLOSEG(ISEG,1))
-           ENDDO
-         ENDIF
+        DO ISEG = 1 , MIN(NSEG1,NSEG2)
+          XM(ISEG) = XM(ISEG) * D(GLOSEG(ISEG,1))
+          XM(ISEG+DIMX) = XM(ISEG+DIMX) * D(GLOSEG(ISEG,2))
+        ENDDO
+        IF(NSEG1.GT.NSEG2) THEN
+          DO ISEG = MIN(NSEG1,NSEG2)+1,MAX(NSEG1,NSEG2)
+            XM(ISEG+DIMX)=XM(ISEG+DIMX)*D(GLOSEG(ISEG,2))
+          ENDDO
+        ELSEIF(NSEG2.GT.NSEG1) THEN
+          DO ISEG = MIN(NSEG1,NSEG2)+1,MAX(NSEG1,NSEG2)
+            XM(ISEG+DIMX)=XM(ISEG+DIMX)*D(GLOSEG(ISEG,1))
+          ENDDO
+        ENDIF
 !
-         ELSEIF(TYPEXM(1:1).EQ.'S') THEN
+        ELSEIF(TYPEXM(1:1).EQ.'S') THEN
           IF (LNG.EQ.1) WRITE(LU,180)
           IF (LNG.EQ.2) WRITE(LU,181)
 180       FORMAT(1X,'OMSEG (BIEF) : M=DM N''EST PAS SYMETRIQUE')
 181       FORMAT(1X,'OMSEG (BIEF) : M=MD IS NOT SYMMETRIC')
           CALL PLANTE(1)
           STOP
-         ELSEIF(TYPEXM(1:1).NE.'0') THEN
+        ELSEIF(TYPEXM(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,172) TYPEXM(1:1)
           IF (LNG.EQ.2) WRITE(LU,173) TYPEXM(1:1)
           CALL PLANTE(1)
           STOP
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -417,40 +429,40 @@
 !
 !   DIAGONAL TERMS
 !
-         IF(TYPDIM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=X-YZ  ' , DM , DN , D , C , NDIAG )
-         ELSEIF(TYPDIM(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIM(1:1).EQ.'Q') THEN
+          CALL OV( 'X=X-YZ  ' , DM , DN , D , C , NDIAG )
+        ELSEIF(TYPDIM(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
+          IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   EXTRADIAGONAL TERMS
 !
-         IF(TYPEXM(1:1).EQ.'Q') THEN
-           IF(TYPEXN(1:1).EQ.'Q') THEN
-           DO ISEG = 1 , NSEG1
-            XM(ISEG     )=XM(ISEG     )-XN(ISEG     )*D(GLOSEG(ISEG,1))
-            XM(ISEG+DIMX)=XM(ISEG+DIMX)-XN(ISEG+DIMX)*D(GLOSEG(ISEG,2))
-           ENDDO
-           ELSEIF(TYPEXN(1:1).EQ.'S') THEN
-           DO ISEG = 1 , NSEG1
-            XM(ISEG     ) = XM(ISEG     ) - XN(ISEG) * D(GLOSEG(ISEG,1))
-            XM(ISEG+DIMX) = XM(ISEG+DIMX) - XN(ISEG) * D(GLOSEG(ISEG,2))
-           ENDDO
-           ELSEIF(TYPEXN(1:1).NE.'0') THEN
-            IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-            IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-            CALL PLANTE(1)
-            STOP
-           ENDIF
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,172) TYPEXM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,173) TYPEXM(1:1)
+        IF(TYPEXM(1:1).EQ.'Q') THEN
+          IF(TYPEXN(1:1).EQ.'Q') THEN
+          DO ISEG = 1 , NSEG1
+           XM(ISEG     )=XM(ISEG     )-XN(ISEG     )*D(GLOSEG(ISEG,1))
+           XM(ISEG+DIMX)=XM(ISEG+DIMX)-XN(ISEG+DIMX)*D(GLOSEG(ISEG,2))
+          ENDDO
+          ELSEIF(TYPEXN(1:1).EQ.'S') THEN
+          DO ISEG = 1 , NSEG1
+           XM(ISEG     ) = XM(ISEG     ) - XN(ISEG) * D(GLOSEG(ISEG,1))
+           XM(ISEG+DIMX) = XM(ISEG+DIMX) - XN(ISEG) * D(GLOSEG(ISEG,2))
+          ENDDO
+          ELSEIF(TYPEXN(1:1).NE.'0') THEN
+           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
+           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
            CALL PLANTE(1)
            STOP
-         ENDIF
+          ENDIF
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,172) TYPEXM(1:1)
+          IF (LNG.EQ.2) WRITE(LU,173) TYPEXM(1:1)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -458,86 +470,86 @@
 !
 !   DIAGONAL TERMS
 !
-         IF(TYPDIM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=X-YZ  ' , DM , DN , D , C , NDIAG )
-         ELSEIF(TYPDIM(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIM(1:1).EQ.'Q') THEN
+          CALL OV( 'X=X-YZ  ' , DM , DN , D , C , NDIAG )
+        ELSEIF(TYPDIM(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
+          IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   EXTRADIAGONAL TERMS
 !
-         IF(TYPEXM(1:1).EQ.'Q') THEN
-           IF(TYPEXN(1:1).EQ.'Q') THEN
-           DO ISEG = 1 , NSEG1
-            XM(ISEG     )=XM(ISEG     )-XN(ISEG     )*D(GLOSEG(ISEG,2))
-            XM(ISEG+DIMX)=XM(ISEG+DIMX)-XN(ISEG+DIMX)*D(GLOSEG(ISEG,1))
-           ENDDO
-           ELSEIF(TYPEXN(1:1).EQ.'S') THEN
-           DO ISEG = 1 , NSEG1
-            XM(ISEG     ) = XM(ISEG     ) - XN(ISEG) * D(GLOSEG(ISEG,2))
-            XM(ISEG+DIMX) = XM(ISEG+DIMX) - XN(ISEG) * D(GLOSEG(ISEG,1))
-           ENDDO
-           ELSEIF(TYPEXN(1:1).NE.'0') THEN
-            IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-            IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-            CALL PLANTE(1)
-            STOP
-           ENDIF
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,172) TYPEXM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,173) TYPEXM(1:1)
+        IF(TYPEXM(1:1).EQ.'Q') THEN
+          IF(TYPEXN(1:1).EQ.'Q') THEN
+          DO ISEG = 1 , NSEG1
+           XM(ISEG     )=XM(ISEG     )-XN(ISEG     )*D(GLOSEG(ISEG,2))
+           XM(ISEG+DIMX)=XM(ISEG+DIMX)-XN(ISEG+DIMX)*D(GLOSEG(ISEG,1))
+          ENDDO
+          ELSEIF(TYPEXN(1:1).EQ.'S') THEN
+          DO ISEG = 1 , NSEG1
+           XM(ISEG     ) = XM(ISEG     ) - XN(ISEG) * D(GLOSEG(ISEG,2))
+           XM(ISEG+DIMX) = XM(ISEG+DIMX) - XN(ISEG) * D(GLOSEG(ISEG,1))
+          ENDDO
+          ELSEIF(TYPEXN(1:1).NE.'0') THEN
+           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
+           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
            CALL PLANTE(1)
            STOP
-         ENDIF
+          ENDIF
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,172) TYPEXM(1:1)
+          IF (LNG.EQ.2) WRITE(LU,173) TYPEXM(1:1)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
-!-----------------------------------------------------------------------
+!----------------------------------------------------------------------
 !
       ELSEIF(OP(3:8).EQ.'DMD   ') THEN
 !
 !   DIAGONAL TERMS
 !
-         IF(TYPDIM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
-           CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
-         ELSEIF(TYPDIM(1:1).EQ.'I') THEN
-           CALL OV( 'X=YZ    ' , DM , D , D , C , NDIAG )
-           TYPDIM(1:1)='Q'
-         ELSEIF(TYPDIM(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
-12         FORMAT(1X,'OMSEG (BIEF) : TYPDIM INCONNU :',A1)
-13         FORMAT(1X,'OMSEG (BIEF) : TYPDIM UNKNOWN :',A1)
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIM(1:1).EQ.'Q') THEN
+          CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
+          CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
+        ELSEIF(TYPDIM(1:1).EQ.'I') THEN
+          CALL OV( 'X=YZ    ' , DM , D , D , C , NDIAG )
+          TYPDIM(1:1)='Q'
+        ELSEIF(TYPDIM(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
+          IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
+12        FORMAT(1X,'OMSEG (BIEF) : TYPDIM INCONNU :',A1)
+13        FORMAT(1X,'OMSEG (BIEF) : TYPDIM UNKNOWN :',A1)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   EXTRADIAGONAL TERMS
 !
-         IF(TYPEXM(1:1).EQ.'S') THEN
+        IF(TYPEXM(1:1).EQ.'S') THEN
 !
-         DO ISEG = 1 , NSEG1
-           XM(ISEG)=XM(ISEG)*D(GLOSEG(ISEG,1))*D(GLOSEG(ISEG,2))
-         ENDDO
+        DO ISEG = 1 , NSEG1
+          XM(ISEG)=XM(ISEG)*D(GLOSEG(ISEG,1))*D(GLOSEG(ISEG,2))
+        ENDDO
 !
-         ELSEIF(TYPEXM(1:1).EQ.'Q') THEN
+        ELSEIF(TYPEXM(1:1).EQ.'Q') THEN
 !
-         DO ISEG = 1 , NSEG1
-           XM(ISEG     )=XM(ISEG     )
-     &                      *D(GLOSEG(ISEG,1))*D(GLOSEG(ISEG,2))
-           XM(ISEG+DIMX)=XM(ISEG+DIMX)
-     &                      *D(GLOSEG(ISEG,1))*D(GLOSEG(ISEG,2))
-         ENDDO
+        DO ISEG = 1 , NSEG1
+          XM(ISEG     )=XM(ISEG     )
+     &                     *D(GLOSEG(ISEG,1))*D(GLOSEG(ISEG,2))
+          XM(ISEG+DIMX)=XM(ISEG+DIMX)
+     &                     *D(GLOSEG(ISEG,1))*D(GLOSEG(ISEG,2))
+        ENDDO
 !
         ELSEIF(TYPEXM(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,20) TYPEXM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,21) TYPEXM(1:1)
-20         FORMAT(1X,'OMSEG (BIEF) : TYPEXM INCONNU :',A1)
-21         FORMAT(1X,'OMSEG (BIEF) : TYPEXM UNKNOWN :',A1)
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,20) TYPEXM(1:1)
+          IF (LNG.EQ.2) WRITE(LU,21) TYPEXM(1:1)
+20        FORMAT(1X,'OMSEG (BIEF) : TYPEXM INCONNU :',A1)
+21        FORMAT(1X,'OMSEG (BIEF) : TYPEXM UNKNOWN :',A1)
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !
 !-----------------------------------------------------------------------
@@ -559,12 +571,12 @@
         ELSEIF(TYPEXM(1:1).EQ.'Q') THEN
            CALL OV( 'X=C     ' , XM , Y , Z , 0.D0 , NSEG1+NSEG2 )
         ELSEIF(TYPEXM(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,710) TYPEXM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,711) TYPEXM(1:1)
-710        FORMAT(1X,'OMSEG (BIEF) : TYPEXM INCONNU :',A1)
-711        FORMAT(1X,'OMSEG (BIEF) : TYPEXM UNKNOWN :',A1)
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,710) TYPEXM(1:1)
+          IF (LNG.EQ.2) WRITE(LU,711) TYPEXM(1:1)
+710       FORMAT(1X,'OMSEG (BIEF) : TYPEXM INCONNU :',A1)
+711       FORMAT(1X,'OMSEG (BIEF) : TYPEXM UNKNOWN :',A1)
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !       TYPDIM IS NOT CHANGED
 !       TYPDIM(1:1)='0'

@@ -121,25 +121,25 @@
 !
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_SISYPHE
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)               :: NCAR
       CHARACTER(LEN=24), INTENT(IN)     :: CODE
       CHARACTER(LEN=250), INTENT(IN)    :: PATH
-C                                                 NMAX
+!                                                 NMAX
       CHARACTER*144, INTENT(INOUT)      :: MOTCAR(300)
-C                                                      NMAX
+!                                                      NMAX
       CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,300)
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, PARAMETER :: NMAX = 300
-C
+!
       INTEGER            :: I,K,ERR
       INTEGER            :: MOTINT(NMAX)
       INTEGER            :: TROUVE(4,NMAX)
@@ -154,66 +154,66 @@ C
       CHARACTER*72       :: MOTCLE(4,NMAX,2)
 
       CHARACTER(LEN=250) TEMPVAR
-C
-C-----------------------------------------------------------------------
-C
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
+!
+!-----------------------------------------------------------------------
+!
       SUMAVAI = 0
 
-C INITIALISES THE VARIABLES FOR DAMOCLES CALL :
-C
+! INITIALISES THE VARIABLES FOR DAMOCLES CALL :
+!
       DO K = 1, NMAX
-C       A FILENAME NOT GIVEN BY DAMOCLES WILL BE RECOGNIZED AS A WHITE SPACE
-C       (IT MAY BE THAT NOT ALL COMPILERS WILL INITIALISE LIKE THAT)
+!       A FILENAME NOT GIVEN BY DAMOCLES WILL BE RECOGNIZED AS A WHITE SPACE
+!       (IT MAY BE THAT NOT ALL COMPILERS WILL INITIALISE LIKE THAT)
         MOTCAR(K)(1:1)=' '
-C
+!
         DIMENS(1,K) = 0
         DIMENS(2,K) = 0
         DIMENS(3,K) = 0
         DIMENS(4,K) = 0
       ENDDO
-C
-C     WRITES OUT INFO
+!
+!     WRITES OUT INFO
       DOC = .FALSE.
-C
-C-----------------------------------------------------------------------
-C     OPENS DICTIONNARY AND STEERING FILES
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!     OPENS DICTIONNARY AND STEERING FILES
+!-----------------------------------------------------------------------
+!
       IF(NCAR.GT.0) THEN
-C
+!
         NOM_DIC=PATH(1:NCAR)//'SISDICO'
         NOM_CAS=PATH(1:NCAR)//'SISCAS'
-C
+!
       ELSE
-C
+!
         NOM_DIC='SISDICO'
         NOM_CAS='SISCAS'
-C
+!
       ENDIF
-C
+!
       OPEN(2,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
       OPEN(3,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
-C
-C-----------------------------------------------------------------------
-C     CALLS DAMOCLES
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!     CALLS DAMOCLES
+!-----------------------------------------------------------------------
+!
       CALL DAMOCLE( ADRESS , DIMENS  , NMAX   , DOC    , LNG , LU  ,
      &               MOTINT , MOTREA  , MOTLOG , MOTCAR ,
      &               MOTCLE , TROUVE , 2 , 3 ,.FALSE., FILE_DESC )
-C
-C     DECODES 'SUBMIT' CHAINS
-C
+!
+!     DECODES 'SUBMIT' CHAINS
+!
       CALL READ_SUBMIT(SIS_FILES,MAXLU_SIS,CODE,FILE_DESC,300)
-C
-C-----------------------------------------------------------------------
-C
-C     RETRIEVES FILES NUMBERS IN TELEMAC-2D FORTRAN PARAMETERS
-C     AT THIS LEVEL LOGICAL UNITS ARE EQUAL TO THE FILE NUMBER
-C
+!
+!-----------------------------------------------------------------------
+!
+!     RETRIEVES FILES NUMBERS IN TELEMAC-2D FORTRAN PARAMETERS
+!     AT THIS LEVEL LOGICAL UNITS ARE EQUAL TO THE FILE NUMBER
+!
       DO I=1,MAXLU_SIS
         IF(SIS_FILES(I)%TELNAME.EQ.'SISHYD') THEN
           SISHYD=I
@@ -241,19 +241,19 @@ C
           SISLIQ=I
         ENDIF
       ENDDO
-C
-C-----------------------------------------------------------------------
-C
-C   ASSIGNS THE STEERING FILE VALUES TO THE PARAMETER FORTRAN NAME
-C
-C-----------------------------------------------------------------------
-C
-C ################# !
-C INTEGER KEYWORDS  !
-C ################# !
-C OPTION OF MATRIX ASSEMBLY IS HARD-CODED
-C ---------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
+!   ASSIGNS THE STEERING FILE VALUES TO THE PARAMETER FORTRAN NAME
+!
+!-----------------------------------------------------------------------
+!
+! ################# !
+! INTEGER KEYWORDS  !
+! ################# !
+! OPTION OF MATRIX ASSEMBLY IS HARD-CODED
+! ---------------------------------------------
+!
       OPTASS = 1
       PRODUC = 1
 
@@ -272,19 +272,19 @@ C
       ! ------------------------
       LOADMETH = 0
 
-C     ICM           = MOTINT( ADRESS(1,  1) )
+!     ICM           = MOTINT( ADRESS(1,  1) )
       ICF           = MOTINT( ADRESS(1,  2) )
       NPAS          = MOTINT( ADRESS(1,  3) )
       NMAREE        = MOTINT( ADRESS(1,  4) )
-C     N1            = MOTINT( ADRESS(1,  5) )
+!     N1            = MOTINT( ADRESS(1,  5) )
 
       LEOPR         = MOTINT( ADRESS(1,  6) )
       LISPR         = MOTINT( ADRESS(1,  7) )
-C     STDGEO IS NOT USED, DELETE FROM DECLARATIONS
+!     STDGEO IS NOT USED, DELETE FROM DECLARATIONS
       STDGEO        = MOTINT( ADRESS(1,  8) )
-C     LOGDES IS NOT USED, DELETE FROM DECLARATIONS
+!     LOGDES IS NOT USED, DELETE FROM DECLARATIONS
       LOGDES        = MOTINT( ADRESS(1,  9) )
-C     LOGPRE IS NOT USED, DELETE FROM DECLARATIONS
+!     LOGPRE IS NOT USED, DELETE FROM DECLARATIONS
       LOGPRE        = MOTINT( ADRESS(1, 10) )
       OPTBAN        = MOTINT( ADRESS(1, 11) )
       LVMAC         = MOTINT( ADRESS(1, 12) )
@@ -305,11 +305,11 @@ C     LOGPRE IS NOT USED, DELETE FROM DECLARATIONS
       CHOIX         = MOTINT( ADRESS(1, 21) )
       DIRFLU        = MOTINT( ADRESS(1, 22) )
       NPRIV         = MOTINT( ADRESS(1, 23) )
-C
-C     NCSIZE        = MOTINT( ADRESS(1, 24) )
-C     NUMBER OF PROCESSORS (ALREADY GIVEN IN INIT_FILES2;
-C     MUST BE THE SAME, BUT WHEN USING COUPLED MODELS IT CAN
-C     WRONGLY BE DIFFERENT)
+!
+!     NCSIZE        = MOTINT( ADRESS(1, 24) )
+!     NUMBER OF PROCESSORS (ALREADY GIVEN IN INIT_FILES2;
+!     MUST BE THE SAME, BUT WHEN USING COUPLED MODELS IT CAN
+!     WRONGLY BE DIFFERENT)
       IF(NCSIZE.NE.MOTINT(ADRESS(1,24))) THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'NOMBRE DE PROCESSEURS PARALLELES DIFFERENT :'
@@ -343,7 +343,7 @@ C     WRONGLY BE DIFFERENT)
       NSICLA        = MOTINT( ADRESS(1,252) )
       HIDFAC        = MOTINT( ADRESS(1,253) )
       ICQ           = MOTINT( ADRESS(1, 41) )
-C     CONTROL SECTIONS
+!     CONTROL SECTIONS
       NCP=DIMENS(1,42)
       ALLOCATE(CTRLSC(NCP),STAT=ERR)
       IF(ERR.NE.0) THEN
@@ -543,29 +543,29 @@ C     CONTROL SECTIONS
 !     HIDING EXPOSURE MULTI GRAIN MODEL
 ! 
       DO K=1,NSICLA
-         HIDI(K)  = MOTREA( ADRESS(2,253) + K-1 )
-         IF (TROUVE(2,255).EQ.1) THEN
-           FD90(K)= FDM(K)
-         ELSE
-           FD90(K)= MOTREA( ADRESS(2,255) + K-1 )
-         ENDIF
-         AVA0(K)  = MOTREA( ADRESS(2,258) + K-1 )
+        HIDI(K)  = MOTREA( ADRESS(2,253) + K-1 )
+        IF (TROUVE(2,255).EQ.1) THEN
+          FD90(K)= FDM(K)
+        ELSE
+          FD90(K)= MOTREA( ADRESS(2,255) + K-1 )
+        ENDIF
+        AVA0(K)  = MOTREA( ADRESS(2,258) + K-1 )
       ENDDO
       ELAY0       = MOTREA( ADRESS(2,259) )
-C
-C UM: MPM-Factor
+!
+! UM: MPM-Factor
       MPM         = MOTREA( ADRESS(2,260) )
-C UM: ALPHA-Factor
+! UM: ALPHA-Factor
       ALPHA       = MOTREA( ADRESS(2,261) )
-C UM: MOFAC-Factor
+! UM: MOFAC-Factor
       MOFAC       = MOTREA( ADRESS(2,262) )
 
       ! ################## !
       ! LOGICAL KEYWORDS !
       ! ################## !
-C INDEX 99 IS ALREADY USED FOR KEYWORD 'LIST OF FILES'
-C INDEX 54 IS ALREADY USED FOR KEYWORD 'DESCRIPTION OF LIBRARIES'
-C INDEX 57 IS ALREADY USED FOR KEYWORD 'DEFAULT EXECUTABLE'
+! INDEX 99 IS ALREADY USED FOR KEYWORD 'LIST OF FILES'
+! INDEX 54 IS ALREADY USED FOR KEYWORD 'DESCRIPTION OF LIBRARIES'
+! INDEX 57 IS ALREADY USED FOR KEYWORD 'DEFAULT EXECUTABLE'
       ! SPHERICAL EQUATIONS HARD-CODED
       ! ----------------------------------
       SPHERI       = .FALSE.
@@ -577,7 +577,7 @@ C INDEX 57 IS ALREADY USED FOR KEYWORD 'DEFAULT EXECUTABLE'
       ! IF TROUVE: VELOCITIES ARE USER-DEFINED
       ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       IF (TROUVE(2, 22).EQ.2) CALWC = .TRUE.
-C CV
+! CV
       ! SHIELDS PARAMETER
       ! ------------------------------------------
       CALAC = .FALSE.
@@ -590,7 +590,7 @@ C CV
       PERMA        = MOTLOG( ADRESS(3,  2) )
       BANDEC       = MOTLOG( ADRESS(3,  3) )
       VALID        = MOTLOG( ADRESS(3,  4) )
-C     DTVAR        = MOTLOG( ADRESS(3,  5) )
+!     DTVAR        = MOTLOG( ADRESS(3,  5) )
       LUMPI        = MOTLOG( ADRESS(3,  6) )
       SUSP         = MOTLOG( ADRESS(3,  7) )
       CHARR        = MOTLOG( ADRESS(3,  8) )
@@ -598,7 +598,7 @@ C     DTVAR        = MOTLOG( ADRESS(3,  5) )
       CONST_ALAYER = MOTLOG( ADRESS(3, 11) )
       LCONDIS      = MOTLOG( ADRESS(3, 12) )
       LGRAFED      = MOTLOG( ADRESS(3, 13) )
-C     USED TO CHECK SIS_FILES(SISPRE)%NAME
+!     USED TO CHECK SIS_FILES(SISPRE)%NAME
       DEBU         = MOTLOG( ADRESS(3, 14) )
       IMP_INFLOW_C = MOTLOG( ADRESS(3, 15) )
       SECCURRENT   = MOTLOG( ADRESS(3, 16) )
@@ -689,7 +689,7 @@ C     USED TO CHECK SIS_FILES(SISPRE)%NAME
 
       !UHM FOR CVSP, But its not Beautiful
       TEMPVAR  =   MOTCAR(ADRESS(4,51)   )
-      call LECDON_SPLIT_OUTPUTPOINTS(TEMPVAR,CVSMOUTPUT,CVSM_OUT_FULL)
+      CALL LECDON_SPLIT_OUTPUTPOINTS(TEMPVAR,CVSMOUTPUT,CVSM_OUT_FULL)
       !UHM
 
       IF(LNG.EQ.1) WRITE(LU,101)
@@ -721,26 +721,25 @@ C     USED TO CHECK SIS_FILES(SISPRE)%NAME
       CALL SORTIE(VARIM  , MNEMO , MAXVAR , SORIMP )
 !
       DO I = 1, 4
-         IF ((NPRIV.LT.I).AND.
-! JWI 31/05/2012 - added 1 to include wave orbital velocities
-     &       (SORLEO(I+28+(NOMBLAY+4)*NSICLA+NOMBLAY).OR.
-     &        SORIMP(I+28+(NOMBLAY+4)*NSICLA+NOMBLAY))) THEN
-! JWI END
-           NPRIV=MAX(NPRIV,I)
-         ENDIF
+        IF ((NPRIV.LT.I).AND.
+            ! JWI 31/05/2012 - added 1 to include wave orbital velocities
+     &      (SORLEO(I+28+(NOMBLAY+4)*NSICLA+NOMBLAY).OR.
+     &       SORIMP(I+28+(NOMBLAY+4)*NSICLA+NOMBLAY))) THEN
+          NPRIV=MAX(NPRIV,I)
+        ENDIF
       ENDDO
-C
-C-----------------------------------------------------------------------
-C
-C     CANCELS OUTPUT OF VARIABLES WHICH ARE NOT BUILT IN THIS CASE
-C
+!
+!-----------------------------------------------------------------------
+!
+!     CANCELS OUTPUT OF VARIABLES WHICH ARE NOT BUILT IN THIS CASE
+!
       IF(.NOT.SUSP) THEN
-CV 7/09/2006 MIGHT WANT TO OUTPUT THE SUSPENDED COMPONENT IN BIJKER
-C        SORIMP(24+4*NSICLA)=.FALSE.
-C        SORIMP(25+4*NSICLA)=.FALSE.
-C        SORIMP(26+4*NSICLA)=.FALSE.
+!V 7/09/2006 MIGHT WANT TO OUTPUT THE SUSPENDED COMPONENT IN BIJKER
+!        SORIMP(24+4*NSICLA)=.FALSE.
+!        SORIMP(25+4*NSICLA)=.FALSE.
+!        SORIMP(26+4*NSICLA)=.FALSE.
       ENDIF
-C   
+!   
 ! JWI 31/05/2012 - added 1 to include wave orbital velocities
       IF(.NOT.CHARR) THEN
         SORLEO(23+(NOMBLAY+2)*NSICLA)=.FALSE.
@@ -751,11 +750,11 @@ C
         SORIMP(25+(NOMBLAY+2)*NSICLA)=.FALSE.
       ENDIF
 ! JWI END
-C
-C-----------------------------------------------------------------------
-C
-C CHECKS TETA VALUE
-C
+!
+!-----------------------------------------------------------------------
+!
+! CHECKS TETA VALUE
+!
       IF( TETA.LT.0.D0.OR.TETA.GT.1.D0) THEN
           IF (LNG.EQ.1) WRITE(LU,50)
           IF (LNG.EQ.2) WRITE(LU,51)
@@ -766,19 +765,19 @@ C
         CALL PLANTE(1)
         STOP
       ENDIF
-C
-C     INITIALISES MSK (MASKING VARIABLE)
-C     FOR NOW MASKING IS ONLY DONE FOR ONE 'OPTION FOR THE TREATMENT
-C     OF TIDAL FLATS'. SHOULD BE OFFERED AS AN OPTION FOR THE USER TO
-C     CREATE ISLANDS IN THE FUTURE
+!
+!     INITIALISES MSK (MASKING VARIABLE)
+!     FOR NOW MASKING IS ONLY DONE FOR ONE 'OPTION FOR THE TREATMENT
+!     OF TIDAL FLATS'. SHOULD BE OFFERED AS AN OPTION FOR THE USER TO
+!     CREATE ISLANDS IN THE FUTURE
       MSK = .FALSE.
       IF (.NOT.BANDEC) OPTBAN=0
       IF (OPTBAN.EQ.2) MSK = .TRUE.
-C
-C-----------------------------------------------------------------------
-C
-C     CHECKS WHETHER THERE IS A VALIDATION FILE
-C
+!
+!-----------------------------------------------------------------------
+!
+!     CHECKS WHETHER THERE IS A VALIDATION FILE
+!
       IF (VALID.AND.SIS_FILES(SISREF)%NAME.EQ.' ') THEN
           VALID=.FALSE.
         IF (LNG.EQ.1) WRITE(LU,70)
@@ -789,10 +788,10 @@ C
 71      FORMAT(/,1X,'VALIDATION IS NOT POSSIBLE :  ',/
      &          ,1X,'NO VALIDATION FILE  !                 ')
       ENDIF
-C
-CMGDL
-C     CHECKS THE NUMBER OF NSICLA
-C      IF(NSICLA.GT.10) THEN
+!
+!MGDL
+!     CHECKS THE NUMBER OF NSICLA
+!      IF(NSICLA.GT.10) THEN
       IF(NSICLA.GT.NSICLM) THEN
       IF (LNG.EQ.1) WRITE(LU,80) NSICLM
         IF (LNG.EQ.2) WRITE(LU,81) NSICLM
@@ -803,7 +802,7 @@ C      IF(NSICLA.GT.10) THEN
         CALL PLANTE(1)
         STOP
       ENDIF
-C     CHECKS THE SUM OF INITIAL AVAI
+!     CHECKS THE SUM OF INITIAL AVAI
       DO I=1,NSICLA
       SUMAVAI = SUMAVAI + AVA0(I)
       ENDDO
@@ -817,9 +816,9 @@ C     CHECKS THE SUM OF INITIAL AVAI
         CALL PLANTE(1)
         STOP
       ENDIF
-C
-C     WARNING FOR THE CHOICE OF RIGID BED METHOD
-C
+!
+!     WARNING FOR THE CHOICE OF RIGID BED METHOD
+!
       IF(CHOIX.GT.0.AND.CHOIX.LT.4.AND.VF) THEN
       IF(LNG.EQ.1) WRITE(LU,200)
         IF (LNG.EQ.2) WRITE(LU,201)
@@ -829,7 +828,7 @@ C
      &ISEE ')
 201     FORMAT(/,1X,'FINITE VOLUMES CHOSEN: ',/
      &          ,1X,'METHOD 4 FOR RIGID BED WILL BE USED ')
-C       ADDED BY JMH 12/07/2007
+!       ADDED BY JMH 12/07/2007
         CHOIX=4
       ENDIF
       IF (CHOIX.EQ.4.AND..NOT.VF) THEN
@@ -842,13 +841,13 @@ C       ADDED BY JMH 12/07/2007
 301     FORMAT(/,1X,'FINITE ELEMENTS CHOSEN: ',/
      &          ,1X,'METHOD 4 FOR RIGID BED CAN NOT BE USED, METHOD 3 US
      &ED INSTEAD')
-C       ADDED BY JMH 12/07/2007
+!       ADDED BY JMH 12/07/2007
         CHOIX=3
       ENDIF
-C
-C     CHECKS THAT THE BEDLOAD TRANSPORT FORMULATION AND THE HIDING
-C     FACTOR FORMULATION CAN GO TOGETHER
-C
+!
+!     CHECKS THAT THE BEDLOAD TRANSPORT FORMULATION AND THE HIDING
+!     FACTOR FORMULATION CAN GO TOGETHER
+!
       IF ((HIDFAC.EQ.3.AND.ICF.NE.6).OR.
      &    (HIDFAC.EQ.1.AND.ICF.NE.1).OR.
      &    (HIDFAC.EQ.2.AND.ICF.NE.1)) THEN
@@ -862,9 +861,9 @@ C
         CALL PLANTE(1)
         STOP
       ENDIF
-C
-C     WITHOUT AND WITH COUPLING, SOME CORRECTIONS
-C
+!
+!     WITHOUT AND WITH COUPLING, SOME CORRECTIONS
+!
       IF(CODE(1:7).EQ.'TELEMAC'.AND.
      &   SIS_FILES(SISHYD)%NAME(1:1).NE.' ') THEN
         SIS_FILES(SISHYD)%NAME(1:1)=' '
@@ -873,9 +872,9 @@ C
         IF(LNG.EQ.1) WRITE(LU,113)
 113     FORMAT(/,1X,'COUPLING: HYDRODYNAMIC FILE IGNORED')
       ENDIF
-C
-C     COMPUTATION CONTINUED
-C
+!
+!     COMPUTATION CONTINUED
+!
       IF(DEBU) THEN
         IF(SIS_FILES(SISPRE)%NAME(1:1).EQ.' ') THEN
           IF(LNG.EQ.1) WRITE(LU,312)
@@ -898,37 +897,35 @@ C
      &             1X,'PREVIOUS SEDIMENTOLOGICAL FILE IGNORED')
         ENDIF
       ENDIF
-C
-C METHODS NOT CODED UP FOR SUSPENSION
-C -------------------------------------------
-C
-C     JMH ON 09/10/2009 : NEW PARAMETERISATION AND NEW SCHEMES
-C
+!
+! METHODS NOT CODED UP FOR SUSPENSION
+! -------------------------------------------
+!
+!     JMH ON 09/10/2009 : NEW PARAMETERISATION AND NEW SCHEMES
+!
       IF(SUSP) THEN
-      IF(RESOL.NE.ADV_CAR   .AND.RESOL.NE.ADV_SUP   .AND.
-     &   RESOL.NE.ADV_PSI_NC.AND.RESOL.NE.ADV_NSC_NC.AND.
-     &   RESOL.NE.ADV_LPO   .AND.RESOL.NE.ADV_NSC   .AND.
-     &   RESOL.NE.ADV_PSI   .AND.RESOL.NE.ADV_LPO_TF.AND.
-     &   RESOL.NE.ADV_NSC_TF                              ) THEN
-         IF (LNG.EQ.1) WRITE(LU,302) RESOL
-         IF (LNG.EQ.2) WRITE(LU,303) RESOL
-302      FORMAT(1X,'METHODE DE RESOLUTION NON PROGRAMMEE : ',1I6)
-303      FORMAT(1X,'RESOLVING METHOD NOT IMPLEMENTED : ',1I6)
-         IF(RESOL.EQ.8) THEN
-           IF(LNG.EQ.2) THEN
-           WRITE(LU,*) 'LE SCHEMA 8 AVANT VERSION 6.0 EST DEVENU LE 4'
-           ENDIF
-           IF(LNG.EQ.2) THEN
-           WRITE(LU,*) 'NUMBER 8 PRIOR TO VERSION 6.0 IS NOW NUMBER 4'
-           ENDIF
-         ENDIF
-         CALL PLANTE(1)
-         STOP
+        IF(RESOL.NE.ADV_CAR   .AND.RESOL.NE.ADV_SUP   .AND.
+     &     RESOL.NE.ADV_PSI_NC.AND.RESOL.NE.ADV_NSC_NC.AND.
+     &     RESOL.NE.ADV_LPO   .AND.RESOL.NE.ADV_NSC   .AND.
+     &     RESOL.NE.ADV_PSI   .AND.RESOL.NE.ADV_LPO_TF.AND.
+     &     RESOL.NE.ADV_NSC_TF                              ) THEN
+          IF (LNG.EQ.1) WRITE(LU,302) RESOL
+          IF (LNG.EQ.2) WRITE(LU,303) RESOL
+302       FORMAT(1X,'METHODE DE RESOLUTION NON PROGRAMMEE : ',1I6)
+303       FORMAT(1X,'RESOLVING METHOD NOT IMPLEMENTED : ',1I6)
+          IF(RESOL.EQ.8) THEN
+            IF(LNG.EQ.1) WRITE(LU,*) 
+     &                'LE SCHEMA 8 AVANT VERSION 6.0 EST DEVENU LE 4'
+            IF(LNG.EQ.2) WRITE(LU,*) 
+     &                'NUMBER 8 PRIOR TO VERSION 6.0 IS NOW NUMBER 4'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ENDIF
-      ENDIF
-CC
-C CV 27/01/2005
-C
+!C
+! CV 27/01/2005
+!
       IF(.NOT.HOULE) SIS_FILES(SISCOU)%NAME(1:1)=' '
       IF(HOULE) THEN
         IF(ICF.NE.4.AND.ICF.NE.5.AND.ICF.NE.8.AND.ICF.NE.9) THEN
@@ -945,7 +942,7 @@ C
         ENDIF
       ENDIF
 !
-C BEDLOAD AND SUSPENDED TRANSPORT COUPLING
+! BEDLOAD AND SUSPENDED TRANSPORT COUPLING
 ! ---------------------------------
 !
       IF((ICF==30.OR.ICF==3.OR.ICF==9).AND.SUSP.AND.CHARR) THEN
@@ -961,9 +958,9 @@ C BEDLOAD AND SUSPENDED TRANSPORT COUPLING
      &       'THE SUSPENSION TERM IS CALCULATED TWICE,'
      &      ,' WITH TOTAL LOAD FORMULA AND SUSPENSION ')
 !
-C REFERENCE CONCENTRATION
+! REFERENCE CONCENTRATION
 !
-C MODIFICATION CV 31/12      IF(ICQ.EQ.2.AND.(PERCOU.NE.1.OR..NOT.CHARR)) THEN
+! MODIFICATION CV 31/12      IF(ICQ.EQ.2.AND.(PERCOU.NE.1.OR..NOT.CHARR)) THEN
 !
       IF(ICQ.EQ.2.AND.(PERCOU.GT.1.OR..NOT.CHARR)) THEN
         IF(LNG == 1) WRITE(LU,1401) ICQ
@@ -979,13 +976,13 @@ C MODIFICATION CV 31/12      IF(ICQ.EQ.2.AND.(PERCOU.NE.1.OR..NOT.CHARR)) THEN
         STOP
       ENDIF
 !
-C     CHECKS CONSISTENCY OF BEDLOAD LAWS
+!     CHECKS CONSISTENCY OF BEDLOAD LAWS
 !
-C     SOULSBY SLOPE EFFECT : REQUIRES A THRESHOLD FORMULA
+!     SOULSBY SLOPE EFFECT : REQUIRES A THRESHOLD FORMULA
 !
       IF(SLOPEFF.EQ.2) THEN
-C       CHECK FOR ICF=6
-C       IF(ICF.NE.1.AND.ICF.NE.6) THEN
+!       CHECK FOR ICF=6
+!       IF(ICF.NE.1.AND.ICF.NE.6) THEN
         IF(ICF.NE.1) THEN
         IF(LNG == 1) WRITE(LU,1403) ICF
         IF(LNG == 2) WRITE(LU,1404) ICF
@@ -997,54 +994,54 @@ C       IF(ICF.NE.1.AND.ICF.NE.6) THEN
      &         'IF FORMULA FOR SLOPE EFFECT=2 (SOULSBY)')
         ENDIF
       ENDIF
-C
-C V6P0 : COHERENCE IF CONSOLIDATION MODEL IS USED
-C VITCE AND CSF_VASE STEM FROM THE FIRST LAYER OF THE MULTI-LAYER MODEL
-C +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-C Mots clés supprimés vitesse critique d'erosion et concentration du lit
-C CV : si première couche est  vide cela n'est pas correct
+!
+! V6P0 : COHERENCE IF CONSOLIDATION MODEL IS USED
+! VITCE AND CSF_VASE STEM FROM THE FIRST LAYER OF THE MULTI-LAYER MODEL
+! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+! Mots clés supprimés vitesse critique d'erosion et concentration du lit
+! CV : si première couche est  vide cela n'est pas correct
 
-C
+!
       IF(MIXTE) THEN
-C
-C       FILLS VOIDS WITH MUD:
-C CV: vérifier que la concentration en cohésif est non nulle
-C
+!
+!       FILLS VOIDS WITH MUD:
+! CV: vérifier que la concentration en cohésif est non nulle
+!
         CSF_SABLE= 1.D0
-CV: verrouiller les options
+!V: verrouiller les options
         NSICLA=2
         SEDCO(1)=.FALSE.
         SEDCO(2)=.TRUE.
         CHARR=.FALSE.
         SUSP=.TRUE.
-CV
+!V
       ELSE
         CSF_SABLE= (1.D0-XKV)
       ENDIF
-C
+!
       IF((.NOT.MIXTE).AND.SEDCO(1)) THEN
         CHARR=.FALSE.
         !SUSP=.TRUE. (In general, but not necessary)
       ENDIF
-C
+!
       IF(NOMBLAY.GT.NLAYMAX) THEN
         WRITE (LU,*) 'NUMBER OF BED LOAD MODEL LAYERS LARGER THAN '
         WRITE (LU,*) 'THE MAXIMUM PROGRAMMED VALUE OF ', NLAYMAX
         CALL PLANTE(1)
         STOP
       ENDIF
-C      IF(NOMBLAY.LT.2) THEN
-C        WRITE (LU,*) 'BEWARE: NUMBER OF BED LOAD MODEL LAYERS'
-C        WRITE (LU,*) '======= LOWER THAN THE DEFAULT VALUE OF 2'
-C      ENDIF
-C
-C----------------------------------------------------------------
-C
-C  V6P1: FOR THE BED FRICTION PREDICTOR USE LAW OF FRICTION 5 (NIKURADSE)
-C
+!      IF(NOMBLAY.LT.2) THEN
+!        WRITE (LU,*) 'BEWARE: NUMBER OF BED LOAD MODEL LAYERS'
+!        WRITE (LU,*) '======= LOWER THAN THE DEFAULT VALUE OF 2'
+!      ENDIF
+!
+!----------------------------------------------------------------
+!
+!  V6P1: FOR THE BED FRICTION PREDICTOR USE LAW OF FRICTION 5 (NIKURADSE)
+!
       IF(KSPRED) KFROT=5
-C
-C----------------------------------------------------------------
-C
+!
+!----------------------------------------------------------------
+!
       RETURN
       END

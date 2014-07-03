@@ -254,17 +254,17 @@
 70    IF(AT.GE.TL1-TOL.AND.AT.LE.TL2+TOL) THEN
         TETA = (AT-TL1)/(TL2-TL1)
       ELSE
-         DO J=1,NLIG-1
-            IF(AT.GE.TIME(J)-TOL.AND.AT.LE.TIME(J+1)+TOL) THEN
-               TL1=TIME(J)
-               TL2=TIME(J+1)
-               IL1=J
-               IL2=J+1
-               GO TO 70
-            ENDIF
-         ENDDO
-         IL1=IL2
-         IL2=IL2+1
+        DO J=1,NLIG-1
+          IF(AT.GE.TIME(J)-TOL.AND.AT.LE.TIME(J+1)+TOL) THEN
+            TL1=TIME(J)
+            TL2=TIME(J+1)
+            IL1=J
+            IL2=J+1
+            GO TO 70
+          ENDIF
+        ENDDO
+        IL1=IL2
+        IL2=IL2+1
         IF(IL2.GT.NLIG) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'T=',AT,' HORS LIMITES'

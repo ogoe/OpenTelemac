@@ -76,20 +76,20 @@
       IFRM1  = 1
       ITOP1  = 1
       DO IPOIN = 2, NPOIN2
-         DX     = XFRM1-X(IPOIN)
-         DY     = YFRM1-Y(IPOIN)
-         DX     = DX*DX + DY*DY
-         IF(DX.LT.DISFRM) THEN
-           DISFRM = DX
-           IFRM1  = IPOIN
-         ENDIF
-         DX     = XTOP1-X(IPOIN)
-         DY     = YTOP1-Y(IPOIN)
-         DX     = DX*DX + DY*DY
-         IF(DX.LT.DISTO) THEN
-           DISTO  = DX
-           ITOP1  = IPOIN
-         ENDIF
+        DX     = XFRM1-X(IPOIN)
+        DY     = YFRM1-Y(IPOIN)
+        DX     = DX*DX + DY*DY
+        IF(DX.LT.DISFRM) THEN
+          DISFRM = DX
+          IFRM1  = IPOIN
+        ENDIF
+        DX     = XTOP1-X(IPOIN)
+        DY     = YTOP1-Y(IPOIN)
+        DX     = DX*DX + DY*DY
+        IF(DX.LT.DISTO) THEN
+          DISTO  = DX
+          ITOP1  = IPOIN
+        ENDIF
       ENDDO
       IFRM1 = NODENRS(IFRM1)
       ITOP1 = NODENRS(ITOP1)

@@ -123,59 +123,59 @@
       IF ((IELMF.EQ.31.AND.((IELMG.EQ.31).OR.(IELMG.EQ.30))).OR.
      &    (IELMF.EQ.51.AND.IELMG.EQ.51)     ) THEN
 !
-      IF (ICOORD.EQ.1) THEN
+        IF (ICOORD.EQ.1) THEN
 !
 !-----------------------------------------------------------------------
 !  DERIVATIVE WRT X
 !
-      DO  IELEM = 1 , NELEM
+          DO  IELEM = 1 , NELEM
 !
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
-!
-         F1 = F(I1)
-         F2 = F(I2)
-         F3 = F(I3)
-         F4 = F(I4)
-!
-         IF (IELMG.EQ.31) THEN
-            G1 = G(I1)
-            G2 = G(I2)
-            G3 = G(I3)
-            G4 = G(I4)
-         ELSE
-            G1 = G(IELEM)
-            G2 = G1
-            G3 = G1
-            G4 = G1
-         ENDIF
-            
-!
-         F2MF1 = F2-F1
-         F3MF1 = F3-F1
-         F4MF1 = F4-F1
-         G2MG1 = G2-G1
-         G3MG1 = G3-G1
-         G4MG1 = G4-G1
+            I1 = IKLE1(IELEM)
+            I2 = IKLE2(IELEM)
+            I3 = IKLE3(IELEM)
+            I4 = IKLE4(IELEM)
+!           
+            F1 = F(I1)
+            F2 = F(I2)
+            F3 = F(I3)
+            F4 = F(I4)
+!           
+            IF (IELMG.EQ.31) THEN
+              G1 = G(I1)
+              G2 = G(I2)
+              G3 = G(I3)
+              G4 = G(I4)
+            ELSE
+              G1 = G(IELEM)
+              G2 = G1
+              G3 = G1
+              G4 = G1
+            ENDIF
+               
+!           
+            F2MF1 = F2-F1
+            F3MF1 = F3-F1
+            F4MF1 = F4-F1
+            G2MG1 = G2-G1
+            G3MG1 = G3-G1
+            G4MG1 = G4-G1
 !
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-         Y2  =  Y(I2) - Y(I1)
-         Y3  =  Y(I3) - Y(I1)
-         Y4  =  Y(I4) - Y(I1)
-         Z2  =  Z(I2) - Z(I1)
-         Z3  =  Z(I3) - Z(I1)
-         Z4  =  Z(I4) - Z(I1)
+            Y2  =  Y(I2) - Y(I1)
+            Y3  =  Y(I3) - Y(I1)
+            Y4  =  Y(I4) - Y(I1)
+            Z2  =  Z(I2) - Z(I1)
+            Z3  =  Z(I3) - Z(I1)
+            Z4  =  Z(I4) - Z(I1)
 !
-         W1(IELEM) = (
+            W1(IELEM) = (
      & (5*F2MF1*G1+F2MF1*G2MG1+F2MF1*G3MG1+F2MF1*G4MG1)*(Y3*Z4-Y4*Z3)
      &+(5*F3MF1*G1+F3MF1*G2MG1+F3MF1*G3MG1+F3MF1*G4MG1)*(Z2*Y4-Y2*Z4)
      &+(5*F4MF1*G1+F4MF1*G2MG1+F4MF1*G3MG1+F4MF1*G4MG1)*(Y2*Z3-Z2*Y3)
      &               ) * XSUR120
 !
-         W2(IELEM) = (
+            W2(IELEM) = (
      &-F4MF1*Z2*Y3*G4MG1+F4MF1*Y2*Z3*G4MG1+F3MF1*Z2*Y4*G4MG1
      &-F3MF1*Y2*Z4*G4MG1+F2MF1*Y3*Z4*G4MG1-F2MF1*Y4*Z3*G4MG1
      &+5*F2MF1*Y3*Z4*G1+2*F2MF1*Y3*Z4*G2MG1+F2MF1*Y3*Z4*G3MG1
@@ -185,12 +185,12 @@
      &+5*F4MF1*Y2*Z3*G1+2*F4MF1*Y2*Z3*G2MG1+F4MF1*Y2*Z3*G3MG1
      &-5*F4MF1*Z2*Y3*G1-2*F4MF1*Z2*Y3*G2MG1-F4MF1*Z2*Y3*G3MG1
      &               ) * XSUR120
-         W3(IELEM) = (
+            W3(IELEM) = (
      &-(-F2MF1*Y3*Z4+F2MF1*Y4*Z3+F3MF1*Y2*Z4
      &  -F3MF1*Z2*Y4-F4MF1*Y2*Z3+F4MF1*Z2*Y3)
      &               *(2*G3MG1+G2MG1+G4MG1+5*G1)
      &               ) * XSUR120
-         W4(IELEM) = (
+            W4(IELEM) = (
      &-2*F4MF1*Z2*Y3*G4MG1
      &+2*F4MF1*Y2*Z3*G4MG1
      &+2*F3MF1*Z2*Y4*G4MG1
@@ -207,54 +207,54 @@
      &-F4MF1*Z2*Y3*G3MG1
      &               ) * XSUR120
 !
-      ENDDO
-!
-      ELSE IF (ICOORD.EQ.2) THEN
+          ENDDO
+!      
+        ELSE IF (ICOORD.EQ.2) THEN
 !
 !-----------------------------------------------------------------------
 !  DERIVATIVE WRT Y
 !
-      DO   IELEM = 1 , NELEM
-!
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
-!
-         F1 = F(I1)
-         F2 = F(I2)
-         F3 = F(I3)
-         F4 = F(I4)
-!
-         IF (IELMG.EQ.31) THEN
-            G1 = G(I1)
-            G2 = G(I2)
-            G3 = G(I3)
-            G4 = G(I4)
-         ELSE
-            G1 = G(IELEM)
-            G2 = G1
-            G3 = G1
-            G4 = G1
-         ENDIF
-!
-         F2MF1 = F2-F1
-         F3MF1 = F3-F1
-         F4MF1 = F4-F1
-         G2MG1 = G2-G1
-         G3MG1 = G3-G1
-         G4MG1 = G4-G1
+          DO   IELEM = 1 , NELEM
+!       
+            I1 = IKLE1(IELEM)
+            I2 = IKLE2(IELEM)
+            I3 = IKLE3(IELEM)
+            I4 = IKLE4(IELEM)
+!           
+            F1 = F(I1)
+            F2 = F(I2)
+            F3 = F(I3)
+            F4 = F(I4)
+!           
+            IF (IELMG.EQ.31) THEN
+              G1 = G(I1)
+              G2 = G(I2)
+              G3 = G(I3)
+              G4 = G(I4)
+            ELSE
+              G1 = G(IELEM)
+              G2 = G1
+              G3 = G1
+              G4 = G1
+            ENDIF
+!           
+            F2MF1 = F2-F1
+            F3MF1 = F3-F1
+            F4MF1 = F4-F1
+            G2MG1 = G2-G1
+            G3MG1 = G3-G1
+            G4MG1 = G4-G1
 !
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-         X2  =  X(I2) - X(I1)
-         X3  =  X(I3) - X(I1)
-         X4  =  X(I4) - X(I1)
-         Z2  =  Z(I2) - Z(I1)
-         Z3  =  Z(I3) - Z(I1)
-         Z4  =  Z(I4) - Z(I1)
+            X2  =  X(I2) - X(I1)
+            X3  =  X(I3) - X(I1)
+            X4  =  X(I4) - X(I1)
+            Z2  =  Z(I2) - Z(I1)
+            Z3  =  Z(I3) - Z(I1)
+            Z4  =  Z(I4) - Z(I1)
 !
-         W1(IELEM) = (
+            W1(IELEM) = (
      &-F2MF1*X3*Z4*G2MG1+F3MF1*X2*Z4*G3MG1+5*F3MF1*X2*Z4*G1
      &-F2MF1*X3*Z4*G3MG1-5*F2MF1*X3*Z4*G1
      &+F2MF1*X4*Z3*G2MG1+F2MF1*X4*Z3*G3MG1+5*F2MF1*X4*Z3*G1
@@ -264,7 +264,7 @@
      &-5*F3MF1*Z2*X4*G1+F2MF1*X4*Z3*G4MG1+F3MF1*X2*Z4*G4MG1
      &-F4MF1*X2*Z3*G4MG1-F3MF1*Z2*X4*G4MG1-F2MF1*X3*Z4*G4MG1
      &+F4MF1*Z2*X3*G4MG1 ) * XSUR120
-         W2(IELEM) = (
+            W2(IELEM) = (
      &         -2*F2MF1*X3*Z4*G2MG1+F3MF1*X2*Z4*G3MG1+5*F3MF1*X2*Z4*G1-F
      &2MF1*X3*Z4*G3MG1-5*F2MF1*X3*Z4*G1+2*F2MF1*X4*Z3*G2MG1+F2MF1*X4*Z3*
      &G3MG1+5*F2MF1*X4*Z3*G1+2*F3MF1*X2*Z4*G2MG1+2*F4MF1*Z2*X3*G2MG1+F4M
@@ -272,10 +272,10 @@
      &MG1-5*F4MF1*X2*Z3*G1-2*F3MF1*Z2*X4*G2MG1-F3MF1*Z2*X4*G3MG1-5*F3MF1
      &*Z2*X4*G1+F2MF1*X4*Z3*G4MG1+F3MF1*X2*Z4*G4MG1-F4MF1*X2*Z3*G4MG1-F3
      &MF1*Z2*X4*G4MG1-F2MF1*X3*Z4*G4MG1+F4MF1*Z2*X3*G4MG1 ) * XSUR120
-         W3(IELEM) = (
+            W3(IELEM) = (
      &         -(F2MF1*X3*Z4-F2MF1*X4*Z3-F3MF1*X2*Z4+F3MF1*Z2*X4+F4MF1*X
      &2*Z3-F4MF1*Z2*X3)*(2*G3MG1+G2MG1+G4MG1+5*G1) ) * XSUR120
-         W4(IELEM) = (
+            W4(IELEM) = (
      &         -F2MF1*X3*Z4*G2MG1+F3MF1*X2*Z4*G3MG1+5*F3MF1*X2*Z4*G1-F2M
      &F1*X3*Z4*G3MG1-5*F2MF1*X3*Z4*G1+F2MF1*X4*Z3*G2MG1+F2MF1*X4*Z3*G3MG
      &1+5*F2MF1*X4*Z3*G1+F3MF1*X2*Z4*G2MG1+F4MF1*Z2*X3*G2MG1+F4MF1*Z2*X3
@@ -284,53 +284,53 @@
      &F2MF1*X4*Z3*G4MG1+2*F3MF1*X2*Z4*G4MG1-2*F4MF1*X2*Z3*G4MG1-2*F3MF1*
      &Z2*X4*G4MG1-2*F2MF1*X3*Z4*G4MG1+2*F4MF1*Z2*X3*G4MG1 ) * XSUR120
 !
-      ENDDO
-!
-      ELSE IF (ICOORD.EQ.3) THEN
+          ENDDO
+!      
+        ELSE IF (ICOORD.EQ.3) THEN
 !-----------------------------------------------------------------------
 !  DERIVATIVE WRT Z
 !
-      DO   IELEM = 1 , NELEM
+          DO   IELEM = 1 , NELEM
 !
-         I1 = IKLE1(IELEM)
-         I2 = IKLE2(IELEM)
-         I3 = IKLE3(IELEM)
-         I4 = IKLE4(IELEM)
-!
-         F1 = F(I1)
-         F2 = F(I2)
-         F3 = F(I3)
-         F4 = F(I4)
-!
-         IF (IELMG.EQ.31) THEN
-            G1 = G(I1)
-            G2 = G(I2)
-            G3 = G(I3)
-            G4 = G(I4)
-         ELSE
-            G1 = G(IELEM)
-            G2 = G1
-            G3 = G1
-            G4 = G1
-         ENDIF
-!
-         F2MF1 = F2-F1
-         F3MF1 = F3-F1
-         F4MF1 = F4-F1
-         G2MG1 = G2-G1
-         G3MG1 = G3-G1
-         G4MG1 = G4-G1
-!
+            I1 = IKLE1(IELEM)
+            I2 = IKLE2(IELEM)
+            I3 = IKLE3(IELEM)
+            I4 = IKLE4(IELEM)
+!         
+            F1 = F(I1)
+            F2 = F(I2)
+            F3 = F(I3)
+            F4 = F(I4)
+!         
+            IF (IELMG.EQ.31) THEN
+              G1 = G(I1)
+              G2 = G(I2)
+              G3 = G(I3)
+              G4 = G(I4)
+            ELSE
+              G1 = G(IELEM)
+              G2 = G1
+              G3 = G1
+              G4 = G1
+            ENDIF
+!         
+            F2MF1 = F2-F1
+            F3MF1 = F3-F1
+            F4MF1 = F4-F1
+            G2MG1 = G2-G1
+            G3MG1 = G3-G1
+            G4MG1 = G4-G1
+!         
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT
-!
-         X2  =  X(I2) - X(I1)
-         X3  =  X(I3) - X(I1)
-         X4  =  X(I4) - X(I1)
-         Y2  =  Y(I2) - Y(I1)
-         Y3  =  Y(I3) - Y(I1)
-         Y4  =  Y(I4) - Y(I1)
-!
-         W1(IELEM) = (
+!         
+            X2  =  X(I2) - X(I1)
+            X3  =  X(I3) - X(I1)
+            X4  =  X(I4) - X(I1)
+            Y2  =  Y(I2) - Y(I1)
+            Y3  =  Y(I3) - Y(I1)
+            Y4  =  Y(I4) - Y(I1)
+!         
+            W1(IELEM) = (
      &         5*F2MF1*X3*Y4*G1+F2MF1*X3*Y4*G2MG1+F2MF1*X3*Y4*G3MG1-5*F2
      &MF1*X4*Y3*G1-F2MF1*X4*Y3*G2MG1-F2MF1*X4*Y3*G3MG1-5*F3MF1*X2*Y4*G1-
      &F3MF1*X2*Y4*G2MG1-F3MF1*X2*Y4*G3MG1+5*F3MF1*Y2*X4*G1+F3MF1*Y2*X4*G
@@ -338,7 +338,7 @@
      &Y2*X3*G1-F4MF1*Y2*X3*G2MG1-F4MF1*Y2*X3*G3MG1+F4MF1*X2*Y3*G3MG1-F4M
      &F1*Y2*X3*G4MG1-F3MF1*X2*Y4*G4MG1+F4MF1*X2*Y3*G4MG1+F2MF1*X3*Y4*G4M
      &G1+F3MF1*Y2*X4*G4MG1-F2MF1*X4*Y3*G4MG1 ) * XSUR120
-         W2(IELEM) = (
+            W2(IELEM) = (
      &         5*F2MF1*X3*Y4*G1+2*F2MF1*X3*Y4*G2MG1+F2MF1*X3*Y4*G3MG1-5*
      &F2MF1*X4*Y3*G1-2*F2MF1*X4*Y3*G2MG1-F2MF1*X4*Y3*G3MG1-5*F3MF1*X2*Y4
      &*G1-2*F3MF1*X2*Y4*G2MG1-F3MF1*X2*Y4*G3MG1+5*F3MF1*Y2*X4*G1+2*F3MF1
@@ -346,10 +346,10 @@
      &1-5*F4MF1*Y2*X3*G1-2*F4MF1*Y2*X3*G2MG1-F4MF1*Y2*X3*G3MG1+F4MF1*X2*
      &Y3*G3MG1-F4MF1*Y2*X3*G4MG1-F3MF1*X2*Y4*G4MG1+F4MF1*X2*Y3*G4MG1+F2M
      &F1*X3*Y4*G4MG1+F3MF1*Y2*X4*G4MG1-F2MF1*X4*Y3*G4MG1 ) * XSUR120
-         W3(IELEM) = (
+            W3(IELEM) = (
      &         -(-F2MF1*X3*Y4+F2MF1*X4*Y3+F3MF1*X2*Y4-F3MF1*Y2*X4-F4MF1*
      &X2*Y3+F4MF1*Y2*X3)*(2*G3MG1+G2MG1+G4MG1+5*G1) ) * XSUR120
-         W4(IELEM) = (
+            W4(IELEM) = (
      &         5*F2MF1*X3*Y4*G1+F2MF1*X3*Y4*G2MG1+F2MF1*X3*Y4*G3MG1-5*F2
      &MF1*X4*Y3*G1-F2MF1*X4*Y3*G2MG1-F2MF1*X4*Y3*G3MG1-5*F3MF1*X2*Y4*G1-
      &F3MF1*X2*Y4*G2MG1-F3MF1*X2*Y4*G3MG1+5*F3MF1*Y2*X4*G1+F3MF1*Y2*X4*G
@@ -358,22 +358,22 @@
      &4MF1*Y2*X3*G4MG1-2*F3MF1*X2*Y4*G4MG1+2*F4MF1*X2*Y3*G4MG1+2*F2MF1*X
      &3*Y4*G4MG1+2*F3MF1*Y2*X4*G4MG1-2*F2MF1*X4*Y3*G4MG1 ) * XSUR120
 !
-      ENDDO
-!
-      ELSE
+          ENDDO
+!      
+        ELSE
 !
 !-----------------------------------------------------------------------
 !
-         IF (LNG.EQ.1) WRITE(LU,200) ICOORD
-         IF (LNG.EQ.2) WRITE(LU,201) ICOORD
- 200     FORMAT(1X,'VC11TT (BIEF) : COMPOSANTE IMPOSSIBLE ',
-     &        1I6,' VERIFIER ICOORD')
- 201     FORMAT(1X,'VC11TT (BIEF) : IMPOSSIBLE COMPONENT ',
-     &        1I6,' CHECK ICOORD')
-         CALL PLANTE(1)
-         STOP
+          IF (LNG.EQ.1) WRITE(LU,200) ICOORD
+          IF (LNG.EQ.2) WRITE(LU,201) ICOORD
+ 200      FORMAT(1X,'VC11TT (BIEF) : COMPOSANTE IMPOSSIBLE ',
+     &         1I6,' VERIFIER ICOORD')
+ 201      FORMAT(1X,'VC11TT (BIEF) : IMPOSSIBLE COMPONENT ',
+     &         1I6,' CHECK ICOORD')
+          CALL PLANTE(1)
+          STOP
 !
-      ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 ! ERROR
@@ -382,26 +382,26 @@
 !
 !-----------------------------------------------------------------------
 !
-         IF (LNG.EQ.1) WRITE(LU,1100) IELMF,SF%NAME
-         IF (LNG.EQ.1) WRITE(LU,1200) IELMG,SG%NAME
-         IF (LNG.EQ.1) WRITE(LU,1300)
-         IF (LNG.EQ.2) WRITE(LU,1101) IELMF,SF%NAME
-         IF (LNG.EQ.2) WRITE(LU,1201) IELMG,SG%NAME
-         IF (LNG.EQ.2) WRITE(LU,1301)
-         CALL PLANTE(1)
-         STOP
- 1100    FORMAT(1X,'VC11TT (BIEF) :',/,
-     &          1X,'DISCRETISATION DE F : ',1I6,
-     &          1X,'NOM REEL : ',A6)
- 1200    FORMAT(1X,'DISCRETISATION DE G : ',1I6,
-     &          1X,'NOM REEL : ',A6)
- 1300    FORMAT(1X,'CAS NON PREVU')
- 1101    FORMAT(1X,'VC11TT (BIEF) :',/,
-     &          1X,'DISCRETIZATION OF F:',1I6,
-     &          1X,'REAL NAME: ',A6)
- 1201    FORMAT(1X,'DISCRETIZATION OF G:',1I6,
-     &          1X,'REAL NAME: ',A6)
- 1301    FORMAT(1X,'CASE NOT IMPLEMENTED')
+        IF (LNG.EQ.1) WRITE(LU,1100) IELMF,SF%NAME
+        IF (LNG.EQ.1) WRITE(LU,1200) IELMG,SG%NAME
+        IF (LNG.EQ.1) WRITE(LU,1300)
+        IF (LNG.EQ.2) WRITE(LU,1101) IELMF,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,1201) IELMG,SG%NAME
+        IF (LNG.EQ.2) WRITE(LU,1301)
+        CALL PLANTE(1)
+        STOP
+ 1100   FORMAT(1X,'VC11TT (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+ 1200   FORMAT(1X,'DISCRETISATION DE G : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+ 1300   FORMAT(1X,'CAS NON PREVU')
+ 1101   FORMAT(1X,'VC11TT (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F:',1I6,
+     &         1X,'REAL NAME: ',A6)
+ 1201   FORMAT(1X,'DISCRETIZATION OF G:',1I6,
+     &         1X,'REAL NAME: ',A6)
+ 1301   FORMAT(1X,'CASE NOT IMPLEMENTED')
 !
       ENDIF
 !

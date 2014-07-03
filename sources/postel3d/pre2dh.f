@@ -3,7 +3,7 @@
 !                       *****************
 !
      &(X,Y,IKLES,IPOBO,NPOIN2,NELEM2,NC2DH,NCOU,TITCAS,
-     & NVAR,NTRAC,NTRPA,BINCOU,nva3,textlu)
+     & NVAR,NTRAC,NTRPA,BINCOU,NVA3,TEXTLU)
 !
 !***********************************************************************
 ! POSTEL3D VERSION 5.1   01/09/99   T. DENOT (LNH) 01 30 87 74 89
@@ -84,7 +84,7 @@
 !  LISTE DE FUTURS PARAMETRES DEJA PREVUS.(SEUL LES PREMIERS SERVENT)
 !
       DO J = 1,10
-         IB(J) = 0
+        IB(J) = 0
       ENDDO
 !   ECRITURE ECLATEE DES RESULTATS (CONVENTION SELAFIN)
       IB(1) = 1
@@ -95,23 +95,23 @@
 !
       DO IC = 1,NC2DH
 !
-         CANAL = NCOU
+        CANAL = NCOU
 !
 !     OUVERTURE DU FICHIER + ENREGISTREMENT DES PREMIERS PARAMETRES
 !     -------------------------------------------------------------
 !
-         CALL ECRDEB(NCOU-1+IC,BINCOU,TITCAS,NBV,NTRAC,NTRPA,.TRUE.,
+        CALL ECRDEB(NCOU-1+IC,BINCOU,TITCAS,NBV,NTRAC,NTRPA,.TRUE.,
      &               TEXTLU,IC,N)
 !
 !     ENREGISTREMENT DES AUTRES PARAMETRES DE L'ENTETE
 !     ------------------------------------------------
 !
-         CALL ECRI2(XB, IB  ,CB,      10,'I ',NCOU-1+IC,BINCOU,ISTAT)
-         CALL ECRI2(XB, I   ,CB,       4,'I ',NCOU-1+IC,BINCOU,ISTAT)
-         CALL ECRI2(XB,IKLES,CB,3*NELEM2,'I ',NCOU-1+IC,BINCOU,ISTAT)
-         CALL ECRI2(XB,IPOBO,CB,  NPOIN2,'I ',NCOU-1+IC,BINCOU,ISTAT)
-         CALL ECRI2( X, IBID,CB,  NPOIN2,'R4',NCOU-1+IC,BINCOU,ISTAT)
-         CALL ECRI2( Y, IBID,CB,  NPOIN2,'R4',NCOU-1+IC,BINCOU,ISTAT)
+        CALL ECRI2(XB, IB  ,CB,      10,'I ',NCOU-1+IC,BINCOU,ISTAT)
+        CALL ECRI2(XB, I   ,CB,       4,'I ',NCOU-1+IC,BINCOU,ISTAT)
+        CALL ECRI2(XB,IKLES,CB,3*NELEM2,'I ',NCOU-1+IC,BINCOU,ISTAT)
+        CALL ECRI2(XB,IPOBO,CB,  NPOIN2,'I ',NCOU-1+IC,BINCOU,ISTAT)
+        CALL ECRI2( X, IBID,CB,  NPOIN2,'R4',NCOU-1+IC,BINCOU,ISTAT)
+        CALL ECRI2( Y, IBID,CB,  NPOIN2,'R4',NCOU-1+IC,BINCOU,ISTAT)
 !
       ENDDO
 !

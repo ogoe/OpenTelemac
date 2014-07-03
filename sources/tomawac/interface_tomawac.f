@@ -1092,9 +1092,9 @@
 ! 
       INTERFACE
         SUBROUTINE QMOUT2
-     *( TSTOT , TSDER , F     , XK    , ENRJ  , FREQ  , FMOY  , XKMOY , 
-     *  USOLD , USNEW , DEPTH , PROINF, CMOUT3, CMOUT4, CMOUT5, CMOUT6,
-     *  NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 ,F_INT  , BETOTO, BETOTN)
+     &( TSTOT , TSDER , F     , XK    , ENRJ  , FREQ  , FMOY  , XKMOY , 
+     &  USOLD , USNEW , DEPTH , PROINF, CMOUT3, CMOUT4, CMOUT5, CMOUT6,
+     &  NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 ,F_INT  , BETOTO, BETOTN)
       IMPLICIT NONE
       INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
       DOUBLE PRECISION, INTENT(IN)    :: CMOUT3,CMOUT4
@@ -1193,7 +1193,7 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
-       SUBROUTINE QTRIA1
+        SUBROUTINE QTRIA1
      &( F     , XK    , FREQ  , DEPTH , RAISF , ALFLTA, RFMLTA,
      &  NF    , NPLAN , NPOIN2, TSTOT , TSDER , FTOT  , FMOY  )
       IMPLICIT NONE

@@ -88,7 +88,7 @@
 !
       IF (HIDFAC == 0) THEN
 !
-         CALL OS('X=C     ', X=HIDING, C=HIDI)
+        CALL OS('X=C     ', X=HIDING, C=HIDI)
 !
 ! ************************** !
 ! IB - EGIAZAROFF FORMULATION !
@@ -96,11 +96,11 @@
 !
       ELSEIF (HIDFAC == 1) THEN
 !
-         C1 = LOG10(19.D0)
-         C2 = 19.D0*DM
-         DO J = 1, NPOIN
-           HIDING%R(J) = (C1/LOG10(C2/ACLADM%R(J)))**2
-         ENDDO
+        C1 = LOG10(19.D0)
+        C2 = 19.D0*DM
+        DO J = 1, NPOIN
+          HIDING%R(J) = (C1/LOG10(C2/ACLADM%R(J)))**2
+        ENDDO
 !
 ! ********************************** !
 ! IC - ASHIDA AND MICHIUE FORMULATION !
@@ -108,17 +108,17 @@
 !
       ELSEIF (HIDFAC == 2) THEN
 !
-         C1 = LOG10(19.D0)
-         C2 = 19.D0*DM
-         DO J = 1, NPOIN
+        C1 = LOG10(19.D0)
+        C2 = 19.D0*DM
+        DO J = 1, NPOIN
 !
-            IF(DM/ACLADM%R(J) >= 0.4D0) THEN
-              HIDING%R(J) = (C1 / LOG10(C2/ACLADM%R(J)) )**2
-            ELSE
-              HIDING%R(J) = 0.85D0*(ACLADM%R(J)/DM)
-            ENDIF
+          IF(DM/ACLADM%R(J) >= 0.4D0) THEN
+            HIDING%R(J) = (C1 / LOG10(C2/ACLADM%R(J)) )**2
+          ELSE
+            HIDING%R(J) = 0.85D0*(ACLADM%R(J)/DM)
+          ENDIF
 !
-         ENDDO
+        ENDDO
 !
 ! ************************************* !
 ! IE - KARIM, HOLLY AND YANG FORMULATION !
@@ -126,9 +126,9 @@
 !
       ELSEIF (HIDFAC == 4) THEN
 !
-         CALL OS('X=1/Y   ', X=HIDING, Y=ACLADM)
-         CALL OS('X=CX    ', X=HIDING, C=DM)
-         CALL OS('X=Y**C  ', X=HIDING, Y=HIDING, C=KARIM_HOLLY_YANG)
+        CALL OS('X=1/Y   ', X=HIDING, Y=ACLADM)
+        CALL OS('X=CX    ', X=HIDING, C=DM)
+        CALL OS('X=Y**C  ', X=HIDING, Y=HIDING, C=KARIM_HOLLY_YANG)
 !
       ELSE
 !

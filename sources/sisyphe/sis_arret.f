@@ -105,39 +105,39 @@
       ! IV - IF THE MINIMUM VALUE IS NEGATIVE, COMPUTATION IS STOPPED !
       ! ************************************************************* !
       IF (XMIN < 0.D0) THEN
-         ! IV.1 - PRINTS THE VALUES
-         ! --------------------------
-         IF(LNG.EQ.1) THEN
-            WRITE(LU,400) MN
-            WRITE(LU,*) ' '
-            WRITE(LU,402) IMIN
-            WRITE(LU,404) HN%R(IMIN)
-            WRITE(LU,406) RC
-            WRITE(LU,408) EMAX%R(IMIN)
-            WRITE(LU,410) ESM%R(IMIN)
-            WRITE(LU,412) AT0
-            WRITE(LU,*) ' '
-            WRITE(LU,*) 'DERNIER RESULTAT SAUVEGARDE'
-         ELSE IF(LNG.EQ.2) THEN
-            WRITE(LU,401) MN
-            WRITE(LU,*) ' '
-            WRITE(LU,403) IMIN
-            WRITE(LU,405) HN%R(IMIN)
-            WRITE(LU,407) RC
-            WRITE(LU,409) EMAX%R(IMIN)
-            WRITE(LU,411) ESM%R(IMIN)
-            WRITE(LU,413) AT0
-            WRITE(LU,*) ' '
-            WRITE(LU,*) 'LAST RESULT SAVED'
-         ENDIF
+        ! IV.1 - PRINTS THE VALUES
+        ! --------------------------
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,400) MN
+          WRITE(LU,*) ' '
+          WRITE(LU,402) IMIN
+          WRITE(LU,404) HN%R(IMIN)
+          WRITE(LU,406) RC
+          WRITE(LU,408) EMAX%R(IMIN)
+          WRITE(LU,410) ESM%R(IMIN)
+          WRITE(LU,412) AT0
+          WRITE(LU,*) ' '
+          WRITE(LU,*) 'DERNIER RESULTAT SAUVEGARDE'
+        ELSE IF(LNG.EQ.2) THEN
+          WRITE(LU,401) MN
+          WRITE(LU,*) ' '
+          WRITE(LU,403) IMIN
+          WRITE(LU,405) HN%R(IMIN)
+          WRITE(LU,407) RC
+          WRITE(LU,409) EMAX%R(IMIN)
+          WRITE(LU,411) ESM%R(IMIN)
+          WRITE(LU,413) AT0
+          WRITE(LU,*) ' '
+          WRITE(LU,*) 'LAST RESULT SAVED'
+        ENDIF
 !
-         ! IV.2 - SAVES THE LAST RESULT
-         ! -----------------------------
-         CALL PREDES(1,AT0)
-         CALL BIEF_DESIMP(FMTRES,VARSOR,HIST,0,NPOIN,NRES,BINRESSIS,AT0,
-     &                    1,1,1,SORLEO,SORIMP,MAXVAR,TEXTE,1,1)
-         CALL PLANTE(1)
-         STOP
+        ! IV.2 - SAVES THE LAST RESULT
+        ! -----------------------------
+        CALL PREDES(1,AT0)
+        CALL BIEF_DESIMP(FMTRES,VARSOR,HIST,0,NPOIN,NRES,BINRESSIS,AT0,
+     &                   1,1,1,SORLEO,SORIMP,MAXVAR,TEXTE,1,1)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       !----------------------------------------------------------------!

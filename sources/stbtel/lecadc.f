@@ -79,6 +79,7 @@
         READ(NGEO,*) J,X(I),Y(I),ZF(I)
         IF(I.NE.J) THEN
           WRITE(LU,*) 'ERROR IN THE LIST OF COORDINATES LINE ',I
+          CALL PLANTE(1)
           STOP
         ENDIF
       ENDDO

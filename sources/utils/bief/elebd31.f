@@ -91,33 +91,33 @@
         IPOBO(IPOIN) = 0
       ENDDO
       DO K = 1, NPTFR
-         IPOBO(NBOR(K)) = K
+        IPOBO(NBOR(K)) = K
       ENDDO
 !
 ! BUILDS NELBOR, NULONE, IKLBORD
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       IELEB = 0
       DO IELEM = 1,NELEM
-         DO J = 1,4
-            IF(IFABOR(IELEM,J).EQ.0.OR.IFABOR(IELEM,J).EQ.-1) THEN
-               IELEB           = IELEB + 1
-               IF ( IELEB .GT. NELEB ) THEN
-                 IF(LNG.EQ.1) WRITE(LU,101)
-                 IF(LNG.EQ.2) WRITE(LU,102)
-101              FORMAT(1X,'ELEBD31 : ERREUR DANS LE MAILLAGE')
-102              FORMAT(1X,'ELEBD31 : ERROR IN MESH')
-                 CALL PLANTE(1)
-                 STOP
-               END IF
-               NELBOR(IELEB)   = IELEM
-               NULONE(IELEB,1) = SOMFAC(1,J)
-               NULONE(IELEB,2) = SOMFAC(2,J)
-               NULONE(IELEB,3) = SOMFAC(3,J)
-               IKLBOR(IELEB,1) = IPOBO(IKLE(NELBOR(IELEB),SOMFAC(1,J)))
-               IKLBOR(IELEB,2) = IPOBO(IKLE(NELBOR(IELEB),SOMFAC(2,J)))
-               IKLBOR(IELEB,3) = IPOBO(IKLE(NELBOR(IELEB),SOMFAC(3,J)))
-            ENDIF
-         ENDDO
+        DO J = 1,4
+          IF(IFABOR(IELEM,J).EQ.0.OR.IFABOR(IELEM,J).EQ.-1) THEN
+            IELEB           = IELEB + 1
+            IF ( IELEB .GT. NELEB ) THEN
+              IF(LNG.EQ.1) WRITE(LU,101)
+              IF(LNG.EQ.2) WRITE(LU,102)
+101           FORMAT(1X,'ELEBD31 : ERREUR DANS LE MAILLAGE')
+102           FORMAT(1X,'ELEBD31 : ERROR IN MESH')
+              CALL PLANTE(1)
+              STOP
+            END IF
+            NELBOR(IELEB)   = IELEM
+            NULONE(IELEB,1) = SOMFAC(1,J)
+            NULONE(IELEB,2) = SOMFAC(2,J)
+            NULONE(IELEB,3) = SOMFAC(3,J)
+            IKLBOR(IELEB,1) = IPOBO(IKLE(NELBOR(IELEB),SOMFAC(1,J)))
+            IKLBOR(IELEB,2) = IPOBO(IKLE(NELBOR(IELEB),SOMFAC(2,J)))
+            IKLBOR(IELEB,3) = IPOBO(IKLE(NELBOR(IELEB),SOMFAC(3,J)))
+          ENDIF
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------

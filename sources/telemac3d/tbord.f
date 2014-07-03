@@ -138,132 +138,132 @@
 !
 !
 !        *********************
-         IF(LISRUL.EQ.1) THEN
-!        *********************
+      IF(LISRUL.EQ.1) THEN
+!     *********************
 !
-!                  3
-!                  **         IT IS ASSUMED HERE THAT POINT 3 IS IN
-!                 *  *        THE LOGARITHMIC LAYER. DISBOR IS THE DISTANCE
-!                *    *       BETWEEN 3 AND SEGMENT 1-2
-!               *      *
-!              *        *
-!             *          *
-!          1 *            * 2
+!               3
+!               **         IT IS ASSUMED HERE THAT POINT 3 IS IN
+!              *  *        THE LOGARITHMIC LAYER. DISBOR IS THE DISTANCE
+!             *    *       BETWEEN 3 AND SEGMENT 1-2
+!            *      *
+!           *        *
+!          *          *
+!       1 *            * 2
 !  ************************************
 !
 !
-         DO IPLAN=1,NPLAN
-           DO IPTFR=1,NPTFR
-!            TANGENTIAL VELOCITY AT POINT 3 (IT IS ASSUMED THAT THE POINT IS
-!            CLOSE ENOUGH TO THE BOUNDARY SO THAT THE VELOCITY IS TANGENTIAL)
-             DIST = DISBOR(IPTFR)
-             IELEM=NELBOR(IPTFR)
-             IF(IELEM.GT.0) THEN
-!              UTANG IS THE TANGENTIAL VELOCITY INSIDE THE DOMAIN,
-!              ASSUMED TO BE CLOSE ENOUGH TO THE BOUNDARY THAT IT CAN BE
-!              CONSIDERED TANGENTIAL
-               I3 = IKLE(IELEM,MOD(NULONE(IPTFR)+2,3)+1)
-               UTANG(IPTFR)=SQRT( U(I3,IPLAN)**2
-     &                           +V(I3,IPLAN)**2
-     &                           +W(I3,IPLAN)**2 )
-             ELSE
-               UTANG(IPTFR)=0.D0
-             ENDIF
-           ENDDO
-!          FINDS THE TRUE VALUE OF UTANG IF IN ANOTHER
-!          SUBDOMAIN
-           IF(NCSIZE.GT.1) THEN
-             CALL PARCOM_BORD(UTANG,3,MESH2D)
-           ENDIF
+      DO IPLAN=1,NPLAN
+        DO IPTFR=1,NPTFR
+!         TANGENTIAL VELOCITY AT POINT 3 (IT IS ASSUMED THAT THE POINT IS
+!         CLOSE ENOUGH TO THE BOUNDARY SO THAT THE VELOCITY IS TANGENTIAL)
+          DIST = DISBOR(IPTFR)
+          IELEM=NELBOR(IPTFR)
+          IF(IELEM.GT.0) THEN
+!           UTANG IS THE TANGENTIAL VELOCITY INSIDE THE DOMAIN,
+!           ASSUMED TO BE CLOSE ENOUGH TO THE BOUNDARY THAT IT CAN BE
+!           CONSIDERED TANGENTIAL
+            I3 = IKLE(IELEM,MOD(NULONE(IPTFR)+2,3)+1)
+            UTANG(IPTFR)=SQRT( U(I3,IPLAN)**2
+     &                        +V(I3,IPLAN)**2
+     &                        +W(I3,IPLAN)**2 )
+          ELSE
+            UTANG(IPTFR)=0.D0
+          ENDIF
+        ENDDO
+!       FINDS THE TRUE VALUE OF UTANG IF IN ANOTHER
+!       SUBDOMAIN
+        IF(NCSIZE.GT.1) THEN
+          CALL PARCOM_BORD(UTANG,3,MESH2D)
+        ENDIF
 !
-           DO IPTFR=1,NPTFR
-!            INITIAL GUESS
-             UETUTA= 6.D-2
-             UETREICH= 6.D-2
-             DO ITER=1,MAXITEREICH
-               YPLUS = DIST*UETUTA*UTANG(IPTFR)/PROPNU
-               UETUTA = 1.D0/(LOG(1.D0+KARMAN*YPLUS)/KARMAN + 7.8D0*
-     &                    (1.D0-EXP(-YPLUS/11.D0) - YPLUS/11.D0
-     &                                            *EXP(-0.33D0* YPLUS)))
-               TEST = ABS(UETUTA-UETREICH)/UETREICH
-               IF(TEST.LT.TESTREICH) THEN
-                 GOTO 44
-               ELSE
-                 UETREICH = UETUTA
-               ENDIF
-             ENDDO
-44           CONTINUE
-             UETCAL(IPTFR,IPLAN) = (UETUTA*UTANG(IPTFR))**2
-           ENDDO
+        DO IPTFR=1,NPTFR
+!         INITIAL GUESS
+          UETUTA= 6.D-2
+          UETREICH= 6.D-2
+          DO ITER=1,MAXITEREICH
+            YPLUS = DIST*UETUTA*UTANG(IPTFR)/PROPNU
+            UETUTA = 1.D0/(LOG(1.D0+KARMAN*YPLUS)/KARMAN + 7.8D0*
+     &                 (1.D0-EXP(-YPLUS/11.D0) - YPLUS/11.D0
+     &                                         *EXP(-0.33D0* YPLUS)))
+            TEST = ABS(UETUTA-UETREICH)/UETREICH
+            IF(TEST.LT.TESTREICH) THEN
+              GOTO 44
+            ELSE
+              UETREICH = UETUTA
+            ENDIF
+          ENDDO
+44        CONTINUE
+          UETCAL(IPTFR,IPLAN) = (UETUTA*UTANG(IPTFR))**2
+        ENDDO
 !
-         ENDDO
+      ENDDO
 !
-!        ROUGH FRICTION TURBULENCE REGIME
+!     ROUGH FRICTION TURBULENCE REGIME
 !
-!        ************************
-         ELSEIF(LISRUL.EQ.2) THEN
-!        ************************
+!     ************************
+      ELSEIF(LISRUL.EQ.2) THEN
+!     ************************
 !
-           IF(KFROTL.EQ.0) THEN
+        IF(KFROTL.EQ.0) THEN
 !
-!            NO FRICTION NO STRESS
+!         NO FRICTION NO STRESS
 !
-             DO IPTFR=1,NPTFR
-               DO IPLAN=1,NPLAN
-                 UETCAL(IPTFR,IPLAN) = 0.D0
-               ENDDO
-             ENDDO
+          DO IPTFR=1,NPTFR
+            DO IPLAN=1,NPLAN
+              UETCAL(IPTFR,IPLAN) = 0.D0
+            ENDDO
+          ENDDO
 !
-           ELSEIF(KFROTL.EQ.5) THEN
+        ELSEIF(KFROTL.EQ.5) THEN
 !
-           DO IPLAN=1,NPLAN
-             DO IPTFR=1,NPTFR
-               DIST = DISBOR(IPTFR)
-               IELEM=NELBOR(IPTFR)
-               IF(IELEM.GT.0) THEN
-                 I3 = IKLE(IELEM,MOD(NULONE(IPTFR)+2,3)+1)
-                 UTANG(IPTFR)=SQRT( U(I3,IPLAN)**2
-     &                             +V(I3,IPLAN)**2
-     &                             +W(I3,IPLAN)**2 )
-               ELSE
-                 UTANG(IPTFR)=0.D0
-               ENDIF
-             ENDDO
-             IF(NCSIZE.GT.1) THEN
-               CALL PARCOM_BORD(UTANG,3,MESH2D)
-             ENDIF
-             DO IPTFR=1,NPTFR
-!              NIKURADSE LAW
-               UETUTA=1.D0/(8.5D0+LOG(DIST/RUGOL(IPTFR,IPLAN))/KARMAN)
-               UETCAL(IPTFR,IPLAN) = (UETUTA*UTANG(IPTFR))**2
-             ENDDO
-           ENDDO
+        DO IPLAN=1,NPLAN
+          DO IPTFR=1,NPTFR
+            DIST = DISBOR(IPTFR)
+            IELEM=NELBOR(IPTFR)
+            IF(IELEM.GT.0) THEN
+              I3 = IKLE(IELEM,MOD(NULONE(IPTFR)+2,3)+1)
+              UTANG(IPTFR)=SQRT( U(I3,IPLAN)**2
+     &                          +V(I3,IPLAN)**2
+     &                          +W(I3,IPLAN)**2 )
+            ELSE
+              UTANG(IPTFR)=0.D0
+            ENDIF
+          ENDDO
+          IF(NCSIZE.GT.1) THEN
+            CALL PARCOM_BORD(UTANG,3,MESH2D)
+          ENDIF
+          DO IPTFR=1,NPTFR
+!           NIKURADSE LAW
+            UETUTA=1.D0/(8.5D0+LOG(DIST/RUGOL(IPTFR,IPLAN))/KARMAN)
+            UETCAL(IPTFR,IPLAN) = (UETUTA*UTANG(IPTFR))**2
+          ENDDO
+        ENDDO
 !
-           ELSE
+        ELSE
 !
-             IF(LNG.EQ.1) WRITE(LU,201) KFROTL
-             IF(LNG.EQ.2) WRITE(LU,202) KFROTL
-201          FORMAT('TBORD : FROTTEMENT SUR LES PAROIS INCONNU : ',I6)
-202          FORMAT('TBORD: UNKNOWN FRICTION ON BOUNDARIES : ',I6)
-             CALL PLANTE(1)
-             STOP
+          IF(LNG.EQ.1) WRITE(LU,201) KFROTL
+          IF(LNG.EQ.2) WRITE(LU,202) KFROTL
+201       FORMAT('TBORD : FROTTEMENT SUR LES PAROIS INCONNU : ',I6)
+202       FORMAT('TBORD: UNKNOWN FRICTION ON BOUNDARIES : ',I6)
+          CALL PLANTE(1)
+          STOP
 !
-           ENDIF
+        ENDIF
 !
-!        ****
-         ELSE
-!        ****
+!     ****
+      ELSE
+!     ****
 !
-            IF (LNG.EQ.1) WRITE(LU,101) LISRUL
-            IF (LNG.EQ.2) WRITE(LU,102) LISRUL
-101         FORMAT('TBORD : REGIME DE TURBULENCE INCONNU : ',I6)
-102         FORMAT('TBORD: UNKNOWN TURBULENCE MODEL : ',I6)
-            CALL PLANTE(1)
-            STOP
+        IF (LNG.EQ.1) WRITE(LU,101) LISRUL
+        IF (LNG.EQ.2) WRITE(LU,102) LISRUL
+101     FORMAT('TBORD : REGIME DE TURBULENCE INCONNU : ',I6)
+102     FORMAT('TBORD: UNKNOWN TURBULENCE MODEL : ',I6)
+        CALL PLANTE(1)
+        STOP
 !
-!        *****
-         ENDIF
-!        *****
+!     *****
+      ENDIF
+!     *****
 !
 !-----------------------------------------------------------------------
 !

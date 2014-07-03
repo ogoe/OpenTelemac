@@ -148,7 +148,8 @@
       IF (NPDT.EQ.0) THEN
         IF (LNG.EQ.1) WRITE(LU,1001)
         IF (LNG.EQ.2) WRITE(LU,2001)
-        STOP  'ERREUR FATALE'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !     TEST DES ELEMENTS SECS OU PARTIELLEMENTS SECS
 !     ---------------------------------------------
@@ -186,26 +187,26 @@
       ENDDO !IEL
 !     FIN PARCOURS DE TOUS LES ELEMENTS
       IF (NSEC.EQ.0) THEN
-       IF (LNG.EQ.1) WRITE(LU,1002)
-       IF (LNG.EQ.2) WRITE(LU,2002)
+        IF (LNG.EQ.1) WRITE(LU,1002)
+        IF (LNG.EQ.2) WRITE(LU,2002)
       ELSE IF (NSEC.EQ.1) THEN
-       IF (LNG.EQ.1) WRITE(LU,1003)
-       IF (LNG.EQ.2) WRITE(LU,2003)
+        IF (LNG.EQ.1) WRITE(LU,1003)
+        IF (LNG.EQ.2) WRITE(LU,2003)
       ELSE
-       IF (LNG.EQ.1) WRITE(LU,1004) NSEC
-       IF (LNG.EQ.2) WRITE(LU,2004) NSEC
+        IF (LNG.EQ.1) WRITE(LU,1004) NSEC
+        IF (LNG.EQ.2) WRITE(LU,2004) NSEC
       ENDIF
 !
       IF (ELPSEC) THEN
         IF (NPSEC.EQ.0) THEN
-         IF (LNG.EQ.1) WRITE(LU,1005)
-         IF (LNG.EQ.2) WRITE(LU,2005)
+          IF (LNG.EQ.1) WRITE(LU,1005)
+          IF (LNG.EQ.2) WRITE(LU,2005)
         ELSE IF (NPSEC.EQ.1) THEN
-         IF (LNG.EQ.1) WRITE(LU,1006)
-         IF (LNG.EQ.2) WRITE(LU,2006)
+          IF (LNG.EQ.1) WRITE(LU,1006)
+          IF (LNG.EQ.2) WRITE(LU,2006)
         ELSE
-         IF (LNG.EQ.1) WRITE(LU,1007) NPSEC
-         IF (LNG.EQ.2) WRITE(LU,2007) NPSEC
+          IF (LNG.EQ.1) WRITE(LU,1007) NPSEC
+          IF (LNG.EQ.2) WRITE(LU,2007) NPSEC
         ENDIF
       ENDIF
 !
@@ -220,98 +221,98 @@
  20   CONTINUE
         IF ((IKLE(IEL, 1).EQ.0).AND.(IKLE(IEL, 2).EQ.0).AND.
      &     (IKLE(IEL, 3).EQ.0)) THEN
-         NELI = NELI + 1
-         DO I = IEL, NELEM - NELI
-           IKLE(I,1) = IKLE(I+1, 1)
-           IKLE(I,2) = IKLE(I+1, 2)
-           IKLE(I,3) = IKLE(I+1, 3)
-         ENDDO
+          NELI = NELI + 1
+          DO I = IEL, NELEM - NELI
+            IKLE(I,1) = IKLE(I+1, 1)
+            IKLE(I,2) = IKLE(I+1, 2)
+            IKLE(I,3) = IKLE(I+1, 3)
+          ENDDO
         ELSE
-         IEL = IEL + 1
+          IEL = IEL + 1
         ENDIF
       IF (IEL .LE. NELEM-NELI) GOTO 20
 !     FIN POUR CHAQUE ELEMENT
 !
       IF (NELI .LE. 0) THEN
-         IF (LNG.EQ.1) WRITE(LU,1008)
-         IF (LNG.EQ.2) WRITE(LU,2008)
+        IF (LNG.EQ.1) WRITE(LU,1008)
+        IF (LNG.EQ.2) WRITE(LU,2008)
       ELSE
-         IF (LNG.EQ.1) WRITE(LU,1009) NELI
-         IF (LNG.EQ.2) WRITE(LU,2009) NELI
+        IF (LNG.EQ.1) WRITE(LU,1009) NELI
+        IF (LNG.EQ.2) WRITE(LU,2009) NELI
       ENDIF
 !
       NELEM = NELEM - NELI
 !
-!      ELIMINATION DES POINTS NE FAISANT PLUS PARTIE DU MAILLAGE
-!      REUTILISATION DE ISDRY POUR MARQUER LES POINTS NON UTILISEES
-!      ---------------------------------------------
-       DO I = 1, NPOIN
-         ISDRY(I) = 0
-         NEW(I) = 0
-       ENDDO
+!     ELIMINATION DES POINTS NE FAISANT PLUS PARTIE DU MAILLAGE
+!     REUTILISATION DE ISDRY POUR MARQUER LES POINTS NON UTILISEES
+!     ---------------------------------------------
+      DO I = 1, NPOIN
+        ISDRY(I) = 0
+        NEW(I) = 0
+      ENDDO
 !
-       DO IEL = 1, NELEM
+      DO IEL = 1, NELEM
         ISDRY(IKLE(IEL,1)) = IKLE(IEL,1)
         ISDRY(IKLE(IEL,2)) = IKLE(IEL,2)
         ISDRY(IKLE(IEL,3)) = IKLE(IEL,3)
-       ENDDO
+      ENDDO
 !
-       NELI = 0
-       I = 1
-!      POUR CHAQUE POINT FAIRE
-       DO I = 1, NPOIN
-         IF (ISDRY(I) .EQ.0) THEN
-           NELI = NELI + 1
-           NEW(I) = 0
-         ELSE
-           NEW(I) = I - NELI
-         ENDIF
-       ENDDO
-!      FIN POUR CHAQUE POINT
+      NELI = 0
+      I = 1
+!     POUR CHAQUE POINT FAIRE
+      DO I = 1, NPOIN
+        IF (ISDRY(I) .EQ.0) THEN
+          NELI = NELI + 1
+          NEW(I) = 0
+        ELSE
+          NEW(I) = I - NELI
+        ENDIF
+      ENDDO
+!     FIN POUR CHAQUE POINT
 !
-       NELI = 0
-       I = 1
-!      POUR CHAQUE POINT FAIRE
- 30    CONTINUE
-         IF (ISDRY(I).EQ.0) THEN
-!          POINT I  A ELIMINER
-!      WRITE(LU,*) 'POINT A ELIMINER',I,':',X(I),Y(I),NCOLOR(I)
-           NELI = NELI + 1
-!          DECALAGE DANS LE TABLEAU DES POINTS
-           DO J = I, NPOIN - NELI
-             X(J) = X(J+1)
-             Y(J) = Y(J+1)
-             NCOLOR(J) = NCOLOR(J+1)
-             IF (ISDRY(J+1).GT.0) THEN
-               ISDRY(J) = ISDRY(J+1) - 1
-             ELSE
-               ISDRY(J) = 0
-             ENDIF
-           ENDDO
-         ELSE
-           I = I + 1
-         ENDIF
-       IF (I .LE. NPOIN - NELI) GOTO 30
-!      FIN POUR CHAQUE POINT
-       IF (NELI .LE. 0) THEN
-         IF (LNG.EQ.1) WRITE(LU,1010)
-         IF (LNG.EQ.2) WRITE(LU,2010)
-       ELSE
-         IF (LNG.EQ.1) WRITE(LU,1011) NELI
-         IF (LNG.EQ.2) WRITE(LU,2011) NELI
-       ENDIF
-       NPOIN = NPOIN - NELI
+      NELI = 0
+      I = 1
+!     POUR CHAQUE POINT FAIRE
+ 30   CONTINUE
+      IF (ISDRY(I).EQ.0) THEN
+!       POINT I  A ELIMINER
+!       WRITE(LU,*) 'POINT A ELIMINER',I,':',X(I),Y(I),NCOLOR(I)
+        NELI = NELI + 1
+!       DECALAGE DANS LE TABLEAU DES POINTS
+        DO J = I, NPOIN - NELI
+          X(J) = X(J+1)
+          Y(J) = Y(J+1)
+          NCOLOR(J) = NCOLOR(J+1)
+          IF (ISDRY(J+1).GT.0) THEN
+            ISDRY(J) = ISDRY(J+1) - 1
+          ELSE
+            ISDRY(J) = 0
+          ENDIF
+        ENDDO
+      ELSE
+        I = I + 1
+      ENDIF
+      IF (I .LE. NPOIN - NELI) GOTO 30
+!     FIN POUR CHAQUE POINT
+      IF (NELI .LE. 0) THEN
+        IF (LNG.EQ.1) WRITE(LU,1010)
+        IF (LNG.EQ.2) WRITE(LU,2010)
+      ELSE
+        IF (LNG.EQ.1) WRITE(LU,1011) NELI
+        IF (LNG.EQ.2) WRITE(LU,2011) NELI
+      ENDIF
+      NPOIN = NPOIN - NELI
 !
-!      ON REPERCUTE LA RENUMEROTATION DANS IKLE
-!      ----------------------------------------
-       DO IEL = 1, NELEM
-         J = IKLE(IEL,1)
-         IKLE(IEL,1) = NEW(J)
-         J = IKLE(IEL,2)
-         IKLE(IEL,2) = NEW(J)
-         J = IKLE(IEL,3)
-         IKLE(IEL,3) = NEW(J)
-       ENDDO
+!     ON REPERCUTE LA RENUMEROTATION DANS IKLE
+!     ----------------------------------------
+      DO IEL = 1, NELEM
+        J = IKLE(IEL,1)
+        IKLE(IEL,1) = NEW(J)
+        J = IKLE(IEL,2)
+        IKLE(IEL,2) = NEW(J)
+        J = IKLE(IEL,3)
+        IKLE(IEL,3) = NEW(J)
+      ENDDO
       RETURN
 !***********************************************************************
  1000 FORMAT(1X,'TEMPS ',G15.3,' : ',I8,

@@ -118,38 +118,38 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         F1  =  F(IELEM) * SURFAC(IELEM)
+        F1  =  F(IELEM) * SURFAC(IELEM)
 !
 !  DIAGONAL TERMS
 !
-         A11(IELEM) =   XSUR030 * F1
-         A22(IELEM) =   A11(IELEM)
-         A33(IELEM) =   A11(IELEM)
-         A44(IELEM) =   8.D0 * XSUR045 * F1
-         A55(IELEM) =   A44(IELEM)
-         A66(IELEM) =   A44(IELEM)
+        A11(IELEM) =   XSUR030 * F1
+        A22(IELEM) =   A11(IELEM)
+        A33(IELEM) =   A11(IELEM)
+        A44(IELEM) =   8.D0 * XSUR045 * F1
+        A55(IELEM) =   A44(IELEM)
+        A66(IELEM) =   A44(IELEM)
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM) = - XSUR180 * F1
-         A13(IELEM) =   A12(IELEM)
-         A14(IELEM) =   0.D0
-         A15(IELEM) = - XSUR045*F1
-         A16(IELEM) =   0.D0
+        A12(IELEM) = - XSUR180 * F1
+        A13(IELEM) =   A12(IELEM)
+        A14(IELEM) =   0.D0
+        A15(IELEM) = - XSUR045*F1
+        A16(IELEM) =   0.D0
 !
-         A23(IELEM) =   A12(IELEM)
-         A24(IELEM) =   0.D0
-         A25(IELEM) =   0.D0
-         A26(IELEM) =   A15(IELEM)
+        A23(IELEM) =   A12(IELEM)
+        A24(IELEM) =   0.D0
+        A25(IELEM) =   0.D0
+        A26(IELEM) =   A15(IELEM)
 !
-         A34(IELEM) =   A15(IELEM)
-         A35(IELEM) =   0.D0
-         A36(IELEM) =   0.D0
+        A34(IELEM) =   A15(IELEM)
+        A35(IELEM) =   0.D0
+        A36(IELEM) =   0.D0
 !
-         A45(IELEM) =   4.D0*XSUR045*F1
-         A46(IELEM) =   A45(IELEM)
+        A45(IELEM) =   4.D0*XSUR045*F1
+        A46(IELEM) =   A45(IELEM)
 !
-         A56(IELEM) =   A45(IELEM)
+        A56(IELEM) =   A45(IELEM)
 !
       ENDDO ! IELEM 
 !
@@ -164,49 +164,49 @@
       XSU1260 = XMUL / 1260.D0
 !
       DO IELEM = 1 , NELEM
-      AUX210 = SURFAC(IELEM) * XSUR210
-      AUX315 = SURFAC(IELEM) * XSUR315
-      AUX1260= SURFAC(IELEM) * XSU1260
+        AUX210 = SURFAC(IELEM) * XSUR210
+        AUX315 = SURFAC(IELEM) * XSUR315
+        AUX1260= SURFAC(IELEM) * XSU1260
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-      F1  =  F(IKLE1(IELEM))
-      F2  =  F(IKLE2(IELEM))
-      F3  =  F(IKLE3(IELEM))
+        F1  =  F(IKLE1(IELEM))
+        F2  =  F(IKLE2(IELEM))
+        F3  =  F(IKLE3(IELEM))
 !
 !   INITIALISES THE INTERMEDIATE VARIABLES
 !
 !
 !  DIAGONAL TERMS
 !
-         A11(IELEM) =      (5.D0*F1+     F2+     F3)*AUX210
-         A22(IELEM) =      (     F1+5.D0*F2+     F3)*AUX210
-         A33(IELEM) =      (     F1+     F2+5.D0*F3)*AUX210
-         A44(IELEM) = 8.D0*(3.D0*F1+3.D0*F2+     F3)*AUX315
-         A55(IELEM) = 8.D0*(     F1+3.D0*F2+3.D0*F3)*AUX315
-         A66(IELEM) = 8.D0*(3.D0*F1+     F2+3.D0*F3)*AUX315
+        A11(IELEM) =      (5.D0*F1+     F2+     F3)*AUX210
+        A22(IELEM) =      (     F1+5.D0*F2+     F3)*AUX210
+        A33(IELEM) =      (     F1+     F2+5.D0*F3)*AUX210
+        A44(IELEM) = 8.D0*(3.D0*F1+3.D0*F2+     F3)*AUX315
+        A55(IELEM) = 8.D0*(     F1+3.D0*F2+3.D0*F3)*AUX315
+        A66(IELEM) = 8.D0*(3.D0*F1+     F2+3.D0*F3)*AUX315
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM) = -(4.D0*F1+4.D0*F2-     F3)*AUX1260
-         A13(IELEM) = -(4.D0*F1-     F2+4.D0*F3)*AUX1260
-         A14(IELEM) =  (3.D0*F1-2.D0*F2-     F3)*AUX315
-         A15(IELEM) = -(     F1+3.D0*F2+3.D0*F3)*AUX315
-         A16(IELEM) =  (3.D0*F1-     F2-2.D0*F3)*AUX315
+        A12(IELEM) = -(4.D0*F1+4.D0*F2-     F3)*AUX1260
+        A13(IELEM) = -(4.D0*F1-     F2+4.D0*F3)*AUX1260
+        A14(IELEM) =  (3.D0*F1-2.D0*F2-     F3)*AUX315
+        A15(IELEM) = -(     F1+3.D0*F2+3.D0*F3)*AUX315
+        A16(IELEM) =  (3.D0*F1-     F2-2.D0*F3)*AUX315
 !
-         A23(IELEM) =  (     F1-4.D0*F2-4.D0*F3)*AUX1260
-         A24(IELEM) = -(2.D0*F1-3.D0*F2+     F3)*AUX315
-         A25(IELEM) = -(     F1-3.D0*F2+2.D0*F3)*AUX315
-         A26(IELEM) = -(3.D0*F1+     F2+3.D0*F3)*AUX315
+        A23(IELEM) =  (     F1-4.D0*F2-4.D0*F3)*AUX1260
+        A24(IELEM) = -(2.D0*F1-3.D0*F2+     F3)*AUX315
+        A25(IELEM) = -(     F1-3.D0*F2+2.D0*F3)*AUX315
+        A26(IELEM) = -(3.D0*F1+     F2+3.D0*F3)*AUX315
 !
-         A34(IELEM) = -(3.D0*F1+3.D0*F2+     F3)*AUX315
-         A35(IELEM) = -(     F1+2.D0*F2-3.D0*F3)*AUX315
-         A36(IELEM) = -(2.D0*F1+     F2-3.D0*F3)*AUX315
+        A34(IELEM) = -(3.D0*F1+3.D0*F2+     F3)*AUX315
+        A35(IELEM) = -(     F1+2.D0*F2-3.D0*F3)*AUX315
+        A36(IELEM) = -(2.D0*F1+     F2-3.D0*F3)*AUX315
 !
-         A45(IELEM) =  (2.D0*F1+3.D0*F2+2.D0*F3)*AUX315*4.D0
-         A46(IELEM) =  (3.D0*F1+2.D0*F2+2.D0*F3)*AUX315*4.D0
+        A45(IELEM) =  (2.D0*F1+3.D0*F2+2.D0*F3)*AUX315*4.D0
+        A46(IELEM) =  (3.D0*F1+2.D0*F2+2.D0*F3)*AUX315*4.D0
 !
-         A56(IELEM) =  (2.D0*F1+3.D0*F3+2.D0*F2)*AUX315*4.D0
+        A56(IELEM) =  (2.D0*F1+3.D0*F3+2.D0*F2)*AUX315*4.D0
 !
       ENDDO ! IELEM 
 !
@@ -223,64 +223,64 @@
       XSU1260 = XMUL / 1260.D0
 !
       DO IELEM = 1 , NELEM
-      AUX315 = SURFAC(IELEM) * XSUR315
-      AUX630 = SURFAC(IELEM) * XSUR630
-      AUX1260= SURFAC(IELEM) * XSU1260
+        AUX315 = SURFAC(IELEM) * XSUR315
+        AUX630 = SURFAC(IELEM) * XSUR630
+        AUX1260= SURFAC(IELEM) * XSU1260
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-      F1  =  F(IKLE1(IELEM))
-      F2  =  F(IKLE2(IELEM))
-      F3  =  F(IKLE3(IELEM))
-      F4  =  F(IKLE4(IELEM))
-      F5  =  F(IKLE5(IELEM))
-      F6  =  F(IKLE6(IELEM))
+        F1  =  F(IKLE1(IELEM))
+        F2  =  F(IKLE2(IELEM))
+        F3  =  F(IKLE3(IELEM))
+        F4  =  F(IKLE4(IELEM))
+        F5  =  F(IKLE5(IELEM))
+        F6  =  F(IKLE6(IELEM))
 !
 !  DIAGONAL TERMS
 !
-       A11(IELEM) = (6.D0*(F4+F6)+9.D0*F1+2.D0*F5-F2-F3) * AUX630
-       A22(IELEM) = (6.D0*(F4+F5)+2.D0*F6+9.D0*F2-F1-F3) * AUX630
-       A33(IELEM) = (6.D0*(F6+F5)+9.D0*F3+2.D0*F4-F1-F2) * AUX630
-       A44(IELEM) =  4.D0*(3.D0*(F6+F5)+9.D0*F4-F3) * AUX315
-       A55(IELEM) =  4.D0*(3.D0*(F4+F6)+9.D0*F5-F1) * AUX315
-       A66(IELEM) =  4.D0*(3.D0*(F4+F5)+9.D0*F6-F2) * AUX315
+        A11(IELEM) = (6.D0*(F4+F6)+9.D0*F1+2.D0*F5-F2-F3) * AUX630
+        A22(IELEM) = (6.D0*(F4+F5)+2.D0*F6+9.D0*F2-F1-F3) * AUX630
+        A33(IELEM) = (6.D0*(F6+F5)+9.D0*F3+2.D0*F4-F1-F2) * AUX630
+        A44(IELEM) =  4.D0*(3.D0*(F6+F5)+9.D0*F4-F3) * AUX315
+        A55(IELEM) =  4.D0*(3.D0*(F4+F6)+9.D0*F5-F1) * AUX315
+        A66(IELEM) =  4.D0*(3.D0*(F4+F5)+9.D0*F6-F2) * AUX315
 !
 !  EXTRADIAGONAL TERMS
 !
-      A12(IELEM) = -(2.D0*(F1+F2)+4.D0*F4-F3) * AUX1260
-      A13(IELEM) = -(2.D0*(F1+F3)+4.D0*F6-F2) * AUX1260
-      A14(IELEM) =  (3.D0* F1    -2.D0*F5-F2) * AUX315
-      A15(IELEM) = -(2.D0*(F4+F6)+4.D0*F5-F1) * AUX315
-      A16(IELEM) =  (3.D0*F1     -2.D0*F5-F3) * AUX315
-!
-      A23(IELEM) =  (-2.D0*(F2+F3)-4.D0*F5+F1) * AUX1260
-      A24(IELEM) =  (-2.D0*F6     +3.D0*F2-F1) * AUX315
-      A25(IELEM) =  (-2.D0*F6     +3.D0*F2-F3) * AUX315
-      A26(IELEM) =  (-2.D0*(F4+F5)-4.D0*F6+F2) * AUX315
-!
-      A34(IELEM) =  (-2.D0*(F6+F5)-4.D0*F4+F3) * AUX315
-      A35(IELEM) =  (-2.D0*F4     +3.D0*F3-F2) * AUX315
-      A36(IELEM) =  (-2.D0*F4     +3.D0*F3-F1) * AUX315
-!
-      A45(IELEM) =  2.D0*(6.D0*(F4+F5)+4.D0*F6-F1-F3) * AUX315
-      A46(IELEM) =  2.D0*(6.D0*(F4+F6)+4.D0*F5-F2-F3) * AUX315
-!
-      A56(IELEM) =  2.D0*(6.D0*(F6+F5)+4.D0*F4-F2-F1) * AUX315
+        A12(IELEM) = -(2.D0*(F1+F2)+4.D0*F4-F3) * AUX1260
+        A13(IELEM) = -(2.D0*(F1+F3)+4.D0*F6-F2) * AUX1260
+        A14(IELEM) =  (3.D0* F1    -2.D0*F5-F2) * AUX315
+        A15(IELEM) = -(2.D0*(F4+F6)+4.D0*F5-F1) * AUX315
+        A16(IELEM) =  (3.D0*F1     -2.D0*F5-F3) * AUX315
+!      
+        A23(IELEM) =  (-2.D0*(F2+F3)-4.D0*F5+F1) * AUX1260
+        A24(IELEM) =  (-2.D0*F6     +3.D0*F2-F1) * AUX315
+        A25(IELEM) =  (-2.D0*F6     +3.D0*F2-F3) * AUX315
+        A26(IELEM) =  (-2.D0*(F4+F5)-4.D0*F6+F2) * AUX315
+!      
+        A34(IELEM) =  (-2.D0*(F6+F5)-4.D0*F4+F3) * AUX315
+        A35(IELEM) =  (-2.D0*F4     +3.D0*F3-F2) * AUX315
+        A36(IELEM) =  (-2.D0*F4     +3.D0*F3-F1) * AUX315
+!      
+        A45(IELEM) =  2.D0*(6.D0*(F4+F5)+4.D0*F6-F1-F3) * AUX315
+        A46(IELEM) =  2.D0*(6.D0*(F4+F6)+4.D0*F5-F2-F3) * AUX315
+!      
+        A56(IELEM) =  2.D0*(6.D0*(F6+F5)+4.D0*F4-F2-F1) * AUX315
 !
       ENDDO ! IELEM 
 !
       ELSE
 !
-       IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
-       IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
-100    FORMAT(1X,'MT06CC (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F NON PREVUE : ',1I6,
-     &        1X,'NOM REEL : ',A6)
-101    FORMAT(1X,'MT06CC (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF F NOT AVAILABLE:',1I6,
-     &        1X,'REAL NAME: ',A6)
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
+100     FORMAT(1X,'MT06CC (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F NON PREVUE : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+101     FORMAT(1X,'MT06CC (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F NOT AVAILABLE:',1I6,
+     &         1X,'REAL NAME: ',A6)
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

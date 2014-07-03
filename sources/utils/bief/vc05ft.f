@@ -105,57 +105,57 @@
 !
 !   LOOP ON THE BOUNDARY SIDES
 !
-         DO IELEM = 1,NELEM
+        DO IELEM = 1,NELEM
 !
-!           LOCAL NUMBERING OF THE SIDE NODES
+!         LOCAL NUMBERING OF THE SIDE NODES
 !
-            I1 = IKLE1(IELEM)
-            I2 = IKLE2(IELEM)
-            I3 = IKLE3(IELEM)
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
 !
-!           GLOBAL NUMBERING OF THE SIDE NODES
+!         GLOBAL NUMBERING OF THE SIDE NODES
 !
-            N1 = NBOR(I1)
-            N2 = NBOR(I2)
-            N3 = NBOR(I3)
+          N1 = NBOR(I1)
+          N2 = NBOR(I2)
+          N3 = NBOR(I3)
 !
-            U1 = U(I1)
-            U2 = U(I2)
-            U3 = U(I3)
-            V1 = V(I1)
-            V2 = V(I2)
-            V3 = V(I3)
+          U1 = U(I1)
+          U2 = U(I2)
+          U3 = U(I3)
+          V1 = V(I1)
+          V2 = V(I2)
+          V3 = V(I3)
 !
-            X1 = X(N1)
-            X2 = X(N2)-X1
-            X3 = X(N3)-X1
-            Y1 = Y(N1)
-            Y2 = Y(N2)-Y1
-            Y3 = Y(N3)-Y1
-            Z1 = Z(N1)
-            Z2 = Z(N2)-Z1
-            Z3 = Z(N3)-Z1
+          X1 = X(N1)
+          X2 = X(N2)-X1
+          X3 = X(N3)-X1
+          Y1 = Y(N1)
+          Y2 = Y(N2)-Y1
+          Y3 = Y(N3)-Y1
+          Z1 = Z(N1)
+          Z2 = Z(N2)-Z1
+          Z3 = Z(N3)-Z1
 !
-!           COMPUTES THE AREA OF THE TRIANGLE (BY VECTOR PRODUCT)
+!         COMPUTES THE AREA OF THE TRIANGLE (BY VECTOR PRODUCT)
 !
-!           NOTE: VECTOR NORMAL TO THE TRIANGLE,
-!                 WHICH NORM IS THE SURFACE:
+!         NOTE: VECTOR NORMAL TO THE TRIANGLE,
+!               WHICH NORM IS THE SURFACE:
 !
-!                      0.5  (Y2*Z3-Y3*Z2)
-!                      0.5  (X3*Z2-X2*Z3)
-!                      0.5  (X2*Y3-X3*Y2)  : THIS TERM =0
+!                    0.5  (Y2*Z3-Y3*Z2)
+!                    0.5  (X3*Z2-X2*Z3)
+!                    0.5  (X2*Y3-X3*Y2)  : THIS TERM =0
 !
-!           INSPIRED FROM MASVEC ON TRIANGLES :
+!         INSPIRED FROM MASVEC ON TRIANGLES :
 !
 !
-            W1(IELEM) = XSUR24* (  (Y2*Z3-Y3*Z2)*(2*U1+  U2+  U3)
-     &                            +(X3*Z2-X2*Z3)*(2*V1+  V2+  V3) )
-            W2(IELEM) = XSUR24* (  (Y2*Z3-Y3*Z2)*(  U1+2*U2+  U3)
-     &                            +(X3*Z2-X2*Z3)*(  V1+2*V2+  V3) )
-            W3(IELEM) = XSUR24* (  (Y2*Z3-Y3*Z2)*(  U1+  U2+2*U3)
-     &                            +(X3*Z2-X2*Z3)*(  V1+  V2+2*V3) )
+          W1(IELEM) = XSUR24* (  (Y2*Z3-Y3*Z2)*(2*U1+  U2+  U3)
+     &                          +(X3*Z2-X2*Z3)*(2*V1+  V2+  V3) )
+          W2(IELEM) = XSUR24* (  (Y2*Z3-Y3*Z2)*(  U1+2*U2+  U3)
+     &                          +(X3*Z2-X2*Z3)*(  V1+2*V2+  V3) )
+          W3(IELEM) = XSUR24* (  (Y2*Z3-Y3*Z2)*(  U1+  U2+2*U3)
+     &                          +(X3*Z2-X2*Z3)*(  V1+  V2+2*V3) )
 !
-         ENDDO
+        ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -165,50 +165,50 @@
 !
 !   LOOP ON THE BOUNDARY SIDES
 !
-         DO IELEM = 1,NELEM
+        DO IELEM = 1,NELEM
 !
-!           GLOBAL NUMBERING OF THE SIDE NODES
+!         GLOBAL NUMBERING OF THE SIDE NODES
 !
-            N1 = NBOR(IKLE1(IELEM))
-            N2 = NBOR(IKLE2(IELEM))
-            N3 = NBOR(IKLE3(IELEM))
+          N1 = NBOR(IKLE1(IELEM))
+          N2 = NBOR(IKLE2(IELEM))
+          N3 = NBOR(IKLE3(IELEM))
 !
-            U1 = U(N1)
-            U2 = U(N2)
-            U3 = U(N3)
-            V1 = V(N1)
-            V2 = V(N2)
-            V3 = V(N3)
-            X1 = X(N1)
-            X2 = X(N2)-X1
-            X3 = X(N3)-X1
-            Y1 = Y(N1)
-            Y2 = Y(N2)-Y1
-            Y3 = Y(N3)-Y1
-            Z1 = Z(N1)
-            Z2 = Z(N2)-Z1
-            Z3 = Z(N3)-Z1
+          U1 = U(N1)
+          U2 = U(N2)
+          U3 = U(N3)
+          V1 = V(N1)
+          V2 = V(N2)
+          V3 = V(N3)
+          X1 = X(N1)
+          X2 = X(N2)-X1
+          X3 = X(N3)-X1
+          Y1 = Y(N1)
+          Y2 = Y(N2)-Y1
+          Y3 = Y(N3)-Y1
+          Z1 = Z(N1)
+          Z2 = Z(N2)-Z1
+          Z3 = Z(N3)-Z1
 !
-!           COMPUTES THE AREA OF THE TRIANGLE (BY VECTOR PRODUCT)
+!         COMPUTES THE AREA OF THE TRIANGLE (BY VECTOR PRODUCT)
 !
-!           NOTE: VECTOR NORMAL TO THE TRIANGLE,
-!                 WHICH NORM IS THE SURFACE:
+!         NOTE: VECTOR NORMAL TO THE TRIANGLE,
+!               WHICH NORM IS THE SURFACE:
 !
-!                      0.5  (Y2*Z3-Y3*Z2)
-!                      0.5  (X3*Z2-X2*Z3)
-!                      0.5  (X2*Y3-X3*Y2)  : THIS TERM =0
+!                    0.5  (Y2*Z3-Y3*Z2)
+!                    0.5  (X3*Z2-X2*Z3)
+!                    0.5  (X2*Y3-X3*Y2)  : THIS TERM =0
 !
-!           INSPIRED FROM MASVEC ON TRIANGLES :
+!         INSPIRED FROM MASVEC ON TRIANGLES :
 !
 !
-            W1(IELEM) = XSUR24* (  (Y2*Z3-Y3*Z2)*(2*U1+  U2+  U3)
-     &                            +(X3*Z2-X2*Z3)*(2*V1+  V2+  V3) )
-            W2(IELEM) = XSUR24* (  (Y2*Z3-Y3*Z2)*(  U1+2*U2+  U3)
-     &                            +(X3*Z2-X2*Z3)*(  V1+2*V2+  V3) )
-            W3(IELEM) = XSUR24* (  (Y2*Z3-Y3*Z2)*(  U1+  U2+2*U3)
-     &                            +(X3*Z2-X2*Z3)*(  V1+  V2+2*V3) )
+          W1(IELEM) = XSUR24* (  (Y2*Z3-Y3*Z2)*(2*U1+  U2+  U3)
+     &                          +(X3*Z2-X2*Z3)*(2*V1+  V2+  V3) )
+          W2(IELEM) = XSUR24* (  (Y2*Z3-Y3*Z2)*(  U1+2*U2+  U3)
+     &                          +(X3*Z2-X2*Z3)*(  V1+2*V2+  V3) )
+          W3(IELEM) = XSUR24* (  (Y2*Z3-Y3*Z2)*(  U1+  U2+2*U3)
+     &                          +(X3*Z2-X2*Z3)*(  V1+  V2+2*V3) )
 !
-         ENDDO
+        ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -216,16 +216,16 @@
 !
 !-----------------------------------------------------------------------
 !
-         IF (LNG.EQ.1) WRITE(LU,100) IELMU,SU%NAME
-         IF (LNG.EQ.2) WRITE(LU,101) IELMU,SU%NAME
-100      FORMAT(1X,'VC05FT (BIEF) :',/,
-     &          1X,'DISCRETISATION DE U NON PREVUE : ',1I6,
-     &          1X,'NOM REEL : ',A6)
-101      FORMAT(1X,'VC05FT (BIEF) :',/,
-     &          1X,'DISCRETIZATION OF U NOT AVAILABLE:',1I6,
-     &          1X,'REAL NAME: ',A6)
-         CALL PLANTE(1)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMU,SU%NAME
+        IF (LNG.EQ.2) WRITE(LU,101) IELMU,SU%NAME
+100     FORMAT(1X,'VC05FT (BIEF) :',/,
+     &         1X,'DISCRETISATION DE U NON PREVUE : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+101     FORMAT(1X,'VC05FT (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF U NOT AVAILABLE:',1I6,
+     &         1X,'REAL NAME: ',A6)
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

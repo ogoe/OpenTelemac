@@ -105,26 +105,26 @@
 !     CASE WHERE THE INTEGER DOES NOT FINISH ON THE LINE                                                                                                                                                                                                                                                                                                                                                                                                                                              LINE
 !
       IF (I2.GT.LONGLI) THEN
-         LUFIC=.TRUE.
-         READ(NFIC,END=900,ERR=998,FMT='(A)') LIGNE2
-         CDEB = LIGNE2(1:1)
-         IF (CDEB.EQ.'0'.OR.CDEB.EQ.'1'.OR.CDEB.EQ.'2'.OR.
-     &       CDEB.EQ.'3'.OR.CDEB.EQ.'4'.OR.CDEB.EQ.'5'.OR.
-     &       CDEB.EQ.'6'.OR.CDEB.EQ.'7'.OR.CDEB.EQ.'8'.OR.
-     &       CDEB.EQ.'9'.OR.CDEB.EQ.'.') THEN
-            LISUIV = .TRUE.
-            I3=1
-            I3=PREVAL(I3,LIGNE2 , ' ' , ';', TABUL)
-            IF (I1.LE.LONGLI) THEN
-              LIGNE = LIGNE(I1:LONGLI)//LIGNE2(1:I3)
-            ELSE
-              LIGNE =LIGNE2(1:I3)
-            ENDIF
-            I2 = LONGLI-I1+1+I3
-            I1 = 1
-         ENDIF
-       ENDIF
-       GOTO 910
+        LUFIC=.TRUE.
+        READ(NFIC,END=900,ERR=998,FMT='(A)') LIGNE2
+        CDEB = LIGNE2(1:1)
+        IF (CDEB.EQ.'0'.OR.CDEB.EQ.'1'.OR.CDEB.EQ.'2'.OR.
+     &     CDEB.EQ.'3'.OR.CDEB.EQ.'4'.OR.CDEB.EQ.'5'.OR.
+     &     CDEB.EQ.'6'.OR.CDEB.EQ.'7'.OR.CDEB.EQ.'8'.OR.
+     &     CDEB.EQ.'9'.OR.CDEB.EQ.'.') THEN
+          LISUIV = .TRUE.
+          I3=1
+          I3=PREVAL(I3,LIGNE2 , ' ' , ';', TABUL)
+          IF (I1.LE.LONGLI) THEN
+            LIGNE = LIGNE(I1:LONGLI)//LIGNE2(1:I3)
+          ELSE
+            LIGNE =LIGNE2(1:I3)
+          ENDIF
+          I2 = LONGLI-I1+1+I3
+          I1 = 1
+        ENDIF
+      ENDIF
+      GOTO 910
 !
  900  CONTINUE
       RETOUR = .TRUE.
@@ -145,9 +145,9 @@
       WRITE ( LLONG , '(I3)' ) ILONG
 !
       IF(I1.EQ.1) THEN
-         WRITE (FORMA , 1101 )  LLONG(JD1:3)
+        WRITE (FORMA , 1101 )  LLONG(JD1:3)
       ELSE
-         WRITE (FORMA , 1100 )  I1-1 , LLONG(JD1:3)
+        WRITE (FORMA , 1100 )  I1-1 , LLONG(JD1:3)
       ENDIF
 !
 !     ////  DECODES ////

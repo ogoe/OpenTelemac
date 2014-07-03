@@ -56,12 +56,12 @@
 !
       DO IELEM = 1 , NELEM
 !
-         X2 = XEL(IELEM,2)
-         X3 = XEL(IELEM,3)
-         Y2 = YEL(IELEM,2)
-         Y3 = YEL(IELEM,3)
+        X2 = XEL(IELEM,2)
+        X3 = XEL(IELEM,3)
+        Y2 = YEL(IELEM,2)
+        Y3 = YEL(IELEM,3)
 !
-         SURFAC(IELEM) = 0.5D0 * ( X2*Y3 - X3*Y2 )
+        SURFAC(IELEM) = 0.5D0 * ( X2*Y3 - X3*Y2 )
 !
       ENDDO ! IELEM 
 !

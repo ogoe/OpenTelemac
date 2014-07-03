@@ -96,11 +96,11 @@
      &             -MESH3D%Z%R(IPOIN2)  , 1.D-4)
             DELTAZ=MESH3D%Z%R(IPOIN3)-MESH3D%Z%R(IPOIN2)
 !           bug correction CV            
-            TRA_PROF_Z=(ZREFE/(HH-ZREFE)*(HH-DELTAZ)/DELTAZ)**ROUSE            
+            TRA_PROF_Z=(ZREFE/(HH-ZREFE)*(HH-DELTAZ)/DELTAZ)**ROUSE
           ENDIF   
           TRA_PROF_Z=CREF%R(IPOIN2)*TRA_PROF_Z
 !
-       ENDIF
+        ENDIF
 !
       ELSEIF(IOPT.EQ.3) THEN
 !

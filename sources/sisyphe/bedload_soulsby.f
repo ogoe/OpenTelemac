@@ -86,42 +86,42 @@
 !
       DO I = 1, NPOIN
 !
-         ! *************************** !
-         ! III - BEDLOAD COEFFICIENT   !
-         ! *************************** !
-         ASB = 0.005D0*HN%R(I)*(DM/MAX(HN%R(I),DM))**1.2D0 / COEF
+        ! *************************** !
+        ! III - BEDLOAD COEFFICIENT   !
+        ! *************************** !
+        ASB = 0.005D0*HN%R(I)*(DM/MAX(HN%R(I),DM))**1.2D0 / COEF
 !
-         ! ********************************** !
-         ! IV - ROUGHNESS COEFFICIENT CD      !
-         !      SOULSBY: Z0=0.006 --> KS=18CM !
-         ! ********************************** !
-         CD = (0.4D0 / (LOG(MAX(HN%R(I),Z0)/Z0)-1.D0))**2
+        ! ********************************** !
+        ! IV - ROUGHNESS COEFFICIENT CD      !
+        !      SOULSBY: Z0=0.006 --> KS=18CM !
+        ! ********************************** !
+        CD = (0.4D0 / (LOG(MAX(HN%R(I),Z0)/Z0)-1.D0))**2
 !
-         ! ************************************************ !
-         ! V - CRTITICAL CURRENT SPEED UCR                  !
-         ! ************************************************ !
-         IF (DM < 0.0005D0) THEN
-            UCR = 0.19D0*(DM**0.1D0)*LOG10(4.D0*MAX(HN%R(I),D90)/D90)
-         ELSE
-            UCR = 8.50D0*(DM**0.6D0)*LOG10(4.D0*MAX(HN%R(I),D90)/D90)
-         ENDIF
+        ! ************************************************ !
+        ! V - CRTITICAL CURRENT SPEED UCR                  !
+        ! ************************************************ !
+        IF (DM < 0.0005D0) THEN
+          UCR = 0.19D0*(DM**0.1D0)*LOG10(4.D0*MAX(HN%R(I),D90)/D90)
+        ELSE
+          UCR = 8.50D0*(DM**0.6D0)*LOG10(4.D0*MAX(HN%R(I),D90)/D90)
+        ENDIF
 !
-         ! ************************************************* !
-         ! VI - SPEED INDUCED BY THE CURRENT AND WAVES       !
-         ! ************************************************* !
-         VTOT = SQRT(UCMOY%R(I)**2+(0.018D0/CD)*UW%R(I)**2)
+        ! ************************************************* !
+        ! VI - SPEED INDUCED BY THE CURRENT AND WAVES       !
+        ! ************************************************* !
+        VTOT = SQRT(UCMOY%R(I)**2+(0.018D0/CD)*UW%R(I)**2)
 !
-         ! *********************************************** !
-         ! VII - SUSPENDED AND BEDLOAD TRANSPORT           !
-         ! *********************************************** !
-         IF (VTOT > UCR) THEN
-            TRA     = UCMOY%R(I)  * (VTOT - UCR )**2.4D0
-            QSS%R(I)= ASS * TRA
-            QSC%R(I)= ASB * TRA
-         ELSE
-            QSS%R(I) = 0.D0
-            QSC%R(I) = 0.D0
-         ENDIF
+        ! *********************************************** !
+        ! VII - SUSPENDED AND BEDLOAD TRANSPORT           !
+        ! *********************************************** !
+        IF (VTOT > UCR) THEN
+          TRA     = UCMOY%R(I)  * (VTOT - UCR )**2.4D0
+          QSS%R(I)= ASS * TRA
+          QSC%R(I)= ASB * TRA
+        ELSE
+          QSS%R(I) = 0.D0
+          QSC%R(I) = 0.D0
+        ENDIF
       ENDDO
 !======================================================================!
 !======================================================================!

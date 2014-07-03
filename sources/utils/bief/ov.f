@@ -217,7 +217,7 @@
 !
         CASE('CXY   ')
 !
-         DO I=1,NPOIN
+        DO I=1,NPOIN
            X(I) = C * X(I) * Y(I)
         ENDDO
 !

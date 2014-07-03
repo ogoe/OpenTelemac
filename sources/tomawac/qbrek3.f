@@ -97,9 +97,9 @@
             XM    = 1.D0 + 0.7D0*(TAN(PISUR2*SIGMA/GAM2RO))**2
             A     = EXP(XM*(GAMMLN(1.D0+1.D0/XM,DEUPI)))
             IF(XM.GT.98.D0) THEN
-               FN = 1.D0
+              FN = 1.D0
             ELSE
-               FN = QGAUSS(BX,IEXPRO,A,XM)
+              FN = QGAUSS(BX,IEXPRO,A,XM)
             ENDIF
             BETA(IP) = COEF1*FCAR(IP)*FN
           ELSE

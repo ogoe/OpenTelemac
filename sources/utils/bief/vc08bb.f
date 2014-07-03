@@ -197,48 +197,48 @@
 !
       DO IELEM = 1 , NELEM
 !
-         X2 = XEL(IELEM+NELMAX)
-         X3 = XEL(IELEM+2*NELMAX)
-         Y2 = YEL(IELEM+NELMAX)
-         Y3 = YEL(IELEM+2*NELMAX)
+        X2 = XEL(IELEM+NELMAX)
+        X3 = XEL(IELEM+2*NELMAX)
+        Y2 = YEL(IELEM+NELMAX)
+        Y3 = YEL(IELEM+2*NELMAX)
 !
-         U1 = U(IKLE1(IELEM))
-         U2 = U(IKLE2(IELEM))
-         U3 = U(IKLE3(IELEM))
-         U4 = U(IKLE4(IELEM))
-         V1 = V(IKLE1(IELEM))
-         V2 = V(IKLE2(IELEM))
-         V3 = V(IKLE3(IELEM))
-         V4 = V(IKLE4(IELEM))
+        U1 = U(IKLE1(IELEM))
+        U2 = U(IKLE2(IELEM))
+        U3 = U(IKLE3(IELEM))
+        U4 = U(IKLE4(IELEM))
+        V1 = V(IKLE1(IELEM))
+        V2 = V(IKLE2(IELEM))
+        V3 = V(IKLE3(IELEM))
+        V4 = V(IKLE4(IELEM))
 !
-         F1 = F(IKLE1(IELEM))
-         F2 = F(IKLE2(IELEM)) - F1
-         F3 = F(IKLE3(IELEM)) - F1
-         F4 = F(IKLE4(IELEM)) - F1
+        F1 = F(IKLE1(IELEM))
+        F2 = F(IKLE2(IELEM)) - F1
+        F3 = F(IKLE3(IELEM)) - F1
+        F4 = F(IKLE4(IELEM)) - F1
 !
-         W1(IELEM)= (((V3+V4+2*V1)*X2+(V3+V4+2*V1)*X3-(Y3+Y2)*U3-(Y3+
-     &     Y2)*U4-2*(Y3+Y2)*U1)*F3-3*((V3+V4+2*V1)*X3-(V4+V2+2*
-     &     V1)*X2-(Y3-Y2)*U4-2*(Y3-Y2)*U1-U3*Y3+U2*Y2)*F4-((V4+V2+
-     &     2*V1)*X2+(V4+V2+2*V1)*X3-(Y3+Y2)*U4-(Y3+Y2)*U2-2*(Y3+Y2
-     &     )*U1)*F2)*XSUR72
+        W1(IELEM)= (((V3+V4+2*V1)*X2+(V3+V4+2*V1)*X3-(Y3+Y2)*U3-(Y3+
+     &    Y2)*U4-2*(Y3+Y2)*U1)*F3-3*((V3+V4+2*V1)*X3-(V4+V2+2*
+     &    V1)*X2-(Y3-Y2)*U4-2*(Y3-Y2)*U1-U3*Y3+U2*Y2)*F4-((V4+V2+
+     &    2*V1)*X2+(V4+V2+2*V1)*X3-(Y3+Y2)*U4-(Y3+Y2)*U2-2*(Y3+Y2
+     &    )*U1)*F2)*XSUR72
 !
-         W2(IELEM)= (-(((2*V3+3*V4+6*V2+V1)*X3-(V3-V1)*X2-(2*Y3-Y2)
-     &     *U3-(Y3+Y2)*U1-3*U4*Y3-6*U2*Y3)*F2-(2*(V3+V4+2*V2)*X2
-     &     -(V3+V4+2*V2)*X3+(Y3-2*Y2)*U3+(Y3-2*Y2)*U4+2*(Y3-2*
-     &     Y2)*U2)*F3-3*((V3+V4+2*V2)*X3-(V3-V1)*X2-(Y3-Y2)*U3-U4*
-     &     Y3-2*U2*Y3-U1*Y2)*F4))*XSUR72
+        W2(IELEM)= (-(((2*V3+3*V4+6*V2+V1)*X3-(V3-V1)*X2-(2*Y3-Y2)
+     &    *U3-(Y3+Y2)*U1-3*U4*Y3-6*U2*Y3)*F2-(2*(V3+V4+2*V2)*X2
+     &    -(V3+V4+2*V2)*X3+(Y3-2*Y2)*U3+(Y3-2*Y2)*U4+2*(Y3-2*
+     &    Y2)*U2)*F3-3*((V3+V4+2*V2)*X3-(V3-V1)*X2-(Y3-Y2)*U3-U4*
+     &    Y3-2*U2*Y3-U1*Y2)*F4))*XSUR72
 !
-         W3(IELEM)= (((6*V3+3*V4+2*V2+V1)*X2-(V2-V1)*X3-(Y3+Y2)*U1+(
-     &     Y3-2*Y2)*U2-6*U3*Y2-3*U4*Y2)*F3+((2*V3+V4+V2)*X2-2*(
-     &     2*V3+V4+V2)*X3+2*(2*Y3-Y2)*U3+(2*Y3-Y2)*U4+(2*Y3-Y2)*
-     &     U2)*F2-3*((2*V3+V4+V2)*X2-(V2-V1)*X3+(Y3-Y2)*U2-2*U3*
-     &     Y2-U4*Y2-U1*Y3)*F4)*XSUR72
+        W3(IELEM)= (((6*V3+3*V4+2*V2+V1)*X2-(V2-V1)*X3-(Y3+Y2)*U1+(
+     &    Y3-2*Y2)*U2-6*U3*Y2-3*U4*Y2)*F3+((2*V3+V4+V2)*X2-2*(
+     &    2*V3+V4+V2)*X3+2*(2*Y3-Y2)*U3+(2*Y3-Y2)*U4+(2*Y3-Y2)*
+     &    U2)*F2-3*((2*V3+V4+V2)*X2-(V2-V1)*X3+(Y3-Y2)*U2-2*U3*
+     &    Y2-U4*Y2-U1*Y3)*F4)*XSUR72
 !
-         W4(IELEM)= (((3*V3+6*V4+2*V2+V1)*X2-(V2-V1)*X3-(Y3+Y2)*U1+(
-     &     Y3-2*Y2)*U2-3*U3*Y2-6*U4*Y2)*F3-((2*V3+6*V4+3*V2+V1
-     &     )*X3-(V3-V1)*X2-(2*Y3-Y2)*U3-(Y3+Y2)*U1-6*U4*Y3-3*U2*
-     &     Y3)*F2-3*((V3-V1)*X2-(V2-V1)*X3-(Y3-Y2)*U1-U3*Y2+U2*Y3)*
-     &     F4)*XSUR72
+        W4(IELEM)= (((3*V3+6*V4+2*V2+V1)*X2-(V2-V1)*X3-(Y3+Y2)*U1+(
+     &    Y3-2*Y2)*U2-3*U3*Y2-6*U4*Y2)*F3-((2*V3+6*V4+3*V2+V1
+     &    )*X3-(V3-V1)*X2-(2*Y3-Y2)*U3-(Y3+Y2)*U1-6*U4*Y3-3*U2*
+     &    Y3)*F2-3*((V3-V1)*X2-(V2-V1)*X3-(Y3-Y2)*U1-U3*Y2+U2*Y3)*
+     &    F4)*XSUR72
 !
       ENDDO ! IELEM 
 !
@@ -250,12 +250,12 @@
 !
       IF(FORMUL(14:16).EQ.'PSI') THEN
 !
-       IF (LNG.EQ.1) WRITE(LU,400)
-       IF (LNG.EQ.2) WRITE(LU,401)
-400    FORMAT(1X,'VC08BB (BIEF) : PSI NON PROGRAMME EN QUASI-BULLE')
-401    FORMAT(1X,'VC08BB (BIEF) : PSI NOT IMPLEMENTED FOR QUASI-BUBBLE')
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,400)
+        IF (LNG.EQ.2) WRITE(LU,401)
+400   FORMAT(1X,'VC08BB (BIEF) : PSI NON PROGRAMME EN QUASI-BULLE')
+401   FORMAT(1X,'VC08BB (BIEF) : PSI NOT IMPLEMENTED FOR QUASI-BUBBLE')
+        CALL PLANTE(1)
+        STOP
 !
       ELSE
 !
@@ -263,42 +263,42 @@
 !
       DO IELEM = 1 , NELEM
 !
-         X2 = XEL(IELEM+NELMAX)
-         X3 = XEL(IELEM+2*NELMAX)
-         Y2 = YEL(IELEM+NELMAX)
-         Y3 = YEL(IELEM+2*NELMAX)
+        X2 = XEL(IELEM+NELMAX)
+        X3 = XEL(IELEM+2*NELMAX)
+        Y2 = YEL(IELEM+NELMAX)
+        Y3 = YEL(IELEM+2*NELMAX)
 !
-         U1 = U(IKLE1(IELEM))
-         U2 = U(IKLE2(IELEM))
-         U3 = U(IKLE3(IELEM))
-         V1 = V(IKLE1(IELEM))
-         V2 = V(IKLE2(IELEM))
-         V3 = V(IKLE3(IELEM))
+        U1 = U(IKLE1(IELEM))
+        U2 = U(IKLE2(IELEM))
+        U3 = U(IKLE3(IELEM))
+        V1 = V(IKLE1(IELEM))
+        V2 = V(IKLE2(IELEM))
+        V3 = V(IKLE3(IELEM))
 !
-         F1 = F(IKLE1(IELEM))
-         F2 = F(IKLE2(IELEM)) - F1
-         F3 = F(IKLE3(IELEM)) - F1
-         F4 = F(IKLE4(IELEM)) - F1
+        F1 = F(IKLE1(IELEM))
+        F2 = F(IKLE2(IELEM)) - F1
+        F3 = F(IKLE3(IELEM)) - F1
+        F4 = F(IKLE4(IELEM)) - F1
 !
-         W1(IELEM)=(((4*V3+V2+7*V1)*X2+(4*V3+V2+7*V1)*X3-4*(Y3+Y2
-     &    )*U3-(Y3+Y2)*U2-7*(Y3+Y2)*U1)*F3-3*((4*V3+V2+7*V1)*X3
-     &    -(V3+4*V2+7*V1)*X2-(4*Y3-Y2)*U3-7*(Y3-Y2)*U1-(Y3-4*
-     &    Y2)*U2)*F4-((V3+4*V2+7*V1)*X2+(V3+4*V2+7*V1)*X3-(Y3+
-     &    Y2)*U3-4*(Y3+Y2)*U2-7*(Y3+Y2)*U1)*F2)*XSU216
-         W2(IELEM)=((2*(4*V3+7*V2+V1)*X2-(4*V3+7*V2+V1)*X3+4*(Y3
-     &    -2*Y2)*U3+7*(Y3-2*Y2)*U2+(Y3-2*Y2)*U1)*F3+3*((4*V3+
-     &    7*V2+V1)*X3-3*(V3-V1)*X2-(4*Y3-3*Y2)*U3-(Y3+3*Y2)*U1-
-     &    7*U2*Y3)*F4-3*((3*V3+7*V2+2*V1)*X3-(V3-V1)*X2-(3*Y3-
-     &    Y2)*U3-(2*Y3+Y2)*U1-7*U2*Y3)*F2)*XSU216
-         W3(IELEM)=(((7*V3+4*V2+V1)*X2-2*(7*V3+4*V2+V1)*X3+7*(2
-     &    *Y3-Y2)*U3+4*(2*Y3-Y2)*U2+(2*Y3-Y2)*U1)*F2-3*((7*V3+
-     &    4*V2+V1)*X2-3*(V2-V1)*X3-(3*Y3+Y2)*U1+(3*Y3-4*Y2)*U2-
-     &    7*U3*Y2)*F4+3*((7*V3+3*V2+2*V1)*X2-(V2-V1)*X3-(Y3+2*
-     &    Y2)*U1+(Y3-3*Y2)*U2-7*U3*Y2)*F3)*XSU216
-         W4(IELEM)=(((5*V3+4*V2+3*V1)*X2-(V2-V1)*X3-(Y3+3*Y2)*U1+(
-     &    Y3-4*Y2)*U2-5*U3*Y2)*F3-((4*V3+5*V2+3*V1)*X3-(V3-V1)
-     &    *X2-(4*Y3-Y2)*U3-(3*Y3+Y2)*U1-5*U2*Y3)*F2-3*((V3-V1)*
-     &    X2-(V2-V1)*X3-(Y3-Y2)*U1-U3*Y2+U2*Y3)*F4)*XSUR72
+        W1(IELEM)=(((4*V3+V2+7*V1)*X2+(4*V3+V2+7*V1)*X3-4*(Y3+Y2
+     &   )*U3-(Y3+Y2)*U2-7*(Y3+Y2)*U1)*F3-3*((4*V3+V2+7*V1)*X3
+     &   -(V3+4*V2+7*V1)*X2-(4*Y3-Y2)*U3-7*(Y3-Y2)*U1-(Y3-4*
+     &   Y2)*U2)*F4-((V3+4*V2+7*V1)*X2+(V3+4*V2+7*V1)*X3-(Y3+
+     &   Y2)*U3-4*(Y3+Y2)*U2-7*(Y3+Y2)*U1)*F2)*XSU216
+        W2(IELEM)=((2*(4*V3+7*V2+V1)*X2-(4*V3+7*V2+V1)*X3+4*(Y3
+     &   -2*Y2)*U3+7*(Y3-2*Y2)*U2+(Y3-2*Y2)*U1)*F3+3*((4*V3+
+     &   7*V2+V1)*X3-3*(V3-V1)*X2-(4*Y3-3*Y2)*U3-(Y3+3*Y2)*U1-
+     &   7*U2*Y3)*F4-3*((3*V3+7*V2+2*V1)*X3-(V3-V1)*X2-(3*Y3-
+     &   Y2)*U3-(2*Y3+Y2)*U1-7*U2*Y3)*F2)*XSU216
+        W3(IELEM)=(((7*V3+4*V2+V1)*X2-2*(7*V3+4*V2+V1)*X3+7*(2
+     &   *Y3-Y2)*U3+4*(2*Y3-Y2)*U2+(2*Y3-Y2)*U1)*F2-3*((7*V3+
+     &   4*V2+V1)*X2-3*(V2-V1)*X3-(3*Y3+Y2)*U1+(3*Y3-4*Y2)*U2-
+     &   7*U3*Y2)*F4+3*((7*V3+3*V2+2*V1)*X2-(V2-V1)*X3-(Y3+2*
+     &   Y2)*U1+(Y3-3*Y2)*U2-7*U3*Y2)*F3)*XSU216
+        W4(IELEM)=(((5*V3+4*V2+3*V1)*X2-(V2-V1)*X3-(Y3+3*Y2)*U1+(
+     &   Y3-4*Y2)*U2-5*U3*Y2)*F3-((4*V3+5*V2+3*V1)*X3-(V3-V1)
+     &   *X2-(4*Y3-Y2)*U3-(3*Y3+Y2)*U1-5*U2*Y3)*F2-3*((V3-V1)*
+     &   X2-(V2-V1)*X3-(Y3-Y2)*U1-U3*Y2+U2*Y3)*F4)*XSUR72
 !
       ENDDO ! IELEM 
 !
@@ -310,26 +310,26 @@
 !
 !-----------------------------------------------------------------------
 !
-       IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
-       IF (LNG.EQ.1) WRITE(LU,200) IELMU,SU%NAME
-       IF (LNG.EQ.1) WRITE(LU,300)
-       IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
-       IF (LNG.EQ.1) WRITE(LU,201) IELMU,SU%NAME
-       IF (LNG.EQ.1) WRITE(LU,301)
-100    FORMAT(1X,'VC08BB (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F : ',1I6,
-     &        1X,'NOM REEL : ',A6)
-200    FORMAT(1X,'DISCRETISATION DE U : ',1I6,
-     &        1X,'NOM REEL : ',A6)
-300    FORMAT(1X,'CAS NON PREVU')
-101    FORMAT(1X,'VC08BB (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF F:',1I6,
-     &        1X,'REAL NAME: ',A6)
-201    FORMAT(1X,'DISCRETIZATION OF U:',1I6,
-     &        1X,'REAL NAME: ',A6)
-301    FORMAT(1X,'CASE NOT IMPLEMENTED')
-       CALL PLANTE(1)
-       STOP
+        IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
+        IF (LNG.EQ.1) WRITE(LU,200) IELMU,SU%NAME
+        IF (LNG.EQ.1) WRITE(LU,300)
+        IF (LNG.EQ.2) WRITE(LU,101) IELMF,SF%NAME
+        IF (LNG.EQ.1) WRITE(LU,201) IELMU,SU%NAME
+        IF (LNG.EQ.1) WRITE(LU,301)
+100     FORMAT(1X,'VC08BB (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+200     FORMAT(1X,'DISCRETISATION DE U : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+300     FORMAT(1X,'CAS NON PREVU')
+101     FORMAT(1X,'VC08BB (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F:',1I6,
+     &         1X,'REAL NAME: ',A6)
+201     FORMAT(1X,'DISCRETIZATION OF U:',1I6,
+     &         1X,'REAL NAME: ',A6)
+301     FORMAT(1X,'CASE NOT IMPLEMENTED')
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

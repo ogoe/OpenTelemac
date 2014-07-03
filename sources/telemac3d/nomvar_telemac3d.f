@@ -74,9 +74,9 @@
 !     INITIALISES
 !
       DO I=1,100
-        MNEMO(I) ='xxxxxxxx'
-        TEXT3(I) ='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-        TEXTP3(I)='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+        MNEMO(I) ='XXXXXXXX'
+        TEXT3(I) ='XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+        TEXTP3(I)='XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
       ENDDO
 !
 !     ENGLISH

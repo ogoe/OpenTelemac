@@ -60,14 +60,14 @@
 !=======================================================================
 !
       DO I=1,NPOIN
-         NEW(I) = 0
+        NEW(I) = 0
       ENDDO
 !
       DO I=1,NELEM
-         NEW(IKLE(I,1)) = IKLE(I,1)
-         NEW(IKLE(I,2)) = IKLE(I,2)
-         NEW(IKLE(I,3)) = IKLE(I,3)
-         IF(NDP.EQ.4) NEW(IKLE(I,4)) = IKLE(I,4)
+        NEW(IKLE(I,1)) = IKLE(I,1)
+        NEW(IKLE(I,2)) = IKLE(I,2)
+        NEW(IKLE(I,3)) = IKLE(I,3)
+        IF(NDP.EQ.4) NEW(IKLE(I,4)) = IKLE(I,4)
       ENDDO
 !
 !=======================================================================
@@ -80,17 +80,17 @@
       NPTELI = 0
 !
       DO I=1,NPOIN-1
-         IF(NEW(I).EQ.I) THEN
-            DO J=I+1,NPOIN
-               IF((X(I)-X(J))**2+(Y(I)-Y(J))**2.LT.EPSI
-     &            .AND.NEW(J).EQ.J) THEN
-                  PTPRO  = .TRUE.
-                  NEW(J) = I
-               ENDIF
-            ENDDO
-         ELSE
-            PTELI = .TRUE.
-         ENDIF
+        IF(NEW(I).EQ.I) THEN
+          DO J=I+1,NPOIN
+            IF((X(I)-X(J))**2+(Y(I)-Y(J))**2.LT.EPSI
+     &        .AND.NEW(J).EQ.J) THEN
+              PTPRO  = .TRUE.
+              NEW(J) = I
+            ENDIF
+          ENDDO
+        ELSE
+           PTELI = .TRUE.
+        ENDIF
       ENDDO
 !
 !=======================================================================
@@ -104,12 +104,12 @@
 !=======================================================================
 !
       IF(PTPRO) THEN
-         DO I=1,NELEM
-            IKLE(I,1) = NEW(IKLE(I,1))
-            IKLE(I,2) = NEW(IKLE(I,2))
-            IKLE(I,3) = NEW(IKLE(I,3))
-            IF(NDP.EQ.4) IKLE(I,4) = NEW(IKLE(I,4))
-         ENDDO
+        DO I=1,NELEM
+          IKLE(I,1) = NEW(IKLE(I,1))
+          IKLE(I,2) = NEW(IKLE(I,2))
+          IKLE(I,3) = NEW(IKLE(I,3))
+          IF(NDP.EQ.4) IKLE(I,4) = NEW(IKLE(I,4))
+        ENDDO
       ENDIF
 !
 !=======================================================================
@@ -117,27 +117,27 @@
 !=======================================================================
 !
       IF(PTELI) THEN
-         DO I=1,NPOIN
-            IF(NEW(I).EQ.I) THEN
-               NEW(I) = I - NPTELI
-               X(I-NPTELI) = X(I)
-               Y(I-NPTELI) = Y(I)
-               NCOLOR(I-NPTELI) = NCOLOR(I)
-            ELSE
-               NPTELI = NPTELI + 1
-            ENDIF
-         ENDDO
+        DO I=1,NPOIN
+          IF(NEW(I).EQ.I) THEN
+            NEW(I) = I - NPTELI
+            X(I-NPTELI) = X(I)
+            Y(I-NPTELI) = Y(I)
+            NCOLOR(I-NPTELI) = NCOLOR(I)
+          ELSE
+            NPTELI = NPTELI + 1
+          ENDIF
+        ENDDO
 !
 !=======================================================================
 ! MODIFICATION DES IKLE DUE AU REMPLISSAGE DES TROUS
 !=======================================================================
 !
-         DO I=1,NELEM
-            IKLE(I,1) = NEW(IKLE(I,1))
-            IKLE(I,2) = NEW(IKLE(I,2))
-            IKLE(I,3) = NEW(IKLE(I,3))
-            IF(NDP.EQ.4) IKLE(I,4) = NEW(IKLE(I,4))
-         ENDDO
+        DO I=1,NELEM
+          IKLE(I,1) = NEW(IKLE(I,1))
+          IKLE(I,2) = NEW(IKLE(I,2))
+          IKLE(I,3) = NEW(IKLE(I,3))
+          IF(NDP.EQ.4) IKLE(I,4) = NEW(IKLE(I,4))
+        ENDDO
       ENDIF
 !
       NPOIN = NPOIN - NPTELI
@@ -152,68 +152,68 @@
 !
       IF (NDP.EQ.3) THEN
 !
-         DO I=1,NELEM
+        DO I=1,NELEM
+          I1 = IKLE(I,1)
+          I2 = IKLE(I,2)
+          I3 = IKLE(I,3)
+          NEW(I) = 0
+          IF (I1.EQ.I2.OR.I1.EQ.I3.OR.I2.EQ.I3) NEW(I) = 1
+        ENDDO
+!
+        DO I=1,NELEM-1
+          IF (NEW(I).EQ.0) THEN
             I1 = IKLE(I,1)
             I2 = IKLE(I,2)
             I3 = IKLE(I,3)
-            NEW(I) = 0
-            IF (I1.EQ.I2.OR.I1.EQ.I3.OR.I2.EQ.I3) NEW(I) = 1
-         ENDDO
-!
-         DO I=1,NELEM-1
-            IF (NEW(I).EQ.0) THEN
-               I1 = IKLE(I,1)
-               I2 = IKLE(I,2)
-               I3 = IKLE(I,3)
-               DO J=I+1,NELEM
-                  IF (NEW(J).EQ.0) THEN
-                     J1 = IKLE(J,1)
-                     J2 = IKLE(J,2)
-                     J3 = IKLE(J,3)
-                     IF ((I1.EQ.J1.OR.I1.EQ.J2.OR.I1.EQ.J3).AND.
-     &                   (I2.EQ.J1.OR.I2.EQ.J2.OR.I2.EQ.J3).AND.
-     &                   (I3.EQ.J1.OR.I3.EQ.J2.OR.I3.EQ.J3)) NEW(J) = 1
-                  ENDIF
-               ENDDO
-            ELSE
-               ELELI = .TRUE.
-            ENDIF
-         ENDDO
+            DO J=I+1,NELEM
+              IF (NEW(J).EQ.0) THEN
+                J1 = IKLE(J,1)
+                J2 = IKLE(J,2)
+                J3 = IKLE(J,3)
+                IF ((I1.EQ.J1.OR.I1.EQ.J2.OR.I1.EQ.J3).AND.
+     &              (I2.EQ.J1.OR.I2.EQ.J2.OR.I2.EQ.J3).AND.
+     &              (I3.EQ.J1.OR.I3.EQ.J2.OR.I3.EQ.J3)) NEW(J) = 1
+              ENDIF
+            ENDDO
+          ELSE
+            ELELI = .TRUE.
+          ENDIF
+        ENDDO
 !
       ELSE
 !
-         DO I=1,NELEM
+        DO I=1,NELEM
+          I1 = IKLE(I,1)
+          I2 = IKLE(I,2)
+          I3 = IKLE(I,3)
+          I4 = IKLE(I,4)
+          NEW(I) = 0
+          IF (I1.EQ.I2.OR.I1.EQ.I3.OR.I1.EQ.I4.OR.
+     &        I2.EQ.I3.OR.I2.EQ.I4.OR.I3.EQ.I4) NEW(I) = 1
+        ENDDO
+!
+        DO I=1,NELEM-1
+          IF (NEW(I).EQ.0) THEN
             I1 = IKLE(I,1)
             I2 = IKLE(I,2)
             I3 = IKLE(I,3)
             I4 = IKLE(I,4)
-            NEW(I) = 0
-            IF (I1.EQ.I2.OR.I1.EQ.I3.OR.I1.EQ.I4.OR.
-     &          I2.EQ.I3.OR.I2.EQ.I4.OR.I3.EQ.I4) NEW(I) = 1
-         ENDDO
-!
-         DO I=1,NELEM-1
-            IF (NEW(I).EQ.0) THEN
-               I1 = IKLE(I,1)
-               I2 = IKLE(I,2)
-               I3 = IKLE(I,3)
-               I4 = IKLE(I,4)
-               DO J=I+1,NELEM
-                  IF (NEW(J).EQ.0) THEN
-                     J1 = IKLE(J,1)
-                     J2 = IKLE(J,2)
-                     J3 = IKLE(J,3)
-                     J4 = IKLE(J,4)
-             IF((I1.EQ.J1.OR.I1.EQ.J2.OR.I1.EQ.J3.OR.I1.EQ.J4).AND.
-     &          (I2.EQ.J1.OR.I2.EQ.J2.OR.I2.EQ.J3.OR.I2.EQ.J4).AND.
-     &          (I3.EQ.J1.OR.I3.EQ.J2.OR.I3.EQ.J3.OR.I3.EQ.J4).AND.
-     &          (I4.EQ.J1.OR.I4.EQ.J2.OR.I4.EQ.J3.OR.I4.EQ.J4)) NEW(J)=1
-                  ENDIF
-               ENDDO
-            ELSE
-               ELELI = .TRUE.
-            ENDIF
-         ENDDO
+            DO J=I+1,NELEM
+              IF (NEW(J).EQ.0) THEN
+                J1 = IKLE(J,1)
+                J2 = IKLE(J,2)
+                J3 = IKLE(J,3)
+                J4 = IKLE(J,4)
+                IF((I1.EQ.J1.OR.I1.EQ.J2.OR.I1.EQ.J3.OR.I1.EQ.J4).AND.
+     &       (I2.EQ.J1.OR.I2.EQ.J2.OR.I2.EQ.J3.OR.I2.EQ.J4).AND.
+     &       (I3.EQ.J1.OR.I3.EQ.J2.OR.I3.EQ.J3.OR.I3.EQ.J4).AND.
+     &       (I4.EQ.J1.OR.I4.EQ.J2.OR.I4.EQ.J3.OR.I4.EQ.J4)) NEW(J)=1
+              ENDIF
+            ENDDO
+          ELSE
+            ELELI = .TRUE.
+          ENDIF
+        ENDDO
 !
       ENDIF
 !
@@ -228,16 +228,16 @@
 !=======================================================================
 !
       IF(ELELI) THEN
-         DO I=1,NELEM
-            IF(NEW(I).EQ.0) THEN
-               IKLE(I-NELELI,1) = IKLE(I,1)
-               IKLE(I-NELELI,2) = IKLE(I,2)
-               IKLE(I-NELELI,3) = IKLE(I,3)
-               IF(NDP.EQ.4) IKLE(I-NELELI,4) = IKLE(I,4)
-            ELSE
-               NELELI = NELELI + 1
-            ENDIF
-         ENDDO
+        DO I=1,NELEM
+          IF(NEW(I).EQ.0) THEN
+            IKLE(I-NELELI,1) = IKLE(I,1)
+            IKLE(I-NELELI,2) = IKLE(I,2)
+            IKLE(I-NELELI,3) = IKLE(I,3)
+            IF(NDP.EQ.4) IKLE(I-NELELI,4) = IKLE(I,4)
+          ELSE
+            NELELI = NELELI + 1
+          ENDIF
+        ENDDO
       ENDIF
 !
       NELEM = NELEM - NELELI
@@ -263,5 +263,5 @@
      &        /,1X,'NEW NUMBER OF POINTS   : ',I9,
      &        /,1X,'NEW NUMBER OF ELEMENTS : ',I9)
 !
-       RETURN
-       END
+      RETURN
+      END

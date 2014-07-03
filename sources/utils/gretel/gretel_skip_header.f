@@ -46,7 +46,7 @@
       READ(FU,ERR=999) NBV1
       IF (NBV1.NE.NVALUE) THEN
         WRITE(LU,*)  'NBV1.NE.NVALUE! CHECK OUTPUT FILES ...'
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !

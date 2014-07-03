@@ -51,22 +51,22 @@
 !
       IF(NTRAC.GE.1) THEN
 !
-!        CALL OS ( 'X=C     ' , X=S0TA , C=0.D0 )
-!        CALL OS ( 'X=C     ' , X=S1TA , C=0.D0 )
+!       CALL OS ( 'X=C     ' , X=S0TA , C=0.D0 )
+!       CALL OS ( 'X=C     ' , X=S1TA , C=0.D0 )
 !
-!        SOURCE TERMS SIMPLY MARKED
+!       SOURCE TERMS SIMPLY MARKED
 !
-!        BEWARE, PUT Q INSTEAD OF 0 IN TYPR IF NOT NIL
+!       BEWARE, PUT Q INSTEAD OF 0 IN TYPR IF NOT NIL
 !
-         DO ITRAC=1,NTRAC
-           S0TA%ADR(ITRAC)%P%TYPR='0'
-           S1TA%ADR(ITRAC)%P%TYPR='0'
-         ENDDO
+        DO ITRAC=1,NTRAC
+          S0TA%ADR(ITRAC)%P%TYPR='0'
+          S1TA%ADR(ITRAC)%P%TYPR='0'
+        ENDDO
 !
-!        EXAMPLE OF RADIOACTIVE DECAY E**(-KT) ON FIRST TRACER, HERE C=K
+!       EXAMPLE OF RADIOACTIVE DECAY E**(-KT) ON FIRST TRACER, HERE C=K
 !
-!        S1TA%ADR(1)%P%TYPR='Q'
-!        CALL OS('X=C     ',S1TA%ADR(1)%P,C=1.D0)
+!       S1TA%ADR(1)%P%TYPR='Q'
+!       CALL OS('X=C     ',S1TA%ADR(1)%P,C=1.D0)
 !
       ENDIF
 !

@@ -73,42 +73,42 @@
 !======================================================================!
 !
       DO I = 1,NPOIN
-         UCMOY = ABS(UCW%R(I))
-         ! ****************** !
-         !    I - WAVES ONLY  ! (_IMP_)
-         ! ****************** !
-         IF (UCMOY <= ZERO) THEN
-            UW1%R(I) = UW%R(I)
-            UW2%R(I) = UW%R(I)
-            TW1%R(I) = TW%R(I) / 2.D0
-            TW2%R(I) = TW%R(I) / 2.D0
-         ELSE
-            RAP = UW%R(I) / UCMOY
-            ! ******************** !
-            ! II - WAVES ARE PREDOMINANT ! (_IMP_)
-            ! ******************** !
-            IF (RAP > 1.D0) THEN
-               ACOSMRAP = ACOS(-1.D0/RAP)
-               ACOSPRAP = ACOS( 1.D0/RAP)
-               SQRTRAP  = SQRT(1.D0-1.D0/RAP**2)
-               TW1%R(I) = TW%R(I)*ACOSMRAP / PI
-               TW2%R(I) = TW%R(I)*ACOSPRAP / PI
-               UW1%R(I) = 2.D0*UCMOY**2 + UW%R(I)**2
-     &                  + 3.D0*UCMOY*UW%R(I)*SQRTRAP/ACOSMRAP
-               UW1%R(I) = SQRT(UW1%R(I))
-               UW2%R(I) = 2.D0*UCMOY**2 + UW%R(I)**2
-     &                  - 3.D0*UCMOY*UW%R(I)*SQRTRAP/ACOSPRAP
-               UW2%R(I) = SQRT(UW2%R(I))
-            ! ********************** !
-            ! III - CURRENTS ARE PREDOMINANT ! (_IMP_)
-            ! ********************** !
-            ELSE
-               UW1%R(I) = UCW%R(I)*SQRT(2.D0 + RAP**2)
-               UW2%R(I) = ZERO
-               TW1%R(I) = TW%R(I)
-               TW2%R(I) = ZERO
-            ENDIF
-         ENDIF
+        UCMOY = ABS(UCW%R(I))
+        ! ****************** !
+        !    I - WAVES ONLY  ! (_IMP_)
+        ! ****************** !
+        IF (UCMOY <= ZERO) THEN
+          UW1%R(I) = UW%R(I)
+          UW2%R(I) = UW%R(I)
+          TW1%R(I) = TW%R(I) / 2.D0
+          TW2%R(I) = TW%R(I) / 2.D0
+        ELSE
+          RAP = UW%R(I) / UCMOY
+          ! ******************** !
+          ! II - WAVES ARE PREDOMINANT ! (_IMP_)
+          ! ******************** !
+          IF (RAP > 1.D0) THEN
+            ACOSMRAP = ACOS(-1.D0/RAP)
+            ACOSPRAP = ACOS( 1.D0/RAP)
+            SQRTRAP  = SQRT(1.D0-1.D0/RAP**2)
+            TW1%R(I) = TW%R(I)*ACOSMRAP / PI
+            TW2%R(I) = TW%R(I)*ACOSPRAP / PI
+            UW1%R(I) = 2.D0*UCMOY**2 + UW%R(I)**2
+     &               + 3.D0*UCMOY*UW%R(I)*SQRTRAP/ACOSMRAP
+            UW1%R(I) = SQRT(UW1%R(I))
+            UW2%R(I) = 2.D0*UCMOY**2 + UW%R(I)**2
+     &               - 3.D0*UCMOY*UW%R(I)*SQRTRAP/ACOSPRAP
+            UW2%R(I) = SQRT(UW2%R(I))
+          ! ********************** !
+          ! III - CURRENTS ARE PREDOMINANT ! (_IMP_)
+          ! ********************** !
+          ELSE
+            UW1%R(I) = UCW%R(I)*SQRT(2.D0 + RAP**2)
+            UW2%R(I) = ZERO
+            TW1%R(I) = TW%R(I)
+            TW2%R(I) = ZERO
+          ENDIF
+        ENDIF
       ENDDO
 !
 !======================================================================!

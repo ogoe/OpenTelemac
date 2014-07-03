@@ -53,6 +53,8 @@
 !
       DOUBLE PRECISION X(NPOIN) , Y(NPOIN) , SOM1 , SOM2 , Y2 , EPSILO
 !
+      LOGICAL SWAP
+!
       COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
       DATA SOMSUI / 2 , 3 , 4 , 0 /
@@ -64,11 +66,12 @@
 !
       SOMSUI(NDP) = 1
       IF (MESH.NE.2.AND.MESH.NE.3) THEN
-         IF (LNG.EQ.1) WRITE(LU,1000) MESH
-         IF (LNG.EQ.2) WRITE(LU,4000) MESH
-1000     FORMAT(/,1X,'RANBO : CAS DE MAILLAGE NON PREVU, MESH = ',I4,/)
-4000     FORMAT(/,1X,'RANBO : MESH NOT ALLOWED , MESH = ',I4,/)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,1000) MESH
+        IF (LNG.EQ.2) WRITE(LU,4000) MESH
+1000    FORMAT(/,1X,'RANBO : CAS DE MAILLAGE NON PREVU, MESH = ',I4,/)
+4000    FORMAT(/,1X,'RANBO : MESH NOT ALLOWED , MESH = ',I4,/)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !=======================================================================
@@ -77,13 +80,13 @@
 !
       NPTFR = 0
       DO IELEM=1,NELEM
-         DO IFACE=1,NDP
-            IF (IFABOR(IELEM,IFACE).LE.0) THEN
-               NPTFR = NPTFR + 1
-               TRAV1(NPTFR,1) = IKLE(IELEM,       IFACE )
-               TRAV1(NPTFR,2) = IKLE(IELEM,SOMSUI(IFACE))
-            ENDIF
-         ENDDO
+        DO IFACE=1,NDP
+          IF (IFABOR(IELEM,IFACE).LE.0) THEN
+            NPTFR = NPTFR + 1
+            TRAV1(NPTFR,1) = IKLE(IELEM,       IFACE )
+            TRAV1(NPTFR,2) = IKLE(IELEM,SOMSUI(IFACE))
+          ENDIF
+        ENDDO
       ENDDO
 !
 !=======================================================================
@@ -93,22 +96,22 @@
 !
       IERROR = 0
       DO I=1,NPTFR
-         I1 = 1
-         I2 = 1
-         DO ISUIV=1,NPTFR
-            IF (TRAV1(I,1).EQ.TRAV1(ISUIV,2)) I1 = I1 + 1
-            IF (TRAV1(I,2).EQ.TRAV1(ISUIV,1)) I2 = I2 + 1
-         ENDDO
-         IF (I1.NE.2) THEN
-            IERROR = IERROR + 1
-            IF (LNG.EQ.1) WRITE(LU,1010) X(TRAV1(I,1)),Y(TRAV1(I,1)),I1
-            IF (LNG.EQ.2) WRITE(LU,1020) X(TRAV1(I,1)),Y(TRAV1(I,1)),I1
-         ENDIF
-         IF (I2.NE.2) THEN
-            IERROR = IERROR + 1
-            IF (LNG.EQ.1) WRITE(LU,1010) X(TRAV1(I,2)),Y(TRAV1(I,2)),I2
-            IF (LNG.EQ.2) WRITE(LU,1020) X(TRAV1(I,2)),Y(TRAV1(I,2)),I2
-         ENDIF
+        I1 = 1
+        I2 = 1
+        DO ISUIV=1,NPTFR
+          IF (TRAV1(I,1).EQ.TRAV1(ISUIV,2)) I1 = I1 + 1
+          IF (TRAV1(I,2).EQ.TRAV1(ISUIV,1)) I2 = I2 + 1
+        ENDDO
+        IF (I1.NE.2) THEN
+          IERROR = IERROR + 1
+          IF (LNG.EQ.1) WRITE(LU,1010) X(TRAV1(I,1)),Y(TRAV1(I,1)),I1
+          IF (LNG.EQ.2) WRITE(LU,1020) X(TRAV1(I,1)),Y(TRAV1(I,1)),I1
+        ENDIF
+        IF (I2.NE.2) THEN
+          IERROR = IERROR + 1
+          IF (LNG.EQ.1) WRITE(LU,1010) X(TRAV1(I,2)),Y(TRAV1(I,2)),I2
+          IF (LNG.EQ.2) WRITE(LU,1020) X(TRAV1(I,2)),Y(TRAV1(I,2)),I2
+        ENDIF
       ENDDO
 !
 1010  FORMAT(1X,'ERREUR SUR LE POINT DE BORD :',/,
@@ -118,7 +121,10 @@
      &       1X,'X=',F13.3,'  Y=',F13.3,/,
      &       1X,'IT BELONGS TO',I2,' BOUNDARY SEGMENT(S)')
 !
-      IF (IERROR.GT.0) STOP
+      IF (IERROR.GT.0) THEN
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 !=======================================================================
 ! RANGEMENT DES ARETES DE BORD BOUT A BOUT.
@@ -132,18 +138,18 @@
 !
       DO I=1,NPTFR
 !
-         SOM1 = X(TRAV1(I,1)) + Y(TRAV1(I,1))
-         IF (ABS(SOM1-SOM2).LE.ABS(EPSILO*SOM1)) THEN
-            IF (Y(TRAV1(I,1)).LE.Y2) THEN
-               Y2    = Y(TRAV1(I,1))
-               SOM2  = SOM1
-               ISUIV = I
-            ENDIF
-         ELSEIF (SOM1.LE.SOM2) THEN
+        SOM1 = X(TRAV1(I,1)) + Y(TRAV1(I,1))
+        IF (ABS(SOM1-SOM2).LE.ABS(EPSILO*SOM1)) THEN
+          IF (Y(TRAV1(I,1)).LE.Y2) THEN
             Y2    = Y(TRAV1(I,1))
             SOM2  = SOM1
             ISUIV = I
-         ENDIF
+          ENDIF
+        ELSEIF (SOM1.LE.SOM2) THEN
+          Y2    = Y(TRAV1(I,1))
+          SOM2  = SOM1
+          ISUIV = I
+        ENDIF
 !
       ENDDO
 !
@@ -158,33 +164,36 @@
       NILE = 1
 !
       DO I=2,NPTFR
+        SWAP = .FALSE.
 !
 !=======================================================================
 ! RECHERCHE DE L'ARETE DONT LE PREMIER NOEUD EST IDENTIQUE AU SECOND
 ! DE L'ARETE PRECEDENTE
 !=======================================================================
 !
-         DO ISUIV=I,NPTFR
+        DO ISUIV=I,NPTFR
 !
-            IF (TRAV1(ISUIV,1).EQ.TRAV1(I-1,2)) THEN
+          IF (TRAV1(ISUIV,1).EQ.TRAV1(I-1,2)) THEN
 !
 !=======================================================================
 ! PERMUTATION DES ARETES DE NUMEROS I+1 ET ISUIV
 !=======================================================================
 !
-               NOEUD1 = TRAV1(ISUIV,1)
-               NOEUD2 = TRAV1(ISUIV,2)
-               TRAV1(ISUIV,1) = TRAV1(I,1)
-               TRAV1(ISUIV,2) = TRAV1(I,2)
-               TRAV1(I,1) = NOEUD1
-               TRAV1(I,2) = NOEUD2
-               KP1BOR(I+NPTFR) = I-1
-               KP1BOR(I-1) = I
-               EXIT
+            NOEUD1 = TRAV1(ISUIV,1)
+            NOEUD2 = TRAV1(ISUIV,2)
+            TRAV1(ISUIV,1) = TRAV1(I,1)
+            TRAV1(ISUIV,2) = TRAV1(I,2)
+            TRAV1(I,1) = NOEUD1
+            TRAV1(I,2) = NOEUD2
+            KP1BOR(I+NPTFR) = I-1
+            KP1BOR(I-1) = I
+            SWAP = .TRUE.
+            EXIT
 !
-            ENDIF
+          ENDIF
 !
-         ENDDO
+        ENDDO
+        IF(SWAP) CYCLE
 !
 !=======================================================================
 ! SI ON NE TROUVE PAS DE POINT SUIVANT : ON VERIFIE QUE LE DERNIER POINT
@@ -192,25 +201,26 @@
 ! ILE ET ON ITERE LE PROCESSUS GLOBAL
 !=======================================================================
 !
-         IF (TRAV1(NILE,1).NE.TRAV1(I-1,2)) THEN
+        IF (TRAV1(NILE,1).NE.TRAV1(I-1,2)) THEN
 !
 !=======================================================================
 ! SINON IL Y A ERREUR
 !=======================================================================
 !
-            IF (LNG.EQ.1) WRITE(LU,1500) TRAV1(I-1,2)
-            IF (LNG.EQ.2) WRITE(LU,4500) TRAV1(I-1,2)
-1500        FORMAT(1X,'ERREUR LORS DU RANGEMENT DES ARETES DE BORD',/,
-     &             1X,'POUR LE NOEUD ',I5)
-4500        FORMAT(1X,'ERROR IN STORING THE EDGE SEGMENTS',/,
-     &             1X,'FOR THE NODE ',I5)
-            STOP
-         ENDIF
+          IF (LNG.EQ.1) WRITE(LU,1500) TRAV1(I-1,2)
+          IF (LNG.EQ.2) WRITE(LU,4500) TRAV1(I-1,2)
+1500      FORMAT(1X,'ERREUR LORS DU RANGEMENT DES ARETES DE BORD',/,
+     &           1X,'POUR LE NOEUD ',I5)
+4500      FORMAT(1X,'ERROR IN STORING THE EDGE SEGMENTS',/,
+     &           1X,'FOR THE NODE ',I5)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
-         KP1BOR(NILE+NPTFR) = I-1
-         KP1BOR(I-1) = NILE
-         IILE = IILE+1
-         NILE = I
+        KP1BOR(NILE+NPTFR) = I-1
+        KP1BOR(I-1) = NILE
+        IILE = IILE+1
+        NILE = I
 !
       ENDDO! ISUIV
 !
@@ -219,13 +229,14 @@
 !=======================================================================
 !
       IF (TRAV1(NILE,1).NE.TRAV1(NPTFR,2)) THEN
-         IF (LNG.EQ.1) WRITE(LU,2000) TRAV1(NILE,1),TRAV1(NPTFR,2)
-         IF (LNG.EQ.2) WRITE(LU,5000) TRAV1(NILE,1),TRAV1(NPTFR,2)
-2000     FORMAT(1X,'ERREUR, LE CONTOUR N''EST PAS FERME :',/,
-     &          1X,'PREMIER POINT :',I5,2X,'DERNIER POINT : ',I5)
-5000     FORMAT(1X,'ERROR, THE BOUNDARY IS NOT CLOSED :',/,
-     &          1X,'FIRST POINT :',I5,2X,'LAST POINT : ',I5)
-         STOP
+        IF (LNG.EQ.1) WRITE(LU,2000) TRAV1(NILE,1),TRAV1(NPTFR,2)
+        IF (LNG.EQ.2) WRITE(LU,5000) TRAV1(NILE,1),TRAV1(NPTFR,2)
+2000    FORMAT(1X,'ERREUR, LE CONTOUR N''EST PAS FERME :',/,
+     &         1X,'PREMIER POINT :',I5,2X,'DERNIER POINT : ',I5)
+5000    FORMAT(1X,'ERROR, THE BOUNDARY IS NOT CLOSED :',/,
+     &         1X,'FIRST POINT :',I5,2X,'LAST POINT : ',I5)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       KP1BOR(NILE+NPTFR) = NPTFR
@@ -246,9 +257,9 @@
 !=======================================================================
 !
       DO I=1,NPTFR
-         NBOR(I      ) = TRAV1(I,1)
-         NBOR(I+NPTFR) = TRAV1(I,2)
-         NCOLFR(I) = NCOLOR(TRAV1(I,1))
+        NBOR(I      ) = TRAV1(I,1)
+        NBOR(I+NPTFR) = TRAV1(I,2)
+        NCOLFR(I) = NCOLOR(TRAV1(I,1))
       ENDDO
 !
       RETURN

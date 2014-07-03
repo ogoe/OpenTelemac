@@ -701,45 +701,45 @@
       IF(     INCLU2(ESTIME,'PERMANENT')
      &    .OR.INCLU2(ESTIME,'STEADY'   )  ) THEN
 !
-!      STEADY STATE : DOES NOT UPDATE DATA AND RESULTS,
-!                     ONLY LAST TIMESTEP CONSIDERED
-!
-!      CALL OS( 'X=C     ' , ALPHA1 , ALPHA1 , ALPHA1 , 0.D0 )
-!      CALL OS( 'X=C     ' , ALPHA2 , ALPHA2 , ALPHA2 , 0.D0 )
-!      CALL OS( 'X=C     ' , ALPHA3 , ALPHA3 , ALPHA3 , 0.D0 )
-!      U AND V MODIFIED BY BORD, RESET HERE (H USEFUL ??)
-       CALL OS( 'X=Y     ' , H , HN  , HN  , C )
-       CALL OS( 'X=Y     ' , U , UN  , UN  , C )
-       CALL OS( 'X=Y     ' , V , VN  , VN  , C )
+!       STEADY STATE : DOES NOT UPDATE DATA AND RESULTS,
+!                      ONLY LAST TIMESTEP CONSIDERED
+!       
+!       CALL OS( 'X=C     ' , ALPHA1 , ALPHA1 , ALPHA1 , 0.D0 )
+!       CALL OS( 'X=C     ' , ALPHA2 , ALPHA2 , ALPHA2 , 0.D0 )
+!       CALL OS( 'X=C     ' , ALPHA3 , ALPHA3 , ALPHA3 , 0.D0 )
+!       U AND V MODIFIED BY BORD, RESET HERE (H USEFUL ??)
+        CALL OS( 'X=Y     ' , H , HN  , HN  , C )
+        CALL OS( 'X=Y     ' , U , UN  , UN  , C )
+        CALL OS( 'X=Y     ' , V , VN  , VN  , C )
 !
       ELSE
 !
-!      UNSTEADY STATE : UPDATES DATA AND RESULTS
-!
-       IF(LT.LT.NIT) THEN
-!
-!       HIT,.., HH,.. IN INITIAL CONDITIONS, SEE PROPIN_ADJ
-        CALL OS( 'X=Y     ' , HH , HN  , HN  , C )
-        CALL OS( 'X=Y     ' , UU , UN  , UN  , C )
-        CALL OS( 'X=Y     ' , VV , VN  , VN  , C )
-!
-!       READS TELEMAC2D RESULTS (RESULTS FILE - UNIT NRES)
-!       SEE ALSO CONDIN_ADJ
-!
-        DO I=1,2*(NVARRES+1)
-          BACKSPACE NRES
-        ENDDO
-        CALL LITENR(VARSOR,VARCL,NRES,'STD',
-     &       HIST,0,MESH%NPOIN,AT1,TEXTE,
-     &       TEXRES,NVARRES,VARCLA,0,TROUVE,ALIRE,W,.FALSE.,MAXVAR)
-!
-!       READS THE MEASUREMENTS (REFERENCE FILE - UNIT NREF)
-!
-        ITER=NIT-LT
-        IF(OUTINI) ITER=ITER+1
-        CALL MESURES(ITER,AT-DT)
-!
-       ENDIF
+!       UNSTEADY STATE : UPDATES DATA AND RESULTS
+!       
+        IF(LT.LT.NIT) THEN
+!       
+!         HIT,.., HH,.. IN INITIAL CONDITIONS, SEE PROPIN_ADJ
+          CALL OS( 'X=Y     ' , HH , HN  , HN  , C )
+          CALL OS( 'X=Y     ' , UU , UN  , UN  , C )
+          CALL OS( 'X=Y     ' , VV , VN  , VN  , C )
+!        
+!         READS TELEMAC2D RESULTS (RESULTS FILE - UNIT NRES)
+!         SEE ALSO CONDIN_ADJ
+!        
+          DO I=1,2*(NVARRES+1)
+            BACKSPACE NRES
+          ENDDO
+          CALL LITENR(VARSOR,VARCL,NRES,'STD',
+     &         HIST,0,MESH%NPOIN,AT1,TEXTE,
+     &         TEXRES,NVARRES,VARCLA,0,TROUVE,ALIRE,W,.FALSE.,MAXVAR)
+!        
+!         READS THE MEASUREMENTS (REFERENCE FILE - UNIT NREF)
+!        
+          ITER=NIT-LT
+          IF(OUTINI) ITER=ITER+1
+          CALL MESURES(ITER,AT-DT)
+!       
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------

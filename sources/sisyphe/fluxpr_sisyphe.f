@@ -146,7 +146,7 @@
      &           (' '//TRIM(CHAIN(ISEC)%DESCR), ISEC=1,NSEC)
         ENDIF
 !
-	WRITE(NSEO,100)(II , II= 1 ,NSEC)
+        WRITE(NSEO,100)(II , II= 1 ,NSEC)
 100     FORMAT(' TIME',' SECTION:',I2, 'SECTION: ',I2)
 !
       ENDIF

@@ -123,42 +123,42 @@
 !
       DO ISEGIN = 1, NSEG
 !
-         IEL1 = NUBO(1,ISEGIN)
-         IEL2 = NUBO(2,ISEGIN)
+        IEL1 = NUBO(1,ISEGIN)
+        IEL2 = NUBO(2,ISEGIN)
 !
-         ! II.1 - SEGMENT LENGTH (RNORM)
-         ! ----------------------------------
-         VNOIN1 = VNOIN(1,ISEGIN)
-         VNOIN2 = VNOIN(2,ISEGIN)
-         RNORM  = VNOIN(3,ISEGIN)
-         PROD_SCAL= (MESH%X%R(IEL2)-MESH%X%R(IEL1))*VNOIN1+
-     &              (MESH%Y%R(IEL2)-MESH%Y%R(IEL1))*VNOIN2
-         IF(PROD_SCAL.LT.0.D0)THEN
-           IEL1 = NUBO(2,ISEGIN)
-           IEL2 = NUBO(1,ISEGIN)
-         ENDIF
-         ! II.2 - QS FOR THE SEGMENT, BROKEN UP ACCORDING TO X AND Y
-         ! ---------------------------------------------
-         QSMOY1 = 0.5D0*(QSX%R(IEL1) + QSX%R(IEL2))
-         QSMOY2 = 0.5D0*(QSY%R(IEL1) + QSY%R(IEL2))
-         ! II.3 - PROJECTS QS FOR THE SEGMENT ONTO THE SEGMENT NORMAL
-         ! ------------------------------------------------------------
-         QSP = VNOIN1*QSMOY1 + VNOIN2*QSMOY2
-         ! II.4 - UPWIND SCHEME ON NODES WITH A "PROBLEM"
-         ! ----------------------------------------------
-         IF(BREACH%I(IEL1).EQ.1.AND.QSP.GT.0.D0) THEN
-           QSMOY1 = QSX%R(IEL1)
-           QSMOY2 = QSY%R(IEL1)
-         ENDIF
-         IF(BREACH%I(IEL2).EQ.1.AND.QSP.LT.0.D0) THEN
-           QSMOY1 = QSX%R(IEL2)
-           QSMOY2 = QSY%R(IEL2)
-         ENDIF
-         QSP = VNOIN1*QSMOY1 + VNOIN2*QSMOY2
-         ! II.5 - INTEGRATES BY THE SEGMENT LENGTH
-         ! ---------------------------------------------
-         FLUX%R(IEL1) = FLUX%R(IEL1) + RNORM*QSP
-         FLUX%R(IEL2) = FLUX%R(IEL2) - RNORM*QSP
+        ! II.1 - SEGMENT LENGTH (RNORM)
+        ! ----------------------------------
+        VNOIN1 = VNOIN(1,ISEGIN)
+        VNOIN2 = VNOIN(2,ISEGIN)
+        RNORM  = VNOIN(3,ISEGIN)
+        PROD_SCAL= (MESH%X%R(IEL2)-MESH%X%R(IEL1))*VNOIN1+
+     &             (MESH%Y%R(IEL2)-MESH%Y%R(IEL1))*VNOIN2
+        IF(PROD_SCAL.LT.0.D0)THEN
+          IEL1 = NUBO(2,ISEGIN)
+          IEL2 = NUBO(1,ISEGIN)
+        ENDIF
+        ! II.2 - QS FOR THE SEGMENT, BROKEN UP ACCORDING TO X AND Y
+        ! ---------------------------------------------
+        QSMOY1 = 0.5D0*(QSX%R(IEL1) + QSX%R(IEL2))
+        QSMOY2 = 0.5D0*(QSY%R(IEL1) + QSY%R(IEL2))
+        ! II.3 - PROJECTS QS FOR THE SEGMENT ONTO THE SEGMENT NORMAL
+        ! ------------------------------------------------------------
+        QSP = VNOIN1*QSMOY1 + VNOIN2*QSMOY2
+        ! II.4 - UPWIND SCHEME ON NODES WITH A "PROBLEM"
+        ! ----------------------------------------------
+        IF(BREACH%I(IEL1).EQ.1.AND.QSP.GT.0.D0) THEN
+          QSMOY1 = QSX%R(IEL1)
+          QSMOY2 = QSY%R(IEL1)
+        ENDIF
+        IF(BREACH%I(IEL2).EQ.1.AND.QSP.LT.0.D0) THEN
+          QSMOY1 = QSX%R(IEL2)
+          QSMOY2 = QSY%R(IEL2)
+        ENDIF
+        QSP = VNOIN1*QSMOY1 + VNOIN2*QSMOY2
+        ! II.5 - INTEGRATES BY THE SEGMENT LENGTH
+        ! ---------------------------------------------
+        FLUX%R(IEL1) = FLUX%R(IEL1) + RNORM*QSP
+        FLUX%R(IEL2) = FLUX%R(IEL2) - RNORM*QSP
       ENDDO
 !
 !     BOUNDARIES

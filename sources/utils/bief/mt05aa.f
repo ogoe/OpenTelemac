@@ -165,46 +165,46 @@
 !
       DO IELEM = 1 , NELEM
 !
-         X2 = XEL(IELEM,2)
-         X3 = XEL(IELEM,3)
-         Y2 = YEL(IELEM,2)
-         Y3 = YEL(IELEM,3)
+        X2 = XEL(IELEM,2)
+        X3 = XEL(IELEM,3)
+        Y2 = YEL(IELEM,2)
+        Y3 = YEL(IELEM,3)
 !
-         U1 = U(IKLE(IELEM,1))
-         U2 = U(IKLE(IELEM,2))
-         U3 = U(IKLE(IELEM,3))
-         V1 = V(IKLE(IELEM,1))
-         V2 = V(IKLE(IELEM,2))
-         V3 = V(IKLE(IELEM,3))
+        U1 = U(IKLE(IELEM,1))
+        U2 = U(IKLE(IELEM,2))
+        U3 = U(IKLE(IELEM,3))
+        V1 = V(IKLE(IELEM,1))
+        V2 = V(IKLE(IELEM,2))
+        V3 = V(IKLE(IELEM,3))
 !
-         USUR2 = (U1+U2+U3)*SUR6
-         VSUR2 = (V1+V2+V3)*SUR6
+        USUR2 = (U1+U2+U3)*SUR6
+        VSUR2 = (V1+V2+V3)*SUR6
 !
-         K1 = USUR2 * (Y2-Y3) - VSUR2 * (X2-X3)
-         K2 = USUR2 * (Y3   ) - VSUR2 * (X3   )
-         K3 = USUR2 * (  -Y2) - VSUR2 * (  -X2)
+        K1 = USUR2 * (Y2-Y3) - VSUR2 * (X2-X3)
+        K2 = USUR2 * (Y3   ) - VSUR2 * (X3   )
+        K3 = USUR2 * (  -Y2) - VSUR2 * (  -X2)
 !
-         L12 = MAX(  MIN(K1,-K2) , 0.D0 )
-         L13 = MAX(  MIN(K1,-K3) , 0.D0 )
-         L21 = MAX(  MIN(K2,-K1) , 0.D0 )
-         L23 = MAX(  MIN(K2,-K3) , 0.D0 )
-         L31 = MAX(  MIN(K3,-K1) , 0.D0 )
-         L32 = MAX(  MIN(K3,-K2) , 0.D0 )
+        L12 = MAX(  MIN(K1,-K2) , 0.D0 )
+        L13 = MAX(  MIN(K1,-K3) , 0.D0 )
+        L21 = MAX(  MIN(K2,-K1) , 0.D0 )
+        L23 = MAX(  MIN(K2,-K3) , 0.D0 )
+        L31 = MAX(  MIN(K3,-K1) , 0.D0 )
+        L32 = MAX(  MIN(K3,-K2) , 0.D0 )
 !
 !   DIAGONAL TERMS
 !
-         A11(IELEM)  = L12 + L13
-         A22(IELEM)  = L21 + L23
-         A33(IELEM)  = L31 + L32
+        A11(IELEM)  = L12 + L13
+        A22(IELEM)  = L21 + L23
+        A33(IELEM)  = L31 + L32
 !
 !   EXTRADIAGONAL TERMS
 !
-         A12(IELEM)  = - L12
-         A13(IELEM)  = - L13
-         A23(IELEM)  = - L23
-         A21(IELEM)  = - L21
-         A31(IELEM)  = - L31
-         A32(IELEM)  = - L32
+        A12(IELEM)  = - L12
+        A13(IELEM)  = - L13
+        A23(IELEM)  = - L23
+        A21(IELEM)  = - L21
+        A31(IELEM)  = - L31
+        A32(IELEM)  = - L32
 !
       ENDDO ! IELEM 
 !
@@ -355,24 +355,24 @@
 !
       ELSE
 !
-       IF(IELMU.EQ.IELMV) THEN
-       IF (LNG.EQ.1) WRITE(LU,100) IELMU
-       IF (LNG.EQ.2) WRITE(LU,101) IELMU
-100    FORMAT(1X,'MT05AA (BIEF) :',/,
-     &        1X,'DISCRETISATION DE U ET V : ',1I6,' NON PREVUE')
-101    FORMAT(1X,'MT05AA (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF U AND V : ',1I6,' NOT AVAILABLE')
-       ELSE
-       IF (LNG.EQ.1) WRITE(LU,200) IELMU,IELMV
-       IF (LNG.EQ.2) WRITE(LU,201) IELMU,IELMV
-200    FORMAT(1X,'MT05AA (BIEF) :',/,
-     &        1X,'U ET V DE DISCRETISATIONS DIFFERENTES :',1I6,3X,1I6)
-201    FORMAT(1X,'MT05AA (BIEF) :',/,
-     &        1X,'U AND V OF A DIFFERENT DISCRETISATION:',1I6,3X,1I6)
-       ENDIF
-!
-       CALL PLANTE(1)
-       STOP
+        IF(IELMU.EQ.IELMV) THEN
+        IF (LNG.EQ.1) WRITE(LU,100) IELMU
+        IF (LNG.EQ.2) WRITE(LU,101) IELMU
+100     FORMAT(1X,'MT05AA (BIEF) :',/,
+     &         1X,'DISCRETISATION DE U ET V : ',1I6,' NON PREVUE')
+101     FORMAT(1X,'MT05AA (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF U AND V : ',1I6,' NOT AVAILABLE')
+        ELSE
+        IF (LNG.EQ.1) WRITE(LU,200) IELMU,IELMV
+        IF (LNG.EQ.2) WRITE(LU,201) IELMU,IELMV
+200     FORMAT(1X,'MT05AA (BIEF) :',/,
+     &         1X,'U ET V DE DISCRETISATIONS DIFFERENTES :',1I6,3X,1I6)
+201     FORMAT(1X,'MT05AA (BIEF) :',/,
+     &         1X,'U AND V OF A DIFFERENT DISCRETISATION:',1I6,3X,1I6)
+        ENDIF
+!       
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

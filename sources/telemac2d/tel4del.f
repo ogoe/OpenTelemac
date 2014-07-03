@@ -291,305 +291,305 @@
 !
       IF(LLT.EQ.0) THEN
 !
-         NPTFR2 = NPTFR/NOLAY
-!        THE WRITING OF EXCHANGE POINTERS IS MOVED TO HERE   LP 05/04/2009
+        NPTFR2 = NPTFR/NOLAY
+!       THE WRITING OF EXCHANGE POINTERS IS MOVED TO HERE   LP 05/04/2009
 !
-!        DERIVES THE OPEN BOUNDARY NODES AND NUMBERS THEM NEGATIVELY
+!       DERIVES THE OPEN BOUNDARY NODES AND NUMBERS THEM NEGATIVELY
 !
-!        NODENRS : IF NOT OPEN BOUNDARY = NODE NUMBER
-!                  IF     OPEN BOUNDARY = - (OPEN BOUNDARY NODE NUMBER)
+!       NODENRS : IF NOT OPEN BOUNDARY = NODE NUMBER
+!                 IF     OPEN BOUNDARY = - (OPEN BOUNDARY NODE NUMBER)
 !
-         ALLOCATE( NODENRS(NPOIN2) ,STAT=ERR)
-         DO INODE = 1, NPOIN2
-           NODENRS(INODE) = INODE
-         ENDDO
-         MBND = 0
-         DO IBOR = 1, NPTFR2
-            IF ( LIHBOR(IBOR) .NE. 2 ) THEN
-               MBND = MBND + 1
-               NODENRS(NBOR(IBOR)) = -MBND
-            ENDIF
-         ENDDO
-!        BECAUSE MBND EXCHANGES ARE ADDED                              LP 05/04/2009
+        ALLOCATE( NODENRS(NPOIN2) ,STAT=ERR)
+        DO INODE = 1, NPOIN2
+          NODENRS(INODE) = INODE
+        ENDDO
+        MBND = 0
+        DO IBOR = 1, NPTFR2
+          IF ( LIHBOR(IBOR) .NE. 2 ) THEN
+            MBND = MBND + 1
+            NODENRS(NBOR(IBOR)) = -MBND
+          ENDIF
+        ENDDO
+!       BECAUSE MBND EXCHANGES ARE ADDED                              LP 05/04/2009
 !
-!        DERIVES THE HORIZONTAL PART (NOQ1) OF THE FROM-TO EXCHANGE TABLE
-!            FOR COMPUTATIONAL ELEMENTS. THE ELEMENT NUMBERS AT THE LAYERS
-!            DIFFER NPOIN2 IN IN COMPUTATIONAL ELEMENT NUMBER AND MBND IN
-!            BOUNDARY NUMBER (MBND ITSELF IS POSITIVE)
-!        COMPUTES HORIZONTAL 'FROM' AND 'TO' HALF DISTANCES ON THE FLY
-!            THEY ARE THE SAME FOR ALL LAYERS, SO DO ONLY FOR LAYER 1
-!                                                                    ! LP 05/04/2009
-         NOQ1 =  NOLAY   *(NSEG + MBND)  ! NUMBER OF FLOWS IN FIRST DIRECTION
-         NOQ3 = (NOLAY-1)*NPOIN2         ! NUMBER OF VERTICAL FLOW TERMS
-         NOQ  = NOQ1 + NOQ3              ! TOTAL NUMBER OF FLOW TERMS FOR WAQ
+!       DERIVES THE HORIZONTAL PART (NOQ1) OF THE FROM-TO EXCHANGE TABLE
+!           FOR COMPUTATIONAL ELEMENTS. THE ELEMENT NUMBERS AT THE LAYERS
+!           DIFFER NPOIN2 IN IN COMPUTATIONAL ELEMENT NUMBER AND MBND IN
+!           BOUNDARY NUMBER (MBND ITSELF IS POSITIVE)
+!       COMPUTES HORIZONTAL 'FROM' AND 'TO' HALF DISTANCES ON THE FLY
+!           THEY ARE THE SAME FOR ALL LAYERS, SO DO ONLY FOR LAYER 1
+!                                                                   ! LP 05/04/2009
+        NOQ1 =  NOLAY   *(NSEG + MBND)  ! NUMBER OF FLOWS IN FIRST DIRECTION
+        NOQ3 = (NOLAY-1)*NPOIN2         ! NUMBER OF VERTICAL FLOW TERMS
+        NOQ  = NOQ1 + NOQ3              ! TOTAL NUMBER OF FLOW TERMS FOR WAQ
 !
-!        ALLOCATES ALL THE ARRAYS USED IN THE SUBROUTINE
+!       ALLOCATES ALL THE ARRAYS USED IN THE SUBROUTINE
 !
-         ALLOCATE( DIST(3,NELEM2)  ,STAT=ERR)
-         ALLOCATE( LENGTH (2,NSEG+MBND) ,STAT=ERR)                   ! LP 05/04/2009
-         ALLOCATE( IFROM1(MAXSEG)  ,STAT=ERR)                        ! LP 05/04/2009
-         ALLOCATE( ITOPL1(MAXSEG)  ,STAT=ERR)                        ! LP 05/04/2009
+        ALLOCATE( DIST(3,NELEM2)  ,STAT=ERR)
+        ALLOCATE( LENGTH (2,NSEG+MBND) ,STAT=ERR)                   ! LP 05/04/2009
+        ALLOCATE( IFROM1(MAXSEG)  ,STAT=ERR)                        ! LP 05/04/2009
+        ALLOCATE( ITOPL1(MAXSEG)  ,STAT=ERR)                        ! LP 05/04/2009
 !
-!        ARRAYS FOR ALL TRANSPORT AND OTHER ADVECTION DIFFUSION TERMS
+!       ARRAYS FOR ALL TRANSPORT AND OTHER ADVECTION DIFFUSION TERMS
 !
-         ALLOCATE( F(NPOIN2,NOLAY)      ,STAT=ERR)
-         ALLOCATE( VELO(NPOIN)   ,STAT=ERR)
-         ALLOCATE( VOL2(NPOIN2)  ,STAT=ERR)
-         ALLOCATE( VOLUME(NPOIN) ,STAT=ERR)
-         ALLOCATE( AREAWQ(NOQ)   ,STAT=ERR)
-         ALLOCATE( VOLOLD(NPOIN) ,STAT=ERR)
-         ALLOCATE( SUMAREA(NOQ)  ,STAT=ERR)
-         SUMAREA = 0.D0
-         ALLOCATE( SUMFLOW(NOQ)  ,STAT=ERR)
-         SUMFLOW = 0.D0
-         IF(SALI_DEL) THEN
-           ALLOCATE( SUMSALI(NPOIN),STAT=ERR)
-           SUMSALI = 0.D0
-         ENDIF
-         IF(TEMP_DEL) THEN
-           ALLOCATE( SUMTEMP(NPOIN),STAT=ERR)
-           SUMTEMP = 0.D0
-         ENDIF
-         IF(VELO_DEL) THEN
-           ALLOCATE( SUMVELO(NPOIN),STAT=ERR)
-           SUMVELO = 0.D0
-         ENDIF
-         IF(DIFF_DEL) THEN
-           ALLOCATE( SUMVISC(NPOIN),STAT=ERR)
-           SUMVISC = 0.D0
-         ENDIF
+        ALLOCATE( F(NPOIN2,NOLAY)      ,STAT=ERR)
+        ALLOCATE( VELO(NPOIN)   ,STAT=ERR)
+        ALLOCATE( VOL2(NPOIN2)  ,STAT=ERR)
+        ALLOCATE( VOLUME(NPOIN) ,STAT=ERR)
+        ALLOCATE( AREAWQ(NOQ)   ,STAT=ERR)
+        ALLOCATE( VOLOLD(NPOIN) ,STAT=ERR)
+        ALLOCATE( SUMAREA(NOQ)  ,STAT=ERR)
+        SUMAREA = 0.D0
+        ALLOCATE( SUMFLOW(NOQ)  ,STAT=ERR)
+        SUMFLOW = 0.D0
+        IF(SALI_DEL) THEN
+          ALLOCATE( SUMSALI(NPOIN),STAT=ERR)
+          SUMSALI = 0.D0
+        ENDIF
+        IF(TEMP_DEL) THEN
+          ALLOCATE( SUMTEMP(NPOIN),STAT=ERR)
+          SUMTEMP = 0.D0
+        ENDIF
+        IF(VELO_DEL) THEN
+          ALLOCATE( SUMVELO(NPOIN),STAT=ERR)
+          SUMVELO = 0.D0
+        ENDIF
+        IF(DIFF_DEL) THEN
+          ALLOCATE( SUMVISC(NPOIN),STAT=ERR)
+          SUMVISC = 0.D0
+        ENDIF
 !
       ENDIF
 !
       IF(LLT.EQ.0) THEN
 !
-         STATIO = 0
+        STATIO = 0
 !
-!        COMPUTES THE AREA ASSOCIATED WITH EACH NODE
-!        AS 1/3 OF EVERY NEIGHBOURING TRIANGLE
+!       COMPUTES THE AREA ASSOCIATED WITH EACH NODE
+!       AS 1/3 OF EVERY NEIGHBOURING TRIANGLE
 !
-!        COMPUTES 1/3 OF THE HEIGHT OF THE TRIANGLES FROM NODE I
-!        HEIGHT = 2*SURFACE/(LENGTH OF THE SEGMENT)
+!       COMPUTES 1/3 OF THE HEIGHT OF THE TRIANGLES FROM NODE I
+!       HEIGHT = 2*SURFACE/(LENGTH OF THE SEGMENT)
 !
-         DO IELEM=1,NELEM2
-           ND1 = IKLE(IELEM,1)
-           ND2 = IKLE(IELEM,2)
-           ND3 = IKLE(IELEM,3)
-           X2=X(ND2)-X(ND1)
-           X3=X(ND3)-X(ND1)
-           Y2=Y(ND2)-Y(ND1)
-           Y3=Y(ND3)-Y(ND1)
-           SURFACC=0.5D0*(X2*Y3-X3*Y2)
-           DO I = 1 , 3
-             ISEG = ELTSEG(IELEM,I)
-             A1   = X(GLOSEG(ISEG,1))-X(GLOSEG(ISEG,2))
-             A2   = Y(GLOSEG(ISEG,1))-Y(GLOSEG(ISEG,2))
-             DIST(I,IELEM)=2.D0*SURFACC/SQRT(A1**2+A2**2)/3.D0
-           ENDDO
-         ENDDO
+        DO IELEM=1,NELEM2
+          ND1 = IKLE(IELEM,1)
+          ND2 = IKLE(IELEM,2)
+          ND3 = IKLE(IELEM,3)
+          X2=X(ND2)-X(ND1)
+          X3=X(ND3)-X(ND1)
+          Y2=Y(ND2)-Y(ND1)
+          Y3=Y(ND3)-Y(ND1)
+          SURFACC=0.5D0*(X2*Y3-X3*Y2)
+          DO I = 1 , 3
+            ISEG = ELTSEG(IELEM,I)
+            A1   = X(GLOSEG(ISEG,1))-X(GLOSEG(ISEG,2))
+            A2   = Y(GLOSEG(ISEG,1))-Y(GLOSEG(ISEG,2))
+            DIST(I,IELEM)=2.D0*SURFACC/SQRT(A1**2+A2**2)/3.D0
+          ENDDO
+        ENDDO
 !
-!        CHECKS THE INITIAL MASS
+!       CHECKS THE INITIAL MASS
 !
-!        MASINI=0.D0
-!        DO I=1,NPOIN2
-!          MASINI=MASINI+V2DPAR(I)*HNEW(I)
-!        ENDDO
-!        WRITE(LU,*) 'INITIAL MASS=',MASINI
+!       MASINI=0.D0
+!       DO I=1,NPOIN2
+!         MASINI=MASINI+V2DPAR(I)*HNEW(I)
+!       ENDDO
+!       WRITE(LU,*) 'INITIAL MASS=',MASINI
 !
-         IF(NCSIZE.GT.0) THEN
-           WRITE(NINI) 'AREA2D '
-           WRITE(NINI) NOLAY
-         ENDIF
+        IF(NCSIZE.GT.0) THEN
+          WRITE(NINI) 'AREA2D '
+          WRITE(NINI) NOLAY
+        ENDIF
 !
-         WRITE(NINI) NPOIN2,0,NPOIN2,NPOIN2,NPOIN2,0
-         WRITE(NINI) (REAL(V2DPAR(I)),I=1,NPOIN2)
+        WRITE(NINI) NPOIN2,0,NPOIN2,NPOIN2,NPOIN2,0
+        WRITE(NINI) (REAL(V2DPAR(I)),I=1,NPOIN2)
 !
-         IF(NCSIZE.GT.0) THEN
-           WRITE(NVEB) 'IFRMTO '
-           WRITE(NVEB) NOLAY
-           WRITE(NMAF) 'LENGTH '
-           WRITE(NMAF) NOLAY
-         ENDIF
+        IF(NCSIZE.GT.0) THEN
+          WRITE(NVEB) 'IFRMTO '
+          WRITE(NVEB) NOLAY
+          WRITE(NMAF) 'LENGTH '
+          WRITE(NMAF) NOLAY
+        ENDIF
 !
-!        THE WRITING OF EXCHANGE POINTERS IS CHANGED       *START*     LP 05/04/2009
-         DO NLAY  = 1, NOLAY
-            DO ISEG  = 1, NSEG
-               IFROM = GLOSEG(ISEG,1)
-               ITO   = GLOSEG(ISEG,2)
-               IF ( NLAY .EQ. 1 ) THEN
-                  CALL FDNRST(IFROM,ITO,X,Y,NODENRS,NPOIN2,
-     &                                  IFROM1(ISEG),ITOPL1(ISEG))
-                  DX = X(GLOSEG(ISEG,1)) - X(GLOSEG(ISEG,2))
-                  DY = Y(GLOSEG(ISEG,1)) - Y(GLOSEG(ISEG,2))
-                  LENGTH(1,ISEG) = SQRT(DX**2+DY**2)*0.5D0
-                  LENGTH(2,ISEG) = LENGTH(1,ISEG)
-                  IF ( IFROM1(ISEG) .LT. 0 .AND.              !  *START*  LP 24/04/2009
-     &                 IFROM1(ISEG) .NE. NODENRS(IFROM) ) THEN
-                     DO I = 1,NPOIN2
-                        IF ( NODENRS(I) .EQ. IFROM1(ISEG) ) THEN
-                           IFROM1(ISEG) = I
-                           EXIT
-                        ENDIF
-                     ENDDO
+!       THE WRITING OF EXCHANGE POINTERS IS CHANGED       *START*     LP 05/04/2009
+        DO NLAY  = 1, NOLAY
+          DO ISEG  = 1, NSEG
+            IFROM = GLOSEG(ISEG,1)
+            ITO   = GLOSEG(ISEG,2)
+            IF ( NLAY .EQ. 1 ) THEN
+              CALL FDNRST(IFROM,ITO,X,Y,NODENRS,NPOIN2,
+     &                              IFROM1(ISEG),ITOPL1(ISEG))
+              DX = X(GLOSEG(ISEG,1)) - X(GLOSEG(ISEG,2))
+              DY = Y(GLOSEG(ISEG,1)) - Y(GLOSEG(ISEG,2))
+              LENGTH(1,ISEG) = SQRT(DX**2+DY**2)*0.5D0
+              LENGTH(2,ISEG) = LENGTH(1,ISEG)
+              IF ( IFROM1(ISEG) .LT. 0 .AND.              !  *START*  LP 24/04/2009
+     &            IFROM1(ISEG) .NE. NODENRS(IFROM) ) THEN
+                DO I = 1,NPOIN2
+                  IF ( NODENRS(I) .EQ. IFROM1(ISEG) ) THEN
+                    IFROM1(ISEG) = I
+                    EXIT
                   ENDIF
-                  IF ( ITOPL1(ISEG) .LT. 0 .AND.
-     &                 ITOPL1(ISEG) .NE. NODENRS(ITO  ) ) THEN
-                     DO I = 1,NPOIN2
-                        IF ( NODENRS(I) .EQ. ITOPL1(ISEG) ) THEN
-                           ITOPL1(ISEG) = I
-                           EXIT
-                        ENDIF
-                     ENDDO
-                  ENDIF                                       !  **END**  LP 24/04/2009
-               ENDIF
-               IFRM1 = IFROM1(ISEG)
-               ITOP1 = ITOPL1(ISEG)
-               IFROM = IFROM + (NLAY-1)*NPOIN2
-               IF ( IFRM1 .GT. 0 ) THEN
-                  IFRM1 = IFRM1 + (NLAY-1)*NPOIN2
-               ELSE
-                  IFRM1 = IFRM1 - (NLAY-1)*MBND                      ! LP 24/04/2009
-               ENDIF
-               ITO   = ITO   + (NLAY-1)*NPOIN2
-               IF ( ITOP1 .GT. 0 ) THEN
-                  ITOP1 = ITOP1 + (NLAY-1)*NPOIN2
-               ELSE
-                  ITOP1 = ITOP1 - (NLAY-1)*MBND                      ! LP 24/04/2009
-               ENDIF
-               WRITE ( NVEB ) IFROM,ITO,IFRM1,ITOP1
-            ENDDO
-            DO IBOR = 1, NPTFR2                                      ! LP 05/04/2009
-               IF ( LIHBOR(IBOR) .NE. 2 ) THEN                       ! OPEN BOUNDARY
-                  IFROM = NODENRS(NBOR(IBOR))                        ! EXCHANGES ADDED
-                  ITO   = NBOR(IBOR)
-                  IF ( NLAY .EQ. 1 ) THEN
-!                    11/06/2009 CHI-TUAN PHAM, CORRECTED BUG
-!                    ISEG WAS USED INSTEAD OF NSEG
-                     LENGTH(1,NSEG-IFROM) = 10.D0                   ! DUMMY LENGTH
-                     LENGTH(2,NSEG-IFROM) = 10.D0
+                ENDDO
+              ENDIF
+              IF ( ITOPL1(ISEG) .LT. 0 .AND.
+     &            ITOPL1(ISEG) .NE. NODENRS(ITO  ) ) THEN
+                DO I = 1,NPOIN2
+                  IF ( NODENRS(I) .EQ. ITOPL1(ISEG) ) THEN
+                    ITOPL1(ISEG) = I
+                    EXIT
                   ENDIF
-                  IFRM1 = IFROM
-                  ITOP1 = ITO
-                  IFROM = IFROM - (NLAY-1)*MBND
-                  IFRM1 = IFRM1 - (NLAY-1)*MBND
-                  ITO   = ITO   + (NLAY-1)*NPOIN2
-                  ITOP1 = ITOP1 + (NLAY-1)*NPOIN2
-                  WRITE ( NVEB ) IFROM,ITO,IFRM1,ITOP1
-               ENDIF
-            ENDDO
-!        THE WRITING OF EXCHANGE POINTERS IS CHANGED       **END**     LP 05/04/2009
-         ENDDO
+                ENDDO
+              ENDIF                                       !  **END**  LP 24/04/2009
+            ENDIF
+            IFRM1 = IFROM1(ISEG)
+            ITOP1 = ITOPL1(ISEG)
+            IFROM = IFROM + (NLAY-1)*NPOIN2
+            IF ( IFRM1 .GT. 0 ) THEN
+              IFRM1 = IFRM1 + (NLAY-1)*NPOIN2
+            ELSE
+              IFRM1 = IFRM1 - (NLAY-1)*MBND                      ! LP 24/04/2009
+            ENDIF
+            ITO   = ITO   + (NLAY-1)*NPOIN2
+            IF ( ITOP1 .GT. 0 ) THEN
+              ITOP1 = ITOP1 + (NLAY-1)*NPOIN2
+            ELSE
+              ITOP1 = ITOP1 - (NLAY-1)*MBND                      ! LP 24/04/2009
+            ENDIF
+            WRITE ( NVEB ) IFROM,ITO,IFRM1,ITOP1
+          ENDDO
+          DO IBOR = 1, NPTFR2                                      ! LP 05/04/2009
+            IF ( LIHBOR(IBOR) .NE. 2 ) THEN                       ! OPEN BOUNDARY
+              IFROM = NODENRS(NBOR(IBOR))                        ! EXCHANGES ADDED
+              ITO   = NBOR(IBOR)
+              IF ( NLAY .EQ. 1 ) THEN
+!               11/06/2009 CHI-TUAN PHAM, CORRECTED BUG
+!               ISEG WAS USED INSTEAD OF NSEG
+                LENGTH(1,NSEG-IFROM) = 10.D0                   ! DUMMY LENGTH
+                LENGTH(2,NSEG-IFROM) = 10.D0
+              ENDIF
+              IFRM1 = IFROM
+              ITOP1 = ITO
+              IFROM = IFROM - (NLAY-1)*MBND
+              IFRM1 = IFRM1 - (NLAY-1)*MBND
+              ITO   = ITO   + (NLAY-1)*NPOIN2
+              ITOP1 = ITOP1 + (NLAY-1)*NPOIN2
+              WRITE ( NVEB ) IFROM,ITO,IFRM1,ITOP1
+            ENDIF
+          ENDDO
+!       THE WRITING OF EXCHANGE POINTERS IS CHANGED       **END**     LP 05/04/2009
+        ENDDO
 !
-!        WRITES ALL HORIZONTAL 'FROM' 'TO' HALF LENGTHS
+!       WRITES ALL HORIZONTAL 'FROM' 'TO' HALF LENGTHS
 !
-!        WRITE(NMAF) 0
-!        DO NLAY = 1, NOLAY
-!          WRITE(NMAF) ((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG+MBND)     ! LP 05/04/2009
-!        ENDDO
+!       WRITE(NMAF) 0
+!       DO NLAY = 1, NOLAY
+!         WRITE(NMAF) ((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG+MBND)     ! LP 05/04/2009
+!       ENDDO
 !
 ! LP 27/02/2011: BECAUSE OF UNFORMATTED FILES. ALL NOW IN 1 RECORD
 !
-         WRITE(NMAF) 0, (((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG+MBND),     
-     &                     NLAY=1,NOLAY), ((1.0,1.0), K=NOQ1+1,NOQ)     
-!         LP 27/02/2011 
-!         BECAUSE OF UNFORMATTED FILES ALL NOW IN 1 RECORD
+        WRITE(NMAF) 0, (((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG+MBND),     
+     &                    NLAY=1,NOLAY), ((1.0,1.0), K=NOQ1+1,NOQ)     
+!        LP 27/02/2011 
+!        BECAUSE OF UNFORMATTED FILES ALL NOW IN 1 RECORD
 !
-!        DERIVES THE FROM-TO EXCHANGE TABLE FOR COMPUTATIONAL ELEMENTS
-!        VERTICALLY FOR ALL LAYERS. THE LAYERS DIFFER NPOIN2 IN
-!        COMPUTATIONAL ELEMENT NUMBER. BOUNDARY NODES HAVE NO VERTICAL FLOW
-!        WRITES 1.0 FOR THE VERTICAL 'FROM' AND 'TO' HALFDISTANCES
-!        THEY ARE UPDATED BY WAQ TO BECOME VOLUME/AREA/2.0 DURING
-!        SIMULATION TIME, SINCE VERTICAL DISTANCES CHANGE WITH VOLUME.
+!       DERIVES THE FROM-TO EXCHANGE TABLE FOR COMPUTATIONAL ELEMENTS
+!       VERTICALLY FOR ALL LAYERS. THE LAYERS DIFFER NPOIN2 IN
+!       COMPUTATIONAL ELEMENT NUMBER. BOUNDARY NODES HAVE NO VERTICAL FLOW
+!       WRITES 1.0 FOR THE VERTICAL 'FROM' AND 'TO' HALFDISTANCES
+!       THEY ARE UPDATED BY WAQ TO BECOME VOLUME/AREA/2.0 DURING
+!       SIMULATION TIME, SINCE VERTICAL DISTANCES CHANGE WITH VOLUME.
 !
-         DO NLAY = 1, NOLAY-1
-            DO INODE = 1, NPOIN2
-!        THE WRITING OF EXCHANGE POINTERS IS CHANGED       *START*     LP 05/04/2009
-               IFROM = INODE
-               IFRM1 = IFROM +  MAX(NLAY-2,   0   )*NPOIN2
-               ITOP1 = IFROM +  MIN(NLAY+1,NOLAY-1)*NPOIN2
-               IFROM = IFROM + (    NLAY-1        )*NPOIN2
-               ITO   = IFROM +                      NPOIN2
-               WRITE ( NVEB ) IFROM,ITO,IFRM1,ITOP1
-!        THE WRITING OF EXCHANGE POINTERS IS CHANGED       **END**     LP 05/04/2009
-            ENDDO
-!           WRITE(NMAF) (1.0, I=1,NPOIN2*2) ! VERTICAL LENGTHS AT A DUMMY 1.0
-         ENDDO                  ! WAQ COMPUTES THEM ON THE FLY FROM VOLUMES
+        DO NLAY = 1, NOLAY-1
+          DO INODE = 1, NPOIN2
+!       THE WRITING OF EXCHANGE POINTERS IS CHANGED       *START*     LP 05/04/2009
+            IFROM = INODE
+            IFRM1 = IFROM +  MAX(NLAY-2,   0   )*NPOIN2
+            ITOP1 = IFROM +  MIN(NLAY+1,NOLAY-1)*NPOIN2
+            IFROM = IFROM + (    NLAY-1        )*NPOIN2
+            ITO   = IFROM +                      NPOIN2
+            WRITE ( NVEB ) IFROM,ITO,IFRM1,ITOP1
+!       THE WRITING OF EXCHANGE POINTERS IS CHANGED       **END**     LP 05/04/2009
+          ENDDO
+!          WRITE(NMAF) (1.0, I=1,NPOIN2*2) ! VERTICAL LENGTHS AT A DUMMY 1.0
+        ENDDO                  ! WAQ COMPUTES THEM ON THE FLY FROM VOLUMES
 !
-!        FILLS IN THE HORIZONTAL AREA IN THE LAST DIRECTION EXCHANGE AREA
+!       FILLS IN THE HORIZONTAL AREA IN THE LAST DIRECTION EXCHANGE AREA
 !
-         DO NLAY = 1 , NOLAY-1
+        DO NLAY = 1 , NOLAY-1
 !  LP 05/04/2009
-            AREAWQ( (NOLAY*(NSEG+MBND))+(NLAY-1)*NPOIN2+1 :             
-     &              (NOLAY*(NSEG+MBND))+ NLAY   *NPOIN2     ) = V2DPAR  
-         ENDDO
+           AREAWQ( (NOLAY*(NSEG+MBND))+(NLAY-1)*NPOIN2+1 :             
+     &             (NOLAY*(NSEG+MBND))+ NLAY   *NPOIN2     ) = V2DPAR  
+        ENDDO
 !
-         IF(TRICK) THEN
-!           WRITE ( 4 , * )
-!    *           "TIME STEP: ",DDT," SMALLER THAN ONE SECOND !"
-!           WRITE ( 4 , * )
-!    *           "SYSTEM WILL COMPUTE IN TIMESTEPS AND M3/TIMESTEP"
-            ITSTRT = 0
-            ITSTEP = 1
-         ELSE
-            ITSTRT = INT(AAT)
-         ENDIF
+        IF(TRICK) THEN
+!          WRITE ( 4 , * )
+!    *          "TIME STEP: ",DDT," SMALLER THAN ONE SECOND !"
+!          WRITE ( 4 , * )
+!    *          "SYSTEM WILL COMPUTE IN TIMESTEPS AND M3/TIMESTEP"
+           ITSTRT = 0
+           ITSTEP = 1
+        ELSE
+           ITSTRT = INT(AAT)
+        ENDIF
 !
-         ISTEPA=0
+        ISTEPA=0
 !
-         IF(NCSIZE.GT.0) THEN
+        IF(NCSIZE.GT.0) THEN
 !
-           WRITE(NSOU) NPOIN ! VOLUMES
-           WRITE(NSOU) NOLAY
-           WRITE(NSOU)(KNOLG(I),I=1,NPOIN2)
+          WRITE(NSOU) NPOIN ! VOLUMES
+          WRITE(NSOU) NOLAY
+          WRITE(NSOU)(KNOLG(I),I=1,NPOIN2)
 !
-           WRITE(NMAB) 'SUMAREA'
-           WRITE(NMAB) NPOIN
-           WRITE(NMAB) NSEG
-           WRITE(NMAB) MBND
-           WRITE(NMAB) NOQ
-           WRITE(NMAB) NOLAY
-           WRITE(NMAB) NPTFR2
-           WRITE(NMAB)(KNOLG(I),I=1,NPOIN2)
-           WRITE(NMAB)((GLOSEG(I,J),J=1,2),I=1,NSEG)
-           WRITE(NMAB)(NODENRS(I),I=1,NPOIN2)
-           WRITE(NMAB)(NBOR(I),I=1,NPTFR2)
-           WRITE(NMAB)(LIHBOR(I),I=1,NPTFR2)
+          WRITE(NMAB) 'SUMAREA'
+          WRITE(NMAB) NPOIN
+          WRITE(NMAB) NSEG
+          WRITE(NMAB) MBND
+          WRITE(NMAB) NOQ
+          WRITE(NMAB) NOLAY
+          WRITE(NMAB) NPTFR2
+          WRITE(NMAB)(KNOLG(I),I=1,NPOIN2)
+          WRITE(NMAB)((GLOSEG(I,J),J=1,2),I=1,NSEG)
+          WRITE(NMAB)(NODENRS(I),I=1,NPOIN2)
+          WRITE(NMAB)(NBOR(I),I=1,NPTFR2)
+          WRITE(NMAB)(LIHBOR(I),I=1,NPTFR2)
 !
-           WRITE(NCOU) 'SUMFLOW'
-           WRITE(NCOU) NPOIN
-           WRITE(NCOU) NSEG
-           WRITE(NCOU) MBND
-           WRITE(NCOU) NOQ
-           WRITE(NCOU) NOLAY
-           WRITE(NCOU) NPTFR2
-           WRITE(NCOU)(KNOLG(I),I=1,NPOIN2)
-           WRITE(NCOU)((GLOSEG(I,J),J=1,2),I=1,NSEG)
-           WRITE(NCOU)(NODENRS(I),I=1,NPOIN2)
-           WRITE(NCOU)(NBOR(I),I=1,NPTFR2)
-           WRITE(NCOU)(LIHBOR(I),I=1,NPTFR2)
+          WRITE(NCOU) 'SUMFLOW'
+          WRITE(NCOU) NPOIN
+          WRITE(NCOU) NSEG
+          WRITE(NCOU) MBND
+          WRITE(NCOU) NOQ
+          WRITE(NCOU) NOLAY
+          WRITE(NCOU) NPTFR2
+          WRITE(NCOU)(KNOLG(I),I=1,NPOIN2)
+          WRITE(NCOU)((GLOSEG(I,J),J=1,2),I=1,NSEG)
+          WRITE(NCOU)(NODENRS(I),I=1,NPOIN2)
+          WRITE(NCOU)(NBOR(I),I=1,NPTFR2)
+          WRITE(NCOU)(LIHBOR(I),I=1,NPTFR2)
 !
-           IF(SALI_DEL) THEN
-             WRITE(NSAL) NPOIN
-             WRITE(NSAL) NOLAY
-             WRITE(NSAL)(KNOLG(I),I=1,NPOIN2)
-           ENDIF
-           IF(TEMP_DEL) THEN
-             WRITE(NTEM) NPOIN
-             WRITE(NTEM) NOLAY
-             WRITE(NTEM)(KNOLG(I),I=1,NPOIN2)
-           ENDIF
-           IF(VELO_DEL) THEN
-             WRITE(NVEL) NPOIN
-             WRITE(NVEL) NOLAY
-             WRITE(NVEL)(KNOLG(I),I=1,NPOIN2)
-           ENDIF
-           IF(DIFF_DEL) THEN
-             WRITE(NVIS) NPOIN
-             WRITE(NVIS) NOLAY
-             WRITE(NVIS)(KNOLG(I),I=1,NPOIN2)
-           ENDIF
+          IF(SALI_DEL) THEN
+            WRITE(NSAL) NPOIN
+            WRITE(NSAL) NOLAY
+            WRITE(NSAL)(KNOLG(I),I=1,NPOIN2)
+          ENDIF
+          IF(TEMP_DEL) THEN
+            WRITE(NTEM) NPOIN
+            WRITE(NTEM) NOLAY
+            WRITE(NTEM)(KNOLG(I),I=1,NPOIN2)
+          ENDIF
+          IF(VELO_DEL) THEN
+            WRITE(NVEL) NPOIN
+            WRITE(NVEL) NOLAY
+            WRITE(NVEL)(KNOLG(I),I=1,NPOIN2)
+          ENDIF
+          IF(DIFF_DEL) THEN
+            WRITE(NVIS) NPOIN
+            WRITE(NVIS) NOLAY
+            WRITE(NVIS)(KNOLG(I),I=1,NPOIN2)
+          ENDIF
 !
-         ENDIF
+        ENDIF
 !
       ENDIF   ! FOR LLT = 0
 !
@@ -605,39 +605,39 @@
 !                   F IN TELEMAC ORDER (FIRST LAYER = BOTTOM)
 !                   F IS THE LAYER THICKNESS AROUND THE PLANES
 !
-       IF(NOLAY.EQ.1) THEN !  2D
-         DO I=1,NPOIN2
-           F(I,1) = 1.D0
-         ENDDO
-       ELSE !  3D
-         DO ND1=1,NPOIN2
-           DO NLAY = 1 , NOLAY !  DETERMINES F WITH THIS NODE
-             ND2 = ND1 + (NLAY-1)*NPOIN2
-             IF(NLAY.EQ.1) THEN
-               IF(HNEW(ND1).GT.1.D-4) THEN
-                 F(ND1,NLAY)=(ZNEW(ND2+NPOIN2)-ZNEW(ND2))
+      IF(NOLAY.EQ.1) THEN !  2D
+        DO I=1,NPOIN2
+          F(I,1) = 1.D0
+        ENDDO
+      ELSE !  3D
+        DO ND1=1,NPOIN2
+          DO NLAY = 1 , NOLAY !  DETERMINES F WITH THIS NODE
+            ND2 = ND1 + (NLAY-1)*NPOIN2
+            IF(NLAY.EQ.1) THEN
+              IF(HNEW(ND1).GT.1.D-4) THEN
+                F(ND1,NLAY)=(ZNEW(ND2+NPOIN2)-ZNEW(ND2))
+     &                      /(2.D0*HNEW(ND1))
+              ELSE
+                F(ND1,NLAY)=0.5D0/(NOLAY-1.D0)
+              ENDIF
+            ELSEIF(NLAY.EQ.NOLAY) THEN
+              IF(HNEW(ND1).GT.1.D-4) THEN
+                F(ND1,NLAY)=(ZNEW(ND2)-ZNEW(ND2-NPOIN2))
      &                       /(2.D0*HNEW(ND1))
-               ELSE
-                 F(ND1,NLAY)=0.5D0/(NOLAY-1.D0)
-               ENDIF
-             ELSEIF(NLAY.EQ.NOLAY) THEN
-               IF(HNEW(ND1).GT.1.D-4) THEN
-                 F(ND1,NLAY)=(ZNEW(ND2)-ZNEW(ND2-NPOIN2))
-     &                        /(2.D0*HNEW(ND1))
-               ELSE
-                 F(ND1,NLAY)=0.5D0/(NOLAY-1.D0)
-               ENDIF
-             ELSE
-               IF(HNEW(ND1).GT.1.D-4) THEN
-                 F(ND1,NLAY)=(ZNEW(ND2+NPOIN2)-ZNEW(ND2-NPOIN2))
-     &                        /(2.D0*HNEW(ND1))
-               ELSE
-                 F(ND1,NLAY)=1.D0/(NOLAY-1.D0)
-               ENDIF
-             ENDIF
-           ENDDO
-         ENDDO
-       ENDIF
+              ELSE
+                F(ND1,NLAY)=0.5D0/(NOLAY-1.D0)
+              ENDIF
+            ELSE
+              IF(HNEW(ND1).GT.1.D-4) THEN
+                F(ND1,NLAY)=(ZNEW(ND2+NPOIN2)-ZNEW(ND2-NPOIN2))
+     &                       /(2.D0*HNEW(ND1))
+              ELSE
+                F(ND1,NLAY)=1.D0/(NOLAY-1.D0)
+              ENDIF
+            ENDIF
+          ENDDO
+        ENDDO
+      ENDIF
 !
 !
 !
@@ -652,35 +652,35 @@
       IF(LLT.NE.0) VOLOLD = VOLUME   ! SAVES VOLUME OF PREV. TIME LEVEL
       IF ( NOLAY .EQ. 1 ) THEN
 !
-!        THIS IS THE 2D VOLUME AT START OF TIME STEP
+!       THIS IS THE 2D VOLUME AT START OF TIME STEP
 !
-         DO INODE = 1, NPOIN2
-           VOLUME(INODE) = HNEW(INODE)*V2DPAR(INODE)
-         ENDDO
+        DO INODE = 1, NPOIN2
+          VOLUME(INODE) = HNEW(INODE)*V2DPAR(INODE)
+        ENDDO
 !
       ELSE
 !
-!        NOTE THAT WAQ NUMBERS 3D FROM TOP TO BOTTOM !!!!
-!        NLAY IS THE TELEMAC CURRENT PLANE NUMBER
-!        ND1  IS THE WAQ VOLUMES COUNTER
+!       NOTE THAT WAQ NUMBERS 3D FROM TOP TO BOTTOM !!!!
+!       NLAY IS THE TELEMAC CURRENT PLANE NUMBER
+!       ND1  IS THE WAQ VOLUMES COUNTER
 !
-         ND1 = 1
-         DO NLAY = NOLAY , 1 , -1 ! REVERSED ORDER FOR WAQ
-           DO INODE = 1, NPOIN2
-             VOLUME(ND1)=HNEW(INODE)*F(INODE,NLAY)*V2DPAR(INODE)
-             ND1  =  ND1  + 1
-           ENDDO
-         ENDDO
+        ND1 = 1
+        DO NLAY = NOLAY , 1 , -1 ! REVERSED ORDER FOR WAQ
+          DO INODE = 1, NPOIN2
+            VOLUME(ND1)=HNEW(INODE)*F(INODE,NLAY)*V2DPAR(INODE)
+            ND1  =  ND1  + 1
+          ENDDO
+        ENDDO
       ENDIF
 !
       IF ( MOD(ISTEPA,NSTEPA) .EQ. 0 ) THEN
-         IF(STATIO.NE.1) THEN
-            IF(TRICK) THEN
-              ITOLD = LLT                ! <=== CHANGED BY LEO
-            ELSE
-              ITOLD = INT(ATOLD)         ! <=== CHANGED BY LEO
-            ENDIF
-         ENDIF
+        IF(STATIO.NE.1) THEN
+          IF(TRICK) THEN
+            ITOLD = LLT                ! <=== CHANGED BY LEO
+          ELSE
+            ITOLD = INT(ATOLD)         ! <=== CHANGED BY LEO
+          ENDIF
+        ENDIF
       ENDIF
       IF(MOD(ISTEPA,NSTEPA).EQ.0) THEN
         IF(STATIO.NE.1) THEN
@@ -696,12 +696,12 @@
 !
       ND1 = 1                   ! WAQ NUMBERING IS TOP TO BOTTOM
       DO NLAY  = 1, NOLAY
-         ND2 = (NOLAY-NLAY)*NPOIN2 + 1 ! TELEMAC NUMBERING IS BOTTOM TO TOP
-         DO INODE = 1, NPOIN2
-            VELO(ND1) = SQRT(U(ND2)**2+V(ND2)**2)
-            ND1 = ND1 + 1
-            ND2 = ND2 + 1
-         ENDDO
+        ND2 = (NOLAY-NLAY)*NPOIN2 + 1 ! TELEMAC NUMBERING IS BOTTOM TO TOP
+        DO INODE = 1, NPOIN2
+          VELO(ND1) = SQRT(U(ND2)**2+V(ND2)**2)
+          ND1 = ND1 + 1
+          ND2 = ND2 + 1
+        ENDDO
       ENDDO
 !
 !     MAKES EXCHANGE AREAS
@@ -740,7 +740,7 @@
         ENDDO
       ENDDO
       DO I=1,NOQ                                                       !  LP 05/04/2009
-         IF ( AREAWQ(I) .LT. 1.0D-20 ) AREAWQ(I) = 10.D0  ! BOUNDARIES    LP 05/04/2009
+        IF ( AREAWQ(I) .LT. 1.0D-20 ) AREAWQ(I) = 10.D0  ! BOUNDARIES    LP 05/04/2009
       ENDDO                                                            !  LP 05/04/2009
 !
 !     WRITES THE EXCHANGE AREAS (LAST DIRECTION REMAINS AT HORSURF)
@@ -838,19 +838,15 @@
 !     FIRST THE NEW VOLUMES WITHOUT VERTICAL FLOWS
 !
       DO NLAY = 1 , NOLAY       ! NOW IN WAQ ORDER
-         DO ISEG = 1 , NSEG
-            IFROM = GLOSEG(ISEG,1)                            !        LP 24/04/2009
-            ITO   = GLOSEG(ISEG,2)                            !        LP 24/04/2009
-            ISEGL = ISEG + (NLAY-1)*NSEG
-!           IF ( IFROM .GT. 0 ) THEN                          !        LP 24/04/2009
-               IFROM = IFROM + (NLAY-1)*NPOIN2
-               VOLOLD(IFROM) = VOLOLD(IFROM) - FLOW(ISEGL) * DDT
-!           ENDIF                                             !        LP 24/04/2009
-!           IF(ITO.GT.0) THEN                                 !        LP 24/04/2009
-               ITO = ITO + (NLAY-1)*NPOIN2
-               VOLOLD(ITO) = VOLOLD(ITO) + FLOW(ISEGL) * DDT
-!           ENDIF                                             !        LP 24/04/2009
-         ENDDO
+        DO ISEG = 1 , NSEG
+          IFROM = GLOSEG(ISEG,1)                            !        LP 24/04/2009
+          ITO   = GLOSEG(ISEG,2)                            !        LP 24/04/2009
+          ISEGL = ISEG + (NLAY-1)*NSEG
+          IFROM = IFROM + (NLAY-1)*NPOIN2
+          VOLOLD(IFROM) = VOLOLD(IFROM) - FLOW(ISEGL) * DDT
+          ITO = ITO + (NLAY-1)*NPOIN2
+          VOLOLD(ITO) = VOLOLD(ITO) + FLOW(ISEGL) * DDT
+        ENDDO
       ENDDO
 !
 !     THEN THE TOTAL NEW VOLUMES: VOL2 IS THE SUM OF ALL
@@ -918,11 +914,11 @@
         ENDDO
         WRITE(LU,*) ' '
         IF(LNG.EQ.1) THEN
-         WRITE(LU,*) 'TEL4DEL : ERREUR DE MASSE MAXIMUM:',SSUM
-         WRITE(LU,*) '          SOMME SUR LES POINTS INTERIEURS:',ERRTOT
+        WRITE(LU,*) 'TEL4DEL : ERREUR DE MASSE MAXIMUM:',SSUM
+        WRITE(LU,*) '          SOMME SUR LES POINTS INTERIEURS:',ERRTOT
         ELSE
-         WRITE(LU,*) 'TEL4DEL: MAXIMUM MASS ERROR:',SSUM
-         WRITE(LU,*) '         SUM OF ERRORS ON INTERNAL POINTS:',ERRTOT
+        WRITE(LU,*) 'TEL4DEL: MAXIMUM MASS ERROR:',SSUM
+        WRITE(LU,*) '         SUM OF ERRORS ON INTERNAL POINTS:',ERRTOT
         ENDIF
         WRITE(LU,*) ' '
       ENDIF
@@ -965,46 +961,46 @@
 !        STATIONARY DATABASE IF REQUIRED
 !
       IF ( LLT .LT. NNIT ) THEN
-         ISTEPA = ISTEPA + 1
-         RETURN                 !  FINALISATION
+        ISTEPA = ISTEPA + 1
+        RETURN                 !  FINALISATION
       ENDIF
       IF ( STATIO .EQ. 1 ) THEN
-         IF ( TRICK ) THEN
-            WRITE(NSOU) ITOLD , (REAL(VOLUME(I)),I=1,NPOIN)
-            WRITE(NMAB) ITOLD , (REAL(SUMAREA(I)),I=1,NOQ)
-            WRITE(NCOU) ITOLD , (REAL(SUMFLOW(I)),I=1,NOQ)
-         ELSE
-            WRITE(NSOU) INT(ATOLD), (REAL(VOLUME(I)),I=1,NPOIN)
-            WRITE(NMAB) INT(ATOLD), (REAL(SUMAREA(I)),I=1,NOQ)
-            WRITE(NCOU) INT(ATOLD), (REAL(SUMFLOW(I)),I=1,NOQ)
-         ENDIF
-         DO NLAY  = 1, NOLAY
-            DO ISEG  = 1, NSEG
-               ISEGL  = ISEG + (NOLAY-NLAY)*NSEG ! WAQ ORDER
-               IFROM = NODENRS(GLOSEG(ISEG,1))
-               IF ( IFROM .GT. 0 ) THEN
-                  IFROM = IFROM + (NLAY-1)*NPOIN2
-                  VOLUME(IFROM) = VOLUME(IFROM) - FLOW(ISEGL)*DDT
-               ENDIF
-               ITO   = NODENRS(GLOSEG(ISEG,2))
-               IF ( ITO   .GT. 0 ) THEN
-                  ITO   = ITO   + (NLAY-1)*NPOIN2
-                  VOLUME(ITO  ) = VOLUME(ITO  ) + FLOW(ISEGL)*DDT
-               ENDIF
-            ENDDO
-         ENDDO
-         ND2 = NOLAY*NSEG
-         DO INODE = 1 , NPOIN2
-            DO ND1 = INODE , NPOIN-NPOIN2 , NPOIN2
-               VOLUME(ND1)       = VOLUME(ND1)       - FLOW(ND1+ND2)*DDT
-               VOLUME(ND1+NPOIN2)= VOLUME(ND1+NPOIN2)+ FLOW(ND1+ND2)*DDT
-            ENDDO
-         ENDDO
-         IF(TRICK) THEN
-           WRITE(NSOU) ITOLD,(REAL(VOLUME(I)),I=1,NPOIN)
-         ELSE
-           WRITE(NSOU) INT(AAT-NSTEPA*DDT),(REAL(VOLUME(I)),I=1,NPOIN)
-         ENDIF
+        IF ( TRICK ) THEN
+          WRITE(NSOU) ITOLD , (REAL(VOLUME(I)),I=1,NPOIN)
+          WRITE(NMAB) ITOLD , (REAL(SUMAREA(I)),I=1,NOQ)
+          WRITE(NCOU) ITOLD , (REAL(SUMFLOW(I)),I=1,NOQ)
+        ELSE
+          WRITE(NSOU) INT(ATOLD), (REAL(VOLUME(I)),I=1,NPOIN)
+          WRITE(NMAB) INT(ATOLD), (REAL(SUMAREA(I)),I=1,NOQ)
+          WRITE(NCOU) INT(ATOLD), (REAL(SUMFLOW(I)),I=1,NOQ)
+        ENDIF
+        DO NLAY  = 1, NOLAY
+          DO ISEG  = 1, NSEG
+            ISEGL  = ISEG + (NOLAY-NLAY)*NSEG ! WAQ ORDER
+            IFROM = NODENRS(GLOSEG(ISEG,1))
+            IF ( IFROM .GT. 0 ) THEN
+              IFROM = IFROM + (NLAY-1)*NPOIN2
+              VOLUME(IFROM) = VOLUME(IFROM) - FLOW(ISEGL)*DDT
+            ENDIF
+            ITO   = NODENRS(GLOSEG(ISEG,2))
+            IF ( ITO   .GT. 0 ) THEN
+              ITO   = ITO   + (NLAY-1)*NPOIN2
+              VOLUME(ITO  ) = VOLUME(ITO  ) + FLOW(ISEGL)*DDT
+            ENDIF
+          ENDDO
+        ENDDO
+        ND2 = NOLAY*NSEG
+        DO INODE = 1 , NPOIN2
+          DO ND1 = INODE , NPOIN-NPOIN2 , NPOIN2
+            VOLUME(ND1)       = VOLUME(ND1)       - FLOW(ND1+ND2)*DDT
+            VOLUME(ND1+NPOIN2)= VOLUME(ND1+NPOIN2)+ FLOW(ND1+ND2)*DDT
+          ENDDO
+        ENDDO
+        IF(TRICK) THEN
+          WRITE(NSOU) ITOLD,(REAL(VOLUME(I)),I=1,NPOIN)
+        ELSE
+          WRITE(NSOU) INT(AAT-NSTEPA*DDT),(REAL(VOLUME(I)),I=1,NPOIN)
+        ENDIF
       ENDIF
 !
 !     DUMMY RECORDS AT THE END. THEY ARE NOT USED BY WAQ BUT SHOULD BE THERE

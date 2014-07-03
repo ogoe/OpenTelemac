@@ -2,7 +2,7 @@
                         SUBROUTINE P_MPI_ADDRESS
 !                       ************************
 !
-     *(LOCATION,ADDRESS,IER)
+     &(LOCATION,ADDRESS,IER)
 !
 !***********************************************************************
 ! PARALLEL   V6P2                                   21/08/2010
@@ -53,6 +53,7 @@
       IF(IER.NE.0) THEN
         WRITE(LU,*) 'P_MPI_ADDRESS:'
         WRITE(LU,*) 'MPI ERROR ',IER
+        CALL PLANTE(1)
         STOP
       ENDIF
 #else

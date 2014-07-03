@@ -133,37 +133,37 @@
 !
       DO ISEGIN = 1, NSEG
 !
-         IEL1 = NUBO(1,ISEGIN)
-         IEL2 = NUBO(2,ISEGIN)
+        IEL1 = NUBO(1,ISEGIN)
+        IEL2 = NUBO(2,ISEGIN)
 !
-         ! II.1 - SEGMENT LENGTH (RNORM)
-         ! ----------------------------------
-         VNOIN1 = VNOIN(1,ISEGIN)
-         VNOIN2 = VNOIN(2,ISEGIN)
-         RNORM  = VNOIN(3,ISEGIN)
-         PROD_SCAL= (MESH%X%R(IEL2)-MESH%X%R(IEL1))*VNOIN1+
-     &              (MESH%Y%R(IEL2)-MESH%Y%R(IEL1))*VNOIN2
-         IF(PROD_SCAL.LT.0.D0)THEN
-           IEL1 = NUBO(2,ISEGIN)
-           IEL2 = NUBO(1,ISEGIN)
-         ENDIF
+        ! II.1 - SEGMENT LENGTH (RNORM)
+        ! ----------------------------------
+        VNOIN1 = VNOIN(1,ISEGIN)
+        VNOIN2 = VNOIN(2,ISEGIN)
+        RNORM  = VNOIN(3,ISEGIN)
+        PROD_SCAL= (MESH%X%R(IEL2)-MESH%X%R(IEL1))*VNOIN1+
+     &             (MESH%Y%R(IEL2)-MESH%Y%R(IEL1))*VNOIN2
+        IF(PROD_SCAL.LT.0.D0)THEN
+          IEL1 = NUBO(2,ISEGIN)
+          IEL2 = NUBO(1,ISEGIN)
+        ENDIF
 !
-         ! II.2 - PROJECTS QS FOR THE SEGMENT ONTO THE SEGMENT NORMAL
-         ! ------------------------------------------------------------
-         QSP1 = VNOIN1*QSX%R(IEL1) + VNOIN2*QSY%R(IEL1)
-         QSP2 = VNOIN1*QSX%R(IEL2) + VNOIN2*QSY%R(IEL2)
-         QSPC = (QSP1+QSP2)*0.5D0
+        ! II.2 - PROJECTS QS FOR THE SEGMENT ONTO THE SEGMENT NORMAL
+        ! ------------------------------------------------------------
+        QSP1 = VNOIN1*QSX%R(IEL1) + VNOIN2*QSY%R(IEL1)
+        QSP2 = VNOIN1*QSX%R(IEL2) + VNOIN2*QSY%R(IEL2)
+        QSPC = (QSP1+QSP2)*0.5D0
 !
-         ! II.3 - QS SUCH AS THE OUTGOING FLUX IS MAXIMUM
-         ! ----------------------------------------------
-         T1%R(IEL1) = T1%R(IEL1) + RNORM*MAX(QSPC,QSP1,0.D0)
-         T1%R(IEL2) = T1%R(IEL2) - RNORM*MIN(QSPC,QSP2,0.D0)
+        ! II.3 - QS SUCH AS THE OUTGOING FLUX IS MAXIMUM
+        ! ----------------------------------------------
+        T1%R(IEL1) = T1%R(IEL1) + RNORM*MAX(QSPC,QSP1,0.D0)
+        T1%R(IEL2) = T1%R(IEL2) - RNORM*MIN(QSPC,QSP2,0.D0)
 !
-         IF(QSPC > 0.D0) THEN
-           T2%R(IEL1) = T2%R(IEL1) + RNORM*QSP1
-         ELSEIF(QSPC < 0.D0) THEN
-           T2%R(IEL2) = T2%R(IEL2) - RNORM*QSP2
-         ENDIF
+        IF(QSPC > 0.D0) THEN
+          T2%R(IEL1) = T2%R(IEL1) + RNORM*QSP1
+        ELSEIF(QSPC < 0.D0) THEN
+          T2%R(IEL2) = T2%R(IEL2) - RNORM*QSP2
+        ENDIF
 !
       ENDDO
 !
@@ -172,29 +172,29 @@
       ! ************************************** !
 !
       DO K = 1, NPTFR
-         IEL = MESH%NBOR%I(K)
+        IEL = MESH%NBOR%I(K)
 !
-         ! III.1 - FREE EVOLUTION: SEDIMENTS ARE FREE TO LEAVE
-         ! ---------------------------------------------------------
-         IF (LIEBOR%I(K) == KSORT) THEN
+        ! III.1 - FREE EVOLUTION: SEDIMENTS ARE FREE TO LEAVE
+        ! ---------------------------------------------------------
+        IF (LIEBOR%I(K) == KSORT) THEN
 !
-            ! XNEBOR (*+NPTFR) AND YNEBOR (*+NPTFR)
-            ! CONTAIN THE VECTOR NORMAL TO A BOUNDARY NODE
-            ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            XN   = MESH%XNEBOR%R(K+NPTFR)
-            YN   = MESH%YNEBOR%R(K+NPTFR)
-            TEMP = QSX%R(IEL)*XN + QSY%R(IEL)*YN
-            IF (TEMP > 0.D0) THEN
-               T1%R(IEL) = T1%R(IEL) + TEMP
-               T2%R(IEL) = T2%R(IEL) + TEMP
-            ENDIF
+          ! XNEBOR (*+NPTFR) AND YNEBOR (*+NPTFR)
+          ! CONTAIN THE VECTOR NORMAL TO A BOUNDARY NODE
+          ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          XN   = MESH%XNEBOR%R(K+NPTFR)
+          YN   = MESH%YNEBOR%R(K+NPTFR)
+          TEMP = QSX%R(IEL)*XN + QSY%R(IEL)*YN
+          IF (TEMP > 0.D0) THEN
+            T1%R(IEL) = T1%R(IEL) + TEMP
+            T2%R(IEL) = T2%R(IEL) + TEMP
+          ENDIF
 !
-         ENDIF
+        ENDIF
 !
-         ! III.2 - FOR A SOLID BOUNDARY: NOTHING TO PROGRAM
-         !         BECAUSE THE SEDIMENT FLUX IS ZERO HERE
-         !         FOR IMPOSED EVOLUTION : SEE BEDLOAD_SOLVS_VF.F
-         ! --------------------------------------------------------
+        ! III.2 - FOR A SOLID BOUNDARY: NOTHING TO PROGRAM
+        !         BECAUSE THE SEDIMENT FLUX IS ZERO HERE
+        !         FOR IMPOSED EVOLUTION : SEE BEDLOAD_SOLVS_VF.F
+        ! --------------------------------------------------------
       ENDDO
 !
       IF(NCSIZE > 1) THEN
@@ -208,17 +208,17 @@
 !
       DO I = 1, NPOIN
 !
-         T3%R(I)=ELAY(I)*V2DPAR(I)*AVA(I)* CSF_SABLE/DT
-         IF (T3%R(I) < 0.D0) T3%R(I) = 0.D0
+        T3%R(I)=ELAY(I)*V2DPAR(I)*AVA(I)* CSF_SABLE/DT
+        IF (T3%R(I) < 0.D0) T3%R(I) = 0.D0
 !
-         ! IF THE OUTGOING FLUX IS TOO LARGE, QS IS CAPPED AT THE NODE
-         ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         IF(T1%R(I) > T3%R(I)) THEN
-            BREACH%I(I) = 1
-            IF(T2%R(I) > T3%R(I)) THEN
-              QS%R(I) = QS%R(I)*T3%R(I)/T2%R(I)
-            ENDIF
-         ENDIF
+        ! IF THE OUTGOING FLUX IS TOO LARGE, QS IS CAPPED AT THE NODE
+        ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        IF(T1%R(I) > T3%R(I)) THEN
+          BREACH%I(I) = 1
+          IF(T2%R(I) > T3%R(I)) THEN
+            QS%R(I) = QS%R(I)*T3%R(I)/T2%R(I)
+          ENDIF
+        ENDIF
 !
       ENDDO
 !

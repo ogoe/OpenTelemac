@@ -68,14 +68,14 @@
 !-----------------------------------------------------------------------
 !
       IF(MXPTVS.GT.11) THEN
-       IF(LNG.EQ.1) WRITE(LU,777)
-       IF(LNG.EQ.2) WRITE(LU,778)
-777    FORMAT(1X,'OPASS (BIEF) : PROGRAMME JUSQU''A 11 VOISINS',/,
-     &        1X,'CHOISIR STOCKAGE DES MATRICES : 1')
-778    FORMAT(1X,'OPASS (BIEF): IMPLEMENTED UP TO 11 NEIGHBOURS ONLY',/,
-     &        1X,'CHOOSE STORAGE OF MATRICES : 1')
-       CALL PLANTE(1)
-       STOP
+        IF(LNG.EQ.1) WRITE(LU,777)
+        IF(LNG.EQ.2) WRITE(LU,778)
+777   FORMAT(1X,'OPASS (BIEF) : PROGRAMME JUSQU''A 11 VOISINS',/,
+     &       1X,'CHOISIR STOCKAGE DES MATRICES : 1')
+778   FORMAT(1X,'OPASS (BIEF): IMPLEMENTED UP TO 11 NEIGHBOURS ONLY',/,
+     &       1X,'CHOOSE STORAGE OF MATRICES : 1')
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -98,80 +98,80 @@
 !
       IF(MXPTVS.GE.3.AND.LIMVOI(3,1).GT.0) THEN
       DO I = LIMVOI(3,1) , LIMVOI(3,2)
-         X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
-     &        + W(IW(I,3))*Y(IY(I,3))
+        X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
+     &       + W(IW(I,3))*Y(IY(I,3))
       ENDDO
       ENDIF
 !
       IF(MXPTVS.GE.4.AND.LIMVOI(4,1).GT.0) THEN
       DO I = LIMVOI(4,1) , LIMVOI(4,2)
-         X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
-     &        + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
+        X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
+     &       + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
       ENDDO
       ENDIF
 !
       IF(MXPTVS.GE.5.AND.LIMVOI(5,1).GT.0) THEN
       DO I = LIMVOI(5,1) , LIMVOI(5,2)
-         X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
-     &        + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
-     &        + W(IW(I,5))*Y(IY(I,5))
+        X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
+     &       + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
+     &       + W(IW(I,5))*Y(IY(I,5))
       ENDDO
       ENDIF
 !
       IF(MXPTVS.GE.6.AND.LIMVOI(6,1).GT.0) THEN
       DO I = LIMVOI(6,1) , LIMVOI(6,2)
-         X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
-     &        + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
-     &        + W(IW(I,5))*Y(IY(I,5)) + W(IW(I,6))*Y(IY(I,6))
+        X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
+     &       + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
+     &       + W(IW(I,5))*Y(IY(I,5)) + W(IW(I,6))*Y(IY(I,6))
       ENDDO
       ENDIF
 !
       IF(MXPTVS.GE.7.AND.LIMVOI(7,1).GT.0) THEN
       DO I = LIMVOI(7,1) , LIMVOI(7,2)
-         X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
-     &        + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
-     &        + W(IW(I,5))*Y(IY(I,5)) + W(IW(I,6))*Y(IY(I,6))
-     &        + W(IW(I,7))*Y(IY(I,7))
+        X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
+     &       + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
+     &       + W(IW(I,5))*Y(IY(I,5)) + W(IW(I,6))*Y(IY(I,6))
+     &       + W(IW(I,7))*Y(IY(I,7))
       ENDDO
       ENDIF
 !
       IF(MXPTVS.GE.8.AND.LIMVOI(8,1).GT.0) THEN
       DO I = LIMVOI(8,1) , LIMVOI(8,2)
-         X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
-     &        + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
-     &        + W(IW(I,5))*Y(IY(I,5)) + W(IW(I,6))*Y(IY(I,6))
-     &        + W(IW(I,7))*Y(IY(I,7)) + W(IW(I,8))*Y(IY(I,8))
+        X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
+     &       + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
+     &       + W(IW(I,5))*Y(IY(I,5)) + W(IW(I,6))*Y(IY(I,6))
+     &       + W(IW(I,7))*Y(IY(I,7)) + W(IW(I,8))*Y(IY(I,8))
       ENDDO
       ENDIF
 !
       IF(MXPTVS.GE.9.AND.LIMVOI(9,1).GT.0) THEN
       DO I = LIMVOI(9,1) , LIMVOI(9,2)
-         X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
-     &        + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
-     &        + W(IW(I,5))*Y(IY(I,5)) + W(IW(I,6))*Y(IY(I,6))
-     &        + W(IW(I,7))*Y(IY(I,7)) + W(IW(I,8))*Y(IY(I,8))
-     &        + W(IW(I,9))*Y(IY(I,9))
+        X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
+     &       + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
+     &       + W(IW(I,5))*Y(IY(I,5)) + W(IW(I,6))*Y(IY(I,6))
+     &       + W(IW(I,7))*Y(IY(I,7)) + W(IW(I,8))*Y(IY(I,8))
+     &       + W(IW(I,9))*Y(IY(I,9))
       ENDDO
       ENDIF
 !
       IF(MXPTVS.GE.10.AND.LIMVOI(10,1).GT.0) THEN
       DO I = LIMVOI(10,1) , LIMVOI(10,2)
-         X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
-     &        + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
-     &        + W(IW(I,5))*Y(IY(I,5)) + W(IW(I,6))*Y(IY(I,6))
-     &        + W(IW(I,7))*Y(IY(I,7)) + W(IW(I,8))*Y(IY(I,8))
-     &        + W(IW(I,9))*Y(IY(I,9)) + W(IW(I,10))*Y(IY(I,10))
+        X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
+     &       + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
+     &       + W(IW(I,5))*Y(IY(I,5)) + W(IW(I,6))*Y(IY(I,6))
+     &       + W(IW(I,7))*Y(IY(I,7)) + W(IW(I,8))*Y(IY(I,8))
+     &       + W(IW(I,9))*Y(IY(I,9)) + W(IW(I,10))*Y(IY(I,10))
       ENDDO
       ENDIF
 !
       IF(MXPTVS.GE.11.AND.LIMVOI(11,1).GT.0) THEN
       DO I = LIMVOI(11,1) , LIMVOI(11,2)
-         X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
-     &        + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
-     &        + W(IW(I,5))*Y(IY(I,5)) + W(IW(I,6))*Y(IY(I,6))
-     &        + W(IW(I,7))*Y(IY(I,7)) + W(IW(I,8))*Y(IY(I,8))
-     &        + W(IW(I,9))*Y(IY(I,9)) + W(IW(I,10))*Y(IY(I,10))
-     &        + W(IW(I,11))*Y(IY(I,11))
+        X(I) = W(IW(I,1))*Y(IY(I,1)) + W(IW(I,2))*Y(IY(I,2))
+     &       + W(IW(I,3))*Y(IY(I,3)) + W(IW(I,4))*Y(IY(I,4))
+     &       + W(IW(I,5))*Y(IY(I,5)) + W(IW(I,6))*Y(IY(I,6))
+     &       + W(IW(I,7))*Y(IY(I,7)) + W(IW(I,8))*Y(IY(I,8))
+     &       + W(IW(I,9))*Y(IY(I,9)) + W(IW(I,10))*Y(IY(I,10))
+     &       + W(IW(I,11))*Y(IY(I,11))
       ENDDO
       ENDIF
 !

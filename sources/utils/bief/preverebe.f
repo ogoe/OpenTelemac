@@ -99,11 +99,11 @@
       ELSEIF(TYPDIA(1:1).EQ.'Q') THEN
         CALL OV('X=Y     ',XAUX(1,2),AD,AD,0.D0,NPOIN)
       ELSE
-       WRITE(LU,*) TYPDIA
-       IF(LNG.EQ.1) WRITE(LU,*) 'DIAGONALE INCONNUE DANS PREVEREBE'
-       IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN TYPE OF DIAGONAL IN PREVEREBE'
-       CALL PLANTE(1)
-       STOP
+        WRITE(LU,*) TYPDIA
+        IF(LNG.EQ.1) WRITE(LU,*) 'DIAGONALE INCONNUE DANS PREVEREBE'
+        IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN TYPE OF DIAGONAL IN PREVEREBE'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

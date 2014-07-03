@@ -64,13 +64,13 @@
 !
       CALL OS( 'X=N(Y,Z)', T1, PHIR, PHII , BID             )
       IF (COURANT) THEN
-C     WE USE WR (RELATIVE PULSATION) 
-         CALL OS( 'X=CY    ', X=T2   ,Y=WR, C=2.D0/GRAV)
-         CALL OS( 'X=YZ    ', X=HHO  ,Y=T1, Z=T2 )
-!         CALL OS( 'X=CY    ', X=HHO  ,Y=T1, C=2.D0*OMEGA/GRAV)
+!     WE USE WR (RELATIVE PULSATION) 
+        CALL OS( 'X=CY    ', X=T2   ,Y=WR, C=2.D0/GRAV)
+        CALL OS( 'X=YZ    ', X=HHO  ,Y=T1, Z=T2 )
+!       CALL OS( 'X=CY    ', X=HHO  ,Y=T1, C=2.D0*OMEGA/GRAV)
       ELSE
-C     WE USE OMEGA 
-         CALL OS( 'X=CY    ', X=HHO  ,Y=T1, C=2.D0*OMEGA/GRAV)
+!     WE USE OMEGA 
+        CALL OS( 'X=CY    ', X=HHO  ,Y=T1, C=2.D0*OMEGA/GRAV)
       ENDIF
 !
 !=======================================================================
@@ -78,27 +78,26 @@ C     WE USE OMEGA
 !=======================================================================
 !
       DO I=1,NPOIN
-         IF (T1%R(I).LT.ZERO) THEN
-            PHAS%R(I) = 0.D0
-         ELSE
-            PHAS%R(I) = ATAN2( PHII%R(I),PHIR%R(I) )
-         ENDIF
+        IF (T1%R(I).LT.ZERO) THEN
+          PHAS%R(I) = 0.D0
+        ELSE
+          PHAS%R(I) = ATAN2( PHII%R(I),PHIR%R(I) )
+        ENDIF
       ENDDO
 !
 !=======================================================================
 ! FREE SURFACE ELEVATION
 !=======================================================================
       IF (COURANT) THEN
-          DO I=1,NPOIN
-             S%R(I) = -WR%R(I)/GRAV*PHII%R(I) + H%R(I) + ZF%R(I)
-          ENDDO
+        DO I=1,NPOIN
+          S%R(I) = -WR%R(I)/GRAV*PHII%R(I) + H%R(I) + ZF%R(I)
+        ENDDO
       ELSE
-          DO I=1,NPOIN
-             S%R(I) = -OMEGA/GRAV*PHII%R(I) + H%R(I) + ZF%R(I)
-          ENDDO
+        DO I=1,NPOIN
+          S%R(I) = -OMEGA/GRAV*PHII%R(I) + H%R(I) + ZF%R(I)
+        ENDDO
       ENDIF
-
-
+!
 !=======================================================================
 ! WAVE INIDENCE USING SPEEDS AT THE SURFACE (AT T=0 AND T=OMEGA/4)
 !=======================================================================
@@ -108,12 +107,12 @@ C     WE USE OMEGA
 !                                                 PRIVEES DANS LE .cas
 !      IF (COURANT) THEN
 !      ON IMPRIME LE COURANT ET LE VECTEUR D ONDE
-!       DO I=1,NPOIN
-!        PRIVE%ADR(1)%P%R(I) = UC%R(I)
-!        PRIVE%ADR(2)%P%R(I) = VC%R(I)
-!        PRIVE%ADR(3)%P%R(I) = T5%R(I)
-!        PRIVE%ADR(4)%P%R(I) = T6%R(I)
-!       ENDDO
+!        DO I=1,NPOIN
+!          PRIVE%ADR(1)%P%R(I) = UC%R(I)
+!          PRIVE%ADR(2)%P%R(I) = VC%R(I)
+!          PRIVE%ADR(3)%P%R(I) = T5%R(I)
+!          PRIVE%ADR(4)%P%R(I) = T6%R(I)
+!        ENDDO
 !      ENDIF
  
 !=======================================================================

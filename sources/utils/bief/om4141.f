@@ -303,59 +303,59 @@
 !
 !   DIAGONAL TERMS
 !
-         IF(TYPDIM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
-         ELSEIF(TYPDIM(1:1).EQ.'I') THEN
-           CALL OV( 'X=Y     ' , DM , D , Z , C , NDIAG )
-           TYPDIM(1:1)='Q'
-         ELSEIF(TYPDIM(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIM(1:1).EQ.'Q') THEN
+          CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
+        ELSEIF(TYPDIM(1:1).EQ.'I') THEN
+          CALL OV( 'X=Y     ' , DM , D , Z , C , NDIAG )
+          TYPDIM(1:1)='Q'
+        ELSEIF(TYPDIM(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
+          IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   EXTRADIAGONAL TERMS
 !
-         IF(TYPEXM(1:1).EQ.'Q') THEN
+        IF(TYPEXM(1:1).EQ.'Q') THEN
 !
-         DO IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
-           XM(IELEM, 1) = XM(IELEM, 1) * D(IKLE(IELEM,2))
-           XM(IELEM, 2) = XM(IELEM, 2) * D(IKLE(IELEM,3))
-           XM(IELEM, 3) = XM(IELEM, 3) * D(IKLE(IELEM,4))
-           XM(IELEM, 4) = XM(IELEM, 4) * D(IKLE(IELEM,5))
-           XM(IELEM, 5) = XM(IELEM, 5) * D(IKLE(IELEM,6))
-           XM(IELEM, 6) = XM(IELEM, 6) * D(IKLE(IELEM,3))
-           XM(IELEM, 7) = XM(IELEM, 7) * D(IKLE(IELEM,4))
-           XM(IELEM, 8) = XM(IELEM, 8) * D(IKLE(IELEM,5))
-           XM(IELEM, 9) = XM(IELEM, 9) * D(IKLE(IELEM,6))
-           XM(IELEM,10) = XM(IELEM,10) * D(IKLE(IELEM,4))
-           XM(IELEM,11) = XM(IELEM,11) * D(IKLE(IELEM,5))
-           XM(IELEM,12) = XM(IELEM,12) * D(IKLE(IELEM,6))
-           XM(IELEM,13) = XM(IELEM,13) * D(IKLE(IELEM,5))
-           XM(IELEM,14) = XM(IELEM,14) * D(IKLE(IELEM,6))
-           XM(IELEM,15) = XM(IELEM,15) * D(IKLE(IELEM,6))
+          XM(IELEM, 1) = XM(IELEM, 1) * D(IKLE(IELEM,2))
+          XM(IELEM, 2) = XM(IELEM, 2) * D(IKLE(IELEM,3))
+          XM(IELEM, 3) = XM(IELEM, 3) * D(IKLE(IELEM,4))
+          XM(IELEM, 4) = XM(IELEM, 4) * D(IKLE(IELEM,5))
+          XM(IELEM, 5) = XM(IELEM, 5) * D(IKLE(IELEM,6))
+          XM(IELEM, 6) = XM(IELEM, 6) * D(IKLE(IELEM,3))
+          XM(IELEM, 7) = XM(IELEM, 7) * D(IKLE(IELEM,4))
+          XM(IELEM, 8) = XM(IELEM, 8) * D(IKLE(IELEM,5))
+          XM(IELEM, 9) = XM(IELEM, 9) * D(IKLE(IELEM,6))
+          XM(IELEM,10) = XM(IELEM,10) * D(IKLE(IELEM,4))
+          XM(IELEM,11) = XM(IELEM,11) * D(IKLE(IELEM,5))
+          XM(IELEM,12) = XM(IELEM,12) * D(IKLE(IELEM,6))
+          XM(IELEM,13) = XM(IELEM,13) * D(IKLE(IELEM,5))
+          XM(IELEM,14) = XM(IELEM,14) * D(IKLE(IELEM,6))
+          XM(IELEM,15) = XM(IELEM,15) * D(IKLE(IELEM,6))
 !
-           XM(IELEM,16) = XM(IELEM,16) * D(IKLE(IELEM,1))
-           XM(IELEM,17) = XM(IELEM,17) * D(IKLE(IELEM,1))
-           XM(IELEM,18) = XM(IELEM,18) * D(IKLE(IELEM,1))
-           XM(IELEM,19) = XM(IELEM,19) * D(IKLE(IELEM,1))
-           XM(IELEM,20) = XM(IELEM,20) * D(IKLE(IELEM,1))
-           XM(IELEM,21) = XM(IELEM,21) * D(IKLE(IELEM,2))
-           XM(IELEM,22) = XM(IELEM,22) * D(IKLE(IELEM,2))
-           XM(IELEM,23) = XM(IELEM,23) * D(IKLE(IELEM,2))
-           XM(IELEM,24) = XM(IELEM,24) * D(IKLE(IELEM,2))
-           XM(IELEM,25) = XM(IELEM,25) * D(IKLE(IELEM,3))
-           XM(IELEM,26) = XM(IELEM,26) * D(IKLE(IELEM,3))
-           XM(IELEM,27) = XM(IELEM,27) * D(IKLE(IELEM,3))
-           XM(IELEM,28) = XM(IELEM,28) * D(IKLE(IELEM,4))
-           XM(IELEM,29) = XM(IELEM,29) * D(IKLE(IELEM,4))
-           XM(IELEM,30) = XM(IELEM,30) * D(IKLE(IELEM,5))
+          XM(IELEM,16) = XM(IELEM,16) * D(IKLE(IELEM,1))
+          XM(IELEM,17) = XM(IELEM,17) * D(IKLE(IELEM,1))
+          XM(IELEM,18) = XM(IELEM,18) * D(IKLE(IELEM,1))
+          XM(IELEM,19) = XM(IELEM,19) * D(IKLE(IELEM,1))
+          XM(IELEM,20) = XM(IELEM,20) * D(IKLE(IELEM,1))
+          XM(IELEM,21) = XM(IELEM,21) * D(IKLE(IELEM,2))
+          XM(IELEM,22) = XM(IELEM,22) * D(IKLE(IELEM,2))
+          XM(IELEM,23) = XM(IELEM,23) * D(IKLE(IELEM,2))
+          XM(IELEM,24) = XM(IELEM,24) * D(IKLE(IELEM,2))
+          XM(IELEM,25) = XM(IELEM,25) * D(IKLE(IELEM,3))
+          XM(IELEM,26) = XM(IELEM,26) * D(IKLE(IELEM,3))
+          XM(IELEM,27) = XM(IELEM,27) * D(IKLE(IELEM,3))
+          XM(IELEM,28) = XM(IELEM,28) * D(IKLE(IELEM,4))
+          XM(IELEM,29) = XM(IELEM,29) * D(IKLE(IELEM,4))
+          XM(IELEM,30) = XM(IELEM,30) * D(IKLE(IELEM,5))
 !
-         ENDDO ! IELEM 
+        ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXM(1:1).EQ.'S') THEN
+        ELSEIF(TYPEXM(1:1).EQ.'S') THEN
           IF (LNG.EQ.1) WRITE(LU,150)
           IF (LNG.EQ.2) WRITE(LU,151)
 150       FORMAT(1X,'OM4141 (BIEF) : M=MD A ECRIRE SI M SYMETRIQUE')
@@ -363,12 +363,12 @@
      &    'OM4141 (BIEF) : M=MD NOT AVAILABLE IF M SYMMETRIC')
           CALL PLANTE(1)
           STOP
-         ELSEIF(TYPEXM(1:1).NE.'0') THEN
+        ELSEIF(TYPEXM(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,190)
           IF (LNG.EQ.2) WRITE(LU,200)
           CALL PLANTE(1)
           STOP
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -376,59 +376,59 @@
 !
 !   DIAGONAL TERMS
 !
-         IF(TYPDIM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
-         ELSEIF(TYPDIM(1:1).EQ.'I') THEN
-           CALL OV( 'X=Y     ' , DM , D , Z , C , NDIAG )
-           TYPDIM(1:1)='Q'
-         ELSEIF(TYPDIM(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
-           CALL PLANTE(1)
-           STOP
-         ENDIF
+        IF(TYPDIM(1:1).EQ.'Q') THEN
+          CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
+        ELSEIF(TYPDIM(1:1).EQ.'I') THEN
+          CALL OV( 'X=Y     ' , DM , D , Z , C , NDIAG )
+          TYPDIM(1:1)='Q'
+        ELSEIF(TYPDIM(1:1).NE.'0') THEN
+          IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
+          IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !   EXTRADIAGONAL TERMS
 !
-         IF(TYPEXM(1:1).EQ.'Q') THEN
+        IF(TYPEXM(1:1).EQ.'Q') THEN
 !
-         DO IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
 !
-           XM(IELEM, 1) = XM(IELEM, 1) * D(IKLE(IELEM,1))
-           XM(IELEM, 2) = XM(IELEM, 2) * D(IKLE(IELEM,1))
-           XM(IELEM, 3) = XM(IELEM, 3) * D(IKLE(IELEM,1))
-           XM(IELEM, 4) = XM(IELEM, 4) * D(IKLE(IELEM,1))
-           XM(IELEM, 5) = XM(IELEM, 5) * D(IKLE(IELEM,1))
-           XM(IELEM, 6) = XM(IELEM, 6) * D(IKLE(IELEM,2))
-           XM(IELEM, 7) = XM(IELEM, 7) * D(IKLE(IELEM,2))
-           XM(IELEM, 8) = XM(IELEM, 8) * D(IKLE(IELEM,2))
-           XM(IELEM, 9) = XM(IELEM, 9) * D(IKLE(IELEM,2))
-           XM(IELEM,10) = XM(IELEM,10) * D(IKLE(IELEM,3))
-           XM(IELEM,11) = XM(IELEM,11) * D(IKLE(IELEM,3))
-           XM(IELEM,12) = XM(IELEM,12) * D(IKLE(IELEM,3))
-           XM(IELEM,13) = XM(IELEM,13) * D(IKLE(IELEM,4))
-           XM(IELEM,14) = XM(IELEM,14) * D(IKLE(IELEM,4))
-           XM(IELEM,15) = XM(IELEM,15) * D(IKLE(IELEM,5))
+          XM(IELEM, 1) = XM(IELEM, 1) * D(IKLE(IELEM,1))
+          XM(IELEM, 2) = XM(IELEM, 2) * D(IKLE(IELEM,1))
+          XM(IELEM, 3) = XM(IELEM, 3) * D(IKLE(IELEM,1))
+          XM(IELEM, 4) = XM(IELEM, 4) * D(IKLE(IELEM,1))
+          XM(IELEM, 5) = XM(IELEM, 5) * D(IKLE(IELEM,1))
+          XM(IELEM, 6) = XM(IELEM, 6) * D(IKLE(IELEM,2))
+          XM(IELEM, 7) = XM(IELEM, 7) * D(IKLE(IELEM,2))
+          XM(IELEM, 8) = XM(IELEM, 8) * D(IKLE(IELEM,2))
+          XM(IELEM, 9) = XM(IELEM, 9) * D(IKLE(IELEM,2))
+          XM(IELEM,10) = XM(IELEM,10) * D(IKLE(IELEM,3))
+          XM(IELEM,11) = XM(IELEM,11) * D(IKLE(IELEM,3))
+          XM(IELEM,12) = XM(IELEM,12) * D(IKLE(IELEM,3))
+          XM(IELEM,13) = XM(IELEM,13) * D(IKLE(IELEM,4))
+          XM(IELEM,14) = XM(IELEM,14) * D(IKLE(IELEM,4))
+          XM(IELEM,15) = XM(IELEM,15) * D(IKLE(IELEM,5))
 !
-           XM(IELEM,16) = XM(IELEM,16) * D(IKLE(IELEM,2))
-           XM(IELEM,17) = XM(IELEM,17) * D(IKLE(IELEM,3))
-           XM(IELEM,18) = XM(IELEM,18) * D(IKLE(IELEM,4))
-           XM(IELEM,19) = XM(IELEM,19) * D(IKLE(IELEM,5))
-           XM(IELEM,20) = XM(IELEM,20) * D(IKLE(IELEM,6))
-           XM(IELEM,21) = XM(IELEM,21) * D(IKLE(IELEM,3))
-           XM(IELEM,22) = XM(IELEM,22) * D(IKLE(IELEM,4))
-           XM(IELEM,23) = XM(IELEM,23) * D(IKLE(IELEM,5))
-           XM(IELEM,24) = XM(IELEM,24) * D(IKLE(IELEM,6))
-           XM(IELEM,25) = XM(IELEM,25) * D(IKLE(IELEM,4))
-           XM(IELEM,26) = XM(IELEM,26) * D(IKLE(IELEM,5))
-           XM(IELEM,27) = XM(IELEM,27) * D(IKLE(IELEM,6))
-           XM(IELEM,28) = XM(IELEM,28) * D(IKLE(IELEM,5))
-           XM(IELEM,29) = XM(IELEM,29) * D(IKLE(IELEM,6))
-           XM(IELEM,30) = XM(IELEM,30) * D(IKLE(IELEM,6))
+          XM(IELEM,16) = XM(IELEM,16) * D(IKLE(IELEM,2))
+          XM(IELEM,17) = XM(IELEM,17) * D(IKLE(IELEM,3))
+          XM(IELEM,18) = XM(IELEM,18) * D(IKLE(IELEM,4))
+          XM(IELEM,19) = XM(IELEM,19) * D(IKLE(IELEM,5))
+          XM(IELEM,20) = XM(IELEM,20) * D(IKLE(IELEM,6))
+          XM(IELEM,21) = XM(IELEM,21) * D(IKLE(IELEM,3))
+          XM(IELEM,22) = XM(IELEM,22) * D(IKLE(IELEM,4))
+          XM(IELEM,23) = XM(IELEM,23) * D(IKLE(IELEM,5))
+          XM(IELEM,24) = XM(IELEM,24) * D(IKLE(IELEM,6))
+          XM(IELEM,25) = XM(IELEM,25) * D(IKLE(IELEM,4))
+          XM(IELEM,26) = XM(IELEM,26) * D(IKLE(IELEM,5))
+          XM(IELEM,27) = XM(IELEM,27) * D(IKLE(IELEM,6))
+          XM(IELEM,28) = XM(IELEM,28) * D(IKLE(IELEM,5))
+          XM(IELEM,29) = XM(IELEM,29) * D(IKLE(IELEM,6))
+          XM(IELEM,30) = XM(IELEM,30) * D(IKLE(IELEM,6))
 !
-         ENDDO ! IELEM 
+        ENDDO ! IELEM 
 !
-         ELSEIF(TYPEXM(1:1).EQ.'S') THEN
+        ELSEIF(TYPEXM(1:1).EQ.'S') THEN
           IF (LNG.EQ.1) WRITE(LU,160)
           IF (LNG.EQ.2) WRITE(LU,161)
 160       FORMAT(1X,'OM4141 (BIEF) : M=DM A ECRIRE SI M SYMETRIQUE')
@@ -436,14 +436,14 @@
      &    'OM4141 (BIEF) : M=MD NOT AVAILABLE IF M SYMMETRIC')
           CALL PLANTE(1)
           STOP
-         ELSEIF(TYPEXM(1:1).NE.'0') THEN
+        ELSEIF(TYPEXM(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,190)
           IF (LNG.EQ.2) WRITE(LU,200)
 190       FORMAT(1X,'OM4141 (BIEF) : TYPEXM NON PREVU : ',A1)
 200       FORMAT(1X,'OM4141 (BIEF) : TYPEXM NOT AVAILABLE : ',A1)
           CALL PLANTE(1)
           STOP
-         ENDIF
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -470,147 +470,147 @@
 !
         IF(TYPEXM(1:1).EQ.'S') THEN
 !
-         DO IELEM = 1 , NELEM
-!
-           I1 = IKLE(IELEM,1)
-           I2 = IKLE(IELEM,2)
-           I3 = IKLE(IELEM,3)
-           I4 = IKLE(IELEM,4)
-           I5 = IKLE(IELEM,5)
-           I6 = IKLE(IELEM,6)
-!
-           XM(IELEM, 1) =  XM(IELEM, 1) * D(I2) * D(I1)
-           XM(IELEM, 2) =  XM(IELEM, 2) * D(I3) * D(I1)
-           XM(IELEM, 3) =  XM(IELEM, 3) * D(I4) * D(I1)
-           XM(IELEM, 4) =  XM(IELEM, 4) * D(I5) * D(I1)
-           XM(IELEM, 5) =  XM(IELEM, 5) * D(I6) * D(I1)
-           XM(IELEM, 6) =  XM(IELEM, 6) * D(I3) * D(I2)
-           XM(IELEM, 7) =  XM(IELEM, 7) * D(I4) * D(I2)
-           XM(IELEM, 8) =  XM(IELEM, 8) * D(I5) * D(I2)
-           XM(IELEM, 9) =  XM(IELEM, 9) * D(I6) * D(I2)
-           XM(IELEM,10) =  XM(IELEM,10) * D(I4) * D(I3)
-           XM(IELEM,11) =  XM(IELEM,11) * D(I5) * D(I3)
-           XM(IELEM,12) =  XM(IELEM,12) * D(I6) * D(I3)
-           XM(IELEM,13) =  XM(IELEM,13) * D(I5) * D(I4)
-           XM(IELEM,14) =  XM(IELEM,14) * D(I6) * D(I4)
-           XM(IELEM,15) =  XM(IELEM,15) * D(I6) * D(I5)
-!
-         ENDDO ! IELEM 
+          DO IELEM = 1 , NELEM
+!         
+            I1 = IKLE(IELEM,1)
+            I2 = IKLE(IELEM,2)
+            I3 = IKLE(IELEM,3)
+            I4 = IKLE(IELEM,4)
+            I5 = IKLE(IELEM,5)
+            I6 = IKLE(IELEM,6)
+!         
+            XM(IELEM, 1) =  XM(IELEM, 1) * D(I2) * D(I1)
+            XM(IELEM, 2) =  XM(IELEM, 2) * D(I3) * D(I1)
+            XM(IELEM, 3) =  XM(IELEM, 3) * D(I4) * D(I1)
+            XM(IELEM, 4) =  XM(IELEM, 4) * D(I5) * D(I1)
+            XM(IELEM, 5) =  XM(IELEM, 5) * D(I6) * D(I1)
+            XM(IELEM, 6) =  XM(IELEM, 6) * D(I3) * D(I2)
+            XM(IELEM, 7) =  XM(IELEM, 7) * D(I4) * D(I2)
+            XM(IELEM, 8) =  XM(IELEM, 8) * D(I5) * D(I2)
+            XM(IELEM, 9) =  XM(IELEM, 9) * D(I6) * D(I2)
+            XM(IELEM,10) =  XM(IELEM,10) * D(I4) * D(I3)
+            XM(IELEM,11) =  XM(IELEM,11) * D(I5) * D(I3)
+            XM(IELEM,12) =  XM(IELEM,12) * D(I6) * D(I3)
+            XM(IELEM,13) =  XM(IELEM,13) * D(I5) * D(I4)
+            XM(IELEM,14) =  XM(IELEM,14) * D(I6) * D(I4)
+            XM(IELEM,15) =  XM(IELEM,15) * D(I6) * D(I5)
+!         
+          ENDDO ! IELEM 
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q') THEN
 !
-         DO IELEM = 1 , NELEM
-!
-           I1 = IKLE(IELEM,1)
-           I2 = IKLE(IELEM,2)
-           I3 = IKLE(IELEM,3)
-           I4 = IKLE(IELEM,4)
-           I5 = IKLE(IELEM,5)
-           I6 = IKLE(IELEM,6)
-!
-           XM(IELEM, 1) =  XM(IELEM, 1) * D(I2) * D(I1)
-           XM(IELEM, 2) =  XM(IELEM, 2) * D(I3) * D(I1)
-           XM(IELEM, 3) =  XM(IELEM, 3) * D(I4) * D(I1)
-           XM(IELEM, 4) =  XM(IELEM, 4) * D(I5) * D(I1)
-           XM(IELEM, 5) =  XM(IELEM, 5) * D(I6) * D(I1)
-           XM(IELEM, 6) =  XM(IELEM, 6) * D(I3) * D(I2)
-           XM(IELEM, 7) =  XM(IELEM, 7) * D(I4) * D(I2)
-           XM(IELEM, 8) =  XM(IELEM, 8) * D(I5) * D(I2)
-           XM(IELEM, 9) =  XM(IELEM, 9) * D(I6) * D(I2)
-           XM(IELEM,10) =  XM(IELEM,10) * D(I4) * D(I3)
-           XM(IELEM,11) =  XM(IELEM,11) * D(I5) * D(I3)
-           XM(IELEM,12) =  XM(IELEM,12) * D(I6) * D(I3)
-           XM(IELEM,13) =  XM(IELEM,13) * D(I5) * D(I4)
-           XM(IELEM,14) =  XM(IELEM,14) * D(I6) * D(I4)
-           XM(IELEM,15) =  XM(IELEM,15) * D(I6) * D(I5)
-           XM(IELEM,16) =  XM(IELEM,16) * D(I2) * D(I1)
-           XM(IELEM,17) =  XM(IELEM,17) * D(I3) * D(I1)
-           XM(IELEM,18) =  XM(IELEM,18) * D(I4) * D(I1)
-           XM(IELEM,19) =  XM(IELEM,19) * D(I5) * D(I1)
-           XM(IELEM,20) =  XM(IELEM,20) * D(I6) * D(I1)
-           XM(IELEM,21) =  XM(IELEM,21) * D(I3) * D(I2)
-           XM(IELEM,22) =  XM(IELEM,22) * D(I4) * D(I2)
-           XM(IELEM,23) =  XM(IELEM,23) * D(I5) * D(I2)
-           XM(IELEM,24) =  XM(IELEM,24) * D(I6) * D(I2)
-           XM(IELEM,25) =  XM(IELEM,25) * D(I4) * D(I3)
-           XM(IELEM,26) =  XM(IELEM,26) * D(I5) * D(I3)
-           XM(IELEM,27) =  XM(IELEM,27) * D(I6) * D(I3)
-           XM(IELEM,28) =  XM(IELEM,28) * D(I5) * D(I4)
-           XM(IELEM,29) =  XM(IELEM,29) * D(I6) * D(I4)
-           XM(IELEM,30) =  XM(IELEM,30) * D(I6) * D(I5)
-!
-         ENDDO ! IELEM 
+          DO IELEM = 1 , NELEM
+!         
+            I1 = IKLE(IELEM,1)
+            I2 = IKLE(IELEM,2)
+            I3 = IKLE(IELEM,3)
+            I4 = IKLE(IELEM,4)
+            I5 = IKLE(IELEM,5)
+            I6 = IKLE(IELEM,6)
+!         
+            XM(IELEM, 1) =  XM(IELEM, 1) * D(I2) * D(I1)
+            XM(IELEM, 2) =  XM(IELEM, 2) * D(I3) * D(I1)
+            XM(IELEM, 3) =  XM(IELEM, 3) * D(I4) * D(I1)
+            XM(IELEM, 4) =  XM(IELEM, 4) * D(I5) * D(I1)
+            XM(IELEM, 5) =  XM(IELEM, 5) * D(I6) * D(I1)
+            XM(IELEM, 6) =  XM(IELEM, 6) * D(I3) * D(I2)
+            XM(IELEM, 7) =  XM(IELEM, 7) * D(I4) * D(I2)
+            XM(IELEM, 8) =  XM(IELEM, 8) * D(I5) * D(I2)
+            XM(IELEM, 9) =  XM(IELEM, 9) * D(I6) * D(I2)
+            XM(IELEM,10) =  XM(IELEM,10) * D(I4) * D(I3)
+            XM(IELEM,11) =  XM(IELEM,11) * D(I5) * D(I3)
+            XM(IELEM,12) =  XM(IELEM,12) * D(I6) * D(I3)
+            XM(IELEM,13) =  XM(IELEM,13) * D(I5) * D(I4)
+            XM(IELEM,14) =  XM(IELEM,14) * D(I6) * D(I4)
+            XM(IELEM,15) =  XM(IELEM,15) * D(I6) * D(I5)
+            XM(IELEM,16) =  XM(IELEM,16) * D(I2) * D(I1)
+            XM(IELEM,17) =  XM(IELEM,17) * D(I3) * D(I1)
+            XM(IELEM,18) =  XM(IELEM,18) * D(I4) * D(I1)
+            XM(IELEM,19) =  XM(IELEM,19) * D(I5) * D(I1)
+            XM(IELEM,20) =  XM(IELEM,20) * D(I6) * D(I1)
+            XM(IELEM,21) =  XM(IELEM,21) * D(I3) * D(I2)
+            XM(IELEM,22) =  XM(IELEM,22) * D(I4) * D(I2)
+            XM(IELEM,23) =  XM(IELEM,23) * D(I5) * D(I2)
+            XM(IELEM,24) =  XM(IELEM,24) * D(I6) * D(I2)
+            XM(IELEM,25) =  XM(IELEM,25) * D(I4) * D(I3)
+            XM(IELEM,26) =  XM(IELEM,26) * D(I5) * D(I3)
+            XM(IELEM,27) =  XM(IELEM,27) * D(I6) * D(I3)
+            XM(IELEM,28) =  XM(IELEM,28) * D(I5) * D(I4)
+            XM(IELEM,29) =  XM(IELEM,29) * D(I6) * D(I4)
+            XM(IELEM,30) =  XM(IELEM,30) * D(I6) * D(I5)
+!         
+          ENDDO ! IELEM 
 !
         ELSEIF(TYPEXM(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,20) TYPEXM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,21) TYPEXM(1:1)
-20         FORMAT(1X,'OM4141 (BIEF) : TYPEXM INCONNU :',A1)
-21         FORMAT(1X,'OM4141 (BIEF) : TYPEXM UNKNOWN :',A1)
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,20) TYPEXM(1:1)
+          IF (LNG.EQ.2) WRITE(LU,21) TYPEXM(1:1)
+20        FORMAT(1X,'OM4141 (BIEF) : TYPEXM INCONNU :',A1)
+21        FORMAT(1X,'OM4141 (BIEF) : TYPEXM UNKNOWN :',A1)
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !
 !-----------------------------------------------------------------------
 !
-       ELSEIF(OP(3:8).EQ.'0     ') THEN
+      ELSEIF(OP(3:8).EQ.'0     ') THEN
 !
         PRINT*,'OM4141 M=0'
         CALL OV( 'X=C     ' , DM , Y , Z , 0.D0 , NDIAG )
-!
+!       
         IF(TYPEXM(1:1).EQ.'S') THEN
-           CALL OV( 'X=C     ' , XM(1,1 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,2 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,3 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,4 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,5 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,6 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,7 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,8 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,9 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,10) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,11) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,12) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,13) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,14) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,15) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,1 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,2 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,3 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,4 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,5 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,6 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,7 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,8 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,9 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,10) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,11) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,12) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,13) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,14) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,15) , Y , Z , 0.D0 , NELEM )
         ELSEIF(TYPEXM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=C     ' , XM(1,1 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,2 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,3 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,4 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,5 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,6 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,7 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,8 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,9 ) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,10) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,11) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,12) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,13) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,14) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,15) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,16) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,17) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,18) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,19) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,20) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,21) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,22) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,23) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,24) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,25) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,26) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,27) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,28) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,29) , Y , Z , 0.D0 , NELEM )
-           CALL OV( 'X=C     ' , XM(1,30) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,1 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,2 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,3 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,4 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,5 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,6 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,7 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,8 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,9 ) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,10) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,11) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,12) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,13) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,14) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,15) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,16) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,17) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,18) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,19) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,20) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,21) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,22) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,23) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,24) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,25) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,26) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,27) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,28) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,29) , Y , Z , 0.D0 , NELEM )
+          CALL OV( 'X=C     ' , XM(1,30) , Y , Z , 0.D0 , NELEM )
         ELSEIF(TYPEXM(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,710) TYPEXM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,711) TYPEXM(1:1)
-710        FORMAT(1X,'OM4141 (BIEF) : TYPEXM INCONNU :',A1)
-711        FORMAT(1X,'OM4141 (BIEF) : TYPEXM UNKNOWN :',A1)
-           CALL PLANTE(1)
-           STOP
+          IF (LNG.EQ.1) WRITE(LU,710) TYPEXM(1:1)
+          IF (LNG.EQ.2) WRITE(LU,711) TYPEXM(1:1)
+710       FORMAT(1X,'OM4141 (BIEF) : TYPEXM INCONNU :',A1)
+711       FORMAT(1X,'OM4141 (BIEF) : TYPEXM UNKNOWN :',A1)
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !       TYPDIM IS NOT CHANGED
 !        TYPDIM(1:1)='0'
@@ -666,9 +666,9 @@
       ENDIF
 !
       IF(J.GT.0) THEN
-         DO I = 1,J
-            CALL OV ( 'X=XY    ' , XM(1,I) , D , Z , C , NELEM )
-         ENDDO ! I 
+        DO I = 1,J
+          CALL OV ( 'X=XY    ' , XM(1,I) , D , Z , C , NELEM )
+        ENDDO ! I 
       ENDIF
 !
 !-----------------------------------------------------------------------

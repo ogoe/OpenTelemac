@@ -2,7 +2,7 @@
                         SUBROUTINE PRENL2
 !                       *****************
 !
-     *( IANGNL, COEFNL, NPLAN , NF    , RAISF , XLAMD , XMU   )
+     &( IANGNL, COEFNL, NPLAN , NF    , RAISF , XLAMD , XMU   )
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   22/06/2011
@@ -87,42 +87,42 @@
 !         (CORRESPONDING TO (-DTPLUS,DTMOIN))
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""""
       IF (XXXX.GT.1.D-6) THEN
-       DELTA1=-DTPLUS
-       DELTA2= DTMOIN
-       DO JP=1,NPLAN
-        CALL INTANG( IANGNL(JP, 2), IANGNL(JP, 1), JP , NPLAN , DELTA1)
-        CALL INTANG( IANGNL(JP, 3), IANGNL(JP, 4), JP , NPLAN , DELTA2)
-       ENDDO
+        DELTA1=-DTPLUS
+        DELTA2= DTMOIN
+        DO JP=1,NPLAN
+          CALL INTANG(IANGNL(JP, 2), IANGNL(JP, 1), JP , NPLAN , DELTA1)
+          CALL INTANG(IANGNL(JP, 3), IANGNL(JP, 4), JP , NPLAN , DELTA2)
+        ENDDO
       ELSE
-       DO JP=1,NPLAN
-        IANGNL(JP, 1)=JP
-        IANGNL(JP, 2)=JP-1
-        IF (JP.EQ.1) IANGNL(JP, 2)=NPLAN
-        IANGNL(JP, 3)=JP
-        IANGNL(JP, 4)=JP+1
-        IF (JP.EQ.NPLAN) IANGNL(JP, 4)=1
-       ENDDO
+        DO JP=1,NPLAN
+          IANGNL(JP, 1)=JP
+          IANGNL(JP, 2)=JP-1
+          IF (JP.EQ.1) IANGNL(JP, 2)=NPLAN
+          IANGNL(JP, 3)=JP
+          IANGNL(JP, 4)=JP+1
+          IF (JP.EQ.NPLAN) IANGNL(JP, 4)=1
+        ENDDO
       ENDIF
 !
 !.....1.3 DETERMINES ANGULAR INDICES FOR THE 'IMAGE' CONFIGURATION
 !         (CORRESPONDING TO (DTPLUS,-DTMOIN))
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""
       IF (XXXX.GT.1.D-6) THEN
-       DELTA1= DTPLUS
-       DELTA2=-DTMOIN
-       DO JP=1,NPLAN
+        DELTA1= DTPLUS
+        DELTA2=-DTMOIN
+        DO JP=1,NPLAN
         CALL INTANG( IANGNL(JP, 5), IANGNL(JP, 6), JP , NPLAN , DELTA1)
         CALL INTANG( IANGNL(JP, 8), IANGNL(JP, 7), JP , NPLAN , DELTA2)
-       ENDDO
+        ENDDO
       ELSE
-       DO JP=1,NPLAN
-        IANGNL(JP, 5)=JP
-        IANGNL(JP, 6)=JP+1
-        IF (JP.EQ.NPLAN) IANGNL(JP, 6)=1
-        IANGNL(JP, 7)=JP
-        IANGNL(JP, 8)=JP-1
-        IF (JP.EQ.1) IANGNL(JP, 8)=NPLAN
-       ENDDO
+        DO JP=1,NPLAN
+          IANGNL(JP, 5)=JP
+          IANGNL(JP, 6)=JP+1
+          IF (JP.EQ.NPLAN) IANGNL(JP, 6)=1
+          IANGNL(JP, 7)=JP
+          IANGNL(JP, 8)=JP-1
+          IF (JP.EQ.1) IANGNL(JP, 8)=NPLAN
+        ENDDO
       ENDIF
 !
 !.....1.4 DETERMINES COEFFICIENTS OF ANGULAR INTERPOLATION
@@ -181,42 +181,42 @@
 !         (CORRESPONDING TO (-DTPLUS,DTMOIN))
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""""
       IF (XXXX.GT.1.D-6) THEN
-       DELTA1=-DTPLUS
-       DELTA2= DTMOIN
-       DO JP=1,NPLAN
-        CALL INTANG( IANGNL(JP,10), IANGNL(JP, 9), JP , NPLAN , DELTA1)
-        CALL INTANG( IANGNL(JP,11), IANGNL(JP,12), JP , NPLAN , DELTA2)
-       ENDDO
+        DELTA1=-DTPLUS
+        DELTA2= DTMOIN
+        DO JP=1,NPLAN
+          CALL INTANG(IANGNL(JP,10), IANGNL(JP, 9), JP , NPLAN , DELTA1)
+          CALL INTANG(IANGNL(JP,11), IANGNL(JP,12), JP , NPLAN , DELTA2)
+        ENDDO
       ELSE
-       DO JP=1,NPLAN
-        IANGNL(JP, 9)=JP
-        IANGNL(JP,10)=JP-1
-        IF (JP.EQ.1) IANGNL(JP,10)=NPLAN
-        IANGNL(JP,11)=JP
-        IANGNL(JP,12)=JP+1
-        IF (JP.EQ.NPLAN) IANGNL(JP,12)=1
-       ENDDO
+        DO JP=1,NPLAN
+          IANGNL(JP, 9)=JP
+          IANGNL(JP,10)=JP-1
+          IF (JP.EQ.1) IANGNL(JP,10)=NPLAN
+          IANGNL(JP,11)=JP
+          IANGNL(JP,12)=JP+1
+          IF (JP.EQ.NPLAN) IANGNL(JP,12)=1
+        ENDDO
       ENDIF
 !
 !.....1.3 DETERMINES ANGULAR INDICES FOR THE 'IMAGE' CONFIGURATION
 !         (CORRESPONDING TO (DTPLUS,-DTMOIN))
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""
       IF (XXXX.GT.1.D-6) THEN
-       DELTA1= DTPLUS
-       DELTA2=-DTMOIN
-       DO JP=1,NPLAN
-        CALL INTANG( IANGNL(JP,13), IANGNL(JP,14), JP , NPLAN , DELTA1)
-        CALL INTANG( IANGNL(JP,16), IANGNL(JP,15), JP , NPLAN , DELTA2)
-       ENDDO
+        DELTA1= DTPLUS
+        DELTA2=-DTMOIN
+        DO JP=1,NPLAN
+          CALL INTANG(IANGNL(JP,13), IANGNL(JP,14), JP , NPLAN , DELTA1)
+          CALL INTANG(IANGNL(JP,16), IANGNL(JP,15), JP , NPLAN , DELTA2)
+        ENDDO
       ELSE
-       DO JP=1,NPLAN
-        IANGNL(JP,13)=JP
-        IANGNL(JP,14)=JP+1
-        IF (JP.EQ.NPLAN) IANGNL(JP,14)=1
-        IANGNL(JP,15)=JP
-        IANGNL(JP,16)=JP-1
-        IF (JP.EQ.1) IANGNL(JP,16)=NPLAN
-       ENDDO
+        DO JP=1,NPLAN
+          IANGNL(JP,13)=JP
+          IANGNL(JP,14)=JP+1
+          IF (JP.EQ.NPLAN) IANGNL(JP,14)=1
+          IANGNL(JP,15)=JP
+          IANGNL(JP,16)=JP-1
+          IF (JP.EQ.1) IANGNL(JP,16)=NPLAN
+        ENDDO
       ENDIF
 !
 !.....1.4 DETERMINES COEFFICIENTS OF ANGULAR INTERPOLATION

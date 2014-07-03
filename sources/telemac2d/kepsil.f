@@ -278,18 +278,18 @@
       CALL CPSTVC(SMK,T1)
       CALL CPSTVC(SMK,T2)
       DO N=1,T1%DIM1
-         USTAR = SQRT(0.5D0*CF%R(N)*(U%R(N)**2+V%R(N)**2))
-!        T1 : PKV TERM OF THE EQUATION FOR K
-         T1%R(N)=USTAR**3/MAX(SQRT(0.5D0*CF%R(N))*HN%R(N),1.D-6)
-!        LIMITS THE GROWTH OF K DUE TO BOTTOM FRICTION
-!        TO 50% PER TIMESTEP
-         T1%R(N) = MIN (T1%R(N) , EP%R(N) + 0.5D0*AK%R(N)/DT )
-!        T2 : PEV TERM OF THE EQUATION FOR EPSILON
-         T2%R(N) = CEPS * USTAR**4 /
-     &           MAX(((0.5D0*CF%R(N))**0.75D0)*HN%R(N)**2,1.D-6)
-!        LIMITS THE GROWTH OF E TO 50% PER TIMESTEP
-         T2%R(N) = MIN(T2%R(N),C2*EP%R(N)**2/MAX(AK%R(N),KMIN)
-     &           +0.5D0*EP%R(N)/DT )
+        USTAR = SQRT(0.5D0*CF%R(N)*(U%R(N)**2+V%R(N)**2))
+!       T1 : PKV TERM OF THE EQUATION FOR K
+        T1%R(N)=USTAR**3/MAX(SQRT(0.5D0*CF%R(N))*HN%R(N),1.D-6)
+!       LIMITS THE GROWTH OF K DUE TO BOTTOM FRICTION
+!       TO 50% PER TIMESTEP
+        T1%R(N) = MIN (T1%R(N) , EP%R(N) + 0.5D0*AK%R(N)/DT )
+!       T2 : PEV TERM OF THE EQUATION FOR EPSILON
+        T2%R(N) = CEPS * USTAR**4 /
+     &          MAX(((0.5D0*CF%R(N))**0.75D0)*HN%R(N)**2,1.D-6)
+!       LIMITS THE GROWTH OF E TO 50% PER TIMESTEP
+        T2%R(N) = MIN(T2%R(N),C2*EP%R(N)**2/MAX(AK%R(N),KMIN)
+     &          +0.5D0*EP%R(N)/DT )
       ENDDO
 !
       CALL OS( 'X=XY    ' , T1  , T3 , T3 , C )

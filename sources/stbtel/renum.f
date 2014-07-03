@@ -63,17 +63,17 @@
 !=======================================================================
 !
       DO IPOIN = 1,NPOIN
-         TRAV1(IPOIN) = 0
+        TRAV1(IPOIN) = 0
       ENDDO
 !
       DO IELEM = 1,NELEM
-         TRAV1(IKLE(IELEM,1)) = TRAV1(IKLE(IELEM,1)) + 2
-         TRAV1(IKLE(IELEM,2)) = TRAV1(IKLE(IELEM,2)) + 2
-         TRAV1(IKLE(IELEM,3)) = TRAV1(IKLE(IELEM,3)) + 2
+        TRAV1(IKLE(IELEM,1)) = TRAV1(IKLE(IELEM,1)) + 2
+        TRAV1(IKLE(IELEM,2)) = TRAV1(IKLE(IELEM,2)) + 2
+        TRAV1(IKLE(IELEM,3)) = TRAV1(IKLE(IELEM,3)) + 2
       ENDDO
 !
       DO IPTFR = 1,NPTFR
-         TRAV1(NBOR(IPTFR)) = TRAV1(NBOR(IPTFR)) + 1
+        TRAV1(NBOR(IPTFR)) = TRAV1(NBOR(IPTFR)) + 1
       ENDDO
 !
 !=======================================================================
@@ -84,27 +84,27 @@
 !
       DO IPOIN = 1,NPOIN
 !
-         I1 = TRAV1(IPOIN)
+        I1 = TRAV1(IPOIN)
 !
-         IF (I1.GT.TABMAX) THEN
-            DO I2 = TABMAX+1,I1
-               TAB(I2) = IPOIN - 1
-            ENDDO
-            TABMAX = I1
-         ELSEIF (I1.LT.TABMAX) THEN
-            DO I2 = TABMAX,I1+1,-1
-               TAB(I2) = TAB(I2) + 1
-               TRAV2(TAB(I2)) = TRAV2(TAB(I2-1)+1)
-            ENDDO
-         ENDIF
+        IF (I1.GT.TABMAX) THEN
+          DO I2 = TABMAX+1,I1
+            TAB(I2) = IPOIN - 1
+          ENDDO
+          TABMAX = I1
+        ELSEIF (I1.LT.TABMAX) THEN
+          DO I2 = TABMAX,I1+1,-1
+            TAB(I2) = TAB(I2) + 1
+            TRAV2(TAB(I2)) = TRAV2(TAB(I2-1)+1)
+          ENDDO
+        ENDIF
 !
-         TAB(I1) = TAB(I1) + 1
-         TRAV2(TAB(I1)) = IPOIN
+        TAB(I1) = TAB(I1) + 1
+        TRAV2(TAB(I1)) = IPOIN
 !
       ENDDO
 !
       DO I1 = 1,TABMAX
-         PRINT*,'TAB(',I1,')=',TAB(I1)
+        PRINT*,'TAB(',I1,')=',TAB(I1)
       ENDDO
 !
 !=======================================================================
@@ -112,42 +112,42 @@
 !=======================================================================
 !
       DO IPOIN = 1,NPOIN
-         TRAV1(TRAV2(IPOIN)) = IPOIN
+        TRAV1(TRAV2(IPOIN)) = IPOIN
       ENDDO
 !
       DO IELEM = 1,NELEM
-         IKLE(IELEM,1) = TRAV1(IKLE(IELEM,1))
-         IKLE(IELEM,2) = TRAV1(IKLE(IELEM,2))
-         IKLE(IELEM,3) = TRAV1(IKLE(IELEM,3))
+        IKLE(IELEM,1) = TRAV1(IKLE(IELEM,1))
+        IKLE(IELEM,2) = TRAV1(IKLE(IELEM,2))
+        IKLE(IELEM,3) = TRAV1(IKLE(IELEM,3))
       ENDDO
 !
       DO IPTFR = 1,NPTFR
-         NBOR(IPTFR) = TRAV1(NBOR(IPTFR))
-         NBOR(NPTFR+IPTFR) = TRAV1(NBOR(NPTFR+IPTFR))
+        NBOR(IPTFR) = TRAV1(NBOR(IPTFR))
+        NBOR(NPTFR+IPTFR) = TRAV1(NBOR(NPTFR+IPTFR))
       ENDDO
 !
       DO IPOIN = 1,NPOIN
-         W(IPOIN) = X(TRAV2(IPOIN))
+        W(IPOIN) = X(TRAV2(IPOIN))
       ENDDO
       DO IPOIN = 1,NPOIN
-         X(IPOIN) = W(IPOIN)
+        X(IPOIN) = W(IPOIN)
       ENDDO
 !
       DO IPOIN = 1,NPOIN
-         W(IPOIN) = Y(TRAV2(IPOIN))
+        W(IPOIN) = Y(TRAV2(IPOIN))
       ENDDO
       DO IPOIN = 1,NPOIN
-         Y(IPOIN) = W(IPOIN)
+        Y(IPOIN) = W(IPOIN)
       ENDDO
 !
       IF (COLOR) THEN
 !
-         DO IPOIN = 1,NPOIN
-            TRAV1(IPOIN) = NCOLOR(TRAV2(IPOIN))
-         ENDDO
-         DO IPOIN = 1,NPOIN
-            NCOLOR(IPOIN) = TRAV1(IPOIN)
-         ENDDO
+        DO IPOIN = 1,NPOIN
+          TRAV1(IPOIN) = NCOLOR(TRAV2(IPOIN))
+        ENDDO
+        DO IPOIN = 1,NPOIN
+          NCOLOR(IPOIN) = TRAV1(IPOIN)
+        ENDDO
 !
       ENDIF
 !

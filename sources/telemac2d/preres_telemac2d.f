@@ -180,10 +180,10 @@
 !
 !     CASE WHERE OUTINI=.TRUE. : PRIORITY ON PTINIG, VALUES FOR LT=0
 !     OTHERWISE THEY WOULD NOT BE INITIALISED
-       IF(SORLEO(27).OR.SORIMP(27)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
-       IF(SORLEO(28).OR.SORIMP(28)) CALL OS('X=C     ',X=TMAXZ,C=AT)
-       IF(SORLEO(29).OR.SORIMP(29)) CALL OS('X=C     ',X=MAXV ,C=0.D0)
-       IF(SORLEO(30).OR.SORIMP(30)) CALL OS('X=C     ',X=TMAXV,C=AT)
+        IF(SORLEO(27).OR.SORIMP(27)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+        IF(SORLEO(28).OR.SORIMP(28)) CALL OS('X=C     ',X=TMAXZ,C=AT)
+        IF(SORLEO(29).OR.SORIMP(29)) CALL OS('X=C     ',X=MAXV ,C=0.D0)
+        IF(SORLEO(30).OR.SORIMP(30)) CALL OS('X=C     ',X=TMAXV,C=AT)
 !
 !     ENDIF FOR : IF(LT.GE.PTINIG) THEN
       ENDIF
@@ -239,7 +239,7 @@
       IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN
         CALL CPSTVC(ZF,T3)
         DO N=1,NPOIN
-         T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
+          T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
         ENDDO
       ENDIF
 !
@@ -308,15 +308,15 @@
 !=======================================================================
 !
       IF((SORLEO(23).OR.SORIMP(23)).AND.SPILL_MODEL.AND.NTRAC.GT.0) THEN
-         DO N=1,NPOIN
-           PRIVE1(N) = T%ADR(1)%P%R(N)
-         ENDDO
-         IF(NTRAC.GT.1) THEN
-           DO I=2,NTRAC
-             DO N=1,NPOIN
-               PRIVE1(N) = PRIVE1(N) + T%ADR(I)%P%R(N)
-             ENDDO
-           ENDDO
+        DO N=1,NPOIN
+          PRIVE1(N) = T%ADR(1)%P%R(N)
+        ENDDO
+        IF(NTRAC.GT.1) THEN
+          DO I=2,NTRAC
+            DO N=1,NPOIN
+              PRIVE1(N) = PRIVE1(N) + T%ADR(I)%P%R(N)
+            ENDDO
+          ENDDO
         ENDIF
       ENDIF
 !

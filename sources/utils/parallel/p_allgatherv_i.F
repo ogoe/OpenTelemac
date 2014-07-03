@@ -52,6 +52,7 @@
      &                           'ERREUR DANS MPI_BARRIER'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_ALLGATHERV_I: ERROR IN MPI_BARRIER'
         WRITE(LU,*) 'MPI ERROR ',IERR
+        CALL PLANTE(1)
         STOP
       ENDIF
       RETURN
@@ -59,7 +60,6 @@
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_ALLGATHERV_I VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_ALLGATHERV_I '//
      &                         'IN ITS VOID VERSION'
-      STOP
 #endif
 !
 !-----------------------------------------------------------------------

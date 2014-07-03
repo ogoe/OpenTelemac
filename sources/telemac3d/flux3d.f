@@ -305,6 +305,7 @@
 !               I=(IPLAN-1)*NPOIN2+MESH2%NBOR%I(IPTFR)
 !               FLUEXT%R(I)=FLUEXT%R(I)*(FLBOR%R(IPTFR)/SUM_FLUEXT)
 !             ENDDO
+!             CALL PLANTE(1)
 !             STOP
 !           ENDIF
           ENDIF

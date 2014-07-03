@@ -540,85 +540,85 @@
 !
       IF(COUROU) THEN
 !
-         IF(.NOT.DEJALU.AND..NOT.INCLUS(COUPLING,'TOMAWAC')) THEN
+        IF(.NOT.DEJALU.AND..NOT.INCLUS(COUPLING,'TOMAWAC')) THEN
 !
-            ALLOCATE(W(NPOIN2),STAT=ERR)
-            IF(ERR.NE.0) THEN
-              IF(LNG.EQ.1) THEN
-                WRITE(LU,*) 'ERREUR D''ALLOCATION DE W DANS TRISOU'
-              ENDIF
-              IF(LNG.EQ.2) THEN
-                WRITE(LU,*) 'MEMORY ALLOCATION ERROR OF W IN TRISOU'
-              ENDIF
+          ALLOCATE(W(NPOIN2),STAT=ERR)
+          IF(ERR.NE.0) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'ERREUR D''ALLOCATION DE W DANS TRISOU'
             ENDIF
-!
-!           T3DBI1 : BINARY DATA FILE 1
-            NOMX='FORCE FX        '
-            NOMY='FORCE FY        '
-            CALL FIND_IN_SEL(FXH,NOMX,T3D_FILES(T3DBI1)%LU,
-     &                       T3D_FILES(T3DBI1)%FMT,
-     &                       W,OKX,NPTH,NP,ATH)
-            CALL FIND_IN_SEL(FYH,NOMY,T3D_FILES(T3DBI1)%LU,
-     &                       T3D_FILES(T3DBI1)%FMT,
-     &                       W,OKY,NPTH,NP,ATH)
-!
-            IF(.NOT.OKX.OR..NOT.OKY) THEN
-              IF(LNG.EQ.1) WRITE(LU,5)
-              IF(LNG.EQ.2) WRITE(LU,6)
- 5            FORMAT(1X,'TRISOU : FORCE FX OU FY NON TROUVES',/,1X,
-     &                  '         DANS LE FICHIER DE HOULE')
- 6            FORMAT(1X,'TRISOU: FORCE FX OR FY NOT FOUND',/,1X,
-     &                  '        IN THE WAVE RESULTS FILE')
-              CALL PLANTE(1)
-              STOP
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'MEMORY ALLOCATION ERROR OF W IN TRISOU'
             ENDIF
-            IF(NP.NE.NPOIN2) THEN
-              IF(LNG.EQ.1) WRITE(LU,95)
-              IF(LNG.EQ.2) WRITE(LU,96)
- 95           FORMAT(1X,'TRISOU : SIMULATION DES COURANTS DE HOULE.',/,
-     &               1X,'LES MAILLAGES HOULE ET COURANTS SONT ',/,
-     &               1X,'DIFFERENTS : PAS POSSIBLE POUR LE MOMENT.')
- 96           FORMAT(1X,'TRISOU: WAVE DRIVEN CURRENTS MODELLING.',/,
-     &               1X,'WAVE AND CURRENT MODELS MESHES ARE ',/,
-     &               1X,'DIFFERENT : NOT POSSIBLE AT THE MOMENT.')
+          ENDIF
 !
-              CALL PLANTE(1)
-              STOP
-            ENDIF
-!           WRITES OUT TO LISTING
-            IF(LNG.EQ.1) WRITE(LU,115) ATH
-            IF(LNG.EQ.2) WRITE(LU,116) ATH
-115         FORMAT(1X,/,1X,'TRISOU : COURANTS DE HOULE',/,
-     &                  1X,'         LECTURE AU TEMPS ',F10.3,/)
-116         FORMAT(1X,/,1X,'TRISOU: WAVE DRIVEN CURRENTS MODELLING',/,
-     &                  1X,'         READING FILE AT TIME ',F10.3,/)
-            DEJALU = .TRUE.
+!         T3DBI1 : BINARY DATA FILE 1
+          NOMX='FORCE FX        '
+          NOMY='FORCE FY        '
+          CALL FIND_IN_SEL(FXH,NOMX,T3D_FILES(T3DBI1)%LU,
+     &                     T3D_FILES(T3DBI1)%FMT,
+     &                     W,OKX,NPTH,NP,ATH)
+          CALL FIND_IN_SEL(FYH,NOMY,T3D_FILES(T3DBI1)%LU,
+     &                     T3D_FILES(T3DBI1)%FMT,
+     &                     W,OKY,NPTH,NP,ATH)
 !
-         ENDIF
+          IF(.NOT.OKX.OR..NOT.OKY) THEN
+            IF(LNG.EQ.1) WRITE(LU,5)
+            IF(LNG.EQ.2) WRITE(LU,6)
+ 5          FORMAT(1X,'TRISOU : FORCE FX OU FY NON TROUVES',/,1X,
+     &                '         DANS LE FICHIER DE HOULE')
+ 6          FORMAT(1X,'TRISOU: FORCE FX OR FY NOT FOUND',/,1X,
+     &                '        IN THE WAVE RESULTS FILE')
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          IF(NP.NE.NPOIN2) THEN
+            IF(LNG.EQ.1) WRITE(LU,95)
+            IF(LNG.EQ.2) WRITE(LU,96)
+ 95         FORMAT(1X,'TRISOU : SIMULATION DES COURANTS DE HOULE.',/,
+     &             1X,'LES MAILLAGES HOULE ET COURANTS SONT ',/,
+     &             1X,'DIFFERENTS : PAS POSSIBLE POUR LE MOMENT.')
+ 96         FORMAT(1X,'TRISOU: WAVE DRIVEN CURRENTS MODELLING.',/,
+     &             1X,'WAVE AND CURRENT MODELS MESHES ARE ',/,
+     &             1X,'DIFFERENT : NOT POSSIBLE AT THE MOMENT.')
 !
-!        ADDS TO SOURCE TERMS
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+!         WRITES OUT TO LISTING
+          IF(LNG.EQ.1) WRITE(LU,115) ATH
+          IF(LNG.EQ.2) WRITE(LU,116) ATH
+115       FORMAT(1X,/,1X,'TRISOU : COURANTS DE HOULE',/,
+     &                1X,'         LECTURE AU TEMPS ',F10.3,/)
+116       FORMAT(1X,/,1X,'TRISOU: WAVE DRIVEN CURRENTS MODELLING',/,
+     &                1X,'         READING FILE AT TIME ',F10.3,/)
+          DEJALU = .TRUE.
 !
-         IF(SCV1%TYPR.EQ.'0') THEN
-           DO I=1,NPOIN2
-             DO IPLAN=1,NPLAN
-               I3D=((IPLAN-1)*NPOIN2)+I
-!              CV1(I3D)=1.5D0*FXH%R(I)  (SOGREAH-PECHON-TEISSON VERSION)
-               CV1(I3D)=FXH%R(I)
-               CV2(I3D)=FYH%R(I)
-             ENDDO
-           ENDDO
-           SCV1%TYPR='Q'
-           SCV2%TYPR='Q'
-         ELSE
-           DO I=1,NPOIN2
-             DO IPLAN=1,NPLAN
-               I3D=((IPLAN-1)*NPOIN2)+I
-!              CV1(I3D)=CV1(I3D)+1.5D0*FXH%R(I)  (SOGREAH-PECHON-TEISSON VERSION)
-               CV1(I3D)=CV1(I3D)+FXH%R(I)
-               CV2(I3D)=CV2(I3D)+FYH%R(I)
-             ENDDO
-           ENDDO
-         ENDIF
+        ENDIF
+!
+!       ADDS TO SOURCE TERMS
+!
+        IF(SCV1%TYPR.EQ.'0') THEN
+          DO I=1,NPOIN2
+            DO IPLAN=1,NPLAN
+              I3D=((IPLAN-1)*NPOIN2)+I
+!             CV1(I3D)=1.5D0*FXH%R(I)  (SOGREAH-PECHON-TEISSON VERSION)
+              CV1(I3D)=FXH%R(I)
+              CV2(I3D)=FYH%R(I)
+            ENDDO
+          ENDDO
+          SCV1%TYPR='Q'
+          SCV2%TYPR='Q'
+        ELSE
+          DO I=1,NPOIN2
+            DO IPLAN=1,NPLAN
+              I3D=((IPLAN-1)*NPOIN2)+I
+!             CV1(I3D)=CV1(I3D)+1.5D0*FXH%R(I)  (SOGREAH-PECHON-TEISSON VERSION)
+              CV1(I3D)=CV1(I3D)+FXH%R(I)
+              CV2(I3D)=CV2(I3D)+FYH%R(I)
+            ENDDO
+          ENDDO
+        ENDIF
 !
       ENDIF
 !

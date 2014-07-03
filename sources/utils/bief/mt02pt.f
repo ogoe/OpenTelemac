@@ -598,38 +598,38 @@
 !
       DO IELEM=1,NELEM
 !
-         I1=IKLE(IELEM,1)
-         I2=IKLE(IELEM,2)
-         I3=IKLE(IELEM,3)
-         I4=IKLE(IELEM,4)
-         I5=IKLE(IELEM,5)
-         I6=IKLE(IELEM,6)
+        I1=IKLE(IELEM,1)
+        I2=IKLE(IELEM,2)
+        I3=IKLE(IELEM,3)
+        I4=IKLE(IELEM,4)
+        I5=IKLE(IELEM,5)
+        I6=IKLE(IELEM,6)
 !
-         IF(MAX(Z(I1),Z(I2),Z(I3)).GT.MIN(Z(I4),Z(I5),Z(I6))) THEN
+        IF(MAX(Z(I1),Z(I2),Z(I3)).GT.MIN(Z(I4),Z(I5),Z(I6))) THEN
 !
-           T(IELEM,1)  =0.D0
-           T(IELEM,2)  =0.D0
-           T(IELEM,3)  =0.D0
-           T(IELEM,4)  =0.D0
-           T(IELEM,5)  =0.D0
-           T(IELEM,6)  =0.D0
-           XM(IELEM, 1)=0.D0
-           XM(IELEM, 2)=0.D0
-           XM(IELEM, 3)=0.D0
-           XM(IELEM, 4)=0.D0
-           XM(IELEM, 5)=0.D0
-           XM(IELEM, 6)=0.D0
-           XM(IELEM, 7)=0.D0
-           XM(IELEM, 8)=0.D0
-           XM(IELEM, 9)=0.D0
-           XM(IELEM,10)=0.D0
-           XM(IELEM,11)=0.D0
-           XM(IELEM,12)=0.D0
-           XM(IELEM,13)=0.D0
-           XM(IELEM,14)=0.D0
-           XM(IELEM,15)=0.D0
+          T(IELEM,1)  =0.D0
+          T(IELEM,2)  =0.D0
+          T(IELEM,3)  =0.D0
+          T(IELEM,4)  =0.D0
+          T(IELEM,5)  =0.D0
+          T(IELEM,6)  =0.D0
+          XM(IELEM, 1)=0.D0
+          XM(IELEM, 2)=0.D0
+          XM(IELEM, 3)=0.D0
+          XM(IELEM, 4)=0.D0
+          XM(IELEM, 5)=0.D0
+          XM(IELEM, 6)=0.D0
+          XM(IELEM, 7)=0.D0
+          XM(IELEM, 8)=0.D0
+          XM(IELEM, 9)=0.D0
+          XM(IELEM,10)=0.D0
+          XM(IELEM,11)=0.D0
+          XM(IELEM,12)=0.D0
+          XM(IELEM,13)=0.D0
+          XM(IELEM,14)=0.D0
+          XM(IELEM,15)=0.D0
 !
-         ENDIF
+        ENDIF
 !
       ENDDO ! IELEM
 !

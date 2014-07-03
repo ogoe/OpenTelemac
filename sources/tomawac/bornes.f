@@ -73,34 +73,34 @@
       INP  = 0
 !
       DO II=1,20
-         DX = (X(I1)-X(I0))/10.D0
-         X(1) = X(I0)
-         IMAX = 0
-         I0   = 1
-         I1   = 11
-         DO JJ=2,11
-            X(JJ)=X(JJ-1)+DX
-            Y(JJ)=FONCRO(X(JJ),B,N,A,XM)
-            IF(Y(JJ).EQ.0.D0.AND.JJ.EQ.2.AND.INP.EQ.0D0) THEN
-               X(I1) = X(I1)/10.D0
-               INP   = 1
-               GOTO 10
+        DX = (X(I1)-X(I0))/10.D0
+        X(1) = X(I0)
+        IMAX = 0
+        I0   = 1
+        I1   = 11
+        DO JJ=2,11
+          X(JJ)=X(JJ-1)+DX
+          Y(JJ)=FONCRO(X(JJ),B,N,A,XM)
+          IF(Y(JJ).EQ.0.D0.AND.JJ.EQ.2.AND.INP.EQ.0D0) THEN
+            X(I1) = X(I1)/10.D0
+            INP   = 1
+            GOTO 10
+          END IF
+          IF(Y(JJ).LT.Y(JJ-1)) THEN
+            IF(IMAX.EQ.0) THEN
+              IMAX = JJ-1
+              EPS  = EPS1*Y(IMAX)
             END IF
-            IF(Y(JJ).LT.Y(JJ-1)) THEN
-               IF(IMAX.EQ.0) THEN
-                  IMAX = JJ-1
-                  EPS  = EPS1*Y(IMAX)
-               END IF
-               IF (Y(JJ).LT.EPS) THEN
-                  I1 = JJ
-                  EXIT
-               END IF
-            ELSEIF(IMAX.EQ.0.AND.Y(JJ).LT.EPS.AND.JJ.NE.2) THEN
-               I0 = JJ
+            IF (Y(JJ).LT.EPS) THEN
+              I1 = JJ
+              EXIT
             END IF
-         END DO
-         IF((I1-I0).GT.2) EXIT
-   10    CONTINUE
+          ELSEIF(IMAX.EQ.0.AND.Y(JJ).LT.EPS.AND.JJ.NE.2) THEN
+            I0 = JJ
+          END IF
+        END DO
+        IF((I1-I0).GT.2) EXIT
+   10   CONTINUE
       ENDDO ! II
 !
       X0 = X(I0)

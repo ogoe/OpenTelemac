@@ -43,18 +43,18 @@
 !
       NDEPAR = 0
       DO IELEM = 1,NELEM
-         I1 = IKLE(IELEM,1)
-         I2 = IKLE(IELEM,2)
-         I3 = IKLE(IELEM,3)
-         DO K = 2,LGVEC
-            IEL1 = MOD(NELEM+IELEM-K,NELEM) + 1
-            J1 = IKLE(IEL1,1)
-            J2 = IKLE(IEL1,2)
-            J3 = IKLE(IEL1,3)
-            IF (I1.EQ.J1.OR.I1.EQ.J2.OR.I1.EQ.J3.OR.
-     &          I2.EQ.J1.OR.I2.EQ.J2.OR.I2.EQ.J3.OR.
-     &          I3.EQ.J1.OR.I3.EQ.J2.OR.I3.EQ.J3) NDEPAR = NDEPAR + 1
-         ENDDO
+        I1 = IKLE(IELEM,1)
+        I2 = IKLE(IELEM,2)
+        I3 = IKLE(IELEM,3)
+        DO K = 2,LGVEC
+          IEL1 = MOD(NELEM+IELEM-K,NELEM) + 1
+          J1 = IKLE(IEL1,1)
+          J2 = IKLE(IEL1,2)
+          J3 = IKLE(IEL1,3)
+          IF (I1.EQ.J1.OR.I1.EQ.J2.OR.I1.EQ.J3.OR.
+     &        I2.EQ.J1.OR.I2.EQ.J2.OR.I2.EQ.J3.OR.
+     &        I3.EQ.J1.OR.I3.EQ.J2.OR.I3.EQ.J3) NDEPAR = NDEPAR + 1
+        ENDDO
       ENDDO
 !
 !=======================================================================

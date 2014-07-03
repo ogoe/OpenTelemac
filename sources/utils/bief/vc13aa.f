@@ -313,16 +313,16 @@
 !
 !-----------------------------------------------------------------------
 !
-       IF(LNG.EQ.1) WRITE(LU,101) IELMF,SF%NAME
-       IF(LNG.EQ.2) WRITE(LU,102) IELMF,SF%NAME
-101    FORMAT(1X,'VC13AA (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F : ',1I6,' CAS NON PREVU',/,
-     &        1X,'NOM REEL DE F : ',A6)
-102    FORMAT(1X,'VC13AA (BIEF) :',/,
-     &        1X,'DISCRETISATION OF F : ',1I6,' NOT IMPLEMENTED',/,
-     &        1X,'REAL NAME OF F: ',A6)
-       CALL PLANTE(1)
-       STOP
+        IF(LNG.EQ.1) WRITE(LU,101) IELMF,SF%NAME
+        IF(LNG.EQ.2) WRITE(LU,102) IELMF,SF%NAME
+101     FORMAT(1X,'VC13AA (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F : ',1I6,' CAS NON PREVU',/,
+     &         1X,'NOM REEL DE F : ',A6)
+102     FORMAT(1X,'VC13AA (BIEF) :',/,
+     &         1X,'DISCRETISATION OF F : ',1I6,' NOT IMPLEMENTED',/,
+     &         1X,'REAL NAME OF F: ',A6)
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

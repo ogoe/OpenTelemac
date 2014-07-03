@@ -68,16 +68,17 @@
       IF(YEAR2.EQ.0) THEN
         IF (LNG.EQ.1) WRITE (LU,100)
         IF(LNG.EQ.2)  WRITE (LU,101)
+        CALL PLANTE(1)
         STOP
       ENDIF
       IF(YEAR2.LT.0) YEAR2=YEAR2+1
 !
       IF (MONTH.GT.2) THEN
-       Y=YEAR2
-       M=MONTH+1
+        Y=YEAR2
+        M=MONTH+1
       ELSE
-       Y=YEAR2-1
-       M=MONTH+13
+        Y=YEAR2-1
+        M=MONTH+13
       ENDIF
 !
       J=INT(365.25D0*Y)+INT(30.6001D0*M)+DAY+1720995.D0

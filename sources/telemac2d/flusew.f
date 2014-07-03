@@ -89,53 +89,53 @@
 !
       DO K = 1 , NPTFR 
 !
-!     IF H IS FREE OR INFLOW IS FREE 
-      IF(LIMPRO(K,1).EQ.KDDL.OR.LIMPRO(K,2).EQ.KDDL) THEN 
-        IEL = NBOR(K)
-        XN = XNEBOR(K)
-        YN = YNEBOR(K)
-        HJ = W(1,IEL)
-        IF(HJ.GT.EPS) THEN
-          UJ = W(2,IEL)/HJ
-          VJ = W(3,IEL)/HJ
-          R  =  UJ*XN + VJ*YN-2.D0*SQRT(G*HJ)
-          R1 =  UJ*XN + VJ*YN+2.D0*SQRT(G*HJ)
-!
-!     IF IN/OUTFLOW IMPOSED
-! 
-          IF(LIMPRO(K,2).EQ.KDIR) THEN
-!
-!   Q GIVEN ; COMPUTES H FOR A SUBCRITICAL ENTRY
-!
-            RLAMB0 = UJ*XN + VJ*YN
-            IF ( RLAMB0.LE.0.D0) THEN
-              PI = -R+RLAMB0
-              HI = (PI**2/4.D0)/G
-              UI = AMINF(2,K)/HI
-              VI = AMINF(3,K)/HI
-              AMINF(1,K) = HI
+!       IF H IS FREE OR INFLOW IS FREE 
+        IF(LIMPRO(K,1).EQ.KDDL.OR.LIMPRO(K,2).EQ.KDDL) THEN 
+          IEL = NBOR(K)
+          XN = XNEBOR(K)
+          YN = YNEBOR(K)
+          HJ = W(1,IEL)
+          IF(HJ.GT.EPS) THEN
+            UJ = W(2,IEL)/HJ
+            VJ = W(3,IEL)/HJ
+            R  =  UJ*XN + VJ*YN-2.D0*SQRT(G*HJ)
+            R1 =  UJ*XN + VJ*YN+2.D0*SQRT(G*HJ)
+!      
+!       IF IN/OUTFLOW IMPOSED
+!      
+            IF(LIMPRO(K,2).EQ.KDIR) THEN
+!      
+!       Q GIVEN ; COMPUTES H FOR A SUBCRITICAL ENTRY
+!      
+              RLAMB0 = UJ*XN + VJ*YN
+              IF ( RLAMB0.LE.0.D0) THEN
+                PI = -R+RLAMB0
+                HI = (PI**2/4.D0)/G
+                UI = AMINF(2,K)/HI
+                VI = AMINF(3,K)/HI
+                AMINF(1,K) = HI
+              ENDIF
             ENDIF
-          ENDIF
-!
-!       IF H IMPOSED
-!
-          IF(LIMPRO(K,1).EQ.KDIR) THEN 
-!
-!   H GIVEN ; COMUTES Q FOR A SUBCRITICAL OUTFLOW
-!
-            HI = AMINF(1,K)
-!
-            RLAMB0 = UJ*XN + VJ*YN 
-            IF (RLAMB0.GE.-0.0001D0) THEN
-               UI = (R1-2.D0*SQRT(G*HI))*XN 
-               VI = (R1-2.D0*SQRT(G*HI))*YN 
-               AMINF(2,K) = UI*HI
-               AMINF(3,K) = VI*HI
+!      
+!         IF H IMPOSED
+!      
+            IF(LIMPRO(K,1).EQ.KDIR) THEN 
+!      
+!        H GIVEN ; COMUTES Q FOR A SUBCRITICAL OUTFLOW
+!      
+              HI = AMINF(1,K)
+!      
+              RLAMB0 = UJ*XN + VJ*YN 
+              IF (RLAMB0.GE.-0.0001D0) THEN
+                UI = (R1-2.D0*SQRT(G*HI))*XN 
+                VI = (R1-2.D0*SQRT(G*HI))*YN 
+                AMINF(2,K) = UI*HI
+                AMINF(3,K) = VI*HI
+              ENDIF
             ENDIF
-          ENDIF
-       ENDIF  
-!
-       ENDIF
+          ENDIF  
+!      
+        ENDIF
 !
       ENDDO !  K 
 !

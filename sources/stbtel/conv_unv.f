@@ -261,7 +261,7 @@
             CASE DEFAULT
               IF(LNG.EQ.1) WRITE(LU,*) 'TYPE UNV INCONNU :',ELEM
               IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN UNV TYPE:',ELEM
-              CALL PLANTE2(-1)
+              CALL PLANTE(1)
             END SELECT
           ENDDO
           DEALLOCATE(TEMPO)
@@ -468,11 +468,11 @@
       DOUBLE PRECISION :: XB(3)
       CHARACTER*80 :: TITLE2
       INTEGER, ALLOCATABLE :: NCOLOR(:)
-      INTEGER, ALLOCATABLE :: myvalfam(:)
-      INTEGER, ALLOCATABLE :: sort(:)
+      INTEGER, ALLOCATABLE :: MYVALFAM(:)
+      INTEGER, ALLOCATABLE :: SORT(:)
       INTEGER :: ELEM
-      integer :: tempmin
-      integer :: pos(1)
+      INTEGER :: TEMPMIN
+      INTEGER :: POS(1)
 !      
       WRITE(LU,*) '----------------------------------------------------'
       IF(LNG.EQ.1) WRITE(LU,*) '------DEBUT ECRITURE DU FICHIER UNV'
@@ -510,17 +510,17 @@
           ENDDO
           TEMPMIN = MINVAL(MYVALFAM)
         ENDDO
-        WRITE(NOUT,*) 'number of external faces         :',
-     &                i-1
-        WRITE(NOUT,*) 'Priority for the external faces  :',
-     &     (SORT(j),j=2,i)
+        WRITE(NOUT,*) 'NUMBER OF EXTERNAL FACES         :',
+     &                I-1
+        WRITE(NOUT,*) 'PRIORITY FOR THE EXTERNAL FACES  :',
+     &     (SORT(J),J=2,I)
         DEALLOCATE(MYVALFAM)
         DEALLOCATE(SORT)
       ELSE
         WRITE(NOUT,*) 'TOTAL NO. OF FAMILIES                :  0'
         WRITE(NOUT,*) 'LIST OF FAMILIES, FAMILY_ID, COLOR_ID :'
-        WRITE(NOUT,*) 'number of external faces         :'
-        WRITE(NOUT,*) 'Priority for the external faces  :'
+        WRITE(NOUT,*) 'NUMBER OF EXTERNAL FACES         :'
+        WRITE(NOUT,*) 'PRIORITY FOR THE EXTERNAL FACES  :'
       ENDIF
 
       CLOSE(NOUT,IOSTAT=IERR)

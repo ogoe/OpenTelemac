@@ -106,83 +106,87 @@
 !
       DO ITRAC=1,NTRAC
 !
-      DO IS=1,NS
-        FLUXTEST(IS) = 0.D0
-      ENDDO
+        DO IS=1,NS
+          FLUXTEST(IS) = 0.D0
+        ENDDO
 !
 !   TEST FOR ORDER 1
 !
-      IF(NORDRE.EQ.1) THEN
-!
-       DO NSG=1,NSEG
-         NUBO1=NUBO(1,NSG)
-         NUBO2=NUBO(2,NSG)
-         AUX = FLUXT%ADR(ITRAC)%P%R(NSG)+DT*FLUXTEMP%ADR(ITRAC)%P%R(NSG)
-         IF(AUX.GE.0.D0) THEN
-           FLUXTEST(NUBO1) = FLUXTEST(NUBO1) + AUX
-         ELSE
-           FLUXTEST(NUBO2) = FLUXTEST(NUBO2) - AUX
-         ENDIF
-       ENDDO
-       IF(NPTFR.GT.0)THEN !USEFUL FOR PARALLEL CASES
-        DO K=1,NPTFR
-         IS =NBOR(K)
-         AUX = FLUHBOR%ADR(ITRAC)%P%R(K)+DT*FLUHBTEMP%ADR(ITRAC)%P%R(K)
-         IF(AUX.GE.0.D0) FLUXTEST(IS)=FLUXTEST(IS)+AUX
-        ENDDO
-       ENDIF
-      DO IS=1,NS
-         TEST=AIRS(IS)*HSTOK(IS)-FLUXTEST(IS)
-         IF(TEST.LT.0.D0) RETURN
-      ENDDO
-!
-      ELSE
+        IF(NORDRE.EQ.1) THEN
+!       
+          DO NSG=1,NSEG
+            NUBO1=NUBO(1,NSG)
+            NUBO2=NUBO(2,NSG)
+            AUX = FLUXT%ADR(ITRAC)%P%R(NSG) 
+     &            + DT*FLUXTEMP%ADR(ITRAC)%P%R(NSG)
+            IF(AUX.GE.0.D0) THEN
+              FLUXTEST(NUBO1) = FLUXTEST(NUBO1) + AUX
+            ELSE
+              FLUXTEST(NUBO2) = FLUXTEST(NUBO2) - AUX
+            ENDIF
+          ENDDO
+          IF(NPTFR.GT.0)THEN !USEFUL FOR PARALLEL CASES
+            DO K=1,NPTFR
+              IS =NBOR(K)
+              AUX = FLUHBOR%ADR(ITRAC)%P%R(K)
+     &            + DT*FLUHBTEMP%ADR(ITRAC)%P%R(K)
+              IF(AUX.GE.0.D0) FLUXTEST(IS)=FLUXTEST(IS)+AUX
+            ENDDO
+          ENDIF
+          DO IS=1,NS
+            TEST=AIRS(IS)*HSTOK(IS)-FLUXTEST(IS)
+            IF(TEST.LT.0.D0) RETURN
+          ENDDO
+!       
+        ELSE
 !
 !   TEST FOR ORDER 2
 !
-       DO NSG=1,NSEG
-         NUBO1=NUBO(1,NSG)
-         NUBO2=NUBO(2,NSG)
-!
-         AUX = FLUXT%ADR(ITRAC)%P%R(NSG)+DT*FLUXTEMP%ADR(ITRAC)%P%R(NSG)
-!
-         IF(AUX.GE.0.D0) THEN
-!
-          TEST=AIRST(1,NSG)*HCSTOK(1,NSG)-AUX
-          IF(LOGFR(NUBO1).NE.0.AND.
-     &      AIRST(1,NSG)*HCSTOK(1,NSG).GT.0.D0) THEN
-              FLUXTEST(NUBO1)= MAX(FLUXTEST(NUBO1),
-     &        AUX/(AIRST(1,NSG)*HCSTOK(1,NSG)))
-          ENDIF
-!
-         ELSE
-!
-         TEST=AIRST(2,NSG)*HCSTOK(2,NSG)+AUX
-         IF(LOGFR(NUBO2).NE.0.AND.
-     &     AIRST(2,NSG)*HCSTOK(2,NSG).GT.0.D0) THEN
-           FLUXTEST(NUBO2)= MAX(FLUXTEST(NUBO2),
-     &     -AUX/(AIRST(2,NSG)*HCSTOK(2,NSG)))
-         ENDIF
-!
-         ENDIF
-         IF(TEST.LT.0.D0) RETURN
-       ENDDO
+          DO NSG=1,NSEG
+            NUBO1=NUBO(1,NSG)
+            NUBO2=NUBO(2,NSG)
+!         
+            AUX = FLUXT%ADR(ITRAC)%P%R(NSG)
+     &          + DT*FLUXTEMP%ADR(ITRAC)%P%R(NSG)
+!         
+            IF(AUX.GE.0.D0) THEN
+!         
+              TEST=AIRST(1,NSG)*HCSTOK(1,NSG)-AUX
+              IF(LOGFR(NUBO1).NE.0.AND.
+     &           AIRST(1,NSG)*HCSTOK(1,NSG).GT.0.D0) THEN
+                FLUXTEST(NUBO1)= MAX(FLUXTEST(NUBO1),
+     &          AUX/(AIRST(1,NSG)*HCSTOK(1,NSG)))
+              ENDIF
+!         
+            ELSE
+!         
+              TEST=AIRST(2,NSG)*HCSTOK(2,NSG)+AUX
+              IF(LOGFR(NUBO2).NE.0.AND.
+     &          AIRST(2,NSG)*HCSTOK(2,NSG).GT.0.D0) THEN
+                FLUXTEST(NUBO2)= MAX(FLUXTEST(NUBO2),
+     &          -AUX/(AIRST(2,NSG)*HCSTOK(2,NSG)))
+              ENDIF
+!         
+            ENDIF
+            IF(TEST.LT.0.D0) RETURN
+          ENDDO
 !
 !   TEST FOR THE BOUNDARY NODES
 !
-        DO K=1,NPTFR
-         IS =NBOR(K)
-         AUX = FLUHBOR%ADR(ITRAC)%P%R(K)+DT*FLUHBTEMP%ADR(ITRAC)%P%R(K)
-         IF(AUX.GE.0.D0) THEN
-           TEST=AIRS(IS)*HSTOK(IS)-AUX
-           IF(AIRS(IS)*HSTOK(IS).GT.0.D0.AND.
-     &     (1.D0-FLUXTEST(IS)).LT. AUX/(AIRS(IS)*HSTOK(IS)))
-     &     TEST =-1.D0
-         ENDIF
-         IF(TEST.LT.0.D0) RETURN
-!
-        ENDDO
-       ENDIF
+          DO K=1,NPTFR
+            IS =NBOR(K)
+            AUX = FLUHBOR%ADR(ITRAC)%P%R(K)
+     &          + DT*FLUHBTEMP%ADR(ITRAC)%P%R(K)
+            IF(AUX.GE.0.D0) THEN
+              TEST=AIRS(IS)*HSTOK(IS)-AUX
+              IF(AIRS(IS)*HSTOK(IS).GT.0.D0.AND.
+     &        (1.D0-FLUXTEST(IS)).LT. AUX/(AIRS(IS)*HSTOK(IS)))
+     &        TEST =-1.D0
+            ENDIF
+            IF(TEST.LT.0.D0) RETURN
+!        
+          ENDDO
+        ENDIF
       ENDDO
 !
 !------------------------------------------------------------------------

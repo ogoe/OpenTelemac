@@ -60,37 +60,13 @@
 ! allocate a (simple) REAL vector
 !
       ALLOCATE(RB(NPOIN3),STAT=ERR)
-      IF(ERR.NE.0) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'LECSUI : ALLOCATION DE RB DEFECTUEUSE'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'LECSUI : WRONG ALLOCATION OF RB'
-        ENDIF
-        STOP
-      ENDIF
+      CALL CHECK_ALLOCATE(ERR,'POSTEL3D:RB')
 !
       ALLOCATE(VAR(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'LECSUI : ALLOCATION DE VAR DEFECTUEUSE'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'LECSUI : WRONG ALLOCATION OF VAR'
-        ENDIF
-        STOP
-      ENDIF
+      CALL CHECK_ALLOCATE(ERR,'POSTEL3D:VAR')
 !
       ALLOCATE(SHZ(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'LECSUI : ALLOCATION DE SHZ DEFECTUEUSE'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'LECSUI : WRONG ALLOCATION OF SHZ'
-        ENDIF
-        STOP
-      ENDIF
+      CALL CHECK_ALLOCATE(ERR,'POSTEL3D:SHZ')
 !
 !***********************************************************************
 !
@@ -133,19 +109,19 @@
 ! INVERSION DE IKLE3 EN IKLES
 !
       DO K = 1,NELEM2
-         IKLES(1,K) = IKLE2%I(K)
-         IKLES(2,K) = IKLE2%I(K+NELEM2)
-         IKLES(3,K) = IKLE2%I(K+2*NELEM2)
+        IKLES(1,K) = IKLE2%I(K)
+        IKLES(2,K) = IKLE2%I(K+NELEM2)
+        IKLES(3,K) = IKLE2%I(K+2*NELEM2)
       ENDDO
 !
 ! PREPARATION DES DONNEES POUR LES COUPES HORIZONTALES
 !
       IF(NC2DH.GE.1) THEN
-         DO K = 1,NPOIN2
-            IPOBO(K) = 0
-         ENDDO
-         CALL PRE2DH (X,Y,IKLES,IPOBO,NPOIN2,NELEM2,NC2DH,NRES,
-     &      TITCAS,NVAR,NTRAC,NTRPA,BINCOU,nva3,textlu)
+        DO K = 1,NPOIN2
+          IPOBO(K) = 0
+        ENDDO
+        CALL PRE2DH (X,Y,IKLES,IPOBO,NPOIN2,NELEM2,NC2DH,NRES,
+     &     TITCAS,NVAR,NTRAC,NTRPA,BINCOU,NVA3,TEXTLU)
       ENDIF
 !
 ! PREPARATION DES DONNEES POUR LES COUPES VERTICALES
@@ -161,34 +137,34 @@
       N=0
 !
       DO K = 1,NENRE
-         IF (K.GE.NUPRSO.AND.MOD(K-NUPRSO,PESOGR).EQ.0) THEN
+        IF (K.GE.NUPRSO.AND.MOD(K-NUPRSO,PESOGR).EQ.0) THEN
 !
 ! LA ON SAIT QUE CET ENREGISTREMENT EST A TRANSCRIRE
 !
-           CALL LECR3D(AT,Z,U%R,V%R,W%R,NPOIN3,NPOIN2,NPLAN,
-     &                 NPRE,BINPRE,RB,NVA3,TAB,VARSUB)
+          CALL LECR3D(AT,Z,U%R,V%R,W%R,NPOIN3,NPOIN2,NPLAN,
+     &                NPRE,BINPRE,RB,NVA3,TAB,VARSUB)
 !
-           IF(NC2DH.GE.1) CALL COUPEH (AT,Z,U%R,V%R,W%R,
-     &        HREF,NPLREF,PLINF,NC2DH,NPOIN2,NPLAN,NRES,BINCOU,
-     &        VAR,SHZ,NVA3,TAB)
+          IF(NC2DH.GE.1) CALL COUPEH (AT,Z,U%R,V%R,W%R,
+     &      HREF,NPLREF,PLINF,NC2DH,NPOIN2,NPLAN,NRES,BINCOU,
+     &      VAR,SHZ,NVA3,TAB)
 !
-           IF (NC2DV.GE.1) THEN
-           N=N+1
-           CALL COUPEV(AT,Z,U%R,V%R,W%R,SHP,
-     &        IMSEG,X2DV,Y2DV,DISTOR,IKLES,INDIC,ELEM,NC2DV,NPOIN2,
-     &        NELEM2,NCOU2,BINCOU,IM,JM,NVAR,TITCAS,nva3,tab,textlu,
-     &        N)
-           ENDIF
+          IF (NC2DV.GE.1) THEN
+            N=N+1
+            CALL COUPEV(AT,Z,U%R,V%R,W%R,SHP,
+     &         IMSEG,X2DV,Y2DV,DISTOR,IKLES,INDIC,ELEM,NC2DV,NPOIN2,
+     &         NELEM2,NCOU2,BINCOU,IM,JM,NVAR,TITCAS,NVA3,TAB,TEXTLU,
+     &         N)
+          ENDIF
 !
-           NCOU2 = NCOU2 + NC2DV
-         ELSE
+          NCOU2 = NCOU2 + NC2DV
+        ELSE
 !
 ! LA ON SAIT QUE CET ENREGISTREMENT N'EST PAS A TRANSCRIRE
 !
-           DO J = 1,NVA3+1
-              READ(NPRE)
-           ENDDO
-         ENDIF
+          DO J = 1,NVA3+1
+            READ(NPRE)
+          ENDDO
+        ENDIF
       ENDDO
 !
       DO I=1,NC2DH

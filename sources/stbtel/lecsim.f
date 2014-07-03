@@ -96,9 +96,9 @@
       REWIND NGEO
 !
       DO I=1,NPOIN
-         X(I) = 9999999.D0
-         Y(I) = 9999999.D0
-         NCOLOR(I) = 99999
+        X(I) = 9999999.D0
+        Y(I) = 9999999.D0
+        NCOLOR(I) = 99999
       ENDDO
 !
 !=======================================================================
@@ -121,10 +121,10 @@
 !=======================================================================
 !
       IF (NTASD.GT.0) THEN
-         READ(NGEO,ERR=110,END=120) LONG,(NOP5(I),I=1,LONG)
-         DO I=1,NTASD
-            READ(NGEO,ERR=110,END=120) LONG,(NOP5(J),J=1,LONG)
-         ENDDO
+        READ(NGEO,ERR=110,END=120) LONG,(NOP5(I),I=1,LONG)
+        DO I=1,NTASD
+          READ(NGEO,ERR=110,END=120) LONG,(NOP5(J),J=1,LONG)
+        ENDDO
       ENDIF
 !
 !=======================================================================
@@ -142,7 +142,7 @@
 !=======================================================================
 !
       IF (NBEGM.NE.0) THEN
-         READ(NGEO,ERR=110,END=120) LONG,(NOP5(I),I=1,LONG)
+        READ(NGEO,ERR=110,END=120) LONG,(NOP5(I),I=1,LONG)
       ENDIF
 !
 !=======================================================================
@@ -151,8 +151,8 @@
 !
       READ(NGEO,ERR=110,END=120) LONG,(X1(I),Y1(I),I=1,NPOIN)
       DO I=1,NPOIN
-         X(I) = DBLE(X1(I))
-         Y(I) = DBLE(Y1(I))
+        X(I) = DBLE(X1(I))
+        Y(I) = DBLE(Y1(I))
       ENDDO
 !
 !=======================================================================
@@ -163,50 +163,51 @@
       INDIC = 0
       READ(NGEO,ERR=110,END=120) LONG,(NOP5(I),I=1,LONG)
       DO I=1,NELEM
-         INDIC = INDIC +1
-         NCGE  = NOP5(INDIC)
-         INDIC = INDIC +1
-         NMAE  = NOP5(INDIC)
-         INDIC = INDIC +1
-         NDSDE = NOP5(INDIC)
-         INDIC = INDIC +1
-         NNO   = NOP5(INDIC)
+        INDIC = INDIC +1
+        NCGE  = NOP5(INDIC)
+        INDIC = INDIC +1
+        NMAE  = NOP5(INDIC)
+        INDIC = INDIC +1
+        NDSDE = NOP5(INDIC)
+        INDIC = INDIC +1
+        NNO   = NOP5(INDIC)
 ! NNO : NOMBRE DE NOEUDS PAR ELEMENT
-         IF ( (NNO.EQ.4.AND.MESH.NE.2) .OR. (NNO.EQ.3.AND.MESH.NE.3) )
-     &   THEN
-            IF (LNG.EQ.1) WRITE(LU,1000)
-            IF (LNG.EQ.2) WRITE(LU,4000)
-            STOP
-         ENDIF
-         DO K=1,NNO
+        IF ( (NNO.EQ.4.AND.MESH.NE.2) .OR. (NNO.EQ.3.AND.MESH.NE.3) )
+     &  THEN
+          IF (LNG.EQ.1) WRITE(LU,1000)
+          IF (LNG.EQ.2) WRITE(LU,4000)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        DO K=1,NNO
+          INDIC = INDIC +1
+          IKLE(I,K) = NOP5(INDIC)
+        ENDDO
+        IF (NCOPNP.NE.1) THEN
+          INDIC = INDIC +1
+          NPO = NOP5(INDIC)
+          DO K=1,NPO
             INDIC = INDIC +1
-            IKLE(I,K) = NOP5(INDIC)
-         ENDDO
-         IF (NCOPNP.NE.1) THEN
-           INDIC = INDIC +1
-           NPO = NOP5(INDIC)
-           DO K=1,NPO
-              INDIC = INDIC +1
-           ENDDO
-         ENDIF
+          ENDDO
+        ENDIF
 !  NMAE :
-         IF (NMAE.NE.0) THEN
-           INDIC = INDIC +1
-           INING = NOP5(INDIC)
-           DO K=2,NMAE
-              IF (INING.EQ.3) THEN
-                 INDIC = INDIC +1
-                 NCOLOR(IKLE(I,K-1)) = NOP5(INDIC)
-              ELSE IF(INING.EQ.2) THEN
-                 INDIC = INDIC +1
-                 IF (K.GT.NNO+1) NCOLOR(IKLE(I,K-(NNO+1))) = NOP5(INDIC)
-              ELSE IF(INING.EQ.1) THEN
-                 INDIC = INDIC +1
-                 IF (K.GT.2*NNO+1)
-     &           NCOLOR(IKLE(I,K-(2*NNO+1))) = NOP5(INDIC)
-              ENDIF
-           ENDDO
-         ENDIF
+        IF (NMAE.NE.0) THEN
+          INDIC = INDIC +1
+          INING = NOP5(INDIC)
+          DO K=2,NMAE
+            IF (INING.EQ.3) THEN
+              INDIC = INDIC +1
+              NCOLOR(IKLE(I,K-1)) = NOP5(INDIC)
+            ELSE IF(INING.EQ.2) THEN
+              INDIC = INDIC +1
+              IF (K.GT.NNO+1) NCOLOR(IKLE(I,K-(NNO+1))) = NOP5(INDIC)
+            ELSE IF(INING.EQ.1) THEN
+              INDIC = INDIC +1
+              IF (K.GT.2*NNO+1)
+     &        NCOLOR(IKLE(I,K-(2*NNO+1))) = NOP5(INDIC)
+            ENDIF
+          ENDDO
+        ENDIF
       ENDDO !I
 !
       GOTO 80

@@ -300,11 +300,11 @@
 !
       WRITE(LU,*)'*********************************************'
       IF (LNG.EQ.1) THEN
-         WRITE(LU,*)'  ERREUR A LA LECTURE DU FICHIER DE DONNEES  '
-         WRITE(LU,*)'      OU FIN DE FICHIER PREMATUREE           '
+        WRITE(LU,*)'  ERREUR A LA LECTURE DU FICHIER DE DONNEES  '
+        WRITE(LU,*)'      OU FIN DE FICHIER PREMATUREE           '
       ELSE
-         WRITE(LU,*)'  ERROR WHILE READING DATA FILE '
-         WRITE(LU,*)'    OR UNEXPECTED END OF FILE           '
+        WRITE(LU,*)'  ERROR WHILE READING DATA FILE '
+        WRITE(LU,*)'    OR UNEXPECTED END OF FILE           '
       ENDIF
       WRITE(LU,*)'*********************************************'
       CALL PLANTE(1)

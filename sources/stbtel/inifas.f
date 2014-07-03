@@ -112,5 +112,6 @@
      &        ,/,1X,'SUBROUTINE INIFAS :'
      &        ,/,1X,'ERROR READING FASTTABS FILE.'
      &        ,/,1X,'****************************')
+      CALL PLANTE(1)
       STOP
       END

@@ -131,14 +131,14 @@
 !
       ELSE
 !
-       IF(LNG.EQ.1) THEN
-         WRITE(LU,*) 'COST_FUNCTION : FROTTEMENT NON TRAITE : ',KFROT
-       ENDIF
-       IF(LNG.EQ.2) THEN
-         WRITE(LU,*) 'COST_FUNCTION: UNEXPECTED FRICTION LAW: ',KFROT
-       ENDIF
-       CALL PLANTE(1)
-       STOP
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'COST_FUNCTION : FROTTEMENT NON TRAITE : ',KFROT
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'COST_FUNCTION: UNEXPECTED FRICTION LAW: ',KFROT
+        ENDIF
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !
@@ -216,10 +216,12 @@
 !
 !=======================================================================
 !
-       IF(LNG.EQ.1) WRITE(LU,*) 'COST_FUNCTION : MODE NON PREVU : ',MODE
-       IF(LNG.EQ.2) WRITE(LU,*) 'COST_FUNCTION: UNEXPECTED MODE : ',MODE
-       CALL PLANTE(1)
-       STOP
+        IF(LNG.EQ.1) WRITE(LU,*) 'COST_FUNCTION : MODE NON PREVU : ',
+     &                           MODE
+        IF(LNG.EQ.2) WRITE(LU,*) 'COST_FUNCTION: UNEXPECTED MODE : ',
+     &                           MODE
+        CALL PLANTE(1)
+        STOP
 !
 !=======================================================================
 !

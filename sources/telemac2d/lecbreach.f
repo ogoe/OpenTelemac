@@ -8,14 +8,14 @@
 ! TELEMAC2D   V6P2                                   03/08/2012
 !***********************************************************************
 !
-!brief    READ THE BREACHES DATA FILE, ALLOCATE THE DEDICATED ARRAY
+!BRIEF    READ THE BREACHES DATA FILE, ALLOCATE THE DEDICATED ARRAY
 !+        AND IDENTIFY THE NODES
 !
 !
-!history  P. CHASSE (CETMEF) / C.COULET (ARTELIA)
+!HISTORY  P. CHASSE (CETMEF) / C.COULET (ARTELIA)
 !+        03/08/2012
 !+        V6P2
-!+        Creation
+!+        CREATION
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFIC           |-->| LOGICAL UNIT OF BREACHES DATA FILE
@@ -34,12 +34,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N, M, Num, Nbl, ISTAT
-      INTEGER Itmp(NPOIN)
+      INTEGER N, M, NUM, NBL, ISTAT
+      INTEGER ITMP(NPOIN)
       DOUBLE PRECISION LEMPRISE
       DOUBLE PRECISION X1, X2, Y1, Y2, DX, DY
       DOUBLE PRECISION U1, U2, V1, V2, DS
-      DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE :: Xl, Yl, Xp, Yp
+      DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE :: XL, YL, XP, YP
 !
       CHARACTER(LEN=6) :: NOM
       CHARACTER*1 CHIFFRE(0:9)
@@ -52,7 +52,7 @@
       READ(IFIC,*,END=900) ! COMMENT LINE
       READ(IFIC,*,ERR=999) NBRECH
 !
-!     Allocation of specific arrays
+!     ALLOCATION OF SPECIFIC ARRAYS
 !
       IF(NBRECH.GT.0) THEN
         CALL BIEF_ALLVEC(2,OPTNBR,'OPTNBR',NBRECH,1,0,MESH)
@@ -97,10 +97,10 @@
           READ(IFIC,*,ERR=993) NUMPSD%I(N)
           READ(IFIC,*,END=900) ! COMMENT LINE
           IF(NCSIZE.GT.1) THEN 
-            Num = NUMPSD%I(N)
+            NUM = NUMPSD%I(N)
             NUMPSD%I(N) = 0
             DO M=1,MESH%NPOIN 
-              IF(Num.EQ.MESH%KNOLG%I(M)) THEN 
+              IF(NUM.EQ.MESH%KNOLG%I(M)) THEN 
                 NUMPSD%I(N) = M 
               ENDIF  
             ENDDO  
@@ -110,21 +110,23 @@
           READ(IFIC,*,ERR=992) ZDECBR%R(N)
           READ(IFIC,*,END=900) ! COMMENT LINE
         ENDIF
-        READ(IFIC,*,ERR=991) Nbl
+        READ(IFIC,*,ERR=991) NBL
         READ(IFIC,*,END=900) ! COMMENT LINE
 !
 !       ALLOCATION OF LOCAL VARIABLE TO READ BREACH DEFINITION
         ISTAT = 0
-        ALLOCATE(Xl(Nbl), STAT=ISTAT)
+        ALLOCATE(XL(NBL), STAT=ISTAT)
         IF(ISTAT.NE.0) THEN
           IF(LNG.EQ.1) WRITE(LU,10) NOM,ISTAT
           IF(LNG.EQ.2) WRITE(LU,20) NOM,ISTAT
+          CALL PLANTE(1)
           STOP
         ENDIF
-        ALLOCATE(Yl(Nbl), STAT=ISTAT)
+        ALLOCATE(YL(NBL), STAT=ISTAT)
         IF(ISTAT.NE.0) THEN
           IF(LNG.EQ.1) WRITE(LU,10) NOM,ISTAT
           IF(LNG.EQ.2) WRITE(LU,20) NOM,ISTAT
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -133,28 +135,30 @@
 20      FORMAT(1X,'ERROR DURING ALLOCATION OF VECTOR: ',A6,/,1X,
      &            'ERROR CODE: ',1I6)
 !
-        DO M = 1, Nbl
-           READ(IFIC,*,ERR=990) Xl(M), Yl(M)
+        DO M = 1, NBL
+           READ(IFIC,*,ERR=990) XL(M), YL(M)
         ENDDO
 !       SEARCH MESH POINTS INSIDE THE BREACH DOMAIN
         ISTAT = 0
-        ALLOCATE(Xp(2*Nbl), STAT=ISTAT)
+        ALLOCATE(XP(2*NBL), STAT=ISTAT)
         IF(ISTAT.NE.0) THEN
           IF(LNG.EQ.1) WRITE(LU,10) NOM,ISTAT
           IF(LNG.EQ.2) WRITE(LU,20) NOM,ISTAT
+          CALL PLANTE(1)
           STOP
         ENDIF
-        ALLOCATE(Yp(2*Nbl), STAT=ISTAT)
+        ALLOCATE(YP(2*NBL), STAT=ISTAT)
         IF(ISTAT.NE.0) THEN
           IF(LNG.EQ.1) WRITE(LU,10) NOM,ISTAT
           IF(LNG.EQ.2) WRITE(LU,20) NOM,ISTAT
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
-        X1 = Xl(1)
-        Y1 = Yl(1)
-        X2 = Xl(2)
-        Y2 = Yl(2)
+        X1 = XL(1)
+        Y1 = YL(1)
+        X2 = XL(2)
+        Y2 = YL(2)
         DX = X2 - X1
         DY = Y2 - Y1
         DS=DSQRT(DX*DX+DY*DY)
@@ -170,14 +174,14 @@
         ENDIF
         V1 = -U2
         V2 = U1
-        Xp(1)     = X1 + V1*LEMPRISE/2.0
-        Yp(1)     = Y1 + V2*LEMPRISE/2.0
-        Xp(2*Nbl) = X1 - V1*LEMPRISE/2.0
-        Yp(2*Nbl) = Y1 - V2*LEMPRISE/2.0
+        XP(1)     = X1 + V1*LEMPRISE/2.0
+        YP(1)     = Y1 + V2*LEMPRISE/2.0
+        XP(2*NBL) = X1 - V1*LEMPRISE/2.0
+        YP(2*NBL) = Y1 - V2*LEMPRISE/2.0
 !
-        DO M = 2,Nbl
-           X2 = Xl(M)
-           Y2 = Yl(M)
+        DO M = 2,NBL
+           X2 = XL(M)
+           Y2 = YL(M)
            DX = X2 - X1
            DY = Y2 - Y1
            DS=DSQRT(DX*DX+DY*DY)
@@ -194,19 +198,19 @@
            ENDIF
            V1 = -U2
            V2 = U1
-           Xp(M)         = X2 + V1*LEMPRISE/2.0
-           Yp(M)         = Y2 + V2*LEMPRISE/2.0
-           Xp(2*Nbl-M+1) = X2 - V1*LEMPRISE/2.0
-           Yp(2*Nbl-M+1) = Y2 - V2*LEMPRISE/2.0
+           XP(M)         = X2 + V1*LEMPRISE/2.0
+           YP(M)         = Y2 + V2*LEMPRISE/2.0
+           XP(2*NBL-M+1) = X2 - V1*LEMPRISE/2.0
+           YP(2*NBL-M+1) = Y2 - V2*LEMPRISE/2.0
            X1=X2
            Y1=Y2
         ENDDO
 !
         NBNDBR%I(N) = 0
         DO M = 1, NPOIN
-           IF(INPOLY(MESH%X%R(M), MESH%Y%R(M), Xp, Yp, 2*Nbl)) THEN
+           IF(INPOLY(MESH%X%R(M), MESH%Y%R(M), XP, YP, 2*NBL)) THEN
              NBNDBR%I(N) = NBNDBR%I(N)+1
-             Itmp(NBNDBR%I(N)) = M
+             ITMP(NBNDBR%I(N)) = M
            ENDIF
         ENDDO
 !
@@ -222,7 +226,12 @@
             NOM(5:5) = CHIFFRE((N-100*(N/100))/10)
             NOM(6:6) = CHIFFRE((N-100*(N/100))-10*((N-100*(N/100))/10))
           ELSE
-            STOP 'MORE THAN 999 BREACHS ASKED IN LECBREACH'
+            IF(LNG.EQ.1) WRITE(LU,*) 'PLUS DE 999 BRECHES DEMANDEES 
+     &                                DANS LECBREACH'
+            IF(LNG.EQ.2) WRITE(LU,*) 'MORE THAN 999 BREACHS ASKED 
+     &                                IN LECBREACH'
+            CALL PLANTE(1)
+            STOP
           ENDIF
           ALLOCATE(INDBR%ADR(N)%P)
           CALL BIEF_ALLVEC(2,INDBR%ADR(N)%P,NOM,NBNDBR%I(N),1,0,MESH)
@@ -239,26 +248,27 @@
             WRITE(LU,*) 'VECTORS TO BE ALLOCATED'
             WRITE(LU,*) 'CHANGE MAXBLOCK IN ALLBLO.'
           ENDIF
+          CALL PLANTE(1)
           STOP
         ENDIF
         DO M=1, NBNDBR%I(N)
-           INDBR%ADR(N)%P%I(M) = Itmp(M)
+           INDBR%ADR(N)%P%I(M) = ITMP(M)
         ENDDO
 !
-        DEALLOCATE(Xl)
-        DEALLOCATE(Yl)
-        DEALLOCATE(Xp)
-        DEALLOCATE(Yp)
+        DEALLOCATE(XL)
+        DEALLOCATE(YL)
+        DEALLOCATE(XP)
+        DEALLOCATE(YP)
 !
       ENDDO
-C
+!
       INDBR%N = NBRECH
       GOTO 1000
-C
-C-----------------------------------------------------------------------
-C     MESSAGES D'ERREURS
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!     MESSAGES D'ERREURS
+!-----------------------------------------------------------------------
+!
 999   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
@@ -270,7 +280,7 @@ C
         WRITE(LU,*) '         AT LINE 2'
       ENDIF
       GO TO 2000
-C
+!
 998   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
@@ -282,7 +292,7 @@ C
         WRITE(LU,*) '         AT LINE 4'
       ENDIF
       GO TO 2000
-C
+!
 997   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
@@ -296,7 +306,7 @@ C
         WRITE(LU,*) '         OPTION CANNOT BE READ'
       ENDIF
       GO TO 2000
-C
+!
 996   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
@@ -310,7 +320,7 @@ C
         WRITE(LU,*) '         THE STARTING TIME CANNOT BE READ'
       ENDIF
       GO TO 2000
-C
+!
 995   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
@@ -324,7 +334,7 @@ C
         WRITE(LU,*) '         THE OPENNING DURATION CANNOT BE READ'
       ENDIF
       GO TO 2000
-C
+!
 994   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
@@ -338,7 +348,7 @@ C
         WRITE(LU,*) '         THE FINAL LEVEL CANNOT BE READ'
       ENDIF
       GO TO 2000
-C
+!
 993   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
@@ -352,7 +362,7 @@ C
         WRITE(LU,*) '         THE NUMBER OF TEST POINT CANNOT BE READ'
       ENDIF
       GO TO 2000
-C
+!
 992   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
@@ -366,7 +376,7 @@ C
         WRITE(LU,*) '         THE STARTING LEVEL CANNOT BE READ'
       ENDIF
       GO TO 2000
-C
+!
 991   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
@@ -381,7 +391,7 @@ C
         WRITE(LU,*) '         THE POINT NUMBER OF LINE CANNOT BE READ'
       ENDIF
       GO TO 2000
-C
+!
 990   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
@@ -397,7 +407,7 @@ C
         WRITE(LU,*) '         CANNOT BE READ'
       ENDIF
       GO TO 2000
-C
+!
 900   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
@@ -408,11 +418,12 @@ C
         WRITE(LU,*) '         BREACHES DATA FILE'
         WRITE(LU,*) '         UNEXPECTED END OF FILE'
       ENDIF
-C
+!
 2000  CONTINUE
-C
+!
       CALL PLANTE(1)
-C
+      STOP
+!
 1000  CONTINUE
       RETURN
       END                  

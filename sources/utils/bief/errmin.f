@@ -116,10 +116,10 @@
 !
       XL = P_DOTS(B,B,MESH)
       IF(XL.LT.1.D0) THEN
-         XL = 1.D0
-         RELAT = .FALSE.
+        XL = 1.D0
+        RELAT = .FALSE.
       ELSE
-         RELAT = .TRUE.
+        RELAT = .TRUE.
       ENDIF
 !
 ! COMPUTES THE INITIAL RESIDUAL AND POSSIBLY EXITS:

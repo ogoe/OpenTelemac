@@ -165,7 +165,10 @@
           ENDDO
 !
       ELSE
-        STOP 'UNKNOWN NAT IN ALLVEC'
+        IF(LNG.EQ.1) WRITE(LU,*) 'NAT INCONNU DANS ALLVEC'
+        IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN NAT IN ALLVEC'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -180,6 +183,7 @@
      &            'CODE D''ERREUR : ',1I6)
 20      FORMAT(1X,'ERROR DURING ALLOCATION OF VECTOR: ',A6,/,1X,
      &            'ERROR CODE: ',1I6)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !

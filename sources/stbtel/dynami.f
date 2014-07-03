@@ -74,135 +74,135 @@
 ! SANS FROTTEMENT. LA COULEUR 11, STANDARD POUR SUPERTAB, DONNE CE
 ! TYPE DE CARACTERISTIQUE.
 !
-         LIHBOR(J)=ILOG
-         LIUBOR(J)=ILOG
-         LIVBOR(J)=ILOG
-         LITBOR(J)=ILOG
+        LIHBOR(J)=ILOG
+        LIUBOR(J)=ILOG
+        LIVBOR(J)=ILOG
+        LITBOR(J)=ILOG
 !
-         IF(NCOLFR(J).EQ.1) THEN
+        IF(NCOLFR(J).EQ.1) THEN
 !
 ! H IMPOSEE , U ET V LIBRES
 !
-            LIHBOR(J)=IENT
-            LIUBOR(J)=ISORT
-            LIVBOR(J)=ISORT
-            LITBOR(J)=ISORT
+          LIHBOR(J)=IENT
+          LIUBOR(J)=ISORT
+          LIVBOR(J)=ISORT
+          LITBOR(J)=ISORT
 !
-         ELSE IF (NCOLFR(J).EQ.2) THEN
+        ELSE IF (NCOLFR(J).EQ.2) THEN
 !
 !  H  IMPOSEE , DEBIT IMPOSE
 !
-            LIHBOR(J)=IENT
-            LIUBOR(J)=IENT
-            LIVBOR(J)=IENT
-            LITBOR(J)=IENT
+          LIHBOR(J)=IENT
+          LIUBOR(J)=IENT
+          LIVBOR(J)=IENT
+          LITBOR(J)=IENT
 !
-         ELSE IF (NCOLFR(J).EQ.3) THEN
+        ELSE IF (NCOLFR(J).EQ.3) THEN
 !
 !  H , U ET V IMPOSEES
 !
-            LIHBOR(J)=IENT
-            LIUBOR(J)=IENTU
-            LIVBOR(J)=IENTU
-            LITBOR(J)=IENT
+          LIHBOR(J)=IENT
+          LIUBOR(J)=IENTU
+          LIVBOR(J)=IENTU
+          LITBOR(J)=IENT
 !
-         ELSE IF (NCOLFR(J).EQ.4) THEN
+        ELSE IF (NCOLFR(J).EQ.4) THEN
 !
 ! H IMPOSEE , U LIBRE , V NULLE
 !
-            LIHBOR(J)=IENT
-            LIUBOR(J)=ISORT
-            LIVBOR(J)=IADH
-            LITBOR(J)=ISORT
+          LIHBOR(J)=IENT
+          LIUBOR(J)=ISORT
+          LIVBOR(J)=IADH
+          LITBOR(J)=ISORT
 !
-         ELSE IF (NCOLFR(J).EQ.5) THEN
+        ELSE IF (NCOLFR(J).EQ.5) THEN
 !
 !  CONDITION D'ONDE INCIDENTE
 !
-            LIHBOR(J)=IINC
-            LIUBOR(J)=IINC
-            LIVBOR(J)=IINC
-            LITBOR(J)=ISORT
+          LIHBOR(J)=IINC
+          LIUBOR(J)=IINC
+          LIVBOR(J)=IINC
+          LITBOR(J)=ISORT
 !
-         ELSE IF (NCOLFR(J).EQ.7) THEN
+        ELSE IF (NCOLFR(J).EQ.7) THEN
 !
 ! H IMPOSEE , U NULLE , V LIBRE
 !
-            LIHBOR(J)=IENT
-            LIUBOR(J)=IADH
-            LIVBOR(J)=ISORT
-            LITBOR(J)=ISORT
+          LIHBOR(J)=IENT
+          LIUBOR(J)=IADH
+          LIVBOR(J)=ISORT
+          LITBOR(J)=ISORT
 !
-         ELSE IF (NCOLFR(J).EQ.8) THEN
+        ELSE IF (NCOLFR(J).EQ.8) THEN
 !
 ! H LIBRE , U ET V IMPOSEES
 !
-            LIHBOR(J)=ISORT
-            LIUBOR(J)=IENT
-            LIVBOR(J)=IENT
-            LITBOR(J)=IENT
+          LIHBOR(J)=ISORT
+          LIUBOR(J)=IENT
+          LIVBOR(J)=IENT
+          LITBOR(J)=IENT
 !
-         ELSE IF (NCOLFR(J).EQ.9) THEN
+        ELSE IF (NCOLFR(J).EQ.9) THEN
 !
 !  H LIBRE , U ET V IMPOSEES
 !
-            LIHBOR(J)=ISORT
-            LIUBOR(J)=IENTU
-            LIVBOR(J)=IENTU
-            LITBOR(J)=IENT
+          LIHBOR(J)=ISORT
+          LIUBOR(J)=IENTU
+          LIVBOR(J)=IENTU
+          LITBOR(J)=IENT
 !
-         ELSE IF (NCOLFR(J).EQ.12) THEN
+        ELSE IF (NCOLFR(J).EQ.12) THEN
 !
 ! H LIBRE , U IMPOSEE , V NULLE
 !
-            LIHBOR(J)=ISORT
-            LIUBOR(J)=IENT
-            LIVBOR(J)=IADH
-            LITBOR(J)=IENT
+          LIHBOR(J)=ISORT
+          LIUBOR(J)=IENT
+          LIVBOR(J)=IADH
+          LITBOR(J)=IENT
 !
-         ELSE IF (NCOLFR(J).EQ.13) THEN
+        ELSE IF (NCOLFR(J).EQ.13) THEN
 !
 ! FRONTIERE SOLIDE AVEC V NULLE
 !
-            LIHBOR(J)=ILOG
-            LIUBOR(J)=ILOG
-            LIVBOR(J)=IADH
-            LITBOR(J)=ILOG
+          LIHBOR(J)=ILOG
+          LIUBOR(J)=ILOG
+          LIVBOR(J)=IADH
+          LITBOR(J)=ILOG
 !
-         ELSE IF (NCOLFR(J).EQ.14) THEN
+        ELSE IF (NCOLFR(J).EQ.14) THEN
 !
 ! FRONTIERE SOLIDE AVEC U NULLE
 !
-            LIHBOR(J)=ILOG
-            LIUBOR(J)=IADH
-            LIVBOR(J)=ILOG
-            LITBOR(J)=ILOG
+          LIHBOR(J)=ILOG
+          LIUBOR(J)=IADH
+          LIVBOR(J)=ILOG
+          LITBOR(J)=ILOG
 !
-         ELSE IF (NCOLFR(J).EQ.15) THEN
+        ELSE IF (NCOLFR(J).EQ.15) THEN
 !
 ! H LIBRE , U NULLE , V IMPOSEE
 !
-            LIHBOR(J)=ISORT
-            LIUBOR(J)=IADH
-            LIVBOR(J)=IENT
-            LITBOR(J)=IENT
+          LIHBOR(J)=ISORT
+          LIUBOR(J)=IADH
+          LIVBOR(J)=IENT
+          LITBOR(J)=IENT
 !
-         ENDIF
+        ENDIF
 !
       ENDDO
 !
       DO J=1,NPTFR
 !
-         HBOR = 0.D0
-         UBOR = 0.D0
-         VBOR = 0.D0
-         AUBOR = 0.D0
-         TBOR = 0.D0
-         ATBOR = 0.D0
-         BTBOR = 0.D0
+        HBOR = 0.D0
+        UBOR = 0.D0
+        VBOR = 0.D0
+        AUBOR = 0.D0
+        TBOR = 0.D0
+        ATBOR = 0.D0
+        BTBOR = 0.D0
 !
-         WRITE(NLIM,30) LIHBOR(J),LIUBOR(J),LIVBOR(J),HBOR,UBOR,VBOR,
-     &                    AUBOR,LITBOR(J),TBOR,ATBOR,BTBOR,NBOR(J),J
+        WRITE(NLIM,30) LIHBOR(J),LIUBOR(J),LIVBOR(J),HBOR,UBOR,VBOR,
+     &                   AUBOR,LITBOR(J),TBOR,ATBOR,BTBOR,NBOR(J),J
 !
       ENDDO
 !

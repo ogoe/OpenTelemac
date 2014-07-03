@@ -81,10 +81,10 @@
 !
 !     INITIALISATION
 !
-         !LEO
-         ALLOCATE(TDS_SIS_NODE_DEPTH(NPOIN))
-         ALLOCATE(TDS_HN(NPOIN))
-         ALLOCATE(TDS_NODE_SEDIMENT_FRACTION(NPOIN,NSICLA))
+        !LEO
+        ALLOCATE(TDS_SIS_NODE_DEPTH(NPOIN))
+        ALLOCATE(TDS_HN(NPOIN))
+        ALLOCATE(TDS_NODE_SEDIMENT_FRACTION(NPOIN,NSICLA))
 
         DREDGEINP = ''
         SEDGEO = ''
@@ -108,6 +108,7 @@
           WRITE(*,*)'DREDGESIM -STOP, PLEASE START WITHOUT'
           WRITE(*,*)'DREDGESIM OR USE ANOTHER ELEMENT TYPE'
           WRITE(*,*)'ACTUAL ELEMENT TYPE OF ZF: ',IELMH_SIS
+          CALL PLANTE(1)
           STOP
         ENDIF
 
@@ -124,8 +125,8 @@
 !      WRITE(*,*)""
 !
       OPEN (120, FILE = "nodearea.dat")
-      DO i = 1,NPOIN
-         WRITE(120,*) i, T13%R(i)
+      DO I = 1,NPOIN
+        WRITE(120,*) I, T13%R(I)
       END DO
 
       CLOSE(120)
@@ -152,43 +153,43 @@
 !
 !     CALL FROM WITHIN BEDLOAD_POSTTREATMENT
 !
-         !---------------- do some preprocessing -----
+        !---------------- do some preprocessing -----
 !       allocating avai_gf
         ALLOCATE(AVAI_GF(NPOIN,NSICLA))
 !       INITIALIZATION OF THE ELEVATION TO ADD
         CALL OS('X=0     ',X=DZF_GF)
 
-         !LEO MAKE A STUPID COPY OF TDS_SIS_NODE_DEPTH, AND WATER DEPTH HN
-         DO I = 1,NPOIN
-            TDS_SIS_NODE_DEPTH(I) = ZF%R(I)
-            TDS_HN(I) = HN%R(I)
-         END DO
+        !LEO MAKE A STUPID COPY OF TDS_SIS_NODE_DEPTH, AND WATER DEPTH HN
+        DO I = 1,NPOIN
+          TDS_SIS_NODE_DEPTH(I) = ZF%R(I)
+          TDS_HN(I) = HN%R(I)
+        END DO
        
-         !LEO COPY SEDIMENT FRATIONS TO TDS_NODE_SEDIMENT_FRACTION
-         DO IPOIN=1,NPOIN !GET_NOF_NODES()
-            DO ISICLA=1,NSICLA !SIZE(NODE_SEDIMENT_FRACTION,2)
-               TDS_NODE_SEDIMENT_FRACTION(IPOIN,ISICLA) = 
-     &                         AVAIL(IPOIN,1,ISICLA)
-            END DO
-         END DO
+        !LEO COPY SEDIMENT FRATIONS TO TDS_NODE_SEDIMENT_FRACTION
+        DO IPOIN=1,NPOIN !GET_NOF_NODES()
+           DO ISICLA=1,NSICLA !SIZE(NODE_SEDIMENT_FRACTION,2)
+              TDS_NODE_SEDIMENT_FRACTION(IPOIN,ISICLA) = 
+     &                        AVAIL(IPOIN,1,ISICLA)
+           END DO
+        END DO
    
-       !-----------------RUN DREDGESIM -------------
-       CALL RUN_DREDGESIM(DT,TDS_SIS_NODE_DEPTH,TDS_HN,AVAIL,NPOIN,
+        !-----------------RUN DREDGESIM -------------
+        CALL RUN_DREDGESIM(DT,TDS_SIS_NODE_DEPTH,TDS_HN,AVAIL,NPOIN,
      &                         NSICLA,TDS_NODE_SEDIMENT_FRACTION)
 
-      !---------------- do some postprocessing -----
+        !---------------- do some postprocessing -----
        
-       !LEO OLD DEFAULT 
-       !DZF_GF%R = node_depth - ZF%R
+        !LEO OLD DEFAULT 
+        !DZF_GF%R = node_depth - ZF%R
        
-       DZF_GF%R =  TDS_SIS_NODE_DEPTH - ZF%R
-       !LEO DZF_GF%R = NODE_DEPTH - TDS_SIS_NODE_DEPTH
+        DZF_GF%R =  TDS_SIS_NODE_DEPTH - ZF%R
+        !LEO DZF_GF%R = NODE_DEPTH - TDS_SIS_NODE_DEPTH
        
-       !LEO RESET ZF%R WITH TDS_SIS_NODE_DEPTH       
-       !LEO NOT LONGER NEEDED ZF%R = TDS_SIS_NODE_DEPTH
+        !LEO RESET ZF%R WITH TDS_SIS_NODE_DEPTH       
+        !LEO NOT LONGER NEEDED ZF%R = TDS_SIS_NODE_DEPTH
 
 
-       AVAI_GF = NODE_SEDIMENT_FRACTION
+        AVAI_GF = NODE_SEDIMENT_FRACTION
 !
         DO J = 1, NPOIN
           IF(DZF_GF%R(J).GT.0.D0) THEN
@@ -207,16 +208,16 @@
 !
       ELSEIF(OPTION.EQ.3) THEN
 !
-!     CLOSING
-!
-      CALL STOP_DREDGESIM()
-      CALL CLEAR_DREDGESIM()
-      CALL CLEAR_SISYDREDGE()
-      
-      !LEO DEALLOCATE MY VARIABLES
-      DEALLOCATE(TDS_SIS_NODE_DEPTH) 
-      DEALLOCATE(TDS_NODE_SEDIMENT_FRACTION)
-      DEALLOCATE(TDS_HN) 
+!       CLOSING
+!      
+        CALL STOP_DREDGESIM()
+        CALL CLEAR_DREDGESIM()
+        CALL CLEAR_SISYDREDGE()
+        
+        !LEO DEALLOCATE MY VARIABLES
+        DEALLOCATE(TDS_SIS_NODE_DEPTH) 
+        DEALLOCATE(TDS_NODE_SEDIMENT_FRACTION)
+        DEALLOCATE(TDS_HN) 
 !
       ELSE
 !

@@ -174,11 +174,11 @@
       IF(ECRI) THEN
         IB(1) = 1
         DO I = 2,10
-         IB(I) = 0
+          IB(I) = 0
         ENDDO
 !   Y-A-T-IL PASSAGE DE LA DATE ?
         IF(DATE(1)+DATE(2)+DATE(3)+TIME(1)+TIME(2)+TIME(3).NE.0) THEN
-         IB(10) = 1
+          IB(10) = 1
         ENDIF
 !   ECRITURE DU TABLEAU DE 10 PARAMETRES
         IF(IPARAM(8).EQ.0.AND.IPARAM(9).EQ.0) THEN
@@ -309,6 +309,7 @@
         IF(NPOIN.LT.3.OR.NPTFR.LT.3.OR.NPTFR.GE.NPOIN) THEN
           IF(LNG.EQ.1) WRITE(LU,23) NPOIN,NPTFR
           IF(LNG.EQ.2) WRITE(LU,24) NPOIN,NPTFR
+          CALL PLANTE(1)
           STOP
         ENDIF
       ENDIF

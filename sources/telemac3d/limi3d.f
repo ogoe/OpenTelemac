@@ -115,14 +115,14 @@
 !              NO FRICTION
 !
       DO IPLAN = 2,NPLAN
-         DO IPTFR = 1,NPTFR2
-            IPTFR3 = (IPLAN-1)*NPTFR2 + IPTFR
-            LIUBOL%I(IPTFR3) = LIUBOL%I(IPTFR)
-            LIVBOL%I(IPTFR3) = LIVBOL%I(IPTFR)
-            UBORL%R(IPTFR3)  = UBORL%R(IPTFR)
-            VBORL%R(IPTFR3)  = VBORL%R(IPTFR)
-            AUBORL%R(IPTFR3) = AUBORL%R(IPTFR)
-         ENDDO
+        DO IPTFR = 1,NPTFR2
+          IPTFR3 = (IPLAN-1)*NPTFR2 + IPTFR
+          LIUBOL%I(IPTFR3) = LIUBOL%I(IPTFR)
+          LIVBOL%I(IPTFR3) = LIVBOL%I(IPTFR)
+          UBORL%R(IPTFR3)  = UBORL%R(IPTFR)
+          VBORL%R(IPTFR3)  = VBORL%R(IPTFR)
+          AUBORL%R(IPTFR3) = AUBORL%R(IPTFR)
+        ENDDO
       ENDDO
 !
 !     IDEA OF OPTIMISATION (BEWARE PARALLELISM)
@@ -135,15 +135,15 @@
 !
       DO IPTFR3 = 1,NPTFR3
 !                           KSORT: W FREE ON LATERAL BOUNDARIES
-         LIWBOL%I(IPTFR3)        = KSORT
-!        VALUES SAVED IN SECOND DIMENSION BECAUSE ADVECTION
-!        SCHEMES MAY CHANGE THE VALUES
-         LIUBOL%I(IPTFR3+NPTFR3) = LIUBOL%I(IPTFR3)
-         LIVBOL%I(IPTFR3+NPTFR3) = LIVBOL%I(IPTFR3)
-         LIWBOL%I(IPTFR3+NPTFR3) = LIWBOL%I(IPTFR3)
-         WBORL%R(IPTFR3)  = 0.D0
-!        BUBORL%R(IPTFR3) = 0.D0
-!        BVBORL%R(IPTFR3) = 0.D0
+        LIWBOL%I(IPTFR3)        = KSORT
+!       VALUES SAVED IN SECOND DIMENSION BECAUSE ADVECTION
+!       SCHEMES MAY CHANGE THE VALUES
+        LIUBOL%I(IPTFR3+NPTFR3) = LIUBOL%I(IPTFR3)
+        LIVBOL%I(IPTFR3+NPTFR3) = LIVBOL%I(IPTFR3)
+        LIWBOL%I(IPTFR3+NPTFR3) = LIWBOL%I(IPTFR3)
+        WBORL%R(IPTFR3)  = 0.D0
+!       BUBORL%R(IPTFR3) = 0.D0
+!       BVBORL%R(IPTFR3) = 0.D0
       ENDDO
       BUBORL%TYPR='0'
       BVBORL%TYPR='0'
@@ -163,15 +163,15 @@
 !     DEFAULT: IMPERMEABILITY AND NO FRICTION (SEE ALSO BORD3D)
 !
       DO IPOIN2 = 1,NPOIN2
-         LIUBOS%I(IPOIN2) = KLOG
-         LIVBOS%I(IPOIN2) = KLOG
-         LIWBOS%I(IPOIN2) = KLOG
-         UBORS%R(IPOIN2)  = 0.D0
-         VBORS%R(IPOIN2)  = 0.D0
-         WBORS%R(IPOIN2)  = 0.D0
-!        AUBORS%R(IPOIN2) = 0.D0
-!        BUBORS%R(IPOIN2) = 0.D0
-!        BVBORS%R(IPOIN2) = 0.D0
+        LIUBOS%I(IPOIN2) = KLOG
+        LIVBOS%I(IPOIN2) = KLOG
+        LIWBOS%I(IPOIN2) = KLOG
+        UBORS%R(IPOIN2)  = 0.D0
+        VBORS%R(IPOIN2)  = 0.D0
+        WBORS%R(IPOIN2)  = 0.D0
+!       AUBORS%R(IPOIN2) = 0.D0
+!       BUBORS%R(IPOIN2) = 0.D0
+!       BVBORS%R(IPOIN2) = 0.D0
       ENDDO
       AUBORS%TYPR='0'
       BUBORS%TYPR='0'
@@ -192,21 +192,21 @@
 !     **************
 !
       IF (NTRAC.NE.0) THEN
-         DO ITRAC = 1,NTRAC
+        DO ITRAC = 1,NTRAC
 !
 !     BOTTOM
 !     ======
 !
 !     DEFAULT: NEUMANN BC'S
 !
-            DO IPOIN2 = 1,NPOIN2
-               LITABF%ADR(ITRAC)%P%I(IPOIN2) = KLOG
-               TABORF%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
-!              ATABOF%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
-!              BTABOF%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
-            ENDDO
-            ATABOF%ADR(ITRAC)%P%TYPR='0'
-            BTABOF%ADR(ITRAC)%P%TYPR='0'
+          DO IPOIN2 = 1,NPOIN2
+            LITABF%ADR(ITRAC)%P%I(IPOIN2) = KLOG
+            TABORF%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
+!           ATABOF%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
+!           BTABOF%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
+          ENDDO
+          ATABOF%ADR(ITRAC)%P%TYPR='0'
+          BTABOF%ADR(ITRAC)%P%TYPR='0'
 !
 !     SIDES
 !     =====
@@ -217,37 +217,37 @@
 !           FOR 1 TRACER IS DUPLICATED ON THE VERTICAL AND FOR
 !           ALL TRACERS
 !
-            DO IPLAN = 1,NPLAN
-              DO IPTFR = 1,NPTFR2
-                IPTFR3 = (IPLAN-1)*NPTFR2 + IPTFR
-                LITABL%ADR(ITRAC)%P%I(IPTFR3) = LITABL%ADR(1)%P%I(IPTFR)
-!               SAVING ON SECOND DIMENSION BECAUSE ADVECTION SCHEMES
-!               MAY CHANGE THIS VALUE
-                LITABL%ADR(ITRAC)%P%I(IPTFR3+NPTFR3) =
-     &                                          LITABL%ADR(1)%P%I(IPTFR)
-                TABORL%ADR(ITRAC)%P%R(IPTFR3) = TABORL%ADR(1)%P%R(IPTFR)
-!               ATABOL%ADR(ITRAC)%P%R(IPTFR3) = ATABOL%ADR(1)%P%R(IPTFR)
-!               BTABOL%ADR(ITRAC)%P%R(IPTFR3) = BTABOL%ADR(1)%P%R(IPTFR)
-              ENDDO
+          DO IPLAN = 1,NPLAN
+            DO IPTFR = 1,NPTFR2
+              IPTFR3 = (IPLAN-1)*NPTFR2 + IPTFR
+              LITABL%ADR(ITRAC)%P%I(IPTFR3) = LITABL%ADR(1)%P%I(IPTFR)
+!             SAVING ON SECOND DIMENSION BECAUSE ADVECTION SCHEMES
+!             MAY CHANGE THIS VALUE
+              LITABL%ADR(ITRAC)%P%I(IPTFR3+NPTFR3) =
+     &                                        LITABL%ADR(1)%P%I(IPTFR)
+              TABORL%ADR(ITRAC)%P%R(IPTFR3) = TABORL%ADR(1)%P%R(IPTFR)
+!             ATABOL%ADR(ITRAC)%P%R(IPTFR3) = ATABOL%ADR(1)%P%R(IPTFR)
+!             BTABOL%ADR(ITRAC)%P%R(IPTFR3) = BTABOL%ADR(1)%P%R(IPTFR)
             ENDDO
-            ATABOL%ADR(ITRAC)%P%TYPR='0'
-            BTABOL%ADR(ITRAC)%P%TYPR='0'
+          ENDDO
+          ATABOL%ADR(ITRAC)%P%TYPR='0'
+          BTABOL%ADR(ITRAC)%P%TYPR='0'
 !
 !     FREE SURFACE
 !     =============
 !
 !     DEFAULT: NEUMANN BC'S
 !
-            DO IPOIN2 = 1,NPOIN2
-               LITABS%ADR(ITRAC)%P%I(IPOIN2) = KLOG
-               TABORS%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
-!              ATABOS%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
-!              BTABOS%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
-            ENDDO
-            ATABOS%ADR(ITRAC)%P%TYPR='0'
-            BTABOS%ADR(ITRAC)%P%TYPR='0'
+          DO IPOIN2 = 1,NPOIN2
+             LITABS%ADR(ITRAC)%P%I(IPOIN2) = KLOG
+             TABORS%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
+!            ATABOS%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
+!            BTABOS%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
+          ENDDO
+          ATABOS%ADR(ITRAC)%P%TYPR='0'
+          BTABOS%ADR(ITRAC)%P%TYPR='0'
 !
-         ENDDO
+        ENDDO
       ENDIF
 !
 !     SOLID BOUNDARIES FOR K AND EPSILON
@@ -260,40 +260,40 @@
 !
 !     DEFAULT : NO GRADIENT
 !
-         DO IPOIN2 = 1,NPOIN2
-           AKBORF%R(IPOIN2) = 0.D0
-           BKBORF%R(IPOIN2) = 0.D0
-           AEBORF%R(IPOIN2) = 0.D0
-           BEBORF%R(IPOIN2) = 0.D0
-         ENDDO
-         AKBORF%TYPR = '0'
-         BKBORF%TYPR = '0'
-         AEBORF%TYPR = '0'
-         BEBORF%TYPR = '0'
+        DO IPOIN2 = 1,NPOIN2
+          AKBORF%R(IPOIN2) = 0.D0
+          BKBORF%R(IPOIN2) = 0.D0
+          AEBORF%R(IPOIN2) = 0.D0
+          BEBORF%R(IPOIN2) = 0.D0
+        ENDDO
+        AKBORF%TYPR = '0'
+        BKBORF%TYPR = '0'
+        AEBORF%TYPR = '0'
+        BEBORF%TYPR = '0'
 !
 !     SIDES
 !     =====
 !
 !     DEFAULT : NO GRADIENT
 !
-         DO IPTFR3 = 1,NPTFR3
-           AKBORL%R(IPTFR3) = 0.D0
-           BKBORL%R(IPTFR3) = 0.D0
-           AEBORL%R(IPTFR3) = 0.D0
-           BEBORL%R(IPTFR3) = 0.D0
-         ENDDO
+        DO IPTFR3 = 1,NPTFR3
+          AKBORL%R(IPTFR3) = 0.D0
+          BKBORL%R(IPTFR3) = 0.D0
+          AEBORL%R(IPTFR3) = 0.D0
+          BEBORL%R(IPTFR3) = 0.D0
+        ENDDO
 !
 !     FREE SURFACE
 !     ============
 !
 !     DEFAULT : NO GRADIENT
 !
-         DO IPOIN2 = 1,NPOIN2
-            AKBORS%R(IPOIN2) = 0.D0
-            BKBORS%R(IPOIN2) = 0.D0
-            AEBORS%R(IPOIN2) = 0.D0
-            BEBORS%R(IPOIN2) = 0.D0
-         ENDDO
+        DO IPOIN2 = 1,NPOIN2
+           AKBORS%R(IPOIN2) = 0.D0
+           BKBORS%R(IPOIN2) = 0.D0
+           AEBORS%R(IPOIN2) = 0.D0
+           BEBORS%R(IPOIN2) = 0.D0
+        ENDDO
 !
       ENDIF
 !

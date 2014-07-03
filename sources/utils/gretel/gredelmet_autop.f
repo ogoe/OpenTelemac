@@ -131,14 +131,14 @@
       INQUIRE (FILE=GEO,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
-        CALL PLANTE (-1)
+        CALL PLANTE(1)
         STOP
       END IF
 !
       I_S  = LEN (RES)
       I_SP = I_S + 1
       DO I=1,I_S
-         IF(RES(I_SP-I:I_SP-I) .NE. ' ') EXIT
+        IF(RES(I_SP-I:I_SP-I) .NE. ' ') EXIT
       ENDDO
       I_LEN=I_SP - I
 !
@@ -152,7 +152,7 @@
       ENDDO ! I
       GO TO 992
 990   WRITE(LU,*) 'ERROR WHEN OPENING OR READING FILE: ',GEO
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 992   CONTINUE
 !     READS THE 10 PARAMETERS AND THE DATE
@@ -164,7 +164,7 @@
       OPEN(3,FILE=RES,FORM='UNFORMATTED',ERR=991)
       GO TO 993
 991   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RES
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 993   CONTINUE
 !
@@ -179,14 +179,14 @@
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', RESPAR
         WRITE (LU,*) 'CHECK THE NUMBER OF PROCESSORS'
         WRITE (LU,*) 'AND THE RESULT FILE CORE NAME'
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
         STOP
       END IF
 !
       OPEN(4,FILE=RESPAR,FORM='UNFORMATTED',ERR=994)
       GO TO 995
 994   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 995   CONTINUE
 !
@@ -263,7 +263,7 @@
       OPEN(4,FILE=CONLIM,FORM='FORMATTED',ERR=996)
       GO TO 997
  996  WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',CONLIM
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
  997  CONTINUE
 !
@@ -451,79 +451,79 @@
           DO ISEG=1,NSEG2
             IFROM = GLOSEG(ISEG,1)
             ITO   = GLOSEG(ISEG,2)
-              IF ( K.EQ.1 ) THEN
-                CALL GREDEL_FDNRST(IFROM,ITO,XORIG,YORIG,NODENRS,
-     &           NPOIN2,IFROM1(ISEG),ITOPL1(ISEG))
-                IF ( IFROM1(ISEG) .LT. 0 .AND.              !  *START*  LP 24/04/2009
-     &               IFROM1(ISEG) .NE. NODENRS(IFROM) ) THEN
-                  DO I = 1,NPOIN2
-                    IF ( NODENRS(I) .EQ. IFROM1(ISEG) ) THEN
-                         IFROM1(ISEG) = I
-                       EXIT
-                    ENDIF
-                  ENDDO
-                ENDIF
-                IF ( ITOPL1(ISEG) .LT. 0 .AND.
-     &               ITOPL1(ISEG) .NE. NODENRS(ITO  ) ) THEN
-                  DO I = 1,NPOIN2
-                    IF ( NODENRS(I) .EQ. ITOPL1(ISEG) ) THEN
-                         ITOPL1(ISEG) = I
-                       EXIT
-                    ENDIF
-                  ENDDO
-                ENDIF                                       !  **END**  LP 24/04/2009
+            IF ( K.EQ.1 ) THEN
+              CALL GREDEL_FDNRST(IFROM,ITO,XORIG,YORIG,NODENRS,
+     &         NPOIN2,IFROM1(ISEG),ITOPL1(ISEG))
+              IF ( IFROM1(ISEG) .LT. 0 .AND.              !  *START*  LP 24/04/2009
+     &             IFROM1(ISEG) .NE. NODENRS(IFROM) ) THEN
+                DO I = 1,NPOIN2
+                  IF ( NODENRS(I) .EQ. IFROM1(ISEG) ) THEN
+                    IFROM1(ISEG) = I
+                    EXIT
+                  ENDIF
+                ENDDO
               ENDIF
-              IFRM1 = IFROM1(ISEG)
-              ITOP1 = ITOPL1(ISEG)
-              IFROM = IFROM + (K-1)*NPOIN2
-              IF ( IFRM1 .GT. 0 ) THEN
-                IFRM1 = IFRM1 + (K-1)*NPOIN2
-              ELSE
-                IFRM1 = IFRM1 - (K-1)*MBND                      ! LP 24/04/2009
-              ENDIF
+              IF ( ITOPL1(ISEG) .LT. 0 .AND.
+     &             ITOPL1(ISEG) .NE. NODENRS(ITO  ) ) THEN
+                DO I = 1,NPOIN2
+                  IF ( NODENRS(I) .EQ. ITOPL1(ISEG) ) THEN
+                    ITOPL1(ISEG) = I
+                    EXIT
+                  ENDIF
+                ENDDO
+              ENDIF                                       !  **END**  LP 24/04/2009
+            ENDIF
+            IFRM1 = IFROM1(ISEG)
+            ITOP1 = ITOPL1(ISEG)
+            IFROM = IFROM + (K-1)*NPOIN2
+            IF ( IFRM1 .GT. 0 ) THEN
+              IFRM1 = IFRM1 + (K-1)*NPOIN2
+            ELSE
+              IFRM1 = IFRM1 - (K-1)*MBND                      ! LP 24/04/2009
+            ENDIF
+            ITO   = ITO   + (K-1)*NPOIN2
+            IF ( ITOP1 .GT. 0 ) THEN
+              ITOP1 = ITOP1 + (K-1)*NPOIN2
+            ELSE
+              ITOP1 = ITOP1 - (K-1)*MBND                      ! LP 24/04/2009
+            ENDIF
+            WRITE(3) IFROM,ITO,IFRM1,ITOP1
+          ENDDO
+          DO I=1,NPTFR2                                      ! LP 05/04/2009
+            IF ( LIHBOR(I) .NE. 2 ) THEN                       ! OPEN BOUNDARY
+              IFROM = NODENRS(NBOR(I))                        ! EXCHANGES ADDED
+              ITO   = NBOR(I)
+              IFRM1 = IFROM
+              ITOP1 = ITO
+              IFROM = IFROM - (K-1)*MBND
+              IFRM1 = IFRM1 - (K-1)*MBND
               ITO   = ITO   + (K-1)*NPOIN2
-              IF ( ITOP1 .GT. 0 ) THEN
-                ITOP1 = ITOP1 + (K-1)*NPOIN2
-              ELSE
-                ITOP1 = ITOP1 - (K-1)*MBND                      ! LP 24/04/2009
-              ENDIF
-              WRITE(3) IFROM,ITO,IFRM1,ITOP1
-            ENDDO
-            DO I=1,NPTFR2                                      ! LP 05/04/2009
-              IF ( LIHBOR(I) .NE. 2 ) THEN                       ! OPEN BOUNDARY
-                 IFROM = NODENRS(NBOR(I))                        ! EXCHANGES ADDED
-                 ITO   = NBOR(I)
-                 IFRM1 = IFROM
-                 ITOP1 = ITO
-                 IFROM = IFROM - (K-1)*MBND
-                 IFRM1 = IFRM1 - (K-1)*MBND
-                 ITO   = ITO   + (K-1)*NPOIN2
-                 ITOP1 = ITOP1 + (K-1)*NPOIN2
-                 WRITE(3)IFROM,ITO,IFRM1,ITOP1
-              ENDIF
-            ENDDO
+              ITOP1 = ITOP1 + (K-1)*NPOIN2
+              WRITE(3)IFROM,ITO,IFRM1,ITOP1
+            ENDIF
+          ENDDO
 !        THE WRITING OF EXCHANGE POINTERS IS CHANGED       **END**     LP 05/04/2009
-         ENDDO
+        ENDDO
 !
-!        DERIVE THE FROM-TO EXCHANGE TABLE FOR COMPUTATIONAL ELEMENTS
-!        VERTICALLY FOR ALL LAYERS. THE LAYERS DIFFER NPOIN2 IN
-!        COMPUTATIONAL ELEMENT NUMBER. BOUNDARY NODES HAVE NO VERTICAL FLOW
-!        WRITE 1.0 FOR THE VERTICAL 'FROM' AND 'TO' HALFDISTANCES
-!        THEY ARE UPDATED BY WAQ TO BECOME VOLUME/AREA/2.0 DURING
-!        SIMULATION TIME, SINCE VERTICAL DISTANCES CHANGE WITH VOLUME.
+!       DERIVE THE FROM-TO EXCHANGE TABLE FOR COMPUTATIONAL ELEMENTS
+!       VERTICALLY FOR ALL LAYERS. THE LAYERS DIFFER NPOIN2 IN
+!       COMPUTATIONAL ELEMENT NUMBER. BOUNDARY NODES HAVE NO VERTICAL FLOW
+!       WRITE 1.0 FOR THE VERTICAL 'FROM' AND 'TO' HALFDISTANCES
+!       THEY ARE UPDATED BY WAQ TO BECOME VOLUME/AREA/2.0 DURING
+!       SIMULATION TIME, SINCE VERTICAL DISTANCES CHANGE WITH VOLUME.
 !
-         DO K=1,NPLAN-1
-           DO I=1,NPOIN2
-!        THE WRITING OF EXCHANGE POINTERS IS CHANGED       *START*     LP 05/04/2009
-             IFROM = I
-             IFRM1 = IFROM +  MAX(K-2,   0   )*NPOIN2
-             ITOP1 = IFROM +  MIN(K+1,NPLAN-1)*NPOIN2
-             IFROM = IFROM + (    K-1        )*NPOIN2
-             ITO   = IFROM +                      NPOIN2
-             WRITE (3) IFROM,ITO,IFRM1,ITOP1
-!        THE WRITING OF EXCHANGE POINTERS IS CHANGED       **END**     LP 05/04/2009
-           ENDDO
-         ENDDO                  ! WAQ COMPUTES THEM ON THE FLY FROM VOLUMES
+        DO K=1,NPLAN-1
+          DO I=1,NPOIN2
+!       THE WRITING OF EXCHANGE POINTERS IS CHANGED       *START*     LP 05/04/2009
+            IFROM = I
+            IFRM1 = IFROM +  MAX(K-2,   0   )*NPOIN2
+            ITOP1 = IFROM +  MIN(K+1,NPLAN-1)*NPOIN2
+            IFROM = IFROM + (    K-1        )*NPOIN2
+            ITO   = IFROM +                      NPOIN2
+            WRITE (3) IFROM,ITO,IFRM1,ITOP1
+!       THE WRITING OF EXCHANGE POINTERS IS CHANGED       **END**     LP 05/04/2009
+          ENDDO
+        ENDDO                  ! WAQ COMPUTES THEM ON THE FLY FROM VOLUMES
       ENDIF
 !
       WRITE(LU,*) 'END OF PROGRAM '
@@ -531,9 +531,5 @@
       CLOSE(2)
       CLOSE(3)
 !
-      STOP
+      STOP 0
       END PROGRAM GREDELMET_AUTOP
-!
-!
-!
-!

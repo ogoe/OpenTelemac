@@ -74,7 +74,7 @@
      &   'GRETEL_CPIKLE2 : IL FAUT AU MOINS 2 PLANS'
         IF(LNG.EQ.2) WRITE(LU,*) 
      &   'GRETEL_CPIKLE2 : MINIMUM OF 2 PLANES NEEDED'
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !

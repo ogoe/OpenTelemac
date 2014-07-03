@@ -80,11 +80,7 @@
 !-----------------------------------------------------------------------
 !
       ALLOCATE(W(MESH%NPOIN),STAT=ERR)
-      IF(ERR.NE.0) THEN
-        IF(LNG.EQ.1) WRITE(LU,*) 'FONSTR : MAUVAISE ALLOCATION DE W'
-        IF(LNG.EQ.2) WRITE(LU,*) 'FONSTR: WRONG ALLOCATION OF W'
-        STOP
-      ENDIF
+      CALL CHECK_ALLOCATE(ERR,'FONSTR:W')
 !
 !-----------------------------------------------------------------------
 !
@@ -187,28 +183,28 @@
 !
       IF(LUZF) THEN
 !
-         CALFON = .FALSE.
+        CALFON = .FALSE.
 !
       ELSE
 !
-         IF (LUZ.AND.LUH) THEN
+        IF (LUZ.AND.LUH) THEN
 !
-            CALL OS( 'X=Y-Z   ' , ZF , Z , H , BID )
-            IF(LNG.EQ.1) WRITE(LU,24)
-            IF(LNG.EQ.2) WRITE(LU,25)
-24          FORMAT(1X,'FONSTR (BIEF) : ATTENTION, FOND CALCULE AVEC',/,
-     &                '                PROFONDEUR ET SURFACE LIBRE',/,
-     &                '                DU FICHIER DE GEOMETRIE')
-25          FORMAT(1X,'FONSTR (BIEF): ATTENTION, THE BOTTOM RESULTS',/,
-     &                '               FROM DEPTH AND SURFACE ELEVATION',
-     &              /,'               FOUND IN THE GEOMETRY FILE')
-            CALFON = .FALSE.
+          CALL OS( 'X=Y-Z   ' , ZF , Z , H , BID )
+          IF(LNG.EQ.1) WRITE(LU,24)
+          IF(LNG.EQ.2) WRITE(LU,25)
+24        FORMAT(1X,'FONSTR (BIEF) : ATTENTION, FOND CALCULE AVEC',/,
+     &              '                PROFONDEUR ET SURFACE LIBRE',/,
+     &              '                DU FICHIER DE GEOMETRIE')
+25        FORMAT(1X,'FONSTR (BIEF): ATTENTION, THE BOTTOM RESULTS',/,
+     &              '               FROM DEPTH AND SURFACE ELEVATION',
+     &            /,'               FOUND IN THE GEOMETRY FILE')
+          CALFON = .FALSE.
 !
-         ELSE
+        ELSE
 !
-            CALFON = .TRUE.
+          CALFON = .TRUE.
 !
-         ENDIF
+        ENDIF
 !
       ENDIF
 !

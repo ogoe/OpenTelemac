@@ -200,65 +200,65 @@
       GRADIJ(:)=(/(0.D0,IS=1,NSEG)/)
       GRADJI(:)=(/(0.D0,IS=1,NSEG)/)
 !
- !
+!
       DO IEL=1, NT 
-       DO I = 1,3
-        IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
-         NSG = ELTSEG(IEL,I)
+        DO I = 1,3
+          IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
+            NSG = ELTSEG(IEL,I)
 !     RECUPERATE JMI
-         J   = JMI(NSG) ! THIS THE TRIANGLE IN WHICH IS LOCATED CMI
-         IF(NCSIZE.GT.1.AND.J.EQ.0)CYCLE  ! THAT MEANS CMI IS NOT LOCATED IN TRIANGLE J
+            J   = JMI(NSG) ! THIS THE TRIANGLE IN WHICH IS LOCATED CMI
+            IF(NCSIZE.GT.1.AND.J.EQ.0) CYCLE  ! THAT MEANS CMI IS NOT LOCATED IN TRIANGLE J
 !
 !    RECUPERATE NODES OF THE EDGE WITH THE GOOD ORIENTATION
 !     WITH RESPECT TO THE NORMAL
-         NUBO1 = NUBO(1,NSG)
-         NUBO2 = NUBO(2,NSG)
-         PROD_SCAL= ((X(NUBO2)-X(NUBO1))*VNOCL(1,NSG)+
-     &               (Y(NUBO2)-Y(NUBO1))*VNOCL(2,NSG))
-         IF(PROD_SCAL.LT.0.D0)THEN
-           NUBO1 = NUBO(2,NSG)
-           NUBO2 = NUBO(1,NSG)
-         ENDIF
+            NUBO1 = NUBO(1,NSG)
+            NUBO2 = NUBO(2,NSG)
+            PROD_SCAL= ((X(NUBO2)-X(NUBO1))*VNOCL(1,NSG)+
+     &                  (Y(NUBO2)-Y(NUBO1))*VNOCL(2,NSG))
+            IF(PROD_SCAL.LT.0.D0)THEN
+              NUBO1 = NUBO(2,NSG)
+              NUBO2 = NUBO(1,NSG)
+            ENDIF
+!           
+            ZF1 = ZF(NUBO1)
+            ZF2 = ZF(NUBO2)
+!           
+            IF(PROD_SCAL.LT.0.D0)THEN
+              DSZ1 = DSZ(2,NSG)
+              DSZ2 = DSZ(1,NSG)
+            ELSE
+              DSZ1 = DSZ(1,NSG)
+              DSZ2 = DSZ(2,NSG)
+            ENDIF
+!           
+            HI0 = HSTOK(NUBO1)
+            HJ0 = HSTOK(NUBO2)
 !
-         ZF1 = ZF(NUBO1)
-         ZF2 = ZF(NUBO2)
-!
-         IF(PROD_SCAL.LT.0.D0)THEN
-           DSZ1 = DSZ(2,NSG)
-           DSZ2 = DSZ(1,NSG)
-         ELSE
-           DSZ1 = DSZ(1,NSG)
-           DSZ2 = DSZ(2,NSG)
-         ENDIF
-!
-         HI0 = HSTOK(NUBO1)
-         HJ0 = HSTOK(NUBO2)
-!
-!   STICKS TO 1ST ORDER FOR A COVERED EDGE
-!
-         IF(ZF1.GE. (HJ0+ZF2) .OR. ZF2.GE. (HI0+ZF1)
-     &      .OR. 2.*ABS(DSZ1).GE.HI0
-     &      .OR. 2.*ABS(DSZ1).GE.HJ0
-     &      .OR. 2.*ABS(DSZ2).GE.HI0
-     &      .OR. 2.*ABS(DSZ2).GE.HJ0)  THEN
-!          DST(1,NSG) =0.D0
-!          DST(2,NSG) =0.D0
-           CYCLE
-         ELSE
-!
-           AIX         = CMI(1,NSG)-X(NUBO1)
-           AIY         = CMI(2,NSG)-Y(NUBO1)
-           AJX         = CMI(1,NSG)-X(NUBO2)
-           AJY         = CMI(2,NSG)-Y(NUBO2)
-!
-           GRADI(NSG)  = AIX*DXT(NUBO1) + AIY*DYT(NUBO1)
-           GRADJ(NSG)  = AJX*DXT(NUBO2) + AJY*DYT(NUBO2)
-           GRADIJ(NSG) = AIX*DJXT(J) + AIY*DJYT(J)
-           GRADJI(NSG) = AJX*DJXT(J) + AJY*DJYT(J)
-         ENDIF
-         YESNO(NSG)=.TRUE. 
-        ENDIF 
-       ENDDO
+!           STICKS TO 1ST ORDER FOR A COVERED EDGE
+!           
+            IF(ZF1.GE. (HJ0+ZF2) .OR. ZF2.GE. (HI0+ZF1)
+     &         .OR. 2.*ABS(DSZ1).GE.HI0
+     &         .OR. 2.*ABS(DSZ1).GE.HJ0
+     &         .OR. 2.*ABS(DSZ2).GE.HI0
+     &         .OR. 2.*ABS(DSZ2).GE.HJ0)  THEN
+!             DST(1,NSG) =0.D0
+!             DST(2,NSG) =0.D0
+              CYCLE
+            ELSE
+!           
+              AIX         = CMI(1,NSG)-X(NUBO1)
+              AIY         = CMI(2,NSG)-Y(NUBO1)
+              AJX         = CMI(1,NSG)-X(NUBO2)
+              AJY         = CMI(2,NSG)-Y(NUBO2)
+!           
+              GRADI(NSG)  = AIX*DXT(NUBO1) + AIY*DYT(NUBO1)
+              GRADJ(NSG)  = AJX*DXT(NUBO2) + AJY*DYT(NUBO2)
+              GRADIJ(NSG) = AIX*DJXT(J) + AIY*DJYT(J)
+              GRADJI(NSG) = AJX*DJXT(J) + AJY*DJYT(J)
+            ENDIF
+            YESNO(NSG)=.TRUE. 
+          ENDIF 
+        ENDDO
       ENDDO
       IF(NCSIZE.GT.1)THEN      ! NPON,NPLAN,ICOM,IAN , HERE ICOM=1 VALUE WITH MAX | |
         CALL PARCOM2_SEG(GRADI,GRADJ,GRADI,
@@ -281,56 +281,56 @@
         YESNO(I)=.FALSE.
       ENDDO
       DO IEL=1, NT 
-       DO I = 1,3
-        IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
-         NSG = ELTSEG(IEL,I)
+        DO I = 1,3
+          IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
+            NSG = ELTSEG(IEL,I)
 !    RECUPERATE NODES OF THE EDGE WITH THE GOOD ORIENTATION
 !     WITH RESPECT TO THE NORMAL
-         NUBO1 = NUBO(1,NSG)
-         NUBO2 = NUBO(2,NSG)
-         PROD_SCAL= ((X(NUBO2)-X(NUBO1))*VNOCL(1,NSG)+
-     &               (Y(NUBO2)-Y(NUBO1))*VNOCL(2,NSG))
-         IF(PROD_SCAL.LT.0.D0)THEN
-           NUBO1 = NUBO(2,NSG)
-           NUBO2 = NUBO(1,NSG)
-         ENDIF
-!
-!        FOR PARALLELILSM
-         IF(NCSIZE.GT.1.AND.IFABOR(IEL,I).EQ.-2)THEN ! THIS IS AN INTERFACE EDGE
-           IF(DST(1,NSG).GE.0.D0) THEN
-            DSP(NUBO1) = DSP(NUBO1) + 
-     &                   DEMI*AIRST(1,NSG)*HCSTOK(1,NSG)*DST(1,NSG) ! WE CONSIDER ONLY
-           ELSE                                                      ! 0.5 AIRST 
-            DSM(NUBO1) = DSM(NUBO1) - 
-     &                   DEMI*AIRST(1,NSG)*HCSTOK(1,NSG)*DST(1,NSG) ! PARCOM2 WILL ADD 
-           ENDIF                                                     ! CONTRIBUTIONS
-           IF(DST(2,NSG).GE.0.D0) THEN
-            DSP(NUBO2) = DSP(NUBO2) + 
-     &                   DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST(2,NSG)
-           ELSE
-            DSM(NUBO2) = DSM(NUBO2) - 
-     &                   DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST(2,NSG)
-           ENDIF 
-         ELSE ! NO PARALLELILSM OR NO INTERFACE EDGE
-           IF(DST(1,NSG).GE.0.D0) THEN
-             DSP(NUBO1) = DSP(NUBO1) +
-     &       AIRST(1,NSG)* HCSTOK(1,NSG)*DST(1,NSG)
-           ELSE
-             DSM(NUBO1) = DSM(NUBO1) -
-     &       AIRST(1,NSG)* HCSTOK(1,NSG)*DST(1,NSG)
-           ENDIF
-           IF(DST(2,NSG).GE.0.) THEN
-             DSP(NUBO2) = DSP(NUBO2) +
-     &       AIRST(2,NSG)* HCSTOK(2,NSG)*DST(2,NSG)
-           ELSE
-             DSM(NUBO2) = DSM(NUBO2) -
-     &       AIRST(2,NSG)* HCSTOK(2,NSG)*DST(2,NSG)
-           ENDIF
-         ENDIF
-!
-         YESNO(NSG)=.TRUE. 
-        ENDIF 
-       ENDDO
+            NUBO1 = NUBO(1,NSG)
+            NUBO2 = NUBO(2,NSG)
+            PROD_SCAL= ((X(NUBO2)-X(NUBO1))*VNOCL(1,NSG)+
+     &                  (Y(NUBO2)-Y(NUBO1))*VNOCL(2,NSG))
+            IF(PROD_SCAL.LT.0.D0)THEN
+              NUBO1 = NUBO(2,NSG)
+              NUBO2 = NUBO(1,NSG)
+            ENDIF
+!           
+!           FOR PARALLELILSM
+            IF(NCSIZE.GT.1.AND.IFABOR(IEL,I).EQ.-2)THEN ! THIS IS AN INTERFACE EDGE
+              IF(DST(1,NSG).GE.0.D0) THEN
+                DSP(NUBO1) = DSP(NUBO1) + 
+     &                      DEMI*AIRST(1,NSG)*HCSTOK(1,NSG)*DST(1,NSG) ! WE CONSIDER ONLY
+              ELSE                                                      ! 0.5 AIRST 
+                DSM(NUBO1) = DSM(NUBO1) - 
+     &                      DEMI*AIRST(1,NSG)*HCSTOK(1,NSG)*DST(1,NSG) ! PARCOM2 WILL ADD 
+              ENDIF                                                     ! CONTRIBUTIONS
+              IF(DST(2,NSG).GE.0.D0) THEN
+                DSP(NUBO2) = DSP(NUBO2) + 
+     &                      DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST(2,NSG)
+              ELSE
+                DSM(NUBO2) = DSM(NUBO2) - 
+     &                      DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST(2,NSG)
+              ENDIF 
+            ELSE ! NO PARALLELILSM OR NO INTERFACE EDGE
+              IF(DST(1,NSG).GE.0.D0) THEN
+                DSP(NUBO1) = DSP(NUBO1) +
+     &          AIRST(1,NSG)* HCSTOK(1,NSG)*DST(1,NSG)
+              ELSE
+                DSM(NUBO1) = DSM(NUBO1) -
+     &          AIRST(1,NSG)* HCSTOK(1,NSG)*DST(1,NSG)
+              ENDIF
+              IF(DST(2,NSG).GE.0.) THEN
+                DSP(NUBO2) = DSP(NUBO2) +
+     &          AIRST(2,NSG)* HCSTOK(2,NSG)*DST(2,NSG)
+              ELSE
+                DSM(NUBO2) = DSM(NUBO2) -
+     &          AIRST(2,NSG)* HCSTOK(2,NSG)*DST(2,NSG)
+              ENDIF
+            ENDIF
+!           
+            YESNO(NSG)=.TRUE. 
+          ENDIF 
+        ENDDO
       ENDDO
       !  FOR PARALLELILSM
       IF(NCSIZE.GT.1)THEN     
@@ -341,10 +341,10 @@
 !                  ***********           ******************
 !
       DO IS=1,NS
-       CORRT(IS) =  DSM(IS) - DSP(IS)
-       AMDS =MAX(DSP(IS),DSM(IS))
+        CORRT(IS) =  DSM(IS) - DSP(IS)
+        AMDS =MAX(DSP(IS),DSM(IS))
         IF(AMDS.GT.0.D0) THEN
-        CORRT(IS) = CORRT(IS)/AMDS
+          CORRT(IS) = CORRT(IS)/AMDS
         ENDIF
       ENDDO
 !
@@ -360,48 +360,48 @@
 !     LOOP ON GLOBAL LIST OF EDGES
 !    ******************************
 !
-       DO IEL=1, NT 
+      DO IEL=1, NT 
         DO I = 1,3
-         IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
-          NSG = ELTSEG(IEL,I)
+          IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
+            NSG = ELTSEG(IEL,I)
 !
 !    RECUPERATE NODES OF THE EDGE WITH THE GOOD ORIENTATION
 !     WITH RESPECT TO THE NORMAL
-          NUBO1 = NUBO(1,NSG)
-          NUBO2 = NUBO(2,NSG)
-          PROD_SCAL= ((X(NUBO2)-X(NUBO1))*VNOCL(1,NSG)+
-     &                (Y(NUBO2)-Y(NUBO1))*VNOCL(2,NSG))
-          IF(PROD_SCAL.LT.0.D0)THEN
-           NUBO1 = NUBO(2,NSG)
-           NUBO2 = NUBO(1,NSG)
-          ENDIF
-!
-          UAS41     = TN(NUBO1)
-          UAS42     = TN(NUBO2)
-!
-          FLU11=FLUXT(NSG)
-!
-          IF (FLU11.GE.0.) THEN
-            IF(NORDRE.GE.2) THEN
-              UAS41 = UAS41  + DST(1,NSG) +
-     &        MIN(0.D0,CORRT(NUBO1))*MAX(0.D0,DST(1,NSG))+
-     &        MAX(0.D0,CORRT(NUBO1))*MAX(0.D0,-DST(1,NSG))
+            NUBO1 = NUBO(1,NSG)
+            NUBO2 = NUBO(2,NSG)
+            PROD_SCAL= ((X(NUBO2)-X(NUBO1))*VNOCL(1,NSG)+
+     &                  (Y(NUBO2)-Y(NUBO1))*VNOCL(2,NSG))
+            IF(PROD_SCAL.LT.0.D0)THEN
+              NUBO1 = NUBO(2,NSG)
+              NUBO2 = NUBO(1,NSG)
             ENDIF
-            FLU41 =  UAS41 * FLU11
-          ELSE
-            IF(NORDRE.GE.2) THEN
-              UAS42 = UAS42 + DST(2,NSG) +
-     &        MIN(0.D0,CORRT(NUBO2))*MAX(0.D0,DST(2,NSG))+
-     &        MAX(0.D0,CORRT(NUBO2))*MAX(0.D0,-DST(2,NSG))
+!           
+            UAS41     = TN(NUBO1)
+            UAS42     = TN(NUBO2)
+!           
+            FLU11=FLUXT(NSG)
+!           
+            IF (FLU11.GE.0.) THEN
+              IF(NORDRE.GE.2) THEN
+                UAS41 = UAS41  + DST(1,NSG) +
+     &          MIN(0.D0,CORRT(NUBO1))*MAX(0.D0,DST(1,NSG))+
+     &          MAX(0.D0,CORRT(NUBO1))*MAX(0.D0,-DST(1,NSG))
+              ENDIF
+              FLU41 =  UAS41 * FLU11
+            ELSE
+              IF(NORDRE.GE.2) THEN
+                UAS42 = UAS42 + DST(2,NSG) +
+     &          MIN(0.D0,CORRT(NUBO2))*MAX(0.D0,DST(2,NSG))+
+     &          MAX(0.D0,CORRT(NUBO2))*MAX(0.D0,-DST(2,NSG))
+              ENDIF
+              FLU41 =  UAS42 * FLU11
             ENDIF
-            FLU41 =  UAS42 * FLU11
+!           
+            CET(NUBO1) = CET(NUBO1) - FLU41
+            CET(NUBO2) = CET(NUBO2) + FLU41
+!           
+            YESNO(NSG)=.TRUE. 
           ENDIF
-!
-          CET(NUBO1) = CET(NUBO1) - FLU41
-          CET(NUBO2) = CET(NUBO2) + FLU41
-!
-          YESNO(NSG)=.TRUE. 
-         ENDIF
         ENDDO
       ENDDO
       !  FOR PARALLELILSM
@@ -413,26 +413,26 @@
 !
       IF(NPTFR.GT.0)THEN  ! USEFUL FOR PARALLEL CASE
         DO K=1,NPTFR
-         IS=NBOR(K)
-!
-         FLUH =FLUHBOR(K)
-!
-         IF(FLUH.GE.0.D0) THEN
-           FLUT= TN(IS)*FLUH
-           FLUTSOR = FLUTSOR +FLUT
-         ELSE
-           FLUT= TBOR(K)*FLUH
-           FLUTENT = FLUTENT +FLUT
-         ENDIF
-!
-         CET(IS)  = CET(IS) - FLUT
+          IS=NBOR(K)
+!         
+          FLUH =FLUHBOR(K)
+!         
+          IF(FLUH.GE.0.D0) THEN
+            FLUT= TN(IS)*FLUH
+            FLUTSOR = FLUTSOR +FLUT
+          ELSE
+            FLUT= TBOR(K)*FLUH
+            FLUTENT = FLUTENT +FLUT
+          ENDIF
+!         
+          CET(IS)  = CET(IS) - FLUT
 !
         ENDDO
       ENDIF
 !
 !     UPDATES HT
 !
-      DO  IS =1,NS
+      DO IS =1,NS
 !
         HT(IS)  = HTN(IS) +  (CET(IS)+SMTR(IS))/AIRS(IS)
         MASSOU = MASSOU + SMTR(IS)

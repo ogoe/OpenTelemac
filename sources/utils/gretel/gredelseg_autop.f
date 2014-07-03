@@ -135,14 +135,14 @@
       INQUIRE (FILE=GEO,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
-        CALL PLANTE (-1)
+        CALL PLANTE(1)
         STOP
       END IF
 !
       I_S  = LEN (RES)
       I_SP = I_S + 1
       DO I=1,I_S
-         IF(RES(I_SP-I:I_SP-I) .NE. ' ') EXIT
+        IF(RES(I_SP-I:I_SP-I) .NE. ' ') EXIT
       ENDDO
       I_LEN=I_SP - I
 !
@@ -156,7 +156,7 @@
       ENDDO ! I
       GO TO 992
 990   WRITE(LU,*) 'ERROR WHEN OPENING OR READING FILE: ',GEO
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 992   CONTINUE
 !     READS THE 10 PARAMETERS AND THE DATE
@@ -168,7 +168,7 @@
       OPEN(3,FILE=RES,FORM='UNFORMATTED',ERR=991)
       GO TO 993
 991   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RES
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 993   CONTINUE
 !
@@ -183,14 +183,14 @@
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', RESPAR
         WRITE (LU,*) 'CHECK THE NUMBER OF PROCESSORS'
         WRITE (LU,*) 'AND THE RESULT FILE CORE NAME'
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
         STOP
       END IF
 !
       OPEN(4,FILE=RESPAR,FORM='UNFORMATTED',ERR=994)
       GO TO 995
 994   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 995   CONTINUE
 !
@@ -259,7 +259,7 @@
       OPEN(4,FILE=CONLIM,FORM='FORMATTED',ERR=996)
       GO TO 997
  996  WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',CONLIM
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
  997  CONTINUE
 !
@@ -375,36 +375,36 @@
 !
       IF(IELM.EQ.11) THEN
 !
-         NSEG2 = (3*NELEM+NPTFR)/2
-         NOQ2=NPLAN*(NSEG2+MBND2)+(NPLAN-1)*NPOIN2
-         IF(NPLAN.EQ.0) THEN
-           ALLOCATE(VERIF(NSEG2+MBND2),STAT=ERR)
-         ELSE
-           ALLOCATE(VERIF(NOQ2) ,STAT=ERR)
-         ENDIF
-         CALL CHECK_ALLOCATE(ERR, 'VERIFSEG')
+        NSEG2 = (3*NELEM+NPTFR)/2
+        NOQ2=NPLAN*(NSEG2+MBND2)+(NPLAN-1)*NPOIN2
+        IF(NPLAN.EQ.0) THEN
+          ALLOCATE(VERIF(NSEG2+MBND2),STAT=ERR)
+        ELSE
+          ALLOCATE(VERIF(NOQ2) ,STAT=ERR)
+        ENDIF
+        CALL CHECK_ALLOCATE(ERR, 'VERIFSEG')
 !
 !  GLOBAL_VALUES, STORES THE WHOLE DATASET (NBV1-VALUES)
-         IF(NPLAN.EQ.0) THEN
-           ALLOCATE(GLOBAL_VALUE(NSEG2+MBND2),STAT=ERR)
-         ELSE
-           ALLOCATE(GLOBAL_VALUE(NOQ2),STAT=ERR)
-         ENDIF
-         CALL CHECK_ALLOCATE(ERR, 'GLOBAL_VALUE')
+        IF(NPLAN.EQ.0) THEN
+          ALLOCATE(GLOBAL_VALUE(NSEG2+MBND2),STAT=ERR)
+        ELSE
+          ALLOCATE(GLOBAL_VALUE(NOQ2),STAT=ERR)
+        ENDIF
+        CALL CHECK_ALLOCATE(ERR, 'GLOBAL_VALUE')
 !
-         ALLOCATE(GLOSEG(NSEG2,2),STAT=ERR)
-         CALL CHECK_ALLOCATE(ERR, 'GLOSEG')
+        ALLOCATE(GLOSEG(NSEG2,2),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR, 'GLOSEG')
 !
       ! DUMMY ARRAY
-         ALLOCATE(KNOLG(1,1),STAT=ERR)
-         CALL CHECK_ALLOCATE(ERR, 'KNOLG')
+        ALLOCATE(KNOLG(1,1),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR, 'KNOLG')
       
-      CALL STOSEG(IFABOR,NELEM,NELMAX2,NELMAX2,IELM,IKLE,
+        CALL STOSEG(IFABOR,NELEM,NELMAX2,NELMAX2,IELM,IKLE,
      &            NBOR,NPTFR,
      &            GLOSEG,NSEG2,    ! GLOSEG%MAXDIM1,
      &            ELTSEG,ORISEG,NSEG2,
      &            NELBOR,NULONE,KNOLG(:,1),IKLBOR,NPTFR,NPTFR)
-      DEALLOCATE(KNOLG)
+        DEALLOCATE(KNOLG)
       ENDIF
 !
       ALLOCATE(SEGMENT(NPOIN2,MAXNVOIS,2),STAT=ERR)
@@ -439,22 +439,22 @@
 ! OPENS FILES AND READS/SKIPS HEADERS -> NPOIN(NPROC), NPOINMAX
 !
       DO IPID = 0,NPROC-1
-         FU = IPID +10
-         RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,IPID)
-         OPEN (FU,FILE=RESPAR,FORM='UNFORMATTED',ERR=998)
-         GO TO 999
-998      WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR,
-     &                      ' USING FILE UNIT: ', FU
-         CALL PLANTE(-1)
-         STOP
-999      REWIND(FU)
-         READ(FU) FILETYPE
-         READ(FU) NPOIN(IPID+1)
-         READ(FU) NSEG(IPID+1)
-         READ(FU) MBND(IPID+1)
-         READ(FU) NOQ(IPID+1)
-         READ(FU) NPLANLOC
-         READ(FU) NPTFRL(IPID+1)
+        FU = IPID +10
+        RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,IPID)
+        OPEN (FU,FILE=RESPAR,FORM='UNFORMATTED',ERR=998)
+        GO TO 999
+998     WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR,
+     &                     ' USING FILE UNIT: ', FU
+        CALL PLANTE(1)
+        STOP
+999     REWIND(FU)
+        READ(FU) FILETYPE
+        READ(FU) NPOIN(IPID+1)
+        READ(FU) NSEG(IPID+1)
+        READ(FU) MBND(IPID+1)
+        READ(FU) NOQ(IPID+1)
+        READ(FU) NPLANLOC
+        READ(FU) NPTFRL(IPID+1)
       END DO
 !
       NPOINMAX = MAXVAL(NPOIN)
@@ -497,44 +497,44 @@
       ENDIF
 !
       DO IPID = 0,NPROC-1
-         FU = IPID +10
+        FU = IPID +10
 ! CHECKS
-         IF(NPLAN.EQ.0) THEN
-            READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1))
-            READ(FU) ((GLOSEGLOC(I,J,IPID+1),J=1,2),I=1,NSEG(IPID+1))
-            READ(FU) (NODENRSLOC(I,IPID+1),I=1,NPOIN(IPID+1))
-            READ(FU) (NBORLOC(I,IPID+1),I=1,NPTFRL(IPID+1))
-            READ(FU) (LIHBORLOC(I,IPID+1),I=1,NPTFRL(IPID+1))
-         ELSE
-            READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1)/NPLAN)
-            READ(FU) ((GLOSEGLOC(I,J,IPID+1),J=1,2),I=1,NSEG(IPID+1))
-            READ(FU) (NODENRSLOC(I,IPID+1),I=1,NPOIN(IPID+1)/NPLAN)
-            READ(FU) (NBORLOC(I,IPID+1),I=1,NPTFRL(IPID+1))
-            READ(FU) (LIHBORLOC(I,IPID+1),I=1,NPTFRL(IPID+1))
-         ENDIF
+        IF(NPLAN.EQ.0) THEN
+          READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1))
+          READ(FU) ((GLOSEGLOC(I,J,IPID+1),J=1,2),I=1,NSEG(IPID+1))
+          READ(FU) (NODENRSLOC(I,IPID+1),I=1,NPOIN(IPID+1))
+          READ(FU) (NBORLOC(I,IPID+1),I=1,NPTFRL(IPID+1))
+          READ(FU) (LIHBORLOC(I,IPID+1),I=1,NPTFRL(IPID+1))
+        ELSE
+          READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1)/NPLAN)
+          READ(FU) ((GLOSEGLOC(I,J,IPID+1),J=1,2),I=1,NSEG(IPID+1))
+          READ(FU) (NODENRSLOC(I,IPID+1),I=1,NPOIN(IPID+1)/NPLAN)
+          READ(FU) (NBORLOC(I,IPID+1),I=1,NPTFRL(IPID+1))
+          READ(FU) (LIHBORLOC(I,IPID+1),I=1,NPTFRL(IPID+1))
+        ENDIF
 !
 ! INITIALISES SEGMENT
 !
-         DO ISEG=1,NSEG(IPID+1)
-           IL1 = GLOSEGLOC(ISEG,1,IPID+1)
-           IL2 = GLOSEGLOC(ISEG,2,IPID+1)
-           IG1 = KNOLG(IL1,IPID+1)
-           IG2 = KNOLG(IL2,IPID+1)
-!          GLOBAL NUMBER IN INCREASING ORDER
-           IF(IG1.GT.IG2) THEN
-             IGTEMP = IG1
-             IG1 = IG2
-             IG2 = IGTEMP
-           ENDIF
-           IVOIS=1
-           DO WHILE ((SEGMENT(IG1,IVOIS,1).NE.IG2)
-     &               .AND.(IVOIS.LE.MAXNVOIS))
-             IVOIS = IVOIS + 1
-           ENDDO
-           IF(IVOIS.LE.MAXNVOIS) THEN
-             KSEGLG(ISEG,IPID+1) = SEGMENT(IG1,IVOIS,2)
-           ENDIF
-         ENDDO
+        DO ISEG=1,NSEG(IPID+1)
+          IL1 = GLOSEGLOC(ISEG,1,IPID+1)
+          IL2 = GLOSEGLOC(ISEG,2,IPID+1)
+          IG1 = KNOLG(IL1,IPID+1)
+          IG2 = KNOLG(IL2,IPID+1)
+!         GLOBAL NUMBER IN INCREASING ORDER
+          IF(IG1.GT.IG2) THEN
+            IGTEMP = IG1
+            IG1 = IG2
+            IG2 = IGTEMP
+          ENDIF
+          IVOIS=1
+          DO WHILE ((SEGMENT(IG1,IVOIS,1).NE.IG2)
+     &              .AND.(IVOIS.LE.MAXNVOIS))
+            IVOIS = IVOIS + 1
+          ENDDO
+          IF(IVOIS.LE.MAXNVOIS) THEN
+            KSEGLG(ISEG,IPID+1) = SEGMENT(IG1,IVOIS,2)
+          ENDIF
+        ENDDO
 !
       ENDDO
 !
@@ -569,118 +569,121 @@
       ENDIF
 !
       DO IPID = 0,NPROC-1
-         FU = IPID +10
-!        READS LOCAL X INSTEAD OF GREDELSEG_READ_DATASET
-         CALL GREDELPTS_READ_DATASET
-     &   (LOCAL_VALUE,NOQMAX,NOQ(IPID+1),IT,FU,ENDE)
-         IF (ENDE) GOTO 3000
-!        STORES EACH DATASET
-         IF(NPLAN.EQ.0) THEN
-            NSEG2LOC  = NSEG(IPID+1)
-            NPTFRLOC  = NPTFRL(IPID+1)
-            DO I=1,NSEG2LOC
-              GLOBAL_VALUE(KSEGLG(I,IPID+1)) =
-     &        GLOBAL_VALUE(KSEGLG(I,IPID+1)) + LOCAL_VALUE(I)
-              VERIF(KSEGLG(I,IPID+1)) =   VERIF(KSEGLG(I,IPID+1))
-     &                                     + 1
-            ENDDO
+        FU = IPID +10
+!       READS LOCAL X INSTEAD OF GREDELSEG_READ_DATASET
+        CALL GREDELPTS_READ_DATASET
+     &  (LOCAL_VALUE,NOQMAX,NOQ(IPID+1),IT,FU,ENDE)
+        IF (ENDE) GOTO 3000
+!       STORES EACH DATASET
+        IF(NPLAN.EQ.0) THEN
+          NSEG2LOC  = NSEG(IPID+1)
+          NPTFRLOC  = NPTFRL(IPID+1)
+          DO I=1,NSEG2LOC
+            GLOBAL_VALUE(KSEGLG(I,IPID+1)) =
+     &      GLOBAL_VALUE(KSEGLG(I,IPID+1)) + LOCAL_VALUE(I)
+            VERIF(KSEGLG(I,IPID+1)) =   VERIF(KSEGLG(I,IPID+1))
+     &                                   + 1
+          ENDDO
 !
-           DO I=1,NPTFRLOC
-             IF(LIHBORLOC(I,IPID+1).NE.2) THEN
-               IF(FILETYPE(1:7).EQ.'SUMAREA') THEN
+          DO I=1,NPTFRLOC
+            IF(LIHBORLOC(I,IPID+1).NE.2) THEN
+              IF(FILETYPE(1:7).EQ.'SUMAREA') THEN
+                GLOBAL_VALUE(-NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
+     &                       + NSEG2) =
+     &          LOCAL_VALUE(-NODENRSLOC(NBORLOC(I,IPID+1),IPID+1)
+     &                      + NSEG2LOC)
+                VERIF( -NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
+     &                + NSEG2) = 1
+              ELSEIF(FILETYPE(1:7).EQ.'SUMFLOW') THEN
+                GLOBAL_VALUE(-NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
+     &                       + NSEG2) =
+     &          GLOBAL_VALUE(-NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
+     &                       + NSEG2) +
+     &          LOCAL_VALUE(-NODENRSLOC(NBORLOC(I,IPID+1),IPID+1)
+     &                      + NSEG2LOC)
+                VERIF( -NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
+     &                + NSEG2) =
+     &          VERIF( -NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
+     &                + NSEG2) + 1
+              ELSE
+                WRITE(LU,*) 'CAS NON PREVU'
+                CALL PLANTE(1)
+                STOP
+              ENDIF
+            ENDIF
+          ENDDO
+!
+        ELSE
+          NPOIN2LOC = NPOIN(IPID+1)/NPLAN
+          NSEG2LOC  = NSEG(IPID+1)
+          MBNDLOC   = MBND(IPID+1)
+          NPTFRLOC  = NPTFRL(IPID+1)
+          DO I=1,NSEG2LOC
+            DO J=1,NPLAN
+              GLOBAL_VALUE(KSEGLG(I,IPID+1) + (NSEG2+MBND2)*(J-1)) =
+     &        GLOBAL_VALUE(KSEGLG(I,IPID+1) + (NSEG2+MBND2)*(J-1)) +
+     &        LOCAL_VALUE(       I      + (NSEG2LOC+MBNDLOC)*(J-1))
+              VERIF(KSEGLG(I,IPID+1) + (NSEG2+MBND2)*(J-1)) =
+     &      + VERIF(KSEGLG(I,IPID+1) + (NSEG2+MBND2)*(J-1)) + 1
+            END DO
+          END DO
+!
+          DO I=1,NPTFRLOC
+            IF(LIHBORLOC(I,IPID+1).NE.2) THEN
+              DO J=1,NPLAN
+                IF(FILETYPE(1:7).EQ.'SUMAREA') THEN
                  GLOBAL_VALUE(-NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
-     &                        + NSEG2) =
-     &           LOCAL_VALUE(-NODENRSLOC(NBORLOC(I,IPID+1),IPID+1)
-     &                       + NSEG2LOC)
-                 VERIF( -NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
-     &                 + NSEG2) = 1
-               ELSEIF(FILETYPE(1:7).EQ.'SUMFLOW') THEN
+     &                        + NSEG2 + (NSEG2+MBND2)*(J-1)) =
+     &            LOCAL_VALUE(-NODENRSLOC(NBORLOC(I,IPID+1),IPID+1)
+     &                        + NSEG2LOC + (NSEG2LOC+MBNDLOC)*(J-1))
+                  VERIF( -NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
+     &                  + NSEG2 + (NSEG2+MBND2)*(J-1)) = 1
+                ELSEIF(FILETYPE(1:7).EQ.'SUMFLOW') THEN
                  GLOBAL_VALUE(-NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
-     &                        + NSEG2) =
+     &                        + NSEG2 + (NSEG2+MBND2)*(J-1)) =
      &           GLOBAL_VALUE(-NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
-     &                        + NSEG2) +
-     &           LOCAL_VALUE(-NODENRSLOC(NBORLOC(I,IPID+1),IPID+1)
-     &                       + NSEG2LOC)
-                 VERIF( -NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
-     &                 + NSEG2) =
-     &           VERIF( -NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
-     &                 + NSEG2) + 1
-               ELSE
-                 WRITE(LU,*) 'CAS NON PREVU'
-                 STOP
-               ENDIF
-             ENDIF
-           ENDDO
+     &                        + NSEG2 + (NSEG2+MBND2)*(J-1)) +
+     &            LOCAL_VALUE(-NODENRSLOC(NBORLOC(I,IPID+1),IPID+1)
+     &                        + NSEG2LOC + (NSEG2LOC+MBNDLOC)*(J-1))
+                  VERIF( -NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
+     &                  + NSEG2 + (NSEG2+MBND2)*(J-1)) =
+     &            VERIF( -NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
+     &                  + NSEG2 + (NSEG2+MBND2)*(J-1)) + 1
+                ELSE
+                  WRITE(LU,*) 'CAS NON PREVU'
+                  CALL PLANTE(1)
+                  STOP
+                ENDIF
+              ENDDO
+            ENDIF
+          ENDDO
 !
-         ELSE
-           NPOIN2LOC = NPOIN(IPID+1)/NPLAN
-           NSEG2LOC  = NSEG(IPID+1)
-           MBNDLOC   = MBND(IPID+1)
-           NPTFRLOC  = NPTFRL(IPID+1)
-           DO I=1,NSEG2LOC
-             DO J=1,NPLAN
-               GLOBAL_VALUE(KSEGLG(I,IPID+1) + (NSEG2+MBND2)*(J-1)) =
-     &         GLOBAL_VALUE(KSEGLG(I,IPID+1) + (NSEG2+MBND2)*(J-1)) +
-     &         LOCAL_VALUE(       I      + (NSEG2LOC+MBNDLOC)*(J-1))
-               VERIF(KSEGLG(I,IPID+1) + (NSEG2+MBND2)*(J-1)) =
-     &       + VERIF(KSEGLG(I,IPID+1) + (NSEG2+MBND2)*(J-1)) + 1
-             END DO
-           END DO
-!
-           DO I=1,NPTFRLOC
-             IF(LIHBORLOC(I,IPID+1).NE.2) THEN
-               DO J=1,NPLAN
-                 IF(FILETYPE(1:7).EQ.'SUMAREA') THEN
-                  GLOBAL_VALUE(-NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
-     &                         + NSEG2 + (NSEG2+MBND2)*(J-1)) =
-     &             LOCAL_VALUE(-NODENRSLOC(NBORLOC(I,IPID+1),IPID+1)
-     &                         + NSEG2LOC + (NSEG2LOC+MBNDLOC)*(J-1))
-                   VERIF( -NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
-     &                   + NSEG2 + (NSEG2+MBND2)*(J-1)) = 1
-                 ELSEIF(FILETYPE(1:7).EQ.'SUMFLOW') THEN
-                  GLOBAL_VALUE(-NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
-     &                         + NSEG2 + (NSEG2+MBND2)*(J-1)) =
-     &            GLOBAL_VALUE(-NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
-     &                         + NSEG2 + (NSEG2+MBND2)*(J-1)) +
-     &             LOCAL_VALUE(-NODENRSLOC(NBORLOC(I,IPID+1),IPID+1)
-     &                         + NSEG2LOC + (NSEG2LOC+MBNDLOC)*(J-1))
-                   VERIF( -NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
-     &                   + NSEG2 + (NSEG2+MBND2)*(J-1)) =
-     &             VERIF( -NODENRS(KNOLG(NBORLOC(I,IPID+1),IPID+1))
-     &                   + NSEG2 + (NSEG2+MBND2)*(J-1)) + 1
-                 ELSE
-                   WRITE(LU,*) 'CAS NON PREVU'
-                   STOP
-                 ENDIF
-               ENDDO
-             ENDIF
-           ENDDO
-!
-           DO I=1,NPOIN2LOC
-             DO J=1,NPLAN-1
-               IF(FILETYPE(1:7).EQ.'SUMAREA') THEN
-                 GLOBAL_VALUE(  KNOLG(I,IPID+1) + NPOIN2*(J-1)
-     &                        + (NSEG2+MBND2)*NPLAN) =
-     &         LOCAL_VALUE(I+NPOIN2LOC*(J-1)+(NSEG2LOC+MBNDLOC)*NPLAN)
-                 VERIF( KNOLG(I,IPID+1) + NPOIN2*(J-1)
-     &               + (NSEG2+MBND2)*NPLAN) = 1
-               ELSEIF(FILETYPE(1:7).EQ.'SUMFLOW') THEN
-                 GLOBAL_VALUE( KNOLG(I,IPID+1) + NPOIN2*(J-1)
-     &                        + (NSEG2+MBND2)*NPLAN) =
-     &           GLOBAL_VALUE( KNOLG(I,IPID+1) + NPOIN2*(J-1)
-     &                        + (NSEG2+MBND2)*NPLAN) +
-     &         LOCAL_VALUE(I+NPOIN2LOC*(J-1)+(NSEG2LOC+MBNDLOC)*NPLAN)
-                 VERIF( KNOLG(I,IPID+1) + NPOIN2*(J-1)
-     &               + (NSEG2+MBND2)*NPLAN) =
-     &           VERIF( KNOLG(I,IPID+1) + NPOIN2*(J-1)
-     &               + (NSEG2+MBND2)*NPLAN) + 1
-               ELSE
-                 WRITE(LU,*) 'CAS NON PREVU'
-                 STOP
-               ENDIF
-             ENDDO
-           ENDDO
-         ENDIF
+          DO I=1,NPOIN2LOC
+            DO J=1,NPLAN-1
+              IF(FILETYPE(1:7).EQ.'SUMAREA') THEN
+                GLOBAL_VALUE(  KNOLG(I,IPID+1) + NPOIN2*(J-1)
+     &                       + (NSEG2+MBND2)*NPLAN) =
+     &        LOCAL_VALUE(I+NPOIN2LOC*(J-1)+(NSEG2LOC+MBNDLOC)*NPLAN)
+                VERIF( KNOLG(I,IPID+1) + NPOIN2*(J-1)
+     &              + (NSEG2+MBND2)*NPLAN) = 1
+              ELSEIF(FILETYPE(1:7).EQ.'SUMFLOW') THEN
+                GLOBAL_VALUE( KNOLG(I,IPID+1) + NPOIN2*(J-1)
+     &                       + (NSEG2+MBND2)*NPLAN) =
+     &          GLOBAL_VALUE( KNOLG(I,IPID+1) + NPOIN2*(J-1)
+     &                       + (NSEG2+MBND2)*NPLAN) +
+     &        LOCAL_VALUE(I+NPOIN2LOC*(J-1)+(NSEG2LOC+MBNDLOC)*NPLAN)
+                VERIF( KNOLG(I,IPID+1) + NPOIN2*(J-1)
+     &              + (NSEG2+MBND2)*NPLAN) =
+     &          VERIF( KNOLG(I,IPID+1) + NPOIN2*(J-1)
+     &              + (NSEG2+MBND2)*NPLAN) + 1
+              ELSE
+                WRITE(LU,*) 'CAS NON PREVU'
+                CALL PLANTE(1)
+                STOP
+              ENDIF
+            ENDDO
+          ENDDO
+        ENDIF
       ENDDO
 ! WRITES GLOBAL DATASET
       WRITE(LU,*)'WRITING DATASET NO.',NRESU,' TIME =',IT
@@ -717,6 +720,5 @@
         CLOSE (FU)
       ENDDO
 !
-        !!!FABS
-      STOP
+      STOP 0
       END PROGRAM GREDELSEG_AUTOP

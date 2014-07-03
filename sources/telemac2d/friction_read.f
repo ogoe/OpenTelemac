@@ -76,23 +76,23 @@
       ! CHECK THAT THERE IS A FRICTION FILE
       ! -----------------------------------
       IF (NOMCOF(1:1) == ' ') THEN
-         IF (LNG == 1) WRITE(LU,1)
-         IF (LNG == 2) WRITE(LU,2)
-         CALL PLANTE(1)
-         STOP
+        IF (LNG == 1) WRITE(LU,1)
+        IF (LNG == 2) WRITE(LU,2)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       REWIND NCOF
 !
       DO I=1,NZONMX
-         DO J = 1, 2
-            FRTAB%ADR(I)%P%GNUMB(J) = 0
-            FRTAB%ADR(I)%P%RTYPE(J) = 0
-            FRTAB%ADR(I)%P%RCOEF(J) = 0.D0
-            FRTAB%ADR(I)%P%NDEF (J) = 0.D0
-         ENDDO
-         FRTAB%ADR(I)%P%DP          = 0.D0
-         FRTAB%ADR(I)%P%SP          = 0.D0
+        DO J = 1, 2
+          FRTAB%ADR(I)%P%GNUMB(J) = 0
+          FRTAB%ADR(I)%P%RTYPE(J) = 0
+          FRTAB%ADR(I)%P%RCOEF(J) = 0.D0
+          FRTAB%ADR(I)%P%NDEF (J) = 0.D0
+        ENDDO
+        FRTAB%ADR(I)%P%DP          = 0.D0
+        FRTAB%ADR(I)%P%SP          = 0.D0
       ENDDO
 !
       ! K-EPSILON : READ PARAMETERS FOR 2 LAWS (BOTTOM AND BOUNDARY CONDITIONS)
@@ -115,159 +115,159 @@
       LINE = 0
       DO I = 1, NZONMX
 !
-         ! FIND THE NEXT ZONE INDEX AND LAW
-         ! --------------------------------
-         CALL FRICTION_SCAN(NCOF,NOMCOF,TYP,LINE)
+        ! FIND THE NEXT ZONE INDEX AND LAW
+        ! --------------------------------
+        CALL FRICTION_SCAN(NCOF,NOMCOF,TYP,LINE)
 !
-         ! END OF FILE => EXIT
-         ! -------------------
-         IF (TYP == 3) THEN
-            NZONES = IZONE
-            EXIT
-         ENDIF
+        ! END OF FILE => EXIT
+        ! -------------------
+        IF (TYP == 3) THEN
+          NZONES = IZONE
+          EXIT
+        ENDIF
 !
-         ! INCREMENT NUMBER OF ZONES
-         ! -------------------------
-         IZONE = IZONE + 1
+        ! INCREMENT NUMBER OF ZONES
+        ! -------------------------
+        IZONE = IZONE + 1
 !
-         ! NOT ENOUGH ZONES ALLOCATED
-         ! --------------------------
-         IF (IZONE > NZONMX) THEN
-            IF (LNG == 1) WRITE(LU,5)
-            IF (LNG == 2) WRITE(LU,6)
-            CALL PLANTE(1)
-            STOP
-         ENDIF
+        ! NOT ENOUGH ZONES ALLOCATED
+        ! --------------------------
+        IF (IZONE > NZONMX) THEN
+          IF (LNG == 1) WRITE(LU,5)
+          IF (LNG == 2) WRITE(LU,6)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
-         ! READ AND SAVE PARAMETERS OF THE ZONE
-         ! ------------------------------------
-         IF (TYP == 1) N = 1
-         IF (TYP == 2) N = 4
+        ! READ AND SAVE PARAMETERS OF THE ZONE
+        ! ------------------------------------
+        IF (TYP == 1) N = 1
+        IF (TYP == 2) N = 4
 !
-         DO LOOP = 1, NLOOP
+        DO LOOP = 1, NLOOP
 !
-            IF (LOOP == 2) BACKSPACE(NCOF)
-            ! READ THE NAME OF THE LAW AND NUMBERING OF THE ZONE
-            ! --------------------------------------------------
-            CHAINE(1) = ' '
-            IF (TYP == 1) THEN
-               READ(NCOF,*,END=999,ERR=998) IZ1,(CHAINE(J),J=2,N),LAW
-               IZ2 = IZ1
-            ELSE IF (TYP == 2) THEN
-               READ(NCOF,*,END=999,ERR=998) CHAINE(1),IZ1,CHAINE(3),IZ2,
-     &                                      (CHAINE(J),J=5,N),LAW
+          IF (LOOP == 2) BACKSPACE(NCOF)
+          ! READ THE NAME OF THE LAW AND NUMBERING OF THE ZONE
+          ! --------------------------------------------------
+          CHAINE(1) = ' '
+          IF (TYP == 1) THEN
+            READ(NCOF,*,END=999,ERR=998) IZ1,(CHAINE(J),J=2,N),LAW
+            IZ2 = IZ1
+          ELSE IF (TYP == 2) THEN
+            READ(NCOF,*,END=999,ERR=998) CHAINE(1),IZ1,CHAINE(3),IZ2,
+     &                                   (CHAINE(J),J=5,N),LAW
+          ENDIF
+!
+          ! LOCAL-GLOBAL NUMBER OF THE ZONE
+          ! -------------------------------
+          IF (LOOP == 1) FRTAB%ADR(I)%P%GNUMB(1) = IZ1
+          IF (LOOP == 1) FRTAB%ADR(I)%P%GNUMB(2) = IZ2
+!
+          BACKSPACE(NCOF)
+          CALL MAJUS(LAW)
+!
+          ! FIND THE LAW AND THE NUMBER OF PARAMETERS TO READ
+          ! -------------------------------------------------
+          SELECT CASE (LAW)
+!
+          CASE('NOFR')
+            READ(NCOF,*,END=999,ERR=900) (CHAINE(J),J=1,N),LAW
+            FRTAB%ADR(I)%P%RTYPE(LOOP) = 0
+            FRTAB%ADR(I)%P%RCOEF(LOOP) = 0.D0
+            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
+            N = N + 1
+          CASE('HAAL')
+            READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
+            FRTAB%ADR(I)%P%RTYPE(LOOP) = 1
+            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
+            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
+!
+            ! THE BOUNDARY COEFFICIENT COEF MUST BE THE SAME AS THE BOTTOM
+            ! -----------------------------------------------------------
+            IF ( ( ((N>1).AND.(TYP==1)).OR.((N>4).AND.(TYP==2)) )
+     &          .AND.
+     &           (FRTAB%ADR(I)%P%RCOEF(1)/=FRTAB%ADR(I)%P%RCOEF(2))
+     &         ) THEN
+              IF (LNG==1) WRITE(LU,15) NOMCOF,I,
+     &                                 FRTAB%ADR(I)%P%RCOEF(1)
+              IF (LNG==2) WRITE(LU,16) NOMCOF,I,
+     &                                 FRTAB%ADR(I)%P%RCOEF(1)
+              CALL PLANTE(1)
+              STOP
             ENDIF
+            N = N + 2
+          CASE('CHEZ')
+            READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
+            FRTAB%ADR(I)%P%RTYPE(LOOP) = 2
+            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
+            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
+            N = N + 2
+          CASE('STRI')
+            READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
+            FRTAB%ADR(I)%P%RTYPE(LOOP) = 3
+            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
+            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
+            N = N + 2
+          CASE('MANN')
+            READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
+            FRTAB%ADR(I)%P%RTYPE(LOOP) = 4
+            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
+            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
+            N = N + 2
+          CASE('NIKU')
+            READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
+            FRTAB%ADR(I)%P%RTYPE(LOOP) = 5
+            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
+            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
+            N = N + 2
+          CASE('LOGW')
+            IF (((N == 1).AND.(TYP == 1))  .OR.
+     &          ((N == 4).AND.(TYP == 2))) THEN
+              IF (LNG == 1) WRITE(LU,7) NOMCOF, I
+              IF (LNG == 2) WRITE(LU,8) NOMCOF, I
+              CALL PLANTE(1)
+              STOP
+            ENDIF
+            READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
+            FRTAB%ADR(I)%P%RTYPE(LOOP) = 6
+            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
+            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
+            N = N + 2
+          CASE('COWH')
+            READ(NCOF,*,END=999,ERR=907) (CHAINE(J),J=1,N),LAW,R1,R2
+            FRTAB%ADR(I)%P%RTYPE(LOOP) = 7
+            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
+            FRTAB%ADR(I)%P%NDEF (LOOP) = R2
+            N = N + 3
+          CASE DEFAULT
+            IF (LNG==1) WRITE(LU, 9) LINE, IZ1, IZ2, LAW
+            IF (LNG==2) WRITE(LU,10) LINE, IZ1, IZ2, LAW
+            CALL PLANTE(0)
+            STOP
+          END SELECT
+        ENDDO
 !
-            ! LOCAL-GLOBAL NUMBER OF THE ZONE
-            ! -------------------------------
-            IF (LOOP == 1) FRTAB%ADR(I)%P%GNUMB(1) = IZ1
-            IF (LOOP == 1) FRTAB%ADR(I)%P%GNUMB(2) = IZ2
-!
-            BACKSPACE(NCOF)
-            CALL MAJUS(LAW)
-!
-            ! FIND THE LAW AND THE NUMBER OF PARAMETERS TO READ
-            ! -------------------------------------------------
-            SELECT CASE (LAW)
-!
-            CASE('NOFR')
-               READ(NCOF,*,END=999,ERR=900) (CHAINE(J),J=1,N),LAW
-               FRTAB%ADR(I)%P%RTYPE(LOOP) = 0
-               FRTAB%ADR(I)%P%RCOEF(LOOP) = 0.D0
-               FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
-               N = N + 1
-            CASE('HAAL')
-               READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
-               FRTAB%ADR(I)%P%RTYPE(LOOP) = 1
-               FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-               FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
-!
-               ! THE BOUNDARY COEFFICIENT COEF MUST BE THE SAME AS THE BOTTOM
-               ! -----------------------------------------------------------
-               IF ( ( ((N>1).AND.(TYP==1)).OR.((N>4).AND.(TYP==2)) )
-     &             .AND.
-     &              (FRTAB%ADR(I)%P%RCOEF(1)/=FRTAB%ADR(I)%P%RCOEF(2))
-     &            ) THEN
-                  IF (LNG==1) WRITE(LU,15) NOMCOF,I,
-     &                                     FRTAB%ADR(I)%P%RCOEF(1)
-                  IF (LNG==2) WRITE(LU,16) NOMCOF,I,
-     &                                     FRTAB%ADR(I)%P%RCOEF(1)
-                  CALL PLANTE(1)
-                  STOP
-               ENDIF
-               N = N + 2
-            CASE('CHEZ')
-               READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
-               FRTAB%ADR(I)%P%RTYPE(LOOP) = 2
-               FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-               FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
-               N = N + 2
-            CASE('STRI')
-               READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
-               FRTAB%ADR(I)%P%RTYPE(LOOP) = 3
-               FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-               FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
-               N = N + 2
-            CASE('MANN')
-               READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
-               FRTAB%ADR(I)%P%RTYPE(LOOP) = 4
-               FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-               FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
-               N = N + 2
-            CASE('NIKU')
-               READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
-               FRTAB%ADR(I)%P%RTYPE(LOOP) = 5
-               FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-               FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
-               N = N + 2
-            CASE('LOGW')
-               IF (((N == 1).AND.(TYP == 1))  .OR.
-     &             ((N == 4).AND.(TYP == 2))) THEN
-                  IF (LNG == 1) WRITE(LU,7) NOMCOF, I
-                  IF (LNG == 2) WRITE(LU,8) NOMCOF, I
-                  CALL PLANTE(1)
-                  STOP
-               ENDIF
-               READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
-               FRTAB%ADR(I)%P%RTYPE(LOOP) = 6
-               FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-               FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
-               N = N + 2
-            CASE('COWH')
-               READ(NCOF,*,END=999,ERR=907) (CHAINE(J),J=1,N),LAW,R1,R2
-               FRTAB%ADR(I)%P%RTYPE(LOOP) = 7
-               FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-               FRTAB%ADR(I)%P%NDEF (LOOP) = R2
-               N = N + 3
-            CASE DEFAULT
-               IF (LNG==1) WRITE(LU, 9) LINE, IZ1, IZ2, LAW
-               IF (LNG==2) WRITE(LU,10) LINE, IZ1, IZ2, LAW
-               CALL PLANTE(0)
-               STOP
-            END SELECT
-         ENDDO
-!
-         ! READ NON-SUBMERGED COEFFICIENT IF NEEDED
-         ! ----------------------------------------
-         IF (LINDNER) THEN
-            BACKSPACE(NCOF)
-            READ(NCOF,*,END=999,ERR=888) (CHAINE(J),J=1,N),R1,R2
-            FRTAB%ADR(I)%P%DP = R1
-            FRTAB%ADR(I)%P%SP = R2
-         ELSE
-            FRTAB%ADR(I)%P%DP = 0.D0
-            FRTAB%ADR(I)%P%SP = 0.D0
-         ENDIF
-         WRITE(LU,11) FRTAB%ADR(I)%P%GNUMB(1),
-     &                FRTAB%ADR(I)%P%GNUMB(2),
-     &                FRTAB%ADR(I)%P%RTYPE(1),
-     &                FRTAB%ADR(I)%P%RCOEF(1),
-     &                FRTAB%ADR(I)%P%NDEF (1),
-     &                FRTAB%ADR(I)%P%RTYPE(2),
-     &                FRTAB%ADR(I)%P%RCOEF(2),
-     &                FRTAB%ADR(I)%P%NDEF (2),
-     &                FRTAB%ADR(I)%P%DP,
-     &                FRTAB%ADR(I)%P%SP
+        ! READ NON-SUBMERGED COEFFICIENT IF NEEDED
+        ! ----------------------------------------
+        IF (LINDNER) THEN
+          BACKSPACE(NCOF)
+          READ(NCOF,*,END=999,ERR=888) (CHAINE(J),J=1,N),R1,R2
+          FRTAB%ADR(I)%P%DP = R1
+          FRTAB%ADR(I)%P%SP = R2
+        ELSE
+          FRTAB%ADR(I)%P%DP = 0.D0
+          FRTAB%ADR(I)%P%SP = 0.D0
+        ENDIF
+        WRITE(LU,11) FRTAB%ADR(I)%P%GNUMB(1),
+     &               FRTAB%ADR(I)%P%GNUMB(2),
+     &               FRTAB%ADR(I)%P%RTYPE(1),
+     &               FRTAB%ADR(I)%P%RCOEF(1),
+     &               FRTAB%ADR(I)%P%NDEF (1),
+     &               FRTAB%ADR(I)%P%RTYPE(2),
+     &               FRTAB%ADR(I)%P%RCOEF(2),
+     &               FRTAB%ADR(I)%P%NDEF (2),
+     &               FRTAB%ADR(I)%P%DP,
+     &               FRTAB%ADR(I)%P%SP
       ENDDO
 !
 !
@@ -331,14 +331,14 @@
       ! -----------
 999   CONTINUE
       IF (LNG.EQ.1) THEN
-         WRITE(LU,*) 'FICHIER DE DONNEES POUR LE FROTTEMENT : ',NOMCOF
-         WRITE(LU,*) 'FIN DE FICHIER ANORMALE'
-         WRITE(LU,*) 'VERIFIER QUE TOUTES LES VALEURS SONT ENTREES'
+        WRITE(LU,*) 'FICHIER DE DONNEES POUR LE FROTTEMENT : ',NOMCOF
+        WRITE(LU,*) 'FIN DE FICHIER ANORMALE'
+        WRITE(LU,*) 'VERIFIER QUE TOUTES LES VALEURS SONT ENTREES'
       ENDIF
       IF (LNG.EQ.2) THEN
-         WRITE(LU,*) 'FRICTION DATA FILE : ',NOMCOF
-         WRITE(LU,*) 'ABNORMAL END OF FILE'
-         WRITE(LU,*) 'CHECK ALL VALUE HAVE BEEN WRITTEN'
+        WRITE(LU,*) 'FRICTION DATA FILE : ',NOMCOF
+        WRITE(LU,*) 'ABNORMAL END OF FILE'
+        WRITE(LU,*) 'CHECK ALL VALUE HAVE BEEN WRITTEN'
       ENDIF
       CALL PLANTE(1)
       STOP
@@ -347,12 +347,12 @@
       ! -------------------------------
 998   CONTINUE
       IF (LNG.EQ.1) THEN
-         WRITE(LU,*)'FICHIER DE DONNEES POUR LE FROTTEMENT : ',NOMCOF
-         WRITE(LU,*)'ERREUR DE LECTURE ZONE : ',CHAINE(1)
+        WRITE(LU,*)'FICHIER DE DONNEES POUR LE FROTTEMENT : ',NOMCOF
+        WRITE(LU,*)'ERREUR DE LECTURE ZONE : ',CHAINE(1)
       ENDIF
       IF (LNG.EQ.2) THEN
-         WRITE(LU,*) 'FRICTION DATA FILE : ',NOMCOF
-         WRITE(LU,*) 'READ ERROR ZONE : ',CHAINE(1)
+        WRITE(LU,*) 'FRICTION DATA FILE : ',NOMCOF
+        WRITE(LU,*) 'READ ERROR ZONE : ',CHAINE(1)
       ENDIF
       CALL PLANTE(0)
       STOP
@@ -360,12 +360,12 @@
       ! ----------------------------------
 888   CONTINUE
       IF (LNG.EQ.1) THEN
-         WRITE(LU,*) 'FICHIER DE DONNEES POUR LE FROTTEMENT'
-         WRITE(LU,*)'ERREUR DE LECTURE POUR DP ET SP, ZONE : ',CHAINE(1)
+        WRITE(LU,*) 'FICHIER DE DONNEES POUR LE FROTTEMENT'
+        WRITE(LU,*)'ERREUR DE LECTURE POUR DP ET SP, ZONE : ',CHAINE(1)
       ENDIF
       IF (LNG.EQ.2) THEN
-         WRITE(LU,*) 'FRICTION DATA FILE'
-         WRITE(LU,*) 'READ ERROR FOR DP AND SP, ZONE : ',CHAINE(1)
+        WRITE(LU,*) 'FRICTION DATA FILE'
+        WRITE(LU,*) 'READ ERROR FOR DP AND SP, ZONE : ',CHAINE(1)
       ENDIF
       CALL PLANTE(0)
       STOP
@@ -374,28 +374,28 @@
       ! ---------------
 900   CONTINUE
       IF (LNG.EQ.1) THEN
-         WRITE(LU,*)'FICHIER DE DONNEES POUR LE FROTTEMENT'
-         WRITE(LU,*) 'ERREUR DE LECTURE ZONE  : ',CHAINE(1)
-         IF ((ITURB==3).AND.(LISRUG==2)) THEN
-            IF (LOOP==1) WRITE(LU,*) 'POUR LA 1ERE LOI DEFINIR '//
-     &                               'SEULEMENT LE NOM DE LA LOI : NOFR'
-            IF (LOOP==2) WRITE(LU,*) 'POUR LA 2NDE LOI DEFINIR'//
-     &                               'SEULEMENT LE NOM DE LA LOI : NOFR'
-         ELSE
-            WRITE(LU,*) 'DEFINIR SEULEMENT LE NOM DE LA LOI'
-         ENDIF
+        WRITE(LU,*)'FICHIER DE DONNEES POUR LE FROTTEMENT'
+        WRITE(LU,*) 'ERREUR DE LECTURE ZONE  : ',CHAINE(1)
+        IF ((ITURB==3).AND.(LISRUG==2)) THEN
+          IF (LOOP==1) WRITE(LU,*) 'POUR LA 1ERE LOI DEFINIR '//
+     &                             'SEULEMENT LE NOM DE LA LOI : NOFR'
+          IF (LOOP==2) WRITE(LU,*) 'POUR LA 2NDE LOI DEFINIR'//
+     &                             'SEULEMENT LE NOM DE LA LOI : NOFR'
+        ELSE
+          WRITE(LU,*) 'DEFINIR SEULEMENT LE NOM DE LA LOI'
+        ENDIF
       ENDIF
       IF (LNG.EQ.2) THEN
-         WRITE(LU,*) 'FRICTION DATA FILE'
-         WRITE(LU,*) 'READ ERROR ZONE : ',CHAINE(1)
-         IF ((ITURB==3).AND.(LISRUG==2)) THEN
-            IF (LOOP==1) WRITE(LU,*) 'FOR THE 1ST LAW DEFINE '//
-     &                               'ONLY THE NAME OF THE LAW : NOFR'
-            IF (LOOP==2) WRITE(LU,*) 'FOR THE 2ND LAW DEFINE '//
-     &                               'ONLY THE NAME OF THE LAW : NOFR'
-         ELSE
-            WRITE(LU,*) 'DEFINE ONLY THE NAME OF THE LAW : NOFR'
-         ENDIF
+        WRITE(LU,*) 'FRICTION DATA FILE'
+        WRITE(LU,*) 'READ ERROR ZONE : ',CHAINE(1)
+        IF ((ITURB==3).AND.(LISRUG==2)) THEN
+          IF (LOOP==1) WRITE(LU,*) 'FOR THE 1ST LAW DEFINE '//
+     &                             'ONLY THE NAME OF THE LAW : NOFR'
+          IF (LOOP==2) WRITE(LU,*) 'FOR THE 2ND LAW DEFINE '//
+     &                             'ONLY THE NAME OF THE LAW : NOFR'
+        ELSE
+           WRITE(LU,*) 'DEFINE ONLY THE NAME OF THE LAW : NOFR'
+        ENDIF
       ENDIF
       CALL PLANTE(1)
       STOP
@@ -404,35 +404,35 @@
       ! -------------------------------------------------------
 901   CONTINUE
       IF (LNG.EQ.1) THEN
-         WRITE(LU,*)'FICHIER DE DONNEES POUR LE FROTTEMENT : ',NOMCOF
-         WRITE(LU,*) 'ERREUR DE LECTURE ZONE: ',CHAINE(1)
-         IF ((ITURB==3).AND.(LISRUG==2)) THEN
-            IF (LOOP==1) WRITE(LU,*) 'POUR LA 1ERE LOI DEFINIR ' //
-     &                               'LE NOM DE LA LOI : ',LAW,' ET'//
-     &                               ' LE COEFFICIENT DE FROTTEMENT'
-            IF (LOOP==1) WRITE(LU,*) 'POUR LA 2NDE LOI DEFINIR ' //
-     &                               'LE NOM DE LA LOI : ',LAW,' ET'//
-     &                               ' LE COEFFICIENT DE FROTTEMENT'
-         ELSE
-            WRITE(LU,*) 'DEFINIR LE NOM DE LA LOI : ',LAW,' ET'//
-     &                  ' LE COEFFICIENT DE FROTTEMENT'
-         ENDIF
+        WRITE(LU,*)'FICHIER DE DONNEES POUR LE FROTTEMENT : ',NOMCOF
+        WRITE(LU,*) 'ERREUR DE LECTURE ZONE: ',CHAINE(1)
+        IF ((ITURB==3).AND.(LISRUG==2)) THEN
+          IF (LOOP==1) WRITE(LU,*) 'POUR LA 1ERE LOI DEFINIR ' //
+     &                             'LE NOM DE LA LOI : ',LAW,' ET'//
+     &                             ' LE COEFFICIENT DE FROTTEMENT'
+          IF (LOOP==1) WRITE(LU,*) 'POUR LA 2NDE LOI DEFINIR ' //
+     &                             'LE NOM DE LA LOI : ',LAW,' ET'//
+     &                             ' LE COEFFICIENT DE FROTTEMENT'
+        ELSE
+          WRITE(LU,*) 'DEFINIR LE NOM DE LA LOI : ',LAW,' ET'//
+     &                ' LE COEFFICIENT DE FROTTEMENT'
+        ENDIF
       ENDIF
 !
       IF (LNG.EQ.2) THEN
-         WRITE(LU,*) 'FRICTION DATA FILE : ',NOMCOF
-         WRITE(LU,*) 'READ ERROR ZONE : ',CHAINE(1)
-         IF ((ITURB==3).AND.(LISRUG==2)) THEN
-            IF (LOOP==1) WRITE(LU,*) 'FOR THE 1ST LAW DEFINE '//
-     &                               'THE NAME OF THE LAW : ',LAW//
-     &                               ' AND THE FRICTION COEFFICIENT'
-            IF (LOOP==2) WRITE(LU,*) 'FOR THE 2ND LAW DEFINE '//
-     &                               'THE NAME OF THE LAW : ',LAW//
-     &                               ' AND THE FRICTION COEFFICIENT'
-         ELSE
-            WRITE(LU,*) 'DEFINE THE NAME OF THE LAW : ',LAW//
-     &                  ' AND THE FRICTION COEFFICIENT'
-         ENDIF
+        WRITE(LU,*) 'FRICTION DATA FILE : ',NOMCOF
+        WRITE(LU,*) 'READ ERROR ZONE : ',CHAINE(1)
+        IF ((ITURB==3).AND.(LISRUG==2)) THEN
+          IF (LOOP==1) WRITE(LU,*) 'FOR THE 1ST LAW DEFINE '//
+     &                             'THE NAME OF THE LAW : ',LAW//
+     &                             ' AND THE FRICTION COEFFICIENT'
+          IF (LOOP==2) WRITE(LU,*) 'FOR THE 2ND LAW DEFINE '//
+     &                             'THE NAME OF THE LAW : ',LAW//
+     &                             ' AND THE FRICTION COEFFICIENT'
+        ELSE
+          WRITE(LU,*) 'DEFINE THE NAME OF THE LAW : ',LAW//
+     &                ' AND THE FRICTION COEFFICIENT'
+        ENDIF
       ENDIF
       CALL PLANTE(1)
       STOP
@@ -441,39 +441,39 @@
       ! -------------------
 907   CONTINUE
       IF (LNG.EQ.1) THEN
-         WRITE(LU,*)'FICHIER DE DONNEES POUR LE FROTTEMENT : ',NOMCOF
-         WRITE(LU,*) 'ERREUR DE LECTURE ZONE : ',CHAINE(1)
-         IF ((ITURB==3).AND.(LISRUG==2)) THEN
-            IF (LOOP==1) WRITE(LU,*) 'POUR LA 1ERE LOI DEFINIR ' //
-     &                               'LE NOM DE LA LOI : ',LAW,' ET'//
-     &                               ' LE COEFFICIENT DE FROTTEMENT'//
-     &                               ' ET LE MANNING'
-            IF (LOOP==1) WRITE(LU,*) 'POUR LA 2NDE LOI DEFINIR ' //
-     &                               'LE NOM DE LA LOI : ',LAW,' ET'//
-     &                               ' LE COEFFICIENT DE FROTTEMENT'//
-     &                               ' ET LE MANNING'
-         ELSE
-            WRITE(LU,*) 'DEFINIR LE NOM DE LA LOI : ',LAW,' ET'//
-     &                  ' LE COEFFICIENT DE FROTTEMENT ET LE MANNING'
-         ENDIF
+        WRITE(LU,*)'FICHIER DE DONNEES POUR LE FROTTEMENT : ',NOMCOF
+        WRITE(LU,*) 'ERREUR DE LECTURE ZONE : ',CHAINE(1)
+        IF ((ITURB==3).AND.(LISRUG==2)) THEN
+          IF (LOOP==1) WRITE(LU,*) 'POUR LA 1ERE LOI DEFINIR ' //
+     &                             'LE NOM DE LA LOI : ',LAW,' ET'//
+     &                             ' LE COEFFICIENT DE FROTTEMENT'//
+     &                             ' ET LE MANNING'
+          IF (LOOP==1) WRITE(LU,*) 'POUR LA 2NDE LOI DEFINIR ' //
+     &                             'LE NOM DE LA LOI : ',LAW,' ET'//
+     &                             ' LE COEFFICIENT DE FROTTEMENT'//
+     &                             ' ET LE MANNING'
+        ELSE
+          WRITE(LU,*) 'DEFINIR LE NOM DE LA LOI : ',LAW,' ET'//
+     &                ' LE COEFFICIENT DE FROTTEMENT ET LE MANNING'
+        ENDIF
       ENDIF
       IF (LNG.EQ.2) THEN
-         WRITE(LU,*) 'FRICTION DATA FILE : ',NOMCOF
-         WRITE(LU,*) 'READ ERROR ZONE : ',CHAINE(1)
-         IF ((ITURB==3).AND.(LISRUG==2)) THEN
-            IF (LOOP==1) WRITE(LU,*) 'FOR THE 1ST LAW DEFINE '//
-     &                               'THE NAME OF THE LAW : ',LAW//
-     &                               ' AND THE FRICTION COEFFICIENT'//
-     &                               ' AND DEFAULT MANNING'
-            IF (LOOP==2) WRITE(LU,*) 'FOR THE 2ND LAW DEFINE '//
-     &                               'THE NAME OF THE LAW : ',LAW//
-     &                               ' AND THE FRICTION COEFFICIENT'//
-     &                               ' AND DEFAULT MANNING'
-         ELSE
-            WRITE(LU,*) 'DEFINE THE NAME OF THE LAW : ',LAW//
-     &                  ' AND THE FRICTION COEFFICIENT'//
-     &                  ' AND DEFAULT MANNING'
-         ENDIF
+        WRITE(LU,*) 'FRICTION DATA FILE : ',NOMCOF
+        WRITE(LU,*) 'READ ERROR ZONE : ',CHAINE(1)
+        IF ((ITURB==3).AND.(LISRUG==2)) THEN
+          IF (LOOP==1) WRITE(LU,*) 'FOR THE 1ST LAW DEFINE '//
+     &                             'THE NAME OF THE LAW : ',LAW//
+     &                             ' AND THE FRICTION COEFFICIENT'//
+     &                             ' AND DEFAULT MANNING'
+          IF (LOOP==2) WRITE(LU,*) 'FOR THE 2ND LAW DEFINE '//
+     &                             'THE NAME OF THE LAW : ',LAW//
+     &                             ' AND THE FRICTION COEFFICIENT'//
+     &                             ' AND DEFAULT MANNING'
+        ELSE
+          WRITE(LU,*) 'DEFINE THE NAME OF THE LAW : ',LAW//
+     &                ' AND THE FRICTION COEFFICIENT'//
+     &                ' AND DEFAULT MANNING'
+        ENDIF
       ENDIF
       CALL PLANTE(1)
       STOP

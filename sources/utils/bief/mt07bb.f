@@ -107,23 +107,23 @@
 !
 !   INITIALISES THE INTERMEDIATE VARIABLES
 !
-         T = F(IELEM)
+        T = F(IELEM)
 !
 !  DIAGONAL TERMS
 !
-         A11(IELEM) = -(T-2)*SURFAC(IELEM)*XSUR09
-         A22(IELEM) = A11(IELEM)
-         A33(IELEM) = A11(IELEM)
-         A44(IELEM) = -(T-2)*SURFAC(IELEM)*XSUR06
+        A11(IELEM) = -(T-2)*SURFAC(IELEM)*XSUR09
+        A22(IELEM) = A11(IELEM)
+        A33(IELEM) = A11(IELEM)
+        A44(IELEM) = -(T-2)*SURFAC(IELEM)*XSUR06
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM) = SURFAC(IELEM)*T*XSUR36
-         A13(IELEM) = A12(IELEM)
-         A14(IELEM) = 2*A12(IELEM)
-         A23(IELEM) = A12(IELEM)
-         A24(IELEM) = A14(IELEM)
-         A34(IELEM) = A14(IELEM)
+        A12(IELEM) = SURFAC(IELEM)*T*XSUR36
+        A13(IELEM) = A12(IELEM)
+        A14(IELEM) = 2*A12(IELEM)
+        A23(IELEM) = A12(IELEM)
+        A24(IELEM) = A14(IELEM)
+        A34(IELEM) = A14(IELEM)
 !
       ENDDO ! IELEM 
 !
@@ -136,14 +136,15 @@
 !
       ELSE
 !
-       IF (LNG.EQ.1) WRITE(LU,100) SF%ELM,SF%NAME
-       IF (LNG.EQ.2) WRITE(LU,101) SF%ELM,SF%NAME
-100    FORMAT(1X,'MT07BB (BIEF) :',/,
-     &        1X,'DISCRETISATION DE F NON PREVUE : ',1I6,
-     &        1X,'NOM REEL : ',A6)
-101    FORMAT(1X,'MT07BB (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF F NOT AVAILABLE:',1I6,
-     &        1X,'REAL NAME: ',A6)
+        IF (LNG.EQ.1) WRITE(LU,100) SF%ELM,SF%NAME
+        IF (LNG.EQ.2) WRITE(LU,101) SF%ELM,SF%NAME
+100     FORMAT(1X,'MT07BB (BIEF) :',/,
+     &         1X,'DISCRETISATION DE F NON PREVUE : ',1I6,
+     &         1X,'NOM REEL : ',A6)
+101     FORMAT(1X,'MT07BB (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF F NOT AVAILABLE:',1I6,
+     &         1X,'REAL NAME: ',A6)
+        CALL PLANTE(1)
         STOP
 !
       ENDIF

@@ -132,14 +132,13 @@
         WRITE(LU,*) ' OR' 
         WRITE(LU,*) ' IUB=',IUB,' NOT EQUAL TO CH_DELTA(18)=', 
      &        CH_DELTA(18) 
-!       CALL PLANTE(1) 
+        CALL PLANTE(1) 
         STOP 
       ENDIF 
       RETURN  
 #else
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_SYNC VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_SYNC IN ITS VOID VERSION'
-      STOP
 #endif
 !     
 !----------------------------------------------------------------------

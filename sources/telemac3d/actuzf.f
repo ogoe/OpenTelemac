@@ -47,35 +47,35 @@
 !| ZF             |<->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-       IMPLICIT NONE
+      IMPLICIT NONE
 !
 !-----------------------------------------------------------------------
 !
-       INTEGER, INTENT(IN)             :: NPOIN2, NPFMAX
-       DOUBLE PRECISION, INTENT(IN)    :: IVIDE(NPFMAX,NPOIN2)
-       DOUBLE PRECISION, INTENT(IN)    :: EPAI(NPFMAX-1,NPOIN2)
-       DOUBLE PRECISION, INTENT(INOUT) :: ZF(NPOIN2)
-       INTEGER, INTENT(IN)             :: NPF(NPOIN2)
+      INTEGER, INTENT(IN)             :: NPOIN2, NPFMAX
+      DOUBLE PRECISION, INTENT(IN)    :: IVIDE(NPFMAX,NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: EPAI(NPFMAX-1,NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZF(NPOIN2)
+      INTEGER, INTENT(IN)             :: NPF(NPOIN2)
 !
 !-----------------------------------------------------------------------
 !
-       INTEGER IPOIN , IPF
-       DOUBLE PRECISION  ECOUCH
+      INTEGER IPOIN , IPF
+      DOUBLE PRECISION  ECOUCH
 !
 !-----------------------------------------------------------------------
 !
-       DO IPOIN=1,NPOIN2
+      DO IPOIN=1,NPOIN2
 !
-!         -----COMPUTES THE BOTTOM ELEVATION-----
+!       -----COMPUTES THE BOTTOM ELEVATION-----
 !
-          DO IPF=1,NPF(IPOIN)-1
-            ECOUCH=(IVIDE(IPF,IPOIN)+IVIDE(IPF+1,IPOIN))/2.D0
-            ZF(IPOIN)=ZF(IPOIN)+(1.D0+ECOUCH)*EPAI(IPF,IPOIN)
-          END DO
+        DO IPF=1,NPF(IPOIN)-1
+          ECOUCH=(IVIDE(IPF,IPOIN)+IVIDE(IPF+1,IPOIN))/2.D0
+          ZF(IPOIN)=ZF(IPOIN)+(1.D0+ECOUCH)*EPAI(IPF,IPOIN)
+        END DO
 !
-       END DO
+      END DO
 !
 !-----------------------------------------------------------------------
 !
-       RETURN
-       END SUBROUTINE ACTUZF
+      RETURN
+      END SUBROUTINE ACTUZF

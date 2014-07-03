@@ -258,12 +258,12 @@
 !
         ELSEIF(IELM1.EQ.71) THEN
 !
-!              FOR VERTICAL RECTANGULAR SIDES OF THE PRISMS
-               CALL VC00FF(XMUL,XEL,YEL,ZPT,
-     &                     IKLBOR(1,1),IKLBOR(1,2),
-     &                     IKLBOR(1,3),IKLBOR(1,4),NBOR,
-     &                     NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4),
-     &                     NELBOR,NULONE,NELMAX)
+!         FOR VERTICAL RECTANGULAR SIDES OF THE PRISMS
+          CALL VC00FF(XMUL,XEL,YEL,ZPT,
+     &                IKLBOR(1,1),IKLBOR(1,2),
+     &                IKLBOR(1,3),IKLBOR(1,4),NBOR,
+     &                NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4),
+     &                NELBOR,NULONE,NELMAX)
 !
 !-----------------------------------------------------------------------
 !       OTHER
@@ -349,12 +349,12 @@
 !
         ELSEIF(IELM1.EQ.71) THEN
 !
-!              FOR VERTICAL RECTANGULAR SIDES OF THE PRISMS
-               CALL VC01FF(XMUL,SF,F,XEL,YEL,ZPT,
-     &                     IKLBOR(1,1),IKLBOR(1,2),
-     &                     IKLBOR(1,3),IKLBOR(1,4),NBOR,
-     &                     NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4),
-     &                     NELBOR,NULONE,NELMAX)
+!         FOR VERTICAL RECTANGULAR SIDES OF THE PRISMS
+          CALL VC01FF(XMUL,SF,F,XEL,YEL,ZPT,
+     &                IKLBOR(1,1),IKLBOR(1,2),
+     &                IKLBOR(1,3),IKLBOR(1,4),NBOR,
+     &                NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4),
+     &                NELBOR,NULONE,NELMAX)
 !
 !-----------------------------------------------------------------------
 !
@@ -1068,25 +1068,25 @@
 !
         ELSEIF(IELM1.EQ.41) THEN
 !
-             IF(FORMUL(1:15).EQ.'GRADF(X,Y)     ') THEN
-!            SIMPLIFIED FORMULATION FOR EFFICIENCY AND ACCURACY
-             CALL VC13PP2(XMUL,SF,F,XEL,YEL,ZPT,
-     &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
-     &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
-     &                   T(1,3),T(1,4),T(1,5),T(1,6),ICOORD)
-             ELSEIF( FORMUL(8:15).EQ.'        ') THEN
-!                    FORMUL(6:7) IS LEFT FOR OPTIONS
-             CALL VC13PP(XMUL,SF,F,XEL,YEL,ZPT,SURFAC,
-     &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
-     &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
-     &                   T(1,3),T(1,4),T(1,5),T(1,6),ICOORD,FORMUL)
+          IF(FORMUL(1:15).EQ.'GRADF(X,Y)     ') THEN
+!         SIMPLIFIED FORMULATION FOR EFFICIENCY AND ACCURACY
+          CALL VC13PP2(XMUL,SF,F,XEL,YEL,ZPT,
+     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
+     &                IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
+     &                T(1,3),T(1,4),T(1,5),T(1,6),ICOORD)
+          ELSEIF( FORMUL(8:15).EQ.'        ') THEN
+!                 FORMUL(6:7) IS LEFT FOR OPTIONS
+          CALL VC13PP(XMUL,SF,F,XEL,YEL,ZPT,SURFAC,
+     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
+     &                IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
+     &                T(1,3),T(1,4),T(1,5),T(1,6),ICOORD,FORMUL)
 !
-             ELSE
-               IF(LNG.EQ.1) WRITE(LU,1000) FORMUL
-               IF(LNG.EQ.2) WRITE(LU,1001) FORMUL
-               CALL PLANTE(1)
-               STOP
-             ENDIF
+          ELSE
+            IF(LNG.EQ.1) WRITE(LU,1000) FORMUL
+            IF(LNG.EQ.2) WRITE(LU,1001) FORMUL
+            CALL PLANTE(1)
+            STOP
+          ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -1094,20 +1094,20 @@
 !
         ELSEIF(IELM1.EQ.31.OR.IELM1.EQ.51) THEN
 !
-             IF(FORMUL(1:5).EQ.'GRADF'.AND.
-     &          FORMUL(8:15).EQ.'        ') THEN
-!              FORMUL(6:7) IS LEFT FOR OPTIONS
-               CALL VC13TT(XMUL,SF,F,XPT,YPT,ZPT,
-     &                     IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
-     &                     NELEM,NELMAX,T(1,1),T(1,2),
-     &                     T(1,3),T(1,4),ICOORD,FORMUL)
+          IF(FORMUL(1:5).EQ.'GRADF'.AND.
+     &       FORMUL(8:15).EQ.'        ') THEN
+!           FORMUL(6:7) IS LEFT FOR OPTIONS
+            CALL VC13TT(XMUL,SF,F,XPT,YPT,ZPT,
+     &                  IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
+     &                  NELEM,NELMAX,T(1,1),T(1,2),
+     &                  T(1,3),T(1,4),ICOORD,FORMUL)
 !
-             ELSE
-               IF(LNG.EQ.1) WRITE(LU,1000) FORMUL
-               IF(LNG.EQ.2) WRITE(LU,1001) FORMUL
-               CALL PLANTE(1)
-               STOP
-             ENDIF
+          ELSE
+            IF(LNG.EQ.1) WRITE(LU,1000) FORMUL
+            IF(LNG.EQ.2) WRITE(LU,1001) FORMUL
+            CALL PLANTE(1)
+            STOP
+          ENDIF
 !
 !-----------------------------------------------------------------------
 !       OTHER

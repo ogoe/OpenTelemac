@@ -757,18 +757,18 @@
 !> @brief
 ! declaration for QNL4 - GQM method
       INTEGER, ALLOCATABLE :: K_IF1(:) , K_1P(:,:) , K_1M(:,:),
-     *                        K_IF2 (:,:,:), K_IF3 (:,:,:),
-     *                        K_1P2P(:,:,:), K_1P2M(:,:,:),
-     *                        K_1P3P(:,:,:), K_1P3M(:,:,:),
-     *                        K_1M2P(:,:,:), K_1M2M(:,:,:),
-     *                        K_1M3P(:,:,:), K_1M3M(:,:,:),
-     *                        IDCONF(:,:)
+     &                        K_IF2 (:,:,:), K_IF3 (:,:,:),
+     &                        K_1P2P(:,:,:), K_1P2M(:,:,:),
+     &                        K_1P3P(:,:,:), K_1P3M(:,:,:),
+     &                        K_1M2P(:,:,:), K_1M2M(:,:,:),
+     &                        K_1M3P(:,:,:), K_1M3M(:,:,:),
+     &                        IDCONF(:,:)
 !> @brief
 ! declaration for QNL4 - GQM method
       DOUBLE PRECISION, ALLOCATABLE :: TB_V24(:,:,:), TB_V34(:,:,:),
-     *                                 TB_TPM(:,:,:), TB_TMP(:,:,:),
-     *                                 TB_FAC(:,:,:),
-     *                                 TB_V14(:)
+     &                                 TB_TPM(:,:,:), TB_TMP(:,:,:),
+     &                                 TB_FAC(:,:,:),
+     &                                 TB_V14(:)
 !> @brief
 ! declaration for QNL4 - GQM method
       INTEGER, PARAMETER :: LBUF = 500

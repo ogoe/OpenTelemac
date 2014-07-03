@@ -165,7 +165,7 @@
           W3(IELEM) = (    -Y2 *(H123*U123+HU123)
      &                     +X2 *(H123*V123+HV123) )*XSUR24
 !
-       ENDDO
+        ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -266,7 +266,7 @@
           W3(IELEM) = (    -Y2 *(H123*U123+HU123)
      &                     +X2 *(H123*V123+HV123) )*XSUR24
 !
-       ENDDO
+        ENDDO
 !
 !     F, G AND H ARE LINEAR, U AND V ARE LINEAR OR QUASI-BUBBLE
 !
@@ -316,7 +316,7 @@
           W3(IELEM) = (    -Y2 *(H123*U123+HU123)
      &                     +X2 *(H123*V123+HV123) )*XSUR24
 !
-       ENDDO
+        ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -392,9 +392,9 @@
           W3(IELEM) = (    -Y2 *(H123*U123+HU123)
      &                     +X2 *(H123*V123+HV123) )*XSUR24
 !
-       ENDDO
+        ENDDO
 !
-       ELSEIF(       IELMF.EQ.11
+      ELSEIF(       IELMF.EQ.11
      &          .AND.IELMG.EQ.11
      &          .AND.IELMH.EQ.11  ) THEN
 !
@@ -442,7 +442,7 @@
 !
         ENDDO
 !
-       ELSE
+      ELSE
         IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
         IF (LNG.EQ.1) WRITE(LU,200) IELMG,SG%NAME
         IF (LNG.EQ.1) WRITE(LU,300) IELMH,SH%NAME
@@ -453,7 +453,7 @@
         IF (LNG.EQ.2) WRITE(LU,601)
         CALL PLANTE(1)
         STOP
-       ENDIF
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

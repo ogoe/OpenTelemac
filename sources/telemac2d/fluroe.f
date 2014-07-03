@@ -125,9 +125,9 @@
         FLUSCE(3,NB) = 0.D0
       ENDDO
 !    INITIALIZATION OF YESNO
-       DO I=1,NSEG
-         YESNO(I)=.FALSE.
-       ENDDO
+      DO I=1,NSEG
+        YESNO(I)=.FALSE.
+      ENDDO
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -140,101 +140,101 @@
 !
       DDMIN = 10000.D0
       DO IEL=1, NELEM 
-       DO I = 1,3
-        IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
-         NSG = ELTSEG(IEL,I)
-!
-    !    RECUPERATE NODES OF THE EDGE WITH THE GOOD ORIENTATION
-    !    WITH RESPECT TO THE NORMAL
-         NUBO1 = NUBO(1,NSG)
-         NUBO2 = NUBO(2,NSG)
-         PROD_SCAL= ((X(NUBO2)-X(NUBO1))*VNOIN(1,NSG)+
-     &               (Y(NUBO2)-Y(NUBO1))*VNOIN(2,NSG))
-         IF(PROD_SCAL.LT.0.D0)THEN
-           NUBO1 = NUBO(2,NSG)
-           NUBO2 = NUBO(1,NSG)
-         ENDIF
-         INDIC =0
+        DO I = 1,3
+          IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
+            NSG = ELTSEG(IEL,I)
+!           
+!           RECUPERATE NODES OF THE EDGE WITH THE GOOD ORIENTATION
+!           WITH RESPECT TO THE NORMAL
+            NUBO1 = NUBO(1,NSG)
+            NUBO2 = NUBO(2,NSG)
+            PROD_SCAL= ((X(NUBO2)-X(NUBO1))*VNOIN(1,NSG)+
+     &                  (Y(NUBO2)-Y(NUBO1))*VNOIN(2,NSG))
+            IF(PROD_SCAL.LT.0.D0)THEN
+              NUBO1 = NUBO(2,NSG)
+              NUBO2 = NUBO(1,NSG)
+            ENDIF
+            INDIC =0
 !
 !   --->    INTERMEDIATE COMPUTATIONS
 !
-         HI = W(1,NUBO1)
-         IF(HI.GT.EPS) THEN
-           UI = W(2,NUBO1) / HI
-           VI = W(3,NUBO1) / HI
-         ELSE
-           INDIC = INDIC + 1
-           UI = 0.D0
-           VI = 0.D0
-           HI = 0.D0
-         ENDIF
-!
-         HJ = W(1,NUBO2)
-         IF(HJ.GT.EPS) THEN
-           UJ = W(2,NUBO2) / HJ
-           VJ = W(3,NUBO2) / HJ
-         ELSE
-           INDIC = INDIC + 1
-           UJ = 0.D0
-           VJ = 0.D0
-           HJ = 0.D0
-         ENDIF
-!
-         DIJ = SQRT((X(NUBO1)-Y(NUBO2))**2+(Y(NUBO1)-Y(NUBO2))**2)
-         IF(DIJ.LE.DDMIN) THEN
-           DDMIN=DIJ
-         ENDIF
-         RNORM = VNOIN(3,NSG)
-!
-         IF(INDIC.LT.2) THEN
-           XN = VNOIN (1,NSG)
-           YN = VNOIN (2,NSG)
-!
-           CALL FLUXE(HJ,UJ,VJ,HI,UI,VI,XN,YN,RNORM,G,FLULOC)
-           CALL FLUSRC(NUBO1,NUBO2,NSG,VNOIN,W,FLUSCE,X,Y,AIRS,NPOIN,
-     &              NSEG,ZF,EPS,G)
-         ELSE
-           FLULOC(1)= 0.D0
-           FLULOC(2)= 0.D0
-           FLULOC(3)= 0.D0
-           FLUSCE(1,NUBO1)=0.D0
-           FLUSCE(2,NUBO1)=0.D0
-           FLUSCE(3,NUBO1)=0.D0
-           FLUSCE(1,NUBO2)=0.D0
-           FLUSCE(2,NUBO2)=0.D0
-           FLUSCE(3,NUBO2)=0.D0
-         ENDIF
+            HI = W(1,NUBO1)
+            IF(HI.GT.EPS) THEN
+              UI = W(2,NUBO1) / HI
+              VI = W(3,NUBO1) / HI
+            ELSE
+              INDIC = INDIC + 1
+              UI = 0.D0
+              VI = 0.D0
+              HI = 0.D0
+            ENDIF
+!         
+            HJ = W(1,NUBO2)
+            IF(HJ.GT.EPS) THEN
+              UJ = W(2,NUBO2) / HJ
+              VJ = W(3,NUBO2) / HJ
+            ELSE
+              INDIC = INDIC + 1
+              UJ = 0.D0
+              VJ = 0.D0
+              HJ = 0.D0
+            ENDIF
+!         
+            DIJ = SQRT((X(NUBO1)-Y(NUBO2))**2+(Y(NUBO1)-Y(NUBO2))**2)
+            IF(DIJ.LE.DDMIN) THEN
+              DDMIN=DIJ
+            ENDIF
+            RNORM = VNOIN(3,NSG)
+!         
+            IF(INDIC.LT.2) THEN
+              XN = VNOIN (1,NSG)
+              YN = VNOIN (2,NSG)
+!         
+              CALL FLUXE(HJ,UJ,VJ,HI,UI,VI,XN,YN,RNORM,G,FLULOC)
+              CALL FLUSRC(NUBO1,NUBO2,NSG,VNOIN,W,FLUSCE,X,Y,AIRS,NPOIN,
+     &                 NSEG,ZF,EPS,G)
+            ELSE
+              FLULOC(1)= 0.D0
+              FLULOC(2)= 0.D0
+              FLULOC(3)= 0.D0
+              FLUSCE(1,NUBO1)=0.D0
+              FLUSCE(2,NUBO1)=0.D0
+              FLUSCE(3,NUBO1)=0.D0
+              FLUSCE(1,NUBO2)=0.D0
+              FLUSCE(2,NUBO2)=0.D0
+              FLUSCE(3,NUBO2)=0.D0
+            ENDIF
 !
 !FOR PARALLELISM
 !
-         IF(NCSIZE.GT.1)THEN
-          IF(IFABOR(IEL,I).EQ.-2)THEN !THIS IS INTERFACE EDGE
-           ! DEMI=DEMI*SIGN(1.0D0,PROD_SCAL)
-            FLULOC(1)= DEMI*FLULOC(1)
-            FLULOC(2)= DEMI*FLULOC(2)
-            FLULOC(3)= DEMI*FLULOC(3)
+            IF(NCSIZE.GT.1)THEN
+              IF(IFABOR(IEL,I).EQ.-2)THEN !THIS IS INTERFACE EDGE
+                ! DEMI=DEMI*SIGN(1.0D0,PROD_SCAL)
+                FLULOC(1)= DEMI*FLULOC(1)
+                FLULOC(2)= DEMI*FLULOC(2)
+                FLULOC(3)= DEMI*FLULOC(3)
+!            
+                FLUSCE(1,NUBO1)= DEMI*FLUSCE(1,NUBO1)
+                FLUSCE(2,NUBO1)= DEMI*FLUSCE(2,NUBO1)
+                FLUSCE(3,NUBO1)= DEMI*FLUSCE(3,NUBO1)
+                FLUSCE(1,NUBO2)= DEMI*FLUSCE(1,NUBO2)
+                FLUSCE(2,NUBO2)= DEMI*FLUSCE(2,NUBO2)
+                FLUSCE(3,NUBO2)= DEMI*FLUSCE(3,NUBO2)
+              ENDIF
+            ENDIF
+!           
+            FLUX(NUBO1,1)=FLUX(NUBO1,1)+FLULOC(1)*RNORM+FLUSCE(1,NUBO1)
+            FLUX(NUBO1,2)=FLUX(NUBO1,2)+FLULOC(2)*RNORM+FLUSCE(2,NUBO1)
+            FLUX(NUBO1,3)=FLUX(NUBO1,3)+FLULOC(3)*RNORM+FLUSCE(3,NUBO1)
+!           
+            FLUX(NUBO2,1)=FLUX(NUBO2,1)-FLULOC(1)*RNORM+FLUSCE(1,NUBO2)
+            FLUX(NUBO2,2)=FLUX(NUBO2,2)-FLULOC(2)*RNORM+FLUSCE(2,NUBO2)
+            FLUX(NUBO2,3)=FLUX(NUBO2,3)-FLULOC(3)*RNORM+FLUSCE(3,NUBO2)
 !
-            FLUSCE(1,NUBO1)= DEMI*FLUSCE(1,NUBO1)
-            FLUSCE(2,NUBO1)= DEMI*FLUSCE(2,NUBO1)
-            FLUSCE(3,NUBO1)= DEMI*FLUSCE(3,NUBO1)
-            FLUSCE(1,NUBO2)= DEMI*FLUSCE(1,NUBO2)
-            FLUSCE(2,NUBO2)= DEMI*FLUSCE(2,NUBO2)
-            FLUSCE(3,NUBO2)= DEMI*FLUSCE(3,NUBO2)
+            YESNO(NSG)=.TRUE. 
           ENDIF
-         ENDIF
-!
-         FLUX(NUBO1,1)=FLUX(NUBO1,1)+FLULOC(1)*RNORM+FLUSCE(1,NUBO1)
-         FLUX(NUBO1,2)=FLUX(NUBO1,2)+FLULOC(2)*RNORM+FLUSCE(2,NUBO1)
-         FLUX(NUBO1,3)=FLUX(NUBO1,3)+FLULOC(3)*RNORM+FLUSCE(3,NUBO1)
-!
-         FLUX(NUBO2,1)=FLUX(NUBO2,1)-FLULOC(1)*RNORM+FLUSCE(1,NUBO2)
-         FLUX(NUBO2,2)=FLUX(NUBO2,2)-FLULOC(2)*RNORM+FLUSCE(2,NUBO2)
-         FLUX(NUBO2,3)=FLUX(NUBO2,3)-FLULOC(3)*RNORM+FLUSCE(3,NUBO2)
-!
-        YESNO(NSG)=.TRUE. 
-        ENDIF
         
-       ENDDO
+        ENDDO
       ENDDO
 
 !     FOR PARALLESM
@@ -243,18 +243,18 @@
       ENDIF
 !
 ! 3. COMPUTE FLUXES AT THE BOUNDARIES
-!        START AT ZERO
-         FLUSORT = 0.D0
-         FLUENT  = 0.D0
+!     START AT ZERO
+      FLUSORT = 0.D0
+      FLUENT  = 0.D0
 !
 ! ====>   INLET FLUX
 !
       DO K = 1 , NPTFR
 !
-      NB = NBOR(K)
-      INDIC = 0
+        NB = NBOR(K)
+        INDIC = 0
 !
-      IF(LIMPRO(K,1).EQ.KDIR.OR.LIMPRO(K,1).EQ.KDDL) THEN
+        IF(LIMPRO(K,1).EQ.KDIR.OR.LIMPRO(K,1).EQ.KDDL) THEN
 !
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -263,121 +263,118 @@
 !   --->    INTERMEDIATE COMPUTATIONS
 !           -------------------------------
 !
-!     IF H IMPOSED
-      IF(LIMPRO(K,1).EQ.KDIR) THEN
-       HJ = WINF(1,K)
-       IF(HJ.GT.EPS) THEN
-         UJ = WINF(2,K) / HJ
-         VJ = WINF(3,K) / HJ
-       ELSE
-         HJ = 0.D0
-         UJ = 0.D0
-         VJ = 0.D0
-         INDIC = INDIC+1
-       ENDIF
-       HI = W(1,NB)
-       IF(HI.GT.EPS) THEN
-         UI = W(2,NB) / HI
-         VI = W(3,NB) / HI
-       ELSE
-         HI = 0.D0
-         UI = 0.D0
-         VI = 0.D0
-         INDIC = INDIC+1
-       ENDIF
-       XN = XNEBOR(K)
-       YN = YNEBOR(K)
-       RNORM = SQRT( XNEBOR(K+NPTFR)**2 + YNEBOR(K+NPTFR)**2 )
-!
-       IF(INDIC.LT.2) THEN
-         CALL FLUXE(HJ,UJ,VJ,HI,UI,VI,XN,YN,RNORM,G,FLULOC)
-         OUTFLOW = FLULOC(1)*RNORM
-         FLUSORT = FLUSORT + OUTFLOW
-         FLBOR%R(K)=OUTFLOW
-       ELSE
-         FLULOC(1)= 0.D0
-         FLULOC(2)= 0.D0
-         FLULOC(3)= 0.D0
-         FLBOR%R(K)=0.0D0
-       ENDIF
+!         IF H IMPOSED
+          IF(LIMPRO(K,1).EQ.KDIR) THEN
+            HJ = WINF(1,K)
+            IF(HJ.GT.EPS) THEN
+              UJ = WINF(2,K) / HJ
+              VJ = WINF(3,K) / HJ
+            ELSE
+              HJ = 0.D0
+              UJ = 0.D0
+              VJ = 0.D0
+              INDIC = INDIC+1
+            ENDIF
+            HI = W(1,NB)
+            IF(HI.GT.EPS) THEN
+              UI = W(2,NB) / HI
+              VI = W(3,NB) / HI
+            ELSE
+              HI = 0.D0
+              UI = 0.D0
+              VI = 0.D0
+              INDIC = INDIC+1
+            ENDIF
+            XN = XNEBOR(K)
+            YN = YNEBOR(K)
+            RNORM = SQRT( XNEBOR(K+NPTFR)**2 + YNEBOR(K+NPTFR)**2 )
+!           
+            IF(INDIC.LT.2) THEN
+              CALL FLUXE(HJ,UJ,VJ,HI,UI,VI,XN,YN,RNORM,G,FLULOC)
+              OUTFLOW = FLULOC(1)*RNORM
+              FLUSORT = FLUSORT + OUTFLOW
+              FLBOR%R(K)=OUTFLOW
+            ELSE
+              FLULOC(1)= 0.D0
+              FLULOC(2)= 0.D0
+              FLULOC(3)= 0.D0
+              FLBOR%R(K)=0.0D0
+            ENDIF
 !
 ! RA: LIMPRO .NE. KDIR
-       ELSE
-        HI = WINF(1,K)
-        IF(HI.GT.EPS) THEN
-         UI = WINF(2,K) / HI
-         VI = WINF(3,K) / HI
-        ELSE
-         HI = 0.D0
-         UI = 0.D0
-         VI = 0.D0
-         INDIC = INDIC+1
-        ENDIF
-        HJ = W(1,NB)
-        IF(HJ.GT.EPS) THEN
-         UJ = W(2,NB) / HJ
-         VJ = W(3,NB) / HJ
-        ELSE
-         HJ = 0.D0
-         UJ = 0.D0
-         VJ = 0.D0
-         INDIC = INDIC+1
-        ENDIF
-        XN = XNEBOR(K)
-        YN = YNEBOR(K)
-        RNORM = SQRT( XNEBOR(K+NPTFR)**2 + YNEBOR(K+NPTFR)**2 )
-!
-        IF(INDIC.LT.2) THEN
-         CALL FLUXE(HI,UI,VI,HJ,UJ,VJ,XN,YN,RNORM,G,FLULOC)
-! RA
-         INFLOW = FLULOC(1)*RNORM
-         FLUENT = FLUENT + INFLOW
-         FLBOR%R(K)=INFLOW
-!
-        ELSE
-         FLULOC(1)= 0.D0
-         FLULOC(2)= 0.D0
-         FLULOC(3)= 0.D0
-         FLBOR%R(K)=0.0D0
-        ENDIF
-       ENDIF
-!
-       FLUX(NB,1)=FLUX(NB,1)+FLULOC(1)*RNORM
-       FLUX(NB,2)=FLUX(NB,2)+FLULOC(2)*RNORM
-       FLUX(NB,3)=FLUX(NB,3)+FLULOC(3)*RNORM
+          ELSE
+            HI = WINF(1,K)
+            IF(HI.GT.EPS) THEN
+             UI = WINF(2,K) / HI
+             VI = WINF(3,K) / HI
+            ELSE
+             HI = 0.D0
+             UI = 0.D0
+             VI = 0.D0
+             INDIC = INDIC+1
+            ENDIF
+            HJ = W(1,NB)
+            IF(HJ.GT.EPS) THEN
+             UJ = W(2,NB) / HJ
+             VJ = W(3,NB) / HJ
+            ELSE
+             HJ = 0.D0
+             UJ = 0.D0
+             VJ = 0.D0
+             INDIC = INDIC+1
+            ENDIF
+            XN = XNEBOR(K)
+            YN = YNEBOR(K)
+            RNORM = SQRT( XNEBOR(K+NPTFR)**2 + YNEBOR(K+NPTFR)**2 )
+!          
+            IF(INDIC.LT.2) THEN
+             CALL FLUXE(HI,UI,VI,HJ,UJ,VJ,XN,YN,RNORM,G,FLULOC)
+! RA       
+             INFLOW = FLULOC(1)*RNORM
+             FLUENT = FLUENT + INFLOW
+             FLBOR%R(K)=INFLOW
+!          
+            ELSE
+             FLULOC(1)= 0.D0
+             FLULOC(2)= 0.D0
+             FLULOC(3)= 0.D0
+             FLBOR%R(K)=0.0D0
+            ENDIF
+          ENDIF
+!         
+          FLUX(NB,1)=FLUX(NB,1)+FLULOC(1)*RNORM
+          FLUX(NB,2)=FLUX(NB,2)+FLULOC(2)*RNORM
+          FLUX(NB,3)=FLUX(NB,3)+FLULOC(3)*RNORM
 !
 !------
 ! 5. FLUX AT THE BOUNDARY
 !------
 !
-       ELSEIF(LIMPRO(K,1).EQ.KNEU) THEN
+        ELSEIF(LIMPRO(K,1).EQ.KNEU) THEN
 !
 !
-        IF(W(1,NB).GT.0.) THEN
-          PRI =G*( W(1,NB)*W(1,NB))/2.D0
-          USN = (W(2,NB)*XNEBOR(K)+W(3,NB)*YNEBOR(K))/W(1,NB)
-          CT = SQRT(G*W(1,NB))
-!
-          IF((USN+2.D0*CT).LE.0.D0) THEN
-!GODUNOV
-             PRI =0.D0
-          ELSEIF(((USN+2.D0*CT).GE.0.D0) .AND. (USN.LE.0.D0)) THEN
-!GODUNOV
-             PRI = PRI * (1.D0 +  USN / 2.D0 / CT)
-     &                 * (1.D0 +  USN / 2.D0 / CT)
-     &                 * (1.D0 +  USN / 2.D0 / CT)
-     &                 * (1.D0 +  USN / 2.D0 / CT)
-!
-          ELSEIF(USN.GE.0.D0) THEN
-!VFROENC
-             PRI = PRI*(1.D0 + 2.D0 * USN / CT)
+          IF(W(1,NB).GT.0.) THEN
+            PRI =G*( W(1,NB)*W(1,NB))/2.D0
+            USN = (W(2,NB)*XNEBOR(K)+W(3,NB)*YNEBOR(K))/W(1,NB)
+            CT = SQRT(G*W(1,NB))
+!           
+            IF((USN+2.D0*CT).LE.0.D0) THEN
+              PRI =0.D0
+            ELSEIF(((USN+2.D0*CT).GE.0.D0) .AND. (USN.LE.0.D0)) THEN
+              PRI = PRI * (1.D0 +  USN / 2.D0 / CT)
+     &                  * (1.D0 +  USN / 2.D0 / CT)
+     &                  * (1.D0 +  USN / 2.D0 / CT)
+     &                  * (1.D0 +  USN / 2.D0 / CT)
+!           
+            ELSEIF(USN.GE.0.D0) THEN
+              PRI = PRI*(1.D0 + 2.D0 * USN / CT)
+            ENDIF
+!           
+            FLUX(NB,2) = FLUX(NB,2) + XNEBOR(K+NPTFR) * PRI
+            FLUX(NB,3) = FLUX(NB,3) + YNEBOR(K+NPTFR) * PRI
           ENDIF
 !
-          FLUX(NB,2) = FLUX(NB,2) + XNEBOR(K+NPTFR) * PRI
-          FLUX(NB,3) = FLUX(NB,3) + YNEBOR(K+NPTFR) * PRI
         ENDIF
-!
-       ENDIF
       ENDDO ! K 
 !
       DEALLOCATE(YESNO)

@@ -140,12 +140,12 @@
             I2 = IKLE(IELEM1,NEXT(IFACE))
             IF(I1.EQ.I2) THEN
               IF(LNG.EQ.1) THEN
-               WRITE(LU,*) 'STOSEG : SEGMENT AVEC UN SEUL POINT'
-               WRITE(LU,*) '         ELEMENT ',IELEM1,' FACE ',IFACE
+                WRITE(LU,*) 'STOSEG : SEGMENT AVEC UN SEUL POINT'
+                WRITE(LU,*) '         ELEMENT ',IELEM1,' FACE ',IFACE
               ENDIF
               IF(LNG.EQ.2) THEN
-               WRITE(LU,*) 'STOSEG: EDGE MADE OF ONLY ONE POINT'
-               WRITE(LU,*) '        ELEMENT ',IELEM1,' FACE ',IFACE
+                WRITE(LU,*) 'STOSEG: EDGE MADE OF ONLY ONE POINT'
+                WRITE(LU,*) '        ELEMENT ',IELEM1,' FACE ',IFACE
               ENDIF
               CALL PLANTE(1)
               STOP

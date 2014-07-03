@@ -131,6 +131,7 @@
 !
 !
       WRITE(LU,*) 'THE OPTION GEO=',GEO,' HAS BEEN REMOVED'
+      CALL PLANTE(1)
       STOP
 !     CALL RECOMPOSITION_PARTICULAIRE(GEO)
 !
@@ -163,14 +164,14 @@
       INQUIRE (FILE=GEO,EXIST=IS)
       IF(.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
-        CALL PLANTE (-1)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
       I_S  = LEN (RES)
       I_SP = I_S + 1
       DO I=1,I_S
-         IF(RES(I_SP-I:I_SP-I) .NE. ' ') EXIT
+        IF(RES(I_SP-I:I_SP-I) .NE. ' ') EXIT
       ENDDO
       I_LEN=I_SP - I
 !
@@ -188,7 +189,7 @@
       ENDDO ! I
       GO TO 992
 990   WRITE(LU,*) 'ERROR WHEN OPENING OR READING FILE: ',GEO
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 992   CONTINUE
 !     READS THE 10 PARAMETERS AND THE DATE
@@ -200,27 +201,27 @@
       OPEN(3,FILE=RES,FORM='UNFORMATTED',ERR=991)
       GO TO 993
 991   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RES
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 993   CONTINUE
 !
 !     1) STARTS READING THE 1ST RESULT FILE
 !
-      RESPAR=RES(1:I_LEN) // extens(NPROC-1,0)
+      RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,0)
 !
       INQUIRE (FILE=RESPAR,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', RESPAR
         WRITE (LU,*) 'CHECK THE NUMBER OF PROCESSORS'
         WRITE (LU,*) 'AND THE RESULT FILE CORE NAME'
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
         STOP
       END IF
 !
       OPEN(4,FILE=RESPAR,FORM='UNFORMATTED',ERR=994)
       GO TO 995
 994   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR
-      CALL PLANTE(-1)
+      CALL PLANTE(1)
       STOP
 995   CONTINUE
 !
@@ -386,21 +387,21 @@
 ! OPENS FILES AND READS/SKIPS HEADERS -> NPOIN(NPROC), NPOINMAX
 !
       DO IPID = 0,NPROC-1
-         FU = IPID +10
-         RESPAR=RES(1:I_LEN) // extens(NPROC-1,IPID)
-         OPEN (FU,FILE=RESPAR,FORM='UNFORMATTED',ERR=998)
-         GO TO 999
-998      WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR,
-     &                      ' USING FILE UNIT: ', FU
-         CALL PLANTE(-1)
-         STOP
-999      REWIND(FU)
-         CALL GRETEL_SKIP_HEADER(FU,NPOIN(IPID+1),NBV1,ERR,LU)
-         IF(ERR.NE.0) THEN
-           WRITE(LU,*) 'ERROR READING FILE '
-           CALL PLANTE(-1)
-           STOP
-         ENDIF
+        FU = IPID +10
+        RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,IPID)
+        OPEN (FU,FILE=RESPAR,FORM='UNFORMATTED',ERR=998)
+        GO TO 999
+998     WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR,
+     &                     ' USING FILE UNIT: ', FU
+        CALL PLANTE(1)
+        STOP
+999     REWIND(FU)
+        CALL GRETEL_SKIP_HEADER(FU,NPOIN(IPID+1),NBV1,ERR,LU)
+        IF(ERR.NE.0) THEN
+          WRITE(LU,*) 'ERROR READING FILE '
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ENDDO
 !
       NPOINMAX = MAXVAL(NPOIN)
@@ -408,9 +409,9 @@
 !     ARRAY FOR LOCAL-GLOBAL NUMBERS, 2D-FIELD
 !
       IF(NPLAN.EQ.0) THEN
-         ALLOCATE (KNOLG(NPOINMAX,NPROC),STAT=ERR)
+        ALLOCATE (KNOLG(NPOINMAX,NPROC),STAT=ERR)
       ELSE
-         ALLOCATE (KNOLG(NPOINMAX/NPLAN,NPROC),STAT=ERR)
+        ALLOCATE (KNOLG(NPOINMAX/NPLAN,NPROC),STAT=ERR)
       ENDIF
       CALL CHECK_ALLOCATE(ERR, 'KNOLG')
 !
@@ -432,55 +433,55 @@
 ! READS KNOLG(NPOIN,NPROC)
 !
       DO IPID = 0,NPROC-1
-         FU = IPID +10
-         IF(NPLAN.EQ.0) THEN
-            READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1))
-         ELSE
-            READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1)/NPLAN)
-         ENDIF
+        FU = IPID +10
+        IF(NPLAN.EQ.0) THEN
+          READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1))
+        ELSE
+          READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1)/NPLAN)
+        ENDIF
       ENDDO
 !
 ! READS LOCAL X
 !
       DO IPID = 0,NPROC-1
-         FU = IPID +10
-         IF(SERAFIND_RES) THEN
-           READ(FU) (LOCAL_VALUE_D(I,1),I=1,NPOIN(IPID+1))
-         ELSE
-           READ(FU) (LOCAL_VALUE(I,1),I=1,NPOIN(IPID+1))
-         ENDIF
-         IF(NPLAN.EQ.0) THEN
-           IF(SERAFIND_RES) THEN
-             DO I=1,NPOIN(IPID+1)
-               GLOBAL_VALUE_D(KNOLG(I,IPID+1),1)=LOCAL_VALUE_D(I,1)
-               VERIF(KNOLG(I,IPID+1))   = 1
-             ENDDO
-           ELSE
-             DO I=1,NPOIN(IPID+1)
-               GLOBAL_VALUE(KNOLG(I,IPID+1),1)=LOCAL_VALUE(I,1)
-               VERIF(KNOLG(I,IPID+1))   = 1
-             ENDDO
-           ENDIF
-         ELSE
-           NPOIN2LOC = NPOIN(IPID+1)/NPLAN
-           IF(SERAFIND_RES) THEN
-             DO I=1,NPOIN2LOC
-             DO J=1,NPLAN
-               GLOBAL_VALUE_D(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
-     &         LOCAL_VALUE_D(      I         + NPOIN2LOC*(J-1) , 1)
-               VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
-             ENDDO
-             ENDDO
-           ELSE
-             DO I=1,NPOIN2LOC
-             DO J=1,NPLAN
-               GLOBAL_VALUE(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
-     &         LOCAL_VALUE(      I         + NPOIN2LOC*(J-1) , 1)
-               VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
-             ENDDO
-             ENDDO
+        FU = IPID +10
+        IF(SERAFIND_RES) THEN
+          READ(FU) (LOCAL_VALUE_D(I,1),I=1,NPOIN(IPID+1))
+        ELSE
+          READ(FU) (LOCAL_VALUE(I,1),I=1,NPOIN(IPID+1))
+        ENDIF
+        IF(NPLAN.EQ.0) THEN
+          IF(SERAFIND_RES) THEN
+            DO I=1,NPOIN(IPID+1)
+              GLOBAL_VALUE_D(KNOLG(I,IPID+1),1)=LOCAL_VALUE_D(I,1)
+              VERIF(KNOLG(I,IPID+1))   = 1
+            ENDDO
+          ELSE
+            DO I=1,NPOIN(IPID+1)
+              GLOBAL_VALUE(KNOLG(I,IPID+1),1)=LOCAL_VALUE(I,1)
+              VERIF(KNOLG(I,IPID+1))   = 1
+            ENDDO
           ENDIF
-         ENDIF
+        ELSE
+          NPOIN2LOC = NPOIN(IPID+1)/NPLAN
+          IF(SERAFIND_RES) THEN
+            DO I=1,NPOIN2LOC
+            DO J=1,NPLAN
+              GLOBAL_VALUE_D(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
+     &        LOCAL_VALUE_D(      I         + NPOIN2LOC*(J-1) , 1)
+              VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
+            ENDDO
+            ENDDO
+          ELSE
+            DO I=1,NPOIN2LOC
+            DO J=1,NPLAN
+              GLOBAL_VALUE(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
+     &        LOCAL_VALUE(      I         + NPOIN2LOC*(J-1) , 1)
+              VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
+            ENDDO
+            ENDDO
+          ENDIF
+        ENDIF
       ENDDO
 !
 ! COMPARISON WITH GLOBAL VALUES (ON SINGLE PRECISION VALUES)
@@ -541,44 +542,44 @@
 ! READS LOCAL Y (EXACTLY LIKE READS LOCAL X, COULD BE A LOOP...)
 !
       DO IPID = 0,NPROC-1
-         FU = IPID +10
-         IF(SERAFIND_RES) THEN
-           READ(FU) (LOCAL_VALUE_D(I,1),I=1,NPOIN(IPID+1))
-         ELSE
-           READ(FU) (LOCAL_VALUE(I,1),I=1,NPOIN(IPID+1))
-         ENDIF
-         IF(NPLAN.EQ.0) THEN
-           IF(SERAFIND_RES) THEN
-             DO I=1,NPOIN(IPID+1)
-               GLOBAL_VALUE_D(KNOLG(I,IPID+1),1)=LOCAL_VALUE_D(I,1)
-               VERIF(KNOLG(I,IPID+1))   = 1
-             ENDDO
-           ELSE
-             DO I=1,NPOIN(IPID+1)
-               GLOBAL_VALUE(KNOLG(I,IPID+1),1)=LOCAL_VALUE(I,1)
-               VERIF(KNOLG(I,IPID+1))   = 1
-             ENDDO
-           ENDIF
-         ELSE
-           NPOIN2LOC = NPOIN(IPID+1)/NPLAN
-           IF(SERAFIND_RES) THEN
-             DO I=1,NPOIN2LOC
-             DO J=1,NPLAN
-               GLOBAL_VALUE_D(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
-     &         LOCAL_VALUE_D(      I         + NPOIN2LOC*(J-1) , 1)
-               VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
-             ENDDO
-             ENDDO
-           ELSE
-             DO I=1,NPOIN2LOC
-             DO J=1,NPLAN
-               GLOBAL_VALUE(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
-     &         LOCAL_VALUE(      I         + NPOIN2LOC*(J-1) , 1)
-               VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
-             ENDDO
-             ENDDO
+        FU = IPID +10
+        IF(SERAFIND_RES) THEN
+          READ(FU) (LOCAL_VALUE_D(I,1),I=1,NPOIN(IPID+1))
+        ELSE
+          READ(FU) (LOCAL_VALUE(I,1),I=1,NPOIN(IPID+1))
+        ENDIF
+        IF(NPLAN.EQ.0) THEN
+          IF(SERAFIND_RES) THEN
+            DO I=1,NPOIN(IPID+1)
+              GLOBAL_VALUE_D(KNOLG(I,IPID+1),1)=LOCAL_VALUE_D(I,1)
+              VERIF(KNOLG(I,IPID+1))   = 1
+            ENDDO
+          ELSE
+            DO I=1,NPOIN(IPID+1)
+              GLOBAL_VALUE(KNOLG(I,IPID+1),1)=LOCAL_VALUE(I,1)
+              VERIF(KNOLG(I,IPID+1))   = 1
+            ENDDO
           ENDIF
-         ENDIF
+        ELSE
+          NPOIN2LOC = NPOIN(IPID+1)/NPLAN
+          IF(SERAFIND_RES) THEN
+            DO I=1,NPOIN2LOC
+            DO J=1,NPLAN
+              GLOBAL_VALUE_D(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
+     &        LOCAL_VALUE_D(      I         + NPOIN2LOC*(J-1) , 1)
+              VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
+            ENDDO
+            ENDDO
+          ELSE
+            DO I=1,NPOIN2LOC
+            DO J=1,NPLAN
+              GLOBAL_VALUE(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
+     &        LOCAL_VALUE(      I         + NPOIN2LOC*(J-1) , 1)
+              VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
+            ENDDO
+            ENDDO
+          ENDIF
+        ENDIF
       ENDDO
 !
 ! COMPARISON WITH GLOBAL VALUES
@@ -655,55 +656,55 @@
       WRITE(LU,*) 'TRY TO READ DATASET NO.',NRESU
 !
       DO IPID = 0,NPROC-1
-         FU = IPID +10
-         CALL GRETEL_READ_DATASET(LOCAL_VALUE,LOCAL_VALUE_D,
-     &                            SERAFIND_RES,
-     &                            NPOINMAX,NPOIN(IPID+1),
-     &                            NBV1,AT,AT_D,FU,ENDE)
-         IF(ENDE) GOTO 3000
+        FU = IPID +10
+        CALL GRETEL_READ_DATASET(LOCAL_VALUE,LOCAL_VALUE_D,
+     &                           SERAFIND_RES,
+     &                           NPOINMAX,NPOIN(IPID+1),
+     &                           NBV1,AT,AT_D,FU,ENDE)
+        IF(ENDE) GOTO 3000
 !
-!        STORES EACH DATASET
+!       STORES EACH DATASET
 !
-         IF(NPLAN.EQ.0) THEN
-            IF(SERAFIND_RES) THEN
-              DO I=1,NPOIN(IPID+1)
-              DO K=1,NBV1
-                GLOBAL_VALUE_D(KNOLG(I,IPID+1),K)=LOCAL_VALUE_D(I,K)
-              ENDDO
-              VERIF(KNOLG(I,IPID+1)) = 1
-              ENDDO
-            ELSE
-              DO I=1,NPOIN(IPID+1)
-              DO K=1,NBV1
-                GLOBAL_VALUE(KNOLG(I,IPID+1),K) = LOCAL_VALUE(I,K)
-              ENDDO
-              VERIF(KNOLG(I,IPID+1)) = 1
-              ENDDO
-            ENDIF
-         ELSE
-            NPOIN2LOC = NPOIN(IPID+1)/NPLAN
-            IF(SERAFIND_RES) THEN
-              DO I=1,NPOIN2LOC
-                DO J=1,NPLAN
-                  DO K=1,NBV1
-              GLOBAL_VALUE_D(KNOLG(I,IPID+1)+NPOIN2   *(J-1),K)=
-     &         LOCAL_VALUE_D(      I        +NPOIN2LOC*(J-1),K)
-                  ENDDO
-              VERIF(KNOLG(I,IPID+1) + NPOIN2*(J-1)) = 1
+        IF(NPLAN.EQ.0) THEN
+          IF(SERAFIND_RES) THEN
+            DO I=1,NPOIN(IPID+1)
+            DO K=1,NBV1
+              GLOBAL_VALUE_D(KNOLG(I,IPID+1),K)=LOCAL_VALUE_D(I,K)
+            ENDDO
+            VERIF(KNOLG(I,IPID+1)) = 1
+            ENDDO
+          ELSE
+            DO I=1,NPOIN(IPID+1)
+            DO K=1,NBV1
+              GLOBAL_VALUE(KNOLG(I,IPID+1),K) = LOCAL_VALUE(I,K)
+            ENDDO
+            VERIF(KNOLG(I,IPID+1)) = 1
+            ENDDO
+          ENDIF
+        ELSE
+          NPOIN2LOC = NPOIN(IPID+1)/NPLAN
+          IF(SERAFIND_RES) THEN
+            DO I=1,NPOIN2LOC
+              DO J=1,NPLAN
+                DO K=1,NBV1
+            GLOBAL_VALUE_D(KNOLG(I,IPID+1)+NPOIN2   *(J-1),K)=
+     &       LOCAL_VALUE_D(      I        +NPOIN2LOC*(J-1),K)
                 ENDDO
+            VERIF(KNOLG(I,IPID+1) + NPOIN2*(J-1)) = 1
               ENDDO
-            ELSE
-              DO I=1,NPOIN2LOC
-                DO J=1,NPLAN
-                  DO K=1,NBV1
-              GLOBAL_VALUE(KNOLG(I,IPID+1)+NPOIN2   *(J-1),K)=
-     &         LOCAL_VALUE(      I        +NPOIN2LOC*(J-1),K)
-                  ENDDO
-              VERIF(KNOLG(I,IPID+1) + NPOIN2*(J-1)) = 1
+            ENDDO
+          ELSE
+            DO I=1,NPOIN2LOC
+              DO J=1,NPLAN
+                DO K=1,NBV1
+            GLOBAL_VALUE(KNOLG(I,IPID+1)+NPOIN2   *(J-1),K)=
+     &       LOCAL_VALUE(      I        +NPOIN2LOC*(J-1),K)
                 ENDDO
+            VERIF(KNOLG(I,IPID+1) + NPOIN2*(J-1)) = 1
               ENDDO
-            ENDIF
-         ENDIF
+            ENDDO
+          ENDIF
+        ENDIF
       ENDDO
 !
 ! WRITES GLOBAL DATASET
@@ -721,19 +722,19 @@
 !     VARIABLES
 !
       DO K = 1,NBV1
-         IF(NPLAN.EQ.0) THEN
-            IF(SERAFIND_RES) THEN
-              WRITE(3) (GLOBAL_VALUE_D(I,K),I=1,NPOIN2)
-            ELSE
-              WRITE(3) (GLOBAL_VALUE(I,K),I=1,NPOIN2)
-            ENDIF
-         ELSE
-            IF(SERAFIND_RES) THEN
-              WRITE(3) (GLOBAL_VALUE_D(I,K),I=1,NPOIN2*NPLAN)
-            ELSE
-              WRITE(3) (GLOBAL_VALUE(I,K),I=1,NPOIN2*NPLAN)
-            ENDIF
-         ENDIF
+        IF(NPLAN.EQ.0) THEN
+          IF(SERAFIND_RES) THEN
+            WRITE(3) (GLOBAL_VALUE_D(I,K),I=1,NPOIN2)
+          ELSE
+            WRITE(3) (GLOBAL_VALUE(I,K),I=1,NPOIN2)
+          ENDIF
+        ELSE
+          IF(SERAFIND_RES) THEN
+            WRITE(3) (GLOBAL_VALUE_D(I,K),I=1,NPOIN2*NPLAN)
+          ELSE
+            WRITE(3) (GLOBAL_VALUE(I,K),I=1,NPOIN2*NPLAN)
+          ENDIF
+        ENDIF
       ENDDO
 !
 ! CHECKS ...
@@ -759,8 +760,8 @@
       CLOSE(2)
       CLOSE(3)
       DO IPID = 0,NPROC-1
-         FU = IPID +10
-         CLOSE (FU)
+        FU = IPID +10
+        CLOSE (FU)
       ENDDO
 !
 !|==================================================================|
@@ -770,5 +771,5 @@
 !|==================================================================|
 !
 !
-      STOP
+      STOP 0
       END PROGRAM GRETEL_AUTOP

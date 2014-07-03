@@ -56,7 +56,7 @@
 !
 !    MINMOD
 !
-       EXLIM=0.5D0*(DSIGN(1.D0,GRI1)+DSIGN(1.D0,GRIJ))
+        EXLIM=0.5D0*(DSIGN(1.D0,GRI1)+DSIGN(1.D0,GRIJ))
      &   *MIN(ABS(GRI1),ABS(GRIJ))
 !
 !

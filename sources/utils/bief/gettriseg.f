@@ -130,7 +130,8 @@
           ENDDO
         ENDIF
 !
-       CALL OV('X=CX    ',AX(NSEGH+1:NSEGH+NSEGV),AX,AX,1.D0-TETA,NSEGV)
+        CALL OV('X=CX    ',AX(NSEGH+1:NSEGH+NSEGV),AX,AX,
+     &          1.D0-TETA,NSEGV)
 !
       ELSE
         WRITE(LU,*) 'GETTRISEG: UNKNOWN ELEMENT:',IELM3

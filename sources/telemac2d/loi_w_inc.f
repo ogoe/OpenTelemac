@@ -8,11 +8,11 @@
 ! TELEMAC2D   V6P3                                   13/06/2013
 !***********************************************************************
 !
-!brief    DISCHARGE LAW FOR AN INCLINATED WEIR.
+!BRIEF    DISCHARGE LAW FOR AN INCLINATED WEIR.
 !
-!history  C. COULET (ARTELIA)
+!HISTORY  C. COULET (ARTELIA)
 !+        13/06/2013
-!+ Inspired from CARIMA program
+!+ INSPIRED FROM CARIMA PROGRAM
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,16 +37,16 @@
 !
       DOUBLE PRECISION :: SLOPE,XPD,XD,XPN,XN,QD,QN
       DOUBLE PRECISION :: AUX0,AUX1,AUX2,AUX3,AUX4
-      DOUBLE PRECISION :: YSmin
+      DOUBLE PRECISION :: YSMIN
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       SLOPE = DABS(YS1-YS2)/WIDTH
 !      
       IF (SLOPE.GT.1.D-4) THEN
-        YSmin = DMIN1(YS1,YS2)
-        XPD = (YAM-YSmin)/SLOPE
+        YSMIN = DMIN1(YS1,YS2)
+        XPD = (YAM-YSMIN)/SLOPE
       ELSE
-        YSmin = YS1
+        YSMIN = YS1
         XPD = WIDTH
       ENDIF
       IF (XPD.GE.WIDTH) THEN
@@ -55,7 +55,7 @@
         XD = XPD
       ENDIF
 !
-      XPN = 3.D0*YAV - 2.D0*YAM - YSmin
+      XPN = 3.D0*YAV - 2.D0*YAM - YSMIN
       IF (XPN.LE.0.D0) THEN
         XN = 0.D0
       ELSEIF (XPN.LE.WIDTH*SLOPE) THEN
@@ -64,20 +64,20 @@
         XN = WIDTH
       ENDIF
 !
-      IF(YAM.LT.YSmin.AND.YAV.LT.YSmin) THEN
+      IF(YAM.LT.YSMIN.AND.YAV.LT.YSMIN) THEN
         DEB=0.D0
       ELSE
-        QN = ((YAV-YSmin)*XN - 0.5D0*SLOPE*XN**2)*SQRT(YAM-YAV)
+        QN = ((YAV-YSMIN)*XN - 0.5D0*SLOPE*XN**2)*SQRT(YAM-YAV)
         IF (SLOPE.GT.1.D-4) THEN
-          AUX0 = YAM-YSmin
-          AUX1 = MAX(YAM-YSmin-XD*SLOPE, 0.D0)
-          AUX2 = MAX(YAM-YSmin-XN*SLOPE, 0.D0)
+          AUX0 = YAM-YSMIN
+          AUX1 = MAX(YAM-YSMIN-XD*SLOPE, 0.D0)
+          AUX2 = MAX(YAM-YSMIN-XN*SLOPE, 0.D0)
           AUX3 = AUX1**1.5D0 - AUX2**1.5D0
           AUX4 = XD*AUX1**1.5D0 + 2.D0/(5.D0*SLOPE)*AUX1**2.5D0 -
      &           XN*AUX2**1.5D0 - 2.D0/(5.D0*SLOPE)*AUX2**2.5D0
           QD = PHI * 2.D0/(3.D0*SLOPE) * (SLOPE*AUX4-AUX0*AUX3)
         ELSE
-          QD = PHI * (YAM-YSmin) * SQRT(YAM-YSmin) * (XD-XN)
+          QD = PHI * (YAM-YSMIN) * SQRT(YAM-YSMIN) * (XD-XN)
         ENDIF
 !
         DEB=SQRT(2.D0*G)*(QN+QD)

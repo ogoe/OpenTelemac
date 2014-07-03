@@ -88,35 +88,35 @@
 !
       IF(NTRAC.GT.0) THEN
 !
-         DO ITRAC=1,NTRAC
+        DO ITRAC=1,NTRAC
 !
-!           UP TO RELEASE 5.4
+!         UP TO RELEASE 5.4
 !
-!           CALL VECTOR
-!    &      (T3_01, '=', 'MASVEC          ', IELM3, 1.D0,
-!    &       TA%ADR(ITRAC)%P,
-!    &       SVIDE, SVIDE, SVIDE, SVIDE, SVIDE, MESH3D, MSK, MASKEL)
-!           MASSE%R(5+ITRAC) = SUM(T3_01)
+!         CALL VECTOR
+!    &    (T3_01, '=', 'MASVEC          ', IELM3, 1.D0,
+!    &     TA%ADR(ITRAC)%P,
+!    &     SVIDE, SVIDE, SVIDE, SVIDE, SVIDE, MESH3D, MSK, MASKEL)
+!         MASSE%R(5+ITRAC) = SUM(T3_01)
 !
-!           FROM RELEASE 5.5 ON
+!         FROM RELEASE 5.5 ON
 !
-!           THE 2 VERSIONS ARE NOT EQUIVALENT WHEN VOLU IS COMPUTED
-!           WITH FORMULA MASBAS2 WHICH GIVES A COMPATIBILITY WITH 2D
-!           WHEN THERE IS A MASS-LUMPING
+!         THE 2 VERSIONS ARE NOT EQUIVALENT WHEN VOLU IS COMPUTED
+!         WITH FORMULA MASBAS2 WHICH GIVES A COMPATIBILITY WITH 2D
+!         WHEN THERE IS A MASS-LUMPING
 !
-!           TRACERS IN MASSE COME AFTER U,V,W,K AND EPSILON (HENCE THE 5)
+!         TRACERS IN MASSE COME AFTER U,V,W,K AND EPSILON (HENCE THE 5)
 !
-            MASSE%R(5+ITRAC) = 0.D0
-            DO I=1,NPOIN3
-              MASSE%R(5+ITRAC)=MASSE%R(5+ITRAC)+TA%ADR(ITRAC)%P%R(I)*
-     &                                          VOLU%R(I)
-            ENDDO
+          MASSE%R(5+ITRAC) = 0.D0
+          DO I=1,NPOIN3
+            MASSE%R(5+ITRAC)=MASSE%R(5+ITRAC)+TA%ADR(ITRAC)%P%R(I)*
+     &                                        VOLU%R(I)
+          ENDDO
 !
-!           END OF MODIFICATION BETWEEN 5.4 AND 5.5
+!         END OF MODIFICATION BETWEEN 5.4 AND 5.5
 !
-            IF(NCSIZE.GT.1) MASSE%R(5+ITRAC) = P_DSUM(MASSE%R(5+ITRAC))
+          IF(NCSIZE.GT.1) MASSE%R(5+ITRAC) = P_DSUM(MASSE%R(5+ITRAC))
 !
-         ENDDO
+        ENDDO
 !
       ENDIF
 !

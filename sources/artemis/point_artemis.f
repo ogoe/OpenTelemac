@@ -71,8 +71,8 @@
 !-----------------------------------------------------------------------
 !
       IF(LISTIN) THEN
-         IF(LNG.EQ.1) WRITE(LU,20)
-         IF(LNG.EQ.2) WRITE(LU,21)
+        IF(LNG.EQ.1) WRITE(LU,20)
+        IF(LNG.EQ.2) WRITE(LU,21)
       ENDIF
 20    FORMAT(1X,///,26X,'*****************************',/,
      &26X,              '* ALLOCATION DE LA MEMOIRE  *',/,
@@ -107,8 +107,8 @@
 !
 !     ALLOCATES THE MESH STRUCTURE
 !
-       CALL ALMESH(MESH,'MESH  ',IELM,SPHERI,CFG,ART_FILES(ARTGEO)%LU,
-     &             EQUA,FILE_FORMAT=ART_FILES(ARTGEO)%FMT)
+      CALL ALMESH(MESH,'MESH  ',IELM,SPHERI,CFG,ART_FILES(ARTGEO)%LU,
+     &            EQUA,FILE_FORMAT=ART_FILES(ARTGEO)%FMT)
 !
 !
 !     ALIAS FOR CERTAIN COMPONENTS OF MESH
@@ -339,13 +339,13 @@
 ! ARRAYS FOR THE WAVE-CURRENT INTERACTION :
 !
 ! --> CURRENT VELOCITY : X and Y DIRECTIONS
-         CALL BIEF_ALLVEC(1, UC    ,'UC    ',IELM, 1 , 2 ,MESH)
-         CALL BIEF_ALLVEC(1, VC    ,'VC    ',IELM, 1 , 2 ,MESH)
+      CALL BIEF_ALLVEC(1, UC    ,'UC    ',IELM, 1 , 2 ,MESH)
+      CALL BIEF_ALLVEC(1, VC    ,'VC    ',IELM, 1 , 2 ,MESH)
 ! --> RELATIVE ANGULAR FREQUENCY
-         CALL BIEF_ALLVEC(1, WR    ,'WR    ',IELM, 1 , 2 ,MESH)
+      CALL BIEF_ALLVEC(1, WR    ,'WR    ',IELM, 1 , 2 ,MESH)
 ! --> STORAGE OF WAVE VECTOR COMPONENTS
-         CALL BIEF_ALLVEC(1, KANCX ,'KANCX ',IELM, 1 , 2 ,MESH)
-         CALL BIEF_ALLVEC(1, KANCY ,'KANCY ',IELM, 1 , 2 ,MESH)
+      CALL BIEF_ALLVEC(1, KANCX ,'KANCX ',IELM, 1 , 2 ,MESH)
+      CALL BIEF_ALLVEC(1, KANCY ,'KANCY ',IELM, 1 , 2 ,MESH)
 !
 !
 ! ARRAYS FOR RADIATION STRESSES
@@ -446,9 +446,9 @@
       CALL ALLBLO(VARSOR,'VARSOR')
 ! 01
       IF (ALEMON .OR. ALEMUL) THEN
-         CALL ADDBLO(VARSOR,HALE)
+        CALL ADDBLO(VARSOR,HALE)
       ELSE
-         CALL ADDBLO(VARSOR,HHO)
+        CALL ADDBLO(VARSOR,HHO)
       ENDIF
 ! 02
       CALL ADDBLO(VARSOR,PHAS)
@@ -506,13 +506,16 @@
 ! CHECKS :
 !
       ISTOP=0
-      IF(ISTOP.EQ.1) STOP
+      IF(ISTOP.EQ.1) THEN
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 ! WRITES OUT :
 !
       IF(LISTIN) THEN
-         IF(LNG.EQ.1) WRITE(LU,22)
-         IF(LNG.EQ.2) WRITE(LU,23)
+        IF(LNG.EQ.1) WRITE(LU,22)
+        IF(LNG.EQ.2) WRITE(LU,23)
       ENDIF
 22    FORMAT(1X,///,21X,'****************************************',/,
      &21X,              '* FIN DE L''ALLOCATION DE LA MEMOIRE  : *',/,

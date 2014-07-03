@@ -226,33 +226,31 @@
 !
       RL   = P_DOTS(G,G,MESH)
       IF (RL.GT.CFG%EPS**2*XL) THEN
-         IF (M.GE.CFG%NITMAX) THEN
-!          IF(INFOGR) THEN
-                TESTL=SQRT(RL/XL)
-                IF(RELAT) THEN
-                  IF (LNG.EQ.1) WRITE(LU,102) M,TESTL
-                  IF (LNG.EQ.2) WRITE(LU,103) M,TESTL
-                ELSE
-                  IF (LNG.EQ.1) WRITE(LU,202) M,TESTL
-                  IF (LNG.EQ.2) WRITE(LU,203) M,TESTL
-                ENDIF
-!          ENDIF
-           GOTO 1000
-         ELSE
-           M = M + 1
-         ENDIF
+        IF (M.GE.CFG%NITMAX) THEN
+            TESTL=SQRT(RL/XL)
+            IF(RELAT) THEN
+              IF (LNG.EQ.1) WRITE(LU,102) M,TESTL
+              IF (LNG.EQ.2) WRITE(LU,103) M,TESTL
+            ELSE
+              IF (LNG.EQ.1) WRITE(LU,202) M,TESTL
+              IF (LNG.EQ.2) WRITE(LU,203) M,TESTL
+            ENDIF
+          GOTO 1000
+        ELSE
+          M = M + 1
+        ENDIF
       ELSE
-         IF(INFOGR) THEN
-           TESTL=SQRT(RL/XL)
-           IF(RELAT) THEN
-             IF (LNG.EQ.1) WRITE(LU,100) M,TESTL
-             IF (LNG.EQ.2) WRITE(LU,101) M,TESTL
-           ELSE
-             IF (LNG.EQ.1) WRITE(LU,200) M,TESTL
-             IF (LNG.EQ.2) WRITE(LU,201) M,TESTL
-           ENDIF
-         ENDIF
-         GOTO 1000
+        IF(INFOGR) THEN
+          TESTL=SQRT(RL/XL)
+          IF(RELAT) THEN
+            IF (LNG.EQ.1) WRITE(LU,100) M,TESTL
+            IF (LNG.EQ.2) WRITE(LU,101) M,TESTL
+          ELSE
+            IF (LNG.EQ.1) WRITE(LU,200) M,TESTL
+            IF (LNG.EQ.2) WRITE(LU,201) M,TESTL
+          ENDIF
+        ENDIF
+        GOTO 1000
       ENDIF
 !
 !             M+1   0

@@ -122,18 +122,18 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
-         U1 = U(IKLE1(IELEM))
-         U2 = U(IKLE2(IELEM))
-         U3 = U(IKLE3(IELEM))
-         V1 = V(IKLE1(IELEM))
-         V2 = V(IKLE2(IELEM))
-         V3 = V(IKLE3(IELEM))
+        U1 = U(IKLE1(IELEM))
+        U2 = U(IKLE2(IELEM))
+        U3 = U(IKLE3(IELEM))
+        V1 = V(IKLE1(IELEM))
+        V2 = V(IKLE2(IELEM))
+        V3 = V(IKLE3(IELEM))
 !
         UNSU2 = XMUL/(X2*Y3-Y2*X3)
 !
@@ -470,25 +470,25 @@
 ! USES HERE THE 'MAGIC SQUARE' PROPERTIES
 ! (SUM OF EACH LINE = SUM OF EACH COLUMN = 0)
 !
-         A16(IELEM) = - A11(IELEM) - A12(IELEM) - A13(IELEM)
-     &                - A14(IELEM) - A15(IELEM)
+          A16(IELEM) = - A11(IELEM) - A12(IELEM) - A13(IELEM)
+     &                 - A14(IELEM) - A15(IELEM)
+!         
+          A26(IELEM) = - A12(IELEM) - A22(IELEM) - A23(IELEM)
+     &                 - A24(IELEM) - A25(IELEM)
+!         
+          A36(IELEM) = - A13(IELEM) - A23(IELEM) - A33(IELEM)
+     &                 - A34(IELEM) - A35(IELEM)
+!         
+          A46(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
+     &                 - A44(IELEM) - A45(IELEM)
+!         
+          A56(IELEM) = - A15(IELEM) - A25(IELEM) - A35(IELEM)
+     &                 - A45(IELEM) - A55(IELEM)
+!         
+          A66(IELEM) = - A16(IELEM) - A26(IELEM) - A36(IELEM)
+     &                 - A46(IELEM) - A56(IELEM)
 !
-         A26(IELEM) = - A12(IELEM) - A22(IELEM) - A23(IELEM)
-     &                - A24(IELEM) - A25(IELEM)
-!
-         A36(IELEM) = - A13(IELEM) - A23(IELEM) - A33(IELEM)
-     &                - A34(IELEM) - A35(IELEM)
-!
-         A46(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
-     &                - A44(IELEM) - A45(IELEM)
-!
-         A56(IELEM) = - A15(IELEM) - A25(IELEM) - A35(IELEM)
-     &                - A45(IELEM) - A55(IELEM)
-!
-         A66(IELEM) = - A16(IELEM) - A26(IELEM) - A36(IELEM)
-     &                - A46(IELEM) - A56(IELEM)
-!
-      ENDDO ! IELEM 
+        ENDDO ! IELEM 
 !
 !-----------------------------------------------------------------------
 !
@@ -502,31 +502,31 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
-         U1 = U(IKLE1(IELEM))
-         U2 = U(IKLE2(IELEM))
-         U3 = U(IKLE3(IELEM))
-         U4 = U(IKLE4(IELEM))
-         U5 = U(IKLE5(IELEM))
-         U6 = U(IKLE6(IELEM))
-         V1 = V(IKLE1(IELEM))
-         V2 = V(IKLE2(IELEM))
-         V3 = V(IKLE3(IELEM))
-         V4 = V(IKLE4(IELEM))
-         V5 = V(IKLE5(IELEM))
-         V6 = V(IKLE6(IELEM))
+        U1 = U(IKLE1(IELEM))
+        U2 = U(IKLE2(IELEM))
+        U3 = U(IKLE3(IELEM))
+        U4 = U(IKLE4(IELEM))
+        U5 = U(IKLE5(IELEM))
+        U6 = U(IKLE6(IELEM))
+        V1 = V(IKLE1(IELEM))
+        V2 = V(IKLE2(IELEM))
+        V3 = V(IKLE3(IELEM))
+        V4 = V(IKLE4(IELEM))
+        V5 = V(IKLE5(IELEM))
+        V6 = V(IKLE6(IELEM))
 !
 !   INITIALISES THE INTERMEDIATE VARIABLES
 !
-         UNSU2 = XMUL/(X2*Y3-Y2*X3)
-         AUX630  = UNSU2/630.D0
-         AUX1260 = UNSU2/1260.D0
-         AUX2520 = UNSU2/2520.D0
+        UNSU2 = XMUL/(X2*Y3-Y2*X3)
+        AUX630  = UNSU2/630.D0
+        AUX1260 = UNSU2/1260.D0
+        AUX2520 = UNSU2/2520.D0
 !
 !  COMPUTES 15 OF THE 36 TERMS (SELECTED AMONG THE LEAST COMPLEX)
 !
@@ -1277,28 +1277,28 @@
      &       24.D0*V5*X3*U6*Y3-4.D0*V5*X2*U1*Y3-2.D0*U2*Y2*V6*X3+
      &       3.D0*V2*X2*U1*Y2+4.D0*U4*Y2*U1*Y3+12.D0*U5*Y3*V6*X2-
      &       3.D0*V2*X2**2*V1+V1*X3*U1*Y2-3.D0*U2*Y2**2*U1
-      A55(IELEM) = (ANS1+ANS2+ANS3+ANS4)*8.D0*AUX630
+        A55(IELEM) = (ANS1+ANS2+ANS3+ANS4)*8.D0*AUX630
 !
 !
 ! USES HERE THE 'MAGIC SQUARE' PROPERTIES TO GET THE REMAINING TERMS
 ! (SUM OF EACH LINE = SUM OF EACH COLUMN = 0)
 !
-         A16(IELEM) = - A11(IELEM) - A12(IELEM) - A13(IELEM)
-     &                - A14(IELEM) - A15(IELEM)
+        A16(IELEM) = - A11(IELEM) - A12(IELEM) - A13(IELEM)
+     &               - A14(IELEM) - A15(IELEM)
 !
-         A25(IELEM) = - A12(IELEM) - A22(IELEM) - A23(IELEM)
-     &                - A24(IELEM) - A26(IELEM)
+        A25(IELEM) = - A12(IELEM) - A22(IELEM) - A23(IELEM)
+     &               - A24(IELEM) - A26(IELEM)
 !
-         A36(IELEM) = - A13(IELEM) - A23(IELEM) - A33(IELEM)
-     &                - A34(IELEM) - A35(IELEM)
+        A36(IELEM) = - A13(IELEM) - A23(IELEM) - A33(IELEM)
+     &               - A34(IELEM) - A35(IELEM)
 !
-         A45(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
-     &                - A44(IELEM) - A46(IELEM)
+        A45(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
+     &               - A44(IELEM) - A46(IELEM)
 !
-         A56(IELEM) = - A15(IELEM) - A25(IELEM) - A35(IELEM)
-     &                - A45(IELEM) - A55(IELEM)
+        A56(IELEM) = - A15(IELEM) - A25(IELEM) - A35(IELEM)
+     &               - A45(IELEM) - A55(IELEM)
 !
-         A66(IELEM) = - A16(IELEM) - A26(IELEM) - A36(IELEM)
+        A66(IELEM) = - A16(IELEM) - A26(IELEM) - A36(IELEM)
      &                - A46(IELEM) - A56(IELEM)
 !
       ENDDO ! IELEM 
@@ -1306,24 +1306,24 @@
 !-----------------------------------------------------------------------
 !
       ELSE
-       IF(IELMU.EQ.IELMV) THEN
-       IF (LNG.EQ.1) WRITE(LU,100) IELMU
-       IF (LNG.EQ.2) WRITE(LU,101) IELMU
-100    FORMAT(1X,'MT04CC (BIEF) :',/,
-     &        1X,'DISCRETISATION DE U ET V : ',1I6,' NON PREVUE')
-101    FORMAT(1X,'MT04CC (BIEF) :',/,
-     &        1X,'DISCRETIZATION OF U AND V : ',1I6,' NOT AVAILABLE')
-       ELSE
-       IF (LNG.EQ.1) WRITE(LU,200) IELMU,IELMV
-       IF (LNG.EQ.2) WRITE(LU,201) IELMU,IELMV
-200    FORMAT(1X,'MT04CC (BIEF) :',/,
-     &        1X,'U ET V DE DISCRETISATIONS DIFFERENTES :',1I6,3X,1I6)
-201    FORMAT(1X,'MT04CC (BIEF) :',/,
-     &        1X,'U AND V OF A DIFFERENT DISCRETISATION:',1I6,3X,1I6)
-       ENDIF
-!
-       CALL PLANTE(1)
-       STOP
+        IF(IELMU.EQ.IELMV) THEN
+        IF (LNG.EQ.1) WRITE(LU,100) IELMU
+        IF (LNG.EQ.2) WRITE(LU,101) IELMU
+100     FORMAT(1X,'MT04CC (BIEF) :',/,
+     &         1X,'DISCRETISATION DE U ET V : ',1I6,' NON PREVUE')
+101     FORMAT(1X,'MT04CC (BIEF) :',/,
+     &         1X,'DISCRETIZATION OF U AND V : ',1I6,' NOT AVAILABLE')
+        ELSE
+        IF (LNG.EQ.1) WRITE(LU,200) IELMU,IELMV
+        IF (LNG.EQ.2) WRITE(LU,201) IELMU,IELMV
+200     FORMAT(1X,'MT04CC (BIEF) :',/,
+     &         1X,'U ET V DE DISCRETISATIONS DIFFERENTES :',1I6,3X,1I6)
+201     FORMAT(1X,'MT04CC (BIEF) :',/,
+     &         1X,'U AND V OF A DIFFERENT DISCRETISATION:',1I6,3X,1I6)
+        ENDIF
+!       
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

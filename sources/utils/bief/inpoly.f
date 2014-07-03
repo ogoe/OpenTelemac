@@ -141,6 +141,7 @@
         ENDIF
         WRITE(LU,*) ' '
         WRITE(LU,*) ' '
+        CALL PLANTE(1)
         STOP
       ENDIF
 !

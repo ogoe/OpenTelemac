@@ -599,7 +599,7 @@
 !
           IF(IPID.EQ.0) THEN
             WRITE(UL,200) 'ZONE DATAPACKING=POINT, T="G_',AT,
-     &        ' seconds"',', I=',NFLOTG,', SOLUTIONTIME=',AT
+     &        ' SECONDS"',', I=',NFLOTG,', SOLUTIONTIME=',AT
             DO IPROC=1,NCSIZE
               INQUIRE(FILE=EXTENS(NCSIZE,IPROC),EXIST=YESITIS)
               IF(YESITIS) THEN
@@ -623,7 +623,7 @@
 !
         IF(NFLOT.GT.0.AND.(LT.EQ.1.OR.(LT/FLOPRD)*FLOPRD.EQ.LT)) THEN
           WRITE(UL,200) 'ZONE DATAPACKING=POINT, T="G_',AT,
-     &                  ' seconds"',', I=',NFLOT,', SOLUTIONTIME=',AT
+     &                  ' SECONDS"',', I=',NFLOT,', SOLUTIONTIME=',AT
           IF(IELM.EQ.11) THEN
             DO IFLOT=1,NFLOT
               WRITE(UL,300) TAGFLO(IFLOT),XFLOT(IFLOT),YFLOT(IFLOT),1

@@ -78,28 +78,28 @@
       J (4) = 4
 !
       IF (ZF(IK(2)).LT.ZF(IK(1)))  THEN
-         J(2)=1
-         J(1)=2
+        J(2)=1
+        J(1)=2
       ENDIF
       IF (ZF(IK(3)).LT.ZF(IK(J(2)))) THEN
-         J(3)=J(2)
-         J(2)=3
-         IF (ZF(IK(3)).LT.ZF(IK(J(1)))) THEN
-            J(2)=J(1)
-            J(1)=3
-         ENDIF
+        J(3)=J(2)
+        J(2)=3
+        IF (ZF(IK(3)).LT.ZF(IK(J(1)))) THEN
+          J(2)=J(1)
+          J(1)=3
+        ENDIF
       ENDIF
       IF (ZF(IK(4)).LT.ZF(IK(J(3)))) THEN
-         J(4)=J(3)
-         J(3)=4
-         IF (ZF(IK(4)).LT.ZF(IK(J(2)))) THEN
-            J(3)=J(2)
-            J(2)=4
-            IF (ZF(IK(4)).LT.ZF(IK(J(1)))) THEN
-               J(2)=J(1)
-               J(1)=4
-            ENDIF
-         ENDIF
+        J(4)=J(3)
+        J(3)=4
+        IF (ZF(IK(4)).LT.ZF(IK(J(2)))) THEN
+          J(3)=J(2)
+          J(2)=4
+          IF (ZF(IK(4)).LT.ZF(IK(J(1)))) THEN
+            J(2)=J(1)
+            J(1)=4
+          ENDIF
+        ENDIF
       ENDIF
 !
       SLM=OLDSL(IK(J(1)))

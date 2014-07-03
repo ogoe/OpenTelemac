@@ -153,91 +153,92 @@
 !       READS A SELAFIN FILE OF TYPE: TELEMAC
 !     ------------------------------------------------------------------
 !
- 95     CONTINUE
+ 95       CONTINUE
 !
-!       ----------------------------------------------------------------
-!       GOES TO NEXT RECORD : 2 BECOMES 1 AND READS A NEW 2
-!       ----------------------------------------------------------------    
-!
-        TV1=TV2   
-!
-!       READS THE DATE OF THE RECORD
-        CALL LIT(DAT2B,W,IW,C1,1,'R4',NDON,BINDON,ISTAT)
-        TV2=(DAT2B(1)-PHASTIME)*UNITIME
-!
-!       HERE THE POSSIBLE DATE IN THE FILE SHOULD BE TRANSMITTED
-!
-!       READS THE DATA
-!
-        TROUVE(1)=.FALSE.
-        TROUVE(2)=.FALSE.
-        TROUVE(3)=.FALSE.
-        DO I =1,NVAR
-          VOID=.TRUE.
-          DO J=1,3
-           IF((TEXTE(I).EQ.NAMEFR(J).OR.TEXTE(I).EQ.NAMEGB(J)).AND.
-     &       MODE(J).GT.0) THEN
-             IF(J.EQ.1) THEN
-               CALL OV('X=Y     ', F11 , F12 , Z , C , NPOIN)
-               CALL LIT(F12,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
-             ELSEIF(J.EQ.2) THEN
-               CALL OV('X=Y     ', F21 , F22 , Z , C , NPOIN)
-               CALL LIT(F22,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
-             ELSEIF(J.EQ.3) THEN
-               CALL OV('X=Y     ', F31 , F32 , Z , C , NPOIN)
-               CALL LIT(F32,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
-             ENDIF
-             TROUVE(J)=.TRUE.
-             VOID=.FALSE.
-           ENDIF
-         ENDDO
-!        VARIABLE NOT USEFUL, JUMPING THE RECORD
-         IF(VOID) READ(NDON)
-        ENDDO
-!
-        IF(TV2.LT.AT) THEN
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) ' NOUDON : ON SAUTE 1 ENREGISTREMENT'
-          ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*) ' NOUDON: JUMP OF 1 DATA RECORD'
+!         ----------------------------------------------------------------
+!         GOES TO NEXT RECORD : 2 BECOMES 1 AND READS A NEW 2
+!         ----------------------------------------------------------------    
+!         
+          TV1=TV2   
+!         
+!         READS THE DATE OF THE RECORD
+          CALL LIT(DAT2B,W,IW,C1,1,'R4',NDON,BINDON,ISTAT)
+          TV2=(DAT2B(1)-PHASTIME)*UNITIME
+!         
+!         HERE THE POSSIBLE DATE IN THE FILE SHOULD BE TRANSMITTED
+!         
+!         READS THE DATA
+!         
+          TROUVE(1)=.FALSE.
+          TROUVE(2)=.FALSE.
+          TROUVE(3)=.FALSE.
+          DO I =1,NVAR
+            VOID=.TRUE.
+            DO J=1,3
+              IF((TEXTE(I).EQ.NAMEFR(J).OR.TEXTE(I).EQ.NAMEGB(J)).AND.
+     &          MODE(J).GT.0) THEN
+                IF(J.EQ.1) THEN
+                  CALL OV('X=Y     ', F11 , F12 , Z , C , NPOIN)
+                  CALL LIT(F12,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
+                ELSEIF(J.EQ.2) THEN
+                  CALL OV('X=Y     ', F21 , F22 , Z , C , NPOIN)
+                  CALL LIT(F22,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
+                ELSEIF(J.EQ.3) THEN
+                  CALL OV('X=Y     ', F31 , F32 , Z , C , NPOIN)
+                  CALL LIT(F32,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
+                ENDIF
+                TROUVE(J)=.TRUE.
+                VOID=.FALSE.
+              ENDIF
+            ENDDO
+!           VARIABLE NOT USEFUL, JUMPING THE RECORD
+            IF(VOID) READ(NDON)
+          ENDDO
+!         
+          IF(TV2.LT.AT) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) ' NOUDON : ON SAUTE 1 ENREGISTREMENT'
+            ELSEIF(LNG.EQ.2) THEN
+              WRITE(LU,*) ' NOUDON: JUMP OF 1 DATA RECORD'
+            ENDIF
+            GO TO 95
           ENDIF
-          GO TO 95
-        ENDIF
 !
-       DO J=1,3
-         IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
-           IF(LNG.EQ.1) THEN
-             WRITE(LU,*) 'NOUDON : VARIABLE ',J,' NON TROUVEE'
-             WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OU ',
-     &                   TRIM(NAMEGB(J)(1:16))
-           ELSEIF(LNG.EQ.2) THEN
-             WRITE(LU,*) 'NOUDON: VARIABLE ',NAME1GB,' NOT FOUND'
-             WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OR ',
-     &                   TRIM(NAMEGB(J)(1:16))
-           ENDIF
-           CALL PLANTE(1)
-           STOP
-         ELSEIF(MODE(J).GT.0.AND.TROUVE(J)) THEN
-           IF(LNG.EQ.1) THEN
-             WRITE(LU,*) 'VARIABLE ',J,' LUE (',
-     &       TRIM(NAMEFR(J)(1:16)),' OU ',
-     &       TRIM(NAMEGB(J)(1:16)),') AU TEMPS ',AT
-             WRITE(LU,*) 'PAR INTERPOLATION ENTRE T=',TV1,' ET ',TV2
-           ELSEIF(LNG.EQ.2) THEN
-             WRITE(LU,*) 'VARIABLE ',J,' READ (',
-     &       TRIM(NAMEFR(J)(1:16)),' OR ',
-     &       TRIM(NAMEGB(J)(1:16)),') AT TIME ',AT
-             WRITE(LU,*) 'BY INTERPOLATION BETWEEN T=',TV1,' AND ',TV2
-           ENDIF
-         ENDIF
-       ENDDO
-!
-       ELSEIF (INDIC.EQ.4) THEN
-!
-!     ------------------------------------------------------------------
-!        READS A USER-DEFINED FILE FORMAT
-!     ------------------------------------------------------------------
-!
+          DO J=1,3
+            IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) 'NOUDON : VARIABLE ',J,' NON TROUVEE'
+                WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OU ',
+     &                      TRIM(NAMEGB(J)(1:16))
+              ELSEIF(LNG.EQ.2) THEN
+                WRITE(LU,*) 'NOUDON: VARIABLE ',NAME1GB,' NOT FOUND'
+                WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OR ',
+     &                      TRIM(NAMEGB(J)(1:16))
+              ENDIF
+              CALL PLANTE(1)
+              STOP
+            ELSEIF(MODE(J).GT.0.AND.TROUVE(J)) THEN
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) 'VARIABLE ',J,' LUE (',
+     &          TRIM(NAMEFR(J)(1:16)),' OU ',
+     &          TRIM(NAMEGB(J)(1:16)),') AU TEMPS ',AT
+                WRITE(LU,*) 'PAR INTERPOLATION ENTRE T=',TV1,' ET ',TV2
+              ELSEIF(LNG.EQ.2) THEN
+                WRITE(LU,*) 'VARIABLE ',J,' READ (',
+     &          TRIM(NAMEFR(J)(1:16)),' OR ',
+     &          TRIM(NAMEGB(J)(1:16)),') AT TIME ',AT
+                WRITE(LU,*) 'BY INTERPOLATION BETWEEN T=',TV1,
+     &                      ' AND ',TV2
+              ENDIF
+            ENDIF
+          ENDDO
+!         
+        ELSEIF (INDIC.EQ.4) THEN
+!         
+!     ---------------------------------------------------------------------
+!           READS A USER-DEFINED FILE FORMAT
+!     ---------------------------------------------------------------------
+!         
           IF(CHDON(1:1).EQ.'C') THEN
             TROUVE(1)=.TRUE.
             TROUVE(2)=.TRUE.
@@ -256,17 +257,17 @@
             CALL MARUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
      &                  F31,F32)
           ENDIF
-!
+!         
         ELSE
-!
-        WRITE(LU,*) '************************************************'
-        IF(LNG.EQ.1) THEN
-         WRITE(LU,*) 'NOUDON : INDICATEUR DE FORMAT INCONNU : ',INDIC
-        ELSE
-          WRITE(LU,*)'NOUDON : UNKNOWN INDICATOR OF FORMAT : ',INDIC
-        ENDIF
-        WRITE(LU,*) '************************************************'
-        CALL PLANTE(1)
+!         
+          WRITE(LU,*) '************************************************'
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'NOUDON : INDICATEUR DE FORMAT INCONNU : ',INDIC
+          ELSE
+            WRITE(LU,*)'NOUDON : UNKNOWN INDICATOR OF FORMAT : ',INDIC
+          ENDIF
+          WRITE(LU,*) '************************************************'
+          CALL PLANTE(1)
         ENDIF
 !
       ELSE
@@ -290,9 +291,9 @@
 !
       ENDIF
 !
-!       --------------------------------------------------------------
-!          INTERPOLATES
-!       --------------------------------------------------------------
+!     --------------------------------------------------------------
+!        INTERPOLATES
+!     --------------------------------------------------------------
 !
       COEF=(AT-TV1)/(TV2-TV1)
 !
@@ -324,11 +325,11 @@
 !
       WRITE(LU,*)'*********************************************'
       IF (LNG.EQ.1) THEN
-         WRITE(LU,*)'  ERREUR A LA LECTURE DU FICHIER DE DONNEES  '
-         WRITE(LU,*)'      OU FIN DE FICHIER PREMATUREE           '
+        WRITE(LU,*)'  ERREUR A LA LECTURE DU FICHIER DE DONNEES  '
+        WRITE(LU,*)'      OU FIN DE FICHIER PREMATUREE           '
       ELSE
-         WRITE(LU,*)'  ERROR WHILE READING DATA FILE '
-         WRITE(LU,*)'    OR UNEXPECTED END OF FILE           '
+        WRITE(LU,*)'  ERROR WHILE READING DATA FILE '
+        WRITE(LU,*)'    OR UNEXPECTED END OF FILE           '
       ENDIF
       WRITE(LU,*)'*********************************************'
       CALL PLANTE(1)

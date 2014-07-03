@@ -130,25 +130,25 @@
       CALL CPSTVC(THETAC,US4Y)
 !
       DO I = 1, NPOIN
-         ! ********************* !
-         ! I - CURRENT REFERENCE SYSTEM !
-         ! ********************* !
-         U3X = UCMOY%R(I)**3
-     &       + UCMOY%R(I)*UW%R(I)**2 * (1 + COS(2.D0*ALPHAW%R(I))/ 2.D0)
-         U3Y = UCMOY%R(I)*UW%R(I)**2 * SIN(2.D0*ALPHAW%R(I)) / 2.D0
-         ! ********************************************** !
-         ! II - 3RD ORDER MOMENTUM (LINEAR WAVE THEORY)   !
-         ! ********************************************** !
-         UC3X%R(I) = U3X * COS(THETAC%R(I)) - U3Y * SIN(THETAC%R(I))
-         UC3Y%R(I) = U3X * SIN(THETAC%R(I)) + U3Y * COS(THETAC%R(I))
-         ! ************************************************************ !
-         ! III -  4TH ORDER MOMENTUM (COLINEAR WAVES AND CURRENTS)      !
-         ! ************************************************************ !
-         NUM = ( 8.D0*UCMOY%R(I)**4 + 3.D0*UW%R(I)**4
-     &           + 24.D0*(UCMOY%R(I)**2)*(UW%R(I)**2) )*0.125D0
-         US4X%R(I) = NUM * COS(THETAC%R(I))
-         US4Y%R(I) = NUM * SIN(THETAC%R(I))
-       ENDDO
+        ! ********************* !
+        ! I - CURRENT REFERENCE SYSTEM !
+        ! ********************* !
+        U3X = UCMOY%R(I)**3
+     &      + UCMOY%R(I)*UW%R(I)**2 * (1 + COS(2.D0*ALPHAW%R(I))/ 2.D0)
+        U3Y = UCMOY%R(I)*UW%R(I)**2 * SIN(2.D0*ALPHAW%R(I)) / 2.D0
+        ! ********************************************** !
+        ! II - 3RD ORDER MOMENTUM (LINEAR WAVE THEORY)   !
+        ! ********************************************** !
+        UC3X%R(I) = U3X * COS(THETAC%R(I)) - U3Y * SIN(THETAC%R(I))
+        UC3Y%R(I) = U3X * SIN(THETAC%R(I)) + U3Y * COS(THETAC%R(I))
+        ! ************************************************************ !
+        ! III -  4TH ORDER MOMENTUM (COLINEAR WAVES AND CURRENTS)      !
+        ! ************************************************************ !
+        NUM = ( 8.D0*UCMOY%R(I)**4 + 3.D0*UW%R(I)**4
+     &          + 24.D0*(UCMOY%R(I)**2)*(UW%R(I)**2) )*0.125D0
+        US4X%R(I) = NUM * COS(THETAC%R(I))
+        US4Y%R(I) = NUM * SIN(THETAC%R(I))
+      ENDDO
       ! *********************************************** !
       ! IV -  FRICTION COEFFICIENT WAVE + CURRENT       !
       ! *********************************************** !

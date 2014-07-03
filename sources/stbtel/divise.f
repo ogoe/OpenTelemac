@@ -43,29 +43,29 @@
 !=======================================================================
 !
       DO IPOIN = 1,NPOIN
-         INDICP(IPOIN) = 1
+        INDICP(IPOIN) = 1
       ENDDO
 !
       IF (NSOM2.GE.3) THEN
 !
-         DO ISOM = 1,NSOM2
+        DO ISOM = 1,NSOM2
 !
-            DX = SOM2(ISOM+1,1) - SOM2(ISOM,1)
-            DY = SOM2(ISOM+1,2) - SOM2(ISOM,2)
+          DX = SOM2(ISOM+1,1) - SOM2(ISOM,1)
+          DY = SOM2(ISOM+1,2) - SOM2(ISOM,2)
 !
-            DO IPOIN = 1,NPOIN
-               IF (DX*(Y(IPOIN)-SOM2(ISOM,2)).LT.
-     &             DY*(X(IPOIN)-SOM2(ISOM,1))) INDICP(IPOIN) = 0
-            ENDDO
+          DO IPOIN = 1,NPOIN
+            IF (DX*(Y(IPOIN)-SOM2(ISOM,2)).LT.
+     &          DY*(X(IPOIN)-SOM2(ISOM,1))) INDICP(IPOIN) = 0
+          ENDDO
 !
-         ENDDO
+        ENDDO
 !
       ENDIF
 !
       DO IELEM = 1,NELEM
-         INDICE(IELEM) = INDICP(IKLE(IELEM,1))
-     &               + 2*INDICP(IKLE(IELEM,2))
-     &               + 4*INDICP(IKLE(IELEM,3))
+        INDICE(IELEM) = INDICP(IKLE(IELEM,1))
+     &              + 2*INDICP(IKLE(IELEM,2))
+     &              + 4*INDICP(IKLE(IELEM,3))
       ENDDO
 !
 !=======================================================================
@@ -76,88 +76,88 @@
 !
       DO IELEM = 1,NELEM
 !
-         IF (INDICE(IELEM).EQ.7) THEN
+        IF (INDICE(IELEM).EQ.7) THEN
 !
+          NO1 = IKLE(IELEM,1)
+          NO2 = IKLE(IELEM,2)
+          NO3 = IKLE(IELEM,3)
+!
+          NP1 = NPOIN + IPOIN
+          NP2 = NP1   + 1
+          NP3 = NP2   + 1
+!
+          NE1 = NELEM + IPOIN
+          NE2 = NE1   + 1
+          NE3 = NE2   + 1
+!
+          IPOIN = IPOIN + 3
+!
+          X(NP1) = 0.5D0 * ( X(NO1) + X(NO2) )
+          X(NP2) = 0.5D0 * ( X(NO2) + X(NO3) )
+          X(NP3) = 0.5D0 * ( X(NO3) + X(NO1) )
+!
+          Y(NP1) = 0.5D0 * ( Y(NO1) + Y(NO2) )
+          Y(NP2) = 0.5D0 * ( Y(NO2) + Y(NO3) )
+          Y(NP3) = 0.5D0 * ( Y(NO3) + Y(NO1) )
+!
+          NCOLOR(NP1) = NCOLOR(NO1)
+          NCOLOR(NP2) = NCOLOR(NO2)
+          NCOLOR(NP3) = NCOLOR(NO3)
+!
+          IKLE(IELEM,2) = NP1
+          IKLE(IELEM,3) = NP3
+!
+          IKLE(  NE1,1) = NP1
+          IKLE(  NE1,2) = NO2
+          IKLE(  NE1,3) = NP2
+!
+          IKLE(  NE2,1) = NP3
+          IKLE(  NE2,2) = NP2
+          IKLE(  NE2,3) = NO3
+!
+          IKLE(  NE3,1) = NP2
+          IKLE(  NE3,2) = NP3
+          IKLE(  NE3,3) = NP1
+!
+        ELSEIF (INDICE(IELEM).EQ.3.OR.
+     &          INDICE(IELEM).EQ.5.OR.
+     &          INDICE(IELEM).EQ.6) THEN
+!
+          IF (INDICE(IELEM).EQ.3) THEN
             NO1 = IKLE(IELEM,1)
             NO2 = IKLE(IELEM,2)
             NO3 = IKLE(IELEM,3)
+          ELSEIF (INDICE(IELEM).EQ.5) THEN
+            NO1 = IKLE(IELEM,3)
+            NO2 = IKLE(IELEM,1)
+            NO3 = IKLE(IELEM,2)
+          ELSE
+            NO1 = IKLE(IELEM,2)
+            NO2 = IKLE(IELEM,3)
+            NO3 = IKLE(IELEM,1)
+          ENDIF
 !
-            NP1 = NPOIN + IPOIN
-            NP2 = NP1   + 1
-            NP3 = NP2   + 1
+          NP1 = NPOIN + IPOIN
 !
-            NE1 = NELEM + IPOIN
-            NE2 = NE1   + 1
-            NE3 = NE2   + 1
+          NE1 = NELEM + IPOIN
 !
-            IPOIN = IPOIN + 3
+          IPOIN = IPOIN + 1
 !
-            X(NP1) = 0.5D0 * ( X(NO1) + X(NO2) )
-            X(NP2) = 0.5D0 * ( X(NO2) + X(NO3) )
-            X(NP3) = 0.5D0 * ( X(NO3) + X(NO1) )
+          X(NP1) = 0.5D0 * ( X(NO1) + X(NO2) )
 !
-            Y(NP1) = 0.5D0 * ( Y(NO1) + Y(NO2) )
-            Y(NP2) = 0.5D0 * ( Y(NO2) + Y(NO3) )
-            Y(NP3) = 0.5D0 * ( Y(NO3) + Y(NO1) )
+          Y(NP1) = 0.5D0 * ( Y(NO1) + Y(NO2) )
 !
-            NCOLOR(NP1) = NCOLOR(NO1)
-            NCOLOR(NP2) = NCOLOR(NO2)
-            NCOLOR(NP3) = NCOLOR(NO3)
+          NCOLOR(NP1) = NCOLOR(NO1)
 !
-            IKLE(IELEM,2) = NP1
-            IKLE(IELEM,3) = NP3
+          IKLE(IELEM,1) = NO1
+          IKLE(IELEM,2) = NP1
+          IKLE(IELEM,3) = NO3
 !
-            IKLE(  NE1,1) = NP1
-            IKLE(  NE1,2) = NO2
-            IKLE(  NE1,3) = NP2
+          IKLE(  NE1,1) = NO2
+          IKLE(  NE1,2) = NO3
+          IKLE(  NE1,3) = NP1
 !
-            IKLE(  NE2,1) = NP3
-            IKLE(  NE2,2) = NP2
-            IKLE(  NE2,3) = NO3
-!
-            IKLE(  NE3,1) = NP2
-            IKLE(  NE3,2) = NP3
-            IKLE(  NE3,3) = NP1
-!
-         ELSEIF (INDICE(IELEM).EQ.3.OR.
-     &           INDICE(IELEM).EQ.5.OR.
-     &           INDICE(IELEM).EQ.6) THEN
-!
-            IF (INDICE(IELEM).EQ.3) THEN
-               NO1 = IKLE(IELEM,1)
-               NO2 = IKLE(IELEM,2)
-               NO3 = IKLE(IELEM,3)
-            ELSEIF (INDICE(IELEM).EQ.5) THEN
-               NO1 = IKLE(IELEM,3)
-               NO2 = IKLE(IELEM,1)
-               NO3 = IKLE(IELEM,2)
-            ELSE
-               NO1 = IKLE(IELEM,2)
-               NO2 = IKLE(IELEM,3)
-               NO3 = IKLE(IELEM,1)
-            ENDIF
-!
-            NP1 = NPOIN + IPOIN
-!
-            NE1 = NELEM + IPOIN
-!
-            IPOIN = IPOIN + 1
-!
-            X(NP1) = 0.5D0 * ( X(NO1) + X(NO2) )
-!
-            Y(NP1) = 0.5D0 * ( Y(NO1) + Y(NO2) )
-!
-            NCOLOR(NP1) = NCOLOR(NO1)
-!
-            IKLE(IELEM,1) = NO1
-            IKLE(IELEM,2) = NP1
-            IKLE(IELEM,3) = NO3
-!
-            IKLE(  NE1,1) = NO2
-            IKLE(  NE1,2) = NO3
-            IKLE(  NE1,3) = NP1
-!
-         ENDIF
+        ENDIF
 !
       ENDDO !IELEM
 !

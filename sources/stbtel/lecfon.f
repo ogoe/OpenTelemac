@@ -79,9 +79,9 @@
 !=======================================================================
 !
       DO I=1,NBAT
-         XRELV(I)=0.D0
-         YRELV(I)=0.D0
-         ZRELV(I)=0.D0
+        XRELV(I)=0.D0
+        YRELV(I)=0.D0
+        ZRELV(I)=0.D0
       ENDDO
 !
 !=======================================================================
@@ -143,39 +143,43 @@
 !
         DO I = 1,NBFOND
 !
-           REWIND NFOND(I)
-30         READ(NFOND(I),1000,END=40) C
-           IF (C(1:1).NE.'C'.AND.C(1:1).NE.'B') THEN
-               BACKSPACE ( UNIT = NFOND(I) )
-              NP(I)=NP(I)+1
-              NPT  =NPT +1
-              IF (NPT.GT.NBAT.AND.LNG.EQ.1) THEN
-                 WRITE(LU,1020) NBAT
-                 STOP
-              ENDIF
-              IF (NPT.GT.NBAT.AND.LNG.EQ.2) THEN
-                 WRITE(LU,4020) NBAT
-                 STOP
-              ENDIF
+          REWIND NFOND(I)
+30        READ(NFOND(I),1000,END=40) C
+          IF (C(1:1).NE.'C'.AND.C(1:1).NE.'B') THEN
+            BACKSPACE ( UNIT = NFOND(I) )
+            NP(I)=NP(I)+1
+            NPT  =NPT +1
+            IF (NPT.GT.NBAT.AND.LNG.EQ.1) THEN
+              WRITE(LU,1020) NBAT
+              CALL PLANTE(1)
+              STOP
+            ENDIF
+            IF (NPT.GT.NBAT.AND.LNG.EQ.2) THEN
+              WRITE(LU,4020) NBAT
+              CALL PLANTE(1)
+              STOP
+            ENDIF
 !
 ! LECTURE FICHIER SINUSX SIMPLE PRECISION PUIS -> DOUBLE PRECISION
 !
-              READ (NFOND(I),*) XSP,YSP,ZSP
-              XRELV(NPT) = DBLE(XSP)
-              YRELV(NPT) = DBLE(YSP)
-              ZRELV(NPT) = DBLE(ZSP)
+             READ (NFOND(I),*) XSP,YSP,ZSP
+             XRELV(NPT) = DBLE(XSP)
+             YRELV(NPT) = DBLE(YSP)
+             ZRELV(NPT) = DBLE(ZSP)
 !
-           ENDIF
-           GOTO 30
-40         CONTINUE
-           IF (NP(I).EQ.0.AND.LNG.EQ.1) THEN
-              WRITE(LU,1030) I
-              STOP
-           ENDIF
-           IF (NP(I).EQ.0.AND.LNG.EQ.2) THEN
-              WRITE(LU,4030) I
-              STOP
-           ENDIF
+          ENDIF
+          GOTO 30
+40        CONTINUE
+          IF (NP(I).EQ.0.AND.LNG.EQ.1) THEN
+            WRITE(LU,1030) I
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          IF (NP(I).EQ.0.AND.LNG.EQ.2) THEN
+            WRITE(LU,4030) I
+            CALL PLANTE(1)
+            STOP
+          ENDIF
 !
         ENDDO! I
       ENDIF
@@ -194,6 +198,7 @@
      &        ,/,1X,'SUBROUTINE LECFON :'
      &        ,/,1X,'ERROR READING FASTTABS FILE.'
      &        ,/,1X,'****************************')
+      CALL PLANTE(1)
       STOP
 !
 !-----------------------------------------------------------------------

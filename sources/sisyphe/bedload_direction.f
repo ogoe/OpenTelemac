@@ -66,18 +66,18 @@
 !======================================================================!
 !======================================================================!
       DO I = 1, NPOIN
-         IF (ABS(QU%R(I)) <= LOCAL_ZERO) THEN
-            IF (QV%R(I) < = LOCAL_ZERO) THEN
-               THETAC%R(I) = -PI*0.5D0
-            ELSE
-               THETAC%R(I) =  PI*0.5D0
-            ENDIF
-         ELSE
-            THETAC%R(I) = ATAN(QV%R(I) / QU%R(I))
-            IF (QU%R(I) < 0.D0) THEN
-               THETAC%R(I) = PI + THETAC%R(I)
-            ENDIF
-         ENDIF
+        IF (ABS(QU%R(I)) <= LOCAL_ZERO) THEN
+          IF (QV%R(I) < = LOCAL_ZERO) THEN
+            THETAC%R(I) = -PI*0.5D0
+          ELSE
+            THETAC%R(I) =  PI*0.5D0
+          ENDIF
+        ELSE
+          THETAC%R(I) = ATAN(QV%R(I) / QU%R(I))
+          IF (QU%R(I) < 0.D0) THEN
+            THETAC%R(I) = PI + THETAC%R(I)
+          ENDIF
+        ENDIF
       END DO
 !======================================================================!
 !======================================================================!

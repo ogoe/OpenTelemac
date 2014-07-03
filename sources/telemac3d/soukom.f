@@ -197,43 +197,43 @@
 !
       DO N=1,NPOIN3
 !
-         ROTAT%R(N) = ABS(DWDY%R(N)-DVDZ%R(N))
-     &              + ABS(DUDZ%R(N)-DWDX%R(N))
-     &              + ABS(DVDX%R(N)-DUDY%R(N))
-         GRDKOM   = DKDX%R(N)*DODX%R(N)
-     &             +DKDY%R(N)*DODY%R(N)+DKDZ%R(N)*DODZ%R(N)
+        ROTAT%R(N) = ABS(DWDY%R(N)-DVDZ%R(N))
+     &             + ABS(DUDZ%R(N)-DWDX%R(N))
+     &             + ABS(DVDX%R(N)-DUDY%R(N))
+        GRDKOM   = DKDX%R(N)*DODX%R(N)
+     &            +DKDY%R(N)*DODY%R(N)+DKDZ%R(N)*DODZ%R(N)
 !
-         IF(GRDKOM.GE.0.D0) THEN
-           SIGMAD = 0.5D0
-         ELSE
-           SIGMAD   = 0.D0
-         ENDIF
+        IF(GRDKOM.GE.0.D0) THEN
+          SIGMAD = 0.5D0
+        ELSE
+          SIGMAD   = 0.D0
+        ENDIF
 !
-         VISC = 0.3D0*AK%R(N)/MAX(0.3D0*EP%R(N),ROTAT%R(N))
+        VISC = 0.3D0*AK%R(N)/MAX(0.3D0*EP%R(N),ROTAT%R(N))
 !
-         PROD = (  2.D0 * (DUDX%R(N)**2+DVDY%R(N)**2+DWDZ%R(N)**2)
-     &                  + ( DUDY%R(N)+DVDX%R(N) )**2
-     &                  + ( DUDZ%R(N)+DWDX%R(N) )**2
-     &                  + ( DVDZ%R(N)+DWDY%R(N) )**2  ) * VISC
+        PROD = (  2.D0 * (DUDX%R(N)**2+DVDY%R(N)**2+DWDZ%R(N)**2)
+     &                 + ( DUDY%R(N)+DVDX%R(N) )**2
+     &                 + ( DUDZ%R(N)+DWDX%R(N) )**2
+     &                 + ( DVDZ%R(N)+DWDY%R(N) )**2  ) * VISC
 !
-!        COMPUTES G AND C3
+!       COMPUTES G AND C3
 !
-         G = VISC*GRAV*DTADZ%R(N)
+        G = VISC*GRAV*DTADZ%R(N)
 !
-         IF(G.GT.0.D0) THEN
-           C3=0.D0
-         ELSE
-           C3=1.D0
-         ENDIF
+        IF(G.GT.0.D0) THEN
+          C3=0.D0
+        ELSE
+          C3=1.D0
+        ENDIF
 !
-!        EXPLICIT K
+!       EXPLICIT K
 !
-         CV1%R(N) = PROD + G
+        CV1%R(N) = PROD + G
 !
-!        EXPLICIT OMEGA
+!       EXPLICIT OMEGA
 !
-         CV2%R(N)=ALPHA*(PROD+(1-C3)*G)*EP%R(N)/AK%R(N)
-     &            +SIGMAD/EP%R(N)*GRDKOM
+        CV2%R(N)=ALPHA*(PROD+(1-C3)*G)*EP%R(N)/AK%R(N)
+     &           +SIGMAD/EP%R(N)*GRDKOM
 !
       ENDDO
 !

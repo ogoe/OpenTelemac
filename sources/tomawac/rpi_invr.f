@@ -125,17 +125,17 @@
       CALL INVERT(RN,NP,MAXNSP) 
 ! 
       DO IP1 =1,NB_CLOSE(I) 
-         WZ=0.D0 
-         WZX1=0.D0 
-         WZY1=0.D0 
-         WZX2=0.D0 
-         WZY2=0.D0                  
+        WZ=0.D0 
+        WZX1=0.D0 
+        WZY1=0.D0 
+        WZX2=0.D0 
+        WZY2=0.D0                  
         DO IPOIN1 =1,NB_CLOSE(I) 
           WZ=WZ+RK_I(1,IPOIN1)*RN(IPOIN1,IP1) 
-          WZx1=WZx1+RX_I(1,IPOIN1)*RN(IPOIN1,IP1) 
-          WZy1=WZy1+RY_I(1,IPOIN1)*RN(IPOIN1,IP1) 
-          WZx2=WZx2+RXX_I(1,IPOIN1)*RN(IPOIN1,IP1) 
-          WZy2=WZy2+RYY_I(1,IPOIN1)*RN(IPOIN1,IP1) 
+          WZX1=WZX1+RX_I(1,IPOIN1)*RN(IPOIN1,IP1) 
+          WZY1=WZY1+RY_I(1,IPOIN1)*RN(IPOIN1,IP1) 
+          WZX2=WZX2+RXX_I(1,IPOIN1)*RN(IPOIN1,IP1) 
+          WZY2=WZY2+RYY_I(1,IPOIN1)*RN(IPOIN1,IP1) 
         ENDDO   
 !       write RK etc for the right form for each domain in one row
         RK_D(IP1)  = WZ 

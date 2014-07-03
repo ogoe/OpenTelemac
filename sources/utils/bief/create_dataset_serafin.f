@@ -98,11 +98,12 @@
 !   LEC/ECR 3 : NAMES AND UNITS OF THE VARIABLES
 !
       IF(NVAR.GE.1) THEN
-       DO I=1,NVAR
-         IF(OUTVAR(I)) THEN
-          CALL ECRI2(XBID,IBID,NOMVAR(I)(1:32),32,'CH',NFIC,'STD',ISTAT)
-         ENDIF
-       ENDDO
+        DO I=1,NVAR
+          IF(OUTVAR(I)) THEN
+            CALL ECRI2(XBID,IBID,NOMVAR(I)(1:32),32,'CH',
+     &                 NFIC,'STD',ISTAT)
+          ENDIF
+        ENDDO
       ENDIF
 !
 !***********************************************************************

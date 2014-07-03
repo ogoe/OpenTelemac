@@ -114,31 +114,31 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
 !   INITIALISES THE INTERMEDIATE VARIABLES
 !
-         S2D   = XMUL*0.25D0/SURFAC(IELEM)
-         VISC1 = U(IELEM)*S2D
-         BPE   = VISC1*(Y3**2 + X3**2)
-         CPF   = VISC1*(Y2*Y3 + X2*X3)
-         APD   = VISC1*(Y2**2 + X2**2)
+        S2D   = XMUL*0.25D0/SURFAC(IELEM)
+        VISC1 = U(IELEM)*S2D
+        BPE   = VISC1*(Y3**2 + X3**2)
+        CPF   = VISC1*(Y2*Y3 + X2*X3)
+        APD   = VISC1*(Y2**2 + X2**2)
 !
 !  DIAGONAL TERMS
 !
-         A11(IELEM)= APD+BPE-2*CPF
-         A22(IELEM)= BPE
-         A33(IELEM)= APD
+        A11(IELEM)= APD+BPE-2*CPF
+        A22(IELEM)= BPE
+        A33(IELEM)= APD
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM)= CPF-BPE
-         A13(IELEM)= CPF-APD
-         A23(IELEM)=-CPF
+        A12(IELEM)= CPF-BPE
+        A13(IELEM)= CPF-APD
+        A23(IELEM)=-CPF
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !
@@ -158,35 +158,35 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
 !  INITIALISES THE INTERMEDIATE VARIABLES
 !
-         S2D   = XMUL*0.25D0/SURFAC(IELEM)
-         VISC1 = U(         IELEM)*S2D
-         VISC2 = U(  NELMAX+IELEM)*S2D
-         VISC3 = U(2*NELMAX+IELEM)*S2D
-         BPE   = VISC1*Y3**2 + VISC2*X3**2
-         CPF   = VISC1*Y2*Y3 + VISC2*X2*X3
-         APD   = VISC1*Y2**2 + VISC2*X2**2
-         X2MX3  = X2-X3
-         Y2MY3  = Y2-Y3
+        S2D   = XMUL*0.25D0/SURFAC(IELEM)
+        VISC1 = U(         IELEM)*S2D
+        VISC2 = U(  NELMAX+IELEM)*S2D
+        VISC3 = U(2*NELMAX+IELEM)*S2D
+        BPE   = VISC1*Y3**2 + VISC2*X3**2
+        CPF   = VISC1*Y2*Y3 + VISC2*X2*X3
+        APD   = VISC1*Y2**2 + VISC2*X2**2
+        X2MX3  = X2-X3
+        Y2MY3  = Y2-Y3
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM)= CPF-BPE   - ( Y2MY3*X3 + X2MX3*Y3 ) * VISC3
-         A13(IELEM)= CPF-APD   + ( Y2MY3*X2 + X2MX3*Y2 ) * VISC3
-         A23(IELEM)= -CPF      + ( X2*Y3    + X3*Y2    ) * VISC3
+        A12(IELEM)= CPF-BPE   - ( Y2MY3*X3 + X2MX3*Y3 ) * VISC3
+        A13(IELEM)= CPF-APD   + ( Y2MY3*X2 + X2MX3*Y2 ) * VISC3
+        A23(IELEM)= -CPF      + ( X2*Y3    + X3*Y2    ) * VISC3
 !
 !  DIAGONAL TERMS
 !
-         A11(IELEM) = - A12(IELEM) - A13(IELEM)
-         A22(IELEM) = - A12(IELEM) - A23(IELEM)
-         A33(IELEM) = - A13(IELEM) - A23(IELEM)
+        A11(IELEM) = - A12(IELEM) - A13(IELEM)
+        A22(IELEM) = - A12(IELEM) - A23(IELEM)
+        A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
 !   END OF THE LOOP ON THE ELEMENTS
 !
@@ -251,32 +251,32 @@
 !
 !   INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
 !   INITIALISES THE INTERMEDIATE VARIABLES
 !
-         SOMVX = ( U(IKLE1(IELEM))
-     &            +U(IKLE2(IELEM))
-     &            +U(IKLE3(IELEM)) ) * XSUR12 / SURFAC(IELEM)
-         X2X3  = X2 * X3  + Y2 * Y3
-         X2AUX = X2*(-X2+X3)+Y2*(-Y2+Y3)
-         X3AUX = X3*(-X2+X3)+Y3*(-Y2+Y3)
+        SOMVX = ( U(IKLE1(IELEM))
+     &           +U(IKLE2(IELEM))
+     &           +U(IKLE3(IELEM)) ) * XSUR12 / SURFAC(IELEM)
+        X2X3  = X2 * X3  + Y2 * Y3
+        X2AUX = X2*(-X2+X3)+Y2*(-Y2+Y3)
+        X3AUX = X3*(-X2+X3)+Y3*(-Y2+Y3)
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM) = - SOMVX * X3AUX
-         A13(IELEM) =   SOMVX * X2AUX
-         A23(IELEM) = - SOMVX * X2X3
+        A12(IELEM) = - SOMVX * X3AUX
+        A13(IELEM) =   SOMVX * X2AUX
+        A23(IELEM) = - SOMVX * X2X3
 !
 !  DIAGONAL TERMS
 !
-         A11(IELEM) = - A12(IELEM) - A13(IELEM)
-         A22(IELEM) = - A12(IELEM) - A23(IELEM)
-         A33(IELEM) = - A13(IELEM) - A23(IELEM)
+        A11(IELEM) = - A12(IELEM) - A13(IELEM)
+        A22(IELEM) = - A12(IELEM) - A23(IELEM)
+        A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
       ENDDO ! IELEM 
 !
@@ -299,57 +299,57 @@
 !
 !  INITIALISES THE GEOMETRICAL VARIABLES
 !
-         X2  =  XEL(IELEM,2)
-         X3  =  XEL(IELEM,3)
+        X2  =  XEL(IELEM,2)
+        X3  =  XEL(IELEM,3)
 !
-         Y2  =  YEL(IELEM,2)
-         Y3  =  YEL(IELEM,3)
+        Y2  =  YEL(IELEM,2)
+        Y3  =  YEL(IELEM,3)
 !
 !  INITIALISES THE INTERMEDIATE VARIABLES
 !
-         SOMVX = U(IKLE1(IELEM)     )
-     &         + U(IKLE2(IELEM)     )
-     &         + U(IKLE3(IELEM)     )
-         SOMVY = U(IKLE1(IELEM)+IAD2)
-     &         + U(IKLE2(IELEM)+IAD2)
-     &         + U(IKLE3(IELEM)+IAD2)
-         SOMVZ = U(IKLE1(IELEM)+IAD3)
-     &         + U(IKLE2(IELEM)+IAD3)
-     &         + U(IKLE3(IELEM)+IAD3)
+        SOMVX = U(IKLE1(IELEM)     )
+     &        + U(IKLE2(IELEM)     )
+     &        + U(IKLE3(IELEM)     )
+        SOMVY = U(IKLE1(IELEM)+IAD2)
+     &        + U(IKLE2(IELEM)+IAD2)
+     &        + U(IKLE3(IELEM)+IAD2)
+        SOMVZ = U(IKLE1(IELEM)+IAD3)
+     &        + U(IKLE2(IELEM)+IAD3)
+     &        + U(IKLE3(IELEM)+IAD3)
 !
 !   INITIALISES THE INTERMEDIATE VARIABLES
 !
-         AUX = XSUR12 / SURFAC(IELEM)
-         X2X3 = X2 * X3
-         Y2Y3 = Y2 * Y3
-         X2AUX = X2*(-X2+X3)
-         Y2AUX = Y2*(-Y2+Y3)
-         X3AUX = X3*(-X2+X3)
-         Y3AUX = Y3*(-Y2+Y3)
-         X2MX3 = X2-X3
-         Y2MY3 = Y2-Y3
+        AUX = XSUR12 / SURFAC(IELEM)
+        X2X3 = X2 * X3
+        Y2Y3 = Y2 * Y3
+        X2AUX = X2*(-X2+X3)
+        Y2AUX = Y2*(-Y2+Y3)
+        X3AUX = X3*(-X2+X3)
+        Y3AUX = Y3*(-Y2+Y3)
+        X2MX3 = X2-X3
+        Y2MY3 = Y2-Y3
 !
 !  EXTRADIAGONAL TERMS
 !
-         A12(IELEM) = (   - SOMVX * Y3AUX
-     &                    - SOMVY * X3AUX
-     &                    - Y2MY3*X3*SOMVZ
-     &                    - X2MX3*Y3*SOMVZ ) * AUX
+        A12(IELEM) = (   - SOMVX * Y3AUX
+     &                   - SOMVY * X3AUX
+     &                   - Y2MY3*X3*SOMVZ
+     &                   - X2MX3*Y3*SOMVZ ) * AUX
 !
-         A13(IELEM) = (     SOMVX * Y2AUX
-     &                    + SOMVY * X2AUX
-     &                    + Y2MY3*X2*SOMVZ
-     &                    + X2MX3*Y2*SOMVZ ) * AUX
+        A13(IELEM) = (     SOMVX * Y2AUX
+     &                   + SOMVY * X2AUX
+     &                   + Y2MY3*X2*SOMVZ
+     &                   + X2MX3*Y2*SOMVZ ) * AUX
 !
-         A23(IELEM) = (   - SOMVX * Y2Y3
-     &                    - SOMVY * X2X3
-     &                    + SOMVZ*X3*Y2+SOMVZ*X2*Y3 ) * AUX
+        A23(IELEM) = (   - SOMVX * Y2Y3
+     &                   - SOMVY * X2X3
+     &                   + SOMVZ*X3*Y2+SOMVZ*X2*Y3 ) * AUX
 !
 !  DIAGONAL TERMS
 !
-         A11(IELEM) = - A12(IELEM) - A13(IELEM)
-         A22(IELEM) = - A12(IELEM) - A23(IELEM)
-         A33(IELEM) = - A13(IELEM) - A23(IELEM)
+        A11(IELEM) = - A12(IELEM) - A13(IELEM)
+        A22(IELEM) = - A12(IELEM) - A23(IELEM)
+        A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
       ENDDO ! IELEM 
 !

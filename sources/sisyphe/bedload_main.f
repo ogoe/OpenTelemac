@@ -263,24 +263,24 @@
 !
       DO I = 1, NSICLA
 !
-!        FOR SAND
-         IF(.NOT.SEDCO(I)) THEN
-           IF (DEBUG > 0) WRITE(LU,*)
-     &       'BEDLOAD_SOLIDISCHARGE : ',I,'/',NSICLA
-           CALL BEDLOAD_SOLIDISCHARGE
-     &        (MESH, U2D, V2D, UNORM,HN, TW, UW, MU,TOB,CF,
-     &          TOBW,FW,THETAW,AVAIL(1:NPOIN,1,I),
-     &          MASKPT, MASKEL, ACLADM,
-     &          UNLADM,KSP,KSR, LIQBOR, QBOR%ADR(I)%P, DEBUG, NPOIN,
-     &          NPTFR, IELMT, ICF, KENT, OPTBAN, HIDFAC, GRAV,
-     &          FDM(I), FD90(I), XWC(I), XMVE, XMVS, VCE, HMIN,
-     &          HIDI(I),KARMAN,ZERO,PI,
-     &          KARIM_HOLLY_YANG,SUSP,MSK,T1,T2,
-     &          T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, AC(I),
-     &          HIDING,QSCL_C%ADR(I)%P,QSCL_S%ADR(I)%P,
-     &          SLOPEFF,COEFPN,PHISED,CALFA,SALFA,BETA,ZF,S,
-     &          DEVIA, BETA2 , SECCURRENT, BIJK,HOULE,UNSV2D,
-     &          U3D,V3D,CODE)
+!       FOR SAND
+        IF(.NOT.SEDCO(I)) THEN
+          IF (DEBUG > 0) WRITE(LU,*)
+     &      'BEDLOAD_SOLIDISCHARGE : ',I,'/',NSICLA
+          CALL BEDLOAD_SOLIDISCHARGE
+     &       (MESH, U2D, V2D, UNORM,HN, TW, UW, MU,TOB,CF,
+     &         TOBW,FW,THETAW,AVAIL(1:NPOIN,1,I),
+     &         MASKPT, MASKEL, ACLADM,
+     &         UNLADM,KSP,KSR, LIQBOR, QBOR%ADR(I)%P, DEBUG, NPOIN,
+     &         NPTFR, IELMT, ICF, KENT, OPTBAN, HIDFAC, GRAV,
+     &         FDM(I), FD90(I), XWC(I), XMVE, XMVS, VCE, HMIN,
+     &         HIDI(I),KARMAN,ZERO,PI,
+     &         KARIM_HOLLY_YANG,SUSP,MSK,T1,T2,
+     &         T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, AC(I),
+     &         HIDING,QSCL_C%ADR(I)%P,QSCL_S%ADR(I)%P,
+     &         SLOPEFF,COEFPN,PHISED,CALFA,SALFA,BETA,ZF,S,
+     &         DEVIA, BETA2 , SECCURRENT, BIJK,HOULE,UNSV2D,
+     &         U3D,V3D,CODE)
           IF(DEBUG > 0) WRITE(LU,*) 'END_BEDLOAD_SOLIDISCHARGE'
         ELSE
 !         FOR COHESIVE SEDIMENT: ZERO BEDLOAD TRANSPORT RATE
@@ -340,11 +340,11 @@
       ! ----------------------
       !
       DO I=1,NSICLA      
-         IF(.NOT.SEDCO(I)) THEN
-           CALL OS('X=X+Y   ', X=QS_C, Y=QSCL_C%ADR(I)%P)
-           CALL OS('X=X+Y   ', X=ZF_C, Y=ZFCL_C%ADR(I)%P)
-         ENDIF
-       ENDDO
+        IF(.NOT.SEDCO(I)) THEN
+          CALL OS('X=X+Y   ', X=QS_C, Y=QSCL_C%ADR(I)%P)
+          CALL OS('X=X+Y   ', X=ZF_C, Y=ZFCL_C%ADR(I)%P)
+        ENDIF
+      ENDDO
 !
 !     TIDAL FLATS WITH MASKING     JMH ON 27/07/2006
 !

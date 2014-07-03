@@ -104,10 +104,10 @@
 !
       ELSE
 !
-!      CASE WHERE OUTINI=.TRUE. : PRIORITY ON PTINIG, VALUES FOR LT=0
-!      OTHERWISE THEY WOULD NOT BE INITIALISED
-       IF(SORG2D(35)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
-       IF(SORG2D(36)) CALL OS('X=C     ',X=TMAXZ,C=AT)
+!       CASE WHERE OUTINI=.TRUE. : PRIORITY ON PTINIG, VALUES FOR LT=0
+!       OTHERWISE THEY WOULD NOT BE INITIALISED
+        IF(SORG2D(35)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+        IF(SORG2D(36)) CALL OS('X=C     ',X=TMAXZ,C=AT)
 !
 !     ENDIF FOR : IF(LT.GE.GRADEB) THEN
       ENDIF
@@ -150,7 +150,7 @@
 !=======================================================================
 !
       IF(LEO.AND.SORG2D(5)) THEN
-         CALL OS( 'X=Y+Z   ' , T2_01 , H  , ZF , 0.D0 )
+        CALL OS( 'X=Y+Z   ' , T2_01 , H  , ZF , 0.D0 )
       ENDIF
 !
 !=======================================================================
@@ -169,8 +169,8 @@
 !=======================================================================
 !
       IF(LEO.AND.SORG2D(8)) THEN
-         CALL OS( 'X=N(Y,Z)' , X=T2_03 , Y=U2D, Z=V2D )
-         CALL OS( 'X=XY    ' , X=T2_03 , Y=H )
+        CALL OS( 'X=N(Y,Z)' , X=T2_03 , Y=U2D, Z=V2D )
+        CALL OS( 'X=XY    ' , X=T2_03 , Y=H )
       ENDIF
 !
 !=======================================================================
@@ -178,7 +178,7 @@
 !=======================================================================
 !
       IF(LEO.AND.SORG2D(13)) THEN
-         CALL OS( 'X=YZ    ' , X=T2_04 , Y=H , Z=U2D )
+        CALL OS( 'X=YZ    ' , X=T2_04 , Y=H , Z=U2D )
       ENDIF
 !
 !=======================================================================
@@ -186,7 +186,7 @@
 !=======================================================================
 !
       IF(LEO.AND.SORG2D(14)) THEN
-         CALL OS( 'X=YZ    ' , X=T2_05 , Y=H , Z=V2D )
+        CALL OS( 'X=YZ    ' , X=T2_05 , Y=H , Z=V2D )
       ENDIF
 !
 !=======================================================================
@@ -194,7 +194,7 @@
 !=======================================================================
 !
       IF(LEO.AND.SORG2D(15)) THEN
-         CALL OS( 'X=N(Y,Z)' , X=T2_06 , Y=U2D , Z=V2D )
+        CALL OS( 'X=N(Y,Z)' , X=T2_06 , Y=U2D , Z=V2D )
       ENDIF
 !
 !=======================================================================
@@ -211,7 +211,7 @@
 !=======================================================================
 !
       IF(LEO.AND.SORG2D(31)) THEN
-         CALL OS( 'X=SQR(Y)' , X=T2_07 , Y=UETCAR )
+        CALL OS( 'X=SQR(Y)' , X=T2_07 , Y=UETCAR )
       ENDIF
 !
 !=======================================================================

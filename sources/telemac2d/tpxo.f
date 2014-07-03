@@ -116,15 +116,15 @@
 !
 !     ORIGINAL VALUES WITH 7 DIGITS. ACCURACY HAS BEEN INCREASED AFTER
 !
-c$$$      DATA TPXO_OMEGA_D/
-c$$$     &    1.405189D-04,1.454441D-04,7.292117D-05,6.759774D-05,
-c$$$     &    1.378797D-04,7.252295D-05,1.458423D-04,6.495854D-05,
-c$$$     &    1.352405D-04,1.355937D-04,1.382329D-04,1.431581D-04,
-c$$$     &    1.452450D-04,7.556036D-05,7.028195D-05,7.824458D-05,
-c$$$     &    6.531174D-05,0.053234D-04,0.026392D-04,0.003982D-04,
-c$$$     &    2.810377D-04,2.859630D-04,2.783984D-04,4.215566D-04,
-c$$$     &    5.620755D-04,2.134402D-04,4.363323D-04,1.503693D-04,
-c$$$     &    2.081166D-04/
+!$$$      DATA TPXO_OMEGA_D/
+!$$$     &    1.405189D-04,1.454441D-04,7.292117D-05,6.759774D-05,
+!$$$     &    1.378797D-04,7.252295D-05,1.458423D-04,6.495854D-05,
+!$$$     &    1.352405D-04,1.355937D-04,1.382329D-04,1.431581D-04,
+!$$$     &    1.452450D-04,7.556036D-05,7.028195D-05,7.824458D-05,
+!$$$     &    6.531174D-05,0.053234D-04,0.026392D-04,0.003982D-04,
+!$$$     &    2.810377D-04,2.859630D-04,2.783984D-04,4.215566D-04,
+!$$$     &    5.620755D-04,2.134402D-04,4.363323D-04,1.503693D-04,
+!$$$     &    2.081166D-04/
 !
 !     MORE ACCURATE VALUES
 !
@@ -152,15 +152,15 @@ c$$$     &    2.081166D-04/
 !
 !     ORIGINAL VALUES WITH 7 DIGITS. ACCURACY HAS BEEN INCREASED AFTER
 !
-c$$$      DATA TPXO_PHASE_MKB/
-c$$$     &    1.731557546D0, 0.000000000D0, 0.173003674D0, 1.558553872D0,
-c$$$     &    6.050721243D0, 6.110181633D0, 3.487600001D0, 5.877717569D0,
-c$$$     &    4.086699633D0, 3.463115091D0, 5.427136701D0, 0.553986502D0,
-c$$$     &    0.052841931D0, 2.137025284D0, 2.436575100D0, 1.929046130D0,
-c$$$     &    5.254133027D0, 1.756042456D0, 1.964021610D0, 3.487600001D0,
-c$$$     &    3.463115091D0, 1.731557546D0, 1.499093481D0, 5.194672637D0,
-c$$$     &    6.926230184D0, 1.904561220D0, 0.000000000D0, 4.551627762D0,
-c$$$     &    3.809122439D0/
+!$$$      DATA TPXO_PHASE_MKB/
+!$$$     &    1.731557546D0, 0.000000000D0, 0.173003674D0, 1.558553872D0,
+!$$$     &    6.050721243D0, 6.110181633D0, 3.487600001D0, 5.877717569D0,
+!$$$     &    4.086699633D0, 3.463115091D0, 5.427136701D0, 0.553986502D0,
+!$$$     &    0.052841931D0, 2.137025284D0, 2.436575100D0, 1.929046130D0,
+!$$$     &    5.254133027D0, 1.756042456D0, 1.964021610D0, 3.487600001D0,
+!$$$     &    3.463115091D0, 1.731557546D0, 1.499093481D0, 5.194672637D0,
+!$$$     &    6.926230184D0, 1.904561220D0, 0.000000000D0, 4.551627762D0,
+!$$$     &    3.809122439D0/
 !
 !     MORE ACCURATE VALUES
 !
@@ -294,53 +294,53 @@ c$$$     &    3.809122439D0/
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-c$$$!                    **********************
-c$$$                     SUBROUTINE DEF_CON_IND
-c$$$!                    **********************
-c$$$!
-c$$$     &( C_ID, NCON, C_ID_MOD, NC, CIND )
-c$$$!
-c$$$!***********************************************************************
-c$$$! TELEMAC2D   V6P2                                   16/01/2012
-c$$$!***********************************************************************
-c$$$!
-c$$$!brief    DEFINES CONSTITUENT INDICES IN A MODEL FOR GIVEN SET OF CONSTITUENTS
-c$$$!
-c$$$!warning  CONSTITUENT NAMES ARE ASSUMED TO BE ALL IN LOWER CASE
-c$$$!
-c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-c$$$!|  C_ID          |-->| NAME OF CONTITUENTS
-c$$$!|  C_ID_MOD      |-->| NAME OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
-c$$$!|  CIND          |<--| INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
-c$$$!|  NC            |-->| NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
-c$$$!|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
-c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-c$$$!
-c$$$      IMPLICIT NONE
-c$$$!
-c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-c$$$!
-c$$$      INTEGER, INTENT(IN)          :: NC,NCON
-c$$$      INTEGER, INTENT(OUT)         :: CIND(NCON)
-c$$$      CHARACTER(LEN=4), INTENT(IN) :: C_ID(*),C_ID_MOD(*)
-c$$$!
-c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-c$$$!
-c$$$      INTEGER IC1,IC2
-c$$$!
-c$$$!-----------------------------------------------------------------------
-c$$$!
-c$$$      DO IC1 = 1,NCON
-c$$$         CIND(IC1) = 0
-c$$$         DO IC2 = 1,NC
-c$$$            IF( C_ID(IC1).EQ.C_ID_MOD(IC2) ) CIND(IC1) = IC2
-c$$$         ENDDO
-c$$$      ENDDO
-c$$$!
-c$$$!-----------------------------------------------------------------------
-c$$$!
-c$$$      RETURN
-c$$$      END SUBROUTINE DEF_CON_IND
+!$$$!                    **********************
+!$$$                     SUBROUTINE DEF_CON_IND
+!$$$!                    **********************
+!$$$!
+!$$$     &( C_ID, NCON, C_ID_MOD, NC, CIND )
+!$$$!
+!$$$!***********************************************************************
+!$$$! TELEMAC2D   V6P2                                   16/01/2012
+!$$$!***********************************************************************
+!$$$!
+!$$$!brief    DEFINES CONSTITUENT INDICES IN A MODEL FOR GIVEN SET OF CONSTITUENTS
+!$$$!
+!$$$!warning  CONSTITUENT NAMES ARE ASSUMED TO BE ALL IN LOWER CASE
+!$$$!
+!$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!$$$!|  C_ID          |-->| NAME OF CONTITUENTS
+!$$$!|  C_ID_MOD      |-->| NAME OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+!$$$!|  CIND          |<--| INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+!$$$!|  NC            |-->| NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
+!$$$!|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
+!$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!$$$!
+!$$$      IMPLICIT NONE
+!$$$!
+!$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!$$$!
+!$$$      INTEGER, INTENT(IN)          :: NC,NCON
+!$$$      INTEGER, INTENT(OUT)         :: CIND(NCON)
+!$$$      CHARACTER(LEN=4), INTENT(IN) :: C_ID(*),C_ID_MOD(*)
+!$$$!
+!$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!$$$!
+!$$$      INTEGER IC1,IC2
+!$$$!
+!$$$!-----------------------------------------------------------------------
+!$$$!
+!$$$      DO IC1 = 1,NCON
+!$$$         CIND(IC1) = 0
+!$$$         DO IC2 = 1,NC
+!$$$            IF( C_ID(IC1).EQ.C_ID_MOD(IC2) ) CIND(IC1) = IC2
+!$$$         ENDDO
+!$$$      ENDDO
+!$$$!
+!$$$!-----------------------------------------------------------------------
+!$$$!
+!$$$      RETURN
+!$$$      END SUBROUTINE DEF_CON_IND
 !                    ******************
                      SUBROUTINE DEF_CID
 !                    ******************
@@ -377,20 +377,20 @@ c$$$      END SUBROUTINE DEF_CON_IND
 !
       K = 1
       DO IC = 1,NC0
-         IND(K) = 0
-         DO JC = 1,TPXO_NCMX
-            IF( CID(IC).EQ.TPXO_CONSTID(JC) ) THEN
-               IND(K) = JC
-               EXIT
-            ENDIF
-         ENDDO
-         IF( IND(K).EQ.0 ) THEN
-            IF(LNG.EQ.1) WRITE(LU,*) 'TPXO : ATTENTION :' //
-     &         'COMPOSANTE ID ',CID(IC),' N''EST PAS PERMISE'
-            IF(LNG.EQ.2) WRITE(LU,*) 'TPXO : WARNING:' //
-     &         'CONSTITUENT ID ',CID(IC),' IS NOT ALLOWED'
-         ENDIF
-         K = K + 1
+        IND(K) = 0
+        DO JC = 1,TPXO_NCMX
+          IF( CID(IC).EQ.TPXO_CONSTID(JC) ) THEN
+            IND(K) = JC
+            EXIT
+          ENDIF
+        ENDDO
+        IF( IND(K).EQ.0 ) THEN
+          IF(LNG.EQ.1) WRITE(LU,*) 'TPXO : ATTENTION :' //
+     &       'COMPOSANTE ID ',CID(IC),' N''EST PAS PERMISE'
+          IF(LNG.EQ.2) WRITE(LU,*) 'TPXO : WARNING:' //
+     &       'CONSTITUENT ID ',CID(IC),' IS NOT ALLOWED'
+        ENDIF
+        K = K + 1
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -468,10 +468,10 @@ c$$$      END SUBROUTINE DEF_CON_IND
 !
       IF( NC.NE.0 ) THEN
 !     HEIGHT(I)=SUM_OF_REAL(A(I)*P(I))
-         DO I = 1,NC
-            HEIGHT = HEIGHT
-     &             + REAL(P(I))*REAL(A(I))-AIMAG(P(I))*AIMAG(A(I))
-         ENDDO
+        DO I = 1,NC
+          HEIGHT = HEIGHT
+     &           + REAL(P(I))*REAL(A(I))-AIMAG(P(I))*AIMAG(A(I))
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -540,12 +540,12 @@ c$$$      END SUBROUTINE DEF_CON_IND
       IF( XLONC.LT.PH_LIM(1) ) XLONC = XLONC + 360.D0
       IF( XLONC.GT.PH_LIM(2) ) XLONC = XLONC - 360.D0
       IF( XLONC.LT.PH_LIM(1).OR.XLONC.GT.PH_LIM(2) ) THEN
-         IERR = -1
-         RETURN
+        IERR = -1
+        RETURN
       END IF
       IF( XLAT.LT.TH_LIM(1).OR.XLAT.GT.TH_LIM(2) ) THEN
-         IERR = -1
-         RETURN
+        IERR = -1
+        RETURN
       END IF
       DLAT = XLAT
       DLON = XLONC
@@ -554,18 +554,18 @@ c$$$      END SUBROUTINE DEF_CON_IND
      &                 DPHI,DTHETA,MZ,N,M,WW,IW,JW )
 !
       IF( (WW(0,0)+WW(1,0)+WW(0,1)+WW(1,1)).LT.0.01D0 ) THEN
-         IERR = -2
-         DO K = 1,NT
-            UV1(K) = CMPLX(0.D0,0.D0,KIND(1.D0))
-         ENDDO
+        IERR = -2
+        DO K = 1,NT
+          UV1(K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+        ENDDO
       ELSE
-         IERR = 0
-         DO K = 1,NT
-            UV1(K) = UV(K,IW(0),JW(0))*WW(0,0) +
-     &               UV(K,IW(1),JW(0))*WW(1,0) +
-     &               UV(K,IW(0),JW(1))*WW(0,1) +
-     &               UV(K,IW(1),JW(1))*WW(1,1)
-         ENDDO
+        IERR = 0
+        DO K = 1,NT
+          UV1(K) = UV(K,IW(0),JW(0))*WW(0,0) +
+     &             UV(K,IW(1),JW(0))*WW(1,0) +
+     &             UV(K,IW(0),JW(1))*WW(0,1) +
+     &             UV(K,IW(1),JW(1))*WW(1,1)
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -635,10 +635,10 @@ c$$$      END SUBROUTINE DEF_CON_IND
       IF( ZUV.EQ.'Z' ) ZUV = 'z'
 !
       IF( ZUV.NE.'u'.AND.ZUV.NE.'v'.AND.ZUV.NE.'z' ) THEN
-         IF(LNG.EQ.1) WRITE(LU,*) 'TPXO : PAS DE NOEUDS ',ZUV
-         IF(LNG.EQ.2) WRITE(LU,*) 'TPXO : NO ',ZUV,' NODES'
-         CALL PLANTE(1)
-         STOP
+        IF(LNG.EQ.1) WRITE(LU,*) 'TPXO : PAS DE NOEUDS ',ZUV
+        IF(LNG.EQ.2) WRITE(LU,*) 'TPXO : NO ',ZUV,' NODES'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       IF( ZUV.EQ.'z' ) THEN
@@ -656,8 +656,8 @@ c$$$      END SUBROUTINE DEF_CON_IND
 !         |      /|\      |
 !                 |
 !
-         XI = (PHI  -PHI_LIM(1)  )/DX + 0.5D0
-         XJ = (THETA-THETA_LIM(1))/DY + 0.5D0
+        XI = (PHI  -PHI_LIM(1)  )/DX + 0.5D0
+        XJ = (THETA-THETA_LIM(1))/DY + 0.5D0
 !
       ELSEIF( ZUV.EQ.'u' ) THEN
 !
@@ -678,13 +678,13 @@ c$$$      END SUBROUTINE DEF_CON_IND
 !                 v-------v     WITH A UNIT VECTOR (TH,PH):
 !                               (1.,0)->EW, (0.,1.)->NS
 !
-         XI = (PHI  -PHI_LIM(1)  )/DX + 1.D0
-         XJ = (THETA-THETA_LIM(1))/DY + 0.5D0
+        XI = (PHI  -PHI_LIM(1)  )/DX + 1.D0
+        XJ = (THETA-THETA_LIM(1))/DY + 0.5D0
 !
       ELSEIF( ZUV.EQ.'v' ) THEN
 !
-         XI = (PHI  -PHI_LIM(1)  )/DX + 0.5D0
-         XJ = (THETA-THETA_LIM(1))/DY + 1.D0
+        XI = (PHI  -PHI_LIM(1)  )/DX + 0.5D0
+        XJ = (THETA-THETA_LIM(1))/DY + 1.D0
 !
       ENDIF
 !
@@ -701,7 +701,7 @@ c$$$      END SUBROUTINE DEF_CON_IND
 !
 !     CHECK TO SEE IF CALCULATED INDICES ARE IN RANGE
       IF( (I0.GT.N).OR.(I0.LT.1).OR.(J0.GT.M).OR.(J0.LT.1) ) THEN
-         RETURN
+        RETURN
       ENDIF
 !
 !     COMPUTES WEIGHTS FOR BILINEAR SPLINE INTERPOLATION; ONLY
@@ -711,18 +711,18 @@ c$$$      END SUBROUTINE DEF_CON_IND
       I1 = IPSHFT(I0,1,N)
       SM = MASK(I0,J0) + MASK(I0,J1) + MASK(I1,J0) + MASK(I1,J1)
       IF( SM.GT.0 ) THEN
-         W00 = (1.D0-X)*(1.D0-Y)*REAL(MASK(I0,J0))
-         W01 = (1.D0-X)*Y*REAL(MASK(I0,J1))
-         W10 = X*(1.D0-Y)*REAL(MASK(I1,J0))
-         W11 = X*Y*REAL(MASK(I1,J1))
-         WTOT = W00+W01+W10+W11
-         IF( WTOT.EQ.0.D0 ) THEN
-            RETURN
-         ENDIF
-         WW(0,0) = W00/WTOT
-         WW(0,1) = W01/WTOT
-         WW(1,0) = W10/WTOT
-         WW(1,1) = W11/WTOT
+        W00 = (1.D0-X)*(1.D0-Y)*REAL(MASK(I0,J0))
+        W01 = (1.D0-X)*Y*REAL(MASK(I0,J1))
+        W10 = X*(1.D0-Y)*REAL(MASK(I1,J0))
+        W11 = X*Y*REAL(MASK(I1,J1))
+        WTOT = W00+W01+W10+W11
+        IF( WTOT.EQ.0.D0 ) THEN
+          RETURN
+        ENDIF
+        WW(0,0) = W00/WTOT
+        WW(0,1) = W01/WTOT
+        WW(1,0) = W10/WTOT
+        WW(1,1) = W11/WTOT
       ENDIF
 !
       IW(0) = I0
@@ -736,9 +736,9 @@ c$$$      END SUBROUTINE DEF_CON_IND
       END SUBROUTINE BSI_WEIGHTS
 
 
-!              *******************************
-               DOUBLE PRECISION FUNCTION PTIDE
-!              *******************************
+!             *******************************
+              DOUBLE PRECISION FUNCTION PTIDE
+!             *******************************
 !
      &( Z1,CID,NCON,IND,LAT,TIME_MJD,INTERP ) !,NTIME=1
 !
@@ -794,24 +794,24 @@ c$$$      END SUBROUTINE DEF_CON_IND
 !
       K=1 !DO K=1,NTIME
 !
-         CALL NODAL( TIME_MJD,DLAT,PU,PF )
-!        TO USE PHASE SHIFTS FROM CONSTIT, TIME SHOULD BE
-!        IN SECONDS, RELATIVE TO JAN 1 1992 (48622MJD)
-         TIME = (TIME_MJD-48622.D0)*SECONDSPERDAY
-!        .TRUE. MEANS NO SOLID EARTH CORRECTION APPLIED IN MAKE_A
-         CALL MAKE_A(.FALSE.,IND,NCON,TIME,PU,PF,WW,A,.TRUE.)
-         PTIDE = HEIGHT(A,Z1,NCON)
-         IF( INTERP )
-     &      CALL INFER_MINOR( Z1,CID,NCON,TIME_MJD,DH,IERR )
-         IF( IERR.EQ.-1 ) THEN
-            IF(LNG.EQ.1) WRITE(LU,*) 'PAS ASSEZ DE COMPOSANTES' //
-     &        ' POUR EN DEDUIRE LES COMPOSANTES MINEURES : IGNORE'
-            IF(LNG.EQ.2) WRITE(LU,*) 'NOT ENOUGH CONSTITUENTS FOR' //
-     &        ' INFERENCE OF MINOR CONSTITUENTS: IGNORED'
-            INTERP=.FALSE.
-         ENDIF
-!        ADDS MINOR CONSTITUENTS
-         PTIDE = PTIDE + DH
+      CALL NODAL( TIME_MJD,DLAT,PU,PF )
+!     TO USE PHASE SHIFTS FROM CONSTIT, TIME SHOULD BE
+!     IN SECONDS, RELATIVE TO JAN 1 1992 (48622MJD)
+      TIME = (TIME_MJD-48622.D0)*SECONDSPERDAY
+!     .TRUE. MEANS NO SOLID EARTH CORRECTION APPLIED IN MAKE_A
+      CALL MAKE_A(.FALSE.,IND,NCON,TIME,PU,PF,WW,A,.TRUE.)
+      PTIDE = HEIGHT(A,Z1,NCON)
+      IF( INTERP )
+     &  CALL INFER_MINOR( Z1,CID,NCON,TIME_MJD,DH,IERR )
+      IF( IERR.EQ.-1 ) THEN
+        IF(LNG.EQ.1) WRITE(LU,*) 'PAS ASSEZ DE COMPOSANTES' //
+     &    ' POUR EN DEDUIRE LES COMPOSANTES MINEURES : IGNORE'
+        IF(LNG.EQ.2) WRITE(LU,*) 'NOT ENOUGH CONSTITUENTS FOR' //
+     &    ' INFERENCE OF MINOR CONSTITUENTS: IGNORED'
+        INTERP=.FALSE.
+      ENDIF
+!     ADDS MINOR CONSTITUENTS
+      PTIDE = PTIDE + DH
 !
       !ENDDO
 !
@@ -822,9 +822,9 @@ c$$$      END SUBROUTINE DEF_CON_IND
       RETURN
       END FUNCTION PTIDE
 
-!              ************************************
-               DOUBLE PRECISION FUNCTION TPXO_PTIDE
-!              ************************************
+!             ************************************
+              DOUBLE PRECISION FUNCTION TPXO_PTIDE
+!             ************************************
 !
      &( IV,KFR,TPXO_NFR,TPXO_BOR,C_ID,NCON,CCIND,LAT,TIME_MJD,INTERP )
 !
@@ -916,19 +916,19 @@ c$$$      END SUBROUTINE DEF_CON_IND
 !-----------------------------------------------------------------------
 !
       DO J=1,TPXO_NCON
-         DO I=1,8
-            WR(J,I) = TPXO_W(J,I)
-         ENDDO
+        DO I=1,8
+          WR(J,I) = TPXO_W(J,I)
+        ENDDO
       ENDDO
 !
       IF( .NOT.INTERP ) THEN
-         DO J=1,NC
-            IF( IND(J).NE.0 ) THEN
-               DO I=1,8
-                  WR(IND(J),I) = 0.D0
-               ENDDO
-            ENDIF
-         ENDDO
+        DO J=1,NC
+          IF( IND(J).NE.0 ) THEN
+            DO I=1,8
+              WR(IND(J),I) = 0.D0
+            ENDDO
+          ENDIF
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -974,8 +974,8 @@ c$$$      END SUBROUTINE DEF_CON_IND
 !     IN CONSTIT   M2,S2,K1,O1,N2,P1,K2,q1,2N2,mu2,nu2,L2,t2,
 !                  J1,M1(no1),OO1,rho1,Mf,Mm,SSA,M4,
 !                  MS4,MN4,M6,M8,MK3,S6,2SM2,2MK3
-c$$$      DATA INDEX/30,35,19,12,27,17,37,10,25,26,28,33,34,
-c$$$     &           23,14,24,11,5,3,2,45,46,44,50,0,42,51,40,0/
+!$$$      DATA INDEX/30,35,19,12,27,17,37,10,25,26,28,33,34,
+!$$$     &           23,14,24,11,5,3,2,45,46,44,50,0,42,51,40,0/
       DATA INDEX/30,35,19,12,27,17,37,10,25,26,28,33,34,
      &           23,14,24,11,5,3,2,45,46,44,50,54,42,51,40,55/
 !
@@ -993,16 +993,16 @@ c$$$     &           23,14,24,11,5,3,2,45,46,44,50,0,42,51,40,0/
 !     R. RAY, MARCH 1999, ATTACHED TO OTIS
       CALL ARGUMENTS( DTIME,ARG,F,U )
       DO I=1,TPXO_NCMX
-         PU(I) = 0.D0
-         PF(I) = 1.D0
+        PU(I) = 0.D0
+        PF(I) = 1.D0
       ENDDO
       DO I = 1,TPXO_NCMX
-!          INDEX(I).EQ.0 FOR M8 AND 2MK3
-         IF( INDEX(I).GT.0 ) THEN
-!          U IS RETURNED BY "ARGUMENTS" IN DEGREES
-           PU(I) = U(INDEX(I))*DTR
-           PF(I) = F(INDEX(I))
-         ENDIF
+!       INDEX(I).EQ.0 FOR M8 AND 2MK3
+        IF( INDEX(I).GT.0 ) THEN
+!         U IS RETURNED BY "ARGUMENTS" IN DEGREES
+          PU(I) = U(INDEX(I))*DTR
+          PF(I) = F(INDEX(I))
+        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -1169,7 +1169,7 @@ c$$$     &           23,14,24,11,5,3,2,45,46,44,50,0,42,51,40,0/
 !     IN SCHUREMAN, THETA1 HAS THE SAME NODAL FACTORS AS
 !     CHI1 AND J1
 !     HERE, GEOMETRIC AVERAGE OF CHI1 AND J1
-c$$$      F(22) = ONE                                         ! theta1
+!$$$      F(22) = ONE                                         ! theta1
       F(22) = SQRT( SQRT((ONE+.221D0*COSN)**2+(.221D0*SINN)**2)
      &             *SQRT((ONE+.169D0*COSN)**2+(.227D0*SINN)**2)) ! theta1
       F(23) = SQRT((ONE+.169D0*COSN)**2+(.227D0*SINN)**2) ! J1
@@ -1249,7 +1249,7 @@ c$$$      F(22) = ONE                                         ! theta1
 !     IN SCHUREMAN, THETA1 HAS THE SAME NODAL FACTORS AS
 !     CHI1 AND J1
 !     HERE, ARITHMETIC AVERAGE OF CHI1 AND J1
-c$$$      U(22) = ZERO                                         ! theta1
+!$$$      U(22) = ZERO                                         ! theta1
       U(22) = (  ATAN(-.221D0*SINN/(ONE+.221D0*COSN))
      &         + ATAN(-.227D0*SINN/(ONE+.169D0*COSN)))     ! theta1
      &        *RTD*0.5D0
@@ -1351,55 +1351,55 @@ c$$$      U(22) = ZERO                                         ! theta1
 !-----------------------------------------------------------------------
 !
       IF( .NOT.INTERP ) THEN
-         DO J = 1,TPXO_NCMX
-            OMEGA(J) = TPXO_OMEGA_D(J)
-            PHASE(J) = TPXO_PHASE_MKB(J)
-         ENDDO
-         DO J = 1,NC
-           I = IND(J)
-           IF( I.NE.0 ) THEN
-              C(J) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
-     &                      PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)),
-     &                      KIND(1.D0))
-            ENDIF
-         ENDDO
-!        REMOVE SOLID EARTH TIDE
-         IF( .NOT.L_SAL ) THEN
-            DO J = 1,NC
-              A(J) = CMPLX(0.D0,0.D0,KIND(1.D0))
-              IF( IND(J).NE.0 ) A(J) = C(J)*TPXO_BETA_SE(IND(J))
-            ENDDO
-         ELSE
-            DO J = 1,NC
-              A(J) = C(J)
-            ENDDO
-         ENDIF
+        DO J = 1,TPXO_NCMX
+          OMEGA(J) = TPXO_OMEGA_D(J)
+          PHASE(J) = TPXO_PHASE_MKB(J)
+        ENDDO
+        DO J = 1,NC
+          I = IND(J)
+          IF( I.NE.0 ) THEN
+            C(J) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
+     &                    PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)),
+     &                    KIND(1.D0))
+          ENDIF
+        ENDDO
+!       REMOVE SOLID EARTH TIDE
+        IF( .NOT.L_SAL ) THEN
+          DO J = 1,NC
+            A(J) = CMPLX(0.D0,0.D0,KIND(1.D0))
+            IF( IND(J).NE.0 ) A(J) = C(J)*TPXO_BETA_SE(IND(J))
+          ENDDO
+        ELSE
+          DO J = 1,NC
+            A(J) = C(J)
+          ENDDO
+        ENDIF
 !
       ELSE
 !     THIS IS THE CASE WHEN W FROM MODULE WEIGHTS IS USED
 !-----------------------------------------------------------------------
-         DO I=1,TPXO_NCON
-            OMEGA(I) = TPXO_OMEGA_D(I)
-            PHASE(I) = TPXO_PHASE_MKB(I)
-         ENDDO
+        DO I=1,TPXO_NCON
+          OMEGA(I) = TPXO_OMEGA_D(I)
+          PHASE(I) = TPXO_PHASE_MKB(I)
+        ENDDO
 !
-         DO I=1,TPXO_NCON
-            C(I) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
-     &                    PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)),
-     &                    KIND(1.D0))
-         ENDDO
+        DO I=1,TPXO_NCON
+          C(I) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
+     &                  PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)),
+     &                  KIND(1.D0))
+        ENDDO
 !
-         DO J = 1,NC
-            A(J) = CMPLX(0.D0,0.D0,KIND(1.D0))
-         ENDDO
+        DO J = 1,NC
+          A(J) = CMPLX(0.D0,0.D0,KIND(1.D0))
+        ENDDO
 !
-!        IND(J)=0 MEANS THE CONSTITUENT IS EXCLUDED
-         DO I = 1,TPXO_NCON
-            DO J = 1,NC
-               IF( IND(J).NE.0 ) A(J) =
-     &            A(J)+C(I)*TPXO_BETA_SE(I)*W(I,IND(J))
-            ENDDO
-         ENDDO
+!       IND(J)=0 MEANS THE CONSTITUENT IS EXCLUDED
+        DO I = 1,TPXO_NCON
+          DO J = 1,NC
+            IF( IND(J).NE.0 ) A(J) =
+     &         A(J)+C(I)*TPXO_BETA_SE(I)*W(I,IND(J))
+          ENDDO
+        ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -1476,17 +1476,17 @@ c$$$      U(22) = ZERO                                         ! theta1
       Z8 = CMPLX(0.D0,0.D0,KIND(1.D0))
       NI = 0
       DO I = 1,8
-         DO J = 1,NCON
-            IF( CID(J).EQ.CID8(I) ) THEN
-               Z8(I)=ZMAJ(J)
-               IF( I.NE.3.AND.I.NE.8 ) NI = NI+1
-            ENDIF
-         ENDDO
+        DO J = 1,NCON
+          IF( CID(J).EQ.CID8(I) ) THEN
+            Z8(I)=ZMAJ(J)
+            IF( I.NE.3.AND.I.NE.8 ) NI = NI+1
+          ENDIF
+        ENDDO
       ENDDO
 !
       IF( NI.LT.6 ) THEN
-         IERR=-1 ! NOT ENOUGH CONSTITUENTS FOR INFERENCE
-         RETURN
+        IERR=-1 ! NOT ENOUGH CONSTITUENTS FOR INFERENCE
+        RETURN
       ENDIF
 !
       ZMIN(1)  = 0.263D0 *Z8(1) - 0.0252D0*Z8(2)  ! 2Q1
@@ -1732,28 +1732,28 @@ c$$$      U(22) = ZERO                                         ! theta1
 !     NO EARLIER DATES THAN NOVEMBER 17TH 1858
       IF(     IYYY.LT.1858.OR.(IYYY.EQ.1858.AND.MM.LT.11)
      &   .OR.(IYYY.EQ.1858.AND.MM.EQ.11.AND.ID.LT.17) ) THEN
-         IF(LNG.EQ.1) WRITE(LU,*) 'PAS DE DATES ANTERIEURES ' //
-     &                'AU 17 NOVEMBRE 1858 NE SONT PERMISES'
-         IF(LNG.EQ.2) WRITE(LU,*) 'NO EARLIER DATES ' //
-     &                'THAN NOVEMBER 17TH 1858 ARE ALLOWED'
-         CALL PLANTE(1)
-         STOP
+        IF(LNG.EQ.1) WRITE(LU,*) 'PAS DE DATES ANTERIEURES ' //
+     &               'AU 17 NOVEMBRE 1858 NE SONT PERMISES'
+        IF(LNG.EQ.2) WRITE(LU,*) 'NO EARLIER DATES ' //
+     &               'THAN NOVEMBER 17TH 1858 ARE ALLOWED'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       DAYS = 0
       DO I = 1,MM-1
-         DAYS = DAYS+DPM(I)
-         IF( I.EQ.2.AND.INT(IYYY/4)*4.EQ.IYYY ) DAYS = DAYS+1
+        DAYS = DAYS+DPM(I)
+        IF( I.EQ.2.AND.INT(IYYY/4)*4.EQ.IYYY ) DAYS = DAYS+1
       ENDDO
 !     321TH DAY CORRESPONDS TO NOVEMBER 17TH FOR A NON LEAP YEAR
       DAYS = DAYS+ID-321
 
 !     LEAP DAY CORRECTION
       DO K = 1900,IYYY,100
-         IF( K.EQ.IYYY.AND.MM.GT.2 ) DAYS = DAYS-1
+        IF( K.EQ.IYYY.AND.MM.GT.2 ) DAYS = DAYS-1
       ENDDO
       DO K = 2000,IYYY,400
-         IF( K.EQ.IYYY.AND.MM.GT.2 ) DAYS = DAYS+1
+        IF( K.EQ.IYYY.AND.MM.GT.2 ) DAYS = DAYS+1
       ENDDO
 !     EACH 4TH YEAR IS LEAP YEAR
       NLEAP = INT(REAL(IYYY-1-1860)*0.25)
@@ -1920,14 +1920,14 @@ c$$$      U(22) = ZERO                                         ! theta1
 !
       ALLOCATE( TPXO_NFR(NPOIN) )
       DO K=1,NPOIN
-         TPXO_NFR(K) = 0
+        TPXO_NFR(K) = 0
       ENDDO
       NPTFRL = 0
       DO K = 1,NPTFR
-         IF( LIHBOR(K).EQ.KENT.OR.LIUBOR(K).EQ.KENTU ) THEN
-            NPTFRL = NPTFRL + 1
-            TPXO_NFR(NBOR(K)) = NPTFRL
-         ENDIF
+        IF( LIHBOR(K).EQ.KENT.OR.LIUBOR(K).EQ.KENTU ) THEN
+          NPTFRL = NPTFRL + 1
+          TPXO_NFR(NBOR(K)) = NPTFRL
+        ENDIF
       ENDDO
 !
       IF(T2D_FILES(T2DBB1)%NAME(1:1).EQ.' ' .OR.
@@ -1973,11 +1973,11 @@ c$$$      U(22) = ZERO                                         ! theta1
 !
       ALLOCATE( TPXO_BOR(3,NPTFRL,NCON) )
       DO K=1,NCON
-         DO J=1,NPTFRL
-            DO I=1,3
-               TPXO_BOR(I,J,K) = CMPLX(0.D0,0.D0,KIND(1.D0))
-            ENDDO
-         ENDDO
+        DO J=1,NPTFRL
+          DO I=1,3
+            TPXO_BOR(I,J,K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+          ENDDO
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -2079,8 +2079,8 @@ c$$$      U(22) = ZERO                                         ! theta1
       ENDIF
 !
       DO I = 1,NPOIN
-         IF( LON(I).GT.PH_LIM(2) ) LON(I) = LON(I) - 360.D0
-         IF( LON(I).LT.PH_LIM(1) ) LON(I) = LON(I) + 360.D0
+        IF( LON(I).GT.PH_LIM(2) ) LON(I) = LON(I) - 360.D0
+        IF( LON(I).LT.PH_LIM(1) ) LON(I) = LON(I) + 360.D0
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -2092,19 +2092,19 @@ c$$$      U(22) = ZERO                                         ! theta1
 !
       ALLOCATE( ZT(NCON,N,M), MASKT(N,M) )
       DO J=1,M
-         DO I=1,N
-            MASKT(I,J) = 0
-         ENDDO
+        DO I=1,N
+          MASKT(I,J) = 0
+        ENDDO
       ENDDO
 !
       DO IC = 1,NCON
-         REWIND(T2D_FILES(T2DBB1)%LU)
-         READ(T2D_FILES(T2DBB1)%LU)  ! HEADER LINE
-         DO K = 1,IC-1
-            READ(T2D_FILES(T2DBB1)%LU)
-         ENDDO
-         READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
-         WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
+        REWIND(T2D_FILES(T2DBB1)%LU)
+        READ(T2D_FILES(T2DBB1)%LU)  ! HEADER LINE
+        DO K = 1,IC-1
+          READ(T2D_FILES(T2DBB1)%LU)
+        ENDDO
+        READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
+        WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
       ENDDO
 !
 !     INTERPOLATE TPXO IN SPACE
@@ -2115,25 +2115,25 @@ c$$$      U(22) = ZERO                                         ! theta1
       ALLOCATE( ZCON(NCON) )
       DO IPOIN = 1,NPOIN
 !
-         CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
-     &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
-         IF( TPXO_NFR(IPOIN).NE.0 ) THEN
-            DO K=1,NCON
-               TPXO_BOR(1,TPXO_NFR(IPOIN),K) = ZCON(K)
-            ENDDO
-         ENDIF
-         IF( IERR.EQ.0 ) H(IPOIN) = H(IPOIN) +
-     &       PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
+        CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
+     &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
+        IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+          DO K=1,NCON
+            TPXO_BOR(1,TPXO_NFR(IPOIN),K) = ZCON(K)
+          ENDDO
+        ENDIF
+        IF( IERR.EQ.0 ) H(IPOIN) = H(IPOIN) +
+     &      PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
 !###> MST@HRW: CHECKING DRY LANDS
 !         IF(H(IPOIN).LT.0.D0) H(IPOIN) = 0.D0
 !         H(IPOIN) = MAX(H(IPOIN),0.D0)
 !     CTP@LNHE: CASE WHEN BOTTOM IS REFERENCED WITH RESPECT TO CD
 !               ALSO TAKEN INTO ACCOUNT
-         IF(H(IPOIN).LE.0.D0) THEN
-           H(IPOIN) = 0.D0
-         ELSE
-           H(IPOIN) = H(IPOIN) + MSL
-         ENDIF
+        IF(H(IPOIN).LE.0.D0) THEN
+          H(IPOIN) = 0.D0
+        ELSE
+          H(IPOIN) = H(IPOIN) + MSL
+        ENDIF
 !###< MST@HRW
 !
       ENDDO
@@ -2148,28 +2148,28 @@ c$$$      U(22) = ZERO                                         ! theta1
 !
       ALLOCATE( UT(NCON,N,M),VT(NCON,N,M),MASKU(N,M),MASKV(N,M) )
       DO J=1,M
-         DO I=1,N
-            MASKU(I,J) = 0
-            MASKV(I,J) = 0
-         ENDDO
+        DO I=1,N
+          MASKU(I,J) = 0
+          MASKV(I,J) = 0
+        ENDDO
       ENDDO
 !
       ALLOCATE( UV(2,N,M) )
       DO IC = 1,NCON
-         REWIND(T2D_FILES(T2DBB2)%LU)
-         READ(T2D_FILES(T2DBB2)%LU)  ! HEADER LINE
-         DO K = 1,IC-1
-            READ(T2D_FILES(T2DBB2)%LU)
-         ENDDO
-         READ(T2D_FILES(T2DBB2)%LU) UV
-         DO J=1,M
-            DO I=1,N
-               UT(IC,I,J) = UV(1,I,J)
-               VT(IC,I,J) = UV(2,I,J)
-            ENDDO
-         ENDDO
-         WHERE( UT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKU = 1
-         WHERE( VT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKV = 1
+        REWIND(T2D_FILES(T2DBB2)%LU)
+        READ(T2D_FILES(T2DBB2)%LU)  ! HEADER LINE
+        DO K = 1,IC-1
+          READ(T2D_FILES(T2DBB2)%LU)
+        ENDDO
+        READ(T2D_FILES(T2DBB2)%LU) UV
+        DO J=1,M
+          DO I=1,N
+            UT(IC,I,J) = UV(1,I,J)
+            VT(IC,I,J) = UV(2,I,J)
+          ENDDO
+        ENDDO
+        WHERE( UT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKU = 1
+        WHERE( VT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKV = 1
       ENDDO
       DEALLOCATE( UV )
 !
@@ -2183,54 +2183,54 @@ c$$$      U(22) = ZERO                                         ! theta1
 !
 !     INITIALISATION AT 0.D0
 !
-         U(IPOIN) = 0.D0
-         V(IPOIN) = 0.D0
+        U(IPOIN) = 0.D0
+        V(IPOIN) = 0.D0
 !
-         CALL INTERPT(UT,NCON,N,M,MASKU,TH_LIM,PH_LIM,
-     &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
-         IF( TPXO_NFR(IPOIN).NE.0 ) THEN
-            DO K=1,NCON
+        CALL INTERPT(UT,NCON,N,M,MASKU,TH_LIM,PH_LIM,
+     &               LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
+        IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+          DO K=1,NCON
 !     VELOCITY READ IN M2/S
-               TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
-            ENDDO
-         ENDIF
-         IF( IERR.EQ.0 ) U(IPOIN) = 
-     &       PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
+            TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
+          ENDDO
+        ENDIF
+        IF( IERR.EQ.0 ) U(IPOIN) = 
+     &      PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
 !
-         CALL INTERPT(VT,NCON,N,M,MASKV,TH_LIM,PH_LIM,
+          CALL INTERPT(VT,NCON,N,M,MASKV,TH_LIM,PH_LIM,
      &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'v')
-         IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON
 !     VELOCITY READ IN M2/S
-               TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)
+              TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)
             ENDDO
-         ENDIF
-         IF( IERR.EQ.0 ) V(IPOIN) = 
+          ENDIF
+          IF( IERR.EQ.0 ) V(IPOIN) = 
      &       PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
 !
 !     VELOCITY READ IN M/S
-         IF( H(IPOIN).GT.0.1D0 ) THEN
+          IF( H(IPOIN).GT.0.1D0 ) THEN
             U(IPOIN) = U(IPOIN) / H(IPOIN)
             V(IPOIN) = V(IPOIN) / H(IPOIN)
             SPEED = SQRT( U(IPOIN)**2+V(IPOIN)**2 )
             MAXSP = 2.D0
             IF( SPEED.GT.2.D0 ) THEN
-               U(IPOIN) = MAXSP*U(IPOIN)/SPEED
-               V(IPOIN) = MAXSP*V(IPOIN)/SPEED
+              U(IPOIN) = MAXSP*U(IPOIN)/SPEED
+              V(IPOIN) = MAXSP*V(IPOIN)/SPEED
             ENDIF
-         ELSE
+          ELSE
             U(IPOIN) = 0.D0
             V(IPOIN) = 0.D0
-         ENDIF
+          ENDIF
 !
-      ENDDO
-      DEALLOCATE( UT,VT,ZCON,MASKU,MASKV )
-      DEALLOCATE( LON,LAT )
-!
-      IF(LNG.EQ.1) WRITE(LU,*) 'FIN DE L''INITIALISATION TPXO'
-      IF(LNG.EQ.2) WRITE(LU,*) 'END OF TPXO INITIALISATION'
-!
-      DEJA = .TRUE.
+        ENDDO
+        DEALLOCATE( UT,VT,ZCON,MASKU,MASKV )
+        DEALLOCATE( LON,LAT )
+!      
+        IF(LNG.EQ.1) WRITE(LU,*) 'FIN DE L''INITIALISATION TPXO'
+        IF(LNG.EQ.2) WRITE(LU,*) 'END OF TPXO INITIALISATION'
+!      
+        DEJA = .TRUE.
 !
       ENDIF
 !
@@ -2409,19 +2409,19 @@ c$$$      U(22) = ZERO                                         ! theta1
 !  TEST TO CHECK CORRECT VALUES FOR TIDALTYPE
 !
       IF(.NOT.DEJA) THEN
-c$$$        IF(TIDALTYPE.LT.1.OR.TIDALTYPE.GT.6) THEN
+!$$$        IF(TIDALTYPE.LT.1.OR.TIDALTYPE.GT.6) THEN
         IF(TIDALTYPE.NE.1) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'MAUVAISE VALEUR POUR TIDALTYPE =',TIDALTYPE
             WRITE(LU,*) 'ELLE DOIT ETRE EGALE A 1 ACTUELLEMENT'
             WRITE(LU,*) 'AVEC LA BASE DE DONNEES DE MAREE TPXO'
-c$$$            WRITE(LU,*) 'ELLE DOIT ETRE COMPRISE ENTRE 1 ET 6'
+!$$$            WRITE(LU,*) 'ELLE DOIT ETRE COMPRISE ENTRE 1 ET 6'
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'UNEXPECTED VALUE FOR TIDALTYPE=',TIDALTYPE
             WRITE(LU,*) 'IT MUST BE CHOSEN EQUAL TO 1 CURRENTLY'
             WRITE(LU,*) 'WITH TPXO TIDAL DATA BASE'
-c$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
+!$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -2452,14 +2452,14 @@ c$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
 !
       ALLOCATE( TPXO_NFR(NPOIN) )
       DO K=1,NPOIN
-         TPXO_NFR(K) = 0
+        TPXO_NFR(K) = 0
       ENDDO
       NPTFRL = 0
       DO K = 1,NPTFR
-         IF( LIHBOR(K).EQ.KENT.OR.LIUBOR(K).EQ.KENTU ) THEN
-            NPTFRL = NPTFRL + 1
-            TPXO_NFR(NBOR(K)) = NPTFRL
-         ENDIF
+        IF( LIHBOR(K).EQ.KENT.OR.LIUBOR(K).EQ.KENTU ) THEN
+          NPTFRL = NPTFRL + 1
+          TPXO_NFR(NBOR(K)) = NPTFRL
+        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -2507,11 +2507,11 @@ c$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
 !
       ALLOCATE( TPXO_BOR(3,NPTFRL,NCON) )
       DO K=1,NCON
-         DO J=1,NPTFRL
-            DO I=1,3
-               TPXO_BOR(I,J,K) = CMPLX(0.D0,0.D0,KIND(1.D0))
-            ENDDO
-         ENDDO
+        DO J=1,NPTFRL
+          DO I=1,3
+            TPXO_BOR(I,J,K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+          ENDDO
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -2608,8 +2608,8 @@ c$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
       ENDIF
 !
       DO I = 1,NPOIN
-         IF( LON(I).GT.PH_LIM(2) ) LON(I) = LON(I) - 360.D0
-         IF( LON(I).LT.PH_LIM(1) ) LON(I) = LON(I) + 360.D0
+        IF( LON(I).GT.PH_LIM(2) ) LON(I) = LON(I) - 360.D0
+        IF( LON(I).LT.PH_LIM(1) ) LON(I) = LON(I) + 360.D0
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -2621,19 +2621,19 @@ c$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
 !
       ALLOCATE( ZT(NCON,N,M), MASKT(N,M) )
       DO J=1,M
-         DO I=1,N
-            MASKT(I,J) = 0
-         ENDDO
+        DO I=1,N
+          MASKT(I,J) = 0
+        ENDDO
       ENDDO
 !
       DO IC = 1,NCON
-         REWIND(T2D_FILES(T2DBB1)%LU)
-         READ(T2D_FILES(T2DBB1)%LU)  ! HEADER LINE
-         DO K = 1,IC-1
-            READ(T2D_FILES(T2DBB1)%LU)
-         ENDDO
-         READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
-         WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
+        REWIND(T2D_FILES(T2DBB1)%LU)
+        READ(T2D_FILES(T2DBB1)%LU)  ! HEADER LINE
+        DO K = 1,IC-1
+          READ(T2D_FILES(T2DBB1)%LU)
+        ENDDO
+        READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
+        WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
       ENDDO
 !
 !     INTERPOLATE TPXO IN SPACE
@@ -2644,13 +2644,13 @@ c$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
       ALLOCATE( ZCON(NCON) )
       DO IPOIN = 1,NPOIN
 !
-         CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
-     &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
-         IF( TPXO_NFR(IPOIN).NE.0 ) THEN
-            DO K=1,NCON
-               TPXO_BOR(1,TPXO_NFR(IPOIN),K) = ZCON(K)
-            ENDDO
-         ENDIF
+        CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
+     &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
+        IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+          DO K=1,NCON
+            TPXO_BOR(1,TPXO_NFR(IPOIN),K) = ZCON(K)
+          ENDDO
+        ENDIF
 !
       ENDDO
       DEALLOCATE( ZCON,ZT,MASKT )
@@ -2664,28 +2664,28 @@ c$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
 !
       ALLOCATE( UT(NCON,N,M),VT(NCON,N,M),MASKU(N,M),MASKV(N,M) )
       DO J=1,M
-         DO I=1,N
-            MASKU(I,J) = 0
-            MASKV(I,J) = 0
-         ENDDO
+        DO I=1,N
+          MASKU(I,J) = 0
+          MASKV(I,J) = 0
+        ENDDO
       ENDDO
 !
       ALLOCATE( UV(2,N,M) )
       DO IC = 1,NCON
-         REWIND(T2D_FILES(T2DBB2)%LU)
-         READ(T2D_FILES(T2DBB2)%LU)  ! HEADER LINE
-         DO K = 1,IC-1
-            READ(T2D_FILES(T2DBB2)%LU)
-         ENDDO
-         READ(T2D_FILES(T2DBB2)%LU) UV
-         DO J=1,M
-            DO I=1,N
-               UT(IC,I,J) = UV(1,I,J)
-               VT(IC,I,J) = UV(2,I,J)
-            ENDDO
-         ENDDO
-         WHERE( UT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKU = 1
-         WHERE( VT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKV = 1
+        REWIND(T2D_FILES(T2DBB2)%LU)
+        READ(T2D_FILES(T2DBB2)%LU)  ! HEADER LINE
+        DO K = 1,IC-1
+          READ(T2D_FILES(T2DBB2)%LU)
+        ENDDO
+        READ(T2D_FILES(T2DBB2)%LU) UV
+        DO J=1,M
+          DO I=1,N
+            UT(IC,I,J) = UV(1,I,J)
+            VT(IC,I,J) = UV(2,I,J)
+          ENDDO
+        ENDDO
+        WHERE( UT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKU = 1
+        WHERE( VT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKV = 1
       ENDDO
       DEALLOCATE( UV )
 !
@@ -2697,23 +2697,23 @@ c$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
       ALLOCATE( ZCON(NCON) )
       DO IPOIN = 1,NPOIN
 !
-         CALL INTERPT(UT,NCON,N,M,MASKU,TH_LIM,PH_LIM,
-     &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
-         IF( TPXO_NFR(IPOIN).NE.0 ) THEN
-            DO K=1,NCON
+        CALL INTERPT(UT,NCON,N,M,MASKU,TH_LIM,PH_LIM,
+     &               LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
+        IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+          DO K=1,NCON
 !     VELOCITY READ IN M2/S
-               TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
-            ENDDO
-         ENDIF
+            TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
+          ENDDO
+        ENDIF
 !
-         CALL INTERPT(VT,NCON,N,M,MASKV,TH_LIM,PH_LIM,
-     &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'v')
-         IF( TPXO_NFR(IPOIN).NE.0 ) THEN
-            DO K=1,NCON
+        CALL INTERPT(VT,NCON,N,M,MASKV,TH_LIM,PH_LIM,
+     &               LAT(IPOIN),LON(IPOIN),ZCON,IERR,'v')
+        IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+          DO K=1,NCON
 !     VELOCITY READ IN M2/S
-               TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)
-            ENDDO
-         ENDIF
+            TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)
+          ENDDO
+        ENDIF
 !
       ENDDO
       DEALLOCATE( UT,VT,ZCON,MASKU,MASKV )
@@ -2741,7 +2741,7 @@ c$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
         IF(LIHBOR(K).EQ.KENT) THEN
 !         BEGINNING OF PRESCRIBED DEPTHS
 !
-c$$$          IF(NCOTE.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
+!$$$          IF(NCOTE.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
 !
 !  TYPE OF TIDE TO MODEL
 !  1: REAL TIDE
@@ -2751,24 +2751,24 @@ c$$$          IF(NCOTE.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
 !  5: MEAN NEAP TIDE         (COEF. NEARLY 45)
 !  6: ASTRONOMICAL NEAP TIDE (COEF. NEARLY 20)
 !
-            IF(TIDALTYPE.EQ.1) THEN
-              Z = CTIDE*TPXO_PTIDE(1,NBOR(K),TPXO_NFR,TPXO_BOR,C_ID,
-     &                             NCON,CCIND,TPXO_LAT_DUMMY,
-     &                             STIME_MJD+TEMPS/86400.D0,INTMICON)
-     &          + MSL
-              HBTIDE%R(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
-c$$$            ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
-            ENDIF
+          IF(TIDALTYPE.EQ.1) THEN
+            Z = CTIDE*TPXO_PTIDE(1,NBOR(K),TPXO_NFR,TPXO_BOR,C_ID,
+     &                           NCON,CCIND,TPXO_LAT_DUMMY,
+     &                           STIME_MJD+TEMPS/86400.D0,INTMICON)
+     &        + MSL
+            HBTIDE%R(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
+!$$$          ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+          ENDIF
 !         ELSE HBOR TAKEN IN BOUNDARY CONDITIONS FILE
-c$$$          ENDIF
+!$$$          ENDIF
         ENDIF
 !
 !  VELOCITY IMPOSED: ONE USES THE OUTGOING DIRECTION
 !                    PROVIDED BY THE USER.
 !
       IF(LIUBOR(K).EQ.KENTU) THEN
-c$$$      IF(LIUBOR(K).EQ.KENTU.AND.
-c$$$     &  (NVITES.NE.0.OR.NOMIMP(1:1).NE.' ')) THEN
+!$$$      IF(LIUBOR(K).EQ.KENTU.AND.
+!$$$     &  (NVITES.NE.0.OR.NOMIMP(1:1).NE.' ')) THEN
 !
 !       POINTS ON WEIRS HAVE NUMLIQ(K)=0
         IF(NUMLIQ(K).GT.0) THEN
@@ -2789,7 +2789,7 @@ c$$$     &  (NVITES.NE.0.OR.NOMIMP(1:1).NE.' ')) THEN
      &                           NCON,CCIND,TPXO_LAT_DUMMY,
      &                           STIME_MJD+TEMPS/86400.D0,INTMICON)
      &        + MSL
-c$$$           IF(PROVEL(NUMLIQ(K)).EQ.1) THEN
+!$$$           IF(PROVEL(NUMLIQ(K)).EQ.1) THEN
             UBTIDE%R(K) =
      &              CTIDEV*TPXO_PTIDE(2,NBOR(K),TPXO_NFR,TPXO_BOR,C_ID,
      &                                NCON,CCIND,TPXO_LAT_DUMMY,
@@ -2800,9 +2800,9 @@ c$$$           IF(PROVEL(NUMLIQ(K)).EQ.1) THEN
      &                                NCON,CCIND,TPXO_LAT_DUMMY,
      &                                STIME_MJD+TEMPS/86400.D0,INTMICON)
      &              / MAX( 0.1D0 , Z-ZF(NBOR(K)) )
-c$$$           ENDIF
-c$$$          ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
-            ENDIF
+!$$$           ENDIF
+!$$$          ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+          ENDIF
 !
         ENDIF
       ENDIF
@@ -3051,8 +3051,8 @@ c$$$          ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
       ENDIF
 !
       DO I = 1,NPOIN
-         IF( LON(I).GT.PH_LIM(2) ) LON(I) = LON(I) - 360.D0
-         IF( LON(I).LT.PH_LIM(1) ) LON(I) = LON(I) + 360.D0
+        IF( LON(I).GT.PH_LIM(2) ) LON(I) = LON(I) - 360.D0
+        IF( LON(I).LT.PH_LIM(1) ) LON(I) = LON(I) + 360.D0
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -3064,19 +3064,19 @@ c$$$          ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
 !
       ALLOCATE( ZT(NCON,N,M), MASKT(N,M) )
       DO J=1,M
-         DO I=1,N
-            MASKT(I,J) = 0
-         ENDDO
+        DO I=1,N
+          MASKT(I,J) = 0
+        ENDDO
       ENDDO
 !
       DO IC = 1,NCON
-         REWIND(T2D_FILES(T2DBB1)%LU)
-         READ(T2D_FILES(T2DBB1)%LU)  ! HEADER LINE
-         DO K = 1,IC-1
-            READ(T2D_FILES(T2DBB1)%LU)
-         ENDDO
-         READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
-         WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
+        REWIND(T2D_FILES(T2DBB1)%LU)
+        READ(T2D_FILES(T2DBB1)%LU)  ! HEADER LINE
+        DO K = 1,IC-1
+          READ(T2D_FILES(T2DBB1)%LU)
+        ENDDO
+        READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
+        WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
       ENDDO
 !
 !     INTERPOLATE TPXO IN SPACE
@@ -3086,17 +3086,17 @@ c$$$          ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
 !
       ALLOCATE( ZCON(NCON) )
       DO IPOIN = 1,NPOIN
-         CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
-     &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
-         IF( IERR.EQ.0 ) THEN
-           H(IPOIN) = 0.D0
-           DO I=1,NCON
-             H(IPOIN) = H(IPOIN) + ABS(ZCON(I))
-           ENDDO
-           H(IPOIN) = CAMPLIF*H(IPOIN)
-         ELSE
-           H(IPOIN) = MSL
-         ENDIF
+        CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
+     &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
+        IF( IERR.EQ.0 ) THEN
+          H(IPOIN) = 0.D0
+          DO I=1,NCON
+            H(IPOIN) = H(IPOIN) + ABS(ZCON(I))
+          ENDDO
+          H(IPOIN) = CAMPLIF*H(IPOIN)
+        ELSE
+          H(IPOIN) = MSL
+        ENDIF
       ENDDO
       DEALLOCATE( ZCON,ZT,MASKT )
       DEALLOCATE( LON,LAT )
