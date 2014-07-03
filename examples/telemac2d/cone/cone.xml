@@ -30,6 +30,8 @@
        title="rotating cone parallel mode" 
    />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   --> 
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    --> <!-- 
    <save1d xref="figure1" type="v-section" config="oneofall" > 
       <layer vars="tracer:line" extract="(10.05;10.05):(20.1;10.05)" time="[0]" target="1:T2DRES" /> 
@@ -39,15 +41,6 @@
       <layer vars="tracer:line" extract="(10.05;10.05):(20.1;10.05)" time="[4]" target="1:T2DRES" /> 
    </save1d>
  --> 
-<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   --> 
-   <plot1d xref="figure1" type="v-section" config="oneofall" size="[12;3]" > 
-      <layer vars="tracer:line" extract="(10.05;10.05):(20.1;10.05)" time="[0]" target="1:T2DRES" /> 
-      <layer vars="tracer:line" extract="(10.05;10.05):(10.05;20.1)" time="[1]" target="1:T2DRES" /> 
-      <layer vars="tracer:line" extract="(10.05;10.05):(0;10.05)" time="[2]" target="1:T2DRES" /> 
-      <layer vars="tracer:line" extract="(10.05;10.05):(10.05;-20.1)" time="[3]" target="1:T2DRES" /> 
-      <layer vars="tracer:line" extract="(10.05;10.05):(20.1;10.05)" time="[4]" target="1:T2DRES" /> 
-   </plot1d>
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
@@ -55,8 +48,10 @@
       <layer vars="velocity:map" target="1:T2DRES" time="[-1]" /> 
       <layer vars="velocity:angle" sample="(10.05;7.05)(20.1;13.05)[10;4]" target="1:T2DRES" time="[-1]" /> 
    </plot2d>
+<!--
    <plot2d xref="figure3" config="oneofall" size="[8;8]" > 
       <layer vars="tracer:map" target="1:T2DRES" time="[-1]" /> 
    </plot2d>
+-->
  
 </validation>

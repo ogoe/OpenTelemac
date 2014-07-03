@@ -1,6 +1,16 @@
+#!/bin/sh
+#-----------------------------------------------------
+#
+# lancement sous unix de justmake
+#
+#-----------------------------------------------------
+#
 PERL5LIB=`getperl5lib`
 export PERL5LIB
-
-
-perl -w -x -S justmake.pl $1 $2 $3 $4 $5 
+#
+PERLPATH=`getperlpath`
+export PERLPATH
+#
+$PERLPATH/perl -x -S cfgmak.pl
+$PERLPATH/perl -w -x -S justmake.pl $1 $2 $3 $4 $5 
 

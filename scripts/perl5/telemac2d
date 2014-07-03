@@ -10,4 +10,5 @@ export PERL5LIB
 PERLPATH=`getperlpath`
 export PERLPATH
 #
+$PERLPATH/perl -x -S cfgmak.pl
 $PERLPATH/perl -x -S runtel.pl telemac2d $1 $2 $3 $4 $5

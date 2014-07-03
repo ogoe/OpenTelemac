@@ -51,7 +51,7 @@
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
    <plot2d xref="mesh" config="oneofall" time="[-1]" size="[12;7]" > 
-      <layer vars="cote z:mesh" target="1:T3DGEO" /> 
+      <layer vars="fond:mesh" target="1:T3DGEO" /> 
    </plot2d> 
 
 </validation>
