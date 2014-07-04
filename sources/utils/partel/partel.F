@@ -1275,7 +1275,7 @@
      &           HBOR(K), UBOR(K), VBOR(K), 
      &            AUBOR(K), LITBOR(K), TBOR(K), ATBOR(K), BTBOR(K),
 !     JMH 16/06/2008: INITIAL LINE NUMBER OR COLOUR
-     &           NBOR(K),CHECK(K), ISEG, XSEG, YSEG, NUMLIQ(K)
+     &           KNOGL(NBOR(K),I),CHECK(K), ISEG, XSEG, YSEG, NUMLIQ(K)
 !    &           NBOR(K),    J   , ISEG, XSEG, YSEG, NUMLIQ(K)
      
 !     19/10/2007 ER+JMH SUR RECOMMANDATION CHARLES MOULINEC
@@ -1328,7 +1328,7 @@
             TAB_TMP(L)=PART_P(CUT_P(SORT(J),I),K)
           ENDIF
         ENDDO 
-      WRITE(NCLM,FMT=FMT4) CUT_P(SORT(J),I),
+        WRITE(NCLM,FMT=FMT4) KNOGL(CUT_P(SORT(J),I),I),
      &                (TAB_TMP(K)-1, K=1,MAX_N_NEIGH)
       ENDDO
 !                               !     
