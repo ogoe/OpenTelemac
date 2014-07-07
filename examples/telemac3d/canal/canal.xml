@@ -50,7 +50,7 @@
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
    <plot2d xref="mesh" config="oneofall" time="[-1]" size="[12;7]" > 
-      <layer vars="bottom:mesh" target="1:T3DRES" /> 
+      <layer vars="cote z:mesh" target="1:T3DRES" /> 
    </plot2d> 
  
 </validation>
