@@ -201,7 +201,7 @@ C           PERIODICITE
            IMIL(IP)=1117+IP-1
            IF(IMIL(IP).EQ.1156) IMIL(IP)=116
 !
-           IMIL(IP)=MESH%KNOGL%I(IMIL(IP))
+           IMIL(IP)=GLOBAL_TO_LOCAL_POINT(IMIL(IP),MESH)
            IF(IMIL(IP).EQ.0) THEN
              DUMMY_U=0.D0
              DUMMY_H=0.D0
