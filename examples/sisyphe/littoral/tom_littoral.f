@@ -289,14 +289,14 @@
           ENDIF
         ENDDO
       ENDIF
-C
-C-----------------------------------------------------------------------
-C     MODIFICATION M. BENOIT (12/03/2002) POUR METTRE SUR LES LIMITES
-C     LATERALES LE SPECTRE CALCULE SUR L'AXE DU DOMAINE 
-C     (ATTENTION : CECI N'EST VALABLE QUE POUR LE MAILLAGE "COURANT
-C      LITTORAL" ; LES NUMEROS DE POINTS SONT CODES EN DUR)
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!     MODIFICATION M. BENOIT (12/03/2002) POUR METTRE SUR LES LIMITES
+!     LATERALES LE SPECTRE CALCULE SUR L'AXE DU DOMAINE 
+!     (ATTENTION : CECI N'EST VALABLE QUE POUR LE MAILLAGE "COURANT
+!      LITTORAL" ; LES NUMEROS DE POINTS SONT CODES EN DUR)
+!-----------------------------------------------------------------------
+!
       DO IP=1,40
         IMIL(IP)=1117+IP-1
         IF (IMIL(IP).EQ.1156) IMIL(IP)=116
@@ -325,55 +325,55 @@ C
 !
       RETURN
       END
-C                  *******************
+!                  *******************
                    SUBROUTINE BORD_WAC
-C                  *******************
-C
-     *(F,NPLAN,NF,NPOIN2,IP)
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C !      NOM       !MODE!                   ROLE                       !
-C !________________!____!______________________________________________!
-C !    F           ! <->!  DENSITE SPECTRALE                           !
-C !    NPLAN       ! -->!  NOMBRE DE DIRECTIONS                        !
-C !    NF          ! -->!  NOMBRE DE FREQUENCES                        !
-C !    NPOIN2      ! -->!  NOMBRE DE POINTS 2D                         !
-C !________________!____!______________________________________________!
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C SOUS-PROGRAMME APPELE PAR : LIMWAC
-C
-C***********************************************************************
-C
+!                  *******************
+!
+     &(F,NPLAN,NF,NPOIN2,IP)
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! !      NOM       !MODE!                   ROLE                       !
+! !________________!____!______________________________________________!
+! !    F           ! <->!  DENSITE SPECTRALE                           !
+! !    NPLAN       ! -->!  NOMBRE DE DIRECTIONS                        !
+! !    NF          ! -->!  NOMBRE DE FREQUENCES                        !
+! !    NPOIN2      ! -->!  NOMBRE DE POINTS 2D                         !
+! !________________!____!______________________________________________!
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!
+!-----------------------------------------------------------------------
+!
+! SOUS-PROGRAMME APPELE PAR : LIMWAC
+!
+!***********************************************************************
+!
       USE DECLARATIONS_TOMAWAC ,ONLY : MESH, NCSIZE
-C
+!
       IMPLICIT NONE
-C
+!
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
-C
+!
       INTEGER NPLAN,NF,NPOIN2,NPTFR,LT,NPRIV
-C
+!
       DOUBLE PRECISION F(NPOIN2,NPLAN,NF)
-C
+!
       INTEGER IFF,IPLAN
       INTEGER IP, IMIL, IDRO, IGAU
       DOUBLE PRECISION DUMMY(100,100)
       DOUBLE PRECISION P_DMAX, P_DMIN
       EXTERNAL P_DMAX, P_DMIN
-C
-C***********************************************************************
-C
+!
+!***********************************************************************
+!
       IMIL=1117+IP-1
       IF (IMIL.EQ.1156) IMIL=116
       IGAU=180-IP+1
       IDRO= 52+IP-1
-C
-      IMIL=MESH%KNOGL%I(IMIL)
+!
+      IMIL=GLOBAL_TO_LOCAL_POINT(IMIL,MESH)
       IF(IMIL.EQ.0) THEN
         DO IFF=1,NF
           DO IPLAN = 1,NPLAN
@@ -387,16 +387,16 @@ C
           ENDDO
         ENDDO
       ENDIF
-C
+!
       DO IFF=1,NF
         DO IPLAN=1,NPLAN
           DUMMY(IPLAN,IFF) = P_DMAX(DUMMY(IPLAN,IFF))+
      &                       P_DMIN(DUMMY(IPLAN,IFF))
         ENDDO
       ENDDO
-C
-      IGAU=MESH%KNOGL%I(IGAU)
-      IDRO=MESH%KNOGL%I(IDRO)
+!
+      IGAU=GLOBAL_TO_LOCAL_POINT(IGAU,MESH)
+      IDRO=GLOBAL_TO_LOCAL_POINT(IDRO,MESH)
       IF(IGAU.GT.0) THEN
         DO IFF=1,NF
           DO IPLAN = 1,NPLAN
@@ -414,67 +414,67 @@ C
 !
       RETURN
       END
-C                       *****************
+!                       *****************
                         SUBROUTINE ANACOS
-C                       *****************
-C
-     *( UC    , VC    , X     , Y     , NPOIN2 ) 
-C
-C***********************************************************************
-C  TOMAWAC VERSION 5.2    07/06/01       
-C***********************************************************************
-C
-C     FONCTION  : PERMET LA SPECIFICATION D'UN COURANT ANALYTIQUE 
-C                 (! STATIONNAIRE !)
-C
-C     FUNCTION  : SPECIFICATION OF AN ANALYTICAL CURRENT 
-C                 (! STATIONNARY !)
-C                 
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C !      NOM       !MODE!                   ROLE                       !
-C !________________!____!______________________________________________!
-C !    UC,VC       !<-- ! COMPOSANTES DU CHAMP DE COURANT              !
-C !    X,Y         ! -->! COORDONNEES DES POINTS DU MAILLAGE 2D        !
-C !    NPOIN2      ! -->! NOMBRE DE POINTS 2D                          !
-C !________________!____!______________________________________________!
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C  APPELE PAR : CONDIW
-C
-C  SOUS-PROGRAMME APPELE : NEANT
-C
-C***********************************************************************
-C
+!                       *****************
+!
+     &( UC    , VC    , X     , Y     , NPOIN2 ) 
+!
+!***********************************************************************
+!  TOMAWAC VERSION 5.2    07/06/01       
+!***********************************************************************
+!
+!     FONCTION  : PERMET LA SPECIFICATION D'UN COURANT ANALYTIQUE 
+!                 (! STATIONNAIRE !)
+!
+!     FUNCTION  : SPECIFICATION OF AN ANALYTICAL CURRENT 
+!                 (! STATIONNARY !)
+!                 
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! !      NOM       !MODE!                   ROLE                       !
+! !________________!____!______________________________________________!
+! !    UC,VC       !<-- ! COMPOSANTES DU CHAMP DE COURANT              !
+! !    X,Y         ! -->! COORDONNEES DES POINTS DU MAILLAGE 2D        !
+! !    NPOIN2      ! -->! NOMBRE DE POINTS 2D                          !
+! !________________!____!______________________________________________!
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!
+!-----------------------------------------------------------------------
+!
+!  APPELE PAR : CONDIW
+!
+!  SOUS-PROGRAMME APPELE : NEANT
+!
+!***********************************************************************
+!
       IMPLICIT NONE
-C
+!
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
-C
-C.....VARIABLES TRANSMISES
-C     """"""""""""""""""""
+!
+!.....VARIABLES TRANSMISES
+!     """"""""""""""""""""
       INTEGER  NPOIN2
       DOUBLE PRECISION X (NPOIN2) , Y (NPOIN2)
       DOUBLE PRECISION UC(NPOIN2) , VC(NPOIN2)
-C
-C.....VARIABLES LOCALES
-C     """""""""""""""""
+!
+!.....VARIABLES LOCALES
+!     """""""""""""""""
       INTEGER  IP
       DOUBLE PRECISION UCONST, VCONST
-C
-C
+!
+!
       UCONST=1.0D0
       VCONST=1.0D0
-C
+!
       DO IP=1,NPOIN2
         UC(IP)=UCONST
         VC(IP)=VCONST
       ENDDO
-C
+!
       RETURN
       END
-C
+!
