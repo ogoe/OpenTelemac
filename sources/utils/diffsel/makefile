@@ -51,6 +51,8 @@ MESSAGE       = @echo "$(PWD) $(LIBRARY) $(LOGNAME) $(DATE) $@ ($?)" >>$(JOURNAL
 
 DEST          =  $(PROJECT)/builds/$(DIRLIB)
 
+LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/special$(MODE)$(VERSION).a \
+                $(LIBS_MPI) $(LK_LIB_SPECIAL)
 INSTALL       = cp
 
 MAKEFILE      = makefile
