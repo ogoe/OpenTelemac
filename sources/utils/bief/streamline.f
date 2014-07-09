@@ -77,10 +77,19 @@
 !+        V7P0
 !+   Routine SCHAR11_STO for stochastic diffusion in 2D.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        08/07/2014
+!+        V7P0
+!+   In subroutines SCHAR41_... updating of coordinates after touching a
+!+   boundary was missing in RECVCHAR and caused a bug if the trajectory
+!+   went to another subdomain just after. Look for 08/07/2014 to trace
+!+   the corrections.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_PARALLEL
+      USE INTERFACE_PARALLEL
       IMPLICIT NONE   
       PRIVATE
 ! 
@@ -2063,7 +2072,17 @@
 ! 
                 IF(SHZ(IPLOT).LT.     EPSILO) ISO=IBSET(ISO,0) 
                 IF(SHZ(IPLOT).GT.1.D0-EPSILO) ISO=IBSET(ISO,1) 
-! 
+!
+!               ADDED BY JMH 08/07/2014
+                IF(ADD) THEN 
+                  RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
+                  RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
+                  RECVCHAR(IPLOT)%ZP=ZPLOT(IPLOT) 
+                  RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+                  RECVCHAR(IPLOT)%DY=DY(IPLOT)
+                  RECVCHAR(IPLOT)%DZ=DZ(IPLOT)
+                ENDIF 
+!
                 GOTO 50 
 ! 
               ENDIF 
@@ -2827,7 +2846,17 @@
 ! 
                 IF(SHZ(IPLOT).LT.     EPSILO) ISO=IBSET(ISO,0) 
                 IF(SHZ(IPLOT).GT.1.D0-EPSILO) ISO=IBSET(ISO,1) 
-! 
+!
+!               ADDED BY JMH 08/07/2014
+                IF(ADD) THEN 
+                  RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
+                  RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
+                  RECVCHAR(IPLOT)%ZP=ZPLOT(IPLOT) 
+                  RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+                  RECVCHAR(IPLOT)%DY=DY(IPLOT)
+                  RECVCHAR(IPLOT)%DZ=DZ(IPLOT)
+                ENDIF 
+!
                 GOTO 50 
 ! 
               ENDIF 
@@ -2867,7 +2896,7 @@
      &  SENS  , IFAPAR, NCHDIM,NCHARA,ADD) 
 ! 
 !*********************************************************************** 
-! BIEF VERSION 6.2           28/04/93     J-M JANIN (LNH) 30 87 72 84 
+! BIEF VERSION 7.0           28/04/93     J-M JANIN (LNH) 30 87 72 84 
 !                        12/10/05     J-M HERVOUET (LNHE) 01 30 87 80 18 
 ! 
 ! 08/11/04 : ADAPTATION A LA TRANSFORMEE SIGMA GENERALISEE 
@@ -3488,7 +3517,17 @@
 ! 
                 IF(SHZ(IPLOT).LT.     EPSILO) ISO=IBSET(ISO,0) 
                 IF(SHZ(IPLOT).GT.1.D0-EPSILO) ISO=IBSET(ISO,1) 
-! 
+!
+!               ADDED BY JMH 08/07/2014
+                IF(ADD) THEN 
+                  RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
+                  RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
+                  RECVCHAR(IPLOT)%ZP=ZPLOT(IPLOT) 
+                  RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+                  RECVCHAR(IPLOT)%DY=DY(IPLOT)
+                  RECVCHAR(IPLOT)%DZ=DZ(IPLOT)
+                ENDIF 
+!
                 GOTO 50 
 ! 
               ENDIF 
@@ -3527,7 +3566,7 @@
      &  SENS  , IFAPAR, NCHDIM,NCHARA,ADD) 
 ! 
 !*********************************************************************** 
-! BIEF VERSION 6.3           28/04/93     J-M JANIN (LNH) 30 87 72 84 
+! BIEF VERSION 7.0           28/04/93     J-M JANIN (LNH) 30 87 72 84 
 !                        12/10/05     J-M HERVOUET (LNHE) 01 30 87 80 18 
 ! 
 !brief    LIKE SCHAR41 BUT WITH PERIODICITY ON THE VERTICAL
@@ -4206,7 +4245,17 @@
 ! 
                 IF(SHZ(IPLOT).LT.     EPSILO) ISO=IBSET(ISO,0) 
                 IF(SHZ(IPLOT).GT.1.D0-EPSILO) ISO=IBSET(ISO,1) 
-! 
+!
+!               ADDED BY JMH 08/07/2014
+                IF(ADD) THEN 
+                  RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
+                  RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
+                  RECVCHAR(IPLOT)%ZP=ZPLOT(IPLOT) 
+                  RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+                  RECVCHAR(IPLOT)%DY=DY(IPLOT)
+                  RECVCHAR(IPLOT)%DZ=DZ(IPLOT)
+                ENDIF 
+!
                 GOTO 50 
 ! 
               ENDIF 
@@ -4907,9 +4956,9 @@
 !
             ELSE
               IF(LNG.EQ.1) THEN
-                WRITE(LU,*) 'PROBLEME DANS SCHAR41_PER_YA4D',IEL,IPLOT
+                WRITE(LU,*) 'PROBLEME DANS SCHAR41_PER_4D',IEL,IPLOT
               ELSE
-                WRITE(LU,*) 'PROBLEM IN SCHAR41_PER_YA4D',IEL,IPLOT
+                WRITE(LU,*) 'PROBLEM IN SCHAR41_PER_4D',IEL,IPLOT
               ENDIF
               CALL PLANTE(1)
               STOP

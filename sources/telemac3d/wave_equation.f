@@ -5,7 +5,7 @@
      &(LT,ISOUSI)
 !
 !***********************************************************************
-! TELEMAC3D   V6P3                                   21/08/2010
+! TELEMAC3D   V7P0                                   07/07/2014
 !***********************************************************************
 !
 !brief    DIFFUSION AND PROPAGATION STEP IN 3D USING THE WAVE
@@ -51,19 +51,16 @@
 !history  J-M HERVOUET (LNHE)
 !+        15/09/2011
 !+        V6P1
-!+
 !+   Call to NUWAVE_P0 modified
 !
 !history  J-M HERVOUET (LNHE)
 !+        02/04/2012
 !+        V6P2
-!+
 !+   Initialization of DH moved to telemac3d.f
 !
 !history  J-M HERVOUET (LNHE)
 !+        19/09/2012
 !+        V6P3
-!+
 !+   Using S0U is now double-checked by the advection scheme to know if
 !+   S0U has been treated before. S0U%TYPR is no longer cancelled in
 !+   CVDF3D, otherwise S0U is forgotten if there are iterations for non
@@ -73,6 +70,16 @@
 !+        12/11/2013
 !+        V6P3
 !+   Correction in case of atmospheric pressure.
+!
+!history  J-M HERVOUET (LNHE)
+!+        07/07/2014
+!+        V6P3
+!+   New correction in case of atmospheric pressure. Free surface and
+!+   atmospheric pressure did not balance their gradients exactly when
+!+   the free surface gradient compatibility was not 1. Now the variable
+!+   grad(PATMOS)/(RO*G) is added to the free surface gradient for the
+!+   compatible part, and PATMOS/(RO*G) is added to the free surface
+!+   for the non compatible part.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
@@ -95,8 +102,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       CHARACTER(LEN=16) :: FORMUL
-      INTEGER           :: I,IPTFR3,IPOIN2,IPLAN,I1,I2,I3,NP
-      INTEGER           :: I3D,IP
+      INTEGER           :: I,IPTFR3,IPOIN2,IPLAN,I1,I2,I3,NP,IELEM
+      INTEGER           :: I3D,IP,IAD1,IAD2,IAD3
       LOGICAL           :: MSKGRA
       DOUBLE PRECISION  :: C
 !
@@ -131,7 +138,66 @@
       ENDIF
 !
 !=======================================================================
-!    1) COMPUTES THE DIFFUSION TERMS DIFF
+!     PRESSURE GRADIENT IS ADDED TO THE GRADIENT OF FREE SURFACE
+!
+!=======================================================================
+!
+      IF(ATMOS) THEN
+        C=1.D0/(RHO0*GRAV)
+!       PRESSURE GRADIENTS WILL BE LOCALLY MASKED
+        IF(MSK.OR.OPTBAN.EQ.1) THEN
+          MSKGRA = .TRUE.
+          IF(OPTBAN.EQ.1) THEN
+            CALL OV('X=Y+Z   ',T2_01%R,HN%R,Z3%R,0.D0,NPOIN2)
+!           Z3 GIVEN AS ZF (FIRST PLANE IS BOTTOM)
+!           WOULD BE REJECTED AS 3D VECTOR
+            I=Z3%ELM
+            Z3%ELM=11
+            CALL DECVRT(TE3,T2_01,Z3,MESH2D)
+            Z3%ELM=I
+          ENDIF
+          IF(OPTBAN.EQ.1.AND.MSK) THEN
+            CALL OV('X=XY    ',TE3%R,MASKEL%R,MASKEL%R,0.D0,NELEM2)
+          ENDIF
+          IF(MSK.AND.OPTBAN.NE.1) THEN
+            CALL OV('X=Y     ',TE3%R,MASKEL%R,MASKEL%R,C,TE3%DIM1)
+          ENDIF
+          IF(OPTBAN.EQ.1) THEN
+!           ADDING ATMOSPHERIC PRESSURE TO ZFLATS
+            DO IELEM=1,NELEM2
+              IF(TE3%R(IELEM).GT.0.5D0) THEN
+                IAD1=IELEM
+                IAD2=IAD1+NELEM2
+                IAD3=IAD2+NELEM2
+                I1=MESH2D%IKLE%I(IAD1)
+                I2=MESH2D%IKLE%I(IAD2)
+                I3=MESH2D%IKLE%I(IAD3)
+                ZFLATS%R(IAD1)=ZFLATS%R(IAD1)+C*PATMOS%R(I1)
+                ZFLATS%R(IAD2)=ZFLATS%R(IAD2)+C*PATMOS%R(I2)
+                ZFLATS%R(IAD3)=ZFLATS%R(IAD3)+C*PATMOS%R(I3)
+              ENDIF
+            ENDDO
+          ENDIF
+        ELSE
+          MSKGRA = .FALSE.
+        ENDIF
+!       ATMOSPHERIC PRESSURE GRADIENT
+        CALL VECTOR(T2_01,'=','GRADF          X',IELM2H,
+     &              C,PATMOS,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
+     &              MESH2D,MSKGRA,TE3)
+        CALL VECTOR(T2_02,'=','GRADF          Y',IELM2H,
+     &              C,PATMOS,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
+     &              MESH2D,MSKGRA,TE3)
+        DO I=1,NPOIN2
+          GRADZN%ADR(1)%P%R(I)=GRADZN%ADR(1)%P%R(I)
+     &                        +T2_01%R(I)*UNSV2D%R(I)
+          GRADZN%ADR(2)%P%R(I)=GRADZN%ADR(2)%P%R(I)
+     &                        +T2_02%R(I)*UNSV2D%R(I)
+        ENDDO
+      ENDIF
+!
+!=======================================================================
+!     COMPUTES THE DIFFUSION TERMS DIFF
 !
 !       AND THEN UC + DT(F - DIFF -G GRAD(Z))
 !
@@ -228,46 +294,8 @@
         ENDDO
       ENDIF
 !
-!     ATMOSPHERIC PRESSURE: ADDED BY JMH ON 10/11/2010
-!
-      IF(ATMOS) THEN
-!       PRESSURE GRADIENTS WILL BE LOCALLY MASKED
-        IF(MSK.OR.OPTBAN.EQ.1) THEN
-          MSKGRA = .TRUE.
-          IF(OPTBAN.EQ.1) THEN
-            CALL OV('X=Y+Z   ',T2_01%R,HN%R,Z3%R,0.D0,NPOIN2)
-!           Z3 GIVEN AS ZF (FIRST PLANE IS BOTTOM)
-!           WOULD BE REJECTED AS 3D VECTOR
-            I=Z3%ELM
-            Z3%ELM=11
-            CALL DECVRT(TE3,T2_01,Z3,MESH2D)
-            Z3%ELM=I
-          ENDIF
-          IF(OPTBAN.EQ.1.AND.MSK) THEN
-            CALL OV('X=XY    ',TE3%R,MASKEL%R,MASKEL%R,0.D0,NELEM2)
-          ENDIF
-          IF(MSK.AND.OPTBAN.NE.1) THEN
-            CALL OV('X=Y     ',TE3%R,MASKEL%R,MASKEL%R,C,TE3%DIM1)
-          ENDIF
-        ELSE
-          MSKGRA = .FALSE.
-        ENDIF
-!       ATMOSPHERIC PRESSURE GRADIENT
-        CALL VECTOR(T2_01,'=','GRADF          X',IELM2H,
-     &              -DT/RHO0,PATMOS,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
-     &              MESH2D,MSKGRA,TE3)
-        CALL VECTOR(T2_02,'=','GRADF          Y',IELM2H,
-     &              -DT/RHO0,PATMOS,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
-     &              MESH2D,MSKGRA,TE3)
-        DO I=1,U%DIM1
-          I2=MOD(I-1,NPOIN2)+1
-          T3_01%R(I)=T3_01%R(I)+T2_01%R(I2)*UNSV2D%R(I2)
-          T3_02%R(I)=T3_02%R(I)+T2_02%R(I2)*UNSV2D%R(I2)
-        ENDDO
-      ENDIF
-!
 !=======================================================================
-!    2) COMPUTES 1/(1+DT*(FROT3D+S1U))      IN T3_04
+!     COMPUTES 1/(1+DT*(FROT3D+S1U))      IN T3_04
 !
 !       IT IS ASSUMED THAT S1V=S1U         (IT SHOULD FOR TENSORIALITY)
 !                     THAT AVBORL=AUBORL
@@ -276,7 +304,7 @@
 !
 !=======================================================================
 !
-!     2.1) COMPUTES THE FRICTION TERM FROT3D + IMPLICIT SOURCES
+!     COMPUTES THE FRICTION TERM FROT3D + IMPLICIT SOURCES
 !
       CALL CPSTVC(S1U,T3_04)
 !     ERASES ALL VALUES (ONLY BOUNDARY VALUES WILL BE CHANGED BELOW)
@@ -324,7 +352,7 @@
 !
       IF(NCSIZE.GT.1) CALL PARCOM(T3_04,2,MESH3D)
 !
-!     2.2) COMPUTES THE INVERSE OF THE DENOMINATOR FOR U(N+1) AND V(N+1)
+!     COMPUTES THE INVERSE OF THE DENOMINATOR FOR U(N+1) AND V(N+1)
 !
       IF(S1U%TYPR.NE.'0') THEN
         DO I=1,U%DIM1
@@ -352,7 +380,7 @@
       ENDDO
 !
 !=======================================================================
-!    2) COMPUTES THE NEW DEPTH WITH WAVE EQUATION
+!     COMPUTES THE NEW DEPTH WITH WAVE EQUATION
 !=======================================================================
 !
 !     STARTS COMPUTATION OF THE SECOND MEMBER (IN SEM2D%ADR(1)%P)
@@ -546,6 +574,13 @@
           DO I=1,NPOIN2
             T2_04%R(I)=HN%R(I)+ZF%R(I)
           ENDDO
+          IF(ATMOS) THEN
+!         ADDING ATMOSPHERIC PRESSURE
+            C=1.D0/(RHO0*GRAV)
+            DO I=1,NPOIN2
+              T2_04%R(I)=T2_04%R(I)+C*PATMOS%R(I)
+            ENDDO
+          ENDIF
           CALL VECTOR(FLINT2,'+','VGRADP 2        ',IELM2H,
      &                -(1.D0-TETAZCOMP)/TETAH,
      &                SVIDE,SVIDE,SVIDE,NUWAVE,T2_04,SVIDE,
@@ -640,10 +675,10 @@
      &                NELEM2,OPTBAN,MESH2D%IKLE%I,MESH2D)
 !
 !=======================================================================
-!     3) COMPUTES NEW VELOCITIES
+!     COMPUTES NEW VELOCITIES
 !=======================================================================
 !
-!     3.1) GRADIENT OF DH (IN T2_02 AND T2_03)
+!     GRADIENT OF DH (IN T2_02 AND T2_03)
 !
 !     COMPONENT X (IN T2_02)
 !
@@ -671,7 +706,7 @@
         CALL OS('X=X+CY  ',X=T2_03,Y=GRADZN%ADR(2)%P,C=C)
       ENDIF
 !
-!     3.2) FINAL COMPUTATION OF U AND V
+!     FINAL COMPUTATION OF U AND V
 !
       DO I=1,U%DIM1
         U%R(I)=UAUX(I)+DT*T2_02%R(MOD(I-1,NPOIN2)+1)*DM1%R(I)
@@ -814,3 +849,4 @@
 !
       RETURN
       END
+
