@@ -1,6 +1,8 @@
 !                    **************
-                     PROGRAM PARTEL
+                     SUBROUTINE PARTEL 
 !                    **************
+     & (NAMEINP, NAMECLI, NPARTS, PMETHOD, WITH_SECTIONS, NAMESEC,
+     &  WITH_ZONES, NAMEZFI)
 !
 !
 !***********************************************************************
@@ -68,19 +70,25 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_PARTEL
       USE BIEF, ONLY : NBMAXNSHARE, NCSIZE, NPTIR, CHAIN_TYPE
       IMPLICIT NONE
 !
-!     MAXIMUM NUMBER OF HALO, IN THE PARALLEL VERSION THE NUMBER OF HALO WILL BE DIRECTLY COMPUTED
-      INTEGER, PARAMETER :: NBMAXHALO=100000
+      INTEGER LNG,LU
+      COMMON /INFO/ LNG,LU
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      
+      CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMEINP
+      CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMECLI
+      INTEGER, INTENT(IN) :: NPARTS
+      INTEGER, INTENT(IN) :: PMETHOD
+      LOGICAL, INTENT(INOUT) :: WITH_SECTIONS
+      CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMESEC
+      LOGICAL, INTENT(INOUT) :: WITH_ZONES
+      CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMEZFI
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      INTEGER, PARAMETER :: MAXNPROC = 100000 ! MAX PARTITION NUMBER [00000..99999]
-      INTEGER, PARAMETER :: MAXLENSOFT = 144 ! SOFT MAX FILE NAME LENGTH
-      INTEGER, PARAMETER :: MAXLENHARD = 250 ! HARD MAX FILE NAME LENGTH
-      INTEGER, PARAMETER :: MAXADDCH = 10 ! MAX ADDED SUFFIX LENGTH
-      INTEGER, PARAMETER :: MAXVAR = 100  ! MAX NUMBER OF VARIABLES
 !
-      INTEGER PMETHOD
       INTEGER NVAR, NPLAN, NPTFR, NPTFRMAX
       INTEGER NELEM, NPOIN, NDP, NELEM2, NPOIN2, NDUM
       INTEGER IB(10)
@@ -116,14 +124,13 @@
 !
       CHARACTER(LEN=80)  :: TITLE
       CHARACTER(LEN=32)  :: VARI, VARIABLE(MAXVAR)
-      CHARACTER(LEN=MAXLENHARD)  :: NAMEINP, NAMECLI, NAMEOUT, NAMECLM
+      CHARACTER(LEN=MAXLENHARD)  :: NAMEOUT, NAMECLM
       CHARACTER(LEN=12)  :: FMT4
 !
       INTEGER MAX_NELEM_P
       INTEGER  MAX_NPOIN_P,MAX_N_NEIGH
       INTEGER I, J, K, L , M, N, ERR, ISO, IDUM
       INTEGER ISEG, II, ILOOP
-      INTEGER I_LEN, I_S, I_SP, I_LENCLI, I_LENINP
       INTEGER JJ
 !
       REAL XSEG, YSEG
@@ -132,7 +139,6 @@
 ! METISOLOGY
 !
       INTEGER, ALLOCATABLE :: EPART(:), NPART(:)
-      INTEGER NPARTS
 !
 ! FOR CALLING FRONT2
 !
@@ -155,8 +161,6 @@
       REAL TMP
       DOUBLE PRECISION TMP_D
 !
-      INTEGER LNG,LU,LI
-      COMMON /INFO/ LNG,LU
 !
 ! TIME MEASURING 
 !
@@ -200,14 +204,10 @@
       INTEGER :: PT, I1,I2,I3, ARR,DEP, ILPREC,ILBEST,ELBEST,IGBEST
       DOUBLE PRECISION :: XA, YA, DISTB, DISTE, DMINB, DMINE
       DOUBLE PRECISION :: DIST1, DIST2, DIST3, DIST
-      CHARACTER(LEN=MAXLENHARD) :: NAMESEC
-      LOGICAL :: WITH_SECTIONS=.FALSE., DONE_SECTIONS=.FALSE.
 !
 ! #### FOR ZONES 
 !
-      LOGICAL :: WITH_ZONES=.FALSE., DONE_ZONES=.FALSE.
       INTEGER, ALLOCATABLE :: FRICTION(:)
-      CHARACTER(LEN=MAXLENHARD) :: NAMEZFI
       INTEGER :: NZFI,I_GLOB,VAL_ZFI
 !
 !     CD: FLAG FOR SERAFIN FORMAT (.TRUE. IF DOUBLE PRECISION)
@@ -221,263 +221,11 @@
 !
       NDP_2D=3
 !
+!
       CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
       TIMECOUNT = .TRUE.
       IF (PARSEC==0) TIMECOUNT = .FALSE.  ! COUNT_RATE == 0 : NO CLOCK
       IF (TIMECOUNT) TDEB = TEMPS
-!
-      LNG=2 ! JE NE PARLE FRANCAIS, JE SUIS BARBARIEN
-      LU=6  ! FORTRAN STANDARD OUPUT CHANNEL
-      LI=5  ! FORTRAN STANDARD INPUT CHANNEL
-!
-!     ALLOCATE(NULLTABLE(0))       
-!
-!----------------------------------------------------------------------
-! INTRODUCE YOURSELF
-!
-      WRITE(LU,*) ' '
-      WRITE(LU,*) '+-------------------------------------------------+'
-      WRITE(LU,*) '  PARTEL: TELEMAC SELAFIN METISOLOGIC PARTITIONER'
-      WRITE(LU,*) '                                                   '
-      WRITE(LU,*) '  REBEKKA KOPMANN & JACEK A. JANKOWSKI (BAW)'
-      WRITE(LU,*) '                 JEAN-MICHEL HERVOUET (LNHE)'
-      WRITE(LU,*) '                 CHRISTOPHE DENIS     (SINETICS) '
-      WRITE(LU,*) '                 YOANN AUDOUIN        (LNHE) '
-      WRITE(LU,*) '  PARTEL (C) COPYRIGHT 2000-2002 '
-      WRITE(LU,*) '  BUNDESANSTALT FUER WASSERBAU, KARLSRUHE'
-      WRITE(LU,*) ' '
-      WRITE(LU,*) '  METIS 5.0.2 (C) COPYRIGHT 2012 '
-      WRITE(LU,*) '  REGENTS OF THE UNIVERSITY OF MINNESOTA '
-      WRITE(LU,*) ' '
-      WRITE(LU,*) '  BIEF 6.2 (C) COPYRIGHT 2012 EDF'
-      WRITE(LU,*) '+-------------------------------------------------+'
-      WRITE(LU,*) ' '
-      WRITE(LU,*) ' '
-      WRITE(LU,*) '  MAXIMUM NUMBER OF PARTITIONS: ',MAXNPROC
-      WRITE(LU,*) ' '
-      WRITE(LU,*) '+--------------------------------------------------+'
-      WRITE(LU,*) ' '
-!
-!----------------------------------------------------------------------
-! NAMES OF THE INPUT FILES:
-!
-      INQUIRE(FILE='PARTEL.PAR',EXIST=FOUND)
-      IF( FOUND ) OPEN(UNIT=72,FILE='PARTEL.PAR')
-
-      IF (FOUND) REWIND(72)
-      DO 
-        IF( FOUND ) THEN                  
-           READ(72,*) NAMEINP             
-        ELSE                              
-           WRITE(LU, ADVANCE='NO', FMT=
-     &         '(/,'' SELAFIN INPUT NAME <INPUT_NAME>: '')')
-           READ(LI,'(A)') NAMEINP
-        ENDIF                            
-        IF (NAMEINP.EQ.' ') THEN
-          WRITE (LU,'('' NO FILENAME'')') 
-        ELSE
-          IF (NAMEINP(1:3)=='ES3') THEN
-!----------------------------------------------------------------------
-! NAMES OF THE INPUT FILE TO EVENTUALLY GUIDE TO PARES3D
-! IF PARALLEL COMPUTATION WITH ESTEL3D
-! PARTEL ADAPTED TO ESTEL3D CODE
-            CALL PARES3D(NAMEINP,LI,FOUND)
-            GOTO 299
-          ELSE
-! CONTINUE WITH TELEMAC CODES
-            WRITE(LU,*) 'INPUT: ',NAMEINP
-            EXIT 
-          ENDIF
-        END IF  
-      END DO
-
-      INQUIRE (FILE=NAMEINP,EXIST=IS)
-      IF (.NOT.IS) THEN 
-        WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEINP
-        CALL PLANTE(1)
-        STOP
-      END IF  
-!
-      DO
-        IF( FOUND ) THEN                      
-           READ(72,*) NAMECLI                 
-        ELSE                                  
-           WRITE(LU, ADVANCE='NO', FMT=
-     &           '(/,'' BOUNDARY CONDITIONS FILE NAME : '')')
-           READ(LI,'(A)') NAMECLI
-        ENDIF                                
-        IF (NAMECLI.EQ.' ') THEN
-          WRITE (LU,'('' NO FILENAME'')') 
-        ELSE
-          WRITE(LU,*) 'INPUT: ',NAMECLI
-          EXIT
-        END IF
-      END DO
-!  
-      INQUIRE (FILE=NAMECLI,EXIST=IS)
-      IF (.NOT.IS) THEN 
-        WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMECLI
-        CALL PLANTE(1)
-        STOP
-      END IF  
-!
-      DO 
-        IF( FOUND ) THEN                     
-           READ(72,*) NPARTS                 
-        ELSE                                 
-           WRITE(LU, ADVANCE='NO',FMT=
-     &    '(/,'' NUMBER OF PARTITIONS <NPARTS> [2 -'',I6,'']: '')') 
-     &        MAXNPROC
-           READ(LI,*) NPARTS
-        ENDIF                               
-        IF ( (NPARTS > MAXNPROC) .OR. (NPARTS < 2) ) THEN
-          WRITE(LU,
-     &    '('' NUMBER OF PARTITIONS MUST BE IN [2 -'',I6,'']'')') 
-     &      MAXNPROC
-        ELSE
-          WRITE(LU,'('' INPUT: '',I4)') NPARTS
-          EXIT
-        END IF 
-      END DO
-!
-      WRITE(LU,FMT='(/,'' PARTITIONING OPTIONS: '')')
-
-      DO 
-        IF( FOUND ) THEN                     
-           READ(72,*) PMETHOD                
-        ELSE                                 
-           WRITE(LU, ADVANCE='NO',FMT=
-     &    '(/,'' PARTITIONING METHOD <PMETHOD> 
-     &    [1 (METIS) OR 2 (SCOTCH)]: '')') 
-           READ(LI,*) PMETHOD
-        ENDIF                                 
-        IF ( (PMETHOD > 2) .OR. (PMETHOD < 1) ) THEN
-          WRITE(LU,
-     &    '('' PARTITIONING METHOD MUST BE 1 OR 2'')') 
-        ELSE
-          WRITE(LU,'('' INPUT: '',I3)') PMETHOD
-          EXIT
-        END IF 
-      END DO
-!
-! #### THE SECTIONS FILE NAME 
-!
-      DO
-        IF( FOUND ) THEN                      
-           READ(72,*) I                       
-        ELSE                                  
-           WRITE(LU, ADVANCE='NO',FMT=
-     &    '(/,'' WITH SECTIONS? [1:YES 0:NO]: '')') 
-           READ(LI,*) I
-        ENDIF                                
-        IF ( I<0 .OR. I>1 ) THEN
-          WRITE(LU,'('' PLEASE ANSWER 1:YES OR 0:NO '')') 
-        ELSE
-          WRITE(LU,'('' INPUT: '',I4)') I
-          EXIT
-        END IF 
-      END DO
-      IF (I==1) WITH_SECTIONS=.TRUE.
-!
-      IF (WITH_SECTIONS) THEN 
-        DO
-          WRITE(LU, ADVANCE='NO', FMT=
-     &      '(/,'' CONTROL SECTIONS FILE NAME (OR RETURN) : '')')
-          IF(FOUND) THEN
-            READ(72,'(A)') NAMESEC
-          ELSE
-            READ(LI,'(A)') NAMESEC
-          ENDIF
-          IF (NAMESEC.EQ.' ') THEN
-            WRITE (LU,'('' NO FILENAME '')') 
-          ELSE
-            WRITE(LU,*) 'INPUT: ',NAMESEC
-            EXIT
-          ENDIF
-        ENDDO
-!  
-        INQUIRE (FILE=NAMESEC,EXIST=IS)
-        IF (.NOT.IS) THEN
-          WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMESEC
-          CALL PLANTE(1)
-          STOP
-        ENDIF  
-      ENDIF
-      ! Not recalculating section if already done in previous run of partel
-      INQUIRE(FILE=TRIM(NAMESEC)//EXTENS(NPARTS,0),EXIST=DONE_SECTIONS)
-      WITH_SECTIONS = WITH_SECTIONS .AND. (.NOT. DONE_SECTIONS)
-!
-! #### THE ZONES FILE NAME 
-!
-      DO
-        IF( FOUND ) THEN                      
-           READ(72,*) I                       
-        ELSE                                  
-           WRITE(LU, ADVANCE='NO',FMT=
-     &    '(/,'' WITH ZONES? [1:YES 0:NO]: '')') 
-           READ(LI,*) I
-        ENDIF                                
-        IF ( I<0 .OR. I>1 ) THEN
-          WRITE(LU,'('' PLEASE ANSWER 1:YES OR 0:NO '')') 
-        ELSE
-          WRITE(LU,'('' INPUT: '',I4)') I
-          EXIT
-        END IF 
-      END DO
-      IF (I==1) WITH_ZONES=.TRUE.
-!
-      IF (WITH_ZONES) THEN 
-        DO
-          WRITE(LU, ADVANCE='NO', FMT=
-     &      '(/,'' FRICTION ZONES FILE NAME (OR RETURN) : '')')
-          IF(FOUND) THEN
-            READ(72,'(A)') NAMEZFI
-          ELSE
-            READ(LI,'(A)') NAMEZFI
-          ENDIF
-          IF (NAMEZFI.EQ.' ') THEN
-            WRITE (LU,'('' NO FILENAME '')') 
-          ELSE
-            WRITE(LU,*) 'INPUT: ',NAMEZFI
-            EXIT
-          ENDIF
-        ENDDO
-!  
-        INQUIRE (FILE=NAMEZFI,EXIST=IS)
-        IF (.NOT.IS) THEN
-          WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEZFI
-          CALL PLANTE(1)
-          STOP
-        ENDIF  
-      ENDIF
-      ! Not recalculating zone if already done in previous run of partel
-      INQUIRE(FILE=TRIM(NAMEZFI)//EXTENS(NPARTS-1,0),EXIST=DONE_ZONES)
-      WITH_ZONES = WITH_ZONES .AND. (.NOT. DONE_ZONES)
-!
-      IF( FOUND ) CLOSE(72)
-!
-!
-! FIND THE INPUT FILE CORE NAME LENGTH
-!
-      I_S  = LEN(NAMEINP)
-      I_SP = I_S + 1
-      DO I=1,I_S
-        IF (NAMEINP(I_SP-I:I_SP-I) .NE. ' ') EXIT
-      ENDDO
-      I_LEN=I_SP - I
-      I_LENINP = I_LEN
-!
-      IF (I_LENINP > MAXLENSOFT) THEN
-        WRITE(LU,*) ' '
-        WRITE(LU,*) 'ATTENTION:'
-        WRITE(LU,*) 'THE NAME OF THE INPUT FILE:'
-        WRITE(LU,*) NAMEINP
-        WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS' 
-        WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
-        WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
-        CALL PLANTE(1)
-        STOP
-      ENDIF
 !
       OPEN(NINP,FILE=NAMEINP,STATUS='OLD',FORM='UNFORMATTED')
       REWIND NINP
@@ -707,28 +455,6 @@
       CALL CHECK_ALLOCATE(ERR, 'NUMLIQ')
       ALLOCATE (CHECK(NPTFRMAX),STAT=ERR)
       CALL CHECK_ALLOCATE(ERR, 'CHECK')
-!
-! CORE NAME LENGTH
-!
-      I_S  = LEN(NAMECLI)
-      I_SP = I_S + 1
-      DO I=1,I_S
-        IF (NAMECLI(I_SP-I:I_SP-I) .NE. ' ') EXIT
-      ENDDO
-      I_LEN=I_SP - I
-      I_LENCLI = I_LEN
-!
-      IF (I_LENINP > MAXLENSOFT) THEN
-        WRITE(LU,*) ' '
-        WRITE(LU,*) 'ATTENTION:'
-        WRITE(LU,*) 'THE NAME OF THE BOUNDARY CONDITIONS FILE:'
-        WRITE(LU,*) NAMECLI
-        WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS' 
-        WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
-        WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
-        CALL PLANTE(1)
-        STOP
-      ENDIF
 !
       OPEN(NCLI,FILE=NAMECLI,STATUS='OLD',FORM='FORMATTED')
       REWIND NCLI
@@ -1196,7 +922,7 @@
 !----------------------------------------------------------------------
 !     WORK ON THE BOUNDARIES WRITING THE BC FILES SIMULTANEOUSLY...
 !     
-      NAMECLM(I_LENCLI+1:I_LENCLI+11) = EXTENS(NPARTS-1,I-1)
+      NAMECLM = TRIM(NAMECLI)//EXTENS(NPARTS-1,I-1)
       OPEN(NCLM,FILE=NAMECLM,STATUS='UNKNOWN',FORM='FORMATTED')
       REWIND(NCLM)
 !     
@@ -1390,7 +1116,7 @@
 !     
 !       WRITING GEOMETRY FILES FOR ALL PARTS/PROCESSORS
 !
-        NAMEOUT(I_LENINP+1:I_LENINP+11) = EXTENS(NPARTS-1,I-1)
+        NAMEOUT = TRIM(NAMEINP)//EXTENS(NPARTS-1,I-1)
 !   
         OPEN(NOUT,FILE=NAMEOUT,FORM='UNFORMATTED',STATUS='UNKNOWN') 
 !       
@@ -1983,4 +1709,4 @@
 !
 !----------------------------------------------------------------------      
 !
-      END PROGRAM PARTEL
+      END SUBROUTINE PARTEL

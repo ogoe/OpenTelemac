@@ -2,7 +2,7 @@
                         SUBROUTINE PARES3D
 !                       ******************
 
-     &(NAMEINP,LI,IO_PARTEL_PAR)
+     &(NAMEINP,NAMELOG,NPARTS,PMETHOD)
 !
 !**********************************************************************
 !  12/11/2009 CHRISTOPHE DENIS SINETICS/I23 
@@ -32,7 +32,9 @@
 ! |      NOM       |MODE|                   ROLE                       |
 ! |________________|____|______________________________________________|
 ! |    NAMEINP     | -->| NOM DU FICHIER DE GEOMETRIE ESTEL3D
-! |    LI          | -->| UNITE LOGIQUE D'ECRITURE POUR MONITORING 
+! |    NAMELOG     | -->| NOM DU FICHIER LOG 
+! |    NPARTS      | -->| NOMBRE DE PARTITION
+! |    PMETHOD     | -->| METHODE DE PARTITIONEMENT 1 metis 2 scotch
 ! |________________|____|______________________________________________|
 !  MODE: -->(DONNEE NON MODIFIEE),<--(RESULTAT),<-->(DONNEE MODIFIEE)
 !
@@ -46,25 +48,31 @@
 !***********************************************************************
 !
 !     BEGIN MODIF V STOBIAC
+      USE DECLARATIONS_PARTEL
       USE UTIL_PARES
       USE M_MED
 !     END MODIF V STOBIAC
 
       IMPLICIT NONE
-      INTEGER, PARAMETER :: MAXNPROC = 100000 ! MAX PARTITION NUMBER [00000..99999]
-      INTEGER, PARAMETER :: MAXLENHARD = 250 ! HARD MAX FILE NAME LENGTH
-      INTEGER, PARAMETER :: MAXLENSOFT = 144 ! SOFT MAX FILE NAME LENGTH
 !
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-! PARAMETRES D'APPEL DE LA ROUTINE
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMEINP
-      INTEGER,                   INTENT(IN) :: LI
-      LOGICAL,                   INTENT(IN) :: IO_PARTEL_PAR ! (True if partel.par is found...)
+      CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMELOG
+      INTEGER,                   INTENT(IN) :: NPARTS
+      INTEGER,                   INTENT(IN) :: PMETHOD
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+!
+! PARAMETRES D'APPEL DE LA ROUTINE
 ! VARIABLES LOCALES
-      CHARACTER(LEN=MAXLENHARD) :: NAMELOG,NAMEINP2,NAMELOG2
+      CHARACTER(LEN=MAXLENHARD) :: NAMEINP2,NAMELOG2
       INTEGER :: NINP=10,NLOG=11,NINP2=12,NLOG2=13
-      INTEGER :: NPARTS,I_S,I_SP,I,I_LEN,I_LENINP,IERR,J,K,COMPT,
+      INTEGER :: I_S,I_SP,I,I_LEN,I_LENINP,IERR,J,K,COMPT,
      &           N,NUMTET,NUMTRI,NUMTRIG,I_LENLOG,L,NI,NF,NT,IBID,IDD,
      &           COMPT1,COMPT2,COMPT3,NBTRIIDD,M,COLOR1,
      &           COLOR2,PR1,PR2,NBTETJ,IDDNT,NIT,NFT,MT,
@@ -253,83 +261,12 @@
 ! 1. PREAMBULE
 !-------------
 !
-      CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(1),COUNT_RATE=PARSEC)
       ALLOCATE (VECTNB(NBSDOMVOIS-3))
       WRITE(LU,*)' '
       WRITE(LU,*)'+-------------------------------------------------+'
       WRITE(LU,*)'  PARTEL: TELEMAC ESTEL3D PARTITIONER'
       WRITE(LU,*)'+-------------------------------------------------+'
       WRITE(LU,*)' READING UNV AND LOG FILES'
-!     NAMES OF THE INPUT FILES:
-!
-!     Geometry file
-      IF (NAMEINP.EQ.' ') THEN
-        GOTO 149 
-      ELSE
-        WRITE(LU,89)NAMEINP
-      ENDIF
-      INQUIRE (FILE=NAMEINP,EXIST=IS)
-      IF (.NOT.IS) GOTO 140
-!     
-!     Complementary file
-      DO
-        IF( IO_PARTEL_PAR ) THEN               
-           READ(72,*) NAMELOG         
-        ELSE                          
-           WRITE(LU, ADVANCE='NO', FMT=
-     &           '(/,'' BOUNDARY CONDITIONS FILE NAME : '')')
-           READ(LI,'(A)') NAMELOG
-        ENDIF                         
-        IF (NAMELOG.EQ.' ') THEN
-          WRITE (LU,'('' NO FILENAME'')') 
-        ELSE
-          WRITE(LU,*) 'INPUT: ',NAMELOG
-          EXIT
-        END IF
-      END DO
-      INQUIRE(FILE=NAMELOG,EXIST=IS)
-      IF (.NOT.IS) GOTO 141   
-!
-!     Number of sub-domains asked
-      DO 
-        IF( IO_PARTEL_PAR ) THEN                      !###> SEB@HRW
-           READ(72,*) NPARTS                  !###> SEB@HRW
-        ELSE                                  !###> SEB@HRW
-           WRITE(LU, ADVANCE='NO',FMT=
-     &    '(/,'' NUMBER OF PARTITIONS <NPARTS> [2 -'',I6,'']: '')') 
-     &        MAXNPROC
-           READ(LI,*) NPARTS
-        ENDIF                                 !###> SEB@HRW
-        IF ( (NPARTS > MAXNPROC) .OR. (NPARTS < 2) ) THEN
-          WRITE(LU,
-     &    '('' NUMBER OF PARTITIONS MUST BE IN [2 -'',I6,'']'')') 
-     &      MAXNPROC
-        ELSE
-          WRITE(LU,'('' SUB DOMAINS: '',I4)') NPARTS
-          EXIT
-        END IF 
-      END DO
-!
-      WRITE(LU,FMT='(/,'' PARTITIONING OPTIONS: '')')
-      
-! FIND THE INPUT FILES CORE NAME LENGTH
-      I_S  = LEN(NAMEINP)
-      I_SP = I_S + 1
-      DO I=1,I_S
-        IF (NAMEINP(I_SP-I:I_SP-I) .NE. ' ') EXIT
-      ENDDO
-      I_LEN=I_SP - I
-      I_LENINP = I_LEN
-      IF (I_LENINP > MAXLENSOFT) GOTO 144
-!
-      I_S  = LEN(NAMELOG)
-      I_SP = I_S + 1
-      DO I=1,I_S
-        IF (NAMELOG(I_SP-I:I_SP-I) .NE. ' ') EXIT
-      ENDDO
-      I_LEN=I_SP - I
-      I_LENLOG = I_LEN 
-      IF (I_LENLOG > MAXLENSOFT) GOTO 145
 
 !     BEGIN MODIF V STOBIAC
 !     FIND THE FORMAT OF THE MESH
@@ -1558,7 +1495,7 @@
       WRITE(LU,*)' '
       WRITE(LU,*)' STARTING METIS MESH PARTITIONING------------------+'
 !
-      CALL PARTITIONER(1, NBTET, NPOINT, 4, NPARTS, IKLESTET,
+      CALL PARTITIONER(PMETHOD, NBTET, NPOINT, 4, NPARTS, IKLESTET,
      &                 EPART, NPART)
 !
       CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(6),COUNT_RATE=PARSEC)

@@ -19,10 +19,12 @@ files: bief_def.f
 
 [partel]
 path: <root>|sources|utils|partel
-files: partitioner.F
+files: declarations_partel.f
+  partitioner.F
   util_pares.f
   pares3d.F
   partel.F
+  homere_partel.f
 
 [special]
 path: <root>|sources|utils|special
