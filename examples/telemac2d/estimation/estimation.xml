@@ -41,7 +41,7 @@
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
    <plot2d xref="Mesh" size="[20;5]" > 
-      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
+      <layer vars="maillage:mesh" target="1:T2DGEO" config="oneofall" /> 
    </plot2d> 
     <plot2d xref="FreeSurfacetf" size="[20;5]" > 
       <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
