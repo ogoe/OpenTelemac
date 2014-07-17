@@ -57,7 +57,7 @@
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
    <plot2d xref="Mesh" size="[10;10]" > 
-      <layer vars="bottom:mesh" target="1:ARTGEO" config="together" /> 
+      <layer vars="maillage:mesh" target="1:ARTGEO" config="together" /> 
    </plot2d> 
    <plot2d xref="Bathy" size="[10;10]" > 
       <layer vars="bottom:map" target="1:ARTRES" config="together" /> 
