@@ -44,7 +44,7 @@
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
    <plot2d xref="mesh" config="oneofall" time="[-1]" size="[12;7]" > 
-      <layer vars="bottom:mesh" target="1:T3DRES" /> 
+      <layer vars="cote z:mesh" target="1:T3DRES" /> 
    </plot2d> 
    <plot2d xref="mesh_section" type="v-section" config="oneofall" time="[-1]" size="[12;7]" > 
       <layer vars="Z:mesh" extract="(0;50)(500;50)" target="1:T3DRES"  /> 
