@@ -45,7 +45,7 @@
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
    <plot2d xref="Mesh" size="[12;8]" > 
-      <layer vars="bottom:mesh" target="1:ARTGEO" config="oneofall" /> 
+      <layer vars="maillage:mesh" target="1:ARTGEO" config="oneofall" /> 
    </plot2d>
    <plot2d xref="WaveHeight" size="[12;8]" > 
       <layer vars="wave height:map" target="1:ARTRES" config="oneofall" /> 
