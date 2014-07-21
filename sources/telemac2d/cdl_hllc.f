@@ -170,7 +170,7 @@
 !         LIQUID BOUNDARIES
 !**************************************************
         ELSEIF((LIMPRO(K,1).EQ.KDIR).OR.(LIMPRO(K,1).EQ.KDDL))THEN 
-          ! PREPARE COMPUTATION OF RIEMANN INVARIANTS
+!         PREPARE COMPUTATION OF RIEMANN INVARIANTS
           IF(H1.LT.EPS)THEN
             UNN = 0.D0
             VNN = 0.D0
@@ -178,14 +178,6 @@
             UNN =  XNN*U1 + YNN*V1
             VNN = -YNN*U1 + XNN*V1
           ENDIF
-       ! PREPARE COMPUTATION OF RIEMANN INVARIANTS
-        IF(H1.LT.EPS)THEN
-         UNN = 0.D0
-         VNN = 0.D0
-       ELSE
-         UNN =  XNN*U1 + YNN*V1
-         VNN = -YNN*U1 + XNN*V1
-       ENDIF
 !===============================
 !    IF H IS IMPOSED
 !===============================

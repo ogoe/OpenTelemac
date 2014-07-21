@@ -218,9 +218,9 @@
       DOUBLE PRECISION, INTENT(INOUT) :: W(3,NPOIN),FLUSORTN,FLUENTN   
       DOUBLE PRECISION, INTENT(IN)    :: AIRE(NPOIN),DTHAUT(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: HBOR(NPTFR),UBOR(NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: VBOR(NPTFR)
+      DOUBLE PRECISION, INTENT(IN)    :: VBOR(NPTFR),HN(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: SMH(NPOIN),ZF(NPOIN),CF(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN),V(NPOIN),HN(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN),V(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN),QU(NPOIN),QV(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: DPX(3,NELMAX),DPY(3,NELMAX)
       DOUBLE PRECISION, INTENT(INOUT) :: WINF(3,*)
@@ -980,8 +980,7 @@
       ENDIF
 !                                                                       
       DO I=1,NPOIN                                                  
-        H(I)  = W(1,I)     
-        HN(I)  = W(1,I)                         
+        H(I)  = W(1,I)                             
         QU(I) = W(2,I)                                                  
         QV(I) = W(3,I)
 !  SAVE FLUXES FOR NEXT TIME STEP
