@@ -35,7 +35,7 @@
 !
       CHARACTER*100, DEBUGFILE
       INTEGER  I,K,J
-      DOUBLEPRECISION DEPTH, AT, MYFRA, BSUM
+      DOUBLE PRECISION DEPTH, AT, MYFRA, BSUM
 !
 !----------------------------------------------------------------
 !

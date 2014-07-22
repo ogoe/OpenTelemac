@@ -462,7 +462,7 @@ C
       INTEGER         , INTENT(IN)    :: LT
       LOGICAL         , INTENT(IN)    :: ENTET
       INTEGER         , INTENT(IN)    :: NPTFR2_DIM
-      INTEGER         , INTENT(INOUT) :: NFRLIQ
+      INTEGER         , INTENT(IN) :: NFRLIQ
 C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C

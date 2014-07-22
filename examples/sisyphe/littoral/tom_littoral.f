@@ -349,6 +349,7 @@
 !
 !***********************************************************************
 !
+      USE BIEF
       USE DECLARATIONS_TOMAWAC ,ONLY : MESH, NCSIZE
 !
       IMPLICIT NONE
