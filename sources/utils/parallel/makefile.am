@@ -1,8 +1,8 @@
 #
 #------- Sources Fortran
-SRCS	      = interface_parallel.f \
-                declarations_parallel.F \
-		errpvm.F \
+SRCS	      = declarations_parallel.F \
+		interface_parallel.f \
+                errpvm.F \
 		org_charac_type1.F \
 		oil_org_charac_type.F \
 		org_charac_type_alg.F \
