@@ -135,6 +135,13 @@
 !+   Argument ZR added to FONVAS. HDEP updated differently after calling
 !+   Sisyphe, to avoid truncation errors that would give HDEP<0.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        31/07/2014
+!+        V7P0
+!+   Call to METEO moved just before the first call to FSGRAD, not just
+!+   after (atmospheric pressure gradients now systematically added
+!+   to free surface gradients).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -708,7 +715,16 @@
       CALL MASBAS2D(VOLU2D,V2DPAR,UNSV2D,
      &              IELM2H,MESH2D,MSK,MASKEL,T2_01,SVIDE)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE MASBAS2D'
+!
 !-----------------------------------------------------------------------
+!
+! INITIALISES THE METEOROLOGICAL VARIABLES
+!
+      IF(VENT.OR.ATMOS) CALL METEO
+     &  (PATMOS%R,WIND%ADR(1)%P%R,WIND%ADR(2)%P%R,FUAIR,FVAIR,
+     &   X2%R,Y2%R,AT,LT,NPOIN2,VENT,ATMOS,H%R,T2_01%R,
+     &   GRAV,RHO0,0.D0,PRIVE,T3DFO1,T3D_FILES,LISTIN)
+!
 !-----------------------------------------------------------------------
 ! FREE SURFACE AND BOTTOM GRADIENTS
 ! INITIALISES DSSUDT = 0
@@ -724,13 +740,6 @@
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FSGRAD'
 !
       CALL OS('X=C     ',X=DSSUDT,C=0.D0)
-!
-! INITIALISES THE METEOROLOGICAL VARIABLES
-!
-      IF (VENT.OR.ATMOS) CALL METEO
-     &   (PATMOS%R,WIND%ADR(1)%P%R,WIND%ADR(2)%P%R,FUAIR,FVAIR,
-     &    X2%R,Y2%R,AT,LT,NPOIN2,VENT,ATMOS,H%R,T2_01%R,
-     &    GRAV,RHO0,0.D0,PRIVE,T3DFO1,T3D_FILES,LISTIN)
 !
 !-----------------------------------------------------------------------
 ! INITIALISES K AND EPSILON
@@ -2595,3 +2604,4 @@
 !
       RETURN
       END
+

@@ -1961,6 +1961,7 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'K="energie turbulente du modele k-epsilon (J/kg)"';
 'EPS="dissipation de l''energie turbulente (W/kg)"';
 'DP="pression dynamique (multipliee par DT/RHO)"';
+'PH="pression hydrostatique (en Pascals)"';
 'RHO="densite relative"';
 'P1="variable privee 1"';
 'P2="variable privee 2"';
@@ -1991,6 +1992,7 @@ CHOIX1 = 'U="velocity along x axis (m/s)"';
 'K="turbulent energie for k-epsilon model (J/kg)"';
 'EPS="dissipation of turbulent energie (W/kg)"';
 'DP="dynamic pressure (multiplied by DT/RHO)"';
+'PH="hydrostatic pressure (in Pascals)"';
 'RHO="relative density"';
 'P1="private variable 1"';
 'P2="private variable 2"';
@@ -2020,6 +2022,8 @@ Les possibilites offertes sont les suivantes :
    - RI  : nombre de Richardson en cas de modele de longueur de melange,
    - K   : energie turbulente du modele k-epsilon (J/kg),
    - EPS : dissipation de l''energie turbulente (W/kg),
+   - DP  : pression dynamique (multipliee par DT/RHO),
+   - PH  : pression hydrostatique (en Pascals),
    - RHO : densite relative,
    - P1  : variable privee 1,
    - P2  : variable privee 2,
@@ -2041,6 +2045,8 @@ Free choice of separator. You can ask for:
    - RI  : Richardson number for mixing length model,
    - K   : turbulent kinetic energy for k-epsilon model (J/kg),
    - EPS : dissipation of turbulent kinetic energy (W/kg),
+   - DP  : dynamic pressure (multiplied by DT/RHO),
+   - PH  : hydrostatic pressure (in Pascals),
    - RHO : relative density,
    - P1  : private variable 1,
    - P2  : private variable 2,

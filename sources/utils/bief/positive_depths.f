@@ -8,7 +8,7 @@
      & NAMECODE,OPTION,NITMAX)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    SUPPRESSES NEGATIVE DEPTHS BY A LIMITATION OF FLUXES.
@@ -45,6 +45,14 @@
 !+        30/12/2013
 !+        V7P0
 !+   Argument YAFLODEL removed.
+!
+!history  J-M HERVOUET (LNHE)
+!+        18/07/2014
+!+        V7P0
+!+   Now positive sources are first added, then the transfers between 
+!+   points are done, then the negative sources are treated. In this way
+!+   the transfers cannot be corrupted by an initial negative depth.
+!+   + one NCSIZE.GT.0 changed into NCSISE.GT.1.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL HERE 
@@ -151,7 +159,7 @@
         WRITE(LU,*) 'AVANT TRAITEMENT HAUTEURS NEGATIVES, HN MIN=',CINIT
         C=0.D0
         CINIT=0.D0
-        IF(NCSIZE.GT.0) THEN
+        IF(NCSIZE.GT.1) THEN
           DO I=1,NPOIN
             C    =C    +H%R(I) *MESH%FAC%R(I)/UNSV2D%R(I)
             CINIT=CINIT+HN%R(I)*MESH%FAC%R(I)/UNSV2D%R(I)
@@ -210,14 +218,15 @@
 !     ADMISSIBLES
 !
 !     ADDING THE SOURCES (SMH IS NATURALLY ASSEMBLED IN //)
+!     FIRST THE POSITIVE SOURCES
       IF(YASMH) THEN
         IF(OPTSOU.EQ.1) THEN
           DO I=1,NPOIN
-            H%R(I)=HN%R(I)+DT*SMH%R(I)
+            H%R(I)=HN%R(I)+DT*MAX(SMH%R(I),0.D0)
           ENDDO
         ELSEIF(OPTSOU.EQ.2) THEN
           DO I=1,NPOIN
-            H%R(I)=HN%R(I)+DT*SMH%R(I)*UNSV2D%R(I)
+            H%R(I)=HN%R(I)+DT*MAX(SMH%R(I),0.D0)*UNSV2D%R(I)
           ENDDO
         ENDIF
       ELSE
@@ -485,6 +494,22 @@
         ENDIF
       ENDDO
 !
+!     ADDING THE SOURCES (SMH IS NATURALLY ASSEMBLED IN //)
+!     NOW THE NEGATIVE SOURCES
+      IF(YASMH) THEN
+        IF(OPTSOU.EQ.1) THEN
+          DO I=1,NPOIN
+            H%R(I)=HN%R(I)+DT*MIN(SMH%R(I),0.D0)
+          ENDDO
+        ELSEIF(OPTSOU.EQ.2) THEN
+          DO I=1,NPOIN
+            H%R(I)=HN%R(I)+DT*MIN(SMH%R(I),0.D0)*UNSV2D%R(I)
+          ENDDO
+        ENDIF
+      ENDIF
+!
+!
+!
       IF(TESTING) THEN
         C=1.D99
         DO I=1,NPOIN
@@ -550,3 +575,4 @@
 !
       RETURN
       END
+

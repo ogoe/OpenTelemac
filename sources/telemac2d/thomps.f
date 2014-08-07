@@ -56,6 +56,12 @@
 !+   in scalar mode and in parallel, for the treatment of characteristic
 !+   curves.
 !
+!history  J-M HERVOUET (LNHE)
+!+        15/07/2014
+!+        V7P0
+!+   Size of IT1 changed from 2*NPTFR to NPOIN (to avoid a problem of
+!+   bound checking when NPTFR=0)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| WORK ARRAY: CELERITY OF WAVES
 !| DT             |-->| TIME STEP
@@ -149,7 +155,8 @@
       INTEGER, INTENT(IN) :: IKLE(NELMAX,3),IFABOR(*)
       INTEGER, INTENT(IN) :: LIHBOR(NPTFR),LIUBOR(NPTFR),LIVBOR(NPTFR)
       INTEGER, INTENT(IN) :: FRTYPE(NFRLIQ),NUMLIQ(NPTFR)
-      INTEGER, INTENT(INOUT),TARGET  :: IT1(2*NPTFR)
+!                                           2*NPTFR REALLY USED HERE
+      INTEGER, INTENT(INOUT),TARGET  :: IT1(NPOIN)
 !     ITRAV2 : OF DIMENSION NPOIN
       INTEGER, INTENT(INOUT) :: ITRAV2(*)
       LOGICAL, INTENT(IN) :: MSK

@@ -217,6 +217,12 @@
 !+   LIMTRA replaced by a copy in the call to cvdftr (some schemes may
 !+   change it and it may cause problems for the next tracers)
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        05/08/2014
+!+        V7P0
+!+   Initialisation of PRIVE move before call to FONSTR (it could be
+!+   used in FONSTR and wrongly cancelled by initialisation).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
 !param code      [in] calling program (if coupling)
@@ -487,6 +493,12 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
+!
+!  INITIALISES PRIVE
+!
+      IF(NPRIV.GT.0) CALL OS('X=0     ',X=PRIVE)
+!
+!-----------------------------------------------------------------------
 !  LOOKS FOR VARIABLES BOTTOM AND BOTTOM FRICTION IN THE GEOMETRY FILE:
 !-----------------------------------------------------------------------
 !
@@ -570,10 +582,6 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-!
-!     INITIALISES PRIVE
-!
-      IF(NPRIV.GT.0) CALL OS('X=0     ',X=PRIVE)
 !
 !  ENLARGES COSLAT AND SINLAT TO GIVE THEM THE DIMENSION OF U AND V
 !  SAME THING FOR FRICTION

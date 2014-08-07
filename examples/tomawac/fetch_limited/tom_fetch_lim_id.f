@@ -1,3 +1,4 @@
+
 !                    *****************
                      SUBROUTINE ANAVEN
 !                    *****************
@@ -78,5 +79,66 @@ C
         VV(IP)=VCONST
       ENDDO
 !
+      RETURN
+      END
+!                    *********************
+                     SUBROUTINE TOM_CORFON
+!                    *********************
+!
+!  NOTE JMH 18/07/2014  THE BOTTOM WILL NOT BE USED SINCE THIS IS A
+!                       CASE WITH INFINITE DEPTH, BUT THE GEOMETRY
+!                       FILE HAS AN UNDEFINED BOTTOM.....
+!
+!
+!***********************************************************************
+! TOMAWAC   V6P1                                   14/06/2011
+!***********************************************************************
+!
+!brief    MODIFIES THE BOTTOM TOPOGRAPHY.
+!
+!warning  USER SUBROUTINE; MUST BE CODED BY THE USER
+!
+!history  F. MARCOS
+!+
+!+
+!+
+!
+!history  OPTIMER (    )
+!+        12/01/2001
+!+
+!+   TOMAWAC/COWADIS MERGE
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+      USE DECLARATIONS_TOMAWAC
+!
+      IMPLICIT NONE
+!
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+C
+C---------------------------------MODIF debut
+      INTEGER IP
+C
+      DO IP=1,NPOIN2
+        ZF(IP) = -15.0D0
+      ENDDO
+C---------------------------------MODIF fin
+C
       RETURN
       END

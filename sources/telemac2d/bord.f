@@ -52,6 +52,13 @@
 !+        V7P0
 !+   Stage-discharge curves Q(Z) now programmed.
 !
+!history  J-M HERVOUET (LNHE)
+!+        18/07/2014
+!+        V7P0
+!+   When velocities imposed, values not initialised in the case of
+!+   Thompson. Correction proposed by HRW (the values of U and V
+!+   are in this case taken as the values at the previous time step).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| STRING DESCRIBING THE EQUATIONS SOLVED
 !| H              |-->| DEPTH AT TIME N
@@ -94,7 +101,7 @@
       USE BIEF
       USE INTERFACE_TELEMAC2D, EX_BORD => BORD
       USE DECLARATIONS_TELEMAC2D, ONLY: STA_DIS_CURVES,PTS_CURVES,QZ,
-     &                                  FLUX_BOUNDARIES,MAXFRO,
+     &                                  FLUX_BOUNDARIES,MAXFRO,FRTYPE,
      &                                  TIDALTYPE,BOUNDARY_COLOUR
 !
       IMPLICIT NONE
@@ -252,27 +259,28 @@
      &  (NVITES.NE.0.OR.NOMIMP(1:1).NE.' ')) THEN
 !       POINTS ON WEIRS HAVE NUMLIQ(K)=0
         IF(NUMLIQ(K).GT.0) THEN
-          IF(PROVEL(NUMLIQ(K)).EQ.1) THEN
+          IFR=NUMLIQ(K)
+          IF(PROVEL(IFR).EQ.1) THEN
             N=NBOR(K)
             IF(NCSIZE.GT.1) N=MESH%KNOLG%I(N)
             UBOR(K,1) = - XNEBOR(K) * VIT(NUMLIQ(K),N)
             VBOR(K,1) = - YNEBOR(K) * VIT(NUMLIQ(K),N)
-          ELSEIF(PROVEL(NUMLIQ(K)).EQ.2) THEN
+          ELSEIF(PROVEL(IFR).EQ.2) THEN
             UBOR(K,1) = UBOR(K,2)
             VBOR(K,1) = VBOR(K,2)
-          ELSEIF(PROVEL(NUMLIQ(K)).EQ.3) THEN
+          ELSEIF(PROVEL(IFR).EQ.3) THEN
             UBOR(K,1) = - XNEBOR(K) * UBOR(K,2)
             VBOR(K,1) = - YNEBOR(K) * UBOR(K,2)
           ELSE
             IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'FRONTIERE ',NUMLIQ(K)
-              WRITE(LU,*) 'PROFIL ',PROVEL(NUMLIQ(K)),
+              WRITE(LU,*) 'FRONTIERE ',IFR
+              WRITE(LU,*) 'PROFIL ',PROVEL(IFR),
      &                    ' DEMANDE AVEC VITESSES IMPOSEES'
               WRITE(LU,*) 'COMBINAISON ILLOGIQUE'
             ENDIF
             IF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'BOUNDARY ',NUMLIQ(K)
-              WRITE(LU,*) 'PROFILE ',PROVEL(NUMLIQ(K)),
+              WRITE(LU,*) 'BOUNDARY ',IFR
+              WRITE(LU,*) 'PROFILE ',PROVEL(IFR),
      &                    ' ASKED'
               WRITE(LU,*) 'IMPOSSIBLE COMBINATION'
             ENDIF
@@ -280,8 +288,11 @@
             STOP
           ENDIF
 !         U AND V INITIALISED WITH THE IMPOSED VALUES
-          U%R(NBOR(K)) = UBOR(K,1)
-          V%R(NBOR(K)) = VBOR(K,1)
+!         IF NOT IN THOMPSON MODE
+          IF(FRTYPE(IFR).NE.2) THEN
+            U%R(NBOR(K)) = UBOR(K,1)
+            V%R(NBOR(K)) = VBOR(K,1)
+          ENDIF
         ENDIF
       ENDIF
 !

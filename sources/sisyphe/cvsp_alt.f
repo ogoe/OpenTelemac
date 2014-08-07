@@ -22,6 +22,11 @@
 !+        V6P3
 !+   cleaning, cosmetic
 !
+!history  LEOPOLD STADLER (BAW) & J-M HERVOUET (EDF LAB, LNHE)
+!+        28/07/2014
+!+        V7P0
+!+   Computation of D90 and DIAMAX secured to avoid divisions by 0.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| J              |<--| INDEX OF A POINT IN MESH
 !| FORMULA        |<--| WHICH FORMULA TO USE TO CALCULATE THE ALT
@@ -44,7 +49,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER  I
-      DOUBLE PRECISION RHO, RHO_S, G, D50, D90, DMAX, TAUC, TAUB, D
+      DOUBLE PRECISION RHO, RHO_S, G, D50, D90, DIAMAX, TAUC, TAUB, D
       DOUBLE PRECISION A1, A2, A3, A4, A5, A6, RHOCR, PON, SUMME
       DOUBLE PRECISION DSTAR
 !
@@ -99,11 +104,11 @@
 !     D50 = ACLADM%R(J)
 !     
 !-----------------------------------------------------------------------            
-! DMAX - FIRST APPROXIMATION
+! DIAMAX - FIRST APPROXIMATION
 !-----------------------------------------------------------------------
 !     
       DO I=1,NSICLA
-        IF(AVAIL(J,1,I).GE.0.01D0) DMAX = FDM(NSICLA)
+        IF(AVAIL(J,1,I).GE.0.01D0) DIAMAX = FDM(I)
       ENDDO
 !
 !-----------------------------------------------------------------------            
@@ -112,14 +117,18 @@
 !
       SUMME = AVAIL(J,1,1)
       D90 = 0.D0
-      DO I=2,NSICLA
-        SUMME = AVAIL(J,1,I) + SUMME
-        IF(SUMME.GE.0.9D0.AND.D90.EQ.0.D0) THEN
-          D90 = (0.9D0 - (SUMME-AVAIL(J,1,I)))/AVAIL(J,1,I)*
-     &         (FDM(I)-FDM(I-1)) + FDM(I-1)
-        ENDIF
-      ENDDO
-            
+      IF (AVAIL(J,1,1).GE.0.999D0) THEN
+        D90 = D50   
+      ELSE
+        DO I=2,NSICLA
+          SUMME = AVAIL(J,1,I) + SUMME
+          IF(SUMME.GE.0.9D0.AND.AVAIL(J,1,I).GT.0.D0) THEN
+            D90 = (0.9D0 - (SUMME-AVAIL(J,1,I)))/
+     &            AVAIL(J,1,I)*(FDM(I)-FDM(I-1)) + FDM(I-1)
+            EXIT
+          ENDIF
+        ENDDO
+      ENDIF
       D = D50
 !
 !-----------------------------------------------------------------------            
@@ -161,7 +170,7 @@
 ! HUNZIKER & G�NTHER
 !-----------------------------------------------------------------------
 !
-      CVSP_ALT = 5.D0 * DMAX
+      CVSP_ALT = 5.D0 * DIAMAX
       A1 = CVSP_ALT
 !
 !-----------------------------------------------------------------------      
@@ -217,7 +226,7 @@
       CVSP_ALT = ELAY0
 !
 !-----------------------------------------------------------------------      
-      
+!      
       IF(FORMULA == 0) CVSP_ALT = ELAY0
       IF(FORMULA == 1) CVSP_ALT = A1
       IF(FORMULA == 2) CVSP_ALT = A2
@@ -238,4 +247,5 @@
 !
       RETURN
       END FUNCTION CVSP_ALT
+
 

@@ -6,7 +6,7 @@
      & NPOIN2,OPTBAN,S)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P0                                   31/07/2014
 !***********************************************************************
 !
 !brief    COMPUTES THE FREE SURFACE GRADIENT, TAKING INTO
@@ -29,6 +29,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        31/07/2014
+!+        V7P0
+!+   Atmospheric pressure gradient systematically added to free surface
+!+   gradient.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| GRADZS         |<->| FREE SURFACE GRADIENT (BLOCK OF 2 COMPONENTS)
 !| IELM2H         |-->| TYPE OF ELEMENT
@@ -48,6 +54,9 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC3D, ONLY : ATMOS,RHO0,GRAV,HN,TE3,T2_02,
+     &                                   PATMOS,NELEM2,SVIDE
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -64,6 +73,9 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVE_T2_01
+      DOUBLE PRECISION C
+      LOGICAL MSKGRA
+      INTEGER I,IELEM,I1,I2,I3,IAD1,IAD2,IAD3
 !
 !-----------------------------------------------------------------------
 !
@@ -95,6 +107,60 @@
 !
       ENDIF
 !
+!     ADDING THE ATMOSPHERIC PRESSURE GRADIENT
+!
+      IF(ATMOS) THEN
+        C=1.D0/(RHO0*GRAV)
+!       PRESSURE GRADIENTS WILL BE LOCALLY MASKED
+        IF(MSK.OR.OPTBAN.EQ.1) THEN
+          MSKGRA = .TRUE.
+          IF(OPTBAN.EQ.1) THEN
+            CALL OV('X=Y+Z   ',T2_01%R,HN%R,ZF%R,0.D0,NPOIN2)
+            CALL DECVRT(TE3,T2_01,ZF,MESH2D)
+          ENDIF
+          IF(OPTBAN.EQ.1.AND.MSK) THEN
+            CALL OV('X=XY    ',TE3%R,MASKEL%R,MASKEL%R,0.D0,NELEM2)
+          ENDIF
+          IF(MSK.AND.OPTBAN.NE.1) THEN
+            CALL OV('X=Y     ',TE3%R,MASKEL%R,MASKEL%R,C,TE3%DIM1)
+          ENDIF
+        ELSE
+          MSKGRA = .FALSE.
+        ENDIF
+!
+!       ATMOSPHERIC PRESSURE GRADIENT ADDED TO GRADZS
+!
+        CALL VECTOR(T2_01,'=','GRADF          X',IELM2H,
+     &              C,PATMOS,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
+     &              MESH2D,MSKGRA,TE3)
+        CALL VECTOR(T2_02,'=','GRADF          Y',IELM2H,
+     &              C,PATMOS,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
+     &              MESH2D,MSKGRA,TE3)
+        DO I=1,NPOIN2
+          GRADZS%ADR(1)%P%R(I)=GRADZS%ADR(1)%P%R(I)+T2_01%R(I)
+          GRADZS%ADR(2)%P%R(I)=GRADZS%ADR(2)%P%R(I)+T2_02%R(I)
+        ENDDO
+!
+!       ATMOSPHERIC PRESSURE ALSO ADDED TO ZFLATS
+!
+        IF(OPTBAN.EQ.1) THEN
+          DO IELEM=1,NELEM2
+            IF(TE3%R(IELEM).GT.0.5D0) THEN
+              IAD1=IELEM
+              IAD2=IAD1+NELEM2
+              IAD3=IAD2+NELEM2
+              I1=MESH2D%IKLE%I(IAD1)
+              I2=MESH2D%IKLE%I(IAD2)
+              I3=MESH2D%IKLE%I(IAD3)
+              ZFLATS%R(IAD1)=ZFLATS%R(IAD1)+C*PATMOS%R(I1)
+              ZFLATS%R(IAD2)=ZFLATS%R(IAD2)+C*PATMOS%R(I2)
+              ZFLATS%R(IAD3)=ZFLATS%R(IAD3)+C*PATMOS%R(I3)
+            ENDIF
+          ENDDO
+        ENDIF
+!
+      ENDIF
+!
       IF(NCSIZE.GT.1) THEN
         CALL PARCOM(GRADZS%ADR(1)%P,2,MESH2D)
         CALL PARCOM(GRADZS%ADR(2)%P,2,MESH2D)
@@ -109,3 +175,4 @@
 !
       RETURN
       END
+
