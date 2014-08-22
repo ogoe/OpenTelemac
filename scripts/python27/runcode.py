@@ -590,8 +590,10 @@ def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,section_name,zone_name,u
 
 def runPARTEL(partel,file,conlim,ncsize,bypass,section_name,zone_name):
 
-   has_section = str(0) if section_name == "" else str(1)
-   has_zone = str(0) if zone_name == "" else str(1)
+   has_section = '0'
+   if section_name != '': has_section = '1'
+   has_zone = '0'
+   if zone_name != '': has_zone = '1'
    putFileContent('PARTEL.PAR',[file,conlim,str(ncsize),str(1),has_section,section_name,has_zone,zone_name])
    parCmd = partel.replace('<partel.log>','partel_'+file+'.log').split(';')
    mes = MESSAGES(size=10)
