@@ -25,7 +25,7 @@ friction_lindner.f  friction_calc.f friction_quad.f \
 friction_unif.f friction_zones.f friction_user.f \
 friction_read.f friction_scan.f friction_init.f friction_choice.f \
 gestio.f  gradnod.f gradnodt.f gradz.f grad_zconv.f \
-homere_adj_t2d.f hpropa.f hyd_hllc.f hyd_waf.f interpol.f  \
+homere_adj_t2d.f hpropa.f hyd_hllc.f hyd_waf.f interpmeteo.f interpol.f  \
 href.f  initstr.f intemp.f isitok.f  \
 kepscl.f kepsil.f   kepsin.f lagran.f lecbus.f lecbreach.f \
 lecsip.f lecsng.f  limiter.f loiden.f loinoy.f loi_w_inc.f  majtrac.f majzz.f \

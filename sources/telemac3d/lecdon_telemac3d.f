@@ -535,6 +535,8 @@
 ! TBE + CV
       HIND_TYPE = MOTINT(ADRESS(1,125))
       FLOC_TYPE= MOTINT(ADRESS(1,126))
+!     OPTION OF ATMOSPHERE-WATER EXCHANGE MODEL
+      ATMOSEXCH = MOTINT(ADRESS(1,50))
 !
 ! REAL KEYWORDS
 !
@@ -806,6 +808,8 @@
 ! TBE
       CGEL= MOTREA( ADRESS(2,103) )
       CINI= MOTREA( ADRESS(2,104) )
+!     COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL
+      C_ATMOS   = MOTREA( ADRESS(2,37) )
 !
 ! LOGICAL KEYWORDS
 !
@@ -2308,8 +2312,43 @@
      &  'USE CONVECTION SCHEME ',I2/)
 154      FORMAT(1X,'LECDON : POUR SCHEMA EXPLICITE',/,10X,
      &  'UTILISER CONVECTION SCHEME ',I2/)
-
-
+!
+!-----------------------------------------------------------------------
+!
+!     ATMOSPHERE-WATER EXCHANGE MODEL AND WIND COMPATIBILITY
+      IF((ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2).AND..NOT.VENT) THEN
+!
+        IF(LNG.EQ.1) WRITE(LU,181)
+        IF(LNG.EQ.2) WRITE(LU,182)
+ 181    FORMAT(///,1X,'ATTENTION ! MODULE D''ECHANGES EAU-',/,1X,
+     &                  'ATMOSPHERE ACTIVE MAIS PAS LE VENT.',/,1X,
+     &                  'LES COMPOSANTES HORIZONTALES DE VENT',/,1X,
+     &                  'NE SONT PAS PRISES EN COMPTE',/,1X,
+     &                  'HORS DE CE MODULE',///)
+ 182    FORMAT(///,1X,'BEWARE! ATMOSPHERE-WATER EXCHANGE',/,1X,
+     &                  'MODEL ACTIVATED, BUT NOT THE WIND.',/,1X,
+     &                  'THE HORIZONTAL COMPONENTS OF WIND',/,1X,
+     &                  'ARE NOT TAKEN INTO ACCOUNT',/,1X,
+     &                  'OUTSIDE THIS MODULE',///)
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     ATMOSPHERE-WATER EXCHANGE MODEL AND WIND COMPATIBILITY
+      IF((ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2).AND..NOT.ATMOS) THEN
+!
+        IF(LNG.EQ.1) WRITE(LU,183)
+        IF(LNG.EQ.2) WRITE(LU,184)
+ 183    FORMAT(///,1X,'ATTENTION ! MODULE D''ECHANGES EAU-',/,1X,
+     &                  'ATMOSPHERE ACTIVE MAIS PAS LA PRESSION,',/,1X,
+     &                  'QUI N''EST PAS PRISE EN COMPTE HORS DE',/,1X,
+     &                  'CE MODULE',///)
+ 184    FORMAT(///,1X,'BEWARE! ATMOSPHERE-WATER EXCHANGE',/,1X,
+     &                  'MODEL ACTIVATED, BUT NOT THE PRESSURE,',/,1X,
+     &                  'WHICH IS NOT TAKEN INTO ACCOUNT',/,1X,
+     &                  'OUTSIDE THIS MODULE',///)
+      ENDIF
+!
 !-----------------------------------------------------------------------
 !
 

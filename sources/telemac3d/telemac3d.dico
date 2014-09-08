@@ -6029,6 +6029,46 @@ RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1 
 AIDE = 'Active la prise en compte de la force generatrice de la maree' 
 AIDE1 = 'The tide generating force is taken into account. '  
+
+NOM = 'MODELE D''ECHANGES EAU-ATMOSPHERE'
+NOM1 = 'ATMOSPHERE-WATER EXCHANGE MODEL'
+TYPE = ENTIER
+INDEX = 50
+MNEMO = 'ATMOSEXCH'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+CHOIX=
+'0="PAS DE MODELE D ECHANGES EAU-ATMOSPHERE"';
+'1="FORMULE LINEARISEE A LA SURFACE"';
+'2="MODELE A BILAN COMPLET"'
+CHOIX1=
+'0="NO MODEL"';
+'1="LINEARISED FORMULA AT THE FREE SURFACE"';
+'2="MODEL WITH COMPLETE BALANCE"'
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Choix du modele d echanges entre l eau et l atmosphere'
+AIDE1 = 'Choice of the atmosphere-water exchange model.'
+
+NOM = 'COEFFICIENT DE CALAGE DU MODELE D''ECHANGES EAU-ATMOSPHERE'
+NOM1 = 'COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL'
+TYPE = REEL
+INDEX = 37
+MNEMO = 'C_ATMOS'
+TAILLE = 0
+DEFAUT = 0.0025
+DEFAUT1 = 0.0025
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Valeur du coefficient de calage pour la fonction de vent
+dans le modele d echanges eau-atmosphere a bilan complet.
+Une valeur comprise entre 0.0017 et 0.0035 est conseillee'
+AIDE1 = 'Value of the calibration coefficient for the wind function
+of the atmosphere-water exchange model with a complete balance.
+A value between 0.0017 and 0.0035 is advised'
 /
 /---------------------------------------------------------------------
 /

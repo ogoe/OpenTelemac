@@ -1,0 +1,85 @@
+/
+/      A PARTIR DU CAS PLUIE
+/
+/----------------------------------------------------------------------/
+/      POUR LE FICHIER CNTL
+/----------------------------------------------------------------------/
+/
+TITRE = 'TELEMAC 3D : CANAL'
+DATE DE L'ORIGINE DES TEMPS : 2006;10;1
+HEURE DE L'ORIGINE DES TEMPS : 0;0;0
+/
+FICHIER FORTRAN                    : t3d_heat_exchange_source_trac.f
+FICHIER DES CONDITIONS AUX LIMITES : geo_heat_exchange.cli
+FICHIER DE GEOMETRIE               : geo_heat_exchange.slf
+FICHIER DE DONNEES FORMATE 1       : meteo_data.txt
+FICHIER DES RESULTATS 3D           : r3d_heat_exchange_source_trac.slf
+FICHIER DES RESULTATS 2D           : r2d_heat_exchange_source_trac.slf
+FICHIER DE REFERENCE               : f3d_heat_exchange_source_trac.slf
+VALIDATION : OUI
+/
+/----------------------------------------------------------------------/
+/     OPTIONS GENERALES
+/----------------------------------------------------------------------/
+/
+STOCKAGE DES MATRICES : 3
+/
+/ 30 j
+NOMBRE DE PAS DE TEMPS = 1440
+PAS DE TEMPS = 1800
+PERIODE POUR LES SORTIES GRAPHIQUES = 6
+PERIODE POUR LES SORTIES LISTING    = 48
+NOMBRE DE PLANS HORIZONTAUX = 26
+/
+CONDITIONS INITIALES : 'HAUTEUR CONSTANTE'   HAUTEUR INITIALE : 5.
+/
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D = U,V,H,TA1
+VARIABLES POUR LES SORTIES GRAPHIQUES 3D = Z,U,V,W,TA1
+BILAN DE MASSE = OUI
+/INFORMATION SUR LE BILAN DE MASSE A CHAQUE SORTIE LISTING = OUI
+/
+/-------------------------
+/  CONVECTION-DIFFUSION
+/-------------------------
+/
+ COEFFICIENT DE DIFFUSION HORIZONTAL DES VITESSES = 0.1D0
+ MODELE DE TURBULENCE VERTICAL = 2
+ MODELE DE LONGUEUR DE MELANGE : 3
+/
+PRECONDITIONNEMENT POUR LA DIFFUSION DES VITESSES = 14
+/
+/----------------------------/
+/     TERMES SOURCES
+/----------------------------/
+/
+ COEFFICIENT DE FROTTEMENT POUR LE FOND = 0.0162  
+ LOI DE FROTTEMENT SUR LE FOND = 5 
+/
+/----------------------------/
+/          TRACEUR
+/----------------------------/
+/
+NOMBRE DE TRACEURS : 1 
+NOMS DES TRACEURS : 'TEMPERATURE     DEGRE C         '
+VALEURS INITIALES DES TRACEURS : 20.
+LOI DE DENSITE : 1
+/
+COEFFICIENT DE DIFFUSION VERTICAL DES TRACEURS = 1.E-4
+/
+MAXIMUM D'ITERATIONS POUR LA DIFFUSION DES TRACEURS = 200
+/
+COEFFICIENT DE FROTTEMENT POUR LES PAROIS LATERALES : 1.
+/
+MASS-LUMPING POUR LA HAUTEUR : 1.
+MASS-LUMPING POUR LES VITESSES : 1.
+MASS-LUMPING POUR LA DIFFUSION : 1.
+/
+/----------------------------/
+/ ECHANGES AVEC L ATMOSPHERE
+/----------------------------/
+/
+MODELE D'ECHANGES EAU-ATMOSPHERE = 2
+COEFFICIENT DE CALAGE DU MODELE D'ECHANGES EAU-ATMOSPHERE = 0.0026
+/
+/&ETA
+&FIN

@@ -691,6 +691,7 @@ files: friction_def.f
   valro.f
   smagor.f
   steady.f
+  interpmeteo.f
   meteo.f
   buse.f
   rescue.f

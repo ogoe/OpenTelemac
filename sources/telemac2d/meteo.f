@@ -6,7 +6,7 @@
      & HN,TRA01,GRAV,ROEAU,NORD,PRIVE,FO1,FILES,LISTIN)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/08/2010
+! TELEMAC2D   V7P0                                   09/07/2014
 !***********************************************************************
 !
 !brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
@@ -36,13 +36,23 @@
 !+        V6P3
 !+   Now 2 options with an example for reading a file. Extra arguments. 
 !
+!history  C.-T. PHAM (LNHE)
+!+        09/07/2014
+!+        V7P0
+!+   Reading a file of meteo data for exchange with atmosphere
+!+   Only the wind is used here
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT,LT          |-->| TIME, ITERATION NUMBER
+!| AT             |-->| TIME
 !| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
+!| FILES          |-->| BIEF_FILES STRUCTURES OF ALL FILES
+!| FO1            |-->| LOGICAL UNIT OF THE FORMATTED DATA FILE
 !| FUAIR          |-->| VELOCITY OF WIND ALONG X, IF CONSTANT
 !| FVAIR          |-->| VELOCITY OF WIND ALONG Y, IF CONSTANT
 !| GRAV           |-->| GRAVITY ACCELERATION
 !| HN             |-->| DEPTH
+!| LISTIN         |-->| IF YES, PRINTS INFORMATION
+!| LT             |-->| ITERATION NUMBER
 !| NORD           |-->| DIRECTION OF NORTH, COUNTER-CLOCK-WISE
 !|                |   | STARTING FROM VERTICAL AXIS
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
@@ -79,6 +89,8 @@
       INTEGER MY_OPTION,UL
       DOUBLE PRECISION P0,Z(1),AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
       DOUBLE PRECISION UAIR,VAIR
+!     EXCHANGE WITH ATMOSPHERE
+      DOUBLE PRECISION WW,TAIR,PATM,HREL,NEBU,RAINFALL
 !
 !-----------------------------------------------------------------------
 !
@@ -100,8 +112,13 @@
 !        THEY WILL BE SET ONCE FOR ALL BEFORE THE FIRST ITERATION (LT=0)
 !
 !     2: TIME VARYING CONSTANT IN SPACE WIND COMPONENTS OF VELOCITY 
-!        GIVEN IN THE FILE FO1_WIND DECLARED AS 
-!        FORMATTED DATA FILE 1 = FO1_WIND 
+!        GIVEN IN THE FILE FO1 DECLARED AS 
+!        FORMATTED DATA FILE 1 = FO1
+!
+!     3: TIME VARYING CONSTANT IN SPACE WIND COMPONENTS OF VELOCITY 
+!        GIVEN IN THE FILE FO1 DECLARED AS 
+!        FORMATTED DATA FILE 1 = FO1
+!        RECOMMENDED FOR EXCHANGE WITH ATMOSPHERE MODULE
 !
 !-----------------------------------------------------------------------
 !
@@ -144,6 +161,13 @@
 !         READING THE FIRST TWO LINES OF DATA
           READ(UL,*,ERR=100,END=200) AT1,FUAIR1,FVAIR1
           READ(UL,*,ERR=100,END=200) AT2,FUAIR2,FVAIR2
+          IF(AT.LT.AT1) THEN
+            WRITE(LU,*) ' '
+            WRITE(LU,*) 'METEO'
+            IF(LNG.EQ.1) WRITE(LU,*) 'DEBUT TARDIF DU FICHIER DE VENT'
+            IF(LNG.EQ.2) WRITE(LU,*) 'LATE BEGINNING OF THE WIND FILE'
+            CALL PLANTE(1)
+          ENDIF
         ENDIF
 !
       ENDIF
@@ -151,8 +175,6 @@
 !-----------------------------------------------------------------------
 !
       IF(MY_OPTION.EQ.2.AND.VENT) THEN
-!
-!       JUMPING TWO LINES OF COMMENTS
 !
 10      CONTINUE
         IF(AT.GE.AT1.AND.AT.LT.AT2) THEN
@@ -180,6 +202,23 @@
         CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
         CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)    
 !
+      ENDIF
+!
+!     EXCHANGE WITH ATMOSPHERE
+!
+      IF(MY_OPTION.EQ.3.AND.VENT) THEN
+        CALL INTERPMETEO(WW,UAIR,VAIR,
+     &                   TAIR,PATM,HREL,NEBU,RAINFALL,AT,UL)
+!
+        CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
+        CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)    
+      ENDIF
+!
+      IF(MY_OPTION.EQ.3.AND.ATMOS) THEN
+        CALL INTERPMETEO(WW,UAIR,VAIR,
+     &                   TAIR,PATM,HREL,NEBU,RAINFALL,AT,UL)
+!
+        CALL OV('X=C     ',PATMOS,Y,Z,PATM,NPOIN)
       ENDIF
 !
       RETURN

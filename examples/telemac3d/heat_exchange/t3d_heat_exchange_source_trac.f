@@ -1,11 +1,126 @@
 !                    *****************
+                     SUBROUTINE CORRXY
+!                    *****************
+!
+     & (X,Y,NPOIN)
+!
+!***********************************************************************
+! BIEF   V6P3                                   21/08/2010
+!***********************************************************************
+!
+!brief    MODIFIES THE COORDINATES OF THE POINTS IN THE MESH.
+!
+!warning  USER SUBROUTINE; COMMENTED LINES ARE AN EXAMPLE
+!
+!warning  DO NOT PERFORM ROTATIONS AS IT WILL CHANGE
+!+            THE NUMBERING OF THE LIQUID BOUNDARIES
+!
+!history  EMILE RAZAFINDRAKOTO (LNHE)
+!+        17/10/05
+!+        V5P6
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
+!| X              |<->| ABSCISSAE OF POINTS IN THE MESH
+!| X,Y            |<->| ORDINATES OF POINTS IN THE MESH
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF, EX_CORRXY => CORRXY
+!
+!     OTHER DATA ARE AVAILABLE WITH THE DECLARATIONS OF EACH PROGRAM
+!
+!     USE DECLARATIONS_TELEMAC2D
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+      INTEGER, INTENT(IN) :: NPOIN
+      DOUBLE PRECISION, INTENT(INOUT) :: X(NPOIN),Y(NPOIN)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!     THIS SUBROUTINE MUST BE MODIFIED ACCORDING TO
+!     THE CALLING PROGRAM AND THE NEEDED MODIFICATION
+!     BY ADDING USE DECLARATIONS_"NAME OF CALLING CODE"
+!     ALL THE DATA STRUCTURE OF THIS CODE IS AVAILABLE
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+!-----------------------------------------------------------------------
+!
+!      EXAMPLE 1: MULTIPLIES BY A CONSTANT (SCALES THE MESH)
+!                 AND CHANGES THE ORIGIN
+!
+!      INTEGER I
+!
+!      DO I = 1 , NPOIN
+!        X(I) = 3.D0 * X(I) + 100.D0
+!        Y(I) = 5.D0 * Y(I) - 50.D0
+!      ENDDO
+!
+!
+!-----------------------------------------------------------------------
+!
+!      EXAMPLE 2: CHANGING LATITUDE-LONGITUDE IN DEGREES TO RADIANS
+!
+!      INTEGER I
+!      DOUBLE PRECISION DEGTORAD
+!      INTRINSIC ACOS
+!
+!      DEGTORAD=ACOS(-1.D0)/180.D0
+!      DO I = 1 , NPOIN
+!        X(I) = X(I) * DEGTORAD
+!        Y(I) = Y(I) * DEGTORAD
+!      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+      INTEGER I
+!
+      DO I = 1,NPOIN
+        X(I) = 20.D0*X(I)
+        Y(I) = 20.D0*Y(I)
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+!     THIS SHOULD BE CHANGED IF MODIFICATIONS ARE DONE
+!
+      IF(LNG.EQ.1) THEN
+        WRITE(LU,*)'CORRXY (BIEF) : MODIFICATION DES COORDONNEES'
+        WRITE(LU,*)
+      ENDIF
+      IF(LNG.EQ.2) THEN
+        WRITE(LU,*)'CORRXY (BIEF): MODIFICATION OF COORDINATES'
+        WRITE(LU,*)
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END
+!                    *****************
                      SUBROUTINE BORD3D
 !                    *****************
 !
      &(TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   09/07/2014
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    SPECIFIC BOUNDARY CONDITIONS.
@@ -570,13 +685,13 @@
           WINDRELY=WIND%ADR(2)%P%R(IPOIN2)-V%R(NPOIN3-NPOIN2+IPOIN2)
           VITV=SQRT(WINDRELX**2+WINDRELY**2)
 !         A MORE ACCURATE TREATMENT
-!         IF(VITV.LE.5.D0) THEN
-!           FAIR = ROAIR/ROEAU*0.565D-3
-!         ELSEIF (VITV.LE.19.22D0) THEN
-!           FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3
-!         ELSE
-!           FAIR = ROAIR/ROEAU*2.513D-3
-!         ENDIF
+          IF(VITV.LE.5.D0) THEN
+            FAIR = ROAIR/ROEAU*0.565D-3
+          ELSEIF (VITV.LE.19.22D0) THEN
+            FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3
+          ELSE
+            FAIR = ROAIR/ROEAU*2.513D-3
+          ENDIF
 !         BEWARE : BUBORS IS VISCVI*DU/DN, NOT DU/DN
           IF(H%R(IPOIN2).GT.HWIND) THEN
 !           EXPLICIT PART
@@ -696,6 +811,377 @@
         BUBORS%TYPR='0'
         BVBORS%TYPR='0'
       ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END
+!                    **********************
+                     SUBROUTINE SOURCE_TRAC
+!                    **********************
+!
+!
+!***********************************************************************
+! TELEMAC3D   V7P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    PREPARES SOURCE TERMS FOR DIFFUSION OF TRACERS.
+!
+!history  CDG/SOGREAH
+!+        **/06/2001
+!+
+!+   TRACER SOURCES
+!
+!history  J-M HERVOUET (LNHE)
+!+        21/10/2004
+!+        V5P5
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  A. GINEAU, N. DURAND, N. LORRAIN, C.-T. PHAM (LNHE)
+!+        09/07/2014
+!+        V7P0
+!+   Adding an example of the penetration of the solar radiation
+!+   for exchange with atmosphere
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+      USE DECLARATIONS_TELEMAC3D
+      USE EXCHANGE_WITH_ATMOSPHERE
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!----------------------------------------------------------------------
+!
+      INTEGER ITRAC
+!
+!     HEAT EXCHANGE WITH ATMOSPHERE. UNCOMMENT IF USED
+      INTEGER IPLAN,I,J,NFO
+      DOUBLE PRECISION WW,WINDX,WINDY,T_AIR,PATM,HREL,NEBU,RAINFALL
+      DOUBLE PRECISION TREEL,SAL,RO,LAMB,RAY_SOL,LATITUDE,LONGITUDE
+      DOUBLE PRECISION ZSD,KD
+!
+!----------------------------------------------------------------------
+!
+!     SETS SOURCE TERMS TO ZERO
+!
+      IF(NTRAC.GE.1) THEN
+!
+!       CALL OS ( 'X=C     ' , X=S0TA , C=0.D0 )
+!       CALL OS ( 'X=C     ' , X=S1TA , C=0.D0 )
+!
+!       SOURCE TERMS SIMPLY MARKED
+!
+!       BEWARE, PUT Q INSTEAD OF 0 IN TYPR IF NOT NIL
+!
+        DO ITRAC=1,NTRAC
+          S0TA%ADR(ITRAC)%P%TYPR='0'
+          S1TA%ADR(ITRAC)%P%TYPR='0'
+        ENDDO
+!
+!       EXAMPLE OF RADIOACTIVE DECAY E**(-KT) ON FIRST TRACER, HERE C=K
+!
+!       S1TA%ADR(1)%P%TYPR='Q'
+!       CALL OS('X=C     ',S1TA%ADR(1)%P,C=1.D0)
+!
+!
+        ITRAC = 1 ! FIRST TRACER IS THE WATER TEMPERATURE, MAY BE CHANGED
+!       SOURCE IN TEMPERATURE NOT EQUAL TO ZERO
+        S0TA%ADR(ITRAC)%P%TYPR='Q'	
+!       DONNEES METEO DATA
+        NFO = T3D_FILES(T3DFO1)%LU   ! FORMATTED DATA FILE 1
+        CALL INTERPMETEO(WW,WINDX,WINDY,T_AIR,PATM,HREL,NEBU,RAINFALL,
+     &                   AT,NFO)
+!       INCIDENT SOLAR RADIATION
+!       LATITUDE AND LONGITUDE TO BE CHANGED DEPENDING ON THE MEAN LOCATION
+        LATITUDE  = 43.4458D0
+        LONGITUDE = 5.1139D0
+        CALL SOLRAD(RAY_SOL,NEBU,MARDAT,MARTIM,AT,LATITUDE,LONGITUDE)
+!       FORMULA FOR TURBID WATER WITH SECCHI LENGTH
+        ZSD = 0.9D0
+        KD  = 1.7D0/ZSD ! 83% OF THE INCIDENT ENERGY IS ABSORBED
+        SAL = 0.D0
+        DO I=1,NPOIN2
+          DO IPLAN=1,NPLAN
+            J = I + (IPLAN-1)*NPOIN2
+            TREEL=TA%ADR(ITRAC)%P%R(NPOIN3-NPOIN2+I)
+            RO=RO0*(1.D0-(7.D0*(TREEL-4.D0)**2-750.D0*SAL)*1.D-6)
+            LAMB=RO*CP
+            S0TA%ADR(ITRAC)%P%R(J) = 
+     &       KD*EXP(KD*(Z(J)-Z(I+(NPLAN-1)*NPOIN2)))
+     &      *RAY_SOL/LAMB
+!
+!       FORMULA FOR TURBID WATER
+!       0.22D0 = 1.D0-0.78D0
+!           S0TA%ADR(ITRAC)%P%R(J) =
+!           ( 0.78D0*0.66D0 *EXP(0.66D0* (Z(J)-Z(I+(NPLAN-1)*NPOIN2)))
+!     &      +0.22D0*0.125D0*EXP(0.125D0*(Z(J)-Z(I+(NPLAN-1)*NPOIN2))))
+!     &     *RAY_SOL/LAMB
+!
+!       FORMULA FOR CLEAR WATER
+!       0.42D0 = 1.D0-0.58D0
+!           S0TA%ADR(ITRAC)%P%R(J) =
+!           ( 0.58D0/0.35D0*EXP((Z(J)-Z(I+(NPLAN-1)*NPOIN2))/0.35D0)
+!     &      +0.42D0/23.D0 *EXP((Z(J)-Z(I+(NPLAN-1)*NPOIN2))/23.D0 ))
+!     &     *RAY_SOL/LAMB
+          ENDDO
+        ENDDO
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END
+!                    ****************
+                     SUBROUTINE METEO
+!                    ****************
+!
+     &(PATMOS,WINDX,WINDY,FUAIR,FVAIR,X,Y,AT,LT,NPOIN,VENT,ATMOS,
+     & HN,TRA01,GRAV,ROEAU,NORD,PRIVE,FO1,FILES,LISTIN)
+!
+!***********************************************************************
+! TELEMAC2D   V7P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
+!+               (IN GENERAL FROM INPUT DATA FILES).
+!
+!warning  CAN BE ADAPTED BY USER
+!
+!history  J-M HERVOUET (LNHE)
+!+        02/01/2004
+!+        V5P4
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        30/01/2013
+!+        V6P3
+!+   Now 2 options with an example for reading a file. Extra arguments. 
+!
+!history  C.-T. PHAM (LNHE)
+!+        09/07/2014
+!+        V7P0
+!+   Reading a file of meteo data for exchange with atmosphere
+!+   Only the wind is used here
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AT             |-->| TIME
+!| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
+!| FILES          |-->| BIEF_FILES STRUCTURES OF ALL FILES
+!| FO1            |-->| LOGICAL UNIT OF THE FORMATTED DATA FILE
+!| FUAIR          |-->| VELOCITY OF WIND ALONG X, IF CONSTANT
+!| FVAIR          |-->| VELOCITY OF WIND ALONG Y, IF CONSTANT
+!| GRAV           |-->| GRAVITY ACCELERATION
+!| HN             |-->| DEPTH
+!| LISTIN         |-->| IF YES, PRINTS INFORMATION
+!| LT             |-->| ITERATION NUMBER
+!| NORD           |-->| DIRECTION OF NORTH, COUNTER-CLOCK-WISE
+!|                |   | STARTING FROM VERTICAL AXIS
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
+!| PATMOS         |<--| ATMOSPHERIC PRESSURE
+!| PRIVE          |-->| USER WORKING ARRAYS (BIEF_OBJ BLOCK)
+!| ROEAU          |-->| WATER DENSITY
+!| TRA01          |-->| WORKING ARRAY
+!| VENT           |-->| YES IF WIND TAKEN INTO ACCOUNT
+!| WINDX          |<--| FIRST COMPONENT OF WIND VELOCITY
+!| WINDY          |<--| SECOND COMPONENT OF WIND VELOCITY
+!| X              |-->| ABSCISSAE OF POINTS
+!| Y              |-->| ORDINATES OF POINTS
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)             :: LT,NPOIN,FO1
+      LOGICAL, INTENT(IN)             :: ATMOS,VENT,LISTIN
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),HN(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: WINDX(NPOIN),WINDY(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: PATMOS(NPOIN),TRA01(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: FUAIR,FVAIR,AT,GRAV,ROEAU,NORD
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: PRIVE
+      TYPE(BIEF_FILE), INTENT(IN)     :: FILES(*)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER MY_OPTION,UL
+      DOUBLE PRECISION P0,Z(1),AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
+      DOUBLE PRECISION UAIR,VAIR
+!     EXCHANGE WITH ATMOSPHERE
+      DOUBLE PRECISION WW,TAIR,PATM,HREL,NEBU,RAINFALL
+!
+!-----------------------------------------------------------------------
+!
+!     DATA THAT YOU DECLARE AND READ HERE ONCE IN A FILE MAY HAVE TO BE
+!     KEPT BECAUSE THIS SUBROUTINE IS CALLED AT EVERY TIME STEP.
+!     WITHOUT THE SAVE COMMAND, ALL LOCAL DATA ARE FORGOTTEN IN THE NEXT
+!     CALL.
+!
+      SAVE
+!
+!-----------------------------------------------------------------------
+!
+!     CHOOSE YOUR OPTION !!!
+!
+!     1: CONSTANTS GIVEN BY THE KEYWORDS:
+!        AIR PRESSURE (GIVEN HERE AS P0, NO KEYWORD)
+!        WIND VELOCITY ALONG X (HERE FUAIR)
+!        WIND VELOCITY ALONG Y (HERE FVAIR)
+!        THEY WILL BE SET ONCE FOR ALL BEFORE THE FIRST ITERATION (LT=0)
+!
+!     2: TIME VARYING CONSTANT IN SPACE WIND COMPONENTS OF VELOCITY 
+!        GIVEN IN THE FILE FO1 DECLARED AS 
+!        FORMATTED DATA FILE 1 = FO1
+!
+!     3: TIME VARYING CONSTANT IN SPACE WIND COMPONENTS OF VELOCITY 
+!        GIVEN IN THE FILE FO1 DECLARED AS 
+!        FORMATTED DATA FILE 1 = FO1
+!        RECOMMENDED FOR EXCHANGE WITH ATMOSPHERE MODULE
+!
+!-----------------------------------------------------------------------
+!
+      MY_OPTION = 3
+!
+!-----------------------------------------------------------------------
+!
+!     AT FIRST TIMESTEP
+!
+      IF(LT.EQ.0) THEN
+!
+        UL=FILES(FO1)%LU
+!
+!-----------------------------------------------------------------------
+!
+!       ATMOSPHERIC PRESSURE
+!
+        IF(ATMOS) THEN
+          P0 = 100000.D0
+          CALL OV( 'X=C     ' , PATMOS , Y , Z , P0 , NPOIN )
+        ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!       WIND : IN THIS CASE THE WIND IS CONSTANT,
+!              VALUE GIVEN IN STEERING FILE.
+!
+!       MAY REQUIRE A ROTATION,
+!       DEPENDING ON THE SYSTEM IN WHICH THE WIND VELOCITY WAS SUPPLIED
+!
+        IF(VENT) THEN
+          CALL OV( 'X=C     ' , WINDX , Y , Z , FUAIR , NPOIN )
+          CALL OV( 'X=C     ' , WINDY , Y , Z , FVAIR , NPOIN )
+        ENDIF
+!
+        IF(MY_OPTION.EQ.2) THEN
+!         JUMPING TWO LINES OF COMMENTS
+          READ(UL,*,ERR=100,END=200)
+          READ(UL,*,ERR=100,END=200)
+!         READING THE FIRST TWO LINES OF DATA
+          READ(UL,*,ERR=100,END=200) AT1,FUAIR1,FVAIR1
+          READ(UL,*,ERR=100,END=200) AT2,FUAIR2,FVAIR2
+          IF(AT.LT.AT1) THEN
+            WRITE(LU,*) ' '
+            WRITE(LU,*) 'METEO'
+            IF(LNG.EQ.1) WRITE(LU,*) 'DEBUT TARDIF DU FICHIER DE VENT'
+            IF(LNG.EQ.2) WRITE(LU,*) 'LATE BEGINNING OF THE WIND FILE'
+            CALL PLANTE(1)
+          ENDIF
+        ENDIF
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      IF(MY_OPTION.EQ.2.AND.VENT) THEN
+!
+10      CONTINUE
+        IF(AT.GE.AT1.AND.AT.LT.AT2) THEN
+          IF(AT2-AT1.GT.1.D-6) THEN
+            COEF=(AT-AT1)/(AT2-AT1)
+          ELSE
+            COEF=0.D0
+          ENDIF
+          UAIR=FUAIR1+COEF*(FUAIR2-FUAIR1)
+          VAIR=FVAIR1+COEF*(FVAIR2-FVAIR1)
+          IF(LISTIN) THEN
+            IF(LNG.EQ.1) WRITE(LU,*) 'VENT A T=',AT,' UAIR=',UAIR,
+     &                                              ' VAIR=',VAIR
+            IF(LNG.EQ.2) WRITE(LU,*) 'WIND AT T=',AT,' UAIR=',UAIR,
+     &                                               ' VAIR=',VAIR
+          ENDIF
+        ELSE
+          AT1=AT2
+          FUAIR1=FUAIR2
+          FVAIR1=FVAIR2
+          READ(UL,*,ERR=100,END=200) AT2,FUAIR2,FVAIR2
+          GO TO 10
+        ENDIF
+!
+        CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
+        CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)    
+!
+      ENDIF
+!
+!     EXCHANGE WITH ATMOSPHERE
+!
+      IF(MY_OPTION.EQ.3.AND.VENT) THEN
+        CALL INTERPMETEO(WW,UAIR,VAIR,
+     &                   TAIR,PATM,HREL,NEBU,RAINFALL,AT,UL)
+!
+        CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
+        CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)    
+      ENDIF
+!
+      RETURN
+!
+!-----------------------------------------------------------------------
+! 
+100   CONTINUE
+      WRITE(LU,*) ' '
+      WRITE(LU,*) 'METEO'
+      IF(LNG.EQ.1) WRITE(LU,*) 'ERREUR DANS LE FICHIER DE VENT'
+      IF(LNG.EQ.2) WRITE(LU,*) 'ERROR IN THE WIND FILE'
+      CALL PLANTE(1)
+      STOP  
+200   CONTINUE
+      WRITE(LU,*) ' '
+      WRITE(LU,*) 'METEO'
+      IF(LNG.EQ.1) WRITE(LU,*) 'FIN PREMATUREE DU FICHIER DE VENT'
+      IF(LNG.EQ.2) WRITE(LU,*) 'WIND FILE TOO SHORT'
+      CALL PLANTE(1)
+      STOP           
 !
 !-----------------------------------------------------------------------
 !

@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P0                                   09/07/2014
 !***********************************************************************
 !
 !brief    BUILDS THE SOURCE TERMS TO ADD IN 2D AND 3D
@@ -32,12 +32,19 @@
 !+        V6P2
 !+   Correction of SMH with rain in parallel.
 !
+!history  A. GINEAU, N. DURAND, N. LORRAIN, C.-T. PHAM (LNHE)
+!+        09/07/2014
+!+        V7P0
+!+   Adding non constant rain for exchange with atmosphere module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
+      USE EXCHANGE_WITH_ATMOSPHERE
+
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -48,6 +55,10 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IS,I,IP
+!     HEAT EXCHANGE WITH ATMOSPHERE
+      INTEGER ITRAC,NFO
+      DOUBLE PRECISION WW,WINDX,WINDY,PATM,HREL,NEBU,RAINFALL
+      DOUBLE PRECISION TREEL,SAL,RO,WW2,FLUX_EVAP,FLUX_SENS,DEBEVAP
 !
 !-----------------------------------------------------------------------
 !
@@ -92,18 +103,59 @@
 !     RAIN AND EVAPORATION (NEGATIVE RAIN)
 !
       IF(RAIN) THEN
-!       PLUIE MUST BE NON ASSEMBLED IN PARALLEL
-        CALL OS('X=CY    ',X=PLUIE,Y=VOLU2D,C=RAIN_MMPD/86400000.D0)
-        IF(NCSIZE.GT.1) THEN
-!         USING V2DPAR AVOIDS A CALL PARCOM OF A COPY OF PLUIE
-          CALL OS('X=CY    ',X=PARAPLUIE,Y=V2DPAR,
-     &                       C=RAIN_MMPD/86400000.D0)
-!         SMH MUST BE ASSEMBLED IN PARALLEL
-          CALL OS('X=X+Y   ',X=SMH,Y=PARAPLUIE)
-        ELSE
-!         PARAPLUIE%R=>PLUIE%R  ! DONE ONCE FOR ALL IN POINT_TELEMAC3D
-!         BUT PARAPLUIE ALLOCATED WITH SIZE 0 CANNOT BE USED AS BIEF_OBJ
-          CALL OS('X=X+Y   ',X=SMH,Y=PLUIE)
+        IF(ATMOSEXCH.NE.2) THEN
+!         PLUIE MUST BE NON ASSEMBLED IN PARALLEL
+          CALL OS('X=CY    ',X=PLUIE,Y=VOLU2D,C=RAIN_MMPD/86400000.D0)
+          IF(NCSIZE.GT.1) THEN
+!           USING V2DPAR AVOIDS A CALL PARCOM OF A COPY OF PLUIE
+            CALL OS('X=CY    ',X=PARAPLUIE,Y=V2DPAR,
+     &                         C=RAIN_MMPD/86400000.D0)
+!           SMH MUST BE ASSEMBLED IN PARALLEL
+            CALL OS('X=X+Y   ',X=SMH,Y=PARAPLUIE)
+          ELSE
+!           PARAPLUIE%R=>PLUIE%R  ! DONE ONCE FOR ALL IN POINT_TELEMAC3D
+!           BUT PARAPLUIE ALLOCATED WITH SIZE 0 CANNOT BE USED AS BIEF_OBJ
+            CALL OS('X=X+Y   ',X=SMH,Y=PLUIE)
+          ENDIF
+        ELSEIF(ATMOSEXCH.EQ.2) THEN
+          ITRAC = 1  ! NUMBER OF TRACER FOR TEMPERATURE
+          NFO = T3D_FILES(T3DFO1)%LU   ! FORMATTED DATA FILE 1
+!
+          CALL INTERPMETEO(WW,WINDX,WINDY,
+     &                     TAIR,PATM,HREL,NEBU,RAINFALL,AT,NFO)
+!         LOG LAW FOR WIND AT 2 METERS
+!          WW2 = WW * LOG(2.D0/0.0002D0)/LOG(10.D0/0.0002D0)
+!         DIRECTLY WRITTEN BELOW
+          WW2 = WW * LOG(1.D4)/LOG(5.D4)
+!         ALTERNATIVE LAW FOR WIND AT 2 METERS
+!          WW2 = 0.6D0*WW
+!
+          DO I=1,NPOIN2
+!         TEMPERATURE AND SALINITY AT THE SURFACE
+            TREEL = TA%ADR(ITRAC)%P%R(NPOIN3-NPOIN2+I)
+!            SAL   = TA%ADR(2)%P%R(NPOIN3-NPOIN2+I)
+            SAL = 0.D0
+            RO = RO0*(1.D0-(7.D0*(TREEL-4.D0)**2-750.D0*SAL)*1.D-6)
+            CALL EVAPO(TREEL,TAIR,WW2,PATM,HREL,RO,
+     &                 FLUX_EVAP,FLUX_SENS,DEBEVAP,C_ATMOS)
+!           WATER FLUXES = RAIN - EVAPORATION
+!           CONVERSION FROM MM/S TO M/S --> *1.D-3
+            PLUIE%R(I) = VOLU2D%R(I)*(RAINFALL*1.D-3-DEBEVAP)
+            IF(NCSIZE.GT.1) THEN
+!             USING V2DPAR AVOIDS A CALL PARCOM OF A COPY OF PLUIE
+!             CONVERSION FROM MM/S TO M/S --> *1.D-3
+              PARAPLUIE%R(I) = V2DPAR%R(I)*(RAINFALL*1.D-3-DEBEVAP)
+            ENDIF
+	  ENDDO
+!         PLUIE MUST BE NON ASSEMBLED IN PARALLEL
+          IF(NCSIZE.GT.1) THEN
+!           SMH MUST BE ASSEMBLED IN PARALLEL
+            CALL OS('X=X+Y   ',X=SMH,Y=PARAPLUIE)
+          ELSE
+!           PARAPLUIE%R=>PLUIE%R  ! DONE ONCE FOR ALL IN POINT_TELEMAC3D
+!           BUT PARAPLUIE ALLOCATED WITH SIZE 0 CANNOT BE USED AS BIEF_OBJ
+            CALL OS('X=X+Y   ',X=SMH,Y=PLUIE)
+          ENDIF
         ENDIF
       ENDIF
 !

@@ -651,6 +651,7 @@ files: friction_def.f
   oil_flot.f
   oilspill.f
   grad_zconv.f
+  interpmeteo.f
   meteo.f
   read_fic_frliq.f
   sta_dis_cur.f
@@ -683,6 +684,7 @@ path: <root>|sources|telemac3d
 files: declarations_telemac3d.f
   interface_telemac3d.f
   point_telemac3d.f
+  exchange_with_atmosphere.f
   nomvar_telemac3d.f
   nomvar_2d_in_3d.f
   lecdon_telemac3d.f
