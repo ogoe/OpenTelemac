@@ -692,12 +692,17 @@
 !          
               ICOL = NEXT(ICOL+1,LIGNE)
 !          
-              IF(LIGNE(ICOL:ICOL).EQ.PTVIRG) THEN
-                DEFLU = DEFLU + 1
-                GO TO 200
+              IF(ICOL.GT.LONGLI) THEN
+                ICOL = LONGLI
               ELSE
-                ICOL=ICOL-1
+                IF(LIGNE(ICOL:ICOL).EQ.PTVIRG) THEN
+                  DEFLU = DEFLU + 1
+                  GO TO 200
+                ELSE
+                  ICOL=ICOL-1
+                ENDIF
               ENDIF
+              
 !
 !
 !

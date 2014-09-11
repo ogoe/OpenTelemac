@@ -439,12 +439,6 @@
             FLUX_OLD(I,2) = 0.0D0
             FLUX_OLD(I,3) = 0.0D0
           ENDDO     
-!      INITIALIZATION OF FLUX_OLD
-       DO I=1,NPOIN
-        FLUX_OLD(I,1) = 0.0D0
-        FLUX_OLD(I,2) = 0.0D0
-        FLUX_OLD(I,3) = 0.0D0
-       ENDDO     
 !
 !     COMPUTE GRADIENT OF ZF FOR ORDRE2
 !

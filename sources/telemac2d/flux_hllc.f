@@ -171,8 +171,8 @@
 !       SSTAR = SL
         GOTO 35        
 ! RA+SP: USE OF ANALYTICAL FORMULA FOR SSTAR
-!         SSTAR = SL
-         GOTO 35        
+!        SSTAR = SL
+        GOTO 35        
       ENDIF
 !
       IF(HR.GT.EPS)THEN
@@ -185,7 +185,7 @@
         GOTO 35      
 ! RA+SP: USE OF ANALYTICAL FORMULA FOR SSTAR
 !         SSTAR = SR
-         GOTO 35      
+        GOTO 35      
       ENDIF
 !RA      SSTAR = USTAR
 35    CONTINUE

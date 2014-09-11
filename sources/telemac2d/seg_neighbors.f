@@ -26,8 +26,8 @@
 !+        07/15/2014
 !+        V7P0
 !+   correction on the criterion of selection of the neighbor:
-!+   GE is replaced by GT in 2 locations in order to overcome very 
-!+   sepcific problematic cases   
+!+   GE is replAced by GT in 2 locAtions in order to overcome very 
+!+   sepcific problemAtic cAses   
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  NSEG          | -->|  NUMBER OF TOTAL MESH EDGES                  |
@@ -71,7 +71,7 @@
       DOUBLE PRECISION EPS
       DOUBLE PRECISION UNSIX
 !
-      DOUBLE PRECISION a,NORMNUB,XNUB12,YNUB12
+      DOUBLE PRECISION A,NORMNUB,XNUB12,YNUB12
       DOUBLE PRECISION XM,YM,NORM_MNUBO1,NORM_MNUBO2,NORM_JM
       DOUBLE PRECISION NORM_JNUBO1,NORM_JNUBO2
       DOUBLE PRECISION MINANGLE,SINANGLE 
@@ -216,142 +216,142 @@
 ! 
 !    INITIALISATION 
       DO ISEG=1,NSEG
-         NEISEG(1,ISEG)=0
-         NEISEG(2,ISEG)=0
+        NEISEG(1,ISEG)=0
+        NEISEG(2,ISEG)=0
       ENDDO
 !
       DO ISEG=1,NSEG
-!        RECUPERATE NODES
-         NUBO1 = NUBO (1,ISEG) 
-         NUBO2 = NUBO (2,ISEG)
-!        VECTOR NUB12
-         XNUB12 = XX(NUBO2)-XX(NUBO1)
-         YNUB12 = YY(NUBO2)-YY(NUBO1)
-!        ITS NORM
-         NORMNUB =SQRT(XNUB12**2 + YNUB12**2)
-         IF(NORMNUB.LE.EPS) THEN
-             WRITE(LU,*)'PROBLEM: SEGMENT LENGTH =0'
-             WRITE(LU,*)'WE ARE IN SEG_NEIGHBORS.F'
-             WRITE(LU,*)'SEGMENT OF INTEREST  :',ISEG
-             WRITE(LU,*)'NODES ARE  :',NUBO1,NUBO2
-             CALL PLANTE(1)
-             STOP
-         ENDIF
-!        INITALIALIZE MINANGLE
-         MINANGLE = 1.E10
+!       RECUPERATE NODES
+        NUBO1 = NUBO (1,ISEG) 
+        NUBO2 = NUBO (2,ISEG)
+!       VECTOR NUB12
+        XNUB12 = XX(NUBO2)-XX(NUBO1)
+        YNUB12 = YY(NUBO2)-YY(NUBO1)
+!       ITS NORM
+        NORMNUB =SQRT(XNUB12**2 + YNUB12**2)
+        IF(NORMNUB.LE.EPS) THEN
+          WRITE(LU,*)'PROBLEM: SEGMENT LENGTH =0'
+          WRITE(LU,*)'WE ARE IN SEG_NEIGHBORS.F'
+          WRITE(LU,*)'SEGMENT OF INTEREST  :',ISEG
+          WRITE(LU,*)'NODES ARE  :',NUBO1,NUBO2
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!       INITALIALIZE MINANGLE
+        MINANGLE = 1.E10
 !
-!        LET'S START WITH NUBO1
+!       LET'S START WITH NUBO1
 !
-!        LET'S RETRIEVE ITS NEIGHBORS
+!       LET'S RETRIEVE ITS NEIGHBORS
 !
-          DO NV1= 1,NVMAX
-             J   = JVOIS(NUBO1,NV1,1)
-             NSG = JVOIS(NUBO1,NV1,2)
-             IF(J.NE.0.AND.J.NE.NUBO2)THEN
-!              ORTHOGONAL PROJECTION OF J OVER NUB12: M
-!              XM= X1 + a*(X2-X1)
-!              YM= Y1 + a*(Y2-Y1)
-!              WHERE a = [(XJ-X1)(X2-X1)+(YJ-Y1)(Y2-Y1)]/NORMNUB**2
-               a = ((XX(J)-XX(NUBO1))*XNUB12+(YY(J)-YY(NUBO1))*YNUB12)/
-     &             NORMNUB**2
-!              XM & YM
-               XM = XX(NUBO1) + a*XNUB12
-               YM = YY(NUBO1) + a*YNUB12
-!              NORM OF MNUBO1 AND MNUBO2
-               NORM_MNUBO1 = SQRT((XM-XX(NUBO1))**2 + 
-     &                             (YM-YY(NUBO1))**2)
-               NORM_MNUBO2 = SQRT((XM-XX(NUBO2))**2 + 
-     &                             (YM-YY(NUBO2))**2)
-!              MAKE THE DECISION: THE FOLLOWING "IF" ELIMINATES THE CASES:
-!                               1- WHERE M IS BETWEEN NUB1 AND NUB2(N1--M--N2)
-!                               2- WHERE M IS AT THE RIGHT OF NUB2 (N1--N2--M)
-               IF((NORM_MNUBO1+NORM_MNUBO2).GT.NORMNUB
-     &       .AND. NORM_MNUBO2.GE.NORM_MNUBO1) THEN
-!                 NORM OF JM
-                  NORM_JM= SQRT((XX(J)-XM)**2 + (YY(J)-YM)**2) 
-!                 NORM OF JNUBO1
-                  NORM_JNUBO1 = SQRT((XX(J)-XX(NUBO1))**2 + 
-     &                                (YY(J)-YY(NUBO1))**2) 
-!                 SIN OF THETA
-                  SINANGLE = NORM_JM/(NORM_JNUBO1+EPS)
+        DO NV1= 1,NVMAX
+          J   = JVOIS(NUBO1,NV1,1)
+          NSG = JVOIS(NUBO1,NV1,2)
+          IF(J.NE.0.AND.J.NE.NUBO2)THEN
+!           ORTHOGONAL PROJECTION OF J OVER NUB12: M
+!           XM= X1 + A*(X2-X1)
+!           YM= Y1 + A*(Y2-Y1)
+!           WHERE A = [(XJ-X1)(X2-X1)+(YJ-Y1)(Y2-Y1)]/NORMNUB**2
+            A = ((XX(J)-XX(NUBO1))*XNUB12+(YY(J)-YY(NUBO1))*YNUB12)/
+     &          NORMNUB**2
+!           XM & YM
+            XM = XX(NUBO1) + A*XNUB12
+            YM = YY(NUBO1) + A*YNUB12
+!           NORM OF MNUBO1 AND MNUBO2
+            NORM_MNUBO1 = SQRT((XM-XX(NUBO1))**2 + 
+     &                          (YM-YY(NUBO1))**2)
+            NORM_MNUBO2 = SQRT((XM-XX(NUBO2))**2 + 
+     &                          (YM-YY(NUBO2))**2)
+!           MAKE THE DECISION: THE FOLLOWING "IF" ELIMINATES THE CASES:
+!                            1- WHERE M IS BETWEEN NUB1 AND NUB2(N1--M--N2)
+!                            2- WHERE M IS AT THE RIGHT OF NUB2 (N1--N2--M)
+            IF((NORM_MNUBO1+NORM_MNUBO2).GT.NORMNUB
+     &    .AND. NORM_MNUBO2.GE.NORM_MNUBO1) THEN
+!             NORM OF JM
+              NORM_JM= SQRT((XX(J)-XM)**2 + (YY(J)-YM)**2) 
+!             NORM OF JNUBO1
+              NORM_JNUBO1 = SQRT((XX(J)-XX(NUBO1))**2 + 
+     &                            (YY(J)-YY(NUBO1))**2) 
+!             SIN OF THETA
+              SINANGLE = NORM_JM/(NORM_JNUBO1+EPS)
 !
-                  IF(SINANGLE.LT.MINANGLE)THEN
-                     NEISEG(1,ISEG) = NSG 
-                     MINANGLE       = SINANGLE
-                  ENDIF
-               ENDIF
-             ENDIF
-          ENDDO
+              IF(SINANGLE.LT.MINANGLE)THEN
+                NEISEG(1,ISEG) = NSG 
+                MINANGLE       = SINANGLE
+              ENDIF
+            ENDIF
+          ENDIF
+        ENDDO
 !
-!         DO THE SAME FOR NUBO2
+!       DO THE SAME FOR NUBO2
 !
-!        INITALIALIZE MINANGLE
-         MINANGLE = 1.E10
-!        LET'S RECUPERATE ITS NEIGHBORS
-          DO NV1= 1,NVMAX
-             J   = JVOIS(NUBO2,NV1,1)
-             NSG = JVOIS(NUBO2,NV1,2)
-             IF(J.NE.0.AND.J.NE.NUBO1)THEN
-!              ORTHOGONAL PROJECTION OF J OVER NUB12: M
-!              XM= X1 + a*(X2-X1)
-!              YM= Y1 + a*(Y2-Y1)
-!              WHERE a = [(XJ-X1)(X2-X1)+(YJ-Y1)(Y2-Y1)]/NORMNUB**2
-               a = ((XX(J)-XX(NUBO1))*XNUB12+(YY(J)-YY(NUBO1))*YNUB12)/
-     &             NORMNUB**2
-!              XM & YM
-               XM = XX(NUBO1) + a*XNUB12
-               YM = YY(NUBO1) + a*YNUB12
-!              NORM OF MNUBO1 AND MNUBO2
-               NORM_MNUBO1 = SQRT((XM-XX(NUBO1))**2 + 
-     &                             (YM-YY(NUBO1))**2)
-               NORM_MNUBO2 = SQRT((XM-XX(NUBO2))**2 + 
-     &                             (YM-YY(NUBO2))**2)
-!              MAKE THE DECISION: THE FOLLOWING IF ELIMINATES THE CASES:
-!                               1- WHERE M IS BETWEEN NUB1 AND NUB2(N1--M--N2)
-!                               2- WHERE M IS AT THE LEFT OF NUBO1 (M--N1--N2)
-               IF((NORM_MNUBO1+NORM_MNUBO2).GT.NORMNUB
-     &           .AND.NORM_MNUBO1.GE.NORM_MNUBO2)THEN
-!                 NORM OF JM
-                  NORM_JM= SQRT((XX(J)-XM)**2 + (YY(J)-YM)**2) 
-!                 NORM OF JNUBO2
-                  NORM_JNUBO2 = SQRT((XX(J)-XX(NUBO2))**2 + 
-     &                                (YY(J)-YY(NUBO2))**2) 
-!                 SIN OF THETA
-                  SINANGLE = NORM_JM/(NORM_JNUBO2+EPS)
+!       INITALIALIZE MINANGLE
+        MINANGLE = 1.E10
+!       LET'S RECUPERATE ITS NEIGHBORS
+        DO NV1= 1,NVMAX
+          J   = JVOIS(NUBO2,NV1,1)
+          NSG = JVOIS(NUBO2,NV1,2)
+          IF(J.NE.0.AND.J.NE.NUBO1)THEN
+!           ORTHOGONAL PROJECTION OF J OVER NUB12: M
+!           XM= X1 + A*(X2-X1)
+!           YM= Y1 + A*(Y2-Y1)
+!           WHERE A = [(XJ-X1)(X2-X1)+(YJ-Y1)(Y2-Y1)]/NORMNUB**2
+            A = ((XX(J)-XX(NUBO1))*XNUB12+(YY(J)-YY(NUBO1))*YNUB12)/
+     &          NORMNUB**2
+!           XM & YM
+            XM = XX(NUBO1) + A*XNUB12
+            YM = YY(NUBO1) + A*YNUB12
+!           NORM OF MNUBO1 AND MNUBO2
+            NORM_MNUBO1 = SQRT((XM-XX(NUBO1))**2 + 
+     &                          (YM-YY(NUBO1))**2)
+            NORM_MNUBO2 = SQRT((XM-XX(NUBO2))**2 + 
+     &                          (YM-YY(NUBO2))**2)
+!           MAKE THE DECISION: THE FOLLOWING IF ELIMINATES THE CASES:
+!                            1- WHERE M IS BETWEEN NUB1 AND NUB2(N1--M--N2)
+!                            2- WHERE M IS AT THE LEFT OF NUBO1 (M--N1--N2)
+            IF((NORM_MNUBO1+NORM_MNUBO2).GT.NORMNUB
+     &        .AND.NORM_MNUBO1.GE.NORM_MNUBO2)THEN
+!             NORM OF JM
+              NORM_JM= SQRT((XX(J)-XM)**2 + (YY(J)-YM)**2) 
+!             NORM OF JNUBO2
+              NORM_JNUBO2 = SQRT((XX(J)-XX(NUBO2))**2 + 
+     &                            (YY(J)-YY(NUBO2))**2) 
+!             SIN OF THETA
+              SINANGLE = NORM_JM/(NORM_JNUBO2+EPS)
 !
-                  IF(SINANGLE.LT.MINANGLE)THEN
-                     NEISEG(2,ISEG) = NSG 
-                     MINANGLE       = SINANGLE
-                  ENDIF
-               ENDIF
-             ENDIF
-          ENDDO
+              IF(SINANGLE.LT.MINANGLE)THEN
+                NEISEG(2,ISEG) = NSG 
+                MINANGLE       = SINANGLE
+              ENDIF
+            ENDIF
+          ENDIF
+        ENDDO
 
 ! REFLEXION ABOUT HOW TO DEAL WITH BOUNDARY EDGES, ESPECIALLY FOR
 ! EDGE AT CORNER
 ! FOR THE MOMENT, THE EDGE IS ITS OWN NEIGHBOR
-          IF(NEISEG(1,ISEG).EQ.0)THEN
-!             WRITE(LU,*)'PROBLEM AT SEG_NEIGHBORS ....!'
-!             WRITE(LU,*)'SEGMENT: ',ISEG,'HAS NO NEIGHBOR'
-!             WRITE(LU,*)'ITS NODES ARE  :',NUBO1,NUBO2
-!             WRITE(LU,*)'HE WILL BE HIS OWN NEIGHBOR'
-             NEISEG(1,ISEG) = ISEG
-          ENDIF
-          IF(NEISEG(2,ISEG).EQ.0)THEN
-!             WRITE(LU,*)'PROBLEM AT SEG_NEIGHBORS ....!'
-!             WRITE(LU,*)'SEGMENT: ',ISEG,'HAS NO NEIGHBOR'
-!             WRITE(LU,*)'ITS NODES ARE  :',NUBO1,NUBO2
-!             WRITE(LU,*)'HE WILL BE HIS OWN NEIGHBOR'
-             NEISEG(2,ISEG) = ISEG
-          ENDIF
+        IF(NEISEG(1,ISEG).EQ.0)THEN
+!           WRITE(LU,*)'PROBLEM AT SEG_NEIGHBORS ....!'
+!           WRITE(LU,*)'SEGMENT: ',ISEG,'HAS NO NEIGHBOR'
+!           WRITE(LU,*)'ITS NODES ARE  :',NUBO1,NUBO2
+!           WRITE(LU,*)'HE WILL BE HIS OWN NEIGHBOR'
+           NEISEG(1,ISEG) = ISEG
+        ENDIF
+        IF(NEISEG(2,ISEG).EQ.0)THEN
+!           WRITE(LU,*)'PROBLEM AT SEG_NEIGHBORS ....!'
+!           WRITE(LU,*)'SEGMENT: ',ISEG,'HAS NO NEIGHBOR'
+!           WRITE(LU,*)'ITS NODES ARE  :',NUBO1,NUBO2
+!           WRITE(LU,*)'HE WILL BE HIS OWN NEIGHBOR'
+           NEISEG(2,ISEG) = ISEG
+        ENDIF
 ! VERIFICATION THAT THE ROUTINE WORKS WELL
-          IF(NEISEG(1,ISEG).LE.0.OR.NEISEG(2,ISEG).LE.0)THEN
-             WRITE(LU,*)'PROBLEM AT SEG_NEIGHBORS ....!'
-             WRITE(LU,*)'SEGMENT: ',ISEG,'HAS NO NEIGHBOR'
-             WRITE(LU,*)'ITS NODES ARE  :',NUBO1,NUBO2
-             CALL PLANTE(1)
-             STOP
-          ENDIF
+        IF(NEISEG(1,ISEG).LE.0.OR.NEISEG(2,ISEG).LE.0)THEN
+           WRITE(LU,*)'PROBLEM AT SEG_NEIGHBORS ....!'
+           WRITE(LU,*)'SEGMENT: ',ISEG,'HAS NO NEIGHBOR'
+           WRITE(LU,*)'ITS NODES ARE  :',NUBO1,NUBO2
+           CALL PLANTE(1)
+           STOP
+        ENDIF
       ENDDO ! ISEG
 ! 
       DEALLOCATE(JVOIS)
