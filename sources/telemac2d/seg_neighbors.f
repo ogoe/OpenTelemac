@@ -25,9 +25,9 @@
 !history  SARA PAVAN (EDF R&D-LNHE)
 !+        07/15/2014
 !+        V7P0
-!+   correction on the criterion of selection of the neighbor:
-!+   GE is replAced by GT in 2 locAtions in order to overcome very 
-!+   sepcific problemAtic cAses   
+!+   correction on the criterion of selection of the neighbour:
+!+   GE is replaced by GT in 2 locations in order to overcome very 
+!+   specific problematic cases   
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  NSEG          | -->|  NUMBER OF TOTAL MESH EDGES                  |
@@ -244,36 +244,36 @@
 !
 !       LET'S RETRIEVE ITS NEIGHBORS
 !
-        DO NV1= 1,NVMAX
-          J   = JVOIS(NUBO1,NV1,1)
-          NSG = JVOIS(NUBO1,NV1,2)
-          IF(J.NE.0.AND.J.NE.NUBO2)THEN
-!           ORTHOGONAL PROJECTION OF J OVER NUB12: M
-!           XM= X1 + A*(X2-X1)
-!           YM= Y1 + A*(Y2-Y1)
-!           WHERE A = [(XJ-X1)(X2-X1)+(YJ-Y1)(Y2-Y1)]/NORMNUB**2
-            A = ((XX(J)-XX(NUBO1))*XNUB12+(YY(J)-YY(NUBO1))*YNUB12)/
-     &          NORMNUB**2
-!           XM & YM
-            XM = XX(NUBO1) + A*XNUB12
-            YM = YY(NUBO1) + A*YNUB12
-!           NORM OF MNUBO1 AND MNUBO2
-            NORM_MNUBO1 = SQRT((XM-XX(NUBO1))**2 + 
-     &                          (YM-YY(NUBO1))**2)
-            NORM_MNUBO2 = SQRT((XM-XX(NUBO2))**2 + 
-     &                          (YM-YY(NUBO2))**2)
-!           MAKE THE DECISION: THE FOLLOWING "IF" ELIMINATES THE CASES:
-!                            1- WHERE M IS BETWEEN NUB1 AND NUB2(N1--M--N2)
-!                            2- WHERE M IS AT THE RIGHT OF NUB2 (N1--N2--M)
-            IF((NORM_MNUBO1+NORM_MNUBO2).GT.NORMNUB
-     &    .AND. NORM_MNUBO2.GE.NORM_MNUBO1) THEN
-!             NORM OF JM
-              NORM_JM= SQRT((XX(J)-XM)**2 + (YY(J)-YM)**2) 
-!             NORM OF JNUBO1
-              NORM_JNUBO1 = SQRT((XX(J)-XX(NUBO1))**2 + 
-     &                            (YY(J)-YY(NUBO1))**2) 
-!             SIN OF THETA
-              SINANGLE = NORM_JM/(NORM_JNUBO1+EPS)
+          DO NV1= 1,NVMAX
+             J   = JVOIS(NUBO1,NV1,1)
+             NSG = JVOIS(NUBO1,NV1,2)
+             IF(J.NE.0.AND.J.NE.NUBO2)THEN
+!              ORTHOGONAL PROJECTION OF J OVER NUB12: M
+!              XM= X1 + A*(X2-X1)
+!              YM= Y1 + A*(Y2-Y1)
+!              WHERE A = [(XJ-X1)(X2-X1)+(YJ-Y1)(Y2-Y1)]/NORMNUB**2
+               A = ((XX(J)-XX(NUBO1))*XNUB12+(YY(J)-YY(NUBO1))*YNUB12)/
+     &             NORMNUB**2
+!              XM & YM
+               XM = XX(NUBO1) + A*XNUB12
+               YM = YY(NUBO1) + A*YNUB12
+!              NORM OF MNUBO1 AND MNUBO2
+               NORM_MNUBO1 = SQRT((XM-XX(NUBO1))**2 + 
+     &                             (YM-YY(NUBO1))**2)
+               NORM_MNUBO2 = SQRT((XM-XX(NUBO2))**2 + 
+     &                             (YM-YY(NUBO2))**2)
+!              MAKE THE DECISION: THE FOLLOWING "IF" ELIMINATES THE CASES:
+!                               1- WHERE M IS BETWEEN NUB1 AND NUB2(N1--M--N2)
+!                               2- WHERE M IS AT THE RIGHT OF NUB2 (N1--N2--M)
+               IF((NORM_MNUBO1+NORM_MNUBO2).GT.NORMNUB
+     &       .AND. NORM_MNUBO2.GE.NORM_MNUBO1) THEN
+!                 NORM OF JM
+                  NORM_JM= SQRT((XX(J)-XM)**2 + (YY(J)-YM)**2) 
+!                 NORM OF JNUBO1
+                  NORM_JNUBO1 = SQRT((XX(J)-XX(NUBO1))**2 + 
+     &                                (YY(J)-YY(NUBO1))**2) 
+!                 SIN OF THETA
+                  SINANGLE = NORM_JM/(NORM_JNUBO1+EPS)
 !
               IF(SINANGLE.LT.MINANGLE)THEN
                 NEISEG(1,ISEG) = NSG 

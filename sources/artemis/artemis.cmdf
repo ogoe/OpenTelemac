@@ -2,7 +2,7 @@
 path: <root>|sources|artemis
 module: artemis
 liborder: special parallel damocles bief artemis
-version: v6p3
+version: v7p0
 name: HOMERE_ARTEMIS
 
 [artemis]
@@ -66,19 +66,19 @@ files: bief_def.f
   cpstvc.f
   bief_nbsegel.f
   segbor.f
-  cpikle3.f
-  bief_ininds.f
-  ielbor.f
   lit.f
   readgeo1.f
+  bief_ininds.f
+  cpikle2.f
   corrxy.f
   readgeo3.f
   readgeo2.f
+  cpikle3.f
+  bief_nbfel.f
+  ielbor.f
+  ov_2.f
   mxptel31.f
   mxptel.f
-  bief_nbfel.f
-  cpikle2.f
-  ov_2.f
   almesh.f
   read_submit.f
   sortie.f
@@ -166,6 +166,7 @@ files: bief_def.f
   mt03cc.f
   mt12ab.f
   mt01aa.f
+  mt12aa.f
   mt99bb.f
   mt04pp.f
   mt08bb.f
@@ -180,7 +181,7 @@ files: bief_def.f
   mt06oo.f
   mt06pp.f
   mt06aa.f
-  mt02pp.f
+  mt04bb.f
   mt05pp.f
   mt04tt.f
   mt12bb.f
@@ -194,7 +195,7 @@ files: bief_def.f
   mt05aa.f
   mt11aa.f
   mt11ab.f
-  mt11ac.f
+  mt02pp.f
   mt03aa.f
   mt02bb.f
   mt01bb.f
@@ -202,7 +203,7 @@ files: bief_def.f
   mt06ff.f
   mt12ac.f
   mt99aa.f
-  mt12aa.f
+  mt11ac.f
   mt04cc.f
   mt08ab.f
   mt08pp.f
@@ -215,7 +216,6 @@ files: bief_def.f
   mt13aa.f
   mt06bb.f
   mt15pp.f
-  mt04bb.f
   mt06ft.f
   mt03bb.f
   mt07bb.f
@@ -471,8 +471,8 @@ files: declarations_parallel.F
   p_iread.F
   p_ireadi8.F
   p_iwriti8.F
-  p_dmax.F
   p_dmin.F
+  p_dmax.F
   p_imin.F
   p_dsum.F
   p_ireadi.F

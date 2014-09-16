@@ -363,6 +363,8 @@
       ENDDO
 !   
       NEXT=NEXT+NTRAC
+!
+!
       DO I=1,NCOUCH
 !      
         TEXTE(NEXT+I-1) = TEXTE_ES(I)

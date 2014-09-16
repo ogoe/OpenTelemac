@@ -23,13 +23,16 @@
 !+   New developments in sediment merged on 25/02/2014.
 !+ 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+!| C              |-->| CONCENTRATION OF SED AT NODES 
+!|                |   | (ACTUALLY TRAV1 BIEF OBJECT WORK ARRAY) 
+!| CGEL           |<--| SEDIMENT CONCENTRATION AT WHICH SEDIMENT FORMS
+!|                |   | A WEAK SOIL (KG/M3) 
+!| CINI           |-->| THRESHOLD CONCENTRATION FOR HINDERING TO START 
+!| HIND_TYPE      |-->| 1:WHITEHOUSE ET AL. (2000), 2:WINTERWERP (1999)
+!|                |-->| (NOTE THAT OPTION 2 IS NOT WORKING YET)
 !| HN             |-->| WATER DEPTH 
 !| NPOIN3         |-->| TOTAL NUMBER OF POINTS IN 3D MESH 
 !| WC             |<->| SEDIMENT SETTLING VELOCITY  
-!| C              |-->| CONCENTRATION OF SED AT NODES (actually TRAV1) 
-!| CINI           |-->| THRESHOLD CONCENTATION FOR HINDERING TO START 
-!| CGEL           |<--| SEDIMENT CONCENTRATION AT WHICH SEDIMENT FORMS
-!|                |   | A WEAK SOIL (KG/M3) 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
       USE BIEF 
@@ -62,7 +65,7 @@
 !           MODEL (BECAUSE WCINI VARIES)    
             PHI = (C%R(I)-CINI) / CGEL 
             QRWC = 1.D0-PHI 
-!           CV: WC now positive   
+!           N.B. WC IS POSITIVE   
             WC%R(I) = MAX(WC%R(I)*QRWC**5,0.D0)
           ELSEIF(HIND_TYPE.EQ.2) THEN  
             WRITE(LU,*) 'WINTERWERP HINDRED SETTLING DOES NOT WORK YET'
@@ -77,7 +80,7 @@
             CORR= MIN(MAX(CORR, 0.D0),1.D0)           
             WC%R(I)  = WC%R(I)*CORR  
           ELSE 
-            WRITE(LU,*) 'HINDERED SETTLING MUST BE 1 OR 2'
+            WRITE(LU,*) 'HINDERED SETTLING FORMULA MUST BE 1 OR 2'
             CALL PLANTE(1)
             STOP
           ENDIF  

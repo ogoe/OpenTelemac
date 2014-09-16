@@ -140,7 +140,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION C, TOTMASS, QERODE, QS,DELTAF, FLUX, SEDBED
+      DOUBLE PRECISION C,TOTMASS,QERODE,QS,DELTAF,FLUX,SEDBED,MASTMP
       INTEGER IPOIN, IC
       INTRINSIC MOD
       DOUBLE PRECISION P_DSUM
@@ -321,7 +321,12 @@
 !
 !     TOTAL DEPOSITED MASS --> MASDEP
 !
-      MASDEP = MASDEP + FLUX*DT
+!###>TBE - fixed bug...add up the deposition flux for all partitions (MASDEP)
+!       MASDEP = MASDEP + FLUX*DT
+        MASTMP = FLUX*DT
+        IF(NCSIZE.GT.1) MASTMP=P_DSUM(MASTMP)
+        MASDEP = MASDEP + MASTMP
+!###<TBE 
 !
 !=======================================================================
 !

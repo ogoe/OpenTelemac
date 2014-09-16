@@ -6292,10 +6292,12 @@ RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
 AIDE = 'Choix de schema vertical pour la diffusion et le depot du sediment
 : 0 Diffusion implicite
-: 1 schema explicite de convection'
+: 1 schema implicit de convection-diffusion (tridiagonal matrix solver)
+: 2 convection faible sed_fall.f'
 AIDE1 = 'Choice of vertical scheme for diffusion and settling of sediment
 : 0 Implicit-diffusion scheme 
-: 1 Explicit- convection scheme'
+: 1 Implicit- convection scheme (Tridiagonal matrix solver)
+: 2  set_fall.f'
 /
 / CV
 / 
@@ -6460,10 +6462,10 @@ AIDE1 = 'TYPE OF HINDERED SETTLING
          1. WHITEHOUSE ET AL. (2000) - working
          2. WINTERWERP (1999) - not currently working'
 /
-/ FLOCULATION
+/ FLOCULATION (N.B. FLOCCULATION IN ENGLISH)
 / 
 NOM = 'FLOCULATION'
-NOM1 = 'FLOCULATION'
+NOM1 = 'FLOCCULATION'
 TYPE = LOGIQUE
 INDEX = 91
 MNEMO = 'FLOC'
@@ -6479,7 +6481,7 @@ AIDE1 = 'Decides if hindered formulation is to be used to
         compute settling velocity for mud'
         
 NOM = 'FORMULE POUR FLOCULATION'
-NOM1 = 'FLOCULATION FORMULA'
+NOM1 = 'FLOCCULATION FORMULA'
 TYPE = ENTIER
 INDEX = 126
 MNEMO = 'FLOC_TYPE'
@@ -6492,7 +6494,7 @@ NIVEAU = 1
 AIDE = 'FORMULE POUR FLOCULATION
         1. Van Leussen (_
         2. SOULSBY ET  AL. (2013) '
-AIDE1 = 'TYPE OF FLOCULATION FORMULA
+AIDE1 = 'TYPE OF FLOCCULATION FORMULA
          1. Van Leussen
          2. SOULSBY ET  AL. (2013) '
 /
@@ -6512,10 +6514,10 @@ AIDE1 = 'TYPE OF FLOCULATION FORMULA
 /AIDE1 = 'if this key word is equal to yes, the influence of 
 /turbulence on the settling velocity is taken into account'
 /
-/ This is now replaced by Floculation Type = 1
+/ This is now replaced by Flocculation Type = 1
 /
 NOM = 'COEFFICIENT TRADUISANT LA FORMATION DES FLOCS'
-NOM1 = 'FLOCULATION COEFFICIENT'
+NOM1 = 'FLOCCULATION COEFFICIENT'
 TYPE = REEL
 INDEX = 59
 MNEMO = 'TURBA'

@@ -2,7 +2,7 @@
 path: <root>|sources|stbtel
 module: stbtel
 liborder: special parallel damocles bief stbtel
-version: v6p3
+version: v7p0
 name: HOMERE_STBTEL
 
 [bief]

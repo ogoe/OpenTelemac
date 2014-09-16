@@ -101,6 +101,7 @@
       USE BIEF
       USE INTERFACE_TELEMAC3D, EX_VISCLM => VISCLM
       USE DECLARATIONS_TELEMAC
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -143,7 +144,7 @@
 !     OPTION 2 : PURE FINITE ELEMENT PROGRAMMING (PRISMS OR TETRAHEDRONS)
 !
       OPTION = 1
-!
+!  
 !-----------------------------------------------------------------------
 !
       IF(OPTION.EQ.1.AND.IELM3.EQ.41) THEN

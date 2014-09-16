@@ -2,8 +2,8 @@
 path: <root>|sources|utils|partel
 module: partel
 liborder: special bief partel
-version: v6p3
-name: PARTEL
+version: v7p0
+name: HOMERE_PARTEL
 
 [bief]
 path: <root>|sources|utils|bief
@@ -11,24 +11,25 @@ files: bief_def.f
   bief.f
   front2.f
   voisin.f
+  elebd.f
   declarations_telemac.f
   m_med.F
   elebd31.f
   voisin31.f
-  elebd.f
 
 [partel]
 path: <root>|sources|utils|partel
 files: declarations_partel.f
   partitioner.F
+  partel.F
   util_pares.f
   pares3d.F
-  partel.F
   homere_partel.f
 
 [special]
 path: <root>|sources|utils|special
-files: declarations_special.f
+files: extens.f
+  declarations_special.f
   plante.f
   check_allocate.f
   extens.f
