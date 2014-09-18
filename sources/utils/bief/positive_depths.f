@@ -47,7 +47,7 @@
 !+   Argument YAFLODEL removed.
 !
 !history  J-M HERVOUET (LNHE)
-!+        18/07/2014
+!+        18/09/2014
 !+        V7P0
 !+   Now positive sources are first added, then the transfers between 
 !+   points are done, then the negative sources are treated. In this way
@@ -496,10 +496,6 @@
 !
 !     ADDING THE SOURCES (SMH IS NATURALLY ASSEMBLED IN //)
 !     NOW THE NEGATIVE SOURCES
-!##> MST, SBO @ HRW: /!\ THIS PART OF CODE RENDER TELEMAC INOPERABLE
-!    ... H DOES NOT VARY ANYMORE ...
-!    SO TEMPORARILY REPLACING HN BY H.
-!    THIS MIGHT NOT BE THE IDEAL SOLUTION.
       IF(YASMH) THEN
         IF(OPTSOU.EQ.1) THEN
           DO I=1,NPOIN
@@ -511,7 +507,7 @@
           ENDDO
         ENDIF
       ENDIF
-!##< MST, SBO @ HRW
+!
 !
 !
       IF(TESTING) THEN
