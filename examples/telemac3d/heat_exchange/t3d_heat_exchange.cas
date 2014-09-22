@@ -9,13 +9,13 @@ TITRE = 'TELEMAC 3D : CANAL'
 DATE DE L'ORIGINE DES TEMPS : 2006;10;1
 HEURE DE L'ORIGINE DES TEMPS : 0;0;0
 /
-FICHIER FORTRAN                    : t3d_heat_exchange_source_trac.f
+FICHIER FORTRAN                    : t3d_heat_exchange.f
 FICHIER DES CONDITIONS AUX LIMITES : geo_heat_exchange.cli
 FICHIER DE GEOMETRIE               : geo_heat_exchange.slf
 FICHIER DE DONNEES FORMATE 1       : meteo_data.txt
-FICHIER DES RESULTATS 3D           : r3d_heat_exchange_source_trac.slf
-FICHIER DES RESULTATS 2D           : r2d_heat_exchange_source_trac.slf
-FICHIER DE REFERENCE               : f3d_heat_exchange_source_trac.slf
+FICHIER DES RESULTATS 3D           : r3d_heat_exchange.slf
+FICHIER DES RESULTATS 2D           : r2d_heat_exchange.slf
+FICHIER DE REFERENCE               : f3d_heat_exchange.slf
 VALIDATION : OUI
 /
 /----------------------------------------------------------------------/

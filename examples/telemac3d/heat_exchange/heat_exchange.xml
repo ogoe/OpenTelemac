@@ -19,20 +19,15 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="1"  rank="2"
+   <action xref="1"  rank="3"
        do="translate;compile;run;cas;princi" 
-       code="telemac3d" target="t3d_heat_exchange_mixed.cas" 
-       title="heat exchange mixed scalar mode" 
+       code="telemac3d" target="t3d_heat_exchange.cas" 
+       title="heat exchange scalar mode" 
    />
-   <action xref="2"  rank="2"
+   <action xref="2"  rank="5"
        do="translate;compile;run;cas;princi" 
-       code="telemac3d" target="t3d_heat_exchange_source_trac.cas" 
-       title="heat exchange source trac scalar mode" 
-   />
-   <action xref="3"  rank="2"
-       do="translate;compile;run;cas;princi" 
-       code="telemac3d" target="t3d_heat_exchange_source_trac_rain_wind.cas" 
-       title="heat exchange source trac scalar mode" 
+       code="telemac3d" target="t3d_heat_exchange_rain_wind.cas" 
+       title="heat exchange rain wind scalar mode" 
    />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
