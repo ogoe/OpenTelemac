@@ -6,7 +6,7 @@
      &  DEPTH1, CGSUC1, DSXXDX, DSXYDX, DSXYDY, DSYYDY )
 !
 !***********************************************************************
-! TOMAWAC   V6P3                                  27/06/2011
+! TOMAWAC   V7P0                                
 !***********************************************************************
 !
 !brief    COMPUTES THE RADIATION STRESSES AND DRIVING FORCES
@@ -48,6 +48,11 @@
 !+        V7P0
 !+   CALL PARCOM suppressed by using new argument ASSPAR in VECTOR
 !
+!history  C. VILLARET (HR-WALLINGFORD)
+!+        15/09/2014
+!+        V7P0
+!+   Cancellation of radiation stresses below a given depth hmin.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CG1            |-->| DISCRETIZED GROUP VELOCITY
 !| CGSUC1         |<--| WORK TABLE
@@ -71,7 +76,7 @@
 !
       IMPLICIT NONE
 !
-!     VARIABLES IN ARGUMENT
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION FS(NPOIN2,NPLAN,NF),CG1(NPOIN2,NF)
       DOUBLE PRECISION DEPTH1(NPOIN2), CGSUC1(NPOIN2,NF)
@@ -80,13 +85,21 @@
       DOUBLE PRECISION DSXYDY(NPOIN2),DSYYDY(NPOIN2),FY(NPOIN2)
       DOUBLE PRECISION SXX(NPOIN2),SXY(NPOIN2),SYY(NPOIN2)
 !
-!     LOCAL VARIABLES
-!     
-      INTEGER  JP    , JF    , IP
-      DOUBLE PRECISION COEF  , COCO  , SISI  , SICO  , OMEGA 
-      DOUBLE PRECISION DTETAR, C
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!    
+      INTEGER JP,JF,IP
+      DOUBLE PRECISION COEF,COEF2,COCO,SISI,SICO,OMEGA,DTETAR,C
+! 
+!     CV: MINIMUM WATER DEPTH FOR TIDAL FLATS TREATMENT
+!     NEW KEYWORD IS NEEDED
 !
-      DTETAR=DEUPI/DBLE(NPLAN)
+      DOUBLE PRECISION HMIN
+!
+!-----------------------------------------------------------------------
+!
+      HMIN=0.1D0     
+!
+      DTETAR=DEUPI/NPLAN
 !
       DO IP=1,NPOIN2
         SXX(IP) = 0.D0
@@ -108,17 +121,15 @@
 !     
       DO JP=1,NPLAN
         COCO=COSTET(JP)**2
-        SICO=SINTET(JP)*COSTET(JP)
-        SISI=SINTET(JP)*SINTET(JP)
+        SISI=SINTET(JP)**2
+        SICO=SINTET(JP)*COSTET(JP)       
         DO JF=1,NF
           COEF=GRAVIT*DFREQ(JF)*DTETAR
           DO IP=1,NPOIN2
-            SXX(IP)=SXX(IP)
-     &             +(CGSUC1(IP,JF)*(1.D0+SISI)-0.5D0)*FS(IP,JP,JF)*COEF
-            SXY(IP)=SXY(IP)
-     &             +(CGSUC1(IP,JF)*SICO)*FS(IP,JP,JF)*COEF
-            SYY(IP)=SYY(IP)
-     &             +(CGSUC1(IP,JF)*(1.D0+COCO)-0.5D0)*FS(IP,JP,JF)*COEF
+            COEF2=COEF*FS(IP,JP,JF)
+            SXX(IP)=SXX(IP)+(CGSUC1(IP,JF)*(1.D0+SISI)-0.5D0)*COEF2
+            SXY(IP)=SXY(IP)+(CGSUC1(IP,JF)*SICO             )*COEF2
+            SYY(IP)=SYY(IP)+(CGSUC1(IP,JF)*(1.D0+COCO)-0.5D0)*COEF2
           ENDDO
         ENDDO
       ENDDO
@@ -166,11 +177,17 @@
 !     COMPUTES THE DRIVING FORCES FOR WAVE-INDUCED CURRENTS
 !     
       DO IP=1,NPOIN2
-        FX(IP)= - (DSXXDX(IP)+DSXYDY(IP))/DEPTH1(IP)
-        FY(IP)= - (DSXYDX(IP)+DSYYDY(IP))/DEPTH1(IP)
+        IF(DEPTH1(IP).GE.HMIN) THEN
+          FX(IP)= - (DSXXDX(IP)+DSXYDY(IP))/DEPTH1(IP)
+          FY(IP)= - (DSXYDX(IP)+DSYYDY(IP))/DEPTH1(IP)
+        ELSE
+          FX(IP)=0.D0
+          FY(IP)=0.D0
+        ENDIF 
       ENDDO
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
+

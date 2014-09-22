@@ -51,6 +51,11 @@
 !+        V7P0
 !+   ZCONV and ZFLATS now declared as type 15, discontinuous linear.
 !
+!history  G. ANTOINE (EDF LAB, LNHE)
+!+        19/09/2014
+!+        V7P0
+!+   Adding variables for mixed sediment, see IF(MIXTE).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -709,10 +714,12 @@
         CALL BIEF_ALLVEC(1,DIRMOY,'DIRMOY',IELMH,1,1,MESH2D)
         CALL BIEF_ALLVEC(1,HM0   ,'HM0   ',IELMH,1,1,MESH2D)
         CALL BIEF_ALLVEC(1,TPR5  ,'TPR5  ',IELMH,1,1,MESH2D)
+        CALL BIEF_ALLVEC(1,ORBVEL,'ORBVEL',IELMH,1,1,MESH2D)
       ELSE
         CALL BIEF_ALLVEC(1,DIRMOY,'DIRMOY',0    ,1,0,MESH2D)
         CALL BIEF_ALLVEC(1,HM0   ,'HM0   ',0    ,1,0,MESH2D)
         CALL BIEF_ALLVEC(1,TPR5  ,'TPR5  ',0    ,1,0,MESH2D)
+        CALL BIEF_ALLVEC(1,ORBVEL,'ORBVEL',0    ,1,0,MESH2D)
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -1295,7 +1302,7 @@
 !        CALL BIEF_ALLVEC(1, TOCE, 'TOCE  ',      0, 1, 0,MESH2D)
 !      ENDIF
 ! 7.0 Big change
-
+!
         ALLOCATE(CONC(NPOIN2,NCOUCH))
         ALLOCATE(EPAI(NPOIN2,NCOUCH))           ! MUD BED LAYER THICKNESS
         ALLOCATE(TOCE(NPOIN2,NCOUCH))           ! CONCENTRATION OF MUD BED LAYER
@@ -1328,6 +1335,32 @@
         CALL BIEF_ALLVEC(1, PDEPO, 'PDEPO ',      0, 1, 0,MESH2D)
         CALL BIEF_ALLVEC(1, ZR,    'ZR    ',      0, 1, 0,MESH2D)
         CALL BIEF_ALLVEC(2, NPF,   'NPF   ',      0, 1, 0,MESH2D)
+      ENDIF
+!
+!     NEW VARIABLES FOR MIXED SEDIMENT
+!
+      IF(MIXTE) THEN
+        CALL BIEF_ALLVEC(1,EPAICO  ,'EPAICO',IELM2H,1,1,MESH2D)
+        CALL BIEF_ALLVEC(1,EPAINCO ,'EPANCO',IELM2H,1,1,MESH2D)
+        CALL BIEF_ALLVEC(1,PVSCO   ,'PVSCO ',IELM2H,1,1,MESH2D)
+        CALL BIEF_ALLVEC(1,PVSNCO  ,'PVSNCO',IELM2H,1,1,MESH2D)
+        CALL BIEF_ALLVEC(1,FLUERC  ,'FLUERC',IELM2H,1,1,MESH2D)
+        CALL BIEF_ALLVEC(1,FLUERNC ,'FLUENC',IELM2H,1,1,MESH2D)
+        CALL BIEF_ALLVEC(1,FLUDPTC ,'FLUDTC',IELM2H,1,1,MESH2D)
+        CALL BIEF_ALLVEC(1,FLUDPTNC,'FLUTNC',IELM2H,1,1,MESH2D)
+        CALL BIEF_ALLVEC(1,FLUDPC  ,'FLUDPC',IELM2H,1,1,MESH2D)
+        CALL BIEF_ALLVEC(1,FLUDPNC ,'FLUPNC',IELM2H,1,1,MESH2D)
+      ELSE
+        CALL BIEF_ALLVEC(1,EPAICO  ,'EPAICO',0     ,1,0,MESH2D)
+        CALL BIEF_ALLVEC(1,EPAINCO ,'EPANCO',0     ,1,0,MESH2D)
+        CALL BIEF_ALLVEC(1,PVSCO   ,'PVSCO ',0     ,1,0,MESH2D)
+        CALL BIEF_ALLVEC(1,PVSNCO  ,'PVSNCO',0     ,1,0,MESH2D)
+        CALL BIEF_ALLVEC(1,FLUERC  ,'FLUERC',0     ,1,0,MESH2D)
+        CALL BIEF_ALLVEC(1,FLUERNC ,'FLUENC',0     ,1,0,MESH2D)
+        CALL BIEF_ALLVEC(1,FLUDPTC ,'FLUDTC',0     ,1,0,MESH2D)
+        CALL BIEF_ALLVEC(1,FLUDPTNC,'FLUTNC',0     ,1,0,MESH2D)
+        CALL BIEF_ALLVEC(1,FLUDPC  ,'FLUDPC',0     ,1,0,MESH2D)
+        CALL BIEF_ALLVEC(1,FLUDPNC ,'FLUPNC',0     ,1,0,MESH2D)
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -1389,6 +1422,10 @@
           CALL ADDBLO(VARSOR,LAYTHI%ADR(I)%P) 
         ENDDO
       ENDIF
+!
+      CALL ADDBLO(VARSOR,PVSCO)           ! 38+NTRAC+NCOUCH
+      CALL ADDBLO(VARSOR,PVSNCO)          ! 39+NTRAC+NCOUCH
+!
 !
 ! QUASI - OTHER VARIABLES, AN EMPTY BLOCK
 !

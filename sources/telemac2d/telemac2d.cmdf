@@ -867,6 +867,9 @@ files: declarations_tomawac.f
   qnlin1.f
   qnlin2.f
   qnlin3.f
+  qveg.f
+  limite.f
+  qdscur.f
   totnrj.f
   kmoyen.f
   frem01.f

@@ -519,20 +519,6 @@ INITIAL MAIN DIRECTION 2
 INITIAL DIRECTIONAL SPREAD 2 
 INITIAL WEIGHTING FACTOR FOR ADF' 
  
-NOM = 'ENTIER 16 LIBRE' 
-NOM1 = 'INTEGER 16 FREE' 
-TYPE = ENTIER 
-INDEX = 16 
-MNEMO = '?????' 
-TAILLE= 0 
-DEFAUT = 0 
-DEFAUT1 = 0 
-RUBRIQUE = 'DIVERS' 
-RUBRIQUE1 = 'MISCELLANEOUS' 
-NIVEAU = 3 
-AIDE = '?????' 
-AIDE1 = '?????' 
- 
 NOM = 'NUMERO DU PAS DE TEMPS DU FICHIER TELEMAC' 
 NOM1 = 'TIME INCREMENT NUMBER IN TELEMAC FILE' 
 TYPE = ENTIER 
@@ -5028,6 +5014,81 @@ RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 2 
 AIDE = '1 : normal 2 : avec des entiers I8' 
 AIDE1 = '1: normal 2: with I8 integers'  
+/
+NOM = 'PRISE EN COMPTE DE LA VEGETATION' 
+NOM1 = 'VEGETATION TAKEN INTO ACCOUNT' 
+TYPE = LOGIQUE 
+INDEX = 17 
+MNEMO = 'VEGETATION' 
+TAILLE = 1 
+DEFAUT = NON 
+DEFAUT1 =  NO 
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 1 
+AIDE = 'Si oui, on appelle le sous-programme QVEG, dans lequel des
+donnees sur la vegetation doivent etre renseignees' 
+AIDE1 = 'If YES, subroutine QVEG will be called, it contains data
+on vegetation that are case-specific and must thus be modified' 
+/
+/ ADDED BY EGR ON 30/07/2014 
+/
+NOM = 'DISSIPATION PAR FORT COURANT' 
+NOM1 = 'DISSIPATION BY STRONG CURRENT' 
+TYPE = ENTIER 
+INDEX = 16
+MNEMO = 'SDSCU' 
+TAILLE= 0 
+CONTROLE = 0 ; 2 
+DEFAUT = 0 
+DEFAUT1 = 0 
+CHOIX = '0="Pas de wave-blocking"';
+'1="Limitation du spectre par une forme de Phillips"';
+'2="Dissipation selon Van der Westhuysen(2012)"'
+CHOIX1 = '0="No wave-blocking"';
+'1="Spectrum limitation by a Phillips shape"';
+'2="Dissipation in accordance with Van der Westhuysen(2012)"'
+RUBRIQUE = 'DISSIPATION'
+RUBRIQUE1 = 'DISSIPATION'
+NIVEAU = 1 
+AIDE = 'Lorsque les effets de wave-blocking ou vagues stoppees 
+par un fort courant sont presents, deux options sont proposees. 
+Si sa valeur est 1, une limitation est imposee au spectre, 
+en utilisant une forme d equilibre de Phillips (1977). 
+Si sa valeur est 2, on utilise le terme de dissipation propose 
+par Van der Westhuysen (2012).
+**Mots-cles associes :** 
+COEFFICIENT DE DISSIPATION PAR FORT COURANT' 
+AIDE1 = 'When wave-blocking effects are present (wave stopped by 
+a strong opposing current), two options are possible. 
+If its value is 1, an upper limit is imposed to the spectrum, 
+using a Phillips (1977) shape.
+If its value is 2, a dissipative term is added, following 
+Van der Westhuysen (2012).
+**Related keywords:**
+DISSIPATION COEFFICIENT FOR STRONG CURRENT'
+/
+NOM = 'COEFFICIENT DE DISSIPATION PAR FORT COURANT'
+NOM1 = 'DISSIPATION COEFFICIENT FOR STRONG CURRENT'
+TYPE = REEL
+INDEX = 87
+MNEMO = 'CDSCUR'
+TAILLE= 0
+DEFAUT = 0.65
+DEFAUT1 = 0.65
+RUBRIQUE = 'DISSIPATION'
+RUBRIQUE1 = 'DISSIPATION'
+NIVEAU = 1
+AIDE = 'Coefficient de dissipation pour des vagues stoppees 
+par un courant fort adverse (effets de wave-blocking). 
+Expression de van der Westhuysen (2012): Cds,cur.
+**Mots-cles associes :**
+DISSIPATION PAR FORT COURANT'
+AIDE1 = 'Dissipation coefficient for waves stopped 
+by a strong opposing current (wave blocking effects).
+Van der Westhuysen (2012) expression: Cds,cur.
+**Related keywords:**
+DISSIPATION BY STRONG CURRENT'
 /
 / Various keywords for scripts
 /

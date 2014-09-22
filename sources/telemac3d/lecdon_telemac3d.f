@@ -57,6 +57,16 @@
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
 !
+!history  J-M HERVOUET (EDF LAB LNHE)
+!+        12/09/2014
+!+        V7P0
+!+   Variable SORG2D(37) set to false if .NOT.SEDI
+!
+!history  G. ANTOINE (EDF LAB, LNHE)
+!+        19/09/2014
+!+        V7P0
+!+   Adding 3 keywords for mixed sediment
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<->| KEYWORD IN CHARACTER
@@ -808,6 +818,11 @@
 ! TBE
       CGEL= MOTREA( ADRESS(2,103) )
       CINI= MOTREA( ADRESS(2,104) )
+!     SETTLING VELOCITY OF SANDS
+      WCS = MOTREA( ADRESS(2,105) )
+!     INITIAL PERCENTAGE OF NON COHESIVE SEDIMENT
+      PVSNCO0 = MOTREA( ADRESS(2,106) )
+!     
 !     COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL
       C_ATMOS   = MOTREA( ADRESS(2,37) )
 !
@@ -888,9 +903,13 @@
 !     INFERENCE OF MINOR CONSTITUENTS OF TPXO TIDAL DATABASE
       INTMICON  = MOTLOG( ADRESS(3,86) )
 ! TBE + CV
-        READ_TOCE=  MOTLOG( ADRESS(3,87)) 
-        HINDER=  MOTLOG( ADRESS(3,90)) 
-        FLOC =  MOTLOG( ADRESS(3,91)) 
+      READ_TOCE=  MOTLOG( ADRESS(3,87)) 
+      HINDER=  MOTLOG( ADRESS(3,90)) 
+      FLOC =  MOTLOG( ADRESS(3,91)) 
+!     MIXED SEDIMENT
+      MIXTE=  MOTLOG( ADRESS(3,92)) 
+!     LOGICAL SEDNCO IS DEDUCED FROM MIXTE AND SEDCO
+      SEDNCO=MIXTE.EQV.SEDCO
 !
 !     FOR NEXT LOGICAL, USE 21 TO 50 AND OTHER AVAILABLE NUMBERS !!!!!!!!!!!!
 !
@@ -1683,6 +1702,7 @@
         SORG2D(32) = .FALSE.
         SORG2D(33) = .FALSE.
         SORG2D(34) = .FALSE.
+        SORG2D(37) = .FALSE.
       ENDIF
       IF(.NOT.VENT) THEN
         SORG2D(16) = .FALSE.
@@ -2354,3 +2374,4 @@
 
       RETURN
       END
+

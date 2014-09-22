@@ -1748,7 +1748,7 @@
 !
 !     VARIABLES TRANSMITTED FROM TOMAWAC TO SISYPHE
 !
-      TYPE(BIEF_OBJ) :: DIRMOY,HM0,TPR5
+      TYPE(BIEF_OBJ) :: DIRMOY,HM0,TPR5,ORBVEL
 !
 !
 !-----------------------------------------------------------------------

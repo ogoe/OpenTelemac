@@ -640,6 +640,17 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE LIMITE( F , DEPTH , FREQ  , NPOIN2, NPLAN , NF    )
+        IMPLICIT NONE    
+        INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
+        DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF),DEPTH(NPOIN2)
+        DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN2,NPLAN,NF)   
+        END SUBROUTINE   
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE LIMWAC
      &(F     , FBOR  , LIFBOR, NPTFR , NPLAN , NF    ,  TETA , FREQ  ,
      & NPOIN2, NBOR  , AT    , LT    , DDC   , LIMSPE, FPMAXL, FETCHL,
@@ -1044,6 +1055,31 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE QDSCUR
+     &( TSTOT , TSDER , F     , CF    , XK    , FREQ  , USOLD , USNEW , 
+     &  DEPTH , PROINF, CDSCUR, CMOUT4, NF    , NPLAN , NPOIN2, CIMPLI,
+     &  F_INT  , BETOTO, BETOTN)
+      IMPLICIT NONE
+      INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
+      DOUBLE PRECISION, INTENT(IN)    :: CMOUT4, CDSCUR
+      DOUBLE PRECISION, INTENT(IN)    :: CIMPLI
+      DOUBLE PRECISION, INTENT(IN)    :: USNEW(NPOIN2),USOLD(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF),DEPTH(NPOIN2) 
+      DOUBLE PRECISION, INTENT(IN)    :: XK(NPOIN2,NF) 
+      DOUBLE PRECISION, INTENT(INOUT) :: F_INT(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: BETOTO(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: BETOTN(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: TSDER(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN2,NPLAN,NF)
+      LOGICAL, INTENT(IN)             :: PROINF
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE QFROT1
      &( TSTOT , TSDER , F     , XK    , DEPTH , CFROT1, GRAVIT, NF    ,
      &  NPLAN , NPOIN2, BETA  )
@@ -1225,6 +1261,32 @@
       END INTERFACE
 !
 !-----------------------------------------------------------------------
+!=======================================================================
+!VBA AJOUT SUBROUTINE QVEG1 12/09/2014
+!=======================================================================
+!
+      INTERFACE
+        SUBROUTINE QVEG1
+     &( TSTOT , TSDER , F , VARIAN , DEPTH, FMOY , 
+     &  XKMOY , NF    , NPLAN  , NPOIN2   , BETA  )
+!
+      IMPLICIT NONE
+      INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
+      DOUBLE PRECISION, INTENT(IN)    :: XKMOY(NPOIN2),VARIAN(NPOIN2) 
+      DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2),FMOY(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: BETA(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: TSDER(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF)
+        END SUBROUTINE
+      END INTERFACE
+!
+!=========================================================================
+!VBA FIN AJOUT SUBROUTINE QVEG1
+!=========================================================================
+!
+!
+!-----------------------------------------------------------------------
 !
       INTERFACE
         SUBROUTINE QWIND1
@@ -1366,7 +1428,7 @@
 !
       INTERFACE
         SUBROUTINE SEMIMP 
-     &( F     ,XK    ,FREQ  ,DFREQ ,DEPTH ,VENTX ,VENTY ,X     ,Y     ,
+     &( F ,CF ,XK    ,FREQ  ,DFREQ ,DEPTH ,VENTX ,VENTY ,X     ,Y     ,
      &  NVEB  ,NVEF  ,NBOR  ,NPTFR ,DDC   ,TV1   ,TV2   ,
      &  U1    ,V1    ,U2    ,V2    ,TETA  ,SINTET,COSTET,INDIC ,
      &  TAILF ,RAISF ,GRAVIT,CFROT1,CMOUT1,CMOUT2,CMOUT3,CMOUT4,CMOUT5,
@@ -1384,10 +1446,10 @@
      &  SEUIL ,LBUF  ,DIMBUF,F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1 ,
      &  K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
      &  K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP, 
-     &  TB_FAC,MDIA  ,IANMDI,COEMDI,NVWIN,DIAGHF) 
+     &  TB_FAC,MDIA,IANMDI,COEMDI,NVWIN,DIAGHF,VEGETATION,SDSCU,CDSCUR) 
       IMPLICIT NONE
       INTEGER          NPOIN2, NPLAN , NF    , NSITS , NPTFR , NVEB  
-      INTEGER          NVEF  , LIMIT , NVWIN
+      INTEGER          NVEF  , LIMIT , NVWIN , SDSCU
       INTEGER          SMOUT , SFROT , SVENT , STRIF , SBREK , INDIC 
       INTEGER          IQBBJ , IHMBJ , IFRBJ , IWHTG , IFRTG , IFRRO 
       INTEGER          IEXPRO, IFRIH , NDTBRK, IDISRO, STRIA 
@@ -1416,12 +1478,13 @@
      &                 FREQ(NF), DFREQ(NF), 
      &                 TOLD(NPOIN2,NPLAN), TNEW(NPOIN2,NPLAN)
       DOUBLE PRECISION BETA(NPOIN2)
+      DOUBLE PRECISION CF(NPOIN2,NPLAN,NF)
       CHARACTER*144 NOMVEB, NOMVEF
       CHARACTER*3 BINVEN
-      LOGICAL  PROINF, VENT , VENSTA
+      LOGICAL  PROINF, VENT , VENSTA,VEGETATION
       INTEGER           LVENT 
       DOUBLE PRECISION  CMOUT3, CMOUT4, CMOUT5, CMOUT6
-      DOUBLE PRECISION  COEFWD, COEFWE, COEFWF, COEFWH
+      DOUBLE PRECISION  COEFWD, COEFWE, COEFWF, COEFWH,CDSCUR
       INTEGER           MDIA
       INTEGER           IANMDI(NPLAN,16,MDIA)
       DOUBLE PRECISION  COEMDI(32,MDIA)
@@ -2048,14 +2111,14 @@
         SUBROUTINE WAC
      &(PART, U_TEL, V_TEL, H_TEL, FX_WAC, FY_WAC, UV_WAC, VV_WAC,
      & CODE, T_TEL, DT_TEL,NIT_TEL,PERCOU_WAC,
-     & DIRMOY_TEL,HM0_TEL,TPR5_TEL)
+     & DIRMOY_TEL,HM0_TEL,TPR5_TEL,ORBVEL_TEL)
       USE BIEF_DEF
       IMPLICIT NONE
       INTEGER,           INTENT(IN)      :: PART,NIT_TEL,PERCOU_WAC
       CHARACTER(LEN=24), INTENT(IN)      :: CODE
       TYPE(BIEF_OBJ),    INTENT(IN)      :: U_TEL,V_TEL,H_TEL
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: DIRMOY_TEL,HM0_TEL,TPR5_TEL
-      TYPE(BIEF_OBJ),    INTENT(INOUT)   :: FX_WAC,FY_WAC
+      TYPE(BIEF_OBJ),    INTENT(INOUT)   :: FX_WAC,FY_WAC,ORBVEL_TEL
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: UV_WAC,VV_WAC
       DOUBLE PRECISION,  INTENT(IN)      :: DT_TEL,T_TEL
         END SUBROUTINE

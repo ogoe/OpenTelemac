@@ -50,8 +50,13 @@
 !
 !history  J-M HERVOUET (EDF R&D LNHE)
 !+        09/05/2014
-!+        V7P03
+!+        V7P0
 !+   Retrieving MODASS for new parallel assembly with integers.
+!
+!history  J-M HERVOUET (EDF R&D LNHE)
+!+        12/09/2014
+!+        V7P0
+!+   Retrieving VEGETATION for VEGETATION TAKEN INTO ACCOUNT
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| NAME OF CALLING PROGRAMME
@@ -240,8 +245,8 @@
       INDIV  = MOTINT( ADRESS(1, 13) )
       NSITS  = MOTINT( ADRESS(1, 14) )
       INISPE = MOTINT( ADRESS(1, 15) )
-!     FREE INTEGER
-!     ?????  = MOTINT( ADRESS(1, 16) )
+!     DISSIPATION BY STRONG CURRENT
+      SDSCU  = MOTINT( ADRESS(1, 16) )
       NPTT   = MOTINT( ADRESS(1, 17) )
       LVMAC  = MOTINT( ADRESS(1, 18) )
       SBREK  = MOTINT( ADRESS(1, 19) )
@@ -407,6 +412,8 @@
       PHASCOB= MOTREA( ADRESS(2, 84) )
       PHASMAB= MOTREA( ADRESS(2, 85) )
       PHASVEB= MOTREA( ADRESS(2, 86) )
+!     DISSIPATION COEFFICIENT FOR STRONG CURRENT  
+      CDSCUR = MOTREA( ADRESS(2, 87) )
 !
 ! LOGICAL KEYWORDS
 !
@@ -426,6 +433,7 @@
       SPEULI = MOTLOG( ADRESS(3, 14) )
       FLTDIF = MOTLOG( ADRESS(3, 15) )
       RAZTIM = MOTLOG( ADRESS(3, 16) )
+      VEGETATION = MOTLOG( ADRESS(3, 17) )
 !
 ! STRING KEYWORDS
 !

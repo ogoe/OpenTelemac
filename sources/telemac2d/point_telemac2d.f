@@ -806,10 +806,12 @@
         CALL BIEF_ALLVEC(1,DIRMOY,'DIRMOY',IELMH,1,1,MESH)
         CALL BIEF_ALLVEC(1,HM0   ,'HM0   ',IELMH,1,1,MESH)
         CALL BIEF_ALLVEC(1,TPR5  ,'TPR5  ',IELMH,1,1,MESH)
+        CALL BIEF_ALLVEC(1,ORBVEL,'ORBVEL',IELMH,1,1,MESH)
       ELSE
         CALL BIEF_ALLVEC(1,DIRMOY,'DIRMOY',0    ,1,0,MESH)
         CALL BIEF_ALLVEC(1,HM0   ,'HM0   ',0    ,1,0,MESH)
         CALL BIEF_ALLVEC(1,TPR5  ,'TPR5  ',0    ,1,0,MESH)
+        CALL BIEF_ALLVEC(1,ORBVEL,'ORBVEL',0    ,1,0,MESH)
       ENDIF
 !
 !-----------------------------------------------------------------------

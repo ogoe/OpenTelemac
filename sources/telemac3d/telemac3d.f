@@ -142,6 +142,11 @@
 !+   after (atmospheric pressure gradients now systematically added
 !+   to free surface gradients).
 !
+!history  C VILLARET (HRW+EDF) & J-M HERVOUET (EDF - LNHE)
+!+        18/09/2014
+!+        V7P0
+!+   Calls to sisyphe and wac chenged.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -197,8 +202,6 @@
       TYPE(SLVCFG) :: SLVD
 !
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
-!
-      DOUBLE PRECISION ERROR
 !
 !=======================================================================
 !
@@ -1202,7 +1205,8 @@
      &               LBID,IBID,LBID,CODE1,PERCOU_SIS,
      &               U,V,AT,VISCVI,DT,CHARR,SUSP,
 !                          1 PRECLUDES THE USE OF THE FOLLOWING ARGUMENTS
-     &               FLBOR,1,DM1,UCONV,VCONV,ZCONV,DIRMOY,HM0,TPR5)
+     &               FLBOR,1,DM1,UCONV,VCONV,ZCONV,DIRMOY,HM0,TPR5,
+     &               ORBVEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DU PREMIER APPEL DE SISYPHE'
         CALL CONFIG_CODE(1)
 !
@@ -1230,7 +1234,7 @@
 !       CALL WAC(0,U2D,V2D,H,FXH,FYH,WINDX,WINDY,CODE1,AT,DT,NIT,
 !                PERCOU_WAC,DIRMOY,HM0,TPR5)
         CALL WAC(0,U2D,V2D,H,FXH,FYH,T2_01,T2_02,CODE1,AT,DT,NIT,
-     &           PERCOU_WAC,DIRMOY,HM0,TPR5)
+     &           PERCOU_WAC,DIRMOY,HM0,TPR5,ORBVEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE TOMAWAC'
         CALL CONFIG_CODE(1)
 !
@@ -1324,7 +1328,7 @@
 !                          1 PRECLUDES THE USE OF THE 4 FOLLOWING ARGUMENTS
      &               FLBOR,1,DM1,UCONV,VCONV,ZCONV,
 !                    VARIABLES TRANSMITTED FROM TOMAWAC
-     &               DIRMOY,HM0,TPR5)
+     &               DIRMOY,HM0,TPR5,ORBVEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SISYPHE'
         CALL CONFIG_CODE(1)
 !
@@ -1351,7 +1355,7 @@
 !       CALL WAC(1,U2D,V2D,H,FXH,FYH,WINDX,WINDY,CODE1,AT,
 !    *           DT,NIT,PERCOU_WAC,DIRMOY,HM0,TPR5)
         CALL WAC(1,U2D,V2D,H,FXH,FYH,T2_01,T2_02,CODE1,AT,
-     &           DT,NIT,PERCOU_WAC,DIRMOY,HM0,TPR5)
+     &           DT,NIT,PERCOU_WAC,DIRMOY,HM0,TPR5,ORBVEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE TOMAWAC'
         CALL CONFIG_CODE(1)
 !

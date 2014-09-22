@@ -842,6 +842,8 @@ files: declarations_tomawac.f
   qgauss.f
   qbrek3.f
   qbrek2.f
+  qdscur.f
+  qveg.f
   qwind3.f
   qwind2.f
   qwind1.f
@@ -853,6 +855,7 @@ files: declarations_tomawac.f
   kmoyen.f
   frem01.f
   frem02.f
+  limite.f
   qtria1.f
   qmout1.f
   qmout2.f

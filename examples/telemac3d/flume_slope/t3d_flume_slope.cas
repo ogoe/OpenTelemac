@@ -114,7 +114,7 @@ REFERENCE FILE              : 'r3d_flume_slope_set1.ref'
  READ CRITICAL BED SHEAR STRESS PER LAYER = no
  CRITICAL EROSION SHEAR STRESS OF THE MUD LAYERS = 0.2  
  CRITICAL SHEAR STRESS FOR DEPOSITION = 0.D0
- INITIAL THICKNESS OF MUD LAYERS  = 0.D0  
+ INITIAL THICKNESS OF SEDIMENT LAYERS  = 0.D0  
  MUD CONCENTRATIONS PER LAYER     = 500.0   / top first...downwards
 /
 /----------------------------------------------------------------------/

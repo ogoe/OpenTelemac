@@ -322,6 +322,10 @@
 !
       INTEGER OPTDER
 !
+!     DISSIPATION BY STRONG CURRENT
+!
+      INTEGER SDSCU
+!
 !     TIME STEP
 !
       DOUBLE PRECISION DT
@@ -449,98 +453,129 @@
 !     TRIADS 1 (LTA) COEFFICIENT RFMLTA
 ! 
       DOUBLE PRECISION RFMLTA
-!> @brief TRIADS 2 (SPB) COEFFICIENT K
-! triads 2 (spb) constante k
+!
+!     TRIADS 2 (SPB) COEFFICIENT K
+! 
       DOUBLE PRECISION KSPB
-!> @brief TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY
-! triads 2 (spb) borne directionnelle inferieure
+!
+!     TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY
+! 
       DOUBLE PRECISION BDISPB
-!> @brief TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY
-! triads 2 (spb) borne directionnelle superieure
+!
+!     TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY
+! 
       DOUBLE PRECISION BDSSPB
-!> @brief SIGNIFICANT WAVE HEIGHT
-! hauteur significative jonswap
+!
+!     SIGNIFICANT WAVE HEIGHT
+! 
       DOUBLE PRECISION HM0
-!> @brief PEAK FREQUENCY
-! frequence de pic jonswap
+!
+!     PEAK FREQUENCY
+! 
       DOUBLE PRECISION FPIC
-!> @brief PEAK FACTOR
-! facteur de forme de pic jonswap
+!
+!     PEAK FACTOR
+! 
       DOUBLE PRECISION GAMMA
-!> @brief VALUE OF SIGMA-A FOR SPECTRUM
-! valeur de sigma jonswap pour f < fp
+!
+!     VALUE OF SIGMA-A FOR SPECTRUM
+! 
       DOUBLE PRECISION SIGMAA
-!> @brief VALUE OF SIGMA-B FOR SPECTRUM
-! valeur de sigma jonswap pour f > fp
+!
+!     VALUE OF SIGMA-B FOR SPECTRUM
+! 
       DOUBLE PRECISION SIGMAB
-!> @brief PHILLIPS CONSTANT
-! constante de phillips (alpha)
+!
+!     PHILLIPS CONSTANT
+! 
       DOUBLE PRECISION ALPHIL
-!> @brief MEAN FETCH VALUE
-! fetch moyen
+!
+!     MEAN FETCH VALUE
+!  
       DOUBLE PRECISION FETCH
-!> @brief MAXIMUM PEAK FREQUENCY
-! valeur maximum de la frequence de pic
+!
+!     MAXIMUM PEAK FREQUENCY
+!  
       DOUBLE PRECISION FREMAX
-!> @brief MAIN DIRECTION 1
-! direction principale 1 pour fonction de repartition ang.
+!
+!     MAIN DIRECTION 1
+! 
       DOUBLE PRECISION TETA1
-!> @brief DIRECTIONAL SPREAD 1
-! etalement directionnel 1 pour fonction de repartition ang.
+!
+!     DIRECTIONAL SPREAD 1
+! 
       DOUBLE PRECISION SPRED1
-!> @brief MAIN DIRECTION 2
-! direction principale 2 pour fonction de repartition ang.
+!
+!     MAIN DIRECTION 2
+! 
       DOUBLE PRECISION TETA2
-!> @brief DIRECTIONAL SPREAD 2
-! etalement directionnel 2 pour fonction de repartition ang.
+!
+!     DIRECTIONAL SPREAD 2
+! 
       DOUBLE PRECISION SPRED2
-!> @brief WEIGHTING FACTOR FOR ADF (DIRECTIONAL SPREADING FUNCTION)
-! facteur de ponderation pour la fonction de repartition ang.
+!
+!     WEIGHTING FACTOR FOR ADF (DIRECTIONAL SPREADING FUNCTION)
+! 
       DOUBLE PRECISION XLAMDA
-!> @brief SPECTRUM TAIL FACTOR
-! facteur de queue du spectre
+!
+!     SPECTRUM TAIL FACTOR
+! 
       DOUBLE PRECISION TAILF
-!> @brief SPECTRUM ENERGY THRESHOLD
-! seuil minimum de variance considere
+!
+!     SPECTRUM ENERGY THRESHOLD
+! 
       DOUBLE PRECISION E2FMIN
-!> @brief BOUNDARY SIGNIFICANT WAVE HEIGHT
-! hauteur significative aux limites
+!
+!     BOUNDARY SIGNIFICANT WAVE HEIGHT
+! 
       DOUBLE PRECISION HM0L
-!> @brief BOUNDARY PEAK FREQUENCY
-! frequence de pic aux limites
+!
+!     BOUNDARY PEAK FREQUENCY
+! 
       DOUBLE PRECISION FPICL
-!> @brief BOUNDARY SPECTRUM VALUE OF SIGMA-A
-! valeur aux limites de sigma-a pour spectre
+!
+!     BOUNDARY SPECTRUM VALUE OF SIGMA-A
+! 
       DOUBLE PRECISION SIGMAL
-!> @brief BOUNDARY SPECTRUM VALUE OF SIGMA-B
-! valeur aux limites de sigma-b pour spectre
+!
+!     BOUNDARY SPECTRUM VALUE OF SIGMA-B
+! 
       DOUBLE PRECISION SIGMBL
-!> @brief BOUNDARY PHILLIPS CONSTANT
-! constante de phillips aux limites
+!
+!     BOUNDARY PHILLIPS CONSTANT
+! 
       DOUBLE PRECISION APHILL
-!> @brief BOUNDARY MEAN FETCH VALUE
-! valeur moyenne du fetch aux limites
+!
+!     BOUNDARY MEAN FETCH VALUE
+! 
       DOUBLE PRECISION FETCHL
-!> @brief BOUNDARY MAXIMUM PEAK FREQUENCY
-! frequence de pic maximale aux limites
+!
+!     BOUNDARY MAXIMUM PEAK FREQUENCY
+! 
       DOUBLE PRECISION FPMAXL
-!> @brief BOUNDARY MAIN DIRECTION 1
-! direction principale 1 aux limites
+!
+!     BOUNDARY MAIN DIRECTION 1
+! 
       DOUBLE PRECISION TETA1L
-!> @brief BOUNDARY DIRECTIONAL SPREAD 1
-! etalement directionnel 1 aux limites
+!
+!     BOUNDARY DIRECTIONAL SPREAD 1
+! 
       DOUBLE PRECISION SPRE1L
-!> @brief BOUNDARY MAIN DIRECTION 2
-! direction principale 2 aux limites
+!
+!     BOUNDARY MAIN DIRECTION 2
+! 
       DOUBLE PRECISION TETA2L
-!> @brief BOUNDARY DIRECTIONAL SPREAD 2
-! etalement directionnel 2 aux limites
+!
+!     BOUNDARY DIRECTIONAL SPREAD 2
+! 
       DOUBLE PRECISION SPRE2L
-!> @brief BOUNDARY WEIGHTING FACTOR FOR ADF
-! facteur de ponderation pour fonction de repartition angulaire aux limites
+!
+!     BOUNDARY WEIGHTING FACTOR FOR ADF
+!
       DOUBLE PRECISION XLAMDL
-!> @brief BOUNDARY PEAK FACTOR
-! facteur de pic aux limites
+!
+!     BOUNDARY PEAK FACTOR
+! 
       DOUBLE PRECISION GAMMAL
 !
 !     ?????
@@ -606,6 +641,10 @@
 !     SPECTRUM VARIANCE THRESHOLD FOR DIFFRACTION
 ! 
       DOUBLE PRECISION F2DIFM
+!
+!     DISSIPATION COEFFICIENT FOR STRONG CURRENT
+! 
+      DOUBLE PRECISION CDSCUR
 !
 !     CONSIDERATION OF SOURCE TERMS
 ! 
@@ -674,6 +713,10 @@
 !     INITIAL TIME SET TO ZERO
 !
       LOGICAL RAZTIM
+!
+!     VEGETATION TAKEN INTO ACCOUNT
+!
+      LOGICAL VEGETATION
 !
 !     TITLE
 ! 

@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P3                                   21/07/2011
+! SISYPHE   V7P0                                  
 !***********************************************************************
 !
 !brief    1) ACQUIRES THE DATA REQUIRED TO DEFINE THE POINTERS:
@@ -28,6 +28,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C VILLARET (HRW+EDF) & J-M HERVOUET (EDF - LNHE)
+!+        18/09/2014
+!+        V7P0
+!+   Adding T1 for the variable ORBVEL_TEL in sisyphe arguments
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -106,7 +111,7 @@
       CALL SISYPHE(-1,0,0,0,0,T1,T1,T1,T1,T1,T1,T1,T1,
      &             DUMLOG,DUMINT,DUMLOG,CODE,1,
      &             T1,T1,0.D0,T1,0.D0,DUMLOG,DUMLOG,
-     &             T1,1,T1,T1,T1,T1,T1,T1,T1)
+     &             T1,1,T1,T1,T1,T1,T1,T1,T1,T1)
 !
 !-----------------------------------------------------------------------
 !

@@ -4,10 +4,10 @@
 !
      &(PART, U_TEL, V_TEL, H_TEL, FX_WAC, FY_WAC, UV_WAC, VV_WAC,
      & CODE, T_TEL, DT_TEL,NIT_TEL,PERCOU_WAC,
-     & DIRMOY_TEL,HM0_TEL,TPR5_TEL)
+     & DIRMOY_TEL,HM0_TEL,TPR5_TEL,ORBVEL_TEL)
 !
 !***********************************************************************
-! TOMAWAC   V6P3                                   25/06/2012
+! TOMAWAC   V7P0                                   
 !***********************************************************************
 !
 !brief    MAIN SUBROUTINE OF TOMAWAC
@@ -28,6 +28,26 @@
 !+   Sisyphe through Telemac-2D or 3D. Values computed in case of triple
 !+   coupling.
 !
+!history  E. GAGNAIRE-RENOU (EDF - LNHE)
+!+        12/09/2014
+!+        V7P0
+!+   New arguments for SEMIMP for wave-blocking effects
+!+   Call the new routine LIMITE
+!
+!history  J-M HERVOUET (EDF - LNHE)
+!+        15/09/2014
+!+        V7P0
+!+   Initialisation of STRA42 and STRA34 if .NOT.VENT 
+!+   (a former overlooked bug)
+!+   PERCOU_WAC now used (correction by Catherine Villaret (HR+EDF)
+!+   and Pablo*(Tassi+Santoro)).
+!
+!history  C VILLARET (HRW+EDF) & J-M HERVOUET (EDF - LNHE)
+!+        18/09/2014
+!+        V7P0
+!+   Adding the variable ORBVEL_TEL in argument (orbital velocity)
+!+   for sending it back to the calling program.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
 !| DT_TEL         |-->| TELEMAC MODEL TIME STEP
@@ -35,6 +55,7 @@
 !| FY_WAC         |<--| DRIVING FORCE ALONG Y PASSED TO TELEMAC
 !| H_TEL          |-->| TELEMAC MODEL WATER DEPTH
 !| NIT_TEL        |-->| NUMBER OF TELEMAC TIME STEPS
+!| ORBVEL_TEL     |-->| ORBITAL VELOCITY
 !| PART           |-->| -1: NO COUPLING
 !|                |   |  0: COUPLING WITH TELEMAC (INITIALISATION) 
 !|                |   |  1: COUPLING WITH TELEMAC (LOOP OVER TIME STEPS) 
@@ -62,6 +83,7 @@
       CHARACTER(LEN=24), INTENT(IN)      :: CODE
       TYPE(BIEF_OBJ),    INTENT(IN)      :: U_TEL,V_TEL,H_TEL
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: DIRMOY_TEL,HM0_TEL,TPR5_TEL
+      TYPE(BIEF_OBJ),    INTENT(INOUT)   :: ORBVEL_TEL
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: FX_WAC,FY_WAC
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: UV_WAC,VV_WAC
       DOUBLE PRECISION,  INTENT(IN)      :: DT_TEL,T_TEL
@@ -130,29 +152,33 @@
            CALL PLANTE(1)
            STOP
         ENDIF
-!
-        DT_MAX=MAX(DT,DT_TEL)
-        DT_MIN=MIN(DT,DT_TEL)
+! CV (taken by JMH on 15/09/2014)
+!       DT_MAX=MAX(DT,DT_TEL)
+!       DT_MIN=MIN(DT,DT_TEL)
+!       Changed to
+        DT_MAX=MAX(DT,DT_TEL*PERCOU_WAC)
+        DT_MIN=MIN(DT,DT_TEL*PERCOU_WAC)
+! CV
         IF(ABS(NINT(DT_MAX/DT_MIN)-DT_MAX/DT_MIN).GT.1.D-6) THEN
-           IF(LNG.EQ.1) THEN
-             WRITE(LU,*) ''
-             WRITE(LU,*) '***************************************'
-             WRITE(LU,*) ' ATTENTION : COUPLAGE TELEMAC-TOMAWAC :'
-             WRITE(LU,*) ' LES DEUX PAS DE TEMPS UTILISES NE SONT'
-             WRITE(LU,*) ' PAS UN MULTIPLE DE L''AUTRE.          '
-             WRITE(LU,*) '           ARRET DU PROGRAMME          '
-             WRITE(LU,*) '***************************************'
-           ELSE
-             WRITE(LU,*) ''
-             WRITE(LU,*) '***************************************'
-             WRITE(LU,*) ' ATTENTION : COUPLING TELEMAC-TOMAWAC :'
-             WRITE(LU,*) ' THE CHOSEN TIME STEPS ARE NOT MULTIPLE'
-             WRITE(LU,*) ' OF EACH OTHER.                        '
-             WRITE(LU,*) '         END OF THE COMPUTATION        '
-             WRITE(LU,*) '***************************************'
-           ENDIF
-           CALL PLANTE(1)
-           STOP
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) ''
+            WRITE(LU,*) '***************************************'
+            WRITE(LU,*) ' ATTENTION : COUPLAGE TELEMAC-TOMAWAC :'
+            WRITE(LU,*) ' LES DEUX PAS DE TEMPS UTILISES NE SONT'
+            WRITE(LU,*) ' PAS UN MULTIPLE DE L''AUTRE.          '
+            WRITE(LU,*) '           ARRET DU PROGRAMME          '
+            WRITE(LU,*) '***************************************'
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) ''
+            WRITE(LU,*) '***************************************'
+            WRITE(LU,*) ' ATTENTION : COUPLING TELEMAC-TOMAWAC :'
+            WRITE(LU,*) ' THE CHOSEN TIME STEPS ARE NOT MULTIPLE'
+            WRITE(LU,*) ' OF EACH OTHER.                        '
+            WRITE(LU,*) '         END OF THE COMPUTATION        '
+            WRITE(LU,*) '***************************************'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
         ENDIF
       ENDIF
 !
@@ -289,9 +315,11 @@
 !
 !     CALCUL DE LA PROFONDEUR D'EAU (TABLEAU DEPTH)
 !
-      DO IP=1,NPOIN2
-        DEPTH(IP)=MAX(ZREPOS-ZF(IP),0.9D0*PROMIN)
-      ENDDO
+      IF(.NOT.PROINF) THEN
+        DO IP=1,NPOIN2
+          DEPTH(IP)=MAX(ZREPOS-ZF(IP),0.9D0*PROMIN)
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -381,35 +409,39 @@
      &              NVHMA,NVCOU,NVWIN,PART,U_TEL,V_TEL,H_TEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CONDIW'
 !       JMH: DEPTH MAY BE MODIFIED IN CONDIW
-        DO IP=1,NPOIN2
-          IF(DEPTH(IP).LT.PROMIN) DEPTH(IP)=0.9D0*PROMIN
-        ENDDO
+        IF(.NOT.PROINF) THEN
+          DO IP=1,NPOIN2
+            IF(DEPTH(IP).LT.PROMIN) DEPTH(IP)=0.9D0*PROMIN
+          ENDDO
+        ENDIF
       ENDIF
 !
       IF(RAZTIM) AT=0.D0
 !
       AT0=AT
 !
-      DO IP=1,NPOIN2
-        IF(DEPTH(IP).LE.0.D0) THEN
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) ''
-            WRITE(LU,*) '*************************'
-            WRITE(LU,*) ' ! PROFONDEUR NEGATIVE ! '
-            WRITE(LU,*) '   ARRET DU PROGRAMME    '
-            WRITE(LU,*) '*************************'
+      IF(.NOT.PROINF) THEN
+        DO IP=1,NPOIN2
+          IF(DEPTH(IP).LE.0.D0) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) ''
+              WRITE(LU,*) '*************************'
+              WRITE(LU,*) ' ! PROFONDEUR NEGATIVE ! '
+              WRITE(LU,*) '   ARRET DU PROGRAMME    '
+              WRITE(LU,*) '*************************'
+              CALL PLANTE(1)
+            ELSEIF(LNG.EQ.2) THEN
+              WRITE(LU,*) ''
+              WRITE(LU,*) '**************************'
+              WRITE(LU,*) ' ! NEGATIVE WATER DEPTH ! '
+              WRITE(LU,*) '   END OF THE COMPUTATION '
+              WRITE(LU,*) '**************************'
+            ENDIF
             CALL PLANTE(1)
-          ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*) ''
-            WRITE(LU,*) '**************************'
-            WRITE(LU,*) ' ! NEGATIVE WATER DEPTH ! '
-            WRITE(LU,*) '   END OF THE COMPUTATION '
-            WRITE(LU,*) '**************************'
+            STOP
           ENDIF
-          CALL PLANTE(1)
-          STOP
-        ENDIF
-      ENDDO
+        ENDDO
+      ENDIF
 !
 !=====C
 !  4  C CALCULS PREPARATOIRES POUR INTERACTIONS NON-LINEAIRES.
@@ -502,6 +534,11 @@
           CALL PLANTE(1)
           STOP
         ENDIF
+      ELSE
+!       USOLD
+        CALL OS('X=0     ',X=STRA42)
+!       USNEW
+        CALL OS('X=0     ',X=STRA34)
       ENDIF
 !
 !.....5.3 CALCUL DE LA DIRECTION DU VENT
@@ -658,6 +695,8 @@
           TPR5_TEL%R(IP)=
      &    1.D0/MIN(MAX(TPR5_TEL%R(IP),FREQ(1)),FREQ(NF))
         ENDDO
+!       ORBITAL VELOCITY SET TO 0.D0
+        CALL OS('X=0     ',X=ORBVEL_TEL)
       ENDIF
 !
 !=====C
@@ -706,11 +745,35 @@
 ! Telemac (DT_TEL) et dans Tomawac (DT).
 ! On assigne a DUMMY la valeur originaire du nombre de pas
 ! de temps specifie dans le fichier .cas de Tomawac.
+!
       IF(PART.EQ.1) THEN
         AT=T_TEL
         DUMMY=NIT
-        IF(DT.GE.DT_TEL) NIT=1
-        IF(DT.LT.DT_TEL) NIT=NINT(DT_TEL/DT)
+!       IF(DT.GE.DT_TEL) NIT=1
+!       IF(DT.LT.DT_TEL) NIT=NINT(DT_TEL/DT)
+!       Correction provided by Catherine Villaret, added by JMH on 15/09/2014
+        IF(DT.GT.DT_TEL*PERCOU_WAC) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) ''
+            WRITE(LU,*) '***************************************'
+            WRITE(LU,*) ' ATTENTION : COUPLAGE TELEMAC-TOMAWAC :'
+            WRITE(LU,*) '                                       '
+            WRITE(LU,*) '                                       '
+            WRITE(LU,*) '           ARRET DU PROGRAMME          '
+            WRITE(LU,*) '***************************************'
+          ELSE
+            WRITE(LU,*) ''
+            WRITE(LU,*) '***************************************'
+            WRITE(LU,*) ' ATTENTION : COUPLING TELEMAC-TOMAWAC :'
+            WRITE(LU,*) ' TOMAWAC TIME STEP CAN NOT BE GREATER  '
+            WRITE(LU,*) ' THAN TELEMAC TIME STEP                '
+            WRITE(LU,*) '         END OF THE COMPUTATION        '
+            WRITE(LU,*) '***************************************'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        IF(DT.LE.DT_TEL*PERCOU_WAC) NIT=NINT(DT_TEL*PERCOU_WAC/DT)
       ENDIF
 !Fin COUPLAGE
 !
@@ -718,7 +781,7 @@
 !         de temps effectifs de TOMAWAC. La variable LT_WAC
 !         compte les pas de temps de chaque boucle, meme
 !         quand TOMAWAC est appele par TELEMAC
-!      DO LT=1,NIT
+!
       DO LT_WAC=1,NIT
 !
 !.....11.1 AFFECTATION DE LA DATE DE FIN DU PAS DE TEMPS COURANT.
@@ -863,31 +926,76 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROPA'
       ENDIF
 !
-!.....11.4 INTEGRATION DES TERMES SOURCES.
+!.....11.4 ECRETE PAR RAPPORT A UN SPECTRE LIMITE APRES PROPAGATION.
+!
+      IF(SDSCU.EQ.1) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LIMITE'
+        CALL LIMITE
+     & (SF%R,SDEPTH%R,SFR%R,NPOIN2,NPLAN,NF)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LIMITE'
+      ELSEIF(SDSCU.GT.2) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) ''
+          WRITE(LU,*) '*************************'
+          WRITE(LU,*) '  OPTION POUR LES FORTS  '
+          WRITE(LU,*) '    COURANTS INCONNUE    '
+          WRITE(LU,*) '*************************'
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) ''
+          WRITE(LU,*) '**************************'
+          WRITE(LU,*) '   UNKNOWN OPTION FOR     '
+          WRITE(LU,*) '    STRONG CURRENTS       '
+          WRITE(LU,*) '**************************'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ELSEIF(SDSCU.EQ.2.AND..NOT.TSOU) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) ''
+          WRITE(LU,*) '****************************'
+          WRITE(LU,*) ' PRISE EN COMPTE DES TERMES '
+          WRITE(LU,*) '	 SOURCES OBLIGATOIRE POUR  '
+          WRITE(LU,*) '	  OPTION 2 POUR LES FORTS  '
+          WRITE(LU,*) '         COURANTS           '
+          WRITE(LU,*) '****************************'
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) ''
+          WRITE(LU,*) '****************************'
+          WRITE(LU,*) '  CONSIDERATION OF SOURCE   '
+          WRITE(LU,*) '	  TERMS MANDATORY FOR      '
+          WRITE(LU,*) '	   OPTION 2 FOR STRONG     '
+          WRITE(LU,*) '         CURRENTS           '
+          WRITE(LU,*) '****************************'
+        ENDIF
+        CALL PLANTE(1)
+        STOP      
+      ENDIF
+!
+!.....11.5 INTEGRATION DES TERMES SOURCES.
 !   
       IF(TSOU) THEN
         CALL IMPR(LISPRD,LT,AT,NSITS,4)
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SEMIMP'
-        CALL SEMIMP(SF%R,SXK%R,SFR%R,SDFR%R,SDEPTH%R, SUV%R, SVV%R ,
-     &  MESH%X%R,MESH%Y%R,WAC_FILES(WACVEB)%LU,WAC_FILES(WACVEF)%LU ,
-     &  NBOR,NPTFR,DDC,TV1,TV2,SUV1%R,SVV1%R,
-     &  SUV2%R,SVV2%R,STETA%R,SSINTE%R,SCOSTE%R,INDIV,TAILF,RAISF      ,
-     &  GRAVIT,CFROT1,CMOUT1,CMOUT2,CMOUT3,CMOUT4,CMOUT5,CMOUT6,AT,DTSI,
-     &  ROAIR,ROEAU,XKAPPA,BETAM,DECAL,CDRAG,ALPHA,ZVENT,NF,NPLAN      ,
-     &  NPOIN2,IANGNL,COEFNL,F1,NSITS,SMOUT,SFROT,SVENT,LVENT,STRIF    ,
-     &  VENT,VENSTA,VX_CTE,VY_CTE,SBREK,ALFABJ,GAMBJ1,GAMBJ2,IQBBJ     ,
-     &  IHMBJ,IFRBJ,BORETG,GAMATG,IWHTG,IFRTG,ALFARO,GAMARO,GAM2RO     ,
-     &  IDISRO,IEXPRO,IFRRO,BETAIH,EM2SIH,IFRIH,COEFHS,XDTBRK,NDTBRK   ,
-     &  STRIA,ALFLTA,RFMLTA,KSPB,BDISPB,BDSSPB,PROINF,DF_LIM,LIMIT     , 
-     &  CIMPLI,COEFWD,COEFWE,COEFWF,COEFWH,WAC_FILES(WACVEB)%NAME      ,
-     &  WAC_FILES(WACVEF)%NAME,BINVEN,NBD,QINDI,STRA41%R,STRA42%R      ,
-     &  STRA43%R,STRA44%R,STSTOT%R,STSDER%R,STOLD%R,STNEW%R,STRA31%R   ,
-     &  STRA32%R,STRA33%R,STRA34%R,STRA35%R,STRA36%R,STRA37%R,STRA38%R ,
-     &  STRA39%R,ST1%R,ST2%R,ST3%R,ST4%R,SBETA%R,NQ_TE1,NQ_OM2,
-     &  NF1,NF2,NT1,NCONF,NCONFM,SEUIL,LBUF,DIMBUF,F_POIN,T_POIN,
-     &  F_COEF,F_PROJ,TB_SCA,K_IF1,K_1P,K_1M,K_IF2,K_IF3,K_1P2P,K_1P2M,
-     &  K_1P3P,K_1P3M,K_1M2P,K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,
-     &  TB_V34,TB_TPM,TB_TMP,TB_FAC,MDIA,IANMDI,COEMDI,NVWIN,DIAGHF)
+        CALL SEMIMP(SF%R,SCF%R,SXK%R,SFR%R,SDFR%R,SDEPTH%R,SUV%R,SVV%R,
+     &  MESH%X%R,MESH%Y%R,WAC_FILES(WACVEB)%LU,WAC_FILES(WACVEF)%LU,
+     &  NBOR,NPTFR,DDC,TV1,TV2,SUV1%R,SVV1%R,SUV2%R,SVV2%R,STETA%R,
+     &  SSINTE%R,SCOSTE%R,INDIV,TAILF,RAISF,GRAVIT,CFROT1,CMOUT1,CMOUT2,
+     &  CMOUT3,CMOUT4,CMOUT5,CMOUT6,AT,DTSI,ROAIR,ROEAU,XKAPPA,BETAM,
+     &  DECAL,CDRAG,ALPHA,ZVENT,NF,NPLAN,NPOIN2,IANGNL,COEFNL,F1,NSITS,
+     &  SMOUT,SFROT,SVENT,LVENT,STRIF,VENT,VENSTA,VX_CTE,VY_CTE,SBREK,
+     &  ALFABJ,GAMBJ1,GAMBJ2,IQBBJ,IHMBJ,IFRBJ,BORETG,GAMATG,IWHTG,
+     &  IFRTG,ALFARO,GAMARO,GAM2RO,IDISRO,IEXPRO,IFRRO,BETAIH,EM2SIH,
+     &  IFRIH,COEFHS,XDTBRK,NDTBRK,STRIA,ALFLTA,RFMLTA,KSPB,BDISPB,
+     &  BDSSPB,PROINF,DF_LIM,LIMIT,CIMPLI,COEFWD,COEFWE,COEFWF,COEFWH,
+     &  WAC_FILES(WACVEB)%NAME,WAC_FILES(WACVEF)%NAME,BINVEN,NBD,QINDI,
+     &  STRA41%R,STRA42%R,STRA43%R,STRA44%R,STSTOT%R,STSDER%R,STOLD%R,
+     &  STNEW%R,STRA31%R,STRA32%R,STRA33%R,STRA34%R,STRA35%R,STRA36%R,
+     &  STRA37%R,STRA38%R,STRA39%R,ST1%R,ST2%R,ST3%R,ST4%R,SBETA%R,
+     &  NQ_TE1,NQ_OM2,NF1,NF2,NT1,NCONF,NCONFM,SEUIL,LBUF,DIMBUF,
+     &  F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1,K_1P,K_1M,K_IF2,K_IF3,
+     &  K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,K_1M2M,K_1M3P,K_1M3M,IDCONF,
+     &  TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP,TB_FAC,MDIA,IANMDI,COEMDI,
+     &  NVWIN,DIAGHF,VEGETATION,SDSCU,CDSCUR)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SEMIMP'
       ENDIF
 !
@@ -900,7 +1008,7 @@
 !
       IF(IMPRES) THEN
 !
-!.....11.5 PASSAGE EN FREQUENCE ABSOLUE.
+!.....11.7 PASSAGE EN FREQUENCE ABSOLUE.
 !     """""""""""""""""""""""""""""""""""""""""""""
 !
         IF(COURAN.OR.PART.EQ.1) THEN
@@ -914,7 +1022,7 @@
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE TRANSF'
         ENDIF
 !
-!.....11.7 IMPRESSION (EVENTUELLE) DES VARIABLES SUR LE MAILLAGE 2D.
+!.....11.8 IMPRESSION (EVENTUELLE) DES VARIABLES SUR LE MAILLAGE 2D.
 !     
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DUMP2D'
         IF(COURAN.OR.PART.EQ.1) THEN
@@ -931,7 +1039,7 @@
      &            SORLEO,SORIMP,MAXVAR,TEXTE,GRADEB,GRADEB)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP'
 !
-!.....11.8 IMPRESSION (EVENTUELLE) DES SPECTRES DIRECTIONNELS.
+!.....11.9 IMPRESSION (EVENTUELLE) DES SPECTRES DIRECTIONNELS.
 !     
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRSPE'
         IF(COURAN.OR.PART.EQ.1) THEN
@@ -1002,6 +1110,9 @@
             TPR5_TEL%R(IP)=
      &      1.D0/MIN(MAX(TPR5_TEL%R(IP),FREQ(1)),FREQ(NF))
           ENDDO
+!         NEAR BED ORBITAL VELOCITY 
+          CALL VITFON(ORBVEL_TEL%R,STSTOT%R,SXK%R,SDEPTH%R,
+     &                SDFR%R,NF,NPOIN2,NPLAN,STRA39%R)
         ENDIF
 !
       ENDIF
@@ -1050,3 +1161,4 @@
 !
       RETURN
       END
+

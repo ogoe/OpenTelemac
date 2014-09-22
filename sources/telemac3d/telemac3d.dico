@@ -6051,7 +6051,7 @@ RUBRIQUE1 = 'PHYSICAL PARAMETERS'
 NIVEAU = 2
 AIDE = 'Choix du modele d echanges entre l eau et l atmosphere'
 AIDE1 = 'Choice of the atmosphere-water exchange model.'
-
+/
 NOM = 'COEFFICIENT DE CALAGE DU MODELE D''ECHANGES EAU-ATMOSPHERE'
 NOM1 = 'COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL'
 TYPE = REEL
@@ -6069,6 +6069,50 @@ Une valeur comprise entre 0.0017 et 0.0035 est conseillee'
 AIDE1 = 'Value of the calibration coefficient for the wind function
 of the atmosphere-water exchange model with a complete balance.
 A value between 0.0017 and 0.0035 is advised'
+/
+NOM = 'SEDIMENT MIXTE'
+NOM1 = 'MIXED SEDIMENT'
+TYPE = LOGIQUE
+INDEX = 92
+MNEMO = 'MIXTE'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'SEDIMENT'
+RUBRIQUE1 = 'SEDIMENT'
+NIVEAU = 1
+AIDE = 'Si oui il y aura un sediment cohesif et un sediment non
+cohesif'
+AIDE1 = 'If yes there will be one cohesive sediment and one non
+cohesive sediment'
+/
+NOM = 'VITESSE DE CHUTE DES SABLES'
+NOM1 = 'SETTLING VELOCITY OF SANDS'
+TYPE = REEL
+INDEX = 105
+TAILLE = 0
+MNEMO = 'WCS'
+DEFAUT  = 0.D0
+DEFAUT1  = 0.D0
+RUBRIQUE = 'SEDIMENT'
+RUBRIQUE1 = 'SEDIMENT'
+NIVEAU = 2
+AIDE = 'Vitesse de chute du sediment non cohesif'
+AIDE1 = 'Non cohesive sediment settling velocity'
+/
+NOM = 'POURCENTAGE INITIAL DE SEDIMENT NON COHESIF'
+NOM1 = 'INITIAL PERCENTAGE OF COHESIVE SEDIMENT'
+TYPE = REEL
+INDEX = 106
+TAILLE = 0
+MNEMO = 'PVSNCO0'
+DEFAUT  = 0.D0
+DEFAUT1  = 0.D0
+RUBRIQUE = 'SEDIMENT'
+RUBRIQUE1 = 'SEDIMENT'
+NIVEAU = 2
+AIDE = 'Pourcentage initial du sediment non cohesif'
+AIDE1 = 'Initial percentage of non cohesive sediment'
 /
 /---------------------------------------------------------------------
 /
@@ -6299,12 +6343,6 @@ AIDE1 = 'Choice of vertical scheme for diffusion and settling of sediment
 : 1 Implicit- convection scheme (Tridiagonal matrix solver)
 : 2  set_fall.f'
 /
-/ CV
-/ 
-/
-/ ATTENTION : IN SISYPHE ,  LAYERS ARE NUMBERED FROM TOP TO BOTTOM
-/             IN TEL3D , LAYERS ARE NUMBERED FROM  BOTTOM TO TOP
-/
 NOM = 'NOMBRE DE COUCHES DU LIT COHESIF'
 NOM1 = 'NUMBER OF SEDIMENT BED LAYERS' 
 TYPE = ENTIER   
@@ -6360,7 +6398,7 @@ starting from the condolidated bottom layer upwards'
 /
 /
 NOM = 'EPAISSEURS INITIALES DES COUCHES'
-NOM1 = 'INITIAL THICKNESS OF MUD LAYERS'
+NOM1 = 'INITIAL THICKNESS OF SEDIMENT LAYERS'
 TYPE = REEL
 INDEX = 64
 TAILLE = 2
@@ -6370,8 +6408,8 @@ DEFAUT1  = 10.D0
 RUBRIQUE = 'COHESIVE SEDIMENT'
 RUBRIQUE1 = 'COHESIVE SEDIMENT'
 NIVEAU = 2
-AIDE = 'Epaisseurs initiles du lit de vase (m)'
-AIDE1 = 'Mud-bed layer thickness (m) for initialisation'
+AIDE = 'Epaisseurs initiales des sediments (m)'
+AIDE1 = 'Sediment layers thickness (m) for initialisation'
 / 
 / 
 / New Initialization of TOCE

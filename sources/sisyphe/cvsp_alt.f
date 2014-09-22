@@ -35,7 +35,6 @@
 !| XMVS           |-->| SEDIMENT DENSITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF_DEF, ONLY: IPID, NCSIZE
       USE BIEF
       USE DECLARATIONS_SISYPHE
 !

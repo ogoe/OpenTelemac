@@ -7,7 +7,7 @@
      & CONSTFLOW,NSIS_CFD,SISYPHE_CFD,CODE,PERICOU,
      & U3D,V3D,T_TEL,VISC_TEL,DT_TEL,CHARR_TEL,SUSP_TEL,
      & FLBOR_TEL,SOLSYS,DM1,UCONV_TEL,VCONV_TEL,ZCONV,
-     & THETAW_TEL,HW_TEL,TW_TEL)
+     & THETAW_TEL,HW_TEL,TW_TEL,UW_TEL)
 !
 !***********************************************************************
 ! SISYPHE   V7P0                                   02/01/2014
@@ -106,6 +106,12 @@
 !+   this was a long time overlooked bug, that can be seen when coupling
 !+   with Telemac-3D with non-erodable beds.
 !
+!history  C VILLARET (HRW+EDF) & J-M HERVOUET (EDF - LNHE)
+!+        18/09/2014
+!+        V7P0
+!+   Adding the variable UW_TEL in argument (orbital velocity)
+!+   for getting it back to the calling program.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
 !| CHARR_TEL      |<->| LOGICAL, BED LOAD OR NOT: Sent to TELEMAC-2D
@@ -122,6 +128,7 @@
 !| KS_TEL         |-->| BED ROUGHNESS SENT TO TELEMAC
 !| LISTCOUNT      |-->| PERIODE DE SORTIE LISTING
 !| LOOPCOUNT      |-->| NUMERO DE L'ITERATION
+!| UW_TEL         |-->| ORBITAL VELOCITY
 !| NSIS_CFD       |---| NUMBER OF ITERATIONS FOR TELEMAC (CONSTANT FLOW DISCHARGE OPTION-TO BE SUPRESSED)
 !| PART           |-->| IF -1, NOT COUPLING : ON PASSE TOUTE LA
 !|                |   | SUBROUTINE. SINON, INDIQUE LA PARTIE DE LA
@@ -171,6 +178,7 @@
       TYPE(BIEF_OBJ),    INTENT(IN)    :: FLBOR_TEL,DM1,ZCONV
       TYPE(BIEF_OBJ),    INTENT(IN)    :: UCONV_TEL,VCONV_TEL
       TYPE(BIEF_OBJ),    INTENT(IN)    :: THETAW_TEL,HW_TEL,TW_TEL
+      TYPE(BIEF_OBJ),    INTENT(IN)    :: UW_TEL
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -547,6 +555,7 @@
 !           TRACES IF WAVE DATA HAVE BEEN FOUND
 !
             IF(HOULE) THEN
+!             NOTE: BIEF_ALLVEC SETS %TYPR TO '?'
               IF(TROUVE(12).EQ.1) HW%TYPR='Q'
               IF(TROUVE(13).EQ.1) TW%TYPR='Q'
               IF(TROUVE(14).EQ.1) THETAW%TYPR='Q'
@@ -555,7 +564,7 @@
                 WRITE(LU,*)
                 WRITE(LU,*) 'WAVE RESULTS IN :',SIS_FILES(SISHYD)%NAME
                 WRITE(LU,*)
-                WRITE(LU,*) 'BOTTOM VELOCITY FOUND'
+                WRITE(LU,*) 'BOTTOM ORBITAL VELOCITY FOUND'
                 WRITE(LU,*) 'THESE WILL BE USED DIRECTLY'
                 WRITE(LU,*)
               ELSEIF(HW%TYPR=='Q'.AND.TW%TYPR=='Q') THEN
@@ -670,9 +679,12 @@
             CALL OS( 'X=Y     ', TW, TW_TEL)
 !           significant wave height
             CALL OS( 'X=Y     ', HW , HW_TEL)
+!           Bottom orbital velocity
+            CALL OS( 'X=Y     ', UW , UW_TEL)
             HW%TYPR='Q'
             TW%TYPR='Q'
             THETAW%TYPR='Q' 
+            UW%TYPR='Q'
           ENDIF
 !
         ENDIF
@@ -789,7 +801,7 @@
         IF(HOULE) THEN
 !         JWI 31/05/2012 - added lines to use wave orbital velocities 
 !         directly if found in hydro file; otherwise compute with CALCUW
-          IF(UW%TYPR    .NE.'Q') THEN
+          IF(UW%TYPR.NE.'Q') THEN
             CALL CALCUW(UW%R,HN%R,HW%R,TW%R,GRAV,NPOIN)
           ENDIF
         ENDIF
@@ -995,6 +1007,11 @@
 !               WORK ON ZF,QU,QV,Z WILL BE IN FACT DONE ON:
 !               T4,DEL_QU,DEL_QV AND DEL_Z
 !               BY PLAYING WITH POINTERS
+!               THEN THE INCREMENT IN ONE TIME STEP WILL BE COMPUTED
+!               AND THE INCREMENT FOR ONE SUB TIME-STEP DEDUCED
+!               THEN AT EVERY SUB TIME-STEP THIS INCREMENt WILL BE ADDED
+!               AND WILL PROGRESSIVELy UPDATE THE VARIABLES FROM TIME N
+!               TO TIME N+1
                 SAVEZF=>ZF%R
                 SAVEQU=>QU%R
                 SAVEQV=>QV%R
@@ -1111,9 +1128,12 @@
             CALL OS( 'X=Y     ', TW, TW_TEL)
 !           SIGNIFICANT HEIGHT
             CALL OS( 'X=Y     ', HW , HW_TEL)
+!           SIGNIFICANT HEIGHT
+            CALL OS( 'X=Y     ', UW , UW_TEL)
             HW%TYPR='Q'
             TW%TYPR='Q'
             THETAW%TYPR='Q' 
+            UW%TYPR='Q'
           ENDIF
 !
         ENDIF
@@ -1538,7 +1558,7 @@
             CALL OS('X=X+Y   ', X=QV, Y=DEL_QV)
             CALL OS('X=X+Y   ', X=Z , Y=DEL_Z)
 ! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
-          IF(HOULE.AND.UW%TYPR=='Q') CALL OS('X=X+Y   ',X=UW,Y=DEL_UW)
+            IF(HOULE.AND.UW%TYPR=='Q') CALL OS('X=X+Y   ',X=UW,Y=DEL_UW)
 ! JWI END
           ENDIF
           CALL OS('X=Y-Z   ', X=HN, Y=Z, Z=ZF)

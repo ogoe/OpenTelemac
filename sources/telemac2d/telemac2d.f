@@ -223,6 +223,11 @@
 !+   Initialisation of PRIVE move before call to FONSTR (it could be
 !+   used in FONSTR and wrongly cancelled by initialisation).
 !
+!history  C VILLARET (HRW+EDF) & J-M HERVOUET (EDF - LNHE)
+!+        18/09/2014
+!+        V7P0
+!+   Calls to sisyphe and wac chenged.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
 !param code      [in] calling program (if coupling)
@@ -1269,7 +1274,7 @@
 !       CALL WAC(0,U,V,H,FXWAVE,FYWAVE,WINDX,WINDY,CODE1,AT,DT,NIT,
 !                PERCOU_WAC,DIRMOY,HM0,TPR5)
         CALL WAC(0,U,V,H,FXWAVE,FYWAVE,T1   ,T2   ,CODE1,AT,DT,NIT,
-     &           PERCOU_WAC,DIRMOY,HM0,TPR5)
+     &           PERCOU_WAC,DIRMOY,HM0,TPR5,ORBVEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM TOMAWAC'
         CALL CONFIG_CODE(1)
 !
@@ -1309,7 +1314,7 @@
 !                                     CHARR,SUSP : RETURNED BY SISYPHE
 !                                                  BUT THEN GIVEN TO IT
      &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV,
-     &                 DIRMOY,HM0,TPR5)
+     &                 DIRMOY,HM0,TPR5,ORBVEL)
           IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM SISYPHE'
           CALL CONFIG_CODE(1)
 !         AVOIDS TWO OUTPUTS WHEN SISYPHE IS CALLED TWICE
@@ -1410,7 +1415,7 @@
 !       CALL WAC(1,U,V,H,FXWAVE,FYWAVE,WINDX,WINDY,CODE1,AT,
 !    &           DT,NIT,PERCOU_WAC,DIRMOY,HM0,TPR5)
         CALL WAC(1,U,V,H,FXWAVE,FYWAVE,T1   ,T2   ,CODE1,AT,
-     &           DT,NIT,PERCOU_WAC,DIRMOY,HM0,TPR5)
+     &           DT,NIT,PERCOU_WAC,DIRMOY,HM0,TPR5,ORBVEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM TOMAWAC'
         CALL CONFIG_CODE(1)
 !
@@ -2395,7 +2400,7 @@
      &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
      &                 CODE1,PERCOU,U,V,AT,VISC,DT*PERCOU,CHARR,SUSP1,
      &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV,
-     &                 DIRMOY,HM0,TPR5)
+     &                 DIRMOY,HM0,TPR5,ORBVEL)
           IF(DEBUG.GT.0) WRITE(LU,*) 'FIN APPEL SISYPHE, CHARRIAGE'
 !
         ENDIF
@@ -2407,7 +2412,7 @@
      &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
      &                 CODE1,1,U,V,AT,VISC,DT,CHARR_TEL,SUSP,
      &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV,
-     &                 DIRMOY,HM0,TPR5)
+     &                 DIRMOY,HM0,TPR5,ORBVEL)
           IF(DEBUG.GT.0) WRITE(LU,*) 'FIN APPEL DE SISYPHE, SUSPENSION'
 !
         ENDIF

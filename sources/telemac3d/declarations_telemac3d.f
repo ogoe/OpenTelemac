@@ -26,6 +26,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G. ANTOINE (EDF LAB, LNHE)
+!+        19/09/2014
+!+        V7P0
+!+   Adding variables for mixed sediment
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -580,7 +585,6 @@
       DOUBLE PRECISION,DIMENSION(:,:), TARGET, ALLOCATABLE :: EPAI
 !
       TYPE(BIEF_OBJ), TARGET :: LAYTHI
-!
 !    
 !     MUD CONCENTRATION FOR EACH LAYER (Constante for initialisation)
 !
@@ -640,7 +644,6 @@
 !
       TYPE(BIEF_OBJ), TARGET :: ESOMT
 !
-
 ! ...CV
 ! 
 !     RIDIG BED ELEVATION
@@ -673,7 +676,12 @@
 !
 !     VARIABLES TRANSMITTED FROM TOMAWAC TO SISYPHE
 !
-      TYPE(BIEF_OBJ) :: DIRMOY,HM0,TPR5
+      TYPE(BIEF_OBJ) :: DIRMOY,HM0,TPR5,ORBVEL
+!
+!     VARIABLES USED IN CASE OF MIXED SEDIMENT
+!
+      TYPE(BIEF_OBJ) :: EPAICO,EPAINCO,PVSCO,PVSNCO,FLUERC,FLUERNC
+      TYPE(BIEF_OBJ) :: FLUDPTC,FLUDPTNC,FLUDPC,FLUDPNC
 !
 !-----------------------------------------------------------------------
 ! (2) MATRICES
@@ -1564,7 +1572,11 @@
       LOGICAL  READ_TOCE
       INTEGER SETDEP
 !###<TBE/DMK changes
-
+!
+!     MIXED SEDIMENT, NON COHESIVE SEDIMENT
+!
+      LOGICAL MIXTE,SEDNCO
+!
 !-----------------------------------------------------------------------
 ! (6) REALS
 !-----------------------------------------------------------------------
@@ -1841,6 +1853,14 @@
 !     COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL
 !
       DOUBLE PRECISION C_ATMOS
+!
+!     SETTLING VELOCITY OF SAND
+!
+      DOUBLE PRECISION WCS
+!
+!     INITIAL PERCENTAGE OF NON COHESIVE SEDIMENT
+!
+      DOUBLE PRECISION PVSNCO0
 !
 !-----------------------------------------------------------------------
 ! (7) STRINGS
@@ -2241,3 +2261,4 @@
       SAVE
 !
       END MODULE DECLARATIONS_TELEMAC3D
+

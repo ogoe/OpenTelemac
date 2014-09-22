@@ -34,6 +34,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C VILLARET (HRW+EDF) & J-M HERVOUET (EDF - LNHE)
+!+        18/09/2014
+!+        V7P0
+!+   Adding STRA01 for the variable ORBVEL_TEL in wac arguments
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -123,7 +128,7 @@
 !     CALLS THE REAL MAIN PROGRAM
 !
       CALL WAC(-1,STRA01,STRA01,STRA01,STRA01,STRA01,STRA01,STRA01,
-     &         CODE,0.D0,0.D0,0,1,STRA01,STRA01,STRA01)
+     &         CODE,0.D0,0.D0,0,1,STRA01,STRA01,STRA01,STRA01)
 !
 !-----------------------------------------------------------------------
 !

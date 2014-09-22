@@ -510,6 +510,7 @@ files: declarations_tomawac.f
   qfrot1.f
   frepic.f
   qwindl.f
+  qveg.f
   semimp.f
   propa.f
   impr.f
@@ -535,6 +536,8 @@ files: declarations_tomawac.f
   fsprd2.f
   speini.f
   limwac.f
+  limite.f
+  qdscur.f
   invert.f
   rpi_invr.f
   frmset.f

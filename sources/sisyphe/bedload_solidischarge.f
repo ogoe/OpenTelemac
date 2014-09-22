@@ -192,8 +192,6 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION P_DMAX
-      EXTERNAL         P_DMAX
       DOUBLE PRECISION U3DNORM
 !
       INTEGER          :: I

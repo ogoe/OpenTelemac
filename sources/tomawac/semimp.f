@@ -2,7 +2,7 @@
                      SUBROUTINE SEMIMP
 !                    *****************
 !
-     &(F     ,XK    ,FREQ  ,DFREQ ,DEPTH ,VENTX ,VENTY ,X     ,Y     ,
+     &(F ,CF ,XK    ,FREQ  ,DFREQ ,DEPTH ,VENTX ,VENTY ,X     ,Y     ,
      & NVEB  ,NVEF  ,NBOR  ,NPTFR ,DDC   ,TV1   ,TV2   ,
      & U1    ,V1    ,U2    ,V2    ,TETA  ,SINTET,COSTET,INDIC ,
      & TAILF ,RAISF ,GRAVIT,CFROT1,CMOUT1,CMOUT2,CMOUT3,CMOUT4,CMOUT5,
@@ -20,10 +20,10 @@
      & SEUIL ,LBUF  ,DIMBUF,F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1 ,
      & K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
      & K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP,
-     & TB_FAC,MDIA  ,IANMDI,COEMDI,NVWIN ,DIAGHF)
+     & TB_FAC,MDIA,IANMDI,COEMDI,NVWIN ,DIAGHF,VEGETATION,SDSCU,CDSCUR)
 !
 !***********************************************************************
-! TOMAWAC   V6P2                                   27/06/2011
+! TOMAWAC   V7P0                                  
 !***********************************************************************
 !
 !brief    SOLVES THE INTEGRATION STEP OF THE SOURCE TERMS USING
@@ -88,6 +88,11 @@
 !+        V6P3
 !+   HF diagnostic tail is not necessarily imposed
 !
+!history  VITO BACCHI (EDF - LNHE)
+!+        12/09/2014
+!+        V7P0
+!+   Friction due to vegetation added.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALFABJ         |-->| COEFFICIENT ALPHA OF BJ WAVE BREAKING MODEL
 !| ALFARO         |-->| CONSTANTE ALPHA OF RO WAVE BREAKING MODEL
@@ -101,6 +106,8 @@
 !| BINVEN         |-->| WIND FILE BINARY
 !| BORETG         |-->| COEFFICIENT B OF BREAKING WAVE TG MODEL
 !| CDRAG          |-->| WIND DRAG COEFFICIENT
+!| CDSCUR         |-->| COEFFICIENT OF DISSIPATION BY STRONG CURRENT
+!| CF             |-->| ADVECTION FIELD ALONG FREQUENCY
 !| CFROT1         |-->| BOTTOM FRICTION COEFFICIENT
 !| CIMPLI         |-->| IMPLICITATION COEFFICIENT FOR SOURCE TERM INTEG.
 !| CMOUT1         |-->| WHITE CAPPING DISSIPATION COEFFICIENT
@@ -198,6 +205,7 @@
 !| ROAIR          |-->| AIR DENSITY
 !| ROEAU          |-->| WATER DENSITY
 !| SBREK          |-->| DEPTH-INDUCED BREAKING DISSIPATION MODEL
+!| SDSCU          |-->| DISSIPATION BY STRONG CURRENT
 !| SEUIL          |-->| THRESHOLD0 FOR CONFIGURATIONS ELIMINATION (GQM)
 !| SFROT          |-->| SELECTION OF THE BOTTOM FRICTION DISSIPATION
 !| SINTET         |-->| SINE OF TETA ANGLE
@@ -238,6 +246,7 @@
 !| USNEW          |<->| FRICTION VELOCITY AT TIME N+1
 !| USOLD          |<->| FRICTION VELOCITY AT TIME N
 !| VARIAN         |-->| SPECTRUM VARIANCE
+!| VEGETATION     |-->|IF YES, VEGETATION TAKEN INTO ACCOUNT
 !| VENSTA         |-->| INDICATES IF THE WIND IS STATIONARY
 !| VENT           |-->| INDICATES IF WIND IS TAKEN INTO ACC
 !| VENTX,VENTY    |<->| WIND DATA INTERPOLATED OVER 2D MESH
@@ -252,18 +261,6 @@
 !| Z0NEW          |<->| SURFACE ROUGHNESS LENGTH AT TIME N+1
 !| Z0OLD          |<->| SURFACE ROUGHNESS LENGTH AT TIME N
 !| ZVENT          |-->| WIND MEASUREMENT LEVEL
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!  APPELS :    - PROGRAMME(S) APPELANT  :  WAC
-!  ********    - PROGRAMME(S) APPELE(S) :  USTAR1, TOTNRJ, ANAVEN,
-!                                          FREMOY, KMOYEN, OV    ,
-!                                          QWIND1, STRESS, QNLIN1,
-!                                          QMOUT1, QFROT1, NOUDON,
-!                                          QWIND2, USTAR2, QBREK1,
-!                                          QBREK2, QBREK3, QBREK4,
-!                                          FPREAD, FREM01, FREM02,
-!                                          FPEPIC, QWINDL, QWIND3,
-!                                          QMOUT2, QNLIN2, QNLIN3
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,T3_01,T3_02,TEXVEB,MESH,
@@ -282,7 +279,7 @@
       INTEGER IQBBJ , IHMBJ , IFRBJ , IWHTG , IFRTG , IFRRO
       INTEGER IEXPRO, IFRIH , NDTBRK, IDISRO, STRIA
       INTEGER NBOR(NPTFR)   , IANGNL(NPLAN,8)
-      INTEGER NBD   , QINDI(NBD) , DIAGHF
+      INTEGER NBD   , QINDI(NBD) , DIAGHF,SDSCU
       DOUBLE PRECISION TAILF , CFROT1, GRAVIT, RAISF , DTSI  , TPROP
       DOUBLE PRECISION CMOUT1, CMOUT2, DDC   , TV1   , TV2   , ZVENT 
       DOUBLE PRECISION ROAIR , ROEAU , XKAPPA, BETAM , DECAL , CDRAG 
@@ -306,15 +303,16 @@
       DOUBLE PRECISION FREQ(NF), DFREQ(NF)
       DOUBLE PRECISION TOLD(NPOIN2,NPLAN), TNEW(NPOIN2,NPLAN)
       DOUBLE PRECISION BETA(NPOIN2)
+      DOUBLE PRECISION CF(NPOIN2,NPLAN,NF)
       CHARACTER(LEN=144) NOMVEB, NOMVEF
       CHARACTER(LEN=3) BINVEN
-      LOGICAL  PROINF, VENT , VENSTA
+      LOGICAL  PROINF, VENT , VENSTA,VEGETATION
 !....Linear wind growth declaration
       INTEGER           LVENT
 !....Yan expression declarations
       DOUBLE PRECISION  CMOUT3, CMOUT4, CMOUT5, CMOUT6
 !....Westhuysen expression decalaration
-      DOUBLE PRECISION  COEFWD, COEFWE, COEFWF, COEFWH
+      DOUBLE PRECISION  COEFWD, COEFWE, COEFWF, COEFWH,CDSCUR
 !....MDIA method declarations
       INTEGER           MDIA
       INTEGER           IANMDI(NPLAN,16,MDIA)
@@ -394,6 +392,11 @@
 !     CONDITIONS AT THE START OF THE TIME STEP TO THE END OF THE TIME
 !     STEP. (THIS IS BECAUSE ARRAYS TWNEW, USNEW AND Z0NEW ARE WORKING
 !     ARRAYS USED IN DUMP2D BETWEEN 2 CALLS TO SEMIMP).
+!
+!     QUESTION JMH 16/09/2014 : WHAT IF VENT=.FALSE. AND USNEW USED
+!     IN BETWEEN ???? IT WOULD BE SAFER TO HAVE USOLD AND USNEW
+!     WITH THIS NAME AND ONLY USED FOR THIS...
+!
 !     ----------------------------------------------------------------
 !
       IF(VENT.AND.VENSTA) THEN
@@ -415,7 +418,7 @@
 !     FOR INTEGRATION OF THE SOURCE TERMS, BY PROPAGATION TIME STEP
 !     -----------------------------------------------------------------
 !
-      DO ISITS=1,NSITS
+      DO 100 ISITS=1,NSITS
 !
 !       1. ASSIGNS THE START AND END DATES OF TIME STEP
 !       ===============================================
@@ -467,9 +470,11 @@
 !         2.3 COMPUTES THE FRICTION VELOCITIES AND ROUGHNESS LENGTHS
 !         ------------------------------------------------------------
 !
-          IF (SVENT.GE.2.OR.(LVENT.EQ.1.AND.SVENT.NE.1).OR.
-     &                                    (SMOUT.EQ.2.AND.SVENT.NE.1))
-     &                    CALL USTAR2( USNEW , VENTX , VENTY , NPOIN2)
+          IF(SVENT.GE.2.OR.(LVENT.EQ.1.AND.SVENT.NE.1).OR.
+     &        (SMOUT.EQ.2.AND.SVENT.NE.1)) THEN
+            CALL USTAR2( USNEW , VENTX , VENTY , NPOIN2)
+          ENDIF
+!
         ENDIF
 !
         IF(VENT.AND.SVENT.EQ.1) THEN
@@ -727,10 +732,15 @@
           STOP
         ENDIF 
 !
+!
 !       7. TAKES THE BREAKING SOURCE TERM INTO ACCOUNT
 !       =================================================
 !
-        IF((SBREK.GT.0.OR.STRIA.GT.0).AND..NOT.PROINF) THEN
+!        IF((SBREK.GT.0.OR.STRIA.GT.0).AND..NOT.PROINF) THEN
+!VB mofid
+        IF(((SBREK.GT.0.OR.STRIA.GT.0.OR.VEGETATION).AND.
+     &     .NOT.PROINF).OR.SDSCU.EQ.2) THEN
+!VB fin modif
 !
 !         7.1 COMPUTES A REPRESENTATIVE FREQUENCY
 !         ------------------------------------------
@@ -806,7 +816,7 @@
           SUME=(XDTBRK**NDTBRK-1.D0)/(XDTBRK-1.D0)
           DTN=DTSI/SUME
 !
-          DO IDT=1,NDTBRK
+          DO 782 IDT=1,NDTBRK
 !         7.2 INITIALISES THE ARRAYS FOR THE SOURCE-TERMS
 !         ----------------------------------------------------
           DO IFF=1,NF
@@ -821,6 +831,7 @@
 !         --------------------------------------------
 !
           CALL TOTNRJ(VARIAN,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2)
+!
 !
 !         7.4 COMPUTES THE WAVE BREAKING CONTRIBUTION
 !         --------------------------------------
@@ -885,14 +896,38 @@
      &( F     , XK    , FREQ  , DEPTH , RAISF , ALFLTA, RFMLTA,
      &  NF    , NPLAN , NPOIN2, TSTOT , TSDER , VARIAN, FMOY  )
 !
-        ELSEIF(STRIA.EQ.2) THEN
+          ELSEIF(STRIA.EQ.2) THEN
             CALL QTRIA2
      &( F     , XK    , FREQ  , DFREQ , DEPTH , TETA  , SINTET, COSTET ,
      &  KSPB  , BDISPB, BDSSPB, RAISF , NF    , NPLAN , NPOIN2 ,
      &  NBD   , QINDI , TSTOT , TSDER )
-        ENDIF
+          ENDIF
 !
-!         7.5 UPDATES THE SPECTRUM - TAKES THE BREAKING SOURCE TERM
+!
+!         7.6 WAVE BLOCKING DISSIPATION
+!         -----------------------------
+          IF(SDSCU.EQ.2) THEN
+            CALL QDSCUR
+     &( TSTOT , TSDER , F     , CF    , XK    , FREQ  , USOLD , USNEW , 
+     &  DEPTH , PROINF, CDSCUR, CMOUT4, NF    , NPLAN , NPOIN2, CIMPLI, 
+     &  TAUX2 ,T3_01%R,T3_02%R)
+          ENDIF
+!
+!======================================================================
+!         7.7 VEGETATION
+!VBA PRISE EN COMPTE VEGETATION
+!======================================================================
+!
+          IF(VEGETATION) THEN
+            CALL QVEG( TSTOT , TSDER , F , VARIAN , DEPTH, FMOY , 
+     &                 XKMOY , NF    , NPLAN  , NPOIN2   , BETA  )
+          ENDIF
+!
+!======================================================================
+!VBA PRISE EN COMPTE VEGETATION
+!======================================================================
+!
+!         7.8 UPDATES THE SPECTRUM - TAKES THE BREAKING SOURCE TERM
 !             INTO ACCOUNT (EXPLICIT EULER SCHEME)
 !         ---------------------------------------------------------
 !
@@ -906,7 +941,7 @@
 !
         DTN=DTN*XDTBRK
 !
-        ENDDO ! IDT
+  782   CONTINUE
 !
         ENDIF
 !
@@ -922,7 +957,7 @@
         ENDIF
 !
 !
-      ENDDO ! ISITS
+  100 CONTINUE
 !
 !     -----------------------------------------------------------------
 !     END OF THE MAIN LOOP ON THE NUMBER OF TIME STEPS (NSITS)
@@ -931,3 +966,4 @@
 !
       RETURN
       END
+
