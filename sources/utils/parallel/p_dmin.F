@@ -69,8 +69,6 @@
       ENDIF
       RETURN
 #else
-      IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_DMIN VERSION VIDE'
-      IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_DMIN IN ITS VOID VERSION'
 !
       P_DMIN=MYPART
 #endif

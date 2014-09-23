@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """@author Yoann Audouin
 """
 """@note ... this work is based on a collaborative effort between
@@ -14,7 +14,7 @@
 """@history 15/02/2013 -- Sebastien E. Bourban
          Adding the file in pytel
 """
-"""@brief
+"""@brief Run a converions of mesh files using stbtel 
 """
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -28,8 +28,62 @@ from optparse import OptionParser
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
 #
+
 __author__="Yoann Audouin"
 __date__ ="$21-Sep-2012 16:51:09$"
+
+
+casCanvas = \
+"""
+/
+/ CONVERSION OF MESH FILE USING STBTEL
+/
+CONVERTER = YES
+DEBUG = {debug}
+/
+/ INPUT FILE INFORMATION
+/
+INPUT FILE FORMAT : '{inputFormat}'
+INPUT FILE : '{inputFile}'
+{inAdditionalFile}
+/
+/ OUTPUT FILE INFORMATION
+/
+OUTPUT FILE FORMAT : '{outputFormat}'
+OUTPUT FILE : '{outputFile}'
+{outAdditionalFile}
+"""
+
+def build_cas(options,extens,inputFormat,inputFile,outputFormat,outputFile):
+   """
+   Build the steering file for stbtel
+   """
+   # Building canvas for steering file
+   debug = 'YES' if options.debug else 'NO'
+   # Additional files
+   ## input files
+   inAdditionalFile = ''
+   if options.boundaryFile:
+      inAdditionalFile += "BOUNDARY FILE : '%s' \n" % (options.boundaryFile + extens)
+   if options.logFile:
+      inAdditionalFile += "LOG FILE : '%s' \n" % (options.logFile + extens)
+   ## Output files
+   outAdditionalFile = ''
+   if outputFormat == "SERAFIN":
+      outAdditionalFile += "OUTPUT BOUNDARY FILE : '%s'\n" % (outputFile[:-3] + 'cli' + extens)
+   # If th output is in UNV format add the name of the log file
+   if outputFormat == "UNV":
+      outAdditionalFile += "OUTPUT LOG FILE : '%s'\n" % (outputFile[:-3]+'log'+extens)
+   
+   return casCanvas.format(
+             debug=debug,  
+             inputFormat=inputFormat,
+             inputFile=inputFile+extens, 
+             inAdditionalFile=inAdditionalFile, 
+             outputFormat=outputFormat,
+             outputFile=outputFile+extens, 
+             outAdditionalFile=outAdditionalFile 
+             )
 
 if __name__ == "__main__":
 
@@ -68,11 +122,17 @@ if __name__ == "__main__":
              default="",
              help="name of the output format, overwrites output detected by extension")
    # the boundary file option
+   parser.add_option("", "--output-boundary-file",
+             type="string",
+             dest="outBoundaryFile",
+             default="",
+             help="name of the output boundary file")
+   # the boundary file option
    parser.add_option("-b","--boundary-file",
              type="string",
              dest="boundaryFile",
              default="",
-             help="name of the output file")
+             help="name of the boundary file")
    # the log file option
    parser.add_option("-l","--log-file",
              type="string",
@@ -104,69 +164,56 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Identifying input and output informations ~~~~~~~~~~~~~~~~~~~
    if len(args) < 1:
-     print("\nMissing input file\n")
-     parser.print_help()
-     sys.exit(1)
+      parser.print_help()
+      parser.error("Missing input file\n")
    # Getting input and output file names
    inputFile = args[0]
    outputFile = options.outputFile
-   if options.inputFormat == "":
-     # Finding the input format by checking the extension
-     n = len(inputFile)
-     i = inputFile.find('.')
-     inputExtension = inputFile[i+1:n]
-     if not inputExtension in formats:
-       print("The input file extension is unknown")
-       print("Known associations :")
-       print(formats)
-       sys.exit(1)
-     inputFormat = formats[inputExtension]
-   if options.outputFormat == "":
-     # Finding the output format
-     n = len(outputFile)
-     i = outputFile.find('.')
-     outputExtension = outputFile[i+1:n]
-     if not outputExtension in formats:
-       print("The output file extension is unknown")
-       print("Known associations :")
-       print(formats)
-       sys.exit(1)
-     outputFormat = formats[outputExtension]
+   if not options.inputFormat:
+      # Finding the input format by checking the extension
+      i = inputFile.rfind('.')
+      inputExtension = inputFile[i+1:]
+      if not inputFile.endswith(tuple(formats.keys())):
+         parser.error("The input file extension is unknown\n Known are : %r"
+                      % formats)
+      else:
+         inputFormat = formats[inputExtension]
+   else:
+      inputFormat = options.inputFormat
+   # If no format was given as option try to indentify format from extension
+   if not options.outputFormat:
+      # Finding the output format
+      i = outputFile.rfind('.')
+      outputExtension = outputFile[i+1:]
+      if not outputFile.endswith(tuple(formats.keys())):
+         parser.error("The output file extension is unknown\n Known are : %r"
+                      % formats)
+      else:
+         outputFormat = formats[outputExtension]
+   else:
+      outputFormat = options.outputFormat
    
    # Loop on the number of domains
    ndomains = options.ndomains
    for idom in range(0,ndomains):
-     # build the extension added to each file of the distributed mesh by partel
-     if ndomains == 1:
-       # Nothing if we are dealling with a non-distributed mesh
-       extens=''
-     else:
-       # the string of format 00000-00000
-       extens=str(ndomains-1).zfill(5)+'-'+str(idom).zfill(5)
-     # Writting the steering file
-     fichier = open("stb%s.cas" % extens,"w")
-     fichier.write("CONVERTER : YES\n")
-     if options.debug:
-       fichier.write("DEBUG : YES\n")
-     fichier.write("INPUT FILE FORMAT : '%s'\n" % inputFormat)
-     fichier.write("INPUT FILE : '%s%s'\n" % (inputFile, extens))
-     if options.boundaryFile != "":
-       fichier.write("BOUNDARY FILE : '%s%s'\n" % (options.boundaryFile, extens))
-     if options.logFile != "":
-       fichier.write("LOG FILE : '%s%s'\n" % (options.logFile, extens))
-     fichier.write("OUTPUT FILE FORMAT : '%s'\n" % outputFormat)
-     fichier.write("OUTPUT FILE : '%s%s'\n" % (outputFile, extens))
-     # if the output is serafin format we add the boundary file 
-     if outputFormat == "SERAFIN":
-       fichier.write("OUTPUT BOUNDARY FILE : '%scli%s'\n" % (outputFile[0:(n-3)], extens))
-     # If th output is in UNV format add the name of the log file
-     if outputFormat == "UNV":
-       fichier.write("OUTPUT LOG FILE : '%slog%s'\n" % (outputFile[0:(n-3)], extens))
-     fichier.close()
-     # Running stbtel
-     sp.call(["stbtel.py", "stb%s.cas" % extens])
-     # Remove the case file
-     remove("stb%s.cas" % extens)
+      # build the extension added to each file of the distributed mesh by partel
+      if ndomains == 1:
+         # Nothing if we are dealling with a non-distributed mesh
+         extens=''
+      else:
+         # the string of format 00000-00000
+         extens=str(ndomains-1).zfill(5)+'-'+str(idom).zfill(5)
+     
+      cas = build_cas(options, extens, inputFormat, inputFile, 
+                      outputFormat, outputFile)
+      # Writting the steering file
+      casName = 'stb'+extens+".cas"
+      with open(casName,"w") as fobj:
+         fobj.write(cas)
+      # Running stbtel
+      sp.call(["stbtel.py", casName])
+      # Remove the case file
+   #   remove(casName)
 
    print '\n\n'+'~'*72
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
