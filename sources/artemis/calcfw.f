@@ -37,6 +37,7 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| PHASE VELOCITY
 !| CG             |-->| GROUP VELOCITY
@@ -58,7 +59,7 @@
 !| MVEAU          |-->| FLUID SPECIFIC WEIGTH
 !| MVSED          |-->| SEDIMENT SPECIFIC WEIGTH 
 !| NPOIN          |-->| NUMBER OF POINT
-!| OMEGA          |-->| WAVE PULSATION
+!| OMEGA          |-->| WAVE  PULSATION
 !| REGIDO         |-->| TYPE OF HYDRAULIC REGIME
 !| RICOEF         |-->| RIPPLES COEFFICIENT 
 !| VISCO          |-->| KINEMATIC VISCOSITY OF THE FLUID
@@ -111,29 +112,29 @@
 ! GRID NODE
 !
 !
-        AEX = HMU(I)/(2.D0*SINH(K(I)*H(I)))
-        UEX = OMEGA * AEX
-        RAP1 = (UEX*AEX)/VISCO
-        RAP2 = AEX/KSRUGO
+      AEX = HMU(I)/(2.D0*SINH(K(I)*H(I)))
+      UEX = OMEGA * AEX
+      RAP1 = (UEX*AEX)/VISCO
+      RAP2 = AEX/KSRUGO
 !
 !   COMPARES AGAINST THE MAXIMUM REYNOLDS NUMBER
 !   AND THE EXCURSION RATIO ON ROUGHNESS
 !
-        IF (RAP1 .GT. RMAX1) THEN
-            RMAX1 = RAP1
-          ENDIF
+      IF (RAP1 .GT. RMAX1) THEN
+        RMAX1 = RAP1
+      ENDIF
 !
-        IF (RAP1 .LT. RMIN1) THEN
-             RMIN1 = RAP1
-          ENDIF
+      IF (RAP1 .LT. RMIN1) THEN
+        RMIN1 = RAP1
+      ENDIF
 !
-        IF (RAP2 .GT. RMAX2) THEN
-              RMAX2 = RAP2
-           ENDIF
+      IF (RAP2 .GT. RMAX2) THEN
+        RMAX2 = RAP2
+      ENDIF
 !
-        IF (RAP2 .LT. RMIN2) THEN
-              RMIN2 = RAP2
-           ENDIF
+      IF (RAP2 .LT. RMIN2) THEN
+        RMIN2 = RAP2
+      ENDIF
 !
 !-----------------------------------------------------------------
 ! DETERMINES THE HYDRAULIC REGIME
@@ -152,8 +153,8 @@
           LL1 = 0.0322D0*RAP1+3.33D0
           IF (RAP2 .GE. LL1) THEN
             REGIME = 1
-!           WRITE(*,*) 'LE REGIME HYDRAULIQUE EST LAMINAIRE'
-!           WRITE(*,*) 'THE HYDRAULIC REGIME IS LAMINAR'
+!             WRITE(*,*) 'LE REGIME HYDRAULIQUE EST LAMINAIRE'
+!             WRITE(*,*) 'THE HYDRAULIC REGIME IS LAMINAR'
           ENDIF
         ENDIF
 !
@@ -161,8 +162,8 @@
           LL1 = 0.009792D0*RAP1+208.33D0
           IF (RAP2 .GE. LL1) THEN
             REGIME = 2
-!           WRITE(*,*) 'LE REGIME HYDRAULIQUE EST TURBULENT LISSE'
-!           WRITE(*,*) 'THE HYDRAULIC REGIME IS SMOOTH TURBULENT'
+!             WRITE(*,*) 'LE REGIME HYDRAULIQUE EST TURBULENT LISSE'
+!             WRITE(*,*) 'THE HYDRAULIC REGIME IS SMOOTH TURBULENT'
           ENDIF
         ENDIF
 !
@@ -170,8 +171,8 @@
           LL1 = 0.026D0*RAP1-12.D0
           IF (RAP2 .LE. LL1) THEN
             REGIME = 3
-!           WRITE(*,*) 'LE REGIME HYDRAULIQUE EST TURBULENT RUGUEUX'
-!           WRITE(*,*) 'THE HYDRAULIC REGIME IS ROUGH TURBULENT'
+!             WRITE(*,*) 'LE REGIME HYDRAULIQUE EST TURBULENT RUGUEUX'
+!             WRITE(*,*) 'THE HYDRAULIC REGIME IS ROUGH TURBULENT'
           ENDIF
         ENDIF
 !
@@ -179,15 +180,15 @@
           LL1 = 0.00099D0*RAP1+30.30D0
           IF (RAP2 .LE. LL1) THEN
             REGIME = 3
-!           WRITE(*,*) 'LE REGIME HYDRAULIQUE EST TURBULENT RUGUEUX'
-!           WRITE(*,*) 'THE HYDRAULIC REGIME IS ROUGH TURBULENT'
+!             WRITE(*,*) 'LE REGIME HYDRAULIQUE EST TURBULENT RUGUEUX'
+!             WRITE(*,*) 'THE HYDRAULIC REGIME IS ROUGH TURBULENT'
           ENDIF
         ENDIF
 !
         IF (REGIME .EQ. 0) THEN
           REGIME = 3
-!         WRITE(*,*) 'LE REGIME EST TURBULENT RUGEUX'
-!           WRITE(*,*) 'THE HYDRAULIC REGIME IS ROUGH TURBULENT'
+!           WRITE(*,*) 'LE REGIME EST TURBULENT RUGEUX'
+!             WRITE(*,*) 'THE HYDRAULIC REGIME IS ROUGH TURBULENT'
         ENDIF
 !
       ENDIF
@@ -209,7 +210,7 @@
 !
         IF (ENTRUG) THEN
 !
-           KSRUGO = 3.D0 * DIAM90
+          KSRUGO = 3.D0 * DIAM90
 !
         ELSE
 !
@@ -232,54 +233,54 @@
 !  RICOEF = 1     RIPPLES ONLY
 !  RICOEF = 0.7D0 RIPPLES AND SAND WAVES
 !
-          ELSE
-            KS1 = 3.D0*(0.04D0*PSI-9.D0)*DIAM90
-            KS2 = 0.D0
-            IF (KS1 .LT. 0.01D0) THEN
-              KS1 = 3.D0*DIAM90
+            ELSE
+              KS1 = 3.D0*(0.04D0*PSI-9.D0)*DIAM90
+              KS2 = 0.D0
+              IF (KS1 .LT. 0.01D0) THEN
+                KS1 = 3.D0*DIAM90
+              ENDIF
             ENDIF
+!
+            KSRUGO = KS1+KS2
+            KS1 = (AEX/KSRUGO)
+!
           ENDIF
 !
-          KSRUGO = KS1+KS2
-          KS1 = (AEX/KSRUGO)
-!
+          FFW = EXP(-6.D0+5.2D0*((AEX/KSRUGO)**(-0.19D0)))
+          IF (FFW .GT. 0.3D0) THEN
+            FFW = 0.3D0
+          ENDIF
         ENDIF
 !
-        FFW = EXP(-6.D0+5.2D0*((AEX/KSRUGO)**(-0.19D0)))
-        IF (FFW .GT. 0.3D0) THEN
-          FFW = 0.3D0
-        ENDIF
-      ENDIF
-!
-      IF (REGIME .EQ. 4) THEN
+        IF (REGIME .EQ. 4) THEN
 !
 !     TRANSIENT STATE NOT TAKEN INTO ACCOUNT
 !
-        IF (ENTRUG) THEN
+          IF (ENTRUG) THEN
 !
-          KSRUGO = 3.D0 * DIAM90
+            KSRUGO = 3.D0 * DIAM90
 !
-        ELSE
+          ELSE
 !
-          DIAMAD = (((MVSED/MVEAU)-1.D0)*GRAV)/(VISCO**2.D0)
-          DIAMAD = DIAMAD**(1/3)
-          DIAMAD = DIAMAD * DIAM50
+            DIAMAD = (((MVSED/MVEAU)-1.D0)*GRAV)/(VISCO**2.D0)
+            DIAMAD = DIAMAD**(1/3)
+            DIAMAD = DIAMAD * DIAM50
 !
-          TETACR = 0.14D0*(DIAMAD**(-0.64D0))
+            TETACR = 0.14D0*(DIAMAD**(-0.64D0))
 !
-          TAUCR = TETACR*(MVSED-MVEAU)*GRAV*DIAM50
+            TAUCR = TETACR*(MVSED-MVEAU)*GRAV*DIAM50
 !
-          KSRUGO = (3.D0*DIAM90)+((3.3D0*VISCO)/
-     &             ((TAUCR/MVEAU)**0.5D0))
+            KSRUGO = (3.D0*DIAM90)+((3.3D0*VISCO)/
+     &               ((TAUCR/MVEAU)**0.5D0))
+!
+          ENDIF
+!
+          FFW = EXP(-6.D0+5.2D0*((AEX/KSRUGO)**(-0.19D0)))
+          IF (FFW .GT. 0.3D0) THEN
+            FFW = 0.3D0
+          ENDIF
 !
         ENDIF
-!
-        FFW = EXP(-6.D0+5.2D0*((AEX/KSRUGO)**(-0.19D0)))
-        IF (FFW .GT. 0.3D0) THEN
-          FFW = 0.3D0
-        ENDIF
-!
-      ENDIF
 !
       RETURN
       END

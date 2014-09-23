@@ -1,6 +1,6 @@
 /---------------------------------------------------------------------
-/ ARTEMIS Version v7p mars 2014
-/ BTWI CAS 2 + TEST PHASE AUTOMATIQUES SUR UN CAS APPLIQUE
+/ ARTEMIS Version v7p0 juin 2014
+/ AGITATION DERRIERE UN BRISE LAME
 /---------------------------------------------------------------------
 
 /---------------------------------------------------------------------
@@ -8,41 +8,42 @@
 /---------------------------------------------------------------------
 
 
-RESULTS FILE               ='btwi2.res'
+FICHIER DES RESULTATS              ='chwac.resu'
 
-BOUNDARY CONDITIONS FILE   ='btwi.cli'
+FICHIER DES CONDITIONS AUX LIMITES ='g8m.cli'
 
-FORTRAN FILE               ='btwi2-par.f'
+FICHIER FORTRAN                    ='g8m.f'
 
-GEOMETRY FILE              ='btwi.geo'
+FICHIER DE GEOMETRIE               ='g8m.geo'
 
-REFERENCE FILE             ='btwi2_ref.res'
-/REFERENCE FILE             ='ref_btwi2-par_S3.res'
+FICHIER DE REFERENCE               ='ref_chwac.resu'
 
+FICHIER DES PARAMETRES             ='g8m.cas'
 
+FICHIER DE DONNEES TOMAWAC 1       ='twc_50x48.spe'
 
 /---------------------------------------------------------------------
 / ENTREES-SORTIES,GENERALITES
 /---------------------------------------------------------------------
 
-TITLE ='BTWI CAS 2'
+TITRE ='EXEMPLE UTILISATION : AGITATION DERRIERE BRISE LAME'
 
 
 /---------------------------------------------------------------------
 / ENTREES-SORTIES,GRAPHIQUES ET LISTING
 /---------------------------------------------------------------------
 
-WAVE HEIGHTS SMOOTHING          = NO
+LISSAGE DES HAUTEURS DE HOULE          = NON
 
-VARIABLES FOR GRAPHIC PRINTOUTS  ='HS,ZF,QB'
+VARIABLES POUR LES SORTIES GRAPHIQUES  ='HS,PHAS,ZF,ZS,C,CG,QB,INC'
 
 /---------------------------------------------------------------------
 / EQUATIONS CONDITIONS INITIALES
 /---------------------------------------------------------------------
 
-INITIAL CONDITIONS          : 'CONSTANT ELEVATION'
+CONDITIONS INITIALES ='COTE CONSTANTE'
 
-INITIAL WATER LEVEL         : 1.2
+COTE INITIALE        =0.
 
 
 /---------------------------------------------------------------------
@@ -52,40 +53,45 @@ INITIAL WATER LEVEL         : 1.2
 /--------------------------------------------------------------------/
 / OPTIONS
 /--------------------------------------------------------------------/
-MATRIX STORAGE : 3
+STOCKAGE DES MATRICES =3
 
 
 /---------------------------------------------------------------------
 / PARAMETRES NUMERIQUES,SOLVEUR
 /---------------------------------------------------------------------
 
-SOLVER =8
-/PARALLEL PROCESSORS : 1
-/SOLVER=3
-AUTOMATIC TETAP CALCULATION               : YES
-SUB-ITERATIONS ACCURACY FOR TETAP         =1E-1
-RELAXATION ON TETAP                       = 1.
-AUTOMATIC CALCULATION OF PHASE            : YES
-REFERENCE WATER DEPTH FOR AUTOMATIC PHASE = 5.2
-PHASE REFERENCE COORDINATES               = 0.;0.
+SOLVEUR =8
+
+CHAINAGE TOMAWAC  1= OUI
+NOMBRE DE DIRECTION DANS LE SPECTRE TOMAWAC=48
+NOMBRE DE FREQUENCES DANS LE SPECTRE TOMAWAC=50
+INSTANT DE LECTURE DU SPECTRE TOMAWAC=30000.
 /---------------------------------------------------------------------
 / PHYSICAL PARAMETERS
 /---------------------------------------------------------------------
 
-MONODIRECTIONAL RANDOM WAVE              : YES
+DEFERLEMENT =OUI
 
-GAMMA = 1.05
-PEAK PERIOD : 5.3
-MINIMUM SPECTRAL PERIOD : 2.94
-MAXIMUM SPECTRAL PERIOD : 11.
-DIRECTION OF WAVE PROPAGATION  : 67.
-NUMBER OF PERIODS = 10
+HOULE ALEATOIRE MULTIDIRECTIONNELLE = OUI
 
-BREAKING : YES
+GAMMA = 3.3 
+
+PERIODE DE PIC : 1.68 
+
+PERIODE MINIMUM DU SPECTRE : 0.6
+PERIODE MAXIMUM DU SPECTRE : 8.
+
+ANGLE MINIMUM DE PROPAGATION : -140.0
+ANGLE MAXIMUM DE PROPAGATION : -40.0
+
+DIRECTION DE PROPAGATION DE LA HOULE : -90.0
+
+EXPOSANT S = 10
+
+PRECONDITIONNEMENT : 2
 
 
 /---------------------------------------------------------------------
 VALIDATION : YES
 /---------------------------------------------------------------------
-
 

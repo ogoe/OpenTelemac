@@ -137,20 +137,20 @@
 ! VISCOSITY AND SETTLING VELOCITY ARRAYS
 ! DEAL WITH VISCOSITY SCHEME OPTION 2 (SEE VISCLM)
       IF (VISCTA%DIMDISC.EQ.4111) THEN
-         DO IPLAN=1,NPLAN
-            I1 = IPOIN + (IPLAN-1)*NPOIN2
-            EV%R(IPLAN)=VISCTA%R(I1)
-            WS%R(IPLAN)= WCC%R(I1)
-         ENDDO
+        DO IPLAN=1,NPLAN
+          I1 = IPOIN + (IPLAN-1)*NPOIN2
+          EV%R(IPLAN)=VISCTA%R(I1)
+          WS%R(IPLAN)= WCC%R(I1)
+        ENDDO
       ELSE 
-          DO IPLAN=1,NPLAN-1
-            I1 = IPOIN + (IPLAN-1)*NPOIN2
-            EV%R(IPLAN)=0.5*(VISCTA%R(I1)+VISCTA%R(I1+NPOIN2))
-            WS%R(IPLAN)= WCC%R(I1)
-         ENDDO
-         I1 = IPOIN + (NPLAN-1)*NPOIN2
-         EV%R(NPLAN)=EV%R(NPLAN-1)
-         WS%R(NPLAN)=WCC%R(I1)
+        DO IPLAN=1,NPLAN-1
+          I1 = IPOIN + (IPLAN-1)*NPOIN2
+          EV%R(IPLAN)=0.5*(VISCTA%R(I1)+VISCTA%R(I1+NPOIN2))
+          WS%R(IPLAN)= WCC%R(I1)
+        ENDDO
+        I1 = IPOIN + (NPLAN-1)*NPOIN2
+        EV%R(NPLAN)=EV%R(NPLAN-1)
+        WS%R(NPLAN)=WCC%R(I1)
       ENDIF
 !
 ! APPLY THE DEPOSITION RATE TO BOTTOM PLANE
@@ -165,14 +165,14 @@
 !     INTERMEDIATE PLANES
       DO IPLAN=2,NPLAN-1
 !         
-!        PARAMETERS A AND B
-         A=EV%R(IPLAN-1)/(DZ%R(IPLAN)*DZA%R(IPLAN))
-         B=EV%R(IPLAN  )/(DZ%R(IPLAN)*DZB%R(IPLAN))
+!       PARAMETERS A AND B
+        A=EV%R(IPLAN-1)/(DZ%R(IPLAN)*DZA%R(IPLAN))
+        B=EV%R(IPLAN  )/(DZ%R(IPLAN)*DZB%R(IPLAN))
 !
-!        DIFFUSION MATRIX
-         AA%R(IPLAN)=-A*DT
-         BB%R(IPLAN)=1.D0+ (WS%R(IPLAN)/DZ%R(IPLAN)+(A+B))*DT
-         CC%R(IPLAN)=-(WS%R(IPLAN+1)/DZ%R(IPLAN)+B)*DT
+!       DIFFUSION MATRIX
+        AA%R(IPLAN)=-A*DT
+        BB%R(IPLAN)=1.D0+ (WS%R(IPLAN)/DZ%R(IPLAN)+(A+B))*DT
+        CC%R(IPLAN)=-(WS%R(IPLAN+1)/DZ%R(IPLAN)+B)*DT
 !         
       ENDDO
 !     SURFACE PLANE

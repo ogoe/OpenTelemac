@@ -42,7 +42,7 @@
       EPS=1.D-8
 !      
       DO K=2,IMAX
-         IF( BB(K-1).LT.EPS ) THEN
+        IF( BB(K-1).LT.EPS ) THEN
           WRITE(LU,*) 'FLOATING EXCEPTION IN TRID1D'
           CALL PLANTE(1)
           STOP

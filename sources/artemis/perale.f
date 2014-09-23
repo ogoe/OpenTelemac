@@ -87,31 +87,31 @@
       IF (GAMMA.GT.0.99D0 .AND. GAMMA.LT.1.01D0) THEN
 !
 !
-!       PIERSON-MOSKOWITZ SPECTRUM
-!       ----------------------------
+!        PIERSON-MOSKOWITZ SPECTRUM
+!        ----------------------------
 !
         B1 = EXP(-1.25D0 * (FP/FMAX)**4)
         B2 = EXP(-1.25D0 * (FP/FMIN)**4)
         B  = B1 - B2
         DO I=1,NPALE
           PALE(NPALE-I+1) = PERPIC *
-     &   (-0.8D0*LOG( B2 + B*FLOAT(2*I-1)/FLOAT(2*NPALE) ))**(0.25D0)
+     &    (-0.8D0*LOG( B2 + B*FLOAT(2*I-1)/FLOAT(2*NPALE) ))**(0.25D0)
         ENDDO
 !
       ELSE
 !
 !
-!       JONSWAP SPECTRUM
-!       ------------------
+!        JONSWAP SPECTRUM
+!        ------------------
 !
-!       THE FREQUENCIES LIMITING THE SPECTRUM TO THE LEFT AND RIGHT
-!       ARE GIVEN BY KEYWORDS IN THE ARGUMENTS
+!        THE FREQUENCIES LIMITING THE SPECTRUM TO THE LEFT AND RIGHT
+!        ARE GIVEN BY KEYWORDS IN THE ARGUMENTS
 !
         IF (FMAX.LE.FP) THEN
           FMAX = 2.5D0 * FP
           WRITE(LU,110) FMAX
  110      FORMAT(/,1X,'(PERALE) : FMAX < FP ??? =>',1X,
-     &           'CORRECTION : FMAX =',1X,F5.3,' HZ',/)
+     &          'CORRECTION : FMAX =',1X,F5.3,' HZ',/)
         ENDIF
 !
 !       NUMBER OF INTEGRATION INTERVALS FOR THE TRAPEZOIDS METHOD
@@ -126,7 +126,7 @@
 !       SO THAT IT'S NOT RECOMPUTED WHEN CALLS SPE)
 !
         DELTA = 0.0624D0 * FP**4 /
-     &          ( 0.230D0 + 0.0336D0*GAM - 0.185D0 / (1.9D0+GAM) )
+     &           ( 0.230D0 + 0.0336D0*GAM - 0.185D0 / (1.9D0+GAM) )
 !
 !       SURFACE OF THE SPECTRUM (TRAPEZOIDS METHOD)
 !
@@ -151,7 +151,7 @@
             I = I + 1
             IF (I.GT.NPALE) RETURN
           ENDIF
-          SUMICI = SUMICI + VAR/2.D0
+            SUMICI = SUMICI + VAR/2.D0
         ENDDO
 !
 !

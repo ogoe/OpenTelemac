@@ -289,6 +289,9 @@
 !brief WAVE DIRECTIONS AT THE BOUNDARY (RANDOM MODE)
 !
       TYPE(BIEF_OBJ), TARGET :: DALE
+!brief PERIODS ASSOCIATED TO WAVE DIRECTIONS AT THE BOUNDARY (RANDOM MODE)
+!
+      TYPE(BIEF_OBJ), TARGET :: PDALE
 !brief BOUNDARY CONDITION TYPE
 ! type de conditions aux limites sur u
       TYPE(BIEF_OBJ), TARGET :: LIUBOR
@@ -351,6 +354,12 @@
 !brief table for wave-current interaction
 ! WAVE VECTOR COMPONENT Y
       TYPE(BIEF_OBJ), TARGET :: KANCY
+!brief table for mean omega on the domain (from T01)
+! MEAN OMEGA = 2 PI / T01
+      TYPE(BIEF_OBJ), TARGET :: OMEGAM
+!brief table for bottom velocity in random waves
+! BOTTOM VELOCITY (RANDOM SEAS)
+      TYPE(BIEF_OBJ), TARGET :: UEB
 !
 !-----------------------------------------------------------------------
 !
@@ -421,8 +430,11 @@
 !brief
 ! maximum de frontieres liquides
       INTEGER, PARAMETER :: MAXFRO = 3000
-!brief ORIGIN COORDINATE
-
+!brief
+! maximum de tableau du spectre TOMAWAC (frequences)
+      INTEGER, PARAMETER :: MAXFRE = 300
+! maximum de tableau du spectre TOMAWAC (direction)
+      INTEGER, PARAMETER :: MAXDIR = 720
 !     OPEN BOUNDARY WITH INCIDENT POTENTIAL 
       INTEGER, PARAMETER :: KPOT  =  7
 
@@ -537,6 +549,17 @@
       INTEGER LPER
 !brief
       INTEGER LDIR
+!brief MAX NUMBER OF ITERATION ON TETAP CALCULATION
+! nombre max d'iteration pour calcul auto du TETAP
+      INTEGER NITTP
+!brief
+! nombre de frequence du spectre importe de TOMAWAC
+      INTEGER NFTWC
+!brief
+! nombre de direction du spectre importe de TOMAWAC
+      INTEGER NDTWC
+!brief DIRECTIONS FROM TOMAWAC
+      INTEGER DTWC(2*MAXDIR+1)
       
       
       
@@ -603,6 +626,9 @@
 !!brief AUTOMATIC PHASES ON INCIDENT WAVE BOUNDARY
 ! si oui, calcul automatique des phases sur la frontière de type onde incidente (KINC)
       LOGICAL LPHASEAUTO
+!!brief CHAINING TOMAWAC AND ARTEMIS USING A TOMAWAC SPECTRUM ON A SINGLE POINT  
+! si oui, utilise un spectre issu de TOMAWAC (en 1 point) en entree du calcul artemis
+      LOGICAL CHAINTWC
 !-----------------------------------------------------------------------
 !
 !       6) REALS
@@ -723,7 +749,22 @@
 !brief SUB-ITERATIONS ACCURACY FOR TETAP 
 ! precision sur les sous-iterations sur le TETAP
       DOUBLE PRECISION EPSTP
-!
+!briefRELAXATION COEFFICIENT FOR TETAP 
+! coefficient de relaxation pour calcul automatic de TETAP
+      DOUBLE PRECISION RELTP
+!brief SPECTRUM FROM TOMAWAC
+      DOUBLE PRECISION SPETWC(MAXDIR,MAXFRE)
+!brief FREQUENCIES FROM TOMAWAC
+      DOUBLE PRECISION FREQTWC(MAXFRE)
+!brief DIRECTIONS FROM TOMAWAC
+      DOUBLE PRECISION DIRTWC(MAXDIR)
+!brief FREQUENCIES FROM TOMAWAC
+      DOUBLE PRECISION FTWC(2*MAXFRE+1)
+!brief TIME AT WHICH TOMAWAC SPECTRUM IS TAKEN
+      DOUBLE PRECISION TPSTWC
+! Significant wave height corresponding to global 
+! energy contained in TOMAWAC spectrum
+      DOUBLE PRECISION HSCAL
 !-----------------------------------------------------------------------
 !
 !       7) STRINGS
@@ -943,6 +984,12 @@
 !brief NAME OF THE FORMATTED DATA FILE 2
 ! nom du fichier de donnees formate 2
       INTEGER :: ARTFO2
+!brief NAME OF THE TOMAWAC DATA FILE 1 (BINARY)
+! nom du fichier de donnees tomawac 1 (binaire)
+      INTEGER :: ARTTC1
+
+
+
 !brief
 !
       TYPE(BIEF_FILE) :: ART_FILES(MAXLU_ART)

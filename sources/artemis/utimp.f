@@ -141,8 +141,8 @@
 !      CALL OS( 'X=Y/Z   ' , TRA03 , TRA03 , TRA01 , BID )
 !
 !      DO I = 1,NPOIN
-!         PRIVE%ADR(1)%P%R(1) = TRA02(I)
-!         PRIVE%ADR(1)%P%R(2) = TRA03(I)
+!        PRIVE%ADR(1)%P%R(1) = OMEGAM(I)
+!        PRIVE%ADR(1)%P%R(2) = 2D0*3.1415D0/PERPIC
 !      ENDDO
 !
       RETURN

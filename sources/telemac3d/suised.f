@@ -67,7 +67,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-ccc      USE DECLARATIONS_TELEMAC3D, ONLY: RHOS
+!!!      USE DECLARATIONS_TELEMAC3D, ONLY: RHOS
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -84,15 +84,15 @@ ccc      USE DECLARATIONS_TELEMAC3D, ONLY: RHOS
       DOUBLE PRECISION, INTENT(OUT)   :: ZR(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: ZF(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2)
-ccc TBE - THESE ARE FOR GIBSON MODEL (COMMENTED FOR NOW)
-ccc      DOUBLE PRECISION, INTENT(OUT)   :: IVIDE(NPOIN2,NCOUCH+1)
-ccc      DOUBLE PRECISION, INTENT(INOUT) :: TEMP(NPOIN2,NCOUCH)      
-ccc      DOUBLE PRECISION, INTENT(OUT)   :: FLUER(NPOIN2), PDEPOT(NPOIN2)
-ccc      INTEGER, INTENT(OUT)            :: NPF(NPOIN2)
+!!! TBE - THESE ARE FOR GIBSON MODEL (COMMENTED FOR NOW)
+!!!      DOUBLE PRECISION, INTENT(OUT)   :: IVIDE(NPOIN2,NCOUCH+1)
+!!!      DOUBLE PRECISION, INTENT(INOUT) :: TEMP(NPOIN2,NCOUCH)      
+!!!      DOUBLE PRECISION, INTENT(OUT)   :: FLUER(NPOIN2), PDEPOT(NPOIN2)
+!!!      INTEGER, INTENT(OUT)            :: NPF(NPOIN2)
 !
       CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT 
 !
-ccc      LOGICAL, INTENT(IN)             :: TASSE 
+!!!      LOGICAL, INTENT(IN)             :: TASSE 
       
 !
 !----------------------------------------------------------------------
@@ -147,15 +147,15 @@ ccc      LOGICAL, INTENT(IN)             :: TASSE
       IF(LNG.EQ.2) WRITE(LU,*) 'NUMBER OF VARIABLES: ',IB(1)
       IF(LNG.EQ.1) WRITE(LU,*) 'ET DE VARIABLES CLANDESTINES: ',IB(2)
       IF(LNG.EQ.2) WRITE(LU,*) 'AND OF CLANDESTINE VARIABLES: ',IB(2)
-ccc      IF( (IB(1).NE.4 .AND.ITASS.EQ.1).OR.(IB(1).NE.4 .AND.ITASS.EQ.2) )
-ccc     &   THEN
-ccc        IF(LNG.EQ.1) WRITE(LU,*)
-ccc     &'SUISED : CONSOLIDATION NON COMPATIBLE AVEC NOMBRE DE VARIABLES'
-ccc        IF(LNG.EQ.2) WRITE(LU,*)
-ccc     &'SUISED: CONSOLIDATION NOT COMPATIBLE WITH NUMBER OF VARIABLES'
-ccc        CALL PLANTE(1)
-ccc        STOP
-ccc      ENDIF
+!!!      IF( (IB(1).NE.4 .AND.ITASS.EQ.1).OR.(IB(1).NE.4 .AND.ITASS.EQ.2) )
+!!!     &   THEN
+!!!        IF(LNG.EQ.1) WRITE(LU,*)
+!!!     &'SUISED : CONSOLIDATION NON COMPATIBLE AVEC NOMBRE DE VARIABLES'
+!!!        IF(LNG.EQ.2) WRITE(LU,*)
+!!!     &'SUISED: CONSOLIDATION NOT COMPATIBLE WITH NUMBER OF VARIABLES'
+!!!        CALL PLANTE(1)
+!!!        STOP
+!!!      ENDIF
       NVAR = IB(1)+IB(2)
 !
 !   3: VARIABLES NAMES AND UNITS
@@ -173,15 +173,15 @@ ccc      ENDIF
           WRITE(LU,*) IB(1),IB(2),IB(3)
           WRITE(LU,*) IB(4),IB(5),IB(6)
       ENDIF
-ccc      IF( (IB(7).NE.NPFMAX .AND.ITASS.EQ.2).OR.
-ccc     &                   (IB(7).NE.NCOUCH .AND.ITASS.EQ.1) ) THEN
-ccc        IF(LNG.EQ.1) WRITE(LU,*)
-ccc     &'SUISED : NOMBRE DE COUCHES NON COMPATIBLE AVEC CONSOLIDATION'
-ccc        IF(LNG.EQ.2) WRITE(LU,*)
-ccc     &'SUISED: NUMBER OF LAYERS NOT COMPATIBLE WITH CONSOLIDATION'
-ccc        CALL PLANTE(1)
-ccc        STOP
-ccc      ENDIF
+!!!      IF( (IB(7).NE.NPFMAX .AND.ITASS.EQ.2).OR.
+!!!     &                   (IB(7).NE.NCOUCH .AND.ITASS.EQ.1) ) THEN
+!!!        IF(LNG.EQ.1) WRITE(LU,*)
+!!!     &'SUISED : NOMBRE DE COUCHES NON COMPATIBLE AVEC CONSOLIDATION'
+!!!        IF(LNG.EQ.2) WRITE(LU,*)
+!!!     &'SUISED: NUMBER OF LAYERS NOT COMPATIBLE WITH CONSOLIDATION'
+!!!        CALL PLANTE(1)
+!!!        STOP
+!!!      ENDIF
 !
 !   5: 4 INTEGERS
       CALL LIT(XB,RB,IB,CB,4,'I',NSUIS,'STD',ISTAT)
@@ -286,79 +286,79 @@ ccc      ENDIF
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! STILL NEED TO CODE CONCENTRATION AND TIME OF CONSOLIDATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-ccc! CONCENTRATION
-ccc        CALL LIT(XB,RB,IB,CB,NPOIN2,'R4',NSUIS,'STD',ISTAT)
-ccc        DO I=1,NPOIN2
-ccc          DO IPLAN = 1,NCOUCH
-ccc            CONC(IPOIN,IPLAN) = DBLE( RB(1+(IPLAN-1)*NPOIN2))* UNITCONV
-ccc          ENDDO
-ccc        ENDDO
-ccc! TIME OF CONSOLIDATION
-ccc        CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,'STD',ISTAT)
-ccc        DO IPOIN = 1,NCOUCH*NPOIN2
-ccc!>        TEMP(IPOIN) = DBLE( RB(IPOIN) )
-ccc        ENDDO
-ccc
+!!!! CONCENTRATION
+!!!        CALL LIT(XB,RB,IB,CB,NPOIN2,'R4',NSUIS,'STD',ISTAT)
+!!!        DO I=1,NPOIN2
+!!!          DO IPLAN = 1,NCOUCH
+!!!            CONC(IPOIN,IPLAN) = DBLE( RB(1+(IPLAN-1)*NPOIN2))* UNITCONV
+!!!          ENDDO
+!!!        ENDDO
+!!!! TIME OF CONSOLIDATION
+!!!        CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,'STD',ISTAT)
+!!!        DO IPOIN = 1,NCOUCH*NPOIN2
+!!!!>        TEMP(IPOIN) = DBLE( RB(IPOIN) )
+!!!        ENDDO
+!!!
         ELSEIF (ITASS.EQ.2) THEN
 !###>TBE - COMMENTED GIBSON (NOT WORKING YET)
-ccc!> ELEVATION Z (TEMPORARILY STORES TRUE LAYER THICKNESS)
-ccc        CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,'STD',ISTAT)
-ccc        DO IPOIN = 1,NPOIN2
-ccc          ZR(IPOIN) = DBLE( RB(IPOIN) )
-ccc          ZPLAN = ZR(IPOIN)
-ccc          DO IPLAN = 1,NPFMAX-1
-ccc            EPAI(IPOIN,IPLAN) =
-ccc     &         DBLE( RB(IPOIN+(IPLAN-1)*NPOIN2) ) - ZPLAN
-ccc            ZPLAN = ZPLAN + EPAI(IPOIN,IPLAN)
-ccc          ENDDO
-ccc          ZF(IPOIN) = DBLE( RB(IPOIN+(NPFMAX-1)*NPOIN2) )
-ccc!         HDEB(IPOIN) = ZF(IPOIN) - ZPLAN
-ccc        ENDDO
-ccc!> TRUE THICKNESS AND NUMBER OF LAYERS
-ccc        CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,'STD',ISTAT)
-ccc        DO IPOIN = 1,NPOIN2
-ccc          NPF(IPOIN) = INT( RB(IPOIN) )
-ccc          IF( NPF(IPOIN).GT.NPFMAX ) THEN
-ccc            IF(LNG.EQ.1) THEN
-ccc              WRITE(LU,*) 'SUISED : NOMBRE DE COUCHE MAXIMAL NON VALIDE'
-ccc            ENDIF
-ccc            IF(LNG.EQ.2) THEN
-ccc              WRITE(LU,*) 'SUISED: MAXIMUM NUMBER OF LAYERS NOT VALID'
-ccc            ENDIF
-ccc            CALL PLANTE(1)
-ccc            STOP
-ccc          ENDIF
-ccc          HDEP(IPOIN)=DBLE(RB(IPOIN+(NPFMAX-1)*NPOIN2))*UNITCONV
-ccc        ENDDO
-ccc!> TRUE DENSITY AND RENUMBERING
-ccc        CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,'STD',ISTAT)
-ccc        DO IPOIN = 1, NPOIN2
-ccc          DO IPLAN = NPFMAX,NPF(IPOIN)+1,-1
-ccc            IVIDE(IPLAN,IPOIN) = 0.D0
-ccc          ENDDO
-ccc          JPLAN = NPFMAX
-ccc          DO IPLAN = NPF(IPOIN),1,-1
-ccc            IVIDE(IPLAN,IPOIN) =
-ccc     &         RHOS/DBLE( RB(IPOIN+(JPLAN-1)*NPOIN2) ) - 1.D0
-ccc            JPLAN = JPLAN - 1
-ccc          ENDDO
-ccc        ENDDO
-ccc!> VIRTUAL THICKNESS EPAI AND RENUMBERING
-ccc        DO IPOIN = 1,NPOIN2
-ccc          JPLAN = NPFMAX-NPF(IPOIN)+1
-ccc          DO IPLAN = 1,NPF(IPOIN)
-ccc            ECOUCH =
-ccc     &      ( IVIDE(IPLAN,IPOIN) + IVIDE(IPLAN+1,IPOIN) )/2.D0
-ccc            EPAI(IPOIN,IPLAN) = EPAI(IPOIN,IPLAN)/( 1.D0+ECOUCH )
-ccc            JPLAN = JPLAN + 1
-ccc          ENDDO
-ccc          DO IPLAN = NPF(IPOIN),NCOUCH
-ccc            EPAI(IPOIN,IPLAN) = 0.D0
-ccc          ENDDO
-ccc        ENDDO
-ccc!> LAYER IPF: ONLY USEFUL FOR PLOTTING PURPOSES
-ccc!         CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,'STD',ISTAT)
-ccc        DEALLOCATE(XB)
+!!!!> ELEVATION Z (TEMPORARILY STORES TRUE LAYER THICKNESS)
+!!!        CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,'STD',ISTAT)
+!!!        DO IPOIN = 1,NPOIN2
+!!!          ZR(IPOIN) = DBLE( RB(IPOIN) )
+!!!          ZPLAN = ZR(IPOIN)
+!!!          DO IPLAN = 1,NPFMAX-1
+!!!            EPAI(IPOIN,IPLAN) =
+!!!     &         DBLE( RB(IPOIN+(IPLAN-1)*NPOIN2) ) - ZPLAN
+!!!            ZPLAN = ZPLAN + EPAI(IPOIN,IPLAN)
+!!!          ENDDO
+!!!          ZF(IPOIN) = DBLE( RB(IPOIN+(NPFMAX-1)*NPOIN2) )
+!!!!         HDEB(IPOIN) = ZF(IPOIN) - ZPLAN
+!!!        ENDDO
+!!!!> TRUE THICKNESS AND NUMBER OF LAYERS
+!!!        CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,'STD',ISTAT)
+!!!        DO IPOIN = 1,NPOIN2
+!!!          NPF(IPOIN) = INT( RB(IPOIN) )
+!!!          IF( NPF(IPOIN).GT.NPFMAX ) THEN
+!!!            IF(LNG.EQ.1) THEN
+!!!              WRITE(LU,*) 'SUISED : NOMBRE DE COUCHE MAXIMAL NON VALIDE'
+!!!            ENDIF
+!!!            IF(LNG.EQ.2) THEN
+!!!              WRITE(LU,*) 'SUISED: MAXIMUM NUMBER OF LAYERS NOT VALID'
+!!!            ENDIF
+!!!            CALL PLANTE(1)
+!!!            STOP
+!!!          ENDIF
+!!!          HDEP(IPOIN)=DBLE(RB(IPOIN+(NPFMAX-1)*NPOIN2))*UNITCONV
+!!!        ENDDO
+!!!!> TRUE DENSITY AND RENUMBERING
+!!!        CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,'STD',ISTAT)
+!!!        DO IPOIN = 1, NPOIN2
+!!!          DO IPLAN = NPFMAX,NPF(IPOIN)+1,-1
+!!!            IVIDE(IPLAN,IPOIN) = 0.D0
+!!!          ENDDO
+!!!          JPLAN = NPFMAX
+!!!          DO IPLAN = NPF(IPOIN),1,-1
+!!!            IVIDE(IPLAN,IPOIN) =
+!!!     &         RHOS/DBLE( RB(IPOIN+(JPLAN-1)*NPOIN2) ) - 1.D0
+!!!            JPLAN = JPLAN - 1
+!!!          ENDDO
+!!!        ENDDO
+!!!!> VIRTUAL THICKNESS EPAI AND RENUMBERING
+!!!        DO IPOIN = 1,NPOIN2
+!!!          JPLAN = NPFMAX-NPF(IPOIN)+1
+!!!          DO IPLAN = 1,NPF(IPOIN)
+!!!            ECOUCH =
+!!!     &      ( IVIDE(IPLAN,IPOIN) + IVIDE(IPLAN+1,IPOIN) )/2.D0
+!!!            EPAI(IPOIN,IPLAN) = EPAI(IPOIN,IPLAN)/( 1.D0+ECOUCH )
+!!!            JPLAN = JPLAN + 1
+!!!          ENDDO
+!!!          DO IPLAN = NPF(IPOIN),NCOUCH
+!!!            EPAI(IPOIN,IPLAN) = 0.D0
+!!!          ENDDO
+!!!        ENDDO
+!!!!> LAYER IPF: ONLY USEFUL FOR PLOTTING PURPOSES
+!!!!         CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,'STD',ISTAT)
+!!!        DEALLOCATE(XB)
         ENDIF
 !        
 !     DEALLOCATE TEMPORARY STORAGE

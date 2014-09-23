@@ -1562,6 +1562,30 @@ AIDE1 = '
 Name of a potential bathymetry file. If this key-word is specified, 
 the bathymetry which it is defining is accounted for.' 
  
+ 
+NOM = 'FICHIER DE DONNEES TOMAWAC 1' 
+NOM1 = 'TOMAWAC DATA FILE 1' 
+TYPE = CARACTERE 
+INDEX = 35 
+MNEMO = 'NOMTC1' 
+TAILLE = 0 
+SUBMIT = 'NTC1-READ-30;ARTTC1;FACUL;BIN;LIT;SCAL' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES ' 
+COMPORT = 'Foreground ("ENTREES-SORTIES,FICHIERS*NOMS") IS VALEUR (Red)' 
+CHOIX = 'binaire1' 
+APPARENCE = 'LISTE IS EDITABLE' 
+NIVEAU= 1  
+AIDE = ' 
+Fichier binaire contenant un spectre issu de TOMAWAC. 
+Les donnees de ce fichier seront a lire sur le canal 30.' 
+AIDE1 = ' 
+Data file, written in binary mode, given a tomawac spectrum. 
+Data of this file must be read on unit 30.' 
+ 
+ 
 NOM = 'FICHIER DE DONNEES BINAIRE 1' 
 NOM1 = 'BINARY DATA FILE 1' 
 TYPE = CARACTERE 
@@ -2071,6 +2095,135 @@ AIDE1 = '
 Fixes the relaxation coefficient used between two sub-iterations 
 for the computation of the dissipation term.' 
  
+NOM = 'MAXIMUM DE SOUS-ITERATIONS POUR TETAP' 
+NOM1 = 'MAXIMUM OF SUB-ITERATIONS FOR TETAP' 
+TYPE = ENTIER 
+INDEX = 27 
+MNEMO = 'NITTP' 
+TAILLE = 0 
+DEFAUT = 15 
+DEFAUT1 = 15 
+RUBRIQUE = 'DISSIPATION';'GENERALITES' 
+RUBRIQUE1 = 'DISSIPATION';'INFORMATION' 
+COMPORT = 'Foreground 
+("DISSIPATION*GENERALITES") 
+IS VALEUR (RED)' 
+NIVEAU= 3 
+AIDE = ' 
+Donne le nombre maximum admis de sous-iterations pour le calcul 
+automatique de tetap' 
+AIDE1 = ' 
+Fixes the maximum number of sub-iterations for the automatic 
+computation of tetap' 
+ 
+NOM = 'RELAXATION SUR TETAP' 
+NOM1 = 'RELAXATION ON TETAP'  
+TYPE = REEL 
+INDEX = 38 
+MNEMO = 'RELTP' 
+TAILLE = 0 
+DEFAUT = 1. 
+DEFAUT1 = 1. 
+RUBRIQUE = 'DISSIPATION';'GENERALITES' 
+RUBRIQUE1 = 'DISSIPATION';'INFORMATION' 
+COMPORT = 'Foreground 
+("DISSIPATION*GENERALITES") 
+IS VALEUR (RED)' 
+NIVEAU= 3 
+AIDE = ' 
+Donne le coefficient de relaxation entre deux sous-iterations 
+pour le calcul de l angle d incidence automatique.' 
+AIDE1 = ' 
+Fixes the relaxation coefficient used between two sub-iterations 
+for the computation of automatic tetap.' 
+
+
+NOM = 'CHAINAGE TOMAWAC 1' 
+NOM1 = 'CHAINING TOMAWAC 1' 
+TYPE = LOGIQUE 
+INDEX = 16 
+MNEMO = 'CHAINTWC' 
+TAILLE = 0 
+DEFAUT =  NON 
+DEFAUT1 =  NON 
+RUBRIQUE = 'CHAINAGE';'TOMAWAC'  
+RUBRIQUE1 = 'CHAINAGE';'TOMAWAC' 
+COMPORT = 'Foreground 
+("CHAINAGE*TOMAWAC") 
+IS VALEUR (BLUE)' 
+NIVEAU= 1 
+AIDE = ' 
+Oui, si on imposer un spectre tomawac unique sur la frontiere
+onde incidente.' 
+AIDE1 = ' 
+Yes, if one wants to use a spectrum from TOMAWAC on the incident
+boundary.' 
+
+NOM = 'NOMBRE DE DIRECTION DANS LE SPECTRE TOMAWAC' 
+NOM1 = 'NUMBER OF DIRECTIONS IN TOMAWAC SPECTRUM'  
+TYPE = INTEGER 
+INDEX = 28 
+MNEMO = 'NDTWC' 
+TAILLE = 0 
+DEFAUT = 0 
+DEFAUT1 = 0 
+RUBRIQUE = 'CHAINAGE';'TOMAWAC' 
+RUBRIQUE1 = 'CHAINING';'TOMAWAC' 
+COMPORT = 'Foreground 
+("CHAINAGE*TOMAWAC") 
+IS VALEUR (RED)' 
+NIVEAU= 3 
+AIDE = ' 
+Indique le nombre de directions dans le spectre importe 
+depuis TOMAWAC' 
+AIDE1 = ' 
+Give the number of direction in the TOMAWAC imported
+spectrum' 
+
+NOM = 'NOMBRE DE FREQUENCES DANS LE SPECTRE TOMAWAC' 
+NOM1 = 'NUMBER OF FREQUENCIES IN TOMAWAC SPECTRUM'  
+TYPE = INTEGER 
+INDEX = 29 
+MNEMO = 'NFTWC' 
+TAILLE = 0 
+DEFAUT = 0 
+DEFAUT1 = 0 
+RUBRIQUE = 'CHAINAGE';'TOMAWAC' 
+RUBRIQUE1 = 'CHAINING';'TOMAWAC' 
+COMPORT = 'Foreground 
+("CHAINAGE*TOMAWAC") 
+IS VALEUR (RED)' 
+NIVEAU= 3 
+AIDE = ' 
+Indique le nombre de frequences dans le spectre importe 
+depuis TOMAWAC' 
+AIDE1 = ' 
+Give the number of frequences in the TOMAWAC imported
+spectrum' 
+
+NOM = 'INSTANT DE LECTURE DU SPECTRE TOMAWAC' 
+NOM1 = 'INSTANT FOR READING TOMAWAC SPECTRUM'  
+TYPE = REEL 
+INDEX = 39 
+MNEMO = 'TPSTWC' 
+TAILLE = 0 
+DEFAUT = 0. 
+DEFAUT1 = 0. 
+RUBRIQUE = 'CHAINAGE';'TOMAWAC' 
+RUBRIQUE1 = 'CHAINING';'TOMAWAC' 
+COMPORT = 'Foreground 
+("CHAINAGE*TOMAWAC") 
+IS VALEUR (RED)' 
+NIVEAU= 3 
+AIDE = ' 
+Indique l instant de calcul TOMAWAC associe au spectre
+qui doit etre importe dans ARTEMIS' 
+AIDE1 = ' 
+Give the instant of the TOMAWAC computation at which we
+want to import the spectrum for ARTEMIS' 
+
+
+
 NOM = 'ALPHA' 
 NOM1 = 'ALPHA'  
 TYPE = REEL 
@@ -2781,6 +2934,31 @@ Possible values are:
 - SERAFIND: classical double precision format in Telemac; 
 - MED     : MED format based on HDF5' 
  
+
+
+NOM = 'FORMAT DU FICHIER DE DONNEES TOMAWAC 1' 
+NOM1 = 'TOMAWAC DATA FILE 1 FORMAT' 
+TYPE = CARACTERE 
+INDEX = 34 
+MNEMO = 'ART_FILES(ARTTC1)%FMT' 
+DEFAUT = 'SERAFIN ' 
+DEFAUT1 = 'SERAFIN ' 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+NIVEAU = 2 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
+AIDE = 'Format du fichier de resultats du calcul precedent. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac;  
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Previous computation results file format. 
+Possible values are: 
+- SERAFIN : classical single precision format in Telemac;  
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
+
+
  
 NOM = 'FORMAT DU FICHIER DE DONNEES BINAIRE 1' 
 NOM1 = 'BINARY DATA FILE 1 FORMAT' 
@@ -2883,7 +3061,7 @@ NOM1 = 'LIST OF FILES'
 TYPE = CARACTERE 
 INDEX = 99 
 MNEMO = '' 
-TAILLE = 14 
+TAILLE = 15 
 DEFAUT = 'FICHIER DES PARAMETRES'; 
          'DICTIONNAIRE'; 
          'FICHIER FORTRAN'; 
@@ -2897,7 +3075,8 @@ DEFAUT = 'FICHIER DES PARAMETRES';
          'FICHIER DE DONNEES FORMATE 2'; 
          'FICHIER DE RESULTATS BINAIRE'; 
          'FICHIER DE RESULTATS FORMATE'; 
-         'FICHIER DE REFERENCE' 
+         'FICHIER DE REFERENCE'; 
+         'FICHIER DE DONNEES TOMAWAC 1' 
 DEFAUT1 ='STEERING FILE'; 
          'DICTIONARY'; 
          'FORTRAN FILE'; 
@@ -2911,8 +3090,8 @@ DEFAUT1 ='STEERING FILE';
          'FORMATTED DATA FILE 2'; 
          'BINARY RESULTS FILE'; 
          'FORMATTED RESULTS FILE'; 
-         'REFERENCE FILE' 
- 
+         'REFERENCE FILE' ;
+         'TOMAWAC DATA FILE 1'
  
 //----Librairies du code------------------------------------------- 
 // 

@@ -162,7 +162,7 @@
           INTEGER, INTENT(IN) :: IMAX
            DOUBLE PRECISION, INTENT(INOUT) :: X(IMAX),DD(IMAX),GAM(IMAX)
            DOUBLE PRECISION, INTENT(INOUT) :: AA(IMAX),BB(IMAX),CC(IMAX)
-       END SUBROUTINE
+        END SUBROUTINE
       END INTERFACE
 !
 !-----------------------------------------------------------------------

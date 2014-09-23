@@ -61,7 +61,8 @@
 !
       FREQ = 1.D0/PER
       FREQ2 = FREQ * FREQ
-      PONDER = 1.D0/DBLE(NDALE*NPALE)
+!      PONDER = 1.D0/DBLE(NDALE*NPALE)
+      PONDER= 1D0
 !
 !=======================================================================
 ! M1 = INTEGRAL OF ( F * S(F) * DF )

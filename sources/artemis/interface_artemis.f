@@ -271,6 +271,15 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        DOUBLE PRECISION FUNCTION STWC(F,DIR)
+        IMPLICIT NONE
+        DOUBLE PRECISION F,DIR
+        END FUNCTION
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE UTIMP
      &(PHIR,PHII,C,CG,K,X,Y,ZF,H,
      & HHO,U0,V0,PHAS,S,TRA01,TRA02,TRA03,TRA04,INCI,

@@ -53,22 +53,25 @@
 !
 !-----------------------------------------------------------------------
 !
+!      FP=1/1.68
+!      GAM=3.3
+!
       IF (F.LE.FP) THEN
         SIGMA = 0.07D0
       ELSE
         SIGMA = 0.09D0
       ENDIF
 !
-!C    DELTA = 0.0624D0 * FP**4 /
-!C   *       ( 0.230D0 + 0.0336D0*GAM - 0.185D0 / (1.9D0+GAM) )
+      DELTA = 0.0624D0 * FP**4 /
+     &       ( 0.230D0 + 0.0336D0*GAM - 0.185D0 / (1.9D0+GAM) )
 !
 !     DELTA IS COMPUTED IN PERALE
 !
       IF ( F.GE.1.D-4*FP) THEN
         SPE = DELTA/F**5 * EXP(-1.25D0*(FP/F)**4) *
-     &        GAM** ( EXP( -0.5D0*( ( (F-FP)/(SIGMA*FP) ) **2 ) ) )
+     &         GAM** ( EXP( -0.5D0*( ( (F-FP)/(SIGMA*FP) ) **2 ) ) )
       ELSE
-        SPE = 0.D0
+        SPE = 0D0
       ENDIF
 !
 !-----------------------------------------------------------------------

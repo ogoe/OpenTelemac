@@ -44,7 +44,13 @@ files: declarations_artemis.f
   perale.f
   artemis.f
   homere_artemis.f
-
+  relaxmu.f
+  calcmu.f
+  calueb2.f
+  lecwac1.f
+  stwc.f
+  twcale.f
+  
 [bief]
 path: <root>|sources|utils|bief
 files: bief_def.f

@@ -67,10 +67,21 @@
 !
 !-----------------------------------------------------------------------
 !
+!
+!=======================================================================
+! COMPUTES MEAN OMEGA
+!=======================================================================
+!
 ! MEAN OMEGA STORED IN T1
 !
-      CALL OS( 'X=1/Y   ', T1 , T01  , SBID  , BID )
-      CALL OS( 'X=CX    ', T1 , SBID  , SBID  , DEUXPI )
+      CALL OS( 'X=1/Y   ', T1   , T01  , SBID  , BID    )
+      CALL OS( 'X=CX    ', T1   , SBID , SBID  , DEUXPI )
+!      CALL OS( 'X=C     ', T1 , SBID , SBID , DEUXPI/PERPIC )
+      CALL OS( 'X=Y     ',OMEGAM, T1   , SBID  , BID    )
+!
+!=======================================================================
+! COMPUTES MEAN K
+!=======================================================================
 !
 ! OMEGA**2 * H / GRAV
 !
@@ -83,10 +94,10 @@
 !
       DO I=1,NPOIN
         T1%R(I) = 1.D0 + T2%R(I) *( 0.6522D0 +
-     &                   T2%R(I) *( 0.4622D0 +
-     &                   T2%R(I) *
-     &                   T2%R(I) *( 0.0864D0 +
-     &                   T2%R(I) *( 0.0675D0 ) )))
+     &                    T2%R(I) *( 0.4622D0 +
+     &                    T2%R(I) *
+     &                    T2%R(I) *( 0.0864D0 +
+     &                    T2%R(I) *( 0.0675D0 ) )))
         T1%R(I) = SQRT( T2%R(I)*(T2%R(I) + 1.D0/T1%R(I)) )
         K%R(I)  = T1%R(I)/H%R(I)
         DHTEST  = MIN( DHTEST , H%R(I) )
@@ -108,7 +119,7 @@
 !
       DO I=1,NPOIN
         CG%R(I) = C%R(I)/2.D0 *
-     &            (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
+     &             (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
       ENDDO
 !
       RETURN

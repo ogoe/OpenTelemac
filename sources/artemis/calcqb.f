@@ -47,17 +47,17 @@
       ELSE
         FQ3 = 1000.D0
 !
-! 10    FQ1 = (1.D0-Q1)+RAP*LOG(Q1)
+! 10      FQ1 = (1.D0-Q1)+RAP*LOG(Q1)
  10     FQ1 = (1.D0-Q1)+RAP*LOG(ABS(Q1))
         FQ2 = (1.D0-Q2)+RAP*LOG(ABS(Q2))
-!       FQ2 = (1.D0-Q2)+RAP*LOG(Q2)
+!         FQ2 = (1.D0-Q2)+RAP*LOG(Q2)
         IF (FQ1.GE.0.D0) THEN
           Q3 = Q1
           FQ3 = EPSIQB/10.D0
         ELSE
           Q3 = Q1 - FQ1*(Q2-Q1)/(FQ2-FQ1)
           FQ3 = (1.D0-Q3)+RAP*LOG(ABS(Q3))
-!         FQ3 = (1.D0-Q3)+RAP*LOG(Q3)
+!            FQ3 = (1.D0-Q3)+RAP*LOG(Q3)
           IF ((FQ3*FQ1).GT.0.D0) THEN
             Q1 = Q3
           ELSE

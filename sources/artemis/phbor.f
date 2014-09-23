@@ -154,14 +154,14 @@
           AUXIS = SIN(TETAB%R(I)*DEGRAD)
           AUXI1 = GRAV/OMEGA * HB%R(I)/2.D0 
 
-!---------- AUTOMATIC PHASE CALCULATION (TETAB HAVE TO BE UNIFORM ON THE BOUNDARY)
+!---------AUTOMATIC PHASE CALCULATION (TETAB HAVE TO BE UNIFORM ON THE BOUNDARY)
           IF(LPHASEAUTO) THEN
             PHASEOI = KPHREF*AUXIC*(X(IG)-X0)+KPHREF*AUXIS*(Y(IG)-Y0)
           ENDIF
-!---------- INCIDENT WAVE --> INCIDENT POTENTIAL  (REAL, IMAGINAR)
+!---------INCIDENT WAVE --> INCIDENT POTENTIAL  (REAL, IMAGINAR)
           GRE= AUXI1*SIN( ALFAP%R(I)*DEGRAD + PHASEOI)
           GIM=-AUXI1*COS( ALFAP%R(I)*DEGRAD + PHASEOI)
-! --------- INCIDENT WAVE --> GRADIENTS           (REAL, IMAGINAR)
+! --------INCIDENT WAVE --> GRADIENTS           (REAL, IMAGINAR)
           DDXGRE= AUXI1*COS(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIC*K%R(IG)
           DDYGRE= AUXI1*COS(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIS*K%R(IG)
           DDXGIM= AUXI1*SIN(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIC*K%R(IG)
@@ -185,9 +185,9 @@
           DGRY1B%R(I)=   ( DDYGIM ) *C%R(IG)*CG%R(IG)
         ENDIF
 !
-!       -------------------------------------------------
-!            COEFFICIENTS FOR AN INCIDENT POTENTIAL
-!       -------------------------------------------------
+!        -------------------------------------------------
+!             COEFFICIENTS FOR AN INCIDENT POTENTIAL
+!        -------------------------------------------------
 !
         IF (LIHBOR%I(I).EQ.KPOT) THEN
 !
@@ -199,10 +199,10 @@
           DDYGRE= DDYPRB%R(I)
           DDXGIM= DDXPIB%R(I)
           DDYGIM= DDYPIB%R(I)
-! -------- COEFFICIENTS
-! --       MATRIX AM AND BM COEFFICIENTS
+! --------COEFFICIENTS
+! --      MATRIX AM AND BM COEFFICIENTS
           APHI1B%R(I) = - K%R(IG) * C%R(IG) * CG%R(IG)
-     &                 * COS(TETAP%R(I)*DEGRAD)
+     &                  * COS(TETAP%R(I)*DEGRAD)
           BPHI1B%R(I) = 0.D0
 ! --      SECOND MEMBER CV1 AND CV2 COEFFICIENTS
 ! ----    i * K * Gamma (multiplied by "- cos THETAP" in BERKHO)
@@ -214,29 +214,28 @@
           DGRX1B%R(I)=   ( DDXGIM ) *C%R(IG)*CG%R(IG) 
           DGRY1B%R(I)=   ( DDYGIM ) *C%R(IG)*CG%R(IG)
         ENDIF
-!        -------------------------------------------------
-!        COEFFICIENTS FOR A FREE EXIT BOUNDARY SEGMENT
-!        -------------------------------------------------
+!         -------------------------------------------------
+!         COEFFICIENTS FOR A FREE EXIT BOUNDARY SEGMENT
+!         -------------------------------------------------
 !
         IF(LIHBOR%I(I).EQ.KSORT) THEN
 !       
           APHI2B%R(I)  = - K%R(IG) * C%R(IG) * CG%R(IG)
-     &                  * COS(TETAP%R(I)*DEGRAD)
+     &                   * COS(TETAP%R(I)*DEGRAD)
           BPHI2B%R(I)  = 0.D0
           CPHI2B%R(I)  = 0.D0
           DPHI2B%R(I)  = 0.D0
 !
         ELSEIF (LIHBOR%I(MESH%KP1BOR%I(I)).EQ.KSORT) THEN
           APHI2B%R(I)  = - K%R(IG) * C%R(IG) * CG%R(IG)
-     &                  * COS(TETAP%R(MESH%KP1BOR%I(I))*DEGRAD)
+     &                   * COS(TETAP%R(MESH%KP1BOR%I(I))*DEGRAD)
           BPHI2B%R(I)  = 0.D0
           CPHI2B%R(I)  = 0.D0
           DPHI2B%R(I)  = 0.D0
 !
         ELSEIF (LIHBOR%I(MESH%KP1BOR%I(I+NPTFR)).EQ.KSORT) THEN
           APHI2B%R(I)  = - K%R(IG) * C%R(IG) * CG%R(IG)
-     &                 * COS(TETAP%R(MESH%KP1BOR%I(I+NPTFR))*DEGRAD)
-
+     &                  * COS(TETAP%R(MESH%KP1BOR%I(I+NPTFR))*DEGRAD)
           BPHI2B%R(I)  = 0.D0
           CPHI2B%R(I)  = 0.D0
           DPHI2B%R(I)  = 0.D0
@@ -255,9 +254,9 @@
         IF (LIHBOR%I(I).EQ.KLOG) THEN
 !
           AUXI1 = K%R(IG) * C%R(IG) * CG%R(IG) *
-     &            COS(TETAP%R(I)*DEGRAD) /
-     &            (1.D0 + RP%R(I)*RP%R(I) +
-     &            2.D0*RP%R(I)*COS(ALFAP%R(I)*DEGRAD))
+     &             COS(TETAP%R(I)*DEGRAD) /
+     &             (1.D0 + RP%R(I)*RP%R(I) +
+     &             2.D0*RP%R(I)*COS(ALFAP%R(I)*DEGRAD))
 !
           APHI3B%R(I) = - (1.D0 - RP%R(I) * RP%R(I) ) * AUXI1
 !
@@ -269,16 +268,16 @@
 !
         ELSEIF (LIHBOR%I(MESH%KP1BOR%I(I)).EQ.KLOG) THEN
           AUXI1 = K%R(IG) * C%R(IG) * CG%R(IG) *
-     &     COS(TETAP%R(MESH%KP1BOR%I(I))*DEGRAD) /
-     &     (1.D0 + RP%R(MESH%KP1BOR%I(I))*RP%R(MESH%KP1BOR%I(I))
-     &     +2.D0 * RP%R(MESH%KP1BOR%I(I))*
-     &      COS(ALFAP%R(MESH%KP1BOR%I(I))*DEGRAD))
+     &      COS(TETAP%R(MESH%KP1BOR%I(I))*DEGRAD) /
+     &      (1.D0 + RP%R(MESH%KP1BOR%I(I))*RP%R(MESH%KP1BOR%I(I))
+     &      +2.D0 * RP%R(MESH%KP1BOR%I(I))*
+     &       COS(ALFAP%R(MESH%KP1BOR%I(I))*DEGRAD))
 !
           APHI3B%R(I) = - (1.D0-RP%R(MESH%KP1BOR%I(I))*
-     &     RP%R(MESH%KP1BOR%I(I))) * AUXI1
+     &      RP%R(MESH%KP1BOR%I(I))) * AUXI1
 !
           BPHI3B%R(I) = 2.D0*RP%R(MESH%KP1BOR%I(I))
-     &               * SIN(ALFAP%R(MESH%KP1BOR%I(I))*DEGRAD) * AUXI1
+     &                * SIN(ALFAP%R(MESH%KP1BOR%I(I))*DEGRAD) * AUXI1
 !
           CPHI3B%R(I)  = 0.D0
 !
@@ -286,17 +285,17 @@
 !
         ELSEIF (LIHBOR%I(MESH%KP1BOR%I(I+NPTFR)).EQ.KLOG) THEN
           AUXI1 = K%R(IG) * C%R(IG) * CG%R(IG) *
-     &    COS(TETAP%R(MESH%KP1BOR%I(I+NPTFR))*DEGRAD) /
-     &    (1.D0 + RP%R(MESH%KP1BOR%I(I+NPTFR))
-     &     *RP%R(MESH%KP1BOR%I(I+NPTFR))
-     &     +2.D0 * RP%R(MESH%KP1BOR%I(I+NPTFR))*
-     &      COS(ALFAP%R(MESH%KP1BOR%I(I+NPTFR))*DEGRAD))
+     &     COS(TETAP%R(MESH%KP1BOR%I(I+NPTFR))*DEGRAD) /
+     &     (1.D0 + RP%R(MESH%KP1BOR%I(I+NPTFR))
+     &      *RP%R(MESH%KP1BOR%I(I+NPTFR))
+     &      +2.D0 * RP%R(MESH%KP1BOR%I(I+NPTFR))*
+     &       COS(ALFAP%R(MESH%KP1BOR%I(I+NPTFR))*DEGRAD))
 !
           APHI3B%R(I) = - (1.D0-RP%R(MESH%KP1BOR%I(I+NPTFR))*
-     &      RP%R(MESH%KP1BOR%I(I+NPTFR))) * AUXI1
+     &       RP%R(MESH%KP1BOR%I(I+NPTFR))) * AUXI1
 !
           BPHI3B%R(I) = 2.D0*RP%R(MESH%KP1BOR%I(I+NPTFR))
-     &     * SIN(ALFAP%R(MESH%KP1BOR%I(I+NPTFR))*DEGRAD) * AUXI1
+     &      * SIN(ALFAP%R(MESH%KP1BOR%I(I+NPTFR))*DEGRAD) * AUXI1
 !
           CPHI3B%R(I)  = 0.D0
 !
@@ -313,21 +312,21 @@
 !
         ENDIF
 !
-!       -------------------------------------------------
-!       COEFFICIENTS FOR AN IMPOSED WAVE BOUNDARY SEGMENT
-!       -------------------------------------------------
-!DA     -----------------------------------
-!DA     KEPT FOR MEMORY !
-!DA     -----------------------------------
+!        -------------------------------------------------
+!        COEFFICIENTS FOR AN IMPOSED WAVE BOUNDARY SEGMENT
+!        -------------------------------------------------
+!DA      -----------------------------------
+!DA      KEPT FOR MEMORY !
+!DA      -----------------------------------
 !DA
 !DA         IF (LIHBOR(I).EQ.KENT) THEN
 !DA         AUXIC      = COS(TETAB(I)*DEGRAD)
 !DA         AUXIS      = SIN(TETAB(I)*DEGRAD)
 !DA         AUXI1      = GRAV/OMEGA * HB(I)/2.D0 * C(IG) * CG(IG) *
-!DA     &                K(IG) * ( AUXIC *XSGBOR(I) +
-!DA     &                          AUXIS *YSGBOR(I) )
+!DA     *                K(IG) * ( AUXIC *XSGBOR(I) +
+!DA     *                          AUXIS *YSGBOR(I) )
 !DA         AUXI2      = K(IG) * ( X(IG)*AUXIC +
-!DA     &                          Y(IG)*AUXIS )
+!DA     *                          Y(IG)*AUXIS )
 !DA
 !DA         APHI4B(I)  = 0.D0
 !DA
@@ -342,7 +341,7 @@
 !DA
 !DA         AUXI1 = GRAV/OMEGA * HB(I)/2.D0
 !DA         AUXI2 = K(IG) * (X(IG)*AUXIC +
-!DA     &                    Y(IG)*AUXIS )
+!DA     *                    Y(IG)*AUXIS )
 !DA
 !DA            PHIRB(I) =   AUXI1 * SIN( AUXI2 )
 !DA            PHIIB(I) = - AUXI1 * COS( AUXI2 )
