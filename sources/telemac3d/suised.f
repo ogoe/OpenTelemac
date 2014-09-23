@@ -97,7 +97,7 @@ ccc      LOGICAL, INTENT(IN)             :: TASSE
 !
 !----------------------------------------------------------------------
 !
-      INTEGER IPOIN, ITER  , ISTAT
+      INTEGER IPOIN,ISTAT
 !
       INTEGER           :: IB(10),ERR
       DOUBLE PRECISION, ALLOCATABLE :: XB(:)
@@ -107,7 +107,7 @@ ccc      LOGICAL, INTENT(IN)             :: TASSE
       LOGICAL           :: FOUND 
       CHARACTER(LEN=16) :: VARNAME 
 !      
-      INTEGER           :: NVAR, I, IPLAN,JPLAN
+      INTEGER           :: NVAR,I
 !
 ! ALLOCATE ARRAY FOR READING FROM FILE
       ALLOCATE(XB(NPOIN2),STAT=ERR)
@@ -242,9 +242,9 @@ ccc      ENDIF
 !       MAKE THE NUMBERED NAME STRING 
         IF(I.LT.10) THEN
           WRITE(VARNAME,'(A5,I1,A10)')  'LAYER',I,'  THICKNES'  
-		ELSEIF(I.LT.100) THEN
-		  WRITE(VARNAME,'(A5,I2,A9)')  'LAYER',I,' THICKNES'  
-		ELSE
+        ELSEIF(I.LT.100) THEN
+          WRITE(VARNAME,'(A5,I2,A9)')  'LAYER',I,' THICKNES'  
+        ELSE
           WRITE (LU,*) 'SUISED: NOT IMPLEMENTED FOR ',NCOUCH,' LAYERS'
           CALL PLANTE(1)
           STOP            

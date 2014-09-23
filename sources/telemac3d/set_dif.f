@@ -1,10 +1,9 @@
-!                    ***********************
+!                    ******************
                      SUBROUTINE SET_DIF
-!                    ***********************
+!                    ******************
 !
      &(FC,VOLU2D,Z,NPOIN2,NPOIN3,DT,FLUX, 
-     & NPLAN,WCC,FLUDPT,FLUDP, FLUER,IPBOT,
-     & VISCTA)
+     & NPLAN,WCC,FLUDPT,FLUDP, FLUER,IPBOT,VISCTA)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                   23/01/2014
@@ -66,11 +65,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IPOIN,I1,I2,IPLAN,I
+      INTEGER IPOIN,I1,IPLAN
 !
-      DOUBLE PRECISION :: FLUERO,FLUSET,FLUNET,FLUDEP
-      DOUBLE PRECISION :: MASSERR,MASSOUT,MASSIN,A,B
-      DOUBLE PRECISION :: DTSUB,DT_CRIT,TIME,TIMELEFT,TMAX
+      DOUBLE PRECISION :: FLUERO,FLUNET,FLUDEP,A,B
 !     POINTERS TO 1DV ARRAY BLOCK
       TYPE(BIEF_OBJ),POINTER :: DZA,DZB,DZ
       TYPE(BIEF_OBJ),POINTER :: AA,BB,CC,DD
