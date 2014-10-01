@@ -5,7 +5,7 @@
      &(U,V,H,S,ZF,T,TRAC0,NTRAC,ITURB,NPOIN,AKEP,TROUVE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V7P0
 !***********************************************************************
 !
 !brief    COMPUTES MISSING DATA/VARIABLES (WHEN RESUMING SIMULATION).
@@ -26,6 +26,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  D WANG & P TASSI (LNHE)
+!+        10/07/2014
+!+        V7P0
+!+   Tracers ranks shifted due to secondary currents variables.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AKEP           |-->| IF YES, K AND EPSILON TO BE INITIALISED
@@ -65,13 +70,13 @@
 !  VELOCITY U-COMPONENT
 !
       IF(TROUVE(1).NE.1 )  THEN
-          IF(LNG.EQ.1) WRITE(LU,190)
-          IF(LNG.EQ.2) WRITE(LU,191)
-190       FORMAT(1X,'RESCUE : FICHIER DE RESULTATS DU CALCUL PRECEDENT',
+        IF(LNG.EQ.1) WRITE(LU,190)
+        IF(LNG.EQ.2) WRITE(LU,191)
+190     FORMAT(1X,'RESCUE : FICHIER DE RESULTATS DU CALCUL PRECEDENT',
      &         /,1X,'         SANS LA VITESSE U, ON LA PREND NULLE')
-191       FORMAT(1X,'RESCUE : PREVIOUS COMPUTATION RESULTS FILE',
+191     FORMAT(1X,'RESCUE : PREVIOUS COMPUTATION RESULTS FILE',
      &         /,1X,'         WITHOUT VELOCITY U, WE FIX IT TO ZERO')
-          CALL OV( 'X=C     ' , U , U , U , 0.D0 , NPOIN )
+        CALL OV( 'X=C     ' , U , U , U , 0.D0 , NPOIN )
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -79,13 +84,13 @@
 !  VELOCITY V-COMPONENT
 !
       IF(TROUVE(2).NE.1 )  THEN
-          IF(LNG.EQ.1) WRITE(LU,200)
-          IF(LNG.EQ.2) WRITE(LU,201)
-200       FORMAT(1X,'RESCUE : FICHIER DE RESULTATS DU CALCUL PRECEDENT',
+        IF(LNG.EQ.1) WRITE(LU,200)
+        IF(LNG.EQ.2) WRITE(LU,201)
+200     FORMAT(1X,'RESCUE : FICHIER DE RESULTATS DU CALCUL PRECEDENT',
      &         /,1X,'         SANS LA VITESSE V, ON LA PREND NULLE')
-201       FORMAT(1X,'RESCUE : PREVIOUS COMPUTATION RESULTS FILE',
+201     FORMAT(1X,'RESCUE : PREVIOUS COMPUTATION RESULTS FILE',
      &         /,1X,'         WITHOUT VELOCITY V, WE FIX IT TO ZERO')
-          CALL OV( 'X=C     ' , V , V , V , 0.D0 , NPOIN )
+        CALL OV( 'X=C     ' , V , V , V , 0.D0 , NPOIN )
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -117,7 +122,7 @@
 !
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
-          IF(TROUVE(31+ITRAC).EQ.0) THEN
+          IF(TROUVE(33+ITRAC).EQ.0) THEN
             IF(LNG.EQ.1) WRITE(LU,900)
             IF(LNG.EQ.2) WRITE(LU,901)
 900         FORMAT(1X,'RESCUE : CALCUL PRECEDENT SANS TRACEUR,',
@@ -147,3 +152,4 @@
 !
       RETURN
       END
+

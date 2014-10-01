@@ -2,9 +2,8 @@
                      SUBROUTINE POINT_TELEMAC2D
 !                    **************************
 !
-!
 !***********************************************************************
-! TELEMAC2D   V7P0                                   21/08/2010
+! TELEMAC2D  
 !***********************************************************************
 !
 !brief    Memory allocation of structures, aliases, blocks...
@@ -66,7 +65,7 @@
 !history  C.COULET / A.REBAI / E.DAVID (ARTELIA)
 !+        12/06/2013
 !+        V6P3
-!+   Adaptation to the dynamic allocation of weirs
+!+   Adaptation to the dynamic allocation of weirs.
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        18/06/2013
@@ -91,6 +90,11 @@
 !+   discontinuous linear, quasi-bubble, and quadratic, rather than
 !+   using component DIMDISC=11, 12 or 13. Here case of ZFLATS.
 !
+!history  D. WANG & P. TASSI (EDF LAB, LNHE)
+!+        23/09/2014
+!+        V7P0
+!+   Adding variables for secondary currents.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -108,7 +112,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER MEMW1,NTR,NTRT,NTRKE,I,J,I3,I4,ITRAC,SIZ
-      INTEGER IELMX,IELMC1,IELMC2,IELMUT,IELMHT
+      INTEGER IELMX,IELMC1,IELMC2,IELMUT,IELMHT,ILAST
       INTEGER IELBU,IELBH,IELBT,IELBK,IELBE,IELB1
       INTEGER IELBX,CFG(2),CFGBOR(2),ERR
 !
@@ -531,11 +535,12 @@
 !  MAXIMUM USEFUL SIZE
 !
       NTRT=0
+      ILAST=33
       IF(NTRAC.GT.0) THEN
 !       NTRT = 7
 !       BECAUSE OF THE POSITION OF TRACERS IN VARSOR (WILL BE
 !       THE SAME IN TB, USED BY VALIDA)
-        NTRT = 31+NTRAC
+        NTRT = ILAST+NTRAC
         DO ITRAC=1,NTRAC
           IF(SLVTRA(ITRAC)%SLV.EQ.7) THEN
             NTRT = MAX(2+2*SLVTRA(ITRAC)%KRYLOV,NTRT)
@@ -1065,8 +1070,20 @@
      &                              0,2,0,MESH)
         ENDIF
       ENDIF
-!        
+!
+!=======================================================================
+!     VARIABLES FOR SECONDARY CURRENTS
 !-----------------------------------------------------------------------
+!
+      IF(SECCURRENTS) THEN
+        CALL BIEF_ALLVEC(1,SEC_TAU,'SECTAU',IELMH,1,1,MESH)
+        CALL BIEF_ALLVEC(1,SEC_R  ,'SEC_R ',IELMH,1,1,MESH)
+      ELSE
+        CALL BIEF_ALLVEC(1,SEC_TAU,'SECTAU',0    ,1,0,MESH)
+        CALL BIEF_ALLVEC(1,SEC_R  ,'SEC_R ',0    ,1,0,MESH)
+      ENDIF
+!
+!=======================================================================
 !
 !-----------------------------------------------------------------------
 !
@@ -1356,6 +1373,20 @@
       CALL ADDBLO(VARSOR,TMAXV)
 ! 31  FRICTION VELOCITY
       CALL ADDBLO(VARSOR,T7)
+! 32  FOR SECONDARY CURRENTS
+      CALL ADDBLO(VARSOR,SEC_TAU)
+! 33  FOR SECONDARY CURRENTS
+      CALL ADDBLO(VARSOR,SEC_R)
+!
+!     THE LAST RANK IN VARSOR (SO FAR 33)
+!
+      IF(ILAST.NE.VARSOR%N) THEN
+        WRITE(LU,*) 'MESSAGE TO DEVELOPPERS:'
+        WRITE(LU,*) 'CHANGE ILAST INTO ',VARSOR%N
+        WRITE(LU,*) 'IN POINT_TELEMAC2D'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 !     TRACERS
 !
@@ -1370,8 +1401,8 @@
       IF(NPERIAF.GT.0) THEN
         DO I=1,NPERIAF
 !         OUTPUT VARIABLES (TO BE CHECKED)
-          SORLEO(31+NTRAC+2*(I-1)+1)=.TRUE.
-          SORLEO(31+NTRAC+2*(I-1)+2)=.TRUE.
+          SORLEO(ILAST+NTRAC+2*(I-1)+1)=.TRUE.
+          SORLEO(ILAST+NTRAC+2*(I-1)+2)=.TRUE.
 !         END OF OUTPUT VARIABLES (TO BE CHECKED)
           CALL ADDBLO(VARSOR,AMPL%ADR(I)%P)
           CALL ADDBLO(VARSOR,PHAS%ADR(I)%P)
@@ -1380,7 +1411,7 @@
 !
 !     OTHER POSSIBLE VARIABLES ADDED BY USER
 !
-      J=32+NTRAC+2*NPERIAF
+      J=ILAST+1+NTRAC+2*NPERIAF
 900   CONTINUE
       IF(SORLEO(J).OR.SORIMP(J)) THEN
         IF(NPRIV.LT.J-27-NTRAC-2*NPERIAF) THEN
@@ -1429,3 +1460,4 @@
 !
       RETURN
       END
+

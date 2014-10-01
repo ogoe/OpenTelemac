@@ -9,7 +9,7 @@
      & MASTRAIN)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V7P0                                  
 !***********************************************************************
 !
 !brief    COMPUTES THE MASS BALANCE FOR THE TRACER.
@@ -30,6 +30,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        30/09/20148
+!+        V7P0
+!+   Some ABS put in the relative accuracy formulas because the mass of
+!+   a tracer can be negative (case of vorticity).  
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOT         |-->| MASS-LUMPING ON TRACER
@@ -230,7 +236,10 @@
           ENDIF
           IF(LNG.EQ.1) WRITE(LU,1165) ERREUT
           IF(LNG.EQ.2) WRITE(LU,2165) ERREUT
-          DENOM = MAX(MASTR1,MASTR2,ABS(FLUXT*DT),MASRAI,MASSOU)
+!         ABS BECAUSE THE MASS OF A TRACER CAN BE NEGATIVE
+!         EXAMPLE : VORTICITY
+          DENOM = MAX(ABS(MASTR1),ABS(MASTR2),ABS(FLUXT*DT),
+     &                ABS(MASRAI),ABS(MASSOU))
           IF(DENOM.GT.1.D-8) THEN
             ERREUT = ERREUT / DENOM
             IF(LNG.EQ.1) WRITE(LU,1120) ERREUT
@@ -257,9 +266,8 @@
      &    TRIM(NAMETRAC(1:16)),' (UNIT: ',TRIM(NAMETRAC(17:32)),' * M3)'
         ENDIF
 !
-        PERDUE = MASTR0+MASTEN+
-     &           MASBOR+MASTOU+MASTRAIN-MASTR2
-        DENOM = MAX(MASTR0,MASTR2,ABS(MASTEN),
+        PERDUE = MASTR0+MASTEN+MASBOR+MASTOU+MASTRAIN-MASTR2
+        DENOM = MAX(ABS(MASTR0),ABS(MASTR2),ABS(MASTEN),
      &              ABS(MASTOU),ABS(MASTRAIN))
         IF(LNG.EQ.1) THEN
           WRITE(LU,1160) MASTR0,MASTR2
@@ -319,3 +327,4 @@
 !
       RETURN
       END
+

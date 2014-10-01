@@ -232,7 +232,7 @@
       INTERFACE
         SUBROUTINE CALCUL_Q_WEIR
      &    (NWEIRS,X,Y,ZF,HN,CHESTR,NKFROT,KARMAN,IOPTAN,NTRAC,T)
-      USE BIEF
+      USE BIEF_DEF
       IMPLICIT NONE
       INTEGER, INTENT (IN)          :: NWEIRS,IOPTAN,NTRAC
       INTEGER, INTENT(IN)           :: NKFROT(*)
@@ -312,13 +312,8 @@
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,
      & W,CE,FLUENT,FLUSORT,FLBOR,EPS,WINF,
      & G,HBOR,UBOR,VBOR)
-!
-      USE BIEF
-      USE DECLARATIONS_TELEMAC2D,ONLY:NUMLIQ,LIUBOR,LIVBOR
-      USE DECLARATIONS_TELEMAC,  ONLY:KDIR,KENT,KDDL,KNEU,KENTU
-!
+      USE BIEF_DEF
       IMPLICIT NONE
-!
       INTEGER, INTENT(IN)             :: NS,NPTFR
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMPRO(NPTFR,6)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
@@ -337,10 +332,8 @@
         SUBROUTINE CDL_TCH
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,KDDL,G,
      & W,CE,FLUENT,FLUSORT,FLBOR,EPS,ZF,WINF)
-      USE BIEF
-!
+      USE BIEF_DEF
       IMPLICIT NONE
-!
       INTEGER, INTENT(IN)             :: NS,NPTFR,KDIR,KNEU,KDDL
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMPRO(NPTFR,6)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
@@ -351,16 +344,15 @@
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLBOR
         END SUBROUTINE
       END INTERFACE
+!
 !-----------------------------------------------------------------------
 !
       INTERFACE
         SUBROUTINE CDL_WAF
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,KDDL,
      & W,CE,FLUENT,FLUSORT,FLBOR,DTHAUT,DT,EPS,WINF)
-!
-      USE BIEF
+      USE BIEF_DEF
       IMPLICIT NONE
-!
       INTEGER, INTENT(IN)             :: NS,NPTFR,KDIR,KNEU,KDDL
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMPRO(NPTFR,6)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
@@ -377,12 +369,8 @@
         SUBROUTINE CDLZZ
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,KDDL,G,
      & W,CE,FLUENT,FLUSORT,FLBOR,ZF,WINF)
-      USE BIEF
-!
+      USE BIEF_DEF
       IMPLICIT NONE
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
       INTEGER, INTENT(IN)             :: NS,NPTFR,KDIR,KNEU,KDDL
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMPRO(NPTFR,6)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
@@ -999,9 +987,8 @@
         SUBROUTINE FLUX_HLLC
      &(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
      & XNN,YNN,ROT,HLLCFLX)
-      USE BIEF
+!
       IMPLICIT NONE
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
       DOUBLE PRECISION, INTENT(IN)    :: H1,H2,U1,U2,PSI1,PSI2
       DOUBLE PRECISION, INTENT(IN)    :: XI,V1,V2,XNN,YNN
       LOGICAL, INTENT(IN)             :: ROT
@@ -1016,9 +1003,7 @@
      & (XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
      & HL_UP,HR_UP,VL_UP,VR_UP,PSIL_UP,PSIR_UP,
      & XNN,YNN,DT,DX,WAFFLX)
-      USE BIEF
       IMPLICIT NONE
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
       DOUBLE PRECISION, INTENT(IN)    :: H1,H2,U1,U2,PSI1,PSI2
       DOUBLE PRECISION, INTENT(IN)    :: XI,V1,V2,XNN,YNN,DT
       DOUBLE PRECISION, INTENT(IN)    :: HL_UP,HR_UP,VL_UP,VR_UP
@@ -1034,9 +1019,7 @@
         SUBROUTINE FLUX_TCH
      &(X,Y,NS,NSEG,NELEM,NUBO,G,W,ZF,VNOCL,
      & ELTSEG,CE,IFABOR)
-      USE BIEF
       IMPLICIT NONE
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
       INTEGER, INTENT(IN)             :: NS,NSEG,NELEM
       INTEGER, INTENT(IN)             :: NUBO(2,NSEG)
       INTEGER, INTENT(IN)             :: ELTSEG(NELEM,3)
@@ -1333,9 +1316,7 @@
         SUBROUTINE HYD_WAF
      &(NS,NSEG,NELEM,NUBO,G,W,ZF,VNOCL,DT,DTHAUT,
      & X,Y,CE,ELTSEG,NEISEG)
-      USE BIEF
       IMPLICIT NONE
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
       INTEGER, INTENT(IN) :: NS,NSEG,NELEM
       INTEGER, INTENT(IN) :: NUBO(2,NSEG),NEISEG(2,NSEG)
       INTEGER, INTENT(IN)             :: ELTSEG(NELEM,3)

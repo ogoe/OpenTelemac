@@ -126,6 +126,12 @@
 !+        V7P0
 !+   Argument VOLU2D added for calling CVTRVF.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        30/09/2014
+!+        V7P0
+!+   Checking mass in case of implicit source terms SMI depends on the
+!+   advection scheme, a section was added for distributive schemes.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR,BFBOR    |-->| COEFFICIENTS OF NEUMANN CONDITION
 !|                |   | VISC*DF/DN = AFBOR*F + BFBOR
@@ -229,7 +235,7 @@
 !| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS (ASSEMBLED IN PARALLEL)
 !| VISC           |-->| VISCOSITY COEFFICIENTS ALONG X,Y AND Z .
 !|                |   | IF P0 : PER ELEMENT
-!|                |   | IF P1 : PERR POINT
+!|                |   | IF P1 : PER POINT
 !| VISC_S         |<->| WORK ARRAY FOR SAVING VISC
 !| W              |-->| WORK ARRAY OF DIMENSION :
 !|                |   | NELMAX * (NOMBER OF POINTS IN AN ELEMENT)
@@ -241,6 +247,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CVDFTR => CVDFTR
+      USE INTERFACE_PARALLEL
       USE DECLARATIONS_TELEMAC, ONLY : ADV_CAR,ADV_SUP,ADV_NSC,ADV_PSI,
      &   ADV_PSI_NC,ADV_NSC_NC,ADV_LPO,ADV_NSC_TF,ADV_PSI_TF,ADV_LPO_TF
 !
@@ -860,15 +867,26 @@
 !-----------------------------------------------------------------------
 !
       IF(YASMI.AND.BILAN) THEN
-!       NOTE JMH: WE ASSUME HERE THAT AM2 HAS NOT BEEN DESTROYED IN
-!                 SOLVE (THIS WOULD BE THE CASE WITH SOME PRECONDITIONING
-!                 BUT IN THIS CASE AM2 COULD NOT BE USED BEFORE)
-        CALL MATVEC( 'X=AY    ',T2,AM2,F,C,MESH)
-        IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(T2,2,MESH)
-          MASSOU = MASSOU - DT*P_DOTS(T2,HPROP,MESH)
-        ELSE
-          MASSOU = MASSOU - DT*DOTS(T2,HPROP)
+        IF(YASMI.AND..NOT.(FV_SCHEME.AND.CONV)) THEN
+!         NOTE JMH: WE ASSUME HERE THAT AM2 HAS NOT BEEN DESTROYED IN
+!                   SOLVE (THIS WOULD BE THE CASE WITH SOME PRECONDITIONING
+!                   BUT IN THIS CASE AM2 COULD NOT BE USED BEFORE)
+          CALL MATVEC( 'X=AY    ',T2,AM2,F,C,MESH)
+          IF(NCSIZE.GT.1) THEN
+            CALL PARCOM(T2,2,MESH)
+            MASSOU = MASSOU - DT*P_DOTS(T2,HPROP,MESH)
+          ELSE
+            MASSOU = MASSOU - DT*DOTS(T2,HPROP)
+          ENDIF
+        ELSEIF(YASMI.AND.(FV_SCHEME.AND.CONV)) THEN
+!         THIS IS CONSISTENT WITH WHAT IS DONE
+!         AT THE END OF CVTRVF_POS, FOR SCHEME 14.
+          C=0.D0
+          DO I=1,SMI%DIM1
+            C = C + DT*SMI%R(I)*F%R(I)*VOLU2D%R(I)
+          ENDDO
+          IF(NCSIZE.GT.1) C=P_DSUM(C)
+          MASSOU=MASSOU+C
         ENDIF
       ENDIF
 !
@@ -894,3 +912,4 @@
 !
       RETURN
       END
+

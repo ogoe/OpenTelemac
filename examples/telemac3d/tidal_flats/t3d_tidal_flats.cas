@@ -22,7 +22,7 @@ GEOMETRY FILE               :  'geo_tidal_flats.slf'
 
 /----------------------------------------------------------------------/
 /
- PARALLEL PROCESSORS  = 0
+ PARALLEL PROCESSORS  = 8
 /
 /----------------------------------------------------------------------/ 
 /                     OPTIONS GENERALES                                  

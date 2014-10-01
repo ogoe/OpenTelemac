@@ -936,7 +936,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IFLOT,FRE(1),FREBUF(1),IPROC,NFLOTG,NPLAN,ELT
-      INTEGER N1,N2,N3,N4,N5,N6,NOMB,SENS,IR,I
+      INTEGER N1,N2,N3,N4,N5,N6,NOMB,SENS,IR
 !
       DOUBLE PRECISION ZSTAR(1)
 !
@@ -2138,9 +2138,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I1,I2,I3,IFLOT,ITRAC,I,NFLOTMAX
-      INTEGER P_IMAX 
-      EXTERNAL P_IMAX
+      INTEGER I1,I2,I3,IFLOT,ITRAC,I
 !
 !-----------------------------------------------------------------------
 !

@@ -8,7 +8,7 @@
      & NPSING,NDGA1,NDGB1,TWEIRA,TWEIRB)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V7P0      
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCES TERMS IN THE DIFFUSION EQUATION
@@ -61,6 +61,13 @@
 !+        V6P2
 !+   Modification for weirs (type 2) management
 !
+!history  D WANG & P TASSI (LNHE)
+!+        10/07/2014
+!+        V7P0
+!+   Secondary flow correction:
+!+   first calculate the local radius r_sec,
+!+   then set the production and dissipation terms of Omega,
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| DBUS           |-->| DISCHARGE OF TUBES.
@@ -100,8 +107,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_PARALLEL
       USE DECLARATIONS_TELEMAC2D, ONLY : LOITRAC, COEF1TRAC, QWA, QWB,
-     &                                   MAXNPS
+     &   MAXNPS,U,V,UNSV2D,V2DPAR,VOLU2D,T1,T2,T3,T4,MESH,MSK,MASKEL,
+     &   IELMU,S,NPOIN,CF,H,SECCURRENTS,SEC_AS,SEC_DS,SEC_R
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -126,18 +135,28 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,IR,ITRAC,N,INDIC
+      INTEGER I,K,IR,ITRAC,N,INDIC,NTRA
 !
       DOUBLE PRECISION DEBIT,TRASCE
+      DOUBLE PRECISION DENOM,NUMER,NORM2,SEC_RMAX,RMAX
 !
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
+!     DOUBLE PRECISION P_DSUM
+!     EXTERNAL         P_DSUM
+!
+      INTRINSIC SQRT
+!
+!-----------------------------------------------------------------------
+!
+!     SECONDARY CURRENTS WILL BE TREATED APART
+!
+      NTRA=NTRAC
+      IF(SECCURRENTS) NTRA=NTRA-1
 !
 !-----------------------------------------------------------------------
 !
 !     EXPLICIT SOURCE TERMS
 !
-      DO ITRAC=1,NTRAC
+      DO ITRAC=1,NTRA
         CALL OS('X=0     ',X=TSCEXP%ADR(ITRAC)%P)
         CALL OS('X=0     ',X=TEXP%ADR(ITRAC)%P)
         MASSOU(ITRAC) = 0.D0
@@ -147,7 +166,7 @@
 !
 !     IMPLICIT SOURCE TERMS (DEPENDING ON THE LAW CHOSEN)
 !
-      DO ITRAC=1,NTRAC
+      DO ITRAC=1,NTRA
         IF(LOITRAC(ITRAC).EQ.0) THEN
           YASMI(ITRAC)=.FALSE.
         ELSEIF(LOITRAC(ITRAC).EQ.1) THEN
@@ -184,7 +203,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      DO ITRAC=1,NTRAC
+      DO ITRAC=1,NTRA
 !
         IF(NREJTR.GT.0) THEN
 !       
@@ -338,5 +357,69 @@
 !
 !-----------------------------------------------------------------------
 !
+!     SECONDARY CURRENTS (OMEGA IS THE TRACER OF RANK NTRAC)
+!
+      IF(SECCURRENTS) THEN
+!
+        CALL VECTOR(T1,'=','GRADF          Y',IELMU,
+     &              1.D0,V,S,S,S,S,S,MESH,MSK,MASKEL)
+        CALL VECTOR(T2,'=','GRADF          X',IELMU,
+     &              1.D0,U,S,S,S,S,S,MESH,MSK,MASKEL)
+        CALL VECTOR(T3,'=','GRADF          X',IELMU,
+     &              1.D0,V,S,S,S,S,S,MESH,MSK,MASKEL)
+        CALL VECTOR(T4,'=','GRADF          Y',IELMU,
+     &              1.D0,U,S,S,S,S,S,MESH,MSK,MASKEL)
+        IF(NCSIZE.GT.1) THEN
+          CALL PARCOM (T1, 2, MESH)
+          CALL PARCOM (T2, 2, MESH)
+          CALL PARCOM (T3, 2, MESH)
+          CALL PARCOM (T4, 2, MESH)
+        ENDIF
+!
+!       INITIALISATIONS
+!
+        CALL OS('X=0     ',X=TSCEXP%ADR(NTRAC)%P)
+        YASMI(NTRAC)=.TRUE.   
+!
+!       SOURCE TERMS
+!
+        DO K=1,NPOIN
+          NORM2=U%R(K)**2+V%R(K)**2
+          NUMER = (U%R(K)*V%R(K)*(T1%R(K)-T2%R(K))+U%R(K)**2*(T3%R(K))
+     &           -V%R(K)**2*(T4%R(K)))*UNSV2D%R(K)
+          SEC_R%R(K)=NUMER/MAX(SQRT(NORM2)**3,1.D-9)
+!         GEOMETRY: R OBVIOUSLY LARGER THAN 0.5 LOCAL MESH SIZE
+!         THEORY ALSO SAYS R > 2H
+!         LOCAL MESH SIZE HERE ASSUMED TO BE SQRT(V2DPAR)
+          RMAX=MAX(2.D0*H%R(K),0.5D0*SQRT(V2DPAR%R(K)))
+!         RMAX=0.5D0*SQRT(V2DPAR%R(K))
+          SEC_RMAX=1.D0/RMAX
+          SEC_R%R(K)=MAX(-SEC_RMAX,MIN(SEC_RMAX,SEC_R%R(K)))
+!         EXPLICIT SOURCE TERMS (CREATION OF OMEGA)
+!         CLIPPING OF H AT 1.D-2
+!         NOTE: IMPLICIT TERMS (DESTRUCTION) IN CVDFTR CLIPPED AT 1.D-4
+          DENOM=MAX(H%R(K),1.D-2)*(9.D0*(H%R(K)*SEC_R%R(K))**2+1.D0)
+          TEXP%ADR(NTRAC)%P%R(K)=
+     &                 SEC_AS*SQRT(0.5D0*CF%R(K))*NORM2*SEC_R%R(K)/DENOM
+!         IMPLICIT SOURCE TERMS (DEPENDING ON THE LAW CHOSEN)
+          TIMP%ADR(NTRAC)%P%R(K)=-SEC_DS*SQRT(0.5D0*CF%R(K)*NORM2)
+        ENDDO
+!
+!       MASS ADDED BY EXPLICIT TERMS
+!       THE MASS ADDED BY IMPLICIT TERMS IS COMPUTED IN CVDFTR
+!
+        MASSOU(NTRAC) = 0.D0
+        DO K=1,NPOIN
+          MASSOU(NTRAC)=MASSOU(NTRAC)
+     &                 +H%R(K)*TEXP%ADR(NTRAC)%P%R(K)*VOLU2D%R(K)
+        ENDDO
+        MASSOU(NTRAC)=MASSOU(NTRAC)*DT
+        IF(NCSIZE.GT.1) MASSOU(NTRAC)=P_DSUM(MASSOU(NTRAC))
+!
+      ENDIF     
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
+

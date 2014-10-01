@@ -468,10 +468,12 @@
       TYPE(BIEF_OBJ),TARGET :: NEISEG
 !
 !     FOR BREACHES MANAGEMENT
+!
       TYPE(BIEF_OBJ),TARGET :: OPTNBR, TDECBR, DURBR, ZFINBR, ZDECBR
       TYPE(BIEF_OBJ),TARGET :: NUMPSD, NBNDBR, INDBR, ZCRBR
 !
 !     FOR WEIR MANAGEMENT
+!
       TYPE(BIEF_OBJ),TARGET :: NPSING
       TYPE(BIEF_OBJ),TARGET :: NDGA1, NDGA2, NDGB1, NDGB2
       TYPE(BIEF_OBJ),TARGET :: WDIG, ZDIG, PHIDIG
@@ -479,6 +481,10 @@
       TYPE(BIEF_OBJ),TARGET :: UWEIRA,UWEIRB,VWEIRA,VWEIRB
       TYPE(BIEF_OBJ),TARGET :: QP0
       TYPE(BIEF_OBJ),TARGET :: TWEIRA,TWEIRB
+!
+!     VARIABLES FOR SECONDARY CURRENTS (SECCURRENTS)
+!
+      TYPE(BIEF_OBJ),TARGET :: SEC_TAU, SEC_R
 !
 !-----------------------------------------------------------------------
 !
@@ -1279,6 +1285,10 @@
 !  
       LOGICAL ALGAE
 !
+!     SECONDARY CURRENTS
+!
+      LOGICAL SECCURRENTS
+!
 !-----------------------------------------------------------------------
 !
 !       6) REALS
@@ -1548,6 +1558,11 @@
 !     THICKNESS OF ALGAE
 !
       DOUBLE PRECISION EALGAE
+!
+!     PRODUCTION COEFFICIENT FOR SECONDARY CURRENTS 
+!     DISSIPATION COEFFICIENT FOR SECONDARY CURRENTS  
+!
+      DOUBLE PRECISION SEC_AS,SEC_DS
 !
 !-----------------------------------------------------------------------
 !

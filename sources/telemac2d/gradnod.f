@@ -52,7 +52,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE BIEF_DEF, ONLY: NCSIZE,IPID
+      USE BIEF_DEF, ONLY: NCSIZE
       USE INTERFACE_TELEMAC2D, EX_GRADNOD => GRADNOD
       IMPLICIT NONE
 !

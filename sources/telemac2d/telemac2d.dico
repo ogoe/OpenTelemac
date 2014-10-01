@@ -5690,11 +5690,51 @@ OPTION FOR CHARACTERISTICS
 SUPG OPTION
 IF PSI SCHEME: 1=explicit 2=predictor-corrector
 for k and epsilon'
-
+/
+NOM = 'COURANTS SECONDAIRES'
+NOM1 = 'SECONDARY CURRENTS'
+TYPE = LOGIQUE
+INDEX = 48  
+MNEMO = 'SECCURRENTS' 
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 2
+AIDE = 'Pour prendre en compte les courants secondaires'
+AIDE1 = 'Using the parametrisation for secondary currents'
+/
+NOM = 'COEFFICIENT DE PRODUCTION POUR COURANTS SECONDAIRES' 
+NOM1 = 'PRODUCTION COEFFICIENT FOR SECONDARY CURRENTS' 
+TYPE = REEL 
+INDEX = 72 
+MNEMO = 'SEC_AS' 
+TAILLE = 0 
+DEFAUT = 7.071
+DEFAUT1 = 7.071
+RUBRIQUE = 'GENERAL' 
+RUBRIQUE1 = 'GENERAL' 
+NIVEAU = 2 
+AIDE = 'Une constante dans les termes de creation de Omega' 
+AIDE1 = 'A constant in the production terms of Omega'
+ /
+NOM = 'COEFFICIENT DE DISSIPATION POUR COURANTS SECONDAIRES' 
+NOM1 = 'DISSIPATION COEFFICIENT FOR SECONDARY CURRENTS' 
+TYPE = REEL 
+INDEX = 73 
+MNEMO = 'SEC_DS' 
+TAILLE = 0 
+DEFAUT = 5.E-1 
+DEFAUT1 = 5.E-1 
+RUBRIQUE = 'GENERAL' 
+RUBRIQUE1 = 'GENERAL' 
+NIVEAU = 2 
+AIDE = 'Coefficient de dissipation de Omega' 
+AIDE1 = 'Coefficient of dissipation term of Omega' 
 / 
 / POUR LES LANCEURS PERL : 
 / 
-
 NOM = 'LISTE DES FICHIERS' 
 NOM1 = 'LIST OF FILES' 
 TYPE = CARACTERE 

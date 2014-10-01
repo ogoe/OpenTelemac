@@ -12,11 +12,10 @@
      & T2D_FILES,T2DBI1,BANDEC,OPTBAN,
      & NSIPH,ENTSIP,SORSIP,DSIP,USIP,VSIP,
      & NBUSE,ENTBUS,SORBUS,DBUS,UBUS,VBUS,
-     & TYPSEUIL,NWEIRS,
-     & NPSING,NDGA1,NDGB1,NBOR)
+     & TYPSEUIL,NWEIRS,NPSING,NDGA1,NDGB1,NBOR)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/08/2010
+! TELEMAC2D   V7P0                                
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCE TERMS IN THE CONTINUITY EQUATION
@@ -111,6 +110,12 @@
 !+        V6P3
 !+   Modification for new treatment of weirs
 !
+!history  D WANG & P TASSI (LNHE)
+!+        10/07/2014
+!+        V7P0
+!+   Secondary flow correction: compute the secondary
+!+   stress term \tau_s and secondary source terms S_x, S_y.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
 !| BANDEC         |-->| IF YES, TIDAL FLATS OR DRY ZONES
@@ -186,7 +191,10 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
 !     FOR SEEING OTHER VARIABLES IN DECLARATIONS_TELEMAC2D:
-      USE DECLARATIONS_TELEMAC2D, ONLY : QWA,QWB
+      USE DECLARATIONS_TELEMAC2D, ONLY : QWA,QWB,U,V,H,
+     &                                   SECCURRENTS,NTRAC,SEC_R,
+     &                                   SEC_TAU,T2,T3,T7,
+     &                                   ROEAU,CF,S,IELMU,T
       USE INTERFACE_TELEMAC2D, EX_PROSOU => PROSOU
       USE M_COUPLING_ESTEL3D
 !
@@ -245,11 +253,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N,I,IELMU,IELMH,IELM1,NPOIN,IR,ERR,NP
+      INTEGER N,I,IELMH,IELM1,NPOIN,IR,ERR,NP,K
 !
-      DOUBLE PRECISION PI,WROT,WD,ATH,RAIN_MPS,SURDT
+      DOUBLE PRECISION PI,WROT,WD,ATH,RAIN_MPS,SURDT,XX
 !
-      CHARACTER*16 NOMX,NOMY
+      CHARACTER(LEN=16) NOMX,NOMY
       LOGICAL DEJALU,OKX,OKY,OKC
       DATA DEJALU /.FALSE./
       REAL, ALLOCATABLE :: W(:)
@@ -274,10 +282,48 @@
       CALL OS( 'X=0     ' , X=FU )
       CALL OS( 'X=0     ' , X=FV )
 !
-!-----------------------------------------------------------------------
+!=======================================================================
 !
-!  COMPUTATION WITH WIND
-!  ----------------
+!  SECONDARY CURRENTS
+!  
+      IF(SECCURRENTS) THEN
+!
+!       TAU_SEC
+        DO K=1,NPOIN
+          XX=H%R(K)*T%ADR(NTRAC)%P%R(K)
+     &                        *SQRT(0.5D0*CF%R(K)*(U%R(K)**2+V%R(K)**2))
+!         SEC_TAU IS USED ONLY FOR OUTPUTS
+          SEC_TAU%R(K)=ROEAU*XX
+!         ROEAU NOT CONSIDERED IN TAU_SEC, IT AVOIDS A DIVISION LATER
+          T1%R(K) = XX*H%R(K)
+        ENDDO
+!       COMPUTING THE GRADIENTS OF H*TAU_SEC
+!       WITH FACTOR V2DPAR=1/UNSV2D, REMOVED LATER
+        CALL VECTOR(T2,'=','GRADF          X',IELMU,
+     &              1.D0,T1,S,S,S,S,S,MESH,MSK,MASKEL)
+        CALL VECTOR(T3,'=','GRADF          Y',IELMU,
+     &              1.D0,T1,S,S,S,S,S,MESH,MSK,MASKEL)
+        IF(NCSIZE.GT.1) THEN
+          CALL PARCOM (T2, 2, MESH)
+          CALL PARCOM (T3, 2, MESH)
+        ENDIF
+!
+        DO K=1,NPOIN
+          IF(H%R(K).GE.1.D-4) THEN
+            XX=1.D0/MAX(SQRT(U%R(K)**2+V%R(K)**2),1.D-12)
+            T2%R(K)=UNSV2D%R(K)*(T2%R(K)*V%R(K)-T3%R(K)*U%R(K))*XX
+            T7%R(K)=XX*(2.D0*T1%R(K)*SEC_R%R(K)+T2%R(K))/H%R(K)
+!           FORCES ALONG X AND Y
+            FU%R(K) = FU%R(K) - U%R(K)*T7%R(K)
+            FV%R(K) = FV%R(K) - V%R(K)*T7%R(K)
+          ENDIF
+        ENDDO
+!
+      ENDIF
+!
+!=======================================================================
+!
+!  WIND
 !
 !                               1                         2     2
 !              FU           =  --- * F    * U    * SQRT( U   + V    )
@@ -307,10 +353,10 @@
 !
       ENDIF
 !
-!***********************************************************************
+!=======================================================================
 !
-!     * WITH CORIOLIS FORCE
-!       --------------------------
+! CORIOLIS FORCE
+!       
 !
 !                FU           =  + FCOR * V
 !                  CORIOLIS
@@ -535,12 +581,12 @@
 !
         YASMH = .TRUE.
 !
-        DO N=1,NWEIRS
-          DO I=1,NPSING%I(N)
-            IR=NDGA1%ADR(N)%P%I(I)
-            IF(IR.GT.0) THEN
-              SMH%R(IR)= SMH%R(IR)+QWA%ADR(N)%P%R(I)*UNSV2D%R(IR)
-! QUANTITY OF MOVEMENTS NOT TAKING IN ACCOUNT FOR THE MOMENT
+         DO N=1,NWEIRS
+            DO I=1,NPSING%I(N)
+               IR=NDGA1%ADR(N)%P%I(I)
+               IF(IR.GT.0) THEN
+                 SMH%R(IR)= SMH%R(IR)+QWA%ADR(N)%P%R(I)*UNSV2D%R(IR)
+! QUANTITY OF MOVEMENTS NOT TAKEN INTO ACCOUNT FOR THE MOMENT
 ! The following lines generate instability and crash
 ! Probably because we would like to impose velocities accross  solid boundaries!
 !
@@ -548,23 +594,23 @@
 !     &              QWA%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
 !                 FV%R(IR) = FV%R(IR) + (VWEIRA%ADR(N)%P%R(I)-VN%R(IR))*
 !     &              QWA%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
-            ENDIF
-            IR=NDGB1%ADR(N)%P%I(I)
-            IF(IR.GT.0) THEN
-              SMH%R(IR)=SMH%R(IR)+QWB%ADR(N)%P%R(I)*UNSV2D%R(IR)
-!              FU%R(IR) = FU%R(IR) + (UWEIRB%ADR(N)%P%R(I)-UN%R(IR))*
-!     &           QWB%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
-!              FV%R(IR) = FV%R(IR) + (VWEIRB%ADR(N)%P%R(I)-VN%R(IR))*
-!     &           QWB%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
-            ENDIF
-          ENDDO
-        ENDDO
+               ENDIF
+               IR=NDGB1%ADR(N)%P%I(I)
+               IF(IR.GT.0) THEN
+                 SMH%R(IR)=SMH%R(IR)+QWB%ADR(N)%P%R(I)*UNSV2D%R(IR)
+!                 FU%R(IR) = FU%R(IR) + (UWEIRB%ADR(N)%P%R(I)-UN%R(IR))*
+!     &              QWB%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+!                 FV%R(IR) = FV%R(IR) + (VWEIRB%ADR(N)%P%R(I)-VN%R(IR))*
+!     &              QWB%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+               ENDIF
+            ENDDO
+         ENDDO
       ENDIF
 !
-!***********************************************************************
+!=======================================================================
 !
-!     * WITH WAVE DRIVEN CURRENTS
-!       -------------------------------------
+!  WAVE DRIVEN CURRENTS
+!      
 !
 !                FU        =  FXWAVE
 !                  COUROU
@@ -582,111 +628,111 @@
 !
       IF(COUROU) THEN
 !
-!       WITH NO COUPLING, TAKING THE WAVE STRESSES ONCE FOR ALL
-!       IN A BINARY DATA FILE
+!        WITH NO COUPLING, TAKING THE WAVE STRESSES ONCE FOR ALL
+!        IN A BINARY DATA FILE
 !
-        IF(.NOT.DEJALU.AND..NOT.INCLUS(COUPLING,'TOMAWAC')) THEN
+         IF(.NOT.DEJALU.AND..NOT.INCLUS(COUPLING,'TOMAWAC')) THEN
 !
-          ALLOCATE(W(NPOIN),STAT=ERR)
-          IF(ERR.NE.0) THEN
-            IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'ERREUR D''ALLOCATION DE W DANS PROSOU'
-              WRITE(LU,*) 'CODE ERREUR ',ERR
-              WRITE(LU,*) 'NOMBRE DE POINTS : ',NPOIN
+            ALLOCATE(W(NPOIN),STAT=ERR)
+            IF(ERR.NE.0) THEN
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) 'ERREUR D''ALLOCATION DE W DANS PROSOU'
+                WRITE(LU,*) 'CODE ERREUR ',ERR
+                WRITE(LU,*) 'NOMBRE DE POINTS : ',NPOIN
+              ENDIF
+              IF(LNG.EQ.2) THEN
+                WRITE(LU,*) 'MEMORY ALLOCATION ERROR OF W IN PROSOU'
+                WRITE(LU,*) 'ERROR CODE ',ERR
+                WRITE(LU,*) 'NUMBER OF POINTS: ',NPOIN
+              ENDIF
             ENDIF
-            IF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'MEMORY ALLOCATION ERROR OF W IN PROSOU'
-              WRITE(LU,*) 'ERROR CODE ',ERR
-              WRITE(LU,*) 'NUMBER OF POINTS: ',NPOIN
-            ENDIF
-          ENDIF
 !
-!         NBI1 : BINARY DATA FILE 1
-          NOMX='FORCE FX        '
-          NOMY='FORCE FY        '
-          CALL FIND_IN_SEL(FXWAVE,NOMX,T2D_FILES(T2DBI1)%LU,
-     &                     T2D_FILES(T2DBI1)%FMT,W,OKX,NPTH,NP,ATH)
-          CALL FIND_IN_SEL(FYWAVE,NOMY,T2D_FILES(T2DBI1)%LU,
-     &                     T2D_FILES(T2DBI1)%FMT,W,OKY,NPTH,NP,ATH)
-          IF(.NOT.OKX.OR..NOT.OKY) THEN
-!           SECOND TRY (OLD VERSIONS OF ARTEMIS OR TOMAWAC)
-            NOMX='FORCE_FX        '
-            NOMY='FORCE_FY        '
+!           NBI1 : BINARY DATA FILE 1
+            NOMX='FORCE FX        '
+            NOMY='FORCE FY        '
             CALL FIND_IN_SEL(FXWAVE,NOMX,T2D_FILES(T2DBI1)%LU,
      &                       T2D_FILES(T2DBI1)%FMT,W,OKX,NPTH,NP,ATH)
             CALL FIND_IN_SEL(FYWAVE,NOMY,T2D_FILES(T2DBI1)%LU,
      &                       T2D_FILES(T2DBI1)%FMT,W,OKY,NPTH,NP,ATH)
-          ENDIF
-!         CLANDESTINE VARIABLES FROM TOMAWAC TO SISYPHE
-          IF(NVARCL.GT.0) THEN
-            DO I=1,NVARCL
-            CALL FIND_IN_SEL(VARCL%ADR(I)%P,VARCLA(I)(1:16),
-     &                       T2D_FILES(T2DBI1)%LU,
-     &                       T2D_FILES(T2DBI1)%FMT,
-     &                       W,OKC,NPTH,NP,ATH)
-            IF(.NOT.OKC) THEN
-              IF(LNG.EQ.1) WRITE(LU,7) VARCLA(I)(1:16)
-              IF(LNG.EQ.2) WRITE(LU,8) VARCLA(I)(1:16)
-7           FORMAT(1X,'PROSOU : VARIABLE CLANDESTINE :',/,1X,A16,/,1X,
-     &                '         NON TROUVEE',/,1X,
-     &                '         DANS LE FICHIER DE HOULE')
-8           FORMAT(1X,'PROSOU : CLANDESTINE VARIABLE:',/,1X,A16,/,1X,
-     &                '         NOT FOUND',/,1X,
-     &                '         IN THE WAVE RESULTS FILE')
-            CALL PLANTE(1)
-            STOP
+            IF(.NOT.OKX.OR..NOT.OKY) THEN
+!             SECOND TRY (OLD VERSIONS OF ARTEMIS OR TOMAWAC)
+              NOMX='FORCE_FX        '
+              NOMY='FORCE_FY        '
+              CALL FIND_IN_SEL(FXWAVE,NOMX,T2D_FILES(T2DBI1)%LU,
+     &                         T2D_FILES(T2DBI1)%FMT,W,OKX,NPTH,NP,ATH)
+              CALL FIND_IN_SEL(FYWAVE,NOMY,T2D_FILES(T2DBI1)%LU,
+     &                         T2D_FILES(T2DBI1)%FMT,W,OKY,NPTH,NP,ATH)
             ENDIF
-            ENDDO
-          ENDIF
+!           CLANDESTINE VARIABLES FROM TOMAWAC TO SISYPHE
+            IF(NVARCL.GT.0) THEN
+              DO I=1,NVARCL
+              CALL FIND_IN_SEL(VARCL%ADR(I)%P,VARCLA(I)(1:16),
+     &                         T2D_FILES(T2DBI1)%LU,
+     &                         T2D_FILES(T2DBI1)%FMT,
+     &                         W,OKC,NPTH,NP,ATH)
+              IF(.NOT.OKC) THEN
+                IF(LNG.EQ.1) WRITE(LU,7) VARCLA(I)(1:16)
+                IF(LNG.EQ.2) WRITE(LU,8) VARCLA(I)(1:16)
+7             FORMAT(1X,'PROSOU : VARIABLE CLANDESTINE :',/,1X,A16,/,1X,
+     &                  '         NON TROUVEE',/,1X,
+     &                  '         DANS LE FICHIER DE HOULE')
+8             FORMAT(1X,'PROSOU : CLANDESTINE VARIABLE:',/,1X,A16,/,1X,
+     &                  '         NOT FOUND',/,1X,
+     &                  '         IN THE WAVE RESULTS FILE')
+              CALL PLANTE(1)
+              STOP
+              ENDIF
+              ENDDO
+            ENDIF
 !
-          IF(.NOT.OKX.OR..NOT.OKY) THEN
-            IF(LNG.EQ.1) WRITE(LU,5)
-            IF(LNG.EQ.2) WRITE(LU,6)
-5           FORMAT(1X,'PROSOU : FORCE FX OU FY NON TROUVES',/,1X,
-     &                '         DANS LE FICHIER DE HOULE')
-6           FORMAT(1X,'PROSOU: FORCE FX OR FY NOT FOUND',/,1X,
-     &                '         IN THE WAVE RESULTS FILE')
-            CALL PLANTE(1)
-            STOP
-          ENDIF
-          IF(NP.NE.NPOIN) THEN
-            IF(LNG.EQ.1) WRITE(LU,95)
-            IF(LNG.EQ.2) WRITE(LU,96)
- 95         FORMAT(1X,'PROSOU : SIMULATION DES COURANTS DE HOULE.',/,
-     &             1X,'LES MAILLAGES HOULE ET COURANTS SONT ',/,
-     &             1X,'DIFFERENTS : PAS POSSIBLE POUR LE MOMENT.')
- 96         FORMAT(1X,'PROSOU: WAVE DRIVEN CURRENTS MODELLING.',/,
-     &             1X,'WAVE AND CURRENT MODELS MESHES ARE ',/,
-     &             1X,'DIFFERENT : NOT POSSIBLE AT THE MOMENT.')
+            IF(.NOT.OKX.OR..NOT.OKY) THEN
+              IF(LNG.EQ.1) WRITE(LU,5)
+              IF(LNG.EQ.2) WRITE(LU,6)
+5             FORMAT(1X,'PROSOU : FORCE FX OU FY NON TROUVES',/,1X,
+     &                  '         DANS LE FICHIER DE HOULE')
+6             FORMAT(1X,'PROSOU: FORCE FX OR FY NOT FOUND',/,1X,
+     &                  '         IN THE WAVE RESULTS FILE')
+              CALL PLANTE(1)
+              STOP
+            ENDIF
+            IF(NP.NE.NPOIN) THEN
+              IF(LNG.EQ.1) WRITE(LU,95)
+              IF(LNG.EQ.2) WRITE(LU,96)
+ 95           FORMAT(1X,'PROSOU : SIMULATION DES COURANTS DE HOULE.',/,
+     &               1X,'LES MAILLAGES HOULE ET COURANTS SONT ',/,
+     &               1X,'DIFFERENTS : PAS POSSIBLE POUR LE MOMENT.')
+ 96           FORMAT(1X,'PROSOU: WAVE DRIVEN CURRENTS MODELLING.',/,
+     &               1X,'WAVE AND CURRENT MODELS MESHES ARE ',/,
+     &               1X,'DIFFERENT : NOT POSSIBLE AT THE MOMENT.')
 !
-            CALL PLANTE(1)
-            STOP
-          ENDIF
-!         WRITES OUT TO THE LISTING
-          IF(LNG.EQ.1) WRITE(LU,115) ATH
-          IF(LNG.EQ.2) WRITE(LU,116) ATH
-115       FORMAT(1X,/,1X,'PROSOU : COURANTS DE HOULE',/,
-     &                1X,'         LECTURE AU TEMPS ',F10.3,/)
-116       FORMAT(1X,/,1X,'PROSOU: WAVE DRIVEN CURRENTS MODELLING',/,
-     &                1X,'         READING FILE AT TIME ',F10.3,/)
-          IF(IELMU.NE.IELM1) THEN
-            CALL CHGDIS(FXWAVE,IELM1,IELMU,MESH)
-            CALL CHGDIS(FYWAVE,IELM1,IELMU,MESH)
-          ENDIF
-          DEJALU = .TRUE.
+              CALL PLANTE(1)
+              STOP
+            ENDIF
+!           WRITES OUT TO THE LISTING
+            IF(LNG.EQ.1) WRITE(LU,115) ATH
+            IF(LNG.EQ.2) WRITE(LU,116) ATH
+115         FORMAT(1X,/,1X,'PROSOU : COURANTS DE HOULE',/,
+     &                  1X,'         LECTURE AU TEMPS ',F10.3,/)
+116         FORMAT(1X,/,1X,'PROSOU: WAVE DRIVEN CURRENTS MODELLING',/,
+     &                  1X,'         READING FILE AT TIME ',F10.3,/)
+            IF(IELMU.NE.IELM1) THEN
+              CALL CHGDIS(FXWAVE,IELM1,IELMU,MESH)
+              CALL CHGDIS(FYWAVE,IELM1,IELMU,MESH)
+            ENDIF
+            DEJALU = .TRUE.
 !
-        ENDIF
+         ENDIF
 !
-!       ADDS INTO FU AND FV
+!        ADDS INTO FU AND FV
 !
-        IF(INCLUS(COUPLING,'TOMAWAC')) THEN
-          IF(IELMU.NE.IELM1) THEN
-            CALL CHGDIS(FXWAVE,IELM1,IELMU,MESH)
-            CALL CHGDIS(FYWAVE,IELM1,IELMU,MESH)
-          ENDIF
-        ENDIF
-        CALL OS('X=X+Y   ',X=FU,Y=FXWAVE)
-        CALL OS('X=X+Y   ',X=FV,Y=FYWAVE)
+         IF(INCLUS(COUPLING,'TOMAWAC')) THEN
+           IF(IELMU.NE.IELM1) THEN
+             CALL CHGDIS(FXWAVE,IELM1,IELMU,MESH)
+             CALL CHGDIS(FYWAVE,IELM1,IELMU,MESH)
+           ENDIF
+         ENDIF
+         CALL OS('X=X+Y   ',X=FU,Y=FXWAVE)
+         CALL OS('X=X+Y   ',X=FV,Y=FYWAVE)
 !
       ENDIF
 !
@@ -704,3 +750,4 @@
 !
       RETURN
       END
+

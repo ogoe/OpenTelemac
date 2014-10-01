@@ -228,6 +228,12 @@
 !+        V7P0
 !+   Calls to sisyphe and wac chenged.
 !
+!history  D WANG & P TASSI (LNHE)
+!+        10/07/2014
+!+        V7P0
+!+   Secondary flow correction:
+!+   add the calculation of \Omega 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
 !param code      [in] calling program (if coupling)
@@ -460,6 +466,16 @@
         ENDDO
       ENDIF
 !
+! COEFFICIENTS FOR SECONDARY CURRENTS SECURED TO 0.
+!
+      IF(SECCURRENTS) THEN
+        DO I=1,NPTFR
+          TBOR%ADR(NTRAC)%P%R(I)  = 0.D0
+          ATBOR%ADR(NTRAC)%P%R(I) = 0.D0
+          BTBOR%ADR(NTRAC)%P%R(I) = 0.D0
+        ENDDO
+      ENDIF
+!
 !-----------------------------------------------------------------------
 !  COMPLEMENT OF THE DATA STRUCTURE FOR BIEF
 !-----------------------------------------------------------------------
@@ -495,6 +511,13 @@
         DO I=1,NPTS
           LIST_PTS(I)=GLOBAL_TO_LOCAL_POINT(LIST_PTS(I),MESH)
         ENDDO
+      ENDIF
+!
+!     INITIALISES SECONDARY CURRENTS VARIABLES
+!
+      IF(SECCURRENTS) THEN
+        CALL OS('X=0     ',X=SEC_TAU)
+        CALL OS('X=0     ',X=SEC_R)
       ENDIF
 !
 !-----------------------------------------------------------------------
