@@ -69,6 +69,11 @@
 !+        V7P0
 !+   Secondary flow correction: set the conditions for \Omega.
 !
+!history  C. VILLARET (HRW)
+!+        03/10/2014
+!+        V7P0
+!+   Friction enhancement
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
@@ -915,6 +920,8 @@
          ALGAE     = MOTLOG( ADRESS(3,47) )
 !        ALREADY DONE BEFORE
 !        SECCURRENTS = MOTLOG (ADRESS(3,48))
+! WAVE ENHANCED FRICTION
+         FRICOU    = MOTLOG( ADRESS(3,50) )
 !
          IF(.NOT.DEFZON) NZONE=0
 !

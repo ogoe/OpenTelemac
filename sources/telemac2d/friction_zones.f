@@ -7,7 +7,7 @@
      & KARMAN, GRAV, T1, T2, CF, CFBOR)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V7P0
 !***********************************************************************
 !
 !brief    COMPUTES FRICTION FOR EACH NODE AND ZONE.
@@ -33,6 +33,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C.VILLARET (HRW)
+!+        22/09/2014
+!+        V7P0
+!+ Enhanced friction due to waves
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
@@ -62,6 +67,8 @@
 !
       USE BIEF
       USE INTERFACE_TELEMAC2D, EX_FRICTION_ZONES => FRICTION_ZONES
+!
+      USE DECLARATIONS_TELEMAC2D, ONLY : FRICOU,NPOIN,ORBVEL
 !
       IMPLICIT NONE
 !
@@ -129,22 +136,30 @@
      &       (I, I, NKFROT%I(I), NDEFMA%R(I), VK, GRAV,
      &        KARMAN, CHESTR, T1, T1, T2, CF)
 !
-        ! FRICTION COEFFICIENT FOR NON-SUBMERGED VEGETATION
-        ! -------------------------------------------------
-        IF (LINDNER) THEN
+! FRICTION COEFFICIENT FOR NON-SUBMERGED VEGETATION
+! -------------------------------------------------
+        IF(LINDNER) THEN
           CALL FRICTION_LINDNER
      &         (T2%R(I), T1%R(I), CF%R(I), VK, GRAV,
-     &          LINDDP%R(I),LINDSP%R(I), CP)
-!
-          IF (CP < -0.9D0) THEN
+     &          LINDDP%R(I),LINDSP%R(I),CP)
+          IF(CP.LT.-0.9D0) THEN
             CP = 0.75D0*T1%R(I)*LINDDP%R(I) / (LINDSP%R(I))**2
           ENDIF
-!
-          CF%R(I) = (CF%R(I)+2.D0*CP)
+          CF%R(I) =CF%R(I)+2.D0*CP
         ENDIF
 !
-      END DO
+      ENDDO
 !
+!     CV: WAVE INDUCED FRICTION ENHANCEMENT OCONNOR AND YOO (1988)
+! 
+      IF(FRICOU)THEN 
+        CALL CPSTVC(CF,T2)
+        CALL OS('X=N(Y,Z)',X=T2,Y=U,Z=V)
+        CALL OS('X=+(Y,C)',X=T2,Y=T2,C=1.D-6)
+        DO I=1,NPOIN
+          CF%R(I)= CF%R(I)*(1.D0 + 0.72D0*ORBVEL%R(I)/T2%R(I))
+        ENDDO   
+      ENDIF
 !
       ! ============= !
       ! WALL FRICTION !
@@ -164,6 +179,6 @@
       ENDIF
 !
 !=======================================================================!
-!=======================================================================!
+!
       RETURN
-      END SUBROUTINE FRICTION_ZONES
+      END

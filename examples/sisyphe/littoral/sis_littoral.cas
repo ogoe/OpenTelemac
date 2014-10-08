@@ -1,15 +1,15 @@
 /
 TITRE = ' TRANSPORT LITTORAL'
-CAS PERMANENT = VRAI
 /
 / FICHIERS (1)
 / ______________
 /mode sisyphe seul
 /
-FICHIER DE GEOMETRIE = 'geo_littoral.slf'
+FICHIER DE GEOMETRIE = 'geo_beach.slf'
 FICHIER DES CONDITIONS AUX LIMITES = 'geo_sis_littoral.cli'
 FICHIER DES RESULTATS ='res_sis_littoral.slf'
 FICHIER DE REFERENCE = 'ref_sis_littoral.slf'
+
 /
 / FROTTEMENT
 /______________________
@@ -21,13 +21,14 @@ RATIO ENTRE LA RUGOSITE DE PEAU ET LE DIAMETRE MOYEN = 3
 /ENTREES-SORTIES, GRAPHIQUES ET LISTING (1)
 / ________________________________________
 / 
-VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,H,M,W,X,TOB
+VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,H,M,W,X,TOB,UWB,KS
 / 
 BILAN DE MASSE = VRAI
 / meme que pour fichier cas Telemac
+
 PERIODE DE SORTIE GRAPHIQUE = 10
 PERIODE DE SORTIE LISTING = 10
-/NOMBRE DE PAS DE TEMPS = 10
+NOMBRE DE PAS DE TEMPS = 10
 PAS DE TEMPS = 10.
 /
 /

@@ -32,7 +32,7 @@ INITIAL CONDITIONS = 'CONSTANT DEPTH'
 
 BOUNDARY CONDITIONS FILE = geo_seccurrents.cli
 RESULTS FILE             = t2d_seccurrents.res
-FORTRAN FILE             = princi.f
+/FORTRAN FILE             = princi.f
 GEOMETRY FILE            = geo_seccurrents.slf
 
 COMPUTATION CONTINUED     = YES

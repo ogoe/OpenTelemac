@@ -57,6 +57,11 @@
 !+        V7P0
 !+   Adding 2 blocks FTILD2 and FNCAR2 for weak characteristics.
 !
+!history  C. VILLARET (HRW)
+!+        22/09/2014
+!+        V7P0
+!+   Adding a logical keyword FRICOU for wave-current interactions
+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -1232,6 +1237,10 @@
 !     IF YES, WAVE DRIVEN CURRENTS ARE TAKEN INTO ACCOUNT
 ! 
       LOGICAL COUROU
+!
+!     IF YES, WAVE FRICTION ENHANCEMENT IS TAKEN INTO ACCOUNT
+! 
+      LOGICAL FRICOU
 !
 !     IF YES, VERTICAL STRUCTURES ARE TAKEN INTO ACCOUNT
 ! 

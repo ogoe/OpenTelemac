@@ -1,4 +1,8 @@
+DIRECTION PRINCIPALE 1 INITIALE = 30.
+DIRECTION PRINCIPALE 1 AUX LIMITES = 30.
+/
 /DEBUGGER = 1
+/NOMBRE DE TABLEAUX PRIVES =1 
 /********************************************************************/
 /             FICHIER DES PARAMETRES                                 /
 /                    DE TOMAWAC                                      /
@@ -8,10 +12,10 @@
 /--------------------------------------------------------------------/
 /     FICHIERS
 /--------------------------------------------------------------------/
-FICHIER DE GEOMETRIE = 'geo_littoral.slf'
+FICHIER DE GEOMETRIE = 'geo_beach.slf'
 FICHIER DES CONDITIONS AUX LIMITES = 'geo_tom_littoral.cli'
 FICHIER DES RESULTATS 2D = 'res_tom_littoral.slf'
-FICHIER FORTRAN = 'tom_littoral.f'
+/FICHIER FORTRAN = 'tom_littoral.f'
 FICHIER DE REFERENCE = 'ref_tom_littoral.slf'
 /--------------------------------------------------------------------/
 / DIVERS ENTREES-SORTIES
@@ -20,7 +24,7 @@ VALIDATION = OUI
 TITRE = 'LITTORAL'
 PERIODE POUR LES SORTIES GRAPHIQUES = 10
 VARIABLES POUR LES SORTIES GRAPHIQUES 2D = 
-HM0,DMOY,TPR5,ZF,WD,FX,FY,UX,UY
+HM0,DMOY,TPR5,ZF,WD,FX,FY,UX,UY,UWB
 PERIODE POUR LES SORTIES LISTING = 10
 /--------------------------------------------------------------------/
 / DISCRETISATION
@@ -44,7 +48,7 @@ FREQUENCE DE PIC INITIALE = 0.125
 FACTEUR DE PIC INITIAL = 3.3
 FONCTION DE REPARTITION ANGULAIRE INITIALE = 1
 FACTEUR DE PONDERATION POUR FRA INITIALE = 1.0
-DIRECTION PRINCIPALE 1 INITIALE = 30.
+/DIRECTION PRINCIPALE 1 INITIALE = 30.
 ETALEMENT DIRECTIONNEL 1 INITIAL = 3
 /--------------------------------------------------------------------/
 / CONDITIONS AUX LIMITES   
@@ -53,7 +57,7 @@ TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
 HAUTEUR SIGNIFICATIVE AUX LIMITES = 1.
 FREQUENCE DE PIC AUX LIMITES = 0.125
 FACTEUR DE PIC AUX LIMITES = 3.3
-DIRECTION PRINCIPALE 1 AUX LIMITES = 30.
+/DIRECTION PRINCIPALE 1 AUX LIMITES = 30.
 ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 3.
 /--------------------------------------------------------------------/
 / OPTIONS DU CALCUL

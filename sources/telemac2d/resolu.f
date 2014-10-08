@@ -19,7 +19,7 @@
      &  GAMMA,FLUX_OLD,NVMAX,NEISEG,ELTSEG,IFABOR,MESH)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   26/06/2013
+! TELEMAC2D   V7P0                
 !***********************************************************************
 !
 !brief    1. SOLVES THE PROBLEM BY A METHOD OF TYPE ROE OR BY A 
@@ -190,7 +190,7 @@
       USE BIEF_DEF
       USE BIEF
       USE INTERFACE_TELEMAC2D, EX_RESOLU => RESOLU
-      USE DECLARATIONS_TELEMAC2D, ONLY:DEBUG ! IF NEEDED DECOMMENT
+!     USE DECLARATIONS_TELEMAC2D, ONLY:DEBUG ! IF NEEDED DECOMMENT
 !
       IMPLICIT NONE
 !

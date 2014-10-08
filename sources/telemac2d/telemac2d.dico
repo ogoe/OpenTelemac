@@ -3681,6 +3681,23 @@ NIVEAU = 1
 AIDE = 'Active la prise en compte des courants de houle' 
 AIDE1 = 'Wave driven currents are taken into account. ' 
  
+NOM = 'AUGMENTATION DU FROTTEMENT PAR LA HOULE' 
+NOM1 = 'WAVE ENHANCED FRICTION FACTOR' 
+TYPE = LOGIQUE 
+INDEX = 50 
+MNEMO = 'FRICOU' 
+TAILLE = 0 
+DEFAUT = NON 
+DEFAUT1 = NO 
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 1 
+AIDE = 'Active la prise en compte des interactions non-lineaires entre la houle 
+et les courant pour le calcul du courant de houle 
+(cf OConnor and Yoo, 1988, Coast Eng.12.) ' 
+AIDE1 = 'Wave friction enhancement for the calculation of the wave generated 
+longshore current  (cf OConnor and Yoo, 1988, Coast Eng.12.)'   
+ 
 NOM = 'NUMERO DE L''ENREGISTREMENT DANS LE FICHIER DE HOULE' 
 NOM1 = 'RECORD NUMBER IN WAVE FILE' 
 TYPE = ENTIER 
