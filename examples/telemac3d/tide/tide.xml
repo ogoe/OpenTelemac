@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 <!-- Validation and verification of test cases, given a list of CAS files 
 --> 
-<validation xref="case"> 
+<validation xref="tide"> 
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
@@ -34,7 +34,7 @@
        code="telemac3d" target="t3d_tide-jmj_type.cas" 
        title="tide scalar mode type" 
    />    
-   <action xref="4" rank="7"
+   <action xref="4" rank="5"
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac3d" target="t3d_tide-jmj_type.cas" 
        title="tide parallel mode type" 

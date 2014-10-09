@@ -5789,27 +5789,23 @@ CHOIX=
 '-1="PAS DE VALEUR PAR DEFAUT. CHOISIR LA BASE PARMI LES CHOIX POSSIBLES"';
 '1="JMJ"';
 '2="TPXO"';
-'3="LEGOS-NEA"';
-'4="FES2004"'
+'3="DIVERS (LEGOS-NEA, FES20XX, PREVIMER...)"'
 CHOIX1=
 '-1="NO DEFAULT VALUE. CHOOSE THE BASE AMONG THE POSSIBLE CHOICES"';
 '1="JMJ"';
 '2="TPXO"';
-'3="LEGOS-NEA"';
-'4="FES2004"'
+'3="MISCELLANEOUS (LEGOS-NEA, FES20XX, PREVIMER...)"'
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
 AIDE = 'Pour JMJ, renseigner la localisation du fichier bdd_jmj et geofin
 dans les mots-cles BASE DE DONNEES DE MAREE et FICHIER DU MODELE DE MAREE.
-Pour TPXO et LEGOS-NEA, l''utilisateur doit telecharger
-les fichiers de constantes harmoniques sur internet.
-Pour FES2004 : pas encore disponible'
+Pour TPXO, LEGOS-NEA, FES20XX et PREVIMER, l''utilisateur doit telecharger
+les fichiers de constantes harmoniques sur internet'
 AIDE1 = 'For JMJ, indicate the location of the files bdd_jmj and geofin with keywords 
 TIDE DATA BASE and TIDAL MODEL FILE.
-For TPXO and LEGOS-NEA, the user have to download
-files of harmonic constituents on the internet.
-For FES2004: not yet available'
+For TPXO, LEGOS-NEA, FES20XX and PREVIMER, the user has to download
+files of harmonic constituents on the internet'
 
 NOM = 'SYSTEME GEOGRAPHIQUE'
 NOM1 = 'GEOGRAPHIC SYSTEM'

@@ -170,7 +170,7 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
-        SUBROUTINE BORD_TIDE_LEGOS
+        SUBROUTINE BORD_TIDE_MISC
      &(ZF,NBOR,LIHBOR,LIUBOR,NPOIN,NPTFR,TEMPS,DT,NCOTE,NVITES,
      & NUMLIQ,KENT,KENTU,NOMIMP,TIDALTYPE,CTIDE,MSL,
      & CTIDEV,NODALCORR,NFOT,

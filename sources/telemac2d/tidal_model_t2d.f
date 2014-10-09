@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   28/10/2010
+! TELEMAC2D   V7P0                                   02/10/2014
 !***********************************************************************
 !
 !brief    FINDS TIDAL BOUNDARY CONDITIONS AT THE OPEN SEA BOUNDARIES
@@ -13,6 +13,14 @@
 !history  C-T PHAM (LNHE)
 !+        30/05/2011
 !+        V6P1
+!+
+!
+!history  C-T PHAM (LNHE)
+!+        02/10/2014
+!+        V7P0
+!+   BORD_TIDE_LEGOS changed into BORD_TIDE_MISC
+!+   (e.g. LEGOS-NEA, FES20XX, Previmer)
+!+   Default NODALCORR = 0 (not frozen, computed at each time step)
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,8 +60,8 @@
       IF(CTIDEV.EQ.999999.D0) CTIDEV = SQRT(CTIDE)
 !
 !     NODALCORR: OPTION FOR CALCULATION OF NODAL FACTOR CORRECTION F
-!                IN SUBROUTINES BORD_TIDE AND BORD_TIDE_LEGOS
-!                DEFAULT = 1 (FROZEN AT THE DATE MARDAT + HOUR MARTIM + TEMPS)
+!                IN SUBROUTINES BORD_TIDE AND BORD_TIDE_MISC
+!                DEFAULT = 0 (NOT FROZEN, WARNING: CHANGED VALUE, 1 UNTIL V6P3)
 !                0: NOT FROZEN, COMPUTED AT EACH TIME STEP
 !                1: FROZEN WITH VALUE AT THE BEGINNING OF THE SIMULATION
 !                2: FROZEN WITH VALUE AT THE MIDDLE OF THE YEAR IN MARDAT
@@ -62,7 +70,7 @@
 !     AND 'ORIGINAL HOUR OF TIME' HAVE TO BE SET
 !     WARNING, FORMAT: YEAR, MONTH, DAY
 !
-      NODALCORR = 1
+      NODALCORR = 0
 !
 !     TIDALBCGEN: LOGICAL FOR GENERATION OF TIDAL BOUNDARY CONDITIONS OR NOT
 !                 CURRENTLY WORKS ONLY FOR SCALAR COMPUTATIONS
@@ -80,7 +88,7 @@
 !
 !     TM2S2N2EQUAL: LOGICAL TO IMPOSE THE PERIODS OF S2 AND N2 WAVES
 !                   TO BE EQUAL TO THE PERIOD OF M2 WAVE
-!                   DEFAULT = .TRUE. (WARNING: CHANGED, .FALSE. IN V6P2)
+!                   DEFAULT = .TRUE. (WARNING: CHANGED VALUE, .FALSE. IN V6P2)
 !                   FOR SCHEMATIC TIDES MODELLING ONLY! 
 !                   FOR JMJ DATA BASE ONLY AT THE MOMENT
 !
@@ -198,28 +206,28 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-        CALL BORD_TIDE_LEGOS(ZF%R,MESH%NBOR%I,LIHBOR%I,LIUBOR%I,
-     &                       NPOIN,NPTFR,AT,DT,NCOTE,NVITES,
-     &                       NUMLIQ%I,KENT,KENTU,
-     &                       T2D_FILES(T2DIMP)%NAME,TIDALTYPE,
-     &                       CTIDE,MSL,CTIDEV,NODALCORR,
-     &                       T2D_FILES(T2DHAR)%LU,BOUNDARY_COLOUR,
-     &                       HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
-     &                       MARDAT,MARTIM)
+        CALL BORD_TIDE_MISC(ZF%R,MESH%NBOR%I,LIHBOR%I,LIUBOR%I,
+     &                      NPOIN,NPTFR,AT,DT,NCOTE,NVITES,
+     &                      NUMLIQ%I,KENT,KENTU,
+     &                      T2D_FILES(T2DIMP)%NAME,TIDALTYPE,
+     &                      CTIDE,MSL,CTIDEV,NODALCORR,
+     &                      T2D_FILES(T2DHAR)%LU,BOUNDARY_COLOUR,
+     &                      HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
+     &                      MARDAT,MARTIM)
       ELSEIF(TIDALDB.EQ.-1) THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'VALEUR PAR DEFAUT INCORRECTE POUR LA BASE'
           WRITE(LU,*) 'DE DONNEES DE MAREE. CHOIX POSSIBLES :'
-          WRITE(LU,*) '  -1 : JMJ ;'
-          WRITE(LU,*) '  -2 : TPXO ;'
-          WRITE(LU,*) '  -3 : LEGOS-NEA.'
+          WRITE(LU,*) '  1 : JMJ ;'
+          WRITE(LU,*) '  2 : TPXO ;'
+          WRITE(LU,*) '  3 : DIVERS (LEGOS-NEA, FES20XX, PREVIMER...).'
         ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'INCORRECT DEFAULT VALUE FOR TIDAL DATA BASE.'
           WRITE(LU,*) 'POSSIBLE CHOICES:'
-          WRITE(LU,*) '  -1: JMJ,'
-          WRITE(LU,*) '  -2: TPXO,'
-          WRITE(LU,*) '  -3: LEGOS-NEA.'
+          WRITE(LU,*) '  1: JMJ,'
+          WRITE(LU,*) '  2: TPXO,'
+          WRITE(LU,*) '  3: MISC (LEGOS-NEA, FES20XX, PREVIMER...).'
         ENDIF
         CALL PLANTE(1)
         STOP
@@ -227,16 +235,16 @@
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'BASE DE DONNEES DE MAREE NON TRAITEE.'
           WRITE(LU,*) 'CHOIX POSSIBLES :'
-          WRITE(LU,*) '  -1 : JMJ ;'
-          WRITE(LU,*) '  -2 : TPXO ;'
-          WRITE(LU,*) '  -3 : LEGOS-NEA.'
+          WRITE(LU,*) '  1 : JMJ ;'
+          WRITE(LU,*) '  2 : TPXO ;'
+          WRITE(LU,*) '  3 : DIVERS (LEGOS-NEA, FES20XX, PREVIMER...).'
         ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'TIDAL DATA BASE NOT TAKEN INTO ACCOUNT.'
           WRITE(LU,*) 'POSSIBLE CHOICES:'
-          WRITE(LU,*) '  -1: JMJ,'
-          WRITE(LU,*) '  -2: TPXO,'
-          WRITE(LU,*) '  -3: LEGOS-NEA.'
+          WRITE(LU,*) '  1: JMJ,'
+          WRITE(LU,*) '  2: TPXO,'
+          WRITE(LU,*) '  3: MISC (LEGOS-NEA, FES20XX, PREVIMER...).'
         ENDIF
         CALL PLANTE(1)
         STOP

@@ -680,7 +680,7 @@ files: friction_def.f
   bord_tidal_bc.f
   nodalupv_schureman.f
   nodalf_schureman.f
-  bord_tide_legos.f
+  bord_tide_misc.f
   nodalf_pugh.f
   nodalupv_pugh.f
   bord_tide.f

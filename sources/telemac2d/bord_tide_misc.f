@@ -1,6 +1,6 @@
-!                    **************************
-                     SUBROUTINE BORD_TIDE_LEGOS
-!                    **************************
+!                    *************************
+                     SUBROUTINE BORD_TIDE_MISC
+!                    *************************
 !
      &(ZF,NBOR,LIHBOR,LIUBOR,NPOIN,NPTFR,TEMPS,DT,NCOTE,NVITES,
      & NUMLIQ,KENT,KENTU,NOMIMP,TIDALTYPE,CTIDE,MSL,
@@ -9,7 +9,7 @@
      & MARDAT,MARTIM)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   12/01/2012
+! TELEMAC2D   V7P0                                   08/01/2014
 !***********************************************************************
 !
 !brief    MODIFIES THE BOUNDARY CONDITIONS ARRAYS FOR TIDES
@@ -20,6 +20,13 @@
 !+        12/01/2012
 !+        V6P2
 !+
+!
+!history  C-T PHAM (LNHE)
+!+        08/01/2014
+!+        V7P0
+!+   Change of the name BORD_TIDE_LEGOS to BORD_TIDE_MISC
+!+   (e.g. LEGOS-NEA, Previmer, FES).
+!+   Adding 7 extra harmonic constituents.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BOUNDARY_COLOUR|-->| AN INTEGER LINKED TO BOUNDARY POINTS
@@ -39,7 +46,7 @@
 !| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON VELOCITY
 !| MARDAT         |-->| DATE (YEAR,MONTH,DAY)
 !| MARTIM         |-->| TIME (HOUR,MINUTE,SECOND)
-!| MSL            |---| COEFFICIENT TO CALIBRATE THE SEA LEVEL
+!| MSL            |-->| COEFFICIENT TO CALIBRATE THE SEA LEVEL
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NCOTE          |-->| NUMBER OF BOUNDARIES WITH PRESCRIBED ELEVATION
 !|                |   | AS GIVEN IN THE PARAMETER FILE
@@ -61,7 +68,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE INTERFACE_TELEMAC2D, EX_BORD_TIDE_LEGOS => BORD_TIDE_LEGOS
+      USE INTERFACE_TELEMAC2D, EX_BORD_TIDE_MISC => BORD_TIDE_MISC
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -87,7 +94,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER, PARAMETER   :: LEGOS_NCMX = 47
+      INTEGER, PARAMETER   :: MISC_NCMX = 54
       INTEGER IPTFR,IPTFRL,NPTFRL,NTIDE,NWAVES
       INTEGER, ALLOCATABLE :: FIRSTTIDE(:),LASTTIDE(:),SHIFTTIDE(:)
       INTEGER, ALLOCATABLE :: INDW(:)
@@ -103,17 +110,18 @@
       CHARACTER(LEN=4) TEXT
       CHARACTER(LEN=4), ALLOCATABLE :: NAMEWAVE(:)
 !
-      CHARACTER(LEN=4) LEGOS_CONSTID(LEGOS_NCMX)
-      DATA LEGOS_CONSTID /'2MK6','2MN6','2MS6','2N2 ','2Q1 ',
-     &                    '2SM2','2SM6','E2  ','J1  ','K1  ',
-     &                    'K2  ','KJ2 ','L2  ','La2 ','M1  ',
-     &                    'M2  ','M4  ','M6  ','Mf  ','MK3 ',
-     &                    'MK4 ','MKS2','Mm  ','MN4 ','MO3 ',
-     &                    'MP1 ','MS4 ','MSK6','MSN2','MSN6',
-     &                    'MSqm','Mtm ','Mu2 ','N2  ','Nu2 ',
-     &                    'O1  ','P1  ','Q1  ','R2  ','Ro1 ',
-     &                    'S2  ','S4  ','Sig1','SK4 ','SN4 ',
-     &                    'T2  ','Z0  '/
+      CHARACTER(LEN=4) MISC_CONSTID(MISC_NCMX)
+      DATA MISC_CONSTID /'2MK6','2MN6','2MS6','2N2 ','2Q1 ',
+     &                   '2SM2','2SM6','E2  ','Tta1','J1  ',
+     &                   'K1  ','K2  ','KJ2 ','KQ1 ','L2  ',
+     &                   'La2 ','M1  ','M2  ','M4  ','M6  ',
+     &                   'Mf  ','MK3 ','MK4 ','MKS2','Mm  ',
+     &                   'MN4 ','MO3 ','MP1 ','MS4 ','MSK6',
+     &                   'MSN2','MSN6','MSqm','Mtm ','Mu2 ',
+     &                   'N2  ','Nu2 ','O1  ','OO1 ','P1  ',
+     &                   'Pi1 ','Q1  ','R2  ','Ro1 ','S2  ',
+     &                   'S4  ','Sig1','SK4 ','SN4 ','T2  ',
+     &                   'Phi1','Ki1 ','Psi1','Z0  '/
 !
       LOGICAL DEJA
       DATA    DEJA /.FALSE./
@@ -133,13 +141,13 @@
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'MAUVAISE VALEUR POUR TIDALTYPE =',TIDALTYPE
             WRITE(LU,*) 'ELLE DOIT ETRE EGALE A 1 ACTUELLEMENT'
-            WRITE(LU,*) 'AVEC LA BASE DE DONNEES DE MAREE LEGOS-NEA'
+            WRITE(LU,*) 'AVEC LES BASES DE DONNEES DE MAREE MISC'
 !$$$            WRITE(LU,*) 'ELLE DOIT ETRE COMPRISE ENTRE 1 ET 6'
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'UNEXPECTED VALUE FOR TIDALTYPE=',TIDALTYPE
             WRITE(LU,*) 'IT MUST BE CHOSEN EQUAL TO 1 CURRENTLY'
-            WRITE(LU,*) 'WITH LEGOS-NEA TIDAL DATA BASE'
+            WRITE(LU,*) 'WITH MISC TIDAL DATA BASES'
 !$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
           ENDIF
           CALL PLANTE(1)
@@ -148,8 +156,7 @@
       ENDIF
 !
 !  MAGNITUDES AND PHASES ARE READ IN TIDAL FILE
-!  TIDAL FILE IS OBTAINED BY APPLYING BORD_TIDAL_BC SUBROUTINE
-!  WHICH INTERPOLATES JMJ MODEL RESULTS ON THE CURRENT MESH
+!  TIDAL FILE IS OBTAINED FROM THE TIDAL TOOL BOX (LEGOS)
 !
 !  NTIDE:  NUMBER OF THE TIDAL BOUNDARIES
 !  NPTFRL: NUMBERS OF BOUNDARY POINTS WHERE TIDE IS PRESCRIBED
@@ -165,16 +172,16 @@
 !
         READ(NFOT,*,END=2) NPTFRL,NWAVES,TEXT
 !
-        IF(NWAVES.GT.LEGOS_NCMX) THEN
+        IF(NWAVES.GT.MISC_NCMX) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'NOMBRE D ONDES PRESENTES DANS LE FICHIER DE'
-            WRITE(LU,*) 'CONSTANTES HARMONIQUES SUPERIEUR A',LEGOS_NCMX
+            WRITE(LU,*) 'CONSTANTES HARMONIQUES SUPERIEUR A',MISC_NCMX
             WRITE(LU,*) 'CERTAINES ONDES NE SONT PAS PREVUES.'
             WRITE(LU,*) 'LE FICHIER EST A AJUSTER'
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'NUMBER OF WAVES IN THE HARMONIC CONSTITUENTS'
-            WRITE(LU,*) 'FILE GREATER THAN',LEGOS_NCMX
+            WRITE(LU,*) 'FILE GREATER THAN',MISC_NCMX
             WRITE(LU,*) 'SOME WAVES ARE NOT EXPECTED. THE FILE IS TO'
             WRITE(LU,*) 'BE ADJUSTED'
           ENDIF
@@ -204,9 +211,9 @@
         IF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
           ALLOCATE(PHCALHW(NWAVES),STAT=IERR)
         ENDIF
-        ALLOCATE(UPV(LEGOS_NCMX),STAT=IERR)
-        ALLOCATE(FF(LEGOS_NCMX),STAT=IERR)
-        ALLOCATE(OMEGA(LEGOS_NCMX),STAT=IERR)
+        ALLOCATE(UPV(MISC_NCMX),STAT=IERR)
+        ALLOCATE(FF(MISC_NCMX),STAT=IERR)
+        ALLOCATE(OMEGA(MISC_NCMX),STAT=IERR)
       ENDIF
 !
 !  COMPUTE THE FIRST AND LAST INDICES OF THE OPEN LIQUID BOUNDARY WITH TIDE TO PRESCRIBE
@@ -245,19 +252,19 @@
 !
         DO K = 1,NWAVES
           INDW(K) = 0
-          DO I = 1,LEGOS_NCMX
-            IF(NAMEWAVE(K).EQ.LEGOS_CONSTID(I)) THEN
+          DO I = 1,MISC_NCMX
+            IF(NAMEWAVE(K).EQ.MISC_CONSTID(I)) THEN
               INDW(K) = I
               EXIT
             ENDIF
           ENDDO
           IF(INDW(K).EQ.0) THEN
             IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'LEGOS : ATTENTION :' //
+              WRITE(LU,*) 'MISC : ATTENTION :' //
      &         'COMPOSANTE ID ',NAMEWAVE(K),' N''EST PAS PERMISE'
             ENDIF
             IF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'LEGOS : WARNING:' //
+              WRITE(LU,*) 'MISC : WARNING:' //
      &         'CONSTITUENT ID ',NAMEWAVE(K),' IS NOT ALLOWED'
             ENDIF
             CALL PLANTE(1)
@@ -284,7 +291,7 @@
           IF(ICALHW.EQ.0) ICALHW = NPTFRL/2
 !
 !  CALIBRATION WITH RESPECT TO HIGH WATER!!!
-!  PHASES FOR HEIGHTS ARE READ IN JMJ TIDAL FILE
+!  PHASES FOR HEIGHTS ARE READ IN TIDAL FILE
 !  EXCEPT M4: 2*PHM2 MOD 360 IS APPLIED
 ! --------------------------------------------------
 !
@@ -319,7 +326,7 @@
         IF(TIDALTYPE.EQ.1) THEN
 !
           CALL NODALUPV_SCHUREMAN(UPV,OMEGA,MARDAT,MARTIM)
-!  TEMPS-DT RATHER THAN TEMPS BECAUSE THE FIRST CALL TO BORD_TIDE_LEGOS
+!  TEMPS-DT RATHER THAN TEMPS BECAUSE THE FIRST CALL TO BORD_TIDE_MISC
 !  IS AT THE FIRST TIME STEP
           CALL NODALF_SCHUREMAN(FF,NODALCORR,TEMPS-DT,DEJA,
      &                          MARDAT,MARTIM)

@@ -5,7 +5,7 @@
      &(FWAVE,NODALCORR,TEMPS,DEJA,MARDAT,MARTIM)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   13/01/2012
+! TELEMAC2D   V7P0                                   08/01/2014
 !***********************************************************************
 !
 !brief    COMPUTES NODAL FACTORS F FROM SCHUREMAN FORMULAE
@@ -16,9 +16,15 @@
 !+        V6P2
 !+
 !
+!history  C-T PHAM (LNHE)
+!+        08/01/2014
+!+        V7P0
+!+   Adding 7 extra harmonic constituents, for Previmer database.
+!+
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEJA           |-->| LOGICAL FOR 1ST TIME STEP
-!| FWAVE          |<--| NODAL FACTOR FOR 47 WAVES
+!| FWAVE          |<--| NODAL FACTOR FOR 54 WAVES
 !| MARDAT         |-->| DATE (YEAR,MONTH,DAY)
 !| MARTIM         |-->| TIME (HOUR,MINUTE,SECOND)
 !| NODALCORR      |-->| OPTION FOR CALCULATION OF NODAL FACTOR CORRECTION
@@ -179,84 +185,98 @@
       FWAVE(7) = F78
 ! EPSILON2 ( = MNS2)    TAB 2A 
       FWAVE(8) = F78**2
-! J1       A24
+! TTA1     A28
       FWAVE(9) = F76
+! J1       A24
+      FWAVE(10) = F76
 ! K1       NOTE 2
-      FWAVE(10) = F227
+      FWAVE(11) = F227
 ! K2       NOTE 4
-      FWAVE(11) = F235
+      FWAVE(12) = F235
 ! KJ2      A49
-      FWAVE(12) = F79
+      FWAVE(13) = F79
+! KQ1      A32
+      FWAVE(14) = F77
 ! L2       NOTE 3
-      FWAVE(13) = F215
+      FWAVE(15) = F215
 ! LAMBDA2  A44
-      FWAVE(14) = F78
-! M1       NOTE 1
-      FWAVE(15) = F207
-! M2       A39
       FWAVE(16) = F78
+! M1       NOTE 1
+      FWAVE(17) = F207
+! M2       A39
+      FWAVE(18) = F78
 ! M4       TAB 2A
-      FWAVE(17) = F78**2
+      FWAVE(19) = F78**2
 ! M6       TAB 2A
-      FWAVE(18) = F78**3
+      FWAVE(20) = F78**3
 ! MF       A6
-      FWAVE(19) = F74
+      FWAVE(21) = F74
 ! MK3      TAB 2A
-      FWAVE(20) = F78*F227
+      FWAVE(22) = F78*F227
 ! MK4      TAB 2A
-      FWAVE(21) = F78*F235
+      FWAVE(23) = F78*F235
 ! MKS2     M2+K2-S2
-      FWAVE(22) = F78*F235
+      FWAVE(24) = F78*F235
 ! MM       A2
-      FWAVE(23) = F73
+      FWAVE(25) = F73
 ! MN4      TAB 2A
-      FWAVE(24) = F78**2
+      FWAVE(26) = F78**2
 ! MO3      M2+O1
-      FWAVE(25) = F78*F75
+      FWAVE(27) = F78*F75
 ! MP1      A29, NOT M2-P1
-      FWAVE(26) = F76
+      FWAVE(28) = F76
 ! MS4      TAB 2A
-      FWAVE(27) = F78 ! SCHUREMAN PROBABLY WRONG???
+      FWAVE(29) = F78 ! SCHUREMAN PROBABLY WRONG???
 ! MSK6     M2+S2+K2
-      FWAVE(28) = F78*F235
+      FWAVE(30) = F78*F235
 ! MSN2     M2+S2-N2
-      FWAVE(29) = F78**2
+      FWAVE(31) = F78**2
 ! MSN6     TAB 2A
-      FWAVE(30) = F78**2
+      FWAVE(32) = F78**2
 ! MSQM     A12
-      FWAVE(31) = F74
+      FWAVE(33) = F74
 ! MTM      A7
-      FWAVE(32) = F74
+      FWAVE(34) = F74
 ! MU2      A45
-      FWAVE(33) = F78
-! N2       A40
-      FWAVE(34) = F78
-! NU2      A43
       FWAVE(35) = F78
+! N2       A40
+      FWAVE(36) = F78
+! NU2      A43
+      FWAVE(37) = F78
 ! O1       A14
-      FWAVE(36) = F75
-! P1       B14
-      FWAVE(37) = 1.D0
-! Q1       A15
       FWAVE(38) = F75
-! R2       B41
-      FWAVE(39) = 1.D0
-! RHO1     A18
-      FWAVE(40) = F75
-! S2       B39
+! OO1      A31
+      FWAVE(39) = F77
+! P1       B14
+      FWAVE(40) = 1.D0
+! PI1      B15
       FWAVE(41) = 1.D0
+! Q1       A15
+      FWAVE(42) = F75
+! R2       B41
+      FWAVE(43) = 1.D0
+! RHO1     A18
+      FWAVE(44) = F75
+! S2       B39
+      FWAVE(45) = 1.D0
 ! S4       TAB 2A
-      FWAVE(42) = 1.D0
-! SIGMA1   A20
-      FWAVE(43) = F75
-! SK4      S2+K2
-      FWAVE(44) = F235
-! SN4      S2+N2
-      FWAVE(45) = F78
-! T2       B40
       FWAVE(46) = 1.D0
+! SIGMA1   A20
+      FWAVE(47) = F75
+! SK4      S2+K2
+      FWAVE(48) = F235
+! SN4      S2+N2
+      FWAVE(49) = F78
+! T2       B40
+      FWAVE(50) = 1.D0
+! PHI1     B31
+      FWAVE(51) = 1.D0
+! KI1      A27
+      FWAVE(52) = F76
+! PSI1     B24
+      FWAVE(53) = 1.D0
 ! Z0
-      FWAVE(47) = 1.D0
+      FWAVE(54) = 1.D0
 !
 !-----------------------------------------------------------------------
 !

@@ -95,6 +95,6 @@ MASS-LUMPING FOR VELOCITIES                         : 1.
 MASS-LUMPING FOR DIFFUSION                          : 1.
 VELOCITY PROFILES                                   : 1;1
 /
-/PARALLEL PROCESSORS                                 : 8
+PARALLEL PROCESSORS                                 : 8
 /&ETA
 &FIN
