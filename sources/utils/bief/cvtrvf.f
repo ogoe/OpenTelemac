@@ -47,19 +47,19 @@
 !+        V6P3
 !+   New call to CFLVF, for new monotonicity criterion.
 !
-!history  SARA PAVAN & J-M HERVOUET (EDF LAB, LNHE)
-!+        05/05/2014
-!+        V7P0
-!+   New predictor-corrector PSI scheme (OPTADV=2). Security coefficient
-!+   on maximum time step to avoid truncation errors that would give
-!+   negative values.
-!
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        16/05/2014
 !+        V7P0
 !+   Boundary conditions LIMTRA redone (they may have been done with
 !+   U.N in diffin.f, which is different from flbor here. Argument
 !+   VOLU2D added.
+!
+!history  SARA PAVAN & J-M HERVOUET (EDF LAB, LNHE)
+!+        03/10/2014
+!+        V7P0
+!+   New predictor-corrector PSI scheme (OPTADV=2). Security coefficient
+!+   on maximum time step to avoid truncation errors that would give
+!+   negative values.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -104,6 +104,16 @@
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| OPDADV         |-->| SCHEME OPTION FOR THE ADVECTION OF TRACERS
+!|                |   | WITH N SCHEME:
+!|                |   |  1: EXPLICIT   
+!|                |   |  2: IMPLICIT
+!|                |   |  3: PREDICTOR-CORRECTOR 2ND ORDER IN TIME (MONOTONICITY NOT PROVED)
+!|                |   |  4: IMPLICIT PREDICTOR EXPLICIT CORRECTOR 2ND ORDER IN TIME
+!|                |   | WITH PSI SCHEME:
+!|                |   |  1: EXPLICIT   
+!|                |   |  2: PREDICTOR-CORRECTOR 1ST ORDER IN TIME
+!|                |   |  3: PREDICTOR-CORRECTOR 2ND ORDER IN TIME (MONOTONICITY NOT PROVED)
+!|                |   |  4: IMPLICIT PREDICTOR EXPLICIT CORRECTOR 2ND ORDER IN TIME
 !| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
 !| OPTSOU         |-->| TYPE OF SOURCES
 !|                |   | 1: NORMAL
@@ -168,17 +178,19 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELMF,I,IOPT1,IOPT2,N
+      INTEGER IELMF,I,IOPT1,IOPT2,N,VARIANT,IELEM,I1,I2,I3,ITER
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION DT_REMAIN,DDT,TDT,SECU
+      DOUBLE PRECISION DT_REMAIN,DDT,TDT,SECU,COEMIN,COESOU
 !
       CHARACTER(LEN=16) FORMUL
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVE_HT,SAVE_HNT
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: FXMAT,FXMATPAR
+      DOUBLE PRECISION, POINTER, DIMENSION(:) :: FMIN,FMAX
+      TYPE(BIEF_OBJ), POINTER                 :: FLBOUND
 !
-      DOUBLE PRECISION P_DMIN
+      DOUBLE PRECISION P_DMIN,C
       EXTERNAL         P_DMIN
 !
       INTEGER NITMAX,NIT
@@ -233,10 +245,13 @@
 !
 !     IF NO FLBOR IS GIVEN, IT IS COMPUTED HERE IN T3
 !
-      IF(.NOT.YAFLBOR) THEN
+      IF(YAFLBOR) THEN
+        FLBOUND => FLBOR
+      ELSE
 !       MASK=5 FOR NON NEUMANN BOUNDARIES IN DIFFIN
         CALL VECTOR(T3,'=','FLUBDF          ',1,1.D0,HPROP,HPROP,HPROP,
      &              UCONV,VCONV,VCONV,MESH,.TRUE.,MASKTR%ADR(5)%P)
+        FLBOUND => T3
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -252,17 +267,10 @@
       CALL CPSTVC(HN,T7)
 !     JUST IN CASE INTERNAL POINTS HAVE NON INITIALISED VALUES
       CALL OS('X=0     ',X=T7)
-      IF(YAFLBOR) THEN
-        DO I=1,MESH%NPTFR
-          N=MESH%NBOR%I(I)
-          T7%R(N)=FLBOR%R(I)
-        ENDDO
-      ELSE
-        DO I=1,MESH%NPTFR
-          N=MESH%NBOR%I(I)
-          T7%R(N)=T3%R(I)
-        ENDDO
-      ENDIF
+      DO I=1,MESH%NPTFR
+        N=MESH%NBOR%I(I)
+        T7%R(N)=FLBOUND%R(I)
+      ENDDO
       IF(NCSIZE.GT.1) CALL PARCOM(T7,2,MESH)
       DO I=1,MESH%NPTFR
         N=MESH%NBOR%I(I)
@@ -280,16 +288,13 @@
 !
 !     INITIALISES THE TRACER FLUX AT THE BOUNDARY
 !
+
       DO I=1,MESH%NPTFR
         IF(LIMTRA(I).EQ.KDIR) THEN
 !         FLBOR IS NOT ASSEMBLED IN PARALLEL MODE
-          IF(YAFLBOR) THEN
-            FLBORTRA%R(I)=FLBOR%R(I)*FBOR%R(I)
-          ELSE
-            FLBORTRA%R(I)=T3%R(I)*FBOR%R(I)
-          ENDIF
+          FLBORTRA%R(I)=FLBOUND%R(I)*FBOR%R(I)
         ELSE
-!         FOR KDDL, WILL BE DONE IN TVF
+!         FOR KDDL, WILL BE DONE IN TVF OR TVF_2 OR TVF_IMP
           FLBORTRA%R(I)=0.D0
         ENDIF
       ENDDO
@@ -311,7 +316,7 @@
 !
 !     T4 WILL BE F PROGRESSIVELY UPDATED
 !     T5 WILL BE THE DEPTH AT THE END OF THE SUB-TIMESTEP
-!     (INITIALISED HERE TO CALL CFLVF)
+!     (INITIALISED HERE TO CALL  CFLVF)
 !
       DO I=1,HN%DIM1
         T4%R(I)=FN%R(I)
@@ -336,7 +341,8 @@
       IF(NIT.EQ.1.OR.IOPT1.EQ.3) THEN
         CALL FLUX_EF_VF(FXMAT,MESH%W%R,MESH%NSEG,MESH%NELEM,
      &                  MESH%ELTSEG%I,MESH%ORISEG%I,
-     &                  MESH%IKLE%I,.TRUE.,IOPT1,T4)
+     &                  MESH%IKLE%I,.TRUE.,2    ,T4)
+!                                          IOPT1 HERE FORCED TO N SCHEME
 !       CANCELS FLUXES TO AND FROM MASKED POINTS
         IF(MSK) THEN
           CALL FLUX_MASK(FXMAT,MESH%NSEG,
@@ -359,11 +365,10 @@
 !
 !     IN CFLVF, T7 WILL BE FLBOR WITH A DIMENSION NPOIN
       CALL OS('X=0     ',X=T7)
-      IF(YAFLBOR) THEN
-        CALL OSDB('X=Y     ',T7,FLBOR,FLBOR,0.D0,MESH)
-      ELSE
-        CALL OSDB('X=Y     ',T7,T3,T3,0.D0,MESH)
-      ENDIF
+      DO I=1,MESH%NPTFR
+        N=MESH%NBOR%I(I)
+        T7%R(N)=FLBOUND%R(I)
+      ENDDO
       IF(NCSIZE.GT.1) CALL PARCOM(T7,2,MESH)
 !
 !     MASKS FLBOR IF(MSK)
@@ -373,27 +378,60 @@
 !     COMPUTES THE MAXIMUM TIMESTEP ENSURING MONOTONICITY
 !     ACCORDING TO THEORY
 !
-      IF(OPTADV.EQ.2) THEN
-        SECU=0.5D0
-      ELSE
+      COESOU=0.D0
+      COEMIN=0.D0
+      SECU=0.99D0
+!
+      IF(IOPT1.EQ.3.AND.OPTADV.EQ.2) THEN
         SECU=1.D0
+        COEMIN=-1.D0
+        COESOU=COEMIN
       ENDIF
 !
-!     NOW SECURITY TO AVOID SLIGHTLY NEGATIVE VALUES DUE
-!     TO TRUNCATION ERRORS
-!
-      SECU=SECU*0.99D0
-!
       CALL CFLVF(DDT,T5%R,HT%R,FXMAT,FXMATPAR,
-!                                   FLBOR%R(NPOIN)
+!                               FLBOR%R(NPOIN)
      &           V2DPAR%R,DT_REMAIN,T7%R   ,SMH%R,
      &           YASMH,T8,MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
      &           MESH%GLOSEG%I,MESH%GLOSEG%DIM1,MESH,MSK,MASKPT,
      &           RAIN,PLUIE%R,T4%R,MESH%NELEM,MESH%IKLE%I,
      &           LIMTRA,KDIR,FBOR%R,FSCEXP%R,TRAIN,MESH%NBOR%I,
-     &           T2,T6,SECU)
+     &           T2,T6,SECU,COEMIN,COESOU)
+!
+!     NOW RECOMPUTING THE PSI FLUXES (THE N FLUXES HAVE BEEN
+!     USED FOR THE STABILITY CRITERION).
+!
+      IF(IOPT1.EQ.3) THEN
+        CALL FLUX_EF_VF(FXMAT,MESH%W%R,MESH%NSEG,MESH%NELEM,
+     &                  MESH%ELTSEG%I,MESH%ORISEG%I,
+     &                  MESH%IKLE%I,.TRUE.,IOPT1,T4)
+!       CANCELS FLUXES TO AND FROM MASKED POINTS
+        IF(MSK) THEN
+          CALL FLUX_MASK(FXMAT,MESH%NSEG,
+     &                   MESH%GLOSEG%I,MESH%GLOSEG%DIM1,MASKPT%R)
+        ENDIF
+!       ASSEMBLES THE FLUXES AT INTERFACES IN PARALLEL MODE, THIS
+!       IS FOR UPWINDING (STORED IN SECOND DIMENSION OF MESH%MSEG)
+        IF(NCSIZE.GT.1) THEN
+          CALL OV('X=Y     ',FXMATPAR,FXMAT,FXMAT,0.D0,MESH%NSEG)
+          CALL PARCOM2_SEG(FXMATPAR,FXMATPAR,FXMATPAR,
+     &                     MESH%NSEG,1,2,1,MESH,1,11)
+        ENDIF
+      ENDIF
+!
 !
       IF(NCSIZE.GT.1) DDT=P_DMIN(DDT)
+      DDT=MIN(DDT,DT_REMAIN) 
+!
+!     T2 WILL TAKE THE SUCCESSIVE VALUES OF H
+!     AT THE BEGINNING OF THE SUB-TIMESTEP
+!     WARNING: T2 ALSO USED WITH IOPT2=1, BUT SO FAR PREDICTOR-CORRECTOR
+!              NOT USED WITH THIS OPTION
+!
+      IF(IOPT1.EQ.3.AND.OPTADV.EQ.2) THEN
+        DO I=1,HN%DIM1
+          T2%R(I)=HNT%R(I)+TDT*(HT%R(I)-HNT%R(I))/DT
+        ENDDO
+      ENDIF
 !
       TDT=TDT+DDT
 !
@@ -416,23 +454,16 @@
 !  FINAL RESOLUTION OR PREDICTOR STEP
 !------------------------------------
 !
-      IF(YAFLBOR) THEN
-        CALL TRACVF(F,FN,FSCEXP,HT,HNT,FXMAT,FXMATPAR,V2DPAR,UNSV2D,
-     &              DDT,FLBOR,FBOR,SMH,YASMH,T1,T2,T4,T5,T6,T7,T8,
-     &              MESH,LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,
-     &              DT,RAIN,PLUIE,TRAIN)
-      ELSE
-        CALL TRACVF(F,FN,FSCEXP,HT,HNT,FXMAT,FXMATPAR,V2DPAR,UNSV2D,
-     &              DDT,T3,FBOR,SMH,YASMH,T1,T2,T4,T5,T6,T7,T8,MESH,
-     &              LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,DT,
-     &              RAIN,PLUIE,TRAIN)
-      ENDIF
+      CALL TRACVF(F,FN,FSCEXP,HT,HNT,FXMAT,FXMATPAR,V2DPAR,UNSV2D,
+     &            DDT,FLBOUND,FBOR,SMH,YASMH,T1,T2,T4,T5,T6,T7,T8,
+     &            MESH,LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,
+     &            DT,RAIN,PLUIE,TRAIN)
 !
 !--------------------------------
 !  CORRECTOR STEP FOR PSI SCHEME
 !--------------------------------
 !
-      IF(OPTADV.EQ.2)THEN
+      IF(IOPT1.EQ.3.AND.OPTADV.EQ.2) THEN
 !
         CALL FLUX_EF_VF_2(MESH%W%R,MESH%NELEM,
      &                    MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
@@ -442,21 +473,13 @@
 !
 !       COMPUTE THE SECOND ORDER CORRECTION FORM
 !
-        IF(YAFLBOR) THEN
-          CALL TVF_2(F%R,FN%R,T4%R,UNSV2D%R,DDT,
-     &           FLBOR%R,T7%R,FBOR%R,SMH%R,YASMH,FSCEXP%R,
-     &           MESH%NPOIN,MESH%NPTFR,MESH%NBOR%I,LIMTRA,KDIR,KDDL,
-     &           OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,RAIN,
-     &           PLUIE%R,TRAIN,T8%R)
-!                              FI_I
-        ELSE
-          CALL TVF_2(F%R,FN%R,T4%R,UNSV2D%R,DDT,
-     &           T3%R,T7%R,FBOR%R,SMH%R,YASMH,FSCEXP%R,
-     &           MESH%NPOIN,MESH%NPTFR,MESH%NBOR%I,LIMTRA,KDIR,KDDL,
-     &           OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,RAIN,
-     &           PLUIE%R,TRAIN,T8%R)
-!                              FI_I
-        ENDIF
+        CALL TVF_2(F%R,FN%R,T4%R,UNSV2D%R,DDT,
+     &             FLBOUND%R,T7%R,FBOR%R,SMH%R,YASMH,FSCEXP%R,
+     &             MESH%NPOIN,MESH%NPTFR,MESH%NBOR%I,
+     &             LIMTRA,KDIR,KDDL,
+     &             OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,RAIN,
+     &             PLUIE%R,TRAIN,T8%R)
+!                                FI_I
 !
       ENDIF
 !
@@ -595,3 +618,4 @@
 !
       RETURN
       END
+

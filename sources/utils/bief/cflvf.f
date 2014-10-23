@@ -4,10 +4,11 @@
 !
      &(DTMAX,HSTART,H,FXMAT,FXMATPAR,MAS,DT,FXBOR,SMH,YASMH,TAB1,NSEG,
      & NPOIN,NPTFR,GLOSEG,SIZGLO,MESH,MSK,MASKPT,RAIN,PLUIE,FC,
-     & NELEM,IKLE,LIMTRA,KDIR,FBOR,FSCEXP,TRAIN,NBOR,MINFC,MAXFC,SECU)
+     & NELEM,IKLE,LIMTRA,KDIR,FBOR,FSCEXP,TRAIN,NBOR,MINFC,MAXFC,
+     & SECU,COEMIN,COESOU)
 !
 !***********************************************************************
-! BIEF   V7P0                                   21/08/2010
+! BIEF   V7P0
 !***********************************************************************
 !
 !brief    COMPUTES THE MAXIMUM TIMESTEP THAT ENABLES
@@ -57,17 +58,25 @@
 !+   New stability criterion based on local min and max of function.
 !+   See hardcoded option OPT.
 !
-!history  S. PAVAN & J-M HERVOUET (EDF R&D, LNHE)
+!history  S. PAVAN & J-M HERVOUET (EDF LAB, LNHE)
 !+        24/10/2013
 !+        V7P0
 !+   Old stability criterion simplified.
 !
-!history  S. PAVAN & J-M HERVOUET (EDF R&D, LNHE)
+!history  S. PAVAN & J-M HERVOUET (EDF LAB, LNHE)
 !+        29/04/2014
 !+        V7P0
 !+   Security coefficient added (for predictor-corrector scheme).
 !
+!history  S. PAVAN & J-M HERVOUET (EDF LAB, LNHE)
+!+        13/10/2014
+!+        V7P0
+!+   More general formula with parameters COEMIN and COESOU to account
+!+   for predictor-corrector scheme.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| COEMIN         |-->| COEFFICIENT IN THE STABILITY CONDITION
+!| COESOU         |-->| COEFFICIENT IN THE STABILITY CONDITION
 !| DT             |-->| TIME STEP
 !| DTMAX          |<--| MAXIMUM TIME STEP FOR STABILITY
 !| FXBOR          |-->| BOUNDARY FLUXES
@@ -113,6 +122,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: FC(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FSCEXP(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FBOR(NPTFR),TRAIN,SECU
+      DOUBLE PRECISION, INTENT(IN)    :: COEMIN,COESOU
       LOGICAL, INTENT(IN)             :: YASMH,MSK,RAIN
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TAB1,MINFC,MAXFC
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
@@ -124,8 +134,7 @@
       DOUBLE PRECISION DENOM,A,B,DIFF,DI,MINEL,MAXEL
 !
 !     HARDCODED OPTION (1: CLASSICAL 2: BASED ON LOCAL MIN AND MAX
-!                       3: MIN AND MAX GIVEN)
-!
+!                                    3: MIN AND MAX GIVEN)
       OPT=1
 !
 !-----------------------------------------------------------------------
@@ -221,9 +230,18 @@
 !
         DO I = 1,NSEG
           IF(FXMATPAR(I).GT.0.D0) THEN
+!           FXMAT(I) POSITIVE
+!           MAX(...,0.D0) FOR 1
             TAB1%R(GLOSEG(I,1)) = TAB1%R(GLOSEG(I,1)) + FXMAT(I)
+!           MIN(...,0.D0) FOR 2
+            TAB1%R(GLOSEG(I,2)) = 
+     &      TAB1%R(GLOSEG(I,2)) - COEMIN * FXMAT(I)
           ELSE
+!           - FXMAT(I) POSITIVE
             TAB1%R(GLOSEG(I,2)) = TAB1%R(GLOSEG(I,2)) - FXMAT(I)
+!           MIN(...,0.D0) FOR 1
+            TAB1%R(GLOSEG(I,1)) = 
+     &      TAB1%R(GLOSEG(I,1)) + COEMIN * FXMAT(I)
           ENDIF
         ENDDO
 !
@@ -288,27 +306,33 @@
           DO I = 1,NPOIN
             DENOM=TAB1%R(I)+MAX(FXBOR(I),0.D0)
      &                     -MIN(SMH(I)+PLUIE(I),0.D0)
+     &                     +COESOU*(MIN(FXBOR(I),0.D0)
+     &                             -MAX(SMH(I)+PLUIE(I),0.D0))
             IF(DENOM.GT.1.D-20) THEN
               DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
             ENDIF 
           ENDDO
         ELSEIF(YASMH) THEN
           DO I = 1,NPOIN
-            DENOM=TAB1%R(I)+MAX(FXBOR(I),0.D0)-MIN(SMH(I),0.D0)
+            DENOM=TAB1%R(I)+        MAX(FXBOR(I),0.D0)-MIN(SMH(I),0.D0)
+     &                     +COESOU*(MIN(FXBOR(I),0.D0)-MAX(SMH(I),0.D0))
             IF(DENOM.GT.1.D-20) THEN
               DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
             ENDIF 
           ENDDO
         ELSEIF(RAIN) THEN
           DO I = 1,NPOIN
-            DENOM=TAB1%R(I)+MAX(FXBOR(I),0.D0)-MIN(PLUIE(I),0.D0)
+            DENOM=TAB1%R(I)
+     &                  +MAX(FXBOR(I),0.D0)-MIN(PLUIE(I),0.D0)
+     &          +COESOU*(MIN(FXBOR(I),0.D0)-MAX(PLUIE(I),0.D0))
             IF(DENOM.GT.1.D-20) THEN
               DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
             ENDIF
           ENDDO
         ELSE
           DO I = 1,NPOIN
-            DENOM=TAB1%R(I)+MAX(FXBOR(I),0.D0)
+            DENOM=TAB1%R(I)+       MAX(FXBOR(I),0.D0)
+     &                     +COESOU*MIN(FXBOR(I),0.D0)
             IF(DENOM.GT.1.D-20) THEN
               DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
             ENDIF
@@ -342,3 +366,4 @@
 !
       RETURN
       END
+
