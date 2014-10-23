@@ -39,6 +39,11 @@
        code="telemac2d" target="t2d_tide-jmj_type.cas" 
        title="tide parallel mode type" 
    />    
+   <action xref="5" rank="3" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_tide-NEA_prior_real.cas" 
+       title="tide parallel mode real NEA prior" 
+   />    
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  
