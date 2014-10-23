@@ -3,7 +3,7 @@
 !                    *****************
 !
      & (DELTAR, TA, BETAC,T0AC,RHO,RHO0,RHOS,DENLAW,SEDI,NTRAC,
-     &  IND_T,IND_S)
+     &  IND_T,IND_S, MIXTE)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P3                                   21/08/2010
@@ -44,12 +44,18 @@
 !+   Comments changed, RHO0 had two meanings, now RHOREF and RHO0.
 !+   Name of corresponding keyword changed.
 !
+!history  G. ANTOINE & M. JODEAU & J.M. HERVOUET (EDF - LNHE)
+!+        13/10/2014
+!+        V7P0
+!+   New developments in sediment for mixed sediment transport
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BETAC          |-->| -(1/RHO)*(DRHO/DT) FOR TRACERS WHEN CONSTANT
 !| DELTAR         |<->| (RHO-RHO0)/RHO0
 !| DENLAW         |-->| CHOICE OF DENSITY LAW (SEE ABOVE)
 !| IND_S          |-->| INDEX FOR SALINITY
 !| IND_T          |-->| INDEX FOR TEMPERATURE
+!| MIXTE          |-->| LOGICAL, MIXED SEDIMENTS OR NOT
 !| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
 !| RHO            |<->| WATER DENSITY
 !| RHO0           |-->| AVERAGE WATER DENSITY IN THE DOMAIN
@@ -60,6 +66,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_TELEMAC3D, EX_DRSURR => DRSURR
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -72,7 +79,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT) :: DELTAR
       TYPE(BIEF_OBJ), INTENT(IN)    :: TA
       TYPE(BIEF_OBJ), INTENT(INOUT) :: RHO
-      LOGICAL, INTENT(IN)           :: SEDI
+      LOGICAL, INTENT(IN)           :: SEDI, MIXTE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -146,7 +153,11 @@
         CALL OS( 'X=0     ' , X=DELTAR )
 !
         IF(SEDI) THEN
-          NTRACM1=NTRAC-1
+          IF(MIXTE) THEN
+            NTRACM1=NTRAC-2
+          ELSE
+            NTRACM1=NTRAC-1
+          ENDIF
         ELSE
           NTRACM1=NTRAC
         ENDIF
@@ -181,10 +192,15 @@
 !     ADDS UP THE SEDIMENT EFFECT
 !
       IF(SEDI) THEN
-!
-        CALL OS('X=X+CY  ',X=DELTAR,Y=TA%ADR(NTRAC)%P,
+        IF(MIXTE) THEN
+          CALL OS('X=X+CY  ',X=DELTAR,Y=TA%ADR(NTRAC-1)%P,
+     &                       C=(RHOS-RHO0)/(RHO0*RHOS))        
+          CALL OS('X=X+CY  ',X=DELTAR,Y=TA%ADR(NTRAC)%P,
      &                       C=(RHOS-RHO0)/(RHO0*RHOS))
-!
+        ELSE
+          CALL OS('X=X+CY  ',X=DELTAR,Y=TA%ADR(NTRAC)%P,
+     &                       C=(RHOS-RHO0)/(RHO0*RHOS))
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------

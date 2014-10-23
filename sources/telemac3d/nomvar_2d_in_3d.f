@@ -40,7 +40,7 @@
 !| TEXTPR         |<->| SEE ABOVE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_TELEMAC3D, ONLY: NCOUCH, NLAYMAX
+      USE DECLARATIONS_TELEMAC3D, ONLY: NCOUCH, NLAYMAX, MIXTE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -110,7 +110,6 @@
       TEXTE (34) = 'SOLID DIS IN Y  M2/S            '
       TEXTE (35) = 'HIGH WATER MARK M               '
       TEXTE (36) = 'HIGH WATER TIME S               '
-! CV
       TEXTE (37) = 'BED EVOLUTION   M               '
 !
 ! TEXTPR IS USED TO READ PREVIOUS COMPUTATION FILES.
@@ -339,7 +338,7 @@
       IF(NEXT+NTRAC-1.GT.100) THEN
         IF(LNG.EQ.1) WRITE(LU,98)
 98      FORMAT(1X,'NOMVAR_2D_IN_3D : MAXVAR=100 TROP PETIT')
-        IF(LNG.EQ.1) WRITE(LU,99)
+        IF(LNG.EQ.2) WRITE(LU,99)
 99      FORMAT(1X,'NOMVAR_2D_IN_3D : MAXVAR=100 TOO SMALL')
       ENDIF
 !
@@ -371,6 +370,27 @@
         MNEMO(NEXT+I-1) = MNEMO_ES(I)
 !
       ENDDO
+!
+      NEXT = NEXT + NCOUCH
+!       
+      IF(MIXTE) THEN 
+!       PERCENTAGE OF MUD IN THE BED
+        IF(LNG.EQ.1) THEN
+          TEXTE(NEXT) = 'POURCENTAGE VASE                '
+        ENDIF    
+        IF(LNG.EQ.2) THEN
+          TEXTE(NEXT) = 'MUD PERCENTAGE                  '
+        ENDIF
+        MNEMO(NEXT) = 'PVSCO   '
+!       PERCENTAGE OF SAND IN THE BED
+        IF(LNG.EQ.1) THEN
+          TEXTE(NEXT+1) = 'POURCENT. SABLE                 ' 
+        ENDIF    
+        IF(LNG.EQ.2) THEN
+          TEXTE(NEXT+1) = 'SAND PERCENTAGE                 '
+        ENDIF 
+        MNEMO(NEXT+1) = 'PVSNCO  '
+      ENDIF
 
       DO I=38,100
         TEXTPR(I)=TEXTE(I)

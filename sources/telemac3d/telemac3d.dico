@@ -1957,7 +1957,7 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'NAX="viscosites pour les tr. suivant l''axe des x (m2/s)"';
 'NAY="viscosites pour les tr. suivant l''axe des y (m2/s)"';
 'NAZ="viscosites pour les tr. suivant l''axe des z (m2/s)"';
-	'RI="nombre de Richardson en cas de modele de longueur de melange"';
+'RI="nombre de Richardson en cas de modele de longueur de melange"';
 'K="energie turbulente du modele k-epsilon (J/kg)"';
 'EPS="dissipation de l''energie turbulente (W/kg)"';
 'DP="pression dynamique (multipliee par DT/RHO)"';

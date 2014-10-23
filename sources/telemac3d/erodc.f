@@ -3,7 +3,8 @@
 !                    ****************
 !
      &( CONC  , EPAI   , FLUER  , TOB    , DENSI  ,
-     &  MPART , DT     , NPOIN2 , NCOUCH ,TOCE,HN,HMIN)
+     &  MPART , DT     , NPOIN2 , NCOUCH ,TOCE, HN, HMIN, 
+     &  MIXTE, EPAICO)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                   21/08/2010
@@ -45,22 +46,32 @@
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
 !
+!history  G. ANTOINE & M. JODEAU & J.M. HERVOUET (EDF - LNHE)
+!+        13/10/2014
+!+        V7P0
+!+   New developments in sediment for mixed sediment transport
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CONC           |-->| CONCENTRATION OF BED LAYER
 !| DENSI          |-->| FLUID DENSITY
 !| DT             |-->| TIME STEP
 !| EPAI           |<->| THICKNESS OF SOLID BED LAYER
 !|                |   | (EPAI=DZ/(1+IVIDE), DZ total bed thickness)
+!| EPAICO         |-->| THICKNESS OF COHESIVE SUB-LAYER
 !| FLUER          |<->| EROSION  FLUX
+!| HN             |-->| DEPTH AT TIME N
+!| HMIN           |-->| MINIMAL VALUE FOR DEPTH
+!| MIXTE          |-->| LOGICAL, MIXED SEDIMENTS OR NOT
 !| MPART          |-->| EMPIRICAL COEFFICIENT (PARTHENIADES)
 !| NCOUCH         |-->| NUMBER OF LAYERS WITHIN THE BED
 !|                |   | (GIBSON MODEL)
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| TOB            |-->| BOTTOM FRICTION
+!| TOCE           |-->| CRITICAL EROSION SHEAR STRESS 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-!     
+      USE INTERFACE_TELEMAC3D, EX_ERODC => ERODC
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -72,9 +83,10 @@
       DOUBLE PRECISION, INTENT(IN)    :: CONC(NPOIN2,NCOUCH), HN(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: TOCE(NPOIN2,NCOUCH)
       DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPOIN2,NCOUCH)
+      DOUBLE PRECISION, INTENT(IN)    :: EPAICO(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: FLUER(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: TOB(NPOIN2),DENSI(NPOIN2)
-!
+      LOGICAL, INTENT(IN)             :: MIXTE
       DOUBLE PRECISION, INTENT(IN)    :: MPART, DT, HMIN
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -115,6 +127,50 @@
 !CV
 !     ---- TEMPS:TIME COUNTER FOR EROSION ----
 !
+      IF(MIXTE) THEN 
+
+        DO IPOIN=1,NPOIN2
+!            
+        FLUER(IPOIN) = 0.D0
+        IF(HN(IPOIN).LT.HMIN) GOTO 50
+!
+! initialisation
+          TEMPS=DT
+          QERODE=0.D0
+!
+            IF (TEMPS.LE.1.D-12) GO TO 40
+!
+!     ---- EROSION OF TOP LAYER IF TOB > CRITICAL SHEAR STRESS ----
+
+            IF (TOB(IPOIN).GT.TOCE(IPOIN,1)) THEN
+!
+              FLUER_LOC=MPART*((TOB(IPOIN)/
+     &        MAX(TOCE(IPOIN,1),1.D-10))-1.D0)
+              QS=CONC(IPOIN,1)*EPAICO(IPOIN)
+!CV ...
+!    ---- LAYER THICKNESS AFTER EROSION ----
+!
+!            EPAI(IC,IPOIN)=MAX(0.D0,EPAI(IC,IPOIN)-
+!     &                             (FLUER(IPOIN)*TEMPS/CONC(IC)))
+!
+! ...CV : done in fonvas
+!
+              QS=MIN(FLUER_LOC*TEMPS,CONC(IPOIN,1)*EPAICO(IPOIN))
+              QERODE=QERODE+QS
+              TEMPS= TEMPS-(QS/MAX(FLUER_LOC,1.D-10))
+
+            ENDIF
+!
+40      CONTINUE
+!     -----END OF THE EROSION STEP-----
+!
+        FLUER(IPOIN)=QERODE/DT
+!
+50      CONTINUE
+      ENDDO
+
+      ELSE
+
       DO IPOIN=1,NPOIN2
 !            
         FLUER(IPOIN) = 0.D0
@@ -132,7 +188,8 @@
 
             IF (TOB(IPOIN).GT.TOCE(IPOIN,IC)) THEN
 !
-              FLUER_LOC=MPART*((TOB(IPOIN)/TOCE(IPOIN,IC))-1.D0)
+              FLUER_LOC=MPART*((TOB(IPOIN)
+     &        /MAX(TOCE(IPOIN,IC),1.D-10))-1.D0)
               QS=CONC(IPOIN,IC)*EPAI(IPOIN,IC)
 !CV ...
 !    ---- LAYER THICKNESS AFTER EROSION ----
@@ -160,6 +217,8 @@
 30      CONTINUE
 !
       ENDDO
+
+      ENDIF
 !     
       RETURN
       END

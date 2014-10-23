@@ -2,12 +2,14 @@
                      SUBROUTINE FONVAS
 !                    *****************
 !
-     &(IVIDE  , EPAI   , CONC  , TREST  , TEMP   , HDEP  ,
-     & FLUDP  , FLUDPT , FLUER , ZF     , TA     , WC    , TRA01 ,
-     & TRA02  , TRA03  , NPOIN2, NPOIN3 , NPFMAX , NCOUCH,
-     & NPF    , LT     , DT    , DTC    , GRAV   , RHOS  ,
-     & CFMAX  , TASSE  , ITASS , 
-     & ZF_S   , ESOMT  , VOLU2D, MASDEP , SETDEP , ZR)
+     &(IVIDE   , EPAI   , CONC   , TREST , TEMP   , HDEP   ,
+     & FLUDP   , FLUDPT , FLUER  , ZF    , TA     , WC     ,
+     & TRA01   , TRA02  , TRA03  , NPOIN2, NPOIN3 , NPFMAX ,
+     & NCOUCH  , NPF    , LT     , DT    , DTC    , GRAV   ,
+     & RHOS    , CFMAX  , TASSE  , ITASS , ZF_S   , ESOMT  ,
+     & VOLU2D  , MASDEP , SETDEP , ZR    , TS     , FLUDPTC,
+     & FLUDPTNC, FLUERC , FLUERNC, MIXTE , FLUDPC , FLUDPNC,
+     & PVSCO   , PVSNCO , CFDEP  , EPAICO, EPAINCO)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                   21/08/2010
@@ -58,6 +60,11 @@
 !+   ZF=ZR+HDEP, not ZF=ZF+evolution, otherwise we find cases where
 !+   ZF<ZR, due to truncation errors.
 !
+!history  G. ANTOINE & M. JODEAU & J.M. HERVOUET (EDF - LNHE)
+!+        13/10/2014
+!+        V7P0
+!+   New developments in sediment for mixed sediment transport
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CFDEP          |-->| CONCENTRATION OF MUD DEPOSIT (G/L)
 !| CFMAX          |<->| CONCENTRATION OF CONSOLIDATED MUD (G/L)
@@ -67,15 +74,26 @@
 !| DTC            |-->| TIME STEP FOR CONSOLIDATION PHENOMENON
 !| EPAI           |<->| THICKNESS OF SOLID FRACTION OF THE BED LAYER
 !|                |   | (EPAI=DZ/(1+IVIDE), DZ BED LAYER THICKNESS
-!| EPAI0          |<->| REFERENCE THICKNESS TP CREATE NEW ELEMENTS
-!| SETDEP         |-->| CHOICE OF ADVECTION SCHEME FOR VERTICAL SETTLING
-!| GIBSON         |-->| LOGICAL FOR GIBSON SETTLING MODEL
+!| EPAICO         |<->| THICKNESS OF COHESIVE SUB-LAYER
+!| EPAINCO        |<->| THICKNESS OF NON-COHESIVE SUB-LAYER
+!| ESOMT          |<->| CUMULATED BED EVOLUTION
+!| FLUDP          |<->| DEPOSITION FLUX
+!| FLUDPC         |<->| DEPOSITION FLUX FOR COHESIVE SEDIMENT IN 2D
+!| FLUDPNC        |<->| DEPOSITION FLUX FOR NON-COHESIVE SEDIMENT IN 2D
+!| FLUDPT         |<--| IMPLICIT DEPOSITION FLUX
+!| FLUDPTC        |<--| IMPLICIT DEPOSITION FLUX FOR COHESIVE SEDIMENT 
+!| FLUDPTNC       |<--| IMPLICIT DEPOSITION FLUX FOR NON-COHESIVE SEDIMENT
+!| FLUER          |<--| EROSION FLUX FOR POINTS IN 2D
+!| FLUERC         |<--| EROSION FLUX FOR COHESIVE SEDIMENT IN 2D
+!| FLUERNC        |<--| EROSION FLUX FOR NON-COHESIVE SEDIMENT IN 2D
 !| GRAV           |-->| GRAVITY ACCELERATION
 !| HDEP           |<->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
 !| IVIDE          |<->| VOID RATIO
 !|                |   | (GIBSON MODEL ONLY)
+!| ITASS          |-->| INDEX OF MODEL CHOICE
 !| LT             |-->| CURRENT TIME STEP NUMBER
 !| MASDEP         |<->| DEPOSITED MASS
+!| MIXTE          |-->| LOGICAL, MIXED SEDIMENTS OR NOT
 !| NCOUCH         |-->| NUMBER OF LAYERS WITHIN THE BED
 !|                |   | (GIBSON MULTILAYER SETTLING MODEL)
 !| NPF            |-->| NUMBER OF POINTS OF THE BOTTOM ON ONE VERTICAL
@@ -83,12 +101,15 @@
 !|                |   | DISCRETIZATION OF MUD BED (GIBSON MODEL)
 !| NPOIN2         |-->| NUMBER OF POINTS  (2D MESH)
 !| NPOIN3         |-->| NUMBER OF POINTS  (3D MESH)
-!| PDEPOT         |<->| PROBABILITY OF DEPOSIT
+!| PVSCO          |<->| PERCENTAGE OF MUD
+!| PVSNCO         |<->| PERCENTAGE OF SAND 
 !| RHOS           |-->| SEDIMENT DENSITY
+!| SETDEP         |-->| CHOICE OF ADVECTION SCHEME FOR VERTICAL SETTLING
 !| TA             |-->| ACTIVE TRACOR
 !| TASSE          |-->| MULTILAYER SETTLING MODEL LOGICAL
 !| TEMP           |<->| TIME COUNTER FOR CONSOLIDATION MODEL
 !|                |   | (MULTILAYER MODEL)
+!| TS             |-->| SAND CONCENTRATION
 !| TRA01          |<->| WORK ARRAY
 !| TRA02          |<->| WORK ARRAY
 !| TRA03          |<->| WORK ARRAY
@@ -97,6 +118,7 @@
 !| VOLU2D         |-->|  INTEGRAL OF TEST FUNCTIONS IN 2D (SURFACE OF ELEMENTS)  
 !| WC             |-->| SETTLING VELOCITY
 !| ZF             |<->| BOTTOM ELEVATION
+!| ZF_S           |<->| BED EVOLUTION
 !| ZR             |-->| RIGID BED LEVEL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -106,6 +128,8 @@
 !
       IMPLICIT NONE
 !
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) ::  LT,NPOIN2,NPOIN3
@@ -117,22 +141,29 @@
       DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPOIN2,NCOUCH)
+      DOUBLE PRECISION, INTENT(INOUT) :: EPAICO(NPOIN2), EPAINCO(NPOIN2)
 !
       DOUBLE PRECISION, INTENT(IN)    :: CONC(NPOIN2,NCOUCH),ZR(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: ZF(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: TA(NPOIN3),WC(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN)    :: TS(NPOIN3)
       DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPFMAX,6)
       DOUBLE PRECISION, INTENT(INOUT) :: TRA02(NPFMAX),TRA03(NPFMAX)
       DOUBLE PRECISION, INTENT(IN)    :: FLUDPT(NPOIN2),FLUER(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: FLUDPTC(NPOIN2),FLUERC(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: FLUDPTNC(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: FLUERNC(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: FLUDP(NPOIN2),ZF_S(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: FLUDPC(NPOIN2), FLUDPNC(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: PVSCO(NPOIN2), PVSNCO(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: ESOMT(NPOIN2)
 !
-      DOUBLE PRECISION, INTENT(IN)    :: DT,RHOS,GRAV,DTC
+      DOUBLE PRECISION, INTENT(IN)    :: DT,RHOS,GRAV,DTC, CFDEP
       DOUBLE PRECISION, INTENT(INOUT) :: CFMAX,MASDEP
 !
       INTEGER, INTENT(INOUT) ::  NPF(NPOIN2)
 !
-      LOGICAL, INTENT(IN) :: TASSE
+      LOGICAL, INTENT(IN) :: TASSE, MIXTE
       INTEGER, INTENT(IN) :: SETDEP
       INTEGER, INTENT(IN) :: ITASS
 !
@@ -140,9 +171,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION C,TOTMASS,QERODE,QS,DELTAF,FLUX,SEDBED,MASTMP
+      DOUBLE PRECISION C, TOTMASS, QERODE, QS, DELTAF, FLUX, SEDBED
+      DOUBLE PRECISION MASTMP
+      DOUBLE PRECISION TOTMASSC, QERODEC, QSC, DELTAFC, FLUXC
+      DOUBLE PRECISION TOTMASSNC, QERODENC, QSNC, DELTAFNC, FLUXNC
       INTEGER IPOIN, IC
-      INTRINSIC MOD
       DOUBLE PRECISION P_DSUM
       EXTERNAL         P_DSUM
 !
@@ -159,7 +192,143 @@
 ! calculate the layers thicknesses and deposited thicknes:  HDEP = sum ( EPAI)
 !       
       FLUX=0.D0
+
+      IF(MIXTE) THEN
+
+        IF(SETDEP.NE.1) THEN
+          IF(OPTBAN.EQ.1) THEN
+            DO IPOIN=1,NPOIN2
+              IF(IPBOT%I(IPOIN).NE.NPLAN-1) THEN
+!         COMPUTES FIRST THE DEPOSIT FLUX OF COHESIVE SEDIMENTS
+                FLUDPC(IPOIN)=FLUDPTC(IPOIN)*
+     &          TA(IPBOT%I(IPOIN)*NPOIN2+IPOIN)
+                FLUDPC(IPOIN)=MAX(FLUDPC(IPOIN),0.D0)
+!         THEN COMPUTES THE DEPOSIT FLUX OF NON COHESIVE SEDIMENTS
+                FLUDPNC(IPOIN)=FLUDPTNC(IPOIN)*
+     &          TS(IPBOT%I(IPOIN)*NPOIN2+IPOIN)
+                FLUDPNC(IPOIN)=MAX(FLUDPNC(IPOIN),0.D0)
+!         THE GLOBAL DEPOSITION FLUX IS THE SUMM OF BOTH C & NC
+                FLUDP(IPOIN)=FLUDPC(IPOIN)+FLUDPNC(IPOIN)
+                FLUDP(IPOIN)=MAX(FLUDP(IPOIN),0.D0)
+              ELSE
+                FLUDPC(IPOIN) = 0.D0
+                FLUDPNC(IPOIN)= 0.D0
+                FLUDP(IPOIN)  = 0.D0
+              ENDIF  
+            ENDDO
+          ELSE
+            DO IPOIN=1,NPOIN2
+!         COMPUTES FIRST THE DEPOSIT FLUX OF COHESIVE SEDIMENTS
+              FLUDPC(IPOIN)=FLUDPTC(IPOIN)*TA(IPOIN)
+              FLUDPC(IPOIN)=MAX(FLUDPC(IPOIN),0.D0)
+!         THEN COMPUTES THE DEPOSIT FLUX OF NON COHESIVE SEDIMENTS
+              FLUDPNC(IPOIN)=FLUDPTNC(IPOIN)*TS(IPOIN)
+              FLUDPNC(IPOIN)=MAX(FLUDPNC(IPOIN),0.D0)
+!         THE GLOBAL DEPOSITION FLUX IS THE SUMM OF BOTH C & NC
+              FLUDP(IPOIN)=FLUDPC(IPOIN)+FLUDPNC(IPOIN)
+              FLUDP(IPOIN)=MAX(FLUDP(IPOIN),0.D0)
+            ENDDO     
+          ENDIF
+        ENDIF    
 !
+!         BED EVOLUTION
+!
+        DO IPOIN=1,NPOIN2
+
+!         COMPUTES QERODE FOR COHESIVE SEDIMENTS
+
+          DELTAFC  = FLUDPC(IPOIN)-FLUERC(IPOIN)
+          FLUXC    = FLUXC+DELTAFC*VOLU2D%R(IPOIN)          
+          TOTMASSC = 0.D0
+          QERODEC  = FLUERC(IPOIN)*DT
+      
+!         COMPUTES QERODE FOR NON-COHESIVE SEDIMENT
+          
+          DELTAFNC  = FLUDPNC(IPOIN)-FLUERNC(IPOIN)
+          FLUXNC    = FLUXNC+DELTAFNC*VOLU2D%R(IPOIN)          
+          TOTMASSNC = 0.D0
+          QERODENC  = FLUERNC(IPOIN)*DT
+        
+!         COMPUTES QERODE FOR ALL THE SEDIMENTS 
+        
+          DELTAF  = FLUDP(IPOIN)-FLUER(IPOIN)
+          FLUX    = FLUX+DELTAF*VOLU2D%R(IPOIN)          
+          TOTMASS = 0.D0
+          QERODE  = FLUER(IPOIN)*DT
+!
+
+          QSC  = CONC(IPOIN,1)*EPAICO(IPOIN)
+          QSNC = CFDEP*EPAINCO(IPOIN)
+          QS   = QSC + QSNC
+!               
+          TOTMASSC  = TOTMASSC + QSC
+          TOTMASSNC = TOTMASSNC + QSNC
+          TOTMASS   = TOTMASS + QS
+        
+!         check if we have eroded enough entire layers
+
+          IF(TOTMASSC.LT.QERODEC) THEN
+            EPAICO(IPOIN) = 0.D0
+          ELSE
+            QSC           = TOTMASSC - QERODEC
+            EPAICO(IPOIN) = QSC/MAX(CONC(IPOIN,1),1.D-10)      
+          ENDIF
+!
+          IF(TOTMASSNC.LT.QERODENC) THEN
+            EPAINCO(IPOIN) = 0.D0
+          ELSE
+            QSNC           = TOTMASSNC - QERODENC
+            EPAINCO(IPOIN) = QSNC/CFDEP        
+          ENDIF
+!
+!         DEPOSITION IN THE TOP LAYER
+!  
+        EPAICO(IPOIN)  = EPAICO(IPOIN)+FLUDPC(IPOIN)*
+     &                DT/MAX(CONC(IPOIN,1),1.D-10) 
+        EPAINCO(IPOIN) = EPAINCO(IPOIN)+FLUDPNC(IPOIN)*
+     &                DT/MAX(CFDEP,1.D-10)
+        EPAI(IPOIN,1)  = EPAICO(IPOIN) + EPAINCO(IPOIN) 
+!       
+!         UPDATES PERCENTAGES OF EACH CLASSE
+!
+        IF(EPAI(IPOIN, 1).GT.0.D0) THEN
+          PVSCO(IPOIN)  = EPAICO(IPOIN)/EPAI(IPOIN,1)
+          PVSNCO(IPOIN) = 1.D0-PVSCO(IPOIN)
+        ELSE
+          PVSCO(IPOIN)  = 0.D0
+          PVSNCO(IPOIN) = 0.D0
+        ENDIF
+!
+!         COMPUTING THE NEW SEDIMENT BED THICKNESS
+!
+        SEDBED = EPAI(IPOIN,1)
+!        
+!         EVOLUTION OBTAINED FROM OLD AND NEW SEDIMENT HEIGHT
+!
+        ZF_S(IPOIN) = SEDBED-HDEP(IPOIN)
+!
+!         SEDIMENT HEIGHT UPDATED
+!
+        HDEP(IPOIN) = SEDBED
+!  
+      ENDDO
+!
+!+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+! 
+!     UPDATE THE CUMULATED BED EVOLUTION : ESOMT
+!     BOTTOM ELEVATION : ZF 
+!                 
+!+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+!
+        CALL OV( 'X=Y+Z   ',ESOMT,ESOMT,ZF_S,C,NPOIN2)
+        CALL OV( 'X=Y+Z   ' , ZF   ,   ZR, HDEP, C, NPOIN2)     
+      
+      
+!***********************************************************
+! PREVIOUS CASE NON MIXED
+!************************************************************      
+      ELSE
+      
 !     EXPLICIT SCHEME (SETDEP=1) FLUDP COMPUTED IN SET_DIF
 !
 !     OTHER SCHEMES : FLUDP BUILT HERE
@@ -209,7 +378,7 @@
 !           How much of it do we need to erode?
             QS = TOTMASS - QERODE
 !           calculate new thickness
-            EPAI(IPOIN,IC) = QS/CONC(IPOIN,IC)        
+            EPAI(IPOIN,IC) = QS/MAX(CONC(IPOIN,IC),1.D-10)        
 !           jump out of layer loop
             EXIT
           ENDIF
@@ -218,7 +387,8 @@
 ! 
 !       Then Deposition in Top layer
 !  
-        EPAI(IPOIN,1)=EPAI(IPOIN,1)+FLUDP(IPOIN)*DT/CONC(IPOIN,1)   
+        EPAI(IPOIN,1)=EPAI(IPOIN,1)+FLUDP(IPOIN)*
+     &             DT/MAX(CONC(IPOIN,1),1.D-10)   
 !
 !       COMPUTING THE NEW SEDIMENT BED THICKNESS
 !
@@ -253,6 +423,7 @@
 !     CALL OV( 'X=Y+Z   ' , ZF   ,   ZF, ZF_S, C, NPOIN2)
       CALL OV( 'X=Y+Z   ' , ZF   ,   ZR, HDEP, C, NPOIN2)
 !
+      ENDIF
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ! TASSEMENT HERE
 ! ---> add the other models here

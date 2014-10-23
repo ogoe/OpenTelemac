@@ -2,10 +2,10 @@
                      SUBROUTINE ERODNC
 !                    *****************
 !
-     &(CFDEP  , WC     , HDEP     , FLUER , TOB   , DT    ,
-     & NPOIN2 , NPOIN3 , KSPRATIO , AC    , RHOS  , RHO0  , HN ,
-     & GRAV   , DMOY   , CREF     , ZREF  , CF    , ICQ   ,RUGOF,
-     & Z      , UETCAR , SETDEP)
+     &(CFDEP  , WCS    , HDEP     , FLUER  , TOB   , DT    ,
+     & NPOIN2 , NPOIN3 , KSPRATIO , AC     , RHOS  , RHO0  , HN ,
+     & GRAV   , DMOY   , CREF     , ZREF   , CF    , ICQ   ,RUGOF,
+     & Z      , UETCAR , SETDEP   , EPAINCO, MIXTE)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                   21/08/2010
@@ -42,6 +42,12 @@
 !+   depot, which is so far the only official test case of Telemac-3D
 !+   with erosion and deposition. This must be clarified.
 !
+!history  G. ANTOINE & M. JODEAU & J.M. HERVOUET (EDF - LNHE)
+!+        13/10/2014
+!+        V7P0
+!+   New developments in sediment for mixed sediment transport
+!+   WC changed into WCS
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |-->| CRITICAL SHIELDS PARAMETER
 !| CF             |-->| QUADRATIC FRICTION COEFFICIENT (NOT USED)
@@ -49,13 +55,14 @@
 !| CREF           |<->| EQUILIBRIUM CONCENTRATION
 !| DMOY           |-->| MEAN DIAMETER OF GRAINS
 !| DT             |-->| TIME STEP
-!| SETDEP         |-->| EXPLICIT SETTLING (INTEGER)
+!| EPAINCO        |-->| THICKNESS OF NON-COHESIVE SUB-LAYER
 !| FLUER          |<->| EROSION  FLUX
 !| GRAV           |-->| GRAVITY ACCELERATION
 !| HDEP           |<->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
 !| HN             |-->| WATER DEPTH AT TIME N
 !| ICQ            |-->| FLAG FOR REFERENCE CONCENTRATION FORMULA
 !| KSPRATIO       |-->| NOT USED
+!| MIXTE          |-->| LOGICAL, MIXED SEDIMENTS OR NOT
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPOIN3         |-->| NUMBER OF 3D POINTS
 !| RHO0           |-->| WATER DENSITY AT REFERENCE CONCENTRATION
@@ -64,8 +71,8 @@
 !| SETDEP         |-->| OPTION FOR THE TREATMENT OF SETTLING VELOCITY
 !| TOB            |-->| BOTTOM FRICTION
 !| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY
-!| WC             |-->| SETTLING VELOCITY
-!|     Z          |-->| NODE COORDINATES 
+!| WCS            |-->| SETTLING VELOCITY FOR SAND
+!| Z              |-->| NODE COORDINATES 
 !| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -85,8 +92,7 @@
       INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3,ICQ,SETDEP
 !
       DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2),FLUER(NPOIN2)
-!
-      DOUBLE PRECISION, INTENT(IN)    :: WC(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN)    :: EPAINCO(NPOIN2)
 !
       DOUBLE PRECISION, INTENT(IN)    :: DT,CFDEP,GRAV,RHOS,RHO0
       DOUBLE PRECISION, INTENT(IN)    :: KSPRATIO,AC
@@ -94,12 +100,16 @@
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: DMOY,TOB,CF,HN
       TYPE(BIEF_OBJ)  , INTENT(INOUT) :: CREF,ZREF,RUGOF
 !      
+      DOUBLE PRECISION, INTENT(IN)    :: WCS(NPOIN3)
+
+      LOGICAL, INTENT(IN)             :: MIXTE
+
       DOUBLE PRECISION, INTENT(IN)    :: Z(NPOIN3), UETCAR(NPOIN2)
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IPOIN,I
-      DOUBLE PRECISION USTAR, ROUSE, ROUSE_Z, DELTAZ,QS
+      DOUBLE PRECISION USTAR, ROUSE, ROUSE_Z, DELTAZ, QS
 !
       INTRINSIC MIN,MAX
 !
@@ -145,7 +155,7 @@
 !
         DO IPOIN =1,NPOIN2
           USTAR=MAX(SQRT(UETCAR(IPOIN)),1.D-6) 
-          ROUSE=PRANDTL*WC(IPOIN)/KARMAN/USTAR
+          ROUSE=PRANDTL*WCS(IPOIN)/KARMAN/USTAR
 !         rouse profile extrapolation up to 1/4 of the first layer
           DELTAZ=(Z(IPOIN +NPOIN2)-Z(IPOIN))/FICT
           ROUSE_Z=ZREF%R(IPOIN)/(HN%R(IPOIN)-ZREF%R(IPOIN))
@@ -159,11 +169,23 @@
 !  -----------------     EROSION STEP    ----------------------
 !  ------------------------------------------------------------
 !
-      DO I=1,NPOIN2
+      IF(MIXTE) THEN
+        
+        DO I=1,NPOIN2
+!
+        FLUER(I)= WCS(I)*CREF%R(I)
+        QS=CFDEP*EPAINCO(I)
+        FLUER(I)=MIN(FLUER(I),QS/DT)
+!
+        ENDDO
+
+      ELSE
+
+        DO I=1,NPOIN2
 !
 !       COMPUTES THE EROSION FLUX
 !
-        FLUER(I)= WC(I)*CREF%R(I)
+        FLUER(I)= WCS(I)*CREF%R(I)
 !
 !       QUANTITY OF SOLID IN THE LAYER BEFORE EROSION
 !
@@ -180,6 +202,7 @@
 !
       ENDDO
 !
+      ENDIF
 !-----------------------------------------------------------------------
 !
       RETURN
