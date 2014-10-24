@@ -380,7 +380,6 @@ files: bief_def.f
   gtsh11.f
   char_gauss.f
   charac.f
-  atanc.f
   jultim.f
   dmo.f
   tsloc.f

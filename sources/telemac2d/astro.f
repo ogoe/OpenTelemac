@@ -5,7 +5,7 @@
      &(YEAR,MONTH,DAY,HOUR,MINU,SEC,AT,ARL,ARS,DL,DS,AL,AS)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V7P0
 !***********************************************************************
 !
 !brief    COMPUTES THE ASTRONOMICAL TERMS NECESSARY FOR THE
@@ -31,7 +31,7 @@
 !+ | S  |   MEAN LONGITUDE OF THE SUN              |    S   | 27,32   J |
 !+ | P  |   MEAN LONGITUDE OF MOON PERIGEE         |    P   | 8,85    A |
 !+ | O  |   LONGITUDE OF THE MOON ASCENDING NODE   | N,OMEGA| 18,61   A |
-!+ | OM |   INCLINITAION OF THE EQUATOR ON THE     |  OMEGA | 27665,7 S |
+!+ | OM |   INCLINAION OF THE EQUATOR ON THE       |  OMEGA | 27665,7 S |
 !+ |    |   ECLIPTIC                               |        |           |
 !+ | L  |   REAL LONGITUDE OF MOON                 |    L   |           |
 !+ | CR |   REAL PARALLAX OF MOON                  |   C/R  |           |
@@ -96,6 +96,13 @@
 !+        V6P2
 !+    min to MINU
 !
+!history  User Thijslan on Telemac forum & J-M HERVOUET (EDF LAB, LNHE)
+!+        24/10/2014
+!+        V7P0
+!+    Use of ATANC replaced by function ATAN2.
+!+    ATAN2 used instead of ATAN for AS.
+!+    Function ATANC can be removed from BIEF.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AL             |<--| MOON RIGHT ASCENSION
 !| ARL            |<--| RATIO RT/TL
@@ -124,13 +131,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION T,H,S,P,O,OM,L,CR,ET,MA,EA,TS,VS,LS,JULTIM
+      DOUBLE PRECISION T,H,S,P,O,OM,L,CR,ET,MA,EA,TS,VS,LS
       DOUBLE PRECISION I0,E,M,UA,RT,C,AC,PI,API,EA1,KSI,I,X,NU
 !
-      INTRINSIC ACOS,ASIN,ATAN,COS,SIN,SQRT,TAN,ABS,MOD
+      INTRINSIC ACOS,ASIN,ATAN,COS,SIN,SQRT,TAN,ABS,MOD,ATAN2
 !
-      DOUBLE PRECISION DMO,ATANC
-      EXTERNAL         DMO,ATANC, JULTIM
+      DOUBLE PRECISION DMO,JULTIM
+      EXTERNAL         DMO,JULTIM
 !
 !-----------------------------------------------------------------------
 !
@@ -147,19 +154,19 @@
       T   = JULTIM(YEAR,MONTH,DAY,HOUR,MINU,SEC,AT)
 !
       H   = DMO ( 279.69668D0 + 36000.76892D0       * T
-     &                        + 0.0003025D0         * T * T )
+     &                        + 0.0003025D0         * T**2 )
       S   = DMO ( 270.434164D0 + 481267.8831D0      * T
-     &                         - 0.001133D0         * T * T
-     &                         + 0.0000019D0        * T * T * T )
+     &                         - 0.001133D0         * T**2
+     &                         + 0.0000019D0        * T**3 )
       P   = DMO ( 334.328019444D0 + 4069.03220556D0 * T
-     &                             - 0.01034D0      * T * T
-     &                             + 0.0000125D0    * T * T * T )
+     &                            - 0.01034D0       * T**2
+     &                            + 0.0000125D0     * T**3 )
       O   = DMO ( 259.183275D0 - 1934.1420D0        * T
-     &                      + 0.002078D0            * T * T
-     &                      + 0.0000022D0           * T * T * T )
+     &                         + 0.002078D0         * T**2
+     &                         + 0.0000022D0        * T**3 )
       OM  = DMO ( 23.452294D0 - 0.0130125D0         * T
-     &                        - 0.00000164D0        * T * T
-     &                        + 0.000000503D0       * T * T * T )
+     &                        - 0.00000164D0        * T**2
+     &                        + 0.000000503D0       * T**3 )
       L   = S + 2*E*SIN(S-P) +  5.D0/4.D0 *E*E*SIN(2*(S-P)) +
      &                         15.D0/4.D0 *M*E*SIN(S-2*H+P) +
      &                         11.D0/8.D0 *M*M*SIN(2*(S-H))
@@ -177,19 +184,14 @@
 !
       I   = ACOS( COS(OM)*COS(I0) - SIN(OM)*SIN(I0)*COS(O) )
 !
-! CALCULATES X: TAN(X) = TAN(L-KSI) * COS(I)
-!     WITH X BETWEEN 0 AND 2 PI
-!
-      X   = ATANC( TAN(L-KSI) * COS(I) , L )
-!
-      ET  = 0.01675104D0 - 0.0000418D0 * T - 0.000000126D0 * T * T
+      ET  = 0.01675104D0 - 0.0000418D0 * T - 0.000000126D0 * T**2
       MA  = DMO ( 358.47583D0 + 35999.04975D0 * T
-     &                        - 0.00015D0     * T * T
-     &                        + 0.0000033D0   * T * T * T )
+     &                        - 0.00015D0     * T**2
+     &                        + 0.0000033D0   * T**3 )
       EA1 = MA
 10    CONTINUE
       EA  = MA + ET * SIN (EA1)
-      IF (ABS(EA-EA1).GT.1.D-12) THEN
+      IF(ABS(EA-EA1).GT.1.D-12) THEN
         EA1=EA
         GOTO 10
       ENDIF
@@ -199,13 +201,16 @@
 !
 ! OUTPUT PARAMETERS
 !
-      ARL = AC * CR
-      ARS = RT / TS
-      DL  = ASIN ( SIN(L-KSI) * SIN(I) )
-      DS  = ASIN ( SIN(OM)*SIN(LS) )
-      NU  = ATANC(SIN(O)/(SIN(OM)/TAN(I0)+COS(OM)*COS(O)),O)
-      AL  = X + NU
-      AS  = ATAN ( (COS(OM)*SIN(LS) / COS(LS)) )
+      ARL = AC*CR
+      ARS = RT/TS
+      DL  = ASIN(SIN(L-KSI)*SIN(I))
+      DS  = ASIN(SIN(OM)*SIN(LS))
+!     CALCULATES X SO THAT TAN(X) = TAN(L-KSI) * COS(I)
+!     WITH X BETWEEN 0 AND 2 PI
+      X  = ATAN2(SIN(L-KSI)*COS(I),COS(L-KSI))+PI
+      NU = ATAN2(SIN(O),SIN(OM)/TAN(I0)+COS(OM)*COS(O))+PI
+      AL = MOD(X+NU,2.D0*PI)
+      AS = ATAN2(COS(OM)*SIN(LS),COS(LS))
 !
 !-----------------------------------------------------------------------
 !
