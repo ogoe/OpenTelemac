@@ -22,7 +22,7 @@ RESULTS FILE                    = r2d_wind_txy.slf
 PREVIOUS COMPUTATION FILE       = ini_wind_txy.slf
 FORMATTED DATA FILE 1           = fo1_wind_txy
 REFERENCE FILE                  = f2d_wind_txy.slf
-PARALLEL PROCESSORS             = 4
+PARALLEL PROCESSORS             = 0
 /
 /
 /----------------------------------------------
@@ -61,12 +61,12 @@ VELOCITY DIFFUSIVITY                         = 0.
 /
 TYPE OF ADVECTION                            = 1;5
 SUPG OPTION                                  = 1;2
-SOLVER ACCURACY                              = 1.E-3
+SOLVER ACCURACY                              = 1.E-8
 DISCRETIZATIONS IN SPACE                     = 11 ; 11 
 PRECONDITIONING                              = 2
 IMPLICITATION FOR DEPTH                      = 0.5
 IMPLICITATION FOR VELOCITY                   = 0.5 
-INITIAL GUESS FOR H                          = 0
+INITIAL GUESS FOR H                          = 1
 MATRIX STORAGE                               = 3
 MATRIX-VECTOR PRODUCT                        = 2  
 /
