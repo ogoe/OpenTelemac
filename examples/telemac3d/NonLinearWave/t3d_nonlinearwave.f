@@ -4,7 +4,7 @@
 !
      & (AAT,LT,IINFOGR,NPTFR2_DIM,NFRLIQ)
 ! 
-!*********************************************************************** 
+!***********************************************************************
 ! TELEMAC 3D VERSION 5.6 18/10/2005 J.-M. HERVOUET (LNHE) 01 30 87 80 18
 !         
 !*********************************************************************** 
@@ -22,10 +22,10 @@
 ! 
 !      SPECIFIC BOUNDARY CONDITIONS, MAY BE MODIFIED BY THE USER. 
 !
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 !                          SOME USEFUL PARAMETERS
 ! .________________.____.______________________________________________. 
-! !  NOM           !MODE!                  ROLE                        ! 
+! !  NOM           !MODE!                  ROLE                        !
 ! !________________!____!______________________________________________! 
 ! !  UBORF         !<-- ! PRESCRIBED VELOCITY ALONG X ON THE BOTTOM
 ! !  UBORL         !<-- ! PRESCRIBED VELOCITY ALONG X ON THE LATERAL
@@ -138,17 +138,17 @@
       IMPLICIT NONE 
       INTEGER LNG,LU 
       COMMON/INFO/LNG,LU 
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       DOUBLE PRECISION, INTENT(IN)    :: AAT
       INTEGER         , INTENT(IN)    :: LT
       LOGICAL         , INTENT(IN)    :: IINFOGR
       INTEGER         , INTENT(IN)    :: NPTFR2_DIM
       INTEGER         , INTENT(IN) :: NFRLIQ
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER I,IPOIN2,NP,K1,IBORD,IVIT,ICOT,IDEB,IFRLIQ,IPROF
       INTEGER IPTFR,ITRAC,IPLAN
       DOUBLE PRECISION ROEAU,ROAIR,VITV,PROFZ,TPS    
@@ -285,12 +285,12 @@ C
         ELSE
           IF(LNG.EQ.1) WRITE(LU,100) NUMLIQ%I(K)
 100       FORMAT(1X,'BORD3D : COTES IMPOSEES EN NOMBRE INSUFFISANT',/,
-     *           1X,'       DANS LE FICHIER DES PARAMETRES',/,
-     *           1X,'       IL EN FAUT AU MOINS : ',1I6)
+     &           1X,'       DANS LE FICHIER DES PARAMETRES',/,
+     &           1X,'       IL EN FAUT AU MOINS : ',1I6)
           IF(LNG.EQ.2) WRITE(LU,101) NUMLIQ%I(K)
-101       FORMAT(1X,'BORD3D : MORE PRESCRIBED ELEVATIONS ARE REQUIRED',/,
-     *           1X,'       IN THE PARAMETER FILE',/,
-     *           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
+101       FORMAT(1X,'BORD3D : MORE PRESCRIBED ELEVATIONS ARE REQUIRED',
+     &           /,1X,'       IN THE PARAMETER FILE',/,
+     &           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -309,19 +309,19 @@ C
           IJK=(NP-1)*NPTFR2+K
           IFRLIQ=NUMLIQ%I(K)
           IF(PROFVEL(IFRLIQ).EQ.2) THEN
-C           GIVEN BY USER IN BOUNDARY CONDITIONS FILE
+!           GIVEN BY USER IN BOUNDARY CONDITIONS FILE
             UBORL%R(IJK) = UBOR2D%R(K+NPTFR2)
             VBORL%R(IJK) = VBOR2D%R(K+NPTFR2)
           ELSEIF(PROFVEL(IFRLIQ).EQ.3) THEN
-C           NORMAL AND NORM GIVEN BY UBOR IN BOUNDARY CONDITIONS FILE
+!           NORMAL AND NORM GIVEN BY UBOR IN BOUNDARY CONDITIONS FILE
             UBORL%R(IJK) = -XNEBOR2%R(K)*UBOR2D%R(K+NPTFR2)
             VBORL%R(IJK) = -YNEBOR2%R(K)*UBOR2D%R(K+NPTFR2)
           ELSEIF(PROFVEL(IFRLIQ).EQ.4) THEN
-C           NORMAL AND PROPORTIONAL TO SQRT(H)
+!           NORMAL AND PROPORTIONAL TO SQRT(H)
             UBORL%R(IJK)=-XNEBOR2%R(K) * SQRT(MAX(H%R(NBOR2%I(K)),0.D0))
             VBORL%R(IJK)=-YNEBOR2%R(K) * SQRT(MAX(H%R(NBOR2%I(K)),0.D0))
           ELSE
-C           NORMAL AND NORM 1
+!           NORMAL AND NORM 1
             UBORL%R(IJK)=-XNEBOR2%R(K)
             VBORL%R(IJK)=-YNEBOR2%R(K)
           ENDIF
@@ -333,7 +333,7 @@ C           NORMAL AND NORM 1
 !         CASE OF A VERTICAL PROFILE
           IF(VERPROVEL(IFRLIQ).NE.1) THEN
             PROFZ=VEL_PROF_Z(IFRLIQ,NBOR2%I(K),
-     *                       AT,LT,NP,INFOGR,VERPROVEL(IFRLIQ))        
+     &                       AT,LT,NP,INFOGR,VERPROVEL(IFRLIQ))        
             UBORL%R(IJK) = UBORL%R(IJK)*PROFZ
             VBORL%R(IJK) = VBORL%R(IJK)*PROFZ
           ENDIF
@@ -356,24 +356,24 @@ C           NORMAL AND NORM 1
         IVIT=NUMLIQ%I(K)
         IF(NVIT.GE.IVIT) THEN
 !
-             DO NP=1,NPLAN
-               IBORD = (NP-1)*NPTFR2+K
-               UBORL%R(IBORD) =
-     *         -MESH2D%XNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
-               VBORL%R(IBORD) =
-     *         -MESH2D%YNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
-               WBORL%R(IBORD)=0.D0
-             END DO
+          DO NP=1,NPLAN
+            IBORD = (NP-1)*NPTFR2+K
+            UBORL%R(IBORD) =
+     &      -MESH2D%XNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
+            VBORL%R(IBORD) =
+     &      -MESH2D%YNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
+            WBORL%R(IBORD)=0.D0
+          END DO
 !
         ELSE
           IF(LNG.EQ.1) WRITE(LU,200) NUMLIQ%I(K)
-200       FORMAT(1X,'BORD3D : VITESSES IMPOSEES EN NOMBRE INSUFFISANT',/,
-     *           1X,'       DANS LE FICHIER DES PARAMETRES',/,
-     *           1X,'       IL EN FAUT AU MOINS : ',1I6)
+200       FORMAT(1X,'BORD3D : VITESSES IMPOSEES EN NOMBRE INSUFFISANT',
+     &           /,1X,'       DANS LE FICHIER DES PARAMETRES',
+     &           /,1X,'       IL EN FAUT AU MOINS : ',1I6)
           IF(LNG.EQ.2) WRITE(LU,201) NUMLIQ%I(K)
-201       FORMAT(1X,'BORD3D : MORE PRESCRIBED VELOCITIES ARE REQUIRED',/,
-     *           1X,'       IN THE PARAMETER FILE',/,
-     *           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
+201       FORMAT(1X,'BORD3D : MORE PRESCRIBED VELOCITIES ARE REQUIRED',
+     &           /,1X,'       IN THE PARAMETER FILE',
+     &           /,1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -391,37 +391,37 @@ C           NORMAL AND NORM 1
           IFRLIQ=NUMLIQ%I(K)
           IF(LITABL%ADR(ITRAC)%P%I(IBORD).EQ.KENT.AND.NTRACER.NE.0) THEN
             IFRLIQ=NUMLIQ%I(K)            
-            IF(NTRACER.GE.IFRLIQ*NTRAC) THEN                             
+            IF(NTRACER.GE.IFRLIQ*NTRAC) THEN
               TABORL%ADR(ITRAC)%P%R(IBORD) = 
-     *        TR3(IFRLIQ,ITRAC,NBOR3%I(IBORD),AT,INFOGR)
+     &        TR3(IFRLIQ,ITRAC,NBOR3%I(IBORD),AT,INFOGR)
             ELSE
               IF(LNG.EQ.1) WRITE(LU,300) NUMLIQ%I(K)*NTRAC
 300           FORMAT(1X,'BORD3D : VALEURS IMPOSEES DU TRACEUR',/,
-     *               1X,'         EN NOMBRE INSUFFISANT',/,
-     *               1X,'         DANS LE FICHIER DES PARAMETRES',/,
-     *               1X,'         IL EN FAUT AU MOINS : ',1I6)
+     &               1X,'         EN NOMBRE INSUFFISANT',/,
+     &               1X,'         DANS LE FICHIER DES PARAMETRES',/,
+     &               1X,'         IL EN FAUT AU MOINS : ',1I6)
               IF(LNG.EQ.2) WRITE(LU,301) NUMLIQ%I(K)
 301           FORMAT(1X,'BORD3D: MORE PRESCRIBED TRACER VALUES',/,
-     *               1X,'        ARE REQUIRED IN THE PARAMETER FILE',/,
-     *               1X,'        AT LEAST ',1I6,' MUST BE GIVEN')
+     &               1X,'        ARE REQUIRED IN THE PARAMETER FILE',/,
+     &               1X,'        AT LEAST ',1I6,' MUST BE GIVEN')
               CALL PLANTE(1)
               STOP
             ENDIF
-C           CASE OF A PROFILE ON THE VERTICAL
+!           CASE OF A PROFILE ON THE VERTICAL
             IPROF=VERPROTRA(ITRAC+(IFRLIQ-1)*NTRAC)
             IF(IPROF.NE.1) THEN
               PROFZ=TRA_PROF_Z(IFRLIQ,NBOR2%I(K),
-     *                         AT,LT,NP,INFOGR,IPROF,ITRAC)      
+     &                         AT,LT,NP,INFOGR,IPROF,ITRAC)      
               TABORL%ADR(ITRAC)%P%R(IBORD)=
-     *        TABORL%ADR(ITRAC)%P%R(IBORD)*PROFZ
+     &        TABORL%ADR(ITRAC)%P%R(IBORD)*PROFZ
             ENDIF
           ENDIF
-C          
+!          
         ENDDO
         ENDDO
       ENDIF
 !
-       ENDDO
+      ENDDO
 !        
 !     PRESCRIBED DISCHARGES: FINAL TREATMENT OF VELOCITIES
 !     ----------------------------------------------------
@@ -447,13 +447,13 @@ C
           ELSE
           IF(LNG.EQ.1) WRITE(LU,400) IFRLIQ
 400       FORMAT(1X,'BORD3D : DEBITS IMPOSES',/,
-     *           1X,'       EN NOMBRE INSUFFISANT',/,
-     *           1X,'       DANS LE FICHIER DES PARAMETRES',/,
-     *           1X,'       IL EN FAUT AU MOINS : ',1I6)
+     &           1X,'       EN NOMBRE INSUFFISANT',/,
+     &           1X,'       DANS LE FICHIER DES PARAMETRES',/,
+     &           1X,'       IL EN FAUT AU MOINS : ',1I6)
           IF(LNG.EQ.2) WRITE(LU,401) IFRLIQ
 401       FORMAT(1X,'BORD3D : MORE PRESCRIBED FLOWRATES',/,
-     *           1X,'       ARE REQUIRED IN THE PARAMETER FILE',/,
-     *           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
+     &           1X,'       ARE REQUIRED IN THE PARAMETER FILE',/,
+     &           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -487,27 +487,27 @@ C
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !
       IF(VENT) THEN 
-         ROEAU = 1000.D0 
-         ROAIR = 1.3D0 
-         DO IPOIN2 = 1,NPOIN2 
-            VITV  = SQRT(WIND%ADR(1)%P%R(IPOIN2)**2
-     &                 + WIND%ADR(2)%P%R(IPOIN2)**2) 
+        ROEAU = 1000.D0 
+        ROAIR = 1.3D0 
+        DO IPOIN2 = 1,NPOIN2 
+          VITV  = SQRT(WIND%ADR(1)%P%R(IPOIN2)**2
+     &               + WIND%ADR(2)%P%R(IPOIN2)**2) 
 ! 
 ! A MORE ACCURATE TREATMENT
 ! 
-!CX         IF(VITV.LE.5.D0) THEN 
-!CX           FAIR = ROAIR/ROEAU*0.565D-3 
-!CX         ELSEIF (VITV.LE.19.22D0) THEN 
-!CX           FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3 
-!CX         ELSE 
-!CX           FAIR = ROAIR/ROEAU*2.513D-3 
-!CX         ENDIF 
+!CX       IF(VITV.LE.5.D0) THEN 
+!CX         FAIR = ROAIR/ROEAU*0.565D-3 
+!CX       ELSEIF (VITV.LE.19.22D0) THEN 
+!CX         FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3 
+!CX       ELSE 
+!CX         FAIR = ROAIR/ROEAU*2.513D-3 
+!CX       ENDIF 
 ! 
 ! BEWARE : BUBORS IS VISCVI*DU/DN, NOT DU/DN
 ! 
-            BUBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2) 
-            BVBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2) 
-         ENDDO
+          BUBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2) 
+          BVBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2) 
+        ENDDO
       ENDIF
 !
 ! 
@@ -604,32 +604,32 @@ C
 !
         IF(LIHBOR%I(I).EQ.KENT.OR.LIUBOL%I(I).EQ.KENTU) THEN
 !
-         HBOR%R(I)=-ZF%R(NBOR2%I(I))
-     *            +(HEIGHT*COS(OMEGA*TPS)/2.D0
-     *   +(KK*HEIGHT**2/16.D0)*(COSH(KK*DEPTH)/SINH(KK*DEPTH)**3)
-     *   *(2.D0+COSH(2.D0*KK*DEPTH))*COS(2.D0*OMEGA*TPS))*
-!        RAMPE DE 1 S SUR LE TEMPS
-     *   MIN(1.D0,AT)              
-! 
+          HBOR%R(I)=-ZF%R(NBOR2%I(I))
+     &             +(HEIGHT*COS(OMEGA*TPS)/2.D0
+     &    +(KK*HEIGHT**2/16.D0)*(COSH(KK*DEPTH)/SINH(KK*DEPTH)**3)
+     &    *(2.D0+COSH(2.D0*KK*DEPTH))*COS(2.D0*OMEGA*TPS))*
+!         RAMPE DE 1 S SUR LE TEMPS
+     &    MIN(1.D0,AT)              
+!         
           DO  IPLAN=1, NPLAN
-           IBORD = (IPLAN-1)*NPTFR2 + I
-           ZSURF=Z(NBOR3%I((NPLAN-1)*NPTFR2 + I))
-           ZZ=Z(NBOR3%I(IBORD))-ZSURF
-           UBORL%R(IBORD)=OMEGA*COS(OMEGA*TPS)*HEIGHT/
-     *            2.D0*COSH(KK*(ZZ+DEPTH))/SINH(KK*DEPTH)
-     * +3.D0/16.D0*OMEGA*KK*HEIGHT**2*COSH(2.D0*KK*(ZZ+DEPTH))/
-     *     SINH(KK*DEPTH)**4*COS(2.D0*OMEGA*TPS)
-           VBORL%R(IBORD)=0.D0
-           PBORL%R(IBORD)=DT*9.81D0*HEIGHT*COS(OMEGA*TPS)/2.D0*
-     *                (COSH(KK*(ZZ+DEPTH))/COSH(KK*DEPTH)-1.D0)
-!
-           UBORL%R(IBORD)=UBORL%R(IBORD)*MIN(1.D0,AT) 
-           VBORL%R(IBORD)=VBORL%R(IBORD)*MIN(1.D0,AT)
-           PBORL%R(IBORD)=PBORL%R(IBORD)*MIN(1.D0,AT)
+            IBORD = (IPLAN-1)*NPTFR2 + I
+            ZSURF=Z(NBOR3%I((NPLAN-1)*NPTFR2 + I))
+            ZZ=Z(NBOR3%I(IBORD))-ZSURF
+            UBORL%R(IBORD)=OMEGA*COS(OMEGA*TPS)*HEIGHT/
+     &             2.D0*COSH(KK*(ZZ+DEPTH))/SINH(KK*DEPTH)
+     & +3.D0/16.D0*OMEGA*KK*HEIGHT**2*COSH(2.D0*KK*(ZZ+DEPTH))/
+     &      SINH(KK*DEPTH)**4*COS(2.D0*OMEGA*TPS)
+            VBORL%R(IBORD)=0.D0
+            PBORL%R(IBORD)=DT*9.81D0*HEIGHT*COS(OMEGA*TPS)/2.D0*
+     &                 (COSH(KK*(ZZ+DEPTH))/COSH(KK*DEPTH)-1.D0)
+!           
+            UBORL%R(IBORD)=UBORL%R(IBORD)*MIN(1.D0,AT) 
+            VBORL%R(IBORD)=VBORL%R(IBORD)*MIN(1.D0,AT)
+            PBORL%R(IBORD)=PBORL%R(IBORD)*MIN(1.D0,AT)
 !
           ENDDO 
 !
-         endif
+        ENDIF
       ENDDO
 !
       RETURN
@@ -660,48 +660,48 @@ C
 !
       INTEGER K,I, IMED
       LOGICAL MAS
-      double precision a1, a2, a3, a4, a5, a6, a0, a7
+      DOUBLE PRECISION A1, A2, A3, A4, A5, A6, A0, A7
 !             
-      a1=3.69D0   
-      a2=5.985D0  
-      a3=12.D0     
-      a4=14.D0     
-      a5=17.015D0 
-      a6=20.785D0 
-C       
-      a0=a1-1.D0
-      a7=a6+1.D0
-C
-C bar definition ++ small transitions
-C
+      A1=3.69D0   
+      A2=5.985D0  
+      A3=12.D0     
+      A4=14.D0     
+      A5=17.015D0 
+      A6=20.785D0 
+!       
+      A0=A1-1.D0
+      A7=A6+1.D0
+!
+! bar definition ++ small transitions
+!
       DO  I=1,NPOIN2
-C        
+!        
         ZF(I)=-0.43D0
-        if (x(i).ge.a0.and.x(i).le.a1) then
-          ZF(I)= -0.43D0+0.03D0*(x(i)-a0)/(a1-a0)
-        endif
-C         
-        if (x(i).ge.a1.and.x(i).le.a2) then
+        IF (X(I).GE.A0.AND.X(I).LE.A1) THEN
+          ZF(I)= -0.43D0+0.03D0*(X(I)-A0)/(A1-A0)
+        ENDIF
+!         
+        IF (X(I).GE.A1.AND.X(I).LE.A2) THEN
           ZF(I)=-0.40D0
-        endif
-        if (x(i).ge.a2.and.x(i).le.a3) then
-          ZF(I)=-0.40D0 +0.3D0*(x(i)-a2)/(a3-a2)
-        endif
-        if (x(i).ge.a3.and.x(i).le.a4) then
+        ENDIF
+        IF (X(I).GE.A2.AND.X(I).LE.A3) THEN
+          ZF(I)=-0.40D0 +0.3D0*(X(I)-A2)/(A3-A2)
+        ENDIF
+        IF (X(I).GE.A3.AND.X(I).LE.A4) THEN
           ZF(I)=-0.10D0
-        endif
-        if (x(i).ge.a4.and.x(i).le.a5) then
-          ZF(I)=-0.1D0-0.3D0*(x(i)-a4)/(a5-a4)
-        endif
-        if (x(i).ge.a5.and.x(i).le.a6) then
+        ENDIF
+        IF (X(I).GE.A4.AND.X(I).LE.A5) THEN
+          ZF(I)=-0.1D0-0.3D0*(X(I)-A4)/(A5-A4)
+        ENDIF
+        IF (X(I).GE.A5.AND.X(I).LE.A6) THEN
           ZF(I)=-0.40D0
-        endif
-        if(x(i).ge.a6.and.x(i).le.a7) then
-          ZF(I)= -0.40D0-0.03D0*(x(i)-a6)/(a7-a6)
-        endif
-C         
+        ENDIF
+        IF(X(I).GE.A6.AND.X(I).LE.A7) THEN
+          ZF(I)= -0.40D0-0.03D0*(X(I)-A6)/(A7-A6)
+        ENDIF
+!         
       ENDDO
-C        
+!        
       RETURN
       END
 !                       *****************
@@ -841,16 +841,16 @@ C
 !     DEFAULT: IMPERMEABILITY AND NO FRICTION (SEE ALSO BORD3D)
 !
       DO IPOIN2 = 1,NPOIN2
-         LIUBOF%I(IPOIN2) = KLOG
-         LIVBOF%I(IPOIN2) = KLOG
-         LIWBOF%I(IPOIN2) = KLOG
-         UBORF%R(IPOIN2)  = 0.D0
-         VBORF%R(IPOIN2)  = 0.D0
-         WBORF%R(IPOIN2)  = 0.D0
-!        AUBORF%R(IPOIN2) = 0.D0
-!        AVBORF%R(IPOIN2) = 0.D0
-!        BUBORF%R(IPOIN2) = 0.D0
-!        BVBORF%R(IPOIN2) = 0.D0
+        LIUBOF%I(IPOIN2) = KLOG
+        LIVBOF%I(IPOIN2) = KLOG
+        LIWBOF%I(IPOIN2) = KLOG
+        UBORF%R(IPOIN2)  = 0.D0
+        VBORF%R(IPOIN2)  = 0.D0
+        WBORF%R(IPOIN2)  = 0.D0
+!       AUBORF%R(IPOIN2) = 0.D0
+!       AVBORF%R(IPOIN2) = 0.D0
+!       BUBORF%R(IPOIN2) = 0.D0
+!       BVBORF%R(IPOIN2) = 0.D0
       ENDDO
       AUBORF%TYPR='0'
       AVBORF%TYPR='0'
@@ -874,27 +874,27 @@ C
 !              NO FRICTION
 !
       DO IPLAN = 2,NPLAN
-         DO IPTFR = 1,NPTFR2
-            IPTFR3 = (IPLAN-1)*NPTFR2 + IPTFR
-            LIUBOL%I(IPTFR3) = LIUBOL%I(IPTFR)
-            LIVBOL%I(IPTFR3) = LIVBOL%I(IPTFR)
-            UBORL%R(IPTFR3)  = UBORL%R(IPTFR)
-            VBORL%R(IPTFR3)  = VBORL%R(IPTFR)
-            AUBORL%R(IPTFR3) = AUBORL%R(IPTFR)
-         ENDDO
+        DO IPTFR = 1,NPTFR2
+          IPTFR3 = (IPLAN-1)*NPTFR2 + IPTFR
+          LIUBOL%I(IPTFR3) = LIUBOL%I(IPTFR)
+          LIVBOL%I(IPTFR3) = LIVBOL%I(IPTFR)
+          UBORL%R(IPTFR3)  = UBORL%R(IPTFR)
+          VBORL%R(IPTFR3)  = VBORL%R(IPTFR)
+          AUBORL%R(IPTFR3) = AUBORL%R(IPTFR)
+        ENDDO
       ENDDO
 !
       DO IPTFR3 = 1,NPTFR3
 !                           KSORT: W FREE ON LATERAL BOUNDARIES
-         LIWBOL%I(IPTFR3) = KSORT
-!        VALUES SAVED IN SECOND DIMENSION BECAUSE ADVECTION
-!        SCHEMES MAY CHANGE THE VALUES 
-         LIUBOL%I(IPTFR3+NPTFR3) = LIUBOL%I(IPTFR3)
-         LIVBOL%I(IPTFR3+NPTFR3) = LIVBOL%I(IPTFR3)
-         LIWBOL%I(IPTFR3+NPTFR3) = LIWBOL%I(IPTFR3)
-         WBORL%R(IPTFR3)  = 0.D0
-!        BUBORL%R(IPTFR3) = 0.D0
-!        BVBORL%R(IPTFR3) = 0.D0
+        LIWBOL%I(IPTFR3) = KSORT
+!       VALUES SAVED IN SECOND DIMENSION BECAUSE ADVECTION
+!       SCHEMES MAY CHANGE THE VALUES 
+        LIUBOL%I(IPTFR3+NPTFR3) = LIUBOL%I(IPTFR3)
+        LIVBOL%I(IPTFR3+NPTFR3) = LIVBOL%I(IPTFR3)
+        LIWBOL%I(IPTFR3+NPTFR3) = LIWBOL%I(IPTFR3)
+        WBORL%R(IPTFR3)  = 0.D0
+!       BUBORL%R(IPTFR3) = 0.D0
+!       BVBORL%R(IPTFR3) = 0.D0
       ENDDO
       BUBORL%TYPR='0'
       BVBORL%TYPR='0'
@@ -914,15 +914,15 @@ C
 !     DEFAULT: IMPERMEABILITY AND NO FRICTION (SEE ALSO BORD3D)
 !
       DO IPOIN2 = 1,NPOIN2
-         LIUBOS%I(IPOIN2) = KLOG
-         LIVBOS%I(IPOIN2) = KLOG
-         LIWBOS%I(IPOIN2) = KLOG
-         UBORS%R(IPOIN2)  = 0.D0
-         VBORS%R(IPOIN2)  = 0.D0
-         WBORS%R(IPOIN2)  = 0.D0
-!        AUBORS%R(IPOIN2) = 0.D0
-!        BUBORS%R(IPOIN2) = 0.D0
-!        BVBORS%R(IPOIN2) = 0.D0
+        LIUBOS%I(IPOIN2) = KLOG
+        LIVBOS%I(IPOIN2) = KLOG
+        LIWBOS%I(IPOIN2) = KLOG
+        UBORS%R(IPOIN2)  = 0.D0
+        VBORS%R(IPOIN2)  = 0.D0
+        WBORS%R(IPOIN2)  = 0.D0
+!       AUBORS%R(IPOIN2) = 0.D0
+!       BUBORS%R(IPOIN2) = 0.D0
+!       BVBORS%R(IPOIN2) = 0.D0
       ENDDO
       AUBORS%TYPR='0'
       BUBORS%TYPR='0'
@@ -943,62 +943,62 @@ C
 !     **************
 !
       IF (NTRAC.NE.0) THEN
-         DO ITRAC = 1,NTRAC
+        DO ITRAC = 1,NTRAC
 !
 !     BOTTOM
 !     ======
 !
 !     DEFAULT: Neumann BC's
 !
-            DO IPOIN2 = 1,NPOIN2
-               LITABF%ADR(ITRAC)%P%I(IPOIN2) = KLOG
-               TABORF%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
-!              ATABOF%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
-!              BTABOF%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
-            ENDDO
-            ATABOF%ADR(ITRAC)%P%TYPR='0'
-            BTABOF%ADR(ITRAC)%P%TYPR='0'
+          DO IPOIN2 = 1,NPOIN2
+            LITABF%ADR(ITRAC)%P%I(IPOIN2) = KLOG
+            TABORF%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
+!           ATABOF%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
+!           BTABOF%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
+          ENDDO
+          ATABOF%ADR(ITRAC)%P%TYPR='0'
+          BTABOF%ADR(ITRAC)%P%TYPR='0'
 !
 !     SIDES
 !     =====
 !
 !     DEFAULT: Neumann BC's
 !
-!           WHAT HAS BEEN READ IN THE BOUNDARY CONDITIONS FILE
-!           FOR 1 TRACER IS DUPLICATED ON THE VERTICAL AND FOR
-!           ALL TRACERS.
+!         WHAT HAS BEEN READ IN THE BOUNDARY CONDITIONS FILE
+!         FOR 1 TRACER IS DUPLICATED ON THE VERTICAL AND FOR
+!         ALL TRACERS.
 !
-            DO IPLAN = 1,NPLAN
-              DO IPTFR = 1,NPTFR2
-                IPTFR3 = (IPLAN-1)*NPTFR2 + IPTFR
-                LITABL%ADR(ITRAC)%P%I(IPTFR3) = LITABL%ADR(1)%P%I(IPTFR)
-!               SAVING ON SECOND DIMENSION BECAUSE ADVECTION SCHEMES
-!               MAY CHANGE THIS VALUE
-                LITABL%ADR(ITRAC)%P%I(IPTFR3+NPTFR3) = 
-     &                                          LITABL%ADR(1)%P%I(IPTFR)
-                TABORL%ADR(ITRAC)%P%R(IPTFR3) = TABORL%ADR(1)%P%R(IPTFR)
-!               ATABOL%ADR(ITRAC)%P%R(IPTFR3) = ATABOL%ADR(1)%P%R(IPTFR)
-!               BTABOL%ADR(ITRAC)%P%R(IPTFR3) = BTABOL%ADR(1)%P%R(IPTFR)
-              ENDDO
+          DO IPLAN = 1,NPLAN
+            DO IPTFR = 1,NPTFR2
+              IPTFR3 = (IPLAN-1)*NPTFR2 + IPTFR
+              LITABL%ADR(ITRAC)%P%I(IPTFR3) = LITABL%ADR(1)%P%I(IPTFR)
+!             SAVING ON SECOND DIMENSION BECAUSE ADVECTION SCHEMES
+!             MAY CHANGE THIS VALUE
+              LITABL%ADR(ITRAC)%P%I(IPTFR3+NPTFR3) = 
+     &                                        LITABL%ADR(1)%P%I(IPTFR)
+              TABORL%ADR(ITRAC)%P%R(IPTFR3) = TABORL%ADR(1)%P%R(IPTFR)
+!             ATABOL%ADR(ITRAC)%P%R(IPTFR3) = ATABOL%ADR(1)%P%R(IPTFR)
+!             BTABOL%ADR(ITRAC)%P%R(IPTFR3) = BTABOL%ADR(1)%P%R(IPTFR)
             ENDDO
-            ATABOL%ADR(ITRAC)%P%TYPR='0'
-            BTABOL%ADR(ITRAC)%P%TYPR='0'
+          ENDDO
+          ATABOL%ADR(ITRAC)%P%TYPR='0'
+          BTABOL%ADR(ITRAC)%P%TYPR='0'
 !  
 !     FREE SURFACE
 !     =============
 !
 !     DEFAULT: Neumann BC's
 !
-            DO IPOIN2 = 1,NPOIN2
-               LITABS%ADR(ITRAC)%P%I(IPOIN2) = KLOG
-               TABORS%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
-!              ATABOS%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
-!              BTABOS%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
-            ENDDO
-            ATABOS%ADR(ITRAC)%P%TYPR='0'
-            BTABOS%ADR(ITRAC)%P%TYPR='0'
+          DO IPOIN2 = 1,NPOIN2
+            LITABS%ADR(ITRAC)%P%I(IPOIN2) = KLOG
+            TABORS%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
+!           ATABOS%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
+!           BTABOS%ADR(ITRAC)%P%R(IPOIN2) = 0.D0
+          ENDDO
+          ATABOS%ADR(ITRAC)%P%TYPR='0'
+          BTABOS%ADR(ITRAC)%P%TYPR='0'
 !
-         ENDDO
+        ENDDO
       ENDIF
 !
 !
@@ -1012,36 +1012,36 @@ C
 !
 !     DEFAULT : NO GRADIENT
 !
-         DO IPOIN2 = 1,NPOIN2
-            AKBORF%R(IPOIN2) = 0.D0
-            BKBORF%R(IPOIN2) = 0.D0
-            AEBORF%R(IPOIN2) = 0.D0
-            BEBORF%R(IPOIN2) = 0.D0
-         ENDDO
+        DO IPOIN2 = 1,NPOIN2
+          AKBORF%R(IPOIN2) = 0.D0
+          BKBORF%R(IPOIN2) = 0.D0
+          AEBORF%R(IPOIN2) = 0.D0
+          BEBORF%R(IPOIN2) = 0.D0
+        ENDDO
 !
 !     SIDES
 !     =====
 !
 !     DEFAULT : NO GRADIENT
 !
-         DO IPTFR3 = 1,NPTFR3
-           AKBORL%R(IPTFR3) = 0.D0
-           BKBORL%R(IPTFR3) = 0.D0
-           AEBORL%R(IPTFR3) = 0.D0
-           BEBORL%R(IPTFR3) = 0.D0
-         ENDDO
+        DO IPTFR3 = 1,NPTFR3
+          AKBORL%R(IPTFR3) = 0.D0
+          BKBORL%R(IPTFR3) = 0.D0
+          AEBORL%R(IPTFR3) = 0.D0
+          BEBORL%R(IPTFR3) = 0.D0
+        ENDDO
 !
 !     FREE SURFACE
 !     ============
 !
 !     DEFAULT : NO GRADIENT
 !
-         DO IPOIN2 = 1,NPOIN2
-            AKBORS%R(IPOIN2) = 0.D0
-            BKBORS%R(IPOIN2) = 0.D0
-            AEBORS%R(IPOIN2) = 0.D0
-            BEBORS%R(IPOIN2) = 0.D0
-         ENDDO
+        DO IPOIN2 = 1,NPOIN2
+          AKBORS%R(IPOIN2) = 0.D0
+          BKBORS%R(IPOIN2) = 0.D0
+          AEBORS%R(IPOIN2) = 0.D0
+          BEBORS%R(IPOIN2) = 0.D0
+        ENDDO
 !
       ENDIF
 !
@@ -1086,7 +1086,7 @@ C
           PBORL%R(IPTFR3)  = 0.D0
 ! ESSAI: DIRICHLET DE PRESSION A L'ENTREE
           IF(LIUBOL%I(IPTFR3).EQ.KENTU
-     *   .OR.LIUBOL%I(IPTFR3).EQ.KENT) LIPBOL%I(IPTFR3) = KENT
+     &   .OR.LIUBOL%I(IPTFR3).EQ.KENT) LIPBOL%I(IPTFR3) = KENT
 ! FIN ESSAI
         ENDDO
 !

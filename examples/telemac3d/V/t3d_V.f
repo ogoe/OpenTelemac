@@ -253,10 +253,10 @@
 !
       IF(SUIT2) THEN       
         DO I=1,NPLAN
-         DO J=1,NPOIN2
-         U%R((I-1)*NPOIN2+J)=U2D%R(J)
-         V%R((I-1)*NPOIN2+J)=V2D%R(J)
-         ENDDO
+          DO J=1,NPOIN2
+          U%R((I-1)*NPOIN2+J)=U2D%R(J)
+          V%R((I-1)*NPOIN2+J)=V2D%R(J)
+          ENDDO
         ENDDO
       ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
      &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
@@ -419,10 +419,10 @@
       
       IF(LISFON.GT.0) THEN
 !
-         MAS = .TRUE.
+        MAS = .TRUE.
 !
-         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
-     &               1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
+        CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
+     &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
       ENDIF
 !
 !-----------------------------------------------------------------------

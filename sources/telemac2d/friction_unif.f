@@ -154,14 +154,14 @@
 !     CV
 !     WAVE INDUCED FRICTION ENHANCMENT (OCONNOR AND YOO, 1988)
 ! 
-       IF(FRICOU)THEN 
-         CALL CPSTVC(CF,T2)
-         CALL OS('X=N(Y,Z)', T2,  U, V, C)
-         CALL OS('X=+(Y,C)', T2, T2, S, 1.D-6)      
-         DO I=1,NPOIN
-           CF%R(I)=CF%R(I)*(1.D0 + 0.72D0*ORBVEL%R(I)/T2%R(I))
-         ENDDO   
-       ENDIF
+      IF(FRICOU)THEN 
+        CALL CPSTVC(CF,T2)
+        CALL OS('X=N(Y,Z)', T2,  U, V, C)
+        CALL OS('X=+(Y,C)', T2, T2, S, 1.D-6)      
+        DO I=1,NPOIN
+          CF%R(I)=CF%R(I)*(1.D0 + 0.72D0*ORBVEL%R(I)/T2%R(I))
+        ENDDO   
+      ENDIF
 !
 ! ============= !
 ! WALL FRICTION !

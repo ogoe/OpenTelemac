@@ -5,15 +5,15 @@
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
-   <deco xref="default" >
-      <look savefig.format="png" image.cmap="jet" savefig.dpi="120" figure.figsize="[15;3]" />
-      <data title="bosse" author="artemis" contact="www.opentelemac.org" />
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="bj78" author="artemis" contact="www.opentelemac.org" />
    </deco>
    <deco xref="vect">
-      <look image.cmap="jet" />
+      <look colour="jet.xml" />
    </deco>
    <deco xref="line">
-      <look image.cmap="k" lines.color="red" />
+      <look colour="k" />
    </deco>
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

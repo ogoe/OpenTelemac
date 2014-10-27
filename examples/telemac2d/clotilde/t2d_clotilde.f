@@ -55,18 +55,18 @@
 !     &52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,
 !     &52.50D0,52.50D0,52.50D0 /     
 ! seuil passe navigable
-      INTEGER boucleCR6,nbathyCR6
-      PARAMETER (nbathyCR6=55)
-      INTEGER numeroCR6(nbathyCR6)
-      DOUBLE PRECISION fondCR6(nbathyCR6)
-      DATA numeroCR6 / 44437, 44438, 44366, 44324, 44326, 43373, 44473,
+      INTEGER BOUCLECR6,NBATHYCR6
+      PARAMETER (NBATHYCR6=55)
+      INTEGER NUMEROCR6(NBATHYCR6)
+      DOUBLE PRECISION FONDCR6(NBATHYCR6)
+      DATA NUMEROCR6 / 44437, 44438, 44366, 44324, 44326, 43373, 44473,
      &43748, 44325, 43747, 44442, 44415, 44385, 44386, 44373, 39586,
      &44432,43713,44367,7277,44377,44393,44433,
      &44464,44302,43720,44388,43715,44459,43714,44322,44387,44389,
      &44458,44449,29578,44431,43721,44472,38636, 44358, 44384, 44289, 
      &44290, 44423, 43485, 44372, 43840, 44291, 43792, 44402, 44371, 
      &44330, 44331, 44346/
-      DATA fondCR6  / 66.40D0, 66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
+      DATA FONDCR6  / 66.40D0, 66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0,66.40D0,66.40D0, 66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
@@ -75,14 +75,14 @@
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0 /     
 ! seuil passe est
-      INTEGER boucleCR7,nbathyCR7
-      PARAMETER (nbathyCR7=21)
-      INTEGER numeroCR7(nbathyCR7)
-      DOUBLE PRECISION fondCR7(nbathyCR7)
-      DATA numeroCR7 / 43910, 43890, 43504, 3801,43886,41708,43838,
+      INTEGER BOUCLECR7,NBATHYCR7
+      PARAMETER (NBATHYCR7=21)
+      INTEGER NUMEROCR7(NBATHYCR7)
+      DOUBLE PRECISION FONDCR7(NBATHYCR7)
+      DATA NUMEROCR7 / 43910, 43890, 43504, 3801,43886,41708,43838,
      &43839,43887,10707, 43692,17328,43780,43691,43602,42060,43477,
      &13973, 43570, 43476, 43475 /
-      DATA fondCR7  / 66.40D0, 66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
+      DATA FONDCR7  / 66.40D0, 66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0/    
 ! Fin CR
@@ -100,7 +100,7 @@
 !
         MAS=.TRUE.
         CALL FILTER(ZF,MAS,T1,T2,AM1,'MATMAS          ',
-     *              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
+     &              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
 !
       ENDIF
 !
@@ -135,27 +135,27 @@
 !
 !
       IF ((AT.GE.30000.D0) .AND. (AT.LE.31315.D0)) THEN
-      DO boucleCR6=1,nbathyCR6
-         ZF%R(GLOBAL_TO_LOCAL_POINT(numeroCR6(boucleCR6),MESH))=
-     &                                                0.01D0*AT-246.75D0    
-      ENDDO
+        DO BOUCLECR6=1,NBATHYCR6
+          ZF%R(GLOBAL_TO_LOCAL_POINT(NUMEROCR6(BOUCLECR6),MESH))=
+     &                                               0.01D0*AT-246.75D0
+        ENDDO
       ELSEIF (AT.GT.31315.D0) THEN
-      DO boucleCR6=1,nbathyCR6
-         ZF%R(GLOBAL_TO_LOCAL_POINT(numeroCR6(boucleCR6),MESH))=
-     &                                                fondCR6(boucleCR6)
-      ENDDO
+        DO BOUCLECR6=1,NBATHYCR6
+          ZF%R(GLOBAL_TO_LOCAL_POINT(NUMEROCR6(BOUCLECR6),MESH))=
+     &                                               FONDCR6(BOUCLECR6)
+        ENDDO
       ENDIF
 !
       IF ((AT.GE.30000.D0) .AND. (AT.LE.31190.D0)) THEN
-      DO boucleCR7=1,nbathyCR7
-         ZF%R(GLOBAL_TO_LOCAL_POINT(numeroCR7(boucleCR7),MESH))=
-     &                                                 0.01D0*AT-245.5D0
-      ENDDO
+        DO BOUCLECR7=1,NBATHYCR7
+          ZF%R(GLOBAL_TO_LOCAL_POINT(NUMEROCR7(BOUCLECR7),MESH))=
+     &                                                0.01D0*AT-245.5D0
+        ENDDO
       ELSEIF (AT.GT.31190.D0) THEN
-      DO boucleCR7=1,nbathyCR7
-         ZF%R(GLOBAL_TO_LOCAL_POINT(numeroCR7(boucleCR7),MESH))=
-     &                                                fondCR7(boucleCR7)
-      ENDDO
+        DO BOUCLECR7=1,NBATHYCR7
+          ZF%R(GLOBAL_TO_LOCAL_POINT(NUMEROCR7(BOUCLECR7),MESH))=
+     &                                               FONDCR7(BOUCLECR7)
+        ENDDO
       ENDIF
 !   
 ! Fin CR
@@ -165,7 +165,7 @@
                         DOUBLE PRECISION FUNCTION Q
 !                       ***************************
 !
-     *( I )
+     &( I )
 !
 !***********************************************************************
 !  TELEMAC 2D VERSION 5.0    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
@@ -250,7 +250,7 @@
 ! 
 !     PROGRAMMABLE PART                              
 !     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
-!                                                                                                                                            
+!
         Q = DEBIT(I)   
         IF (I.EQ.2) THEN            
             IF (AT.LE.36000.D0) THEN
@@ -295,7 +295,7 @@
 !                       ****************************
 !
 !
-     *( I , N )
+     &( I , N )
 !
 !***********************************************************************
 !  TELEMAC 2D VERSION 5.1    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
@@ -384,7 +384,7 @@
 ! 
 !     PROGRAMMABLE PART                              
 !     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
-!                                                                             
+!
         REWIND 26
         SL = COTE(I)
         IF (I.EQ.7) THEN            
@@ -423,7 +423,7 @@
 !                       ********************************
 !
 !
-     *( Q1CR, Q2CR, X1, X2)
+     &( Q1CR, Q2CR, X1, X2)
 !
       IMPLICIT NONE
 !

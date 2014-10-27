@@ -156,7 +156,7 @@
 !     V6P2: SO FAR THE MUD CONC IS CONSTANT PER LAYER 
 !     si mixte: calculer aussi les AVAI!
 !
-       DO I=1,NPOIN
+      DO I=1,NPOIN
         DO J= 1,NOMBLAY
 !
           CONC(I,J) = CONC_VASE(J)
@@ -174,7 +174,7 @@
 !              AVAIL(I,J,2)= 0.D0
 !             ENDIF
 !
-         ENDDO
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------

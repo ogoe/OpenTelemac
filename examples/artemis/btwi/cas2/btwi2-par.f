@@ -140,56 +140,56 @@
 
 
       DO I=1,NPTFR
-       JB=BOUNDARY_COLOUR%I(I)
-
-! PAROIS SOLIDES
-!
-      IF(JB.GE.245.AND.JB.LE.902)THEN
-         LIHBOR%I(I)=KLOG
-         RP%R(I)=1.D0  
-         TETAP%R(I)=0.D0
-         ALFAP%R(I)=0.D0
-      ENDIF
-!
-!
-! PAROIS LIQUIDES -FRONTIERE LIBRE
-! 
-      IF(JB.GE.903.AND.JB.LE.953)THEN
-         LIHBOR%I(I)=KSORT
-         TETAP%R(I)=23.D0
-      ENDIF
-!
-      IF(JB.GE.153.AND.JB.LE.244)THEN
-         LIHBOR%I(I)=KSORT
-         TETAP%R(I)=67.D0
-      ENDIF
-!
-!
-!
-! PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
-!
-      IF(JB.GE.954.AND.JB.LE.1042)THEN
-         LIHBOR%I(I)=KINC
-         TETAB%R(I)=67.D0
-         AUXIC =COS(TETAB%R(I)*DEGRAD)
-         AUXIS =SIN(TETAB%R(I)*DEGRAD)
-         HB%R(I)=1.69D0
-!   ---- PHASE
-         IG   = MESH%NBOR%I(I)
-         PHASOI=KINF*AUXIC*(X(IG)-X0)+KINF*AUXIS*(Y(IG)-Y0)
-         ALFAP%R(I) = PHASOI/DEGRAD
-      ENDIF
-      IF(JB.GE.1.AND.JB.LE.152)THEN
-         LIHBOR%I(I)=KINC
-         TETAB%R(I)=67.D0
-         AUXIC =COS(TETAB%R(I)*DEGRAD)
-         AUXIS =SIN(TETAB%R(I)*DEGRAD)
-         HB%R(I)=1.69D0
-!   ---- PHASE
-         IG   = MESH%NBOR%I(I)
-         PHASOI=KINF*AUXIC*(X(IG)-X0)+KINF*AUXIS*(Y(IG)-Y0)
-         ALFAP%R(I) = PHASOI/DEGRAD
-      ENDIF
+        JB=BOUNDARY_COLOUR%I(I)
+       
+!       PAROIS SOLIDES
+!      
+        IF(JB.GE.245.AND.JB.LE.902)THEN
+          LIHBOR%I(I)=KLOG
+          RP%R(I)=1.D0  
+          TETAP%R(I)=0.D0
+          ALFAP%R(I)=0.D0
+        ENDIF
+!      
+!      
+!       PAROIS LIQUIDES -FRONTIERE LIBRE
+!      
+        IF(JB.GE.903.AND.JB.LE.953)THEN
+          LIHBOR%I(I)=KSORT
+          TETAP%R(I)=23.D0
+        ENDIF
+!      
+        IF(JB.GE.153.AND.JB.LE.244)THEN
+          LIHBOR%I(I)=KSORT
+          TETAP%R(I)=67.D0
+        ENDIF
+!      
+!      
+!      
+!       PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
+!      
+        IF(JB.GE.954.AND.JB.LE.1042)THEN
+          LIHBOR%I(I)=KINC
+          TETAB%R(I)=67.D0
+          AUXIC =COS(TETAB%R(I)*DEGRAD)
+          AUXIS =SIN(TETAB%R(I)*DEGRAD)
+          HB%R(I)=1.69D0
+!       -- PHASE
+          IG   = MESH%NBOR%I(I)
+          PHASOI=KINF*AUXIC*(X(IG)-X0)+KINF*AUXIS*(Y(IG)-Y0)
+          ALFAP%R(I) = PHASOI/DEGRAD
+        ENDIF
+        IF(JB.GE.1.AND.JB.LE.152)THEN
+          LIHBOR%I(I)=KINC
+          TETAB%R(I)=67.D0
+          AUXIC =COS(TETAB%R(I)*DEGRAD)
+          AUXIS =SIN(TETAB%R(I)*DEGRAD)
+          HB%R(I)=1.69D0
+!       -- PHASE
+          IG   = MESH%NBOR%I(I)
+          PHASOI=KINF*AUXIC*(X(IG)-X0)+KINF*AUXIS*(Y(IG)-Y0)
+          ALFAP%R(I) = PHASOI/DEGRAD
+        ENDIF
       ENDDO
 !
 !
@@ -257,7 +257,7 @@
 !
         MAS=.TRUE.
         CALL FILTER(ZF,MAS,T1,T2,AM1,'MATMAS          ',
-     *              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
+     &              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
 !
       ENDIF
 !

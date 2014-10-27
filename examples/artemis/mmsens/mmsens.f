@@ -147,7 +147,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-       INTEGER I
+      INTEGER I
 !
 !-----------------------------------------------------------------------
 !
@@ -155,8 +155,8 @@
 !            CHANGES THE ORIGIN
 !
 !      DO I=1,NPOIN
-!	 X(I)=X(I)/100
-!	 Y(I)=Y(I)/2000
+!        X(I)=X(I)/100
+!        Y(I)=Y(I)/2000
 !     ENDDO
 !
 !-----------------------------------------------------------------------
@@ -271,43 +271,41 @@
 !
 
       DO I=1,NPTFR
-       JB=BOUNDARY_COLOUR%I(I)
-C
-      IF(JB.GE.821.AND.JB.LE.840) THEN     
-	 LIHBOR%I(I)=KINC
-	 HB%R(I)=0.202D0
-	 TETAB%R(I)=0.D0
-	 TETAP%R(I)=0.D0
-      ENDIF
-      IF(JB.EQ.1) THEN     
-	 LIHBOR%I(I)=KINC
-	 HB%R(I)=0.202D0
-	 TETAB%R(I)=0.D0
-	 TETAP%R(I)=0.D0
-      ENDIF
-C
-C PAROIS LIQUIDES -FRONTIERE LIBRE
-C
-      IF(JB.GE.401.AND.JB.LE.421) THEN
-	 LIHBOR%I(I)=KSORT
-	 TETAP%R(I)=0.D0
-      ENDIF
-C
-C PAROIS SOLIDES
-      IF(JB.GE.2.AND.JB.LE.400) THEN	 
-         LIHBOR%I(I)=KLOG
-	 RP%R(I)=1.D0
-	 TETAP%R(I)=0.D0
-	 ALFAP%R(I)=0.D0
-      ENDIF
-      IF(JB.GE.422.AND.JB.LE.820) THEN
-	 LIHBOR%I(I)=KLOG
-	 RP%R(I)=1.D0
-	 TETAP%R(I)=0.D0
-	 ALFAP%R(I)=0.D0
-      ENDIF
-
-
+        JB=BOUNDARY_COLOUR%I(I)
+!
+        IF(JB.GE.821.AND.JB.LE.840) THEN     
+          LIHBOR%I(I)=KINC
+          HB%R(I)=0.202D0
+          TETAB%R(I)=0.D0
+          TETAP%R(I)=0.D0
+        ENDIF
+        IF(JB.EQ.1) THEN     
+          LIHBOR%I(I)=KINC
+          HB%R(I)=0.202D0
+          TETAB%R(I)=0.D0
+          TETAP%R(I)=0.D0
+        ENDIF
+!     
+!       PAROIS LIQUIDES -FRONTIERE LIBRE
+!     
+        IF(JB.GE.401.AND.JB.LE.421) THEN
+          LIHBOR%I(I)=KSORT
+          TETAP%R(I)=0.D0
+        ENDIF
+!     
+!       PAROIS SOLIDES
+        IF(JB.GE.2.AND.JB.LE.400) THEN 
+          LIHBOR%I(I)=KLOG
+          RP%R(I)=1.D0
+          TETAP%R(I)=0.D0
+          ALFAP%R(I)=0.D0
+        ENDIF
+        IF(JB.GE.422.AND.JB.LE.820) THEN
+          LIHBOR%I(I)=KLOG
+          RP%R(I)=1.D0
+          TETAP%R(I)=0.D0
+          ALFAP%R(I)=0.D0
+        ENDIF
       ENDDO
 
 
@@ -438,60 +436,60 @@ C PAROIS SOLIDES
       DHTEST = 1.D6
 !
       DO I=1,NPOIN
-         T2%R(I) = 1.D0 + T1%R(I) *( 0.6522D0 +
-     &                    T1%R(I) *( 0.4622D0 +
-     &                    T1%R(I) *
-     &                    T1%R(I) *( 0.0864D0 +
-     &                    T1%R(I) *( 0.0675D0 ) )))
-         T2%R(I) = SQRT( T1%R(I)*(T1%R(I) + 1.D0/T2%R(I)) )
-         K%R(I)  = T2%R(I)/H%R(I)
-         DHTEST  = MIN( DHTEST , H%R(I) )
+        T2%R(I) = 1.D0 + T1%R(I) *( 0.6522D0 +
+     &                   T1%R(I) *( 0.4622D0 +
+     &                   T1%R(I) *
+     &                   T1%R(I) *( 0.0864D0 +
+     &                   T1%R(I) *( 0.0675D0 ) )))
+        T2%R(I) = SQRT( T1%R(I)*(T1%R(I) + 1.D0/T2%R(I)) )
+        K%R(I)  = T2%R(I)/H%R(I)
+        DHTEST  = MIN( DHTEST , H%R(I) )
       ENDDO
 !
 !     COMPUTE REFERENCE WAVE NUMBER KPHREF FOR AUTOMATIC PHASE CALCULATION
       IF (LPHASEAUTO) THEN
-!      CHECKS THE REFERENCE DEPTH HAS BEEN GIVEN 
-       IF (DEPREF.LT.0D0) THEN
-        IF(LNG.EQ.1) THEN
-         WRITE(LU,220)
+!       CHECKS THE REFERENCE DEPTH HAS BEEN GIVEN 
+        IF (DEPREF.LT.0D0) THEN
+          IF(LNG.EQ.1) THEN
+           WRITE(LU,220)
+          ENDIF
+          IF(LNG.EQ.2) THEN
+           WRITE(LU,221)
+          ENDIF
+220       FORMAT(1X,'CONDIH : ERREUR. SI VOUS UTILISEZ LE CALCUL      '
+     &           ,/,'         AUTOMATIQUE DES PHASES, IL FAUT         '
+     &           ,/,'         RENSEIGNER UNE PROFONDEUR DE REFERENCE  '
+     &           ,/,'         MOT CLEF : PROFONDEUR DE REFERENCE POUR '
+     &           ,/,'         LA PHASE AUTOMATIQUE                    ')
+         
+221       FORMAT(1X,'CONDIH : ERROR. IF YOU USE AUTOMATIC PHASE       '
+     &           ,/,'         CALCULATION, YOU HAVE TO GIVE A         '
+     &           ,/,'         REFERENCE WATER DEPTH                   '
+     &           ,/,'         KEY WORD :                              '
+     &           ,/,'        REFERENCE WATER DEPTH FOR AUTOMATIC PHASE')
+          CALL PLANTE(1) 
+          STOP               
         ENDIF
-        IF(LNG.EQ.2) THEN
-         WRITE(LU,221)
-        ENDIF
-220      FORMAT(1X,'CONDIH : ERREUR. SI VOUS UTILISEZ LE CALCUL      '  
-     &          ,/,'         AUTOMATIQUE DES PHASES, IL FAUT         '
-     &          ,/,'         RENSEIGNER UNE PROFONDEUR DE REFERENCE  '
-     &          ,/,'         MOT CLEF : PROFONDEUR DE REFERENCE POUR '
-     &          ,/,'         LA PHASE AUTOMATIQUE                    ')
-
-221      FORMAT(1X,'CONDIH : ERROR. IF YOU USE AUTOMATIC PHASE       '
-     &          ,/,'         CALCULATION, YOU HAVE TO GIVE A         '      
-     &          ,/,'         REFERENCE WATER DEPTH                   '
-     &          ,/,'         KEY WORD :                              '
-     &          ,/,'        REFERENCE WATER DEPTH FOR AUTOMATIC PHASE')
- 
-       STOP               
-       ENDIF
-       T1REF= OMEGA**2/GRAV * DEPREF
-       T2REF = 1.D0 + T1REF *( 0.6522D0 +
-     &                T1REF *( 0.4622D0 +
-     &                T1REF *
-     &                T1REF *( 0.0864D0 +
-     &                T1REF *( 0.0675D0 ) )))
-       T2REF = SQRT( T1REF*(T1REF + 1.D0/T2REF) )
-       KPHREF  = T2REF/DEPREF
+        T1REF= OMEGA**2/GRAV * DEPREF
+        T2REF = 1.D0 + T1REF *( 0.6522D0 +
+     &                 T1REF *( 0.4622D0 +
+     &                 T1REF *
+     &                 T1REF *( 0.0864D0 +
+     &                 T1REF *( 0.0675D0 ) )))
+        T2REF = SQRT( T1REF*(T1REF + 1.D0/T2REF) )
+        KPHREF  = T2REF/DEPREF
       ENDIF
 !   CHECKS WHETHER H HAS BEEN CLIPPED OR NOT
 !
       IF (DHTEST.LE.1.01D-2) THEN
-         IF(LNG.EQ.1) WRITE(LU,120)
-         IF(LNG.EQ.2) WRITE(LU,121)
-120      FORMAT(1X,'CONDIH : ATTENTION !! VOUS AVEZ ATTEINT LE SEUIL '
-     &          ,/,'         MINI DE HAUTEUR D''EAU (1 CM).'
-     &          ,/,'         VERIFIEZ BATHY OU CONDITIONS INITIALES')
-121      FORMAT(1X,'CONDIH : WARNING !! YOU REACHED MINIMUM THRESHOLD'
-     &          ,/,'         FOR WATER DEPTH (1 CM). CHECK THE'
-     &          ,/,'         BATHYMETRY OR INITIAL CONDITIONS')
+        IF(LNG.EQ.1) WRITE(LU,120)
+        IF(LNG.EQ.2) WRITE(LU,121)
+120     FORMAT(1X,'CONDIH : ATTENTION !! VOUS AVEZ ATTEINT LE SEUIL '
+     &         ,/,'         MINI DE HAUTEUR D''EAU (1 CM).'
+     &         ,/,'         VERIFIEZ BATHY OU CONDITIONS INITIALES')
+121     FORMAT(1X,'CONDIH : WARNING !! YOU REACHED MINIMUM THRESHOLD'
+     &         ,/,'         FOR WATER DEPTH (1 CM). CHECK THE'
+     &         ,/,'         BATHYMETRY OR INITIAL CONDITIONS')
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -506,8 +504,8 @@ C PAROIS SOLIDES
 !   COMPUTES GROUP VELOCITY
 !
       DO I=1,NPOIN
-         CG%R(I) = C%R(I)/2.D0 *
-     &             (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
+        CG%R(I) = C%R(I)/2.D0 *
+     &            (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
       ENDDO
 !
 !
@@ -545,16 +543,16 @@ C PAROIS SOLIDES
       IF(COURANT) THEN
 !       AMPLC=0.05 , 0.66 ou 1.
         AMPLC=1.0D0
-     	DO I=1,NPOIN!
-	UC%R(I)=0.D0
-	VC%R(I)=0.D0
-		IF(X(I).GE.5.D0.AND.X(I).LT.13.D0)THEN
-		UC%R(I)=AMPLC*((X(I)-5.D0)/8.D0)
-		ELSEIF(X(I).GE.13.D0)THEN
-		UC%R(I)=AMPLC
-		ENDIF
-	ENDDO
-      ENDIF	
+        DO I=1,NPOIN!
+        UC%R(I)=0.D0
+        VC%R(I)=0.D0
+        IF(X(I).GE.5.D0.AND.X(I).LT.13.D0)THEN
+          UC%R(I)=AMPLC*((X(I)-5.D0)/8.D0)
+        ELSEIF(X(I).GE.13.D0)THEN
+          UC%R(I)=AMPLC
+        ENDIF
+        ENDDO
+      ENDIF
 
 
 !-----------------------------------------------------------------------

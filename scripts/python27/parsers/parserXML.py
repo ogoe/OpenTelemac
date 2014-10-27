@@ -699,6 +699,7 @@ class actionRUN(ACTION):
                   else: raise Exception([{'name':'runCommand','msg':'I cannot see your output file '+self.active["deprefs"][xref]}])
                else:
                   layer = []
+                  print active.keys()
                   for oFile in active["output"]:
                      layer = findTargets(active,self.active["deprefs"][xref])
                      if layer != []:

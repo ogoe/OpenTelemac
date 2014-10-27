@@ -1,101 +1,101 @@
-C                       *****************
+!                       *****************
                         SUBROUTINE CONDIN
-C                       *****************
-C
-C***********************************************************************
-C TELEMAC 2D VERSION 5.2         19/08/98  J-M HERVOUET TEL: 30 87 80 18
-C
-C***********************************************************************
-C
-C     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________
-C |                | -- |  
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C***********************************************************************
-C
+!                       *****************
+!
+!***********************************************************************
+! TELEMAC 2D VERSION 5.2         19/08/98  J-M HERVOUET TEL: 30 87 80 18
+!
+!***********************************************************************
+!
+!     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |                | -- |  
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       DOUBLE PRECISION CC
       INTEGER I,ITRAC
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C  
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DU TEMPS
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!  
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DU TEMPS
+!
       AT = 0.D0
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DES VITESSES : VITESSES NULLES
-C
-C     CALL OS( 'X=C     ' , U , U , U , 0.D0 )
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DES VITESSES : VITESSES NULLES
+!
+!     CALL OS( 'X=C     ' , U , U , U , 0.D0 )
       CALL OS( 'X=C     ' , V , V , V , 0.D0 )
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DE H , LA HAUTEUR D'EAU
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DE H , LA HAUTEUR D'EAU
+!
       IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
-     *   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
+     &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0 )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0 )
       ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
-     *       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
+     &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , COTINI )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0   )
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
-     *       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
+     &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0  )
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
-     *       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
+     &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , HAUTIN )
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
-     *       CDTINI(1:10).EQ.'PARTICULAR'.OR.
-     *       CDTINI(1:07).EQ.'SPECIAL') THEN
-C  ZONE A MODIFIER                                                      
+     &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
+     &       CDTINI(1:07).EQ.'SPECIAL') THEN
+!  ZONE A MODIFIER                                                      
       CC = SQRT(4.D0*9.81D0) 
-C                             
+!                             
       DO I = 1 , NPOIN        
-C
-C  POUR TEMPS=0.9
-C                                                                       
-C     U(I) = 2.D0*((X(I)-10.5D0)/TEMPS+C0)/3.D0
-C      U(I)=MAX(0.D0,U(I))
-C      H(I)=MIN(4.D0,H(I))
-C      IF(X(I).GT.10.5D0+2*C0*TEMPS) THEN
-C        U(I)=0.D0
-C        H(I)=0.D0
-C      ENDIF                         
-C
-C  POUR TEMPS=0
-C                                                                       
+!
+!  POUR TEMPS=0.9
+!                                                                       
+!     U(I) = 2.D0*((X(I)-10.5D0)/TEMPS+C0)/3.D0
+!      U(I)=MAX(0.D0,U(I))
+!      H(I)=MIN(4.D0,H(I))
+!      IF(X(I).GT.10.5D0+2*C0*TEMPS) THEN
+!        U(I)=0.D0
+!        H(I)=0.D0
+!      ENDIF                         
+!
+!  POUR TEMPS=0
+!                                                                       
       IF(X(I).GT.10.5D0) THEN                                           
-        H%R(I) = 0.D0                                                     
-        U%R(I) = 0.D0                                                    
-C       U%R(I) = 2.D0*SQRT(9.81D0*4.D0)  
+        H%R(I) = 0.D0
+        U%R(I) = 0.D0
+!       U%R(I) = 2.D0*SQRT(9.81D0*4.D0)  
       ELSE      
         H%R(I) = 4.D0   
         U%R(I) = 0.D0   
       ENDIF                 
-C             
+!             
       ENDDO                          
-C  FIN DE LA ZONE A MODIFIER      
+!  FIN DE LA ZONE A MODIFIER      
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -106,84 +106,84 @@ C  FIN DE LA ZONE A MODIFIER
         CALL PLANTE(1)
         STOP
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DU TRACEUR
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DU TRACEUR
+!
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
           CALL OS( 'X=C     ' , X=T%ADR(ITRAC)%P , C=TRAC0(ITRAC) )
         ENDDO
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C INITIALISATION DE LA VISCOSITE
-C
+!
+!-----------------------------------------------------------------------
+!
+! INITIALISATION DE LA VISCOSITE
+!
       CALL OS( 'X=C     ' , VISC , VISC , VISC , PROPNU )
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C                       ***************************
+!                       ***************************
                         SUBROUTINE PRERES_TELEMAC2D
-C                       ***************************
-C
-C***********************************************************************
-C  TELEMAC 2D VERSION 5.2    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
-C
-C***********************************************************************
-C
-C     FONCTION  : PREPARATION DE VARIABLES QUI SERONT ECRITES SUR
-C                 LE FICHIER DE RESULTATS OU SUR LE LISTING.
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C |      NOM       |MODE|                   ROLE                       |
-C |________________|____|______________________________________________|
-C |      LT        | -->| NUMERO D'ITERATION
-C |________________|____|______________________________________________|
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C  APPELE PAR : TELMAC
-C
-C  SOUS-PROGRAMME APPELE : OV
-C
-C***********************************************************************
-C
+!                       ***************************
+!
+!***********************************************************************
+!  TELEMAC 2D VERSION 5.2    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
+!
+!***********************************************************************
+!
+!     FONCTION  : PREPARATION DE VARIABLES QUI SERONT ECRITES SUR
+!                 LE FICHIER DE RESULTATS OU SUR LE LISTING.
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! |      NOM       |MODE|                   ROLE                       |
+! |________________|____|______________________________________________|
+! |      LT        | -->| NUMERO D'ITERATION
+! |________________|____|______________________________________________|
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!
+!-----------------------------------------------------------------------
+!
+!  APPELE PAR : TELMAC
+!
+!  SOUS-PROGRAMME APPELE : OV
+!
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C     
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!     
       LOGICAL IMP,LEO,DEJA1,DEJA2,DEJA3
-C
+!
       INTEGER LTT,N,IMAX,I
-C
+!
       DOUBLE PRECISION HHH,XMAX,NF,PI,AMP,PHA,CC
-C
+!
       INTRINSIC MAX,SQRT
       DATA DEJA1/.FALSE./
       DATA DEJA2/.FALSE./
       DATA DEJA3/.FALSE./
       SAVE DEJA1,DEJA2,DEJA3,NF
-C
-C-----------------------------------------------------------------------
-C
-C LOGIQUES POUR DECIDER DES SORTIES
-C
+!
+!-----------------------------------------------------------------------
+!
+! LOGIQUES POUR DECIDER DES SORTIES
+!
       IMP=.FALSE.
       LEO=.FALSE.
       LTT=(LT/LISPRD)*LISPRD
@@ -194,26 +194,26 @@ C
         IMP=OUTINI
         LEO=OUTINI
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C 1)  PART WHICH MUST BE DONE EVEN IF THERE IS NO OUTPUT FOR THIS STEP
-C     BUT ONLY AFTER FIRST TIME STEP FOR GRAPHIC PRINTOUTS      
-C
-C----------------------------------------------------------------------- 
-C
+!
+!-----------------------------------------------------------------------
+!
+! 1)  PART WHICH MUST BE DONE EVEN IF THERE IS NO OUTPUT FOR THIS STEP
+!     BUT ONLY AFTER FIRST TIME STEP FOR GRAPHIC PRINTOUTS      
+!
+!-----------------------------------------------------------------------
+!
       IF(NPERIAF.GT.0.AND.LT.EQ.0) THEN 
-C       FOR OUTPUT OF INITIAL CONDITIONS
+!       FOR OUTPUT OF INITIAL CONDITIONS
         CALL OS('X=C     ',AMPL,AMPL,AMPL,0.D0)
         CALL OS('X=C     ',PHAS,PHAS,PHAS,0.D0)
       ENDIF
-C
+!
       IF(LT.GE.PTINIG) THEN
-C
-C=======================================================================
-C CALCUL DE LA COTE MAXIMUM ET TEMPS ASSOCIE
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DE LA COTE MAXIMUM ET TEMPS ASSOCIE
+!=======================================================================
+!
       IF(SORLEO(27).OR.SORIMP(27)) THEN
         IF(.NOT.DEJA1) THEN
           CALL OS('X=Y     ',MAXZ ,ZF,ZF,0.D0)
@@ -222,7 +222,7 @@ C
         ELSE
           DO N=1,NPOIN
             XMAX=H%R(N)+ZF%R(N)
-C           DRY LAND EXCLUDED (TO AVOID RANDOM TIMES)
+!           DRY LAND EXCLUDED (TO AVOID RANDOM TIMES)
             IF(XMAX.GT.MAXZ%R(N).AND.H%R(N).GT.0.01D0) THEN
               MAXZ%R(N)=XMAX
               IF(SORLEO(28).OR.SORIMP(28)) TMAXZ%R(N)=AT
@@ -230,11 +230,11 @@ C           DRY LAND EXCLUDED (TO AVOID RANDOM TIMES)
           ENDDO
         ENDIF
       ENDIF
-C
-C=======================================================================
-C CALCUL DE LA VITESSE MAXIMUM ET TEMPS ASSOCIE
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DE LA VITESSE MAXIMUM ET TEMPS ASSOCIE
+!=======================================================================
+!
       IF(SORLEO(29).OR.SORIMP(29)) THEN
         IF(.NOT.DEJA2) THEN
           CALL OS('X=C     ',MAXV ,MAXV ,MAXV ,0.D0)
@@ -243,7 +243,7 @@ C
         ELSE
           DO N=1,NPOIN
             XMAX=SQRT(U%R(N)**2+V%R(N)**2)
-C           DRY LAND EXCLUDED (TO AVOID RANDOM TIMES)
+!           DRY LAND EXCLUDED (TO AVOID RANDOM TIMES)
             IF(XMAX.GT.MAXV%R(N).AND.H%R(N).GT.0.01D0) THEN
               MAXV%R(N)=XMAX
               IF(SORLEO(30).OR.SORIMP(30)) TMAXV%R(N)=AT
@@ -251,14 +251,14 @@ C           DRY LAND EXCLUDED (TO AVOID RANDOM TIMES)
           ENDDO
         ENDIF
       ENDIF
-C
-C=======================================================================
-C IMPRESSIONS POUR LES POINTS REMARQUABLES
-C=======================================================================
-C
+!
+!=======================================================================
+! IMPRESSIONS POUR LES POINTS REMARQUABLES
+!=======================================================================
+!
       IF(LT.EQ.NIT.AND.NPTS.GT.0) THEN
         DO I=27,30
-C         CAUTION : HERE SORLEO IS USED INSTEAD OF SORIMP
+!         CAUTION : HERE SORLEO IS USED INSTEAD OF SORIMP
           IF(SORLEO(I)) THEN
             WRITE(LU,*) ' '
             WRITE(LU,*) ' '
@@ -267,21 +267,21 @@ C         CAUTION : HERE SORLEO IS USED INSTEAD OF SORIMP
             WRITE(LU,*) ' '
             DO N=1,NPTS
               WRITE(LU,*) NAME_PTS(N),' : ',
-     *                                    VARSOR%ADR(I)%P%R(LIST_PTS(N))
+     &                                    VARSOR%ADR(I)%P%R(LIST_PTS(N))
             ENDDO
           ENDIF
         ENDDO
       ENDIF
-C
-C=======================================================================
-C ANALYSES DE FOURIER DE LA COTE
-C=======================================================================
-C
-C     NF : NOMBRE DE POINTS DE LA SERIE TEMPORELLE
-C     ON CALCULE D'ABORD : SOMME (SIGNAL * EXP(-I OMEGA AT))
-C     EN METTANT LA PARTIE REELLE DANS AMPL ET L'IMAGINAIRE DANS PHAS
+!
+!=======================================================================
+! ANALYSES DE FOURIER DE LA COTE
+!=======================================================================
+!
+!     NF : NOMBRE DE POINTS DE LA SERIE TEMPORELLE
+!     ON CALCULE D'ABORD : SOMME (SIGNAL * EXP(-I OMEGA AT))
+!     EN METTANT LA PARTIE REELLE DANS AMPL ET L'IMAGINAIRE DANS PHAS
       IF(NPERIAF.GT.0) THEN
-C
+!
         PI=ACOS(-1.D0)
         IF(.NOT.DEJA3) THEN
           DO I=1,NPERIAF
@@ -296,17 +296,17 @@ C
           DO I=1,NPERIAF
             DO N=1,NPOIN
              AMPL%ADR(I)%P%R(N)=AMPL%ADR(I)%P%R(N)
-     *                          +(H%R(N)+ZF%R(N))*COS(2*PI*AT/PERIAF(I))
+     &                          +(H%R(N)+ZF%R(N))*COS(2*PI*AT/PERIAF(I))
              PHAS%ADR(I)%P%R(N)=PHAS%ADR(I)%P%R(N)
-     *                          -(H%R(N)+ZF%R(N))*SIN(2*PI*AT/PERIAF(I))
+     &                          -(H%R(N)+ZF%R(N))*SIN(2*PI*AT/PERIAF(I))
             ENDDO
           ENDDO
           NF=NF+1.D0
         ENDIF
-C
-C       PASSAGE FINAL A AMPLITUDE ET PHASE
-C       (APRES DIVISION PAR NF, ON A AMPL = AMPLITUDE * COS(PHASE)
-C                                 ET PHAS = AMPLITUDE * SIN(PHASE)
+!
+!       PASSAGE FINAL A AMPLITUDE ET PHASE
+!       (APRES DIVISION PAR NF, ON A AMPL = AMPLITUDE * COS(PHASE)
+!                                 ET PHAS = AMPLITUDE * SIN(PHASE)
         IF(LT.EQ.NIT) THEN
           DO I=1,NPERIAF
             DO N=1,NPOIN
@@ -314,7 +314,7 @@ C                                 ET PHAS = AMPLITUDE * SIN(PHASE)
              PHAS%ADR(I)%P%R(N)=PHAS%ADR(I)%P%R(N)/NF
              AMP=SQRT(AMPL%ADR(I)%P%R(N)**2+PHAS%ADR(I)%P%R(N)**2)
              PHA=ATAN2(PHAS%ADR(I)%P%R(N),AMPL%ADR(I)%P%R(N))
-C            PHASE ENTRE 0 ET 360 DEGRES
+!            PHASE ENTRE 0 ET 360 DEGRES
              PHA=PHA*180.D0/PI+180.D0
              AMPL%ADR(I)%P%R(N)=AMP
              PHAS%ADR(I)%P%R(N)=PHA
@@ -324,115 +324,115 @@ C            PHASE ENTRE 0 ET 360 DEGRES
               WRITE(LU,*) ' '
               WRITE(LU,*) ' '
               IF(LNG.EQ.1) WRITE(LU,*) 'ANALYSE DE LA PERIODE ',
-     *                                  PERIAF(I),' S :'
+     &                                  PERIAF(I),' S :'
               IF(LNG.EQ.2) WRITE(LU,*) 'ANALYSIS OF PERIOD ',
-     *                                  PERIAF(I),' S :'
+     &                                  PERIAF(I),' S :'
               WRITE(LU,*) ' '
               DO N=1,NPTS
                 WRITE(LU,*) 'AMPLITUDE ',NAME_PTS(N),' : ',
-     *                                   AMPL%ADR(I)%P%R(LIST_PTS(N))
+     &                                   AMPL%ADR(I)%P%R(LIST_PTS(N))
                 WRITE(LU,*) 'PHASE     ',NAME_PTS(N),' : ',
-     *                                   PHAS%ADR(I)%P%R(LIST_PTS(N))
+     &                                   PHAS%ADR(I)%P%R(LIST_PTS(N))
                 WRITE(LU,*) ' '
               ENDDO
             ENDIF
           ENDDO
-C       ENDIF DE : IF(LT.EQ.NIT)
+!       ENDIF DE : IF(LT.EQ.NIT)
         ENDIF
-C
-C     ENDIF DE : IF(NPERIAF.GT.0) THEN
+!
+!     ENDIF DE : IF(NPERIAF.GT.0) THEN
       ENDIF
-C     
-C-----------------------------------------------------------------------
-C
-C     ENDIF DE : IF(LT.GE.PTINIG) THEN
+!     
+!-----------------------------------------------------------------------
+!
+!     ENDIF DE : IF(LT.GE.PTINIG) THEN
       ENDIF
-C     
-C-----------------------------------------------------------------------
-C
-C 2)  PART WHICH MUST BE DONE ONLY IF THERE IS AN OUTPUT FOR THIS STEP
-C    
-C-----------------------------------------------------------------------
-C
-C     PAS D'IMPRESSION, PAS DE SORTIE SUR FICHIER, ON RESSORT
+!     
+!-----------------------------------------------------------------------
+!
+! 2)  PART WHICH MUST BE DONE ONLY IF THERE IS AN OUTPUT FOR THIS STEP
+!    
+!-----------------------------------------------------------------------
+!
+!     PAS D'IMPRESSION, PAS DE SORTIE SUR FICHIER, ON RESSORT
       IF(.NOT.(LEO.OR.IMP)) GO TO 1000
-C
-C
-C=======================================================================
-C CALCUL DE LA CELERITE (MISE DANS FU, VOIR LE BLOC VARSOR)
-C=======================================================================
-C
+!
+!
+!=======================================================================
+! CALCUL DE LA CELERITE (MISE DANS FU, VOIR LE BLOC VARSOR)
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(3)).OR.(IMP.AND.SORIMP(3))) THEN
         DO N=1,NPOIN
           FU%R(N) = SQRT ( GRAV * MAX(H%R(N),0.D0) )
         ENDDO
       ENDIF
-C
-C=======================================================================
-C CALCUL DE LA SURFACE LIBRE (= H + ZF, MISE DANS FV)
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DE LA SURFACE LIBRE (= H + ZF, MISE DANS FV)
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(5)).OR.(IMP.AND.SORIMP(5))) THEN
         CALL OS( 'X=Y+Z   ' , FV , H , ZF , 0.D0 )
       ENDIF
-C
-C=======================================================================
-C CALCUL DU NOMBRE DE FROUDE
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DU NOMBRE DE FROUDE
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(7)).OR.(IMP.AND.SORIMP(7))) THEN
         DO N=1,NPOIN
           HHH = MAX( H%R(N) , 1.D-8 )
           T2%R(N) = SQRT (( U%R(N)**2 + V%R(N)**2 ) / ( HHH*GRAV ))
         ENDDO
       ENDIF
-C
-C=======================================================================
-C CALCUL DU DEBIT SCALAIRE
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DU DEBIT SCALAIRE
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN
         DO N=1,NPOIN
-         T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
+          T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
         ENDDO
       ENDIF
-C
-C=======================================================================
-C CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT X
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT X
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(13)).OR.(IMP.AND.SORIMP(13))) THEN
         CALL CPSTVC(H,T4)
         DO N=1,NPOIN
           T4%R(N)=H%R(N)*U%R(N)
         ENDDO
       ENDIF
-C
-C=======================================================================
-C CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT Y
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT Y
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(14)).OR.(IMP.AND.SORIMP(14))) THEN
         CALL CPSTVC(H,T5)
         DO N=1,NPOIN
           T5%R(N)=H%R(N)*V%R(N)
         ENDDO
       ENDIF
-C
-C=======================================================================
-C CALCUL DE LA VITESSE SCALAIRE
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DE LA VITESSE SCALAIRE
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(15)).OR.(IMP.AND.SORIMP(15))) THEN
         CALL OS( 'X=N(Y,Z)' , T6 , U , V , 0.D0 )
       ENDIF
-C
-C=======================================================================
-C CALCUL DU NOMBRE DE COURANT
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DU NOMBRE DE COURANT
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(22)).OR.(IMP.AND.SORIMP(22))) THEN
-C                             IELM
+!                             IELM
         CALL CFLPSI(T9,U,V,DT,11,MESH,MSK,MASKEL)
         CALL MAXI(XMAX,IMAX,T9%R,NPOIN)
         IF (LNG.EQ.1) WRITE(LU,78) XMAX
@@ -440,11 +440,11 @@ C                             IELM
 78      FORMAT(1X,'PRERES : NOMBRE DE COURANT MAXIMUM :',G16.7)
 79      FORMAT(1X,'PRERES: MAXIMUM COURANT NUMBER: ',G16.7)
       ENDIF
-C
-C=======================================================================
-C CALCUL DE LA HAUTEUR EXACTE
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DE LA HAUTEUR EXACTE
+!=======================================================================
+!
       CC=SQRT(4.D0*9.81D0)
       IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN
         DO N=1,NPOIN
@@ -453,80 +453,80 @@ C
           PRIVE%ADR(1)%P%R(N) = MIN(4.D0,HHH)
         ENDDO     
       ENDIF
-C
-C=======================================================================
-C CALCUL DE LA VITESSE EXACTE
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DE LA VITESSE EXACTE
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(24)).OR.(IMP.AND.SORIMP(24))) THEN
         DO N=1,NPOIN
           PRIVE%ADR(2)%P%R(N) = 2.D0*(CC+X(N)/MAX(AT,DT))/3.D0
         ENDDO     
       ENDIF
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
 1000  CONTINUE
       RETURN
       END
-C                       ***************************
+!                       ***************************
                         SUBROUTINE NOMVAR_TELEMAC2D
-C                       ***************************
-C
-     *(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC)
-C
-C***********************************************************************
-C  TELEMAC 2D VERSION 5.2    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
-C
-C***********************************************************************
-C
-C FONCTION  :  FIXE LES NOMS DES VARIABLES DU CODE POUR LES FICHIERS
-C              DE RESULTAT ET DE GEOMETRIE (TEXTE) ET POUR LE FICHIER
-C              DE RESULTATS DU CALCUL PRECEDENT (TEXTPR)
-C
-C              EN GENERAL TEXTE ET TEXTPR SONT EGAUX SAUF SI ON FAIT
-C              UNE SUITE A PARTIR D'UN AUTRE LOGICIEL.
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C |      NOM       |MODE|                   ROLE |
-C |________________|____|______________________________________________|
-C |   TEXTE        |<-- | NOM DES VARIABLES
-C |   TEXTPR       |<-- | NOM DES VARIABLES DU CALCUL PRECEDENT
-C |________________|____|______________________________________________|
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C APPELE PAR : PREDON
-C
-C SOUS-PROGAMME APPELE : NEANT
-C
-C**********************************************************************
-C
+!                       ***************************
+!
+     &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC)
+!
+!***********************************************************************
+!  TELEMAC 2D VERSION 5.2    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
+!
+!***********************************************************************
+!
+! FONCTION  :  FIXE LES NOMS DES VARIABLES DU CODE POUR LES FICHIERS
+!              DE RESULTAT ET DE GEOMETRIE (TEXTE) ET POUR LE FICHIER
+!              DE RESULTATS DU CALCUL PRECEDENT (TEXTPR)
+!
+!              EN GENERAL TEXTE ET TEXTPR SONT EGAUX SAUF SI ON FAIT
+!              UNE SUITE A PARTIR D'UN AUTRE LOGICIEL.
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! |      NOM       |MODE|                   ROLE |
+! |________________|____|______________________________________________|
+! |   TEXTE        |<-- | NOM DES VARIABLES
+! |   TEXTPR       |<-- | NOM DES VARIABLES DU CALCUL PRECEDENT
+! |________________|____|______________________________________________|
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!
+!-----------------------------------------------------------------------
+!
+! APPELE PAR : PREDON
+!
+! SOUS-PROGAMME APPELE : NEANT
+!
+!**********************************************************************
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
+!
       CHARACTER*32 TEXTE(*),TEXTPR(*)
       CHARACTER*8  MNEMO(*)
       INTEGER, INTENT(IN)              :: NPERIAF,NTRAC
       CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(32)
-C
+!
       CHARACTER(LEN=2) I_IN_2_LETTERS(32)
       DATA I_IN_2_LETTERS /'1 ','2 ','3 ','4 ','5 ','6 ','7 ','8 ','9 ',
-     *                     '10','11','12','13','14','15','16','17','18',
-     *                     '19','20','21','22','23','24','25','26','27',
-     *                     '28','29','30','31','32'/
+     &                     '10','11','12','13','14','15','16','17','18',
+     &                     '19','20','21','22','23','24','25','26','27',
+     &                     '28','29','30','31','32'/
       INTEGER I
-C
-C-----------------------------------------------------------------------
-C
-C  ENGLISH
-C
+!
+!-----------------------------------------------------------------------
+!
+!  ENGLISH
+!
       IF(LNG.EQ.2) THEN
-C
+!
       TEXTE (1 ) = 'VELOCITY U      M/S             '
       TEXTE (2 ) = 'VELOCITY V      M/S             '
       TEXTE (3 ) = 'CELERITY        M/S             '
@@ -557,12 +557,12 @@ C
       TEXTE (28) = 'HIGH WATER TIME S               '
       TEXTE (29) = 'HIGHEST VELOCITYM/S             '
       TEXTE (30) = 'TIME OF HIGH VELS               '
-C
-C TEXTPR IS USED FOR READING PREVIOUS COMPUTATION FILES.
-C IN GENERAL TEXTPR=TEXTE BUT YOU CAN FOLLOW UP A COMPUTATION
-C FROM ANOTHER CODE WITH DIFFERENT NAMES THAT YOU HAVE TO
-C WRITE HERE.
-C
+!
+! TEXTPR IS USED FOR READING PREVIOUS COMPUTATION FILES.
+! IN GENERAL TEXTPR=TEXTE BUT YOU CAN FOLLOW UP A COMPUTATION
+! FROM ANOTHER CODE WITH DIFFERENT NAMES THAT YOU HAVE TO
+! WRITE HERE.
+!
       TEXTPR (1 ) = 'VELOCITY U      M/S             '
       TEXTPR (2 ) = 'VELOCITY V      M/S             '
       TEXTPR (3 ) = 'CELERITY        M/S             '
@@ -593,13 +593,13 @@ C
       TEXTPR (28) = 'HIGH WATER TIME S               '
       TEXTPR (29) = 'HIGHEST VELOCITYM/S             '
       TEXTPR (30) = 'TIME OF HIGH VELS               '
-C
-C-----------------------------------------------------------------------
-C
-C  FRANCAIS OU AUTRE
-C
+!
+!-----------------------------------------------------------------------
+!
+!  FRANCAIS OU AUTRE
+!
       ELSE
-C
+!
       TEXTE (1 ) = 'VITESSE U       M/S             '
       TEXTE (2 ) = 'VITESSE V       M/S             '
       TEXTE (3 ) = 'CELERITE        M/S             '
@@ -630,11 +630,11 @@ C
       TEXTE (28) = 'TEMPS COTE MAXI S               '
       TEXTE (29) = 'VITESSE MAXIMUM M/S             '
       TEXTE (30) = 'T VITESSE MAXI  S               '
-C
-C TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
-C A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
-C DE CALCUL A PARTIR D'UN AUTRE CODE.
-C
+!
+! TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
+! A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
+! DE CALCUL A PARTIR D'UN AUTRE CODE.
+!
       TEXTPR (1 ) = 'VITESSE U       M/S             '
       TEXTPR (2 ) = 'VITESSE V       M/S             '
       TEXTPR (3 ) = 'CELERITE        M/S             '
@@ -665,93 +665,93 @@ C
       TEXTPR (28) = 'TEMPS COTE MAXI S               '
       TEXTPR (29) = 'VITESSE MAXIMUM M/S             '
       TEXTPR (30) = 'T VITESSE MAXI  S               '
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C   ALIAS DES NOMS DE VARIABLES POUR LE FICHIER DES PARAMETRES
-C
-C     UVCHSBFQTKEDIJMXYPWAGLNORZ
-C     VITESSE U
+!
+!-----------------------------------------------------------------------
+!
+!   ALIAS DES NOMS DE VARIABLES POUR LE FICHIER DES PARAMETRES
+!
+!     UVCHSBFQTKEDIJMXYPWAGLNORZ
+!     VITESSE U
       MNEMO(1)   = 'U       '
-C     VITESSE V
+!     VITESSE V
       MNEMO(2)   = 'V       '
-C     CELERITE
+!     CELERITE
       MNEMO(3)   = 'C       '
-C     HAUTEUR D'EAU
+!     HAUTEUR D'EAU
       MNEMO(4)   = 'H       '
-C     SURFACE LIBRE
+!     SURFACE LIBRE
       MNEMO(5)   = 'S       '
-C     FOND
+!     FOND
       MNEMO(6)   = 'B       '
-C     FROUDE
+!     FROUDE
       MNEMO(7)   = 'F       '
-C     DEBIT SCALAIRE
+!     DEBIT SCALAIRE
       MNEMO(8)   = 'Q       '
-C     TRACEUR
+!     TRACEUR
       MNEMO(9)   = 'T       '
-C     ENERGIE TURBUL.
+!     ENERGIE TURBUL.
       MNEMO(10)   = 'K       '
-C     DISSIPATION
+!     DISSIPATION
       MNEMO(11)   = 'E       '
-C     VISCOSITE TURB.
+!     VISCOSITE TURB.
       MNEMO(12)   = 'D       '
-C     DEBIT SUIVANT X
+!     DEBIT SUIVANT X
       MNEMO(13)   = 'I       '
-C     DEBIT SUIVANT Y
+!     DEBIT SUIVANT Y
       MNEMO(14)   = 'J       '
-C     VITESSE SCALAIRE
+!     VITESSE SCALAIRE
       MNEMO(15)   = 'M       '
-C     VENT X
+!     VENT X
       MNEMO(16)   = 'X       '
-C     VENT Y
+!     VENT Y
       MNEMO(17)   = 'Y       '
-C     PRESSION ATMOS.
+!     PRESSION ATMOS.
       MNEMO(18)   = 'P       '
-C     FROTTEMENT
+!     FROTTEMENT
       MNEMO(19)   = 'W       '
-C     DERIVE EN X
+!     DERIVE EN X
       MNEMO(20)   = 'A       '
-C     DERIVE EN Y
+!     DERIVE EN Y
       MNEMO(21)   = 'G       '
-C     NBRE DE COURANT
+!     NBRE DE COURANT
       MNEMO(22)   = 'L       '
-C     VARIABLE 23
+!     VARIABLE 23
       MNEMO(23)   = 'N       '
-C     VARIABLE 24
+!     VARIABLE 24
       MNEMO(24)   = 'O       '
-C     VARIABLE 25
+!     VARIABLE 25
       MNEMO(25)   = 'R       '
-C     VARIABLE 26
+!     VARIABLE 26
       MNEMO(26)   = 'Z       '
-C     VARIABLE 27
+!     VARIABLE 27
       MNEMO(27)   = 'MAXZ    '
-C     VARIABLE 28
+!     VARIABLE 28
       MNEMO(28)   = 'TMXZ    '
-C     VARIABLE 29
+!     VARIABLE 29
       MNEMO(29)   = 'MAXV    '
-C     VARIABLE 30
+!     VARIABLE 30
       MNEMO(30)   = 'TMXV    '
-C
-C-----------------------------------------------------------------------
-C
-C     ANALYSES DE FOURIERS
-C
+!
+!-----------------------------------------------------------------------
+!
+!     ANALYSES DE FOURIERS
+!
       IF(NPERIAF.GT.0) THEN
         DO I=1,NPERIAF
           TEXTE(31+2*(I-1)) =  'AMPLI PERIODE '
-     *                       //I_IN_2_LETTERS(I)
-     *                       //'M               '
+     &                       //I_IN_2_LETTERS(I)
+     &                       //'M               '
           MNEMO(31+2*(I-1)) = 'AMPL'//I_IN_2_LETTERS(I)//'  '
           TEXTE(32+2*(I-1)) =  'PHASE PERIODE '
-     *                       //I_IN_2_LETTERS(I)
-     *                       //'DEGRES          '
+     &                       //I_IN_2_LETTERS(I)
+     &                       //'DEGRES          '
           MNEMO(32+2*(I-1)) = 'PHAS'//I_IN_2_LETTERS(I)//'  '
         ENDDO 
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END

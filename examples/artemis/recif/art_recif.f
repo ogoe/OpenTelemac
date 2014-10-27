@@ -114,44 +114,44 @@
       
       
       DO I=1,NPTFR
-       JB=BOUNDARY_COLOUR%I(I)
+        JB=BOUNDARY_COLOUR%I(I)
       
-      IF(JB.GE.4101.AND.JB.LE.4200)THEN
-         LIHBOR%I(I) = KINC
-         HB%R(I)     = 0.05D0
-         TETAB%R(I)  = 0.D0
-         TETAP%R(I)  = 0.D0
-         ALFAP%R(1)  = PHASOI
-      ENDIF
-      IF(JB.EQ.1)THEN
-         LIHBOR%I(I) = KINC
-         HB%R(I)     = 0.05D0
-         TETAB%R(I)  = 0.D0
-         TETAP%R(I)  = 0.D0
-         ALFAP%R(I)  = PHASOI
-      ENDIF
+        IF(JB.GE.4101.AND.JB.LE.4200)THEN
+          LIHBOR%I(I) = KINC
+          HB%R(I)     = 0.05D0
+          TETAB%R(I)  = 0.D0
+          TETAP%R(I)  = 0.D0
+          ALFAP%R(1)  = PHASOI
+        ENDIF
+        IF(JB.EQ.1)THEN
+          LIHBOR%I(I) = KINC
+          HB%R(I)     = 0.05D0
+          TETAB%R(I)  = 0.D0
+          TETAP%R(I)  = 0.D0
+          ALFAP%R(I)  = PHASOI
+        ENDIF
 
 
-! solide en y=0
-      IF(JB.GE.2.AND.JB.LE.2000)THEN
-         LIHBOR%I(I) = KLOG
-         RP%R(I) = 1.D0
-         TETAP%R(I) = 0.D0
-         ALFAP%R(I) = 0.D0
-      ENDIF 
-
-! solide libre  
-      IF(JB.GE.2001.AND.JB.LE.2101)THEN
+!       solide en y=0
+        IF(JB.GE.2.AND.JB.LE.2000)THEN
+          LIHBOR%I(I) = KLOG
+          RP%R(I) = 1.D0
+          TETAP%R(I) = 0.D0
+          ALFAP%R(I) = 0.D0
+        ENDIF 
+       
+!       solide libre  
+        IF(JB.GE.2001.AND.JB.LE.2101)THEN
           LIHBOR%I(I) = KSORT
           TETAP%R(I)=0.D0
-      ENDIF
-! solide en y = 1.6
-      IF(JB.GE.2102.AND.JB.LE.4100)THEN
-         LIHBOR%I(I) = KLOG
-         RP%R(I) = 1.D0
-         TETAP%R(I) = 0.D0
-         ALFAP%R(I) = 0.D0
-      ENDIF
+        ENDIF
+!       solide en y = 1.6
+        IF(JB.GE.2102.AND.JB.LE.4100)THEN
+          LIHBOR%I(I) = KLOG
+          RP%R(I) = 1.D0
+          TETAP%R(I) = 0.D0
+          ALFAP%R(I) = 0.D0
+        ENDIF
       
       ENDDO
 !-----------------------------------------------------------------------
@@ -205,7 +205,7 @@
 !
       PARAMETER( PI = 3.1415926535897932384626433D0)
 
-      REAL*8  D1,D3,L1,HCP,XRCP,XDEBUT
+      DOUBLE PRECISION :: D1,D3,L1,HCP,XRCP,XDEBUT
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       LOGICAL MAS
@@ -235,9 +235,9 @@
 
 ! TANH VARIATION
       DO I = 1,NPOIN
-       XRCP=X(I)-XDEBUT
-       HCP =(D1+D3)/2.-( (D1-D3)*TANH(3.*PI*((XRCP/L1)-0.5)) )/2. 
-       ZF%R(I) = D1-HCP
+        XRCP=X(I)-XDEBUT
+        HCP =(D1+D3)/2.-( (D1-D3)*TANH(3.*PI*((XRCP/L1)-0.5)) )/2. 
+        ZF%R(I) = D1-HCP
       ENDDO
 !
       RETURN

@@ -1062,7 +1062,7 @@
      &             DX,DY,DZ,DZ,Z,SHPFLO,SHZFLO,SHZFLO,SURDET,DT,
      &             IKLE,IFABOR,ELTFLO,ETAFLO,
      &             FRE,ELTBUF,ISUB,IELM,IELMU,NELEM,NELMAX,            
-     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,IR,NPOIN2,SENS,        
+     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,IR,NPOIN2,SENS,
      &             SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
      &             APOST=.TRUE.,ASTOCHA=STOCHA,AVISC=VISC)
 !
@@ -1484,7 +1484,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)          :: NFLOT,NFLOT_MAX,ETAL
-      DOUBLE PRECISION, INTENT(IN) :: DT,RHO_OIL,ETA_OIL,VOLDEV,GRAV       
+      DOUBLE PRECISION, INTENT(IN) :: DT,RHO_OIL,ETA_OIL,VOLDEV,GRAV
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

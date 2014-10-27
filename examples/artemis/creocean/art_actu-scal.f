@@ -114,46 +114,46 @@
 ! CONDITIONS AUX LIMITES DES FRONTIERES SOLIDES
 !**************************************************                                                                    
 !   plage au Nord Est
-         write(*,*) 'je suis dans bord1'
+      WRITE(*,*) 'JE SUIS DANS BORD1'
       DO I = 1,1029
-         LIHBOR%I(I) = KLOG
-         RP%R(I)     = 0.05D0
-         TETAP%R(I)  = 0.D0
-         ALFAP%R(I)  = 0.D0
+        LIHBOR%I(I) = KLOG
+        RP%R(I)     = 0.05D0
+        TETAP%R(I)  = 0.D0
+        ALFAP%R(I)  = 0.D0
       ENDDO
 !   enrochements perpendiculaires a la plage
       DO I = 704,784
-         LIHBOR%I(I) = KLOG
-         RP%R(I) = 0.15D0
-         TETAP%R(I) = 45.D0
-         ALFAP%R(I) = 0.D0
+        LIHBOR%I(I) = KLOG
+        RP%R(I) = 0.15D0
+        TETAP%R(I) = 45.D0
+        ALFAP%R(I) = 0.D0
       ENDDO
 !   plage et cote basse
       DO I = 785,947 
-         LIHBOR%I(I) = KLOG 
-         RP%R(I) = 0.05D0
-         TETAP%R(I) = 0.D0
-         ALFAP%R(I) = 0.D0
+        LIHBOR%I(I) = KLOG 
+        RP%R(I) = 0.05D0
+        TETAP%R(I) = 0.D0
+        ALFAP%R(I) = 0.D0
       ENDDO
 ! bassins du port de Borme et capitainerie (ile)
       DO I = 948,1029
-         LIHBOR%I(I) = KLOG
-         RP%R(I) = 1.D0
-         TETAP%R(I) = 0.D0
-         ALFAP%R(I) = 0.D0
+        LIHBOR%I(I) = KLOG
+        RP%R(I) = 1.D0
+        TETAP%R(I) = 0.D0
+        ALFAP%R(I) = 0.D0
       ENDDO
       DO I = 1,267
-         LIHBOR%I(I) = KLOG
-         RP%R(I) = 1.D0
-         TETAP%R(I) = 0.D0
-         ALFAP%R(I) = 0.D0
+        LIHBOR%I(I) = KLOG
+        RP%R(I) = 1.D0
+        TETAP%R(I) = 0.D0
+        ALFAP%R(I) = 0.D0
       ENDDO
 !   musoir et digue du port en enrochements
       DO I = 268,331
-         LIHBOR%I(I) = KLOG
-         RP%R(I) = 0.15D0
-         TETAP%R(I) = 0.D0
-         ALFAP%R(I) = 0.D0
+        LIHBOR%I(I) = KLOG
+        RP%R(I) = 0.15D0
+        TETAP%R(I) = 0.D0
+        ALFAP%R(I) = 0.D0
       ENDDO
 !**************************************************
 ! CONDITIONS AUX LIMITES DES FRONTIERES LQUIDES
@@ -166,65 +166,65 @@
 
 !  --- REFERENCE POINT FOR THE PHASE
 !  -- THIS METHOD DOESN'T WORK IN PARALLEL 
-        IG0=MESH%NBOR%I(332)
-        X0=X(IG0)
-        Y0=Y(IG0)
+      IG0=MESH%NBOR%I(332)
+      X0=X(IG0)
+      Y0=Y(IG0)
 
 
 ! limite sud: Onde Incidente
       DO I = 332,406
-         LIHBOR%I(I) = KINC
-         HB%R(I) = 2.D0
-         TETAB%R(I) = 180.D0
-         TETAP%R(I) = 63.D0
-!    --- PHASE
-          IG    = MESH%NBOR%I(I)
-          KK    = K%R(IG)
-          PHASOI=PHASOI+KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
-          ALFAP%R(I) = PHASOI/DEGRAD
-!    --- INCREMENT
-          X0=X(IG)
-          Y0=Y(IG)
+        LIHBOR%I(I) = KINC
+        HB%R(I) = 2.D0
+        TETAB%R(I) = 180.D0
+        TETAP%R(I) = 63.D0
+!    -- PHASE
+        IG    = MESH%NBOR%I(I)
+        KK    = K%R(IG)
+        PHASOI=PHASOI+KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
+        ALFAP%R(I) = PHASOI/DEGRAD
+!    -- INCREMENT
+        X0=X(IG)
+        Y0=Y(IG)
       ENDDO
 !
 ! limite Est : Onde Incidente
       DO I =  407,497
-         LIHBOR%I(I) = KINC
-         HB%R(I) = 2.D0
-         TETAB%R(I) = 180.D0
-         TETAP%R(I) = 0.D0
-!    --- PHASE
-          IG    = MESH%NBOR%I(I)
-          KK    = K%R(IG)
-          PHASOI=PHASOI+KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
-          ALFAP%R(I) = PHASOI/DEGRAD
-!    --- INCREMENT
-          X0=X(IG)
-          Y0=Y(IG)
+        LIHBOR%I(I) = KINC
+        HB%R(I) = 2.D0
+        TETAB%R(I) = 180.D0
+        TETAP%R(I) = 0.D0
+!    -- PHASE
+        IG    = MESH%NBOR%I(I)
+        KK    = K%R(IG)
+        PHASOI=PHASOI+KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
+        ALFAP%R(I) = PHASOI/DEGRAD
+!    -- INCREMENT
+        X0=X(IG)
+        Y0=Y(IG)
       ENDDO
 !
 ! limite nord: Onde incidente tant que Prof>5m
       DO I = 498,569
-         LIHBOR%I(I) = KINC
-         HB%R(I) = 2.D0
-         TETAB%R(I) = 180.D0
-         TETAP%R(I) = 73.D0
-!    --- PHASE
-          IG    = MESH%NBOR%I(I)
-          KK    = K%R(IG)
-          PHASOI=PHASOI+KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
-          ALFAP%R(I) = PHASOI/DEGRAD
-!    --- INCREMENT
-          X0=X(IG)
-          Y0=Y(IG)
+        LIHBOR%I(I) = KINC
+        HB%R(I) = 2.D0
+        TETAB%R(I) = 180.D0
+        TETAP%R(I) = 73.D0
+!    -- PHASE
+        IG    = MESH%NBOR%I(I)
+        KK    = K%R(IG)
+        PHASOI=PHASOI+KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
+        ALFAP%R(I) = PHASOI/DEGRAD
+!    -- INCREMENT
+        X0=X(IG)
+        Y0=Y(IG)
       ENDDO
 !
 ! limite Nord (h<5m): paroi absorbante
       DO I = 570,641
-         LIHBOR%I(I) = KLOG
-         RP%R(I) = 0.0D0
-         TETAP%R(I) = 0.D0
-         ALFAP%R(I) = 0.D0
+        LIHBOR%I(I) = KLOG
+        RP%R(I) = 0.0D0
+        TETAP%R(I) = 0.D0
+        ALFAP%R(I) = 0.D0
       ENDDO
        
        

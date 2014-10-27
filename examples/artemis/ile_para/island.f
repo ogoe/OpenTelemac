@@ -86,8 +86,8 @@
 !                                                                   
 ! JCB :    
       INTEGER IG  ,JB            
-      DOUBLE PRECISION R0,R1  ,PHASOI,DEGRAD,X0,Y0                                                                 
-      DOUBLE PRECISION AUXIC,AUXIS,KK                                                                
+      DOUBLE PRECISION R0,R1  ,PHASOI,DEGRAD,X0,Y0
+      DOUBLE PRECISION AUXIC,AUXIS,KK
 !
 !
       PARAMETER( PI = 3.1415926535897932384626433D0)
@@ -121,30 +121,30 @@
 
 
       DO I=1,NPTFR
-       JB=BOUNDARY_COLOUR%I(I)
+        JB=BOUNDARY_COLOUR%I(I)
 
 ! PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
 !
-      IF(JB.GE.1.AND.JB.LE.192)THEN
-         LIHBOR%I(I)=KINC
-         HB%R(I)=1.D0
-         TETAB%R(I)=90.D0
+        IF(JB.GE.1.AND.JB.LE.192)THEN
+           LIHBOR%I(I)=KINC
+           HB%R(I)=1.D0
+           TETAB%R(I)=90.D0
 !CP ---- PHASE : K and THETAB are the same everywhere on the boundary 
-         IG   = MESH%NBOR%I(I)
-         AUXIC =COS(TETAB%R(I)*DEGRAD)
-         AUXIS =SIN(TETAB%R(I)*DEGRAD)
-         KK=K%R(IG)
-         PHASOI=KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
-         ALFAP%R(I) = PHASOI/DEGRAD
-      ENDIF
+           IG   = MESH%NBOR%I(I)
+           AUXIC =COS(TETAB%R(I)*DEGRAD)
+           AUXIS =SIN(TETAB%R(I)*DEGRAD)
+           KK=K%R(IG)
+           PHASOI=KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
+           ALFAP%R(I) = PHASOI/DEGRAD
+        ENDIF
 !
 ! PAROIS SOLIDES
-      IF(JB.GE.193.AND.JB.LE.352)THEN
-         LIHBOR%I(I)=KLOG
-         RP%R(I)=1.D0
-         TETAP%R(I)=0.D0
-         ALFAP%R(I)=0.D0
-      ENDIF
+        IF(JB.GE.193.AND.JB.LE.352)THEN
+          LIHBOR%I(I)=KLOG
+          RP%R(I)=1.D0
+          TETAP%R(I)=0.D0
+          ALFAP%R(I)=0.D0
+        ENDIF
 
       ENDDO
       
@@ -203,7 +203,7 @@
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
 !     ---------------------------------------- 
 !                                                                       
-! JCB :                                                                       
+! JCB :
       DOUBLE PRECISION R0,R1,R2
 !
 !
@@ -243,8 +243,8 @@
 !
       DO II = 1 , NPOIN
 !
-         R2 = X(II)**2 + Y(II)**2
-         IF (R2.LE.R1**2) ZF%R(II) = 4000.D0*(1.D0-R2/R1**2)
+        R2 = X(II)**2 + Y(II)**2
+        IF (R2.LE.R1**2) ZF%R(II) = 4000.D0*(1.D0-R2/R1**2)
 !
       ENDDO
 !
@@ -324,17 +324,17 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-       INTEGER I
+      INTEGER I
 !
 !-----------------------------------------------------------------------
 !
 !  EXAMPLE : MULTIPLIES BY A CONSTANT (SCALES THE MESH)
 !            CHANGES THE ORIGIN
 !
-       DO I=1,NPOIN
-         X(I)=X(I)*400.D0
-         Y(I)=Y(I)*400.D0
-       ENDDO
+      DO I=1,NPOIN
+        X(I)=X(I)*400.D0
+        Y(I)=Y(I)*400.D0
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

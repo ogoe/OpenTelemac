@@ -72,7 +72,7 @@
           ZR(I)=0.D0
         ELSE
           ZR(I)=12.5D0
-        ENDIF                                                                                                               
+        ENDIF
       ENDDO 
 !
 !------------------
@@ -197,58 +197,58 @@
 !
       RETURN
       END
-C                       *************************
+!                       *************************
                         SUBROUTINE CONDIM_SISYPHE
-C                       *************************
-C
-     * (U      , V   , QU    , QV  , H   , ZF , Z ,
-     *  ESOMT  , THETAWR   , Q     , HWR  , TWR  ,
-     *  X      , Y   , NPOIN , AT  , PMAREE)
-C
-C***********************************************************************
-C SISYPHE VERSION 5.3                             E. PELTIER    11/09/95
-C                                                 C. LENORMANT
-C                                                 J.-M. HERVOUET
-C                                                
-C COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT      
-C***********************************************************************
-C
-C     FONCTION  : VALEURS IMPOSEES
-C                         - DU DEBIT VECTORIEL    QU, QV
-C                         - DE LA HAUTEUR D'EAU   H
-C                         - DE LA COTE DU FOND    ZF
-C                         - DE LA SURFACE LIBRE   Z
-C                         - DE L'EVOLUTION TOTALE ESOMT
-C                         - DU DEBIT              Q
-C                         - DE LA HAUTEUR DE HOULE HW
-C                         - DE LA PERIODE DE HOULE TW
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________
-C |   U , V        |<-- | COORDONNEES DES VECTEURS VITESSE
-C |   QU , QV      |<-- | DEBIT VECTORIEL SUIVANT X ET SUIVANT Y
-C |   H            |<-->| HAUTEUR D'EAU
-C |   ZF           |<-->| COTE DU FOND
-C |   Z            |<-->| COTE DE SURFACE LIBRE
-C |   ESOMT        |<-->| EVOLUTION TOTALE DES FONDS
-C |   C            |<-->| CELERITE
-C |   Q            |<-->| DEBIT
-C |   HW           | -->| HAUTEUR DE HOULE
-C |   TW           | -->| PERIODE DE HOULE
-C |   X,Y          | -->| COORDONNEES DU MAILLAGE
-C |   NPOIN        | -->| NOMBRE DE POINTS DU MAILLAGE
-C |   AT           | -->| TEMPS
-C |   PMAREE       | -->| PERIODE DE LA MAREE
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C PROGRAMME APPELANT : SISYPH
-C PROGRAMMES APPELES : 
-C***********************************************************************
-C
+!                       *************************
+!
+     & (U      , V   , QU    , QV  , H   , ZF , Z ,
+     &  ESOMT  , THETAWR   , Q     , HWR  , TWR  ,
+     &  X      , Y   , NPOIN , AT  , PMAREE)
+!
+!***********************************************************************
+! SISYPHE VERSION 5.3                             E. PELTIER    11/09/95
+!                                                 C. LENORMANT
+!                                                 J.-M. HERVOUET
+!                                                
+! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT      
+!***********************************************************************
+!
+!     FONCTION  : VALEURS IMPOSEES
+!                         - DU DEBIT VECTORIEL    QU, QV
+!                         - DE LA HAUTEUR D'EAU   H
+!                         - DE LA COTE DU FOND    ZF
+!                         - DE LA SURFACE LIBRE   Z
+!                         - DE L'EVOLUTION TOTALE ESOMT
+!                         - DU DEBIT              Q
+!                         - DE LA HAUTEUR DE HOULE HW
+!                         - DE LA PERIODE DE HOULE TW
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |   U , V        |<-- | COORDONNEES DES VECTEURS VITESSE
+! |   QU , QV      |<-- | DEBIT VECTORIEL SUIVANT X ET SUIVANT Y
+! |   H            |<-->| HAUTEUR D'EAU
+! |   ZF           |<-->| COTE DU FOND
+! |   Z            |<-->| COTE DE SURFACE LIBRE
+! |   ESOMT        |<-->| EVOLUTION TOTALE DES FONDS
+! |   C            |<-->| CELERITE
+! |   Q            |<-->| DEBIT
+! |   HW           | -->| HAUTEUR DE HOULE
+! |   TW           | -->| PERIODE DE HOULE
+! |   X,Y          | -->| COORDONNEES DU MAILLAGE
+! |   NPOIN        | -->| NOMBRE DE POINTS DU MAILLAGE
+! |   AT           | -->| TEMPS
+! |   PMAREE       | -->| PERIODE DE LA MAREE
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+! PROGRAMME APPELANT : SISYPH
+! PROGRAMMES APPELES : 
+!***********************************************************************
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -280,16 +280,16 @@ C
 !     INITIALISATION DES TABLEAUX NON LUS DANS LE FICHIER RESULTATS:
 !     --------------------------------------------------------------
 !
-      DO I=1,NPOIN                                                            
-         QU(I)=0.D0                                                             
-         Q(I) =0.D0                                                                                                                      
-         QV(I)=0.D0                                                             
-         Z(I) =17.D0                                                             
-         ZF(I)=16.D0-X(I)
-         U(I) =0.D0
-         V(I) =0.D0
-         H(I) =Z(I)-ZF(I)                                                             
-      ENDDO                                                                  
+      DO I=1,NPOIN
+        QU(I)=0.D0
+        Q(I) =0.D0
+        QV(I)=0.D0
+        Z(I) =17.D0
+        ZF(I)=16.D0-X(I)
+        U(I) =0.D0
+        V(I) =0.D0
+        H(I) =Z(I)-ZF(I)
+      ENDDO
 !                                                          
 !-----------------------------------------------------------------------
 !

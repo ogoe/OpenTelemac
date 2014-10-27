@@ -2,10 +2,10 @@
                         SUBROUTINE CORSTR 
 !                       ***************** 
 ! 
-!*********************************************************************** 
+!***********************************************************************
 !  TELEMAC 2D VERSION 5.2    17/08/94    J-M HERVOUET (LNH) 30 87 80 18 
 ! 
-!*********************************************************************** 
+!***********************************************************************
 ! 
 !      FONCTION: CORRECTION DU COEFFICIENT DE FROTTEMENT SUR LE FOND 
 !                QUAND IL EST VARIABLE EN TEMPS. 
@@ -16,24 +16,24 @@
 ! 
 !  
 ! 
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 !  EXAMPLE OF POSSIBLE ARGUMENTS 
 ! .________________.____.______________________________________________. 
-! |      NOM       |MODE|                   ROLE                       | 
-! |________________|____|______________________________________________| 
-! |    CHESTR      |<-- |  COEFFICIENT DE FROTTEMENT                   | 
+! |      NOM       |MODE|                   ROLE                       |
+! |________________|____|______________________________________________|
+! |    CHESTR      |<-- |  COEFFICIENT DE FROTTEMENT                   |
 ! |    X,Y         | -->|  COORDONNEE DU MAILLAGE .                    | 
-! |    NPOIN       | -->|  NOMBRE DE POINTS DU MAILLAGE                | 
-! |    PRIVE       | -->|  TABLEAU DE TRAVAIL DEFINI DANS PRINCI       | 
-! |    ZF          | -->|  COTE DU FOND                                | 
+! |    NPOIN       | -->|  NOMBRE DE POINTS DU MAILLAGE                |
+! |    PRIVE       | -->|  TABLEAU DE TRAVAIL DEFINI DANS PRINCI       |
+! |    ZF          | -->|  COTE DU FOND                                |
 ! |    KFROT       | -->|  LOI DE FROTTEMENT (LINEAIRE,CHEZY,STRICKLER)| 
-! |    FFON        | -->|  COEFFICIENT DE FROTTEMENT ASSOCIE A LA LOI  | 
+! |    FFON        | -->|  COEFFICIENT DE FROTTEMENT ASSOCIE A LA LOI  |
 ! |    H           | -->|  HAUTEUR D'EAU. 
 ! |    AT          | -->|  TIME. 
-! |________________|____|______________________________________________| 
+! |________________|____|______________________________________________|
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE) 
 ! 
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 ! 
 !  APPELE PAR : TELMAC 
 ! 
@@ -131,19 +131,19 @@
 ! 
 ! 
       DO I = 1 , NPOIN  
-        IF (inpoly(mesh%x%R(I),mesh%y%R(I),xD,yD,nD)) THEN 
+        IF (INPOLY(MESH%X%R(I),MESH%Y%R(I),XD,YD,ND)) THEN 
           CHESTR%R(I) = 1.D0 
 !         CHESTR%R(I) = 0.3D0 
         ENDIF 
  
-        IF (inpoly(mesh%x%R(I),mesh%y%R(I),xg,yg,ng)) THEN 
+        IF (INPOLY(MESH%X%R(I),MESH%Y%R(I),XG,YG,NG)) THEN 
           CHESTR%R(I) = 1.D0 
 !          CHESTR%R(I) = 0.3D0 
         ENDIF 
                
       ENDDO   
 ! 
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 ! 
       RETURN 
       END 
@@ -151,19 +151,19 @@
                         SUBROUTINE NOEROD 
 !                       ***************** 
 ! 
-     * (H , ZF , ZR , Z , X , Y , NPOIN , CHOIX , NLISS ) 
+     & (H , ZF , ZR , Z , X , Y , NPOIN , CHOIX , NLISS ) 
 ! 
-!*********************************************************************** 
+!***********************************************************************
 ! SISYPHE VERSION 5.1                             C. LENORMANT 
 !                                                 
 ! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT    
-!*********************************************************************** 
+!***********************************************************************
 ! 
 !     FONCTION  : IMPOSE LA VALEUR DE LA COTE DU FOND NON ERODABLE  ZR 
 ! 
 ! 
 !     RQ: LES METHODES DE TRAITEMENT DES FONDS NON ERODABLES PEUVENT CONDUIRE 
-!     A ZF < ZR A CERTAINS PAS DE TEMPS, POUR PALLIER A CELA ON PEUT CHOISIR  
+!     A ZF < ZR A CERTAINS PAS DE TEMPS, POUR PALLIER A CELA ON PEUT CHOISIR
 !     CHOISIR DE LISSER LA SOLUTION OBTENUE i.e NLISS > 0.   
 ! 
 !     FUNCTION  : IMPOSE THE RIGID BED LEVEL  ZR 
@@ -179,7 +179,7 @@
 ! |   Z            | -->| FREE SURFACE  
 ! |   X,Y          | -->| 2D COORDINATES 
 ! |   NPOIN        | -->| NUMBER OF 2D POINTS 
-! |   CHOIX        | -->| SELECTED METHOD FOR THE TREATMENT OF RIGID BEDS 
+! |   CHOIX        | -->| SELECTED METHOD FOR THE TREATMENT OF RIGID BEDS
 ! |   NLISS        |<-->| NUMBER OF SMOOTHINGS 
 ! |________________|____|______________________________________________ 
 ! MODE : -->(INPUT), <--(RESULT), <-->(MODIFIED DATA) 
@@ -197,7 +197,7 @@
       DOUBLE PRECISION , INTENT(IN)::  X(NPOIN) , Y(NPOIN), H(NPOIN) 
       DOUBLE PRECISION , INTENT(INOUT)::  ZR(NPOIN) 
 ! 
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
       INTEGER I 
 ! 
       INTEGER NPMAX2 
@@ -215,7 +215,7 @@
 ! 
 !       DEFAULT VALUE:       ZR=ZF-100  
 !                                                               
-        CALL OV( 'X=Y+C     ',ZR,ZF,ZF,-1000.D0,NPOIN)                                                     
+        CALL OV( 'X=Y+C     ',ZR,ZF,ZF,-1000.D0,NPOIN)
 ! 
 !------------------ 
 ! SMOOTHING OPTION 
@@ -292,11 +292,11 @@
 ! 
       DO I = 1 , NPOIN 
  
-        IF (inpoly(x(I),y(I),xD,yD,nD)) THEN 
+        IF (INPOLY(X(I),Y(I),XD,YD,ND)) THEN 
           ZR(I) = ZF(I) 
           ENDIF 
  
-        IF (inpoly(x(I),y(I),xg,yg,ng)) THEN 
+        IF (INPOLY(X(I),Y(I),XG,YG,NG)) THEN 
           ZR(I) = ZF(I) 
           ENDIF 
                
@@ -308,7 +308,7 @@
                           SUBROUTINE INIT_COMPO
 !                         ********************* 
 !
-     *(NCOUCHES) 
+     &(NCOUCHES) 
 !
 !*********************************************************************** 
 ! SISYPHE VERSION 5.3 
@@ -316,7 +316,7 @@
 ! 
 !                                                 
 ! COPYRIGHT EDF-BAW-IFH    
-!*********************************************************************** 
+!***********************************************************************
 ! 
 !     FONCTION  : DISTRIBUTION DES CLASSES 
 !                 % PAR COUCHE, STRATIFICATION  
@@ -332,7 +332,7 @@
 ! |      NOM       |MODE|                   ROLE 
 ! |________________|____|______________________________________________ 
 ! |                |    |   
-! |    AVAIL       |<-- | SEDIMENT FRACTION FOR EACH LAYER, CLASS AND NODE 
+! |    AVAIL       |<-- | SEDIMENT FRACTION FOR EACH LAYER, CLASS AND NODE
 ! |    AVAIL(10,NSICLA,NPOIN) 
 ! |    ES          |<-- |  THICKNESS FOR EACH LAYER AND NODE 
 ! |    ES(10,NPOIN) 
@@ -345,7 +345,7 @@
 !----------------------------------------------------------------------- 
 ! PROGRAMME APPELANT : INIT_AVAI  
 ! PROGRAMMES APPELES : NONE 
-!*********************************************************************** 
+!***********************************************************************
 ! 
       USE BIEF 
       USE DECLARATIONS_TELEMAC 
@@ -360,7 +360,7 @@
 !                                       NPOIN 
       INTEGER, INTENT (INOUT)::NCOUCHES(*) 
 ! 
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
       INTEGER I , J   
 !  
@@ -372,7 +372,7 @@
 ! 
           NCOUCHES(J) = 1 
 ! 
-      IF (zf%R(J)>454.5D0) THEN 
+      IF (ZF%R(J)>454.5D0) THEN 
 !  
       AVAIL(J,1,1) = 0.065 
       AVAIL(J,1,2) = 0.045 
@@ -381,7 +381,7 @@
       AVAIL(J,1,5) = 0.345 
       AVAIL(J,1,6) = 0.115 
 !  
-      elseif(zf%R(J)<453.8D0) then 
+      ELSEIF(ZF%R(J)<453.8D0) THEN 
 ! 
       AVAIL(J,1,1) = 0.065D0 
       AVAIL(J,1,2) = 0. 
@@ -390,14 +390,14 @@
       AVAIL(J,1,5) = 0. 
       AVAIL(J,1,6) = 0.935D0 
 ! 
-      elseif(zf%R(J)<454.5D0.AND.zf%R(J)>453.8D0) then 
+      ELSEIF(ZF%R(J)<454.5D0.AND.ZF%R(J)>453.8D0) THEN 
 !      DGRA = DMAX + (zf%R(J)-453.8D0)*(0.022D0-DMAX)/(454.5D0-453.8D0) 
 ! 
       AVAIL(J,1,1) = 0.065 
-      AVAIL(J,1,2) = 0.045*(zf%R(J)-453.8D0)/(454.5D0-453.8D0) 
-      AVAIL(J,1,3) = 0.145*(zf%R(J)-453.8D0)/(454.5D0-453.8D0) 
-      AVAIL(J,1,4) = 0.285*(zf%R(J)-453.8D0)/(454.5D0-453.8D0) 
-      AVAIL(J,1,5) = 0.345*(zf%R(J)-453.8D0)/(454.5D0-453.8D0) 
+      AVAIL(J,1,2) = 0.045*(ZF%R(J)-453.8D0)/(454.5D0-453.8D0) 
+      AVAIL(J,1,3) = 0.145*(ZF%R(J)-453.8D0)/(454.5D0-453.8D0) 
+      AVAIL(J,1,4) = 0.285*(ZF%R(J)-453.8D0)/(454.5D0-453.8D0) 
+      AVAIL(J,1,5) = 0.345*(ZF%R(J)-453.8D0)/(454.5D0-453.8D0) 
       AVAIL(J,1,6) = 1.-(AVAIL(J,1,1)+AVAIL(J,1,2)+AVAIL(J,1,3)
      &                    +AVAIL(J,1,4)+AVAIL(J,1,5)) 
 ! 

@@ -236,16 +236,16 @@
       ELSE
 !       CALL OS( 'X=0     ' , X=U )
         DO IPLAN=1,NPLAN
-        DO I=1,NPOIN2
-         IF(IPLAN.EQ.1) THEN
-           DELTAZ=(MESH3D%Z%R(I+NPOIN2)-MESH3D%Z%R(I))
-     *             /2.71828182845D0**2
-         ELSE
-           DELTAZ=MESH3D%Z%R(I+(IPLAN-1)*NPOIN2)-MESH3D%Z%R(I)
-         ENDIF
-         AUX=MAX(30.D0*DELTAZ/0.0162D0,1.D0)
-         U%R(I+(IPLAN-1)*NPOIN2)=(0.0703D0/0.41D0)*LOG(AUX)
-        ENDDO
+          DO I=1,NPOIN2
+            IF(IPLAN.EQ.1) THEN
+              DELTAZ=(MESH3D%Z%R(I+NPOIN2)-MESH3D%Z%R(I))
+     &                /2.71828182845D0**2
+            ELSE
+              DELTAZ=MESH3D%Z%R(I+(IPLAN-1)*NPOIN2)-MESH3D%Z%R(I)
+            ENDIF
+            AUX=MAX(30.D0*DELTAZ/0.0162D0,1.D0)
+            U%R(I+(IPLAN-1)*NPOIN2)=(0.0703D0/0.41D0)*LOG(AUX)
+          ENDDO
         ENDDO
         CALL OS( 'X=0     ' , X=V )
       ENDIF
@@ -379,10 +379,10 @@
 !
       IF(LISFON.GT.0) THEN
 !
-         MAS = .TRUE.
+        MAS = .TRUE.
 !
-         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
-     &               1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
+        CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
+     &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -468,9 +468,9 @@
 !
 !-----------------------------------------------------------------------
 !
-C SPECIFIQUE PROFIL DE ROUSE
-C
-C ESSAI JMH
+! SPECIFIQUE PROFIL DE ROUSE
+!
+! ESSAI JMH
       N=46
       IF(NCSIZE.GT.1) THEN
         NODE=0
@@ -484,14 +484,14 @@ C ESSAI JMH
       IF(NTRAC.GT.0) THEN
         PRINT*,'        Z                      U                  ULOG'
         DO I=1,NPLAN
-         IF(I.EQ.1) THEN
-           DELTAZ=(MESH3D%Z%R(NODE+NPOIN2)-MESH3D%Z%R(NODE))
-     &             /2.71828182845D0**2
-         ELSE
-           DELTAZ=MESH3D%Z%R(NODE+(I-1)*NPOIN2)-MESH3D%Z%R(NODE)
-         ENDIF
-         AUX=MAX(30.D0*DELTAZ/0.0162D0,1.D0)
-         ULOG=(0.0703D0/0.41D0)*LOG(AUX)
+          IF(I.EQ.1) THEN
+            DELTAZ=(MESH3D%Z%R(NODE+NPOIN2)-MESH3D%Z%R(NODE))
+     &              /2.71828182845D0**2
+          ELSE
+            DELTAZ=MESH3D%Z%R(NODE+(I-1)*NPOIN2)-MESH3D%Z%R(NODE)
+          ENDIF
+          AUX=MAX(30.D0*DELTAZ/0.0162D0,1.D0)
+          ULOG=(0.0703D0/0.41D0)*LOG(AUX)
           PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),U%R(NODE+(I-1)*NPOIN2),
      &           ULOG
         ENDDO
@@ -509,16 +509,16 @@ C ESSAI JMH
       ELSE
         PRINT*,'        Z                       U                  ULOG'
         DO I=1,NPLAN
-         IF(I.EQ.1) THEN
-           DELTAZ=(MESH3D%Z%R(NODE+NPOIN2)-MESH3D%Z%R(NODE))
-     &             /2.71828182845D0**2
-         ELSE
-           DELTAZ=MESH3D%Z%R(NODE+(I-1)*NPOIN2)-MESH3D%Z%R(NODE)
-         ENDIF
-         AUX=MAX(30.D0*DELTAZ/0.0162D0,1.D0)
-         ULOG=(0.0703D0/0.41D0)*LOG(AUX)
-          PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),U%R(NODE+(I-1)*NPOIN2),
-     &           ULOG
+          IF(I.EQ.1) THEN
+            DELTAZ=(MESH3D%Z%R(NODE+NPOIN2)-MESH3D%Z%R(NODE))
+     &              /2.71828182845D0**2
+          ELSE
+            DELTAZ=MESH3D%Z%R(NODE+(I-1)*NPOIN2)-MESH3D%Z%R(NODE)
+          ENDIF
+          AUX=MAX(30.D0*DELTAZ/0.0162D0,1.D0)
+          ULOG=(0.0703D0/0.41D0)*LOG(AUX)
+           PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),U%R(NODE+(I-1)*NPOIN2),
+     &            ULOG
         ENDDO
         PRINT*,'         Z                  NUT VIT '
         DO I=1,NPLAN
@@ -527,7 +527,7 @@ C ESSAI JMH
         ENDDO
       ENDIF
       ENDIF
-C FIN ESSAI JMH
+! FIN ESSAI JMH
 !
 !=======================================================================
 ! CELERITY OF WAVES = SQRT(GH) : PUT INTO T2_10
@@ -544,7 +544,7 @@ C FIN ESSAI JMH
 !=======================================================================
 !
       IF(LEO.AND.SORG2D(5)) THEN
-         CALL OS( 'X=Y+Z   ' , T2_01 , H  , ZF , 0.D0 )
+        CALL OS( 'X=Y+Z   ' , T2_01 , H  , ZF , 0.D0 )
       ENDIF
 !
 !=======================================================================
@@ -563,8 +563,8 @@ C FIN ESSAI JMH
 !=======================================================================
 !
       IF(LEO.AND.SORG2D(8)) THEN
-         CALL OS( 'X=N(Y,Z)' , X=T2_03 , Y=U2D, Z=V2D )
-         CALL OS( 'X=XY    ' , X=T2_03 , Y=H )
+        CALL OS( 'X=N(Y,Z)' , X=T2_03 , Y=U2D, Z=V2D )
+        CALL OS( 'X=XY    ' , X=T2_03 , Y=H )
       ENDIF
 !
 !=======================================================================
@@ -572,7 +572,7 @@ C FIN ESSAI JMH
 !=======================================================================
 !
       IF(LEO.AND.SORG2D(13)) THEN
-         CALL OS( 'X=YZ    ' , X=T2_04 , Y=H , Z=U2D )
+        CALL OS( 'X=YZ    ' , X=T2_04 , Y=H , Z=U2D )
       ENDIF
 !
 !=======================================================================
@@ -580,7 +580,7 @@ C FIN ESSAI JMH
 !=======================================================================
 !
       IF(LEO.AND.SORG2D(14)) THEN
-         CALL OS( 'X=YZ    ' , X=T2_05 , Y=H , Z=V2D )
+        CALL OS( 'X=YZ    ' , X=T2_05 , Y=H , Z=V2D )
       ENDIF
 !
 !=======================================================================
@@ -588,7 +588,7 @@ C FIN ESSAI JMH
 !=======================================================================
 !
       IF(LEO.AND.SORG2D(15)) THEN
-         CALL OS( 'X=N(Y,Z)' , X=T2_06 , Y=U2D , Z=V2D )
+        CALL OS( 'X=N(Y,Z)' , X=T2_06 , Y=U2D , Z=V2D )
       ENDIF
 !
 !=======================================================================
@@ -605,7 +605,7 @@ C FIN ESSAI JMH
 !=======================================================================
 !
       IF(LEO.AND.SORG2D(31)) THEN
-         CALL OS( 'X=SQR(Y)' , X=T2_07 , Y=UETCAR )
+        CALL OS( 'X=SQR(Y)' , X=T2_07 , Y=UETCAR )
       ENDIF
 !
 !=======================================================================
@@ -613,38 +613,38 @@ C FIN ESSAI JMH
 !=======================================================================
 !
       IF(LEO.AND.(SORG2D(32).OR.SORG2D(33).OR.SORG2D(34))) THEN
-!        QS IN T2_11, QSX IN T2_12, QSY IN T2_13
-!        GIVING A STRUCTURE OF LINEAR 2D VECTOR, LIKE H
-         CALL CPSTVC(H,T2_11)
-         CALL CPSTVC(H,T2_12)
-         CALL CPSTVC(H,T2_13)
-!        INITIALISES QSX AND QSY
-         CALL OS('X=0     ',X=T2_12)
-         CALL OS('X=0     ',X=T2_13)
-         DO IPLAN=1,NPLAN-1
-           DO I=1,NPOIN2
-             I3=I+NPOIN2*(IPLAN-1)
-             DELTAZ=Z(I3+NPOIN2)-Z(I3)
-!            INTEGRATES U*C ON THE VERTICAL
-             U_0=U%R(I3)
-             U_1=U%R(I3+NPOIN2)
-             V_0=V%R(I3)
-             V_1=V%R(I3+NPOIN2)
-             C_0=TA%ADR(NTRAC)%P%R(I3)
-             C_1=TA%ADR(NTRAC)%P%R(I3+NPOIN2)
-             T2_12%R(I)=T2_12%R(I)+DELTAZ*((U_0*C_1+U_1*C_0)/2.D0
-     &                                    +(U_1-U_0)*(C_1-C_0)/3.D0)
-             T2_13%R(I)=T2_13%R(I)+DELTAZ*((V_0*C_1+V_1*C_0)/2.D0
-     &                                    +(V_1-V_0)*(C_1-C_0)/3.D0)
-           ENDDO
-         ENDDO
-!        SOLID DISCHARGE IN M2/S (AS IN SISYPHE, FOR COMPARISON)
-         CALL OS('X=CX    ',X=T2_12,C=1.D0/RHOS)
-         CALL OS('X=CX    ',X=T2_13,C=1.D0/RHOS)
-!        QS AS NORM OF QSX AND QSY
-         IF(SORG2D(32)) THEN
-           CALL OS( 'X=N(Y,Z)' , X=T2_11 , Y=T2_12 , Z=T2_13 )
-         ENDIF
+!       QS IN T2_11, QSX IN T2_12, QSY IN T2_13
+!       GIVING A STRUCTURE OF LINEAR 2D VECTOR, LIKE H
+        CALL CPSTVC(H,T2_11)
+        CALL CPSTVC(H,T2_12)
+        CALL CPSTVC(H,T2_13)
+!       INITIALISES QSX AND QSY
+        CALL OS('X=0     ',X=T2_12)
+        CALL OS('X=0     ',X=T2_13)
+        DO IPLAN=1,NPLAN-1
+          DO I=1,NPOIN2
+            I3=I+NPOIN2*(IPLAN-1)
+            DELTAZ=Z(I3+NPOIN2)-Z(I3)
+!           INTEGRATES U*C ON THE VERTICAL
+            U_0=U%R(I3)
+            U_1=U%R(I3+NPOIN2)
+            V_0=V%R(I3)
+            V_1=V%R(I3+NPOIN2)
+            C_0=TA%ADR(NTRAC)%P%R(I3)
+            C_1=TA%ADR(NTRAC)%P%R(I3+NPOIN2)
+            T2_12%R(I)=T2_12%R(I)+DELTAZ*((U_0*C_1+U_1*C_0)/2.D0
+     &                                   +(U_1-U_0)*(C_1-C_0)/3.D0)
+            T2_13%R(I)=T2_13%R(I)+DELTAZ*((V_0*C_1+V_1*C_0)/2.D0
+     &                                   +(V_1-V_0)*(C_1-C_0)/3.D0)
+          ENDDO
+        ENDDO
+!       SOLID DISCHARGE IN M2/S (AS IN SISYPHE, FOR COMPARISON)
+        CALL OS('X=CX    ',X=T2_12,C=1.D0/RHOS)
+        CALL OS('X=CX    ',X=T2_13,C=1.D0/RHOS)
+!       QS AS NORM OF QSX AND QSY
+        IF(SORG2D(32)) THEN
+          CALL OS( 'X=N(Y,Z)' , X=T2_11 , Y=T2_12 , Z=T2_13 )
+        ENDIF
       ENDIF
 !
 !=======================================================================
@@ -652,13 +652,14 @@ C FIN ESSAI JMH
 !=======================================================================
 !
       IF(NTRAC.GT.0) THEN
-      DO I=1,NTRAC
-      IF(LEO.AND.SORG2D(34+I)) THEN
-        CALL VERMOY(TRAV2%ADR(13+I)%P%R,TRAV2%ADR(13+I)%P%R,
-     &              TA%ADR(I)%P%R,TA%ADR(I)%P%R,1,Z,
-     &              T3_01%R,T3_02%R,T3_03%R,1,NPLAN,NPOIN2,NPLAN,OPTBAN)
-      ENDIF
-      ENDDO
+        DO I=1,NTRAC
+          IF(LEO.AND.SORG2D(34+I)) THEN
+            CALL VERMOY(TRAV2%ADR(13+I)%P%R,TRAV2%ADR(13+I)%P%R,
+     &                  TA%ADR(I)%P%R,TA%ADR(I)%P%R,1,Z,
+     &                  T3_01%R,T3_02%R,T3_03%R,1,NPLAN,NPOIN2,
+     &                  NPLAN,OPTBAN)
+          ENDIF
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -673,8 +674,8 @@ C FIN ESSAI JMH
 !=======================================================================
 !
       IF(NONHYD.AND.LEO.AND.SORG3D(12)) THEN
-         CALL PHSTAT(PH%R,DELTAR%R,Z,T3_01%R,T3_02%R,RHO0,GRAV,
-     &               NPOIN3,NPOIN2,NPLAN,PRIVE)
+        CALL PHSTAT(PH%R,DELTAR%R,Z,T3_01%R,T3_02%R,RHO0,GRAV,
+     &              NPOIN3,NPOIN2,NPLAN,PRIVE)
       ENDIF
 !
 !=======================================================================

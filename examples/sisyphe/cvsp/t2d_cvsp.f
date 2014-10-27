@@ -37,7 +37,7 @@
       CHARACTER(LEN=250) PATH
       CHARACTER(LEN=144) MOTCAR(MAXKEY),FILE_DESC(4,MAXKEY)
 
-      Character(LEN=50) debugfile
+      CHARACTER(LEN=50) DEBUGFILE
 !
 !======================================================================
 !
@@ -94,17 +94,17 @@
 !
 
 
-C-----------------------------------------------------------------------
-C OPEN A DEBUGGING OUTFILE
+!-----------------------------------------------------------------------
+! OPEN A DEBUGGING OUTFILE
 !
-       write(unit=debugfile, fmt='(A,I4,A)') 'BILANZ',IPID,'.CSV'
-       open(87, file=debugfile , status='UNKNOWN')
-       write(unit=debugfile, fmt='(A,I4,A)') 'ALT',IPID,'.CSV'
-       open(88, file=debugfile , status='UNKNOWN')
-       write(88,*)
-     & "J_GLOBAL AT ES(J,1) D50 D90 DMAX tauB tauC A1 A2 A3 A4 A5"
-C-----------------------------------------------------------------------
-C
+      WRITE(UNIT=DEBUGFILE, FMT='(A,I4,A)') 'BILANZ',IPID,'.CSV'
+      OPEN(87, FILE=DEBUGFILE , STATUS='UNKNOWN')
+      WRITE(UNIT=DEBUGFILE, FMT='(A,I4,A)') 'ALT',IPID,'.CSV'
+      OPEN(88, FILE=DEBUGFILE , STATUS='UNKNOWN')
+      WRITE(88,*)
+     &"J_GLOBAL AT ES(J,1) D50 D90 DMAX TAUB TAUC A1 A2 A3 A4 A5"
+!-----------------------------------------------------------------------
+!
 !
 !     INITIALISES SISYPHE
 !
@@ -242,8 +242,8 @@ C
 !
 !-----------------------------------------------------------------------
 !
-      close(87)
-      close(88)
+      CLOSE(87)
+      CLOSE(88)
 !
 !-----------------------------------------------------------------------
 !

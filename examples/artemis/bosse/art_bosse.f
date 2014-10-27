@@ -112,48 +112,48 @@
 
 
       DO I=1,NPTFR
-       JB=BOUNDARY_COLOUR%I(I)
-
-! onde incidente 
-      IF(JB.GE.1101.AND.JB.LE.1600)THEN
-         LIHBOR%I(I) = KINC
-         HB%R(I)     = 0.01D0
-         TETAB%R(I)  = 0.D0
-         TETAP%R(I)  = 0.D0
-         ALFAP%R(I)  = 0.D0
-      ENDIF
-      IF(JB.EQ.1)THEN
-         LIHBOR%I(I) = KINC
-         HB%R(I)     = 0.01D0
-         TETAB%R(I)  = 0.D0
-         TETAP%R(I)  = 0.D0
-         ALFAP%R(I)  = 0.D0
-      ENDIF
-
-
-
-! solide en y=0
-      IF(JB.GE.2.AND.JB.LE.300)THEN
-         LIHBOR%I(I) = KLOG
-         RP%R(I) = 1.D0
-         TETAP%R(I) = 90.D0
-         ALFAP%R(I) = 0.D0
-      ENDIF
- 
-
-! solide libre  
-      IF(JB.GE.301.AND.JB.LE.801)THEN
+        JB=BOUNDARY_COLOUR%I(I)
+       
+!       onde incidente 
+        IF(JB.GE.1101.AND.JB.LE.1600)THEN
+          LIHBOR%I(I) = KINC
+          HB%R(I)     = 0.01D0
+          TETAB%R(I)  = 0.D0
+          TETAP%R(I)  = 0.D0
+          ALFAP%R(I)  = 0.D0
+        ENDIF
+        IF(JB.EQ.1)THEN
+          LIHBOR%I(I) = KINC
+          HB%R(I)     = 0.01D0
+          TETAB%R(I)  = 0.D0
+          TETAP%R(I)  = 0.D0
+          ALFAP%R(I)  = 0.D0
+        ENDIF
+       
+       
+       
+!       solide en y=0
+        IF(JB.GE.2.AND.JB.LE.300)THEN
+          LIHBOR%I(I) = KLOG
+          RP%R(I) = 1.D0
+          TETAP%R(I) = 90.D0
+          ALFAP%R(I) = 0.D0
+        ENDIF
+       
+       
+!       solide libre  
+        IF(JB.GE.301.AND.JB.LE.801)THEN
           LIHBOR%I(I) = KSORT
           TETAP%R(I)=0.D0
-      ENDIF
-
-! solide en y = 1.6
-      IF(JB.GE.802.AND.JB.LE.1100)THEN
-         LIHBOR%I(I) = KLOG
-         RP%R(I) = 1.D0
-         TETAP%R(I) = 90.D0
-         ALFAP%R(I) = 0.D0
-      ENDIF
+        ENDIF
+       
+!       solide en y = 1.6
+        IF(JB.GE.802.AND.JB.LE.1100)THEN
+          LIHBOR%I(I) = KLOG
+          RP%R(I) = 1.D0
+          TETAP%R(I) = 90.D0
+          ALFAP%R(I) = 0.D0
+        ENDIF
       
       ENDDO
 !-----------------------------------------------------------------------
@@ -207,7 +207,7 @@
 !
       PARAMETER( PI = 3.1415926535897932384626433D0)
 !
-      REAL*8  RCP,BCP,HCP,XCP,DCP,YCP
+      DOUBLE PRECISION :: RCP,BCP,HCP,XCP,DCP,YCP
 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -237,13 +237,13 @@
 
 ! Elliptical obstacle
       DO I = 1,NPOIN
-       DCP=( (X(I)-XCP)**2. + (Y(I)-YCP)**2. )**0.5
-       
-       IF ( DCP.LT.RCP ) THEN
-        ZF%R(I) = BCP*( 1. - (DCP/RCP)**2. )
-        ELSE
-        ZF%R(I) = 0D0
-       ENDIF
+        DCP=( (X(I)-XCP)**2. + (Y(I)-YCP)**2. )**0.5
+        
+        IF ( DCP.LT.RCP ) THEN
+          ZF%R(I) = BCP*( 1. - (DCP/RCP)**2. )
+          ELSE
+          ZF%R(I) = 0D0
+        ENDIF
       ENDDO
 !
       RETURN

@@ -56,7 +56,7 @@
 !
         MAS=.TRUE.
         CALL FILTER(ZF,MAS,T1,T2,AM1,'MATMAS          ',
-     *              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
+     &              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
 !
       ENDIF
 !

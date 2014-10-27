@@ -55,33 +55,33 @@
       IF(.NOT.SUIT2) THEN
 !
       IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
-     *   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
+     &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
         CALL OS( 'X=C     ' ,X=H,C=0.D0)
         CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
       ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
-     *       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
+     &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
         CALL OS( 'X=C     ' ,X=H,C=COTINI)
         CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
-     *       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
+     &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
         CALL OS( 'X=C     ' ,X=H,C=0.D0)
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
-     *       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
+     &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
         CALL OS( 'X=C     ' ,X=H,C=HAUTIN)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
-     *       CDTINI(1:10).EQ.'PARTICULAR'.OR.
-     *       CDTINI(1:07).EQ.'SPECIAL') THEN
+     &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
+     &       CDTINI(1:07).EQ.'SPECIAL') THEN
 !     ZONE A MODIFIER
-!     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE                                                     
+!     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE
         IF(LNG.EQ.1) WRITE(LU,10)                                       
         IF(LNG.EQ.2) WRITE(LU,11)                                       
 10      FORMAT(1X,'CONDIM : AVEC DES CONDITIONS INITIALES PARTICULIERES'
-     *      ,/,1X,'         VOUS DEVEZ MODIFIER CONDIM')                
+     &      ,/,1X,'         VOUS DEVEZ MODIFIER CONDIM')                
 11      FORMAT(1X,'CONDIM : WITH SPECIAL INITIAL CONDITIONS'            
-     *      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')                 
+     &      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')                 
         CALL PLANTE(1)                                                  
         STOP
-!     END OF SPECIAL INITIAL CONDITIONS                                                            
+!     END OF SPECIAL INITIAL CONDITIONS
 !     FIN DE LA ZONE A MODIFIER      
       ELSE
         IF(LNG.EQ.1) THEN
@@ -123,47 +123,47 @@
       DO IPLAN = 1,NPLAN
         TRANSF_PLANE%I(IPLAN)=1
       ENDDO
-C
-C     EXAMPLE 1: ALL PLANES WITH PRESCRIBED ELEVATION
-C
-C     DO IPLAN = 1,NPLAN
-C       TRANSF_PLANE%I(IPLAN)=3
-C     ENDDO
-C     ZPLANE%R(2)=-7.D0
-C     ZPLANE%R(3)=-4.D0
-C     ...
-C     ZPLANE%R(NPLAN-1)=-0.05D0
-C 
-C
-C     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
-C
-C     DO IPLAN = 1,NPLAN
-C       TRANSF_PLANE%I(IPLAN)=2
-C     ENDDO
-C     ZSTAR%R(2)=0.02D0
-C     ZSTAR%R(3)=0.1D0
-C     ...
-C     ZSTAR%R(NPLAN-1)=0.95D0
-C 
-C
-C     EXAMPLE 3: ONE PLANE WITH PRESCRIBED ELEVATION
-C                AND 2 SIGMA TRANSFORMATIONS, WITH NPLAN=7
-C                SIGMA TRANSFORMATIONS ARE MEANT BETWEEN
-C                BOTTOM, FIXED ELEVATION PLANES AND FREE SURFACE
-C                THE VALUES OF ZSTAR ARE LOCAL FOR EVERY
-C                SIGMA TRANSFORMATION: 0. FOR LOWER FIXED PLANE
-C                                      1. FOR UPPER FIXED PLANE
-C
+!
+!     EXAMPLE 1: ALL PLANES WITH PRESCRIBED ELEVATION
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=3
+!     ENDDO
+!     ZPLANE%R(2)=-7.D0
+!     ZPLANE%R(3)=-4.D0
+!     ...
+!     ZPLANE%R(NPLAN-1)=-0.05D0
+! 
+!
+!     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     ZSTAR%R(2)=0.02D0
+!     ZSTAR%R(3)=0.1D0
+!     ...
+!     ZSTAR%R(NPLAN-1)=0.95D0
+! 
+!
+!     EXAMPLE 3: ONE PLANE WITH PRESCRIBED ELEVATION
+!                AND 2 SIGMA TRANSFORMATIONS, WITH NPLAN=7
+!                SIGMA TRANSFORMATIONS ARE MEANT BETWEEN
+!                BOTTOM, FIXED ELEVATION PLANES AND FREE SURFACE
+!                THE VALUES OF ZSTAR ARE LOCAL FOR EVERY
+!                SIGMA TRANSFORMATION: 0. FOR LOWER FIXED PLANE
+!                                      1. FOR UPPER FIXED PLANE
+!
       DO IPLAN = 1,NPLAN
         TRANSF_PLANE%I(IPLAN)=1
       ENDDO
       TRANSF_PLANE%I(4)=3
       ZPLANE%R(4)=-0.2D0
-C     ZSTAR%R(2)=0.2D0
-C     ZSTAR%R(3)=0.8D0
-C     ZSTAR%R(5)=0.1D0
-C     ZSTAR%R(6)=0.9D0
-C 
+!     ZSTAR%R(2)=0.2D0
+!     ZSTAR%R(3)=0.8D0
+!     ZSTAR%R(5)=0.1D0
+!     ZSTAR%R(6)=0.9D0
+! 
 !
 !***********************************************************************
 !
@@ -235,7 +235,7 @@ C
 !
      &(TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 ! 
-!*********************************************************************** 
+!***********************************************************************
 ! TELEMAC 3D VERSION 6.0 20/08/2009 J.-M. HERVOUET (LNHE) 01 30 87 80 18
 ! 
 ! 11/02/2008 : BOUCLE SUR LES POINTS DE BORD CASSEE EN 3 BOUCLES POUR
@@ -245,7 +245,7 @@ C
 !
 ! 20/08/2009 : TEST ON IPBOT FOR DIRICHLET VELOCITIES
 !        
-!*********************************************************************** 
+!***********************************************************************
 ! 
 !      FONCTION: 
 !      ========= 
@@ -260,10 +260,10 @@ C
 ! 
 !      SPECIFIC BOUNDARY CONDITIONS, MAY BE MODIFIED BY THE USER. 
 !
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 !                          SOME USEFUL PARAMETERS
-! .________________.____.______________________________________________. 
-! !  NOM           !MODE!                  ROLE                        ! 
+! .________________.____.______________________________________________.
+! !  NOM           !MODE!                  ROLE                        !
 ! !________________!____!______________________________________________! 
 ! !  UBORF         !<-- ! PRESCRIBED VELOCITY ALONG X ON THE BOTTOM
 ! !  UBORL         !<-- ! PRESCRIBED VELOCITY ALONG X ON THE LATERAL
@@ -354,7 +354,7 @@ C
 ! !  DEBIMP        ! -->! ARRAY OF PRESCRIBED DISCHARGES
 ! !  COTIMP        ! -->! ARRAY OF PRESCRIBED ELEVATIONS
 ! !  VITIMP        ! -->! ARRAY OF PRESCRIBED VELOCITIES
-! !________________!____!______________________________________________! 
+! !________________!____!______________________________________________!
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE) 
 ! 
 !*********************************************************************** 
@@ -366,7 +366,7 @@ C
 !
 !               SEDIMENT IS THE LAST TRACER              
 !                                                                      
-!*********************************************************************** 
+!***********************************************************************
 ! 
       USE BIEF
       USE DECLARATIONS_TELEMAC
@@ -376,18 +376,18 @@ C
       IMPLICIT NONE 
       INTEGER LNG,LU 
       COMMON/INFO/LNG,LU 
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C     TIME AND ENTET ARE AT AND INFOGR (NOW IN DECLARATIONS_TELEMAC3D)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!     TIME AND ENTET ARE AT AND INFOGR (NOW IN DECLARATIONS_TELEMAC3D)
       DOUBLE PRECISION, INTENT(IN)    :: TIME
       INTEGER         , INTENT(IN)    :: LT
       LOGICAL         , INTENT(IN)    :: ENTET
       INTEGER         , INTENT(IN)    :: NPTFR2_DIM
       INTEGER         , INTENT(IN)    :: NFRLIQ
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER I,IPOIN2,NP,K1,IBORD,IVIT,ICOT,IDEB,IFRLIQ,IPROF,K,N,R
       INTEGER IPTFR,ITRAC,IPLAN,I3D
       DOUBLE PRECISION ROEAU,ROAIR,VITV,PROFZ,WINDRELX,WINDRELY     
@@ -458,14 +458,14 @@ C
 !     VERTICAL VELOCITIES SET AS HORIZONTAL VELOCITIES 
 !     THIS IS AN OPTION, OTHERWISE LIWBOL=KSORT (SEE LIMI3D)
 !
-C     DO IPTFR = 1,NPTFR2
-C       IPOIN2 = NBOR2%I(IPTFR)
-C       DO IPLAN = 1,NPLAN
-C         IBORD = (IPLAN-1)*NPTFR2 + IPTFR  
-C         LIWBOL%I(IBORD)= LIUBOL%I(IBORD)
-C         IF(LIWBOL%I(IBORD).EQ.KENT) WBORL%R(IBORD) = 0.D0
-C       ENDDO
-C     ENDDO
+!     DO IPTFR = 1,NPTFR2
+!       IPOIN2 = NBOR2%I(IPTFR)
+!       DO IPLAN = 1,NPLAN
+!         IBORD = (IPLAN-1)*NPTFR2 + IPTFR  
+!         LIWBOL%I(IBORD)= LIUBOL%I(IBORD)
+!         IF(LIWBOL%I(IBORD).EQ.KENT) WBORL%R(IBORD) = 0.D0
+!       ENDDO
+!     ENDDO
 !
 !     TRACERS 
 !
@@ -527,9 +527,9 @@ C     ENDDO
         ICOT=NUMLIQ%I(K)
         IF(STA_DIS_CURVES(ICOT).EQ.1) THEN
           HBOR%R(K) = STA_DIS_CUR(ICOT,FLUX_BOUNDARIES(ICOT),
-     *                            PTS_CURVES(ICOT),QZ,NFRLIQ,
-     *                            ZF%R(IPOIN2)+H%R(IPOIN2))
-     *                - ZF%R(IPOIN2)
+     &                            PTS_CURVES(ICOT),QZ,NFRLIQ,
+     &                            ZF%R(IPOIN2)+H%R(IPOIN2))
+     &                - ZF%R(IPOIN2)
           HBOR%R(K) = MAX(0.D0,HBOR%R(K))
         ELSEIF(NCOTE.GE.NUMLIQ%I(K)) THEN
           HBOR%R(K) = SL3(ICOT,AT,IPOIN2,INFOGR)-ZF%R(IPOIN2)
@@ -537,16 +537,16 @@ C     ENDDO
         ELSE
           IF(LNG.EQ.1) WRITE(LU,100) NUMLIQ%I(K)
 100       FORMAT(1X,'BORD3D : COTES IMPOSEES EN NOMBRE INSUFFISANT',/,
-     *           1X,'         DANS LE FICHIER DES PARAMETRES',/,
-     *           1X,'         IL EN FAUT AU MOINS : ',1I6,/,
-     *           1X,'         AUTRE POSSIBILITE :',/,
-     *           1X,'         FICHIER DES COURBES DE TARAGE MANQUANT')
+     &           1X,'         DANS LE FICHIER DES PARAMETRES',/,
+     &           1X,'         IL EN FAUT AU MOINS : ',1I6,/,
+     &           1X,'         AUTRE POSSIBILITE :',/,
+     &           1X,'         FICHIER DES COURBES DE TARAGE MANQUANT')
           IF(LNG.EQ.2) WRITE(LU,101) NUMLIQ%I(K)
 101       FORMAT(1X,'BORD3D: MORE PRESCRIBED ELEVATIONS ARE REQUIRED',/,
-     *           1X,'        IN THE PARAMETER FILE',/,
-     *           1X,'        AT LEAST ',1I6,' MUST BE GIVEN',/,
-     *           1X,'        OTHER POSSIBILITY:',/,
-     *           1X,'        STAGE-DISCHARGE CURVES FILE MISSING')
+     &           1X,'        IN THE PARAMETER FILE',/,
+     &           1X,'        AT LEAST ',1I6,' MUST BE GIVEN',/,
+     &           1X,'        OTHER POSSIBILITY:',/,
+     &           1X,'        STAGE-DISCHARGE CURVES FILE MISSING')
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -571,19 +571,19 @@ C     ENDDO
           I3D=(NP-1)*NPOIN2+IPOIN2
           IFRLIQ=NUMLIQ%I(K)
           IF(PROFVEL(IFRLIQ).EQ.2) THEN
-C           GIVEN BY USER IN BOUNDARY CONDITIONS FILE
+!           GIVEN BY USER IN BOUNDARY CONDITIONS FILE
             UBORL%R(IJK) = UBOR2D%R(K+NPTFR2)
             VBORL%R(IJK) = VBOR2D%R(K+NPTFR2)
           ELSEIF(PROFVEL(IFRLIQ).EQ.3) THEN
-C           NORMAL AND NORM GIVEN BY UBOR IN BOUNDARY CONDITIONS FILE
+!           NORMAL AND NORM GIVEN BY UBOR IN BOUNDARY CONDITIONS FILE
             UBORL%R(IJK) = -XNEBOR2%R(K)*UBOR2D%R(K+NPTFR2)
             VBORL%R(IJK) = -YNEBOR2%R(K)*UBOR2D%R(K+NPTFR2)
           ELSEIF(PROFVEL(IFRLIQ).EQ.4) THEN
-C           NORMAL AND PROPORTIONAL TO SQRT(H)
+!           NORMAL AND PROPORTIONAL TO SQRT(H)
             UBORL%R(IJK)=-XNEBOR2%R(K) * SQRT(MAX(H%R(IPOIN2),0.D0))
             VBORL%R(IJK)=-YNEBOR2%R(K) * SQRT(MAX(H%R(IPOIN2),0.D0))
           ELSE
-C           NORMAL AND NORM 1
+!           NORMAL AND NORM 1
             UBORL%R(IJK)=-XNEBOR2%R(K)
             VBORL%R(IJK)=-YNEBOR2%R(K)
           ENDIF
@@ -595,7 +595,7 @@ C           NORMAL AND NORM 1
 !         CASE OF A VERTICAL PROFILE
           IF(VERPROVEL(IFRLIQ).NE.1) THEN
             PROFZ=VEL_PROF_Z(IFRLIQ,NBOR2%I(K),
-     *                       AT,LT,NP,INFOGR,VERPROVEL(IFRLIQ))        
+     &                       AT,LT,NP,INFOGR,VERPROVEL(IFRLIQ))        
             UBORL%R(IJK) = UBORL%R(IJK)*PROFZ
             VBORL%R(IJK) = VBORL%R(IJK)*PROFZ
           ENDIF
@@ -622,24 +622,24 @@ C           NORMAL AND NORM 1
         IVIT=NUMLIQ%I(K)
         IF(NVIT.GE.IVIT) THEN
 !
-             DO NP=1,NPLAN
-               IBORD = (NP-1)*NPTFR2+K
-               UBORL%R(IBORD) =
-     *         -MESH2D%XNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
-               VBORL%R(IBORD) =
-     *         -MESH2D%YNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
-               WBORL%R(IBORD)=0.D0
-             END DO
+          DO NP=1,NPLAN
+            IBORD = (NP-1)*NPTFR2+K
+            UBORL%R(IBORD) =
+     &      -MESH2D%XNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
+            VBORL%R(IBORD) =
+     &      -MESH2D%YNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
+            WBORL%R(IBORD)=0.D0
+          END DO
 !
         ELSE
           IF(LNG.EQ.1) WRITE(LU,200) NUMLIQ%I(K)
-200       FORMAT(1X,'BORD3D : VITESSES IMPOSEES EN NOMBRE INSUFFISANT',/,
-     *           1X,'       DANS LE FICHIER DES PARAMETRES',/,
-     *           1X,'       IL EN FAUT AU MOINS : ',1I6)
+200       FORMAT(1X,'BORD3D : VITESSES IMPOSEES EN NOMBRE INSUFFISANT',
+     &           /,1X,'       DANS LE FICHIER DES PARAMETRES',/,
+     &           1X,'       IL EN FAUT AU MOINS : ',1I6)
           IF(LNG.EQ.2) WRITE(LU,201) NUMLIQ%I(K)
-201       FORMAT(1X,'BORD3D : MORE PRESCRIBED VELOCITIES ARE REQUIRED',/,
-     *           1X,'       IN THE PARAMETER FILE',/,
-     *           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
+201       FORMAT(1X,'BORD3D : MORE PRESCRIBED VELOCITIES ARE REQUIRED',
+     &           /,1X,'       IN THE PARAMETER FILE',/,
+     &           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -662,18 +662,18 @@ C           NORMAL AND NORM 1
             IF(IFRLIQ.EQ.0) THEN
               IF(LNG.EQ.1) WRITE(LU,298) IBORD
 298           FORMAT(1X,'BORD3D : VALEURS IMPOSEES DU TRACEUR',/,
-     *               1X,'         SUR PAROI SOLIDE',/,
-     *               1X,'         AU POINT DE BORD ',1I6)
+     &               1X,'         SUR PAROI SOLIDE',/,
+     &               1X,'         AU POINT DE BORD ',1I6)
               IF(LNG.EQ.2) WRITE(LU,299) IBORD
 299           FORMAT(1X,'BORD3D: PRESCRIBED TRACER VALUE',/,
-     *               1X,'        ON A SOLID BOUNDARY',/,
-     *               1X,'        AT BOUNDARY POINT ',1I6)
+     &               1X,'        ON A SOLID BOUNDARY',/,
+     &               1X,'        AT BOUNDARY POINT ',1I6)
               CALL PLANTE(1)
               STOP
             ENDIF            
-            IF(NTRACER.GE.IFRLIQ*NTRAC) THEN                             
+            IF(NTRACER.GE.IFRLIQ*NTRAC) THEN
               TABORL%ADR(ITRAC)%P%R(IBORD) = 
-     *        TR3(IFRLIQ,ITRAC,NBOR3%I(IBORD),AT,INFOGR)
+     &        TR3(IFRLIQ,ITRAC,NBOR3%I(IBORD),AT,INFOGR)
      
               IF(NP.LE.4) THEN
                 TABORL%ADR(ITRAC)%P%R(IBORD)=40.D0
@@ -685,30 +685,30 @@ C           NORMAL AND NORM 1
             ELSE
               IF(LNG.EQ.1) WRITE(LU,300) NUMLIQ%I(K)*NTRAC
 300           FORMAT(1X,'BORD3D : VALEURS IMPOSEES DU TRACEUR',/,
-     *               1X,'         EN NOMBRE INSUFFISANT',/,
-     *               1X,'         DANS LE FICHIER DES PARAMETRES',/,
-     *               1X,'         IL EN FAUT AU MOINS : ',1I6)
+     &               1X,'         EN NOMBRE INSUFFISANT',/,
+     &               1X,'         DANS LE FICHIER DES PARAMETRES',/,
+     &               1X,'         IL EN FAUT AU MOINS : ',1I6)
               IF(LNG.EQ.2) WRITE(LU,301) NUMLIQ%I(K)
 301           FORMAT(1X,'BORD3D: MORE PRESCRIBED TRACER VALUES',/,
-     *               1X,'        ARE REQUIRED IN THE PARAMETER FILE',/,
-     *               1X,'        AT LEAST ',1I6,' MUST BE GIVEN')
+     &               1X,'        ARE REQUIRED IN THE PARAMETER FILE',/,
+     &               1X,'        AT LEAST ',1I6,' MUST BE GIVEN')
               CALL PLANTE(1)
               STOP
             ENDIF
-C           CASE OF A PROFILE ON THE VERTICAL
+!           CASE OF A PROFILE ON THE VERTICAL
             IPROF=VERPROTRA(ITRAC+(IFRLIQ-1)*NTRAC)
             IF(IPROF.NE.1) THEN
               PROFZ=TRA_PROF_Z(IFRLIQ,NBOR2%I(K),
-     *                         AT,LT,NP,INFOGR,IPROF,ITRAC)
+     &                         AT,LT,NP,INFOGR,IPROF,ITRAC)
               IF(IPROF.EQ.2.OR.IPROF.EQ.3) THEN
                 TABORL%ADR(ITRAC)%P%R(IBORD)=PROFZ
               ELSE     
                 TABORL%ADR(ITRAC)%P%R(IBORD)=
-     *          TABORL%ADR(ITRAC)%P%R(IBORD)*PROFZ
+     &          TABORL%ADR(ITRAC)%P%R(IBORD)*PROFZ
               ENDIF
             ENDIF
           ENDIF
-C          
+!          
         ENDDO
         ENDDO
         ENDDO
@@ -738,13 +738,13 @@ C
           ELSE
           IF(LNG.EQ.1) WRITE(LU,400) IFRLIQ
 400       FORMAT(1X,'BORD3D : DEBITS IMPOSES',/,
-     *           1X,'       EN NOMBRE INSUFFISANT',/,
-     *           1X,'       DANS LE FICHIER DES PARAMETRES',/,
-     *           1X,'       IL EN FAUT AU MOINS : ',1I6)
+     &           1X,'       EN NOMBRE INSUFFISANT',/,
+     &           1X,'       DANS LE FICHIER DES PARAMETRES',/,
+     &           1X,'       IL EN FAUT AU MOINS : ',1I6)
           IF(LNG.EQ.2) WRITE(LU,401) IFRLIQ
 401       FORMAT(1X,'BORD3D : MORE PRESCRIBED FLOWRATES',/,
-     *           1X,'       ARE REQUIRED IN THE PARAMETER FILE',/,
-     *           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
+     &           1X,'       ARE REQUIRED IN THE PARAMETER FILE',/,
+     &           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -770,23 +770,23 @@ C
 !     EXAMPLE OF PRESCRIBED VERTICAL VELOCITIES AT ENTRANCES
 !     VELOCITIES TANGENT TO BOTTOM AND FREE SURFACE
 !
-C     DO K=1,NPTFR2
-C       IF(LIWBOL%I(K).EQ.KENT.OR.LIWBOL%I(K).EQ.KENTU) THEN
-C         DO NP=1,NPLAN
-C             IJK=(NP-1)*NPTFR2+K
-C             I2D=NBOR2%I(K)
-C             I3D=(NP-1)*NPOIN2+I2D
+!     DO K=1,NPTFR2
+!       IF(LIWBOL%I(K).EQ.KENT.OR.LIWBOL%I(K).EQ.KENTU) THEN
+!         DO NP=1,NPLAN
+!             IJK=(NP-1)*NPTFR2+K
+!             I2D=NBOR2%I(K)
+!             I3D=(NP-1)*NPOIN2+I2D
 !             WBORL DEDUCED FROM FREE SURFACE AND BOTTOM         
-C             TETA=(Z(I3D)-Z(I2D))/
-C    *        MAX(1.D-3,Z((NPLAN-1)*NPOIN2+I2D)-Z(I2D))
-C             GX=        TETA *GRADZN%ADR(1)%P%R(I2D)
-C    *            +(1.D0-TETA)*GRADZF%ADR(1)%P%R(I2D)
-C             GY=        TETA *GRADZN%ADR(2)%P%R(I2D)
-C    *            +(1.D0-TETA)*GRADZF%ADR(2)%P%R(I2D)
-C             WBORL%R(IJK)=UBORL%R(IJK)*GX+VBORL%R(IJK)*GY
-C         ENDDO
-C       ENDIF
-C     ENDDO
+!             TETA=(Z(I3D)-Z(I2D))/
+!    *        MAX(1.D-3,Z((NPLAN-1)*NPOIN2+I2D)-Z(I2D))
+!             GX=        TETA *GRADZN%ADR(1)%P%R(I2D)
+!    *            +(1.D0-TETA)*GRADZF%ADR(1)%P%R(I2D)
+!             GY=        TETA *GRADZN%ADR(2)%P%R(I2D)
+!    *            +(1.D0-TETA)*GRADZF%ADR(2)%P%R(I2D)
+!             WBORL%R(IJK)=UBORL%R(IJK)*GX+VBORL%R(IJK)*GY
+!         ENDDO
+!       ENDIF
+!     ENDDO
 !
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !           END OF AUTOMATIC TREATMENT OF LIQUID BOUNDARIES
@@ -799,36 +799,36 @@ C     ENDDO
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !
       IF(VENT) THEN 
-         ROEAU = 1000.D0 
-         ROAIR = 1.3D0 
-         DO IPOIN2 = 1,NPOIN2 
-!          RELATIVE WIND
-           WINDRELX=WIND%ADR(1)%P%R(IPOIN2)-U%R(NPOIN3-NPOIN2+IPOIN2)
-           WINDRELY=WIND%ADR(2)%P%R(IPOIN2)-V%R(NPOIN3-NPOIN2+IPOIN2)
-           VITV=SQRT(WINDRELX**2+WINDRELY**2) 
-!          A MORE ACCURATE TREATMENT 
-C          IF(VITV.LE.5.D0) THEN 
-C            FAIR = ROAIR/ROEAU*0.565D-3 
-C          ELSEIF (VITV.LE.19.22D0) THEN 
-C            FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3 
-C          ELSE 
-C            FAIR = ROAIR/ROEAU*2.513D-3 
-C          ENDIF 
-!          BEWARE : BUBORS IS VISCVI*DU/DN, NOT DU/DN
-           IF(H%R(IPOIN2).GT.HWIND) THEN
-!            EXPLICIT PART
-             BUBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2) 
-             BVBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2)
-!            IMPLICIT PART 
-             AUBORS%R(IPOIN2) = -FAIR*VITV
-             AVBORS%R(IPOIN2) = -FAIR*VITV 
-           ELSE
-             BUBORS%R(IPOIN2) = 0.D0 
-             BVBORS%R(IPOIN2) = 0.D0
-             AUBORS%R(IPOIN2) = 0.D0
-             AVBORS%R(IPOIN2) = 0.D0 
-           ENDIF    
-         ENDDO
+        ROEAU = 1000.D0 
+        ROAIR = 1.3D0 
+        DO IPOIN2 = 1,NPOIN2 
+!         RELATIVE WIND
+          WINDRELX=WIND%ADR(1)%P%R(IPOIN2)-U%R(NPOIN3-NPOIN2+IPOIN2)
+          WINDRELY=WIND%ADR(2)%P%R(IPOIN2)-V%R(NPOIN3-NPOIN2+IPOIN2)
+          VITV=SQRT(WINDRELX**2+WINDRELY**2) 
+!         A MORE ACCURATE TREATMENT 
+!         IF(VITV.LE.5.D0) THEN 
+!           FAIR = ROAIR/ROEAU*0.565D-3 
+!         ELSEIF (VITV.LE.19.22D0) THEN 
+!           FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3 
+!         ELSE 
+!           FAIR = ROAIR/ROEAU*2.513D-3 
+!         ENDIF 
+!         BEWARE : BUBORS IS VISCVI*DU/DN, NOT DU/DN
+          IF(H%R(IPOIN2).GT.HWIND) THEN
+!           EXPLICIT PART
+            BUBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2) 
+            BVBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2)
+!           IMPLICIT PART 
+            AUBORS%R(IPOIN2) = -FAIR*VITV
+            AVBORS%R(IPOIN2) = -FAIR*VITV 
+          ELSE
+            BUBORS%R(IPOIN2) = 0.D0 
+            BVBORS%R(IPOIN2) = 0.D0
+            AUBORS%R(IPOIN2) = 0.D0
+            AVBORS%R(IPOIN2) = 0.D0 
+          ENDIF    
+        ENDDO
       ENDIF
 !
 ! 
@@ -882,7 +882,7 @@ C          ENDIF
 !
 !
 !
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 !
 !     OPTIMIZATION:
 !
@@ -1028,7 +1028,7 @@ C          ENDIF
               DISBOT = MIN(ZSP-ZFP,DISMIN_BOT)
               DISSUR = MIN(ZSP-ZFP,DISMIN_SUR)
               ZZ(IPOIN,IPLAN)=MIN(                    ZSP-DISSUR*RPLS,
-     *                            MAX(ZPLANE%R(IPLAN),ZFP+DISBOT*RPLI))
+     &                            MAX(ZPLANE%R(IPLAN),ZFP+DISBOT*RPLI))
             ENDDO
           ENDIF
         ENDDO
@@ -1055,8 +1055,8 @@ C          ENDIF
               ENDIF 
               DO IPOIN = 1,NPOIN2
                 ZZ(IPOIN,IPLAN) = ZZ(IPOIN,I1-1)
-     *                          + ZSTAR%R(IPLAN)*(  ZZ(IPOIN,I2+1)
-     *                                             -ZZ(IPOIN,I1-1) )
+     &                          + ZSTAR%R(IPLAN)*(  ZZ(IPOIN,I2+1)
+     &                                             -ZZ(IPOIN,I1-1) )
               ENDDO
             ENDDO
             I1=I2+1    
@@ -1075,7 +1075,7 @@ C          ENDIF
                   WRITE(LU,*) '         COTE BASSE : ',ZZ(IPOIN,IPLAN-1)
                   WRITE(LU,*) '         COTE HAUTE : ',ZZ(IPOIN,IPLAN)
                   WRITE(LU,*) '         DIFFERENCE : ',ZZ(IPOIN,IPLAN)-
-     *                                                 ZZ(IPOIN,IPLAN-1)
+     &                                                 ZZ(IPOIN,IPLAN-1)
                   WRITE(LU,*) '         HAUTEUR    : ',HH(IPOIN)
                 ENDIF
                  IF(LNG.EQ.2) THEN
@@ -1084,7 +1084,7 @@ C          ENDIF
                   WRITE(LU,*) '        LOWER POINT : ',ZZ(IPOIN,IPLAN-1)
                   WRITE(LU,*) '        HIGHER POINT: ',ZZ(IPOIN,IPLAN)
                   WRITE(LU,*) '        DIFFERENCE  : ',ZZ(IPOIN,IPLAN)-
-     *                                                 ZZ(IPOIN,IPLAN-1)
+     &                                                 ZZ(IPOIN,IPLAN-1)
                   WRITE(LU,*) '        DEPTH       : ',HH(IPOIN)
                 ENDIF
                 CALL PLANTE(1)
@@ -1128,24 +1128,24 @@ C          ENDIF
 !
       INTEGER K,I
       LOGICAL MAS
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       DO I=1,NPOIN2
         ZF(I) = MAX(-0.3D0,-0.0246875D0*(X(I)-10.D0)**2)
         IF(X(I).LT.2.5D0) THEN
           ZF(I)=MAX(-0.2D0-0.3D0*(X(I)/2.5D0)**2,-0.3D0)
         ENDIF
       ENDDO
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       IF(LISFON.GT.0) THEN
 !
-         MAS = .TRUE.
+        MAS = .TRUE.
 !
-         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
-     &               1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
+        CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
+     &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
 !
       ENDIF
 ! 

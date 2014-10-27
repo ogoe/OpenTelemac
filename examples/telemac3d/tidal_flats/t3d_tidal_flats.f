@@ -261,16 +261,16 @@
 !
 !###>TBE modification for tidal test case, apply susp sediment
 !    in the right hand side of the model (where the intertidals are)
-       do i = 1, npoin2
-          do iplan = 1,nplan
-            j = (iplan-1)*npoin2 + i
-            if (x(i).gt.15000.d0) THEN
-               ta%adr(1)%p%r(j)     = 0.3d0
-            else
-               ta%adr(1)%p%r(j)     = 0.d0
-            endif
-          end do
-       end do
+      DO I = 1, NPOIN2
+        DO IPLAN = 1,NPLAN
+          J = (IPLAN-1)*NPOIN2 + I
+          IF (X(I).GT.15000.D0) THEN
+            TA%ADR(1)%P%R(J)     = 0.3D0
+          ELSE
+            TA%ADR(1)%P%R(J)     = 0.D0
+          ENDIF
+        END DO
+      END DO
 !###<TBE end of modification
 !
 !-----------------------------------------------------------------------

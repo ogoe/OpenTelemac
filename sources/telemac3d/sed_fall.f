@@ -102,10 +102,10 @@
           ALFA=(ZARR-ZINF)/MAX(ZSUP-ZINF,1.D-7) 
 !         MASS ON IINF
           FC%R(I2D+(IINF-1)*NPOIN2)
-     &   =FC%R(I2D+(IINF-1)*NPOIN2)+(1.D0-ALFA)*FN%R(I3D)*VOLU%R(I3D)          
+     &   =FC%R(I2D+(IINF-1)*NPOIN2)+(1.D0-ALFA)*FN%R(I3D)*VOLU%R(I3D)
 !         MASS ON ISUP
           FC%R(I2D+(ISUP-1)*NPOIN2)
-     &   =FC%R(I2D+(ISUP-1)*NPOIN2)+      ALFA *FN%R(I3D)*VOLU%R(I3D)           
+     &   =FC%R(I2D+(ISUP-1)*NPOIN2)+      ALFA *FN%R(I3D)*VOLU%R(I3D)
         ENDDO
       ENDDO
 !

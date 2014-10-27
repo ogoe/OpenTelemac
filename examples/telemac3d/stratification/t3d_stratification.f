@@ -1,81 +1,81 @@
-C                       *****************
+!                       *****************
                         SUBROUTINE CORRXY
-C                       *****************
-     * (X,Y,NPOIN)
-C
-C***********************************************************************
-C BIEF VERSION 5.6  17/10/05  EMILE RAZAFINDRAKOTO (LNHE) 01 30 87 74 03
-C***********************************************************************
-C
-C  USER SUBROUTINE CORRXY
-C
-C  FUNCTION  : MODIFICATION OF THE COORDINATES OF THE POINTS IN THE MESH
-C
-C
-C              THIS SUBROUTINE MUST BE MODIFIED ACCORDING TO
-C              THE CALLING PROGRAM AND THE NEEDED MODIFICATION
-C              BY ADDING USE DECLARATIONS_"NAME OF CALLING CODE"
-C              ALL THE DATA STRUCTURE OF THIS CODE IS
-C              AVAILABLE
-C
-C              BEWARE : DO NOT DO ROTATIONS THAT WILL CHANGE THE
-C                       NUMBERING OF LIQUID BOUNDARIES
-C                       
-C
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS USED IN THE EXAMPLE 
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |    X,Y         | -->|  COORDONNEES DU MAILLAGE .                   |
-C |    NPOIN       | -->|  NOMBRE DE POINTS DU MAILLAGE                |
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C
-C PROGRAMME APPELANT :
-C PROGRAMMES APPELES : RIEN EN STANDARD
-C
-C***********************************************************************
-C
-C APPELE PAR : INBIEF
-C
-C SOUS-PROGRAMME APPELE : NEANT
-C
-C***********************************************************************
-C
+!                       *****************
+     & (X,Y,NPOIN)
+!
+!***********************************************************************
+! BIEF VERSION 5.6  17/10/05  EMILE RAZAFINDRAKOTO (LNHE) 01 30 87 74 03
+!***********************************************************************
+!
+!  USER SUBROUTINE CORRXY
+!
+!  FUNCTION  : MODIFICATION OF THE COORDINATES OF THE POINTS IN THE MESH
+!
+!
+!              THIS SUBROUTINE MUST BE MODIFIED ACCORDING TO
+!              THE CALLING PROGRAM AND THE NEEDED MODIFICATION
+!              BY ADDING USE DECLARATIONS_"NAME OF CALLING CODE"
+!              ALL THE DATA STRUCTURE OF THIS CODE IS
+!              AVAILABLE
+!
+!              BEWARE : DO NOT DO ROTATIONS THAT WILL CHANGE THE
+!                       NUMBERING OF LIQUID BOUNDARIES
+!                       
+!
+!
+!-----------------------------------------------------------------------
+!  ARGUMENTS USED IN THE EXAMPLE 
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|_______________________________________________
+! |    X,Y         | -->|  COORDONNEES DU MAILLAGE .                   |
+! |    NPOIN       | -->|  NOMBRE DE POINTS DU MAILLAGE                |
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+!
+! PROGRAMME APPELANT :
+! PROGRAMMES APPELES : RIEN EN STANDARD
+!
+!***********************************************************************
+!
+! APPELE PAR : INBIEF
+!
+! SOUS-PROGRAMME APPELE : NEANT
+!
+!***********************************************************************
+!
       USE BIEF, EX_CORRXY => CORRXY
-C
-C
-C     OTHER DATA ARE AVAILABLE WITH THE DECLARATIONS OF EVERY PROGRAM
-C
-C     USE DECLARATIONS_TELEMAC3D
-C
+!
+!
+!     OTHER DATA ARE AVAILABLE WITH THE DECLARATIONS OF EVERY PROGRAM
+!
+!     USE DECLARATIONS_TELEMAC3D
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
       INTEGER, INTENT(IN) :: NPOIN
       DOUBLE PRECISION, INTENT(INOUT) :: X(NPOIN),Y(NPOIN)
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-       INTEGER I
-C
-C-----------------------------------------------------------------------
-C
-C  EXAMPLE : MULTIPLICATION BY A CONSTANT (SCALING THE MESH)
-C            CHANGING OF THE ORIGIN
-C
-       DO I = 1 , NPOIN
-          X(I) = 4.D0 * X(I) 
-       ENDDO
-C
-C-----------------------------------------------------------------------
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER I
+!
+!-----------------------------------------------------------------------
+!
+!  EXAMPLE : MULTIPLICATION BY A CONSTANT (SCALING THE MESH)
+!            CHANGING OF THE ORIGIN
+!
+      DO I = 1 , NPOIN
+        X(I) = 4.D0 * X(I) 
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
       IF(LNG.EQ.1) THEN
         WRITE(LU,*)'CORRXY (BIEF) : MODIFICATION DES COORDONNEES'
         WRITE(LU,*)
@@ -84,9 +84,9 @@ C
         WRITE(LU,*)'CORRXY (BIEF): MODIFICATION OF COORDINATES'
         WRITE(LU,*)
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
 !                       *****************
@@ -294,10 +294,10 @@ C
 !
       IF(LISFON.GT.0) THEN
 !
-         MAS = .TRUE.
+        MAS = .TRUE.
 !
-         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
-     &               1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
+        CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
+     &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
 
       ENDIF
 !
@@ -321,7 +321,7 @@ C
 !
      & (TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 ! 
-!*********************************************************************** 
+!***********************************************************************
 ! TELEMAC 3D VERSION 5.7 07/08/2006 J.-M. HERVOUET (LNHE) 01 30 87 80 18
 !         
 !*********************************************************************** 
@@ -339,10 +339,10 @@ C
 ! 
 !      SPECIFIC BOUNDARY CONDITIONS, MAY BE MODIFIED BY THE USER. 
 !
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 !                          SOME USEFUL PARAMETERS
 ! .________________.____.______________________________________________. 
-! !  NOM           !MODE!                  ROLE                        ! 
+! !  NOM           !MODE!                  ROLE                        !
 ! !________________!____!______________________________________________! 
 ! !  UBORF         !<-- ! PRESCRIBED VELOCITY ALONG X ON THE BOTTOM
 ! !  UBORL         !<-- ! PRESCRIBED VELOCITY ALONG X ON THE LATERAL
@@ -455,17 +455,17 @@ C
       IMPLICIT NONE 
       INTEGER LNG,LU 
       COMMON/INFO/LNG,LU 
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       DOUBLE PRECISION, INTENT(IN)    :: TIME
       INTEGER         , INTENT(IN)    :: LT
       LOGICAL         , INTENT(IN)    :: ENTET
       INTEGER         , INTENT(IN)    :: NPTFR2_DIM
       INTEGER         , INTENT(IN) :: NFRLIQ
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER I,IPOIN2,NP,K1,IBORD,IVIT,ICOT,IDEB,IFRLIQ,IPROF
       INTEGER IPTFR,ITRAC,IPLAN
       DOUBLE PRECISION ROEAU,ROAIR,VITV,PROFZ      
@@ -537,14 +537,14 @@ C
 !     VERTICAL VELOCITIES SET AS HORIZONTAL VELOCITIES 
 !     THIS IS AN OPTION, OTHERWISE LIWBOL=KSORT (SEE LIMI3D)
 !
-C     DO IPTFR = 1,NPTFR2
-C       IPOIN2 = NBOR2%I(IPTFR)
-C       DO IPLAN = 1,NPLAN
-C         IBORD = (IPLAN-1)*NPTFR2 + IPTFR  
-C         LIWBOL%I(IBORD)= LIUBOL%I(IBORD)
-C         IF(LIWBOL%I(IBORD).EQ.KENT) WBORL%R(IBORD) = 0.D0
-C       ENDDO
-C     ENDDO
+!     DO IPTFR = 1,NPTFR2
+!       IPOIN2 = NBOR2%I(IPTFR)
+!       DO IPLAN = 1,NPLAN
+!         IBORD = (IPLAN-1)*NPTFR2 + IPTFR  
+!         LIWBOL%I(IBORD)= LIUBOL%I(IBORD)
+!         IF(LIWBOL%I(IBORD).EQ.KENT) WBORL%R(IBORD) = 0.D0
+!       ENDDO
+!     ENDDO
 !
 !     TRACERS 
 !
@@ -610,12 +610,12 @@ C     ENDDO
         ELSE
           IF(LNG.EQ.1) WRITE(LU,100) NUMLIQ%I(K)
 100       FORMAT(1X,'BORD3D : COTES IMPOSEES EN NOMBRE INSUFFISANT',/,
-     *           1X,'       DANS LE FICHIER DES PARAMETRES',/,
-     *           1X,'       IL EN FAUT AU MOINS : ',1I6)
+     &           1X,'       DANS LE FICHIER DES PARAMETRES',/,
+     &           1X,'       IL EN FAUT AU MOINS : ',1I6)
           IF(LNG.EQ.2) WRITE(LU,101) NUMLIQ%I(K)
-101       FORMAT(1X,'BORD3D : MORE PRESCRIBED ELEVATIONS ARE REQUIRED',/,
-     *           1X,'       IN THE PARAMETER FILE',/,
-     *           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
+101       FORMAT(1X,'BORD3D : MORE PRESCRIBED ELEVATIONS ARE REQUIRED',
+     &           /,1X,'       IN THE PARAMETER FILE',/,
+     &           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -634,19 +634,19 @@ C     ENDDO
           IJK=(NP-1)*NPTFR2+K
           IFRLIQ=NUMLIQ%I(K)
           IF(PROFVEL(IFRLIQ).EQ.2) THEN
-C           GIVEN BY USER IN BOUNDARY CONDITIONS FILE
+!           GIVEN BY USER IN BOUNDARY CONDITIONS FILE
             UBORL%R(IJK) = UBOR2D%R(K+NPTFR2)
             VBORL%R(IJK) = VBOR2D%R(K+NPTFR2)
           ELSEIF(PROFVEL(IFRLIQ).EQ.3) THEN
-C           NORMAL AND NORM GIVEN BY UBOR IN BOUNDARY CONDITIONS FILE
+!           NORMAL AND NORM GIVEN BY UBOR IN BOUNDARY CONDITIONS FILE
             UBORL%R(IJK) = -XNEBOR2%R(K)*UBOR2D%R(K+NPTFR2)
             VBORL%R(IJK) = -YNEBOR2%R(K)*UBOR2D%R(K+NPTFR2)
           ELSEIF(PROFVEL(IFRLIQ).EQ.4) THEN
-C           NORMAL AND PROPORTIONAL TO SQRT(H)
+!           NORMAL AND PROPORTIONAL TO SQRT(H)
             UBORL%R(IJK)=-XNEBOR2%R(K) * SQRT(MAX(H%R(NBOR2%I(K)),0.D0))
             VBORL%R(IJK)=-YNEBOR2%R(K) * SQRT(MAX(H%R(NBOR2%I(K)),0.D0))
           ELSE
-C           NORMAL AND NORM 1
+!           NORMAL AND NORM 1
             UBORL%R(IJK)=-XNEBOR2%R(K)
             VBORL%R(IJK)=-YNEBOR2%R(K)
           ENDIF
@@ -658,7 +658,7 @@ C           NORMAL AND NORM 1
 !         CASE OF A VERTICAL PROFILE
           IF(VERPROVEL(IFRLIQ).NE.1) THEN
             PROFZ=VEL_PROF_Z(IFRLIQ,NBOR2%I(K),
-     *                       AT,LT,NP,INFOGR,VERPROVEL(IFRLIQ))        
+     &                       AT,LT,NP,INFOGR,VERPROVEL(IFRLIQ))        
             UBORL%R(IJK) = UBORL%R(IJK)*PROFZ
             VBORL%R(IJK) = VBORL%R(IJK)*PROFZ
           ENDIF
@@ -681,24 +681,24 @@ C           NORMAL AND NORM 1
         IVIT=NUMLIQ%I(K)
         IF(NVIT.GE.IVIT) THEN
 !
-             DO NP=1,NPLAN
-               IBORD = (NP-1)*NPTFR2+K
-               UBORL%R(IBORD) =
-     *         -MESH2D%XNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
-               VBORL%R(IBORD) =
-     *         -MESH2D%YNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
-               WBORL%R(IBORD)=0.D0
-             END DO
+          DO NP=1,NPLAN
+            IBORD = (NP-1)*NPTFR2+K
+            UBORL%R(IBORD) =
+     &      -MESH2D%XNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
+            VBORL%R(IBORD) =
+     &      -MESH2D%YNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
+            WBORL%R(IBORD)=0.D0
+          END DO
 !
         ELSE
           IF(LNG.EQ.1) WRITE(LU,200) NUMLIQ%I(K)
-200       FORMAT(1X,'BORD3D : VITESSES IMPOSEES EN NOMBRE INSUFFISANT',/,
-     *           1X,'       DANS LE FICHIER DES PARAMETRES',/,
-     *           1X,'       IL EN FAUT AU MOINS : ',1I6)
+200       FORMAT(1X,'BORD3D : VITESSES IMPOSEES EN NOMBRE INSUFFISANT',
+     &           /,1X,'       DANS LE FICHIER DES PARAMETRES',
+     &           /,1X,'       IL EN FAUT AU MOINS : ',1I6)
           IF(LNG.EQ.2) WRITE(LU,201) NUMLIQ%I(K)
-201       FORMAT(1X,'BORD3D : MORE PRESCRIBED VELOCITIES ARE REQUIRED',/,
-     *           1X,'       IN THE PARAMETER FILE',/,
-     *           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
+201       FORMAT(1X,'BORD3D : MORE PRESCRIBED VELOCITIES ARE REQUIRED',
+     &           /,1X,'       IN THE PARAMETER FILE',
+     &           /,1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -716,32 +716,32 @@ C           NORMAL AND NORM 1
           IFRLIQ=NUMLIQ%I(K)
           IF(LITABL%ADR(ITRAC)%P%I(IBORD).EQ.KENT.AND.NTRACER.NE.0) THEN
             IFRLIQ=NUMLIQ%I(K)            
-            IF(NTRACER.GE.IFRLIQ*NTRAC) THEN                             
+            IF(NTRACER.GE.IFRLIQ*NTRAC) THEN
               TABORL%ADR(ITRAC)%P%R(IBORD) = 
-     *        TR3(IFRLIQ,ITRAC,NBOR3%I(IBORD),AT,INFOGR)
+     &        TR3(IFRLIQ,ITRAC,NBOR3%I(IBORD),AT,INFOGR)
             ELSE
               IF(LNG.EQ.1) WRITE(LU,300) NUMLIQ%I(K)*NTRAC
 300           FORMAT(1X,'BORD3D : VALEURS IMPOSEES DU TRACEUR',/,
-     *               1X,'         EN NOMBRE INSUFFISANT',/,
-     *               1X,'         DANS LE FICHIER DES PARAMETRES',/,
-     *               1X,'         IL EN FAUT AU MOINS : ',1I6)
+     &               1X,'         EN NOMBRE INSUFFISANT',/,
+     &               1X,'         DANS LE FICHIER DES PARAMETRES',/,
+     &               1X,'         IL EN FAUT AU MOINS : ',1I6)
               IF(LNG.EQ.2) WRITE(LU,301) NUMLIQ%I(K)
 301           FORMAT(1X,'BORD3D: MORE PRESCRIBED TRACER VALUES',/,
-     *               1X,'        ARE REQUIRED IN THE PARAMETER FILE',/,
-     *               1X,'        AT LEAST ',1I6,' MUST BE GIVEN')
+     &               1X,'        ARE REQUIRED IN THE PARAMETER FILE',/,
+     &               1X,'        AT LEAST ',1I6,' MUST BE GIVEN')
               CALL PLANTE(1)
               STOP
             ENDIF
-C           CASE OF A PROFILE ON THE VERTICAL
+!           CASE OF A PROFILE ON THE VERTICAL
             IPROF=VERPROTRA(ITRAC+(IFRLIQ-1)*NTRAC)
             IF(IPROF.NE.1) THEN
               PROFZ=TRA_PROF_Z(IFRLIQ,NBOR2%I(K),
-     *                         AT,LT,NP,INFOGR,IPROF,ITRAC)
+     &                         AT,LT,NP,INFOGR,IPROF,ITRAC)
               IF(IPROF.EQ.2.OR.IPROF.EQ.3) THEN
                 TABORL%ADR(ITRAC)%P%R(IBORD)=PROFZ
               ELSE     
                 TABORL%ADR(ITRAC)%P%R(IBORD)=
-     *          TABORL%ADR(ITRAC)%P%R(IBORD)*PROFZ
+     &          TABORL%ADR(ITRAC)%P%R(IBORD)*PROFZ
               ENDIF
             ENDIF
 !
@@ -753,12 +753,12 @@ C           CASE OF A PROFILE ON THE VERTICAL
 !
 !
           ENDIF
-C          
+!          
         ENDDO
         ENDDO
       ENDIF
 !
-       ENDDO
+      ENDDO
 !        
 !     PRESCRIBED DISCHARGES: FINAL TREATMENT OF VELOCITIES
 !     ----------------------------------------------------
@@ -784,13 +784,13 @@ C
           ELSE
           IF(LNG.EQ.1) WRITE(LU,400) IFRLIQ
 400       FORMAT(1X,'BORD3D : DEBITS IMPOSES',/,
-     *           1X,'       EN NOMBRE INSUFFISANT',/,
-     *           1X,'       DANS LE FICHIER DES PARAMETRES',/,
-     *           1X,'       IL EN FAUT AU MOINS : ',1I6)
+     &           1X,'       EN NOMBRE INSUFFISANT',/,
+     &           1X,'       DANS LE FICHIER DES PARAMETRES',/,
+     &           1X,'       IL EN FAUT AU MOINS : ',1I6)
           IF(LNG.EQ.2) WRITE(LU,401) IFRLIQ
 401       FORMAT(1X,'BORD3D : MORE PRESCRIBED FLOWRATES',/,
-     *           1X,'       ARE REQUIRED IN THE PARAMETER FILE',/,
-     *           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
+     &           1X,'       ARE REQUIRED IN THE PARAMETER FILE',/,
+     &           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -824,27 +824,27 @@ C
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !
       IF(VENT) THEN 
-         ROEAU = 1000.D0 
-         ROAIR = 1.3D0 
-         DO IPOIN2 = 1,NPOIN2 
-            VITV  = SQRT(WIND%ADR(1)%P%R(IPOIN2)**2
-     &                 + WIND%ADR(2)%P%R(IPOIN2)**2) 
+        ROEAU = 1000.D0 
+        ROAIR = 1.3D0 
+        DO IPOIN2 = 1,NPOIN2 
+          VITV  = SQRT(WIND%ADR(1)%P%R(IPOIN2)**2
+     &               + WIND%ADR(2)%P%R(IPOIN2)**2) 
 ! 
 ! A MORE ACCURATE TREATMENT
 ! 
-!CX         IF(VITV.LE.5.D0) THEN 
-!CX           FAIR = ROAIR/ROEAU*0.565D-3 
-!CX         ELSEIF (VITV.LE.19.22D0) THEN 
-!CX           FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3 
-!CX         ELSE 
-!CX           FAIR = ROAIR/ROEAU*2.513D-3 
-!CX         ENDIF 
+!CX       IF(VITV.LE.5.D0) THEN 
+!CX         FAIR = ROAIR/ROEAU*0.565D-3 
+!CX       ELSEIF (VITV.LE.19.22D0) THEN 
+!CX         FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3 
+!CX       ELSE 
+!CX         FAIR = ROAIR/ROEAU*2.513D-3 
+!CX       ENDIF 
 ! 
 ! BEWARE : BUBORS IS VISCVI*DU/DN, NOT DU/DN
 ! 
-            BUBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2) 
-            BVBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2) 
-         ENDDO
+          BUBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2) 
+          BVBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2) 
+        ENDDO
       ENDIF
 !
 ! 

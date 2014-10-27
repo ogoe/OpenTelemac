@@ -7453,7 +7453,7 @@
               IF(STOCHA.EQ.1)THEN
                 CALL SCHAR41_STO(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
      &                          Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
-     &                          DY,DZ,SHPBUF,SHZBUF,ELTBUF,ETABUF,NARRV, 
+     &                          DY,DZ,SHPBUF,SHZBUF,ELTBUF,ETABUF,NARRV,
      &                          NPOIN2,NELEM,NPLAN,SURDET,SENS, 
      &                          MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.,SIGMA,
      &                          VISC,STOCHA)
@@ -7469,11 +7469,12 @@
      &                                 SENS,MESH%IFAPAR%I, 
      &                                 NCHDIM,NARRV,.TRUE.)
                   ELSE
-                    CALL SCHAR41_PER(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
+                    CALL SCHAR41_PER(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR,
      &                              IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
      &                              DY,DZ,SHPBUF,SHZBUF,ELTBUF,ETABUF,
-     &                              NARRV,NPOIN2,NELEM,NPLAN,SURDET,SENS 
-     &                              ,MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.)
+     &                              NARRV,NPOIN2,NELEM,NPLAN,SURDET,
+     &                              SENS,MESH%IFAPAR%I,NCHDIM,NARRV,
+     &                              .TRUE.)
                   ENDIF
                 ELSEIF(.NOT.PERIO) THEN
                   IF(SIGMA) THEN
@@ -7487,7 +7488,7 @@
                   ELSE
                     CALL SCHAR41(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
      &                          Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
-     &                          DY,DZ,SHPBUF,SHZBUF,ELTBUF,ETABUF,NARRV, 
+     &                          DY,DZ,SHPBUF,SHZBUF,ELTBUF,ETABUF,NARRV,
      &                          NPOIN2,NELEM,NPLAN,SURDET,SENS, 
      &                          MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.,SIGMA)
                   ENDIF

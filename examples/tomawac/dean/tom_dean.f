@@ -45,14 +45,14 @@
       COMMON/INFO/LNG,LU
 !
 !
-CVB---------------------------------MODIF Dean, 1991
+!VB---------------------------------MODIF Dean, 1991
       INTEGER IP
 !
       DO IP=1,NPOIN2
 !        ZF(IP) = -5.D0
         ZF(IP) = - 0.25D0*(300.D0 - X(IP))**(2./3.)
       ENDDO
-CVB---------------------------------MODIF fin
+!VB---------------------------------MODIF fin
 !
 !
       RETURN
@@ -523,11 +523,11 @@ CVB---------------------------------MODIF fin
 !
       INTEGER, INTENT(IN)          :: LT,NP1
       DOUBLE PRECISION, INTENT(IN) :: XF1(NP1)
-CVB_modif
+!VB_modif
       DOUBLE PRECISION AUX1(NPOIN2),AUX2(NPOIN2)
       DOUBLE PRECISION AUX3(NPOIN2)
 !      DOUBLE PRECISION TAUX1(NPOIN2)
-CVB_modif
+!VB_modif
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -710,11 +710,11 @@ CVB_modif
 !     ------------------------------- KMOYEN AND QMOUT1
 !
       IF(SORLEO(17)) THEN
-         CALL KMOYEN(SPRIVE%R,SXK%R,SF%R,SFR%R,SDFR%R,TAILF,NF,NPLAN,
-     &               NPOIN2,AUX1,AUX2,AUX3)
-!         CALL QMOUT1(SPRIVE2%R,TSDER,SF%R,SXK%R,STRA37%R,SFR%R,
-!     &               STRA33%R,SPRIVE1%R,PROINF,CMOUT1,CMOUT2,NF,NPLAN,
-!     &               NPOIN2,TAUX1,BETA,SDEPTH%R)
+        CALL KMOYEN(SPRIVE%R,SXK%R,SF%R,SFR%R,SDFR%R,TAILF,NF,NPLAN,
+     &              NPOIN2,AUX1,AUX2,AUX3)
+!        CALL QMOUT1(SPRIVE2%R,TSDER,SF%R,SXK%R,STRA37%R,SFR%R,
+!     &              STRA33%R,SPRIVE1%R,PROINF,CMOUT1,CMOUT2,NF,NPLAN,
+!     &              NPOIN2,TAUX1,BETA,SDEPTH%R)
       ENDIF
 
 !

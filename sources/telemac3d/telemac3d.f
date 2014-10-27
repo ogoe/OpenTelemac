@@ -1020,7 +1020,7 @@
         CALL OS ( 'X=0     ', X=FLUX           )
 !
 !       INITIALIZATION OF BED PROPERTIES
-! 	MASBED0 INITIAL MASS
+!       MASBED0 INITIAL MASS
 !       ESOMT : CUMULATED BED EVOLUTION 
 !       --> Set to Zero but could be read from 2D file
 !       MASDEP : Set to Zero 

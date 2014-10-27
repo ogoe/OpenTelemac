@@ -198,20 +198,20 @@
 !
 !-----------------------------------------------------------------------
 !
-         DO IPLAN = 1,NPLAN
-            TRANSF_PLANE%I(IPLAN)=3
-         ENDDO
-         ZSTAR%R(1)=-10.D0
-         ZSTAR%R(2)=-9.D0
-         ZSTAR%R(3)=-8.D0
-         ZSTAR%R(4)=-7.D0
-         ZSTAR%R(5)=-6.D0
-         ZSTAR%R(6)=-5.D0
-         ZSTAR%R(7)=-4.D0
-         ZSTAR%R(8)=-3.D0
-         ZSTAR%R(9)=-2.D0
-         ZSTAR%R(10)=-1.D0
-         ZSTAR%R(11)=0.D0    
+      DO IPLAN = 1,NPLAN
+        TRANSF_PLANE%I(IPLAN)=3
+      ENDDO
+      ZSTAR%R(1)=-10.D0
+      ZSTAR%R(2)=-9.D0
+      ZSTAR%R(3)=-8.D0
+      ZSTAR%R(4)=-7.D0
+      ZSTAR%R(5)=-6.D0
+      ZSTAR%R(6)=-5.D0
+      ZSTAR%R(7)=-4.D0
+      ZSTAR%R(8)=-3.D0
+      ZSTAR%R(9)=-2.D0
+      ZSTAR%R(10)=-1.D0
+      ZSTAR%R(11)=0.D0    
 !
 !***********************************************************************
 !
@@ -370,10 +370,10 @@
 !
       IF(LISFON.GT.0) THEN
 !
-         MAS = .TRUE.
+        MAS = .TRUE.
 !
-         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
-     &               1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
+        CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
+     &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
       ENDIF
 !
       DO I=1,NPOIN2

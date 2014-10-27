@@ -154,9 +154,9 @@
       CALL OS( 'X=C     ' , U , U , U , 0.0D0 )
       CALL OS( 'X=C     ' , V , V , V , 0.0D0 )
       CALL OS( 'X=C     ' , W , W , W , 0.0D0 )
-C
-C SOLITARY WAVE INITIAL VELOCITY - ANALYTICAL SOLUTION 
-C
+!
+! SOLITARY WAVE INITIAL VELOCITY - ANALYTICAL SOLUTION 
+!
       DO IPLAN=1,NPLAN
         DO IPOIN2=1,NPOIN2
 !

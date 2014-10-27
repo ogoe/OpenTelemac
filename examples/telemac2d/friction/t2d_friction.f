@@ -1,76 +1,76 @@
-C                       *****************
+!                       *****************
                         SUBROUTINE CONDIN
-C                       *****************
-C
-C***********************************************************************
-C TELEMAC 2D VERSION 5.2         19/08/98  J-M HERVOUET TEL: 30 87 80 18
-C
-C***********************************************************************
-C
-C     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________
-C |                | -- |  
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C***********************************************************************
-C
+!                       *****************
+!
+!***********************************************************************
+! TELEMAC 2D VERSION 5.2         19/08/98  J-M HERVOUET TEL: 30 87 80 18
+!
+!***********************************************************************
+!
+!     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |                | -- |  
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       DOUBLE PRECISION CC
       INTEGER I,ITRAC
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C  
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DU TEMPS
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!  
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DU TEMPS
+!
       AT = 0.D0
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DES VITESSES : VITESSES NULLES
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DES VITESSES : VITESSES NULLES
+!
       CALL OS( 'X=C     ' , U , U , U , 0.D0 )
       CALL OS( 'X=C     ' , V , V , V , 0.D0 )
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DE H , LA HAUTEUR D'EAU
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DE H , LA HAUTEUR D'EAU
+!
       IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
-     *   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
+     &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0 )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0 )
       ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
-     *       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
+     &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , COTINI )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0   )
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
-     *       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
+     &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0  )
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
-     *       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
+     &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , HAUTIN )
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
-     *       CDTINI(1:10).EQ.'PARTICULAR'.OR.
-     *       CDTINI(1:07).EQ.'SPECIAL') THEN
-C  ZONE A MODIFIER
-!        CALL EXACTE(H%R,X,NPOIN)                                                           
-C  FIN DE LA ZONE A MODIFIER      
+     &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
+     &       CDTINI(1:07).EQ.'SPECIAL') THEN
+!  ZONE A MODIFIER
+!        CALL EXACTE(H%R,X,NPOIN)
+!  FIN DE LA ZONE A MODIFIER      
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -81,96 +81,96 @@ C  FIN DE LA ZONE A MODIFIER
         CALL PLANTE(1)
         STOP
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DU TRACEUR
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DU TRACEUR
+!
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
           CALL OS( 'X=C     ' , X=T%ADR(ITRAC)%P , C=TRAC0(ITRAC) )
         ENDDO
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C INITIALISATION DE LA VISCOSITE
-C
+!
+!-----------------------------------------------------------------------
+!
+! INITIALISATION DE LA VISCOSITE
+!
       CALL OS( 'X=C     ' , VISC , VISC , VISC , PROPNU )
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C                       *****************
+!                       *****************
                         SUBROUTINE CORFON
-C                       *****************
-C
-C***********************************************************************
-C TELEMAC 2D VERSION 5.1          01/03/90    J-M HERVOUET
-C***********************************************************************
-C
-C  USER SUBROUTINE CORFON
-C
-C  FUNCTION  : MODIFICATION OF THE BOTTOM TOPOGRAPHY
-C
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS USED IN THE EXAMPLE 
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |      ZF        |<-->| FOND A MODIFIER.
-C |      X,Y,(Z)   | -->| COORDONNEES DU MAILLAGE (Z N'EST PAS EMPLOYE).
-C |      A         |<-- | MATRICE
-C |      T1,2      | -->| TABLEAUX DE TRAVAIL (DIMENSION NPOIN)
-C |      W1        | -->| TABLEAU DE TRAVAIL (DIMENSION 3 * NELEM)
-C |      NPOIN     | -->| NOMBRE DE POINTS DU MAILLAGE.
-C |      PRIVE     | -->| TABLEAU PRIVE POUR L'UTILISATEUR.
-C |      LISFON    | -->| NOMBRE DE LISSAGES DU FOND.
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C
-C PROGRAMME APPELANT :
-C PROGRAMMES APPELES : RIEN EN STANDARD
-C
-C***********************************************************************
-C
+!                       *****************
+!
+!***********************************************************************
+! TELEMAC 2D VERSION 5.1          01/03/90    J-M HERVOUET
+!***********************************************************************
+!
+!  USER SUBROUTINE CORFON
+!
+!  FUNCTION  : MODIFICATION OF THE BOTTOM TOPOGRAPHY
+!
+!
+!-----------------------------------------------------------------------
+!  ARGUMENTS USED IN THE EXAMPLE 
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|_______________________________________________
+! |      ZF        |<-->| FOND A MODIFIER.
+! |      X,Y,(Z)   | -->| COORDONNEES DU MAILLAGE (Z N'EST PAS EMPLOYE).
+! |      A         |<-- | MATRICE
+! |      T1,2      | -->| TABLEAUX DE TRAVAIL (DIMENSION NPOIN)
+! |      W1        | -->| TABLEAU DE TRAVAIL (DIMENSION 3 * NELEM)
+! |      NPOIN     | -->| NOMBRE DE POINTS DU MAILLAGE.
+! |      PRIVE     | -->| TABLEAU PRIVE POUR L'UTILISATEUR.
+! |      LISFON    | -->| NOMBRE DE LISSAGES DU FOND.
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+!
+! PROGRAMME APPELANT :
+! PROGRAMMES APPELES : RIEN EN STANDARD
+!
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       LOGICAL MAS
       INTEGER I
-C
-C-----------------------------------------------------------------------
-C
-C  LISSAGES EVENTUELS DU FOND
-C
+!
+!-----------------------------------------------------------------------
+!
+!  LISSAGES EVENTUELS DU FOND
+!
       IF(LISFON.GT.0) THEN
-C
+!
         MAS=.TRUE.
         CALL FILTER(ZF,MAS,T1,T2,AM1,'MATMAS          ',
      &              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       DO I=1,NPOIN
-         ZF%R(I)=-1.853658536585365D0*1.D-5*X(I)-4.0D0   
+        ZF%R(I)=-1.853658536585365D0*1.D-5*X(I)-4.0D0   
       ENDDO
-C-----------------------------------------------------------------------
-C
+!-----------------------------------------------------------------------
+!
       RETURN
       END          
 !                    ***************************
@@ -346,10 +346,10 @@ C
 !
 !     CASE WHERE OUTINI=.TRUE. : PRIORITY ON PTINIG, VALUES FOR LT=0
 !     OTHERWISE THEY WOULD NOT BE INITIALISED
-       IF(SORLEO(27).OR.SORIMP(27)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
-       IF(SORLEO(28).OR.SORIMP(28)) CALL OS('X=C     ',X=TMAXZ,C=AT)
-       IF(SORLEO(29).OR.SORIMP(29)) CALL OS('X=C     ',X=MAXV ,C=0.D0)
-       IF(SORLEO(30).OR.SORIMP(30)) CALL OS('X=C     ',X=TMAXV,C=AT)
+      IF(SORLEO(27).OR.SORIMP(27)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+      IF(SORLEO(28).OR.SORIMP(28)) CALL OS('X=C     ',X=TMAXZ,C=AT)
+      IF(SORLEO(29).OR.SORIMP(29)) CALL OS('X=C     ',X=MAXV ,C=0.D0)
+      IF(SORLEO(30).OR.SORIMP(30)) CALL OS('X=C     ',X=TMAXV,C=AT)
 !
 !     ENDIF FOR : IF(LT.GE.PTINIG) THEN
       ENDIF
@@ -405,7 +405,7 @@ C
       IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN
         CALL CPSTVC(ZF,T3)
         DO N=1,NPOIN
-         T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
+          T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
         ENDDO
       ENDIF
 !
@@ -463,15 +463,15 @@ C
 !=======================================================================
 !
       IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN
-         CALL EXACTE(PRIVE%ADR(1)%P%R,X,NPOIN)
+        CALL EXACTE(PRIVE%ADR(1)%P%R,X,NPOIN)
       ENDIF
 !=======================================================================
 ! COMPUTES EXACT FREE SURFACE
 !=======================================================================
 !
       IF((LEO.AND.SORLEO(25)).OR.(IMP.AND.SORIMP(25))) THEN
-         CALL OV('X=Y+Z   ' ,PRIVE%ADR(3)%P%R,
-     &                       PRIVE%ADR(1)%P%R,ZF%R,0.D0,NPOIN)
+        CALL OV('X=Y+Z   ' ,PRIVE%ADR(3)%P%R,
+     &                      PRIVE%ADR(1)%P%R,ZF%R,0.D0,NPOIN)
       ENDIF
 !=======================================================================
 ! COMPUTES FRICTION SPEED
@@ -843,30 +843,30 @@ C
 !
      &(H,X,NPOIN) 
 !
-!***********************************************************************  
-!                                                                         
+!***********************************************************************
+!
 ! DIRECT INTEGRATION OF THE EQUATION OF GRADUALLY VARIED FLOW 
 ! REF 
 ! 1.Restoration of the contact surface in FORCE-type centred schemes II 
 ! Canestrelli, Toro 2012
 ! 2.Direct integration of the equation of gradually varied flow 
 ! Venutelli 2004          
-!                                                                         
+!
 ! WARNING: THIS IS THE STEADY STATE SOLUTION        
 !          HOWEVER IT IS ADDED AT EVERY TIME
 !          AND STOCKED IN THE OUTPUT FILE
-!                                                                         
-!-----------------------------------------------------------------------  
-!                             ARGUMENTS                                   
-! .________________.____.______________________________________________.  
-! |      NOM       |MODE|                   ROLE                       |  
-! |________________|____|______________________________________________|  
-! |     H          |<-- |  WATER DEPTH                                 |    
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! |      NOM       |MODE|                   ROLE                       |
+! |________________|____|______________________________________________|
+! |     H          |<-- |  WATER DEPTH                                 |
 ! |     X          | -->|  ABSCISSAE                                   |
-! |   NPOIN        | -->|  NUMBER OF MESH POINTS                       |   
-! |________________|____|______________________________________________|  
-!**********************************************************************   
-!                                                                         
+! |   NPOIN        | -->|  NUMBER OF MESH POINTS                       |
+! |________________|____|______________________________________________|
+!**********************************************************************
+!
       IMPLICIT NONE   
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU                                    
@@ -886,12 +886,12 @@ C
       DOUBLE PRECISION F1,F2,F3,F4,Z1,Z2,Z3,Z4
       DOUBLE PRECISION F1T,F2T,F3T,F4T,Z1T,Z2T,Z3T,Z4T
       DOUBLE PRECISION F,G,FT,GT,GAMMA,DXIN      
-      DOUBLE PRECISION XIN(ITMAX),YIN(ITMAX)                                                    
-!                                                                         
-      INTRINSIC SQRT,ABS,LOG,ATAN                                                                                                 
+      DOUBLE PRECISION XIN(ITMAX),YIN(ITMAX)
+!
+      INTRINSIC SQRT,ABS,LOG,ATAN
 !
 ! VARIABLES: S -> BED SLOPE; N -> COEFFICIENT OF MANNING                                                                          
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 !
 ! INITIALIZE X ET YIN
 !
@@ -934,87 +934,87 @@ C
 !
       DO 10 I=2,ITMAX
 !
-         YIN(I)=YOUT-DY
-         ETA=YIN(I)/YN
-         ETAT=YOUT/YN
+        YIN(I)=YOUT-DY
+        ETA=YIN(I)/YN
+        ETAT=YOUT/YN
 !
-         F1=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETA**UNT-UNQ*BETA2)
-         F4=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETA**UNT+UNQ*BETA2)
+        F1=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETA**UNT-UNQ*BETA2)
+        F4=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETA**UNT+UNQ*BETA2)
 !
-         F2=2.D0*SQRT(2.D0/(5.D0+SQRT(5.D0)))*(ETA**UNT+UNQ*BETA1)
-         F3=2.D0*SQRT(2.D0/(5.D0+SQRT(5.D0)))*(ETA**UNT-UNQ*BETA1)
+        F2=2.D0*SQRT(2.D0/(5.D0+SQRT(5.D0)))*(ETA**UNT+UNQ*BETA1)
+        F3=2.D0*SQRT(2.D0/(5.D0+SQRT(5.D0)))*(ETA**UNT-UNQ*BETA1)
 !
-         Z1=1.D0+0.5D0*BETA2*ETA**UNT+ETA**(2.D0/3.D0)
-         Z4=1.D0-0.5D0*BETA2*ETA**UNT+ETA**(2.D0/3.D0)
+        Z1=1.D0+0.5D0*BETA2*ETA**UNT+ETA**(2.D0/3.D0)
+        Z4=1.D0-0.5D0*BETA2*ETA**UNT+ETA**(2.D0/3.D0)
 !
-         Z2=1.D0-0.5D0*BETA1*ETA**UNT+ETA**(2.D0/3.D0)
-         Z3=1.D0+0.5D0*BETA1*ETA**UNT+ETA**(2.D0/3.D0)
+        Z2=1.D0-0.5D0*BETA1*ETA**UNT+ETA**(2.D0/3.D0)
+        Z3=1.D0+0.5D0*BETA1*ETA**UNT+ETA**(2.D0/3.D0)
 !
-         F1T=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETAT**UNT-UNQ*BETA2)
-         F4T=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETAT**UNT+UNQ*BETA2)
+        F1T=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETAT**UNT-UNQ*BETA2)
+        F4T=2.D0*SQRT(2.D0/(5.D0-SQRT(5.D0)))*(ETAT**UNT+UNQ*BETA2)
 !
-         F2T=2.D0*SQRT(2.D0/(5.D0+SQRT(5.D0)))*(ETAT**UNT+UNQ*BETA1)
-         F3T=2.D0*SQRT(2.D0/(5.D0+SQRT(5.D0)))*(ETAT**UNT-UNQ*BETA1)
+        F2T=2.D0*SQRT(2.D0/(5.D0+SQRT(5.D0)))*(ETAT**UNT+UNQ*BETA1)
+        F3T=2.D0*SQRT(2.D0/(5.D0+SQRT(5.D0)))*(ETAT**UNT-UNQ*BETA1)
 !
-         Z1T=1.D0+0.5D0*BETA2*ETAT**UNT+ETAT**(2.D0/3.D0)
-         Z4T=1.D0-0.5D0*BETA2*ETAT**UNT+ETAT**(2.D0/3.D0)
+        Z1T=1.D0+0.5D0*BETA2*ETAT**UNT+ETAT**(2.D0/3.D0)
+        Z4T=1.D0-0.5D0*BETA2*ETAT**UNT+ETAT**(2.D0/3.D0)
 !
-         Z2T=1.D0-0.5D0*BETA1*ETAT**UNT+ETAT**(2.D0/3.D0)
-         Z3T=1.D0+0.5D0*BETA1*ETAT**UNT+ETAT**(2.D0/3.D0)
+        Z2T=1.D0-0.5D0*BETA1*ETAT**UNT+ETAT**(2.D0/3.D0)
+        Z3T=1.D0+0.5D0*BETA1*ETAT**UNT+ETAT**(2.D0/3.D0)
 !
-         F=ALFA1*(ATAN(F1)+ATAN(F4))-ALFA2*(ATAN(F2)+ATAN(F3))+
-     &     (1.D0/40.D0)*(BETA1*(LOG(ABS(Z1))-LOG(ABS(Z4)))-
-     &     BETA2*(LOG(ABS(Z2))-LOG(ABS(Z3))))-
-     &     UNDIX*(LOG(ABS(ETA**UNT-1.D0))-LOG(ABS(ETA**UNT+1.D0)))
+        F=ALFA1*(ATAN(F1)+ATAN(F4))-ALFA2*(ATAN(F2)+ATAN(F3))+
+     &    (1.D0/40.D0)*(BETA1*(LOG(ABS(Z1))-LOG(ABS(Z4)))-
+     &    BETA2*(LOG(ABS(Z2))-LOG(ABS(Z3))))-
+     &    UNDIX*(LOG(ABS(ETA**UNT-1.D0))-LOG(ABS(ETA**UNT+1.D0)))
 !
-         G=ALFA2*(ATAN(F1)-ATAN(F4))-ALFA1*(ATAN(F2)-ATAN(F3))
-     &     +(1.D0/40.0D0)*(BETA2*(LOG(ABS(Z1))+LOG(ABS(Z4)))
-     &     +BETA1*(LOG(ABS(Z2))+LOG(ABS(Z3))))
-     &     -UNDIX*(LOG(ABS(ETA**UNT-1.D0))-LOG(ABS(ETA**UNT+1.D0)))
+        G=ALFA2*(ATAN(F1)-ATAN(F4))-ALFA1*(ATAN(F2)-ATAN(F3))
+     &    +(1.D0/40.0D0)*(BETA2*(LOG(ABS(Z1))+LOG(ABS(Z4)))
+     &    +BETA1*(LOG(ABS(Z2))+LOG(ABS(Z3))))
+     &    -UNDIX*(LOG(ABS(ETA**UNT-1.D0))-LOG(ABS(ETA**UNT+1.D0)))
 !
-         FT=ALFA1*(ATAN(F1T)+ATAN(F4T))-ALFA2*(ATAN(F2T)+ATAN(F3T))
-     &     +(1.D0/40.D0)*(BETA1*(LOG(ABS(Z1T))-LOG(ABS(Z4T)))
-     &     -BETA2*(LOG(ABS(Z2T))-LOG(ABS(Z3T))))
-     &     -UNDIX*(LOG(ABS(ETAT**UNT-1.D0))-LOG(ABS(ETAT**UNT+1.D0)))
+        FT=ALFA1*(ATAN(F1T)+ATAN(F4T))-ALFA2*(ATAN(F2T)+ATAN(F3T))
+     &    +(1.D0/40.D0)*(BETA1*(LOG(ABS(Z1T))-LOG(ABS(Z4T)))
+     &    -BETA2*(LOG(ABS(Z2T))-LOG(ABS(Z3T))))
+     &    -UNDIX*(LOG(ABS(ETAT**UNT-1.D0))-LOG(ABS(ETAT**UNT+1.D0)))
 !
-         GT=ALFA2*(ATAN(F1T)-ATAN(F4T))-ALFA1*(ATAN(F2T)-ATAN(F3T))
-     &     +(1.D0/40.0D0)*(BETA2*(LOG(ABS(Z1))+LOG(ABS(Z4)))
-     &     +BETA1*(LOG(ABS(Z2T))+LOG(ABS(Z3T))))
-     &     -UNDIX*(LOG(ABS(ETAT**UNT-1.D0))-LOG(ABS(ETAT**UNT+1.D0)))
+        GT=ALFA2*(ATAN(F1T)-ATAN(F4T))-ALFA1*(ATAN(F2T)-ATAN(F3T))
+     &    +(1.D0/40.0D0)*(BETA2*(LOG(ABS(Z1))+LOG(ABS(Z4)))
+     &    +BETA1*(LOG(ABS(Z2T))+LOG(ABS(Z3T))))
+     &    -UNDIX*(LOG(ABS(ETAT**UNT-1.D0))-LOG(ABS(ETAT**UNT+1.D0)))
 !
-         GAMMA=ETA-ETAT+3.D0*(FT-F)+3.D0*(ETAC**3)*(G-GT)
-         XIN(I)=XOUT+(YN/S)*GAMMA
-         IF(XIN(I).LT.EPSIL) GO TO 10
-         XOUT=XIN(I)
-         YOUT=YIN(I)
+        GAMMA=ETA-ETAT+3.D0*(FT-F)+3.D0*(ETAC**3)*(G-GT)
+        XIN(I)=XOUT+(YN/S)*GAMMA
+        IF(XIN(I).LT.EPSIL) GO TO 10
+        XOUT=XIN(I)
+        YOUT=YIN(I)
 !
 10    CONTINUE
 !
 ! LINEAR APPROXIMATION FOR ALL MESH POINTS
 !
       DO I=1,NPOIN
-!        FIRST OUTPUT POINTS
-         IF(ABS(X(I)-DOMAIN_L).LE.EPSIL)THEN
-            H(I)=YOUT_INI
-            CYCLE
-         ENDIF
-         DO J=1,ITMAX-1
+!       FIRST OUTPUT POINTS
+        IF(ABS(X(I)-DOMAIN_L).LE.EPSIL)THEN
+          H(I)=YOUT_INI
+          CYCLE
+        ENDIF
+        DO J=1,ITMAX-1
 !       
-            IF(X(I).LT.XIN(J).AND.X(I).GT.XIN(J+1))THEN
-               DXIN=XIN(J)-XIN(J+1)
-               H(I)=(1.D0/DXIN)*((XIN(J)-X(I))*YIN(J+1)+
-     &                           (X(I)-XIN(J+1))*YIN(J))
+          IF(X(I).LT.XIN(J).AND.X(I).GT.XIN(J+1))THEN
+             DXIN=XIN(J)-XIN(J+1)
+             H(I)=(1.D0/DXIN)*((XIN(J)-X(I))*YIN(J+1)+
+     &                         (X(I)-XIN(J+1))*YIN(J))
             CYCLE
-!            DEBUG 
-               IF(H(I).LE.0.D0)THEN
-                WRITE(LU,*)'NEGATIVE H FOR I:',I
-                WRITE(LU,*)'H IS EQUAL :',H(I)
-                WRITE(LU,*),'BORDED BY: ', XIN(J),XIN(J+1)
-                CALL PLANTE(1)
-                STOP
-               ENDIF
+!           DEBUG 
+            IF(H(I).LE.0.D0)THEN
+              WRITE(LU,*)'NEGATIVE H FOR I:',I
+              WRITE(LU,*)'H IS EQUAL :',H(I)
+              WRITE(LU,*),'BORDED BY: ', XIN(J),XIN(J+1)
+              CALL PLANTE(1)
+              STOP
             ENDIF
-         ENDDO
+          ENDIF
+        ENDDO
       ENDDO 
 ! DEBUG RIADH
 !      CALL PLANTE(1)

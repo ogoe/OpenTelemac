@@ -1,55 +1,55 @@
-C                       *************************
+!                       *************************
                         SUBROUTINE CONDIM_SISYPHE
-C                       *************************
-C
-     *(U      , V   , QU    , QV  , H   , ZF , Z ,
-     * ESOMT  ,THETAWR, Q   , HWR , TWR , 
-     * X      , Y   , NPOIN , AT  , PMAREE)
-C
-C***********************************************************************
-C SISYPHE VERSION 5.3                             E. PELTIER    11/09/95
-C                                                 C. LENORMANT
-C                                                 J.-M. HERVOUET
-C                                                
-C COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT      
-C***********************************************************************
-C
-C     FONCTION  : VALEURS IMPOSEES
-C                         - DU DEBIT VECTORIEL    QU, QV
-C                         - DE LA HAUTEUR D'EAU   H
-C                         - DE LA COTE DU FOND    ZF
-C                         - DE LA SURFACE LIBRE   Z
-C                         - DE L'EVOLUTION TOTALE ESOMT
-C                         - DU DEBIT              Q
-C                         - DE LA HAUTEUR DE HOULE HW
-C                         - DE LA PERIODE DE HOULE TW
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________
-C |   U , V        |<-- | COORDONNEES DES VECTEURS VITESSE
-C |   QU , QV      |<-- | DEBIT VECTORIEL SUIVANT X ET SUIVANT Y
-C |   H            |<-->| HAUTEUR D'EAU
-C |   ZF           |<-->| COTE DU FOND
-C |   Z            |<-->| COTE DE SURFACE LIBRE
-C |   ESOMT        |<-->| EVOLUTION TOTALE DES FONDS
-C |   C            |<-->| CELERITE
-C |   Q            |<-->| DEBIT
-C |   HW           | -->| HAUTEUR DE HOULE
-C |   TW           | -->| PERIODE DE HOULE
-C |   X,Y          | -->| COORDONNEES DU MAILLAGE
-C |   NPOIN        | -->| NOMBRE DE POINTS DU MAILLAGE
-C |   AT           | -->| TEMPS
-C |   PMAREE       | -->| PERIODE DE LA MAREE
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C PROGRAMME APPELANT : SISYPH
-C PROGRAMMES APPELES : 
-C***********************************************************************
-C
+!                       *************************
+!
+     &(U      , V   , QU    , QV  , H   , ZF , Z ,
+     & ESOMT  ,THETAWR, Q   , HWR , TWR , 
+     & X      , Y   , NPOIN , AT  , PMAREE)
+!
+!***********************************************************************
+! SISYPHE VERSION 5.3                             E. PELTIER    11/09/95
+!                                                 C. LENORMANT
+!                                                 J.-M. HERVOUET
+!                                                
+! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT      
+!***********************************************************************
+!
+!     FONCTION  : VALEURS IMPOSEES
+!                         - DU DEBIT VECTORIEL    QU, QV
+!                         - DE LA HAUTEUR D'EAU   H
+!                         - DE LA COTE DU FOND    ZF
+!                         - DE LA SURFACE LIBRE   Z
+!                         - DE L'EVOLUTION TOTALE ESOMT
+!                         - DU DEBIT              Q
+!                         - DE LA HAUTEUR DE HOULE HW
+!                         - DE LA PERIODE DE HOULE TW
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |   U , V        |<-- | COORDONNEES DES VECTEURS VITESSE
+! |   QU , QV      |<-- | DEBIT VECTORIEL SUIVANT X ET SUIVANT Y
+! |   H            |<-->| HAUTEUR D'EAU
+! |   ZF           |<-->| COTE DU FOND
+! |   Z            |<-->| COTE DE SURFACE LIBRE
+! |   ESOMT        |<-->| EVOLUTION TOTALE DES FONDS
+! |   C            |<-->| CELERITE
+! |   Q            |<-->| DEBIT
+! |   HW           | -->| HAUTEUR DE HOULE
+! |   TW           | -->| PERIODE DE HOULE
+! |   X,Y          | -->| COORDONNEES DU MAILLAGE
+! |   NPOIN        | -->| NOMBRE DE POINTS DU MAILLAGE
+! |   AT           | -->| TEMPS
+! |   PMAREE       | -->| PERIODE DE LA MAREE
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+! PROGRAMME APPELANT : SISYPH
+! PROGRAMMES APPELES : 
+!***********************************************************************
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -74,74 +74,74 @@ C
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I
-C
-C-----------------------------------------------------------------------
-C
-C  --------------------------------------------------------------
-C  INITIALISATION DES TABLEAUX NON LUS DANS LE FICHIER RESULTATS:
-C  --------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
+!  --------------------------------------------------------------
+!  INITIALISATION DES TABLEAUX NON LUS DANS LE FICHIER RESULTATS:
+!  --------------------------------------------------------------
+!
       DO I=1,NPOIN 
-         Z(I)=10.D0                                                
-         ZF(I)=0.D0    
-         H(I)=Z(I)-ZF(I)
-C
-C  MODIF JMH : U VARIABLE : CROIT LINEAIREMENT JUSQU'A 10 POUR X=8
-C                           REDESCEND ENSUITE
-C
-         IF(X(I).LT.8.D0) THEN  
-C          QU(I)=10.D0*X(I)/8.D0
-           U(I)=X(I)/8.D0
-         ELSE
-C          QU(I)=10.D0*(1.D0-(X(I)-8.D0)/8.D0)
-           U(I)=1.D0-(X(I)-8.D0)/8.D0
-         ENDIF                      
-C        QV(I)=0.D0 
-         V(I)=0.D0                 
-C        Q(I)=SQRT(QU(I)**2+QV(I)**2)
-C                                                     
+        Z(I)=10.D0                                                
+        ZF(I)=0.D0    
+        H(I)=Z(I)-ZF(I)
+!
+!  MODIF JMH : U VARIABLE : CROIT LINEAIREMENT JUSQU'A 10 POUR X=8
+!                           REDESCEND ENSUITE
+!
+        IF(X(I).LT.8.D0) THEN  
+!         QU(I)=10.D0*X(I)/8.D0
+          U(I)=X(I)/8.D0
+        ELSE
+!         QU(I)=10.D0*(1.D0-(X(I)-8.D0)/8.D0)
+          U(I)=1.D0-(X(I)-8.D0)/8.D0
+        ENDIF                      
+!       QV(I)=0.D0 
+        V(I)=0.D0                 
+!       Q(I)=SQRT(QU(I)**2+QV(I)**2)
+!                                                     
       ENDDO     
-C-----------------------------------------------------------------------
-C
+!-----------------------------------------------------------------------
+!
       RETURN
       END   
-C                       *****************
+!                       *****************
                         SUBROUTINE NOEROD
-C                       *****************
-C
-     * (H , ZF , ZR , Z , X , Y , NPOIN , CHOIX , NLISS )
-C
-C***********************************************************************
-C TSEF VERSION 3.2                                          C. LENORMANT
-C
-C***********************************************************************
-C
-C     FONCTION  : IMPOSE LA VALEUR DE LA COTE DU FOND NON ERODABLE  ZR
-C
-C
-C     LES METHODES DE TRAITEMENT DES FONDS NON ERODABLES PEUVENT CONDUIRE
-C     A ZF < ZR A CERTAINS PAS DE TEMPS, POUR PALLIER A CELA ON PEUT CHOISIR 
-C     CHOISIR DE LISSER LA SOLUTION OBTENUE I.E NLISS > 0.  
-C
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________
-C |   H            | -->| HAUTEUR D'EAU
-C |   ZF           | -->| COTE DU FOND
-C |   ZR           |<-- | COTE DU FOND NON ERODABLE
-C |   Z            | -->| COTE DE SURFACE LIBRE
-C |   X,Y          | -->| COORDONNEES DU MAILLAGE
-C |   NPOIN        | -->| NOMBRE DE POINTS DU MAILLAGE
-C |   CHOIX        | -->| METHODE CHOISIE POUR LE TRAITEMENT DES FONDS
-C |                | -->| NON ERODABLES
-C |   NLISS        |<-->| NOMBRE DE LISSAGES
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C
+!                       *****************
+!
+     & (H , ZF , ZR , Z , X , Y , NPOIN , CHOIX , NLISS )
+!
+!***********************************************************************
+! TSEF VERSION 3.2                                          C. LENORMANT
+!
+!***********************************************************************
+!
+!     FONCTION  : IMPOSE LA VALEUR DE LA COTE DU FOND NON ERODABLE  ZR
+!
+!
+!     LES METHODES DE TRAITEMENT DES FONDS NON ERODABLES PEUVENT CONDUIRE
+!     A ZF < ZR A CERTAINS PAS DE TEMPS, POUR PALLIER A CELA ON PEUT CHOISIR 
+!     CHOISIR DE LISSER LA SOLUTION OBTENUE I.E NLISS > 0.  
+!
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |   H            | -->| HAUTEUR D'EAU
+! |   ZF           | -->| COTE DU FOND
+! |   ZR           |<-- | COTE DU FOND NON ERODABLE
+! |   Z            | -->| COTE DE SURFACE LIBRE
+! |   X,Y          | -->| COORDONNEES DU MAILLAGE
+! |   NPOIN        | -->| NOMBRE DE POINTS DU MAILLAGE
+! |   CHOIX        | -->| METHODE CHOISIE POUR LE TRAITEMENT DES FONDS
+! |                | -->| NON ERODABLES
+! |   NLISS        |<-->| NOMBRE DE LISSAGES
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+!
       USE BIEF
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -158,34 +158,34 @@ C
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I
-C
+!
       DOUBLE PRECISION   PI,XMAX,ZEMAX
-C
-C-----------------------------------------------------------------------
-C
-C-----------------------------------
-C TRAITEMENT DES FONDS NON ERODABLES
-C------------------------------------
-C
-C       PAR DEFAUT, ZR=ZF-100 !                                                              
-C    ZEMAX: EPAISSEUR MAX DU LIT
+!
+!-----------------------------------------------------------------------
+!
+!-----------------------------------
+! TRAITEMENT DES FONDS NON ERODABLES
+!------------------------------------
+!
+!       PAR DEFAUT, ZR=ZF-100 !                                                              
+!    ZEMAX: EPAISSEUR MAX DU LIT
         ZEMAX=0.10D0
         CALL OV( 'X=Y+C     ',ZR,ZF,ZF,-ZEMAX,NPOIN) 
-C    XMAX: LONGUEUR DU PLATIER
+!    XMAX: LONGUEUR DU PLATIER
         XMAX=6.D0         
         DO I=1,NPOIN
            IF(X(I).LE.XMAX.OR.X(I).GE.10.5D0) THEN
-               ZR(I)=ZF(I)
+             ZR(I)=ZF(I)
            ENDIF
         ENDDO
-C
-C       NLISS CORRESPOND AU NOMBRE DE LISSAGES EFFECTUEES SUR
-C       LES VALEURS NEGATIVES DE LA VARIABLE (ZF-ZR)
-C       PAR DEFAUT NLISS = 0 
-C
+!
+!       NLISS CORRESPOND AU NOMBRE DE LISSAGES EFFECTUEES SUR
+!       LES VALEURS NEGATIVES DE LA VARIABLE (ZF-ZR)
+!       PAR DEFAUT NLISS = 0 
+!
         NLISS = 0       
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END

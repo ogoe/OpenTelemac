@@ -353,7 +353,7 @@
      &             SURDET,DT,IKLE,IFABOR,ELTFLO,ETAFLO,
      &             FRE,ELTBUF,ISUB,IELM,IELMU,
      &             NELEM,NELMAX,            
-     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,        
+     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
      &             BUFF_2D,BUFF_1D,BUFF_1D,FREBUF,SIZEBUF2,
      &             AALG=ALGAE,APOST=.TRUE.)
         ELSE
@@ -366,7 +366,7 @@
      &             SURDET,DT,IKLE,IFABOR,ELTFLO,ETAFLO,
      &             FRE,ELTBUF,ISUB,IELM,IELMU,
      &             NELEM,NELMAX,            
-     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,        
+     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
      &             SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
      &             AALG=ALGAE,APOST=.TRUE.)
         ENDIF
@@ -376,7 +376,7 @@
      &             DX,DY,DZ,DZ,Z,SHPFLO,SHZFLO,SHZFLO,SURDET,DT,
      &             IKLE,IFABOR,ELTFLO,ETAFLO,
      &             FRE,ELTBUF,ISUB,IELM,IELMU,NELEM,NELMAX,            
-     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,        
+     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
      &             SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
      &             APOST=.TRUE.,ASTOCHA=STOCHA,AVISC=VISC)
 !                  APOST=.TRUE. OTHERWISE ISUB IS NOT FILLED

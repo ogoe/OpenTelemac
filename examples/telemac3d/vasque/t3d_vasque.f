@@ -80,21 +80,21 @@
 !
       IF(LISFON.GT.0) THEN
 !
-         MAS = .TRUE.
+        MAS = .TRUE.
 !
-         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
-     &               1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
+        CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
+     &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
 !
       ENDIF
 !
       IM = 47
       JM = 10
-C                                                                         
-C  VARIANTE FOND EN PENTE RECTILIGNE + CUVETTE                            
-C                                                                         
+!                                                                         
+!  VARIANTE FOND EN PENTE RECTILIGNE + CUVETTE                            
+!                                                                         
       DO I=1,IM 
       DO J=1,JM 
-C       PENTE RECTILIGNE                                                       
+!       PENTE RECTILIGNE                                                       
         POS_LOC = GLOBAL_TO_LOCAL_POINT(I+(J-1)*IM,MESH3D)
 !
 !       NOTE JMH: THIS IS VERY HEAVY, THERE SHOULD BE A
@@ -102,7 +102,7 @@ C       PENTE RECTILIGNE
 !
         IF(POS_LOC.GT.0) THEN
           ZF(POS_LOC)=-0.6D0+0.46D0*FLOAT(I-1)/FLOAT(IM-1) 
-C         BOSSE GAUSSIENNE            
+!         BOSSE GAUSSIENNE            
           IF(I.GT.9.AND.I.LT.29) THEN
             EIKON = -(I-19)**2/20.D0 
             ZF(POS_LOC) = ZF(POS_LOC) + 0.1D0*EXP(EIKON)
@@ -115,85 +115,85 @@ C         BOSSE GAUSSIENNE
 !
       RETURN
       END
-C                       *****************************
+!                       *****************************
                         DOUBLE PRECISION FUNCTION SL3
-C                       *****************************
-C
-C
-     *( I , TIME , N , ENTET )
-C
-C***********************************************************************
-C TELEMAC 3D VERSION 5.9    12/12/00    J-M HERVOUET (LNH) 30 87 80 18
-C
-C***********************************************************************
-C
-C FONCTION  : DONNE LA VALEUR DE LA COTE DE LA SURFACE LIBRE POUR TOUTES
-C             LES ENTREES A COTE IMPOSEE.
-C
-C-----------------------------------------------------------------------
-C
-C FUNCTION  : GIVES THE PRESCRIBED VALUE OF FREE SURFACE AT
-C             A LIQUID BOUNDARY
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C |      NOM       |MODE|                   ROLE                       |
-C |________________|____|______________________________________________|
-C |   I            | -->| NUMBER OF LIQUID BOUNDARY
-C |   N            | -->| GLOBAL NUMBER OF POINT
-C |________________|____|_______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C  APPELE PAR : BORD
-C
-C***********************************************************************
-C
+!                       *****************************
+!
+!
+     &( I , TIME , N , ENTET )
+!
+!***********************************************************************
+! TELEMAC 3D VERSION 5.9    12/12/00    J-M HERVOUET (LNH) 30 87 80 18
+!
+!***********************************************************************
+!
+! FONCTION  : DONNE LA VALEUR DE LA COTE DE LA SURFACE LIBRE POUR TOUTES
+!             LES ENTREES A COTE IMPOSEE.
+!
+!-----------------------------------------------------------------------
+!
+! FUNCTION  : GIVES THE PRESCRIBED VALUE OF FREE SURFACE AT
+!             A LIQUID BOUNDARY
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! |      NOM       |MODE|                   ROLE                       |
+! |________________|____|______________________________________________|
+! |   I            | -->| NUMBER OF LIQUID BOUNDARY
+! |   N            | -->| GLOBAL NUMBER OF POINT
+! |________________|____|_______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!
+!-----------------------------------------------------------------------
+!
+!  APPELE PAR : BORD
+!
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER          , INTENT(IN) :: I,N
       DOUBLE PRECISION , INTENT(IN) :: TIME
       LOGICAL          , INTENT(IN) :: ENTET
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       CHARACTER*8 FCT
       INTEGER J
       LOGICAL DEJA,OK(99)
       DATA    DEJA /.FALSE./
       SAVE    OK,DEJA
-C
+!
       DOUBLE PRECISION PI,OMEGA,PERIODE,A
       DATA PI/3.141592653589D0/
-C
-C     FIRST CALL, OK INITIALISED TO .TRUE.
-C
+!
+!     FIRST CALL, OK INITIALISED TO .TRUE.
+!
       IF(.NOT.DEJA) THEN
         DO J=1,99
           OK(J)=.TRUE.
         ENDDO
         DEJA=.TRUE.
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C     IF FILE OF LIQUID BOUNDARIES EXISTING, ATTEMPT TO FIND
-C     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-C                      IF  NO, OK SET     TO .FALSE.
-C
+!
+!-----------------------------------------------------------------------
+!
+!     IF FILE OF LIQUID BOUNDARIES EXISTING, ATTEMPT TO FIND
+!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
+!                      IF  NO, OK SET     TO .FALSE.
+!
       IF(OK(I).AND.T3D_FILES(T3DIMP)%NAME(1:1).NE.' ') THEN
-C
-C       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
+!
+!       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
         FCT(1:3)='SL('
         IF(I.LT.10) THEN 
           WRITE(FCT(4:4),FMT='(I1)') I
@@ -207,23 +207,23 @@ C       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
         ENDIF
         CALL READ_FIC_FRLIQ(SL3,FCT,TIME,T3D_FILES(T3DIMP)%LU,
      &                      ENTET,OK(I))
-C
+!
       ENDIF
-C
+!
       IF(.NOT.OK(I).OR.T3D_FILES(T3DIMP)%NAME(1:1).EQ.' ') THEN
-C 
-C     PROGRAMMABLE PART                              
-C     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
-C                                                                             
-C       SL3 = COTIMP(I)
+! 
+!     PROGRAMMABLE PART                              
+!     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
+!                                                                             
+!       SL3 = COTIMP(I)
         PERIODE=600.D0
         OMEGA=2*PI/PERIODE
         A=0.55D0/2.D0
         SL3=A*(COS(OMEGA*TIME)-1.D0)
-C 
+! 
       ENDIF           
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END

@@ -17,7 +17,7 @@ COUPLING PERIOD FOR TOMAWAC = 10
 SISYPHE STEERING FILE     = 'sis_littoral.cas'
 COUPLING PERIOD FOR SISYPHE = 10
 /
-FORTRAN FILE              = 'princi_littoral.f'
+FORTRAN FILE              = 't2d_littoral.f'
 BOUNDARY CONDITIONS FILE  = 'geo_t2d_littoral.cli'
 GEOMETRY FILE             = 'geo_littoral.slf'
 RESULTS FILE              = 't2d_littoral.slf'

@@ -121,51 +121,51 @@
 ! PAROIS SOLIDES
 !
       DO I=1,NPTFR
-       JB=BOUNDARY_COLOUR%I(I)
-      
-      IF(JB.GE.101.AND.JB.LE.304)THEN
-         LIHBOR%I(I)=KLOG
-         RP%R(I)=1.D0
-      ENDIF
-! PAROIS LIQUIDES -FRONTIERE LIBRE
-!
-      IF(JB.GE.42.AND.JB.LE.100)THEN
-         LIHBOR%I(I)=KSORT
-      ENDIF
-      IF(JB.GE.305.AND.JB.LE.363)THEN
-         LIHBOR%I(I)=KSORT
-      ENDIF
-!
-! PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
-!
-      DEGRAD=PI/180.D0
-      PHASOI=0.D0
-      X0=2000.
-      Y0=4500.
-      AUXIC =COS(TETAH*DEGRAD)
-      AUXIS =SIN(TETAH*DEGRAD)
-!
-!     
-      IF(JB.GE.364.AND.JB.LE.484)THEN
-         LIHBOR%I(I)=KINC
-         TETAB%R(I)=0.
-         HB%R(I)=1.D0
-!   ---- PHASE 
-         IG   = MESH%NBOR%I(I)
-         KK=K%R(IG)
-         PHASOI=KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
-         ALFAP%R(I) = PHASOI/DEGRAD
-      ENDIF
-      IF(JB.GE.1.AND.JB.LE.41)THEN
-         LIHBOR%I(I)=KINC
-         TETAB%R(I)=0.
-         HB%R(I)=1.D0
-!   ---- PHASE 
-         IG   = MESH%NBOR%I(I)
-         KK=K%R(IG)
-         PHASOI=KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
-         ALFAP%R(I) = PHASOI/DEGRAD
-      ENDIF
+          JB=BOUNDARY_COLOUR%I(I)
+          
+          IF(JB.GE.101.AND.JB.LE.304)THEN
+            LIHBOR%I(I)=KLOG
+            RP%R(I)=1.D0
+          ENDIF
+!         PAROIS LIQUIDES -FRONTIERE LIBRE
+!        
+          IF(JB.GE.42.AND.JB.LE.100)THEN
+            LIHBOR%I(I)=KSORT
+          ENDIF
+          IF(JB.GE.305.AND.JB.LE.363)THEN
+            LIHBOR%I(I)=KSORT
+          ENDIF
+!        
+!         PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
+!        
+          DEGRAD=PI/180.D0
+          PHASOI=0.D0
+          X0=2000.
+          Y0=4500.
+          AUXIC =COS(TETAH*DEGRAD)
+          AUXIS =SIN(TETAH*DEGRAD)
+!        
+!         
+          IF(JB.GE.364.AND.JB.LE.484)THEN
+            LIHBOR%I(I)=KINC
+            TETAB%R(I)=0.
+            HB%R(I)=1.D0
+!   ------- PHASE 
+            IG   = MESH%NBOR%I(I)
+            KK=K%R(IG)
+            PHASOI=KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
+            ALFAP%R(I) = PHASOI/DEGRAD
+          ENDIF
+          IF(JB.GE.1.AND.JB.LE.41)THEN
+            LIHBOR%I(I)=KINC
+            TETAB%R(I)=0.
+            HB%R(I)=1.D0
+!   ------- PHASE 
+            IG   = MESH%NBOR%I(I)
+            KK=K%R(IG)
+            PHASOI=KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
+            ALFAP%R(I) = PHASOI/DEGRAD
+          ENDIF
       ENDDO
 !
 ! ------------ 
@@ -236,7 +236,7 @@
 !
         MAS=.TRUE.
         CALL FILTER(ZF,MAS,T1,T2,AM1,'MATMAS          ',
-     *              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
+     &              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
 !
       ENDIF
 !

@@ -12,190 +12,190 @@
  
         IMPLICIT NONE 
 !              DOUBLE PRECISION, SAVE  :: Q_outCLA(NSICLA) 
-              DOUBLE PRECISION, SAVE  :: Q_outCLA(10)=0.0000001 
+              DOUBLE PRECISION, SAVE  :: Q_OUTCLA(10)=0.0000001 
 !
-              integer       :: outputcounter = 0
+              INTEGER       :: OUTPUTCOUNTER = 0
 !
         END MODULE RECIRCMODUL
-C                       *****************
+!                       *****************
                         SUBROUTINE NOEROD
-C                       *****************
-C
-     * (H , ZF , ZR , Z , X , Y , NPOIN , CHOIX , NLISS )
-C
-C***********************************************************************
-C SISYPHE VERSION 5.1                             C. LENORMANT
-C
-C COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT
-C***********************************************************************
-C
-C     FONCTION  : IMPOSE LA VALEUR DE LA COTE DU FOND NON ERODABLE  ZR
-C
-C
-C     RQ: LES METHODES DE TRAITEMENT DES FONDS NON ERODABLES PEUVENT CONDUIRE
-C     A ZF < ZR A CERTAINS PAS DE TEMPS, POUR PALLIER A CELA ON PEUT CHOISIR
-C     CHOISIR DE LISSER LA SOLUTION OBTENUE i.e NLISS > 0.
-C
-C     FUNCTION  : IMPOSE THE RIGID BED LEVEL  ZR
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________
-C |   H            | -->| WATER DEPTH
-C |   ZF           | -->| BED LEVEL
-C |   ZR           |<-- | RIGID BED LEVEL
-C |   Z            | -->| FREE SURFACE
-C |   X,Y          | -->| 2D COORDINATES
-C |   NPOIN        | -->| NUMBER OF 2D POINTS
-C |   CHOIX        | -->| SELECTED METHOD FOR THE TREATMENT OF RIGID BEDS
-C |   NLISS        |<-->| NUMBER OF SMOOTHINGS
-C |________________|____|______________________________________________
-C MODE : -->(INPUT), <--(RESULT), <-->(MODIFIED DATA)
-C-----------------------------------------------------------------------
-C
+!                       *****************
+!
+     & (H , ZF , ZR , Z , X , Y , NPOIN , CHOIX , NLISS )
+!
+!***********************************************************************
+! SISYPHE VERSION 5.1                             C. LENORMANT
+!
+! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT
+!***********************************************************************
+!
+!     FONCTION  : IMPOSE LA VALEUR DE LA COTE DU FOND NON ERODABLE  ZR
+!
+!
+!     RQ: LES METHODES DE TRAITEMENT DES FONDS NON ERODABLES PEUVENT CONDUIRE
+!     A ZF < ZR A CERTAINS PAS DE TEMPS, POUR PALLIER A CELA ON PEUT CHOISIR
+!     CHOISIR DE LISSER LA SOLUTION OBTENUE i.e NLISS > 0.
+!
+!     FUNCTION  : IMPOSE THE RIGID BED LEVEL  ZR
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |   H            | -->| WATER DEPTH
+! |   ZF           | -->| BED LEVEL
+! |   ZR           |<-- | RIGID BED LEVEL
+! |   Z            | -->| FREE SURFACE
+! |   X,Y          | -->| 2D COORDINATES
+! |   NPOIN        | -->| NUMBER OF 2D POINTS
+! |   CHOIX        | -->| SELECTED METHOD FOR THE TREATMENT OF RIGID BEDS
+! |   NLISS        |<-->| NUMBER OF SMOOTHINGS
+! |________________|____|______________________________________________
+! MODE : -->(INPUT), <--(RESULT), <-->(MODIFIED DATA)
+!-----------------------------------------------------------------------
+!
       USE BIEF
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
+!
       INTEGER, INTENT(IN):: NPOIN , CHOIX
       INTEGER, INTENT(INOUT):: NLISS
-C
+!
       DOUBLE PRECISION, INTENT(IN)::  Z(NPOIN) , ZF(NPOIN)
       DOUBLE PRECISION , INTENT(IN)::  X(NPOIN) , Y(NPOIN), H(NPOIN)
       DOUBLE PRECISION , INTENT(INOUT)::  ZR(NPOIN)
-C
-C-----------------------------------------------------------------------
+!
+!-----------------------------------------------------------------------
       INTEGER I
-C--------------------
-C RIGID BEDS POSITION
-C---------------------
-C
-C       DEFAULT VALUE:       ZR=ZF-100
+!--------------------
+! RIGID BEDS POSITION
+!---------------------
+!
+!       DEFAULT VALUE:       ZR=ZF-100
 !
         CALL OV( 'X=Y+C     ',ZR,ZF,ZF,-0.3D0,NPOIN)
 !
-        DO i=1,NPOIN
-        IF (X(i) < 100.0D0) THEN
-           ! zr(i)=zf(i)
+        DO I=1,NPOIN
+        IF (X(I) < 100.0D0) THEN
+           ! ZR(I)=ZF(I)
         END IF
         END DO
-C
-C------------------
-C SMOOTHING OPTION
-C------------------
-C       NLISS : NUMBER OF SMOOTHING IF  (ZF - ZR ) NEGATIVE
-C                DEFAULT VALUE : NLISS = 0 (NO SMOOTHING)
-C
+!
+!------------------
+! SMOOTHING OPTION
+!------------------
+!       NLISS : NUMBER OF SMOOTHING IF  (ZF - ZR ) NEGATIVE
+!                DEFAULT VALUE : NLISS = 0 (NO SMOOTHING)
+!
         NLISS = 0
-C
-C
+!
+!
       RETURN
       END SUBROUTINE NOEROD
-C                         ********************* 
+!                         ********************* 
                           SUBROUTINE INIT_COMPO 
-C                         ********************* 
-C 
-     *(NCOUCHES) 
-C 
-C*********************************************************************** 
-C SISYPHE VERSION 6.2 
-C
-C           Version for the FLUME CASES OF ASTRID BLOM (2003)
-C              @ DELFT / DELTARES 
-C 
-C           prepared by uwe.merkel@uwe-merkel.com
-C
-C           Choose:  BLOMCASE = 'B1' or A1 / A2 / T5 / T10 
-C 
-C*********************************************************************** 
-C 
-C     FONCTION  : DISTRIBUTION DES CLASSES 
-C                 % PAR COUCHE, STRATIFICATION 
-C     SUBROUTINE A REMPLIR PAR l'UTILISATEUR 
-C 
-C 
-C     FUNCTION  : INITIAL FRACTION DISTRIBUTION, STRATIFICATION, 
-C                 VARIATION IN SPACE 
-C 
-C----------------------------------------------------------------------- 
-C                             ARGUMENTS 
-C .________________.____.______________________________________________ 
-C |      NOM       |MODE|                   ROLE 
-C |________________|____|______________________________________________ 
-C |                |    | 
-C |    AVAIL       |<-- | SEDIMENT FRACTION FOR EACH LAYER, CLASS AND NODE 
-C |                |    | AVAIL(NPOIN,10,NSICLA) 
-C |    ES          |<-- | THICKNESS FOR EACH LAYER AND NODE ES(NPOIN,10) 
-C |    NCOUCHES    |--> | NUMBER OF LAYER FOR EACH POINT 
-C |    NSICLA      |--> | NUMBER OF SIZE-CLASSES OF BED MATERIAL 
-C |                |    | (LESS THAN 10) 
-C |    NPOIN       |--> | NUMBER OF NODES 
-C |________________|____|______________________________________________ 
-C MODE : -->(INPUT), <--(RESULT), <--> (MODIFIED INPUT) 
-C----------------------------------------------------------------------- 
-C PROGRAMME APPELANT : INIT_AVAI 
-C PROGRAMMES APPELES : NONE 
-C*********************************************************************** 
-C 
+!                         ********************* 
+! 
+     &(NCOUCHES) 
+! 
+!*********************************************************************** 
+! SISYPHE VERSION 6.2 
+!
+!           Version for the FLUME CASES OF ASTRID BLOM (2003)
+!              @ DELFT / DELTARES 
+! 
+!           prepared by uwe.merkel@uwe-merkel.com
+!
+!           Choose:  BLOMCASE = 'B1' or A1 / A2 / T5 / T10 
+! 
+!*********************************************************************** 
+! 
+!     FONCTION  : DISTRIBUTION DES CLASSES 
+!                 % PAR COUCHE, STRATIFICATION 
+!     SUBROUTINE A REMPLIR PAR l'UTILISATEUR 
+! 
+! 
+!     FUNCTION  : INITIAL FRACTION DISTRIBUTION, STRATIFICATION, 
+!                 VARIATION IN SPACE 
+! 
+!----------------------------------------------------------------------- 
+!                             ARGUMENTS 
+! .________________.____.______________________________________________ 
+! |      NOM       |MODE|                   ROLE 
+! |________________|____|______________________________________________ 
+! |                |    | 
+! |    AVAIL       |<-- | SEDIMENT FRACTION FOR EACH LAYER, CLASS AND NODE 
+! |                |    | AVAIL(NPOIN,10,NSICLA) 
+! |    ES          |<-- | THICKNESS FOR EACH LAYER AND NODE ES(NPOIN,10) 
+! |    NCOUCHES    |--> | NUMBER OF LAYER FOR EACH POINT 
+! |    NSICLA      |--> | NUMBER OF SIZE-CLASSES OF BED MATERIAL 
+! |                |    | (LESS THAN 10) 
+! |    NPOIN       |--> | NUMBER OF NODES 
+! |________________|____|______________________________________________ 
+! MODE : -->(INPUT), <--(RESULT), <--> (MODIFIED INPUT) 
+!----------------------------------------------------------------------- 
+! PROGRAMME APPELANT : INIT_AVAI 
+! PROGRAMMES APPELES : NONE 
+!*********************************************************************** 
+! 
       USE BIEF 
       USE DECLARATIONS_TELEMAC 
       USE DECLARATIONS_SISYPHE 
-C 
+! 
       IMPLICIT NONE 
-      INTEGER LNG,LU,kk
+      INTEGER LNG,LU,KK
       CHARACTER*2 BLOMCASE
       COMMON/INFO/LNG,LU 
-C 
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
-C 
-C                                       NPOIN 
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+! 
+!                                       NPOIN 
       INTEGER, INTENT (INOUT)::NCOUCHES(*) 
-C 
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
-C 
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+! 
       INTEGER I, J, K 
-C 
-C----------------------------------------------------------------------- 
-C 
+! 
+!----------------------------------------------------------------------- 
+! 
       DO J=1,NPOIN 
 ! 
-            NCOUCHES(J) = NOMBLAY
-            NLAYER%I(J) = NOMBLAY
+        NCOUCHES(J) = NOMBLAY
+        NLAYER%I(J) = NOMBLAY
 
-            ES(J,1) = 0.03D0 
+        ES(J,1) = 0.03D0 
 
-            ES(J,2) = 0.01D0
-            ES(J,3) = 0.01D0
-            ES(J,4) = 0.01D0
-            ES(J,5) = 0.01D0
-            ES(J,6) = 0.01D0
-            ES(J,7) = 0.01D0
-            ES(J,8) = 0.01D0
+        ES(J,2) = 0.01D0
+        ES(J,3) = 0.01D0
+        ES(J,4) = 0.01D0
+        ES(J,5) = 0.01D0
+        ES(J,6) = 0.01D0
+        ES(J,7) = 0.01D0
+        ES(J,8) = 0.01D0
 
-            ES(J,9) = (ZF%R(J) -ZR%R(J)-(NOMBLAY-2)*0.01D0 - ES(J,1))
+        ES(J,9) = (ZF%R(J) -ZR%R(J)-(NOMBLAY-2)*0.01D0 - ES(J,1))
 !
-          BLOMCASE = 'B1'
+        BLOMCASE = 'B1'
 ! 
-          DO I = 1, NSICLA 
+        DO I = 1, NSICLA 
           DO K = 1, NCOUCHES(J) 
-C        Nur für BLOOM B CASES 
+!        Nur für BLOOM B CASES 
             IF (BLOMCASE.EQ.'A1') THEN 
-               AVAIL(J,K,I) = AVA0(I) 
+              AVAIL(J,K,I) = AVA0(I) 
             ELSEIF (BLOMCASE.EQ.'A2') THEN 
-               AVAIL(J,K,I) = AVA0(I) 
+              AVAIL(J,K,I) = AVA0(I) 
             ELSEIF (BLOMCASE.EQ.'T5') THEN 
-               AVAIL(J,K,I) = AVA0(I) 
+              AVAIL(J,K,I) = AVA0(I) 
             ELSEIF (BLOMCASE.EQ.'T10') THEN 
-               AVAIL(J,K,I) = AVA0(I) 
+              AVAIL(J,K,I) = AVA0(I) 
             ELSEIF ((K.EQ.1)) THEN 
-               AVAIL(J,K,I) = AVA0(I) 
+              AVAIL(J,K,I) = AVA0(I) 
             ELSE 
-               AVAIL(J,K,1) = 0.998D0 
-               AVAIL(J,K,2) = 0.001D0 
-               AVAIL(J,K,3) = 0.001D0 
+              AVAIL(J,K,1) = 0.998D0 
+              AVAIL(J,K,2) = 0.001D0 
+              AVAIL(J,K,3) = 0.001D0 
             ENDIF 
  
           ENDDO 
@@ -209,24 +209,24 @@ C        Nur für BLOOM B CASES
 !  No user edit necessary
 !-----------------------------------------------------------------------
 !
-      IF(VSMTYPE.eq.1) THEN
-!        Folder for Hirano Profile Outputs
-         do kk = 1,100
-         if(CVSMOUTPUT(kk).gt.0) THEN
-           call LAYERS_P('./VSP_',CVSMOUTPUT(kk))
-         endif
-         enddo
-         call CVSP_INIT_from_LAYERS
-!        output to Selafin file
-         if (CVSM_OUT_FULL) THEN
-           call CVSP_OUTPUT_INIT
-           call CVSP_WRITE_PROFILE
-         ENDIF
-         do kk = 1,100
-         if (CVSMOUTPUT(kk).gt.0) THEN
-           call CVSP_P('./','V_', CVSMOUTPUT(kk))
-         endif
-         enddo
+      IF(VSMTYPE.EQ.1) THEN
+!       FOLDER FOR HIRANO PROFILE OUTPUTS
+        DO KK = 1,100
+        IF(CVSMOUTPUT(KK).GT.0) THEN
+          CALL LAYERS_P('./VSP_',CVSMOUTPUT(KK))
+        ENDIF
+        ENDDO
+        CALL CVSP_INIT_FROM_LAYERS
+!       OUTPUT TO SELAFIN FILE
+        IF (CVSM_OUT_FULL) THEN
+          CALL CVSP_OUTPUT_INIT
+          CALL CVSP_WRITE_PROFILE
+        ENDIF
+        DO KK = 1,100
+        IF (CVSMOUTPUT(KK).GT.0) THEN
+          CALL CVSP_P('./','V_', CVSMOUTPUT(KK))
+        ENDIF
+        ENDDO
       ENDIF ! END CVSM 
       RETURN 
       END SUBROUTINE INIT_COMPO
@@ -301,25 +301,25 @@ C        Nur für BLOOM B CASES
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,K,KK,IFRLIQ,IRANK, NSIC
-      DOUBLE PRECISION Inflowwidth
+      DOUBLE PRECISION INFLOWWIDTH
 !
 !-----------------------------------------------------------------------
 !
 
 
 !     CALCULATING THE WITH OF THE INFLOW, OUR SEDIMENT INPUT HAS TO BE DISTRIBUTED OVER IT
-        Inflowwidth = 0.D0
+        INFLOWWIDTH = 0.D0
       DO K=1,NPTFR
               KK = MESH%KP1BOR%I(K)
-          if (k.ne.kk) then
-              IF((NUMLIQ%I(K).EQ.2).and.(NUMLIQ%I(KK).EQ.2)) THEN ! FLUX for one class
+          IF (K.NE.KK) THEN
+              IF((NUMLIQ%I(K).EQ.2).AND.(NUMLIQ%I(KK).EQ.2)) THEN ! FLUX FOR ONE CLASS
                 IF(LIEBOR%I(K).EQ.4.AND.LIHBOR%I(K).EQ.4) THEN 
-                Inflowwidth = Inflowwidth + MESH%LGSEG%R(k) 
+                INFLOWWIDTH = INFLOWWIDTH + MESH%LGSEG%R(K) 
 !                print*,'Inflowwidth',k,mesh%lgseg%r(k),Inflowwidth
 !     &           ,MESH%X%R(MESH%NBOR%I(K)),MESH%X%R(MESH%NBOR%I(KK)) 
                 ENDIF 
-              Endif ! FLUX for one class
-          endif
+              ENDIF ! FLUX FOR ONE CLASS
+          ENDIF
       ENDDO
 !
       DO  K=1,NPTFR
@@ -341,16 +341,18 @@ C        Nur für BLOOM B CASES
 !       NODE K , CLASS OF SEDIMENT J, EXCLUDING VOIDS
 !
 !
-       ! RECIRC INPUT ....
-       If (NUMLIQ%I(K).eq.2) then
-            LIEBOR%I(K)=KSORT
-            LIQBOR%I(K)=KENT
-         Print *, 'QBOR%ADR(NSIC)%P%R(K), Q_outCLA(NSIC),Inflowwidth,LT'
-       Do NSIC = 1,NSICLA
-            QBOR%ADR(NSIC)%P%R(K)= (Q_outCLA(NSIC) / Inflowwidth)
-         Print *, QBOR%ADR(NSIC)%P%R(K), Q_outCLA(NSIC), Inflowwidth, LT
-       ENDDO
-       Endif
+        ! RECIRC INPUT ....
+        IF (NUMLIQ%I(K).EQ.2) THEN
+          LIEBOR%I(K)=KSORT
+          LIQBOR%I(K)=KENT
+          PRINT *, 
+     &      'QBOR%ADR(NSIC)%P%R(K), Q_OUTCLA(NSIC), INFLOWWIDTH, LT'
+          DO NSIC = 1,NSICLA
+            QBOR%ADR(NSIC)%P%R(K)= (Q_OUTCLA(NSIC) / INFLOWWIDTH)
+            PRINT *, QBOR%ADR(NSIC)%P%R(K), Q_OUTCLA(NSIC), 
+     &               INFLOWWIDTH, LT
+          ENDDO
+        ENDIF
 !
 !       EXAMPLE 2: IMPOSED BED EVOLUTON
 !
@@ -385,21 +387,21 @@ C        Nur für BLOOM B CASES
           IFRLIQ=NUMLIQ%I(K)
           IF(LIEBOR%I(K).EQ.KENT.OR.LIEBOR%I(K).EQ.KSORT) THEN
             DO I=1,NSICLA
-               IRANK=I+(IFRLIQ-1)*NSICLA
-               CBOR%ADR(I)%P%R(K) = CBOR_CLASSE(IRANK)
+              IRANK=I+(IFRLIQ-1)*NSICLA
+              CBOR%ADR(I)%P%R(K) = CBOR_CLASSE(IRANK)
             ENDDO
           ENDIF
 !
 ! CV 12/06 READING BOUNDARY CONDITION FILE
 !
           IF(LICBOR%I(K).EQ.KENT.AND.
-     *               SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
+     &               SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
 !
-             IF(IFRLIQ.GT.0) THEN
-               DO I=1,NSICLA
-                  CBOR%ADR(I)%P%R(K) = CGL(IFRLIQ,AT)/XMVS
-               ENDDO
-             ENDIF
+            IF(IFRLIQ.GT.0) THEN
+              DO I=1,NSICLA
+                CBOR%ADR(I)%P%R(K) = CGL(IFRLIQ,AT)/XMVS
+              ENDDO
+            ENDIF
           ENDIF
 !
         ENDDO
@@ -450,48 +452,48 @@ C        Nur für BLOOM B CASES
 !----------------------------------------------------------------------- 
 !
       DO J=1,NPOIN
-         DEPTH = 0                    ! INIT DEPTH OF THE VSP
-         PRO_MAX(J) =  2* NLAYER%I(J) ! 2 SECTION POINTS PER LAYER
-         L = PRO_MAX(J)
+        DEPTH = 0                    ! INIT DEPTH OF THE VSP
+        PRO_MAX(J) =  2* NLAYER%I(J) ! 2 SECTION POINTS PER LAYER
+        L = PRO_MAX(J)
 !
 !-----------------------------------------------------------------------     
 ! WATER / BOTTOM
 !-----------------------------------------------------------------------
 !
-         DO I=1,NSICLA
-            PRO_D(J,L,I) = ZF%R(J)
-            PRO_F(J,L,I) = AVAIL(J,1,I)
-         ENDDO
+        DO I=1,NSICLA
+          PRO_D(J,L,I) = ZF%R(J)
+          PRO_F(J,L,I) = AVAIL(J,1,I)
+        ENDDO
 !
 !-----------------------------------------------------------------------     
 ! SECTIONS 
 !-----------------------------------------------------------------------
 !
-         DO M=1,NLAYER%I(J)-1   !FOR THE UPPER 8 LAYERS
-            DEPTH = DEPTH + ES(J,M)
-            L = L - 1
-            DO I=1,NSICLA
-               PRO_D(J,L,I) = ZF%R(J) - DEPTH
-               PRO_F(J,L,I) = AVAIL(J,M,I)
-            ENDDO
-            L = L - 1
-            DO I=1,NSICLA
-               PRO_D(J,L,I) = ZF%R(J) - DEPTH
-               PRO_F(J,L,I) = AVAIL(J,M+1,I)
-            ENDDO
-         ENDDO
+        DO M=1,NLAYER%I(J)-1   !FOR THE UPPER 8 LAYERS
+          DEPTH = DEPTH + ES(J,M)
+          L = L - 1
+          DO I=1,NSICLA
+            PRO_D(J,L,I) = ZF%R(J) - DEPTH
+            PRO_F(J,L,I) = AVAIL(J,M,I)
+          ENDDO
+          L = L - 1
+          DO I=1,NSICLA
+            PRO_D(J,L,I) = ZF%R(J) - DEPTH
+            PRO_F(J,L,I) = AVAIL(J,M+1,I)
+          ENDDO
+        ENDDO
 !
 !-----------------------------------------------------------------------     
 ! BOTTOM / RIGID BED
 !-----------------------------------------------------------------------
 !         
-         L = L - 1
-         DO I=1,NSICLA
-            PRO_D(J,L,I) = ZR%R(J)
-            PRO_F(J,L,I) = AVAIL(J,NLAYER%I(J),I)
-         ENDDO
+        L = L - 1
+        DO I=1,NSICLA
+          PRO_D(J,L,I) = ZR%R(J)
+          PRO_F(J,L,I) = AVAIL(J,NLAYER%I(J),I)
+        ENDDO
 !
-         CALL CVSP_COMPRESS_DP(J,1.D-5)
+        CALL CVSP_COMPRESS_DP(J,1.D-5)
 !
       ENDDO
 !
@@ -567,7 +569,7 @@ C        Nur für BLOOM B CASES
      &     FILE_FORMAT=SIS_FILES(SISGEO)%FMT)
       
       DO I =1,USRMSH%NPTFR
-         USRMSH%NBOR%I(I) = I
+        USRMSH%NBOR%I(I) = I
       END DO
 !     
 !-----------------------------------------------------------------------     
@@ -580,7 +582,7 @@ C        Nur für BLOOM B CASES
      &     FILE_FORMAT=SIS_FILES(SISGEO)%FMT)
       
       DO I =1,USRMSH_2DHYD%NPTFR
-         USRMSH_2DHYD%NBOR%I(I) = I
+        USRMSH_2DHYD%NBOR%I(I) = I
       END DO
 !
 !-----------------------------------------------------------------------     
@@ -588,13 +590,13 @@ C        Nur für BLOOM B CASES
 !-----------------------------------------------------------------------
 !
       DO I = 1,NUMVARUR3D2RES
-         IF (I.LE.3+NSICLA) THEN
-            UR3D_FILES_OUTVAR(I) = .TRUE.
-         ELSE
-            UR3D_FILES_OUTVAR(I) = .FALSE.
-         ENDIF
-         WRITE(UNIT=VLABEL, FMT='(A5,I2,A25)') 'FRACTION_CLASS_',I-3
-         UR3D_FILES_LABELS(I) = VLABEL
+        IF (I.LE.3+NSICLA) THEN
+          UR3D_FILES_OUTVAR(I) = .TRUE.
+        ELSE
+          UR3D_FILES_OUTVAR(I) = .FALSE.
+        ENDIF
+        WRITE(UNIT=VLABEL, FMT='(A5,I2,A25)') 'FRACTION_CLASS_',I-3
+        UR3D_FILES_LABELS(I) = VLABEL
       ENDDO
 ! EXAMPLE FOR MANUALLY OVERWRITTING LEN=32
       UR3D_FILES_LABELS(1)= 'Z [M]                           ' !'PROFILE_ELEVATION               '
@@ -606,7 +608,7 @@ C        Nur für BLOOM B CASES
 !-----------------------------------------------------------------------
 !
       DO I = 1,NUMVAR2DHYD
-         UR2DHYD_FILES_OUTVAR(I) = .TRUE.
+        UR2DHYD_FILES_OUTVAR(I) = .TRUE.
       ENDDO
       
       UR2DHYD_FILES_LABELS(1)= 'Z [M]                           ' !'Z [M] AND ZF [M]                '
@@ -628,24 +630,24 @@ C        Nur für BLOOM B CASES
 !-----------------------------------------------------------------------
 !
       DO I = 3, 4
-         IF(NCSIZE.LE.1) THEN
-! SCALAR
-            OPEN(CP_FILES(I)%LU,FILE=CP_FILES(I)%TELNAME,
+        IF(NCSIZE.LE.1) THEN
+!         SCALAR
+          OPEN(CP_FILES(I)%LU,FILE=CP_FILES(I)%TELNAME,
+     &         ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
+        ELSE
+!         PARALLEL, FILE TYPE: SCAL
+          IF(CP_FILES(I)%TYPE(1:4).EQ.'SCAL') THEN
+            OPEN(CP_FILES(I)%LU,
+     &           FILE=TRIM(CP_FILES(I)%TELNAME),
      &           ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
-         ELSE
-! PARALLEL, FILE TYPE: SCAL
-            IF(CP_FILES(I)%TYPE(1:4).EQ.'SCAL') THEN
-               OPEN(CP_FILES(I)%LU,
-     &              FILE=TRIM(CP_FILES(I)%TELNAME),
-     &              ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
-! PARALLEL, OTHER FILE TYPE
-            ELSE
-               OPEN(CP_FILES(I)%LU,
-     &              FILE=TRIM(CP_FILES(I)%TELNAME)
-     &              //EXTENS(NCSIZE-1,IPID),
-     &              ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
-            ENDIF
-         ENDIF
+!         PARALLEL, OTHER FILE TYPE
+          ELSE
+            OPEN(CP_FILES(I)%LU,
+     &           FILE=TRIM(CP_FILES(I)%TELNAME)
+     &           //EXTENS(NCSIZE-1,IPID),
+     &           ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
+          ENDIF
+        ENDIF
          
       ENDDO                     !CP_FILES
 !
@@ -674,23 +676,23 @@ C        Nur für BLOOM B CASES
 !-----------------------------------------------------------------------
 !
       DO I = 3, 3               !UBOUND(CP_FILES)
-         CALL WRITE_MESH(CP_FILES(I)%FMT, ! RESULTS FILE FORMAT
-     &        CP_FILES(I)%LU,   ! LU FOR RESULTS FILE
-     &        USRMSH,           ! CHARACTERISES MESH
-     &        USRMSH_NPLAN,     ! NUMBER OF PLANES /NA/
-     &        MARDAT,           ! START DATE
-     &        MARTIM,           ! START TIME
-     &        I_ORIG,J_ORIG)    ! COORDINATES OF THE ORIGIN.
+        CALL WRITE_MESH(CP_FILES(I)%FMT, ! RESULTS FILE FORMAT
+     &       CP_FILES(I)%LU,   ! LU FOR RESULTS FILE
+     &       USRMSH,           ! CHARACTERISES MESH
+     &       USRMSH_NPLAN,     ! NUMBER OF PLANES /NA/
+     &       MARDAT,           ! START DATE
+     &       MARTIM,           ! START TIME
+     &       I_ORIG,J_ORIG)    ! COORDINATES OF THE ORIGIN.
       ENDDO
 
       DO I = 4, 4               !UBOUND(CP_FILES)
-         CALL WRITE_MESH(CP_FILES(I)%FMT, ! RESULTS FILE FORMAT
-     &        CP_FILES(I)%LU,   ! LU FOR RESULTS FILE
-     &        USRMSH_2DHYD,     ! CHARACTERISES MESH
-     &        USRMSH_2DHYD_NPLAN, ! NUMBER OF PLANES /NA/
-     &        MARDAT,           ! START DATE
-     &        MARTIM,           ! START TIME
-     &        I_ORIG,J_ORIG)    ! COORDINATES OF THE ORIGIN.
+        CALL WRITE_MESH(CP_FILES(I)%FMT, ! RESULTS FILE FORMAT
+     &       CP_FILES(I)%LU,   ! LU FOR RESULTS FILE
+     &       USRMSH_2DHYD,     ! CHARACTERISES MESH
+     &       USRMSH_2DHYD_NPLAN, ! NUMBER OF PLANES /NA/
+     &       MARDAT,           ! START DATE
+     &       MARTIM,           ! START TIME
+     &       I_ORIG,J_ORIG)    ! COORDINATES OF THE ORIGIN.
       ENDDO
 !
 !-----------------------------------------------------------------------     
@@ -699,7 +701,7 @@ C        Nur für BLOOM B CASES
 !
 ! VSPRES
       DO K = 1, NSICLA
-         CALL BIEF_ALLVEC(1,VSP_FRA(K),'VSPFRA',41,1,1,USRMSH)
+        CALL BIEF_ALLVEC(1,VSP_FRA(K),'VSPFRA',41,1,1,USRMSH)
       ENDDO
       
       CALL BIEF_ALLVEC(1,VSP_D,     'VSP__D',41,1,1,USRMSH)
@@ -708,7 +710,7 @@ C        Nur für BLOOM B CASES
       
 ! VSPHYD
       DO K = 1, NUMVAR2DHYD
-         CALL BIEF_ALLVEC(1,UR2DHYD(K),'VSPHYD',41,1,1,USRMSH_2DHYD)
+        CALL BIEF_ALLVEC(1,UR2DHYD(K),'VSPHYD',41,1,1,USRMSH_2DHYD)
       ENDDO
 !
 !-----------------------------------------------------------------------

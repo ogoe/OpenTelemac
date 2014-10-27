@@ -241,23 +241,23 @@
       LOGICAL MAS
 !
       DO I=1,NPOIN2
-       IF (X(I).LE.160.D0) THEN
-        ZF(I)=-10.D0
-       ENDIF
-       IF (X(I).GE.160.D0.AND.X(I).LE.260.D0) THEN
-        ZF(I)=-10.D0-5./100.D0*(160.-X(I))
-       ENDIF
-       IF (X(I).GE.260.D0) THEN
-        ZF(I)=-5.D0
-       ENDIF
+        IF (X(I).LE.160.D0) THEN
+          ZF(I)=-10.D0
+        ENDIF
+        IF (X(I).GE.160.D0.AND.X(I).LE.260.D0) THEN
+          ZF(I)=-10.D0-5./100.D0*(160.-X(I))
+        ENDIF
+        IF (X(I).GE.260.D0) THEN
+          ZF(I)=-5.D0
+        ENDIF
       ENDDO
 !
 !  LISSAGES EVENTUELS DU FOND
 !
       IF(LISFON.GT.0) THEN
-         MAS = .TRUE.
-         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
-     &               1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
+        MAS = .TRUE.
+        CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
+     &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
       ENDIF
 !
       RETURN

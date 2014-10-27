@@ -45,30 +45,30 @@
 !     INITIALISATION OF H , THE DEPTH
 !
       IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
-     *   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
+     &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
         CALL OS( 'X=C     ' , H   , H , H , 0.D0 )
         CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
       ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
-     *       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
+     &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H , H , COTINI )
         CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
-     *       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
+     &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0  )
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
-     *       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
+     &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , HAUTIN )
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
-     *       CDTINI(1:10).EQ.'PARTICULAR'.OR.
-     *       CDTINI(1:07).EQ.'SPECIAL') THEN
+     &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
+     &       CDTINI(1:07).EQ.'SPECIAL') THEN
 !     ZONE A MODIFIER
 !     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE                                                     
         IF(LNG.EQ.1) WRITE(LU,10)                                       
         IF(LNG.EQ.2) WRITE(LU,11)                                       
 10      FORMAT(1X,'CONDIM : AVEC DES CONDITIONS INITIALES PARTICULIERES'
-     *      ,/,1X,'         VOUS DEVEZ MODIFIER CONDIM')                
+     &      ,/,1X,'         VOUS DEVEZ MODIFIER CONDIM')                
 11      FORMAT(1X,'CONDIM : WITH SPECIAL INITIAL CONDITIONS'            
-     *      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')                 
+     &      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')                 
         CALL PLANTE(1)                                                  
         STOP
 !     END OF SPECIAL INITIAL CONDITIONS                                                            
@@ -132,13 +132,13 @@
 !                 ETRE DONNEES DANS UN ORDRE STRICTEMENT CROISSANT).
 !***********************************************************************
 !
-C
-C     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
-C
+!
+!     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
+!
       DO IPLAN = 1,NPLAN
         TRANSF_PLANE%I(IPLAN)=2
       ENDDO
-C
+!
 ! CV : 3/08/2009: maillage à pas variable
       AL=1.3D0
       DO IPLAN = 1,NPLAN
@@ -158,10 +158,10 @@ C
 !
       IF(SUIT2) THEN       
         DO I=1,NPLAN
-         DO J=1,NPOIN2
-         U%R((I-1)*NPOIN2+J)=U2D%R(J)
-         V%R((I-1)*NPOIN2+J)=V2D%R(J)
-         ENDDO
+          DO J=1,NPOIN2
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
+          ENDDO
         ENDDO
       ELSE
 ! CV: initialisation vitesses comme dans Tel2d      
@@ -175,11 +175,11 @@ C
 !
 !     TRACERS INITIALIZATION : voir resultats du 2D
 !
-       IF(NTRAC.GT.0) THEN
-         DO I=1,NTRAC
-           CALL OS( 'X=C     ', X=TA%ADR(I)%P, C=TRAC0(I))
-         ENDDO
-       ENDIF
+      IF(NTRAC.GT.0) THEN
+        DO I=1,NTRAC
+          CALL OS( 'X=C     ', X=TA%ADR(I)%P, C=TRAC0(I))
+        ENDDO
+      ENDIF
 !!
 !
 !-----------------------------------------------------------------------
@@ -203,8 +203,8 @@ C
         CALL OS('X=C     ', DP, DP, DP, 0.D0)
            WRITE (LU,*) 'CONDIM: DYNAMIC PRESSURE INITIALISED TO ZERO'
         CALL PHSTAT                       
-     *       (PH%R,DELTAR%R,Z, T3_01%R, T3_02%R, RHO0, GRAV,          
-     *                      NPOIN3, NPOIN2, NPLAN, PRIVE )
+     &       (PH%R,DELTAR%R,Z, T3_01%R, T3_02%R, RHO0, GRAV,          
+     &                      NPOIN3, NPOIN2, NPLAN, PRIVE )
 !!!        WRITE (LU,*) 'CONDIM: HYDROSTATIC PRESSURE INITIALISED.'
       ENDIF
 !
@@ -282,16 +282,16 @@ C
 !
       IF(LISFON.GT.0) THEN
 !
-         MAS = .TRUE.
+        MAS = .TRUE.
 !
-         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
-     &               1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
+        CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
+     &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
 
       ENDIF
 !-----------------------------------------------------------------------
 !
-C  Bosse à t=0
-C
+!  Bosse à t=0
+!
       PI=3.141592653589793D0 
       DO I=1,NPOIN2                                              
         ZF(I) = 0.D0

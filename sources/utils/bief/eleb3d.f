@@ -133,7 +133,7 @@
             NULONE(IELEB3,4) = 6
           ELSE
             IF(LNG.EQ.1) WRITE(LU,101) IPOIN,I1,I2,I3,K1,IELEM
-            IF(LNG.EQ.2) WRITE(LU,102) IPOIN,I1,I2,I3,K1,IELEM            
+            IF(LNG.EQ.2) WRITE(LU,102) IPOIN,I1,I2,I3,K1,IELEM
             CALL PLANTE(1)
             STOP
           ENDIF

@@ -3,7 +3,7 @@
 !                       **************************** 
 ! 
 ! 
-     *( I , N ) 
+     &( I , N ) 
 ! 
 !*********************************************************************** 
 !  TELEMAC 2D VERSION 5.0    17/08/94    J-M HERVOUET (LNH) 30 87 80 18 
@@ -204,7 +204,7 @@
 ! 
       IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN 
         DO N=1,NPOIN 
-         T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N) 
+          T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N) 
         ENDDO 
       ENDIF 
 ! 
@@ -250,20 +250,20 @@
 ! CALCUL DE LA SOLUTION ANALYTIQUE                                        
 !======================================================================= 
 !   
-        PI = 3.141592653589D0                                              
+        PI = 3.141592653589D0
         PER=0.5                                            
         WPLG=2.*PI/PER 
         A=0.39     
 !                                                                            
       IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN  
-           DO N = 1, NPOIN 
-             PHI = X(N)/sqrt(9.81*10.) 
-             B = (2.*pi*(AT-PHI))/PER 
-             IF (AT.LE.PHI) THEN 
-               PRIVE%ADR(1)%P%R(N) = 10. 
-               ELSE 
-               PRIVE%ADR(1)%P%R(N) = 10. + A*SIN(B) 
-           ENDIF    
+        DO N = 1, NPOIN 
+          PHI = X(N)/SQRT(9.81*10.) 
+          B = (2.*PI*(AT-PHI))/PER 
+          IF (AT.LE.PHI) THEN 
+            PRIVE%ADR(1)%P%R(N) = 10. 
+          ELSE 
+            PRIVE%ADR(1)%P%R(N) = 10. + A*SIN(B) 
+          ENDIF    
         ENDDO     
       ENDIF                                                          
 ! 
@@ -276,7 +276,7 @@
                         SUBROUTINE NOMVAR_TELEMAC2D 
 !                       *************************** 
 ! 
-     *(TEXTE,TEXTPR,MNEMO,NPERIAF) 
+     &(TEXTE,TEXTPR,MNEMO,NPERIAF) 
 ! 
 !*********************************************************************** 
 !  TELEMAC 2D VERSION 5.2    17/08/94    J-M HERVOUET (LNH) 30 87 80 18 
@@ -317,10 +317,10 @@
       INTEGER, INTENT(IN) :: NPERIAF 
 ! 
       CHARACTER(LEN=2) I_IN_2_LETTERS(32) 
-      DATA I_IN_2_LETTERS /'1 ','2 ','3 ','4 ','5 ','6 ','7 ','8 ','9 ', 
-     *                     '10','11','12','13','14','15','16','17','18', 
-     *                     '19','20','21','22','23','24','25','26','27', 
-     *                     '28','29','30','31','32'/ 
+      DATA I_IN_2_LETTERS /'1 ','2 ','3 ','4 ','5 ','6 ','7 ','8 ','9 ',
+     &                     '10','11','12','13','14','15','16','17','18',
+     &                     '19','20','21','22','23','24','25','26','27',
+     &                     '28','29','30','31','32'/ 
       INTEGER I 
 ! 
 !----------------------------------------------------------------------- 
@@ -351,7 +351,7 @@
       TEXTE (20) = 'DRIFT ALONG X   M               ' 
       TEXTE (21) = 'DRIFT ALONG Y   M               ' 
       TEXTE (22) = 'COURANT NUMBER                  ' 
-      TEXTE (23) = 'SOLANAL                         '                    
+      TEXTE (23) = 'SOLANAL                         '
       TEXTE (24) = 'VARIABLE 24     UNIT   ??       ' 
       TEXTE (25) = 'VARIABLE 25     UNIT   ??       ' 
       TEXTE (26) = 'VARIABLE 26     UNIT   ??       ' 
@@ -543,12 +543,12 @@
       IF(NPERIAF.GT.0) THEN 
         DO I=1,NPERIAF 
           TEXTE(31+2*(I-1)) =  'AMPLI PERIODE ' 
-     *                       //I_IN_2_LETTERS(I) 
-     *                       //'M               ' 
+     &                       //I_IN_2_LETTERS(I) 
+     &                       //'M               ' 
           MNEMO(31+2*(I-1)) = 'AMPL'//I_IN_2_LETTERS(I)//'  ' 
           TEXTE(32+2*(I-1)) =  'PHASE PERIODE ' 
-     *                       //I_IN_2_LETTERS(I) 
-     *                       //'DEGRES          ' 
+     &                       //I_IN_2_LETTERS(I) 
+     &                       //'DEGRES          ' 
           MNEMO(32+2*(I-1)) = 'PHAS'//I_IN_2_LETTERS(I)//'  ' 
         ENDDO  
       ENDIF 

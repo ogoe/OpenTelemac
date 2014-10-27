@@ -51,53 +51,53 @@
       IF(.NOT.SUIT2) THEN
 !
       IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
-     *   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
+     &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
         CALL OS( 'X=C     ' ,X=H,C=0.D0)
         CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
       ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
-     *       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
+     &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
         CALL OS( 'X=C     ' ,X=H,C=COTINI)
         CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
-     *       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
+     &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
         CALL OS( 'X=C     ' ,X=H,C=0.D0)
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
-     *       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
+     &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
         CALL OS( 'X=C     ' ,X=H,C=HAUTIN)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
-     *       CDTINI(1:10).EQ.'PARTICULAR'.OR.
-     *       CDTINI(1:07).EQ.'SPECIAL') THEN
+     &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
+     &       CDTINI(1:07).EQ.'SPECIAL') THEN
 !     ZONE A MODIFIER
 !     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE                                                     
 !jaj free surface initialisation from a file and using surfini
 !
-      read(nfo1,*)
-      read(nfo1,*) nsec
-      write(lu,*) 'CONDIM: reading free surface initialisation file'
-      write(lu,*) 'CONDIM: nsec = ',nsec
-      write(lu,*) ' '
-      write(lu,'(5(1x,a15))') 
-     &    'xleft', 'yleft', 'xright', 'yright', 'water_level'
-      do i=1,nsec
-        read(nfo1,*) t3_01%r(i), t3_02%r(i), t3_04%r(i),
-     &               t3_05%r(i), t3_03%r(i)
-        t3_06%r(i) = t3_03%r(i)
-        write(lu,'(5(1x,g15.6))') 
-     &     t3_01%r(i), t3_02%r(i), t3_04%r(i),
-     &     t3_05%r(i), t3_03%r(i)
-      end do
-      write(lu,*) ' '
+      READ(NFO1,*)
+      READ(NFO1,*) NSEC
+      WRITE(LU,*) 'CONDIM: READING FREE SURFACE INITIALISATION FILE'
+      WRITE(LU,*) 'CONDIM: NSEC = ',NSEC
+      WRITE(LU,*) ' '
+      WRITE(LU,'(5(1X,A15))') 
+     &    'XLEFT', 'YLEFT', 'XRIGHT', 'YRIGHT', 'WATER_LEVEL'
+      DO I=1,NSEC
+        READ(NFO1,*) T3_01%R(I), T3_02%R(I), T3_04%R(I),
+     &               T3_05%R(I), T3_03%R(I)
+        T3_06%R(I) = T3_03%R(I)
+        WRITE(LU,'(5(1X,G15.6))') 
+     &     T3_01%R(I), T3_02%R(I), T3_04%R(I),
+     &     T3_05%R(I), T3_03%R(I)
+      END DO
+      WRITE(LU,*) ' '
 !
-      write(lu,*) 'CONDIM: cotini = ',cotini
-      call OS( 'X=C     ' , h , h  , h , cotini )
+      WRITE(LU,*) 'CONDIM: COTINI = ',COTINI
+      CALL OS( 'X=C     ' , H , H  , H , COTINI )
 !
-      call SURFINI
-     & (t3_01%r, t3_02%r, t3_03%r, t3_04%r, t3_05%r, t3_06%r, 
-     &  t3_07%r, t3_08%r, t3_09%r, 
-     &  mesh3d%x%R, mesh3d%y%R, h%r, zf%r, 
-     &  it1%i, it2%i, nsec, npoin2)
+      CALL SURFINI
+     & (T3_01%R, T3_02%R, T3_03%R, T3_04%R, T3_05%R, T3_06%R, 
+     &  T3_07%R, T3_08%R, T3_09%R, 
+     &  MESH3D%X%R, MESH3D%Y%R, H%R, ZF%R, 
+     &  IT1%I, IT2%I, NSEC, NPOIN2)
 !
-      call OS( 'X=X-Y   ' , h , zf , zf , 0.d0 )
+      CALL OS( 'X=X-Y   ' , H , ZF , ZF , 0.D0 )
 !
 !     END OF SPECIAL INITIAL CONDITIONS                                                            
 !     FIN DE LA ZONE A MODIFIER      
@@ -271,92 +271,92 @@
 ! Wesel-Xanten, The Rhine River, Rhein-km 812.5 - 821.5
 !===========================================================
 !
-      subroutine SURFINI
-     &  (xle,yli,zli,xri,yri,zre,xm,ym,zm,
-     &   x,y,zs,zf,ikle,elem,nsec,npoin2)
+      SUBROUTINE SURFINI
+     &  (XLE,YLI,ZLI,XRI,YRI,ZRE,XM,YM,ZM,
+     &   X,Y,ZS,ZF,IKLE,ELEM,NSEC,NPOIN2)
 !
-      implicit none 
-      integer lng,lu
-      common/info/lng,lu
+      IMPLICIT NONE 
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
-      integer, intent(in) :: nsec,npoin2
-      double precision, intent(in)    :: xle(nsec),yli(nsec),zli(nsec)
-      double precision, intent(in)    :: xri(nsec),yri(nsec),zre(nsec)
-      double precision,intent(inout)::xm(2*nsec),ym(2*nsec),zm(2*nsec)
-      double precision, intent(in) :: x(npoin2), y(npoin2),zf(npoin2)
-      double precision, intent(inout) :: zs(npoin2)
-      integer, intent(inout) :: ikle(2*nsec-2,3)
-      integer, intent(inout) :: elem(npoin2) 
-      double precision, allocatable :: shp(:,:)
+      INTEGER, INTENT(IN) :: NSEC,NPOIN2
+      DOUBLE PRECISION, INTENT(IN)    :: XLE(NSEC),YLI(NSEC),ZLI(NSEC)
+      DOUBLE PRECISION, INTENT(IN)    :: XRI(NSEC),YRI(NSEC),ZRE(NSEC)
+      DOUBLE PRECISION,INTENT(INOUT)::XM(2*NSEC),YM(2*NSEC),ZM(2*NSEC)
+      DOUBLE PRECISION, INTENT(IN) :: X(NPOIN2), Y(NPOIN2),ZF(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZS(NPOIN2)
+      INTEGER, INTENT(INOUT) :: IKLE(2*NSEC-2,3)
+      INTEGER, INTENT(INOUT) :: ELEM(NPOIN2) 
+      DOUBLE PRECISION, ALLOCATABLE :: SHP(:,:)
 !
-      integer isec, i, ie
-      integer n1, n2, n3
-      double precision a1, a2, a3, surdet
+      INTEGER ISEC, I, IE
+      INTEGER N1, N2, N3
+      DOUBLE PRECISION A1, A2, A3, SURDET
 !
-      allocate(shp(npoin2,3))
+      ALLOCATE(SHP(NPOIN2,3))
 !
-      do isec = 1,nsec
-        i = (isec-1)*2 + 1
-        xm(i)   = xle(isec)
-        xm(i+1) = xri(isec)
-        ym(i)   = yli(isec)
-        ym(i+1) = yri(isec)
-        zm(i)   = zli(isec)
-        zm(i+1) = zre(isec)
-      end do
+      DO ISEC = 1,NSEC
+        I = (ISEC-1)*2 + 1
+        XM(I)   = XLE(ISEC)
+        XM(I+1) = XRI(ISEC)
+        YM(I)   = YLI(ISEC)
+        YM(I+1) = YRI(ISEC)
+        ZM(I)   = ZLI(ISEC)
+        ZM(I+1) = ZRE(ISEC)
+      END DO
 !
-      do ie=1,2*nsec-3,2
-        ikle(ie,1)   = ie 
-        ikle(ie,2)   = ie+1
-        ikle(ie,3)   = ie+2
-        ikle(ie+1,1) = ie+1
-        ikle(ie+1,2) = ie+3
-        ikle(ie+1,3) = ie+2
-      end do
+      DO IE=1,2*NSEC-3,2
+        IKLE(IE,1)   = IE 
+        IKLE(IE,2)   = IE+1
+        IKLE(IE,3)   = IE+2
+        IKLE(IE+1,1) = IE+1
+        IKLE(IE+1,2) = IE+3
+        IKLE(IE+1,3) = IE+2
+      END DO
 !
-      do i=1,npoin2
-        elem(i) = 0
-        shp(i,1) = 0.0d0
-        shp(i,2) = 0.0d0
-        shp(i,3) = 0.0d0
-        do ie=1,2*nsec-2
-          n1 = ikle(ie,1)
-          n2 = ikle(ie,2)
-          n3 = ikle(ie,3)
-          a1 = (x(i)-xm(n3))*(ym(n2)-ym(n3)) 
-     &       - (y(i)-ym(n3))*(xm(n2)-xm(n3))
-          a2 = (x(i)-xm(n1))*(ym(n3)-ym(n1)) 
-     &       - (y(i)-ym(n1))*(xm(n3)-xm(n1))
-          a3 = (x(i)-xm(n2))*(ym(n1)-ym(n2)) 
-     &       - (y(i)-ym(n2))*(xm(n1)-xm(n2))
-          if ((a1.ge.0.).and.(a2.ge.0.).and.(a3.ge.0.)) then
-            surdet = 1.0 / ((xm(n2)-xm(n1))*(ym(n3)-ym(n1)) -
-     &                      (ym(n2)-ym(n1))*(xm(n3)-xm(n1)))
-            elem(i) = ie   
-            shp(i,1) = a1 * surdet
-            shp(i,2) = a2 * surdet
-            shp(i,3) = a3 * surdet
-            exit
-          endif
-        end do
-      end do
+      DO I=1,NPOIN2
+        ELEM(I) = 0
+        SHP(I,1) = 0.0D0
+        SHP(I,2) = 0.0D0
+        SHP(I,3) = 0.0D0
+        DO IE=1,2*NSEC-2
+          N1 = IKLE(IE,1)
+          N2 = IKLE(IE,2)
+          N3 = IKLE(IE,3)
+          A1 = (X(I)-XM(N3))*(YM(N2)-YM(N3)) 
+     &       - (Y(I)-YM(N3))*(XM(N2)-XM(N3))
+          A2 = (X(I)-XM(N1))*(YM(N3)-YM(N1)) 
+     &       - (Y(I)-YM(N1))*(XM(N3)-XM(N1))
+          A3 = (X(I)-XM(N2))*(YM(N1)-YM(N2)) 
+     &       - (Y(I)-YM(N2))*(XM(N1)-XM(N2))
+          IF ((A1.GE.0.).AND.(A2.GE.0.).AND.(A3.GE.0.)) THEN
+            SURDET = 1.0 / ((XM(N2)-XM(N1))*(YM(N3)-YM(N1)) -
+     &                      (YM(N2)-YM(N1))*(XM(N3)-XM(N1)))
+            ELEM(I) = IE   
+            SHP(I,1) = A1 * SURDET
+            SHP(I,2) = A2 * SURDET
+            SHP(I,3) = A3 * SURDET
+            EXIT
+          ENDIF
+        END DO
+      END DO
 !
-      do i=1,npoin2
-        if (elem(i)==0) then
-          write (lu,*) 'SURFINI: Point ',i,
-     &        ' is outside the domain for free surface initialisation'
-          zs(i) = zf(i) 
-        else
-          n1 = ikle(elem(i),1)
-          n2 = ikle(elem(i),2)
-          n3 = ikle(elem(i),3)
-          a1 = shp(i,1)
-          a2 = shp(i,2)
-          a3 = shp(i,3)
-          zs(i) = a1*zm(n1) + a2*zm(n2) + a3*zm(n3)
-        endif 
-      end do
+      DO I=1,NPOIN2
+        IF (ELEM(I)==0) THEN
+          WRITE (LU,*) 'SURFINI: POINT ',I,
+     &        ' IS OUTSIDE THE DOMAIN FOR FREE SURFACE INITIALISATION'
+          ZS(I) = ZF(I) 
+        ELSE
+          N1 = IKLE(ELEM(I),1)
+          N2 = IKLE(ELEM(I),2)
+          N3 = IKLE(ELEM(I),3)
+          A1 = SHP(I,1)
+          A2 = SHP(I,2)
+          A3 = SHP(I,3)
+          ZS(I) = A1*ZM(N1) + A2*ZM(N2) + A3*ZM(N3)
+        ENDIF 
+      END DO
 !
-      deallocate(shp)
-      return
-      end
+      DEALLOCATE(SHP)
+      RETURN
+      END

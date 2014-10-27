@@ -237,14 +237,14 @@
         IF (X(IP).GE.(1.56D0).AND.X(IP).LE.(2.78D0)) THEN
           UC(IP)=-0.13*1/(1-(0.3D0/1.22D0)*(X(IP)-1.56D0)/0.75D0)
         ELSEIF (X(IP).GT.(2.78D0).AND.X(IP).LE.(5.22D0)) THEN
-	  UC(IP)=-0.22D0
+          UC(IP)=-0.22D0
         ELSEIF (X(IP).GT.(5.22D0).AND.X(IP).LE.(6.44D0)) THEN
-	  UC(IP)=-0.22*1/(1+(0.3D0/1.22D0)*(X(IP)-5.22D0)/0.45D0)
+          UC(IP)=-0.22*1/(1+(0.3D0/1.22D0)*(X(IP)-5.22D0)/0.45D0)
         ELSE
           UC(IP)=-0.13D0
-        ENDIF	  
+        ENDIF  
         VC(IP)=0.D0
-	WRITE(LU,*) IP,UC(IP),VC(IP),'IP,UC,VC'
+        WRITE(LU,*) IP,UC(IP),VC(IP),'IP,UC,VC'
       ENDDO
 !
 !
@@ -297,21 +297,21 @@
       COMMON/INFO/LNG,LU
 !
 !
-CEGR---------------------------------MODIF debut
+!EGR---------------------------------MODIF debut
       INTEGER IP
 !
       DO IP=1,NPOIN2
         IF (X(IP).GE.(1.56D0).AND.X(IP).LE.(2.78D0)) THEN
           ZF(IP)=-0.75+(30.D0/122.D0)*(X(IP)-1.56D0)
         ELSEIF (X(IP).GT.(2.78D0).AND.X(IP).LE.(5.22D0)) THEN
-	  ZF(IP)=-0.45D0
+          ZF(IP)=-0.45D0
         ELSEIF (X(IP).GT.(5.22D0).AND.X(IP).LE.(6.44D0)) THEN
-	  ZF(IP)=-0.45-(30.D0/122.D0)*(X(IP)-5.22D0)
+          ZF(IP)=-0.45-(30.D0/122.D0)*(X(IP)-5.22D0)
         ELSE
           ZF(IP)=-0.75D0
-        ENDIF	  
+        ENDIF  
       ENDDO
-CEGR---------------------------------MODIF fin
+!EGR---------------------------------MODIF fin
 !
       RETURN
       END

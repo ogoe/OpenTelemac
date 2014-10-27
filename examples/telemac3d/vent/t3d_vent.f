@@ -77,21 +77,21 @@
 !
       IF(LISFON.GT.0) THEN
 !
-         MAS = .TRUE.
+        MAS = .TRUE.
 !
-         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
-     &               1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
+        CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
+     &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
 
       ENDIF
-C
-C - D - CGD SOGREAH
-C
-C  MISE A JOUR DE LA BATHYMETRIE
-C
+!
+! - D - CGD SOGREAH
+!
+!  MISE A JOUR DE LA BATHYMETRIE
+!
       CALL OV( 'X=X+C     ' , ZF , ZF , ZF , -10.D0 , NPOIN2)
-C
-C - F - CGD SOGREAH
-C
+!
+! - F - CGD SOGREAH
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -145,30 +145,30 @@ C
 !     INITIALISATION OF H , THE DEPTH
 !
       IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
-     *   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
+     &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
         CALL OS( 'X=C     ' , H   , H , H , 0.D0 )
         CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
       ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
-     *       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
+     &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H , H , COTINI )
         CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
-     *       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
+     &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0  )
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
-     *       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
+     &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , HAUTIN )
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
-     *       CDTINI(1:10).EQ.'PARTICULAR'.OR.
-     *       CDTINI(1:07).EQ.'SPECIAL') THEN
+     &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
+     &       CDTINI(1:07).EQ.'SPECIAL') THEN
 !     ZONE A MODIFIER
 !     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE                                                     
         IF(LNG.EQ.1) WRITE(LU,10)                                       
         IF(LNG.EQ.2) WRITE(LU,11)                                       
 10      FORMAT(1X,'CONDIM : AVEC DES CONDITIONS INITIALES PARTICULIERES'
-     *      ,/,1X,'         VOUS DEVEZ MODIFIER CONDIM')                
+     &      ,/,1X,'         VOUS DEVEZ MODIFIER CONDIM')                
 11      FORMAT(1X,'CONDIM : WITH SPECIAL INITIAL CONDITIONS'            
-     *      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')                 
+     &      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')                 
         CALL PLANTE(1)                                                  
         STOP
 !     END OF SPECIAL INITIAL CONDITIONS                                                            
@@ -269,10 +269,10 @@ C
 !
       IF(SUIT2) THEN       
         DO I=1,NPLAN
-         DO J=1,NPOIN2
-         U%R((I-1)*NPOIN2+J)=U2D%R(J)
-         V%R((I-1)*NPOIN2+J)=V2D%R(J)
-         ENDDO
+          DO J=1,NPOIN2
+          U%R((I-1)*NPOIN2+J)=U2D%R(J)
+          V%R((I-1)*NPOIN2+J)=V2D%R(J)
+          ENDDO
         ENDDO
       ELSE
         CALL OS( 'X=0     ' , X=U )

@@ -124,8 +124,8 @@
 !
       DOUBLE PRECISION Z,QIMP,ZMIN(MAXFRO)
 !
-      double precision amp, period, pi, omega
-      double precision vnorm, vnormpred, rad, dep
+      DOUBLE PRECISION AMP, PERIOD, PI, OMEGA
+      DOUBLE PRECISION VNORM, VNORMPRED, RAD, DEP
 !
       LOGICAL YAZMIN
 !
@@ -175,11 +175,11 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-      amp = 0.001d0
-      period = 1000.d0 / sqrt(9.81d0)
-      pi = 4.d0*atan(1.d0)
-      omega = 2.d0*pi/period
-      dep = 1.d0
+      AMP = 0.001D0
+      PERIOD = 1000.D0 / SQRT(9.81D0)
+      PI = 4.D0*ATAN(1.D0)
+      OMEGA = 2.D0*PI/PERIOD
+      DEP = 1.D0
 !
 !-----------------------------------------------------------------------
 !
@@ -205,19 +205,19 @@
             N=NBOR(K)
             IF(NCSIZE.GT.1) N=MESH%KNOLG%I(N)
 !            Z = SL(IFRLIQ,N)
-             z = amp * sin(omega*temps)
-             vnormpred = -sqrt(9.81d0/dep) * amp * sin(omega*temps)
+             Z = AMP * SIN(OMEGA*TEMPS)
+             VNORMPRED = -SQRT(9.81D0/DEP) * AMP * SIN(OMEGA*TEMPS)
 
-             vnorm = u%r(nbor(k)) * xnebor(k)
-     &             + v%r(nbor(k)) * ynebor(k)
+             VNORM = U%R(NBOR(K)) * XNEBOR(K)
+     &             + V%R(NBOR(K)) * YNEBOR(K)
 
-            if (temps.gt.1800.d0) then
-              rad = (vnorm-vnormpred)*sqrt(h%r(nbor(k))/9.81d0)
-            else
-              rad = 0.d0
-            endif
+            IF (TEMPS.GT.1800.D0) THEN
+              RAD = (VNORM-VNORMPRED)*SQRT(H%R(NBOR(K))/9.81D0)
+            ELSE
+              RAD = 0.D0
+            ENDIF
 
-            z = z + rad
+            Z = Z + RAD
             HBOR(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
             H%R(NBOR(K))=HBOR(K)
 !         ELSE HBOR TAKEN IN BOUNDARY CONDITIONS FILE
@@ -407,9 +407,9 @@
 !
       RETURN
       END
-C
-C----------------------------------------------------------------------
-C
+!
+!----------------------------------------------------------------------
+!
 !                    ***************************
                      SUBROUTINE PRERES_TELEMAC2D
 !                    ***************************
@@ -522,11 +522,11 @@ C
 !           DRY LAND EXCLUDED (TO AVOID RANDOM TIMES)
             IF(XMAX.GT.MAXZ%R(N).AND.H%R(N).GT.0.01D0) THEN
 ! Only save maximum elevation after 1 hour 45 min
-              if (at.gt.6300.d0) then
+              IF (AT.GT.6300.D0) THEN
                 MAXZ%R(N)=XMAX
-              else
-                maxz%r(n)=0.d0
-              endif
+              ELSE
+                MAXZ%R(N)=0.D0
+              ENDIF
               IF(SORLEO(28).OR.SORIMP(28)) TMAXZ%R(N)=AT
             ENDIF
           ENDDO
@@ -588,10 +588,10 @@ C
 !
 !     CASE WHERE OUTINI=.TRUE. : PRIORITY ON PTINIG, VALUES FOR LT=0
 !     OTHERWISE THEY WOULD NOT BE INITIALISED
-       IF(SORLEO(27).OR.SORIMP(27)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
-       IF(SORLEO(28).OR.SORIMP(28)) CALL OS('X=C     ',X=TMAXZ,C=AT)
-       IF(SORLEO(29).OR.SORIMP(29)) CALL OS('X=C     ',X=MAXV ,C=0.D0)
-       IF(SORLEO(30).OR.SORIMP(30)) CALL OS('X=C     ',X=TMAXV,C=AT)
+        IF(SORLEO(27).OR.SORIMP(27)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+        IF(SORLEO(28).OR.SORIMP(28)) CALL OS('X=C     ',X=TMAXZ,C=AT)
+        IF(SORLEO(29).OR.SORIMP(29)) CALL OS('X=C     ',X=MAXV ,C=0.D0)
+        IF(SORLEO(30).OR.SORIMP(30)) CALL OS('X=C     ',X=TMAXV,C=AT)
 !
 !     ENDIF FOR : IF(LT.GE.PTINIG) THEN
       ENDIF
@@ -647,7 +647,7 @@ C
       IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN
         CALL CPSTVC(ZF,T3)
         DO N=1,NPOIN
-         T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
+          T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
         ENDDO
       ENDIF
 !

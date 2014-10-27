@@ -44,7 +44,7 @@
 !
       INTEGER I
 !
-      REAL, DIMENSION(NPOIN)		:: RR
+      REAL, DIMENSION(NPOIN) :: RR
 !
       DOUBLE PRECISION COTE
       DOUBLE PRECISION PI,BID,DHTEST
@@ -121,27 +121,27 @@
       DHTEST = 1.D6
 !
       DO 100 I=1,NPOIN
-         T2%R(I) = 1.D0 + T1%R(I) *( 0.6522D0 +
-     &                    T1%R(I) *( 0.4622D0 +
-     &                    T1%R(I) *
-     &                    T1%R(I) *( 0.0864D0 +
-     &                    T1%R(I) *( 0.0675D0 ) )))
-         T2%R(I) = SQRT( T1%R(I)*(T1%R(I) + 1.D0/T2%R(I)) )
-         K%R(I)  = T2%R(I)/H%R(I)
-         DHTEST  = MIN( DHTEST , H%R(I) )
+        T2%R(I) = 1.D0 + T1%R(I) *( 0.6522D0 +
+     &                   T1%R(I) *( 0.4622D0 +
+     &                   T1%R(I) *
+     &                   T1%R(I) *( 0.0864D0 +
+     &                   T1%R(I) *( 0.0675D0 ) )))
+        T2%R(I) = SQRT( T1%R(I)*(T1%R(I) + 1.D0/T2%R(I)) )
+        K%R(I)  = T2%R(I)/H%R(I)
+        DHTEST  = MIN( DHTEST , H%R(I) )
 100   CONTINUE
 !
 !   CHECKS WHETHER H HAS BEEN CLIPPED OR NOT
 !
       IF (DHTEST.LE.1.01D-2) THEN
-         IF(LNG.EQ.1) WRITE(LU,120)
-         IF(LNG.EQ.2) WRITE(LU,121)
-120      FORMAT(1X,'CONDIH : ATTENTION !! VOUS AVEZ ATTEINT LE SEUIL '
-     &          ,/,'         MINI DE HAUTEUR D''EAU (1 CM).'
-     &          ,/,'         VERIFIEZ BATHY OU CONDITIONS INITIALES')
-121      FORMAT(1X,'CONDIH : WARNING !! YOU REACHED MINIMUM THRESHOLD'
-     &          ,/,'         FOR WATER DEPTH (1 CM). CHECK THE'
-     &          ,/,'         BATHYMETRY OR INITIAL CONDITIONS')
+        IF(LNG.EQ.1) WRITE(LU,120)
+        IF(LNG.EQ.2) WRITE(LU,121)
+120     FORMAT(1X,'CONDIH : ATTENTION !! VOUS AVEZ ATTEINT LE SEUIL '
+     &         ,/,'         MINI DE HAUTEUR D''EAU (1 CM).'
+     &         ,/,'         VERIFIEZ BATHY OU CONDITIONS INITIALES')
+121     FORMAT(1X,'CONDIH : WARNING !! YOU REACHED MINIMUM THRESHOLD'
+     &         ,/,'         FOR WATER DEPTH (1 CM). CHECK THE'
+     &         ,/,'         BATHYMETRY OR INITIAL CONDITIONS')
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -156,234 +156,234 @@
 !   COMPUTES GROUP VELOCITY
 !
       DO I=1,NPOIN
-         CG%R(I) = C%R(I)/2.D0 *
-     &             (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
+        CG%R(I) = C%R(I)/2.D0 *
+     &            (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
       ENDDO
 !
 !
-C-----------------------------------------------------------------------
-C
+!-----------------------------------------------------------------------
+!
 !     COURANT :
 !
 !      IF(COURANT) THEN
 !        CALL OS( 'X=C     ', X=UC, C=CURRENTX)
-!	 CALL OS( 'X=C     ', X=VC, C=CURRENTY)
+!        CALL OS( 'X=C     ', X=VC, C=CURRENTY)
 !      ENDIF
       IF(COURANT) THEN
-     	DO I=1,NPOIN!
-	UC%R(I)=0.D0
-	VC%R(I)=0.D0
-	RR(I)=0.D0
-	RR(I)=SQRT((X(I)-2500.D0)**2+(Y(I)-2500.D0)**2)
+        DO I=1,NPOIN!
+        UC%R(I)=0.D0
+        VC%R(I)=0.D0
+        RR(I)=0.D0
+        RR(I)=SQRT((X(I)-2500.D0)**2+(Y(I)-2500.D0)**2)
 !
-	IF(X(I).GE.2500.D0.AND.Y(I).GE.2500.D0 )THEN
+        IF(X(I).GE.2500.D0.AND.Y(I).GE.2500.D0 )THEN
 !
-	IF(RR(I).LT.900.D0)THEN
-	UC%R(I)= (0.9D0*(RR(I)/900.D0)**2)*((Y(I)-2500.D0)/RR(I))
-	VC%R(I)= -(0.9D0*(RR(I)/900.D0)**2)*((X(I)-2500.D0)/RR(I))
-	ELSEIF(RR(I).GE.900.D0)THEN
-	UC%R(I)= (1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
-     &	((Y(I)-2500.D0)/RR(I))
-	VC%R(I)=-(1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
-     &	((X(I)-2500.D0)/RR(I))
-	ENDIF
+        IF(RR(I).LT.900.D0)THEN
+        UC%R(I)= (0.9D0*(RR(I)/900.D0)**2)*((Y(I)-2500.D0)/RR(I))
+        VC%R(I)= -(0.9D0*(RR(I)/900.D0)**2)*((X(I)-2500.D0)/RR(I))
+        ELSEIF(RR(I).GE.900.D0)THEN
+        UC%R(I)= (1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
+     &  ((Y(I)-2500.D0)/RR(I))
+        VC%R(I)=-(1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
+     &  ((X(I)-2500.D0)/RR(I))
+        ENDIF
 !
-	ELSEIF(X(I).GE.2500.D0.AND.Y(I).LT.2500.D0)THEN
+        ELSEIF(X(I).GE.2500.D0.AND.Y(I).LT.2500.D0)THEN
 !
-	IF(RR(I).LT.900.D0)THEN
-	UC%R(I)= (0.9D0*(RR(I)/900.D0)**2)*((Y(I)-2500.D0)/RR(I))
-	VC%R(I)= -(0.9D0*(RR(I)/900.D0)**2)*((X(I)-2500.D0)/RR(I))
-	ELSEIF(RR(I).GE.900.D0)THEN
-	UC%R(I)= (1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
-     &	((Y(I)-2500.D0)/RR(I))
-	VC%R(I)= -(1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
-     &	((X(I)-2500.D0)/RR(I))
-	ENDIF
+        IF(RR(I).LT.900.D0)THEN
+        UC%R(I)= (0.9D0*(RR(I)/900.D0)**2)*((Y(I)-2500.D0)/RR(I))
+        VC%R(I)= -(0.9D0*(RR(I)/900.D0)**2)*((X(I)-2500.D0)/RR(I))
+        ELSEIF(RR(I).GE.900.D0)THEN
+        UC%R(I)= (1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
+     &  ((Y(I)-2500.D0)/RR(I))
+        VC%R(I)= -(1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
+     &  ((X(I)-2500.D0)/RR(I))
+        ENDIF
 !
-	ELSEIF(X(I).LT.2500.D0.AND.Y(I).GE.2500.D0)THEN
+        ELSEIF(X(I).LT.2500.D0.AND.Y(I).GE.2500.D0)THEN
 !
-	IF(RR(I).LT.900.D0)THEN
-	UC%R(I)= (0.9D0*(RR(I)/900.D0)**2)*((Y(I)-2500.D0)/RR(I))
-	VC%R(I)= -(0.9D0*(RR(I)/900.D0)**2)*((X(I)-2500.D0)/RR(I))
-	ELSEIF(RR(I).GE.900.D0)THEN
-	UC%R(I)= (1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
-     &	((Y(I)-2500.D0)/RR(I))
-	VC%R(I)= -(1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
-     &	((X(I)-2500.D0)/RR(I))
-	ENDIF
+        IF(RR(I).LT.900.D0)THEN
+        UC%R(I)= (0.9D0*(RR(I)/900.D0)**2)*((Y(I)-2500.D0)/RR(I))
+        VC%R(I)= -(0.9D0*(RR(I)/900.D0)**2)*((X(I)-2500.D0)/RR(I))
+        ELSEIF(RR(I).GE.900.D0)THEN
+        UC%R(I)= (1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
+     &  ((Y(I)-2500.D0)/RR(I))
+        VC%R(I)= -(1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
+     &  ((X(I)-2500.D0)/RR(I))
+        ENDIF
 !
-	ELSEIF(X(I).LT.2500.D0.AND.Y(I).LT.2500.D0)THEN
+        ELSEIF(X(I).LT.2500.D0.AND.Y(I).LT.2500.D0)THEN
 !
-	IF(RR(I).LT.900.D0)THEN
-	UC%R(I)= (0.9D0*(RR(I)/900.D0)**2)*((Y(I)-2500.D0)/RR(I))
-	VC%R(I)= -(0.9D0*(RR(I)/900.D0)**2)*((X(I)-2500.D0)/RR(I))
-	ELSEIF(RR(I).GE.900.D0)THEN
-	UC%R(I)= (1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
-     &		((Y(I)-2500.D0)/RR(I))
-	VC%R(I)= -(1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
-     &		((X(I)-2500.D0)/RR(I))
-	ENDIF
+        IF(RR(I).LT.900.D0)THEN
+        UC%R(I)= (0.9D0*(RR(I)/900.D0)**2)*((Y(I)-2500.D0)/RR(I))
+        VC%R(I)= -(0.9D0*(RR(I)/900.D0)**2)*((X(I)-2500.D0)/RR(I))
+        ELSEIF(RR(I).GE.900.D0)THEN
+        UC%R(I)= (1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
+     &          ((Y(I)-2500.D0)/RR(I))
+        VC%R(I)= -(1.D0*EXP(-((1000.D0-RR(I))/300.D0)**2))*
+     &          ((X(I)-2500.D0)/RR(I))
+        ENDIF
 !
-	ENDIF
-	ENDDO
-        ENDIF	
+        ENDIF
+        ENDDO
+        ENDIF
 
 
-C-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
       RETURN
       END
-C                       ***************
+!                       ***************
                         SUBROUTINE BORH
-C                       ***************
-C
-C***********************************************************************
-C
-C  ARTEMIS    VERSION 6.1 28/06/11   D. AELBRECHT (LNH) 01 30 87 74 12 
-C
-C  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
-C
-C***********************************************************************
-C
-C      FONCTION:    PREND EN COMPTE LES CONDITIONS AUX LIMITES
-C                   DE L'UTILISATEUR
-C                   ELLES SONT DONNEES PAR SEGMENT.
-C
-C      CE SOUS-PROGRAMME PEUT ETRE COMPLETE PAR L'UTILISATEUR
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C |      NOM       |MODE|                   ROLE                       |
-C |________________|____|______________________________________________|
-C |   RP           |<-- |  COEFFICIENTS DE REFLEXION DES PAROIS        |
-C |   TETAP        |<-- |  ANGLE D'ATTAQUE DE LA HOULE SUR LES LIMITES |
-C |                |    |  PAS SEULEMENT LES PAROIS, MAIS AUSSI LES    |
-C |                |    |  LES FRONTIERES LIQUIDES                     |
-C |                |    |  (COMPTE PAR RAPPORT A LA NORMALE EXTERIEURE |
-C |                |    |   DANS LE SENS DIRECT)                       |
-C |   ALFAP        |<-- |  DEPHASAGE INDUIT PAR LA PAROI ENTRE L'ONDE  |
-C |                |    |  REFLECHIE ET L'ONDE INCIDENTE (SI ALFAP EST |
-C |                |    |  POSITIF, L'ONDE REFLECHIE EST EN RETARD)    |
-C |   HB           |<-- |  HAUTEUR DE LA HOULE AUX FRONTIERES OUVERTES |
-C |   TETAB        |<-- |  ANGLE D'ATTAQUE DE LA HOULE (FRONT. OUV.)   |
-C |                |    |  (COMPTE PAR RAPPORT A L'AXE DES X DANS LE   |
-C |                |    |   SENS DIRECT)                               |
-C |    H           | -->|  HAUTEUR D'EAU                               |
-C |    K           | -->|  NOMBRE D'ONDE                               |
-C |    C,CG        | -->|  VITESSES DE PHASE ET DE GROUPE              |
-C |    C           | -->|  CELERITE AU TEMPS N                         |
-C |    ZF          | -->|  FOND                                        |
-C |    X,Y         | -->|  COORDONNEES DES POINTS DU MAILLAGE          |
-C |  TRA01,...,3   |<-->|  TABLEAUX DE TRAVAIL                         |
-C | XSGBOR,YSGBOR  | -->|  NORMALES EXTERIEURES AUX SEGMENTS DE BORD   |
-C |   LIHBOR       | -->|  CONDITIONS AUX LIMITES SUR H                |
-C |    NBOR        | -->|  ADRESSES DES POINTS DE BORD                 |
-C |   KP1BOR       | -->|  NUMERO DU POINT FRONTIERE SUIVANT           |
-C |   OMEGA        | -->|  PULSATION DE LA HOULE                       |
-C |   PER          | -->|  PERIODE DE LA HOULE                         |
-C |   TETAH        | -->|  ANGLE DE PROPAGATION DE LA HOULE            |
-C |   GRAV         | -->|  GRAVITE                                     |
-C |   NPOIN        | -->|  NOMBRE DE POINTS DU MAILLAGE.               |
-C |   NPTFR        | -->|  NOMBRE DE POINTS FRONTIERE.                 |
-C |   KENT,KLOG    | -->|  CONVENTION POUR LES TYPES DE CONDITIONS AUX |
-C |   KSORT,KINC   |    |  LIMITES                                     |
-C |                |    |  KENT  : ENTREE (VALEUR IMPOSEE)             |
-C |                |    |  KLOG  : PAROI                               |
-C |                |    |  KSORT : SORTIE                              |
-C |                |    |  KINC  : ONDE INCIDENTE                      |
-C |   PRIVE        | -->|  TABLEAU DE TRAVAIL (DIMENSION DANS PRINCI)  |
-C |________________|____|______________________________________________|
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C APPELE PAR : ARTEMI
-C
-C***********************************************************************
-C
+!                       ***************
+!
+!***********************************************************************
+!
+!  ARTEMIS    VERSION 6.1 28/06/11   D. AELBRECHT (LNH) 01 30 87 74 12 
+!
+!  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
+!
+!***********************************************************************
+!
+!      FONCTION:    PREND EN COMPTE LES CONDITIONS AUX LIMITES
+!                   DE L'UTILISATEUR
+!                   ELLES SONT DONNEES PAR SEGMENT.
+!
+!      CE SOUS-PROGRAMME PEUT ETRE COMPLETE PAR L'UTILISATEUR
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! |      NOM       |MODE|                   ROLE                       |
+! |________________|____|______________________________________________|
+! |   RP           |<-- |  COEFFICIENTS DE REFLEXION DES PAROIS        |
+! |   TETAP        |<-- |  ANGLE D'ATTAQUE DE LA HOULE SUR LES LIMITES |
+! |                |    |  PAS SEULEMENT LES PAROIS, MAIS AUSSI LES    |
+! |                |    |  LES FRONTIERES LIQUIDES                     |
+! |                |    |  (COMPTE PAR RAPPORT A LA NORMALE EXTERIEURE |
+! |                |    |   DANS LE SENS DIRECT)                       |
+! |   ALFAP        |<-- |  DEPHASAGE INDUIT PAR LA PAROI ENTRE L'ONDE  |
+! |                |    |  REFLECHIE ET L'ONDE INCIDENTE (SI ALFAP EST |
+! |                |    |  POSITIF, L'ONDE REFLECHIE EST EN RETARD)    |
+! |   HB           |<-- |  HAUTEUR DE LA HOULE AUX FRONTIERES OUVERTES |
+! |   TETAB        |<-- |  ANGLE D'ATTAQUE DE LA HOULE (FRONT. OUV.)   |
+! |                |    |  (COMPTE PAR RAPPORT A L'AXE DES X DANS LE   |
+! |                |    |   SENS DIRECT)                               |
+! |    H           | -->|  HAUTEUR D'EAU                               |
+! |    K           | -->|  NOMBRE D'ONDE                               |
+! |    C,CG        | -->|  VITESSES DE PHASE ET DE GROUPE              |
+! |    C           | -->|  CELERITE AU TEMPS N                         |
+! |    ZF          | -->|  FOND                                        |
+! |    X,Y         | -->|  COORDONNEES DES POINTS DU MAILLAGE          |
+! |  TRA01,...,3   |<-->|  TABLEAUX DE TRAVAIL                         |
+! | XSGBOR,YSGBOR  | -->|  NORMALES EXTERIEURES AUX SEGMENTS DE BORD   |
+! |   LIHBOR       | -->|  CONDITIONS AUX LIMITES SUR H                |
+! |    NBOR        | -->|  ADRESSES DES POINTS DE BORD                 |
+! |   KP1BOR       | -->|  NUMERO DU POINT FRONTIERE SUIVANT           |
+! |   OMEGA        | -->|  PULSATION DE LA HOULE                       |
+! |   PER          | -->|  PERIODE DE LA HOULE                         |
+! |   TETAH        | -->|  ANGLE DE PROPAGATION DE LA HOULE            |
+! |   GRAV         | -->|  GRAVITE                                     |
+! |   NPOIN        | -->|  NOMBRE DE POINTS DU MAILLAGE.               |
+! |   NPTFR        | -->|  NOMBRE DE POINTS FRONTIERE.                 |
+! |   KENT,KLOG    | -->|  CONVENTION POUR LES TYPES DE CONDITIONS AUX |
+! |   KSORT,KINC   |    |  LIMITES                                     |
+! |                |    |  KENT  : ENTREE (VALEUR IMPOSEE)             |
+! |                |    |  KLOG  : PAROI                               |
+! |                |    |  KSORT : SORTIE                              |
+! |                |    |  KINC  : ONDE INCIDENTE                      |
+! |   PRIVE        | -->|  TABLEAU DE TRAVAIL (DIMENSION DANS PRINCI)  |
+! |________________|____|______________________________________________|
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!
+!-----------------------------------------------------------------------
+!
+! APPELE PAR : ARTEMI
+!
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_ARTEMIS
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
+!
       INTEGER I,JB
-C
+!
       DOUBLE PRECISION PI,BID         
-C
-C     ---------------------------------------- 
-C     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-C     ---------------------------------------- 
-C                                                                       
-C JCB :                                                                       
-C
-C
+!
+!     ---------------------------------------- 
+!     VOS NOUVELLES DECLARATIONS DE VARIABLES :
+!     ---------------------------------------- 
+!                                                                       
+! JCB :                                                                       
+!
+!
       PARAMETER( PI = 3.1415926535897932384626433D0)
-C
+!
       INTRINSIC COS,SIN
-C
-C-----------------------------------------------------------------------
-C
-C CONDITIONS AUX LIMITES
-C UN SEGMENT EST SOLIDE SI IL EST DE TYPE KLOG.
-C UN SEGMENT EST ONDE INCIDENTE SI IL EST DE TYPE KINC.
-C UN SEGMENT EST UNE ENTREE SI IL EST DE TYPE KENT.
-C UN SEGMENT EST UNE SORTIE SI IL EST DE TYPE KSORT.
-C
-C TOUS LES ANGLES SONT EN DEGRES
-C                         ------
-C ---------------------------------------
-C INITIALISATION DES VARIABLES PAR DEFAUT
-C ---------------------------------------
+!
+!-----------------------------------------------------------------------
+!
+! CONDITIONS AUX LIMITES
+! UN SEGMENT EST SOLIDE SI IL EST DE TYPE KLOG.
+! UN SEGMENT EST ONDE INCIDENTE SI IL EST DE TYPE KINC.
+! UN SEGMENT EST UNE ENTREE SI IL EST DE TYPE KENT.
+! UN SEGMENT EST UNE SORTIE SI IL EST DE TYPE KSORT.
+!
+! TOUS LES ANGLES SONT EN DEGRES
+!                         ------
+! ---------------------------------------
+! INITIALISATION DES VARIABLES PAR DEFAUT
+! ---------------------------------------
       TETAB%R(:) = TETAH
       TETAP%R(:) = 0.D0
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
       HB%R(:)    = 0.0D0 
-C                                                                     
-C PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
-C
+!                                                                     
+! PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
+!
       DO I=1,NPTFR
-       JB=BOUNDARY_COLOUR%I(I)
-C
-      IF(JB.GE.601.AND.JB.LE.800) THEN     
-	 LIHBOR%I(I)=KINC
-	 HB%R(I)=1.D0
-	 TETAB%R(I)=0.D0
-	 TETAP%R(I)=0.D0
-      ENDIF
-      IF(JB.EQ.1) THEN     
-	 LIHBOR%I(I)=KINC
-	 HB%R(I)=1.D0
-	 TETAB%R(I)=0.D0
-	 TETAP%R(I)=0.D0
-      ENDIF
-C
-C PAROIS LIQUIDES -FRONTIERE LIBRE
-C
-      IF(JB.GE.201.AND.JB.LE.401) THEN     
-	 LIHBOR%I(I)=KSORT
-	 TETAP%R(I)=0.D0
-      ENDIF
-C
-C PAROIS SOLIDES
-      IF(JB.GE.2.AND.JB.LE.200) THEN     
-	 LIHBOR%I(I)=KLOG
-	 RP%R(I)=1.D0
-	 TETAP%R(I)=90.D0
-      ENDIF
-      IF(JB.GE.402.AND.JB.LE.600) THEN     
-	 LIHBOR%I(I)=KLOG
-	 RP%R(I)=1.D0
-	 TETAP%R(I)=90.D0
-      ENDIF
+        JB=BOUNDARY_COLOUR%I(I)
+!
+        IF(JB.GE.601.AND.JB.LE.800) THEN     
+          LIHBOR%I(I)=KINC
+          HB%R(I)=1.D0
+          TETAB%R(I)=0.D0
+          TETAP%R(I)=0.D0
+        ENDIF
+        IF(JB.EQ.1) THEN     
+          LIHBOR%I(I)=KINC
+          HB%R(I)=1.D0
+          TETAB%R(I)=0.D0
+          TETAP%R(I)=0.D0
+        ENDIF
+!       
+!       PAROIS LIQUIDES -FRONTIERE LIBRE
+!       
+        IF(JB.GE.201.AND.JB.LE.401) THEN     
+          LIHBOR%I(I)=KSORT
+          TETAP%R(I)=0.D0
+        ENDIF
+!       
+!       PAROIS SOLIDES
+        IF(JB.GE.2.AND.JB.LE.200) THEN     
+          LIHBOR%I(I)=KLOG
+          RP%R(I)=1.D0
+          TETAP%R(I)=90.D0
+        ENDIF
+        IF(JB.GE.402.AND.JB.LE.600) THEN     
+          LIHBOR%I(I)=KLOG
+          RP%R(I)=1.D0
+          TETAP%R(I)=90.D0
+        ENDIF
 !
       ENDDO
-C-----------------------------------------------------------------------
-C                                                                       
+!-----------------------------------------------------------------------
+!                                                                       
       RETURN                                                            
       END                                                               
 !                    *****************
@@ -535,7 +535,7 @@ C
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-       INTEGER I
+      INTEGER I
 !
 !-----------------------------------------------------------------------
 !
@@ -543,8 +543,8 @@ C
 !            CHANGES THE ORIGIN
 !
       DO I=1,NPOIN
-	 X(I)=X(I)*(5.D0/2.D0)
-	 Y(I)=Y(I)*(5.D0/2.D0)
+        X(I)=X(I)*(5.D0/2.D0)
+        Y(I)=Y(I)*(5.D0/2.D0)
       ENDDO
 !
 !-----------------------------------------------------------------------

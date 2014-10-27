@@ -119,37 +119,37 @@
  
       
       DO IB=1,NPTFR
-       JB=BOUNDARY_COLOUR%I(IB)
-! --------------------------------
-! Incident wave
-      IF(JB.GE.313.AND.JB.LE.513)THEN
-         LIHBOR%I(IB)= KINC
-         HB%R(IB)    = 1D0
-         TETAP%R(IB) = 45.D0
-         TETAB%R(IB) = -45D0
-      ENDIF
-!      
-      IF(JB.GE.1.AND.JB.LE.112)THEN
-         LIHBOR%I(IB)= KINC
-         HB%R(IB)    = 1D0
-         TETAP%R(IB) = 90.D0
-         TETAB%R(IB) = -45D0
-      ENDIF
-! --------------------------------
-
-! --------------------------------
-! Free exit
-      IF(JB.GE.113.AND.JB.LE.312)THEN
-         LIHBOR%I(IB) = KSORT
-         TETAP%R(IB) = 45.D0
-      ENDIF 
-! --------------------------------
+        JB=BOUNDARY_COLOUR%I(IB)
+!       --------------------------------
+!       Incident wave
+        IF(JB.GE.313.AND.JB.LE.513)THEN
+          LIHBOR%I(IB)= KINC
+          HB%R(IB)    = 1D0
+          TETAP%R(IB) = 45.D0
+          TETAB%R(IB) = -45D0
+        ENDIF
+!        
+        IF(JB.GE.1.AND.JB.LE.112)THEN
+          LIHBOR%I(IB)= KINC
+          HB%R(IB)    = 1D0
+          TETAP%R(IB) = 90.D0
+          TETAB%R(IB) = -45D0
+        ENDIF
+!       --------------------------------
+        
+!       --------------------------------
+!       Free exit
+        IF(JB.GE.113.AND.JB.LE.312)THEN
+          LIHBOR%I(IB) = KSORT
+          TETAP%R(IB) = 45.D0
+        ENDIF 
+!       --------------------------------
       ENDDO
 
 
 
 !-----------------------------------------------------------------------
-!	FOR REFERENCE (INPUT KINC WHEN NO AUTOMATIC PHASE CALCULATED)
+!       FOR REFERENCE (INPUT KINC WHEN NO AUTOMATIC PHASE CALCULATED)
 
 ! -----Incident wave-------------- 
 !      DEGRAD     =  PI/180.0D0
@@ -199,10 +199,10 @@
 !          ALFAP%R(IB) = PHASOI/DEGRAD
 !      ENDIF
 ! --------------------------------
-								 
-      RETURN								 
-      END								 
-!			*****************
+ 
+      RETURN
+      END
+!                       *****************
                         SUBROUTINE ART_CORFON
 !                       *****************
 !

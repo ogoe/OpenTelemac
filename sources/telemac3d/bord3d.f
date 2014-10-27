@@ -378,13 +378,13 @@
           ENDDO
         ELSE
           IF(LNG.EQ.1) WRITE(LU,200) NUMLIQ%I(K)
-200       FORMAT(1X,'BORD3D : VITESSES IMPOSEES EN NOMBRE INSUFFISANT',/,
-     &           1X,'       DANS LE FICHIER DES PARAMETRES',/,
-     &           1X,'       IL EN FAUT AU MOINS : ',1I6)
+200       FORMAT(1X,'BORD3D : VITESSES IMPOSEES EN NOMBRE INSUFFISANT',
+     &           /,1X,'       DANS LE FICHIER DES PARAMETRES',
+     &           /,1X,'       IL EN FAUT AU MOINS : ',1I6)
           IF(LNG.EQ.2) WRITE(LU,201) NUMLIQ%I(K)
-201       FORMAT(1X,'BORD3D : MORE PRESCRIBED VELOCITIES ARE REQUIRED',/,
-     &           1X,'       IN THE PARAMETER FILE',/,
-     &           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
+201       FORMAT(1X,'BORD3D : MORE PRESCRIBED VELOCITIES ARE REQUIRED',
+     &           /,1X,'       IN THE PARAMETER FILE',
+     &           /,1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
           CALL PLANTE(1)
           STOP
         ENDIF

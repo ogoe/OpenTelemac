@@ -53,13 +53,13 @@
 !  Bosse à t=0
 !
         PI=3.141592653D0 
-        DO I=1,NPOIN                                                            
+        DO I=1,NPOIN
         ZF%R(I) = 0.D0
           IF (X(I) .GE. 400.D0 .AND. X(I) .LE. 600.D0
-     &       .AND. Y(I) .GE. -100.D0 .AND. Y(I) .LE. 100.D0) THEN                        
+     &       .AND. Y(I) .GE. -100.D0 .AND. Y(I) .LE. 100.D0) THEN
            ZF%R(I)=(SIN(PI*(X(I)-400.D0)/200.D0))**2
-     &      *(SIN(PI*(Y(I)+100.D0)/200.D0))**2                                                                    
-          ENDIF                                                                                                                        
+     &      *(SIN(PI*(Y(I)+100.D0)/200.D0))**2
+          ENDIF
         END DO
 !
 !-----------------------------------------------------------------------

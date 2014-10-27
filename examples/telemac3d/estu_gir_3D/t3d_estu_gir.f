@@ -99,18 +99,18 @@
 !
 !========================================================================
 !
-      DOUBLE PRECISION ALF ,PI,y100,Ajul4,Nlun, ht
-      DOUBLE PRECISION  Dd,JD,Tuniv,hsun,slun,plun,tlun,psun
-      DOUBLE PRECISION Tondes (120) 
-      DOUBLE PRECISION uondes(120),fondes(120),Vondes(120)
+      DOUBLE PRECISION ALF ,PI,Y100,AJUL4,NLUN, HT
+      DOUBLE PRECISION  DD,JD,TUNIV,HSUN,SLUN,PLUN,TLUN,PSUN
+      DOUBLE PRECISION TONDES (120) 
+      DOUBLE PRECISION UONDES(120),FONDES(120),VONDES(120)
       DOUBLE PRECISION AHN(50,120) , PHN(50,120)
       INTEGER NPTFRL,IPTFRL,NPTFRLM,IONDES,NONDES,NSPECTR
-      INTEGER YY,MM,day,hour,minu,sec,Ajul,Bjul,NFO1
+      INTEGER YY,MM,DAY,HOUR,MINU,SEC,AJUL,BJUL,NFO1
       DOUBLE PRECISION NIVM(50)        
       DOUBLE PRECISION PROF(NPOIN2)
       INTEGER NSURF(NPTFR2)
       DOUBLE PRECISION TEMPS
-      INTEGER compteur
+      INTEGER COMPTEUR
 !
       INTRINSIC COS,SIN,INT,MOD,ACOS
 !
@@ -183,257 +183,257 @@
         
       READ(NFO1,*) NONDES
       
-      do IONDES =1,NONDES
-         read (NFO1,*) Tondes(IONDES)
-      enddo
+      DO IONDES =1,NONDES
+        READ (NFO1,*) TONDES(IONDES)
+      ENDDO
       
-      do IONDES =NONDES+1,NSPECTR
-         read (NFO1,*) Tondes(IONDES)
-      enddo
-      DO  IPTFRL = 1,NPTFRLM           
+      DO IONDES =NONDES+1,NSPECTR
+        READ (NFO1,*) TONDES(IONDES)
+      ENDDO
+      DO IPTFRL = 1,NPTFRLM           
         IONDES=1
-C       Lecture des Hn et gn des Nondes pour les differents noeuds frontières
+!       LECTURE DES HN ET GN DES NONDES POUR LES DIFFERENTS NOEUDS FRONTIÈRES
         READ(NFO1,*)
         READ(NFO1,*)   NIVM(IPTFRL), ALF
-        do IONDES =1,NONDES     
+        DO IONDES =1,NONDES     
           READ(NFO1,*) AHN(IPTFRL,IONDES),PHN(IPTFRL,IONDES)
           AHN(IPTFRL,IONDES)=0.01D0*AHN(IPTFRL,IONDES)
-        enddo
+        ENDDO
 ! 
-        do IONDES =NONDES+1,NSPECTR       
+        DO IONDES =NONDES+1,NSPECTR       
           READ(NFO1,*) AHN(IPTFRL,IONDES),PHN(IPTFRL,IONDES)
           AHN(IPTFRL,IONDES)=0.01D0*AHN(IPTFRL,IONDES)
-        enddo
+        ENDDO
 !
       ENDDO
 !
       IONDES=1
-C
-C les phases sont calcul�es de mani�re � se recaler en temps par rapport
-C au 06 avril 1999 22h (t=0 simu, TU)
+!
+! les phases sont calcul�es de mani�re � se recaler en temps par rapport
+! au 06 avril 1999 22h (t=0 simu, TU)
     
 
 
-C  Etape 2 calcul de un, fn, Vn
-c ----------------------------------------------------------------
-c ----------------------------------------------------------------      
-C        Definition de la date
-c-----------------------------------------------------------------
-c -------------------------------------------------------------------
-c           year
-             YY=1999
-c           month 
-             MM=4
-c day 
-             day=8
-             hour=22
-             minu=0 
-             sec=0
-c---------------------------------------------------------------
-c         passage en calendrier Julien JD et temps universel Tuniv
-c         jour 6 à 22h donne DDdd=6.917
-c------------------------------------------------------------------
+!  Etape 2 calcul de un, fn, Vn
+! ----------------------------------------------------------------
+! ----------------------------------------------------------------      
+!        Definition de la date
+!-----------------------------------------------------------------
+! -------------------------------------------------------------------
+!     year
+      YY=1999
+!     month 
+      MM=4
+! day 
+      DAY=8
+      HOUR=22
+      MINU=0 
+      SEC=0
+!---------------------------------------------------------------
+!         passage en calendrier Julien JD et temps universel Tuniv
+!         jour 6 à 22h donne DDdd=6.917
+!------------------------------------------------------------------
 
-              Dd=day+(hour*3600.D0+minu*60.D0+sec)/(24.D0*3600.D0)
-              ht=hour+(minu*60.D0+sec)/3600.D0
+      DD=DAY+(HOUR*3600.D0+MINU*60.D0+SEC)/(24.D0*3600.D0)
+      HT=HOUR+(MINU*60.D0+SEC)/3600.D0
 
 
-             if ((MM.eq.2) .OR.(MM.eq.1)) then
-             YY=YY-1
-             MM=MM+12
-             endif
-             y100=YY/100.D0
-             Ajul=INT(y100)
-             Ajul4=Ajul/4.D0
-             Bjul=2.D0-Ajul+INT(Ajul4)
-c           reutilsation des var y100, ajul4
+      IF ((MM.EQ.2) .OR.(MM.EQ.1)) THEN
+        YY=YY-1
+        MM=MM+12
+      ENDIF
+      Y100=YY/100.D0
+      AJUL=INT(Y100)
+      AJUL4=AJUL/4.D0
+      BJUL=2.D0-AJUL+INT(AJUL4)
+!     reutilsation des var y100, ajul4
 
-             y100=365.25D0*YY 
-             Ajul4=30.6001D0*(MM+1)
+      Y100=365.25D0*YY 
+      AJUL4=30.6001D0*(MM+1)
 
-             JD= INT(Y100)+INT(Ajul4)+Dd +1720994.5D0+Bjul
-        
-             Tuniv=(JD-2415020.5D0)/36525.D0
-c-------------------------------------------------------
-c           calcul des variables fondamentales des astres
-c            tlun, slun, hsun, plun, Nlun, psun
-c----------------------------------------------------------
-             slun=MOD(277.0248d0+481267.8906d0*Tuniv
-     *       +0.002d0*Tuniv**2.d0,360.d0)
-             hsun=MOD(280.1895d0+36000.7689d0*Tuniv
-     *		+0.0003d0*Tuniv**2d0,360.d0)
-             tlun=MOD(15.d0*ht+hsun-slun,360.d0)
-             plun=MOD(334.3853d0+4069.034d0*Tuniv
-     *		-0.0103d0*Tuniv**2.d0,360.d0)
+      JD= INT(Y100)+INT(AJUL4)+DD +1720994.5D0+BJUL
+      
+      TUNIV=(JD-2415020.5D0)/36525.D0
+!-------------------------------------------------------
+!           calcul des variables fondamentales des astres
+!            tlun, slun, hsun, plun, Nlun, psun
+!----------------------------------------------------------
+      SLUN=MOD(277.0248D0+481267.8906D0*TUNIV
+     &+0.002D0*TUNIV**2.D0,360.D0)
+      HSUN=MOD(280.1895D0+36000.7689D0*TUNIV
+     &   +0.0003D0*TUNIV**2D0,360.D0)
+      TLUN=MOD(15.D0*HT+HSUN-SLUN,360.D0)
+      PLUN=MOD(334.3853D0+4069.034D0*TUNIV
+     &   -0.0103D0*TUNIV**2.D0,360.D0)
   
-             Nlun=MOD(100.8432d0+1934.142d0*Tuniv
-     *		-0.0021d0*Tuniv**2.d0,360.d0) 
-             psun=MOD(281.2209d0+1.7192d0*Tuniv
-     *		+0.0005d0*Tuniv**2.d0,360.d0)    
-c Calcul des un , facteurs nodaux de phases
-c    Sa,Q1,O1,K1,N2,M2,S2,MN4,M4,MS4
-c        Sa
-          uondes(1)=0.D0
-c         Q1
-        uondes(2)=-10.8d0*sin(PI*Nlun/180.d0)
-c         O1
-        uondes(3)=-10.8d0*sin(PI*Nlun/180.d0)
-c            k1 à changer aussi
-             uondes(4)=11.36d0*sin(PI*Nlun/180.d0)
-c            N2             
-             uondes(5)=2.1d0*sin(PI*Nlun/180.d0)
-c            M2
-             uondes(6)=uondes(5)
-c            S2
-             uondes(7)=0.d0
-c            MN4
-             uondes(8)=2.D0*uondes(5)
-c            M4
-              uondes(9)=2.D0*uondes(6)
-c             MS4
-              uondes(10)=2.1d0*sin(PI*Nlun/180.d0)
+      NLUN=MOD(100.8432D0+1934.142D0*TUNIV
+     &   -0.0021D0*TUNIV**2.D0,360.D0) 
+      PSUN=MOD(281.2209D0+1.7192D0*TUNIV
+     &   +0.0005D0*TUNIV**2.D0,360.D0)    
+! Calcul des un , facteurs nodaux de phases
+!    Sa,Q1,O1,K1,N2,M2,S2,MN4,M4,MS4
+!     Sa
+      UONDES(1)=0.D0
+!     Q1
+      UONDES(2)=-10.8D0*SIN(PI*NLUN/180.D0)
+!     O1
+      UONDES(3)=-10.8D0*SIN(PI*NLUN/180.D0)
+!     k1 à changer aussi
+      UONDES(4)=11.36D0*SIN(PI*NLUN/180.D0)
+!     N2             
+      UONDES(5)=2.1D0*SIN(PI*NLUN/180.D0)
+!     M2
+      UONDES(6)=UONDES(5)
+!     S2
+      UONDES(7)=0.D0
+!     MN4
+      UONDES(8)=2.D0*UONDES(5)
+!     M4
+      UONDES(9)=2.D0*UONDES(6)
+!     MS4
+      UONDES(10)=2.1D0*SIN(PI*NLUN/180.D0)
 
-c          old waves
-c           M3
-             uondes(20)=3.15D0*sin(PI*Nlun/180.d0)
-c            K2 
-             uondes(11)=24.97d0*sin(PI*Nlun/180.d0)
+!     old waves
+!     M3
+      UONDES(20)=3.15D0*SIN(PI*NLUN/180.D0)
+!     K2 
+      UONDES(11)=24.97D0*SIN(PI*NLUN/180.D0)
 
-             uondes(13)=2.1d0*sin(PI*Nlun/180.d0)
-c       MU2
-              uondes(12)=2.1d0*sin(PI*Nlun/180.d0)
-           uondes(13)=uondes(5)
-           uondes(14)=1.43d0*sin(PI*Nlun/180.d0)
-           uondes(15)=2.1d0*sin(PI*Nlun/180.d0)
+      UONDES(13)=2.1D0*SIN(PI*NLUN/180.D0)
+!     MU2
+      UONDES(12)=2.1D0*SIN(PI*NLUN/180.D0)
+      UONDES(13)=UONDES(5)
+      UONDES(14)=1.43D0*SIN(PI*NLUN/180.D0)
+      UONDES(15)=2.1D0*SIN(PI*NLUN/180.D0)
 
-            uondes(16)=0.D0
-            uondes(17)=0.D0
-            uondes(18)=0.D0
-           uondes(19)=0.D0
-           uondes(21)=6.22d0*sin(PI*Nlun/180.d0)
+      UONDES(16)=0.D0
+      UONDES(17)=0.D0
+      UONDES(18)=0.D0
+      UONDES(19)=0.D0
+      UONDES(21)=6.22D0*SIN(PI*NLUN/180.D0)
 
-c Calcul de VN phase de l 'astre perturbateur
+! Calcul de VN phase de l 'astre perturbateur
              
             
 
-           IONDES=1
-           Vondes (1)=MOD(2.d0*hsun,360.d0)
-           Vondes (2)=MOD(tlun-2.d0*slun+plun,360.d0)
-           Vondes (3)=MOD(tlun-slun,360.d0)
-           Vondes (4)=MOD(tlun+slun,360.d0)
-           Vondes (5)=MOD(2.d0*tlun-slun+plun,360.d0)
-           Vondes (6)=MOD(2.d0*tlun,360.d0)
-           Vondes (7)=MOD(2.d0*tlun+2.d0*slun-2.d0*hsun,360.d0)
-           Vondes (8)=MOD(4.d0*tlun-slun+plun,360.d0)
-           Vondes (9)=MOD(4.d0*tlun,360.d0)
-           Vondes (10)=MOD(4.d0*tlun+2.d0*slun-2.d0*hsun,360.d0)
-c old 14 waves
-!          next line uncommented on 10/06/2014 to avoid a crash
- 	   Vondes (11)=MOD(2.d0*tlun+2.d0*slun,360.d0)
-           Vondes (12)=MOD(2.d0*tlun-4.d0*slun+4.d0*hsun,360.d0)
-           Vondes (13)=MOD(2.d0*tlun-2.d0*slun+2.d0*plun,360.d0)
-           Vondes (14)=MOD(2.d0*tlun+slun-plun,360.d0)
-           Vondes (15)=MOD(2.d0*tlun-slun+2.d0*hsun-plun,360.d0)
-           Vondes (16)=MOD(2.d0*tlun+2.d0*slun-3.d0*hsun+plun,360.d0)
-           Vondes (17)=MOD(2.d0*tlun-slun-2.d0*hsun+plun,360.d0)
-	   Vondes (18)=MOD(tlun+slun-2.d0*hsun,360.d0)
-           Vondes (19)=MOD(2.d0*hsun,360.d0)
-           Vondes (20)=MOD(3.d0*tlun,360.d0)
-           Vondes (21)=MOD(6.d0*tlun,360.d0)
-c     Calcul des fn, facteurs nodaux en amplitudes
-             DO IONDES =1,NONDES       
-                fondes (IONDES)=1.D0
-             ENDDO
+      IONDES=1
+      VONDES (1)=MOD(2.D0*HSUN,360.D0)
+      VONDES (2)=MOD(TLUN-2.D0*SLUN+PLUN,360.D0)
+      VONDES (3)=MOD(TLUN-SLUN,360.D0)
+      VONDES (4)=MOD(TLUN+SLUN,360.D0)
+      VONDES (5)=MOD(2.D0*TLUN-SLUN+PLUN,360.D0)
+      VONDES (6)=MOD(2.D0*TLUN,360.D0)
+      VONDES (7)=MOD(2.D0*TLUN+2.D0*SLUN-2.D0*HSUN,360.D0)
+      VONDES (8)=MOD(4.D0*TLUN-SLUN+PLUN,360.D0)
+      VONDES (9)=MOD(4.D0*TLUN,360.D0)
+      VONDES (10)=MOD(4.D0*TLUN+2.D0*SLUN-2.D0*HSUN,360.D0)
+! old 14 waves
+!     next line uncommented on 10/06/2014 to avoid a crash
+      VONDES (11)=MOD(2.D0*TLUN+2.D0*SLUN,360.D0)
+      VONDES (12)=MOD(2.D0*TLUN-4.D0*SLUN+4.D0*HSUN,360.D0)
+      VONDES (13)=MOD(2.D0*TLUN-2.D0*SLUN+2.D0*PLUN,360.D0)
+      VONDES (14)=MOD(2.D0*TLUN+SLUN-PLUN,360.D0)
+      VONDES (15)=MOD(2.D0*TLUN-SLUN+2.D0*HSUN-PLUN,360.D0)
+      VONDES (16)=MOD(2.D0*TLUN+2.D0*SLUN-3.D0*HSUN+PLUN,360.D0)
+      VONDES (17)=MOD(2.D0*TLUN-SLUN-2.D0*HSUN+PLUN,360.D0)
+      VONDES (18)=MOD(TLUN+SLUN-2.D0*HSUN,360.D0)
+      VONDES (19)=MOD(2.D0*HSUN,360.D0)
+      VONDES (20)=MOD(3.D0*TLUN,360.D0)
+      VONDES (21)=MOD(6.D0*TLUN,360.D0)
+!     Calcul des fn, facteurs nodaux en amplitudes
+      DO IONDES =1,NONDES       
+        FONDES (IONDES)=1.D0
+      ENDDO
+      
+      IONDES=1
+      
+      FONDES(2)=1.009D0+0.187D0*COS(PI*NLUN/180.D0)  
+      FONDES(3)=1.009D0+0.187D0*COS(PI*NLUN/180.D0) 
+      FONDES(4)=1.006+0.198*COS(PI*NLUN/180.D0)         
+      FONDES(5)=1.D0-0.037D0*COS(PI*NLUN/180.D0)
+      FONDES(6)=FONDES(5)
+!     uncommented on 10/06/2014 to avoid a crash
+      FONDES(7)=1.D0
+      FONDES(8)=FONDES(6)**2            
+      FONDES(9)=FONDES(5)**2
              
-             IONDES=1
-             
-             fondes(2)=1.009D0+0.187D0*cos(PI*Nlun/180.D0)  
-             fondes(3)=1.009D0+0.187D0*cos(PI*Nlun/180.D0) 
-             fondes(4)=1.006+0.198*cos(PI*Nlun/180.D0)         
-             fondes(5)=1.D0-0.037D0*cos(PI*Nlun/180.D0)
-             fondes(6)=fondes(5)
-!            uncommented on 10/06/2014 to avoid a crash
-             fondes(7)=1.D0
-             fondes(8)=fondes(6)**2            
-             fondes(9)=fondes(5)**2
-             
-            fondes (9)=1.D0-0.056D0*cos(PI*Nlun/180.D0)
-            fondes(10)=1.0D0-0.037d0*cos(PI*Nlun/180.D0)
-            fondes(11)=1.0D0+0.436D0*cos(PI*Nlun/180.D0)
-            fondes(12)=fondes(5)
-            fondes(13)=fondes(5)
-            fondes(14)=1.0D0-0.037d0*cos(PI*Nlun/180.D0)
-            fondes(15)=1.0D0-0.024d0*cos(PI*Nlun/180.D0)
-            fondes(20)=1.D0-0.056D0*cos(PI*Nlun/180.D0)
-            fondes(21)=1.0D0-0.108d0*cos(PI*Nlun/180.D0)
-C calcul des dephasages gn-Vn-un
-              DO  IPTFRL = 1,NPTFRLM
-            DO IONDES=1,NONDES
-             PHN(IPTFRL,IONDES) = (PHN(IPTFRL,IONDES)-uondes(IONDES)
-     *		-Vondes(IONDES)) / 360.D0
-c            print *,'avt',IONDES, AHN(IPTFRL,IONDES)
-            ENDDO
-            END DO
-c ----------------------------------------------------------------------           
+      FONDES (9)=1.D0-0.056D0*COS(PI*NLUN/180.D0)
+      FONDES(10)=1.0D0-0.037D0*COS(PI*NLUN/180.D0)
+      FONDES(11)=1.0D0+0.436D0*COS(PI*NLUN/180.D0)
+      FONDES(12)=FONDES(5)
+      FONDES(13)=FONDES(5)
+      FONDES(14)=1.0D0-0.037D0*COS(PI*NLUN/180.D0)
+      FONDES(15)=1.0D0-0.024D0*COS(PI*NLUN/180.D0)
+      FONDES(20)=1.D0-0.056D0*COS(PI*NLUN/180.D0)
+      FONDES(21)=1.0D0-0.108D0*COS(PI*NLUN/180.D0)
+! calcul des dephasages gn-Vn-un
+      DO  IPTFRL = 1,NPTFRLM
+        DO IONDES=1,NONDES
+          PHN(IPTFRL,IONDES) = (PHN(IPTFRL,IONDES)-UONDES(IONDES)
+     &      -VONDES(IONDES)) / 360.D0
+!        print *,'avt',IONDES, AHN(IPTFRL,IONDES)
+        ENDDO
+      ENDDO
+! ----------------------------------------------------------------------           
 
 
-C
-C            PREMIERE VALEUR SUSPECTE FIDE FL + PAS DE FACTEUR NODAL
-C
-c 777      FORMAT(16X,F4.2,5X,F5.1)
-  777   FORMAT(F9.3,F9.3)
-CXC       ENDIF
-C
-C======================================================
-C CALCUL DE LA MAREE: amplitude
-C======================================================
-C
+!
+!            PREMIERE VALEUR SUSPECTE FIDE FL + PAS DE FACTEUR NODAL
+!
+! 777      FORMAT(16X,F4.2,5X,F5.1)
+  777 FORMAT(F9.3,F9.3)
+!XC       ENDIF
+!
+!======================================================
+! CALCUL DE LA MAREE: amplitude
+!======================================================
+!
       IPTFRL = 1
-C      PRINT*, NPTFR2
-C      PRINT*, SIZE(LIHBOR%R)
+!      PRINT*, NPTFR2
+!      PRINT*, SIZE(LIHBOR%R)
       DO 51 K=1,NPTFR2
-c       IF(compteur.EQ.NPLAN) THEN
-c          DO IPLAN=1,NPLAN
-C
-C
-c         NSURF(IPTFR)=(NPLAN-1)*NPTFR2+IPTFR
-c      IF(LIHBOR%R(NSURF(IPTFR)).EQ.KENT) THEN
-C
+!       IF(compteur.EQ.NPLAN) THEN
+!          DO IPLAN=1,NPLAN
+!
+!
+!         NSURF(IPTFR)=(NPLAN-1)*NPTFR2+IPTFR
+!      IF(LIHBOR%R(NSURF(IPTFR)).EQ.KENT) THEN
+!
       IF (LIHBOR%I(K).EQ.KENT) THEN
-       IONDES=1
-       PROF(K)=0.d0
-C       DO  IPTFRL = 1,NPTFRLM
-       DO IONDES=1,NONDES
+        IONDES=1
+        PROF(K)=0.D0
+!        DO  IPTFRL = 1,NPTFRLM
+        DO IONDES=1,NONDES
 
-c    PROF (K)= amplitude de la marée A au noeud K
-c    A=AM2+AS2+AN2+AM4
-c    An=Hn*fn*cos(sn*temps-gn+un+Vn)
+!    PROF (K)= amplitude de la marée A au noeud K
+!    A=AM2+AS2+AN2+AM4
+!    An=Hn*fn*cos(sn*temps-gn+un+Vn)
 
-C        PROF(NSURF(IPTFR))=PROF(NSURF(IPTFR))+AHN(IPTFRL,IONDES)
-C     *  *COS(2.D0*PI*(TEMPS/Tondes(IONDES)-PHN(IPTFRL,IONDES)))
-C     *  *fondes(IONDES)
+!        PROF(NSURF(IPTFR))=PROF(NSURF(IPTFR))+AHN(IPTFRL,IONDES)
+!     *  *COS(2.D0*PI*(TEMPS/Tondes(IONDES)-PHN(IPTFRL,IONDES)))
+!     *  *fondes(IONDES)
 
-        PROF(K)=PROF(K)+AHN(IPTFRL,IONDES)*fondes(IONDES)
-     *  *COS(2.D0*PI*(AT/Tondes(IONDES)-PHN(IPTFRL,IONDES)))
-       END DO
-c        print *, K,IPTFRL,IONDES,AHN(IPTFRL,1)
-C      END DO
-C      IF (LIHBOR%I(K).EQ.KENT) THEN
-c     ajout du niveau moyen et de la bathy     
-C       HBOR(K) = -ZF(NBOR(K)) + NIVM(IPTFRL) + PROF(K)+0.312d0
-C       HBOR%R(NSURF(IPTFR)) = -ZF%R(NBOR2%I(NSURF(IPTFR))) + 0.2d0    
-C     *  + PROF(NSURF(IPTFR))
+          PROF(K)=PROF(K)+AHN(IPTFRL,IONDES)*FONDES(IONDES)
+     &    *COS(2.D0*PI*(AT/TONDES(IONDES)-PHN(IPTFRL,IONDES)))
+        END DO
+!        print *, K,IPTFRL,IONDES,AHN(IPTFRL,1)
+!      END DO
+!      IF (LIHBOR%I(K).EQ.KENT) THEN
+!     ajout du niveau moyen et de la bathy     
+!       HBOR(K) = -ZF(NBOR(K)) + NIVM(IPTFRL) + PROF(K)+0.312d0
+!       HBOR%R(NSURF(IPTFR)) = -ZF%R(NBOR2%I(NSURF(IPTFR))) + 0.2d0    
+!     *  + PROF(NSURF(IPTFR))
 
-       HBOR%R(K) = -ZF%R(NBOR2%I(K)) + 0.2d0 + PROF(K)
-c       if (K.eq.130) then       
-c       print *,AT,PROF(130)
-c       endif 
+        HBOR%R(K) = -ZF%R(NBOR2%I(K)) + 0.2D0 + PROF(K)
+!       if (K.eq.130) then       
+!       print *,AT,PROF(130)
+!       endif 
  
-C
-C
-      IPTFRL=IPTFRL+1
+!
+!
+        IPTFRL=IPTFRL+1
       ENDIF         
-51     CONTINUE   
+51    CONTINUE   
 !===================================================================
 !     IMPORTANT OPTION:
 !     VERTICAL VELOCITIES ARE SET AS HORIZONTAL VELOCITIES
@@ -644,12 +644,12 @@ C
           ENDDO
         ELSE
           IF(LNG.EQ.1) WRITE(LU,200) NUMLIQ%I(K)
-200       FORMAT(1X,'BORD3D : VITESSES IMPOSEES EN NOMBRE INSUFFISANT',/,
-     &           1X,'       DANS LE FICHIER DES PARAMETRES',/,
+200       FORMAT(1X,'BORD3D : VITESSES IMPOSEES EN NOMBRE INSUFFISANT',
+     &           /,1X,'       DANS LE FICHIER DES PARAMETRES',/,
      &           1X,'       IL EN FAUT AU MOINS : ',1I6)
           IF(LNG.EQ.2) WRITE(LU,201) NUMLIQ%I(K)
-201       FORMAT(1X,'BORD3D : MORE PRESCRIBED VELOCITIES ARE REQUIRED',/,
-     &           1X,'       IN THE PARAMETER FILE',/,
+201       FORMAT(1X,'BORD3D : MORE PRESCRIBED VELOCITIES ARE REQUIRED',
+     &           /,1X,'       IN THE PARAMETER FILE',/,
      &           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
           CALL PLANTE(1)
           STOP
@@ -814,36 +814,36 @@ C
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !
       IF(VENT) THEN
-         ROEAU = 1000.D0
-         ROAIR = 1.3D0
-         DO IPOIN2 = 1,NPOIN2
-!          RELATIVE WIND
-           WINDRELX=WIND%ADR(1)%P%R(IPOIN2)-U%R(NPOIN3-NPOIN2+IPOIN2)
-           WINDRELY=WIND%ADR(2)%P%R(IPOIN2)-V%R(NPOIN3-NPOIN2+IPOIN2)
-           VITV=SQRT(WINDRELX**2+WINDRELY**2)
-!          A MORE ACCURATE TREATMENT
-!          IF(VITV.LE.5.D0) THEN
-!            FAIR = ROAIR/ROEAU*0.565D-3
-!          ELSEIF (VITV.LE.19.22D0) THEN
-!            FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3
-!          ELSE
-!            FAIR = ROAIR/ROEAU*2.513D-3
-!          ENDIF
-!          BEWARE : BUBORS IS VISCVI*DU/DN, NOT DU/DN
-           IF(H%R(IPOIN2).GT.HWIND) THEN
-!            EXPLICIT PART
-             BUBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2)
-             BVBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2)
-!            IMPLICIT PART
-             AUBORS%R(IPOIN2) = -FAIR*VITV
-             AVBORS%R(IPOIN2) = -FAIR*VITV
-           ELSE
-             BUBORS%R(IPOIN2) = 0.D0
-             BVBORS%R(IPOIN2) = 0.D0
-             AUBORS%R(IPOIN2) = 0.D0
-             AVBORS%R(IPOIN2) = 0.D0
-           ENDIF
-         ENDDO
+        ROEAU = 1000.D0
+        ROAIR = 1.3D0
+        DO IPOIN2 = 1,NPOIN2
+!         RELATIVE WIND
+          WINDRELX=WIND%ADR(1)%P%R(IPOIN2)-U%R(NPOIN3-NPOIN2+IPOIN2)
+          WINDRELY=WIND%ADR(2)%P%R(IPOIN2)-V%R(NPOIN3-NPOIN2+IPOIN2)
+          VITV=SQRT(WINDRELX**2+WINDRELY**2)
+!         A MORE ACCURATE TREATMENT
+!         IF(VITV.LE.5.D0) THEN
+!           FAIR = ROAIR/ROEAU*0.565D-3
+!         ELSEIF (VITV.LE.19.22D0) THEN
+!           FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3
+!         ELSE
+!           FAIR = ROAIR/ROEAU*2.513D-3
+!         ENDIF
+!         BEWARE : BUBORS IS VISCVI*DU/DN, NOT DU/DN
+          IF(H%R(IPOIN2).GT.HWIND) THEN
+!           EXPLICIT PART
+            BUBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2)
+            BVBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2)
+!           IMPLICIT PART
+            AUBORS%R(IPOIN2) = -FAIR*VITV
+            AVBORS%R(IPOIN2) = -FAIR*VITV
+          ELSE
+            BUBORS%R(IPOIN2) = 0.D0
+            BVBORS%R(IPOIN2) = 0.D0
+            AUBORS%R(IPOIN2) = 0.D0
+            AVBORS%R(IPOIN2) = 0.D0
+          ENDIF
+        ENDDO
       ENDIF
 !
 !
@@ -998,9 +998,9 @@ C
       DO I=1,NPOIN2
         IF (Y(I)-X(I).GE.10000.D0) THEN
           CF%R(I) = 70.D0
-        ELSEIF (X(I).LE.370000.d0) THEN
+        ELSEIF (X(I).LE.370000.D0) THEN
           CF%R(I) = 75.D0 
-        ELSEIF (X(I).LE.374000.d0.AND.Y(I).GE.282000.d0) THEN
+        ELSEIF (X(I).LE.374000.D0.AND.Y(I).GE.282000.D0) THEN
           CF%R(I) = 70.D0
         ELSE
           CF%R(I) = 60.D0
@@ -1119,26 +1119,26 @@ C
 !
       IF(LISFON.GT.0) THEN
 !
-         MAS = .TRUE.
+        MAS = .TRUE.
 !
-         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
-     &               1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
+        CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
+     &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
       ENDIF
 !
       DO I=1,NPOIN2
-       IF (ZF(I).GE.7.D0) ZF(I)=7.d0
+        IF (ZF(I).GE.7.D0) ZF(I)=7.D0
       ENDDO
       
       
-       DO I=1,NPOIN2
-       IF(X(I).GT.417939.D0.AND.X(I).LT.421750.D0.AND.
-     *    Y(I).GT.283000.D0.AND.Y(I).LT.284451.D0      ) THEN
+      DO I=1,NPOIN2
+        IF(X(I).GT.417939.D0.AND.X(I).LT.421750.D0.AND.
+     &     Y(I).GT.283000.D0.AND.Y(I).LT.284451.D0      ) THEN
           ZF(I)=0.D0
-       ENDIF
-       IF(X(I).GT.410500.D0.AND.X(I).LT.411750.D0.AND.
-     *    Y(I).GT.255750.D0.AND.Y(I).LT.256250.D0      ) THEN
+        ENDIF
+        IF(X(I).GT.410500.D0.AND.X(I).LT.411750.D0.AND.
+     &     Y(I).GT.255750.D0.AND.Y(I).LT.256250.D0      ) THEN
           ZF(I)=0.D0
-       ENDIF
+        ENDIF
       ENDDO     
 !-----------------------------------------------------------------------
 !
@@ -1252,102 +1252,102 @@ C
 !
 !     THIS IS AN EXAMPLE !!!!!!!!!!!!!!!!!!!!
 !
-         RHO_EAU=1000.D0
-         PI=ACOS(-1.D0)
-!        HARDCODED WATER MOLECULAR VISCOSITY
-         NU=1.D-6
-         NU2=NU**2
+      RHO_EAU=1000.D0
+      PI=ACOS(-1.D0)
+!     HARDCODED WATER MOLECULAR VISCOSITY
+      NU=1.D-6
+      NU2=NU**2
 !
-         COEF1=1.21D0**4
-         COEF2=COEF1/1.53**2
-         DELTA=(RHO_EAU-RHO_OIL)/(RHO_EAU)
+      COEF1=1.21D0**4
+      COEF2=COEF1/1.53**2
+      DELTA=(RHO_EAU-RHO_OIL)/(RHO_EAU)
 !
       IF(LT.EQ.250) THEN 
-         NUM_GLO=0
-         NUM_MAX=0
-         NUM_LOC=0
-         COORD_X=0.D0
-         COORD_Y=0.D0 
-         NUM_MAX=INT(SQRT(REAL(NFLOT_MAX)))
-         DO K=0,NUM_MAX-1
-            DO J=0,NUM_MAX-1
-               COORD_X=340250.D0+REAL(j)
-               COORD_Y=362750.D0+REAL(k)
-               NUM_GLO=NUM_GLO+1
-               NFLOT_OIL = 0
-               IF(MESH%DIM.EQ.3)THEN
-                  CALL ADD_PARTICLE(COORD_X,COORD_Y,COORD_Y,NUM_GLO,
-     &               NFLOT_OIL,1,XFLOT,YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,
-     &               ELTFLO,ETAFLO,MESH,NPLAN,0.D0,0.D0,0.D0,0.D0,0,0)
-               ELSEIF(MESH%DIM.EQ.2)THEN
-                  CALL ADD_PARTICLE(COORD_X,COORD_Y,0.D0,NUM_GLO,
-     &               NFLOT_OIL,1,XFLOT,YFLOT,YFLOT,TAGFLO,SHPFLO,SHPFLO,
-     &               ELTFLO,ELTFLO,MESH,NPLAN,0.D0,0.D0,0.D0,0.D0,0,0)
-               END IF
-               IF(NFLOT_OIL.EQ.1)THEN
-                  NUM_LOC = NUM_LOC+1
+        NUM_GLO=0
+        NUM_MAX=0
+        NUM_LOC=0
+        COORD_X=0.D0
+        COORD_Y=0.D0 
+        NUM_MAX=INT(SQRT(REAL(NFLOT_MAX)))
+        DO K=0,NUM_MAX-1
+          DO J=0,NUM_MAX-1
+            COORD_X=340250.D0+REAL(J)
+            COORD_Y=362750.D0+REAL(K)
+            NUM_GLO=NUM_GLO+1
+            NFLOT_OIL = 0
+            IF(MESH%DIM.EQ.3)THEN
+              CALL ADD_PARTICLE(COORD_X,COORD_Y,COORD_Y,NUM_GLO,
+     &           NFLOT_OIL,1,XFLOT,YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,
+     &           ELTFLO,ETAFLO,MESH,NPLAN,0.D0,0.D0,0.D0,0.D0,0,0)
+            ELSEIF(MESH%DIM.EQ.2)THEN
+              CALL ADD_PARTICLE(COORD_X,COORD_Y,0.D0,NUM_GLO,
+     &           NFLOT_OIL,1,XFLOT,YFLOT,YFLOT,TAGFLO,SHPFLO,SHPFLO,
+     &           ELTFLO,ELTFLO,MESH,NPLAN,0.D0,0.D0,0.D0,0.D0,0,0)
+            END IF
+            IF(NFLOT_OIL.EQ.1)THEN
+              NUM_LOC = NUM_LOC+1
 !=========================================================================
 !----INITIALIZATION PARAMETERS FOR THE CALCULATION OF PARTICULE MOTION----
 !=========================================================================
-                  PARTICULES(NUM_LOC)%XOIL = XFLOT(1)
-                  PARTICULES(NUM_LOC)%YOIL = YFLOT(1)
-                  PARTICULES(NUM_LOC)%ID = TAGFLO(1)
-                  PARTICULES(NUM_LOC)%SHPOIL(1) = SHPFLO(1,1)
-                  PARTICULES(NUM_LOC)%SHPOIL(2) = SHPFLO(2,1)
-                  PARTICULES(NUM_LOC)%SHPOIL(3) = SHPFLO(3,1)
-                  PARTICULES(NUM_LOC)%ELTOIL = ELTFLO(1)
-                  IF(MESH%DIM.EQ.3)THEN
-                     PARTICULES(NUM_LOC)%ZOIL = ZFLOT(1)
-                     PARTICULES(NUM_LOC)%ETAOIL = ETAFLO(1)
-                     PARTICULES(NUM_LOC)%SHZOIL = SHZFLO(1)
-                  END IF
+              PARTICULES(NUM_LOC)%XOIL = XFLOT(1)
+              PARTICULES(NUM_LOC)%YOIL = YFLOT(1)
+              PARTICULES(NUM_LOC)%ID = TAGFLO(1)
+              PARTICULES(NUM_LOC)%SHPOIL(1) = SHPFLO(1,1)
+              PARTICULES(NUM_LOC)%SHPOIL(2) = SHPFLO(2,1)
+              PARTICULES(NUM_LOC)%SHPOIL(3) = SHPFLO(3,1)
+              PARTICULES(NUM_LOC)%ELTOIL = ELTFLO(1)
+              IF(MESH%DIM.EQ.3)THEN
+                PARTICULES(NUM_LOC)%ZOIL = ZFLOT(1)
+                PARTICULES(NUM_LOC)%ETAOIL = ETAFLO(1)
+                PARTICULES(NUM_LOC)%SHZOIL = SHZFLO(1)
+              END IF
 !=========================================================================
 !-----------INITIALIZATION PARAMETERS FOR THE CALCULATION OF OIL----------
 !---------------------------WEATHERING PROCESSES--------------------------
 !=========================================================================
-                  PARTICULES(NUM_LOC)%STATE=1
-                  PARTICULES(NUM_LOC)%TPSECH=0
-                  IF(ETAL.EQ.1)THEN
-                     PARTICULES(NUM_LOC)%SURFACE=PI*COEF2*
-     &                    (DELTA*GRAV/(VOLDEV*NU2))**(1.D0/6.D0)
-     &                    *VOLDEV/NFLOT_MAX 
-                  ELSEIF(ETAL.EQ.3)THEN
-                     PARTICULES(NUM_LOC)%SURFACE = AREA
-                  ELSEIF(ETAL.EQ.2) THEN
-                     PARTICULES(NUM_LOC)%SURFACE = 0.D0
-                  ELSE
-                    IF(LNG.EQ.1) THEN
-                      WRITE(LU,*) 'ETAL=',ETAL,' INCONNU DANS OIL_FLOT'
-                    ENDIF
-                    IF(LNG.EQ.1) THEN
-                      WRITE(LU,*) 'ETAL=',ETAL,' UNKNOWN IN OIL_FLOT'
-                    ENDIF
-                    CALL PLANTE(1)
-                    STOP
-                  END IF
-                  PARTICULES(NUM_LOC)%MASS0 = (VOLDEV*RHO_OIL)/NFLOT_MAX
-                  PARTICULES(NUM_LOC)%MASS_EVAP=0.D0
-                  PARTICULES(NUM_LOC)%MASS_DISS=0.D0
-                  DO I=1,NB_COMPO
-                     PARTICULES(NUM_LOC)%COMPO(I)%MASS=
-     &                    PARTICULES(NUM_LOC)%MASS0*FMCOMPO(I)
-                     PARTICULES(NUM_LOC)%COMPO(I)%TB=TBCOMPO(I)
-                     PARTICULES(NUM_LOC)%COMPO(I)%SOL=0.D0
-                     PARTICULES(NUM_LOC)%MASS=PARTICULES(NUM_LOC)%MASS+
-     &                    PARTICULES(NUM_LOC)%COMPO(I)%MASS
-                  END DO
-                  DO I=1,NB_HAP
-                     PARTICULES(NUM_LOC)%HAP(I)%MASS=
-     &                    PARTICULES(NUM_LOC)%MASS0*FMHAP(I)
-                     PARTICULES(NUM_LOC)%HAP(I)%TB=TBHAP(I)
-                      PARTICULES(NUM_LOC)%HAP(I)%SOL=SOLU(I)
-                     PARTICULES(NUM_LOC)%MASS=PARTICULES(NUM_LOC)%MASS+
-     &                    PARTICULES(NUM_LOC)%HAP(I)%MASS
-                  END DO
-                  NFLOT = NUM_LOC
-               END IF
-            END DO
-         END DO
+              PARTICULES(NUM_LOC)%STATE=1
+              PARTICULES(NUM_LOC)%TPSECH=0
+              IF(ETAL.EQ.1)THEN
+                PARTICULES(NUM_LOC)%SURFACE=PI*COEF2*
+     &               (DELTA*GRAV/(VOLDEV*NU2))**(1.D0/6.D0)
+     &               *VOLDEV/NFLOT_MAX 
+              ELSEIF(ETAL.EQ.3)THEN
+                PARTICULES(NUM_LOC)%SURFACE = AREA
+              ELSEIF(ETAL.EQ.2) THEN
+                PARTICULES(NUM_LOC)%SURFACE = 0.D0
+              ELSE
+                IF(LNG.EQ.1) THEN
+                  WRITE(LU,*) 'ETAL=',ETAL,' INCONNU DANS OIL_FLOT'
+                ENDIF
+                IF(LNG.EQ.1) THEN
+                  WRITE(LU,*) 'ETAL=',ETAL,' UNKNOWN IN OIL_FLOT'
+                ENDIF
+                CALL PLANTE(1)
+                STOP
+              END IF
+              PARTICULES(NUM_LOC)%MASS0 = (VOLDEV*RHO_OIL)/NFLOT_MAX
+              PARTICULES(NUM_LOC)%MASS_EVAP=0.D0
+              PARTICULES(NUM_LOC)%MASS_DISS=0.D0
+              DO I=1,NB_COMPO
+                PARTICULES(NUM_LOC)%COMPO(I)%MASS=
+     &               PARTICULES(NUM_LOC)%MASS0*FMCOMPO(I)
+                PARTICULES(NUM_LOC)%COMPO(I)%TB=TBCOMPO(I)
+                PARTICULES(NUM_LOC)%COMPO(I)%SOL=0.D0
+                PARTICULES(NUM_LOC)%MASS=PARTICULES(NUM_LOC)%MASS+
+     &               PARTICULES(NUM_LOC)%COMPO(I)%MASS
+              END DO
+              DO I=1,NB_HAP
+                PARTICULES(NUM_LOC)%HAP(I)%MASS=
+     &               PARTICULES(NUM_LOC)%MASS0*FMHAP(I)
+                PARTICULES(NUM_LOC)%HAP(I)%TB=TBHAP(I)
+                 PARTICULES(NUM_LOC)%HAP(I)%SOL=SOLU(I)
+                PARTICULES(NUM_LOC)%MASS=PARTICULES(NUM_LOC)%MASS+
+     &               PARTICULES(NUM_LOC)%HAP(I)%MASS
+              END DO
+              NFLOT = NUM_LOC
+            END IF
+          END DO
+        END DO
       ENDIF
 !
 !-----------------------------------------------------------------------

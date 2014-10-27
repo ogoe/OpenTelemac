@@ -1,5 +1,5 @@
 ! MODIF 7.0
-! LITTORAL CUURENTS CALCULATED ALONG THE BOUNDARY
+! LITTORAL CURRENTS CALCULATED ALONG THE BOUNDARY
 !
 !                    ***************
                      SUBROUTINE BORD
@@ -470,37 +470,37 @@
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-        DO K=1,NPTFR
-          IF(LIUBOR(K).EQ.KENTU.OR.LIUBOR(K).EQ.KENT) THEN
-            FX=FXWAVE%R(NBOR(K))
-            FY=FYWAVE%R(NBOR(K))
-            FORCE = -(FX*XNEBOR(K)+FY*YNEBOR(K))
-            CCF= MAX(CF%R(NBOR(K)),EPS)
-            HH=MAX(H%R(NBOR(K)),0.D0)
-            IF(HH.GE.HBREAK) FORCE=0.D0
-            UMAG= SQRT(2*ABS(FORCE)*HH/CCF)
-            IF (FORCE.GE.EPS) THEN  
-!              UBOR(K,1) = UBOR(K,1)- XNEBOR(K) * UMAG
-!              VBOR(K,1) = VBOR(K,1)- YNEBOR(K) * UMAG
-              UBOR(K,1) = - XNEBOR(K) * UMAG
-              VBOR(K,1) = - YNEBOR(K) * UMAG
+      DO K=1,NPTFR
+        IF(LIUBOR(K).EQ.KENTU.OR.LIUBOR(K).EQ.KENT) THEN
+          FX=FXWAVE%R(NBOR(K))
+          FY=FYWAVE%R(NBOR(K))
+          FORCE = -(FX*XNEBOR(K)+FY*YNEBOR(K))
+          CCF= MAX(CF%R(NBOR(K)),EPS)
+          HH=MAX(H%R(NBOR(K)),0.D0)
+          IF(HH.GE.HBREAK) FORCE=0.D0
+          UMAG= SQRT(2*ABS(FORCE)*HH/CCF)
+          IF (FORCE.GE.EPS) THEN  
+!           UBOR(K,1) = UBOR(K,1)- XNEBOR(K) * UMAG
+!           VBOR(K,1) = VBOR(K,1)- YNEBOR(K) * UMAG
+            UBOR(K,1) = - XNEBOR(K) * UMAG
+            VBOR(K,1) = - YNEBOR(K) * UMAG
  
-            ELSEIF (FORCE.LE.-EPS) THEN 
-!              UBOR(K,1) = UBOR(K,1)+XNEBOR(K) * UMAG
-!              VBOR(K,1) = VBOR(K,1)+YNEBOR(K) * UMAG
-               UBOR(K,1) = +XNEBOR(K) * UMAG
-               VBOR(K,1) = +YNEBOR(K) * UMAG
-            ELSE
-!              UBOR(K,1)= UBOR(K,1)
-!              VBOR(K,1)= UBOR(K,1)           
-              UBOR(K,1)= 0.D0
-              VBOR(K,1)= 0.D0         
+          ELSEIF (FORCE.LE.-EPS) THEN 
+!           UBOR(K,1) = UBOR(K,1)+XNEBOR(K) * UMAG
+!           VBOR(K,1) = VBOR(K,1)+YNEBOR(K) * UMAG
+            UBOR(K,1) = +XNEBOR(K) * UMAG
+            VBOR(K,1) = +YNEBOR(K) * UMAG
+          ELSE
+!           UBOR(K,1)= UBOR(K,1)
+!           VBOR(K,1)= UBOR(K,1)           
+            UBOR(K,1)= 0.D0
+            VBOR(K,1)= 0.D0         
 
-            ENDIF
+          ENDIF
           U%R(NBOR(K)) =  UBOR(K,1)
           V%R(NBOR(K)) = VBOR(K,1)
-          ENDIF  
-       ENDDO 
+        ENDIF  
+      ENDDO 
 !-----------------------------------------------------------------------
       RETURN
       END

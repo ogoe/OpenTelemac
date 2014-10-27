@@ -289,14 +289,14 @@
           ENDIF
         ENDDO
       ENDIF
-C
-C-----------------------------------------------------------------------
-C     MODIFICATION M. BENOIT (12/03/2002) POUR METTRE SUR LES LIMITES
-C     LATERALES LE SPECTRE CALCULE SUR L'AXE DU DOMAINE 
-C     (ATTENTION : CECI N'EST VALABLE QUE POUR LE MAILLAGE "COURANT
-C      LITTORAL" ; LES NUMEROS DE POINTS SONT CODES EN DUR)
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!     MODIFICATION M. BENOIT (12/03/2002) POUR METTRE SUR LES LIMITES
+!     LATERALES LE SPECTRE CALCULE SUR L'AXE DU DOMAINE 
+!     (ATTENTION : CECI N'EST VALABLE QUE POUR LE MAILLAGE "COURANT
+!      LITTORAL" ; LES NUMEROS DE POINTS SONT CODES EN DUR)
+!-----------------------------------------------------------------------
+!
       DO IP=1,40
         IMIL(IP)=1117+IP-1
         IF (IMIL(IP).EQ.1156) IMIL(IP)=116
@@ -311,14 +311,14 @@ C
       ENDIF
 !
       IF(NCSIZE.LE.1) THEN
-       DO IP=1,40
-         DO IFF=1,NF
-           DO IPLAN = 1,NPLAN
-             F(IGAU(IP),IPLAN,IFF) = F(IMIL(IP),IPLAN,IFF)
-             F(IDRO(IP),IPLAN,IFF) = F(IMIL(IP),IPLAN,IFF)
-           ENDDO
-         ENDDO
-       ENDDO
+        DO IP=1,40
+          DO IFF=1,NF
+            DO IPLAN = 1,NPLAN
+              F(IGAU(IP),IPLAN,IFF) = F(IMIL(IP),IPLAN,IFF)
+              F(IDRO(IP),IPLAN,IFF) = F(IMIL(IP),IPLAN,IFF)
+            ENDDO
+          ENDDO
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -415,67 +415,67 @@ C
 !
       RETURN
       END
-C                       *****************
+!                       *****************
                         SUBROUTINE ANACOS
-C                       *****************
-C
-     *( UC    , VC    , X     , Y     , NPOIN2 ) 
-C
-C***********************************************************************
-C  TOMAWAC VERSION 5.2    07/06/01       
-C***********************************************************************
-C
-C     FONCTION  : PERMET LA SPECIFICATION D'UN COURANT ANALYTIQUE 
-C                 (! STATIONNAIRE !)
-C
-C     FUNCTION  : SPECIFICATION OF AN ANALYTICAL CURRENT 
-C                 (! STATIONNARY !)
-C                 
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C !      NOM       !MODE!                   ROLE                       !
-C !________________!____!______________________________________________!
-C !    UC,VC       !<-- ! COMPOSANTES DU CHAMP DE COURANT              !
-C !    X,Y         ! -->! COORDONNEES DES POINTS DU MAILLAGE 2D        !
-C !    NPOIN2      ! -->! NOMBRE DE POINTS 2D                          !
-C !________________!____!______________________________________________!
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C  APPELE PAR : CONDIW
-C
-C  SOUS-PROGRAMME APPELE : NEANT
-C
-C***********************************************************************
-C
+!                       *****************
+!
+     &( UC    , VC    , X     , Y     , NPOIN2 ) 
+!
+!***********************************************************************
+!  TOMAWAC VERSION 5.2    07/06/01       
+!***********************************************************************
+!
+!     FONCTION  : PERMET LA SPECIFICATION D'UN COURANT ANALYTIQUE 
+!                 (! STATIONNAIRE !)
+!
+!     FUNCTION  : SPECIFICATION OF AN ANALYTICAL CURRENT 
+!                 (! STATIONNARY !)
+!                 
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! !      NOM       !MODE!                   ROLE                       !
+! !________________!____!______________________________________________!
+! !    UC,VC       !<-- ! COMPOSANTES DU CHAMP DE COURANT              !
+! !    X,Y         ! -->! COORDONNEES DES POINTS DU MAILLAGE 2D        !
+! !    NPOIN2      ! -->! NOMBRE DE POINTS 2D                          !
+! !________________!____!______________________________________________!
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!
+!-----------------------------------------------------------------------
+!
+!  APPELE PAR : CONDIW
+!
+!  SOUS-PROGRAMME APPELE : NEANT
+!
+!***********************************************************************
+!
       IMPLICIT NONE
-C
+!
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
-C
-C.....VARIABLES TRANSMISES
-C     """"""""""""""""""""
+!
+!.....VARIABLES TRANSMISES
+!     """"""""""""""""""""
       INTEGER  NPOIN2
       DOUBLE PRECISION X (NPOIN2) , Y (NPOIN2)
       DOUBLE PRECISION UC(NPOIN2) , VC(NPOIN2)
-C
-C.....VARIABLES LOCALES
-C     """""""""""""""""
+!
+!.....VARIABLES LOCALES
+!     """""""""""""""""
       INTEGER  IP
       DOUBLE PRECISION UCONST, VCONST
-C
-C
+!
+!
       UCONST=1.0D0
       VCONST=1.0D0
-C
+!
       DO 100 IP=1,NPOIN2
         UC(IP)=UCONST
         VC(IP)=VCONST
   100 CONTINUE
-C
+!
       RETURN
       END
-C
+!

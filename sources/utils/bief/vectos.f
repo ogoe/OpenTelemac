@@ -1383,7 +1383,7 @@
           IF(MODASS.EQ.1) THEN
             CALL ASSVEC(VEC, IKLE, NPT ,NELEM,NELMAX,IELM1,
      &                  T,INIT,LV,MSK,MASKEL,NDP)
-          ELSEIF(MODASS.EQ.2) THEN                                                          
+          ELSEIF(MODASS.EQ.2) THEN
             CALL DOUBLE_TO_INTEGER(T,MESH%WI8,NDP*NELEM,QT,MESH%MXELVS)
             DO I=1,NPT
               MESH%TI8(I)=0

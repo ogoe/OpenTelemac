@@ -112,39 +112,39 @@
 ! -----------------------------
 
       DO I=1,NPTFR
-       JB=BOUNDARY_COLOUR%I(I)
+      JB=BOUNDARY_COLOUR%I(I)
 
 !  
-! PLAGE - SORTIE LIBRE
+!     PLAGE - SORTIE LIBRE
 !                                                                    
       IF(JB.GE.1.AND.JB.LE.161)THEN
-         LIHBOR%I(I)=KSORT
-         ALFAP%R(I)=0.D0
-         TETAP%R(I)=20.13D0
+        LIHBOR%I(I)=KSORT
+        ALFAP%R(I)=0.D0
+        TETAP%R(I)=20.13D0
       ENDIF
 !
-! PAROIS LATERALES
+!     PAROIS LATERALES
 !
       IF(JB.GE.162.AND.JB.LE.332)THEN
-         LIHBOR%I(I)=KLOG
-         ALFAP%R(I)=0.D0
-         TETAP%R(I)=90.D0
-         RP%R(I)=0.D0
+        LIHBOR%I(I)=KLOG
+        ALFAP%R(I)=0.D0
+        TETAP%R(I)=90.D0
+        RP%R(I)=0.D0
       ENDIF
       IF(JB.GE.484.AND.JB.LE.599)THEN
-         LIHBOR%I(I)=KLOG
-         ALFAP%R(I)=0.D0
-         TETAP%R(I)=90.D0
-         RP%R(I)=0.D0
+        LIHBOR%I(I)=KLOG
+        ALFAP%R(I)=0.D0
+        TETAP%R(I)=90.D0
+        RP%R(I)=0.D0
       ENDIF
 !
-! HOULE INCIDENTE
+!     HOULE INCIDENTE
 !
       IF(JB.GE.333.AND.JB.LE.483)THEN
-         LIHBOR%I(I)=KINC
-         HB%R(I)=0.0464D0
-         ALFAP%R(I)=0.D0
-         TETAP%R(I)=0.D0
+        LIHBOR%I(I)=KINC
+        HB%R(I)=0.0464D0
+        ALFAP%R(I)=0.D0
+        TETAP%R(I)=0.D0
       ENDIF
       
       ENDDO
@@ -220,7 +220,7 @@
 !
         MAS=.TRUE.
         CALL FILTER(ZF,MAS,T1,T2,AM1,'MATMAS          ',
-     *              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
+     &              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
 !
       ENDIF
 !
@@ -244,18 +244,18 @@
       SINA=0.342020143D0
 !
       DO KK=1,NPOIN
-         T1%R(KK)=(X(KK)-15.75D0)*COSA-(Y(KK)-18.5D0)*SINA
-         T2%R(KK)=(X(KK)-15.75D0)*SINA+(Y(KK)-18.5D0)*COSA
-         IF(T2%R(KK) .GT. 5.2D0) THEN
-           ZF%R(KK)=-0.45D0
-         ELSEIF(((T1%R(KK)/4.D0)**2)+((T2%R(KK)/3.D0)**2) .LE. 1.D0)
-     &   THEN
+        T1%R(KK)=(X(KK)-15.75D0)*COSA-(Y(KK)-18.5D0)*SINA
+        T2%R(KK)=(X(KK)-15.75D0)*SINA+(Y(KK)-18.5D0)*COSA
+        IF(T2%R(KK) .GT. 5.2D0) THEN
+          ZF%R(KK)=-0.45D0
+        ELSEIF(((T1%R(KK)/4.D0)**2)+((T2%R(KK)/3.D0)**2) .LE. 1.D0)
+     &  THEN
           ZF%R(KK)=-0.45D0-0.02D0*(-5.2D0+T2%R(KK))+0.5D0*
-     &        SQRT(1.D0-((T1%R(KK)/5.D0)**2)-((T2%R(KK)/3.75D0)
-     &           **2))-0.3D0
-         ELSE
+     &       SQRT(1.D0-((T1%R(KK)/5.D0)**2)-((T2%R(KK)/3.75D0)
+     &          **2))-0.3D0
+        ELSE
           ZF%R(KK)=-0.45D0-0.02D0*(-5.2D0+T2%R(KK))
-         ENDIF
+        ENDIF
       ENDDO
 !
 !

@@ -119,23 +119,23 @@
 ! PAROIS SOLIDES
 !
       DO I=245,902
-         LIHBOR%I(I)=KLOG
-         RP%R(I)=1.D0  
-         TETAP%R(I)=0.D0
-         ALFAP%R(I)=0.D0
+        LIHBOR%I(I)=KLOG
+        RP%R(I)=1.D0  
+        TETAP%R(I)=0.D0
+        ALFAP%R(I)=0.D0
       ENDDO
 !
 !
 ! PAROIS LIQUIDES -FRONTIERE LIBRE
 ! 
       DO I=903,953
-         LIHBOR%I(I)=KSORT
-         TETAP%R(I)=24.D0
+        LIHBOR%I(I)=KSORT
+        TETAP%R(I)=24.D0
       ENDDO
 !
       DO I=954,1042
-         LIHBOR%I(I)=KSORT
-         TETAP%R(I)=66.D0
+        LIHBOR%I(I)=KSORT
+        TETAP%R(I)=66.D0
       ENDDO
 
 !
@@ -150,18 +150,18 @@
       Y0=Y(IG0)
 !
       DO I=1,244
-         LIHBOR%I(I)=KINC
-         TETAB%R(I)=114.D0
-         AUXIC =COS(TETAB%R(I)*DEGRAD)
-         AUXIS =SIN(TETAB%R(I)*DEGRAD)
-         HB%R(I)=2.80D0
-!CP ---- PHASE 
-         IG   = MESH%NBOR%I(I)
-         KK=K%R(IG)
-         PHASOI=PHASOI+KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
-         ALFAP%R(I) = PHASOI/DEGRAD
-         X0=X(IG)
-         Y0=Y(IG)
+        LIHBOR%I(I)=KINC
+        TETAB%R(I)=114.D0
+        AUXIC =COS(TETAB%R(I)*DEGRAD)
+        AUXIS =SIN(TETAB%R(I)*DEGRAD)
+        HB%R(I)=2.80D0
+!CP --- PHASE 
+        IG   = MESH%NBOR%I(I)
+        KK=K%R(IG)
+        PHASOI=PHASOI+KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
+        ALFAP%R(I) = PHASOI/DEGRAD
+        X0=X(IG)
+        Y0=Y(IG)
       ENDDO
 !
 !
@@ -229,7 +229,7 @@
 !
         MAS=.TRUE.
         CALL FILTER(ZF,MAS,T1,T2,AM1,'MATMAS          ',
-     *              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
+     &              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
 !
       ENDIF
 !

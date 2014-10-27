@@ -81,13 +81,13 @@
 !  TO BE MODIFIED BY USER
 !  MODIFIED BY QINGHUI ZHANG 15 JULY 2013
 !  FOR THE PURPOSE OF PRECSCRIBING A CONSTANT INITIAL DEPTH AND VELOCITY
-      DO I=1,NPOIN
-C
-         H%R(I) = 10.D0
-         U%R(I) = 3.D-2
-         V%R(I) = 0.D0
-C
-      ENDDO
+        DO I=1,NPOIN
+!      
+          H%R(I) = 10.D0
+          U%R(I) = 3.D-2
+          V%R(I) = 0.D0
+!      
+        ENDDO
 
 !  END OF CODE TO BE MODIFIED BY USER
       ELSE
@@ -408,33 +408,33 @@ C
 !  FOR THE FIRST 6 HOURS,TRACER CONCENTRATION IS 0 MG/L
 !  AFTER, THE CONCENTRATION IS 0
 !  AN ADDITION OF AN INNER LOOP HELPS TO REALIZE IT
-*  IF (TEMPS.LE.2.13D4) THEN
-*        TBOR%ADR(ITRAC)%P%R(K) = 3.D1
-*  ELSE
-*        BOR%ADR(ITRAC)%P%R(K) = 0
-*  ENDIF
+!  IF (TEMPS.LE.2.13D4) THEN
+!        TBOR%ADR(ITRAC)%P%R(K) = 3.D1
+!  ELSE
+!        BOR%ADR(ITRAC)%P%R(K) = 0
+!  ENDIF
 
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
 
-        IF(LITBOR%ADR(ITRAC)%P%I(K).EQ.KENT.AND.
-     &    (NTRACE.GT.0.OR.NOMIMP(1:1).NE.' ')) THEN
-!         THE CASE NUMLIQ(K)=0 CORRESPONDS TO A SINGULARITY INITIALLY
-!         DECLARED AS A SOLID BOUNDARY AND FOR WHICH
-!         TBOR IS FILLED IN CLHUVT
-          IF(NUMLIQ(K).GT.0) THEN
-            N=NBOR(K)
-            IF(NCSIZE.GT.1) N=MESH%KNOLG%I(N)
-            Z = TR(NUMLIQ(K),ITRAC,N,IERR)
-            IF(IERR.EQ.0) TBOR%ADR(ITRAC)%P%R(K) = Z
-                   IF (TEMPS.LE.2.13D4) THEN
-                        TBOR%ADR(ITRAC)%P%R(K) = 3.D1
-                   ELSE
-                        TBOR%ADR(ITRAC)%P%R(K) = 0
-                   ENDIF
+          IF(LITBOR%ADR(ITRAC)%P%I(K).EQ.KENT.AND.
+     &      (NTRACE.GT.0.OR.NOMIMP(1:1).NE.' ')) THEN
+!           THE CASE NUMLIQ(K)=0 CORRESPONDS TO A SINGULARITY INITIALLY
+!           DECLARED AS A SOLID BOUNDARY AND FOR WHICH
+!           TBOR IS FILLED IN CLHUVT
+            IF(NUMLIQ(K).GT.0) THEN
+              N=NBOR(K)
+              IF(NCSIZE.GT.1) N=MESH%KNOLG%I(N)
+              Z = TR(NUMLIQ(K),ITRAC,N,IERR)
+              IF(IERR.EQ.0) TBOR%ADR(ITRAC)%P%R(K) = Z
+              IF (TEMPS.LE.2.13D4) THEN
+                TBOR%ADR(ITRAC)%P%R(K) = 3.D1
+              ELSE
+                TBOR%ADR(ITRAC)%P%R(K) = 0
+              ENDIF
+            ENDIF
           ENDIF
-        ENDIF
-       ENDDO
+        ENDDO
       ENDIF
 
 

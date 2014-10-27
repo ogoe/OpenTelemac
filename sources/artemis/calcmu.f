@@ -153,7 +153,7 @@
               HEFF=MIN(HMU%R(I),HM)
               HEFF=MAX(HEFF,1.D-5)
               MU2%R(I)=T3%R(I)*KDALLY*
-     &      	    (1.D0-(GDALLY*H%R(I)/HEFF)**2)/H%R(I)
+     &              (1.D0-(GDALLY*H%R(I)/HEFF)**2)/H%R(I)
             ENDDO
           ENDIF
 !
@@ -205,7 +205,7 @@
             HEFF = MIN((HMU%R(I)/1.4142D0),HM)
             HEFF=MAX(HEFF,1.D-5)
             MU2%R(I)=ALFABJ*OMEGAM%R(I)*T3%R(I)*((HM/HEFF)**2)/
-     &      	   (PI*CG%R(I))
+     &             (PI*CG%R(I))
           ENDDO
 !
 !         --------------------------------
@@ -256,11 +256,11 @@
           ELSE
             DO I = 1,NPOIN
               CALL CALCFW
-     &      	     (I,H%R,C%R,CG%R,K%R,HMU%R,
-     &      	      NPOIN,OMEGAM%R(I),GRAV,
-     &      	      VISCO,DIAM90,DIAM50,MVSED,MVEAU,
-     &      	      FORMFR,REGIDO,RICOEF,
-     &      	      ENTREG,ENTRUG,FFW)
+     &           (I,H%R,C%R,CG%R,K%R,HMU%R,
+     &            NPOIN,OMEGAM%R(I),GRAV,
+     &            VISCO,DIAM90,DIAM50,MVSED,MVEAU,
+     &            FORMFR,REGIDO,RICOEF,
+     &            ENTREG,ENTRUG,FFW)
               FW%R(I) = FFW
             ENDDO
           ENDIF
@@ -276,14 +276,14 @@
 !         ---------------------------------------------------
 !         COMPUTES AN EFFECTIVE SPEED
 !         UE = 1.2D0*(0.5*((DPHIR/DX)**2 + (DPHIR/DY)**2
-!         	      +(DPHII/DX)**2 + (DPHII/DY)**2))**0.5
+!                     +(DPHII/DX)**2 + (DPHII/DY)**2))**0.5
 !         UE IS STORED IN T4 HERE
 !         ---------------------------------------------------
 !
           IF ((.NOT. ALEMON).AND.(.NOT. ALEMUL)) THEN
             CALL CALCUE
-!                   WORK TABLE MODIFIED : T1,T2  	       
-!                   RESULTS WORK TABLE  : T4 	       
+!                   WORK TABLE MODIFIED : T1,T2         
+!                   RESULTS WORK TABLE  : T4        
           ELSE
             CALL OS( 'X=Y     ', T4 , UEB , SBID  , CBID )
           ENDIF
@@ -297,7 +297,7 @@
 !
           DO I = 1,NPOIN
             T1%R(I) = (0.5D0*FW%R(I)*T4%R(I))/
-     &    	      (H%R(I)*((COSH(K%R(I)*H%R(I)))**2))
+     &                (H%R(I)*((COSH(K%R(I)*H%R(I)))**2))
             T1%R(I) = T1%R(I)/CG%R(I)
           ENDDO
         ENDIF
@@ -311,7 +311,7 @@
           IF ((.NOT. ALEMON).AND.(.NOT. ALEMUL)) THEN
             DO I = 1,NPOIN
               T1%R(I) = (2*FW%R(I)*HMU%R(I)*
-     &    	      ((OMEGA/SINH(K%R(I)*H%R(I)))**3))
+     &                ((OMEGA/SINH(K%R(I)*H%R(I)))**3))
               T1%R(I) = T1%R(I)/(3.D0*3.14159D0*GRAV)
               T1%R(I) = T1%R(I)/CG%R(I)
             ENDDO
@@ -321,11 +321,11 @@
 !  FOR MEMORY : DIRECT CALCULATION OF MU BASED ON MEAN OMEGA
 !  CP suspects that th(kD)=kD approximation was used here
 !              T1%R(I) = (2*FW%R(I)*HMU%R(I)*
-!     &    	      ((OMEGAM%R(I)/SINH(K%R(I)*H%R(I)))**3))
+!     &               ((OMEGAM%R(I)/SINH(K%R(I)*H%R(I)))**3))
 !              T1%R(I) = T1%R(I)/(3.D0*3.14159D0*GRAV)
 !              T1%R(I) = T1%R(I)/CG%R(I)
               T1%R(I) = (0.5D0*FW%R(I)*T4%R(I))/
-     &    	      (H%R(I)*((COSH(K%R(I)*H%R(I)))**2))
+     &                (H%R(I)*((COSH(K%R(I)*H%R(I)))**2))
               T1%R(I) = T1%R(I)/CG%R(I)
             ENDDO
           ENDIF

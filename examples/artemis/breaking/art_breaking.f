@@ -111,44 +111,44 @@
       HB%R(:)    = 1.D0 
 !     
       DO I=1,NPTFR
-       JB=BOUNDARY_COLOUR%I(I)
+        JB=BOUNDARY_COLOUR%I(I)
 
-! PAROIS SOLIDES
-      IF(JB.GE.2.AND.JB.LE.144)THEN
-         LIHBOR%I(I)=KLOG
-         RP%R(I)=1.D0
-         TETAP%R(I)=0.D0
-         ALFAP%R(I)=0.D0
-      ENDIF 
-      IF(JB.GE.159.AND.JB.LE.301)THEN
-         LIHBOR%I(I)=KLOG
-         RP%R(I)=1.D0
-         TETAP%R(I)=0.D0
-         ALFAP%R(I)=0.D0
-      ENDIF 
-!
-! PAROIS LIQUIDES -FRONTIERE LIBRE
-! 
-      IF(JB.GE.145.AND.JB.LE.158)THEN
-         LIHBOR%I(I)=KSORT
-      ENDIF 
-!
-! PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
-!
-!
-      IF(JB.GE.302.AND.JB.LE.303)THEN
-         LIHBOR%I(I)=KINC
-         HB%R(I)=0.145D0
-         ALFAP%R(I) = 0.D0
-         TETAB%R(I)=0.
-      ENDIF 
-!
-      IF(JB.EQ.1)THEN
-         LIHBOR%I(I)=KINC
-         HB%R(I)=0.145D0
-         ALFAP%R(I) = 0.D0
-         TETAB%R(I)=0.
-      ENDIF 
+!       PAROIS SOLIDES
+        IF(JB.GE.2.AND.JB.LE.144)THEN
+          LIHBOR%I(I)=KLOG
+          RP%R(I)=1.D0
+          TETAP%R(I)=0.D0
+          ALFAP%R(I)=0.D0
+        ENDIF 
+        IF(JB.GE.159.AND.JB.LE.301)THEN
+          LIHBOR%I(I)=KLOG
+          RP%R(I)=1.D0
+          TETAP%R(I)=0.D0
+          ALFAP%R(I)=0.D0
+        ENDIF 
+!       
+!       PAROIS LIQUIDES -FRONTIERE LIBRE
+!       
+        IF(JB.GE.145.AND.JB.LE.158)THEN
+           LIHBOR%I(I)=KSORT
+        ENDIF 
+!       
+!       PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
+!       
+!       
+        IF(JB.GE.302.AND.JB.LE.303)THEN
+          LIHBOR%I(I)=KINC
+          HB%R(I)=0.145D0
+          ALFAP%R(I) = 0.D0
+          TETAB%R(I)=0.
+        ENDIF 
+!       
+        IF(JB.EQ.1)THEN
+          LIHBOR%I(I)=KINC
+          HB%R(I)=0.145D0
+          ALFAP%R(I) = 0.D0
+          TETAB%R(I)=0.
+        ENDIF 
       
       ENDDO                                                         
 !
@@ -216,7 +216,7 @@
 !
         MAS=.TRUE.
         CALL FILTER(ZF,MAS,T1,T2,AM1,'MATMAS          ',
-     *              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
+     &              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
         MAS = .FALSE.                                                   
 !                                                                       
       CONTINUE                                                          
@@ -229,10 +229,10 @@
 ! EXEMPLE :
 !
       DO  I=1,NPOIN
-         ZF%R(I) = -0.7+0.025*(X(I)-15)
-         IF(ZF%R(I).LT.-0.7)THEN
-           ZF%R(I)=-0.7
-         ENDIF
+        ZF%R(I) = -0.7+0.025*(X(I)-15)
+        IF(ZF%R(I).LT.-0.7)THEN
+          ZF%R(I)=-0.7
+        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------

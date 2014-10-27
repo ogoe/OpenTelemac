@@ -124,15 +124,15 @@
 
 !-----------------------------------------------------------------------
 
-       EPAI_VASE(1)=0.01D0
-       EPAI_VASE(2)=0.02D0
-       EPAI_VASE(3)=0.03995D0
-       EPAI_VASE(4)=0.0437D0
-       EPAI_VASE(5)=0.0517D0
-       EPAI_VASE(6)=0.1259D0
-       EPAI_VASE(7)=0.4889D0
-       EPAI_VASE(8)=1.5071D0
-       EPAI_VASE(9)=0.86410D0
+      EPAI_VASE(1)=0.01D0
+      EPAI_VASE(2)=0.02D0
+      EPAI_VASE(3)=0.03995D0
+      EPAI_VASE(4)=0.0437D0
+      EPAI_VASE(5)=0.0517D0
+      EPAI_VASE(6)=0.1259D0
+      EPAI_VASE(7)=0.4889D0
+      EPAI_VASE(8)=1.5071D0
+      EPAI_VASE(9)=0.86410D0
 !
 !-----------------------------------------------------------------------
 !
@@ -155,25 +155,25 @@
 !     V6P2: SO FAR THE MUD CONC IS CONSTANT PER LAYER 
 !     si mixte: calculer aussi les AVAI!
 !
-       DO I=1,NPOIN
+      DO I=1,NPOIN
         DO J= 1,NOMBLAY
 !
           CONC(I,J) = CONC_VASE(J)
           ES(I,J)   = EPAI_VASE(J)
 !
           IF(NSICLA.GT.1) THEN
-              ES(I,J)= ES(I,J) + EPAI_SABLE(J)
-              IF(ES(I,J).GE.1.D-6) THEN
+            ES(I,J)= ES(I,J) + EPAI_SABLE(J)
+            IF(ES(I,J).GE.1.D-6) THEN
 ! Class 1 is for sand, class 2 is mud
-                AVAIL(I,J,1)= EPAI_SABLE(J)/ES(I,J)
-                AVAIL(I,J,2)= EPAI_VASE(J)/ES(I,J)
-             ELSE
+              AVAIL(I,J,1)= EPAI_SABLE(J)/ES(I,J)
+              AVAIL(I,J,2)= EPAI_VASE(J)/ES(I,J)
+            ELSE
               AVAIL(I,J,1)= AVA0(1)
               AVAIL(I,J,2)= AVA0(2)
-             ENDIF
+            ENDIF
           ENDIF   
 !
-         ENDDO
+        ENDDO
       ENDDO
 !
 !-----------------------------------------------------------------------

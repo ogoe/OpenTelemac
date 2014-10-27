@@ -1,13 +1,13 @@
-C
-C  THIS TEST CASE WORKS WITH PROPAG AND DIFFIN MODIFIED
-C
-C  HYDRODYNAMICS IS GIVEN IN CONDIN, AND IS NOT SOLUTION OF
-C  SHALLOW WATER EQUATIONS (IT IS JUST DIVERGENCE FREE)
-C          
-C  PROPAG: EMPTIED SUBROUTINE, EXCEPT A FEW LINES, SEE BELOW 
-C  DIFFIN: CHECKING OF ENTERING AND EXITING BOUNDARIES REMOVED         
-C
-C
+!
+!  THIS TEST CASE WORKS WITH PROPAG AND DIFFIN MODIFIED
+!
+!  HYDRODYNAMICS IS GIVEN IN CONDIN, AND IS NOT SOLUTION OF
+!  SHALLOW WATER EQUATIONS (IT IS JUST DIVERGENCE FREE)
+!          
+!  PROPAG: EMPTIED SUBROUTINE, EXCEPT A FEW LINES, SEE BELOW 
+!  DIFFIN: CHECKING OF ENTERING AND EXITING BOUNDARIES REMOVED         
+!
+!
 !                    *****************
                      SUBROUTINE PROPAG
 !                    *****************
@@ -401,66 +401,66 @@ C
 !
       RETURN
       END
-C                       *****************
+!                       *****************
                         SUBROUTINE CONDIN
-C                       *****************
-C
-C***********************************************************************
-C TELEMAC-2D VERSION 5.0         19/08/98  J-M HERVOUET TEL: 30 87 80 18
-C
-C***********************************************************************
-C
-C     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________
-C |                | -- |  
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C***********************************************************************
-C
+!                       *****************
+!
+!***********************************************************************
+! TELEMAC-2D VERSION 5.0         19/08/98  J-M HERVOUET TEL: 30 87 80 18
+!
+!***********************************************************************
+!
+!     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |                | -- |  
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C  
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!  
       INTEGER IPOIN,ITRAC
-C
+!
       DOUBLE PRECISION EIKON
-C
+!
       INTRINSIC EXP
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DU TEMPS
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DU TEMPS
+!
       AT = 0.D0
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DES VITESSES : VITESSES NULLES
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DES VITESSES : VITESSES NULLES
+!
       CALL OS( 'X=C     ' , U , U , U , 0.D0 )
       CALL OS( 'X=C     ' , V , V , V , 0.D0 )
       DO IPOIN=1,NPOIN
         U%R(IPOIN) = -(Y(IPOIN)-10.05D0)
         V%R(IPOIN) =  (X(IPOIN)-10.05D0) 
       ENDDO
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DE H , LA HAUTEUR D'EAU
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DE H , LA HAUTEUR D'EAU
+!
       IF(CDTINI(1:10).EQ.'COTE NULLE') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0 )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0 )
@@ -479,11 +479,11 @@ C
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
         STOP
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DES TRACEURS
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DES TRACEURS
+!
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
           DO IPOIN=1,NPOIN
@@ -492,15 +492,15 @@ C
           ENDDO
         ENDDO
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C INITIALISATION DE LA VISCOSITE
-C
+!
+!-----------------------------------------------------------------------
+!
+! INITIALISATION DE LA VISCOSITE
+!
       CALL OS( 'X=C     ' , VISC , VISC , VISC , PROPNU )
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
 !                    *****************

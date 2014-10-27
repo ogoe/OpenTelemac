@@ -1,75 +1,75 @@
-C                       *****************
+!                       *****************
                         SUBROUTINE CONDIN
-C                       *****************
-C
-C***********************************************************************
-C TELEMAC 2D VERSION 5.1         19/08/98  J-M HERVOUET TEL: 30 87 80 18
-C
-C***********************************************************************
-C
-C     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________
-C |                | -- |  
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C***********************************************************************
-C
+!                       *****************
+!
+!***********************************************************************
+! TELEMAC 2D VERSION 5.1         19/08/98  J-M HERVOUET TEL: 30 87 80 18
+!
+!***********************************************************************
+!
+!     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |                | -- |  
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! 
       INTEGER ITRAC 
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DU TEMPS
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DU TEMPS
+!
       AT = 0.D0
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DES VITESSES : VITESSES NULLES
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DES VITESSES : VITESSES NULLES
+!
       CALL OS( 'X=C     ' , U , U , U , 0.D0 )
       CALL OS( 'X=C     ' , V , V , V , 0.D0 )
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DE H , LA HAUTEUR D'EAU
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DE H , LA HAUTEUR D'EAU
+!
       IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
-     *   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
+     &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0 )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0 )
       ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
-     *       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
+     &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , COTINI )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0   )
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
-     *       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
+     &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0  )
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
-     *       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
+     &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , HAUTIN )
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
-     *       CDTINI(1:10).EQ.'PARTICULAR'.OR.
-     *       CDTINI(1:07).EQ.'SPECIAL') THEN
-C  ZONE A MODIFIER                                                      
-      CALL EXACTE(H%R,U%R,ZF%R,X,NPOIN)                                        
-C  FIN DE LA ZONE A MODIFIER      
+     &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
+     &       CDTINI(1:07).EQ.'SPECIAL') THEN
+!  ZONE A MODIFIER                                                      
+      CALL EXACTE(H%R,U%R,ZF%R,X,NPOIN)
+!  FIN DE LA ZONE A MODIFIER      
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -80,160 +80,160 @@ C  FIN DE LA ZONE A MODIFIER
         CALL PLANTE(1)
         STOP
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DU TRACEUR
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DU TRACEUR
+!
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
           CALL OS( 'X=C     ' , X=T%ADR(ITRAC)%P , C=TRAC0(ITRAC) )
         ENDDO
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C INITIALISATION DE LA VISCOSITE
-C
+!
+!-----------------------------------------------------------------------
+!
+! INITIALISATION DE LA VISCOSITE
+!
       CALL OS( 'X=C     ' , VISC , VISC , VISC , PROPNU )
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C                       ***************************
+!                       ***************************
                         SUBROUTINE PRERES_TELEMAC2D
-C                       ***************************
-C
-C***********************************************************************
-C  TELEMAC 2D VERSION 5.1    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
-C
-C***********************************************************************
-C
-C     FONCTION  : PREPARATION DE VARIABLES QUI SERONT ECRITES SUR
-C                 LE FICHIER DE RESULTATS OU SUR LE LISTING.
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C |      NOM       |MODE|                   ROLE                       |
-C |________________|____|______________________________________________|
-C |      LT        | -->| NUMERO D'ITERATION
-C |________________|____|______________________________________________|
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C  APPELE PAR : TELMAC
-C
-C  SOUS-PROGRAMME APPELE : OV
-C
-C***********************************************************************
-C
+!                       ***************************
+!
+!***********************************************************************
+!  TELEMAC 2D VERSION 5.1    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
+!
+!***********************************************************************
+!
+!     FONCTION  : PREPARATION DE VARIABLES QUI SERONT ECRITES SUR
+!                 LE FICHIER DE RESULTATS OU SUR LE LISTING.
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! |      NOM       |MODE|                   ROLE                       |
+! |________________|____|______________________________________________|
+! |      LT        | -->| NUMERO D'ITERATION
+! |________________|____|______________________________________________|
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!
+!-----------------------------------------------------------------------
+!
+!  APPELE PAR : TELMAC
+!
+!  SOUS-PROGRAMME APPELE : OV
+!
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C     
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!     
       LOGICAL IMP,LEO
-C
+!
       INTEGER LTT,N,IMAX
-C
+!
       DOUBLE PRECISION HHH,XMAX
-C
+!
       INTRINSIC MAX,SQRT
-C
-C-----------------------------------------------------------------------
-C
-C LOGIQUES POUR DECIDER DES SORTIES
-C
+!
+!-----------------------------------------------------------------------
+!
+! LOGIQUES POUR DECIDER DES SORTIES
+!
       IMP=.FALSE.
       LEO=.FALSE.
       LTT=(LT/LISPRD)*LISPRD
       IF((LT.EQ.LTT.OR.LT.EQ.NIT).AND.LT.GE.PTINIL) IMP=.TRUE.
       LTT=(LT/LEOPRD)*LEOPRD
       IF((LT.EQ.LTT.OR.LT.EQ.NIT).AND.LT.GE.PTINIG) LEO=.TRUE.
-C
-C     PAS D'IMPRESSION, PAS DE SORTIE SUR FICHIER, ON RESSORT
+!
+!     PAS D'IMPRESSION, PAS DE SORTIE SUR FICHIER, ON RESSORT
       IF(.NOT.(LEO.OR.IMP)) GO TO 1000
-C
-C
-C=======================================================================
-C CALCUL DE LA CELERITE (MISE DANS FU, VOIR LE BLOC VARSOR)
-C=======================================================================
-C
+!
+!
+!=======================================================================
+! CALCUL DE LA CELERITE (MISE DANS FU, VOIR LE BLOC VARSOR)
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(3)).OR.(IMP.AND.SORIMP(3))) THEN
         DO N=1,NPOIN
           FU%R(N) = SQRT ( GRAV * MAX(H%R(N),0.D0) )
         ENDDO
       ENDIF
-C
-C=======================================================================
-C CALCUL DE LA SURFACE LIBRE (= H + ZF, MISE DANS FV)
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DE LA SURFACE LIBRE (= H + ZF, MISE DANS FV)
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(5)).OR.(IMP.AND.SORIMP(5))) THEN
         CALL OS( 'X=Y+Z   ' , FV , H , ZF , 0.D0 )
       ENDIF
-C
-C=======================================================================
-C CALCUL DU NOMBRE DE FROUDE
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DU NOMBRE DE FROUDE
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(7)).OR.(IMP.AND.SORIMP(7))) THEN
         DO N=1,NPOIN
           HHH = MAX( H%R(N) , 1.D-8 )
           T2%R(N) = SQRT (( U%R(N)**2 + V%R(N)**2 ) / ( HHH*GRAV ))
         ENDDO
       ENDIF
-C
-C=======================================================================
-C CALCUL DU DEBIT SCALAIRE
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DU DEBIT SCALAIRE
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN
         DO N=1,NPOIN
-         T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
+          T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
         ENDDO
       ENDIF
-C
-C=======================================================================
-C CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT X
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT X
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(13)).OR.(IMP.AND.SORIMP(13))) THEN
         CALL OS( 'X=YZ    ' , T4 , H , U , HHH )
       ENDIF
-C
-C=======================================================================
-C CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT Y
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT Y
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(14)).OR.(IMP.AND.SORIMP(14))) THEN
         CALL OS( 'X=YZ    ' , T5 , H , V , HHH )
       ENDIF
-C
-C=======================================================================
-C CALCUL DE LA VITESSE SCALAIRE
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DE LA VITESSE SCALAIRE
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(15)).OR.(IMP.AND.SORIMP(15))) THEN
         CALL OS( 'X=N(Y,Z)' , T6 , U , V , HHH )
       ENDIF
-C
-C=======================================================================
-C CALCUL DU NOMBRE DE COURANT
-C=======================================================================
-C
+!
+!=======================================================================
+! CALCUL DU NOMBRE DE COURANT
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(22)).OR.(IMP.AND.SORIMP(22))) THEN
-C                             IELM
+!                             IELM
         CALL CFLPSI(T9,U,V,DT,11,MESH,MSK,MASKEL)
         CALL MAXI(XMAX,IMAX,T9%R,NPOIN)
         IF (LNG.EQ.1) WRITE(LU,78) XMAX
@@ -241,90 +241,90 @@ C                             IELM
 78      FORMAT(1X,'PRERES : NOMBRE DE COURANT MAXIMUM :',G16.7)
 79      FORMAT(1X,'PRERES: MAXIMUM COURANT NUMBER: ',G16.7)
       ENDIF
-C 
-C=======================================================================  
-C CALCUL DE LA VITESSE ET DE LA HAUTEUR EXACTE                            
-C=======================================================================  
-C                                                                         
-      IF(((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))).AND.              
-     *   ((LEO.AND.SORLEO(24)).OR.(IMP.AND.SORIMP(24)))) THEN             
-        CALL EXACTE(PRIVE%ADR(1)%P%R,PRIVE%ADR(2)%P%R,ZF%R,X,NPOIN)                                   
+! 
+!=======================================================================  
+! CALCUL DE LA VITESSE ET DE LA HAUTEUR EXACTE                            
+!=======================================================================  
+!                                                                         
+      IF(((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))).AND.
+     &   ((LEO.AND.SORLEO(24)).OR.(IMP.AND.SORIMP(24)))) THEN
+        CALL EXACTE(PRIVE%ADR(1)%P%R,PRIVE%ADR(2)%P%R,ZF%R,X,NPOIN)
       ENDIF
-C                                                                         
-C=======================================================================  
-C CALCUL DE LA SURFACE LIBRE EXACTE                                       
-C=======================================================================  
-C                                                                         
-      IF((LEO.AND.SORLEO(25)).OR.(IMP.AND.SORIMP(25))) THEN               
+!                                                                         
+!=======================================================================  
+! CALCUL DE LA SURFACE LIBRE EXACTE                                       
+!=======================================================================  
+!                                                                         
+      IF((LEO.AND.SORLEO(25)).OR.(IMP.AND.SORIMP(25))) THEN
         CALL OV( 'X=Y+Z   ' ,PRIVE%ADR(3)%P%R,
-     *                       PRIVE%ADR(1)%P%R,ZF%R,0.D0,NPOIN)                
+     &                       PRIVE%ADR(1)%P%R,ZF%R,0.D0,NPOIN)
       ENDIF
-C
-C=======================================================================  
-C CALCUL DU NOMBRE DE FROUDE EXACT                                        
-C=======================================================================  
-C                                                                         
-      IF((LEO.AND.SORLEO(26)).OR.(IMP.AND.SORIMP(26))) THEN               
-        DO N=1,NPOIN                                                   
-         HHH = MAX(PRIVE%ADR(1)%P%R(N),1.D-8)                                           
-         PRIVE%ADR(4)%P%R(N)=SQRT(PRIVE%ADR(2)%P%R(N)**2/(HHH*GRAV))                        
+!
+!=======================================================================  
+! CALCUL DU NOMBRE DE FROUDE EXACT                                        
+!=======================================================================  
+!                                                                         
+      IF((LEO.AND.SORLEO(26)).OR.(IMP.AND.SORIMP(26))) THEN
+        DO N=1,NPOIN
+          HHH = MAX(PRIVE%ADR(1)%P%R(N),1.D-8)
+          PRIVE%ADR(4)%P%R(N)=SQRT(PRIVE%ADR(2)%P%R(N)**2/(HHH*GRAV))
         ENDDO                                                          
       ENDIF         
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
 1000  CONTINUE
       RETURN
       END
-C                       ***************************
+!                       ***************************
                         SUBROUTINE NOMVAR_TELEMAC2D
-C                       ***************************
-C
-     *(TEXTE,TEXTPR,MNEMO)
-C
-C***********************************************************************
-C  TELEMAC 2D VERSION 5.1    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
-C
-C***********************************************************************
-C
-C FONCTION  :  FIXE LES NOMS DES VARIABLES DU CODE POUR LES FICHIERS
-C              DE RESULTAT ET DE GEOMETRIE (TEXTE) ET POUR LE FICHIER
-C              DE RESULTATS DU CALCUL PRECEDENT (TEXTPR)
-C
-C              EN GENERAL TEXTE ET TEXTPR SONT EGAUX SAUF SI ON FAIT
-C              UNE SUITE A PARTIR D'UN AUTRE LOGICIEL.
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C |      NOM       |MODE|                   ROLE |
-C |________________|____|______________________________________________|
-C |   TEXTE        |<-- | NOM DES VARIABLES
-C |   TEXTPR       |<-- | NOM DES VARIABLES DU CALCUL PRECEDENT
-C |________________|____|______________________________________________|
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C APPELE PAR : PREDON
-C
-C SOUS-PROGAMME APPELE : NEANT
-C
-C**********************************************************************
-C
+!                       ***************************
+!
+     &(TEXTE,TEXTPR,MNEMO)
+!
+!***********************************************************************
+!  TELEMAC 2D VERSION 5.1    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
+!
+!***********************************************************************
+!
+! FONCTION  :  FIXE LES NOMS DES VARIABLES DU CODE POUR LES FICHIERS
+!              DE RESULTAT ET DE GEOMETRIE (TEXTE) ET POUR LE FICHIER
+!              DE RESULTATS DU CALCUL PRECEDENT (TEXTPR)
+!
+!              EN GENERAL TEXTE ET TEXTPR SONT EGAUX SAUF SI ON FAIT
+!              UNE SUITE A PARTIR D'UN AUTRE LOGICIEL.
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! |      NOM       |MODE|                   ROLE |
+! |________________|____|______________________________________________|
+! |   TEXTE        |<-- | NOM DES VARIABLES
+! |   TEXTPR       |<-- | NOM DES VARIABLES DU CALCUL PRECEDENT
+! |________________|____|______________________________________________|
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!
+!-----------------------------------------------------------------------
+!
+! APPELE PAR : PREDON
+!
+! SOUS-PROGAMME APPELE : NEANT
+!
+!**********************************************************************
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
+!
       CHARACTER*32 TEXTE(26),TEXTPR(26)
       CHARACTER*8  MNEMO(26)
-C
-C-----------------------------------------------------------------------
-C
-C  ENGLISH
-C
+!
+!-----------------------------------------------------------------------
+!
+!  ENGLISH
+!
       IF(LNG.EQ.2) THEN
-C
+!
       TEXTE (1 ) = 'VELOCITY U      M/S             '
       TEXTE (2 ) = 'VELOCITY V      M/S             '
       TEXTE (3 ) = 'CELERITY        M/S             '
@@ -347,16 +347,16 @@ C
       TEXTE (20) = 'DRIFT ALONG X   M               '
       TEXTE (21) = 'DRIFT ALONG Y   M               '
       TEXTE (22) = 'COURANT NUMBER                  '
-      TEXTE (23) = 'EXACT DEPTH     M               '                     
-      TEXTE (24) = 'EXACT VELOCITY  M/S             '                     
+      TEXTE (23) = 'EXACT DEPTH     M               '
+      TEXTE (24) = 'EXACT VELOCITY  M/S             '
       TEXTE (25) = 'EXACT ELEVATION M               '       
       TEXTE (26) = 'EXACT FROUDE                    '
-C
-C TEXTPR IS USED FOR READING PREVIOUS COMPUTATION FILES.
-C IN GENERAL TEXTPR=TEXTE BUT YOU CAN FOLLOW UP A COMPUTATION
-C FROM ANOTHER CODE WITH DIFFERENT NAMES THAT YOU HAVE TO
-C WRITE HERE.
-C
+!
+! TEXTPR IS USED FOR READING PREVIOUS COMPUTATION FILES.
+! IN GENERAL TEXTPR=TEXTE BUT YOU CAN FOLLOW UP A COMPUTATION
+! FROM ANOTHER CODE WITH DIFFERENT NAMES THAT YOU HAVE TO
+! WRITE HERE.
+!
       TEXTPR (1 ) = 'VELOCITY U      M/S             '
       TEXTPR (2 ) = 'VELOCITY V      M/S             '
       TEXTPR (3 ) = 'CELERITY        M/S             '
@@ -383,13 +383,13 @@ C
       TEXTPR (24) = 'VARIABLE 24     UNIT   ??       '
       TEXTPR (25) = 'VARIABLE 25     UNIT   ??       '
       TEXTPR (26) = 'VARIABLE 26     UNIT   ??       '
-C
-C-----------------------------------------------------------------------
-C
-C  FRANCAIS OU AUTRE
-C
+!
+!-----------------------------------------------------------------------
+!
+!  FRANCAIS OU AUTRE
+!
       ELSE
-C
+!
       TEXTE (1 ) = 'VITESSE U       M/S             '
       TEXTE (2 ) = 'VITESSE V       M/S             '
       TEXTE (3 ) = 'CELERITE        M/S             '
@@ -412,15 +412,15 @@ C
       TEXTE (20) = 'DERIVE EN X     M               '
       TEXTE (21) = 'DERIVE EN Y     M               '
       TEXTE (22) = 'NBRE DE COURANT                 '
-      TEXTE (23) = 'HAUTEUR EXACTE  M               '                     
-      TEXTE (24) = 'VITESSE EXACTE  M/S             '                     
+      TEXTE (23) = 'HAUTEUR EXACTE  M               '
+      TEXTE (24) = 'VITESSE EXACTE  M/S             '
       TEXTE (25) = 'SURFACE EXACTE  M               '       
       TEXTE (26) = 'FROUDE EXACT                    '
-C
-C TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
-C A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
-C DE CALCUL A PARTIR D'UN AUTRE CODE.
-C
+!
+! TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
+! A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
+! DE CALCUL A PARTIR D'UN AUTRE CODE.
+!
       TEXTPR (1 ) = 'VITESSE U       M/S             '
       TEXTPR (2 ) = 'VITESSE V       M/S             '
       TEXTPR (3 ) = 'CELERITE        M/S             '
@@ -447,328 +447,329 @@ C
       TEXTPR (24) = 'VARIABLE 24     UNITES ??       '
       TEXTPR (25) = 'VARIABLE 25     UNITES ??       '
       TEXTPR (26) = 'VARIABLE 26     UNITES ??       '
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C   ALIAS DES NOMS DE VARIABLES POUR LE FICHIER DES PARAMETRES
-C
-C     UVCHSBFQTKEDIJMXYPWAGLNORZ
-C     VITESSE U
+!
+!-----------------------------------------------------------------------
+!
+!   ALIAS DES NOMS DE VARIABLES POUR LE FICHIER DES PARAMETRES
+!
+!     UVCHSBFQTKEDIJMXYPWAGLNORZ
+!     VITESSE U
       MNEMO(1)   = 'U       '
-C     VITESSE V
+!     VITESSE V
       MNEMO(2)   = 'V       '
-C     CELERITE
+!     CELERITE
       MNEMO(3)   = 'C       '
-C     HAUTEUR D'EAU
+!     HAUTEUR D'EAU
       MNEMO(4)   = 'H       '
-C     SURFACE LIBRE
+!     SURFACE LIBRE
       MNEMO(5)   = 'S       '
-C     FOND
+!     FOND
       MNEMO(6)   = 'B       '
-C     FROUDE
+!     FROUDE
       MNEMO(7)   = 'F       '
-C     DEBIT SCALAIRE
+!     DEBIT SCALAIRE
       MNEMO(8)   = 'Q       '
-C     TRACEUR
+!     TRACEUR
       MNEMO(9)   = 'T       '
-C     ENERGIE TURBUL.
+!     ENERGIE TURBUL.
       MNEMO(10)   = 'K       '
-C     DISSIPATION
+!     DISSIPATION
       MNEMO(11)   = 'E       '
-C     VISCOSITE TURB.
+!     VISCOSITE TURB.
       MNEMO(12)   = 'D       '
-C     DEBIT SUIVANT X
+!     DEBIT SUIVANT X
       MNEMO(13)   = 'I       '
-C     DEBIT SUIVANT Y
+!     DEBIT SUIVANT Y
       MNEMO(14)   = 'J       '
-C     VITESSE SCALAIRE
+!     VITESSE SCALAIRE
       MNEMO(15)   = 'M       '
-C     VENT X
+!     VENT X
       MNEMO(16)   = 'X       '
-C     VENT Y
+!     VENT Y
       MNEMO(17)   = 'Y       '
-C     PRESSION ATMOS.
+!     PRESSION ATMOS.
       MNEMO(18)   = 'P       '
-C     FROTTEMENT
+!     FROTTEMENT
       MNEMO(19)   = 'W       '
-C     DERIVE EN X
+!     DERIVE EN X
       MNEMO(20)   = 'A       '
-C     DERIVE EN Y
+!     DERIVE EN Y
       MNEMO(21)   = 'G       '
-C     NBRE DE COURANT
+!     NBRE DE COURANT
       MNEMO(22)   = 'L       '
-C     VARIABLE 23
+!     VARIABLE 23
       MNEMO(23)   = 'N       '
-C     VARIABLE 24
+!     VARIABLE 24
       MNEMO(24)   = 'O       '
-C     VARIABLE 25
+!     VARIABLE 25
       MNEMO(25)   = 'R       '
-C     VARIABLE 26
+!     VARIABLE 26
       MNEMO(26)   = 'Z       '
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C                       *****************
+!                       *****************
                         SUBROUTINE CORFON
-C                       *****************
-C
-C***********************************************************************
-C TELEMAC 2D VERSION 5.1          01/03/90    J-M HERVOUET
-C***********************************************************************
-C
-C  USER SUBROUTINE CORFON
-C
-C  FUNCTION  : MODIFICATION OF THE BOTTOM TOPOGRAPHY
-C
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS USED IN THE EXAMPLE 
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |      ZF        |<-->| FOND A MODIFIER.
-C |      X,Y,(Z)   | -->| COORDONNEES DU MAILLAGE (Z N'EST PAS EMPLOYE).
-C |      A         |<-- | MATRICE
-C |      T1,2      | -->| TABLEAUX DE TRAVAIL (DIMENSION NPOIN)
-C |      W1        | -->| TABLEAU DE TRAVAIL (DIMENSION 3 * NELEM)
-C |      NPOIN     | -->| NOMBRE DE POINTS DU MAILLAGE.
-C |      PRIVE     | -->| TABLEAU PRIVE POUR L'UTILISATEUR.
-C |      LISFON    | -->| NOMBRE DE LISSAGES DU FOND.
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C
-C PROGRAMME APPELANT :
-C PROGRAMMES APPELES : RIEN EN STANDARD
-C
-C***********************************************************************
-C
+!                       *****************
+!
+!***********************************************************************
+! TELEMAC 2D VERSION 5.1          01/03/90    J-M HERVOUET
+!***********************************************************************
+!
+!  USER SUBROUTINE CORFON
+!
+!  FUNCTION  : MODIFICATION OF THE BOTTOM TOPOGRAPHY
+!
+!
+!-----------------------------------------------------------------------
+!  ARGUMENTS USED IN THE EXAMPLE 
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|_______________________________________________
+! |      ZF        |<-->| FOND A MODIFIER.
+! |      X,Y,(Z)   | -->| COORDONNEES DU MAILLAGE (Z N'EST PAS EMPLOYE).
+! |      A         |<-- | MATRICE
+! |      T1,2      | -->| TABLEAUX DE TRAVAIL (DIMENSION NPOIN)
+! |      W1        | -->| TABLEAU DE TRAVAIL (DIMENSION 3 * NELEM)
+! |      NPOIN     | -->| NOMBRE DE POINTS DU MAILLAGE.
+! |      PRIVE     | -->| TABLEAU PRIVE POUR L'UTILISATEUR.
+! |      LISFON    | -->| NOMBRE DE LISSAGES DU FOND.
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+!
+! PROGRAMME APPELANT :
+! PROGRAMMES APPELES : RIEN EN STANDARD
+!
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       LOGICAL MAS
       INTEGER I
-C
-C-----------------------------------------------------------------------
-C
-C  LISSAGES EVENTUELS DU FOND
-C
+!
+!-----------------------------------------------------------------------
+!
+!  LISSAGES EVENTUELS DU FOND
+!
       IF(LISFON.GT.0) THEN
-C
+!
         MAS=.TRUE.
         CALL FILTER(ZF,MAS,T1,T2,AM1,'MATMAS          ',
-     *              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
-C
+     &              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       DO I=1,NPOIN
         ZF%R(I) = MAX(-0.2D0,-0.0246875D0*(X(I)-10.D0)**2)
       ENDDO
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
-      END                                                                                                                               
-C                       *****************                                 
-                        SUBROUTINE EXACTE                                 
-C                       *****************                                 
-C                                                                         
-     *(H,U,ZF,X,NPOIN)                                                    
-C                                                                         
-C***********************************************************************  
-C PROGICIEL : 'TELEMAC'       12/12/88    J-M HERVOUET                    
-C                                                                         
-C***********************************************************************  
-C                                                                         
-C      FONCTION:    SOLUTION EXACTE DE L'ECOULEMENT TRANSCRITIQUE         
-C                   SUR UN BUMP.                                          
-C                                                                         
-C                   PAR CONVENTION, ZF=0. AU POINT CRITIQUE               
-C                                                                         
-C                   ATTENTION, IL NE S'AGIT ICI QUE DE LA SOLUTION        
-C                   PERMANENTE, QUI EST TOUTEFOIS MISE DANS LE            
-C                   FICHIER DE RESULTATS A TOUS LES PAS DE TEMPS.         
-C                                                                         
-C-----------------------------------------------------------------------  
-C                             ARGUMENTS                                   
-C .________________.____.______________________________________________.  
-C |      NOM       |MODE|                   ROLE                       |  
-C |________________|____|______________________________________________|  
-C |     HN         |<-- |  HAUTEUR D'EAU.                              |  
-C |     U          |<-- |  VITESSE U.                                     
-C |     ZF         | -->|  COTE DU FOND.                                  
-C |________________|____|______________________________________________|  
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)   
-C**********************************************************************   
-C                                                                         
+      END
+!                       *****************
+                        SUBROUTINE EXACTE
+!                       *****************
+!                                                                         
+     &(H,U,ZF,X,NPOIN)
+!                                                                         
+!***********************************************************************  
+! PROGICIEL : 'TELEMAC'       12/12/88    J-M HERVOUET                    
+!                                                                         
+!***********************************************************************  
+!                                                                         
+!      FONCTION:    SOLUTION EXACTE DE L'ECOULEMENT TRANSCRITIQUE         
+!                   SUR UN BUMP.                                          
+!                                                                         
+!                   PAR CONVENTION, ZF=0. AU POINT CRITIQUE               
+!                                                                         
+!                   ATTENTION, IL NE S'AGIT ICI QUE DE LA SOLUTION        
+!                   PERMANENTE, QUI EST TOUTEFOIS MISE DANS LE            
+!                   FICHIER DE RESULTATS A TOUS LES PAS DE TEMPS.         
+!                                                                         
+!-----------------------------------------------------------------------  
+!                             ARGUMENTS                                   
+! .________________.____.______________________________________________.  
+! |      NOM       |MODE|                   ROLE                       |  
+! |________________|____|______________________________________________|  
+! |     HN         |<-- |  HAUTEUR D'EAU.                              |  
+! |     U          |<-- |  VITESSE U.                                     
+! |     ZF         | -->|  COTE DU FOND.                                  
+! |________________|____|______________________________________________|  
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)   
+!**********************************************************************   
+!                                                                         
       IMPLICIT NONE
-C
+!
       INTEGER I,NPOIN
-C                                                                        
+!                                                                        
       DOUBLE PRECISION H(NPOIN),U(NPOIN),ZF(NPOIN),X(NPOIN)
-      DOUBLE PRECISION Q,H0,A(4)                                                    
-C                                                                         
-      EXTERNAL FC1                                                        
-      DOUBLE PRECISION FC1                                                
-C                                                                         
-      COMMON/FORFC1/A                                                     
-C
-C-----------------------------------------------------------------------  
-C
-C DEBIT ET HAUTEUR AU POINT CRITIQUE                                      
-C                                                                         
-      Q = 0.3D0                                                           
-      H0 = ( Q**2/9.81D0 )**(1.D0/3.D0)                                   
-C                                                                         
-C EQUATION A RESOUDRE : A(1)*H**3 + A(2)*H**2 + A(3)*H + A(4)             
-C                                                                         
-      A(1) = 1.D0                                                         
-      A(3) = 0.D0                                                         
-      A(4) = H0**3.D0/2.D0                                                
-      DO I=1,NPOIN                                                     
-C                                                                         
-      A(2) = ZF(I)-3.D0*H0/2.D0                                           
-C                                                                         
-      IF(X(I).GT.10.D0) THEN                                              
-C        ON PREND LA PLUS PETITE SOLUTION REELLE                          
-         H(I) = H0                                                        
-         CALL ZBRENT(FC1,1.D-3,0.1D0,H(I),100)                            
-      ELSEIF(X(I).LT.10.D0) THEN                                          
-C        ON PREND LA PLUS GRANDE SOLUTION REELLE                          
-         H(I) = 0.5D0                                                     
-         CALL ZBRENT(FC1,1.D-3,H0,H(I),100)                               
-      ELSE                                                                
-C        POINT CRITIQUE                                                   
-         H(I) = H0                                                        
-        ENDIF                                                             
-C                                                                         
+      DOUBLE PRECISION Q,H0,A(4)
+!                                                                         
+      EXTERNAL FC1
+      DOUBLE PRECISION FC1
+!                                                                         
+      COMMON/FORFC1/A
+!
+!-----------------------------------------------------------------------  
+!
+! DEBIT ET HAUTEUR AU POINT CRITIQUE                                      
+!                                                                         
+      Q = 0.3D0
+      H0 = ( Q**2/9.81D0 )**(1.D0/3.D0)
+!                                                                         
+! EQUATION A RESOUDRE : A(1)*H**3 + A(2)*H**2 + A(3)*H + A(4)             
+!                                                                         
+      A(1) = 1.D0
+      A(3) = 0.D0
+      A(4) = H0**3.D0/2.D0
+      DO I=1,NPOIN
+!                                                                         
+        A(2) = ZF(I)-3.D0*H0/2.D0
+!                                                                           
+        IF(X(I).GT.10.D0) THEN
+!         ON PREND LA PLUS PETITE SOLUTION REELLE                          
+          H(I) = H0
+          CALL ZBRENT(FC1,1.D-3,0.1D0,H(I),100)
+        ELSEIF(X(I).LT.10.D0) THEN
+!         ON PREND LA PLUS GRANDE SOLUTION REELLE                          
+          H(I) = 0.5D0
+          CALL ZBRENT(FC1,1.D-3,H0,H(I),100)
+        ELSE
+!         POINT CRITIQUE
+          H(I) = H0
+        ENDIF
+!                                                                         
       ENDDO                                                            
-C                                                                         
-C-----------------------------------------------------------------------  
-C                                                                         
+!                                                                         
+!-----------------------------------------------------------------------  
+!                                                                         
       DO I=1,NPOIN                                                     
-        U(I) = Q / MAX(H(I),1.D-8)                                        
+        U(I) = Q / MAX(H(I),1.D-8)
       ENDDO                                                            
-C                                                                         
-C-----------------------------------------------------------------------  
-C                                                                         
-      RETURN                                                              
-      END                                                                 
-C                       *****************************                     
-                        DOUBLE PRECISION FUNCTION FC1                     
-C                       *****************************                     
-C                                                                         
-     *(X)                                                                 
-C                                                                         
-C***********************************************************************  
-C PROGICIEL : TELEMAC        07/12/88    J-M HERVOUET (LNH) 30 71 80 18   
-C                                                                         
-C***********************************************************************  
-C                                                                         
-C  FONCTION  : CALCULE UN POLYNOME DU TROISIEME DEGRE                     
-C                                                                         
-C-----------------------------------------------------------------------  
-C                             ARGUMENTS                                   
-C .________________.____.______________________________________________   
-C |      NOM       |MODE|                   ROLE                          
-C |________________|____|______________________________________________   
-C |   X            | -->| ARGUMENT DE LA FONCTION.                        
-C |________________|____|______________________________________________   
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)   
-C***********************************************************************  
-C                                                                         
-      IMPLICIT NONE                                                       
-C                                                                         
-      DOUBLE PRECISION A(4),X                                             
-C                                                                         
-      COMMON/FORFC1/A                                                     
-C                                                                         
-C-----------------------------------------------------------------------  
-C                                                                         
-      FC1 = A(1)*X**3 + A(2)*X**2 + A(3)*X + A(4)                         
-C                                                                         
-C-----------------------------------------------------------------------  
-C                                                                         
-      RETURN                                                              
-      END                                                                 
-C                       *****************                                
-                        SUBROUTINE ZBRENT                                
-C                       *****************                                
-C                                                                       
-     *(FC1,EPS,X1,X2,ITMAX)                                              
-C                                                                        
-C*********************************************************************** 
-C BIEF VERSION 3.0           18/08/94    J-M HERVOUET (LNH) 30 87 80 18  
-C                                                                        
-C*********************************************************************** 
-C                                                                        
-C  FONCTION  :  SOLUTION D'UNE EQUATION DONT UN ZERO UNIQUE EST ENTRE    
-C               LES POINTS X1 ET X2.                                     
-C                                                                        
-C----------------------------------------------------------------------- 
-C                             ARGUMENTS                                  
-C .________________.____.______________________________________________  
-C |      NOM       |MODE|                   ROLE                         
-C |________________|____|______________________________________________  
-C |   FC1          | -->| FONCTION DONT ON CHERCHE LE ZERO               
-C |                |    | DOIT ETRE DEFINIE EN DOUBLE PRECISION          
-C |                |    | PAR AILLEURS.                                  
-C |   EPS          | -->| PRECISION CHERCHEE.                            
-C |   X1,X2        | -->| ENCADREMENT DE LA SOLUTION ENTREE              
-C |                |<-->| X2 = SOLUTION EN SORTIE.                       
-C |   ITMAX        | -->| NOMBRE MAXIMUM D'ITERATIONS.                   
-C |________________|____|______________________________________________  
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)  
-C----------------------------------------------------------------------- 
-C                                                                        
-C  FONCTION APPELEE : FC1                                                
-C                                                                       
-C***********************************************************************
-C                                                                       
+!                                                                         
+!-----------------------------------------------------------------------  
+!                                                                         
+      RETURN
+      END
+!                       *****************************                     
+                        DOUBLE PRECISION FUNCTION FC1
+!                       *****************************                     
+!                                                                         
+     &(X)
+!                                                                         
+!***********************************************************************  
+! PROGICIEL : TELEMAC        07/12/88    J-M HERVOUET (LNH) 30 71 80 18   
+!                                                                         
+!***********************************************************************  
+!                                                                         
+!  FONCTION  : CALCULE UN POLYNOME DU TROISIEME DEGRE                     
+!                                                                         
+!-----------------------------------------------------------------------  
+!                             ARGUMENTS                                   
+! .________________.____.______________________________________________   
+! |      NOM       |MODE|                   ROLE                          
+! |________________|____|______________________________________________   
+! |   X            | -->| ARGUMENT DE LA FONCTION.                        
+! |________________|____|______________________________________________   
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)   
+!***********************************************************************  
+!                                                                         
+      IMPLICIT NONE
+!                                                                         
+      DOUBLE PRECISION A(4),X
+!                                                                         
+      COMMON/FORFC1/A
+!                                                                         
+!-----------------------------------------------------------------------  
+!                                                                         
+      FC1 = A(1)*X**3 + A(2)*X**2 + A(3)*X + A(4)
+!                                                                         
+!-----------------------------------------------------------------------  
+!
+      RETURN
+      END
+!                       *****************                                
+                        SUBROUTINE ZBRENT
+!                       *****************                                
+!                                                                       
+     &(FC1,EPS,X1,X2,ITMAX)
+!                                                                        
+!*********************************************************************** 
+! BIEF VERSION 3.0           18/08/94    J-M HERVOUET (LNH) 30 87 80 18  
+!                                                                        
+!*********************************************************************** 
+!                                                                        
+!  FONCTION  :  SOLUTION D'UNE EQUATION DONT UN ZERO UNIQUE EST ENTRE    
+!               LES POINTS X1 ET X2.                                     
+!                                                                        
+!----------------------------------------------------------------------- 
+!                             ARGUMENTS                                  
+! .________________.____.______________________________________________  
+! |      NOM       |MODE|                   ROLE                         
+! |________________|____|______________________________________________  
+! |   FC1          | -->| FONCTION DONT ON CHERCHE LE ZERO               
+! |                |    | DOIT ETRE DEFINIE EN DOUBLE PRECISION          
+! |                |    | PAR AILLEURS.                                  
+! |   EPS          | -->| PRECISION CHERCHEE.                            
+! |   X1,X2        | -->| ENCADREMENT DE LA SOLUTION ENTREE              
+! |                |<-->| X2 = SOLUTION EN SORTIE.                       
+! |   ITMAX        | -->| NOMBRE MAXIMUM D'ITERATIONS.                   
+! |________________|____|______________________________________________  
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)  
+!----------------------------------------------------------------------- 
+!                                                                        
+!  FONCTION APPELEE : FC1                                                
+!                                                                       
+!***********************************************************************
+!                                                                       
       IMPLICIT NONE                                                     
       INTEGER LNG,LU                                                    
       COMMON/INFO/LNG,LU                                                
-C                                                                       
+!                                                                       
       DOUBLE PRECISION A,B,C,D,E,X1,X2,FA,FB,FC,EPS,EPS2,XM,S,P,Q,R     
-C                                                                       
+!                                                                       
       INTEGER ITMAX,ITER                                                
-C                                                                       
+!                                                                       
       DOUBLE PRECISION FC1                                              
       EXTERNAL FC1                                                      
-C                                                                       
+!                                                                       
       INTRINSIC ABS,SIGN,MIN                                            
-C                                                                       
-C-----------------------------------------------------------------------
-C                                                                       
-C  ON VERIFIE QU'ON ENCADRE BIEN LA SOLUTION :                          
-C                                                                       
+!                                                                       
+!-----------------------------------------------------------------------
+!                                                                       
+!  ON VERIFIE QU'ON ENCADRE BIEN LA SOLUTION :                          
+!                                                                       
       A=X1                                                              
       B=X2                                                              
       FA=FC1(A)                                                         
       FB=FC1(B)                                                         
       IF(FB*FA.GT.0.D0) THEN                                            
-       IF (LNG.EQ.1) WRITE(LU,*) 'ZBRENT : FC1(X1)*FC1(X2) EST POSITIF' 
-       IF (LNG.EQ.2) WRITE(LU,*) 'ZBRENT : ROOT MUST BE BRACKETED'      
-       STOP                                                             
+        IF (LNG.EQ.1) WRITE(LU,*) 'ZBRENT : FC1(X1)*FC1(X2) EST POSITIF'
+        IF (LNG.EQ.2) WRITE(LU,*) 'ZBRENT : ROOT MUST BE BRACKETED'
+        CALL PLANTE(1)
+        STOP
       ENDIF                                                             
-C                                                                       
-C  ITERATIONS :                                                         
-C                                                                       
+!                                                                       
+!  ITERATIONS :                                                         
+!                                                                       
       FC=FB                                                             
       DO ITER=1,ITMAX                                                
         IF(FB*FC.GT.0.D0) THEN                                          
@@ -824,14 +825,12 @@ C
         ENDIF                                                           
         FB=FC1(B)                                                       
       ENDDO                                                          
-C                                                                       
+!                                                                       
       IF (LNG.EQ.1) WRITE(LU,*) 'ZBRENT : MAXIMUM D''ITERATIONS ATTEINT'
       IF (LNG.EQ.2) WRITE(LU,*) 'ZBRENT : EXCEEDING MAXIMUM ITERATIONS' 
       X2=B                                                              
-C                                                                       
-C-----------------------------------------------------------------------
-C                                                                       
+!                                                                       
+!-----------------------------------------------------------------------
+!                                                                       
       RETURN
       END
-
-

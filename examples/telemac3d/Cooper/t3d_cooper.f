@@ -55,30 +55,30 @@
       IF(.NOT.SUIT2) THEN
 !
       IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
-     *   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
+     &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
         CALL OS( 'X=C     ' ,X=H,C=0.D0)
         CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
       ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
-     *       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
+     &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
         CALL OS( 'X=C     ' ,X=H,C=COTINI)
         CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
-     *       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
+     &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
         CALL OS( 'X=C     ' ,X=H,C=0.D0)
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
-     *       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
+     &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
         CALL OS( 'X=C     ' ,X=H,C=HAUTIN)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
-     *       CDTINI(1:10).EQ.'PARTICULAR'.OR.
-     *       CDTINI(1:07).EQ.'SPECIAL') THEN
+     &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
+     &       CDTINI(1:07).EQ.'SPECIAL') THEN
 !     ZONE A MODIFIER
 !     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE                                                     
         IF(LNG.EQ.1) WRITE(LU,10)                                       
         IF(LNG.EQ.2) WRITE(LU,11)                                       
 10      FORMAT(1X,'CONDIM : AVEC DES CONDITIONS INITIALES PARTICULIERES'
-     *      ,/,1X,'         VOUS DEVEZ MODIFIER CONDIM')                
+     &      ,/,1X,'         VOUS DEVEZ MODIFIER CONDIM')                
 11      FORMAT(1X,'CONDIM : WITH SPECIAL INITIAL CONDITIONS'            
-     *      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')                 
+     &      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')                 
         CALL PLANTE(1)                                                  
         STOP
 !     END OF SPECIAL INITIAL CONDITIONS                                                            
@@ -125,59 +125,59 @@
       DO IPLAN = 1,NPLAN
         TRANSF_PLANE%I(IPLAN)=1
       ENDDO
-C
-C     OTHER EXAMPLES:
-C
-C     EXAMPLE 1: ALL PLANES WITH PRESCRIBED ELEVATION
-C
-C     DO IPLAN = 1,NPLAN
-C       TRANSF_PLANE%I(IPLAN)=3
-C     ENDDO
-C     ZPLANE%R(2)=-7.D0
-C     ZPLANE%R(3)=-4.D0
-C     ...
-C     ZPLANE%R(NPLAN-1)=-0.05D0
-C 
-C
-C     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
-C
-C     DO IPLAN = 1,NPLAN
-C       TRANSF_PLANE%I(IPLAN)=2
-C     ENDDO
-C     ZSTAR%R(2)=0.02D0
-C     ZSTAR%R(3)=0.1D0
-C     ...
-C     ZSTAR%R(NPLAN-1)=0.95D0
-C 
-C
-C     EXAMPLE 3: ONE PLANE (NUMBER 4) WITH PRESCRIBED ELEVATION
-C                AND SIGMA ELSEWHERE
-C
+!
+!     OTHER EXAMPLES:
+!
+!     EXAMPLE 1: ALL PLANES WITH PRESCRIBED ELEVATION
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=3
+!     ENDDO
+!     ZPLANE%R(2)=-7.D0
+!     ZPLANE%R(3)=-4.D0
+!     ...
+!     ZPLANE%R(NPLAN-1)=-0.05D0
+! 
+!
+!     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     ZSTAR%R(2)=0.02D0
+!     ZSTAR%R(3)=0.1D0
+!     ...
+!     ZSTAR%R(NPLAN-1)=0.95D0
+! 
+!
+!     EXAMPLE 3: ONE PLANE (NUMBER 4) WITH PRESCRIBED ELEVATION
+!                AND SIGMA ELSEWHERE
+!
       DO IPLAN = 1,NPLAN
         TRANSF_PLANE%I(IPLAN)=1
       ENDDO
       TRANSF_PLANE%I(7)=3
       ZPLANE%R(7)=-4.D0
-C
-C
-C     EXAMPLE 4: ONE PLANE WITH PRESCRIBED ELEVATION
-C                AND 2 SIGMA TRANSFORMATIONS, WITH NPLAN=7
-C                SIGMA TRANSFORMATIONS ARE MEANT BETWEEN
-C                BOTTOM, FIXED ELEVATION PLANES AND FREE SURFACE
-C                THE VALUES OF ZSTAR ARE LOCAL FOR EVERY
-C                SIGMA TRANSFORMATION: 0. FOR LOWER FIXED PLANE
-C                                      1. FOR UPPER FIXED PLANE
-C
-C     DO IPLAN = 1,7
-C       TRANSF_PLANE%I(IPLAN)=2
-C     ENDDO
-C     TRANSF_PLANE%I(4)=3
-C     ZPLANE%R(4)=3.D0
-C     ZSTAR%R(2)=0.2D0
-C     ZSTAR%R(3)=0.8D0
-C     ZSTAR%R(5)=0.1D0
-C     ZSTAR%R(6)=0.9D0
-C 
+!
+!
+!     EXAMPLE 4: ONE PLANE WITH PRESCRIBED ELEVATION
+!                AND 2 SIGMA TRANSFORMATIONS, WITH NPLAN=7
+!                SIGMA TRANSFORMATIONS ARE MEANT BETWEEN
+!                BOTTOM, FIXED ELEVATION PLANES AND FREE SURFACE
+!                THE VALUES OF ZSTAR ARE LOCAL FOR EVERY
+!                SIGMA TRANSFORMATION: 0. FOR LOWER FIXED PLANE
+!                                      1. FOR UPPER FIXED PLANE
+!
+!     DO IPLAN = 1,7
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     TRANSF_PLANE%I(4)=3
+!     ZPLANE%R(4)=3.D0
+!     ZSTAR%R(2)=0.2D0
+!     ZSTAR%R(3)=0.8D0
+!     ZSTAR%R(5)=0.1D0
+!     ZSTAR%R(6)=0.9D0
+! 
 !
 !***********************************************************************
 !
@@ -331,10 +331,10 @@ C
 !
       IF(LISFON.GT.0) THEN
 !
-         MAS = .TRUE.
+        MAS = .TRUE.
 !
-         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
-     &               1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
+        CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
+     &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
 
       ENDIF
 !

@@ -1,81 +1,81 @@
-C                       *****************
+!                       *****************
                         SUBROUTINE CONDIN
-C                       *****************
-C
-C***********************************************************************
-C TELEMAC 2D VERSION 5.2         19/08/98  J-M HERVOUET TEL: 30 87 80 18
-C
-C***********************************************************************
-C
-C     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________
-C |                | -- |  
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C***********************************************************************
-C
+!                       *****************
+!
+!***********************************************************************
+! TELEMAC 2D VERSION 5.2         19/08/98  J-M HERVOUET TEL: 30 87 80 18
+!
+!***********************************************************************
+!
+!     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |                | -- |  
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU 
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       DOUBLE PRECISION ALPHA,X1,Y1,OMEGA,RAY
       DOUBLE PRECISION R,CONST1,CONST2,GR,PERI,PI
       INTEGER I,ITRAC
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C  
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DU TEMPS
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!  
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DU TEMPS
+!
       AT = 0.D0
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DES VITESSES : VITESSES NULLES
-C
-C     CALL OS( 'X=C     ' , U , U , U , 0.D0 )
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DES VITESSES : VITESSES NULLES
+!
+!     CALL OS( 'X=C     ' , U , U , U , 0.D0 )
       CALL OS( 'X=C     ' , V , V , V , 0.D0 )
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DE H , LA HAUTEUR D'EAU
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DE H , LA HAUTEUR D'EAU
+!
       IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
-     *   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
+     &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0 )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0 )
       ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
-     *       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
+     &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , COTINI )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0   )
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
-     *       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
+     &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0  )
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
-     *       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
+     &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , HAUTIN )
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
-     *       CDTINI(1:10).EQ.'PARTICULAR'.OR.
-     *       CDTINI(1:07).EQ.'SPECIAL') THEN
-C  ZONE A MODIFIER                                                      
-C
-C=====================================     
-C DEFINITION DES PARAMETRES A UTILISER                        
+     &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
+     &       CDTINI(1:07).EQ.'SPECIAL') THEN
+!  ZONE A MODIFIER                                                      
+!
+!=====================================     
+! DEFINITION DES PARAMETRES A UTILISER                        
       GR=9.81D0
       PERI=1773.D0
-C     ALPHA=1.6E-7
+!     ALPHA=1.6E-7
       PI=4.D0*ATAN(1.D0)
       ALPHA=PI**2/(2.D0*PERI**2*GR)
       X1=1.0D0
@@ -84,20 +84,20 @@ C     ALPHA=1.6E-7
       RAY=SQRT(1.0D0/(ALPHA*(X1-Y1)))
       CONST1=1.0D0/(X1+Y1)
       CONST2=ALPHA*(Y1**2-X1**2)
-C ===================================      
+! ===================================      
       DO I = 1 , NPOIN        
-C  CALCUL DE r
-      r=SQRT(X(I)**2+Y(I)**2) 
-      IF(r.LE.RAY) THEN                                           
-        H%R(I) = CONST1+(CONST2*r**2)*CONST1**2
+!  CALCUL DE r
+      R=SQRT(X(I)**2+Y(I)**2) 
+      IF(R.LE.RAY) THEN                                           
+        H%R(I) = CONST1+(CONST2*R**2)*CONST1**2
         U%R(I) = 0.D0                         
       ELSE      
         H%R(I) = 0.D0   
         U%R(I) = 0.D0   
       ENDIF                 
-C             
+!             
       ENDDO                          
-C  FIN DE LA ZONE A MODIFIER      
+!  FIN DE LA ZONE A MODIFIER      
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -108,105 +108,105 @@ C  FIN DE LA ZONE A MODIFIER
         CALL PLANTE(1)
         STOP
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DU TRACEUR
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DU TRACEUR
+!
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
           CALL OS( 'X=C     ' , X=T%ADR(ITRAC)%P , C=TRAC0(ITRAC) )
         ENDDO
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C INITIALISATION DE LA VISCOSITE
-C
+!
+!-----------------------------------------------------------------------
+!
+! INITIALISATION DE LA VISCOSITE
+!
       CALL OS( 'X=C     ' , VISC , VISC , VISC , PROPNU )
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C                       *****************
+!                       *****************
                         SUBROUTINE CORFON
-C                       *****************
-C
-C***********************************************************************
-C TELEMAC 2D VERSION 5.1          01/03/90    J-M HERVOUET
-C***********************************************************************
-C
-C  USER SUBROUTINE CORFON
-C
-C  FUNCTION  : MODIFICATION OF THE BOTTOM TOPOGRAPHY
-C
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS USED IN THE EXAMPLE 
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |      ZF        |<-->| FOND A MODIFIER.
-C |      X,Y,(Z)   | -->| COORDONNEES DU MAILLAGE (Z N'EST PAS EMPLOYE).
-C |      A         |<-- | MATRICE
-C |      T1,2      | -->| TABLEAUX DE TRAVAIL (DIMENSION NPOIN)
-C |      W1        | -->| TABLEAU DE TRAVAIL (DIMENSION 3 * NELEM)
-C |      NPOIN     | -->| NOMBRE DE POINTS DU MAILLAGE.
-C |      PRIVE     | -->| TABLEAU PRIVE POUR L'UTILISATEUR.
-C |      LISFON    | -->| NOMBRE DE LISSAGES DU FOND.
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C
-C PROGRAMME APPELANT :
-C PROGRAMMES APPELES : RIEN EN STANDARD
-C
-C***********************************************************************
-C
+!                       *****************
+!
+!***********************************************************************
+! TELEMAC 2D VERSION 5.1          01/03/90    J-M HERVOUET
+!***********************************************************************
+!
+!  USER SUBROUTINE CORFON
+!
+!  FUNCTION  : MODIFICATION OF THE BOTTOM TOPOGRAPHY
+!
+!
+!-----------------------------------------------------------------------
+!  ARGUMENTS USED IN THE EXAMPLE 
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|_______________________________________________
+! |      ZF        |<-->| FOND A MODIFIER.
+! |      X,Y,(Z)   | -->| COORDONNEES DU MAILLAGE (Z N'EST PAS EMPLOYE).
+! |      A         |<-- | MATRICE
+! |      T1,2      | -->| TABLEAUX DE TRAVAIL (DIMENSION NPOIN)
+! |      W1        | -->| TABLEAU DE TRAVAIL (DIMENSION 3 * NELEM)
+! |      NPOIN     | -->| NOMBRE DE POINTS DU MAILLAGE.
+! |      PRIVE     | -->| TABLEAU PRIVE POUR L'UTILISATEUR.
+! |      LISFON    | -->| NOMBRE DE LISSAGES DU FOND.
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+!
+! PROGRAMME APPELANT :
+! PROGRAMMES APPELES : RIEN EN STANDARD
+!
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       LOGICAL MAS
       INTEGER I
       DOUBLE PRECISION ALPHA, RAY2,GR,PERI,PI
-C
-C-----------------------------------------------------------------------
-C
-C  LISSAGES EVENTUELS DU FOND
-C
+!
+!-----------------------------------------------------------------------
+!
+!  LISSAGES EVENTUELS DU FOND
+!
       IF(LISFON.GT.0) THEN
-C
+!
         MAS=.TRUE.
         CALL FILTER(ZF,MAS,T1,T2,AM1,'MATMAS          ',
-     *              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
-C
+     &              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       GR=9.81D0
       PERI=1773.D0
-C     ALPHA=1.6E-7
+!     ALPHA=1.6E-7
       PI=4.D0*ATAN(1.D0)
       ALPHA=PI**2/(2.D0*PERI**2*GR)
-C     ALPHA=1.6E-7
+!     ALPHA=1.6E-7
       DO I=1,NPOIN
         RAY2=X(I)**2+Y(I)**2 
         ZF%R(I) = ALPHA*RAY2
       ENDDO
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END     
                               

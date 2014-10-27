@@ -152,88 +152,88 @@
 !
       RETURN
       END
-C                       *****************
+!                       *****************
                         SUBROUTINE CONDIN
-C                       *****************
-C
-C    ICI VITESSES U INITIALISEES
-C
-C
-C***********************************************************************
-C TELEMAC-2D VERSION 5.2         19/08/98  J-M HERVOUET TEL: 30 87 80 18
-C
-C***********************************************************************
-C
-C     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________
-C |                | -- |  
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C***********************************************************************
-C
+!                       *****************
+!
+!    ICI VITESSES U INITIALISEES
+!
+!
+!***********************************************************************
+! TELEMAC-2D VERSION 5.2         19/08/98  J-M HERVOUET TEL: 30 87 80 18
+!
+!***********************************************************************
+!
+!     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |                | -- |  
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! 
       INTEGER ITRAC 
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DU TEMPS
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DU TEMPS
+!
       AT = 0.D0
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DES VITESSES : 
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DES VITESSES : 
+!
       CALL OS( 'X=C     ' , U , U , U , 0.625D0 )
       CALL OS( 'X=C     ' , V , V , V , 0.D0 )
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DE H , LA HAUTEUR D'EAU
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DE H , LA HAUTEUR D'EAU
+!
       IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
-     *   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
+     &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0 )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0 )
       ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
-     *       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
+     &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , COTINI )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0   )
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
-     *       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
+     &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0  )
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
-     *       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
+     &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , HAUTIN )
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
-     *       CDTINI(1:10).EQ.'PARTICULAR'.OR.
-     *       CDTINI(1:07).EQ.'SPECIAL') THEN
-C  ZONE A MODIFIER                                                      
+     &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
+     &       CDTINI(1:07).EQ.'SPECIAL') THEN
+!  ZONE A MODIFIER                                                      
         IF(LNG.EQ.1) WRITE(LU,10)                                       
         IF(LNG.EQ.2) WRITE(LU,11)                                       
 10      FORMAT(1X,'CONDIN : AVEC DES CONDITIONS INITIALES PARTICULIERES'
-     *         ,/,'         VOUS DEVEZ MODIFIER CONDIN')                
+     &         ,/,'         VOUS DEVEZ MODIFIER CONDIN')                
 11      FORMAT(1X,'CONDIN : WITH SPECIAL INITIAL CONDITIONS'            
-     *         ,/,'         YOU HAVE TO MODIFY CONDIN')                 
+     &         ,/,'         YOU HAVE TO MODIFY CONDIN')                 
         CALL PLANTE(1)                                                  
         STOP                                                            
-C  FIN DE LA ZONE A MODIFIER      
+!  FIN DE LA ZONE A MODIFIER      
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -243,79 +243,79 @@ C  FIN DE LA ZONE A MODIFIER
         ENDIF
         STOP
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISATION DU TRACEUR
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DU TRACEUR
+!
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
           CALL OS( 'X=C     ' , X=T%ADR(ITRAC)%P , C=TRAC0(ITRAC) )
         ENDDO
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C INITIALISATION DE LA VISCOSITE
-C
+!
+!-----------------------------------------------------------------------
+!
+! INITIALISATION DE LA VISCOSITE
+!
       CALL OS( 'X=C     ' , VISC , VISC , VISC , PROPNU )
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C                       *****************
+!                       *****************
                         SUBROUTINE CORPOR
-C                       *****************
-C
-     *(POROS)
-C
-C***********************************************************************
-C PROGICIEL : TELEMAC-2D 5.1          01/03/90    J-M HERVOUET
-C***********************************************************************
-C
-C  USER SUBROUTINE CORPOR
-C
-C  FUNCTION  : MODIFICATION OF THE POROSITY OF ELEMENTS
-C
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS 
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |      POROS     |<-->| POROSITY TO BE MODIFIED.
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C
-C PROGRAMME APPELANT :
-C PROGRAMMES APPELES : RIEN EN STANDARD
-C
-C***********************************************************************
-C
+!                       *****************
+!
+     &(POROS)
+!
+!***********************************************************************
+! PROGICIEL : TELEMAC-2D 5.1          01/03/90    J-M HERVOUET
+!***********************************************************************
+!
+!  USER SUBROUTINE CORPOR
+!
+!  FUNCTION  : MODIFICATION OF THE POROSITY OF ELEMENTS
+!
+!
+!-----------------------------------------------------------------------
+!  ARGUMENTS 
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|_______________________________________________
+! |      POROS     |<-->| POROSITY TO BE MODIFIED.
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+!
+! PROGRAMME APPELANT :
+! PROGRAMMES APPELES : RIEN EN STANDARD
+!
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       TYPE(BIEF_OBJ), INTENT(INOUT) :: POROS
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       DOUBLE PRECISION XSOM(4),YSOM(4),XX1,YY1,POR
       INTEGER NSOM,IELEM
-C
-C-----------------------------------------------------------------------
-C
-C     EXAMPLE : POROSITY IS SET TO 0.5 IN A QUADRILATERAL
-C
-C     Surface de 20 x 40 centree sur (0,0) 
-C
+!
+!-----------------------------------------------------------------------
+!
+!     EXAMPLE : POROSITY IS SET TO 0.5 IN A QUADRILATERAL
+!
+!     Surface de 20 x 40 centree sur (0,0) 
+!
       NSOM = 4
       XSOM(1) = -20.D0
       XSOM(2) =  20.D0
@@ -325,38 +325,38 @@ C
       YSOM(2) = -21.D0
       YSOM(3) =  21.D0
       YSOM(4) =  21.D0
-C                                                                       
-C-----------------------------------------------------------------------
-C                                                                  
-      CALL OS( 'X=C     ' , POROS , POROS , POROS , 1.D0 )                   
-C                                                                       
-C--------------------------------------------------------------
-C
+!                                                                       
+!-----------------------------------------------------------------------
+!                                                                  
+      CALL OS( 'X=C     ' , POROS , POROS , POROS , 1.D0 )
+!                                                                       
+!--------------------------------------------------------------
+!
       POR=19.D0/20.D0
-C
+!
       DO IELEM = 1 , NELEM                                         
-C                                                                            
+!
         XX1 = (  X(IKLE%I(IELEM)          )+
-     *           X(IKLE%I(IELEM+NELMAX)   )+
-     *           X(IKLE%I(IELEM+2*NELMAX) ))/3.D0 
+     &           X(IKLE%I(IELEM+NELMAX)   )+
+     &           X(IKLE%I(IELEM+2*NELMAX) ))/3.D0 
         YY1 = (  Y(IKLE%I(IELEM)          )+
-     *           Y(IKLE%I(IELEM+NELMAX)   )+
-     *           Y(IKLE%I(IELEM+2*NELMAX) ))/3.D0                                     
-C
+     &           Y(IKLE%I(IELEM+NELMAX)   )+
+     &           Y(IKLE%I(IELEM+2*NELMAX) ))/3.D0
+!
         IF(INPOLY(XX1,YY1,XSOM,YSOM,NSOM)) THEN
           IF(XX1.GE.-10.D0.AND.XX1.LE.10.D0) THEN
             POROS%R(IELEM) = POR
           ELSEIF(XX1.LT.-10.D0) THEN
             POROS%R(IELEM) = POR - (1.D0-POR) * (XX1+10.D0) / 10.D0
           ELSEIF(XX1.GT.10.D0) THEN
-            POROS%R(IELEM) = POR + (1.D0-POR) * (XX1-10.D0) / 10.D0            
+            POROS%R(IELEM) = POR + (1.D0-POR) * (XX1-10.D0) / 10.D0
           ENDIF
         ENDIF
-C                                      
+!                                      
       ENDDO                                                       
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
       

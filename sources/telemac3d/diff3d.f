@@ -566,7 +566,7 @@
 !         NOTE: MATWC IS NOT PROGRAMMED WITH TETRAHEDRA...                
           CALL MATRIX(MTRA1,'M=N     ','MATWC           ',
      &                IELM3,IELM3,1.D0,WCC,
-     &                SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,MSK,MASKEL)          
+     &                SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,MSK,MASKEL)
           CALL OM('M=X(M)  ',MTRA2,MTRA2,SVIDE,C,MESH3D)
           CALL OM('M=M+N   ',MTRA2,MTRA1,SVIDE,C,MESH3D)
         ENDIF

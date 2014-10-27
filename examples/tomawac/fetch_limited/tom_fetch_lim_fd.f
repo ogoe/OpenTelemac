@@ -69,10 +69,10 @@
 !     """""""""""""""""
       INTEGER  IP
       DOUBLE PRECISION UCONST, VCONST
-C
+!
       UCONST= 20.D0
       VCONST= 0.D0
-C
+!
       DO IP=1,NPOIN2
         UV(IP)=UCONST
         VV(IP)=VCONST
@@ -127,14 +127,14 @@ C
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-C
-C---------------------------------MODIF debut
+!
+!---------------------------------MODIF debut
       INTEGER IP
-C
+!
       DO IP=1,NPOIN2
         ZF(IP) = -15.0D0
       ENDDO
-C---------------------------------MODIF fin
-C
+!---------------------------------MODIF fin
+!
       RETURN
       END

@@ -132,79 +132,72 @@
       PHASOI = 0.
       
       DO IB=1,NPTFR
-       JB=BOUNDARY_COLOUR%I(IB)
-
-
-! solide en y=0
-      IF(JB.GE.2.AND.JB.LE.2000)THEN
-         LIHBOR%I(IB) = KLOG
-         RP%R(IB) = 1.D0
-         TETAP%R(IB) = 0.D0
-         ALFAP%R(IB) = 0.D0
-      ENDIF 
-
-! solide libre
-      IF(JB.GE.2001.AND.JB.LE.2101)THEN
+        JB=BOUNDARY_COLOUR%I(IB)
+        
+        
+!       solide en y=0
+        IF(JB.GE.2.AND.JB.LE.2000)THEN
+          LIHBOR%I(IB) = KLOG
+          RP%R(IB) = 1.D0
+          TETAP%R(IB) = 0.D0
+          ALFAP%R(IB) = 0.D0
+        ENDIF 
+        
+!       solide libre
+        IF(JB.GE.2001.AND.JB.LE.2101)THEN
           LIHBOR%I(IB) = KSORT
           TETAP%R(IB)=0.D0
-      ENDIF
-      
-! solide en y = 1.6
-      IF(JB.GE.2102.AND.JB.LE.4100)THEN
-         LIHBOR%I(IB) = KLOG
-         RP%R(IB) = 1.D0
-         TETAP%R(IB) = 0.D0
-         ALFAP%R(IB) = 0.D0
-      ENDIF
-
-! Incident wave with PHASE=0.
-      IF(JB.GE.4101.AND.JB.LE.4200)THEN
-         LIHBOR%I(IB) = KINC
-         HB%R(IB)    = 0.01D0
-         TETAP%R(IB) = 0.D0
-         ALFAP%R(IB) = 0.D0
-      ENDIF
-      IF(JB.EQ.1)THEN
-         LIHBOR%I(IB) = KINC
-         HB%R(IB)    = 0.01D0
-         TETAP%R(IB) = 0.D0
-         ALFAP%R(IB) = 0.D0
-      ENDIF
-      
-      
-      
-      
-      
-      
-
+        ENDIF
+        
+!       solide en y = 1.6
+        IF(JB.GE.2102.AND.JB.LE.4100)THEN
+          LIHBOR%I(IB) = KLOG
+          RP%R(IB) = 1.D0
+          TETAP%R(IB) = 0.D0
+          ALFAP%R(IB) = 0.D0
+        ENDIF
+        
+!       Incident wave with PHASE=0.
+        IF(JB.GE.4101.AND.JB.LE.4200)THEN
+          LIHBOR%I(IB) = KINC
+          HB%R(IB)    = 0.01D0
+          TETAP%R(IB) = 0.D0
+          ALFAP%R(IB) = 0.D0
+        ENDIF
+        IF(JB.EQ.1)THEN
+          LIHBOR%I(IB) = KINC
+          HB%R(IB)    = 0.01D0
+          TETAP%R(IB) = 0.D0
+          ALFAP%R(IB) = 0.D0
+        ENDIF
 ! Example : Incident potential with phase = 0. 
-!      PHASOI=0.D0    
-!      IF(JB.GE.4101.AND.JB.LE.4200)THEN
-!	 LIHBOR%I(IB)= KPOT
-!	 IG	     = MESH%NBOR%I(IB)
-!	 KK	     = K%R(IG)
-!	 PRB%R(IB)   = HINC*GRAV/(2.0D0*OMEGA)*SIN(PHASOI)
-!	 PIB%R(IB)   =-HINC*GRAV/(2.0D0*OMEGA)*COS(PHASOI)
-!	 DDXPRB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIC*COS(PHASOI)
-!	 DDYPRB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIS*COS(PHASOI)
-!	 DDXPIB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIC*SIN(PHASOI)
-!	 DDYPIB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIS*SIN(PHASOI)
-!	 TETAP%R(IB) = 0.D0
-!	 ALFAP%R(IB) = 0.D0	
-!      ENDIF
-!      IF(JB.EQ.1)THEN
-!	 LIHBOR%I(IB) = KPOT
-!	 IG	     = MESH%NBOR%I(IB)
-!	 KK	     = K%R(IG)
-!	 PRB%R(IB)   = HINC*GRAV/(2.0D0*OMEGA)*SIN(PHASOI)
-!	 PIB%R(IB)   =-HINC*GRAV/(2.0D0*OMEGA)*COS(PHASOI)
-!	 DDXPRB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIC*COS(PHASOI)
-!	 DDYPRB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIS*COS(PHASOI)
-!	 DDXPIB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIC*SIN(PHASOI)
-!	 DDYPIB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIS*SIN(PHASOI)	
-!	 TETAP%R(IB) = 0.D0
-!	 ALFAP%R(IB) = 0.D0	
-!      ENDIF
+!       PHASOI=0.D0    
+!       IF(JB.GE.4101.AND.JB.LE.4200)THEN
+!         LIHBOR%I(IB)= KPOT
+!         IG         = MESH%NBOR%I(IB)
+!         KK         = K%R(IG)
+!         PRB%R(IB)   = HINC*GRAV/(2.0D0*OMEGA)*SIN(PHASOI)
+!         PIB%R(IB)   =-HINC*GRAV/(2.0D0*OMEGA)*COS(PHASOI)
+!         DDXPRB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIC*COS(PHASOI)
+!         DDYPRB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIS*COS(PHASOI)
+!         DDXPIB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIC*SIN(PHASOI)
+!         DDYPIB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIS*SIN(PHASOI)
+!         TETAP%R(IB) = 0.D0
+!         ALFAP%R(IB) = 0.D0
+!       ENDIF
+!       IF(JB.EQ.1)THEN
+!         LIHBOR%I(IB) = KPOT
+!         IG         = MESH%NBOR%I(IB)
+!         KK         = K%R(IG)
+!         PRB%R(IB)   = HINC*GRAV/(2.0D0*OMEGA)*SIN(PHASOI)
+!         PIB%R(IB)   =-HINC*GRAV/(2.0D0*OMEGA)*COS(PHASOI)
+!         DDXPRB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIC*COS(PHASOI)
+!         DDYPRB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIS*COS(PHASOI)
+!         DDXPIB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIC*SIN(PHASOI)
+!         DDYPIB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIS*SIN(PHASOI)
+!         TETAP%R(IB) = 0.D0
+!         ALFAP%R(IB) = 0.D0
+!       ENDIF
 !
 !      
       ENDDO
@@ -212,10 +205,10 @@
 
 
 !-----------------------------------------------------------------------
-!									 
-      RETURN								 
-      END								 
-!			*****************
+! 
+      RETURN 
+      END 
+!                       *****************
                         SUBROUTINE ART_CORFON
 !                       *****************
 !
@@ -262,8 +255,8 @@
 !
       PARAMETER( PI = 3.1415926535897932384626433D0)
 !
-      REAL*8  NRID
-      REAL*8  D1,LCP,AA,XCP,XDEBUT,XRCP
+      DOUBLE PRECISION :: NRID
+      DOUBLE PRECISION :: D1,LCP,AA,XCP,XDEBUT,XRCP
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -296,10 +289,10 @@
 
 ! bathy sinusoidale
       DO I = 1,NPOIN
-       IF ( abs(X(I)-XCP).LT.(NRID*LCP/2.) ) THEN
-        XRCP    = X(I)-XDEBUT
-        ZF%R(I) = AA*SIN(2*PI*XRCP/LCP)
-       ENDIF
+        IF ( ABS(X(I)-XCP).LT.(NRID*LCP/2.) ) THEN
+          XRCP    = X(I)-XDEBUT
+          ZF%R(I) = AA*SIN(2*PI*XRCP/LCP)
+        ENDIF
       ENDDO
 !
       RETURN
