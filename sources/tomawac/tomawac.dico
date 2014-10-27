@@ -4680,22 +4680,18 @@ NOM1 = 'PREVIOUS COMPUTATION FILE FORMAT'
 TYPE = CARACTERE 
 INDEX = 41 
 MNEMO = 'WAC_FILES(WACPRE)%FMT' 
-DEFAUT = 'SERAFIN ' 
-DEFAUT1 = 'SERAFIN ' 
+DEFAUT = 'SERAFIND' 
+DEFAUT1 = 'SERAFIND' 
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
 NIVEAU = 1 
 RUBRIQUE = 'FICHIERS DE DONNEES' 
 RUBRIQUE1 = 'DATA FILE' 
 AIDE = 'Format du fichier de resultats du calcul precedent. 
-Les valeurs possibles sont : 
-- SERAFIN : format standard simple precision pour Telemac; 
-- SERAFIND: format standard double precision pour Telemac; 
-- MED     : format MED base sur HDF5' 
+Les valeurs possibles sont provisoirement seulement: 
+- SERAFIND: format standard double precision pour Telemac'
 AIDE1 = 'Previous computation results file format. 
-Possible values are: 
-- SERAFIN : classical single precision format in Telemac; 
-- SERAFIND: classical double precision format in Telemac; 
-- MED     : MED format based on HDF5' 
+Possible values are provisionnally only: 
+- SERAFIND: classical double precision format in Telemac'
  
 NOM = 'FORMAT DU FICHIER DE REFERENCE' 
 NOM1 = 'REFERENCE FILE FORMAT' 
