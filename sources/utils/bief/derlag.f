@@ -37,6 +37,13 @@
 !+   Adapted to call SCARACT instead of CHAR11. However further
 !+   modifications are required for parallelism.
 !
+!history  J-M HERVOUET (LNHE)
+!+        28/10/2014
+!+        V7P0
+!+   Stopping drifts that exit the domain has been added
+!+   + error message : parallelism does not work here.
+!+   (possible but a long implementation copied on particles)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBLAG         |-->| TIME STEP FOR STARTING THE COMPUTATION
 !| DT             |-->| TIME STEP
@@ -104,6 +111,19 @@
 !
 !-----------------------------------------------------------------------
 !
+      IF(NCSIZE.GT.1) THEN
+        IF(LNG.EQ.1) THEN
+        WRITE(LU,*) 'DERIVES LAGRANGIENNES NON PROGRAMMEES EN PARALLELE'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+        WRITE(LU,*) 'LAGRANGIAN DRIFTS NOT PROGRAMMED IN PARALLEL'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
 !     2D HERE
 !
       NPLAN=1
@@ -155,13 +175,10 @@
 !
 !-----------------------------------------------------------------------
 !
-!   - COMPUTES THE SUCCESSIVE POSITIONS OF THIS FLOAT
+!     COMPUTES THE SUCCESSIVE POSITIONS OF THIS FLOAT
 !     (SUBSEQUENT TIMESTEPS)
 !
 !-----------------------------------------------------------------------
-!
-!  P1 TRIANGLES
-!  ============
 !
           CALL SCARACT(SVOID,SVOID,U,V,V,V,X,Y,
      &                 ZSTAR,ZSTAR,XLAG(1,ILAG),YLAG(1,ILAG),
@@ -174,23 +191,29 @@
      &                 MESH,NPOIN,BIEF_NBPTS(IELMU,MESH),SENS,
 !                      PROVISIONAL, THIS WILL NOT WORK IN PARALLEL            
      &                 SHPBUF,SHZBUF,SHZBUF,FREBUF,1,
-     &                 .FALSE.,.FALSE.,.FALSE.)
-!
-        ENDIF
-!
-!-----------------------------------------------------------------------
-!
-!   - CANCELS THE FLOATS LEAVING THE DOMAIN
+     &                 .TRUE.)
+!                       POST : DATA KEPT FOR A POSTERIORI INTERPOLATION
+!                              HERE FOR NEXT STEP
 !
 !-----------------------------------------------------------------------
 !
-        IF(LT.EQ.FINLAG(ILAG)) THEN
+!       STOPPING THE FLOATS THAT LEFT THE DOMAIN
+!
+!-----------------------------------------------------------------------
+!
           DO IPOIN=1,NPOIN
-            IF(ELTLAG(IPOIN,ILAG).LE.0) THEN
-              XLAG(IPOIN,ILAG) = X(IPOIN)
-              YLAG(IPOIN,ILAG) = Y(IPOIN)
+            IF(ELTLAG(IPOIN,ILAG).LT.0) THEN
+!             THIS POINT WILL NO LONGER BE TREATED
+              ELTLAG(IPOIN,ILAG) = 0
+!             NEXT TWO LINES IN PREVIOUS VERSIONS
+!             BUT WHY NOT KEEPING THE LAST POSITION AT THE EXIT?
+!             XLAG(IPOIN,ILAG) = X(IPOIN)
+!             YLAG(IPOIN,ILAG) = Y(IPOIN)
             ENDIF
           ENDDO
+!
+!-----------------------------------------------------------------------
+!
         ENDIF
 !
       ENDDO ! ILAG
@@ -220,3 +243,4 @@
 !
       RETURN
       END
+

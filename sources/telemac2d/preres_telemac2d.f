@@ -37,6 +37,12 @@
 !+        V7P0
 !+   Securing bound checking in parallelism.
 !
+!history  J-M HERVOUET EDF R&D, LNHE)
+!+        28/10/2014
+!+        V7P0
+!+   Initialising Lagrangian drifts for iteration 0 in case they are
+!+   in outputs.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -274,6 +280,17 @@
       ENDIF
 !
 !=======================================================================
+! LAGRANGIAN DRIFTS
+!=======================================================================
+!
+      IF((LEO.AND.SORLEO(20)).OR.(IMP.AND.SORIMP(20))) THEN
+        IF(LT.EQ.0) CALL OS('X=0     ',X=T7)
+      ENDIF
+      IF((LEO.AND.SORLEO(21)).OR.(IMP.AND.SORIMP(21))) THEN
+        IF(LT.EQ.0) CALL OS('X=0     ',X=T8)
+      ENDIF
+!
+!=======================================================================
 ! COMPUTES COURANT NUMBER
 !=======================================================================
 !
@@ -334,3 +351,4 @@
 !
       RETURN
       END
+
