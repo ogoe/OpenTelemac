@@ -5,18 +5,16 @@
 VALIDATION = YES
 REFERENCE FILE = 'r3d_tidal_flats_set1.ref'
 /
+/ These options also work with the same time step,
+/ but with more mass error
+/
 /ADVECTION-DIFFUSION SCHEME WITH SETTLING VELOCITY     = 0
-/ This run crashes - OK if time step is reduced
-/
 /ADVECTION-DIFFUSION SCHEME WITH SETTLING VELOCITY     = 2
-/ This run crashes - OK if time step is reduced
 /
- 
-
- FORTRAN FILE                : 't3d_tidal_flats.f'
- 3D RESULT FILE              : 'r3d_tidal_flats.slf'
- 2D RESULT FILE              : 'r2d_tidal_flats.slf'
- LIQUID BOUNDARIES FILE       : 'bli_tidal_flats.dat'
+FORTRAN FILE                : 't3d_tidal_flats.f'
+3D RESULT FILE              : 'r3d_tidal_flats.slf'
+2D RESULT FILE              : 'r2d_tidal_flats.slf'
+LIQUID BOUNDARIES FILE       : 'bli_tidal_flats.dat'
 BOUNDARY CONDITIONS FILE    :  'geo_tidal_flats.cli'   
 GEOMETRY FILE               :  'geo_tidal_flats.slf'  
 
@@ -100,6 +98,8 @@ GEOMETRY FILE               :  'geo_tidal_flats.slf'
 / settling and diffusivity
 /
  ACCURACY FOR DIFFUSION OF SEDIMENT                    = 1.E-8
+ SOLVER FOR DIFFUSION OF THE SEDIMENT : 7
+ PRECONDITIONING FOR DIFFUSION OF TRACERS : 34
  THRESHOLD FOR SEDIMENT FLUX CORRECTION ON TIDAL FLATS = 0.1
  THRESHOLD FOR VISCOSITY CORRECTION ON TIDAL FLATS     = 1.D0
  FLOCCULATION = NO
