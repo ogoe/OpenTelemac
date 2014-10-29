@@ -89,10 +89,10 @@ ROUGHNESS COEFFICIENT OF BOUNDARIES         : 10
 LAW OF BOTTOM FRICTION                      : 3
 FRICTION COEFFICIENT                        : 94.
 /----------------------------------------------------------------------
-/                            OILSPILL
+/                            OIL SPILL
 /----------------------------------------------------------------------
 OIL SPILL MODEL                             : YES
-OILSPILL STEERING FILE                      : oilspill.txt
+OIL SPILL STEERING FILE                     : oilspill.txt
 NUMBER OF DROGUES                           : 1156
 PRINTOUT PERIOD FOR DROGUES                 : 100
 DROGUES FILE                                : oil_displacement.dat

@@ -87,10 +87,10 @@ VELOCITY DIFFUSIVITY                        : 1.D0
 LAW OF BOTTOM FRICTION                      : 3
 FRICTION COEFFICIENT                        : 60.
 /----------------------------------------------------------------------
-/                            OILSPILL
+/                            OIL SPILL
 /----------------------------------------------------------------------
 OIL SPILL MODEL                             : YES
-OILSPILL STEERING FILE                      : oilspill.txt
+OIL SPILL STEERING FILE                     : oilspill.txt
 NUMBER OF DROGUES                           : 961
 PRINTOUT PERIOD FOR DROGUES                 : 20
 DROGUES FILE                                : oil_displacement.dat

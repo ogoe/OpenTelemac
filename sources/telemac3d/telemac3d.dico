@@ -5465,7 +5465,7 @@ AIDE = 'Fichier des parametres de TOMAWAC en cas de couplage interne.'
 AIDE1 = 'TOMAWAC parameter file in case of internal coupling.'
  
 NOM = 'FICHIER DE COMMANDES HYDROCARBURES' 
-NOM1 = 'OILSPILL STEERING FILE' 
+NOM1 = 'OIL SPILL STEERING FILE' 
 TYPE = CARACTERE 
 INDEX = 57
 MNEMO = 'T3D_FILES(T3DMIG)' 
@@ -6211,7 +6211,7 @@ DEFAUT1 = 'STEERING FILE';
           'BINARY RESULTS FILE';
           'FORMATTED RESULTS FILE';
           'RESTART FILE';
-          'OILSPILL STEERING FILE';
+          'OIL SPILL STEERING FILE';
           'HARMONIC CONSTANTS FILE';
           'TIDAL MODEL FILE';
           'ASCII DATABASE FOR TIDE';
@@ -6609,8 +6609,8 @@ DEFAUT = 0.4
 DEFAUT1 = 0.4
 RUBRIQUE = 'TURBULENCE'
 RUBRIQUE1 = 'TURBULENCE'
-AIDE = ''
-AIDE1 = ''
+AIDE = 'Valeur de la constante de Von Karman'
+AIDE1 = 'Value of Von Karman constant'
 /
 NOM = 'NOMBRE DE PRANDTL'
 NOM1 = 'PRANDTL NUMBER'
@@ -6622,8 +6622,8 @@ DEFAUT = 1.0
 DEFAUT1 = 1.0
 RUBRIQUE = 'TURBULENCE'
 RUBRIQUE1 = 'TURBULENCE'
-AIDE = 'Ratio between  eddy viscosity and eddy diffusivity'
-AIDE1 = 'Rapport entre viscosite  et diffusivite turbulente'
+AIDE = 'Rapport entre viscosite et diffusivite turbulente'
+AIDE1 = 'Ratio between eddy viscosity and eddy diffusivity'
 / 
 NOM = 'HAUTEUR DU LIT FICTIF'
 NOM1 = 'FICTITIOUS BED LEVEL'

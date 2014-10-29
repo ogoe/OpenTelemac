@@ -99,7 +99,7 @@ OIL SPILL MODEL             : YES
 NUMBER OF DROGUES           : 961
 PRINTOUT PERIOD FOR DROGUES : 100
 DROGUES FILE                : t3d_particles.dat
-OILSPILL STEERING FILE      : oilspill.txt
+OIL SPILL STEERING FILE     : oilspill.txt
 /---------------------------------------------------------------------/
 /     TRACER                                                    /
 /---------------------------------------------------------------------/
