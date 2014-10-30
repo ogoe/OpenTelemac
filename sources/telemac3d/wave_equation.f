@@ -75,15 +75,6 @@
 !+   PATMOS/(RO*G) is added to the free surface also for the non 
 !+   compatible part.
 !
-!history  J-M HERVOUET (LNHE)
-!+        07/07/2014
-!+        V6P3
-!+   New correction in case of atmospheric pressure. Free surface and
-!+   atmospheric pressure did not balance their gradients exactly when
-!+   the free surface gradient compatibility was not 1. Now 
-!+   PATMOS/(RO*G) is added to the free surface also for the non 
-!+   compatible part.
-!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -141,66 +132,6 @@
       ENDIF
 !
 !=======================================================================
-!     PRESSURE GRADIENT IS ADDED TO THE GRADIENT OF FREE SURFACE
-!     COMPUTES THE DIFFUSION TERMS DIFF
-!
-!=======================================================================
-!
-      IF(ATMOS) THEN
-        C=1.D0/(RHO0*GRAV)
-!       PRESSURE GRADIENTS WILL BE LOCALLY MASKED
-        IF(MSK.OR.OPTBAN.EQ.1) THEN
-          MSKGRA = .TRUE.
-          IF(OPTBAN.EQ.1) THEN
-            CALL OV('X=Y+Z   ',T2_01%R,HN%R,Z3%R,0.D0,NPOIN2)
-!           Z3 GIVEN AS ZF (FIRST PLANE IS BOTTOM)
-!           WOULD BE REJECTED AS 3D VECTOR
-            I=Z3%ELM
-            Z3%ELM=11
-            CALL DECVRT(TE3,T2_01,Z3,MESH2D)
-            Z3%ELM=I
-          ENDIF
-          IF(OPTBAN.EQ.1.AND.MSK) THEN
-            CALL OV('X=XY    ',TE3%R,MASKEL%R,MASKEL%R,0.D0,NELEM2)
-          ENDIF
-          IF(MSK.AND.OPTBAN.NE.1) THEN
-            CALL OV('X=Y     ',TE3%R,MASKEL%R,MASKEL%R,C,TE3%DIM1)
-          ENDIF
-          IF(OPTBAN.EQ.1) THEN
-!           ADDING ATMOSPHERIC PRESSURE TO ZFLATS
-            DO IELEM=1,NELEM2
-              IF(TE3%R(IELEM).GT.0.5D0) THEN
-                IAD1=IELEM
-                IAD2=IAD1+NELEM2
-                IAD3=IAD2+NELEM2
-                I1=MESH2D%IKLE%I(IAD1)
-                I2=MESH2D%IKLE%I(IAD2)
-                I3=MESH2D%IKLE%I(IAD3)
-                ZFLATS%R(IAD1)=ZFLATS%R(IAD1)+C*PATMOS%R(I1)
-                ZFLATS%R(IAD2)=ZFLATS%R(IAD2)+C*PATMOS%R(I2)
-                ZFLATS%R(IAD3)=ZFLATS%R(IAD3)+C*PATMOS%R(I3)
-              ENDIF
-            ENDDO
-          ENDIF
-        ELSE
-          MSKGRA = .FALSE.
-        ENDIF
-!       ATMOSPHERIC PRESSURE GRADIENT
-        CALL VECTOR(T2_01,'=','GRADF          X',IELM2H,
-     &              C,PATMOS,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
-     &              MESH2D,MSKGRA,TE3)
-        CALL VECTOR(T2_02,'=','GRADF          Y',IELM2H,
-     &              C,PATMOS,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
-     &              MESH2D,MSKGRA,TE3)
-        DO I=1,NPOIN2
-          GRADZN%ADR(1)%P%R(I)=GRADZN%ADR(1)%P%R(I)
-     &                        +T2_01%R(I)*UNSV2D%R(I)
-          GRADZN%ADR(2)%P%R(I)=GRADZN%ADR(2)%P%R(I)
-     &                        +T2_02%R(I)*UNSV2D%R(I)
-        ENDDO
-      ENDIF
-!
-!=======================================================================
 !     COMPUTES THE DIFFUSION TERMS DIFF
 !
 !       AND THEN UC + DT(F - DIFF -G GRAD(Z))
@@ -238,13 +169,11 @@
       CALL T3D_STRESS(T3_01,'X=X-Y   ',T2_02,T3_04,
      &                BUBORL,BUBORF,BUBORS,NPOIN2,NPOIN3,MESH2D,
      &                MESH3D,IELM3,IELM2H,IELM2V,SVIDE,
-     &                MSK,MASKBR,MASKEL,IPBOT%I,SIGMAG,
-     &                OPTBAN,NPLAN)
+     &                MSK,MASKBR,MASKEL,IPBOT%I,SIGMAG,OPTBAN,NPLAN)
       CALL T3D_STRESS(T3_02,'X=X-Y   ',T2_02,T3_04,
      &                BVBORL,BVBORF,BVBORS,NPOIN2,NPOIN3,MESH2D,
      &                MESH3D,IELM3,IELM2H,IELM2V,SVIDE,
-     &                MSK,MASKBR,MASKEL,IPBOT%I,SIGMAG,
-     &                OPTBAN,NPLAN)
+     &                MSK,MASKBR,MASKEL,IPBOT%I,SIGMAG,OPTBAN,NPLAN)
 !
 !     REQUIRES REAL VALUES IN PARALLEL MODE
 !
@@ -853,4 +782,4 @@
 !
       RETURN
       END
-
+      
