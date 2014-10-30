@@ -27,12 +27,6 @@
   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-   <action xref="RunPython"
-      do="python post_foulness.py" code="exec"
-	  target="post_foulness.py" deprefs="fielddata.csv;RunCase:SISRES"
-      title="Foulness post processing"
-   />
-   
 <!-- 
    <extract xref="L2" >
       <task do="L2error" target="transport_rates_ebb.csv" ExactData = "SedimentTransportExperiment" 

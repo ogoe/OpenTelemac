@@ -28,13 +28,6 @@
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->   
 
-   <action xref="RunPython"
-      do="python post_sandpit.py" code="exec"
-	  target="post_sandpit.py" deprefs="experiment_data.csv;Built:SISRES"
-      title="Sandpit post processing"
-   />
-
-
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
  

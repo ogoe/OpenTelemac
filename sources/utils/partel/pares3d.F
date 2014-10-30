@@ -2,7 +2,7 @@
                         SUBROUTINE PARES3D
 !                       ******************
 
-     &(NAMEINP,NAMELOG,NPARTS,PMETHOD)
+     &(NAMEINP,NAMELOG,NPARTS,PMETHOD,FORMAT_MED)
 !
 !**********************************************************************
 !  12/11/2009 CHRISTOPHE DENIS SINETICS/I23 
@@ -35,6 +35,7 @@
 ! |    NAMELOG     | -->| NOM DU FICHIER LOG 
 ! |    NPARTS      | -->| NOMBRE DE PARTITION
 ! |    PMETHOD     | -->| METHODE DE PARTITIONEMENT 1 metis 2 scotch
+! |    FORMAT_MED  | -->| BOULEEN POUR LE MAILLAGE AU FORMAT MED
 ! |________________|____|______________________________________________|
 !  MODE: -->(DONNEE NON MODIFIEE),<--(RESULTAT),<-->(DONNEE MODIFIEE)
 !
@@ -64,11 +65,11 @@
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMELOG
       INTEGER,                   INTENT(IN) :: NPARTS
       INTEGER,                   INTENT(IN) :: PMETHOD
+      LOGICAL,                   INTENT(IN) :: FORMAT_MED
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !
-! PARAMETRES D'APPEL DE LA ROUTINE
 ! VARIABLES LOCALES
       CHARACTER(LEN=MAXLENHARD) :: NAMEINP2,NAMELOG2
       INTEGER :: NINP=10,NLOG=11,NINP2=12,NLOG2=13
@@ -115,6 +116,7 @@
       CHARACTER(LEN=16)                  :: DATA_TEMP
       CHARACTER(LEN=43)                  :: TYPE_INPUT
       CHARACTER(LEN=43)                  :: TXT, TXT_OLD
+#if defined (HAVE_MED)
       CHARACTER(LEN=MED_NAME_SIZE),DIMENSION(:),ALLOCATABLE :: FAM
       CHARACTER(LEN=MED_NAME_SIZE)       :: VERSION             ! VERSION OF THE MED FILE
       CHARACTER(LEN=MED_NAME_SIZE)       :: MESH_NAME           ! CURRENT MESH NAME
@@ -122,9 +124,9 @@
       CHARACTER(LEN=MED_COMMENT_SIZE)    :: DESC                ! MESH DESCRIPTION
       CHARACTER(LEN=MED_LNAME_SIZE),DIMENSION(:),ALLOCATABLE :: 
      &       GR_FAMILY
+#endif
       CHARACTER, DIMENSION(:), ALLOCATABLE :: DUMNAME
 
-      LOGICAL :: FORMAT_MED
       LOGICAL :: HDFOK, MEDOK  ! CHECK COMPATIBILITY
       LOGICAL :: FOUND
 
@@ -148,6 +150,11 @@
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: ID_CHANGE_LOG2
 
       DOUBLE PRECISION, ALLOCATABLE :: COOR(:) ! COORD NODES
+
+      INTEGER :: PTET1,PTET2,PTET3,DEB1,FIN1,DEB2,FIN2,DEB3,FIN3
+      INTEGER :: PTET4,PTRI1,PTRI2,PTRI3
+      LOGICAL :: FOUND_TET
+
       ! END MODIF V STOBIAC
 
       DOUBLE PRECISION, ALLOCATABLE :: X1(:),Y1(:),Z1(:) ! COORD NODES
@@ -189,7 +196,7 @@
       LOGICAL, DIMENSION(:,:), ALLOCATABLE :: TETCOLOR
       LOGICAL, DIMENSION(:), ALLOCATABLE :: DEJA_TROUVE
 ! INDISPENSABLE POUR PARALLELISME TELEMAC
-      INTEGER, DIMENSION(:), ALLOCATABLE :: KNOLG 
+      INTEGER, DIMENSION(:), ALLOCATABLE :: KNOLG
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: NACHB
       LOGICAL :: NACHBLOG
 !     MAXIMUM GEOMETRICAL MULTIPLICITY OF A NODE (VARIABLE AUSSI
@@ -246,8 +253,8 @@
 !     SIZE MAX_NELEM_P,NPARTS, ELEGL(J,I) IS THE GLOBAL NUMBER OF LOCAL FINITE ELEMENT J IN SUBDOMAIN I
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: NODEGL
 !     SIZE MAX_NPOIN_P,NPARTS, NODEGL(J,I) IS THE GLOBAL NUMBER OF LOCAL NODE J IN SUBDOMAIN I
-      INTEGER, DIMENSION(:), ALLOCATABLE :: NODELG
-!     SIZE NPOINT, NODELG(I)=J, J IS THE LOCAL NUMBER OF GLOBAL NODE I ON ONE SUBDOMAIN
+      INTEGER, DIMENSION(:,:), ALLOCATABLE :: NODELG
+!     SIZE NPOINT, NODELG(J,I)=J, IS THE LOCAL NUMBER OF GLOBAL NODE J ON SUBDOMAIN I
       INTEGER,  DIMENSION(:,:), ALLOCATABLE :: TRI_REF
 !     SIZE NPOINT*MAX_TRIA
 !     EXTENS
@@ -261,33 +268,14 @@
 ! 1. PREAMBULE
 !-------------
 !
+      CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(1),COUNT_RATE=PARSEC)
       ALLOCATE (VECTNB(NBSDOMVOIS-3))
       WRITE(LU,*)' '
       WRITE(LU,*)'+-------------------------------------------------+'
       WRITE(LU,*)'  PARTEL: TELEMAC ESTEL3D PARTITIONER'
       WRITE(LU,*)'+-------------------------------------------------+'
       WRITE(LU,*)' READING UNV AND LOG FILES'
-
-!     BEGIN MODIF V STOBIAC
-!     FIND THE FORMAT OF THE MESH
-      FORMAT_MED = .FALSE.
-#if defined (HAVE_MED)
-
-      INQUIRE(FILE='ES3CAS',EXIST=FOUND)
-      IF (FOUND) OPEN(UNIT=60,FILE='ES3CAS')
-
-      IOS = 0
-      DO WHILE (IOS .EQ. 0)
-        READ(UNIT=60,FMT='(A43)',IOSTAT=IOS) TYPE_INPUT
-
-        IF (TYPE_INPUT .EQ. (' FILE FORMAT FOR THE 3D INPUT MESH '
-     & // 'FILE : 4')) THEN
-          FORMAT_MED = .TRUE.
-          EXIT
-        ENDIF
-      ENDDO
-#endif
-
+!
 !     WRITE FILE FORMAT AND TEST MED LIBRARY
       IF (FORMAT_MED) THEN
 #if defined (HAVE_MED)
@@ -514,7 +502,8 @@
             ! WARNING (ASSUMPTION) : SYNTAX EXPECTED : <COLOR_ID>:<NAME_GROUP>
             POS = INDEX(GR_FAMILY(1),':')-1
             !
-            IF (POS.EQ.-1) THEN
+            !     BEGIN MODIF V STOBIAC
+            IF ((POS.LT.1).OR.(POS.GT.3)) THEN
               ! COULD BE AN ERROR OR A GROUP OF NODE
               ! (MAY HAPPEN WHEN THE MED FILE IS EXPORTED FROM AN UNV FILE)
               POS = 0
@@ -525,8 +514,12 @@
 !     &                // '<NAME_GROUP>'
 
             ELSE
-              !        
-              READ(GR_FAMILY(1)(1:POS),FMT='(I3)',IOSTAT=IOS) NSOLS
+              !
+              ! THE FORMAT IS ADAPTED TO POS IN ORDER TO
+              ! PREVENT PROBLEMS ON THE BGQ CLUSTER
+              READ(GR_FAMILY(1)(1:POS),FMT='(i'//ACHAR(48+POS)//')',
+     &          IOSTAT=IOS) NSOLS
+              !     END MODIF V STOBIAC
               IF (IOS.NE.0) THEN
                 NSOLS = -99
 !                WRITE(LU,*)'CONVERTING ERROR, FROM GROUP:'//
@@ -1238,13 +1231,13 @@
 !
       DEALLOCATE(NBOR2)
 !
-      WRITE(LU,*) 'VOISIN31'
+      WRITE(LU,*) 'PARTEL_VOISIN31'
 !
       CALL VOISIN31(IFABOR,NBTET,NBTET,31,
      &              IKLE,NBTET,NPOINT,NBOR,NPTFR,
      &              LIHBOR,2,INDPU,IKLESTRI,NBTRI)
 !
-      WRITE(LU,*) 'FIN VOISIN31'
+      WRITE(LU,*) 'FIN DE PARTEL_VOISIN31'
 !      
       ALLOCATE(LIHBOR(NPTFR),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,'LIHBOR')
@@ -1537,23 +1530,22 @@
       END DO
 !D    COMPUTE THE MAXIMUM OF NODES ASSIGNED TO ONE SUBDOMAIN
 
-      ALLOCATE(NODELG(NPOINT),STAT=IERR)
+      ALLOCATE(NODELG(NPOINT,NPARTS),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,'NODELG')
 
-      NODELG(:)=0
+      NODELG(:,:)=0
 !D    FOR EACH SUBDOMAIN IDD
       DO IDD=1,NPARTS  
-        NODELG(:)=0
-!D       LOOP ON THE FINITE ELEMENTS IELEM ASSIGNED TO SUBDOMAIN IDD
+!D      LOOP ON THE FINITE ELEMENTS IELEM ASSIGNED TO SUBDOMAIN IDD
         DO POS=1,NELEM_P(IDD)
           IELEM=ELEGL(POS,IDD)
           N=4*(IELEM-1)+1
 !D        LOOP OF THE NODE CONTAINED IN IELEM            
           DO K=0,3
             NODE=IKLESTET(N+K)
-            IF (NODELG(NODE) .EQ. 0) THEN
+            IF (NODELG(NODE,IDD) .EQ. 0) THEN
               NPOIN_P(IDD)=NPOIN_P(IDD)+1
-              NODELG(NODE)=NPOIN_P(IDD)
+              NODELG(NODE,IDD)=NPOIN_P(IDD)
             END IF
           END DO
         END DO
@@ -1566,25 +1558,15 @@
       DO I=1,NPARTS
         WRITE(LU,*) I, NPOIN_P(I)
       ENDDO
-
-      NPOIN_P(:)=0
-      NODELG(:)=0
 !
       ALLOCATE(NODEGL(MAX_NPOIN_P,NPARTS),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,'NODEGL')
+      NODEGL(:,:)=0
       DO IDD=1,NPARTS
-        NODELG(:)=0
-        DO POS=1,NELEM_P(IDD)
-          IELEM=ELEGL(POS,IDD)
-          N=4*(IELEM-1)+1
-          DO K=0,3
-            NODE=IKLESTET(N+K)
-            IF (NODELG(NODE) .EQ. 0) THEN
-              NPOIN_P(IDD)=NPOIN_P(IDD)+1
-              NODELG(NODE)=NPOIN_P(IDD)
-              NODEGL(NPOIN_P(IDD),IDD)=NODE
-            END IF
-          END DO
+        DO NODE=1,NPOINT
+          IF (NODELG(NODE,IDD) .NE. 0) THEN
+            NODEGL(NODELG(NODE,IDD),IDD)=NODE
+          END IF
         END DO
       END DO
 !            
@@ -1754,7 +1736,11 @@
       ENDIF
       CALL CHECK_ALLOCATE(IERR,'DEJA_TROUVE')
       DEJA_TROUVE(:)=.FALSE.
-!      
+!
+!     INITIALISATION OF THE SIZE OF THE FILE'S NAME
+      I_LENINP = LEN_TRIM(NAMEINP2)
+      I_LENLOG = LEN_TRIM(NAMELOG2)
+!
       DO IDD=1,NPARTS  ! BOUCLE SUR LES SOUS-DOMAINES
 
 ! NOMBRE DE TRIANGLES POUR CE SOUS-DOMAINE
@@ -1805,9 +1791,9 @@
 ! POUR PARALLELISME TELEMAC
           KNOLG(COMPT)=J ! CONVERSION SD (LOCAL)-->MAILLAGE ENTIER (GLOBAL)
           K=NACHB(1,J)   ! NBRE DE SD CONTENANT LE NOEUD J
-          NACHBLOG=.TRUE.       
+          NACHBLOG=.TRUE.
           DO L=1,K     ! NOEUD DEJA CONCERNE PAR CE SD ?
-            IF (NACHB(1+L,J)==IDD) NACHBLOG=.FALSE.  ! OUI      
+            IF (NACHB(1+L,J)==IDD) NACHBLOG=.FALSE.  ! OUI
           ENDDO
           IF (NACHBLOG) THEN                         ! NON
             K=NACHB(1,J)+1
@@ -1906,13 +1892,52 @@
 !
         ELEM=91
 ! BOUCLE SURDIMENSIONNEE, ON BOUCLE SUR LE NOMBRE DE SURFACE INTERNE DU MAILLAGE GLOBAL...
-        IF (NELIN .GT. 0) THEN 
+        IF (NELIN .GT. 0) THEN
           DO J=1,NELIN
             IF (DEJA_TROUVE(J)) CYCLE
             IKLE1=NODES4(IKLEIN(J,2))
             IKLE2=NODES4(IKLEIN(J,3))
             IKLE3=NODES4(IKLEIN(J,4))
             IF ((IKLE1.EQ.-1).OR.(IKLE2.EQ.-1).OR.(IKLE3.EQ.-1)) CYCLE
+            !
+            ! MODIF STOBIAC
+            FOUND_TET = .FALSE.
+            !
+            ! ON BOUCLE SUR LES TETRA DE CHAQUE NOEUD POUR VERIFIER QUE LES TROIS POINTS
+            ! APPARTIENNENT A UN TETRAEDRE DE LA PARTITION
+            !
+            ! PASSAGE A LA NUMEROTATION GLOBALE
+            PTRI1 = NODEGL(IKLE1,IDD)
+            PTRI2 = NODEGL(IKLE2,IDD)
+            PTRI3 = NODEGL(IKLE3,IDD)
+            !
+            DEB1 = NODES2(PTRI1)
+            FIN1 = DEB1 + NODES1(PTRI1)-1
+            DEB2 = NODES2(PTRI2)
+            FIN2 = DEB2 + NODES1(PTRI2)-1
+            DEB3 = NODES2(PTRI3)
+            FIN3 = DEB3 + NODES1(PTRI3)-1
+            !
+            DO PTET1 = DEB1, FIN1
+              DO PTET2 = DEB2, FIN2
+                IF (NODES3(PTET1).EQ.NODES3(PTET2)) THEN
+                  DO PTET3 = DEB3, FIN3
+                    IF (NODES3(PTET3).EQ.NODES3(PTET1)) THEN
+                      IF (EPART(NODES3(PTET3)).EQ.IDD) THEN
+                        FOUND_TET = .TRUE.
+                      ENDIF
+                    ENDIF
+                    IF (FOUND_TET) EXIT
+                  ENDDO
+                ENDIF
+                IF (FOUND_TET) EXIT
+              ENDDO
+              IF (FOUND_TET) EXIT
+            ENDDO
+            !
+            IF (.NOT.FOUND_TET) CYCLE
+            ! END MODIF STOBIAC
+            !
             WRITE(NINP2,65,ERR=112) COMPT,ELEM,IBID,IBID,IKLEIN(J,1),3
             WRITE(NINP2,67,ERR=112) IKLE1,IKLE2,IKLE3
             COMPT = COMPT+1
@@ -2047,7 +2072,8 @@
             NT = NBSDOMVOIS-3
             NI=NT/6
             NF=NT-6*NI+1
-            WRITE(NLOG2,640,ERR=113)J,(VECTNB(K),K=1,5)
+            WRITE(NLOG2,640,ERR=113)NODELG(J,IDD),(VECTNB(K),K=1,5)
+!            WRITE(NLOG2,640,ERR=113)J,(VECTNB(K),K=1,5)
             DO L=2,NI
               WRITE(NLOG2,640,ERR=113)(VECTNB(6*(L-1)+K),K=0,5)
             ENDDO

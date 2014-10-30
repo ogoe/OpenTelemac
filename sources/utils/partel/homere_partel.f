@@ -11,8 +11,10 @@
 !
 !history   Y. AUDOUIN (EDF)
 !+
-!+         FIRST  VERSION 
+!+         FIRST  VERSION
 !
+!+    V STOBIAC
+!+    READING OF THE MESH FORMAT
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,13 +22,12 @@
       USE DECLARATIONS_PARTEL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU,LI
+      INTEGER :: LNG,LU,LI
       COMMON /INFO/ LNG,LU,LI
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-
-      LOGICAL FOUND
+      LOGICAL :: FOUND
       CHARACTER(LEN=MAXLENHARD) :: NAMEINP
       CHARACTER(LEN=MAXLENHARD) :: NAMECLI
       INTEGER :: NPARTS
@@ -37,13 +38,17 @@
       CHARACTER(LEN=MAXLENHARD) :: NAMEZFI
 !
       LOGICAL :: IS
-      INTEGER I, J, K, L , M, N, ERR, ISO, IDUM
-      INTEGER ISEG, II, ILOOP
-      INTEGER I_LEN, I_S, I_SP, I_LENCLI, I_LENINP
-      INTEGER JJ
+      INTEGER :: I, J, K, L , M, N, ERR, ISO, IDUM
+      INTEGER :: ISEG, II, ILOOP
+      INTEGER :: I_LEN, I_S, I_SP, I_LENCLI, I_LENINP
+      INTEGER :: JJ, IPAR, ICAS, IOS
 !
       CHARACTER(LEN=11) :: EXTENS
       EXTERNAL EXTENS
+!
+      CHARACTER(LEN=43) :: LINE, LINE_ADJ
+      CHARACTER(LEN=38) :: KEY_FORMAT
+      LOGICAL :: FORMAT_MED
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -51,6 +56,10 @@
       LNG=2 ! JE NE PARLE FRANCAIS, JE SUIS BARBARIEN
       LU=6  ! FORTRAN STANDARD OUPUT CHANNEL
       LI=5  ! FORTRAN STANDARD INPUT CHANNEL
+!
+!     FILE DESCRIPTOR
+      IPAR = 72
+      ICAS = 73
 !
 !     ALLOCATE(NULLTABLE(0))       
       WITH_SECTIONS = .FALSE.
@@ -88,13 +97,13 @@
 ! NAMES OF THE INPUT FILES:
 !
       INQUIRE(FILE='PARTEL.PAR',EXIST=FOUND)
-      IF( FOUND ) OPEN(UNIT=72,FILE='PARTEL.PAR')
+      IF( FOUND ) OPEN(UNIT=IPAR,FILE='PARTEL.PAR')
 
-      IF (FOUND) REWIND(72)
+      IF (FOUND) REWIND(IPAR)
       DO 
         IF( FOUND ) THEN                  
            WRITE(LU, FMT='(/,'' SELAFIN INPUT NAME <INPUT_NAME>: '')')
-           READ(72,*) NAMEINP             
+           READ(IPAR,*) NAMEINP             
         ELSE                              
            WRITE(LU, ADVANCE='NO', FMT=
      &         '(/,'' SELAFIN INPUT NAME <INPUT_NAME>: '')')
@@ -119,7 +128,7 @@
       DO
         IF( FOUND ) THEN                      
            WRITE(LU, FMT='(/,'' BOUNDARY CONDITIONS FILE NAME : '')')
-           READ(72,*) NAMECLI                 
+           READ(IPAR,*) NAMECLI                 
         ELSE                                  
            WRITE(LU, ADVANCE='NO', FMT=
      &           '(/,'' BOUNDARY CONDITIONS FILE NAME : '')')
@@ -145,7 +154,7 @@
            WRITE(LU,FMT=
      &    '(/,'' NUMBER OF PARTITIONS <NPARTS> [2 -'',I6,'']: '')') 
      &        MAXNPROC
-           READ(72,*) NPARTS                 
+           READ(IPAR,*) NPARTS                 
         ELSE                                 
            WRITE(LU, ADVANCE='NO',FMT=
      &    '(/,'' NUMBER OF PARTITIONS <NPARTS> [2 -'',I6,'']: '')') 
@@ -169,7 +178,7 @@
            WRITE(LU, FMT=
      &    '(/,'' PARTITIONING METHOD <PMETHOD> 
      &    [1 (METIS) OR 2 (SCOTCH)]: '')') 
-           READ(72,*) PMETHOD                
+           READ(IPAR,*) PMETHOD                
         ELSE                                 
            WRITE(LU, ADVANCE='NO',FMT=
      &    '(/,'' PARTITIONING METHOD <PMETHOD> 
@@ -191,7 +200,7 @@
         IF( FOUND ) THEN                      
            WRITE(LU, FMT=
      &    '(/,'' WITH SECTIONS? [1:YES 0:NO]: '')') 
-           READ(72,*) I
+           READ(IPAR,*) I
         ELSE                                  
            WRITE(LU, ADVANCE='NO',FMT=
      &    '(/,'' WITH SECTIONS? [1:YES 0:NO]: '')') 
@@ -211,7 +220,7 @@
           WRITE(LU, ADVANCE='NO', FMT=
      &      '(/,'' CONTROL SECTIONS FILE NAME (OR RETURN) : '')')
           IF(FOUND) THEN
-            READ(72,'(A)') NAMESEC
+            READ(IPAR,'(A)') NAMESEC
           ELSE
             READ(LI,'(A)') NAMESEC
           ENDIF
@@ -240,7 +249,7 @@
         IF( FOUND ) THEN                      
            WRITE(LU, FMT=
      &    '(/,'' WITH ZONES? [1:YES 0:NO]: '')') 
-           READ(72,*) I                       
+           READ(IPAR,*) I                       
         ELSE                                  
            WRITE(LU, ADVANCE='NO',FMT=
      &    '(/,'' WITH ZONES? [1:YES 0:NO]: '')') 
@@ -260,7 +269,7 @@
           WRITE(LU, ADVANCE='NO', FMT=
      &      '(/,'' FRICTION ZONES FILE NAME (OR RETURN) : '')')
           IF(FOUND) THEN
-            READ(72,'(A)') NAMEZFI
+            READ(IPAR,'(A)') NAMEZFI
           ELSE
             READ(LI,'(A)') NAMEZFI
           ENDIF
@@ -283,7 +292,7 @@
       INQUIRE(FILE=TRIM(NAMEZFI)//EXTENS(NPARTS-1,0),EXIST=DONE_ZONES)
       WITH_ZONES = WITH_ZONES .AND. (.NOT. DONE_ZONES)
 !
-      IF( FOUND ) CLOSE(72)
+      IF( FOUND ) CLOSE(IPAR)
 !
 !
 ! FIND THE INPUT FILE CORE NAME LENGTH
@@ -329,9 +338,43 @@
         CALL PLANTE(1)
         STOP
       ENDIF
-      
+!
+!     READ THE FORMAT OF THE MESH (ONLY FOR ESTEL FOR NOW)
+      FORMAT_MED = .FALSE.
+      INQUIRE(FILE='ES3CAS',EXIST=FOUND)
+!
+      IF (FOUND) THEN
+!
+!       OPEN THE FILE CASE FILE FOR ESTEL
+        OPEN(UNIT=ICAS,FILE='ES3CAS')
+        REWIND(ICAS)
+!
+!       DEFINITION OF THE KEY WORD AND ITS SIZE
+        KEY_FORMAT = 'FILE FORMAT FOR THE 3D INPUT MESH FILE'
+        I_LEN = LEN(KEY_FORMAT)
+!
+!       LOOP ON THE LINE OF THE INPUT FILE
+        IOS = 0
+        DO WHILE (IOS .EQ. 0)
+          READ(UNIT=ICAS,FMT='(A43)',IOSTAT=IOS) LINE
+!
+!         SECURITY TO ERASE SPACE AT THE BEGINNING OF THE LINE
+          LINE_ADJ=ADJUSTL(LINE)
+!
+!         LOOP TO FIND THE NUMBER OF THE FORMAT
+          IF (LINE_ADJ(1:I_LEN) .EQ. KEY_FORMAT(1:I_LEN)) THEN
+            DO I=I_LEN+1,43
+              IF (LINE_ADJ(I:I).EQ.'4') FORMAT_MED = .TRUE.
+            ENDDO
+            EXIT
+          ENDIF
+        ENDDO
+!
+        CLOSE (ICAS)
+      ENDIF
+!
       IF(NAMEINP(1:3) .EQ. 'ES3') THEN
-        CALL PARES3D(NAMEINP, NAMECLI, NPARTS, PMETHOD)
+        CALL PARES3D(NAMEINP, NAMECLI, NPARTS, PMETHOD, FORMAT_MED)
       ELSE
         CALL PARTEL(NAMEINP, NAMECLI, NPARTS, PMETHOD, 
      &              WITH_SECTIONS, NAMESEC, 
