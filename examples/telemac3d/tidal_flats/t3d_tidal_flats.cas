@@ -14,9 +14,9 @@ REFERENCE FILE = 'r3d_tidal_flats_set1.ref'
 FORTRAN FILE                : 't3d_tidal_flats.f'
 3D RESULT FILE              : 'r3d_tidal_flats.slf'
 2D RESULT FILE              : 'r2d_tidal_flats.slf'
-LIQUID BOUNDARIES FILE       : 'bli_tidal_flats.dat'
-BOUNDARY CONDITIONS FILE    :  'geo_tidal_flats.cli'   
-GEOMETRY FILE               :  'geo_tidal_flats.slf'  
+LIQUID BOUNDARIES FILE      : 'bli_tidal_flats.dat'
+BOUNDARY CONDITIONS FILE    : 'geo_tidal_flats.cli'   
+GEOMETRY FILE               : 'geo_tidal_flats.slf'  
 
 /----------------------------------------------------------------------/
 /
@@ -25,7 +25,7 @@ GEOMETRY FILE               :  'geo_tidal_flats.slf'
 /----------------------------------------------------------------------/ 
 /                     OPTIONS GENERALES                                  
 /----------------------------------------------------------------------/ 
- TITLE = 'Sloped flume Rouse prfile test'              
+ TITLE = 'Sloped flume Rouse profile test'              
 /                                             
  VARIABLES FOR 2D GRAPHIC PRINTOUTS = 'U,V,H,S,B'                      
  VARIABLES FOR 3D GRAPHIC PRINTOUTS = 'Z,U,V,W,TA1'
@@ -97,7 +97,7 @@ GEOMETRY FILE               :  'geo_tidal_flats.slf'
 /
 / settling and diffusivity
 /
- ACCURACY FOR DIFFUSION OF SEDIMENT                    = 1.E-8
+ ACCURACY FOR DIFFUSION OF SEDIMENT = 1.E-14
  SOLVER FOR DIFFUSION OF THE SEDIMENT : 7
  PRECONDITIONING FOR DIFFUSION OF TRACERS : 34
  THRESHOLD FOR SEDIMENT FLUX CORRECTION ON TIDAL FLATS = 0.1
