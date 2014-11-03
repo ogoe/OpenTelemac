@@ -105,8 +105,8 @@ MNEMO = 'MIXING'
 TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = ''
-RUBRIQUE1 = ''
+RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE'
+RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL'
 NIVEAU = 1
 AIDE = '1: PRANDTL 3: NEZU ET NAKAGAWA 5: QUETIN 6: TSANIS
 4 (jet) a ete supprime'
@@ -5974,8 +5974,8 @@ DEFAUT = 1
 DEFAUT1 = 1
 CHOIX='1="fortes"';'2="faibles"'
 CHOIX1='1="strong"';'2="weak"'
-RUBRIQUE = 'PARAMETRES PHYSIQUES'
-RUBRIQUE1 = 'PHYSICAL PARAMETERS' 
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 2
 AIDE = '1: forme forte 2: forme faible'
 AIDE1 = '1: strong form 2: weak form'
@@ -6004,8 +6004,8 @@ MNEMO = 'AGGLOW'
 TAILLE = 0
 DEFAUT = 0.
 DEFAUT1 = 0.
-RUBRIQUE = 'PARAMETRES PHYSIQUES'
-RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 2
 AIDE = 'Applique a la matrice de masse'
 AIDE1 = 'To be applied to the mass matrix'
@@ -6609,6 +6609,7 @@ DEFAUT = 0.4
 DEFAUT1 = 0.4
 RUBRIQUE = 'TURBULENCE'
 RUBRIQUE1 = 'TURBULENCE'
+NIVEAU = 1
 AIDE = 'Valeur de la constante de Von Karman'
 AIDE1 = 'Value of Von Karman constant'
 /
@@ -6622,6 +6623,7 @@ DEFAUT = 1.0
 DEFAUT1 = 1.0
 RUBRIQUE = 'TURBULENCE'
 RUBRIQUE1 = 'TURBULENCE'
+NIVEAU = 1
 AIDE = 'Rapport entre viscosite et diffusivite turbulente'
 AIDE1 = 'Ratio between eddy viscosity and eddy diffusivity'
 / 
