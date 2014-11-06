@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TOMAWAC   V6P3                                   25/06/2012
+! TOMAWAC   V7P0 
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY.
@@ -37,6 +37,12 @@
 !+        25/06/2012
 !+        V6P2
 !+   Memory allocation for variables used for diffraction
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        06/11/2014
+!+        V7P0
+!+   Conditional allocation of SUC1, SVC1, SUC2, SVC2 changed because
+!+   they are used by lecsui.f in case of restart.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -260,18 +266,10 @@
 !     NOTE JMH: WE SHOULD SET COURAN=.TRUE. WHEN COUPLING
 !               THIS WOULD SIMPLIFY TESTS
       IF(COURAN.OR.NAMECODE(1:7).EQ.'TELEMAC') THEN
-        IF(WAC_FILES(WACCOB)%NAME.NE.' '.OR.
-     &     WAC_FILES(WACCOF)%NAME.NE.' ') THEN
-          CALL BIEF_ALLVEC(1,SVC1,'SVC1  ',IELM2 , 1 , 2 ,MESH)
-          CALL BIEF_ALLVEC(1,SUC1,'SUC1  ',IELM2 , 1 , 2 ,MESH)
-          CALL BIEF_ALLVEC(1,SVC2,'SVC2  ',IELM2 , 1 , 2 ,MESH)
-          CALL BIEF_ALLVEC(1,SUC2,'SUC2  ',IELM2 , 1 , 2 ,MESH)
-        ELSE
-          CALL BIEF_ALLVEC(1,SVC1  ,'SVC1  ', 1, 1, 0 ,MESH)
-          CALL BIEF_ALLVEC(1,SUC1  ,'SUC1  ', 1, 1, 0 ,MESH)
-          CALL BIEF_ALLVEC(1,SVC2  ,'SVC2  ', 1, 1, 0 ,MESH)
-          CALL BIEF_ALLVEC(1,SUC2  ,'SUC2  ', 1, 1, 0 ,MESH)
-        ENDIF
+        CALL BIEF_ALLVEC(1,SVC1,'SVC1  ',IELM2 , 1 , 2 ,MESH)
+        CALL BIEF_ALLVEC(1,SUC1,'SUC1  ',IELM2 , 1 , 2 ,MESH)
+        CALL BIEF_ALLVEC(1,SVC2,'SVC2  ',IELM2 , 1 , 2 ,MESH)
+        CALL BIEF_ALLVEC(1,SUC2,'SUC2  ',IELM2 , 1 , 2 ,MESH)
         CALL BIEF_ALLVEC(1,SZM1,'SZM1  ',IELM2 , 1 , 2 ,MESH)
         CALL BIEF_ALLVEC(1,SZM2,'SZM2  ',IELM2 , 1 , 2 ,MESH)
       ELSE
@@ -818,3 +816,4 @@
 !
       RETURN
       END
+
