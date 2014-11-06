@@ -503,10 +503,10 @@
                         SUBROUTINE NOMVAR_TELEMAC2D
 !                       ***************************
 !
-     &(TEXTE,TEXTPR,MNEMO)
+     &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC)
 !
 !***********************************************************************
-!  TELEMAC 2D VERSION 5.1    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
+!  TELEMAC 2D 7.0    
 !
 !***********************************************************************
 !
@@ -535,12 +535,26 @@
 !
 !**********************************************************************
 !
+      USE DECLARATIONS_TELEMAC2D, ONLY : SECCURRENTS
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      CHARACTER*32 TEXTE(100),TEXTPR(100)
-      CHARACTER*8  MNEMO(100)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(*),TEXTPR(*)
+      CHARACTER(LEN=8),  INTENT(INOUT) :: MNEMO(*)
+      INTEGER, INTENT(IN)              :: NPERIAF,NTRAC
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(32)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      CHARACTER(LEN=2) I_IN_2_LETTERS(34)
+      DATA I_IN_2_LETTERS /'1 ','2 ','3 ','4 ','5 ','6 ','7 ','8 ','9 ',
+     &                     '10','11','12','13','14','15','16','17','18',
+     &                     '19','20','21','22','23','24','25','26','27',
+     &                     '28','29','30','31','32','33','34'/
+      INTEGER I
 !
 !-----------------------------------------------------------------------
 !
@@ -574,6 +588,13 @@
       TEXTE (24) = 'EXACT VELOCITY  M/S             '
       TEXTE (25) = 'EXACT ELEVATION M               '       
       TEXTE (26) = 'NONCONS   ELEV  M               '
+      TEXTE (27) = 'HIGH WATER MARK M               '
+      TEXTE (28) = 'HIGH WATER TIME S               '
+      TEXTE (29) = 'HIGHEST VELOCITYM/S             '
+      TEXTE (30) = 'TIME OF HIGH VELS               '
+      TEXTE (31) = 'FRICTION VEL.   M/S             '
+      TEXTE (32) = 'TAU_S           NA              '
+      TEXTE (33) = '1/R             1/M             '
 !
 ! TEXTPR IS USED FOR READING PREVIOUS COMPUTATION FILES.
 ! IN GENERAL TEXTPR=TEXTE BUT YOU CAN FOLLOW UP A COMPUTATION
@@ -606,6 +627,13 @@
       TEXTPR (24) = 'VARIABLE 24     UNIT   ??       '
       TEXTPR (25) = 'VARIABLE 25     UNIT   ??       '
       TEXTPR (26) = 'VARIABLE 26     UNIT   ??       '
+      TEXTPR (27) = 'HIGH WATER MARK M               '
+      TEXTPR (28) = 'HIGH WATER TIME S               '
+      TEXTPR (29) = 'HIGHEST VELOCITYM/S             '
+      TEXTPR (30) = 'TIME OF HIGH VELS               '
+      TEXTPR (31) = 'FRICTION VEL.   M/S             '
+      TEXTPR (32) = 'TAU_S           NA              '
+      TEXTPR (33) = '1/R             1/M             '
 !
 !-----------------------------------------------------------------------
 !
@@ -635,10 +663,17 @@
       TEXTE (20) = 'DERIVE EN X     M               '
       TEXTE (21) = 'DERIVE EN Y     M               '
       TEXTE (22) = 'NBRE DE COURANT                 '
-      TEXTE (23) = 'HAUTEUR EXACTE  M               '
-      TEXTE (24) = 'VITESSE EXACTE  M/S             '
-      TEXTE (25) = 'SURFACE EXACTE  M               '       
+      TEXTE (23) = 'EXACT DEPTH     M               '
+      TEXTE (24) = 'EXACT VELOCITY  M/S             '
+      TEXTE (25) = 'EXACT ELEVATION M               '       
       TEXTE (26) = 'NONCONS   ELEV  M               '
+      TEXTE (27) = 'COTE MAXIMUM    M               '
+      TEXTE (28) = 'TEMPS COTE MAXI S               '
+      TEXTE (29) = 'VITESSE MAXIMUM M/S             '
+      TEXTE (30) = 'T VITESSE MAXI  S               '
+      TEXTE (31) = 'VITESSE DE FROT.M/S             '
+      TEXTE (32) = 'TAU_S           NA              '
+      TEXTE (33) = '1/R             1/M             '
 !
 ! TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
 ! A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
@@ -669,58 +704,65 @@
       TEXTPR (23) = 'VARIABLE 23     UNITES ??       '
       TEXTPR (24) = 'VARIABLE 24     UNITES ??       '
       TEXTPR (25) = 'VARIABLE 25     UNITES ??       '
-      TEXTPR (26) = 'NONCONS   ELEV  M               '
+      TEXTPR (26) = 'VARIABLE 26     UNITES ??       '
+      TEXTPR (27) = 'COTE MAXIMUM    M               '
+      TEXTPR (28) = 'TEMPS COTE MAXI S               '
+      TEXTPR (29) = 'VITESSE MAXIMUM M/S             '
+      TEXTPR (30) = 'T VITESSE MAXI  S               '
+      TEXTPR (31) = 'VITESSE DE FROT.M/S             '
+      TEXTPR (32) = 'TAU_S           NA              '
+      TEXTPR (33) = '1/R             1/M             '
 !
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-!   ALIAS DES NOMS DE VARIABLES POUR LE FICHIER DES PARAMETRES
+!   ALIASES FOR THE VARIABLES IN THE STEERING FILE
 !
 !     UVCHSBFQTKEDIJMXYPWAGLNORZ
-!     VITESSE U
+!     VELOCITY COMPONENT U
       MNEMO(1)   = 'U       '
-!     VITESSE V
+!     VELOCITY COMPONENT V
       MNEMO(2)   = 'V       '
-!     CELERITE
+!     CELERITY
       MNEMO(3)   = 'C       '
-!     HAUTEUR D'EAU
+!     WATER DEPTH
       MNEMO(4)   = 'H       '
-!     SURFACE LIBRE
+!     FREE SURFACE ELEVATION
       MNEMO(5)   = 'S       '
-!     FOND
+!     BOTTOM ELEVATION
       MNEMO(6)   = 'B       '
 !     FROUDE
       MNEMO(7)   = 'F       '
-!     DEBIT SCALAIRE
+!     FLOW RATE
       MNEMO(8)   = 'Q       '
-!     TRACEUR
-      MNEMO(9)   = 'T       '
-!     ENERGIE TURBUL.
+!     EX TRACER
+      MNEMO(9)   = '?       '
+!     TURBULENT ENERGY
       MNEMO(10)   = 'K       '
 !     DISSIPATION
       MNEMO(11)   = 'E       '
-!     VISCOSITE TURB.
+!     TURBULENT VISCOSITY
       MNEMO(12)   = 'D       '
-!     DEBIT SUIVANT X
+!     FLOWRATE ALONG X
       MNEMO(13)   = 'I       '
-!     DEBIT SUIVANT Y
+!     FLOWRATE ALONG Y
       MNEMO(14)   = 'J       '
-!     VITESSE SCALAIRE
+!     SPEED
       MNEMO(15)   = 'M       '
-!     VENT X
+!     WIND COMPONENT X
       MNEMO(16)   = 'X       '
-!     VENT Y
+!     WIND COMPONENT Y
       MNEMO(17)   = 'Y       '
-!     PRESSION ATMOS.
+!     ATMOSPHERIC PRESSURE
       MNEMO(18)   = 'P       '
-!     FROTTEMENT
+!     FRICTION
       MNEMO(19)   = 'W       '
-!     DERIVE EN X
+!     DRIFT IN X
       MNEMO(20)   = 'A       '
-!     DERIVE EN Y
+!     DRIFT IN Y
       MNEMO(21)   = 'G       '
-!     NBRE DE COURANT
+!     COURANT NUMBER
       MNEMO(22)   = 'L       '
 !     VARIABLE 23
       MNEMO(23)   = 'N       '
@@ -730,6 +772,76 @@
       MNEMO(25)   = 'R       '
 !     VARIABLE 26
       MNEMO(26)   = 'Z       '
+!     VARIABLE 27
+      MNEMO(27)   = 'MAXZ    '
+!     VARIABLE 28
+      MNEMO(28)   = 'TMXZ    '
+!     VARIABLE 29
+      MNEMO(29)   = 'MAXV    '
+!     VARIABLE 30
+      MNEMO(30)   = 'TMXV    '
+!     VARIABLE 31
+      MNEMO(31)   = 'US      '
+!
+      MNEMO(32)   = 'TAU_S   '
+!
+      MNEMO(33)   = '1/R     '
+!
+!-----------------------------------------------------------------------
+!
+!     FOURIER ANALYSES
+!
+      IF(NPERIAF.GT.0) THEN
+        DO I=1,NPERIAF
+          IF(LNG.EQ.1) THEN
+            TEXTE(34+NTRAC+2*(I-1)) =  'AMPLI PERIODE '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'M               '
+            TEXTE(35+NTRAC+2*(I-1)) =  'PHASE PERIODE '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'DEGRES          '
+            TEXTPR(34+NTRAC+2*(I-1)) =  'AMPLI PERIODE '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'M               '
+            TEXTPR(35+NTRAC+2*(I-1)) =  'PHASE PERIODE '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'DEGRES          '
+          ELSE
+            TEXTE(34+NTRAC+2*(I-1)) =  'AMPLI PERIOD  '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'M               '
+            TEXTE(35+NTRAC+2*(I-1)) =  'PHASE PERIOD  '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'DEGRES          '
+            TEXTPR(34+NTRAC+2*(I-1)) =  'AMPLI PERIOD  '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'M               '
+            TEXTPR(35+NTRAC+2*(I-1)) =  'PHASE PERIOD  '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'DEGRES          '
+          ENDIF
+          MNEMO(34+NTRAC+2*(I-1)) = 'AMPL'//I_IN_2_LETTERS(I)//'  '
+          MNEMO(35+NTRAC+2*(I-1)) = 'PHAS'//I_IN_2_LETTERS(I)//'  '
+        ENDDO
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     TRACERS
+!
+      IF(NTRAC.GT.0) THEN
+        DO I=1,NTRAC
+          TEXTE(33+I)  = NAMETRAC(I)
+          TEXTPR(33+I) = NAMETRAC(I)
+          MNEMO(33+I)  = 'T'//I_IN_2_LETTERS(I)//'   '
+        ENDDO
+!       OMEGA FOR SECONDARY CURRENTS
+        IF(SECCURRENTS) THEN
+          TEXTE(33+NTRAC) = NAMETRAC(NTRAC)
+          TEXTPR(33+NTRAC)= NAMETRAC(NTRAC)
+          MNEMO(33+NTRAC) = 'OMEGA   '
+        ENDIF
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
