@@ -75,6 +75,10 @@
    Final upgrade to the scan to sort by libraries rather than by files
    Also, checking recursive behaviour between libraries.
 """
+"""@history 29/09/2014 -- Sebastien E. Bourban
+   Addition of a new feature: the ability for the cmd_exe to create static or
+   dynamic libraries, using <libname> instead of <exename> in the command.
+"""
 """@brief
 """
 
@@ -314,14 +318,27 @@ def createExeFiles(cfg,ename,ecfg,eprog,bypass):
    chdir(LibDir)
    ExeDir = cfg['root']+sep+'builds'+sep+ecfg+sep+'bin'
    createDirectories(ExeDir)
+   cmd = cfg['MODULES'][eprog]['xexe']
 
    # ~~ Removes existing executables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if 'homere' in ename.lower() or 'systeme' in ename.lower():
-      ExeFile = path.join(ExeDir,eprog + cfg['SYSTEM']['sfx_exe'])
+      if '<exename>' in cfg['MODULES'][eprog]['xexe']:
+         ExeFile = path.join(ExeDir,eprog + cfg['SYSTEM']['sfx_exe'])
+         cmd = cmd.replace('<exename>',ExeFile).replace('<config>',LibDir).replace('<root>',cfg['root'])
+      elif '<libname>' in cfg['MODULES'][eprog]['xexe']:     # dynamic or static library
+         ExeFile = path.join(ExeDir,eprog + cfg['SYSTEM']['sfx_lib'])
+         cmd = cmd.replace('<libname>',ExeFile).replace('<config>',LibDir).replace('<root>',cfg['root'])
+      else:
+         raise Exception([{'name':'createExeFiles','msg':'Your execute commande does not include a <exename> or a <libname>. I do not know what to do with it.'}])
       ObjCmd = path.join(LibDir,eprog + '.cmdo')
       ExeCmd = path.join(LibDir,eprog + '.cmdx')
    else:
-      ExeFile = path.join(ExeDir,ename + cfg['SYSTEM']['sfx_exe'])
+      if '<exename>' in cfg['MODULES'][eprog]['xexe']:
+         ExeFile = path.join(ExeDir,ename + cfg['SYSTEM']['sfx_exe'])
+         cmd = cmd.replace('<exename>',ExeFile).replace('<config>',LibDir).replace('<root>',cfg['root'])
+      elif '<libname>' in cfg['MODULES'][eprog]['xexe']:     # dynamic or static library
+         ExeFile = path.join(ExeDir,ename + cfg['SYSTEM']['sfx_lib'])
+         cmd = cmd.replace('<libname>',ExeFile).replace('<config>',LibDir).replace('<root>',cfg['root'])
       ObjCmd = path.join(LibDir,ename + '.cmdo')
       ExeCmd = path.join(LibDir,ename + '.cmdx')
    if cfg['COMPILER']['REBUILD'] > 0 and path.exists(ExeFile): remove(ExeFile)
@@ -375,10 +392,8 @@ def createExeFiles(cfg,ename,ecfg,eprog,bypass):
    
    # ~~ creation of the exe (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe /stack:536870912 /out:postel3dV5P9.exe declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj ..\..\..\bief\bief_V5P9\1\biefV5P9.lib ..\..\..\damocles\damo_V5P9\1\damoV5P9.lib ..\..\..\paravoid\paravoid_V5P9\1\paravoidV5P9.lib ..\..\..\special\special_V5P9\1\specialV5P9.lib
-   cmd = cfg['MODULES'][eprog]['xexe']
    cmd = cmd.replace('<libs>',LibFiles)
    cmd = cmd.replace('<objs>',ObjFiles)
-   cmd = cmd.replace('<exename>',ExeFile).replace('<config>',LibDir).replace('<root>',cfg['root'])
    
    xocmd = cfg['MODULES'][eprog]['xobj']
    xocmd = xocmd.replace('<incs>',cfg['MODULES'][eprog]['incs'])
@@ -515,6 +530,7 @@ if __name__ == "__main__":
       print '\n\nScanning the source code for:\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       print '    +> configuration: ' +  cfgname
+      if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
       print '    +> root:          ' +  cfgs[cfgname]['root']
       print '    +> version:       ' +  cfgs[cfgname]['version']
       print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\

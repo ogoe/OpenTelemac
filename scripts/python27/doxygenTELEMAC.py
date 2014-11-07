@@ -523,6 +523,7 @@ if __name__ == "__main__":
    print '\n\nScanning the source code for:\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    print '    +> configuration: ' +  cfgname
+   if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
    print '    +> root:          ' +  cfgs[cfgname]['root']
    print '    +> version:       ' +  cfgs[cfgname]['version']
    print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\

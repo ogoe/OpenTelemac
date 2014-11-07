@@ -102,6 +102,10 @@
    FORTRAN file can now be refered to as directories, in which case, all files
       within it will be bundled together as one FORTRAn file.
 """
+"""@history 23/09/2014 -- Sebastien E. Bourban and Yoann Audoin
+   The content of the log files from GRETEL and PARTEL are now reported
+   in the error report.
+"""
 """@brief
          runcode is the execution launcher for all TELEMAC modules
 """
@@ -602,8 +606,12 @@ def runPARTEL(partel,file,conlim,ncsize,bypass,section_name,zone_name):
          print '    +> ',p
          tail,code = mes.runCmd(p,bypass)
       except Exception as e:
-         raise Exception([filterMessage({'name':'runPARTEL','msg':'Could not execute the following partition task:\n      '+p},e,bypass)])
-      if code != 0: raise Exception([{'name':'runPARTEL','msg':'Could not complete partition (runcode='+str(code)+').\n      '+tail+'\n      You may have forgotten to compile PARTEL with the appropriate compiler directive\n        (add -DHAVE_MPI to your cmd_obj in your configuration file).'}])
+         raise Exception([filterMessage({'name':'runPARTEL','msg':'something went wrong, I am not sure why. Here is the log:\n'+
+            '\n'.join(getFileContent('partel_'+file+'.log'))},e,bypass)])
+      if code != 0: raise Exception([{'name':'runPARTEL','msg':'Could not split your file '+file+' (runcode='+str(code)+') with the error as follows:'+
+         '\n      '+tail+
+         '\n      You may have forgotten to compile PARTEL with the appropriate compiler directive\n        (add -DHAVE_MPI to your cmd_obj in your configuration file).'+
+         '\n\nHere is the log:\n'+'\n'.join(getFileContent('partel_'+file+'.log'))}])
    return
 
 # ~~~ CCW: amended runCode to include optional listing file        ~~~
@@ -687,8 +695,8 @@ def runGRETEL(gretel,file,geom,ncsize,bypass):
    try:
       tail,code = mes.runCmd(cmd,bypass)
    except Exception as e:
-      raise Exception([filterMessage({'name':'runGRETEL','msg':'something went wrong, I am not sure why. Please verify your compilation or the python script itself.'},e,bypass)])
-   if code != 0: raise Exception([{'name':'runGRETEL','msg':'Could not split your file (runcode='+str(code)+').\n     '+file+'\n      '+tail}])
+      raise Exception([filterMessage({'name':'runGRETEL','msg':'something went wrong, I am not sure why. Here is the log:\n'+'\n'.join(getFileContent('gretel_'+file+'.log'))},e,bypass)])
+   if code != 0: raise Exception([{'name':'runGRETEL','msg':'Could not split your file '+file+' (runcode='+str(code)+') with the error as follows:'+'\n      '+tail+'\n\nHere is the log:\n'+'\n'.join(getFileContent('gretel_'+file+'.log'))}])
    return
 
 def runGREDEL(gredel,file,geom,type,ncsize,bypass):
@@ -714,10 +722,6 @@ def runGREDEL(gredel,file,geom,type,ncsize,bypass):
       where the mpi_exec command do the parallelisation
    Notes:
       - casdir is where the CAS files are.
-      - wdir is <widr> and used to store HPC_STDIN.
-        If only one CAS file, HPC_STDIN is stored within <wdir>
-        If more than one CAS file, HPC_STDIN is stored one level up
-          in casdir
       - The hpccmd is unique. The mpicmd is not (unfortunately).
 """
 def runCAS(cfgName,cfg,codeName,casNames,options):
@@ -746,8 +750,23 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    except Exception as e:
       raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])
    CASFiles = {}
-   for cas,casName in zip(cases,casNames): CASFiles.update({ path.basename(casName):{ 'code':codeName, 'cas':cas, 'dir':path.dirname(path.realpath(casName)) } })
+   # ~~ Find a common root to all CAS files ~~~~~~~~~~~~~~~~~~~~~
+   # /!\ in case of multiple CAS files, all CAS files have to leave at the same address
+   casdir = ''
+   for cas,casName in zip(cases,casNames):
+      name = path.basename(casName)
+      if casdir == '': casdir = path.dirname(path.realpath(casName))
+      elif casdir != path.dirname(path.realpath(casName)):
+         raise Exception([{'name':'runCAS','msg':'Location of more than one CAS file is not common to all:' \
+            '    +> you should have all your CAS files within the same directory'}])
+      CASFiles.update({ name:{ 'code':codeName, 'cas':cas, 'dir':casdir } })
    ncruns = len(CASFiles)
+
+   # /!\ options.mpi is True only if you are in your second call, within the HPC queue; you have already used up your HPC credits
+   if options.mpi and cfg.has_key('HPC'): cfg['HPC'] = {}
+   # /!\ hpcpass is True only if you are in your first call and you intend to do a second call with the same configuration
+   hpcpass = False
+   if cfg['HPC'] != {}: hpcpass = ( cfg['HPC'].has_key('PYCODE') )
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Common behaviours for all CAS files ~~~~~~~~~~~~~~~~~~~~~~~
@@ -758,32 +777,22 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    # Outputs ...
    #    > nctile, ncnode, ncsize
    #    > lang, casdir
-   if options.mpi and cfg.has_key('HPC'): cfg['HPC'] = {}
    print '\n... checking parallelisation'
    nctile,ncnode,ncsize = checkParaTilling(options.nctile,options.ncnode,options.ncsize,ncruns,ncsize)
-   if ( cfg['MPI'] != {} or cfg['HPC'] != {} ): ncsize = max( 1, ncsize )
-   if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize > 1:
+   if cfg['MPI'] != {}: ncsize = max( 1, ncsize )
+   elif ncsize > 1:
       raise Exception([{'name':'runCAS','msg':'parallel inconsistency: ' \
          '\n    +> you may be using an inappropriate configuration: '+cfgName+ \
          '\n    +> or may be wishing for scalar mode while setting to '+str(ncsize)+' processors'}])
-   if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ): ncsize = 0
-   hpcpass = False
-   if cfg['HPC'] != {}: hpcpass = ( cfg['HPC'].has_key('PYCODE') )
+   if cfg['MPI'] == {}: ncsize = 0      #TODO: check if this is still useful
    # ~~ Forces keyword if parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if not options.merge:
-      if lang == 1:
-         for name in CASFiles: CASFiles[name]['cas'] = \
-            setKeyValue('PROCESSEURS PARALLELES',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['frgb'],ncsize)
-      elif lang == 2:
-         for name in CASFiles: CASFiles[name]['cas'] = \
-            setKeyValue('PARALLEL PROCESSORS',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['frgb'],ncsize)
-   # ~~ Find a common root to all CAS files ~~~~~~~~~~~~~~~~~~~~~
-   casdir = ''
-   for name in CASFiles:
-      if casdir == '': casdir = CASFiles[name]['dir']
-      elif casdir != CASFiles[name]['dir']:
-         raise Exception([{'name':'runCAS','msg':'Location of more than one CAS file is not common to all:' \
-            '    +> you should have all your CAS files within the same directory'}])
+   # /!\ in case of multiple CAS files, you have to have the same ncsize
+   if lang == 1:
+      for name in CASFiles: CASFiles[name]['cas'] = \
+         setKeyValue('PROCESSEURS PARALLELES',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['frgb'],ncsize)
+   elif lang == 2:
+      for name in CASFiles: CASFiles[name]['cas'] = \
+         setKeyValue('PARALLEL PROCESSORS',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['frgb'],ncsize)
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -793,18 +802,20 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    #    - if options.compileonly, same as options.run
    #    - if options.merge, to know where to copy the ECR file from
    # Outputs ...
-   #    > wdir
+   #    > the full name of the sortie file without extension, in CASFiles[name]['sortie']
+   #    > wdir same as above but would be reset with -w option
    #    > CASFiles[name]['wir'] and CASFiles[name]['wrt']
+   #    > CASFiles[name]['dir'] is where the CAS file is from
    print '\n... handling temporary directories'
    for name in CASFiles:
-      TMPDir = processTMP(CASFiles[name]['dir']+sep+name)    #/!\ useful to sortie file name
+      TMPDir = processTMP(CASFiles[name]['dir']+sep+name)    #/!\ includes date/time in the name
       wdir = TMPDir
       CASFiles[name].update({ 'wir':wdir, 'wrt':True, 'sortie':TMPDir })
       if options.wDir != '':
          if ncruns == 1: wdir = path.join(CASFiles[name]['dir'],options.wDir)
-         else: wdir = path.join(CASFiles[name]['dir'],path.basename(name)+'_'+path.basename(options.wDir))
+         else: wdir = path.join(CASFiles[name]['dir'],path.basename(options.wDir)+'_'+name)
          CASFiles[name]['wir'] = wdir
-      if not path.exists(wdir) and not hpcpass:
+      if not path.exists(wdir):
          mkdir(wdir)
          CASFiles[name]['wrt'] = False
 
@@ -854,7 +865,6 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    if not options.merge and not options.run and not hpcpass:
       print '\n... first pass at copying all input files'
       for name in CASFiles:
-         print '    +> ',name
          # >>> Placing yourself where the CAS File is
          chdir(CASFiles[name]['dir'])
          # >>> Copy INPUT files into wdir
@@ -879,6 +889,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    # You need to do this if ...
    #    - if options.run, obvisouly this is the main executable to run
    #    - if options.compileonly, obvisouly this is the main executable to create
+   #    - if you are in your first pass of two of the HPC configuration, as you may need to update the name in the STDIN script
    if not options.merge and not options.split and not hpcpass:
       print '\n... checking the executable'
       for name in CASFiles:
@@ -926,14 +937,12 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          # >>> Compiling the executable if required
          exename = path.join(CASFiles[name]['wir'],'out_'+path.basename(useFile))
          CASFiles[name].update({ 'run':exename, 'exe':exename })
-         # ~~> no file executable compilation if hpcpass
-         if hpcpass: continue
          try:
             processExecutable(useFile,objFile,f90File,objCmd,exeCmd,options.bypass)
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS','msg':'could not compile: ' + path.basename(useFile)},e,options.bypass)])  # only one item here
          print ' re-copying: ',path.basename(useFile),exename
-         shutil.copy2(path.basename(useFile),useFile) # Why -- because we avoid having to re-compile, and we make sure we can re-create the exact same simulation
+         shutil.copy2(path.basename(useFile),path.join(CASFiles[name]['dir'],path.basename(useFile)))
          shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
    
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1053,85 +1062,9 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          # define the filename (basename) of the sortie file
          for name in CASFiles: CASFiles[name]['sortie'] = path.basename(CASFiles[name]['sortie'])+'.sortie'
 
-   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-   # ~~ Handling the HPC command ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # You need to do this if ...
-   #    - if options.run, obvisouly this is the main executable to run
-   # Inputs ...
-   #    - ncsize, nctilem ncnode, wdir, casdir, options, codeName
-   #    - cfg['HPC']['STDIN'] and cfg['MPI']['HOSTS']
-   #    - CASFiles.values()[0]['sortie'] and CASFiles.values()[0]['exe']
-   #    - CASFiles[name]['run']
-   # Outputs ...
-   #    > runcmd and putFileContent(stdinfile,)
    if not options.merge:
-      if cfg['HPC'] != {}:
-         print '\n... modifying run command to HPC instruction'
-         # ~~> HPC Command line launching runcode
-         hpccmd = getHPCCommand(cfg['HPC'])
-         #hpccmd = hpccmd.replace('<ncsize>',str(ncsize))  \
-         #hpccmd = hpccmd.replace('<nctile>',str(nctile))  |- You should not have these in the command line
-         #hpccmd = hpccmd.replace('<ncnode>',str(ncnode))  /
-         if ncruns == 1 and not hpcpass:
-            cfg['HPC'].update({ 'wdir':wdir })
-            if options.sortieFile: cfg['HPC'].update({ 'sortie':path.basename(CASFiles.values()[0]['sortie']) })
-            else: cfg['HPC'].update({ 'sortie':'absent.sortie' })
-            cfg['HPC'].update({ 'exename':path.basename(CASFiles.values()[0]['exe']) })
-         else:
-            cfg['HPC'].update({ 'wdir':casdir })
-            cfg['HPC'].update({ 'sortie':'combined.'+codeName+'.sortie' })
-            cfg['HPC'].update({ 'exename':'combined.'+codeName })
-         hpccmd = hpccmd.replace('<wdir>',cfg['HPC']['wdir'])
-         cfg['HPC'].update( {'cmd':hpccmd } )
-         # ~~> HPC queueing script
-         if cfg['HPC'].has_key('STDIN'):
-            # ~~> Replace the parameter in the hpc_stdin script
-            stdinfile = cfg['HPC']['STDIN'][0] # only one key for now
-            stdin = cfg['HPC']['STDIN'][1]
-            stdin = stdin.replace('<hosts>',cfg['MPI']['HOSTS'])
-            stdin = stdin.replace('<ncsize>',str(ncsize))
-            stdin = stdin.replace('<nctile>',str(nctile))
-            stdin = stdin.replace('<ncnode>',str(ncnode))
-            stdin = stdin.replace('<email>',options.email)
-            stdin = stdin.replace('<jobname>',options.jobname)
-            stdin = stdin.replace('<time>',strftime("%Y-%m-%d-%Hh%Mmin%Ss", localtime()))
-            stdin = stdin.replace('<queue>',options.hpc_queue)
-            stdin = stdin.replace('<walltime>',options.walltime)
-            stdin = stdin.replace('<codename>',codeName)
-            stdin = stdin.replace('\n ','\n')
-            stdin = stdin.replace('<wdir>',cfg['HPC']['wdir'])      # /!\ HPC_STDIN in the TMP directory
-            stdin = stdin.replace('<sortiefile>',cfg['HPC']['sortie'])
-            stdin = stdin.replace('<exename>',cfg['HPC']['exename'])
-            if hpcpass:
-               # ~~> Recreate the runcode.py command 
-               runcmd = 'runcode.py ' + codeName + ' --mpi '
-               if options.configName != '': runcmd = runcmd + ' -c ' + options.configName
-               if options.configFile != '': runcmd = runcmd + ' -f ' + options.configFile
-               if options.rootDir != '': runcmd = runcmd + ' -r ' + options.rootDir
-               if options.version != '': runcmd = runcmd + ' -v ' + options.version
-               if options.sortieFile: runcmd = runcmd + ' -s '
-               if options.tmpdirectory: runcmd = runcmd + ' -t '
-               if options.wDir != '': runcmd = runcmd + ' -w ' + options.wDir
-               runcmd = runcmd + ' --nctile ' + str(nctile)
-               runcmd = runcmd + ' --ncnode ' + str(ncnode)
-               runcmd = runcmd + ' --ncsize ' + str(ncsize)
-               if options.split: runcmd = runcmd + ' --split '
-               if options.compileonly: runcmd = runcmd + ' -x '
-               if options.merge: runcmd = runcmd + ' --merge '
-               if options.run: runcmd = runcmd + ' --run '
-               runcmd = runcmd + ' ' + ' '.join(CASFiles.keys())
-               stdin = stdin.replace('<py_runcode>',runcmd)         # /!\ parallel mode ?
-            else:
-               # ~~> Recreate the <mpi_exec> (option --hpc)
-               mpicmd = []
-               for name in CASFiles: mpicmd.append(CASFiles[name]['run'])
-               stdin = stdin.replace('<mpi_cmdexec>','\n'.join(mpicmd))   # /!\ serial mode
-            # ~~> Special case
-            if hpcpass: cfg['HPC']['sortie'] = None
-            # ~~> Write to HPC_STDIN
-            chdir(cfg['HPC']['wdir'])
-            putFileContent(stdinfile,stdin.split('\n'))
-
+      print '\n\nRunning your simulation(s) :\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # You need to do this if ...
@@ -1141,25 +1074,91 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    # Inputs ...
    #    - runcmd if options.hpc
    #    - CASFiles[name]['run'] and CASFiles[name]['sortie'] otherwise
-   if not options.merge:
-      print '\n\nRunning your simulation(s) :\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-      if cfg['HPC'] != {}:
-         chdir(cfg['HPC']['wdir'])
-         if not runCode(cfg['HPC']['cmd'],cfg['HPC']['sortie']):
-            raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
-         print '\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-         print '... Your simulation has been launched through the queue.\n'
-         if hpcpass: print '   +> You need to wait for completion before checking on results.\n'
-         else: print '   +> You need to wait for completion before re-collecting files using the option --merge\n'
-         return []          # HPC lunch only: do not proceed any further from that end
-      else: # case of codename or mpi launch
-         # This should be done in parallel when multiple CASFiles
-         for name in CASFiles:
+      if cfg['HPC'] == {}:
+         for name in CASFiles:  # /!\ This should be done in parallel when multiple CASFiles
             chdir(CASFiles[name]['wir'])
             print '\n\n'+CASFiles[name]['run']+'\n\n'
+            # ~~> here you go run
             if not runCode(CASFiles[name]['run'],CASFiles[name]['sortie']):
                raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
+
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Handling the HPC before running ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # You need to do this if ...
+   #    - if options.run, obvisouly this is the main executable to run
+   # Inputs ...
+   #    - ncsize, nctilem ncnode, wdir, casdir, options, codeName
+   #    - cfg['HPC']['STDIN'] and cfg['MPI']['HOSTS']
+   #    - CASFiles.values()[0]['sortie'] and CASFiles.values()[0]['exe']
+   #    - CASFiles[name]['run']
+   # Outputs ...
+   #    > runcmd and putFileContent(stdinfile,)
+      elif not cfg['HPC'].has_key('STDIN'):
+         raise Exception([{'name':'runCAS','msg':'\nI would need the key hpc_stdin in you configuration so I can launch your simulation on the HPC queue.'}])
+      else:
+         for name in CASFiles:  # /!\ This is being done in parallel when multiple CASFiles
+            chdir(CASFiles[name]['wir'])
+            print '\n... modifying run command to HPC instruction'
+            # ~~> HPC Command line launching runcode
+            hpccmd = getHPCCommand(cfg['HPC'])
+            if not hpcpass: hpccmd = hpccmd.replace('<wdir>',CASFiles[name]['wir'])
+            else: hpccmd = hpccmd.replace('<wdir>',CASFiles[name]['dir'])
+            # ~~> HPC queueing script
+            stdinfile = cfg['HPC']['STDIN'][0]   # only one key for now
+            stdin = cfg['HPC']['STDIN'][1]
+            if cfg['MPI'] != {}: stdin = stdin.replace('<hosts>',cfg['MPI']['HOSTS'])
+            stdin = stdin.replace('<ncsize>',str(ncsize))
+            stdin = stdin.replace('<nctile>',str(nctile))
+            stdin = stdin.replace('<ncnode>',str(ncnode))
+            stdin = stdin.replace('<email>',options.email)
+            if ncruns == 1: stdin = stdin.replace('<jobname>',options.jobname)
+            else: stdin = stdin.replace('<jobname>',name)
+            stdin = stdin.replace('<time>',strftime("%Y-%m-%d-%Hh%Mmin%Ss", localtime()))
+            stdin = stdin.replace('<queue>',options.hpc_queue)
+            stdin = stdin.replace('<walltime>',options.walltime)
+            stdin = stdin.replace('<codename>',codeName)
+            stdin = stdin.replace('\n ','\n')
+            if not hpcpass: stdin = stdin.replace('<wdir>',CASFiles[name]['wir'])      # /!\ HPC_STDIN in the TMP directory
+            else: stdin = stdin.replace('<wdir>',CASFiles[name]['dir'])
+            sortie = 'hpc-job.sortie'
+            if options.sortieFile: sortie = CASFiles[name]['sortie']
+            stdin = stdin.replace('<sortiefile>',sortie)
+            # ~~> Recreate the <mpi_exec> (option --hpc)
+            if not hpcpass:
+               if 'exe' in CASFiles[name]: stdin = stdin.replace('<exename>',path.basename(CASFiles[name]['exe']))
+               else: stdin = stdin.replace('<exename>',CASFiles[name]['run'])
+               stdin = stdin.replace('<mpi_cmdexec>',CASFiles[name]['run'])   # /!\ serial mode
+            # ~~> Recreate the runcode.py command 
+            else:
+               stdin = stdin.replace('<exename>',name)
+               runcmd = 'runcode.py ' + codeName + ' --mpi '
+               if options.configName != '': runcmd = runcmd + ' -c ' + options.configName
+               if options.configFile != '': runcmd = runcmd + ' -f ' + options.configFile
+               if options.rootDir != '': runcmd = runcmd + ' -r ' + options.rootDir
+               if options.version != '': runcmd = runcmd + ' -v ' + options.version
+               runcmd = runcmd + ' -s '
+               if options.tmpdirectory: runcmd = runcmd + ' -t '
+               runcmd = runcmd + ' -w ' + CASFiles[name]['wir']
+               runcmd = runcmd + ' --nctile ' + str(nctile)
+               runcmd = runcmd + ' --ncnode ' + str(ncnode)
+               runcmd = runcmd + ' --ncsize ' + str(ncsize)
+               if options.split: runcmd = runcmd + ' --split '
+               if options.compileonly: runcmd = runcmd + ' -x '
+               if options.merge: runcmd = runcmd + ' --merge '
+               if options.run: runcmd = runcmd + ' --run '
+               runcmd = runcmd + ' ' + name
+               stdin = stdin.replace('<py_runcode>',runcmd)
+            # ~~> Write to HPC_STDIN
+            chdir(CASFiles[name]['wir'])
+            putFileContent(stdinfile,stdin.split('\n'))
+
+            # ~~> here you go run
+            if not runCode(hpccmd,sortie):
+               raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
+            print '... Your simulation ('+name+') has been launched through the queue.\n'
+            if hpcpass: print '   +> You need to wait for completion before checking on results.\n'
+            else: print '   +> You need to wait for completion before re-collecting files using the option --merge\n'
+         return []
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Getting out if run only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1257,7 +1256,9 @@ def main(module=None):
    parser.add_option("-w", "--workdirectory",type="string",dest="wDir",default='',
       help="specify whether to re-run within a defined subdirectory" )
    # ~~> HPC / parallel
-   parser.add_option("--jobname",type="string",dest="jobname",default='job_unamed',
+   if module is None: parser.add_option("--jobname",type="string",dest="jobname",default=path.basename(sys.argv[0]),
+      help="specify a jobname for HPC queue tracking" )
+   else: parser.add_option("--jobname",type="string",dest="jobname",default=module,
       help="specify a jobname for HPC queue tracking" )
    parser.add_option("--queue",type="string",dest="hpc_queue",default='',
       help="specify a queue for HPC queue tracking" )
@@ -1342,6 +1343,7 @@ def main(module=None):
    print '\n\nRunning your CAS file for:\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    print '    +> configuration: ' +  cfgname
+   if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
    print '    +> root:          ' +  cfgs[cfgname]['root']
    print '    +> version        ' +  cfgs[cfgname]['version']
    if options.wDir != '':

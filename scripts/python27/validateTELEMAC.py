@@ -64,14 +64,14 @@
          The new class REPORT has been created to group the specifics.
 """
 """@history 07/03/2013 -- Juliette Parisi
-         New options created : --runcase, --postprocess, --criteria to run
+         New options created : --runcase, --postprocess, --casting to run
          respectively the simulation, the post process steps and the validation
-         criteria. A validation summary is produced for each step.
+         casting. A validation summary is produced for each step.
 		 Before running one the step, the previous step Validation Summary is read
 		 in order to run only successful cases in the next step.
 """
 """@history 28/04/2013 -- Juliette Parisi and Sebastien Bourban
-   Re-work of the options --runcase, --postprocess, --criteria in
+   Re-work of the options --runcase, --postprocess, --casting in
       order to combine them with previous --action, --draw options.
    This should make the whole process more generic.
    Wiki documentation remains to be done.
@@ -90,112 +90,154 @@ from copy import deepcopy
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserXML import runXML
-from utils.messages import MESSAGES,filterMessage
+from utils.messages import MESSAGES,filterMessage,reprMessage
 from utils.files import checkSymLink,moveFile2File,putFileContent
 
-# _____                         ____________________________________
-# ____/ Primary Class: REPORTs /___________________________________/
-# TODO: Differentiate reports for action
-#      - needs implementation in runXML
-#      - need a report.tic() and report.toc()
+# _____                        _____________________________________
+# ____/ Primary Class: REPORT /____________________________________/
+#
 
+"""
+ The principal object in REPORT is self.reports.
+ It has the following structure:
+   { "repname" :
+      { "xmlfile1":{},"xmlfile2":{},... }
+   }
+ where each "xmlfile" dict has the following keys:
+   [ '', '', '' ]
+ and where the various "root" are roots to a particular branch of the system.
+ 
+"""
 class REPORT:
 
    # Constant definition
    comment = '#'
    delimiter = ','
+   # Arbitrary associations between report headers and the return of the XML keys
+   heads = [
+      'XML Name',
+      'Total Duration (s)',
+      'Action Name',
+      'XML Path',
+      'Action Failed',
+      'Action Warned',
+      'Action Rank',
+      'Action Updated',
+      'Action Result',
+      'Action Meta-Data' ]
+   hkeys = [
+      'file',
+      'duration',
+      'xref',
+      'path',
+      'fail',
+      'warn',
+      'rank',
+      'updt',
+      'value',
+      'title' ]
 
+   """
+      Initialisation
+      - repname: a user defined name, which will distinguish one report from another
+   """
    def __init__(self,repname):
       self.reports = {}
+      # > fileFields makes up the name of the report file, stored at the root of the system
       self.fileFields = [ '[version]', repname, time.strftime("%Y-%m-%d-%Hh%Mmin%Ss", time.localtime(time.time())) ]
-      self.fileHeader = []
 
-   def add(self,root,repname,module,version):
-      if repname == '': return
+   """
+      Adds a new report to the list of reports.
+      The reference key for that additional report is the repname
+      - root: the root of a particular system branch
+   """
+   def add(self,repname,root,version):
+      if repname == '': return {}
+      
       # ~~> Current file name
       self.fileFields[0] = version
       self.fileFields[1] = repname
-      if not repname in self.reports: self.reports.update({ repname:{} })
-      self.fileName = path.join( root, '_'.join(self.fileFields)+'.csv' )
+      fileName = path.join( root, '_'.join(self.fileFields)+'.csv' )
+      if not repname in self.reports: self.reports.update({ repname:{ 'head':[],'core':{},'file':[] } })
+      if fileName not in self.reports[repname]['file']: self.reports[repname]['file'].append(fileName)
       # ~~> Possible existing file name
-      dirpath, _, filenames = walk(root).next()
-      for filename in filenames:
-         n,e = path.splitext(filename)
+      dirpath, _, files = walk(root).next()
+      for file in files:
+         n,e = path.splitext(file)
+         if e != '.csv': continue
          n = n.split('_')
-         if e =='.csv' and n[0] == version and repname in n[1]:
-            if path.join(dirpath,filename) != self.fileName:
-               print '      +> Moving existing: ' + n[2] + ' to ' + path.basename(self.fileName)
-               moveFile2File(path.join(dirpath,filename),self.fileName)
-               self.loadHead(self.fileName)
-               self.reports[repname].update(self.loadCore(self.fileName))
-      # ~~> Storage facility
-      if not module in self.reports[repname]: self.reports[repname].update({ module:{}, 'file':self.fileName })
-   
-   def update(self,repname,module,caseName,caseValue):
-      if repname == '': return
-      if repname in self.reports:
-         if module in self.reports[repname]:
-            self.reports[repname][module].update({ caseName:caseValue })
+         if len(n) < 3: continue
+         if n[0] == version and repname in n[1]:
+            if path.join(dirpath,file) != fileName:
+               print '      +> Moving existing: ' + n[2] + ' to ' + path.basename(fileName)
+               moveFile2File(path.join(dirpath,file),fileName)
+               self.reports[repname].update({ 'head':self.loadHead(fileName) })
+               self.reports[repname].update({ 'core':self.loadCore(fileName) })
+      
+      return self.reports[repname]['core']
 
    def loadHead(self,fileName):
-      self.fileHeader = []
-      File = open(fileName,'r')
-      for line in File:
-         if line[0] == self.comment: self.fileHeader.append(line.strip())
+      r = []
+      file = open(fileName,'r')
+      for line in file:
+         if line[0] == self.comment: r.append(line.strip())
          else: break
-      File.close()
+      file.close()
+      return r
 
    def loadCore(self,fileName):
-      report = {}
-      headrow = ''
+      r = {}
+      headrow = []
+      corerow = ''
       # ~~> Opening
-      File = open(fileName,'r')
+      file = open(fileName,'r')
       # ~~> Parsing head row
-      for line in File:
+      for line in file:
          if line[0] == self.comment: continue
-         if headrow == '': headrow = line.strip().split(self.delimiter)
+         if headrow == []: headrow = line.split(self.delimiter)
          else:
-            corerow = line.strip().split(self.delimiter)
-            if corerow[0] not in report: report.update({ corerow[0]:{}, 'file':fileName })
-            report[corerow[0]].update({ corerow[1]:{} })
-            for i,k in zip(range(len(headrow)),corerow[2:]):
-               if k != '': report[corerow[0]][corerow[1]].update({ headrow[i+2]:k })
+            corerow = line.replace('"','').split(self.delimiter)
+            caseName = corerow[self.hkeys.index('file')]
+            if caseName not in r: r.update({ caseName:{ 'casts':[] } })           # name of the xml file
+            r[caseName]['file'] = path.join(corerow[self.hkeys.index('path')],caseName)
+            r[caseName]['duration'] = float(corerow[self.hkeys.index('duration')])            
+            cast = {}
+            if corerow[self.hkeys.index('fail')] != '': cast.update({ 'fail': ( 'true' in corerow[self.hkeys.index('fail')].lower() ) })
+            if corerow[self.hkeys.index('warn')] != '': cast.update({ 'warn': ( 'true' in corerow[self.hkeys.index('warn')].lower() ) })
+            if corerow[self.hkeys.index('updt')] != '': cast.update({ 'updt': ( 'true' in corerow[self.hkeys.index('updt')].lower() ) })
+            cast.update({ 'value': corerow[self.hkeys.index('value')] })
+            cast.update({ 'rank': corerow[self.hkeys.index('rank')] })
+            cast.update({ 'title': corerow[self.hkeys.index('title')] })
+            cast.update({ 'xref': corerow[self.hkeys.index('xref')] })
+            r[caseName]['casts'].append( cast )
       # ~~> closure
-      File.close()
-      return report
+      file.close()
+      return r
 
    def dump(self):   # /!\ TODO:(JCP) Update with CSV call functionalities (?)
       if self.reports == {}: return
       contents = {}
-      headrows = ['Module','Case']
-      # ~~> Copy the default header
-      for n in self.reports:
-         if self.reports[n]['file'] not in contents:
-            content = deepcopy(self.fileHeader)
-            contents.update({ self.reports[n]['file']:content })
-      # ~~> Identify all entry names / keys for the header row
-      for n in self.reports:                        # repname (could be "Validation-Summary")
-         for m in self.reports[n]:                  # codename (could be stbtel)
-            if m == 'file': continue
-            for z in self.reports[n][m]:            # case name (could adcirc)
-               if z == 'Case': continue
-               for k in self.reports[n][m][z]:      # reported keys (one of which is Duration)
-                  if k not in headrows: headrows.append(k)
-         contents[self.reports[n]['file']].append(self.delimiter.join(headrows))
+      # ~~> Copy the default header in all files
+      for repName in self.reports:
+         for fileName in self.reports[repName]['file']:
+            if fileName not in contents:
+               content = deepcopy(self.reports[repName]['head'])
+               content.append(self.delimiter.join(self.heads))
+               contents.update({ fileName:content })
       # ~~> Line template for those absenties
       emptyline = []
-      for k in headrows: emptyline.append('')
+      for head in self.heads: emptyline.append('')
       # ~~> Copy the core passed/failed vallues
-      for n in self.reports:
-         for m in self.reports[n]:
-            if m == 'file': continue
-            for z in self.reports[n][m]:
-               if z == 'Case': continue
-               for k in self.reports[n][m][z]:
+      for repName in self.reports:                                  # repname  (could be "Validation-Summary")
+         for fileName in self.reports[repName]['file']:             # filename (root dependant)
+            for caseName in self.reports[repName]['core']:          # case name (could bumpflu.xml)
+               for cast in self.reports[repName]['core'][caseName]['casts']:
                   line = deepcopy(emptyline)
-                  line[0] = m; line[1] = z
-                  line[headrows.index(k)] = str(self.reports[n][m][z][k])
-               contents[self.reports[n]['file']].append( self.delimiter.join(line) )
+                  for key in cast: line[self.hkeys.index(key)] = '"'+str(cast[key])+'"'
+                  line[self.hkeys.index('file')] = caseName
+                  line[self.hkeys.index('path')] = path.dirname(self.reports[repName]['core'][caseName]['file'])
+                  line[self.hkeys.index('duration')] = str(self.reports[repName]['core'][caseName]['duration'])
+                  contents[fileName].append( self.delimiter.join(line) )
       for fileName in contents:
          putFileContent(fileName,contents[fileName])
 
@@ -272,9 +314,9 @@ if __name__ == "__main__":
       help="filter specific actions from the XML file, and will only do these by default" )
    parser.add_option("--draw",type="string",dest="drawing",default='',
       help="filter specific drawings from the XML file, and will only do these by default" )
-   parser.add_option("--get",type="string",dest="extraction",default='',
+   parser.add_option("--save",type="string",dest="saving",default='',
       help="filter specific data extractions from the XML file and will only do these by default" )
-   parser.add_option("--test",type="string",dest="criteria",default='',
+   parser.add_option("--cast",type="string",dest="casting",default='',
       help="filter specific drawing actions from the XML file, and will only do these" )
    parser.add_option("--report",type="string",dest="report",default='',
       help="will create a report summary of with your chosen middle name" )
@@ -304,56 +346,55 @@ if __name__ == "__main__":
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
 
-
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~ Manage options to run only ranked actions ~~~~~~~~~~~~~~~~~~~~
 #
 # if no option are set, then all will be available
-#   as a results: todos = {'test': {'todo': '', 'rank': 0}, 'draw': {'todo': '', 'rank': 0}, 'get': {'todo': '', 'rank': 0}, 'act': {'todo': '', 'rank': 0}}
+#   as a results: todos = {'cast': {'todo': '', 'rank': 0}, 'draw': {'todo': '', 'rank': 0}, 'save': {'todo': '', 'rank': 0}, 'act': {'todo': '', 'rank': 0}}
 #   where if rank=0, it can be divided by all prime numbers
 #
 # if one option is set, for instance --act prnci, then all not set will be turned off
-#   as a result: todos = {'test': {'todo': '', 'rank': -1}, 'draw': {'todo': '', 'rank': -1}, 'get': {'todo': '', 'rank': -1}, 'act': {'todo': 'princi', 'rank': 0}}
+#   as a result: todos = {'cast': {'todo': '', 'rank': -1}, 'draw': {'todo': '', 'rank': -1}, 'save': {'todo': '', 'rank': -1}, 'act': {'todo': 'princi', 'rank': 0}}
 #   where 1 or -1 is used to turn off an option as it cannot be divided by any prime number
 #
 # if --rank is used, then all are sreset accordingly, for instance --rank 2.0.1.1
-#   as a result: todos = {'test': {'todo': 'none', 'rank': 1}, 'draw': {'todo': '', 'rank': 0}, 'get': {'todo': 'none', 'rank': 1}, 'act': {'todo': '', 'rank': 2}}
-#   where the numbers are associated to act,draw,get and test respectively
+#   as a result: todos = {'cast': {'todo': 'none', 'rank': 1}, 'draw': {'todo': '', 'rank': 0}, 'save': {'todo': 'none', 'rank': 1}, 'act': {'todo': '', 'rank': 2}}
+#   where the numbers are associated to act,draw,save and cast respectively
 #
-   if options.action + options.drawing + options.extraction + options.criteria == '' :
+   if options.action + options.drawing + options.saving + options.casting == '' :
       # rank = 0 can be divided by all prime numbers
       options.todos = { 'act':{'rank':0,'todo':options.action},
          'draw':{'rank':0,'todo':options.drawing},
-         'get':{'rank':0,'todo':options.extraction},
-         'test':{'rank':0,'todo':options.criteria} }
+         'save':{'rank':0,'todo':options.saving},
+         'cast':{'rank':0,'todo':options.casting} }
    # else, only those options will be avaiable at their specific rank
    else:
       # rank =1 or -1 cannot be divided by any prime number
       options.todos = { 'act':{'rank':-1,'todo':''},
          'draw':{'rank':-1,'todo':''},
-         'get':{'rank':-1,'todo':''},
-         'test':{'rank':-1,'todo':''} }
+         'save':{'rank':-1,'todo':''},
+         'cast':{'rank':-1,'todo':''} }
       if options.action != '': options.todos['act'] = {'rank':0,'todo':options.action}
       if options.drawing != '': options.todos['draw'] = {'rank':0,'todo':options.drawing}
-      if options.extraction != '': options.todos['get'] = {'rank':0,'todo':options.extraction}
-      if options.criteria != '': options.todos['test'] = {'rank':0,'todo':options.criteria}
+      if options.saving != '': options.todos['save'] = {'rank':0,'todo':options.saving}
+      if options.casting != '': options.todos['cast'] = {'rank':0,'todo':options.casting}
    # however, if rank is present, then it takes over
    if options.rank != '':
       rank = options.rank.split('.')
       if len(rank) == 1: rank = [ rank[0],rank[0],rank[0],rank[0] ]
       if len(rank) != 4:
          print '\nNot able to decode you rank: ' + options.rank
-         print ' ... it should be something like 2.3.1.0, where the numbers are associated to act,draw,get and test respectively,'
-         print '     or it could be just one integer, in which case rank will associate the integer to act,draw,get and test.'
+         print ' ... it should be something like 2.3.1.0, where the numbers are associated to act,draw,save and cast respectively,'
+         print '     or it could be just one integer, in which case rank will associate the integer to act,draw,save and cast.'
          sys.exit(1)
       options.todos['act']['rank'] = int(rank[0])
       if abs(options.todos['act']['rank']) == 1:  options.todos['act']['todo'] = 'none'
       options.todos['draw']['rank'] = int(rank[1])
       if abs(options.todos['draw']['rank']) == 1:  options.todos['draw']['todo'] = 'none'
-      options.todos['get']['rank'] = int(rank[2])
-      if abs(options.todos['get']['rank']) == 1:  options.todos['get']['todo'] = 'none'
-      options.todos['test']['rank'] = int(rank[3])
-      if abs(options.todos['test']['rank']) == 1:  options.todos['test']['todo'] = 'none'
+      options.todos['save']['rank'] = int(rank[2])
+      if abs(options.todos['save']['rank']) == 1:  options.todos['save']['todo'] = 'none'
+      options.todos['cast']['rank'] = int(rank[3])
+      if abs(options.todos['cast']['rank']) == 1:  options.todos['cast']['todo'] = 'none'
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Forces not to use any Xwindows backend for Jenkins ~~~~~~~~~~
@@ -364,8 +405,10 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    xcpts = MESSAGES()
+   if options.version == '': VERSION = 'report'
+   else: VERSION = options.version
 # ~~~~ Reporting summary ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   report = REPORT(options.report)
+   reports = REPORT(options.report)
 
    if args != []:
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -399,9 +442,26 @@ if __name__ == "__main__":
          print '\n\nFocused validation on ' + xmlFile + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
          try:
-            runXML(path.realpath(xmlFile),xmls[xmlFile],options.bypass)
+            report = reports.add(options.report,PWD,VERSION)
          except Exception as e:
             xcpts.addMessages([filterMessage({'name':'runXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
+            break
+         r = []
+         if xmlFile.replace(PWD,'') in report: r = report[xmlFile.replace(PWD,'')]['casts']
+         try:
+            tic = time.time()
+            r = runXML(path.realpath(xmlFile),xmls[xmlFile],r,options.bypass)
+            toc = time.time()
+            #if r == []: r = [{ 'fail':False, 'warn':False, 'value':1, 'title':'My work is done' }]
+            report.update({ xmlFile.replace(PWD,''):
+               { 'duration':toc-tic, 'file':path.realpath(xmlFile), 'casts':r } })
+         except Exception as e:
+            mes = filterMessage({'name':'runXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)
+            xcpts.addMessages([mes])
+            report.update({ xmlFile.replace(PWD,''):
+               { 'duration':0, 'file':path.realpath(xmlFile),
+                  'casts':[{ 'xref':'*****', 'fail':True, 'warn':True, 'updt':True, 'rank':-1, 'value':0, 'title':reprMessage([mes]).replace('\n','') }]
+               } })
 
    else:
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -411,10 +471,8 @@ if __name__ == "__main__":
       xmls = {}; nxmls = 0
       for cfgname in cfgs:
          # still in lower case
-         if options.rootDir != '': 
-            cfgs[cfgname]['root'] = path.abspath(options.rootDir)
-            root = path.abspath(options.rootDir)
-         else : root = cfgs[cfgname]['root']
+         if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
+         root = cfgs[cfgname]['root']
          if options.version != '': cfgs[cfgname]['version'] = options.version
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
          cfgs[cfgname]['display'] = options.display
@@ -425,7 +483,6 @@ if __name__ == "__main__":
          if options.cleanup: cfg['REBUILD'] = 2
          # gathering XMLs
          for codeName in cfg['VALIDATION']:
-            report.add(root,options.report,codeName,cfgs[cfgname]['version'])
             xmlKeys = cfg['VALIDATION'][codeName]
             if not codeName in xmls: xmls.update({codeName:{}})
             for key in xmlKeys:
@@ -452,19 +509,30 @@ if __name__ == "__main__":
                print '     XML file: ' + xmlFile + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
                try:
+                  report = reports.add(options.report,root,VERSION)
+               except Exception as e:
+                  xcpts.addMessages([filterMessage({'name':'runXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
+                  break
+               r = []
+               if path.realpath(xmlFile).replace(root,'') in report: r = report[path.realpath(xmlFile).replace(root,'')]['casts']
+               try:
                   tic = time.time()
-                  r = runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass)
+                  r = runXML(xmlFile,xmls[codeName][key][xmlFile],r,options.bypass)
                   toc = time.time()
-                  r.update({'Duration (s)':toc-tic})
-                  report.update(options.report,codeName,key,r)
+                  #if r == []: r = [{ 'fail':False, 'warn':False, 'value':1, 'title':'My work is done' }]
+                  report.update({ path.realpath(xmlFile).replace(root,''):
+                     { 'duration':toc-tic, 'file':path.realpath(xmlFile), 'casts':r } })
                except Exception as e:
                   mes = filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)
                   xcpts.addMessages([mes])
-                  report.update(options.report,codeName,key,{'Failure':'x'}) #\n'+reprMessage([mes]))
+                  report.update({ path.realpath(xmlFile).replace(root,''):
+                     { 'duration':0, 'file':path.realpath(xmlFile),
+                        'casts':[{ 'xref':'*****', 'fail':True, 'warn':True, 'updt':True, 'rank':-1, 'value':0, 'title':reprMessage([mes]).replace('\n','') }]
+                     } })
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<         
 # ~~~~ Writes the Validation Report in a CSV file ~~~~~~~~~~~~~~~~~~~~
-      report.dump()
+   reports.dump()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

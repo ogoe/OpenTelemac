@@ -283,7 +283,7 @@ def getValuePolyplanSLF(hook,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,va
          f.read(4)
 
    return z
-
+   
 def getEndianFromChar(f,nchar):
    pointer = f.tell()
    endian = ">"       # "<" means little-endian, ">" means big-endian
@@ -664,7 +664,8 @@ class SELAFIN:
       endian = self.fole['endian']
       ftype,fsize = self.fole['float']
       # Print time record
-      f.write(pack(endian+'i'+ftype+'i',4,self.tags['times'][t],4))
+      if type(t) == type(0.0): f.write(pack(endian+'i'+ftype+'i',4,t,4))
+      else: f.write(pack(endian+'i'+ftype+'i',4,self.tags['times'][t],4))
 
    def appendCoreVarsSLF( self,VARSOR ):
       f = self.fole['hook']

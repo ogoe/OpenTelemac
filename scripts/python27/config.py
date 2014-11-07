@@ -1036,6 +1036,7 @@ if __name__ == "__main__":
       cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
 
       print cfgname + ': \n    '
+      if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
       print '    +> root:    ',cfg['root']
       print '    +> version: ',cfg['version']
       print '    +> module:  ',' / '.join(cfg['MODULES'].keys())

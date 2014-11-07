@@ -20,7 +20,7 @@
 #
 # ~~> dependencies towards standard python
 import sys
-#import matplotlib
+from copy import deepcopy
 import numpy as np
 # ~~> matplotlib and pyplot
 import matplotlib as mpl
@@ -31,153 +31,179 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm                                  # used for colour maps
 #from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.collections as collections                # used for collections
+# ~~> dependencies towards other mtlplots
+from plotTELEMAC import getColourMap
 # ~~> dependencies towards other pytel/modules
-from parsers.parserSELAFIN import SELAFIN,getValuePolylineSLF,subsetVariablesSLF,getValuePolyplanSLF
-from samplers.meshes import xysLocateMesh,sliceMesh
-from parsers.parserStrings import parseArrayFrame,parseArrayPoint,parseArrayPaires,parseArrayGrid
+from samplers.mycast import Caster,whatVarsSLF
+from parsers.parserSELAFIN import SELAFIN,SELAFINS
+from parsers.parserStrings import parseArrayFrame
 
-# _____                         ____________________________________
-# ____/ Primary Method:Extract /___________________________________/
+# _____               ______________________________________________
+# ____/ Default DECO /_____________________________________________/
 #
 
-def getKDTree(MESHX,MESHY,IKLE):
-   from scipy.spatial import cKDTree
-   isoxy = np.column_stack((np.sum(MESHX[IKLE],axis=1)/3.0,np.sum(MESHY[IKLE],axis=1)/3.0))
-   return cKDTree(isoxy)
+decoDefault = {
+   "size":'', "dpi":'', "ratio2d": '', "title": '', "roi": '', "type":'',
+   ### LINES
+   # See http://matplotlib.org/api/artist_api.html#module-matplotlib.lines for more
+   # information on line properties.
+   'lines.linewidth'          : 0.5,            # line width in points
+   'lines.linestyle'          : '-',            # solid line
+   'lines.color'              : 'blue',         # has no affect on plot(); see axes.color_cycle
+   'lines.marker'             : None,           # the default marker
+   'lines.markeredgewidth'    : 0.5,            # the line width around the marker symbol
+   'lines.markersize'         : 6,              # markersize, in points
+   'lines.dash_joinstyle'     : 'miter',        # miter|round|bevel
+   'lines.dash_capstyle'      : 'butt',         # butt|round|projecting
+   'lines.solid_joinstyle'    : 'miter',        # miter|round|bevel
+   'lines.solid_capstyle'     : 'projecting',   # butt|round|projecting
+   'lines.antialiased'        : True,           # render lines in antialised (no jaggies)
+   ### AXES
+   # default face and edge color, default tick sizes,
+   # default fontsizes for ticklabels, and so on.  See
+   # http://matplotlib.org/api/axes_api.html#module-matplotlib.axes
+   'axes.hold'               : True,           # whether to clear the axes by default on
+   'axes.facecolor'          : 'white',        # axes background color
+   'axes.edgecolor'          : 'black',        # axes edge color
+   'axes.linewidth'          : 1.0,            # edge linewidth
+   'axes.grid'               : False,          # display grid or not
+   'axes.titlesize'          : 'large',        # fontsize of the axes title
+   'axes.labelsize'          : 'medium',       # fontsize of the x any y labels
+   'axes.labelweight'        : 'normal',       # weight of the x and y labels
+   'axes.labelcolor'         : 'black',
+   'axes.axisbelow'          : False,          # whether axis gridlines and ticks are below
+                                               # the axes elements (lines, text, etc)
+   'axes.formatter.limits'   : [-7, 7],        # use scientific notation if log10
+                                               # of the axis range is smaller than the
+                                               # first or larger than the second
+   'axes.formatter.use_locale' : False,        # When True, format tick labels
+                                               # according to the user's locale.
+                                               # For example, use ',' as a decimal
+                                               # separator in the fr_FR locale.
+   'axes.formatter.use_mathtext' : False,      # When True, use mathtext for scientific
+                                               # notation.
+   'axes.unicode_minus'      : True,           # use unicode for the minus symbol
+                                               # rather than hyphen.  See
+                                               # http://en.wikipedia.org/wiki/Plus_and_minus_signs#Character_codes
+   'axes.color_cycle'        : [ 'b', 'g', 'r', 'c', 'm', 'y', 'k' ],
+                                               # color cycle for plot lines
+                                               # as list of string colorspecs:
+                                               # single letter, long name, or
+                                               # web-style hex
+   'axes.xmargin'            : 0,              # x margin.  See `axes.Axes.margins`
+   'axes.ymargin'            : 0,              # y margin See `axes.Axes.margins`
+   'polaraxes.grid'          : True,           # display grid on polar axes
+   'axes3d.grid'             : True,           # display grid on 3d axes
+   ### TICKS
+   # see http://matplotlib.org/api/axis_api.html#matplotlib.axis.Tick
+   'xtick.major.size'         : 4,             # major tick size in points
+   'xtick.minor.size'         : 2,             # minor tick size in points
+   'xtick.major.width'        : 0.5,           # major tick width in points
+   'xtick.minor.width'        : 0.5,           # minor tick width in points
+   'xtick.major.pad'          : 4,             # distance to major tick label in points
+   'xtick.minor.pad'          : 4,             # distance to the minor tick label in points
+   'xtick.color'              : 'k',           # color of the tick labels
+   'xtick.labelsize'          : 'medium',      # fontsize of the tick labels
+   'xtick.direction'          : 'in',          # direction: in, out, or inout
+   'ytick.major.size'         : 4,             # major tick size in points
+   'ytick.minor.size'         : 2,             # minor tick size in points
+   'ytick.major.width'        : 0.5,           # major tick width in points
+   'ytick.minor.width'        : 0.5,           # minor tick width in points
+   'ytick.major.pad'          : 4,             # distance to major tick label in points
+   'ytick.minor.pad'          : 4,             # distance to the minor tick label in points
+   'ytick.color'              : 'k',           # color of the tick labels
+   'ytick.labelsize'          : 'medium',      # fontsize of the tick labels
+   'ytick.direction'          : 'in',          # direction: in, out, or inout
+   ### GRIDS
+   'grid.color'               : 'black',       # grid color
+   'grid.linestyle'           : ':',           # dotted
+   'grid.linewidth'           : 0.5,           # in points
+   'grid.alpha'               : 1.0,           # transparency, between 0.0 and 1.0
+   ### LEGEND
+   'legend.fancybox'           : False,        # if True, use a rounded box for the
+                                               # legend, else a rectangle
+   'legend.isaxes'             : True,
+   'legend.numpoints'          : 2,            # the number of points in the legend line
+   'legend.fontsize'           : 'large',
+   'legend.borderpad'          : 0.5,          # border whitespace in fontsize units
+   'legend.markerscale'        : 1.0,          # the relative size of legend markers vs. original
+                                               # the following dimensions are in axes coords
+   'legend.labelspacing'       : 0.5,          # the vertical space between the legend entries in fraction of fontsize
+   'legend.handlelength'       : 2.,           # the length of the legend lines in fraction of fontsize
+   'legend.handleheight'       : 0.7,          # the height of the legend handle in fraction of fontsize
+   'legend.handletextpad'      : 0.8,          # the space between the legend line and legend text in fraction of fontsize
+   'legend.borderaxespad'      : 0.5,          # the border between the axes and legend edge in fraction of fontsize
+   'legend.columnspacing'      : 2.,           # the border between the axes and legend edge in fraction of fontsize
+   'legend.shadow'             : False,
+   'legend.frameon'            : True,         # whether or not to draw a frame around legend
+   'legend.scatterpoints'      : 3             # number of scatter points
+}
 
-def getMPLTri(MESHX,MESHY,IKLE):
-   from matplotlib.tri import Triangulation
-   mpltri = Triangulation(MESHX,MESHY,IKLE).get_cpp_triangulation()
-   return mpltri.get_neighbors(),mpltri.get_edges()
+# _____                  ___________________________________________
+# ____/ General Toolbox /__________________________________________/
+#
 
-def whatTimeSLF(instr,ctimes):
-   # instr ~ what['time']: list of frames or (times,) delimited by ';'
-   # ctimes ~ slf.tags['cores']: list of time
-   t = parseArrayFrame(instr,len(ctimes))
-   if len(t) != 1: print '... the time definition should only have one frame in this case. It is: ',instr,'. I will assume you wish to plot the last frame.'
-   return [ t[len(t)-1] ]
+def mapDecoDefault(decoUser,default):
    
-def whatVarsSLF(instr,vnames):
-# instr ~ what['vars']: list of pairs "variable:support" delimited by ';'
-# vnames ~ slf.VARNAMES: list of variables names from the SELAFIN file
-   vars = []; vtypes = []
-   for var in instr.split(';'):
-      v,vtype = var.split(':')
-      vars.append( v ); vtypes.append( vtype )
-   return subsetVariablesSLF(';'.join(vars),vnames),vtypes
+   # ~~~ melting the pot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   mpar = {}                    # mpar, contains the matplotlib parameters (defaults)
+   upar = deepcopy(default) # upar, contains the user parameters (from the XML)
+   for name in decoUser:
+      if name not in ['look','data']: upar.update( { name:decoUser[name] } )
+   for name in decoUser:
+      if name in ['look','data']: upar.update(decoUser[name][0])
 
-def whatSample(inspl,box):
-   grids = []
-   for grid in parseArrayGrid(inspl,box):
-      if grid[0][0] == grid[1][0]:
-         print '... same min(x)=',grid[0][0],' and max(x)=',grid[1][0],' values in: ',inspl,'. I cannot create a box.'
-         continue # TODO: add exception
-      if grid[0][1] == grid[1][1]:
-         print '... same min(y)=',grid[0][1],' and max(y)=',grid[1][1],' values in: ',inspl,'. I cannot create a box.'
-         continue # TODO: add exception
-      mx,my = np.meshgrid(np.linspace(grid[0][0], grid[1][0], grid[2][0]+1),np.linspace(grid[0][1], grid[1][1], grid[2][1]+1))
-      grids.append((len(mx[0]),len(mx),np.concatenate(mx),np.concatenate(my)))
-   return grids
+   # ~~~ special conversions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # Replaces the relevat mpar by the upar values
+   for key in upar.keys(): # /!\ the .keys() is necessary
+      if key in mpl.rcParams.keys():
+         if type(mpl.rcParams[key]) == type(upar[key]):
+            mpar[key] = deepcopy(upar[key])
+            del upar[key]
+         else:
+            if type(mpl.rcParams[key]) == type([]):
+               if type(mpl.rcParams[key][0]) == type(1) or type(mpl.rcParams[key][0]) == type(1.0):
+                  mpar[key] = parseArrayFrame(upar[key])
+                  del upar[key]
+               if type(mpl.rcParams[key][0]) == type("") or type(mpl.rcParams[key][0]) == type(unicode('')):
+                  print upar[key].strip('[]')
+                  mpar[key] = [ s.strip() for s in upar[key].strip('[]').replace(';',',').split(',') ]
+                  del upar[key]
+               else:
+                  print '... I did not know ',type(mpl.rcParams[key]),' for key:',key,'. Could be an acceptable type'
+                  sys.exit()
+            elif type(mpl.rcParams[key]) == type(True):
+               mpar[key] = ( upar[key].lower() == 'true' )
+               del upar[key]
+            elif type(mpl.rcParams[key]) == type(1):
+               mpar[key] = int(upar[key])
+               del upar[key]
+            elif type(mpl.rcParams[key]) == type(1.0):
+               mpar[key] = float(upar[key])
+               del upar[key]
+            elif type(mpl.rcParams[key]) == type("") or type(mpl.rcParams[key][0]) == type(unicode('')):
+               mpar[key] = upar[key]
+               del upar[key]
+            else:
+               print '... I did not know ',type(mpl.rcParams[key]),' for key:',key,'. Could be an acceptable type'
+               sys.exit()
+      elif key == "dpi":
+         if upar[key] != '':
+            mpar.update({ 'savefig.dpi': int(upar[key]) })
+            mpar.update({ 'figure.dpi': int(upar[key]) })
+         del upar[key]
+      elif key == "size":
+         if upar[key] != '':
+            mpar.update({ 'figure.figsize': parseArrayFrame(upar[key]) })
+         del upar[key]
 
-def setQuad(grids):
-   MESHX = []; MESHY = []
-   IKLE = []
-   for dimx,dimy,x,y in grids:
-      IKLE.extend(([ i+j*dimx,i+1+j*dimx,i+1+(j+1)*dimx,i+(j+1)*dimx ] for j in range(dimy-1) for i in range(dimx-1) ))
-      MESHX.extend(x)
-      MESHY.extend(y)
-   return np.array(IKLE),np.array(MESHX),np.array(MESHY)
-
-def splitQuad2Triangle(IKLE):
-   # split each quad into triangles
-   return np.delete(np.concatenate((IKLE,np.roll(IKLE,2,axis=1))),np.s_[3::],axis=1)
-
-def extractVSectionSELAFIN(what,slf):
-
-   # what['extract']: could be list delimited by ';', of:
-   #    + points (x;y),
-   #    + 2D points (x;y) bundled within (x;y)#n or (x;y)@d#n, delimited by ';'
-   #      where n is a plan number and d is depth from that plane (or the surface by default)
-   xyo = []; zpo = []
-   for xyi,zpi in parseArrayPoint(what["extract"],slf.NPLAN):
-      if xyi == []:
-         print '... I could not find anything to extract in "',what["extract"].strip(),'" as support for the cross section.'
-         sys.exit(1)
-      if type(xyi) == type(()): xyo.append(xyi)
-      else: xyo.append( (slf.MESHX[xyi],slf.MESHY[xyi]) )
-      for p in zpi:                         # /!\ common deinition of plans
-         if p not in zpo: zpo.append(p)     # /!\ only allowing plans for now
-
-   # ~~> Extract horizontal cross MESHX
-   xys,support2d = sliceMesh(xyo,slf.IKLE2,slf.MESHX,slf.MESHY,slf.tree)
-   support3d = []
-   for s2d in support2d: support3d.append( (s2d,zpo) )   # common vertical definition to all points
-   # Distance d-axis
-   distot = 0.0
-   d = [ distot ]
-   for xy in range(len(xys)-1):
-      distot += np.sqrt( np.power(xys[xy+1][0]-xys[xy][0],2) + np.power(xys[xy+1][1]-xys[xy][1],2) )
-      d.append(distot)
-   MESHX = np.repeat(d,len(zpo))
-   
-   # ~~>  Extract MESHZ for only one time frame
-   varz = subsetVariablesSLF('z',slf.VARNAMES)
-   t = whatTimeSLF(what['time'],slf.tags['cores'])
-   MESHZ = np.ravel( getValuePolylineSLF(slf.file,slf.tags,t,support3d,slf.NVAR,slf.NPOIN3,slf.NPLAN,varz)[0][0].T )
-
-   # ~~>  Connect with IKLE, keeping quads
-   IKLE = []
-   for j in range(len(d)-1):
-      for i in range(len(zpo)-1):
-         IKLE.append([ i+j*len(zpo),i+(j+1)*len(zpo),i+1+(j+1)*len(zpo),i+1+j*len(zpo) ])
-   IKLE = np.array(IKLE)
-
-   return IKLE,MESHX,MESHZ, support3d
-
-def extractPlansSELAFIN(what,slf):
-
-   # what['extract']: could be list delimited by ';', of:
-   #    + empty spatial location [],
-   #    + bundled within []#n or []@d#n, delimited by ';'
-   #      where n is a plan number and d is depth from that plane (or the surface by default)
-   xyo = []; zpo = []
-   for xyi,zpi in parseArrayPoint(what["extract"],slf.NPLAN):
-      #if xyi != []:
-      #   print '... I will assume that all 2D nodes are considered at this stage.'
-      #   sys.exit(1)
-      for p in zpi:                         # /!\ common deinition of plans
-         if p not in zpo: zpo.append(p)     # /!\ only allowing plans for now
-
-   return slf.IKLE2,slf.MESHX,slf.MESHY, zpo
-
-def extractVarsorSELAFIN(what,var,slf):
-   
-   t = whatTimeSLF(what['time'],slf.tags['cores'])
-   # what['vars']: list of pairs variables:support2d delimited by ';'
-   vars = subsetVariablesSLF(var,slf.VARNAMES)
-   # what['extract']: could be list delimited by ';', of:
-   #    + points (x;y),
-   #    + 2D points (x;y) bundled within (x;y)#n or (x;y)@d#n, delimited by ';'
-   #      where n is a plan number and d is depth from that plane (or the surface by default)
-   xyo = []; zpo = []
-   for xyi,zpi in parseArrayPoint(what["extract"],slf.NPLAN):
-      if xyi == [] or type(xyi) == type(()): xyo.append(xyi)
-      else: xyo.append( (slf.MESHX[xyi],slf.MESHY[xyi]) )
-      for p in zpi:                         # /!\ common deinition of plans
-         if p not in zpo: zpo.append(p)     # /!\ only allowing plans for now
-   if len(zpo) != 1: print '... the vertical definition should only have one plan in this case. It is: ',what['extract'],'. I will assume you wish to plot the higher plane.'
-   # could be more than one variables including v, but only one time frame t and one plan
-   data = getValuePolyplanSLF(slf.file,slf.tags,t,zpo,slf.NVAR,slf.NPOIN3,slf.NPLAN,vars)
-   VARSORS = []
-   for ivar in range(len(data)): VARSORS.append( data[ivar][0][0] )
-
-   return VARSORS
+   return mpar,upar
 
 # _____                      _______________________________________
 # ____/ Primary Method:Draw /______________________________________/
 #
 
-def drawMesh2DElements(myplt,elements):
+def drawMesh2DElements(myplt,deco,elements):
 
    #  *2DElements: draw individual elements polygons  (triangle or quads)
    # ~~> Focus on current subplot / axes instance
@@ -193,40 +219,38 @@ def drawMesh2DElements(myplt,elements):
    
    return
 
-def drawMeshLines(myplt,edges):
+def drawColouredTriMaps(myplt,deco,(x,y,ikle,z)):
 
-   #  *Lines: draw individual edges
-   # TODO: Find a way to do colours properly -- and complete drawColouredMeshLines
-   # ~~> Focus on current subplot / axes instance
-   crax = myplt.gca()
-   # ~~>  Collections
-   colection = collections.LineCollection(
-      edges, antialiaseds=0,  # cmap=cm.jet ,norm=self.plt.Normalize(),
-      linewidth=1 ) #colors = 'k',
-   #colection.set_zorder(deco['zorder'])
-   #colection.set_array(val)       # each element colour dependent on its value from its verticies
-   # ~~> Plot data
-   #ex: fig = self.plt.figure(1,figsize=(3.0,4.0),dpi=100), where figsize is in inches
-   crax.add_collection(colection, autolim=True)   # adds, or plots our collection
+   # ~~> Line Width
+   linewidths = decoDefault['lines.linewidth']
+   if deco.has_key('linewidths'): linewidths = float(deco['linewidths'])
+   # ~~> Line Colour
+   colors = decoDefault['lines.color']
+   if deco.has_key('colors'): colors = deco['colors']
+   # ~~> Line Labels
+   fontsize = 9        #/!\ do find and set a default
+   if deco.has_key('fontsize'): fontsize = int(deco['fontsize'])
+   inline = 1          #/!\ do find and set a default
+   if deco.has_key('inline'): inline = int(deco['inline'])
+   fmt='%1.1f'         #/!\ do find and set a default
+   if deco.has_key('fmt'): fmt = deco['fmt']  
 
-   return
+   # ~~> Colour maps
+   cmap = cm.jet       #/!\ do find and set a default
+   if deco.has_key('cmap'): cmap = mpl.colors.LinearSegmentedColormap('user',getColourMap(deco['cmap']))
 
-def drawColouredTriMaps(myplt,(x,y,ikle,z)):
-
-   # ~~> Plot data
-   colourmap = cm.jet
-   #if geometry.has_key('cmapPlot'):
-   #   colourmap = LinearSegmentedColormap('User', getColourMap(geometry['cmapPlot']))
+   # ~~> Colour maps
+   myplt.tricontourf(x,y,ikle, z, cmap=cmap)
+   # ~~> Iso-contours and Labels
    zmin = np.min(z); zmax = np.max(z)
-   cs = myplt.tricontour(x,y,ikle, z, linewidths=0.5, colors='k')
-   #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')
-   myplt.tricontourf(x,y,ikle, z, cmap=colourmap)
-   # adds numbers along the iso-contours
-   myplt.clabel(cs,fontsize=9,inline=1)
+   if zmin < zmax:
+      cs = myplt.tricontour(x,y,ikle, z, linewidths=linewidths, colors=colors)
+      myplt.clabel(cs,fmt=fmt,fontsize=fontsize,inline=inline)
+      #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')
 
    return
 
-def drawLabeledTriContours(myplt,(x,y,ikle,z)):
+def drawLabeledTriContours(myplt,deco,(x,y,ikle,z)):
 
    # Convert negative dashed default contour lines by solids
    # matplotlib.rcParams['contour.negative_linestyle'] = 'solid'
@@ -296,7 +320,7 @@ def drawLabeledTriContours(myplt,(x,y,ikle,z)):
 
    return
 
-def drawColouredTriVects(myplt,(x,y,uv,normalised)):
+def drawColouredTriVects(myplt,deco,(x,y,uv,normalised)):
 
    # ~~> Plot data
    colourmap = cm.jet
@@ -313,6 +337,21 @@ def drawColouredTriVects(myplt,(x,y,uv,normalised)):
 
    return
 
+# _____                         ____________________________________
+# ____/ Primary Casts:SELAFINS /___________________________________/
+#
+class dumpSELAFIN(SELAFINS):
+
+   # ~~> Standard SELAFINS file
+   #def __init__(self,f):
+   #   SELAFINS.__init__(self,f)
+
+   def add(self,slf):
+      if self.slf == None: self.slf = slf
+      self.slfs.append(slf)
+      self.suite = self.isSuite()
+      self.merge = self.isMerge()
+
 # _____                      _______________________________________
 # ____/ Primary Method:Deco /______________________________________/
 #
@@ -321,27 +360,44 @@ def deco(myplt,upar,x0,y0):
 
    # ~~ Ratio ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #crax.axis('equal')         # sets both axis scale to be equal
-   crax = myplt.gca()
-   crax.set_aspect('equal')
+   #crax = myplt.gca()
+   #crax.set_aspect('equal')
 
    # ~~ Axis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # TODO: Replace white margins
-   if not upar.has_key("roi"):
+   # TODO: Replace white margins with user parameter
+   if upar["roi"] != '':
+      roi,mar = upar["roi"]
+      (xmin,ymin),(xmax,ymax) = roi
+      emar,nmar,wmar,smar = mar
+      xgap = xmax - xmin
+      xmin -= emar*xgap; xmax += wmar*xgap
+      ygap = ymax - ymin
+      ymin -= smar*ygap; ymax += nmar*ygap
+      myplt.axis([xmin,xmax,ymin,ymax])
+   else:
       xmin = np.min(x0); xmax = np.max(x0)
       ymin = np.min(y0); ymax = np.max(y0)
       if upar.has_key("setroi"):
-         xgap = max(upar["setroi"][1],xmax) - min(upar["setroi"][0],xmin)
-         xmin -= 0.02*xgap; xmax += 0.02*xgap
-         ygap = max(upar["setroi"][3],ymax) - min(upar["setroi"][2],ymin)
-         ymin -= 0.02*ygap; ymax += 0.02*ygap
-         upar["setroi"] = [xmin,xmax,ymin,ymax]
+         xmin = min(upar["setroi"][0][0][0],xmin)
+         ymin = min(upar["setroi"][0][0][1],ymin)
+         xmax = max(upar["setroi"][0][1][0],xmax)
+         ymax = max(upar["setroi"][0][1][1],ymax)
+         upar["setroi"] = [ [[xmin,ymin],[xmax,ymax]],[0.02,0.02,0.02,0.02] ]
+         xgap = xmax - xmin
+         xmin -= upar["setroi"][1][2]*xgap
+         xmax += upar["setroi"][1][0]*xgap
+         ygap = ymax - ymin
+         ymin -= upar["setroi"][1][3]*ygap
+         ymax += upar["setroi"][1][1]*ygap
       else:
-         xgap = xmax-xmin
-         xmin -= 0.02*xgap; xmax += 0.02*xgap
-         ygap = ymax-ymin
-         ymin -= 0.02*ygap; ymax += 0.02*ygap
-         upar.update({ "setroi":[xmin,xmax,ymin,ymax] })
-   if upar.has_key("setroi"): myplt.axis(upar["setroi"])
+         upar.update({ "setroi":[ [[xmin,ymin],[xmax,ymax]],[0.02,0.02,0.02,0.02] ] })
+         xgap = xmax - xmin
+         xmin -= upar["setroi"][1][2]*xgap
+         xmax += upar["setroi"][1][0]*xgap
+         ygap = ymax - ymin
+         ymin -= upar["setroi"][1][3]*ygap
+         ymax += upar["setroi"][1][1]*ygap
+      myplt.axis([xmin,xmax,ymin,ymax])
 
    #curax.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
 
@@ -354,75 +410,102 @@ def deco(myplt,upar,x0,y0):
 # ____/ Primary Classes:Dumper /___________________________________/
 #
 
-class Dumper2D:
+class Dumper2D(Caster):
 
-   def __init__(self,task):
-      self.data = None
-      if True: # TODO: raise exception
-         print '... do not know how to save in this format: ' + task['outFormat']
+   def __init__(self,caster,dump):
+      Caster.__init__(self,{'object':caster.object,'obdata':caster.obdata})
+      self.obtype = dump['outFormat']    # the type of file, 'slf' most probably
+      self.oudata = None          # the loaded SELAFIN object itself, most probably
+      self.obdump = dumpSELAFIN()
 
    def add(self,typl,what):
-      # ~~> SELAFIN file
-      pass
-   
+      Caster.add(self,typl,what)
+      
+      # ~~> output from for 2D file
+      if self.obtype == 'slf':
+         self.obdump.add(self.object[what['file']])
+         cast = self.get(typl,what) # TODO: recover track of time
+         support = cast.support
+         values = cast.values
+         if len(support) != 3:
+            print '... not enough information to save as 2d variable'
+            sys.exit(1)
+         obj = self.object[what['file']]
+         # ~~ SELAFIN header ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         if not self.oudata:
+            self.oudata = SELAFIN('')
+            # create the out header
+            self.oudata.TITLE = '' # TODO: pass it on from what and deco
+            self.oudata.NBV1 = 0
+            self.oudata.VARNAMES = []; self.oudata.VARUNITS = []
+            self.oudata.IPARAM = obj.IPARAM
+            self.oudata.IPARAM[6] = 1 # 3D being forced to 2D
+            self.oudata.NDP2 = len(support[2][0])
+            if np.all([obj.IKLE2,support[2]]):
+               self.oudata.IKLE2 = support[3]; self.oudata.IPOB2 = np.zeros(len(supoort[0]),dtype=np.int)
+               self.oudata.MESHX = support[0]
+               self.oudata.MESHY = support[1]
+            else:
+               self.oudata.IKLE2 = obj.IKLE2; self.oudata.IPOB2 = obj.IPOB2 # IPOBO missing from support
+               self.oudata.MESHX = obj.MESHX
+               self.oudata.MESHY = obj.MESHY
+            self.oudata.NELEM2 = len(self.oudata.IKLE2); self.oudata.NPOIN2 = len(self.oudata.MESHX)
+            self.oudata.NELEM3 = self.oudata.NELEM2; self.oudata.NPOIN3 = self.oudata.NPOIN2; self.oudata.NDP3 = self.oudata.NDP2; self.oudata.NPLAN = 1
+         vars,vtypes = whatVarsSLF(what['vars'],obj.VARNAMES)
+         self.oudata.NBV1 = self.oudata.NBV1 + len(vars[0])
+         self.oudata.NBV2 = 0; self.oudata.NVAR = self.oudata.NBV1 + self.oudata.NBV2
+         self.oudata.CLDNAMES = []; self.oudata.CLDUNITS = []
+         self.oudata.VARINDEX = range(self.oudata.NVAR)
+         for ivar in vars[0]:
+            self.oudata.VARNAMES.append(obj.VARNAMES[ivar])
+            self.oudata.VARUNITS.append(obj.VARUNITS[ivar])
+            self.obdata.update({obj.VARNAMES[ivar]:values})
+         if max(self.oudata.IPARAM[9],obj.IPARAM[9]) >0:
+            if self.oudata.DATETIME != obj.DATETIME: self.oudata.IPARAM[9] = 0
+         if self.oudata.NELEM2 != obj.NELEM2 or self.oudata.NPOIN2 != obj.NPOIN2:
+            print '... mismatch between the 2D sizes of layers of a same save2d object '
+            sys.exit(1)
+         self.oudata.IKLE3 = self.oudata.IKLE2; self.oudata.IPOB3 = self.oudata.IPOB2
+
+      # ~~> unkonwn
+      else: # TODO: raise exception
+         print '... do not know how to write to this format: ' + self.obtype
+         sys.exit(1)
+         
    def save(self,fileName):
-      # ~~> SELAFIN file
-      pass
+      # gather common information for the final header
+      if self.obtype == 'slf':
+         self.oudata.file = {}
+         self.oudata.file.update({ 'name': fileName })
+         self.oudata.file.update({ 'endian': ">" })    # "<" means little-endian, ">" means big-endian
+         self.oudata.file.update({ 'float': ('f',4) }) #'f' size 4, 'd' = size 8
+         #self.oudata.fole.update({ 'hook': open(fileName,'wb') })
+         #self.oudata.appendHeaderSLF()
+         #self.oudata.appendCoreTimeSLF(0.0) # TODO: recover track of time
+         for ivar in self.oudata.VARNAMES:
+            print self.obdata[ivar]
+            #self.oudata.appendCoreVarsSLF(self.obdata[ivar])
+
+      # ~~> unkonwn
+      else: # TODO: raise exception
+         print '... do not know how to write to this format: ' + self.obtype
+         sys.exit(1)
 
 # _____                          ___________________________________
 # ____/ Primary Classes: Figure /__________________________________/
 #
 
-class Figure2D:
+class Figure2D(Caster):
 
-   def __init__(self,plot):
+   def __init__(self,caster,plot):
+      Caster.__init__(self,{'object':caster.object,'obdata':caster.obdata})
 
-      # ~~~ melting the pot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      self.mpar = {} # mpar, contains the matplotlib parameters (defaults)
-      self.upar = {} # upar, contains the user parameters (from the XML)
-      for name in ['look','data']:
-         if plot['deco'].has_key(name): self.upar.update(plot['deco'][name][0])
-
-      # ~~~ special conversions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      # Replaces the relevat mpar by the upar values
-      for key in self.upar.keys(): # /!\ the .keys() is necessary
-         if key in mpl.rcParams:
-            if type(mpl.rcParams[key]) == type([]):
-               if type(mpl.rcParams[key][0]) == type(1) or type(mpl.rcParams[key][0]) == type(1.0):
-                  self.mpar[key] = parseArrayFrame(self.upar[key])
-                  del self.upar[key]
-               #elif type(mpl.rcParams[key][0]) == type(""): pass
-               else:
-                  print '... I did not know ',type(mpl.rcParams[key]),' could be an acceptable type'
-                  sys.exit(1)
-            elif type(mpl.rcParams[key]) == type(1):
-               self.mpar[key] = int(self.upar[key])
-               del self.upar[key]
-            elif type(mpl.rcParams[key]) == type(1.0):
-               self.mpar[key] = float(self.upar[key])
-               del self.upar[key]
-            elif type(mpl.rcParams[key]) == type(""):
-               self.mpar[key] = self.upar[key]
-               del self.upar[key]
-            else:
-               print '... I did not know ',type(mpl.rcParams[key]),' could be an acceptable type'
-               sys.exit(1)
-         elif self.upar[key] != '':
-            if key == "roi": self.upar[key] = parseArrayPaires(self.upar[key])
-            elif key == "dpi":
-               self.mpar.update({ 'savefig.dpi': int(self.upar[key]) })
-               self.mpar.update({ 'figure.dpi': int(self.upar[key]) })
-               del self.upar[key]
-            elif key == "size":
-               self.mpar.update({ 'figure.figsize': parseArrayFrame(self.upar[key]) })
-               del self.upar[key]
-            else: del self.upar[key]
-
+      # ~~~ figure decoration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      self.mpar,self.upar = mapDecoDefault( plot['deco'],decoDefault )
+      mpl.rcParams.update(self.mpar)
       # ~~> by default, there is no grid in 1D
       #self.mpar.update({ 'grid.alpha':1.0 })
 
-      # ~~~ figure decoration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      mpl.rcParams.update(self.mpar) # TODO: do this when you draw
       # ~~~ create figure ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       fig = plt.figure() # TODO: do this when you draw
       # ~~> add_subplot, or ax definition
@@ -433,175 +516,161 @@ class Figure2D:
       #   bit more: it adds a subplot. So far we have only seen a Figure with one Axes
       #   instance, so only one area where we can draw, but Matplotlib allows more than one
       
+      # ~~~ figure decoration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      mpl.rcdefaults()
+      
       # ~~> user params
-      if plot.has_key('title'): plt.title(plot['title'])
+      if self.upar['title'] != '': plt.title(self.upar['title'])
       # ~~> type of plot
-      if plot.has_key('type'):
-         if len(plot['type']) > 0 and ((plot['type'][1] == 'line')or(plot['type'][1] == 'rose')):
+      if self.upar['type'] != '':
+         if self.upar['type'][1] == 'line' or self.upar['type'][1] == 'rose':
             fig.add_subplot(adjustable='datalim')
          else:
             fig.add_subplot(aspect='equal')
       else: fig.add_subplot(aspect='equal')
-      # ~~> self.plt.axis
-      if self.upar.has_key("roi"):
-         xmin = min(self.upar["roi"][0][0],self.upar["roi"][1][0])
-         xmax = max(self.upar["roi"][0][0],self.upar["roi"][1][0])
-         ymin = min(self.upar["roi"][0][1],self.upar["roi"][1][1])
-         ymax = max(self.upar["roi"][0][1],self.upar["roi"][1][1])
-         plt.axis([xmin,xmax,ymin,ymax])
+      # ~~> region of interes and defaault margins
+      if self.upar["roi"] != '': self.upar["roi"] = [ parseArrayPaires(self.upar["roi"]), [0,0,0,0] ]
 
       self.plt = plt 
       self.fig = fig
 
    def add(self,typl,what):
+      Caster.add(self,typl,what)
+      
+      if len(what['vars'].split(';')) > 1: # TODO: raise exception
+         print '... do not know support multiple variables anymore: ' + what['vars']
+         sys.exit(1)
+      
+      if what['type'].split(':')[1] == 'v-section':
+         
+         cast = self.get(typl,what)
+         elements = cast.support
+         VARSORS = cast.values
+         vtype = what['vars'].split(':')[1]
 
-      # /!\ WACLEO: Temporary fix because TOMAWAC's IOs names are not yet standard TELEMAC
+         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         if "mesh" in vtype or "wire" in vtype or "grid" in vtype:
+            # ~~> Draw/Dump (works with triangles and quads)
+            drawMesh2DElements(self.plt,what['deco'],elements)
+            deco(self.plt,self.upar,np.ravel(elements.T[0]),np.ravel(elements.T[1]))
+            # TODO: colour the mesh according to cast.values
+
+         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         else:
+            MESHX,MESHZ,IKLE3 = elements
+            # ~~> Multi-variables calculations
+            if len(VARSORS) > 1:
+               if "map" in vtype: VARSORS = [ np.sqrt(np.sum(np.power(np.dstack(VARSORS[0:3:2])[0],2),axis=1)) ]
+            # ~~> Draw/Dump (multiple options possible)
+            if "map" in vtype: drawColouredTriMaps(self.plt,what['deco'],(MESHX,MESHZ,IKLE3,VARSORS[0]))
+            if "label" in vtype: drawLabeledTriContours(self.plt,what['deco'],(MESHX,MESHZ,IKLE3,VARSORS[0]))
+            if "arrow" in vtype or "vector" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHZ,VARSORS,False))
+            if "angle" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHZ,VARSORS,True))
+            deco(self.plt,self.upar,np.ravel(MESHX[IKLE3]),np.ravel(MESHZ[IKLE3]))
+
+
+      elif what['type'].split(':')[1] == 'p-section':
+
+         cast = self.get(typl,what)
+         elements = cast.support
+         VARSORS = cast.values
+         vtype = what['vars'].split(':')[1]
+
+         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         # ~~> Draw triangles and quads
+         if "mesh" in vtype or "wire" in vtype or "grid" in vtype:
+            # ~~> Draw/Dump (works with triangles and quads)
+            drawMesh2DElements(self.plt,what['deco'],elements)
+            deco(self.plt,self.upar,np.ravel(elements.T[0]),np.ravel(elements.T[1]))
+            # TODO: colour the mesh according to cast.values
+
+         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         # ~~> Extract variable data for only one time frame and one plane
+         else:
+            MESHX,MESHY,IKLE3 = elements
+            # ~~> Multi-variables calculations
+            if len(VARSORS) > 1:
+               if "map" in vtype: VARSORS = [ np.sqrt(np.sum(np.power(np.dstack(VARSORS[0:2])[0],2),axis=1)) ]
+            # ~~> Draw/Dump (multiple options possible)
+            if "map" in vtype: drawColouredTriMaps(self.plt,what['deco'],(MESHX,MESHY,IKLE3,VARSORS[0]))
+            elif "label" in vtype: drawLabeledTriContours(self.plt,what['deco'],(MESHX,MESHY,IKLE3,VARSORS[0]))
+            elif "arrow" in vtype or "vector" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHY,VARSORS,False))
+            elif "angle" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHY,VARSORS,True))
+            else: print '... do not know how to draw this SELAFIN type: ' + vtype
+            deco(self.plt,self.upar,np.ravel(MESHX[IKLE3]),np.ravel(MESHY[IKLE3]))
+
+         """# /!\ WACLEO: Temporary fix because TOMAWAC's IOs names are not yet standard TELEMAC
       if 'WACLEO' in typl.upper() or \
          'SELAFIN' in typl.upper() or \
          'slf' in typl.lower():
-
-         # ~~> Load data
-         slf = SELAFIN(what['file'])
-         slf.setKDTree()
-         slf.setMPLTri()
          
-         if what['type'] == 'v-section':
+         if what['type'].split(':')[1] == 'v-section':
             
-            # ~~> Extract data
-            elements = []
-            IKLE4,MESHX,MESHZ, support3d = extractVSectionSELAFIN(what,slf)
-            IKLE3 = splitQuad2Triangle(IKLE4)
-            vars,vtypes = whatVarsSLF(what['vars'],slf.VARNAMES)
-            time = whatTimeSLF(what['time'],slf.tags['cores'])
-            tree = getKDTree(MESHX,MESHZ,IKLE3)
-            tria = getMPLTri(MESHX,MESHZ,IKLE3)[0]
-            data = getValuePolylineSLF(slf.file,slf.tags,time,support3d,slf.NVAR,slf.NPOIN3,slf.NPLAN,vars)
-
-            # ~~> Possible sampling of the data
-            if what["sample"] != '':
-               supMESHX = MESHX; supMESHZ = MESHZ
-               MESHX = []; MESHZ = []
-               IKLE4 = []; support2d = []
-               grids = whatSample(what["sample"],[(min(supMESHX),min(supMESHZ)),(max(supMESHX),max(supMESHZ))])
-               for dimx,dimy,x,y in grids:
-                  for xyi in np.dstack((x,y))[0]:
-                     support2d.append( xysLocateMesh(xyi,IKLE3,supMESHX,supMESHZ,tree,tria) )
-                  IKLE4.extend(([ i+j*dimx,i+1+j*dimx,i+1+(j+1)*dimx,i+(j+1)*dimx ] for j in range(dimy-1) for i in range(dimx-1) ))
-                  MESHX.extend(x)
-                  MESHZ.extend(y)
-               IKLE4 = np.asarray(IKLE4)
-               IKLE3 = splitQuad2Triangle(IKLE4)
-               MESHX = np.asarray(MESHX)
-               MESHZ = np.asarray(MESHZ)
-
             # ~~> Loop on variables
-            for v,vtype in zip(vars,vtypes):
+            for vtype in what['vars'].split(';'):
+               vtype = vtype.split(':')[1]
 
                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                if "mesh" in vtype or "wire" in vtype or "grid" in vtype:
-                  if elements == []: elements = np.dstack((MESHX[IKLE4],MESHZ[IKLE4]))
+                  cast = self.get(typl,what)
+                  elements = cast.support
                   # ~~> Draw/Dump (works with triangles and quads)
-                  drawMesh2DElements(self.plt,elements)
-                  deco(self.plt,self.upar,MESHX,MESHZ)
+                  drawMesh2DElements(self.plt,what['deco'],elements)
+                  deco(self.plt,self.upar,np.ravel(elements.T[0]),np.ravel(elements.T[1]))
                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                else:
-                  VARSORS = []
-                  for ivar in range(len(vars[0])): VARSORS.append( np.ravel(data[ivar][0].T) )
-
-                  # ~~> Re-sampling
-                  if what["sample"] != '':
-                     data = np.zeros((len(vars[0]),len(support2d)),dtype=np.float64)
-                     for ivar in range(len(vars[0])):
-                        for ipt in range(len(support2d)):
-                           ln,bn = support2d[ipt]
-                           data[ivar][ipt] = 0.0
-                           for inod in range(len(bn)):                  # /!\ node could be outside domain
-                              if ln[inod] >=0: data[ivar][ipt] += bn[inod]*VARSORS[ivar][ln[inod]]
-                     VARSORS = data
-
+                  cast = self.get(typl,what)
+                  MESHX,MESHZ,IKLE3 = cast.support
+                  VARSORS = cast.values
                   # ~~> Multi-variables calculations
                   if len(VARSORS) > 1:
                      if "map" in vtype: VARSORS = [ np.sqrt(np.sum(np.power(np.dstack(VARSORS[0:3:2])[0],2),axis=1)) ]
                   # ~~> Draw/Dump (multiple options possible)
-                  if "map" in vtype: drawColouredTriMaps(self.plt,(MESHX,MESHZ,IKLE3,VARSORS[0]))
-                  if "label" in vtype: drawLabeledTriContours(self.plt,(MESHX,MESHZ,IKLE3,VARSORS[0]))
-                  if "arrow" in vtype: drawColouredTriVects(self.plt,(MESHX,MESHZ,VARSORS,False))
-                  if "angle" in vtype: drawColouredTriVects(self.plt,(MESHX,MESHZ,VARSORS,True))
+                  if "map" in vtype: drawColouredTriMaps(self.plt,what['deco'],(MESHX,MESHZ,IKLE3,VARSORS[0]))
+                  if "label" in vtype: drawLabeledTriContours(self.plt,what['deco'],(MESHX,MESHZ,IKLE3,VARSORS[0]))
+                  if "arrow" in vtype or "vector" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHZ,VARSORS,False))
+                  if "angle" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHZ,VARSORS,True))
                   deco(self.plt,self.upar,np.ravel(MESHX[IKLE3]),np.ravel(MESHZ[IKLE3]))
 
-         else: # if what['type'] != 'v-section'
-
-            # ~~> Extract data
-            elements = []
-            IKLE3,MESHX,MESHY, zpo = extractPlansSELAFIN(what,slf)
-            if slf.NDP2 == 4: IKLE3 = splitQuad2Triangle(IKLE3)
-            IKLE4 = IKLE3
-            vars,vtypes = whatVarsSLF(what['vars'],slf.VARNAMES)
-            time = whatTimeSLF(what['time'],slf.tags['cores'])
-            tree = slf.tree
-            tria = slf.neighbours
-            data = getValuePolyplanSLF(slf.file,slf.tags,time,zpo,slf.NVAR,slf.NPOIN3,slf.NPLAN,vars)
-
-            # ~~> Possible re-sampling
-            support2d = []
-            if what["sample"] != '':
-               supMESHX = MESHX; supMESHY = MESHY
-               MESHX = []; MESHY = []
-               IKLE4 = []; support2d = []
-               grids = whatSample(what["sample"],[(min(supMESHX),min(supMESHY)),(max(supMESHX),max(supMESHY))])
-               for dimx,dimy,x,y in grids:
-                  for xyi in np.dstack((x,y))[0]:
-                     support2d.append( xysLocateMesh(xyi,IKLE3,supMESHX,supMESHY,tree,tria) )
-                  IKLE4.extend(([ i+j*dimx,i+1+j*dimx,i+1+(j+1)*dimx,i+(j+1)*dimx ] for j in range(dimy-1) for i in range(dimx-1) ))
-                  MESHX.extend(x)
-                  MESHY.extend(y)
-               IKLE4 = np.asarray(IKLE4)
-               IKLE3 = splitQuad2Triangle(IKLE4)
-               MESHX = np.asarray(MESHX)
-               MESHY = np.asarray(MESHY)
+         elif what['type'].split(':')[1] == 'p-section':
             
             # ~~> Loop on variables
-            for var in what["vars"].split(';'):
-               v,vtype = var.split(':')
+            for vtype in what['vars'].split(';'):
+               vtype = vtype.split(':')[1]
 
                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                # ~~> Draw triangles and quads
                if "mesh" in vtype or "wire" in vtype or "grid" in vtype:
-                  if elements == []: elements = np.dstack((MESHX[IKLE4],MESHY[IKLE4]))
+                  cast = self.get(typl,what)
+                  elements = cast.support
                   # ~~> Draw/Dump (works with triangles and quads)
-                  drawMesh2DElements(self.plt,elements)
-                  deco(self.plt,self.upar,MESHX,MESHY)
+                  drawMesh2DElements(self.plt,what['deco'],elements)
+                  deco(self.plt,self.upar,np.ravel(elements.T[0]),np.ravel(elements.T[1]))
 
                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                # ~~> Extract variable data for only one time frame and one plane
                else:
-                  VARSORS = extractVarsorSELAFIN(what,v,slf)
-                  # ~~> Re-sampling
-                  if support2d != []:
-                     data = np.zeros((len(vars[0]),len(support2d)),dtype=np.float64)
-                     for ivar in range(len(vars[0])):
-                        for ipt in range(len(support2d)):
-                           ln,bn = support2d[ipt]
-                           data[ivar][ipt] = 0.0
-                           for inod in range(len(bn)):                  # /!\ node could be outside domain
-                              if ln[inod] >=0: data[ivar][ipt] += bn[inod]*VARSORS[ivar][ln[inod]]
-                     VARSORS = data
+                  cast = self.get(typl,what)
+                  MESHX,MESHY,IKLE3 = cast.support
+                  VARSORS = cast.values
                   # ~~> Multi-variables calculations
                   if len(VARSORS) > 1:
                      if "map" in vtype: VARSORS = [ np.sqrt(np.sum(np.power(np.dstack(VARSORS[0:2])[0],2),axis=1)) ]
                   # ~~> Draw/Dump (multiple options possible)
-                  if "map" in vtype: drawColouredTriMaps(self.plt,(MESHX,MESHY,IKLE3,VARSORS[0]))
-                  elif "label" in vtype: drawLabeledTriContours(self.plt,(MESHX,MESHY,IKLE3,VARSORS[0]))
-                  elif "arrow" in vtype: drawColouredTriVects(self.plt,(MESHX,MESHY,VARSORS,False))
-                  elif "angle" in vtype: drawColouredTriVects(self.plt,(MESHX,MESHY,VARSORS,True))
+                  if "map" in vtype: drawColouredTriMaps(self.plt,what['deco'],(MESHX,MESHY,IKLE3,VARSORS[0]))
+                  elif "label" in vtype: drawLabeledTriContours(self.plt,what['deco'],(MESHX,MESHY,IKLE3,VARSORS[0]))
+                  elif "arrow" in vtype or "vector" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHY,VARSORS,False))
+                  elif "angle" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHY,VARSORS,True))
                   else: print '... do not know how to draw this SELAFIN type: ' + vtype
-                  deco(self.plt,self.upar,np.ravel(MESHX[IKLE3]),np.ravel(MESHY[IKLE3]))
-
-         slf.file['hook'].close()
+                  deco(self.plt,self.upar,np.ravel(MESHX[IKLE3]),np.ravel(MESHY[IKLE3]))"""
 
       # ~~> unkonwn
       else: # TODO: raise exception
-         print '... do not know how to extract from this format: ' + typl
+         print '... do not know how to do this type of extraction: ' + what['type'].split(':')[1]
+
+      # ~~> unkonwn
+      #else: # TODO: raise exception
+      #   print '... do not know how to draw from this format: ' + typl
 
    def show(self): self.plt.show()
    def save(self,fileName): self.plt.savefig(fileName)
@@ -661,6 +730,24 @@ def drawGridContours(plt,(x,y,z),deco):
 # ____/ Mesh Toolbox /_____________________________________________/
 #
 #   Contour plot of a Z based on a triangular mesh a with labels.
+
+def drawMeshLines(myplt,edges):
+
+   #  *Lines: draw individual edges
+   # TODO: Find a way to do colours properly -- and complete drawColouredMeshLines
+   # ~~> Focus on current subplot / axes instance
+   crax = myplt.gca()
+   # ~~>  Collections
+   colection = collections.LineCollection(
+      edges, antialiaseds=0,  # cmap=cm.jet ,norm=self.plt.Normalize(),
+      linewidth=1 ) #colors = 'k',
+   #colection.set_zorder(deco['zorder'])
+   #colection.set_array(val)       # each element colour dependent on its value from its verticies
+   # ~~> Plot data
+   #ex: fig = self.plt.figure(1,figsize=(3.0,4.0),dpi=100), where figsize is in inches
+   crax.add_collection(colection, autolim=True)   # adds, or plots our collection
+
+   return
 
 def drawColouredQuadMaps(plt,(nelem,npoin,ndp,nplan),(x,y,ikle,z),deco):
 

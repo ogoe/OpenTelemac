@@ -35,19 +35,17 @@
 #
 # ~~> dependencies towards standard python
 import sys
-from os import path
-# ~~> dependencies from within pytel/parsers
-from myplot1d import Drawer1D,Dumper1D
-from myplot2d import Drawer2D,Dumper2D
-from myplot3d import Drawer3D,Dumper3D
+from os import path,environ
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
-from parsers.parserCSV import CSV
-from parsers.parserSELAFIN import SELAFIN
+from parsers.parserStrings import parseArrayFrame,parseArrayPoint
 
 # _____                   __________________________________________
 # ____/ Plotting Toolbox /_________________________________________/
 #
+#decoDefault = {
+#   "size":'', "dpi":'', "ratio2d": '', "title": '', "roi": '', "type":''
+#   }
 decoFigure = {
    'data':{ 'title': 'openTELEMAC' },
    'look':{ 'savefig.dpi': 100, 'savefig.format':"png", 'grid': True, 'crax.xlim': 0.02, 'crax.ylim': 0.02 }
@@ -117,43 +115,20 @@ hrwd = {
 'anno.label1.placement' : 'plot'
 }
 
-# _____                        _____________________________________
-# ____/ Primary Class: FIGURE /____________________________________/
-#
-class Figure:
-   do = None
-
-   def __init__(self,typl,plot,figureName,display=False):
-      if typl == 'plot1d': self.do = Drawer1D(plot)
-      elif typl == 'plot2d': self.do = Drawer2D(plot)
-      elif typl == 'plot3d': self.do = Drawer3D(plot)
-      elif typl == 'save1d': self.do = Dumper1D()
-      elif typl == 'save2d': self.do = Dumper2D()
-      elif typl == 'save3d': self.do = Dumper3D()
-      else:
-         print '... do not know how to Figure this one out: ' + typl
-         sys.exit(1)
-      self.figureName = figureName
-      self.display = display
-
-   def show(self):
-      if self.display: self.do.show()
-      else: self.do.savefig(self.figureName)
-
-   def dump(self):
-      self.do.putFileContent(self.figureName)
-   
-   def draw(self,typl,what):
-      self.do.draw(typl,what)
-
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
 #
 def getColourMap(fileName):
 
-   pointList = []
    red = []; green = []; blue = []
-   f = open(fileName,'r')
+   if path.exists(fileName):
+      f = open(fileName,'r')
+   elif path.exists(path.join(environ['PYTELPATH'],path.join('ColourMaps',fileName))):
+      fileName = path.join(environ['PYTELPATH'],path.join('ColourMaps',fileName))
+      f = open(fileName,'r')
+   else:
+      print "... Could not access/read expected colour map file content: " + fileName
+      sys.exit(1)
 
    # just in case of file access, parser problems:
    try:
@@ -171,8 +146,8 @@ def getColourMap(fileName):
       blue.append((float(entry.attrib["x"]),float(entry.attrib["b"]),float(entry.attrib["b"])))
       green.append((float(entry.attrib["x"]),float(entry.attrib["g"]),float(entry.attrib["g"])))
 
-   return { 'blue': blue, 'red': red, 'green': green }
-
+   return { 'blue': tuple(reversed(blue)), 'red': tuple(reversed(red)), 'green': tuple(reversed(green)) }
+   
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
 #

@@ -61,14 +61,16 @@
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
-from os import path, remove, walk, chdir, getcwd
+from os import path, remove, walk, chdir
 from optparse import Values
 import sys
 from copy import deepcopy
 from socket import gethostname
-from scipy import linalg as la
 from types import StringTypes
 from fractions import gcd
+# ~~> dependencies added for casting within XML
+import numpy as np
+import math
 # ~~> dependencies from within pytel/parsers
 from parserKeywords import scanDICO,scanCAS,readCAS,translateCAS, getCASLang,getKeyWord,setKeyValue, getIOFilesSubmit
 from parserSortie import getLatestSortieFiles
@@ -80,9 +82,13 @@ from runcode import runCAS,getNCSIZE,compilePRINCI
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import getFileContent,putFileContent,addFileContent,createDirectories,copyFile,moveFile, matchSafe,diffTextFiles
 from utils.messages import filterMessage, MESSAGES
+from mtlplots.myplot1d import decoDefault as decoDefault1D
+from mtlplots.myplot2d import decoDefault as decoDefault2D
+from mtlplots.myplot3d import decoDefault as decoDefault3D
 from mtlplots.myplot1d import Figure1D,Dumper1D
 from mtlplots.myplot2d import Figure2D,Dumper2D
 from mtlplots.myplot3d import Figure3D,Dumper3D
+from samplers.mycast import Caster
 
 # _____                           __________________________________
 # ____/ Specific TELEMAC Toolbox /_________________________________/
@@ -182,9 +188,6 @@ def findTargets(dido,src):
       if dido['type'] == src: layer = [[dido['target']],'',src]
 
    return layer
-
-def findDecos():
-   pass
 
 # _____                        _____________________________________
 # ____/ Primary Class: ACTION /____________________________________/
@@ -371,7 +374,7 @@ class GROUPS:
 class groupDECO(GROUPS):
 
    availkeys = deepcopy(GROUPS.availkeys)
-   availkeys.update({ })
+   #availkeys.update(decoDefault) # depends on 1D, 2D or 3D plotting packages
    groupkeys = deepcopy(GROUPS.groupkeys)
 
    def __init__(self,xmlFile,title='',bypass=True):
@@ -388,11 +391,7 @@ class groupDECO(GROUPS):
    def addLookTask(self,layer,nametask='look'):
       #self.avaylkeys = deepcopy(GROUPS.avaylkeys)
       self.avaylkeys = {}
-      for key in layer.attrib:
-         self.avaylkeys.update({key:layer.attrib[key]})
-         if key == 'grid':
-            if layer.attrib['grid'] == 'no': layer.attrib['grid'] = False
-            else: layer.attrib['grid'] = True
+      for key in layer.attrib: self.avaylkeys.update({key:layer.attrib[key]})
       return GROUPS.addSubTask(self,layer,nametask)
 
    def addDataTask(self,layer,nametask='data'):
@@ -448,11 +447,14 @@ class actionRUN(ACTION):
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    # ~~ todo: difference of CAS file with default keys ~~~~~~~~~~~~~
-   def diffCAS(self): return
+   def diffCAS(self):
+      updated = False
+      return updated
 
    # ~~ Translate the CAS file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    def translateCAS(self,rebuild):
-      if not "translate" in self.availacts.split(';'): return
+      updated = False
+      if not "translate" in self.availacts.split(';'): return updated
       xref = self.active["xref"]; cfgname = self.active['cfg']
       active = self.dids[xref][cfgname]
       # ~~> principal CAS file
@@ -474,10 +476,13 @@ class actionRUN(ACTION):
             casfr,casgb = translateCAS(sacFile,DICOS[link['dico']]['frgb'])  #/!\ removes comments at end of lines
             moveFile(casfr,oneup)
             moveFile(casgb,oneup)
+            updated = True
+      return updated
 
    # ~~ Run the CAS file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    def runCAS(self,options,cfg,rebuild):
-      if not "run" in self.availacts.split(';'): return
+      updated = False
+      if not "run" in self.availacts.split(';'): return updated
       
       # ~~> prepare options as if run from command line
       specs = Values()
@@ -523,9 +528,11 @@ class actionRUN(ACTION):
            matchSafe('',path.basename(k[1][0]),self.active['safe'],2)
          try:
             sortieFiles = runCAS(self.active['cfg'],cfg,self.active["code"],[sacFile],specs)
+            updated = True
          except Exception as e:
             raise Exception([filterMessage({'name':'ACTION::runCAS'},e,self.bypass)])  # only one item here
       if sortieFiles != []: self.updateCFG({ 'sortie': sortieFiles })
+      return updated
 
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #                                         PRINCI related Methods
@@ -533,7 +540,8 @@ class actionRUN(ACTION):
 
    # ~~ Highligh user PRINCI differences ~~~~~~~~~~~~~~~~~~~~~~~~~~~
    def diffPRINCI(self,options,cfg,rebuild):
-      if not "princi" in self.availacts.split(';'): return
+      updated = False
+      if not "princi" in self.availacts.split(';'): return updated
       xref = self.active["xref"]; cfgname = self.active['cfg']
       active = self.dids[xref][cfgname]
       oneup = path.dirname(active['safe'])            # copied one level up
@@ -581,14 +589,17 @@ class actionRUN(ACTION):
                of.writelines( diff )
                of.close()
                print '       ~> comparison successful ! created: ' + path.basename(htmlFile)
+               updated = True
          else:
             raise Exception([{'name':'ACTION::diffPRINCI','msg':'I could not find your PRINCI file: '+princiFile}])
       # ~~> associated PRINCI file
       # TODO: case of coupling with multiple PRINCI files
+      return updated
  
    # ~~ Compile the PRINCI file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    def compilePRINCI(self,cfg,rebuild):
-      if not "compile" in self.availacts.split(';'): return
+      updated = False
+      if not "compile" in self.availacts.split(';'): return updated
       xref = self.active["xref"]; cfgname = self.active['cfg']
       active = self.dids[xref][cfgname]
       confirmed = False
@@ -633,11 +644,13 @@ class actionRUN(ACTION):
       if confirmed:
          try:
             compilePRINCI(princiSafe,active["code"],self.active['cfg'],cfg,self.bypass)
+            updated = True
          except Exception as e:
             raise Exception([filterMessage({'name':'ACTION::compilePRINCI'},e,self.bypass)])  # only one item here
          #moveFile(exeFile,active['safe'])
          print '       ~> compilation successful ! created: ' + path.basename(exeFile)
       #else: you may wish to retrieve the executable for later analysis
+      return updated
 
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #                                              Direct Executions
@@ -645,6 +658,7 @@ class actionRUN(ACTION):
 
    def runCommand(self,rebuild):
       
+      updated = False
       print '    +> executing your command:\n      ', self.active["do"]
       mes = MESSAGES(size=10)
 
@@ -699,7 +713,6 @@ class actionRUN(ACTION):
                   else: raise Exception([{'name':'runCommand','msg':'I cannot see your output file '+self.active["deprefs"][xref]}])
                else:
                   layer = []
-                  print active.keys()
                   for oFile in active["output"]:
                      layer = findTargets(active,self.active["deprefs"][xref])
                      if layer != []:
@@ -725,6 +738,7 @@ class actionRUN(ACTION):
       chdir(self.active['safe'])
       try:
          tail,code = mes.runCmd(exeCmd,self.bypass) # /!\ Do you really need True here ?
+         updated = True
       except Exception as e:
          raise Exception([filterMessage({'name':'runCommand','msg':'something went wrong when executing you command.'},e,True)])
       if code != 0: raise Exception([{'name':'runCommand','msg':'Could not run your command ('+exeCmd+').\n      '+tail}])
@@ -737,6 +751,7 @@ class actionRUN(ACTION):
             except Exception as e:
                raise Exception([filterMessage({'name':'runCommand','msg':'I can see your file '+oFile+': '+self.active["outrefs"][oFile]+'but cannot copy it'},e,True)])
          else: raise Exception([{'name':'runCommand','msg':'I cannot see your output file '+oFile+': '+self.active["outrefs"][oFile]}])
+      return updated
 
 # _____                            __________________________________
 # ____/ Secondary Class actionGET /_________________________________/
@@ -778,10 +793,10 @@ class actionGET(ACTION):
 class groupPLOT(GROUPS):
 
    availkeys = deepcopy(GROUPS.availkeys)
-   availkeys.update({ 'path':'','safe':'','cfg':'', "size":'', "dpi":'',
+   availkeys.update({ 'path':'','safe':'','cfg':'',
          "time": '[-1]', "extract": '', "vars": '', 'outFormat': 'png',
-         "sample": '', "target": '', "ratio2d": '', "do": '', "rank":'',
-         "title": '', "deprefs":'', "outrefs":'', "where":'',
+         "sample": '', "target": '', "do": '', "rank":'',
+         "deprefs":'', "outrefs":'', "where":'',
          "type":'', "config": 'distinct' })
    groupkeys = deepcopy(GROUPS.groupkeys)
    groupkeys.update({ "vars":'', "time":'', "extract":'', "sample": '', "config":'', "where":'' })
@@ -821,8 +836,8 @@ class groupGET(GROUPS):
    availkeys = deepcopy(GROUPS.availkeys)
    availkeys.update({ 'path':'','safe':'','cfg':'',
          "time": '[-1]', "extract": '', "sample": '', "vars": '',
-         'outFormat': 'csv', "target": '', "do": '', "rank":'',
-         "title": '', "deprefs":'', "outrefs":'', "where":'',
+         'outFormat': '', "target": '', "do": '', "rank":'',
+         "deprefs":'', "outrefs":'', "where":'',
          "type":'', "config": 'distinct' })
    groupkeys = deepcopy(GROUPS.groupkeys)
    groupkeys.update({ "vars":'', "time":'', "extract":'', "sample": '', "config":'', "where":'' })
@@ -854,158 +869,53 @@ class groupGET(GROUPS):
       subtask["vars"] = ';'.join(vrs)
       return subtask
 
-# _____                           ___________________________________
-# ____/ Secondary Class CRITERIA /__________________________________/
+# _____                             _________________________________
+# ____/ Secondary Class groupCHECK /________________________________/
 #
 
-class CRITERIA(GROUPS):
+class groupCAST(GROUPS):
 
    availkeys = deepcopy(GROUPS.availkeys)
    availkeys.update({ 'path':'','safe':'','cfg':'',
-         "target": '', "do": '', "rank":'',
-         "title": '', "deprefs":'', "outrefs":'', "where":'',
+         "time": '[-1]', "extract": '', "vars": [],
+         "sample": '', "target": '', "rank":'',
+         "deprefs":'', "outrefs":'', "where":'',
          "type":'', "config": 'distinct' })
    groupkeys = deepcopy(GROUPS.groupkeys)
-   groupkeys.update({ "vars":'', "time":'', "extract":'', "config":'', "where":'' })
+   groupkeys.update({ "vars":'', "time":'', "extract":'', "sample": '', "config":'', "where":'', "type":'' })
    avaylkeys = deepcopy(GROUPS.avaylkeys)
-   #avaylkeys.update({ "title":'', "target":'' })
+   avaylkeys.update({ "title":'', "target":'' })
 
    def __init__(self,xmlFile,title='',bypass=True):
       GROUPS.__init__(self,title,bypass)
       # those you reset
       self.path = path.dirname(xmlFile)
-      self.safe = ''
-      # ~~~~~~~~~~~~~
-      self.variabling = {}; self.conditionning = {}
+      self.safe = self.path
 
-   def addCriteria(self,criteria):
-      try:
-         i = getXMLKeys(criteria,self.active)
-      except Exception as e:
-         raise Exception([filterMessage({'name':'ACTION::addCriteria'},e,self.bypass)])  # only one item here
-      else:
-         self.active = i
+   def addCast(self,cast,rank=''):
+      GROUPS.addGroup(self,cast)
       self.active['path'] = self.path
       self.active['safe'] = self.safe
-      if self.active["xref"] in self.dids:
-         raise Exception([{'name':'CRITERIA::addCriteria','msg':'you are getting me confused, this xref already exists: '+self.active["xref"]}])
-      self.dids.update({ self.active["xref"]:{} })
-      print '\n    +> Validation Criteria :', self.active["xref"]
-      return 
-   
-   def addCFG(self,cfgname,cfg):
-      self.active['cfg'] = cfgname
-      self.dids[self.active["xref"]].update( { cfgname: {'variables':{},'condition':{} } } )
+      if self.dids[self.active['type']][self.tasks["xref"]]['rank'] == '': self.dids[self.active['type']][self.tasks["xref"]]['rank'] = rank
+      if self.dids[self.active['type']][self.tasks["xref"]]['rank'] == '': self.dids[self.active['type']][self.tasks["xref"]]['rank'] = '953'
+      self.dids[self.active['type']][self.tasks["xref"]]['rank'] = int(self.dids[self.active['type']][self.tasks["xref"]]['rank'])
 
-   def addvariable(self,variable):
-      variabling = {"vars": None, "target":None, "path":''}
-      cfgname = self.active['cfg']
-      try:
-         self.variabling = getXMLKeys(variable,variabling)
-      except Exception as e:
-         raise Exception([filterMessage({'name':'CRITERIA::addvariable'},e,self.bypass)])  # only one item here
-           
-      self.dids[self.active["xref"]][self.active['cfg']]['variables'].update({self.variabling["vars"]:{}})
-      active = self.dids[self.active["xref"]][self.active['cfg']]['variables']
-          
-      folder,fle = self.variabling["target"].split(':')
-      pathfolder = path.join(getcwd(),folder)
-      pathcfg = path.join(pathfolder,cfgname)
-      pathfile = path.join(pathcfg,fle) 
-      
-      active[self.variabling["vars"]]['path'] = [pathfile]
-      self.variabling['path'] = [pathfile]
-      return
-   
-   def addcondition(self,condition,NBR):
-      conditionning = {"do": None, "success":None, "failure":None, "warning":'',
-                        "result":[]}
-      #cfgname = self.active['cfg']
-      try:
-         self.conditionning = getXMLKeys(condition,conditionning)
-      except Exception as e:
-         raise Exception([filterMessage({'name':'CRITERIA::addcondition'},e,self.bypass)])  # only one item here
-           
-      self.dids[self.active["xref"]][self.active['cfg']]['condition'][NBR] = self.conditionning
-      return self.conditionning
+   def addPythonTask(self,code,nametask='python'):
+      self.tasks.update({nametask:code.text})
 
-   def updateCFG(self,d): self.dids[self.active["xref"]][self.active['cfg']].update( d )
+   def addReturnTask(self,code,nametask='return'):
+      self.tasks.update({nametask:{}})
+      for key in code.attrib: self.tasks[nametask].update({key:code.attrib[key]})
 
-   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   #   Available Operations for criteria
-   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   def addVariableTask(self,code,nametask):
+      subtasks = { 'xref':nametask }
+      for key in self.groupkeys: subtasks.update({key:self.tasks[key]})
+      for key in self.avaylkeys: subtasks.update({key:self.avaylkeys[key]})
+      for key in code.attrib: subtasks.update({key:code.attrib[key]})
+      self.tasks['vars'].append(subtasks)
+      return len(self.tasks['vars'])-1,'vars'
 
-   def compare(self,condition):
-      variables = self.dids[self.active["xref"]][self.active['cfg']]['variables']
-      
-      ######### Success condition ################################
-      NameVar1,operator,NameVar2 = condition["success"].split(':')
-      
-      print '         +> comparing :', NameVar1, '&', NameVar2
-
-      if not NameVar1.isalpha(): var1 = float(NameVar1)
-      else :     
-         PathVar1 = variables[NameVar1]['path'][0]
-         var1 = [] #getVariableCSV(PathVar1,NameVar1)
-      if not NameVar2.isalpha(): var2 = float(NameVar2)
-      else :     
-         PathVar2 = variables[NameVar2]['path'][0]
-         var2 = [] #getVariableCSV(PathVar2,NameVar2)
-      
-      if operator == 'LE' :
-         if var1 <= var2 : condition["result"].append('success')
-      elif operator == 'LT' :
-         if var1 < var2 : condition["result"].append('success')   
-      elif operator == 'GE' :
-         if var1 >= var2 : condition["result"].append('success')
-      elif operator == 'GT' :
-         if var1 > var2 : condition["result"].append('success')
-      
-         
-      ######### Failure condition ################################
-      NameVar1,operator,NameVar2 = condition["failure"].split(':')
-
-      if not NameVar1.isalpha(): var1 = float(NameVar1)
-      else :     
-         PathVar1 = variables[NameVar1]['path'][0]
-         var1 = [] #getVariableCSV(PathVar1,NameVar1)
-      if not NameVar2.isalpha(): var2 = float(NameVar2)
-      else :     
-         PathVar2 = variables[NameVar2]['path'][0]
-         var2 = [] #getVariableCSV(PathVar2,NameVar2)
-         
-      if operator == 'LE' :
-         if var1 <= var2 : condition["result"].append('failed')
-      elif operator == 'LT' :
-         if var1 < var2 : condition["result"].append('failed')   
-      elif operator == 'GE' :
-         if var1 >= var2 : condition["result"].append('failed')
-      elif operator == 'GT' :
-         if var1 > var2 : condition["result"].append('failed')   
-         
-      ######### Warning condition ################################
-      if condition["result"] == [] : condition["result"].append('warning')  
-      
-      return
-      
-   def CalcL2error(self,task):   
-      xref = self.active["xref"]; cfgname = self.active['cfg']
-      active = self.dids[xref][cfgname]
-      fle = task["target"]
-      print '       +> Calculating L2 error :', task["title"],'\n'
-      if task["reference"] != '':
-         fle = path.join(self.dids[task["reference"]][cfgname]['tasks']['safe'],fle)
-      var1 = task["ModelData"].lower()
-      var2 = task["ExactData"].lower()
-      VarModel,VarExperiment = 0.0, 0.0 #get2VariablesCSV(fle,var1,var2)
-      L2error = (la.norm(VarModel-VarExperiment))/(la.norm(VarExperiment))
-      columns = [[task["title"],'None',L2error]]
-      file2 = path.join(self.active['safe'], xref +'.csv')
-      if path.exists(file2): 
-         columns = [[task["title"],'None',L2error]]
-         #addColumnCSV(file2,columns[0])
-      else : pass #putDataCSV(file2,columns)
-      return
+   def update(self,d): self.dids[self.active["type"]][self.active["xref"]].update( d )
 
 # _____                     ________________________________________
 # ____/ XML Parser Toolbox /_______________________________________/
@@ -1013,10 +923,9 @@ class CRITERIA(GROUPS):
 """
    Assumes that the directory ColourMaps is in PWD (i.e. ~root/pytel.)
 """
-def runXML(xmlFile,xmlConfig,bypass):
+def runXML(xmlFile,xmlConfig,reports,bypass):
 
    xcpt = []            # try all keys for full report
-   report = {}          # report on criteria, the default one being Duration
 
    # ~~ Parse xmlFile ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    import xml.etree.ElementTree as XML
@@ -1047,7 +956,7 @@ def runXML(xmlFile,xmlConfig,bypass):
 
       # ~~ Step 2. Cumul looks ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if len(decoing.findall("look")) > 1:
-         xcpt.append({'name':'runXML','msg':'you can only have one look in deco referenced: '+dc.tasks["xref"]})
+         raise Exception([{'name':'runXML','msg':'you can only have one look in deco referenced: '+dc.tasks["xref"]}])
       if len(decoing.findall("look")) > 0:
          look = decoing.findall("look")[0]
          try:
@@ -1057,7 +966,7 @@ def runXML(xmlFile,xmlConfig,bypass):
             continue   # bypass the rest of the for loop
       # ~~ Step 2. Cumul decos ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if len(decoing.findall("data")) > 1:
-         xcpt.append({'name':'runXML','msg':'you can only have one data in deco referenced: '+dc.tasks["xref"]})
+         raise Exception([{'name':'runXML','msg':'you can only have one data in deco referenced: '+dc.tasks["xref"]}])
       if len(decoing.findall("data")) > 0:
          data = decoing.findall("data")[0]
          try:
@@ -1069,14 +978,17 @@ def runXML(xmlFile,xmlConfig,bypass):
       dc.update(dc.tasks)
 
    if xcpt != []: raise Exception({'name':'runXML','msg':'looking at deco in xmlFile: '+xmlFile,'tree':xcpt})
-   display = False
 
    # ~~ Looping logic in order of appearance ~~~~~~~~~~~~~~~~~~~~~~~
    do = actionRUN(xmlFile,title,bypass)
-   ex = groupGET(xmlFile,title,bypass)
-   for typeSave in ["save1d","save2d","save3d"]: ex.addGroupType(typeSave)
+   save = groupGET(xmlFile,title,bypass)
+   for typeSave in ["save1d","save2d","save3d"]: save.addGroupType(typeSave)
    plot = groupPLOT(xmlFile,title,bypass)
    for typePlot in ["plot1d","plot2d","plot3d","plotpv"]: plot.addGroupType(typePlot)
+   cast = groupCAST(xmlFile,title,bypass)
+   cast.addGroupType("cast")
+   # ~~> Create casts for future references
+   caster = Caster()
 
    for xmlChild in xmlRoot:
 
@@ -1087,14 +999,18 @@ def runXML(xmlFile,xmlConfig,bypass):
    #    PRINCAS(ACTION) will still be loaded to register various files
    #       for possible subsequent extraction, plotting or analysis
    #    TODO: limit the number of path / safe duplication
-   #
+   # _______________________________________________________//        \\
+   # _______________________________________________________>> ACTION <<
+   #                                                        \\        //
    #for action in xmlRoot.findall("action"):      
       if xmlChild.tag == "action":
+         report = {}; updated = False
          action = xmlChild
 
          # ~~ Step 1. Common check for keys and driving file ~~~~~~~
          try:
             targetFile = do.addAction(action,rank)
+            report.update({ 'xref':do.active['xref'], 'updt':False, 'fail':False, 'warn':False, 'rank':do.active['rank'], 'value':0, 'title':'This was ignored' })
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
             continue    # bypass rest of the loop
@@ -1104,8 +1020,8 @@ def runXML(xmlFile,xmlConfig,bypass):
             for d in sys.path:
                if path.isfile(path.join(d,targetFile)): oneFound = True
             if not oneFound:
-               xcpt.append({'name':'runXML','msg':'could not find your target file'+targetFile})
-               continue    # bypass rest of the loop
+               raise Exception([{'name':'runXML','msg':'could not find your target file'+targetFile}])
+               #continue    # bypass rest of the loop
 
          # ~~ Step 2. Loop over configurations ~~~~~~~~~~~~~~~~~~~~~
          for cfgname in xmlConfig:
@@ -1192,13 +1108,13 @@ def runXML(xmlFile,xmlConfig,bypass):
                doable = xmlConfig[cfgname]['options'].todos['act']['todo']
                if doable == '': doable = do.active["do"]
                if doable == '' or doable == 'all': doable = do.availacts
-               display = display or xmlConfig[cfgname]['options'].display
 
                # ~~> Action type A. Translate the CAS file
                if "translate" in doable.split(';') and dodo:
                   try:
                      # - exchange keywords between dictionaries
                      do.translateCAS(cfg['REBUILD'])
+                     #updated = do.translateCAS(cfg['REBUILD'])
                   except Exception as e:
                      xcpt.append(filterMessage({'name':'runXML','msg':'   +> translate'},e,bypass))
 
@@ -1220,6 +1136,7 @@ def runXML(xmlFile,xmlConfig,bypass):
                      specs.ablines = True
                      specs.context = False
                      do.diffPRINCI(specs,cfg,cfg['REBUILD'])
+                     #updated = do.diffPRINCI(specs,cfg,cfg['REBUILD'])
                   #except Exception as e:
                   #   xcpt.append(filterMessage({'name':'runXML','msg':'   +> diff(princi)'},e,bypass))
                # TODO: - comparison of subroutines between action items
@@ -1227,7 +1144,7 @@ def runXML(xmlFile,xmlConfig,bypass):
                # ~~> Action type E. Running CAS files
                if "run" in doable.split(';') and dodo:
                   try:
-                     do.runCAS(xmlConfig[cfgname]['options'],cfg,cfg['REBUILD'])
+                     updated = do.runCAS(xmlConfig[cfgname]['options'],cfg,cfg['REBUILD'])
                   except Exception as e:
                      xcpt.append(filterMessage({'name':'runXML','msg':'   +> run'},e,bypass))
 
@@ -1246,105 +1163,374 @@ def runXML(xmlFile,xmlConfig,bypass):
                if "exec" in doable.split(';') and dodo:
                   try:
                      # - simply run the exec as stated
-                     do.runCommand(cfg['REBUILD'])
+                     updated = do.runCommand(cfg['REBUILD'])
                   except Exception as e:
                      xcpt.append(filterMessage({'name':'runXML::runCommand','msg':'   +> '+do.active["do"]},e,bypass))
 
+         if updated: report.update({ 'updt':updated, 'title':'My work is done' })
+
          if xcpt != []: raise Exception({'name':'runXML','msg':'looking at actions in xmlFile: '+xmlFile,'tree':xcpt})
 
-   # ~~ Save As ... targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # did has all the IO references and the latest sortie files
-   #for extracting in xmlRoot.findall(typeSave):
-      if xmlChild.tag[0:4] == "save":
-         typeSave = xmlChild.tag
-         ex.active['type'] = typeSave
-         extracting = xmlChild
+         oneFound = False
+         for i in range(len(reports)):
+            if reports[i]['xref'] == report['xref']:  #/!\ You are sure there is one xref (?)
+               reports[i] = report
+               oneFound = True
+         if not oneFound: reports.append(report)
+
+   # _________________________________________________________//      \\
+   # _________________________________________________________>> CAST <<
+   #                                                          \\      //
+      if xmlChild.tag[0:4] == "cast":
+         report = {}
+         typeCast = xmlChild.tag
+         cast.active['type'] = typeCast
+         casting = xmlChild
 
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          try:
-            ex.addGroup(extracting,rank)
+            cast.addCast(casting,rank)
+            report.update({ 'xref':cast.tasks['xref'], 'updt':False, 'rank':cast.tasks['rank'] })
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add extract object to the list'},e,bypass))
             continue   # bypass the rest of the for loop
 
          # ~~> Temper with rank but still gather intelligence
-         rankdo = ex.dids[typeSave][ex.active['xref']]['rank']
+         dodo = True
+         rankdo = cast.active['rank']
+         rankdont = cast.dids[typeCast][cast.active['xref']]['rank']
+         if rankdont == 1: dodo = False
+         if gcd(rankdont,rankdo) == 1: dodo = False
+
+         # ~~ Step 2. Python code ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         if len(casting.findall("python")) > 1:
+            raise Exception([{'name':'runXML','msg':'you can only have one python key in cast referenced: '+cast.tasks["xref"]}])
+         if len(casting.findall("python")) > 0:
+            code = casting.findall("python")[0]
+            try:
+               cast.addPythonTask(code)
+            except Exception as e:
+               xcpt.append(filterMessage({'name':'runXML','msg':'add python code to the list'},e,bypass))
+               continue   # bypass the rest of the for loop
+
+         # ~~ Step 3. Return statement ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         if len(casting.findall("return")) > 1:
+            raise Exception([{'name':'runXML','msg':'you can only have one return key in cast referenced: '+cast.tasks["xref"]}])
+         if len(casting.findall("return")) > 0 and dodo:
+            code = casting.findall("return")[0]
+            try:
+               cast.addReturnTask(code)
+            except Exception as e:
+               xcpt.append(filterMessage({'name':'runXML','msg':'add return statement to the list'},e,bypass))
+               continue   # bypass the rest of the for loop
+
+         # ~~ Step 2. Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         for vari in casting.getchildren():
+            if vari.tag in ['python','return']: continue
+            if vari.tag in cast.tasks: raise Exception([{'name':'runXML','msg':'The variable '+vari.tag+' is cast more than once in '+cast.tasks["xref"]}])
+            try:
+               index,namex = cast.addVariableTask(vari,vari.tag)
+               target = cast.tasks[namex][index]["target"]
+            except Exception as e:
+               xcpt.append(filterMessage({'name':'runXML','msg':'add variable to the list'},e,bypass))
+               continue   # bypass the rest of the for loop
+
+            # ~~> just casting, no specific targets
+            if target == '':
+               cast.tasks[namex][index].update({ 'fileName':{},'target':cast.tasks["xref"] })
+               continue
+            # ~~> round up targets and their configurations looking in exes and does
+            xref = target ; src = ''
+            if len(target.split(':')) > 1: xref,src = target.split(':')
+
+            xdid = ''
+            for did in cast.dids:
+               if xref in cast.dids[did].keys(): xdid = did
+            if xdid != '':
+               if src not in caster.obdata.keys(): raise Exception([{'name':'runXML','msg':'did not already cast variable '+src+' wihtin '+xref}])
+               layers = {}
+               for cfgname in xmlConfig:
+                  layers.update({ cfgname:[[xref+':'+src],'',''] }) # TODO: maybe you do not need xref
+               if layers != {}: cast.targetSubTask(layers,index,namex)
+               continue # try finding the next variable
+
+            for did in save.dids:
+               if xref in save.dids[did].keys(): xdid = did
+            if xdid != '':     # saved files can be reopened as target to do something else
+               target = xref + '.' + save.dids[xdid][xref]['outFormat'] # TODO: 'outFormat' may not be correct
+               if save.dids[xdid][xref]["where"] != '':
+                  if path.exists(path.join(save.dids[xdid][xref]["where"],target)):
+                     findlayer = {}
+                     t = path.splitext(path.basename(target))[1].lower()[1:]
+                     for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(save.dids[xdid][xref]["where"],target)],'',t] })
+                     cast.targetSubTask(findlayer,index,namex)
+                  else : raise Exception([{'name':'runXML','msg':'could not find reference to extract the cast: '+target+' where '+cast.tasks[namex][index]["where"]}])
+               elif path.exists(path.join(save.path,target)):
+                  findlayer = {}
+                  t = path.splitext(path.basename(target))[1].lower()[1:]
+                  for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(save.path,target)],'',t] })
+                  cast.targetSubTask(findlayer,index,namex)
+               continue # try finding the next variable
+               
+            if xref in do.dids:
+               layers = {}
+               oneFound = False
+               for cfgname in xmlConfig:
+                  rankdont = xmlConfig[cfgname]['options'].todos['cast']['rank']
+                  if rankdont == 1: continue
+                  if gcd(rankdont,rankdo) == 1: continue
+                  oneFound = True
+                  findlayer = findTargets(do.dids[xref][cfgname],src)
+                  if findlayer != []: layers.update({ cfgname:findlayer })
+               if oneFound and layers == {}: raise Exception([{'name':'runXML','msg':'could not find reference to cast the action: '+xref+':'+src}])
+               else:
+                  cast.targetSubTask(layers,index,namex)
+               continue # try finding the next variable
+
+            if src == '':
+               if cast.tasks["where"] != '':
+                  if path.exists(path.join(cast.tasks["where"],target)):
+                     findlayer = {}
+                     t = path.splitext(path.basename(target))[1].lower()[1:]
+                     for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(cast.tasks["where"],target)],'',t] })
+                     cast.targetSubTask(findlayer,index,namex)
+                  else : raise Exception([{'name':'runXML','msg':'could not find reference to extract the cast: '+target+' where '+cast.tasks["where"]}])
+               elif path.exists(path.join(cast.path,target)):
+                  findlayer = {}
+                  t = path.splitext(path.basename(target))[1].lower()[1:]
+                  for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(cast.path,target)],'',t] })
+                  cast.targetSubTask(findlayer,index,namex)
+               else : raise Exception([{'name':'runXML','msg':'could not find reference to cast: '+target}])
+
+         cast.update(cast.tasks)
+
+         if xcpt != []: raise Exception({'name':'runXML','msg':'looking at casting in xmlFile: '+xmlFile,'tree':xcpt})
+
+   # ~~ Matrix distribution by casting types ~~~~~~~~~~~~~~~~~~~~
+   # /!\ you can only have one of them per variable
+         xref = cast.tasks['xref']
+         task = cast.dids[typeCast][xref]
+         print '    +> reference: ',xref,' of type ',typeCast
+
+         xvars = ''   # now done with strings as arrays proved to be too challenging
+         for var in task["vars"]:
+            if task['config'] == 'together':
+               raise Exception([{'name':'runXML','msg':'could not have more than one configuration at a time for casting: '+var['xref']}])
+            elif task['config'] == 'distinct':
+               raise Exception([{'name':'runXML','msg':'could not have more than one configuration at a time for casting: '+var['xref']}])
+            elif task['config'] == 'oneofall':
+               xys = []
+               if var['fileName'] != {}: cfg = var['fileName'].iterkeys().next()
+               else: cfg = '-'                  
+               for x in xvars.split('|'): xys.append( (x+';'+cfg).strip(';') )
+               xvars = '|'.join(xys)
+            else:
+               xys = []
+               if var['fileName'] != {}:
+                  if task['config'] in var['fileName']:
+                     for x in xvars.split('|'): xys.append( (x+';'+task['config']).strip(';') )
+               else:
+                  for x in xvars.split('|'): xys.append( (x+';'+'-').strip(';') )
+               xvars = '|'.join(xys)
+
+         # ~~> First, loading the user python (this is not executing anything yet ...)
+         if 'python' in cast.tasks: exec( cast.tasks['python'] )
+
+         # ~~> Second, casting and extracting data
+         nbFile = 0; avars = xvars.split('|')
+
+         space = globals()
+         for cfglist in avars:
+            # ~~> Cast all variables
+            for var,cfgs in zip(task["vars"],cfglist.split(';')):
+               for cfg in cfgs.split(':'):
+                  space[var['xref']] = Values() # more practical than a dict { 'support':None, 'values':None }
+                  if var['fileName'] != {} and var['fileName'][cfg][0] != []:
+                     fileName = var['fileName'][cfg]
+                     var.update({ 'file':fileName[0][0] })
+                     caster.add( fileName[2], var )
+                     space[var['xref']] = caster.get( fileName[2], var )
+                  else:
+                     r = eval( var["vars"] )
+                     if type(r) != type(()): raise Exception([{'name':'runXML','msg':'The result of the function '+var["vars"]+' for '+cast.tasks["xref"]+' should have 2 arguments: support,values'}])
+                     if len(r) != 2: raise Exception([{'name':'runXML','msg':'The result of the function '+var["vars"]+' for '++cast.tasks["xref"]+' should have 2 arguments: support,values'}])
+                     support,values = r
+                     caster.set( var['xref'],Values({ 'support':support, 'values':values }) )
+                     space[var['xref']].support = support
+                     space[var['xref']].values = values
+
+         # ~~> Last but not least, validating
+         report.update({ 'updt':True })
+         if 'return' not in cast.tasks:
+            report.update({ 'fail':False, 'warn':False, 'value':0, 'title':'My work is done' })
+         else:
+            for var in cast.tasks['return']:
+               if var in ['fail','warn','value']:
+                  r = eval( cast.tasks['return'][var] )
+                  report.update({ var:r })
+                  print '        - cast:',var,' = ',repr(r),' ( expression: ',cast.tasks['return'][var],' )'
+               else: report.update({ var:cast.tasks['return'][var] })
+
+         if xcpt != []: raise Exception({'name':'runXML','msg':'looking at casting in xmlFile: '+xmlFile,'tree':xcpt})
+         oneFound = False
+         for i in range(len(reports)):
+            if reports[i]['xref'] == report['xref']:  #/!\ You are sure there is one xref (?)
+               reports[i] = report
+               oneFound = True
+         if not oneFound: reports.append(report)
+
+   # _________________________________________________________//      \\
+   # _________________________________________________________>> SAVE <<
+   #                                                          \\      //
+   # did has all the IO references and the latest sortie files
+   #for extracting in xmlRoot.findall(typeSave):
+      if xmlChild.tag[0:4] == "save":
+         report = {}; updated = False
+         # /!\ typeSave should be in ['save1d','save2d','save3d']         
+         typeSave = xmlChild.tag
+         if "type" not in xmlChild.attrib:  #TODO: This will eventually be removed
+            if len(typeSave) == 4: raise Exception([{'name':'runXML','msg':'do not know what dimension your saved data will be in: '+xmlChild.attrib["xref"]}])
+            elif len(typeSave) == 6: xmlChild.set("type",typeSave[4:6]+':')
+            else: raise Exception([{'name':'runXML','msg':'the type of your saved data should be in: ["save1d","save2d","save3d"] for '+xmlChild.attrib["xref"]}])
+         else:
+            if len(typeSave) == 4:
+               if len(xmlChild.attrib["type"].split(':')) == 2: typeSave = typeSave + xmlChild.attrib["type"].split(':')[0]
+               else: raise Exception([{'name':'runXML','msg':'do not know what dimension your saved data will be in: '+xmlChild.attrib["xref"]}])
+            elif len(typeSave) == 6:
+               if len(xmlChild.attrib["type"].split(':')) == 2:
+                  if typeSave[4:6] != xmlChild.attrib["type"].split(':')[0]: raise Exception([{'name':'runXML','msg':'inconsistency in the dimension of your plotted data in: '+xmlChild.attrib["xref"]}])
+               else: xmlChild.attrib["type"] = typeSave[4:6] + ":" + xmlChild.attrib["type"]
+            else: raise Exception([{'name':'runXML','msg':'the type of your saved data should be in: ["save1d","save2d","save3d"] for '+xmlChild.attrib["xref"]}])
+         save.active['type'] = typeSave
+         extracting = xmlChild
+
+         # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
+         try:
+            save.addGroup(extracting,rank)
+            report.update({ 'xref':save.active['xref'], 'updt':False, 'fail':False, 'warn':False, 'rank':save.active['rank'], 'value':0, 'title':'This was ignored' })
+         except Exception as e:
+            xcpt.append(filterMessage({'name':'runXML','msg':'add extract object to the list'},e,bypass))
+            continue   # bypass the rest of the for loop
+
+         # ~~> Temper with rank but still gather intelligence
+         rankdo = save.dids[typeSave][save.active['xref']]['rank']
+
+         # ~~> Default output formats
+         if save.dids[typeSave][save.active['xref']]['outFormat'] == '':
+            if typeSave[4:6] == "1d": save.dids[typeSave][save.active['xref']]['outFormat'] = 'csv'
+            if typeSave[4:6] == "2d": save.dids[typeSave][save.active['xref']]['outFormat'] = 'slf'
+            if typeSave[4:6] == "3d": save.dids[typeSave][save.active['xref']]['outFormat'] = 'slf'
 
          # ~~ Step 2. Cumul layers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          for layer in extracting.findall("layer"):
             try:
-               index,namex = ex.addSubTask(layer)
-               target = ex.tasks[namex][index]["target"]
+               index,namex = save.addSubTask(layer)
+               target = save.tasks[namex][index]["target"]
             except Exception as e:
                xcpt.append(filterMessage({'name':'runXML','msg':'add layer to the list'},e,bypass))
                continue   # bypass the rest of the for loop
 
             # ~~> round up targets and their configurations looking in exes and does
-            if len(target.split(':')) > 1:
-               xref,src = target.split(':')
+            xref = target ; src = ''
+            if len(target.split(':')) > 1: xref,src = target.split(':')
+
+            if xref in cast.dids['cast']:
+               if src == '': src = save.tasks[namex][index]['vars'].split(';')[0].split(':')[0]
+               layers = {}
+               oneFound = False
+               findlayer = []
+               for cfgname in xmlConfig:
+                  #rankdont = xmlConfig[cfgname]['options'].todos['save']['rank']
+                  #if rankdont == 1: continue
+                  #if gcd(rankdont,rankdo) == 1: continue
+                  for var in cast.dids['cast'][xref]['vars']:
+                     if src == var['xref']:
+                        oneFound = True
+                        findlayer = [[src],'','']
+                  if findlayer != []: layers.update({ cfgname:findlayer })
+               if layers == {}:
+                  raise Exception([{'name':'runXML','msg':'could not find reference to save the cast: '+xref+':'+src}])
+                  save.targetSubTask({},index,namex)
+                  continue    # bypass the rest of the for loop
+               else:
+                  save.targetSubTask(layers,index,namex)
+
+            elif src != '':
                if xref in do.dids:
                   layers = {}
                   oneFound = False
                   for cfgname in xmlConfig:
-                     rankdont = xmlConfig[cfgname]['options'].todos['get']['rank']
+                     rankdont = xmlConfig[cfgname]['options'].todos['save']['rank']
                      if rankdont == 1: continue
                      if gcd(rankdont,rankdo) == 1: continue
                      oneFound = True
-                     #cfg = xmlConfig[cfgname]['cfg']
-                     layer = findTargets(do.dids[xref][cfgname],src)
-                     if layer != []: layers.update({ cfgname:layer })
+                     findlayer = findTargets(do.dids[xref][cfgname],src)
+                     if findlayer != []: layers.update({ cfgname:findlayer })
                   if oneFound and layers == {}:
-                     xcpt.append({'name':'runXML','msg':'could not find reference to extract within actions: '+xref+':'+src})
-                     ex.targetSubTask({},index,namex)
+                     raise Exception([{'name':'runXML','msg':'could not find reference to extract within actions: '+xref+':'+src}])
+                     save.targetSubTask({},index,namex)
                      continue    # bypass the rest of the for loop
                   else:
-                     ex.targetSubTask(layers,index,namex)
-               else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+xref+':'+src})
+                     save.targetSubTask(layers,index,namex)
+               else : raise Exception([{'name':'runXML','msg':'could not find reference to extract the action: '+xref+':'+src}])
+
             else:
-               if ex.tasks[namex][index]["where"] != '':
-                  if path.exists(path.join(ex.tasks[namex][index]["where"],target)):
+               if save.tasks[namex][index]["where"] != '':
+                  if path.exists(path.join(save.tasks[namex][index]["where"],target)):
                      findlayer = {}
                      t = path.splitext(path.basename(target))[1].lower()[1:]
-                     for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(ex.tasks[namex][index]["where"],target)],'',t] })
-                     ex.targetSubTask(findlayer,index,namex)
-                  else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target+' where '+ex.tasks[namex][index]["where"]})
-               elif path.exists(path.join(ex.path,target)):
+                     for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(save.tasks[namex][index]["where"],target)],'',t] })
+                     save.targetSubTask(findlayer,index,namex)
+                  else : raise Exception([{'name':'runXML','msg':'could not find reference to extract the action: '+target+' where '+save.tasks[namex][index]["where"]}])
+               elif path.exists(path.join(save.path,target)):
                   findlayer = {}
                   t = path.splitext(path.basename(target))[1].lower()[1:]
-                  for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(ex.path,target)],'',t] })
-                  ex.targetSubTask(findlayer,index,namex)
-               else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target})
+                  for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(save.path,target)],'',t] })
+                  save.targetSubTask(findlayer,index,namex)
+               else : raise Exception([{'name':'runXML','msg':'could not find reference to extract the action: '+target}])
 
             # ~~> round up decos, replacing the name by the associated deco dico
             # > at the action level
-            if type(ex.tasks['deco']) == type(''):
-               if ex.tasks['deco'] != '':
-                  if dc.dids['deco'].has_key(ex.tasks['deco']):
-                     ex.tasks['deco'] = dc.dids['deco'][ex.tasks['deco']]
-                  elif ex.tasks['deco'] != '':
-                     print '... ignoring the figure decoration named: ',ex.tasks['deco']
-                  else: ex.tasks['deco'] = {}
-               else: ex.tasks['deco'] = {}
+            if type(save.tasks['deco']) == type(''):
+               if save.tasks['deco'] != '':
+                  decos = save.tasks['deco'].split(';')
+                  save.tasks['deco'] = {}
+                  for deco in decos:
+                     if dc.dids['deco'].has_key(deco):
+                        save.tasks['deco'].update(dc.dids['deco'][deco])
+                     else: raise Exception([{'name':'runXML','msg':'could not find reference to deco tag <'+deco+'> for figure "'+save.tasks['xref']+'"'}])
+               elif dc.dids['deco'].has_key(save.tasks['xref']):
+                  save.tasks['deco'] = dc.dids['deco'][save.tasks['xref']]
+               else:
+                  if typeSave[4:6] == '1d': save.tasks['deco'] = decoDefault1D
+                  if typeSave[4:6] == '2d': save.tasks['deco'] = decoDefault2D
+                  if typeSave[4:6] == '3d': save.tasks['deco'] = decoDefault3D
             # > at the layer level
-            if type(ex.tasks[namex][index]['deco']) == type(''):
-               if ex.tasks[namex][index]['deco'] != '':
-                  if dc.dids['deco'].has_key(ex.tasks[namex][index]['deco']):
-                     ex.tasks[namex][index]['deco'] = dc.dids['deco'][ex.tasks[namex][index]['deco']]
-                  elif ex.tasks[namex][index]['deco'] != '':
-                     print '... ignoring the '+namex+' decoration named: ',ex.tasks[namex][index]['deco']
-                  else: ex.tasks[namex][index]['deco'] = {}
-               else: ex.tasks[namex][index]['deco'] = {}
+            if type(save.tasks[namex][index]['deco']) == type(''):
+               if save.tasks[namex][index]['deco'] != '':
+                  decos = save.tasks[namex][index]['deco'].split(';')
+                  save.tasks[namex][index]['deco'] = {}
+                  for deco in decos:
+                     if dc.dids['deco'].has_key(deco):
+                        for name in dc.dids['deco'][deco]:
+                           if name in ['look','data']: save.tasks[namex][index]['deco'].update(dc.dids['deco'][deco][name][0])
+                     else: raise Exception([{'name':'runXML','msg':'could not find reference to deco tag <'+deco+'> for figure "'+save.tasks['xref']+'"'}])
+               else:
+                  if typeSave[4:6] == '1d': save.tasks[namex][index]['deco'] = decoDefault1D
+                  if typeSave[4:6] == '2d': save.tasks[namex][index]['deco'] = decoDefault2D
+                  if typeSave[4:6] == '3d': save.tasks[namex][index]['deco'] = decoDefault3D
 
-         ex.update(ex.tasks)
+         save.update(save.tasks)
 
          if xcpt != []: raise Exception({'name':'runXML','msg':'looking at extractions in xmlFile: '+xmlFile,'tree':xcpt})
 
    # ~~ Matrix distribution by extraction types ~~~~~~~~~~~~~~~~~~~~
-   #for xref in ex.order:
-   #   for did in ex.dids:
-   #      if xref in ex.dids[did]: typeSave = did
-         xref = ex.tasks['xref']
-         task = ex.dids[typeSave][xref]
+   #for xref in save.order:
+   #   for did in save.dids:
+   #      if xref in save.dids[did]: typeSave = did
+         xref = save.tasks['xref']
+         
+         task = save.dids[typeSave][xref]
          if not "layers" in task: continue
          oneFound = False
          for layer in task["layers"]:
@@ -1385,39 +1571,60 @@ def runXML(xmlFile,xmlConfig,bypass):
             print '       ~> saved as: ',extractName
             extractName = path.join(path.dirname(xmlFile),extractName)
             # ~~> Create Figure
-            if typeSave == "save1d": figure = Dumper1D(task)
-            if typeSave == "save2d": figure = Dumper2D(task)
-            if typeSave == "save3d": figure = Dumper3D(task)
+            if typeSave[4:6] == "1d": figure = Dumper1D(caster,task)
+            if typeSave[4:6] == "2d": figure = Dumper2D(caster,task)
+            if typeSave[4:6] == "3d": figure = Dumper3D(caster,task)
 
             for layer,cfgs in zip(task["layers"],cfglist.split(';')):
                for cfg in cfgs.split(':'):
                   for fle in layer['fileName'][cfg][0]:
                      figure.add( layer['fileName'][cfg][2], { 'file': fle,
-                        'deco': {},
+                        'deco': {}, 'xref':xref,
                         'vars': layer["vars"], 'extract':layer["extract"], 'sample':layer["sample"],
                         'type': task['type'], 'time':layer["time"] } )
 
             figure.save(extractName)
+            updated = True
+
+         if updated: report.update({ 'updt':updated, 'title':'My work is done' })
 
          if xcpt != []: raise Exception({'name':'runXML','msg':'looking at savings in xmlFile: '+xmlFile,'tree':xcpt})
+         
+         oneFound = False
+         for i in range(len(reports)):
+            if reports[i]['xref'] == report['xref']:  #/!\ You are sure there is one xref (?)
+               reports[i] = report
+               oneFound = True
+         if not oneFound: reports.append(report)
 
-      """      if "L2error" in doaddtask["do"]:
-               chdir(racine)
-               try:
-                  ex.CalcL2error(doaddtask)
-               except Exception as e:
-                  xcpt.append(filterMessage({'name':'runXML','msg':'   +> CalcL2error'},e,bypass))"""
-
-   # ~~ Gathering targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # _________________________________________________________//      \\
+   # _________________________________________________________>> PLOT <<
+   #                                                          \\      //
    #for ploting in xmlRoot.findall(typePlot):
       if xmlChild.tag[0:4] == "plot":
-         typePlot = xmlChild.tag
+         report = {}; updated = False
+         # /!\ typePlot should be in ['plot1d','plot2d','plot3d','plotpv']
+         typePlot = xmlChild.tag 
+         if "type" not in xmlChild.attrib:  #TODO: This will eventually be removed
+            if len(typePlot) == 4: raise Exception([{'name':'runXML','msg':'do not know what dimension your plotted data will be in: '+xmlChild.attrib["xref"]}])
+            elif len(typePlot) == 6: xmlChild.set("type",typePlot[4:6]+':')
+            else: raise Exception([{'name':'runXML','msg':'the type of your plot should be in: ["plot1d","plot2d","plot3d","plotpv"] for '+xmlChild.attrib["xref"]}])
+         else:
+            if len(typePlot) == 4:
+               if len(xmlChild.attrib["type"].split(':')) == 2: typePlot = typePlot + xmlChild.attrib["type"].split(':')[0]
+               else: raise Exception([{'name':'runXML','msg':'do not know what dimension your plotted data will be in: '+xmlChild.attrib["xref"]}])
+            elif len(typePlot) == 6: 
+               if len(xmlChild.attrib["type"].split(':')) == 2:
+                  if typePlot[4:6] != xmlChild.attrib["type"].split(':')[0]: raise Exception([{'name':'runXML','msg':'inconsistency in the dimension of your plotted data in: '+xmlChild.attrib["xref"]}])
+               else: xmlChild.attrib["type"] = typePlot[4:6] + ":" + xmlChild.attrib["type"]
+            else: raise Exception([{'name':'runXML','msg':'the type of your plot should be in: ["plot1d","plot2d","plot3d","plotpv"] for '+xmlChild.attrib["xref"]}])
          plot.active['type'] = typePlot
          ploting = xmlChild
          
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          try:
             plot.addDraw(ploting,rank)
+            report.update({ 'xref':plot.active['xref'], 'updt':False, 'fail':False, 'warn':False, 'rank':plot.active['rank'], 'value':0, 'title':'This was ignored' })
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add plot to the list'},e,bypass))
             continue   # bypass the rest of the for loop
@@ -1435,9 +1642,32 @@ def runXML(xmlFile,xmlConfig,bypass):
                continue   # bypass the rest of the for loop
 
             # ~~> round up targets and their configurations looking in exes and does
-            if len(target.split(':')) > 1:
-               xref,src = target.split(':')
-               if xref in ex.dids:
+            xref = target ; src = ''
+            if len(target.split(':')) > 1: xref,src = target.split(':')
+
+            if xref in cast.dids['cast']:
+               if src == '': src = plot.tasks[namex][index]['vars'].split(';')[0].split(':')[0]
+               layers = {}
+               oneFound = False
+               findlayer = []
+               for cfgname in xmlConfig:
+                  #rankdont = xmlConfig[cfgname]['options'].todos['draw']['rank']
+                  #if rankdont == 1: continue
+                  #if gcd(rankdont,rankdo) == 1: continue
+                  for var in cast.dids['cast'][xref]['vars']:
+                     if src == var['xref']:
+                        oneFound = True
+                        findlayer = [[src],'','']
+                  if findlayer != []: layers.update({ cfgname:findlayer })
+               if layers == {}:
+                  raise Exception([{'name':'runXML','msg':'could not find reference to draw the cast: '+xref+':'+src}])
+                  plot.targetSubTask({},index,namex)
+                  continue    # bypass the rest of the for loop
+               else:
+                  plot.targetSubTask(layers,index,namex)
+
+            elif src != '':
+               if xref in save.dids:
                   layers = {}
                   oneFound = False
                   for cfgname in xmlConfig:
@@ -1445,10 +1675,10 @@ def runXML(xmlFile,xmlConfig,bypass):
                      if rankdont == 1: continue
                      if gcd(rankdont,rankdo) == 1: continue
                      oneFound = True
-                     findlayer = findTargets(ex.dids[xref][cfgname],src)
+                     findlayer = findTargets(save.dids[xref][cfgname],src)
                      if findlayer != []: layers.update({ cfgname:findlayer })
                   if oneFound and layers == {}:
-                     xcpt.append({'name':'runXML','msg':'could not find reference to draw the extract: '+xref+':'+src})
+                     raise Exception([{'name':'runXML','msg':'could not find reference to draw the extract: '+xref+':'+src}])
                      plot.targetSubTask({},index,namex)
                      continue    # bypass the rest of the for loop
                   else:
@@ -1469,7 +1699,8 @@ def runXML(xmlFile,xmlConfig,bypass):
                      continue    # bypass the rest of the for loop
                   else:
                      plot.targetSubTask(layers,index,namex)
-               else : xcpt.append({'name':'runXML','msg':'could not find reference to draw the action: '+xref})
+               else : raise Exception([{'name':'runXML','msg':'could not find reference to draw the action: '+xref}])
+
             else:
                if plot.tasks[namex][index]["where"] != '':
                   if path.exists(path.join(plot.tasks[namex][index]["where"],target)):
@@ -1477,33 +1708,44 @@ def runXML(xmlFile,xmlConfig,bypass):
                      t = path.splitext(path.basename(target))[1].lower()[1:]
                      for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(plot.tasks[namex][index]["where"],target)],'',t] })
                      plot.targetSubTask(findlayer,index,namex)
-                  else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target+' where '+plot.tasks[namex][index]["where"]})
+                  else : raise Exception([{'name':'runXML','msg':'could not find reference to extract the action: '+target+' where '+plot.tasks[namex][index]["where"]}])
                elif path.exists(path.join(plot.path,target)):
                   findlayer = {}
                   t = path.splitext(path.basename(target))[1].lower()[1:]
                   for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(plot.path,target)],'',t] })
                   plot.targetSubTask(findlayer,index,namex)
-               else : xcpt.append({'name':'runXML','msg':'could not find reference to extract the action: '+target})
+               else : raise Exception([{'name':'runXML','msg':'could not find reference to extract the action: '+target}])
 
             # ~~> round up decos, replacing the name by the associated deco dico
             # > at the action level
             if type(plot.tasks['deco']) == type(''):
                if plot.tasks['deco'] != '':
-                  if dc.dids['deco'].has_key(plot.tasks['deco']):
-                     plot.tasks['deco'] = dc.dids['deco'][plot.tasks['deco']]
-                  elif plot.tasks['deco'] != '':
-                     print '... ignoring the figure decoration named: ',plot.tasks['deco']
-                  else: plot.tasks['deco'] = {}
-               else: plot.tasks['deco'] = {}
+                  decos = plot.tasks['deco'].split(';')
+                  plot.tasks['deco'] = {}
+                  for deco in decos:
+                     if dc.dids['deco'].has_key(deco):
+                        plot.tasks['deco'].update(dc.dids['deco'][deco])
+                     else: raise Exception([{'name':'runXML','msg':'could not find reference to deco tag <'+deco+'> for figure "'+plot.tasks['xref']+'"'}])
+               elif dc.dids['deco'].has_key(plot.tasks['xref']):
+                  plot.tasks['deco'] = dc.dids['deco'][plot.tasks['xref']]
+               else:
+                  if typePlot[4:6] == '1d': plot.tasks['deco'] = decoDefault1D
+                  if typePlot[4:6] == '2d': plot.tasks['deco'] = decoDefault2D
+                  if typePlot[4:6] == '3d': plot.tasks['deco'] = decoDefault3D
             # > at the layer level
             if type(plot.tasks[namex][index]['deco']) == type(''):
                if plot.tasks[namex][index]['deco'] != '':
-                  if dc.dids['deco'].has_key(plot.tasks[namex][index]['deco']):
-                     plot.tasks[namex][index]['deco'] = dc.dids['deco'][plot.tasks[namex][index]['deco']]
-                  elif plot.tasks[namex][index]['deco'] != '':
-                     print '... ignoring the '+namex+' decoration named: ',plot.tasks[namex][index]['deco']
-                  else: plot.tasks[namex][index]['deco'] = {}
-               else: plot.tasks[namex][index]['deco'] = {}
+                  decos = plot.tasks[namex][index]['deco'].split(';')
+                  plot.tasks[namex][index]['deco'] = {}
+                  for deco in decos:
+                     if dc.dids['deco'].has_key(deco):
+                        for name in dc.dids['deco'][deco]:
+                           if name in ['look','data']: plot.tasks[namex][index]['deco'].update(dc.dids['deco'][deco][name][0])
+                     else: raise Exception([{'name':'runXML','msg':'could not find reference to layer deco tag: '+deco+' for figure '+plot.tasks['xref']}])
+               else:
+                  if typePlot[4:6] == '1d': plot.tasks[namex][index]['deco'] = decoDefault1D
+                  if typePlot[4:6] == '2d': plot.tasks[namex][index]['deco'] = decoDefault2D
+                  if typePlot[4:6] == '3d': plot.tasks[namex][index]['deco'] = decoDefault3D
 
          plot.update(plot.tasks)
 
@@ -1515,7 +1757,6 @@ def runXML(xmlFile,xmlConfig,bypass):
    #   for did in plot.dids:
    #      if xref in plot.dids[did]: typePlot = did
          xref = plot.tasks['xref']
-         task = plot.dids[typePlot][xref]
 
          draw = plot.dids[typePlot][xref]
          if not "layers" in draw: continue
@@ -1561,93 +1802,41 @@ def runXML(xmlFile,xmlConfig,bypass):
             print '       ~> saved as: ',figureName
             figureName = path.join(path.dirname(xmlFile),figureName)
             # ~~> Create Figure
-            if typePlot == "plot1d": figure = Figure1D(draw)
-            if typePlot == "plot2d": figure = Figure2D(draw)
-            if typePlot == "plot3d": figure = Figure3D(draw)
-            # ~~> User Deco taken from 'look'
-            #if layer['deco'].has_key('look'):
-            #   for key in layer['deco']['look'][0]: layer['deco'].update({key:layer['deco']['look'][0][key]})
+            if typePlot[4:6] == "1d": figure = Figure1D(caster,draw)
+            if typePlot[4:6] == "2d": figure = Figure2D(caster,draw)
+            if typePlot[4:6] == "3d": figure = Figure3D(caster,draw)
 
+            display = False
             for layer,cfgs in zip(draw["layers"],cfglist.split(';')):
                for cfg in cfgs.split(':'):
+                  display = display or xmlConfig[cfg]['options'].display
                   for fle in layer['fileName'][cfg][0]:
                      figure.add( layer['fileName'][cfg][2], { 'file': fle,
-                        'deco': layer["deco"],
+                        'deco': layer["deco"], 'xref':xref,
                         'vars': layer["vars"], 'extract':layer["extract"], 'sample':layer["sample"],
                         'type': draw['type'], 'time':layer["time"] } )
 
             if display: figure.show()
             else: figure.save(figureName)
+            updated = True
+
+         if updated: report.update({ 'updt':updated, 'title':'My work is done' })
 
          if xcpt != []: raise Exception({'name':'runXML','msg':'looking at plotting in xmlFile: '+xmlFile,'tree':xcpt})
 
-   # ~~ Validation Criteria ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   #
-   racine = path.split(xmlFile)[0]
-   chdir(racine)
-   docriteria = CRITERIA(xmlFile,title,bypass)
-   for criteria in xmlRoot.findall("criteria"):
-
-  # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      try:
-         doadd = docriteria.addCriteria(criteria)
-      except Exception as e:
-         xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
-         continue
-
-      # ~~> Temper with rank but still gather intelligence
-      docrt = True
-      rankdo = docriteria.dids['?'][docriteria.active['xref']]['rank']
-      rankdont = xmlConfig[cfgname]['options'].todos['test']['rank']
-      if rankdont == 1: docrt = False
-      if gcd(rankdont,rankdo) == 1: docrt = False
-      if not docrt: continue
-
-      for cfgname in xmlConfig:
-         criteriacfg = xmlConfig[cfgname]['cfg']
-         docriteria.addCFG(cfgname,criteriacfg) #if not : continue
-
-         for vrs in criteria.findall("variable"):
-            try:
-               doaddvariable = docriteria.addvariable(vrs)
-            except Exception as e:
-               xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
-               continue
-
-         conditionNBR = 1
-         for condition in criteria.findall("condition"):               
-            try:
-               doaddcondition = docriteria.addcondition(condition,conditionNBR)
-               conditionNBR += 1
-            except Exception as e:
-               xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
-               continue  
-
-            if "compare" in doaddcondition["do"]:
-               try:
-                  docriteria.compare(doaddcondition)
-               except Exception as e:
-                  xcpt.append(filterMessage({'name':'runXML','msg':'   +> compare'},e,bypass))
-
-
-      for criteria in docriteria.dids:        
-         for cfg in docriteria.dids[criteria]:
-            for NBR in docriteria.dids[criteria][cfg]['condition']:
-               if docriteria.dids[criteria][cfg]['condition'][NBR]['result'][0] == 'success' : continue
-               else :
-                  if docriteria.dids[criteria][cfg]['condition'][NBR]['result'][0] == 'warning' :
-                     print '\n!!!!!  Warning about the follwing condition %s !!!!!!!!\n' % docriteria.dids[criteria][cfg]['condition'][NBR]['success']
-                  else :
-                     #raise Exception([{'name':'CRITERIA','msg':'the following criteria failed: '+criteria}])
-                     raise Exception([{'name':'CRITERIA','msg':'the following condition failed: '+docriteria.dids[criteria][cfg]['condition'][NBR]['success']}])
-
+         oneFound = False
+         for i in range(len(reports)):
+            if reports[i]['xref'] == report['xref']:  #/!\ You are sure there is one xref (?)
+               reports[i] = report
+               oneFound = True
+         if not oneFound: reports.append(report)
 
    # ~~ Error management ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpt != []:  # raise full failure report
       raise Exception({'name':'runXML','msg':'in xmlFile: '+xmlFile,'tree':xcpt})
    
    # ~~ Final report summary ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   return report
+   return reports
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
