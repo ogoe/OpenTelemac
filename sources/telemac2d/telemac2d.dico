@@ -5536,6 +5536,39 @@ numero de point  numero de zone'
 AIDE1 = 'Zones file, with on every line:
 point number   zone number' 
 
+NOM = 'FICHIER DES PARAMETRES WAQ'
+NOM1 = 'WAQ STEERING FILE'
+TYPE = CARACTERE 
+INDEX = 93
+MNEMO = 'T2D_FILES(T2DWAQ)%NAME' 
+SUBMIT = 'T2DWAQ-READ-31;T2DWAQ;FACUL;ASC;LIT;SCAL'
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'fichier des parametres physiques pour les 
+processus de qualite d eau (internes non ceux de DELWAQ)' 
+AIDE1 = 'file for physical parameters of waq processes
+(local ones of Telemac-tracer not those of DELWAQ)' 
+
+NOM = 'DICTIONNAIRE WAQ'
+NOM1 = 'WAQ DICTIONARY'
+TYPE = CARACTERE 
+INDEX = 94
+MNEMO = 'T2D_FILES(T2DWQD)%NAME' 
+SUBMIT = 'T2DWQD-READ-32;T2DWQD;FACUL;ASC;LIT;SCAL'
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'fichier des parametres physiques pour les 
+processus de qualite d eau (internes non ceux de DELWAQ)' 
+AIDE1 = 'file for physical parameters of waq processes
+(local ones of Telemac-tracer not those of DELWAQ)' 
+
+
 NOM = 'SCHEMA POUR LA CONVECTION DES VITESSES'
 NOM1 = 'SCHEME FOR ADVECTION OF VELOCITIES'
 TYPE = ENTIER
@@ -5707,7 +5740,7 @@ for k and epsilon'
 NOM = 'COURANTS SECONDAIRES'
 NOM1 = 'SECONDARY CURRENTS'
 TYPE = LOGIQUE
-INDEX = 48  
+INDEX = 49  
 MNEMO = 'SECCURRENTS' 
 TAILLE = 0
 DEFAUT = NON
@@ -5721,7 +5754,7 @@ AIDE1 = 'Using the parametrisation for secondary currents'
 NOM = 'COEFFICIENT DE PRODUCTION POUR COURANTS SECONDAIRES' 
 NOM1 = 'PRODUCTION COEFFICIENT FOR SECONDARY CURRENTS' 
 TYPE = REEL 
-INDEX = 72 
+INDEX = 74 
 MNEMO = 'SEC_AS' 
 TAILLE = 0 
 DEFAUT = 7.071
@@ -5731,11 +5764,11 @@ RUBRIQUE1 = 'GENERAL'
 NIVEAU = 2 
 AIDE = 'Une constante dans les termes de creation de Omega' 
 AIDE1 = 'A constant in the production terms of Omega'
- /
+/
 NOM = 'COEFFICIENT DE DISSIPATION POUR COURANTS SECONDAIRES' 
 NOM1 = 'DISSIPATION COEFFICIENT FOR SECONDARY CURRENTS' 
 TYPE = REEL 
-INDEX = 73 
+INDEX = 75 
 MNEMO = 'SEC_DS' 
 TAILLE = 0 
 DEFAUT = 5.E-1 
@@ -5745,6 +5778,80 @@ RUBRIQUE1 = 'GENERAL'
 NIVEAU = 2 
 AIDE = 'Coefficient de dissipation de Omega' 
 AIDE1 = 'Coefficient of dissipation term of Omega' 
+
+NOM = 'QUALITE D''EAU' 
+NOM1 = 'WATER QUALITY' 
+TYPE = LOGIQUE 
+INDEX = 48
+MNEMO = 'WATQUA' 
+TAILLE = 0 
+DEFAUT = NON 
+DEFAUT1 = NO 
+RUBRIQUE = 'EQUATIONS';'QUALITE D EAU' 
+RUBRIQUE1 = 'EQUATIONS';'WATER QUALITY' 
+NIVEAU = 1 
+AIDE = 'Prise en compte ou non de qualite d eau' 
+AIDE1 = 'waq effects are to be taken into 
+account or not.' 
+
+NOM = 'OPTION DU VENT'
+NOM1 = 'OPTION FOR WIND'
+TYPE = ENTIER
+INDEX = 94
+MNEMO = 'OPTWIND'
+TAILLE = 1
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'EQUATIONS, SOURCES'
+RUBRIQUE1 = 'EQUATIONS, SOURCES'
+NIVEAU = 1
+AIDE = 'donne les options pour introduire le vent:
+   0: pas de vent (enleve le mot cle VENT (logique))
+   1: constant en temps et en espace (donne par le mot cle 
+      VITESSE ET DIRECTION DU VENT)
+   2: variable en temps donne par fichier formate
+   3: variable en temps et en espace donne par fichier formate'
+AIDE1 = 'gives option for managing the wind:
+    0: no wind (we can remove keyword WIND (boolean))
+    1: constant in time and space, given by keyword SPPED AND 
+       DIRECTION OF WIND
+    2: variable in time and (constant in space), given by formated file
+    3: variable in time and space'
+
+NOM = 'VITESSE ET DIRECTION DU VENT'
+NOM1 = 'SPEED AND DIRECTION OF WIND'
+TYPE = REAL
+INDEX = 72
+MNEMO = 'WIND_SPD'
+TAILLE = 2
+DEFAUT = 0.;0.
+DEFAUT1 = 0.;0.
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Donne la vitesse et la direction (en degres de 0 a 360, 
+0 etant y=0 et x=+inf) du vent lorsqu ils sont consant en temps et
+en espace (mot cle OPTION DU VENT = 1)'
+AIDE1 = 'gives the speed and direction (degre (from 0 to 360), 
+0 given y=0 anx x=+infinity) when they are constant in time and space
+(keyword OPTION FOR WIND = 1)'
+
+NOM = 'VALEUR DE LA PRESSION ATMOSPHERIQUE'
+NOM1 = 'VALUE OF ATMOSPHERIC PRESSURE'
+TYPE = REAL
+INDEX = 73
+MNEMO = 'PATMOS_VALUE'
+TAILLE = 1
+DEFAUT = 100000.
+DEFAUT1 = 100000.
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'donne la valeur de la pression atmospherique lorsquelle est 
+constante en temps et en espace'
+AIDE1 = 'gives the value of atmospheric pressure when it is contant
+in time and space'
+
 / 
 / POUR LES LANCEURS PERL : 
 / 
@@ -5753,7 +5860,7 @@ NOM1 = 'LIST OF FILES'
 TYPE = CARACTERE 
 INDEX = 99 
 MNEMO = '' 
-TAILLE = 44
+TAILLE = 46
 DEFAUT = 'FICHIER DES PARAMETRES'; 
          'DICTIONNAIRE'; 
          'FICHIER FORTRAN'; 
@@ -5797,7 +5904,9 @@ DEFAUT = 'FICHIER DES PARAMETRES';
          'FICHIER DE DONNEES DES BUSES';
          'FICHIER DE DONNEES DES BRECHES';
          'FICHIER DES FLOTTEURS';
-         'FICHIER DES ZONES'
+         'FICHIER DES ZONES';
+         'FICHIER DES PARAMETRES WAQ';
+         'DICTIONNAIRE WAQ'
 DEFAUT1 ='STEERING FILE'; 
          'DICTIONARY'; 
          'FORTRAN FILE'; 
@@ -5841,7 +5950,9 @@ DEFAUT1 ='STEERING FILE';
          'TUBES DATA FILE';
          'BREACHES DATA FILE';
          'DROGUES FILE';
-         'ZONES FILE'
+         'ZONES FILE';
+         'WAQ STEERING FILE';
+         'WAQ DICTIONARY'
 RUBRIQUE  = 'FICHIERS' 
 RUBRIQUE1 = 'FILES' 
 NIVEAU = 1 

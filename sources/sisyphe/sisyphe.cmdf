@@ -37,11 +37,11 @@ files: bief_def.f
   lit.f
   readgeo1.f
   bief_ininds.f
-  cpikle2.f
   corrxy.f
   readgeo3.f
   readgeo2.f
   cpikle3.f
+  cpikle2.f
   ov_2.f
   mxptel31.f
   mxptel.f
@@ -57,7 +57,6 @@ files: bief_def.f
   fond.f
   strche.f
   fonstr.f
-  mini.f
   paraco.f
   parcom2.f
   parcom2_seg.f
@@ -115,6 +114,7 @@ files: bief_def.f
   vc01pp.f
   vc05oo.f
   vc14aa.f
+  mini.f
   maxi.f
   double_to_integer.f
   vc03aa.f
@@ -296,7 +296,6 @@ files: bief_def.f
   mt03cc.f
   mt12ab.f
   mt01aa.f
-  mt12aa.f
   mt99bb.f
   mt04pp.f
   mt08bb.f
@@ -311,7 +310,7 @@ files: bief_def.f
   mt06oo.f
   mt06pp.f
   mt06aa.f
-  mt04bb.f
+  mt02pp.f
   mt05pp.f
   mt04tt.f
   mt12bb.f
@@ -325,7 +324,7 @@ files: bief_def.f
   mt05aa.f
   mt11aa.f
   mt11ab.f
-  mt02pp.f
+  mt11ac.f
   mt03aa.f
   mt02bb.f
   mt01bb.f
@@ -333,7 +332,7 @@ files: bief_def.f
   mt06ff.f
   mt12ac.f
   mt99aa.f
-  mt11ac.f
+  mt12aa.f
   mt04cc.f
   mt08ab.f
   mt08pp.f
@@ -346,6 +345,7 @@ files: bief_def.f
   mt13aa.f
   mt06bb.f
   mt15pp.f
+  mt04bb.f
   mt06ft.f
   mt03bb.f
   mt07bb.f
@@ -468,7 +468,6 @@ files: declarations_parallel.F
   p_init.F
   p_imax.F
   interface_parallel.f
-  p_dsum.F
   p_wait_paraco.F
   p_iwrit.F
   p_iread.F
@@ -476,6 +475,7 @@ files: declarations_parallel.F
   p_iwriti8.F
   p_dmin.F
   p_dmax.F
+  p_dsum.F
   p_mpi_type_get_extent.F
   p_mpi_type_create_struct.F
   p_mpi_type_commit.F

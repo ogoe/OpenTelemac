@@ -89,6 +89,7 @@ MATRIX-VECTOR PRODUCT                        = 2
 /----------------------------------------------
 /
 WIND                                         = YES
+OPTION FOR WIND                              = 2
 COEFFICIENT OF WIND INFLUENCE                = 1.2615E-3 
 WIND VELOCITY ALONG X                        = 5.
 WIND VELOCITY ALONG Y                        = 0.

@@ -14,6 +14,10 @@
 !note     IN CASE OF PARAMETER ESTIMATION, HOMERE_ADJ_T2D IS
 !+            CALLED INSTEAD OF HOMERE_TELEMAC2D.
 !
+!history  R. ATA
+!+        10/11/2014
+!+        V7P0
+!+       add waq variables for lecdon_telemac2d
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -36,6 +40,7 @@
 !
       CHARACTER(LEN=250) PATH
       CHARACTER(LEN=144) MOTCAR(MAXKEY),FILE_DESC(4,MAXKEY)
+      CHARACTER(LEN=144) WMOTCAR(MAXKEY),WFILE_DESC(4,MAXKEY)
 !
 !======================================================================
 !
@@ -71,7 +76,8 @@
 !
 !     READS THE STEERING FILE
 !
-      CALL LECDON_TELEMAC2D(MOTCAR,FILE_DESC,PATH,NCAR)
+      CALL LECDON_TELEMAC2D(MOTCAR,WMOTCAR,FILE_DESC,WFILE_DESC,
+     &                      PATH,NCAR)
 !
 !-----------------------------------------------------------------------
 !

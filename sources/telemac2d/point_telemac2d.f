@@ -95,12 +95,18 @@
 !+        V7P0
 !+   Adding variables for secondary currents.
 !
+!history R. ATA (EDF LAB, LNHE)
+!+        10/11/2014
+!+        V7P0
+!+   adding varibles for waq, wind and rain
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC2D
+      USE DECLARATIONS_TELEMAC2D     
+      USE DECLARATIONS_WAQTEL,ONLY:K2
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -349,12 +355,18 @@
         CALL BIEF_ALLVEC(1,RO,'RO    ',    0,1,0,MESH)
       ENDIF
 !     WIND GIVEN IN P1
-      IF(VENT) THEN
+      IF(VENT.OR.WATQUA) THEN
         CALL BIEF_ALLVEC(1,WINDX,'WINDX ',IELM1,1,1,MESH)
         CALL BIEF_ALLVEC(1,WINDY,'WINDY ',IELM1,1,1,MESH)
       ELSE
         CALL BIEF_ALLVEC(1,WINDX,'WINDX ',    0,1,0,MESH)
         CALL BIEF_ALLVEC(1,WINDY,'WINDY ',    0,1,0,MESH)
+      ENDIF
+!     IF WAQTEL
+      IF(WATQUA) THEN
+        CALL BIEF_ALLVEC(1,K2   ,'K2    ',IELM1,1,1,MESH)
+      ELSE
+        CALL BIEF_ALLVEC(1,K2   ,'K2    ',    0,1,0,MESH)
       ENDIF
 !
 !  SOURCE TERM ARRAYS
@@ -799,7 +811,7 @@
 !
 !     FOR RAIN-EVAPORATION
 !
-      IF(RAIN) THEN
+      IF(RAIN.OR.WATQUA) THEN
         CALL BIEF_ALLVEC(1,PLUIE,'PLUIE ',IELMH,1,1,MESH)
       ELSE
         CALL BIEF_ALLVEC(1,PLUIE,'PLUIE ',0    ,1,0,MESH)

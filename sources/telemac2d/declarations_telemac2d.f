@@ -61,7 +61,12 @@
 !+        22/09/2014
 !+        V7P0
 !+   Adding a logical keyword FRICOU for wave-current interactions
-
+!
+!history  R. ATA (EDF-LNHE)
+!+        10/11/2014
+!+        V7P0
+!+   adding of waq variables
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -732,6 +737,14 @@
 !
       INTEGER T2DZFI
 !
+!     WAQ STEERING FILE (INTERN WAQ NOT THOSE OF DELWAQ)
+!
+      INTEGER T2DWAQ
+!
+!     WAQ DICO (INTERN WAQ NOT THOSE OF DELWAQ)
+!
+      INTEGER T2DWQD
+!
 !     GRAPHIC PRINTOUT PERIOD
 ! 
       INTEGER LEOPRD
@@ -1001,9 +1014,9 @@
 ! 
       INTEGER NTRAC
 !
-!     INDEX FOR TEMPERATURE, FOR SALINITY
+!     INDEX FOR TEMPERATURE, FOR SALINITY AND FOR SECONDARY CURRENT
 !
-      INTEGER IND_T,IND_S
+      INTEGER IND_T,IND_S,IND_SEC
 !
 !     NUMBER OF POINTS GIVEN FOR EACH DISCHARGE-ELEVATIONS CURVES
 !
@@ -1098,6 +1111,10 @@
 !     VELOCITY, K-EPSILON AND TRACERS
 !
       INTEGER OPTADV_VI,OPTADV_KE,OPTADV_TR(MAXTRA)
+!
+!     OPTION FOR WIND 
+!
+      INTEGER OPTWIND
 !
 !-----------------------------------------------------------------------
 !
@@ -1298,6 +1315,10 @@
 !
       LOGICAL SECCURRENTS
 !
+!     IF YES, WATER QUALITY CONSIDERED
+!  
+      LOGICAL WATQUA
+!
 !-----------------------------------------------------------------------
 !
 !       6) REALS
@@ -1324,9 +1345,9 @@
 ! 
       DOUBLE PRECISION FAIR
 !
-!     COMPONENTS OF WIND VELOCITY
+!     COMPONENTS OF WIND VELOCITY,ITS NORM AND DIRECTION
 !
-      DOUBLE PRECISION FUAIR,FVAIR
+      DOUBLE PRECISION FUAIR,FVAIR,WIND_SPD(2)
 !
 !     INITIAL VALUES OF TRACERS
 ! 
@@ -1567,6 +1588,10 @@
 !     THICKNESS OF ALGAE
 !
       DOUBLE PRECISION EALGAE
+!
+!     VALUE OF THE ATMOSPHERIC PRESSURE
+!
+      DOUBLE PRECISION PATMOS_VALUE
 !
 !     PRODUCTION COEFFICIENT FOR SECONDARY CURRENTS 
 !     DISSIPATION COEFFICIENT FOR SECONDARY CURRENTS  

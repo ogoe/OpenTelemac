@@ -2,7 +2,7 @@
                      SUBROUTINE LECDON_TELEMAC2D
 !                    ***************************
 !
-     &(MOTCAR,FILE_DESC,PATH,NCAR)
+     &(MOTCAR,WMOTCAR,FILE_DESC,WFILE_DESC,PATH,NCAR)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P0                                   21/08/2010
@@ -74,16 +74,24 @@
 !+        V7P0
 !+   Friction enhancement
 !
+!history R. ATA
+!+        10/11/2014
+!+        V7P0
+!+   introduction of water quality 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
 !| NCAR           |-->| NUMBER OF LETTERS IN STRING PATH
 !| PATH           |-->| FULL PATH TO CODE DICTIONARY
+!| WFILE_DESC     |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY FOR WAQ
+!| WMOTCAR        |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER FOR WAQ
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
+      USE DECLARATIONS_WAQTEL
 !
       USE INTERFACE_TELEMAC2D, EX_LECDON_TELEMAC2D => LECDON_TELEMAC2D
 !
@@ -97,6 +105,9 @@
       CHARACTER(LEN=250), INTENT(IN)    :: PATH
       CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,MAXKEY)
       CHARACTER(LEN=144), INTENT(INOUT) :: MOTCAR(MAXKEY)
+!     WAQ
+      CHARACTER(LEN=144), INTENT(INOUT) :: WFILE_DESC(4,MAXKEY)
+      CHARACTER(LEN=144), INTENT(INOUT) :: WMOTCAR(MAXKEY)
 !                                                 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -105,6 +116,7 @@
 !
       CHARACTER*8 MNEMO(MAXVAR)
       CHARACTER(LEN=250) NOM_CAS,NOM_DIC
+      CHARACTER(LEN=250) NOM_CAS_WAQ,NOM_DIC_WAQ
 !
 !-----------------------------------------------------------------------
 !
@@ -115,6 +127,7 @@
      &                     '28','29','30','31','32','33','34'/
 !
       CHARACTER(LEN=24), PARAMETER :: CODE1='TELEMAC2D               '
+!      CHARACTER(LEN=24), PARAMETER :: CODE2='WAQTEL                  '
 !
 !-----------------------------------------------------------------------
 !
@@ -127,6 +140,14 @@
       CHARACTER*72         MOTCLE(4,MAXKEY,2)
       INTEGER              TROUVE(4,MAXKEY)
       LOGICAL DOC
+!     ARRAYS USED IN THE DAMOCLES CALL FOR WAQ
+!
+      INTEGER              WADRESS(4,MAXKEY),WDIMEN(4,MAXKEY)
+      DOUBLE PRECISION     WMOTREA(MAXKEY)
+      INTEGER              WMOTINT(MAXKEY)
+      LOGICAL              WMOTLOG(MAXKEY)
+      CHARACTER*72         WMOTCLE(4,MAXKEY,2)
+      INTEGER              WTROUVE(4,MAXKEY)
 !
 !     END OF DECLARATIONS FOR DAMOCLES CALL :
 !
@@ -191,9 +212,17 @@
         DIMEN(2,K) = 0
         DIMEN(3,K) = 0
         DIMEN(4,K) = 0
+!
+        WMOTCAR(K)(1:1)=' '
+!
+        WDIMEN(1,K) = 0
+        WDIMEN(2,K) = 0
+        WDIMEN(3,K) = 0
+        WDIMEN(4,K) = 0
       ENDDO ! K
 !     WRITES OUT INFO
       DOC = .FALSE.
+      ADDTR = 0
 !
 !-----------------------------------------------------------------------
 !     OPENS DICTIONNARY AND STEERING FILES
@@ -203,11 +232,17 @@
 !
         NOM_DIC=PATH(1:NCAR)//'T2DDICO'
         NOM_CAS=PATH(1:NCAR)//'T2DCAS'
+!       WAQTEL
+        NOM_DIC_WAQ=PATH(1:NCAR)//'T2DWQD'
+        NOM_CAS_WAQ=PATH(1:NCAR)//'T2DWAQ'
 !
       ELSE
 !
         NOM_DIC='T2DDICO'
         NOM_CAS='T2DCAS'
+!       WAQTEL
+        NOM_DIC_WAQ='T2DWQD'
+        NOM_CAS_WAQ='T2DWAQ'
 !
       ENDIF
 !
@@ -223,14 +258,39 @@
 !-----------------------------------------------------------------------
 !     CLOSES DICTIONNARY AND STEERING FILES
 !-----------------------------------------------------------------------
-!
       CLOSE(2)
-      CLOSE(3)
+      CLOSE(3)  
+!
+!     FIRST VERIFY IF WE CALL WAQ OR NOT
+!
+      WATQUA    = MOTLOG( ADRESS(3, 48) ) 
+      IF(WATQUA)THEN  
+!
+        OPEN(2,FILE=NOM_DIC_WAQ,FORM='FORMATTED',ACTION='READ',ERR=9000)
+        OPEN(3,FILE=NOM_CAS_WAQ,FORM='FORMATTED',ACTION='READ',ERR=9000)
+!
+!       CALLING DAMCOCLE FOR WAQTEL
+!
+        CALL DAMOCLE( WADRESS, WDIMEN, MAXKEY , DOC     , LNG    , LU ,
+     &                WMOTINT , WMOTREA , WMOTLOG , WMOTCAR  , WMOTCLE,
+     &                WTROUVE , 2       , 3    , .FALSE. , WFILE_DESC )
+!
+!-----------------------------------------------------------------------
+!     CLOSES DICTIONNARY AND STEERING FILES
+!-----------------------------------------------------------------------
+!
+        CLOSE(2)
+        CLOSE(3)
+      ENDIF
 !
 !     ANALYSIS OF 'SUBMIT' CHAINS
 !
-      CALL READ_SUBMIT(T2D_FILES,MAXLU_T2D,CODE1,FILE_DESC,300)
+      CALL READ_SUBMIT(T2D_FILES,   MAXLU_T2D,   CODE1,FILE_DESC, 300)
 !
+!      NOT NECESSAY SO FAR, TO ACTIVATE WHEN WORKING IN STANDALONE  
+!      IF(WATQUA) CALL 
+!     &     READ_SUBMIT(WAQTEL_FILES,MAXLU_WAQTEL,CODE1,WFILE_DESC,300)
+
 !-----------------------------------------------------------------------
 !
 !     RETRIEVES FILES NUMBERS IN TELEMAC-2D FORTRAN PARAMETERS
@@ -320,8 +380,11 @@
           T2DFLO=I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DZFI') THEN
           T2DZFI=I
-        ELSEIF(I.NE.02.AND.I.NE.03.AND.I.NE.05.AND.I.NE.06.AND.
-     &         I.NE.31.AND.I.NE.32) THEN
+        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DWAQ') THEN
+          T2DWAQ=I
+        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DWQD') THEN
+          T2DWQD=I
+        ELSEIF(I.NE.02.AND.I.NE.03.AND.I.NE.05.AND.I.NE.06)THEN
 !         ONE FILE THAT SHOULD HAVE A STRING 'SUBMIT' IN DICTIONARY
 !         HAS RECEIVED NO NAME
           IF(LNG.EQ.1) THEN
@@ -341,6 +404,136 @@
           STOP
         ENDIF
       ENDDO
+!
+      IF(WATQUA)THEN
+!
+!     RETRIEVES FILES NUMBERS IN WAQTEL PARAMETERS
+!  
+        DO I=1,MAXLU_WAQTEL
+          IF    (WAQTEL_FILES(I)%TELNAME.EQ.'WAQCAS') THEN
+            WAQCAS=I
+          ELSEIF(WAQTEL_FILES(I)%TELNAME.EQ.'WAQGEO') THEN
+            WAQGEO=I
+          ELSEIF(WAQTEL_FILES(I)%TELNAME.EQ.'WAQRES') THEN
+            WAQRES=I
+          ELSEIF(WAQTEL_FILES(I)%TELNAME.EQ.'WAQREF') THEN
+            WAQREF=I
+          ENDIF
+        ENDDO
+!     
+!     ASSIGNS THE WAQ STEERING FILE VALUES TO THE PARAMETER FORTRAN NAME
+!
+!-----------------------------------------------------------------------
+!*******************************
+!   WAQ  INTEGER KEYWORDS      *
+!*******************************
+!
+!       PRINTOUT WAQ PERIOD
+!       WLEOPRD    = WMOTINT( ADRESS(1,  1) )
+!       WAQ PROCESS
+        WAQPROCESS = WMOTINT( WADRESS(1,  2) )
+!       K2 FORMULA
+        FORMK2     = WMOTINT( WADRESS(1,  3) )
+!       CS FORMULA
+        FORMCS     = WMOTINT( WADRESS(1,  5) )
+!       DEBUG KEYWORD
+        DEBUG      = WMOTINT( WADRESS(1, 11) )
+!
+!*******************************
+!       WAQ REAL KEYWORDS        *                   
+!*******************************
+!
+        ROO    = WMOTREA( WADRESS(2,  2) )
+        GRAV   = WMOTREA( WADRESS(2,  5) )
+        VCE    = WMOTREA( WADRESS(2,  8) )
+        LDISP  = WMOTREA( WADRESS(2, 11) )
+        TDISP  = WMOTREA( WADRESS(2, 12) )
+        K120   = WMOTREA( WADRESS(2, 21) )
+        K520   = WMOTREA( WADRESS(2, 22) )
+        O2PHOTO= WMOTREA( WADRESS(2, 25) )
+        O2NITRI= WMOTREA( WADRESS(2, 26) )
+        DEMBEN = WMOTREA( WADRESS(2, 29) )
+        K22    = WMOTREA( WADRESS(2, 31) )
+        O2SATU = WMOTREA( WADRESS(2, 33) )
+        WPOR   = WMOTREA( WADRESS(2, 36) )
+        WNOR   = WMOTREA( WADRESS(2, 39) )
+        CMAX   = WMOTREA( WADRESS(2, 42) )
+        PS     = WMOTREA( WADRESS(2, 45) )
+        KPE    = WMOTREA( WADRESS(2, 48) )
+        BETA   = WMOTREA( WADRESS(2, 51) )
+        IK     = WMOTREA( WADRESS(2, 54) )
+        KP     = WMOTREA( WADRESS(2, 57) )
+        KN     = WMOTREA( WADRESS(2, 60) )
+        CTOXIC = WMOTREA( WADRESS(2, 63) )
+        TRESPIR= WMOTREA( WADRESS(2, 66) )
+        PROPHOC= WMOTREA( WADRESS(2, 69) )
+        DTP    = WMOTREA( WADRESS(2, 71) )
+        K320   = WMOTREA( WADRESS(2, 73) )
+        PRONITC= WMOTREA( WADRESS(2, 75) )
+        PERNITS= WMOTREA( WADRESS(2, 77) )
+        K360   = WMOTREA( WADRESS(2, 79) )
+        CMORALG(1)= WMOTREA(WADRESS(2,81))
+        CMORALG(2)= WMOTREA(WADRESS(2,81)+1)
+        WLOR   = WMOTREA( WADRESS(2, 85) )
+        K1     = WMOTREA( WADRESS(2, 90) )
+        K44    = WMOTREA( WADRESS(2, 93) )
+        PHOTO  = WMOTREA( WADRESS(2, 95) )
+        RESP   = WMOTREA( WADRESS(2, 97) )
+        WATTEMP= WMOTREA( WADRESS(2, 99) )
+        ERO    = WMOTREA( WADRESS(2,104) )
+        TAUR   = WMOTREA( WADRESS(2,106) )
+        TAUS   = WMOTREA( WADRESS(2,109) )
+        VITCHU = WMOTREA( WADRESS(2,111) )
+        CCSEDIM= WMOTREA( WADRESS(2,113) )
+        CDISTRIB= WMOTREA(WADRESS(2,115) )
+        KDESORP= WMOTREA (WADRESS(2,117) )
+        CP_EAU = WMOTREA( WADRESS(2,119) )
+        CP_AIR = WMOTREA( WADRESS(2,121) )
+        CFAER(1)=WMOTREA( WADRESS(2,125) )
+        CFAER(2)=WMOTREA( WADRESS(2,125)+1) 
+        COEF_K = WMOTREA( WADRESS(2,127) )
+        EMA    = WMOTREA( WADRESS(2,129) )
+        EMI_EAU= WMOTREA( WADRESS(2,131) )
+!       INITIALIZE K2 DONE IN CALCS_O2
+!        IF(WAQPROCESS.EQ.1.AND.FORMK2.EQ.0)THEN
+!          CALL OS('X=C     ',K2,K2,K2,K22)
+!        ENDIF      
+!
+!*******************************
+!       LOGICAL KEYWORDS         *
+!*******************************
+!
+        WQBILMAS= WMOTLOG( WADRESS(3,  1) )
+        WQVALID = WMOTLOG( WADRESS(3,  3) )
+!
+!*******************************
+!       STRING KEYWORDS          *
+!*******************************
+!
+        TITWAQCAS = WMOTCAR( WADRESS(4, 2) ) (1:72)
+!       SORTWAQ   = WMOTCAR( WADRESS(4, 3) ) (1:72)
+!
+!       FILES IN THE STEERING FILE (TO ACTIVATE FOR STANALONE RUN)
+!
+!       WAQTEL_FILES(WAQRES)%NAME=WMOTCAR( WADRESS(4,6 ) )
+!       WAQTEL_FILES(WAQGEO)%NAME=WMOTCAR( WADRESS(4,8 ) )
+!       WAQTEL_FILES(WAQREF)%NAME=WMOTCAR( WADRESS(4,12) )
+!       WAQTEL_FILES(WAQHYD)%NAME=WMOTCAR( WADRESS(4,14) )
+!
+      ENDIF
+!     JUMP HERE IF NO WAQ 
+!
+!     LOOKS FOR THE NUMBER OF TRACERS TO BE INCREASED 
+!     DEPENDING ON THE WAQ PROCESS
+!   
+      IF(WATQUA.OR.SECCURRENTS)THEN  
+!                                              
+        CALL INCREASE_NTRAC(ADDTR,WATQUA,WAQPROCESS,SECCURRENTS,
+     &                      MOTCAR,                    ! HERE ARE NAMETRAC
+     &                      DIMEN(4,74),       
+     &                      MOTINT( ADRESS(1,67)   ))  ! HERE IS NTRAC 
+      ENDIF
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -499,15 +692,8 @@
       WAQPRD = MOTINT( ADRESS(1,66)   )
 !     NUMBER OF TRACERS
       NTRAC  = MOTINT( ADRESS(1,67)   )
-!
-!======================================================================
-!
-!     HERE A LOGICAL VALUE IS READ IN ADVANCE FOR INCREMENTING
-!     NTRAC
-      SECCURRENTS = MOTLOG (ADRESS(3,48))
-      IF(SECCURRENTS) NTRAC = NTRAC + 1
-!
-!======================================================================
+!     ADD THE TRACERS OF WAQ  AND SECONDARY CURRENT
+      NTRAC = NTRAC + ADDTR
 !
 !     PREVIOUS KEYWORDS DEPENDING ON NTRAC
 !
@@ -610,6 +796,22 @@
       IF(TROUVE(1,90).EQ.2) THEN
         ICONVF(4) = MOTINT(ADRESS(1,90))
       ENDIF
+!
+!     OPTION FOR WIND MANAGEMENT
+      OPTWIND = MOTINT(ADRESS(1,94))
+!     AVOID NON LOGICAL CASE (WIND=YES AND OPTWIND=0)
+      IF(VENT.AND.OPTWIND.EQ.0)THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) ' INCONSISTANCE DANS LA GESTION DU VENT'
+          WRITE(LU,*) ' VENT ACTIVE ET OPTION DU VENT = 0'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) ' UNCOHERENT CHOICES FOR WIND MANAGEMENT'
+          WRITE(LU,*) ' WIND ACTIVATED AND OPTION FOR WIND = 0'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF     
 !
 ! REAL KEYWORDS:
 !
@@ -856,9 +1058,15 @@
       EALGAE   = MOTREA( ADRESS(2,70) )
 !     MASS-LUMPING FOR WEAK CHARACTERISTICS
       AGGLOW   = MOTREA( ADRESS(2,71) )
+!     SPEED AND DIRECTION OF WIND
+      WIND_SPD(1)   = MOTREA( ADRESS(2,72)   )
+      WIND_SPD(2)   = MOTREA( ADRESS(2,72)+1 )
+!
+!     VALUE OF THE ATMOSPHERIC PRESSURE
+      PATMOS_VALUE  = MOTREA( ADRESS(2,73)   )
 !     FOR SECONDARY CURRENTS
-      SEC_AS     = MOTREA( ADRESS(2, 72) )
-      SEC_DS     = MOTREA( ADRESS(2, 73) )
+      SEC_AS     = MOTREA( ADRESS(2, 74) )
+      SEC_DS     = MOTREA( ADRESS(2, 75) )
 !
 ! LOGICAL KEYWORDS:
 !
@@ -918,8 +1126,8 @@
       INTMICON  = MOTLOG( ADRESS(3,46) )
 !     ALGAE TRANSPORT MODEL
       ALGAE     = MOTLOG( ADRESS(3,47) )
-!     ALREADY DONE BEFORE
-!     SECCURRENTS = MOTLOG (ADRESS(3,48))
+!     SECONDARY CURRENTS
+      SECCURRENTS = MOTLOG(ADRESS(3,49))
 !     WAVE ENHANCED FRICTION
       FRICOU    = MOTLOG( ADRESS(3,50) )
 !
@@ -1051,13 +1259,12 @@
           NAMETRAC(I) = MOTCAR(ADRESS(4,74)+I-1)(1:32)
         ENDDO
       ENDIF
-!
-!=========================================================================
-      IF(SECCURRENTS)THEN
-        NAMETRAC(NTRAC) ='OMEGA           NA              '
-      ENDIF
-!=========================================================================
-!
+!     CHANES DUE TO WAQ
+      IF(WATQUA.OR.SECCURRENTS)THEN
+!       GIVE THEM THEIR NAMES
+        CALL NAMETRAC_WAQ(NAMETRAC,WATQUA,SECCURRENTS,
+     &                    WAQPROCESS,NTRAC-ADDTR,IND_SEC)
+      ENDIF   
 !     SOURCES FILE
       T2D_FILES(T2DVEF)%NAME=MOTCAR( ADRESS(4,75) )
 !     76 AND 77 IN DELWAQ FILES ABOVE
@@ -1092,6 +1299,13 @@
       T2D_FILES(T2DBRC)%NAME=MOTCAR( ADRESS(4,91) )
 !     DROGUES FILE
       T2D_FILES(T2DFLO)%NAME=MOTCAR( ADRESS(4,92) )
+!     WATER QUALITY
+!
+!     WAQ STEERING FILE
+      T2D_FILES(T2DWAQ)%NAME=MOTCAR( ADRESS(4,93) )
+!     WAQ DICTIONARY
+      T2D_FILES(T2DWQD)%NAME=MOTCAR( ADRESS(4,94) )
+
       IF(LISTIN) THEN
         IF(LNG.EQ.1) WRITE(LU,1000)
         IF(LNG.EQ.2) WRITE(LU,1001)
@@ -1926,9 +2140,10 @@
         STOP
       ENDIF
 !
-!  LOOKS FOR TEMPERATURE AND SALINITY IN THE TRACERS
+!  LOOKS FOR TEMPERATURE AND SALINITY IN THE TRACERS 
 !
-      IND_T=0
+      IF(.NOT.WATQUA)IND_T=0
+!     IF WATQUA, IND_T IS OBTAINED IN SUBROUTINE INCREASE_NTRAC 
       IND_S=0
       IF(NTRAC.GE.1) THEN
         DO I=1,NTRAC
@@ -2271,5 +2486,13 @@
 !-----------------------------------------------------------------------
 !
       RETURN
+9000  CONTINUE
+      IF(LNG.EQ.1)WRITE(LU,9001)NOM_CAS_WAQ,NOM_DIC_WAQ
+      IF(LNG.EQ.2)WRITE(LU,9002)NOM_CAS_WAQ,NOM_DIC_WAQ
+9001  FORMAT(/1X,'ERREUR DANS L OUVERTURE DU FICHIER WAQ OU DU DICO :',
+     &       /,1X,A172,1X/A172)
+9002  FORMAT(/1X,'PROBLEM IN OPENING WAQ STEERING FILE OR DICO :',
+     &       /,1X,A172,1X/A172)
+      CALL PLANTE(1)
+      STOP
       END
-

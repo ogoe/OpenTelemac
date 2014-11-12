@@ -2,7 +2,7 @@
 path: <root>|sources|telemac3d
 module: telemac3d
 liborder: special parallel damocles bief sisyphe tomawac telemac2d telemac3d
-version: v6p3
+version: v7p0
 name: HOMERE_TELEMAC3D
 
 [bief]
@@ -37,12 +37,12 @@ files: declarations_telemac.f
   lit.f
   readgeo1.f
   bief_ininds.f
-  cpikle2.f
   corrxy.f
   readgeo3.f
   readgeo2.f
   cpikle3.f
   bief_nbfel.f
+  cpikle2.f
   ov_2.f
   mxptel31.f
   mxptel.f
@@ -127,7 +127,6 @@ files: declarations_telemac.f
   mt03cc.f
   mt12ab.f
   mt01aa.f
-  mt12aa.f
   mt99bb.f
   mt04pp.f
   mt08bb.f
@@ -142,7 +141,7 @@ files: declarations_telemac.f
   mt06oo.f
   mt06pp.f
   mt06aa.f
-  mt04bb.f
+  mt02pp.f
   mt05pp.f
   mt04tt.f
   mt12bb.f
@@ -156,7 +155,7 @@ files: declarations_telemac.f
   mt05aa.f
   mt11aa.f
   mt11ab.f
-  mt02pp.f
+  mt11ac.f
   mt03aa.f
   mt02bb.f
   mt01bb.f
@@ -164,7 +163,7 @@ files: declarations_telemac.f
   mt06ff.f
   mt12ac.f
   mt99aa.f
-  mt11ac.f
+  mt12aa.f
   mt04cc.f
   mt08ab.f
   mt08pp.f
@@ -177,6 +176,7 @@ files: declarations_telemac.f
   mt13aa.f
   mt06bb.f
   mt15pp.f
+  mt04bb.f
   mt06ft.f
   mt03bb.f
   mt07bb.f
@@ -347,9 +347,6 @@ files: declarations_telemac.f
   goup.f
   gmres.f
   solve.f
-  decv11.f
-  decv21.f
-  decvrt.f
   ovbd.f
   osbd.f
   slop10.f
@@ -384,6 +381,9 @@ files: declarations_telemac.f
   charac.f
   maskbd.f
   maskto.f
+  decv11.f
+  decv21.f
+  decvrt.f
   crsl11.f
   proxim.f
   leclim.f
@@ -650,20 +650,22 @@ files: friction_def.f
   oil_flot.f
   oilspill.f
   grad_zconv.f
+  declarations_waqtel.f
   interpmeteo.f
+  interpmeteo2.f
   meteo.f
   read_fic_frliq.f
   sta_dis_cur.f
   conv_mercator_to_degdec.f
   conv_lambert_to_degdec.f
   tpxo.f
+  nodalf_pugh.f
+  nodalupv_pugh.f
+  bord_tide.f
   bord_tidal_bc.f
   nodalupv_schureman.f
   nodalf_schureman.f
   bord_tide_misc.f
-  nodalf_pugh.f
-  nodalupv_pugh.f
-  bord_tide.f
   read_fic_sources.f
   corstr.f
   astro.f
@@ -719,10 +721,10 @@ files: declarations_telemac3d.f
   fluver_2.f
   rhs_pressure.f
   prediv.f
-  vermoy.f
   velres.f
   nuwave_p0.f
   airwik3.f
+  vermoy.f
   wave_equation.f
   tbord.f
   dessed.f
@@ -829,19 +831,19 @@ files: declarations_tomawac.f
   anaven.f
   tautot.f
   ustar1.f
+  qdscur.f
   ustar2.f
   wnscou.f
   qbrek4.f
   qbbj78.f
   qbrek1.f
-  gammln.f
+  qveg.f
   foncro.f
   bornes.f
   qgauss.f
+  gammln.f
   qbrek3.f
   qbrek2.f
-  qdscur.f
-  qveg.f
   qwind3.f
   qwind2.f
   qwind1.f
@@ -853,7 +855,6 @@ files: declarations_tomawac.f
   kmoyen.f
   frem01.f
   frem02.f
-  limite.f
   qtria1.f
   qmout1.f
   qmout2.f
@@ -864,7 +865,9 @@ files: declarations_tomawac.f
   frepic.f
   qwindl.f
   semimp.f
-  propa.f
+  tom_corfon.f
+  radiat.f
+  iniphy.f
   impr.f
   filt_sa.f
   rpi_intr.f
@@ -872,14 +875,11 @@ files: declarations_tomawac.f
   conwac.f
   predif.f
   initab.f
-  vitfon.f
-  radiat.f
-  spread.f
-  wpower.f
-  dump2d.f
-  tom_corfon.f
-  iniphy.f
-  ecrspe.f
+  limite.f
+  gauleg.f
+  couple.f
+  f1f1f1.f
+  prenl3.f
   spetma.f
   spejon.f
   delfra.f
@@ -888,6 +888,9 @@ files: declarations_tomawac.f
   fsprd2.f
   speini.f
   limwac.f
+  vitfon.f
+  propa.f
+  ecrspe.f
   invert.f
   rpi_invr.f
   frmset.f
@@ -895,10 +898,9 @@ files: declarations_tomawac.f
   intang.f
   angles.f
   prenl1.f
-  gauleg.f
-  couple.f
-  f1f1f1.f
-  prenl3.f
+  spread.f
+  wpower.f
+  dump2d.f
   prenl2.f
   ecrete.f
   conw4d.f

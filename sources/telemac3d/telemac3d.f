@@ -151,6 +151,12 @@
 !+        13/10/2014
 !+        V7P0
 !+   New developments in sediment for mixed sediment transport
+!
+!history  R. ATA (EDF LAB, LNHE)
+!+        05/11/2014
+!+        V7P0
+!+   add optional variables to meteo in a sake of harmonization
+!+   with telemac-2d
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -744,7 +750,8 @@
       IF(VENT.OR.ATMOS) CALL METEO
      &  (PATMOS%R,WIND%ADR(1)%P%R,WIND%ADR(2)%P%R,FUAIR,FVAIR,
      &   X2%R,Y2%R,AT,LT,NPOIN2,VENT,ATMOS,H%R,T2_01%R,
-     &   GRAV,RHO0,0.D0,PRIVE,T3DFO1,T3D_FILES,LISTIN)
+     &   GRAV,RHO0,0.D0,PRIVE,T3DFO1,T3D_FILES,LISTIN,
+     &   .FALSE.,PLUIE,ATMOSEXCH)
 !
 !-----------------------------------------------------------------------
 ! FREE SURFACE AND BOTTOM GRADIENTS
@@ -1447,7 +1454,8 @@
       IF (VENT.OR.ATMOS) CALL METEO
      &   (PATMOS%R, WIND%ADR(1)%P%R, WIND%ADR(2)%P%R, FUAIR, FVAIR,
      &    X2%R, Y2%R, AT, LT, NPOIN2, VENT, ATMOS, H%R, T2_01%R,
-     &    GRAV, RHO0, 0.D0, PRIVE,T3DFO1,T3D_FILES,LISTIN)
+     &    GRAV, RHO0, 0.D0, PRIVE,T3DFO1,T3D_FILES,LISTIN,
+     &   .FALSE., PLUIE, ATMOSEXCH)
 !
 !-----------------------------------------------------------------------
 !

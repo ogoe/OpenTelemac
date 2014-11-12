@@ -68,6 +68,11 @@
 !+   first calculate the local radius r_sec,
 !+   then set the production and dissipation terms of Omega,
 !
+!history  R. ATA (LNHE)
+!+        10/11/2014
+!+        V7P0
+!+   add new water quality processes
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| DBUS           |-->| DISCHARGE OF TUBES.
@@ -110,7 +115,9 @@
       USE INTERFACE_PARALLEL
       USE DECLARATIONS_TELEMAC2D, ONLY : LOITRAC, COEF1TRAC, QWA, QWB,
      &   MAXNPS,U,V,UNSV2D,V2DPAR,VOLU2D,T1,T2,T3,T4,MESH,MSK,MASKEL,
-     &   IELMU,S,NPOIN,CF,H,SECCURRENTS,SEC_AS,SEC_DS,SEC_R
+     &   IELMU,S,NPOIN,CF,H,SECCURRENTS,SEC_AS,SEC_DS,SEC_R,WATQUA,IND_T
+      USE DECLARATIONS_WAQTEL,ONLY: WAQPROCESS,FORMRS,O2SATU,ADDTR,
+     &                              WATTEMP,RSW,ABRS
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -140,8 +147,11 @@
       DOUBLE PRECISION DEBIT,TRASCE
       DOUBLE PRECISION DENOM,NUMER,NORM2,SEC_RMAX,RMAX
 !
-!     DOUBLE PRECISION P_DSUM
-!     EXTERNAL         P_DSUM
+      DOUBLE PRECISION H1,H2,TRUP,TRDO,AB,DZ
+      DOUBLE PRECISION, PARAMETER :: EPS=1.D-6
+!
+!      DOUBLE PRECISION P_DSUM,P_DMIN,P_DMAX
+!      EXTERNAL         P_DSUM,P_DMIN,P_DMAX
 !
       INTRINSIC SQRT
 !
@@ -314,6 +324,8 @@
             DO I = 1 , NPSING%I(N)
               INDIC = (N-1)*MAXNPS + I
               IR = NDGA1%ADR(N)%P%I(I)
+              H1 = 0.D0
+              TRUP = 0.D0
               IF(IR.GT.0) THEN
                 IF(NCSIZE.GT.1) THEN
 !                 FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
@@ -327,8 +339,19 @@
                 TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR) +
      &             TWEIRA%ADR(ITRAC)%P%R(INDIC) -
      &             (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
+!               RECUPERATE H FOR WAQ
+                IF(WATQUA.AND.WAQPROCESS.EQ.1)THEN
+                  H1   = HPROP%R(IR)
+                  TRUP = TN%ADR(NTRAC-ADDTR+1)%P%R(IR)
+                  IF(NCSIZE.GT.1)THEN 
+                    H1   = P_DMIN(H1  )+P_DMAX(H1  )
+                    TRUP = P_DMIN(TRUP)+P_DMAX(TRUP)
+                  ENDIF
+                ENDIF
               ENDIF
               IR = NDGB1%ADR(N)%P%I(I)
+              H2   = 0.D0
+              TRDO = 0.D0
               IF(IR.GT.0) THEN
                 IF(NCSIZE.GT.1) THEN
 !                 FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
@@ -342,7 +365,62 @@
                 TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR) +
      &             TWEIRB%ADR(ITRAC)%P%R(INDIC) -
      &             (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
-              ENDIF
+!               RECUPERATE H FOR WAQ
+                IF(WATQUA.AND.WAQPROCESS.EQ.1)THEN 
+                  H2  = HPROP%R(IR)
+                  IF(NCSIZE.GT.1)THEN 
+                    H2   = P_DMIN(H2  )+P_DMAX(H2  )
+                  ENDIF
+                ENDIF
+!               CONTRIBUTION TO WAQ
+                IF(WATQUA.AND.WAQPROCESS.EQ.1)THEN
+                  DZ= ABS(H2-H1)
+                  RSW = 0.D0
+!                 LETS'S COMPUTE RS IF IT IS NOT TAKEN CONSTANT
+                  IF(FORMRS.NE.0) THEN
+                    AB=ABRS(1)*ABRS(2)
+!                   GAMESON FORMULA 1
+                    IF(FORMRS.EQ.1)     THEN
+                      RSW=1.D0+0.5D0*AB*DZ
+!                   GAMESON FORMULA2
+                    ELSEIF(FORMRS.EQ.2) THEN
+                      RSW = 0.11D0*AB*(1.D0+0.046D0*WATTEMP)*DZ
+!                   WRL FORMULA 1 (NO NEED TO AB ? )
+                    ELSEIF(FORMRS.EQ.3 )THEN
+                      RSW = 1.D0+0.69D0*DZ*(1.D0-0.11D0*DZ ) 
+     &                      *( 1.D0+0.046D0*WATTEMP)
+!                   WRL FORMULA 2
+                    ELSEIF (FORMRS.EQ.4)THEN
+                      RSW = 1.D0+0.38D0*AB*DZ*(1.D0-0.11D0*DZ)
+     &                      * (1.D0+0.046D0*WATTEMP )
+                    ELSE
+                      IF(LNG.EQ.1)THEN
+                        WRITE(LU,*)'FORMULE DE RS (REAERATION AU SEUIL)'
+                        WRITE(LU,*)'INCONNUE  :',FORMRS
+                        WRITE(LU,*)'LES CHOIX POSSIBLES SONT DE 1 A 4'
+                      ELSE
+                        WRITE(LU,*)'FORMULA FOR RS (WEIR REAERATION) '
+                        WRITE(LU,*)' NOT VALID  :',FORMRS
+                        WRITE(LU,*)'POSSIBLE CHOICES ARE FROM 1 TO 4'
+                      ENDIF
+                      CALL PLANTE(1)
+                      STOP                             
+                    ENDIF
+!
+!                   FORCING O2 DENSITY DOWNSTREAM THE WEIR
+!                   
+                    IF(ABS(RSW).GT.EPS)THEN
+                      TRDO = O2SATU + (TRUP-O2SATU)/RSW
+                    ELSE
+                      WRITE(LU,*)'DIFSOU:RSW VERY SMALL',RSW
+                      CALL PLANTE(1)
+                      STOP
+                    ENDIF
+                    IF(NCSIZE.GT.1)TRDO = P_DMIN(TRDO)+P_DMAX(TRDO)
+                    TN%ADR(NTRAC-ADDTR+1)%P%R(IR)=TRDO
+                  ENDIF
+                ENDIF
+              ENDIF               
             ENDDO
           ENDDO
         ENDIF
@@ -354,6 +432,12 @@
         ENDIF
 !
       ENDDO
+!
+!     WATER QUALITY CONTRIBUTION TO TRACER SOURCES
+      IF(WATQUA)THEN
+        CALL SOURCE_WAQ(NPOIN,TEXP,TIMP,YASMI,TSCEXP,HPROP,TN,TETAT,
+     &                  AT,DT,NTRAC,WAQPROCESS)
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

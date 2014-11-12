@@ -226,7 +226,7 @@
 !history  C VILLARET (HRW+EDF) & J-M HERVOUET (EDF - LNHE)
 !+        18/09/2014
 !+        V7P0
-!+   Calls to sisyphe and wac chenged.
+!+   Calls to sisyphe and wac changed.
 !
 !history  D WANG & P TASSI (LNHE)
 !+        10/07/2014
@@ -234,6 +234,11 @@
 !+   Secondary flow correction:
 !+   add the calculation of \Omega 
 !
+!history  R. ATA (EDF LAB, LNHE)
+!+        05/11/2014
+!+        V7P0
+!+   add optional variables to meteo in a sake of harmonization
+!+   with telemac-3d
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
 !param code      [in] calling program (if coupling)
@@ -888,7 +893,7 @@
         CALL METEO(PATMOS%R,WINDX%R,WINDY%R,
      &             FUAIR,FVAIR,MESH%X%R,MESH%Y%R,AT,LT,NPOIN,VENT,ATMOS,
      &             H%R,T1%R,GRAV,ROEAU,NORD,PRIVE,
-     &             T2DFO1,T2D_FILES,LISTIN)
+     &             T2DFO1,T2D_FILES,LISTIN,WATQUA,PLUIE)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM METEO'
       ENDIF
 !
@@ -1904,7 +1909,7 @@
         CALL METEO(PATMOS%R,WINDX%R,WINDY%R,
      &             FUAIR,FVAIR,MESH%X%R,MESH%Y%R,AT,LT,NPOIN,VENT,ATMOS,
      &             H%R,T1%R,GRAV,ROEAU,NORD,PRIVE,
-     &             T2DFO1,T2D_FILES,LISTIN)
+     &             T2DFO1,T2D_FILES,LISTIN,WATQUA,PLUIE)
       ENDIF
 !
 !  COMPUTES THE DENSITY WHEN IT IS VARIABLE
