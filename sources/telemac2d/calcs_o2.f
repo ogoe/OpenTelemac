@@ -196,20 +196,20 @@
       RANKTR2 = RANKTR1+1
 !     RANKTR3 =NTRAC
       DO I=1,NPOIN
-!        FIRST TRACER O2 (RANK NTRAC-ADDTR+1) (EXPLICIT ?)
-         TEXP%ADR(RANKTR1)%P%R(I) = 
-     &    K2%R(I) * CORR2T * (O2SATU-TN%ADR(RANKTR1)%P%R(I)) -
-     &    K1 * TN%ADR(RANKTR2)%P%R(I) -
-     &    K44 * TN%ADR(NTRAC)%P%R(I)  +
-     &    PHOTO - RESP - BENCORR/MAX(EPS,HPROP%R(I))
+!       FIRST TRACER O2 (RANK NTRAC-ADDTR+1) (EXPLICIT ?)
+        TEXP%ADR(RANKTR1)%P%R(I) = 
+     &   K2%R(I) * CORR2T * (O2SATU-TN%ADR(RANKTR1)%P%R(I)) -
+     &   K1 * TN%ADR(RANKTR2)%P%R(I) -
+     &   K44 * TN%ADR(NTRAC)%P%R(I)  +
+     &   PHOTO - RESP - BENCORR/MAX(EPS,HPROP%R(I))
 !
-!        SECOND TRACER [L] ORGANIC LOAD
+!       SECOND TRACER [L] ORGANIC LOAD
 !
-         TEXP%ADR(RANKTR2)%P%R(I) = 
-     &       -K1*TN%ADR(RANKTR2)%P%R(I)
-!        THIRD TRACER [NH4]
-         TEXP%ADR(NTRAC)%P%R(I) = 
-     &       -K44*TN%ADR(NTRAC)%P%R(I)
+        TEXP%ADR(RANKTR2)%P%R(I) = 
+     &      -K1*TN%ADR(RANKTR2)%P%R(I)
+!       THIRD TRACER [NH4]
+        TEXP%ADR(NTRAC)%P%R(I) = 
+     &      -K44*TN%ADR(NTRAC)%P%R(I)
 !
       ENDDO
 !     CONVERT DAYS TO SECONDS
