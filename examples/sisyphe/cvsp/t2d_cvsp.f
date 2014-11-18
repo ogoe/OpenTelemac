@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    1) READS ALL NECESSARY DATA.
@@ -14,6 +14,10 @@
 !note     IN CASE OF PARAMETER ESTIMATION, HOMERE_ADJ_T2D IS
 !+            CALLED INSTEAD OF HOMERE_TELEMAC2D.
 !
+!history  R. ATA
+!+        10/11/2014
+!+        V7P0
+!+       add waq variables for lecdon_telemac2d
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -36,7 +40,7 @@
 !
       CHARACTER(LEN=250) PATH
       CHARACTER(LEN=144) MOTCAR(MAXKEY),FILE_DESC(4,MAXKEY)
-
+      CHARACTER(LEN=144) WMOTCAR(MAXKEY),WFILE_DESC(4,MAXKEY)
       CHARACTER(LEN=50) DEBUGFILE
 !
 !======================================================================
@@ -64,7 +68,7 @@
      &14X,'     T    E      L      E      M   M  A   A  C    ',/,
      &14X,'     T    EEEEE  LLLLL  EEEEE  M   M  A   A  CCCCC',/,
      &14X,'                                                  ',/,
-     &14X,'           2D    VERSION 6.3    FORTRAN 90        ',/,
+     &14X,'           2D    VERSION 7.0    FORTRAN 90        ',/,
      &14X,'                 WITH SEVERAL TRACERS             ',/,
      &14X,'           COUPLED WITH SISYPHE AND TOMAWAC       ',/,
      &14X,/////)
@@ -73,7 +77,8 @@
 !
 !     READS THE STEERING FILE
 !
-      CALL LECDON_TELEMAC2D(MOTCAR,FILE_DESC,PATH,NCAR)
+      CALL LECDON_TELEMAC2D(MOTCAR,WMOTCAR,FILE_DESC,WFILE_DESC,
+     &                      PATH,NCAR)
 !
 !-----------------------------------------------------------------------
 !
@@ -122,7 +127,7 @@
      &  14X,'       S I      S   Y   P     H   H E     ',/,
      &  14X,'   SSSS  I  SSSS    Y   P     H   H EEEEE' ,/,
      &  14X,'                                          ',/,
-     &  14X,'                VERSION 6.3               ',/,
+     &  14X,'                VERSION 7.0               ',/,
      &  14X,'      COUPLED WITH TELEMAC-2D INTERNALLY  ',/,
      &  14X,/////)
 !
@@ -149,7 +154,7 @@
 !
         WRITE(LU,106)
         WRITE(LU,107)
-106     FORMAT(100(1H-),////////,
+106     FORMAT(100('-'),////////,
      &  16X,
      &  'TTTTT  OOOOO  M   M  AAAAA  W   W  AAAAA  CCCCC '
      &  ,/,16X,
@@ -172,7 +177,7 @@
      &  ,/,15X,
      &  '           _____|____|____|____\\\__       '
      &  ,/,15X,
-     &  '  ---------\               6.3  /---------  '
+     &  '  ---------\               7.0  /---------  '
      &  ,/,15X,
      & '    ^^^^^^^^^^^^^^^^^^^^^^^^^^^             '
      &  ,/,15X,
@@ -254,5 +259,5 @@
 !
 !-----------------------------------------------------------------------
 !
-      STOP
+      STOP 0
       END
