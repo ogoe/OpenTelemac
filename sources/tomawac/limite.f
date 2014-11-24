@@ -14,6 +14,7 @@
 !history  E. GAGNAIRE-RENOU AND M.BENOIT (EDF/LNHE)
 !+        09/2014
 !+        V7P0
+!+        NEW SUBROUTINE CREATED / IMPLEMENTED
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!
 !| DEPTH          |-->| WATER DEPTH

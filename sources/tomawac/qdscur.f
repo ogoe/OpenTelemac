@@ -20,6 +20,7 @@
 !history  E. GAGNAIRE-RENOU (EDF/LNHE)
 !+        09/2014
 !+        V7P0
+!+        NEW SUBROUTINE CREATED / IMPLEMENTED
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BETOTN         |<->| WORK TABLE

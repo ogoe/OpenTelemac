@@ -13,8 +13,9 @@
 !         TETAP is given in degrees, in the interval [0 ; 90]
 !
 !history  C. PEYRARD (LNHE)
-!+      18/03/2014
-!+   
+!+        18/03/2014
+!+        V7P0
+!+        NEW SUBROUTINE CREATED / IMPLEMENTED
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| TETA           |-->| ANGLE BETWEEN WAVE DIRECTION AND BOUNDARY NORMAL

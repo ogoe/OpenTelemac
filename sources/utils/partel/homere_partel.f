@@ -9,12 +9,15 @@
 !
 !brief    PREPROCESSING STEP BEFORE A PARALLEL COMPUTATION
 !
-!history   Y. AUDOUIN (EDF)
-!+
-!+         FIRST  VERSION
+!history  Y. AUDOUIN (EDF)
+!+        09/2012
+!+        V7P0
+!+        FIRST  VERSION
 !
-!+    V STOBIAC
-!+    READING OF THE MESH FORMAT
+!history  V STOBIAC (EDF)
+!+        09/2014
+!+        V7P0
+!+        READING OF THE MESH FORMAT
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

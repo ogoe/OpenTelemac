@@ -106,6 +106,7 @@
 !
 !history  J-M HERVOUET & C. MOULIN (LNH)
 !+        26/08/1993
+!+        FIRST IMPLEMENTATION
 !+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)

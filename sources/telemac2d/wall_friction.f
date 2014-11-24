@@ -31,6 +31,7 @@
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        27/03/2014
+!+        V7P0
 !+   Adaptation to new numbering of boundary segments in parallel.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

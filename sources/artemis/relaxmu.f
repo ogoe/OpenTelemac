@@ -12,8 +12,10 @@
 !+                USING RELAXATION METHOD
 !
 !history  C PEYRARD (LNHE)
-!+
-!+
+!+        27/03/2014
+!+        V7P0
+!+        NEW SUBROUTINE CREATED / IMPLEMENTED
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ITERMU             |-->| INDICE OF THE CURRENT CALCULATION
 !| ECRHMU             |-->| ERROR ON WAVE HEIGHT BETWEEN 2 ITERATIONS

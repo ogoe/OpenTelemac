@@ -13,7 +13,8 @@
 !+                    MU : DISSIP COEFF
 !
 !history  C PEYRARD (LNHE)
-!+
+!+        27/03/2014
+!+        V7P0
 !+   CREATION OF THE ROUTINE
 !
 !
