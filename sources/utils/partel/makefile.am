@@ -1,0 +1,7 @@
+#
+#------- Sources Fortran
+
+SRCS_PARTEL= declarations_partel.f util_pares.f partitioner.F pares3d.F partel.F homere_partel.f
+SRCS_PARTEL_PARA= partitioner_para.F partel_para.F 
+SRCS_PARTEL_PRELIM= partitioner.F partel_prelim.F
+

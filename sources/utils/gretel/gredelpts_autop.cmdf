@@ -1,0 +1,17 @@
+[general]
+path: <root>|sources|utils|gretel
+module: gretel
+liborder: special gretel
+version: v7p0
+name: GREDELPTS_AUTOP
+
+[gretel]
+path: <root>|sources|utils|gretel
+files: gredelpts_read_dataset.f
+  gredelpts_autop.f
+
+[special]
+path: <root>|sources|utils|special
+files: plante.f
+  check_allocate.f
+  extens.f

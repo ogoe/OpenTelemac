@@ -1,0 +1,71 @@
+/********************************************************************/
+/             FICHIER DES PARAMETRES DE TOMAWAC                      /
+/********************************************************************/
+/
+PROCESSEURS PARALLELES = 3
+/
+/--------------------------------------------------------------------/
+/     FICHIERS
+/--------------------------------------------------------------------/
+FICHIER FORTRAN = 'tom_whirl.f'
+FICHIER DE GEOMETRIE = 'geo_whirl.slf'
+FICHIER DES CONDITIONS AUX LIMITES = 'geo_whirl.cli'
+FICHIER DE REFERENCE = 'fom_whirl.slf'
+/
+FICHIER DES RESULTATS 2D = 'tom_whirl.slf'
+FICHIER DES RESULTATS PONCTUELS = 'tom_whirl.spe'
+/--------------------------------------------------------------------/
+/ DIVERS ENTREES-SORTIES
+/--------------------------------------------------------------------/
+TITRE = 'TEST WHIRL CURRENT'
+PERIODE POUR LES SORTIES GRAPHIQUES = 25
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D =
+HM0,DMOY,FMOY,FM01,UX,UY,ZF,WD
+PERIODE POUR LES SORTIES LISTING = 5
+ABSCISSES DES POINTS DE SORTIE DU SPECTRE =
+-7429.9850463867188;-2051.20086669922;
+3275.56228637695;7066.65802001953;-12715.4541015625;
+-3640.49911499023;3874.46975708008;12139.1906738281
+ORDONNEES DES POINTS DE SORTIE DU SPECTRE =
+13664.404869079590;14746.8509674072;
+13877.0227432251;12045.3062057495;20754.3487548828;
+25039.1960144043;25227.3235321045;21570.6596374512
+/--------------------------------------------------------------------/
+/ DISCRETISATION
+/--------------------------------------------------------------------/
+PAS DE TEMPS = 1200.
+NOMBRE DE PAS DE TEMPS = 50
+NOMBRE DE FREQUENCES = 25
+FREQUENCE MINIMALE = 0.04177248
+RAISON FREQUENTIELLE = 1.1
+NOMBRE DE DIRECTIONS = 48
+/--------------------------------------------------------------------/
+/ CONDITIONS AUX LIMITES
+/--------------------------------------------------------------------/
+TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
+HAUTEUR SIGNIFICATIVE AUX LIMITES = 1.
+FREQUENCE DE PIC AUX LIMITES = 0.1
+DIRECTION PRINCIPALE 1 AUX LIMITES = 0.
+ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 6.
+FACTEUR DE PIC AUX LIMITES = 1.5
+SPECTRE AUX LIMITES MODIFIE PAR L'UTILISATEUR = OUI
+/--------------------------------------------------------------------/
+/ CONDITIONS INITIALES
+/--------------------------------------------------------------------/
+TYPE DE SPECTRE DIRECTIONNEL INITIAL = 0
+/--------------------------------------------------------------------/
+/ OPTIONS DU CALCUL
+/--------------------------------------------------------------------/
+PROFONDEUR INFINIE = NON
+COORDONNEES SPHERIQUES = NON
+PRISE EN COMPTE DES TERMES SOURCES = NON
+PRISE EN COMPTE D'UN COURANT STATIONNAIRE = OUI
+PRISE EN COMPTE DU VENT = NON
+/CALCUL EXACT DU NOMBRE D'ONDE = OUI
+VALIDATION = OUI
+/ TEST JMH
+/NOMBRE DE PAS DE TEMPS = 25
+/SORTIE GLOBALE A LA FIN : OUI
+/FICHIER DES RESULTATS GLOBAUX = 'tom_whirl.pre'
+/SUITE DE CALCUL : OUI
+/FICHIER DU CALCUL PRECEDENT : tom_whirl.pre25

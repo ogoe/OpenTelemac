@@ -1,0 +1,83 @@
+/
+/ ROTATING CONE TEST ON A DIVERGENCE FREE VELOCITY FIELD
+/
+/
+/
+/ HP Linux Calibre 7 : 3 s  version 6.3  30/12/2013
+/
+/
+/
+PARALLEL PROCESSORS : 0
+/
+FORTRAN FILE             : t2d_cone.f 
+BOUNDARY CONDITIONS FILE : geo_cone.cli
+GEOMETRY FILE            : geo_cone.slf
+REFERENCE FILE           : f2d_cone.slf
+RESULTS FILE             : r2d_cone.slf
+VALIDATION               : YES
+/
+/----------------------------------------------------------------------/ 
+/                     OPTIONS GENERALES                                  
+/----------------------------------------------------------------------/
+/ 
+TITLE = 'TELEMAC-2D: ROTATING CONE TEST'                                                              
+VARIABLES FOR GRAPHIC PRINTOUTS: 'U,V,H,T*'                        
+/
+/TIME STEP = 0.392699082    NUMBER OF TIME STEPS = 16 
+/TIME STEP = 0.785398164    NUMBER OF TIME STEPS = 8 
+/TIME STEP = 1.570796328    NUMBER OF TIME STEPS = 4 
+/TIME STEP = 3.141592653    NUMBER OF TIME STEPS = 2 
+/TIME STEP = 6.283185308    NUMBER OF TIME STEPS = 1                                               
+ TIME STEP = 0.196349541    NUMBER OF TIME STEPS = 32
+/TIME STEP = 0.098174771    NUMBER OF TIME STEPS = 64
+/TIME STEP = 0.049087385    NUMBER OF TIME STEPS = 128 
+/TIME STEP = 0.024543693    NUMBER OF TIME STEPS = 256
+/TIME STEP = 0.012271846    NUMBER OF TIME STEPS = 512 
+/TIME STEP = 0.028049934    NUMBER OF TIME STEPS = 224 
+/TIME STEP = 0.004908739    NUMBER OF TIME STEPS = 1280 
+/
+GRAPHIC PRINTOUT PERIOD : 8   
+LISTING PRINTOUT PERIOD : 1 
+/
+LAW OF BOTTOM FRICTION : 0 
+/    
+/----------------------------------------------------------------------/ 
+/     PROPAGATION                                                        
+/----------------------------------------------------------------------/ 
+/
+VELOCITY DIFFUSIVITY = 0.D0
+/               
+/----------------------------------------------------------------------/
+/
+MASS-BALANCE : YES                                  
+INITIAL CONDITIONS : PARTICULIERES                                         
+/ 
+/TYPE OF ADVECTION:3;5;1 
+SCHEME FOR ADVECTION OF VELOCITIES : 3
+OPTION FOR CHARACTERISTICS : 2
+NUMBER OF GAUSS POINTS FOR WEAK CHARACTERISTICS : 12
+/
+/----------------------------------------------------------------------/
+/
+/ NOTE: THE COMBINATION OF STRONG AND WEAK CHARACTERISTICS
+/       IS NOT IMPLEMENTED YET, THOUGH ASKED BELOW
+/
+NUMBER OF TRACERS : 6 
+INITIAL VALUES OF TRACERS              : 0.;0.;0.;0.;0.;0.
+COEFFICIENT FOR DIFFUSION OF TRACERS   : 0.;0.;0.;0.;0.;0.
+SCHEME FOR ADVECTION OF TRACERS        : 1 ; 1;4 ; 5; 5;13
+SCHEME OPTION FOR ADVECTION OF TRACERS : 1 ; 2;1 ; 1; 2;1
+SOLVER FOR DIFFUSION OF TRACERS        : 1 ; 1;1 ; 1; 1;1
+/PRECONDITIONING FOR DIFFUSION OF TRACERS : 5
+NAMES OF TRACERS : 'CHARACT. STRONG TRACER 1        ';
+                   'CHARACT. WEAK   TRACER 2        ';
+                   'N SCHEME        TRACER 3        ';
+                   'PSI SCHEME      TRACER 4        ';
+                   'PSI SCHEME  COR.TRACER 5        ';
+                   'NERD SCHEME     TRACER 6        '
+TREATMENT OF NEGATIVE DEPTHS : 2
+MASS-LUMPING ON H : 1.
+CONTINUITY CORRECTION : YES
+/
+/----------------------------------------------------------------------/ 
+/   

@@ -1,0 +1,75 @@
+<?xml version="1.0"?> 
+<!-- Validation and verification of test cases, given a list of CAS files 
+--> 
+<validation xref="bumpcri" rank="13"> 
+ 
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ This section is being ignored at the moment --> 
+   <deco xref="default"> 
+      <look format="png" colourbar="jet.xml" /> 
+      <data title="bumpcri" author="telemac2d" contact="www.opentelemac.org" /> 
+   </deco> 
+   <deco xref="vect"> 
+      <look colour="jet.xml" /> 
+   </deco> 
+   <deco xref="line"> 
+      <look colour="k" /> 
+   </deco> 
+ 
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ do="cas;princi" are being ignored at the moment 
+-->  
+   <action xref="1"  rank="3"
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_bumpcri.cas" 
+       title="bumpcri scalar mode" 
+   /> 
+   <action xref="2"  rank="3"
+       do="translate;compile;run;cas;princi" ncsize="4"  
+       code="telemac2d" target="t2d_bumpcri.cas" 
+       title="bumpcri parallel mode" 
+   />    
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ This section is being ignored at the moment --> 
+
+   <save1d xref="VolumeTotal" type="history" time="[0;-1]" >  
+      <layer vars="voltotal" target="1:sortie" config="together" />  
+   </save1d>  
+   <save1d xref="free-surface-time-series" type="history" config="together" time="[0;-1]" >  
+      <layer vars="surface libre:line" extract="[10;1][0;1]" target="1:T2DRES" />  
+   </save1d>     
+   <save1d xref="profiles" type="v-section" config="together" time="[-1]" >  
+      <layer vars="surface libre:line;fond:line" extract="[0;1][21;1]" target="1:T2DRES" />  
+   </save1d>  
+   
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   --> 
+   <plot1d xref="VolumeTotal" type="history" time="[0;-1]" size="[12;5]" >  
+      <layer vars="voltotal" target="1:sortie" config="together" />  
+   </plot1d>  
+   <plot1d xref="VolumesFluxes" type="history" time="[0;-1]" size="[12;5]" >  
+      <layer vars="volfluxes" target="1:sortie" config="together" />  
+   </plot1d>  
+   <plot1d xref="VolumeError" type="history" time="[0;-1]" size="[12;5]" >  
+      <layer vars="volerror" target="1:sortie" config="together" />  
+   </plot1d>  
+   <plot1d xref="free-surface-time-series" type="history" config="together" time="[0;-1]" size="[12;5]" >  
+      <layer vars="surface libre:line" extract="[10;1][0;1]" target="1:T2DRES" />  
+   </plot1d>  
+   <plot1d xref="profiles" type="v-section" config="together" time="[-1]" size="[12;5]" >  
+      <layer vars="surface libre:line;fond:line" extract="[0;1][21;1]" target="1:T2DRES" />  
+   </plot1d>  
+ 
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+  --> 
+   <plot2d xref="mesh" size="[20;5]" >  
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" />  
+   </plot2d>  
+   <plot2d xref="bathy" size="[20;5]" >  
+      <layer vars="fond:map" target="1:T2DRES" config="oneofall" />  
+   </plot2d>  
+    <plot2d xref="free-surface" size="[20;5]" >  
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" />  
+   </plot2d>  
+ 
+</validation> 

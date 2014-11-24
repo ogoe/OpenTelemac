@@ -1,0 +1,47 @@
+# --------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------
+# Diese Datei beschreibt den Zusammenhang zwischenden den in der 
+# BAW DH gebraeuchlichen Konventionen bei der Bezeichnung 
+# physikalischer Groessen, wie sie in den Dateien 
+# "phydef.cfg.*.dat" festgelegt sind, sowie den standardisierten
+# Bezeichnungen des CF-Standards, wie sie unter
+#   -> http://www.cgd.ucar.edu/cms/eaton/cf-metadata/standard_name.html
+# beschrieben sind.
+# Mit Hilfe dieser Informationen sollte es moeglich sein, Trans-
+# formationen der Metadaten-Informationen in beiden Richtungen
+# BDF <--> NetCDF vorzunehmen.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# SCCS-IDs : @(#) 08/17/06 1.4 phydef-cf.cfg.dat
+# -------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
+# 01 - 05 : icode == Code-Kennung der phys. Groesse in phydef.cfg.*.dat
+#                    -1 = nicht definiert
+#                     0 = keine Entsprechung vorhanden
+# 06 - 10 : idim  == Zeiger auf Koordinatenrichtung fuer eine vekt. Groesse 
+#                    -1 = nicht definiert
+#                     0 = keine Entsprechung vorhanden, z.B. skalare Groesse
+# 11 - 15 : ivar  == Zeiger auf Datenvariation
+#                    -1 = nicht definiert
+#                     0 = keine Entsprechung vorhanden
+# 17 - 80 : name  == Standardname (darf keine Leerzeichen besitzen)
+#                    "undefined"     = nicht definiert
+#                    "not_available" = keine Entsprechung vorhanden
+# ------------------------------------------------------------------------------
+#        1         2         3         4         5         6         7         8
+# 345678901234567890123456789012345678901234567890123456789012345678901234567890
+# --AB---BC---CXD--------------------------------------------------------------D
+    0    0    0 time
+    2    1    0 sea_water_x_velocity
+    2    2    0 sea_water_y_velocity
+    2    3    0 upward_sea_water_velocity
+    3    0    0 sea_surface_height
+    5    0    0 sea_water_salinity
+    7    0    0 concentration_of_suspended_matter_in_sea_water
+  617    0    0 sea_floor_depth_below_sea_level
+   17    0    0 sea_floor_depth
+    0    0    0 names_of_suspended_matter_in_sea_water
+    0    0    0 projection_x_coordinate
+    0    0    0 projection_y_coordinate
+    0    0    0 ocean_sigma_layer_thickness
+ENDDATA
+# end of file ---------------------------------------------------

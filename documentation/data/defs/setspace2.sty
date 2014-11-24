@@ -1,0 +1,63 @@
+
+\NeedsTeXFormat {LaTeX2e}[1994/12/01]
+\def \filename {setspace2.sty}
+\def \filedate {1998/11/26}
+\def \fileversion {6.4}
+\ProvidesPackage {./defs/setspace2}[\filedate\space\fileversion\space
+  Contributed and Supported LaTeX2e package]
+\typeout {Package: `setspace' \fileversion\space <\filedate>}
+
+%%%%%%%
+
+\newcommand{\setstretch}[1]{%
+  \def\baselinestretch{#1}%
+  \@currsize
+}
+
+\newcommand{\SetSinglespace}[1]{%
+  \def\setspace@singlespace{#1}%
+}
+
+% Here's the default single line spacing value.
+\SetSinglespace{1}
+
+\newcommand{\singlespacing}{%
+  \setstretch {\setspace@singlespace}%
+  \vskip \baselineskip  % Correction for coming into singlespace
+}
+
+\newenvironment{singlespace}{%
+  \vskip \baselineskip
+  \setstretch {\setspace@singlespace}%
+  \vskip -\baselineskip
+}{%
+  \par
+}
+
+\newenvironment{singlespace*}{%
+  \setstretch {\setspace@singlespace}%
+  \vskip -\baselineskip
+}{%
+  \vskip -0.5\baselineskip
+}
+
+\newcommand{\restore@spacing}{%
+    \par
+    \vskip \parskip
+    \vskip \baselineskip
+  \endgroup
+  \vskip -\parskip
+  \vskip -\baselineskip
+}
+
+\newenvironment{spacing}[1]{%
+  \par
+  \begingroup             % moved from \endspacing by PGBR 29-1-91
+    \setstretch {#1}%
+}{%
+  \restore@spacing
+}
+
+\endinput
+
+%%% EOF.

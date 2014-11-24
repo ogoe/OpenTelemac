@@ -1,0 +1,17 @@
+/**********************************************************************/
+/                  EXAMPLE OF CONVERTION OF GEOMETRY                   /
+/                 SLF TO VTK                                           /
+/**********************************************************************/
+/ WARNING : You need med library to fullfill this test
+/ Define that we are using the converter part of stbtel
+CONVERTISSEUR                 : OUI
+/ Allow debug informations to be displayed or not
+DEBUG                         : OUI
+/ INPUT INFORMATIONS
+FORMAT DU FICHIER D ENTREE    : 'SERAFIN'
+FICHIER D ENTREE              : 'r2d_riogrande.slf'
+/ OUPUT INFORMATIONS
+FORMAT DU FICHIER DE SORTIE   : 'VTK'
+FICHIER DE SORTIE             : 'geo_riogrande.vtk'
+/
+&FIN

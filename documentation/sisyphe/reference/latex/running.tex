@@ -1,0 +1,259 @@
+\section{Running a sedimentological computation}\label{sec:running}
+
+\subsection{Input files}
+The minimum set of input files to run a \sisyphe simulation includes the steering file (text file {\sffamily cas}), the geometry file (format selafin {\sffamily slf}), and the boundary conditions file (text file {\sffamily cli}). Additional or optional input files include the fortran file, the reference file, the result file, etc.
+
+\subsection{Steering file}
+The steering file contains the necessary information for running a computation, plus the values of parameters
+that are different from the defaults.
+Like in other modules of the \tel system, the model parameters can
+be specified in the (obligatory) \sisyphe steering file. The following essential information (input/output) should be specified in the steering file:
+\begin{itemize}
+\item Input and output files 
+\item Physical parameters (sand diameter, cohesive or
+not, settling velocity, etc.)
+\item Main sediment transport processes (transport mechanism and formulae, etc.)
+\item Additional sediment transport processes (secondary currents, slope effect, etc.)
+\item Numerical options and parameters (numerical scheme, options for solvers, etc.)
+\end{itemize}
+
+\subsection{Coupling hydrodynamics and morphodynamics}\label{sec:running:subsec:coupling} 
+We describe here two methods for linking the hydrodynamic and the
+morphodynamic models: by \emph{chaining} (the flow is obtained from a previous
+hydrodynamic simulation assuming a fixed bed) or by \emph{internal coupling} (both the
+flow and bed evolution are updated at each time step).
+
+\subsubsection{Chaining method}
+\begin{itemize}
+\item \textbf{Principle}
+
+Both models (hydrodynamic and morphodynamic) are run independently: during the first hydrodynamic simulation 
+the bed is assumed to be fixed. Then, in the subsequent morphodynamic run, 
+the flow rate and free surface are read from the previous hydrodynamic results file.
+% ***START COMPLETE***
+This `chaining method' is only justified for relatively simple flows, due to
+the difference in time-scales between the hydrodynamics and the bed
+evolution. For unsteady tidal flow, \sisyphe can be used in an unsteady mode:
+the flow field is linearly interpolated between two time steps of the
+hydrodynamic file. For steady flow, the last time step of the hydrodynamic
+file is used and the flow rate and free surface assumed to stay constant
+while the bed evolves. 
+\\
+
+% ***END COMPLETE***
+
+\item \textbf{Flow updating}
+
+At each time step, the flow velocity is updated by assuming simply that both
+the flow rate and the free surface elevation are conserved, such that, in
+the case of deposition, the flow velocity is locally increased, whereas in
+the case of erosion, the flow velocity decreases.
+
+This rather schematic updating does not take into account any deviation of
+the flow. It is only suitable for simple flows (2D processes) and assuming
+relatively small bed evolutions. However it can be responsible for numerical
+instabilities~\cite{}.%ADD (cf. [01b], Hervouet and Villaret, 2004).
+% ***START VERIFY***
+The morphodynamic computation is stopped when the bed evolution reaches a
+certain percent of the initial water depth. This simple updating of the flow
+field is no longer valid when the bed evolution becomes greater than a
+significant percentage of the water depth, specified by the user. At this
+point, it is recommended to stop the morphodynamic calculation and to
+recalculate the hydrodynamic variables. 
+% ***END VERIFY***
+\\
+
+\item \textbf{Mass continuity}
+
+It should be noted that with this simple method, the sediment mass
+continuity may not be satisfied because of potential losses due to changes
+in the flow depth as the bed evolves. 
+
+When the flow is steady ({\ttfamily STEADY CASE = YES}), only the last record of the previous result file will be
+used. Otherwise ({\ttfamily STEADY CASE = NO}), the {\ttfamily TIDE PERIOD} and {\ttfamily NUMBER OF TIDES OR FLOODS} will be used to specify the sequence to be read on the
+hydrodynamic files. Hydrodynamic records are interpolated at each time step
+of the sedimentological computation.
+
+Note: an error may occur when the {\ttfamily TIDE PERIOD} is not a multiple of the
+graphical time steps of the hydrodynamic file ({\ttfamily hydrodynamic file is not
+long enough}). In an unsteady case, the keyword {\ttfamily STARTING TIME OF THE HYDROGRAM} gives the
+first time step to be read. If the starting time is not specified, the last
+period of the hydrogram will be used for sedimentological computation.
+\\
+
+\item \textbf{Steering/fortran files}
+
+For uncoupled mode, the \sisyphe steering file should specify:
+\begin{itemize}
+\item The time steps, graphical or listing output,
+duration 
+\item The hydrodynamic file as yielded by \teldd or \telddd ({\ttfamily HYDRODYNAMIC FILE}) or by the subroutine {\ttfamily condim\_sisyphe.f}. 
+\item For waves only: the wave parameters can be either
+calculated by a wave propagation code (\tomawac), or defined directly in
+\sisyphe ({\ttfamily condim\_sisyphe.f}). The effect of waves on bed forms and associated
+bed roughness coefficient can be accounted with keyword: {\ttfamily EFFECT OF WAVES = YES}.
+\item A restart from a previous \sisyphe model run, by
+setting {\ttfamily COMPUTATION CONTINUED = YES} and specification of sedimentological
+results in {\ttfamily PREVIOUS SEDIMENTOLOGICAL COMPUTATION}
+\item Flow options: steady or unsteady options, flow
+period
+\end{itemize}
+
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+For time step, duration and output:
+\begin{itemize}
+\item {\ttfamily TIME STEP, NUMBER OF TIME STEPS}
+\item {\ttfamily GRAPHIC PRINTOUT PERIOD} 
+\item {\ttfamily LISTING VARIABLES FOR GRAPHIC PRINTOUTS}
+\end{itemize}
+For hydrodynamics (imposed flow and updated):
+\begin{itemize}
+\item {\ttfamily HYDRODYNAMIC FILE}
+\item {\ttfamily STEADY CASE =NO}, default option
+\item {\ttfamily TIDE PERIOD = 44640}, default option
+\item {\ttfamily STARTING TIME OF THE HYDROGRAM = 0.}, default
+option
+\item {\ttfamily NUMBER OF TIDES OR FLOODS = 1}, default option
+\item {\ttfamily CRITICAL EVOLUTION RATIO = 0.1}, default value
+\end{itemize}
+For waves: 
+\begin{itemize}
+\item {\ttfamily WAVE FILE, WAVE EFFECTS}
+\end{itemize}
+\end{bclogo}
+
+\end{itemize}
+
+\subsubsection{Internal coupling}
+\begin{itemize}
+\item \textbf{Principle}
+
+\sisyphe can be automatically coupled
+(internally) with the hydrodynamic model, \teldd or \telddd. \sisyphe is
+called inside the hydrodynamic model without any exchange of data files. The
+data to be exchanged between the two programs is now directly shared in the
+memory, instead of being written and read in a file. %FOR CHAINING METHOD????
+
+At each time step, the hydrodynamics variables (velocity field, water depth,
+bed shear stress,...) are transferred to the morphodynamic model, which
+sends back the updated bed elevation to the hydrodynamics model.
+\\
+
+\item \textbf{Time step and coupling period}
+The internal coupling method is more CPU time consuming than the chaining
+method. Various techniques can be set up to reduce the CPU time (e.g.
+parallel processors). 
+% ***START VERIFY***
+In certain cases, the use of a coupling
+period $>1$ allows the bed load transport rates and resulting bed
+evolution not to be re-calculated at every time step.
+% ***END VERIFY***
+For suspended load, a diffusion/transport equation needs to be solved.
+This transport equation obeys the same Courant number criteria on the time
+step than the hydrodynamics, and therefore needs to be solved at each
+time-step ({\ttfamily COUPLING PERIOD = 1}).
+
+The time step of \sisyphe is equal to the time step of \teldd or \telddd
+multiplied by the `coupling period'. The graphic/listing printout periods
+are the same as in the \tel computation.
+
+The \teldd/3D steering file must specify the type of coupling, the name
+of the \sisyphe steering file, and the coupling period. In addition, the
+Fortran file of \sisyphe must be sometimes specified in the \tel steering
+file (if there is no Fortran file for \tel). Some of the keywords of the
+\sisyphe steering file become obsolete.
+
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+For internal coupling, the following keywords need to be specified in the
+\teldd or \telddd steering files:
+\begin{itemize}
+\item {\ttfamily COUPLING WITH = SISYPHE} 
+\item {\ttfamily COUPLING PERIOD =1}, default value 
+\item {\ttfamily NAME OF SISYPHE STEERING FILE}
+\end{itemize}
+\end{bclogo}
+
+All computational parameters (time step, duration, printout, option for
+friction) need to be specified in the \tel steering file, but are no
+longer used by \sisyphe. The values of time step, bottom shear stress, etc. are
+transferred directly from \tel to \sisyphe.
+% EXPLAIN BETTER!!!!
+\begin{bclogo}[couleur = blue!10, arrondi = 0.10, logo = \bcattention]{\textsf{Important}}
+The following keywords are no longer in use is (\sisyphe) steering file:
+\begin{itemize}
+\item {\ttfamily TIME STEP}
+\item {\ttfamily GRAPHIC PRINTOUT PERIOD}
+\item {\ttfamily LISTING PRINTOUT PERIOD}
+\item {\ttfamily LAW OF BOTTOM FRICTION}
+\item {\ttfamily FRICTION COEFFICIENT}
+\end{itemize}
+\end{bclogo}
+
+\end{itemize}
+
+
+%\subsection{Input data files}
+%The geometry file is a binary file that contains the finite element mesh information (e.g., element type, number of elements, coordinates of the nodes and connectivity matrix). 
+%This file can also contain bottom topography information and/or friction values at each mesh point. 
+
+%The geometry file ({\ttfamily GEOMETRY FILE}) is a binary file in Selafin format issued
+%from the mesh generator. It contains a full description
+%of the (three-node) triangular grid as well as the bathymetry information, obtained from the interpolation of bathymetric data file onto each node of the triangular grid.
+
+%The {\ttfamily FORTRAN FILE} contains those subroutines which the user has modified.
+
+%The {\ttfamily HYDRODYNAMIC FILE} contains the hydrodynamic results of a previous
+%hydrodynamic computation (\teldd or \telddd). If \tel is coupled to \sisyphe, the grid must be the same. 
+%When a hydrodynamics file comes for example from a finite differences hydrodynamic model, 
+%the file must be transformed beforehand and interpolated onto a triangular, finite element mesh.
+
+%The hydrodynamics will be given either by the last time step of that file in
+%steady mode, or by the time steps related to the period of the tide or flood
+%being considered in unsteady mode. That file should contain current data and wave data if the effect of waves is considered. The {\ttfamily WAVE FILE} contains the hydrodynamic results of a previous wave
+%computation (\tomawac). Only the last record will be read if the keyword {\ttfamily WAVE EFFECTS} is
+%activated.
+
+%The {\ttfamily PREVIOUS SEDIMENTOLOGICAL COMPUTATION FILE} is provided for implementing
+%a computational sequence, it contains the results of a previous
+%sedimentological computation made using \sisyphe on the same grid. If that
+%file exists, then the initial sedimentological conditions of the computation
+%will be given by the last time step in the file. This file will be read
+%only if the keyword {\ttfamily COMPUTATION CONTINUED} is activated.
+
+%The {\ttfamily REFERENCE FILE} is the results file from a previous computation. The last time step is compared to the new last time step. 
+%All the files must be either binary (Selafin format) or text ({\ttfamily ascii} format). 
+
+%\medskip
+%\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+%\begin{itemize}
+%\item {\ttfamily BOUNDARY CONDITIONS FILE}
+%\item {\ttfamily GEOMETRY FILE}
+%\item {\ttfamily FORTRAN FILE}
+%\item {\ttfamily RESULTS FILE}
+%\end{itemize}
+%When combining with a previous computation:
+%\begin{itemize}
+%\item {\ttfamily COMPUTATION CONTINUED} {\ttfamily = NO}, default option
+%\item {\ttfamily PREVIOUS SEDIMENTOLOGICAL COMPUTATION FILE}
+%\end{itemize}
+%\end{bclogo}
+
+\subsection{Boundary conditions file}
+The format of the boundary condition file is the same as for \teldd or \telddd. 
+This file can be created by a mesh generator (for example, BlueKenue~\cite{bluekenue}) and modified using a text editor. 
+Each line is related to a point along the edge of the mesh. Boundary points are listed in the file in the following way: 
+First the domain outline points, proceeding counterclockwise from the lower left corner, then the islands proceeding clockwise, also from the lower left corner. 
+
+The edge points are numbered like the file lines; the numbering first
+describes the domain outline in the counterclockwise direction from lower
+left point (X+Y minimum), then the islands in the clockwise direction. The
+boundary condition about the bottom depth is imposed at the specific place
+of the tracer boundary condition in \teldd.
+The following thirteen variables for each edge point are first read out of
+the boundary conditions file \texttt{X1, X2, X3, X4, X5, X6, X7, LIEBOR, EBOR, X10,
+X11, N, K}. The first seven variables (\texttt{X1, X2, X3, X4, X5, X6, X7}), as well as \texttt{X10} and
+\texttt{X11}, are specific to the \teldd model. They are read in Sisyphe, but
+remain unused.
+

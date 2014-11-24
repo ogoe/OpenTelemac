@@ -1,0 +1,57 @@
+BILAN DE MASSE = VRAI
+CORRECTION DU CHAMP CONVECTEUR : OUI
+FORME DE LA CONVECTION : 4
+/
+/
+CHARRIAGE  =  OUI
+/
+/
+/                           SISYPHE                                       
+/----------------------------------------------------------------------/
+/
+/           FICHIER DE DECLARATION DES MOTS CLES DU CODE                
+/
+/
+/NOMS FICHIERS
+/ -----------------------------------------------------
+FICHIER DE GEOMETRIE = geo_bosse-t2d.slf
+FICHIER DES CONDITIONS AUX LIMITES = geo_bosse-t2d.cli
+FICHIER DES RESULTATS = sis_bosse-t2d.slf
+FICHIER DE REFERENCE  = fis_bosse-t2d.slf
+VALIDATION : OUI
+/
+/CALCUL 
+/ -----------------------------------------------------
+TITRE = 'Cas5'
+/ENTREES-SORTIES, GRAPHIQUES ET LISTING 
+/-------------------------------------------------------
+NOMBRE DE TABLEAUX PRIVES = 1
+VARIABLES POUR LES SORTIES GRAPHIQUES = 
+        'U,S,H,B,E,CS1,TOB,M,MU,A'
+/
+/
+/
+/PARAMETRES NUMERIQUES 
+/-----------------------------
+ZERO = 1e-12
+TETA = 0.5
+/
+/
+/
+/FROTTEMENT ET TRANSPORT SOLIDE 
+/------------------------------
+/
+/
+EFFET DE PENTE = OUI
+/ SEULE LA DEVIATION EST PRISE EN COMPTE DANS KOCH AND FLOCHSTRA 
+BETA = 0.
+/
+FORMULE DE TRANSPORT SOLIDE = 30 /Engelund Hansen
+RAPPORT D'EVOLUTION CRITIQUE = 0.5
+DIAMETRES DES GRAINS = 0.000150
+POROSITE DU LIT NON COHESIF= 0.4
+/
+PRECISION DU SOLVEUR POUR LA SUSPENSION : 1.E-10
+/
+&ETA
+ 
