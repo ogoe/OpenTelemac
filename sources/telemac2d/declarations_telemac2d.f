@@ -52,6 +52,11 @@
 !+        V7P0
 !+   Adding a zones data file.
 !
+!history  Y.B. TADESSE (TUHH, INSTITUTE OF RIVER AND COASTAL ENGINEERING)
+!+        14/02/2014
+!+        V6P3R2
+!+   Modification for adding later breach growth option
+!
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        30/04/2014
 !+        V7P0
@@ -480,7 +485,9 @@
 !     FOR BREACHES MANAGEMENT
 !
       TYPE(BIEF_OBJ),TARGET :: OPTNBR, TDECBR, DURBR, ZFINBR, ZDECBR
-      TYPE(BIEF_OBJ),TARGET :: NUMPSD, NBNDBR, INDBR, ZCRBR
+      TYPE(BIEF_OBJ),TARGET :: NUMPSD, NBNDBR, INDBR, ZCRBR, POLWDT
+      TYPE(BIEF_OBJ),TARGET :: OPTERO, DKAXCR, DKAYCR, PONDSB, NPONBR
+      TYPE(BIEF_OBJ),TARGET :: CURBRW, FINBRW, INIBRW
 !
 !     FOR WEIR MANAGEMENT
 !

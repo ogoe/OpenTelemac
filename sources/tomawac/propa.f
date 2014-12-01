@@ -6,7 +6,7 @@
      & NPLAN,NF,COURAN,TRA01,TRA02,ITR01,T3_01,T3_02,ISUB,MESH3D)
 !
 !***********************************************************************
-! TOMAWAC   V6P3                                   23/06/2011
+! TOMAWAC   V7P0
 !***********************************************************************
 !
 !brief    ADVECTION STEP.
@@ -33,6 +33,14 @@
 !+        23/06/2011
 !+        V6P1
 !+   Translation of French names of the variables in argument
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        25/11/2014
+!+        V7P0
+!+   Bug corrected: size of array WSHZ for POST_INTERP was not correct
+!+   in the call, as TRA01(1,2), TRA01(1,4) was needed.
+!+   Moreover the real size of TRA01 is (NPOIN3,6), not (NPOIN3,8), see
+!+   point_tomawac.f. Intent completed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| B              |-->| JACOBIAN TO TRANSFORM N(KX,KY) INTO F(FR,TETA)
@@ -71,11 +79,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NPOIN3,NPOIN2,NPLAN,NF
+      INTEGER, INTENT(IN) :: NPOIN3,NPOIN2,NPLAN,NF
 !
-      DOUBLE PRECISION F(NPOIN2,NPLAN,NF)
-      DOUBLE PRECISION, INTENT(IN) :: B(NPOIN2,NF)
-      DOUBLE PRECISION TRA01(NPOIN3,8)
+      DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(IN)    :: B(NPOIN2,NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN3,6)
       INTEGER, INTENT(INOUT) :: ELT(NPOIN3,NF),ETA(NPOIN3,NF)
       INTEGER, INTENT(INOUT) :: FRE(NPOIN3,NF)
       INTEGER, INTENT(IN)    :: ISUB(NPOIN3,NF)
@@ -129,7 +137,7 @@
      &                   IKLE_EXT%I,IKLE_EXT%DIM1,1,
      &                   NPOIN2,ELT(1,IFF),ETA(1,IFF),FRE(1,IFF),
      &                   ISUB(1,IFF),3,NPLAN,41,41,NPOIN3,
-     &                   NPOIN2,TRA01,TRA01(1,2),
+     &                   NPOIN2,TRA01,TRA01(1,4),
      &                   T3_01%R,ITR01(1:NPOIN3),
      &                   ITR01(NPOIN3+1:2*NPOIN3),
      &                   ITR01(2*NPOIN3+1:3*NPOIN3),
@@ -157,3 +165,4 @@
 !
       RETURN
       END
+

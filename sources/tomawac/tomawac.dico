@@ -369,8 +369,8 @@ INDEX = 12
 MNEMO = 'INDIC' 
 TAILLE= 0 
 CONTROLE = 3 ; 4 
-DEFAUT = 1 
-DEFAUT1 = 1 
+DEFAUT = 3 
+DEFAUT1 = 3 
 CHOIX = '3="Selafin du type TELEMAC"';
 '4="Format utilisateur (couuti.f)"'
 CHOIX1 = '3="Selafin, TELEMAC type"';
@@ -1241,8 +1241,8 @@ INDEX = 35
 MNEMO = 'INDIM' 
 TAILLE= 0 
 CONTROLE = 3 ; 4 
-DEFAUT = 1 
-DEFAUT1 = 1 
+DEFAUT = 3 
+DEFAUT1 = 3 
 CHOIX = '3="Selafin du type TELEMAC"';
 '4="Format utilisateur (maruti.f)"'
 CHOIX1 = '3="Selafin, TELEMAC type"';
