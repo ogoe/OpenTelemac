@@ -451,7 +451,8 @@ def setKeyValue(key,cas,frgb,value):
    kl,vl = keys
    # ~~> Identify where is &FIN for possible insertion of new key before it
    try:
-      jndex = lines.index('&FIN')
+      for line,j in zip(lines,range(len(lines))):
+         if '&FIN' in line.strip(): jndex = j
       kndex = kl.index('&FIN')
    except:
       jndex = len(lines)
