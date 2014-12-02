@@ -1135,7 +1135,6 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                if options.configName != '': runcmd = runcmd + ' -c ' + options.configName
                if options.configFile != '': runcmd = runcmd + ' -f ' + options.configFile
                if options.rootDir != '': runcmd = runcmd + ' -r ' + options.rootDir
-               if options.version != '': runcmd = runcmd + ' -v ' + options.version
                runcmd = runcmd + ' -s '
                if options.tmpdirectory: runcmd = runcmd + ' -t '
                runcmd = runcmd + ' -w ' + CASFiles[name]['wir']
@@ -1245,8 +1244,6 @@ def main(module=None):
       help="specify configuration file, default is systel.cfg" )
    parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',
       help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",type="string",dest="version",default='',
-      help="specify the version number, default is taken from config file" )
    parser.add_option("-s", "--sortiefile",action="store_true",dest="sortieFile",default=False,
       help="specify whether there is a sortie file, default is no" )
    parser.add_option("-t", "--tmpdirectory",action="store_false",dest="tmpdirectory",default=True,
@@ -1319,8 +1316,8 @@ def main(module=None):
    cfgname = cfgs.iterkeys().next()
 
    # still in lower case
+   if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
-   if options.version != '': cfgs[cfgname]['version'] = options.version
    # recognised keys in the config
    if options.ncsize == '' and cfgs[cfgname].has_key('ncsize'): options.ncsize = cfgs[cfgname]['ncsize']
    if options.nctile == '' and cfgs[cfgname].has_key('nctile'): options.nctile = cfgs[cfgname]['nctile']
@@ -1345,7 +1342,6 @@ def main(module=None):
    print '    +> configuration: ' +  cfgname
    if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
    print '    +> root:          ' +  cfgs[cfgname]['root']
-   print '    +> version        ' +  cfgs[cfgname]['version']
    if options.wDir != '':
       print '    +> directory      ' +  options.wDir
       options.tmpdirectory = False

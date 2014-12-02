@@ -48,6 +48,10 @@ cmd_obj:    gfortran [fflags] <mods> <incs> <f95name>
       will read the [general] section, trying to guess the root and the version at
       the very least. One can also use -r and -v to inform of these values.
 """
+"""@history 25/12/2014 -- Sebastien E. Bourban
+   'version' is not mandatroy anymore.
+   It has been removed from having to be in the configuration file.
+"""
 """@brief
 """
 """@details
@@ -87,16 +91,14 @@ cmd_obj:    gfortran [fflags] <mods> <incs> <f95name>
    follows:
       [sources.gb]
       root:       D:\systel\v6p0r8
-      version:    v6p0
       modules:    parallel artemis telemac2d
    - The key 'root' defines the directory path to the base of the
    TELEMAC system files.
-   - The key 'version' defines the version number, assuming this
-     number fits the template root\*\*_version\
+
    - the key 'module' defines the name of the modules upon which
      the action of the configuration is carried out. The module
    names that are not recognised as part of the TELEMAC system
-   (following the template root\module\*_version\) are
+   (following the template root\module) are
    ignored. Three additonal names are however allowed:
    - system: which is replaced by the list of all available modules
    - clean: which trigger the action to be carried out as if it was
@@ -107,7 +109,6 @@ cmd_obj:    gfortran [fflags] <mods> <incs> <f95name>
    removing all existing object and libraries would simply write:
       [wintel32s]
       root:       D:\systel\v6p0r8
-      version:    v6p0
       modules:    clean system
    Note that the order of appearance of the names of the module has
    no bearing on the action. For the compilation of modules of the
@@ -275,7 +276,7 @@ def getConfigKey(cfg,key,there,empty):
 """
    Extract all the information required for
    the Compilation of TELEMAC
-   Requires: root, version,
+   Requires: root,
    Optional: mods_, incs_, libs_, ... and options
 """
 def parseConfig_CompileTELEMAC(cfg):
@@ -288,10 +289,8 @@ def parseConfig_CompileTELEMAC(cfg):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit(1)
    cfgTELEMAC.update({'root':path.normpath(get)})
-   # Get telver:
-   # TELEMAC version number, to build relative path names to \sources\ etc...
-   # using the template ... teldir\*\*telver\
-   get = getConfigKey(cfg,'version',True,True).lower()
+   # Get version if present
+   get = getConfigKey(cfg,'version',False,False).lower()
    cfgTELEMAC.update({'version':get})
    # Get options for printing purposes
    get = getConfigKey(cfg,'options',False,False).lower()
@@ -367,10 +366,8 @@ def parseConfig_TranslateTELEMAC(cfg):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit(1)
    cfgTELEMAC[cfg].update({'root':path.normpath(get)})
-   # Get telver:
-   # TELEMAC version number, to build relative path names to \sources\ etc...
-   # using the template ... teldir\*\*telver\
-   get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
+   # Get version if present
+   get = getConfigKey(CONFIGS[cfg],'version',False,False).lower()
    cfgTELEMAC[cfg].update({'version':get})
    # Get options for printing purposes
    get = getConfigKey(cfg,'options',False,False).lower()
@@ -408,10 +405,8 @@ def parseConfig_TranslateCAS(cfg):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit(1)
    cfgTELEMAC[cfg].update({'root':path.normpath(get)})
-   # Get telver:
-   # TELEMAC version number, to build relative path names to \sources\ etc...
-   # using the template ... teldir\*\*telver\
-   get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
+   # Get version if present
+   get = getConfigKey(CONFIGS[cfg],'version',False,False).lower()
    cfgTELEMAC[cfg].update({'version':get})
    # Get options for printing purposes
    get = getConfigKey(cfg,'options',False,False).lower()
@@ -437,7 +432,7 @@ def parseConfig_TranslateCAS(cfg):
    # TELEMAC language code, to know the default language
    # tellng = 1, French; tellng = 2, English
    get = getConfigKey(CONFIGS[cfg],'language',True,True)
-   cfgTELEMAC[cfg].update({'version':get})
+   cfgTELEMAC[cfg].update({'language':get})
 
    return cfgTELEMAC
 
@@ -455,10 +450,8 @@ def parseConfig_DoxygenTELEMAC(cfg):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit(1)
    cfgTELEMAC.update({'root':path.normpath(get)})
-   # Get telver:
-   # TELEMAC version number, to build relative path names to \sources\ etc...
-   # using the template ... teldir\*\*telver\
-   get = getConfigKey(cfg,'version',True,True).lower()
+   # Get version if present
+   get = getConfigKey(cfg,'version',False,False).lower()
    cfgTELEMAC.update({'version':get})
    # Get destination doxydocs: ...
    get = getConfigKey(cfg,'doxydocs',True,True).lower()
@@ -517,10 +510,8 @@ def parseConfig_CompactTELEMAC(cfg):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit(1)
    cfgTELEMAC.update({'root':path.normpath(get)})
-   # Get telver:
-   # TELEMAC version number, to build relative path names to \sources\ etc...
-   # using the template ... teldir\*\*telver\
-   get = getConfigKey(cfg,'version',True,True).lower()
+   # Get version if present
+   get = getConfigKey(cfg,'version',False,False).lower()
    cfgTELEMAC.update({'version':get})
    # Get options for printing purposes
    get = getConfigKey(cfg,'options',False,False).lower()
@@ -557,10 +548,8 @@ def parseConfig_ValidateTELEMAC(cfg):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit(1)
    cfgTELEMAC.update({'root':path.normpath(get)})
-   # Get telver:
-   # TELEMAC version number, to build relative path names to \sources\ etc..
-   # using the template ... teldir\*\*telver\
-   get = getConfigKey(cfg,'version',True,True).lower()
+   # Get version if present
+   get = getConfigKey(cfg,'version',False,False).lower()
    cfgTELEMAC.update({'version':get})
    # Get options for printing purposes
    get = getConfigKey(cfg,'options',False,False).lower()
@@ -655,10 +644,8 @@ def parseConfig_RunningTELEMAC(cfg):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit(1)
    cfgTELEMAC.update({'root':path.normpath(get)})
-   # Get telver:
-   # TELEMAC version number, to build relative path names to \sources\ etc...
-   # using the template ... teldir\*\*telver\
-   get = getConfigKey(cfg,'version',True,True).lower()
+   # Get version if present
+   get = getConfigKey(cfg,'version',False,False).lower()
    cfgTELEMAC.update({'version':get})
    # Get options for printing purposes
    get = getConfigKey(cfg,'options',False,False).lower()
@@ -732,7 +719,7 @@ def getFolders_ModulesTELEMAC(root):
    sources = path.join(root,'sources')
    if not path.exists(sources):
       print '... I could not locate the source code in ',sources
-      print '\nEither the root key in your cfg file is not valid, or you are using a past version of the system.'
+      print '\nThe root key in your cfg file may not be valid.'
       sys.exit(1)
    for moddir in listdir(sources) :
       if not (moddir[0] == '.' or path.isfile(path.join(sources,moddir))) :
@@ -1003,7 +990,7 @@ if __name__ == "__main__":
                       type="string",
                       dest="version",
                       default='',
-                      help="specify the version number, default is taken from config file" )
+                      help="specify the version number, default is an empty string" )
    parser.add_option("--clean",
                       action="store_true",
                       dest="configDelete",
@@ -1030,15 +1017,14 @@ if __name__ == "__main__":
       print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
       # still in lower case
+      if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
       if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
-      if options.version != '': cfgs[cfgname]['version'] = options.version
       # parsing for proper naming
       cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
 
       print cfgname + ': \n    '
       if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
       print '    +> root:    ',cfg['root']
-      print '    +> version: ',cfg['version']
       print '    +> module:  ',' / '.join(cfg['MODULES'].keys())
       if options.configDelete: cleanConfig(cfg,cfgname)
    

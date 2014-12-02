@@ -148,8 +148,8 @@ def main():
                  type="string",
                  dest="version",
                  default='',
-                 help="specify the version number, default is "\
-                     "taken from config file" )
+                 help="specify the version number, mandatory for "\
+                     "documentation purposes" )
    parser.add_option("-m", "--modules",
                  type="string",
                  dest="modules",
@@ -215,7 +215,9 @@ def main():
          root = path.abspath(options.root_dir)
       else : 
          root = cfgs[cfgname]['root']  
-      if options.version != '': 
+      if options.version == '': 
+         print '\nYou need a reference version for this documentation'
+         sys.exit(1)
          cfgs[cfgname]['version'] = options.version
       if options.modules != '': 
          cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')

@@ -487,7 +487,7 @@ if __name__ == "__main__":
    parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',
       help="specify the root, default is taken from config file" )
    parser.add_option("-v", "--version",type="string",dest="version",default='',
-      help="specify the version number, default is taken from config file" )
+      help="specify the version number, mandatory for documentation purposes" )
    parser.add_option("-d", "--doxydir",type="string",dest="doxyDir",default='',
       help="specify the root, default is taken from config file" )
    parser.add_option("-m", "--modules",type="string",dest="modules",default='',
@@ -510,8 +510,12 @@ if __name__ == "__main__":
    cfgname = cfgs.iterkeys().next()
 
    # still in lower case
+   if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
-   if options.version != '': cfgs[cfgname]['version'] = options.version
+   if options.version == '':
+      print '\nYou need a reference version for this doxygenation'
+      sys.exit(1)
+   cfgs[cfgname]['version'] = options.version
    if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
    if options.doxyDir == '':
       cfgs[cfgname].update({'doxydocs':path.join(cfgs[cfgname]['root'],'documentation'+sep+cfgname)})

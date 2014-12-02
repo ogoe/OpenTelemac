@@ -76,6 +76,10 @@
    This should make the whole process more generic.
    Wiki documentation remains to be done.
 """
+"""@history 23/09/2014 -- Sebastien E. Bourban and Yoann Audoin
+   The content of the log files from GRETEL and PARTEL are now reported
+   in the error report.
+"""
 """@brief
 """
 # _____          ___________________________________________________
@@ -273,7 +277,7 @@ if __name__ == "__main__":
    parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',
       help="specify the root, default is taken from config file" )
    parser.add_option("-v", "--version",type="string",dest="version",default='',
-      help="specify the version number, default is taken from config file" )
+      help="specify the report version number, default is an empty string" )
    parser.add_option("-m", "--modules",type="string",dest="modules",default='',
       help="specify the list modules, default is taken from config file" )
    parser.add_option("-s", "--screen",action="store_true",dest="display",default=False,
@@ -418,8 +422,8 @@ if __name__ == "__main__":
       xmls = {}
       for cfgname in cfgs:
          # still in lower case
+         if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
          if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
-         if options.version != '': cfgs[cfgname]['version'] = options.version
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
          cfgs[cfgname]['display'] = options.display
          # parsing for proper naming
@@ -471,9 +475,9 @@ if __name__ == "__main__":
       xmls = {}; nxmls = 0
       for cfgname in cfgs:
          # still in lower case
+         if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
          if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
          root = cfgs[cfgname]['root']
-         if options.version != '': cfgs[cfgname]['version'] = options.version
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
          cfgs[cfgname]['display'] = options.display
          # parsing for proper naming

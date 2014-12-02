@@ -491,7 +491,6 @@ class actionRUN(ACTION):
       specs.sortieFile = True
       specs.tmpdirectory = True
       specs.rootDir = options.rootDir
-      specs.version = options.version
       specs.wDir = options.wDir
       specs.compileonly = False
       if options.hosts != '': 

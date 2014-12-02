@@ -52,6 +52,10 @@
       valid configurations in an array. Testing for validity is now done
       within config.py
 """
+"""@history 25/12/2014 -- Sebastien E. Bourban
+   'version' is not mandatroy anymore.
+   It has been removed from having to be in the configuration file.
+"""
 """@brief
 
 """
@@ -103,11 +107,6 @@ if __name__ == "__main__":
                       dest="rootDir",
                       default='',
                       help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",
-                      type="string",
-                      dest="version",
-                      default='',
-                      help="specify the version number, default is taken from config file" )
    parser.add_option("-a", "--archiveName",
                       type="string",
                       dest="archiveName",
@@ -136,11 +135,11 @@ if __name__ == "__main__":
 
    for cfgname in cfgs:
       # still in lower case
+      if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
       if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
       if not path.exists(cfgs[cfgname]['root']):
          print '\nNot able to find your root directory: ' + cfgs[cfgname]['root'] + '\n'
          sys.exit(1)
-      if options.version != '': cfgs[cfgname]['version'] = options.version
       if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
       # parsing for proper naming
       cfg = parseConfig_CompactTELEMAC(cfgs[cfgname])
@@ -149,7 +148,6 @@ if __name__ == "__main__":
       print '    +> configuration: ' +  cfgname
       if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
       print '    +> root:          ' +  cfgs[cfgname]['root']
-      print '    +> version:       ' +  cfgs[cfgname]['version']
       print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 

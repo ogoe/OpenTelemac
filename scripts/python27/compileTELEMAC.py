@@ -79,6 +79,10 @@
    Addition of a new feature: the ability for the cmd_exe to create static or
    dynamic libraries, using <libname> instead of <exename> in the command.
 """
+"""@history 25/12/2014 -- Sebastien E. Bourban
+   'version' is not mandatroy anymore.
+   It has been removed from having to be in the configuration file.
+"""
 """@brief
 """
 
@@ -185,7 +189,7 @@ def putScanContent(fle,root,content):
    if 'general' in content:
       lines.append('[general]'+'\n'+'path: '+content['general']['path'].replace(root,'<root>').replace(sep,'|')+'\n'+'module: '+content['general']['module'])
       lines.append('liborder: '+' '.join(content['general']['liborder']))
-      lines.append('version: '+content['general']['version']+'\n'+'name: '+content['general']['name'])
+      lines.append('name: '+content['general']['name'])
    for lib in sorted(content.keys()):
       if lib == 'general': continue
       lines.append('\n['+lib+']'+'\n'+'path: '+content[lib]['path'].replace(root,'<root>').replace(sep,'|')+'\n'+'files: '+'\n  '.join(content[lib]['files']))
@@ -210,7 +214,6 @@ def getScanContent(fle,root,bypass):
    general['path'] = general['path'].replace('<root>',root).replace('|',sep)
    if not 'module' in general: raise Exception([{'name':'getScanContent','msg':'Could not find the key module in the general section of the cmdf-scan file:'+fle}])
    if not 'liborder' in general: raise Exception([{'name':'getScanContent','msg':'Could not find the key liborder in the general section of the cmdf-scan file:'+fle}])
-   if not 'version' in general: raise Exception([{'name':'getScanContent','msg':'Could not find the key version in the general section of the cmdf-scan file:'+fle}])
    if not 'name' in general: raise Exception([{'name':'getScanContent','msg':'Could not find the key name in the general section of the cmdf-scan file:'+fle}])
    general['liborder'] = general['liborder'].split()
    content.update({'general':general})
@@ -475,11 +478,6 @@ if __name__ == "__main__":
                       dest="rootDir",
                       default='',
                       help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",
-                      type="string",
-                      dest="version",
-                      default='',
-                      help="specify the version number, default is taken from config file" )
    parser.add_option("-m", "--modules",
                       type="string",
                       dest="modules",
@@ -522,8 +520,8 @@ if __name__ == "__main__":
 
    for cfgname in cfgs:
       # still in lower case
+      if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
       if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
-      if options.version != '': cfgs[cfgname]['version'] = options.version
       if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
       # parsing for proper naming
       cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
@@ -532,7 +530,6 @@ if __name__ == "__main__":
       print '    +> configuration: ' +  cfgname
       if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
       print '    +> root:          ' +  cfgs[cfgname]['root']
-      print '    +> version:       ' +  cfgs[cfgname]['version']
       print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
@@ -576,7 +573,7 @@ if __name__ == "__main__":
                for lib in LIBDEPS:
                  if lib in MAKSYSTEL['deps']: fixedLibOrder.append(lib)
                #TODO: Replace fixedLibOrder by MAKSYSTEL['deps']
-               FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'version':cfgs[cfgname]['version'],'name':item,'module':prg[item][0],'liborder':fixedLibOrder}} 
+               FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'name':item,'module':prg[item][0],'liborder':fixedLibOrder}} 
                for obj,lib in HOMERES[item]['add']:
                   try:
                      fic = all_file[lib][path.splitext(path.basename(obj.replace('|',sep)))[0].upper()]
