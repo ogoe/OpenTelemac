@@ -117,6 +117,7 @@
 import sys
 import shutil
 import threading
+import numpy as np
 from time import localtime, strftime
 from subprocess import *
 from os import path,walk,mkdir,chdir,remove,sep,environ,listdir,getcwd
@@ -127,6 +128,7 @@ from utils.files import checkSymLink,symlinkFile,getFileContent,putFileContent,r
 from utils.messages import MESSAGES,filterMessage
 from parsers.parserKeywords import scanCAS,readCAS,rewriteCAS,scanDICO, getCASLang,getKeyWord,setKeyValue,getIOFilesSubmit
 from parsers.parserSortie import getLatestSortieFiles
+from parsers.parserSELAFIN import PARAFINS
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -291,73 +293,73 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
                      cfor = []
                      for file in listdir(cdir):
                         if path.isfile(path.join(cdir,file)): cfor.extend(getFileContent(path.join(cdir,file)))
-                     print 're-bundling: ', path.basename(cref),crun
+                     print '   re-bundling: ', path.basename(cref),crun
                      putFileContent(crun,cfor+[''])
                   else:
-                     print ' re-copying: ', path.basename(cref),crun
+                     print '    re-copying: ', path.basename(cref),crun
                      putFileContent(crun,getFileContent(cref)+[''])
                elif iFiles[k].split(';')[5][0:3] == 'CAS':
-                  #print ' re-writing: ', crun
+                  #print '    re-writing: ', crun
                   #putFileContent(crun,rewriteCAS(cas))
-                  print ' re-copying: ', crun
+                  print '    re-copying: ', crun
                   putFileContent(crun,cas[0])
                else:
-                  print '   ignoring: ', path.basename(cref),crun
+                  print '      ignoring: ', path.basename(cref),crun
                   #putFileContent(crun,getFileContent(cref)+[''])
                continue
          if iFiles[k].split(';')[3] == 'ASC':
             if iFiles[k].split(';')[5][0:3] == 'CAS':
-               #print ' re-writing: ', crun
+               #print '    re-writing: ', crun
                #putFileContent(crun,rewriteCAS(cas))
-               print ' re-copying: ', crun
+               print '    re-copying: ', crun
                putFileContent(crun,cas[0])
                # An input mesh may be a binary or an ascii file
                # It depends on the selected format (Selafin, Ideas, Med)
             elif iFiles[k].split(';')[5][0:12] == 'SELAFIN-GEOM':
                if use_link:
-                  print '    linking: ', path.basename(cref),crun
+                  print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
                else:
-                  print '    copying: ', path.basename(cref),crun
+                  print '       copying: ', path.basename(cref),crun
                   shutil.copy2(path.join(getcwd(),cref), crun)
             elif iFiles[k].split(';')[5][0:7] == 'SECTION':
                # Giving section name means that we have to give it to partel
                section_name = path.basename(crun)
                if use_link:
-                  print '    linking: ', path.basename(cref),crun
+                  print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
                else:
-                  print '    copying: ', path.basename(cref),crun
+                  print '       copying: ', path.basename(cref),crun
                   putFileContent(crun,getFileContent(cref)+[''])
             elif iFiles[k].split(';')[5][0:5] == 'ZONES':
                # Giving zone name means that we have to give it to partel
                zone_name = path.basename(crun)
                if use_link:
-                  print '    linking: ', path.basename(cref),crun
+                  print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
                else:
-                  print '    copying: ', path.basename(cref),crun
+                  print '       copying: ', path.basename(cref),crun
                   putFileContent(crun,getFileContent(cref)+[''])
             elif path.isdir(cref):
                cdir = path.join(getcwd(),cref)
                cfor = []
                for file in listdir(cdir):
                   if path.isfile(path.join(cdir,file)): cfor.extend(getFileContent(path.join(cdir,file)))
-               print '   bundling: ', path.basename(cref),crun
+               print '      bundling: ', path.basename(cref),crun
                putFileContent(crun,cfor+[''])
             else:
                if use_link:
-                  print '    linking: ', path.basename(cref),crun
+                  print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
                else:
-                  print '    copying: ', path.basename(cref),crun
+                  print '       copying: ', path.basename(cref),crun
                   putFileContent(crun,getFileContent(cref)+[''])
          else:
             if use_link:
-               print '    linking: ', path.basename(cref),crun
+               print '       linking: ', path.basename(cref),crun
                symlinkFile(path.join(getcwd(),cref), crun)
             else:
-               print '    copying: ', path.basename(cref),crun
+               print '       copying: ', path.basename(cref),crun
                shutil.copy2(path.join(getcwd(),cref), crun)
 
    if xcpt != []: raise Exception(xcpt) # raise full report
@@ -377,7 +379,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)
                if not path.isfile(crun): break
                shutil.move(crun,cref) #shutil.copy2(crun,cref)
-               print '  moving: ', path.basename(cref)
+               print '        moving: ', path.basename(cref)
                npsize = npsize + 1
             npsize = 1
             while 1:                              # VERTICAL SECTION FILES
@@ -389,7 +391,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                   crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)
                   if not path.isfile(crun): break
                   shutil.move(crun,cref) #shutil.copy2(crun,cref)
-                  print '  moving: ', path.basename(cref)
+                  print '        moving: ', path.basename(cref)
                   nptime = nptime + 1
                npsize = npsize + 1
          elif oFiles[k].split(';')[5] == 'PARAL' and ncsize > 1: # MAIN MODULE
@@ -401,8 +403,8 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                crun = oFiles[k].split(';')[1]+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)
                if not path.isfile(crun): break
                shutil.move(crun,cref) #shutil.copy2(crun,cref)
-               #print ' copying: ', path.basename(cref)
-               print '  moving: ', path.basename(cref)
+               #print '       copying: ', path.basename(cref)
+               print '        moving: ', path.basename(cref)
                npsize = npsize + 1
          elif oFiles[k].split(';')[5] == 'MULTI2':
             for crun in listdir('.') :
@@ -411,7 +413,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                          v[0].strip("'\"").split('.')[0])) + '.' + v[0].strip("'\"").split('.')[1]
                   if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
                   shutil.move(crun,cref)
-                  print '  moving: ', path.basename(cref)
+                  print '        moving: ', path.basename(cref)
          else:
             cref = path.join(CASDir,v[0].strip("'\""))
             if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
@@ -420,7 +422,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                xcpt.append({'name':'processECR','msg':'did not create outfile: '+path.basename(cref)+' ('+crun+')'})
                continue
             shutil.move(crun,cref) #shutil.copy2(crun,cref)
-            print '  moving: ', path.basename(cref)
+            print '        moving: ', path.basename(cref)
 
    # ~~~ copy the sortie file(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    sortiefiles = []
@@ -431,7 +433,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
          xcpt.append({'name':'processECR','msg':'did not create listing file: '+path.basename(cref)+' ('+crun+')'})
          raise Exception(xcpt) # raise full report
       shutil.copy(crun,cref)
-      print ' copying: ', path.basename(cref)
+      print '       copying: ', path.basename(cref)
       sortiefiles.append(cref)
 
       # ~~~ If in parallel, also copy the slave log files     ~~~~~~
@@ -449,7 +451,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                xcpt.append({'name':'processECR','msg':'could not find the listing file: '+crun})
                raise Exception(xcpt) # raise full report
             shutil.copy(crun,cref)
-            print ' copying: ',path.basename(cref)            
+            print '       copying: ',path.basename(cref)            
             sortiefiles.append(cref)
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpt != []: raise Exception(xcpt) # raise full report
@@ -514,7 +516,7 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
       except Exception as e:
          raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason. Please verify your external library installation.'},e,bypass)])
       if code != 0: raise Exception([{'name':'processExecutable','msg':'could not link your executable (runcode='+str(code)+').\n      '+tail}])
-      print '    created: ',path.basename(useName)
+      print '       created: ',path.basename(useName)
    
    else:
    # ~~ default executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -569,25 +571,37 @@ def getGLOGEO(cas,iFiles):
          if iFiles[k].split(';')[5][-4:] == 'GEOM': GLOGEO = iFiles[k].split(';')[1]
    return GLOGEO
 
-def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,section_name,zone_name,use_link):
+def runPartition(partel,geom,conlim,ncsize,bypass,section_name,zone_name):
+
+   if ncsize < 2: return True
+   # ~~ split GEO, CONLIM, SECTIONS and ZONES file ~~~~~~~~~~~~~~~~~
+   print '\n... partitioning base files (geo, conlim, sections and zones)'
+   try:
+      runPARTEL(partel,geom,conlim,ncsize,bypass,section_name,zone_name)
+   except Exception as e:
+      raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
+
+   return True
+
+def copyPartition(cas,geom,iFiles,ncsize,bypass,use_link):
 
    if ncsize < 2: return True
    # ~~ split input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n... splitting / copying other input files'
+   slf = PARAFINS(geom,geom)
    for k in cas[1][0]:
       if k in iFiles:
          crun = iFiles[k].split(';')[1]
-         if iFiles[k].split(';')[5][0:7] == 'SELAFIN':
-            print ' partitioning: ', path.basename(crun)
-            try:
-               runPARTEL(partel,crun,conlim,ncsize,bypass,section_name,zone_name)
-            except Exception as e:
-               raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
+         if iFiles[k].split(';')[5][-4:] == 'GEOM': continue
+         elif iFiles[k].split(';')[5][0:7] == 'SELAFIN':
+            print '      aquiring: ', path.basename(crun)
+            slf.cutContent(crun)
          elif iFiles[k].split(';')[5][0:5] == 'PARAL':
             if use_link:
-               print 'duplilinking: ', path.basename(crun)
+               print '  duplilinking: ', path.basename(crun)
                for n in range(ncsize): symlinkFile(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
             else:
-               print ' duplicating: ', path.basename(crun)
+               print '   duplicating: ', path.basename(crun)
                for n in range(ncsize): shutil.copy2(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
 
    return True
@@ -673,13 +687,13 @@ def runRecollection(gretel,cas,glogeo,oFiles,ncsize,bypass):
          crun = oFiles[k].split(';')[1]
          tpe = oFiles[k].split(';')[5]
          if tpe[0:7] == 'SELAFIN':
-            print ' recollectioning: ', path.basename(crun)
+            print '    collecting: ', path.basename(crun)
             try:
                runGRETEL(gretel,crun,glogeo,ncsize,bypass)
             except Exception as e:
                raise Exception([filterMessage({'name':'runRecollection'},e,bypass)])
          if tpe[0:6] == 'DELWAQ':
-            print ' recollectioning: ', path.basename(crun)
+            print '    collecting: ', path.basename(crun)
             try:
                runGREDEL(gretel,crun,glogeo,tpe[6:],ncsize,bypass)
             except Exception as e:
@@ -941,7 +955,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             processExecutable(useFile,objFile,f90File,objCmd,exeCmd,options.bypass)
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS','msg':'could not compile: ' + path.basename(useFile)},e,options.bypass)])  # only one item here
-         print ' re-copying: ',path.basename(useFile),exename
+         print '    re-copying: ',path.basename(useFile),exename
          shutil.copy2(path.basename(useFile),path.join(CASFiles[name]['dir'],path.basename(useFile)))
          shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
    
@@ -1025,21 +1039,26 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          # >>> Add running command
          CASFiles[name].update({ 'par':parcmd })
 
-         # ~~> Run PARTEL
+         # ~~> Run PARTEL for the base files (GEO,CONLIM,SECTIONS,ZONES,)
          CONLIM = getCONLIM(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    # Global CONLIM file
+         GLOGEO = getGLOGEO(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    # Global GEO file
          try:
-            runPartition(parcmd,CASFiles[name]['cas'],CONLIM,MODFiles[CASFiles[name]['code']]['iFS'],
-                         ncsize,options.bypass,section_name,zone_name,options.use_link)
+            runPartition(parcmd,GLOGEO,CONLIM,ncsize,options.bypass,section_name,zone_name)
          except Exception as e:
-            raise Exception([filterMessage({'name':'runCAS','msg':'Partioning primary input files of the CAS file: '+name},e,options.bypass)])
+            raise Exception([filterMessage({'name':'runCAS','msg':'Could not partition the base files for the following CAS file: '+name},e,options.bypass)])
+         # ~~> Copy partition for the other input files
+         copyPartition(CASFiles[name]['cas'],GLOGEO,MODFiles[CASFiles[name]['code']]['iFS'],ncsize,False,options.use_link)
+
          for cplage in CASFiles[name]['with']:
             CONLIM = getCONLIM(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
+            GLOGEO = getGLOGEO(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
             try:
-               runPartition(parcmd,CASFiles[name]['with'][cplage]['cas'],CONLIM,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],
-                            ncsize,options.bypass,section_name,zone_name,options.use_link)
+               runPartition(parcmd,GLOGEO,CONLIM,ncsize,options.bypass,section_name,zone_name)
             except Exception as e:
-               raise Exception([filterMessage({'name':'runCAS','msg':'Partioning coupling input files'},e,options.bypass)])
-   
+               raise Exception([filterMessage({'name':'runCAS','msg':'Could not partition the base files for the CAS file couled with: '+name},e,options.bypass)])
+            # ~~> Copy partition for the other input files
+            copyPartition(CASFiles[name]['with'][cplage]['cas'],GLOGEO,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],ncsize,False,options.use_link)
+  
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Getting out if split only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if options.split and not hpcpass:

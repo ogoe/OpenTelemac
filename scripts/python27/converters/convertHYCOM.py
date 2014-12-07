@@ -208,7 +208,7 @@ class HYCOM():
                ielem = ielem + 1
                pbar.update(ielem)
       pbar.finish()
-      self.slf2d.IKLE3 = np.compress( [ True,True,True,False,False,False ], self.slf3d.IKLE3[0:self.slf3d.NELEM2], axis=1 ) #.reshape((self.slf3d.NELEM2,self.slf3d.NDP2))
+      self.slf2d.IKLE3 = np.compress( np.repeat([True,False],self.slf2d.NDP2), self.slf3d.IKLE3[0:self.slf3d.NELEM2], axis=1 ) #.reshape((self.slf3d.NELEM2,self.slf3d.NDP2))
 
       # ~~~~ Boundaries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print '     +> Set SELAFIN IPOBO'

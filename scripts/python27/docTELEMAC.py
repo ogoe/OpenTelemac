@@ -209,7 +209,7 @@ def main():
 # ~~~~ Compile the valiation documentation
    doall = not (options.validation or options.user or options.reference or options.release )
    for cfgname in cfgs:
-     # still in lower case
+      # still in lower case
       if options.root_dir != '': 
          cfgs[cfgname]['root'] = path.abspath(options.root_dir)
          root = path.abspath(options.root_dir)
@@ -218,7 +218,7 @@ def main():
       if options.version == '': 
          print '\nYou need a reference version for this documentation'
          sys.exit(1)
-         cfgs[cfgname]['version'] = options.version
+      cfgs[cfgname]['version'] = options.version
       if options.modules != '': 
          cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
       cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])

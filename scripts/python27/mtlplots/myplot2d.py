@@ -349,8 +349,8 @@ class dumpSELAFIN(SELAFINS):
    def add(self,slf):
       if self.slf == None: self.slf = slf
       self.slfs.append(slf)
-      self.suite = self.isSuite()
-      self.merge = self.isMerge()
+      self.suite = self.isSuite() # True if there is only one slf
+      self.merge = self.isMerge() # True if there is only one slf
 
 # _____                      _______________________________________
 # ____/ Primary Method:Deco /______________________________________/
@@ -424,7 +424,7 @@ class Dumper2D(Caster):
       # ~~> output from for 2D file
       if self.obtype == 'slf':
          self.obdump.add(self.object[what['file']])
-         cast = self.get(typl,what) # TODO: recover track of time
+         cast = self.get(typl,what)
          support = cast.support
          values = cast.values
          if len(support) != 3:
@@ -456,10 +456,10 @@ class Dumper2D(Caster):
          self.oudata.NBV2 = 0; self.oudata.NVAR = self.oudata.NBV1 + self.oudata.NBV2
          self.oudata.CLDNAMES = []; self.oudata.CLDUNITS = []
          self.oudata.VARINDEX = range(self.oudata.NVAR)
-         for ivar in vars[0]:
+         for ivar,ival in zip(vars[0],range(len(vars[0]))):
             self.oudata.VARNAMES.append(obj.VARNAMES[ivar])
             self.oudata.VARUNITS.append(obj.VARUNITS[ivar])
-            self.obdata.update({obj.VARNAMES[ivar]:values})
+            self.obdata.update({obj.VARNAMES[ivar]:[values[ival]]})
          if max(self.oudata.IPARAM[9],obj.IPARAM[9]) >0:
             if self.oudata.DATETIME != obj.DATETIME: self.oudata.IPARAM[9] = 0
          if self.oudata.NELEM2 != obj.NELEM2 or self.oudata.NPOIN2 != obj.NPOIN2:
@@ -475,16 +475,16 @@ class Dumper2D(Caster):
    def save(self,fileName):
       # gather common information for the final header
       if self.obtype == 'slf':
-         self.oudata.file = {}
-         self.oudata.file.update({ 'name': fileName })
-         self.oudata.file.update({ 'endian': ">" })    # "<" means little-endian, ">" means big-endian
-         self.oudata.file.update({ 'float': ('f',4) }) #'f' size 4, 'd' = size 8
-         #self.oudata.fole.update({ 'hook': open(fileName,'wb') })
-         #self.oudata.appendHeaderSLF()
-         #self.oudata.appendCoreTimeSLF(0.0) # TODO: recover track of time
+         self.oudata.fole = {}
+         self.oudata.fole.update({ 'name': fileName })
+         self.oudata.fole.update({ 'endian': ">" })    # "<" means little-endian, ">" means big-endian
+         self.oudata.fole.update({ 'float': ('f',4) }) #'f' size 4, 'd' = size 8
+         self.oudata.fole.update({ 'hook': open(fileName,'wb') })
+         self.oudata.appendHeaderSLF()
+         self.oudata.appendCoreTimeSLF(0.0) # TODO: recover track of time
          for ivar in self.oudata.VARNAMES:
-            print self.obdata[ivar]
-            #self.oudata.appendCoreVarsSLF(self.obdata[ivar])
+            self.oudata.appendCoreVarsSLF(self.obdata[ivar])
+         self.oudata.fole['hook'].close()
 
       # ~~> unkonwn
       else: # TODO: raise exception

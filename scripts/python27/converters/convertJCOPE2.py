@@ -1,4 +1,5 @@
-"""@author Sebastien E. Bourban
+#!/usr/bin/env python
+"""@author Sebastien E. Bourban and Noemie Durand
 """
 """@note ... this work is based on a collaborative effort between
   .________.                                                          ,--.
@@ -18,6 +19,10 @@
 """
 """@history 30/04/2013 -- Sebastien E. Bourban
    Frist draft, also the final version.
+"""
+"""@history 11/09/2013 -- Noemie Durand
+   Modification of the 3D output file, so the elevation of the top
+     layer is the same as the elevation in the 2D file.
 """
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/

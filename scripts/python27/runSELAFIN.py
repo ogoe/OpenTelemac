@@ -427,16 +427,13 @@ class subSELAFIN(SELAFIN): # TODO with 3D
       else: self.NELEM3 = self.NELEM2
       nel3n = self.NELEM3
       # ~~> Connecting
-      self.IPOB3 = np.zeros(self.NPOIN3,dtype=np.int)
-      for iplan in range(self.NPLAN):
-         self.IPOB3[0+iplan*self.NPOIN2:self.NPOIN2+iplan*self.NPOIN2] = self.IPOB2[0:self.NPOIN2]+iplan*self.NPOIN2
       if self.NPLAN > 1:
-         self.IKLE3 = np.zeros(self.NELEM3*self.NDP3,dtype=np.int).reshape((self.NELEM3,self.NDP3))
-         for ielem in range(self.NELEM2):  # TODO:(JPC), convert to numpy calculations
-            for inode in range(self.NDP2): self.IKLE3[ielem][inode] = self.IKLE2[ielem][inode]
-            for inode in range(self.NDP2): self.IKLE3[ielem][inode+self.NDP2] = self.IKLE2[ielem][inode]+self.NPOIN2
-            for iplan in range(self.NPLAN-2): self.IKLE3[ielem+(iplan+1)*self.NELEM2] = self.IKLE3[ielem+iplan*self.NELEM2]+self.NPOIN2
+         self.IPOB3 = np.ravel(np.add(np.repeat(self.IPOB2,self.NPLAN).reshape((self.NPOIN2,self.NPLAN)),self.NPOIN2*np.arange(self.NPLAN)).T)
+         self.IKLE3 = \
+            np.repeat(self.NPOIN2*np.arange(self.NPLAN-1),self.NELEM2*self.NDP3).reshape((self.NELEM2*(self.NPLAN-1),self.NDP3)) + \
+            np.tile(np.add(np.tile(self.IKLE2,2),np.repeat(self.NPOIN2*np.arange(2),self.NDP2)),(self.NPLAN-1,1))
       else:
+         self.IPOB3 = self.IPOB2
          self.IKLE3 = self.IKLE2
       # ~~> Filing
       self.fole.update({ 'hook': open(fileName,'wb') })

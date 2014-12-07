@@ -19,12 +19,12 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="1"  rank="7"
+   <action xref="1"  rank="17"
        do="translate;compile;run;cas;princi" 
        code="telemac2d" target="t2d_breach.cas" 
        title="breach scalar mode" 
    />
-   <action xref="2"  rank="7"
+   <action xref="2"  rank="17"
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_breach.cas" 
        title="breach parallel mode" 

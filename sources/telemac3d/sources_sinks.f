@@ -157,7 +157,7 @@
 !             CONVERSION FROM MM/S TO M/S --> *1.D-3
               PARAPLUIE%R(I) = V2DPAR%R(I)*(RAINFALL*1.D-3-DEBEVAP)
             ENDIF
-	  ENDDO
+          ENDDO
 !         PLUIE MUST BE NON ASSEMBLED IN PARALLEL
           IF(NCSIZE.GT.1) THEN
 !           SMH MUST BE ASSEMBLED IN PARALLEL
@@ -192,3 +192,4 @@
 !
       RETURN
       END
+
