@@ -207,7 +207,7 @@ def main():
    cfgs = parseConfigFile(options.configFile, options.configName)
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Compile the valiation documentation
-   doall = not (options.validation or options.user or options.reference or options.release )
+   doall = not (options.validation or options.user or options.reference or options.release_note )
    for cfgname in cfgs:
       # still in lower case
       if options.root_dir != '': 
