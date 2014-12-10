@@ -76,7 +76,8 @@
       - NOTE:  the key extract, can also be moved up a level to the tag saved1d
    -->
    <plot1d xref="figure2" type="v-section" extract="(0;0.93):(21;1.07)" config="oneofall" time="[-1]" size="[12;5]" > 
-      <layer vars="surface libre:line;fond:line" target="1:T2DRES" /> 
+      <layer vars="surface libre:line" target="1:T2DRES" /> 
+      <layer vars="fond:line" target="1:T2DRES" /> 
    </plot1d>
 
    <!-- Plot a coloured surface into the PNG file "figure6.png".
