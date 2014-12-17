@@ -198,6 +198,8 @@
       ELSE
       VARSUB=.FALSE.
       ENDIF
+      ! Skipping date if present
+      IF (I(10).ne.0) READ(POS_FILES(POSPRE)%LU)
 !
       DO K = 1,5
         READ(POS_FILES(POSPRE)%LU)
