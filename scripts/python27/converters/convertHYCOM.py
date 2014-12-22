@@ -29,19 +29,21 @@ from os import path
 import time
 from datetime import datetime
 import numpy as np
+# ~~> dependencies towards other modules
+from pydap.client import open_url
+try:
+   from pydap.client import open_url
+except:
+   print '... you are in bad luck !'
+   print '  ~>  you need the pydap library unzipped locally'
+   print '  ~>  and if you have, you will also need the httplib2 library installed with your python'
+   sys.exit(1)
 # ~~> dependencies towards other pytel scripts
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) )
 # ~~> dependencies towards other modules
 from config import OptionParser
 from parsers.parserSELAFIN import SELAFIN
 from utils.progressbar import ProgressBar
-# ~~> dependencies towards other modules
-try:
-   from pydap.client import open_url
-except:
-   print '... you are in bad luck !'
-   print '  ~>  you need the pydap library unzipped locally'
-   sys.exit(1)
 
 
 # _____                   __________________________________________
@@ -290,6 +292,7 @@ class HYCOM():
             self.slf2d.appendCoreVarsSLF([var2d])
             if not only2D:
                var3d = - np.tile(self.ZPLAN,self.slf3d.NPOIN2).reshape(self.slf3d.NPOIN2,self.slf3d.NPLAN).T.ravel()
+               var3d[self.slf3d.NPOIN3-self.slf3d.NPOIN2:] = var2d
                self.slf3d.appendCoreVarsSLF([var3d])
             pbar.write('             - ssh',10*ibar+1)
             pbar.update(10*ibar+1)

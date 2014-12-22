@@ -133,17 +133,18 @@ def getValueHistorySLF( hook,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,va
          f.seek(4,1)                      # the file pointer advances through all records to keep on track
          if ivar in varsIndexes:          # extraction of a particular variable
             VARSOR = unpack(endian+str(NPOIN3)+ftype,f.read(fsize*NPOIN3))
+            jvar = varsIndexes.index(ivar)
             ipt = 0                       # ipt is from 0 to lens-1 (= all points extracted and all plans extracted)
             for xy,zp in support:
                if type(xy) == type(()):   # xp is a pair (x,y) and you need interpolation
                   for plan in zp:   # /!\ only list of plans is allowed for now
-                     z[varsIndexes.index(ivar)][ipt][it] = 0.
+                     z[jvar][ipt][it] = 0.
                      ln,bn = xy
-                     for inod in range(len(bn)): z[varsIndexes.index(ivar)][ipt][it] += bn[inod]*VARSOR[ln[inod]+plan*NPOIN3/NPLAN]
+                     for inod in range(len(bn)): z[jvar][ipt][it] += bn[inod]*VARSOR[ln[inod]+plan*NPOIN3/NPLAN]
                      ipt += 1             # ipt advances to keep on track
                else:
                   for plan in zp:   # /!\ only list of plans is allowed for now
-                     z[varsIndexes.index(ivar)][ipt][it] = VARSOR[xy+plan*NPOIN3/NPLAN]
+                     z[jvar][ipt][it] = VARSOR[xy+plan*NPOIN3/NPLAN]
                      ipt += 1             # ipt advances to keep on track
          else:
             f.seek(fsize*NPOIN3,1)            # the file pointer advances through all records to keep on track
