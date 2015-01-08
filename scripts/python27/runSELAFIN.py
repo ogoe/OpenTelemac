@@ -161,19 +161,22 @@ class scanSELAFIN(PARAFINS,chopSELAFIN): # /!\ does not support PARAFINS yet -- 
       print "   - NPLAN* = ",self.slf.IPARAM[6],"\n   - NPTFR* = ",self.slf.IPARAM[7],"\n   - IFACE* = ",self.slf.IPARAM[8]
       print "   - NELEM3 = ",self.slf.NELEM3,"\n   - NPOIN3 = ",self.slf.NPOIN3,"\n   - NDP3   = ",self.slf.NDP3,"\n   - NPLAN  = ",self.slf.NPLAN
       if self.slf.NPLAN > 1: print "   - NELEM2 = ",self.slf.NELEM2,"\n   - NPOIN2 = ",self.slf.NPOIN2,"\n   - NDP2   = ",self.slf.NDP2
-      print "MESH         : / min: [ ",np.min(self.slf.MESHX),";",np.min(self.slf.MESHY),"]  / max: [ ",np.max(self.slf.MESHX),";",np.max(self.slf.MESHY),"]"
+      if self.slf.NPOIN2 > 0: print "MESH         : / min: [ ",np.min(self.slf.MESHX),";",np.min(self.slf.MESHY),"]  / max: [ ",np.max(self.slf.MESHX),";",np.max(self.slf.MESHY),"]"
+      print "ARRAYs       :"
+      print "   - IKLE  : ",self.slf.IKLE3
+      print "   - IPOBO : ",self.slf.IPOB3
 
    def printCore(self):
       for v in range(self.slf.NBV1):
          print "VARIABLE     : ",self.slf.VARNAMES[v]
          for t in range(len(self.slf.tags['times'])):
             VARSOR = self.slf.getVariablesAt( t,[self.slf.VARINDEX[v]] )
-            print "    / TIME: ",self.slf.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
+            if self.slf.NPOIN2 > 0: print "    / TIME: ",self.slf.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
       for v in range(self.slf.NBV2):
          print "CLANDESTINE  : ",self.slf.CLDNAMES[v]
          for t in range(len(self.slf.tags['times'])):
             VARSOR = self.slf.getVariablesAt( t,[self.slf.VARINDEX[v+self.slf.NBV1]] )
-            print "    / TIME: ",self.slf.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
+            if self.slf.NPOIN2 > 0: print "    / TIME: ",self.slf.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
 
    def printTimeSummary(self):
       print "NUMBER OF TIMES : ",len(self.slf.tags['times'])
