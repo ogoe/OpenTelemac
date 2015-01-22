@@ -1116,7 +1116,8 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          raise Exception([{'name':'runCAS','msg':'\nI would need the key hpc_stdin in you configuration so I can launch your simulation on the HPC queue.'}])
       else:
          for name in CASFiles:  # /!\ This is being done in parallel when multiple CASFiles
-            chdir(CASFiles[name]['wir'])
+            if not hpcpass: 
+               chdir(CASFiles[name]['wir'])
             print '\n... modifying run command to HPC instruction'
             # ~~> HPC Command line launching runcode
             hpccmd = getHPCCommand(cfg['HPC'])
@@ -1137,15 +1138,19 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             stdin = stdin.replace('<walltime>',options.walltime)
             stdin = stdin.replace('<codename>',codeName)
             stdin = stdin.replace('\n ','\n')
-            if not hpcpass: stdin = stdin.replace('<wdir>',CASFiles[name]['wir'])      # /!\ HPC_STDIN in the TMP directory
-            else: stdin = stdin.replace('<wdir>',CASFiles[name]['dir'])
+            if not hpcpass: 
+               stdin = stdin.replace('<wdir>',CASFiles[name]['wir'])      # /!\ HPC_STDIN in the TMP directory
+            else: 
+               stdin = stdin.replace('<wdir>',CASFiles[name]['dir'])
             sortie = 'hpc-job.sortie'
             if options.sortieFile: sortie = CASFiles[name]['sortie']
             stdin = stdin.replace('<sortiefile>',sortie)
             # ~~> Recreate the <mpi_exec> (option --hpc)
             if not hpcpass:
-               if 'exe' in CASFiles[name]: stdin = stdin.replace('<exename>',path.basename(CASFiles[name]['exe']))
-               else: stdin = stdin.replace('<exename>',CASFiles[name]['run'])
+               if 'exe' in CASFiles[name]: 
+                  stdin = stdin.replace('<exename>',path.basename(CASFiles[name]['exe']))
+               else: 
+                  stdin = stdin.replace('<exename>',CASFiles[name]['run'])
                stdin = stdin.replace('<mpi_cmdexec>',CASFiles[name]['run'])   # /!\ serial mode
             # ~~> Recreate the runcode.py command 
             else:
@@ -1167,7 +1172,8 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                runcmd = runcmd + ' ' + name
                stdin = stdin.replace('<py_runcode>',runcmd)
             # ~~> Write to HPC_STDIN
-            chdir(CASFiles[name]['wir'])
+            if not hpcpass:
+               chdir(CASFiles[name]['wir'])
             putFileContent(stdinfile,stdin.split('\n'))
 
             # ~~> here you go run
