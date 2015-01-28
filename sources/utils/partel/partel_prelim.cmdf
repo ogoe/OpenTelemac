@@ -1,0 +1,16 @@
+[general]
+path: <root>|sources|utils|partel
+module: partel
+liborder: special partel
+version: v7p0
+name: PARTEL_PRELIM
+
+[partel]
+path: <root>|sources|utils|partel
+files: partitioner.F
+  partel_prelim.F
+
+[special]
+path: <root>|sources|utils|special
+files: plante.f
+  check_allocate.f

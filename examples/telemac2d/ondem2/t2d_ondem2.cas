@@ -1,0 +1,120 @@
+PROCESSEURS PARALLELES : 0
+/ ALSO WORKS IN PARALLEL
+/ PROCESSEURS PARALLELES : 2
+/
+/ HP C3700     :                  51 s    5.5  23/11/2004
+/ HP C3700     : compilateur HP   38 s    5.7  18/04/2007
+/ HP C3700     : compilateur Nag 109 s    5.7  18/04/2007
+/ Dell 2.8 MHz : compilateur pgi  25 s    5.7  19/04/2007
+/
+/ HP C3700     : compilateur HP   41 s    5.8  30/11/2007
+/ HP C3700     : compilateur Nag 117 s    5.8  21/12/2007
+/ Dell 2.8 MHz : compilateur pgi  25 s    5.8  19/12/2007
+/
+/ HP C3700     : compilateur HP   41 s    5.9  16/10/2008
+/ HP C3700     : compilateur Nag 117 s    5.9  17/10/2008
+/ Dell 2.8 MHz : compilateur pgi  16 s    5.9  16/10/2008 (2 procs)
+/
+/ HP C3700     : compilateur HP     41 s    6.0  24/11/2009
+/ HP C3700     : compilateur Nag   117 s    6.0  26/11/2009
+/ Dell 2.8 MHz : compilateur Intel  20 s    6.0  26/11/2009
+/
+/ Version 6.2
+/
+/ HP C3700     : compilateur HP     34 s    04/05/2012
+/ Note JMH: probleme sur les amplitudes, a voir.
+/
+/-------------------------------------------------------------------/
+/
+/         TELEMAC-2D - ONDE M2 DANS LA MANCHE
+/
+/-------------------------------------------------------------------/
+/
+/----------------------------------------------
+/  FICHIERS DE DONNEES ET DE RESULTATS
+/----------------------------------------------
+/
+FICHIER DE GEOMETRIE                = geo_ondem2.slf
+FICHIER FORTRAN                     = t2d_ondem2.f
+FICHIER DES CONDITIONS AUX LIMITES  = geo_ondem2.cli
+FICHIER DES RESULTATS               = r2d_ondem2.slf
+FICHIER DE REFERENCE                = f2d_ondem2.slf
+FICHIER DE DONNEES FORMATE 1        = fo1_ondem2.txt
+FICHIER DE DONNEES FORMATE 2        = fo2_ondem2.txt
+FICHIER DE RESULTATS FORMATE        = rfo_ondem2.txt
+/
+/----------------------------------------------
+/  GENERAL INFORMATIONS - OUTPUTS
+/----------------------------------------------
+/
+TITRE = 'ONDE M2 DANS LA MANCHE'
+VARIABLES POUR LES SORTIES GRAPHIQUES =
+          'U,V,H,S,B,W,T,MAXZ,TMXZ,MAXV,TMXV'
+PERIODE POUR LES SORTIES GRAPHIQUES = 149
+PERIODE DE SORTIE LISTING           = 50
+NUMERO DU PREMIER PAS DE TEMPS POUR LES SORTIES GRAPHIQUES = 894
+VALIDATION                                      = OUI
+PAS DE TEMPS                                    = 150.
+BORNES EN TEMPS POUR L'ANALYSE DE FOURIER : 44714.;178800.
+/PERIODES D'ANALYSE DE FOURIER  = 44714.15975593032
+ PERIODES D'ANALYSE DE FOURIER  = 44714.
+LISTE DE POINTS : 270 ; 8 ; 74 ; 15 ; 769 ; 804 ; 4071 ; 2399
+NOMS DES POINTS : 'ZEEBRUGGE';
+                  'CALAIS';
+                  'BOULOGNE';
+                  'DIEPPE'; 
+                  'CHERBOURG';
+                  'SAINT-MALO';
+                  'C1';
+                  'OUESSANT'
+NOMBRE DE PAS DE TEMPS       = 1192
+BILAN DE MASSE               = NO
+INFORMATIONS SUR LE SOLVEUR  = YES
+/
+/----------------------------------------------
+/  PARAMETRES PHYSIQUES
+/----------------------------------------------
+/
+LOI DE FROTTEMENT SUR LE FOND    = 2
+COEFFICIENT DE FROTTEMENT        = 40.
+MODELE DE TURBULENCE             = 1
+CORIOLIS                         = OUI
+/
+/----------------------------------------------
+/  NUMERICAL PARAMETERS 
+/----------------------------------------------
+/
+NOMBRE DE TABLEAUX PRIVES        = 1
+BANCS DECOUVRANTS                = NON
+COORDONNEES SPHERIQUES=OUI TYPE DE PROJECTION SPATIALE=2
+CONVECTION DE U ET V             = NON
+DIFFUSION DES VITESSES           = NON
+FORME DE LA CONVECTION           = 1;5
+OPTION DE SUPG                   = 1;0
+SOLVEUR : 7
+OPTION DU SOLVEUR                = 3
+PRECISION DU SOLVEUR             = 1.E-3
+PRECONDITIONNEMENT               = 2
+ORDRE DU TIR INITIAL POUR H      = 1
+ORDRE DU TIR INITIAL POUR U      = 2
+IMPLICITATION POUR LA HAUTEUR    = 0.55
+IMPLICITATION POUR LA VITESSE    = 0.55
+MASS-LUMPING SUR H               = 1.
+STOCKAGE DES MATRICES            = 3
+PRODUIT MATRICE-VECTEUR          = 1 
+/DISCRETISATIONS EN ESPACE        = 12 ; 11 
+/
+/ Equation d'onde :
+/
+DISCRETISATIONS EN ESPACE        = 11 ; 11 
+TRAITEMENT DU SYSTEME LINEAIRE : 2  SOLVEUR : 1
+COMPATIBILITE DU GRADIENT DE SURFACE LIBRE : 0.9
+/ 
+/ Traceur
+/
+/TRACEUR : OUI
+/ABSCISSES DES SOURCES : -266565.  ORDONNEES DES SOURCES : 232753.
+/DEBITS DES SOURCES : 1.
+/VALEURS DU TRACEUR AUX SOURCES : 1000000.
+/ 
+&FIN

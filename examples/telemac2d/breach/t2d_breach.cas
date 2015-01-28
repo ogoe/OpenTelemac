@@ -1,0 +1,124 @@
+/---------------------------------------------------------------------
+/ TELEMAC2D Version v6p1 16 juil. 2012
+/ TELEMAC 2D : rupture digue  - Qinitial
+/---------------------------------------------------------------------
+
+/ ENTREES-SORTIES, FICHIERS
+/---------------------------------------------------------------------
+
+FICHIER DES RESULTATS              ='r2d_breach.slf'
+
+FICHIER DES CONDITIONS AUX LIMITES ='geo_breach.cli'
+
+FICHIER DES FRONTIERES LIQUIDES    ='t2d_breach.liq'
+
+FICHIER DE GEOMETRIE               ='geo_breach.slf'
+
+FICHIER DU CALCUL PRECEDENT        ='ini_breach.slf'
+
+FICHIER DE DONNEES DES BRECHES     ='breach.txt'
+
+FICHIER DE REFERENCE               ='f2d_breach.slf'
+
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, GENERALITES
+/---------------------------------------------------------------------
+
+SUITE DE CALCUL =true
+
+VALIDATION      = OUI
+
+/-------------------------------------------------------------------
+/---/
+/ 
+TITRE='TELEMAC 2D : rupture digue  - Qinitial'
+
+
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, GRAPHIQUES ET LISTING
+/---------------------------------------------------------------------
+
+BILAN DE MASSE                        =OUI
+
+PERIODE DE SORTIE LISTING             =20
+
+VARIABLES POUR LES SORTIES GRAPHIQUES =U,V,S,H,B,L,D,W
+
+PERIODE POUR LES SORTIES GRAPHIQUES   =120
+
+INFORMATIONS SUR LE SOLVEUR           =OUI
+
+
+/---------------------------------------------------------------------
+/ EQUATIONS
+/---------------------------------------------------------------------
+
+COEFFICIENT DE FROTTEMENT             =15.
+
+COEFFICIENT DE DIFFUSION DES VITESSES =0.005
+
+LOI DE FROTTEMENT SUR LE FOND         =3
+
+
+/---------------------------------------------------------------------
+/ EQUATIONS, CONDITIONS INITIALES
+/---------------------------------------------------------------------
+
+CONDITIONS INITIALES ='COTE CONSTANTE'
+
+COTE INITIALE        =2.0
+
+
+/---------------------------------------------------------------------
+/ EQUATIONS, CONDITIONS LIMITES
+/---------------------------------------------------------------------
+
+DEBITS IMPOSES                      =0;50.0
+
+PROFILS DE VITESSE                  =1;4
+
+COTES IMPOSEES                      =2.0;0
+
+OPTION POUR LES FRONTIERES LIQUIDES =1;1
+
+
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES
+/---------------------------------------------------------------------
+
+BRECHE                                     =TRUE
+
+TRAITEMENT DU SYSTEME LINEAIRE             =2
+
+COMPATIBILITE DU GRADIENT DE SURFACE LIBRE =0.9
+
+REMISE A ZERO DU TEMPS                     =true
+
+PAS DE TEMPS                               =0.5
+
+OPTION DE SUPG                             =1;2
+
+DUREE DU CALCUL                            =2700
+
+CORRECTION DE CONTINUITE                   =true
+
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES, SOLVEUR
+/---------------------------------------------------------------------
+
+SOLVEUR              =1
+
+PRECISION DU SOLVEUR =1.E-5
+
+
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES, VITESSE-CELERITE-HAUTEUR
+/---------------------------------------------------------------------
+
+MASS-LUMPING SUR LA VITESSE   =1.
+
+IMPLICITATION POUR LA HAUTEUR =0.6
+
+MASS-LUMPING SUR H            =1.
+
+IMPLICITATION POUR LA VITESSE =0.6

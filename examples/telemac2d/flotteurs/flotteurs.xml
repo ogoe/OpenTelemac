@@ -1,0 +1,56 @@
+<?xml version="1.0"?> 
+<!-- Validation and verification of test cases, given a list of CAS files 
+--> 
+<validation xref="flotteurs"> 
+ 
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ This section is being ignored at the moment --> 
+   <deco xref="default"> 
+      <look format="png" colourbar="jet.xml" /> 
+      <data title="flotteurs" author="telemac2d" contact="www.opentelemac.org" /> 
+   </deco> 
+   <deco xref="vect"> 
+      <look colour="jet.xml" /> 
+   </deco> 
+   <deco xref="line"> 
+      <look colour="k" /> 
+   </deco> 
+ 
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ do="cas;princi" are being ignored at the moment 
+-->  
+   <action xref="1"  rank="3"
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_flotteurs_v1p0.cas" 
+       title="flotteurs scalar mode" 
+   /> 
+   <action xref="2"  rank="3"
+       do="translate;compile;run;cas;princi" ncsize="4"  
+       code="telemac2d" target="t2d_flotteurs_v1p0.cas" 
+       title="flotteurs parallel mode" 
+   />    
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ This section is being ignored at the moment --> 
+ 
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   --> 
+   <plot1d xref="FreeSurfaceTimeSeries" type="history" config="together" time="[0:-1]" size="[12;5]" >  
+      <layer vars="surface libre:line" extract="(270;500)(1030;460)" target="1:T2DRES" />  
+   </plot1d> 
+   <plot1d xref="FreeSurfaceProfiles" type="v-section" config="together" size="[12;5]" >  
+      <layer vars="surface libre:line" extract="(0;500)(1000;500)" target="1:T2DRES" time="[0:-1:10]" />
+   </plot1d>    
+ 
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+  --> 
+   <plot2d xref="Mesh" size="[15;7]" >  
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" />  
+   </plot2d>  
+    <plot2d xref="FreeSurfacetf" size="[15;7]" >  
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" />  
+   </plot2d>  
+   <plot2d xref="FreeSurfacet1" size="[15;7]" >  
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[1]" />  
+   </plot2d>  
+ 
+</validation> 

@@ -1,0 +1,90 @@
+/DEBUGGER = 1
+/----------------------------------------------------------------------
+
+/           STEERING FILE
+
+/           TELEMAC
+/----------------------------------------------------------------------
+/                    SETTINGS
+/----------------------------------------------------------------------
+/
+COUPLING WITH : 'TOMAWAC,SISYPHE'
+/
+WAVE DRIVEN CURRENTS      = YES
+TOMAWAC STEERING FILE     = 'tom_littoral.cas'
+COUPLING PERIOD FOR TOMAWAC = 10
+/
+SISYPHE STEERING FILE     = 'sis_littoral.cas'
+COUPLING PERIOD FOR SISYPHE = 10
+/
+FORTRAN FILE              = 't2d_littoral.f'
+BOUNDARY CONDITIONS FILE  = 'geo_t2d_littoral.cli'
+GEOMETRY FILE             = 'geo_littoral.slf'
+RESULTS FILE              = 't2d_littoral.slf'
+REFERENCE FILE           = 'ref_t2d_littoral.slf'
+VALIDATION = YES
+/----------------------------------------------------------------------
+/ INITIAL CONDITIONS 
+/----------------------------------------------------------------------
+INITIAL CONDITIONS = 'COTE NULLE'
+/
+/----------------------------------------------------------------------
+/                         GENERAL OPTIONS 
+/----------------------------------------------------------------------
+/
+TITLE = 'LITTORAL'
+/
+VARIABLES FOR GRAPHIC PRINTOUTS = H,S,B,U,V
+/
+TIME STEP               = 10.
+NUMBER OF TIME STEPS    = 100
+GRAPHIC PRINTOUT PERIOD = 100
+LISTING PRINTOUT PERIOD = 10
+/----------------------------------------------------------------------
+INFORMATION ABOUT SOLVER           = YES
+DIFFUSION OF VELOCITY              = YES
+TURBULENCE MODEL                   = 4
+VELOCITY DIFFUSIVITY               = 1.e-6
+CORIOLIS                           = NO
+/
+/------------------------------------------------
+/         BOUNDARY CONDITIONS
+/------------------------------------------------
+/
+BOTTOM SMOOTHINGS            = 0
+LAW OF BOTTOM FRICTION       = 5
+FRICTION COEFFICIENT         = 0.05
+/
+PRESCRIBED ELEVATIONS        = 0.
+/-------------------------------------------
+/          NUMERICAL OPTIONS
+/-------------------------------------------
+/
+DISCRETIZATIONS IN SPACE = 12;11
+/
+TIDAL FLATS   = NO
+OPTION FOR THE TREATMENT OF TIDAL FLATS = 1
+H CLIPPING    = FALSE
+/
+MASS-BALANCE  = TRUE
+/
+SOLVER ACCURACY                         = 1e-05
+MAXIMUM NUMBER OF ITERATIONS FOR SOLVER = 100
+/
+TYPE OF ADVECTION                            = 1;5
+NUMBER OF SUB-ITERATIONS FOR NON-LINEARITIES = 1
+/
+PROPAGATION                   = TRUE
+IMPLICITATION FOR DEPTH       = 0.6
+IMPLICITATION FOR VELOCITY    = 0.6
+/
+PRECONDITIONING            = 2
+/
+SOLVER                     = 7
+SOLVER OPTION              = 4
+MASS-LUMPING ON H          = 1.
+MASS-LUMPING ON VELOCITY   = 0.9
+/
+MATRIX STORAGE             = 3
+/
+&FIN

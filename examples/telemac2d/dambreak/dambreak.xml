@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="dambreak">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="dambreak" author="telemac2d" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="1" rank="3"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_dambreak_v1p0.cas"
+       title="dambreak scalar mode"
+   /> 
+   <action xref="2" rank="3"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_dambreak_v2p0.cas"
+       title="dambreak scalar mode"
+   />
+   <action xref="3" rank="3"
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_dambreak_v2p0.cas"
+       title="dambreak parallel mode"
+   />   
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="Water Depth v1" type="v-section" size="[12;5]" config="together">
+      <layer vars="water depth:line" extract="(0;10)(20;10)" target="1:T2DRES" time="[0:-1:10]"/>	  
+   </plot1d>
+   <plot1d xref="Velocity U v1" type="v-section" size="[12;5]" config="together">
+      <layer vars="velocity u:line" extract="(0;10)(20;10)" target="1:T2DRES" time="[0:-1:10]"/>
+   </plot1d>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="[10;10]" > 
+      <layer vars="hauteur d'eau:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="WaterDepth_t3" size="[10;10]" > 
+      <layer vars="water depth:map" target="1:T2DRES" config="oneofall" time="[3]" /> 
+   </plot2d>   
+   <plot2d xref="WaterDepth_tf" size="[10;10]" > 
+      <layer vars="water depth:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+
+</validation>

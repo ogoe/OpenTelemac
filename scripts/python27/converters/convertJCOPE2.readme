@@ -1,0 +1,5 @@
+Extraction of 2 months of 3D JCOPE2 data for ADCP comparison.
+> convertJCOPE2.py --from 2008-08-01 --stop 2008-10-01 --bl 34,140 --tr 41,147 -r jcope-2m.slf
+
+Extraction of 3 years of 2D HYCOM data for big picture review.
+> convertJCOPE2.py --from 2005-08-01 --stop 2008-08-01 --bl 30,130 --tr 50,152 -r jcope-3y.slf --2d

@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="shoal" author="artemis" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="1"  rank="3"
+       do="translate;compile;run;cas;princi"
+       code="artemis" target="art_shoal.cas"
+       title="elliptic shoal scalar mode"
+   />
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="Section1" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="(10;18)(20;18)" target="1:ARTRES" time="[0]" /> 
+   </plot1d>
+   <plot1d xref="Section2" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="(10;17)(20;17)" target="1:ARTRES" time="[0]" /> 
+   </plot1d>
+   <plot1d xref="Section3" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="(10;16)(20;16)" target="1:ARTRES" time="[0]" /> 
+   </plot1d> 
+   <plot1d xref="Section4" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="(10;15)(0;15)" target="1:ARTRES" time="[0]" /> 
+   </plot1d>    
+   <plot1d xref="Section5" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="(10;14)(20;14)" target="1:ARTRES" time="[0]" /> 
+   </plot1d>
+   <plot1d xref="Section6" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="(14.75;8)(14.75;20)" target="1:ARTRES" time="[0]" /> 
+   </plot1d> 
+   <plot1d xref="Section7" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="(15.75;8)(15.75;20)" target="1:ARTRES" time="[0]" /> 
+   </plot1d>    
+   <plot1d xref="Section8" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="(16.75;8)(16.75;20)" target="1:ARTRES" time="[0]" /> 
+   </plot1d>   
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="[10;10]" > 
+      <layer vars="maillage:mesh" target="1:ARTGEO" config="together" /> 
+   </plot2d> 
+   <plot2d xref="Bathy" size="[10;10]" > 
+      <layer vars="bottom:map" target="1:ARTRES" config="together" /> 
+   </plot2d>    
+   <plot2d xref="WaveHeight" size="[10;10]" > 
+      <layer vars="wave height:map" target="1:ARTRES" config="together" /> 
+   </plot2d>  
+
+</validation>

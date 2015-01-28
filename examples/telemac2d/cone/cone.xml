@@ -1,0 +1,57 @@
+<?xml version="1.0"?> 
+<!-- Validation and verification of test cases, given a list of CAS files 
+--> 
+<validation xref="case"> 
+ 
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ This section is being ignored at the moment --> 
+   <deco xref="default"> 
+      <look format="png" colourbar="jet.xml" /> 
+      <data title="cone" author="telemac2d" contact="www.opentelemac.org" /> 
+   </deco> 
+   <deco xref="vect"> 
+      <look colour="jet.xml" /> 
+   </deco> 
+   <deco xref="line"> 
+      <look colour="k" /> 
+   </deco> 
+ 
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ do="cas;princi" are being ignored at the moment 
+-->  
+   <action xref="1"  rank="2"
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_cone.cas" 
+       title="rotating cone in 2D" 
+   />
+    <action xref="2"  rank="2"
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_cone.cas" 
+       title="rotating cone parallel mode" 
+   />   
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   --> 
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   --> <!-- 
+   <save1d xref="figure1" type="v-section" config="oneofall" > 
+      <layer vars="tracer:line" extract="(10.05;10.05):(20.1;10.05)" time="[0]" target="1:T2DRES" /> 
+      <layer vars="tracer:line" extract="(10.05;10.05):(10.05;20.1)" time="[1]" target="1:T2DRES" /> 
+      <layer vars="tracer:line" extract="(10.05;10.05):(0;10.05)" time="[2]" target="1:T2DRES" /> 
+      <layer vars="tracer:line" extract="(10.05;10.05):(10.05;-20.1)" time="[3]" target="1:T2DRES" /> 
+      <layer vars="tracer:line" extract="(10.05;10.05):(20.1;10.05)" time="[4]" target="1:T2DRES" /> 
+   </save1d>
+ --> 
+ 
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+  --> 
+   <plot2d xref="figure2" config="oneofall" size="[8;8]" > 
+      <layer vars="velocity:map" target="1:T2DRES" time="[-1]" /> 
+      <layer vars="velocity:angle" sample="(10.05;7.05)(20.1;13.05)[10;4]" target="1:T2DRES" time="[-1]" /> 
+   </plot2d>
+<!--
+   <plot2d xref="figure3" config="oneofall" size="[8;8]" > 
+      <layer vars="tracer:map" target="1:T2DRES" time="[-1]" /> 
+   </plot2d>
+-->
+ 
+</validation>

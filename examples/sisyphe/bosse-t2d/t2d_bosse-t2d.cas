@@ -1,0 +1,79 @@
+/DEBUGGER : 0
+/PROCESSEURS PARALLELES : 8
+/
+/  HP C3700                     : 27 s   5.5  24/11/2004
+/
+/  HP C3700 compilateur HP      : 23 s   5.7  17/04/2007
+/  HP C3700 compilateur Nag     : 55 s   5.7  17/04/2007
+/  Dell 2.8 MHz compilateur pgi : 16 s   5.7  19/04/2007
+/ 
+/  HP C3700 compilateur HP      : 21 s   5.8  13/11/2007
+/  HP C3700 compilateur Nag     : 56 s   5.8  20/12/2007
+/  Dell 2.8 MHz compilateur pgi : 16 s   5.8  19/12/2007
+/
+/  HP C3700 compilateur HP      : 12 s   5.9  15/10/2008  (4 procs OK)
+/  HP C3700 compilateur Nag     : 38 s   5.9  16/10/2008
+/  Dell 2.8 MHz compilateur pgi :  9 s   5.9  15/10/2008
+/ 
+/  HP C3700 compilateur HP        : 11 s   6.0  23/11/2009  
+/  HP C3700 compilateur Nag       : 30 s   6.0  25/11/2009
+/  Dell 2.8 MHz compilateur Intel : 06 s   6.0  24/11/2009
+/
+/  HP C3700 compilateur HP        : 11 s   6.1  21/12/2010 
+/    
+/
+/
+FICHIER FORTRAN			   : t2d_bosse-t2d.f
+FICHIER DES CONDITIONS AUX LIMITES : geo_bosse-t2d.cli
+FICHIER DE GEOMETRIE               : geo_bosse-t2d.slf            
+FICHIER DES RESULTATS              : r2d_bosse-t2d.slf
+FICHIER DE REFERENCE               : f2d_bosse-t2d.slf
+FICHIER DES PARAMETRES DE SISYPHE  : sis_bosse-t2d.cas
+VALIDATION : OUI
+/----------------------------------------------------------------------/  
+/                       OPTIONS GENERALES                                 
+/----------------------------------------------------------------------/  
+TITRE = 'TELEMAC 2D : Cas5'  
+COUPLAGE AVEC : 'INTER-SISYPHE'
+PERIODE DE COUPLAGE POUR SISYPHE= 1                                                 
+PAS DE TEMPS = 0.1
+NOMBRE DE PAS DE TEMPS = 100000 
+BILAN DE MASSE : OUI 
+INFORMATIONS SUR LE SOLVEUR : OUI               
+PERIODE POUR LES SORTIES GRAPHIQUES = 10000
+PERIODE DE SORTIE LISTING = 100
+VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,S,B,F,H,L' 
+/----------------------------------------------------------------------/
+/                      SCHEMA NUMERIQUE ET SOLVEUR
+/----------------------------------------------------------------------/ 
+SOLVEUR : 7 / gmres
+OPTION DU SOLVEUR :3 / dimension de l'espace de Krilov
+PRECISION DU SOLVEUR = 1.E-6  
+IMPLICITATION POUR LA HAUTEUR = 0.6 
+IMPLICITATION POUR LA VITESSE = 0.6   
+DISCRETISATIONS EN ESPACE : 11 ; 11 /triangle lineaire
+MASS-LUMPING SUR H : 1. / stabilité + efficacité                                                       
+FORME DE LA CONVECTION = 1;5 / 1 characteristiques (u et v); 5 schema Psi conservatif (h)                        
+OPTION DE SUPG         = 1;0 / 1 supg classique (u et v); 
+COMPATIBILITE DU GRADIENT DE SURFACE LIBRE : 0.9 / supression d'oscillations
+/
+/----------------------------------------------------------------------/
+/                    EQUATIONS ET PARAMETRES
+/----------------------------------------------------------------------/              
+MASSE VOLUMIQUE DE L'EAU = 1000
+LOI DE FROTTEMENT SUR LE FOND = 2 /Chézy
+COEFFICIENT DE FROTTEMENT = 45.57                              
+MODELE DE TURBULENCE = 1 /viscosite constante
+COEFFICIENT DE DIFFUSION DES VITESSES = 1.E-5  
+EQUATIONS : 'SAINT-VENANT EF' 
+VALEUR MINIMUM DE H = 0.1       
+/
+/----------------------------------------------------------------------/
+/               CONDITIONS INITIALES ET AUX LIMITES
+/----------------------------------------------------------------------/  
+CONDITIONS INITIALES : 'COTE CONSTANTE'
+COTE INITIALE = 0.6
+DEBITS IMPOSES : 0.25 ; 0.25
+COTES IMPOSEES = 0.6                         
+/----------------------------------------------------------------------/  
+&FIN                                                                    

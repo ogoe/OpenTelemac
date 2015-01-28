@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="estimation">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="estimation" author="telemac2d" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="1" rank="5"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_estimation.cas"
+       title="estimation scalar mode"
+   />
+   <action xref="2" rank="5"
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_estimation.cas"
+       title="estimation parallel mode"
+   />   
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="FreeSurfaceProfiles" type="v-section" config="together" size="[12;5]" > 
+      <layer vars="surface libre:line" extract="(0;50)(500;50)" target="1:T2DRES" time="[0:-1]" />
+   </plot1d>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="[20;5]" > 
+      <layer vars="maillage:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+    <plot2d xref="FreeSurfacetf" size="[20;5]" > 
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d> 
+   <plot2d xref="FreeSurfacet5" size="[20;5]" > 
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[5]" /> 
+   </plot2d> 
+
+</validation>

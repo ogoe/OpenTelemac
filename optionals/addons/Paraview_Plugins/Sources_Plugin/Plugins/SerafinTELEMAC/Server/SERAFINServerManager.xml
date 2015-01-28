@@ -1,0 +1,36 @@
+<ServerManagerConfiguration>
+	<ProxyGroup name="sources">
+		
+		<SourceProxy class="vtkSerafinReader" name="SerafinReader" >
+			
+			<Documentation
+				short_help= "Read a serafin file."
+				long_help = "Read a serafin file into a vtkUnstructuredGrid.">
+					The SERAFIN reader reads a binary file creating a vtkUnstructuredGrid.
+					The default file extension is .srf for this software.
+    			</Documentation>
+			 
+			<StringVectorProperty 
+				number_of_elements="1"
+				animateable="0"
+				name="FileName" 
+				command="SetFileName">
+					<FileListDomain name="files" />
+					<Documentation>
+						This property specifies the file name for the SERAFIN reader.
+        				</Documentation>
+			</StringVectorProperty>
+			
+			<DoubleVectorProperty name="TimestepValues" repeatable="1" information_only="1">
+				<TimeStepsInformationHelper/>
+			</DoubleVectorProperty>
+			
+			<DoubleVectorProperty name="TimeRange" information_only="1">
+				<TimeRangeInformationHelper/>
+			</DoubleVectorProperty>
+			
+		</SourceProxy>
+		
+	</ProxyGroup>	
+ </ServerManagerConfiguration>
+ 

@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="ruptmoui">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="ruptmoui" author="telemac2d" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="1" rank="3"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_ruptmoui.cas"
+       title="ruptmoui scalar mode"
+   />
+<!-- Segfault
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_ruptmoui.cas"
+       title="ruptmoui parallel mode"
+   />   
+-->
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="Water Depth v1" type="v-section" size="[12;5]" config="together">
+      <layer vars="hauteur d'eau:line" extract="(3000;-12000)(3000;12000)" target="1:T2DRES" time="[0:-1]"/>
+   </plot1d>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="[8;10]" > 
+      <layer vars="hauteur d'eau:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="WaterDepth_tf" size="[8;10]" > 
+      <layer vars="hauteur d'eau:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+   <plot2d xref="VelocityU_tf" size="[8;10]" > 
+      <layer vars="vitesse U:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+   <plot2d xref="VelocityV_tf" size="[8;10]" > 
+      <layer vars="vitesse V:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+   <plot2d xref="WaterDepth_t5" size="[8;10]" > 
+      <layer vars="hauteur d'eau:map" target="1:T2DRES" config="oneofall" time="[5]" /> 
+   </plot2d>
+
+
+</validation>

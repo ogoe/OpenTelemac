@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="port" author="artemis" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="1"  rank="2"
+       do="translate;compile;run;cas;princi"
+       code="artemis" target="art_delft-harbour.cas"
+       title="port scalar mode"
+   />
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="Section1" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="(1;3)(9;3)" target="1:ARTRES" /> 
+   </plot1d>
+   <plot1d xref="Section2" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="(1;4)(9;4)" target="1:ARTRES" time="[0]" /> 
+   </plot1d>
+   <plot1d xref="Section3" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="(1;5)(8;5)" target="1:ARTRES" time="[0]" /> 
+   </plot1d>
+   <plot1d xref="Section4" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="(1;6)(8;6)" target="1:ARTRES" time="[0]" /> 
+   </plot1d>   
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="[12;8]" > 
+      <layer vars="maillage:mesh" target="1:ARTGEO" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="WaveHeight" size="[12;8]" > 
+      <layer vars="wave height:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="Free Surface" size="[12;8]" > 
+      <layer vars="free surface:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>   
+
+
+</validation>

@@ -1,0 +1,107 @@
+/-------------------------------------------------------------------/
+/   TELEMAC-2D V5.2 -  VALIDATION TEST CASE NUMBER 11  -  12/2001   /
+/                       Meandering River Scheme                     /
+/-------------------------------------------------------------------/
+/
+/----------------------------------------------
+/  COMPUTER INFORMATIONS
+/----------------------------------------------
+/
+/PARALLEL PROCESSORS             = 12
+/
+SISYPHE STEERING FILE = sis.cas
+COUPLING WITH = 'INTER-SISYPHE'
+COUPLING PERIOD FOR SISYPHE = 1
+GEOMETRY FILE                   = gitter50neu.geo
+BOUNDARY CONDITIONS FILE        = boundary50neu.conlim
+RESULTS FILE                    = r_tel_dredgesim.res
+FORTRAN FILE                    = homere_telemac2d_v6p2.f 
+/
+/----------------------------------------------
+/  GENERAL INFORMATIONS - OUTPUTS
+/----------------------------------------------
+/
+TITLE                                        = 'fluesschen'
+VARIABLES FOR GRAPHIC PRINTOUTS              = 'U,V,H,S,B,M' / ,N,O'
+GRAPHIC PRINTOUT PERIOD                      =  86400 / 17280  86400
+LISTING PRINTOUT PERIOD                      =  360
+NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS   = 0 /2
+VALIDATION                                   = NO
+MASS-BALANCE                                 = YES
+TIME STEP                                    = 10
+NUMBER OF TIME STEPS                         = 259200 / 6307200 864000 3153600  
+INFORMATION ABOUT SOLVER                     = YES
+/
+/----------------------------------------------
+/  INITIAL CONDITIONS
+/----------------------------------------------
+/
+COMPUTATION CONTINUED                        = NO 
+INITIAL CONDITIONS                           = 'CONSTANT ELEVATION'
+INITIAL ELEVATION                            = 4.
+/
+/----------------------------------------------
+/  BOUNDARY CONDITIONS
+/----------------------------------------------
+/
+PRESCRIBED ELEVATIONS                        = 4.;0.
+PRESCRIBED FLOWRATES                         = 0.;800.
+/VELOCITY PROFILES                            = 2;2;2
+/
+/----------------------------------------------
+/  SediMorph
+/----------------------------------------------
+/
+/SEDIMORPH                                    = YES
+/----------------------------------------------
+/  DredgeSim
+/----------------------------------------------
+/
+/DREDGESIM                                    = YES
+/
+/
+/----------------------------------------------
+/  PHYSICAL PARAMETERS
+/----------------------------------------------
+/
+LAW OF BOTTOM FRICTION                       = 5
+FRICTION COEFFICIENT                         = 0.006
+/
+/----------------------------------------------
+/  Turbulence Modelling
+/----------------------------------------------
+/Einstellung des zu verwendenden Turbulenzmodells
+/1 = konstante Wirbelviskositaet
+/    -> dann muss die Zeile VELOCITY DIFFUSIVITY + Wert der Wirbelviskositaet hinzugefuegt werden
+/2 = Elder-Modell (tiefengemittelte Wirbelviskositaet)
+/    -> dann muss die Zeile NON-DIMENSIONAL DISPERSION COEFFICIENTS + Wert in Stroemungsrichtung und vertikal dazu angegeben werden
+/    -> Defaultwerte sind 6 und 0.6 (bei Nichteingabe nimmt Telemac immer diese)
+/    -> Wert der VELOCITY DIFFUSIVITY verliert bei Nicht-Entfernen automatisch ihre Relevanz
+/3 = k-e-Modell
+/    -> Zusaetzlich muessen numerische Vorgaben zur Loesung der 2 zusaetzlichen DGLn gemacht
+/4 = Smagorinsky-Modell fuer Large Eddy Simulationen
+/    -> nicht in tiefengemittelten Modellen, hier braucht man auszerdem ein sehr feines Gitter
+TURBULENCE MODEL                             = 2
+VELOCITY DIFFUSIVITY                         = 5.
+NON-DIMENSIONAL DISPERSION COEFFICIENTS      = 6.;0.6
+//----------------------------------------------
+/  NUMERICAL PARAMETERS 
+/----------------------------------------------
+/
+TYPE OF ADVECTION                            = 2;5
+SUPG OPTION                                  = 1;2
+DISCRETIZATIONS IN SPACE                     = 11; 11; 11; 11
+SOLVER ACCURACY                              = 1.E-4 
+IMPLICITATION FOR DEPTH                      = 0.6
+IMPLICITATION FOR VELOCITY                   = 0.6 
+SOLVER                                       = 7
+SOLVER OPTION                                = 6  
+MATRIX STORAGE                               = 1  
+TIDAL FLATS                                  = YES
+/MASS-LUMPING ON H                            = 1.
+/H CLIPPING                                   = NO         
+/
+/  END OF STEERING FILE 
+/
+&ETA             
+&FIN
