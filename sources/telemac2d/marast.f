@@ -5,7 +5,7 @@
      &(MARDAT,MARTIM,PHI0,NPOIN,AT,FU1,FV1,X,SINLAT,COSLAT,GRAV)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                  21/08/2010
+! TELEMAC2D   V7P0                                  20/01/2015
 !***********************************************************************
 !
 !brief    COMPUTES THE TIDAL FORCE.
@@ -31,7 +31,12 @@
 !+        17/07/2012
 !+        V6P2
 !+    Adaption to NAG
-!!
+!
+!history  T.LACKRIET (IMDC)
+!+        20/01/2015
+!+        V7P0
+!+   Correction of a bug for the signs of FXL AND FXS
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| COSLAT         |-->| COSINUS OF LATITUDE (IN SPHERICAL COORDINATES)
@@ -145,19 +150,19 @@
 !     Y  : ALONG Y
 !     S  : SAME THING FOR THE SUN
 !
-        FXL  = F0L * COS(DL) * SIN(AHL) *
+        FXL = -F0L * COS(DL) * SIN(AHL) *
      &         ( ( 1.D0-2*ARL*(SINLAT(I)*SIN(DL)+
      &           COSLAT(I)*COS(DL)*COS(AHL))+ARL*ARL )**(-1.5D0) -1.D0 )
 !
-        FXS  = F0S * COS(DS) * SIN(AHS) *
+        FXS = -F0S * COS(DS) * SIN(AHS) *
      &         ( ( 1.D0-2*ARS*(SINLAT(I)*SIN(DS)+
      &           COSLAT(I)*COS(DS)*COS(AHS))+ARS*ARS )**(-1.5D0) -1.D0 )
 !
-        FYL  = F0L*(COSLAT(I)*SIN(DL)-SINLAT(I)*COS(DL)*COS(AHL))*
+        FYL =  F0L*(COSLAT(I)*SIN(DL)-SINLAT(I)*COS(DL)*COS(AHL))*
      &         ( ( 1.D0-2*ARL*(SINLAT(I)*SIN(DL)+
      &           COSLAT(I)*COS(DL)*COS(AHL))+ARL*ARL )**(-1.5D0) -1.D0 )
 !
-        FYS  = F0S*( COSLAT(I)*SIN(DS)-SINLAT(I)*COS(DS)*COS(AHS))*
+        FYS =  F0S*( COSLAT(I)*SIN(DS)-SINLAT(I)*COS(DS)*COS(AHS))*
      &         ( ( 1.D0-2*ARS*(SINLAT(I)*SIN(DS)+
      &           COSLAT(I)*COS(DS)*COS(AHS))+ARS*ARS )**(-1.5D0) -1.D0 )
 !

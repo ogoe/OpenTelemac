@@ -1029,18 +1029,18 @@ class PARAFINS(SELAFINS):
             intsect = np.in1d(islf.IPOB2,np.sort(sub.IPOB2))
             # The new compressed IPOBO
             sub.IPOB2 = np.compress( intsect, islf.IPOB2 )
-            # Those node numbers of the islf you keep
+            # Those node numbers of the islf you keep ~> converting True/False into indices
             indices = np.arange(len(islf.IPOB2),dtype=np.int)[intsect]
             # Set the array that only includes elements of islf.IKLE2 with at least two nodes in the subdomain
-            GKLE2 = islf.IKLE2[np.where( np.sum(np.in1d(islf.IKLE2,np.sort(indices)).reshape(islf.NELEM2,islf.NDP2),axis=1) == 2 )]
+            GKLE2 = islf.IKLE2[np.where( np.sum(np.in1d(islf.IKLE2,np.sort(indices)).reshape(islf.NELEM2,islf.NDP2),axis=1) == islf.NDP2 )]
             # re-numbering IKLE2 as a local connectivity matrix
             KNOLG = np.unique( np.ravel(GKLE2) )
             KNOGL = dict(zip( KNOLG,range(len(KNOLG)) ))
             sub.IKLE2 = - np.ones_like(GKLE2,dtype=np.int)
             for k in range(len(GKLE2)):
-               sub.IKLE2[k] = [ KNOGL[GKLE2[k][0]], KNOGL[GKLE2[k][1]] ]    # /!\ sub.IKLE2 has a local numbering, fit to the boundary elements
+               for ki in range(islf.NDP2): sub.IKLE2[k][ki] = KNOGL[GKLE2[k][ki]]    # /!\ sub.IKLE2 has a local numbering, fit to the boundary elements
             # Set the remaining integers
-            sub.NPOIN2 = len(np.unique(sub.IKLE2))        # sub.NPOIN2 from MASK -- could be empty
+            sub.NPOIN2 = len(sub.IPOB2)
             sub.NELEM2 = len(sub.IKLE2)
             sub.NDP2 = islf.NDP2
             sub.NDP3 = islf.NDP3
@@ -1085,7 +1085,7 @@ class PARAFINS(SELAFINS):
 # ____/ MAIN CALL  /_______________________________________________/
 #
 
-__author__="Christopher J. Cawthor and Sebastien E. Bourban"
+__author__="Sebastien E. Bourban"
 __date__ ="$09-Sep-2011 08:51:29$"
 
 if __name__ == "__main__":

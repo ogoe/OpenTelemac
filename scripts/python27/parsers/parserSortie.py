@@ -204,10 +204,10 @@ class Sortie:
       Creates the x,y arrays for plotting
       Values read from the TELEMAC sortie file ... every time this is called
    """
-   def getValueHistorySortie(vrs):
+   def getValueHistorySortie(self,vrs):
       # ~~ Extract data
-      i,x0 = parseTimeProfile()
-      y1,y2,y3 = parseValueProfile()
+      i,x0 = self.getTimeProfile()
+      y1,y2,y3 = self.getVolumeProfile()
       y0 = []
       for var in vrs.split(';'):
          v,s = var.split(':')

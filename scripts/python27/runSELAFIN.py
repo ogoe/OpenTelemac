@@ -163,8 +163,8 @@ class scanSELAFIN(PARAFINS,chopSELAFIN): # /!\ does not support PARAFINS yet -- 
       if self.slf.NPLAN > 1: print "   - NELEM2 = ",self.slf.NELEM2,"\n   - NPOIN2 = ",self.slf.NPOIN2,"\n   - NDP2   = ",self.slf.NDP2
       if self.slf.NPOIN2 > 0: print "MESH         : / min: [ ",np.min(self.slf.MESHX),";",np.min(self.slf.MESHY),"]  / max: [ ",np.max(self.slf.MESHX),";",np.max(self.slf.MESHY),"]"
       print "ARRAYs       :"
-      print "   - IKLE  : ",self.slf.IKLE3
-      print "   - IPOBO : ",self.slf.IPOB3
+      print "   - IKLE  : / min: [ ",np.min(self.slf.IKLE3)+1,"]  / max: [ ",np.max(self.slf.IKLE3)+1,"]",self.slf.IKLE3+1
+      print "   - IPOBO : / min: [ ",np.min(self.slf.IPOB3),"]  / max: [ ",np.max(self.slf.IPOB3),"]",self.slf.IPOB3
 
    def printCore(self):
       for v in range(self.slf.NBV1):

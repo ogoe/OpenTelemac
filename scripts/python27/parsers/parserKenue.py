@@ -72,6 +72,7 @@ var_1int = re.compile(r'(?P<before>[^+-]*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+)(\
 var_1dbl = re.compile(r'(?P<number>[+-]?(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))[\s,;]*(?P<after>.*?)\Z')
 var_2dbl = re.compile(r'(?P<number1>[+-]?(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))[\s,;]*(?P<number2>[+-]?(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))(?P<after>.*?)\Z')
 var_3dbl = re.compile(r'(?P<number1>[+-]?(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))[\s,;]*(?P<number2>[+-]?(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))[\s,;]*(?P<number3>[+-]?(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))(?P<after>.*?)\Z')
+var_1str = re.compile(r'(?P<string>)(".*?")[\s,;]*(?P<after>.*?)\Z')
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
@@ -94,12 +95,12 @@ def getInS(file):
 
    # ~~ Parse head ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    icore = 0; atrbut = {}; natrbut = 0
-   while re.match(ken_header,core[icore]):
+   while re.match(ken_header,core[icore].strip()):
       # ~~> instruction FileType
-      proc = re.match(asc_FileType,core[icore])
+      proc = re.match(asc_FileType,core[icore].strip())
       if proc: fileType = proc.group('type').lower()
       # ~~> instruction AttributeName
-      proc = re.match(asc_AttributeName,core[icore])
+      proc = re.match(asc_AttributeName,core[icore].strip())
       if proc:
          natrbut += 1
          if natrbut == int(proc.group('number')):
@@ -109,6 +110,7 @@ def getInS(file):
             sys.exit(1)
       # ... more instruction coming ...
       icore += 1
+   natrbut = max(natrbut,1)
    head = core[0:icore]
    # /!\ icore starts the body
 
@@ -120,34 +122,31 @@ def getInS(file):
          icore += 1
          continue
       # ~~> polygon head
-      proc = re.match(var_1int,core[icore])
+      proc = re.match(var_1int,core[icore].strip())
       if not proc:
-         print '\nCould not parse the following polyline header: '+core[icore]
+         print '\nCould not parse the following polyline header: '+core[icore].strip()
          sys.exit(1)
       nrec = int(proc.group('number'))
       a = proc.group('after').strip().split()
       if len(a) != natrbut:
-         print '... Could not find the correct number of attribute:',core[icore],', ',natrbut,' expected'
+         print '... Could not find the correct number of attribute:',core[icore].strip(),', ',natrbut,' expected'
          sys.exit(1)
       for i in atrbut: 
          atrbut[i].append(a[i-1])
       xyi = []; icore += 1
       for irec in range(nrec):
-         nbres = core[icore+irec].split()
+         nbres = core[icore+irec].strip().split()
          proc = re.match(var_1dbl,nbres[0])
          if not proc:
             proc = re.match(var_1int,nbres[0])
             if not proc:
-               print '\nCould not parse the following polyline record: '+core[icore+irec]
+               print '\nCould not parse the following polyline record: '+core[icore+irec].strip()
                sys.exit(1)
          nbres[0] = float(proc.group('number'))
-         proc = re.match(var_1dbl,nbres[1])
-         if not proc:
-            proc = re.match(var_1int,nbres[1])
-            if not proc:
-               print '\nCould not parse the following polyline record: '+core[icore+irec]
-               sys.exit(1)
-         nbres[1] = float(proc.group('number'))
+         procd = re.match(var_1dbl,nbres[1])
+         proci = re.match(var_1int,nbres[1])
+         if procd: nbres[1] = float(procd.group('number'))
+         elif proci: nbres[1] = float(procd.group('number'))
          xyi.append(nbres)
       if xyi != []:
          cls = 0

@@ -89,7 +89,7 @@
    -->
    <plot2d xref="figure6" config="oneofall" time="[-1]" size="[12;3]" > 
       <layer vars="VITESSE:map" target="1:T2DRES" /> 
-      <layer vars="VITESSE:angle" target="1:T2DRES"  sample="(7;0.25)(13.5;1.75)[10;4]" /> 
+      <layer vars="VITESSE:angle" target="1:T2DRES"  sample="(7;0.25)(13.5;1.75){10;4}" /> 
    </plot2d>
 
    <!-- Plot a mesh into the PNG file "figure7.png".
@@ -109,7 +109,7 @@
    -->
    <plot2d xref="figure8" size="[20;5]" > 
       <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" />
-      <layer vars="surface libre:wire" sample="(7;0.25)(13.5;1.75)[10;4]" target="1:T2DRES" config="oneofall" />
+      <layer vars="surface libre:wire" sample="(7;0.25)(13.5;1.75){10;4}" target="1:T2DRES" config="oneofall" />
    </plot2d>
  
 </validation>

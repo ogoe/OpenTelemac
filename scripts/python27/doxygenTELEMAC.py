@@ -53,13 +53,14 @@
 # ~~> dependencies towards standard python
 import sys
 import re
-from os import path, walk, sep, chdir, mkdir, remove, environ
+from os import path, walk, sep, chdir, environ
 import subprocess as sp
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_DoxygenTELEMAC
 # ~~> dependencies towards other pytel/modules
-from parsers.parserFortran import scanSources, parseDoxyWrap, parseVars
+from parsers.parserFortran import scanSources, parseDoxyWrap
 from utils.files import getFileContent, putFileContent, createDirectories
+from utils.messages import MESSAGES,banner
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
@@ -471,14 +472,39 @@ if __name__ == "__main__":
    BYPASS = False  # /!\ Temporary bypass for subroutine within programs
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+# ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    CFGNAME = 'doxydocs'
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    SYSTELCFG = path.join(PWD,'configs')
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ banners ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   mes = MESSAGES()  # runcode takes its version number from the CAS file
+   svnrev = ''
+   svnurl = ''
+   svnban = 'unknown revision'
+   try:
+      key_equals = re.compile(r'(?P<key>[^:]*)(?P<after>.*)',re.I)
+      tail,code = mes.runCmd('svn info '+PWD,True)
+      for line in tail.split('\n'):
+         proc = re.match(key_equals,line)
+         if proc:
+            if proc.group('key').strip() == 'Revision': svnrev = proc.group('after')[1:].strip()
+            if proc.group('key').strip() == 'URL': svnurl = proc.group('after')[1:].strip()
+   except:
+      pass
+   if svnrev+svnurl == '':
+      print '\n'.join(banner('unknown revision'))
+   else:
+      if svnurl != '': print '\n'.join(banner(svnurl.split('/')[-1]))
+      if svnrev != '': print '\n'.join(banner('rev. #'+svnrev))
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nLoading Options and Configurations\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",type="string",dest="configName",default=CFGNAME,
       help="specify configuration name, default is randomly found in the configuration file" )
@@ -486,8 +512,6 @@ if __name__ == "__main__":
       help="specify configuration file, default is systel.cfg" )
    parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',
       help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",type="string",dest="version",default='',
-      help="specify the version number, mandatory for documentation purposes" )
    parser.add_option("-d", "--doxydir",type="string",dest="doxyDir",default='',
       help="specify the root, default is taken from config file" )
    parser.add_option("-m", "--modules",type="string",dest="modules",default='',
@@ -512,10 +536,6 @@ if __name__ == "__main__":
    # still in lower case
    if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
-   if options.version == '':
-      print '\nYou need a reference version for this doxygenation'
-      sys.exit(1)
-   cfgs[cfgname]['version'] = options.version
    if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
    if options.doxyDir == '':
       cfgs[cfgname].update({'doxydocs':path.join(cfgs[cfgname]['root'],'documentation'+sep+cfgname)})
@@ -529,7 +549,6 @@ if __name__ == "__main__":
    print '    +> configuration: ' +  cfgname
    if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
    print '    +> root:          ' +  cfgs[cfgname]['root']
-   print '    +> version:       ' +  cfgs[cfgname]['version']
    print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 

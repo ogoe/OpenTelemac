@@ -450,9 +450,6 @@ def parseConfig_DoxygenTELEMAC(cfg):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit(1)
    cfgTELEMAC.update({'root':path.normpath(get)})
-   # Get version if present
-   get = getConfigKey(cfg,'version',False,False).lower()
-   cfgTELEMAC.update({'version':get})
    # Get destination doxydocs: ...
    get = getConfigKey(cfg,'doxydocs',True,True).lower()
    cfgTELEMAC.update({'doxydocs':get})
@@ -488,10 +485,10 @@ def parseConfig_DoxygenTELEMAC(cfg):
 
    # Get system's suffixes for obj, lib, mod, and exe
    system = {}
-   system.update({'sfx_obj':getConfigKey(cfg,'sfx_obj',True,False).lower()})
-   system.update({'sfx_exe':getConfigKey(cfg,'sfx_exe',True,False).lower()})
-   system.update({'sfx_lib':getConfigKey(cfg,'sfx_lib',True,False).lower()})
-   system.update({'sfx_mod':getConfigKey(cfg,'sfx_mod',True,False).lower()})
+   #system.update({'sfx_obj':getConfigKey(cfg,'sfx_obj',True,False).lower()})
+   #system.update({'sfx_exe':getConfigKey(cfg,'sfx_exe',True,False).lower()})
+   #system.update({'sfx_lib':getConfigKey(cfg,'sfx_lib',True,False).lower()})
+   #system.update({'sfx_mod':getConfigKey(cfg,'sfx_mod',True,False).lower()})
    cfgTELEMAC.update({'SYSTEM':system})
 
    return cfgTELEMAC
@@ -510,9 +507,6 @@ def parseConfig_CompactTELEMAC(cfg):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit(1)
    cfgTELEMAC.update({'root':path.normpath(get)})
-   # Get version if present
-   get = getConfigKey(cfg,'version',False,False).lower()
-   cfgTELEMAC.update({'version':get})
    # Get options for printing purposes
    get = getConfigKey(cfg,'options',False,False).lower()
    cfgTELEMAC.update({'options':get})
@@ -986,11 +980,6 @@ if __name__ == "__main__":
                       dest="rootDir",
                       default='',
                       help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",
-                      type="string",
-                      dest="version",
-                      default='',
-                      help="specify the version number, default is an empty string" )
    parser.add_option("--clean",
                       action="store_true",
                       dest="configDelete",

@@ -218,7 +218,7 @@ def main():
       if options.version == '': 
          print '\nYou need a reference version for this documentation'
          sys.exit(1)
-      cfgs[cfgname]['version'] = options.version
+         cfgs[cfgname]['version'] = options.version
       if options.modules != '': 
          cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
       cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])

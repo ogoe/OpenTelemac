@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 <!-- Validation and verification of test cases, given a list of CAS files 
 --> 
-<validation xref="bumpcri" rank="13"> 
+<validation xref="bumpcri"> 
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
@@ -30,7 +30,7 @@
        title="bumpcri parallel mode" 
    />    
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ This section is being ignored at the moment --> 
+   /!\ This section is being ignored at the moment 
 
    <save1d xref="VolumeTotal" type="history" time="[0;-1]" >  
       <layer vars="voltotal" target="1:sortie" config="together" />  
@@ -40,10 +40,10 @@
    </save1d>     
    <save1d xref="profiles" type="v-section" config="together" time="[-1]" >  
       <layer vars="surface libre:line;fond:line" extract="[0;1][21;1]" target="1:T2DRES" />  
-   </save1d>  
+   </save1d>  --> 
    
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   --> 
+
    <plot1d xref="VolumeTotal" type="history" time="[0;-1]" size="[12;5]" >  
       <layer vars="voltotal" target="1:sortie" config="together" />  
    </plot1d>  
@@ -58,7 +58,7 @@
    </plot1d>  
    <plot1d xref="profiles" type="v-section" config="together" time="[-1]" size="[12;5]" >  
       <layer vars="surface libre:line;fond:line" extract="[0;1][21;1]" target="1:T2DRES" />  
-   </plot1d>  
+   </plot1d>     --> 
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
