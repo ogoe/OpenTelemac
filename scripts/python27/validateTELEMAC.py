@@ -76,6 +76,10 @@
    This should make the whole process more generic.
    Wiki documentation remains to be done.
 """
+"""@history 23/09/2014 -- Sebastien E. Bourban and Yoann Audoin
+   The content of the log files from GRETEL and PARTEL are now reported
+   in the error report.
+"""
 """@brief
 """
 # _____          ___________________________________________________
@@ -83,6 +87,7 @@
 #
 # ~~> dependencies towards standard python
 import sys
+import re
 import time
 from os import path,walk,environ
 from copy import deepcopy
@@ -90,7 +95,7 @@ from copy import deepcopy
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserXML import runXML
-from utils.messages import MESSAGES,filterMessage,reprMessage
+from utils.messages import MESSAGES,filterMessage,reprMessage,banner
 from utils.files import checkSymLink,moveFile2File,putFileContent
 
 # _____                        _____________________________________
@@ -252,9 +257,7 @@ if __name__ == "__main__":
    debug = False
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+# ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    USETELCFG = ''
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
@@ -265,6 +268,36 @@ if __name__ == "__main__":
    if 'PYTELPATH' not in environ:
       environ.update({'PYTELPATH':PYTELPATH})
       sys.path.append( PYTELPATH ) # clever you !
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ banners ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   mes = MESSAGES()  # validation takes its version number from the SVN revision
+   VERSION = 'report'
+   svnrev = ''
+   svnurl = ''
+   svnban = 'unknown revision'
+   try:
+      key_equals = re.compile(r'(?P<key>[^:]*)(?P<after>.*)',re.I)
+      tail,code = mes.runCmd('svn info '+PWD,True)
+      for line in tail.split('\n'):
+         proc = re.match(key_equals,line)
+         if proc:
+            if proc.group('key').strip() == 'Revision': svnrev = proc.group('after')[1:].strip()
+            if proc.group('key').strip() == 'URL': svnurl = proc.group('after')[1:].strip()
+   except:
+      if options.version != '': svnrev += options.version
+   if svnrev != '': VERSION += '-svn'+svnrev
+   if svnurl != '': VERSION += '-'+svnurl.split('/')[-1]
+   if svnrev+svnurl == '':
+      print '\n'.join(banner('unknown revision'))
+   else:
+      if svnurl != '': print '\n'.join(banner(svnurl.split('/')[-1]))
+      if svnrev != '': print '\n'.join(banner('rev. #'+svnrev))
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nLoading Options and Configurations\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",type="string",dest="configName",default=USETELCFG,
       help="specify configuration name, default is the first found in the configuration file" )
@@ -273,7 +306,7 @@ if __name__ == "__main__":
    parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',
       help="specify the root, default is taken from config file" )
    parser.add_option("-v", "--version",type="string",dest="version",default='',
-      help="specify the version number, default is taken from config file" )
+      help="specify the report version number, default is an empty string" )
    parser.add_option("-m", "--modules",type="string",dest="modules",default='',
       help="specify the list modules, default is taken from config file" )
    parser.add_option("-s", "--screen",action="store_true",dest="display",default=False,
@@ -405,8 +438,7 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    xcpts = MESSAGES()
-   if options.version == '': VERSION = 'report'
-   else: VERSION = options.version
+
 # ~~~~ Reporting summary ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    reports = REPORT(options.report)
 
@@ -418,8 +450,8 @@ if __name__ == "__main__":
       xmls = {}
       for cfgname in cfgs:
          # still in lower case
+         if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
          if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
-         if options.version != '': cfgs[cfgname]['version'] = options.version
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
          cfgs[cfgname]['display'] = options.display
          # parsing for proper naming
@@ -471,9 +503,9 @@ if __name__ == "__main__":
       xmls = {}; nxmls = 0
       for cfgname in cfgs:
          # still in lower case
+         if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
          if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
          root = cfgs[cfgname]['root']
-         if options.version != '': cfgs[cfgname]['version'] = options.version
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
          cfgs[cfgname]['display'] = options.display
          # parsing for proper naming

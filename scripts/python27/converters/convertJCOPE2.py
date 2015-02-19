@@ -1,4 +1,5 @@
-"""@author Sebastien E. Bourban
+#!/usr/bin/env python
+"""@author Sebastien E. Bourban and Noemie Durand
 """
 """@note ... this work is based on a collaborative effort between
   .________.                                                          ,--.
@@ -18,6 +19,10 @@
 """
 """@history 30/04/2013 -- Sebastien E. Bourban
    Frist draft, also the final version.
+"""
+"""@history 11/09/2013 -- Noemie Durand
+   Modification of the 3D output file, so the elevation of the top
+     layer is the same as the elevation in the 2D file.
 """
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -123,12 +128,13 @@ class JCOPE2():
 
       # ~~> the whole of the 2D grid sizes
       print '     +> Extract JCOPE2 sizes'
-      self.jcope2data = self.experiments[0][0]['temp'] # /!\ 't' gives me acces to NPLAN in 3D
-      NX1D = self.jcope2data['lon'].shape[0]
-      NY1D = self.jcope2data['lat'].shape[0]
+      # /!\ 't' gives me access to NPLAN in 3D
+      jcope2data = self.experiments[0][0]['temp']
+      NX1D = jcope2data['lon'].shape[0]
+      NY1D = jcope2data['lat'].shape[0]
       print '     +> Extract JCOPE2 mesh'
-      lonX1D = self.jcope2data['lon'].data[0:NX1D]
-      latY1D = self.jcope2data['lat'].data[0:NY1D]
+      lonX1D = jcope2data['lon'].data[0:NX1D]
+      latY1D = jcope2data['lat'].data[0:NY1D]
       # ~~> no correction for lat,lon
       # ~~> subset for the SELAFIN
       print '     +> Set SELAFIN mesh'
@@ -142,8 +148,8 @@ class JCOPE2():
       # ~~~~ MESH sizes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print '     +> Set SELAFIN sizes'
       # ~~> 3D
-      self.slf3d.NPLAN = self.jcope2data['lev'].shape[0]
-      self.ZPLAN = self.jcope2data['lev'][0:self.slf3d.NPLAN][::-1] # I do not know any other way
+      self.slf3d.NPLAN = jcope2data['lev'].shape[0]
+      self.ZPLAN = jcope2data['lev'][0:self.slf3d.NPLAN][::-1] # I do not know any other way
       self.slf3d.NDP2 = 3
       self.slf3d.NDP3 = 6
       self.slf3d.NPOIN2 = NX1D * NY1D
@@ -161,14 +167,8 @@ class JCOPE2():
       self.slf2d.NELEM3 = self.slf2d.NELEM2
       self.slf2d.IPARAM = [ 0,0,0,0,0,0,            1,     0,0,0 ]
 
-      print '     +> Set SELAFIN mesh'
-      self.slf3d.MESHX = np.tile(x,NY1D).reshape(NY1D,NX1D).T.ravel()
-      self.slf3d.MESHY = np.tile(y,NX1D)
-      self.slf2d.MESHX = self.slf3d.MESHX[0:self.slf2d.NPOIN2]
-      self.slf2d.MESHY = self.slf3d.MESHY[0:self.slf2d.NPOIN2]
-
       # ~~~~ Connectivity ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      print '     +> Set SELAFIN IKLE'
+      print '     +> Set the default SELAFIN IKLE 3D'
       ielem = 0; pbar = ProgressBar(maxval=self.slf3d.NELEM3).start()
       self.slf3d.IKLE3 = np.zeros((self.slf3d.NELEM3,self.slf3d.NDP3),dtype=np.int)
       for k in range(1,self.slf3d.NPLAN):
@@ -195,30 +195,73 @@ class JCOPE2():
                pbar.update(ielem)
       pbar.finish()
       self.slf2d.IKLE3 = np.compress( [ True,True,True,False,False,False ], self.slf3d.IKLE3[0:self.slf3d.NELEM2], axis=1 ) #.reshape((self.slf3d.NELEM2,self.slf3d.NDP2))
-
+      
       # ~~~~ Boundaries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print '     +> Set SELAFIN IPOBO'
       pbar = ProgressBar(maxval=NX1D+NY1D).start()
-      self.slf3d.IPOB3 = np.zeros(self.slf3d.NPOIN3,dtype=np.int)
+      IPOB2 = np.zeros(self.slf3d.NPOIN2,dtype=np.int)
       # ~~> along the x-axis (lon)
       for i in range(NX1D):
-         for k in range(1,self.slf3d.NPLAN+1):
-            ipoin = i*NY1D  + (k-1)*(2*NX1D+2*NY1D-4) 
-            self.slf3d.IPOB3[ipoin] = i + 1 + (k-1)*(2*NX1D+2*NY1D-4)
-            ipoin = i*NY1D -1 + (k-1)*(2*NX1D+2*NY1D-4)
-            self.slf3d.IPOB3[ipoin] = 2*NX1D+(NY1D-2) - i  + (k-1)*(2*NX1D+2*NY1D-4)
+         ipoin = i*NY1D
+         IPOB2[ipoin] = i + 1
+         ipoin = i*NY1D -1
+         IPOB2[ipoin] = 2*NX1D+(NY1D-2) - i
          pbar.update(i)
       # ~~> along the y-axis (alt)
       for i in range(1,NY1D):
-         for k in range(1,self.slf3d.NPLAN+1):
-            ipoin = i + (k-1)*(2*NX1D+2*NY1D-4)
-            self.slf3d.IPOB3[ipoin] = 2*NX1D + 2*(NY1D-2) -i + 1 + (k-1)*(2*NX1D+2*NY1D-4)
-            ipoin = NY1D*(NX1D-1) + i + (k-1)*(2*NX1D+2*NY1D-4)
-            self.slf3d.IPOB3[ipoin] = NX1D + i + (k-1)*(2*NX1D+2*NY1D-4)
+         ipoin = i
+         IPOB2[ipoin] = 2*NX1D + 2*(NY1D-2) -i + 1
+         ipoin = NY1D*(NX1D-1) + i
+         IPOB2[ipoin] = NX1D + i
          pbar.update(i+NX1D)
       pbar.finish()
-      self.slf2d.IPOB3 = self.slf3d.IPOB3[0:self.slf3d.NPOIN2]
-      
+
+      # ~~~~ Connectivity ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # /!\ 'el' gives me access to the real mesh removing elements with -99 values
+      print '     +> Mask the non-values from the SELAFIN IKLE'
+      jcope2data = self.experiments[0][0]['el']
+      var = np.swapaxes( jcope2data['el'].data[0,0,self.jcope2ilat[0]:self.jcope2ilat[-1]+1,self.jcope2ilon[0]:self.jcope2ilon[-1]+1][0], 1,2).ravel()
+      # ~> the elements you wish to keep
+      MASK2 = self.slf2d.IKLE3[np.where( np.sum(np.in1d(self.slf2d.IKLE3,np.compress( var > -99, np.arange(len(var)) )).reshape(self.slf2d.NELEM2,self.slf2d.NDP2),axis=1) == 3 )]
+
+      self.slf2d.NELEM2 = len(MASK2)
+      self.slf2d.NELEM3 = self.slf2d.NELEM2
+      self.slf3d.NELEM2 = self.slf2d.NELEM2
+      self.slf3d.NELEM3 = self.slf3d.NELEM2 * ( self.slf3d.NPLAN-1 )
+
+      # ~~> re-numbering IKLE2 as a local connectivity matrix
+      KNOLG,indices = np.unique( np.ravel(MASK2), return_index=True )
+      KNOGL = dict(zip( KNOLG,range(len(KNOLG)) ))
+      self.MASK2 = np.in1d( np.arange(len(var)),KNOLG )
+      self.MASK3 = np.tile(self.MASK2,self.slf3d.NPLAN)
+      self.slf2d.IKLE2 = - np.ones_like(MASK2,dtype=np.int)
+      for k in range(len(MASK2)):
+         self.slf2d.IKLE2[k] = [ KNOGL[MASK2[k][0]], KNOGL[MASK2[k][1]], KNOGL[MASK2[k][2]] ]
+
+      self.slf3d.NPOIN2 = len(KNOLG)
+      self.slf3d.NPOIN3 = self.slf3d.NPOIN2 * self.slf3d.NPLAN
+      self.slf2d.NPOIN2 = self.slf3d.NPOIN2
+      self.slf2d.NPOIN3 = self.slf2d.NPOIN2
+
+      # ~~> re-connecting the upper floors
+      self.slf2d.IKLE3 = self.slf2d.IKLE2
+      self.slf3d.IKLE2 = self.slf2d.IKLE2
+      self.slf3d.IKLE3 = \
+         np.repeat(self.slf2d.NPOIN2*np.arange(self.slf3d.NPLAN-1),self.slf2d.NELEM2*self.slf3d.NDP3).reshape((self.slf2d.NELEM2*(self.slf3d.NPLAN-1),self.slf3d.NDP3)) + \
+         np.tile(np.add(np.tile(self.slf2d.IKLE2,2),np.repeat(self.slf2d.NPOIN2*np.arange(2),self.slf3d.NDP2)),(self.slf3d.NPLAN-1,1))
+
+      # ~~~~ Boundaries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      self.slf2d.IPOB2 = IPOB2[self.MASK2]
+      self.slf2d.IPOB3 = self.slf2d.IPOB2
+      self.slf3d.IPOB2 = self.slf2d.IPOB2
+      self.slf3d.IPOB3 = np.ravel(np.add(np.repeat(self.slf2d.IPOB2,self.slf3d.NPLAN).reshape((self.slf2d.NPOIN2,self.slf3d.NPLAN)),self.slf2d.NPOIN2*np.arange(self.slf3d.NPLAN)).T)
+
+      # ~~~~ Mesh ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      print '     +> Set SELAFIN mesh'
+      self.slf3d.MESHX = np.tile(x,NY1D).reshape(NY1D,NX1D).T.ravel()[self.MASK2] + 1.0/24.0
+      self.slf3d.MESHY = np.tile(y,NX1D)[self.MASK2] + 1.0/24.0
+      self.slf2d.MESHX = self.slf3d.MESHX
+      self.slf2d.MESHY = self.slf3d.MESHY
 
    def putContent(self,rootName,only2D):
 
@@ -254,8 +297,8 @@ class JCOPE2():
       self.slf2d.fole.update({ 'float': ('f',4) })  # single precision
       self.slf2d.appendHeaderSLF()
       # ~~~~ Time loop(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      var3d = np.zeros(self.slf3d.NPOIN3,dtype=np.float)
-      var2d = np.zeros(self.slf2d.NPOIN3,dtype=np.float)
+      #var3d = np.zeros(self.slf3d.NPOIN3,dtype=np.float)
+      #var2d = np.zeros(self.slf2d.NPOIN3,dtype=np.float)
       print '     +> Write SELAFIN cores'
       ibar = 0; pbar = ProgressBar(maxval=6*nbar).start()
       for e in self.experiments:
@@ -269,8 +312,10 @@ class JCOPE2():
             self.slf2d.appendCoreTimeSLF(ibar)
 
             # ~~> ELEVATION
-            v2d = np.swapaxes( jcope2data['el']['el'].data[t,0,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2).ravel()
-            var2d = np.where( v2d > -99, v2d, 0.0 )
+            #var2d = np.swapaxes( jcope2data['el']['el'].data[t,0,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2).ravel() #[self.MASK2]
+            var2d = np.swapaxes( jcope2data['el']['el'].data[t,0,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2) #.ravel()[self.MASK2]
+            print len(var2d[0]),len(var2d[0][0]),np.where(var2d>-99.0,var2d,0.0)
+            sys.exit()
             self.slf2d.appendCoreVarsSLF([var2d])
             if not only2D:
                var3d = - np.tile(self.ZPLAN,self.slf3d.NPOIN2).reshape(self.slf3d.NPOIN2,self.slf3d.NPLAN).T.ravel()
@@ -282,12 +327,13 @@ class JCOPE2():
             # ~~> SALINITY
             if only2D: var = np.swapaxes( jcope2data['salt']['salt'].data[t,0:1,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
             else: var = np.swapaxes( jcope2data['salt']['salt'].data[t,0:self.slf3d.NPLAN,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
-            v2d = var[0].ravel()
-            var2d = np.where( v2d > -99, v2d, 0.0 )
+            var2d = var[0].ravel()[self.MASK2]
             self.slf2d.appendCoreVarsSLF([var2d])
             if not only2D:
-               v3d = var[::-1].ravel()
-               var3d = np.where( v3d > -99, v3d, 0.0 )
+               var3d = var[::-1].ravel()[self.MASK3]
+               for ipoin in range(self.slf3d.NPOIN2):
+                  for iplan in range(self.slf3d.NPLAN-1,0,-1):
+                     if var3d[ipoin+(iplan-1)*self.slf3d.NPOIN2] < -99.0: var3d[ipoin+(iplan-1)*self.slf3d.NPOIN2] = var3d[ipoin+iplan*self.slf3d.NPOIN2]
                self.slf3d.appendCoreVarsSLF([var3d])
                pbar.write('             - salinity',6*ibar+2)
             pbar.update(6*ibar+2)
@@ -295,12 +341,13 @@ class JCOPE2():
             # ~~> TEMPERATURE
             if only2D: var = np.swapaxes( jcope2data['temp']['temp'].data[t,0:1,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
             else: var = np.swapaxes( jcope2data['temp']['temp'].data[t,0:self.slf3d.NPLAN,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
-            v2d = var[0].ravel()
-            var2d = np.where( v2d > -99, v2d, 0.0 )
+            var2d = var[0].ravel()[self.MASK2]
             self.slf2d.appendCoreVarsSLF([var2d])
             if not only2D:
-               v3d = var[::-1].ravel()
-               var3d = np.where( v3d > -99, v3d, 0.0 )
+               var3d = var[::-1].ravel()[self.MASK3]
+               for ipoin in range(self.slf3d.NPOIN2):
+                  for iplan in range(self.slf3d.NPLAN-1,0,-1):
+                     if var3d[ipoin+(iplan-1)*self.slf3d.NPOIN2] < -99.0: var3d[ipoin+(iplan-1)*self.slf3d.NPOIN2] = var3d[ipoin+iplan*self.slf3d.NPOIN2]
                self.slf3d.appendCoreVarsSLF([var3d])
                pbar.write('             - temperature',6*ibar+3)
             pbar.update(6*ibar+3)
@@ -308,12 +355,13 @@ class JCOPE2():
             # ~~> VELOCITY U
             if only2D: var = np.swapaxes( jcope2data['u']['u'].data[t,0:1,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
             else: var = np.swapaxes( jcope2data['u']['u'].data[t,0:self.slf3d.NPLAN,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
-            v2d = var[0].ravel()
-            var2d = np.where( v2d > -99, v2d, 0.0 )
+            var2d = var[0].ravel()[self.MASK2]
             self.slf2d.appendCoreVarsSLF([var2d])
             if not only2D:
-               v3d = var[::-1].ravel()
-               var3d = np.where( v3d > -99, v3d, 0.0 )
+               var3d = var[::-1].ravel()[self.MASK3]
+               for ipoin in range(self.slf3d.NPOIN2):
+                  for iplan in range(self.slf3d.NPLAN-1,0,-1):
+                     if var3d[ipoin+(iplan-1)*self.slf3d.NPOIN2] < -99.0: var3d[ipoin+(iplan-1)*self.slf3d.NPOIN2] = var3d[ipoin+iplan*self.slf3d.NPOIN2]
                self.slf3d.appendCoreVarsSLF([var3d])
             pbar.write('             - u-velocity',6*ibar+4)
             pbar.update(6*ibar+4)
@@ -321,12 +369,13 @@ class JCOPE2():
             # ~~> VELOCITY V
             if only2D: var = np.swapaxes( jcope2data['v']['v'].data[t,0:1,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
             else: var = np.swapaxes( jcope2data['v']['v'].data[t,0:self.slf3d.NPLAN,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
-            v2d = var[0].ravel()
-            var2d = np.where( v2d > -99, v2d, 0.0 )
+            var2d = var[0].ravel()[self.MASK2]
             self.slf2d.appendCoreVarsSLF([var2d])
             if not only2D:
-               v3d = var[::-1].ravel()
-               var3d = np.where( v3d > -99, v3d, 0.0 )
+               var3d = var[::-1].ravel()[self.MASK3]
+               for ipoin in range(self.slf3d.NPOIN2):
+                  for iplan in range(self.slf3d.NPLAN-1,0,-1):
+                     if var3d[ipoin+(iplan-1)*self.slf3d.NPOIN2] < -99.0: var3d[ipoin+(iplan-1)*self.slf3d.NPOIN2] = var3d[ipoin+iplan*self.slf3d.NPOIN2]
                self.slf3d.appendCoreVarsSLF([var3d])
             pbar.write('             - v-velocity',6*ibar+5)
             pbar.update(6*ibar+5)

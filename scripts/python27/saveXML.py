@@ -85,7 +85,6 @@ if __name__ == "__main__":
             print ' ... maybe something wrong with your command line'
             sys.exit(1)
          try:
-            print xmls['xml']['cfg'].keys()
             runXML(path.realpath(xmlFile),xmls,[],options.bypass)
          except Exception as e:
             mes = filterMessage({'name':'runXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)

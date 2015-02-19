@@ -79,6 +79,10 @@
    Addition of a new feature: the ability for the cmd_exe to create static or
    dynamic libraries, using <libname> instead of <exename> in the command.
 """
+"""@history 25/12/2014 -- Sebastien E. Bourban
+   'version' is not mandatroy anymore.
+   It has been removed from having to be in the configuration file.
+"""
 """@brief
 """
 
@@ -86,6 +90,7 @@
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
+import re
 import sys
 from os import path, sep, walk, chdir, remove, environ
 import ConfigParser
@@ -94,7 +99,7 @@ from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC,clea
 from parsers.parserFortran import scanSources
 # ~~> dependencies towards other pytel/modules
 from utils.files import createDirectories,putFileContent,isNewer
-from utils.messages import MESSAGES,filterMessage
+from utils.messages import MESSAGES,filterMessage,banner
 from utils.progressbar import ProgressBar
 
 # _____                  ___________________________________________
@@ -185,7 +190,7 @@ def putScanContent(fle,root,content):
    if 'general' in content:
       lines.append('[general]'+'\n'+'path: '+content['general']['path'].replace(root,'<root>').replace(sep,'|')+'\n'+'module: '+content['general']['module'])
       lines.append('liborder: '+' '.join(content['general']['liborder']))
-      lines.append('version: '+content['general']['version']+'\n'+'name: '+content['general']['name'])
+      lines.append('name: '+content['general']['name'])
    for lib in sorted(content.keys()):
       if lib == 'general': continue
       lines.append('\n['+lib+']'+'\n'+'path: '+content[lib]['path'].replace(root,'<root>').replace(sep,'|')+'\n'+'files: '+'\n  '.join(content[lib]['files']))
@@ -210,7 +215,6 @@ def getScanContent(fle,root,bypass):
    general['path'] = general['path'].replace('<root>',root).replace('|',sep)
    if not 'module' in general: raise Exception([{'name':'getScanContent','msg':'Could not find the key module in the general section of the cmdf-scan file:'+fle}])
    if not 'liborder' in general: raise Exception([{'name':'getScanContent','msg':'Could not find the key liborder in the general section of the cmdf-scan file:'+fle}])
-   if not 'version' in general: raise Exception([{'name':'getScanContent','msg':'Could not find the key version in the general section of the cmdf-scan file:'+fle}])
    if not 'name' in general: raise Exception([{'name':'getScanContent','msg':'Could not find the key name in the general section of the cmdf-scan file:'+fle}])
    general['liborder'] = general['liborder'].split()
    content.update({'general':general})
@@ -450,15 +454,40 @@ if __name__ == "__main__":
    BYPASS = True  # /!\ Temporary bypass for subroutine within programs
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+# ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    USETELCFG = ''
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    SYSTELCFG = path.join(PWD,'configs')
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ banners ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   mes = MESSAGES()  # runcode takes its version number from the CAS file
+   svnrev = ''
+   svnurl = ''
+   svnban = 'unknown revision'
+   try:
+      key_equals = re.compile(r'(?P<key>[^:]*)(?P<after>.*)',re.I)
+      tail,code = mes.runCmd('svn info '+PWD,True)
+      for line in tail.split('\n'):
+         proc = re.match(key_equals,line)
+         if proc:
+            if proc.group('key').strip() == 'Revision': svnrev = proc.group('after')[1:].strip()
+            if proc.group('key').strip() == 'URL': svnurl = proc.group('after')[1:].strip()
+   except:
+      pass
+   if svnrev+svnurl == '':
+      print '\n'.join(banner('unknown revision'))
+   else:
+      if svnurl != '': print '\n'.join(banner(svnurl.split('/')[-1]))
+      if svnrev != '': print '\n'.join(banner('rev. #'+svnrev))
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nLoading Options and Configurations\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",
                       type="string",
@@ -475,11 +504,6 @@ if __name__ == "__main__":
                       dest="rootDir",
                       default='',
                       help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",
-                      type="string",
-                      dest="version",
-                      default='',
-                      help="specify the version number, default is taken from config file" )
    parser.add_option("-m", "--modules",
                       type="string",
                       dest="modules",
@@ -522,17 +546,17 @@ if __name__ == "__main__":
 
    for cfgname in cfgs:
       # still in lower case
+      if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
       if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
-      if options.version != '': cfgs[cfgname]['version'] = options.version
       if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
       # parsing for proper naming
       cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
-      print '\n\nScanning the source code for:\n\
+      print '\n\n'+'\n'.join(banner(cfgname))
+      print 'Scanning the source code for:\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       print '    +> configuration: ' +  cfgname
       if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
       print '    +> root:          ' +  cfgs[cfgname]['root']
-      print '    +> version:       ' +  cfgs[cfgname]['version']
       print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
@@ -576,7 +600,7 @@ if __name__ == "__main__":
                for lib in LIBDEPS:
                  if lib in MAKSYSTEL['deps']: fixedLibOrder.append(lib)
                #TODO: Replace fixedLibOrder by MAKSYSTEL['deps']
-               FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'version':cfgs[cfgname]['version'],'name':item,'module':prg[item][0],'liborder':fixedLibOrder}} 
+               FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'name':item,'module':prg[item][0],'liborder':fixedLibOrder}} 
                for obj,lib in HOMERES[item]['add']:
                   try:
                      fic = all_file[lib][path.splitext(path.basename(obj.replace('|',sep)))[0].upper()]

@@ -69,6 +69,7 @@ from struct import unpack,pack
 import sys
 from os import path,getcwd
 import glob
+from copy import deepcopy
 import numpy as np
 from scipy.spatial import cKDTree
 from matplotlib.tri import Triangulation
@@ -132,17 +133,18 @@ def getValueHistorySLF( hook,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,va
          f.seek(4,1)                      # the file pointer advances through all records to keep on track
          if ivar in varsIndexes:          # extraction of a particular variable
             VARSOR = unpack(endian+str(NPOIN3)+ftype,f.read(fsize*NPOIN3))
+            jvar = varsIndexes.index(ivar)
             ipt = 0                       # ipt is from 0 to lens-1 (= all points extracted and all plans extracted)
             for xy,zp in support:
                if type(xy) == type(()):   # xp is a pair (x,y) and you need interpolation
                   for plan in zp:   # /!\ only list of plans is allowed for now
-                     z[varsIndexes.index(ivar)][ipt][it] = 0.
+                     z[jvar][ipt][it] = 0.
                      ln,bn = xy
-                     for inod in range(len(bn)): z[varsIndexes.index(ivar)][ipt][it] += bn[inod]*VARSOR[ln[inod]+plan*NPOIN3/NPLAN]
+                     for inod in range(len(bn)): z[jvar][ipt][it] += bn[inod]*VARSOR[ln[inod]+plan*NPOIN3/NPLAN]
                      ipt += 1             # ipt advances to keep on track
                else:
                   for plan in zp:   # /!\ only list of plans is allowed for now
-                     z[varsIndexes.index(ivar)][ipt][it] = VARSOR[xy+plan*NPOIN3/NPLAN]
+                     z[jvar][ipt][it] = VARSOR[xy+plan*NPOIN3/NPLAN]
                      ipt += 1             # ipt advances to keep on track
          else:
             f.seek(fsize*NPOIN3,1)            # the file pointer advances through all records to keep on track
@@ -541,7 +543,7 @@ class SELAFIN:
       self.IKLE3 = np.array( unpack(endian+str(self.NELEM3*self.NDP3)+'i',f.read(4*self.NELEM3*self.NDP3)) ) - 1
       f.seek(4,1)
       self.IKLE3 = self.IKLE3.reshape((self.NELEM3,self.NDP3))
-      if self.NPLAN > 1: self.IKLE2 = np.compress( [ True,True,True,False,False,False ], self.IKLE3[0:self.NELEM2], axis=1 )
+      if self.NPLAN > 1: self.IKLE2 = np.compress( np.repeat([True,False],self.NDP2), self.IKLE3[0:self.NELEM2], axis=1 )
       else: self.IKLE2 = self.IKLE3
       # ~~ Read the IPOBO array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       f.seek(4,1)
@@ -945,13 +947,10 @@ class PARAFINS(SELAFINS):
             print "... Could not find the following sub-file in the list: ",fo
             return []
       print '      +> Reading the header from the following partitions:'
-      ibar = 0; pbar = ProgressBar(maxval=len(slfnames)).start()
       for fle in sorted(slfnames):
-         ibar += 1; pbar.write('         ~> '+path.basename(fle),ibar)
+         print '         ~> '+path.basename(fle)
          slf = SELAFIN(fle)
          self.slfs.append(slf)
-         pbar.update(ibar)
-      pbar.finish()
       return
 
    def getPALUES(self,t):
@@ -996,11 +995,97 @@ class PARAFINS(SELAFINS):
       self.slf.fole['hook'].close()
       if showbar: pbar.finish()
 
+   def cutContent(self,root,showbar=True):
+      islf = SELAFIN(root)
+      print '      +> Writing the core of the following partitions:'
+      for slf in self.slfs: #TODO: do this loop in python parallel with a bottle neck at islf.getVALUES(t)
+         sub = deepcopy(slf)
+         # ~~ Conversion to local islf ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         # you know the geom is 2D
+         # keep the IPOBO2, X2D, Y2D and IKLE2 and replace the rest
+         sub.NPLAN = islf.NPLAN
+         sub.IPARAM = islf.IPARAM   
+
+         # ~~> matching partitions
+         if self.slf.NPOIN2 == islf.NPOIN2:
+            sub.NDP2 = islf.NDP2
+            sub.NDP3 = islf.NDP3
+            sub.NPOIN3 = sub.NPOIN2*islf.NPLAN
+            if islf.NPLAN > 1:
+               sub.NELEM3 = sub.NELEM2*(islf.NPLAN-1)
+               sub.IPOB3 = np.ravel(np.add(np.repeat(sub.IPOB2,islf.NPLAN).reshape((sub.NPOIN2,islf.NPLAN)),sub.NPOIN2*np.arange(islf.NPLAN)).T)
+               sub.IKLE3 = \
+                  np.repeat(sub.NPOIN2*np.arange(islf.NPLAN-1),sub.NELEM2*islf.NDP3).reshape((sub.NELEM2*(islf.NPLAN-1),islf.NDP3)) + \
+                  np.tile(np.add(np.tile(sub.IKLE2,2),np.repeat(sub.NPOIN2*np.arange(2),sub.NDP2)),(islf.NPLAN-1,1))
+            else:
+               sub.NELEM3 = sub.NELEM2
+               sub.IPOB3 = sub.IPOB2
+               sub.IKLE3 = sub.IKLE2
+            indices = sub.IPOB2-1
+
+         # ~~> filtered partitions / non reversable !
+         else:
+            # Intersection with the local domain (sub of slfs): the intersection could be empty
+            intsect = np.in1d(islf.IPOB2,np.sort(sub.IPOB2))
+            # The new compressed IPOBO
+            sub.IPOB2 = np.compress( intsect, islf.IPOB2 )
+            # Those node numbers of the islf you keep ~> converting True/False into indices
+            indices = np.arange(len(islf.IPOB2),dtype=np.int)[intsect]
+            # Set the array that only includes elements of islf.IKLE2 with at least two nodes in the subdomain
+            GKLE2 = islf.IKLE2[np.where( np.sum(np.in1d(islf.IKLE2,np.sort(indices)).reshape(islf.NELEM2,islf.NDP2),axis=1) == islf.NDP2 )]
+            # re-numbering IKLE2 as a local connectivity matrix
+            KNOLG = np.unique( np.ravel(GKLE2) )
+            KNOGL = dict(zip( KNOLG,range(len(KNOLG)) ))
+            sub.IKLE2 = - np.ones_like(GKLE2,dtype=np.int)
+            for k in range(len(GKLE2)):
+               for ki in range(islf.NDP2): sub.IKLE2[k][ki] = KNOGL[GKLE2[k][ki]]    # /!\ sub.IKLE2 has a local numbering, fit to the boundary elements
+            # Set the remaining integers
+            sub.NPOIN2 = len(sub.IPOB2)
+            sub.NELEM2 = len(sub.IKLE2)
+            sub.NDP2 = islf.NDP2
+            sub.NDP3 = islf.NDP3
+            sub.NPOIN3 = sub.NPOIN2*islf.NPLAN
+            if islf.NPLAN > 1:
+               sub.NELEM3 = sub.NELEM2*(islf.NPLAN-1)
+               sub.IPOB3 = np.ravel(np.add(np.repeat(sub.IPOB2,islf.NPLAN).reshape((sub.NPOIN2,islf.NPLAN)),sub.NPOIN2*np.arange(islf.NPLAN)).T)
+               sub.IKLE3 = \
+                  np.repeat(sub.NPOIN2*np.arange(islf.NPLAN-1),sub.NELEM2*islf.NDP3).reshape((sub.NELEM2*(islf.NPLAN-1),islf.NDP3)) + \
+                  np.tile(np.add(np.tile(sub.IKLE2,2),np.repeat(sub.NPOIN2*np.arange(2),sub.NDP2)),(islf.NPLAN-1,1))
+            else:
+               sub.NELEM3 = sub.NELEM2
+               sub.IPOB3 = sub.IPOB2
+               sub.IKLE3 = sub.IKLE2
+            # Set the remaining floats
+            sub.MESHX = islf.MESHX[indices]
+            sub.MESHY = islf.MESHY[indices]
+               
+         # ~~ Addition of variables from islf ~~~~~~~~~~~~~~~~~~~~~~
+         sub.TITLE = islf.TITLE
+         sub.DATETIME = islf.DATETIME
+         sub.VARNAMES = islf.VARNAMES; sub.VARUNITS = islf.VARUNITS
+         sub.CLDNAMES = islf.CLDNAMES; sub.CLDUNITS = islf.CLDUNITS
+         sub.NBV1 = islf.NBV1; sub.NBV2 = islf.NBV2
+         sub.NVAR = sub.NBV1+sub.NBV2
+         # ~~ putContent ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         fileName = path.basename(sub.file['name']).replace(self.slf.file['name'],root)
+         sub.fole.update({ 'hook': open(fileName,'wb') })
+         sub.appendHeaderSLF()
+         print '         ~> '+path.basename(fileName)
+         # ~~> Time stepping
+         sub.tags['times'] = islf.tags['times']
+         VARSORS = np.zeros((sub.NVAR,sub.NPOIN3),dtype=np.float64)
+         for t in range(len(islf.tags['times'])):
+            sub.appendCoreTimeSLF(t) # Time stamps
+            for ivar,var in zip(range(sub.NVAR),islf.getVALUES(t)):
+               for n in range(sub.NPLAN): VARSORS[ivar][n*sub.NPOIN2:(n+1)*sub.NPOIN2] = var[n*islf.NPOIN2:(n+1)*islf.NPOIN2][indices]
+            sub.appendCoreVarsSLF(VARSORS)
+         sub.fole['hook'].close()
+
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
 #
 
-__author__="Christopher J. Cawthor and Sebastien E. Bourban"
+__author__="Sebastien E. Bourban"
 __date__ ="$09-Sep-2011 08:51:29$"
 
 if __name__ == "__main__":

@@ -491,7 +491,6 @@ class actionRUN(ACTION):
       specs.sortieFile = True
       specs.tmpdirectory = True
       specs.rootDir = options.rootDir
-      specs.version = options.version
       specs.wDir = options.wDir
       specs.compileonly = False
       if options.hosts != '': 
@@ -1390,7 +1389,10 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
          typeSave = xmlChild.tag
          if "type" not in xmlChild.attrib:  #TODO: This will eventually be removed
             if len(typeSave) == 4: raise Exception([{'name':'runXML','msg':'do not know what dimension your saved data will be in: '+xmlChild.attrib["xref"]}])
-            elif len(typeSave) == 6: xmlChild.set("type",typeSave[4:6]+':')
+            elif len(typeSave) == 6:     # defaults for each type
+               if typePlot[4:6] == '1d': xmlChild.set("type",typePlot[4:6]+':history')
+               if typePlot[4:6] == '2d': xmlChild.set("type",typePlot[4:6]+':p-section')
+               if typePlot[4:6] == '3d': xmlChild.set("type",typePlot[4:6]+':i-surface')
             else: raise Exception([{'name':'runXML','msg':'the type of your saved data should be in: ["save1d","save2d","save3d"] for '+xmlChild.attrib["xref"]}])
          else:
             if len(typeSave) == 4:
@@ -1607,7 +1609,10 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
          typePlot = xmlChild.tag 
          if "type" not in xmlChild.attrib:  #TODO: This will eventually be removed
             if len(typePlot) == 4: raise Exception([{'name':'runXML','msg':'do not know what dimension your plotted data will be in: '+xmlChild.attrib["xref"]}])
-            elif len(typePlot) == 6: xmlChild.set("type",typePlot[4:6]+':')
+            elif len(typePlot) == 6:     # defaults for each type
+               if typePlot[4:6] == '1d': xmlChild.set("type",typePlot[4:6]+':history')
+               if typePlot[4:6] == '2d': xmlChild.set("type",typePlot[4:6]+':p-section')
+               if typePlot[4:6] == '3d': xmlChild.set("type",typePlot[4:6]+':i-surface')
             else: raise Exception([{'name':'runXML','msg':'the type of your plot should be in: ["plot1d","plot2d","plot3d","plotpv"] for '+xmlChild.attrib["xref"]}])
          else:
             if len(typePlot) == 4:

@@ -50,10 +50,10 @@
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
     type="plan" is assumed by default if nothing else is there, particularly for 2D files
 	roi="[-1.0;-0.3][23.0;0.7]"
- --> 
+ -->   
    <plot2d xref="figure3" type="v-section" config="oneofall" time="[-1]" size="[12;5]" > 
-      <layer vars="Z:mesh" extract="(0;1)(21;1)" target="1:T3DRES" sample="(10;0)(15;0.5)[10;4]" /> 
-   </plot2d>  <!--
+      <layer vars="Z:mesh" extract="(0;1)(21;1)" target="1:T3DRES" sample="(10;0)(15;0.5){10;4}" /> 
+   </plot2d> 
    <plot2d xref="figure6" type="v-section" config="oneofall" time="[-1]" size="[12;5]" > 
       <layer vars="Z:wire" extract="(0;1)(21;1)" target="1:T3DRES"  /> 
    </plot2d>  
@@ -62,7 +62,7 @@
    </plot2d> 
    <plot2d xref="figure9" size="[12;3]" type="v-section" extract="(0;1)(21;1)" > 
       <layer vars="vitesse:map" target="1:T3DRES" config="oneofall" time="[-1]" /> 
-      <layer vars="vitesse:arrow" target="1:T3DRES" config="oneofall" time="[-1]" sample="(10;0)(15;0.5)[10;4]" /> 
+      <layer vars="vitesse:arrow" target="1:T3DRES" config="oneofall" time="[-1]" sample="(10;0)(15;0.5){10;4}" /> 
    </plot2d> 
    <plot2d xref="figure1" config="oneofall" time="[-1]" size="[12;3]" > 
       <layer vars="Z:map" extract="[]#[-1]" target="1:T3DRES" /> 
@@ -72,7 +72,7 @@
    </plot2d>  
    <plot2d xref="figure0" size="[12;3]" > 
       <layer vars="vitesse:map" target="1:T3DHYD" config="oneofall" time="[-1]" /> 
-      <layer vars="vitesse:angle" target="1:T3DHYD" config="oneofall" time="[-1]" sample="(5;0)(15;2)[10;4]" /> 
-   </plot2d> -->  
+      <layer vars="vitesse:angle" target="1:T3DHYD" config="oneofall" time="[-1]" sample="(5;0)(15;2){10;4}" /> 
+   </plot2d> <!---->  
 
 </validation>

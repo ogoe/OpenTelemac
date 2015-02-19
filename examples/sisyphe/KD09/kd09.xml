@@ -19,7 +19,7 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="Built" rank="11"
+   <action xref="Built" rank="17"
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_kd09.cas"
        title="kd09 telemac2d-sisyphe coupled scalar mode "

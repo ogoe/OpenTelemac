@@ -117,7 +117,7 @@
       CONSTRA = EMA*BOLTZ *(TAIR+273.15D0)**4 * 
      &          (1.D0+COEF_K*(NEBU/8.D0)**2)
 !     MAJORATED RADIATION
-	  RAJ      = 1.8D0*CONSTRA
+      RAJ     = 1.8D0*CONSTRA
       CONSTSS = 1.D0/(ROO*CP_EAU)
 !     LOOP OVER ALL MESH POINTS
       DO I=1,NPOIN

@@ -106,6 +106,10 @@
    The content of the log files from GRETEL and PARTEL are now reported
    in the error report.
 """
+"""@history 25/12/2014 -- Sebastien E. Bourban
+   'version' is not mandatroy anymore.
+   It has been removed from having to be in the configuration file.
+"""
 """@brief
          runcode is the execution launcher for all TELEMAC modules
 """
@@ -114,9 +118,11 @@
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
+import re
 import sys
 import shutil
 import threading
+import numpy as np
 from time import localtime, strftime
 from subprocess import *
 from os import path,walk,mkdir,chdir,remove,sep,environ,listdir,getcwd
@@ -124,9 +130,10 @@ from os import path,walk,mkdir,chdir,remove,sep,environ,listdir,getcwd
 from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
 from utils.files import checkSymLink,symlinkFile,getFileContent,putFileContent,removeDirectories,isNewer
-from utils.messages import MESSAGES,filterMessage
+from utils.messages import MESSAGES,filterMessage,banner
 from parsers.parserKeywords import scanCAS,readCAS,rewriteCAS,scanDICO, getCASLang,getKeyWord,setKeyValue,getIOFilesSubmit
 from parsers.parserSortie import getLatestSortieFiles
+from parsers.parserSELAFIN import PARAFINS
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -275,7 +282,7 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
             xcpt.append({'name':'processLIT','msg':'file does not exist: '+path.basename(cref)})
             continue
          crun = path.join(TMPDir,iFiles[k].split(';')[1])
-         if path.exists(crun) and update:
+         if path.exists(crun) and update:    # update is always True because we now copy the CAS file regardeless
             if not isNewer(crun,cref) == 1:
                if iFiles[k].split(';')[5][0:7] == 'SELAFIN' or iFiles[k].split(';')[5][0:5] == 'PARAL':
                   # ~~> check if all files are there before skipping
@@ -291,74 +298,76 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
                      cfor = []
                      for file in listdir(cdir):
                         if path.isfile(path.join(cdir,file)): cfor.extend(getFileContent(path.join(cdir,file)))
-                     print 're-bundling: ', path.basename(cref),crun
+                     print '   re-bundling: ', path.basename(cref),crun
                      putFileContent(crun,cfor+[''])
                   else:
-                     print ' re-copying: ', path.basename(cref),crun
+                     print '    re-copying: ', path.basename(cref),crun
                      putFileContent(crun,getFileContent(cref)+[''])
                elif iFiles[k].split(';')[5][0:3] == 'CAS':
-                  #print ' re-writing: ', crun
+                  #print '    re-writing: ', crun
                   #putFileContent(crun,rewriteCAS(cas))
-                  print ' re-copying: ', crun
+                  print '    re-copying: ', crun
                   putFileContent(crun,cas[0])
                else:
-                  print '   ignoring: ', path.basename(cref),crun
+                  print '      ignoring: ', path.basename(cref),crun
                   #putFileContent(crun,getFileContent(cref)+[''])
                continue
          if iFiles[k].split(';')[3] == 'ASC':
             if iFiles[k].split(';')[5][0:3] == 'CAS':
-               #print ' re-writing: ', crun
+               #print '    re-writing: ', crun
                #putFileContent(crun,rewriteCAS(cas))
-               print ' re-copying: ', crun
+               print '    re-copying: ', crun
                putFileContent(crun,cas[0])
                # An input mesh may be a binary or an ascii file
                # It depends on the selected format (Selafin, Ideas, Med)
             elif iFiles[k].split(';')[5][0:12] == 'SELAFIN-GEOM':
                if use_link:
-                  print '    linking: ', path.basename(cref),crun
+                  print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
                else:
-                  print '    copying: ', path.basename(cref),crun
-                  shutil.copy2(path.join(getcwd(),cref), crun)
+                  print '       copying: ', path.basename(cref),crun
+                  shutil.copyfile(path.join(getcwd(),cref), crun)
+                  #shutil.copy2(path.join(getcwd(),cref), crun)
             elif iFiles[k].split(';')[5][0:7] == 'SECTION':
                # Giving section name means that we have to give it to partel
                section_name = path.basename(crun)
                if use_link:
-                  print '    linking: ', path.basename(cref),crun
+                  print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
                else:
-                  print '    copying: ', path.basename(cref),crun
+                  print '       copying: ', path.basename(cref),crun
                   putFileContent(crun,getFileContent(cref)+[''])
             elif iFiles[k].split(';')[5][0:5] == 'ZONES':
                # Giving zone name means that we have to give it to partel
                zone_name = path.basename(crun)
                if use_link:
-                  print '    linking: ', path.basename(cref),crun
+                  print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
                else:
-                  print '    copying: ', path.basename(cref),crun
+                  print '       copying: ', path.basename(cref),crun
                   putFileContent(crun,getFileContent(cref)+[''])
             elif path.isdir(cref):
                cdir = path.join(getcwd(),cref)
                cfor = []
                for file in listdir(cdir):
                   if path.isfile(path.join(cdir,file)): cfor.extend(getFileContent(path.join(cdir,file)))
-               print '   bundling: ', path.basename(cref),crun
+               print '      bundling: ', path.basename(cref),crun
                putFileContent(crun,cfor+[''])
             else:
                if use_link:
-                  print '    linking: ', path.basename(cref),crun
+                  print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
                else:
-                  print '    copying: ', path.basename(cref),crun
+                  print '       copying: ', path.basename(cref),crun
                   putFileContent(crun,getFileContent(cref)+[''])
          else:
             if use_link:
-               print '    linking: ', path.basename(cref),crun
+               print '       linking: ', path.basename(cref),crun
                symlinkFile(path.join(getcwd(),cref), crun)
             else:
-               print '    copying: ', path.basename(cref),crun
-               shutil.copy2(path.join(getcwd(),cref), crun)
+               print '       copying: ', path.basename(cref),crun
+               shutil.copyfile(path.join(getcwd(),cref), crun)
+               #shutil.copy2(path.join(getcwd(),cref), crun)
 
    if xcpt != []: raise Exception(xcpt) # raise full report
    return section_name,zone_name
@@ -373,11 +382,17 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
             npsize = 1
             while 1:                              # HORIZONTAL SECTION FILES
                cref = path.join(CASDir,v[0].strip("'\"")+'_{0:03d}'.format(npsize))
-               if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
+               if path.isfile(cref):
+                  bs,es = path.splitext(cref)
+                  i = 0
+                  while 1:   # this would be an infinite loop only if you have an inifite number of files
+                     i = i + 1
+                     if not path.isfile(bs+'_old'+str(i)+es): break
+                  shutil.move(cref,bs+'_old'+str(i)+es)
                crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)
                if not path.isfile(crun): break
                shutil.move(crun,cref) #shutil.copy2(crun,cref)
-               print '  moving: ', path.basename(cref)
+               print '        moving: ', path.basename(cref)
                npsize = npsize + 1
             npsize = 1
             while 1:                              # VERTICAL SECTION FILES
@@ -385,11 +400,17 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                if not path.isfile(oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)): break
                while 1:
                   cref = path.join(CASDir,v[0].strip("'\"")+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime))
-                  if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
+                  if path.isfile(cref):
+                     bs,es = path.splitext(cref)
+                     i = 0
+                     while 1:   # this would be an infinite loop only if you have an inifite number of files
+                        i = i + 1
+                        if not path.isfile(bs+'_old'+str(i)+es): break
+                     shutil.move(cref,bs+'_old'+str(i)+es)
                   crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)
                   if not path.isfile(crun): break
                   shutil.move(crun,cref) #shutil.copy2(crun,cref)
-                  print '  moving: ', path.basename(cref)
+                  print '        moving: ', path.basename(cref)
                   nptime = nptime + 1
                npsize = npsize + 1
          elif oFiles[k].split(';')[5] == 'PARAL' and ncsize > 1: # MAIN MODULE
@@ -397,30 +418,47 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
             cb,ce = path.splitext(v[0].strip("'\""))
             while 1:
                cref = path.join(CASDir,cb+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)+ce)
-               if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
+               if path.isfile(cref):
+                  bs,es = path.splitext(cref)
+                  i = 0
+                  while 1:   # this would be an infinite loop only if you have an inifite number of files
+                     i = i + 1
+                     if not path.isfile(bs+'_old'+str(i)+es): break
+                  shutil.move(cref,bs+'_old'+str(i)+es)
                crun = oFiles[k].split(';')[1]+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)
                if not path.isfile(crun): break
                shutil.move(crun,cref) #shutil.copy2(crun,cref)
-               #print ' copying: ', path.basename(cref)
-               print '  moving: ', path.basename(cref)
+               print '        moving: ', path.basename(cref)
                npsize = npsize + 1
          elif oFiles[k].split(';')[5] == 'MULTI2':
             for crun in listdir('.') :
                if crun.count(oFiles[k].split(';')[1]) == 1:
                   cref = path.join(CASDir,crun.lower().replace(oFiles[k].split(';')[1].lower(),
                          v[0].strip("'\"").split('.')[0])) + '.' + v[0].strip("'\"").split('.')[1]
-                  if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
+                  if path.isfile(cref):
+                     bs,es = path.splitext(cref)
+                     i = 0
+                     while 1:   # this would be an infinite loop only if you have an inifite number of files
+                        i = i + 1
+                        if not path.isfile(bs+'_old'+str(i)+es): break
+                     shutil.move(cref,bs+'_old'+str(i)+es)
                   shutil.move(crun,cref)
-                  print '  moving: ', path.basename(cref)
+                  print '        moving: ', path.basename(cref)
          else:
             cref = path.join(CASDir,v[0].strip("'\""))
-            if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
+            if path.isfile(cref):
+               bs,es = path.splitext(cref)
+               i = 0
+               while 1:   # this would be an infinite loop only if you have an inifite number of files
+                  i = i + 1
+                  if not path.isfile(bs+'_old'+str(i)+es): break
+               shutil.move(cref,bs+'_old'+str(i)+es)
             crun = oFiles[k].split(';')[1]
             if not path.isfile(crun):
                xcpt.append({'name':'processECR','msg':'did not create outfile: '+path.basename(cref)+' ('+crun+')'})
                continue
-            shutil.move(crun,cref) #shutil.copy2(crun,cref)
-            print '  moving: ', path.basename(cref)
+            shutil.move(crun,cref)
+            print '        moving: ', path.basename(cref)
 
    # ~~~ copy the sortie file(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    sortiefiles = []
@@ -431,7 +469,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
          xcpt.append({'name':'processECR','msg':'did not create listing file: '+path.basename(cref)+' ('+crun+')'})
          raise Exception(xcpt) # raise full report
       shutil.copy(crun,cref)
-      print ' copying: ', path.basename(cref)
+      print '       copying: ', path.basename(cref)
       sortiefiles.append(cref)
 
       # ~~~ If in parallel, also copy the slave log files     ~~~~~~
@@ -449,7 +487,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                xcpt.append({'name':'processECR','msg':'could not find the listing file: '+crun})
                raise Exception(xcpt) # raise full report
             shutil.copy(crun,cref)
-            print ' copying: ',path.basename(cref)            
+            print '       copying: ',path.basename(cref)            
             sortiefiles.append(cref)
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpt != []: raise Exception(xcpt) # raise full report
@@ -514,7 +552,7 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
       except Exception as e:
          raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason. Please verify your external library installation.'},e,bypass)])
       if code != 0: raise Exception([{'name':'processExecutable','msg':'could not link your executable (runcode='+str(code)+').\n      '+tail}])
-      print '    created: ',path.basename(useName)
+      print '       created: ',path.basename(useName)
    
    else:
    # ~~ default executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -569,30 +607,45 @@ def getGLOGEO(cas,iFiles):
          if iFiles[k].split(';')[5][-4:] == 'GEOM': GLOGEO = iFiles[k].split(';')[1]
    return GLOGEO
 
-def runPartition(partel,cas,conlim,iFiles,ncsize,bypass,section_name,zone_name,use_link):
+def runPartition(partel,geom,conlim,ncsize,bypass,section_name,zone_name):
+
+   if ncsize < 2: return True
+   # ~~ split GEO, CONLIM, SECTIONS and ZONES file ~~~~~~~~~~~~~~~~~
+   print '\n... partitioning base files (geo, conlim, sections and zones)'
+   try:
+      runPARTEL(partel,geom,conlim,ncsize,bypass,section_name,zone_name)
+   except Exception as e:
+      raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
+
+   return True
+
+def copyPartition(cas,geom,iFiles,ncsize,bypass,use_link):
 
    if ncsize < 2: return True
    # ~~ split input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n... splitting / copying other input files'
+   slf = None
    for k in cas[1][0]:
       if k in iFiles:
          crun = iFiles[k].split(';')[1]
-         if iFiles[k].split(';')[5][0:7] == 'SELAFIN':
-            print ' partitioning: ', path.basename(crun)
-            try:
-               runPARTEL(partel,crun,conlim,ncsize,bypass,section_name,zone_name)
-            except Exception as e:
-               raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
+         if iFiles[k].split(';')[5][-4:] == 'GEOM': continue
+         elif iFiles[k].split(';')[5][0:7] == 'SELAFIN':
+            if not slf: slf = PARAFINS(geom,geom)
+            print '      aquiring: ', path.basename(crun)
+            slf.cutContent(crun)
          elif iFiles[k].split(';')[5][0:5] == 'PARAL':
             if use_link:
-               print 'duplilinking: ', path.basename(crun)
+               print '  duplilinking: ', path.basename(crun)
                for n in range(ncsize): symlinkFile(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
             else:
-               print ' duplicating: ', path.basename(crun)
-               for n in range(ncsize): shutil.copy2(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
+               print '   duplicating: ', path.basename(crun)
+               for n in range(ncsize): shutil.copyfile(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
+               #for n in range(ncsize): shutil.copy2(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
 
    return True
 
 def runPARTEL(partel,file,conlim,ncsize,bypass,section_name,zone_name):
+   # TODO: You should check if the file exist and should be updated (or not)
 
    has_section = '0'
    if section_name != '': has_section = '1'
@@ -673,13 +726,13 @@ def runRecollection(gretel,cas,glogeo,oFiles,ncsize,bypass):
          crun = oFiles[k].split(';')[1]
          tpe = oFiles[k].split(';')[5]
          if tpe[0:7] == 'SELAFIN':
-            print ' recollectioning: ', path.basename(crun)
+            print '    collecting: ', path.basename(crun)
             try:
                runGRETEL(gretel,crun,glogeo,ncsize,bypass)
             except Exception as e:
                raise Exception([filterMessage({'name':'runRecollection'},e,bypass)])
          if tpe[0:6] == 'DELWAQ':
-            print ' recollectioning: ', path.basename(crun)
+            print '    collecting: ', path.basename(crun)
             try:
                runGREDEL(gretel,crun,glogeo,tpe[6:],ncsize,bypass)
             except Exception as e:
@@ -941,7 +994,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             processExecutable(useFile,objFile,f90File,objCmd,exeCmd,options.bypass)
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS','msg':'could not compile: ' + path.basename(useFile)},e,options.bypass)])  # only one item here
-         print ' re-copying: ',path.basename(useFile),exename
+         print '    re-copying: ',path.basename(useFile),exename
          shutil.copy2(path.basename(useFile),path.join(CASFiles[name]['dir'],path.basename(useFile)))
          shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
    
@@ -1025,21 +1078,26 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          # >>> Add running command
          CASFiles[name].update({ 'par':parcmd })
 
-         # ~~> Run PARTEL
+         # ~~> Run PARTEL for the base files (GEO,CONLIM,SECTIONS,ZONES,)
          CONLIM = getCONLIM(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    # Global CONLIM file
+         GLOGEO = getGLOGEO(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    # Global GEO file
          try:
-            runPartition(parcmd,CASFiles[name]['cas'],CONLIM,MODFiles[CASFiles[name]['code']]['iFS'],
-                         ncsize,options.bypass,section_name,zone_name,options.use_link)
+            runPartition(parcmd,GLOGEO,CONLIM,ncsize,options.bypass,section_name,zone_name)
          except Exception as e:
-            raise Exception([filterMessage({'name':'runCAS','msg':'Partioning primary input files of the CAS file: '+name},e,options.bypass)])
+            raise Exception([filterMessage({'name':'runCAS','msg':'Could not partition the base files for the following CAS file: '+name},e,options.bypass)])
+         # ~~> Copy partition for the other input files
+         copyPartition(CASFiles[name]['cas'],GLOGEO,MODFiles[CASFiles[name]['code']]['iFS'],ncsize,False,options.use_link)
+
          for cplage in CASFiles[name]['with']:
             CONLIM = getCONLIM(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
+            GLOGEO = getGLOGEO(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
             try:
-               runPartition(parcmd,CASFiles[name]['with'][cplage]['cas'],CONLIM,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],
-                            ncsize,options.bypass,section_name,zone_name,options.use_link)
+               runPartition(parcmd,GLOGEO,CONLIM,ncsize,options.bypass,section_name,zone_name)
             except Exception as e:
-               raise Exception([filterMessage({'name':'runCAS','msg':'Partioning coupling input files'},e,options.bypass)])
-   
+               raise Exception([filterMessage({'name':'runCAS','msg':'Could not partition the base files for the CAS file couled with: '+name},e,options.bypass)])
+            # ~~> Copy partition for the other input files
+            copyPartition(CASFiles[name]['with'][cplage]['cas'],GLOGEO,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],ncsize,False,options.use_link)
+  
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Getting out if split only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if options.split and not hpcpass:
@@ -1078,6 +1136,9 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          for name in CASFiles:  # /!\ This should be done in parallel when multiple CASFiles
             chdir(CASFiles[name]['wir'])
             print '\n\n'+CASFiles[name]['run']+'\n\n'
+            # ~~> added banner
+            value,defaut = getKeyWord('RELEASE',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['dico'],MODFiles[CASFiles[name]['code']]['frgb'])
+            print '\n'.join(banner(CASFiles[name]['code']+' - '+defaut[0].lower()))
             # ~~> here you go run
             if not runCode(CASFiles[name]['run'],CASFiles[name]['sortie']):
                raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
@@ -1097,8 +1158,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          raise Exception([{'name':'runCAS','msg':'\nI would need the key hpc_stdin in you configuration so I can launch your simulation on the HPC queue.'}])
       else:
          for name in CASFiles:  # /!\ This is being done in parallel when multiple CASFiles
-            if not hpcpass:
-               chdir(CASFiles[name]['wir'])
+            chdir(CASFiles[name]['wir'])
             print '\n... modifying run command to HPC instruction'
             # ~~> HPC Command line launching runcode
             hpccmd = getHPCCommand(cfg['HPC'])
@@ -1136,7 +1196,6 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                if options.configName != '': runcmd = runcmd + ' -c ' + options.configName
                if options.configFile != '': runcmd = runcmd + ' -f ' + options.configFile
                if options.rootDir != '': runcmd = runcmd + ' -r ' + options.rootDir
-               if options.version != '': runcmd = runcmd + ' -v ' + options.version
                runcmd = runcmd + ' -s '
                if options.tmpdirectory: runcmd = runcmd + ' -t '
                runcmd = runcmd + ' -w ' + CASFiles[name]['wir']
@@ -1150,10 +1209,12 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                runcmd = runcmd + ' ' + name
                stdin = stdin.replace('<py_runcode>',runcmd)
             # ~~> Write to HPC_STDIN
-            if not hpcpass:
-               chdir(CASFiles[name]['wir'])
+            chdir(CASFiles[name]['wir'])
             putFileContent(stdinfile,stdin.split('\n'))
 
+            # ~~> added banner
+            value,defaut = getKeyWord('RELEASE',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['dico'],MODFiles[CASFiles[name]['code']]['frgb'])
+            print '\n'.join(banner(CASFiles[name]['code']+' - '+defaut[0].lower()))
             # ~~> here you go run
             if not runCode(hpccmd,sortie):
                raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
@@ -1230,15 +1291,40 @@ def main(module=None):
    debug = False
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+# ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    USETELCFG = ''
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    SYSTELCFG = path.join(PWD,'configs')
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ banners ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   mes = MESSAGES()  # runcode takes its version number from the CAS file
+   svnrev = ''
+   svnurl = ''
+   svnban = 'unknown revision'
+   try:
+      key_equals = re.compile(r'(?P<key>[^:]*)(?P<after>.*)',re.I)
+      tail,code = mes.runCmd('svn info '+PWD,True)
+      for line in tail.split('\n'):
+         proc = re.match(key_equals,line)
+         if proc:
+            if proc.group('key').strip() == 'Revision': svnrev = proc.group('after')[1:].strip()
+            if proc.group('key').strip() == 'URL': svnurl = proc.group('after')[1:].strip()
+   except:
+      pass
+   if svnrev+svnurl == '':
+      print '\n'.join(banner('unknown revision'))
+   else:
+      if svnurl != '': print '\n'.join(banner(svnurl.split('/')[-1]))
+      if svnrev != '': print '\n'.join(banner('rev. #'+svnrev))
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nLoading Options and Configurations\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    # ~~> Environment
    parser.add_option("-c", "--configname",type="string",dest="configName",default=USETELCFG,
@@ -1247,8 +1333,6 @@ def main(module=None):
       help="specify configuration file, default is systel.cfg" )
    parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',
       help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",type="string",dest="version",default='',
-      help="specify the version number, default is taken from config file" )
    parser.add_option("-s", "--sortiefile",action="store_true",dest="sortieFile",default=False,
       help="specify whether there is a sortie file, default is no" )
    parser.add_option("-t", "--tmpdirectory",action="store_false",dest="tmpdirectory",default=True,
@@ -1321,8 +1405,8 @@ def main(module=None):
    cfgname = cfgs.iterkeys().next()
 
    # still in lower case
+   if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
-   if options.version != '': cfgs[cfgname]['version'] = options.version
    # recognised keys in the config
    if options.ncsize == '' and cfgs[cfgname].has_key('ncsize'): options.ncsize = cfgs[cfgname]['ncsize']
    if options.nctile == '' and cfgs[cfgname].has_key('nctile'): options.nctile = cfgs[cfgname]['nctile']
@@ -1347,7 +1431,6 @@ def main(module=None):
    print '    +> configuration: ' +  cfgname
    if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
    print '    +> root:          ' +  cfgs[cfgname]['root']
-   print '    +> version        ' +  cfgs[cfgname]['version']
    if options.wDir != '':
       print '    +> directory      ' +  options.wDir
       options.tmpdirectory = False

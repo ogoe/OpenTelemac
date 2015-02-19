@@ -52,6 +52,10 @@
       valid configurations in an array. Testing for validity is now done
       within config.py
 """
+"""@history 25/12/2014 -- Sebastien E. Bourban
+   'version' is not mandatroy anymore.
+   It has been removed from having to be in the configuration file.
+"""
 """@brief
 
 """
@@ -60,6 +64,7 @@
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
+import re
 from os import path,walk,environ,sep
 import sys
 from shutil import copytree,ignore_patterns
@@ -67,6 +72,7 @@ from shutil import copytree,ignore_patterns
 from config import OptionParser,parseConfigFile, parseConfig_CompactTELEMAC
 # ~~> dependencies towards other pytel/modules
 from utils.files import createDirectories, removeDirectories, zip, copyFile
+from utils.messages import MESSAGES,banner
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -77,16 +83,42 @@ __date__ ="$19-Jul-2010 08:51:29$"
 
 if __name__ == "__main__":
    debug = False
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+# ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    USETELCFG = ''
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    SYSTELCFG = path.join(PWD,'configs')
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ banners ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   mes = MESSAGES()  # compact takes its version number from the SVN revision
+   svnrev = ''
+   svnurl = ''
+   svnban = 'unknown revision'
+   try:
+      key_equals = re.compile(r'(?P<key>[^:]*)(?P<after>.*)',re.I)
+      tail,code = mes.runCmd('svn info '+PWD,True)
+      for line in tail.split('\n'):
+         proc = re.match(key_equals,line)
+         if proc:
+            if proc.group('key').strip() == 'Revision': svnrev = proc.group('after')[1:].strip()
+            if proc.group('key').strip() == 'URL': svnurl = proc.group('after')[1:].strip()
+   except:
+      pass
+   if svnrev+svnurl == '':
+      print '\n'.join(banner('unknown revision'))
+   else:
+      if svnurl != '': print '\n'.join(banner(svnurl.split('/')[-1]))
+      if svnrev != '': print '\n'.join(banner('rev. #'+svnrev))
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nLoading Options and Configurations\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",
                       type="string",
@@ -103,11 +135,6 @@ if __name__ == "__main__":
                       dest="rootDir",
                       default='',
                       help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",
-                      type="string",
-                      dest="version",
-                      default='',
-                      help="specify the version number, default is taken from config file" )
    parser.add_option("-a", "--archiveName",
                       type="string",
                       dest="archiveName",
@@ -136,11 +163,11 @@ if __name__ == "__main__":
 
    for cfgname in cfgs:
       # still in lower case
+      if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
       if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
       if not path.exists(cfgs[cfgname]['root']):
          print '\nNot able to find your root directory: ' + cfgs[cfgname]['root'] + '\n'
          sys.exit(1)
-      if options.version != '': cfgs[cfgname]['version'] = options.version
       if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
       # parsing for proper naming
       cfg = parseConfig_CompactTELEMAC(cfgs[cfgname])
@@ -149,7 +176,6 @@ if __name__ == "__main__":
       print '    +> configuration: ' +  cfgname
       if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
       print '    +> root:          ' +  cfgs[cfgname]['root']
-      print '    +> version:       ' +  cfgs[cfgname]['version']
       print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 

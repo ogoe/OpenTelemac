@@ -161,19 +161,22 @@ class scanSELAFIN(PARAFINS,chopSELAFIN): # /!\ does not support PARAFINS yet -- 
       print "   - NPLAN* = ",self.slf.IPARAM[6],"\n   - NPTFR* = ",self.slf.IPARAM[7],"\n   - IFACE* = ",self.slf.IPARAM[8]
       print "   - NELEM3 = ",self.slf.NELEM3,"\n   - NPOIN3 = ",self.slf.NPOIN3,"\n   - NDP3   = ",self.slf.NDP3,"\n   - NPLAN  = ",self.slf.NPLAN
       if self.slf.NPLAN > 1: print "   - NELEM2 = ",self.slf.NELEM2,"\n   - NPOIN2 = ",self.slf.NPOIN2,"\n   - NDP2   = ",self.slf.NDP2
-      print "MESH         : / min: [ ",np.min(self.slf.MESHX),";",np.min(self.slf.MESHY),"]  / max: [ ",np.max(self.slf.MESHX),";",np.max(self.slf.MESHY),"]"
+      if self.slf.NPOIN2 > 0: print "MESH         : / min: [ ",np.min(self.slf.MESHX),";",np.min(self.slf.MESHY),"]  / max: [ ",np.max(self.slf.MESHX),";",np.max(self.slf.MESHY),"]"
+      print "ARRAYs       :"
+      print "   - IKLE  : / min: [ ",np.min(self.slf.IKLE3)+1,"]  / max: [ ",np.max(self.slf.IKLE3)+1,"]",self.slf.IKLE3+1
+      print "   - IPOBO : / min: [ ",np.min(self.slf.IPOB3),"]  / max: [ ",np.max(self.slf.IPOB3),"]",self.slf.IPOB3
 
    def printCore(self):
       for v in range(self.slf.NBV1):
          print "VARIABLE     : ",self.slf.VARNAMES[v]
          for t in range(len(self.slf.tags['times'])):
             VARSOR = self.slf.getVariablesAt( t,[self.slf.VARINDEX[v]] )
-            print "    / TIME: ",self.slf.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
+            if self.slf.NPOIN2 > 0: print "    / TIME: ",self.slf.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
       for v in range(self.slf.NBV2):
          print "CLANDESTINE  : ",self.slf.CLDNAMES[v]
          for t in range(len(self.slf.tags['times'])):
             VARSOR = self.slf.getVariablesAt( t,[self.slf.VARINDEX[v+self.slf.NBV1]] )
-            print "    / TIME: ",self.slf.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
+            if self.slf.NPOIN2 > 0: print "    / TIME: ",self.slf.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
 
    def printTimeSummary(self):
       print "NUMBER OF TIMES : ",len(self.slf.tags['times'])
@@ -427,16 +430,13 @@ class subSELAFIN(SELAFIN): # TODO with 3D
       else: self.NELEM3 = self.NELEM2
       nel3n = self.NELEM3
       # ~~> Connecting
-      self.IPOB3 = np.zeros(self.NPOIN3,dtype=np.int)
-      for iplan in range(self.NPLAN):
-         self.IPOB3[0+iplan*self.NPOIN2:self.NPOIN2+iplan*self.NPOIN2] = self.IPOB2[0:self.NPOIN2]+iplan*self.NPOIN2
       if self.NPLAN > 1:
-         self.IKLE3 = np.zeros(self.NELEM3*self.NDP3,dtype=np.int).reshape((self.NELEM3,self.NDP3))
-         for ielem in range(self.NELEM2):  # TODO:(JPC), convert to numpy calculations
-            for inode in range(self.NDP2): self.IKLE3[ielem][inode] = self.IKLE2[ielem][inode]
-            for inode in range(self.NDP2): self.IKLE3[ielem][inode+self.NDP2] = self.IKLE2[ielem][inode]+self.NPOIN2
-            for iplan in range(self.NPLAN-2): self.IKLE3[ielem+(iplan+1)*self.NELEM2] = self.IKLE3[ielem+iplan*self.NELEM2]+self.NPOIN2
+         self.IPOB3 = np.ravel(np.add(np.repeat(self.IPOB2,self.NPLAN).reshape((self.NPOIN2,self.NPLAN)),self.NPOIN2*np.arange(self.NPLAN)).T)
+         self.IKLE3 = \
+            np.repeat(self.NPOIN2*np.arange(self.NPLAN-1),self.NELEM2*self.NDP3).reshape((self.NELEM2*(self.NPLAN-1),self.NDP3)) + \
+            np.tile(np.add(np.tile(self.IKLE2,2),np.repeat(self.NPOIN2*np.arange(2),self.NDP2)),(self.NPLAN-1,1))
       else:
+         self.IPOB3 = self.IPOB2
          self.IKLE3 = self.IKLE2
       # ~~> Filing
       self.fole.update({ 'hook': open(fileName,'wb') })

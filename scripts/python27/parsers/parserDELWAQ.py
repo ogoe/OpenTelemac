@@ -372,6 +372,7 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    USETELCFG = ''
+   PWD = path.dirname(path.dirname(path.dirname(path.dirname(sys.argv[0]))))
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    SYSTELCFG = 'systel.cfg'
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
@@ -380,7 +381,6 @@ if __name__ == "__main__":
    parser.add_option("-c", "--configname",type="string",dest="configName",default=USETELCFG,help="specify configuration name, default is randomly found in the configuration file" )
    parser.add_option("-f", "--configfile",type="string",dest="configFile",default=SYSTELCFG,help="specify configuration file, default is systel.cfg" )
    parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",type="string",dest="version",default='',help="specify the version number, default is taken from config file" )
    parser.add_option("--reset",action="store_true",dest="areset",default=False,help="reset the start time to zero" )
    parser.add_option("--minvol",type="string",dest="minvol",default='0.001',help="make sure there is a minimum volume" )
    parser.add_option("--from",type="string",dest="tfrom",default="1",help="specify the first frame included" )
@@ -401,8 +401,8 @@ if __name__ == "__main__":
 # ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
    cfgname = cfgs.iterkeys().next()
+   if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
    if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
-   if options.version != '': cfgs[cfgname]['version'] = options.version
    cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

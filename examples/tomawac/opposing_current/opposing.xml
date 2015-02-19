@@ -19,12 +19,12 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="1"  rank="11"
+   <action xref="1"  rank="13"
        do="translate;compile;run;cas;princi" 
        code="tomawac" target="tom_opposing.cas" 
        title="opposing scalar mode" 
    />
-   <action xref="2"  rank="11"
+   <action xref="2"  rank="13"
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="tomawac" target="tom_opposing_opt1.cas" 
        title="opposing parallel mode" 

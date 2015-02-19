@@ -44,6 +44,10 @@
    values of keywords are now checked for their type against the declared type
       in the DICO.
 """
+"""@history 23/09/2014 -- Sebastien E. Bourban and Yoann Audoin
+   The content of the log files from GRETEL and PARTEL are now reported
+   in the error report.
+"""
 """@brief
 """
 
@@ -508,6 +512,7 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    USETELCFG = ''
+   PWD = path.dirname(path.dirname(path.dirname(path.dirname(sys.argv[0]))))
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    SYSTELCFG = 'systel.cfg'
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
@@ -528,11 +533,6 @@ if __name__ == "__main__":
                       dest="rootDir",
                       default='',
                       help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",
-                      type="string",
-                      dest="version",
-                      default='',
-                      help="specify the version number, default is taken from config file" )
    parser.add_option("-k","--rank",type="string",dest="rank",default='all',
       help="the suite of validation ranks (all by defult)" )
    options, args = parser.parse_args()
@@ -554,8 +554,8 @@ if __name__ == "__main__":
    #  /!\  for testing purposes ... no real use
    for cfgname in cfgs:
       # still in lower case
+      if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
       if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
-      if options.version != '': cfgs[cfgname]['version'] = options.version
       # parsing for proper naming
       if options.rank != '': cfgs[cfgname]['val_rank'] = options.rank
       cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
@@ -567,7 +567,7 @@ if __name__ == "__main__":
          print '\n\nConfiguration ' + cfgname + ', Module '+ mod + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          print '... reading module dictionary'
-         frgb,dico = scanDICO(path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['version']+'.dico'))
+         frgb,dico = scanDICO(path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+'.dico'))
          for casFile in cfg['VALIDATION'][mod]:
             print '... CAS file: ',casFile
             casKeys = readCAS(scanCAS(getFileContent(casFile)),dico,frgb)

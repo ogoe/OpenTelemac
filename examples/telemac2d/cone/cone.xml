@@ -46,7 +46,7 @@
   --> 
    <plot2d xref="figure2" config="oneofall" size="[8;8]" > 
       <layer vars="velocity:map" target="1:T2DRES" time="[-1]" /> 
-      <layer vars="velocity:angle" sample="(10.05;7.05)(20.1;13.05)[10;4]" target="1:T2DRES" time="[-1]" /> 
+      <layer vars="velocity:angle" sample="(10.05;7.05)(20.1;13.05){10;4}" target="1:T2DRES" time="[-1]" /> 
    </plot2d>
 <!--
    <plot2d xref="figure3" config="oneofall" size="[8;8]" > 

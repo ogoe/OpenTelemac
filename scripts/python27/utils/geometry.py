@@ -123,6 +123,7 @@ def getPlaneEquation( (x1,y1,z1),(x2,y2,z2),(x3,y3,z3) ):
 def getBarycentricWeights( (xo,yo),(x1,y1),(x2,y2),(x3,y3) ):
 
    det = ( y2-y3 ) * ( x1-x3 ) - ( y1-y3 ) * ( x2-x3 )
+   if det == 0.0: return 0.0,0.0,1.0
    l1 = ( ( y2-y3 ) * ( xo-x3 ) + ( yo-y3 ) * ( x3-x2 ) )/det
    l2 = ( ( y3-y1 ) * ( xo-x3 ) + ( yo-y3 ) * ( x1-x3 ) )/det
 
