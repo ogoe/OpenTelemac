@@ -360,18 +360,18 @@
 105   FORMAT(/,1X,'FRONT2 : ERROR AT BOUNDARY POINT ',1I5,
      &       /,1X,'         SOLID POINT BETWEEN TWO LIQUID POINTS')
 90    FORMAT(/,1X,'FRONTIERE ',1I3,' : ',/,1X,
-     &            ' DEBUT AU POINT DE BORD ',1I6,
-     &            ' , DE NUMERO GLOBAL ',1I8,/,1X,
+     &            ' DEBUT AU POINT DE BORD ',1I8,
+     &            ' , DE NUMERO GLOBAL ',1I9,/,1X,
      &            ' ET DE COORDONNEES : ',G16.7,3X,G16.7,
-     &       /,1X,' FIN AU POINT DE BORD ',1I6,
-     &            ' , DE NUMERO GLOBAL ',1I8,/,1X,
+     &       /,1X,' FIN AU POINT DE BORD ',1I8,
+     &            ' , DE NUMERO GLOBAL ',1I9,/,1X,
      &            ' ET DE COORDONNEES : ',G16.7,3X,G16.7)
 190   FORMAT(/,1X,'BOUNDARY ',1I3,' : ',/,1X,
-     &            ' BEGINS AT BOUNDARY POINT: ',1I6,
-     &            ' , WITH GLOBAL NUMBER: ',1I8,/,1X,
+     &            ' BEGINS AT BOUNDARY POINT: ',1I8,
+     &            ' , WITH GLOBAL NUMBER: ',1I9,/,1X,
      &            ' AND COORDINATES: ',G16.7,3X,G16.7,
-     &       /,1X,' ENDS AT BOUNDARY POINT: ',1I6,
-     &            ' , WITH GLOBAL NUMBER: ',1I8,/,1X,
+     &       /,1X,' ENDS AT BOUNDARY POINT: ',1I8,
+     &            ' , WITH GLOBAL NUMBER: ',1I9,/,1X,
      &            ' AND COORDINATES: ',G16.7,3X,G16.7)
 !
 !-----------------------------------------------------------------------

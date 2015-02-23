@@ -42,6 +42,13 @@
 !+   Added an option for spacio-temporal wind interpolation of wind.
 !+   
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        16/02/2015
+!+        V7P0
+!+   Shifting the stations coordinates removed in case of wind varying
+!+   in time and space (option 99). Managing the divisions by 0 is now
+!+   done by subroutine IDWM_T2D, and this does not spoil parallelism.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT,LT          |-->| TIME, ITERATION NUMBER
 !| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
@@ -179,36 +186,17 @@
         ! READ NUMSTA AND NUMPOINTS
           READ(UL,*) NUMSTA, NUMPOINTS
               
-          !ALLOCATE THE ARRAYS
-              ALLOCATE(XX(NUMSTA), YY(NUMSTA), AT_WIND(NUMPOINTS))
-              ALLOCATE(WIND(NUMPOINTS,NUMSTA*2+5), POINTS(NPOIN,2))
-              ALLOCATE(INPSTA_S(NUMSTA,3), INPSTA_D(NUMSTA,3))
-              ALLOCATE(OUT_WSPD(NPOIN), OUT_WDIR(NPOIN))
+        !ALLOCATE THE ARRAYS
+          ALLOCATE(XX(NUMSTA), YY(NUMSTA), AT_WIND(NUMPOINTS))
+          ALLOCATE(WIND(NUMPOINTS,NUMSTA*2+5), POINTS(NPOIN,2))
+          ALLOCATE(INPSTA_S(NUMSTA,3), INPSTA_D(NUMSTA,3))
+          ALLOCATE(OUT_WSPD(NPOIN), OUT_WDIR(NPOIN))
 !                  
           ! READ STATION CORDINATES
           DO B = 1,NUMSTA
-              READ(UL,*) XX(B), YY(B)
-              !WRITE(*,*) XX(B), YY(B)
+            READ(UL,*) XX(B), YY(B)
+           !WRITE(*,*) XX(B), YY(B)
           ENDDO
-!          
-          ! IN CASE THE STATION CORDINATES COINCIDE WITH A MESH NODE
-          ! INCREASE THE STATION CORDINATE BY 0.1 M
-          ! THIS IS NEEDED FOR A MEANINGFUL IDWM CALCULATION OF DISTANCE
-          ! IN CASE OF SPHERICAL CORDINATES, A DIFFERENT SMALL NUMBER
-          ! SHOULD BE ADDED INSTEAD
-          DO B = 1, NUMSTA
-            DO A = 1, NPOIN
-              IF ((XX(B) .EQ. X(A)) .AND. (YY(B) .EQ. Y(A))) THEN
-                XX(B) = XX(B) + 0.1
-                YY(B) = YY(B) + 0.1
-              ENDIF 
-            ENDDO !A
-          ENDDO !B
-!          
-          ! WRITE THE STATION CORDS
-          !DO B = 1, NUMSTA
-          !  WRITE(*,*) 'THESE ARE THE NEW STATION CORDS ', XX(B), YY(B)
-          !ENDDO !B
 !
           ! READ THE WIND TIME SERIES FROM THE INPUT FILE 
           ! FIRST COLUMN IS TIME IN SECONDS, REST OF COLUMNS ARE WSPD 
@@ -289,37 +277,38 @@
         ENDDO
 !
         CALL IDWM_T2D(INPSTA_S,POINTS,OUT_WSPD,NPOIN,NUMSTA)
-        CALL IDWM_T2D(INPSTA_D,POINTS,OUT_WDIR, NPOIN,NUMSTA)
+        CALL IDWM_T2D(INPSTA_D,POINTS,OUT_WDIR,NPOIN,NUMSTA)
 !
 !       CONVERT OUT_WSPD AND OUT_WDIR TO WINDX AND WINDY
+!
         DO K = 1, NPOIN
         IF (OUT_WDIR(K) >= 0 .AND. OUT_WSPD(K) >= 0) THEN
           IF ((OUT_WDIR(K) >= 0) .AND. (OUT_WDIR(K) <= 90)) THEN
             THETA_RAD = OUT_WDIR(K) * 3.141592654 / 180.0
-            WINDX(K) = -1.0 * SIN(THETA_RAD) * OUT_WSPD(K)
-            WINDY(K) = -1.0 * COS(THETA_RAD) * OUT_WSPD(K)
+            WINDX(K) = -SIN(THETA_RAD) * OUT_WSPD(K)
+            WINDY(K) = -COS(THETA_RAD) * OUT_WSPD(K)
           END IF
 !                  
           IF ((OUT_WDIR(K) > 90) .AND. (OUT_WDIR(K) <= 180)) THEN
             THETA_RAD = (180 - OUT_WDIR(K)) * 3.141592654 / 180.0
-              WINDX(K) = -1.0 * SIN(THETA_RAD)* OUT_WSPD(K)
-              WINDY(K) = COS(THETA_RAD)* OUT_WSPD(K)
+            WINDX(K) = -SIN(THETA_RAD)* OUT_WSPD(K)
+            WINDY(K) =  COS(THETA_RAD)* OUT_WSPD(K)
           END IF
 !                  
           IF ((OUT_WDIR(K) > 180) .AND. (OUT_WDIR(K) <= 270)) THEN
             THETA_RAD = (OUT_WDIR(K)-180) * 3.141592654 / 180.0
-              WINDX(K) = SIN(THETA_RAD)* OUT_WSPD(K)
-              WINDY(K) = COS(THETA_RAD)* OUT_WSPD(K)
+            WINDX(K) = SIN(THETA_RAD)* OUT_WSPD(K)
+            WINDY(K) = COS(THETA_RAD)* OUT_WSPD(K)
           END IF            
 !                  
           IF ((OUT_WDIR(K) > 270) .AND. (OUT_WDIR(K) <= 360)) THEN
             THETA_RAD = (360-OUT_WDIR(K)) * 3.141592654 / 180.0
-              WINDX(K) = SIN(THETA_RAD)* OUT_WSPD(K)
-              WINDY(K) = -1.0 * COS(THETA_RAD)* OUT_WSPD(K)
+            WINDX(K) =  SIN(THETA_RAD)* OUT_WSPD(K)
+            WINDY(K) = -COS(THETA_RAD)* OUT_WSPD(K)
           END IF      
         ELSE
-          WINDX(K) = -999.0
-          WINDY(K) = -999.0
+          WINDX(K) = -999.D0
+          WINDY(K) = -999.D0
           WRITE(*,*) 'NO WIND DATA FOR TIME ', AT
         END IF
         END DO !K
@@ -358,7 +347,7 @@
      &(ELEV,POINTS,IDWM,NPOIN,NUMSTA)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   23/04/2014
+! TELEMAC2D   V7P0
 !***********************************************************************
 !
 !brief    USES INVERSE DISTANCE WEIGHTING METHOD TO COMPUTE A WIND FIELD
@@ -366,7 +355,12 @@
 !
 !history  P. PRODANOVIC (RIGGS ENGINEERING LTD)
 !+        23/04/2014
-!+        V6P3
+!+        V7P0
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        16/02/2015
+!+        V7P0
+!+   Managing the divisions by 0 + optimization.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -421,8 +415,7 @@
 !
           IF(ELEV(I,3).GT.0.D0) THEN
 !
-            DIST = SQRT( (ELEV(I,1) - POINTS(J,1))**2 + 
-     &                   (ELEV(I,2) - POINTS(J,2))**2   )
+            DIST=(ELEV(I,1)-POINTS(J,1))**2+(ELEV(I,2)-POINTS(J,2))**2  
 !     
 !           FIND MIN DIST IN EACH OF THE FOUR QUADRANTS
 !           2 | 1
@@ -468,26 +461,35 @@
 !                  
 !       CALCULATE WEIGHTS
 ! 
-        DEN = 1/MIN1CUR**2+1/MIN2CUR**2+1/MIN3CUR**2+1/MIN4CUR**2
+!       AVOIDING DIVISIONS BY 0
+!
+        MIN1CUR=MAX(MIN1CUR,1.D-6)
+        MIN2CUR=MAX(MIN2CUR,1.D-6)
+        MIN3CUR=MAX(MIN3CUR,1.D-6)
+        MIN4CUR=MAX(MIN4CUR,1.D-6)
+!
+        DEN = 1.D0/MIN1CUR+1.D0/MIN2CUR+1.D0/MIN3CUR+1.D0/MIN4CUR
 !
 !       IN CASE WHEN ALL INPUT DATA IS MISSING, ALSO OUTPUT MISSING
+!
         IF(MIN1LOC.EQ.-1.AND.MIN2LOC.EQ.-1.AND.
      &     MIN3LOC.EQ.-1.AND.MIN4LOC.EQ.-1      ) THEN
           IDWM(J) = -999.D0
         ELSE
           IDWM(J) = 0.D0
           IF(MIN1LOC.GT.0) THEN
-            IDWM(J)=IDWM(J)+ELEV(MIN1LOC,3)/(DEN*MIN1CUR**2)
+            IDWM(J)=IDWM(J)+ELEV(MIN1LOC,3)/MIN1CUR
           ENDIF
           IF(MIN2LOC.GT.0) THEN
-            IDWM(J)=IDWM(J)+ELEV(MIN2LOC,3)/(DEN*MIN2CUR**2)
+            IDWM(J)=IDWM(J)+ELEV(MIN2LOC,3)/MIN2CUR
           ENDIF
           IF(MIN3LOC.GT.0) THEN
-            IDWM(J)=IDWM(J)+ELEV(MIN3LOC,3)/(DEN*MIN3CUR**2)
+            IDWM(J)=IDWM(J)+ELEV(MIN3LOC,3)/MIN3CUR
           ENDIF
           IF(MIN4LOC.GT.0) THEN
-            IDWM(J)=IDWM(J)+ELEV(MIN4LOC,3)/(DEN*MIN4CUR**2)
-          ENDIF            
+            IDWM(J)=IDWM(J)+ELEV(MIN4LOC,3)/MIN4CUR
+          ENDIF 
+          IDWM(J) = IDWM(J)/DEN      
         ENDIF      
 !
       ENDDO

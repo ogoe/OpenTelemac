@@ -5813,7 +5813,7 @@ AIDE = 'donne les options pour introduire le vent:
    3: variable en temps et en espace donne par fichier formate'
 AIDE1 = 'gives option for managing the wind:
     0: no wind (we can remove keyword WIND (boolean))
-    1: constant in time and space, given by keyword SPPED AND 
+    1: constant in time and space, given by keyword SPEED AND 
        DIRECTION OF WIND
     2: variable in time and (constant in space), given by formated file
     3: variable in time and space'

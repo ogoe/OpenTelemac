@@ -5,7 +5,7 @@
      &(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P0
 !***********************************************************************
 !
 !brief    PREPARES THE ADVECTION STEP BY COMPUTING THE
@@ -74,12 +74,17 @@
 !+        V6P3
 !+   Was named PRECON, renamed PREADV for Python scanning sake.
 !
+!history  J-M HERVOUET (LNHE)
+!+        16/01/2015
+!+        V7P0
+!+   Block of advected variables with characteristics changed in the 
+!+   case of more than 2 subiterations.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
 !| LT             |-->| CURRENT TIME STEP NUMBER
 !| VOLU           |-->| VOLUMES (INTEGRAL OF BASES) AT NEW TIME STEP
 !| VOLUN          |-->| VOLUMES (INTEGRAL OF BASES) AT OLD TIME STEP
-!| W              |<->| W VELOCITY
 !| WS             |<->| W VELOCITY IN TRANSFORMED MESH
 !| ZPROP          |<->| TRANSFORMED ZPROP, TEMPORARILY PUT IN MESH3D%Z
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,9 +108,10 @@
      &                                   IT4,TRAV3,ZCONV,IKLE2,UCONVC,
      &                                   VCONVC,OPT_HNEG,WCONV,ZCHAR,
      &                                   NELEM2,MSUPG,UNSV2D,NSCE,
-     &                                   SOURCES,SEM2D,UNSV3D,U,GRADZF,
+     &                                   SOURCES,SEM2D,UNSV3D,GRADZF,
      &                                   SEM3D,DSSUDT,OPTBAN,INFOGR,
-     &                                   SLVPRO,AGGLOW,NGAUSS,OPTCHA
+     &                                   SLVPRO,AGGLOW,NGAUSS,OPTCHA,
+     &                                   U,UN,V,VN,WN,NSOUSI
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -113,8 +119,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: W,WS,ZPROP
-      TYPE(BIEF_OBJ), INTENT(IN)    :: VOLU,VOLUN
+      TYPE(BIEF_OBJ), INTENT(INOUT)         :: WS,ZPROP
+      TYPE(BIEF_OBJ), INTENT(IN)            :: VOLU,VOLUN
+      TYPE(BIEF_OBJ), INTENT(INOUT), TARGET :: W
 !
       INTEGER, INTENT(IN) :: ISOUSI,LT
 !
@@ -419,6 +426,24 @@
 !       IN BLOCK FN3D THERE IS U,V,W INSTEAD OF UN,VN,WN
 !       BECAUSE ADVECTION IS DONE FOR THE NEXT TIME STEP
 !
+!       IT IS MORE COMPLICATED WITH SUB-ITERATIONS:     
+!
+        IF(NSOUSI.GT.1.AND.FN3D%ADR(1)%P%NAME(1:1).EQ.'U') THEN
+!         IF THE VELOCITIES ARE ADVECTED THEY ARE THE FIRST IN THE BLOCK
+          IF(ISOUSI.NE.NSOUSI) THEN
+!           IN THE INITIALISATION, ONLY U, V AND W ARE BUILT
+            IF(LT.GT.0) THEN
+              FN3D%ADR(1)%P=>UN
+              FN3D%ADR(2)%P=>VN
+              IF(NONHYD) FN3D%ADR(3)%P=>WN
+            ENDIF
+          ELSE
+            FN3D%ADR(1)%P=>U
+            FN3D%ADR(2)%P=>V
+            IF(NONHYD) FN3D%ADR(3)%P=>W
+          ENDIF
+        ENDIF
+!
 !       FN3D IS THE BLOCK OF VARIABLES ADVECTED WITH
 !       SCHEME ADV_CAR (SEE POINT_TELEMAC3D)
 !
@@ -442,3 +467,4 @@
 !
       RETURN
       END
+

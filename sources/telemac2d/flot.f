@@ -9,16 +9,7 @@
 ! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
-!brief    THE USER MUST GIVE :
-!+
-!+
-!+   1) THE TIMESTEP WHEN THE FLOATING BODY IS RELEASED.
-!+
-!+
-!+   2) THE TIME WHEN THE COMPUTATION IS STOPPED FOR THIS FLOATING BODY.
-!+
-!+
-!+   3) THE INITIAL POSITION OF THE FLOATING BODY AT THE TIME OF RELEASE.
+!brief    releasing and removing particles in the mesh.
 !
 !history  J-M JANIN (LNH)
 !+        17/08/1994
@@ -85,7 +76,7 @@
 !               A PARTICLE IS RELEASED WITH COORDINATES
 !               X=-220.
 !               Y=400.D0+LT/3.D0
-!               AND TAG NUMBER LT
+!               AND TAG NUMBER LT (LT IS THE TIME STEP NUMBER)
 !
 !     IF(LT.LE.600.AND.(10*(LT/10).EQ.LT.OR.LT.EQ.1)) THEN
 !       CALL ADD_PARTICLE(-220.D0,400.D0+LT/3.D0,0.D0,LT,NFLOT,
