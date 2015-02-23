@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""@author Juliette C.E. Parisi and Sebastien E. Bourban
+"""@author Sebastien E. Bourban
 """
 """@note ... this work is based on a collaborative effort between
   .________.                                                          ,--.
@@ -13,19 +13,10 @@
 """
 """@brief
       Beware the the variables number / names are set in the code below.
-      Creates a binary liquid boundary file from a global model (SLF form)
+      Creates a binary sponge file from a global model (SLF form)
         by interpolating on a given GEO model domain. The time series in
-        the BND file are extracted only at liquid nodes as defined in the
-        CONLIM file.
-"""
-"""@history 02/12/2013 -- Juliette C.E. Parisi
-      Created draft script to write the binary liquid boundary file
-         on the basis of the HYCOM global model results
-"""
-"""@history 11/11/2014 -- Sebastien E. Bourban
-      Heavy modifictaions to make it generic and in order to
-         correctly fill-in the IPOBO and the IKLE in both 2D and 3D
-         based on fancy numpy programing.
+        the SPG file are extracted only at the nodes where the SPONGE mask
+        value is more than 0.5.
 """
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -41,15 +32,15 @@ from utils.progressbar import ProgressBar
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
 #
-__author__="Juliette C.E. Parisi"
-__date__ ="$02-Dec-2013 15:09:48$"
+__author__="Sebastien E. Bourban"
+__date__ ="$02-Feb-2015 15:09:48$"
 
 if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Dependencies towards other modules ~~~~~~~~~~~~~~~~~~~~~~~~~~
    from config import OptionParser
-   from parsers.parserSELAFIN import CONLIM,SELAFIN,subsetVariablesSLF,getValueHistorySLF
+   from parsers.parserSELAFIN import SELAFIN,subsetVariablesSLF,getValueHistorySLF
    from samplers.meshes import xysLocateMesh
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -60,25 +51,25 @@ if __name__ == "__main__":
    options, args = parser.parse_args()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ cli+slf new mesh ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cliFile = args[0]
-   geoFile = args[1]
+# ~~~~ slf new mesh ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   geoFile = args[0]
 
-   # Read the new CLI file to get boundary node numbers
-   print '   +> getting hold of the CONLIM file and of its liquid boundaries'
-   cli = CONLIM(cliFile)
-   # Keeping only open boundary nodes
-   BOR = np.extract( cli.BOR['lih'] != 2, cli.BOR['n'] )
-
-   # Find corresponding (x,y) in corresponding new mesh
-   print '   +> getting hold of the GEO file and of its bathymetry'
+   # Read the new GEO file and its SPONGE MASK variable
+   print '   +> getting hold of the GEO file and of its SPONGE MASK'
    geo = SELAFIN(geoFile)
+   bat,spg = geo.getVariablesAt( 0,subsetVariablesSLF("BOTTOM: ;SPONGE MASK: ",geo.VARNAMES)[0] )[0:2]
+   print '   +> extracting the masked elements'
+   # Keeping only masked nodes
+   MASK = geo.IKLE2[np.where( np.sum(np.in1d(geo.IKLE2,np.sort(np.where( spg > 0. )[0])).reshape(geo.NELEM2,geo.NDP2),axis=1) > 0 )]
+   BOR = np.unique(MASK) + 1
+
+   # Find corresponding (x,y) for the mask
+   print '   +> getting hold of the GEO file and of its bathymetry'
    xys = np.vstack( (geo.MESHX[BOR-1],geo.MESHY[BOR-1]) ).T
-   bat = geo.getVariablesAt( 0,subsetVariablesSLF("BOTTOM: ",geo.VARNAMES)[0] )[0]
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ slf existing res ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   slfFile = args[2]
+   slfFile = args[1]
    slf = SELAFIN(slfFile)
    slf.setKDTree()
    slf.setMPLTri()
@@ -98,7 +89,7 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ writes BND header ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   bndFile = args[3]
+   bndFile = args[2]
    bnd = SELAFIN('')
    bnd.fole = {}
    bnd.fole.update({ 'hook': open(bndFile,'wb') })
@@ -122,22 +113,21 @@ if __name__ == "__main__":
    
    # Sizes and mesh connectivity
    bnd.NPLAN = slf.NPLAN
-   bnd.NDP2 = 2
-   bnd.NDP3 = 4
+   bnd.NDP2 = 3
+   bnd.NDP3 = 6
    bnd.NPOIN2 = len(BOR)
    bnd.NPOIN3 = bnd.NPOIN2*slf.NPLAN
    bnd.IPARAM = [0,0,0,0,0,0,bnd.NPLAN,0,0,0]
    bnd.IPOB2 = BOR   # /!\ Note that IPOBO keeps the original numbering
    print '   +> masking and setting connectivity'
    # Set the array that only includes elements of geo.IKLE2 with at least two nodes in BOR
-   MASK = geo.IKLE2[np.where( np.sum(np.in1d(geo.IKLE2,np.sort(BOR-1)).reshape(geo.NELEM2,geo.NDP2),axis=1) == 2 )]
-   IKLE2 = np.ravel(MASK)[np.in1d(MASK,np.sort(BOR-1))].reshape(len(MASK),2) # this IKLE2 keeps the original numbering
+   IKLE2 = MASK
    # ~~> re-numbering IKLE2 as a local connectivity matrix
    KNOLG,indices = np.unique( np.ravel(IKLE2), return_index=True )
    KNOGL = dict(zip( KNOLG,range(len(KNOLG)) ))
    bnd.IKLE2 = - np.ones_like(IKLE2,dtype=np.int)
    for k in range(len(IKLE2)):
-      bnd.IKLE2[k] = [ KNOGL[IKLE2[k][0]], KNOGL[IKLE2[k][1]] ]    # /!\ bnd.IKLE2 has a local numbering, fit to the boundary elements
+      bnd.IKLE2[k] = [ KNOGL[IKLE2[k][0]], KNOGL[IKLE2[k][1]], KNOGL[IKLE2[k][2]] ]    # /!\ bnd.IKLE2 has a local numbering, fit to the boundary elements
    # Last few numbers
    bnd.NELEM2 = len(bnd.IKLE2)
    if slf.NPLAN > 1: bnd.NELEM3 = bnd.NELEM2*(slf.NPLAN-1)

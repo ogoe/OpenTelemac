@@ -847,6 +847,8 @@ def getHPC(cfgDict):
    if cfgDict.has_key('hpc_runcode'):
       hpc.update({'PYCODE':cfgDict['hpc_runcode']})
       if cfgDict.has_key('hpc_stdin'): hpc.update({'STDIN':['HPC_STDIN',cfgDict['hpc_stdin'].replace(r'\n','\n')]})
+   if cfgDict.has_key('hpc_depend'):
+      hpc.update({'DEPEND':cfgDict['hpc_depend']})
    return hpc
 
 """

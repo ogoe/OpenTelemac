@@ -1,2 +1,4 @@
 Extraction of 4 months of ECMWF data.
-> convertECMWF.py --from 2011-02-15 --stop 2011-06-15 --bl 34,140 --tr 41,147 ecmwf-4m.slf
+
+> python ~/opentelemac/pajama/scripts/python27/converters/convertECMWF.py  --from 2011-03-01 --stop 2011-06-15 --bl 34,140 --tr 41,147 ecmwf-4m2011.new.slf
+> python ~/opentelemac/pajama/scripts/python27/converters/convertECMWF.py  --from 1993-01-02 --stop 1993-05-02 --bl 34,140 --tr 41,147 ecmwf-4m1993.new.slf

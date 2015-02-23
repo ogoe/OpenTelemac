@@ -28,6 +28,7 @@ from os import path
 import numpy as np
 # ~~> dependencies towards other pytel scripts
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) )
+from utils.progressbar import ProgressBar
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -55,6 +56,7 @@ if __name__ == "__main__":
    geoFile = args[0]
 
 # Find corresponding (x,y) in corresponding new mesh
+   print '   +> getting hold of the GEO file'
    geo = SELAFIN(geoFile)
    xys = np.vstack( (geo.MESHX,geo.MESHY) ).T
 
@@ -65,10 +67,15 @@ if __name__ == "__main__":
    slf.setKDTree()
    slf.setMPLTri()
 
+   print '   +> support extraction'
    # Extract triangles and weights in 2D
    support2d = []
+   ibar = 0; pbar = ProgressBar(maxval=len(xys)).start()
    for xyi in xys:
       support2d.append(xysLocateMesh(xyi,slf.IKLE2,slf.MESHX,slf.MESHY,slf.tree,slf.neighbours))
+      ibar+=1
+      pbar.update(ibar)
+   pbar.finish()
    # Extract support in 3D
    support3d = zip(support2d,len(xys)*[range(slf.NPLAN)])
 
@@ -97,11 +104,13 @@ if __name__ == "__main__":
    
    # Sizes and mesh connectivity
    atm.NPLAN = slf.NPLAN          # it should be 2D but why the heack not ...
+   atm.NDP2 = slf.NDP2
    atm.NDP3 = slf.NDP3
    atm.NPOIN2 = geo.NPOIN2
    atm.NPOIN3 = geo.NPOIN2*atm.NPLAN
    atm.NELEM2 = geo.NELEM2
    
+   print '   +> setting connectivity'
    if atm.NPLAN > 1:
       atm.NELEM3 = geo.NELEM2*(atm.NPLAN-1)
       atm.IKLE2 = geo.IKLE2
@@ -122,12 +131,14 @@ if __name__ == "__main__":
    atm.MESHX = geo.MESHX
    atm.MESHY = geo.MESHY
    
+   print '   +> writing header'
    # Write header
    atm.appendHeaderSLF()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ writes ATM core ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+   print '   +> setting variables'
    # TIME and DATE extraction
    atmDATES = slf.DATETIME
    atmTIMES = slf.tags['times']
@@ -136,12 +147,15 @@ if __name__ == "__main__":
    vars = subsetVariablesSLF("SURFACE PRESSURE: ;WIND VELOCITY U: ;WIND VELOCITY V: ;AIR TEMPERATURE: ",slf.VARNAMES)
 
    # Read / Write data, one time step at a time to support large files
+   pbar = ProgressBar(maxval=len(slf.tags['times'])).start()
    for t in range(len(slf.tags['times'])):
 
       data = getValueHistorySLF( slf.file,slf.tags,[t],support3d,slf.NVAR,slf.NPOIN3,slf.NPLAN,vars )
       # special cases ?
       atm.appendCoreTimeSLF( t )
       atm.appendCoreVarsSLF( np.reshape(np.transpose(np.reshape(np.ravel(data),(atm.NVAR,atm.NPOIN2,atm.NPLAN)),(0,2,1)),(atm.NVAR,atm.NPOIN3)) )
+      pbar.update(t)
+   pbar.finish()
 
    # Close atmFile
    atm.fole['hook'].close()   
