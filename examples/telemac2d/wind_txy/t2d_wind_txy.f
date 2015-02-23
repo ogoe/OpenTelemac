@@ -55,6 +55,13 @@
 !+        V7P0
 !+  Adding optional arguments to remove USE DECLARATIONS_TELEMAC2D.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        16/02/2015
+!+        V7P0
+!+   Shifting the stations coordinates removed in case of wind varying
+!+   in time and space (option 99). Managing the divisions by 0 is now
+!+   done by subroutine IDWM_T2D, and this does not spoil parallelism.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
 !| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
