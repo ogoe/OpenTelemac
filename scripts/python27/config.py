@@ -165,7 +165,7 @@ from socket import gethostname
 import ConfigParser
 from optparse import OptionParser
 from utils.files import removeDirectories
-from utils.messages import MESSAGES,filterMessage
+from utils.messages import MESSAGES,filterMessage,banner
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -956,16 +956,42 @@ __author__="Sebastien E. Bourban; Noemie Durand"
 __date__ ="$19-Jul-2010 08:51:29$"
 
 if __name__ == "__main__":
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+# ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    USETELCFG = ''
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    SYSTELCFG = path.join(PWD,'configs')
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ banners ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   mes = MESSAGES()  # runcode takes its version number from the CAS file
+   svnrev = ''
+   svnurl = ''
+   svnban = 'unknown revision'
+   try:
+      key_equals = re.compile(r'(?P<key>[^:]*)(?P<after>.*)',re.I)
+      tail,code = mes.runCmd('svn info '+PWD,True)
+      for line in tail.split('\n'):
+         proc = re.match(key_equals,line)
+         if proc:
+            if proc.group('key').strip() == 'Revision': svnrev = proc.group('after')[1:].strip()
+            if proc.group('key').strip() == 'URL': svnurl = proc.group('after')[1:].strip()
+   except:
+      pass
+   if svnrev+svnurl == '':
+      print '\n'.join(banner('unknown revision'))
+   else:
+      if svnurl != '': print '\n'.join(banner(svnurl.split('/')[-1]))
+      if svnrev != '': print '\n'.join(banner('rev. #'+svnrev))
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nLoading Options and Configurations\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",
                       type="string",

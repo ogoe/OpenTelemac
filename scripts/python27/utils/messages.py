@@ -33,9 +33,10 @@
 # ~~> dependencies towards standard python
 import sys
 import traceback
-import os
 import threading
-import subprocess as sp 
+import subprocess as sp
+from multiprocessing import Process,cpu_count,active_children
+from multiprocessing.sharedctypes import Value,Array
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
@@ -122,23 +123,68 @@ class MESSAGES:
    def notEmpty(self):
       return ( self.messages != [] )
 
-   def runCmd(self,exe,bypass):
+   def startCmd(self,tasks,args):
+      # ~~> prevents from overloading your system
+      while len(active_children()) >= cpu_count(): continue
+      # ~~> subcontract the task out
+      task = paraProcess(self.runCmd,args)
+      # ~~> update the log pile
+      tasks.append([task,args])
+      # ~~> order the work
+      task.start()
+      # ~~> return to high grounds
+      return task
+
+   def flushCmd(self,tasks):
+      messages = []
+      while tasks != []:
+         task,(exe,bp,tail,code) = tasks.pop(-1)
+         task.join()
+         if tail.value.strip() != '':
+            self.clearCmd(tasks)
+         messages.append([exe,'',tail.value.strip(),code.value])
+      return messages
+
+   def cleanCmd(self,tasks):
+      i = len(tasks)
+      messages = []
+      while 0 < i:
+         task,(exe,bp,tail,code) = tasks[i-1]
+         if not task.is_alive(): 
+            tasks.pop(i-1)
+            task.join()
+            if tail.value.strip() != '':
+               messages.append([exe,'',tail.value.strip(),code.value])
+               self.clearCmd(tasks)
+               break
+            else:
+               messages.append([exe,'','',code.value])
+         i -= 1
+      return messages
+
+   def clearCmd(self,tasks):
+      while tasks != []:
+         task,(exe,bp,tail,code) = tasks.pop()
+         task.terminate()
+
+   def runCmd(self,exe,bypass,tail=Array('c',' '*10000),code=Value('i',0)):
       if bypass:
          proc = sp.Popen(exe,bufsize=1024,stdout=sp.PIPE,stderr=sp.PIPE,shell=True)
          t1 = threading.Thread(target=self.bufferScreen,args=(proc.stdout,))
          t1.start()
          t1.join()
          proc.wait()
-         if proc.returncode != 0 and self.tail == '':
-            self.tail = 'I was only able to capture the following execution error. You may wish to re-run without bypass option.'+ \
+         code.value = proc.returncode
+         if code.value != 0 and tail.value.strip() == '':
+            tail.value = 'I was only able to capture the following execution error while executing the following:\n'+exe+'\n... you may wish to re-run without bypass option.'+ \
                '\n~~~~~~~~~~~~~~~~~~\n'+str(proc.stderr.read().strip())+'\n~~~~~~~~~~~~~~~~~~'
-         return self.tail,proc.returncode
+            self.tail = self.tail + '\n' + tail.value
       else:
-         returncode = sp.call(exe,shell=True)
-         if returncode != 0:
-            print '... The following command failed for the reason above\n'+exe
-            sys.exit(1)
-      return '',0
+         code.value = sp.call(exe,shell=True)
+         if code.value != 0:
+            tail.value = '... The following command failed for the reason above (or below)\n'+exe+'\n'
+            self.tail = self.tail + '\n' + tail.value
+      return self.tail,code.value
 
    def bufferScreen(self,pipe):
       lastlineempty = False
@@ -153,6 +199,18 @@ class MESSAGES:
             self.tail = self.tail +'\n'+ dat
       if len(self.tail.split('\n')) > self.size: self.tail = '\n'.join((self.tail.split('\n'))[-self.size:]) 
    
+# _____                     ________________________________________
+# ____/ Parallel Utilities /_______________________________________/
+#
+
+class paraProcess(Process):
+
+   def __init__(self,fct,args):
+      Process.__init__(self)
+      self.fct = fct
+      self.args = args
+
+   def run(self): self.fct(*self.args)
 
 # _____                  ___________________________________________
 # ____/ Other Utilities /__________________________________________/
@@ -284,4 +342,4 @@ class LETTERS:
          i = ord(text[c])
          for j in range(len(self.ascii[i][self.size])): lines[j] += self.ascii[i][self.size][j][1:]
       return lines
-            
+

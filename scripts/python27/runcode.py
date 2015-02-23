@@ -534,6 +534,11 @@ def getHPCCommand(cfgHPC):
 
    return hpcCmd
 
+def getHPCDepend(cfgHPC):
+   # ~~> Executable
+   if cfgHPC.has_key('DEPEND'): return cfgHPC['DEPEND']
+   else: return ''
+
 def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
 
    if path.exists(f90Name) and not path.exists(useName):
@@ -1157,17 +1162,23 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
       elif not cfg['HPC'].has_key('STDIN'):
          raise Exception([{'name':'runCAS','msg':'\nI would need the key hpc_stdin in you configuration so I can launch your simulation on the HPC queue.'}])
       else:
+         jobID = ''
          for name in CASFiles:  # /!\ This is being done in parallel when multiple CASFiles
+            #if not hpcpass:
             chdir(CASFiles[name]['wir'])
             print '\n... modifying run command to HPC instruction'
             # ~~> HPC Command line launching runcode
             hpccmd = getHPCCommand(cfg['HPC'])
             if not hpcpass: hpccmd = hpccmd.replace('<wdir>',CASFiles[name]['wir'])
             else: hpccmd = hpccmd.replace('<wdir>',CASFiles[name]['dir'])
+            # ~~> HPC dependency between jobs
+            hpcjob = getHPCDepend(cfg['HPC'])
+            if hpcjob != '' and jobID != '' and hpcpass: hpccmd = hpccmd + ' ' + hpcjob.replace('<jobid>',jobID)
             # ~~> HPC queueing script
             stdinfile = cfg['HPC']['STDIN'][0]   # only one key for now
             stdin = cfg['HPC']['STDIN'][1]
             if cfg['MPI'] != {}: stdin = stdin.replace('<hosts>',cfg['MPI']['HOSTS'])
+            stdin = stdin.replace('<root>',cfg['root'])
             stdin = stdin.replace('<ncsize>',str(ncsize))
             stdin = stdin.replace('<nctile>',str(nctile))
             stdin = stdin.replace('<ncnode>',str(ncnode))
@@ -1209,6 +1220,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                runcmd = runcmd + ' ' + name
                stdin = stdin.replace('<py_runcode>',runcmd)
             # ~~> Write to HPC_STDIN
+            #if not hpcpass:
             chdir(CASFiles[name]['wir'])
             putFileContent(stdinfile,stdin.split('\n'))
 
@@ -1218,6 +1230,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             # ~~> here you go run
             if not runCode(hpccmd,sortie):
                raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
+            jobID = getFileContent(sortie)[0].strip()
             print '... Your simulation ('+name+') has been launched through the queue.\n'
             if hpcpass: print '   +> You need to wait for completion before checking on results.\n'
             else: print '   +> You need to wait for completion before re-collecting files using the option --merge\n'
@@ -1360,6 +1373,8 @@ def main(module=None):
       help="the number of core per node. ncsize/nctile is the number of compute nodes" )
    parser.add_option("--ncnode",type="string",dest="ncnode",default='',
       help="the number of of nodes. ncsize = ncnode*nctile is the total number of compute nodes" )
+   parser.add_option("--sequential",action="store_true",dest="sequential",default=False,
+      help="if present, imposes that multiple CAS files are launched one after the other" )
    parser.add_option("--mpi",action="store_true",dest="mpi",default=False,
       help="make sure the mpi command is executed, ignoring any hpc command" )
    parser.add_option("--split",action="store_true",dest="split",default=False,

@@ -574,7 +574,7 @@ if __name__ == "__main__":
           'step'    : "0",
           'number'  : "all",
           'levtype' : "sfc",
-          'date'    : "1993-01-02/to/1993-05-02",
+          'date'    : "2011-02-15/to/2011-06-15",
           'time'    : "00/06/12/18",
           # 'origin'  : "all",
           'type'    : "an",
@@ -589,7 +589,6 @@ if __name__ == "__main__":
    print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    print '\nMaking an ECMWF request\n'
-   if options.tfrom != None and options.tstop != None: req['date'] = options.tfrom + '/to/' + options.tstop
    ecmwf2slf = ECMWF("datasets/%s" % (options.dataset,),period,req)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

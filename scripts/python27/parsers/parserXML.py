@@ -559,7 +559,7 @@ class actionRUN(ACTION):
                   raise Exception([{'name':'ACTION::diffPRINCI','msg':'I could not recognised entities in your PRINCI: '+princiFile}])
                else:
                   print '        +> found:'
-                  for pFile in pFiles: print '           - ',pFile
+                  for pType,pFile in pFiles: print '           - ',pFile
                # ~~> Scans the entire system
                oFiles = {}
                for mod in cfg['MODULES']:
@@ -568,7 +568,7 @@ class actionRUN(ACTION):
                      n,e = path.splitext(fle)
                      # Only looking for fortran files
                      if e.lower() not in ['.f','.f90']: continue
-                     for pFile in pFiles:
+                     for pType,pFile in pFiles:
                         if pFile.lower() == n:
                            oFiles.update( filterPrincipalWrapNames( [pFile],[path.join(dirpath,fle)] ) )
                if oFiles == {}:
@@ -579,7 +579,7 @@ class actionRUN(ACTION):
                # ~~> Save temporarily for subsequent difference
                oriFile = path.splitext(princiFile)[0]+'.original'+path.splitext(princiFile)[1]
                putFileContent(oriFile,[])
-               for p in pFiles:
+               for pType,p in pFiles:
                   if p in oFiles: addFileContent(oriFile,getFileContent(oFiles[p]))
                # ~~> Process difference and write output into an HTML file
                diff = diffTextFiles(oriFile,princiFile,options)

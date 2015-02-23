@@ -982,7 +982,7 @@ def getPrincipalWrapNames(difFile):
    pFiles = []
    while flines != []:
       code,w,face,ctns,flines = parsePrincipalWrap(flines)
-      pFiles.append(w[1])
+      pFiles.append([w[0],w[1]])
    return pFiles
 
 def filterPrincipalWrapNames(uNames,sFiles):
@@ -1208,7 +1208,7 @@ if __name__ == "__main__":
             sys.exit(1)
          else:
             print '        +> found:'
-            for oFile in pFiles: print '           - ',oFile
+            for oType,oFile in pFiles: print '           - ',oFile
 
       if len(args[1:]) == 1: # if only one PRINCI ...
          # ~~> Get and store original version of files

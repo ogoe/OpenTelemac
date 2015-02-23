@@ -92,11 +92,13 @@
 # ~~> dependencies towards standard python
 import re
 import sys
+import time
 from os import path, sep, walk, chdir, remove, environ
 import ConfigParser
+from multiprocessing.sharedctypes import Value,Array
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC,cleanConfig
-from parsers.parserFortran import scanSources
+from parsers.parserFortran import scanSources,getPrincipalWrapNames
 # ~~> dependencies towards other pytel/modules
 from utils.files import createDirectories,putFileContent,isNewer
 from utils.messages import MESSAGES,filterMessage,banner
@@ -231,7 +233,7 @@ def getScanContent(fle,root,bypass):
       if lib not in content: raise Exception([{'name':'getScanContent','msg':'The reference ' + lib + ' in the [general] liborder key is not defined in your cmdf-scan file:'+fle}])
    return content
 
-def createObjFiles(cfg,oname,oprog,odict,ocfg,bypass):
+def createObjFiles(cfg,oname,oprog,odict,ocfg,mes,tasks,bypass):
    # ~~ Assumes that the source filenames are in lower case ~~~~~~~~
    Root,Suffix = path.splitext(path.basename(oname))
 
@@ -260,19 +262,15 @@ def createObjFiles(cfg,oname,oprog,odict,ocfg,bypass):
    cmd = cmd.replace('<config>',ObjDir).replace('<root>',cfg['root'])
 
    if debug : print cmd
-   mes = MESSAGES(size=10)
-   try:
-      tail,code = mes.runCmd(cmd,bypass)
-   except Exception as e:
-      raise Exception([filterMessage({'name':'createObjFiles','msg':'something went wrong, I am not sure why. Please verify your compiler installation or the python script itself.'},e,bypass)])
-   if code != 0: raise Exception([{'name':'createObjFiles','msg':'could not compile your FORTRAN (runcode='+str(code)+').\n      '+tail}])
-   if odict['type'] == 'M': out = '   - created ' + ObjFile + ' and ' + ModFile
-   else: out = '   - created ' + ObjFile
+   # ~~> remove gosts
+   out = mes.cleanCmd(tasks)
+   task = mes.startCmd( tasks,(cmd,bypass,Array('c',' '*10000),Value('i',0)) )
+   if odict['type'] == 'M': out.extend( mes.flushCmd(tasks) )
+   # ~~> and remove .f from objList
    odict['time'] = 1
-   #and remove .f from objList
    return out
 
-def createLibFiles(cfg,lname,lcfg,lprog,bypass):
+def createLibFiles(cfg,lname,lcfg,lprog,mes,tasks,bypass):
    # ~~ Assumes that all objects are in <config> ~~~~~~~~~~~~~~~~~~~
    # ~~ recreates the lib regardless ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -306,16 +304,10 @@ def createLibFiles(cfg,lname,lcfg,lprog,bypass):
    cmd = cmd.replace('<libname>',LibFile)
 
    if debug : print cmd
-   mes = MESSAGES(size=10)
-   try:
-      tail,code = mes.runCmd(cmd,bypass)
-   except Exception as e:
-      raise Exception([filterMessage({'name':'createLibFiles','msg':'something went wrong, I am not sure why. Please verify your compilation or the python script itself.'},e,bypass)])
-   if code != 0: raise Exception([{'name':'createLibFiles','msg':'Could not pack your library (runcode='+str(code)+').\n      '+tail}])
-   print '   - created ' + LibFile
+   mes.startCmd( tasks,(cmd,bypass,Array('c',' '*10000),Value('i',0)) )
    return False
 
-def createExeFiles(cfg,ename,ecfg,eprog,bypass):
+def createExeFiles(cfg,ename,ecfg,eprog,mes,bypass):
 
    # ~~ Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    LibDir = cfg['MODULES'][eprog]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+ecfg+sep+'lib')
@@ -417,7 +409,6 @@ def createExeFiles(cfg,ename,ecfg,eprog,bypass):
    xecmd = xecmd.replace('<config>',LibDir).replace('<root>',cfg['root'])
 
    if debug : print cmd
-   mes = MESSAGES(size=10)
    try:
       tail,code = mes.runCmd(cmd,bypass)
       if tail != '':
@@ -688,29 +679,46 @@ if __name__ == "__main__":
                         HOMERES[item]['add'].append((fle,lib))
                   except Exception as e:
                      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Could not find the following file for compilation: '+path.basename(srcName)+'\n         ... so it may have to be removed from the following cmdf file: '+cmdFile},e,options.bypass)])
+# ~~ Parallel log files
+            tasks = []
+            mes = MESSAGES(size=10)
 # ~~ Creates modules and objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             if HOMERES[item]['add'] == []: print '      +> There is no need to compile any object'
             else:
                ibar = 0; pbar = ProgressBar(maxval=len(HOMERES[item]['add'])).start()
                for obj,lib in HOMERES[item]['add'] :
-                  try:
-                     pbar.write( createObjFiles(cfg,obj,item,{'libname':lib,'type':'','path':cmdfFiles[mod][item][lib]['path']},cfgname,options.bypass),ibar )
+                  out = createObjFiles(cfg,obj,item, \
+                     {'libname':lib,'type':getPrincipalWrapNames(path.join(cmdfFiles[mod][item][lib]['path'],obj))[0][0], \
+                      'path':cmdfFiles[mod][item][lib]['path']}, \
+                      cfgname,mes,tasks,options.bypass)
+                  for x,o,e,c in out:
+                     if e == '': pbar.write( '   - completed: ' + x.split()[-1],ibar )
+                     else: xcpts.addMessages([{'name':'compileTELEMAC::createObjFiles:\n      +> failed: '+x+'\n'+e}])
                      ibar = ibar + 1; pbar.update(ibar)
-                  except Exception as e:
-                     xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating objects: '+path.basename(obj)},e,options.bypass)])
-               pbar.finish()
+                  #if xcpts.notEmpty(): raise Exception([{'name':'compileTELEMAC','msg':'Failed compiling for the follwoing reason(s) ' + xcpts.exceptMessages() }])
+               # ~~> waiting for the remaining queued jobs to complete
+               out = mes.flushCmd(tasks)
+               for x,o,e,c in out:
+                  if e == '': pbar.write( '   - completed: ' + x.split()[-1],ibar )
+                  else: xcpts.addMessages([{'name':'compileTELEMAC::createObjFiles:\n      +> failed: '+x+'\n'+e}])
+                  ibar = ibar + 1; pbar.update(ibar)
+               pbar.finish()               
+               #if xcpts.notEmpty(): raise Exception([{'name':'compileTELEMAC','msg':'Failed compiling for the following reason(s) ' + xcpts.exceptMessages() }])
 # ~~ Creates libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             foundLib = True
             for lib in HOMERES[item]['deps']:
-               try:
-                  f = createLibFiles(cfg,lib,cfgname,item,options.bypass)
-               except Exception as e:
-                  xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating library: '+path.basename(lib)},e,options.bypass)])
+               f = createLibFiles(cfg,lib,cfgname,item,mes,tasks,options.bypass)
+               # ~~> waiting for the remaining queued jobs to complete
+               out = mes.flushCmd(tasks)
+               for x,o,e,c in out:
+                  if e == '': print '   - completed: ' + x.split()[-1]
+                  else: xcpts.addMessages([{'name':'compileTELEMAC::createLibFiles:\n      +> failed: '+x+'\n'+e}])
+               #if xcpts.notEmpty(): raise Exception([{'name':'compileTELEMAC','msg':'Failed linking for the following reason(s) ' + xcpts.exceptMessages() }])
                foundLib = foundLib and f
             if foundLib: print '      +> There is no need to package any library'
 # ~~ Creates executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             try:
-               foundExe = createExeFiles(cfg,item.lower(),cfgname,mod,options.bypass)
+               foundExe = createExeFiles(cfg,item.lower(),cfgname,mod,mes,options.bypass)
             except Exception as e:
                xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating executable: '+ item.lower()},e,options.bypass)])
             if foundExe: print '      +> There is no need to create the associate executable'

@@ -237,7 +237,7 @@ class JCOPE2():
       self.slf2d.IKLE2 = - np.ones_like(MASK2,dtype=np.int)
       for k in range(len(MASK2)):
          self.slf2d.IKLE2[k] = [ KNOGL[MASK2[k][0]], KNOGL[MASK2[k][1]], KNOGL[MASK2[k][2]] ]
-
+      
       self.slf3d.NPOIN2 = len(KNOLG)
       self.slf3d.NPOIN3 = self.slf3d.NPOIN2 * self.slf3d.NPLAN
       self.slf2d.NPOIN2 = self.slf3d.NPOIN2
@@ -249,7 +249,7 @@ class JCOPE2():
       self.slf3d.IKLE3 = \
          np.repeat(self.slf2d.NPOIN2*np.arange(self.slf3d.NPLAN-1),self.slf2d.NELEM2*self.slf3d.NDP3).reshape((self.slf2d.NELEM2*(self.slf3d.NPLAN-1),self.slf3d.NDP3)) + \
          np.tile(np.add(np.tile(self.slf2d.IKLE2,2),np.repeat(self.slf2d.NPOIN2*np.arange(2),self.slf3d.NDP2)),(self.slf3d.NPLAN-1,1))
-
+      
       # ~~~~ Boundaries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       self.slf2d.IPOB2 = IPOB2[self.MASK2]
       self.slf2d.IPOB3 = self.slf2d.IPOB2
@@ -258,8 +258,8 @@ class JCOPE2():
 
       # ~~~~ Mesh ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print '     +> Set SELAFIN mesh'
-      self.slf3d.MESHX = np.tile(x,NY1D).reshape(NY1D,NX1D).T.ravel()[self.MASK2] + 1.0/24.0
-      self.slf3d.MESHY = np.tile(y,NX1D)[self.MASK2] + 1.0/24.0
+      self.slf3d.MESHX = np.tile(x,NY1D).reshape(NY1D,NX1D).T.ravel()[self.MASK2] + 0.042
+      self.slf3d.MESHY = np.tile(y,NX1D)[self.MASK2] + 0.042
       self.slf2d.MESHX = self.slf3d.MESHX
       self.slf2d.MESHY = self.slf3d.MESHY
 
@@ -312,10 +312,7 @@ class JCOPE2():
             self.slf2d.appendCoreTimeSLF(ibar)
 
             # ~~> ELEVATION
-            #var2d = np.swapaxes( jcope2data['el']['el'].data[t,0,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2).ravel() #[self.MASK2]
-            var2d = np.swapaxes( jcope2data['el']['el'].data[t,0,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2) #.ravel()[self.MASK2]
-            print len(var2d[0]),len(var2d[0][0]),np.where(var2d>-99.0,var2d,0.0)
-            sys.exit()
+            var2d = np.swapaxes( jcope2data['el']['el'].data[t,0,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2).ravel()[self.MASK2]
             self.slf2d.appendCoreVarsSLF([var2d])
             if not only2D:
                var3d = - np.tile(self.ZPLAN,self.slf3d.NPOIN2).reshape(self.slf3d.NPOIN2,self.slf3d.NPLAN).T.ravel()

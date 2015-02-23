@@ -52,6 +52,7 @@ from fnmatch import fnmatch #,translate
 from zipfile import ZipFile as zipfile
 from distutils.archive_util import make_archive
 from distutils.dep_util import newer
+import urllib2
 # ~~> dependencies towards other modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.progressbar import ProgressBar
@@ -353,6 +354,18 @@ def diffTextFiles(fFile,tFile,options):
          fFile, tFile, fDate, tDate, n=options.ablines)
 
    return
+
+# _____                      _______________________________________
+# ____/ Internet connection /______________________________________/
+#
+
+def isOnline(url='http://www.opentelemac.org/', timeout=5):
+   try:
+      urllib2.urlopen(url,timeout=timeout)
+      return True
+   except urllib2.URLError:
+      print("... could not connect through to the internet.")
+   return False
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
