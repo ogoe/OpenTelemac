@@ -1,13 +1,13 @@
 !                    ****************
-                      SUBROUTINE METEO
+                     SUBROUTINE METEO
 !                    ****************
 !
      &(PATMOS,WINDX,WINDY,FUAIR,FVAIR,X,Y,AT,LT,NPOIN,VENT,ATMOS,
      & HN,TRA01,GRAV,ROEAU,NORD,PRIVE,FO1,FILES,LISTIN,
-     & WATER_QUALITY,PLUIE,ATMOSEXCH)
+     & AWATER_QUALITY,PLUIE,AATMOSEXCH,AOPTWIND,AWIND_SPD,APATMOS_VALUE)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                   09/07/2014
+! TELEMAC2D   V7P0 
 !***********************************************************************
 !
 !brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
@@ -50,6 +50,11 @@
 !+   an optional parameter + remove of my_option which is replaced
 !+   by a new keyword + value of patmos managed also with a new keyword
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        07/01/2015
+!+        V7P0
+!+  Adding optional arguments to remove USE DECLARATIONS_TELEMAC2D.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
 !| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
@@ -76,8 +81,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_WAQTEL ,ONLY:PVAP,RAY3,TAIR,NEBU,NWIND
-      USE DECLARATIONS_TELEMAC2D, ONLY: OPTWIND,WIND_SPD,PATMOS_VALUE
+      USE DECLARATIONS_WAQTEL ,ONLY : PVAP,RAY3,TAIR,NEBU,NWIND
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -95,15 +99,18 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: PRIVE
       TYPE(BIEF_FILE), INTENT(IN)     :: FILES(*)
 !     OPTIONAL 
-      LOGICAL, INTENT(IN)          ,OPTIONAL :: WATER_QUALITY
+      LOGICAL, INTENT(IN)          ,OPTIONAL :: AWATER_QUALITY
       TYPE(BIEF_OBJ), INTENT(INOUT),OPTIONAL :: PLUIE
-      INTEGER, INTENT(IN)          ,OPTIONAL :: ATMOSEXCH
+      INTEGER, INTENT(IN)          ,OPTIONAL :: AATMOSEXCH,AOPTWIND
+      DOUBLE PRECISION, INTENT(IN) ,OPTIONAL :: AWIND_SPD(2)
+      DOUBLE PRECISION, INTENT(IN) ,OPTIONAL :: APATMOS_VALUE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER UL
+      LOGICAL WATER_QUALITY
+      INTEGER UL,OPTWIND,ATMOSEXCH
       DOUBLE PRECISION Z(1),AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
-      DOUBLE PRECISION UAIR,VAIR
+      DOUBLE PRECISION UAIR,VAIR,PATMOS_VALUE,WIND_SPD(2)
 !     EXCHANGE WITH ATMOSPHERE
       DOUBLE PRECISION HREL,RAINFALL,PATM,WW,PI
 !  
@@ -117,6 +124,29 @@
 !     CALL.
 !
       SAVE
+!
+!-----------------------------------------------------------------------
+!
+!     DEFAULT VALUES OF PARAMETERS WHEN THEY ARE NOT GIVEN
+!
+      ATMOSEXCH=0
+      IF(PRESENT(AATMOSEXCH)) ATMOSEXCH=AATMOSEXCH
+      WATER_QUALITY=.FALSE.
+      IF(PRESENT(AWATER_QUALITY)) WATER_QUALITY=AWATER_QUALITY
+      OPTWIND=1
+      IF(PRESENT(AOPTWIND)) OPTWIND=AOPTWIND
+      WIND_SPD(1)=0.D0
+      WIND_SPD(2)=0.D0
+      IF(PRESENT(AWIND_SPD)) THEN
+        WIND_SPD(1)=AWIND_SPD(1)
+        WIND_SPD(2)=AWIND_SPD(2)
+      ENDIF
+      PATMOS_VALUE=0.D0
+      IF(PRESENT(APATMOS_VALUE)) PATMOS_VALUE=APATMOS_VALUE
+!
+!-----------------------------------------------------------------------
+!
+
 !
 !-----------------------------------------------------------------------
 !
@@ -140,7 +170,7 @@
 !         IN THIS CASE THE WIND IS CONSTANT, VALUE GIVEN IN STEERING FILE.
 !            MAY REQUIRE A ROTATION,
 !            DEPENDING ON THE SYSTEM IN WHICH THE WIND VELOCITY WAS SUPPLIED
-            IF(WIND_SPD(1).GT.EPS)THEN ! THERE IS WIND !!!
+            IF(WIND_SPD(1).GT.EPS) THEN ! THERE IS WIND !!!
               FUAIR = WIND_SPD(1)*SIN(WIND_SPD(2)*PI/180.D0)
               FVAIR = WIND_SPD(1)*COS(WIND_SPD(2)*PI/180.D0)
             ELSE
@@ -176,9 +206,10 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
+!
 !     FOR THE REMAINING TIME STEPS
-      IF(VENT.OR.WATER_QUALITY.OR.
-     &  (PRESENT(ATMOSEXCH).AND.(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2)))THEN
+!
+      IF(VENT.OR.WATER_QUALITY.OR.ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
 !
 !       WATER QUALITY
 !
@@ -195,8 +226,7 @@
 !
 !       HEAT EXCHANGE WITH ATMOSPHERE
 ! 
-        ELSEIF(PRESENT(ATMOSEXCH).AND.
-     &         (ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2)) THEN
+        ELSEIF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
           IF(VENT.OR.ATMOS) THEN
             CALL INTERPMETEO(WW,UAIR,VAIR,
      &                       TAIR,PATM,HREL,NEBU,RAINFALL,AT,UL)
@@ -284,6 +314,8 @@
           ENDIF
         ENDIF 
       ENDIF
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

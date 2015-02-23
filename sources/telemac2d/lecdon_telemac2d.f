@@ -801,19 +801,6 @@
 !
 !     OPTION FOR WIND MANAGEMENT
       OPTWIND = MOTINT(ADRESS(1,94))
-!     AVOID NON LOGICAL CASE (WIND=YES AND OPTWIND=0)
-      IF(VENT.AND.OPTWIND.EQ.0)THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) ' INCONSISTANCE DANS LA GESTION DU VENT'
-          WRITE(LU,*) ' VENT ACTIVE ET OPTION DU VENT = 0'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) ' UNCOHERENT CHOICES FOR WIND MANAGEMENT'
-          WRITE(LU,*) ' WIND ACTIVATED AND OPTION FOR WIND = 0'
-        ENDIF
-        CALL PLANTE(1)
-        STOP
-      ENDIF     
 !
 ! REAL KEYWORDS:
 !
@@ -2400,6 +2387,23 @@
           STOP
         ENDIF
       ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     AVOID NON LOGICAL CASE (WIND=YES AND OPTWIND=0)
+!
+      IF(VENT.AND.OPTWIND.EQ.0)THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) ' INCONSISTANCE DANS LA GESTION DU VENT'
+          WRITE(LU,*) ' VENT ACTIVE ET OPTION DU VENT = 0'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) ' UNCOHERENT CHOICES FOR WIND MANAGEMENT'
+          WRITE(LU,*) ' WIND ACTIVATED AND OPTION FOR WIND = 0'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF     
 !
 !-----------------------------------------------------------------------
 !

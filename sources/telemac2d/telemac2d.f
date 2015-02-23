@@ -818,8 +818,6 @@
         ENDIF
       ENDIF
 !
-      TMAX=DUREE+AT0
-!
 !-----------------------------------------------------------------------
 !
 !  INITIALISES PARAMETERS SPECIFIC TO FINITE VOLUMES
@@ -851,6 +849,8 @@
             STOP
           ENDIF
         ENDIF
+!
+        TMAX=DUREE+AT0
 ! 
       ENDIF
 !
@@ -888,12 +888,13 @@
 !-----------------------------------------------------------------------
 ! INITIAL WEATHER CONDITIONS
 !
-      IF (VENT.OR.ATMOS) THEN
+      IF(VENT.OR.ATMOS) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING METEO'
         CALL METEO(PATMOS%R,WINDX%R,WINDY%R,
      &             FUAIR,FVAIR,MESH%X%R,MESH%Y%R,AT,LT,NPOIN,VENT,ATMOS,
      &             H%R,T1%R,GRAV,ROEAU,NORD,PRIVE,
-     &             T2DFO1,T2D_FILES,LISTIN,WATQUA,PLUIE)
+     &             T2DFO1,T2D_FILES,LISTIN,WATQUA,PLUIE,0,
+     &             OPTWIND,WIND_SPD,PATMOS_VALUE)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM METEO'
       ENDIF
 !
@@ -1750,7 +1751,7 @@
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING BORD'
       CALL BORD(HBOR%R,UBOR%R,VBOR%R,TBOR,
-     &          U,V,H,ZF%R,MESH%NBOR%I,W1,T8,
+     &          U,V,H,ZF%R,MESH%NBOR%I,W1DEB,T8,
      &          LIHBOR%I,LIUBOR%I,LITBOR,
      &          MESH%XNEBOR%R,MESH%YNEBOR%R,NPOIN,NPTFR,
      &          NPTFR2,AT,
@@ -1909,7 +1910,8 @@
         CALL METEO(PATMOS%R,WINDX%R,WINDY%R,
      &             FUAIR,FVAIR,MESH%X%R,MESH%Y%R,AT,LT,NPOIN,VENT,ATMOS,
      &             H%R,T1%R,GRAV,ROEAU,NORD,PRIVE,
-     &             T2DFO1,T2D_FILES,LISTIN,WATQUA,PLUIE)
+     &             T2DFO1,T2D_FILES,LISTIN,WATQUA,PLUIE,0,
+     &             OPTWIND,WIND_SPD,PATMOS_VALUE)
       ENDIF
 !
 !  COMPUTES THE DENSITY WHEN IT IS VARIABLE
@@ -2639,4 +2641,3 @@
 !
       RETURN
       END SUBROUTINE TELEMAC2D
-

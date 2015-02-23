@@ -1,22 +1,17 @@
-!                    ****************
-                     SUBROUTINE METEO
-!                    ****************
+!                    *****************
+                     SUBROUTINE CONDIN
+!                    *****************
 !
-     &(PATMOS,WINDX,WINDY,FUAIR,FVAIR,X,Y,AT,LT,NPOIN,VENT,ATMOS,
-     & HN,TRA01,GRAV,ROEAU,NORD,PRIVE,FO1,FILES,LISTIN)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
-!brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
-!+               (IN GENERAL FROM INPUT DATA FILES).
-!
-!warning  CAN BE ADAPTED BY USER
+!brief    INITIALISES THE PHYSICAL PARAMETERS H, U, V ETC.
 !
 !history  J-M HERVOUET (LNHE)
-!+        02/01/2004
-!+        V5P4
+!+        30/08/2007
+!+        V6P0
 !+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
@@ -31,244 +26,62 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
-!history  J-M HERVOUET (EDF R&D, LNHE)
-!+        30/01/2013
-!+        V6P3
-!+   Now 2 options with an example for reading a file. 
+!history  M.S.TURNBULL (HRW), N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        06/12/2011
+!+        V6P2
+!+   Addition of the Tsunami displacement (based on Okada's model)
+!+   by calling CONDI_OKADA and of the TPXO tidal model by calling
+!+   CONDI_TPXO (the TPXO model being coded in module TPXO)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT,LT          |-->| TIME, ITERATION NUMBER
-!| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
-!| FUAIR          |-->| VELOCITY OF WIND ALONG X, IF CONSTANT
-!| FVAIR          |-->| VELOCITY OF WIND ALONG Y, IF CONSTANT
-!| GRAV           |-->| GRAVITY ACCELERATION
-!| HN             |-->| DEPTH
-!| NORD           |-->| DIRECTION OF NORTH, COUNTER-CLOCK-WISE
-!|                |   | STARTING FROM VERTICAL AXIS
-!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
-!| PATMOS         |<--| ATMOSPHERIC PRESSURE
-!| PRIVE          |-->| USER WORKING ARRAYS (BIEF_OBJ BLOCK)
-!| ROEAU          |-->| WATER DENSITY
-!| TRA01          |-->| WORKING ARRAY
-!| VENT           |-->| YES IF WIND TAKEN INTO ACCOUNT
-!| WINDX          |<--| FIRST COMPONENT OF WIND VELOCITY
-!| WINDY          |<--| SECOND COMPONENT OF WIND VELOCITY
-!| X              |-->| ABSCISSAE OF POINTS
-!| Y              |-->| ORDINATES OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER, INTENT(IN)             :: LT,NPOIN,FO1
-      LOGICAL, INTENT(IN)             :: ATMOS,VENT,LISTIN
-      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),HN(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: WINDX(NPOIN),WINDY(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: PATMOS(NPOIN),TRA01(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: FUAIR,FVAIR,AT,GRAV,ROEAU,NORD
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: PRIVE
-      TYPE(BIEF_FILE), INTENT(IN)     :: FILES(*)
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER MY_OPTION,UL
-      DOUBLE PRECISION P0,Z(1),AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
-      DOUBLE PRECISION UAIR,VAIR
-!
-!-----------------------------------------------------------------------
-!
-!     DATA THAT YOU DECLARE AND READ HERE ONCE IN A FILE MAY HAVE TO BE
-!     KEPT BECAUSE THIS SUBROUTINE IS CALLED AT EVERY TIME STEP.
-!     WITHOUT THE SAVE COMMAND, ALL LOCAL DATA ARE FORGOTTEN IN THE NEXT
-!     CALL.
-!
-      SAVE
-!
-!-----------------------------------------------------------------------
-!
-!     CHOOSE YOUR OPTION !!!
-!
-!     1: CONSTANTS GIVEN BY THE KEYWORDS:
-!        AIR PRESSURE (GIVEN HERE AS P0, NO KEYWORD)
-!        WIND VELOCITY ALONG X (HERE FUAIR)
-!        WIND VELOCITY ALONG Y (HERE FVAIR)
-!        THEY WILL BE SET ONCE FOR ALL BEFORE THE FIRST ITERATION (LT=0)
-!
-!     2: CONSTANT IN SPACE WIND COMPONENTS OF VELOCITY GIVEN IN THE FILE
-!        FO1_WIND DECLARED AS FORMATTED DATA FILE 1 = FO1_WIND 
-!
-      MY_OPTION = 2
-!
-!-----------------------------------------------------------------------
-!
-!     BEWARE, HERE ONLY ONE COMPUTATION AT FIRST TIMESTEP
-!
-      IF(LT.EQ.0) THEN
-!
-        UL=FILES(FO1)%LU
-!
-!-----------------------------------------------------------------------
-!
-!       ATMOSPHERIC PRESSURE
-!
-        IF(ATMOS) THEN
-          P0 = 100000.D0
-          CALL OV( 'X=C     ' , PATMOS , Y , Z , P0 , NPOIN )
-        ENDIF
-!
-!-----------------------------------------------------------------------
-!
-!       WIND : IN THIS CASE THE WIND IS CONSTANT,
-!              VALUE GIVEN IN STEERING FILE.
-!
-!       MAY REQUIRE A ROTATION,
-!       DEPENDING ON THE SYSTEM IN WHICH THE WIND VELOCITY WAS SUPPLIED
-!
-        IF(VENT) THEN
-          CALL OV( 'X=C     ' , WINDX , Y , Z , FUAIR , NPOIN )
-          CALL OV( 'X=C     ' , WINDY , Y , Z , FVAIR , NPOIN )
-        ENDIF
-!
-        IF(MY_OPTION.EQ.2) THEN
-!         JUMPING TWO LINES OF COMMENTS
-          READ(UL,*,ERR=100,END=200)
-          READ(UL,*,ERR=100,END=200)
-!         READING THE FIRST TWO LINES OF DATA
-          READ(UL,*,ERR=100,END=200) AT1,FUAIR1,FVAIR1
-          READ(UL,*,ERR=100,END=200) AT2,FUAIR2,FVAIR2
-        ENDIF
-!
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      IF(MY_OPTION.EQ.2.AND.VENT) THEN
-!
-!       JUMPING TWO LINES OF COMMENTS
-!
-10      CONTINUE
-        IF(AT.GE.AT1.AND.AT.LT.AT2) THEN
-          IF(AT2-AT1.GT.1.D-6) THEN
-            COEF=(AT-AT1)/(AT2-AT1)
-          ELSE
-            COEF=0.D0
-          ENDIF
-          UAIR=FUAIR1+COEF*(FUAIR2-FUAIR1)
-          VAIR=FVAIR1+COEF*(FVAIR2-FVAIR1)
-          IF(LISTIN) THEN
-            IF(LNG.EQ.1) WRITE(LU,*) 'VENT A T=',AT,' UAIR=',UAIR,
-     &                                              ' VAIR=',VAIR
-            IF(LNG.EQ.2) WRITE(LU,*) 'WIND AT T=',AT,' UAIR=',UAIR,
-     &                                               ' VAIR=',VAIR
-          ENDIF
-        ELSE
-          AT1=AT2
-          FUAIR1=FUAIR2
-          FVAIR1=FVAIR2
-          READ(UL,*,ERR=100,END=200) AT2,FUAIR2,FVAIR2
-          GO TO 10
-        ENDIF
-!
-        CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
-        CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)    
-!
-      ENDIF
-!
-      RETURN
-!
-!-----------------------------------------------------------------------
-! 
-100   CONTINUE
-      WRITE(LU,*) ' '
-      WRITE(LU,*) 'METEO'
-      IF(LNG.EQ.1) WRITE(LU,*) 'ERREUR DANS LE FICHIER DE VENT'
-      IF(LNG.EQ.2) WRITE(LU,*) 'ERROR IN THE WIND FILE'
-      CALL PLANTE(1)
-      STOP  
-200   CONTINUE
-      WRITE(LU,*) ' '
-      WRITE(LU,*) 'METEO'
-      IF(LNG.EQ.1) WRITE(LU,*) 'FIN PREMATUREE DU FICHIER DE VENT'
-      IF(LNG.EQ.2) WRITE(LU,*) 'WIND FILE TOO SHORT'
-      CALL PLANTE(1)
-      STOP           
-!
-!-----------------------------------------------------------------------
-!
-      RETURN
-      END
-!                       *****************
-                        SUBROUTINE CONDIN
-!                       *****************
-!
-!***********************************************************************
-! TELEMAC-2D VERSION 5.0         19/08/98  J-M HERVOUET TEL: 30 87 80 18
-!
-!***********************************************************************
-!
-!     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
-!
-!-----------------------------------------------------------------------
-!                             ARGUMENTS
-! .________________.____.______________________________________________
-! |      NOM       |MODE|                   ROLE
-! |________________|____|______________________________________________
-! |                | -- |  
-! |________________|____|______________________________________________
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-!***********************************************************************
-!
-      USE BIEF
+      USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
+      USE TPXO
+      USE OKADA
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-      DOUBLE PRECISION FAIR1 , WIND , FVENT , HINI , LCANAL
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      DOUBLE PRECISION FAIR1, WIND, FVENT, HINI, LCANAL
       COMMON/FORFUN/FVENT,LCANAL,HINI
       INTEGER I,ITRAC                                     
-!                                                                         
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!  
 !
 !-----------------------------------------------------------------------
 !
-!   INITIALISATION DU TEMPS
+!   INITIALISES THE TIME
 !
       AT = 0.D0
 !
-!   INITIALISATION DU TEMPS                                               
-!                                                                         
-!                                                                         
-      FAIR1   = 1.2615D-3
+      FAIR1  = 1.2615D-3
       WIND   = 5.D0
       FVENT  = FAIR1*WIND*WIND
       HINI   = -ZF%R(1)
       LCANAL = 500.D0
-!-----------------------------------------------------------------------
-!
-!   INITIALISATION DES VITESSES : VITESSES NULLES
-!
-      CALL OS( 'X=C     ' , U , U , U , 0.D0 )
-      CALL OS( 'X=C     ' , V , V , V , 0.D0 )
 !
 !-----------------------------------------------------------------------
 !
-!   INITIALISATION DE H , LA HAUTEUR D'EAU
+!   INITIALISES THE VELOCITIES: ZERO VELOCITIES
+!
+      CALL OS('X=0     ',X=U)
+      CALL OS('X=0     ',X=V)
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISES THE WATER DEPTH H
 !
       IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
      &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
-        CALL OS( 'X=C     ' , H , H  , H , 0.D0 )
-        CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0 )
+        CALL OS( 'X=0     ' , X=H )
+        CALL OS( 'X=X-Y   ' , X=H , Y=ZF )
       ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
      &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , COTINI )
@@ -279,15 +92,28 @@
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
      &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , HAUTIN )
+      ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
+     &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
+        CALL OS('X=-Y    ',X=H,Y=ZF)
+        CALL CONDI_TPXO(NPOIN,MESH%NPTFR,MESH%NBOR%I,
+     &                  X,Y,H%R,U%R,V%R,
+     &                  LIHBOR%I,LIUBOR%I,KENT,KENTU,
+     &                  GEOSYST,NUMZONE,LAMBD0,PHI0,
+     &                  T2D_FILES,T2DBB1,T2DBB2,
+     &                  MARDAT,MARTIM,INTMICON,MSL)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
-!  ZONE A MODIFIER                                                      
+!
+!  TO BE MODIFIED BY USER IF SPECIAL INITIAL CONDITIONS
+!
       CALL EXACTE(H%R,X,Y,NPOIN,ZF%R)
-        DO I = 1,NPOIN
-          PRIVE%ADR(1)%P%R(I) = H%R(I)
-        ENDDO                                         
-!  FIN DE LA ZONE A MODIFIER      
+      DO I = 1,NPOIN
+        PRIVE%ADR(1)%P%R(I) = H%R(I)
+      ENDDO
+!
+!  END OF CODE TO BE MODIFIED BY USER
+!
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -295,29 +121,38 @@
         IF(LNG.EQ.2) THEN
         WRITE(LU,*) 'CONDIN: INITIAL CONDITION UNKNOWN: ',CDTINI
         ENDIF
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-!   INITIALISATION DU TRACEUR
+!   INITIALISES TSUNAMI DISPLACEMENT
+!
+      IF(OPTTSUNAMI.EQ.1) THEN
+        CALL CONDI_OKADA(NPOIN,X,Y,H%R,COETSUNAMI,LAMBD0,PHI0)
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISES THE TRACERS
 !
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
-          CALL OS( 'X=C     ' , X=T%ADR(ITRAC)%P , C=TRAC0(ITRAC) )
+          CALL OS('X=C     ',X=T%ADR(ITRAC)%P,C=TRAC0(ITRAC))
         ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-! INITIALISATION DE LA VISCOSITE
+!   INITIALISES THE VISCOSITY
 !
-      CALL OS( 'X=C     ' , VISC , VISC , VISC , PROPNU )
+      CALL OS('X=C     ',X=VISC,C=PROPNU)
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END           
+      END
 !                       *****************                                 
                         SUBROUTINE EXACTE
 !                       *****************                                 
@@ -415,40 +250,38 @@
 !                                                                         
       RETURN
       END
-!                       *****************
-                        SUBROUTINE CORFON
-!                       *****************
+!                    *****************
+                     SUBROUTINE CORFON
+!                    *****************
+!
 !
 !***********************************************************************
-! PROGICIEL : TELEMAC-2D 5.0          01/03/90    J-M HERVOUET
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!  USER SUBROUTINE CORFON
+!brief    MODIFIES THE BOTTOM TOPOGRAPHY.
 !
-!  FUNCTION  : MODIFICATION OF THE BOTTOM TOPOGRAPHY
+!warning  USER SUBROUTINE
 !
+!history  J-M HERVOUET (LNHE)
+!+        01/03/1990
+!+        V5P2
+!+
 !
-!-----------------------------------------------------------------------
-!  ARGUMENTS USED IN THE EXAMPLE 
-! .________________.____.______________________________________________
-! |      NOM       |MODE|                   ROLE
-! |________________|____|_______________________________________________
-! |      ZF        |<-->| FOND A MODIFIER.
-! |      X,Y,(Z)   | -->| COORDONNEES DU MAILLAGE (Z N'EST PAS EMPLOYE).
-! |      A         |<-- | MATRICE
-! |      T1,2      | -->| TABLEAUX DE TRAVAIL (DIMENSION NPOIN)
-! |      W1        | -->| TABLEAU DE TRAVAIL (DIMENSION 3 * NELEM)
-! |      NPOIN     | -->| NOMBRE DE POINTS DU MAILLAGE.
-! |      PRIVE     | -->| TABLEAU PRIVE POUR L'UTILISATEUR.
-! |      LISFON    | -->| NOMBRE DE LISSAGES DU FOND.
-! |________________|____|______________________________________________
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-!-----------------------------------------------------------------------
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
-! PROGRAMME APPELANT :
-! PROGRAMMES APPELES : RIEN EN STANDARD
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
-!***********************************************************************
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
@@ -456,7 +289,6 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-      INTEGER I
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -464,10 +296,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       LOGICAL MAS
+      INTEGER I
 !
 !-----------------------------------------------------------------------
 !
-!  LISSAGES EVENTUELS DU FOND
+!  SMOOTHING(S) OF THE BOTTOM (OPTIONAL)
 !
       IF(LISFON.GT.0) THEN
 !
@@ -485,155 +318,33 @@
 !
 !-----------------------------------------------------------------------
 !
+      IF(LNG.EQ.1) THEN
+        IF(LISFON.EQ.0) THEN
+          WRITE(LU,*)
+          WRITE(LU,*) 'CORFON (TELEMAC2D) : PAS DE MODIFICATION DU FOND'
+          WRITE(LU,*)
+        ELSE
+          WRITE(LU,*)
+          WRITE(LU,*) 'CORFON (TELEMAC2D) : ',LISFON,' LISSAGES DU FOND'
+          WRITE(LU,*)
+        ENDIF
+      ENDIF
+      IF(LNG.EQ.2) THEN
+        IF(LISFON.EQ.0) THEN
+          WRITE(LU,*)
+          WRITE(LU,*) 'CORFON (TELEMAC2D): NO MODIFICATION OF BOTTOM'
+          WRITE(LU,*)
+        ELSE
+          WRITE(LU,*)
+          WRITE(LU,*) 'CORFON (TELEMAC2D): ',LISFON,' BOTTOM SMOOTHINGS'
+          WRITE(LU,*)
+        ENDIF
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
       RETURN
-      END                  
-       
-!                       ***************************
-                        SUBROUTINE PRERES_TELEMAC2D
-!                       ***************************
-!
-!***********************************************************************
-!  TELEMAC 2D VERSION 5.0    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
-!
-!***********************************************************************
-!
-!     FONCTION  : PREPARATION DE VARIABLES QUI SERONT ECRITES SUR
-!                 LE FICHIER DE RESULTATS OU SUR LE LISTING.
-!
-!-----------------------------------------------------------------------
-!                             ARGUMENTS
-! .________________.____.______________________________________________.
-! |      NOM       |MODE|                   ROLE                       |
-! |________________|____|______________________________________________|
-! |      LT        | -->| NUMERO D'ITERATION
-! |________________|____|______________________________________________|
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-!
-!-----------------------------------------------------------------------
-!
-!  APPELE PAR : TELMAC
-!
-!  SOUS-PROGRAMME APPELE : OV
-!
-!***********************************************************************
-!
-      USE BIEF
-      USE DECLARATIONS_TELEMAC2D
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!     
-      LOGICAL IMP,LEO
-!
-      INTEGER LTT,N,IMAX
-!
-      DOUBLE PRECISION HHPLG,XMAX
-!
-      INTRINSIC MAX,SQRT
-!
-!-----------------------------------------------------------------------
-!
-! LOGIQUES POUR DECIDER DES SORTIES
-!
-      IMP=.FALSE.
-      LEO=.FALSE.
-      LTT=(LT/LISPRD)*LISPRD
-      IF((LT.EQ.LTT.OR.LT.EQ.NIT).AND.LT.GE.PTINIL) IMP=.TRUE.
-      LTT=(LT/LEOPRD)*LEOPRD
-      IF((LT.EQ.LTT.OR.LT.EQ.NIT).AND.LT.GE.PTINIG) LEO=.TRUE.
-!
-!     PAS D'IMPRESSION, PAS DE SORTIE SUR FICHIER, ON RESSORT
-      IF(.NOT.(LEO.OR.IMP)) GO TO 1000
-!
-!
-!=======================================================================
-! CALCUL DE LA CELERITE (MISE DANS FU, VOIR LE BLOC VARSOR)
-!=======================================================================
-!
-      IF((LEO.AND.SORLEO(3)).OR.(IMP.AND.SORIMP(3))) THEN
-        DO N=1,NPOIN
-          FU%R(N) = SQRT ( GRAV * MAX(H%R(N),0.D0) )
-        ENDDO
-      ENDIF
-!
-!=======================================================================
-! CALCUL DE LA SURFACE LIBRE (= H + ZF, MISE DANS FV)
-!=======================================================================
-!
-      IF((LEO.AND.SORLEO(5)).OR.(IMP.AND.SORIMP(5))) THEN
-        CALL OS( 'X=Y+Z   ' , FV , H , ZF , 0.D0 )
-      ENDIF
-!
-!=======================================================================
-! CALCUL DU NOMBRE DE FROUDE
-!=======================================================================
-!
-      IF((LEO.AND.SORLEO(7)).OR.(IMP.AND.SORIMP(7))) THEN
-        DO N=1,NPOIN
-          HHPLG = MAX( H%R(N) , 1.D-8 )
-          T2%R(N) = SQRT (( U%R(N)**2 + V%R(N)**2 ) / ( HHPLG*GRAV ))
-        ENDDO
-      ENDIF
-!
-!=======================================================================
-! CALCUL DU DEBIT SCALAIRE
-!=======================================================================
-!
-      IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN
-        DO N=1,NPOIN
-          T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
-        ENDDO
-      ENDIF
-!
-!=======================================================================
-! CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT X
-!=======================================================================
-!
-      IF((LEO.AND.SORLEO(13)).OR.(IMP.AND.SORIMP(13))) THEN
-        CALL OS( 'X=YZ    ' , T4 , H , U , HHPLG )
-      ENDIF
-!
-!=======================================================================
-! CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT Y
-!=======================================================================
-!
-      IF((LEO.AND.SORLEO(14)).OR.(IMP.AND.SORIMP(14))) THEN
-        CALL OS( 'X=YZ    ' , T5 , H , V , HHPLG )
-      ENDIF
-!
-!=======================================================================
-! CALCUL DE LA VITESSE SCALAIRE
-!=======================================================================
-!
-      IF((LEO.AND.SORLEO(15)).OR.(IMP.AND.SORIMP(15))) THEN
-        CALL OS( 'X=N(Y,Z)' , T6 , U , V , HHPLG )
-      ENDIF
-!
-!=======================================================================
-! CALCUL DU NOMBRE DE COURANT
-!=======================================================================
-!
-      IF((LEO.AND.SORLEO(22)).OR.(IMP.AND.SORIMP(22))) THEN
-!                             IELM
-        CALL CFLPSI(T9,U,V,DT,11,MESH,MSK,MASKEL)
-        CALL MAXI(XMAX,IMAX,T9%R,NPOIN)
-        IF (LNG.EQ.1) WRITE(LU,78) XMAX
-        IF (LNG.EQ.2) WRITE(LU,79) XMAX
-78      FORMAT(1X,'PRERES : NOMBRE DE COURANT MAXIMUM :',G16.7)
-79      FORMAT(1X,'PRERES: MAXIMUM COURANT NUMBER: ',G16.7)
-      ENDIF
-!
-!=======================================================================
-!
-1000  CONTINUE
-      RETURN
-      END 
+      END
 !                       *****************                               
                         SUBROUTINE ZBRENT                               
 !                       *****************                               

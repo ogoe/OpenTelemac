@@ -3,10 +3,11 @@
 !                    ****************
 !
      &(PATMOS,WINDX,WINDY,FUAIR,FVAIR,X,Y,AT,LT,NPOIN,VENT,ATMOS,
-     & HN,TRA01,GRAV,ROEAU,NORD,PRIVE,FO1,FILES,LISTIN)
+     & HN,TRA01,GRAV,ROEAU,NORD,PRIVE,FO1,FILES,LISTIN,
+     & AWATER_QUALITY,PLUIE,AATMOSEXCH,AOPTWIND,AWIND_SPD,APATMOS_VALUE)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                   
+! TELEMAC2D   V7P0 
 !***********************************************************************
 !
 !brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
@@ -34,28 +35,37 @@
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        30/01/2013
 !+        V6P3
-!+   Now 2 options with an example for reading a file.
+!+   Now 2 options with an example for reading a file. Extra arguments. 
 !
-!history  P. PRODANOVIC (RIGGS ENGINEERING LTD.)
-!+        22/04/2014
-!+        V6P3
-!+   Added an option for spacio-temporal wind interpolation of wind.
-!+   
+!history  C.-T. PHAM (LNHE)
+!+        09/07/2014
+!+        V7P0
+!+   Reading a file of meteo data for exchange with atmosphere
+!+   Only the wind is used here
+!
+!history R.ATA (LNHE)
+!+        09/11/2014
+!+        V7P0
+!+  introducion of water quality option + pluie is introduced as
+!+   an optional parameter + remove of my_option which is replaced
+!+   by a new keyword + value of patmos managed also with a new keyword
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
-!+        16/02/2015
+!+        07/01/2015
 !+        V7P0
-!+   Shifting the stations coordinates removed in case of wind varying
-!+   in time and space (option 99). Managing the divisions by 0 is now
-!+   done by subroutine IDWM_T2D, and this does not spoil parallelism.
+!+  Adding optional arguments to remove USE DECLARATIONS_TELEMAC2D.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT,LT          |-->| TIME, ITERATION NUMBER
+!| AT             |-->| TIME
 !| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
-!| FUAIR          |-->| VELOCITY OF WIND ALONG X, IF CONSTANT
-!| FVAIR          |-->| VELOCITY OF WIND ALONG Y, IF CONSTANT
+!| FILES          |-->| BIEF_FILES STRUCTURES OF ALL FILES
+!| FO1            |-->| LOGICAL UNIT OF THE FORMATTED DATA FILE
+!| FUAIR          |<->| VELOCITY OF WIND ALONG X, IF CONSTANT
+!| FVAIR          |<->| VELOCITY OF WIND ALONG Y, IF CONSTANT
 !| GRAV           |-->| GRAVITY ACCELERATION
 !| HN             |-->| DEPTH
+!| LISTIN         |-->| IF YES, PRINTS INFORMATION
+!| LT             |-->| ITERATION NUMBER
 !| NORD           |-->| DIRECTION OF NORTH, COUNTER-CLOCK-WISE
 !|                |   | STARTING FROM VERTICAL AXIS
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
@@ -71,6 +81,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_WAQTEL ,ONLY : PVAP,RAY3,TAIR,NEBU,NWIND
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -83,24 +94,36 @@
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),HN(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: WINDX(NPOIN),WINDY(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: PATMOS(NPOIN),TRA01(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: FUAIR,FVAIR,AT,GRAV,ROEAU,NORD
+      DOUBLE PRECISION, INTENT(IN)    :: AT,GRAV,ROEAU,NORD
+      DOUBLE PRECISION, INTENT(INOUT) :: FUAIR,FVAIR
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: PRIVE
       TYPE(BIEF_FILE), INTENT(IN)     :: FILES(*)
+!     OPTIONAL 
+      LOGICAL, INTENT(IN)          ,OPTIONAL :: AWATER_QUALITY
+      TYPE(BIEF_OBJ), INTENT(INOUT),OPTIONAL :: PLUIE
+      INTEGER, INTENT(IN)          ,OPTIONAL :: AATMOSEXCH,AOPTWIND
+      DOUBLE PRECISION, INTENT(IN) ,OPTIONAL :: AWIND_SPD(2)
+      DOUBLE PRECISION, INTENT(IN) ,OPTIONAL :: APATMOS_VALUE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER MY_OPTION,UL
-      DOUBLE PRECISION P0,Z(1),AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
-      DOUBLE PRECISION UAIR,VAIR
-!      
+      LOGICAL WATER_QUALITY
+      INTEGER UL,OPTWIND,ATMOSEXCH
+      DOUBLE PRECISION Z(1),AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
+      DOUBLE PRECISION UAIR,VAIR,PATMOS_VALUE,WIND_SPD(2)
+!     EXCHANGE WITH ATMOSPHERE
+      DOUBLE PRECISION HREL,RAINFALL,PATM,WW,PI
+!  
+      DOUBLE PRECISION, PARAMETER :: EPS = 1.D-3
+!
 ! ######################################################################
 ! IDWM WIND INTERPOLATION CUSTOM VARIABLES
-! ######################################################################      
-!      
+! ######################################################################
+!
       INTEGER I, NUMSTA, NUMPOINTS, A, B, J, K, JUNK
       DOUBLE PRECISION THETA_RAD
-!      
-!     CORDINATES OF THE STATIONS UTM
+!
+!     COORDINATES OF THE STATIONS UTM
 !
       DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: XX, YY, AT_WIND
       DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: OUT_WSPD, OUT_WDIR
@@ -108,8 +131,8 @@
       DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: INPSTA_S
       DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: INPSTA_D
 !
-! ######################################################################  
-      
+! ######################################################################
+!
 !-----------------------------------------------------------------------
 !
 !     DATA THAT YOU DECLARE AND READ HERE ONCE IN A FILE MAY HAVE TO BE
@@ -121,220 +144,296 @@
 !
 !-----------------------------------------------------------------------
 !
-!     CHOOSE YOUR OPTION !!!
+!     DEFAULT VALUES OF PARAMETERS WHEN THEY ARE NOT GIVEN
 !
-!     1: CONSTANTS GIVEN BY THE KEYWORDS:
-!        AIR PRESSURE (GIVEN HERE AS P0, NO KEYWORD)
-!        WIND VELOCITY ALONG X (HERE FUAIR)
-!        WIND VELOCITY ALONG Y (HERE FVAIR)
-!        THEY WILL BE SET ONCE FOR ALL BEFORE THE FIRST ITERATION (LT=0)
-!
-!     2: CONSTANT IN SPACE WIND COMPONENTS OF VELOCITY GIVEN IN THE FILE
-!        FO1_WIND DECLARED AS FORMATTED DATA FILE 1 = FO1_WIND
-!
-!     99: VARIABLE IN TIME AND SPACE;  INVERSE DISTANCE WEIGHTING METHOD
-!
-      MY_OPTION = 99
+      ATMOSEXCH=0
+      IF(PRESENT(AATMOSEXCH)) ATMOSEXCH=AATMOSEXCH
+      WATER_QUALITY=.FALSE.
+      IF(PRESENT(AWATER_QUALITY)) WATER_QUALITY=AWATER_QUALITY
+      OPTWIND=1
+      IF(PRESENT(AOPTWIND)) OPTWIND=AOPTWIND
+      WIND_SPD(1)=0.D0
+      WIND_SPD(2)=0.D0
+      IF(PRESENT(AWIND_SPD)) THEN
+        WIND_SPD(1)=AWIND_SPD(1)
+        WIND_SPD(2)=AWIND_SPD(2)
+      ENDIF
+      PATMOS_VALUE=0.D0
+      IF(PRESENT(APATMOS_VALUE)) PATMOS_VALUE=APATMOS_VALUE
 !
 !-----------------------------------------------------------------------
 !
-!     BEWARE, HERE ONLY ONE COMPUTATION AT FIRST TIMESTEP
+
+!
+!-----------------------------------------------------------------------
+!
+!     AT FIRST TIMESTEP
 !
       IF(LT.EQ.0) THEN
 !
-        UL=FILES(FO1)%LU
-        
-!
-!-----------------------------------------------------------------------
+        UL = FILES(FO1)%LU
+        PI = ACOS(-1.D0)
 !
 !       ATMOSPHERIC PRESSURE
 !
-        IF(ATMOS) THEN
-          P0 = 100000.D0
-          CALL OV( 'X=C     ' , PATMOS , Y , Z , P0 , NPOIN )
+        IF(ATMOS.OR.WATER_QUALITY) THEN
+          CALL OV( 'X=C     ' , PATMOS,Y,Z,PATMOS_VALUE,NPOIN )
         ENDIF
 !
-!-----------------------------------------------------------------------
+!       WIND : 
 !
-!       WIND : IN THIS CASE THE WIND IS CONSTANT,
-!              VALUE GIVEN IN STEERING FILE.
+        IF(VENT.OR.WATER_QUALITY) THEN
+          IF(OPTWIND.EQ.1)THEN
+!         IN THIS CASE THE WIND IS CONSTANT, VALUE GIVEN IN STEERING FILE.
+!            MAY REQUIRE A ROTATION,
+!            DEPENDING ON THE SYSTEM IN WHICH THE WIND VELOCITY WAS SUPPLIED
+            IF(WIND_SPD(1).GT.EPS) THEN ! THERE IS WIND !!!
+              FUAIR = WIND_SPD(1)*SIN(WIND_SPD(2)*PI/180.D0)
+              FVAIR = WIND_SPD(1)*COS(WIND_SPD(2)*PI/180.D0)
+            ELSE
+              IF(LNG.EQ.1)THEN
+                WRITE(LU,*)''
+                WRITE(LU,*)'ATTENTION: PAS DE VENT OU VENT TRES FAIBLE '
+                WRITE(LU,*)''
+              ELSE
+                WRITE(LU,*)''
+                WRITE(LU,*)'NO WIND GIVEN OR VERY WEAK VALUE OF WIND'
+                WRITE(LU,*)''
+              ENDIF
+            ENDIF
+!        IN NEXT RELEASE, MAYBE THINK TO REMOVE KEYWORD FOR FUAIR AND FVAIR
+            CALL OV( 'X=C     ' , WINDX , Y , Z , FUAIR , NPOIN )
+            CALL OV( 'X=C     ' , WINDY , Y , Z , FVAIR , NPOIN )
+
+          ELSEIF(OPTWIND.EQ.2) THEN
+!           JUMPING TWO LINES OF COMMENTS
+            READ(UL,*)
+            READ(UL,*)
+!           READING THE FIRST TWO LINES OF DATA
+            READ(UL,*) AT1,FUAIR1,FVAIR1
+            IF(AT.LT.AT1) THEN
+              WRITE(LU,*) ' '
+              WRITE(LU,*) 'METEO'
+              IF(LNG.EQ.1) WRITE(LU,*) 'DEBUT TARDIF DU FICHIER DE VENT'
+              IF(LNG.EQ.2) WRITE(LU,*) 'LATE BEGINNING OF THE WIND FILE'
+              CALL PLANTE(1)
+            ENDIF
 !
-!       MAY REQUIRE A ROTATION,
-!       DEPENDING ON THE SYSTEM IN WHICH THE WIND VELOCITY WAS SUPPLIED
-!
-        IF(VENT) THEN
-          CALL OV( 'X=C     ' , WINDX , Y , Z , FUAIR , NPOIN )
-          CALL OV( 'X=C     ' , WINDY , Y , Z , FVAIR , NPOIN )
-        ENDIF
-!
-        IF(MY_OPTION.EQ.2) THEN
-!         JUMPING TWO LINES OF COMMENTS
-          READ(UL,*,ERR=100,END=200)
-          READ(UL,*,ERR=100,END=200)
-!         READING THE FIRST TWO LINES OF DATA
-          READ(UL,*,ERR=100,END=200) AT1,FUAIR1,FVAIR1
-          READ(UL,*,ERR=100,END=200) AT2,FUAIR2,FVAIR2
-        ENDIF
-!        
 ! ######################################################################
 ! IDWM WIND INTERPOLATION; THIS IS EXECUTED ONLY ONCE AT THE START
 ! ######################################################################
 !
-        IF(MY_OPTION .EQ. 99) THEN
+          ELSEIF(OPTWIND.EQ.3) THEN
         ! READ BLANK LINE AT BEGINING OF FILE
-          READ(UL,*)
+            READ(UL,*)
         ! READ NUMSTA AND NUMPOINTS
-          READ(UL,*) NUMSTA, NUMPOINTS
+            READ(UL,*) NUMSTA, NUMPOINTS
               
-        !ALLOCATE THE ARRAYS
-          ALLOCATE(XX(NUMSTA), YY(NUMSTA), AT_WIND(NUMPOINTS))
-          ALLOCATE(WIND(NUMPOINTS,NUMSTA*2+5), POINTS(NPOIN,2))
-          ALLOCATE(INPSTA_S(NUMSTA,3), INPSTA_D(NUMSTA,3))
-          ALLOCATE(OUT_WSPD(NPOIN), OUT_WDIR(NPOIN))
+          !ALLOCATE THE ARRAYS
+            ALLOCATE(XX(NUMSTA), YY(NUMSTA), AT_WIND(NUMPOINTS))
+            ALLOCATE(WIND(NUMPOINTS,NUMSTA*2+5), POINTS(NPOIN,2))
+            ALLOCATE(INPSTA_S(NUMSTA,3), INPSTA_D(NUMSTA,3))
+            ALLOCATE(OUT_WSPD(NPOIN), OUT_WDIR(NPOIN))
 !                  
-          ! READ STATION CORDINATES
-          DO B = 1,NUMSTA
+          ! READ STATION COORDINATES
+            DO B = 1,NUMSTA
             READ(UL,*) XX(B), YY(B)
            !WRITE(*,*) XX(B), YY(B)
-          ENDDO
+            ENDDO
 !
           ! READ THE WIND TIME SERIES FROM THE INPUT FILE 
           ! FIRST COLUMN IS TIME IN SECONDS, REST OF COLUMNS ARE WSPD 
           ! AND WDIR FOR EACH STATION READ
-          DO A = 1, NUMPOINTS
-            READ(UL,*) (WIND(A,B), B=1,NUMSTA*2+1)
-          ENDDO
+            DO A = 1,NUMPOINTS
+              READ(UL,*) (WIND(A,B), B=1,NUMSTA*2+1)
+            ENDDO
 !              
           ! EXTRACT AT_WIND FROM WIND(A,B); FIRST COLUMN IS TIME IN SECONDS
-          DO A = 1, NUMPOINTS
-            AT_WIND(A) = WIND(A,1)
-          ENDDO
+            DO A = 1,NUMPOINTS
+              AT_WIND(A) = WIND(A,1)
+            ENDDO
 !        
           ! ASSEMBLE THE POINTS ARRAY FOR IDWM FUNCTION
-          DO I = 1, NPOIN
-            POINTS(I,1) = X(I)
-            POINTS(I,2) = Y(I)
-          ENDDO
-!              
-        ENDIF !(MY_OPTION .EQ. 99)
-!        
-! #######################################################################        
+            DO I = 1,NPOIN
+              POINTS(I,1) = X(I)
+              POINTS(I,2) = Y(I)
+            ENDDO
 !
-      ENDIF !(LT.EQ.0)
+! #######################################################################
+!
+          ENDIF
+        ENDIF
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
-      IF(MY_OPTION.EQ.2.AND.VENT) THEN
+!     FOR THE REMAINING TIME STEPS
 !
-!       JUMPING TWO LINES OF COMMENTS
+      IF(VENT.OR.WATER_QUALITY.OR.ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
 !
-10      CONTINUE
-        IF(AT.GE.AT1.AND.AT.LT.AT2) THEN
-          IF(AT2-AT1.GT.1.D-6) THEN
-            COEF=(AT-AT1)/(AT2-AT1)
-          ELSE
-            COEF=0.D0
+!       WATER QUALITY
+!
+        IF(WATER_QUALITY.AND.FILES(FO1)%NAME(1:1).NE.' ')THEN
+          CALL INTERPMETEO2(NWIND,UAIR,VAIR,TAIR,PATM,NEBU,RAINFALL,
+     &                      PVAP,RAY3,AT,UL)
+!
+          CALL OV('X=C     ',WINDX,WINDX,WINDX,UAIR,NPOIN)
+          CALL OV('X=C     ',WINDY,WINDY,WINDY,VAIR,NPOIN)
+          CALL OV('X=C     ',PATMOS,PATMOS,PATMOS,PATM,NPOIN)
+          IF(PRESENT(PLUIE))THEN
+            CALL OS('X=C     ',X = PLUIE, C=RAINFALL) ! MM/S
           ENDIF
-          UAIR=FUAIR1+COEF*(FUAIR2-FUAIR1)
-          VAIR=FVAIR1+COEF*(FVAIR2-FVAIR1)
-          IF(LISTIN) THEN
-            IF(LNG.EQ.1) WRITE(LU,*) 'VENT A T=',AT,' UAIR=',UAIR,
-     &                                              ' VAIR=',VAIR
-            IF(LNG.EQ.2) WRITE(LU,*) 'WIND AT T=',AT,' UAIR=',UAIR,
-     &                                               ' VAIR=',VAIR
-          ENDIF
-        ELSE
-          AT1=AT2
-          FUAIR1=FUAIR2
-          FVAIR1=FVAIR2
-          READ(UL,*,ERR=100,END=200) AT2,FUAIR2,FVAIR2
-          GO TO 10
-        ENDIF
-!        
-        CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
-        CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)    
 !
-      ENDIF
+!       HEAT EXCHANGE WITH ATMOSPHERE
+! 
+        ELSEIF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
+          IF(VENT.OR.ATMOS) THEN
+            CALL INTERPMETEO(WW,UAIR,VAIR,
+     &                       TAIR,PATM,HREL,NEBU,RAINFALL,AT,UL)
+          ENDIF
+!
+          IF(VENT) THEN
+            CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
+            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)    
+          ENDIF
+! 
+          IF(ATMOS) THEN
+            CALL OV('X=C     ',PATMOS,Y,Z,PATM,NPOIN)
+          ENDIF
+!     
+!      NO HEAT EXHANGE NEITHER WATER_QUALITY
+!
+        ELSE 
+!
+!         WIND VARYING IN TIME CONSTANT IN SPACE
+!
+          IF(OPTWIND.EQ.2)THEN
+10          CONTINUE
+            IF(AT.GE.AT1.AND.AT.LT.AT2) THEN
+              IF(AT2-AT1.GT.1.D-6) THEN
+                COEF=(AT-AT1)/(AT2-AT1)
+              ELSE
+                COEF=0.D0
+              ENDIF
+              UAIR=FUAIR1+COEF*(FUAIR2-FUAIR1)
+              VAIR=FVAIR1+COEF*(FVAIR2-FVAIR1)
+              IF(LISTIN) THEN
+                IF(LNG.EQ.1) WRITE(LU,*) 'VENT A T=',AT,' UAIR=',UAIR,
+     &                                                  ' VAIR=',VAIR
+                IF(LNG.EQ.2) WRITE(LU,*) 'WIND AT T=',AT,' UAIR=',UAIR,
+     &                                                   ' VAIR=',VAIR
+              ENDIF
+            ELSE
+              AT1=AT2
+              FUAIR1=FUAIR2
+              FVAIR1=FVAIR2
+              READ(UL,*,ERR=100,END=200) AT2,FUAIR2,FVAIR2
+              GO TO 10
+!
+!-----------------------------------------------------------------------
+! 
+100           CONTINUE
+              WRITE(LU,*) ' '
+              WRITE(LU,*) 'METEO'
+              IF(LNG.EQ.1) WRITE(LU,*) 'ERREUR DANS LE FICHIER DE VENT'
+              IF(LNG.EQ.2) WRITE(LU,*) 'ERROR IN THE WIND FILE'
+              CALL PLANTE(1)
+              STOP  
+200           CONTINUE
+              WRITE(LU,*) ' '
+              WRITE(LU,*) 'METEO'
+              IF(LNG.EQ.1)WRITE(LU,*)'FIN PREMATUREE DU FICHIER DE VENT'
+              IF(LNG.EQ.2)WRITE(LU,*) 'WIND FILE TOO SHORT'
+              CALL PLANTE(1)
+              STOP           
+!
+!-----------------------------------------------------------------------
+!
+            ENDIF
+!
+            CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
+            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)  
+! 
+            FUAIR = UAIR             
+            FVAIR = VAIR
+!
+!         WIND VARYING IN TIME AND SPACE
+!
+          ELSEIF(OPTWIND.EQ.3)THEN 
+!            IF(LNG.EQ.1) THEN
+!              WRITE(LU,*) 'CETTE OPTION N EST PAS ENCORE PROGRAMMEE'
+!              WRITE(LU,*) 'VOIR CAS DE VALIDATION WIND_TXY '
+!              WRITE(LU,*) 'DANS LE DOSSIER EXAMPLES/TELEMAC2D' 
+!            ELSE
+!              WRITE(LU,*) 'THIS OPTION IS NOT IMPLEMENTED YET'
+!              WRITE(LU,*) 'SEE VALIDATION CASE WIND_TXY '
+!              WRITE(LU,*) 'LOCATED AT THE FOLDER EXAMPLES/TELEMAC2D' 
+!            ENDIF
+!            CALL PLANTE(1)
+!            STOP
 !
 ! #######################################################################
 !         IDWM WIND INTERPOLATION CODE
 ! #######################################################################
 !
-      IF(MY_OPTION.EQ.99.AND.VENT) THEN        
-!       ASSEMBLE THE ARRAYS OF X,Y,WNDSPD AND X,Y,WNDDIR FOR EACH ITERATION
-        DO A = 1,NUMPOINTS 
-          IF(AT_WIND(A) .EQ. AT) THEN
-            DO B = 1, NUMSTA
-              ! ASSEMBLE THE ARRAYS FOR THIS TIME STEP
-              INPSTA_D(B,1) = XX(B)
-              INPSTA_D(B,2) = YY(B)
-              INPSTA_D(B,3) = WIND(A,B*2+1)      
-              INPSTA_S(B,1) = XX(B)
-              INPSTA_S(B,2) = YY(B)
-              INPSTA_S(B,3) = WIND(A,B*2)                          
-            ENDDO    
-          ENDIF
-        ENDDO
+            PI = ACOS(-1.D0)
 !
-        CALL IDWM_T2D(INPSTA_S,POINTS,OUT_WSPD,NPOIN,NUMSTA)
-        CALL IDWM_T2D(INPSTA_D,POINTS,OUT_WDIR,NPOIN,NUMSTA)
+!       ASSEMBLE THE ARRAYS OF X,Y,WNDSPD AND X,Y,WNDDIR FOR EACH ITERATION
+            DO A = 1,NUMPOINTS
+              IF(AT_WIND(A).EQ.AT) THEN
+                DO B = 1,NUMSTA
+              ! ASSEMBLE THE ARRAYS FOR THIS TIME STEP
+                  INPSTA_D(B,1) = XX(B)
+                  INPSTA_D(B,2) = YY(B)
+                  INPSTA_D(B,3) = WIND(A,B*2+1)
+                  INPSTA_S(B,1) = XX(B)
+                  INPSTA_S(B,2) = YY(B)
+                  INPSTA_S(B,3) = WIND(A,B*2)
+                ENDDO
+              ENDIF
+            ENDDO
+!
+            CALL IDWM_T2D(INPSTA_S,POINTS,OUT_WSPD,NPOIN,NUMSTA)
+            CALL IDWM_T2D(INPSTA_D,POINTS,OUT_WDIR,NPOIN,NUMSTA)
 !
 !       CONVERT OUT_WSPD AND OUT_WDIR TO WINDX AND WINDY
+            DO K = 1,NPOIN
+              IF(OUT_WDIR(K).GE.0.D0.AND.OUT_WSPD(K).GE.0.D0) THEN
+                IF(OUT_WDIR(K).GE.0.D0.AND.OUT_WDIR(K).LE.90.D0) THEN
+                  THETA_RAD = OUT_WDIR(K)*PI/180.D0
+                  WINDX(K) = -SIN(THETA_RAD)*OUT_WSPD(K)
+                  WINDY(K) = -COS(THETA_RAD)*OUT_WSPD(K)
+                ENDIF
 !
-        DO K = 1, NPOIN
-        IF (OUT_WDIR(K) >= 0 .AND. OUT_WSPD(K) >= 0) THEN
-          IF ((OUT_WDIR(K) >= 0) .AND. (OUT_WDIR(K) <= 90)) THEN
-            THETA_RAD = OUT_WDIR(K) * 3.141592654 / 180.0
-            WINDX(K) = -SIN(THETA_RAD) * OUT_WSPD(K)
-            WINDY(K) = -COS(THETA_RAD) * OUT_WSPD(K)
-          END IF
-!                  
-          IF ((OUT_WDIR(K) > 90) .AND. (OUT_WDIR(K) <= 180)) THEN
-            THETA_RAD = (180 - OUT_WDIR(K)) * 3.141592654 / 180.0
-            WINDX(K) = -SIN(THETA_RAD)* OUT_WSPD(K)
-            WINDY(K) =  COS(THETA_RAD)* OUT_WSPD(K)
-          END IF
-!                  
-          IF ((OUT_WDIR(K) > 180) .AND. (OUT_WDIR(K) <= 270)) THEN
-            THETA_RAD = (OUT_WDIR(K)-180) * 3.141592654 / 180.0
-            WINDX(K) = SIN(THETA_RAD)* OUT_WSPD(K)
-            WINDY(K) = COS(THETA_RAD)* OUT_WSPD(K)
-          END IF            
-!                  
-          IF ((OUT_WDIR(K) > 270) .AND. (OUT_WDIR(K) <= 360)) THEN
-            THETA_RAD = (360-OUT_WDIR(K)) * 3.141592654 / 180.0
-            WINDX(K) =  SIN(THETA_RAD)* OUT_WSPD(K)
-            WINDY(K) = -COS(THETA_RAD)* OUT_WSPD(K)
-          END IF      
-        ELSE
-          WINDX(K) = -999.D0
-          WINDY(K) = -999.D0
-          WRITE(*,*) 'NO WIND DATA FOR TIME ', AT
-        END IF
-        END DO !K
-!       
-      ENDIF ! MY_OPTION=99  
-        
+                IF(OUT_WDIR(K).GT.90.D0.AND.OUT_WDIR(K).LE.180.D0) THEN
+                  THETA_RAD = (180.D0-OUT_WDIR(K))*PI/180.D0
+                  WINDX(K) = -SIN(THETA_RAD)*OUT_WSPD(K)
+                  WINDY(K) =  COS(THETA_RAD)*OUT_WSPD(K)
+                ENDIF
+!
+                IF(OUT_WDIR(K).GT.180.D0.AND.OUT_WDIR(K).LE.270.D0) THEN
+                  THETA_RAD = (OUT_WDIR(K)-180.D0)*PI/180.D0
+                  WINDX(K) = SIN(THETA_RAD)*OUT_WSPD(K)
+                  WINDY(K) = COS(THETA_RAD)*OUT_WSPD(K)
+                ENDIF
+!
+                IF(OUT_WDIR(K).GT.270.D0.AND.OUT_WDIR(K).LE.360.D0) THEN
+                  THETA_RAD = (360.D0-OUT_WDIR(K))*PI/180.D0
+                  WINDX(K) =  SIN(THETA_RAD)*OUT_WSPD(K)
+                  WINDY(K) = -COS(THETA_RAD)*OUT_WSPD(K)
+                ENDIF
+              ELSE
+                WINDX(K) = -999.D0
+                WINDY(K) = -999.D0
+                WRITE(*,*) 'NO WIND DATA FOR TIME ', AT
+              ENDIF
+            ENDDO !K
+!
 ! #######################################################################
 !
-      RETURN
-!
-!-----------------------------------------------------------------------
-! 
-100   CONTINUE
-      WRITE(LU,*) ' '
-      WRITE(LU,*) 'METEO'
-      IF(LNG.EQ.1) WRITE(LU,*) 'ERREUR DANS LE FICHIER DE VENT'
-      IF(LNG.EQ.2) WRITE(LU,*) 'ERROR IN THE WIND FILE'
-      CALL PLANTE(1)
-      STOP  
-200   CONTINUE
-      WRITE(LU,*) ' '
-      WRITE(LU,*) 'METEO'
-      IF(LNG.EQ.1) WRITE(LU,*) 'FIN PREMATUREE DU FICHIER DE VENT'
-      IF(LNG.EQ.2) WRITE(LU,*) 'WIND FILE TOO SHORT'
-      CALL PLANTE(1)
-      STOP           
+          ENDIF
+        ENDIF
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -381,11 +480,11 @@
 !
       INTEGER N, M, I, J, K      
 !     WEIGHTS, DENOMINATOR, DISTANCE
-      DOUBLE PRECISION :: W1, W2, W3, W4, DEN, DIST
+      DOUBLE PRECISION W1, W2, W3, W4, DEN, DIST
 !     CURRENT MINS
-      DOUBLE PRECISION :: MIN1CUR, MIN2CUR, MIN3CUR, MIN4CUR        
+      DOUBLE PRECISION MIN1CUR, MIN2CUR, MIN3CUR, MIN4CUR        
 !     LOCATIONS OF THE MININIMS (USED FOR ARRAY REFERENCING)
-      INTEGER :: MIN1LOC, MIN2LOC, MIN3LOC, MIN4LOC
+      INTEGER MIN1LOC, MIN2LOC, MIN3LOC, MIN4LOC
 !
 !-----------------------------------------------------------------------
 !
@@ -425,7 +524,7 @@
 !          QUADRANT 1
             IF(ELEV(I,1).GE.POINTS(J,1).AND.
      &         ELEV(I,2).GE.POINTS(J,2)      ) THEN    
-              IF(DIST < MIN1CUR) THEN
+              IF(DIST.LT.MIN1CUR) THEN
                 MIN1CUR = DIST      
                 MIN1LOC = I
               ENDIF
@@ -433,7 +532,7 @@
 !           QUADRANT 2
             IF(ELEV(I,1).LT.POINTS(J,1).AND.
      &         ELEV(I,2).GE.POINTS(J,2)      ) THEN
-              IF(DIST < MIN2CUR) THEN
+              IF(DIST.LT.MIN2CUR) THEN
                 MIN2CUR = DIST
                 MIN2LOC = I
               ENDIF
@@ -441,7 +540,7 @@
 !           QUADRANT 3
             IF(ELEV(I,1).LT.POINTS(J,1).AND.
      &         ELEV(I,2).LT.POINTS(J,2)      ) THEN 
-              IF(DIST < MIN3CUR) THEN
+              IF(DIST.LT.MIN3CUR) THEN
                 MIN3CUR = DIST
                 MIN3LOC = I
               ENDIF
@@ -449,7 +548,7 @@
 !           QUADRANT 4
             IF(ELEV(I,1).GT.POINTS(J,1).AND.
      &         ELEV(I,2).LT.POINTS(J,2)      ) THEN
-              IF(DIST < MIN4CUR) THEN
+              IF(DIST.LT.MIN4CUR) THEN
                 MIN4CUR = DIST
                 MIN4LOC = I
               ENDIF
@@ -498,40 +597,38 @@
 !      
       RETURN
       END                                                              
-!                       *****************
-                        SUBROUTINE CORFON
-!                       *****************
+!                    *****************
+                     SUBROUTINE CORFON
+!                    *****************
+!
 !
 !***********************************************************************
-! PROGICIEL : TELEMAC-2D 5.0          01/03/90    J-M HERVOUET
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!  USER SUBROUTINE CORFON
+!brief    MODIFIES THE BOTTOM TOPOGRAPHY.
 !
-!  FUNCTION  : MODIFICATION OF THE BOTTOM TOPOGRAPHY
+!warning  USER SUBROUTINE
 !
+!history  J-M HERVOUET (LNHE)
+!+        01/03/1990
+!+        V5P2
+!+
 !
-!-----------------------------------------------------------------------
-!  ARGUMENTS USED IN THE EXAMPLE 
-! .________________.____.______________________________________________
-! |      NOM       |MODE|                   ROLE
-! |________________|____|_______________________________________________
-! |      ZF        |<-->| FOND A MODIFIER.
-! |      X,Y,(Z)   | -->| COORDONNEES DU MAILLAGE (Z N'EST PAS EMPLOYE).
-! |      A         |<-- | MATRICE
-! |      T1,2      | -->| TABLEAUX DE TRAVAIL (DIMENSION NPOIN)
-! |      W1        | -->| TABLEAU DE TRAVAIL (DIMENSION 3 * NELEM)
-! |      NPOIN     | -->| NOMBRE DE POINTS DU MAILLAGE.
-! |      PRIVE     | -->| TABLEAU PRIVE POUR L'UTILISATEUR.
-! |      LISFON    | -->| NOMBRE DE LISSAGES DU FOND.
-! |________________|____|______________________________________________
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-!-----------------------------------------------------------------------
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
-! PROGRAMME APPELANT :
-! PROGRAMMES APPELES : RIEN EN STANDARD
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
-!***********************************************************************
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
@@ -539,7 +636,6 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-      INTEGER I
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -547,10 +643,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       LOGICAL MAS
+      INTEGER I
 !
 !-----------------------------------------------------------------------
 !
-!  LISSAGES EVENTUELS DU FOND
+!  SMOOTHING(S) OF THE BOTTOM (OPTIONAL)
 !
       IF(LISFON.GT.0) THEN
 !
@@ -568,5 +665,30 @@
 !
 !-----------------------------------------------------------------------
 !
+      IF(LNG.EQ.1) THEN
+        IF(LISFON.EQ.0) THEN
+          WRITE(LU,*)
+          WRITE(LU,*) 'CORFON (TELEMAC2D) : PAS DE MODIFICATION DU FOND'
+          WRITE(LU,*)
+        ELSE
+          WRITE(LU,*)
+          WRITE(LU,*) 'CORFON (TELEMAC2D) : ',LISFON,' LISSAGES DU FOND'
+          WRITE(LU,*)
+        ENDIF
+      ENDIF
+      IF(LNG.EQ.2) THEN
+        IF(LISFON.EQ.0) THEN
+          WRITE(LU,*)
+          WRITE(LU,*) 'CORFON (TELEMAC2D): NO MODIFICATION OF BOTTOM'
+          WRITE(LU,*)
+        ELSE
+          WRITE(LU,*)
+          WRITE(LU,*) 'CORFON (TELEMAC2D): ',LISFON,' BOTTOM SMOOTHINGS'
+          WRITE(LU,*)
+        ENDIF
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
       RETURN
-      END      
+      END

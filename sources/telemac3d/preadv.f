@@ -75,6 +75,12 @@
 !+   Was named PRECON, renamed PREADV for Python scanning sake.
 !
 !history  J-M HERVOUET (LNHE)
+!+        08/01/2015
+!+        V7P0
+!+   Changing the velocities to be advected with characteristics when
+!+   there are more than 2 sub-iterations.
+!
+!history  J-M HERVOUET (LNHE)
 !+        16/01/2015
 !+        V7P0
 !+   Block of advected variables with characteristics changed in the 
