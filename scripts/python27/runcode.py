@@ -122,7 +122,6 @@ import re
 import sys
 import shutil
 import threading
-import numpy as np
 from time import localtime, strftime
 from subprocess import *
 from os import path,walk,mkdir,chdir,remove,sep,environ,listdir,getcwd
