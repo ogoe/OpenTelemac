@@ -5,7 +5,7 @@
      &(DAM,NPOIN,IPRECO,IPREC2)
 !
 !***********************************************************************
-! ARTEMIS   V6P1                                   21/08/2010
+! ARTEMIS   V7P0  
 !***********************************************************************
 !
 !brief    INHIBITS THE DIAGONAL PRECONDITIONING IF ONE OF THE
@@ -48,12 +48,21 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        23/02/2015
+!+        V7P0
+!+   A parallel communication is necessary when the preconditioning
+!+   is changed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DAM            |-->| DIAGONALE OF THE MATRIX
 !| IPREC2         |<--| PRECONDITIONNING USED
 !| IPRECO         |-->| PRECONDITIONNING REQUIRED BY USER
 !| NPOIN          |-->| NUMBER OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+      USE INTERFACE_PARALLEL
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -109,5 +118,13 @@
 !
 !-----------------------------------------------------------------------
 !
+!     IPREC2 MAY HAVE BEEN CHANGED IN ANOTHER PROCESSOR, BUT ALWAYS
+!     IN THE SENSE OF A REDUCTION
+!
+      IF(NCSIZE.GT.1) IPREC2=P_IMIN(IPREC2)
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
+

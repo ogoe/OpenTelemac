@@ -5800,23 +5800,21 @@ TYPE = ENTIER
 INDEX = 94
 MNEMO = 'OPTWIND'
 TAILLE = 1
-DEFAUT = 0
-DEFAUT1 = 0
+DEFAUT = 1
+DEFAUT1 = 1
 RUBRIQUE = 'EQUATIONS, SOURCES'
 RUBRIQUE1 = 'EQUATIONS, SOURCES'
 NIVEAU = 1
 AIDE = 'donne les options pour introduire le vent:
-   0: pas de vent (enleve le mot cle VENT (logique))
    1: constant en temps et en espace (donne par le mot cle 
       VITESSE ET DIRECTION DU VENT)
    2: variable en temps donne par fichier formate
    3: variable en temps et en espace donne par fichier formate'
 AIDE1 = 'gives option for managing the wind:
-    0: no wind (we can remove keyword WIND (boolean))
-    1: constant in time and space, given by keyword SPEED AND 
-       DIRECTION OF WIND
-    2: variable in time and (constant in space), given by formated file
-    3: variable in time and space'
+   1: constant in time and space, given by keyword SPEED AND 
+      DIRECTION OF WIND
+   2: variable in time and (constant in space), given by formated file
+   3: variable in time and space'
 
 NOM = 'VITESSE ET DIRECTION DU VENT'
 NOM1 = 'SPEED AND DIRECTION OF WIND'

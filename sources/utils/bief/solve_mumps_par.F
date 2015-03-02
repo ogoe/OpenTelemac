@@ -1,16 +1,17 @@
-!                      *************************
+!                      **************************
                        SUBROUTINE SOLVE_MUMPS_PAR
-     &    (NPOIN,NSEGB,GLOSEG,MAXSEG,DA,XA,XINC,RHS,INFOGR,TYPEXT,KNOLG,
-     &     NPOIN_TOT,IPID)
-!                      *************************
-
+!                      **************************
+!
+     &(NPOIN,NSEGB,GLOSEG,MAXSEG,DA,XA,XINC,RHS,INFOGR,TYPEXT,KNOLG,
+     & NPOIN_TOT,IPID)
+!
 !***********************************************************************
 !     MUMPS VERSION 5.7     26/02/10   C. DENIS (SINETICS)
 !***********************************************************************
 !
 !     PARALLEL SOLVING USING MUMPS 
       USE DECLARATIONS_PARALLEL
-      
+!      
       IMPLICIT NONE
 !     structures MPI et MUMPS     
 #if defined (HAVE_MUMPS)
@@ -18,18 +19,16 @@
 #endif
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-! ARGUMENTS
-      INTEGER, INTENT(IN)             :: NPOIN,NSEGB,MAXSEG,NPOIN_TOT,
-     &     IPID
-      INTEGER, INTENT(IN)             :: GLOSEG(MAXSEG,2)
-      INTEGER LT
+!
+      INTEGER, INTENT(IN)             :: NPOIN,NSEGB,MAXSEG,NPOIN_TOT
+      INTEGER, INTENT(IN)             :: IPID,GLOSEG(MAXSEG,2)
       LOGICAL, INTENT(IN)             :: INFOGR
       DOUBLE PRECISION, INTENT(INOUT) :: XA(*),RHS(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: XINC(NPOIN),DA(NPOIN)
-      CHARACTER(LEN=1), INTENT(INOUT)    :: TYPEXT
-      INTEGER, INTENT(IN) :: KNOLG(*)
+      CHARACTER(LEN=1), INTENT(INOUT) :: TYPEXT
+      INTEGER, INTENT(IN)             :: KNOLG(*)
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       COMMON/INFO/LNG,LU 
       INTEGER LNG,LU
@@ -43,7 +42,7 @@
       DOUBLE PRECISION ,ALLOCATABLE :: TEMP1(:),TEMP2(:),TEMP3(:)
       INTEGER TAILLE 
       INTEGER I,J,K,ERR,NBELEM,IERR,II,NC,IER
-      
+!      
 !     MUMPS INITIALISATION
       MUMPS_PAR%COMM = MPI_COMM_WORLD
       MUMPS_PAR%JOB = -1
@@ -73,7 +72,7 @@
       MUMPS_PAR%ICNTL(10)=10
       MUMPS_PAR%ICNTL(14)=50
       MUMPS_PAR%ICNTL(13)=40
-
+!
 !     SIZE OF THE MATRIX
       MUMPS_PAR%N = 2*NPOIN_TOT
       IF(TYPEXT.EQ.'S') THEN 
@@ -132,7 +131,7 @@
       DO I=1,MUMPS_PAR%N
         MUMPS_PAR%RHS(I)=TEMP2(I)
       END DO 
-
+!
       NBELEM = NPOIN
       IF(TYPEXT.EQ.'S') THEN 
         DO K = 1,NSEGB
@@ -157,9 +156,8 @@
           MUMPS_PAR%JCN_LOC(NBELEM) = J
           MUMPS_PAR%A_LOC(NBELEM) = XA(K)
         ENDDO
-      ENDIF
-      
-         
+      ENDIF     
+!         
 !     -----------
 !     RESOLUTION
 !     -----------
@@ -179,10 +177,9 @@
         END DO
       END IF
       TEMP2(:)=0.0
-
-      CALL MPI_BCAST(TEMP1,MUMPS_PAR%N,
-     &MPI_DOUBLE_PRECISION,
-     &0,MPI_COMM_WORLD,IER)
+!
+      CALL MPI_BCAST(TEMP1,MUMPS_PAR%N,MPI_DOUBLE_PRECISION,
+     &               0,MPI_COMM_WORLD,IER)
       DO  K = 1,NPOIN
         I=TEMP3(K)
         XINC(K)=TEMP1(I)
@@ -228,7 +225,7 @@
 !
 #endif
 !
-        END SUBROUTINE SOLVE_MUMPS_PAR
+      END SUBROUTINE SOLVE_MUMPS_PAR
 
       
 

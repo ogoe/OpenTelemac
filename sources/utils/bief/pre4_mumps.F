@@ -3,14 +3,15 @@
 !                    *********************
 !
      &(NPOIN,NSEGB,GLOSEGB,DAB1,DAB2,DAB3,DAB4,XAB1,XAB2,XAB3,XAB4,
-     & XX1,XX2,CVB1,CVB2,INFOGR,TYPEXT,KNOLG,NPOIN_TOT,IPID)
+     & XX1,XX2,CVB1,CVB2,INFOGR,TYPEXT1,TYPEXT2,TYPEXT3,TYPEXT4,
+     & KNOLG,NPOIN_TOT)
 !
 !***********************************************************************
-! MUMPSVOID   V6P0                                   21/08/2010
+! MUMPSVOID   V7P1
 !***********************************************************************
 !
 !brief    CALLS THE DIRECT SOLVER MUMPS.
-!+                IF MUMPS IS NOT INSTALLED : EMPTY SUBROUTINES ARE USED INSTEAD.
+!+        IF MUMPS IS NOT INSTALLED : EMPTY SUBROUTINES ARE USED INSTEAD.
 !
 !history  E. RAZAFINDRAKOTO (LNH)
 !+        20/11/2006
@@ -34,6 +35,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        23/02/2015
+!+        V7P1
+!+   Arguments TYPEXT1,2,3,4 added, for calling SD_FABSG4
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CVB1,CVB2      |-->| SECONDS MEMBRES
 !| DAB1           |---|
@@ -44,7 +50,7 @@
 !| INFOGR         |-->| IF, YES INFORMATIONS ON LISTING
 !| NPOIN          |-->| NOMBRE D'INCONNUES
 !| NSEGB          |-->| NOMBRE DE SEGMENTS
-!| TYPEXT         |---|
+!| TYPEXT         |-->| TYPE OF EXTRA-DIAGONAL TERMS OF MATRICES
 !| XAB1           |---|
 !| XAB2           |---|
 !| XAB3           |---|
@@ -52,13 +58,15 @@
 !| XX1,XX2        |<--| SOLUTIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE BIEF
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NPOIN,NSEGB,NPOIN_TOT,IPID
+      INTEGER, INTENT(IN) :: NPOIN,NSEGB,NPOIN_TOT
       INTEGER, INTENT(IN) :: GLOSEGB(NSEGB*2),KNOLG(*)
       LOGICAL, INTENT(IN) :: INFOGR
       DOUBLE PRECISION, INTENT(IN)    :: DAB1(NPOIN),DAB2(NPOIN)
@@ -67,7 +75,8 @@
       DOUBLE PRECISION, INTENT(IN)    :: XAB3(NSEGB),XAB4(NSEGB)
       DOUBLE PRECISION, INTENT(INOUT) :: XX1(NPOIN),XX2(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: CVB1(NPOIN),CVB2(NPOIN)
-      CHARACTER(LEN=1), INTENT(IN)    :: TYPEXT
+      CHARACTER(LEN=1), INTENT(IN)    :: TYPEXT1,TYPEXT2
+      CHARACTER(LEN=1), INTENT(IN)    :: TYPEXT3,TYPEXT4
 !
 #if defined(HAVE_MUMPS)
       INTEGER NPBLK,NSEGBLK,I
@@ -90,8 +99,7 @@
 !
       NPBLK=NPOIN*2
       NSEGBLK=4*NSEGB+NPOIN 
-! 
-     
+!    
       IF(SIZE_GLOSEG4.EQ.0) THEN      
         ALLOCATE(GLOSEG4(2*NSEGBLK))
         SIZE_GLOSEG4=    2*NSEGBLK
@@ -101,8 +109,7 @@
         SIZE_GLOSEG4=    2*NSEGBLK
       ENDIF 
       IF(SIZE_DA.EQ.0) THEN
-        ALLOCATE(DA(NPBLK))
-        
+        ALLOCATE(DA(NPBLK))      
         SIZE_DA=    NPBLK
       ELSEIF(       NPBLK.GT.SIZE_DA) THEN
         DEALLOCATE(DA)
@@ -132,8 +139,7 @@
         DEALLOCATE(XINC)
         ALLOCATE(XINC(NPBLK))
         SIZE_XINC=    NPBLK
-      ENDIF             
-   
+      ENDIF 
 !
 !-----------------------------------------------------------------------
 !       
@@ -143,9 +149,7 @@
       DO I=1,NPOIN
         RHS(I)      = CVB1(I)
         RHS(I+NPOIN)= CVB2(I)
-      ENDDO      
-      
- 
+      ENDDO
 !              
 !     2. CONSTRUCTION STOCKAGE SEGMENT MATRICE BLOCK (DE 4)
 !     ===================================================== 
@@ -153,14 +157,23 @@
       CALL SD_STRSG4(NPOIN,NSEGB,GLOSEGB,NPBLK,NSEGBLK,GLOSEG4)
 !     
       CALL SD_FABSG4(NPOIN,NSEGB,DAB1,DAB2,DAB3,DAB4,
-     &               XAB1,XAB2,XAB3,XAB4,NPBLK,NSEGBLK,DA,XA)
-!
-!     3. RESOLUTION : APPEL A MUMPS
-!     ================================================== 
+     &               XAB1,XAB2,XAB3,XAB4,NPBLK,NSEGBLK,DA,XA,
+     &               TYPEXT1,TYPEXT2,TYPEXT3,TYPEXT4)
 ! 
-     
-      CALL SOLVE_MUMPS(NPBLK,NSEGBLK,GLOSEG4,NSEGBLK,DA,XA,
-     &     XINC,RHS,INFOGR,TYPEXT,KNOLG,NPOIN_TOT,IPID)
+!     3. RESOLUTION : APPEL A MUMPS
+!     =============================
+! 
+!     NOTE JMH 23/02/2015 : THE ARGUMENTS GIVEN TO SOLVE_MUMPS ARE THOSE
+!                           OF SOLVE_MUMPS_PAR !!!!
+!                           AND SOLVE_MUMPS IS VOID !!!!!
+!   
+!     CALL SOLVE_MUMPS(NPBLK,NSEGBLK,GLOSEG4,NSEGBLK,DA,XA,
+!    &                 XINC,RHS,INFOGR,TYPEXT,KNOLG,
+!    &                 NPOIN_TOT,IPID)
+!
+      CALL SOLVE_MUMPS_PAR(NPBLK,NSEGBLK,GLOSEG4,NSEGBLK,DA,XA,
+     &                     XINC,RHS,INFOGR,TYPEXT,KNOLG,
+     &                     NPOIN_TOT,IPID)
 !
 !     4. RECUPERATION DES INCONNUES
 !     ============================= 
@@ -170,7 +183,6 @@
         XX2(I)= XINC(I+NPOIN)
       ENDDO
 !   
-      
 #else
       IF(LNG.EQ.1) WRITE(LU,2018)
       IF(LNG.EQ.2) WRITE(LU,2019)
@@ -181,7 +193,6 @@
       CALL PLANTE(1)
       STOP
 #endif
-!
 !
 !-----------------------------------------------------------------------
 !

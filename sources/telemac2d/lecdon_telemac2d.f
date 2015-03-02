@@ -114,7 +114,7 @@
       INTEGER I,K,ERR,ITRAC,NTRTOT
       INTEGER NREJEX,NREJEY,NCOSUP,NREJEV,NCRITE
 !
-      CHARACTER*8 MNEMO(MAXVAR)
+      CHARACTER(LEN=8) MNEMO(MAXVAR)
       CHARACTER(LEN=250) NOM_CAS,NOM_DIC
       CHARACTER(LEN=250) NOM_CAS_WAQ,NOM_DIC_WAQ
 !
@@ -127,7 +127,6 @@
      &                     '28','29','30','31','32','33','34'/
 !
       CHARACTER(LEN=24), PARAMETER :: CODE1='TELEMAC2D               '
-!      CHARACTER(LEN=24), PARAMETER :: CODE2='WAQTEL                  '
 !
 !-----------------------------------------------------------------------
 !
@@ -137,7 +136,7 @@
       DOUBLE PRECISION     MOTREA(MAXKEY)
       INTEGER              MOTINT(MAXKEY)
       LOGICAL              MOTLOG(MAXKEY)
-      CHARACTER*72         MOTCLE(4,MAXKEY,2)
+      CHARACTER(LEN=72)    MOTCLE(4,MAXKEY,2)
       INTEGER              TROUVE(4,MAXKEY)
       LOGICAL DOC
 !     ARRAYS USED IN THE DAMOCLES CALL FOR WAQ
@@ -146,14 +145,14 @@
       DOUBLE PRECISION     WMOTREA(MAXKEY)
       INTEGER              WMOTINT(MAXKEY)
       LOGICAL              WMOTLOG(MAXKEY)
-      CHARACTER*72         WMOTCLE(4,MAXKEY,2)
+      CHARACTER(LEN=72)    WMOTCLE(4,MAXKEY,2)
       INTEGER              WTROUVE(4,MAXKEY)
 !
 !     END OF DECLARATIONS FOR DAMOCLES CALL :
 !
 !-----------------------------------------------------------------------
 !
-      INTRINSIC MAX,INT,MOD
+      INTRINSIC MAX,INT,MOD,ACOS
 !
 !-----------------------------------------------------------------------
 !
@@ -1050,6 +1049,10 @@
 !     SPEED AND DIRECTION OF WIND
       WIND_SPD(1)   = MOTREA( ADRESS(2,72)   )
       WIND_SPD(2)   = MOTREA( ADRESS(2,72)+1 )
+      IF(TROUVE(2,72).EQ.2) THEN
+        FUAIR = WIND_SPD(1)*SIN(WIND_SPD(2)*ACOS(-1.D0)/180.D0)
+        FVAIR = WIND_SPD(1)*COS(WIND_SPD(2)*ACOS(-1.D0)/180.D0)
+      ENDIF
 !
 !     VALUE OF THE ATMOSPHERIC PRESSURE
       PATMOS_VALUE  = MOTREA( ADRESS(2,73)   )
@@ -2387,23 +2390,6 @@
           STOP
         ENDIF
       ENDIF
-!
-!-----------------------------------------------------------------------
-!
-!     AVOID NON LOGICAL CASE (WIND=YES AND OPTWIND=0)
-!
-      IF(VENT.AND.OPTWIND.EQ.0)THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) ' INCONSISTANCE DANS LA GESTION DU VENT'
-          WRITE(LU,*) ' VENT ACTIVE ET OPTION DU VENT = 0'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) ' UNCOHERENT CHOICES FOR WIND MANAGEMENT'
-          WRITE(LU,*) ' WIND ACTIVATED AND OPTION FOR WIND = 0'
-        ENDIF
-        CALL PLANTE(1)
-        STOP
-      ENDIF     
 !
 !-----------------------------------------------------------------------
 !

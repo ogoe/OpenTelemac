@@ -109,6 +109,12 @@
 !+        V6P2
 !+   Call to SD_SOLVE_4 modified.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        23/02/2015
+!+        V7P1
+!+   Arguments added to PRE4_MUMPS, to correct a bug when it calls
+!+   SD_FABSG4.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRIX OF THE SYSTEM (OR BLOCK OF MATRICES)
 !| AUX            |-->| MATRIX FOR PRECONDITIONING.
@@ -355,8 +361,9 @@
      &                    A%ADR(3)%P%X%R,A%ADR(4)%P%X%R,
      &                    X%ADR(1)%P%R,X%ADR(2)%P%R,
      &                    B%ADR(1)%P%R,B%ADR(2)%P%R,INFOGR,
-     &                    A%ADR(1)%P%TYPEXT,MESH%KNOLG%I,
-     &                    NPOIN_TOT,IPID)
+     &                    A%ADR(1)%P%TYPEXT,A%ADR(2)%P%TYPEXT,
+     &                    A%ADR(3)%P%TYPEXT,A%ADR(4)%P%TYPEXT,
+     &                    MESH%KNOLG%I,NPOIN_TOT)
         ELSE
           IF(LNG.EQ.1) WRITE(LU,301) S
           IF(LNG.EQ.2) WRITE(LU,401) S

@@ -49,7 +49,7 @@
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-! ARGUMENTS
+!
       INTEGER, INTENT(IN)             :: NPOIN,NSEGB,MAXSEG
       INTEGER, INTENT(IN)             :: GLOSEG(MAXSEG,2)
       INTEGER, INTENT(IN)             :: LT

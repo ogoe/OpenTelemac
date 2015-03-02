@@ -167,27 +167,9 @@
 !
         IF(VENT.OR.WATER_QUALITY) THEN
           IF(OPTWIND.EQ.1)THEN
-!         IN THIS CASE THE WIND IS CONSTANT, VALUE GIVEN IN STEERING FILE.
-!            MAY REQUIRE A ROTATION,
-!            DEPENDING ON THE SYSTEM IN WHICH THE WIND VELOCITY WAS SUPPLIED
-            IF(WIND_SPD(1).GT.EPS) THEN ! THERE IS WIND !!!
-              FUAIR = WIND_SPD(1)*SIN(WIND_SPD(2)*PI/180.D0)
-              FVAIR = WIND_SPD(1)*COS(WIND_SPD(2)*PI/180.D0)
-            ELSE
-              IF(LNG.EQ.1)THEN
-                WRITE(LU,*)''
-                WRITE(LU,*)'ATTENTION: PAS DE VENT OU VENT TRES FAIBLE '
-                WRITE(LU,*)''
-              ELSE
-                WRITE(LU,*)''
-                WRITE(LU,*)'NO WIND GIVEN OR VERY WEAK VALUE OF WIND'
-                WRITE(LU,*)''
-              ENDIF
-            ENDIF
-!        IN NEXT RELEASE, MAYBE THINK TO REMOVE KEYWORD FOR FUAIR AND FVAIR
+!           IN THIS CASE THE WIND IS CONSTANT, VALUE GIVEN IN STEERING FILE.
             CALL OV( 'X=C     ' , WINDX , Y , Z , FUAIR , NPOIN )
             CALL OV( 'X=C     ' , WINDY , Y , Z , FVAIR , NPOIN )
-
           ELSEIF(OPTWIND.EQ.2) THEN
 !           JUMPING TWO LINES OF COMMENTS
             READ(UL,*)
