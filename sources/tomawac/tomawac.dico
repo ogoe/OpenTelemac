@@ -400,8 +400,8 @@ INDEX = 13
 MNEMO = 'INDIV' 
 TAILLE= 0 
 CONTROLE = 3 ; 4 
-DEFAUT = 1 
-DEFAUT1 = 1 
+DEFAUT = 3 
+DEFAUT1 = 3 
 CHOIX = '3="Selafin du type TELEMAC"';
 '4="Format utilisateur (venuti.f)"'
 CHOIX1 = '3="Selafin, TELEMAC type"';
