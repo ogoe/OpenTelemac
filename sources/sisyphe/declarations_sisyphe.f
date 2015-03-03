@@ -1246,9 +1246,6 @@
       INTEGER, POINTER:: NPTFRX
 !> @brief
 !
-      INTEGER, POINTER:: DIM
-!> @brief
-!
       INTEGER, POINTER:: TYPELM
 !> @brief NUMBER OF 2D POINTS IN THE MESH
 ! nombre de points 2d du maillage

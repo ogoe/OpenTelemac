@@ -73,6 +73,7 @@
 !| INDIC          |-->| FILE FORMAT
 !| MODE1          |-->| MODE: 0= DO NOT READ
 !|                |   |       1= READ IF PRESENT
+!|                |   |       2= READ AND STOP IF NOT PRESENT
 !| MODE2          |-->| LIKE MODE1 FOR SECOND VARIABLE
 !| MODE3          |-->| LIKE MODE1 FOR THIRD VARIABLE
 !| NAME1FR        |-->| FRENCH NAME OF FIRST VARIABLE

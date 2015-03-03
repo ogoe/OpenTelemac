@@ -41,11 +41,15 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)           :: NWEIRS,IOPTAN,NTRAC
       INTEGER, INTENT(IN)           :: NKFROT(*)
       DOUBLE PRECISION, INTENT(IN)  :: X(*),Y(*),ZF(*),HN(*),CHESTR(*)
       DOUBLE PRECISION, INTENT(IN)  :: KARMAN
       TYPE(BIEF_OBJ)  , INTENT(IN)  :: T
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER          I, N, ITRAC, INDIC
       INTEGER          IA1, IB1, IA2, IB2
@@ -84,6 +88,8 @@
 !
       DOUBLE PRECISION P_DMAX,P_DMIN
       EXTERNAL         P_DMAX,P_DMIN
+!
+      INTRINSIC MAX,SQRT,ABS
 !
 !-----------------------------------------------------------------------
 !
@@ -173,8 +179,8 @@
 !         COMPUTATION OF THE DISCHARGE
 !
 !         ADDING A SECURITY ON THE LEVEL OF THE WEIR
-          YS1 = DMAX1(ZDIG%ADR(N)%P%R(I)  ,ZFA+0.01D0,ZFB+0.01D0)
-          YS2 = DMAX1(ZDIG%ADR(N)%P%R(I+1),ZFA+0.01D0,ZFB+0.01D0)
+          YS1 = MAX(ZDIG%ADR(N)%P%R(I)  ,ZFA+0.01D0,ZFB+0.01D0)
+          YS2 = MAX(ZDIG%ADR(N)%P%R(I+1),ZFA+0.01D0,ZFB+0.01D0)
 !
           QELEM = 0.D0
 !         UPSTREAM IS ON SIDE A
