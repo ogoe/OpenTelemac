@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief
@@ -157,6 +157,13 @@
 !+        V7P0
 !+   add optional variables to meteo in a sake of harmonization
 !+   with telemac-2d
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        31/03/2015
+!+        V7P1
+!+   Just a few extra debugger prints, up to CALL KEPINI, where was the
+!+   last user bug I looked for.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -747,11 +754,14 @@
 !
 ! INITIALISES THE METEOROLOGICAL VARIABLES
 !
-      IF(VENT.OR.ATMOS) CALL METEO
-     &  (PATMOS%R,WIND%ADR(1)%P%R,WIND%ADR(2)%P%R,FUAIR,FVAIR,
-     &   X2%R,Y2%R,AT,LT,NPOIN2,VENT,ATMOS,H%R,T2_01%R,
-     &   GRAV,RHO0,0.D0,PRIVE,T3DFO1,T3D_FILES,LISTIN,
-     &   .FALSE.,PLUIE,ATMOSEXCH)
+      IF(VENT.OR.ATMOS) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE METEO'
+        CALL METEO(PATMOS%R,WIND%ADR(1)%P%R,WIND%ADR(2)%P%R,FUAIR,FVAIR,
+     &             X2%R,Y2%R,AT,LT,NPOIN2,VENT,ATMOS,H%R,T2_01%R,
+     &             GRAV,RHO0,0.D0,PRIVE,T3DFO1,T3D_FILES,LISTIN,
+     &             .FALSE.,PLUIE,ATMOSEXCH)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE METEO'
+      ENDIF
 !
 !-----------------------------------------------------------------------
 ! FREE SURFACE AND BOTTOM GRADIENTS
@@ -774,8 +784,10 @@
 ! IF AKEP = .FALSE. K AND EPSILON HAVE BEEN GIVEN IN LECSUI OR CONDIM
 !
       IF(ITURBV.EQ.3.AND.AKEP) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE KEPINI'
         CALL KEPINI(AK%R,EP%R,U%R,V%R,Z,
      &             ZF%R,NPOIN2,NPLAN,DNUVIH,DNUVIV,KARMAN,CMU,KMIN,EMIN)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE KEPINI'
 !       WILL BE USED BY FIRST CALL TO PREADV
         CALL OS('X=Y     ',X=AKN,Y=AK)
         CALL OS('X=Y     ',X=EPN,Y=EP)
@@ -1451,11 +1463,14 @@
 !
 ! METEOROLOGICAL CONDITIONS
 !
-      IF (VENT.OR.ATMOS) CALL METEO
-     &   (PATMOS%R, WIND%ADR(1)%P%R, WIND%ADR(2)%P%R, FUAIR, FVAIR,
-     &    X2%R, Y2%R, AT, LT, NPOIN2, VENT, ATMOS, H%R, T2_01%R,
-     &    GRAV, RHO0, 0.D0, PRIVE,T3DFO1,T3D_FILES,LISTIN,
-     &   .FALSE., PLUIE, ATMOSEXCH)
+      IF (VENT.OR.ATMOS) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE METEO'
+        CALL METEO(PATMOS%R,WIND%ADR(1)%P%R,WIND%ADR(2)%P%R,FUAIR,FVAIR,
+     &             X2%R,Y2%R,AT,LT,NPOIN2,VENT,ATMOS,H%R,T2_01%R,
+     &             GRAV,RHO0,0.D0,PRIVE,T3DFO1,T3D_FILES,LISTIN,
+     &             .FALSE.,PLUIE,ATMOSEXCH)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE METEO'
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
