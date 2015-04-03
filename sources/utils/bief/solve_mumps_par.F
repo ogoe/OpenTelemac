@@ -6,8 +6,27 @@
      & NPOIN_TOT,IPID)
 !
 !***********************************************************************
-!     MUMPS VERSION 5.7     26/02/10   C. DENIS (SINETICS)
+!  BIEF VERSION 7.1    
 !***********************************************************************
+!
+!brief    PARALLEL DIRECT SYSTEM SOLUTION
+!+
+!
+!history  C. DENIS (SINETICS)
+!+        26/02/2010
+!+        V6P0
+!+     First version
+!
+!history  J-M HERVOUET (LNHE)
+!+        01/04/2015
+!+        V7P1
+!+   Correction in the case of non symmetric matrix.
+!+
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| NPOIN          |-->| NUMBER OF POINTS IN THE PROCESSOR.
+!| ...            |-->| ...
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !     PARALLEL SOLVING USING MUMPS 
       USE DECLARATIONS_PARALLEL
@@ -35,7 +54,7 @@
 #if defined (HAVE_MUMPS)
 !
       DOUBLE PRECISION TIME_IN_SECONDS2
-      EXTERNAL TIME_IN_SECONDS2
+      EXTERNAL         TIME_IN_SECONDS2
       DOUBLE PRECISION T1,T2,T3,T4,T5
       TYPE (DMUMPS_STRUC) MUMPS_PAR
 !     INDIRECT ARRAYS
@@ -148,13 +167,31 @@
           MUMPS_PAR%A_LOC(NBELEM) = XA(K)
         ENDDO
       ELSE
-        DO K = 1,2*NSEGB
+!       ORIGINAL IMPLEMENTATION BY CD
+!       DO K = 1,2*NSEGB
+!         I = TEMP3(GLOSEG(K,1))
+!         J = TEMP3(GLOSEG(K,2))
+!         NBELEM = NBELEM + 1
+!         MUMPS_PAR%IRN_LOC(NBELEM) = I 
+!         MUMPS_PAR%JCN_LOC(NBELEM) = J
+!         MUMPS_PAR%A_LOC(NBELEM) = XA(K)
+!       ENDDO
+!       PROPOSITION JMH
+        DO K = 1,NSEGB
           I = TEMP3(GLOSEG(K,1))
           J = TEMP3(GLOSEG(K,2))
           NBELEM = NBELEM + 1
           MUMPS_PAR%IRN_LOC(NBELEM) = I 
           MUMPS_PAR%JCN_LOC(NBELEM) = J
           MUMPS_PAR%A_LOC(NBELEM) = XA(K)
+        ENDDO
+        DO K = 1,NSEGB
+          I = TEMP3(GLOSEG(K,2))
+          J = TEMP3(GLOSEG(K,1))
+          NBELEM = NBELEM + 1
+          MUMPS_PAR%IRN_LOC(NBELEM) = I 
+          MUMPS_PAR%JCN_LOC(NBELEM) = J
+          MUMPS_PAR%A_LOC(NBELEM) = XA(K+NSEGB)
         ENDDO
       ENDIF     
 !         
@@ -225,7 +262,6 @@
 !
 #endif
 !
-      END SUBROUTINE SOLVE_MUMPS_PAR
+      END
 
-      
 

@@ -3000,8 +3000,8 @@ TYPE = INTEGER
 INDEX = 22
 MNEMO = 'DIRFLU'
 TAILLE = 0
-DEFAUT = 1 
-DEFAUT1= 1
+DEFAUT = 2 
+DEFAUT1= 2
 CHOIX='1="Priorite aux valeurs imposees"';'2="Priorite aux flux"'
 CHOIX1='1="Priority to prescribed values"';'2="Priority to fluxes"'
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 

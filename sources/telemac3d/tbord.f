@@ -36,6 +36,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        02/04/2015
+!+        V7P1
+!+   Avoiding divisions by 0 in the smooth regime section.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AUBORL         |---|
 !| DISBOR         |-->| DISTANCE AU BORD DES POINTS VOISINS DU BORD
@@ -137,9 +142,9 @@
 !        SMOOTH FRICTION TURBULENCE REGIME
 !
 !
-!        *********************
+!     ********************
       IF(LISRUL.EQ.1) THEN
-!     *********************
+!     ********************
 !
 !               3
 !               **         IT IS ASSUMED HERE THAT POINT 3 IS IN
@@ -182,9 +187,14 @@
           UETREICH= 6.D-2
           DO ITER=1,MAXITEREICH
             YPLUS = DIST*UETUTA*UTANG(IPTFR)/PROPNU
-            UETUTA = 1.D0/(LOG(1.D0+KARMAN*YPLUS)/KARMAN + 7.8D0*
+            IF(YPLUS.GT.1.D-10) THEN
+              UETUTA = 1.D0/(LOG(1.D0+KARMAN*YPLUS)/KARMAN + 7.8D0*
      &                 (1.D0-EXP(-YPLUS/11.D0) - YPLUS/11.D0
      &                                         *EXP(-0.33D0* YPLUS)))
+            ELSE
+              UETUTA = 0.D0
+              GO TO 44
+            ENDIF
             TEST = ABS(UETUTA-UETREICH)/UETREICH
             IF(TEST.LT.TESTREICH) THEN
               GOTO 44
