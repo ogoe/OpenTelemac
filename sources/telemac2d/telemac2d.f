@@ -1702,8 +1702,7 @@
 !
       IF(NTRAC.GT.0.AND.DIFT) THEN
         DO ITRAC=1,NTRAC
-          CALL OS( 'X=Y     ' , X=VISCT%ADR(ITRAC)%P , Y=VISC )
-          CALL OS( 'X=X+C   ' , X=VISCT%ADR(ITRAC)%P , C=DIFNU-PROPNU )
+          CALL OS('X=Y+C   ',X=VISCT%ADR(ITRAC)%P,Y=VISC,C=DIFNU-PROPNU)
         ENDDO
       ENDIF
 !
