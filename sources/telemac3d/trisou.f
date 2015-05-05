@@ -204,6 +204,9 @@
       INTEGER I,OPTFLO
       CHARACTER(LEN=15) FORMUL
 !
+      CHARACTER(LEN=8) :: FFORMAT
+      INTEGER :: FILE_ID, IERR
+!
       INTEGER I1,I2,I3,I4,I5,I6
       DOUBLE PRECISION DX1,DX2,DX3,DY1,DY2,DY3
       DOUBLE PRECISION DZ1,DZ2,DZ3,DR1,DR2,DR3
@@ -216,8 +219,6 @@
       CHARACTER*16 NOMX,NOMY
       LOGICAL DEJALU,OKX,OKY
       DATA DEJALU /.FALSE./
-      REAL, ALLOCATABLE :: W(:)
-      SAVE W
 !
 !***********************************************************************
 !
@@ -469,9 +470,6 @@
 !
 !-----------------------------------------------------------------------
 !  CORIOLIS FORCE
-!
-!  NOTE JMH : THERE ARE ADDITIONAL TERMS IF W IS TAKEN INTO ACCOUNT
-!
 !-----------------------------------------------------------------------
 !
       IF(CORIOL) THEN
@@ -542,25 +540,18 @@
 !
         IF(.NOT.DEJALU.AND..NOT.INCLUS(COUPLING,'TOMAWAC')) THEN
 !
-          ALLOCATE(W(NPOIN2),STAT=ERR)
-          IF(ERR.NE.0) THEN
-            IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'ERREUR D''ALLOCATION DE W DANS TRISOU'
-            ENDIF
-            IF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'MEMORY ALLOCATION ERROR OF W IN TRISOU'
-            ENDIF
-          ENDIF
 !
 !         T3DBI1 : BINARY DATA FILE 1
           NOMX='FORCE FX        '
           NOMY='FORCE FY        '
-          CALL FIND_IN_SEL(FXH,NOMX,T3D_FILES(T3DBI1)%LU,
-     &                     T3D_FILES(T3DBI1)%FMT,
-     &                     W,OKX,NPTH,NP,ATH)
-          CALL FIND_IN_SEL(FYH,NOMY,T3D_FILES(T3DBI1)%LU,
-     &                     T3D_FILES(T3DBI1)%FMT,
-     &                     W,OKY,NPTH,NP,ATH)
+          FFORMAT = T3D_FILES(T3DBI1)%FMT
+          FILE_ID = T3D_FILES(T3DBI1)%LU
+          CALL READ_DATA(FFORMAT, FILE_ID, FXH%R ,NOMX, NPOIN2,
+     &                   IERR,NPTH,ATH)
+          OKX = IERR.EQ.0
+          CALL READ_DATA(FFORMAT, FILE_ID, FYH%R ,NOMY, NPOIN2,
+     &                   IERR,NPTH,ATH)
+          OKY = IERR.EQ.0
 !
           IF(.NOT.OKX.OR..NOT.OKY) THEN
             IF(LNG.EQ.1) WRITE(LU,5)
@@ -569,19 +560,6 @@
      &                '         DANS LE FICHIER DE HOULE')
  6          FORMAT(1X,'TRISOU: FORCE FX OR FY NOT FOUND',/,1X,
      &                '        IN THE WAVE RESULTS FILE')
-            CALL PLANTE(1)
-            STOP
-          ENDIF
-          IF(NP.NE.NPOIN2) THEN
-            IF(LNG.EQ.1) WRITE(LU,95)
-            IF(LNG.EQ.2) WRITE(LU,96)
- 95         FORMAT(1X,'TRISOU : SIMULATION DES COURANTS DE HOULE.',/,
-     &             1X,'LES MAILLAGES HOULE ET COURANTS SONT ',/,
-     &             1X,'DIFFERENTS : PAS POSSIBLE POUR LE MOMENT.')
- 96         FORMAT(1X,'TRISOU: WAVE DRIVEN CURRENTS MODELLING.',/,
-     &             1X,'WAVE AND CURRENT MODELS MESHES ARE ',/,
-     &             1X,'DIFFERENT : NOT POSSIBLE AT THE MOMENT.')
-!
             CALL PLANTE(1)
             STOP
           ENDIF

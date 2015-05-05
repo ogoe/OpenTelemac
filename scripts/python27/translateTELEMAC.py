@@ -463,8 +463,7 @@ if __name__ == "__main__":
    debug = False
 
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\nLoading Options and Configurations\n'+'~'*72+'\n'
    USETELCFG = ''
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
@@ -508,6 +507,5 @@ if __name__ == "__main__":
 
    """      for mod in cfg['COMPILER']['MODULES']:
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
-         print '\n\nTranslation of module  ' + mod + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         print '\n\nTranslation of module  ' + mod + '\n'+'~'*72+'\n'
    """

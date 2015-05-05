@@ -39,12 +39,12 @@
       CHARACTER(LEN=MAXLENHARD) :: NAMESEC
       LOGICAL :: WITH_ZONES, DONE_ZONES
       CHARACTER(LEN=MAXLENHARD) :: NAMEZFI
+      CHARACTER(LEN=8) :: FFORMAT
 !
       LOGICAL :: IS
-      INTEGER :: I, J, K, L , M, N, ERR, ISO, IDUM
-      INTEGER :: ISEG, II, ILOOP
-      INTEGER :: I_LEN, I_S, I_SP, I_LENCLI, I_LENINP
-      INTEGER :: JJ, IPAR, ICAS, IOS
+      INTEGER I 
+      INTEGER I_LENCLI, I_LENINP, I_LEN
+      INTEGER IPAR, ICAS, IOS
 !
       CHARACTER(LEN=11) :: EXTENS
       EXTERNAL EXTENS
@@ -118,15 +118,15 @@
 ! CONTINUE WITH TELEMAC CODES
           WRITE(LU,*) 'INPUT: ',NAMEINP
           EXIT 
-        END IF  
-      END DO
+        ENDIF  
+      ENDDO
 
       INQUIRE (FILE=NAMEINP,EXIST=IS)
       IF (.NOT.IS) THEN 
         WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEINP
         CALL PLANTE(1)
         STOP
-      END IF  
+      ENDIF  
 !
       DO
         IF( FOUND ) THEN                      
@@ -142,15 +142,15 @@
         ELSE
           WRITE(LU,*) 'INPUT: ',NAMECLI
           EXIT
-        END IF
-      END DO
+        ENDIF
+      ENDDO
 !  
       INQUIRE (FILE=NAMECLI,EXIST=IS)
       IF (.NOT.IS) THEN 
         WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMECLI
         CALL PLANTE(1)
         STOP
-      END IF  
+      ENDIF  
 !
       DO 
         IF( FOUND ) THEN                     
@@ -171,13 +171,13 @@
         ELSE
           WRITE(LU,'('' INPUT: '',I4)') NPARTS
           EXIT
-        END IF 
-      END DO
+        ENDIF 
+      ENDDO
 !
       WRITE(LU,FMT='(/,'' PARTITIONING OPTIONS: '')')
 
-      DO 
-        IF( FOUND ) THEN                     
+      DO
+        IF( FOUND ) THEN
            WRITE(LU, FMT=
      &    '(/,'' PARTITIONING METHOD <PMETHOD> 
      &    [1 (METIS) OR 2 (SCOTCH)]: '')') 
@@ -185,17 +185,40 @@
         ELSE                                 
            WRITE(LU, ADVANCE='NO',FMT=
      &    '(/,'' PARTITIONING METHOD <PMETHOD> 
-     &    [1 (METIS) OR 2 (SCOTCH)]: '')') 
+     &    [1 (METIS) OR 2 (SCOTCH)]: '')')
            READ(LI,*) PMETHOD
-        ENDIF                                 
+        ENDIF
         IF ( (PMETHOD > 2) .OR. (PMETHOD < 1) ) THEN
           WRITE(LU,
-     &    '('' PARTITIONING METHOD MUST BE 1 OR 2'')') 
+     &    '('' PARTITIONING METHOD MUST BE 1 OR 2'')')
         ELSE
           WRITE(LU,'('' INPUT: '',I3)') PMETHOD
           EXIT
-        END IF 
-      END DO
+        ENDIF
+      ENDDO
+
+!
+      WRITE(LU,FMT='(/,'' FILES FORMAT: '')')
+
+      DO 
+        IF( FOUND ) THEN                     
+           WRITE(LU, FMT=
+     &    '(/,'' FILE FORMAT <FFORMAT> [MED OR SERAFIN: '')') 
+           READ(72,*) FFORMAT                
+        ELSE                                 
+           WRITE(LU, ADVANCE='NO',FMT=
+     &    '(/,'' FILE FORMAT <FFORMAT> [MED OR SERAFIN: '')') 
+           READ(LI,*) FFORMAT
+        ENDIF                                 
+        IF ( (FFORMAT .NE. 'MED     ' ) .AND. 
+     &       (FFORMAT .NE. 'SERAFIN') ) THEN
+          WRITE(LU,
+     &    '('' FILE FORMAT MUST BE "MED" OR "SERAFIN" '')') 
+        ELSE
+          WRITE(LU,'('' INPUT: '',A8)') FFORMAT
+          EXIT
+        ENDIF 
+      ENDDO
 !
 ! #### THE SECTIONS FILE NAME 
 !
@@ -214,8 +237,8 @@
         ELSE
           WRITE(LU,'('' INPUT: '',I4)') I
           EXIT
-        END IF 
-      END DO
+        ENDIF 
+      ENDDO
       IF (I==1) WITH_SECTIONS=.TRUE.
 !
       IF (WITH_SECTIONS) THEN 
@@ -263,8 +286,8 @@
         ELSE
           WRITE(LU,'('' INPUT: '',I4)') I
           EXIT
-        END IF 
-      END DO
+        ENDIF 
+      ENDDO
       IF (I==1) WITH_ZONES=.TRUE.
 !
       IF (WITH_ZONES) THEN 
@@ -300,13 +323,7 @@
 !
 ! FIND THE INPUT FILE CORE NAME LENGTH
 !
-      I_S  = LEN(NAMEINP)
-      I_SP = I_S + 1
-      DO I=1,I_S
-        IF (NAMEINP(I_SP-I:I_SP-I) .NE. ' ') EXIT
-      ENDDO
-      I_LEN = I_SP - I
-      I_LENINP = I_LEN
+      I_LENINP = LEN(TRIM(NAMEINP))
 !
       IF (I_LENINP > MAXLENSOFT) THEN
         WRITE(LU,*) ' '
@@ -322,13 +339,7 @@
 !
 ! CORE NAME LENGTH
 !
-      I_S  = LEN(NAMECLI)
-      I_SP = I_S + 1
-      DO I=1,I_S
-        IF (NAMECLI(I_SP-I:I_SP-I) .NE. ' ') EXIT
-      ENDDO
-      I_LEN = I_SP - I
-      I_LENCLI = I_LEN
+      I_LENCLI = LEN(TRIM(NAMECLI))
 !
       IF (I_LENCLI > MAXLENSOFT) THEN
         WRITE(LU,*) ' '
@@ -379,7 +390,7 @@
       IF(NAMEINP(1:3) .EQ. 'ES3') THEN
         CALL PARES3D(NAMEINP, NAMECLI, NPARTS, PMETHOD, FORMAT_MED)
       ELSE
-        CALL PARTEL(NAMEINP, NAMECLI, NPARTS, PMETHOD, 
+        CALL PARTEL(NAMEINP, NAMECLI, NPARTS, PMETHOD, FFORMAT, 
      &              WITH_SECTIONS, NAMESEC, 
      &              WITH_ZONES, NAMEZFI)
       ENDIF

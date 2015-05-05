@@ -117,8 +117,7 @@
       ! II - ALLOCATES THE MESH STRUCTURE           !
       ! ******************************************* !
       CALL ALMESH(MESH,'MESH_S',IELMT,SPHERI,CFG,
-     &            SIS_FILES(SISGEO)%LU,EQUA,
-     &            FILE_FORMAT=SIS_FILES(SISGEO)%FMT)
+     &            SIS_FILES(SISGEO)%FMT,SIS_FILES(SISGEO)%LU,EQUA)
 
       IKLE  => MESH%IKLE
       X     => MESH%X%R

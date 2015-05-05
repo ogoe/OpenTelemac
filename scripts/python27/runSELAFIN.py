@@ -524,8 +524,7 @@ def main(action=None):
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nInterpreting command line options\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\nInterpreting command line options\n'+'~'*72+'\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    # valid for scan, chop and alter
    parser.add_option("-v", "--vars",type="string",dest="xvars",default=None,help="specify which variables should remain (','-delimited)" )
@@ -586,8 +585,7 @@ def main(action=None):
          if not path.exists(slfFile):
             print '\nCould not find the file named: ',slfFile
             sys.exit(1)
-         print '\n\nScanning ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         print '\n\nScanning ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n'+'~'*72+'\n'
          vars = options.xvars
          if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
          slf = scanSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars )
@@ -606,8 +604,7 @@ def main(action=None):
          if not path.exists(slfFile):
             print '\nCould not find the file named: ',slfFile
             sys.exit(1)
-         print '\n\nScanning ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         print '\n\nScanning ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n'+'~'*72+'\n'
          vars = options.xvars
          if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
          slf = scanSPECTRAL( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars )
@@ -646,8 +643,7 @@ def main(action=None):
          if not path.exists(slfFile):
             print '\nCould not find the file named: ',slfFile
             sys.exit(1)
-         print '\n\nChoping ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         print '\n\nChoping ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n'+'~'*72+'\n'
          vars = options.xvars
          if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
          slf = chopSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars, root=rootFile )
@@ -689,8 +685,7 @@ def main(action=None):
          if not path.exists(slfFile):
             print '\nCould not find the file named: ',slfFile
             sys.exit(1)
-         print '\n\nAltering ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         print '\n\nAltering ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n'+'~'*72+'\n'
          vars = options.xvars
          if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
          slf = alterSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars, root=rootFile  )
@@ -744,8 +739,7 @@ def main(action=None):
          outFile = args[len(args)-1]
       
          slfs = SELAFINS()
-         print '\n\nMerging into ' + path.basename(outFile) + ' within ' + path.dirname(outFile) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         print '\n\nMerging into ' + path.basename(outFile) + ' within ' + path.dirname(outFile) + '\n'+'~'*72+'\n'
          for slfFile in slfFiles:
             slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
             if not path.exists(slfFile):
@@ -764,8 +758,7 @@ def main(action=None):
          rootFile = args[2]
          outFile = args[3]
 
-         print '\n\nMerging into ' + path.basename(outFile) + ' within ' + path.dirname(outFile) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         print '\n\nMerging into ' + path.basename(outFile) + ' within ' + path.dirname(outFile) + '\n'+'~'*72+'\n'
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
          if not path.exists(slfFile):
             print '\nCould not find the file named: ',slfFile
@@ -800,8 +793,7 @@ def main(action=None):
       outFile = args[len(args)-1]
 
       slfs = SELAFINS()
-      print '\n\nDifferences into ' + path.basename(outFile) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\nDifferences into ' + path.basename(outFile) + '\n'+'~'*72+'\n'
       for slfFile in slfFiles:
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
          if not path.exists(slfFile):
@@ -839,8 +831,7 @@ def main(action=None):
       if not path.exists(slfFile):
          print '\nCould not find the file named: ',slfFile
          sys.exit(1)
-      print '\n\nSample ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\nSample ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n'+'~'*72+'\n'
       vars = options.xvars
       if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
       slf = chopSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars, root=rootFile )
@@ -872,8 +863,7 @@ def main(action=None):
       if not path.exists(slfFile):
          print '\nCould not find the file named: ',slfFile
          sys.exit(1)
-      print '\n\nCalculations for ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\nCalculations for ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n'+'~'*72+'\n'
       vars = options.xvars; calcList = []
       if options.xvars != None:
          vars = cleanQuotes(options.xvars.replace('_',' '))
@@ -933,8 +923,7 @@ def main(action=None):
       if not path.exists(slfFile):
          print '\nCould not find the file named: ',slfFile
          sys.exit(1)
-      print '\n\nSubdividing ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\nSubdividing ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n'+'~'*72+'\n'
       slf = subSELAFIN( slfFile )
       slf.putContent( outFile )
 

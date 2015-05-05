@@ -17,7 +17,7 @@
 #--- Definitions pour SYSTEME TELEMAC
 !include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
-VERSION    = V7P0
+VERSION    = V7P1
 
 
 
@@ -56,6 +56,7 @@ PARTEL_PARA   = partel_para$(VERSION).exe
 PARTEL_PRELIM = partel_prelim$(VERSION).exe
 LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\damo$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\hermes$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\parallel$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
                 $(PROJECT)\optionals\metis-5.1.0\libmetis\libmetis.lib \

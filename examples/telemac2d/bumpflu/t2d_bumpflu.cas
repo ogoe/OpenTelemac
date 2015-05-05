@@ -52,4 +52,3 @@ FORME DE LA CONVECTION : 6;5
 /DISCRETISATIONS EN ESPACE : 12 ; 11 
 COMPATIBILITE DU GRADIENT DE SURFACE LIBRE : 0.9
 BANCS DECOUVRANTS : NON                                     
-/&ETA                                                                      

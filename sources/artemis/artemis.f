@@ -155,8 +155,8 @@
       CALL LECLIM (LIHBOR%I   , LIUBOR%I , ITB1%I , ITB1%I,
      &             TB1%R      , TB1%R    , TB1%R  , TB1%R ,
      &             TB1%R      , TB1%R    , TB1%R  ,
-     &             MESH%NPTFR , 3        ,.FALSE. ,
-     &             ART_FILES(ARTCLI)%LU,
+     &             MESH%NPTFR , 'ART'    ,.FALSE. ,
+     &             ART_FILES(ARTGEO)%FMT,ART_FILES(ARTGEO)%LU,
      &             0       , 0    , 0 ,  0 , 0 , 0,
      &             NUMLIQ%I   ,MESH,BOUNDARY_COLOUR%I)
 !
@@ -183,12 +183,12 @@
         ! THE DATA ARE CREATED IN THE FILE: NRES, AND ARE
         ! CHARACTERISED BY A TITLE AND NAME OF OUTPUT VARIABLES
         ! CONTAINED IN THE FILE.
-        CALL CREATE_DATASET(ART_FILES(ARTRES)%FMT, ! RESULTS FILE FORMAT
-     &                      ART_FILES(ARTRES)%LU,  ! LU FOR RESULTS FILE
-     &                      TITCAS,     ! TITLE
-     &                      MAXVAR,     ! MAX NUMBER OF OUTPUT VARIABLES
-     &                      TEXTE,      ! NAMES OF OUTPUT VARIABLES
-     &                      SORLEO)     ! PRINT TO FILE OR NOT
+        CALL WRITE_HEADER(ART_FILES(ARTRES)%FMT, ! RESULTS FILE FORMAT
+     &                    ART_FILES(ARTRES)%LU,  ! LU FOR RESULTS FILE
+     &                    TITCAS,     ! TITLE
+     &                    MAXVAR,     ! MAX NUMBER OF OUTPUT VARIABLES
+     &                    TEXTE,      ! NAMES OF OUTPUT VARIABLES
+     &                    SORLEO)     ! PRINT TO FILE OR NOT
         ! WRITES THE MESH IN THE OUTPUT FILE :
         ! IN PARALLEL, REQUIRES NCSIZE AND NPTIR.
         ! THE REST OF THE INFORMATION IS IN MESH.
@@ -196,11 +196,10 @@
         ! ORIGIN.
         CALL WRITE_MESH(ART_FILES(ARTRES)%FMT, ! RESULTS FILE FORMAT
      &                  ART_FILES(ARTRES)%LU,  ! LU FOR RESULTS FILE
-     &                  MESH,          ! CHARACTERISES MESH
+     &                  MESH,
      &                  1,             ! NUMBER OF PLANES /NA/
      &                  MARDAT,        ! START DATE
-     &                  MARTIM,        ! START TIME
-     &                  I_ORIG,J_ORIG) ! COORDINATES OF THE ORIGIN.
+     &                  MARTIM)        ! START TIME
 !
 !-----------------------------------------------------------------------
 !
@@ -507,7 +506,7 @@
 ! RUBENS FILE
 !
         CALL BIEF_DESIMP(ART_FILES(ARTRES)%FMT,VARSOR,
-     &            HIST,0,NPOIN,ART_FILES(ARTRES)%LU,'STD',PER,0,
+     &            NPOIN,ART_FILES(ARTRES)%LU,'STD',PER,0,
      &            LISPRD,LEOPRD,
      &            SORLEO,SORIMP,MAXVAR,TEXTE,0,0)
 !
@@ -674,7 +673,7 @@
 !            ENDDO
 !
           CALL BIEF_DESIMP(ART_FILES(ARTRES)%FMT,VARSOR,
-     &            HIST,0,NPOIN,ART_FILES(ARTRES)%LU,'STD',PERPIC,0,
+     &            NPOIN,ART_FILES(ARTRES)%LU,'STD',PERPIC,0,
      &            LISPRD,LEOPRD,
      &            SORLEO,SORIMP,MAXVAR,TEXTE,0,0)
 !

@@ -1031,8 +1031,7 @@ if __name__ == "__main__":
    cfgs = parseConfigFile(options.configFile,options.configName,False)
 
    for cfgname in cfgs:
-      print '\n\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+      print '\n\n'+'~'*72+'\n'
       # still in lower case
       if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
       if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
@@ -1045,8 +1044,7 @@ if __name__ == "__main__":
       print '    +> module:  ',' / '.join(cfg['MODULES'].keys())
       if options.configDelete: cleanConfig(cfg,cfgname)
    
-   print '\n\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+   print '\n\n'+'~'*72+'\n'
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'

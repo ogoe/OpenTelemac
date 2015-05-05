@@ -2,7 +2,6 @@
 path: <root>|sources|utils|gretel
 module: gretel
 liborder: special bief gretel
-version: v7p0
 name: GREDELMET_AUTOP
 
 [bief]
@@ -21,6 +20,6 @@ files: gredel_fdnrst.f
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
-  plante.f
+  plante.F
   check_allocate.f
   extens.f

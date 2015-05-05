@@ -1,8 +1,8 @@
-!                    **************
+!                    *****************
                      SUBROUTINE PARTEL 
-!                    **************
-     & (NAMEINP, NAMECLI, NPARTS, PMETHOD, WITH_SECTIONS, NAMESEC,
-     &  WITH_ZONES, NAMEZFI)
+!                    *****************
+     & (NAMEINP, NAMECLI, NPARTS, PMETHOD, FFORMAT, 
+     &  WITH_SECTIONS, NAMESEC, WITH_ZONES, NAMEZFI)
 !
 !
 !***********************************************************************
@@ -72,7 +72,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_PARTEL
-      USE BIEF, ONLY : NBMAXNSHARE, NCSIZE, NPTIR, CHAIN_TYPE
+      USE DECLARATIONS_SPECIAL
+      USE BIEF, ONLY : NBMAXNSHARE, NCSIZE, NPTIR, CHAIN_TYPE, 
+     &                 READ_MESH_INFO
+      USE INTERFACE_HERMES
+!
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -83,6 +87,7 @@
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMECLI
       INTEGER, INTENT(IN) :: NPARTS
       INTEGER, INTENT(IN) :: PMETHOD
+      CHARACTER(LEN=8), INTENT(IN) :: FFORMAT
       LOGICAL, INTENT(INOUT) :: WITH_SECTIONS
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMESEC
       LOGICAL, INTENT(INOUT) :: WITH_ZONES
@@ -90,52 +95,46 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !
-      INTEGER NVAR, NPLAN, NPTFR, NPTFRMAX
-      INTEGER NELEM, NPOIN, NDP, NELEM2, NPOIN2, NDUM
-      INTEGER IB(10)
+      INTEGER NVAR, NPLAN, NPTFR 
+      INTEGER NELEM, NPOIN, NDP, NELEM2, NPOIN2, NDP_BND
+      INTEGER DIM_MESH
 !
       INTEGER, ALLOCATABLE :: IKLES(:), IKLES_P(:)
       INTEGER, ALLOCATABLE :: IKLES3D(:),IKLES3D_P(:,:,:)
-      INTEGER, ALLOCATABLE :: IRAND(:)
-      INTEGER, ALLOCATABLE :: LIHBOR(:), LIUBOR(:), LIVBOR(:)
-      INTEGER, ALLOCATABLE :: LITBOR(:)
+      INTEGER, ALLOCATABLE :: IRAND(:),LIHBOR(:),LIUBOR(:)
+      INTEGER, ALLOCATABLE :: LIVBOR(:),LITBOR(:)
+      INTEGER, ALLOCATABLE :: NBOR(:),IKLE_BND_P(:),IKLE_BND(:)
+      INTEGER, ALLOCATABLE :: VAL_BND(:),VAL_BND_P(:)
       INTEGER, ALLOCATABLE :: NPOIN_P(:), NELEM_P(:), NPTFR_P(:)
-      INTEGER, ALLOCATABLE :: NBOR(:), NPTIR_P(:)
+      INTEGER, ALLOCATABLE :: NPTIR_P(:)
       INTEGER, ALLOCATABLE :: NUMLIQ(:)
-      INTEGER, ALLOCATABLE :: KNOLG(:,:), KNOGL(:,:),CHECK(:)
+      INTEGER, ALLOCATABLE :: KNOLG(:,:), KNOGL(:,:)
       INTEGER, ALLOCATABLE :: ELELG(:,:)
       INTEGER, ALLOCATABLE :: CUT(:), CUT_P(:,:), SORT(:)
       INTEGER, ALLOCATABLE :: PART_P(:,:)
 !
 !     FOR DOUBLE PRECISION SERAFIN FORMAT
 !
-      DOUBLE PRECISION, ALLOCATABLE :: F_D(:,:)
+      DOUBLE PRECISION, ALLOCATABLE    :: F(:,:)
 !
-      REAL, ALLOCATABLE    :: F(:,:)
-      REAL, ALLOCATABLE    :: HBOR(:) 
-      REAL, ALLOCATABLE    :: UBOR(:), VBOR(:), AUBOR(:)
-      REAL, ALLOCATABLE    :: TBOR(:), ATBOR(:), BTBOR(:)
+      DOUBLE PRECISION TIMES
 !
-      REAL TIMES, TIMED
-      DOUBLE PRECISION TIMES_D, TIMED_D
-!
-      INTEGER :: NINP=10, NCLI=11, NSCT=13
+      INTEGER :: NINP=10, NSCT=13
       INTEGER :: NOUT=17, NCLM=18
-      INTEGER TIME(3),DATE(3),TIME_TMP(3), DATE_TMP(3)
+      INTEGER TIME(3),DATE(3), DATE_TMP(6)
 !
       CHARACTER(LEN=80)  :: TITLE
-      CHARACTER(LEN=32)  :: VARI, VARIABLE(MAXVAR)
+      CHARACTER(LEN=32), ALLOCATABLE  :: VARIABLE(:)
       CHARACTER(LEN=MAXLENHARD)  :: NAMEOUT, NAMECLM
       CHARACTER(LEN=12)  :: FMT4
 !
       INTEGER MAX_NELEM_P
       INTEGER  MAX_NPOIN_P,MAX_N_NEIGH
       INTEGER I, J, K, L , M, N, ERR, ISO, IDUM
-      INTEGER ISEG, II, ILOOP
-      INTEGER JJ
+      INTEGER ISEG, NTIMESTEP
 !
       REAL XSEG, YSEG
-      LOGICAL IS, TIMECOUNT
+      LOGICAL TIMECOUNT
 !
 ! METISOLOGY
 !
@@ -159,13 +158,20 @@
       INTEGER, ALLOCATABLE :: IT1(:), IT2(:), IT3(:)
 !
       INTEGER NPOIN_TOT
-      REAL TMP
-      DOUBLE PRECISION TMP_D
 !
 !
 ! TIME MEASURING 
 !
       INTEGER  TDEB, TFIN, TDEBP, TFINP, TEMPS, PARSEC
+!     HERMES TEMPORARY ARRAYS
+      DOUBLE PRECISION, ALLOCATABLE :: X(:), Y(:)
+      DOUBLE PRECISION,ALLOCATABLE :: DATAVAL(:), DATAVAL_P(:)
+      INTEGER, ALLOCATABLE :: KNOLG_P(:), IKLE_P(:), IKLE3D_P(:)
+      INTEGER :: IERR, ITIME, IVAR
+      CHARACTER(LEN=16), ALLOCATABLE :: VAR_NAME(:), VAR_UNIT(:)
+      INTEGER NELEBD, NELEBD_P
+      INTEGER TYP_ELEM, TYP_BND_ELEM
+      LOGICAL FULLY_IN
 !
 !----------------------------------------------------------------------
 !
@@ -213,7 +219,6 @@
 !
 !     CD: FLAG FOR SERAFIN FORMAT (.TRUE. IF DOUBLE PRECISION)
 !
-      LOGICAL SERAFIND
 !     PARTEL EXTENS
       CHARACTER(LEN=11) :: EXTENS
       EXTERNAL EXTENS
@@ -222,56 +227,48 @@
 !
       NDP_2D=3
 !
-!
       CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
       TIMECOUNT = .TRUE.
       IF (PARSEC==0) TIMECOUNT = .FALSE.  ! COUNT_RATE == 0 : NO CLOCK
       IF (TIMECOUNT) TDEB = TEMPS
 !
-      OPEN(NINP,FILE=NAMEINP,STATUS='OLD',FORM='UNFORMATTED')
-      REWIND NINP
+      CALL OPEN_MESH(FFORMAT, NAMEINP, NINP, 'READ     ', IERR)
+      CALL CHECK_CALL(IERR, 'PARTEL:OPENMESH:INP')
 !
 !----------------------------------------------------------------------
 !
 ! START READING THE GEOMETRY OR RESULT FILE
 !
-      READ(NINP,END=290,ERR=290) TITLE
+      CALL READ_MESH_INFO(FFORMAT,NINP,TITLE,NVAR,NPOIN,TYP_ELEM,NELEM,
+     &                    NPTFR,NPTIR,NDP,NPLAN,TYP_BND_ELEM,NELEBD)
 !
-!     SINGLE OR DOUBLE PRECISION
-!
-      SERAFIND=.FALSE.
-      IF(TITLE(73:80) .EQ. 'SERAFIND') THEN 
-        SERAFIND=.TRUE.
-      ENDIF
-!
-!     NUMBER OF VARIABLES IN THE FILE
-!
-      READ (NINP) I, J
-      NVAR = I + J 
-!
+      ! GET THE VARIABLES NAMES
+      ALLOCATE(VAR_NAME(NVAR),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'PARTEL:VAR_NAME')
+      ALLOCATE(VAR_UNIT(NVAR),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'PARTEL:VAR_UNIT')
+      ALLOCATE(VARIABLE(NVAR),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'PARTEL:VAR_UNIT')
+      
+      CALL GET_DATA_VAR_LIST(FFORMAT,NINP,NVAR,VAR_NAME,VAR_UNIT,IERR)
+      CALL CHECK_CALL(IERR,'PARTEL;GET_DATA_VAR_LIST:INP')
       DO I=1,NVAR
-        READ(NINP) VARI     
-        VARIABLE(I) = VARI     
-        DO J=1,32
-          IF(VARI(J:J).EQ.' ') VARI(J:J) = '-'
-        ENDDO
+        VARIABLE(I)(1:16) = VAR_NAME(I)     
+        VARIABLE(I)(17:32) = VAR_UNIT(I)     
       ENDDO 
+      DEALLOCATE(VAR_NAME)
+      DEALLOCATE(VAR_UNIT)
 !
 ! READ THE REST OF THE SELAFIN FILE
 ! 10 INTEGERS, THE FIRST IS THE NUMBER OF RECORDS (TIMESTEPS)
 !
-      READ(NINP) (IB(I), I=1,10)
-      IF(IB(8).NE.0.OR.IB(9).NE.0) THEN
-        WRITE(LU,*) 'THIS IS A PARTIAL OUTPUT FILE'
-        WRITE(LU,*) 'MAYBE MEET GRETEL BEFORE...'
-      ENDIF 
-      NPLAN = IB(7) 
-      IF(IB(10).EQ.1) THEN 
-        READ(NINP) DATE(1),DATE(2),DATE(3),TIME(1),TIME(2),TIME(3)
-      ENDIF 
+      CALL GET_MESH_DATE(FFORMAT,NINP,DATE_TMP,IERR)
+      CALL CHECK_CALL(IERR,'PARTEL:GET_MESH_DATE:INP')
+      DO I=1,3
+        DATE(I) = DATE_TMP(I)
+        TIME(I) = DATE_TMP(I+3)
+      ENDDO
 !
-      READ(NINP) NELEM,NPOIN,NDP,NDUM
-      NPOIN_TOT=NPOIN
       IF(NPLAN.GT.1) THEN 
         WRITE(LU,*) ' '
         WRITE(LU,*) '3D MESH DETECTED' 
@@ -294,26 +291,20 @@
           STOP
         ENDIF
         WRITE(LU,*) ' '
+        WRITE(LU,*) 'THE INPUT FILE ASSUMED TO BE 3D'
+        DIM_MESH = 3
       ELSE
         WRITE(LU,*) ' '
         WRITE(LU,*) 'ONE-LEVEL MESH.'
         WRITE(LU,*) 'NDP NODES PER ELEMENT:         ',NDP
+        WRITE(LU,*) 'ELEMENT TYPE :                 ',TYP_ELEM
         WRITE(LU,*) 'NPOIN NUMBER OF MESH NODES:    ',NPOIN
         WRITE(LU,*) 'NELEM NUMBER OF MESH ELEMENTS: ',NELEM
         WRITE(LU,*) ' '
         NPOIN2 = NPOIN
         NELEM2 = NELEM
-      ENDIF
-!
-      IF(NDP.EQ.3) THEN  
-        WRITE(LU,*) 'THE INPUT FILE ASSUMED TO BE 2D SELAFIN'
-      ELSEIF (NDP.EQ.6) THEN
-        WRITE(LU,*) 'THE INPUT FILE ASSUMED TO BE 3D SELAFIN'
-      ELSE   
-        WRITE(LU,*) 'THE ELEMENTS ARE NEITHER TRIANGLES NOR PRISMS!'
-        WRITE(LU,*) 'NDP = ',NDP
-        CALL PLANTE(1)
-        STOP
+        WRITE(LU,*) 'THE INPUT FILE ASSUMED TO BE 2D'
+        DIM_MESH = 2
       ENDIF
 !
 ! NOW LET US ALLOCATE 
@@ -332,22 +323,19 @@
 !             ONE AFTER THE OTHER...)
 !     NPOIN IS 3D HERE IN 3D
 !
-      IF(SERAFIND) THEN
-        ALLOCATE (F(NPOIN,3),STAT=ERR) 
-        CALL CHECK_ALLOCATE(ERR, 'F')
-        ALLOCATE (F_D(NPOIN,3),STAT=ERR)
-        CALL CHECK_ALLOCATE(ERR, 'F_D')
-      ELSE
-        ALLOCATE (F(NPOIN,3),STAT=ERR)
-        IF(ERR.NE.0) CALL CHECK_ALLOCATE(ERR, 'F')
-      ENDIF
+      ALLOCATE (F(NPOIN,2),STAT=ERR)
+      CALL CHECK_ALLOCATE(ERR, 'F')
 !
 ! CONNECTIVITY TABLE:
 !
       IF(NPLAN.LE.1) THEN
-        READ(NINP) ((IKLES((K-1)*NDP+J),J=1,NDP),K=1,NELEM)        
+        CALL GET_MESH_CONNECTIVITY(FFORMAT,NINP,TYP_ELEM,IKLES,
+     &                             NELEM,NDP,IERR)
+        CALL CHECK_CALL(IERR,'PARTEL:GET_MESH_CONNECTIVITY:2D')
       ELSE
-        READ(NINP) ((IKLES3D((K-1)*NDP+J),J=1,NDP),K=1,NELEM)
+        CALL GET_MESH_CONNECTIVITY(FFORMAT,NINP,TYP_ELEM,IKLES3D,
+     &                             NELEM,NDP,IERR)
+        CALL CHECK_CALL(IERR,'PARTEL:GET_MESH_CONNECTIVITY:3D')
 !       BUILDING IKLES
         DO J=1,3
           DO K=1,NELEM2
@@ -358,122 +346,77 @@
 !
 ! BOUNDARY NODES INDICATIONS
 !
-      READ(NINP) (IRAND(J),J=1,NPOIN)
+      CALL GET_BND_IPOBO(FFORMAT,NINP,NPOIN,NELEBD,TYP_BND_ELEM,
+     &                   IRAND,IERR)
+      CALL CHECK_CALL(IERR,'PARTEL:GET_BND_IPOBO:NINP')
 !
 ! IRAND IS NOT ALWAYS CORRECT AND MAY LEAD TO ERRORS
 ! THE BO0UNDARY FILE IS USED INSTEAD
 !
 ! X-, Y-COORDINATES
 !
-      IF(SERAFIND) THEN
-        READ(NINP,END=297,ERR=297) (F_D(J,1),J=1,NPOIN)
-        READ(NINP,END=297,ERR=297) (F_D(J,2),J=1,NPOIN)
-!       COPYING F_D IN F FOR FRONT2_PARTEL 
-        DO J=1,NPOIN
-          F(J,1)=REAL(F_D(J,1))
-          F(J,2)=REAL(F_D(J,2))
-        ENDDO
-      ELSE
-        READ(NINP,END=297,ERR=297) (F(J,1),J=1,NPOIN)
-        READ(NINP,END=297,ERR=297) (F(J,2),J=1,NPOIN)
-      ENDIF
+      CALL GET_MESH_COORD(FFORMAT,NINP,1,2,NPOIN,F(:,1),IERR)
+      CALL CHECK_CALL(IERR,'PARTEL:GET_MESH_COORD:X')
+      CALL GET_MESH_COORD(FFORMAT,NINP,2,2,NPOIN,F(:,2),IERR)
+      CALL CHECK_CALL(IERR,'PARTEL:GET_MESH_COORD:Y')
 !     
-! NOW THE LOOP OVER ALL RECORDS (TIMESTEPS) - FOR AN INITIAL 
-! CONDITIONS FILE AUTOMATICALLY THE LAST TIME STEP VALUES ARE 
-! TAKEN (!)
+      CALL GET_DATA_NTIMESTEP(FFORMAT,NINP,NTIMESTEP,IERR)
+      CALL CHECK_CALL(IERR,'PARTEL:GET_DATA_NTIMESTEP')
 !
-      ILOOP = 0
-!
-!     INFINITE LOOP THAT ENDS WITH THE END=111 INSTRUCTION IN READ
-!
-      DO 
-!
-!       READ THE TIME STEP
-!
-        IF(SERAFIND) THEN
-          READ(NINP, END=111, ERR=298) TIMES_D          
-          TIMED_D = TIMES_D/3600.D0
-          WRITE(LU,*) 'TIMESTEP: ',TIMES_D,'S = ',TIMED_D,'H'
-        ELSE
-          READ(NINP, END=111, ERR=298) TIMES
-          TIMED = TIMES/3600.
-          WRITE(LU,*) 'TIMESTEP: ',TIMES,'S = ',TIMED,'H'
-        ENDIF
-        ILOOP = ILOOP + 1
-!
-!       READ THE TIME VARIABLES; NO 1 AND 2 ARE X,Y
-!
-!       NOTE JMH 20/06/2012: HERE RECORDS ARE JUST JUMPED
-!       NO NEED TO STORE, IT ALLOWS REDUCING THE SIZE OF F
-!
-        DO K=3,NVAR+2
-!         READ(NINP, END=301, ERR=301) (F(J,K), J=1,NPOIN)
-          READ(NINP, END=301, ERR=301) 
-        ENDDO
-!
-      ENDDO
-!
-111   CONTINUE  
-      CLOSE (NINP)
-      WRITE(LU,*) 'THERE ARE ',ILOOP,' TIME-DEPENDENT RECORDINGS'
+      WRITE(LU,*) 'THERE ARE ',NTIMESTEP,' TIME-DEPENDENT RECORDINGS'
 !
 !----------------------------------------------------------------------
 !
-!     READ THE BOUNDARY CONDITIONS FILE, BUT ALLOCATE FIRST
+!     READ THE BOUNDARY CONDITIONS FILE
 !
-!     NPTFRMAX MUST BE GREATER OR EQUAL TO NPFTR
-!
-      NPTFRMAX = NPOIN2
-!
-!     IT COULD BE THAT (TO BE PROVEN, BUT NILES MAY BE LARGE)
-!     NPTFRMAX = 2*NPOIN2-NELEM2-2+2*NILES
-!
-      ALLOCATE (LIHBOR(NPTFRMAX),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'LIHBOR')
-      ALLOCATE (LIUBOR(NPTFRMAX),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'LIUBOR')
-      ALLOCATE (LIVBOR(NPTFRMAX),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'LIVBOR')
-      ALLOCATE (HBOR(NPTFRMAX),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'HBOR')
-      ALLOCATE (UBOR(NPTFRMAX),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'UBOR')
-      ALLOCATE (VBOR(NPTFRMAX),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'VBOR')
-      ALLOCATE (AUBOR(NPTFRMAX),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'AUBOR')
-      ALLOCATE (TBOR(NPTFRMAX),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'TBOR')
-      ALLOCATE (ATBOR(NPTFRMAX),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'ATBOR')
-      ALLOCATE (BTBOR(NPTFRMAX),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'BTBOR')
-      ALLOCATE (LITBOR(NPTFRMAX),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'LITBOR')
-      ALLOCATE (NBOR(NPTFRMAX),STAT=ERR)  ! FOR FRONT2
-      CALL CHECK_ALLOCATE(ERR, 'NBOR')
-      ALLOCATE (NUMLIQ(NPTFRMAX),STAT=ERR)
+      CALL OPEN_BND(FFORMAT,NAMECLI,NINP,'READ     ',IERR)
+      CALL CHECK_CALL(IERR,'PARTEL:OPEN_BND:NCLI')
+      !
+      CALL GET_NODES_PER_ELEMENT(TYP_BND_ELEM,NDP_BND)
+      ! Get the number of boundary points and elements
+      CALL GET_BND_NELEM(FFORMAT,NINP,TYP_BND_ELEM,NELEBD,IERR)
+      CALL CHECK_CALL(IERR,'PARTEL:GET_BND_NELEBD:NCLI')
+      CALL GET_BND_NPOIN(FFORMAT,NINP,TYP_BND_ELEM,NPTFR,IERR)
+      CALL CHECK_CALL(IERR,'PARTEL:GET_BND_NPOIN:NCLI')
+      !
+      ALLOCATE(IKLE_BND(NELEBD*NDP_BND),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'PARTEL:IKLE_BND')
+      ALLOCATE(NBOR(NPTFR),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'PARTEL:NBOR')
+      ALLOCATE(VAL_BND(NELEBD),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'PARTEL:VAL_BND')
+      ! Get the connectivity table for the boundary elements 
+      CALL GET_BND_CONNECTIVITY(FFORMAT,NINP,TYP_BND_ELEM,NELEBD,
+     &                    NDP_BND,IKLE_BND,IERR)
+      CALL CHECK_CALL(IERR,'PARTEL:GET_BND_CONNECTIVITY:NCLI')
+      ! Fill NBOR
+      CALL GET_BND_NUMBERING(FFORMAT,NINP,TYP_BND_ELEM,NPTFR,NBOR,IERR)
+      ! Get the value of each boundary
+      CALL GET_BND_VALUE(FFORMAT,NINP,TYP_BND_ELEM,NELEBD,VAL_BND,
+     &                   NPTFR,NBOR,IERR)
+      CALL CHECK_CALL(IERR,'PARTEL:GET_BND_VALUE:NCLI')
+      !
+      CALL CLOSE_BND(FFORMAT,NINP,IERR)
+      CALL CHECK_CALL(IERR,'PARTEL:CLOSE_BND:NCLI')
+      ! Building LIHBOR
+      ALLOCATE(LIHBOR(NPTFR),STAT=IERR) 
+      CALL CHECK_ALLOCATE(IERR,'PARTEL:LIHBOR')
+      ALLOCATE(LIUBOR(NPTFR),STAT=IERR) 
+      CALL CHECK_ALLOCATE(IERR,'PARTEL:LIUBOR')
+      ALLOCATE(LIVBOR(NPTFR),STAT=IERR) 
+      CALL CHECK_ALLOCATE(IERR,'PARTEL:LIVBOR')
+      ALLOCATE(LITBOR(NPTFR),STAT=IERR) 
+      CALL CHECK_ALLOCATE(IERR,'PARTEL:LITBOR')
+      ALLOCATE (NUMLIQ(NPTFR),STAT=ERR)
       CALL CHECK_ALLOCATE(ERR, 'NUMLIQ')
-      ALLOCATE (CHECK(NPTFRMAX),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'CHECK')
-!
-      OPEN(NCLI,FILE=NAMECLI,STATUS='OLD',FORM='FORMATTED')
-      REWIND NCLI
-!
-!     READING BOUNDARY FILE AND COUNTING BOUNDARY POINTS
-!
-      K=1
- 900  CONTINUE
-      READ(NCLI,*,END=901,ERR=901) LIHBOR(K),LIUBOR(K),
-     &                             LIVBOR(K),
-     &             HBOR(K),UBOR(K),VBOR(K),AUBOR(K),LITBOR(K),
-     &             TBOR(K),ATBOR(K),BTBOR(K),NBOR(K),CHECK(K)
-!
-      K=K+1
-      GOTO 900
- 901  CONTINUE
-      NPTFR = K-1
-      CLOSE(NCLI)
+      !
+      DO K=1,NPTFR
+        LIHBOR(K) = VAL_BND(K)/1000
+        LIUBOR(K) = (VAL_BND(K) - LIHBOR(K)*1000)/100
+        LIVBOR(K) = (VAL_BND(K) - LIHBOR(K)*1000 - LIUBOR(K)*100)/10
+        LITBOR(K) = VAL_BND(K) - LIHBOR(K)*1000 - LIUBOR(K)*100
+     &              - LIVBOR(K)*10
+      ENDDO
 !
 !----------------------------------------------------------------------
 ! NUMBERING OF OPEN BOUNDARIES 
@@ -538,7 +481,7 @@
         ENDDO
       ENDDO
 !
-      ! Set NCSIZE TO 1 TO USE VOISIN IN SERIAL MODE
+      ! SET NCSIZE TO 1 TO USE VOISIN IN SERIAL MODE
       NCSIZE =  1
    
       CALL VOISIN(IFABOR, NELEM2, NELEM2, 11, IKLE, NELEM2,
@@ -573,15 +516,13 @@
       FINSOL(:) = 0
       DEBLIQ(:) = 0
       FINLIQ(:) = 0
-      DO I=1,NPOIN2
-        X_D(I) = DBLE(F(I,1))
-        Y_D(I) = DBLE(F(I,2))
-      ENDDO
-      CALL FRONT2 
-     &       (NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,
-     &       LIHBOR,LIUBOR,X_D,Y_D,
-     &       NBOR,KP1BOR(1:NPTFR,1),DEJAVU,NPOIN2,NPTFR,
-     &       2,.TRUE.,NUMLIQ,MAXFRO)  
+      IF(DIM_MESH.NE.3) THEN
+        CALL FRONT2 
+     &         (NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,
+     &         LIHBOR,LIUBOR,F(:,1),F(:,2),
+     &         NBOR,KP1BOR(1:NPTFR,1),DEJAVU,NPOIN2,NPTFR,
+     &         2,.TRUE.,NUMLIQ,MAXFRO)  
+      ENDIF
 !
       DEALLOCATE (DEJAVU)
       DEALLOCATE (X_D)
@@ -646,7 +587,11 @@
 ! 
       ALLOCATE (KNOGL(NPOIN2,NPARTS),STAT=ERR)
       CALL CHECK_ALLOCATE(ERR, 'KNOGL')
-      KNOGL(:,:)=0
+      DO I=1,NPOIN2
+        DO J=1,NPARTS
+          KNOGL(I,J)=0
+        ENDDO
+      ENDDO
 !      
 !     NBRE_EF(I) => NUMBER OF FINITE ELEMENT CONTAINING I
 !     I IS A GLOBAL LABEL 
@@ -688,8 +633,8 @@
       CALL CHECK_ALLOCATE(ERR, 'TAB_TMP')
       
       ALLOCATE(IFAPAR(NPARTS,7,NBMAXHALO),STAT=ERR)
-        CALL CHECK_ALLOCATE(ERR, 'IFAPAR')
-        IFAPAR(:,:,:)=0
+      CALL CHECK_ALLOCATE(ERR, 'IFAPAR')
+      IFAPAR(:,:,:)=0
 !
 !======================================================================
 ! STEP 4 : COMPUTE THE NUMBER OF FINITE ELEMENTS AND POINTS
@@ -703,18 +648,18 @@
 !   
 !     LOOP OVER THE FINITE ELEMENT OF THE MESH 
 !     TO COMPUTE THE NUMBER OF FINITE ELEMENTS CONTAINING EACH POINT NOEUD
-        IF (NAMEINP(1:3) == 'ART') THEN     
-          DO EF=1,NELEM2
-            DO K=1,NDP_2D
-              NOEUD=IKLES((EF-1)*3+K)
-              IF (IRAND(NOEUD) .NE. 0) THEN
-                EPART(EF)=1
-              END IF
-            END DO 
-          END DO
-        END IF
-         
-        NBRE_EF(:)=0
+      IF (NAMEINP(1:3) == 'ART') THEN     
+        DO EF=1,NELEM2
+          DO K=1,NDP_2D
+            NOEUD=IKLES((EF-1)*3+K)
+            IF (IRAND(NOEUD) .NE. 0) THEN
+              EPART(EF)=1
+            END IF
+          END DO 
+        END DO
+      END IF
+      
+      NBRE_EF(:)=0
       DO EF=1,NELEM2
         DO K=1,NDP_2D
           NOEUD=IKLES((EF-1)*3+K)
@@ -723,9 +668,9 @@
       END DO 
       DO I=1,NPARTS    
 !
-!     LOOP OVER THE FINITE ELEMENT OF THE MESH TO COMPUTE 
-!     THE NUMBER OF THE FINITE ELEMENT AND POINTS BELONGING 
-!     TO SUBMESH I
+!       LOOP OVER THE FINITE ELEMENT OF THE MESH TO COMPUTE 
+!       THE NUMBER OF THE FINITE ELEMENT AND POINTS BELONGING 
+!       TO SUBMESH I
 !   
         NELEM_P(I)=0
         NPOIN_P(I)=0
@@ -758,8 +703,8 @@
       ELELG(:,:)=0
 !     KNOLG(I) => GLOBAL LABEL OF THE POINT I
 !     I IS THE LOCAL LABEL ON SUBDOMAIN I
-      IF(NPLAN.EQ.0) THEN
-        ALLOCATE (KNOLG(MAX_NELEM_P,NPARTS),STAT=ERR)
+      IF(NPLAN.LE.0) THEN
+        ALLOCATE (KNOLG(MAX_NPOIN_P,NPARTS),STAT=ERR)
       ELSE
         ALLOCATE (KNOLG(MAX_NPOIN_P*NPLAN,NPARTS),STAT=ERR)
       ENDIF
@@ -786,14 +731,14 @@
       DO I=1,NPARTS
         NELEM_P(I)=0
         DO EF=1,NELEM2
-           IF(EPART(EF).EQ.I) THEN
-              NELEM_P(I)=NELEM_P(I)+1
-              ELELG(NELEM_P(I),I)=EF
-              GELEGL(EF,I)=NELEM_P(I)
-           ENDIF
+          IF(EPART(EF).EQ.I) THEN
+            NELEM_P(I)=NELEM_P(I)+1
+            ELELG(NELEM_P(I),I)=EF
+            GELEGL(EF,I)=NELEM_P(I)
+          ENDIF
         ENDDO
         DO J=1,NPOIN_P(I)
-           NBRE_EF_LOC(J)=0
+          NBRE_EF_LOC(J)=0
         ENDDO
 !        
 !======================================================================
@@ -804,7 +749,7 @@
         NPOIN_P(I)=0
         NPTFR_P(I)=0
         NBRE_NOEUD_INTERNE=0
-!         
+!        
         DO J=1,NELEM_P(I)
           EF=ELELG(J,I)
           DO K=1,3
@@ -827,10 +772,10 @@
             ENDIF
           ENDDO
         ENDDO
-!        
+!       
         NPTIR_P(I)=0 
 !
-!        NOMBRE DE NOEUD INTERFACE DU SDI
+!       NOMBRE DE NOEUD INTERFACE DU SDI
 !
         NBRE_EF_I=0            ! NOMBRE D'ELEMENTS FINIS INTERFACES DU SDI
         DO J=1,NELEM_P(I)      ! ON PARCOURS A NOUVEAU LES ELEMENTS FINIS DU SDI
@@ -867,27 +812,27 @@
             EF_II(NBRE_EF_I)=J
           ENDIF
         ENDDO
-!         
-!        FIRST LOOP TO COMPUTE THE NUMBER OF HALO TO ALLOCATE IFAPAR 
 !        
-!        FILLING IFAPAR
+!       FIRST LOOP TO COMPUTE THE NUMBER OF HALO TO ALLOCATE IFAPAR 
+!       
+!       FILLING IFAPAR
 !
         NHALO(I)=0
         DO J=1,NBRE_EF_I  ! ON PARCOURT JUSTE LES ELEMENTS FINIS INTERFACES POUR   
-                           ! DETERMINER DES HALO
+                          ! DETERMINER DES HALO
           EF=EF_I(J)
           HALO=.FALSE.
           IFALOC(:)=IFABOR(EF,:)
           WHERE (IFALOC .GT. 0) 
-            IFALOC=EPART(IFALOC)
+             IFALOC=EPART(IFALOC)
           END WHERE
           HALO=ANY(IFALOC .GT. 0 .AND. IFALOC .NE. I)
           IF(HALO) THEN
             NHALO(I)=NHALO(I)+1
             IF(NHALO(I) > NBMAXHALO) THEN
-                 WRITE(LU,*)  'ERROR : NBMAXHALO TOO SMALL'
-                 CALL PLANTE(1)
-                 STOP 
+              WRITE(LU,*)  'ERROR : NBMAXHALO TOO SMALL'
+              CALL PLANTE(1)
+              STOP 
             ENDIF
             IFAPAR(I,1,NHALO(I))=EF_II(J)
             IFAPAR(I,2:4,NHALO(I))=IFALOC(:)
@@ -900,15 +845,15 @@
       IF ( MAX_N_NEIGH > NBMAXNSHARE-1 ) THEN 
         WRITE(LU,*) 'SERIOUS WARNING: ' 
         WRITE(LU,*) 
-     &        'AN INTERFACE NODE BELONGS TO ',
-     &        'MORE THAN NBMAXNSHARE-1 SUBDOMAINS'
+     &       'AN INTERFACE NODE BELONGS TO ',
+     &       'MORE THAN NBMAXNSHARE-1 SUBDOMAINS'
         WRITE(LU,*) 'TELEMAC MAY PROTEST!'
       ENDIF 
       IF(MAX_N_NEIGH.GT.MAXNPROC) THEN
         WRITE (LU,*) 'THERE IS A NODE WHICH BELONGS TO MORE THAN ',
-     &        MAXNPROC,' PROCESSORS, HOW COME?'
+     &       MAXNPROC,' PROCESSORS, HOW COME?'
         CALL PLANTE(1)
-          STOP 
+        STOP 
       ENDIF
       IF (MAX_N_NEIGH.LT.NBMAXNSHARE-1) MAX_N_NEIGH = NBMAXNSHARE-1
 !       
@@ -917,15 +862,13 @@
 !-----------------------------------------------------------------------
 ! THE CORE NAMES FOR THE OUTPUT BC FILES ACCORDING TO THE NUMBER OF PARTS
 !
-      NAMECLM = NAMECLI    ! CORE NAME LENGTH IS I_LENCLI
-      NAMEOUT = NAMEINP    ! CORE NAME LENGTH IS I_LENINP
-!
-!----------------------------------------------------------------------
-!     WORK ON THE BOUNDARIES WRITING THE BC FILES SIMULTANEOUSLY...
-!     
-      NAMECLM = TRIM(NAMECLI)//EXTENS(NPARTS-1,I-1)
-      OPEN(NCLM,FILE=NAMECLM,STATUS='UNKNOWN',FORM='FORMATTED')
-      REWIND(NCLM)
+
+        ! Working on the parallel informations
+        IF(DIM_MESH.NE.3) THEN
+        NAMECLM = NAMECLI(1:3)//'PAR'//EXTENS(NPARTS-1,I-1)
+        OPEN(NCLM,FILE=NAMECLM,STATUS='UNKNOWN',FORM='FORMATTED')
+        REWIND(NCLM)
+        WRITE(NCLM,*) NPTFR_P(I)
 !     
 ! FILE OPENED, NOW WORK ON BOUNDARIES 
 ! -----------------------------------
@@ -933,154 +876,137 @@
 ! WHEN THE BOUNDARY NODE BELONGS TO THIS SUBDOMAIN IT WILL BE TAKEN
 ! J IS THE RUNNING BOUNDARY NODE NUMBER
 !
-      J = 0
+        J = 0
+!       
+        DO K=1,NPTFR
 !
-      DO K=1,NPTFR
+!         BOUNDARY NODES BELONGING TO THIS PARTITION
 !
-! BOUNDARY NODES BELONGING TO THIS PARTITION
-!
-        IF(KNOGL(NBOR(K),I).NE.0) THEN
-          J = J + 1
-          ISEG = 0
-          XSEG = 0.0
-          YSEG = 0.0
-!     
-!     IF THE ORIGINAL (GLOBAL) BOUNDARY LEADS FURTHER INTO 
-!     ANOTHER PARTITION THEN ISEG IS SET NOT EQUAL TO ZERO
-!     THE NEXT NODE ALONG THE GLOBAL BOUNDARY HAS IPTFR = M
-!     (BUT CHECK THE CASE THE CIRCLE CLOSES)
-!     
-          M = KP1BOR(K,1)
-!
-! NBOR_P CANNOT BE USED, IT IS NOT FULLY FILLED WITH DATA
-!
-          ISO = 0
-!     CHECKING IF THE ADJACENT ELEMENT IS NOT IN THE
-!     SUB-DOMAIN
-          IF (EPART(NELBOR(K)).NE.I) THEN
-!     
-            ISEG = NBOR(M)
-            IF(SERAFIND) THEN
-              XSEG = REAL(F_D(ISEG,1))
-              YSEG = REAL(F_D(ISEG,2))
-            ELSE
-              XSEG = F(ISEG,1)
-              YSEG = F(ISEG,2)
-            ENDIF
-             ISO = ISO + 1
-          ENDIF
-!     
-          M = KP1BOR(K,2)
-!     
-!     SAME AS ABOVE, BUT PREVIOUS SEGMENT ,THUS M, NOT K
-          IF (EPART(NELBOR(M)).NE.I) THEN
-            ISEG = -NBOR(M)
-            IF(SERAFIND) THEN
-              XSEG = REAL(F_D(-ISEG,1))
-              YSEG = REAL(F_D(-ISEG,2))
-            ELSE
-              XSEG = F(-ISEG,1)
-              YSEG = F(-ISEG,2)
-            ENDIF
-            ISO = ISO + 1
-          ENDIF
-!     
-!     WHEN BOTH NEIGHBOURS BOUNDARY NODES BELONG TO ANOTHER PARTITION
-!     
-          IF (ISO == 2) THEN
-            ISEG = -9999
+          IF(KNOGL(NBOR(K),I).NE.0) THEN
+            J = J + 1
+            ISEG = 0
+            XSEG = 0.0
+            YSEG = 0.0
+!         
+!           IF THE ORIGINAL (GLOBAL) BOUNDARY LEADS FURTHER INTO 
+!           ANOTHER PARTITION THEN ISEG IS SET NOT EQUAL TO ZERO
+!           THE NEXT NODE ALONG THE GLOBAL BOUNDARY HAS IPTFR = M
+!           (BUT CHECK THE CASE THE CIRCLE CLOSES)
+!         
+            M = KP1BOR(K,1)
+!         
+!           NBOR_P CANNOT BE USED, IT IS NOT FULLY FILLED WITH DATA
+!         
             ISO = 0
-            WRITE(LU,*) 'ISOLATED BOUNDARY POINT', 
-     &              NBOR(K), KNOGL(NBOR(K),I)
+!           CHECKING IF THE ADJACENT ELEMENT IS NOT IN THE
+!           SUB-DOMAIN
+            IF (EPART(NELBOR(K)).NE.I) THEN
+!         
+              ISEG = NBOR(M)
+              XSEG = REAL(F(ISEG,1))
+              YSEG = REAL(F(ISEG,2))
+              ISO = ISO + 1
+            ENDIF
+!         
+            M = KP1BOR(K,2)
+!         
+!           SAME AS ABOVE, BUT PREVIOUS SEGMENT ,THUS M, NOT K
+            IF (EPART(NELBOR(M)).NE.I) THEN
+              ISEG = -NBOR(M)
+              XSEG = REAL(F(-ISEG,1))
+              YSEG = REAL(F(-ISEG,2))
+              ISO = ISO + 1
+            ENDIF
+!         
+!           WHEN BOTH NEIGHBOURS BOUNDARY NODES BELONG TO ANOTHER PARTITION
+!         
+            IF (ISO == 2) THEN
+              ISEG = -9999
+              ISO = 0
+              WRITE(LU,*) 'ISOLATED BOUNDARY POINT', 
+     &             NBOR(K), KNOGL(NBOR(K),I)
+            ENDIF
+!         
+!           WRITE Boundary parallel informatiosn
+!           CONCERNING THE NODE WHICH HAS BEEN RESEARCHED
+!         
+            WRITE (NCLM,*) K, KNOGL(NBOR(K),I), 
+     &                     ISEG, XSEG, YSEG, NUMLIQ(K)
+          
           ENDIF
 !     
-!     WRITE A LINE OF THE FIRST (CLASSICAL) PART OF THE BOUNDARY FILE
-! CONCERNING THE NODE WHICH HAS BEEN RESEARCHED
-!
-          WRITE (NCLM,4000) 
-     &           LIHBOR(K), LIUBOR(K), LIVBOR(K),
-     &           HBOR(K), UBOR(K), VBOR(K), 
-     &            AUBOR(K), LITBOR(K), TBOR(K), ATBOR(K), BTBOR(K),
-!     JMH 16/06/2008: INITIAL LINE NUMBER OR COLOUR
-     &           KNOGL(NBOR(K),I),CHECK(K), ISEG, XSEG, YSEG, NUMLIQ(K)
-!    &           NBOR(K),    J   , ISEG, XSEG, YSEG, NUMLIQ(K)
-     
-!     19/10/2007 ER+JMH SUR RECOMMANDATION CHARLES MOULINEC
-!     MAIS XSEG ET YSEG NE SONT PLUS UTILISES
- 4000       FORMAT (1X,I2,1X,2(I1,1X),3(F24.12,1X),1X,
-     &           F24.12,3X,I1,1X,3(F24.12,1X),1I9,1X,1I9,
-     &           1X,I10,1X,2(F27.15,1X),I8)
-        ENDIF
-!     
-      END DO
-!      
-      FMT4='(I7)'
-      WRITE (NCLM,*) NPTIR_P(I)
-      IF (MAX_N_NEIGH < NBMAXNSHARE-1) MAX_N_NEIGH = NBMAXNSHARE-1
-      FMT4='(   (I7,1X))'
-      WRITE (FMT4(2:4),'(I3)') MAX_N_NEIGH+1
-!  
-!     SORTING NODE NUMBERS TO SORT(J) SO THAT CUT_P(SORT(J)) IS ORDERED 
-!     CUT IS OVERWRITTEN NOW
-!
-      DO J=1,NPTIR_P(I)
-        CUT(J)=CUT_P(J,I)
-      ENDDO
-!
-! IF A NODE HAS BEEN ALREADY FOUND AS MIN, CUT(NODE) GETS 0
-!
-      DO J=1,NPTIR_P(I)
-        IDUM = NPOIN2+1  ! LARGEST POSSIBLE NODE NUMBER + 1
-        K=0
- 401    CONTINUE
-        K = K + 1
-        IF ( CUT(K) /= 0 .AND. CUT_P(K,I) < IDUM ) THEN
-          SORT(J) = K
-          IDUM = CUT_P(K,I)
-        ENDIF
-        IF ( K < NPTIR_P(I) ) THEN
-          GOTO 401
-        ELSE
-          CUT(SORT(J)) = 0
-        ENDIF
-      ENDDO
-!
-      DO J=1,NPTIR_P(I)
-        TAB_TMP=0
-        L=0
-        DO K=1,MAX_N_NEIGH              
-          IF(PART_P(CUT_P(SORT(J),I),K) .NE. I .AND. 
-     &      PART_P(CUT_P(SORT(J),I),K) .NE. 0) THEN
-            L=L+1
-            TAB_TMP(L)=PART_P(CUT_P(SORT(J),I),K)
-          ENDIF
-        ENDDO 
-        WRITE(NCLM,FMT=FMT4) KNOGL(CUT_P(SORT(J),I),I),
-     &                (TAB_TMP(K)-1, K=1,MAX_N_NEIGH)
-      ENDDO
-!                               !     
-      DO J=1,NHALO(I)
-        DO M=0,2
-          IF (IFAPAR(I,2+M,J)>0) THEN
-            IFAPAR(I,5+M,J)=GELEGL(IFAPAR(I,5+M,J),
-     &               IFAPAR(I,2+M,J))
-          END IF
-        ENDDO
-      ENDDO
-      DO J=1,NHALO(I)
-        DO M=0,2
-          IF (IFAPAR(I,2+M,J)>0) THEN
-            IFAPAR(I,2+M,J)=IFAPAR(I,2+M,J)-1
-          END IF
         END DO
-      END DO      
+    
+        
+!      
+        FMT4='(I7)'
+        WRITE (NCLM,*) NPTIR_P(I)
+        IF (MAX_N_NEIGH < NBMAXNSHARE-1) MAX_N_NEIGH = NBMAXNSHARE-1
+        FMT4='(   (I7,1X))'
+        WRITE (FMT4(2:4),'(I3)') MAX_N_NEIGH+1
+!       
+!       SORTING NODE NUMBERS TO SORT(J) SO THAT CUT_P(SORT(J)) IS ORDERED 
+!       CUT IS OVERWRITTEN NOW
 !
-      WRITE(NCLM,'(I9)') NHALO(I)
-      DO K=1,NHALO(I)
-        WRITE (NCLM,'(7(I9,1X))') IFAPAR(I,:,K) 
-      END DO 
+        DO J=1,NPTIR_P(I)
+          CUT(J)=CUT_P(J,I)
+        ENDDO
+!
+!       IF A NODE HAS BEEN ALREADY FOUND AS MIN, CUT(NODE) GETS 0
+!
+        DO J=1,NPTIR_P(I)
+          IDUM = NPOIN2+1  ! LARGEST POSSIBLE NODE NUMBER + 1
+          K=0
+ 401      CONTINUE
+          K = K + 1
+          IF ( CUT(K) /= 0 .AND. CUT_P(K,I) < IDUM ) THEN
+            SORT(J) = K
+            IDUM = CUT_P(K,I)
+          ENDIF
+          IF ( K < NPTIR_P(I) ) THEN
+            GOTO 401
+          ELSE
+            CUT(SORT(J)) = 0
+          ENDIF
+        ENDDO
+!
+        DO J=1,NPTIR_P(I)
+          TAB_TMP=0
+          L=0
+          DO K=1,MAX_N_NEIGH              
+            IF(PART_P(CUT_P(SORT(J),I),K) .NE. I .AND. 
+     &     PART_P(CUT_P(SORT(J),I),K) .NE. 0) THEN
+              L=L+1
+            TAB_TMP(L)=PART_P(CUT_P(SORT(J),I),K)
+            ENDIF
+          ENDDO 
+          WRITE(NCLM,FMT=FMT4) KNOGL(CUT_P(SORT(J),I),I),
+     &                 (TAB_TMP(K)-1, K=1,MAX_N_NEIGH)
+        ENDDO
+!                                !     
+        DO J=1,NHALO(I)
+          DO M=0,2
+            IF (IFAPAR(I,2+M,J)>0) THEN
+              IFAPAR(I,5+M,J)=GELEGL(IFAPAR(I,5+M,J),
+     &             IFAPAR(I,2+M,J))
+            END IF
+          ENDDO
+        ENDDO
+        DO J=1,NHALO(I)
+          DO M=0,2
+            IF (IFAPAR(I,2+M,J)>0) THEN
+              IFAPAR(I,2+M,J)=IFAPAR(I,2+M,J)-1
+            END IF
+          ENDDO
+        ENDDO      
+!
+        WRITE(NCLM,'(I9)') NHALO(I)
+        DO K=1,NHALO(I)
+          WRITE (NCLM,'(7(I9,1X))') IFAPAR(I,:,K) 
+        END DO 
 !     
-      CLOSE(NCLM)
+        CLOSE(NCLM)
+        ENDIF
       END DO 
 !
       DEALLOCATE(IFAPAR)
@@ -1088,18 +1014,9 @@
       DEALLOCATE(LIHBOR)
       DEALLOCATE(LIUBOR)
       DEALLOCATE(LIVBOR)
-      DEALLOCATE(HBOR)
-      DEALLOCATE(UBOR)
-      DEALLOCATE(VBOR)
-      DEALLOCATE(AUBOR)
       DEALLOCATE(LITBOR)
-      DEALLOCATE(TBOR)
-      DEALLOCATE(ATBOR)
-      DEALLOCATE(BTBOR)
-      DEALLOCATE(NBOR)
       DEALLOCATE(NUMLIQ)
       DEALLOCATE(TAB_TMP)
-      DEALLOCATE(CHECK)
       DEALLOCATE(GELEGL)
       DEALLOCATE(CUT)
       DEALLOCATE(CUT_P)
@@ -1118,100 +1035,160 @@
 !       WRITING GEOMETRY FILES FOR ALL PARTS/PROCESSORS
 !
         NAMEOUT = TRIM(NAMEINP)//EXTENS(NPARTS-1,I-1)
+        NAMECLM = TRIM(NAMECLI)//EXTENS(NPARTS-1,I-1)
 !   
-        OPEN(NOUT,FILE=NAMEOUT,FORM='UNFORMATTED',STATUS='UNKNOWN') 
-!       
-        REWIND(NOUT)
+        CALL OPEN_MESH(FFORMAT,NAMEOUT,NOUT,'READWRITE',IERR)
+        CALL CHECK_CALL(IERR,'PARTEL:OPEN_MESH:NOUT')
 !     
 !       TITLE, THE NUMBER OF VARIABLES
 !     
-        WRITE(NOUT) TITLE
-        WRITE(NOUT) NVAR,0
-        DO K=1,NVAR
-          WRITE(NOUT) VARIABLE(K)
-        ENDDO
+        CALL SET_HEADER(FFORMAT,NOUT,TITLE,NVAR,VARIABLE,IERR)
 !     
-!     10 INTEGERS...
-! 1.  IS THE NUMBER OF RECORDINGS IN FILES
-! 8.  IS THE NUMBER OF BOUNDARY POINTS (NPTFR_P)
-! 9.  IS THE NUMBER OF INTERFACE POINTS (NPTIR_P)
-! 10. IS 0 WHEN NO DATE PASSED; 1 IF A DATE/TIME RECORD FOLLOWS
+!     The Mesh
 !
-!       IB(7) = NPLAN   (ALREADY DONE)
-        IB(8) = NPTFR_P(I)
-        IB(9) = NPTIR_P(I)
-        WRITE(NOUT) (IB(K), K=1,10)
-        IF(IB(10).EQ.1) THEN 
-           WRITE(NOUT) DATE(1),DATE(2),DATE(3), 
-     &                 TIME(1),TIME(2),TIME(3)           
-        ENDIF 
-
-        IF(NPLAN.LE.1) THEN
-          WRITE(NOUT) NELEM_P(I), NPOIN_P(I), NDP, NDUM
-        ELSE
-          WRITE(NOUT) NELEM_P(I)*(NPLAN-1),
-     &          NPOIN_P(I)*NPLAN, NDP, NDUM
-        ENDIF
-!     
+        ALLOCATE(IKLE_P(NELEM_P(I)*3),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'PARTEL:IKLE_P')
         DO J=1,NELEM_P(I)
-           EF=ELELG(J,I)
-           DO K=1,3
-             IKLES_P((J-1)*3+K) = KNOGL(IKLES((EF-1)*3+K),I)
-           ENDDO
+          EF=ELELG(J,I)
+          DO K=1,3
+            IKLE_P(J+(K-1)*NELEM_P(I)) = KNOGL(IKLES((EF-1)*3+K),I)
+          ENDDO
         ENDDO
         IF(NPLAN.GT.1) THEN
-           DO K = 1,NPLAN-1
-              DO J = 1,NELEM_P(I)       
-                IKLES3D_P(1,J,K) = IKLES_P(1+(J-1)*3) + (K-1)*NPOIN_P(I)
-                IKLES3D_P(2,J,K) = IKLES_P(2+(J-1)*3) + (K-1)*NPOIN_P(I)
-                IKLES3D_P(3,J,K) = IKLES_P(3+(J-1)*3) + (K-1)*NPOIN_P(I)
-                IKLES3D_P(4,J,K) = IKLES_P(1+(J-1)*3) +  K   *NPOIN_P(I)
-                IKLES3D_P(5,J,K) = IKLES_P(2+(J-1)*3) +  K   *NPOIN_P(I)
-                IKLES3D_P(6,J,K) = IKLES_P(3+(J-1)*3) +  K   *NPOIN_P(I)
-              ENDDO
-           ENDDO
-        ENDIF
-!
-        IF(NPLAN.EQ.0) THEN
-          WRITE(NOUT) ((IKLES_P((J-1)*3+K),K=1,3),J=1,NELEM_P(I))
-        ELSE           
-          WRITE(NOUT)
-     &         (((IKLES3D_P(L,J,K),L=1,6),J=1,NELEM_P(I)),K=1,NPLAN-1)
+          ALLOCATE(IKLE3D_P(NELEM_P(I)*6*(NPLAN-1)),STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,'PARTEL:IKLE_P')
+          DO K = 1,NPLAN-1
+            DO J = 1,NELEM_P(I)       
+              IKLE3D_P(J+(K-1)*NELEM_P(I) + (0*NELEM_P(I)*(NPLAN-1))) = 
+     &     IKLE_P(J + (0*NELEM_P(I))) + (K-1)*NPOIN_P(I)
+              IKLE3D_P(J+(K-1)*NELEM_P(I) + (1*NELEM_P(I)*(NPLAN-1))) = 
+     &     IKLE_P(J + (1*NELEM_P(I))) + (K-1)*NPOIN_P(I)
+              IKLE3D_P(J+(K-1)*NELEM_P(I) + (2*NELEM_P(I)*(NPLAN-1))) = 
+     &     IKLE_P(J + (2*NELEM_P(I))) + (K-1)*NPOIN_P(I)
+              IKLE3D_P(J+(K-1)*NELEM_P(I) + (3*NELEM_P(I)*(NPLAN-1))) = 
+     &     IKLE_P(J + (0*NELEM_P(I))) + (K)*NPOIN_P(I)
+              IKLE3D_P(J+(K-1)*NELEM_P(I) + (4*NELEM_P(I)*(NPLAN-1))) = 
+     &     IKLE_P(J + (1*NELEM_P(I))) + (K)*NPOIN_P(I)
+              IKLE3D_P(J+(K-1)*NELEM_P(I) + (5*NELEM_P(I)*(NPLAN-1))) = 
+     &     IKLE_P(J + (2*NELEM_P(I))) + (K)*NPOIN_P(I)
+            ENDDO
+          ENDDO
         ENDIF
 !     
 ! INSTEAD OF IRAND, KNOLG IS WRITTEN !!!
 ! I.E. THE TABLE PROCESSOR-LOCAL -> PROCESSOR-GLOBAL NODE NUMBERS
 !
         IF(NPLAN.EQ.0) THEN
-          WRITE(NOUT) (KNOLG(J,I), J=1,NPOIN_P(I))
+          ALLOCATE(KNOLG_P(NPOIN_P(I)),STAT=IERR)
+          CALL CHECK_CALL(IERR,'PARTEL:KNOLG_P:2D')
+          DO J=1,NPOIN_P(I)
+            KNOLG_P(J) = KNOLG(J,I)
+          ENDDO
         ELSE
-!         BEYOND NPOIN_P(I) : DUMMY VALUES IN KNOLG, NEVER USED
-          WRITE(NOUT) (KNOLG(J,I), J=1,NPOIN_P(I)*NPLAN)
+          ALLOCATE(KNOLG_P(NPOIN_P(I)*NPLAN),STAT=IERR)
+          CALL CHECK_CALL(IERR,'PARTEL:KNOLG_P:3D')
+          DO J=1,NPOIN_P(I)*NPLAN
+            ! We fill knolg with dummy values because 3d knolg is never used
+            KNOLG_P(J) = KNOLG(J,I)
+          ENDDO
         ENDIF
 !
 ! NODE COORDINATES X AND Y
 !
         IF(NPLAN.EQ.0) THEN
-          IF(SERAFIND) THEN
-            WRITE(NOUT) (F_D(KNOLG(J,I),1),J=1,NPOIN_P(I))  
-            WRITE(NOUT) (F_D(KNOLG(J,I),2),J=1,NPOIN_P(I)) 
-          ELSE
-            WRITE(NOUT) (F(KNOLG(J,I),1),J=1,NPOIN_P(I))  
-            WRITE(NOUT) (F(KNOLG(J,I),2),J=1,NPOIN_P(I))
-          ENDIF
+          ALLOCATE(X(NPOIN_P(I)),STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,'PARTEL:X')
+          ALLOCATE(Y(NPOIN_P(I)),STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,'PARTEL:Y')
+          DO J=1,NPOIN_P(I)
+            X(J) = F(KNOLG(J,I),1)
+            Y(J) = F(KNOLG(J,I),2)
+          ENDDO
         ELSE 
-          IF(SERAFIND) THEN
-            WRITE(NOUT) ((F_D(KNOLG(J,I)+(L-1)*NPOIN2,1),
-     &                      J=1,NPOIN_P(I)), L=1,NPLAN)  
-            WRITE(NOUT) ((F_D(KNOLG(J,I)+(L-1)*NPOIN2,2),
-     &                      J=1,NPOIN_P(I)), L=1,NPLAN) 
-          ELSE                     
-            WRITE(NOUT) ((F(KNOLG(J,I)+(L-1)*NPOIN2,1),J=1,NPOIN_P(I)), 
-     &                                                      L=1,NPLAN)  
-            WRITE(NOUT) ((F(KNOLG(J,I)+(L-1)*NPOIN2,2),J=1,NPOIN_P(I)), 
-     &                                                      L=1,NPLAN)
-          ENDIF  
+          ALLOCATE(X(NPOIN_P(I)*NPLAN),STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,'PARTEL:X')
+          ALLOCATE(Y(NPOIN_P(I)*NPLAN),STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,'PARTEL:Y')
+          DO J=1,NPOIN_P(I)
+            DO L=1,NPLAN
+              X(J+(L-1)*NPLAN) = F(KNOLG(J,I)+(L-1)*NPOIN2,1) 
+              Y(J+(L-1)*NPLAN) = F(KNOLG(J,I)+(L-1)*NPOIN2,2) 
+            ENDDO
+          ENDDO
         ENDIF
+        IF(NPLAN.EQ.0) THEN
+          CALL SET_MESH(FFORMAT,NOUT,2,TYP_ELEM,NDP,NPTFR_P(I),
+     &                  NPTIR_P(I),NELEM_P(I),NPOIN_P(I),IKLE_P,
+     &                  KNOLG_P,KNOLG_P,X,Y,NPLAN,DATE,TIME,
+     &                  IERR)
+          CALL CHECK_CALL(IERR,'PARTEL:SET_MESH:NOUT')
+        ELSE
+          CALL SET_MESH(FFORMAT,NOUT,3,TYP_ELEM,6,NPTFR_P(I),
+     &                  NPTIR_P(I),NELEM_P(I)*(NPLAN-1),
+     &                  NPOIN_P(I)*NPLAN,IKLE3D_P,
+     &                  KNOLG_P,KNOLG_P,X,Y,NPLAN,DATE,TIME,
+     &                  IERR)
+          CALL CHECK_CALL(IERR,'PARTEL:SET_MESH:NOUT')
+          DEALLOCATE(IKLE3D_P)
+        ENDIF
+        DEALLOCATE(X)
+        DEALLOCATE(Y)
+        DEALLOCATE(KNOLG_P)
+        DEALLOCATE(IKLE_P)
+!
+!       WORK ON THE BOUNDARY CONDITIONS INFORMATIONS
+!     
+        ! Compute the number of boundary_elements
+        NELEBD_P = 0
+        DO K=1,NELEBD
+          FULLY_IN = .TRUE.
+          DO L=1,NDP_BND
+          ! If every point of the boundary element is in the partition then the element is as well
+            IF(KNOGL(IKLE_BND(K+(L-1)*NELEBD),I).EQ.0) THEN
+              FULLY_IN = .FALSE.
+              EXIT
+            ENDIF
+          ENDDO
+          ! IF
+          IF(FULLY_IN) NELEBD_P = NELEBD_P + 1
+        ENDDO
+        
+        ! Writing the boundary conditions
+        CALL OPEN_BND(FFORMAT,NAMECLM,NOUT,'WRITE    ',IERR)
+        CALL CHECK_CALL(IERR,'PARTEL:OPEN_BND')
+        !
+        ALLOCATE(IKLE_BND_P(NELEBD_P*NDP_BND),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'PARTEL:IKLE_BND_P')
+        ALLOCATE(VAL_BND_P(NELEBD_P),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'PARTEL:VAL_BND_P')
+        J = 0
+        DO K=1,NELEBD
+          ! If both point of the segment are in the partition then the segment is in the partition
+          FULLY_IN = .TRUE.
+          DO L=1,NDP_BND
+            IF(KNOGL(IKLE_BND(K+(L-1)*NELEBD),I).EQ.0) THEN
+              FULLY_IN = .FALSE.
+              EXIT
+            ENDIF
+          ENDDO
+          IF(FULLY_IN) THEN
+            J = J + 1
+            DO L=1,NDP_BND
+              IKLE_BND_P(J+(L-1)*NELEBD_P) = 
+     &                   KNOGL(IKLE_BND(K+(L-1)*NELEBD),I)
+            ENDDO
+            VAL_BND_P(J) = VAL_BND(K)
+          ENDIF
+        ENDDO
+        CALL SET_BND(FFORMAT,NOUT,TYP_BND_ELEM,NELEBD_P,NDP_BND,
+     &               IKLE_BND_P,VAL_BND_P,IERR)
+        CALL CHECK_CALL(IERR,'PARTEL:SET_BND')
+        !
+        CALL CLOSE_BND(FFORMAT,NOUT,IERR)
+        CALL CHECK_CALL(IERR,'PARTEL:CLOSE_BND')
+        
+        DEALLOCATE(IKLE_BND_P)
+        DEALLOCATE(VAL_BND_P)
 !
 ! TIME STAMP (SECONDS) 
 !
@@ -1220,79 +1197,61 @@
 !!   MODIFICATION TO PUT ALL THE RECORDINGS IN PARALLEL 
 !!   GEO FILE 08/06/2011
 !!   -------------------------------------------------------------------
-!!     FIRST STEP : CLOSE/REOPEN/REWIND THE FILE AND READ ALL THE RECORDINGS UNTIL
-!!     THOSE CONCERNING THE TIME-DEPENDENT  VARIABLES
 !!
-        CLOSE(NINP)
-        OPEN(NINP,FILE=NAMEINP,STATUS='OLD',FORM='UNFORMATTED')
-        REWIND(NINP)
-        READ (NINP) TITLE
-        READ (NINP) II, JJ
-        NVAR = II + JJ 
-        DO II=1,NVAR
-          READ(NINP) VARI
-        ENDDO 
-        READ (NINP) (II, JJ=1,10)
-        IF(II.EQ.1) THEN 
-          READ(NINP) DATE_TMP(1), DATE_TMP(2), DATE_TMP(3), 
-     &               TIME_TMP(1), TIME_TMP(2), TIME_TMP(3)
-        ENDIF 
-        READ(NINP) II,II,II,II
-        READ(NINP) ((II,JJ=1,NDP),K=1,NELEM)
-        READ(NINP) (II,JJ=1,NPOIN)
-        IF(SERAFIND) THEN
-          READ(NINP) (TMP_D,JJ=1,NPOIN)
-          READ(NINP) (TMP_D,JJ=1,NPOIN)
-        ELSE
-          READ(NINP) (TMP,JJ=1,NPOIN)
-          READ(NINP) (TMP,JJ=1,NPOIN)
-        ENDIF
-!
-!       SECOND STEP 
 !       EACH RECORDING IS READ AND ONLY THE LOCAL VARIABLES ARE STORED 
 !       INTO THE PARALLEL GEO FILE
-! 
-!       INFINITE LOOP THAT ENDS WITH END=1111 IN READ STATEMENT
 !       
-        DO 
-          IF(SERAFIND) THEN
-            READ(NINP, END=1111, ERR=300) TIMES_D
-            WRITE(NOUT) TIMES_D
-          ELSE
-            READ(NINP, END=1111, ERR=300) TIMES
-            WRITE(NOUT) TIMES
-          ENDIF
-          DO K=3,NVAR+2
-            IF(SERAFIND) THEN
-              READ(NINP, END=302, ERR=302) (F_D(J,3), J=1,NPOIN)
-            ELSE
-              READ(NINP, END=302, ERR=302) (F(J,3), J=1,NPOIN)
-            ENDIF
+        ALLOCATE(DATAVAL(NPOIN),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'PARTEL:DATAVAL')
+        IF(NPLAN.LE.1) THEN
+          ALLOCATE(DATAVAL_P(NPOIN_P(I)),STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,'PARTEL:DATAVAL')
+        ELSE
+          ALLOCATE(DATAVAL_P(NPOIN_P(I)*NPLAN),STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,'PARTEL:DATAVAL')
+        ENDIF
+        DO ITIME=1,NTIMESTEP
+          CALL GET_DATA_TIME(FFORMAT,NINP,ITIME-1,TIMES,IERR)
+          CALL CHECK_CALL(IERR,'PARTEL:GET_DATA_TIME:NINP')
+          WRITE(LU,*) ' -- WRITING TIMESTEP',ITIME-1,' AT',real(TIMES)
+          DO IVAR=1,NVAR
+            ! READING VARIABLE VALUE FOR TIME ITIME-1 ON INPUT FILE
+            CALL GET_DATA_VALUE(FFORMAT,NINP,ITIME-1,
+     &                          VARIABLE(IVAR)(1:16),DATAVAL,NPOIN,IERR)
+            CALL CHECK_CALL(IERR,'PARTEL:GET_DATA_VALUE:NINP')
+            ! WRITING RESULT VALUE ON PARTITIONNED FILE
             IF(NPLAN.EQ.0) THEN
-              IF(SERAFIND) THEN
-                WRITE(NOUT) (F_D(KNOLG(J,I),3),J=1,NPOIN_P(I))
-              ELSE
-                WRITE(NOUT) (F(KNOLG(J,I),3),J=1,NPOIN_P(I))
-              ENDIF
+              ! 2D
+              DO J=1,NPOIN_P(I)
+                DATAVAL_P(J) = DATAVAL(KNOLG(J,I))
+              ENDDO
+              CALL ADD_DATA(FFORMAT,NOUT,VARIABLE(IVAR),TIMES,ITIME-1,
+     &                      IVAR.EQ.1,DATAVAL_P,NPOIN_P(I),IERR)
+              CALL CHECK_CALL(IERR,'PARTEL:ADD_DATA')
             ELSE
-              IF(SERAFIND) THEN
-                WRITE(NOUT) ((F_D(KNOLG(J,I)+(L-1)*NPOIN2,3),
-     &                        J=1,NPOIN_P(I)),L=1,NPLAN)
-              ELSE
-                WRITE(NOUT) ((F(KNOLG(J,I)+(L-1)*NPOIN2,3),
-     &                        J=1,NPOIN_P(I)),L=1,NPLAN)
-              ENDIF
+              ! 3D
+              DO J=1,NPOIN_P(I)
+                DO L=1,NPLAN
+                  DATAVAL_P(J + (L-1)*NPOIN_P(I)) = 
+     &                       DATAVAL(KNOLG(J,I)+(L-1)*NPOIN2)
+                ENDDO
+              ENDDO
+              CALL ADD_DATA(FFORMAT,NOUT,VARIABLE(IVAR),TIMES,ITIME-1,
+     &                      IVAR.EQ.1,DATAVAL_P,NPOIN_P(I)*NPLAN,IERR)
+              CALL CHECK_CALL(IERR,'PARTEL:ADD_DATA')
             ENDIF
           ENDDO
         ENDDO
-1111    CONTINUE   
-        CLOSE (NINP)
-        CLOSE (NOUT)    
+        DEALLOCATE(DATAVAL)
+        DEALLOCATE(DATAVAL_P)
+        CALL CLOSE_MESH(FFORMAT,NOUT,IERR)
+        CALL CHECK_CALL(IERR,'PARTEL:CLOSE_MESH:NOUT')
       ENDDO
-!D   -------------------------------------------------------------------
-!D   END OF THE MODIFICATION TO PUT ALL THE
-!D   RECORDINGS IN PARALLEL GEO FILE 08/06/2011
-!D   -------------------------------------------------------------------
+      CALL CLOSE_MESH(FFORMAT,NINP,IERR)
+      CALL CHECK_CALL(IERR,'PARTEL:CLOSE_MESH:NINP')
+      DEALLOCATE(NBOR)
+      DEALLOCATE(VAL_BND)
+!   -------------------------------------------------------------------
 ! //// JAJ: LA FINITA COMMEDIA FOR PARALLEL CHARACTERISTICS, BYE! 
 !----------------------------------------------------------------------
 ! !JAJ #### DEAL WITH SECTIONS 
@@ -1301,6 +1260,7 @@
       IF (WITH_SECTIONS) THEN ! PRESENTLY, FOR TELEMAC2D, EV. SISYPHE 
 !
       WRITE(LU,*) 'DEALING WITH SECTIONS WITH FILE ',TRIM(NAMESEC)
+      NSCT = 8
       OPEN (NSCT,FILE=TRIM(NAMESEC),FORM='FORMATTED',STATUS='OLD') 
       READ (NSCT,*) ! COMMENT LINE
       READ (NSCT,*) NSEC, IHOWSEC
@@ -1356,7 +1316,7 @@
               CHAIN(ISEC)%NPAIR(2)=I
               DMINE=DISTE 
             ENDIF 
-          END DO
+          ENDDO
           WRITE(LU,'(A,3(1X,I9))') 
      &          ' -> SECTION, TERMINAL NODES: ', 
      &          ISEC, CHAIN(ISEC)%NPAIR(:)
@@ -1491,8 +1451,8 @@
               CALL PLANTE(1)
               STOP
             ENDIF 
-          ! AT LEAST ONE OF THE TERMINAL NODES IS ON THE INTERFACE
-          ! TAKE THE LARGEST COMMON PARTITION NUMBER THEY BOTH BELONG TO
+            ! AT LEAST ONE OF THE TERMINAL NODES IS ON THE INTERFACE
+            ! TAKE THE LARGEST COMMON PARTITION NUMBER THEY BOTH BELONG TO
           ELSE 
             IF (NPBEG==1 .AND. NPEND>1) THEN ! THE SEGMENT'S END TOUCHES THE INTERFACE 
               IM(:) = MAXLOC ( KNOGL(CHAIN(ISEC)%LISTE(ISEG,1),:) )
@@ -1595,12 +1555,12 @@
 !
 !----------------------------------------------------------------------
 !
-      ! TODO: Handle 3d 
       IF (NPLAN.NE.0) WITH_ZONES = .FALSE.
       IF(WITH_ZONES) THEN 
 !
       WRITE(LU,*) 'DEALING WITH ZONES WITH FILE ',TRIM(NAMEZFI)
 !     Reading the friction informations
+      NZFI=9
       OPEN(NZFI,FILE=TRIM(NAMEZFI),FORM='FORMATTED',STATUS='OLD') 
       ALLOCATE (FRICTION(NPOIN), STAT=ERR) 
       CALL CHECK_ALLOCATE(ERR, 'FRICTION') 
@@ -1657,10 +1617,11 @@
       DEALLOCATE(KNOGL)
       DEALLOCATE(ELELG)
       DEALLOCATE(KP1BOR)
+      DEALLOCATE(VARIABLE)
 !
 !----------------------------------------------------------------------      
 !
- 299  IF (TIMECOUNT) THEN 
+      IF (TIMECOUNT) THEN 
         CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
         TFIN = TEMPS
         WRITE(LU,*) 'OVERALL TIMING: ',
@@ -1671,20 +1632,8 @@
       WRITE(LU,*) '+---- PARTEL: NORMAL TERMINATION ----+'
       WRITE(LU,*) ' '
 !
-      GO TO 999
+      GO TO 998
 !
- 290  WRITE(LU,*) 'ERROR WHEN READING THE TITLE'
-      GO TO 998
- 297  WRITE(LU,*) 'ERROR WHEN READING X AND Y'
-      GO TO 998
- 298  WRITE(LU,*) 'ERROR WHEN READING TIME IN FIRST LOOP'
-      GO TO 998
- 300  WRITE(LU,*) 'ERROR WHEN READING TIME IN SECOND LOOP'
-      GO TO 998
- 301  WRITE(LU,*) 'ERROR WHEN READING VARIABLES IN FIRST LOOP'
-      GO TO 998
- 302  WRITE(LU,*) 'ERROR WHEN READING VARIABLES IN SECOND LOOP'
-      GO TO 998
 ! Error handling for zones
  303  WRITE(LU,*) 'ERROR WITH ZONE FILE FORMAT'
       GO TO 999
@@ -1692,22 +1641,10 @@
       GO TO 999
       
 !
-!     CASE WITH ERROR
-!
- 998  CONTINUE
-      WRITE(LU,*) 'TITLE WAS ',TITLE
-      WRITE(LU,*) 'SERAFIND WAS ',SERAFIND
-      WRITE(LU,*) 'NPOIN WAS ',NPOIN
-      IF(SERAFIND) THEN
-        WRITE(LU,*) 'LAST TIME READ WAS ',TIMES_D,' ILOOP=',ILOOP
-      ELSE
-        WRITE(LU,*) 'LAST TIME READ WAS ',TIMES,' ILOOP=',ILOOP
-      ENDIF  
-      CALL PLANTE(1)
-      STOP
-!
- 999  STOP 0
+ 999  CALL PLANTE(1)
+      STOP  
 !
 !----------------------------------------------------------------------      
 !
+998   CONTINUE
       END SUBROUTINE PARTEL

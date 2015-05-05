@@ -1076,14 +1076,16 @@ NOM1 = 'DESCRIPTION OF LIBRARIES'
 TYPE = CARACTERE
 INDEX = 55
 MNEMO = 'LINKLIBS'
-TAILLE = 5
+TAILLE = 6
 DEFAUT = 'builds|PPP|lib|stbtelMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 
 DEFAUT1 = 'builds|PPP|lib|stbtelMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 

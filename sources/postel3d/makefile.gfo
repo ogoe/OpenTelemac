@@ -16,7 +16,7 @@
 #--- Definitions pour SYSTEME TELEMAC
 !include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
-VERSION    = V7P0
+VERSION    = V7P1
 
 DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
 
@@ -51,6 +51,7 @@ DEST          = $(PROJECT)\builds\$(DIRLIB)
 EXEDEF	  = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
 LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\damo$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\hermes$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\parallel$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)

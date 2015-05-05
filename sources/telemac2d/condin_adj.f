@@ -2,7 +2,7 @@
                      SUBROUTINE CONDIN_ADJ
 !                    *********************
 !
-     &(ALIRE,NRES,TROUVE)
+     &(ALIRE,NRES,RESFORMAT,TROUVE)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P1                                   21/08/2010
@@ -38,6 +38,8 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
+      USE INTERFACE_HERMES
+      USE DECLARATIONS_SPECIAL
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -46,11 +48,12 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)    :: ALIRE(*),NRES
+      CHARACTER(LEN=*), INTENT(IN) :: RESFORMAT
       INTEGER, INTENT(INOUT) :: TROUVE(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,ITER
+      INTEGER I,ITER, IERR, ITER1
       DOUBLE PRECISION HIST(1),AT1
 !
 !-----------------------------------------------------------------------
@@ -70,11 +73,12 @@
 !     READS THE LAST TIME IN THE TELEMAC RESULT FILE (NRES)
 !     INITIALISES U,V AND H
 !
-      REWIND NRES
-!
-      CALL BIEF_SUITE(VARSOR,VARCL,ITER,NRES,'SERAFIN ',
-     &           HIST,0,NPOIN,AT,TEXTE,VARCLA,
-     &           NVARCL,TROUVE,ALIRE,LISTIN,.TRUE.,MAXVAR)
+      CALL GET_DATA_NTIMESTEP(RESFORMAT,NRES,ITER,IERR)
+      CALL CHECK_CALL(IERR,'CONDIN_ADJ:GET_DATA_NTIMESTEP')
+      ! Iteration are from 0 to ntimestep - 1
+      ITER = ITER - 1
+      CALL READ_DATASET(RESFORMAT,NRES,VARSOR,NPOIN,ITER,AT,TEXTE,
+     &                  TROUVE,ALIRE,LISTIN,.TRUE.,MAXVAR)
 !
 !     GIVES MEASUREMENTS HD,UD AND VD AT THE LAST TIME STEP
 !     (ITER AND AT GIVEN BY THE PREVIOUS CALL TO SUITE)
@@ -94,11 +98,9 @@
 !
 !     BEWARE : ASSUMES THAT NVARRES HAS ALREADY BEEN COMPUTED
 !
-      DO I=1,2*(NVARRES+1)
-        BACKSPACE NRES
-      ENDDO
-      CALL LITENR(VARSOR,VARCL,NRES,'STD',HIST,0,NPOIN,AT1,TEXTE,
-     &           TEXRES,NVARRES,VARCLA,0,TROUVE,ALIRE,W,.FALSE.,MAXVAR)
+      ITER1 = ITER - 1
+      CALL READ_DATASET(RESFORMAT,NRES,VARSOR,NPOIN,ITER1,AT1,TEXTE,
+     &                  TROUVE,ALIRE,LISTIN,.FALSE.,MAXVAR)
 !
 !-----------------------------------------------------------------------
 !

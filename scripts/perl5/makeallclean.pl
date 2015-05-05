@@ -18,6 +18,7 @@
         "sources|utils|special",
         "sources|utils|parallel",
         "sources|utils|damocles",
+        "sources|utils|hermes",
         "sources|utils|bief",
         "sources|utils|partel",
         "sources|utils|gretel",

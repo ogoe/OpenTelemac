@@ -942,7 +942,7 @@ sub RunPartel       # (geo, cli, NCSIZE, sec, secname, zon, zonname); #jaj added
  #PARTEL parameters (METIS_PartMeshDual method always choosen [=1])
   if (@_[4] eq "") {$ifsec=0;$ifsecname=""} else {$ifsec=1;$ifsecname=@_[3]}          #jaj
   if (@_[6] eq "") {$ifzon=0;$ifzonname=""} else {$ifzon=1;$ifzonname=@_[5]}          #jaj
-  print FPAR "@_[0]\n@_[1]\n@_[2]\n1\n$ifsec\n$ifsecname\n$ifzon\n$ifzonname\n";  #jaj
+  print FPAR "@_[0]\n@_[1]\n@_[2]\n1\nSERAFIN\n$ifsec\n$ifsecname\n$ifzon\n$ifzonname\n";  #jaj
   close(FPAR) or die "File \'partel.par\' cannot be closed!";
 # partel outputs redirected to a file
   $command=join "",$PROJECT,$ps,"builds$ps$dirlib$ps","bin$ps","partel$VERS[$0].exe < partel.par >> partel.log";
@@ -962,7 +962,7 @@ sub RunGretel       # (geo, res, NCSIZE);
 
  #Arguments de GRETEL dans "partel.par"
   open(FPAR,">gretel.par") or die "File \'gretel.par\' cannot be opened!";
-  print FPAR "@_[0]\n@_[1]\n@_[2]\n";
+  print FPAR "@_[0]\nSERAFIN\n@_[1]\nSERAFIN\n@_[2]\n0\n";
   close(FPAR) or die "File \'gretel.par\' cannot be closed!";
  #Lancement GRETEL, append outputs
   $command=join "",$PROJECT,$ps,"builds$ps$dirlib$ps","bin$ps","gretel$VERS[$0].exe < gretel.par >> gretel.log";

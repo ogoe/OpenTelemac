@@ -95,8 +95,10 @@
 !
         IF(WAC_FILES(WACCOB)%NAME(1:1).NE.' ') THEN  
           UL=WAC_FILES(WACCOB)%LU
+          BINCOU=WAC_FILES(WACCOB)%FMT
         ELSE
           UL=WAC_FILES(WACCOF)%LU
+          BINCOU=WAC_FILES(WACCOF)%FMT
         ENDIF
         CALL NOUDON(SUC%R,NAMEU,
      &                    'VELOCITY U      M/S             ',2,    
@@ -134,8 +136,10 @@
 !
         IF(WAC_FILES(WACMAB)%NAME(1:1).NE.' ') THEN
           UL=WAC_FILES(WACMAB)%LU
+          BINMAR=WAC_FILES(WACMAB)%FMT
         ELSE
           UL=WAC_FILES(WACMAF)%LU
+          BINMAR=WAC_FILES(WACMAF)%FMT
         ENDIF
 !
         CALL NOUDON(SUC%R,NAMEU,

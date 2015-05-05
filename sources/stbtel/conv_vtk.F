@@ -22,6 +22,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_STBTEL
+      USE DECLARATIONS_SPECIAL
       USE LIB_VTK_IO
 !      
       IMPLICIT NONE
@@ -72,13 +73,13 @@
         CALL FNCT_CHECK(IERR,'ALLOCATE CELL_TYPE')
         ! VALUE CHOSEN IN PDF VTK FILE FORMAT (GOOGLE)
         SELECT CASE(MESH2%TYPE_ELEM)
-        CASE(TYPE_TRIA3)
+        CASE(TRIANGLE_ELT_TYPE)
           CELL_TYPE(:) = 5
-        CASE(TYPE_QUAD4)
+        CASE(QUADRANGLE_ELT_TYPE)
           CELL_TYPE(:) = 9
-        CASE(TYPE_TETRA4)
+        CASE(TETRAHEDRON_ELT_TYPE)
           CELL_TYPE(:) = 10
-        CASE(TYPE_PRISM6)
+        CASE(PRISM_ELT_TYPE)
           CELL_TYPE(:) = 13
         END SELECT
         ! BUILDING THE CONNECTION TABLE FOLLOWING THE VTK STANDARD

@@ -5,7 +5,7 @@
      &(F1,NAME1FR,NAME1GB,MODE1,
      & F2,NAME2FR,NAME2GB,MODE2,
      & F3,NAME3FR,NAME3GB,MODE3,
-     & X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,NPTT,INDIC,CHDON,TEXTE,TROUVE)
+     & X,Y,NPOIN2,NDON,FFORMAT,NBOR,NPTFR,NPTT,INDIC,CHDON,TEXTE,TROUVE)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   21/06/2011
@@ -90,7 +90,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: F1(NPOIN2),F2(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: F3(NPOIN2)
-      CHARACTER(LEN=3), INTENT(IN)    :: BINDON
+      CHARACTER(LEN=8), INTENT(IN)    :: FFORMAT
       CHARACTER(LEN=7), INTENT(IN)    :: CHDON
       CHARACTER(LEN=32),INTENT(IN)    :: NAME1FR,NAME2FR,NAME3FR
       CHARACTER(LEN=32),INTENT(IN)    :: NAME1GB,NAME2GB,NAME3GB
@@ -99,17 +99,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NP,I,J,NVAR,IB(10),ISTAT,MODE(3)
-      DOUBLE PRECISION ATT,BDX(2),Z(1),T1VOID,T2VOID
-      CHARACTER(LEN=3) C
-      CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3)
+      CHARACTER(LEN=16), ALLOCATABLE :: VAR_NAME(:), VAR_UNIT(:)
+      INTEGER NP,I,J,NVAR,MODE(3)
+      DOUBLE PRECISION T1VOID,T2VOID,TIME
+      CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3),FULL_NAME(3)
       CHARACTER(LEN=72) TITCAS
-      LOGICAL VOID
+      INTEGER :: RECORD, IERR
 !
       INTRINSIC TRIM
 !
-      REAL, ALLOCATABLE :: W(:)
-      ALLOCATE(W(NPOIN2))
 !
 !-----------------------------------------------------------------------
 !
@@ -129,128 +127,111 @@
 !
       IF(INDIC.EQ.3) THEN
 !
-!     ------------------------------------------------------------------
-!     SERAFIN FORMAT 
-!     ------------------------------------------------------------------
+!       -----------------------------------------------------------------
+!       TELEMAC FORMAT,
+!       VARIABLES 1 AND 2 ARE THE X AND Y COMPONENTS OF THE WIND
+!       -----------------------------------------------------------------
 !
-!         READS TITLE
-!
-          CALL LIT(Z,W,IB,TITCAS,72,'CH',NDON,BINDON,ISTAT)
-!
-!         READS NUMBER OF VARIABLES AND THEIR NAMES
-!
-          CALL LIT(Z,W,IB,C,2,'I ',NDON,BINDON,ISTAT)
-          NVAR=IB(1)
-          DO I=1,NVAR
-            CALL LIT(Z,W,IB,TEXTE(I),32,'CH',NDON,BINDON,ISTAT)
-          ENDDO
-!
-!         FORMAT AND GEOMETRY
-!
-          CALL LIT(Z,W,IB,C,10,'I ',NDON,BINDON,ISTAT)
-          IF(IB(10).EQ.1) THEN
-!           THIS IS THE DATE : YEAR, MONTH, DAY, HOUR, MINUTE, SECOND
-            CALL LIT(Z,W,IB,C,6,'I ',NDON,BINDON,ISTAT)
-          ENDIF
-          CALL LIT(Z,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
-          NP=IB(2)
-          WRITE(LU,*)
-     &        '-----------------------------------------------------'
-          IF (LNG.EQ.1) THEN
-             WRITE(LU,*)'LECDON : LECTURE DU FICHIER TELEMAC'
-             WRITE(LU,*)'         NOMBRE DE POINTS   : ',NP
-          ELSE
-             WRITE(LU,*)'LECDON : READING OF TELEMAC DATA FILE '
-             WRITE(LU,*)'         NUMBER OF POINTS   : ',NP
-          ENDIF
-          IF(NP.NE.NPOIN2) THEN
-            WRITE(LU,*) ' '
-            IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'LECDON : LE MAILLAGE DU'
-              WRITE(LU,*) 'FICHIER DES COURANTS EST'
-              WRITE(LU,*) 'DIFFERENT DE CELUI DU FICHIER DE GEOMETRIE'
-            ELSEIF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'LECDON: THE MESH OF THE CURRENTS FILE'
-              WRITE(LU,*) 'IS DIFFERENT FROM THE GEOMETRY FILE'
-            ENDIF
-            WRITE(LU,*) ' '
-            CALL PLANTE(1)
-          ENDIF
-          READ(NDON)
-          READ(NDON)
-!
-!         X AND Y
-!
-          READ(NDON)
-          READ(NDON)
-!
-!         TIME STEP AND VARIABLES
-!
-          DO J=1,(NPTT-1)*(NVAR+1)
-            READ(NDON)
-          ENDDO
-!
-          CALL LIT(BDX(1),W,IB,C,1,'R4',NDON,BINDON,ISTAT)
-          ATT=BDX(1)
-!
-!         HERE THE DATE SHOULD BE TAKEN INTO ACCOUNT IF PRESENT
-!
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*)'         TITRE DU CAS TELEMAC : '
-            WRITE(LU,*)'           ',TITCAS
-            WRITE(LU,*)'         TEMPS DE TELEMAC : ',ATT
-          ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*)'         TITLE OF TELEMAC CASE : '
-            WRITE(LU,*)'           ',TITCAS
-            WRITE(LU,*)'         TIME OF TELEMAC RECORD : ',ATT
-          ENDIF
-!
-          TROUVE(1)=.FALSE.
-          TROUVE(2)=.FALSE.
-          TROUVE(3)=.FALSE.
-          DO I=1,NVAR
-            VOID=.TRUE.
-            DO J=1,3
-              IF((TEXTE(I).EQ.NAMEFR(J).OR.TEXTE(I).EQ.NAMEGB(J)).AND.
-     &          MODE(J).GT.0) THEN
-                IF(J.EQ.1) THEN
-                  CALL LIT(F1,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-                ELSEIF(J.EQ.2) THEN
-                  CALL LIT(F2,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-                ELSEIF(J.EQ.3) THEN
-                  CALL LIT(F3,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-                ENDIF
-                TROUVE(J)=.TRUE.
-                VOID=.FALSE.
-              ENDIF
-            ENDDO
-            IF(VOID) READ(NDON)
-          ENDDO
+        ! Getting title
+        CALL GET_MESH_TITLE(FFORMAT,NDON,TITCAS,IERR)
+        CALL CHECK_CALL(IERR,'LECDON:GET_MESH_TITLE')
+        ! 
+        CALL GET_DATA_NVAR(FFORMAT,NDON,NVAR,IERR)
+        CALL CHECK_CALL(IERR,'LECDON:GET_DATA_NVAR')
+        ! 
+        ALLOCATE(VAR_NAME(NVAR),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'LECDON:VAR_NAME')
+        ALLOCATE(VAR_UNIT(NVAR),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'LECDON:VAR_UNIT')
+        CALL GET_DATA_VAR_LIST(FFORMAT,NDON,NVAR,VAR_NAME,VAR_UNIT,IERR)
+        CALL CHECK_CALL(IERR,'LECDON:GET_DATA_VAR_LIST')
+        DO I=1,NVAR
+          TEXTE(I)(1:16) = VAR_NAME(I)
+          TEXTE(I)(17:32) = VAR_UNIT(I)
+          ! CHECK IF THE VARIABLE ARE IN THE FILE
           DO J=1,3
-            IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
-              IF(LNG.EQ.1) THEN
-                WRITE(LU,*) 'LECDON : VARIABLE ',J,' NON TROUVEE'
-                WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OU ',
-     &                      TRIM(NAMEGB(J)(1:16))
-              ELSEIF(LNG.EQ.2) THEN
-                WRITE(LU,*) 'LECDON: VARIABLE ',NAME1GB,' NOT FOUND'
-                WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OR ',
-     &                      TRIM(NAMEGB(J)(1:16))
-              ENDIF
-              CALL PLANTE(1)
-              STOP
-            ELSEIF(MODE(J).GT.0.AND.TROUVE(J)) THEN
-              IF(LNG.EQ.1) THEN
-                WRITE(LU,*) 'VARIABLE ',J,' LUE (',
-     &                      TRIM(NAMEFR(J)(1:16)),' OU ',
-     &                      TRIM(NAMEGB(J)(1:16)),')'
-              ELSEIF(LNG.EQ.2) THEN
-                WRITE(LU,*) 'VARIABLE ',J,' READ (',
-     &                      TRIM(NAMEFR(J)(1:16)),' OR ',
-     &                      TRIM(NAMEGB(J)(1:16)),')'
-              ENDIF
+            IF((TEXTE(I).EQ.NAMEFR(J)).AND.
+     &        MODE(J).GT.0) THEN
+              TROUVE(J) = .TRUE.
+              FULL_NAME(J) = NAMEFR(J)
+            ENDIF
+            IF((TEXTE(I).EQ.NAMEGB(J)).AND.
+     &        MODE(J).GT.0) THEN
+              TROUVE(J) = .TRUE.
+              FULL_NAME(J) = NAMEGB(J)
             ENDIF
           ENDDO
+        ENDDO
+        DEALLOCATE(VAR_NAME)
+        DEALLOCATE(VAR_UNIT)
+        ! get the number of point
+        CALL GET_MESH_NPOIN(FFORMAT,NDON,POINT_BND_ELT_TYPE,NP,IERR)
+        CALL CHECK_CALL(IERR,'LECDON:GET_MESH_NPOIN')
+        WRITE(LU,*) '--------------------------------------------'
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'LECDON : LECTURE DU FICHIER TELEMAC'
+          WRITE(LU,*) '         TITRE DU CAS LU : ',TITCAS
+          WRITE(LU,*) '         NOMBRE DE POINTS   : ',NP
+        ELSE
+          WRITE(LU,*) 'LECDON : READING OF TELEMAC DATA FILE '
+          WRITE(LU,*) '         FILE TITLE : ',TITCAS
+          WRITE(LU,*) '         NUMBER OF POINTS   : ',NP
+        ENDIF
+        WRITE(LU,*) '--------------------------------------------'
+        IF(NP.NE.NPOIN2) THEN
+          WRITE(LU,*) ' '
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'LE MAILLAGE DU FICHIER DES COURANTS EST'
+            WRITE(LU,*) 'DIFFERENT DE CELUI DU FICHIER DE GEOMETRIE'
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'THE MESH OF THE CURRENTS FILE'
+            WRITE(LU,*) 'IS DIFFERENT FROM THE GEOMETRY FILE'
+          ENDIF
+          WRITE(LU,*) ' '
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        ! Timesteps
+        CALL GET_DATA_NTIMESTEP(FFORMAT,NDON,NPTT,IERR)
+        RECORD = NPTT - 1
+        CALL GET_DATA_TIME(FFORMAT,NDON,TIME,IERR)
+        ! Check if all the variables are found for record1
+        DO J=1,3
+          IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'LECDON : VARIABLE ',J,' NON TROUVEE'
+              WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OU ',
+     &                    TRIM(NAMEGB(J)(1:16))
+            ELSEIF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'LECDON: VARIABLE ',NAME1GB,' NOT FOUND'
+              WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OR ',
+     &                    TRIM(NAMEGB(J)(1:16))
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ELSEIF(MODE(J).GT.0.AND.TROUVE(J)) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'VARIABLE ',J,' LUE (',
+     &        TRIM(NAMEFR(J)(1:16)),' OU ',
+     &        TRIM(NAMEGB(J)(1:16)),') AU TEMPS ',TIME
+            ELSEIF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'VARIABLE ',J,' READ (',
+     &        TRIM(NAMEFR(J)(1:16)),' OR ',
+     &        TRIM(NAMEGB(J)(1:16)),') AT TIME ',TIME
+            ENDIF
+            ! Read the data for varialbe j on record1
+            IF(J.EQ.1) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD,
+     &                            FULL_NAME(J),F1,NP,IERR)
+            ELSEIF(J.EQ.2) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD,
+     &                            FULL_NAME(J),F2,NP,IERR)
+            ELSEIF(J.EQ.3) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD,
+     &                            FULL_NAME(J),F3,NP,IERR)
+            ENDIF
+          ENDIF
+        ENDDO
 !
       ELSEIF(INDIC.EQ.4) THEN
 !
@@ -260,11 +241,11 @@
 !
         IF(CHDON(1:1).EQ.'C') THEN
 !         READS A CURRENT FIELD
-          CALL COUUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,
+          CALL COUUTI(X,Y,NPOIN2,NDON,FFORMAT,NBOR,NPTFR,
      &                0.D0,0.D0,0.D0,0.D0,F1,F2,F1,F2)
         ELSEIF(CHDON(1:1).EQ.'W') THEN
 !         READS A WIND FIELD
-          CALL VENUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,
+          CALL VENUTI(X,Y,NPOIN2,NDON,FFORMAT,NBOR,NPTFR,
      &                0.D0,0.D0,T1VOID,T2VOID,F1,F2,F1,F2)
         ELSE
           IF(LNG.EQ.1) THEN
@@ -291,8 +272,6 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-!
-      DEALLOCATE(W)
 !
       RETURN
 !

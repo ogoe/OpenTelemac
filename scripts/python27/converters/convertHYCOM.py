@@ -391,8 +391,7 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nInterpreting command line options\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\nInterpreting command line options\n'+'~'*72+'\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-r", "--root",type="string",dest="rootName",default='hycom.slf',help="root name used for the output" )
    parser.add_option("-f", "--from",type="string",dest="tfrom",default=None,help="specify the first date included (1972-13-07)" )
@@ -437,14 +436,12 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Convert to SELAFIN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
-   print '\n\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\n'+'~'*72+'\n'
    print '\nProcessing header (mesh, connectivity, etc.)\n'
    hy2slf = HYCOM(period)
    hy2slf.getHeaderHYCOM(modelbox)
 
-   print '\n\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\n'+'~'*72+'\n'
    print '\nProcessing core variables (time record, variables, etc.)\n'
    tic = time.time()
    print '\nExtraction start time:   '+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(tic))

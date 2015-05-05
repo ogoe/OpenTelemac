@@ -1,8 +1,9 @@
+# 1 "plante.F"
 !                    *****************
                      SUBROUTINE PLANTE
 !                    *****************
 !
-     &(IVAL)
+     *(IVAL)
 !
 !***********************************************************************
 ! SPECIAL   V6P1                                   21/08/2010
@@ -43,16 +44,19 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
+
+      INCLUDE 'mpif.h'
+
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IVAL
+      INTEGER, INTENT(IN) :: IVAL
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ICODE
+      INTEGER ICODE, IERR
 !
 !-----------------------------------------------------------------------
 !
@@ -76,9 +80,15 @@
         ICODE = 0      ! JUST ASSUMED FOR NON-ERROR STOP
       ELSEIF(IVAL.EQ.0.OR.IVAL.EQ.1) THEN
         ICODE = 2      ! EXIT IVAL 0 OR 1 INDICATING A "CONTROLLED" ERROR
+
+      CALL MPI_ABORT(MPI_COMM_WORLD,ICODE,IERR)
+
         STOP 2
       ELSE
         ICODE = 1     ! SOMETHING ELSE? BUT AN ERROR!
+
+      CALL MPI_ABORT(MPI_COMM_WORLD,ICODE,IERR)
+
         STOP 1
       ENDIF
       WRITE(LU,*) 'RETURNING EXIT CODE: ', ICODE
@@ -87,6 +97,9 @@
 !     YA: THIS CALL IS OBSOLETE
 !      CALL SPECIAL_PLANTE(IVAL,NCSIZE,LNG,LU)
 !
+
+      CALL MPI_ABORT(MPI_COMM_WORLD,ICODE,IERR)
+
       STOP 0   ! WHICH IS USUALLY EQUIVALENT TO CALL EXIT(0)
 !
 !-----------------------------------------------------------------------

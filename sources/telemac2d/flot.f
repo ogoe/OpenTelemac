@@ -6,7 +6,7 @@
      & TAGFLO,SHPFLO,ELTFLO,MESH,LT,NIT,AT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/08/2010
+! TELEMAC2D   V7P0
 !***********************************************************************
 !
 !brief    releasing and removing particles in the mesh.

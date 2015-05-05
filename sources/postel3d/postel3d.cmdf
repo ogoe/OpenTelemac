@@ -1,8 +1,7 @@
 [general]
 path: <root>|sources|postel3d
 module: postel3d
-liborder: special parallel damocles bief postel3d
-version: v7p0
+liborder: special parallel damocles hermes bief postel3d
 name: HOMERE_POSTEL3D
 
 [bief]
@@ -11,7 +10,6 @@ files: bief_def.f
   bief.f
   declarations_telemac.f
   read_submit.f
-  lit.f
   ov.f
   bief_nbpts.f
   bief_nbmpts.f
@@ -20,52 +18,81 @@ files: bief_def.f
   dimens.f
   cpstvc.f
   bief_nbsegel.f
+  ielbor.f
   segbor.f
-  readgeo1.f
+  bief_nbfel.f
   bief_nbpel.f
   bief_dim2_ext.f
   bief_nbseg.f
   bief_dim1_ext.f
   bief_allmat.f
-  bief_ininds.f
-  ielbor.f
-  corrxy.f
-  readgeo3.f
-  readgeo2.f
-  cpikle3.f
-  bief_nbfel.f
   cpikle2.f
+  read_mesh_info.f
+  corrxy.f
+  read_mesh_coord.f
+  cpikle3.f
+  read_mesh_conn.f
   ov_2.f
   mxptel31.f
   mxptel.f
+  bief_ininds.f
   almesh.f
   allblo.f
   read_config.f
   bief_init.f
-  ecri2.f
-  m_med.F
   bief_open_files.f
   bief_close_files.f
 
 [damocles]
 path: <root>|sources|utils|damocles
 files: preval.f
-  next.f
-  intlu.f
   longlu.f
   cmd.f
   majus.f
   precar.f
+  next.f
   carlu.f
   influ.f
   loglu.f
   classe.f
   dico.f
   aidelu.f
+  intlu.f
   realu.f
   prev.f
   damoc.f
   damocle.f
+
+[hermes]
+path: <root>|sources|utils|hermes
+files: interface_hermes.f
+  utils_med.F
+  utils_serafin.f
+  get_data_var_list.f
+  get_mesh_nplan.f
+  open_mesh.f
+  close_mesh.f
+  get_mesh_title.f
+  get_data_ntimestep.f
+  get_data_nvar.f
+  get_mesh_l2g_numbering.f
+  get_mesh_nelem.f
+  get_mesh_npoin_per_element.f
+  get_bnd_nelem.f
+  get_mesh_nptir.f
+  get_bnd_npoin.f
+  get_mesh_dimension.f
+  get_mesh_npoin.f
+  get_mesh_coord.f
+  get_mesh_connectivity.f
+  get_bnd_ipobo.f
+  set_header.f
+  set_mesh.f
+  add_data.f
+  get_data_time.f
+  get_data_value.f
+  open_bnd.f
+  close_bnd.f
 
 [parallel]
 path: <root>|sources|utils|parallel
@@ -80,20 +107,23 @@ path: <root>|sources|postel3d
 files: declarations_postel3d.f
   lecdon_postel3d.f
   point_postel3d.f
-  coupeh.f
-  lecr3d.f
   exten2.f
   exten1.f
   ecrdeb.f
   coupev.f
-  pre2dv.f
+  lecr3d.f
+  coupeh.f
   pre2dh.f
+  pre2dv.f
   postel3d.f
   homere_postel3d.f
 
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
-  plante.f
+  plante.F
+  get_nodes_per_element.f
+  write_error.f
+  check_call.f
   check_allocate.f
   extens.f

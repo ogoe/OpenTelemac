@@ -171,17 +171,14 @@ if __name__ == "__main__":
       if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
       # parsing for proper naming
       cfg = parseConfig_CompactTELEMAC(cfgs[cfgname])
-      print '\n\nScanning the source code for:\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\nScanning the source code for:\n'+'~'*72+'\n'
       print '    +> configuration: ' +  cfgname
       if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
       print '    +> root:          ' +  cfgs[cfgname]['root']
-      print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n'+'~'*72+'\n'
 
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
-      print '\n\nConfiguration ' + cfgname + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\nConfiguration ' + cfgname + '\n'+'~'*72+'\n'
       if cfg['MODULES'] == {}:
          print '\nNot able to find any modules within your root directory ' + cfgs[cfgname]['root'] + '\n'
          sys.exit(1)

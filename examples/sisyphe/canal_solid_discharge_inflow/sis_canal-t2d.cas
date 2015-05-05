@@ -27,6 +27,7 @@ STOCKAGE DES MATRICES : 3
 / -----------------------------------------------------
 FICHIER DE GEOMETRIE = geo_canal-t2d.slf
 FICHIER DES CONDITIONS AUX LIMITES = geo_canal-t2d.cli
+FICHIER FORTRAN = sis_canal-t2d.f
 /
 FICHIER DES RESULTATS = sis_canal-t2d.slf
 FICHIER DE REFERENCE  = fis_canal-t2d.slf
@@ -68,5 +69,4 @@ POROSITE DU LIT NON COHESIF= 0.375
 /
 PRECISION DU SOLVEUR POUR LA SUSPENSION : 1.E-10
 /
-&ETA
  

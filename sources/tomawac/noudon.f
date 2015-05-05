@@ -4,7 +4,7 @@
 !
      &(F1,NAME1FR,NAME1GB,MODE1,
      & F2,NAME2FR,NAME2GB,MODE2,
-     & F3,NAME3FR,NAME3GB,MODE3,X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,
+     & F3,NAME3FR,NAME3GB,MODE3,X,Y,NPOIN,NDON,FFORMAT,NBOR,NPTFR,
      & AT,DDC,TV1,TV2,F11,F12,F21,F22,F31,F32,INDIC,CHDON,NVAR,TEXTE,
      & TROUVE,UNITIME,PHASTIME)
 !
@@ -47,7 +47,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
-!| BINDON         |-->| DATA FILE BINARY
+!| FFORMAT         |-->| DATA FILE FORMAT
 !| CHDON          |-->| NAME OF THE VARIABLE READ FROM THE DATA FILE
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
 !| F1             |<--| FIRST VARIABLE TO READ 
@@ -102,7 +102,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: F31(NPOIN),F32(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: AT,DDC,UNITIME,PHASTIME
       DOUBLE PRECISION, INTENT(INOUT) :: TV1,TV2
-      CHARACTER(LEN=3), INTENT(IN)    :: BINDON
+      CHARACTER(LEN=8), INTENT(IN)    :: FFORMAT
       CHARACTER(LEN=7), INTENT(IN)    :: CHDON
       CHARACTER(LEN=32),INTENT(IN)    :: NAME1FR,NAME2FR,NAME3FR
       CHARACTER(LEN=32),INTENT(IN)    :: NAME1GB,NAME2GB,NAME3GB
@@ -111,19 +111,18 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,J,ISTAT,IW(1),MODE(3)
-      DOUBLE PRECISION DAT2B(1),Z(1),C,COEF
-      CHARACTER(LEN=3) C1
-      CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3)
-      LOGICAL VOID,COUUT,VENUT,MARUT
+      INTEGER I,J,MODE(3)
+      DOUBLE PRECISION COEF
+      CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3),FULL_NAME(3)
+      LOGICAL COUUT,VENUT,MARUT
       DATA COUUT/.FALSE./
       DATA VENUT/.FALSE./
       DATA MARUT/.FALSE./
+      INTEGER :: RECORD1,RECORD2
+      DOUBLE PRECISION :: TIME1,TIME2
+      INTEGER :: IERR
 !
       INTRINSIC TRIM
-!
-      REAL, ALLOCATABLE :: W(:)
-      ALLOCATE(W(NPOIN))
 !
 !-----------------------------------------------------------------------
 !
@@ -153,65 +152,38 @@
 !       READS A SELAFIN FILE OF TYPE: TELEMAC
 !     ------------------------------------------------------------------
 !
- 95       CONTINUE
-!
-!         ----------------------------------------------------------------
-!         GOES TO NEXT RECORD : 2 BECOMES 1 AND READS A NEW 2
-!         ----------------------------------------------------------------    
-!         
-          TV1=TV2   
-!         
-!         READS THE DATE OF THE RECORD
-          CALL LIT(DAT2B,W,IW,C1,1,'R4',NDON,BINDON,ISTAT)
-          TV2=(DAT2B(1)-PHASTIME)*UNITIME
-!         
-!         HERE THE POSSIBLE DATE IN THE FILE SHOULD BE TRANSMITTED
-!         
-!         READS THE DATA
-!         
-          TROUVE(1)=.FALSE.
-          TROUVE(2)=.FALSE.
-          TROUVE(3)=.FALSE.
-          DO I =1,NVAR
-            VOID=.TRUE.
-            DO J=1,3
-              IF((TEXTE(I).EQ.NAMEFR(J).OR.TEXTE(I).EQ.NAMEGB(J)).AND.
-     &          MODE(J).GT.0) THEN
-                IF(J.EQ.1) THEN
-                  CALL OV('X=Y     ', F11 , F12 , Z , C , NPOIN)
-                  CALL LIT(F12,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
-                ELSEIF(J.EQ.2) THEN
-                  CALL OV('X=Y     ', F21 , F22 , Z , C , NPOIN)
-                  CALL LIT(F22,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
-                ELSEIF(J.EQ.3) THEN
-                  CALL OV('X=Y     ', F31 , F32 , Z , C , NPOIN)
-                  CALL LIT(F32,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
-                ENDIF
-                TROUVE(J)=.TRUE.
-                VOID=.FALSE.
+          ! Look for the two record before and after at for the interpolation
+          RECORD1 = 0
+          RECORD2 = 1
+          CALL GET_DATA_TIME(FFORMAT,NDON,RECORD1,TIME1,IERR)
+          CALL CHECK_CALL(IERR,'NOUDON:GET_DATA_TIME')
+          TV1=(TIME1-PHASTIME)*UNITIME
+          DO 
+            CALL GET_DATA_TIME(FFORMAT,NDON,RECORD2,TIME2,IERR)
+            CALL CHECK_CALL(IERR,'NOUDON:GET_DATA_TIME')
+            TV2=(TIME2-PHASTIME)*UNITIME
+            IF(TV2.LT.AT) THEN
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) ' NOUDON : ON SAUTE 1 ENREGISTREMENT'
+              ELSEIF(LNG.EQ.2) THEN
+                WRITE(LU,*) ' NOUDON: JUMP OF 1 DATA RECORD'
               ENDIF
-            ENDDO
-!           VARIABLE NOT USEFUL, JUMPING THE RECORD
-            IF(VOID) READ(NDON)
-          ENDDO
-!         
-          IF(TV2.LT.AT) THEN
-            IF(LNG.EQ.1) THEN
-              WRITE(LU,*) ' NOUDON : ON SAUTE 1 ENREGISTREMENT'
-            ELSEIF(LNG.EQ.2) THEN
-              WRITE(LU,*) ' NOUDON: JUMP OF 1 DATA RECORD'
+              RECORD1 = RECORD2
+              RECORD2 = RECORD2 + 1
+              TV1 = TV2
+            ELSE
+              EXIT
             ENDIF
-            GO TO 95
-          ENDIF
-!
+          ENDDO
+          ! Check if all the variables are found for record1
           DO J=1,3
             IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
               IF(LNG.EQ.1) THEN
-                WRITE(LU,*) 'NOUDON : VARIABLE ',J,' NON TROUVEE'
+                WRITE(LU,*) 'LECDOI : VARIABLE ',J,' NON TROUVEE'
                 WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OU ',
      &                      TRIM(NAMEGB(J)(1:16))
               ELSEIF(LNG.EQ.2) THEN
-                WRITE(LU,*) 'NOUDON: VARIABLE ',NAME1GB,' NOT FOUND'
+                WRITE(LU,*) 'LECDOI: VARIABLE ',NAME1GB,' NOT FOUND'
                 WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OR ',
      &                      TRIM(NAMEGB(J)(1:16))
               ENDIF
@@ -221,14 +193,59 @@
               IF(LNG.EQ.1) THEN
                 WRITE(LU,*) 'VARIABLE ',J,' LUE (',
      &          TRIM(NAMEFR(J)(1:16)),' OU ',
-     &          TRIM(NAMEGB(J)(1:16)),') AU TEMPS ',AT
-                WRITE(LU,*) 'PAR INTERPOLATION ENTRE T=',TV1,' ET ',TV2
+     &          TRIM(NAMEGB(J)(1:16)),') AU TEMPS ',TV1
               ELSEIF(LNG.EQ.2) THEN
                 WRITE(LU,*) 'VARIABLE ',J,' READ (',
      &          TRIM(NAMEFR(J)(1:16)),' OR ',
-     &          TRIM(NAMEGB(J)(1:16)),') AT TIME ',AT
-                WRITE(LU,*) 'BY INTERPOLATION BETWEEN T=',TV1,
-     &                      ' AND ',TV2
+     &          TRIM(NAMEGB(J)(1:16)),') AT TIME ',TV1
+              ENDIF
+              ! Read the data for varialbe j on record1
+              IF(J.EQ.1) THEN
+                CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
+     &                              FULL_NAME(J),F11,NPOIN,IERR)
+              ELSEIF(J.EQ.2) THEN
+                CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
+     &                              FULL_NAME(J),F21,NPOIN,IERR)
+              ELSEIF(J.EQ.3) THEN
+                CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
+     &                              FULL_NAME(J),F31,NPOIN,IERR)
+              ENDIF
+            ENDIF
+          ENDDO
+          ! Read the variables
+          ! 
+          ! Check if all the variables are found for record2
+          DO J=1,3
+            IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) 'LECDON : VARIABLE ',J,' NON TROUVEE'
+                WRITE(LU,*) NAMEFR(J),' OU ',NAMEGB(J)
+              ELSEIF(LNG.EQ.2) THEN
+                WRITE(LU,*) 'LECDON: VARIABLE ',NAME1GB,' NOT FOUND'
+                WRITE(LU,*) NAMEFR(J),' OR ',NAMEGB(J)
+              ENDIF
+              CALL PLANTE(1)
+              STOP
+            ELSEIF(MODE(J).GT.0.AND.TROUVE(J)) THEN
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) 'VARIABLE ',J,' LUE (',
+     &          TRIM(NAMEFR(J)(1:16)),' OU ',
+     &          TRIM(NAMEGB(J)(1:16)),') AU TEMPS ',TV2
+              ELSEIF(LNG.EQ.2) THEN
+                WRITE(LU,*) 'VARIABLE ',J,' READ (',
+     &          TRIM(NAMEFR(J)(1:16)),' OR ',
+     &          TRIM(NAMEGB(J)(1:16)),') AT TIME ',TV2
+              ENDIF
+              ! Read the data for varialbe j on record1
+              IF(J.EQ.1) THEN
+                CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
+     &                              FULL_NAME(J),F12,NPOIN,IERR)
+              ELSEIF(J.EQ.2) THEN
+                CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
+     &                              FULL_NAME(J),F22,NPOIN,IERR)
+              ELSEIF(J.EQ.2) THEN
+                CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
+     &                              FULL_NAME(J),F32,NPOIN,IERR)
               ENDIF
             ENDIF
           ENDDO
@@ -243,19 +260,19 @@
             TROUVE(1)=.TRUE.
             TROUVE(2)=.TRUE.
             COUUT=.TRUE.
-            CALL COUUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
-     &                  F11,F21,F12,F22)
+            CALL COUUTI(X,Y,NPOIN,NDON,FFORMAT,NBOR,NPTFR,AT,DDC,
+     &                  TV1,TV2,F11,F21,F12,F22)
           ELSEIF(CHDON(1:1).EQ.'V'.OR.CHDON(1:1).EQ.'W') THEN
             TROUVE(1)=.TRUE.
             TROUVE(2)=.TRUE.
             VENUT=.TRUE.
-            CALL VENUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
-     &                  F11,F21,F12,F22)
+            CALL VENUTI(X,Y,NPOIN,NDON,FFORMAT,NBOR,NPTFR,AT,DDC,
+     &                  TV1,TV2,F11,F21,F12,F22)
           ELSEIF(CHDON(1:1).EQ.'H') THEN
             TROUVE(3)=.TRUE.
             MARUT=.TRUE.
-            CALL MARUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
-     &                  F31,F32)
+            CALL MARUTI(X,Y,NPOIN,NDON,FFORMAT,NBOR,NPTFR,AT,DDC,
+     &                  TV1,TV2,F31,F32)
           ENDIF
 !         
         ELSE
@@ -316,8 +333,6 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-!
-      DEALLOCATE(W)
 !
       RETURN
 !

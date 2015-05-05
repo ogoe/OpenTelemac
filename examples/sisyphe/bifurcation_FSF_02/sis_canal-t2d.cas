@@ -15,6 +15,7 @@ BOUNDARY CONDITIONS FILE          : sis_FSF_02.cli
 RESULTS FILE                      : sis_FSF_02.slf
 REFERENCE FILE                    : fis_FSF_02.slf
 VALIDATION                        : YES
+FORTRAN FILE                      : sis_canal-t2d.f
 /
 /---------------------------------------------------------------------/
 /       GENERAL INFORMATIONS                                          /
@@ -62,4 +63,3 @@ MEAN DIAMETER OF THE SEDIMENT              = 0.0001
 /SECONDARY CURRENTS                               : YES
 /SECONDARY CURRENTS ALPHA COEFFICIENT             : 1.0E-00
 /
-&ETA

@@ -155,6 +155,7 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_SISYPHE
+      USE INTERFACE_HERMES
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -190,13 +191,14 @@
       INTEGER, PARAMETER :: NSOR = 100
       INTEGER            :: VALNIT,NLISS
       INTEGER            :: I,J,K,MN,MT,ISOUS,NIDT,NIT,IMA,IMI,IELEB,KP1
+      INTEGER            :: IERR
       INTEGER            :: IMIN,IMAX,NCALCU,NUMEN,NUMENX,NUMDEB
       INTEGER            :: ALIRE(MAXVAR),ALIRV(MAXVAR),ALIRH(MAXVAR)
       INTEGER            :: ALIR0(MAXVAR)
       INTEGER            :: TROUVE(MAXVAR+10)
       DOUBLE PRECISION   :: AT0,DTS,BID,XMA,XMI
       DOUBLE PRECISION   :: XMIN,XMAX
-      DOUBLE PRECISION   :: AT,VCUMU,MASS_GF
+      DOUBLE PRECISION   :: AT,AT2,VCUMU,MASS_GF
       DOUBLE PRECISION   :: HIST(1)
       LOGICAL            :: PASS,PASS_SUSP
       LOGICAL            :: ENTETS,YAZR
@@ -204,6 +206,9 @@
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZF,SAVEQU,SAVEQV
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEUW
+!
+      INTEGER, ALLOCATABLE :: NULLT(:)
+      DOUBLE PRECISION, ALLOCATABLE :: NULLD(:)
 !
 !     SAVES LOCAL VARIABLES
 ! 
@@ -213,7 +218,8 @@
       SAVE NIDT, NCALCU, NUMEN, NIT, VALNIT !
       SAVE AT0                 ! TIME
 !     NUMEN0 : 1ST RECORD TO READ
-      INTEGER NUMEN0
+      INTEGER :: NUMEN0
+      INTEGER :: RECORD
 !
 !     VARIABLES TO READ IF COMPUTATION IS CONTINUED
 !     --------------------------------
@@ -333,14 +339,20 @@
 !       EBOR IS READ HERE FOR THE FIRST CLASS ONLY
 !       SEE CONLIT FOR OTHER CLASSES
 !
-        IF(DEBUG.GT.0) WRITE(LU,*) 'LECLIS'
-        CALL LECLIS(LIEBOR%I,LIHBOR%I,LIQBOR%I,EBOR%ADR(1)%P,Q2BOR,
-     &              MESH%NPTFR,MESH%NBOR%I,3,
-     &              SIS_FILES(SISCLI)%LU,KENT,
-     &              MESH%ISEG%I,MESH%XSEG%R,MESH%YSEG%R,MESH%NACHB%I,
-     &              NUMLIQ%I,NSICLA,AFBOR%R,BFBOR%R,BOUNDARY_COLOUR%I,
-     &              MESH)
-        IF(DEBUG.GT.0) WRITE(LU,*) 'END_LECLIS'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECLIM'
+        ALLOCATE(NULLT(NPTFR),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'NULLT')
+        ALLOCATE(NULLD(NPTFR*2),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'NULLD')
+        CALL LECLIM(LIHBOR%I,LIQBOR%I,NULLT,LIEBOR%I,Q2BOR%R,NULLD,
+     &              NULLD,EBOR%ADR(1)%P%R,NULLD,AFBOR%R,BFBOR%R,
+     &              MESH%NPTFR,'SIS',.TRUE.,
+     &              SIS_FILES(SISGEO)%FMT,SIS_FILES(SISGEO)%LU,
+     &              KENT,KENT,-1,-1,-1,-1,
+     &              NUMLIQ%I,MESH,BOUNDARY_COLOUR=BOUNDARY_COLOUR%I)
+        DEALLOCATE(NULLT)
+        DEALLOCATE(NULLD)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'END_LECLIM'
 !
 !-----------------------------------------------------------------------
 !
@@ -391,17 +403,19 @@
 !
 !       STANDARD SELAFIN FORMAT
 !
-        IF(DEBUG.GT.0) WRITE(LU,*) 'ECRGEO'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'WRITE_HEADER'
 !       CREATES DATA FILE USING A GIVEN FILE FORMAT : FORMAT_RES
 !       THE DATA ARE CREATED IN THE FILE: SISRES, AND ARE
 !       CHARACTERISED BY A TITLE AND NAME OF OUTPUT VARIABLES
 !       CONTAINED IN THE FILE.
-        CALL CREATE_DATASET(SIS_FILES(SISRES)%FMT, ! RESULTS FILE FORMAT
-     &                      SIS_FILES(SISRES)%LU,  ! LU FOR RESULTS FILE
-     &                      TITCA,      ! TITLE
-     &                      MAXVAR,     ! MAX NUMBER OF OUTPUT VARIABLES
-     &                      TEXTE,      ! NAMES OF OUTPUT VARIABLES
-     &                      SORLEO)     ! PRINT TO FILE OR NOT
+        CALL WRITE_HEADER(SIS_FILES(SISRES)%FMT, ! RESULTS FILE FORMAT
+     &                    SIS_FILES(SISRES)%LU,  ! LU FOR RESULTS FILE
+     &                    TITCA,      ! TITLE
+     &                    MAXVAR,     ! MAX NUMBER OF OUTPUT VARIABLES
+     &                    TEXTE,      ! NAMES OF OUTPUT VARIABLES
+     &                    SORLEO)     ! PRINT TO FILE OR NOT
+        IF(DEBUG.GT.0) WRITE(LU,*) 'END_WRITE_HEADER'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'WRITE_MESH'
 !       WRITES THE MESH IN THE OUTPUT FILE :
 !       IN PARALLEL, REQUIRES NCSIZE AND NPTIR.
 !       THE REST OF THE INFORMATION IS IN MESH.
@@ -409,12 +423,11 @@
 !       ORIGIN.
         CALL WRITE_MESH(SIS_FILES(SISRES)%FMT, ! RESULTS FILE FORMAT
      &                  SIS_FILES(SISRES)%LU,  ! LU FOR RESULTS FILE
-     &                  MESH,          ! CHARACTERISES MESH
+     &                  MESH,
      &                  1,             ! NUMBER OF PLANES /NA/
      &                  MARDAT,        ! START DATE
-     &                  MARTIM,        ! START TIME
-     &                  I_ORIG,J_ORIG) ! COORDINATES OF THE ORIGIN.
-        IF(DEBUG.GT.0) WRITE(LU,*) 'END_ECRGEO'
+     &                  MARTIM)        ! START TIME
+        IF(DEBUG.GT.0) WRITE(LU,*) 'END_WRITE_MESH'
 !
 !   --- FILLS IN MASKEL BY DEFAULT
 !
@@ -478,32 +491,31 @@
           ENDIF
         ENDIF
 !
-!       GETTING NUMEN: TOTAL NUMBER OF RECORDS, AND THE TIME STEP
-!
+! UNSTEADY MODE : DT IS COMPUTED FROM THE HYDRO FILE
+!                 NUMEN: TOTAL NUMBER OF RECORDS
         IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
-          IF(PERMA) THEN
-!           STEADY MODE
-!           TO GET NUMEN ONLY
-            IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_SUITE'
-            CALL BIEF_SUITE(VARSOR,VARCL,NUMEN,SIS_FILES(SISHYD)%LU,
-     &                      SIS_FILES(SISHYD)%FMT,HIST,0,NPOIN,AT,
-     &                      TEXTPR,VARCLA,
-     &                      0,TROUVE,ALIR0,.TRUE.,.TRUE.,MAXVAR)
-            DT=DELT
-            IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE BIEF_SUITE'
+!         JUST TO GET NUMEN AND DT (SEE ALIR0)
+          ! GET THE RECORD NUMBER OF THE LAST TIMESTEP
+          ! AND THE TIME STEP BETWEEN TWO RECORDS
+          CALL GET_DATA_NTIMESTEP(SIS_FILES(SISHYD)%FMT,
+     &                  SIS_FILES(SISHYD)%LU,NUMEN,IERR)
+          CALL CHECK_CALL(IERR,'SISYPHE:GET_DATA_NTIMESTEP')
+          IF(PERMA) THEN 
+            DT = DELT
           ELSE
-!           UNSTEADY MODE : DT IS TAKEN FROM THE HYDRO FILE
-!           TO GET NUMEN AND DT
-            IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_SUITE'
-            CALL BIEF_SUITE(VARSOR,VARCL,NUMEN,SIS_FILES(SISHYD)%LU,
-     &                      SIS_FILES(SISHYD)%FMT,HIST,0,NPOIN,AT,
-     &                      TEXTPR,VARCLA,
-     &                      0,TROUVE,ALIR0,.TRUE.,.TRUE.,MAXVAR,DT=DT)
-            IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE BIEF_SUITE'
+            ! GET TIME FOR ONE BEFORE LAST RECORD
+            CALL GET_DATA_TIME(SIS_FILES(SISHYD)%FMT,
+     &         SIS_FILES(SISHYD)%LU,NUMEN-2,AT2,IERR)
+            CALL CHECK_CALL(IERR,'SISYPHE:GET_DATA_TIME:AT2')
+            ! GET TIME FOR LAST RECORD
+            CALL GET_DATA_TIME(SIS_FILES(SISHYD)%FMT,
+     &         SIS_FILES(SISHYD)%LU,NUMEN-1,AT,IERR)
+            CALL CHECK_CALL(IERR,'SISYPHE:GET_DATA_TIME:AT')
+            DT = AT - AT2
             NIDT =  NINT ( PMAREE / DT + 0.1D0 )
             IF(ABS(NIDT*DT-PMAREE) > 1.D-3) THEN
-              IF(LNG.EQ.1) WRITE(LU,101) NIDT*DT
-              IF(LNG.EQ.2) WRITE(LU,102) NIDT*DT
+              IF (LNG == 1) WRITE(LU,101) NIDT*DT
+              IF (LNG == 2) WRITE(LU,102) NIDT*DT
             ENDIF
             NIT  = NCALCU * NIDT
           ENDIF
@@ -546,12 +558,12 @@
           ENDIF
 !
           IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
-            IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_SUITE'
-            CALL BIEF_SUITE(VARSOR,VARCL,NUMEN0,SIS_FILES(SISHYD)%LU,
-     &                      SIS_FILES(SISHYD)%FMT,HIST,0,NPOIN,AT,
-     &                      TEXTPR,VARCLA,
-     &                      0,TROUVE,ALIRE,.TRUE.,PERMA,MAXVAR)
-            IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_SUITE'
+            IF(DEBUG.GT.0) WRITE(LU,*) 'READ_DATASET'
+            ! The time step are numbered from 0
+            NUMEN0 = NUMEN0 - 1
+            CALL READ_DATASET(SIS_FILES(SISHYD)%FMT,
+     &                SIS_FILES(SISHYD)%LU,VARSOR,NPOIN,NUMEN0,AT,
+     &                TEXTPR,TROUVE,ALIRE,.TRUE.,PERMA,MAXVAR)
 !
 !           TRACES IF WAVE DATA HAVE BEEN FOUND
 !
@@ -577,7 +589,7 @@
                 WRITE(LU,*)
               ENDIF
             ENDIF
-            IF(DEBUG.GT.0) WRITE(LU,*) 'END_BIEF_SUITE'
+            IF(DEBUG.GT.0) WRITE(LU,*) 'END_READ_DATASET'
             IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE'
             CALL RESCUE_SISYPHE(QU%R,QV%R,Q%R,U2D%R,V2D%R,HN%R,Z%R,
      &                        ZF%R,HW%R,TW%R,THETAW%R,NPOIN,
@@ -594,19 +606,18 @@
 !
 !         READS THE HYDRO AND SEDIMENTOLOGICAL VARIABLES
 !
-          IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_SUITE'
-          CALL BIEF_SUITE(VARSOR,VARCL,NUMENX,SIS_FILES(SISPRE)%LU,
-     &                    SIS_FILES(SISPRE)%FMT,
-     &                    HIST,0,NPOIN,AT0,TEXTPR,VARCLA,0,
-     &                    TROUVE,ALIRE,.TRUE.,.TRUE.,MAXVAR)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'READ_DATASET'
+          CALL READ_DATASET(SIS_FILES(SISPRE)%FMT,SIS_FILES(SISPRE)%LU,
+     &                      VARSOR,NPOIN,NUMENX,AT0,TEXTPR,TROUVE,ALIRE,
+     &                      .TRUE.,.TRUE.,MAXVAR)
           IF(TROUVE(9).EQ.1) YAZR=.TRUE.
-          IF(DEBUG.GT.0) WRITE(LU,*) 'END_BIEF_SUITE'
+          IF(DEBUG.GT.0) WRITE(LU,*) 'END_READ_DATASET'
 !
           IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE'
           CALL RESCUE_SISYPHE(QU%R,QV%R,Q%R,U2D%R,V2D%R,HN%R,Z%R,ZF%R,
      &                        HW%R,TW%R,THETAW%R,NPOIN,TROUVE,ALIRE,
      &                        PASS,ICF,.TRUE.,MAXVAR)
-          IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE BIEF_SUITE'
+          IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE RESCUE_SISYPHE'
 !
 !         CHANGES THE UNITS OF CONCENTRATIONS
 !
@@ -628,10 +639,9 @@
 !
           IF(DEBUG.GT.0) WRITE(LU,*) 'SUITE_HOULE'
           WRITE(LU,*) ' LECTURE HOULE :',SIS_FILES(SISCOU)%NAME
-          CALL BIEF_SUITE(VARSOR,VARCL,NUMENX,SIS_FILES(SISCOU)%LU,
-     &                    SIS_FILES(SISCOU)%FMT,HIST,0,NPOIN,AT,
-     &                    TEXTPR,VARCLA,0,
-     &                    TROUVE,ALIRH,.TRUE.,.TRUE.,MAXVAR)
+          CALL READ_DATASET(SIS_FILES(SISCOU)%FMT,SIS_FILES(SISCOU)%LU,
+     &                      VARSOR,NPOIN,NUMENX,AT,TEXTPR,TROUVE,ALIRH, 
+     &                      .TRUE.,.TRUE.,MAXVAR)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_SUITE_HOULE'
 !         TRACES IF WAVE DATA HAVE BEEN FOUND
           IF(TROUVE(12).EQ.1) HW%TYPR='Q'
@@ -701,7 +711,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_CONDIM_SISYPHE'
 !
 !       AT THIS LEVEL U2D,V2D,H AND ZF MUST HAVE BEEN DEFINED
-!       EITHER BY BIEF_SUITE, CONDIM_SISYPHE OR CALLING PROGRAM
+!       EITHER BY READ_DATASET, CONDIM_SISYPHE OR CALLING PROGRAM
 !
 !       NOW COMPUTES FUNCTIONS OF U2D,V2D,HN AND ZF
 !
@@ -847,7 +857,7 @@
 !       
         IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_DESIMP'
         CALL BIEF_DESIMP(SIS_FILES(SISRES)%FMT,VARSOR,
-     &                   HIST,0,NPOIN,SIS_FILES(SISRES)%LU,'STD',
+     &                   NPOIN,SIS_FILES(SISRES)%LU,'STD',
      &                   AT0,0,LISPR,LEOPR,SORLEO,SORIMP,MAXVAR,
      &                   TEXTE,PTINIG,PTINIL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END BIEF_DESIMP'
@@ -1028,10 +1038,10 @@
 !             
                 IF(ENTET) WRITE(LU,*) 'DEFINITION INITIALE DES VITESSES'
 !             
-                CALL BIEF_SUITE(VARSOR,VARCL,NUMDEB,
-     &             SIS_FILES(SISHYD)%LU,SIS_FILES(SISHYD)%FMT,
-     &             HIST,0,NPOIN,BID,TEXTPR,VARCLA,0,
-     &             TROUVE,ALIRE,ENTET,PERMA,MAXVAR)
+                CALL READ_DATASET(SIS_FILES(SISHYD)%FMT,
+     &                            SIS_FILES(SISHYD)%LU,VARSOR,NPOIN,
+     &                            NUMDEB,BID,TEXTPR,TROUVE,ALIRE,
+     &                            ENTET,PERMA,MAXVAR)
 !             
                 IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE_NOTPERMA'
                 CALL RESCUE_SISYPHE_NOTPERMA
@@ -1703,7 +1713,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREDES'
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
         CALL BIEF_DESIMP(SIS_FILES(SISRES)%FMT,VARSOR,
-     &                   HIST,0,NPOIN,SIS_FILES(SISRES)%LU,
+     &                   NPOIN,SIS_FILES(SISRES)%LU,
      &                   'STD',AT0,LT,LISPR,LEOPR,
      &                   SORLEO,SORIMP,MAXVAR,TEXTE,PTINIG,PTINIL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP'

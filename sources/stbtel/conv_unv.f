@@ -22,6 +22,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_STBTEL
+      USE DECLARATIONS_SPECIAL
 !      
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
@@ -221,7 +222,7 @@
             ! TRIANGLE
             CASE (91,41)
               IELEM2 = IELEM2 + 1
-              MESH2%TYPE_ELEM2 = TYPE_TRIA3
+              MESH2%TYPE_ELEM2 = TRIANGLE_ELT_TYPE
               MESH2%NDP2 = 3
               READ(NINP,*)(IB(J),J=1,MESH2%NDP2)
               DO J=1,MESH2%NDP2
@@ -231,7 +232,7 @@
             ! SQUARE
             CASE (44,94)
               IELEM2 = IELEM2 + 1
-              MESH2%TYPE_ELEM2 = TYPE_QUAD4
+              MESH2%TYPE_ELEM2 = QUADRANGLE_ELT_TYPE
               MESH2%NDP2 = 4
               READ(NINP,*)(IB(J),J=1,MESH2%NDP2)
               DO J=1,MESH2%NDP2
@@ -241,7 +242,7 @@
             ! TETRAEDRON
             CASE (111)
               IELEM = IELEM + 1
-              MESH2%TYPE_ELEM = TYPE_TETRA4
+              MESH2%TYPE_ELEM = TETRAHEDRON_ELT_TYPE
               MESH2%NDP = 4
               READ(NINP,*)(IB(J),J=1,MESH2%NDP)
               DO J=1,MESH2%NDP
@@ -251,7 +252,7 @@
             ! PRISM
             CASE (112)
               IELEM = IELEM + 1
-              MESH2%TYPE_ELEM = TYPE_PRISM6
+              MESH2%TYPE_ELEM = PRISM_ELT_TYPE
               MESH2%NDP = 6
               READ(NINP,*)(IB(J),J=1,MESH2%NDP)
               DO J=1,MESH2%NDP
@@ -286,8 +287,8 @@
             ! DESTROY
             DEALLOCATE(MESH2%IKLES2)
             DEALLOCATE(MESH2%NCOLOR2)
-            MESH2%NDP2 = 0
-            MESH2%TYPE_ELEM2 = 0
+            MESH2%NDP2 = -1
+            MESH2%TYPE_ELEM2 = -1
             MESH2%NELEM2 = 0
           ELSE
             MESH2%NELEM = IELEM
@@ -448,6 +449,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_STBTEL
+      USE DECLARATIONS_SPECIAL
 !      
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
@@ -577,13 +579,13 @@
       WRITE(NOUT,'(I6)') CONN_SEC
       ! IDENTIFY THE UNV TYPE NUMBER
       SELECT CASE(MESH2%TYPE_ELEM)
-      CASE(TYPE_TRIA3)
+      CASE(TRIANGLE_ELT_TYPE)
         ELEM = 91
-      CASE(TYPE_QUAD4)
+      CASE(QUADRANGLE_ELT_TYPE)
         ELEM = 94
-      CASE(TYPE_TETRA4)
+      CASE(TETRAHEDRON_ELT_TYPE)
         ELEM = 111
-      CASE(TYPE_PRISM6)
+      CASE(PRISM_ELT_TYPE)
         ELEM = 112
       END SELECT
       ALLOCATE(NCOLOR(MESH2%NELEM),STAT=IERR)
@@ -611,13 +613,13 @@
       ! DOING IT FOR THE 2D ELEMENTS IF THEY EXIST
       IF(MESH2%NELEM2.NE.0) THEN
         SELECT CASE(MESH2%TYPE_ELEM2)
-        CASE(TYPE_TRIA3)
+        CASE(TRIANGLE_ELT_TYPE)
           ELEM = 91
-        CASE(TYPE_QUAD4)
+        CASE(QUADRANGLE_ELT_TYPE)
           ELEM = 94
-        CASE(TYPE_TETRA4)
+        CASE(TETRAHEDRON_ELT_TYPE)
           ELEM = 111
-        CASE(TYPE_PRISM6)
+        CASE(PRISM_ELT_TYPE)
           ELEM = 112
         END SELECT
         ALLOCATE(NCOLOR(MESH2%NELEM2),STAT=IERR)

@@ -2,7 +2,6 @@
 path: <root>|sources|utils|diffsel
 module: diffsel
 liborder: special diffsel
-version: v7p0
 name: DIFFSEL
 
 [diffsel]
@@ -11,4 +10,4 @@ files: diffsel.f
 
 [special]
 path: <root>|sources|utils|special
-files: plante.f
+files: plante.F

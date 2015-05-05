@@ -40,6 +40,12 @@
 !+   mesh must be now less than 1.D-8 instead of 1.D-4 (to avoid 
 !+   problems with subroutine ecrspe in Tomawac)
 !
+!history  J-M HERVOUET (LNHE)
+!+        14/11/2014
+!+        V7P0
+!+   Checking that a point belongs to at least one sub-domain in
+!+   parallel mode.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| IP             |<--| ADDRESSES OF NEAREST POINTS
@@ -53,6 +59,7 @@
 !| YP             |-->| ORDINATES OF POINTS IN THE SET
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_PARALLEL
       USE BIEF, EX_PROXIM => PROXIM
 !
       IMPLICIT NONE
@@ -75,9 +82,6 @@
       DOUBLE PRECISION XX,YY
 !
       INTRINSIC SQRT
-!
-      DOUBLE PRECISION P_DSUM,P_DMAX
-      EXTERNAL         P_DSUM,P_DMAX
 !
 !-----------------------------------------------------------------------
 !
@@ -166,6 +170,18 @@
           CALL PLANTE(1)
           STOP
         ENDIF
+        IF(NCSIZE.GT.1) THEN
+          IF(P_IMAX(IP(K)).EQ.0) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'LE POINT ',K,' EST DANS HORS DOMAINE GLOBAL'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'POINT ',K,' IS NOT IN ANY SUB-DOMAIN'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+        ENDIF
       ENDDO
       ENDIF
 !
@@ -173,3 +189,4 @@
 !
       RETURN
       END
+

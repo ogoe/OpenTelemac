@@ -27,12 +27,13 @@
       USE BIEF
       USE DECLARATIONS_SISYPHE
       USE CVSP_OUTPUTFILES
+      USE INTERFACE_HERMES
 
       IMPLICIT NONE
 
       CHARACTER*32 VLABEL
       CHARACTER(LEN=11) :: EXTENS
-      INTEGER I, K
+      INTEGER I, K, IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -48,23 +49,23 @@
       CP_FILES(3)%LU = 10004    !INTEGER, INDIVIDUAL
       CP_FILES(3)%NAME = 'SORTINGPROFILE.RES' !UP TO 144 CHARACTERS
       CP_FILES(3)%TELNAME = 'VSPRES' !ONLY 6 CHARACTERS
-      CP_FILES(3)%ACTION = 'WRITE'
+      CP_FILES(3)%ACTION = 'WRITE    '
       USRMSH_NPLAN = PRO_MAX_MAX
       
       CP_FILES(4)%FMT = 'SERAFIN ' !'SERAFIN ' OR 'SERAFIND'
       CP_FILES(4)%LU = 10005    !INTEGER, INDIVIDUAL
       CP_FILES(4)%NAME = '2DHYDROAS3D.RES' !UP TO 144 CHARACTERS
       CP_FILES(4)%TELNAME = 'VSPHYD' !ONLY 6 CHARACTERS
-      CP_FILES(4)%ACTION = 'WRITE'
+      CP_FILES(4)%ACTION = 'WRITE    '
       USRMSH_2DHYD_NPLAN = 2
 !
 !-----------------------------------------------------------------------     
 ! ALLOCATES A 3D MESH FOR USEROUTPU: HERE VSPRES
 !-----------------------------------------------------------------------
 !
-      CALL ALMESH(USRMSH,'USRMSH',41,SPHERI,CFG,SIS_FILES(SISGEO)%LU,
-     &     EQUA,NPLAN=USRMSH_NPLAN,
-     &     FILE_FORMAT=SIS_FILES(SISGEO)%FMT)
+      CALL ALMESH(USRMSH,'USRMSH',41,SPHERI,CFG,
+     &     SIS_FILES(SISGEO)%FMT, SIS_FILES(SISGEO)%LU,
+     &     EQUA,NPLAN=USRMSH_NPLAN)
       
       DO I =1,USRMSH%NPTFR
         USRMSH%NBOR%I(I) = I
@@ -75,9 +76,8 @@
 !-----------------------------------------------------------------------
 !
       CALL ALMESH(USRMSH_2DHYD,'USRHYD',41,SPHERI,CFG,
-     &     SIS_FILES(SISGEO)%LU,
-     &     EQUA,NPLAN=USRMSH_2DHYD_NPLAN,
-     &     FILE_FORMAT=SIS_FILES(SISGEO)%FMT)
+     &     SIS_FILES(SISGEO)%FMT, SIS_FILES(SISGEO)%LU,
+     &     EQUA,NPLAN=USRMSH_2DHYD_NPLAN)
       
       DO I =1,USRMSH_2DHYD%NPTFR
         USRMSH_2DHYD%NBOR%I(I) = I
@@ -130,67 +130,62 @@
       DO I = 3, 4
         IF(NCSIZE.LE.1) THEN
 ! SCALAR
-          OPEN(CP_FILES(I)%LU,FILE=CP_FILES(I)%TELNAME,
-     &         ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
+          CALL OPEN_MESH(CP_FILES(I)%FMT,CP_FILES(I)%TELNAME,
+     &                   CP_FILES(I)%LU,CP_FILES(I)%ACTION,IERR)
         ELSE
 ! PARALLEL, FILE TYPE: SCAL
           IF(CP_FILES(I)%TYPE(1:4).EQ.'SCAL') THEN
-            OPEN(CP_FILES(I)%LU,
-     &           FILE=TRIM(CP_FILES(I)%TELNAME),
-     &           ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
+            CALL OPEN_MESH(CP_FILES(I)%FMT,CP_FILES(I)%TELNAME,
+     &                     CP_FILES(I)%LU,CP_FILES(I)%ACTION,IERR)
 ! PARALLEL, OTHER FILE TYPE
           ELSE
-            OPEN(CP_FILES(I)%LU,
-     &           FILE=TRIM(CP_FILES(I)%TELNAME)
-     &           //EXTENS(NCSIZE-1,IPID),
-     &           ACTION=CP_FILES(I)%ACTION,FORM='UNFORMATTED')
+          CALL OPEN_MESH(CP_FILES(I)%FMT,TRIM(CP_FILES(I)%TELNAME)
+     &                   //EXTENS(NCSIZE-1,IPID),
+     &                   CP_FILES(I)%LU,CP_FILES(I)%ACTION,IERR)
           ENDIF
         ENDIF
+        CALL CHECK_CALL(IERR,'CVSP_OUTPU_INIT:OPEN_MESH')
+         
       ENDDO                     !CP_FILES
 !
 !-----------------------------------------------------------------------     
 ! WRITES THE HEADER OF THE RESFILES
 !-----------------------------------------------------------------------
 !
-      CALL CREATE_DATASET_SERAFIN(CP_FILES(4)%LU,
-     &     '2D HYDRAULIC PARAMETERS IN 3D  '//
-     &     '                                         ',
-     &     NUMVAR2DHYD,
-     &     UR2DHYD_FILES_LABELS,
-     &     UR2DHYD_FILES_OUTVAR,
-     &     CP_FILES(4)%FMT)
-
-      CALL CREATE_DATASET_SERAFIN(CP_FILES(3)%LU,
+      CALL WRITE_HEADER(CP_FILES(3)%FMT,
+     &     CP_FILES(3)%LU,
      &     'USEROUTPUT3D                   '//
      &     '                                         ',
      &     NUMVARUR3D2RES,
      &     UR3D_FILES_LABELS,
-     &     UR3D_FILES_OUTVAR,
-     &     CP_FILES(3)%FMT)
+     &     UR3D_FILES_OUTVAR)
+
+      CALL WRITE_HEADER(CP_FILES(4)%FMT,
+     &     CP_FILES(4)%LU,
+     &     '2D HYDRAULIC PARAMETERS IN 3D  '//
+     &     '                                         ',
+     &     NUMVAR2DHYD,
+     &     UR2DHYD_FILES_LABELS,
+     &     UR2DHYD_FILES_OUTVAR)
+
 !
 !-----------------------------------------------------------------------     
 ! WRITES THE MESH INFORMATION IN THE OUTPUT FILE :
 !-----------------------------------------------------------------------
 !
-      DO I = 3, 3               !UBOUND(CP_FILES)
-        CALL WRITE_MESH(CP_FILES(I)%FMT, ! RESULTS FILE FORMAT
-     &       CP_FILES(I)%LU,   ! LU FOR RESULTS FILE
-     &       USRMSH,           ! CHARACTERISES MESH
-     &       USRMSH_NPLAN,     ! NUMBER OF PLANES /NA/
-     &       MARDAT,           ! START DATE
-     &       MARTIM,           ! START TIME
-     &       I_ORIG,J_ORIG)    ! COORDINATES OF THE ORIGIN.
-      ENDDO
+      CALL WRITE_MESH(CP_FILES(3)%FMT, ! RESULTS FILE FORMAT
+     &     CP_FILES(3)%LU,   ! LU FOR RESULTS FILE
+     &     USRMSH,
+     &     USRMSH_NPLAN,     ! NUMBER OF PLANES /NA/
+     &     MARDAT,           ! START DATE
+     &     MARTIM)           ! START TIME
 
-      DO I = 4, 4               !UBOUND(CP_FILES)
-        CALL WRITE_MESH(CP_FILES(I)%FMT, ! RESULTS FILE FORMAT
-     &       CP_FILES(I)%LU,   ! LU FOR RESULTS FILE
-     &       USRMSH_2DHYD,     ! CHARACTERISES MESH
-     &       USRMSH_2DHYD_NPLAN, ! NUMBER OF PLANES /NA/
-     &       MARDAT,           ! START DATE
-     &       MARTIM,           ! START TIME
-     &       I_ORIG,J_ORIG)    ! COORDINATES OF THE ORIGIN.
-      ENDDO
+      CALL WRITE_MESH(CP_FILES(4)%FMT, ! RESULTS FILE FORMAT
+     &     CP_FILES(4)%LU,   ! LU FOR RESULTS FILE
+     &     USRMSH_2DHYD,
+     &     USRMSH_2DHYD_NPLAN, ! NUMBER OF PLANES /NA/
+     &     MARDAT,           ! START DATE
+     &     MARTIM)           ! START TIME
 !
 !-----------------------------------------------------------------------     
 ! INITS OUTPUT VECTORS

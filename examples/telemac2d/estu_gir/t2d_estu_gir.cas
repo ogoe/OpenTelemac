@@ -117,5 +117,4 @@ OPTION FOR WIND                              = 1
 WIND VELOCITY ALONG X                        = -1.0D0
 WIND VELOCITY ALONG Y                        = 0.3D0
 /
-&ETA
 &FIN

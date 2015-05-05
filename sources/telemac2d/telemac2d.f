@@ -339,6 +339,9 @@
       INTEGER  P_IMAX,P_IMIN
       DOUBLE PRECISION P_DMIN
       EXTERNAL P_IMAX,P_IMIN,P_DMIN
+      CHARACTER(LEN=3), PARAMETER :: CCODE = 'T2D'
+!
+      INTEGER :: OLD_LEOPRD
 !
 !-----------------------------------------------------------------------
 !
@@ -452,8 +455,8 @@
       CALL LECLIM (LIHBOR%I   , LIUBOR%I , LIVBOR%I , LITBOR%ADR(1)%P%I,
      &             HBOR%R     , UBOR%R   , VBOR%R   , TBOR%ADR(1)%P%R ,
      &             CHBORD%R    , ATBOR%ADR(1)%P%R   , BTBOR%ADR(1)%P%R ,
-     &             MESH%NPTFR , 3        ,NTRAC.GT.0,
-     &             T2D_FILES(T2DCLI)%LU,
+     &             MESH%NPTFR , CCODE     ,NTRAC.GT.0,
+     &             T2D_FILES(T2DGEO)%FMT,T2D_FILES(T2DGEO)%LU,
      &             KENT       , KENTU    , KSORT ,  KADH , KLOG , KINC,
      &             NUMLIQ%I   ,MESH,BOUNDARY_COLOUR%I,NPTFR2)
       IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM LECLIM'
@@ -576,12 +579,11 @@
       IF(ADJO) THEN
 !
         IF(T2D_FILES(T2DRBI)%NAME.NE.' '.AND.
-     &    INCLU2(ESTIME,'DEBUG')) THEN
-          CALL ECRGEO(MESH%X%R,MESH%Y%R,MESH%NPOIN,MESH%NBOR%I,
-     &                T2D_FILES(T2DRBI)%LU,IBID,TEXTE,VARCLA,NVARCL,
-     &                TITCAS,SORLEOA,MAXVAR,MESH%IKLE%I,
-     &                MESH%NELEM,MESH%NPTFR,3,MARDAT,MARTIM,
-     &                NCSIZE,NPTIR,MESH%KNOLG%I,I3=I_ORIG,I4=J_ORIG)
+     &     INCLU2(ESTIME,'DEBUG')) THEN
+          CALL WRITE_HEADER(T2D_FILES(T2DRBI)%FMT, T2D_FILES(T2DRBI)%LU,
+     &                      TITCAS, MAXVAR, TEXTE, SORLEOA)
+          CALL WRITE_MESH(T2D_FILES(T2DRBI)%FMT, T2D_FILES(T2DRBI)%LU,
+     &                    MESH,1,MARDAT,MARTIM)
         ENDIF
 !
       ELSE
@@ -591,12 +593,12 @@
 !       THE DATA ARE CREATED IN THE LOGICAL UNIT T2D_FILES(T2DRES)%LU
 !       WITH A TITLE AND NAMES OF OUTPUT VARIABLES.
 !
-        CALL CREATE_DATASET(T2D_FILES(T2DRES)%FMT, ! RESULTS FILE FORMAT
-     &                      T2D_FILES(T2DRES)%LU,  ! LU FOR RESULTS FILE
-     &                      TITCAS,     ! TITLE
-     &                      MAXVAR,     ! MAX NUMBER OF OUTPUT VARIABLES
-     &                      TEXTE,      ! NAMES OF OUTPUT VARIABLES
-     &                      SORLEO)     ! PRINT TO FILE OR NOT
+        CALL WRITE_HEADER(T2D_FILES(T2DRES)%FMT, ! RESULTS FILE FORMAT
+     &                    T2D_FILES(T2DRES)%LU,  ! LU FOR RESULTS FILE
+     &                    TITCAS,     ! TITLE
+     &                    MAXVAR,     ! MAX NUMBER OF OUTPUT VARIABLES
+     &                    TEXTE,      ! NAMES OF OUTPUT VARIABLES
+     &                    SORLEO)     ! PRINT TO FILE OR NOT
 !
 !       WRITES THE MESH IN THE OUTPUT FILE :
 !       IN PARALLEL, REQUIRES NCSIZE AND NPTIR.
@@ -606,11 +608,10 @@
 !
         CALL WRITE_MESH(T2D_FILES(T2DRES)%FMT, ! RESULTS FILE FORMAT
      &                  T2D_FILES(T2DRES)%LU,  ! LU FOR RESULTS FILE
-     &                  MESH,          ! CHARACTERISES MESH
+     &                  MESH,
      &                  1,             ! NUMBER OF PLANES /NA/
      &                  MARDAT,        ! START DATE
-     &                  MARTIM,        ! START TIME
-     &                  I_ORIG,J_ORIG) ! COORDINATES OF THE ORIGIN.
+     &                  MARTIM)        ! START TIME
 !
       ENDIF
 !
@@ -754,7 +755,8 @@
 !     OF C0 DOES NOT CHANGE (CASE OF INCIDENT WAVES)
 !
       IF(ADJO) THEN
-        CALL CONDIN_ADJ(ALIRE,T2D_FILES(T2DRES)%LU,TROUVE)
+        CALL CONDIN_ADJ(ALIRE,T2D_FILES(T2DRES)%LU,
+     &                  T2D_FILES(T2DRES)%FMT,TROUVE)
       ELSE
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING CONDIN'
         CALL CONDIN
@@ -777,18 +779,15 @@
 !
       IF(.NOT.DEBU.AND..NOT.ADJO) THEN
 !
-!       BEWARE : BIEF_SUITE WILL TAKE THE BOTTOM IN THE FILE
+!       BEWARE : READ_DATASET WILL TAKE THE BOTTOM IN THE FILE
 !                IF IT IS THERE.
 !
 !       FRICTION COEFFICIENT ALSO READ IN CASE IT HAS BEEN DONE
 !       BY THE USER INTERFACE (JMH 27/11/2006)
         ALIRE(19)=1
-        CALL BIEF_SUITE(VARSOR,VARCL,START_RECORD,
-     &                  T2D_FILES(T2DPRE)%LU,
-     &                  T2D_FILES(T2DPRE)%FMT,
-     &                  HIST,0,NPOIN,AT,TEXTPR,VARCLA,
-     &                  NVARCL,TROUVE,ALIRE,LISTIN,
-     &                  START_RECORD.EQ.0,MAXVAR)
+        CALL READ_DATASET(T2D_FILES(T2DPRE)%FMT,T2D_FILES(T2DPRE)%LU,
+     &                    VARSOR,NPOIN,START_RECORD,AT,TEXTPR,TROUVE,
+     &                    ALIRE,LISTIN,START_RECORD.EQ.0,MAXVAR)
         ALIRE(19)=0
         IF(INCLUS(COUPLING,'SISYPHE').AND.TROUVE(6).NE.1) THEN
           IF(LNG.EQ.1) THEN
@@ -1109,13 +1108,9 @@
 !
       IF(LISTIN) CALL ENTETE(1,AT,LT)
 !
-!     OUTINI IS KEY-WORD "OUTPUT OF INITIAL CONDITONS"
-!     IT HAS PRIORITY OVER FIRST TIME-STEP FOR GRAPHIC PRINTOUTS.
-!
 !     NOTE THAT OUTPUTS ARE DONE WITHIN ESTEL3D IN COUPLED MODE)
 !
-      IF(OUTINI .AND. (.NOT.ADJO)
-     &          .AND. (CODE(1:7).NE.'ESTEL3D') ) THEN
+      IF((.NOT.ADJO) .AND. (CODE(1:7).NE.'ESTEL3D') ) THEN
 !
 ! CONTROL SECTIONS (0. IN PLACE OF DT)
 !
@@ -1132,7 +1127,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM PRERES_TELEMAC2D'
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING DESIMP'
         CALL BIEF_DESIMP(T2D_FILES(T2DRES)%FMT,VARSOR,
-     &                  HIST,0,NPOIN,T2D_FILES(T2DRES)%LU,'STD',AT,LT,
+     &                  NPOIN,T2D_FILES(T2DRES)%LU,'STD',AT,LT,
      &                  LISPRD,LEOPRD,
      &                  SORLEO,SORIMP,MAXVAR,TEXTE,0,     0)
 !                                                  PTINIG,PTINIL
@@ -2008,7 +2003,7 @@
      &  ALPHA1,ALPHA2,ALPHA3,ADJDIR,ESTIME,OPTCOST,NIT,NVARRES,
      &  VARSOR,T2D_FILES(T2DRES)%LU,T2D_FILES(T2DREF)%LU,
      &  ALIRE,TROUVE,MAXVAR,VARCL,VARCLA,TEXTE,
-     &  TEXREF,TEXRES,W,OUTINI,CHESTR,KARMAN,NDEF,ITURB,LISRUG,
+     &  TEXREF,TEXRES,W,CHESTR,KARMAN,NDEF,ITURB,LISRUG,
      &  LINDNER,SB,DP,SP,CHBORD,CFBOR,HFROT,UNSV2D)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM PROPAG_ADJ'
 !
@@ -2041,8 +2036,14 @@
 !       
         AT = AT + DT
         IF (LT.GE.NIT.OR.AT.GE.TMAX) THEN !LAST TIME STEP
-           NIT = LT         
-           LEOPRD = LT ! TO GET OUTPUT OF LAST TIME STEP IN RESULT FILE
+           ! Set lt in order for the last timestep to be written
+           IF(MOD(LT,LEOPRD).EQ.0) THEN
+             LT = (LT/LEOPRD)*LEOPRD
+           ELSE
+             LT = ((LT/LEOPRD) + 1)*LEOPRD
+           ENDIF
+           ! Set lt as the last timestep
+           NIT = LT
            ENTET = .TRUE.
            CALL ENTETE(1,AT,LT)
         ENDIF
@@ -2460,7 +2461,7 @@
         IF(T2D_FILES(T2DRBI)%NAME.NE.' '.AND.
      &     INCLU2(ESTIME,'DEBUG')) THEN
           CALL BIEF_DESIMP('SERAFIN ',VARSORA,
-     &                     HIST,0,NPOIN,T2D_FILES(T2DRBI)%LU,
+     &                     NPOIN,T2D_FILES(T2DRBI)%LU,
      &                     'STD',-AT,LT,LISPRD,1,
      &                     SORLEOA,SORIMPA,MAXVAR,TEXTE,PTINIG,PTINIL)
         ENDIF
@@ -2475,10 +2476,14 @@
 ! (NOTE THAT OUTPUTS ARE DONE WITHIN ESTEL3D IN COUPLED MODE)
 !
         ELSE
+          ! Keeping in memory the value of leoprd as it will be 
+          ! set to 1 by preres_telemac2d on the last time step
+          OLD_LEOPRD = LEOPRD
+!
           CALL PRERES_TELEMAC2D
           CALL BIEF_DESIMP(T2D_FILES(T2DRES)%FMT,VARSOR,
-     &            HIST,0,NPOIN,T2D_FILES(T2DRES)%LU,'STD',AT,LT,
-     &            LISPRD,LEOPRD,
+     &            NPOIN,T2D_FILES(T2DRES)%LU,'STD',AT,LT,
+     &            LISPRD,OLD_LEOPRD,
      &            SORLEO,SORIMP,MAXVAR,TEXTE,PTINIG,PTINIL)
         ENDIF
 !

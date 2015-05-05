@@ -64,6 +64,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_HERMES
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -79,13 +80,13 @@
       DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN2*NPLAN)
       LOGICAL, INTENT(IN)             :: COURAN,VENT,MAREE
-      CHARACTER(LEN=3), INTENT(IN)    :: BINR3D
+      CHARACTER(LEN=8), INTENT(IN)    :: BINR3D
       CHARACTER(LEN=80), INTENT(IN)   :: TITRE
       TYPE(BIEF_MESH), INTENT(IN)     :: MESH3D
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ISTAT,IB(2),I,IF
+      INTEGER ISTAT,IB(2),I,IIF,J
       DOUBLE PRECISION ATT(1)
       CHARACTER(LEN=3) CAR
 !
@@ -96,6 +97,7 @@
       INTEGER DATE(3),TIME(3)
       DATA DATE/0,0,0/
       DATA TIME/0,0,0/
+      DOUBLE PRECISION, ALLOCATABLE :: TMP(:)
 !
 !***********************************************************************
 !
@@ -130,33 +132,38 @@
 !     CHARACTERISED BY A TITLE AND NAME OF OUTPUT VARIABLES
 !     CONTAINED IN THE FILE.
 !
-      CALL CREATE_DATASET('SERAFIND', ! RESULTS FILE FORMAT
-     &                    NR3D,       ! LU FOR RESULTS FILE
-     &                    TITRE,      ! TITLE
-     &                    NF+2,       ! MAX NUMBER OF OUTPUT VARIABLES
-     &                    TEXTE,      ! NAMES OF OUTPUT VARIABLES
-     &                    SORLEO)     ! PRINT TO FILE OR NOT
+      CALL WRITE_HEADER(BINR3D, ! RESULTS FILE FORMAT
+     &                  NR3D,       ! LU FOR RESULTS FILE
+     &                  TITRE,      ! TITLE
+     &                  NF+2,       ! MAX NUMBER OF OUTPUT VARIABLES
+     &                  TEXTE,      ! NAMES OF OUTPUT VARIABLES
+     &                  SORLEO)     ! PRINT TO FILE OR NOT
 !
 !     WRITES THE MESH IN THE OUTPUT FILE
 !
-      CALL WRITE_MESH('SERAFIND', ! RESULTS FILE FORMAT
+      CALL WRITE_MESH(BINR3D,     ! RESULTS FILE FORMAT
      &                NR3D,       ! LU FOR RESULTS FILE
-     &                MESH3D,     ! MESH
+     &                MESH3D,
      &                NPLAN,      ! NUMBER OF PLANES 
      &                DATE,       ! START DATE
-     &                TIME,       ! START TIME
-     &                0,0)        ! COORDINATES OF THE ORIGIN.
+     &                TIME)       ! START TIME
 !
 ! WRITES TIME
 !
-      ATT(1)=AT
-      CALL ECRI2(ATT,IB,CAR,1,'R8',NR3D,BINR3D,ISTAT)
+!     WRITES DATA INFORMATION
 !
 ! WRITES F
 !
-      DO IF=1,NF
-        CALL ECRI2(F(1,1,IF),IB,CAR,NPOIN2*NPLAN,
-     &             'R8',NR3D,BINR3D,ISTAT)
+      ALLOCATE(TMP(NPOIN2*NPLAN),STAT=ISTAT)
+      CALL CHECK_ALLOCATE(ISTAT,'SOR3D:TMP')
+      DO IIF=1,NF
+        DO I=1,NPOIN2
+          DO J=1,NPLAN
+            TMP(I)=F(I,J,IIF)
+          ENDDO
+        ENDDO
+        CALL ADD_DATA(BINR3D,NR3D,TEXTE(NF),AT,0,IIF.EQ.1,TMP,
+     &                NPOIN2*NPLAN,ISTAT)
       ENDDO
 !
 !     WRITES DEPTH 
@@ -170,7 +177,8 @@
 !     HERE TRA01 MAY BE WRITTEN FOR NOTHING (AND NOT INITIALISED)
 !     THIS IS NECESSARY TO HAVE A REAL SERAFIN FORMAT
 !
-      CALL ECRI2(TRA01,IB,CAR,NPOIN2*NPLAN,'R8',NR3D,BINR3D,ISTAT)
+      CALL ADD_DATA(BINR3D,NR3D,TEXTE(NF+1),AT,0,.FALSE.,TRA01,
+     &                NPOIN2*NPLAN,ISTAT)
 !
 !     WRITES U,V,UV,VV (IF HAS TO)
 !
@@ -200,7 +208,8 @@
       ENDIF
 !
       IF(COURAN.OR.VENT) THEN
-        CALL ECRI2(TRA01,IB,CAR,NPOIN2*NPLAN,'R8',NR3D,BINR3D,ISTAT)
+        CALL ADD_DATA(BINR3D,NR3D,TEXTE(NF+2),AT,0,.FALSE.,TRA01,
+     &                NPOIN2*NPLAN,ISTAT)
       ENDIF
 !
 !-----------------------------------------------------------------------

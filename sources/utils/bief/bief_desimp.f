@@ -2,8 +2,8 @@
                      SUBROUTINE BIEF_DESIMP
 !                    **********************
 !
-     &(FORMAT_RES,VARSOR,HIST,NHIST,N,NRES,STD,AT,LT,LISPRD,LEOPRD,
-     & SORLEO,SORIMP,MAXVAR,TEXTE,PTINIG,PTINIL)
+     &(FORMAT_RES,VARSOR,N,NRES,STD,AT,LT,LISPRD,LEOPRD,
+     & SORLEO,SORIMP,MAXVAR,TEXTE,PTINIG,PTINIL,MESH)
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -28,14 +28,17 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  V. STOBIAC
+!+        10/12/2014
+!+        V7P0
+!+   Add update of mesh coordinates for moving mesh
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FORMAT_RES     |-->| FORMAT OF RESULT FILE
-!| HIST           |-->| A SEQUENCE OF NHIST VALUES BEGINNING BY TIME
 !| LEOPRD         |-->| GRAPHIC PRINTOUT PERIOD
 !| LISPRD         |-->| LISTING PRINTOUT PERIOD
 !| MAXVAR         |-->| MAXIMUM OF VARIABLES IN THE FILE
 !| N              |-->| NUMBER OF POINTS IN THE MESH
-!| NHIST          |-->| NUMBER OF VALUES IN HIST (OBSOLETE)
 !| NRES           |-->| LOGICAL UNIT OF THE RESULTS FILE
 !| PTINIG         |-->| NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS
 !| PTINIL         |-->| NUMBER OF FIRST TIME STEP FOR LISTING PRINTOUTS
@@ -46,9 +49,13 @@
 !| STD            |-->| BINARY OF RESULTS FILE (IBM,I3E,STD)
 !| TEXTE          |-->| NAMES AND UNITS OF VARIABLES
 !| VARSOR         |-->| BLOCK WITH VARIABLES TO BE PRINTED OR COPIED
+!| MESH (OPTIONAL) |-->| MESH STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF
+!      USE BIEF_DEF
+!      USE BIEF, ONLY: IMPVEC
+      USE BIEF, EX_BIEF_DESIMP => BIEF_DESIMP
+      USE INTERFACE_HERMES
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -59,12 +66,13 @@
       TYPE(BIEF_OBJ)   , INTENT(IN) :: VARSOR
       CHARACTER(LEN=8) , INTENT(IN) :: FORMAT_RES
       INTEGER          , INTENT(IN) :: NRES,LT,LISPRD,LEOPRD
-      INTEGER          , INTENT(IN) :: NHIST,PTINIG,PTINIL,N
+      INTEGER          , INTENT(IN) :: PTINIG,PTINIL,N
       INTEGER          , INTENT(IN) :: MAXVAR
-      DOUBLE PRECISION , INTENT(IN) :: AT,HIST(NHIST)
+      DOUBLE PRECISION , INTENT(IN) :: AT
       CHARACTER(LEN=32), INTENT(IN) :: TEXTE(*)
       CHARACTER(LEN=3) , INTENT(IN) :: STD
       LOGICAL          , INTENT(IN) :: SORLEO(MAXVAR),SORIMP(MAXVAR)
+      TYPE(BIEF_MESH)  , INTENT(IN), OPTIONAL :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -82,19 +90,23 @@
       IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.
       LTT=(LT/LEOPRD)*LEOPRD
       IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
+      IF(LT.EQ.0) LEO=.TRUE.
 !
 !-----------------------------------------------------------------------
 !
       IF(LEO) THEN
-        CALL WRITE_DATA(FORMAT_RES,       ! RESULT FILE FORMAT ID
-     &                  NRES,             ! LU RESULT FILE
-     &                  MAXVAR,           ! MAX NB OF VARIABLES IN VARSOR
-     &                  AT,               ! TIME
-     &                  LT,               ! TIMESTEP
-     &                  SORLEO(1:MAXVAR), ! OUTPUT OR NOT
-     &                  TEXTE(1:MAXVAR),  ! TIMESTEP
-     &                  VARSOR,           ! COLLECTION OF VECTORS
-     &                  N)                ! NUMBER OF VALUES
+        LTT = (LT-PTINIG)/LEOPRD
+        ! In case the starting point is not at lt.eq.0 but later
+        !  we still write the timestep 0 so we need to increment LTT
+        IF(PTINIG.NE.0) LTT = LTT + 1
+        IF(LT.EQ.0) LTT = 0
+        IF(PRESENT(MESH)) THEN
+          CALL WRITE_DATA(FORMAT_RES,NRES,MAXVAR,AT,LTT,SORLEO,
+     &                    TEXTE,VARSOR,N,MESH)
+        ELSE
+          CALL WRITE_DATA(FORMAT_RES,NRES,MAXVAR,AT,LTT,SORLEO,
+     &                    TEXTE,VARSOR,N)
+        ENDIF
       ENDIF
 !
 ! TO LISTING FILE

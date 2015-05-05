@@ -38,6 +38,7 @@ FICHIER DES FRONTIERES LIQUIDES    : t3d_delwaq.qsl
 FICHIER DES RESULTATS 3D           : r3d_delwaq.slf
 FICHIER DES RESULTATS 2D           : r2d_delwaq.slf
 FICHIER DE REFERENCE               : f3d_delwaq.slf
+FICHIER FORTRAN                    : t3d_delwaq.f
 VALIDATION : OUI
 /
 FICHIER DELWAQ DES VOLUMES                : dwq_delwaq-volume.dwq

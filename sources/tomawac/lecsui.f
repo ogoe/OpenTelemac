@@ -3,7 +3,7 @@
 !                    *****************
 !
      &(F,NPLAN,NF,TETA,FREQ,NELEM2,NPOIN2,AT,UC,VC,UC1,VC1,UC2,VC2,
-     & UV,VV,UV1,VV1,UV2,VV2,VENT,TV1,TV2,COURAN,NPRE,BINPRE,DEPTH,
+     & UV,VV,UV1,VV1,UV2,VV2,VENT,TV1,TV2,COURAN,NPRE,FFORMAT,DEPTH,
      & TC1,TC2,ZM1,ZM2,DZHDT,TM1,TM2,MAREE,TRA01)
 !
 !***********************************************************************
@@ -78,6 +78,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_HERMES
 !
       IMPLICIT NONE
 !
@@ -101,12 +102,14 @@
       DOUBLE PRECISION, INTENT(INOUT) :: DZHDT(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN2*NPLAN)
       LOGICAL, INTENT(IN)             :: COURAN,VENT,MAREE
-      CHARACTER(LEN=3), INTENT(IN)    :: BINPRE
+      CHARACTER(LEN=8), INTENT(IN)    :: FFORMAT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,ISTAT,NPOIN,NVAR,NPL,IB(1)
-      CHARACTER(LEN=72) CAR
+      INTEGER NELEM, NPTFR, NNPLAN, NPTIR2, NDP, TYP_ELEM
+      INTEGER TYP_BND_ELEM, NELEBD
+      CHARACTER(LEN=80) CAR
 !
       INTEGER, PARAMETER :: NFMAX = 200
       CHARACTER(LEN=32) TEXTE(NFMAX+2)
@@ -117,7 +120,8 @@
 !
 !***********************************************************************
 !
-      CALL SKIPGEO(NPRE,CAR,NPOIN,NVAR,TEXTE,NPL)
+      CALL READ_MESH_INFO(FFORMAT,NPRE,CAR,NVAR,NPOIN,TYP_ELEM,
+     &                    NELEM,NPTFR,NPTIR2,NDP,NNPLAN)
 !
       IF(NPL.NE.NPLAN) THEN
         IF(LNG.EQ.1) THEN
@@ -184,8 +188,8 @@
 !
 !     READS TIME
 !
-      CALL LIT(ATT,W,IB,CAR,1,'R8',NPRE,BINPRE,ISTAT)
-      AT = ATT(1)
+      CALL GET_DATA_TIME(FFORMAT,NPRE,1,AT,ISTAT)
+!
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) '- REPRISE DE CALCUL AU TEMPS  ',AT
       ELSEIF(LNG.EQ.2) THEN
@@ -195,14 +199,15 @@
 !     READS F
 !
       DO I=1,NF
-        CALL LIT(F(1,1,I),W,IB,CAR,NPOIN2*NPLAN,
-     &           'R8',NPRE,BINPRE,ISTAT)
+        CALL READ_DATA(FFORMAT,NPRE,F(1,1,I),TEXTE(I),NPOIN,
+     &                 ISTAT,1)
       ENDDO
 !
 !     READS DEPTH (ALWAYS WRITTEN, EVEN IF NOT RELEVANT)
 !
       IF(MAREE) THEN
-        CALL LIT(DEPTH,W,IB,CAR,NPOIN2,'R8',NPRE,BINPRE,ISTAT)
+        CALL READ_DATA(FFORMAT,NPRE,F(1,1,I),TEXTE(I),NPOIN2,
+     &                 ISTAT,1)
 !       SETS TRIPLETS U,V,TV1 AND 2 TO UV,VV,AT
         TM1=AT
         TM2=AT
@@ -210,16 +215,19 @@
         CALL OV( 'X=Y     ' , ZM2 , DEPTH , Z , 0.D0   , NPOIN2)
         CALL OV( 'X=C     ' , DZHDT , DEPTH , Z , 0.D0 , NPOIN2)
       ELSE
-        CALL LIT(TRA01,W,IB,CAR,1,'R8',NPRE,BINPRE,ISTAT)
+        CALL READ_DATA(FFORMAT,NPRE,TRA01,TEXTE(I),1,
+     &                 ISTAT,1)
       ENDIF
 !
 !     READS UC,VC,UV,VV IF HAS TO
 !
       IF(COURAN.OR.VENT) THEN
         IF(VENT) THEN
-          CALL LIT(TRA01,W,IB,CAR,4*NPOIN2,'R8',NPRE,BINPRE,ISTAT)
+          CALL READ_DATA(FFORMAT,NPRE,TRA01,TEXTE(I),4*NPOIN2,
+     &                   ISTAT,1)
         ELSE
-          CALL LIT(TRA01,W,IB,CAR,2*NPOIN2,'R8',NPRE,BINPRE,ISTAT)
+          CALL READ_DATA(FFORMAT,NPRE,TRA01,TEXTE(I),2*NPOIN2,
+     &                   ISTAT,1)
         ENDIF
       ENDIF
 !

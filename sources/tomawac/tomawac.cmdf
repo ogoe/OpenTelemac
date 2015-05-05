@@ -1,8 +1,7 @@
 [general]
 path: <root>|sources|tomawac
 module: tomawac
-liborder: special parallel damocles bief tomawac
-version: v7p0
+liborder: special parallel damocles hermes bief tomawac
 name: HOMERE_TOMAWAC
 
 [bief]
@@ -13,8 +12,7 @@ files: bief_def.f
   elapse.f
   read_config.f
   bief_init.f
-  lit.f
-  find_in_sel.f
+  read_data.f
   crosfr.f
   fasp.f
   fond.f
@@ -27,7 +25,7 @@ files: bief_def.f
   os.f
   strche.f
   fonstr.f
-  skipgeo.f
+  read_mesh_info.f
   dimens.f
   bief_nbpel.f
   bief_nbpts.f
@@ -323,7 +321,18 @@ files: bief_def.f
   bief_allvec_in_block.f
   charac.f
   proxim.f
+  read_partel_info.f
   leclim.f
+  write_header.f
+  write_mesh.f
+  read_dataset.f
+  bief_valida.f
+  write_data.f
+  impvec.f
+  bief_desimp.f
+  build_ikle_ext.f
+  ludcmp.f
+  lubksb.f
   vecle3.f
   vecle6.f
   vecle4.f
@@ -366,39 +375,20 @@ files: bief_def.f
   survol.f
   geoelt.f
   inbief.f
-  m_med.F
-  litenr.f
-  bief_eof.f
-  suite_serafin.f
-  bief_suite.f
-  bief_valida.f
-  ecri2.f
-  write_data_serafin.f
-  write_data.f
-  impvec.f
-  bief_desimp.f
-  create_dataset_serafin.f
-  create_dataset.f
-  write_mesh_serafin.f
-  write_mesh.f
-  build_ikle_ext.f
-  ludcmp.f
-  lubksb.f
   bief_open_files.f
   bief_allmat.f
   ielbor.f
   bief_nbsegel.f
   segbor.f
-  readgeo1.f
-  bief_ininds.f
-  corrxy.f
-  readgeo3.f
-  readgeo2.f
-  cpikle3.f
   bief_nbfel.f
   cpikle2.f
+  corrxy.f
+  read_mesh_coord.f
+  cpikle3.f
+  read_mesh_conn.f
   mxptel31.f
   mxptel.f
+  bief_ininds.f
   almesh.f
   read_submit.f
   sortie.f
@@ -424,6 +414,42 @@ files: majus.f
   damoc.f
   damocle.f
 
+[hermes]
+path: <root>|sources|utils|hermes
+files: interface_hermes.f
+  utils_med.F
+  utils_serafin.f
+  get_data_value.f
+  get_data_var_list.f
+  get_data_time.f
+  get_data_ntimestep.f
+  get_data_nvar.f
+  get_mesh_nelem.f
+  get_mesh_npoin_per_element.f
+  get_mesh_nplan.f
+  get_bnd_nelem.f
+  get_mesh_nptir.f
+  get_mesh_title.f
+  get_bnd_npoin.f
+  get_mesh_dimension.f
+  get_mesh_npoin.f
+  lit.f
+  get_bnd_numbering.f
+  get_bnd_value.f
+  set_header.f
+  set_mesh.f
+  add_data.f
+  update_data_mesh.f
+  ecri2.f
+  open_mesh.f
+  open_bnd.f
+  get_mesh_l2g_numbering.f
+  get_mesh_coord.f
+  get_mesh_connectivity.f
+  get_bnd_ipobo.f
+  close_bnd.f
+  close_mesh.f
+
 [parallel]
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
@@ -434,8 +460,8 @@ files: declarations_parallel.F
   p_ireadi8.F
   p_iwriti8.F
   interface_parallel.f
-  p_dmin.F
   p_dmax.F
+  p_dmin.F
   p_mpi_type_get_extent.F
   p_mpi_type_create_struct.F
   p_mpi_type_commit.F
@@ -458,8 +484,11 @@ files: declarations_parallel.F
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
-  plante.f
+  plante.F
   check_allocate.f
+  get_nodes_per_element.f
+  write_error.f
+  check_call.f
   extens.f
 
 [tomawac]

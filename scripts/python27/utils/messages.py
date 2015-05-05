@@ -56,9 +56,9 @@ def filterMessage(d,e=None,bypass=True):
             cd.update({'tree':message})
          else:
             cd = {'name':'uncontroled error from python:','msg':repr(e)+ 
-               '\n~~~~~~~~~~~~~~~~~~\n'+
+               '\n'+'~'*18+'\n'+
                ''.join(traceback.format_exception(*sys.exc_info()))+
-               '~~~~~~~~~~~~~~~~~~'}
+               '~'*18}
             if 'name' in d: cd['name'] = d['name']+':\n      '+cd['name']
             if 'msg' in d: cd['msg'] = d['msg']+':\n      '+cd['msg']
          if bypass: return cd
@@ -177,7 +177,7 @@ class MESSAGES:
          code.value = proc.returncode
          if code.value != 0 and tail.value.strip() == '':
             tail.value = 'I was only able to capture the following execution error while executing the following:\n'+exe+'\n... you may wish to re-run without bypass option.'+ \
-               '\n~~~~~~~~~~~~~~~~~~\n'+str(proc.stderr.read().strip())+'\n~~~~~~~~~~~~~~~~~~'
+               '\n'+'~'*18+'\n'+str(proc.stderr.read().strip())+'\n'+'~'*18
             self.tail = self.tail + '\n' + tail.value
       else:
          code.value = sp.call(exe,shell=True)

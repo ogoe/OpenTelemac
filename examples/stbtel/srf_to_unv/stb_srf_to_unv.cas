@@ -15,5 +15,4 @@ FORMAT DU FICHIER DE SORTIE   : 'UNV'
 FICHIER DE SORTIE             : 'geo_riogrande.unv'
 FICHIER LOG EN SORTIE         : 'geo_riogrande.log'
 /
-&ETA
 &FIN

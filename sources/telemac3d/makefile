@@ -16,7 +16,7 @@
 #
 NOM_GENERIQUE = telemac3d
 
-VERSION	      = v7p0
+VERSION	      = v7p1
 
 ###########################
 # Definition des macros
@@ -53,6 +53,7 @@ LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/sisyphe$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/telemac2d$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/bief$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/damo$(MODE)$(VERSION).a \
+                $(PROJECT)/builds/$(DIRLIB)/lib/hermes$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/parallel$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/special$(MODE)$(VERSION).a \
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)

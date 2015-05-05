@@ -98,6 +98,5 @@ LAW OF BOTTOM FRICTION                         =  3
 FRICTION COEFFICIENT                           =  50
 TURBULENCE MODEL                               =  1
 VELOCITY DIFFUSIVITY                           =  0.1 / 1.E-6
-&ETA
 &FIN                                           
 

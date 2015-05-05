@@ -445,8 +445,7 @@ if __name__ == "__main__":
    if args != []:
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Turning XML / config loops inside out ~~~~~~~~~~~~~~~~~~~~~~~
-      print '\n\nScanning XML files and configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\nScanning XML files and configurations\n'+'~'*72+'\n'
       xmls = {}
       for cfgname in cfgs:
          # still in lower case
@@ -471,8 +470,7 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       for xmlFile in xmls:
-         print '\n\nFocused validation on ' + xmlFile + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+         print '\n\nFocused validation on ' + xmlFile + '\n'+'~'*72+'\n'
          try:
             report = reports.add(options.report,PWD,VERSION)
          except Exception as e:
@@ -498,8 +496,7 @@ if __name__ == "__main__":
    else:
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Turning XML / config loops inside out ~~~~~~~~~~~~~~~~~~~~~~~
-      print '\n\nScanning XML files and configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\nScanning XML files and configurations\n'+'~'*72+'\n'
       xmls = {}; nxmls = 0
       for cfgname in cfgs:
          # still in lower case
@@ -530,16 +527,14 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      print '\n\nLooping through all XML files ...\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\nLooping through all XML files ...\n'+'~'*72+'\n'
       ixmls = 0
       for codeName in xmls:
          for key in xmls[codeName]:
             for xmlFile in xmls[codeName][key]:
                ixmls += 1
                print '\n\nValidation < '  + str(ixmls) + '/' + str(nxmls) + ' > of ' + key + ' of module ' + codeName
-               print '     XML file: ' + xmlFile + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+               print '     XML file: ' + xmlFile + '\n'+'~'*72
                try:
                   report = reports.add(options.report,root,VERSION)
                except Exception as e:
@@ -569,15 +564,13 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpts.notEmpty():
-      print '\n\nHummm ... I could not complete my work.\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' \
-      + xcpts.exceptMessages()
+      print '\n\nHummm ... I could not complete my work.\n'\
+      '~'*72 + '\n' + xcpts.exceptMessages()
+      sys.exit(1)
 
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   else: print '\n\nMy work is done\n\n'
-
-   
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 
-   sys.exit(0)
+   else: 
+      print '\n\nMy work is done\n\n'
+      sys.exit(0)

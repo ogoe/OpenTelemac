@@ -4,7 +4,7 @@
 /        KFROT=0 OR LESS : Assume flat bed KS=KSP  
 / Ajout des variables KS, KSP, CHESTR pour les sorties graphiques
 / Frottement de peau (ICR =1 par defaut)
-/---SYSTEME-TELEMAC-V7P0-----------------------SISYPHE-----------------------
+/---SYSTEME-TELEMAC-V7P1-----------------------SISYPHE-----------------------
 /
 /Signification des differents mode d'acquisition/restitution
 /des fichiers vis a vis du parallelisme :
@@ -38,7 +38,7 @@
 /     Sections input file, to be treated in parallel by partel in
 /     a similar way as CONLIM   !jaj ####
 /
-/---SYSTEME-TELEMAC-V7P0------------------------DeltaCAD-/-Septembre-2003----
+/---SYSTEME-TELEMAC-V7P1------------------------DeltaCAD-/-Septembre-2003----
 /
 NOM = 'FICHIER DE GEOMETRIE'
 NOM1 = 'GEOMETRY FILE'
@@ -446,8 +446,8 @@ NOM = 'NUMERO DE VERSION'
 NOM1 = 'RELEASE'  
 TYPE = CARACTERE
 INDEX = 13
-DEFAUT = 'V7P0'
-DEFAUT1 = 'V7P0'
+DEFAUT = 'V7P1'
+DEFAUT1 = 'V7P1'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 3
@@ -3560,16 +3560,18 @@ NOM1 = 'DESCRIPTION OF LIBRARIES'
 TYPE = CARACTERE
 INDEX = 54
 MNEMO = 'LINKLIBS'
-TAILLE = 6
+TAILLE = 7
 DEFAUT = 'builds|PPP|lib|sisypheMMMVVV.LLL'; 
 'builds|PPP|lib|dredgesimMMMVVV.LLL';
 'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 
 DEFAUT1 = 'builds|PPP|lib|sisypheMMMVVV.LLL'; 
 'builds|PPP|lib|dredgesimMMMVVV.LLL';
 'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 

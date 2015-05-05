@@ -544,21 +544,18 @@ if __name__ == "__main__":
    if not path.isdir(cfgs[cfgname]['doxydocs']): createDirectories(cfgs[cfgname]['doxydocs'])
    # parsing for proper naming
    cfg = parseConfig_DoxygenTELEMAC(cfgs[cfgname])
-   print '\n\nScanning the source code for:\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\nScanning the source code for:\n'+'~'*72+'\n'
    print '    +> configuration: ' +  cfgname
    if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
    print '    +> root:          ' +  cfgs[cfgname]['root']
-   print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n'+'~'*72+'\n'
 
    # ~~ Scans all source files to build a relation database ~~
    fic,mdl,sbt,fct,prg,dep,racine = scanSources(cfgname,cfg,BYPASS)
 
    # ~~ Scann all source files to update Doxygen ~~~~~~~~~~~~~~~~
    for mod in fic:
-      print '\nCreating the DOXYGEN headers for ' + mod + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+      print '\nCreating the DOXYGEN headers for ' + mod + '\n'+'~'*72+'\n'
       for ifile in fic[mod]:
 
          # ~~ Read the content of the source file ~~~~~~~~~~~~

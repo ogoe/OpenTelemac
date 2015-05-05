@@ -2,7 +2,6 @@
 path: <root>|sources|utils|gretel
 module: gretel
 liborder: special gretel
-version: v7p0
 name: GREDELPTS_AUTOP
 
 [gretel]
@@ -12,6 +11,6 @@ files: gredelpts_read_dataset.f
 
 [special]
 path: <root>|sources|utils|special
-files: plante.f
+files: plante.F
   check_allocate.f
   extens.f

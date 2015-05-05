@@ -64,7 +64,6 @@
       INTEGER LNG,LU
 !
 #if defined(HAVE_MUMPS)
-      !TODO:Get code for mumps
 #else
       IF(LNG.EQ.1) WRITE(LU,2018)
       IF(LNG.EQ.2) WRITE(LU,2019)

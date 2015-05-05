@@ -153,5 +153,4 @@ STOCKAGE DES MATRICES : 3
 COEFFICIENT DE DIFFUSION VERTICAL DES TRACEURS = 1.E-4
 PRECONDITIONNEMENT POUR LA DIFFUSION DES TRACEURS : 34
 /
-&ETA                                                                            
 &FIN

@@ -58,8 +58,7 @@ def main(action=None):
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nInterpreting command line options\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\nInterpreting command line options\n'+'~'*72+'\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    # valid for i2s / i3s
    parser.add_option("--replace",action="store_true",dest="freplace",default=False,help="if present, the output file will eventualy replace the input file" )
@@ -100,8 +99,7 @@ def main(action=None):
       for insFile in insFiles:
 
          insFile = path.realpath(insFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
-         print '\n\nSmoothing ' + path.basename(insFile) + ' within ' + path.dirname(insFile) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         print '\n\nSmoothing ' + path.basename(insFile) + ' within ' + path.dirname(insFile) + '\n'+'~'*72+'\n'
          ins = InS( insFile )
          if options.fclock:
             print '\nMake closed loops clockwise'
@@ -142,9 +140,9 @@ def main(action=None):
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nMy work is done\n\n'
-
-   sys.exit(0)
+   else:
+      print '\n\nMy work is done\n\n'
+      sys.exit(0)
 
 if __name__ == "__main__":
     main(None)

@@ -509,8 +509,7 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\nLoading Options and Configurations\n'+'~'*72+'\n'
    USETELCFG = ''
    PWD = path.dirname(path.dirname(path.dirname(path.dirname(sys.argv[0]))))
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
@@ -564,8 +563,7 @@ if __name__ == "__main__":
 
       for mod in cfg['VALIDATION']:
 # ~~ Scans all CAS files to launch validation ~~~~~~~~~~~~~~~~~~~~~~
-         print '\n\nConfiguration ' + cfgname + ', Module '+ mod + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         print '\n\nConfiguration ' + cfgname + ', Module '+ mod + '\n'+'~'*72+'\n'
          print '... reading module dictionary'
          frgb,dico = scanDICO(path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+'.dico'))
          for casFile in cfg['VALIDATION'][mod]:

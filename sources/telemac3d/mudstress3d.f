@@ -21,6 +21,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
       USE BIEF 
+!
       IMPLICIT NONE 
       INTEGER LNG,LU 
       COMMON/INFO/LNG,LU 
@@ -38,30 +39,8 @@
 ! 
       INTEGER :: ERR 
       DOUBLE PRECISION :: BID 
-      REAL, ALLOCATABLE :: W(:) 
-      LOGICAL :: OK 
       CHARACTER(LEN=16) :: VARNAME 
-      INTEGER :: I 
-! 
-!----------------------------------------------------------------------- 
-! 
-      ALLOCATE(W(MESH%NPOIN),STAT=ERR) 
-      IF(ERR.NE.0) THEN 
-        IF(LNG.EQ.1) WRITE(LU,*) 'MUDSTRESS3D: MAUVAISE ALLOCATION DE W'
-        IF(LNG.EQ.2) WRITE(LU,*) 'MUDSTRESS3D: WRONG ALLOCATION OF W'
-        CALL PLANTE(1) 
-        STOP 
-      ENDIF 
-! 
-!----------------------------------------------------------------------- 
-! 
-!     ASSUMES THAT THE FILE HEADER LINES HAVE ALREADY BEEN READ 
-!     WILL START READING THE RESULT RECORDS 
-! 
-!----------------------------------------------------------------------- 
-! 
-!     INITIALISE 
-      OK = .FALSE. 
+      INTEGER :: I, IERR
 ! 
 !----------------------------------------------------------------------- 
 ! 
@@ -76,20 +55,18 @@
 ! 
         WRITE(VARNAME,'(A9,I0)')  'ERO SHEAR',I  
 !           
-        CALL FIND_IN_SEL(LAYTOCE%ADR(I)%P, 
-     &                   VARNAME,NGEO,FFORMAT,W,OK,TIME=BID) 
+        CALL READ_DATA(FFORMAT, NGEO, LAYTOCE%ADR(I)%P%R, 
+     &                   VARNAME,MESH%NPOIN,IERR,1,TIME=BID) 
 !       
-        IF (OK) WRITE(LU,*)  
+        IF (IERR.EQ.0) THEN
+          WRITE(LU,*)  
      &    'EROSION SHEAR (LAYER', I, ') FOUND IN GEOMETRY FILE' 
-        IF (.NOT. OK) WRITE(LU,*)  
+        ELSE
+          WRITE(LU,*)  
      &    'EROSION SHEAR (LAYER', I, ') NOT FOUND IN GEOMETRY FILE' 
- 
-!       RESET FIND FLAG: 
-        OK = .FALSE. 
+        ENDIF
 ! 
       ENDDO 
-!       
-      DEALLOCATE(W) 
 ! 
 !----------------------------------------------------------------------- 
 ! 

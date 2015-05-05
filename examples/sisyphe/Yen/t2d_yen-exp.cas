@@ -106,7 +106,6 @@ VELOCITY DIFFUSIVITY                        : 1.E-2
 OPTION FOR THE DIFFUSION OF VELOCITIES      : 1
 /......................................................................
 /
-/&ETA
 &FIN                                                              
 
 

@@ -1,22 +1,18 @@
 [general]
 path: <root>|sources|stbtel
 module: stbtel
-liborder: special parallel damocles bief stbtel
-version: v7p0
+liborder: special parallel damocles hermes bief stbtel
 name: HOMERE_STBTEL
 
 [bief]
 path: <root>|sources|utils|bief
-files: bief_def.f
+files: declarations_telemac.f
+  bief_def.f
   bief.f
-  declarations_telemac.f
-  m_med.F
-  lit.f
-  ecri2.f
-  readgeo1.f
+  read_mesh_info.f
   corrxy.f
-  readgeo3.f
-  readgeo2.f
+  read_mesh_coord.f
+  read_mesh_conn.f
   time_in_seconds.f
   voisin.f
   bief_eof.f
@@ -46,6 +42,37 @@ files: preval.f
   damoc.f
   damocles.f
 
+[hermes]
+path: <root>|sources|utils|hermes
+files: utils_med.F
+  interface_hermes.f
+  utils_serafin.f
+  set_mesh.f
+  get_data_var_list.f
+  get_data_time.f
+  open_mesh.f
+  get_mesh_l2g_numbering.f
+  add_data.f
+  close_mesh.f
+  get_mesh_title.f
+  get_data_ntimestep.f
+  get_mesh_nelem.f
+  get_mesh_npoin_per_element.f
+  get_mesh_nplan.f
+  get_bnd_nelem.f
+  get_mesh_nptir.f
+  get_bnd_npoin.f
+  get_data_nvar.f
+  get_mesh_dimension.f
+  get_mesh_npoin.f
+  set_header.f
+  get_data_value.f
+  get_mesh_coord.f
+  get_mesh_connectivity.f
+  get_bnd_ipobo.f
+  lit.f
+  ecri2.f
+
 [parallel]
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
@@ -57,7 +84,10 @@ files: declarations_parallel.F
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
-  plante.f
+  plante.F
+  get_nodes_per_element.f
+  write_error.f
+  check_call.f
   check_allocate.f
 
 [stbtel]

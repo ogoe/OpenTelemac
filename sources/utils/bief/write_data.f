@@ -2,10 +2,10 @@
                      SUBROUTINE WRITE_DATA
 !                    *********************
 !
-     &(FFORMAT,FILERES,NVARS,TIME,TIMESTEP,OUTVAR,NOMVAR,BVARSOR,N)
+     &(FFORMAT,FILERES,NVARS,TIME,TIMESTEP,OUTVAR,NOMVAR,BVARSOR,N,MESH)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    WRITES DATA VALUES ON A MESH INTO THE DATA FILE OF THE
@@ -32,23 +32,30 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  Y. AUDOUIN (EDF), V.STOBIAC (EDF)
+!+        10/12/2014
+!+        V7P0
+!+   
+!+   Use of Hermes interface to write data and mesh update option
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BVARSOR        |-->| BIEF BLOCK CONTAINING THE VARIABLES VARIABLES
-!| FFORMAT        |-->| FILE FORMAT
-!| FILERES        |-->| LOGICAL UNIT OF FILE
-!| N              |-->| NUMBER OF VALUES (MAY BE DIFFERENT FROM
-!|                |   | THE NUMBER OF DEGREES OF FREEDOM, E.G. FOR
-!|                |   | QUADRATIC ELEMENTS ONLY THE LINEAR VALUES
-!|                |   | ARE EXITED)
-!| NOMVAR         |-->| NAME OF VARIABLES
-!| NVARS          |-->| NUMBER OF VARIABLES
-!| OUTVAR         |-->| VARIABLES TO BE PUT IN THE FILE
-!| TIME           |-->| TIME
-!| TIMESTEP       |-->| TIME STEP (INTEGER), NOT DT.
+!| BVARSOR         |-->| BIEF BLOCK CONTAINING THE VARIABLES VARIABLES
+!| FFORMAT         |-->| FILE FORMAT
+!| FILERES         |-->| LOGICAL UNIT OF FILE
+!| N               |-->| NUMBER OF VALUES (MAY BE DIFFERENT FROM
+!|                 |   | THE NUMBER OF DEGREES OF FREEDOM, E.G. FOR
+!|                 |   | QUADRATIC ELEMENTS ONLY THE LINEAR VALUES
+!|                 |   | ARE EXITED)
+!| NOMVAR          |-->| NAME OF VARIABLES
+!| NVARS           |-->| NUMBER OF VARIABLES
+!| OUTVAR          |-->| VARIABLES TO BE PUT IN THE FILE
+!| TIME            |-->| TIME
+!| TIMESTEP        |-->| TIME STEP (INTEGER), NOT DT.
+!| MESH (OPTIONAL) |-->| MESH STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE M_MED
       USE BIEF, EX_WRITE_DATA => WRITE_DATA
+      USE INTERFACE_HERMES
 !
       IMPLICIT NONE
 !
@@ -57,42 +64,69 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER(LEN=8), INTENT(IN)          :: FFORMAT
-      INTEGER,          INTENT(IN)          :: FILERES,N
-      INTEGER,          INTENT(IN)          :: NVARS
-      DOUBLE PRECISION, INTENT(IN)          :: TIME
-      INTEGER,          INTENT(IN)          :: TIMESTEP
+      CHARACTER(LEN=8), INTENT(IN)           :: FFORMAT
+      INTEGER,          INTENT(IN)           :: FILERES,N
+      INTEGER,          INTENT(IN)           :: NVARS
+      DOUBLE PRECISION, INTENT(IN)           :: TIME
+      INTEGER,          INTENT(IN)           :: TIMESTEP
       CHARACTER(LEN=32),DIMENSION(NVARS), INTENT(IN) :: NOMVAR
-      LOGICAL, DIMENSION(NVARS), INTENT(IN) :: OUTVAR
-      TYPE(BIEF_OBJ),            INTENT(IN) :: BVARSOR
+      LOGICAL, DIMENSION(NVARS), INTENT(IN)  :: OUTVAR
+      TYPE(BIEF_OBJ),   INTENT(IN)           :: BVARSOR
+      TYPE(BIEF_MESH),  INTENT(IN), OPTIONAL :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!***********************************************************************
-!     IF(DEBUG) CALL PROC_BEGIN('WRITE_DATA')
-!***********************************************************************
+      LOGICAL :: FIRST_VAR
+      INTEGER :: I,IERR, NPT, NB_DIM
+      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: COORD
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
-          CALL WRITE_DATA_SERAFIN(FILERES,NVARS,TIME,TIMESTEP,
-     &                            OUTVAR,BVARSOR,FFORMAT,N)
-        CASE ('MED     ')
-          CALL WRITE_DATA_MED(FILERES,NVARS,TIME,TIMESTEP,
-     &                        NOMVAR,OUTVAR,BVARSOR)
-        CASE DEFAULT
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'WRITE_DATA : MAUVAIS FORMAT : ',FFORMAT
-          ENDIF
-          IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'WRITE_DATA: BAD FILE FORMAT : ',FFORMAT
-          ENDIF
-          CALL PLANTE(1)
-          STOP
-      END SELECT
+!-----------------------------------------------------------------------
 !
-!***********************************************************************
-!     IF(DEBUG) CALL PROC_END('WRITE_DATA')
-!***********************************************************************
+      ! CONSTRUCT COORDINATES TABLE
+      IF(PRESENT(MESH)) THEN
+        ! SET VARIABLES
+        NPT    = MESH%NPOIN
+        NB_DIM = MESH%DIM
+        ! SET COORDINATES
+        ALLOCATE(COORD(NB_DIM*NPT))
+        DO I=1,NPT
+          COORD(I)     = MESH%X%R(I)
+          COORD(I+NPT) = MESH%Y%R(I)
+          IF(NB_DIM.EQ.3) COORD(I+2*NPT) = MESH%Z%R(I)
+        ENDDO
+        ! UPDATE COORDINATES IN 3D RES FILES
+        CALL UPDATE_DATA_MESH(FFORMAT,FILERES,TIME,TIMESTEP,
+     &                        NB_DIM,NPT,COORD,IERR)
+        DEALLOCATE(COORD)
+      ENDIF
+!
+      ! LOOP ON ALL THE VARIABLES
+      FIRST_VAR = .TRUE.
+      DO I=1,NVARS
+        ! IF THE VARIABLE MUST BE WRITTEN
+        IF(OUTVAR(I)) THEN
+          IF(ASSOCIATED(BVARSOR%ADR(I)%P%R)) THEN
+            CALL ADD_DATA(FFORMAT,FILERES,NOMVAR(I),TIME,TIMESTEP,
+     &                    FIRST_VAR,BVARSOR%ADR(I)%P%R,N,IERR)
+            CALL CHECK_CALL(IERR,'WRITE_DATASET:ADD_DATA')
+            FIRST_VAR = .FALSE.
+          ELSE
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'WRITE_DATA : VARIABLE NO : ',I
+              WRITE(LU,*) '        PAS OU MAL ALLOUEE'
+              WRITE(LU,*) '        OU POINTEUR NON ASSOCIE'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'WRITE_DATA: VARIABLE NO: ',I
+              WRITE(LU,*) '        NOT OR NOT WELL ALLOCATED'
+              WRITE(LU,*) '        OR POINTER NOT ASSOCIATED '
+            ENDIF
+          ENDIF
+        ENDIF
+      ENDDO
+      
+!
+!-----------------------------------------------------------------------
 !
       RETURN
-      END
+      END SUBROUTINE

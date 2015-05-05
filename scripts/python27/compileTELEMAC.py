@@ -122,7 +122,8 @@ def trimTree(name,lname,lst,rebuild):
             libdws.append(lrank[lib]['dw'])
             del lrank[lib]
          for ldw in lrank:
-            if lib in lrank[ldw]['up']: lrank[ldw]['up'].remove(lib)
+            if lib in lrank[ldw]['up']: 
+               lrank[ldw]['up'].remove(lib)
    return liborder
 
 def getTree(name,lname,lst,level,lrank,rebuild):
@@ -543,13 +544,11 @@ if __name__ == "__main__":
       # parsing for proper naming
       cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
       print '\n\n'+'\n'.join(banner(cfgname))
-      print 'Scanning the source code for:\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print 'Scanning the source code for:\n'+'~'*72+'\n'
       print '    +> configuration: ' +  cfgname
       if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
       print '    +> root:          ' +  cfgs[cfgname]['root']
-      print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n'+'~'*72+'\n'
 
       if options.cleanup:
          try: cleanConfig(cfg,cfgname)
@@ -560,7 +559,7 @@ if __name__ == "__main__":
       #TODO: Solve order error when we compile telemac3d telemac2d is put before bief
       #DONE: the error on the order, but has to be tested -- replace LIBDEPS by MAKSYSTEL['deps']...'liborder' in the loop below
       #TODO: Tested still not working even if we rename all the duplicated variable/functions names
-      LIBDEPS = ['special', 'parallel', 'mumps', 'damocles', 'bief', 'gretel', 'partel', 'diffsel', 'postel3d', 'dredgesim', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
+      LIBDEPS = ['special', 'parallel', 'mumps', 'damocles', 'hermes', 'bief', 'gretel', 'partel', 'diffsel', 'postel3d', 'dredgesim', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
       # Only if we ask for a scan
       if options.rescan:
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
@@ -568,8 +567,7 @@ if __name__ == "__main__":
 
 # ~~ Builds the Call Tree for each main program ~~~~~~~~~~~~~~~~~~~~
          HOMERES = {}
-         print '\nUpdating your cmdf file for compilation without scan\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         print '\nUpdating your cmdf file for compilation without scan\n'+'~'*72+'\n'
          for item in prg:
 
             if prg[item][0] in cfg['COMPILER']['MODULES']:
@@ -660,8 +658,7 @@ if __name__ == "__main__":
                cmdfFiles[mod].update({cmdf['general']['name']:cmdf})
 # ~~ Look whether .o older than .f ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          for item in cmdfFiles[mod]:
-            print '\n\nCompiling the program ' + item + ' and dependents\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+            print '\n\nCompiling the program ' + item + ' and dependents\n'+'~'*72+'\n'
             MAKSYSTEL = {'add':[],'tag':[],'deps':cmdfFiles[mod][item]['general']['liborder']}
             HOMERES.update({item:MAKSYSTEL})
             for lib in MAKSYSTEL['deps']:
@@ -727,12 +724,12 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpts.notEmpty():
-      print '\n\nHummm ... I could not complete my work.\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' \
-      + xcpts.exceptMessages()
+      print '\n\nHummm ... I could not complete my work.\n'\
+      '~'*72+'\n'+ xcpts.exceptMessages()
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   else: print '\n\nMy work is done\n\n'
-
-   sys.exit(0)
+   else: 
+      print '\n\nMy work is done\n\n' 
+      sys.exit(0)

@@ -1103,8 +1103,7 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\nLoading Options and Configurations\n'+'~'*72+'\n'
    USETELCFG = ''
    PWD = path.dirname(path.dirname(path.dirname(path.dirname(sys.argv[0]))))
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
@@ -1194,8 +1193,7 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Comparison with standard PRINCI ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if codeName == 'princi':
-      print '\n\nScanning Fortran\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\nScanning Fortran\n'+'~'*72+'\n'
 
       if len(args[1:]) >= 1:
          difFile = args[1]
@@ -1233,8 +1231,7 @@ if __name__ == "__main__":
          oriFile = args[2]
 
       # ~~> Execute diff 
-      print '\n\nDifferenciating:\n    +> ' + oriFile + '\nand +> ' + difFile + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\nDifferenciating:\n    +> ' + oriFile + '\nand +> ' + difFile + '\n'+'~'*72+'\n'
       # ~~> use of writelines because diff is a generator
       diff = diffTextFiles(oriFile,difFile,options)
       remove(oriFile)

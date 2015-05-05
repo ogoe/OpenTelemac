@@ -26,6 +26,7 @@ FICHIER DE GEOMETRIE               : geo_bj78.slf
 FICHIER DE REFERENCE               : f2d_bj78.slf
 FICHIER DES RESULTATS              : r2d_bj78.slf
 FICHIER DE DONNEES BINAIRE 1       : art_bj78.slf
+FORMAT DU FICHIER DE DONNEES BINAIRE 1       : 'SERAFIN'
 /
 /----------------------------------------------------------------------/ 
 /                     OPTIONS GENERALES                                  

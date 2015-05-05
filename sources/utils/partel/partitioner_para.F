@@ -43,7 +43,6 @@
       INTEGER, INTENT(IN)  :: IKLES(NELEM*NDP)
       INTEGER, INTENT(IN)  :: NPARTS
       INTEGER, INTENT(OUT) :: EPART(NELEM)
-!TODO: Remove ??
       INTEGER, INTENT(OUT) :: NPART(NELEM)
 !
 !-----------------------------------------------------------------------

@@ -3,7 +3,7 @@
 !                    *****************
 !
      &( F     , TETA  , NPLAN , FREQ  , NF    , NK    ,
-     &  NPOIN2, AT    , AUXIL , NOLEO , NLEO  , NSCO  ,
+     &  NPOIN2, AT    , LT, AUXIL , NOLEO , NLEO  , NSCO  ,
      &  BINSCO, DEBRES, TITCAS, DATE  , TIME  , KNOLG , MESH,
      &  NSPE  , TISPEF)
 !
@@ -90,7 +90,9 @@
 !
       USE BIEF
 !
+      USE INTERFACE_HERMES
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+      USE DECLARATIONS_SPECIAL
 !
       IMPLICIT NONE
 !
@@ -100,7 +102,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN2,NLEO,NSCO,NF,NK,NPLAN
-      INTEGER, INTENT(IN)             :: KNOLG(NPOIN2)
+      INTEGER, INTENT(IN)             :: KNOLG(NPOIN2), LT
       INTEGER, INTENT(IN)             :: NOLEO(NLEO)
       INTEGER, INTENT(IN)             :: DATE(3),TIME(3)
       DOUBLE PRECISION, INTENT(IN)    :: AT
@@ -126,7 +128,7 @@
       CHARACTER(LEN=1)  C1,C2,C3,C4,C5,C6
       TYPE(BIEF_MESH) MESHF
       LOGICAL         SORLEO(99)    
-      DOUBLE PRECISION AAT(1),DTETAR
+      DOUBLE PRECISION DTETAR
       REAL W(1)
       CHARACTER(LEN=11) EXTENS
       EXTERNAL          EXTENS
@@ -191,7 +193,7 @@
         ALLOCATE(F_INTF(NLEO,NF))
 !
         MESHF%NAME = 'MESH'
-        MESHF%TYPELM = 20 !QUADRANGLE 2D MESH
+        MESHF%TYPELM = TRIANGLE_ELT_TYPE !TRIANGLE 2D MESH
         MESHF%NELEM  = NELEM
         MESHF%NPOIN  = NPSPE
         MESHF%DIM    = 2
@@ -227,6 +229,9 @@
           MESHF%NBOR%I(II)=NPLAN+1+NPSPE-II
         ENDDO
         MESHF%KNOLG%I = 0
+        ALLOCATE(MESHF%NDS(0:81,7))
+        MESHF%TYPELM = TRIANGLE_ELT_TYPE
+        MESHF%NDS(MESHF%TYPELM+1,3) = 3
 !
 !       IN PARALLEL ONLY PROCESSOR 0 CREATES THE FILE
 !
@@ -237,22 +242,21 @@
 !         CHARACTERISED BY A TITLE AND NAME OF OUTPUT VARIABLES
 !         CONTAINED IN THE FILE.
 !
-          CALL CREATE_DATASET(BINSCO, ! RESULTS FILE FORMAT
-     &                        NSCO,   ! LU FOR RESULTS FILE
-     &                        TITCAS, ! TITLE
-     &                        NLEO,   ! MAX NUMBER OF OUTPUT VARIABLES
-     &                        TEXTE,  ! NAMES OF OUTPUT VARIABLES
-     &                        SORLEO) ! PRINT TO FILE OR NOT
+          CALL WRITE_HEADER(BINSCO, ! RESULTS FILE FORMAT
+     &                      NSCO,   ! LU FOR RESULTS FILE
+     &                      TITCAS, ! TITLE
+     &                      NLEO,   ! MAX NUMBER OF OUTPUT VARIABLES
+     &                      TEXTE,  ! NAMES OF OUTPUT VARIABLES
+     &                      SORLEO) ! PRINT TO FILE OR NOT
 !
 !         WRITES THE MESH IN THE OUTPUT FILE
 !
           CALL WRITE_MESH(BINSCO, ! RESULTS FILE FORMAT
      &                    NSCO,   ! LU FOR RESULTS FILE
-     &                    MESHF,  ! CHARACTERISES MESH
+     &                    MESHF,
      &                    1,      ! NUMBER OF PLANES 
      &                    DATE,   ! START DATE
-     &                    TIME,   ! START TIME
-     &                    0,0)    ! COORDINATES OF THE ORIGIN.  
+     &                    TIME)   ! START TIME
 !   
           IF(TISPEF(1:1).NE.' ') THEN
             WRITE(NSPE,'(A1,A72)') '/', TITCAS
@@ -269,10 +273,8 @@
 !     RECORDS THE CURRENT TIME STEP
 !
       IF(IPID.EQ.0) THEN
-        AAT(1) = AT
-        CALL ECRI2(AAT,IBID,C,1,'R4',NSCO,'STD',ISTAT)
-        IF(LNG.EQ.1) WRITE(NSPE,1007) AAT
-        IF(LNG.EQ.2) WRITE(NSPE,1008) AAT
+        IF(LNG.EQ.1) WRITE(NSPE,1007) AT
+        IF(LNG.EQ.2) WRITE(NSPE,1008) AT
       ENDIF   
 1007  FORMAT('TEMPS = ',F13.5) 
 1008  FORMAT('TIME  = ',F13.5)     
@@ -310,7 +312,9 @@
             OPEN(99,FILE=EXTENS(NLEO,ILEO),
      &              FORM='UNFORMATTED',STATUS='OLD')
             CALL LIT(AUXIL,W,IBID,C,NPSPE,'R8',99,'STD',ISTAT)
-            CALL ECRI2(AUXIL,IBID,C,NPSPE,'R4',NSCO,'STD',ISTAT)
+            CALL ADD_DATA(BINSCO,NSCO,TEXTE(ILEO),AT,LT,ILEO.EQ.1,
+     &                    AUXIL,NPSPE,ISTAT)
+            CALL CHECK_CALL(ISTAT,'ECRSPE:ADD_DATA')
             DO JF=1,NF
               F_INTF(ILEO,JF)=0.D0
               DO K=1,NPLAN
@@ -337,7 +341,9 @@
             ENDDO
             IF(ABS(F_INTF(ILEO,JF)).LT.1.D-90) F_INTF(ILEO,JF)=0.D0
           ENDDO
-          CALL ECRI2(AUXIL,IBID,C,NPSPE,'R4',NSCO,'STD',ISTAT)
+          CALL ADD_DATA(BINSCO,NSCO,TEXTE(ILEO),AT,LT,ILEO.EQ.1,
+     &                  AUXIL,NPSPE,ISTAT)
+          CALL CHECK_CALL(ISTAT,'ECRSPE:ADD_DATA')
         ENDDO 
         DO JF=1,NF
           WRITE(NSPE,'(100(E10.4,2X))') FREQ(JF),

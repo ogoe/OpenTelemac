@@ -1,8 +1,7 @@
 [general]
 path: <root>|sources|sisyphe
 module: sisyphe
-liborder: special parallel damocles bief sisyphe
-version: v7p0
+liborder: special parallel damocles hermes bief sisyphe
 name: HOMERE_SISYPHE
 
 [bief]
@@ -14,7 +13,6 @@ files: bief_def.f
   sortie.f
   read_config.f
   bief_init.f
-  m_med.F
   bief_open_files.f
   allblo.f
   ov.f
@@ -34,24 +32,23 @@ files: bief_def.f
   cpstvc.f
   bief_nbsegel.f
   segbor.f
-  lit.f
-  readgeo1.f
-  bief_ininds.f
-  corrxy.f
-  readgeo3.f
-  readgeo2.f
-  cpikle3.f
   cpikle2.f
+  read_mesh_info.f
+  corrxy.f
+  read_mesh_coord.f
+  cpikle3.f
+  read_mesh_conn.f
   ov_2.f
   mxptel31.f
   mxptel.f
+  bief_ininds.f
   almesh.f
   ovd.f
   cmpobj.f
   ovd_2.f
   os.f
   time_in_seconds.f
-  find_in_sel.f
+  read_data.f
   crosfr.f
   fasp.f
   fond.f
@@ -121,10 +118,11 @@ files: bief_def.f
   vc15aa.f
   vectos.f
   vector.f
-  dot.f
-  dots.f
+  read_dataset.f
   somme.f
   bief_sum.f
+  dot.f
+  dots.f
   ovbd.f
   osbd.f
   cg1113.f
@@ -378,16 +376,12 @@ files: bief_def.f
   bief_gcf.f
   bief_gammp.f
   bief_erf.f
-  litenr.f
-  bief_eof.f
-  skipgeo.f
-  suite_serafin.f
-  bief_suite.f
-  ecri2.f
-  write_data_serafin.f
+  read_partel_info.f
+  leclim.f
   write_data.f
   impvec.f
   bief_desimp.f
+  write_header.f
   vecle3.f
   vecle6.f
   vecle4.f
@@ -430,15 +424,12 @@ files: bief_def.f
   survol.f
   geoelt.f
   inbief.f
-  bief_valida.f
   front2.f
   masktf.f
   maskto.f
   positive_depths.f
-  create_dataset_serafin.f
-  create_dataset.f
+  bief_valida.f
   global_to_local_point.f
-  write_mesh_serafin.f
   write_mesh.f
   bief_close_files.f
 
@@ -462,6 +453,40 @@ files: majus.f
   damoc.f
   damocle.f
 
+[hermes]
+path: <root>|sources|utils|hermes
+files: interface_hermes.f
+  utils_med.F
+  utils_serafin.f
+  open_mesh.f
+  open_bnd.f
+  get_mesh_l2g_numbering.f
+  get_mesh_nelem.f
+  get_mesh_npoin_per_element.f
+  get_mesh_nplan.f
+  get_bnd_nelem.f
+  get_mesh_nptir.f
+  get_mesh_title.f
+  get_bnd_npoin.f
+  get_data_nvar.f
+  get_mesh_dimension.f
+  get_mesh_npoin.f
+  get_mesh_coord.f
+  get_mesh_connectivity.f
+  get_bnd_ipobo.f
+  get_data_value.f
+  get_data_var_list.f
+  get_data_time.f
+  get_data_ntimestep.f
+  get_bnd_numbering.f
+  get_bnd_value.f
+  add_data.f
+  update_data_mesh.f
+  set_header.f
+  set_mesh.f
+  close_bnd.f
+  close_mesh.f
+
 [parallel]
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
@@ -473,15 +498,15 @@ files: declarations_parallel.F
   p_iread.F
   p_ireadi8.F
   p_iwriti8.F
-  p_dmin.F
   p_dmax.F
+  p_dmin.F
+  p_isum.F
   p_dsum.F
   p_mpi_type_get_extent.F
   p_mpi_type_create_struct.F
   p_mpi_type_commit.F
   org_charac_type1.F
   p_sync.F
-  p_isum.F
   p_mpi_alltoall.F
   p_mpi_alltoallv.F
   oil_org_charac_type.F
@@ -507,24 +532,8 @@ files: declarations_sisyphe.f
   point_sisyphe.f
   dredgesim_interface.F
   maxslope.f
-  suspension_dispersion.f
-  suspension_erosion_coh.f
-  suspension_evol.f
-  suspension_bilan.f
-  suspension_vanrijn.f
-  suspension_fredsoe.f
-  suspension_bijker.f
-  suspension_flux_mixte.f
-  suspension_bilan_coh.f
-  suspension_sandflow.f
-  suspension_erosion.f
-  suspension_listing.f
-  suspension_conv.f
-  suspension_rouse.f
-  suspension_miles.f
-  suspension_depot.f
-  suspension_computation.f
-  suspension_main.f
+  condis_sisyphe.f
+  init_constant.f
   disimp.f
   read_fic_conc.f
   cgl.f
@@ -547,15 +556,30 @@ files: declarations_sisyphe.f
   bedload_einst.f
   bedload_formula.f
   condim_susp.f
+  suspension_rouse.f
+  suspension_sandflow.f
+  suspension_vanrijn.f
+  suspension_fredsoe.f
+  suspension_bijker.f
   init_transport.f
   predes.f
-  condis_sisyphe.f
+  suspension_dispersion.f
+  suspension_erosion_coh.f
+  suspension_evol.f
+  suspension_bilan.f
+  suspension_flux_mixte.f
+  suspension_bilan_coh.f
+  suspension_erosion.f
+  suspension_listing.f
+  suspension_conv.f
+  suspension_miles.f
+  suspension_depot.f
+  suspension_computation.f
+  suspension_main.f
   rescue_sisyphe.f
   noerod.f
   bilan_sisyphe.f
-  init_constant.f
   corstr_sisyphe.f
-  leclis.f
   sis_arret.f
   condim_sisyphe.f
   tassement_2.f
@@ -569,8 +593,12 @@ files: declarations_sisyphe.f
   bedload_effpnt.f
   bedload_solidischarge.f
   bedload_main.f
-  fluxpr_sisyphe.f
-  flusec_sisyphe.f
+  coefro_sisyphe.f
+  ride.f
+  ride_vr.f
+  ks_sisyphe.f
+  tobw_sisyphe.f
+  tob_sisyphe.f
   db.f
   cvsp_outputfiles.f
   cvsp_p.f
@@ -588,6 +616,7 @@ files: declarations_sisyphe.f
   cvsp_make_actlay.f
   cvsp_add_fraction.f
   cvsp_main.f
+  cvsp_output_init.f
   init_compo.f
   init_avai.f
   init_compo_coh.f
@@ -596,12 +625,8 @@ files: declarations_sisyphe.f
   init_sediment.f
   layer.f
   rescue_sisyphe_notperma.f
-  coefro_sisyphe.f
-  ride.f
-  ride_vr.f
-  ks_sisyphe.f
-  tobw_sisyphe.f
-  tob_sisyphe.f
+  fluxpr_sisyphe.f
+  flusec_sisyphe.f
   calcuw.f
   mean_grain_size.f
   init_zero.f
@@ -612,6 +637,9 @@ files: declarations_sisyphe.f
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
-  plante.f
+  plante.F
+  write_error.f
+  check_call.f
   extens.f
+  get_nodes_per_element.f
   check_allocate.f

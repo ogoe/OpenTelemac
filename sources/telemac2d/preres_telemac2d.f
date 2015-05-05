@@ -96,9 +96,10 @@
       LTT=(LT/LEOPRD)*LEOPRD
       IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
 !
+      ! Always write the intial conditions
       IF(LT.EQ.0) THEN
-        IMP=OUTINI
-        LEO=OUTINI
+        IMP=.TRUE.
+        LEO=.TRUE.
       ENDIF
 !
 !-----------------------------------------------------------------------

@@ -2,17 +2,17 @@
                      SUBROUTINE WRITE_MESH
 !                    *********************
 !
-     &(FFORMAT,NFILE,MESH,NPLAN,DATE,TIME,I_ORIG,J_ORIG)
+     &(FFORMAT,NFILE,MESH,NPLAN,DATE,TIME)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    WRITES THE MESH, DESCRIBED BY THE BIEF_MESH STRUCTURE
-!+                INTO THE FILE. BIEF_MESH STRUCTURE CONTAINS INFORMATIONS
-!+                ABOUT CONNECTIVITY, COORDINATES, BOUNDARY NODES. OTHER
-!+                INFORMATIONS NEEDED : THE DATE AND TIME INFORMATION, AND
-!+                THE ORIGIN OF THE COORDINATE SYSTEM (X_ORIG,Y_ORIG).
+!+        INTO THE FILE. BIEF_MESH STRUCTURE CONTAINS INFORMATIONS
+!+        ABOUT CONNECTIVITY, COORDINATES, BOUNDARY NODES. OTHER
+!+        INFORMATIONS NEEDED : THE DATE AND TIME INFORMATION, AND
+!+        THE ORIGIN OF THE COORDINATE SYSTEM (X_ORIG,Y_ORIG).
 !
 !history  R NEBAUER (LNHE)
 !+        25/11/08
@@ -37,18 +37,16 @@
 !+   Changed to work with NAG
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DATE           |-->| 3 INTEGERS (YEAR, MONTH, DAY)
 !| FFORMAT        |-->| FILE FORMAT
-!| I_ORIG         |-->| OFFSET OF ABSCISSAE IN METRES
-!| J_ORIG         |-->| OFFSET OF ORDINATES IN METRES
-!| MESH           |-->| MESH STRUCTURE
 !| NFILE          |-->| LOGICAL UNIT OF FILE
+!| MESH           |-->| MESH STRUCTURE
 !| NPLAN          |-->| NUMBER OF PLANES (3D)
+!| DATE           |-->| 3 INTEGERS (YEAR, MONTH, DAY)
 !| TIME           |-->| 3 INTEGERS (HOUR, MINUTE, SECOND)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF
-      USE M_MED
+      USE BIEF, EX_WRITE_MESH => WRITE_MESH
+      USE INTERFACE_HERMES
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -61,43 +59,48 @@
       TYPE(BIEF_MESH),       INTENT(IN) :: MESH
       INTEGER, DIMENSION(3), INTENT(IN) :: DATE
       INTEGER, DIMENSION(3), INTENT(IN) :: TIME
-      INTEGER,               INTENT(IN) :: I_ORIG,J_ORIG
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION DI_ORIG, DJ_ORIG
-
-!***********************************************************************
-!     IF(DEBUG) CALL PROC_BEGIN('WRITE_MESH')
-!***********************************************************************
+      INTEGER :: TYPELM
+      INTEGER :: IERR, I, NDP
+      INTEGER, ALLOCATABLE :: IPOBO(:)
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN','SERAFIND')
-           CALL WRITE_MESH_SERAFIN(NFILE,
-     &                             MESH,
-     &                             NPLAN,
-     &                             DATE,
-     &                             TIME,
-     &                             I_ORIG,J_ORIG,
-     &                             FFORMAT)
-        CASE ('MED     ')
-           DI_ORIG = DBLE(I_ORIG)
-           DJ_ORIG = DBLE(J_ORIG)
-           CALL WRITE_MESH_MED(NFILE,MESH,DI_ORIG,DJ_ORIG)
-        CASE DEFAULT
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'WRITE_MESH : MAUVAIS FORMAT : ',FFORMAT
-          ENDIF
-          IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'WRITE_MESH: BAD FILE FORMAT : ',FFORMAT
-          ENDIF
-          CALL PLANTE(1)
-          STOP
-      END SELECT
+!-----------------------------------------------------------------------
 !
-!***********************************************************************
-!     IF(DEBUG) CALL PROC_END('WRITE_MESH')
-!***********************************************************************
+!     BUILDING IPOBO ONLY IN SERIAL RUN
+      IF(NCSIZE.LE.1) THEN
+        ALLOCATE(IPOBO(MESH%NPOIN),STAT=IERR)
+        DO I=1,MESH%NPOIN
+          IPOBO(I) = 0
+        END DO
+        DO I=1,MESH%NPTFR
+          IPOBO(MESH%NBOR%I(I)) = I
+        END DO
+      ELSE
+        ALLOCATE(IPOBO(1),STAT=IERR)
+      ENDIF
+!
+      CALL CHECK_ALLOCATE(IERR,'IPOBO')
+!
+      NDP = MESH%NDS(MESH%TYPELM+1,3)
+      IF(MESH%DIM.EQ.3) THEN 
+        CALL SET_MESH(FFORMAT,NFILE,MESH%DIM,MESH%TYPELM,NDP,MESH%NPTFR,
+     &                NPTIR,MESH%NELEM,MESH%NPOIN,MESH%IKLE%I,
+     &                IPOBO,MESH%KNOLG%I,MESH%X%R,MESH%Y%R,NPLAN,
+     &                DATE,TIME,IERR,MESH%Z%R)
+        CALL CHECK_CALL(IERR,'WRITE_MESH:SET_MESH')
+      ELSE
+        CALL SET_MESH(FFORMAT,NFILE,MESH%DIM,MESH%TYPELM,NDP,MESH%NPTFR,
+     &                NPTIR,MESH%NELEM,MESH%NPOIN,MESH%IKLE%I,
+     &                IPOBO,MESH%KNOLG%I,MESH%X%R,MESH%Y%R,NPLAN,
+     &                DATE,TIME,IERR)
+        CALL CHECK_CALL(IERR,'WRITE_MESH:SET_MESH')
+      ENDIF
+!
+      IF(NCSIZE.LE.1) DEALLOCATE(IPOBO)
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

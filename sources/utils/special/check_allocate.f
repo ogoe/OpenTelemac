@@ -1,6 +1,6 @@
-!                    ****************************************
-      SUBROUTINE CHECK_ALLOCATE
-!                    ****************************************
+!                    *************************
+                     SUBROUTINE CHECK_ALLOCATE
+!                    *************************
 !
      &(IERR, CHFILE)
 !
@@ -38,7 +38,7 @@
       IF(IERR.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'ERROR DURING ALLOCATION OF ',CHFILE
         IF(LNG.EQ.2)WRITE(LU,*) 'ERREUR LORS DE L ALLOCATION DE ',CHFILE
-        CALL PLANTE(-1)
+        CALL PLANTE(1)
       ENDIF
 !
 !-----------------------------------------------------------------------

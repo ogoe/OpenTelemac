@@ -1,19 +1,55 @@
 [general]
 path: <root>|sources|utils|gretel
 module: gretel
-liborder: special gretel
-version: v7p0
+liborder: special hermes bief gretel
 name: GRETEL_AUTOP
+
+[bief]
+path: <root>|sources|utils|bief
+files: bief_def.f
+  bief.f
+  read_mesh_info.f
+  read_mesh_conn.f
 
 [gretel]
 path: <root>|sources|utils|gretel
-files: gretel_read_dataset.f
-  gretel_skip_header.f
-  gretel_cpikle2.f
-  gretel_autop.f
+files: gretel_autop.f
+
+[hermes]
+path: <root>|sources|utils|hermes
+files: interface_hermes.f
+  utils_med.F
+  utils_serafin.f
+  set_header.f
+  set_mesh.f
+  get_data_value.f
+  get_data_var_list.f
+  get_data_nvar.f
+  get_data_time.f
+  open_mesh.f
+  get_mesh_l2g_numbering.f
+  get_mesh_nplan.f
+  get_mesh_coord.f
+  get_mesh_title.f
+  close_mesh.f
+  get_data_ntimestep.f
+  get_mesh_nelem.f
+  get_mesh_npoin_per_element.f
+  get_bnd_nelem.f
+  get_mesh_nptir.f
+  get_bnd_npoin.f
+  get_mesh_dimension.f
+  get_mesh_npoin.f
+  add_data.f
+  get_mesh_connectivity.f
+  get_bnd_ipobo.f
 
 [special]
 path: <root>|sources|utils|special
-files: extens.f
-  plante.f
+files: declarations_special.f
+  plante.F
+  get_nodes_per_element.f
+  write_error.f
+  check_call.f
   check_allocate.f
+  extens.f

@@ -1,8 +1,7 @@
 [general]
 path: <root>|sources|artemis
 module: artemis
-liborder: special parallel damocles bief artemis
-version: v7p0
+liborder: special parallel damocles hermes bief artemis
 name: HOMERE_ARTEMIS
 
 [artemis]
@@ -42,9 +41,9 @@ files: declarations_artemis.f
   calctm.f
   entart.f
   calres.f
-  lecwac1.f
   calre2.f
   calueb2.f
+  lecwac1.f
   condih.f
   spe.f
   perale.f
@@ -71,26 +70,25 @@ files: bief_def.f
   dimens.f
   cpstvc.f
   bief_nbsegel.f
-  segbor.f
-  lit.f
-  readgeo1.f
-  bief_ininds.f
   ielbor.f
-  corrxy.f
-  readgeo3.f
-  readgeo2.f
-  cpikle3.f
+  segbor.f
   bief_nbfel.f
   cpikle2.f
+  read_mesh_info.f
+  corrxy.f
+  read_mesh_coord.f
+  cpikle3.f
+  read_mesh_conn.f
   ov_2.f
   mxptel31.f
   mxptel.f
+  bief_ininds.f
   almesh.f
   read_submit.f
   sortie.f
   read_config.f
   bief_init.f
-  find_in_sel.f
+  read_data.f
   crosfr.f
   fasp.f
   fond.f
@@ -381,7 +379,17 @@ files: bief_def.f
   diri04.f
   diri09.f
   dirich.f
+  read_partel_info.f
   leclim.f
+  write_header.f
+  write_mesh.f
+  read_dataset.f
+  bief_valida.f
+  front2.f
+  write_data.f
+  impvec.f
+  bief_desimp.f
+  clip.f
   vecle3.f
   vecle6.f
   vecle4.f
@@ -424,24 +432,6 @@ files: bief_def.f
   survol.f
   geoelt.f
   inbief.f
-  m_med.F
-  litenr.f
-  bief_eof.f
-  skipgeo.f
-  suite_serafin.f
-  bief_suite.f
-  bief_valida.f
-  front2.f
-  ecri2.f
-  write_data_serafin.f
-  write_data.f
-  impvec.f
-  bief_desimp.f
-  create_dataset_serafin.f
-  create_dataset.f
-  clip.f
-  write_mesh_serafin.f
-  write_mesh.f
   bief_open_files.f
   time_in_seconds.f
   bief_close_files.f
@@ -466,12 +456,47 @@ files: majus.f
   damoc.f
   damocle.f
 
+[hermes]
+path: <root>|sources|utils|hermes
+files: interface_hermes.f
+  utils_med.F
+  utils_serafin.f
+  get_mesh_l2g_numbering.f
+  get_mesh_nelem.f
+  get_mesh_npoin_per_element.f
+  get_mesh_nplan.f
+  get_bnd_nelem.f
+  get_mesh_nptir.f
+  get_mesh_title.f
+  get_bnd_npoin.f
+  get_data_nvar.f
+  get_mesh_dimension.f
+  get_mesh_npoin.f
+  get_mesh_coord.f
+  get_mesh_connectivity.f
+  get_bnd_ipobo.f
+  get_data_value.f
+  get_data_var_list.f
+  get_data_time.f
+  get_data_ntimestep.f
+  get_bnd_numbering.f
+  get_bnd_value.f
+  set_header.f
+  set_mesh.f
+  add_data.f
+  update_data_mesh.f
+  open_mesh.f
+  open_bnd.f
+  close_bnd.f
+  close_mesh.f
+
 [parallel]
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
   p_imax.F
   interface_parallel.f
   p_init.F
+  p_sync.F
   p_dmax.F
   p_wait_paraco.F
   p_ireadi8.F
@@ -488,7 +513,10 @@ files: declarations_parallel.F
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
-  plante.f
+  plante.F
+  get_nodes_per_element.f
+  write_error.f
+  check_call.f
   check_allocate.f
   gracestop.f
   extens.f

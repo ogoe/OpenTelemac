@@ -140,5 +140,4 @@ VELOCITY DIFFUSIVITY                           =  0.1 / 1.E-6
 /----------------------------------------------------------------
 COUPLING WITH                                 =  'INTER-SISYPHE'
 COUPLING PERIOD FOR SISYPHE                   =  1            
-&ETA
 &FIN

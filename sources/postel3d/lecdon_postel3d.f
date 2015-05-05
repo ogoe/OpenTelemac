@@ -16,6 +16,7 @@
 !
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_POSTEL3D
+      USE INTERFACE_HERMES
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -47,27 +48,21 @@
 !
       INTEGER ADRESS(4,NMAX),DIMENS(4,NMAX)
       DOUBLE PRECISION   MOTREA(NMAX)
-      INTEGER            MOTINT(NMAX) , ISTAT
+      INTEGER            MOTINT(NMAX)
       LOGICAL            MOTLOG(NMAX)
 !
       CHARACTER*72     MOTCLE(4,NMAX,2)
       INTEGER          TROUVE(4,NMAX)
-      INTEGER      I(10),J,K
+      INTEGER      J,K
       LOGICAL DOC
 !
-      DOUBLE PRECISION XB(2)
-      REAL, ALLOCATABLE :: RB(:)
-      INTEGER IB(2), ERR
-      CHARACTER(LEN=1) CB
+      INTEGER  ERR
+      CHARACTER(LEN=8) FFORMAT
+      CHARACTER(LEN=80) TITLE
+      CHARACTER(LEN=16),ALLOCATABLE :: VAR_NAME(:), VAR_UNIT(:)
+      INTEGER FID
 !
 !***********************************************************************
-! allocate a (simple) REAL vector
-!
-      ALLOCATE(RB(50000),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR,'LECDON_POSTEL3D:RB')
-!
-!***********************************************************************
-!
 !
 !-----------------------------------------------------------------------
 !
@@ -153,10 +148,10 @@
 !
 !     FORMATS EN DUR
 !
-      POS_FILES(POSPRE)%FMT='SELAFIN '
-      POS_FILES(POSHOR)%FMT='SELAFIN '
-      POS_FILES(POSVER)%FMT='SELAFIN '
-      POS_FILES(POSGEO)%FMT='SELAFIN '
+      POS_FILES(POSPRE)%FMT=MOTCAR( ADRESS(4, 19) )(1:8)
+      POS_FILES(POSHOR)%FMT=MOTCAR( ADRESS(4, 20) )(1:8)
+      POS_FILES(POSVER)%FMT=MOTCAR( ADRESS(4, 21) )(1:8)
+      POS_FILES(POSGEO)%FMT=MOTCAR( ADRESS(4, 18) )(1:8)
 !
       POS_FILES(POSPRE)%NAME=MOTCAR( ADRESS(4, 3) )
       POS_FILES(POSHOR)%NAME=MOTCAR( ADRESS(4, 4) )
@@ -169,57 +164,46 @@
 ! CERTAINES DONNEES (NOMBRE DE POINTS,...) SONT INDISPENSABLES POUR
 ! CONSTRUIRE LES POINTEURS + COMPTAGE DU NOMBRE D'ENREGISTREMENTS
 !
-      OPEN(POS_FILES(POSPRE)%LU,FILE=POS_FILES(POSPRE)%TELNAME,
-     &     FORM='UNFORMATTED',ACTION='READ')
-      REWIND POS_FILES(POSPRE)%LU
+      FFORMAT = POS_FILES(POSPRE)%FMT
+      FID = POS_FILES(POSPRE)%LU
+      CALL OPEN_MESH(FFORMAT,POS_FILES(POSPRE)%TELNAME,FID,'READ     ', 
+     &               ERR)
+      CALL CHECK_CALL(ERR,'LECDON_POSTEL3D:OPEN_MESH')
 !
-      CALL LIT(XB,RB,IB,TITCAS,72,'CH',POS_FILES(POSPRE)%LU,
-     &         BINPRE,ISTAT)
-!
-      CALL LIT(XB,RB,IB,CB,2, 'I ',POS_FILES(POSPRE)%LU,BINPRE,ISTAT)
-      NVA3 = IB(1)+IB(2)
-!
-!   LEC/ECR 3 : NOMS ET UNITES DES VARIABLES
-!
-      IF(NVA3.GE.1) THEN
-        DO K=1,NVA3
-          CALL LIT(XB,RB,IB,TEXTLU(K),32,'CH',POS_FILES(POSPRE)%LU,
-     &             BINPRE,ISTAT)
-        ENDDO
-      ENDIF
-!
-!
-      CALL LIT(XB,RB,I,CB,10,'I ',POS_FILES(POSPRE)%LU,BINPRE,ISTAT)
-!
-      NPLAN = I(7)
-!
-      IF (I(6).EQ.1) THEN
-      VARSUB=.TRUE.
-      ELSE
-      VARSUB=.FALSE.
-      ENDIF
-      ! Skipping date if present
-      IF (I(10).ne.0) READ(POS_FILES(POSPRE)%LU)
-!
-      DO K = 1,5
-        READ(POS_FILES(POSPRE)%LU)
+      ! Reading the title      
+      CALL GET_MESH_TITLE(FFORMAT,FID,TITLE,ERR)
+      CALL CHECK_CALL(ERR,'LECDON_POSTEL3D:GET_MESH_TITLE')
+      TITCAS = TITLE(1:72)
+ 
+      ! Get the number of variables
+      CALL GET_DATA_NVAR(FFORMAT,FID,NVA3,ERR)
+      CALL CHECK_CALL(ERR,'LECDON_POSTEL3D:GET_DATA_NVAR')
+
+      ! Get the Name and Unit of the variables
+      ALLOCATE(VAR_NAME(NVA3),STAT=ERR)
+      CALL CHECK_ALLOCATE(ERR,'LECDON_POSTEL3D:VAR_NAME')
+      ALLOCATE(VAR_UNIT(NVA3),STAT=ERR)
+      CALL CHECK_ALLOCATE(ERR,'LECDON_POSTEL3D:VAR_UNIT')
+      CALL GET_DATA_VAR_LIST(FFORMAT,FID,NVA3,VAR_NAME,VAR_UNIT,ERR)
+      CALL CHECK_CALL(ERR,'LECDON_POSTEL3D:GET_DATA_NVAR')
+      DO K=1,NVA3
+        TEXTLU(K)(1:16) = VAR_NAME(K)
+        TEXTLU(K)(17:32) = VAR_UNIT(K)
       ENDDO
-      NENRE = 0
-43    CONTINUE
-!th   +1 car il y a dt
-      DO K = 1,NVA3+1
-        READ(POS_FILES(POSPRE)%LU,ERR=48,END=48)
-      ENDDO
-!
-      IF (VARSUB) THEN
-        DO K = 1,4
-          READ(POS_FILES(POSPRE)%LU,ERR=48,END=48)
-        ENDDO
-      ENDIF
-!
-      NENRE = NENRE + 1
-      GOTO 43
-48    CONTINUE
+      DEALLOCATE(VAR_NAME)
+      DEALLOCATE(VAR_UNIT)
+
+      ! Get the number of planes
+      CALL GET_MESH_NPLAN(FFORMAT,FID,NPLAN,ERR)
+      CALL CHECK_CALL(ERR,'LECDON_POSTEL3D:GET_MESH_NPLAN')
+
+      ! Get the number of planes
+      CALL GET_DATA_NTIMESTEP(FFORMAT,FID,NENRE,ERR)
+      CALL CHECK_CALL(ERR,'LECDON_POSTEL3D:GET_DATA_TIMESTEP')
+       
+      CALL CLOSE_MESH(FFORMAT,FID,ERR)
+      CALL CHECK_CALL(ERR,'LECDON_POSTEL3D:CLOSE_MESH')
+     
 !
 !
 !-----------------------------------------------------------------------
@@ -324,7 +308,6 @@
 !     &       ' NUMBER OF 3D ELEMENTS       : ',I8,/,
 !     &       ' NUMBER OF LEVELS            : ',I8,//)
 !
-      DEALLOCATE (RB)
 !
       RETURN
       END SUBROUTINE

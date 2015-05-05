@@ -109,15 +109,15 @@
       YMIN  = Y(NBOR(IDEP))
 !
       DO K = 1 , NPTFR
-      IF(DEJAVU(K).EQ.0) THEN
-        NS = X(NBOR(K)) + Y(NBOR(K))
-        IF(NS.LT.MINNS) THEN
-          IDEP = K
-          MINNS = NS
-          YMIN = Y(NBOR(K))
+        IF(DEJAVU(K).EQ.0) THEN
+          NS = X(NBOR(K)) + Y(NBOR(K))
+          IF(NS.LT.MINNS) THEN
+            IDEP = K
+            MINNS = NS
+            YMIN = Y(NBOR(K))
+          ENDIF
+          IF(NS.GT.MAXNS) MAXNS = NS
         ENDIF
-        IF(NS.GT.MAXNS) MAXNS = NS
-      ENDIF
       ENDDO ! K 
 !
       EPS = (MAXNS-MINNS) * 1.D-4
@@ -125,15 +125,15 @@
 !  SELECTS THE SOUTHERNMOST POINT FROM THE SOUTH-WESTERNMOST CANDIDATES
 !
       DO K = 1 , NPTFR
-      IF(DEJAVU(K).EQ.0) THEN
-        NS = X(NBOR(K)) + Y(NBOR(K))
-        IF(ABS(MINNS-NS).LT.EPS) THEN
-          IF(Y(NBOR(K)).LT.YMIN) THEN
-            IDEP = K
-            YMIN = Y(NBOR(K))
+        IF(DEJAVU(K).EQ.0) THEN
+          NS = X(NBOR(K)) + Y(NBOR(K))
+          IF(ABS(MINNS-NS).LT.EPS) THEN
+            IF(Y(NBOR(K)).LT.YMIN) THEN
+              IDEP = K
+              YMIN = Y(NBOR(K))
+            ENDIF
           ENDIF
         ENDIF
-      ENDIF
       ENDDO ! K 
 !
 !-----------------------------------------------------------------------

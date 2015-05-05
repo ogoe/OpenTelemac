@@ -1,0 +1,7 @@
+#
+#  DEBIT A L'ENTREE ET SURFACE LIBRE A LA SORTIE
+#
+T       Q(1)     SL(2)
+s       m3/s      m
+0.      762.     143.39
+100000. 762.     143.39

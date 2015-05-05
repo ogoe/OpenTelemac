@@ -40,6 +40,7 @@
 !
       INTEGER I,J,K
       DOUBLE PRECISION BSUM, SUMERR, AT
+      DOUBLE PRECISION, POINTER :: VAR_VALUE(:)
 !
 !-----------------------------------------------------------------------
 !
@@ -144,47 +145,19 @@
 ! WRITE TIME STEP TO    !VSP
 !-----------------------------------------------------------------------
 !
-      SELECT CASE (CP_FILES(3)%FMT)
-      CASE ('SERAFIN ','SERAFIND')
-        CALL WRITE_DATA_SERAFIN(CP_FILES(3)%LU,NUMVARUR3D2RES,
-     &        USERTIME,LT,
-     &        UR3D_FILES_OUTVAR,URBLOC3D,
-     &        CP_FILES(3)%FMT,VSP_FRA(1)%DIM1)
-!
-      CASE ('MED     ')
-!         
-      CASE DEFAULT
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'WRITE_DATA : MAUVAIS FORMAT : ',CP_FILES(3)%FMT
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'WRITE_DATA: BAD FILE FORMAT : ',CP_FILES(3)%FMT
-        ENDIF
-        CALL PLANTE(1)
-      END SELECT
+      CALL WRITE_DATA(CP_FILES(3)%FMT,CP_FILES(3)%LU,
+     &                NUMVARUR3D2RES,USERTIME,LT/PERCOU,
+     &                UR3D_FILES_OUTVAR,UR3D_FILES_LABELS,URBLOC3D,
+     &                VSP_FRA(1)%DIM1)
 !     
 !-----------------------------------------------------------------------    
 ! WRITE TIME STEP TO 2DHYD_AS_3D 
 !-----------------------------------------------------------------------
 !
-      SELECT CASE (CP_FILES(4)%FMT)
-      CASE ('SERAFIN ','SERAFIND')
-        CALL WRITE_DATA_SERAFIN(CP_FILES(4)%LU,NUMVAR2DHYD,
-     &        USERTIME,LT,
-     &        UR2DHYD_FILES_OUTVAR,URBLOC2DHYD,
-     &        CP_FILES(4)%FMT,UR2DHYD(1)%DIM1)
-!         
-      CASE ('MED     ')
-!         
-      CASE DEFAULT
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'WRITE_DATA : MAUVAIS FORMAT : ',CP_FILES(4)%FMT
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'WRITE_DATA: BAD FILE FORMAT : ',CP_FILES(4)%FMT
-        ENDIF
-        CALL PLANTE(1)
-      END SELECT
+      CALL WRITE_DATA(CP_FILES(4)%FMT,CP_FILES(4)%LU,
+     &                NUMVAR2DHYD,USERTIME,LT/PERCOU,
+     &                UR2DHYD_FILES_OUTVAR,UR2DHYD_FILES_LABELS,
+     &                URBLOC2DHYD,UR2DHYD(1)%DIM1)
 !     
 !-----------------------------------------------------------------------
 !

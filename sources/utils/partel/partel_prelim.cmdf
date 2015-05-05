@@ -2,7 +2,6 @@
 path: <root>|sources|utils|partel
 module: partel
 liborder: special partel
-version: v7p0
 name: PARTEL_PRELIM
 
 [partel]
@@ -12,5 +11,5 @@ files: partitioner.F
 
 [special]
 path: <root>|sources|utils|special
-files: plante.f
+files: plante.F
   check_allocate.f

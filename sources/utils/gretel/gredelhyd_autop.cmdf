@@ -2,7 +2,6 @@
 path: <root>|sources|utils|gretel
 module: gretel
 liborder: special bief gretel
-version: v7p0
 name: GREDELHYD_AUTOP
 
 [bief]
@@ -16,6 +15,6 @@ files: gredelhyd_autop.f
 
 [special]
 path: <root>|sources|utils|special
-files: plante.f
+files: plante.F
   check_allocate.f
   extens.f

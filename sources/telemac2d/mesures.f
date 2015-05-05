@@ -42,6 +42,7 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
+      USE INTERFACE_HERMES
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -54,9 +55,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      CHARACTER(LEN=8) :: FFORMAT
+      INTEGER :: FILE_ID
       DOUBLE PRECISION TPS,C
       LOGICAL OKH,OKU,OKV
       INTEGER I,DISCLIN
+      INTEGER IERR
 !
 !-----------------------------------------------------------------------
 !
@@ -66,12 +70,17 @@
 !
 !       WHEN MEASUREMENTS ARE IN A SELAFIN FILE
 !
-        CALL FIND_IN_SEL(HD,TEXTE(4)(1:16),T2D_FILES(T2DREF)%LU,
-     &         T2D_FILES(T2DREF)%FMT,W,OKH,RECORD=ITER,TIME=TPS)
-        CALL FIND_IN_SEL(UD,TEXTE(1)(1:16),T2D_FILES(T2DREF)%LU,
-     &         T2D_FILES(T2DREF)%FMT,W,OKU,RECORD=ITER,TIME=TPS)
-        CALL FIND_IN_SEL(VD,TEXTE(2)(1:16),T2D_FILES(T2DREF)%LU,
-     &         T2D_FILES(T2DREF)%FMT,W,OKV,RECORD=ITER,TIME=TPS)
+        FFORMAT = T2D_FILES(T2DREF)%FMT
+        FILE_ID = T2D_FILES(T2DREF)%LU
+        CALL READ_DATA(FFORMAT, FILE_ID, HD%R, TEXTE(4), NPOIN,
+     &                 IERR,ITER,TIME=TPS)
+        OKH = IERR.EQ.0
+        CALL READ_DATA(FFORMAT, FILE_ID, UD%R, TEXTE(1), NPOIN,
+     &                 IERR,ITER,TIME=TPS)
+        OKU = IERR.EQ.0
+        CALL READ_DATA(FFORMAT, FILE_ID, VD%R, TEXTE(2), NPOIN,
+     &                 IERR,ITER,TIME=TPS)
+        OKV = IERR.EQ.0
 !
         IF(.NOT.OKH.OR..NOT.OKU.OR..NOT.OKV) THEN
           IF(LNG.EQ.1) THEN

@@ -53,6 +53,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_FONSTR => FONSTR
+      USE INTERFACE_HERMES
+      USE DECLARATIONS_SPECIAL
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -70,12 +72,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ERR
+      INTEGER ERR, IERR, RECORD
 !
       DOUBLE PRECISION BID
       REAL, ALLOCATABLE :: W(:)
 !
-      LOGICAL CALFON,CALFRO,OK,LUZF,LUH,LUZ
+      LOGICAL CALFON,CALFRO,LUZF,LUH,LUZ
 !
 !-----------------------------------------------------------------------
 !
@@ -95,25 +97,30 @@
       LUZ  =  .FALSE.
       LUZF =  .FALSE.
       CALFRO = .TRUE.
+      RECORD = 0
 !
 !-----------------------------------------------------------------------
 !
 !     LOOKS FOR THE FRICTION COEFFICIENT IN THE FILE
 !
-      IF(LNG.EQ.1) CALL FIND_IN_SEL(CHESTR,'FROTTEMENT      ',NGEO,
-     &                              FFORMAT,W,OK,TIME=BID)
-      IF(LNG.EQ.2) CALL FIND_IN_SEL(CHESTR,'BOTTOM FRICTION ',NGEO,
-     &                              FFORMAT,W,OK,TIME=BID)
+      IF(LNG.EQ.1) CALL READ_DATA(FFORMAT, NGEO, CHESTR%R,
+     &                            'FROTTEMENT      ', MESH%NPOIN,
+     &                            IERR,RECORD,TIME=BID)
+      IF(LNG.EQ.2) CALL READ_DATA(FFORMAT, NGEO, CHESTR%R,
+     &                            'BOTTOM FRICTION ', MESH%NPOIN,
+     &                            IERR,RECORD,TIME=BID)
 !     CASE OF A GEOMETRY FILE IN ANOTHER LANGUAGE
-      IF(.NOT.OK.AND.LNG.EQ.1) THEN
-        CALL FIND_IN_SEL(CHESTR,'BOTTOM FRICTION ',NGEO,
-     &                   FFORMAT,W,OK,TIME=BID)
+      IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.1) THEN
+        CALL READ_DATA(FFORMAT, NGEO, CHESTR%R,
+     &                 'BOTTOM FRICTION ', MESH%NPOIN,
+     &                 IERR,RECORD,TIME=BID)
       ENDIF
-      IF(.NOT.OK.AND.LNG.EQ.2) THEN
-        CALL FIND_IN_SEL(CHESTR,'FROTTEMENT      ',NGEO,
-     &                   FFORMAT,W,OK,TIME=BID)
+      IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.2) THEN
+        CALL READ_DATA(FFORMAT, NGEO, CHESTR%R,
+     &                 'FROTTEMENT      ', MESH%NPOIN,
+     &                 IERR,RECORD,TIME=BID)
       ENDIF
-      IF(OK) THEN
+      IF(IERR.EQ.0) THEN
         CALFRO = .FALSE.
         IF(LNG.EQ.1) WRITE(LU,5)
         IF(LNG.EQ.2) WRITE(LU,6)
@@ -125,58 +132,76 @@
 !
 !     LOOKS FOR THE BOTTOM ELEVATION IN THE FILE
 !
-      IF(LNG.EQ.1) CALL FIND_IN_SEL(ZF,'FOND            ',NGEO,
-     &                              FFORMAT,W,OK,TIME=BID)
-      IF(LNG.EQ.2) CALL FIND_IN_SEL(ZF,'BOTTOM          ',NGEO,
-     &                              FFORMAT,W,OK,TIME=BID)
-      IF(.NOT.OK.AND.LNG.EQ.1) THEN
-        CALL FIND_IN_SEL(ZF,'BOTTOM          ',NGEO,
-     &                   FFORMAT,W,OK,TIME=BID)
+      IF(LNG.EQ.1) CALL READ_DATA(FFORMAT, NGEO, ZF%R, 
+     &                            'FOND            ', MESH%NPOIN,
+     &                            IERR,RECORD,TIME=BID)
+      IF(LNG.EQ.2) CALL READ_DATA(FFORMAT, NGEO, ZF%R, 
+     &                            'BOTTOM          ', MESH%NPOIN,
+     &                            IERR,RECORD,TIME=BID)
+      IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.1) THEN
+        CALL READ_DATA(FFORMAT, NGEO, ZF%R, 
+     &                 'BOTTOM          ', MESH%NPOIN,
+     &                 IERR,RECORD,TIME=BID)
       ENDIF
-      IF(.NOT.OK.AND.LNG.EQ.2) THEN
-        CALL FIND_IN_SEL(ZF,'FOND            ',NGEO,
-     &                   FFORMAT,W,OK,TIME=BID)
+      IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.2) THEN
+        CALL READ_DATA(FFORMAT, NGEO, ZF%R, 
+     &                 'FOND            ', MESH%NPOIN,
+     &                 IERR,RECORD,TIME=BID)
       ENDIF
 !     MESHES FROM BALMAT ?
-      IF(.NOT.OK) CALL FIND_IN_SEL(ZF,'ALTIMETRIE      ',NGEO,
-     &                             FFORMAT,W,OK,TIME=BID)
+      IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR)
+     &                   CALL READ_DATA(FFORMAT, NGEO, ZF%R,
+     &                   'ALTIMETRIE      ', MESH%NPOIN,
+     &                   IERR,RECORD,TIME=BID)
 !     TOMAWAC IN FRENCH ?
-      IF(.NOT.OK) CALL FIND_IN_SEL(ZF,'COTE_DU_FOND    ',NGEO,
-     &                             FFORMAT,W,OK,TIME=BID)
+      IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) 
+     &                   CALL READ_DATA(FFORMAT, NGEO, ZF%R,
+     &                   'COTE_DU_FOND    ', MESH%NPOIN,
+     &                   IERR,RECORD,TIME=BID)
 !     TOMAWAC IN ENGLISH ?
-      IF(.NOT.OK) CALL FIND_IN_SEL(ZF,'BOTTOM_LEVEL    ',NGEO,
-     &                             FFORMAT,W,OK,TIME=BID)
-      LUZF = OK
+      IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) 
+     &                   CALL READ_DATA(FFORMAT, NGEO, ZF%R,
+     &                   'BOTTOM_LEVEL    ', MESH%NPOIN,
+     &                   IERR,RECORD,TIME=BID)
+      LUZF = IERR.EQ.0
 !
       IF(.NOT.LUZF) THEN
 !       LOOKS FOR WATER DEPTH AND FREE SURFACE ELEVATION
-        IF(LNG.EQ.1) CALL FIND_IN_SEL(H,'HAUTEUR D''EAU   ',NGEO,
-     &                                FFORMAT,W,OK,TIME=BID)
-        IF(LNG.EQ.2) CALL FIND_IN_SEL(H,'WATER DEPTH     ',NGEO,
-     &                                FFORMAT,W,OK,TIME=BID)
-        IF(.NOT.OK.AND.LNG.EQ.1) THEN
-          CALL FIND_IN_SEL(H,'WATER DEPTH     ',NGEO,
-     &                     FFORMAT,W,OK,TIME=BID)
+        IF(LNG.EQ.1) CALL READ_DATA(FFORMAT, NGEO, H%R,
+     &                              'HAUTEUR D''EAU   ', MESH%NPOIN,
+     &                              IERR,RECORD,TIME=BID)
+        IF(LNG.EQ.2) CALL READ_DATA(FFORMAT, NGEO, H%R,
+     &                              'WATER DEPTH     ', MESH%NPOIN,
+     &                              IERR,RECORD,TIME=BID)
+        IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.1) THEN
+          CALL READ_DATA(FFORMAT, NGEO, H%R,
+     &                   'WATER DEPTH     ', MESH%NPOIN,
+     &                   IERR,RECORD,TIME=BID)
 
         ENDIF
-        IF(.NOT.OK.AND.LNG.EQ.2) THEN
-          CALL FIND_IN_SEL(H,'HAUTEUR D''EAU   ',NGEO,
-     &                     FFORMAT,W,OK,TIME=BID)
+        IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.2) THEN
+          CALL READ_DATA(FFORMAT, NGEO, H%R,
+     &                   'HAUTEUR D''EAU   ', MESH%NPOIN,
+     &                   IERR,RECORD,TIME=BID)
         ENDIF
-        LUH = OK
-        IF(LNG.EQ.1) CALL FIND_IN_SEL(Z,'SURFACE LIBRE   ',NGEO,
-     &                                FFORMAT,W,OK,TIME=BID)
-        IF(LNG.EQ.2) CALL FIND_IN_SEL(Z,'FREE SURFACE    ',NGEO,
-     &                                FFORMAT,W,OK,TIME=BID)
-        IF(.NOT.OK.AND.LNG.EQ.1) THEN
-          CALL FIND_IN_SEL(Z,'FREE SURFACE    ',NGEO,
-     &                     FFORMAT,W,OK,TIME=BID)
+        LUH = IERR.EQ.0
+        IF(LNG.EQ.1) CALL READ_DATA(FFORMAT, NGEO, Z%R,
+     &                              'SURFACE LIBRE   ', MESH%NPOIN,
+     &                              IERR, RECORD,TIME=BID)
+        IF(LNG.EQ.2) CALL READ_DATA(FFORMAT, NGEO, Z%R,
+     &                              'FREE SURFACE    ', MESH%NPOIN,
+     &                              IERR, RECORD,TIME=BID)
+        IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.1) THEN
+          CALL READ_DATA(FFORMAT, NGEO, Z%R,
+     &                   'FREE SURFACE    ', MESH%NPOIN,
+     &                   IERR, RECORD,TIME=BID)
         ENDIF
-        IF(.NOT.OK.AND.LNG.EQ.2) THEN
-          CALL FIND_IN_SEL(Z,'SURFACE LIBRE   ',NGEO,
-     &                     FFORMAT,W,OK,TIME=BID)
+        IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.2) THEN
+          CALL READ_DATA(FFORMAT, NGEO, Z%R,
+     &                   'SURFACE LIBRE   ', MESH%NPOIN,
+     &                   IERR, RECORD,TIME=BID)
         ENDIF
-        LUZ = OK
+        LUZ = IERR.EQ.0
       ENDIF
 !
 !     INITIALISES THE BOTTOM ELEVATION

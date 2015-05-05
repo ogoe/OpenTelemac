@@ -16,7 +16,7 @@
 #
 NOM_GENERIQUE = partel
 
-VERSION	      = v7p0
+VERSION	      = v7p1
 
 ###########################
 # Definition des macros
@@ -55,6 +55,7 @@ MESSAGE       = @echo "$(PWD) $(LIBRARY) $(LOGNAME) $(DATE) $@ ($?)" >>$(JOURNAL
 DEST          =  $(PROJECT)/builds/$(DIRLIB)
 
 LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/bief$(MODE)$(VERSION).a \
+                $(PROJECT)/builds/$(DIRLIB)/lib/hermes$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/parallel$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/special$(MODE)$(VERSION).a \
                 $(PROJECT)/optionals/metis-5.1.0/libmetis/libmetis.a \

@@ -57,7 +57,8 @@
 !| VARRES         |-->| BLOCK OF VARIABLES IN RESULTS FILE 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF    !, EX_VALIDA => VALIDA
+      USE BIEF, EX_BIEF_VALIDA => BIEF_VALIDA
+      USE BIEF_DEF
       USE DECLARATIONS_TELEMAC
 !
       IMPLICIT NONE
@@ -76,7 +77,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IVAR,I,IREF,IRES,IERMAX
+      INTEGER IVAR,I,IREF,IRES,IERMAX,IERR
 !
       DOUBLE PRECISION TIMEREF,TIMERES,ERMAX,HIST(1),ERR
 !
@@ -100,17 +101,15 @@
 !
       IF(LNG.EQ.1) WRITE(LU,10) NAMECODE
       IF(LNG.EQ.2) WRITE(LU,11) NAMECODE
-      CALL BIEF_SUITE(VARREF,VARREF,IREF,UREF,REFFORMAT,HIST,0,NP,
-     &                TIMEREF,TEXTREF,TEXTREF,0,FINDREF,ACOMPARER,
-     &                .TRUE.,.TRUE.,MAXTAB)
+      CALL READ_DATASET(REFFORMAT,UREF,VARREF,NP,IREF,TIMEREF,
+     &                  TEXTREF,FINDREF,ACOMPARER,.TRUE.,.TRUE.,MAXTAB)
 !
 !  CALLS SUITE TO READ THE RESULTS FILE
 !
       IF(LNG.EQ.1) WRITE(LU,12)
       IF(LNG.EQ.2) WRITE(LU,13)
-      CALL BIEF_SUITE(VARRES,VARRES,IRES,URES,RESFORMAT,HIST,0,NP,
-     &                TIMERES,TEXTRES,TEXTRES,0,FINDRES,ACOMPARER,
-     &                .TRUE.,.TRUE.,MAXTAB)
+      CALL READ_DATASET(RESFORMAT,URES,VARRES,NP,IRES,TIMERES,
+     &                  TEXTRES,FINDRES,ACOMPARER,.TRUE.,.TRUE.,MAXTAB)
 !
 !-----------------------------------------------------------------------
 !
@@ -130,7 +129,7 @@
 !
 !     LOOP ON THE VARIABLES TO COMPARE
 !
-      DO IVAR=1,MAXTAB
+      DO IVAR=1,MIN(MAXTAB,VARREF%N,VARRES%N)
 !
         IF(ACOMPARER(IVAR).EQ.1) THEN
 !

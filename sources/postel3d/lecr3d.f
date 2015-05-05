@@ -1,7 +1,8 @@
                         SUBROUTINE LECR3D
 !                       *****************
 !
-     &(AT,Z,U,V,W,NPOIN3,NPOIN2,NPLAN,NRES,BINRES,RB,NVA3,TAB,VARSUB)
+     &(IREC,AT,Z,U,V,W,NPOIN3,NPOIN2,NPLAN,NRES,FFORMAT,RB,NVA3,TAB,
+     & VARSUB)
 !
 !***********************************************************************
 ! POSTEL3D VERSION 5.1   01/09/99   T. DENOT (LNH) 01 30 87 74 89
@@ -15,6 +16,7 @@
 ! .________________.____.______________________________________________.
 ! !      NOM       !MODE!                   ROLE                       !
 ! !________________!____!______________________________________________!
+! !   IREC         !--> ! PAS DE TEMPS TRAITE                          !
 ! !   AT           !<-- ! TEMPS CORRESPONDANT AU PAS TRAITE            !
 ! !   U,V,W        !<-- ! COMPOSANTES 3D DE LA VITESSE                 !
 ! !   TA,TP        !<-- ! CONCENTRATIONS DES TRACEURS                  !
@@ -45,6 +47,8 @@
 !**********************************************************************
 !
       USE BIEF
+      USE DECLARATIONS_POSTEL3D, ONLY: TEXTLU
+      USE INTERFACE_HERMES
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -53,8 +57,9 @@
       INTEGER NPOIN3,NPOIN2,NPLAN,NRES
       INTEGER NVA3
 !      INTEGER , INTENT(IN) :: NELEM3
-      CHARACTER*3 BINRES
+      CHARACTER*8 FFORMAT
 !
+      INTEGER, INTENT(IN) :: IREC
       DOUBLE PRECISION , INTENT(INOUT) :: AT
       DOUBLE PRECISION , INTENT(INOUT) :: U(NPOIN3)
       DOUBLE PRECISION , INTENT(INOUT) :: V(NPOIN3)
@@ -63,31 +68,35 @@
       LOGICAL , INTENT(IN) :: VARSUB
       TYPE (BIEF_OBJ) , INTENT(INOUT) :: TAB
 !
-      INTEGER I,ISTAT
-      DOUBLE PRECISION XB(2)
-      INTEGER IB(2)
-      CHARACTER(LEN=1) CB
-      REAL RB(NPOIN3)
+      INTEGER I
+      REAL, INTENT(INOUT) :: RB(NPOIN3)
+      INTEGER IERR
 !
 !***********************************************************************
 !
 !
 ! LECTURE DU TEMPS DU DEBUT DU CALCUL
 !
-      CALL LIT(XB,RB,IB,CB,1,'R4',NRES,BINRES,ISTAT)
-      AT=XB(1)
+      CALL GET_DATA_TIME(FFORMAT,NRES,IREC,AT,IERR)
+      CALL CHECK_CALL(IERR,'LECR3D:GET_DATA_TIME')
 !
 ! LECTURE DES VITESSES U,V ET W
 !
-      CALL LIT(Z,RB,IB,CB,NPOIN3,'R4',NRES,BINRES,ISTAT)
-      CALL LIT(U,RB,IB,CB,NPOIN3,'R4',NRES,BINRES,ISTAT)
-      CALL LIT(V,RB,IB,CB,NPOIN3,'R4',NRES,BINRES,ISTAT)
-      CALL LIT(W,RB,IB,CB,NPOIN3,'R4',NRES,BINRES,ISTAT)
+      CALL GET_DATA_VALUE(FFORMAT,NRES,IREC,TEXTLU(1),Z,NPOIN3,IERR)
+      CALL CHECK_CALL(IERR,'LECR3D:GET_DATA_VALUE:Z')
+      CALL GET_DATA_VALUE(FFORMAT,NRES,IREC,TEXTLU(2),U,NPOIN3,IERR)
+      CALL CHECK_CALL(IERR,'LECR3D:GET_DATA_VALUE:U')
+      CALL GET_DATA_VALUE(FFORMAT,NRES,IREC,TEXTLU(3),V,NPOIN3,IERR)
+      CALL CHECK_CALL(IERR,'LECR3D:GET_DATA_VALUE:V')
+      CALL GET_DATA_VALUE(FFORMAT,NRES,IREC,TEXTLU(4),W,NPOIN3,IERR)
+      CALL CHECK_CALL(IERR,'LECR3D:GET_DATA_VALUE:W')
 !
       IF (NVA3.GT.4) THEN
-      DO I=1,NVA3-4
-        CALL LIT(TAB%ADR(I)%P%R,RB,IB,CB,NPOIN3,'R4',NRES,BINRES,ISTAT)
-      ENDDO
+        DO I=1,NVA3-4
+          CALL GET_DATA_VALUE(FFORMAT,NRES,IREC,TEXTLU(4),
+     &                        TAB%ADR(I)%P%R,NPOIN3,IERR)
+          CALL CHECK_CALL(IERR,'LECR3D:GET_DATA_VALUE:W')
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------

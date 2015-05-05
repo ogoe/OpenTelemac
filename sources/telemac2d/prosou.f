@@ -197,6 +197,8 @@
      &                                   ROEAU,CF,S,IELMU,T
       USE INTERFACE_TELEMAC2D, EX_PROSOU => PROSOU
       USE M_COUPLING_ESTEL3D
+      USE DECLARATIONS_SPECIAL
+      USE INTERFACE_HERMES
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -257,11 +259,11 @@
 !
       DOUBLE PRECISION PI,WROT,WD,ATH,RAIN_MPS,SURDT,XX
 !
-      CHARACTER(LEN=16) NOMX,NOMY
+      CHARACTER(LEN=32) NOMX,NOMY
+      CHARACTER(LEN=8) :: FFORMAT
+      INTEGER :: FILE_ID, IREC
       LOGICAL DEJALU,OKX,OKY,OKC
       DATA DEJALU /.FALSE./
-      REAL, ALLOCATABLE :: W(:)
-      SAVE W
 !
       INTRINSIC SQRT,MAX,ACOS
 !
@@ -633,57 +635,53 @@
 !
         IF(.NOT.DEJALU.AND..NOT.INCLUS(COUPLING,'TOMAWAC')) THEN
 !
-          ALLOCATE(W(NPOIN),STAT=ERR)
-          IF(ERR.NE.0) THEN
-            IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'ERREUR D''ALLOCATION DE W DANS PROSOU'
-              WRITE(LU,*) 'CODE ERREUR ',ERR
-              WRITE(LU,*) 'NOMBRE DE POINTS : ',NPOIN
+            ! Records numbering starts from 0 
+            IREC = NPTH - 1
+!           NBI1 : BINARY DATA FILE 1
+            NOMX='FORCE FX        M/S2            '
+            NOMY='FORCE FY        M/S2            '
+            FFORMAT = T2D_FILES(T2DBI1)%FMT
+            FILE_ID = T2D_FILES(T2DBI1)%LU
+            CALL GET_MESH_NPOIN(FFORMAT, FILE_ID, TRIANGLE_ELT_TYPE, 
+     &                          NP, ERR)
+            CALL CHECK_CALL(ERR,'PROSOU:GET_MESH_NPOIN')
+            CALL READ_DATA(FFORMAT, FILE_ID, FXWAVE%R, NOMX, NPOIN,
+     &                     ERR, IREC, ATH)
+            OKX = ERR.EQ.0
+            CALL READ_DATA(FFORMAT, FILE_ID, FYWAVE%R, NOMY, NPOIN,
+     &                     ERR, IREC, ATH)
+            OKY = ERR.EQ.0
+            IF(.NOT.OKX.OR..NOT.OKY) THEN
+!             SECOND TRY (OLD VERSIONS OF ARTEMIS OR TOMAWAC)
+              NOMX='FORCE_FX                      '
+              NOMY='FORCE_FY                      '
+              CALL READ_DATA(FFORMAT, FILE_ID, FXWAVE%R, NOMX, NPOIN,
+     &                       ERR, IREC, ATH)
+              OKX = ERR.EQ.0
+              CALL READ_DATA(FFORMAT, FILE_ID, FYWAVE%R, NOMY, NPOIN,
+     &                       ERR, IREC, ATH)
+              OKY = ERR.EQ.0
             ENDIF
-            IF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'MEMORY ALLOCATION ERROR OF W IN PROSOU'
-              WRITE(LU,*) 'ERROR CODE ',ERR
-              WRITE(LU,*) 'NUMBER OF POINTS: ',NPOIN
+!           CLANDESTINE VARIABLES FROM TOMAWAC TO SISYPHE
+            IF(NVARCL.GT.0) THEN
+              DO I=1,NVARCL
+                CALL READ_DATA(FFORMAT, FILE_ID, VARCL%ADR(I)%P%R, 
+     &                         VARCLA(I)(1:16), NPOIN,
+     &                          ERR,IREC,ATH)
+                IF(ERR.NE.0) THEN
+                  IF(LNG.EQ.1) WRITE(LU,7) VARCLA(I)(1:16)
+                  IF(LNG.EQ.2) WRITE(LU,8) VARCLA(I)(1:16)
+7               FORMAT(1X,'PROSOU : VARIABLE CLANDESTINE :',/,1X,A16,/,
+     &                 1X,'         NON TROUVEE',/,1X,
+     &                    '         DANS LE FICHIER DE HOULE')
+8               FORMAT(1X,'PROSOU : CLANDESTINE VARIABLE:',/,1X,A16,/,
+     &                 1X,'         NOT FOUND',/,1X,
+     &                    '         IN THE WAVE RESULTS FILE')
+                CALL PLANTE(1)
+                STOP
+                ENDIF
+              ENDDO
             ENDIF
-          ENDIF
-!
-!         NBI1 : BINARY DATA FILE 1
-          NOMX='FORCE FX        '
-          NOMY='FORCE FY        '
-          CALL FIND_IN_SEL(FXWAVE,NOMX,T2D_FILES(T2DBI1)%LU,
-     &                     T2D_FILES(T2DBI1)%FMT,W,OKX,NPTH,NP,ATH)
-          CALL FIND_IN_SEL(FYWAVE,NOMY,T2D_FILES(T2DBI1)%LU,
-     &                     T2D_FILES(T2DBI1)%FMT,W,OKY,NPTH,NP,ATH)
-          IF(.NOT.OKX.OR..NOT.OKY) THEN
-!           SECOND TRY (OLD VERSIONS OF ARTEMIS OR TOMAWAC)
-            NOMX='FORCE_FX        '
-            NOMY='FORCE_FY        '
-            CALL FIND_IN_SEL(FXWAVE,NOMX,T2D_FILES(T2DBI1)%LU,
-     &                       T2D_FILES(T2DBI1)%FMT,W,OKX,NPTH,NP,ATH)
-            CALL FIND_IN_SEL(FYWAVE,NOMY,T2D_FILES(T2DBI1)%LU,
-     &                       T2D_FILES(T2DBI1)%FMT,W,OKY,NPTH,NP,ATH)
-          ENDIF
-!         CLANDESTINE VARIABLES FROM TOMAWAC TO SISYPHE
-          IF(NVARCL.GT.0) THEN
-            DO I=1,NVARCL
-              CALL FIND_IN_SEL(VARCL%ADR(I)%P,VARCLA(I)(1:16),
-     &                         T2D_FILES(T2DBI1)%LU,
-     &                         T2D_FILES(T2DBI1)%FMT,
-     &                         W,OKC,NPTH,NP,ATH)
-              IF(.NOT.OKC) THEN
-                IF(LNG.EQ.1) WRITE(LU,7) VARCLA(I)(1:16)
-                IF(LNG.EQ.2) WRITE(LU,8) VARCLA(I)(1:16)
-7             FORMAT(1X,'PROSOU : VARIABLE CLANDESTINE :',/,1X,A16,/,1X,
-     &                  '         NON TROUVEE',/,1X,
-     &                  '         DANS LE FICHIER DE HOULE')
-8             FORMAT(1X,'PROSOU : CLANDESTINE VARIABLE:',/,1X,A16,/,1X,
-     &                  '         NOT FOUND',/,1X,
-     &                  '         IN THE WAVE RESULTS FILE')
-              CALL PLANTE(1)
-              STOP
-              ENDIF
-            ENDDO
-          ENDIF
 !
           IF(.NOT.OKX.OR..NOT.OKY) THEN
             IF(LNG.EQ.1) WRITE(LU,5)

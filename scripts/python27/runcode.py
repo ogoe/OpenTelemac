@@ -133,7 +133,6 @@ from utils.files import checkSymLink,symlinkFile,getFileContent,putFileContent,r
 from utils.messages import MESSAGES,filterMessage,banner
 from parsers.parserKeywords import scanCAS,readCAS,rewriteCAS,scanDICO, getCASLang,getKeyWord,setKeyValue,getIOFilesSubmit
 from parsers.parserSortie import getLatestSortieFiles
-from parsers.parserSELAFIN import PARAFINS
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -229,7 +228,8 @@ def processCAS(casFiles,dico,frgb):
       
       #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
       casFile = path.realpath(casFile)
-      if not path.exists(casFile): raise Exception([{'name':'runCAS','msg':'inexistent CAS file: '+casFile+ \
+      if not path.exists(casFile): 
+         raise Exception([{'name':'runCAS','msg':'inexistent CAS file: '+casFile+ \
             '    +> or you may have forgotten an option key in your command line'}])
 
       # ~~> extract keywords
@@ -607,56 +607,86 @@ def getGLOGEO(cas,iFiles):
 
    # ~~ look for GLOBAL GEO ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    GLOGEO = ''
+   FMTGEO = ''
    for k in cas[1][0]:
       if k in iFiles:
-         if iFiles[k].split(';')[5][-4:] == 'GEOM': GLOGEO = iFiles[k].split(';')[1]
-   return GLOGEO
+         if iFiles[k].split(';')[5][-4:] == 'GEOM': 
+            GLOGEO = iFiles[k].split(';')[1]
+            FMTGEO = getFileFormat(cas,k)
+   return GLOGEO,FMTGEO
 
-def runPartition(partel,geom,conlim,ncsize,bypass,section_name,zone_name):
+def getFileFormat(cas,keyword):
+   """
+   Search in a cas object for the format key word 
+   associated with the keyword in argument
+   """
+   i = 0
+   # Loop on all the keywords in the cas file
+   for k in cas[1][0]:
+      # The keyword we are searching for contains both the keyword 'keyword' 
+      # and the word FORMAT (same word in french and english)
+      if keyword in k and 'FORMAT ' in k:
+         print 'debug:keyword',keyword,'format',cas[1][1][i][0].strip("'\"")
+         print 'debug:k',k
+         return cas[1][1][i][0].strip("'\"")
+      else:
+         i = i + 1
+   # By default if there is no format keyword the file is SERAFIN
+   return 'SERAFIN'
+
+def runPartition(partel,geom,fmtgeom,conlim,ncsize,bypass,section_name,zone_name):
 
    if ncsize < 2: return True
    # ~~ split GEO, CONLIM, SECTIONS and ZONES file ~~~~~~~~~~~~~~~~~
    print '\n... partitioning base files (geo, conlim, sections and zones)'
    try:
-      runPARTEL(partel,geom,conlim,ncsize,bypass,section_name,zone_name)
+      runPARTEL(partel,geom,fmtgeom,conlim,ncsize,bypass,section_name,zone_name)
    except Exception as e:
       raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
 
    return True
 
-def copyPartition(cas,geom,iFiles,ncsize,bypass,use_link):
+def copyPartition(partel,cas,geom,conlim,iFiles,ncsize,bypass,section_name,zone_name,use_link):
 
    if ncsize < 2: return True
    # ~~ split input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n... splitting / copying other input files'
-   slf = None
    for k in cas[1][0]:
       if k in iFiles:
          crun = iFiles[k].split(';')[1]
-         if iFiles[k].split(';')[5][-4:] == 'GEOM': continue
-         elif iFiles[k].split(';')[5][0:7] == 'SELAFIN':
-            if not slf: slf = PARAFINS(geom,geom)
-            print '      aquiring: ', path.basename(crun)
-            slf.cutContent(crun)
+         if iFiles[k].split(';')[5][0:7] == 'SELAFIN':
+            print ' partitioning: ', path.basename(crun)
+            try:
+               # Get the real name of the file to identify the format
+               # A better solution would be to find the definition of the format in the cas file
+               fileFormat = getFileFormat(cas,k)
+               runPARTEL(partel,crun,fileFormat,conlim,ncsize,bypass,section_name,zone_name)
+            except Exception as e:
+               raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
          elif iFiles[k].split(';')[5][0:5] == 'PARAL':
             if use_link:
                print '  duplilinking: ', path.basename(crun)
-               for n in range(ncsize): symlinkFile(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
+               for n in range(ncsize): 
+                  symlinkFile(crun,
+                              crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
             else:
                print '   duplicating: ', path.basename(crun)
-               for n in range(ncsize): shutil.copyfile(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
-               #for n in range(ncsize): shutil.copy2(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
+               for n in range(ncsize): 
+                  shutil.copy2(crun,
+                               crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
 
    return True
 
-def runPARTEL(partel,file,conlim,ncsize,bypass,section_name,zone_name):
+def runPARTEL(partel,file,fileFormat,conlim,ncsize,bypass,section_name,zone_name):
    # TODO: You should check if the file exist and should be updated (or not)
 
    has_section = '0'
    if section_name != '': has_section = '1'
    has_zone = '0'
    if zone_name != '': has_zone = '1'
-   putFileContent('PARTEL.PAR',[file,conlim,str(ncsize),str(1),has_section,section_name,has_zone,zone_name])
+   putFileContent('PARTEL.PAR',
+                  [file,conlim,str(ncsize),str(1),fileFormat,
+                   has_section,section_name,has_zone,zone_name])
    parCmd = partel.replace('<partel.log>','partel_'+file+'.log').split(';')
    mes = MESSAGES(size=10)
    for p in parCmd:
@@ -664,12 +694,22 @@ def runPARTEL(partel,file,conlim,ncsize,bypass,section_name,zone_name):
          print '    +> ',p
          tail,code = mes.runCmd(p,bypass)
       except Exception as e:
-         raise Exception([filterMessage({'name':'runPARTEL','msg':'something went wrong, I am not sure why. Here is the log:\n'+
-            '\n'.join(getFileContent('partel_'+file+'.log'))},e,bypass)])
-      if code != 0: raise Exception([{'name':'runPARTEL','msg':'Could not split your file '+file+' (runcode='+str(code)+') with the error as follows:'+
-         '\n      '+tail+
-         '\n      You may have forgotten to compile PARTEL with the appropriate compiler directive\n        (add -DHAVE_MPI to your cmd_obj in your configuration file).'+
-         '\n\nHere is the log:\n'+'\n'.join(getFileContent('partel_'+file+'.log'))}])
+         raise Exception([filterMessage(
+               {'name':'runPARTEL',
+                'msg':'something went wrong, I am not sure why. Here is the log:\n'+
+                      '\n'.join(getFileContent('partel_'+file+'.log'))
+               },e,bypass)])
+      if code != 0:
+         raise Exception([
+               {'name':'runPARTEL',
+                'msg':'Could not split your file '+file\
+                      +' (runcode='+str(code)+') with the error as follows:'\
+                      +'\n      '+tail\
+                      +'\n      You may have forgotten to compile PARTEL '\
+                      +'with the appropriate compiler directive'\
+                      +'\n        (add -DHAVE_MPI to your cmd_obj in your configuration file).'\
+                      +'\n\nHere is the log:\n'+'\n'.join(getFileContent('partel_'+file+'.log'))
+               }])
    return
 
 # ~~~ CCW: amended runCode to include optional listing file        ~~~
@@ -719,10 +759,10 @@ def runCode(exe,sortiefile):
    proc.wait()
    if proc.returncode == 0: return True
    raise Exception({'name':'runCode','msg':'Fail to run\n'+exe+
-      '\n~~~~~~~~~~~~~~~~~~\n'+str(proc.stderr.read().strip())+'\n~~~~~~~~~~~~~~~~~~'})
+      '\n'+'~'*18+'\n'+str(proc.stderr.read().strip())+'\n'+'~'*18})
    return False
 
-def runRecollection(gretel,cas,glogeo,oFiles,ncsize,bypass):
+def runRecollection(gretel,cas,glogeo,fmtgeo,oFiles,ncsize,bypass):
 
    if ncsize < 2: return True
    # ~~ aggregate output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -733,7 +773,16 @@ def runRecollection(gretel,cas,glogeo,oFiles,ncsize,bypass):
          if tpe[0:7] == 'SELAFIN':
             print '    collecting: ', path.basename(crun)
             try:
-               runGRETEL(gretel,crun,glogeo,ncsize,bypass)
+               fileFormat = getFileFormat(cas,k)
+               # We need nplan for gretel in med format
+               idx = -1
+               if "NUMBER OF HORIZONTAL LEVELS" in cas[1][0]:
+                  idx = cas[1][0].index("NUMBER OF HORIZONTAL LEVELS")
+               if "NOMBRE DE PLANS HORIZONTAUX" in cas[1][0]:
+                  idx = cas[1][0].index("NOMBRE DE PLANS HORIZONTAUX")
+               nplan = 0 if idx == -1 else cas[1][1][idx][0]  
+               print 'nplan',nplan
+               runGRETEL(gretel,crun,fileFormat,glogeo,fmtgeo,ncsize,nplan,bypass)
             except Exception as e:
                raise Exception([filterMessage({'name':'runRecollection'},e,bypass)])
          if tpe[0:6] == 'DELWAQ':
@@ -744,17 +793,30 @@ def runRecollection(gretel,cas,glogeo,oFiles,ncsize,bypass):
                raise Exception([filterMessage({'name':'runRecollection'},e,bypass)])
    return True
 
-def runGRETEL(gretel,file,geom,ncsize,bypass):
+def runGRETEL(gretel,file,fileFormat,geom,geoFormat,ncsize,nplan,bypass):
 
    # ~~ Run GRETEL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   putFileContent('gretel_'+file+'.par',[geom,file,str(ncsize)])
+   putFileContent('gretel_'+file+'.par',
+                  [geom,geoFormat,file,fileFormat,str(ncsize),str(nplan)])
    mes = MESSAGES(size=10)
    cmd = gretel+' < gretel_'+file+'.par >> gretel_'+file+'.log'
    try:
       tail,code = mes.runCmd(cmd,bypass)
    except Exception as e:
-      raise Exception([filterMessage({'name':'runGRETEL','msg':'something went wrong, I am not sure why. Here is the log:\n'+'\n'.join(getFileContent('gretel_'+file+'.log'))},e,bypass)])
-   if code != 0: raise Exception([{'name':'runGRETEL','msg':'Could not split your file '+file+' (runcode='+str(code)+') with the error as follows:'+'\n      '+tail+'\n\nHere is the log:\n'+'\n'.join(getFileContent('gretel_'+file+'.log'))}])
+      raise Exception(
+             [filterMessage(
+               {'name':'runGRETEL',
+                'msg':'something went wrong, I am not sure why. Here is the log:\n'\
+                      +'\n'.join(getFileContent('gretel_'+file+'.log'))
+               },e,bypass)])
+   if code != 0: 
+      raise Exception([
+            {'name':'runGRETEL',
+             'msg':'Could not split your file '+file\
+                   +' (runcode='+str(code)+') with the error as follows:'\
+                   +'\n      '+tail+'\n\nHere is the log:\n'\
+                   +'\n'.join(getFileContent('gretel_'+file+'.log'))
+            }])
    return
 
 def runGREDEL(gredel,file,geom,type,ncsize,bypass):
@@ -967,16 +1029,23 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          exeFile = path.join(pbin,CASFiles[name]['code']+cfg['SYSTEM']['sfx_exe'])
             #> user defined executable name
          useFile = exeFile
-         value,defaut = getKeyWord('FICHIER FORTRAN',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['dico'],MODFiles[CASFiles[name]['code']]['frgb'])
+         value,defaut = getKeyWord('FICHIER FORTRAN',CASFiles[name]['cas'],
+                                   MODFiles[CASFiles[name]['code']]['dico'],
+                                   MODFiles[CASFiles[name]['code']]['frgb'])
          # ~~ check if compileTELEMAC.py has been called since
          if value != []:
             useFort = path.join(CASFiles[name]['dir'],value[0].strip("'\""))
-            useFile = path.join(CASFiles[name]['dir'],path.splitext(value[0].strip("'\""))[0]+cfg['SYSTEM']['sfx_exe'])
+            useFile = path.join(CASFiles[name]['dir'],
+                                path.splitext(value[0].strip("'\""))[0]\
+                                +cfg['SYSTEM']['sfx_exe'])
             # /!\ removing dependency over cfg['REBUILD']:
             if path.exists(useFile):
-               if cfg['REBUILD'] == 1: remove(useFile)
-               elif isNewer(useFile,exeFile) == 1: remove(useFile)
-               elif isNewer(useFile,useFort) == 1: remove(useFile)
+               if cfg['REBUILD'] == 1: 
+                  remove(useFile)
+               elif isNewer(useFile,exeFile) == 1: 
+                  remove(useFile)
+               elif isNewer(useFile,useFort) == 1: 
+                  remove(useFile)
             #> default command line compilation and linkage
          if not path.exists(path.join(plib,CASFiles[name]['code']+'.cmdo')):
             raise Exception([{'name':'runCAS','msg': \
@@ -1046,7 +1115,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Getting out if compile only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if options.compileonly and not hpcpass:
-      print '\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\n'+'~'*72+'\n'
       print '... Your simulation is ready for launch and you can now :\n'
       print '    +> re-run without option -x (--compileonly) or with option --run\n'
       if cfg['MPI'] == {}:
@@ -1084,29 +1153,35 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          CASFiles[name].update({ 'par':parcmd })
 
          # ~~> Run PARTEL for the base files (GEO,CONLIM,SECTIONS,ZONES,)
-         CONLIM = getCONLIM(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    # Global CONLIM file
-         GLOGEO = getGLOGEO(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    # Global GEO file
+         CONLIM = getCONLIM(CASFiles[name]['cas'],
+                            MODFiles[CASFiles[name]['code']]['iFS'])    # Global CONLIM file
+         GLOGEO,FMTGEO = getGLOGEO(CASFiles[name]['cas'],
+                                   MODFiles[CASFiles[name]['code']]['iFS'])    # Global GEO file
          try:
-            runPartition(parcmd,GLOGEO,CONLIM,ncsize,options.bypass,section_name,zone_name)
+            runPartition(parcmd,GLOGEO,FMTGEO,CONLIM,ncsize,options.bypass,section_name,zone_name)
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS','msg':'Could not partition the base files for the following CAS file: '+name},e,options.bypass)])
          # ~~> Copy partition for the other input files
-         copyPartition(CASFiles[name]['cas'],GLOGEO,MODFiles[CASFiles[name]['code']]['iFS'],ncsize,False,options.use_link)
+         copyPartition(parcmd,CASFiles[name]['cas'],GLOGEO,CONLIM,\
+                       MODFiles[CASFiles[name]['code']]['iFS'],\
+                       ncsize,False,section_name,zone_name,options.use_link)
 
          for cplage in CASFiles[name]['with']:
             CONLIM = getCONLIM(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
-            GLOGEO = getGLOGEO(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
+            GLOGEO, FMTGEO = getGLOGEO(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
             try:
-               runPartition(parcmd,GLOGEO,CONLIM,ncsize,options.bypass,section_name,zone_name)
+               runPartition(parcmd,GLOGEO,FMTGEO,CONLIM,ncsize,options.bypass,section_name,zone_name)
             except Exception as e:
                raise Exception([filterMessage({'name':'runCAS','msg':'Could not partition the base files for the CAS file couled with: '+name},e,options.bypass)])
             # ~~> Copy partition for the other input files
-            copyPartition(CASFiles[name]['with'][cplage]['cas'],GLOGEO,MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],ncsize,False,options.use_link)
+            copyPartition(parcmd,CASFiles[name]['with'][cplage]['cas'],GLOGEO,CONLIM,\
+                          MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],\
+                          ncsize,False,section_name,zone_name,options.use_link)
   
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Getting out if split only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if options.split and not hpcpass:
-      print '\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\n'+'~'*72+'\n'
       print '... Your simulation is almost ready for launch. You need to compile your executable with the option -x (--compileonly)\n'
       return []          # Split only: do not proceed any further
 
@@ -1126,8 +1201,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          for name in CASFiles: CASFiles[name]['sortie'] = path.basename(CASFiles[name]['sortie'])+'.sortie'
 
    if not options.merge:
-      print '\n\nRunning your simulation(s) :\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\nRunning your simulation(s) :\n'+'~'*72+'\n'
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # You need to do this if ...
@@ -1232,15 +1306,17 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
             jobID = getFileContent(sortie)[0].strip()
             print '... Your simulation ('+name+') has been launched through the queue.\n'
-            if hpcpass: print '   +> You need to wait for completion before checking on results.\n'
-            else: print '   +> You need to wait for completion before re-collecting files using the option --merge\n'
+            if hpcpass: 
+               print '   +> You need to wait for completion before checking on results.\n'
+            else: 
+               print '   +> You need to wait for completion before re-collecting files using the option --merge\n'
          return []
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Getting out if run only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #    - options.split and options.compileonly are out already
    if options.run:
-      print '\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\n'+'~'*72+'\n'
       print '... Your simulation has been completed but you need to re-collect files using the option --merge\n'
       return []          # Run only: do not proceed any further
 
@@ -1248,39 +1324,55 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    # ~~ Handling the recollection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #    - options.split and options.compileonly and options run are out already
    if ncsize > 0:
-      print '\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\n'+'~'*72+'\n'
       print '... merging separated result files\n'
       # ~~> Path
       PARDir = pbin
       if cfg['PARTEL'] != {}:
-         if cfg['PARTEL'].has_key('PATH'): PARDir = cfg['PARTEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
+         if cfg['PARTEL'].has_key('PATH'): 
+            PARDir = cfg['PARTEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
       # ~~> GRETEL Executable
       execmd = path.join(PARDir,'gretel_autop'+cfg['SYSTEM']['sfx_exe'])
       # ~~> Run GRETEL
       for name in CASFiles:
          print '    +> ',name
          chdir(CASFiles[name]['wir'])
-         GLOGEO = getGLOGEO(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    # Global GEO file
-         runRecollection(execmd,CASFiles[name]['cas'],GLOGEO,MODFiles[CASFiles[name]['code']]['oFS'],ncsize,options.bypass)
+         # Global GEO file
+         GLOGEO,FMTGEO = getGLOGEO(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    
+         runRecollection(execmd,CASFiles[name]['cas'],GLOGEO,FMTGEO,
+                         MODFiles[CASFiles[name]['code']]['oFS'],
+                         ncsize,options.bypass)
          for cplage in CASFiles[name]['with']:
-            GLOGEO = getGLOGEO(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
-            runRecollection(execmd,CASFiles[name]['with'][cplage]['cas'],GLOGEO,MODFiles[CASFiles[name]['with'][cplage]['code']]['oFS'],ncsize,options.bypass)
+            GLOGEO,FMTGEO = getGLOGEO(CASFiles[name]['with'][cplage]['cas'],
+                                      MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
+            runRecollection(execmd,CASFiles[name]['with'][cplage]['cas'],GLOGEO,FMTGEO,
+                            MODFiles[CASFiles[name]['with'][cplage]['code']]['oFS'],
+                            ncsize,options.bypass)
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Handling all output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\n'+'~'*72+'\n'
    print '... handling result files\n'
    sortiefiles = []
    for name in CASFiles:
       print '    +> ',name
       chdir(CASFiles[name]['wir'])
-      files = processECR(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['oFS'],CASFiles[name]['dir'],CASFiles[name]['wir'],CASFiles[name]['sortie'],ncsize,options.bypass)
+      files = processECR(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['oFS'],
+                         CASFiles[name]['dir'],CASFiles[name]['wir'],
+                         CASFiles[name]['sortie'],ncsize,options.bypass)
       sortiefiles.extend(files)
       for cplage in CASFiles[name]['with']:
-         files = processECR(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['oFS'],CASFiles[name]['dir'],CASFiles[name]['wir'],None,ncsize,options.bypass)
+         files = processECR(CASFiles[name]['with'][cplage]['cas'],
+                            MODFiles[CASFiles[name]['with'][cplage]['code']]['oFS'],
+                            CASFiles[name]['dir'],CASFiles[name]['wir'],None,
+                            ncsize,options.bypass)
          sortiefiles.extend(files)
    #except Exception as e:
-   #   raise Exception([filterMessage({'name':'runCAS','msg':'I could not copy the output files back from the temporary directory:\n      '+wdir},e,options.bypass)])  # only one item here
+   #   raise Exception([filterMessage(
+   #                       {'name':'runCAS','msg':
+   #                        'I could not copy the output files back from\
+   #                         the temporary directory:\n      '+wdir},
+   #                         e,options.bypass)])  # only one item here
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if options.tmpdirectory:
@@ -1336,8 +1428,7 @@ def main(module=None):
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\nLoading Options and Configurations\n'+72*'~'+'\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    # ~~> Environment
    parser.add_option("-c", "--configname",type="string",dest="configName",default=USETELCFG,
@@ -1355,10 +1446,12 @@ def main(module=None):
    parser.add_option("-w", "--workdirectory",type="string",dest="wDir",default='',
       help="specify whether to re-run within a defined subdirectory" )
    # ~~> HPC / parallel
-   if module is None: parser.add_option("--jobname",type="string",dest="jobname",default=path.basename(sys.argv[0]),
-      help="specify a jobname for HPC queue tracking" )
-   else: parser.add_option("--jobname",type="string",dest="jobname",default=module,
-      help="specify a jobname for HPC queue tracking" )
+   if module is None: 
+      parser.add_option("--jobname",type="string",dest="jobname",default=path.basename(sys.argv[0]),
+                        help="specify a jobname for HPC queue tracking" )
+   else: 
+      parser.add_option("--jobname",type="string",dest="jobname",default=module,
+                        help="specify a jobname for HPC queue tracking" )
    parser.add_option("--queue",type="string",dest="hpc_queue",default='',
       help="specify a queue for HPC queue tracking" )
    parser.add_option("--walltime",type="string",dest="walltime",default='01:00:00',
@@ -1398,7 +1491,8 @@ def main(module=None):
          _, _, filenames = walk(dircfg).next()
          for ffile in filenames :
             head,tail = path.splitext(ffile)
-            if tail == '.cfg' : print '    +> ',ffile
+            if tail == '.cfg' :
+               print '    +> ',ffile
       sys.exit(1)
    if len(args) < 2:
       print '\nThe name of the module to run and one CAS file at least are required\n'
@@ -1423,9 +1517,12 @@ def main(module=None):
    if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
    # recognised keys in the config
-   if options.ncsize == '' and cfgs[cfgname].has_key('ncsize'): options.ncsize = cfgs[cfgname]['ncsize']
-   if options.nctile == '' and cfgs[cfgname].has_key('nctile'): options.nctile = cfgs[cfgname]['nctile']
-   if options.ncnode == '' and cfgs[cfgname].has_key('ncnode'): options.ncnode = cfgs[cfgname]['ncnode']
+   if options.ncsize == '' and cfgs[cfgname].has_key('ncsize'): 
+      options.ncsize = cfgs[cfgname]['ncsize']
+   if options.nctile == '' and cfgs[cfgname].has_key('nctile'): 
+      options.nctile = cfgs[cfgname]['nctile']
+   if options.ncnode == '' and cfgs[cfgname].has_key('ncnode'): 
+      options.ncnode = cfgs[cfgname]['ncnode']
 
    # bypass errors and carries on
    options.bypass = False
@@ -1433,27 +1530,30 @@ def main(module=None):
       if options.wDir == '':
          print '\nPlease use option -w (--workdirectory) with either of the options --split, --run or --merge\n'
          sys.exit(1)
-   if (options.split and options.merge) or (options.split and options.run) or (options.split and options.compileonly) or \
-      (options.merge and options.run) or (options.merge and options.compileonly) or \
-      (options.run and options.compileonly):
+   if (options.split and options.merge) \
+      or (options.split and options.run) \
+      or (options.split and options.compileonly) \
+      or (options.merge and options.run) \
+      or (options.merge and options.compileonly) \
+      or (options.run and options.compileonly):
       print '\nOnly one of the options --split, --run, --merge or --compileonly (-x) can be used at a time'
       sys.exit(1)
    # parsing for proper naming
    cfg = parseConfig_RunningTELEMAC(cfgs[cfgname])
    
-   print '\n\nRunning your CAS file for:\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\nRunning your CAS file for:\n'+'~'*72+'\n'
    print '    +> configuration: ' +  cfgname
-   if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
+   if 'brief' in cfgs[cfgname]: 
+      print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
    print '    +> root:          ' +  cfgs[cfgname]['root']
    if options.wDir != '':
       print '    +> directory      ' +  options.wDir
       options.tmpdirectory = False
-   print '\n\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\n'+'~'*72+'\n'
 
 # >>> Check wether the config has been compiled for the runcode
-   if options.compileonly: cfg['REBUILD'] = 1
+   if options.compileonly: 
+      cfg['REBUILD'] = 1
    if codeName not in cfg['MODULES']:
       print '\nThe code requested is not installed on this system : ' + codeName + '\n'
       sys.exit(1)
@@ -1472,15 +1572,15 @@ def main(module=None):
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpts.notEmpty():
-      print '\n\nHummm ... I could not complete my work.\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' \
+      print '\n\nHummm ... I could not complete my work.\n'+'~'*72\
       + xcpts.exceptMessages()
+      sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nMy work is done\n\n'
-
-   sys.exit(0)
+   else: 
+      print '\n\nMy work is done\n\n'
+      sys.exit(0)
 
 if __name__ == "__main__":
    main(None)

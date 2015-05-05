@@ -45,9 +45,21 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!     TO BE REMOVED IF IMPLEMENTED FOR A SPECIFIC CASE
+!     THIS JUST TO WARN IN CASE A USER FORGETS TO DO IT
 !
-!-----------------------------------------------------------------------
+      IF(LNG.EQ.1) THEN
+        WRITE(LU,*) 'LE SOUS-PROGRAMME DEF_ZONES DOIT ETRE INCLUS DANS'
+        WRITE(LU,*) 'LE FICHIER FORTRAN POUR Y DEFINIR LES ZONES'
+      ENDIF
+      IF(LNG.EQ.2) THEN
+        WRITE(LU,*) 'SUBROUTINE DEF_ZONES MUST BE INCLUDED'
+        WRITE(LU,*) 'IN THE FORTRAN FILE TO DEFINE ZONES'
+      ENDIF
+      CALL PLANTE(1)
+      STOP
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !     NZONE = ???
 !     ZONE%I(I) = ???

@@ -82,8 +82,7 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nInterpreting command line options\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\nInterpreting command line options\n'+'~'*72+'\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("--sph2ll",type="string",dest="sph2ll",default=None,help="convert from spherical to longitude-latitude" )
    options, args = parser.parse_args()
@@ -101,8 +100,7 @@ if __name__ == "__main__":
       for insFile in insFiles:
 
          insFile = path.realpath(insFile)
-         print '\n\nSmoothing ' + path.basename(insFile) + ' within ' + path.dirname(insFile) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         print '\n\nSmoothing ' + path.basename(insFile) + ' within ' + path.dirname(insFile) + '\n'+'~'*72+'\n'
          ins = InS2Shp( insFile )
          if options.sph2ll != None: ins.sph2ll(options.sph2ll.split(":"))
 

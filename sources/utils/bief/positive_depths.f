@@ -480,9 +480,9 @@
             ENDIF
             IF(NAMECODE(1:7).EQ.'SISYPHE') THEN
               WRITE(LU,*) 'BEDLOAD_SOLVS_FE'
-            ELSEIF(NAMECODE(1:7).EQ.'TELEMAC2D') THEN
+            ELSEIF(NAMECODE(1:9).EQ.'TELEMAC2D') THEN
               WRITE(LU,*) 'BORD'
-            ELSEIF(NAMECODE(1:7).EQ.'TELEMAC3D') THEN
+            ELSEIF(NAMECODE(1:9).EQ.'TELEMAC3D') THEN
               WRITE(LU,*) 'BORD3D'
             ENDIF       
             CALL PLANTE(1)

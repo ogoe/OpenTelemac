@@ -81,5 +81,4 @@ SOLVER OPTION                                = 3
 MATRIX STORAGE : 1
 TREATMENT OF THE LINEAR SYSTEM : 1   SOLVER : 7            
 /                                           
-&ETA
 &FIN

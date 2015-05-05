@@ -7,6 +7,7 @@ PERIODE DE COUPLAGE POUR SISYPHE = 1
 /
 FICHIER DES CONDITIONS AUX LIMITES :  geo_canal-t2d.cli
 FICHIER DE GEOMETRIE               :  geo_canal-t2d.slf
+FICHIER FORTRAN                    :  t2d_canal-t2d.f
 FICHIER DES RESULTATS              :  r2d_canal-t2d.slf
 FICHIER DE REFERENCE               :  f2d_canal-t2d.slf
 VALIDATION : OUI
@@ -61,4 +62,3 @@ PRODUIT MATRICE-VECTEUR : 1
 TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 1
 /
 /            
-&ETA                                                                            

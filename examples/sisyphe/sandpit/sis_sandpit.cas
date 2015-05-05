@@ -63,8 +63,11 @@ MASS-LUMPING             : NO
  SUSPENSION                                 = YES
  EQUILIBRIUM INFLOW CONCENTRATION           = YES
  REFERENCE CONCENTRATION FORMULA            = 4
- FORMULATION FOR DEPOSITION AND EROSION     = 3            /it does accept this setting even if the dico doesn't give more then 2 options
- SETTLING LAG                               = YES          /not coded into the trunk
+ FORMULATION FOR DEPOSITION AND EROSION     = 3            
+ /it does accept this setting 
+ / even if the dico doesn't give more then 2 options
+ SETTLING LAG                               = YES          
+ /not coded into the trunk
 /
  WATER DENSITY                              = 1000
  SEDIMENT DENSITY                           = 2650.0
@@ -81,5 +84,4 @@ MASS-LUMPING             : NO
  BED ROUGHNESS PREDICTOR OPTION             = 1
  SKIN FRICTION CORRECTION                   = 2
 /
-&ETA 
 

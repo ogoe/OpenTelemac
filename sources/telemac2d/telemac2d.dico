@@ -36,7 +36,7 @@
 /!RUBRIQUE 'CONSTANTES PHYSIQUES' 
 /!BACKGROUND 'LightGray' 
 /!FOREGROUND 'Brown' 
-/---SYSTEME-TELEMAC-V7P0------------------------------TELEMAC-2D------------- 
+/---SYSTEME-TELEMAC-V7P1------------------------------TELEMAC-2D------------- 
 / 
 /Signification des differents mode d'acquisition/restitution 
 /des fichiers vis a vis du parallelisme : 
@@ -70,7 +70,7 @@
 /     Sections input file, to be treated in parallel by partel in  
 /     a similar way as CONLIM !jaj #### 
 / 
-/---SYSTEME-TELEMAC-V7P0------------------------DeltaCAD-/-Septembre-2003---- 
+/---SYSTEME-TELEMAC-V7P1------------------------DeltaCAD-/-Septembre-2003---- 
  
 NOM = 'FICHIER DE GEOMETRIE' 
 NOM1 = 'GEOMETRY FILE' 
@@ -2059,8 +2059,8 @@ TYPE = CARACTERE
 INDEX = 12 
 MNEMO = '' 
 TAILLE = 0 
-DEFAUT = 'V7P0' 
-DEFAUT1 = 'V7P0' 
+DEFAUT = 'V7P1' 
+DEFAUT1 = 'V7P1' 
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL' 
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION' 
 NIVEAU = -3 
@@ -2158,6 +2158,30 @@ de l''utilisateur.
 Les donnees de ce fichier seront a lire sur le canal 24.' 
 AIDE1 = 'Binary-coded data file made available to the user. 
 The data in this file shall be read on channel 24.' 
+
+NOM = 'FORMAT DU FICHIER DE DONNEES BINAIRE 1' 
+NOM1 = 'BINARY DATA FILE 1 FORMAT' 
+TYPE = CARACTERE 
+INDEX = 96 
+MNEMO = '????' 
+DEFAUT = 'BIN     ' 
+DEFAUT1 = 'BIN     ' 
+NIVEAU = 2 
+CHOIX = 'BIN     ';'SERAFIN ';'SERAFIND';'MED     ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
+AIDE = 'Format du fichier de geometrie. 
+Les valeurs possibles sont : 
+- BIN     : format binaire standard
+- SERAFIN : format standard simple precision pour Telemac;  
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Geometry file format. 
+Possible values are: 
+- BIN     : Standard binary format
+- SERAFIN : classical single precision format in Telemac;  
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
  
 NOM = 'FICHIER DE DONNEES BINAIRE 2' 
 NOM1 = 'BINARY DATA FILE 2' 
@@ -2177,6 +2201,30 @@ de l''utilisateur.
 Les donnees de ce fichier seront a lire sur le canal 25.' 
 AIDE1 = 'Binary-coded data file made available to the user. 
 The data in this file shall be read on channel 25.' 
+
+NOM = 'FORMAT DU FICHIER DE DONNEES BINAIRE 2' 
+NOM1 = 'BINARY DATA FILE 2 FORMAT' 
+TYPE = CARACTERE 
+INDEX = 97 
+MNEMO = '????' 
+DEFAUT = 'BIN     ' 
+DEFAUT1 = 'BIN     ' 
+NIVEAU = 2 
+CHOIX = 'BIN     ';'SERAFIN ';'SERAFIND';'MED     ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
+AIDE = 'Format du fichier de geometrie. 
+Les valeurs possibles sont : 
+- BIN     : format binaire standard
+- SERAFIN : format standard simple precision pour Telemac;  
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Geometry file format. 
+Possible values are: 
+- BIN     : Standard binary format
+- SERAFIN : classical single precision format in Telemac;  
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
  
 NOM = 'FICHIER DE DONNEES FORMATE 1' 
 NOM1 = 'FORMATTED DATA FILE 1' 
@@ -2285,6 +2333,28 @@ ecrire sur le canal 28.'
 AIDE1 = 'Additional binary-coded result file made available 
 to the user. The results to be entered into this file shall be written 
 on channel 28.' 
+
+NOM = 'FORMAT DU FICHIER DE RESULTATS BINAIRE' 
+NOM1 = 'BINARY RESULTS FILE FORMAT' 
+TYPE = CARACTERE 
+INDEX = 95 
+MNEMO = 'T2D_FILES(T2DRBI)%NAME' 
+DEFAUT = '        ' 
+DEFAUT1 = '        ' 
+NIVEAU = 2 
+CHOIX = '        ';'SERAFIN ';'SERAFIND';'MED     ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
+AIDE = 'Format du fichier de geometrie. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac;  
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Geometry file format. 
+Possible values are: 
+- SERAFIN : classical single precision format in Telemac;  
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
  
 NOM = 'FICHIER DE RESULTATS FORMATE' 
 NOM1 = 'FORMATTED RESULTS FILE' 
@@ -3729,20 +3799,6 @@ AIDE = 'Prise en compte de la force de trainee de structures verticales
 (il faut alors remplir la subroutine DRAGFO)' 
 AIDE1 = 'drag forces from vertical structures are taken into account. 
 (subroutine DRAGFO must then be implemented) ' 
- 
-NOM = 'SORTIE DES CONDITIONS INITIALES' 
-NOM1 = 'OUTPUT OF INITIAL CONDITIONS' 
-TYPE = LOGIQUE 
-INDEX = 35 
-MNEMO = 'OUTINI' 
-TAILLE = 0 
-DEFAUT = OUI 
-DEFAUT1 = YES 
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
-NIVEAU = 1 
-AIDE = 'Si OUI, impression des conditions initiales dans les resultats' 
-AIDE1 = 'If YES, output of initial conditions in the results' 
  
 / NOUVEAUTES 5.2 
  
@@ -5973,12 +6029,13 @@ NOM1 = 'DESCRIPTION OF LIBRARIES'
 TYPE = CARACTERE 
 INDEX = 54 
 MNEMO = 'LINKLIBS' 
-TAILLE = 8
+TAILLE = 9
 DEFAUT = 'builds|PPP|lib|telemac2dMMMVVV.LLL'; 
 'builds|PPP|lib|sisypheMMMVVV.LLL'; 
 'builds|PPP|lib|tomawacMMMVVV.LLL'; 
 'builds|PPP|lib|dredgesimMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 
@@ -5988,6 +6045,7 @@ DEFAUT1 = 'builds|PPP|lib|telemac2dMMMVVV.LLL';
 'builds|PPP|lib|tomawacMMMVVV.LLL'; 
 'builds|PPP|lib|dredgesimMMMVVV.LLL';
 'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 

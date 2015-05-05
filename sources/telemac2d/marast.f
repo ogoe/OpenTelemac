@@ -13,7 +13,7 @@
 !history  E. DAVID (LHF)    ; F LEPEINTRE (LNH)    ; J-M JANIN (LNH)
 !+        01/03/1994
 !+        V5P2
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -27,7 +27,7 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
-!history  U.H.Merkel
+!history  U.H.Merkel (BAW Karlsruhe)
 !+        17/07/2012
 !+        V6P2
 !+    Adaption to NAG

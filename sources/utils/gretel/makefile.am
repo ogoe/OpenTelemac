@@ -1,7 +1,7 @@
 #
 #------- Sources Fortran
 
-SRCS_GRETEL= gretel_autop.f gretel_cpikle2.f gretel_read_dataset_elem.f gretel_read_dataset.f gretel_skip_header.f
+SRCS_GRETEL= gretel_autop.f
 SRCS_GREDELPTS= gredelpts_autop.f gredelpts_read_dataset.f
 SRCS_GREDELSEG= gredelseg_autop.f gredelpts_read_dataset.f
 SRCS_GREDELMET= gredelmet_autop.f gredel_fdnrst.f

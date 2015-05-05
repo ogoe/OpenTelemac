@@ -494,8 +494,8 @@
       IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
 !
       IF(LT.EQ.0) THEN
-        IMP=OUTINI
-        LEO=OUTINI
+        IMP=.TRUE.
+        LEO=.TRUE.
       ENDIF
 !
 !-----------------------------------------------------------------------

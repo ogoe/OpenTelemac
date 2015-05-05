@@ -54,4 +54,3 @@ DISCRETISATIONS EN ESPACE : 11 ; 11
 TRAITEMENT DU SYSTEME LINEAIRE : 2
 PRECISION DU SOLVEUR = 1.E-5  SOLVEUR : 1   
 CORRECTION DE CONTINUITE : OUI                                     
-&ETA                                                                      

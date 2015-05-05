@@ -17,7 +17,7 @@
 #--- Definitions pour SYSTEME TELEMAC
 !include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
-VERSION    = V7P0
+VERSION    = V7P1
 
 
 

@@ -35,4 +35,3 @@ PRODUIT MATRICE-VECTEUR : 1
 FORME DE LA CONVECTION : 1;5                                              
 OPTION DE SUPG         : 1;2 
 TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 1                                             
-&ETA                                                                      

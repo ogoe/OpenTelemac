@@ -10,7 +10,7 @@
 /
 &DYN
 /
-/---SYSTEME-TELEMAC-V7P0------------------------------TELEMAC-3D-------------
+/---SYSTEME-TELEMAC-V7P1------------------------------TELEMAC-3D-------------
 /
 /Signification des differents mode d'acquisition/restitution
 /des fichiers vis a vis du parallelisme :
@@ -40,7 +40,7 @@
 /     Cette valeur designe le fichier des "conditions aux limites"
 /     (utilise par le decoupeur "partel").
 /
-/---SYSTEME-TELEMAC-V7P0------------------------DeltaCAD-/-Septembre-2003----
+/---SYSTEME-TELEMAC-V7P1------------------------DeltaCAD-/-Septembre-2003----
 /
 NOM = 'NOMBRE DE PAS DE TEMPS'
 NOM1 = 'NUMBER OF TIME STEPS'
@@ -2337,8 +2337,8 @@ TYPE = CARACTERE
 INDEX = 12
 MNEMO = ''
 TAILLE = 0
-DEFAUT = 'V7P0'
-DEFAUT1 = 'V7P0'
+DEFAUT = 'V7P1'
+DEFAUT1 = 'V7P1'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
@@ -2353,8 +2353,8 @@ TYPE = CARACTERE
 INDEX = 13
 MNEMO = ''
 TAILLE = 0
-DEFAUT = 'V7P0'
-DEFAUT1 = 'V7P0'
+DEFAUT = 'V7P1'
+DEFAUT1 = 'V7P1'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
@@ -6259,6 +6259,7 @@ DEFAUT = 'builds|PPP|lib|telemac3dMMMVVV.LLL';
 'builds|PPP|lib|sisypheMMMVVV.LLL'; 
 'builds|PPP|lib|dredgesimMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 
@@ -6268,6 +6269,7 @@ DEFAUT1 = 'builds|PPP|lib|telemac3dMMMVVV.LLL';
 'builds|PPP|lib|sisypheMMMVVV.LLL'; 
 'builds|PPP|lib|dredgesimMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 

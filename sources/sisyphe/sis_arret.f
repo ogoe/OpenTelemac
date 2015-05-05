@@ -134,7 +134,7 @@
         ! IV.2 - SAVES THE LAST RESULT
         ! -----------------------------
         CALL PREDES(1,AT0)
-        CALL BIEF_DESIMP(FMTRES,VARSOR,HIST,0,NPOIN,NRES,BINRESSIS,AT0,
+        CALL BIEF_DESIMP(FMTRES,VARSOR,NPOIN,NRES,BINRESSIS,AT0,
      &                   1,1,1,SORLEO,SORIMP,MAXVAR,TEXTE,1,1)
         CALL PLANTE(1)
         STOP

@@ -83,15 +83,23 @@
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: Z1(NPOIN),Z2(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: AT,DDC,TV1,TV2
-      CHARACTER(LEN=3), INTENT(IN)    :: BINMAR
+      CHARACTER(LEN=8), INTENT(IN)    :: BINMAR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      WRITE(LU,*) '*********************************************'
-      WRITE(LU,*) '  VOUS FAITES APPEL A LA PROCEDURE MARUTI    '
-      WRITE(LU,*) '    (FORMAT DU FICHIER DES MAREES = 4)     '
-      WRITE(LU,*) '     MAIS VOUS NE L''AVEZ PAS MODIFIEE       '
-      WRITE(LU,*) '*********************************************'
+      IF(LNG.EQ.1) THEN
+        WRITE(LU,*) '*********************************************'
+        WRITE(LU,*) '  VOUS FAITES APPEL A LA PROCEDURE MARUTI    '
+        WRITE(LU,*) '    (FORMAT DU FICHIER DES MAREES = 4)       '
+        WRITE(LU,*) '     MAIS VOUS NE L''AVEZ PAS MODIFIEE       '
+        WRITE(LU,*) '*********************************************'
+      ELSEIF(LNG.EQ.2) THEN
+        WRITE(LU,*) '*********************************************'
+        WRITE(LU,*) '      YOU ARE CALLING SUBROUTINE MARUTI      '
+        WRITE(LU,*) '            (TIDE FILE FORMAT = 4)           '
+        WRITE(LU,*) '           BUT YOU DID NOT MODIFY IT         '
+        WRITE(LU,*) '*********************************************'
+      ENDIF
       CALL PLANTE(1)
       STOP
 !

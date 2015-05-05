@@ -2,7 +2,7 @@
                         SUBROUTINE ECRDEB
 !                       *****************
 !
-     &(CANAL,BINCOU,TITCAS,NBV,NTRAC,NTRPA,C2DH,TEXTLU,IC,N)
+     &(CANAL,FFORMAT,TITCAS,NBV,NTRAC,NTRPA,C2DH,TEXTLU,IC,N)
 !
 !***********************************************************************
 ! POSTEL3D VERSION 5.1   01/09/99   T. DENOT (LNH) 01 30 87 74 89
@@ -35,12 +35,13 @@
 !***********************************************************************
 !
       USE BIEF
+      USE INTERFACE_HERMES
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
       INTEGER ,INTENT(IN) :: NBV(2),CANAL,NTRAC,NTRPA
-      INTEGER ISTAT
       INTEGER I
       INTEGER IC,N
 !
@@ -48,17 +49,16 @@
 !
       CHARACTER*80 TITRE
       CHARACTER*72 TITCAS
-      CHARACTER*32 TEXTE
       CHARACTER*32 TEXTLU(100)
       CHARACTER*15  NOMCOU
-      CHARACTER*3 , INTENT(IN) ::  BINCOU
+      CHARACTER*8 , INTENT(IN) ::  FFORMAT
 !
-      CHARACTER(LEN=2) CB
-      DOUBLE PRECISION XB(2)
-      INTEGER IB(2)
       CHARACTER(LEN=3) :: EXTEN1
       CHARACTER(LEN=7) :: EXTEN2
       EXTERNAL EXTEN1,EXTEN2
+      INTEGER :: NBVAR
+      CHARACTER*32, ALLOCATABLE :: VAR_NAME(:)
+      INTEGER :: IVAR, IERR
 !
 !-----------------------------------------------------------------------
 !
@@ -70,60 +70,78 @@
         NOMCOU = 'POSVER_' // EXTEN2(IC,N)
       ENDIF
 !
-      OPEN(CANAL, FILE=NOMCOU , FORM='UNFORMATTED',ACTION='READWRITE' )
+      CALL OPEN_MESH(FFORMAT,NOMCOU,CANAL,'READWRITE',IERR)
+      CALL CHECK_CALL(IERR,'ECRDEB:OPEN_MESH')
 !
 !-----------------------------------------------------------------------
 !
 !  ECRITURE DU TITRE
 !
-      TITRE = TITCAS // '        '
-      CALL ECRI2(XB,IB,TITRE,80,'CH',CANAL,BINCOU,ISTAT)
+      TITRE = TITCAS // FFORMAT
 !
 !-----------------------------------------------------------------------
 !
 !  ECRITURE DU NOMBRE DE VARIABLES EN SORTIE
 !
 !
-      CALL ECRI2(XB,NBV,CB,2,'I ',CANAL,BINCOU,ISTAT)
+      NBVAR = NBV(1) + NBV(2)
+      IVAR = 1
 !
 !-----------------------------------------------------------------------
 !
 !  ECRITURE DES TEXTES
 !
       IF (C2DH) THEN
+        ALLOCATE(VAR_NAME(NBVAR),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'ECRDEB:VAR_NAME')
 !
-        IF (LNG.EQ.1) TEXTE = 'INDICATEUR DOM.                 '
-        IF (LNG.EQ.2) TEXTE = 'DOMAIN INDICATOR                '
-        CALL ECRI2(XB,IB,TEXTE,32,'CH',CANAL,BINCOU,ISTAT)
+        IF (LNG.EQ.1) VAR_NAME(IVAR) = 
+     &                        'INDICATEUR DOM.                 '
+        IF (LNG.EQ.2) VAR_NAME(IVAR) = 
+     &                        'DOMAIN INDICATOR                '
+        IVAR = IVAR + 1
 !
       ELSE
+        ALLOCATE(VAR_NAME(NBVAR+2),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'ECRDEB:VAR_NAME')
 !
-        IF (LNG.EQ.1) TEXTE = 'VITESSE UT      M/S             '
-        IF (LNG.EQ.2) TEXTE = 'VELOCITY UT     M/S             '
-        CALL ECRI2(XB,IB,TEXTE,32,'CH',CANAL,BINCOU,ISTAT)
+        IF (LNG.EQ.1) VAR_NAME(IVAR) = 
+     &                        'VITESSE UT      M/S             '
+        IF (LNG.EQ.2) VAR_NAME(IVAR) = 
+     &                        'VELOCITY UT     M/S             '
+        IVAR = IVAR + 1
 !
-        IF (LNG.EQ.1) TEXTE = 'VITESSE W       M/S             '
-        IF (LNG.EQ.2) TEXTE = 'VELOCITY W      M/S             '
-        CALL ECRI2(XB,IB,TEXTE,32,'CH',CANAL,BINCOU,ISTAT)
+        IF (LNG.EQ.1) VAR_NAME(IVAR) = 
+     &                        'VITESSE W       M/S             '
+        IF (LNG.EQ.2) VAR_NAME(IVAR) = 
+     &                        'VELOCITY W      M/S             '
+        IVAR = IVAR + 1
 !
-        IF (LNG.EQ.1) TEXTE = 'VITESSE UN      M/S             '
-        IF (LNG.EQ.2) TEXTE = 'VELOCITY UN     M/S             '
-        CALL ECRI2(XB,IB,TEXTE,32,'CH',CANAL,BINCOU,ISTAT)
+        IF (LNG.EQ.1) VAR_NAME(IVAR) = 
+     &                        'VITESSE UN      M/S             '
+        IF (LNG.EQ.2) VAR_NAME(IVAR) = 
+     &                        'VELOCITY UN     M/S             '
+        IVAR = IVAR + 1
 !
       ENDIF
 !
 !th pas besoin de 1 car on ne veut pas z
       IF (C2DH) THEN
         DO I=2,NBV(1)
-          CALL ECRI2(XB,IB,TEXTLU(I),32,'CH',CANAL,BINCOU,ISTAT)
+          VAR_NAME(IVAR) = TEXTLU(I)
+          IVAR = IVAR + 1
         ENDDO
       ELSE
         IF (NBV(1).GT.3) THEN
-        DO I=5,NBV(1)+1
-          CALL ECRI2(XB,IB,TEXTLU(I),32,'CH',CANAL,BINCOU,ISTAT)
-        ENDDO
+          DO I=4,NBV(1)
+            VAR_NAME(IVAR) = TEXTLU(I)
+            IVAR = IVAR + 1
+          ENDDO
         ENDIF
       ENDIF
+      CALL SET_HEADER(FFORMAT,CANAL,TITRE,IVAR-1,
+     &                VAR_NAME(1:IVAR-1),IERR)
+      CALL CHECK_CALL(IERR,'ECRDEB:SET_HEADER')
 !
 !-----------------------------------------------------------------------
 !

@@ -67,6 +67,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_HERMES
 !!!      USE DECLARATIONS_TELEMAC3D, ONLY: RHOS
       IMPLICIT NONE
 !
@@ -99,26 +100,16 @@
 !
       INTEGER IPOIN,ISTAT
 !
-      INTEGER           :: IB(10),ERR
-      DOUBLE PRECISION, ALLOCATABLE :: XB(:)
-      REAL, ALLOCATABLE :: RB(:)
-      CHARACTER(LEN=80) :: CB
-      INTEGER           :: REC 
+      INTEGER           :: IB(10),IERR
+      CHARACTER(LEN=80) :: TITLE
+      INTEGER           :: RECORD 
       LOGICAL           :: FOUND 
       CHARACTER(LEN=16) :: VARNAME 
+      INTEGER :: NPOIN_SUIS,TYP_ELEM,NELEM,NPTFR,NDP_SUIS,NPLAN
+      DOUBLE PRECISION :: TIME
 !      
       INTEGER           :: NVAR,I
 !
-! ALLOCATE ARRAY FOR READING FROM FILE
-      ALLOCATE(XB(NPOIN2),STAT=ERR)
-      ALLOCATE(RB(NPOIN2),STAT=ERR)
-!
-      IF(ERR.NE.0) THEN
-        IF(LNG.EQ.1) WRITE(LU,*) 'SUISED : ALLOCATION DE RB DEFECTUEUSE'
-        IF(LNG.EQ.2) WRITE(LU,*) 'SUISED : WRONG ALLOCATION OF RB'
-        CALL PLANTE(1)
-        STOP
-      ENDIF
 !
 !    NOTE: GIBSON MODEL NOT YET CODED
       IF (ITASS.EQ.2) THEN
@@ -136,57 +127,10 @@
      &   'READING BED SEDIMENT FROM PREVIOUS COMPUTATION FILE'
       WRITE(LU,*) ' '
 !
-!   1: NAME OF THE GEOMETRY FILE
-      CALL LIT(XB,RB,IB,CB,80,'CH',NSUIS,'STD',ISTAT)
-      IF(LNG.EQ.1) WRITE(LU,*) 'TITRE : ',CB(1:72)
-      IF(LNG.EQ.2) WRITE(LU,*) 'TITTLE: ',CB(1:72)
+      CALL READ_MESH_INFO(FFORMAT,NSUIS,TITLE,NVAR,NPOIN_SUIS,TYP_ELEM,
+     &                    NELEM,NPTFR,NPTIR,NDP_SUIS,NPLAN)
 !
-!   2: NUMBER OF 1 AND 2 DISCRETISATION FUNCTIONS
-      CALL LIT(XB,RB,IB,CB,2,'I',NSUIS,'STD',ISTAT)
-      IF(LNG.EQ.1) WRITE(LU,*) 'NOMBRE DE VARIABLES : ',IB(1)
-      IF(LNG.EQ.2) WRITE(LU,*) 'NUMBER OF VARIABLES: ',IB(1)
-      IF(LNG.EQ.1) WRITE(LU,*) 'ET DE VARIABLES CLANDESTINES: ',IB(2)
-      IF(LNG.EQ.2) WRITE(LU,*) 'AND OF CLANDESTINE VARIABLES: ',IB(2)
-!!!      IF( (IB(1).NE.4 .AND.ITASS.EQ.1).OR.(IB(1).NE.4 .AND.ITASS.EQ.2) )
-!!!     &   THEN
-!!!        IF(LNG.EQ.1) WRITE(LU,*)
-!!!     &'SUISED : CONSOLIDATION NON COMPATIBLE AVEC NOMBRE DE VARIABLES'
-!!!        IF(LNG.EQ.2) WRITE(LU,*)
-!!!     &'SUISED: CONSOLIDATION NOT COMPATIBLE WITH NUMBER OF VARIABLES'
-!!!        CALL PLANTE(1)
-!!!        STOP
-!!!      ENDIF
-      NVAR = IB(1)+IB(2)
-!
-!   3: VARIABLES NAMES AND UNITS
-      DO I = 1,NVAR
-        CALL LIT(XB,RB,IB,CB,32,'CH',NSUIS,'STD',ISTAT)
-        IF(LNG.EQ.1) WRITE(LU,*) I,".- ",CB(1:16)
-        IF(LNG.EQ.2) WRITE(LU,*) I,".- ",CB(1:16)
-      ENDDO
-!
-!   4: LIST OF 10 INTEGER PARAMETERS
-      CALL LIT(XB,RB,IB,CB,10,'I',NSUIS,'STD',ISTAT)     
-!     CASE WHERE DATE AND TIME ARE IN THE FILE
-      IF(IB(10).EQ.1) THEN 
-          CALL LIT(XB,RB,IB,CB,6,'I ',NSUIS,'STD',ISTAT)
-          WRITE(LU,*) IB(1),IB(2),IB(3)
-          WRITE(LU,*) IB(4),IB(5),IB(6)
-      ENDIF
-!!!      IF( (IB(7).NE.NPFMAX .AND.ITASS.EQ.2).OR.
-!!!     &                   (IB(7).NE.NCOUCH .AND.ITASS.EQ.1) ) THEN
-!!!        IF(LNG.EQ.1) WRITE(LU,*)
-!!!     &'SUISED : NOMBRE DE COUCHES NON COMPATIBLE AVEC CONSOLIDATION'
-!!!        IF(LNG.EQ.2) WRITE(LU,*)
-!!!     &'SUISED: NUMBER OF LAYERS NOT COMPATIBLE WITH CONSOLIDATION'
-!!!        CALL PLANTE(1)
-!!!        STOP
-!!!      ENDIF
-!
-!   5: 4 INTEGERS
-      CALL LIT(XB,RB,IB,CB,4,'I',NSUIS,'STD',ISTAT)
-      WRITE(LU,*) IB(1),IB(2),IB(3),IB(4)
-      IF( (IB(2).NE.NPOIN2) .OR. (IB(3).NE.3) ) THEN
+      IF( (NPOIN_SUIS.NE.NPOIN2) .OR. (NDP_SUIS.NE.3) ) THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'SUISED : NOMBRE DE NOEUDS NON COMPATIBLE'
         ENDIF
@@ -196,31 +140,6 @@
         CALL PLANTE(1)
         STOP
       ENDIF
-!
-!   6: IKLE
-      READ(NSUIS)
-!
-!   7: IPOBO (NOT IN PARALLEL MODE)
-      READ(NSUIS)
-!
-!   8 AND 9: X AND Y COORDINATES OF THE GRID NODES
-      READ(NSUIS)
-      READ(NSUIS)
-!
-!-----------------------------------------------------------------------
-!     QUICKLY LOOP TO FIND THE NUMBER OF RECORDS IN THE FILE
-      REC = 0
-      DO
-        READ(NSUIS,END=1901)          ! AT
-        DO I = 1,NVAR
-           READ(NSUIS)
-        ENDDO
-        REC = REC + 1
-      ENDDO
- 1901 CONTINUE
-!      
-!     REWIND BACK TO BEGINNING OF FILE
-      REWIND NSUIS
 !
       IF(ITASS.EQ.1) THEN
 ! 
@@ -250,15 +169,14 @@
           STOP            
         ENDIF 
 !           
-!       INITIALISE THE FOUND CHECK
-        FOUND = .FALSE. 
-!
         WRITE(LU,*)  'CHECKING PREVIOUS SED FILE FOR VARIABLE'
         
 !       PUT RESULTS INTO T2 BIEF OBJECT
-        CALL FIND_IN_SEL(T2,VARNAME,NSUIS,FFORMAT,RB,FOUND,REC) 
+        RECORD = -1 ! To get the last time step
+        CALL READ_DATA(FFORMAT,NSUIS,T2%R,VARNAME,NPOIN_SUIS,IERR,
+     &                 RECORD,TIME)
 !                       
-        IF (FOUND)  THEN
+        IF (IERR.EQ.0)  THEN
           WRITE(LU,*)
      &     'BED LAYER THICKNESS (LAYER',I,') FOUND IN GEOMETRY FILE' 
 !
@@ -280,29 +198,35 @@
 !       
 !     ELEVATION OF RIGID BED
       DO IPOIN = 1,NPOIN2
-          ZR(IPOIN) = ZF(IPOIN)-HDEP(IPOIN)
+        ZR(IPOIN) = ZF(IPOIN)-HDEP(IPOIN)
       ENDDO
 !             
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! STILL NEED TO CODE CONCENTRATION AND TIME OF CONSOLIDATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!!!! YA
+!!!! USE READ_DATA INSTEAD OF LIT
+!!!!
 !!!! CONCENTRATION
-!!!        CALL LIT(XB,RB,IB,CB,NPOIN2,'R4',NSUIS,'STD',ISTAT)
+!!!        RECORD = -1 ! To get the last time step
+!!!        VARNAME = 'xxxxxxxxxxxxxxxx'
+!!!        CALL READ_DATA(FFORMAT,NSUIS,VALUE,VARNAME,NPOIN_SUIS,IERR,
+!!!     &                 RECORD,TIME)
 !!!        DO I=1,NPOIN2
 !!!          DO IPLAN = 1,NCOUCH
-!!!            CONC(IPOIN,IPLAN) = DBLE( RB(1+(IPLAN-1)*NPOIN2))* UNITCONV
+!!!            CONC(IPOIN,IPLAN) = VALUE(1+(IPLAN-1)*NPOIN2)* UNITCONV
 !!!          ENDDO
 !!!        ENDDO
 !!!! TIME OF CONSOLIDATION
-!!!        CALL LIT(XB,RB,IB,CB,NCOUCH*NPOIN2,'R4',NSUIS,'STD',ISTAT)
-!!!        DO IPOIN = 1,NCOUCH*NPOIN2
-!!!!>        TEMP(IPOIN) = DBLE( RB(IPOIN) )
-!!!        ENDDO
+!!!        VARNAME = 'xxxxxxxxxxxxxxxx'
+!!!        CALL READ_DATA(FFORMAT,NSUIS,TEMP,VARNAME,NPOIN_SUIS,IERR,
+!!!     &                 RECORD,TIME)
 !!!
         ELSEIF (ITASS.EQ.2) THEN
 !###>TBE - COMMENTED GIBSON (NOT WORKING YET)
 !!!!> ELEVATION Z (TEMPORARILY STORES TRUE LAYER THICKNESS)
 !!!        CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,'STD',ISTAT)
+!!!        CALL READ_DATA
 !!!        DO IPOIN = 1,NPOIN2
 !!!          ZR(IPOIN) = DBLE( RB(IPOIN) )
 !!!          ZPLAN = ZR(IPOIN)
@@ -362,8 +286,6 @@
         ENDIF
 !        
 !     DEALLOCATE TEMPORARY STORAGE
-      DEALLOCATE(XB) 
-      DEALLOCATE(RB) 
 !      
       RETURN
       END

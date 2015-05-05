@@ -1447,8 +1447,8 @@ NOM1 = 'RELEASE'
 TYPE = CARACTERE 
 INDEX = 11 
 TAILLE = 0 
-DEFAUT =  V7P0 
-DEFAUT1 = V7P0
+DEFAUT =  V7P1
+DEFAUT1 = V7P1
 RUBRIQUE = 'ENTREES-SORTIES,GENERALITES';'CALCUL' 
 RUBRIQUE1 = 'INPUT-OUTPUT,INFORMATION';'COMPUTATIONAL INFORMATION' 
 COMPORT = 'Foreground ("ENTREES-SORTIES,GENERALITES*CALCUL")  
@@ -3109,14 +3109,16 @@ NOM1 = 'DESCRIPTION DES LIBRARIES'
 TYPE = CARACTERE 
 INDEX = 55 
 MNEMO = 'LINKLIBS' 
-TAILLE = 5 
+TAILLE = 6 
 DEFAUT = 'builds|PPP|lib|artemisMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 
 DEFAUT1 = 'builds|PPP|lib|artemisMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 

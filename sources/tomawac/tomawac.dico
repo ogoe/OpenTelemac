@@ -3614,6 +3614,28 @@ AIDE1 = 'Name of the file containing the grid of the computation to be
 made. 
 **Related keyword :** 
 GEOMETRY FILE BINARY' 
+
+NOM = 'FORMAT DU FICHIER DE GEOMETRIE' 
+NOM1 = 'GEOMETRY FILE FORMAT' 
+TYPE = CARACTERE 
+INDEX = 39 
+MNEMO = 'WAC_FILES(WACGEO)%FMT' 
+DEFAUT = 'SERAFIN ' 
+DEFAUT1 = 'SERAFIN ' 
+NIVEAU = 1 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE' 
+AIDE = 'Format du fichier de geometrie. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Geometry file format. 
+Possible values are: 
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
  
 NOM = 'FICHIER FORTRAN' 
 NOM1 = 'FORTRAN FILE' 
@@ -3715,6 +3737,28 @@ VARIABLES FOR 2D GRAPHIC PRINTOUTS
 PERIOD FOR GRAPHIC PRINTOUTS 
 NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS' 
  
+NOM = 'FORMAT DU FICHIER DES RESULTAT 2D' 
+NOM1 = '2D RESULTS FILE FORMAT' 
+TYPE = CARACTERE 
+INDEX = 17 
+MNEMO = 'WAC_FILES(WACRES)%FMT' 
+DEFAUT = 'SERAFIN ' 
+DEFAUT1 = 'SERAFIN ' 
+NIVEAU = 1 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE' 
+AIDE = 'Format du fichier de geometrie. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Geometry file format. 
+Possible values are: 
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
+
 NOM = 'FICHIER DES RESULTATS PONCTUELS' 
 NOM1 = 'PUNCTUAL RESULTS FILE' 
 TYPE = CARACTERE 
@@ -3767,6 +3811,28 @@ conditions for a next computation.
 **Related keywords :** 
 BINARY OF THE PREVIOUS COMPUTATION FILE' 
  
+NOM = 'FORMAT DU FICHIER DU CALCUL PRECEDENT' 
+NOM1 = 'PREVIOUS COMPUTATION FILE FORMAT' 
+TYPE = CARACTERE 
+INDEX = 41 
+MNEMO = 'WAC_FILES(WACPRE)%FMT' 
+DEFAUT = 'SERAFIND' 
+DEFAUT1 = 'SERAFIND' 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+NIVEAU = 1 
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE' 
+AIDE = 'Format du fichier de resultats du calcul precedent. 
+Les valeurs possibles sont provisoirement seulement: 
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Previous computation results file format. 
+Possible values are provisionnally only: 
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+ 
 NOM = 'FICHIER DES RESULTATS GLOBAUX' 
 NOM1 = 'GLOBAL RESULT FILE' 
 TYPE = CARACTERE 
@@ -3788,6 +3854,28 @@ is written at the end of the computation in order to realise a next
 computation. 
 **Related keywords :** 
 BINARY OF THE GLOBAL RESULT FILE' 
+
+NOM = 'FORMAT DU FICHIER DES RESULTATS GLOBAUX'
+NOM1 = 'GLOBAL RESULT FILE FORMAT' 
+TYPE = CARACTERE 
+INDEX = 51 
+MNEMO = 'WAC_FILES(WACRBI)%FMT' 
+DEFAUT = 'SERAFIND' 
+DEFAUT1 = 'SERAFIND' 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+NIVEAU = 1 
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE' 
+AIDE = 'Format du fichier de resultats du calcul precedent. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Previous computation results file format. 
+Possible values are: 
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
  
 NOM = 'FICHIER DES COURANTS BINAIRE' 
 NOM1 = 'BINARY CURRENTS FILE' 
@@ -3813,6 +3901,28 @@ CONSIDERATION OF A STATIONARY CURRENT
 CONSIDERATION OF TIDE 
 FORMATTED CURRENTS FILE 
 CURRENTS FILE FORMAT' 
+
+NOM = 'FORMAT DU FICHIER DES COURANTS BINAIRE'
+NOM1 = 'BINARY CURRENTS FILE FORMAT' 
+TYPE = CARACTERE 
+INDEX = 40 
+MNEMO = 'WAC_FILES(WACCOB)%FMT' 
+DEFAUT = 'SERAFIN' 
+DEFAUT1 = 'SERAFIN' 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+NIVEAU = 1 
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE' 
+AIDE = 'Format du fichier de resultats du calcul precedent. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Previous computation results file format. 
+Possible values are: 
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
  
 NOM = 'FICHIER DES COURANTS FORMATE' 
 NOM1 = 'FORMATTED CURRENTS FILE' 
@@ -3902,34 +4012,6 @@ possible values are as follows :
 **Related keyword :** 
 GEOMETRY FILE' 
  
-NOM = 'BINAIRE DU FICHIER DES RESULTATS 2D' 
-NOM1 = '2D RESULTS FILE BINARY' 
-TYPE = CARACTERE 
-INDEX = 17 
-MNEMO = 'Variable BINRES' 
-TAILLE= 0 
-DEFAUT = 'STD' 
-DEFAUT1 = 'STD' 
-CHOIX = 'STD'; 
-'IBM'; 
-'I3E' 
-RUBRIQUE = 'INUTILE' 
-RUBRIQUE1 = 'USELESS' 
-NIVEAU = 0 
-AIDE = 'Type du binaire utilise pour l''ecriture du fichier 
-des resultats 2D. Ce type depend de la machine sur laquelle le 
-fichier a ete genere. Les valeurs possibles sont les memes que pour 
-le fichier de geometrie. 
-**Mots-cles associes :** 
-FICHIER DES RESULTATS 2D' 
-AIDE1 = 'Type of the binary used for writing the 2D results file. That 
-type depends on the machine in which the file was generated. The 
-possible values are as follows : 
-- IBM; for a file created in an IBM machine; 
-- I3E; for a file created in a HP machine; 
-- STD; normal READ and WRITE instructions are then generated. 
-**Related keyword :** 
-2D RESULTS FILE' 
  
 NOM = 'BINAIRE DU FICHIER DES RESULTATS PONCTUELS' 
 NOM1 = 'PUNCTUAL RESULTS FILE BINARY' 
@@ -4058,8 +4140,8 @@ TYPE = CARACTERE
 INDEX = 22 
 MNEMO = 'Variable VERS' 
 TAILLE= 0 
-DEFAUT = 'V7P0' 
-DEFAUT1 = 'V7P0' 
+DEFAUT = 'V7P1' 
+DEFAUT1 = 'V7P1' 
 RUBRIQUE = 'INUTILE' 
 RUBRIQUE1 = 'USELESS' 
 NIVEAU = 0 
@@ -4632,67 +4714,6 @@ STARTING TIME STEP FOR DIFFFRACTION'
 
 /V6P0 
  
-NOM = 'FORMAT DU FICHIER DE GEOMETRIE' 
-NOM1 = 'GEOMETRY FILE FORMAT' 
-TYPE = CARACTERE 
-INDEX = 39 
-MNEMO = 'WAC_FILES(WACGEO)%FMT' 
-DEFAUT = 'SERAFIN ' 
-DEFAUT1 = 'SERAFIN ' 
-NIVEAU = 1 
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
-RUBRIQUE = 'FICHIERS DE DONNEES' 
-RUBRIQUE1 = 'DATA FILE' 
-AIDE = 'Format du fichier de geometrie. 
-Les valeurs possibles sont : 
-- SERAFIN : format standard simple precision pour Telemac; 
-- SERAFIND: format standard double precision pour Telemac; 
-- MED     : format MED base sur HDF5' 
-AIDE1 = 'Geometry file format. 
-Possible values are: 
-- SERAFIN : classical single precision format in Telemac; 
-- SERAFIND: classical double precision format in Telemac; 
-- MED     : MED format based on HDF5' 
- 
-NOM = 'FORMAT DU FICHIER DE RESULTATS' 
-NOM1 = 'RESULTS FILE FORMAT' 
-TYPE = CARACTERE 
-INDEX = 40 
-MNEMO = 'WAC_FILES(WACRES)%FMT' 
-DEFAUT = 'SERAFIN ' 
-DEFAUT1 = 'SERAFIN ' 
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
-NIVEAU = 1 
-RUBRIQUE = 'FICHIERS DE DONNEES' 
-RUBRIQUE1 = 'DATA FILE' 
-AIDE = 'Format du fichier de resultats. 
-Les valeurs possibles sont : 
-- SERAFIN : format standard simple precision pour Telemac; 
-- SERAFIND: format standard double precision pour Telemac; 
-- MED     : format MED base sur HDF5' 
-AIDE1 = 'Results file format. Possible values are: 
-- SERAFIN : classical single precision format in Telemac; 
-- SERAFIND: classical double precision format in Telemac; 
-- MED     : MED format based on HDF5' 
- 
-NOM = 'FORMAT DU FICHIER DU CALCUL PRECEDENT' 
-NOM1 = 'PREVIOUS COMPUTATION FILE FORMAT' 
-TYPE = CARACTERE 
-INDEX = 41 
-MNEMO = 'WAC_FILES(WACPRE)%FMT' 
-DEFAUT = 'SERAFIND' 
-DEFAUT1 = 'SERAFIND' 
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
-NIVEAU = 1 
-RUBRIQUE = 'FICHIERS DE DONNEES' 
-RUBRIQUE1 = 'DATA FILE' 
-AIDE = 'Format du fichier de resultats du calcul precedent. 
-Les valeurs possibles sont provisoirement seulement: 
-- SERAFIND: format standard double precision pour Telemac'
-AIDE1 = 'Previous computation results file format. 
-Possible values are provisionnally only: 
-- SERAFIND: classical double precision format in Telemac'
- 
 NOM = 'FORMAT DU FICHIER DE REFERENCE' 
 NOM1 = 'REFERENCE FILE FORMAT' 
 TYPE = CARACTERE 
@@ -5093,14 +5114,16 @@ NOM1 = 'DESCRIPTION OF LIBRARIES'
 TYPE = CARACTERE 
 INDEX = 98 
 MNEMO = 'LINKLIBS' 
-TAILLE = 5 
+TAILLE = 6 
 DEFAUT = 'builds|PPP|lib|tomawacMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 
 DEFAUT1 = 'builds|PPP|lib|tomawacMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 
 'builds|PPP|lib|parallelMMMVVV.LLL'; 
 'builds|PPP|lib|specialMMMVVV.LLL' 

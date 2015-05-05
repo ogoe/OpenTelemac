@@ -90,7 +90,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: UC1(NPOIN),VC1(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: UC2(NPOIN),VC2(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: AT,DDC,TC1,TC2
-      CHARACTER(LEN=3), INTENT(IN)    :: BINCOU
+      CHARACTER(LEN=8), INTENT(IN)    :: BINCOU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

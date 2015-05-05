@@ -2,7 +2,6 @@
 path: <root>|sources|utils|partel
 module: partel
 liborder: special parallel bief partel
-version: v7p0
 name: PARTEL_PARA
 
 [bief]
@@ -32,6 +31,6 @@ files: partitioner_para.F
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
-  plante.f
+  plante.F
   check_allocate.f
   extens.f

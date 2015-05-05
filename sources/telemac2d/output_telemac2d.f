@@ -48,9 +48,6 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!     REQUIRED BY DESIMP, NO IDEA WHY...
-      DOUBLE PRECISION :: HIST(1)
-      DATA HIST /9999.D0/
 !
 !----------------------------------------------------------------------
 !
@@ -61,7 +58,7 @@
 !     OUTPUTS A STANDARD TIME STEP
 !
       CALL BIEF_DESIMP(T2D_FILES(T2DRES)%FMT,VARSOR,
-     &                 HIST,0,NPOIN,T2D_FILES(T2DRES)%LU,'STD',
+     &                 NPOIN,T2D_FILES(T2DRES)%LU,'STD',
      &                 TIME,1,1,1,
      &                 SORLEO,SORIMP,MAXVAR,TEXTE,0,0)
 !

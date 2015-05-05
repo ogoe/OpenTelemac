@@ -1,4 +1,5 @@
-PROCESSEURS PARALLELES : 8
+PROCESSEURS PARALLELES : 4
+DEBUGGER : 0
 /
 / HP C3700 : 11 s compilateur HP  5.5 18/04/2007 
 /
@@ -65,5 +66,4 @@ STOCKAGE DES MATRICES : 3       PRODUIT MATRICE-VECTEUR : 1
 /----------------------------------------------------------------------/ 
 DATE DE L'ORIGINE DES TEMPS  : 1997; 2;21
 HEURE DE L'ORIGINE DES TEMPS :   10;21;30
-/&ETA
  

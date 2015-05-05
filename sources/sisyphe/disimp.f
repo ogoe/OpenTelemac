@@ -96,7 +96,7 @@
 !
 !       FOR THE USER: POSITIVE DISCHARGE = ENTERING
         Q1 = BIEF_SUM(QBOR)
-        IF(NCSIZE.GT.1) Q1 = P_DSUM(Q1)    
+        IF(NCSIZE.GT.1) Q1 = P_DSUM(Q1)
 !
         IF(ABS(Q1).LT.1.D-10) THEN
 !         ZERO FLUX: WARNING MESSAGE

@@ -345,7 +345,7 @@
 !***********************************************************************
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC2D, ONLY : BOUNDARY_COLOUR
+      USE DECLARATIONS_TELEMAC2D, ONLY : BOUNDARY_COLOUR, LT
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -398,12 +398,14 @@
 !                                                                               
       PI = 3.141592653589793D0
       NPTFRL=77
-!     DO K = 1, NPTFR
-!       HBOR(K) = 0.D0
-!     ENDDO
+      IF(LT.EQ.0) THEN
+        DO K = 1, NPTFR
+          HBOR(K) = 1.D0
+        ENDDO
+      ENDIF
       IF(TEMPS.EQ.150.) THEN
         REWIND 26
-        DO K= 1 , NPTFRL
+        DO K= 1, NPTFRL
           READ(26,*) I,HB(K),PHASEB(K),HC(K),PHASEC(K)
           PHASEB(K)=PI/180.D0*PHASEB(K)
           PHASEC(K)=PI/180.D0*PHASEC(K)

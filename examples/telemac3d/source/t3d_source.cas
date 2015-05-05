@@ -77,6 +77,5 @@ BANCS DECOUVRANTS : NON
 NOMBRE DE TRACEURS = 3
 VALEURS INITIALES DES TRACEURS : 0.;0.;0.
 PRECISION POUR LA DIFFUSION DES TRACEURS = 1.E-7
-/&ETA                                                                     
 &FIN
  

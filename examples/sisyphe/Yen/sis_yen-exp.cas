@@ -59,7 +59,6 @@ TYPE OF ADVECTION = 6
 / here only deviation is accounted for
 //SLOPE EFFECT = YES
 //BETA = 0.
-/&ETA
 &FIN
 
 

@@ -175,22 +175,6 @@
 !
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-! CCP : V6P2 doesn't use leclim_artemis.f / Use of leclim.f
-!      INTERFACE
-!        SUBROUTINE LECLIM_ARTEMIS
-!     &(LIHBOR,LIUBOR,NPTFR,NBOR,STDGEO,NLIM,
-!     & ISEG , XSEG , YSEG , NACHB , NUMLIQ, IFAPAR )
-!       USE BIEF_DEF
-!       IMPLICIT NONE
-!       INTEGER NPTFR,STDGEO,NLIM
-!       INTEGER ISEG(NPTFR),NACHB(5,*),NUMLIQ(*)
-!       INTEGER LIHBOR(NPTFR),LIUBOR(NPTFR),NBOR(NPTFR)
-!       DOUBLE PRECISION XSEG(NPTFR),YSEG(NPTFR)
-!       INTEGER :: IFAPAR(6,*)
-!        END SUBROUTINE
-!      END INTERFACE
 
 !-----------------------------------------------------------------------
 !

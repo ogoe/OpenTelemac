@@ -1,8 +1,7 @@
 [general]
 path: <root>|sources|telemac3d
 module: telemac3d
-liborder: special parallel damocles bief sisyphe tomawac telemac2d telemac3d
-version: v7p0
+liborder: special parallel damocles hermes bief sisyphe tomawac telemac2d telemac3d
 name: HOMERE_TELEMAC3D
 
 [bief]
@@ -34,20 +33,18 @@ files: declarations_telemac.f
   cpstvc.f
   bief_nbsegel.f
   segbor.f
-  lit.f
-  readgeo1.f
-  bief_ininds.f
-  corrxy.f
-  readgeo3.f
-  readgeo2.f
-  cpikle3.f
   bief_nbfel.f
   cpikle2.f
+  read_mesh_info.f
+  corrxy.f
+  read_mesh_coord.f
+  cpikle3.f
+  read_mesh_conn.f
   ov_2.f
   mxptel31.f
   mxptel.f
+  bief_ininds.f
   almesh.f
-  m_med.F
   bief_open_files.f
   ovd.f
   cmpobj.f
@@ -186,11 +183,6 @@ files: declarations_telemac.f
   matriy.f
   matrix.f
   filter.f
-  litenr.f
-  bief_eof.f
-  skipgeo.f
-  suite_serafin.f
-  bief_suite.f
   vc13cc.f
   vc04tt.f
   vc01tt0.f
@@ -352,15 +344,13 @@ files: declarations_telemac.f
   slop10.f
   slopes.f
   parcom_bord.f
-  ecri2.f
   clip.f
   share_3d_fluxes.f
   flux3dlim.f
-  find_in_sel.f
-  write_mesh_serafin.f
-  write_mesh.f
+  read_dataset.f
   bief_valida.f
-  write_data_serafin.f
+  read_data.f
+  write_mesh.f
   write_data.f
   impvec.f
   bief_desimp.f
@@ -386,12 +376,17 @@ files: declarations_telemac.f
   decvrt.f
   crsl11.f
   proxim.f
+  read_partel_info.f
   leclim.f
   crosfr.f
   fasp.f
   fond.f
   strche.f
   fonstr.f
+  write_header.f
+  build_ikle_ext.f
+  ludcmp.f
+  lubksb.f
   vecle3.f
   vecle6.f
   vecle4.f
@@ -433,11 +428,6 @@ files: declarations_telemac.f
   survol.f
   geoelt.f
   inbief.f
-  create_dataset_serafin.f
-  create_dataset.f
-  build_ikle_ext.f
-  ludcmp.f
-  lubksb.f
   config_code.f
   positive_depths.f
   front2.f
@@ -489,6 +479,42 @@ files: majus.f
   damoc.f
   damocle.f
 
+[hermes]
+path: <root>|sources|utils|hermes
+files: interface_hermes.f
+  utils_med.F
+  utils_serafin.f
+  get_mesh_l2g_numbering.f
+  get_mesh_nelem.f
+  get_mesh_npoin_per_element.f
+  get_mesh_nplan.f
+  get_bnd_nelem.f
+  get_mesh_nptir.f
+  get_mesh_title.f
+  get_bnd_npoin.f
+  get_data_nvar.f
+  get_mesh_dimension.f
+  get_mesh_npoin.f
+  get_mesh_coord.f
+  get_mesh_connectivity.f
+  get_bnd_ipobo.f
+  open_mesh.f
+  open_bnd.f
+  close_bnd.f
+  close_mesh.f
+  ecri2.f
+  get_data_value.f
+  get_data_ntimestep.f
+  get_data_time.f
+  get_data_var_list.f
+  set_mesh.f
+  add_data.f
+  update_data_mesh.f
+  get_bnd_numbering.f
+  get_bnd_value.f
+  lit.f
+  set_header.f
+
 [parallel]
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
@@ -536,22 +562,8 @@ files: declarations_sisyphe.f
   suspension_fredsoe.f
   dredgesim_interface.F
   maxslope.f
-  suspension_dispersion.f
-  suspension_erosion_coh.f
-  suspension_evol.f
-  suspension_bilan.f
-  suspension_bijker.f
-  suspension_flux_mixte.f
-  suspension_bilan_coh.f
-  suspension_sandflow.f
-  suspension_erosion.f
-  suspension_listing.f
-  suspension_conv.f
-  suspension_rouse.f
-  suspension_miles.f
-  suspension_depot.f
-  suspension_computation.f
-  suspension_main.f
+  condis_sisyphe.f
+  init_constant.f
   disimp.f
   read_fic_conc.f
   cgl.f
@@ -574,15 +586,28 @@ files: declarations_sisyphe.f
   bedload_einst.f
   bedload_formula.f
   condim_susp.f
+  suspension_rouse.f
+  suspension_sandflow.f
+  suspension_bijker.f
   init_transport.f
   predes.f
-  condis_sisyphe.f
+  suspension_dispersion.f
+  suspension_erosion_coh.f
+  suspension_evol.f
+  suspension_bilan.f
+  suspension_flux_mixte.f
+  suspension_bilan_coh.f
+  suspension_erosion.f
+  suspension_listing.f
+  suspension_conv.f
+  suspension_miles.f
+  suspension_depot.f
+  suspension_computation.f
+  suspension_main.f
   rescue_sisyphe.f
   noerod.f
   bilan_sisyphe.f
-  init_constant.f
   corstr_sisyphe.f
-  leclis.f
   sis_arret.f
   condim_sisyphe.f
   tassement_2.f
@@ -596,8 +621,12 @@ files: declarations_sisyphe.f
   bedload_effpnt.f
   bedload_solidischarge.f
   bedload_main.f
-  fluxpr_sisyphe.f
-  flusec_sisyphe.f
+  coefro_sisyphe.f
+  ride.f
+  ride_vr.f
+  ks_sisyphe.f
+  tobw_sisyphe.f
+  tob_sisyphe.f
   db.f
   cvsp_outputfiles.f
   cvsp_p.f
@@ -615,6 +644,7 @@ files: declarations_sisyphe.f
   cvsp_make_actlay.f
   cvsp_add_fraction.f
   cvsp_main.f
+  cvsp_output_init.f
   init_compo.f
   init_avai.f
   init_compo_coh.f
@@ -623,12 +653,8 @@ files: declarations_sisyphe.f
   init_sediment.f
   layer.f
   rescue_sisyphe_notperma.f
-  coefro_sisyphe.f
-  ride.f
-  ride_vr.f
-  ks_sisyphe.f
-  tobw_sisyphe.f
-  tob_sisyphe.f
+  fluxpr_sisyphe.f
+  flusec_sisyphe.f
   calcuw.f
   mean_grain_size.f
   init_zero.f
@@ -638,7 +664,10 @@ files: declarations_sisyphe.f
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
-  plante.f
+  plante.F
+  get_nodes_per_element.f
+  write_error.f
+  check_call.f
   check_allocate.f
   extens.f
 
@@ -667,7 +696,6 @@ files: friction_def.f
   nodalf_schureman.f
   bord_tide_misc.f
   read_fic_sources.f
-  corstr.f
   astro.f
   marast.f
   maskob.f
@@ -676,6 +704,7 @@ files: friction_def.f
   masbas2d.f
   coefro.f
   prebor.f
+  corstr.f
   fdnrst.f
   wrihyd.f
   tel4del.f
@@ -698,6 +727,7 @@ files: declarations_telemac3d.f
   kepini.f
   t3d_corfon.f
   utimp.f
+  source.f
   check.f
   exchange_with_atmosphere.f
   q3.f
@@ -715,6 +745,7 @@ files: declarations_telemac3d.f
   scope.f
   t3d_debsce.f
   viscke.f
+  mittit.f
   t3d_stress.f
   sumver.f
   flupri.f
@@ -769,7 +800,6 @@ files: declarations_telemac3d.f
   grad2d.f
   fsgrad.f
   flot3d.f
-  source.f
   smago3d.f
   smago.f
   vissma.f
@@ -778,12 +808,12 @@ files: declarations_telemac3d.f
   transf_zchar.f
   kepicl.f
   t3d_read_fic_curves.f
+  findksce.f
   sources_sinks.f
   erodc.f
   erodnc.f
   flused.f
   clsedi.f
-  mittit.f
   bil3d.f
   soukep.f
   phstat.f
@@ -805,7 +835,6 @@ files: declarations_telemac3d.f
   condim.f
   sed3d.f
   mass3d.f
-  findksce.f
   condis.f
   telemac3d.f
   homere_telemac3d.f

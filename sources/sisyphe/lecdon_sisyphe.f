@@ -160,8 +160,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      SUMAVAI = 0
-
 ! INITIALISES THE VARIABLES FOR DAMOCLES CALL :
 !
       DO K = 1, NMAX
@@ -803,6 +801,7 @@
         STOP
       ENDIF
 !     CHECKS THE SUM OF INITIAL AVAI
+      SUMAVAI = 0.D0
       DO I=1,NSICLA
       SUMAVAI = SUMAVAI + AVA0(I)
       ENDDO

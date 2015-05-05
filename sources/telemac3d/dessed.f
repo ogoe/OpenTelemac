@@ -3,7 +3,7 @@
 !                    *****************
 !
      & (NPF,IVIDE,EPAI,HDEP,CONC,TEMP,ZR,NPOIN2,NPFMAX,NCOUCH,
-     &  NIT,GRAPRD,LT,DTC,TASSE,GIBSON,NRSED,TITCAS,BIRSED,GRADEB)
+     &  NIT,GRAPRD,LT,DTC,TASSE,GIBSON,NRSED,TITCAS,FMTRSED,GRADEB)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                   21/08/2010
@@ -80,7 +80,9 @@
 !| ZR             |<--| ELEVATION OF RIDIG BED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, ONLY: NCSIZE,NPTIR
+      USE DECLARATIONS_SPECIAL
+      USE INTERFACE_HERMES
+      USE BIEF, ONLY: NPTIR
       USE DECLARATIONS_TELEMAC3D, ONLY: MESH2D,RHOS
 !
       IMPLICIT NONE
@@ -89,36 +91,33 @@
       COMMON/INFO/LNG,LU
 !
       INTEGER ERR, I, IPLAN,JPLAN, IPOIN, IELEM
-      INTEGER NPLAN,NPOIN3,NELEM3,NELEM2,NPTFR2,NDP
-      CHARACTER*80 TITSEL
+      INTEGER NPLAN,NPOIN3,NELEM3,NELEM2,NPTFR2,NDP,NPTFR
+      CHARACTER(LEN=80) TITSEL
       DOUBLE PRECISION UNITCONV, ECOUCH,ZPLAN
 !
       INTEGER, ALLOCATABLE :: IPOBO(:),IKLES(:)       ! THESE WILL BE 3D
-      DOUBLE PRECISION, ALLOCATABLE :: WSEB(:)
-!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-!#####< SEB-changes
+      DOUBLE PRECISION, ALLOCATABLE :: WSEB(:), X(:), Y(:)
+!
 !
       INTEGER, INTENT(IN)          :: NPOIN2, NPFMAX, NRSED
       INTEGER, INTENT(IN)          :: LT, NIT , NCOUCH
       INTEGER, INTENT(IN)          :: GRAPRD, GRADEB
       INTEGER, INTENT(IN)          :: NPF(NPOIN2)
-!#####> SEB-CHANGES
-!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+!
       DOUBLE PRECISION, INTENT(IN) :: EPAI(NPOIN2,NCOUCH)
       DOUBLE PRECISION, INTENT(IN) :: IVIDE(NPOIN2,NCOUCH+1)
       DOUBLE PRECISION, INTENT(IN) :: HDEP(NPOIN2), ZR(NPOIN2)
       DOUBLE PRECISION, INTENT(IN) :: CONC(NPOIN2,NCOUCH)
       DOUBLE PRECISION, INTENT(IN) ::  TEMP(NCOUCH,NPOIN2)
-!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-!#####< SEB-changes
+!
       DOUBLE PRECISION, INTENT(IN) :: DTC
       LOGICAL, INTENT(IN)          :: TASSE,GIBSON
       CHARACTER(LEN=72), INTENT(IN):: TITCAS
-      CHARACTER(LEN=3), INTENT(IN) :: BIRSED
+      CHARACTER(LEN=8), INTENT(IN) :: FMTRSED
 !
-      DOUBLE PRECISION XB(2)
-      INTEGER IB(10), ISTAT
-      CHARACTER(LEN=2) CB
+      INTEGER DATE(3), TIME(3), IERR
+      CHARACTER(LEN=32) :: VARNAME(4)
+      INTEGER :: RECORD, NVAR
 !
 !----------------------------------------------------------------------
 !
@@ -128,92 +127,50 @@
 !
       IF(LT.EQ.0) THEN
 !
-      REWIND NRSED
-!
-!#####> SEB-CHANGES
-!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         NELEM2 = MESH2D%NELEM
         NPTFR2 = MESH2D%NPTFR
 !       LEC/ECR 1: NAME OF GEOMETRY FILE
-        TITSEL = TITCAS // 'SERAPHIN'
-        CALL ECRI2(XB,IB,TITSEL,80,'CH',NRSED,BIRSED,ISTAT)
+        TITSEL = TITCAS // 'SERAFIN '
 !
 !       LEC/ECR 2: NUMBER OF 1 AND 2 DISCRETISATION FUNCTIONS
         IF(TASSE) THEN
-          IB(1)=4
-          IB(2)=0
+          NVAR = 4
         ELSEIF (GIBSON) THEN
-          IB(1)=4
-          IB(2)=0
+          NVAR = 4
         ELSE
           IF(LNG.EQ.1) WRITE(LU,*) "OPTION DE CONSOLIDATION NON PREVUE"
           IF(LNG.EQ.2) WRITE(LU,*) "UNKNOWN CONSOLIDATION OPTION"
           CALL PLANTE(1)
           STOP
         ENDIF
-        CALL ECRI2(XB,IB,CB,2,'I ',NRSED,BIRSED,ISTAT)
 !
 !   LEC/ECR 3: NAMES AND UNITS OF THE VARIABLES
         IF(TASSE) THEN
-          TITSEL(1:32) = 'ELEVATION Z     M               '
-          CALL ECRI2(XB,IB,TITSEL(1:32),32,'CH',NRSED,BIRSED,ISTAT)
-          TITSEL(1:32) = 'EPAISSEUR VRAIE M               '
-          CALL ECRI2(XB,IB,TITSEL(1:32),32,'CH',NRSED,BIRSED,ISTAT)
-          TITSEL(1:32) = 'CONC. VASE      KG/M3           '
-          CALL ECRI2(XB,IB,TITSEL(1:32),32,'CH',NRSED,BIRSED,ISTAT)
-          TITSEL(1:32) = 'COMPTEUR TEMPS  S               '
-          CALL ECRI2(XB,IB,TITSEL(1:32),32,'CH',NRSED,BIRSED,ISTAT)
+          VARNAME(1) = 'ELEVATION Z     M               '
+          VARNAME(2) = 'EPAISSEUR VRAIE M               '
+          VARNAME(3) = 'CONC. VASE      KG/M3           '
+          VARNAME(4) = 'COMPTEUR TEMPS  S               '
         ELSEIF(GIBSON) THEN
-          TITSEL(1:32) = 'ELEVATION Z     M               '
-          CALL ECRI2(XB,IB,TITSEL(1:32),32,'CH',NRSED,BIRSED,ISTAT)
-          TITSEL(1:32) = 'EPAISSEUR VRAIE M               '
-          CALL ECRI2(XB,IB,TITSEL(1:32),32,'CH',NRSED,BIRSED,ISTAT)
-          TITSEL(1:32) = 'DENSITE VRAIE   KG/M3           '
-          CALL ECRI2(XB,IB,TITSEL(1:32),32,'CH',NRSED,BIRSED,ISTAT)
-          TITSEL(1:32) = 'LAYER IPF                       '
-          CALL ECRI2(XB,IB,TITSEL(1:32),32,'CH',NRSED,BIRSED,ISTAT)
+          VARNAME(1) = 'ELEVATION Z     M               '
+          VARNAME(2) = 'EPAISSEUR VRAIE M               '
+          VARNAME(3) = 'DENSITE VRAIE   KG/M3           '
+          VARNAME(4) = 'LAYER IPF                       '
         ENDIF
+        CALL SET_HEADER(FMTRSED,NRSED,TITSEL,NVAR,VARNAME,IERR)
+        CALL CHECK_CALL(IERR,'DESSED:SET_HEADER')
 !
 !   LEC/ECR 4: LIST OF 10 INTEGER PARAMETERS (AND DATE)
-        IB(1) = 1
-        DO I = 2,10
-          IB(I) = 0
-        ENDDO
         IF (TASSE) THEN
-          IB(7) = NCOUCH
+          NPLAN = NCOUCH
         ELSEIF (GIBSON) THEN
-          IB(7) = NPFMAX
+          NPLAN = NPFMAX
         ENDIF
-        NPLAN = IB(7)
-        IF(NCSIZE.GT.1) THEN       ! CAN YOU MAKE SURE THESE ARE 3D
-          IB(8) = NPTFR2*NPLAN    ! 3D -> TO BE CALCULATED FROM 2D
-          IB(9) = NPTIR           ! CAN THIS ONLY BE 2D ?
-        ENDIF
-!        IF(DATE(1)+DATE(2)+DATE(3)+TIME(1)+TIME(2)+TIME(3).NE.0) THEN
-!           IB(10) = 1
-!        ENDIF
-        CALL ECRI2(XB,IB,CB,10,'I ',NRSED,BIRSED,ISTAT)
-!
-!   DATE
-!       IF(IB(10).EQ.1) THEN
-!          IB(1)=DATE(1)
-!          IB(2)=DATE(2)
-!          IB(3)=DATE(3)
-!          IB(4)=TIME(1)
-!          IB(5)=TIME(2)
-!          IB(6)=TIME(3)
-!          CALL ECRI2(XB,IB,CB,6,'I ',NRSED,BIRSED,ISTAT)
-!       ENDIF
+        NPTFR = NPTFR2*NPLAN    ! 3D -> TO BE CALCULATED FROM 2D
 !
 !   LEC/ECR 5: 4 INTEGERS
-        IB(1) = NELEM2*(NPLAN-1)    ! 3D -> TO BE CALCULATED FROM 2D
-        NELEM3 = IB(1)
-        IB(2) = NPOIN2*NPLAN        ! 3D -> TO BE CALCULATED FROM 2D
-        NPOIN3 = IB(2)
-        IB(3) = 6                   ! PARTICULAR CASE OF PRISMS NDP=6
-        NDP = IB(3)
-        IB(4) = 1
-        CALL ECRI2(XB,IB,CB,4,'I ',NRSED,BIRSED,ISTAT)
+        NELEM3 = NELEM2*(NPLAN-1)    ! 3D -> TO BE CALCULATED FROM 2D
+        NPOIN3 = NPOIN2*NPLAN        ! 3D -> TO BE CALCULATED FROM 2D
+        NDP = 6
 !
 !   LEC/ECR 6: IKLE
 !   BUILDS 3D LAYERED PRISMATIC MESH OUT OF 2D IMPRINT
@@ -230,14 +187,12 @@
             IKLES(I+6)=MESH2D%IKLE%I(IELEM+2*NELEM2)+IPLAN*NPOIN2
           ENDDO
         ENDDO
-        CALL ECRI2(XB,IKLES,CB,NELEM3*NDP,'I ',NRSED,BIRSED,ISTAT)
-        DEALLOCATE(IKLES)
 !
+!
+        ALLOCATE(IPOBO(NPLAN*NPOIN2),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR, 'IPOBO')
+        IF( NPTFR.EQ.0.AND.NPTIR.EQ.0 ) THEN
 !   LEC/ECR 7: IPOBO (CASE OF FILES WITHOUT PARALLELISM)
-!
-        IF( IB(8).EQ.0.AND.IB(9).EQ.0 ) THEN
-          ALLOCATE(IPOBO(NPLAN*NPOIN2),STAT=ERR)
-          CALL CHECK_ALLOCATE(ERR, 'IPOBO')
           DO IPOIN = 1,NPLAN*NPOIN2            ! THIS IS INDEED 3D
             IPOBO(IPOIN) = 0
           ENDDO
@@ -247,13 +202,8 @@
      &        IPOIN+(IPLAN-1)*NPTFR2
             ENDDO
           ENDDO
-          CALL ECRI2(XB,IPOBO,CB,NPLAN*NPOIN2,'I ',NRSED,BIRSED,ISTAT)
-          DEALLOCATE(IPOBO)
-        ENDIF
+        ELSE
 !   LEC/ECR 7.1: KNOLG (ONLY IN THE EVENT OF PARALLEL MODE)
-        IF(IB(8).NE.0.OR.IB(9).NE.0) THEN
-          ALLOCATE(IPOBO(NPLAN*NPOIN2),STAT=ERR)
-          CALL CHECK_ALLOCATE(ERR, 'IPOBO')
           DO IPOIN = 1,NPLAN*NPOIN2            ! THIS IS INDEED 3D
             IPOBO(IPOIN) = 0
           ENDDO
@@ -263,82 +213,86 @@
      &           MESH2D%KNOLG%I(IPOIN)+(IPLAN-1)*NPOIN2
             ENDDO
           ENDDO
-          CALL ECRI2(XB,IPOBO,CB,NPOIN3,'I ',NRSED,BIRSED,ISTAT)
         ENDIF
 !
 !   LEC/ECR 8 AND 9: X AND Y COORDINATES OF THE MESH NODES
 !
-        ALLOCATE(WSEB(NPLAN*NPOIN2),STAT=ERR)
-        CALL CHECK_ALLOCATE(ERR,'FONSTR:WSEB')
+        ALLOCATE(X(NPLAN*NPOIN2),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR,'DESSED:X')
+        ALLOCATE(Y(NPLAN*NPOIN2),STAT=ERR)
+        CALL CHECK_ALLOCATE(ERR,'DESSED:Y')
         DO IPOIN = 1, NPOIN2
           DO IPLAN = 1,NPLAN
-            WSEB(IPOIN+(IPLAN-1)*NPOIN2) = MESH2D%X%R(IPOIN)
+            X(IPOIN+(IPLAN-1)*NPOIN2) = MESH2D%X%R(IPOIN)
           ENDDO
         ENDDO
-        CALL ECRI2(WSEB,IB,CB,NPOIN3,'R4',NRSED,BIRSED,ISTAT)
         DO IPOIN = 1, NPOIN2
           DO IPLAN = 1,NPLAN
-            WSEB(IPOIN+(IPLAN-1)*NPOIN2) = MESH2D%Y%R(IPOIN)
+            Y(IPOIN+(IPLAN-1)*NPOIN2) = MESH2D%Y%R(IPOIN)
           ENDDO
         ENDDO
-        CALL ECRI2(WSEB,IB,CB,NPOIN3,'R4',NRSED,BIRSED,ISTAT)
-        DEALLOCATE(WSEB)
-!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-!#####< SEB-changes
+        DATE = (/0,0,0/)
+        TIME = (/0,0,0/)
+        CALL SET_MESH(FMTRSED,NRSED,3,PRISM_ELT_TYPE,NDP,NPTFR,NPTIR,
+     &                NELEM3,NPOIN3,IKLES,IPOBO,IPOBO,X,Y,NPLAN,
+     &                DATE,TIME,IERR)
+        DEALLOCATE(X)
+        DEALLOCATE(Y)
+        DEALLOCATE(IKLES)
+        DEALLOCATE(IPOBO)
       ENDIF
 !
 ! A TRICK TO WRITE ONE NUMBER
 !
-      XB(1) = DTC
-      CALL ECRI2(XB,IB,CB,1,'R4',NRSED,BIRSED,ISTAT)
+      RECORD = (LT-GRADEB/GRAPRD)  
 !
       IF (TASSE) THEN
 !
-!#####> SEB-CHANGES
-!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 !  /!\ THIS PART SHOULD BE ENTIRELY REVISITED ...
         UNITCONV = 1.D0                     ! VARIABLES CAN BE ENLARGED
         ALLOCATE(WSEB(NCOUCH*NPOIN2),STAT=ERR)
-        CALL CHECK_ALLOCATE(ERR,'FONSTR:WSEB')
+        CALL CHECK_ALLOCATE(ERR,'DESSED:WSEB')
 ! THIS IS THE Z FOR THE LAYERING -
-        DO IPOIN = 1, NPOIN2
-!>        WSEB(IPOIN) = ZR(IPOIN) + EPAI(IPOIN)
-        ENDDO
-        DO IPLAN = 2,NCOUCH
-          DO IPOIN = 1, NPOIN2
-!>          WSEB(IPOIN+NPOIN2*(IPLAN-1)) =
-!>     & WSEB(IPOIN+NPOIN2*(IPLAN-2)) + EPAI(IPOIN+NPOIN2*(IPLAN-1))
-           ENDDO
-        ENDDO
-        CALL ECRI2(WSEB,IB,CB,NCOUCH*NPOIN2,'R4',NRSED,BIRSED,ISTAT)
+!       DO IPOIN = 1, NPOIN2
+!         WSEB(IPOIN) = ZR(IPOIN) + EPAI(IPOIN)
+!       ENDDO
+!       DO IPLAN = 2,NCOUCH
+!         DO IPOIN = 1, NPOIN2
+!           WSEB(IPOIN+NPOIN2*(IPLAN-1)) = 
+!                     WSEB(IPOIN+NPOIN2*(IPLAN-2))
+!                     + EPAI(IPOIN+NPOIN2*(IPLAN-1))
+!          ENDDO
+!       ENDDO
+        CALL ADD_DATA(FMTRSED,NRSED,VARNAME(1),DTC,RECORD,.TRUE.,
+     &                WSEB,NPOIN3,IERR)
+        CALL CHECK_CALL(IERR,'DESSED:ADD_DATA')
 !
-        DO IPOIN = 1, (NCOUCH-1)*NPOIN2
-!>        WSEB(IPOIN) = EPAI(IPOIN+NPOIN2) * UNITCONV
-        ENDDO
+!       DO IPOIN = 1, (NCOUCH-1)*NPOIN2
+!         WSEB(IPOIN) = EPAI(IPOIN+NPOIN2) * UNITCONV
+!       ENDDO
 !       DO IPOIN = 1, NPOIN2
 !         WSEB(IPOIN+(NCOUCH-1)*NPOIN2) = HDEP(IPOIN) * UNITCONV
 !       ENDDO
-        CALL ECRI2(WSEB,IB,CB,NCOUCH*NPOIN2,'R4',NRSED,BIRSED,ISTAT)
-!       CALL ECRI2(EPAI,IB,CB,NCOUCH*NPOIN2,'R4',NRSED,BIRSED,ISTAT)
+        CALL ADD_DATA(FMTRSED,NRSED,VARNAME(2),DTC,RECORD,.FALSE.,
+     &                WSEB,NPOIN3,IERR)
+        CALL CHECK_CALL(IERR,'DESSED:ADD_DATA')
 !!
-        DO IPLAN = 1,NCOUCH
-          DO IPOIN = 1, NPOIN2
-!>          WSEB(IPOIN+NPOIN2*(IPLAN-1)) = CONC(IPLAN) * UNITCONV
-          ENDDO
-        ENDDO
-        CALL ECRI2(WSEB,IB,CB,NCOUCH*NPOIN2,'R4',NRSED,BIRSED,ISTAT)
-!       CALL ECRI2(CONC,IB,CB,NCOUCH,'R4',NRSED,BIRSED,ISTAT)
-!#####< SEB-changes
+!       DO IPLAN = 1,NCOUCH
+!         DO IPOIN = 1, NPOIN2
+!           WSEB(IPOIN+NPOIN2*(IPLAN-1)) = CONC(IPLAN) * UNITCONV
+!         ENDDO
+!       ENDDO
+        CALL ADD_DATA(FMTRSED,NRSED,VARNAME(3),DTC,RECORD,.FALSE.,
+     &                WSEB,NPOIN3,IERR)
+        CALL CHECK_CALL(IERR,'DESSED:ADD_DATA')
 !
-        CALL ECRI2(TEMP,IB,CB,NCOUCH*NPOIN2,'R4',NRSED,BIRSED,ISTAT)
-!#####> SEB-CHANGES
+        CALL ADD_DATA(FMTRSED,NRSED,VARNAME(4),DTC,RECORD,.FALSE.,
+     &                TEMP,NPOIN3,IERR)
+        CALL CHECK_CALL(IERR,'DESSED:ADD_DATA')
         DEALLOCATE(WSEB)
-!#####< SEB-changes
 !
       ELSEIF (GIBSON) THEN
 !
-!#####> SEB-CHANGES
-!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 !
 ! ASSUMPTIONS - Z-LEVELS:
 !  * B KENUE'S BOTTOM Z-LEVEL IS ZR (1), TOP Z-LEVEL IS ZF (NPFMAX)
@@ -365,7 +319,7 @@
           IF(LNG.EQ.2) WRITE(LU,*) 'FONSTR: WRONG ALLOCATION OF W'
           STOP
         ENDIF
-!> TRUE LAYERING - ELEVATION Z
+! TRUE LAYERING - ELEVATION Z
         DO IPOIN = 1, NPOIN2
            JPLAN = 0
            ZPLAN = ZR(IPOIN)
@@ -383,8 +337,10 @@
            WSEB(IPOIN+(NPFMAX-1)*NPOIN2) = ZPLAN +
      &              HDEP(IPOIN)
         ENDDO
-        CALL ECRI2(WSEB,IB,CB,NPFMAX*NPOIN2,'R4',NRSED,BIRSED,ISTAT)
-!> TRUE THICKNESS - THICKNESS DZ
+        CALL ADD_DATA(FMTRSED,NRSED,VARNAME(1),DTC,RECORD,.TRUE.,
+     &                WSEB,NPOIN3,IERR)
+        CALL CHECK_CALL(IERR,'DESSED:ADD_DATA')
+! TRUE THICKNESS - THICKNESS DZ
         DO IPOIN = 1, NPOIN2
           JPLAN = 0
           DO IPLAN = 1,NPFMAX-NPF(IPOIN)
@@ -400,8 +356,10 @@
           WSEB(IPOIN+(NPFMAX-1)*NPOIN2) = HDEP(IPOIN) *UNITCONV
           WSEB(IPOIN) = 1.D0 * NPF(IPOIN) ! RESET THIS ONE ! OR NOT ?
         ENDDO
-        CALL ECRI2(WSEB,IB,CB,NPFMAX*NPOIN2,'R4',NRSED,BIRSED,ISTAT)
-!> TRUE DENSITY
+        CALL ADD_DATA(FMTRSED,NRSED,VARNAME(2),DTC,RECORD,.FALSE.,
+     &                WSEB,NPOIN3,IERR)
+        CALL CHECK_CALL(IERR,'DESSED:ADD_DATA')
+! TRUE DENSITY
         DO IPOIN = 1, NPOIN2
           JPLAN = NPFMAX
           DO IPLAN = NPF(IPOIN),1,-1
@@ -414,25 +372,21 @@
             JPLAN = JPLAN - 1
           ENDDO
         ENDDO
-        CALL ECRI2(WSEB,IB,CB,NPFMAX*NPOIN2,'R4',NRSED,BIRSED,ISTAT)
-!> LAYERING - LAYER IPF
+        CALL ADD_DATA(FMTRSED,NRSED,VARNAME(3),DTC,RECORD,.FALSE.,
+     &                WSEB,NPOIN3,IERR)
+        CALL CHECK_CALL(IERR,'DESSED:ADD_DATA')
+! LAYERING - LAYER IPF
         DO IPOIN = 1, NPOIN2
           DO IPLAN = 1,NPFMAX-1
             WSEB(IPOIN+(IPLAN-1)*NPOIN2) = IPLAN
           ENDDO
         ENDDO
-        CALL ECRI2(WSEB,IB,CB,NPFMAX*NPOIN2,'R4',NRSED,BIRSED,ISTAT)
-!       CALL ECRI2(IVIDE,IB,CB,NPFMAX*NPOIN2,'R4',NRSED,BIRSED,ISTAT)
-!       CALL ECRI2(XB,NPF,CB,NPOIN2,'I',NRSED,BIRSED,ISTAT)
-!       CALL ECRI2(EPAI,IB,CB,(NPFMAX-1)*NPOIN2,'R4',NRSED,BIRSED,ISTAT)
+        CALL ADD_DATA(FMTRSED,NRSED,VARNAME(4),DTC,RECORD,.FALSE.,
+     &                WSEB,NPOIN3,IERR)
+        CALL CHECK_CALL(IERR,'DESSED:ADD_DATA')
         DEALLOCATE(WSEB)
-!#####< SEB-changes
 !
       ENDIF
-!
-!     CALL ECRI2(HDEP,IB,CB,NPOIN2,'R4',NRSED,BIRSED,ISTAT)
-!
-!     CALL ECRI2(ZR,IB,CB,NPOIN2,'R4',NRSED,BIRSED,ISTAT)
 !
 !----------------------------------------------------------------------
 !

@@ -88,7 +88,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: U2(NPOIN),V2(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: AT,DDC
       DOUBLE PRECISION, INTENT(INOUT) :: TV1,TV2
-      CHARACTER(LEN=3), INTENT(IN)    :: BINVEN
+      CHARACTER(LEN=8), INTENT(IN)    :: BINVEN
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

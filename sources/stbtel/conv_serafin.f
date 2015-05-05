@@ -4,7 +4,7 @@
                         SUBROUTINE READ_SERAFIN 
 !                       ***********************
 !
-     &(SLFFILE,LIMFILE)
+     &(SLFFILE,LIMFILE,SERAFIND)
 !
 !***********************************************************************
 ! STBTEL   V6P1                                   11/07/2011
@@ -20,10 +20,12 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| SLFFILE        |-->| NAME OF THE SERAFIN FILE IN THE TEMPORARY FOLDER
 !| LIMFILE        |-->| NAME OF THE BOUNDARY FILE IN THE TEMPORARY FOLDER
+!| SERAFIND       |-->| TRUE IF SERAFIN IS IN DOUBLE PRECISION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_STBTEL
       USE CONV_LIM
+      USE INTERFACE_HERMES
       USE BIEF
 !      
       IMPLICIT NONE
@@ -35,21 +37,15 @@
 !
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: SLFFILE
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: LIMFILE
+      LOGICAL, INTENT(IN)                   :: SERAFIND
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER :: I,J,K,IERR,IDUM
-      CHARACTER(LEN=32) :: VARI
-      REAL :: TIME
-      INTEGER :: IB(6)
-      DOUBLE PRECISION XB(1)
-      REAL :: RB(1)
-      CHARACTER(LEN=1) :: CB
-      INTEGER :: ISTAT
-      REAL, ALLOCATABLE :: TMP(:)
-      DOUBLE PRECISION, ALLOCATABLE :: TMP2(:)
-      CHARACTER*2 :: RF
+      DOUBLE PRECISION, ALLOCATABLE :: TMP(:)
       CHARACTER*8 :: FFORMAT
+      CHARACTER*80 :: TITLE
+      INTEGER :: TYP_BND_ELEM,NELEBD
 !
       WRITE(LU,*) '----------------------------------------------------'
       IF(LNG.EQ.1) WRITE(LU,*) '------DEBUT LECTURE DU FICHIER SERAFIN'
@@ -58,26 +54,22 @@
 !      
 !-----------------------------------------------------------------------
 !
-      ! IF THE OPTION DOUBLE PRECISION IS TRUE WE READ IN DOUBLE
+      ! IF THE OPTION SERAFIND IS TRUE WE READ IN DOUBLE
       ! PRECISION SINGLE OTHERWISE
-      IF(SERAFIN_DOUBLE) THEN
-        RF='R8'
+      IF(SERAFIND) THEN
         WRITE(LU,*) 'DOUBLE PRECISION'
         FFORMAT='SERAFIND'
       ELSE
-        RF='R4'
-        FFORMAT='        '
+        FFORMAT='SERAFIN '
       ENDIF
-      OPEN(NINP,IOSTAT=IERR,FILE=SLFFILE,FORM='UNFORMATTED') 
+      CALL OPEN_MESH(FFORMAT, SLFFILE, NINP, 'READ     ', ierr)
       CALL FNCT_CHECK(IERR,'OPEN '//TRIM(SLFFILE))
       ! READING NAME OF THE MESH
-      CALL LIT(XB,RB,IB,MESH2%TITLE,TITLE_SIZE,'CH',NINP,'STD',ISTAT)
+      CALL GET_MESH_TITLE(FFORMAT, NINP, MESH2%TITLE, IERR)
       ! SET THE DESCRIPTION  TO NO DESCRIPTION
       MESH2%DESCRIPTION = 'NO DESCRIPTION'//CHAR(0)
       ! GET THE NUMBER OF VARIABLES
-      CALL LIT(XB,RB,IB,CB,2,'I ',NINP,'STD',ISTAT)
-      IF(DEBUG) WRITE(LU,*) IB(1),IB(2)
-      MESH2%NVAR = IB(1) + IB(2)
+      CALL GET_DATA_NVAR(FFORMAT, NINP, MESH2%NVAR, IERR)
 !
       IF(LNG.EQ.1) WRITE(LU,*) '---INFORMATIONS SUR LES VARIABLES'
       IF(LNG.EQ.2) WRITE(LU,*) '---VARIABLES INFORMATIONS'
@@ -92,12 +84,9 @@
         ALLOCATE(MESH2%UNITVAR(MESH2%NVAR),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%UNITVAR')
         ! GET THE NAME AND UNIT OF EACH VARIABLE
+        CALL GET_DATA_VAR_LIST(FFORMAT, NINP, MESH2%NVAR, 
+     &                         MESH2%NAMEVAR, MESH2%UNITVAR, IERR)
         DO I=1,MESH2%NVAR
-          CALL LIT(XB,RB,IB,VARI,32,'CH',NINP,'STD',ISTAT)
-          MESH2%NAMEVAR(I) = VARI(1:16)
-          MESH2%UNITVAR(I) = VARI(17:32)
-          CALL BLANC2USCORE(MESH2%NAMEVAR(I),16)
-          CALL BLANC2USCORE(MESH2%UNITVAR(I),16)
           IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 'NOM DE LA VARIABLE : ',
      &                  MESH2%NAMEVAR(I)
           IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*)'UNITE DE LA VARIABLE : ',
@@ -108,33 +97,20 @@
      &                  MESH2%UNITVAR(I)
         ENDDO
       ENDIF
-      CALL LIT(XB,RB,MESH2%IB,CB,10,'I ',NINP,'STD',ISTAT)
 !
-      ! GO BACK TO THE BEGINNING OF THE FILE
-      CLOSE(NINP,IOSTAT=IERR)
-      CALL FNCT_CHECK(IERR,'CLOSE '//TRIM(SLFFILE))
-      OPEN(NINP,IOSTAT=IERR,FILE=SLFFILE,FORM='UNFORMATTED') 
-      CALL FNCT_CHECK(IERR,'OPEN '//TRIM(SLFFILE))
-!
-      ! CANCELLING READGEO OUTPUT INFORMATIONS
       ! READING THE NUMBER ELEMENTS, POINT, ...
-      CALL READGEO1(MESH2%NPOIN, MESH2%NELEM, MESH2%NPTFR, 
-     &              MESH2%NDP, MESH2%IB, NINP,IDUM)
+      CALL READ_MESH_INFO(FFORMAT,NINP,TITLE,IDUM,MESH2%NPOIN, 
+     &                    MESH2%TYPE_ELEM, MESH2%NELEM, MESH2%NPTFR, 
+     &                    MESH2%IB(9), MESH2%NDP, MESH2%IB(7),
+     &                    TYP_BND_ELEM,NELEBD)
+      MESH2%IB(8) = MESH2%NPTFR
       ! IF WE ARE IN 3D
       IF(MESH2%IB(7).GT.1) THEN
         MESH2%NDIM=3
       ELSE
         MESH2%NDIM=2
       ENDIF
-      ! DEFINE THE TYPE OF ELEMENT
-      IF(MESH2%NDIM.EQ.2) THEN
-        IF(MESH2%NDP.EQ.3) MESH2%TYPE_ELEM = TYPE_TRIA3
-        IF(MESH2%NDP.EQ.4) MESH2%TYPE_ELEM = TYPE_QUAD4
-      ELSE
-        IF(MESH2%NDP.EQ.4) MESH2%TYPE_ELEM = TYPE_TETRA4
-        IF(MESH2%NDP.EQ.6) MESH2%TYPE_ELEM = TYPE_PRISM6
-      ENDIF
-      IF(MESH2%TYPE_ELEM.EQ.0) THEN
+      IF(MESH2%TYPE_ELEM.LT.0) THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'TYPE D ELEMENT INCONNU'
           WRITE(LU,*) 'NOMBRE DE POINT PAR ELEMENT :',MESH2%NDP
@@ -153,10 +129,20 @@
       CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%IKLES')
       ALLOCATE(MESH2%IPOBO(MESH2%NPOIN),STAT=IERR)
       CALL FNCT_CHECK(IERR,'ALLOCATE MESH%IPOBO')
+      IF( (MESH2%IB(8).NE.0) .OR. (MESH2%IB(9).NE.0) ) THEN
+        ALLOCATE(MESH2%KNOLG(MESH2%NPOIN),STAT=IERR)
+        CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%KNOLG')
+      ELSE
+        ALLOCATE(MESH2%KNOLG(1),STAT=IERR)
+        CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%KNOLG')
+      ENDIF
 !      
-      CALL READGEO2(MESH2%NPOIN, MESH2%NELEM, MESH2%NPTFR, 
-     &              MESH2%NDP, MESH2%IKLES, MESH2%IPOBO,
-     &              MESH2%IB, NINP)
+      CALL READ_MESH_CONN(FFORMAT,NINP,MESH2%NPOIN, MESH2%TYPE_ELEM,
+     &                    MESH2%NELEM, MESH2%NDP,
+     &                    TYP_BND_ELEM, NELEBD,
+     &                    MESH2%IKLES, MESH2%IPOBO)
+      CALL GET_MESH_L2G_NUMBERING(FFORMAT,NINP,MESH2%KNOLG,
+     &                            MESH2%NPOIN,IERR)
       IF(DEBUG) WRITE(LU,*) 'NPTFR:',MESH2%NPTFR
       IF(DEBUG) WRITE(LU,*) 'NDIM:',MESH2%NDIM
       IF(DEBUG) WRITE(LU,*) 'NDP:',MESH2%NDP
@@ -171,21 +157,14 @@
         ALLOCATE(MESH2%Z(MESH2%NPOIN),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%Z')
       ENDIF
-      IF( (MESH2%IB(8).NE.0) .OR. (MESH2%IB(9).NE.0) ) THEN
-        ALLOCATE(MESH2%KNOLG(MESH2%NPOIN),STAT=IERR)
-        CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%KNOLG')
-      ELSE
-        ALLOCATE(MESH2%KNOLG(1),STAT=IERR)
-        CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%KNOLG')
-      ENDIF
 !
       !READING THE COORDINATES
 
 !     PROJECTION
       IDUM=1
 !
-      CALL READGEO3(MESH2%KNOLG,MESH2%X,MESH2%Y,MESH2%NPOIN,
-     &              NINP,MESH2%IB,FFORMAT,IDUM,0.D0,0.D0)
+      CALL READ_MESH_COORD(FFORMAT,NINP,MESH2%X,MESH2%Y,MESH2%NPOIN,
+     &              IDUM,0.D0,0.D0)
       IF( (MESH2%IB(8).EQ.0) .AND. (MESH2%IB(9).EQ.0) ) THEN
         DEALLOCATE(MESH2%KNOLG)
       ENDIF
@@ -213,24 +192,13 @@
       IF(LNG.EQ.2) WRITE(LU,*) '---RESULTS INFORMATIONS'
       ! WE DO A FIRST READ TO COUNT THE NUMBER OF TIMESTEPS
       MESH2%TIMESTEP = 0
-      DO WHILE(.TRUE.)
-        ! IF WE ARE AT THE END OF THE FILE WE GO TO HELL (666)
-        ! CANNOT USE LIT BECAUSE LIT CALL PLANTE IF END
-        READ(NINP,END=666) TIME
-        MESH2%TIMESTEP = MESH2%TIMESTEP + 1
-        DO I=1,MESH2%NVAR
-          CALL LIT(XB,RB,IB,CB,1,RF,NINP,'STD',ISTAT)
-        ENDDO
-      ENDDO
+      CALL GET_DATA_NTIMESTEP(FFORMAT,NINP,MESH2%TIMESTEP,IERR)
 !     
-666   IF(MESH2%TIMESTEP .NE. 0) THEN
+      IF(MESH2%TIMESTEP .NE. 0) THEN
         ! IF WE HAVE RESULTS WE GO BACK TO BEGINNING OF THE FILE
-        CLOSE(NINP,IOSTAT=IERR)
         CALL FNCT_CHECK(IERR,'CLOSE '//TRIM(SLFFILE))
         OPEN(NINP,FILE=SLFFILE, FORM='UNFORMATTED', IOSTAT=IERR) 
         CALL FNCT_CHECK(IERR,'OPEN '//TRIM(SLFFILE))
-        ! ADVANCING IN THE FILE TO THE RESULTS
-        CALL QUICKREAD(NINP)
         ! ALLOCATING RESULTS TABLES
         ALLOCATE(MESH2%TIMES(MESH2%TIMESTEP),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%TIMES')
@@ -244,10 +212,8 @@
         ! THEN READ THE RESULTS FOR ALL VARIALBLES AND ALL TIMESTEPS
         ALLOCATE(TMP(MESH2%NPOIN),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE TMP')
-        ALLOCATE(TMP2(MESH2%NPOIN),STAT=IERR)
-        CALL FNCT_CHECK(IERR,'ALLOCATE TMP')
         DO I=1,MESH2%TIMESTEP
-          CALL LIT(MESH2%TIMES(I),RB,IB,CB,1,RF,NINP,'STD',ISTAT)
+          CALL GET_DATA_TIME(FFORMAT,NINP,I-1,MESH2%TIMES(I),IERR)
           IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) '--POUR TEMPS : ',
      &                  REAL(MESH2%TIMES(I))
           IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) '--FOR TIME: ',
@@ -257,16 +223,14 @@
      &             MESH2%NAMEVAR(J)
             IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) '-FOR VARIABLE: ',
      &             MESH2%NAMEVAR(J)
-            CALL LIT(TMP2,TMP,IB,CB,
-     &               MESH2%NPOIN,
-     &               RF,NINP,'STD',ISTAT)
+            CALL GET_DATA_VALUE(FFORMAT, NINP, I-1, MESH2%NAMEVAR(J),
+     &                          TMP, MESH2%NPOIN, IERR)
             DO K=1,MESH2%NPOIN
-              MESH2%RESULTS(I,J,K) = TMP2(K)
+              MESH2%RESULTS(I,J,K) = TMP(K)
             ENDDO
           ENDDO
         ENDDO
         DEALLOCATE(TMP)
-        DEALLOCATE(TMP2)
       ENDIF
       ! IF WE ARE IN 3D THE FIRST VARIABLE IS THE Z COORDINATES
       IF(MESH2%NDIM.EQ.3) THEN
@@ -276,10 +240,10 @@
           MESH2%Z(I) = MESH2%RESULTS(1,1,I)
         ENDDO
       ENDIF
-!      
-      CLOSE(NINP,IOSTAT=IERR)
-      CALL FNCT_CHECK(IERR,'CLOSE '//TRIM(SLFFILE))
 !
+      CALL CLOSE_MESH(FFORMAT,NINP,IERR)
+      CALL CHECK_CALL(IERR,'READ_SERAFIN:CLOSE_MESH')
+!      
       IF(LNG.EQ.1) WRITE(LU,*) 
      &       '---INFORMATIONS SUR LES CONDITIONS LIMITES'
       IF(LNG.EQ.2) WRITE(LU,*) '---BOUNDARY INFORMATIONS'
@@ -302,7 +266,7 @@
 !                       ***************** 
                         SUBROUTINE WRITE_SERAFIN 
 !                       *****************
-     &(SLFFILE,LIMFILE)
+     &(SLFFILE,LIMFILE,SERAFIND)
 !
 !***********************************************************************
 ! STBTEL   V6P1                                   11/07/2011
@@ -324,6 +288,7 @@
       USE DECLARATIONS_STBTEL
       USE BIEF
       USE CONV_LIM
+      USE INTERFACE_HERMES
 !      
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
@@ -332,19 +297,18 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER(LEN=MAXLENHARD) :: SLFFILE
-      CHARACTER(LEN=MAXLENHARD) :: LIMFILE
+      CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: SLFFILE
+      CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: LIMFILE
+      LOGICAL, INTENT(IN)                   :: SERAFIND
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER :: I,J,K,IERR,ISTAT
-      CHARACTER(LEN=SNAME_SIZE*2) ::VARI
-      INTEGER :: IB(6)
-      DOUBLE PRECISION :: XB(1)
-      CHARACTER*1 :: CB
-      CHARACTER*2 :: RF
+      INTEGER :: I,J,K,IERR
+      CHARACTER(LEN=SNAME_SIZE*2),ALLOCATABLE ::VARI(:)
       CHARACTER*80 :: TITLE
+      CHARACTER*8 :: FFORMAT
       DOUBLE PRECISION, ALLOCATABLE :: TMP(:)
+      INTEGER :: DATE(3), TIME(3)
 !
       WRITE(LU,*) '----------------------------------------------------'
       IF(LNG.EQ.1) WRITE(LU,*)'------DEBUT ECRITURE DU FICHIER SERAFIN'
@@ -355,54 +319,40 @@
 !
       ! IF THE OPTION DOUBLE PRECISION IS TRUE WE WRITE IN DOUBLE
       ! PRECISION SINGLE OTHERWISE
-      IF(SERAFIN_DOUBLE) THEN
-        RF='R8'
+      IF(SERAFIND) THEN
+        FFORMAT = 'SERAFIND'
       ELSE
-        RF='R4'
+        FFORMAT = 'SERAFIN '
       ENDIF
-      OPEN(NOUT,IOSTAT=IERR,FILE=SLFFILE,STATUS='NEW',
-     &     FORM='UNFORMATTED')
-      CALL FNCT_CHECK(IERR,'OPEN '//TRIM(SLFFILE))
-      ! TITLE AND NUMBER OF VARIABLES
-      TITLE = MESH2%TITLE
-      CALL ECRI2(XB,IB,TITLE,80,'CH',NOUT,'STD',ISTAT)
+      CALL OPEN_MESH(FFORMAT,SLFFILE,NOUT,'WRITE    ',IERR)
+      CALL CHECK_CALL(IERR,'WRITE_SERAFIN:OPEN_MESH')
+      ! TITLE AND VARIABLES
       IF(LNG.EQ.1) WRITE(LU,*) '---INFORMATIONS SUR LES VARIABLES'
       IF(LNG.EQ.2) WRITE(LU,*) '---VARIABLES INFORMATIONS'
-      IB(1) = MESH2%NVAR
-      IB(2) = 0
-      CALL ECRI2(XB,IB,CB,2,'I ',NOUT,'STD',ISTAT)
-      ! NAME OF THE VARIABLES
+      TITLE = MESH2%TITLE
+      ALLOCATE(VARI(MESH2%NVAR),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'WRITE_SERAFIN:VARI')
       DO I=1,MESH2%NVAR
-        VARI(1:16) = MESH2%NAMEVAR(I) 
-        VARI(17:32) = MESH2%UNITVAR(I)
-        CALL ECRI2(XB,IB,VARI,32,'CH',NOUT,'STD',ISTAT)
+        VARI(I)(1:16) = MESH2%NAMEVAR(I) 
+        VARI(I)(17:32) = MESH2%UNITVAR(I)
+        CALL USCORE2BLANC(VARI(I),32)
+        IF(DEBUG) WRITE(LU,*) '------',VARI(I)
       ENDDO
-      ! GEO1 INFORMATIONS
+      CALL SET_HEADER(FFORMAT,NOUT,TITLE,MESH2%NVAR,VARI,IERR)
+      CALL CHECK_CALL(IERR,'WRITE_SERAFIN:SET_HEADER')
+
+      ! MESH INFORMATIONS
       IF(LNG.EQ.1) WRITE(LU,*) '---INFORMATIONS SUR MAILLAGE'
       IF(LNG.EQ.2) WRITE(LU,*) '---MESH INFORMATIONS'
-      CALL ECRI2(XB,MESH2%IB,CB,10,'I ',NOUT,'STD',ISTAT)
-      IF(MESH2%IB(10) .EQ. 1) THEN
-        IB(:) = 1
-        CALL ECRI2(XB,IB,CB,6,'I ',NOUT,'STD',ISTAT)
-      ENDIF
-      IB(1) = MESH2%NELEM
-      IB(2) = MESH2%NPOIN
-      IB(3) = MESH2%NDP
-      IB(4) = 1
-      CALL ECRI2(XB,IB,CB,4,'I ',NOUT,'STD',ISTAT)
-      ! IKLES AND IPOBO
-      CALL ECRI2(XB,MESH2%IKLES,CB,MESH2%NELEM*MESH2%NDP,'I ',
-     &           NOUT,'STD',ISTAT)
-      IF(MESH2%IB(8).EQ.0 .AND. MESH2%IB(9).EQ.0) THEN
-        CALL ECRI2(XB,MESH2%IPOBO,CB,MESH2%NPOIN,'I ',NOUT,'STD',
-     &             ISTAT)
-      ELSE
-        CALL ECRI2(XB,MESH2%KNOLG,CB,MESH2%NPOIN,'I ',NOUT,'STD',
-     &             ISTAT)
-      ENDIF
-      ! COORDONATES
-      CALL ECRI2(MESH2%X,IB,CB,MESH2%NPOIN,RF,NOUT,'STD',ISTAT)
-      CALL ECRI2(MESH2%Y,IB,CB,MESH2%NPOIN,RF,NOUT,'STD',ISTAT)
+
+      DATE = (/0,0,0/)
+      TIME = (/0,0,0/)
+      CALL SET_MESH(FFORMAT,NOUT,MESH2%NDIM,MESH2%TYPE_ELEM,MESH2%NDP,
+     &              MESH2%IB(8),MESH2%IB(9),MESH2%NELEM,MESH2%NPOIN,
+     &              MESH2%IKLES,MESH2%IPOBO,MESH2%KNOLG,MESH2%X,
+     &              MESH2%Y,MESH2%IB(7),DATE,TIME,IERR)
+      CALL CHECK_CALL(IERR,'WRITE_SERAFIN:SET_MESH')
+
       ! RESULTS INFORMATIONS 
       IF(LNG.EQ.1) WRITE(LU,*) '---INFORMATIONS SUR LES RESUTATS'
       IF(LNG.EQ.2) WRITE(LU,*) '---RESULTS INFORMATIONS'
@@ -410,20 +360,24 @@
         ALLOCATE(TMP(MESH2%NPOIN),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE TMP')
         DO I=1,MESH2%TIMESTEP
-          CALL ECRI2(MESH2%TIMES(I),IB,CB,1,RF,NOUT,'STD',ISTAT)
+          IF(DEBUG) WRITE(LU,*) '------','TIME',MESH2%TIMES(I)
           DO J=1,MESH2%NVAR
+            IF(DEBUG) WRITE(LU,*) '---------','VAR',VARI(J)
             DO K=1,MESH2%NPOIN
               TMP(K) = MESH2%RESULTS(I,J,K) 
             ENDDO
-            CALL ECRI2(TMP,IB,CB,MESH2%NPOIN,
-     &                  RF,NOUT,'STD',ISTAT)
+            CALL ADD_DATA(FFORMAT,NOUT,VARI(J),MESH2%TIMES(I),I-1,
+     &                    J.EQ.1,TMP,MESH2%NPOIN,IERR)
+            CALL CHECK_CALL(IERR,'WRITE_SERAFIN:ADD_DATA')
           ENDDO
         ENDDO
         DEALLOCATE(TMP)
       ENDIF
 !
-      CLOSE(NOUT,IOSTAT=IERR)
-      CALL FNCT_CHECK(IERR,'CLOSE '//TRIM(SLFFILE))
+      CALL CLOSE_MESH(FFORMAT,NOUT,IERR)
+      CALL CHECK_CALL(IERR,'WRITE_SERAFIN:CLOSE_MESH')
+
+      DEALLOCATE(VARI)
       IF(LNG.EQ.1) WRITE(LU,*) 
      &           '---INFORMATIONS SUR LES CONDITIONS LIMITES'
       IF(LNG.EQ.2) WRITE(LU,*) '---BOUNDARY INFORMATIONS'
@@ -442,78 +396,5 @@
       IF(LNG.EQ.1) WRITE(LU,*) '------FIN ECRITURE DU FICHIER SERAFIN'
       IF(LNG.EQ.2) WRITE(LU,*) '------ENDING WRITTING OF SERAFIN FILE'
       WRITE(LU,*) '----------------------------------------------------'
-      END SUBROUTINE
-!                       ***************** 
-                        SUBROUTINE QUICKREAD 
-!                       *****************
-     &(IDFILE)
-!
-!***********************************************************************
-! STBTEL   V6P1                                   11/07/2011
-!***********************************************************************
-!
-!BRIEF    MAKE A QUICK READ OF THE SERAFIN FILE TO REACH THE RESULTS
-!                        
-!HISTORY  Y.AUDOUIN (EDF)
-!+        11/07/2011
-!+        V6P1
-!+   CREATION OF THE FILE
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IDFILE        |-->| ID OF THE SERAFIN FILE
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      USE DECLARATIONS_STBTEL
-      USE BIEF
-!
-      IMPLICIT NONE
-!      
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER, INTENT(IN) :: IDFILE
-!      
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER :: I
-      INTEGER :: IB(10)
-      DOUBLE PRECISION XB(1)
-      REAL :: RB(1)
-      CHARACTER(LEN=1) :: CB
-      INTEGER :: ISTAT
-      CHARACTER*2 :: RF
-!      
-!-----------------------------------------------------------------------
-!
-      ! IF THE OPTION DOUBLE PRECISION IS TRUE WE WRITE IN DOUBLE
-      ! PRECISION SINGLE OTHERWISE
-      IF(SERAFIN_DOUBLE) THEN
-        RF='R8'
-      ELSE
-        RF='R4'
-      ENDIF
-      ! TITLE
-      CALL LIT(XB,RB,IB,CB,1,'CH',IDFILE,'STD',ISTAT)
-      ! NUMBER OF VARIABLES
-      CALL LIT(XB,RB,IB,CB,2,'I ',IDFILE,'STD',ISTAT)
-      ! NAME AND UNIT
-      DO I=1,IB(1)+IB(2)
-        CALL LIT(XB,RB,IB,CB,1,'CH',IDFILE,'STD',ISTAT)
-      ENDDO
-      ! 10 INTEGERS
-      CALL LIT(XB,RB,IB,CB,10,'I ',IDFILE,'STD',ISTAT)
-      ! CASE WHERE DATE AND TIME ARE IN THE FILE
-      IF(IB(10).EQ.1) CALL LIT(XB,RB,IB,CB,6,'I ',IDFILE,'STD',ISTAT)
-      ! 4 INTEGERS
-      CALL LIT(XB,RB,IB,CB,4,'I ',IDFILE,'STD',ISTAT)
-      ! IKLES
-      CALL LIT(XB,RB,IB,CB,1,'I ',IDFILE,'STD',ISTAT)
-      ! IPOBO OR KNOLG
-      CALL LIT(XB,RB,IB,CB,1,'I ',IDFILE,'STD',ISTAT)
-      ! X AND Y
-      CALL LIT(XB,RB,IB,CB,1,RF,IDFILE,'STD',ISTAT)
-      CALL LIT(XB,RB,IB,CB,1,RF,IDFILE,'STD',ISTAT)
-!      
-!-----------------------------------------------------------------------
-!
       END SUBROUTINE
       END MODULE

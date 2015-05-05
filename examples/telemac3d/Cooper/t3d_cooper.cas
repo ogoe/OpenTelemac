@@ -114,5 +114,4 @@ STANDARD VALUES FOR TRACERS : 0.
  SOLVER FOR PROPAGATION : 2
 /DYNAMIC PRESSURE IN WAVE EQUATION : YES
 /
-&ETA                                                                     
 &FIN

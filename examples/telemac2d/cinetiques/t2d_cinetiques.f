@@ -191,8 +191,8 @@
       LTT=(LT/LEOPRD)*LEOPRD
       IF((LT.EQ.LTT.OR.LT.EQ.NIT).AND.LT.GE.PTINIG) LEO=.TRUE.
       IF(LT.EQ.0) THEN
-        IMP=OUTINI
-        LEO=OUTINI
+        IMP=.TRUE.
+        LEO=.TRUE.
       ENDIF
 !
 !-----------------------------------------------------------------------

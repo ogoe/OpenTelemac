@@ -38,7 +38,7 @@ PROCESSEURS PARALLELES : 8
 FICHIER FORTRAN                     : t2d_flotteurs_v2p0.f
 FICHIER DES CONDITIONS AUX LIMITES  : geo_flotteurs.cli
 FICHIER DE GEOMETRIE                : geo_flotteurs.slf
-FICHIER DES RESULTATS               : res
+FICHIER DES RESULTATS               : r2d_flotteurs_v2p0.slf
 FICHIER DU CALCUL PRECEDENT         : r2d_flotteurs_v1p0.slf
 FICHIER DES FLOTTEURS               : flo.dat
 /

@@ -3,7 +3,7 @@
 !                       *****************
 !
      &(X,Y,IKLES,IPOBO,NPOIN2,NELEM2,NC2DH,NCOU,TITCAS,
-     & NVAR,NTRAC,NTRPA,BINCOU,NVA3,TEXTLU)
+     & NVAR,NTRAC,NTRPA,FFORMAT,NVA3,TEXTLU)
 !
 !***********************************************************************
 ! POSTEL3D VERSION 5.1   01/09/99   T. DENOT (LNH) 01 30 87 74 89
@@ -45,6 +45,9 @@
 !***********************************************************************
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
+      USE INTERFACE_HERMES
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -53,7 +56,6 @@
 !
       DOUBLE PRECISION X(NPOIN2),Y(NPOIN2)
 !
-      INTEGER NBV(2),IB(10),I(4)
       INTEGER , INTENT(INOUT) :: IKLES(3,NELEM2),IPOBO(NPOIN2)
       INTEGER IC,J,CANAL,IBID(1),ISTAT
       INTEGER NVA3
@@ -61,33 +63,12 @@
 !
       CHARACTER*72 TITCAS
       CHARACTER*32 TEXTLU(100)
-      CHARACTER*3  BINCOU
+      CHARACTER*8 FFORMAT
 !
-      CHARACTER(LEN=2) CB
-      DOUBLE PRECISION XB(2)
+      INTEGER :: DATE(3), TIME(3), IERR
 !-----------------------------------------------------------------------
       N=0
 !
-!  NOMBRE DE VARIABLES EN SORTIE :
-!  (ON NE SORT PAS LES VARIABLES QUI SERVENT A SUBIEF-3D)
-!
-      NBV(1) = NVA3
-      NBV(2) = 0
-!
-!  4 PARAMETRES INDISPENSABLES :
-!
-      I(1) = NELEM2
-      I(2) = NPOIN2
-      I(3) = 3
-      I(4) = 1
-!
-!  LISTE DE FUTURS PARAMETRES DEJA PREVUS.(SEUL LES PREMIERS SERVENT)
-!
-      DO J = 1,10
-        IB(J) = 0
-      ENDDO
-!   ECRITURE ECLATEE DES RESULTATS (CONVENTION SELAFIN)
-      IB(1) = 1
 !
 !-----------------------------------------------------------------------
 !
@@ -95,23 +76,23 @@
 !
       DO IC = 1,NC2DH
 !
-        CANAL = NCOU
+        CANAL = NCOU-1+IC
 !
 !     OUVERTURE DU FICHIER + ENREGISTREMENT DES PREMIERS PARAMETRES
 !     -------------------------------------------------------------
 !
-        CALL ECRDEB(NCOU-1+IC,BINCOU,TITCAS,NBV,NTRAC,NTRPA,.TRUE.,
+        CALL ECRDEB(CANAL,FFORMAT,TITCAS,NVA3,NTRAC,NTRPA,.TRUE.,
      &               TEXTLU,IC,N)
 !
 !     ENREGISTREMENT DES AUTRES PARAMETRES DE L'ENTETE
 !     ------------------------------------------------
 !
-        CALL ECRI2(XB, IB  ,CB,      10,'I ',NCOU-1+IC,BINCOU,ISTAT)
-        CALL ECRI2(XB, I   ,CB,       4,'I ',NCOU-1+IC,BINCOU,ISTAT)
-        CALL ECRI2(XB,IKLES,CB,3*NELEM2,'I ',NCOU-1+IC,BINCOU,ISTAT)
-        CALL ECRI2(XB,IPOBO,CB,  NPOIN2,'I ',NCOU-1+IC,BINCOU,ISTAT)
-        CALL ECRI2( X, IBID,CB,  NPOIN2,'R4',NCOU-1+IC,BINCOU,ISTAT)
-        CALL ECRI2( Y, IBID,CB,  NPOIN2,'R4',NCOU-1+IC,BINCOU,ISTAT)
+        DATE = (/0,0,0/)
+        TIME = (/0,0,0/)
+        CALL SET_MESH(FFORMAT,CANAL,2,TRIANGLE_ELT_TYPE,3,0,0,
+     &                NELEM2,NPOIN2,IKLES,IPOBO,IPOBO,X,Y,0,
+     &                DATE,TIME,IERR)
+        CALL CHECK_CALL(IERR,'PRED2H:SET_MESH')
 !
       ENDDO
 !

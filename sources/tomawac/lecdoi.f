@@ -5,7 +5,7 @@
      &(F1,NAME1FR,NAME1GB,MODE1,
      & F2,NAME2FR,NAME2GB,MODE2,
      & F3,NAME3FR,NAME3GB,MODE3,
-     & X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,
+     & X,Y,NPOIN2,NDON,FFORMAT,NBOR,NPTFR,
      & AT,DDC,TV1,TV2,F11,F12,F21,F22,F31,F32,INDIC,CHDON,NVAR,TEXTE,
      & TROUVE,UNITIME,PHASTIME)
 !
@@ -58,7 +58,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
-!| BINDON         |-->| DATA FILE BINARY
+!| FONFMT         |-->| DATA FILE FORMAT
 !| CHDON          |-->| NAME OF THE VARIABLE READ FROM THE DATA FILE
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
 !| F1             |<--| FIRST VARIABLE TO READ 
@@ -99,6 +99,8 @@
 !
       USE BIEF
       USE INTERFACE_TOMAWAC, EX_LECDOI => LECDOI
+      USE INTERFACE_HERMES
+      USE DECLARATIONS_SPECIAL
 !
       IMPLICIT NONE
 !
@@ -119,7 +121,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: F31(NPOIN2),F32(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: AT,DDC,UNITIME,PHASTIME
       DOUBLE PRECISION, INTENT(INOUT) :: TV1,TV2
-      CHARACTER(LEN=3), INTENT(IN)    :: BINDON
+      CHARACTER(LEN=8), INTENT(IN)    :: FFORMAT
       CHARACTER(LEN=7), INTENT(IN)    :: CHDON
       CHARACTER(LEN=32),INTENT(IN)    :: NAME1FR,NAME2FR,NAME3FR
       CHARACTER(LEN=32),INTENT(IN)    :: NAME1GB,NAME2GB,NAME3GB
@@ -128,17 +130,16 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NP,I,J,MODE(3),ISTAT,IB(10)
-      CHARACTER(LEN=3) C
-      DOUBLE PRECISION COEF,ATB(1),Z(1)
-      CHARACTER(LEN=72) TITCAS
-      CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3)
-      LOGICAL VOID
+      INTEGER NP,I,J,MODE(3)
+      DOUBLE PRECISION COEF
+      CHARACTER(LEN=80) TITCAS
+      CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3),FULL_NAME(3)
+      CHARACTER(LEN=16), ALLOCATABLE :: VAR_NAME(:), VAR_UNIT(:)
+      DOUBLE PRECISION :: TIME1,TIME2
+      INTEGER :: RECORD1,RECORD2
+      INTEGER :: IERR
 !
       INTRINSIC TRIM
-!
-      REAL, ALLOCATABLE :: W(:)
-      ALLOCATE(W(NPOIN2))
 !
 !-----------------------------------------------------------------------
 !
@@ -163,29 +164,41 @@
 !       VARIABLES 1 AND 2 ARE THE X AND Y COMPONENTS OF THE WIND
 !       -----------------------------------------------------------------
 !
-        REWIND NDON
-!
-!       READS TITLE
-!
-        CALL LIT(Z,W,IB,TITCAS,72,'CH',NDON,BINDON,ISTAT)
-!
-!       READS NUMBER OF VARIABLES AND THEIR NAMES
-!
-        CALL LIT(Z,W,IB,C,2,'I ',NDON,BINDON,ISTAT)
-        NVAR=IB(1)
+        ! Getting title
+        CALL GET_MESH_TITLE(FFORMAT,NDON,TITCAS,IERR)
+        CALL CHECK_CALL(IERR,'LECDOI:GET_MESH_TITLE')
+        ! 
+        CALL GET_DATA_NVAR(FFORMAT,NDON,NVAR,IERR)
+        CALL CHECK_CALL(IERR,'LECDOI:GET_DATA_NVAR')
+        ! 
+        ALLOCATE(VAR_NAME(NVAR),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'LECDOI:VAR_NAME')
+        ALLOCATE(VAR_UNIT(NVAR),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'LECDOI:VAR_UNIT')
+        CALL GET_DATA_VAR_LIST(FFORMAT,NDON,NVAR,VAR_NAME,VAR_UNIT,IERR)
+        CALL CHECK_CALL(IERR,'LECDOI:GET_DATA_VAR_LIST')
         DO I=1,NVAR
-          CALL LIT(Z,W,IB,TEXTE(I),32,'CH',NDON,BINDON,ISTAT)
+          TEXTE(I)(1:16) = VAR_NAME(I)
+          TEXTE(I)(17:32) = VAR_UNIT(I)
+          ! CHECK IF THE VARIABLE ARE IN THE FILE
+          DO J=1,3
+            IF((TEXTE(I).EQ.NAMEFR(J)).AND.
+     &        MODE(J).GT.0) THEN
+              TROUVE(J) = .TRUE.
+              FULL_NAME(J) = NAMEFR(J)
+            ENDIF
+            IF((TEXTE(I).EQ.NAMEGB(J)).AND.
+     &        MODE(J).GT.0) THEN
+              TROUVE(J) = .TRUE.
+              FULL_NAME(J) = NAMEGB(J)
+            ENDIF
+          ENDDO
         ENDDO
-!
-!       FORMAT AND GEOMETRY
-!
-        CALL LIT(Z,W,IB,C,10,'I ',NDON,BINDON,ISTAT)
-        IF(IB(10).EQ.1) THEN
-!         THIS IS THE DATE : YEAR, MONTH, DAY, HOUR, MINUTE, SECOND
-          CALL LIT(Z,W,IB,C,6,'I ',NDON,BINDON,ISTAT)
-        ENDIF
-        CALL LIT(Z,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
-        NP=IB(2)
+        DEALLOCATE(VAR_NAME)
+        DEALLOCATE(VAR_UNIT)
+        ! get the number of point
+        CALL GET_MESH_NPOIN(FFORMAT,NDON,POINT_BND_ELT_TYPE,NP,IERR)
+        CALL CHECK_CALL(IERR,'LECDOI:GET_MESH_NPOIN')
         WRITE(LU,*) '--------------------------------------------'
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'LECDOI : LECTURE DU FICHIER TELEMAC'
@@ -210,27 +223,13 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-!
-!       ARRAY OF INTEGERS IKLE
-!
-        READ(NDON)
-!
-!       ARRAY OF INTEGERS IPOBO
-!
-        READ(NDON)
-!
-!       X AND Y
-!
-        READ(NDON)
-        READ(NDON)
-!
-!       TIME STEP AND VARIABLES
-!
-        CALL LIT(ATB,W,IB,C,1,'R4',NDON,BINDON,ISTAT)
-        TV1=(ATB(1)-PHASTIME)*UNITIME
-!
-!       HERE THE DATE, IF PRESENT, SHOULD BE TAKEN INTO ACCOUNT
-!
+        ! Timesteps
+        RECORD1 = 0
+        RECORD2 = 1
+        CALL GET_DATA_TIME(FFORMAT,NDON,RECORD1,TIME1,IERR)
+        CALL CHECK_CALL(IERR,'LECDOI:GET_DATA_TIME')
+        TV1=(TIME1-PHASTIME)*UNITIME
+        !
         IF(TV1.GT.AT) THEN
           WRITE(LU,*) '************************************************'
           IF(LNG.EQ.1) THEN
@@ -246,31 +245,21 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-!
-110     CONTINUE
-!
-        TROUVE(1)=.FALSE.
-        TROUVE(2)=.FALSE.
-        TROUVE(3)=.FALSE.
-        DO I=1,NVAR
-          VOID=.TRUE.
-          DO J=1,3
-            IF((TEXTE(I).EQ.NAMEFR(J).OR.TEXTE(I).EQ.NAMEGB(J)).AND.
-     &        MODE(J).GT.0) THEN
-              IF(J.EQ.1) THEN
-                CALL LIT(F11,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-              ELSEIF(J.EQ.2) THEN
-                CALL LIT(F21,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-              ELSEIF(J.EQ.3) THEN
-                CALL LIT(F31,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-              ENDIF
-              TROUVE(J)=.TRUE.
-              VOID=.FALSE.
-            ENDIF
-          ENDDO
-          IF(VOID) READ(NDON)
+        !
+        ! Get the two records before and after at for the interpolation
+        DO
+          CALL GET_DATA_TIME(FFORMAT,NDON,RECORD2,TIME2,IERR)
+          CALL CHECK_CALL(IERR,'LECDOI:GET_DATA_TIME')
+          TV2=(TIME2-PHASTIME)*UNITIME
+          IF(TV2.LT.AT) THEN
+            RECORD1 = RECORD2
+            RECORD2 = RECORD2 + 1
+            TV1 = TV2
+          ELSE
+            EXIT
+          ENDIF
         ENDDO
-!
+        ! Check if all the variables are found for record1
         DO J=1,3
           IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
             IF(LNG.EQ.1) THEN
@@ -294,38 +283,22 @@
      &        TRIM(NAMEFR(J)(1:16)),' OR ',
      &        TRIM(NAMEGB(J)(1:16)),') AT TIME ',TV1
             ENDIF
+            ! Read the data for varialbe j on record1
+            IF(J.EQ.1) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
+     &                            FULL_NAME(J),F11,NP,IERR)
+            ELSEIF(J.EQ.2) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
+     &                            FULL_NAME(J),F21,NP,IERR)
+            ELSEIF(J.EQ.3) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
+     &                            FULL_NAME(J),F31,NP,IERR)
+            ENDIF
           ENDIF
         ENDDO
-!
-        CALL LIT(ATB,W,IB,C,1,'R4',NDON,BINDON,ISTAT)
-        TV2=(ATB(1)-PHASTIME)*UNITIME
-        IF(TV2.LT.AT) THEN
-          TV1=TV2
-          GOTO 110
-        ENDIF
-!
-        TROUVE(1)=.FALSE.
-        TROUVE(2)=.FALSE.
-        TROUVE(3)=.FALSE.
-        DO I=1,NVAR
-          VOID=.TRUE.
-          DO J=1,3
-            IF((TEXTE(I).EQ.NAMEFR(J).OR.TEXTE(I).EQ.NAMEGB(J)).AND.
-     &        MODE(J).GT.0) THEN
-              IF(J.EQ.1) THEN
-                CALL LIT(F12,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-              ELSEIF(J.EQ.2) THEN
-                CALL LIT(F22,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-              ELSEIF(J.EQ.3) THEN
-                CALL LIT(F32,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-              ENDIF
-              TROUVE(J)=.TRUE.
-              VOID=.FALSE.
-            ENDIF
-          ENDDO
-          IF(VOID) READ(NDON)
-        ENDDO
-!
+        ! Read the variables
+        ! 
+        ! Check if all the variables are found for record2
         DO J=1,3
           IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
             IF(LNG.EQ.1) THEN
@@ -347,6 +320,17 @@
      &        TRIM(NAMEFR(J)(1:16)),' OR ',
      &        TRIM(NAMEGB(J)(1:16)),') AT TIME ',TV2
             ENDIF
+            ! Read the data for varialbe j on record1
+            IF(J.EQ.1) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
+     &                            FULL_NAME(J),F12,NP,IERR)
+            ELSEIF(J.EQ.2) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
+     &                            FULL_NAME(J),F22,NP,IERR)
+            ELSEIF(J.EQ.2) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
+     &                            FULL_NAME(J),F32,NP,IERR)
+            ENDIF
           ENDIF
         ENDDO
 !
@@ -358,24 +342,24 @@
 !         READS A CURRENT FIELD
           TROUVE(1)=.TRUE.
           TROUVE(2)=.TRUE.
-          CALL COUUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
+          CALL COUUTI(X,Y,NPOIN2,NDON,FFORMAT,NBOR,NPTFR,AT,DDC,TV1,TV2,
      &                F11,F21,F12,F22)
         ELSEIF(CHDON(1:1).EQ.'V') THEN
 !         READS A WIND FIELD
           TROUVE(1)=.TRUE.
           TROUVE(2)=.TRUE.
-          CALL VENUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
+          CALL VENUTI(X,Y,NPOIN2,NDON,FFORMAT,NBOR,NPTFR,AT,DDC,TV1,TV2,
      &                F11,F21,F12,F22)
         ELSEIF(CHDON(1:1).EQ.'H') THEN
 !         READS A DEPTH FIELD
           TROUVE(3)=.TRUE.
-          CALL MARUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
+          CALL MARUTI(X,Y,NPOIN2,NDON,FFORMAT,NBOR,NPTFR,AT,DDC,TV1,TV2,
      &                F31,F32)
         ELSE
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LE TYPE DE DONNEES A LIRE EST INCONNU'
           ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'UNKNOWN DATA'
+            WRITE(LU,*) 'UNKNOWN DATA TYPE'
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -416,10 +400,6 @@
           F3(I)=(F32(I)-F31(I))*COEF+F31(I)
         ENDDO
       ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      DEALLOCATE(W)
 !
 !-----------------------------------------------------------------------
 !

@@ -38,7 +38,7 @@
       USE BIEF, EX_BIEF_CLOSE_FILES => BIEF_CLOSE_FILES
 !
       USE DECLARATIONS_TELEMAC
-      USE M_MED
+      USE INTERFACE_HERMES
 !
       IMPLICIT NONE
       INTEGER     LNG,LU
@@ -53,7 +53,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I
+      INTEGER I,IERR
 !
 !-----------------------------------------------------------------------
 !
@@ -63,8 +63,23 @@
 !
 !         CLOSES THE FILE
 !
-          IF(FILES(I)%FMT.EQ.'MED     ') THEN
-            CALL CLOSE_FILE_MED(FILES(I)%LU)
+          IF(FILES(I)%TYPE.EQ.'CONLIM') CYCLE
+          IF((FILES(I)%FMT.EQ.'SERAFIN ')
+     &       .OR.(FILES(I)%FMT.EQ.'SERAFIND')
+     &       .OR.(FILES(I)%FMT.EQ.'MED     ')) THEN
+            IF(FILES(I)%TYPE(1:4).EQ.'SCAL') THEN
+              IF(IPID.EQ.0.OR.FILES(I)%ACTION(5:9).NE.'WRITE') THEN
+                CALL CLOSE_BND(FILES(I)%FMT, FILES(I)%LU, IERR)
+                CALL CHECK_CALL(IERR,'BIEF_CLOSE_FILE:CLOSE_BND')
+                CALL CLOSE_MESH(FILES(I)%FMT, FILES(I)%LU, IERR)
+                CALL CHECK_CALL(IERR,'BIEF_CLOSE_FILE:CLOSE_MESH')
+              ENDIF
+            ELSE
+              CALL CLOSE_BND(FILES(I)%FMT, FILES(I)%LU, IERR)
+              CALL CHECK_CALL(IERR,'BIEF_CLOSE_FILE:CLOSE_BND')
+              CALL CLOSE_MESH(FILES(I)%FMT, FILES(I)%LU, IERR)
+              CALL CHECK_CALL(IERR,'BIEF_CLOSE_FILE:CLOSE_MESH')
+            ENDIF
           ELSE
             CLOSE(FILES(I)%LU)
           ENDIF
