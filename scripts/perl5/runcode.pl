@@ -704,7 +704,7 @@ sub restihpPARAL    # (ficnamcode, ficnam, ficGEOM, modepar, autopar)
    	    }
    	  else
    	    { chdir("$REP");  #jaj hihi...
-   	      $rcg = RunGretel ($ficGEOM, $FIL1, $NCSIZE);
+   	      $rcg = RunGretel ($ficGEOM, $FIL1, $NCSIZE, $NPLAN);
               if ( $rcg != 0 )  
                 {
                   open(F, ">>$REPLANCE$ps"."$PARA$WORKING"."_error.log");
@@ -952,7 +952,7 @@ sub RunPartel       # (geo, cli, NCSIZE, sec, secname, zon, zonname); #jaj added
   return $ret;
 }#RunPartel (end)
 
-sub RunGretel       # (geo, res, NCSIZE);
+sub RunGretel       # (geo, res, NCSIZE, NPLAN);
 #_______________________________________________________________________
 #
 #  Consolidation automatique avec GRETEL
@@ -962,7 +962,7 @@ sub RunGretel       # (geo, res, NCSIZE);
 
  #Arguments de GRETEL dans "partel.par"
   open(FPAR,">gretel.par") or die "File \'gretel.par\' cannot be opened!";
-  print FPAR "@_[0]\nSERAFIN\n@_[1]\nSERAFIN\n@_[2]\n0\n";
+  print FPAR "@_[0]\nSERAFIN\n@_[1]\nSERAFIN\n@_[2]\n@_[3]\n";
   close(FPAR) or die "File \'gretel.par\' cannot be closed!";
  #Lancement GRETEL, append outputs
   $command=join "",$PROJECT,$ps,"builds$ps$dirlib$ps","bin$ps","gretel$VERS[$0].exe < gretel.par >> gretel.log";

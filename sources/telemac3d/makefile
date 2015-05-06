@@ -16,8 +16,6 @@
 #
 NOM_GENERIQUE = telemac3d
 
-VERSION	      = v7p1
-
 ###########################
 # Definition des macros
 #

@@ -26,23 +26,29 @@ echo '*****************'
 echo 'indentation error'
 echo '*****************'
 grep -ER -n $2 '^(\ ){9}[^\ ]|^(\ ){7}[^\ ]|^(\ ){15}[^\ ]' $1 --include=*.[fF] > indent.log
+wc -l indent.log
 echo '*****************'
 echo 'Comments error'
 echo '*****************'
 grep -ER -n $2 '^[^!\n0-9#\ ]' $1 --include=*.[fF] > comments.log 
+wc -l comments.log
 echo '*****************'
 echo 'Continuation line error'
 echo '*****************'
 grep -ER -n $2 '^(\ ){5}[^\&\ ]' $1 --include=*.[fF] > continuation.log 
+wc -l continuation.log
 echo '*****************'
 echo 'Lowercase error'
 echo '*****************'
 grep -ER -n $2 '^[^!#\"'\'']*[azertyuiopqsdfghjklmnbvcxw]' $1 --include=*.[fF] > lowercas.log  
+wc -l lowercas.log
 echo '*****************'
 echo 'Line too long error'
 echo '*****************'
 grep -ER -n $2 '^[^!]{73}' $1 --include=*.[fF] > linetoolong.log  
+wc -l linetoolong.log
 echo '*****************'
 echo 'Invalid character error'
 echo '*****************'
 grep -PR -n $2 '\t|\r' $1 --include=*.[fF] > invalidchar.log  
+wc -l invalidchar.log

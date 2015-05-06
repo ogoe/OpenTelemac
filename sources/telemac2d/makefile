@@ -15,8 +15,6 @@
 #
 NOM_GENERIQUE = telemac2d
 
-VERSION	      = v7p1
-
 ###########################
 # Definition des macros
 #

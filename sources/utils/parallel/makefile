@@ -15,8 +15,6 @@
 #
 NOM_GENERIQUE = parallel
 
-VERSION	      = v7p1
-
 ###########################
 # Definition des macros
 #

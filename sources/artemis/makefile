@@ -16,8 +16,6 @@
 #
 NOM_GENERIQUE = artemis
 
-VERSION	      = v7p1
-
 ###########################
 # Definition des macros
 #

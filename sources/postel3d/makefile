@@ -16,8 +16,6 @@
 #
 NOM_GENERIQUE = postel3d
 
-VERSION	      = v7p1
-
 ###########################
 # Definition des macros
 #

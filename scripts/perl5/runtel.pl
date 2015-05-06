@@ -692,48 +692,48 @@ sub get_code_params
 #Traitement
 if ($NOMCOD eq "telemac3d") {    $$refCH    = "TELEMAC3D$ps"."TEL3D_";
                                  $$refRAC   = "TELEMAC3D";
-                                 $$refLNG   = $$refH{"LNGTEL3D"};
-                                 $$refVER   = $$refH{"VERSTEL3D"};          }
+                                 $$refLNG   = $$refH{"LNG"};
+                                 $$refVER   = $$refH{"VERSION"};          }
 if ($NOMCOD eq "telemac2d") {    $$refCH    = "TELEMAC2D$ps"."TEL2D_";
                                  $$refRAC   = "TELEMAC2D";
-                                 $$refLNG   = $$refH{"LNGTEL"};
-                                 $$refVER   = $$refH{"VERSTEL"};            }
+                                 $$refLNG   = $$refH{"LNG"};
+                                 $$refVER   = $$refH{"VERSION"};            }
 if ($NOMCOD eq "stbtel")    {    $$refCH    = "STBTEL$ps"."STBTEL_";
                                  $$refRAC   = "STBTEL";
-                                 $$refLNG   = $$refH{"LNGSTB"};
-                                 $$refVER   = $$refH{"VERSSTB"};            }
+                                 $$refLNG   = $$refH{"LNG"};
+                                 $$refVER   = $$refH{"VERSION"};            }
 if ($NOMCOD eq "postel3d")  {    $$refCH    = "POSTEL3D$ps"."POSTEL3D_";
                                  $$refRAC   = "POSTEL3D";
-                                 $$refLNG   = $$refH{"LNGPOSTE"};
-                                 $$refVER   = $$refH{"VERSPOSTE"};          }
+                                 $$refLNG   = $$refH{"LNG"};
+                                 $$refVER   = $$refH{"VERSION"};          }
 if ($NOMCOD eq "artemis")   {    $$refCH    = "ARTEMIS$ps"."ARTE_";
                                  $$refRAC   = "ARTEMIS";
-                                 $$refLNG   = $$refH{"LNGARTE"};
-                                 $$refVER   = $$refH{"VERSARTE"};           }
+                                 $$refLNG   = $$refH{"LNG"};
+                                 $$refVER   = $$refH{"VERSION"};           }
 if ($NOMCOD eq "sisyphe")   {    $$refCH    = "SISYPHE$ps"."SISYPHE_";
                                  $$refRAC   = "SISYPHE";
-                                 $$refLNG   = $$refH{"LNGSISY"};
-                                 $$refVER   = $$refH{"VERSSISY"};           }
+                                 $$refLNG   = $$refH{"LNG"};
+                                 $$refVER   = $$refH{"VERSION"};           }
 if ($NOMCOD eq "cowadis")   {    $$refCH    = "COWADIS$ps"."COWA_";
                                  $$refRAC   = "COWADIS";
-                                 $$refLNG   = $$refH{"LNGCOWA"};
-                                 $$refVER   = $$refH{"VERSCOWA"};           }
+                                 $$refLNG   = $$refH{"LNG"};
+                                 $$refVER   = $$refH{"VERSION"};           }
 if ($NOMCOD eq "estel2d")   {    $$refCH    = "ESTEL2D$ps"."ESTEL2D_";
                                  $$refRAC   = "ESTEL2D";
-                                 $$refLNG   = $$refH{"LNGESTEL2"};
-                                 $$refVER   = $$refH{"VERSESTEL2"};          }
+                                 $$refLNG   = $$refH{"LNG"};
+                                 $$refVER   = $$refH{"VERSION"};          }
 if ($NOMCOD eq "estel3d")   {    $$refCH    = "ESTEL3D$ps"."ESTEL3D_";
                                  $$refRAC   = "ESTEL3D";
-                                 $$refLNG   = $$refH{"LNGESTEL3"};
-                                 $$refVER   = $$refH{"VERSESTEL3"};          }
+                                 $$refLNG   = $$refH{"LNG"};
+                                 $$refVER   = $$refH{"VERSION"};          }
 if ($NOMCOD eq "tomawac")   {    $$refCH    = "TOMAWAC$ps"."TOMA_";
                                  $$refRAC   = "TOMAWAC";
-                                 $$refLNG   = $$refH{"LNGTOMA"};
-                                 $$refVER   = $$refH{"VERSTOMA"};           }
+                                 $$refLNG   = $$refH{"LNG"};
+                                 $$refVER   = $$refH{"VERSION"};           }
 if ($NOMCOD eq "spartacus2d")   {    $$refCH    = "SPARTACUS2D$ps"."SPARTACUS2D_";
                                  $$refRAC   = "SPARTACUS2D";
-                                 $$refLNG   = $$refH{"LNGSPA"};
-                                 $$refVER   = $$refH{"VERSSPA"};           }
+                                 $$refLNG   = $$refH{"LNG"};
+                                 $$refVER   = $$refH{"VERSION"};           }
 $$refCH=~tr/A-Z/a-z/;
 #Fin
   return 0;
@@ -808,7 +808,7 @@ if($mVDEF ne $VERS[0])
   {
   entete("Exploitation de la version specifique $VERS[0]",
          "Using specific version $VERS[0]", " ");
-  $$refDICO="$mPROJ$ps"."sources$ps$mNOMCODps$mNOMCOD".".dico";
+  $$refDICO="$mPROJ$ps"."sources$ps$mNOMCOD$ps$mNOMCOD".".dico";
 
   %Mots = tm_casdico::lecture_fichier_dictionnaire($$refDICO); 
   if (keys(%Mots)==0)
@@ -1178,6 +1178,10 @@ chdir($REP)       or die "## Error : chdir $REP impossible : $!\n";
 @vals = tm_casdico::recup_valeur_mot(\%motsEtude, "PROCESSEURS PARALLELES"); 
 $NCSIZE=@vals[0]; 
 if ($NCSIZE eq "")  {$NCSIZE=0;}          #Le mot clef n'existe pas
+# Get the number of planes
+@vals = tm_casdico::recup_valeur_mot(\%motsEtude, "NOMBRE DE PLANS HORIZONTAUX"); 
+$NPLAN=@vals[0]; 
+if ($NPLAN eq "")  {$NPLAN=0;}          #Le mot clef n'existe pas
 
 #jaj orig:
 #$Directory_tmp=join "",$REPLANCE,$ps,$REP,$ps;
@@ -1268,6 +1272,7 @@ ecrire_variable_fichier(F,"ps");
 #SAinutile ecrire_variable_fichier(F,"BASE");      
 #SA ecrire_variable_fichier(F,"DICO");      
 ecrire_variable_fichier(F,"NCSIZE");    
+ecrire_variable_fichier(F,"NPLAN");    
 ecrire_variable_fichier(F,"PARA");      
 ecrire_variable_fichier(F,"PROJECT");   
 ecrire_variable_fichier(F,"REP");       
