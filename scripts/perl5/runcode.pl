@@ -89,7 +89,7 @@ $LIBCALCIUM = "";
 $i=0;
 foreach (@CODLIBS)
   {
-    $param = SubstParamPath ($_, $VERS[$i]);
+    $param = SubstParamPath ($_, $VERS[$0]);
     $param = join "", $PROJECT,$ps,$param;
     $BIBLI="$BIBLI $param";
     $i++;
