@@ -43,6 +43,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      IERR=0
       SELECT CASE (FFORMAT)
         CASE ('SERAFIN ','SERAFIND')
           WRITE(LU,*)'NO NEED TO UPDATE MESH COORDINATES FOR SLF FORMAT'
