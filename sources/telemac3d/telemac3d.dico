@@ -6248,11 +6248,11 @@ AIDE1= 'File names of the used files'
 //    ex : "telemac2d|tel2d_VVV|PPP|telemac2dMMMVVV.LLL"
 
 NOM = 'DESCRIPTION DES LIBRAIRIES'
-NOM1 = 'DESCRIPTION DES LIBRARIES'
+NOM1 = 'DESCRIPTION OF LIBRARIES'
 TYPE = CARACTERE
 INDEX = 80
 MNEMO = 'LINKLIBS'
-TAILLE = 9
+TAILLE = 10
 DEFAUT = 'builds|PPP|lib|telemac3dMMMVVV.LLL'; 
 'builds|PPP|lib|telemac2dMMMVVV.LLL'; 
 'builds|PPP|lib|tomawacMMMVVV.LLL'; 
@@ -6277,7 +6277,7 @@ DEFAUT1 = 'builds|PPP|lib|telemac3dMMMVVV.LLL';
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
-AIDE  = 'Description des librairies de T2D'
+AIDE  = 'Description des librairies de Telemac-3D'
 AIDE1 = 'LIBRARIES description'
 
 //----Executable par defaut du code---------------------------------
