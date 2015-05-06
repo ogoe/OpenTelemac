@@ -1,19 +1,19 @@
-!                    *************************
+!                    **************************
                      SUBROUTINE READ_MESH_COORD
-!                    *************************
+!                    **************************
 !
      &(FFORMAT,NFIC,X,Y,NPOIN,PROJECTION,LATI0,LONGI0,Z)
 !
 !***********************************************************************
-! HERMES   V6P3                                   21/08/2010
+! HERMES   V7P1
 !***********************************************************************
 !
 !brief    Reads the coordinates in the geometry file.
 !+        Latitude-longitude coordinates transformed into mercator.
 !
-!history  J-M HERVOUET (LNH)     
-!+        29/04/04
-!+        V5P5
+!history  Y. AUDOUIN (EDF LAB, LNHE)    
+!+        06/05/2015
+!+        V7P1
 !+   First version.
 !
 !
@@ -46,7 +46,6 @@
 !
       INTEGER :: IERR, I, NDIM
 !
-      REAL, ALLOCATABLE :: RB(:)
       DOUBLE PRECISION, PARAMETER :: R=6.37D6
       DOUBLE PRECISION PS4,TAN1,TAN2,LONGIRAD
 !
