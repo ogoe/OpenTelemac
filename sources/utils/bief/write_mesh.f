@@ -62,7 +62,6 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER :: TYPELM
       INTEGER :: IERR, I, NDP
       INTEGER, ALLOCATABLE :: IPOBO(:)
 !

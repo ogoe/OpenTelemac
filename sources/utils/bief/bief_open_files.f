@@ -5,7 +5,7 @@
      &(CODE,FILES,NFILES,PATH,NCAR,FLOT,IFLOT,ICODE)
 !
 !***********************************************************************
-! BIEF   V7P0                                   26/12/2013
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    OPENS FILES DECLARED IN THE STEERING FILE.
@@ -76,7 +76,6 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I, II, ICLI, IERR
-      CHARACTER(LEN=80) :: TITLE
 !
       CHARACTER(LEN=11) :: FORME,EXTENS
       CHARACTER(LEN=300) :: FILE_NAME
