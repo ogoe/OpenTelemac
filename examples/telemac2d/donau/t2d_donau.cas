@@ -109,5 +109,4 @@ FRICTION DATA FILE                 = roughness.tbl
 ZONES FILE                         = gitter_09_tbl.bfr
 MAXIMUM NUMBER OF FRICTION DOMAINS = 10
 NON-SUBMERGED VEGETATION FRICTION  = NO
-&ETA
 &FIN
