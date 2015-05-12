@@ -21,7 +21,7 @@
 #
 # ~~> dependencies towards standard python
 import sys
-from os import remove
+import os
 import subprocess as sp
 from optparse import OptionParser
 
@@ -45,6 +45,7 @@ DEBUG = {debug}
 /
 INPUT FILE FORMAT : '{inputFormat}'
 INPUT FILE : '{inputFile}'
+BOUNDARY CONDITION IN SERAFIN FORMAT : {srfBnd}
 {inAdditionalFile}
 /
 / OUTPUT FILE INFORMATION
@@ -60,6 +61,7 @@ def build_cas(options,extens,inputFormat,inputFile,outputFormat,outputFile):
    """
    # Building canvas for steering file
    debug = 'YES' if options.debug else 'NO'
+   srfBnd = 'YES' if options.srfBnd else 'NO'
    # Additional files
    ## input files
    inAdditionalFile = ''
@@ -79,6 +81,7 @@ def build_cas(options,extens,inputFormat,inputFile,outputFormat,outputFile):
              debug=debug,  
              inputFormat=inputFormat,
              inputFile=inputFile+extens, 
+             srfBnd=srfBnd, 
              inAdditionalFile=inAdditionalFile, 
              outputFormat=outputFormat,
              outputFile=outputFile+extens, 
@@ -145,6 +148,12 @@ if __name__ == "__main__":
              dest="ndomains",
              default=1,
              help="number of sub-domains of the distributed mesh")
+   # Option to tell stbtel to read the boundary conidtion from the boundary file
+   parser.add_option("","--srf-bnd",
+             action="store_true",
+             dest="srfBnd",
+             default=False,
+             help="tell stbtel to read the boundary conidtion from the boundary file")
    # the silent option define if display stbtel informations
    parser.add_option("-s","--silent",
              action="store_true",
@@ -157,7 +166,13 @@ if __name__ == "__main__":
              dest="debug",
              default=False,
              help="Enable debug mode which displays more informations during run time")
-   
+   # root directory
+   parser.add_option("-r", "--rootdir",
+                     type = "string",
+                     dest = "rootDir",
+                     default = None,
+                     help="specify the root, default is taken from config file")
+
    # reading the options
    options, args = parser.parse_args()
 
@@ -211,9 +226,22 @@ if __name__ == "__main__":
       with open(casName,"w") as fobj:
          fobj.write(cas)
       # Running stbtel
-      sp.call(["stbtel.py", casName])
-      # Remove the case file
-   #   remove(casName)
+      path_stbtel = "stbtel.py"
+      if options.rootDir is not None:
+        path_stbtel = os.path.join(options.rootDir, "scripts", "python27", path_stbtel)
+      stbtel_args = [path_stbtel, casName]
+      if options.rootDir is not None:
+         stbtel_args += ["-r", options.rootDir]
+      print "Calling:", " ".join(stbtel_args)
+      rc = sp.call(stbtel_args)
+
+      
+      if rc != 0:
+         sys.exit(rc)
+      else:
+         # Remove the case file
+         os.remove(casName)
+
 
    print '\n\n'+'~'*72
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

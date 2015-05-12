@@ -2,7 +2,8 @@
                      SUBROUTINE LECDON_TELEMAC2D
 !                    ***************************
 !
-     &(MOTCAR,WMOTCAR,FILE_DESC,WFILE_DESC,PATH,NCAR)
+     &(MOTCAR,WMOTCAR,FILE_DESC,WFILE_DESC,PATH,NCAR,
+     & CAS_FILE,DICO_FILE)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P0                                   21/08/2010
@@ -108,6 +109,9 @@
 !     WAQ
       CHARACTER(LEN=144), INTENT(INOUT) :: WFILE_DESC(4,MAXKEY)
       CHARACTER(LEN=144), INTENT(INOUT) :: WMOTCAR(MAXKEY)
+!     API
+      CHARACTER(LEN=144), INTENT(IN)    :: DICO_FILE
+      CHARACTER(LEN=144), INTENT(IN)    :: CAS_FILE
 !                                                 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -244,6 +248,14 @@
         NOM_CAS_WAQ='T2DWAQ'
 !
       ENDIF
+      IF((CAS_FILE(1:1).NE.' ').AND.(DICO_FILE(1:1).NE.' ')) THEN
+        WRITE(LU,*) 'FIXED DICO AND STERRING FILE PRESENT'
+        NOM_DIC=DICO_FILE
+        NOM_CAS=CAS_FILE
+        WRITE(LU,*) 'NOM_DIC',NOM_DIC
+        WRITE(LU,*) 'NOM_CAS',NOM_CAS
+      ENDIF
+
 !
       OPEN(2,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
       OPEN(3,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
@@ -1372,6 +1384,9 @@
 !
 ! ARRAY OF LOGICALS FOR OUTPUT
 !
+      DO I=1,MAXVAR
+        MNEMO(I) = '        '
+      ENDDO
       CALL NOMVAR_TELEMAC2D(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC)
       CALL SORTIE(VARDES , MNEMO , MAXVAR , SORLEO )
       CALL SORTIE(VARIMP , MNEMO , MAXVAR , SORIMP )

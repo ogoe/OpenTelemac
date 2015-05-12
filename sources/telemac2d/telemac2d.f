@@ -2,7 +2,7 @@
                      SUBROUTINE TELEMAC2D
 !                    ********************
 !
-     &(PASS,ATDEP,NITER,CODE,DTDEP,NEWTIME,DOPRINT)
+     &(PASS,ATDEP,NITER,CODE,DTDEP,NEWTIME,DOPRINT,NITERORI)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P0                                  02/01/2014
@@ -282,6 +282,7 @@
       LOGICAL,          INTENT(IN), OPTIONAL :: NEWTIME
 !     DO WE WANT TELEMAC2D TO OUTPUT IN THE LISTING OR NOT?
       LOGICAL,          INTENT(IN), OPTIONAL :: DOPRINT
+      INTEGER,          INTENT(IN), OPTIONAL :: NITERORI
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -367,6 +368,8 @@
 !     ADVECTION FIELD USED FOR SISYPHE CALL
 !
       TYPE(BIEF_OBJ), POINTER :: USIS,VSIS
+!     Numlber of iteration asked in the case file for api
+      INTEGER :: TOTAL_ITER
 !
 !-----------------------------------------------------------------------
 !
@@ -374,6 +377,11 @@
 !
 !-----------------------------------------------------------------------
 !
+      IF(PRESENT(NITERORI)) THEN
+        TOTAL_ITER = NITERORI
+      ELSE
+        TOTAL_ITER = NIT
+      ENDIF
       CHARR_TEL=.FALSE.
       CHARR=.FALSE.
       SUSP=.FALSE.
@@ -1222,7 +1230,7 @@
         FLUSOR = 0.D0
         FLUENT = 0.D0
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING BILAN'
-        CALL BILAN(MESH,H,T1,MASK,AT,DT,LT,NIT,ENTET,
+        CALL BILAN(MESH,H,T1,MASK,AT,DT,LT,TOTAL_ITER,ENTET,
      &             MASSES,MSK,MASKEL,EQUA,TE5,OPTBAN,
      &             MESH%NPTFR,FLBOR,
      &             FLUX_BOUNDARIES,NUMLIQ%I,NFRLIQ,GAMMA)
@@ -1234,7 +1242,7 @@
             IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING BILANT'
             DO ITRAC=1,NTRAC
             MASSOU(ITRAC) = 0.D0
-            CALL BILANT(H,T2,T3,DT,LT,NIT,LISTIN,
+            CALL BILANT(H,T2,T3,DT,LT,TOTAL_ITER,LISTIN,
      &                  T%ADR(ITRAC)%P,
      &                  AGGLOT,MASSOU(ITRAC),MASTR0(ITRAC),
      &                  MASTR2(ITRAC),MASTEN(ITRAC),
@@ -1251,7 +1259,7 @@
             IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING BILANT1'
             DO ITRAC=1,NTRAC
             CALL BILANT1(H,UCONV,VCONV,HPROP,T2,T3,T4,T5,T6,
-     &                   DT,LT,NIT,ENTET,MASKTR,
+     &                   DT,LT,TOTAL_ITER,ENTET,MASKTR,
      &                   T%ADR(1)%P,TN%ADR(1)%P,TETAT,
      &                   MASSOU(ITRAC),MSK,MASKEL,MESH,
      &                   FLUTSOR(ITRAC),FLUTENT(ITRAC),EQUA,LTT,ITRAC)
@@ -1384,19 +1392,17 @@
         IF(CODE(1:7).EQ.'ESTEL3D') THEN
           AT=ATDEP
           NIT=NITER
-! --- JP RENAUD START ---
 !         USE THE TIME STEP SPECIFIED BY ESTEL-3D
           IF(PRESENT(DTDEP)) THEN
             DT = DTDEP
             DTCAS = DTDEP
           ! TO DO: CHECK WHAT HAPPENS WITH ADAPTIVE TIME STEP
           ENDIF
-! --- JP RENAUD END ---
         ELSE
-          IF(LNG.EQ.1) WRITE(LU,*) 'PROGRAM APPELANT INCONNU'
-          IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN CALLING PROGRAM'
-          CALL PLANTE(1)
-          STOP
+!         IF(LNG.EQ.1) WRITE(LU,*) 'PROGRAM APPELANT INCONNU'
+!         IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN CALLING PROGRAM'
+!         CALL PLANTE(1)
+!         STOP
         ENDIF
       ENDIF
 !
@@ -2216,7 +2222,7 @@
 !
       IF(BILMAS) THEN
       IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING BILANT'
-      CALL BILANT(H,T2,T3,DT,LT,NIT,ENTET,
+      CALL BILANT(H,T2,T3,DT,LT,TOTAL_ITER,ENTET,
      &            T%ADR(ITRAC)%P,AGGLOT,MASSOU(ITRAC),MASTR0(ITRAC),
      &            MASTR2(ITRAC),MASTEN(ITRAC),
      &            MASTOU(ITRAC),MSK,MASKEL,MESH,FLBOR,NUMLIQ%I,
@@ -2279,7 +2285,7 @@
 !
       IF(BILMAS) THEN
 !
-        CALL BILAN(MESH,H,T1,MASK,AT,DT,LT,NIT,ENTET,
+        CALL BILAN(MESH,H,T1,MASK,AT,DT,LT,TOTAL_ITER,ENTET,
      &             MASSES,MSK,MASKEL,EQUA,TE5,OPTBAN,
      &             MESH%NPTFR,FLBOR,
      &             FLUX_BOUNDARIES,NUMLIQ%I,NFRLIQ,GAMMA)
@@ -2291,7 +2297,7 @@
 !
             DO ITRAC=1,NTRAC
             CALL BILANT1(HSTOK,UCONV,VCONV,HPROP,T2,T3,T4,T5,T6,
-     &                   DT,LT,NIT,ENTET,MASKTR,
+     &                   DT,LT,TOTAL_ITER,ENTET,MASKTR,
      &                   T%ADR(1)%P,TN%ADR(1)%P,TETAT,
      &                   MASSOU(ITRAC),MSK,MASKEL,MESH,
      &                   FLUTSOR(ITRAC),FLUTENT(ITRAC),EQUA,LTT,ITRAC)
@@ -2545,7 +2551,7 @@
      &                   T2D_FILES(T2DREF)%LU,T2D_FILES(T2DREF)%FMT,
      &                   VARSOR,TEXTE,
      &                   T2D_FILES(T2DRES)%LU,T2D_FILES(T2DRES)%FMT,
-     &                   MAXVAR,NPOIN,LT,NIT,ALIRE)
+     &                   MAXVAR,NPOIN,LT,TOTAL_ITER,ALIRE)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM BIEF_VALIDA'
       ENDIF
 
@@ -2636,10 +2642,12 @@
 !
 !=======================================================================
 !
+      IF(PASS.NE.1) THEN
       IF(LNG.EQ.1.AND.LISTIN) WRITE(LU,18)
       IF(LNG.EQ.2.AND.LISTIN) WRITE(LU,19)
 18    FORMAT(/,1X,'FIN DE LA BOUCLE EN TEMPS',////)
 19    FORMAT(/,1X,'END OF TIME LOOP',////)
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

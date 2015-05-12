@@ -1,6 +1,7 @@
 !                    ********************
-                     PROGRAM GRETEL_AUTOP
+                     SUBROUTINE GRETEL_AUTOP
 !                    ********************
+     &(GEO,GEOFORMAT,RES,RESFORMAT,NPROC,NPLAN_RES)
 !
 !
 !***********************************************************************
@@ -28,12 +29,14 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       INTEGER LI
+      CHARACTER(LEN=250), INTENT(IN) :: GEO
+      CHARACTER(LEN=250), INTENT(IN) :: RES
+      CHARACTER(LEN=8),   INTENT(IN) :: GEOFORMAT,RESFORMAT
+      INTEGER,            INTENT(IN) :: NPROC,NPLAN_RES
 !
-      CHARACTER(LEN=30) GEO
       INTEGER IPID
       INTEGER I,J,IELEM
-      INTEGER NPLAN_RES,NPLAN_GEO,NELEM_GEO,NDP,NELEBD, NPTFR, NPTIR
-      INTEGER NPROC
+      INTEGER NPLAN_GEO,NELEM_GEO,NDP,NELEBD, NPTFR, NPTIR
 !
       INTEGER, DIMENSION(:)  , ALLOCATABLE :: IPOBO_GEO,IPOBO3D
       INTEGER, DIMENSION(:), ALLOCATABLE :: KNOLG, TMP2
@@ -48,13 +51,12 @@
 !
       LOGICAL IS
 !
-      CHARACTER*30 RES
-      CHARACTER*50 RESPAR
+      CHARACTER(LEN=300) :: RESPAR
+!
       CHARACTER*80 TITSEL
       CHARACTER*32,ALLOCATABLE :: TEXTELU(:)
       CHARACTER*16,ALLOCATABLE :: VAR_NAME(:), VAR_UNIT(:)
       CHARACTER*11 EXTENS
-      CHARACTER*8 GEOFORMAT,RESFORMAT
       EXTERNAL  EXTENS
       INTRINSIC REAL
 !     
@@ -75,45 +77,16 @@
       NGEO = 2
       NRES = 3
       NRESPAR = 4
-!HW
-!JAJ INTRODUCE YOURSELF WITH THE VERSION DATE
+
 !
-      WRITE(LU,*) 'I AM GRETEL FROM BAW HAMBURG'
-      WRITE(LU,*) 'REINCARNATED BY HOLGER WEILBEER'
-      WRITE(LU,*) 'ON 20TH FEBRUARY 2003'
-      WRITE(LU,*)
-!
-      WRITE (LU, ADVANCE='NO',
-     &    FMT='(/,'' GLOBAL GEOMETRY FILE: '')')
-      READ(LI,*) GEO
-!
-      WRITE (LU,ADVANCE='NO',
-     &    FMT='(/,'' FORMAT OF THE GEOMERTY FILE: '')')
-      READ (LI,*) GEOFORMAT
-      WRITE (LU,*) ' '
-!
+!|==================================================================|
+!|                                                                  |
+!| START: MERGES FILES RESULTING FROM THE DOMAIN DECOMPOSITION      |
+!|                                                                  |
+!|==================================================================|
 !
 ! READS FILE NAMES AND THE NUMBER OF PROCESSORS / PARTITIONS
 !
-      WRITE(LU, ADVANCE='NO', FMT='(/,'' RESULT FILE: '')')
-      READ(LI,*) RES
-!
-      WRITE (LU,ADVANCE='NO',FMT='(/,'' FORMAT OF THE RESULT FILE: '')')
-      READ (LI,*) RESFORMAT
-      WRITE (LU,*) ' '
-!
-      WRITE (LU,ADVANCE='NO',FMT='(/,'' NUMBER OF PROCESSORS: '')')
-      READ (LI,*) NPROC
-!
-      WRITE (LU,ADVANCE='NO',FMT='(/,'' NUMBER OF PLANES: '')')
-      READ (LI,*) NPLAN_RES
-!
-      INQUIRE (FILE=GEO,EXIST=IS)
-      IF(.NOT.IS) THEN
-        WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
-        CALL PLANTE(1)
-        STOP
-      ENDIF
 !
       CALL OPEN_MESH(RESFORMAT,RES,NRES,'READWRITE',IERR)
       CALL CHECK_CALL(IERR,"GRETEL:OPEN_MESH:RES")
@@ -366,6 +339,4 @@
       DEALLOCATE(RESDATA)
       WRITE(LU,*) 'END OF PROGRAM, ',NTIMESTEP_RES,' DATASETS FOUND'
 
-      STOP 0
-      END PROGRAM GRETEL_AUTOP
-
+      END SUBROUTINE GRETEL_AUTOP

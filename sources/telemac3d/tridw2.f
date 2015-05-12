@@ -214,7 +214,7 @@
 !        ENDDO ! IETAGE 
 !     ENDDO ! IPTFR 
 !
-!     PRINT*,'WSCONV=',DOTS(WSCONV,WSCONV)
+!     WRITE(LU,*)'WSCONV=',DOTS(WSCONV,WSCONV)
 !
 !-----------------------------------------------------------------------
 !

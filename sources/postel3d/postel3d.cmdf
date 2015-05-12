@@ -26,6 +26,7 @@ files: bief_def.f
   bief_nbseg.f
   bief_dim1_ext.f
   bief_allmat.f
+  bief_ininds.f
   cpikle2.f
   read_mesh_info.f
   corrxy.f
@@ -35,7 +36,6 @@ files: bief_def.f
   ov_2.f
   mxptel31.f
   mxptel.f
-  bief_ininds.f
   almesh.f
   allblo.f
   read_config.f
@@ -75,7 +75,6 @@ files: interface_hermes.f
   get_mesh_title.f
   get_data_ntimestep.f
   get_data_nvar.f
-  get_mesh_l2g_numbering.f
   get_mesh_nelem.f
   get_mesh_npoin_per_element.f
   get_bnd_nelem.f
@@ -83,6 +82,7 @@ files: interface_hermes.f
   get_bnd_npoin.f
   get_mesh_dimension.f
   get_mesh_npoin.f
+  get_mesh_l2g_numbering.f
   get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
@@ -122,8 +122,8 @@ files: declarations_postel3d.f
 path: <root>|sources|utils|special
 files: declarations_special.f
   plante.F
+  check_allocate.f
   get_nodes_per_element.f
   write_error.f
   check_call.f
-  check_allocate.f
   extens.f

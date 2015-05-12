@@ -62,6 +62,9 @@
 !
 !  RECOGNISED SEPARATORS IN 'CHAINE'
 !
+      DO I=1,100
+        MOT(I) = '        '
+      ENDDO
       C(1) = ','
       C(2) = ';'
       LONG = LEN(CHAINE)

@@ -146,7 +146,7 @@
       STOTOT = MOTLOG  (ADRES(3,11))
       DEBUG  = MOTLOG  (ADRES(3,12))
       CONVER = MOTLOG  (ADRES(3,13))
-      SERAFIN_DOUBLE = MOTLOG  (ADRES(3,14))
+      SRF_BND = MOTLOG  (ADRES(3,14))
 !
 !-----------------------------------------------------------------------
 ! MOTS CLE DE TYPE CARACTERE

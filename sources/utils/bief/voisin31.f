@@ -485,14 +485,14 @@
 !     THESE 3 NODES INDEED BELONG TO THE SAME BOUNDARY TRIANGLE
                       IF (COMPT==111) THEN
                         BORD=.TRUE.
-!     PRINT*,'VERTICES OF A BOUNDARY TRIANGLE'
+!     WRITE(LU,*)'VERTICES OF A BOUNDARY TRIANGLE'
                         EXIT
                       ENDIF                         
                     ENDDO
                   ENDIF                        
                   IF (.NOT.BORD) THEN
 !     THESE 3 NODES BELONG TO AN INTERFACE MESH
-!     PRINT*, 'INTERFACE NODES'
+!     WRITE(LU,*) 'INTERFACE NODES'
                     IFABOR(IELEM,IFACE)=-2
                   ENDIF
                 ENDIF

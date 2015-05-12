@@ -142,7 +142,9 @@
           IF (DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_BETAFACTOR'
 
         ELSE
-          PRINT *, 'LAG FACTOR MUST BE EITHER "TRUE" OR "FALSE"'; STOP
+          WRITE(LU,*) 'LAG FACTOR MUST BE EITHER "TRUE" OR "FALSE"'
+          CALL PLANTE(1)
+          STOP
         ENDIF
 
 !       End of DMK mod

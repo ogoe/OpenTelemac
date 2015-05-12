@@ -119,9 +119,9 @@
 !     ATTENTION
             IF((ERODEPTH-D2).LT.0.D0) ERODEPTH = D2
 !
-            IF(DB(JG,0)) THEN
-!             PRINT*, '  '
-            ENDIF
+!           IF(DB(JG,0)) THEN
+!             WRITE(LU,*) '  '
+!           ENDIF
 !
 !----------------------------------------------------------------------- 
 ! INSERT A NEW BREAKPOINT TO SPLIT THE VSP AND SHIFT THE REST

@@ -51,7 +51,6 @@ files: utils_med.F
   get_data_var_list.f
   get_data_time.f
   open_mesh.f
-  get_mesh_l2g_numbering.f
   add_data.f
   close_mesh.f
   get_mesh_title.f
@@ -65,6 +64,7 @@ files: utils_med.F
   get_data_nvar.f
   get_mesh_dimension.f
   get_mesh_npoin.f
+  get_mesh_l2g_numbering.f
   set_header.f
   get_data_value.f
   get_mesh_coord.f

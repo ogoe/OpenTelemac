@@ -238,9 +238,9 @@ files: bief_def.f
   dlduseg.f
   decldu.f
   dcpldu.f
+  solve_mumps_par.F
   sd_strsg4.f
   sd_fabsg4.f
-  solve_mumps.F
   pre4_mumps.F
   sd_strssd.f
   sd_strtri.f
@@ -381,6 +381,7 @@ files: bief_def.f
   bief_nbsegel.f
   segbor.f
   bief_nbfel.f
+  bief_ininds.f
   cpikle2.f
   corrxy.f
   read_mesh_coord.f
@@ -388,7 +389,6 @@ files: bief_def.f
   read_mesh_conn.f
   mxptel31.f
   mxptel.f
-  bief_ininds.f
   almesh.f
   read_submit.f
   sortie.f
@@ -433,13 +433,13 @@ files: interface_hermes.f
   get_bnd_npoin.f
   get_mesh_dimension.f
   get_mesh_npoin.f
-  lit.f
   get_bnd_numbering.f
   get_bnd_value.f
   set_header.f
   set_mesh.f
   add_data.f
   update_data_mesh.f
+  lit.f
   ecri2.f
   open_mesh.f
   open_bnd.f

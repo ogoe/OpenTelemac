@@ -73,11 +73,16 @@
 !
       ELSE
 !
-        WRITE(LU,*) 'READ_CONFIG : FICHIER CONFIG NON TROUVE : ',CONFIG
-        WRITE(LU,*) 'VALEURS PAR DEFAUT DE LU ET LNG : ',LU,' ET ',LNG
-        WRITE(LU,*) ' '
-        WRITE(LU,*) 'READ_CONFIG: FILE CONFIG NOT FOUND: ',CONFIG
-        WRITE(LU,*) 'DEFAULTS VALUES OF LU AND LNG: ',LU,' AND ',LNG
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'READ_CONFIG : FICHIER CONFIG NON TROUVE : ',
+     &                CONFIG(1:NC)
+          WRITE(LU,*) 'VALEURS PAR DEFAUT DE LU ET LNG : ',LU,' ET ',LNG
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'READ_CONFIG: FILE CONFIG NOT FOUND: ',
+     &                CONFIG(1:NC)
+          WRITE(LU,*) 'DEFAULTS VALUES OF LU AND LNG: ',LU,' AND ',LNG
+        ENDIF
 !
       ENDIF
 !

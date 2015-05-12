@@ -139,8 +139,8 @@
 !
       DO J=1,NOMBLAY
         DO I=1,NPOIN
-!         PRINT*,'I=',I,' J=',J,' (MS_VASE(I, J)=',MS_VASE(I,J)
-!         PRINT*,'I=',I,' J=',J,' (MS_SABLE(I, J)=',MS_SABLE(I,J)
+!         WRITE(LU,*)'I=',I,' J=',J,' (MS_VASE(I, J)=',MS_VASE(I,J)
+!         WRITE(LU,*)'I=',I,' J=',J,' (MS_SABLE(I, J)=',MS_SABLE(I,J)
           DETER=MS_VASE(I,J) + MS_SABLE(I,J)
           IF(DETER.GT.1.D-20) THEN
             F2=MS_VASE(I, J)/DETER

@@ -73,6 +73,7 @@ files: bief_def.f
   ielbor.f
   segbor.f
   bief_nbfel.f
+  bief_ininds.f
   cpikle2.f
   read_mesh_info.f
   corrxy.f
@@ -82,7 +83,6 @@ files: bief_def.f
   ov_2.f
   mxptel31.f
   mxptel.f
-  bief_ininds.f
   almesh.f
   read_submit.f
   sortie.f
@@ -297,9 +297,9 @@ files: bief_def.f
   dlduseg.f
   decldu.f
   dcpldu.f
+  solve_mumps_par.F
   sd_strsg4.f
   sd_fabsg4.f
-  solve_mumps.F
   pre4_mumps.F
   sd_strssd.f
   sd_strtri.f
@@ -461,7 +461,6 @@ path: <root>|sources|utils|hermes
 files: interface_hermes.f
   utils_med.F
   utils_serafin.f
-  get_mesh_l2g_numbering.f
   get_mesh_nelem.f
   get_mesh_npoin_per_element.f
   get_mesh_nplan.f
@@ -472,6 +471,7 @@ files: interface_hermes.f
   get_data_nvar.f
   get_mesh_dimension.f
   get_mesh_npoin.f
+  get_mesh_l2g_numbering.f
   get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
@@ -496,7 +496,6 @@ files: declarations_parallel.F
   p_imax.F
   interface_parallel.f
   p_init.F
-  p_sync.F
   p_dmax.F
   p_wait_paraco.F
   p_ireadi8.F

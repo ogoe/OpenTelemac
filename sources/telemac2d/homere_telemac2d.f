@@ -41,6 +41,7 @@
       CHARACTER(LEN=250) PATH
       CHARACTER(LEN=144) MOTCAR(MAXKEY),FILE_DESC(4,MAXKEY)
       CHARACTER(LEN=144) WMOTCAR(MAXKEY),WFILE_DESC(4,MAXKEY)
+      CHARACTER(LEN=144) DUMMY
 !
 !======================================================================
 !
@@ -76,8 +77,11 @@
 !
 !     READS THE STEERING FILE
 !
+      DUMMY = ' '
+!     
       CALL LECDON_TELEMAC2D(MOTCAR,WMOTCAR,FILE_DESC,WFILE_DESC,
-     &                      PATH,NCAR)
+     &                      PATH,NCAR,DUMMY,DUMMY)
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -86,7 +90,8 @@
       IFLOT = 0
       CALL BIEF_OPEN_FILES(CODE1,T2D_FILES,MAXLU_T2D,PATH,NCAR,
      &                     INCLUS(COUPLING,'SISYPHE').OR.
-     &                     INCLUS(COUPLING,'TOMAWAC')         ,IFLOT,1)
+     &                     INCLUS(COUPLING,'TOMAWAC'),
+     &                     IFLOT,1,.FALSE.)
 !
 !-----------------------------------------------------------------------
 !
@@ -119,7 +124,7 @@
       CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE1)
 !
       CALL BIEF_OPEN_FILES(CODE2,SIS_FILES,MAXLU_SIS,PATH,NCAR,
-     &                     .TRUE.,IFLOT,2)
+     &                     .TRUE.,IFLOT,2,.FALSE.)
 !
 !     RESETS TELEMAC2D CONFIGURATION
 !
@@ -173,7 +178,7 @@
 !
       CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE3)
       CALL BIEF_OPEN_FILES(CODE3,WAC_FILES,MAXLU_WAC,PATH,NCAR,
-     &                     .TRUE.,IFLOT,3)
+     &                     .TRUE.,IFLOT,3,.FALSE.)
 !
 !     RESETS TELEMAC2D CONFIGURATION
 !

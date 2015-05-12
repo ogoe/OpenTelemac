@@ -554,7 +554,7 @@
 !
       ELSEIF(OP(3:8).EQ.'0     ') THEN
 !
-        PRINT*,'OM4141 M=0'
+        WRITE(LU,*)'OM4141 M=0'
         CALL OV( 'X=C     ' , DM , Y , Z , 0.D0 , NDIAG )
 !       
         IF(TYPEXM(1:1).EQ.'S') THEN

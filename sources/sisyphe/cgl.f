@@ -86,7 +86,7 @@
 !        WRITE(FCT(4:5),FMT='(I2)') I
 !        FCT(6:6)=')'
       ELSE
-        PRINT*,'I=',I
+        WRITE(LU,*)'I=',I
         WRITE(LU,*) 'CGL NOT PROGRAMMED FOR MORE THAN 9 BOUNDARIES'
         CALL PLANTE(1)
         STOP

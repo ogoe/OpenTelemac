@@ -398,17 +398,17 @@
 !     FOR FURTHER INVESTIGATIONS...
 !
 !     CALL MAXI(G,N,AK,NPOIN3)
-!     PRINT*,'K MAXI=',G,' EN ',N
+!     WRITE(LU,*)'K MAXI=',G,' EN ',N
 !     CALL MINI(G,N,AK,NPOIN3)
-!     PRINT*,'K MINI=',G,' EN ',N
+!     WRITE(LU,*)'K MINI=',G,' EN ',N
 !     CALL MAXI(G,N,EP,NPOIN3)
-!     PRINT*,'E MAXI=',G,' EN ',N
+!     WRITE(LU,*)'E MAXI=',G,' EN ',N
 !     CALL MINI(G,N,EP,NPOIN3)
-!     PRINT*,'E MINI=',G,' EN ',N
+!     WRITE(LU,*)'E MINI=',G,' EN ',N
 !     CALL MAXI(G,N,CV1,NPOIN3)
-!     PRINT*,'CV1 MAXI=',G,' EN ',N
+!     WRITE(LU,*)'CV1 MAXI=',G,' EN ',N
 !     CALL MAXI(G,N,CV2,NPOIN3)
-!     PRINT*,'CV2 MAXI=',G,' EN ',N
+!     WRITE(LU,*)'CV2 MAXI=',G,' EN ',N
 !     G=0.D0
 !     I=1
 !     DO N=1,NPOIN3
@@ -417,7 +417,7 @@
 !        I=N
 !       ENDIF
 !     ENDDO
-!     PRINT*,'MAX VISCOSITY=',G,' AT POINT ',I,' AK=',AK(I),' EP=',EP(I)
+!     WRITE(LU,*)'MAX VISCOSITY=',G,' AT POINT ',I,' AK=',AK(I),' EP=',EP(I)
 !
 !-----------------------------------------------------------------------
 !

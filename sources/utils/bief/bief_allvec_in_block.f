@@ -120,6 +120,7 @@
 !         
             ALLOCATE(BLO%ADR(I)%P)
             CALL BIEF_ALLVEC(NAT,BLO%ADR(I)%P,NOM,IELM,NDIM,STATUT,MESH)
+            BLO%ADR(I)%P%TYPDIA = 'W'
 !         
           ENDDO ! I 
 !         

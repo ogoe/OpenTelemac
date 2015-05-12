@@ -90,7 +90,7 @@
 !
       IFLOT = 0
       CALL BIEF_OPEN_FILES(CODE,SIS_FILES,MAXLU_SIS,
-     &                     PATH,NCAR,.FALSE.,IFLOT,2)
+     &                     PATH,NCAR,.FALSE.,IFLOT,2,.FALSE.)
 !
 !-----------------------------------------------------------------------
 !

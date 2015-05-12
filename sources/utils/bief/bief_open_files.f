@@ -2,7 +2,7 @@
                      SUBROUTINE BIEF_OPEN_FILES
 !                    **************************
 !
-     &(CODE,FILES,NFILES,PATH,NCAR,FLOT,IFLOT,ICODE)
+     &(CODE,FILES,NFILES,PATH,NCAR,FLOT,IFLOT,ICODE,FULLNAME)
 !
 !***********************************************************************
 ! BIEF   V7P1
@@ -72,6 +72,7 @@
       INTEGER           , INTENT(IN)    :: NCAR,ICODE
       INTEGER           , INTENT(INOUT) :: IFLOT
       LOGICAL           , INTENT(IN)    :: FLOT
+      LOGICAL           , INTENT(IN)    :: FULLNAME
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -114,6 +115,12 @@
           ENDIF
 !
 !         OPENS THE FILE
+          ! If fullname name is true we use the real name of the file not the temporary foldare name
+          IF(FULLNAME) THEN
+            FILE_NAME = FILES(I)%NAME
+          ELSE
+            FILE_NAME = PATH(1:NCAR)//TRIM(FILES(I)%TELNAME)
+          ENDIF
 !
           ! Boundary file will be opened by the hermes module
           IF(FILES(I)%TYPE.EQ.'CONLIM') CYCLE
@@ -200,7 +207,7 @@
 !
             IF(NCSIZE.LE.1) THEN
 !             SCALAR
-              OPEN(FILES(I)%LU,FILE=FILES(I)%TELNAME,
+              OPEN(FILES(I)%LU,FILE=FILE_NAME,
      &             FORM=FORME,ACTION=FILES(I)%ACTION)
             ELSE
 !             PARALLEL, FILE TYPE: SCAL
@@ -209,13 +216,13 @@
               IF(FILES(I)%TYPE(1:4).EQ.'SCAL') THEN
                 IF(IPID.EQ.0.OR.FILES(I)%ACTION(1:5).NE.'WRITE') THEN
                   OPEN(FILES(I)%LU,
-     &                 FILE=PATH(1:NCAR)//TRIM(FILES(I)%TELNAME),
+     &                 FILE=FILE_NAME,
      &                 FORM=FORME,ACTION=FILES(I)%ACTION)
                 ENDIF
 !             PARALLEL, OTHER FILE TYPE
               ELSE
                 OPEN(FILES(I)%LU,
-     &               FILE=PATH(1:NCAR)//TRIM(FILES(I)%TELNAME)
+     &               FILE=TRIM(FILE_NAME)
      &               //EXTENS(NCSIZE-1,IPID),
      &               FORM=FORME,ACTION=FILES(I)%ACTION)
               ENDIF

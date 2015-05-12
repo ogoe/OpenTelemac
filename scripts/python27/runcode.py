@@ -781,7 +781,6 @@ def runRecollection(gretel,cas,glogeo,fmtgeo,oFiles,ncsize,bypass):
                if "NOMBRE DE PLANS HORIZONTAUX" in cas[1][0]:
                   idx = cas[1][0].index("NOMBRE DE PLANS HORIZONTAUX")
                nplan = 0 if idx == -1 else cas[1][1][idx][0]  
-               print 'nplan',nplan
                runGRETEL(gretel,crun,fileFormat,glogeo,fmtgeo,ncsize,nplan,bypass)
             except Exception as e:
                raise Exception([filterMessage({'name':'runRecollection'},e,bypass)])
@@ -1332,7 +1331,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          if cfg['PARTEL'].has_key('PATH'): 
             PARDir = cfg['PARTEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
       # ~~> GRETEL Executable
-      execmd = path.join(PARDir,'gretel_autop'+cfg['SYSTEM']['sfx_exe'])
+      execmd = path.join(PARDir,'gretel'+cfg['SYSTEM']['sfx_exe'])
       # ~~> Run GRETEL
       for name in CASFiles:
          print '    +> ',name

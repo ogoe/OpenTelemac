@@ -115,7 +115,7 @@
 !
       IFLOT = 0
       CALL BIEF_OPEN_FILES(CODE,WAC_FILES,MAXLU_WAC,PATH,NCAR,
-     &                     .FALSE.,IFLOT,1)
+     &                     .FALSE.,IFLOT,1,.FALSE.)
 !
 !-----------------------------------------------------------------------
 !

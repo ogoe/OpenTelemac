@@ -20,15 +20,13 @@ path: <root>|sources|utils|hermes
 files: interface_hermes.f
   utils_med.F
   utils_serafin.f
-  set_mesh.f
   get_bnd_numbering.f
+  set_mesh.f
   get_data_var_list.f
   get_data_time.f
   open_mesh.f
   close_mesh.f
-  get_mesh_connectivity.f
   get_data_ntimestep.f
-  get_bnd_connectivity.f
   set_bnd.f
   open_bnd.f
   set_header.f
@@ -38,6 +36,7 @@ files: interface_hermes.f
   get_bnd_npoin.f
   get_mesh_date.f
   add_data.f
+  get_bnd_connectivity.f
   get_bnd_nelem.f
   close_bnd.f
   get_mesh_nelem.f
@@ -49,6 +48,7 @@ files: interface_hermes.f
   get_mesh_dimension.f
   get_mesh_npoin.f
   get_bnd_value.f
+  get_mesh_connectivity.f
 
 [partel]
 path: <root>|sources|utils|partel
