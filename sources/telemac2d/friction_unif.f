@@ -6,7 +6,7 @@
      & SB,NDEF,DP,SP,VK,KARMAN,GRAV,T1,T2,CHBORD,CF,CFBOR)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                         
+! TELEMAC2D   V7P1                         
 !***********************************************************************
 !
 !brief    COMPUTES FRICTION FOR EACH NODE WHEN THERE IS ONLY
@@ -33,6 +33,12 @@
 !+        22/09/2014
 !+        V7P0
 !+   Enhanced friction due to waves, depending on logical FRICOU
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        11/05/2015
+!+        V7P1
+!+   For boundaries, depth renumbered before being sent to
+!+   friction_calc.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
@@ -85,8 +91,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER          :: IELMC,IELMH,I
+      INTEGER          :: IELMC,IELMH,I,J
       DOUBLE PRECISION :: C,CP
+      DOUBLE PRECISION, PARAMETER :: MINH=1.D-4
 !
 !=======================================================================!
 !=======================================================================!
@@ -107,15 +114,13 @@
 ! ----------------------------------------------------------------------
       IF (KFROT.NE.0.AND.KFROT.NE.2) THEN
 !
-! MAXIMUM BETWEEN WATER DEPTH AND 1.D-4
+! MAXIMUM BETWEEN WATER DEPTH AND MINH
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         CALL CPSTVC(H,T1)
         CALL OS('X=Y     ', T1, H, S, C)
         IF(IELMC.NE.IELMH) CALL CHGDIS( T1 , IELMH , IELMC , MESH )
 !       NIKURADSE LAW WILL DO ITS OWN CLIPPING
-        IF(KFROT.NE.5) THEN
-          CALL OS('X=+(Y,C)', T1, T1, S, 1.D-4)
-        ENDIF
+        IF(KFROT.NE.5) CALL OS('X=+(Y,C)',T1,T1,S,MINH)
       ENDIF
 !
 ! RESULTANT VELOCITY IN T2
@@ -171,8 +176,14 @@
 ! -------------------------
 !
       IF(LISRUG.EQ.2) THEN
+        DO J = 1, MESH%NPTFR
+          I = MESH%NBOR%I(J)
+!         DEPTH WITH BOUNDARY NUMBERS
+          T1%R(J)=MAX(MINH,H%R(I))
+        ENDDO
         CALL FRICTION_CALC(1,MESH%NPTFR,KFROTL,NDEF,VK,GRAV,
-     &                     KARMAN,CHBORD,MESH%DISBOR,T1,T2,CFBOR)
+     &                     KARMAN,CHBORD,MESH%DISBOR,T1,
+     &                     T2,CFBOR)
       ENDIF
 !
 !=======================================================================!
@@ -180,3 +191,4 @@
 !
       RETURN
       END
+

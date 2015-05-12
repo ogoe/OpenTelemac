@@ -134,6 +134,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_PARALLEL
       USE DECLARATIONS_TELEMAC
 !
       IMPLICIT NONE
@@ -183,9 +184,6 @@
       INTEGER I1,I2,I3,I4,I5,I6,OPT,ISEG3D,NSEGH,NSEGV
 !
 !-----------------------------------------------------------------------
-!
-      DOUBLE PRECISION P_DMIN,P_DSUM
-      EXTERNAL P_DMIN,P_DSUM
 !
       DOUBLE PRECISION EPS
       DATA EPS /1.D-6/
@@ -820,7 +818,7 @@
 !     THE MINIMUM ON ALL POINTS WILL BE TAKEN
 !
       ALFA = 1.D0
-      IGUILT=1
+      IGUILT=0
       IF(OPTBAN.EQ.2) THEN
         DO IPOIN = 1,NPOIN3
           IF(TRA03(IPOIN).LT.0.D0.AND.MASKPT(IPOIN).GT.0.5D0) THEN
@@ -972,9 +970,19 @@
       NITER = NITER + 1
       TOTITER = TOTITER + 1
       IF(NITER.GE.100) THEN
-        WRITE (LU,*) 'MURD3D: ITERATION NO. REACHED ',NITER,', STOP.'
-        WRITE (LU,*) 'ALFA = ',ALFA
-        WRITE (LU,*) 'GUILTY POINT = ',IGUILT
+        WRITE(LU,*) 'MURD3D: ITERATION NO. REACHED ',NITER,', STOP.'
+        IF(NCSIZE.GT.1) THEN
+!         GLOBAL NUMBERING
+          IGUILT=MESH3%KNOLG%I(IGUILT)
+!         ONLY THE MORE GUILTY POINT IS KEPT
+          IF(ALFA.NE.P_DMAX(ALFA)) IGUILT=0
+!         RETRIEVING THE LARGEST ALFA
+          ALFA=P_DMAX(ALFA)
+!         RETRIEVING THE CORRESPONDING POINT
+          IGUILT=P_IMAX(IGUILT)
+        ENDIF
+        WRITE(LU,*) 'ALFA = ',ALFA
+        WRITE(LU,*) 'GUILTY POINT = ',IGUILT
         CALL PLANTE(1)
         STOP
       ENDIF

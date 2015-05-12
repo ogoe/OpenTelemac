@@ -656,20 +656,25 @@
 !> @brief 'SUPG OPTION'
 !
       INTEGER OPTSUP
-!> @brief NUMBER OF ITERATIONS WITH CONSTANT FLOW DISCHARGE
-! nombre d'iterations pour telemac
+!
+!     NUMBER OF ITERATIONS WITH CONSTANT FLOW DISCHARGE
+!
       INTEGER :: NCONDIS
-!> @brief LAW OF BOTTOM FRICTION
-! loi de frottement sur le fond
+!
+!     LAW OF BOTTOM FRICTION
+! 
       INTEGER KFROT
-!> @brief BED-LOAD TRANSPORT FORMULA
-! formule de transport solide
+!
+!     BED-LOAD TRANSPORT FORMULA
+! 
       INTEGER ICF
+!
 !> @brief
 !
       INTEGER NPAS
-!> @brief NUMBER OF TIDES OR FLOODS
-! nombre de marees ou crues
+!
+!     NUMBER OF TIDES OR FLOODS
+! 
       INTEGER NMAREE
 !> @brief
 !
@@ -689,15 +694,19 @@
 !> @brief
 !
       INTEGER LOGDES ,LOGPRE ,OPTBAN ,LVMAC
-!> @brief HYDRODYNAMIC CODE
-! code de calcul utilise pour l'hydrodynamique
+!
+!     HYDRODYNAMIC CODE
+! 
       INTEGER HYDRO
-!> @brief MATRIX STORAGE
-! stockage des matrices
+!
+!     MATRIX STORAGE
+! 
       INTEGER OPTASS
-!> @brief NUMBER OF SUB-ITERATIONS
-! nombre de sous-iterations
+!
+!     NUMBER OF SUB-ITERATIONS
+! 
       INTEGER NSOUS
+!
 !> @brief
 !
       INTEGER MARDAT(3),MARTIM(3),PRODUC
@@ -708,13 +717,16 @@
 !> @brief
 !
       INTEGER PTINIL,PTINIG
-!> @brief NUMBER OF PRIVATE ARRAYS
-! nombre de tableaux prives
+!
+!     NUMBER OF PRIVATE ARRAYS
+! 
       INTEGER NPRIV
-!> @brief COUPLING PERIOD
-! periode de couplage
+!
+!     COUPLING PERIOD
+! 
       INTEGER PERCOU
-!> @brief NUMERO DU PAS DE TEMPS
+!
+!     NUMERO DU PAS DE TEMPS
 !
       INTEGER LT
 !> @brief

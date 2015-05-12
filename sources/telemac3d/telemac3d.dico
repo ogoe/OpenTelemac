@@ -338,7 +338,7 @@ If option 3 ou 7 is chosen, this parameter must get its real physical
 value of molecular diffusivity, generally about 1.E-6.'
 
 NOM = 'REGIME DE TURBULENCE POUR LE FOND'
-NOM1 = 'TURBULENCE MODEL FOR THE BOTTOM'
+NOM1 = 'TURBULENCE REGIME FOR THE BOTTOM'
 TYPE = ENTIER
 INDEX = 15
 MNEMO = 'LISRUF'
@@ -368,7 +368,7 @@ k-epsilon or mixing-length model.
 3 : rough also (for compatibility with old versions)'
 
 NOM = 'REGIME DE TURBULENCE POUR LES PAROIS LATERALES'
-NOM1 = 'TURBULENCE MODEL FOR LATERAL SOLID BOUNDARIES'
+NOM1 = 'TURBULENCE REGIME FOR LATERAL SOLID BOUNDARIES'
 TYPE = ENTIER
 INDEX = 16
 MNEMO = 'LISRUL'

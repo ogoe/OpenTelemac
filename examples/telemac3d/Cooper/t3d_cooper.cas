@@ -58,7 +58,7 @@ ACCURACY FOR VERTICAL VELOCITY : 1.E-8
 /----------------------------------------------------------------------/
 HORIZONTAL TURBULENCE MODEL : 1
 VERTICAL TURBULENCE MODEL : 2
-TURBULENCE MODEL FOR THE BOTTOM : 2
+TURBULENCE REGIME FOR THE BOTTOM : 2
 LAW OF BOTTOM FRICTION : 5
 FRICTION COEFFICIENT FOR THE BOTTOM = 0.01
 /----------------------------------------------------------------------/

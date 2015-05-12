@@ -6,7 +6,7 @@
      & KARMAN, CHESTR, DW_MESH, HC, VRES, CF)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    SETS THE FRICTION COEFFICIENT.
@@ -229,7 +229,7 @@
               UST = SQRT(VRES%R(I)*VK/DW)
             ENDIF
 !
-          CF%R(I) = 2.D0*(UST**2) / (VRES%R(I)**2)
+          CF%R(I) = 2.D0*UST**2 / VRES%R(I)**2
           ENDIF
         ENDDO
 !

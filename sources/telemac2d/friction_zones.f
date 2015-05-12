@@ -7,7 +7,7 @@
      & KARMAN, GRAV, T1, T2, CF, CFBOR)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES FRICTION FOR EACH NODE AND ZONE.
@@ -38,6 +38,11 @@
 !+        22/09/2014
 !+        V7P0
 !+ Enhanced friction due to waves
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        11/05/2015
+!+        V7P1
+!+   For boundaries, depth renumbered before being sent to friction_calc.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
@@ -92,6 +97,7 @@
       INTEGER          :: I, J
       INTEGER          :: IELMC, IELMH
       DOUBLE PRECISION :: CP
+      DOUBLE PRECISION, PARAMETER :: MINH=1.D-4
 !
 !=======================================================================!
 !=======================================================================!
@@ -108,12 +114,12 @@
       IELMC = CF%ELM
       IELMH = H%ELM
 !
-      ! MAXIMUM BETWEEN WATER DEPTH AND 1.D-4
+      ! MAXIMUM BETWEEN WATER DEPTH AND MINH
       ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       CALL CPSTVC(H,T1)
       CALL OS('X=Y     ', X=T1, Y=H)
       IF(IELMC.NE.IELMH) CALL CHGDIS(T1, IELMH, IELMC, MESH)
-      CALL OS('X=+(Y,C)', X=T1, Y=T1, C=1.D-4)
+      CALL OS('X=+(Y,C)', X=T1, Y=T1, C=MINH)
 !
       ! RESULTANT VELOCITY IN T2
       ! ------------------------
@@ -143,7 +149,7 @@
      &         (T2%R(I), T1%R(I), CF%R(I), VK, GRAV,
      &          LINDDP%R(I),LINDSP%R(I),CP)
           IF(CP.LT.-0.9D0) THEN
-            CP = 0.75D0*T1%R(I)*LINDDP%R(I) / (LINDSP%R(I))**2
+            CP = 0.75D0*T1%R(I)*LINDDP%R(I) / LINDSP%R(I)**2
           ENDIF
           CF%R(I) =CF%R(I)+2.D0*CP
         ENDIF
@@ -169,8 +175,9 @@
 !
         DO J = 1, MESH%NPTFR
           I = MESH%NBOR%I(J)
-          ! BOTTOM FRICTION CALCULATION
-          ! ---------------------------
+!         DEPTH WITH BOUNDARY NUMBERS
+          T1%R(J)=MAX(MINH,H%R(I))
+!         BOTTOM FRICTION CALCULATION
           CALL FRICTION_CALC
      &         (J,J,KFRO_B%I(J),NDEF_B%R(J),VK,GRAV,KARMAN,
      &          CHBORD,MESH%DISBOR,T1,T2,CFBOR)
@@ -182,3 +189,4 @@
 !
       RETURN
       END
+

@@ -461,15 +461,14 @@
 !     TRACERS
       DO IPTFR=1,NPTFR2
         IPOIN2 = NBOR2%I(IPTFR)
+        IF(NCSIZE.GT.1) IPOIN2 = MESH3D%KNOLG%I(IPOIN2)
         DO IPLAN = 1,NPLAN
           IBORD = (IPLAN-1)*NPTFR2 + IPTFR
-          IF(NCSIZE.GT.1) IPOIN2 = MESH3D%KNOLG%I(IPOIN2)
-
-            DO ITRAC=1,NTRAC
-              IF(LITABL%ADR(ITRAC)%P%I(IPTFR).EQ.5) THEN
-                TABORL%ADR(ITRAC)%P%R(IBORD) = 280.D0
-              ENDIF
-            ENDDO
+          DO ITRAC=1,NTRAC
+            IF(LITABL%ADR(ITRAC)%P%I(IPTFR).EQ.5) THEN
+              TABORL%ADR(ITRAC)%P%R(IBORD) = 280.D0
+            ENDIF
+          ENDDO
         ENDDO
       ENDDO
 !

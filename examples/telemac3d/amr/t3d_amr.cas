@@ -49,7 +49,7 @@ MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF VELOCITIES = 200
 MAXIMUM NUMBER OF ITERATIONS FOR VERTICAL VELOCITY = 200
 /--------------------------------------------------------------------/
 HORIZONTAL TURBULENCE MODEL : 1
-TURBULENCE MODEL FOR THE BOTTOM : 2
+TURBULENCE REGIME FOR THE BOTTOM : 2
 /----------------------------------------------------------------------/
 VERTICAL TURBULENCE MODEL : 2                /mixing length model
 MIXING LENGTH MODEL : 3                      /NEZU & NAKAGAWA

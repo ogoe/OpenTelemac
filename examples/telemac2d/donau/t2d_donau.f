@@ -1,41 +1,54 @@
-!                       ***************************
-                        DOUBLE PRECISION FUNCTION Q
-!                       ***************************
+
+!                    ***************************
+                     DOUBLE PRECISION FUNCTION Q
+!                    ***************************
 !
-     &( I )
-!
-!***********************************************************************
-!  TELEMAC 2D VERSION 5.2    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
+     &(I)
 !
 !***********************************************************************
-!
-! FONCTION  : DONNE LA VALEUR DU DEBIT POUR TOUTES LES ENTREES A DEBIT
-!             IMPOSE.
-!
-!-----------------------------------------------------------------------
-!                             ARGUMENTS
-! .________________.____.______________________________________________.
-! |      NOM       |MODE|                   ROLE                       |
-! |________________|____|______________________________________________|
-! |   AT           | -->| TEMPS AUQUEL ON DONNE LE DEBIT               |
-! |   I            | -->| RANG DE LA FRONTIERE A DEBIT IMPOSE          |
-! |                |    | (1 S'IL N'Y EN A QU'UNE)                     |
-! |   DEBIT        | -->| TABLEAU DES DEBITS IMPOSES.                  |
-! |                |    | (LU DANS LE FICHIER DES PARAMETRES)          |
-! |   HAUTEUR D'EAU| -->| TABLEAU DES HAUTEURS D'EAU.                  |
-! |   NPOIN        | -->| NOMBRE DE POINTS DU TABLEAU DES HAUTEURS     |
-! |________________|____|______________________________________________|
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-!
-!-----------------------------------------------------------------------
-!
-!  APPELE PAR : BORD
-!
+! TELEMAC2D   V7P0
 !***********************************************************************
+!
+!brief    PRESCRIBES THE DISCHARGE FOR FLOW IMPOSED
+!+                LIQUID BOUNDARIES.
+!
+!history  J-M HERVOUET (LNHE)
+!+        09/01/2004
+!+        V5P6
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  C. COULET (ARTELIA GROUP)
+!+        08/11/2011
+!+        V6P2
+!+   Modification of FCT size due to modification of TRACER numbering
+!
+!history  J-M HERVOUET (LNHE)
+!+        21/05/2012
+!+        V6P2
+!+   Discharge taken at mid distance between AT-DT AND AT, except
+!+   for finite volumes (DT unknown, and AT time of beginning of time
+!+   step in this case)
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| I              |-->| NUMBER OF THE LIQUID BOUNDARY.
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
+      USE INTERFACE_TELEMAC2D, EX_Q => Q
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -47,11 +60,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
+      CHARACTER*9 FCT
       INTEGER N
-      LOGICAL DEJA,OK(MAXFRO)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
+      LOGICAL,SAVE :: DEJA=.FALSE.
+      LOGICAL, DIMENSION(MAXFRO), SAVE :: OK
+      DOUBLE PRECISION Q1,Q2
 !
 !     FIRST CALL, OK INITIALISED TO .TRUE.
 !
@@ -62,48 +75,78 @@
         DEJA=.TRUE.
       ENDIF
 !
-!     IF FILE OF LIQUID BOUNDARIES EXISTING, ATTEMPT TO FIND
+!     IF LIQUID BOUNDARY FILE EXISTS, ATTEMPTS TO FIND
 !     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-!                      IF  NO, OK SET     TO .FALSE.
+!                      IF  NO, OK IS SET  TO .FALSE.
 !
       IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
-        FCT(1:2)='Q('
-        IF(I.LT.10) THEN 
+        FCT='Q(       '
+        IF(I.LT.10) THEN
           WRITE(FCT(3:3),FMT='(I1)') I
-          FCT(4:8)=')    '
+          FCT(4:4)=')'
         ELSEIF(I.LT.100) THEN
           WRITE(FCT(3:4),FMT='(I2)') I
-          FCT(5:8)=')   '
+          FCT(5:5)=')'
         ELSE
           WRITE(LU,*) 'Q NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
           CALL PLANTE(1)
-          STOP 
+          STOP
         ENDIF
-        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I)) 
+        IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
+          CALL READ_FIC_FRLIQ(Q1,FCT,AT-DT,
+     &                        T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+          CALL READ_FIC_FRLIQ(Q2,FCT,AT   ,
+     &                        T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+          Q=(Q1+Q2)*0.5D0
+        ELSE
+          CALL READ_FIC_FRLIQ(Q,FCT,AT,
+     &                        T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+        ENDIF
 !
       ENDIF
 !
       IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
+!
+!     PROGRAMMABLE PART
+!     Q IS TAKEN FROM THE STEERING FILE, BUT MAY BE CHANGED
+!
+        IF(NDEBIT.GE.I) THEN
 ! 
-!     PROGRAMMABLE PART                              
-!     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
-                                                             
-        IF(AT.LE.600.D0) THEN
-          Q = DEBIT(I) * AT/600.D0
+!         PROGRAMMABLE PART                              
+!         Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
+!                                                             
+          IF(AT.LE.600.D0) THEN
+            Q = DEBIT(I) * AT/600.D0
+          ELSE
+            Q = DEBIT(I)
+          ENDIF  
+!     
         ELSE
-          Q = DEBIT(I)
-        ENDIF             
-! 
-      ENDIF          
+!
+          IF(LNG.EQ.1) WRITE(LU,400) I
+400       FORMAT(1X,/,1X,'Q : DEBITS IMPOSES',/,
+     &                1X,'    EN NOMBRE INSUFFISANT',/,
+     &                1X,'    DANS LE FICHIER DES PARAMETRES',/,
+     &                1X,'    IL EN FAUT AU MOINS : ',1I6)
+          IF(LNG.EQ.2) WRITE(LU,401) I
+401       FORMAT(1X,/,1X,'Q : MORE PRESCRIBED FLOWRATES',/,
+     &                1X,'    ARE REQUIRED IN THE PARAMETER FILE',/,
+     &                1X,'    AT LEAST ',1I6,' MUST BE GIVEN')
+          CALL PLANTE(1)
+          STOP
+!
+        ENDIF
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
 !                       *****************
-                        SUBROUTINE CORSTR
+                        SUBROUTINE EXCORSTR
 !                       *****************
 !
 !***********************************************************************
@@ -158,9 +201,9 @@
 
       IF (LT == 1) THEN
         DO I = 1, NPOIN
-           IF ( ABS(CHESTR%R(I) - 0.025D0) < 1.D-7 ) THEN
+           IF( ABS(CHESTR%R(I) - 0.025D0) < 1.D-7 ) THEN
               CHESTR%R(I) = 0.020D0
-           END IF
+           ENDIF
         ENDDO
       END IF
 

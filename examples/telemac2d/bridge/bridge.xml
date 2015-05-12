@@ -20,12 +20,12 @@
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
    <action xref="1" rank="2"
-       do="none" 
+       do="translate;compile;run;cas;princi" 
        code="telemac2d" target="t2d_bridge.cas" 
        title="bridge scalar mode" 
    />
    <action xref="2" rank="2"
-       do="none" ncsize="4" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_bridge.cas" 
        title="bridge parallel mode" 
    />   

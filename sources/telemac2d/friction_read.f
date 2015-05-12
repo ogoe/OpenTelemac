@@ -5,7 +5,7 @@
      &(NCOF,NZONMX,ITURB,LISRUG,LINDNER,NOMCOF,NZONES,FRTAB)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    FRICTION FILE READ.
@@ -13,11 +13,6 @@
 !history  F. HUVELIN
 !+        20/04/2004
 !+
-!+
-!
-!history  J-M HERVOUET (LNHE)
-!+
-!+        V5P5
 !+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
@@ -31,6 +26,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        11/05/2015
+!+        V7P1
+!+   Data on lateral friction are now asked as soon as LISRUG=2
+!+   and not only in case of k-epsilon model.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FRTAB          |-->| FRICTION_OBJ STRUCTURE WITH DATA ON FRICTION
@@ -61,11 +62,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER          :: I, J, LOOP, NLOOP, N, IZ1, IZ2
-      INTEGER          :: IZONE, TYP, LINE
-      DOUBLE PRECISION :: R1, R2
-      CHARACTER*4      :: LAW
-      CHARACTER*20     :: CHAINE(10)
+      INTEGER           :: I, J, LOOP, NLOOP, N, IZ1, IZ2
+      INTEGER           :: IZONE, TYP, LINE
+      DOUBLE PRECISION  :: R1, R2
+      CHARACTER(LEN=4)  :: LAW
+      CHARACTER(LEN=20) :: CHAINE(10)
 !
 !=======================================================================!
 !=======================================================================!
@@ -75,9 +76,9 @@
 !
       ! CHECK THAT THERE IS A FRICTION FILE
       ! -----------------------------------
-      IF (NOMCOF(1:1) == ' ') THEN
-        IF (LNG == 1) WRITE(LU,1)
-        IF (LNG == 2) WRITE(LU,2)
+      IF(NOMCOF(1:1) == ' ') THEN
+        IF(LNG == 1) WRITE(LU,1)
+        IF(LNG == 2) WRITE(LU,2)
         CALL PLANTE(1)
         STOP
       ENDIF
@@ -95,43 +96,40 @@
         FRTAB%ADR(I)%P%SP          = 0.D0
       ENDDO
 !
-      ! K-EPSILON : READ PARAMETERS FOR 2 LAWS (BOTTOM AND BOUNDARY CONDITIONS)
-      ! ELSE      : READ PARAMETERS FOR 1 LAW  (BOTTOM)
-      ! ----------------------------------------------------------------------
-      IF(ITURB.EQ.3.AND.LISRUG.EQ.2) THEN
+!     ROUGH REGIME  : READ PARAMETERS FOR 2 LAWS (BOTTOM AND BOUNDARY CONDITIONS)
+!     SMOOTH REGIME : READ PARAMETERS FOR 1 LAW  (BOTTOM)
+! 
+      IF(LISRUG.EQ.2) THEN
         NLOOP=2
       ELSE
         NLOOP=1
       ENDIF
 !
-      ! LISTING
-      ! -------
+!     LISTING
+!
       WRITE(LU,3)
       WRITE(LU,4)
 !
-      ! READ DATA FOR EACH ZONE
-      ! ------------------------
+!     READ DATA FOR EACH ZONE
+!
       IZONE = 0
       LINE = 0
       DO I = 1, NZONMX
 !
-        ! FIND THE NEXT ZONE INDEX AND LAW
-        ! --------------------------------
+!       FIND THE NEXT ZONE INDEX AND LAW
+! 
         CALL FRICTION_SCAN(NCOF,NOMCOF,TYP,LINE)
 !
-        ! END OF FILE => EXIT
-        ! -------------------
+!       END OF FILE => EXIT
         IF (TYP == 3) THEN
           NZONES = IZONE
           EXIT
         ENDIF
 !
-        ! INCREMENT NUMBER OF ZONES
-        ! -------------------------
+!       INCREMENT NUMBER OF ZONES
         IZONE = IZONE + 1
 !
-        ! NOT ENOUGH ZONES ALLOCATED
-        ! --------------------------
+!       NOT ENOUGH ZONES ALLOCATED
         IF (IZONE > NZONMX) THEN
           IF (LNG == 1) WRITE(LU,5)
           IF (LNG == 2) WRITE(LU,6)
@@ -139,35 +137,33 @@
           STOP
         ENDIF
 !
-        ! READ AND SAVE PARAMETERS OF THE ZONE
-        ! ------------------------------------
+!       READ AND SAVE PARAMETERS OF THE ZONE
         IF (TYP == 1) N = 1
         IF (TYP == 2) N = 4
 !
         DO LOOP = 1, NLOOP
 !
-          IF (LOOP == 2) BACKSPACE(NCOF)
-          ! READ THE NAME OF THE LAW AND NUMBERING OF THE ZONE
-          ! --------------------------------------------------
+          IF(LOOP == 2) BACKSPACE(NCOF)
+!         READ THE NAME OF THE LAW AND NUMBERING OF THE ZONE
           CHAINE(1) = ' '
-          IF (TYP == 1) THEN
+          IF(TYP == 1) THEN
             READ(NCOF,*,END=999,ERR=998) IZ1,(CHAINE(J),J=2,N),LAW
             IZ2 = IZ1
-          ELSE IF (TYP == 2) THEN
+          ELSEIF (TYP == 2) THEN
             READ(NCOF,*,END=999,ERR=998) CHAINE(1),IZ1,CHAINE(3),IZ2,
      &                                   (CHAINE(J),J=5,N),LAW
           ENDIF
 !
-          ! LOCAL-GLOBAL NUMBER OF THE ZONE
-          ! -------------------------------
+!         LOCAL-GLOBAL NUMBER OF THE ZONE
+! 
           IF (LOOP == 1) FRTAB%ADR(I)%P%GNUMB(1) = IZ1
           IF (LOOP == 1) FRTAB%ADR(I)%P%GNUMB(2) = IZ2
 !
           BACKSPACE(NCOF)
           CALL MAJUS(LAW)
 !
-          ! FIND THE LAW AND THE NUMBER OF PARAMETERS TO READ
-          ! -------------------------------------------------
+!         FIND THE LAW AND THE NUMBER OF PARAMETERS TO READ
+!
           SELECT CASE (LAW)
 !
           CASE('NOFR')
@@ -182,8 +178,8 @@
             FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
             FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
 !
-            ! THE BOUNDARY COEFFICIENT COEF MUST BE THE SAME AS THE BOTTOM
-            ! -----------------------------------------------------------
+!           THE BOUNDARY COEFFICIENT COEF MUST BE THE SAME AS THE BOTTOM
+!
             IF ( ( ((N>1).AND.(TYP==1)).OR.((N>4).AND.(TYP==2)) )
      &          .AND.
      &           (FRTAB%ADR(I)%P%RCOEF(1)/=FRTAB%ADR(I)%P%RCOEF(2))
@@ -242,14 +238,14 @@
           CASE DEFAULT
             IF (LNG==1) WRITE(LU, 9) LINE, IZ1, IZ2, LAW
             IF (LNG==2) WRITE(LU,10) LINE, IZ1, IZ2, LAW
-            CALL PLANTE(0)
+            CALL PLANTE(1)
             STOP
           END SELECT
         ENDDO
 !
-        ! READ NON-SUBMERGED COEFFICIENT IF NEEDED
-        ! ----------------------------------------
-        IF (LINDNER) THEN
+!       READ NON-SUBMERGED COEFFICIENT IF NEEDED
+!
+        IF(LINDNER) THEN
           BACKSPACE(NCOF)
           READ(NCOF,*,END=999,ERR=888) (CHAINE(J),J=1,N),R1,R2
           FRTAB%ADR(I)%P%DP = R1
@@ -270,9 +266,8 @@
      &               FRTAB%ADR(I)%P%SP
       ENDDO
 !
+!     END
 !
-      ! END
-      ! ---
       WRITE(LU,3)
 !
       IF (LNG == 1) WRITE(LU,13) NZONES
@@ -485,3 +480,4 @@
 !
       RETURN
       END
+
