@@ -1,18 +1,23 @@
-!                 ************
+!                 ********************
                   MODULE UTILS_SERAFIN
-!                 ************
+!                 ********************
 !
 !***********************************************************************
-! HERMES  V5P8                                                 2008
+! HERMES  V7P1
 !***********************************************************************
 !
-!BRIEF    LIST OF SUBROUTINE FOR SERAFIN FORMAT
+!brief    a number of subroutines dedicated to the serafin format.
 !
-!HISTORY YOANN AUDOUIN
+!history YOANN AUDOUIN
 !+       29/10/2011     
-!+       V6P2
+!+       V7P1
 !+       Creation of the file
 !
+!history J-M HERVOUET (EDF LAB, LNHE)
+!+       12/05/2015    
+!+       V7P1
+!+       Correcting an old mistake on serafin files in prisms when the 
+!+       computation is done with tetrahedra. See SET_MESH_SRF.
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -1892,7 +1897,8 @@
         DOUBLE PRECISION,      INTENT(IN) :: X(NPOIN),Y(NPOIN)
         INTEGER,               INTENT(OUT) :: IERR
         !
-        INTEGER :: SRF_ID, IKLES_SIZE, IELEM, I, MY_POS
+        INTEGER :: SRF_ID,IKLES_SIZE,IELEM,I,MY_POS,IPLAN,NELEM2
+        INTEGER :: IELEMP,IELEMT,NPOIN2,IELEM2        
         !
         INTEGER(KIND=I4) :: TMP(10), TAG
         INTEGER(KIND=I4), ALLOCATABLE :: IKLES(:)
@@ -1997,7 +2003,7 @@
           IKLES_SIZE = NELEM*SRF_OBJ_TAB(SRF_ID)%NDP
         ELSE
 !         tetrahedrons regrouped into prisms
-!                              2=(nelem/3)*6
+!         nelem*2=(nelem/3)*6
           IKLES_SIZE = NELEM*2
         ENDIF
         ALLOCATE(IKLES(IKLES_SIZE),STAT=IERR)
@@ -2011,14 +2017,27 @@
             ENDDO
           ENDDO
         ELSE
-!       tetrahedrons regrouped into prisms
-          DO IELEM  = 1,NELEM/3
-            IKLES((IELEM-1)*6+1) = IKLE(IELEM)
-            IKLES((IELEM-1)*6+2) = IKLE(NELEM+IELEM)
-            IKLES((IELEM-1)*6+3) = IKLE(2*NELEM+IELEM)
-            IKLES((IELEM-1)*6+4) = IKLE(IELEM)+NPOIN/NPLAN
-            IKLES((IELEM-1)*6+5) = IKLE(NELEM+IELEM)+NPOIN/NPLAN
-            IKLES((IELEM-1)*6+6) = IKLE(2*NELEM+IELEM)+NPOIN/NPLAN
+!         tetrahedrons regrouped into prisms
+!         the first tetrahedrons in a layer have the first 3 points like the bottom of the prism
+!         ikle is ikle(NELEM,4)
+!         ikles is ikles(6,nelem/3)
+          NELEM2=NELEM/3/(NPLAN-1)
+          NPOIN2=NPOIN/NPLAN
+!         loop on layers
+          DO IPLAN=1,NPLAN-1
+            DO IELEM2=1,NELEM2 
+!             prism number
+              IELEMP=(IPLAN-1)*NELEM2+IELEM2  
+!             tetrahedron number (the first of the 3 in the prism ielemp)
+              IELEMT=(IPLAN-1)*NELEM2*3+IELEM2  
+!             ikles of the prism     
+              IKLES((IELEMP-1)*6+1) = IKLE(IELEMT)
+              IKLES((IELEMP-1)*6+2) = IKLE(NELEM+IELEMT)
+              IKLES((IELEMP-1)*6+3) = IKLE(2*NELEM+IELEMT)
+              IKLES((IELEMP-1)*6+4) = IKLE(IELEMT)+NPOIN2
+              IKLES((IELEMP-1)*6+5) = IKLE(NELEM+IELEMT)+NPOIN2
+              IKLES((IELEMP-1)*6+6) = IKLE(2*NELEM+IELEMT)+NPOIN2         
+            ENDDO
           ENDDO
         ENDIF
         !
@@ -2034,7 +2053,7 @@
         !
         ! Write ipobo or knolg depending if serial or parallel
         !
-        ! We are in serila if both nptfr and nptir are equal to 0
+        ! We are in serial if both nptfr and nptir are equal to 0
         TAG = IS*NPOIN
         IF(NPTIR.EQ.0) THEN
           WRITE(FILE_ID,IOSTAT=IERR) TAG,IPOBO(1:NPOIN),TAG
