@@ -15,7 +15,6 @@ COUPLING PERIOD FOR SISYPHE = 1
 GEOMETRY FILE                   = gitter50neu.geo
 BOUNDARY CONDITIONS FILE        = boundary50neu.conlim
 RESULTS FILE                    = r_tel_dredgesim.res
-FORTRAN FILE                    = homere_telemac2d_v6p2.f 
 /
 /----------------------------------------------
 /  GENERAL INFORMATIONS - OUTPUTS

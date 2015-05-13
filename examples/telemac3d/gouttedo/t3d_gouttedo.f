@@ -360,7 +360,7 @@
       IFLOT = 0
       CALL BIEF_OPEN_FILES(CODE1,T3D_FILES,MAXLU_T3D,PATH,NCAR,
      &                     INCLUS(COUPLING,'SISYPHE').OR.
-     &                     INCLUS(COUPLING,'TOMAWAC') ,IFLOT,1)
+     &                     INCLUS(COUPLING,'TOMAWAC') ,IFLOT,1,.FALSE.)
 !
 !-----------------------------------------------------------------------
 !
@@ -392,7 +392,7 @@
 !
       CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE1)
       CALL BIEF_OPEN_FILES(CODE2,SIS_FILES,MAXLU_SIS,PATH,NCAR,
-     &                     INCLUS(COUPLING,'SISYPHE'),IFLOT,2)
+     &                     INCLUS(COUPLING,'SISYPHE'),IFLOT,2,.FALSE.)
       CALL CONFIG_CODE(1)
       CALL POINT_SISYPHE
 !
@@ -440,7 +440,7 @@
 !
       CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE3)
       CALL BIEF_OPEN_FILES(CODE3,WAC_FILES,MAXLU_WAC,PATH,NCAR,
-     &                     .TRUE.,IFLOT,3)
+     &                     .TRUE.,IFLOT,3,.FALSE.)
       CALL CONFIG_CODE(1)
       CALL POINT_TOMAWAC
 !

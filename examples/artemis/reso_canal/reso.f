@@ -356,7 +356,7 @@
 !
       IFLOT = 0
       CALL BIEF_OPEN_FILES(CODE,ART_FILES,MAXLU_ART,PATH,NCAR,
-     &                     .FALSE.,IFLOT,1)
+     &                     .FALSE.,IFLOT,1,.FALSE.)
 !-----------------------------------------------------------------------
 !
 !     ALLOCATES MEMORY FOR BIEF_OBJ STRUCTURES (VECTORS, MATRICES)
