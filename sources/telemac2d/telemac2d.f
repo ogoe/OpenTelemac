@@ -5,7 +5,7 @@
      &(PASS,ATDEP,NITER,CODE,DTDEP,NEWTIME,DOPRINT,NITERORI)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                  02/01/2014
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    SOLVES THE SAINT-VENANT EQUATIONS FOR U,V,H.
@@ -239,6 +239,13 @@
 !+        V7P0
 !+   add optional variables to meteo in a sake of harmonization
 !+   with telemac-3d
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/05/2015
+!+        V7P1
+!+   ALIRE variable was wrong for tracers, they now begin at rank 34,
+!+   so ALIRE(33+ITRAC)=1. After a remark by Noémie Durand.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
 !param code      [in] calling program (if coupling)
@@ -368,7 +375,7 @@
 !     ADVECTION FIELD USED FOR SISYPHE CALL
 !
       TYPE(BIEF_OBJ), POINTER :: USIS,VSIS
-!     Numlber of iteration asked in the case file for api
+!     Number of iterations asked in the case file for api
       INTEGER :: TOTAL_ITER
 !
 !-----------------------------------------------------------------------
@@ -401,7 +408,7 @@
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
 !         SEE POINT_TELEMAC2D
-          ALIRE(31+ITRAC) = 1
+          ALIRE(33+ITRAC) = 1
         ENDDO
       ENDIF
 !
