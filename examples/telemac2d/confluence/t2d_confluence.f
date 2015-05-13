@@ -47,7 +47,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
+      CHARACTER*9 FCT
       INTEGER N
       LOGICAL DEJA,OK(MAXFRO)
       DATA    DEJA /.FALSE./
