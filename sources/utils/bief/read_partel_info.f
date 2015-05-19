@@ -5,7 +5,7 @@
      &(NAMEPAR,NPTFR,NUMLIQ,BOUNDARY_COLOUR,MESH)
 !
 !***********************************************************************
-! BIEF   V7P0
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    READS IFAPAR AND NACHB
@@ -39,7 +39,6 @@
 !
       INTEGER PTIR,I,K,IF1,IF2,IF3,IF4,IF5,IF6,IF7
       INTEGER NPTFR_BND
-      INTEGER KFICH
       INTEGER NPAR
       LOGICAL IS_USED
 !

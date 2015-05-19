@@ -210,7 +210,7 @@ NIVEAU = 1
 AIDE = 'Determine le numero de pas de temps a partir duquel debute
 l''ecriture des resultats dans le ''FICHIER DES RESULTATS 2D ou 3D''.'
 AIDE1 = 'Determines the number of time steps after which the results
-are first written into the 2D or 3D RESULTS FILE.'
+are first written into the 2D or 3D RESULT FILE.'
 
 NOM = 'NUMERO DU PREMIER PAS DE TEMPS POUR LES SORTIES LISTING'
 NOM1 = 'NUMBER OF FIRST TIME STEP FOR LISTING PRINTOUTS'
@@ -5279,7 +5279,7 @@ Les valeurs possibles sont :
 - SERAFIN : format standard simple precision pour Telemac; 
 - SERAFIND: format standard double precision pour Telemac;
 - MED     : format MED base sur HDF5'
-AIDE1 = '3D results file format. Possible values are:
+AIDE1 = '3D result file format. Possible values are:
 - SERAFIN : classical single precision format in Telemac; 
 - SERAFIND: classical double precision format in Telemac;
 - MED     : MED format based on HDF5'
@@ -6110,215 +6110,6 @@ NIVEAU = 2
 AIDE = 'Pourcentage initial du sediment non cohesif'
 AIDE1 = 'Initial percentage of non cohesive sediment'
 /
-/---------------------------------------------------------------------
-/
-NOM = 'DICTIONNAIRE'
-NOM1 = 'DICTIONARY'
-TYPE = CARACTERE
-INDEX = 100
-MNEMO = ''
-SUBMIT = 'INUTILE;T3DDICO;OBLIG;ASC;LIT;DICO'
-DEFAUT = 'telemac3d.dico'
-DEFAUT1 = 'telemac3d.dico'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
-NIVEAU = -3
-AIDE ='Dictionnaire des mots cles.'
-AIDE1 ='Key word dictionary.'
-/
-NOM = 'LISTE DES FICHIERS'
-NOM1 = 'LIST OF FILES'
-TYPE = CARACTERE
-INDEX = 99
-/
-MNEMO = ''
-TAILLE = 43
-DEFAUT  = 'FICHIER DES PARAMETRES';
-          'DICTIONNAIRE';
-          'FICHIER FORTRAN';
-          'FICHIER DE GEOMETRIE';
-          'FICHIER DES CONDITIONS AUX LIMITES';
-          'FICHIER DU CALCUL PRECEDENT';
-          'FICHIER DES RESULTATS 3D';
-          'FICHIER DES FONDS';
-          'FICHIER POUR SCOPE';
-          'FICHIER DES RESULTATS 2D';
-          'FICHIER DE DONNEES FORMATE 1';
-          'FICHIER DE DONNEES FORMATE 2';
-          'FICHIER DE DONNEES BINAIRE 1';
-          'FICHIER DE DONNEES BINAIRE 2';
-          'FICHIER DES RESULTATS SEDIMENTOLOGIQUES';
-          'FICHIER SEDIMENTOLOGIQUE DU CALCUL PRECEDENT';
-          'FICHIER DE REFERENCE';
-          'FICHIER DES RESULTATS POUR SUBIEF-3D';
-          'FICHIER DES FRONTIERES LIQUIDES';
-          'FICHIER DELWAQ DES VOLUMES';
-          'FICHIER DELWAQ DES SURFACES DE FLUX';
-          'FICHIER DELWAQ DES FLUX VERTICAUX';
-          'FICHIER DELWAQ DE LA SALINITE';
-          'FICHIER DELWAQ DES SURFACES DU FOND';
-          'FICHIER DELWAQ DES ECHANGES ENTRE NOEUDS';
-          'FICHIER DELWAQ DES DISTANCES ENTRE NOEUDS';
-          'FICHIER DELWAQ DE LA TEMPERATURE';
-          'FICHIER DELWAQ DE LA VITESSE';
-          'FICHIER DELWAQ DE LA DIFFUSION';
-          'FICHIER DE COMMANDE DELWAQ';
-          'FICHIER DES COURBES DE TARAGE';
-          'FICHIER DES SOURCES';
-          'FICHIER DE RESULTATS BINAIRE';
-          'FICHIER DE RESULTATS FORMATE';
-          'FICHIER DE COMMANDES HYDROCARBURES';
-          'FICHIER POUR SUITE';
-          'FICHIER DES CONSTANTES HARMONIQUES';
-          'FICHIER DU MODELE DE MAREE';
-          'BASE ASCII DE DONNEES DE MAREE';
-          'BASE BINAIRE 1 DE DONNEES DE MAREE';
-          'BASE BINAIRE 2 DE DONNEES DE MAREE';
-          'FICHIER DES FLOTTEURS';
-          'FICHIER POUR SUITE 2D'
-DEFAUT1 = 'STEERING FILE';
-          'DICTIONARY';
-          'FORTRAN FILE';
-          'GEOMETRY FILE';
-          'BOUNDARY CONDITIONS FILE';
-          'PREVIOUS COMPUTATION FILE';
-          '3D RESULT FILE';
-          'BOTTOM TOPOGRAPHY FILE';
-          'FILE FOR SCOPE';
-          '2D RESULT FILE';
-          'FORMATTED DATA FILE 1';
-          'FORMATTED DATA FILE 2';
-          'BINARY DATA FILE 1';
-          'BINARY DATA FILE 2';
-          'SEDIMENTOLOGICAL RESULT FILE';
-          'PREVIOUS COMPUTATION SEDIMENTOLOGICAL FILE';
-          'REFERENCE FILE';
-          'RESULT FILE FOR SUBIEF-3D';
-          'LIQUID BOUNDARIES FILE';
-          'VOLUMES DELWAQ FILE';
-          'EXCHANGE AREAS DELWAQ FILE';
-          'VERTICAL FLUXES DELWAQ FILE';
-          'SALINITY DELWAQ FILE';
-          'BOTTOM SURFACES DELWAQ FILE';
-          'EXCHANGES BETWEEN NODES DELWAQ FILE';
-          'NODES DISTANCES DELWAQ FILE';
-          'TEMPERATURE DELWAQ FILE';
-          'VELOCITY DELWAQ FILE';
-          'DIFFUSIVITY DELWAQ FILE';
-          'DELWAQ STEERING FILE';
-          'STAGE-DISCHARGE CURVES FILE';
-          'SOURCES FILE';
-          'BINARY RESULTS FILE';
-          'FORMATTED RESULTS FILE';
-          'RESTART FILE';
-          'OIL SPILL STEERING FILE';
-          'HARMONIC CONSTANTS FILE';
-          'TIDAL MODEL FILE';
-          'ASCII DATABASE FOR TIDE';
-          'BINARY DATABASE 1 FOR TIDE';
-          'BINARY DATABASE 2 FOR TIDE';
-          'DROGUES FILE';
-          'FILE FOR 2D CONTINUATION'
-RUBRIQUE  = 'FICHIERS'
-RUBRIQUE1 = 'FILES'
-NIVEAU = 1
-AIDE = 'Noms des fichiers exploites par le code'
-AIDE1= 'File names of the used files'
-
-//
-//----Librairies du code-------------------------------------------
-//
-//Conventions de notation :
-//   VVV = version
-//   MMM = mode (debug ou non)
-//   PPP = plateforme
-//   LLL = extension d'une librairie ("a" ou "lib")
-//    |  = seperateur dans un path (/ sous Unix, \ sous NT)
-//
-//    ex : "telemac2d|tel2d_VVV|PPP|telemac2dMMMVVV.LLL"
-//----Librairies du code-------------------------------------------
-//
-//Conventions de notation :
-//   VVV = version
-//   MMM = mode (debug ou non)
-//   PPP = plateforme
-//   LLL = extension d'une librairie ("a" ou "lib")
-//    |  = seperateur dans un path (/ sous Unix, \ sous NT)
-//
-//    ex : "telemac2d|tel2d_VVV|PPP|telemac2dMMMVVV.LLL"
-
-NOM = 'DESCRIPTION DES LIBRAIRIES'
-NOM1 = 'DESCRIPTION OF LIBRARIES'
-TYPE = CARACTERE
-INDEX = 80
-MNEMO = 'LINKLIBS'
-TAILLE = 10
-DEFAUT = 'builds|PPP|lib|telemac3dMMMVVV.LLL'; 
-'builds|PPP|lib|telemac2dMMMVVV.LLL'; 
-'builds|PPP|lib|tomawacMMMVVV.LLL'; 
-'builds|PPP|lib|sisypheMMMVVV.LLL'; 
-'builds|PPP|lib|dredgesimMMMVVV.LLL'; 
-'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|hermesMMMVVV.LLL'; 
-'builds|PPP|lib|damoMMMVVV.LLL'; 
-'builds|PPP|lib|parallelMMMVVV.LLL'; 
-'builds|PPP|lib|specialMMMVVV.LLL' 
-DEFAUT1 = 'builds|PPP|lib|telemac3dMMMVVV.LLL'; 
-'builds|PPP|lib|telemac2dMMMVVV.LLL'; 
-'builds|PPP|lib|tomawacMMMVVV.LLL'; 
-'builds|PPP|lib|sisypheMMMVVV.LLL'; 
-'builds|PPP|lib|dredgesimMMMVVV.LLL'; 
-'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|hermesMMMVVV.LLL'; 
-'builds|PPP|lib|damoMMMVVV.LLL'; 
-'builds|PPP|lib|parallelMMMVVV.LLL'; 
-'builds|PPP|lib|specialMMMVVV.LLL' 
-
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
-NIVEAU = 1
-AIDE  = 'Description des librairies de Telemac-3D'
-AIDE1 = 'LIBRARIES description'
-
-//----Executable par defaut du code---------------------------------
-//
-//Conventions de notation :
-//   VVV = version
-//   MMM = mode (debug ou non)
-//   PPP = plateforme
-//    |  = separateur dans un path (/ sous Unix, \ sous NT)
-//
-//    ex : "telemac3d|tel3d_VVV|PPP|telemac3dMMMVVV.LLL"
-
-NOM = 'EXECUTABLE PAR DEFAUT'
-NOM1 = 'DEFAULT EXECUTABLE'
-TYPE = CARACTERE
-INDEX = 81
-MNEMO = 'EXEDEF'
-TAILLE = 1
-DEFAUT  = 'builds|PPP|bin|telemac3dMMMVVV.exe'
-DEFAUT1 = 'builds|PPP|bin|telemac3dMMMVVV.exe'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
-NIVEAU = 1
-AIDE  = 'Executable par defaut de T3D'
-AIDE1 = 'Default executable for T3D'
-
-NOM = 'EXECUTABLE PARALLELE PAR DEFAUT'
-NOM1 = 'DEFAULT PARALLEL EXECUTABLE'
-TYPE = CARACTERE
-INDEX = 82
-MNEMO = 'EXEDEFPARA'
-TAILLE = 1
-DEFAUT  = 'builds|PPP|bin|telemac3dMMMVVV.exe'
-DEFAUT1 = 'builds|PPP|bin|telemac3dMMMVVV.exe'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
-NIVEAU = 1
-AIDE  = 'Executable parallele par defaut de T3D'
-AIDE1 = 'Default parallel executable for T3D'
-
-/
 / TBE +cv
 /
 NOM = 'SCHEMA DE CONVECTION DIFFUSION AVEC VITESSE DE CHUTE'
@@ -6712,4 +6503,233 @@ NIVEAU = 2
 AIDE = '1 : Modele multicouches empirique,
 2: Modele de Gibson (Lenormant)'
 AIDE1 ='1: Empirical multilayer model, 2: Gibson model '
+/
+/  VERSION 7.1
+/
+NOM = 'VERIFICATION DU MAILLAGE'
+NOM1 = 'CHECKING THE MESH'
+TYPE = LOGIQUE
+INDEX = 21
+/ in declarations_telemac
+MNEMO = 'CHECK_MESH'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1
+AIDE = 'Si oui on appelle le sous-programme checkmesh qui verifie
+la coherence du maillage, points superposes, etc.'
+AIDE1 = 'if this key word is equal to yes, a call to subroutine
+checkmesh will look for errors in the mesh, superimposed points, etc.'
+/
+/ FOR SCRIPTS
+/
+/---------------------------------------------------------------------
+/
+NOM = 'DICTIONNAIRE'
+NOM1 = 'DICTIONARY'
+TYPE = CARACTERE
+INDEX = 100
+MNEMO = ''
+SUBMIT = 'INUTILE;T3DDICO;OBLIG;ASC;LIT;DICO'
+DEFAUT = 'telemac3d.dico'
+DEFAUT1 = 'telemac3d.dico'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
+NIVEAU = -3
+AIDE ='Dictionnaire des mots cles.'
+AIDE1 ='Key word dictionary.'
+/
+NOM = 'LISTE DES FICHIERS'
+NOM1 = 'LIST OF FILES'
+TYPE = CARACTERE
+INDEX = 99
+/
+MNEMO = ''
+TAILLE = 43
+DEFAUT  = 'FICHIER DES PARAMETRES';
+          'DICTIONNAIRE';
+          'FICHIER FORTRAN';
+          'FICHIER DE GEOMETRIE';
+          'FICHIER DES CONDITIONS AUX LIMITES';
+          'FICHIER DU CALCUL PRECEDENT';
+          'FICHIER DES RESULTATS 3D';
+          'FICHIER DES FONDS';
+          'FICHIER POUR SCOPE';
+          'FICHIER DES RESULTATS 2D';
+          'FICHIER DE DONNEES FORMATE 1';
+          'FICHIER DE DONNEES FORMATE 2';
+          'FICHIER DE DONNEES BINAIRE 1';
+          'FICHIER DE DONNEES BINAIRE 2';
+          'FICHIER DES RESULTATS SEDIMENTOLOGIQUES';
+          'FICHIER SEDIMENTOLOGIQUE DU CALCUL PRECEDENT';
+          'FICHIER DE REFERENCE';
+          'FICHIER DES RESULTATS POUR SUBIEF-3D';
+          'FICHIER DES FRONTIERES LIQUIDES';
+          'FICHIER DELWAQ DES VOLUMES';
+          'FICHIER DELWAQ DES SURFACES DE FLUX';
+          'FICHIER DELWAQ DES FLUX VERTICAUX';
+          'FICHIER DELWAQ DE LA SALINITE';
+          'FICHIER DELWAQ DES SURFACES DU FOND';
+          'FICHIER DELWAQ DES ECHANGES ENTRE NOEUDS';
+          'FICHIER DELWAQ DES DISTANCES ENTRE NOEUDS';
+          'FICHIER DELWAQ DE LA TEMPERATURE';
+          'FICHIER DELWAQ DE LA VITESSE';
+          'FICHIER DELWAQ DE LA DIFFUSION';
+          'FICHIER DE COMMANDE DELWAQ';
+          'FICHIER DES COURBES DE TARAGE';
+          'FICHIER DES SOURCES';
+          'FICHIER DE RESULTATS BINAIRE';
+          'FICHIER DE RESULTATS FORMATE';
+          'FICHIER DE COMMANDES HYDROCARBURES';
+          'FICHIER POUR SUITE';
+          'FICHIER DES CONSTANTES HARMONIQUES';
+          'FICHIER DU MODELE DE MAREE';
+          'BASE ASCII DE DONNEES DE MAREE';
+          'BASE BINAIRE 1 DE DONNEES DE MAREE';
+          'BASE BINAIRE 2 DE DONNEES DE MAREE';
+          'FICHIER DES FLOTTEURS';
+          'FICHIER POUR SUITE 2D'
+DEFAUT1 = 'STEERING FILE';
+          'DICTIONARY';
+          'FORTRAN FILE';
+          'GEOMETRY FILE';
+          'BOUNDARY CONDITIONS FILE';
+          'PREVIOUS COMPUTATION FILE';
+          '3D RESULT FILE';
+          'BOTTOM TOPOGRAPHY FILE';
+          'FILE FOR SCOPE';
+          '2D RESULT FILE';
+          'FORMATTED DATA FILE 1';
+          'FORMATTED DATA FILE 2';
+          'BINARY DATA FILE 1';
+          'BINARY DATA FILE 2';
+          'SEDIMENTOLOGICAL RESULT FILE';
+          'PREVIOUS COMPUTATION SEDIMENTOLOGICAL FILE';
+          'REFERENCE FILE';
+          'RESULT FILE FOR SUBIEF-3D';
+          'LIQUID BOUNDARIES FILE';
+          'VOLUMES DELWAQ FILE';
+          'EXCHANGE AREAS DELWAQ FILE';
+          'VERTICAL FLUXES DELWAQ FILE';
+          'SALINITY DELWAQ FILE';
+          'BOTTOM SURFACES DELWAQ FILE';
+          'EXCHANGES BETWEEN NODES DELWAQ FILE';
+          'NODES DISTANCES DELWAQ FILE';
+          'TEMPERATURE DELWAQ FILE';
+          'VELOCITY DELWAQ FILE';
+          'DIFFUSIVITY DELWAQ FILE';
+          'DELWAQ STEERING FILE';
+          'STAGE-DISCHARGE CURVES FILE';
+          'SOURCES FILE';
+          'BINARY RESULTS FILE';
+          'FORMATTED RESULTS FILE';
+          'RESTART FILE';
+          'OIL SPILL STEERING FILE';
+          'HARMONIC CONSTANTS FILE';
+          'TIDAL MODEL FILE';
+          'ASCII DATABASE FOR TIDE';
+          'BINARY DATABASE 1 FOR TIDE';
+          'BINARY DATABASE 2 FOR TIDE';
+          'DROGUES FILE';
+          'FILE FOR 2D CONTINUATION'
+RUBRIQUE  = 'FICHIERS'
+RUBRIQUE1 = 'FILES'
+NIVEAU = 1
+AIDE = 'Noms des fichiers exploites par le code'
+AIDE1= 'File names of the used files'
+/
+//
+//----Librairies du code-------------------------------------------
+//
+//Conventions de notation :
+//   VVV = version
+//   MMM = mode (debug ou non)
+//   PPP = plateforme
+//   LLL = extension d'une librairie ("a" ou "lib")
+//    |  = seperateur dans un path (/ sous Unix, \ sous NT)
+//
+//    ex : "telemac2d|tel2d_VVV|PPP|telemac2dMMMVVV.LLL"
+//----Librairies du code-------------------------------------------
+//
+//Conventions de notation :
+//   VVV = version
+//   MMM = mode (debug ou non)
+//   PPP = plateforme
+//   LLL = extension d'une librairie ("a" ou "lib")
+//    |  = seperateur dans un path (/ sous Unix, \ sous NT)
+//
+//    ex : "telemac2d|tel2d_VVV|PPP|telemac2dMMMVVV.LLL"
+/
+NOM = 'DESCRIPTION DES LIBRAIRIES'
+NOM1 = 'DESCRIPTION OF LIBRARIES'
+TYPE = CARACTERE
+INDEX = 80
+MNEMO = 'LINKLIBS'
+TAILLE = 10
+DEFAUT = 'builds|PPP|lib|telemac3dMMMVVV.LLL'; 
+'builds|PPP|lib|telemac2dMMMVVV.LLL'; 
+'builds|PPP|lib|tomawacMMMVVV.LLL'; 
+'builds|PPP|lib|sisypheMMMVVV.LLL'; 
+'builds|PPP|lib|dredgesimMMMVVV.LLL'; 
+'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
+'builds|PPP|lib|damoMMMVVV.LLL'; 
+'builds|PPP|lib|parallelMMMVVV.LLL'; 
+'builds|PPP|lib|specialMMMVVV.LLL' 
+DEFAUT1 = 'builds|PPP|lib|telemac3dMMMVVV.LLL'; 
+'builds|PPP|lib|telemac2dMMMVVV.LLL'; 
+'builds|PPP|lib|tomawacMMMVVV.LLL'; 
+'builds|PPP|lib|sisypheMMMVVV.LLL'; 
+'builds|PPP|lib|dredgesimMMMVVV.LLL'; 
+'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|hermesMMMVVV.LLL'; 
+'builds|PPP|lib|damoMMMVVV.LLL'; 
+'builds|PPP|lib|parallelMMMVVV.LLL'; 
+'builds|PPP|lib|specialMMMVVV.LLL' 
+
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Description des librairies de Telemac-3D'
+AIDE1 = 'LIBRARIES description'
+
+//----Executable par defaut du code---------------------------------
+//
+//Conventions de notation :
+//   VVV = version
+//   MMM = mode (debug ou non)
+//   PPP = plateforme
+//    |  = separateur dans un path (/ sous Unix, \ sous NT)
+//
+//    ex : "telemac3d|tel3d_VVV|PPP|telemac3dMMMVVV.LLL"
+
+NOM = 'EXECUTABLE PAR DEFAUT'
+NOM1 = 'DEFAULT EXECUTABLE'
+TYPE = CARACTERE
+INDEX = 81
+MNEMO = 'EXEDEF'
+TAILLE = 1
+DEFAUT  = 'builds|PPP|bin|telemac3dMMMVVV.exe'
+DEFAUT1 = 'builds|PPP|bin|telemac3dMMMVVV.exe'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Executable par defaut de T3D'
+AIDE1 = 'Default executable for T3D'
+
+NOM = 'EXECUTABLE PARALLELE PAR DEFAUT'
+NOM1 = 'DEFAULT PARALLEL EXECUTABLE'
+TYPE = CARACTERE
+INDEX = 82
+MNEMO = 'EXEDEFPARA'
+TAILLE = 1
+DEFAUT  = 'builds|PPP|bin|telemac3dMMMVVV.exe'
+DEFAUT1 = 'builds|PPP|bin|telemac3dMMMVVV.exe'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Executable parallele par defaut de T3D'
+AIDE1 = 'Default parallel executable for T3D'
 /

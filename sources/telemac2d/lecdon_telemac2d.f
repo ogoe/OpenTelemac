@@ -6,27 +6,10 @@
      & CAS_FILE,DICO_FILE)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                   21/08/2010
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
-!
-!history  J-M HERVOUET (LNHE)
-!+        20/04/2010
-!+        V6P0
-!+
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
 !
 !history  C.COULET (ARTELIA)
 !+        30/03/2012
@@ -79,6 +62,11 @@
 !+        10/11/2014
 !+        V7P0
 !+   introduction of water quality 
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        18/05/2015
+!+        V7P1
+!+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH' 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -282,7 +270,7 @@
         OPEN(2,FILE=NOM_DIC_WAQ,FORM='FORMATTED',ACTION='READ',ERR=9000)
         OPEN(3,FILE=NOM_CAS_WAQ,FORM='FORMATTED',ACTION='READ',ERR=9000)
 !
-!       CALLING DAMCOCLE FOR WAQTEL
+!       CALLING DAMOCLE FOR WAQTEL
 !
         CALL DAMOCLE( WADRESS, WDIMEN, MAXKEY , DOC     , LNG    , LU ,
      &                WMOTINT , WMOTREA , WMOTLOG , WMOTCAR  , WMOTCLE,
@@ -526,7 +514,7 @@
         TITWAQCAS = WMOTCAR( WADRESS(4, 2) ) (1:72)
 !       SORTWAQ   = WMOTCAR( WADRESS(4, 3) ) (1:72)
 !
-!       FILES IN THE STEERING FILE (TO ACTIVATE FOR STANALONE RUN)
+!       FILES IN THE STEERING FILE (TO ACTIVATE FOR STANDALONE RUN)
 !
 !       WAQTEL_FILES(WAQRES)%NAME=WMOTCAR( WADRESS(4,6 ) )
 !       WAQTEL_FILES(WAQGEO)%NAME=WMOTCAR( WADRESS(4,8 ) )
@@ -1133,6 +1121,8 @@
 !     SECCURRENTS = MOTLOG(ADRESS(3,49))
 !     WAVE ENHANCED FRICTION
       FRICOU    = MOTLOG( ADRESS(3,50) )
+!     CHECKING THE MESH
+      CHECK_MESH = MOTLOG( ADRESS(3,51) )
 !
       IF(.NOT.DEFZON) NZONE=0
 !

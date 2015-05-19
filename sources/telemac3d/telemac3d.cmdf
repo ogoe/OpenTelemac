@@ -44,6 +44,7 @@ files: declarations_telemac.f
   ov_2.f
   mxptel31.f
   mxptel.f
+  checkmesh.f
   almesh.f
   bief_open_files.f
   ovd.f

@@ -2,30 +2,13 @@
                      SUBROUTINE LECDON_TOMAWAC
 !                    *************************
 !
-     & (FILE_DESC,PATH,NCAR,CODE)
+     &(FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! TOMAWAC   V7P0                                  25/06/2012
+! TOMAWAC   V7P1
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
-!
-!history  MICHEL BENOIT (EDF R&D LNHE)
-!+        06/12/2004
-!+        V6P0
-!+
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
 !
 !history  G.MATTAROLO (EDF)
 !+        16/05/2011
@@ -57,6 +40,11 @@
 !+        12/09/2014
 !+        V7P0
 !+   Retrieving VEGETATION for VEGETATION TAKEN INTO ACCOUNT
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        18/05/2015
+!+        V7P1
+!+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH' 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| NAME OF CALLING PROGRAMME
@@ -434,6 +422,7 @@
       FLTDIF = MOTLOG( ADRESS(3, 15) )
       RAZTIM = MOTLOG( ADRESS(3, 16) )
       VEGETATION = MOTLOG( ADRESS(3, 17) )
+      CHECK_MESH = MOTLOG( ADRESS(3, 18) )
 !
 ! STRING KEYWORDS
 !

@@ -13,7 +13,7 @@ bief_nbfel.f bief_nbmpts.f  bief_nbpel.f  bief_nbpts.f  bief_nbseg.f  bief_nbseg
 bief_open_files.f bief_sum.f bief_valida.f \
 bilant.f     build_ikle_ext.f  centre_mass_seg.f           cflp11.f       cflp12.f \
 cflpsi.f     cflvf.f        cg1112.f      cg1113.f      cgsqua.f    cgstab.f \
-charac.f     char_gauss.f   char_weak.f   check_digits.f check_dot.f   chgdis.f  \
+charac.f     char_gauss.f   char_weak.f   check_digits.f check_dot.f checkmesh.f  chgdis.f  \
 clip.f       cmpobj.f       comp_fac.f    comp_ikle.f \
 comp_nh_com_seg.f           comp_seg.f    config_code.f   corlat.f  \
 corrsl.f     corrxy.f       cpik12.f      cpik13.f      cpikle2.f \

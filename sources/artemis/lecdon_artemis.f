@@ -5,37 +5,21 @@
      &(FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! ARTEMIS   V6P1                                   31/05/2011
+! ARTEMIS   V7P1
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
-!
-!history  J-M HERVOUET (LNH)
-!+        17/08/1994
-!+
-!+   LINKED TO BIEF 5.0
-!
-!history  D. AELBRECHT (LNH)
-!+        20/04/1999
-!+        V6P0
-!+
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
 !
 !history  C/PEYRARD (EDF)
 !+        18/03/2014
 !+        V6P1 - V7P0
 !+   NEW KEY WORDS
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        18/05/2015
+!+        V7P1
+!+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH' 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| CALLING CODE
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -54,7 +38,7 @@
       LOGICAL LSTOP
       INTEGER I,KK
 !
-      CHARACTER*8 MNEMO(MAXVAR)
+      CHARACTER(LEN=8) MNEMO(MAXVAR)
 !
 !-----------------------------------------------------------------------
 !
@@ -66,8 +50,8 @@
       DOUBLE PRECISION MOTREA(NMAX)
       INTEGER          MOTINT(NMAX)
       LOGICAL          MOTLOG(NMAX)
-      CHARACTER*144    MOTCAR(NMAX)
-      CHARACTER*72     MOTCLE(4,NMAX,2)
+      CHARACTER(LEN=144) MOTCAR(NMAX)
+      CHARACTER(LEN=72)  MOTCLE(4,NMAX,2)
       INTEGER          TROUVE(4,NMAX)
       LOGICAL DOC
       CHARACTER(LEN=250) :: NOM_CAS
@@ -276,6 +260,7 @@
 !     SPHERICAL EQUATIONS, HARD-CODED
       SPHERI    = .FALSE.
       CHAINTWC  = MOTLOG( ADRESS(3, 16) )
+      CHECK_MESH = MOTLOG( ADRESS(3, 17) )
 !
 ! STRING KEYWORDS : SOME ARE USED BY THE LAUNCHING
 !                   PROCEDURE

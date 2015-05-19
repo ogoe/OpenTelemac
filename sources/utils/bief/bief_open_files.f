@@ -201,6 +201,7 @@
                 WRITE(LU,*) 'ERROR ',IERR
               ENDIF
               CALL PLANTE(1)
+              STOP
             ENDIF
 !
           ELSE

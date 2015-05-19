@@ -5,83 +5,10 @@
      &(MOTCAR,FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! SISYPHE   V6P3                                   12/02/2013
+! SISYPHE   V7P1
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE BY CALL TO DAMOCLES.
-!
-!history  M. GONZALES DE LINARES
-!+        2002
-!+
-!+
-!
-!history  C.VILLARET
-!+        **/10/2003
-!+
-!+   * READS KFROT, HOULE
-!
-!history  F. HUVELIN
-!+        **/12/2003
-!+
-!+   * INITIALISES F90 TO FDM IF NOT IN THE STEERING FILE
-!
-!history  CV
-!+        **/03/06
-!+
-!+   ADDED NEW KEYWROD: TASS
-!
-!history  JMH
-!+        11/04/2008
-!+
-!+   DEBUG IS A KEYWORD: DEBUGGER
-!
-!history  CV+JMH
-!+        29/07/2008
-!+
-!+   READS CBOR_CLASSE
-!
-!history  JMH
-!+        17/10/2008
-!+
-!+   CHECKS NCSIZE (FOR CONSISTENCY WITH TELEMAC-2D WHEN COUPLING)
-!
-!history  JMH
-!+        23/12/2008
-!+
-!+   KEYWORDS FOR COUPLING WITH DREDGESIM
-!
-!history  BD+JMH
-!+        09/04/2009
-!+
-!+   MED FORMAT
-!
-!history   J.-M. HERVOUET; C.VILLARET
-!+        03/11/2009
-!+        V6P0
-!+
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!history  C.VILLARET; U. MERKEL, R. KOPMAN
-!+        20/03/2011
-!+        V6P1
-!+
-!
-!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
-!+        19/07/2011
-!+        V6P1
-!+  Name of variables   
-!+   
 !
 !history  C.VILLARET + JMH (EDF-LNHE)
 !+        02/05/2012
@@ -111,6 +38,11 @@
 !+        V6P3
 !+ Settling lag: determines choice between Rouse and Miles concentration profile
 !+ (by Michiel Knaapen HRW)
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        18/05/2015
+!+        V7P1
+!+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH' 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -634,6 +566,8 @@
       SET_LAG  = MOTLOG(ADRESS(3,27) )
 !     STATIONARY MODE: calculate sediment transport without updating the bed.
       STAT_MODE  = MOTLOG(ADRESS(3,28) )
+!     Checking the mesh
+      CHECK_MESH = MOTLOG(ADRESS(3,29) )
 ! 
 !
 ! ################################### !

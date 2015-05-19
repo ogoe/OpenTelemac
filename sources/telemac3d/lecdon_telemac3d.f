@@ -5,36 +5,12 @@
      &(MOTCAR,FILE_DESC,PATH,NCAR)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE USING DAMOCLES.
-!+
-!+            SETS SOME DEFAULT VALUES.
-!+
-!+            CHECKS SOME INCONSISTENCIES.
-!
-!history  JACEK A. JANKOWSKI PINXIT
-!+        **/03/1999
-!+
-!+
-!
-!history  JMH
-!+        22/06/2009
-!+        V6P0
-!+
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
+!+        SETS SOME DEFAULT VALUES.
+!+        CHECKS SOME INCONSISTENCIES.
 !
 !history  J-M HERVOUET (LNHE)
 !+        02/04/2012
@@ -66,6 +42,11 @@
 !+        19/09/2014
 !+        V7P0
 !+   Adding 3 keywords for mixed sediment
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        18/05/2015
+!+        V7P1
+!+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH' 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -862,6 +843,8 @@
       MAREE        = MOTLOG(ADRESS(3,18))
       VALID        = MOTLOG(ADRESS(3,19))
       RESTART_MODE = MOTLOG(ADRESS(3,20))
+!     This one is in declarations_telemac.f
+      CHECK_MESH   = MOTLOG(ADRESS(3,21))
       TASSE        = MOTLOG(ADRESS(3,51))
 ! OBSOLE REPLACED BY ITASS      
 !      GIBSON       = MOTLOG(ADRESS(3,52))

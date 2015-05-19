@@ -1,3 +1,4 @@
+!                    *****************
                      SUBROUTINE ALMESH
 !                    *****************
 !
@@ -5,7 +6,7 @@
      & NELMAX,PROJECTION,LATI0,LONGI0)
 !
 !***********************************************************************
-! BIEF   V7P0                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    ALLOCATES A BIEF_MESH MESH STRUCTURE.
@@ -49,6 +50,11 @@
 !+        V6P3
 !+   Dimension of LIMVOI now set to (11,2).
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        15/05/2015
+!+        V7P1
+!+   Call to a new subroutine that checks the mesh (coordinates...).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| NAME IN 20 CHARACTERS TO ENABLE DIFFERENT
 !|                |   | OPTIONS. OPTIONS ARE:
@@ -71,6 +77,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_ALMESH => ALMESH
+      USE DECLARATIONS_TELEMAC
       USE INTERFACE_HERMES
 !
       IMPLICIT NONE
@@ -354,7 +361,7 @@
 !
       ALLOCATE(MESH%COSLAT)
       ALLOCATE(MESH%SINLAT)
-      IF(SPHERI) THEN ! DIFFERENT COMPARED TO V2.3
+      IF(SPHERI) THEN
         CALL BIEF_ALLVEC(1,MESH%COSLAT,'COSLAT',IELM,1,2,MESH)
         CALL BIEF_ALLVEC(1,MESH%SINLAT,'SINLAT',IELM,1,2,MESH)
         CALL CPSTVC(MESH%X,MESH%COSLAT)
@@ -798,7 +805,7 @@
 !       NOTE : WITH PRISMS Z IS COMPUTED WITH ZF AND H, OR
 !              READ IN THE PREVIOUS COMPUTATION FILE, HENCE NO Z HERE
         CALL READ_MESH_COORD(FFORMAT,NFIC,MESH%X%R,MESH%Y%R,NPOIN,
-     &                PROJEC,LATI,LONGI)
+     &                       PROJEC,LATI,LONGI)
 !
         CALL CPIKLE2(MESH%IKLE%I,MESH%KLEI%I,IKLES,
      &               NELEM,NNELMAX,NPOIN,NNPLAN)
@@ -817,18 +824,19 @@
         ENDDO
         IF(IELM.EQ.11.OR.IELM.EQ.12.OR.IELM.EQ.13.OR.IELM.EQ.14) THEN
           CALL READ_MESH_COORD(FFORMAT,NFIC,MESH%X%R,MESH%Y%R,NPOIN,
-     &                  PROJEC,LATI,LONGI)
+     &                         PROJEC,LATI,LONGI)
         ELSEIF(IELM.EQ.31) THEN
 !         TETRAHEDRONS: READS THE Z COORDINATE AFTER X AND Y
           CALL READ_MESH_COORD(FFORMAT,NFIC,MESH%X%R,MESH%Y%R,NPOIN,
-     &                  PROJEC,LATI,LONGI,Z=MESH%Z%R)
+     &                         PROJEC,LATI,LONGI,Z=MESH%Z%R)
         ENDIF
 !
       ELSE
 !
 ! OTHER ELEMENT TYPES
 !
-        WRITE(LU,*) 'ALMESH : UNKNOWN ELEMENT:',IELM
+        IF(LNG.EQ.1) WRITE(LU,*) 'ALMESH : ELEMENT INCONNU :',IELM
+        IF(LNG.EQ.2) WRITE(LU,*) 'ALMESH: UNKNOWN ELEMENT:',IELM
         CALL PLANTE(1)
         STOP
 !
@@ -868,6 +876,14 @@
 !
 !-----------------------------------------------------------------------
 !
+!     CHECKING THE MESH
+!
+      IF(CHECK_MESH) THEN
+        CALL CHECKMESH(MESH,NPOIN)
+      ENDIF   
+!
+!-----------------------------------------------------------------------
+!
 ! DEALLOCATES TEMPORARY ARRAYS
 !
       DEALLOCATE(IKLES)
@@ -881,3 +897,4 @@
 !
       RETURN
       END
+

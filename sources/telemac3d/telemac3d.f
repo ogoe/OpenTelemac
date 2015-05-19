@@ -164,6 +164,11 @@
 !+   Just a few extra debugger prints, up to CALL KEPINI, where was the
 !+   last user bug I looked for.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        16/05/2015
+!+        V7P1
+!+   3D RESULT FILE can be optional. Tests for writing it added.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -192,7 +197,7 @@
 !-----------------------------------------------------------------------
 !
       INTEGER LT,DATE(3),TIME(3)
-      INTEGER ITRAC, NVARCL,ISOUSI
+      INTEGER ITRAC,ISOUSI
       INTEGER SCHDVI_HOR,SCHDVI_VER,SCHCVI_HOR,SCHCVI_VER
       INTEGER, PARAMETER :: NSOR = 26 ! HERE MAXVAR FOR 2D
       INTEGER ALIRE2D(MAXVAR),TROUVE(MAXVAR+10),ALIRE3D(MAXVAR)
@@ -202,9 +207,6 @@
       DOUBLE PRECISION UMIN,  UMAX,  SIGMAU, VMIN,  VMAX, SIGMAV
       DOUBLE PRECISION WMIN,  WMAX,  SIGMAW
       DOUBLE PRECISION TAMIN, TAMAX, SIGMTA,TETATRA
-!
-      DOUBLE PRECISION HIST(1)
-      DATA HIST /9999.D0/
 !
       LOGICAL CLUMIN, CLUMAX, CLVMIN, CLVMAX, CLWMIN, CLWMAX
       LOGICAL CTAMIN, CTAMAX, YASEM3D,YAS0U,YAS1U
@@ -303,7 +305,6 @@
       LT     = 0       ! INITIALISES TIMESTEP
 !     INITIALISES NUMBER OF SUB-ITERATIONS, LOOK IN PREADV
       ISOUSI = 0
-      NVARCL = 0
       IF(NTRAC.GT.0) THEN
         TRAC=.TRUE.
       ELSE
@@ -927,20 +928,22 @@
 !
       ENDIF
 !
-!     3D OUTPUT
+!     3D OUTPUT (OPTIONAL)
 !
-      CALL WRITE_HEADER(T3D_FILES(T3DRES)%FMT, ! RESULT FILE FORMAT
-     &                  T3D_FILES(T3DRES)%LU,  ! RESULT FILE LU
-     &                  TITCAS,     ! TITLE
-     &                  MAXVA3,     ! MAX NUMBER OF OUTPUT VARIABLES
-     &                  TEXT3,      ! NAMES OF OUTPUT VARIABLES
-     &                  SORG3D)     ! OUTPUT OR NOT
-      CALL WRITE_MESH(T3D_FILES(T3DRES)%FMT, ! RESULT FILE FORMAT
-     &                T3D_FILES(T3DRES)%LU,  ! RESULT FILE LU
-     &                MESH3D,
-     &                NPLAN,           ! NUMBER OF PLANE /NA/
-     &                DATE,            ! START DATE
-     &                TIME)            ! START HOUR
+      IF(T3D_FILES(T3DRES)%NAME(1:1).NE.' ') THEN
+       CALL WRITE_HEADER(T3D_FILES(T3DRES)%FMT, ! RESULT FILE FORMAT
+     &                   T3D_FILES(T3DRES)%LU,  ! RESULT FILE LU
+     &                   TITCAS,     ! TITLE
+     &                   MAXVA3,     ! MAX NUMBER OF OUTPUT VARIABLES
+     &                   TEXT3,      ! NAMES OF OUTPUT VARIABLES
+     &                   SORG3D)     ! OUTPUT OR NOT
+       CALL WRITE_MESH(T3D_FILES(T3DRES)%FMT, ! RESULT FILE FORMAT
+     &                 T3D_FILES(T3DRES)%LU,  ! RESULT FILE LU
+     &                 MESH3D,
+     &                 NPLAN,           ! NUMBER OF PLANE /NA/
+     &                 DATE,            ! START DATE
+     &                 TIME)            ! START HOUR
+      ENDIF
 !
 !     3D OUTPUT FOR RESTART
 !
@@ -972,12 +975,14 @@
       IF(SORG3D(23)) CALL OS('X=0     ',X=VD)
       IF(SORG3D(24)) CALL OS('X=0     ',X=WD)
 !
-      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
+      IF(T3D_FILES(T3DRES)%NAME(1:1).NE.' ') THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
         CALL BIEF_DESIMP(T3D_FILES(T3DRES)%FMT,VARSO3,
      &                   NPOIN3,T3D_FILES(T3DRES)%LU,'STD',AT,LT,
      &                   LISPRD,GRAPRD,
      &                   SORG3D,SORIM3,MAXVA3,TEXT3,GRADEB,LISDEB)
-      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF DESIMP'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF DESIMP'
+      ENDIF
 !
 !     SEDIMENTOLOGY OUTPUT
 !
@@ -2577,10 +2582,12 @@
 !
 ! 3D OUTPUT
 !
-      CALL BIEF_DESIMP(T3D_FILES(T3DRES)%FMT,VARSO3,
-     &                 NPOIN3,T3D_FILES(T3DRES)%LU,BINRES,AT,LT,
-     &                 LISPRD,GRAPRD,
-     &                 SORG3D,SORIM3,MAXVA3,TEXT3,GRADEB,LISDEB)
+      IF(T3D_FILES(T3DRES)%NAME(1:1).NE.' ') THEN
+        CALL BIEF_DESIMP(T3D_FILES(T3DRES)%FMT,VARSO3,
+     &                   NPOIN3,T3D_FILES(T3DRES)%LU,BINRES,AT,LT,
+     &                   LISPRD,GRAPRD,
+     &                   SORG3D,SORIM3,MAXVA3,TEXT3,GRADEB,LISDEB)
+      ENDIF
 !
 ! 3D OUTPUT FOR RESTART
 !
@@ -2726,7 +2733,7 @@
 !
 ! COMPARES WITH REFERENCE FILE
 !
-      IF(VALID) THEN
+      IF(VALID.AND.T3D_FILES(T3DRES)%NAME(1:1).NE.' ') THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_VALIDA'
         CALL BIEF_VALIDA(TRAV3,TEXTP3,
      &                   T3D_FILES(T3DREF)%LU,T3D_FILES(T3DREF)%FMT,
@@ -2734,6 +2741,14 @@
      &                   T3D_FILES(T3DRES)%LU,T3D_FILES(T3DRES)%FMT,
      &                   MAXVA3,NPOIN3,LT,NIT,ALIRE3D)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_VALIDA'
+      ELSEIF(VALID.AND.T3D_FILES(T3DRES)%NAME(1:1).EQ.' '.AND.
+     &       LT.EQ.NIT) THEN
+        WRITE(LU,*) ' '
+        WRITE(LU,*) ' '
+        IF(LNG.EQ.1) WRITE(LU,*) 'PAS DE VALIDATION SANS'
+        IF(LNG.EQ.1) WRITE(LU,*) 'FICHIER DE RESULTATS 3D !!!'
+        IF(LNG.EQ.2) WRITE(LU,*) 'NO VALIDATION IF NO'
+        IF(LNG.EQ.2) WRITE(LU,*) '3D RESULT FILE!!!'
       ENDIF
 !
 !
@@ -2753,7 +2768,7 @@
 !
 ! END OF TIME LOOP
 !
-      END DO TIMELOOP
+      ENDDO TIMELOOP
 !
 !=======================================================================
 ! THE TIME LOOP ENDS HERE

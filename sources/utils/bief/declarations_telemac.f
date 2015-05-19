@@ -258,6 +258,13 @@
       INTEGER MODASS
       DATA MODASS/1/
 !
+! 7./ CHECKING THE MESH
+!
+!     KEYWORD INITIALISED TO FALSE (MAY BE MODIFIED BY KEYWORDS)
+!
+      LOGICAL CHECK_MESH
+      DATA CHECK_MESH/.FALSE./
+!
 !-----------------------------------------------------------------------
 !
       END MODULE DECLARATIONS_TELEMAC
