@@ -17,6 +17,11 @@
 !+        27/02/2014
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
+!
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
 ! 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 

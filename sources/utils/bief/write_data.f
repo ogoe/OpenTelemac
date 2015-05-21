@@ -39,18 +39,18 @@
 !+   Use of Hermes interface to write data and mesh update option
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BVARSOR         |-->| BIEF BLOCK CONTAINING THE VARIABLES VARIABLES
 !| FFORMAT         |-->| FILE FORMAT
 !| FILERES         |-->| LOGICAL UNIT OF FILE
+!| NVARS           |-->| NUMBER OF VARIABLES
+!| TIME            |-->| TIME
+!| TIMESTEP        |-->| TIME STEP (INTEGER), NOT DT.
+!| OUTVAR          |-->| VARIABLES TO BE PUT IN THE FILE
+!| NOMVAR          |-->| NAME OF VARIABLES
+!| BVARSOR         |-->| BIEF BLOCK CONTAINING THE VARIABLES VARIABLES
 !| N               |-->| NUMBER OF VALUES (MAY BE DIFFERENT FROM
 !|                 |   | THE NUMBER OF DEGREES OF FREEDOM, E.G. FOR
 !|                 |   | QUADRATIC ELEMENTS ONLY THE LINEAR VALUES
 !|                 |   | ARE EXITED)
-!| NOMVAR          |-->| NAME OF VARIABLES
-!| NVARS           |-->| NUMBER OF VARIABLES
-!| OUTVAR          |-->| VARIABLES TO BE PUT IN THE FILE
-!| TIME            |-->| TIME
-!| TIMESTEP        |-->| TIME STEP (INTEGER), NOT DT.
 !| MESH (OPTIONAL) |-->| MESH STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

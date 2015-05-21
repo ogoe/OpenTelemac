@@ -5,6 +5,12 @@
 !***********************************************************************
 ! POSTEL3D VERSION 5.1   01/09/99   T. DENOT (LNH) 01 30 87 74 89
 ! FORTRAN90
+!
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !***********************************************************************
 !
       USE BIEF

@@ -48,6 +48,11 @@
 !+   Adding the variable ORBVEL_TEL in argument (orbital velocity)
 !+   for sending it back to the calling program.
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
 !| DT_TEL         |-->| TELEMAC MODEL TIME STEP

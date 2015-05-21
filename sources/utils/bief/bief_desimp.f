@@ -33,6 +33,11 @@
 !+        V7P0
 !+   Add update of mesh coordinates for moving mesh
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FORMAT_RES     |-->| FORMAT OF RESULT FILE
 !| LEOPRD         |-->| GRAPHIC PRINTOUT PERIOD

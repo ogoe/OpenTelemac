@@ -55,6 +55,11 @@
 !+        V7P1
 !+   Call to a new subroutine that checks the mesh (coordinates...).
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| NAME IN 20 CHARACTERS TO ENABLE DIFFERENT
 !|                |   | OPTIONS. OPTIONS ARE:

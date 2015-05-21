@@ -56,6 +56,11 @@
 !+        V6P3
 !+   Generalised for reading 3 variables with given names.
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| FONFMT         |-->| DATA FILE FORMAT

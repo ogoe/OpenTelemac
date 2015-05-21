@@ -17,6 +17,11 @@
 !+        V6P1
 !+   CREATION OF THE FILE
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| SLFFILE        |-->| NAME OF THE SERAFIN FILE IN THE TEMPORARY FOLDER
 !| LIMFILE        |-->| NAME OF THE BOUNDARY FILE IN THE TEMPORARY FOLDER

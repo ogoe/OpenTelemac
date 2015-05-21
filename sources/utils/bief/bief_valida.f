@@ -41,6 +41,11 @@
 !+        V6P3
 !+   Name of code now printed in the listing.
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACOMPARER      |-->| INDICATES WHICH VARIABLE TO COMPARE
 !| IT             |-->| TIME STEP NUMBER

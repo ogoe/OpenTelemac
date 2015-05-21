@@ -1,10 +1,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!BRIEF ERROR HANDLING FUNCTIONS
+!brief ERROR HANDLING FUNCTIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!HISTORY Y AUDOUIN (EDF R&D, LNHE)
+!history Y AUDOUIN (EDF R&D, LNHE)
 !+       21/08/2013
-!+       CREATION OF THE FILE
+!+       Creation of the file
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       MODULE API_HANDLE_ERROR_T2D
       

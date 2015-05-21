@@ -246,6 +246,11 @@
 !+   ALIRE variable was wrong for tracers, they now begin at rank 34,
 !+   so ALIRE(33+ITRAC)=1. After a remark by Noémie Durand.
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
 !param code      [in] calling program (if coupling)

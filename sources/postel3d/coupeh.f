@@ -60,6 +60,11 @@
 ! SOUS-PROGRAMME APPELE PAR : POSTEL3D
 ! SOUS-PROGRAMME APPELES : ECRI2
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !**********************************************************************
 !
       USE BIEF

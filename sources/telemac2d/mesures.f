@@ -35,6 +35,11 @@
 !+        V6P3
 !+   Adding the file format in the call to FIND_IN_SEL.
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ITER           |-->| ITERATION WHERE TO LOOK FOR THE MEASUREMENTS
 !| TT             |-->| CORRESPONDING TIME (TO CHECK)

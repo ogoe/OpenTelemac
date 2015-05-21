@@ -10,14 +10,17 @@
 !
 !brief    READS IFAPAR AND NACHB
 !
-!history  J-M HERVOUET (LNHE)
-!+        09/07/2009
-!+        V6P0
+!history  Y AUDOUIN (LNHE)
+!+        25/05/2015
+!+        V7P0
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NPAR           |-->| LOGICAL UNIT OF THE PARTEL INFO FILE
-!| MESH           |-->| MESH STRUCTURE
+!| NAMEPAR        |-->| NAME OF THE PARTEL INFO FILE
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NUMLIQ         |<->| NUMBER OF LIQUID BOUNDARY
+!| BOUNDARY_COLOUR|<->| COLOUR OF BOUNDARY POINTS
+!| MESH           |<->| MESH STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -48,8 +51,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      NPAR = 1000
       ! Look for an available unit
+      NPAR = 1000
       DO
         INQUIRE(UNIT=NPAR,OPENED=IS_USED)
         IF(.NOT.IS_USED) EXIT

@@ -6,17 +6,17 @@
 ! HERMES  V7P0                                                 2015
 !***********************************************************************
 !
-!BRIEF    INTERFACES OF MED PUBLIC SUBROUTINES
+!brief    INTERFACES OF MED PUBLIC SUBROUTINES
 !
-!WARNING  NOTE THAT THIS INTERFACE IS FOR THE LIBRARY INCLUDED IN MED
+!warning  NOTE THAT THIS INTERFACE IS FOR THE LIBRARY INCLUDED IN MED
 !+     V3.0.4 CHANGES MIGHT BE REQUIRED WITH FUTURE VERSIONS OF MED.
 !
-!HISTORY YOANN AUDOUIN
-!+       29/10/2011     
-!+       V6P2
+!history YOANN AUDOUIN
+!+       25/05/2015     
+!+       V7P0
 !+       ADAPTING CODE TO MED V3.0.4         
-!+
-!+       VINCENT STOBIAC
+! 
+!history VINCENT STOBIAC
 !+       23/05/2014
 !+       ADDING GENERAL MED SUBROUTINES
 !

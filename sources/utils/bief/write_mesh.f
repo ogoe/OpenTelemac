@@ -36,6 +36,11 @@
 !+        V6P2
 !+   Changed to work with NAG
 !
+!history  Y AUDOUIN 
+!+        21/05/2015
+!+        V7P0
+!+   Adapt code to work with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FFORMAT        |-->| FILE FORMAT
 !| NFILE          |-->| LOGICAL UNIT OF FILE

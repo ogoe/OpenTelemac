@@ -19,6 +19,8 @@
 !+       Correcting an old mistake on serafin files in prisms when the 
 !+       computation is done with tetrahedra. See SET_MESH_SRF.
 !
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !

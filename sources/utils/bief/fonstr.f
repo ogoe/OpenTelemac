@@ -39,6 +39,11 @@
 !+        V6P3
 !+   Adding the format FFORMAT
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHESTR         |<--| FRICTION COEFFICIENT (DEPENDING ON FRICTION LAW)
 !| FFON           |-->| FRICTION COEFFICIENT IF CONSTANT

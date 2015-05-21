@@ -33,15 +33,20 @@
 !+        V6P3
 !+   Adding the format FFORMAT
 !
+!history  Y AUDOUIN 
+!+        21/05/2015
+!+        V7P0
+!+   Adapt code to work with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NFIC           |-->| NUMERO DU CANAL DU FICHIER
-!| FFORMAT        |-->| FORMAT OF THE FIEL
+!| NPOIN          |-->| NUMBER OF POINT (SIZE OF VAR_VALUE)
+!| FFORMAT        |-->| FORMAT OF THE FILE
 !| VAR_VALUE      |<--| WHERE TO PUT THE RESULT
 !| VAR_NAME       |-->| NAME OF VARIABLE (16 CHARACTERS)
-!| RECORD         |-->| NUMBER OF THE REQUESTED RECORD if eq -1 the last one
-!| TIME           |<--| TIME OF RECORD (OPTIONAL)
-!| W              |<->| REAL WORK ARRAY OF DIMENSION AT LEAST NPOIN.
 !| IERR           |<--| 0 IF VARIABLE FOUND 1 OTHERWISE
+!| RECORD         |-->| NUMBER OF THE REQUESTED RECORD
+!| TIME           |<--| TIME OF RECORD (OPTIONAL)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_HERMES

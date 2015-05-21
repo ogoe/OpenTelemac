@@ -11,19 +11,14 @@
 !brief    GIVES THE EXTENSION FOR NAMING FILES IN PARALLEL
 !+
 !
-!history  J-M HERVOUET (LNHE)
-!+        11/07/2008
-!+        V5P9
-!+  
-!
-!history  J-M HERVOUET (LNHE)
-!+        22/11/2012
-!+        V6P3
-!+   USE BIEF removed, IIPID and IPID changed into I.
+!history  Y AUDOUIN (LNHE)
+!+        25/05/2015
+!+        V7P0
+!+        Creation of the file
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| N              |-->| TOTAL NUMBER OF PROCESSORS
-!| I              |-->| RANK OF THE PROCESSOR
+!| TYP_ELT        |-->| TYPE OF THE ELEMENT
+!| NDP            |-->| NUMBER OF NODES COMPOSING THE ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SPECIAL

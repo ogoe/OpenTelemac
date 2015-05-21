@@ -472,6 +472,7 @@ files: bief_def.f
   read_mesh_conn.f
   mxptel31.f
   mxptel.f
+  checkmesh.f
   almesh.f
 
 [damocles]

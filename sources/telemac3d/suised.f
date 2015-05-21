@@ -51,6 +51,11 @@
 !+        V7P0
 !+        Major rewrite to use 2D result file (simplified)
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FFORMAT        |-->| BINARY OF PREVIOUS SEDIMENT COMPUTATION FILE
 !| CONC           |<->| CONCENTRATION OF MUD BED LAYER

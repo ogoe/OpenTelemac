@@ -98,6 +98,8 @@ files: interface_hermes.f
 [parallel]
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
+  p_dmax.F
+  p_dmin.F
   p_imax.F
   interface_parallel.f
   p_init.F

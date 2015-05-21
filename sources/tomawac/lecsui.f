@@ -44,6 +44,11 @@
 !+   Correction of bugs and double precision. Changing file format
 !+   for domain decomposition.
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| BINPRE         |-->| PREVIOUS COMPUTATION FILE BINARY

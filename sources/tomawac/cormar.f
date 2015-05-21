@@ -43,6 +43,11 @@
 !+        V7P0
 !+   CALL PARCOM suppressed by using new argument ASSPAR in VECTOR
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| H_TEL          |-->| TELEMAC WATER DEPTH

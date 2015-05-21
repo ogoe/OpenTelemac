@@ -12,9 +12,9 @@
 !brief    READS THE CONNECTIVITY TABLE AND NUMBERING FOR THE
 !+        BOUNDARY NODES.
 !
-!history  J-M HERVOUET (LNH)     
-!+        29/04/04
-!+        V5P5
+!history  Y AUDOUIN (LNHE)
+!+        21/05/2015
+!+        V7P0
 !+   First version.
 !
 !

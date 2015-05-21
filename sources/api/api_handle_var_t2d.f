@@ -1,10 +1,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!BRIEF GETTER/SETTER OF TELEMAC2D VARIABLES
+!brief GETTER/SETTER OF TELEMAC2D VARIABLES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!HISTORY Y AUDOUIN (EDF R&D, LNHE)
+!history Y AUDOUIN (EDF R&D, LNHE)
 !+       21/08/2013
-!+       CREATION OF THE FILE
+!+       Creation of the file
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       MODULE API_HANDLE_VAR_T2D

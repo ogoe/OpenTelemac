@@ -42,6 +42,11 @@
 !+   Checking the declared format when possible : case of a SERAFIN file
 !+   in READ mode.
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| NAME OF CALLING PROGRAMME
 !| FILES          |-->| STRUCTURES OF CODE FILES

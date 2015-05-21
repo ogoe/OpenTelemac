@@ -43,6 +43,11 @@
 !+        V6P3
 !+   Calls modified.
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |<--| COMPUTATION TIME
 !| H_TEL          |-->| TELEMAC WATER DEPTH

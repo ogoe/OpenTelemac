@@ -112,6 +112,11 @@
 !+   Adding the variable UW_TEL in argument (orbital velocity)
 !+   for getting it back to the calling program.
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
 !| CHARR_TEL      |<->| LOGICAL, BED LOAD OR NOT: Sent to TELEMAC-2D

@@ -1,10 +1,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!BRIEF $function to control telemac2d execution
+!brief $function to control telemac2d execution
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!HISTORY Y AUDOUIN (EDF R&D, LNHE)
+!history Y AUDOUIN (EDF R&D, LNHE)
 !+       21/08/2013
-!+       CREATION OF THE FILE
+!+       Creation of the file
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       MODULE API_RUN_T2D

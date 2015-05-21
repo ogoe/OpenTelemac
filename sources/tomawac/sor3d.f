@@ -39,6 +39,11 @@
 !+        V6P3
 !+   Correction of bugs and double precision.
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| BINR3D         |-->| GLOBAL RESULT FILE BINARY

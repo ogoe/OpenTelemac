@@ -116,6 +116,11 @@
 !+   Secondary flow correction: compute the secondary
 !+   stress term \tau_s and secondary source terms S_x, S_y.
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
 !| BANDEC         |-->| IF YES, TIDAL FLATS OR DRY ZONES

@@ -12,13 +12,12 @@
 !+
 !
 !history  Y AUDOUIN (LNHE)
-!+        11/07/2008
+!+        11/05/2015
 !+        V7P0
 !+  
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| N              |-->| TOTAL NUMBER OF PROCESSORS
-!| I              |-->| RANK OF THE PROCESSOR
+!| IERR           |-->| ERROR VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SPECIAL
@@ -66,7 +65,7 @@
       CASE(HERMES_WRONG_AXE_ERR)
         STRING = 'HERMES_WRONG_AXE_ERR'
       CASE DEFAULT
-        STRING = ' '
+        STRING = 'UNKONWN ERROR'
       END SELECT
 !
       WRITE_ERROR = STRING

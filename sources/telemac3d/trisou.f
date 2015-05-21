@@ -59,6 +59,11 @@
 !+        V6P3
 !+   In last loop on sources a test IF(ISCE(I).GT.0) THEN has been added
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME OF TIME STEP
 !| CORIOL         |-->| LOGICAL IF CORIOLIS FORCE OR NOT

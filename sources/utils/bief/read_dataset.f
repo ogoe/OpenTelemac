@@ -34,7 +34,6 @@
 !| LASTRECORD     |<->| LASTRECORD = .TRUE. LAST RECORD WILL BE READ
 !|                |   | LASTRECORD = .FALSE. : RECORD "RECORD" WILL BE READ
 !| MAXVAR         |-->| DIMENSION OF ARRAY RELATED TO VARIABLES: ALIRE,..
-!| DT             |<--| TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_HERMES

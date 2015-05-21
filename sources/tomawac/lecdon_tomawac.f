@@ -46,6 +46,11 @@
 !+        V7P1
 !+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH' 
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| NAME OF CALLING PROGRAMME
 !| FILE_DESC      |-->| STORES THE FILES 'SUBMIT' ATTRIBUTES

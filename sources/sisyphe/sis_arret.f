@@ -39,6 +39,11 @@
 !+  Name of variables   
 !+   
 !
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT0            |-->|TIME 
 !| BINRESSIS      |-->| BINARY OF RESULTS FILE (IBM,I3E,STD)
