@@ -666,8 +666,8 @@ class SELAFIN:
       endian = self.fole['endian']
       ftype,fsize = self.fole['float']
       # Print time record
-      if type(t) == type(0.0): f.write(pack(endian+'i'+ftype+'i',4,t,4))
-      else: f.write(pack(endian+'i'+ftype+'i',4,self.tags['times'][t],4))
+      if type(t) == type(0.0): f.write(pack(endian+'i'+ftype+'i',fsize,t,fsize))
+      else: f.write(pack(endian+'i'+ftype+'i',fsize,self.tags['times'][t],fsize))
 
    def appendCoreVarsSLF( self,VARSOR ):
       f = self.fole['hook']
@@ -1000,6 +1000,8 @@ class PARAFINS(SELAFINS):
       print '      +> Writing the core of the following partitions:'
       for slf in self.slfs: #TODO: do this loop in python parallel with a bottle neck at islf.getVALUES(t)
          sub = deepcopy(slf)
+         sub.fole.update({ 'endian': islf.fole['endian'] })
+         sub.fole.update({ 'float': islf.fole['float'] })
          # ~~ Conversion to local islf ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          # you know the geom is 2D
          # keep the IPOBO2, X2D, Y2D and IKLE2 and replace the rest
