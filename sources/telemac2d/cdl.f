@@ -4,7 +4,7 @@
 !
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,G,HBOR,
      & UBOR,VBOR,UA,CE,FLUENT,FLUSORT,FLBOR,
-     & DTHAUT,DT,CFL,FLUHBTEMP,NTRAC)
+     & DTHAUT,DT,CFL,FLUHBTEMP,NTRAC,MESH)
 !
 !***********************************************************************
 ! TELEMAC 2D VERSION 6.1                                          INRIA
@@ -25,6 +25,11 @@
 !+   Translation of French comments within the FORTRAN sources into
 !+   English comments
 !
+!history  R. ATA (EDF-LNHE) 
+!+        30/01/2015
+!+        V7p0
+!+   parallelization
+!+   
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  NS            |-->|  TOTAL NUMNER OF NODES
@@ -51,6 +56,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF 
+      USE INTERFACE_TELEMAC2D, EX_CDL => CDL
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -67,6 +73,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3),FLUENT,FLUSORT
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLUHBTEMP
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLBOR
+      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -74,12 +81,13 @@
 !
       DOUBLE PRECISION RA3,RA32,RA33, ALP,ALP2,ALP3,SG,SQ2      
       DOUBLE PRECISION VNX,VNY,VNX1,VNY1,VNL,H,U,V,RUN
-      DOUBLE PRECISION FLUH,FLUU,FLUV,AUX,FLUTMP,RH,HRH,UNN,VNN
+      DOUBLE PRECISION FLUH(NPTFR),FLUU(NPTFR),FLUV(NPTFR)
+      DOUBLE PRECISION AUX,FLUTMP,RH,HRH,UNN,VNN
       DOUBLE PRECISION FHPLUS,FUPLUS,FHMOINS,FUMOINS 
       DOUBLE PRECISION A,A1,A2,A3,ALPHA0,ALPHA1,ALPHA2,C,VP1,VP2 ,VP3
       DOUBLE PRECISION HG ,RHG,HRHG,UG,VG,DEST,RVG,CA1,AM
       DOUBLE PRECISION UIN,VIN,HUIN,HVIN,SIGMAX,DTL,UNORM 
-      DOUBLE PRECISION P_DMIN
+      DOUBLE PRECISION P_DMIN,OUTFLOW
       EXTERNAL P_DMIN
 !
       SQ2   = SQRT(2.D0)
@@ -117,9 +125,9 @@
           IF(LIMPRO(K,1).EQ.KNEU) THEN
 !         
             AUX=0.5D0*G*H**2
-            FLUH = 0.D0
-            FLUU = AUX*VNX
-            FLUV = AUX*VNY
+            FLUH(K) = 0.D0
+            FLUU(K) = AUX*VNX
+            FLUV(K) = AUX*VNY
           ELSE
 !       
 !        LIQUID BOUNDARY
@@ -311,18 +319,18 @@
 !           CALCUL DES FLUX ET ROTATION INVERSE
 !         
  200        CONTINUE
-            FLUH=(FHPLUS +FHMOINS)*VNL
-            FLUU=(FUPLUS +FUMOINS)*VNL
+            FLUH(K)=(FHPLUS +FHMOINS)*VNL
+            FLUU(K)=(FUPLUS +FUMOINS)*VNL
 !         
-            IF (FLUH.GE.0.D0) THEN 
-              FLUV= VNN*FLUH 
+            IF (FLUH(K).GE.0.D0) THEN 
+              FLUV(K)= VNN*FLUH(K) 
             ELSE
-              FLUV= VG*FLUH 
+              FLUV(K)= VG*FLUH(K) 
             ENDIF
 !         
-            FLUTMP=FLUU
-            FLUU = +VNX1*FLUTMP-VNY1*FLUV
-            FLUV = +VNY1*FLUTMP+VNX1*FLUV
+            FLUTMP=FLUU(K)
+            FLUU(K) = +VNX1*FLUTMP-VNY1*FLUV(K)
+            FLUV(K) = +VNY1*FLUTMP+VNX1*FLUV(K)
 !         
 !           CORRECTION OF THE TIME STEP
 !           
@@ -333,25 +341,44 @@
 100         CONTINUE
             RUN     = H*UNN
 !           
-            FLUH =  RUN* VNL
-            FLUU =  (U *RUN + 0.5D0*G*H**2* VNX)*VNL
-            FLUV =  (V *RUN + 0.5D0*G*H**2* VNY)*VNL
+            FLUH(K) =  RUN* VNL
+            FLUU(K) =  (U *RUN + 0.5D0*G*H**2* VNX)*VNL
+            FLUV(K) =  (V *RUN + 0.5D0*G*H**2* VNY)*VNL
 !         
 1000        CONTINUE
           ENDIF
+        ENDDO
+      ENDIF
+
+!
+      IF(NCSIZE.GT.1)THEN
+        CALL PARCOM_BORD(FLUH,1,MESH)
+        CALL PARCOM_BORD(FLUU,1,MESH)
+        CALL PARCOM_BORD(FLUV,1,MESH)
+      ENDIF
+
+
+      IF(NPTFR.GT.0)THEN
+        DO K=1,NPTFR
+          IS=NBOR(K)
 !        
-          IF(LIMPRO(K,1).EQ.KDIR)  FLUSORT = FLUSORT + FLUH
-          IF(LIMPRO(K,2).EQ.KDIR)  FLUENT = FLUENT +FLUH
+          IF(NCSIZE.GT.1)THEN
+            OUTFLOW  = FLUH(K)*MESH%FAC%R(IS)
+          ELSE
+            OUTFLOW  = FLUH(K)
+          ENDIF
+          IF(LIMPRO(K,1).EQ.KDIR)  FLUSORT = FLUSORT + OUTFLOW
+          IF(LIMPRO(K,2).EQ.KDIR)  FLUENT  = FLUENT  + OUTFLOW
 !RA     
-          FLBOR%R(K)=FLUH       
+          FLBOR%R(K)=OUTFLOW       
 !       
-          CE(IS,1)  = CE(IS,1) - FLUH
-          CE(IS,2)  = CE(IS,2) - FLUU
-          CE(IS,3)  = CE(IS,3) - FLUV
+          CE(IS,1)  = CE(IS,1) - FLUH(K)
+          CE(IS,2)  = CE(IS,2) - FLUU(K)
+          CE(IS,3)  = CE(IS,3) - FLUV(K)
 !       
           IF(NTRAC.GT.0) THEN
             DO ITRAC=1,NTRAC
-              FLUHBTEMP%ADR(ITRAC)%P%R(K)=FLUH
+              FLUHBTEMP%ADR(ITRAC)%P%R(K)=FLUH(K)
             ENDDO
           ENDIF
 ! 

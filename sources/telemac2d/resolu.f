@@ -90,11 +90,16 @@
 !+        V7P0
 !+    change winf values which are directly  
 !+    obtained by bord
-!+    add parcom_bor after cdl routines
+!+    add parcom_bord after cdl routines
 !+    change cdl routines to exactly impose boundary conditions
 !+    initiliaze QU,QV and Hn
 !+
-!
+! history R. ATA (EDF R&D-LNHE)
+!+        20/01/2015
+!+        V7P0
+!+    correction for parallelization
+!+    parcom_bord removed and parcom placed 
+!+    after cdl of each scheme
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| ELEMENT AREA
 !| AIRS           |-->| CELL AREA
@@ -726,14 +731,14 @@
 ! FLUX COMPUTATION
       CALL FLUXZZ(X,Y,NPOIN,NSEG,NELMAX,NUBO,G,W,ZF,VNOIN,
      &            ELTSEG,FLUX,IFABOR)
-! FOR PARALLESM
-      IF(NCSIZE.GT.1)THEN
-        CALL PARCOM2(FLUX(:,1),FLUX(:,2),FLUX(:,3),NPOIN,1,2,3,MESH)
-      ENDIF
 !BOUNDARY CONDITIONS
       CALL CDLZZ(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
      &           KDDL,G,W,FLUX,FLUENT,FLUSORT,
      &           FLBOR,ZF,WINF)
+! FOR PARALLESM
+      IF(NCSIZE.GT.1)THEN
+        CALL PARCOM2(FLUX(:,1),FLUX(:,2),FLUX(:,3),NPOIN,1,2,3,MESH)
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -830,15 +835,16 @@
 
       CALL FLUX_TCH(X,Y,NPOIN,NSEG,NELMAX,NUBO,G,W,ZF,VNOIN,
      &              ELTSEG,FLUX,IFABOR)
+!
+!BOUNDARY CONDITIONS
+        CALL CDL_TCH(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
+     &               KDDL,G,W,FLUX,FLUENT,FLUSORT,
+     &               FLBOR,EPS,ZF,WINF)
 
 !  FOR PARALLESM
       IF(NCSIZE.GT.1)THEN
         CALL PARCOM2(FLUX(:,1),FLUX(:,2),FLUX(:,3),NPOIN,1,2,3,MESH)
       ENDIF
-!BOUNDARY CONDITIONS
-        CALL CDL_TCH(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &               KDDL,G,W,FLUX,FLUENT,FLUSORT,
-     &               FLBOR,EPS,ZF,WINF)
 !
 !-----------------------------------------------------------------------
 !
@@ -933,24 +939,19 @@
 !
       CALL HYD_HLLC(NPOIN,NELEM,NSEG,NUBO,G,W,ZF,VNOIN,
      &              X,Y,ELTSEG,FLUX,IFABOR)
+!
 !  FOR PARALLESM
+!
       IF(NCSIZE.GT.1)THEN
         CALL PARCOM2(FLUX(1,1),FLUX(1,2),FLUX(1,3),NPOIN,1,2,3,MESH)
       ENDIF
+!
 !
 ! BOUNDARY CONDITIONS
 !
       CALL CDL_HLLC(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,
      &              W,FLUX,FLUENT,FLUSORT,FLBOR,EPS,WINF,
-     &              G,HBOR,UBOR,VBOR)
-!
-!     ASSEMBLY IN PARALLEL (EVEN IF NPTFR=0)
-!
-      IF(NCSIZE.GT.1) THEN
-        CALL PARCOM_BORD(FLUX(:,1),2,MESH)
-        CALL PARCOM_BORD(FLUX(:,2),2,MESH)
-        CALL PARCOM_BORD(FLUX(:,3),2,MESH)
-      ENDIF
+     &              G,HBOR,UBOR,VBOR,MESH)
 !
 !-----------------------------------------------------------------------
 !
@@ -959,7 +960,6 @@
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
      &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G) 
-!
 !
 !-----------------------------------------------------------------------
 !

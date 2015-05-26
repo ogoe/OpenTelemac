@@ -4,7 +4,8 @@
 !                                                                       
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,
      & W,CE,FLUENT,FLUSORT,FLBOR,EPS,WINF,
-     & G,HBOR,UBOR,VBOR)
+     & G,HBOR,UBOR,VBOR,MESH)
+
 !                                                                       
 !
 !***********************************************************************
@@ -31,6 +32,12 @@
 !+        V7P0
 !+ completely re-written to exactly impose boundary
 !+ conditions and especially flowrates
+!
+!history  R. ATA (EDF-LNHE) 10/01/2015
+!+
+!+        V7P0
+!+ add free condition and fix parallel issues
+!+ move projection on liquid boundaries to majzz
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  NS            |-->|  TOTAL NUMBER OF NODES
@@ -69,19 +76,20 @@
       DOUBLE PRECISION, INTENT(INOUT) :: WINF(3,NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3),FLUENT,FLUSORT
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLBOR
+      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IS,K,IDRY
 !    
-      DOUBLE PRECISION :: VNX,VNY,XNN,YNN,VNL
+      DOUBLE PRECISION :: VNX,VNY,XNN,YNN,VNL(NPTFR)
       DOUBLE PRECISION :: UNN,VNN,LAMBDA1,LAMBDA2
-      DOUBLE PRECISION :: FLX(4),H1,U10,U1,V1
+      DOUBLE PRECISION :: FLX(NPTFR,4),H1,U10,U1,V1
       DOUBLE PRECISION :: H2,U2,V2,UGN,AL,C1
       DOUBLE PRECISION :: HG,UG,VG,CG,UGTEMP
       DOUBLE PRECISION :: INFLOW,OUTFLOW,REGIME,FOURG
       DOUBLE PRECISION,PARAMETER ::XI=0.0D0
-! TO CORRECT WHEN CONSIDERING TRACERS
+!     TO CORRECT WHEN CONSIDERING TRACERS
       DOUBLE PRECISION,PARAMETER ::PSI1=0.0D0,PSI2=0.0D0
       LOGICAL                    ::ROT,DEJA
 !
@@ -89,31 +97,32 @@
       ROT = .TRUE.
       FOURG = 4.D0*G
 !
-! LOOP OVER BOUNDARY NODES
+!     LOOP OVER BOUNDARY NODES
       IF(NPTFR.GT.0)THEN    ! FOR PARALLEL CASES
       DO K=1,NPTFR
         IS=NBOR(K)
 !
-! INITIALIZATION
-        FLUENT  = 0.D0
-        FLUSORT = 0.0D0
-        INFLOW  = 0.0D0
-        OUTFLOW = 0.0D0
-        FLX(1)  = 0.0D0
-        FLX(2)  = 0.0D0
-        FLX(3)  = 0.0D0
-        FLX(4)  = 0.0D0
-! INDICATOR FOR DRY CELLS
+!     INITIALIZATION
+        FLBOR%R(K) = 0.D0
+        FLUENT     = 0.D0
+        FLUSORT    = 0.D0
+        INFLOW     = 0.D0
+        OUTFLOW    = 0.D0
+        FLX(K,1)     = 0.D0
+        FLX(K,2)     = 0.D0
+        FLX(K,3)     = 0.D0
+        FLX(K,4)     = 0.D0
+!     INDICATOR FOR DRY CELLS
         IDRY=0
-!   NORMALIZED NORMAL    
+!     NORMALIZED NORMAL    
         XNN=XNEBOR(K)
         YNN=YNEBOR(K)
-!   NON NORMALIZED NORMAL
+!     NON NORMALIZED NORMAL
         VNX=XNEBOR(K+NPTFR)
         VNY=YNEBOR(K+NPTFR)
 !
-        VNL=SQRT(VNX**2+VNY**2)
-!       
+        VNL(K)=SQRT(VNX**2+VNY**2)
+!     
         H1 = W(1,IS)
         IF(H1.GT.EPS)THEN
           U1 = W(2,IS)/H1
@@ -124,10 +133,10 @@
           IDRY=IDRY+1
         ENDIF
 !**************************************************
-!         WALL BOUNDARY
+!     WALL BOUNDARY
 !**************************************************
 !===============================
-!    SLIPPING CONDITION
+!     SLIPPING CONDITION
 !===============================
 !
         IF(LIMPRO(K,1).EQ.KNEU) THEN 
@@ -163,13 +172,14 @@
 !           V2 = V1 - U10*YNN
 !
           CALL FLUX_HLLC(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
-     &                 XNN,YNN,ROT,FLX)
-          GOTO 100
+     &                 XNN,YNN,ROT,FLX(K,:))
+!          GOTO 100
 !
 !**************************************************
 !         LIQUID BOUNDARIES
 !**************************************************
         ELSEIF((LIMPRO(K,1).EQ.KDIR).OR.(LIMPRO(K,1).EQ.KDDL))THEN 
+
 !         PREPARE COMPUTATION OF RIEMANN INVARIANTS
           IF(H1.LT.EPS)THEN
             UNN = 0.D0
@@ -179,11 +189,11 @@
             VNN = -YNN*U1 + XNN*V1
           ENDIF
 !===============================
-!    IF H IS IMPOSED
+!         IF H IS IMPOSED
 !===============================
 !
           IF(LIMPRO(K,1).EQ.KDIR) THEN
-!         
+!   
             HG = HBOR(K) ! THIS IS HG (GHOST STATE)
             CG = SQRT(G*HG)
             C1 = SQRT(G*H1) 
@@ -222,82 +232,96 @@
               ENDIF
             ELSE !THIS IS A SUPERCRITICAL OUTFLOW (NO NEED FOR GIVEN H) 
               IF(.NOT.DEJA.AND.ENTET)THEN 
-                IF(LNG.EQ.1) WRITE(LU,60) NUMLIQ%I(K)
-                IF(LNG.EQ.2) WRITE(LU,61) NUMLIQ%I(K)
+                IF(LNG.EQ.1) WRITE(LU,60) NUMLIQ%I(K),ABS(UNN)/
+     &                                    MAX(EPS,C1)
+                IF(LNG.EQ.2) WRITE(LU,61) NUMLIQ%I(K),ABS(UNN)/
+     &                                    MAX(EPS,C1)
                 DEJA=.TRUE.
 !               NO CONTRIBUTION
+              ENDIF
+!              GOTO 100
             ENDIF
-          ENDIF
 !
           GOTO 90 ! TO COMPUTE THE FLUX
 !==================================
-!    IF GIVEN VELOCITY OR DISCHARGE
+!      IF GIVEN VELOCITY OR DISCHARGE
 !==================================
 ! 
-        ELSEIF(LIMPRO(K,2).EQ.KDIR)THEN     !   (LIUBOR%I(K).EQ.KENTU)THEN
+          ELSEIF(LIMPRO(K,2).EQ.KDIR)THEN     !   (LIUBOR%I(K).EQ.KENTU)THEN
 !
-          UG = UBOR(K) ! GIVEN BY BORD
-          VG = VBOR(K) ! GIVEN BY BORD
+            UG = UBOR(K) ! GIVEN BY BORD
+            VG = VBOR(K) ! GIVEN BY BORD
 !           
-          UGN =  XNN*UG + YNN*VG ! TO RETRIEVE NORMAL COMPONENT OF UG 
-!          VGN = -YNN*UG + XNN*VG ! AND SO ON
+            UGN =  XNN*UG + YNN*VG ! TO RETRIEVE NORMAL COMPONENT OF UG 
+!           VGN = -YNN*UG + XNN*VG ! AND SO ON
 !
-          HG = (UNN + 2.D0*SQRT(G*H1)-UGN)**2/FOURG 
+            HG = (UNN + 2.D0*SQRT(G*H1)-UGN)**2/FOURG 
 !
-          IF(HG.LE.EPS)THEN
-            IDRY = IDRY + 1
-          ENDIF
+            IF(HG.LE.EPS)THEN
+              IDRY = IDRY + 1
+            ENDIF
 !
-          GOTO 90 ! TO COMPUTE THE FLUX         
+            GOTO 90 ! TO COMPUTE THE FLUX         
 !=========================================================
-!    IF GIVEN DISCHARGE :CONSIDERED IN THE PREVIOUS CASES
-!    THANKS TO SUBROUTINE DEBIMP WHICH TRANSFORMS FLOWRATES
-!    TO H (AT TN, WHICH CAN BE IMPROVED) AND VELOCITY 
+!     IF GIVEN DISCHARGE :CONSIDERED IN THE PREVIOUS CASES
+!     THANKS TO SUBROUTINE DEBIMP WHICH TRANSFORMS FLOWRATES
+!     TO H (AT TN, WHICH CAN BE IMPROVED) AND VELOCITY 
 !==========================================================
 !         ELSE IF(LIUBOR%I(K).EQ.KENT)THEN
-!         
-          ENDIF
-        ENDIF
 !
-90      CONTINUE
-!       COMPUTE THE FLUX 
-        IF(IDRY.LT.2)THEN
-!        AT LEAST ONE WET CELL
-          CALL FLUX_HLLC(XI,H1,HG,U1,UG,V1,VG,PSI1,PSI2,
-     &                    XNN,YNN,ROT,FLX)
-        ENDIF
-!    
+!===============================
+!     FREE CONDITION
+!===============================
+          ELSE  
+!         NOTHING TO DO   
+            HG = 0.D0
+            UG = 0.D0
+            VG = 0.D0 
+            IDRY = IDRY+1    
+          ENDIF
+!
+90        CONTINUE
+!         COMPUTE THE FLUX 
+          IF(IDRY.LT.2)THEN
+!         AT LEAST ONE WET CELL
+            CALL FLUX_HLLC(XI,H1,HG,U1,UG,V1,VG,PSI1,PSI2,
+     &                     XNN,YNN,ROT,FLX(K,:))
+          ENDIF
+!   
+         ENDIF
+      ENDDO
+      ENDIF
+!
+      IF(NCSIZE.GT.1)THEN
+        CALL PARCOM_BORD(FLX(1,1),1,MESH)
+        CALL PARCOM_BORD(FLX(1,2),1,MESH)
+        CALL PARCOM_BORD(FLX(1,3),1,MESH)
+!       FOR TRACER UNCOMMENT WHEN IMPLEMENTED
+!        CALL PARCOM_BORD(FLX(1,4),1,MESH)
+      ENDIF
+
+      IF(NPTFR.GT.0)THEN
+      DO K=1,NPTFR
+        IS=NBOR(K)
 !       FINAL BALANCE
-        OUTFLOW  = FLX(1)*VNL
-        IF(UNN.LE.0D0)THEN 
-          FLUENT = FLUENT + OUTFLOW
+        IF(NCSIZE.GT.1)THEN
+          OUTFLOW  = FLX(K,1)*VNL(K)*MESH%FAC%R(IS)
         ELSE
+          OUTFLOW  = FLX(K,1)*VNL(K)
+        ENDIF
+        IF(FLX(K,1).LE.0D0)THEN ! INLET 
+          FLUENT = FLUENT + OUTFLOW
+        ELSE                    ! OUTLET
           FLUSORT = FLUSORT + OUTFLOW
         ENDIF
         FLBOR%R(K) = OUTFLOW
 !
-100     CONTINUE
+!100     CONTINUE
 !  
-        CE(IS,1)  = CE(IS,1) - VNL*FLX(1)
-        CE(IS,2)  = CE(IS,2) - VNL*FLX(2)
-        CE(IS,3)  = CE(IS,3) - VNL*FLX(3)
+        CE(IS,1)  = CE(IS,1) - VNL(K)*FLX(K,1)
+        CE(IS,2)  = CE(IS,2) - VNL(K)*FLX(K,2)
+        CE(IS,3)  = CE(IS,3) - VNL(K)*FLX(K,3)
       ENDDO
-!
-!      PROJECTION ON THE NORMAL TO ELIMINATE THE TANGENT COMPONENT
-!      ONLY FOR LIQUID BOUNDARY
-      DO K=1,NPTFR
-        IS=NBOR(K)
-        IF(LIMPRO(K,1).NE.KNEU) THEN
-          !NORMALIZED NORMAL    
-          XNN=XNEBOR(K)
-          YNN=YNEBOR(K)
-          UGN =  XNN*CE(IS,2) + YNN*CE(IS,3) ! TO RETRIEVE NORMAL COMPONENET OF UG 
-!         VGN =  0.D0  ! PUT TANGENTIAL COMPENENT =0
-!         INVERSE ROTATION
-          CE(IS,2) = XNN*UGN
-          CE(IS,3) = YNN*UGN
-        ENDIF
-      ENDDO 
 !       
       ENDIF ! PARALLEL CASES
 !
@@ -310,13 +334,14 @@
 !
 60    FORMAT(1X,'CDL_HLLC: ATTENTION SUR LA FRONTIERE ',1I6,/,1X,
      & '          SORTIE TORRENTIELLE ET DONC       ',/,1X,
-     & '          CONDITION AUX LIMITES NON IMPOSEE',/,1X)
+     & '          CONDITION AUX LIMITES (PEUT-ETRE) NON VERIFIEE',/,1X,
+     & '          NOMBRE DE FROUDE A LA FRONTIERE: ',G16.7)
 61    FORMAT(1X,'CDL_HLLC: WARNING, LIQUID BOUNDARY ',1I6,/,1X,
      & '          SUPERCRITICAL OUTLET        ',/,1X,
-     & '          DESIRED BOUNDARY CONDITION MAY BE UNSATISFIED')
+     & '          DESIRED BOUNDARY CONDITION MAY BE UNSATISFIED',/,1X,
+     & '          FROUDE AT BOUNDARY IS: ',G16.7)
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
-!**********************************************************************

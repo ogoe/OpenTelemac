@@ -49,6 +49,12 @@
 !+        V7P0
 !+    parcom_bord after cdl
 !+    
+!history  R. ATA 
+!+        18/01/2015
+!+        V7P0
+!+    remove parcom_bord, no need for it
+!+    parcom is called once after flucin
+!+    and parcom_seg for tracer
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| ELEMENT AREA
@@ -155,31 +161,13 @@
 !
       IF(NCSIZE.GT.1)THEN
         CALL PARCOM2(CE(1,1),CE(1,2),CE(1,3),NS,1,2,3,MESH)
-        IF(NTRAC.GT.0)THEN
-          DO ITRAC=1,NTRAC
-            CALL PARCOM2_SEG(FLUXTEMP%ADR(ITRAC)%P%R,
-     &                       FLUXTEMP%ADR(ITRAC)%P%R, ! NO EFFECT FOR THIS ONE
-     &                       FLUXTEMP%ADR(ITRAC)%P%R, ! NO EFFECT FOR THIS ONE
-     &                  NSEG,1,    2,   1,  MESH,1,  11)
-                           ! NPLAN,ICOM,IAN,MESH,OPT,IELM)
-          ENDDO
-        ENDIF
       ENDIF
 !
 !     BOUNDARY CONDITIONS TREATMENT
 !
       CALL CDL(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
      &         G,HBOR,UBOR,VBOR,UA,CE,FLUENT,FLUSORT,FLBOR,
-     &         DTHAUT,DT,CFLWTD,FLUHBTEMP,NTRAC)
-
-!
-!     ASSEMBLY IN PARALLEL (EVEN IF NPTFR=0)
-!
-      IF(NCSIZE.GT.1) THEN
-        CALL PARCOM_BORD(CE(:,1),2,MESH)
-        CALL PARCOM_BORD(CE(:,2),2,MESH)
-        CALL PARCOM_BORD(CE(:,3),2,MESH)
-      ENDIF
+     &         DTHAUT,DT,CFLWTD,FLUHBTEMP,NTRAC,MESH)
 !
 !
 !-----------------------------------------------------------------------

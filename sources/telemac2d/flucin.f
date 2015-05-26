@@ -7,7 +7,7 @@
      & XNEBOR,YNEBOR,NTRAC,ELTSEG,IFABOR,MESH)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/07/2013
+! TELEMAC2D   V7P0                                   24/02/2015
 !***********************************************************************
 !
 !brief    COMPUTES THE FLUXES FOR THE INTERNAL INTERFACES.
@@ -35,6 +35,12 @@
 !+   Adaptation for new data structure of finite volumes
 !+   clean and optimize 
 !+   parallelism
+!history  R.ATA EDF R&D-LNHE
+!+        24/02/2015
+!+        V6P3
+!+   bug fixed for parallelism of second order
+!+   no need for parcom_seg
+!+   demi removed for tracer in parallel
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRS           |-->| CELL'S AREA
@@ -259,6 +265,7 @@
      &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HI0
      &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HJ0)  THEN
 !ra02/05/2013 FOR OPTIMIZATION
+              YESNO(NSG)=.TRUE. 
               CYCLE
 !           DSH(1,NSG) =0.D0
 !           DSH(2,NSG) =0.D0
@@ -269,12 +276,6 @@
 !           DSZ(1,NSG) =0.D0
 !           DSZ(2,NSG) =0.D0
             ELSE
-!
-!     NORMALIZED UNIT NORMAL (VNOCL), RNN LENGTH OF LIJ
-!
-              XNN = VNOCL(1,NSG)
-              YNN = VNOCL(2,NSG)
-              RNN = VNOCL(3,NSG)
 !             
               AIX = CMI(1,NSG)-X(NUBO1) ! THESE ARE COORDINATES OF
               AIY = CMI(2,NSG)-Y(NUBO1) !  VECTOR PM (EQ 5.1)
@@ -288,47 +289,12 @@
                 GRADIJ(IVAR,NSG) = AIX*DJX(IVAR,J) + AIY*DJY(IVAR,J)
                 GRADJI(IVAR,NSG) = AJX*DJX(IVAR,J) + AJY*DJY(IVAR,J)
               ENDDO
-! ROTATION OF THE GRADIENTS
-!
-              GRADI2       = GRADI(2,NSG)
-              GRADI(2,NSG) = XNN*GRADI2+YNN*GRADI(3,NSG)
-              GRADI(3,NSG) =-YNN*GRADI2+XNN*GRADI(3,NSG)
-!             
-              GRADIJ2      = GRADIJ(2,NSG)
-              GRADIJ(2,NSG)= XNN*GRADIJ2+YNN*GRADIJ(3,NSG)
-              GRADIJ(3,NSG)=-YNN*GRADIJ2+XNN*GRADIJ(3,NSG)
-!             
-              GRADJ2       = GRADJ(2,NSG)
-              GRADJ(2,NSG) = XNN*GRADJ2+YNN*GRADJ(3,NSG)
-              GRADJ(3,NSG) =-YNN*GRADJ2+XNN*GRADJ(3,NSG)
-!             
-              GRADJI2      = GRADJI(2,NSG)
-              GRADJI(2,NSG)= XNN*GRADJI2+YNN*GRADJI(3,NSG)
-              GRADJI(3,NSG)=-YNN*GRADJI2+XNN*GRADJI(3,NSG)
 !
             ENDIF
             YESNO(NSG)=.TRUE. 
           ENDIF 
         ENDDO
       ENDDO
-      IF(NCSIZE.GT.1)THEN      ! NPON,NPLAN,ICOM,IAN , HERE ICOM=1 VALUE WITH MAX | |
-        CALL PARCOM2_SEG(GRADI(1,1:NSEG),
-     &                   GRADI(2,1:NSEG),
-     &                   GRADI(3,1:NSEG),
-     &              NSEG,1,2,3,MESH,1,11)
-        CALL PARCOM2_SEG(GRADJ(1,1:NSEG),
-     &                   GRADJ(2,1:NSEG),
-     &                   GRADJ(3,1:NSEG),
-     &              NSEG,1,2,3,MESH,1,11)
-        CALL PARCOM2_SEG(GRADIJ(1,1:NSEG),
-     &                   GRADIJ(2,1:NSEG),
-     &                   GRADIJ(3,1:NSEG),
-     &              NSEG,1,2,3,MESH,1,11)
-        CALL PARCOM2_SEG(GRADJI(1,1:NSEG),
-     &                   GRADJI(2,1:NSEG),
-     &                   GRADJI(3,1:NSEG),
-     &              NSEG,1,2,3,MESH,1,11)
-      ENDIF
 !
 !    EXTRAPOLATES THE GRADIENTS AND USES OF SLOPE LIMITERS
 !
@@ -373,8 +339,32 @@
      &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HI0
      &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HJ0)  THEN
 !ra02/05/2013 FOR APTIMIZATION
+              YESNO(NSG)=.TRUE. 
               CYCLE 
             ELSE
+!
+!     NORMALIZED UNIT NORMAL (VNOCL), RNN LENGTH OF LIJ
+!
+              XNN = VNOCL(1,NSG)
+              YNN = VNOCL(2,NSG)
+              RNN = VNOCL(3,NSG)
+! ROTATION OF THE GRADIENTS
+!
+              GRADI2       = GRADI(2,NSG)
+              GRADI(2,NSG) = XNN*GRADI2+YNN*GRADI(3,NSG)
+              GRADI(3,NSG) =-YNN*GRADI2+XNN*GRADI(3,NSG)
+!             
+              GRADIJ2      = GRADIJ(2,NSG)
+              GRADIJ(2,NSG)= XNN*GRADIJ2+YNN*GRADIJ(3,NSG)
+              GRADIJ(3,NSG)=-YNN*GRADIJ2+XNN*GRADIJ(3,NSG)
+!             
+              GRADJ2       = GRADJ(2,NSG)
+              GRADJ(2,NSG) = XNN*GRADJ2+YNN*GRADJ(3,NSG)
+              GRADJ(3,NSG) =-YNN*GRADJ2+XNN*GRADJ(3,NSG)
+!             
+              GRADJI2      = GRADJI(2,NSG)
+              GRADJI(2,NSG)= XNN*GRADJI2+YNN*GRADJI(3,NSG)
+              GRADJI(3,NSG)=-YNN*GRADJI2+XNN*GRADJI(3,NSG)
 !
 !   ONE REBUILDS H+Z, DSH = VARIATION OF H+Z
 !
@@ -655,7 +645,7 @@
                 HDYZ2 = DEMI*HDYZ2
                 IF(NTRAC.GT.0) THEN
                   DO ITRAC=1,NTRAC
-                    FLUXTEMP%ADR(ITRAC)%P%R(NSG)=DEMI*FLU11
+                    FLUXTEMP%ADR(ITRAC)%P%R(NSG)=FLU11
                   ENDDO
                 ENDIF
               ENDIF

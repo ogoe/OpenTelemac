@@ -25,6 +25,12 @@
 !+      adaptation with the new data structure (common with FEM)
 !+      PARALLELIZATION
 !
+!history  R. ATA (EDF-LNHE)
+!+        18/01/2015
+!+        V7P0
+!+      optimization (change place of Hydro Reconst)
+!+  
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  CE            |<-->|  FLUX  INCREMENTS AT INTERNAL FACES          |                          |
 ! |  ELTSEG        | -->|  SEGMENT NUMBERS PER ELEMENT                 |
@@ -141,18 +147,6 @@
             H1=W(1,NUBO1)
             H2=W(1,NUBO2) 
 !
-!*****************************************************
-!    HYDROSTATIC RECONSTRUCTION
-!
-            DZIJ = MAX(0.D0,ZF2-ZF1)
-            HIJ  = MAX(0.D0,H1- DZIJ)
-!*****************************************************
-!    HYDROSTATIC RECONSTRUCTION
-!
-            DZJI = MAX(0.D0,ZF1-ZF2)
-            HJI  = MAX(0.D0,H2- DZJI)
-!*****************************************************
-!
 !    VELOCITY COMPONENTS 
 !
             IF(H1.GT.EPS)THEN
@@ -177,6 +171,14 @@
 !       AT LEAST ONE WET CELL
 !
             IF(IDRY.LT.2)THEN
+!
+!             HYDROSTATIC RECONSTRUCTION
+              DZIJ = MAX(0.D0,ZF2-ZF1)
+              HIJ  = MAX(0.D0,H1- DZIJ)
+!             HYDROSTATIC RECONSTRUCTION
+              DZJI = MAX(0.D0,ZF1-ZF2)
+              HJI  = MAX(0.D0,H2- DZJI)
+!*****************************************************
               CALL FLUX_HLLC(XI,HIJ,HJI,V21,V22,V31,V32,
      &                       PSI1,PSI2,XNN,YNN,ROT,FLX)
 !

@@ -28,6 +28,13 @@
 !+        V6P3
 !+    cleaning
 !+ 
+!history  R. ATA (EDF-LNHE)
+!+        01/25/2013
+!+        V7p0
+!+    add normal projection of flux for liquid
+!+    boundaries
+!+    warning: its impact on mass balance is not taken into account
+!+             to be considered for next release
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  AIRS          |-->|  CELL AREAS
@@ -61,8 +68,8 @@
       INTEGER, INTENT(IN)             :: NPOIN,KFROT,LT,NPTFR,KNEU
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMPRO(NPTFR,6)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
-      DOUBLE PRECISION, INTENT(INOUT) :: W(3,NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: FLUX(NPOIN,3),DT
+      DOUBLE PRECISION, INTENT(INOUT) :: W(3,NPOIN),FLUX(NPOIN,3)
+      DOUBLE PRECISION, INTENT(IN)    :: DT
       DOUBLE PRECISION, INTENT(IN)    :: FLUX_OLD(NPOIN,3),GAMMA
       DOUBLE PRECISION, INTENT(IN)    :: AIRS(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN),SMH(NPOIN) 
@@ -71,8 +78,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
-      INTEGER I 
-      DOUBLE PRECISION FACT,UNMGAMMA
+      INTEGER I,K
+      DOUBLE PRECISION FACT,UNMGAMMA,UGN
 !
 !
 !=======================
@@ -87,6 +94,22 @@
         CALL PLANTE(1)
         STOP
       ENDIF
+!
+!      PROJECTION ON THE NORMAL TO ELIMINATE THE TANGENT COMPONENT
+!      ONLY FOR LIQUID BOUNDARY  
+!
+      DO K=1,NPTFR
+        I=NBOR(K)
+        IF(LIMPRO(K,1).NE.KNEU) THEN
+          !NORMALIZED NORMAL    
+          UGN =XNEBOR(K)*FLUX(I,2)+YNEBOR(K)*FLUX(I,3) ! TO RETRIEVE NORMAL COMPONENET OF UG 
+!         VGN =  0.D0  ! PUT TANGENTIAL COMPENENT =0
+!         INVERSE ROTATION
+          FLUX(I,2) = XNEBOR(K)*UGN
+          FLUX(I,3) = YNEBOR(K)*UGN
+        ENDIF
+      ENDDO 
+!       
 !
 !++++++++++++++++++++++++++++++++++++
 ! TIME INTEGRATION
