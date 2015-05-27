@@ -14,7 +14,7 @@
      &  HSTOK,HCSTOK,LOGFR,DSZ,FLUXT,FLUHBOR,FLBOR,DTN,FLUSORTN,
      &  FLUENTN,LTT,
      &  FLUXTEMP,FLUHBTEMP,HC,SMTR,AIRST,TMAX,DTT,GAMMA,FLUX_OLD,
-     &  MXPTVS,NEISEG,V2DPAR)
+     &  MXPTVS,NEISEG,V2DPAR,UDEL,VDEL)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   15/06/2013
@@ -75,6 +75,11 @@
 !+    change diemensions of CMI
 !+    from (2,nseg) to (nseg,2)
 !
+!history  R. ATA 
+!+        25/05/2015
+!+        V7P1
+!+    include udel and vdel for the coupling
+!+    with DELWAQ and Sisyphe
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| ELEMENT AREA
 !| AIRS           |-->| CELL AREA
@@ -83,6 +88,7 @@
 !| CF             |-->| FRICTION COEFFICIENT
 !| CFLWTD         |-->| WANTED CFL NUMBER
 !| CMI            |-->| COORDINATES OF MIDDLE PONTS OF EDGES
+!| COUPLING       |-->| STRING WITH THE LIST OF COUPLED PROGRAMMES
 !| DIFNU          |-->| COEFFICIENT OF DIFFUSION FOR TRACER
 !| DIFT           |-->| LOGICAL: DIFFUSION FOR TRACER OR NOT
 !| DIFVIT         |-->|  LOGICAL: DIFFUSION FOR VELOCITY OR NOT
@@ -130,7 +136,9 @@
 !| MASSOU         |<--| ADDED TRACER MASS BY SOURCE TERM
 !| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
 !| MAXTRA         |-->| MAXIMUM NUMBER OF TRACERS
+!| MXPTVS         |-->| MAX NUMBER OF NEIGHBOR FOR A NODE 
 !| NBOR           |-->| GLOBAL INDICES FOR BORD NODES
+!| NEISEG         |-->| NEIGHBOR OF THE SEGMENT
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NIT            |-->| TOTAL NUMBER OF TIME STEPS
@@ -152,6 +160,7 @@
 !| TMAX           |-->| FINAL TIME
 !| TSCE2          |-->| VALUES OF TRACERS AT SOURCES
 !| U,V            |<--| VELOCITY COMPONENTS AT TIME N+1
+!| UDEL,VDEL      |<--| COMPATIBLE COMPONENTS (OF DELWAQ) VELOCITY FIELD
 !| UBOR           |-->| IMPOSED VALUES FOR U
 !| VBOR           |-->| IMPOSED VALUES FOR V
 !| VNOIN          |-->| NORMAL TO THE INTERFACE
@@ -163,8 +172,6 @@
 !| XNEBOR,YNEBOR  |-->| NORMAL TO BOUNDARY POINTS
 !| YASMH          |-->| LOGICAL: TO TAKE INTO ACCOUNT SMH
 !| ZF             |-->| BED TOPOGRAPHY (BATHYMETRY)
-!| MXPTVS         |-->| MAX NUMBER OF NEIGHBOR FOR A NODE 
-!| NEISEG         |-->| NEIGHBOR OF THE SEGMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -207,7 +214,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: FLUSORTN,FLUENTN
       DOUBLE PRECISION, INTENT(INOUT) :: DJXT(*),DJYT(*)
       DOUBLE PRECISION, INTENT(INOUT) :: FLUTENT(*),FLUTSOR(*)    
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: TB
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: TB,UDEL,VDEL
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
       TYPE(BIEF_OBJ) , INTENT(IN)     :: TBOR,TN,V2DPAR
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: T,HT,SMTR,FLUHBOR,FLUHBTEMP
@@ -243,5 +250,11 @@
 !
 !-----------------------------------------------------------------------
 !
+!
+!  COMPATIBLE VELOCITY FIELD IN CONTINUITY EQUATION
+!  USED BY SISYPHE AND DELWAQ
+      CALL OV ('X=Y    ',UDEL%R,U,U,1.D0,NPOIN)
+      CALL OV ('X=Y    ',VDEL%R,V,V,1.D0,NPOIN)
+!-----------------------------------------------------------------------
       RETURN
       END
