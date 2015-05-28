@@ -136,7 +136,8 @@
      &                SDEPTH%R,NAMEH,
      &                         'WATER DEPTH     M               ',1, 
      &                MESH%X%R,MESH%Y%R,
-     &                NPOIN2,WAC_FILES(WACCOB)%LU,BINCOU,NBOR,NPTFR,
+     &                NPOIN2,WAC_FILES(WACCOB)%LU,WAC_FILES(WACCOB)%FMT,
+     &                NBOR,NPTFR,
      &                AT,DDC,TC1,TC2,SUC1%R,SUC2%R,SVC1%R,SVC2%R,
      &                SZM1%R,SZM2%R,INDIC,'COURANT',NVCOU,TEXCOB,TROUVE,
      &                UNITCOB,PHASCOB)
@@ -228,8 +229,10 @@
         ELSE
           IF(WAC_FILES(WACCOF)%NAME(1:1).NE.' ') THEN
             UL=WAC_FILES(WACCOF)%LU
+            FFORMAT=WAC_FILES(WACCOF)%FMT
           ELSE
             UL=WAC_FILES(WACCOB)%LU
+            FFORMAT=WAC_FILES(WACCOB)%FMT
           ENDIF
 !         HERE DEPTH POSSIBLY READ AS THIRD VARIABLE
           CALL LECDON(SUC%R,NAMEU,
@@ -238,7 +241,7 @@
      &                      'VELOCITY V      M/S             ',2, 
      &                SDEPTH%R,NAMEH,
      &                         'WATER DEPTH     M               ',1, 
-     &                MESH%X%R,MESH%Y%R,NPOIN2,UL,BINCOU,NBOR,NPTFR,
+     &                MESH%X%R,MESH%Y%R,NPOIN2,UL,FFORMAT,NBOR,NPTFR,
      &                NPTT,INDIC,'COURANT',TEXCOB,TROUVE)
         ENDIF
         CALL OV('X=C     ',DZHDT,DZHDT,DZHDT,0.D0,NPOIN2)
@@ -274,8 +277,10 @@
         ELSE
           IF(WAC_FILES(WACVEF)%NAME(1:1).NE.' ') THEN
             UL=WAC_FILES(WACVEF)%LU
+            FFORMAT=WAC_FILES(WACVEF)%FMT
           ELSE
             UL=WAC_FILES(WACVEB)%LU
+            FFORMAT=WAC_FILES(WACVEB)%FMT
           ENDIF
           IF(VENSTA) THEN
             CALL LECDON(SUV%R,NAMEWX,
@@ -284,7 +289,7 @@
      &                        'WIND ALONG Y    M/S             ',2, 
      &                  SVV%R,'????????????????????????????????',
      &                        '????????????????????????????????',0, 
-     &                  MESH%X%R,MESH%Y%R,NPOIN2,UL,BINVEN,NBOR,NPTFR,
+     &                  MESH%X%R,MESH%Y%R,NPOIN2,UL,FFORMAT,NBOR,NPTFR,
      &                  NPTT,INDIV,'WIND   ',TEXVEB,TROUVE)
           ELSE
             CALL LECDOI(SUV%R,NAMEWX,
@@ -294,7 +299,7 @@
      &                  SVV%R,'????????????????????????????????',
      &                        '????????????????????????????????',0, 
      &                  MESH%X%R,MESH%Y%R,
-     &                  NPOIN2,UL,BINVEN,NBOR,NPTFR,
+     &                  NPOIN2,UL,FFORMAT,NBOR,NPTFR,
      &                  AT,DDC,TV1,TV2,SUV1%R,SUV2%R,SVV1%R,SVV2%R,
      &                  SVV1%R,SVV2%R,INDIV,'VENT   ',NVWIN,TEXVEB,
      &                  TROUVE,UNITVEB,PHASVEB)

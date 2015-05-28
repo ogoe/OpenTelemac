@@ -52,7 +52,8 @@
 !
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
-      DOUBLE PRECISION GAMMLN, XX    , DEUPI
+      DOUBLE PRECISION GAMMLN
+      DOUBLE PRECISION,INTENT(IN)    ::  XX    , DEUPI
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""

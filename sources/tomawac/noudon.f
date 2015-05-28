@@ -93,7 +93,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NDON,NPOIN,NPTFR,INDIC,NVAR
+      INTEGER, INTENT(IN)             :: NDON,NPOIN,NPTFR,INDIC
+      INTEGER, INTENT(INOUT)          :: NVAR
       INTEGER, INTENT(IN)             :: MODE1,MODE2,MODE3
       INTEGER, INTENT(IN)             :: NBOR(NPTFR,2)
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
@@ -115,6 +116,8 @@
       INTEGER I,J,MODE(3)
       DOUBLE PRECISION COEF
       CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3),FULL_NAME(3)
+      CHARACTER(LEN=16), ALLOCATABLE :: VAR_NAME(:), VAR_UNIT(:)
+      CHARACTER(LEN=32) COMPONENT      
       LOGICAL COUUT,VENUT,MARUT
       DATA COUUT/.FALSE./
       DATA VENUT/.FALSE./
@@ -153,6 +156,39 @@
 !       READS A SELAFIN FILE OF TYPE: TELEMAC
 !     ------------------------------------------------------------------
 !
+
+!
+!     The test is useless as fields have already been checked for the initial value
+!
+        CALL GET_DATA_NVAR(FFORMAT,NDON,NVAR,IERR)
+        CALL CHECK_CALL(IERR,'LECDOI:GET_DATA_NVAR')
+        ! 
+        ALLOCATE(VAR_NAME(NVAR),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'LECDOI:VAR_NAME')
+        ALLOCATE(VAR_UNIT(NVAR),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'LECDOI:VAR_UNIT')
+        CALL GET_DATA_VAR_LIST(FFORMAT,NDON,NVAR,VAR_NAME,VAR_UNIT,IERR)
+        CALL CHECK_CALL(IERR,'LECDOI:GET_DATA_VAR_LIST')
+        DO I=1,NVAR
+          COMPONENT (1:16) = VAR_NAME(I)
+          COMPONENT (17:32) = VAR_UNIT(I)
+          ! CHECK IF THE VARIABLE ARE IN THE FILE
+          DO J=1,3
+            IF((COMPONENT.EQ.NAMEFR(J)).AND.
+     &        MODE(J).GT.0) THEN
+              TROUVE(J) = .TRUE.
+              FULL_NAME(J) = NAMEFR(J)
+            ENDIF
+            IF((COMPONENT.EQ.NAMEGB(J)).AND.
+     &        MODE(J).GT.0) THEN
+              TROUVE(J) = .TRUE.
+              FULL_NAME(J) = NAMEGB(J)
+            ENDIF
+          ENDDO
+        ENDDO
+        DEALLOCATE(VAR_NAME)
+        DEALLOCATE(VAR_UNIT)
+
           ! Look for the two record before and after at for the interpolation
           RECORD1 = 0
           RECORD2 = 1

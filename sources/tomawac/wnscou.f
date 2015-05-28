@@ -54,7 +54,8 @@
 !
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
-      DOUBLE PRECISION CK2   , FREQ  , DEPTH
+      DOUBLE PRECISION, INTENT(IN)    :: FREQ  , DEPTH
+      DOUBLE PRECISION, INTENT(INOUT) :: CK2 
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""

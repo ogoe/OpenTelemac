@@ -34,8 +34,8 @@
 !
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
-      INTEGER           NPOIN
-      DOUBLE PRECISION  W_LEG(NPOIN) , X_LEG(NPOIN)
+      INTEGER ,INTENT(IN)             ::          NPOIN
+      DOUBLE PRECISION ,INTENT(INOUT) :: W_LEG(NPOIN) , X_LEG(NPOIN)
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""

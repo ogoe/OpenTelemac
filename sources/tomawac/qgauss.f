@@ -44,8 +44,9 @@
 !
 !     VARIABLES IN ARGUMENT
 !     """""""""""""""""""""
-      INTEGER  N
-      DOUBLE PRECISION QGAUSS, B     , A     , XM
+      INTEGER, INTENT(IN)    ::  N
+      DOUBLE PRECISION QGAUSS
+      DOUBLE PRECISION, INTENT(IN)    :: B , A , XM
 !
 !     LOCAL VARIABLES
 !     """"""""""""""""""

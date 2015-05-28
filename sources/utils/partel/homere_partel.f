@@ -211,6 +211,7 @@
            READ(LI,*) FFORMAT
         ENDIF                                 
         IF ( (FFORMAT .NE. 'MED     ' ) .AND. 
+     &       (FFORMAT .NE. 'SERAFIND' ) .AND. 
      &       (FFORMAT .NE. 'SERAFIN') ) THEN
           WRITE(LU,
      &    '('' FILE FORMAT MUST BE "MED" OR "SERAFIN" '')') 

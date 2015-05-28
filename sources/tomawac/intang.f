@@ -60,8 +60,9 @@
 !
 !.....VARIABLES IN ARGUMENT
 !     """""""""""""""""""""
-      INTEGER  LAVANT, LAPRES, NPLAN , IPLAN
-      DOUBLE PRECISION DELTAD
+      INTEGER, INTENT(IN)          :: NPLAN , IPLAN
+      DOUBLE PRECISION, INTENT(IN) :: DELTAD
+      INTEGER, INTENT(INOUT)       :: LAVANT, LAPRES
 !
 !.....LOCAL VARIABLES
 !     """"""""""""""""""

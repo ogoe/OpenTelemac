@@ -79,7 +79,7 @@
 !| TB_SCA         |<--| SCALE COEFFICIENT
 !| TB_TMP         |<--| WORK TABLE
 !| TB_TPM         |<--| WORK TABLE
-!| TB_V14         |<--| WORK TABLE
+!| TB_V14         |<--| WORK TABLE for F1 
 !| TB_V24         |<--| WORK TABLE
 !| TB_V34         |<--| WORK TABLE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,35 +95,42 @@
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
-      INTEGER           NF    , NT
-      DOUBLE PRECISION  RAISF , TAILF , FREQ(NF)
-!
+      INTEGER, INTENT(IN)   ::NF    , NT
+      DOUBLE PRECISION, INTENT(IN)   :: RAISF , TAILF , FREQ(NF)
 !.....Variables for the spectro-angular interpolation of the spectrum
-      INTEGER           LBUF  , DIMBUF
-      INTEGER           F_POIN(DIMBUF), T_POIN(DIMBUF)
-      DOUBLE PRECISION  F_COEF(DIMBUF), F_PROJ(DIMBUF), TB_SCA(DIMBUF)
-!
+      INTEGER, INTENT(IN)   ::LBUF  , DIMBUF
+      INTEGER, INTENT(INOUT)::F_POIN(DIMBUF), T_POIN(DIMBUF)
+      DOUBLE PRECISION, INTENT(INOUT):: F_COEF(DIMBUF), F_PROJ(DIMBUF)
+      DOUBLE PRECISION, INTENT(INOUT):: TB_SCA(DIMBUF)
 !.....Variables related to the Gaussian quadratures
-      INTEGER           IQ_OM1 , NQ_TE1, NQ_OM2
+      INTEGER, INTENT(IN)   ::IQ_OM1 , NQ_TE1, NQ_OM2
 !
 !.....Variables related to freq. F1 et direc. THETA1
-      INTEGER           NF1   , NT1
-      INTEGER           K_IF1(NF1), K_1P(NT1,NF1), K_1M(NT1,NF1)
-      DOUBLE PRECISION  TB_V14(NF1)
-!
+      INTEGER, INTENT(IN)   ::NF1   , NT1
+      INTEGER, INTENT(INOUT)::K_IF1(NF1), K_1P(NT1,NF1), K_1M(NT1,NF1)
+      DOUBLE PRECISION, INTENT(INOUT):: TB_V14(NF1)
 !.....Variables related to freq. F2 et F3 et direc. THETA2 et THETA3
-      INTEGER           K_IF2 (NQ_OM2,NT1,NF1), K_IF3 (NQ_OM2,NT1,NF1),
-     &                  K_1P2P(NQ_OM2,NT1,NF1), K_1P3M(NQ_OM2,NT1,NF1),
-     &                  K_1P2M(NQ_OM2,NT1,NF1), K_1P3P(NQ_OM2,NT1,NF1),
-     &                  K_1M2P(NQ_OM2,NT1,NF1), K_1M3M(NQ_OM2,NT1,NF1),
-     &                  K_1M2M(NQ_OM2,NT1,NF1), K_1M3P(NQ_OM2,NT1,NF1)
-      DOUBLE PRECISION  TB_V24(NQ_OM2,NT1,NF1), TB_V34(NQ_OM2,NT1,NF1),
-     &                  TB_TPM(NQ_OM2,NT1,NF1), TB_TMP(NQ_OM2,NT1,NF1),
-     &                  TB_FAC(NQ_OM2,NT1,NF1)
-!
+      INTEGER, INTENT(INOUT)::K_IF2 (NQ_OM2,NT1,NF1)
+      INTEGER, INTENT(INOUT)::K_IF3 (NQ_OM2,NT1,NF1)
+      INTEGER, INTENT(INOUT)::K_1P2P(NQ_OM2,NT1,NF1)
+      INTEGER, INTENT(INOUT)::K_1P3M(NQ_OM2,NT1,NF1)
+      INTEGER, INTENT(INOUT)::K_1P2M(NQ_OM2,NT1,NF1)
+      INTEGER, INTENT(INOUT)::K_1P3P(NQ_OM2,NT1,NF1)
+      INTEGER, INTENT(INOUT)::K_1M2P(NQ_OM2,NT1,NF1)
+      INTEGER, INTENT(INOUT)::K_1M3M(NQ_OM2,NT1,NF1)
+      INTEGER, INTENT(INOUT)::K_1M2M(NQ_OM2,NT1,NF1)
+      INTEGER, INTENT(INOUT)::K_1M3P(NQ_OM2,NT1,NF1)
+      DOUBLE PRECISION, INTENT(INOUT):: TB_V24(NQ_OM2,NT1,NF1)
+      DOUBLE PRECISION, INTENT(INOUT):: TB_V34(NQ_OM2,NT1,NF1)
+      DOUBLE PRECISION, INTENT(INOUT):: TB_TPM(NQ_OM2,NT1,NF1)
+      DOUBLE PRECISION, INTENT(INOUT):: TB_TMP(NQ_OM2,NT1,NF1)
+      DOUBLE PRECISION, INTENT(INOUT):: TB_FAC(NQ_OM2,NT1,NF1)
 !.....Variables related to the configuration selection
-      DOUBLE PRECISION  SEUIL1, SEUIL2, ELIM
-      INTEGER           NCONF , NCONFM, IDCONF(NCONFM,3)
+      DOUBLE PRECISION, INTENT(IN)   :: SEUIL1, SEUIL2
+      DOUBLE PRECISION, INTENT(INOUT):: ELIM
+      INTEGER, INTENT(IN)   ::NCONFM
+      INTEGER, INTENT(INOUT)::NCONF , IDCONF(NCONFM,3)
+!
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""

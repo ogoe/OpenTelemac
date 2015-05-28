@@ -1,5 +1,5 @@
-DEBUGGER : 0
-PROCESSEURS PARALLELES : 8
+/DEBUGGER : 1
+/PROCESSEURS PARALLELES : 8
 /--------------------------------------------------------------------/
 /             FICHIER DES PARAMETRES DE TOMAWAC                      /
 /--------------------------------------------------------------------/
@@ -7,9 +7,10 @@ PROCESSEURS PARALLELES : 8
 /--------------------------------------------------------------------/
 /     FICHIERS
 /--------------------------------------------------------------------/
-FICHIER FORTRAN = 'tom_frot_V5P6.f'
-FICHIER DE GEOMETRIE = 'geo_frot_V5P6.slf'
-FICHIER DES CONDITIONS AUX LIMITES = 'geo_frot_V5P6.cli'
+/FICHIER FORTRAN = 'tom_frot.f'
+/FICHIER DE GEOMETRIE = 'geo_frot.slf'
+FICHIER DE GEOMETRIE = 'geom.slf'
+FICHIER DES CONDITIONS AUX LIMITES = 'geo_frot.cli'
 FICHIER DE REFERENCE = 'fom_frot_T_d5-f0.1-h1.slf'
 /
 FICHIER DES RESULTATS 2D = 'tom_frot_T_d5-f0.1-h1.slf'
@@ -19,7 +20,7 @@ FICHIER DES RESULTATS PONCTUELS = 'tom_frot_T_d5-f0.1-h1.spe'
 /--------------------------------------------------------------------/
 TITRE = 'TEST FROTTEMENT AU FOND SUR FOND PLAT'
 PERIODE POUR LES SORTIES GRAPHIQUES = 25
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D = HM0,DMOY,FMOY,FM01
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D = HM0,DMOY,FMOY,FM01,ZF
 PERIODE POUR LES SORTIES LISTING = 20
 ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 0.
 ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 0.

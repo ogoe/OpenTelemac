@@ -10,7 +10,7 @@ ecrete.f ecrspe.f f1f1f1.f filt_sa.f\
 foncro.f fpread.f frem01.f frem02.f fremoy.f frepic.f frmset.f fsprd1.f \
 fsprd2.f fsprd3.f gammln.f gauleg.f homere_tomawac.f \
 ifabtom.f impr.f  iniphy.f initab.f invert.f intang.f   \
-kerbou.f kmoyen.f \
+kerbou.f kmoyen.f kmoye2.f\
 lecdoi.f lecdon.f lecdon_tomawac.f lecsui.f limite.f limwac.f  \
 maruti.f nomvar_tomawac.f noudon.f  \
 point_tomawac.f predif.f  \

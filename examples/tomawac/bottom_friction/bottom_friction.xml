@@ -21,12 +21,12 @@
 --> 
    <action xref="1" rank="2"
        do="translate;compile;run;cas;princi"
-       code="tomawac" target="tom_frot_T_V5P6.cas"
+       code="tomawac" target="bottom_friction.cas"
        title="bottom_friction scalar mode"
    />
    <action xref="2" rank="2"
        do="translate;compile;run;cas;princi" ncsize="4" 
-       code="tomawac" target="tom_frot_T_V5P6.cas"
+       code="tomawac" target="bottom_friction.cas"
        title="bottom_friction parallel mode"
    />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

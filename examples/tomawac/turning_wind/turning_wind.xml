@@ -21,7 +21,7 @@
 --> 
    <action xref="1" rank="2"
        do="translate;compile;run;cas;princi"
-       code="tomawac" target="tom_TW_V5P6.cas"
+       code="tomawac" target="turning_wind.cas"
        title="turning_wind scalar mode"
    />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

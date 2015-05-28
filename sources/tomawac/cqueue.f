@@ -50,8 +50,10 @@
 !
 !.....VARIABLES IN ARGUMENT
 !     """""""""""""""""""""
-      INTEGER  NF    , JFRE  , JBIS
-      DOUBLE PRECISION RAISF , TAILF , COEF1
+      INTEGER, INTENT(IN)             :: NF    , JFRE  
+      DOUBLE PRECISION, INTENT(IN)    :: RAISF , TAILF 
+      DOUBLE PRECISION, INTENT(INOUT) :: COEF1
+      INTEGER, INTENT(INOUT)          :: JBIS
 !
 !
       IF (JFRE.GT.NF) THEN

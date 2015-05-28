@@ -6,7 +6,7 @@
 /--------------------------------------------------------------------/
 /     FILES
 /--------------------------------------------------------------------/
-FICHIER FORTRAN = 'tom_shoal.f'
+/FICHIER FORTRAN = 'tom_shoal.f'
 FICHIER DE GEOMETRIE = 'geo_shoal.slf'
 FICHIER DES CONDITIONS AUX LIMITES = 'geo_shoal.cli'
 VALIDATION = OUI
@@ -28,6 +28,7 @@ ORDONNEES DES POINTS DE SORTIE DU SPECTRE =17.074281692504883
 /--------------------------------------------------------------------/
 PAS DE TEMPS = 0.1
 NOMBRE DE PAS DE TEMPS = 12000
+/NOMBRE DE PAS DE TEMPS = 6000
 NOMBRE DE DIRECTIONS = 36
 NOMBRE DE FREQUENCES = 22
 FREQUENCE MINIMALE = 0.35
@@ -55,7 +56,9 @@ DIRECTION PRINCIPALE 1 INITIALE = 0.
 /--------------------------------------------------------------------/
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 7
 FACTEUR DE PIC AUX LIMITES = 2.
-HAUTEUR SIGNIFICATIVE AUX LIMITES = 0.075
+/HAUTEUR SIGNIFICATIVE AUX LIMITES = 0.075
+/ pour avoir le alpha de briggs en TMA 
+HAUTEUR SIGNIFICATIVE AUX LIMITES = 0.1008288189902181
 FREQUENCE DE PIC AUX LIMITES = 0.7692
 DIRECTION PRINCIPALE 1 AUX LIMITES = 90.
 FONCTION DE REPARTITION ANGULAIRE AUX LIMITES = 3
@@ -65,3 +68,5 @@ ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 64.66
 /--------------------------------------------------------------------/
 /DIFFRACTION = 2
 /PAS DE TEMPS DEBUT DIFFRACTION = 6000
+/SORTIE GLOBALE A LA FIN : OUI
+/FICHIER DES RESULTATS GLOBAUX = 'next_comput.pre'

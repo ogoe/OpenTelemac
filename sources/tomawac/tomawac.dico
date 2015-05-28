@@ -4227,6 +4227,29 @@ AIDE1 = 'Name of wind data file (if binary).
 CONSIDERATION OF WIND 
 FORMATTED WINDS FILE 
 WINDS FILE FORMAT' 
+
+NOM = 'FORMAT DU FICHIER DES VENTS BINAIRE'
+NOM1 = 'BINARY WINDS FILE FORMAT' 
+TYPE = CARACTERE 
+INDEX = 46 
+MNEMO = 'WAC_FILES(WACVEB)%FMT' 
+DEFAUT = 'SERAFIN' 
+DEFAUT1 = 'SERAFIN' 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+NIVEAU = 1 
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE' 
+AIDE = 'Format du fichier de resultats du calcul precedent. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Previous computation results file format. 
+Possible values are: 
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
+ 
  
 NOM = 'FICHIER DES VENTS FORMATE' 
 NOM1 = 'FORMATTED WINDS FILE' 
@@ -4315,6 +4338,28 @@ FORMATTED TIDAL WATER LEVEL FILE
 TIDAL WATER LEVEL FILE FORMAT 
 TIDE REFRESHING PERIOD 
 TIDAL WATER LEVEL FILE BINARY' 
+
+NOM = 'FORMAT DU FICHIER DE LA MAREE BINAIRE'
+NOM1 = 'BINARY TIDAL WATER FILE FORMAT' 
+TYPE = CARACTERE 
+INDEX = 47 
+MNEMO = 'WAC_FILES(WACMAB)%FMT' 
+DEFAUT = 'SERAFIN' 
+DEFAUT1 = 'SERAFIN' 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+NIVEAU = 1 
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE' 
+AIDE = 'Format du fichier de resultats du calcul precedent. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Previous computation results file format. 
+Possible values are: 
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
  
 NOM = 'FICHIER DU NIVEAU DE LA MAREE FORMATE' 
 NOM1 = 'FORMATTED TIDAL WATER LEVEL FILE' 
@@ -5084,6 +5129,37 @@ If its value is 2, a dissipative term is added, following
 Van der Westhuysen (2012).
 **Related keywords:**
 DISSIPATION COEFFICIENT FOR STRONG CURRENT'
+/
+/ ADDED BY TF ON 19/11/2014 
+/
+NOM = 'MODELISATION BAJ' 
+NOM1 = 'BAJ MODELISATION' 
+TYPE = ENTIER 
+INDEX = 51
+MNEMO = 'CBAJ' 
+TAILLE= 0 
+CONTROLE = 0 ; 1 
+DEFAUT = 0 
+DEFAUT1 = 0 
+/CHOIX = '0="Modelisation classique"';
+/'1="Modelisation BAJ"';
+/CHOIX1 = '0="classical modelisation"';
+/'1="BAJ Modelisation"';
+RUBRIQUE = 'SPECTRE'
+RUBRIQUE1 = 'SPECTRUM'
+NIVEAU = 1 
+AIDE = 'Type de calcul de la frequence centrale
+Si sa valeur est 0, on prend la formulation classique 
+Si sa valeur est 1 on pren la modélisation BAJ proposee 
+par Laugel (2013) pour le calcul de la frequence centrale 
+et le limiteur de croissance
+**Mots-cles associes :** 
+PRISE EN COMPTE DES TERMES SOURCES' 
+AIDE1 = 'Choice of the calculus of centrale frequency
+if its value is 0, classical choice 
+if its value is 1, BAJ choice proposed by Laugel (2013).  
+**Related keywords:**
+CONSIDERATION OF SOURCE TERMS' 
 /
 NOM = 'COEFFICIENT DE DISSIPATION PAR FORT COURANT'
 NOM1 = 'DISSIPATION COEFFICIENT FOR STRONG CURRENT'

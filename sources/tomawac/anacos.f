@@ -57,9 +57,9 @@
 !
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
-      INTEGER  NPOIN2
-      DOUBLE PRECISION X (NPOIN2) , Y (NPOIN2)
-      DOUBLE PRECISION UC(NPOIN2) , VC(NPOIN2)
+      INTEGER, INTENT(IN)             ::  NPOIN2
+      DOUBLE PRECISION, INTENT(IN)    ::  X (NPOIN2) , Y (NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) ::  UC(NPOIN2) , VC(NPOIN2)
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""

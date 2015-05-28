@@ -21,7 +21,8 @@
      & SEUIL ,LBUF  ,DIMBUF,F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1 ,
      & K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
      & K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP,
-     & TB_FAC,MDIA,IANMDI,COEMDI,NVWIN ,DIAGHF,VEGETATION,SDSCU,CDSCUR)
+     & TB_FAC,MDIA,IANMDI,COEMDI,NVWIN ,DIAGHF,VEGETATION,SDSCU,CDSCUR,
+     & CBAJ)
 !
 !***********************************************************************
 ! TOMAWAC   V7P0                                  
@@ -94,6 +95,11 @@
 !+        V7P0
 !+   Friction due to vegetation added.
 !
+!history THIERRY FOUQUET (EDF-LNHE)
+!+       19/11/2014 
+!+       V7P0
+!+   BAJ MODELISATION    
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALFABJ         |-->| COEFFICIENT ALPHA OF BJ WAVE BREAKING MODEL
 !| ALFARO         |-->| CONSTANTE ALPHA OF RO WAVE BREAKING MODEL
@@ -106,6 +112,7 @@
 !| BETAM          |-->| WIND GENERATION COEFFICIENT
 !| BINVEN         |-->| WIND FILE BINARY
 !| BORETG         |-->| COEFFICIENT B OF BREAKING WAVE TG MODEL
+!| CBAJ           |-->| CHOICE OF THE CENTRAL FREQUENCY CALCULUS 
 !| CDRAG          |-->| WIND DRAG COEFFICIENT
 !| CDSCUR         |-->| COEFFICIENT OF DISSIPATION BY STRONG CURRENT
 !| CF             |-->| ADVECTION FIELD ALONG FREQUENCY
@@ -275,71 +282,88 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NPOIN2,NPLAN,NF,NSITS,NPTFR,NVEB,NVEF,LIMIT,NVWIN 
-      INTEGER SMOUT , SFROT , SVENT , STRIF , SBREK , INDIC
-      INTEGER IQBBJ , IHMBJ , IFRBJ , IWHTG , IFRTG , IFRRO
-      INTEGER IEXPRO, IFRIH , NDTBRK, IDISRO, STRIA
-      INTEGER NBOR(NPTFR)   , IANGNL(NPLAN,8)
-      INTEGER NBD   , QINDI(NBD) , DIAGHF,SDSCU
-      DOUBLE PRECISION TAILF , CFROT1, GRAVIT, RAISF , DTSI  , TPROP
-      DOUBLE PRECISION CMOUT1, CMOUT2, DDC   , TV1   , TV2   , ZVENT 
-      DOUBLE PRECISION ROAIR , ROEAU , XKAPPA, BETAM , DECAL , CDRAG 
-      DOUBLE PRECISION ALPHA , GAMBJ1, GAMBJ2, ALFABJ, BORETG, GAMATG
-      DOUBLE PRECISION COEFHS, VX_CTE, VY_CTE, CIMPLI
-      DOUBLE PRECISION GAMARO, ALFARO, GAM2RO, EM2SIH, BETAIH, XDTBRK
-      DOUBLE PRECISION ALFLTA, RFMLTA, KSPB  , BDISPB, BDSSPB, F1
-      DOUBLE PRECISION DEPTH(NPOIN2), USNEW(NPOIN2) , USOLD(NPOIN2) 
-      DOUBLE PRECISION VARIAN(NPOIN2),  FMOY(NPOIN2) , XKMOY(NPOIN2)
-      DOUBLE PRECISION TWOLD(NPOIN2), TWNEW(NPOIN2) , Z0OLD(NPOIN2) 
-      DOUBLE PRECISION Z0NEW(NPOIN2), VENTX(NPOIN2) , VENTY(NPOIN2) 
-      DOUBLE PRECISION U1(NPOIN2),    U2(NPOIN2) ,    V1(NPOIN2) 
-      DOUBLE PRECISION V2(NPOIN2),     X(NPOIN2) ,     Y(NPOIN2) 
-      DOUBLE PRECISION TAUWAV(NPOIN2), TAUX1(NPOIN2) , TAUX2(NPOIN2) 
-      DOUBLE PRECISION TAUX3(NPOIN2), TAUX4(NPOIN2) , TAUX5(NPOIN2) 
-      DOUBLE PRECISION TAUX6(NPOIN2), TAUX7(NPOIN2) , COEFNL(16)    
-      DOUBLE PRECISION TETA(NPLAN), SINTET(NPLAN) , COSTET(NPLAN) 
-      DOUBLE PRECISION F(NPOIN2,NPLAN,NF),XK(NPOIN2,NF)       
-      DOUBLE PRECISION DF_LIM(NPOIN2) 
-      DOUBLE PRECISION TSDER(NPOIN2,NPLAN,NF),TSTOT(NPOIN2,NPLAN,NF) 
-      DOUBLE PRECISION FREQ(NF), DFREQ(NF)
-      DOUBLE PRECISION TOLD(NPOIN2,NPLAN), TNEW(NPOIN2,NPLAN)
-      DOUBLE PRECISION BETA(NPOIN2)
-      DOUBLE PRECISION CF(NPOIN2,NPLAN,NF)
-      CHARACTER(LEN=144) NOMVEB, NOMVEF
-      CHARACTER(LEN=8) BINVEB
-      CHARACTER(LEN=8) BINVEF
-      LOGICAL  PROINF, VENT , VENSTA,VEGETATION
+      INTEGER, INTENT(IN) :: NPOIN2,NPLAN,NF,NSITS,NPTFR,NVEB
+      INTEGER, INTENT(INOUT) :: NVWIN,NVEF
+      INTEGER, INTENT(IN) :: SMOUT , SFROT , SVENT , STRIF , 
+     &                   SBREK , INDIC 
+      INTEGER, INTENT(IN) :: IQBBJ, IHMBJ, IFRBJ, IWHTG , IFRTG , IFRRO
+      INTEGER, INTENT(IN) :: IEXPRO, IFRIH, NDTBRK, IDISRO, STRIA
+      INTEGER, INTENT(IN) :: NBOR(NPTFR)   , IANGNL(NPLAN,8)
+      INTEGER, INTENT(IN) :: NBD   , QINDI(NBD), DIAGHF,SDSCU
+      DOUBLE PRECISION, INTENT(IN) :: TAILF, CFROT1, GRAVIT, RAISF,DTSI,
+     &                  CMOUT1, CMOUT2, DDC   , ZVENT , TPROP ,
+     &                  ROAIR , ROEAU , XKAPPA, BETAM , DECAL , CDRAG ,
+     &                  ALPHA , GAMBJ1, GAMBJ2, ALFABJ,BORETG, GAMATG,
+     &                  COEFHS, VX_CTE, VY_CTE, CIMPLI,
+     &                  GAMARO, ALFARO, GAM2RO, EM2SIH, BETAIH, XDTBRK,
+     &                  ALFLTA, RFMLTA, KSPB  , BDISPB, BDSSPB, F1
+      DOUBLE PRECISION, INTENT(INOUT) :: TV1   ,TV2   
+      DOUBLE PRECISION, INTENT(IN) ::  DEPTH(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: USNEW(NPOIN2) , USOLD(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: VARIAN(NPOIN2),  FMOY(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: XKMOY(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: TWOLD(NPOIN2), TWNEW(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: Z0OLD(NPOIN2), Z0NEW(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: VENTX(NPOIN2), VENTY(NPOIN2) 
+      DOUBLE PRECISION, INTENT(INOUT) :: U1(NPOIN2),    U2(NPOIN2)  
+      DOUBLE PRECISION, INTENT(INOUT) :: V1(NPOIN2), V2(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN) ::    X(NPOIN2)   ,   Y(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: TAUWAV(NPOIN2), TAUX1(NPOIN2), 
+     &                                   TAUX2(NPOIN2),TAUX3(NPOIN2), 
+     &                                   TAUX4(NPOIN2),TAUX5(NPOIN2), 
+     &                                   TAUX6(NPOIN2),TAUX7(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN) ::  COEFNL(16)
+      DOUBLE PRECISION, INTENT(IN) :: TETA(NPLAN), SINTET(NPLAN)
+      DOUBLE PRECISION, INTENT(IN) :: COSTET(NPLAN) 
+      DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN2,NPLAN,NF) 
+      DOUBLE PRECISION, INTENT(IN) :: XK(NPOIN2,NF), FREQ(NF), DFREQ(NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: DF_LIM(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: TSDER(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NPOIN2,NPLAN,NF) 
+      DOUBLE PRECISION, INTENT(INOUT) :: TOLD(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: TNEW(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: BETA(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN) :: CF(NPOIN2,NPLAN,NF)
+     &                   ,CDSCUR
+      INTEGER, INTENT(IN) :: CBAJ
+      INTEGER, INTENT(INOUT) :: LIMIT
+      CHARACTER*144, INTENT(IN) :: NOMVEB, NOMVEF
+      CHARACTER(LEN=8), INTENT(IN) :: BINVEB,BINVEF
+      LOGICAL, INTENT(IN) ::  PROINF, VENT , VENSTA,VEGETATION
 !....Linear wind growth declaration
-      INTEGER           LVENT
+      INTEGER, INTENT(IN) :: LVENT
 !....Yan expression declarations
-      DOUBLE PRECISION  CMOUT3, CMOUT4, CMOUT5, CMOUT6
+      DOUBLE PRECISION, INTENT(IN) :: CMOUT3, CMOUT4, CMOUT5, CMOUT6
 !....Westhuysen expression decalaration
-      DOUBLE PRECISION  COEFWD, COEFWE, COEFWF, COEFWH,CDSCUR
+      DOUBLE PRECISION, INTENT(IN) :: COEFWD, COEFWE, COEFWF, COEFWH
 !....MDIA method declarations
-      INTEGER           MDIA
-      INTEGER           IANMDI(NPLAN,16,MDIA)
-      DOUBLE PRECISION  COEMDI(32,MDIA)
+      INTEGER, INTENT(IN) :: MDIA, IANMDI(NPLAN,16,MDIA)
+      DOUBLE PRECISION, INTENT(IN) ::  COEMDI(32,MDIA)
 !....GQM method declarations
-      INTEGER  NQ_TE1, NQ_OM2, NF1, NF2 , NT1
-      INTEGER  NCONF , NCONFM
-      DOUBLE PRECISION SEUIL
-      INTEGER  LBUF  , DIMBUF
-      INTEGER           F_POIN(DIMBUF), T_POIN(DIMBUF)
-      DOUBLE PRECISION  F_COEF(DIMBUF), F_PROJ(DIMBUF), TB_SCA(DIMBUF)
-      INTEGER K_IF1 (1:NF1)
-      INTEGER K_1P  (1:NT1,1:NF1), K_1M(1:NT1,1:NF1)
-      INTEGER K_IF2 (1:NF2,1:NT1,1:NF1), K_IF3 (1:NF2,1:NT1,1:NF1)
-      INTEGER K_1P2P(1:NF2,1:NT1,1:NF1), K_1P2M(1:NF2,1:NT1,1:NF1)
-      INTEGER K_1P3P(1:NF2,1:NT1,1:NF1), K_1P3M(1:NF2,1:NT1,1:NF1)
-      INTEGER K_1M2P(1:NF2,1:NT1,1:NF1), K_1M2M(1:NF2,1:NT1,1:NF1)
-      INTEGER K_1M3P(1:NF2,1:NT1,1:NF1), K_1M3M(1:NF2,1:NT1,1:NF1)
-      INTEGER IDCONF(1:NCONFM,1:3)
-      DOUBLE PRECISION TB_V14(1:NF1)
-      DOUBLE PRECISION TB_V24(1:NF2,1:NT1,1:NF1)
-      DOUBLE PRECISION TB_V34(1:NF2,1:NT1,1:NF1)
-      DOUBLE PRECISION TB_TPM(1:NF2,1:NT1,1:NF1)
-      DOUBLE PRECISION TB_TMP(1:NF2,1:NT1,1:NF1)
-      DOUBLE PRECISION TB_FAC(1:NF2,1:NT1,1:NF1)
+      INTEGER, INTENT(IN) :: NQ_TE1, NQ_OM2, NF1, NF2 , NT1
+      INTEGER, INTENT(IN) ::  NCONF , NCONFM
+      DOUBLE PRECISION, INTENT(IN) ::  SEUIL
+      INTEGER, INTENT(IN) :: LBUF  , DIMBUF
+      INTEGER, INTENT(IN) :: F_POIN(DIMBUF), T_POIN(DIMBUF)
+      DOUBLE PRECISION, INTENT(IN) ::  F_COEF(DIMBUF), F_PROJ(DIMBUF),
+     &                                TB_SCA(DIMBUF)
+      INTEGER, INTENT(IN) :: K_IF1 (NF1)
+      INTEGER, INTENT(IN) :: K_1P  (NT1,NF1), K_1M(NT1,NF1)
+      INTEGER, INTENT(IN) :: K_IF2 (NF2,NT1,NF1),
+     &                       K_IF3 (NF2,NT1,NF1),
+     &        K_1P2P(NF2,NT1,NF1), K_1P2M(NF2,NT1,NF1),
+     &        K_1P3P(NF2,NT1,NF1), K_1P3M(NF2,NT1,NF1),
+     &        K_1M2P(NF2,NT1,NF1), K_1M2M(NF2,NT1,NF1),
+     &        K_1M3P(NF2,NT1,NF1), K_1M3M(NF2,NT1,NF1)
+      INTEGER, INTENT(IN) :: IDCONF(NCONFM,3)
+      DOUBLE PRECISION, INTENT(IN) :: TB_V14(NF1)
+      DOUBLE PRECISION, INTENT(IN) :: TB_V24(NF2,NT1,NF1), 
+     &                                TB_V34(NF2,NT1,NF1),
+     &                                TB_TPM(NF2,NT1,NF1), 
+     &                                TB_TMP(NF2,NT1,NF1),
+     &                                TB_FAC(NF2,NT1,NF1)
+
+
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -351,7 +375,11 @@
       DOUBLE PRECISION  XCCMDI(4)
 !
       LOGICAL TROUVE(3)
+!
+      DOUBLE PRECISION  CPHAS , SEUILF
+!
       CHARACTER(LEN=8) BINVEN
+
 !
 !-----------------------------------------------------------------------
 !
@@ -496,18 +524,35 @@
 !
         CALL TOTNRJ(VARIAN,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2)
 !
+        IF (CBAJ.EQ.0) THEN
+!
 !       3.2 COMPUTES THE MEAN FREQUENCY OF THE SPECTRUM
 !       -----------------------------------------------
 !
-        CALL FREMOY(FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2,
-     &              TAUX1,TAUX2)
+             CALL FREMOY(FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2,
+     &          TAUX1,TAUX2)
 !
 !       3.3 COMPUTES THE MEAN WAVE NUMBER OF THE SPECTRUM
 !       -------------------------------------------------
-        CALL KMOYEN
-     &( XKMOY , XK    , F     , FREQ  , DFREQ , TAILF , NF    , NPLAN ,
-     &  NPOIN2, TAUX1 , TAUX2 , TAUX3 )
+             CALL KMOYEN (XKMOY, XK , F, FREQ, DFREQ , TAILF, NF, 
+     &            NPLAN, NPOIN2, TAUX1 , TAUX2 , TAUX3 )
+          ELSEIF (CBAJ.EQ.1) THEN
 !
+!       3.2 COMPUTES THE MEAN FREQUENCY OF THE SPECTRUM
+!       -----------------------------------------------
+!
+             CALL FREM01 (FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2,
+     &            TAUX1,TAUX2)
+!
+!       3.3 COMPUTES THE MEAN WAVE NUMBER OF THE SPECTRUM
+!       -------------------------------------------------
+             CALL KMOYE2(XKMOY, XK, F, FREQ, DFREQ, TAILF, NF, NPLAN ,
+     &            NPOIN2, TAUX1 , TAUX2 , TAUX3 )
+          ELSE
+            WRITE(LU,*) 'UNKNOWN VALUE OF BAJ:',CBAJ
+            CALL PLANTE(1)
+            STOP
+          ENDIF
 !
 !       4. COMPUTES THE CONTRIBUTIONS OF THE SOURCE TERMS FOR GENERATION,
 !          WHITECAPPING AND INTERACTIONS BETWEEN QUADRUPLETS
@@ -567,7 +612,39 @@
           ENDDO
 !
         ENDIF
+
+        IF (CBAJ.EQ.1) THEN 
+! Calculation pf mean frequency fmean_WS put in the  tabular TAUX7
+           SEUILF = 1.D-20
+           DO IP=1,NPOIN2
+              TAUX1(IP) = 0.0D0
+              TAUX2(IP) = 0.0D0
+           ENDDO
 !
+           DO IFF=1,NF
+              AUX3=DEUPI/DBLE(NPLAN)*DFREQ(IFF)
+              AUX4=AUX3/FREQ(IFF)
+              DO JP=1,NPLAN
+                 DO IP=1,NPOIN2
+                    CPHAS=DEUPI*FREQ(IFF)/XK(IP,IFF)
+                    AUXI=28.0D0/CPHAS*USNEW(IP)*COS(TETA(JP)-TWNEW(IP))
+                    IF ((TSTOT(IP,JP,IFF).GT.0).OR.(AUXI.GE.1.0D0)) THEN
+                       TAUX1(IP) = TAUX1(IP) + F(IP,JP,IFF)*AUX3
+                       TAUX2(IP) = TAUX2(IP) + F(IP,JP,IFF)*AUX4
+                    ENDIF
+                 ENDDO
+              ENDDO
+           ENDDO
+!
+           DO IP=1,NPOIN2
+              IF (TAUX1(IP).LT.SEUILF) THEN
+                 TAUX7(IP) = SEUILF
+              ELSE
+                 TAUX7(IP) = TAUX1(IP)/TAUX2(IP)
+              ENDIF
+           ENDDO
+        ENDIF
+
 !       4.3 NON-LINEAR INTERACTIONS BETWEEN QUADRUPLETS
 !       -----------------------------------------------
 !
@@ -641,6 +718,11 @@
 !                       OF DF_LIM(NPOIN2,NF)
 !
 !
+        IF (CBAJ.EQ.1) THEN
+           LIMIT=3
+!     or doing it in lecdon 
+        ENDIF
+! if nf is growing, inverse if limit and loop on nf 
         DO IFF=1,NF
 !         LIMITING FACTOR TAKEN FROM WAM-CYCLE 4
           IF(LIMIT.EQ.1) THEN
@@ -657,6 +739,17 @@
             DO IP=1,NPOIN2
               DF_LIM(IP)=AUXI*MAX(USNEW(IP),USMIN)
             ENDDO
+!
+!           LIMITING FACTOR FROM LAUGIER
+!
+          ELSEIF (LIMIT.EQ.3) THEN
+            COEF=3.0D-7*GRAVIT*DTSI
+            AUXI=COEF/FREQ(IFF)**4
+            USMIN=GRAVIT*5.6D-3/FREQ(IFF)
+            DO IP=1,NPOIN2
+              DF_LIM(IP)=AUXI*MAX(USNEW(IP),USMIN)*TAUX7(IP)
+            ENDDO
+!
           ELSEIF(LIMIT.NE.0) THEN
             WRITE(LU,*) 'UNKNOWN LIMITING FACTOR:',LIMIT
             CALL PLANTE(1)
@@ -698,32 +791,50 @@
           AUX2=2.5D0/FREQ(1)
           AUX3=1.D0/LOG10(RAISF)
 !
-          DO IP=1,NPOIN2
+!     IF CBAJ and loop inversed 6.2 and 6.3 written twice with a different formula for FM2 
+          IF(CBAJ.EQ.0) THEN 
+             DO IP=1,NPOIN2
 !
 !       6.2 COMPUTES THE LAST FREQUENCY OF THE DISCRETISED SPECTRUM.
 !           THIS FREQUENCY IS THE MAXIMUM OF (FM1=4.*FPM ; FM2=2.5*FMOY).
 !           ITS INDEX IS MFMAX.
 !       -------------------------------------------------------------
 !
-            FM1 =AUX1/MAX(USNEW(IP),1.D-90)
-            FM2 =AUX2*FMOY(IP)
-            MF1=INT(AUX3*LOG10(FM1)+1.D0)
-            MF2=INT(AUX3*LOG10(FM2)+1.D0)
-            MFMAX=MIN(MAX(MF1,MF2),NF)
+                FM1 =AUX1/MAX(USNEW(IP),1.D-90)
+                FM2 =AUX2*FMOY(IP)
+                MF1=INT(AUX3*LOG10(FM1)+1.D0)
+                MF2=INT(AUX3*LOG10(FM2)+1.D0)
+                MFMAX=MIN(MAX(MF1,MF2),NF)
 !
 !       6.3 MODIFIES THE HIGH FREQUENCY PART OF THE SPECTRUM
 !           A DECREASE IN F**(-TAILF) IS IMPOSED BEYOND
 !           FREQ(MFMAX).  (TAILF=5 IN WAM-CYCLE 4)
 !       -------------------------------------------------------------
 !
-            DO IFF=MFMAX+1,NF
-              AUX4=(FREQ(MFMAX)/FREQ(IFF))**TAILF
-              DO JP=1,NPLAN
-                F(IP,JP,IFF)=AUX4*F(IP,JP,MFMAX)
-              ENDDO
-            ENDDO
+                DO IFF=MFMAX+1,NF
+                   AUX4=(FREQ(MFMAX)/FREQ(IFF))**TAILF
+                   DO JP=1,NPLAN
+                      F(IP,JP,IFF)=AUX4*F(IP,JP,MFMAX)
+                   ENDDO
+                ENDDO
+             ENDDO
+
+          ELSE
+             DO IP=1,NPOIN2
+                FM1 =AUX1/MAX(USNEW(IP),1.D-90)
+                FM2 =AUX2*TAUX7(IP)
+                MF1=INT(AUX3*LOG10(FM1)+1.D0)
+                MF2=INT(AUX3*LOG10(FM2)+1.D0)
+                MFMAX=MIN(MAX(MF1,MF2),NF)
+                DO IFF=MFMAX+1,NF
+                   AUX4=(FREQ(MFMAX)/FREQ(IFF))**TAILF
+                   DO JP=1,NPLAN
+                      F(IP,JP,IFF)=AUX4*F(IP,JP,MFMAX)
+                   ENDDO
+                ENDDO
 !
-          ENDDO
+             ENDDO
+          ENDIF
         ELSEIF(DIAGHF.GE.2) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'OPTION POUR LA QUEUE DIAGNOSTIQUE'
@@ -769,9 +880,14 @@
 !           - - - - - - - - - - - -
 !
   751       CONTINUE
-            DO IP=1,NPOIN2
-              TAUX3(IP)=FMOY(IP)
-            ENDDO
+            IF (CBAJ.EQ.1) THEN 
+              CALL FREMOY(TAUX3, F, FREQ, DFREQ, TAILF, NF, NPLAN, 
+     &              NPOIN2, TAUX1, TAUX2 )
+            ELSE
+              DO IP=1,NPOIN2
+                TAUX3(IP)=FMOY(IP)
+              ENDDO
+            ENDIF
             GOTO 759
 !
 !           MEAN FREQUENCY F01

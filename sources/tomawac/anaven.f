@@ -69,10 +69,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER  NPOIN2
-      DOUBLE PRECISION AT    , DDC   , VX_CTE, VY_CTE
-      DOUBLE PRECISION X (NPOIN2)    , Y (NPOIN2)
-      DOUBLE PRECISION UV(NPOIN2)    , VV(NPOIN2)
+      INTEGER, INTENT(IN)             ::  NPOIN2
+      DOUBLE PRECISION, INTENT(IN)    :: AT    , DDC   , VX_CTE, VY_CTE
+      DOUBLE PRECISION, INTENT(IN)    :: X (NPOIN2)    , Y (NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT)    :: UV(NPOIN2)    , VV(NPOIN2)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

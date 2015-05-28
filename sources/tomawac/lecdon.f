@@ -82,6 +82,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_HERMES
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -89,7 +90,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NDON,NPOIN2,NPTFR,INDIC,NPTT
+      INTEGER, INTENT(IN)             :: NDON,NPOIN2,NPTFR,INDIC
+      INTEGER, INTENT(INOUT)          :: NPTT
       INTEGER, INTENT(IN)             :: MODE1,MODE2,MODE3
       INTEGER, INTENT(IN)             :: NBOR(NPTFR,2)
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2)
@@ -108,7 +110,7 @@
       INTEGER NP,I,J,NVAR,MODE(3)
       DOUBLE PRECISION T1VOID,T2VOID,TIME
       CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3),FULL_NAME(3)
-      CHARACTER(LEN=72) TITCAS
+      CHARACTER(LEN=80) TITCAS
       INTEGER :: RECORD, IERR
 !
       INTRINSIC TRIM
@@ -199,7 +201,7 @@
         ! Timesteps
         CALL GET_DATA_NTIMESTEP(FFORMAT,NDON,NPTT,IERR)
         RECORD = NPTT - 1
-        CALL GET_DATA_TIME(FFORMAT,NDON,TIME,IERR)
+        CALL GET_DATA_TIME(FFORMAT,NDON,RECORD,TIME,IERR)
         ! Check if all the variables are found for record1
         DO J=1,3
           IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN

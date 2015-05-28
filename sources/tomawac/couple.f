@@ -36,8 +36,10 @@
 !
 !.....VARIABLES IN ARGUMENT
 !     """""""""""""""""""""
-      DOUBLE PRECISION XK1   , YK1   , XK2   , YK2   , XK3   , YK3
-      DOUBLE PRECISION XK4   , YK4   , GRAVIT, PI    , COUPLE
+      DOUBLE PRECISION, INTENT(IN)    :: XK1   , YK1   , XK2   , YK2 
+      DOUBLE PRECISION, INTENT(IN)    :: XK3   , YK3
+      DOUBLE PRECISION, INTENT(IN)    :: XK4   , YK4   , GRAVIT, PI    
+      DOUBLE PRECISION COUPLE
 !
 !.....LOCAL VARIABLES
 !     """"""""""""""""""

@@ -4,8 +4,9 @@
 /--------------------------------------------------------------------/
 /     FICHIERS
 /--------------------------------------------------------------------/
-FICHIER FORTRAN = 'tom_fetch_lim_fd.f'
-FICHIER DE GEOMETRIE = 'geo_fetch_lim.slf'
+/FICHIER FORTRAN = 'tom_fetch_lim_fd.f'
+/FICHIER DE GEOMETRIE = 'geo_fetch_lim.slf'
+FICHIER DE GEOMETRIE = 'geom.slf'
 FICHIER DES CONDITIONS AUX LIMITES = 'geo_fetch_lim.cli'
 /
 FICHIER DE REFERENCE = 'fom_fetch_lim_fd.slf'
@@ -62,6 +63,8 @@ HAUTEUR SIGNIFICATIVE AUX LIMITES = 0.
 /--------------------------------------------------------------------/
 PROFONDEUR INFINIE = NON
 APPORTS DUS AU VENT = 2
+VITESSE DU VENT SUIVANT X = 20.
+VITESSE DU VENT SUIVANT Y = 0.
 DISSIPATION PAR MOUTONNEMENT = 2
 DISSIPATION PAR FROTTEMENT SUR LE FOND = 1
 TRANSFERTS NON LINEAIRES INTER-FREQUENCES = 1

@@ -920,6 +920,7 @@ files: declarations_tomawac.f
   qtria2.f
   fpread.f
   qfrot1.f
+  kmoye2.f
   frepic.f
   qwindl.f
   semimp.f

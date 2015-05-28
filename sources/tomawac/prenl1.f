@@ -68,10 +68,10 @@
 !
 !.....VARIABLES IN ARGUMENT
 !     """""""""""""""""""""
-      INTEGER  NPLAN , NF
-      INTEGER  IANGNL(NPLAN,8)
-      DOUBLE PRECISION RAISF , XLAMD
-      DOUBLE PRECISION COEFNL(16)
+      INTEGER, INTENT(IN)             ::  NPLAN , NF
+      INTEGER, INTENT(INOUT)          ::  IANGNL(NPLAN,8)
+      DOUBLE PRECISION, INTENT(IN)    :: RAISF , XLAMD
+      DOUBLE PRECISION, INTENT(INOUT) :: COEFNL(16)
 !
 !.....LOCAL VARIABLES
 !     """"""""""""""""""

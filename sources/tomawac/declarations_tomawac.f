@@ -326,6 +326,10 @@
 !
       INTEGER SDSCU
 !
+!     MODELISATION CBAJ
+!
+      INTEGER CBAJ
+!
 !     TIME STEP
 !
       DOUBLE PRECISION DT

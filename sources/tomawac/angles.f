@@ -62,7 +62,8 @@
 !
 !.....VARIABLES IN ARGUMENT
 !     """""""""""""""""""""
-      DOUBLE PRECISION XLAMD , DTPLUS, DTMOIN
+      DOUBLE PRECISION, INTENT(IN)    :: XLAMD 
+      DOUBLE PRECISION, INTENT(INOUT) :: DTPLUS, DTMOIN
 !
 !.....LOCAL VARIABLES
 !     """"""""""""""""""

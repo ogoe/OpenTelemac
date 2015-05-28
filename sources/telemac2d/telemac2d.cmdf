@@ -883,7 +883,7 @@ files: declarations_tomawac.f
   couuti.f
   noudon.f
   stress.f
-  anaven.f
+  kmoye2.f
   tautot.f
   ustar1.f
   qdscur.f
@@ -908,6 +908,7 @@ files: declarations_tomawac.f
   qnlin3.f
   totnrj.f
   kmoyen.f
+  anaven.f
   frem01.f
   frem02.f
   qtria1.f

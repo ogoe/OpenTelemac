@@ -1,0 +1,81 @@
+/PROCESSEURS PARALLELES = 5
+/********************************************************************/
+/              TOMAWAC  STEERING FILE                                /
+/********************************************************************/
+/DEBUGGER=1
+/--------------------------------------------------------------------/
+/     FILES
+/--------------------------------------------------------------------/
+/FICHIER FORTRAN = 'princi_veg.f'
+/FICHIER DE GEOMETRIE = 'geo_mesh_veg.slf'
+FICHIER DE GEOMETRIE = 'geom.slf'
+FICHIER DES CONDITIONS AUX LIMITES = 'geo_mesh_veg.cli'
+FICHIER DES RESULTATS 2D = 'res_veg_Tp1.slf'
+/FICHIER DES RESULTATS 2D = 'geom.slf'
+/FICHIER DES RESULTATS PONCTUELS = 'res_veg_Tp1_Thierry.spe'
+/FICHIER DES RESULTATS SPECTRES 1D  = 'res_veg_Tp1.txt'
+/
+FICHIER DE REFERENCE = 'ref_veg.slf'
+VALIDATION = OUI
+/--------------------------------------------------------------------/
+/ MISCELLANEOUS INPUT-OUTPUT 
+/--------------------------------------------------------------------/
+TITRE = 'CAS1 VEG TEST MENDEZ ET AL. 2004'
+PERIODE POUR LES SORTIES GRAPHIQUES = 30
+/NOMBRE DE TABLEAUX PRIVES = 1
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D = 
+M0,HM0,DMOY,TMOY,VX,VY,ZF,FMOY,TPD
+/,PRI
+PERIODE POUR LES SORTIES LISTING = 30
+/ABSCISSES DES POINTS DE SORTIE DU SPECTRE = NEANT	
+/ORDONNEES DES POINTS DE SORTIE DU SPECTRE = NEANT
+/--------------------------------------------------------------------/
+/ DISCRETIZATION
+/--------------------------------------------------------------------/
+PAS DE TEMPS = 1
+NOMBRE DE PAS DE TEMPS = 1200
+NOMBRE DE DIRECTIONS = 36
+NOMBRE DE FREQUENCES = 6
+FREQUENCE MINIMALE = 0.9705 /0.48225
+RAISON FREQUENTIELLE = 1.01
+/--------------------------------------------------------------------/
+/ OPTIONS DU CALCUL
+/--------------------------------------------------------------------/
+FACTEUR DE QUEUE DU SPECTRE = 4.
+PROFONDEUR INFINIE = NON
+NOMBRE DE SOUS-ITERATIONS POUR LES TERMES SOURCES = 1
+PRISE EN COMPTE DE LA PROPAGATION = OUI
+PRISE EN COMPTE DES TERMES SOURCES = OUI
+/--------------------------------------------------------------------/
+/  INITIAL CONDITIONS 
+/--------------------------------------------------------------------/
+/SPECTRE AUX LIMITES MODIFIE PAR L'UTILISATEUR = OUI
+/HAUTEUR SIGNIFICATIVE INITIALE = 0.5656 /(Hrms*racine2)
+/FREQUENCE DE PIC INITIALE = 1.
+/FACTEUR DE PIC INITIAL = 3.3 /valeur moyenne JONSWAP
+/FONCTION DE REPARTITION ANGULAIRE INITIALE = 3
+/ETALEMENT DIRECTIONNEL 1 INITIAL = 2.
+/DIRECTION PRINCIPALE 1 INITIALE = 90.
+TYPE DE SPECTRE DIRECTIONNEL INITIAL = 7
+HAUTEUR SIGNIFICATIVE INITIALE = 0.015 /(Hrms*racine2)
+FREQUENCE DE PIC INITIALE = 1.
+FACTEUR DE PIC INITIAL = 3.3 /valeur moyenne JONSWAP
+FONCTION DE REPARTITION ANGULAIRE INITIALE = 3
+ETALEMENT DIRECTIONNEL 1 INITIAL = 0
+DIRECTION PRINCIPALE 1 INITIALE = 90.
+/--------------------------------------------------------------------/
+/   BOUNDARY CONDITIONS
+/--------------------------------------------------------------------/
+TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
+FACTEUR DE PIC AUX LIMITES = 3.3 /valeur moyenne JONSWAP
+HAUTEUR SIGNIFICATIVE AUX LIMITES = 0.5656 /0.57
+FREQUENCE DE PIC AUX LIMITES = 1.
+DIRECTION PRINCIPALE 1 AUX LIMITES = 90.
+FONCTION DE REPARTITION ANGULAIRE AUX LIMITES = 3
+/ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 2. /30
+ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 64.66
+/--------------------------------------------------------------------/
+/   VEGETATION
+/--------------------------------------------------------------------/
+PRISE EN COMPTE DE LA VEGETATION = OUI
+DISSIPATION PAR DEFERLEMENT = 1

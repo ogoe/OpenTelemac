@@ -77,9 +77,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER LT
-      INTEGER NVHMA, NVCOU
-      DOUBLE PRECISION AT,TC1,TC2,TV1,TV2,TM1,TM2
+      INTEGER, INTENT(IN)             ::LT
+      INTEGER, INTENT(INOUT)             :: NVHMA
+      INTEGER, INTENT(INOUT)          :: NVCOU
+      DOUBLE PRECISION, INTENT(IN)    :: AT
+      DOUBLE PRECISION, INTENT(INOUT) :: TC1,TC2,TV1,TV2,TM1,TM2
       INTEGER, INTENT(IN)        :: PART
       TYPE(BIEF_OBJ), INTENT(IN) :: U_TEL,V_TEL,H_TEL
 !

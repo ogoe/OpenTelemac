@@ -19,14 +19,24 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="1"  rank="5"
+   <action xref="infinitedepthscalar"  rank="5"
        do="translate;compile;run;cas;princi" 
        code="tomawac" target="tom_fetch_lim_id.cas" 
        title="fetch_lim scalar mode" 
    />
-   <action xref="2"  rank="5"
+   <action xref="infinitedepthparallel"  rank="5"
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="tomawac" target="tom_fetch_lim_id.cas" 
+       title="fetch_lim parallel mode" 
+   />   
+   <action xref="finitedepthscalar"  rank="5"
+       do="translate;compile;run;cas;princi" 
+       code="tomawac" target="tom_fetch_lim_fd.cas" 
+       title="fetch_lim scalar mode" 
+   />
+   <action xref="finitedepthparallel"  rank="5"
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="tomawac" target="tom_fetch_lim_fd.cas" 
        title="fetch_lim parallel mode" 
    />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 

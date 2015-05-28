@@ -10,19 +10,20 @@ PROCESSEURS PARALLELES : 0
 /--------------------------------------------------------------------/
 /     FICHIERS
 /--------------------------------------------------------------------/
-FICHIER FORTRAN = 'tom_TW_V5P6.f'
 FICHIER DE GEOMETRIE = 'geo_TW.slf'
 FICHIER DES CONDITIONS AUX LIMITES = 'geo_TW.cli'
 FICHIER DE REFERENCE = 'fom_TW.slf'
 /
-FICHIER DES RESULTATS 2D = 'tom_TW_V5P6.slf'
-FICHIER DES RESULTATS PONCTUELS = 'tom_TW_V5P6.spe'
+FICHIER DES RESULTATS 2D = 'turningwind.slf'
+/FICHIER DES RESULTATS 2D = 'wind.slf'
+FICHIER DES RESULTATS PONCTUELS = 'turningwind.spe'
 /--------------------------------------------------------------------/
 / DIVERS ENTREES-SORTIES
 /--------------------------------------------------------------------/
 TITRE = 'CAS TEST DE VENT DE 20 M/S TOURNANT BRUSQUEMENT DE 60 DEG '
-PERIODE POUR LES SORTIES GRAPHIQUES = 2
+PERIODE POUR LES SORTIES GRAPHIQUES = 1
 VARIABLES POUR LES SORTIES GRAPHIQUES 2D = HM0,DMOY,FM01,FPD,VX,VY
+/VARIABLES POUR LES SORTIES GRAPHIQUES 2D = VX,VY
 PERIODE POUR LES SORTIES LISTING = 2
 ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 0.
 ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 0.
@@ -31,6 +32,8 @@ ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 0.
 /--------------------------------------------------------------------/
 PAS DE TEMPS = 900.
 NOMBRE DE PAS DE TEMPS = 128
+/PAS DE TEMPS = 4.
+/NOMBRE DE PAS DE TEMPS = 28800
 NOMBRE DE SOUS-ITERATIONS POUR LES TERMES SOURCES = 1
 NOMBRE DE DIRECTIONS = 12
 FREQUENCE MINIMALE = 0.04177248
@@ -59,6 +62,8 @@ FACTEUR DE PIC INITIAL = 1.0
 /--------------------------------------------------------------------/
 / TERMES SOURCES
 /--------------------------------------------------------------------/
+FORMAT DU FICHIER DES VENTS = 3
+FICHIER DES VENTS BINAIRE = 'wind.slf'
 APPORTS DUS AU VENT = 1
 DISSIPATION PAR MOUTONNEMENT = 1
 DISSIPATION PAR FROTTEMENT SUR LE FOND = 0

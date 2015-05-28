@@ -54,11 +54,11 @@
 !
 !.....VARIABLES IN ARGUMENT
 !     """""""""""""""""""""
-      INTEGER  NPLAN , NF
-      INTEGER  IANGNL(NPLAN,16)
-      DOUBLE PRECISION RAISF , XLAMD , XMU
-      DOUBLE PRECISION COEFNL(32)
-!
+      INTEGER, INTENT(IN)             :: NPLAN , NF
+      INTEGER, INTENT(INOUT)          :: IANGNL(NPLAN,16)
+      DOUBLE PRECISION, INTENT(IN)    :: RAISF , XLAMD , XMU
+      DOUBLE PRECISION, INTENT(INOUT) :: COEFNL(32)
+
 !.....LOCAL VARIABLES
 !     """"""""""""""""""
       INTEGER  JP

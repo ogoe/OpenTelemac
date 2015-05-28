@@ -49,8 +49,9 @@
 !
 !     VARIABLES IN ARGUMENT
 !     """""""""""""""""""""
-      INTEGER  N
-      DOUBLE PRECISION B     , A     , XM    , X0    , X1
+      INTEGER, INTENT(IN)             :: N
+      DOUBLE PRECISION, INTENT(IN)    :: B, A, XM
+      DOUBLE PRECISION, INTENT(INOUT) :: X0, X1
 !
 !     LOCAL VARIABLES
 !     """"""""""""""""""

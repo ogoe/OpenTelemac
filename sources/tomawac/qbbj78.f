@@ -50,8 +50,9 @@
 !
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
-      DOUBLE PRECISION QBBJ78, B
-      INTEGER  IQBBJ
+      DOUBLE PRECISION, INTENT(IN) ::  B
+      INTEGER, INTENT(IN)     ::  IQBBJ
+      DOUBLE PRECISION QBBJ78
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""

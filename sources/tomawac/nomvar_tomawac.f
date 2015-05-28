@@ -50,9 +50,9 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER      MAXVAR
-      CHARACTER*32 TEXTE(MAXVAR),TEXTPR(MAXVAR)
-      CHARACTER*8  MNEMO(MAXVAR)
+      INTEGER, INTENT(IN)         ::      MAXVAR
+      CHARACTER*32, INTENT(INOUT) :: TEXTE(MAXVAR),TEXTPR(MAXVAR)
+      CHARACTER*8 , INTENT(INOUT) :: MNEMO(MAXVAR)
 !
 !-----------------------------------------------------------------------
 !

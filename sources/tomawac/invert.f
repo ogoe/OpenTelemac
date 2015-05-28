@@ -34,8 +34,8 @@
 ! 
 !.....VARIABLES IN ARGUMENT 
 !     """""""""""""""""""" 
-      INTEGER N, NP 
-      DOUBLE PRECISION RN(NP,NP) 
+      INTEGER, INTENT(IN) :: N, NP 
+      DOUBLE PRECISION, INTENT(INOUT) :: RN(NP,NP) 
 ! 
 !.....LOCAL VARIABLES 
 !     """"""""""""""" 

@@ -112,21 +112,22 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,ISTAT,NPOIN,NVAR,NPL,IB(1)
-      INTEGER NELEM, NPTFR, NNPLAN, NPTIR2, NDP, TYP_ELEM
-      INTEGER TYP_BND_ELEM, NELEBD
+      INTEGER NELEM, NPTFR, NPTIR2, NDP, TYP_ELEM
+      INTEGER TYP_BND_ELEM, NELEBD,NTIMESTEP
       CHARACTER(LEN=80) CAR
 !
-      INTEGER, PARAMETER :: NFMAX = 200
-      CHARACTER(LEN=32) TEXTE(NFMAX+2)
+      INTEGER NVA3
+      CHARACTER(LEN=16),ALLOCATABLE :: VAR_NAME(:),VAR_UNIT(:)
+!, VAR_UNIT(:)
+!      INTEGER, PARAMETER :: NFMAX = 200
+!      CHARACTER(LEN=32) TEXTE(NFMAX+2)
 !
       DOUBLE PRECISION Z(1),ATT(1)
-      REAL, ALLOCATABLE :: W(:)
-      ALLOCATE(W(NPOIN2*NPLAN))
 !
 !***********************************************************************
 !
       CALL READ_MESH_INFO(FFORMAT,NPRE,CAR,NVAR,NPOIN,TYP_ELEM,
-     &                    NELEM,NPTFR,NPTIR2,NDP,NNPLAN)
+     &                    NELEM,NPTFR,NPTIR2,NDP,NPL)
 !
       IF(NPL.NE.NPLAN) THEN
         IF(LNG.EQ.1) THEN
@@ -193,7 +194,10 @@
 !
 !     READS TIME
 !
-      CALL GET_DATA_TIME(FFORMAT,NPRE,1,AT,ISTAT)
+      CALL GET_DATA_NTIMESTEP(FFORMAT,NPRE,NTIMESTEP,ISTAT)
+      CALL CHECK_CALL(ISTAT,'LECSUI:GET_DATA_NTIMESTEP')
+      CALL GET_DATA_TIME(FFORMAT,NPRE,NTIMESTEP-1,AT,ISTAT)
+      CALL CHECK_CALL(ISTAT,'LECSUI:GET_DATA_TIME')
 !
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) '- REPRISE DE CALCUL AU TEMPS  ',AT
@@ -201,18 +205,32 @@
         WRITE(LU,*) '- COMPUTATIONAL RESUMPTION AT TIME ',AT
       ENDIF
 !
-!     READS F
+!     
+! Get the number of variables
+      CALL GET_DATA_NVAR(FFORMAT,NPRE,NVA3,ISTAT)
+      CALL CHECK_CALL(ISTAT,'LECSUI:GET_DATA_NVAR')
+
+      ALLOCATE(VAR_NAME(NVA3),STAT=ISTAT)
+      CALL CHECK_ALLOCATE(ISTAT,'LECSUI:VAR_NAME')
+      ALLOCATE(VAR_UNIT(NVA3),STAT=ISTAT)
+      CALL CHECK_ALLOCATE(ISTAT,'LECSUI:VAR_UNIT')
 !
+      CALL GET_DATA_VAR_LIST(FFORMAT,NPRE,NVA3,VAR_NAME,VAR_UNIT,ISTAT)
+      CALL CHECK_CALL(ISTAT,'LECSUI:GET_DATA_VAR_LIST')
+!READS F
+!
+
       DO I=1,NF
-        CALL READ_DATA(FFORMAT,NPRE,F(1,1,I),TEXTE(I),NPOIN,
-     &                 ISTAT,1)
+        CALL READ_DATA(FFORMAT,NPRE,F(1,1,I),VAR_NAME(I),NPOIN,
+     &                 ISTAT,NTIMESTEP-1)
+        CALL CHECK_CALL(ISTAT,'LECSUI:READ_DATA')
       ENDDO
 !
 !     READS DEPTH (ALWAYS WRITTEN, EVEN IF NOT RELEVANT)
 !
       IF(MAREE) THEN
-        CALL READ_DATA(FFORMAT,NPRE,F(1,1,I),TEXTE(I),NPOIN2,
-     &                 ISTAT,1)
+        CALL READ_DATA(FFORMAT,NPRE,F(1,1,I),VAR_NAME(I),NPOIN2,
+     &                 ISTAT,NTIMESTEP-1)
 !       SETS TRIPLETS U,V,TV1 AND 2 TO UV,VV,AT
         TM1=AT
         TM2=AT
@@ -220,19 +238,22 @@
         CALL OV( 'X=Y     ' , ZM2 , DEPTH , Z , 0.D0   , NPOIN2)
         CALL OV( 'X=C     ' , DZHDT , DEPTH , Z , 0.D0 , NPOIN2)
       ELSE
-        CALL READ_DATA(FFORMAT,NPRE,TRA01,TEXTE(I),1,
-     &                 ISTAT,1)
+        CALL READ_DATA(FFORMAT,NPRE,TRA01,VAR_NAME(I),NPOIN,
+     &                 ISTAT,NTIMESTEP-1)
+        CALL CHECK_CALL(ISTAT,'LECSUI:READ_DATA')
       ENDIF
 !
 !     READS UC,VC,UV,VV IF HAS TO
 !
       IF(COURAN.OR.VENT) THEN
         IF(VENT) THEN
-          CALL READ_DATA(FFORMAT,NPRE,TRA01,TEXTE(I),4*NPOIN2,
-     &                   ISTAT,1)
+          CALL READ_DATA(FFORMAT,NPRE,TRA01,VAR_NAME(I),4*NPOIN2,
+     &                   ISTAT,NTIMESTEP-1)
+          CALL CHECK_CALL(ISTAT,'LECSUI:READ_DATA')
         ELSE
-          CALL READ_DATA(FFORMAT,NPRE,TRA01,TEXTE(I),2*NPOIN2,
-     &                   ISTAT,1)
+          CALL READ_DATA(FFORMAT,NPRE,TRA01,VAR_NAME(I),2*NPOIN2,
+     &                   ISTAT,NTIMESTEP-1)
+          CALL CHECK_CALL(ISTAT,'LECSUI:READ_DATA')
         ENDIF
       ENDIF
 !
@@ -259,10 +280,6 @@
         CALL OV( 'X=Y     ' , VV1 , VV , Z , 0.D0 , NPOIN2)
         CALL OV( 'X=Y     ' , VV2 , VV , Z , 0.D0 , NPOIN2)
       ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      DEALLOCATE(W)
 !
 !-----------------------------------------------------------------------
 !

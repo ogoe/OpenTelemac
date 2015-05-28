@@ -45,8 +45,9 @@
 !
 !     VARIABLES IN ARGUMENT
 !     """""""""""""""""""""
-      INTEGER  N
-      DOUBLE PRECISION X      , B     , A     , XM    , FONCRO
+      INTEGER,          INTENT(IN)    :: N
+      DOUBLE PRECISION, INTENT(IN)    :: X      , B     , A     , XM   
+      DOUBLE PRECISION FONCRO
 !
 !     LOCAL VARIABLES
 !     """"""""""""""""""

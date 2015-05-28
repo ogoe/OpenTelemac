@@ -49,17 +49,17 @@
 !
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
-      INTEGER           NPLAN
-      DOUBLE PRECISION  BDISPB , BDSSPB
-      DOUBLE PRECISION  TETA(NPLAN)
+      INTEGER, INTENT(IN)          :: NPLAN
+      INTEGER, INTENT(INOUT)       :: INDI(NPLAN), NBD
+      DOUBLE PRECISION, INTENT(IN) :: BDISPB , BDSSPB
+      DOUBLE PRECISION, INTENT(IN) :: TETA(NPLAN)
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER           IPL
       DOUBLE PRECISION  AP2 , EPS , DTETA
 !
-      INTEGER           NBPL , NBPU, NBD, NB1
-      INTEGER           INDI(NPLAN)
+      INTEGER           NBPL , NBPU, NB1
 !
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 !
