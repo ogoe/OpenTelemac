@@ -253,8 +253,8 @@
 !
 !  COMPATIBLE VELOCITY FIELD IN CONTINUITY EQUATION
 !  USED BY SISYPHE AND DELWAQ
-      CALL OV ('X=Y    ',UDEL%R,U,U,1.D0,NPOIN)
-      CALL OV ('X=Y    ',VDEL%R,V,V,1.D0,NPOIN)
+      CALL OV ('X=Y     ',UDEL%R,U,U,1.D0,NPOIN)
+      CALL OV ('X=Y     ',VDEL%R,V,V,1.D0,NPOIN)
 !-----------------------------------------------------------------------
       RETURN
       END
