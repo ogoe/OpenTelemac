@@ -6,7 +6,7 @@
      &  DEPTH1, CGSUC1, DSXXDX, DSXYDX, DSXYDY, DSYYDY )
 !
 !***********************************************************************
-! TOMAWAC   V7P0                                
+! TOMAWAC   V7P0
 !***********************************************************************
 !
 !brief    COMPUTES THE RADIATION STRESSES AND DRIVING FORCES
@@ -88,10 +88,10 @@
       DOUBLE PRECISION, INTENT(INOUT) :: DSXYDY(NPOIN2),DSYYDY(NPOIN2)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!    
+!
       INTEGER JP,JF,IP
       DOUBLE PRECISION COEF,COEF2,COCO,SISI,SICO,OMEGA,DTETAR,C
-! 
+!
 !     CV: MINIMUM WATER DEPTH FOR TIDAL FLATS TREATMENT
 !     NEW KEYWORD IS NEEDED
 !
@@ -99,7 +99,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      HMIN=0.1D0     
+      HMIN=0.1D0
 !
       DTETAR=DEUPI/NPLAN
 !
@@ -110,7 +110,7 @@
       ENDDO
 !
 !     COMPUTES THE WORKING ARRAY N = CG/C
-!    
+!
       DO JF = 1,NF
         OMEGA=DEUPI*FREQ(JF)
         DO IP=1,NPOIN2
@@ -120,11 +120,11 @@
 !
 !     COMPUTES THE RADIATION STRESSES INTEGRATED OVER THE SPECTRUM
 !     SUMS UP THE DISCRETISED PART OF THE SPECTRUM
-!     
+!
       DO JP=1,NPLAN
         COCO=COSTET(JP)**2
         SISI=SINTET(JP)**2
-        SICO=SINTET(JP)*COSTET(JP)       
+        SICO=SINTET(JP)*COSTET(JP)
         DO JF=1,NF
           COEF=GRAVIT*DFREQ(JF)*DTETAR
           DO IP=1,NPOIN2
@@ -137,7 +137,7 @@
       ENDDO
 !
 !     COMPUTES THE GRADIENTS IN SPACE OF THE RADIATION STRESSES
-! 
+!
 !
 !     INVERSE OF INTEGRALS OF TEST FUNCTIONS
 !
@@ -145,7 +145,7 @@
      &            ST0,ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,
      &            ASSPAR=.TRUE.)
       CALL OS('X=1/Y   ',X=ST0,Y=ST0)
-!    
+!
 !     DERIVATIVE IN X
 !
       CALL OV('X=Y     ',T4,SXX,T3,C,NPOIN2)
@@ -177,7 +177,7 @@
       CALL OV('X=YZ    ',DSXYDY,T2,ST0%R,C,NPOIN2)
 !
 !     COMPUTES THE DRIVING FORCES FOR WAVE-INDUCED CURRENTS
-!     
+!
       DO IP=1,NPOIN2
         IF(DEPTH1(IP).GE.HMIN) THEN
           FX(IP)= - (DSXXDX(IP)+DSXYDY(IP))/DEPTH1(IP)
@@ -185,7 +185,7 @@
         ELSE
           FX(IP)=0.D0
           FY(IP)=0.D0
-        ENDIF 
+        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------

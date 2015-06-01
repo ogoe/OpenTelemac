@@ -36,35 +36,35 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Names of variables .  
-!+   
+!+  Names of variables .
+!+
 !history  R.ATA (EDF-LNHE)
 !+        02/06/2014
 !+        V7P0
-!+  Corrections of normals and nubo tables 
+!+  Corrections of normals and nubo tables
 !+  after changes in FV data structure of Telemac-2D.
-!+  
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AVA            |-->| PERCENT AVAILABLE
 !| BREACH         |<->| INDICATOR FOR NON ERODIBLE BED (FINITE VOLUMES SCHEMES)
 !| DT             |-->| TIME STEP
 !| ELAY           |<->| THICKNESS OF SURFACE LAYER
-!| KSORT          |-->| CONVENTION FOR FREE OUTPUT  
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT
 !| LIEBOR         |<->| PHYSICAL BOUNDARY CONDITIONS FOR BED EVOLUTION
 !| MESH           |<->| MESH STRUCTURE
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| NSEG           |-->| NUMBER OF SEGMENTS PER CONTROL SECTION 
-!| NUBO           |-->| GLOBAL NUMBER OF EDGE EXTREMITIES  
+!| NSEG           |-->| NUMBER OF SEGMENTS PER CONTROL SECTION
+!| NUBO           |-->| GLOBAL NUMBER OF EDGE EXTREMITIES
 !| QS             |<->| BEDLOAD TRANSPORT RATE
-!| QSX            |-->| SOLID DISCHARGE X 
-!| QSY            |-->| SOLID DISCHARGE Y 
+!| QSX            |-->| SOLID DISCHARGE X
+!| QSY            |-->| SOLID DISCHARGE Y
 !| T1             |<->| WORK BIEF_OBJ STRUCTURE
 !| T2             |<->| WORK BIEF_OBJ STRUCTURE
 !| T3             |<->| WORK BIEF_OBJ STRUCTURE
 !| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS, ASSEMBLED IN PARALLEL
-!| VNOIN          |-->| OUTWARD UNIT NORMALS                        
+!| VNOIN          |-->| OUTWARD UNIT NORMALS
 !| CSF_SABLE      |-->| VOLUME CONCENTRATION OF SAND (1-POROSITY)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

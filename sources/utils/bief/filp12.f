@@ -68,7 +68,7 @@
 !
         IF(INPOLY(X(I),Y(I),XSOM,YSOM,NSOM)) F(I) = C
 !
-      ENDDO ! I 
+      ENDDO ! I
 !
       DO IELEM = 1 , NELEM
 !
@@ -79,7 +79,7 @@
         YY = 0.3333333333D0 * ( Y(I1)+Y(I2)+Y(I3) )
         IF(INPOLY(XX,YY,XSOM,YSOM,NSOM)) F(IELEM+NPOIN) = C
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !

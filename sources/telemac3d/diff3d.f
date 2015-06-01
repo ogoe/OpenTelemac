@@ -85,7 +85,7 @@
 !+        V7P0
 !+   Implicit upwind treatment of settling velocity modified. Now a
 !+   single matrix is called (MATWC) and upwind is not called.
-!+   Positivity is ensured without any condition, and stability 
+!+   Positivity is ensured without any condition, and stability
 !+   if the solver can resist to non dominant diagonals...
 !+   Call to t3d_stress changed (for treatment of tidal flats).
 !
@@ -283,13 +283,13 @@
 !=======================================================================
 !   CASES OF ADVECTION OF SETTLING VELOCITY WITH EXPLICIT SCHEME
 !   FC IS AT THE BEGINNING THE RESULT OF ADVECTION WITHOUT SETTLING
-!   VELOCITY, THEN THE EFFECT OF SETTLING VELOCITY IS ADDED 
+!   VELOCITY, THEN THE EFFECT OF SETTLING VELOCITY IS ADDED
 !=======================================================================
 !
       IF(SETDEP.EQ.2) THEN
         CALL OS('X=Y     ',X=T3_02,Y=FC)
         CALL SED_FALL(FC,T3_02,WCC,MESH2D,MESH3D,DT,VOLU,
-     &                IPBOT,NPOIN2,NPOIN3,NPLAN,T3_01)     
+     &                IPBOT,NPOIN2,NPOIN3,NPLAN,T3_01)
       ENDIF
 !
 !=======================================================================
@@ -314,14 +314,14 @@
       ENDIF
 !
 !=======================================================================
-!     
+!
 !     SUPG SCHEME: TEST OF UPWINDING OF THE TIME DERIVATIVE
 !
       IF(SCHCF.EQ.ADV_SUP) THEN
 !       HERE OPTSUP=2 ONLY
         CALL MATRIX(MTRA1,'M=TN    ','MATVGR 2        ',
      &              IELM3,IELM3,0.5D0,DM1,ZCONV,SVIDE,
-     &              UCONV,VCONV,WSCONV,MESH3D,MSK,MASKEL)  
+     &              UCONV,VCONV,WSCONV,MESH3D,MSK,MASKEL)
 !       COEFFICIENT 1/DT HAS ALREADY BEEN PUT IN MTRA1 (0.5=0.5*DT/DT)
         CALL OM('M=X(M)  ',MTRA2,MTRA2,SVIDE,C,MESH3D)
         CALL OM('M=M+N   ',MTRA2,MTRA1,SVIDE,C,MESH3D)
@@ -508,7 +508,7 @@
                 DO NP=0,IPBOT(IPOIN2)
                   I=NP*NPOIN2+IPOIN2
                   MTRA2%D%R(I)=MTRA2%D%R(I)+T2_03%R(IPOIN2)
-                ENDDO                      
+                ENDDO
 !             ENDIF
 !             PROPOSED ALTERNATIVE IMPLEMENTATION, ONLY FIRST FREE POINT TREATED
 !             AND NOTHING DONE ON TIDAL FLATS.
@@ -562,8 +562,8 @@
 !=======================================================================
 !
         IF(YAWCC.AND.SETDEP.EQ.0) THEN
-!         FOR BOUNDARY TERMS, SEE SUBROUTINE FLUSED 
-!         NOTE: MATWC IS NOT PROGRAMMED WITH TETRAHEDRA...                
+!         FOR BOUNDARY TERMS, SEE SUBROUTINE FLUSED
+!         NOTE: MATWC IS NOT PROGRAMMED WITH TETRAHEDRA...
           CALL MATRIX(MTRA1,'M=N     ','MATWC           ',
      &                IELM3,IELM3,1.D0,WCC,
      &                SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,MSK,MASKEL)
@@ -649,7 +649,7 @@
                 ENDDO
               ELSE
 !               POINTS WITH NO VOLUME PROVISIONALLY SET TO FN
-!               TESTED UP TO FIRST FREE POINT (IPBOT+1), 
+!               TESTED UP TO FIRST FREE POINT (IPBOT+1),
 !               WHICH SHOULD NOT HAVE VOLUME=0 EXCEPT ON TIDAL
 !               FLATS BECAUSE IN THIS CASE IPBOT=NPLAN-1
 !               DO I=0,IPBOT(I2D)-1
@@ -678,7 +678,7 @@
                 ENDDO
               ELSE
 !               POINTS WITH NO VOLUME PROVISIONALLY SET TO FN
-!               TESTED UP TO FIRST FREE POINT (IPBOT+1), 
+!               TESTED UP TO FIRST FREE POINT (IPBOT+1),
 !               WHICH SHOULD NOT HAVE VOLUME=0 EXCEPT ON TIDAL
 !               FLATS BECAUSE IN THIS CASE IPBOT=NPLAN-1
 !               DO I=0,IPBOT(I2D)-1
@@ -774,7 +774,7 @@
 !
 !   CRUSHED POINTS AND THEIR FREE POINT ABOVE MUST HAVE THE SAME VALUE
 !   IT IS DONE HERE WITH MASS CONSERVATION: THE VOLUMIC AVERAGE IS
-!   TAKEN. TO AVOID SPURIOUS GRADIENTS... 
+!   TAKEN. TO AVOID SPURIOUS GRADIENTS...
 !   HEAVY BUT SAVES TIME IN COMPLEX APPLICATIONS!
 !
 !=======================================================================

@@ -60,7 +60,7 @@
 !|                |   | ELEMENT.
 !| NELEB          |-->| NUMBER OF BOUNDARY ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
-!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
+!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE
 !|                |   | ADJACENT ELEMENT, NULONE GIVES THE LOCAL
 !|                |   | NUMBER OF THE FIRST NODE OF THE BOUNDARY EDGE
 !|                |   | I.E. 1, 2 OR 3 FOR TRIANGLES.

@@ -3,7 +3,7 @@
 !                      *****************
 !
      &(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,ZF,CF,EPS,KFROT,SMH,
-     & HN,QU,QV,LT,GAMMA) 
+     & HN,QU,QV,LT,GAMMA)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P1                                         03/15/2011
@@ -29,7 +29,7 @@
 !+        03/15/2011
 !+        V6P1
 !+    CHANGE EXPLICIT EULER BY NEWMARK SCHEME
-!+     GAMMA FIXES THE SCHEME ACCURACY (SEE BELOW) 
+!+     GAMMA FIXES THE SCHEME ACCURACY (SEE BELOW)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  W             |<--|  (H,HU,HV)
@@ -44,7 +44,7 @@
 !|  KFROT         |-->|  LOGICAL! FRICTION OF NO FRICTION
 !|  SMH           |-->|  MASS SOURCE
 !|  HN,QU;QV      |-->|  H, HU AND HV AT TN
-!|  LT            |-->|  CURRENT TIME ITERATION 
+!|  LT            |-->|  CURRENT TIME ITERATION
 !|  GAMMA         |-->|  NEWMARK PARAMETER (SEE BELOW)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -52,7 +52,7 @@
 !
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-! 
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN,KFROT,LT
@@ -60,44 +60,44 @@
       DOUBLE PRECISION, INTENT(IN)    :: FLUX(NPOIN,3),DT,EPS
       DOUBLE PRECISION, INTENT(IN)    :: AIRS(NPOIN),ZF(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FLUX_OLD(NPOIN,3)
-      DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN),SMH(NPOIN),GAMMA 
+      DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN),SMH(NPOIN),GAMMA
       DOUBLE PRECISION, INTENT(IN)    :: HN(NPOIN),QU(NPOIN),QV(NPOIN)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I
 !
-      DOUBLE PRECISION DELTA,KF,ST2D,ALPHAF,UNMGAMMA,FACT           
+      DOUBLE PRECISION DELTA,KF,ST2D,ALPHAF,UNMGAMMA,FACT
 !
 !=======================
 !---- NEWMARK SCHEME
 !=======================
-! 
+!
       UNMGAMMA = 1.D0-GAMMA
 !
 !     - FOR GAMMA=0.5, THIS CHOICE GIVES ORDER 2 ACCURACY AND
 !     THE SCHEME IS UNCONDITIALLY STABLE
 !     - FOR USER WHO PREFERS (EULER) EXPLICIT SCHEME,
 !     YOU HAVE TO PUT GAMMA=1
-!  
+!
       DO I=1,NPOIN
         FACT=DT/AIRS(I)
 !---    FIRST TIME STEP
         IF(LT.EQ.1)THEN
-          W(1,I) = HN(I) - FACT * ( FLUX(I,1)-SMH(I) ) 
+          W(1,I) = HN(I) - FACT * ( FLUX(I,1)-SMH(I) )
           W(2,I) = QU(I) - FACT * FLUX (I,2)
           W(3,I) = QV(I) - FACT * FLUX (I,3)
         ELSE
-          W(1,I) = HN(I) - FACT * (UNMGAMMA*FLUX_OLD(I,1) + 
+          W(1,I) = HN(I) - FACT * (UNMGAMMA*FLUX_OLD(I,1) +
      &                             GAMMA*FLUX(I,1)-SMH(I))
-          W(2,I) = QU(I) - FACT * (UNMGAMMA*FLUX_OLD(I,2) + 
+          W(2,I) = QU(I) - FACT * (UNMGAMMA*FLUX_OLD(I,2) +
      &                             GAMMA*FLUX(I,2))
-          W(3,I) = QV(I) - FACT * (UNMGAMMA*FLUX_OLD(I,3) + 
+          W(3,I) = QV(I) - FACT * (UNMGAMMA*FLUX_OLD(I,3) +
      &                             GAMMA*FLUX(I,3))
         ENDIF
       ENDDO
 !
-!     TO TAKE INTO ACCOUNT FRICTION 
+!     TO TAKE INTO ACCOUNT FRICTION
 !     *****************************
       IF (KFROT.NE.0) THEN
 !
@@ -117,8 +117,8 @@
             W(3,I) = ALPHAF * W(3,I)
           ENDIF
 !
-        ENDDO ! I 
-! 
+        ENDDO ! I
+!
       ENDIF
 !
 !-----------------------------------------------------------------------

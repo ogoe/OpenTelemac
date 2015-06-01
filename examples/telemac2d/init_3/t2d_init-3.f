@@ -49,11 +49,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !     GLOBAL NUMBER OF SOURCE I IS ISCE(I) IN TELEMAC-2D
-! 
+!
       IF(TIME.GE.1800.D0.AND.TIME.LE.3600.D0) THEN
         DEBSCE = DISCE(I)
       ELSEIF(TIME.GE.4800.D0.AND.TIME.LE.7200.D0) THEN
-        DEBSCE = DISCE(I) 
+        DEBSCE = DISCE(I)
       ELSE
         DEBSCE = 0.D0
       ENDIF
@@ -92,7 +92,7 @@
 ! |   TIME         | -->| TIME
 ! |   I            | -->| SOURCE RANK
 ! |   TSCE         | -->| ARRAY OF PRESCRIBED VALUES OF THE TRACER
-! |                |    | (READ IN THE PARAMETER FILE) 
+! |                |    | (READ IN THE PARAMETER FILE)
 ! |   ITRAC        | -->| TRACER RANK
 ! |________________|____|______________________________________________|
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
@@ -116,11 +116,11 @@
       INTEGER         , INTENT(IN) :: I,ITRAC
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-! 
+!
       IF(TIME.GE.1800.D0.AND.TIME.LE.3600.D0) THEN
-        TRSCE = TSCE(I,ITRAC) 
+        TRSCE = TSCE(I,ITRAC)
       ELSEIF(TIME.GE.4800.D0.AND.TIME.LE.7200.D0) THEN
-        TRSCE = TSCE(I,ITRAC) 
+        TRSCE = TSCE(I,ITRAC)
       ELSE
         TRSCE = 0.D0
       ENDIF
@@ -128,4 +128,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END        
+      END

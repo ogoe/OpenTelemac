@@ -124,7 +124,7 @@
       ELSEIF(YASMH) THEN
 !
 !     CASE SMH AND RAIN
-!      
+!
       IF(OPTSOU.EQ.1) THEN
         CALL OS('X=Y+Z   ',X=T5,Y=SMH,Z=PLUIE)
       ELSE

@@ -160,7 +160,7 @@
 !history  J-M HERVOUET (LNH)
 !+        28/11/2011
 !+        V6P2
-!+   Use of KNOLG in case of parallelism, to get the same splitting of 
+!+   Use of KNOLG in case of parallelism, to get the same splitting of
 !+   than in scalar mode. Loops on planes and elements swapped.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -205,7 +205,7 @@
 !     BOTTOM AND TOP OF ALL LAYERS
 !
       IF(NPLAN.GE.2) THEN
-!        
+!
 !       LOOP ON THE TRIANGLES
 !
         DO IELEM = 1,NELEM2
@@ -219,9 +219,9 @@
 !         GLOBAL NUMBERS
 !
           IF(NCSIZE.GT.1) THEN
-            I1=KNOLG(I1)            
-            I2=KNOLG(I2) 
-            I3=KNOLG(I3) 
+            I1=KNOLG(I1)
+            I2=KNOLG(I2)
+            I3=KNOLG(I3)
           ENDIF
 !
           IF(I1.GT.I2) THEN
@@ -255,7 +255,7 @@
 !
             DO K=1,3
             DO L=1,4
-              IKLE3(IELEM,K,I,L) = IGLOB(TETRA(S1,S2,S3,K,L))        
+              IKLE3(IELEM,K,I,L) = IGLOB(TETRA(S1,S2,S3,K,L))
             ENDDO
             ENDDO
 !
@@ -266,7 +266,7 @@
         IF(LNG.EQ.2) WRITE(LU,*) 'CPIKLE3 : MINIMUM OF 2 PLANES NEEDED'
         CALL PLANTE(1)
         STOP
-      ENDIF    
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

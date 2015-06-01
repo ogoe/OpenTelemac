@@ -11,7 +11,7 @@
 !brief    Reads the coordinates in the geometry file.
 !+        Latitude-longitude coordinates transformed into mercator.
 !
-!history  Y. AUDOUIN (EDF LAB, LNHE)    
+!history  Y. AUDOUIN (EDF LAB, LNHE)
 !+        06/05/2015
 !+        V7P1
 !+   First version.
@@ -80,7 +80,7 @@
 !
       CALL CORRXY(X,Y,NPOIN)
 !
-!     LATITUDE-LONGITUDE COORDINATES (DEGREES) 
+!     LATITUDE-LONGITUDE COORDINATES (DEGREES)
 !     CHANGED INTO MERCATOR PROJECTION
 !
       IF(PROJECTION.EQ.3) THEN
@@ -90,7 +90,7 @@
         IF(TAN2.LT.0.D0) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LATI0=',LATI0,' EST PROBABLEMENT FAUSSE'
-          ENDIF 
+          ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'LATI0=',LATI0,' IS PROBABLY WRONG'
           ENDIF
@@ -105,7 +105,7 @@
               WRITE(LU,*) 'LA LATITUDE DOIT ETRE DONNEE EN DEGRES'
               WRITE(LU,*) 'ICI Y(I)=',Y(I),' POUR I=',I
               WRITE(LU,*) 'UTILISEZ CORRXY (BIEF) POUR LA CONVERSION'
-            ENDIF 
+            ENDIF
             IF(LNG.EQ.2) THEN
               WRITE(LU,*) 'LATITUDE MUST BE GIVEN IN DEGREES'
               WRITE(LU,*) 'HERE Y(I)=',Y(I),' FOR I=',I
@@ -115,22 +115,22 @@
             STOP
           ENDIF
           Y(I)=R*(LOG(TAN1)-LOG(TAN2))
-        ENDDO 
+        ENDDO
 !       NOW IT IS MERCATOR
         PROJECTION=2
         WRITE(LU,*) ' '
-        WRITE(LU,*) 'REAGEO3 :' 
+        WRITE(LU,*) 'REAGEO3 :'
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'COORDONNEES CHANGEES EN PROJECTION DE MERCATOR'
           WRITE(LU,*) 'AVEC LATITUDE DU POINT ORIGINE = ',LATI0
           WRITE(LU,*) 'ET  LONGITUDE DU POINT ORIGINE = ',LONGI0
-        ENDIF 
+        ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'COORDINATES CHANGED INTO MERCATOR PROJECTION'
           WRITE(LU,*) 'WITH LATITUDE OF ORIGIN POINT = ',LATI0
           WRITE(LU,*) 'AND LONGITUDE OF ORIGIN POINT = ',LONGI0
         ENDIF
-        WRITE(LU,*) ' '      
+        WRITE(LU,*) ' '
       ENDIF
 !
 !-----------------------------------------------------------------------

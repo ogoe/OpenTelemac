@@ -189,7 +189,7 @@
      &                 ETA,FRE,NSP,ISPDONE,IELM,IELMU,NELEM,NELMAX,
      &                 0,NPOIN,NPOIN,NDP,NPLAN,1,
      &                 MESH,NPOIN,BIEF_NBPTS(IELMU,MESH),SENS,
-!                      PROVISIONAL, THIS WILL NOT WORK IN PARALLEL            
+!                      PROVISIONAL, THIS WILL NOT WORK IN PARALLEL
      &                 SHPBUF,SHZBUF,SHZBUF,FREBUF,1,
      &                 .TRUE.)
 !                       POST : DATA KEPT FOR A POSTERIORI INTERPOLATION

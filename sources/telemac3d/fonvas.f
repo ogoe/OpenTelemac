@@ -46,7 +46,7 @@
 !+   ZR not used anymore, ZF_S and ESOMT added.
 !+   (note JMH: not a good idea, see next but one history)
 !+   MASDEP computed: total deposited mass.
-! 
+!
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        30/04/2014
 !+        V7P0
@@ -81,7 +81,7 @@
 !| FLUDPC         |<->| DEPOSITION FLUX FOR COHESIVE SEDIMENT IN 2D
 !| FLUDPNC        |<->| DEPOSITION FLUX FOR NON-COHESIVE SEDIMENT IN 2D
 !| FLUDPT         |<--| IMPLICIT DEPOSITION FLUX
-!| FLUDPTC        |<--| IMPLICIT DEPOSITION FLUX FOR COHESIVE SEDIMENT 
+!| FLUDPTC        |<--| IMPLICIT DEPOSITION FLUX FOR COHESIVE SEDIMENT
 !| FLUDPTNC       |<--| IMPLICIT DEPOSITION FLUX FOR NON-COHESIVE SEDIMENT
 !| FLUER          |<--| EROSION FLUX FOR POINTS IN 2D
 !| FLUERC         |<--| EROSION FLUX FOR COHESIVE SEDIMENT IN 2D
@@ -102,7 +102,7 @@
 !| NPOIN2         |-->| NUMBER OF POINTS  (2D MESH)
 !| NPOIN3         |-->| NUMBER OF POINTS  (3D MESH)
 !| PVSCO          |<->| PERCENTAGE OF MUD
-!| PVSNCO         |<->| PERCENTAGE OF SAND 
+!| PVSNCO         |<->| PERCENTAGE OF SAND
 !| RHOS           |-->| SEDIMENT DENSITY
 !| SETDEP         |-->| CHOICE OF ADVECTION SCHEME FOR VERTICAL SETTLING
 !| TA             |-->| ACTIVE TRACOR
@@ -115,7 +115,7 @@
 !| TRA03          |<->| WORK ARRAY
 !| TREST          |<->| CONSOLIDATION TIME SCALE
 !|                |   | (ONLY FOR MULTILAYER MODEL)
-!| VOLU2D         |-->|  INTEGRAL OF TEST FUNCTIONS IN 2D (SURFACE OF ELEMENTS)  
+!| VOLU2D         |-->|  INTEGRAL OF TEST FUNCTIONS IN 2D (SURFACE OF ELEMENTS)
 !| WC             |-->| SETTLING VELOCITY
 !| ZF             |<->| BOTTOM ELEVATION
 !| ZF_S           |<->| BED EVOLUTION
@@ -183,14 +183,14 @@
 ! FIRST STEP
 !     COMPUTES THE DEPOSITED QUANTITY (IN MATERIAL COORDINATES)
 !     CFDEP=CONC(NCOUCH)
-!     COMPUTES THE ERODED QUANTITY 
+!     COMPUTES THE ERODED QUANTITY
 !=======================================================================
 !
-! Multi layer model      
+! Multi layer model
 ! +++++++++++++++++++
 ! deposition in the first top layer
 ! calculate the layers thicknesses and deposited thicknes:  HDEP = sum ( EPAI)
-!       
+!
       FLUX=0.D0
 
       IF(MIXTE) THEN
@@ -214,7 +214,7 @@
                 FLUDPC(IPOIN) = 0.D0
                 FLUDPNC(IPOIN)= 0.D0
                 FLUDP(IPOIN)  = 0.D0
-              ENDIF  
+              ENDIF
             ENDDO
           ELSE
             DO IPOIN=1,NPOIN2
@@ -227,9 +227,9 @@
 !         THE GLOBAL DEPOSITION FLUX IS THE SUMM OF BOTH C & NC
               FLUDP(IPOIN)=FLUDPC(IPOIN)+FLUDPNC(IPOIN)
               FLUDP(IPOIN)=MAX(FLUDP(IPOIN),0.D0)
-            ENDDO     
+            ENDDO
           ENDIF
-        ENDIF    
+        ENDIF
 !
 !         BED EVOLUTION
 !
@@ -238,21 +238,21 @@
 !         COMPUTES QERODE FOR COHESIVE SEDIMENTS
 
           DELTAFC  = FLUDPC(IPOIN)-FLUERC(IPOIN)
-          FLUXC    = FLUXC+DELTAFC*VOLU2D%R(IPOIN)          
+          FLUXC    = FLUXC+DELTAFC*VOLU2D%R(IPOIN)
           TOTMASSC = 0.D0
           QERODEC  = FLUERC(IPOIN)*DT
-      
+
 !         COMPUTES QERODE FOR NON-COHESIVE SEDIMENT
-          
+
           DELTAFNC  = FLUDPNC(IPOIN)-FLUERNC(IPOIN)
-          FLUXNC    = FLUXNC+DELTAFNC*VOLU2D%R(IPOIN)          
+          FLUXNC    = FLUXNC+DELTAFNC*VOLU2D%R(IPOIN)
           TOTMASSNC = 0.D0
           QERODENC  = FLUERNC(IPOIN)*DT
-        
-!         COMPUTES QERODE FOR ALL THE SEDIMENTS 
-        
+
+!         COMPUTES QERODE FOR ALL THE SEDIMENTS
+
           DELTAF  = FLUDP(IPOIN)-FLUER(IPOIN)
-          FLUX    = FLUX+DELTAF*VOLU2D%R(IPOIN)          
+          FLUX    = FLUX+DELTAF*VOLU2D%R(IPOIN)
           TOTMASS = 0.D0
           QERODE  = FLUER(IPOIN)*DT
 !
@@ -260,35 +260,35 @@
           QSC  = CONC(IPOIN,1)*EPAICO(IPOIN)
           QSNC = CFDEP*EPAINCO(IPOIN)
           QS   = QSC + QSNC
-!               
+!
           TOTMASSC  = TOTMASSC + QSC
           TOTMASSNC = TOTMASSNC + QSNC
           TOTMASS   = TOTMASS + QS
-        
+
 !         check if we have eroded enough entire layers
 
           IF(TOTMASSC.LT.QERODEC) THEN
             EPAICO(IPOIN) = 0.D0
           ELSE
             QSC           = TOTMASSC - QERODEC
-            EPAICO(IPOIN) = QSC/MAX(CONC(IPOIN,1),1.D-10)      
+            EPAICO(IPOIN) = QSC/MAX(CONC(IPOIN,1),1.D-10)
           ENDIF
 !
           IF(TOTMASSNC.LT.QERODENC) THEN
             EPAINCO(IPOIN) = 0.D0
           ELSE
             QSNC           = TOTMASSNC - QERODENC
-            EPAINCO(IPOIN) = QSNC/CFDEP        
+            EPAINCO(IPOIN) = QSNC/CFDEP
           ENDIF
 !
 !         DEPOSITION IN THE TOP LAYER
-!  
+!
         EPAICO(IPOIN)  = EPAICO(IPOIN)+FLUDPC(IPOIN)*
-     &                DT/MAX(CONC(IPOIN,1),1.D-10) 
+     &                DT/MAX(CONC(IPOIN,1),1.D-10)
         EPAINCO(IPOIN) = EPAINCO(IPOIN)+FLUDPNC(IPOIN)*
      &                DT/MAX(CFDEP,1.D-10)
-        EPAI(IPOIN,1)  = EPAICO(IPOIN) + EPAINCO(IPOIN) 
-!       
+        EPAI(IPOIN,1)  = EPAICO(IPOIN) + EPAINCO(IPOIN)
+!
 !         UPDATES PERCENTAGES OF EACH CLASSE
 !
         IF(EPAI(IPOIN, 1).GT.0.D0) THEN
@@ -302,7 +302,7 @@
 !         COMPUTING THE NEW SEDIMENT BED THICKNESS
 !
         SEDBED = EPAI(IPOIN,1)
-!        
+!
 !         EVOLUTION OBTAINED FROM OLD AND NEW SEDIMENT HEIGHT
 !
         ZF_S(IPOIN) = SEDBED-HDEP(IPOIN)
@@ -310,25 +310,25 @@
 !         SEDIMENT HEIGHT UPDATED
 !
         HDEP(IPOIN) = SEDBED
-!  
+!
       ENDDO
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-! 
+!
 !     UPDATE THE CUMULATED BED EVOLUTION : ESOMT
-!     BOTTOM ELEVATION : ZF 
-!                 
+!     BOTTOM ELEVATION : ZF
+!
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
         CALL OV( 'X=Y+Z   ',ESOMT,ESOMT,ZF_S,C,NPOIN2)
-        CALL OV( 'X=Y+Z   ' , ZF   ,   ZR, HDEP, C, NPOIN2)     
-      
-      
+        CALL OV( 'X=Y+Z   ' , ZF   ,   ZR, HDEP, C, NPOIN2)
+
+
 !***********************************************************
 ! PREVIOUS CASE NON MIXED
-!************************************************************      
+!************************************************************
       ELSE
-      
+
 !     EXPLICIT SCHEME (SETDEP=1) FLUDP COMPUTED IN SET_DIF
 !
 !     OTHER SCHEMES : FLUDP BUILT HERE
@@ -344,7 +344,7 @@
               FLUDP(IPOIN)=MAX(FLUDP(IPOIN),0.D0)
             ELSE
               FLUDP(IPOIN)=0.D0
-            ENDIF  
+            ENDIF
           ENDDO
         ELSE
           DO IPOIN=1,NPOIN2
@@ -352,43 +352,43 @@
 !           FLUDP MUST BE POSITIVE, EVEN IF TA<0 DUE TO TRUNCATION ERRORS
 !           PROBLEM SEEN WITH TA=-1.D-87 !!!!!
             FLUDP(IPOIN)=MAX(FLUDP(IPOIN),0.D0)
-          ENDDO     
+          ENDDO
         ENDIF
-      ENDIF    
+      ENDIF
 !
 !     BED EVOLUTION
 !
       DO IPOIN=1,NPOIN2
 !
         DELTAF=FLUDP(IPOIN)-FLUER(IPOIN)
-        FLUX=FLUX+DELTAF*VOLU2D%R(IPOIN)          
+        FLUX=FLUX+DELTAF*VOLU2D%R(IPOIN)
         TOTMASS=0.D0
         QERODE = FLUER(IPOIN)*DT
 !
         DO IC=1,NCOUCH
-!                   
+!
           QS = CONC(IPOIN,IC)*EPAI(IPOIN,IC)
-!               
+!
           TOTMASS = TOTMASS + QS
 !         check if we have eroded enough entire layers
           IF(TOTMASS.LT.QERODE) THEN
             EPAI(IPOIN,IC) = 0.D0
           ELSE
-!           we have got to the correct layer. 
+!           we have got to the correct layer.
 !           How much of it do we need to erode?
             QS = TOTMASS - QERODE
 !           calculate new thickness
-            EPAI(IPOIN,IC) = QS/MAX(CONC(IPOIN,IC),1.D-10)        
+            EPAI(IPOIN,IC) = QS/MAX(CONC(IPOIN,IC),1.D-10)
 !           jump out of layer loop
             EXIT
           ENDIF
-!     
+!
         ENDDO
-! 
+!
 !       Then Deposition in Top layer
-!  
+!
         EPAI(IPOIN,1)=EPAI(IPOIN,1)+FLUDP(IPOIN)*
-     &             DT/MAX(CONC(IPOIN,1),1.D-10)   
+     &             DT/MAX(CONC(IPOIN,1),1.D-10)
 !
 !       COMPUTING THE NEW SEDIMENT BED THICKNESS
 !
@@ -396,7 +396,7 @@
         DO IC=1,NCOUCH
           SEDBED=SEDBED+EPAI(IPOIN,IC)
         ENDDO
-!        
+!
 !       EVOLUTION OBTAINED FROM OLD AND NEW SEDIMENT HEIGHT
 !
         ZF_S(IPOIN)=SEDBED-HDEP(IPOIN)
@@ -404,14 +404,14 @@
 !       SEDIMENT HEIGHT UPDATED
 !
         HDEP(IPOIN) = SEDBED
-!  
+!
       ENDDO
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-! 
+!
 !     UPDATE THE CUMULATED BED EVOLUTION : ESOMT
-!     BOTTOM ELEVATION : ZF 
-!                 
+!     BOTTOM ELEVATION : ZF
+!
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
       CALL OV( 'X=Y+Z   ',ESOMT,ESOMT,ZF_S,C,NPOIN2)
@@ -419,7 +419,7 @@
 !     NOTE JMH: THIS WAY OF WRITING THE NEW ZF ENSURES
 !               THAT ZF ABOVE ZR EVEN WITH TRUNCATION
 !               ERRORS, IF HDEP >0, THIS IS IMPORTANT
-!                  
+!
 !     CALL OV( 'X=Y+Z   ' , ZF   ,   ZF, ZF_S, C, NPOIN2)
       CALL OV( 'X=Y+Z   ' , ZF   ,   ZR, HDEP, C, NPOIN2)
 !
@@ -435,7 +435,7 @@
 !     -----              INTO ACCOUNT               -----
 !
 !         IF(ITASS.EQ.2)
-!         
+!
 !         IF (MOD(LT*DT,DTC).LT.1.D-8) THEN
 !
 !     -----MANAGES THE DEPOSITED QUANTITY : CREATES-----
@@ -458,7 +458,7 @@
 !     -----UPDATES THE BOTTOM ELEVATION-----
 !
 !         CALL ACTUZF(IVIDE,EPAI,ZF,NPOIN2,NPFMAX,NPF)
-! 
+!
 ! Will have to be rewritten
 !          CALL GIBSON(ZF,NPOIN2,DT,ELAY,
 !     &               T3,T2,LT,XMVS,XMVE,GRAV,NOMBLAY,
@@ -487,7 +487,7 @@
 !      ENDIF
 !      ENDIF
 !
-!!+++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+!!+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ! COMPUTES HERE DEPOSITED MASS
 !
 !     TOTAL DEPOSITED MASS --> MASDEP
@@ -497,7 +497,7 @@
         MASTMP = FLUX*DT
         IF(NCSIZE.GT.1) MASTMP=P_DSUM(MASTMP)
         MASDEP = MASDEP + MASTMP
-!###<TBE 
+!###<TBE
 !
 !=======================================================================
 !

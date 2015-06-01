@@ -32,7 +32,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| CONNECTIVITY TABLE
-!| LV             |-->| VECTOR LENGTH OF THE COMPUTER 
+!| LV             |-->| VECTOR LENGTH OF THE COMPUTER
 !| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
 !| NELMAX         |-->| FIRST DIMENSION OF IKLE AND W.
 !| NPOIN          |-->| NUMBER OF POINTS IN X
@@ -68,7 +68,7 @@
 !
       DO IELEM = 1 , NELEM
         X(IKLE(IELEM)) = X(IKLE(IELEM)) * W(IELEM)
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !
@@ -79,8 +79,8 @@
 !DIR$ IVDEP
       DO IELEM = 1+(IB-1)*LV , MIN(NELEM,IB*LV)
         X(IKLE(IELEM)) = X(IKLE(IELEM)) * W(IELEM)
-      ENDDO ! IELEM 
-      ENDDO ! IB 
+      ENDDO ! IELEM
+      ENDDO ! IB
 !
       ENDIF
 !

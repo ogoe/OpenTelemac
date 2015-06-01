@@ -2,16 +2,16 @@
                      SUBROUTINE SET_DIF
 !                    ******************
 !
-     &(FC,VOLU2D,Z,NPOIN2,NPOIN3,DT,FLUX, 
+     &(FC,VOLU2D,Z,NPOIN2,NPOIN3,DT,FLUX,
      & NPLAN,WCC,FLUDPT,FLUDP, FLUER,IPBOT,VISCTA)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                   23/01/2014
 !***********************************************************************
 !
-!brief    1D VERTICAL PROFILE MODEL FOR SETTLING & DIFFUSION  
+!brief    1D VERTICAL PROFILE MODEL FOR SETTLING & DIFFUSION
 !+        PLUS BED EXCHANGE DUE TO NET EROSION & DEPOSITION
-!+        
+!+
 !+        SOLVED USING A TRIDIAGONAL MATRIX SOLVER (trid1d.f)
 !+
 !
@@ -33,7 +33,7 @@
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPOIN3         |-->| NUMBER OF 3D POINTS
 !| VISCTA         |-->| VISCOSITY OF THE TRACER
-!| VOLU2D         |-->| INTEGRAL OF TEST FUNCTIONS IN 2D (SURFACE OF ELEMENTS) 
+!| VOLU2D         |-->| INTEGRAL OF TEST FUNCTIONS IN 2D (SURFACE OF ELEMENTS)
 !| WCC            |-->| SETTLING VELOCITY (SEDIMENT)
 !| Z              |-->| NODE ELEVATIONS OF THE 3D MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,7 +51,7 @@
 !
       INTEGER, INTENT(IN)             :: NPOIN3,NPOIN2
       INTEGER, INTENT(IN)             :: NPLAN
-!      
+!
       INTEGER, INTENT(IN)             :: IPBOT(NPOIN2)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: FC(NPOIN3)
@@ -72,7 +72,7 @@
       TYPE(BIEF_OBJ),POINTER :: DZA,DZB,DZ
       TYPE(BIEF_OBJ),POINTER :: AA,BB,CC,DD
       TYPE(BIEF_OBJ),POINTER :: WS,EV,CONC,GAM
-! 
+!
 ! a block of vectors was allocated using statut=0 in point_telemac3d
 ! pointers get set each time
 !
@@ -90,9 +90,9 @@
       GAM  => TRAV1%ADR(11)%P
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-!      
+!
 ! LOOP THROUGH HORIZONTAL JUST ONCE
-      DO IPOIN = 1,NPOIN2   
+      DO IPOIN = 1,NPOIN2
 !
 ! TIDAL FLATS
       IF(IPBOT(IPOIN).EQ.(NPLAN-1)) THEN
@@ -100,8 +100,8 @@
           FLUDP%R(IPOIN) = 0.D0
 !         SKIP THIS NODE
           CYCLE
-      ENDIF  
-!      
+      ENDIF
+!
 ! CALCULATE DZ VARIABLES: DZA,DZB,DZ (NPLAN IN SIZE)
 !
 !     BOTTOM PLANE
@@ -115,16 +115,16 @@
           DZA%R(IPLAN)  = Z(I1)-Z(I1-NPOIN2)
           DZB%R(IPLAN)  = Z(I1+NPOIN2)-Z(I1)
           DZ%R(IPLAN)   = 0.5D0*(DZA%R(IPLAN)+DZB%R(IPLAN))
-      ENDDO    
+      ENDDO
 !     SURFACE PLANE
       I1 = IPOIN + (NPLAN-1)*NPOIN2
       DZA%R(NPLAN)  = Z(I1)-Z(I1-NPOIN2)
       DZB%R(NPLAN)  = 0.D0
       DZ%R(NPLAN)   = 0.5D0*DZA%R(NPLAN)
-!              
+!
 ! NET EROSION - DEPOSITION FLUX (N.B. BOTH ARE +VE VALUES)
-      FLUERO = FLUER%R(IPOIN)*DT 
-!          
+      FLUERO = FLUER%R(IPOIN)*DT
+!
 ! SETTLING AND DIFFUSION
 !
 ! FILL THE CONCENTRATION PROFILE ARRAY (RHS OF MATRIX)
@@ -142,7 +142,7 @@
           EV%R(IPLAN)=VISCTA%R(I1)
           WS%R(IPLAN)= WCC%R(I1)
         ENDDO
-      ELSE 
+      ELSE
         DO IPLAN=1,NPLAN-1
           I1 = IPOIN + (IPLAN-1)*NPOIN2
           EV%R(IPLAN)=0.5*(VISCTA%R(I1)+VISCTA%R(I1+NPOIN2))
@@ -156,7 +156,7 @@
 ! APPLY THE DEPOSITION RATE TO BOTTOM PLANE
       WS%R(1)=FLUDPT%R(IPOIN)
 !
-! SETUP THE DIFFUSION PARAMETERS 
+! SETUP THE DIFFUSION PARAMETERS
 !
 !     BOTTOM PLANE
       B=EV%R(1)/(DZ%R(1)*DZB%R(1))
@@ -164,7 +164,7 @@
       CC%R(1)=    -(WS%R(2)/DZ%R(1)+B)*DT
 !     INTERMEDIATE PLANES
       DO IPLAN=2,NPLAN-1
-!         
+!
 !       PARAMETERS A AND B
         A=EV%R(IPLAN-1)/(DZ%R(IPLAN)*DZA%R(IPLAN))
         B=EV%R(IPLAN  )/(DZ%R(IPLAN)*DZB%R(IPLAN))
@@ -173,7 +173,7 @@
         AA%R(IPLAN)=-A*DT
         BB%R(IPLAN)=1.D0+ (WS%R(IPLAN)/DZ%R(IPLAN)+(A+B))*DT
         CC%R(IPLAN)=-(WS%R(IPLAN+1)/DZ%R(IPLAN)+B)*DT
-!         
+!
       ENDDO
 !     SURFACE PLANE
       A = EV%R(NPLAN-1)/(DZ%R(NPLAN)*DZA%R(NPLAN))
@@ -181,23 +181,23 @@
       BB%R(NPLAN)=1.D0+(WS%R(NPLAN)/DZ%R(NPLAN)+A)*DT
 !
 ! MAIN SETTLING & DIFFUSION - DIRECT SOLVER
-!    
+!
       CALL TRID1D(CONC%R,AA%R,BB%R,CC%R,DD%R,GAM%R,NPLAN)
-!   
-! OUTPUT THE FINAL CONCENTRATION PROFILE 
+!
+! OUTPUT THE FINAL CONCENTRATION PROFILE
       DO IPLAN=1,NPLAN
           I1 = IPOIN + (IPLAN-1)*NPOIN2
           FC(I1)=CONC%R(IPLAN)
       ENDDO
       FLUDP%R(IPOIN)=FLUDPT%R(IPOIN)*FC(IPOIN)
 !
-! IMPLICIT DEPOSITION FLUX      
+! IMPLICIT DEPOSITION FLUX
       FLUDEP = FLUDPT%R(IPOIN)*FC(IPOIN)*DT
-      FLUNET = FLUERO - FLUDEP ! NET EROSION IS POSITIVE   
+      FLUNET = FLUERO - FLUDEP ! NET EROSION IS POSITIVE
 ! UPDATE FLUX OUT OF DOMAIN (+VE OUT, SO SUBTRACT)
       FLUX = FLUX-FLUNET*VOLU2D%R(IPOIN)
 !
-      ENDDO  ! END OF NODE LOOP   
+      ENDDO  ! END OF NODE LOOP
 !
 !
 !-----------------------------------------------------------------------

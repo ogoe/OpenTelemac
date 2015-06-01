@@ -43,8 +43,8 @@
 !+        22/10/2013
 !+        V7P0
 !+   Correction of PSI scheme. Reduction of fluxes based on same
-!+   contribution than classical distributive schemes (i.e. without 
-!+   integration by part). 
+!+   contribution than classical distributive schemes (i.e. without
+!+   integration by part).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTSEG         |-->| SEGMENTS OF EVERY TRIANGLE
@@ -358,8 +358,8 @@
           F32=0.D0
           F13=0.D0
         ENDIF
-!       
-!1000    CONTINUE        
+!
+!1000    CONTINUE
 !
 !       ASSEMBLES FLUXES
 !       A DIFFERENCE WITH STANDARD DISTRIBUTIVE SCHEMES
@@ -369,7 +369,7 @@
 !       SEGMENT 1
         ISEG  = ELTSEG(IELEM,1)
         IF(ORISEG(IELEM,1).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + F21 - F12         
+          FLOW(ISEG) = FLOW(ISEG) + F21 - F12
         ELSE
           FLOW(ISEG) = FLOW(ISEG) - F21 + F12
         ENDIF
@@ -386,7 +386,7 @@
           FLOW(ISEG) = FLOW(ISEG) + F13 - F31
         ELSE
           FLOW(ISEG) = FLOW(ISEG) - F13 + F31
-        ENDIF    
+        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------

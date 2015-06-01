@@ -46,7 +46,7 @@
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        18/05/2015
 !+        V7P1
-!+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH' 
+!+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH'
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -266,16 +266,16 @@
 !         ONE FILE THAT SHOULD HAVE A STRING 'SUBMIT' IN DICTIONARY
 !         HAS RECEIVED NO NAME
           IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'LECDON_TELEMAC3D: ERREUR POUR LE FICHIER' 
+            WRITE(LU,*) 'LECDON_TELEMAC3D: ERREUR POUR LE FICHIER'
             WRITE(LU,*) 'I=',I,' NOM=',T3D_FILES(I)%TELNAME
             WRITE(LU,*) 'IL MANQUE UNE CHAINE SUBMIT DANS LE'
             WRITE(LU,*) 'DICTIONNAIRE'
           ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'LECDON_TELEMAC3D: ERROR FOR FILE NUMBER' 
+            WRITE(LU,*) 'LECDON_TELEMAC3D: ERROR FOR FILE NUMBER'
             WRITE(LU,*) 'I=',I,' NAME=',T3D_FILES(I)%TELNAME
             WRITE(LU,*) 'THIS FILE SHOULD HAVE A STRING SUBMIT'
             WRITE(LU,*) 'IN DICTIONARY'
-          ENDIF 
+          ENDIF
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -334,7 +334,7 @@
         ELSE
           DO K=1,NTRAC
             SLVDTA(K)%PRECON = MOTINT(ADRESS(1,28)+K-1)
-          ENDDO        
+          ENDDO
         ENDIF
       ENDIF
       SLVDSE%NITMAX  =  MOTINT(ADRESS(1,29))
@@ -363,7 +363,7 @@
       SLVDTA(1)%NITMAX = MOTINT(ADRESS(1,40))
       IF(NTRAC.GT.1) THEN
         DO K=2,NTRAC
-          SLVDTA(K)%NITMAX = SLVDTA(1)%NITMAX 
+          SLVDTA(K)%NITMAX = SLVDTA(1)%NITMAX
         ENDDO
       ENDIF
       PERCOU_SIS       = MOTINT(ADRESS(1,41))
@@ -385,7 +385,7 @@
 !     R3D2D     =     MOTINT(ADRESS(1,63))
 ! JMH 29/09/99:
       KFROT     =     MOTINT(ADRESS(1,64))
-! CV 2013      
+! CV 2013
       NCOUCH=         MOTINT(ADRESS(1,65))
 !
 ! NON-HYDROSTATIC
@@ -483,7 +483,7 @@
       NPTH = MOTINT( ADRESS(1,105) )
 !     KEYWORD: TREATMENT OF NEGATIVE DEPTHS
       OPT_HNEG = MOTINT( ADRESS(1,106) )
-!     KEYWORD: SKIN FRICTION 
+!     KEYWORD: SKIN FRICTION
       ICR = MOTINT( ADRESS(1,107) )
 !
       ICQ=  MOTINT( ADRESS(1,108) )
@@ -506,7 +506,7 @@
           IF(FRTYPE(K).EQ.2) THOMFR=.TRUE.
         ENDDO
       ENDIF
-!     KEYWORD: VERTICAL VELOCITY DERIVATIVES 
+!     KEYWORD: VERTICAL VELOCITY DERIVATIVES
       LINLOG = MOTINT( ADRESS(1,110) )
 !     OPTION FOR TIDAL BOUNDARY CONDITIONS
       TIDALTYPE  = MOTINT(ADRESS(1,111))
@@ -589,7 +589,7 @@
       SLVDTA(1)%ZERO = MOTREA(ADRESS(2,13))
       IF(NTRAC.GT.1) THEN
         DO K=2,NTRAC
-          SLVDTA(K)%ZERO = SLVDTA(1)%ZERO 
+          SLVDTA(K)%ZERO = SLVDTA(1)%ZERO
         ENDDO
       ENDIF
 !     NO KEY-WORD FOR THIS ONE
@@ -676,7 +676,7 @@
       ENDDO
 !
 !     CHECKING THE SIZE OF KEY-WORD TREATMENT OF FLUXES AT THE BOUNDARIES
-!     SOME USERS THINK IT IS A SINGLE VALUE FOR ALL BOUNDARIES     
+!     SOME USERS THINK IT IS A SINGLE VALUE FOR ALL BOUNDARIES
 !
       IF(TROUVE(1,97).EQ.2.AND.
      &    DIMEN(1,97).LT.MAX(NDEBIT,NCOTE,NVIT)) THEN
@@ -803,7 +803,7 @@
       WCS0 = MOTREA( ADRESS(2,105) )
 !     INITIAL PERCENTAGE OF NON COHESIVE SEDIMENT
       PVSNCO0 = MOTREA( ADRESS(2,106) )
-!     
+!
 !     COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL
       C_ATMOS   = MOTREA( ADRESS(2,37) )
 !
@@ -846,7 +846,7 @@
 !     This one is in declarations_telemac.f
       CHECK_MESH   = MOTLOG(ADRESS(3,21))
       TASSE        = MOTLOG(ADRESS(3,51))
-! OBSOLE REPLACED BY ITASS      
+! OBSOLE REPLACED BY ITASS
 !      GIBSON       = MOTLOG(ADRESS(3,52))
 !      TURBWC       = MOTLOG(ADRESS(3,53))
       LISTIN       = MOTLOG(ADRESS(3,61))
@@ -886,11 +886,11 @@
 !     INFERENCE OF MINOR CONSTITUENTS OF TPXO TIDAL DATABASE
       INTMICON  = MOTLOG( ADRESS(3,86) )
 ! TBE + CV
-      READ_TOCE=  MOTLOG( ADRESS(3,87)) 
-      HINDER=  MOTLOG( ADRESS(3,90)) 
-      FLOC =  MOTLOG( ADRESS(3,91)) 
+      READ_TOCE=  MOTLOG( ADRESS(3,87))
+      HINDER=  MOTLOG( ADRESS(3,90))
+      FLOC =  MOTLOG( ADRESS(3,91))
 !     MIXED SEDIMENT
-      MIXTE=  MOTLOG( ADRESS(3,92)) 
+      MIXTE=  MOTLOG( ADRESS(3,92))
 !     LOGICAL SEDNCO IS DEDUCED FROM MIXTE AND SEDCO
       SEDNCO=MIXTE.EQV.SEDCO
 !
@@ -1059,9 +1059,9 @@
       SLVDSE%SLV    = MOTINT(ADRESS(1,52))
       SLVDSE%PRECON = MOTINT(ADRESS(1,53))
 !
-! CV : VERTICAL SCHME 
+! CV : VERTICAL SCHME
 !
-        SETDEP = MOTINT( ADRESS(1,54)) 
+        SETDEP = MOTINT( ADRESS(1,54))
 !
 ! REALS
 !
@@ -1091,13 +1091,13 @@
 !      CFDEP     = MOTREA(ADRESS(2,53))
       XKV =   MOTREA(ADRESS(2,63))
 !
-! sediment bed layers initialization        
+! sediment bed layers initialization
 !
-  
+
       DO K = 1, DIMEN(2,53)
-        CONC_LAYER(K)=MOTREA( ADRESS(2,53) + K-1 )  
+        CONC_LAYER(K)=MOTREA( ADRESS(2,53) + K-1 )
         TOCE_LAYER(K)=MOTREA( ADRESS(2,58) + K-1 )
-        ES_LAYER(K)=MOTREA( ADRESS(2,64) + K-1 ) 
+        ES_LAYER(K)=MOTREA( ADRESS(2,64) + K-1 )
 ! multilayer consolidation
         IF(TASSE) TREST(K) = MOTREA(ADRESS(2,62)+K-1)
       ENDDO
@@ -1105,12 +1105,12 @@
 ! CFDEP no longer used, replaced by CONC(1)
 !
 !        IF(SEDCO) THEN
-!          CFDEP=CONC_LAYER(NCOUCH)        
+!          CFDEP=CONC_LAYER(NCOUCH)
 !        ELSE
-!           CFDEP=(1.D0-XKV)* RHOS  
+!           CFDEP=(1.D0-XKV)* RHOS
 !        ENDIF
 !....CV
-!       
+!
 ! CHARACTERS
 !
       T3D_FILES(T3DSED)%NAME=MOTCAR( ADRESS(4,51) )
@@ -1212,11 +1212,11 @@
             WRITE(LU,*) 'WITH ADVECTION SCHEMES'
             WRITE(LU,*) ADV_LPO_TF,ADV_NSC_TF,' OR ',ADV_PSI_TF
             WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
-            WRITE(LU,*) 'MUST BE EQUAL TO 2'            
+            WRITE(LU,*) 'MUST BE EQUAL TO 2'
           ENDIF
           CALL PLANTE(1)
           STOP
-        ENDIF 
+        ENDIF
         IF(NTRAC.GT.0) THEN
           DO K=1,NTRAC
             IF(SCHCTA(K).EQ.ADV_NSC_TF.OR.SCHCTA(K).EQ.ADV_LPO_TF
@@ -1231,13 +1231,13 @@
                 WRITE(LU,*) 'WITH ADVECTION SCHEMES'
                 WRITE(LU,*) ADV_LPO_TF,ADV_NSC_TF,' OR ',ADV_PSI_TF
                 WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
-                WRITE(LU,*) 'MUST BE EQUAL TO 2'            
+                WRITE(LU,*) 'MUST BE EQUAL TO 2'
               ENDIF
               CALL PLANTE(1)
               STOP
             ENDIF
-          ENDDO    
-        ENDIF   
+          ENDDO
+        ENDIF
       ENDIF
 !
 !     WITH TETRAHEDRA, LEO POSTMA SCHEME IS REPLACED BY N-SCHEME
@@ -1255,10 +1255,10 @@
             WRITE(LU,*) 'WITH TETRAHEDRA ADVECTION SCHEME'
             WRITE(LU,*) ADV_LPO,' OR ',ADV_LPO_TF
             WRITE(LU,*) 'IS REPLACED BY'
-            WRITE(LU,*) ADV_NSC,' OR ',ADV_NSC_TF            
+            WRITE(LU,*) ADV_NSC,' OR ',ADV_NSC_TF
           ENDIF
           SCHCVI=SCHCVI+1
-        ENDIF 
+        ENDIF
         IF(SCHCKE.EQ.ADV_LPO.OR.SCHCKE.EQ.ADV_LPO_TF) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'AVEC TETRAEDRES'
@@ -1271,10 +1271,10 @@
             WRITE(LU,*) 'WITH TETRAHEDRA ADVECTION SCHEME'
             WRITE(LU,*) ADV_LPO,' OR ',ADV_LPO_TF
             WRITE(LU,*) 'IS REPLACED BY'
-            WRITE(LU,*) ADV_NSC,' OR ',ADV_NSC_TF            
+            WRITE(LU,*) ADV_NSC,' OR ',ADV_NSC_TF
           ENDIF
           SCHCKE=SCHCKE+1
-        ENDIF 
+        ENDIF
         IF(NTRAC.GT.0) THEN
           DO K=1,NTRAC
             IF(SCHCTA(K).EQ.ADV_LPO.OR.SCHCTA(K).EQ.ADV_LPO_TF) THEN
@@ -1289,12 +1289,12 @@
                 WRITE(LU,*) 'WITH TETRAHEDRA ADVECTION SCHEME'
                 WRITE(LU,*) ADV_LPO,' OR ',ADV_LPO_TF
                 WRITE(LU,*) 'IS REPLACED BY'
-                WRITE(LU,*) ADV_NSC,' OR ',ADV_NSC_TF             
+                WRITE(LU,*) ADV_NSC,' OR ',ADV_NSC_TF
               ENDIF
               SCHCTA(K)=SCHCTA(K)+1
             ENDIF
-          ENDDO    
-        ENDIF   
+          ENDDO
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -1566,7 +1566,7 @@
         ENDIF
       ENDIF
 !
-!     LIST OF VARIABLES TO BE ADVECTED BY A SCHEME I (AT INDEX I IN LIST) 
+!     LIST OF VARIABLES TO BE ADVECTED BY A SCHEME I (AT INDEX I IN LIST)
 !     LIST OF ALL VARIABLES TO BE ADVECTED (AT INDEX 0)
 !
       IF(SCHCVI.GT.0) THEN
@@ -1597,7 +1597,7 @@
         LIST_ADV(N_ADV(0     ),0     )=5   ! EP
       ENDIF
       IF(NTRAC.GT.0) THEN
-        DO I=1,NTRAC        
+        DO I=1,NTRAC
           IF(SCHCTA(I).GT.0) THEN
             N_ADV(SCHCTA(I))=N_ADV(SCHCTA(I))+1
             N_ADV(0        )=N_ADV(0        )+1
@@ -1616,7 +1616,7 @@
       S_ADV(4) = SCHCKE
       S_ADV(5) = SCHCKE
       IF(NTRAC.GT.0) THEN
-        DO I=1,NTRAC        
+        DO I=1,NTRAC
           S_ADV(5+I)=SCHCTA(I)
         ENDDO
       ENDIF
@@ -1723,12 +1723,12 @@
 !     V
       SOREST(3)=.TRUE.
 !     W
-      SOREST(4)=.TRUE. 
+      SOREST(4)=.TRUE.
 !     K AND EPSILON
       IF(ITURBH.EQ.3.OR.ITURBH.EQ.7) THEN
         SOREST(8)=.TRUE.
         SOREST(9)=.TRUE.
-      ENDIF 
+      ENDIF
 !     NON HYDROSTATIC PRESSURE
       IF(NONHYD) SOREST(12)=.TRUE.
 !     UCONV,VCONV,WCONV,DM1
@@ -2115,7 +2115,7 @@
      &            'FOR VELOCITIES IS NOT SYMMETRIC',/,1X,
      &            'CHOOSE SOLVER GMRES FOR EXAMPLE : 7')
         CALL PLANTE(1)
-        STOP     
+        STOP
       ENDIF
 !
       IF(SCHCKE.EQ.ADV_SUP.AND.(SLVDKE%SLV.EQ.1.OR.
@@ -2133,7 +2133,7 @@
      &            'FOR K AND EPSILON IS NOT SYMMETRIC',/,1X,
      &            'CHOOSE SOLVER GMRES FOR EXAMPLE : 7')
         CALL PLANTE(1)
-        STOP     
+        STOP
       ENDIF
 !
       IF(NTRAC.GT.0) THEN
@@ -2153,7 +2153,7 @@
      &              'IS NOT SYMMETRIC.',/,1X,
      &              'CHOOSE SOLVER GMRES FOR EXAMPLE : 7')
           CALL PLANTE(1)
-          STOP     
+          STOP
           ENDIF
         ENDDO
       ENDIF
@@ -2308,13 +2308,13 @@
 ! This may not be useful anymore ..
 !      IF(SEDI.AND.SETDEP.EQ.1) THEN
 !        IF((SCHCTA(1).NE.ADV_LPO_TF).AND.(SCHCTA(1).NE.ADV_NSC_TF)) THEN
-! error message        
+! error message
 !          IF(LNG.EQ.1) WRITE(LU,153) ADV_NSC_TF
 !          IF(LNG.EQ.2) WRITE(LU,154) ADV_NSC_TF
-! change value          
+! change value
 !          SCHCTA(1)=ADV_NSC_TF
-!        ENDIF 
-!      ENDIF 
+!        ENDIF
+!      ENDIF
 !
 153      FORMAT(1X,'LECDON : FOR EXPLICIT SETTLING SCHEME',/,10X,
      &  'USE CONVECTION SCHEME ',I2/)

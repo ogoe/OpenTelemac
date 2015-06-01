@@ -152,14 +152,14 @@
         ENDDO
         IF (LNG.EQ.1) VAR_NAME = 'VITESSE U       M/S             '
         IF (LNG.EQ.2) VAR_NAME = 'VELOCITY U      M/S             '
-        
+
         CALL ADD_DATA(FFORMAT,CANAL,VAR_NAME,AT,IREC,.FALSE.,VAR,
      &                NPOIN2,IERR)
         ! If variable unknown try again with version in the other language
         IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
           IF (LNG.EQ.2) VAR_NAME = 'VITESSE U       M/S             '
           IF (LNG.EQ.1) VAR_NAME = 'VELOCITY U      M/S             '
-        
+
           CALL ADD_DATA(FFORMAT,CANAL,VAR_NAME,AT,IREC,.FALSE.,VAR,
      &                  NPOIN2,IERR)
           CALL CHECK_CALL(IERR,'COUPEH:ADD_DATA:U2')

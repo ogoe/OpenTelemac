@@ -21,7 +21,7 @@
 !+
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
 !
-!         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS 
+!         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS
 !         FOR CLARITY
 !
 !history  C. PEYRARD (LNHE)
@@ -30,7 +30,7 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| B              |-->| RIGHT-HAND SIDE B ; 
+!| B              |-->| RIGHT-HAND SIDE B ;
 !| C              |-->| ORDERING OF THE COLUMNS OF MATRIX
 !| D              |-->| DIAGONAL FACTORIZED OF MATRIX
 !| IL, JL         |-->| STRUCTURE OF LOWER FACTORISED TRIANGULAR MATRIX
@@ -54,7 +54,7 @@
       DOUBLE PRECISION  L(*), D(*), U(*), B(*), Z(*), TMP(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!      
+!
       INTEGER K,JMIN,JMAX,ML,J,MU,I
       DOUBLE PRECISION TMPK,SUM
 !
@@ -66,7 +66,7 @@
         TMP(K) = B(R(K))
       ENDDO
 !
-!     SOLVE  LY = B  BY FORWARD SUBSTITUTION 
+!     SOLVE  LY = B  BY FORWARD SUBSTITUTION
 !
       DO K=1,N
         JMIN = IL(K)

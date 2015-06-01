@@ -4,7 +4,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 6.2    07/12   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 6.2    07/12   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -77,18 +77,18 @@
 !
       INTEGER I
 !
-      DOUBLE PRECISION PI,BID         
+      DOUBLE PRECISION PI,BID
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
+!     ----------------------------------------
 !
-      INTEGER IG              
+! JCB :
+!
+      INTEGER IG
 !
 !CP
-      INTEGER IG0             
+      INTEGER IG0
       DOUBLE PRECISION PHASOI,AUXIC,AUXIS,DEGRAD,X0,Y0,KK
 !CP
 !
@@ -113,20 +113,20 @@
       TETAP%R(:) = 0.D0
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
-      HB%R(:)    = 1.0D0 
+      HB%R(:)    = 1.0D0
 !
 ! PAROIS SOLIDES
 !
       DO I=245,902
         LIHBOR%I(I)=KLOG
-        RP%R(I)=1.D0  
+        RP%R(I)=1.D0
         TETAP%R(I)=0.D0
         ALFAP%R(I)=0.D0
       ENDDO
 !
 !
 ! PAROIS LIQUIDES -FRONTIERE LIBRE
-! 
+!
       DO I=903,953
         LIHBOR%I(I)=KSORT
         TETAP%R(I)=23.D0
@@ -154,7 +154,7 @@
         AUXIC =COS(TETAB%R(I)*DEGRAD)
         AUXIS =SIN(TETAB%R(I)*DEGRAD)
         HB%R(I)=1.69D0
-!CP ----PHASE 
+!CP ----PHASE
         IG   = MESH%NBOR%I(I)
         KK=K%R(IG)
         PHASOI=PHASOI+KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
@@ -169,7 +169,7 @@
         AUXIC =COS(TETAB%R(I)*DEGRAD)
         AUXIS =SIN(TETAB%R(I)*DEGRAD)
         HB%R(I)=1.69D0
-!CP ----PHASE 
+!CP ----PHASE
         IG   = MESH%NBOR%I(I)
         KK=K%R(IG)
         PHASOI=PHASOI+KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
@@ -180,9 +180,9 @@
 !
 !
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+      RETURN
+      END
 !                       *****************
                         SUBROUTINE CORFON
 !                       *****************
@@ -263,4 +263,4 @@
 !
 !
       RETURN
-      END                  
+      END

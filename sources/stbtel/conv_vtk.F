@@ -1,7 +1,7 @@
       MODULE CONV_VTK
-      CONTAINS               
-!                       ***************** 
-                        SUBROUTINE WRITE_VTK 
+      CONTAINS
+!                       *****************
+                        SUBROUTINE WRITE_VTK
 !                       *****************
      &(VTKFILE)
 !
@@ -11,20 +11,20 @@
 !
 !BRIEF    WRITE A FILE OF SELAFIN FORMAT WITH THE MESH OBJECT
 !+        INFORMATIONS
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
 !+   CREATION OF THE FILE
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| VTKFILE        |-->| NAME OF THE VTK FILE 
+!| VTKFILE        |-->| NAME OF THE VTK FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_STBTEL
       USE DECLARATIONS_SPECIAL
       USE LIB_VTK_IO
-!      
+!
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
       INTEGER LNG,LU
@@ -42,12 +42,12 @@
       DOUBLE PRECISION, ALLOCATABLE :: TMP(:)
       CHARACTER(LEN=MAXLENHARD) :: FILENAME
       CHARACTER*8 :: TIMESTR
-!      
+!
       WRITE(LU,*) '----------------------------------------------------'
       IF(LNG.EQ.1) WRITE(LU,*) '------DEBUT ECRITURE FICHIER VTK'
       IF(LNG.EQ.2) WRITE(LU,*) '------BEGINNING WRITTING OF VTK FILE'
       WRITE(LU,*) '----------------------------------------------------'
-!      
+!
 !-----------------------------------------------------------------------
 !
       ! IF WE ARE IN 2D ADDING Z COORDINATES TO 0
@@ -55,7 +55,7 @@
         ALLOCATE(MESH2%Z(MESH2%NPOIN),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%Z')
         MESH2%Z(:) = 0.D0
-      ENDIF 
+      ENDIF
       ! MAKING A FILE FOR EACH TIME STEP
       DO ITIME=1,MESH2%TIMESTEP
         CALL NUMBER2STRING(TIMESTR,ITIME)
@@ -121,7 +121,7 @@
       ENDDO
       IF(MESH2%NDIM.EQ.2) DEALLOCATE(MESH2%Z)
 
-!      
+!
 !-----------------------------------------------------------------------
 !
       WRITE(LU,*) '----------------------------------------------------'
@@ -129,10 +129,10 @@
       IF(LNG.EQ.2) WRITE(LU,*) '------ENDING WRITTING OF VTK FILE'
       WRITE(LU,*) '----------------------------------------------------'
 #else
-      IF(LNG.EQ.1) WRITE(LU,*) 
+      IF(LNG.EQ.1) WRITE(LU,*)
      &       'ERREUR : TENTATIVE D ECRITURE D UN FICHIER VTK ',
      &       'SANS LA BIBLIOTHEQUE'
-      IF(LNG.EQ.2) WRITE(LU,*) 
+      IF(LNG.EQ.2) WRITE(LU,*)
      &       'ERROR : TRYING TO WRITE VTK FILE WITHOUT VTK LIBRARY'
       CALL PLANTE(1)
 

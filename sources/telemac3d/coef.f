@@ -39,7 +39,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DSIG1          |-->| DERIVATIVE OF THE EFFECTIVE STRESS
 !|                |   | AT THE FIRST POINT OF THE MESH
-!| DTC            |-->| TIME STEP FOR CONSOLIDATION 
+!| DTC            |-->| TIME STEP FOR CONSOLIDATION
 !| EPAI           |-->| THICKNESS OF MESH ELEMENTS DISCRETISING THE BED
 !| GRAV           |-->| GRAVITY ACCELERATION
 !| IMAX           |-->| NUMBER OF POINTS AT THE BOTTOM MESH
@@ -47,7 +47,7 @@
 !| NDEB           |-->| INDEX LIMITING THE RANGE OF RESOLUTION
 !| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES THAT
 !|                |   | DISCRETISE MUDDY BOTTOM
-!| RHOS           |-->| SEDIMENT DENSITY 
+!| RHOS           |-->| SEDIMENT DENSITY
 !| TRA01          |<->| WORKING ARRAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

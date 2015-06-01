@@ -125,9 +125,9 @@
           IF(IEL.GT.0) THEN
 !
 !           ELEMENT IN THE DOMAIN
-! 
+!
 !           LOCAL NUMBERING OF THE SIDE NODES
-!         
+!
             I1 = IKLE1(IELEM)
             I2 = IKLE2(IELEM)
             I3 = IKLE3(IELEM)
@@ -196,7 +196,7 @@
 !
           IEL=NELBOR(IELEM)
 !
-          IF(IEL.GT.0) THEN   
+          IF(IEL.GT.0) THEN
 !
 !           GLOBAL NUMBERING OF THE SIDE NODES
 !
@@ -210,7 +210,7 @@
             HT = H1 + H2
             H1 = H1 + H1 + HT
             H2 = H2 + H2 + HT
-!       
+!
             J1=NULONE(IELEM,1)
             J2=NULONE(IELEM,2)
             AX = (Y(IEL,J2)-Y(IEL,J1)) * XSUR72

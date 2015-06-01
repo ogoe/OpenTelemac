@@ -73,7 +73,7 @@
       DOUBLE PRECISION, INTENT(IN)  :: FFON
       LOGICAL, INTENT(IN)           :: LISTIN
       INTEGER, INTENT(IN)           :: NGEO,NFON
-      CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT      
+      CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -137,19 +137,19 @@
 !
 !     LOOKS FOR THE BOTTOM ELEVATION IN THE FILE
 !
-      IF(LNG.EQ.1) CALL READ_DATA(FFORMAT, NGEO, ZF%R, 
+      IF(LNG.EQ.1) CALL READ_DATA(FFORMAT, NGEO, ZF%R,
      &                            'FOND            ', MESH%NPOIN,
      &                            IERR,RECORD,TIME=BID)
-      IF(LNG.EQ.2) CALL READ_DATA(FFORMAT, NGEO, ZF%R, 
+      IF(LNG.EQ.2) CALL READ_DATA(FFORMAT, NGEO, ZF%R,
      &                            'BOTTOM          ', MESH%NPOIN,
      &                            IERR,RECORD,TIME=BID)
       IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.1) THEN
-        CALL READ_DATA(FFORMAT, NGEO, ZF%R, 
+        CALL READ_DATA(FFORMAT, NGEO, ZF%R,
      &                 'BOTTOM          ', MESH%NPOIN,
      &                 IERR,RECORD,TIME=BID)
       ENDIF
       IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.2) THEN
-        CALL READ_DATA(FFORMAT, NGEO, ZF%R, 
+        CALL READ_DATA(FFORMAT, NGEO, ZF%R,
      &                 'FOND            ', MESH%NPOIN,
      &                 IERR,RECORD,TIME=BID)
       ENDIF
@@ -159,12 +159,12 @@
      &                   'ALTIMETRIE      ', MESH%NPOIN,
      &                   IERR,RECORD,TIME=BID)
 !     TOMAWAC IN FRENCH ?
-      IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) 
+      IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR)
      &                   CALL READ_DATA(FFORMAT, NGEO, ZF%R,
      &                   'COTE_DU_FOND    ', MESH%NPOIN,
      &                   IERR,RECORD,TIME=BID)
 !     TOMAWAC IN ENGLISH ?
-      IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) 
+      IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR)
      &                   CALL READ_DATA(FFORMAT, NGEO, ZF%R,
      &                   'BOTTOM_LEVEL    ', MESH%NPOIN,
      &                   IERR,RECORD,TIME=BID)

@@ -63,23 +63,23 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
+!+  Name of variables
 !+
 !history  J-M HERVOUET (EDF-LNHE)
 !+        27/01/2012
 !+        V6P2
-!+  Argument ICLA added 
+!+  Argument ICLA added
 !
 !history  J-M HERVOUET (EDF-LNHE)
 !+        14/02/2012
 !+        V6P2
 !+  Optimisation, and FLBCLA built and kept for use in bilan_sisyphe
-!+  Treatment of QBOR added     
+!+  Treatment of QBOR added
 !
 !history  J-M HERVOUET (EDF-LNHE)
 !+        25/12/2012
 !+        V6P3
-!+  3 arguments added to VECTOS.    
+!+  3 arguments added to VECTOS.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -108,7 +108,7 @@
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSEG           |-->| NUMBER OF SEGMENTS PER CONTROL SECTION
-!| QBOR           |-->| PRESCRIBED BEDLOAD DISCHARGES 
+!| QBOR           |-->| PRESCRIBED BEDLOAD DISCHARGES
 !| QSX            |-->| SOLID DISCHARGE X
 !| QSY            |-->| SOLID DISCHARGE Y
 !| S              |-->| VOID STRUCTURE
@@ -165,7 +165,7 @@
 !         HERE WE PUT THE INTERNAL USAGE <0 = ENTERING
           FLBCLA%R(K)=-QBOR%R(K)
 !         EVEN IF USER HAS SPECIFIED LIEBOR=KSORT, LIMTEC MAY HAVE BEEN
-!         SET TO KDIR BY CHECKING IF VELOCITY IS ENTERING, THIS IS 
+!         SET TO KDIR BY CHECKING IF VELOCITY IS ENTERING, THIS IS
 !         UNWANTED HERE AS QBOR ONLY IS TAKEN INTO ACCOUNT,
 !         SO DDL IS PUT TO AVOID A DIRICHLET TREATMENT IN POSITIVE_DEPTHS.
           LIMTEC%I(K)=KDDL

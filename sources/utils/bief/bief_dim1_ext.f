@@ -29,7 +29,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IELM1          |-->| TYPE OF LINE ELEMENT 
+!| IELM1          |-->| TYPE OF LINE ELEMENT
 !| IELM2          |-->| TYPE OF COLUMN ELEMENT
 !| MESH           |-->| MESH STRUCTURE
 !| STO            |-->| TYPE OF STORAGE

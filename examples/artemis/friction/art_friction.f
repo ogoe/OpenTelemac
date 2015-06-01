@@ -5,7 +5,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 6.2    07/12   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 6.2    07/12   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -78,13 +78,13 @@
 !
       INTEGER I,JB
 !
-      DOUBLE PRECISION PI,BID         
+      DOUBLE PRECISION PI,BID
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
+!     ----------------------------------------
+!
+! JCB :
 !
 !
       PARAMETER( PI = 3.1415926535897932384626433D0)
@@ -108,54 +108,54 @@
       TETAP%R(:) = 0.D0
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
-      HB%R(:)    = 1.0D0 
-!                                                                     
+      HB%R(:)    = 1.0D0
+!
 ! PAROIS SOLIDES
 !
       DO I=1,NPTFR
         JB=BOUNDARY_COLOUR%I(I)
-        
+
         IF(JB.GE.2.AND.JB.LE.216)THEN
           LIHBOR%I(I) = KLOG
           RP%R(I) = 1.D0
           TETAP%R(I) = 90.D0
           ALFAP%R(I) = 0.D0
-        ENDIF 
-        
+        ENDIF
+
         IF(JB.GE.223.AND.JB.LE.437)THEN
           LIHBOR%I(I) = KLOG
           RP%R(I)    = 1.D0
           TETAP%R(I) = 90.D0
           ALFAP%R(I) = 0.D0
-        ENDIF 
-!      
-!       PAROIS LIQUIDES - FRONTIERE LIBRE 
-!      
+        ENDIF
+!
+!       PAROIS LIQUIDES - FRONTIERE LIBRE
+!
         IF(JB.GE.217.AND.JB.LE.222)THEN
           LIHBOR%I(I) = KSORT
           TETAP%R(I) = 0.D0
-        ENDIF 
-!      
+        ENDIF
+!
 !       PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
-!      
+!
         IF(JB.EQ.1)THEN
           LIHBOR%I(I) = KINC
           HB%R(I) = 0.175D0
           TETAB%R(I) = 0.D0
           ALFAP%R(I) = 0.D0
-        ENDIF 
+        ENDIF
         IF(JB.GE.438.AND.JB.LE.440)THEN
           LIHBOR%I(I) = KINC
           HB%R(I) = 0.175D0
           TETAB%R(I) = 0.D0
           ALFAP%R(I) = 0.D0
-        ENDIF 
+        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+      RETURN
+      END
 !                       *****************
                         SUBROUTINE ART_CORFON
 !                       *****************
@@ -220,7 +220,7 @@
 !
       ENDIF
 !
- 
+
 
 !-----------------------------------------------------------------------
 !
@@ -238,7 +238,7 @@
 !
 !
       RETURN
-      END                  
+      END
 !                    *****************
                      SUBROUTINE CORRXY
 !                    *****************
@@ -315,9 +315,9 @@
 !  EXAMPLE : MULTIPLIES BY A CONSTANT (SCALES THE MESH)
 !            CHANGES THE ORIGIN
 !
-      DO I=1,NPOIN                                         
-        X(I) = X(I) / 60.D0                           
-        Y(I) = Y(I) / 10.D0                                          
+      DO I=1,NPOIN
+        X(I) = X(I) / 60.D0
+        Y(I) = Y(I) / 10.D0
       ENDDO
 !
 !-----------------------------------------------------------------------

@@ -63,7 +63,7 @@
 !
       IF(STOXMT.EQ.1) THEN
 !
-!     ASSEMBLES 
+!     ASSEMBLES
 !
       DO IELEM = 1,NELEM
 !       TERM 12
@@ -79,7 +79,7 @@
 !
       ELSEIF(STOXMT.EQ.2) THEN
 !
-!     ASSEMBLES 
+!     ASSEMBLES
 !
       DO IELEM = 1,NELEM
 !       TERM 12

@@ -83,7 +83,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        16/01/2015
 !+        V7P0
-!+   Block of advected variables with characteristics changed in the 
+!+   Block of advected variables with characteristics changed in the
 !+   case of more than 2 subiterations.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -214,7 +214,7 @@
 !       NOTE: THE MATRIX IS THE SAME IN N-SCHEME OR PSI-SCHEME BUT
 !             WITH PSI SCHEME THE DIAGONAL IS NOT ASSEMBLED BECAUSE
 !             IT IS ASSEMBLED IN MURD3D.
-! 
+!
         IF(N_ADV(ADV_NSC).GT.0) THEN
           FORMUL = 'MAMURD 2     N  '
         ELSE
@@ -324,7 +324,7 @@
      &                                   MESH3D%GLOSEG%DIM1,
      &                                   MESH2D%NSEG,NPLAN)
         ENDIF
-!       FLOPAR = FLODEL ASSEMBLED IN PARALLEL MODE  
+!       FLOPAR = FLODEL ASSEMBLED IN PARALLEL MODE
         IF(NCSIZE.GT.1) THEN
           CALL OS('X=Y     ',X=FLOPAR,Y=FLODEL)
           CALL PARCOM2_SEG(FLOPAR%R,FLOPAR%R,FLOPAR%R,
@@ -355,9 +355,9 @@
      &     SVIDE,UCONV,VCONV,WSCONV,MESH3D,MSK,MASKEL)
 !         MSUPG IS NOT SYMMETRICAL
         ELSEIF(OPTSUP(1).NE.0) THEN
-          IF (LNG.EQ.1) WRITE(LU,*) 'VALEUR NON PREVU DE OPTSUP 
+          IF (LNG.EQ.1) WRITE(LU,*) 'VALEUR NON PREVU DE OPTSUP
      &                               AND PREADV'
-          IF (LNG.EQ.2) WRITE(LU,*) 'UNEXPECTED VALUE OF OPTSUP 
+          IF (LNG.EQ.2) WRITE(LU,*) 'UNEXPECTED VALUE OF OPTSUP
      &                               ET PREADV'
           CALL PLANTE(1)
           STOP
@@ -376,10 +376,10 @@
 !       ADDS CENTRED ADVECTION TERM
 !
         FORMUL = 'MATVGR          '
-        FORMUL(8:8) = '2'   
+        FORMUL(8:8) = '2'
         CALL MATRIX
      &  (MSUPG,OPER,FORMUL,IELM3,IELM3,1.D0,DM1,ZCONV,SVIDE,
-     &   UCONV,VCONV,WSCONV,MESH3D,MSK,MASKEL)    
+     &   UCONV,VCONV,WSCONV,MESH3D,MSK,MASKEL)
 !
 !       VERTICAL UPWIND (SUBROUTINE UPWIND EXPECTS SYMMETRICAL MATRICES)
 !       HERE UPWIND COEFFICIENT = 1, BUT WSCONV USED INSTEAD OF W.
@@ -432,7 +432,7 @@
 !       IN BLOCK FN3D THERE IS U,V,W INSTEAD OF UN,VN,WN
 !       BECAUSE ADVECTION IS DONE FOR THE NEXT TIME STEP
 !
-!       IT IS MORE COMPLICATED WITH SUB-ITERATIONS:     
+!       IT IS MORE COMPLICATED WITH SUB-ITERATIONS:
 !
         IF(NSOUSI.GT.1.AND.FN3D%ADR(1)%P%NAME(1:1).EQ.'U') THEN
 !         IF THE VELOCITIES ARE ADVECTED THEY ARE THE FIRST IN THE BLOCK

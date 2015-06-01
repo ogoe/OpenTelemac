@@ -30,17 +30,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FLULOC         |<->| LOCAL FLUX AT THE INTERFACE OF IJ 
+!| FLULOC         |<->| LOCAL FLUX AT THE INTERFACE OF IJ
 !| G              |-->| GRAVITY
 !| HI             |-->| WATER DEPTH OF NODE I
-!| HJ             |-->| WATER DEPTH OF NODE J 
+!| HJ             |-->| WATER DEPTH OF NODE J
 !| RNORM          |---|  ???? NOT USED
 !| UI             |-->| VELOCITY X-COMPONENT OF NODE I
 !| UJ             |-->| VELOCITY X-COMPONENT OF NODE J
 !| VI             |-->| VELOCITY Y-COMPONENT OF NODE I
 !| VJ             |-->| VELOCITY Y-COMPONENT OF NODE J
-!| XN             |-->| X-COMPONENT OF THE NORMAL VECTOR 
-!| YN             |-->| Y-COMPONENT OF THE NORMAL VECTOR  
+!| XN             |-->| X-COMPONENT OF THE NORMAL VECTOR
+!| YN             |-->| Y-COMPONENT OF THE NORMAL VECTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

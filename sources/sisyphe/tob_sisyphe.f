@@ -39,8 +39,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
@@ -56,7 +56,7 @@
 !| ICR            |-->| ICR=0: MU=1
 !|                |   | ICR=1: SKIN FRICTION CORRECTION USE KSP
 !|                |   | ICR=2: RIPPLE ROUGHNESS USE KSR, KSR
-!| KARMAN         |-->| VON KARMAN CONSTANT  
+!| KARMAN         |-->| VON KARMAN CONSTANT
 !| KFROT          |-->| FRICTION LAW
 !| KS             |<--| RUGOSITE TOTALE
 !| KSP            |<--| RUGOSITE DE PEAU
@@ -71,8 +71,8 @@
 !| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY (COUPLED T3D)
 !| UNORM          |-->| INTENSITE DU COURANT
 !| VCE            |-->| WATER VISCOSITY
-!| XMVE           |-->| FLUID DENSITY (MASS) 
-!| XMVS           |-->| SEDIMENT DENSITY (MASS) 
+!| XMVE           |-->| FLUID DENSITY (MASS)
+!| XMVS           |-->| SEDIMENT DENSITY (MASS)
 !| ZERO           |-->| ZERO
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -138,7 +138,7 @@
 ! here the total bed roughness is calculated as a function of friction coefficient
 ! -- > issued from Telemac if coupling
 ! -- > from the steering file of Sisyphe
-!  
+!
         IF(CODE(1:7).EQ.'TELEMAC') THEN
           CALL OV('X=Y     ',CF%R,CF_TEL%R,CF_TEL%R,0.D0,CF%DIM1)
         ELSE

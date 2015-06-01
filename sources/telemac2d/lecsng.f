@@ -94,7 +94,7 @@
       MAXNPS=0
 !     COMMENT LINE
       READ(IFIC,*,END=900,ERR=900)
-!     NUMBER OF WEIRS, OPTION FOR TANGENTIAL VELOCITY 
+!     NUMBER OF WEIRS, OPTION FOR TANGENTIAL VELOCITY
       READ(IFIC,*,END=900,ERR=998) NNWEIRS,IOPTAN
 !
 !     COHERENCE WITH THE STEERING FILE
@@ -172,9 +172,9 @@
           NOM(5:5) = CHIFFRE((N-100*(N/100))/10)
           NOM(6:6) = CHIFFRE((N-100*(N/100))-10*((N-100*(N/100))/10))
         ELSE
-          IF(LNG.EQ.1) WRITE(LU,*) 'PLUS DE 999 BARRAGES DEMANDEES 
+          IF(LNG.EQ.1) WRITE(LU,*) 'PLUS DE 999 BARRAGES DEMANDEES
      &                              DANS LECBREACH'
-          IF(LNG.EQ.2) WRITE(LU,*) 'MORE THAN 999 BREACHS ASKED 
+          IF(LNG.EQ.2) WRITE(LU,*) 'MORE THAN 999 BREACHS ASKED
      &                              IN LECBREACH'
           CALL PLANTE(1)
           STOP
@@ -268,7 +268,7 @@
           IF(I.GT.1) THEN
             WDIG%ADR(N)%P%R(I-1)=DSQRT((XDIG2-XDIG1)**2+
      &                                 (YDIG2-YDIG1)**2)
-          ENDIF  
+          ENDIF
           XDIG1=XDIG2
           YDIG1=YDIG2
         ENDDO
@@ -281,7 +281,7 @@
       ENDIF
       ENDDO ! N
 !
-!     RETRIEVING BOUNDARY POINTS NUMBERS 
+!     RETRIEVING BOUNDARY POINTS NUMBERS
 !     WITH MINUS SIGN TO TRACE POINTS WHICH ARE NOT IN THE DOMAIN
 !     SEE STEP 2.
 !
@@ -297,14 +297,14 @@
      &             MESH%KNOLG%I(MESH%NBOR%I(IPTFR))) THEN
                   NDGA1%ADR(N)%P%I(I)=-IPTFR
                   EXIT
-                ENDIF 
+                ENDIF
               ENDDO
               DO IPTFR=1,NPTFR
                 IF(NDGB1%ADR(N)%P%I(I).EQ.
      &             MESH%KNOLG%I(MESH%NBOR%I(IPTFR))) THEN
                   NDGB1%ADR(N)%P%I(I)=-IPTFR
                   EXIT
-                ENDIF 
+                ENDIF
               ENDDO
             ENDDO
           ENDDO
@@ -317,13 +317,13 @@
                 IF(NDGA1%ADR(N)%P%I(I).EQ.MESH%NBOR%I(IPTFR)) THEN
                   NDGA1%ADR(N)%P%I(I)=-IPTFR
                   EXIT
-                ENDIF 
+                ENDIF
               ENDDO
               DO IPTFR=1,NPTFR
                 IF(NDGB1%ADR(N)%P%I(I).EQ.MESH%NBOR%I(IPTFR)) THEN
                   NDGB1%ADR(N)%P%I(I)=-IPTFR
                   EXIT
-                ENDIF 
+                ENDIF
               ENDDO
             ENDDO
           ENDDO
@@ -339,28 +339,28 @@
      &             MESH%KNOLG%I(IPTFR)) THEN
                   NDGA1%ADR(N)%P%I(I)=-IPTFR
                   EXIT
-                ENDIF 
+                ENDIF
               ENDDO
               DO IPTFR=1,NPOIN
                 IF(NDGA2%ADR(N)%P%I(I).EQ.
      &             MESH%KNOLG%I(IPTFR)) THEN
                   NDGA2%ADR(N)%P%I(I)=-IPTFR
                   EXIT
-                ENDIF 
+                ENDIF
               ENDDO
               DO IPTFR=1,NPOIN
                 IF(NDGB1%ADR(N)%P%I(I).EQ.
      &             MESH%KNOLG%I(IPTFR)) THEN
                   NDGB1%ADR(N)%P%I(I)=-IPTFR
                   EXIT
-                ENDIF 
+                ENDIF
               ENDDO
               DO IPTFR=1,NPOIN
                 IF(NDGB2%ADR(N)%P%I(I).EQ.
      &             MESH%KNOLG%I(IPTFR)) THEN
                   NDGB2%ADR(N)%P%I(I)=-IPTFR
                   EXIT
-                ENDIF 
+                ENDIF
               ENDDO
             ENDDO
           ENDDO
@@ -373,25 +373,25 @@
                 IF(NDGA1%ADR(N)%P%I(I).EQ.IPTFR) THEN
                   NDGA1%ADR(N)%P%I(I)=-IPTFR
                   EXIT
-                ENDIF 
+                ENDIF
               ENDDO
               DO IPTFR=1,NPOIN
                 IF(NDGA2%ADR(N)%P%I(I).EQ.IPTFR) THEN
                   NDGA2%ADR(N)%P%I(I)=-IPTFR
                   EXIT
-                ENDIF 
+                ENDIF
               ENDDO
               DO IPTFR=1,NPOIN
                 IF(NDGB1%ADR(N)%P%I(I).EQ.IPTFR) THEN
                   NDGB1%ADR(N)%P%I(I)=-IPTFR
                   EXIT
-                ENDIF 
+                ENDIF
               ENDDO
               DO IPTFR=1,NPOIN
                 IF(NDGB2%ADR(N)%P%I(I).EQ.IPTFR) THEN
                   NDGB2%ADR(N)%P%I(I)=-IPTFR
                   EXIT
-                ENDIF 
+                ENDIF
               ENDDO
             ENDDO
           ENDDO

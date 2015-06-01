@@ -31,16 +31,16 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables   
-!+ 
+!+   Name of variables
+!+
 !history  C.VILLARET (EDF-LNHE)
 !+        21/08/2012
 !+        V6P2
 !+   Added new input argument (ELAY)
-!+     
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AVAI           |<->| PERCENT OF MUD CLASS PER LAYER 
+!| AVAI           |<->| PERCENT OF MUD CLASS PER LAYER
 !| CONC_VASE      |-->|  INPUT CONCENTRATION OF EACH LAYER (IN KG/M3)
 !| DT             |-->| TIME STEP
 !| ES             |<->| THICKNESS OF SEDIMENT BED LAYERS
@@ -80,10 +80,10 @@
 !
       ZERO = 1.D-08
 
-! 
+!
 ! COMPUTES THE SEDIMENT FLUX DURING EACH TIMESTEP
-!  QFLUX IS IN KG/M2 (MUD CONC ARE ALSO IN KG/M3) 
-! 
+!  QFLUX IS IN KG/M2 (MUD CONC ARE ALSO IN KG/M3)
+!
       CALL OS('X=Y-Z   ', X=QFLUX, Y=FLUDP, Z=FLUER)
       CALL OS('X=CX    ', X=QFLUX, C=DT*XMVS)
 !
@@ -111,7 +111,7 @@
 !
 !
             ZFCL_S%R(I) = 0.D0
-!           
+!
             DO J = 1, NOMBLAY
 !
 ! CONC ARE IN KG/M3
@@ -122,7 +122,7 @@
 !               ZFCL_S%R(I)= ZFCL_S%R(I)+QFLUX%R(I)/CONC_VASE(J)
                 ZFCL_S%R(I)= ZFCL_S%R(I)+QFLUX%R(I)/CONC(I,J)
                 ES_VASE(I,J)=ES_VASE(I,J)-
-     &                MAX(-QFLUX%R(I)/CONC(I,J),0.D0)    
+     &                MAX(-QFLUX%R(I)/CONC(I,J),0.D0)
                 GO TO 40
               ELSE
 !               EROSION OF THE WHOLE LAYER
@@ -134,8 +134,8 @@
 ! END OF THE LOOP ON THE LAYERS
 !
             ENDDO ! J
-!          
-!          
+!
+!
             IF(LNG.EQ.1) THEN
               WRITE(LU,*) 'ATTENTION COUCHES VIDES: NOEUD I=',I
             ENDIF

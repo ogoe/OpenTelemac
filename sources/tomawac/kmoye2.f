@@ -9,7 +9,7 @@
 !  TOMAWAC - V1.0    P. THELLIER & M. BENOIT (EDF/DER/LNH)  -  04/04/95
 !**********************************************************************
 !
-!  FONCTION : CALCUL DU NOMBRE D'ONDE MOYEN EN TOUS LES POINTS DU 
+!  FONCTION : CALCUL DU NOMBRE D'ONDE MOYEN EN TOUS LES POINTS DU
 !  ********   MAILLAGE SPATIAL 2D.
 !
 !  ARGUMENTS :
@@ -60,7 +60,7 @@
 !
 !
       PI = 3.141592654D0
-      SEUIL = 1.D-20         
+      SEUIL = 1.D-20
       COEFF = SQRT(9.806D0)/(2.D0*PI)
       DO IP = 1,NPOIN2
         AUX1(IP) = 0.D0
@@ -102,7 +102,7 @@
         AUX2(IP) = AUX2(IP) + AUX3(IP)*CTE2
    45 CONTINUE
 !
-!.....CALCUL DU NOMBRE D'ONDE MOYEN. 
+!.....CALCUL DU NOMBRE D'ONDE MOYEN.
 !     """"""""""""""""""""""""""""""
       DO 50 IP=1,NPOIN2
         IF (AUX2(IP).LT.SEUIL) THEN

@@ -4,7 +4,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -78,11 +78,11 @@
 !
       DOUBLE PRECISION PI,BID
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
+!     ----------------------------------------
+!
+! JCB :
       INTEGER I    ,JB
 ! JCB
 !
@@ -113,8 +113,8 @@
 
       DO I=1,NPTFR
         JB=BOUNDARY_COLOUR%I(I)
-       
-!       onde incidente 
+
+!       onde incidente
         IF(JB.GE.1101.AND.JB.LE.1600)THEN
           LIHBOR%I(I) = KINC
           HB%R(I)     = 0.01D0
@@ -129,9 +129,9 @@
           TETAP%R(I)  = 0.D0
           ALFAP%R(I)  = 0.D0
         ENDIF
-       
-       
-       
+
+
+
 !       solide en y=0
         IF(JB.GE.2.AND.JB.LE.300)THEN
           LIHBOR%I(I) = KLOG
@@ -139,14 +139,14 @@
           TETAP%R(I) = 90.D0
           ALFAP%R(I) = 0.D0
         ENDIF
-       
-       
-!       solide libre  
+
+
+!       solide libre
         IF(JB.GE.301.AND.JB.LE.801)THEN
           LIHBOR%I(I) = KSORT
           TETAP%R(I)=0.D0
         ENDIF
-       
+
 !       solide en y = 1.6
         IF(JB.GE.802.AND.JB.LE.1100)THEN
           LIHBOR%I(I) = KLOG
@@ -154,12 +154,12 @@
           TETAP%R(I) = 90.D0
           ALFAP%R(I) = 0.D0
         ENDIF
-      
+
       ENDDO
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+      RETURN
+      END
 !                       *****************
                         SUBROUTINE ART_CORFON
 !                       *****************
@@ -225,20 +225,20 @@
 !
 !-----------------------------------------------------------------------
 
-! Variables 
+! Variables
       RCP  = 1.
       BCP  = 0.4*RCP
 !      HCP  = BCP/0.3
 
-! Circle center      
+! Circle center
       XCP = 6.*RCP
-      YCP = 10.*RCP 
+      YCP = 10.*RCP
 
 
 ! Elliptical obstacle
       DO I = 1,NPOIN
         DCP=( (X(I)-XCP)**2. + (Y(I)-YCP)**2. )**0.5
-        
+
         IF ( DCP.LT.RCP ) THEN
           ZF%R(I) = BCP*( 1. - (DCP/RCP)**2. )
           ELSE
@@ -247,5 +247,5 @@
       ENDDO
 !
       RETURN
-      END                  
+      END
 

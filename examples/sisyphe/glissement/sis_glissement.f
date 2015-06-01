@@ -67,13 +67,13 @@
 !     DEFAULT VALUE:       ZR=ZF-100
 !
 !     CALL OV( 'X=C       ',ZR,ZF,ZF,-100.D0,NPOIN)
-      DO I=1,NPOIN 
+      DO I=1,NPOIN
         IF(X(I).GT.2.5D0) THEN
           ZR(I)=0.D0
         ELSE
           ZR(I)=12.5D0
         ENDIF
-      ENDDO 
+      ENDDO
 !
 !------------------
 ! SMOOTHING OPTION
@@ -168,11 +168,11 @@
         DO I = 1, NSICLA
           AVAIL(J,1,I) = AVA0(I)
         ENDDO
-        
+
         AVAIL(J,1,1)=       0.2D0*MESH%X%R(J) /16.D0
         AVAIL(J,1,2)=       0.6D0*MESH%X%R(J) /16.D0
         AVAIL(J,1,3)=(16.D0-0.8D0*MESH%X%R(J))/16.D0
-        
+
 !
 !  TO BE FILLED BY THE USER
 !      NCOUCHES(J) = 10
@@ -209,8 +209,8 @@
 ! SISYPHE VERSION 5.3                             E. PELTIER    11/09/95
 !                                                 C. LENORMANT
 !                                                 J.-M. HERVOUET
-!                                                
-! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT      
+!
+! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT
 !***********************************************************************
 !
 !     FONCTION  : VALEURS IMPOSEES
@@ -246,7 +246,7 @@
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !-----------------------------------------------------------------------
 ! PROGRAMME APPELANT : SISYPH
-! PROGRAMMES APPELES : 
+! PROGRAMMES APPELES :
 !***********************************************************************
 !
       IMPLICIT NONE
@@ -290,7 +290,7 @@
         V(I) =0.D0
         H(I) =Z(I)-ZF(I)
       ENDDO
-!                                                          
+!
 !-----------------------------------------------------------------------
 !
       RETURN

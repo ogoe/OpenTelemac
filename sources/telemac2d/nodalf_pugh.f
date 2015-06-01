@@ -60,7 +60,7 @@
         HOUR   = MARTIM(1)
         MINUTE = MARTIM(2)
         SECOND = MARTIM(3)
-!       NUMBER OF THE DAY IN YEAR YEAR 
+!       NUMBER OF THE DAY IN YEAR YEAR
         NDAY = DAY
 !
         DO I=MONTH-1,1,-1

@@ -394,7 +394,7 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END 
+      END
 !                    ***************************
                      SUBROUTINE PRERES_TELEMAC3D
 !                    ***************************
@@ -498,7 +498,7 @@
         PRINT*,'         Z                  NUT VIT '
         DO I=1,NPLAN
           PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),
-     &           VISCVI%ADR(3)%P%R(NODE+(I-1)*NPOIN2)    
+     &           VISCVI%ADR(3)%P%R(NODE+(I-1)*NPOIN2)
         ENDDO
         PRINT*,'         Z                      C               NU TRAC'
         DO I=1,NPLAN
@@ -523,7 +523,7 @@
         PRINT*,'         Z                  NUT VIT '
         DO I=1,NPLAN
           PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),
-     &           VISCVI%ADR(3)%P%R(NODE+(I-1)*NPOIN2)    
+     &           VISCVI%ADR(3)%P%R(NODE+(I-1)*NPOIN2)
         ENDDO
       ENDIF
       ENDIF
@@ -752,13 +752,13 @@
 !| TOB            |-->| BOTTOM FRICTION
 !| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY
 !| WC             |-->| SETTLING VELOCITY
-!|     Z          |-->| NODE COORDINATES 
+!|     Z          |-->| NODE COORDINATES
 !| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC3D, ONLY: KARMAN,PRANDTL,FICT
-!      
+!
       USE INTERFACE_TELEMAC3D, EX_ERODNC => ERODNC
 !     TRIGGERS A PGI COMPILER ERROR
       USE INTERFACE_SISYPHE,ONLY:SUSPENSION_FREDSOE,SUSPENSION_VANRIJN
@@ -780,9 +780,9 @@
 !
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: DMOY,TOB,CF,HN
       TYPE(BIEF_OBJ)  , INTENT(INOUT) :: CREF,ZREF,RUGOF
-!      
+!
       DOUBLE PRECISION, INTENT(IN)    :: Z(NPOIN3), UETCAR(NPOIN2)
-! 
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IPOIN,I
@@ -801,16 +801,16 @@
 !     FE scheme          = Dz1/2
 !
 !     ZYSERMAN & FREDSOE (1994) (BY DEFAULT)
-! 
+!
 !     SO FAR DMOY IS A CONSTANT
 !
-      IF(ICQ.EQ.1) THEN             
+      IF(ICQ.EQ.1) THEN
         CALL OS('X=CY    ', X=ZREF, Y=DMOY, C=2.D0)
         CALL SUSPENSION_FREDSOE(DMOY%R(1),TOB, NPOIN2,
      &                        GRAV,RHO0,RHOS,1.D-6,AC,CREF)
         CALL OS('X=CY    ', X=ZREF, Y=DMOY, C=2.D0)
       ELSEIF(ICQ.EQ.3) THEN
-        CALL OS('X=CY    ', X=ZREF, Y=RUGOF, C=0.5D0)      
+        CALL OS('X=CY    ', X=ZREF, Y=RUGOF, C=0.5D0)
         CALL SUSPENSION_VANRIJN(DMOY%R(1),TOB,NPOIN2,
      &                 GRAV,RHO0,RHOS,1.D-06,1.D-06,AC,CREF,ZREF)
       ENDIF
@@ -818,12 +818,12 @@
 !     UNITS FOR CREF G/L, NOT LIKE IN SISYPHE
 !
       CALL OS('X=CX    ',X=CREF,C=RHOS)
-!      
+!
 !     CV: Extrapolation of Rouse profile from ZREF to 1/2 or 1/4 of first grid mesh
 !
       IF(SETDEP.EQ.1) THEN
         DO IPOIN =1,NPOIN2
-          USTAR=MAX(SQRT(UETCAR(IPOIN)),1.D-6) 
+          USTAR=MAX(SQRT(UETCAR(IPOIN)),1.D-6)
           ROUSE=PRANDTL*WC(IPOIN)/KARMAN/USTAR
 !         rouse profile extrapolation up to 1/4 of the first layer
 !         DELTAZ=(MESH3D%Z%R(IPOIN +NPOIN2)-MESH3D%Z%R(IPOIN))/4.D0
@@ -832,7 +832,7 @@
      &        *(HN%R(IPOIN)-DELTAZ)/DELTAZ
           CREF%R(IPOIN)=CREF%R(IPOIN)*ROUSE_Z**ROUSE
         ENDDO
-      ENDIF           
+      ENDIF
 !
 !  ------------------------------------------------------------
 !  -----------------     EROSION STEP    ----------------------
@@ -878,7 +878,7 @@
      & X      , Y      , Z      , HN     ,
      & GRADZFX, GRADZFY, GRADZSX, GRADZSY,
      & TOB    , FLUDPT , FLUER  , TOCD   ,
-     & NPOIN3 , NPOIN2 , NPLAN  , KLOG   , 
+     & NPOIN3 , NPOIN2 , NPLAN  , KLOG   ,
      & HMIN   , SEDCO  , SETDEP)
 !
 !***********************************************************************
@@ -919,11 +919,11 @@
 !+   Erosion and deposition fluxes cancelled on tidal flats.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ATABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM) 
+!| ATABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM)
 !| ATABOS         |<->| FOR BOUNDARY CONDITION (SURFACE) NOT USED
-!| BTABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM) 
+!| BTABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM)
 !| BTABOS         |<->| FOR BOUNDARY CONDITION (SURFACE) NOT USED
-!| EXPSETDEP      |-->| EXPLICIT DEPOSITION SCHEME 
+!| EXPSETDEP      |-->| EXPLICIT DEPOSITION SCHEME
 !| FLUDPT         |-->| IMPLICIT DEPOSITION FLUX
 !| FLUER          |<->| EROSION  FLUX FOR EACH 2D POINT
 !| GRADZFX        |-->| NOT USED
@@ -933,7 +933,7 @@
 !| HMIN           |-->| MINIMUM WATER DEPTH TO PREVENT EROSION ON TIDAL FLATS
 !| HN             |-->| WATER DEPTH AT TIME N
 !| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
-!| LITABF         |-->| FOR BOUNDARY CONDITION BOTTOM 
+!| LITABF         |-->| FOR BOUNDARY CONDITION BOTTOM
 !| LITABS         |<->| FOR BOUNDARY CONDITION SURFACE (NOT USED)
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN2         |-->| NUMBER OF 2D POINTS
@@ -943,7 +943,7 @@
 !| SETDEP         |-->| CHOICE OF CONVECTION SCHEME FOR VERTICAL SETTLING
 !| TA             |-->| CONCENTRATION OF SEDIMENTS
 !| TOB            |<->| BOTTOM FRICTION
-!| TOCD           |-->| CRITICAL SHEAR STRESS FOR SEDIMENT DEPOSITION 
+!| TOCD           |-->| CRITICAL SHEAR STRESS FOR SEDIMENT DEPOSITION
 !| WC             |-->| SETTLING VELOCITY
 !| X              |-->| COORDINATE
 !| Y              |-->| COORDINATE
@@ -1037,7 +1037,7 @@
       DO I=1,NPOIN2
         IF(HN(I).LE.HMIN) THEN
           FLUER(I)= 0.D0
-        ENDIF            
+        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -1068,10 +1068,10 @@
 !
         DO I=1,NPOIN2
           IF(LITABF(I).EQ.KLOG) THEN
-!           TOM : erosion and deposition are treated with advection  
+!           TOM : erosion and deposition are treated with advection
             ATABOF(I) = 0.D0
-            BTABOF(I) = 0.D0     
-          ENDIF    
+            BTABOF(I) = 0.D0
+          ENDIF
         ENDDO
 !
       ELSEIF(SIGMAG.OR.OPTBAN.EQ.1) THEN
@@ -1082,8 +1082,8 @@
           IF(LITABF(I).EQ.KLOG) THEN
 !           NO EROSION AND DEPOSITION ON TIDAL FLATS
             IF(IPBOT%I(I).NE.NPLAN-1) THEN
-              ATABOF(I) = - FLUDPT(I)  
-              BTABOF(I) = FLUER(I) 
+              ATABOF(I) = - FLUDPT(I)
+              BTABOF(I) = FLUER(I)
             ENDIF
           ENDIF
         ENDDO
@@ -1097,11 +1097,11 @@
 !           WC
 !           ATABOF(I) = - WC(I) * PDEPOT(I) * NZ
 !           BTABOF(I) = - FLUER(I) * NZ
-!           JMH: BEWARE, IN DIFF3D NZ IS CONSIDERED AS -1. 
+!           JMH: BEWARE, IN DIFF3D NZ IS CONSIDERED AS -1.
 !                HENCE WRONG FORMULA BELOW IS ACTUALLY CORRECT
-            ATABOF(I) = - FLUDPT(I) 
-            BTABOF(I) = FLUER(I)         
-          ENDIF    
+            ATABOF(I) = - FLUDPT(I)
+            BTABOF(I) = FLUER(I)
+          ENDIF
         ENDDO
 !
       ENDIF

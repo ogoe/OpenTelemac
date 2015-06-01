@@ -173,7 +173,7 @@
                   GO TO 96
                 ENDIF
               ENDDO ! I
-            ENDDO ! ITYP 
+            ENDDO ! ITYP
             DO I=1,100
 !             K = LONGLU(MOTIGN(I))
               K = LONIGN(I)
@@ -196,9 +196,9 @@
 ! GETS TO THIS POINT IF/WHEN HAS TO READ THE NEXT LINE
 !
           ICOL2 =PRECAR (1 , LIGNE2 , ' ' , TABUL ,' ') - 1
-!         
+!
           LGLU = LGLU + ICOL2
-!         
+!
           IF(LGLU.GT.LGVAR) THEN
             ERREUR = .TRUE.
             IF (LONGLU(LIGNED).GT.0) THEN
@@ -265,7 +265,7 @@
             ERREUR = .TRUE.
             GO TO 1000
           ENDIF
-        ENDDO ! I 
+        ENDDO ! I
 !
       ELSE
 !
@@ -424,8 +424,8 @@
       RETURN
 !
 998   CONTINUE
-      IF(LNG.EQ.1) WRITE(6,999) NFIC,NLIGN+1
-      IF(LNG.EQ.2) WRITE(6,1999) NFIC,NLIGN+1
+      IF(LNG.EQ.1) WRITE(LU,999) NFIC,NLIGN+1
+      IF(LNG.EQ.2) WRITE(LU,1999) NFIC,NLIGN+1
 999   FORMAT(1X,'UNITE LOGIQUE ',1I2,'   ERREUR LIGNE ',1I6)
 1999  FORMAT(1X,'LOGICAL UNIT ',1I2,'   ERROR LINE ',1I6)
       RETOUR = .TRUE.

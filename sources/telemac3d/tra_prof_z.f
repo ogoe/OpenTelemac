@@ -95,17 +95,17 @@
             HH=MAX( MESH3D%Z%R(IPOIN2+(NPLAN-1)*NPOIN2)
      &             -MESH3D%Z%R(IPOIN2)  , 1.D-4)
             DELTAZ=MESH3D%Z%R(IPOIN3)-MESH3D%Z%R(IPOIN2)
-!           bug correction CV            
+!           bug correction CV
             TRA_PROF_Z=(ZREFE/(HH-ZREFE)*(HH-DELTAZ)/DELTAZ)**ROUSE
-          ENDIF   
+          ENDIF
           TRA_PROF_Z=CREF%R(IPOIN2)*TRA_PROF_Z
 !
         ENDIF
 !
       ELSEIF(IOPT.EQ.3) THEN
 !
-!       Normalised Rouse concentration profile 
-!       CV 14/01/2014   
+!       Normalised Rouse concentration profile
+!       CV 14/01/2014
 !
         IF(ITRAC.NE.NTRAC.OR..NOT.SEDI) THEN
           TRA_PROF_Z=1.D0
@@ -117,25 +117,25 @@
           ROUSE= WCHU0*PRANDTL/KARMAN/USTAR
           ZREFE=ZREF%R(IPOIN2)
           B=ZREFE/HH
-!         CMEAN : Mean value (cf Sisyphe User Manual, 
+!         CMEAN : Mean value (cf Sisyphe User Manual,
 !                 subroutine suspension_Rouse)
           IF(ABS(ROUSE-1.D0).LE.1.D-04)THEN
             CMEAN= -LOG(B)
           ELSE
             BROUSE=MAX(B,1.D-04)**(ROUSE-1.D0)
-            CMEAN= 1.D0/(ROUSE-1.D0)*(1.D0-BROUSE)      
+            CMEAN= 1.D0/(ROUSE-1.D0)*(1.D0-BROUSE)
           ENDIF
           IF(IPLAN.EQ.1) THEN
-            TRA_PROF_Z= 1.D0/MAX(CMEAN,1.D-08)              
+            TRA_PROF_Z= 1.D0/MAX(CMEAN,1.D-08)
           ELSE
             IPOIN3=IPOIN2+(IPLAN-1)*NPOIN2
-            DELTAZ=MESH3D%Z%R(IPOIN3)-MESH3D%Z%R(IPOIN2)         
-            TRA_PROF_Z= (HH/DELTAZ)**ROUSE/MAX(CMEAN,1.D-08)        
+            DELTAZ=MESH3D%Z%R(IPOIN3)-MESH3D%Z%R(IPOIN2)
+            TRA_PROF_Z= (HH/DELTAZ)**ROUSE/MAX(CMEAN,1.D-08)
           ENDIF
         ENDIF
 !
-      ELSEIF(IOPT.EQ.4) THEN 
-!      
+      ELSEIF(IOPT.EQ.4) THEN
+!
 !       Modified Rouse profile with eddy viscosity accounted for
 !
         IF(ITRAC.NE.NTRAC.OR..NOT.SEDI) THEN

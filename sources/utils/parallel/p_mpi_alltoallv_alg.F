@@ -17,18 +17,18 @@
 !+   First version, inpired from P_MPI_ALLTOALLV.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| SEND_BUFFER    |-->| SEND BUFFER  
+!| SEND_BUFFER    |-->| SEND BUFFER
 !| NSEND          |-->| SPECIFIES THE NUMBER OF ELEMENTS TO SEND TO EACH
-!|                |   | PROCESSOR 
-!| SEND_DISPL     |-->| DISPLACEMENT ARRAY FOR THE SEND BUFFER 
+!|                |   | PROCESSOR
+!| SEND_DISPL     |-->| DISPLACEMENT ARRAY FOR THE SEND BUFFER
 !| SEND_DATYP     |-->| DATA TYPE OF SEND BUFFER ELEMENTS
 !| RECV_BUFFER    |<--| RECEIVE BUFFER
-!| NRECV          |-->| SPECIFIES THE MAXIMUM NUMBER OF ELEMENTS THAT 
+!| NRECV          |-->| SPECIFIES THE MAXIMUM NUMBER OF ELEMENTS THAT
 !|                |   | CAN BE RECEIVED FROM EACH PROCESSOR
-!| RECV_DISPL     |-->| DISPLACEMENT ARRAY FOR THE RECEIVE BUFFER 
+!| RECV_DISPL     |-->| DISPLACEMENT ARRAY FOR THE RECEIVE BUFFER
 !| RECV_DATYP     |-->| DATA TYPE OF RECEIVE BUFFER ELEMENTS
-!| COMM           |-->| COMMUNICATOR 
-!| IERR           |-->| ERROR VALUE 
+!| COMM           |-->| COMMUNICATOR
+!| IERR           |-->| ERROR VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_PARALLEL

@@ -142,9 +142,9 @@
 !-----------------------------------------------------------------------
 !
       IF(SW%ELM.NE.51) THEN
-        WRITE(LU,*) 'MT14TT DISCRETISATION NON PREVUE' 
+        WRITE(LU,*) 'MT14TT DISCRETISATION NON PREVUE'
         CALL PLANTE(1)
-        STOP 
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -164,13 +164,13 @@
           I3=II3+(IPLAN-1)*NPOIN2
           I4=I1+NPOIN2
           I5=I2+NPOIN2
-          I6=I3+NPOIN2 
+          I6=I3+NPOIN2
 !
           X2=X(II2)-X(II1)
           X3=X(II3)-X(II1)
           Y2=Y(II2)-Y(II1)
-          Y3=Y(II3)-Y(II1) 
-          SURFSUR3=XMUL*(X2*Y3-X3*Y2)/6.D0             
+          Y3=Y(II3)-Y(II1)
+          SURFSUR3=XMUL*(X2*Y3-X3*Y2)/6.D0
 !
 !         EVERY TETRAHEDRON IN THE PRISM
 !
@@ -199,22 +199,22 @@
 !             VERTICAL SEGMENTS
               IF(J1.EQ.I1.AND.J2.EQ.I4) THEN
                 ALFA(IL1)=ALFA(IL1)-W(I1)*SURFSUR3
-                ALFA(IL2)=ALFA(IL2)+W(I1)*SURFSUR3 
+                ALFA(IL2)=ALFA(IL2)+W(I1)*SURFSUR3
               ELSEIF(J1.EQ.I4.AND.J2.EQ.I1) THEN
                 ALFA(IL1)=ALFA(IL1)+W(I1)*SURFSUR3
-                ALFA(IL2)=ALFA(IL2)-W(I1)*SURFSUR3  
+                ALFA(IL2)=ALFA(IL2)-W(I1)*SURFSUR3
               ELSEIF(J1.EQ.I2.AND.J2.EQ.I5) THEN
                 ALFA(IL1)=ALFA(IL1)-W(I2)*SURFSUR3
-                ALFA(IL2)=ALFA(IL2)+W(I2)*SURFSUR3 
+                ALFA(IL2)=ALFA(IL2)+W(I2)*SURFSUR3
               ELSEIF(J1.EQ.I5.AND.J2.EQ.I2) THEN
                 ALFA(IL1)=ALFA(IL1)+W(I2)*SURFSUR3
-                ALFA(IL2)=ALFA(IL2)-W(I2)*SURFSUR3  
+                ALFA(IL2)=ALFA(IL2)-W(I2)*SURFSUR3
               ELSEIF(J1.EQ.I3.AND.J2.EQ.I6) THEN
                 ALFA(IL1)=ALFA(IL1)-W(I3)*SURFSUR3
-                ALFA(IL2)=ALFA(IL2)+W(I3)*SURFSUR3 
+                ALFA(IL2)=ALFA(IL2)+W(I3)*SURFSUR3
               ELSEIF(J1.EQ.I6.AND.J2.EQ.I3) THEN
                 ALFA(IL1)=ALFA(IL1)+W(I3)*SURFSUR3
-                ALFA(IL2)=ALFA(IL2)-W(I3)*SURFSUR3  
+                ALFA(IL2)=ALFA(IL2)-W(I3)*SURFSUR3
               ENDIF
             ENDDO
 !
@@ -244,7 +244,7 @@
 !             TO POINT 4, IT WORKS BECAUSE ALFA(4)=-ALFA(1)-ALFA(2)-ALFA(3)
 !             BUT IT IS NOT THE N-SCHEME
 !             BETTER THAN PUTTING 0 FOR MASS ERROR ?
-!             COULD BE USELESS DEPENDING ON FLUX CLIPPING AFTER 
+!             COULD BE USELESS DEPENDING ON FLUX CLIPPING AFTER
               L12 = 0.D0
               L13 = 0.D0
               L14 = MAX(ALFA(1),0.D0)
@@ -270,14 +270,14 @@
             XM(09,IELEM3D) = L41
             XM(10,IELEM3D) = L32
             XM(11,IELEM3D) = L42
-            XM(12,IELEM3D) = L43       
+            XM(12,IELEM3D) = L43
 !
           ENDDO
 !
 !         END OF LOOP ON THE 3 TETRAHEDRONS
 !
         ENDDO
-      ENDDO 
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

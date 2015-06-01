@@ -55,7 +55,7 @@
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| U              |-->| FIRST COMPONENT OF VELOCITY
 !| V              |-->| SECOND COMPONENT OF VELOCITY
-!| XMUL           |-->| MULTIPLICATION COEFICIENT 
+!| XMUL           |-->| MULTIPLICATION COEFICIENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -142,7 +142,7 @@
         KX(IELEM) = 0.33333333D0 * XMUL * H * UNORM
         KY(IELEM) = 0.33333333D0 * XMUL * H * VNORM
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !

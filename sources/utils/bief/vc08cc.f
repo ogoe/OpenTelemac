@@ -178,7 +178,7 @@
         W5(IELEM) =   (W2(IELEM)+ W3(IELEM))/2.D0
         W6(IELEM) =   (W3(IELEM)+ W1(IELEM))/2.D0
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !
@@ -385,7 +385,7 @@
      &            48.D0*Y3*F5*U5-48.D0*X3*F6*V5+20.D0*X2*F6*V3+
      &            4.D0*Y3*F2*U1+32.D0*X3*F5*V4+ANS1) * (-XSU630)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ENDIF
 !
@@ -448,7 +448,7 @@
         W5(IELEM) =   (W2(IELEM)+ W3(IELEM))/2.D0
         W6(IELEM) =   (W3(IELEM)+ W1(IELEM))/2.D0
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !

@@ -5,9 +5,9 @@
 
      &(IVIDE   , EPAI  , TREST , CONC  , TEMP      , HDEP      ,
      & ZR      , ZF    , X     , Y     , NPOIN2    , NPOIN3    ,
-     & NPF     , NCOUCH, TASSE , ITASS , RHOS      , XKV       , 
+     & NPF     , NCOUCH, TASSE , ITASS , RHOS      , XKV       ,
      & CFDEP   , ESOMT , TOCE  , SEDCO , CONC_LAYER, TOCE_LAYER,
-     & ES_LAYER, SEDNCO, MIXTE , EPAICO, EPAINCO   , PVSCO     , 
+     & ES_LAYER, SEDNCO, MIXTE , EPAICO, EPAINCO   , PVSCO     ,
      & PVSNCO  , PVSNCO0)
 !
 !***********************************************************************
@@ -112,9 +112,9 @@
       DOUBLE PRECISION, INTENT(INOUT) :: EPAICO(NPOIN2), EPAINCO(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: PVSCO(NPOIN2), PVSNCO(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: CONC(NPOIN2,NCOUCH)
-!      
+!
       DOUBLE PRECISION, INTENT(OUT)   :: TEMP(NCOUCH,NPOIN2)
-!      
+!
       DOUBLE PRECISION, INTENT(OUT)   :: HDEP(NPOIN2)
       DOUBLE PRECISION, INTENT(OUT)   :: ZR(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: ZF(NPOIN2)
@@ -125,7 +125,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: ES_LAYER(NCOUCH)
       DOUBLE PRECISION, INTENT(IN)    :: TOCE_LAYER(NCOUCH)
       INTEGER, INTENT(OUT)            :: NPF(NPOIN2)
-      TYPE(BIEF_OBJ), INTENT (INOUT)  :: ESOMT      
+      TYPE(BIEF_OBJ), INTENT (INOUT)  :: ESOMT
       LOGICAL, INTENT(IN)             :: TASSE
       LOGICAL, INTENT(IN)             :: SEDCO, SEDNCO, MIXTE
       INTEGER, INTENT(IN)             :: ITASS
@@ -139,7 +139,7 @@
 !      INTEGER CHOIX,NLISS
 !      DOUBLE PRECISION, POINTER :: ZS(:)!
 !      A POINTER TO THE FREE SURFACE IN Z.
-!      ZS => Z(1+(NPLAN-1)*NPOIN2:NPLAN*NPOIN2) 
+!      ZS => Z(1+(NPLAN-1)*NPOIN2:NPLAN*NPOIN2)
 !
 !-----------------------------------------------------------------------
 !
@@ -161,13 +161,13 @@
             CONC(IPOIN,IC) = CONC_LAYER(IC)
             TOCE(IPOIN,IC) = TOCE_LAYER(IC)
             EPAI(IPOIN,IC) = ES_LAYER(IC)
-            HDEP(IPOIN)    = HDEP(IPOIN) + EPAI(IPOIN,IC)  
-          ENDDO        
+            HDEP(IPOIN)    = HDEP(IPOIN) + EPAI(IPOIN,IC)
+          ENDDO
         ENDDO
 !
 !       INITIALISES ZR TO ZF-HDEP
         CALL OV('X=Y-Z   ' ,ZR,ZF,HDEP,0.D0,NPOIN2)
-!   
+!
       ENDIF
 
 
@@ -182,7 +182,7 @@
 !
 !       CALL OV('X=Y-Z   ',HDEP,ZF,ZR,0.D0,NPOIN2)
 !
-!       ONLY ONE LAYER 
+!       ONLY ONE LAYER
         CFDEP = (1.D0-XKV)*RHOS
         DO IPOIN = 1,NPOIN2
           CONC(IPOIN,1) = CFDEP
@@ -211,7 +211,7 @@
 !
 !       INITIALISES ZR TO ZF-HDEP
         CALL OV('X=Y-Z   ' ,ZR,ZF,HDEP,0.D0,NPOIN2)
-!  
+!
       ENDIF
 !
 !
@@ -222,24 +222,24 @@
       IF(TASSE) THEN
 !
         IF(ITASS.EQ.1) THEN
-!      
+!
 !         SIMPLE MULTI-LAYER MODEL
-!   
+!
 !         CHANGES HOURS INTO SECONDS  -----
           CALL OV( 'X=CX    ',TREST,TREST,TREST,3600.D0,NCOUCH)
 !         INITIALISES TEMP
           CALL OV( 'X=C     ',TEMP,TEMP,TEMP,0.D0,NPOIN2*NCOUCH)
 !
         ELSEIF(ITASS.EQ.2) THEN
-!   
+!
 !         GIBSON MODEL
-! 
+!
           DO IPOIN=1,NPOIN2
             NPF(IPOIN) =NCOUCH
             DO IPF= 1, NCOUCH
               ECOUCH=(RHOS-CONC(IPOIN,IPF))/CONC(IPOIN,IPF)
-              IF(IPF.EQ.1) THEN 
-                IVIDE(IPOIN,IPF)=ECOUCH 
+              IF(IPF.EQ.1) THEN
+                IVIDE(IPOIN,IPF)=ECOUCH
               ELSE
                 IVIDE(IPOIN,IPF)= 2.D0*ECOUCH-IVIDE(IPOIN,IPF-1)
               ENDIF
@@ -260,9 +260,9 @@
 !
         ENDIF
 !
-      ENDIF 
+      ENDIF
 !
-!-----------------------------------------------------------------------      
+!-----------------------------------------------------------------------
 !
       RETURN
       END

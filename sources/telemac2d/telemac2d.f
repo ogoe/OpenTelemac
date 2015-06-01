@@ -193,7 +193,7 @@
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        02/01/2014
 !+        V7P0
-!+   Removing a use of KNOGL. KNOGL suppressed in call to 
+!+   Removing a use of KNOGL. KNOGL suppressed in call to
 !+   flusec_telemac2d.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
@@ -232,7 +232,7 @@
 !+        10/07/2014
 !+        V7P0
 !+   Secondary flow correction:
-!+   add the calculation of \Omega 
+!+   add the calculation of \Omega
 !
 !history  R. ATA (EDF LAB, LNHE)
 !+        05/11/2014
@@ -519,7 +519,7 @@
      &                UBOR%R   , VBOR%R   , TBOR%ADR(1)%P%R ,
      &                CHBORD%R , ATBOR%ADR(1)%P%R , BTBOR%ADR(1)%P%R ,
      &                MESH%NBOR%I,MESH%NPTFR , MESH%NPOIN, NTRAC.GT.0,
-     &                KENT , KENTU , KSORT ,KADH , KLOG , 
+     &                KENT , KENTU , KSORT ,KADH , KLOG ,
      &                IELMU,IELMU,IELMT,MESH,
      &                MESH%IKLBOR%I,MESH%NELEB,MESH%NELEBX)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM COMPLIM'
@@ -782,7 +782,7 @@
         CALL CONDIN
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CONDIN'
       ENDIF
-!     
+!
 !     STARTING TIME (AT MAY BE INITIALISED BY USER IN CONDIN)
 !
       AT0=AT
@@ -842,7 +842,7 @@
 !  INITIALISES PARAMETERS SPECIFIC TO FINITE VOLUMES
 !
 !-----------------------------------------------------------------------
-!   
+!
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
 !
         CALL OS( 'X=YZ    ' , QU , U , H , C )
@@ -852,16 +852,16 @@
           IF(DT.GT.0.D0.AND.NIT.GE.1) THEN
             DUREE = NIT*DT
             IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'DUREE DE SIMULATION DEMANDEE :',DUREE 
+              WRITE(LU,*) 'DUREE DE SIMULATION DEMANDEE :',DUREE
             ELSEIF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'SIMULATION DURATION:',DUREE 
+              WRITE(LU,*) 'SIMULATION DURATION:',DUREE
             ENDIF
           ELSE
             IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'FOURNIR DUREE DE SIMULATION' 
+              WRITE(LU,*) 'FOURNIR DUREE DE SIMULATION'
               WRITE(LU,*) 'OU NOMBRE D''ITERATIONS '
             ELSEIF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'PLEASE GIVE AT LEAST A DURATION' 
+              WRITE(LU,*) 'PLEASE GIVE AT LEAST A DURATION'
               WRITE(LU,*) 'OR A NUMBER OF ITERATIONS'
             ENDIF
             CALL PLANTE(1)
@@ -870,7 +870,7 @@
         ENDIF
 !
         TMAX=DUREE+AT0
-! 
+!
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -1487,11 +1487,11 @@
       ELSE
         ENTET=.FALSE.
       ENDIF
-! 
+!
 !     CONSTRAINS TELEMAC-2D OUTPUT IN THE LISTING
 !
       IF (PRESENT(DOPRINT)) ENTET = ENTET .AND. DOPRINT
-! 
+!
       IF(ENTET) CALL ENTETE(2,AT,LT)
 !
 !=======================================================================
@@ -2031,7 +2031,7 @@
 !       VOLFIN MAY CHANGE DT
 !
 !       CM1%D%R : HT
-!       
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING VOLFIN'
         CALL VOLFIN(W1%R,AT,DT,LT,NELEM,NPTFR,MESH%NSEG,
      &       TB,ZF%R,CHESTR%R,NPOIN,HN%R,H%R,U%R,V%R,QU%R,QV%R,
@@ -2051,7 +2051,7 @@
      &       TMAX,DTT,GAMMA,FLUX_OLD,MXPTVS,NEISEG%I,V2DPAR,
      &       UDEL,VDEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM VOLFIN'
-!       
+!
         AT = AT + DT
         IF (LT.GE.NIT.OR.AT.GE.TMAX) THEN !LAST TIME STEP
            ! Set lt in order for the last timestep to be written
@@ -2130,7 +2130,7 @@
 !=======================================================================
 ! END OF THE LOOP OF THE SUB-ITERATIONS
 !
-      ENDDO ! ISOUSI 
+      ENDDO ! ISOUSI
 !
 !=======================================================================
 !
@@ -2494,7 +2494,7 @@
 ! (NOTE THAT OUTPUTS ARE DONE WITHIN ESTEL3D IN COUPLED MODE)
 !
         ELSE
-          ! Keeping in memory the value of leoprd as it will be 
+          ! Keeping in memory the value of leoprd as it will be
           ! set to 1 by preres_telemac2d on the last time step
           OLD_LEOPRD = LEOPRD
 !
@@ -2570,7 +2570,7 @@
 
 
 !=======================================================================
-!              REDEFINING THE ALGAE VARIABLES FOR THE NEXT 
+!              REDEFINING THE ALGAE VARIABLES FOR THE NEXT
 !                            TIME STEP
 !=======================================================================
 !

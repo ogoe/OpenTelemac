@@ -8,7 +8,7 @@
 ! HERMES   V7P0                                               01/05/2014
 !***********************************************************************
 !
-!brief    Returns an array containing 
+!brief    Returns an array containing
 !+        1 if a point is a boundary point 0 otherwise
 !
 !history  Y AUDOUIN (LNHE)

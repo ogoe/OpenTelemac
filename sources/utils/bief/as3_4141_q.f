@@ -77,7 +77,7 @@
 !| ELTSEG         |-->| SEGMENTS OF A TRIANGLE
 !| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
 !| NELMAX         |-->| FIRST DIMENSION OF IKLE AND W.
-!| NSEG1          |-->| NUMBER OF SEGMENTS 
+!| NSEG1          |-->| NUMBER OF SEGMENTS
 !| ORISEG         |-->| ORIENTATION OF SEGMENTS
 !| STOXMT         |-->| STORAGE OF XMT 1: (NELMAX,*)
 !|                |   |                2: (*,NELMAX)

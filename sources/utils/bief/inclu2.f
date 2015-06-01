@@ -29,7 +29,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C1             |-->| LIST OF WORDS SEPARATED BY A CHARACTER ELSE THAN 
+!| C1             |-->| LIST OF WORDS SEPARATED BY A CHARACTER ELSE THAN
 !|                |   | A-Z AND 0-9
 !| C2             |-->| WORD LOOKED FOR IN C1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,7 +71,7 @@
             ENDIF
             INCLU2 = INCLU2.OR.FLAG
           ENDIF
-        ENDDO ! I 
+        ENDDO ! I
 !
       ENDIF
 !

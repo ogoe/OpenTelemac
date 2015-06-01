@@ -164,12 +164,12 @@
      &                      //EXTENS(NCSIZE-1,IPID)
               ENDIF
             ENDIF
-            
+
             IF(FILES(I)%TYPE(1:4).EQ.'SCAL') THEN
               ! If the file is a scalar type on the processor zero is opning it
               ! And it a read or readwrite file
               IF(IPID.EQ.0.OR.FILES(I)%ACTION(5:9).NE.'WRITE') THEN
-                CALL OPEN_MESH(FILES(I)%FMT, TRIM(FILE_NAME), 
+                CALL OPEN_MESH(FILES(I)%FMT, TRIM(FILE_NAME),
      &                         FILES(I)%LU, FILES(I)%ACTION, IERR)
                 CALL CHECK_CALL(IERR,'BIEF_OPEN_FILES:OPEN_MESH')
                 IF(ICLI.NE.0) THEN
@@ -190,9 +190,9 @@
             ENDIF
             IF(IERR.NE.0) THEN
               IF(LNG.EQ.1) THEN
-                WRITE(LU,*) 'ERREUR LORS DE L OUVERTURE DE : ', 
+                WRITE(LU,*) 'ERREUR LORS DE L OUVERTURE DE : ',
      &                      TRIM(FILE_NAME)
-                WRITE(LU,*) 'ET DE : ', 
+                WRITE(LU,*) 'ET DE : ',
      &                      TRIM(CLI_NAME)
                 WRITE(LU,*) 'AU FORMAT ',FILES(I)%FMT
                 WRITE(LU,*) 'EN MODE ',FILES(I)%ACTION

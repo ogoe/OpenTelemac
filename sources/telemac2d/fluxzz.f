@@ -9,9 +9,9 @@
 ! TELEMAC-2D VERSION 6.3                                     01/07/2013
 !***********************************************************************
 !
-!brief  COMPUTES ZOKAGOA/TCHAMEN FLUX AT THE INERNAL INTERFACES 
-!       REF.:"MODELING OF WETTING-DRYING TRANSITIONS IN FREE SURFACE FLOWS 
-!             OVER COMPLEX TOPOGRAPHIES" CMAME 199(2010) PP 2281-2304 
+!brief  COMPUTES ZOKAGOA/TCHAMEN FLUX AT THE INERNAL INTERFACES
+!       REF.:"MODELING OF WETTING-DRYING TRANSITIONS IN FREE SURFACE FLOWS
+!             OVER COMPLEX TOPOGRAPHIES" CMAME 199(2010) PP 2281-2304
 !
 !history  R. ATA (EDF-LNHE)
 !+
@@ -25,11 +25,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  CE            |<-->|  FLUX  INCREMENTS AT INTERNAL FACES          |                          |
 ! |  ELTSEG        | -->|  SEGMENT NUMBERS PER ELEMENT                 |
-! |  G             | -->|  GRAVITY                                     |  
+! |  G             | -->|  GRAVITY                                     |
 ! |  NELEM         | -->|  NUMBER OF TOTAL ELEMENTS                    |
 ! |  NS            | -->|  NUMBER OF TOTAL MESH NODES                  |
 ! |  NSEG          | -->|  NUMBER OF TOTAL MESH EDGES                  |
-! |  NUBO          ! -->!  GLOBAL NUMBER OF EDGE EXTREMITIES           |    
+! |  NUBO          ! -->!  GLOBAL NUMBER OF EDGE EXTREMITIES           |
 ! !  VNOCL         | -->|  OUTWARD UNIT NORMALS                        |
 ! !                |    |   (2 FIRST COMPONENTS) AND                   |
 ! !                |    |   SEGMENT LENGTH  (THIRD COMPONENT)          |
@@ -55,12 +55,12 @@
       DOUBLE PRECISION, INTENT(IN)    :: G,W(3,NS)
       DOUBLE PRECISION, INTENT(IN)    :: X(NS),Y(NS)
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3)
-      INTEGER, INTENT(IN)             :: IFABOR(NELEM,3) 
+      INTEGER, INTENT(IN)             :: IFABOR(NELEM,3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER NSG,NUBO1,NUBO2,IVAR,I,IDRY
-      INTEGER IELEM,IER     
+      INTEGER IELEM,IER
 !
       DOUBLE PRECISION ZF1,ZF2,XNN,YNN,RNN
       DOUBLE PRECISION V21,V22,V31,V32,PROD_SCAL
@@ -80,7 +80,7 @@
         STOP
       ENDIF
 !**************************************************************
-! INITIALIZATION OF CE 
+! INITIALIZATION OF CE
       DO I=1,3
         DO IVAR=1,NS
           CE(IVAR,I) = 0.D0
@@ -95,8 +95,8 @@
 !-----------------------------------------------------------------------
 !     LOOP OVER GLOBAL LIST OF EDGES
 !    ********************************
-! 
-      DO IELEM=1, NELEM 
+!
+      DO IELEM=1, NELEM
         DO I = 1,3
           IF(.NOT.YESNO(ELTSEG(IELEM,I)))THEN
             NSG = ELTSEG(IELEM,I)
@@ -128,7 +128,7 @@
 !
             XNN   = VNOCL(1,NSG)
             YNN   = VNOCL(2,NSG)
-            RNN   = VNOCL(3,NSG) 
+            RNN   = VNOCL(3,NSG)
 !
 ! WATER DEPTH
 !
@@ -139,7 +139,7 @@
 !
             ETA1  = W(1,NUBO1)+ZF1
             ETA2  = W(1,NUBO2)+ZF2
-           
+
             IF(H1.GT.EPS)THEN
               V21 = W(2,NUBO1)/H1
               V31 = W(3,NUBO1)/H1
@@ -148,9 +148,9 @@
               V31 = 0.0D0
               IDRY= IDRY+1
             ENDIF
-           
+
             IF(H2.GT.EPS)THEN
-              V22 = W(2,NUBO2)/H2 
+              V22 = W(2,NUBO2)/H2
               V32 = W(3,NUBO2)/H2
             ELSE
               V22 = 0.0D0
@@ -163,7 +163,7 @@
 !        AT LEAST ONE WET CELL
             IF(IDRY.LT.2)THEN
               CALL FLU_ZOKAGOA(H1,H2,ZF1,ZF2,ETA1,ETA2,V21,V22,
-     &                         V31,V32,XNN,YNN,FLXI,FLXJ,G) 
+     &                         V31,V32,XNN,YNN,FLXI,FLXJ,G)
 !
 !FOR PARALLELISM
 !
@@ -181,19 +181,19 @@
 ! FLUX INCREMENT
 !
               CE(NUBO1,1) = CE(NUBO1,1) - RNN*FLXI(1)
-              CE(NUBO1,2) = CE(NUBO1,2) - RNN*FLXI(2) 
-              CE(NUBO1,3) = CE(NUBO1,3) - RNN*FLXI(3) 
-!          
+              CE(NUBO1,2) = CE(NUBO1,2) - RNN*FLXI(2)
+              CE(NUBO1,3) = CE(NUBO1,3) - RNN*FLXI(3)
+!
               CE(NUBO2,1) = CE(NUBO2,1) + RNN*FLXJ(1)
-              CE(NUBO2,2) = CE(NUBO2,2) + RNN*FLXJ(2) 
-              CE(NUBO2,3) = CE(NUBO2,3) + RNN*FLXJ(3) 
+              CE(NUBO2,2) = CE(NUBO2,2) + RNN*FLXJ(2)
+              CE(NUBO2,3) = CE(NUBO2,3) + RNN*FLXJ(3)
             ENDIF
             YESNO(NSG)=.TRUE.
           ENDIF
         ENDDO
 !
       ENDDO
-!      
+!
       DEALLOCATE(YESNO)
 !
 !-----------------------------------------------------------------------

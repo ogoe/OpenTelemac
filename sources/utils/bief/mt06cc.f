@@ -151,7 +151,7 @@
 !
         A56(IELEM) =   A45(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -208,7 +208,7 @@
 !
         A56(IELEM) =  (2.D0*F1+3.D0*F3+2.D0*F2)*AUX315*4.D0
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -252,22 +252,22 @@
         A14(IELEM) =  (3.D0* F1    -2.D0*F5-F2) * AUX315
         A15(IELEM) = -(2.D0*(F4+F6)+4.D0*F5-F1) * AUX315
         A16(IELEM) =  (3.D0*F1     -2.D0*F5-F3) * AUX315
-!      
+!
         A23(IELEM) =  (-2.D0*(F2+F3)-4.D0*F5+F1) * AUX1260
         A24(IELEM) =  (-2.D0*F6     +3.D0*F2-F1) * AUX315
         A25(IELEM) =  (-2.D0*F6     +3.D0*F2-F3) * AUX315
         A26(IELEM) =  (-2.D0*(F4+F5)-4.D0*F6+F2) * AUX315
-!      
+!
         A34(IELEM) =  (-2.D0*(F6+F5)-4.D0*F4+F3) * AUX315
         A35(IELEM) =  (-2.D0*F4     +3.D0*F3-F2) * AUX315
         A36(IELEM) =  (-2.D0*F4     +3.D0*F3-F1) * AUX315
-!      
+!
         A45(IELEM) =  2.D0*(6.D0*(F4+F5)+4.D0*F6-F1-F3) * AUX315
         A46(IELEM) =  2.D0*(6.D0*(F4+F6)+4.D0*F5-F2-F3) * AUX315
-!      
+!
         A56(IELEM) =  2.D0*(6.D0*(F6+F5)+4.D0*F4-F2-F1) * AUX315
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !

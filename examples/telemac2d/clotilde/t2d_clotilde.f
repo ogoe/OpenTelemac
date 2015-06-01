@@ -12,7 +12,7 @@
 !
 !
 !-----------------------------------------------------------------------
-!  ARGUMENTS USED IN THE EXAMPLE 
+!  ARGUMENTS USED IN THE EXAMPLE
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|_______________________________________________
@@ -53,7 +53,7 @@
 !      DATA fondCR5  / 52.50D0, 52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,
 !     &52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,
 !     &52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,52.50D0,
-!     &52.50D0,52.50D0,52.50D0 /     
+!     &52.50D0,52.50D0,52.50D0 /
 ! seuil passe navigable
       INTEGER BOUCLECR6,NBATHYCR6
       PARAMETER (NBATHYCR6=55)
@@ -63,8 +63,8 @@
      &43748, 44325, 43747, 44442, 44415, 44385, 44386, 44373, 39586,
      &44432,43713,44367,7277,44377,44393,44433,
      &44464,44302,43720,44388,43715,44459,43714,44322,44387,44389,
-     &44458,44449,29578,44431,43721,44472,38636, 44358, 44384, 44289, 
-     &44290, 44423, 43485, 44372, 43840, 44291, 43792, 44402, 44371, 
+     &44458,44449,29578,44431,43721,44472,38636, 44358, 44384, 44289,
+     &44290, 44423, 43485, 44372, 43840, 44291, 43792, 44402, 44371,
      &44330, 44331, 44346/
       DATA FONDCR6  / 66.40D0, 66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
@@ -73,7 +73,7 @@
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
-     &66.40D0 /     
+     &66.40D0 /
 ! seuil passe est
       INTEGER BOUCLECR7,NBATHYCR7
       PARAMETER (NBATHYCR7=21)
@@ -84,7 +84,7 @@
      &13973, 43570, 43476, 43475 /
       DATA FONDCR7  / 66.40D0, 66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
      &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,
-     &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0/    
+     &66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0,66.40D0/
 ! Fin CR
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -93,7 +93,7 @@
 !-----------------------------------------------------------------------
 !
 !  MODIFICATION DU FOND DE CERTAINS POINTS DE LA FRONTIERE
-!         
+!
 !  LISSAGES EVENTUELS DU FOND
 !
       IF(LISFON.GT.0) THEN
@@ -157,10 +157,10 @@
      &                                               FONDCR7(BOUCLECR7)
         ENDDO
       ENDIF
-!   
+!
 ! Fin CR
       RETURN
-      END      
+      END
 !                       ***************************
                         DOUBLE PRECISION FUNCTION Q
 !                       ***************************
@@ -233,7 +233,7 @@
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
         FCT(1:2)='Q('
-        IF(I.LT.10) THEN 
+        IF(I.LT.10) THEN
           WRITE(FCT(3:3),FMT='(I1)') I
           FCT(4:8)=')    '
         ELSEIF(I.LT.100) THEN
@@ -242,49 +242,49 @@
         ELSE
           STOP 'Q NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
         ENDIF
-        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I)) 
+        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
 !
       ENDIF
 !
       IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
-! 
-!     PROGRAMMABLE PART                              
-!     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
 !
-        Q = DEBIT(I)   
-        IF (I.EQ.2) THEN            
+!     PROGRAMMABLE PART
+!     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
+!
+        Q = DEBIT(I)
+        IF (I.EQ.2) THEN
             IF (AT.LE.36000.D0) THEN
                 Q = AT - 26000.D0
-            ELSE 
+            ELSE
                 Q = DEBIT(I)
             ENDIF
         ELSEIF (I.EQ.3) THEN
             IF (AT.LE.30800.D0) THEN
                 Q= -0.05D0*AT+1550.D0
-            ELSE 
+            ELSE
                 Q = DEBIT(I)
             ENDIF
         ELSEIF (I.EQ.4) THEN
             IF (AT.LE.29500.D0) THEN
                 Q= -1.D0*AT+28000.D0
-            ELSE 
+            ELSE
                 Q = DEBIT(I)
-            ENDIF    
+            ENDIF
         ELSEIF (I.EQ.5) THEN
             IF (AT.LE.29500.D0) THEN
                 Q= AT-28000.D0
-            ELSE 
+            ELSE
                 Q = DEBIT(I)
-            ENDIF 
+            ENDIF
         ELSEIF (I.EQ.6) THEN
             IF (AT.LE.35500.D0) THEN
                 Q= AT-27000.D0
-            ELSE 
+            ELSE
                 Q = DEBIT(I)
             ENDIF
         ENDIF
-      ENDIF                                                         
-! 
+      ENDIF
+!
 !-----------------------------------------------------------------------
 !
 !     PRINT * , 'I=',I,' Q=',Q
@@ -365,7 +365,7 @@
 !
 !       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
         FCT(1:3)='SL('
-        IF(I.LT.10) THEN 
+        IF(I.LT.10) THEN
           WRITE(FCT(4:4),FMT='(I1)') I
           FCT(5:8)=')   '
         ELSEIF(I.LT.100) THEN
@@ -374,23 +374,23 @@
         ELSE
           WRITE(LU,*) 'SL NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
           CALL PLANTE(1)
-          STOP 
+          STOP
         ENDIF
         CALL READ_FIC_FRLIQ(SL,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
 !
       ENDIF
 !
       IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
-! 
-!     PROGRAMMABLE PART                              
-!     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
+!
+!     PROGRAMMABLE PART
+!     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
 !
         REWIND 26
         SL = COTE(I)
-        IF (I.EQ.7) THEN            
+        IF (I.EQ.7) THEN
             IF (AT.LE.35400.D0) THEN
                 SL = 0.0005D0*AT+41.3D0
-            ELSE 
+            ELSE
                 READ(26,200) Q2CR, Z2CR
                 Q1CR = 3900.D0
                 Z1CR = 58.50D0
@@ -404,15 +404,15 @@
 !                print *, Q1CR, Q2CR, Z1CR, Z2CR, SL
             ENDIF
         ENDIF
-        IF (I.EQ.1) THEN            
+        IF (I.EQ.1) THEN
             IF (AT.LE.42860.D0) THEN
                 SL = 0.0005D0*AT+16.7D0
-            ELSE 
+            ELSE
                 SL = COTE(I)
             ENDIF
         ENDIF
-! 
-      ENDIF           
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

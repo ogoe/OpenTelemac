@@ -12,12 +12,12 @@
 !***********************************************************************
 !
 !brief    COMPUTES THE FLUX OF DEPOSITION AND EROSION.
-! 
+!
 !history  C. VILLARET, JMH
 !+        2008
 !+
 !+
-! 
+!
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
@@ -35,18 +35,18 @@
 !+        V6P1
 !+  Change of arguments FDM insteam of ACLADM
 !+   KARMAN suppressed
-!+   Added TOCE _ SABLE + VCE 
+!+   Added TOCE _ SABLE + VCE
 !
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
 !+   Name of variables
-!+   
+!+
 !
 !history  J-M HERVOUET (EDFLAB, LNHE)
 !+        28/04/2014
 !+        V7P0
-!+   Possible divisions by 0 secured. Formatting. 
+!+   Possible divisions by 0 secured. Formatting.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
@@ -76,9 +76,9 @@
 !| TOCE_SABLE     |<->| CRITICAL SHEAR STRESS FOR SAND
 !| TOCE_VASE      |<->| CRITICAL EROSION SHEAR STRESS OF THE MUD PER LAYER (N/M2)
 !| VCE            |-->| FLOW VISCOSITY
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !| XMVS           |-->| WATER DENSITY
-!| XWC            |-->| SETTLING VELOCITIES 
+!| XWC            |-->| SETTLING VELOCITIES
 !| ZERO           |-->| ZERO
 !| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,7 +86,7 @@
       USE INTERFACE_SISYPHE, EX_FLUX_MIXTE=>SUSPENSION_FLUX_MIXTE
       USE BIEF
       USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX
-! 
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -131,7 +131,7 @@
 !
 !     DOES THE EROSION COMPUTATION ONLY ONCE (SAND FOR EXAMPLE
 !     BECAUSE THE COMPUTED FLUX IS A GLOBAL FLUX COMMON TO THE 2 SEDIMENTS)
-!     COMPUTES THE THEORETICAL FLUX OF EROSION FOR EACH (SEDIMENT INFINITELY 
+!     COMPUTES THE THEORETICAL FLUX OF EROSION FOR EACH (SEDIMENT INFINITELY
 !     AVAILABLE IN EACH LAYER)
 !
 !     COMPUTES THE CRITICAL STRESS FOR EACH LAYER AS A FUNCTION
@@ -147,7 +147,7 @@
           ELSE
             F2=0.5D0
           ENDIF
-!         F2= MS_VASE(I, J)/(MS_VASE(I, J) + MS_SABLE(I, J)) 
+!         F2= MS_VASE(I, J)/(MS_VASE(I, J) + MS_SABLE(I, J))
           IF(F2.LE.0.3D0) THEN
             TOCE_MIXTE(I,J)=TOCE_SABLE
           ELSEIF(F2.GE.0.5D0)THEN
@@ -165,10 +165,10 @@
      &                           GRAV,XMVE,XMVS,ZERO,AC,CSTAEQ)
         IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_FREDSOE'
 !
-        DO I=1,NPOIN 
+        DO I=1,NPOIN
           CSTAEQ%R(I)=CSTAEQ%R(I)*AVAIL(I,1,1)
         ENDDO
-!          
+!
       ELSEIF(ICQ.EQ.2) THEN
 !
         IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BIJKER'
@@ -177,16 +177,16 @@
         IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_BIJKER'
 !
       ELSEIF(ICQ.EQ.3) THEN
-        IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_VANRIJN' 
+        IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_VANRIJN'
         CALL SUSPENSION_VANRIJN(FDM,TAUP,NPOIN,
      &                          GRAV,XMVE,XMVS,VCE,
      &                          ZERO,AC,CSTAEQ,ZREF)
         IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_VANRIJN'
-        DO I=1,NPOIN         
+        DO I=1,NPOIN
           CSTAEQ%R(I)=CSTAEQ%R(I)*AVAIL(I,1,1)
         ENDDO
-!      
-      ENDIF 
+!
+      ENDIF
 !
       DO I=1,NPOIN
 !
@@ -200,7 +200,7 @@
           ELSE
             F2=0.5D0
           ENDIF
-!         F2= MS_VASE(I, J)/(MS_VASE(I, J) + MS_SABLE(I, J)) 
+!         F2= MS_VASE(I, J)/(MS_VASE(I, J) + MS_SABLE(I, J))
           IF(F2.LE.0.3D0) THEN
 !           PROPORTION OF MUD < 30%, FLUXES ARE SIMILAR TO THOSE FOR SAND ONLY
             IF(TAUP%R(I).GT.TOCE_MIXTE(I,J))THEN

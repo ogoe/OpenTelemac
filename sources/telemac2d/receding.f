@@ -67,9 +67,9 @@
         I1=IKLE(IELEM,1)
         I2=IKLE(IELEM,2)
         I3=IKLE(IELEM,3)
-        SL1=H(I1)+ZF(I1) 
+        SL1=H(I1)+ZF(I1)
         SL2=H(I2)+ZF(I2)
-        SL3=H(I3)+ZF(I3) 
+        SL3=H(I3)+ZF(I3)
 !
 !       ONLY TIDAL FLATS CONSIDERED, SAME CRITERION AS IN DECV11 (BIEF)
 !
@@ -107,7 +107,7 @@
               HITS%R(I3)=HITS%R(I3)+1.D0
             ENDIF
           ENDIF
-        ENDIF 
+        ENDIF
 !
       ENDDO
 !
@@ -138,9 +138,9 @@
         I1=IKLE(IELEM,1)
         I2=IKLE(IELEM,2)
         I3=IKLE(IELEM,3)
-        SL1=H(I1)+ZF(I1) 
+        SL1=H(I1)+ZF(I1)
         SL2=H(I2)+ZF(I2)
-        SL3=H(I3)+ZF(I3) 
+        SL3=H(I3)+ZF(I3)
 !
 !       ONLY TIDAL FLATS CONSIDERED, SAME CRITERION AS IN DECV11 (BIEF)
 !
@@ -220,7 +220,7 @@
      &                -HITS%R(I3)*H(I3)*V2DPAR(I3)
             ENDIF
           ENDIF
-        ENDIF 
+        ENDIF
 !
       ENDDO
 !

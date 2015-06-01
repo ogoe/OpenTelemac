@@ -177,9 +177,9 @@
 !       Y2  =  Y(I2) - Y(I1)
 !       Y3  =  Y(I3) - Y(I1)
         X2  =  X(IELEM,2)
-        X3  =  X(IELEM,3) 
+        X3  =  X(IELEM,3)
         Y2  =  Y(IELEM,2)
-        Y3  =  Y(IELEM,3) 
+        Y3  =  Y(IELEM,3)
 !
         U1  =  U(I1)
         U2  =  U(I2)
@@ -359,9 +359,9 @@
 !       Y2  =  Y(I2) - Y(I1)
 !       Y3  =  Y(I3) - Y(I1)
         X2  =  X(IELEM,2)
-        X3  =  X(IELEM,3) 
+        X3  =  X(IELEM,3)
         Y2  =  Y(IELEM,2)
-        Y3  =  Y(IELEM,3) 
+        Y3  =  Y(IELEM,3)
 !
         DET= X2*Y3-X3*Y2
         IELEM2 = MOD(IELEM-1,NELEM2) + 1
@@ -593,9 +593,9 @@
 !       Y2  =  Y(I2) - Y(I1)
 !       Y3  =  Y(I3) - Y(I1)
         X2  =  X(IELEM,2)
-        X3  =  X(IELEM,3) 
+        X3  =  X(IELEM,3)
         Y2  =  Y(IELEM,2)
-        Y3  =  Y(IELEM,3) 
+        Y3  =  Y(IELEM,3)
 !
         U1=DZ1*U(I1)/HH1
         U2=DZ2*U(I2)/HH2

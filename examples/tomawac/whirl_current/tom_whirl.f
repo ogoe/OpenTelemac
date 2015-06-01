@@ -6,7 +6,7 @@
      & NPOIN2, NBOR  , AT    , LT    , DDC   , LIMSPE, FPMAXL, FETCHL,
      & SIGMAL, SIGMBL, GAMMAL, FPICL , HM0L  , APHILL, TETA1L, SPRE1L,
      & TETA2L, SPRE2L, XLAMDL, X ,Y  , KENT  , KSORT , NFO1  , NBI1  ,
-     & BINBI1, UV    , VV    , SPEULI, VENT  , VENSTA, GRAVIT, DEUPI , 
+     & BINBI1, UV    , VV    , SPEULI, VENT  , VENSTA, GRAVIT, DEUPI ,
      & PRIVE , NPRIV , SPEC  , FRA   , DEPTH , FRABL ,BOUNDARY_COLOUR)
 !
 !***********************************************************************
@@ -117,7 +117,7 @@
         ENDIF
       ENDIF
 !
-!     AU PREMIER PASSAGE (ET EVENTUELLEMENT AUX AUTRES SI LE VENT EST 
+!     AU PREMIER PASSAGE (ET EVENTUELLEMENT AUX AUTRES SI LE VENT EST
 !     INSTATIONNAIRE ET QUE LE SPECTRE A LA LIMITE EN DEPEND),
 !     ON CALCULE LE SPECTRE AUX LIMITES
 !     ----------------------------------------------------------------
@@ -127,7 +127,7 @@
         GRAVIT=9.81D0
         E2FMIN=1.D-30
         FPMIN =1.D-10
-!       
+!
         HM0    = 1
         FP     = 0.1D0
         GAMMA  = 1.5D0
@@ -135,7 +135,7 @@
         SIGMAB = 0.09D0
         AL=0.0624D0/(0.230D0+0.0336D0*GAMMA-0.185D0/(1.9D0+GAMMA))
      &    *(DEUPI*FP)**4*HM0*HM0/GRAVIT**2
-!       
+!
         CALL SPEJON
      &  ( SPEC , FREQ  , NF , AL , FP    , GAMMA , SIGMAA, SIGMAB,
      &    DEUPI , GRAVIT, E2FMIN, FPMIN )
@@ -146,7 +146,7 @@
         IF (SPEULI) THEN
 !
 !        EXEMPLE DE MODIFICATION DE FRA - A MODIFIER SUIVANT VOTRE CAS
-!        EXAMPLE OF MODIFICATION OF FRA - TO BE MODIFIED DEPENDING 
+!        EXAMPLE OF MODIFICATION OF FRA - TO BE MODIFIED DEPENDING
 !        ON YOUR CASE
           ALLOCATE(TRAV(1:NF))
           S00=0.4538D0
@@ -157,7 +157,7 @@
               TRAV(IFREQ)=S00*(FREQ(IFREQ)/FPICL)**(1.04D0)
             ENDIF
           ENDDO
-!         
+!
           DO IPTFR=1,NPTFR
             IF (LIFBOR(IPTFR).EQ.KENT) THEN
               DO IPLAN=1,NPLAN
@@ -173,13 +173,13 @@
               ENDDO
             ENDIF
           ENDDO
-!         
+!
           DEALLOCATE(TRAV)
 !
         ENDIF
 !
 !     ===========================================================
-!     FIN DE LA ZONE UTILISATEUR 
+!     FIN DE LA ZONE UTILISATEUR
 !     ===========================================================
 !
       ENDIF

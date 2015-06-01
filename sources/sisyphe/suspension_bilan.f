@@ -63,8 +63,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables   
-!+   
+!+   Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOT         |-->| COEFFICIENT OF MASS-LUMPING
@@ -76,7 +76,7 @@
 !| HN             |-->| WATER DEPTH
 !| IELMT          |-->| NUMBER OF ELEMENTS
 !| ITRA           |-->| TRACER INDEX
-!| LT             |-->| ITERATION 
+!| LT             |-->| ITERATION
 !| MASDEP         |<--| TOTAL DEPOSITED MASS
 !| MASDEPT        |<--| DEPOSITED MASS DURING THE TIME STEP
 !| MASED0         |<->| SUSPENDED MASS BALANCE
@@ -87,15 +87,15 @@
 !| MASTEN         |<->| MASS ENTERED THROUGH LIQUID BOUNDARY
 !| MASTOU         |<->| MASS CREATED BY SOURCE TERM
 !| MESH           |<->| MESH STRUCTURE
-!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS 
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
-!| NIT            |-->| TOTAL NUMBER OF ITERATIONS 
+!| NIT            |-->| TOTAL NUMBER OF ITERATIONS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
 !| T2             |<->| WORK BIEF_OBJ STRUCTURE
 !| T3             |<->| WORK BIEF_OBJ STRUCTURE
 !| VOLU2D         |-->| INTEGRAL OF BASES
-!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT 
+!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SUSPENSION_BILAN => SUSPENSION_BILAN
@@ -152,7 +152,7 @@
       ! ************************** !
 !     CALL VECTOR(T2, '=', 'MASVEC          ',IELMT,CSF,ZFCL_S,HN,
 !    &            HN,HN,HN,HN,MESH,MSK,MASKEL)
-     
+
       IF(AGGLOT.GT.0.999999D0) THEN
 !       ASSUMES HERE THAT AGGLOT=1.D0
         CALL OS('X=CYZ   ',X=T2,Y=VOLU2D,Z=ZFCL_S,C=CSF)
@@ -161,7 +161,7 @@
      &             1.D0-AGGLOT,ZFCL_S,T3,T3,T3,T3,T3,MESH,MSK,MASKEL)
         CALL OS('X=X+CYZ ',X=T2,Y=VOLU2D,Z=ZFCL_S,C=AGGLOT)
         CALL OS('X=CX    ',X=T2,C=CSF)
-      ENDIF        
+      ENDIF
       MASDEPT = BIEF_SUM(T2)
       IF(NCSIZE.GT.1) MASDEPT = P_DSUM(MASDEPT)
       ! *************************************************** !
@@ -267,7 +267,7 @@
       ! *************************** !
       ! XII - UPDATES INITIAL MASS  !
       ! *************************** !
-      MASINI = MASFIN  
+      MASINI = MASFIN
       !----------------------------------------------------------------!
 1005  FORMAT(/,1X,'QUANTITE DE LA CLASSE    ',I2
      &         ,' EN SUSPENSION AU TEMPS T    : ',G16.7,' M3')

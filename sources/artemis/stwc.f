@@ -17,7 +17,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F             |-->| FREQUENCY FOR WHICH ENERGY DENSITY IS CALCULATED (Hz)
-!| DIR           |-->| DIRECTION FOR WHICH ENERGY DENSITY IS CALCULATED (°) 
+!| DIR           |-->| DIRECTION FOR WHICH ENERGY DENSITY IS CALCULATED (°)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !      USE INTERFACE_ARTEMIS, EX_SPE => SPE
@@ -36,9 +36,9 @@
 !
 !-----------------------------------------------------------------------
 ! TOMAWAC SPECTRUM is known at frequencies (f1<f2) and directions (t1<t2)
-!  INTERPOLATION : 
+!  INTERPOLATION :
 !  Sp(f,t) =  Sp(f1,t) + (f-f1)*(Sp(f2,t)-Sp(f1,t))/(f2-f1)
-!   with 
+!   with
 !   Sp(f1,t)=  Sp(f1,t1) + (t-t1)*(Sp(f1,t2)-Sp(f1,t1))/(t2-t1)
 !   Sp(f2,t)=  Sp(f2,t1) + (t-t1)*(Sp(f2,t2)-Sp(f2,t1))/(t2-t1)
 
@@ -91,7 +91,7 @@
         SPT1F2=SPETWC(ID1,IFF1+1)
         SPT2F1=SPETWC(ID1+1,IFF1)
         SPT2F2=SPETWC(ID1+1,IFF1+1)
-!             
+!
         SPTF1= SPT1F1 + (DIR-D1)*(SPT2F1-SPT1F1)/(D2-D1)
         SPTF2= SPT1F2 + (DIR-D1)*(SPT2F2-SPT1F2)/(D2-D1)
         STWC = SPTF1  + (F  -F1)*(SPTF2 - SPTF2)/(F2-F1)

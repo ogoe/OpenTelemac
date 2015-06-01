@@ -2,7 +2,7 @@
                      SUBROUTINE CONDIW
 !                    *****************
 !
-     &( AT, LT , TC1, TC2, TV1, TV2, TM1, TM2 , 
+     &( AT, LT , TC1, TC2, TV1, TV2, TM1, TM2 ,
      &  NVHMA,NVCOU,NVWIN, PART , U_TEL, V_TEL , H_TEL )
 !
 !***********************************************************************
@@ -105,7 +105,7 @@
 !
 !       READS IN THE TIDAL CURRRENT AND (OPTIONAL) DEPTH
 !
-!       JMH 16/11/2012 : formatted file suppressed     
+!       JMH 16/11/2012 : formatted file suppressed
 !
         IF(WAC_FILES(WACCOB)%NAME(1:1).EQ.' ') THEN
           WRITE(LU,*) ' '
@@ -130,11 +130,11 @@
 !         READS IN THE CURRENTS FROM BINARY FILE, AND POSSIBLY THE DEPTH
 !
           CALL LECDOI(SUC%R,NAMEU,
-     &                      'VELOCITY U      M/S             ',2,    
+     &                      'VELOCITY U      M/S             ',2,
      &                SVC%R,NAMEV,
-     &                      'VELOCITY V      M/S             ',2, 
+     &                      'VELOCITY V      M/S             ',2,
      &                SDEPTH%R,NAMEH,
-     &                         'WATER DEPTH     M               ',1, 
+     &                         'WATER DEPTH     M               ',1,
      &                MESH%X%R,MESH%Y%R,
      &                NPOIN2,WAC_FILES(WACCOB)%LU,WAC_FILES(WACCOB)%FMT,
      &                NBOR,NPTFR,
@@ -181,11 +181,11 @@
             UL=WAC_FILES(WACMAB)%LU
           ENDIF
           CALL LECDOI(SUC%R,NAMEU,
-     &                      'VELOCITY U      M/S             ',0,    
+     &                      'VELOCITY U      M/S             ',0,
      &                SVC%R,NAMEV,
-     &                      'VELOCITY V      M/S             ',0, 
+     &                      'VELOCITY V      M/S             ',0,
      &                SDEPTH%R,NAMEH,
-     &                         'WATER DEPTH     M               ',2, 
+     &                         'WATER DEPTH     M               ',2,
      &                MESH%X%R,MESH%Y%R,NPOIN2,UL,BINMAR,NBOR,NPTFR,
      &                AT,DDC,TM1,TM2,SUC1%R,SUC2%R,SVC1%R,SVC2%R,
      &                SZM1%R,SZM2%R,INDIM,'HAUTEUR',NVHMA,TEXMAB,TROUVE,
@@ -236,11 +236,11 @@
           ENDIF
 !         HERE DEPTH POSSIBLY READ AS THIRD VARIABLE
           CALL LECDON(SUC%R,NAMEU,
-     &                      'VELOCITY U      M/S             ',2,    
+     &                      'VELOCITY U      M/S             ',2,
      &                SVC%R,NAMEV,
-     &                      'VELOCITY V      M/S             ',2, 
+     &                      'VELOCITY V      M/S             ',2,
      &                SDEPTH%R,NAMEH,
-     &                         'WATER DEPTH     M               ',1, 
+     &                         'WATER DEPTH     M               ',1,
      &                MESH%X%R,MESH%Y%R,NPOIN2,UL,FFORMAT,NBOR,NPTFR,
      &                NPTT,INDIC,'COURANT',TEXCOB,TROUVE)
         ENDIF
@@ -284,20 +284,20 @@
           ENDIF
           IF(VENSTA) THEN
             CALL LECDON(SUV%R,NAMEWX,
-     &                        'WIND ALONG X    M/S             ',2,    
+     &                        'WIND ALONG X    M/S             ',2,
      &                  SVV%R,NAMEWY,
-     &                        'WIND ALONG Y    M/S             ',2, 
+     &                        'WIND ALONG Y    M/S             ',2,
      &                  SVV%R,'????????????????????????????????',
-     &                        '????????????????????????????????',0, 
+     &                        '????????????????????????????????',0,
      &                  MESH%X%R,MESH%Y%R,NPOIN2,UL,FFORMAT,NBOR,NPTFR,
      &                  NPTT,INDIV,'WIND   ',TEXVEB,TROUVE)
           ELSE
             CALL LECDOI(SUV%R,NAMEWX,
-     &                        'WIND ALONG X    M/S             ',2, 
+     &                        'WIND ALONG X    M/S             ',2,
      &                  SVV%R,NAMEWY,
-     &                        'WIND ALONG Y    M/S             ',2, 
+     &                        'WIND ALONG Y    M/S             ',2,
      &                  SVV%R,'????????????????????????????????',
-     &                        '????????????????????????????????',0, 
+     &                        '????????????????????????????????',0,
      &                  MESH%X%R,MESH%Y%R,
      &                  NPOIN2,UL,FFORMAT,NBOR,NPTFR,
      &                  AT,DDC,TV1,TV2,SUV1%R,SUV2%R,SVV1%R,SVV2%R,

@@ -150,7 +150,7 @@
       A31(IELEM)  = (X3-X2) * QUATRV + (Y2-Y3) * QUATRU
       A32(IELEM)  = -X3     * QUATRV +     Y3  * QUATRU
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -206,7 +206,7 @@
         A31(IELEM)  = - L31
         A32(IELEM)  = - L32
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSEIF(IELMU.EQ.11.AND.IELMV.EQ.11) THEN
 !
@@ -246,7 +246,7 @@
       A31(IELEM)  = (X3-X2) * (V123+V3) + (Y2-Y3) * (U123+U3)
       A32(IELEM)  = -X3     * (V123+V3) +     Y3  * (U123+U3)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -294,7 +294,7 @@
       A22(IELEM) = - A21(IELEM) - A23(IELEM)
       A33(IELEM) = - A31(IELEM) - A32(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -347,7 +347,7 @@
       A22(IELEM) = - A21(IELEM) - A23(IELEM)
       A33(IELEM) = - A31(IELEM) - A32(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !     OTHER TYPES OF U AND V DISCRETISATION
 !
@@ -370,7 +370,7 @@
 201     FORMAT(1X,'MT05AA (BIEF) :',/,
      &         1X,'U AND V OF A DIFFERENT DISCRETISATION:',1I6,3X,1I6)
         ENDIF
-!       
+!
         CALL PLANTE(1)
         STOP
 !

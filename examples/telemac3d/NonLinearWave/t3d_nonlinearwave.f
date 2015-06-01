@@ -1,32 +1,32 @@
 !                       *****************
                         SUBROUTINE BORD3D
-!                       ***************** 
+!                       *****************
 !
      & (AAT,LT,IINFOGR,NPTFR2_DIM,NFRLIQ)
-! 
+!
 !***********************************************************************
 ! TELEMAC 3D VERSION 5.6 18/10/2005 J.-M. HERVOUET (LNHE) 01 30 87 80 18
-!         
-!*********************************************************************** 
-! 
-!      FONCTION: 
-!      ========= 
-! 
+!
+!***********************************************************************
+!
+!      FONCTION:
+!      =========
+!
 !      CONDITIONS AUX LIMITES SPECIFIQUES. PEUT ETRE MODIFIE PAR
-!      L'UTILISATEUR 
+!      L'UTILISATEUR
 !
 !-----------------------------------------------------------------------
-! 
-!      FUNCTION: 
-!      ========= 
-! 
-!      SPECIFIC BOUNDARY CONDITIONS, MAY BE MODIFIED BY THE USER. 
+!
+!      FUNCTION:
+!      =========
+!
+!      SPECIFIC BOUNDARY CONDITIONS, MAY BE MODIFIED BY THE USER.
 !
 !-----------------------------------------------------------------------
 !                          SOME USEFUL PARAMETERS
-! .________________.____.______________________________________________. 
+! .________________.____.______________________________________________.
 ! !  NOM           !MODE!                  ROLE                        !
-! !________________!____!______________________________________________! 
+! !________________!____!______________________________________________!
 ! !  UBORF         !<-- ! PRESCRIBED VELOCITY ALONG X ON THE BOTTOM
 ! !  UBORL         !<-- ! PRESCRIBED VELOCITY ALONG X ON THE LATERAL
 ! !                !    ! BOUNDARY
@@ -47,7 +47,7 @@
 ! !                !    !                    FOR VELOCITIES
 ! !                !    !                    ATABO,L,S AND BTABO,L,S
 ! !                !    !                    FOR TRACERS
-! !                !    ! 
+! !                !    !
 ! ! AUBOR,BUBOR    !<-- ! LOG LAW: NU*DU/DN = AUBOR*U + BUBOR
 ! !                !    ! IF BUBOR(F,L,S) ADDED HERE, SPECIFY BUBOR%TYPR='Q'
 ! !                !    ! SEE END OF THE ROUTINE
@@ -57,11 +57,11 @@
 ! ! AWBOR,BWBOR    !<-- ! LOG LAW: NU*DW/DN = AWBOR*W + BWBOR
 ! !                !    ! IF BWBOR(F,L,S) ADDED HERE, SPECIFY BWBOR%TYPR='Q'
 ! !                !    ! SEE END OF THE ROUTINE
-! !                !    ! 
-! ! ATABO,BTABO    !<-- ! LOG LAW: NU*DTA/DN = ATABO*TA + BTABO 
+! !                !    !
+! ! ATABO,BTABO    !<-- ! LOG LAW: NU*DTA/DN = ATABO*TA + BTABO
 ! !                !    !
 ! !                !    ! TYPES OF BOUNDARY CONDITIONS
-! !                !    !                    
+! !                !    !
 ! !  LIU,V,WBOF    !<-->! ON BOTTOM FOR U,V,W
 ! !  LIU,V,WBOL    !<-->! ON LATERAL BOUNDARIES FOR U,V,W
 ! !  LIU,V,WBOS    !<-->! AT FREE SURFACE FOR U,V,W
@@ -98,9 +98,9 @@
 ! !  NPTFR3        ! -->! NUMBER OF BOUNDARY POINTS IN 3D
 ! !  NPLAN         ! -->! NUMBER OF PLANES ON THE VERTICAL
 ! !  NELEM2        ! -->! NUMBER OF ELEMENTS IN 2D
-! !                !    ! 
+! !                !    !
 ! !                !    ! POSSIBLE TYPES OF BOUNDARY CONDITIONS
-! !                !    ! 
+! !                !    !
 ! !  KENT          ! -->! PRESCRIBED VALUE
 ! !  KENTU         ! -->! PRESCRIBED VELOCITY
 ! !  KSORT         ! -->! FREE (E.G. AT AN OUTPUT)
@@ -108,7 +108,7 @@
 ! !  KLOG          ! -->! SOLID BOUNDARY
 ! !  NTRAC         ! -->! NUMBER OF TRACERS
 ! !  SEDI          ! -->! IF YES, THERE IS SEDIMENT
-! !  PRIVE         ! -->! BLOCK OF ARRAYS FOR THE USER 
+! !  PRIVE         ! -->! BLOCK OF ARRAYS FOR THE USER
 ! !  NPRIV         ! -->! NUMBER OF ARRAYS IN BLOCK PRIVE
 ! !  NDEBIT        ! -->! NUMBER OF BOUNDARIES WITH PRESCRIBED DISCHARGE
 ! !  NVIT          ! -->! NUMBER OF BOUNDARIES WITH PRESCRIBED VELOCITY
@@ -116,28 +116,28 @@
 ! !  DEBIMP        ! -->! ARRAY OF PRESCRIBED DISCHARGES
 ! !  COTIMP        ! -->! ARRAY OF PRESCRIBED ELEVATIONS
 ! !  VITIMP        ! -->! ARRAY OF PRESCRIBED VELOCITIES
-! !________________!____!______________________________________________! 
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE) 
-! 
-!*********************************************************************** 
-!                                                                       
+! !________________!____!______________________________________________!
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!
+!***********************************************************************
+!
 ! INFORMATION : FOR PRESCRIBED BOUNDARIES OF POINT BEING BOTH LATERAL
-!               AND BOTTOM, USE LATERAL ARRAYS. 
+!               AND BOTTOM, USE LATERAL ARRAYS.
 !
 !               FOR TYPES OF BOUNDARY CONDITIONS : USE SUBROUTINE LIMI3D
 !
-!               SEDIMENT IS THE LAST TRACER              
-!                                                                      
-!*********************************************************************** 
-! 
+!               SEDIMENT IS THE LAST TRACER
+!
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D, EX_NFRLIQ=>NFRLIQ
       USE INTERFACE_TELEMAC3D, EX_BORD3D => BORD3D
 !
-      IMPLICIT NONE 
-      INTEGER LNG,LU 
-      COMMON/INFO/LNG,LU 
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -151,7 +151,7 @@
 !
       INTEGER I,IPOIN2,NP,K1,IBORD,IVIT,ICOT,IDEB,IFRLIQ,IPROF
       INTEGER IPTFR,ITRAC,IPLAN
-      DOUBLE PRECISION ROEAU,ROAIR,VITV,PROFZ,TPS    
+      DOUBLE PRECISION ROEAU,ROAIR,VITV,PROFZ,TPS
 !
 !     PARAMETERS FOR LIQUID BOUNDARIES
 !     ********************************
@@ -194,7 +194,7 @@
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !
 !=======================================================================
-! 
+!
 !  PREVIOUS LIMLOK : SECURING NO SLIP BOUNDARY CONDITIONS
 !
 !
@@ -221,7 +221,7 @@
         IF(LIWBOS%I(IPOIN2).EQ.KADH) WBORS%R(IPOIN2) = 0.D0
       ENDDO
 !
-!     TRACERS 
+!     TRACERS
 !
 !     IF(NTRAC.NE.0) THEN
 !
@@ -333,20 +333,20 @@
 !         CASE OF A VERTICAL PROFILE
           IF(VERPROVEL(IFRLIQ).NE.1) THEN
             PROFZ=VEL_PROF_Z(IFRLIQ,NBOR2%I(K),
-     &                       AT,LT,NP,INFOGR,VERPROVEL(IFRLIQ))        
+     &                       AT,LT,NP,INFOGR,VERPROVEL(IFRLIQ))
             UBORL%R(IJK) = UBORL%R(IJK)*PROFZ
             VBORL%R(IJK) = VBORL%R(IJK)*PROFZ
           ENDIF
 !         U AND V INITIALISED WITH PRESCRIBED VALUES (FOR DEBIMP3D)
 !         WILL BE CHANGED AGAIN AFTER DEBIMP3D
           U%R((NP-1)*NPOIN2+NBOR2%I(K))=UBORL%R(IJK)
-          V%R((NP-1)*NPOIN2+NBOR2%I(K))=VBORL%R(IJK)        
+          V%R((NP-1)*NPOIN2+NBOR2%I(K))=VBORL%R(IJK)
         ENDDO
-!    
+!
         YADEB(NUMLIQ%I(K))=1
 !
       ENDIF
-!        
+!
 !     PRESCRIBED VELOCITY GIVEN IN PARAMETER FILE (NVIT<>0)
 !     -----------------------------------------------------
 !
@@ -387,12 +387,12 @@
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
         DO NP=1,NPLAN
-          IBORD = (NP-1)*NPTFR2+K 
+          IBORD = (NP-1)*NPTFR2+K
           IFRLIQ=NUMLIQ%I(K)
           IF(LITABL%ADR(ITRAC)%P%I(IBORD).EQ.KENT.AND.NTRACER.NE.0) THEN
-            IFRLIQ=NUMLIQ%I(K)            
+            IFRLIQ=NUMLIQ%I(K)
             IF(NTRACER.GE.IFRLIQ*NTRAC) THEN
-              TABORL%ADR(ITRAC)%P%R(IBORD) = 
+              TABORL%ADR(ITRAC)%P%R(IBORD) =
      &        TR3(IFRLIQ,ITRAC,NBOR3%I(IBORD),AT,INFOGR)
             ELSE
               IF(LNG.EQ.1) WRITE(LU,300) NUMLIQ%I(K)*NTRAC
@@ -411,18 +411,18 @@
             IPROF=VERPROTRA(ITRAC+(IFRLIQ-1)*NTRAC)
             IF(IPROF.NE.1) THEN
               PROFZ=TRA_PROF_Z(IFRLIQ,NBOR2%I(K),
-     &                         AT,LT,NP,INFOGR,IPROF,ITRAC)      
+     &                         AT,LT,NP,INFOGR,IPROF,ITRAC)
               TABORL%ADR(ITRAC)%P%R(IBORD)=
      &        TABORL%ADR(ITRAC)%P%R(IBORD)*PROFZ
             ENDIF
           ENDIF
-!          
+!
         ENDDO
         ENDDO
       ENDIF
 !
       ENDDO
-!        
+!
 !     PRESCRIBED DISCHARGES: FINAL TREATMENT OF VELOCITIES
 !     ----------------------------------------------------
 !
@@ -436,13 +436,13 @@
         MSK1=1
         IF(NDEBIT.GE.IFRLIQ) THEN
           IF(NCSIZE.GT.1) YADEB(IFRLIQ)=P_IMAX(YADEB(IFRLIQ))
-           IF(YADEB(IFRLIQ).EQ.1) THEN 
+           IF(YADEB(IFRLIQ).EQ.1) THEN
              CALL DEBIMP_3D(Q3(IFRLIQ,AT,INFOGR),
      &                      UBORL%R,VBORL%R,WBORL%R,
      &                      U,V,NUMLIQ%I,NUMLIQ_ELM%I,IFRLIQ,T3_02,
      &                      NPTFR2,NETAGE,MASK_3D%ADR(MSK1)%P,
      &                      MESH3D,EQUA,IELM2V,SVIDE,MASKTR,
-     &                      MESH3D%NELEB) 
+     &                      MESH3D%NELEB)
            ENDIF
           ELSE
           IF(LNG.EQ.1) WRITE(LU,400) IFRLIQ
@@ -471,7 +471,7 @@
           DO NP=1,NPLAN
             IJK=(NP-1)*NPTFR2+K
             U%R((NP-1)*NPOIN2+NBOR2%I(K))=UBORL%R(IJK)
-            V%R((NP-1)*NPOIN2+NBOR2%I(K))=VBORL%R(IJK)        
+            V%R((NP-1)*NPOIN2+NBOR2%I(K))=VBORL%R(IJK)
           ENDDO
         ENDIF
       ENDDO
@@ -486,34 +486,34 @@
 !                               WIND
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !
-      IF(VENT) THEN 
-        ROEAU = 1000.D0 
-        ROAIR = 1.3D0 
-        DO IPOIN2 = 1,NPOIN2 
+      IF(VENT) THEN
+        ROEAU = 1000.D0
+        ROAIR = 1.3D0
+        DO IPOIN2 = 1,NPOIN2
           VITV  = SQRT(WIND%ADR(1)%P%R(IPOIN2)**2
-     &               + WIND%ADR(2)%P%R(IPOIN2)**2) 
-! 
+     &               + WIND%ADR(2)%P%R(IPOIN2)**2)
+!
 ! A MORE ACCURATE TREATMENT
-! 
-!CX       IF(VITV.LE.5.D0) THEN 
-!CX         FAIR = ROAIR/ROEAU*0.565D-3 
-!CX       ELSEIF (VITV.LE.19.22D0) THEN 
-!CX         FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3 
-!CX       ELSE 
-!CX         FAIR = ROAIR/ROEAU*2.513D-3 
-!CX       ENDIF 
-! 
+!
+!CX       IF(VITV.LE.5.D0) THEN
+!CX         FAIR = ROAIR/ROEAU*0.565D-3
+!CX       ELSEIF (VITV.LE.19.22D0) THEN
+!CX         FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3
+!CX       ELSE
+!CX         FAIR = ROAIR/ROEAU*2.513D-3
+!CX       ENDIF
+!
 ! BEWARE : BUBORS IS VISCVI*DU/DN, NOT DU/DN
-! 
-          BUBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2) 
-          BVBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2) 
+!
+          BUBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2)
+          BVBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2)
         ENDDO
       ENDIF
 !
-! 
+!
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !                         END OF WIND TREATMENT
-!           +++++++++++++++++++++++++++++++++++++++++++++++ 
+!           +++++++++++++++++++++++++++++++++++++++++++++++
 !
 !
 !
@@ -524,31 +524,31 @@
 !
 !
 !                 LINES BELOW WITH '!C' ARE AN EXAMPLE
-! 
+!
 !    TO BE GIVEN :
-! 
-!    ITEMP = NUMBER OF TRACER WHICH IS THE HEAT 
+!
+!    ITEMP = NUMBER OF TRACER WHICH IS THE HEAT
 !    TAIR  = CONSTANT AIR TEMPERATURE
-!    SAL   = CONSTANT WATER SALINITY 
-! 
-!C    ITEMP=1 
-!C    CP=4.18D3 
-!C    RO0=999.972D0 
-!C    B=0.0025D0 
-!C    TAIR=15.D0 
-!C    SAL=35.D-3 
-!C    WW=0.D0 
-!C    IF (VENT) WW=VITV 
-!C    DO IPOIN2=1,NPOIN2 
-!C       TREEL=TA%ADR(ITEMP)%P%R(NPOIN3-NPOIN2+IPOIN2) 
-!C       RO=RO0*(1.D0-(7.D0*(TREEL-4.D0)*(TREEL-4.D0)-750.D0*SAL)*1D-6) 
-!C       LAMB=RO*CP 
-!C       A=(4.48D0+0.049D0*TREEL)+2021.5D0*B*(1.D0+WW)* 
-!C   &     (1.12D0+0.018D0*TREEL+0.00158D0*TREEL*TREEL) 
-!C       ATABOS%ADR(ITEMP)%P%R(IPOIN2)=-A/LAMB 
+!    SAL   = CONSTANT WATER SALINITY
+!
+!C    ITEMP=1
+!C    CP=4.18D3
+!C    RO0=999.972D0
+!C    B=0.0025D0
+!C    TAIR=15.D0
+!C    SAL=35.D-3
+!C    WW=0.D0
+!C    IF (VENT) WW=VITV
+!C    DO IPOIN2=1,NPOIN2
+!C       TREEL=TA%ADR(ITEMP)%P%R(NPOIN3-NPOIN2+IPOIN2)
+!C       RO=RO0*(1.D0-(7.D0*(TREEL-4.D0)*(TREEL-4.D0)-750.D0*SAL)*1D-6)
+!C       LAMB=RO*CP
+!C       A=(4.48D0+0.049D0*TREEL)+2021.5D0*B*(1.D0+WW)*
+!C   &     (1.12D0+0.018D0*TREEL+0.00158D0*TREEL*TREEL)
+!C       ATABOS%ADR(ITEMP)%P%R(IPOIN2)=-A/LAMB
 !C       BTABOS%ADR(ITEMP)%P%R(IPOIN2)= A*TAIR/LAMB
 !C    END DO
-! 
+!
 !
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !                 END OF HEAT EXCHANGE WITH ATMOSPHERE
@@ -556,7 +556,7 @@
 !
 !
 !
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 !
 !     OPTIMIZATION:
 !
@@ -566,9 +566,9 @@
 !                                               IN THIS SUBROUTINE):
 !
       BUBORF%TYPR='0'
-      BUBORL%TYPR='0'      
+      BUBORL%TYPR='0'
       BVBORF%TYPR='0'
-      BVBORL%TYPR='0'      
+      BVBORL%TYPR='0'
       BWBORF%TYPR='0'
       BWBORL%TYPR='0'
       BWBORS%TYPR='0'
@@ -583,8 +583,8 @@
         BVBORS%TYPR='0'
       ENDIF
 !
-!----------------------------------------------------------------------- 
-! 
+!-----------------------------------------------------------------------
+!
 !     Partie specifique a ce cas
 !
       PI=3.1415926535897932384626433D0
@@ -609,8 +609,8 @@
      &    +(KK*HEIGHT**2/16.D0)*(COSH(KK*DEPTH)/SINH(KK*DEPTH)**3)
      &    *(2.D0+COSH(2.D0*KK*DEPTH))*COS(2.D0*OMEGA*TPS))*
 !         RAMPE DE 1 S SUR LE TEMPS
-     &    MIN(1.D0,AT)              
-!         
+     &    MIN(1.D0,AT)
+!
           DO  IPLAN=1, NPLAN
             IBORD = (IPLAN-1)*NPTFR2 + I
             ZSURF=Z(NBOR3%I((NPLAN-1)*NPTFR2 + I))
@@ -622,12 +622,12 @@
             VBORL%R(IBORD)=0.D0
             PBORL%R(IBORD)=DT*9.81D0*HEIGHT*COS(OMEGA*TPS)/2.D0*
      &                 (COSH(KK*(ZZ+DEPTH))/COSH(KK*DEPTH)-1.D0)
-!           
-            UBORL%R(IBORD)=UBORL%R(IBORD)*MIN(1.D0,AT) 
+!
+            UBORL%R(IBORD)=UBORL%R(IBORD)*MIN(1.D0,AT)
             VBORL%R(IBORD)=VBORL%R(IBORD)*MIN(1.D0,AT)
             PBORL%R(IBORD)=PBORL%R(IBORD)*MIN(1.D0,AT)
 !
-          ENDDO 
+          ENDDO
 !
         ENDIF
       ENDDO
@@ -650,9 +650,9 @@
       INTEGER, INTENT(IN) :: NPOIN2, LISFON
       LOGICAL, INTENT(IN) :: MSK
       TYPE (BIEF_OBJ), INTENT(INOUT) :: SZF, ST1, ST2
-      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(INOUT) :: ZF, T1, T2 
-      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(IN) :: X,Y 
-      TYPE (BIEF_OBJ),  INTENT(INOUT) :: PRIVE 
+      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(INOUT) :: ZF, T1, T2
+      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(IN) :: X,Y
+      TYPE (BIEF_OBJ),  INTENT(INOUT) :: PRIVE
       TYPE (BIEF_OBJ),  INTENT(IN)    :: MASKEL
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: MATR2D
       TYPE (BIEF_MESH), INTENT(INOUT) :: MESH2D
@@ -661,26 +661,26 @@
       INTEGER K,I, IMED
       LOGICAL MAS
       DOUBLE PRECISION A1, A2, A3, A4, A5, A6, A0, A7
-!             
-      A1=3.69D0   
-      A2=5.985D0  
-      A3=12.D0     
-      A4=14.D0     
-      A5=17.015D0 
-      A6=20.785D0 
-!       
+!
+      A1=3.69D0
+      A2=5.985D0
+      A3=12.D0
+      A4=14.D0
+      A5=17.015D0
+      A6=20.785D0
+!
       A0=A1-1.D0
       A7=A6+1.D0
 !
 ! bar definition ++ small transitions
 !
       DO  I=1,NPOIN2
-!        
+!
         ZF(I)=-0.43D0
         IF (X(I).GE.A0.AND.X(I).LE.A1) THEN
           ZF(I)= -0.43D0+0.03D0*(X(I)-A0)/(A1-A0)
         ENDIF
-!         
+!
         IF (X(I).GE.A1.AND.X(I).LE.A2) THEN
           ZF(I)=-0.40D0
         ENDIF
@@ -699,9 +699,9 @@
         IF(X(I).GE.A6.AND.X(I).LE.A7) THEN
           ZF(I)= -0.40D0-0.03D0*(X(I)-A6)/(A7-A6)
         ENDIF
-!         
+!
       ENDDO
-!        
+!
       RETURN
       END
 !                       *****************
@@ -709,20 +709,20 @@
 !                       *****************
 !
 !***********************************************************************
-! TELEMAC 3D VERSION 5.6   
+! TELEMAC 3D VERSION 5.6
 ! FORTRAN95 VERSION         MARCH 1999        JACEK A. JANKOWSKI PINXIT
 !***********************************************************************
 !
-!      FUNCTION: 
+!      FUNCTION:
 !      =========
 !                 INITIALIZING TYPES OF 3D BOUNDARY CONDITIONS
 !                    SETTING THE VALUE OF SOME COEFFICIENTS
 !
 !-----------------------------------------------------------------------
 !                          SOME USEFUL PARAMETERS
-! .________________.____.______________________________________________. 
-! !  NOM           !MODE!                  ROLE                        ! 
-! !________________!____!______________________________________________! 
+! .________________.____.______________________________________________.
+! !  NOM           !MODE!                  ROLE                        !
+! !________________!____!______________________________________________!
 ! !  UBORF         !<-- ! PRESCRIBED VELOCITY ALONG X ON THE BOTTOM
 ! !  UBORL         !<-- ! PRESCRIBED VELOCITY ALONG X ON THE LATERAL
 ! !                !    ! BOUNDARY
@@ -743,13 +743,13 @@
 ! !                !    !                    FOR VELOCITIES
 ! !                !    !                    ATABO,L,S AND BTABO,L,S
 ! !                !    !                    FOR TRACERS
-! !                !    ! 
+! !                !    !
 ! ! AUBOR,BUBOR    !<-- ! LOG LAW: NU*DU/DN = AUBOR*U + BUBOR
 ! ! AUBOR,BVBOR    !<-- ! LOG LAW: NU*DV/DN = AVBOR*V + BVBOR
-! ! ATABO,BTABO    !<-- ! LOG LAW: NU*DTA/DN = ATABO*TA + BTABO 
+! ! ATABO,BTABO    !<-- ! LOG LAW: NU*DTA/DN = ATABO*TA + BTABO
 ! !                !    !
 ! !                !    ! TYPES OF BOUNDARY CONDITIONS
-! !                !    !                    
+! !                !    !
 ! !  LIU,V,WBOF    !<-->! ON BOTTOM FOR U,V,W
 ! !  LIU,V,WBOL    !<-->! ON LATERAL BOUNDARIES FOR U,V,W
 ! !  LIU,V,WBOS    !<-->! AT FREE SURFACE FOR U,V,W
@@ -786,9 +786,9 @@
 ! !  NPTFR3        ! -->! NUMBER OF BOUNDARY POINTS IN 3D
 ! !  NPLAN         ! -->! NUMBER OF PLANES ON THE VERTICAL
 ! !  NELEM2        ! -->! NUMBER OF ELEMENTS IN 2D
-! !                !    ! 
+! !                !    !
 ! !                !    ! POSSIBLE TYPES OF BOUNDARY CONDITIONS
-! !                !    ! 
+! !                !    !
 ! !  KENT          ! -->! PRESCRIBED VALUE
 ! !  KENTU         ! -->! PRESCRIBED VELOCITY
 ! !  KSORT         ! -->! FREE (E.G. AT AN OUTPUT)
@@ -796,7 +796,7 @@
 ! !  KLOG          ! -->! SOLID BOUNDARY
 ! !  NTRAC         ! -->! NUMBER OF TRACERS
 ! !  SEDI          ! -->! IF YES, THERE IS SEDIMENT
-! !  PRIVE         ! -->! BLOCK OF ARRAYS FOR THE USER 
+! !  PRIVE         ! -->! BLOCK OF ARRAYS FOR THE USER
 ! !  NPRIV         ! -->! NUMBER OF ARRAYS IN BLOCK PRIVE
 ! !  NDEBIT        ! -->! NUMBER OF BOUNDARIES WITH PRESCRIBED DISCHARGE
 ! !  NVIT          ! -->! NUMBER OF BOUNDARIES WITH PRESCRIBED VELOCITY
@@ -857,7 +857,7 @@
       BUBORF%TYPR='0'
       BVBORF%TYPR='0'
 !
-      IF(NONHYD) THEN 
+      IF(NONHYD) THEN
 !       DO IPOIN2=1,NPOIN2
 !         AWBORF%R(IPOIN2) = 0.D0
 !         BWBORF%R(IPOIN2) = 0.D0
@@ -888,7 +888,7 @@
 !                           KSORT: W FREE ON LATERAL BOUNDARIES
         LIWBOL%I(IPTFR3) = KSORT
 !       VALUES SAVED IN SECOND DIMENSION BECAUSE ADVECTION
-!       SCHEMES MAY CHANGE THE VALUES 
+!       SCHEMES MAY CHANGE THE VALUES
         LIUBOL%I(IPTFR3+NPTFR3) = LIUBOL%I(IPTFR3)
         LIVBOL%I(IPTFR3+NPTFR3) = LIVBOL%I(IPTFR3)
         LIWBOL%I(IPTFR3+NPTFR3) = LIWBOL%I(IPTFR3)
@@ -907,7 +907,7 @@
         AWBORL%TYPR='0'
         BWBORL%TYPR='0'
       ENDIF
-!      
+!
 !     FREE SURFACE
 !     ============
 !
@@ -974,7 +974,7 @@
               LITABL%ADR(ITRAC)%P%I(IPTFR3) = LITABL%ADR(1)%P%I(IPTFR)
 !             SAVING ON SECOND DIMENSION BECAUSE ADVECTION SCHEMES
 !             MAY CHANGE THIS VALUE
-              LITABL%ADR(ITRAC)%P%I(IPTFR3+NPTFR3) = 
+              LITABL%ADR(ITRAC)%P%I(IPTFR3+NPTFR3) =
      &                                        LITABL%ADR(1)%P%I(IPTFR)
               TABORL%ADR(ITRAC)%P%R(IPTFR3) = TABORL%ADR(1)%P%R(IPTFR)
 !             ATABOL%ADR(ITRAC)%P%R(IPTFR3) = ATABOL%ADR(1)%P%R(IPTFR)
@@ -983,7 +983,7 @@
           ENDDO
           ATABOL%ADR(ITRAC)%P%TYPR='0'
           BTABOL%ADR(ITRAC)%P%TYPR='0'
-!  
+!
 !     FREE SURFACE
 !     =============
 !
@@ -1054,7 +1054,7 @@
       CALL OV('X=C     ',RUGOL%R,RUGOL%R,RUGOL%R,RUGOL0,NPTFR2*NPLAN)
 !
 !======================================================================
-! DEFAULT BOUNDARY CONDITION TYPES AND VALUES FOR THE 
+! DEFAULT BOUNDARY CONDITION TYPES AND VALUES FOR THE
 ! PRESSURE POISSON EQUATION
 !======================================================================
 !
@@ -1065,12 +1065,12 @@
 ! DEFAULT TYPES AND VALUES FOR THE PRESSURE BOUNDARY CONDITIONS
 ! BOTTOM AND FREE SURFACE
 !
-!       AT ALL LATERAL BOUNDARIES AND BOTTOM DP/DN = 0;   
-!       DIRICHLET = 0 AT THE SURFACE; DIRICHLET CONDITIONS SET TO 0 ALL OVER 
+!       AT ALL LATERAL BOUNDARIES AND BOTTOM DP/DN = 0;
+!       DIRICHLET = 0 AT THE SURFACE; DIRICHLET CONDITIONS SET TO 0 ALL OVER
 !       (CORRECT AT THE SURFACE ONLY)
 !
 !       BOTTOM AND SURFACE
-!       CHECK KLOG BOTTOM 
+!       CHECK KLOG BOTTOM
 !
         DO IPOIN2=1,NPOIN2
           LIPBOF%I(IPOIN2) = KLOG

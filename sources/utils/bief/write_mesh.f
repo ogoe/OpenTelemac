@@ -36,7 +36,7 @@
 !+        V6P2
 !+   Changed to work with NAG
 !
-!history  Y AUDOUIN 
+!history  Y AUDOUIN
 !+        21/05/2015
 !+        V7P0
 !+   Adapt code to work with the hermes module
@@ -88,7 +88,7 @@
       CALL CHECK_ALLOCATE(IERR,'IPOBO')
 !
       NDP = MESH%NDS(MESH%TYPELM+1,3)
-      IF(MESH%DIM.EQ.3) THEN 
+      IF(MESH%DIM.EQ.3) THEN
         CALL SET_MESH(FFORMAT,NFILE,MESH%DIM,MESH%TYPELM,NDP,MESH%NPTFR,
      &                NPTIR,MESH%NELEM,MESH%NPOIN,MESH%IKLE%I,
      &                IPOBO,MESH%KNOLG%I,MESH%X%R,MESH%Y%R,NPLAN,

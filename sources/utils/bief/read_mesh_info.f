@@ -140,7 +140,7 @@
           IF(NNELEBD.EQ.0) THEN
             WRITE(LU,*) 'NO BND ELEMENTS IN A 2D MESH'
             ! Only stop if in serial cause the
-            TYP_BND = TYPE_NULL 
+            TYP_BND = TYPE_NULL
           ENDIF
         ENDIF
       ENDIF

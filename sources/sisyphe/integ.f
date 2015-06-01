@@ -43,12 +43,14 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| ROUSE NUMBER
-!| B              |-->| RATIO BEDLOAD LAYER/WATER DEPTH 
+!| B              |-->| RATIO BEDLOAD LAYER/WATER DEPTH
 !| IEIN           |<--| INTEGRAL VALUE I
 !| NPOIN          |-->| NUMBER OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -295,11 +297,11 @@
      &               ,' DANS VOTRE CAS',/)
 !
           IF (B(I).GT.1.D0) THEN
-             WRITE(6,100) B(I),I
+             WRITE(LU,100) B(I),I
           ELSEIF (B(I).LT.BEIN(LNB)) THEN
-             WRITE(6,101) BEIN(LNB),B(I),I
+             WRITE(LU,101) BEIN(LNB),B(I),I
           ELSEIF (A(I).LT.AEIN(1)) THEN
-             WRITE(6,102) AEIN(1),A(I),I
+             WRITE(LU,102) AEIN(1),A(I),I
           ENDIF
           CALL PLANTE(0)
           STOP
@@ -332,7 +334,7 @@
           INF = 1
           SUP = LNA
 !----START OF THE DO WHILE LOOP----
-          DO 
+          DO
           MIL = (INF + SUP ) / 2
             IF (AEIN(MIL).LT.A(I)) THEN
               INF = MIL

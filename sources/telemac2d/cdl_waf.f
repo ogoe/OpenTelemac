@@ -9,7 +9,7 @@
 !  TELEMAC 2D VERSION 6.3                                         R. ATA
 !-----------------------------------------------------------------------
 !                 WAF SCHEME (OPTVF =6)
-!   
+!
 !     COMPUTATION OF THE CONVECTIVE FLUXES AT BOUNDARIES
 !
 !
@@ -34,22 +34,22 @@
 !|  KDIR          |-->|  CONVENTION FOR DIRICHLET POINTS
 !|  KNEU          |-->|  CONVENTION FOR NEUMANN POINTS
 !|  W             |-->|  UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
-!|  CE            |<->|  FLUX 
+!|  CE            |<->|  FLUX
 !|  FLUENT,FLUSORT|<--|  IN AND OUT MASS FLUX
 !|  FLBOR         |<--|  IN AND OUT WATER MASS FLUX
 !|  DTHAUT        |-->|  CHARACTERISTIC LENGTH (DX) FOR CFL
 !|  DT            |<->|  TIME STEP
-!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION 
-!|  WINF          |-->|  PRESCRIBED BOUNDARY CONDITIONS 
+!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION
+!|  WINF          |-->|  PRESCRIBED BOUNDARY CONDITIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !-----------------------------------------------------------------------
 !
-! 
+!
 !***********************************************************************
-! 
+!
       USE BIEF
-!  
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -73,7 +73,7 @@
       DOUBLE PRECISION :: H2,U2,V2,DX
       DOUBLE PRECISION :: INFLOW,OUTFLOW
 !     DOUBLE PRECISION :: HL_UP,HR_UP,VL_UP,VR_UP,PSIL_UP,PSIR_UP
-!     HL_UP AND HR_UP NOT USED BUT COULD BE USED IF WE CHANGE ALGORITHM 
+!     HL_UP AND HR_UP NOT USED BUT COULD BE USED IF WE CHANGE ALGORITHM
 !     FOR LIMITER
       DOUBLE PRECISION,PARAMETER ::XI=0.D0
 !     TO CORRECT WHEN CONSIDERING TRACER
@@ -99,14 +99,14 @@
         FLX(4)  = 0.0D0
 ! INDICATOR FOR DRY CELLS
         IDRY=0
-! NORMALIZED NORMAL    
+! NORMALIZED NORMAL
         XNN=XNEBOR(K)
         YNN=YNEBOR(K)
 ! NON NORMALIZED NORMAL
         VNX=XNEBOR(K+NPTFR)
         VNY=YNEBOR(K+NPTFR)
         VNL=SQRT(VNX**2+VNY**2)
-!       
+!
         H1 = W(1,IS)
         IF(H1.GT.EPS)THEN
           U1   = W(2,IS)/H1
@@ -122,19 +122,19 @@
 !         SOLID WALL
 !**************************************************
 !===============================
-!    SLIPPING CONDITION 
+!    SLIPPING CONDITION
 !===============================
 !
-        IF(LIMPRO(K,1).EQ.KNEU) THEN 
+        IF(LIMPRO(K,1).EQ.KNEU) THEN
 ! FIRST METHOD: STRONG IMPOSITION
 !********************************
 ! DEFINITION OF THE GHOST STATE Ue
           H2=H1
-!         ROTATION 
+!         ROTATION
           U10 = U1
           U1  = XNN*U10+YNN*V1
           V1  =-YNN*U10+XNN*V1
-! PUT NORMAL COMPONENT = 0        
+! PUT NORMAL COMPONENT = 0
           U1 =  0.D0
           U2 =  U1
           V2 =  V1
@@ -142,7 +142,7 @@
           U10 = U1
           U1  = -YNN*V1
           V1  =  XNN*V1
-!          
+!
           U2  = -YNN*V2
           V2  =  XNN*V2
 ! SECOND METHOD: WEAK IMPOSITION
@@ -154,7 +154,7 @@
 ! ! WEAK IMPOSITION: PUT Ve = V1-2(V1.n)n
 !            U2 = U1 - U10*XNN
 !            V2 = V1 - U10*YNN
-! 
+!
 ! ! HERE WE MAKE THE DECISION TO USE HL_UP=HL, HR_UP=HR ..
 ! ! WHICH HAS A CONSEQUENCE THAT LIMITER =0 (A=1)
 !          CALL FLUX_WAF(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
@@ -164,15 +164,15 @@
 !**************************************************
 !         LIQUID BOUDARIES
 !**************************************************
-        ELSEIF(LIMPRO(K,1).EQ.KDIR.OR.LIMPRO(K,1).EQ.KDDL)THEN 
+        ELSEIF(LIMPRO(K,1).EQ.KDIR.OR.LIMPRO(K,1).EQ.KDDL)THEN
 !===============================
 !    SI H EST IMPOSEE
 !===============================
 !
           IF(LIMPRO(K,1).EQ.KDIR) THEN
-!         
+!
             H2 = WINF(1,K)
-!         
+!
             IF(H2 .GT.EPS)THEN
               U2 = WINF(2,K) / H2
               V2 = WINF(3,K) / H2
@@ -181,23 +181,23 @@
               V2 = 0.0D0
               IDRY = IDRY + 1
             ENDIF
-!         
+!
             IF(IDRY.LT.2)THEN
 !           AT LEAST ONE WET CELL
               CALL FLUX_WAF(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
      &                      H1,H2,V1,V2,PSI1,PSI2,
      &                      XNN,YNN,DT,DX,FLX)
-            ENDIF 
+            ENDIF
             OUTFLOW    = FLX(1)*VNL
             FLUSORT    = FLUSORT + OUTFLOW
             FLBOR%R(K) = OUTFLOW
-!         
-!         LIMPRO(K,1).NE.KDIR    
-          ELSE 
+!
+!         LIMPRO(K,1).NE.KDIR
+          ELSE
             H2 = H1
             U2 = U1
             V2 = V1
-!         
+!
             H1 = WINF(1,K)
             IF(H1.GT.EPS)THEN
               U1 = WINF(2,K) / H1
@@ -207,16 +207,16 @@
               V1 = 0.0D0
               IDRY = IDRY + 1
             ENDIF
-!         
+!
             IF(IDRY.LT.2)THEN
 !           AT LEAST ONE WET CELL
               CALL FLUX_WAF(XI,H2,H1,U2,U1,V2,V1,PSI2,PSI1,
      &                      H1,H2,V1,V2,PSI1,PSI2,
      &                      XNN,YNN,DT,DX,FLX)
-            ENDIF 
+            ENDIF
             INFLOW     = FLX(1)*VNL
             FLUENT     = FLUENT + INFLOW
-            FLBOR%R(K) = INFLOW  
+            FLBOR%R(K) = INFLOW
 !
           ENDIF
         ENDIF

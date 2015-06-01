@@ -39,7 +39,7 @@
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        18/01/2013
 !+        V6P3
-!+   ARITHMETIC AVERAGE WHEN ENERGY WEIGHTED AVERAGE IS NOT POSSIBLE   
+!+   ARITHMETIC AVERAGE WHEN ENERGY WEIGHTED AVERAGE IS NOT POSSIBLE
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AUX1           |<->| WORK TABLE
@@ -69,7 +69,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: TAILF
       DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(IN)    :: XK(NPOIN2,NF)
-      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF),DFREQ(NF) 
+      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF),DFREQ(NF)
       DOUBLE PRECISION, INTENT(INOUT) :: AUX1(NPOIN2),AUX2(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: AUX3(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: XKMOY(NPOIN2)
@@ -90,7 +90,7 @@
       ENDDO
 !
 !     SUMS UP THE CONTRIBUTIONS FOR THE DISCRETISED PART OF THE SPECTRUM
-!     
+!
       DO JF = 1,NF
 !
         AUX4=DFREQ(JF)
@@ -112,7 +112,7 @@
       ENDDO
 !
 !     (OPTIONALLY) TAKES INTO ACCOUNT THE HIGH-FREQUENCY PART
-!     
+!
       IF(TAILF.GT.1.D0) THEN
         CTE1=FREQ(NF)/(TAILF-1.D0)
         CTE2=COEFF/TAILF
@@ -123,17 +123,17 @@
       ENDIF
 !
 !     COMPUTES THE AVERAGE WAVE NUMBER
-!     
+!
       DO IP=1,NPOIN2
         IF(AUX2(IP).LT.SEUIL) THEN
 !         XKMOY(IP) = 1.D0
 !         JMH ON 18/01/2013 : ARITHMETIC AVERAGE WHEN ENERGY WEIGHTED
-!                             AVERAGE IS NOT POSSIBLE         
+!                             AVERAGE IS NOT POSSIBLE
           XKMOY(IP)=XK(IP,1)
           DO JF=2,NF
             XKMOY(IP)=XKMOY(IP)+XK(IP,JF)
-          ENDDO          
-          XKMOY(IP)=XKMOY(IP)/NF          
+          ENDDO
+          XKMOY(IP)=XKMOY(IP)/NF
         ELSE
           XKMOY(IP) = (AUX1(IP)/AUX2(IP))**2
         ENDIF

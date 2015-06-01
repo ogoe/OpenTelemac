@@ -18,7 +18,7 @@
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        18/05/2015
 !+        V7P1
-!+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH' 
+!+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH'
 !
 !history Y AUDOUIN (LNHE)
 !+       25/05/2015
@@ -196,7 +196,7 @@
       NITTP   = MOTINT( ADRESS(1,27) )
       NDTWC   = MOTINT( ADRESS(1,28) )
       NFTWC   = MOTINT( ADRESS(1,29) )
-       
+
 
 ! FOR THE MOMENT WTITES TO FILE FROM THE START OF SIMULATION
       PTINIG    = 0
@@ -317,7 +317,7 @@
 !     TOMAWAC FILE 1 FORMAT
       ART_FILES(ARTTC1)%FMT = MOTCAR( ADRESS(4,34) )(1:8)
       CALL MAJUS(ART_FILES(ARTTC1)%FMT)
-!     TOMAWAC FILE 1 
+!     TOMAWAC FILE 1
       ART_FILES(ARTTC1)%NAME=MOTCAR( ADRESS(4,35) )
 !
       IF(LISTIN) THEN

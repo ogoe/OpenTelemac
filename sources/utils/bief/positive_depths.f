@@ -49,18 +49,18 @@
 !history  J-M HERVOUET (LNHE)
 !+        18/09/2014
 !+        V7P0
-!+   Now positive sources are first added, then the transfers between 
+!+   Now positive sources are first added, then the transfers between
 !+   points are done, then the negative sources are treated. In this way
 !+   the transfers cannot be corrupted by an initial negative depth.
 !+   + one NCSIZE.GT.0 changed into NCSISE.GT.1.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL HERE 
+!| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL HERE
 !| DT             |-->| TIME STEP
 !| FLBOR          |<->| BOUNDARY FLUXES
 !| FLODEL         |<->| FLUXES GIVEN BY SEGMENT
 !|                |   | MAY BE COMPUTED HERE (SEE COMPUTE-FLODEL)
-!|                |   | OR SIMPLY GIVEN. AT THE EXIT, THE REAL FLUX 
+!|                |   | OR SIMPLY GIVEN. AT THE EXIT, THE REAL FLUX
 !|                |   | TRANSMITTED IS GIVEN BACK.
 !| FLOPOINT       |-->| FLUXES GIVEN BY POINTS (ELEMENT BY ELEMENT)
 !| FLULIM         |<--| PER SEGMENT: PERCENTAGE OF FLUX THAT HAS NOT
@@ -171,9 +171,9 @@
             C    =C    +H%R(I) /UNSV2D%R(I)
             CINIT=CINIT+HN%R(I)/UNSV2D%R(I)
           ENDDO
-        ENDIF        
-        WRITE(LU,*) 'AVANT TRAITEMENT MASSE INITIALE=',CINIT 
-        WRITE(LU,*) 'AVANT TRAITEMENT MASSE FINALE  =',C       
+        ENDIF
+        WRITE(LU,*) 'AVANT TRAITEMENT MASSE INITIALE=',CINIT
+        WRITE(LU,*) 'AVANT TRAITEMENT MASSE FINALE  =',C
       ENDIF
 !
 !     CALCUL DES FLUX PAR SEGMENT (T1 SUIVI DE FALSE NON UTILISE)
@@ -484,7 +484,7 @@
               WRITE(LU,*) 'BORD'
             ELSEIF(NAMECODE(1:9).EQ.'TELEMAC3D') THEN
               WRITE(LU,*) 'BORD3D'
-            ENDIF       
+            ENDIF
             CALL PLANTE(1)
             STOP
           ENDIF
@@ -527,8 +527,8 @@
           DO I=1,NPOIN
             C=C+H%R(I)/UNSV2D%R(I)
           ENDDO
-        ENDIF        
-        WRITE(LU,*) 'APRES TRAITEMENT MASSE FINALE =',C      
+        ENDIF
+        WRITE(LU,*) 'APRES TRAITEMENT MASSE FINALE =',C
       ENDIF
 !
 !-----------------------------------------------------------------------

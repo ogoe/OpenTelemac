@@ -373,7 +373,7 @@
           XM(IELEM,11) = XM(IELEM,11) * D(IKLE(IELEM,2))
           XM(IELEM,12) = XM(IELEM,12) * D(IKLE(IELEM,3))
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSEIF(TYPEXM(1:1).EQ.'S') THEN
           IF (LNG.EQ.1) WRITE(LU,170)
@@ -430,7 +430,7 @@
           XM(IELEM, 5) = XM(IELEM, 5) * D(IKLE(IELEM,2))
           XM(IELEM, 6) = XM(IELEM, 6) * D(IKLE(IELEM,3))
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSEIF(TYPEXM(1:1).EQ.'S') THEN
           IF (LNG.EQ.1) WRITE(LU,220)
@@ -481,7 +481,7 @@
           XM(IELEM, 4)=XM(IELEM, 4) * D(IKLE(IELEM,3))*D(IKLE(IELEM,2))
           XM(IELEM, 5)=XM(IELEM, 5) * D(IKLE(IELEM,4))*D(IKLE(IELEM,2))
           XM(IELEM, 6)=XM(IELEM, 6) * D(IKLE(IELEM,4))*D(IKLE(IELEM,3))
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q') THEN
 !
@@ -498,7 +498,7 @@
           XM(IELEM,10)=XM(IELEM,10) * D(IKLE(IELEM,3))*D(IKLE(IELEM,2))
           XM(IELEM,11)=XM(IELEM,11) * D(IKLE(IELEM,4))*D(IKLE(IELEM,2))
           XM(IELEM,12)=XM(IELEM,12) * D(IKLE(IELEM,4))*D(IKLE(IELEM,3))
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSEIF(TYPEXM(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,240) TYPEXM(1:1)
@@ -591,7 +591,7 @@
       IF(J.GT.0) THEN
         DO I = 1,J
           CALL OV ( 'X=XY    ' , XM(1,I) , D , D , C , NELEM )
-        ENDDO ! I 
+        ENDDO ! I
       ENDIF
 !
 !-----------------------------------------------------------------------

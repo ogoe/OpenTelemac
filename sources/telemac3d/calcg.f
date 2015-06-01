@@ -71,7 +71,7 @@
 !
 !        ACCORDING TO RICHARD SOULSBY (HRW):
 !        G=SQRT(EPSILON/NU) AND EPSILON=(TAU/RHO)*(DU/DZ)
-!        THEN G COULD BE ALSO SQRT(NUZ/NU)*DU/DZ 
+!        THEN G COULD BE ALSO SQRT(NUZ/NU)*DU/DZ
 !
 !
 !                              USTAR**2 * DU/DZ

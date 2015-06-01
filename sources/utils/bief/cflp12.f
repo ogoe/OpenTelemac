@@ -88,7 +88,7 @@
 !
       DO IELEM = 1 , 4*NELMAX
         W1(IELEM) = 0.D0
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !     USING THE PSI SCHEME,
 !     LOOP ON THE 3 SUB-TRIANGLES AND PRE-ASSEMBLY
@@ -131,7 +131,7 @@
         W1(IAD2) = W1(IAD2) + L21 + L23
         W1(IAD3) = W1(IAD3) + L31 + L32
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
       ENDDO ! IT
 !
 !-----------------------------------------------------------------------

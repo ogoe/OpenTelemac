@@ -30,8 +30,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables   
-!+   
+!+   Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CST            |<->| CONCENTRATION AT TIME T(N+1)
@@ -39,11 +39,11 @@
 !| IELMT          |-->| NUMBER OF ELEMENTS
 !| MASKEL         |-->| MASKING OF ELEMENTS
 !| MESH           |<->| MESH STRUCTURE
-!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS 
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| T1             |<->| WORK BIEF_OBJ STRUCTURE
 !| UCONV          |<->| X-COMPONENT ADVECTION FIELD (TELEMAC)
-!| VCONV          |<->| Y-COMPONENT ADVECTION FIELD 
-!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT 
+!| VCONV          |<->| Y-COMPONENT ADVECTION FIELD
+!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,

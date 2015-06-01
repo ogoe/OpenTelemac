@@ -17,14 +17,14 @@
 !                       *****************
 !
      &( UV    , VV    , X     , Y     , NPOIN2, AT    , DDC   , VX_CTE,
-     &  VY_CTE) 
+     &  VY_CTE)
 !
 !***********************************************************************
 !  TOMAWAC VERSION 1.0    07/06/95       M. BENOIT (LNH) 30 87 72 66
 !***********************************************************************
 !
 !     FONCTION  : PERMET LA SPECIFICATION D'UN VENT ANALYTIQUE
-!                 (EVENTUELLEMENT VARIABLE EN TEMPS) 
+!                 (EVENTUELLEMENT VARIABLE EN TEMPS)
 !
 !-----------------------------------------------------------------------
 !                             ARGUMENTS

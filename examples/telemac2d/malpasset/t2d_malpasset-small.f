@@ -14,7 +14,7 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |                | -- |  
+! |                | -- |
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !***********************************************************************
@@ -30,7 +30,7 @@
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!  
+!
       INTEGER ITRAC
 !
 !-----------------------------------------------------------------------
@@ -59,18 +59,18 @@
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0  )
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES') THEN
-!  ZONE A MODIFIER                                                      
+!  ZONE A MODIFIER
         WRITE(*,*) 'CONDITIONS PARTICULIERES A PROGRAMMER'
         CALL PLANTE(1)
         STOP
-!  FIN DE LA ZONE A MODIFIER      
+!  FIN DE LA ZONE A MODIFIER
       ELSE
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
         CALL PLANTE(1)
         STOP
       ENDIF
 !
-      CALL CORSUI(H%R,U%R,V%R,ZF%R,X,Y,NPOIN)   
+      CALL CORSUI(H%R,U%R,V%R,ZF%R,X,Y,NPOIN)
 !
 !-----------------------------------------------------------------------
 !
@@ -92,29 +92,29 @@
 !
       RETURN
       END
-!               ***************************************************    
+!               ***************************************************
                 DOUBLE PRECISION FUNCTION DISTAN(X1,Y1,X2,Y2,X3,Y3)
 !               ***************************************************
 !
 !***********************************************************************
 ! PROGICIEL : TELEMAC           23/07/91
-!                                                                       
+!
 !***********************************************************************
-!                                                                       
+!
 !   FONCTION : CETE FONCTION CALCULE LA DISTANCE ENTRE UNE DROITE
-! ET UN POINT SUR LE MAILLAGE                                           
+! ET UN POINT SUR LE MAILLAGE
 !-----------------------------------------------------------------------
 !                             ARGUMENTS
 ! .________________.____.______________________________________________.
 ! |      NOM       |MODE|                   ROLE                       |
 ! |________________|____|______________________________________________|
-! |    X1          | -->  ABSCISSE DU PREMIER POINT SUR LA DROITE       
-! |    Y1          | -->| COORDONNEE DU PREMIER POINT SUR LA DROITE    
-! |    X2          | -->  ABSCISSE DU DEUXIEME POINT SUR LA DROITE     
-! |    Y2          | -->| COORDONNEE DU DEUXIEME POINT SUR LA DROITE    
+! |    X1          | -->  ABSCISSE DU PREMIER POINT SUR LA DROITE
+! |    Y1          | -->| COORDONNEE DU PREMIER POINT SUR LA DROITE
+! |    X2          | -->  ABSCISSE DU DEUXIEME POINT SUR LA DROITE
+! |    Y2          | -->| COORDONNEE DU DEUXIEME POINT SUR LA DROITE
 ! |    X           | -->| ABSCISSE DU POINT POUR LEQUEL ON CHERCHE DIST1
 ! |    Y           | -->| COORDONNEE DU POINT POUR LEQUEL ON CHERCHE DIS
-! |    DISTAN      |<-- |  DISTANCE ENTRE LA DROITE ET LE POINT         
+! |    DISTAN      |<-- |  DISTANCE ENTRE LA DROITE ET LE POINT
 ! |________________|____|_______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !***********************************************************************
@@ -130,21 +130,21 @@
       DET=SQRT((A1**2)+(B1**2))
       DISTAN=((A1*X3)+(B1*Y3)+C1)/DET
       RETURN
-      END                                                               
+      END
 !                       *****************
                         SUBROUTINE CORSUI
 !                       *****************
 !
 !
-     &(H,U,V,ZF,X,Y,NPOIN)                                              
+     &(H,U,V,ZF,X,Y,NPOIN)
 !
 !***********************************************************************
 ! PROGICIEL : TELEMAC           01/03/90    J-M HERVOUET
 !***********************************************************************
-!                                                                      
-!  FONCTION  : FONCTION DE CORRECTION DES FONDS RELEVES                
-!                                                                      
-!              CE SOUS-PROGRAMME UTILITAIRE NE FAIT RIEN DANS LA       
+!
+!  FONCTION  : FONCTION DE CORRECTION DES FONDS RELEVES
+!
+!              CE SOUS-PROGRAMME UTILITAIRE NE FAIT RIEN DANS LA
 !              VERSION STANDARD. IL EST A LA DISPOSITION DES
 !              UTILISATEURS, POUR LISSER OU CORRIGER DES FONDS SAISIS
 !              PAR EXEMPLE.
@@ -168,7 +168,7 @@
 !
       IMPLICIT NONE
 !
-      INTEGER NPOIN,I                                                
+      INTEGER NPOIN,I
 !
       DOUBLE PRECISION H(*),X(*),Y(*),ZF(*),U(*),V(*)
 !
@@ -183,15 +183,15 @@
 !
       X1= 4701.183D0
       Y1= 4143.407D0
-      X2= 4655.553D0                                               
+      X2= 4655.553D0
       Y2= 4392.104D0
-!                                                                      
-      DO I=1,NPOIN                                                  
-        HD=DISTAN(X1,Y1,X2,Y2,X(I),Y(I))                              
+!
+      DO I=1,NPOIN
+        HD=DISTAN(X1,Y1,X2,Y2,X(I),Y(I))
         IF(HD.GT.0.001D0) THEN
-          H(I) = 100.D0 - ZF(I)                                        
+          H(I) = 100.D0 - ZF(I)
           U(I) = 0.D0
-          V(I) = 0.D0                                                  
+          V(I) = 0.D0
         ENDIF
 !
 !  ZONE DERRIERE LE BARRAGE MAIS QUI N'EST PAS DANS

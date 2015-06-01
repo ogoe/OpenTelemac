@@ -41,7 +41,7 @@
 !
 !-----------------------------------------------------------------------
 !
-        TYPE(BIEF_OBJ), TARGET :: VSP_FRA(NSICLM)   
+        TYPE(BIEF_OBJ), TARGET :: VSP_FRA(NSICLM)
         TYPE(BIEF_OBJ), TARGET :: VSP_D, VSP_D50, VSP_ERROR
         TYPE(BIEF_OBJ), TARGET :: UR2DHYD(NUMVAR2DHYD)
 !

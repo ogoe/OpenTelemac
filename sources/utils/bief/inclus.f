@@ -29,7 +29,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C1             |-->| CHARACTER STRING WHERE C2 IS LOOKED FOR 
+!| C1             |-->| CHARACTER STRING WHERE C2 IS LOOKED FOR
 !| C2             |-->| CHARACTER STRING LOOKED FOR INTO C1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

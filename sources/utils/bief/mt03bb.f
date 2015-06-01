@@ -248,7 +248,7 @@
       A43(IELEM) = - A13(IELEM) - A23(IELEM) - A33(IELEM)
       A44(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 ! CASE WHERE U IS OF QUASI-BUBBLE DISCRETISATION
@@ -377,7 +377,7 @@
       A43(IELEM) = - A13(IELEM) - A23(IELEM) - A33(IELEM)
       A44(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !     OTHER TYPES OF FUNCTIONS F AND G
 !

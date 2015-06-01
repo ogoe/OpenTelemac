@@ -11,7 +11,7 @@
 !brief    Imposes solid discharge boundary conditions. Q2BOR is the
 !+        discharge in m2/s, the integral of Q2BOR on the boundary QBOR
 !+        is multiplied by a constant to get the correct discharge Q
-!         
+!
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        24/07/2012
@@ -113,7 +113,7 @@
             STOP
           ELSE
             Q1 = 1.D0
-          ENDIF  
+          ENDIF
         ENDIF
 !
         DO K=1,NPTFR

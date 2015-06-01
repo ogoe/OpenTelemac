@@ -559,7 +559,7 @@
       ENDDO
 !
       RETURN
-      END                  
+      END
 !                    **********************
                      PROGRAM HOMERE_ARTEMIS
 !                    **********************

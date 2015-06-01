@@ -100,7 +100,7 @@
       IF(WAC_FILES(WACCOB)%NAME(1:1).NE.' '.OR.
      &   WAC_FILES(WACCOF)%NAME(1:1).NE.' '    ) THEN
 !
-        IF(WAC_FILES(WACCOB)%NAME(1:1).NE.' ') THEN  
+        IF(WAC_FILES(WACCOB)%NAME(1:1).NE.' ') THEN
           UL=WAC_FILES(WACCOB)%LU
           BINCOU=WAC_FILES(WACCOB)%FMT
         ELSE
@@ -108,13 +108,13 @@
           BINCOU=WAC_FILES(WACCOF)%FMT
         ENDIF
         CALL NOUDON(SUC%R,NAMEU,
-     &                    'VELOCITY U      M/S             ',2,    
+     &                    'VELOCITY U      M/S             ',2,
      &              SVC%R,NAMEV,
-     &                    'VELOCITY V      M/S             ',2, 
+     &                    'VELOCITY V      M/S             ',2,
      &              SDEPTH%R,NAMEH,
      &                       'WATER DEPTH     M               ',1,
      &              MESH%X%R,MESH%Y%R,NPOIN2,
-     &              UL,BINCOU,NBOR,NPTFR,AT,DDC,TC1,TC2, 
+     &              UL,BINCOU,NBOR,NPTFR,AT,DDC,TC1,TC2,
      &              SUC1%R,SUC2%R,SVC1%R,SVC2%R,ZM1,ZM2,INDIC,
      &              'COURANT',NVCOU,TEXCOB,TROUVE,UNITCOB,PHASCOB)
         IF(TROUVE(3)) THEN
@@ -150,13 +150,13 @@
         ENDIF
 !
         CALL NOUDON(SUC%R,NAMEU,
-     &                    'VELOCITY U      M/S             ',0,    
+     &                    'VELOCITY U      M/S             ',0,
      &              SVC%R,NAMEV,
-     &                    'VELOCITY V      M/S             ',0, 
+     &                    'VELOCITY V      M/S             ',0,
      &              SDEPTH%R,NAMEH,
      &                       'WATER DEPTH     M               ',2,
      &              MESH%X%R,MESH%Y%R,NPOIN2,
-     &              UL,BINMAR,NBOR,NPTFR,AT,DDC,TM1,TM2, 
+     &              UL,BINMAR,NBOR,NPTFR,AT,DDC,TM1,TM2,
      &              SUC1%R,SUC2%R,SVC1%R,SVC2%R,ZM1,ZM2,INDIM,
      &              'HAUTEUR',NVHMA,TEXMAB,TROUVE,UNITMAB,PHASMAB)
         CALL OV('X=Y-Z   ',DZHDT,SZM2%R,SZM1%R,0.D0,NPOIN2)
@@ -216,7 +216,7 @@
         CALL OV('X=XY    ',SDZY%R,ST0%R,ST0%R,0.D0,NPOIN2)
       ENDIF
       CALL OV('X=XY    ',SDUX%R,ST0%R,ST0%R,0.D0,NPOIN2)
-      CALL OV('X=XY    ',SDVX%R,ST0%R,ST0%R,0.D0,NPOIN2)     
+      CALL OV('X=XY    ',SDVX%R,ST0%R,ST0%R,0.D0,NPOIN2)
       CALL OV('X=XY    ',SDUY%R,ST0%R,ST0%R,0.D0,NPOIN2)
       CALL OV('X=XY    ',SDVY%R,ST0%R,ST0%R,0.D0,NPOIN2)
 !

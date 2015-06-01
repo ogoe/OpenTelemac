@@ -46,12 +46,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
-!history  J-M HERVOUET (LNHE) 
+!history  J-M HERVOUET (LNHE)
 !+        25/08/2011
 !+        V6P2
-!+   NBSEG and NBSEGEL added for element 51 
+!+   NBSEG and NBSEGEL added for element 51
 !
-!history  F. DECUNG (LNHE) 
+!history  F. DECUNG (LNHE)
 !+        01/01/2013
 !+        V6P3
 !+   NBSEG added for elements 31 and 81
@@ -322,7 +322,7 @@
       NDS(41,1) = NPOIN*NPLAN
 !     HORIZONTAL SEGMENTS : NDS(11,2)*NPLAN
 !     VERTICAL SEGMENTS   : NPOIN*(NPLAN-1)
-!     CROSSED SEGMENTS    : NDS(11,2)*2*(NPLAN-1) 
+!     CROSSED SEGMENTS    : NDS(11,2)*2*(NPLAN-1)
       NDS(41,2) = NDS(11,2)*(3*NPLAN-2)+NPOIN*(NPLAN-1)
       NDS(41,3) = 6
       NDS(41,4) = 5
@@ -347,7 +347,7 @@
       NDS(51,1) = NPOIN*NPLAN
 !     HORIZONTAL SEGMENTS : NDS(11,2)*NPLAN
 !     VERTICAL SEGMENTS   : NPOIN*(NPLAN-1)
-!     CROSSED SEGMENTS    : NDS(11,2)*(NPLAN-1) 
+!     CROSSED SEGMENTS    : NDS(11,2)*(NPLAN-1)
       NDS(51,2) = NDS(11,2)*(2*NPLAN-1)+NPOIN*(NPLAN-1)
       NDS(51,3) = 4
       NDS(51,4) = 4

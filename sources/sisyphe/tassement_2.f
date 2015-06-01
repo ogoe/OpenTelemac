@@ -10,13 +10,13 @@
 !***********************************************************************
 !
 !BRIEF    COMPUTES THE CONSOLIDATION BASED ON GIBSON THEORY
-!+               
+!+
 !
 !HISTORY  LAN ANH VAN (LHSV)
 !+        10/01/2011
 !+        V6P2
-!+   FIRST VERSION IN TEST (NOT YET CALLED IN CURRENT VERSION 6.2)  
-!+       
+!+   FIRST VERSION IN TEST (NOT YET CALLED IN CURRENT VERSION 6.2)
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COEF_N         |-->| PERMEABILITY COEFFICIENT
@@ -28,7 +28,7 @@
 !| ELAY           |<->| THICKNESS OF EACH LAYER
 !| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
 !| GRAV           |-->| GRAVITY ACCELERATION
-!| LT             |-->| ITERATION 
+!| LT             |-->| ITERATION
 !| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
 !| NOMBLAY        |-->| NUMBER OF LAYERS FOR CONSOLIDATION
 !| NPOIN          |-->| NUMBER OF POINTS
@@ -61,7 +61,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: COEF_N,CONC_GEL,CONC_MAX
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!     
+!
       INTEGER I,J
 !     FALLING VELOCITY OF EACH LAYER
       DOUBLE PRECISION V_S(NLAYMAX)
@@ -75,13 +75,13 @@
 !     ******************************************************************
 !     * PROGRAM SIMULATING THE SEDIMENTATION-CONSOLIDATION             *
 !     ******************************************************************
-!  
-      DO I =1,NPOIN 
+!
+      DO I =1,NPOIN
         T2%R(I)=0.D0
         DO J=1,NOMBLAY
           T2%R(I)=T2%R(I)+ES(I,J)
         ENDDO
-! 
+!
 !       EFFECTIVE STRESS
 !       ------------------------
         DO J = 1,NOMBLAY
@@ -89,13 +89,13 @@
         ENDDO
 
 !       PERMEABILITY
-!       --------------          
+!       --------------
         DO J=1,NOMBLAY-1
-!       SEDIMENTATION 
+!       SEDIMENTATION
           KSED(J)=XWC*(1.D0-CONC_VASE(J)/XMVS)*
      &            (1.D0-(CONC_VASE(J)/CONC_GEL))**COEF_N/
      &            ((XMVS-XMVE)*(CONC_VASE(J)/XMVS)/XMVE)
-!       CONSOLIDATION  
+!       CONSOLIDATION
           KCONSO(J)=XWC*(1.D0-CONC_VASE(J)/XMVS)*
      &            (1.D0-(CONC_VASE(J)/CONC_MAX))**COEF_N/
      &            ((XMVS-XMVE)*(CONC_VASE(J)/XMVS)/XMVE)
@@ -103,36 +103,36 @@
 !       IF (CONC_VASE(J).GT.CONC_GEL) THEN
         IF(LT.GT.11000.D0) THEN
 !
-!     SEDIMENTATION AND CONSOLIDATION :      
+!     SEDIMENTATION AND CONSOLIDATION :
 !     --------------------------------
           IF ((ES(I,J+1) + ES(I,J)).GT.1.D-8) THEN
             V_S(J) =
      &          KCONSO(J) * CONC_VASE(J) * (1.D0/XMVS - 1.D0/XMVE)
      &          + ( KCONSO(J) / (XMVE * GRAV)) *
-     &          (SIG_EFF(J+1) - SIG_EFF(J)) / 
+     &          (SIG_EFF(J+1) - SIG_EFF(J)) /
      &          (0.5D0 * (ES(I,J+1) + ES(I,J)))
           ELSE
             V_S(J) = 1.D8
           ENDIF
         ELSE
 !      PURE SEDIMENTATION :
-!     ---------------        
+!     ---------------
           V_S(J) = KSED(J)*CONC_VASE(J)*(1.D0/XMVS-1.D0/XMVE)
         ENDIF
       ENDDO
 !
         DO J=1,NOMBLAY
-          IF (V_S(J).GT.0.D0) V_S(J) = 0.D0 
+          IF (V_S(J).GT.0.D0) V_S(J) = 0.D0
         ENDDO
 !
 !      FALLVING VELOCITY AT THE LEVEL OF ZR (AT THE BED)
           V_S(NOMBLAY) = 0.D0
 !      SEDIMENT FLUX :
-!     --------------             
+!     --------------
         DO J=NOMBLAY-1,1,-1
           FLUX(J) =
      &    (V_S(J)-V_S(J+1))*CONC_VASE(J+1)*CONC_VASE(J)/
-     &          (CONC_VASE(J+1)-CONC_VASE(J)) 
+     &          (CONC_VASE(J+1)-CONC_VASE(J))
           IF (FLUX(J).GT.0.D0) FLUX(J) = 0.D0
         ENDDO
 !      SEDIMENT FLUX AT THE RIGID BED
@@ -140,7 +140,7 @@
 !
 !      REDISTRIBUTE THE MASS :
 !      ----------------------------------
-!      RECALCULATE THE FLUX FROM LAYER 1 TO NCOUCH_TASS       
+!      RECALCULATE THE FLUX FROM LAYER 1 TO NCOUCH_TASS
         IF ((MS_VASE(I,1)+DTS*FLUX(1)).LT.0.D0) THEN
           FLUX(1) = -MS_VASE(I,1)/DTS
         ENDIF
@@ -149,23 +149,23 @@
             FLUX(J) = -MS_VASE(I,J)/DTS + FLUX(J-1)
           ENDIF
         ENDDO
-!      MASS OF FIRST LAYER        
+!      MASS OF FIRST LAYER
         MS_VASE(I,1)=MS_VASE(I,1)+DTS*FLUX(1)
-!      MASS OF LAYER 2 TO NCOUCH_TASS                
+!      MASS OF LAYER 2 TO NCOUCH_TASS
         DO J=2,NOMBLAY
           MS_VASE(I,J) = MS_VASE(I,J) - DTS * (FLUX(J-1)-FLUX(J))
         ENDDO
 !
 !      THICKNESSES
-        ELAY%R(I)=0.D0        
+        ELAY%R(I)=0.D0
 !
         DO J=1,NOMBLAY
           ES(I,J) = MS_VASE(I,J) / CONC_VASE(J)
           ELAY%R(I)=ELAY%R(I) + ES(I,J)
-        ENDDO 
+        ENDDO
 !      BED EVOLUTION DUE TO CONSOLIDATION
         DZF_TASS%R(I)=ELAY%R(I)-T2%R(I)
       ENDDO
 !  END SUBROUTINE TASSEMENT_2
-      RETURN 
+      RETURN
       END

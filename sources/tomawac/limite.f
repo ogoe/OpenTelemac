@@ -2,7 +2,7 @@
                         SUBROUTINE LIMITE
 !                       *****************
      &( F     , DEPTH , FREQ  , NPOIN2, NPLAN , NF    )
-!     
+!
 !***********************************************************************
 ! TOMAWAC   V7P0                                 30/07/2014
 !***********************************************************************
@@ -34,10 +34,10 @@
       COMMON/INFO/ LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!      
+!
       INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
       DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF),DEPTH(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN2,NPLAN,NF)      
+      DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN2,NPLAN,NF)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

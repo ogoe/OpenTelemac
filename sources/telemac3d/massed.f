@@ -2,7 +2,7 @@
                      SUBROUTINE MASSED
 !                    *****************
 !
-     &(MASBED,EPAI,CONC,HDEP,TRA02,NPOIN2,  
+     &(MASBED,EPAI,CONC,HDEP,TRA02,NPOIN2,
      & NPFMAX,NCOUCH,NPF,TASSE,GIBSON,RHOS,VOLU2D,
      & CFDEP,EPAICO,EPAINCO,MIXTE)
 !
@@ -101,11 +101,11 @@
       DOUBLE PRECISION MASSE6
       DOUBLE PRECISION P_DSUM
       EXTERNAL         P_DSUM
-!   
+!
 !=======================================================================
 !
 ! MASS OF MUDDY DEPOSITS ON THE RIGID BED (MASSE6)
-! 
+!
 !=======================================================================
 !
       IF(MIXTE) THEN
@@ -132,7 +132,7 @@
         MASSE6=MASSE6+VOLU2D(IPOIN)*TRA02(IPOIN)
       ENDDO
       IF(NCSIZE.GT.1) MASSE6=P_DSUM(MASSE6)
-      MASBED = MASSE6      
+      MASBED = MASSE6
 !
 !-----------------------------------------------------------------------
 !

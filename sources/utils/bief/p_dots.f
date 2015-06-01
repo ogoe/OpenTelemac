@@ -72,7 +72,7 @@
       IF(TYPX.EQ.4) THEN
 !
         P_DOTS = 0.D0
-!       
+!
         IF(NCSIZE.LE.1.OR.NPTIR.EQ.0) THEN
           DO IBL = 1 , X%N
             P_DOTS=P_DOTS+DOT(X%ADR(IBL)%P%DIM1,X%ADR(IBL)%P%R,

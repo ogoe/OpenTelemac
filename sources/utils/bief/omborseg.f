@@ -92,8 +92,8 @@
 !
 !-----------------------------------------------------------------------
 !     BASICALLY, FOR SQUARED MATRICES :
-!     XM(1:NSEG) <=> XN(1:NSEG) 
-!     XM(DIMX+1:DIMX+NSEG) <=> XN(NSEG+1:2*NSEG) 
+!     XM(1:NSEG) <=> XN(1:NSEG)
+!     XM(DIMX+1:DIMX+NSEG) <=> XN(NSEG+1:2*NSEG)
 !
       DIMX=MIN(MSEG1,MSEG2)
       DIMY=MAX(NSEG1,NSEG2)
@@ -121,8 +121,8 @@
              STOP
            ENDIF
            CALL OV( 'X=X+Y   ' , XM , XN , Z , C , NSEG2 )
-           CALL OV( 'X=X+Y   ' , 
-     &          XM(DIMX+1:DIMX+NSEG2) , 
+           CALL OV( 'X=X+Y   ' ,
+     &          XM(DIMX+1:DIMX+NSEG2) ,
      &          XN(DIMY+1:DIMY+NSEG2) ,Z,C,NSEG2)
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
            IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)

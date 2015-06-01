@@ -75,12 +75,12 @@
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| INCI           |-->| WAVE INCIDENCE
 !| K              |-->| WAVE NUMBER
-!| KP1BOR         |-->| BOUNDARY NUMBER OF THE NEXT POINT 
+!| KP1BOR         |-->| BOUNDARY NUMBER OF THE NEXT POINT
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NPOIN          |-->| NUMBER OF POINTS
-!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS 
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| OMEGA          |-->| WAVE PULSATION
 !| PER            |-->| WAVE PERIOD
 !| PHAS           |-->| WAVE PHASE

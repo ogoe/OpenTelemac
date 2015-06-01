@@ -141,7 +141,7 @@
         W2(IELEM)=KSAT*W2(IELEM)
         W3(IELEM)=KSAT*W3(IELEM)
 !
-      ENDDO 
+      ENDDO
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !

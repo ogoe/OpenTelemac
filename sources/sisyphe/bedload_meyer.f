@@ -40,8 +40,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
@@ -51,9 +51,9 @@
 !| DM             |-->| SEDIMENT GRAIN DIAMETER
 !| GRAV           |-->| ACCELERATION OF GRAVITY
 !| HIDFAC         |-->| HIDING FACTOR FORMULAS
-!| HIDING         |-->| HIDING FACTOR CORRECTION 
-!| QSC            |<->| BED LOAD TRANSPORT 
-!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT 
+!| HIDING         |-->| HIDING FACTOR CORRECTION
+!| QSC            |<->| BED LOAD TRANSPORT
+!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT
 !| TETAP          |-->| ADIMENSIONAL SKIN FRICTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -90,7 +90,7 @@
         CALL OS('X=XY    ', X=ACP, Y=COEFPN )
       ENDIF
 !
-!     BEDLOAD TRANSPORT CORRECTED FOR EXTENDED GRAIN SIZE 
+!     BEDLOAD TRANSPORT CORRECTED FOR EXTENDED GRAIN SIZE
 !     WITH VARIABLE MPM_COEFFICIENT
 !
       C2 = SQRT(GRAV*DENS*DM**3)
@@ -101,7 +101,7 @@
 !       CALL OS('X=+(Y,C)', X=QSC, Y=QSC , C=0.D0)
 !       CALL OS('X=Y**C  ', X=QSC, Y=QSC , C=1.5D0)
 !       CALL OS('X=CX    ', X=QSC, C=C2)
-!       CALL OS('X=XY    ', X=QSC, Y=MPM_ARAY) 
+!       CALL OS('X=XY    ', X=QSC, Y=MPM_ARAY)
         DO I=1,QSC%DIM1
           QSC%R(I)=C2*MPM_ARAY%R(I)
      &               *SQRT(MAX(TETAP%R(I)-ACP%R(I)*HIDING%R(I),0.D0))**3
@@ -116,7 +116,7 @@
         DO I=1,QSC%DIM1
           QSC%R(I)=C2*MPM_ARAY%R(I)*HIDING%R(I)*SQRT(
      &                                 MAX(TETAP%R(I)-ACP%R(I),0.D0))**3
-        ENDDO        
+        ENDDO
       ENDIF
 !
 !=======================================================================

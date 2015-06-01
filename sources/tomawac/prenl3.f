@@ -4,7 +4,7 @@
 !
      &( NF    , NT    , RAISF , TAILF , FREQ  , TB_SCA, LBUF  , DIMBUF,
      &  F_POIN, F_COEF, T_POIN, F_PROJ, IQ_OM1, NQ_TE1, NQ_OM2, NF1   ,
-     &  NT1   , K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , 
+     &  NT1   , K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  ,
      &  K_1M  , K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M,
      &  K_1M3P, TB_TPM, TB_TMP, TB_FAC, SEUIL1, SEUIL2, ELIM  , NCONF ,
      &  NCONFM, IDCONF)
@@ -79,7 +79,7 @@
 !| TB_SCA         |<--| SCALE COEFFICIENT
 !| TB_TMP         |<--| WORK TABLE
 !| TB_TPM         |<--| WORK TABLE
-!| TB_V14         |<--| WORK TABLE for F1 
+!| TB_V14         |<--| WORK TABLE for F1
 !| TB_V24         |<--| WORK TABLE
 !| TB_V34         |<--| WORK TABLE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,6 +93,8 @@
       USE DECLARATIONS_TOMAWAC, ONLY : PI,DEUPI,GRAVIT
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 !.....VARIABLES IN ARGUMENT
       INTEGER, INTENT(IN)   ::NF    , NT
@@ -246,7 +248,7 @@
 !
 !
 !=======================================================================
-!     COMPUTES VALUES OF RATIO F1/F AS FUNCTION OF THE IQ_OM1 INDICATOR 
+!     COMPUTES VALUES OF RATIO F1/F AS FUNCTION OF THE IQ_OM1 INDICATOR
 !=======================================================================
       NF1P1=NF1+1
       ALLOCATE(F1SF(1:NF1P1))
@@ -263,12 +265,12 @@
         V1_4=V1**4
         TB_V14(JF1)=V1_4
 !       ---------Computes and stores dv1=df1/f0
-        DV1=F1SF(JF1+1)-F1SF(JF1) 
+        DV1=F1SF(JF1+1)-F1SF(JF1)
 !       ---------Computes the A parameter
         AAA=((1.D0+V1)**4-4.D0*(1.D0+V1_4))/(8.D0*V1**2)
-!       
-!       
-!       
+!
+!
+!
 !       =================================================
 !       STARTS LOOP 2 OVER THE DELTA_1+ VALUES
 !       =================================================
@@ -290,7 +292,7 @@
           D01P  =ACOS(C_D01P)
           K_1P(JT1,JF1)=LBUF+NINT(D01P/DTETAR)
           K_1M(JT1,JF1)=LBUF-NINT(D01P/DTETAR)
-!        
+!
 !         ---------Computes Epsilon_a
           EPSI_A=2.D0*SQRT(1.D0+V1_4+2.D0*V1*V1*C_D01P)/(1.D0+V1)**2
 !         ---------Computes Delta_A+ and its cosinus
@@ -306,7 +308,7 @@
 !        - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             W2_M=0.5D0*(1.D0-EPSI_A/2.D0)
             W2_1=0.5D0
-!           
+!
             W_RAD=W2_1-W2_M
             C_LEG_OM2=SQRT(W_RAD)
 !
@@ -321,7 +323,7 @@
               V2=W2*(1.D0+V1)
               V2_4=V2**4
               TB_V24(IQ_OM2,JT1,JF1)=V2_4
-              K_IF2 (IQ_OM2,JT1,JF1) = NINT(DBLE(LBUF) 
+              K_IF2 (IQ_OM2,JT1,JF1) = NINT(DBLE(LBUF)
      &                               + LOG(V2)/LOG(RAISF))
               V3=1.D0+V1-V2
               V3_4=V3**4
@@ -400,10 +402,10 @@
 !        - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             W2_M=0.5D0*(1.D0-EPSI_A/2.D0)
             W2_1=0.5D0*(1.D0-SQRT(EPSI_A-1.D0))
-!          
+!
             W_MIL=(W2_M+W2_1)/2.D0
             W_RAD=(W2_1-W2_M)/2.D0
-!          
+!
             DO IQ_OM2=1,NQ_OM2
 !             ---------Computes W2, V2, and V3
               W2=W_MIL+W_RAD*X_CHE_OM2(IQ_OM2)
@@ -556,7 +558,7 @@
 !.....It counts the fraction of the eliminated configurations
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""
       ELIM=(1.D0-DBLE(NCONF)/DBLE(NCONFM))*100.D0
-      WRITE(6,*) 'PART DE CONFIGURATIONS ANNULEES : ',ELIM,' %'
+      WRITE(LU,*) 'PART DE CONFIGURATIONS ANNULEES : ',ELIM,' %'
 !
       RETURN
       END

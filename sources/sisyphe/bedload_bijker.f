@@ -41,8 +41,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BIJK           |-->| COEFFICIENT OF THE BIJKER FORMULA
@@ -51,7 +51,7 @@
 !| GRAV           |-->| ACCELERATION OF GRAVITY
 !| HN             |-->| WATER DEPTH
 !| HOULE          |-->| LOGICAL, FOR WAVE EFFECTS
-!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| KARMAN         |-->| VON KARMAN CONSTANT
 !| KSP            |-->| BED SKIN ROUGHNESS
 !| KSR            |-->| RIPPLE BED ROUGHNESS
 !| MU             |<->| CORRECTION FACTOR FOR BED ROUGHNESS
@@ -64,7 +64,7 @@
 !| T9             |<->| WORK BIEF_OBJ STRUCTURE
 !| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
 !| TOBW           |-->| WAVE INDUCED SHEAR STRESS
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !| XWC            |-->| SETTLING VELOCITY
 !| ZERO           |-->| ZERO
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -126,7 +126,7 @@
         ENDIF
       ENDDO
       ! *********************************************************** !
-      ! IV- ROUSE NUMBER AND LOWER BOUND OF EINSTEIN INTEGRAL       ! 
+      ! IV- ROUSE NUMBER AND LOWER BOUND OF EINSTEIN INTEGRAL       !
       ! *********************************************************** !
       DO I = 1, NPOIN
         IF (T4%R(I) > 0.D0) THEN
@@ -145,7 +145,7 @@
       ! ************************************ !
       CALL INTEG(T7%R, T8%R, T9%R, NPOIN)
       ! ************************************** !
-      ! VI - TRANSPORT BY SUSPENSION           ! 
+      ! VI - TRANSPORT BY SUSPENSION           !
       ! ************************************** !
       CALL OS('X=YZ    ', X=QSS, Y=T9, Z=QSC)
 !======================================================================!

@@ -21,7 +21,7 @@
 !+        \           SIZE = N.
 !
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
-!         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS 
+!         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS
 !         FOR CLARITY
 !
 !history  C. PEYRARD (LNHE)
@@ -30,7 +30,7 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| B              |-->| RIGHT-HAND SIDE B ; 
+!| B              |-->| RIGHT-HAND SIDE B ;
 !| C              |-->| ORDERING OF THE COLUMNS OF MATRIX
 !| D              |-->| DIAGONAL FACTORIZED OF MATRIX
 !| IL, JL         |-->| STRUCTURE OF LOWER FACTORISED TRIANGULAR MATRIX
@@ -39,7 +39,7 @@
 !| L              |-->| LOWER FACTORIZED TRIANGULAR MATRIX
 !| N              |-->| RANK OF MATRIX
 !| R              |-->| ORDERING OF THE ROWS OF MATRIX
-!| TMP            |-->| REAL ONE-DIMENSIONAL WORK ARRAY 
+!| TMP            |-->| REAL ONE-DIMENSIONAL WORK ARRAY
 !| U              |-->| UPPER FACTORIZED TRIANGULAR MATRIX
 !| Z              |<--| SOLUTION X
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,11 +54,11 @@
       DOUBLE PRECISION L(*), D(*), U(*), B(*), Z(*), TMP(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!      
+!
       INTEGER K,JMIN,JMAX,MU,J,I,ML
       DOUBLE PRECISION TMPK,SUM
 !
-!  ******  SET TMP TO REORDERED B  ************************************      
+!  ******  SET TMP TO REORDERED B  ************************************
       DO  K=1,N
         TMP(K) = B(C(K))
       ENDDO

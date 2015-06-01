@@ -35,8 +35,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |-->| QUADRATIC FRICTION COEFFICIENT
@@ -44,9 +44,9 @@
 !| DM             |-->| SEDIMENT GRAIN DIAMETER
 !| GRAV           |-->| ACCELERATION OF GRAVITY
 !| QSC            |<->| BED LOAD TRANSPORT
-!| TETA           |<->| DIMENSIONLESS BED SHEAR STRESS 
+!| TETA           |<->| DIMENSIONLESS BED SHEAR STRESS
 !| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_BEDLOAD_ENGEL => BEDLOAD_ENGEL
@@ -70,7 +70,7 @@
 !======================================================================!
 !                               PROGRAM                                !
 !======================================================================!
-! 
+!
       C1 = 1.D0/(DENS*XMVE*GRAV*DM)
       CENGEL = 0.1D0*SQRT(DENS*GRAV*DM**3)
 !     CALL OS('X=CY    ', X=TETA, Y=TOB , C=C1)

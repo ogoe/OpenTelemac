@@ -9,7 +9,7 @@
      & MASTRAIN)
 !
 !***********************************************************************
-! BIEF   V7P0                                  
+! BIEF   V7P0
 !***********************************************************************
 !
 !brief    COMPUTES THE MASS BALANCE FOR THE TRACER.
@@ -35,7 +35,7 @@
 !+        30/09/20148
 !+        V7P0
 !+   Some ABS put in the relative accuracy formulas because the mass of
-!+   a tracer can be negative (case of vorticity).  
+!+   a tracer can be negative (case of vorticity).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOT         |-->| MASS-LUMPING ON TRACER
@@ -288,7 +288,7 @@
           IF(LNG.EQ.1) WRITE(LU,1120) RELATI
           IF(LNG.EQ.2) WRITE(LU,2120) RELATI
         ENDIF
-        WRITE(LU,*) 
+        WRITE(LU,*)
 !
       ENDIF
 !

@@ -7,7 +7,7 @@
      & AWATER_QUALITY,PLUIE,AATMOSEXCH,AOPTWIND,AWIND_SPD,APATMOS_VALUE)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0 
+! TELEMAC2D   V7P0
 !***********************************************************************
 !
 !brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
@@ -35,7 +35,7 @@
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        30/01/2013
 !+        V6P3
-!+   Now 2 options with an example for reading a file. Extra arguments. 
+!+   Now 2 options with an example for reading a file. Extra arguments.
 !
 !history  C.-T. PHAM (LNHE)
 !+        09/07/2014
@@ -98,7 +98,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: FUAIR,FVAIR
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: PRIVE
       TYPE(BIEF_FILE), INTENT(IN)     :: FILES(*)
-!     OPTIONAL 
+!     OPTIONAL
       LOGICAL, INTENT(IN)          ,OPTIONAL :: AWATER_QUALITY
       TYPE(BIEF_OBJ), INTENT(INOUT),OPTIONAL :: PLUIE
       INTEGER, INTENT(IN)          ,OPTIONAL :: AATMOSEXCH,AOPTWIND
@@ -113,7 +113,7 @@
       DOUBLE PRECISION UAIR,VAIR,PATMOS_VALUE,WIND_SPD(2)
 !     EXCHANGE WITH ATMOSPHERE
       DOUBLE PRECISION HREL,RAINFALL,PATM,WW,PI
-!  
+!
       DOUBLE PRECISION, PARAMETER :: EPS = 1.D-3
 !
 !-----------------------------------------------------------------------
@@ -163,7 +163,7 @@
           CALL OV( 'X=C     ' , PATMOS,Y,Z,PATMOS_VALUE,NPOIN )
         ENDIF
 !
-!       WIND : 
+!       WIND :
 !
         IF(VENT.OR.WATER_QUALITY) THEN
           IF(OPTWIND.EQ.1)THEN
@@ -207,7 +207,7 @@
           ENDIF
 !
 !       HEAT EXCHANGE WITH ATMOSPHERE
-! 
+!
         ELSEIF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
           IF(VENT.OR.ATMOS) THEN
             CALL INTERPMETEO(WW,UAIR,VAIR,
@@ -216,16 +216,16 @@
 !
           IF(VENT) THEN
             CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
-            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)    
+            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)
           ENDIF
-! 
+!
           IF(ATMOS) THEN
             CALL OV('X=C     ',PATMOS,Y,Z,PATM,NPOIN)
           ENDIF
-!     
+!
 !      NO HEAT EXHANGE NEITHER WATER_QUALITY
 !
-        ELSE 
+        ELSE
 !
 !         WIND VARYING IN TIME CONSTANT IN SPACE
 !
@@ -253,48 +253,48 @@
               GO TO 10
 !
 !-----------------------------------------------------------------------
-! 
+!
 100           CONTINUE
               WRITE(LU,*) ' '
               WRITE(LU,*) 'METEO'
               IF(LNG.EQ.1) WRITE(LU,*) 'ERREUR DANS LE FICHIER DE VENT'
               IF(LNG.EQ.2) WRITE(LU,*) 'ERROR IN THE WIND FILE'
               CALL PLANTE(1)
-              STOP  
+              STOP
 200           CONTINUE
               WRITE(LU,*) ' '
               WRITE(LU,*) 'METEO'
               IF(LNG.EQ.1)WRITE(LU,*)'FIN PREMATUREE DU FICHIER DE VENT'
               IF(LNG.EQ.2)WRITE(LU,*) 'WIND FILE TOO SHORT'
               CALL PLANTE(1)
-              STOP           
+              STOP
 !
 !-----------------------------------------------------------------------
 !
             ENDIF
 !
             CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
-            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)  
-! 
-            FUAIR = UAIR             
+            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)
+!
+            FUAIR = UAIR
             FVAIR = VAIR
 !
 !         WIND VARYING IN TIME AND SPACE
 !
-          ELSEIF(OPTWIND.EQ.3)THEN 
+          ELSEIF(OPTWIND.EQ.3)THEN
             IF(LNG.EQ.1) THEN
               WRITE(LU,*) 'CETTE OPTION N EST PAS ENCORE PROGRAMMEE'
               WRITE(LU,*) 'VOIR CAS DE VALIDATION WIND_TXY '
-              WRITE(LU,*) 'DANS LE DOSSIER EXAMPLES/TELEMAC2D' 
+              WRITE(LU,*) 'DANS LE DOSSIER EXAMPLES/TELEMAC2D'
             ELSE
               WRITE(LU,*) 'THIS OPTION IS NOT IMPLEMENTED YET'
               WRITE(LU,*) 'SEE VALIDATION CASE WIND_TXY '
-              WRITE(LU,*) 'LOCATED AT THE FOLDER EXAMPLES/TELEMAC2D' 
+              WRITE(LU,*) 'LOCATED AT THE FOLDER EXAMPLES/TELEMAC2D'
             ENDIF
             CALL PLANTE(1)
             STOP
           ENDIF
-        ENDIF 
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------

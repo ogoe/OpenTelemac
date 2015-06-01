@@ -36,8 +36,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables   
-!+   
+!+   Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHARR          |-->| BEDLOAD
@@ -47,7 +47,7 @@
 !| NPOIN          |-->| NUMBER OF POINTS
 !| QSC            |-->| BED LOAD TRANSPPORT RATE
 !| TAUP           |-->| SKIN FROCTION
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !| ZERO           |-->| ZERO
 !| ZREF           |-->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

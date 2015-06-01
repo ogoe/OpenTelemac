@@ -158,7 +158,7 @@
         A33(IELEM) = - A13(IELEM)  - A23(IELEM) - A43(IELEM)
         A44(IELEM) = - A14(IELEM)  - A24(IELEM) - A34(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -200,7 +200,7 @@
         A33(IELEM) = - A13(IELEM)  - A23(IELEM) - A43(IELEM)
         A44(IELEM) = - A14(IELEM)  - A24(IELEM) - A34(IELEM)
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSE
 !
@@ -261,7 +261,7 @@
         A33(IELEM) = - A13(IELEM)  - A23(IELEM) - A43(IELEM)
         A44(IELEM) = - A14(IELEM)  - A24(IELEM) - A34(IELEM)
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -305,7 +305,7 @@
         A33(IELEM) = - A13(IELEM)  - A23(IELEM) - A43(IELEM)
         A44(IELEM) = - A14(IELEM)  - A24(IELEM) - A34(IELEM)
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSE
 !

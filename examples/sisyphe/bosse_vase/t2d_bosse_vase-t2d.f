@@ -80,7 +80,7 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END  
+      END
 !                    *************************
                      SUBROUTINE INIT_COMPO_COH
 !                    *************************
@@ -106,7 +106,7 @@
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!    
+!
       INTEGER, INTENT(IN)              :: NPOIN,NOMBLAY,NSICLA
       DOUBLE PRECISION, INTENT(INOUT)  :: ES(NPOIN,NOMBLAY)
       DOUBLE PRECISION, INTENT(IN)     :: CONC_VASE(NOMBLAY)
@@ -135,8 +135,8 @@
 !-----------------------------------------------------------------------
 !
 !     INITIALISING THE NUMBER OF LAYERS
-!        
- 
+!
+
 !     BY DEFAULT : UNIFORM BED COMPOSITION (KEY WORDS)
 !
       DO I=1,NPOIN
@@ -146,7 +146,7 @@
         ENDDO
       ENDDO
 !
-              
+
 !
 !-----------------------------------------------------------------------
 !

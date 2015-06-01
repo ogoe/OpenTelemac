@@ -133,7 +133,7 @@
 !-----------------------------------------------------------------------
 ! START
 !-----------------------------------------------------------------------
-! 
+!
 ! CHECKS FIRST THAT WE ARE INDEED DEALING WITH TETRAHEDRONS. IF NOT,
 ! GOODBYE.
 !
@@ -403,14 +403,14 @@
       DEALLOCATE(VOIS_TRI)
 !
 !-----------------------------------------------------------------------
-!     STEP 5: FACES BETWEEN DIFFERENT COMPUTATION DOMAIN 
+!     STEP 5: FACES BETWEEN DIFFERENT COMPUTATION DOMAIN
 !-----------------------------------------------------------------------
 !
       IF(NCSIZE.GT.1) THEN
         !
         ! WHY A DIFFERENT ALGORITHM ?
         ! a) Partitionning method : 51 submeshes are obtained from a 2D mesh
-        ! b) No iklestr is available 
+        ! b) No iklestr is available
         ! c) Some pathological cases with 31
         IF (IELM.EQ.51) THEN
           !
@@ -418,25 +418,25 @@
             DO IELEM=1,NELEM
 !     IF A FACE HAS 3 POINTS WHICH ARE INTERFACES BETWEEN SUB-DOMAINS
 !     IT IS ASSIGNED A VALUE OF -2
-!     
+!
               I1=IKLE(IELEM,SOMFAC(1,IFACE))
               I2=IKLE(IELEM,SOMFAC(2,IFACE))
               I3=IKLE(IELEM,SOMFAC(3,IFACE))
-!     
+!
               IF( INDPU(I1).NE.0.AND.
      &            INDPU(I2).NE.0.AND.
      &            INDPU(I3).NE.0     ) IFABOR(IELEM,IFACE)=-2
-!     
+!
             ENDDO
           ENDDO
-!     
+!
         ELSE IF (IELM.EQ.31) THEN
-!     
+!
           DO IFACE=1,NFACE
             DO IELEM=1,NELEM
 !     IF A FACE HAS 3 POINTS WHICH ARE INTERFACES BETWEEN SUB-DOMAINS
 !     IT IS ASSIGNED A VALUE OF -2
-                  
+
 !     PATHOLOGIC CASES (THANKS TO OLIVIER BOITEAU, EDF R&D/SINETICS)
 !     a) 3 nodes may have INDPU /= 0, this doesn't mean automatically
 !     that the triangle is an interface one (case of true unstructured tetra mesh)
@@ -444,23 +444,23 @@
 !     => priority to border triangles
 !     c) 3 nodes of a triangle may be on the boundary and have INDPU /= 0
 !     this doesn't mean automatically that the triangle is on the boundary.
-                  
+
               IF (IFABOR(IELEM,IFACE).EQ.-1) THEN
-!     
+!
                 I1=IKLE(IELEM,SOMFAC(1,IFACE))
                 I2=IKLE(IELEM,SOMFAC(2,IFACE))
                 I3=IKLE(IELEM,SOMFAC(3,IFACE))
-                
+
                 IF ( INDPU(I1).NE.0.AND.
      &               INDPU(I2).NE.0.AND.
      &               INDPU(I3).NE.0     ) THEN
-                        
+
 !     THESE ARE INTERFACE NODES; DO THEY CORRESPOND TO A
 !     (VIRTUAL) INTERFACE TRIANGLE OR TO A BOUNDARY TRIANGLE ?
-                        
+
 !     THE FOLLOWING TEST IS NOT SUFFICIENT
 !     IF (.NOT. (IR5.EQ.1.AND.IR4.EQ.1.AND.IR6.EQ.1)) IFABOR(IELEM,IFACE)=-2
-!     
+!
                   BORD=.FALSE.
                   IR4=0
                   IR5=0
@@ -470,10 +470,10 @@
                     IF (I2.EQ.NBOR(J)) IR4=1
                     IF (I3.EQ.NBOR(J)) IR6=1
                   ENDDO ! J
-                        
+
 !     THEY ARE ALSO BOUNDARY NODES
                   IF (IR5.EQ.1.AND.IR4.EQ.1.AND.IR6.EQ.1) THEN
-!     
+!
                     DO J=1,NELEB2
 !     IT IS A BOUNDARY TRIANGLE
                       COMPT=0
@@ -487,9 +487,9 @@
                         BORD=.TRUE.
 !     WRITE(LU,*)'VERTICES OF A BOUNDARY TRIANGLE'
                         EXIT
-                      ENDIF                         
+                      ENDIF
                     ENDDO
-                  ENDIF                        
+                  ENDIF
                   IF (.NOT.BORD) THEN
 !     THESE 3 NODES BELONG TO AN INTERFACE MESH
 !     WRITE(LU,*) 'INTERFACE NODES'
@@ -538,13 +538,13 @@
 !       IT IS A TRUE BOUNDARY SIDE (IN PARALLEL MODE THE INTERNAL SIDES
 !                                   ARE INDICATED WITH -2).
 !       GLOBAL NUMBERS OF THE NODES OF THE SIDE :
-!       
+!
         I1 = IKLE( IELEM , SOMFAC(1,IFACE) )
         I2 = IKLE( IELEM , SOMFAC(2,IFACE) )
         I3 = IKLE( IELEM , SOMFAC(3,IFACE) )
-!       
+!
 !       A LIQUID SIDE IS IDENTIFIED WITH THE BOUNDARY CONDITION ON H
-!       
+!
         IF(NPTFR.GT.0) THEN
         IF(LIHBOR(NBOR_INV(I1)).NE.KLOG.AND.LIHBOR(NBOR_INV(I2)).NE.KLOG
      &      .AND.LIHBOR(NBOR_INV(I3)).NE.KLOG  ) THEN
@@ -555,8 +555,8 @@
 !
       ENDIF
 !
-      ENDDO ! IELEM 
-      ENDDO ! IFACE 
+      ENDDO ! IELEM
+      ENDDO ! IFACE
 !
 !
 1000  CONTINUE

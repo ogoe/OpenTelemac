@@ -7,7 +7,7 @@
      & AWATER_QUALITY,PLUIE,AATMOSEXCH,AOPTWIND,AWIND_SPD,APATMOS_VALUE)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0 
+! TELEMAC2D   V7P0
 !***********************************************************************
 !
 !brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
@@ -35,7 +35,7 @@
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        30/01/2013
 !+        V6P3
-!+   Now 2 options with an example for reading a file. Extra arguments. 
+!+   Now 2 options with an example for reading a file. Extra arguments.
 !
 !history  C.-T. PHAM (LNHE)
 !+        09/07/2014
@@ -105,7 +105,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: FUAIR,FVAIR
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: PRIVE
       TYPE(BIEF_FILE), INTENT(IN)     :: FILES(*)
-!     OPTIONAL 
+!     OPTIONAL
       LOGICAL, INTENT(IN)          ,OPTIONAL :: AWATER_QUALITY
       TYPE(BIEF_OBJ), INTENT(INOUT),OPTIONAL :: PLUIE
       INTEGER, INTENT(IN)          ,OPTIONAL :: AATMOSEXCH,AOPTWIND
@@ -120,7 +120,7 @@
       DOUBLE PRECISION UAIR,VAIR,PATMOS_VALUE,WIND_SPD(2)
 !     EXCHANGE WITH ATMOSPHERE
       DOUBLE PRECISION HREL,RAINFALL,PATM,WW,PI
-!  
+!
       DOUBLE PRECISION, PARAMETER :: EPS = 1.D-3
 !
 ! ######################################################################
@@ -187,7 +187,7 @@
           CALL OV( 'X=C     ' , PATMOS,Y,Z,PATMOS_VALUE,NPOIN )
         ENDIF
 !
-!       WIND : 
+!       WIND :
 !
         IF(VENT.OR.WATER_QUALITY) THEN
           IF(OPTWIND.EQ.1)THEN
@@ -235,31 +235,31 @@
             READ(UL,*)
         ! READ NUMSTA AND NUMPOINTS
             READ(UL,*) NUMSTA, NUMPOINTS
-              
+
           !ALLOCATE THE ARRAYS
             ALLOCATE(XX(NUMSTA), YY(NUMSTA), AT_WIND(NUMPOINTS))
             ALLOCATE(WIND(NUMPOINTS,NUMSTA*2+5), POINTS(NPOIN,2))
             ALLOCATE(INPSTA_S(NUMSTA,3), INPSTA_D(NUMSTA,3))
             ALLOCATE(OUT_WSPD(NPOIN), OUT_WDIR(NPOIN))
-!                  
+!
           ! READ STATION COORDINATES
             DO B = 1,NUMSTA
             READ(UL,*) XX(B), YY(B)
            !WRITE(*,*) XX(B), YY(B)
             ENDDO
 !
-          ! READ THE WIND TIME SERIES FROM THE INPUT FILE 
-          ! FIRST COLUMN IS TIME IN SECONDS, REST OF COLUMNS ARE WSPD 
+          ! READ THE WIND TIME SERIES FROM THE INPUT FILE
+          ! FIRST COLUMN IS TIME IN SECONDS, REST OF COLUMNS ARE WSPD
           ! AND WDIR FOR EACH STATION READ
             DO A = 1,NUMPOINTS
               READ(UL,*) (WIND(A,B), B=1,NUMSTA*2+1)
             ENDDO
-!              
+!
           ! EXTRACT AT_WIND FROM WIND(A,B); FIRST COLUMN IS TIME IN SECONDS
             DO A = 1,NUMPOINTS
               AT_WIND(A) = WIND(A,1)
             ENDDO
-!        
+!
           ! ASSEMBLE THE POINTS ARRAY FOR IDWM FUNCTION
             DO I = 1,NPOIN
               POINTS(I,1) = X(I)
@@ -292,7 +292,7 @@
           ENDIF
 !
 !       HEAT EXCHANGE WITH ATMOSPHERE
-! 
+!
         ELSEIF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
           IF(VENT.OR.ATMOS) THEN
             CALL INTERPMETEO(WW,UAIR,VAIR,
@@ -301,16 +301,16 @@
 !
           IF(VENT) THEN
             CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
-            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)    
+            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)
           ENDIF
-! 
+!
           IF(ATMOS) THEN
             CALL OV('X=C     ',PATMOS,Y,Z,PATM,NPOIN)
           ENDIF
-!     
+!
 !      NO HEAT EXHANGE NEITHER WATER_QUALITY
 !
-        ELSE 
+        ELSE
 !
 !         WIND VARYING IN TIME CONSTANT IN SPACE
 !
@@ -338,43 +338,43 @@
               GO TO 10
 !
 !-----------------------------------------------------------------------
-! 
+!
 100           CONTINUE
               WRITE(LU,*) ' '
               WRITE(LU,*) 'METEO'
               IF(LNG.EQ.1) WRITE(LU,*) 'ERREUR DANS LE FICHIER DE VENT'
               IF(LNG.EQ.2) WRITE(LU,*) 'ERROR IN THE WIND FILE'
               CALL PLANTE(1)
-              STOP  
+              STOP
 200           CONTINUE
               WRITE(LU,*) ' '
               WRITE(LU,*) 'METEO'
               IF(LNG.EQ.1)WRITE(LU,*)'FIN PREMATUREE DU FICHIER DE VENT'
               IF(LNG.EQ.2)WRITE(LU,*) 'WIND FILE TOO SHORT'
               CALL PLANTE(1)
-              STOP           
+              STOP
 !
 !-----------------------------------------------------------------------
 !
             ENDIF
 !
             CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
-            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)  
-! 
-            FUAIR = UAIR             
+            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)
+!
+            FUAIR = UAIR
             FVAIR = VAIR
 !
 !         WIND VARYING IN TIME AND SPACE
 !
-          ELSEIF(OPTWIND.EQ.3)THEN 
+          ELSEIF(OPTWIND.EQ.3)THEN
 !            IF(LNG.EQ.1) THEN
 !              WRITE(LU,*) 'CETTE OPTION N EST PAS ENCORE PROGRAMMEE'
 !              WRITE(LU,*) 'VOIR CAS DE VALIDATION WIND_TXY '
-!              WRITE(LU,*) 'DANS LE DOSSIER EXAMPLES/TELEMAC2D' 
+!              WRITE(LU,*) 'DANS LE DOSSIER EXAMPLES/TELEMAC2D'
 !            ELSE
 !              WRITE(LU,*) 'THIS OPTION IS NOT IMPLEMENTED YET'
 !              WRITE(LU,*) 'SEE VALIDATION CASE WIND_TXY '
-!              WRITE(LU,*) 'LOCATED AT THE FOLDER EXAMPLES/TELEMAC2D' 
+!              WRITE(LU,*) 'LOCATED AT THE FOLDER EXAMPLES/TELEMAC2D'
 !            ENDIF
 !            CALL PLANTE(1)
 !            STOP
@@ -485,11 +485,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N, M, I, J, K      
+      INTEGER N, M, I, J, K
 !     WEIGHTS, DENOMINATOR, DISTANCE
       DOUBLE PRECISION W1, W2, W3, W4, DEN, DIST
 !     CURRENT MINS
-      DOUBLE PRECISION MIN1CUR, MIN2CUR, MIN3CUR, MIN4CUR        
+      DOUBLE PRECISION MIN1CUR, MIN2CUR, MIN3CUR, MIN4CUR
 !     LOCATIONS OF THE MININIMS (USED FOR ARRAY REFERENCING)
       INTEGER MIN1LOC, MIN2LOC, MIN3LOC, MIN4LOC
 !
@@ -497,8 +497,8 @@
 !
 !     DEFINE N AND M, THIS IS DONE TO HARMONIZE PASTING OF CODE
       N = NUMSTA
-      M = NPOIN    
-!        
+      M = NPOIN
+!
 !     MAIN LOOP TO DO THE INTERPOLATION
 !
       DO J = 1, M
@@ -508,7 +508,7 @@
         MIN1CUR = 1.D30
         MIN2CUR = 1.D30
         MIN3CUR = 1.D30
-        MIN4CUR = 1.D30  
+        MIN4CUR = 1.D30
 !
 !       INITIALIZE MIN_LOC
 !
@@ -521,21 +521,21 @@
 !
           IF(ELEV(I,3).GT.0.D0) THEN
 !
-            DIST=(ELEV(I,1)-POINTS(J,1))**2+(ELEV(I,2)-POINTS(J,2))**2  
-!     
+            DIST=(ELEV(I,1)-POINTS(J,1))**2+(ELEV(I,2)-POINTS(J,2))**2
+!
 !           FIND MIN DIST IN EACH OF THE FOUR QUADRANTS
 !           2 | 1
 !           -----
-!           3 | 4      
-!            
+!           3 | 4
+!
 !          QUADRANT 1
             IF(ELEV(I,1).GE.POINTS(J,1).AND.
-     &         ELEV(I,2).GE.POINTS(J,2)      ) THEN    
+     &         ELEV(I,2).GE.POINTS(J,2)      ) THEN
               IF(DIST.LT.MIN1CUR) THEN
-                MIN1CUR = DIST      
+                MIN1CUR = DIST
                 MIN1LOC = I
               ENDIF
-            ENDIF                  
+            ENDIF
 !           QUADRANT 2
             IF(ELEV(I,1).LT.POINTS(J,1).AND.
      &         ELEV(I,2).GE.POINTS(J,2)      ) THEN
@@ -543,15 +543,15 @@
                 MIN2CUR = DIST
                 MIN2LOC = I
               ENDIF
-            ENDIF                  
+            ENDIF
 !           QUADRANT 3
             IF(ELEV(I,1).LT.POINTS(J,1).AND.
-     &         ELEV(I,2).LT.POINTS(J,2)      ) THEN 
+     &         ELEV(I,2).LT.POINTS(J,2)      ) THEN
               IF(DIST.LT.MIN3CUR) THEN
                 MIN3CUR = DIST
                 MIN3LOC = I
               ENDIF
-            ENDIF                  
+            ENDIF
 !           QUADRANT 4
             IF(ELEV(I,1).GT.POINTS(J,1).AND.
      &         ELEV(I,2).LT.POINTS(J,2)      ) THEN
@@ -561,12 +561,12 @@
               ENDIF
             ENDIF
 !
-          ENDIF                        
+          ENDIF
 !
         ENDDO
-!                  
+!
 !       CALCULATE WEIGHTS
-! 
+!
 !       AVOIDING DIVISIONS BY 0
 !
         MIN1CUR=MAX(MIN1CUR,1.D-6)
@@ -594,16 +594,16 @@
           ENDIF
           IF(MIN4LOC.GT.0) THEN
             IDWM(J)=IDWM(J)+ELEV(MIN4LOC,3)/MIN4CUR
-          ENDIF 
-          IDWM(J) = IDWM(J)/DEN      
-        ENDIF      
+          ENDIF
+          IDWM(J) = IDWM(J)/DEN
+        ENDIF
 !
       ENDDO
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!      
+!
       RETURN
-      END                                                              
+      END
 !                    *****************
                      SUBROUTINE CORFON
 !                    *****************

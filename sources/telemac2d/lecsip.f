@@ -72,7 +72,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: DELSIP(NSIPH,2),ANGSIP(NSIPH,2)
       DOUBLE PRECISION, INTENT(INOUT) :: CESIP(NSIPH,2),CSSIP(NSIPH,2)
       DOUBLE PRECISION, INTENT(INOUT) :: LSIP(NSIPH)
-      TYPE(BIEF_MESH), INTENT(IN)     :: MESH 
+      TYPE(BIEF_MESH), INTENT(IN)     :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

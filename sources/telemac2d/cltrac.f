@@ -56,7 +56,7 @@
 !| NWEIRS         |-->| NUMBER OF SINGULARITIES
 !| T              |-->| BLOCK OF TRACERS
 !| TBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON TRACER
-!| ZDIG           |-->| ELEVATIONS OF POINTS OF WEIRS 
+!| ZDIG           |-->| ELEVATIONS OF POINTS OF WEIRS
 !| ZF             |-->| BOTTOM TOPOGRAPHY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

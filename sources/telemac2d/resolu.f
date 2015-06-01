@@ -6,7 +6,7 @@
      &  NELEM,NSEG,NPTFR,FLUX,AIRS,AIRE,
      &  X,Y,IKLE,ZF,CF,NPOIN,HN,H,U,V,QU,QV,G,LISTIN,
      &  XNEBOR,YNEBOR,LIMPRO,NBOR,KDIR,KNEU,KDDL,
-     &  HBOR,UBOR,VBOR,FLUSORT,FLUENT,CFLWTD,DTVARI,NELMAX,KFROT,  
+     &  HBOR,UBOR,VBOR,FLUSORT,FLUENT,CFLWTD,DTVARI,NELMAX,KFROT,
      &  NREJET,ISCE,TSCE2,MAXSCE,MAXTRA,YASMH,SMH,MASSES,
      &  NTRAC,DIMT,T,HTN,TN,DLIMT,
      &  TBOR,MASSOU,FLUTENT,FLUTSOR,DTHAUT,DPX,DPY,DJX,DJY,CMI,JMI,
@@ -19,14 +19,14 @@
      &  GAMMA,FLUX_OLD,NVMAX,NEISEG,ELTSEG,IFABOR,MESH)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                
+! TELEMAC2D   V7P0
 !***********************************************************************
 !
-!brief    1. SOLVES THE PROBLEM BY A METHOD OF TYPE ROE OR BY A 
-!         KINETIC SCHEME (ORDER 1 OR 2) OR 
+!brief    1. SOLVES THE PROBLEM BY A METHOD OF TYPE ROE OR BY A
+!         KINETIC SCHEME (ORDER 1 OR 2) OR
 !        TCHAMEN/ZOKAGOA SCHEMES (ORDER 1)
 !        HLLC (ORDER1) OR WAF (ORDER2 IN TIME AND SPACE)
-!            FOR INTERIOR FLUXES 
+!            FOR INTERIOR FLUXES
 !            AND OF TYPE STEGER AND WARMING FOR I/O;
 !+
 !+
@@ -58,12 +58,12 @@
 !+        03/15/2011
 !+        V6P1
 !+    CHANGE EXPLICIT EULER BY NEWMARK SCHEME
-!+    ADD TCHAMEN AND ZOKAGOA FLUXES 
+!+    ADD TCHAMEN AND ZOKAGOA FLUXES
 !
 !history  R. ATA (EDF-LNHE)
 !+        07/15/2012
 !+        V6P2
-!+    ADD HLLC AND WAF FLUXES 
+!+    ADD HLLC AND WAF FLUXES
 !
 !history  R. ATA (EDF-LNHE)
 !+
@@ -73,7 +73,7 @@
 !+      remove unused variables
 !+      parallel version
 !
-!history  R. ATA 
+!history  R. ATA
 !+        28/01/2014
 !+        V7P0
 !+    change diemensions of CMI
@@ -88,7 +88,7 @@
 ! history R. ATA (EDF R&D-LNHE)
 !+        20/06/2014
 !+        V7P0
-!+    change winf values which are directly  
+!+    change winf values which are directly
 !+    obtained by bord
 !+    add parcom_bord after cdl routines
 !+    change cdl routines to exactly impose boundary conditions
@@ -98,7 +98,7 @@
 !+        20/01/2015
 !+        V7P0
 !+    correction for parallelization
-!+    parcom_bord removed and parcom placed 
+!+    parcom_bord removed and parcom placed
 !+    after cdl of each scheme
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| ELEMENT AREA
@@ -139,11 +139,11 @@
 !| IKLE           |-->| INDICES OF NODES FOR TRIANGLE
 !| ISCE           |-->| SOURCE POINTS
 !| ITURB          |-->| MODEL OF TURBULENCE  1 : LAMINAIRE
-!| JMI            |-->| NUMBER OF THE TRIANGLE IN WHICH IS LOCATED 
+!| JMI            |-->| NUMBER OF THE TRIANGLE IN WHICH IS LOCATED
 !|                |   | THE MIDPOINT OF THE INTERFACE
 !| KDDL           |-->| CONVENTION FOR FREE POINTS (BC)
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINTS
-!| KFROT          |-->| BED FRICTION LAW 
+!| KFROT          |-->| BED FRICTION LAW
 !| KNEU           |-->| CONVENTION NEUMANN POINTS
 !| LIMPRO         |-->| TYPES OF BOUNDARY CONDITION
 !| LISTIN         |-->| IF YES, PRINT MESSAGES AT LISTING.
@@ -165,11 +165,11 @@
 !| NSEG           |-->| NUMBER OF EDGES
 !| NTRAC          |-->| NUMBER OF TRACERS
 !| NUBO           |-->| GLOBAL INDICES OF EDGE EXTREMITIES
-!| MVMAX          |-->| MAX NUMBER OF NEIGHBOR FOR A NODE 
+!| MVMAX          |-->| MAX NUMBER OF NEIGHBOR FOR A NODE
 !| OPTVF          |-->| OPTION OF THE SCHEME
 !|                |   | 0:ROE, 1:KINETIC ORDRE 1,2:KINETIC ORDRE 2
 !|                |   | 3:ZOKAGOA, 4:TCHAMEN,4:HLLC
-!| PROPNU         |-->| COEFFICIENT OF MOLECULAR DIFFUSION 
+!| PROPNU         |-->| COEFFICIENT OF MOLECULAR DIFFUSION
 !| QU,QV          |<->| FLOW COMPOENENTS AT TIME N THEN AT TIME  N+1
 !| SMH            |-->| SOURCE TERMS FOR CONTINUITY EQUATION
 !| SMTR           |---| SOURCE TERMS FOR TRACEUR
@@ -182,7 +182,7 @@
 !| UBOR           |-->| IMPOSED VALUES FOR U
 !| VBOR           |-->| IMPOSED VALUES FOR V
 !| VNOIN          |-->| NORMAL TO THE INTERFACE
-!|                |   | (2 FIRS COMPOSANTES) AND 
+!|                |   | (2 FIRS COMPOSANTES) AND
 !|                |   | SEGMENT LENGTH (3RD COMPONENT)
 !| W              |<->| WORKING TABLE
 !| WINF           |-->| BOUNDARY CONDITIONS COMPUTED BY BORD
@@ -220,7 +220,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: DT
       DOUBLE PRECISION, INTENT(IN)    :: AT,VNOIN(3,*),GAMMA
       DOUBLE PRECISION, INTENT(IN)    :: TSCE2(MAXSCE,MAXTRA)
-      DOUBLE PRECISION, INTENT(INOUT) :: W(3,NPOIN),FLUSORTN,FLUENTN   
+      DOUBLE PRECISION, INTENT(INOUT) :: W(3,NPOIN),FLUSORTN,FLUENTN
       DOUBLE PRECISION, INTENT(IN)    :: AIRE(NPOIN),DTHAUT(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: HBOR(NPTFR),UBOR(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: VBOR(NPTFR),HN(NPOIN)
@@ -255,11 +255,11 @@
 !
       INTEGER I,IS,K,ICIN,IVIS,NORDRE,ITRAC
       DOUBLE PRECISION XNC,W1,DMIN,BETA,TEST
-!                                                      
+!
       DOUBLE PRECISION P_DMIN
       EXTERNAL P_DMIN
-!                  
-      DOUBLE PRECISION,PARAMETER:: EPS =  1.D-6   
+!
+      DOUBLE PRECISION,PARAMETER:: EPS =  1.D-6
 !
 !
       IF(OPTVF.EQ.0) THEN
@@ -289,26 +289,26 @@
         CALL PLANTE(1)
         STOP
       ENDIF
-!                                                                       
-!  * WINF CONTAINS BC COMPUTED BY BORD                   
-!                                                                       
+!
+!  * WINF CONTAINS BC COMPUTED BY BORD
+!
 !      DO K=1,NPTFR
-!        IF(LIMPRO(K,1).EQ.KDIR) THEN                              
-!          WINF(1,K) =  HBOR(K)                                  
-!          WINF(2,K) =  HBOR(K)*UBOR(K)                      
+!        IF(LIMPRO(K,1).EQ.KDIR) THEN
+!          WINF(1,K) =  HBOR(K)
+!          WINF(2,K) =  HBOR(K)*UBOR(K)
 !          WINF(3,K) =  HBOR(K)*VBOR(K)
 !        ELSE
-!          WINF(1,K) =  H(NBOR(K))                              
-!          WINF(2,K) =  H(NBOR(K))*UBOR(K)                 
+!          WINF(1,K) =  H(NBOR(K))
+!          WINF(2,K) =  H(NBOR(K))*UBOR(K)
 !          WINF(3,K) =  H(NBOR(K))*VBOR(K)
-!        ENDIF 
+!        ENDIF
 !       ENDDO
 ! ================================
 ! VALUES COMPUTED BY BORD ARE GOOD
 !=================================
       DO K=1,NPTFR
-        WINF(1,K) =  H(NBOR(K))                              
-        WINF(2,K) =  H(NBOR(K))*U(NBOR(K))                 
+        WINF(1,K) =  H(NBOR(K))
+        WINF(2,K) =  H(NBOR(K))*U(NBOR(K))
         WINF(3,K) =  H(NBOR(K))*V(NBOR(K))
       ENDDO
       IF(LT.EQ.1) THEN
@@ -316,7 +316,7 @@
         CALL OV('X=YZ    ',QU,HN,U,1.D0,NPOIN)
         CALL OV('X=YZ    ',QV,HN,V,1.D0,NPOIN)
       ENDIF
-                                        
+
       IF(ICIN .EQ.0) THEN
 !-----------------------------------------------------------------------
 !        ROE SCHEME
@@ -325,7 +325,7 @@
         IF(LT.EQ.1) THEN
           WRITE(LU,*) ' '
           WRITE(LU,*) '          ***************** '
-          WRITE(LU,*) '          *   ROE SCHEME  * '              
+          WRITE(LU,*) '          *   ROE SCHEME  * '
           WRITE(LU,*) '          ***************** '
           WRITE(LU,*) ' '
 
@@ -334,12 +334,12 @@
             FLUX_OLD(I,1) = 0.0D0
             FLUX_OLD(I,2) = 0.0D0
             FLUX_OLD(I,3) = 0.0D0
-          ENDDO                  
+          ENDDO
         ENDIF
 
 !
 !      COPY  VARIABLES INTO W
-!     
+!
         DO I=1,NPOIN
           W(1,I)= HN(I)
           W(2,I)= QU(I)
@@ -350,25 +350,25 @@
 !
         CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,AT,TMAX,
      &             CFLWTD,ICIN,DTVARI,LISTIN)
-!       
+!
 !      WINF CONTAINS BORDVALUE AFTER THE USE OF RIEMANN INVARIANTS
-!       
+!
         CALL FLUSEW
-!       
+!
      &     (WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
-     &      NPTFR,LIMPRO,NBOR,KDIR,KDDL)    
-!       
-!       
+     &      NPTFR,LIMPRO,NBOR,KDIR,KDDL)
+!
+!
         CALL FLUROE(W,FLUSCE,NUBO,VNOIN,
-     &              WINF,FLUX,FLUSORT,FLUENT,NELEM,NSEG,NPTFR,   
+     &              WINF,FLUX,FLUSORT,FLUENT,NELEM,NSEG,NPTFR,
      &              NPOIN,X,Y,AIRS,ZF,EPS,DMIN,G,
      &              XNEBOR,YNEBOR,LIMPRO,NBOR,KDIR,KNEU,KDDL,FLBOR,
-     &              ELTSEG,IFABOR,MESH)             
+     &              ELTSEG,IFABOR,MESH)
 !
 ! INTEGRATION IN TIME
-! 
+!
         CALL INTEMP(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,ZF,CF,EPS,KFROT,
-     &             SMH,HN,QU,QV,LT,GAMMA)  
+     &             SMH,HN,QU,QV,LT,GAMMA)
 !
 ! VOLUME ADDEED BY SOURCES
 !
@@ -379,21 +379,21 @@
           ENDDO
           MASSES = DT * MASSES
         ENDIF
-!      
-        DO  I=1,NPOIN 
-          H(I)  = W(1,I) 
+!
+        DO  I=1,NPOIN
+          H(I)  = W(1,I)
           QU(I) = W(2,I)
           QV(I) = W(3,I)
 ! SAVE FLUXES FOR NEXT TIME STEP
           FLUX_OLD(I,1) = FLUX(I,1)
           FLUX_OLD(I,2) = FLUX(I,2)
           FLUX_OLD(I,3) = FLUX(I,3)
-!      
-!        COMPUTE U,V 
-!      
+!
+!        COMPUTE U,V
+!
           IF (H(I).GT.EPS) THEN
             U(I)  = W(2,I) / H(I)
-            V(I)  = W(3,I) / H(I) 
+            V(I)  = W(3,I) / H(I)
           ELSE
             U(I) = 0.D0
             V(I) = 0.D0
@@ -402,8 +402,8 @@
 !
 !
         XNC = 0.D0
-        DO I=1,NPOIN 
-          IF(H(I).GT.EPS) THEN    
+        DO I=1,NPOIN
+          IF(H(I).GT.EPS) THEN
            W1=SQRT((QU(I)/H(I))**2+(QV(I)/H(I))**2)+SQRT(G*H(I))
            IF(W1.GE.XNC) XNC = W1
            IF(W1.GE.50.D0) THEN
@@ -422,7 +422,7 @@
 !
         IVIS=0
         IF(DIFVIT.AND.ITURB.EQ.1) IVIS=1
-!      
+!
         IF(LT.EQ.1) THEN
 !
 !             INITIALIZATIONS FOR THE 1ST TIME STEP
@@ -443,7 +443,7 @@
             FLUX_OLD(I,1) = 0.0D0
             FLUX_OLD(I,2) = 0.0D0
             FLUX_OLD(I,3) = 0.0D0
-          ENDDO     
+          ENDDO
 !
 !     COMPUTE GRADIENT OF ZF FOR ORDRE2
 !
@@ -467,34 +467,34 @@
               CALL OS('X=Y     ',X=T%ADR(ITRAC)%P,Y=TN%ADR(ITRAC)%P)
             ENDDO
           ENDIF
-!         
+!
 !          DEFINITION OF A REFERENCE TO DISTINGUISH INTERIOR
 !          AND BOUNDARY NODES FOR TRACER ORDRE 2
-!         
+!
           DO IS=1,NPOIN
             LOGFR(IS)=0
           ENDDO
-!         
+!
           IF(NPTFR.GT.0)THEN !FOR PARALLLEL CASES
             DO K=1,NPTFR
               IS=NBOR(K)
               IF(LIMPRO(K,2).EQ.KDIR) LOGFR(IS)=1
               IF(LIMPRO(K,1).EQ.KDIR) LOGFR(IS)=3
-              IF(LIMPRO(K,1).EQ.KNEU) LOGFR(IS)=2     
+              IF(LIMPRO(K,1).EQ.KNEU) LOGFR(IS)=2
             ENDDO
-          ENDIF 
+          ENDIF
         ENDIF
 !-----------------------------------------------------------------------
 !
         IF(LT.EQ.1.OR.NTRAC.EQ.0) THEN
-!                                                                         
-!       REWRITE VARIABLES IN W                                      
-!                                                                         
-        DO I=1,NPOIN                                                  
-            W(1,I)= HN(I) 
+!
+!       REWRITE VARIABLES IN W
+!
+        DO I=1,NPOIN
+            W(1,I)= HN(I)
           IF (HN(I).GT.EPS) THEN
             W(2,I) = QU(I) / HN(I)
-            W(3,I) = QV(I) / HN(I)     
+            W(3,I) = QV(I) / HN(I)
           ELSE
             W(2,I) = 0.D0
             W(3,I) = 0.D0
@@ -529,7 +529,7 @@
 !                     HYDRO UPDATING
 !-----------------------------------------------------------------------
 !
-      DT = MIN(DTN,TMAX-AT) 
+      DT = MIN(DTN,TMAX-AT)
 !
       FLUENT =FLUENTN
       FLUSORT =FLUSORTN
@@ -539,11 +539,11 @@
         MASSOU(ITRAC) =0.D0
       ENDDO
 !
-! TIME INTEGRATION 
+! TIME INTEGRATION
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)     
+     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
 !
 !-----------------------------------------------------------------------
 !
@@ -586,11 +586,11 @@
         FLUX_OLD(I,2) = FLUX(I,2)
         FLUX_OLD(I,3) = FLUX(I,3)
 !
-!      CALCULATION OF U,V 
+!      CALCULATION OF U,V
 !
         IF (H(I).GT.EPS) THEN
           U(I)  = W(2,I) / H(I)
-          V(I)  = W(3,I) / H(I) 
+          V(I)  = W(3,I) / H(I)
         ELSE
           U(I) = 0.D0
           V(I) = 0.D0
@@ -605,13 +605,13 @@
       IF(AT+DT.GE.TMAX) GOTO 200
 !
 !-----------------------------------------------------------------------
-!    IF TRACER, WE ANTICIPATE THE COMPUTATION OF FLUXES 
+!    IF TRACER, WE ANTICIPATE THE COMPUTATION OF FLUXES
 !-----------------------------------------------------------------------
 !
-! WE PUT PRIMITIVE VARIABLES  IN W 
+! WE PUT PRIMITIVE VARIABLES  IN W
 !
-      DO I=1,NPOIN 
-        W(1,I) = H(I) 
+      DO I=1,NPOIN
+        W(1,I) = H(I)
         W(2,I) = U(I)
         W(3,I) = V(I)
       ENDDO
@@ -619,7 +619,7 @@
 ! TIME STEP UNDER CFL CONDITION (ORDRE 1)
 !
 !  we may use H and not HN for DT computing !!!!  to be verified
-! 
+!
       CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DTN,AT,TMAX,
      &           CFLWTD,ICIN,DTVARI,LISTIN)
 !
@@ -634,7 +634,7 @@
      &        DSZ,AIRST,HC,FLUXTEMP,NTRAC,ELTSEG,IFABOR,MESH)
 !
 ! TEST OF TRACER FLUX (FOR POSITIVITY)
-! 
+!
 !    USELESS, BUT TO AVOID COMPILER ERROR
       TEST=-1.D0
 !
@@ -664,10 +664,10 @@
      &             MASSOU(ITRAC),DTT,MESH,ELTSEG,IFABOR,VNOIN)
 !
 !
-      DO I=1,NPOIN  
+      DO I=1,NPOIN
         HTN%ADR(ITRAC)%P%R(I) = T%ADR(ITRAC)%P%R(I)
         IF(H(I).GT.EPS) THEN
-          T%ADR(ITRAC)%P%R(I) = T%ADR(ITRAC)%P%R(I) / H(I)    
+          T%ADR(ITRAC)%P%R(I) = T%ADR(ITRAC)%P%R(I) / H(I)
         ELSE
           T%ADR(ITRAC)%P%R(I) = 0.D0
         ENDIF
@@ -695,7 +695,7 @@
 !
         WRITE(LU,*) ' '
         WRITE(LU,*) '          *********************** '
-        WRITE(LU,*) '          *   ZOKAGOA SCHEME    * '              
+        WRITE(LU,*) '          *   ZOKAGOA SCHEME    * '
         WRITE(LU,*) '          *********************** '
         WRITE(LU,*) ' '
 !INITIALIZATION OF FLUX_OLD
@@ -703,7 +703,7 @@
           FLUX_OLD(I,1) = 0.0D0
           FLUX_OLD(I,2) = 0.0D0
           FLUX_OLD(I,3) = 0.0D0
-        ENDDO     
+        ENDDO
 
       ENDIF
 
@@ -712,7 +712,7 @@
 !    COPY VARIABLES INTO W
 !
       DO I=1,NPOIN
-        W(1,I)= HN(I) 
+        W(1,I)= HN(I)
         W(2,I)= QU(I)
         W(3,I)= QV(I)
       ENDDO
@@ -720,7 +720,7 @@
 ! TIME STEP UNDER CFL CONDITION
 !
       CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,AT,TMAX,
-     &           CFLWTD,ICIN,DTVARI,LISTIN)   
+     &           CFLWTD,ICIN,DTVARI,LISTIN)
 !
 !INFLOW AND OUTFLOWS
 !
@@ -742,11 +742,11 @@
 !
 !-----------------------------------------------------------------------
 !
-! TIME INTEGRATION 
+! TIME INTEGRATION
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &          HN,QU,QV,LT,GAMMA,
-     &          NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G) 
+     &          NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
 !-----------------------------------------------------------------------
 
 ! VOLUME ADDED BY SOURCE TERMS
@@ -759,7 +759,7 @@
         MASSES = DT * MASSES
       ENDIF
 !
-      DO I=1,NPOIN 
+      DO I=1,NPOIN
         H(I)  = W(1,I)
         QU(I) = W(2,I)
         QV(I) = W(3,I)
@@ -768,11 +768,11 @@
         FLUX_OLD(I,2) = FLUX(I,2)
         FLUX_OLD(I,3) = FLUX(I,3)
 !
-!      COMPUTE  U,V 
+!      COMPUTE  U,V
 !
         IF (H(I).GT.EPS) THEN
           U(I)  = W(2,I) / H(I)
-          V(I)  = W(3,I) / H(I) 
+          V(I)  = W(3,I) / H(I)
         ELSE
           U(I) = 0.D0
           V(I) = 0.D0
@@ -797,7 +797,7 @@
 !
         WRITE(LU,*) ' '
         WRITE(LU,*) '          *********************** '
-        WRITE(LU,*) '          *   TCHAMEN SCHEME    * '              
+        WRITE(LU,*) '          *   TCHAMEN SCHEME    * '
         WRITE(LU,*) '          *********************** '
         WRITE(LU,*) ' '
 !INITIALIZATION OF FLUX_OLD
@@ -805,7 +805,7 @@
           FLUX_OLD(I,1) = 0.0D0
           FLUX_OLD(I,2) = 0.0D0
           FLUX_OLD(I,3) = 0.0D0
-        ENDDO    
+        ENDDO
 
       ENDIF
 
@@ -814,7 +814,7 @@
 !   CPY VARIABLES INTO W
 !
       DO I=1,NPOIN
-        W(1,I)= HN(I) 
+        W(1,I)= HN(I)
         W(2,I)= QU(I)
         W(3,I)= QV(I)
       ENDDO
@@ -828,7 +828,7 @@
 !INFLOW AND OUTFLOWS ! USELESS
 !
 !      CALL FLUSEW(WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
-!     &            NPTFR,LIMPRO,NBOR,KDIR,KDDL)  
+!     &            NPTFR,LIMPRO,NBOR,KDIR,KDDL)
 !
 !-----------------------------------------------------------------------
 ! FLUX COMPUTATION
@@ -848,11 +848,11 @@
 !
 !-----------------------------------------------------------------------
 !
-! TIME INTEGRATION 
+! TIME INTEGRATION
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)     
+     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
 !
 !
 !-----------------------------------------------------------------------
@@ -861,7 +861,7 @@
 !
       IF(YASMH) THEN
         MASSES=0.D0
-      DO  I=1,NPOIN 
+      DO  I=1,NPOIN
         MASSES = MASSES + SMH(I)
       ENDDO
         MASSES = DT * MASSES
@@ -876,11 +876,11 @@
         FLUX_OLD(I,2) = FLUX(I,2)
         FLUX_OLD(I,3) = FLUX(I,3)
 !
-!      COMPUTATION U,V 
+!      COMPUTATION U,V
 !
         IF (H(I).GT.EPS) THEN
           U(I)  = W(2,I) / H(I)
-          V(I)  = W(3,I) / H(I) 
+          V(I)  = W(3,I) / H(I)
         ELSE
           U(I) = 0.D0
           V(I) = 0.D0
@@ -902,7 +902,7 @@
 !
         WRITE(LU,*) ' '
         WRITE(LU,*) '          *********************** '
-        WRITE(LU,*) '          *     HLLC  SCHEME    * '              
+        WRITE(LU,*) '          *     HLLC  SCHEME    * '
         WRITE(LU,*) '          *********************** '
         WRITE(LU,*) ' '
 ! INITIALIZATION OF FLUX_OLD
@@ -910,17 +910,17 @@
           FLUX_OLD(I,1) = 0.0D0
           FLUX_OLD(I,2) = 0.0D0
           FLUX_OLD(I,3) = 0.0D0
-        ENDDO  
+        ENDDO
 
       ENDIF
 
 !-----------------------------------------------------------------------
 !     COPY VARIABLES INTO W
 !
-      DO I=1,NPOIN 
-        W(1,I)= HN(I) 
+      DO I=1,NPOIN
+        W(1,I)= HN(I)
         W(2,I)= QU(I)
-        W(3,I)= QV(I)  
+        W(3,I)= QV(I)
       ENDDO
 !
 !  TIME STEP UNDER CFL CONDITION
@@ -928,11 +928,11 @@
       CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,AT,TMAX,
      &           CFLWTD,ICIN,DTVARI,LISTIN)
 !
-! 
+!
 ! INFLOW AND OUTFLOWS
 !
 !      CALL FLUSEW(WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
-!     &            NPTFR,LIMPRO,NBOR,KDIR,KDDL)  
+!     &            NPTFR,LIMPRO,NBOR,KDIR,KDDL)
 !
 !-----------------------------------------------------------------------
 !  FLUX COMPUTATION
@@ -955,11 +955,11 @@
 !
 !-----------------------------------------------------------------------
 !
-!  TIME INTEGRATION 
-!                                                                       
+!  TIME INTEGRATION
+!
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G) 
+     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
 !
 !-----------------------------------------------------------------------
 !
@@ -967,26 +967,26 @@
 !
       IF(YASMH) THEN
         MASSES=0.D0
-      DO  I=1,NPOIN                                                  
+      DO  I=1,NPOIN
         MASSES = MASSES + SMH(I)
       ENDDO
         MASSES = DT * MASSES
       ENDIF
-!                                                                       
-      DO I=1,NPOIN                                                  
-        H(I)  = W(1,I)                             
-        QU(I) = W(2,I)                                                  
+!
+      DO I=1,NPOIN
+        H(I)  = W(1,I)
+        QU(I) = W(2,I)
         QV(I) = W(3,I)
 !  SAVE FLUXES FOR NEXT TIME STEP
         FLUX_OLD(I,1) = FLUX(I,1)
         FLUX_OLD(I,2) = FLUX(I,2)
         FLUX_OLD(I,3) = FLUX(I,3)
-!                                                  
-!       CALCUL DE U,V 
-! 
+!
+!       CALCUL DE U,V
+!
         IF (H(I).GT.EPS) THEN
-          U(I)  = W(2,I) / H(I)                                       
-          V(I)  = W(3,I) / H(I) 
+          U(I)  = W(2,I) / H(I)
+          V(I)  = W(3,I) / H(I)
         ELSE
           U(I) = 0.D0
           V(I) = 0.D0
@@ -1009,7 +1009,7 @@
 !
         WRITE(LU,*) ' '
         WRITE(LU,*) '          *********************** '
-        WRITE(LU,*) '          *     WAF  SCHEME    * '              
+        WRITE(LU,*) '          *     WAF  SCHEME    * '
         WRITE(LU,*) '          *********************** '
         WRITE(LU,*) ' '
 ! INITIALIZATION OF FLUX_OLD
@@ -1033,10 +1033,10 @@
 !-----------------------------------------------------------------------
 !     COPY VARIABLES INTO W
 !
-      DO I=1,NPOIN 
-        W(1,I)= HN(I) 
+      DO I=1,NPOIN
+        W(1,I)= HN(I)
         W(2,I)= QU(I)
-        W(3,I)= QV(I) 
+        W(3,I)= QV(I)
       ENDDO
 !
 !  TIME STEP UNDER CFL CONDITION
@@ -1044,12 +1044,12 @@
       CALL CALDT(NPOIN,G,HN,U,V,DTHAUT,DT,AT,TMAX,
      &           CFLWTD,ICIN,DTVARI,LISTIN)
 !
-! 
+!
 ! INFLOW AND OUTFLOWS
 !
       CALL FLUSEW
      &   (WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
-     &    NPTFR,LIMPRO,NBOR,KDIR,KDDL)  
+     &    NPTFR,LIMPRO,NBOR,KDIR,KDDL)
 !
 !-----------------------------------------------------------------------
 !  FLUX COMPUTATION
@@ -1065,7 +1065,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!  TIME INTEGRATION 
+!  TIME INTEGRATION
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
@@ -1077,7 +1077,7 @@
 !
       IF(YASMH) THEN
         MASSES=0.D0
-      DO  I=1,NPOIN 
+      DO  I=1,NPOIN
         MASSES = MASSES + SMH(I)
       ENDDO
         MASSES = DT * MASSES
@@ -1092,11 +1092,11 @@
         FLUX_OLD(I,2) = FLUX(I,2)
         FLUX_OLD(I,3) = FLUX(I,3)
 !
-!       COMPUTE U AND V 
-! 
+!       COMPUTE U AND V
+!
         IF (H(I).GT.EPS) THEN
           U(I)  = W(2,I) / H(I)
-          V(I)  = W(3,I) / H(I) 
+          V(I)  = W(3,I) / H(I)
         ELSE
           U(I) = 0.D0
           V(I) = 0.D0

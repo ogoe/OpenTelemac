@@ -110,7 +110,7 @@
           W(IELEM,2) = 1.D0 - XB(IELEM,1)**2
           XB(IELEM,3) = (XB(IELEM,3)-XB(IELEM,1)*XB(IELEM,2))/W(IELEM,2)
           W(IELEM,3) = 1.D0 - XB(IELEM,2)**2 -XB(IELEM,3)**2
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -123,11 +123,11 @@
           W(IELEM,2)=1.D0 - XB(IELEM,1)*XB(IELEM,4)
           XB(IELEM,6) = (XB(IELEM,6)-XB(IELEM,1)*XB(IELEM,5))/W(IELEM,2)
           XB(IELEM,3) =  XB(IELEM,3)-XB(IELEM,4)*XB(IELEM,2)
-          W(IELEM,3)  = 1.D0-XB(IELEM,2)*XB(IELEM,5) 
+          W(IELEM,3)  = 1.D0-XB(IELEM,2)*XB(IELEM,5)
      &                - XB(IELEM,3)*XB(IELEM,6)
 ! L D U FACTORISATION
           XB(IELEM,3) = XB(IELEM,3) / W(IELEM,2)
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !

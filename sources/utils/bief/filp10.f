@@ -70,7 +70,7 @@
      &      INPOLY(X(I2),Y(I2),XSOM,YSOM,NSOM) .AND.
      &      INPOLY(X(I3),Y(I3),XSOM,YSOM,NSOM) ) F(IELEM) = C
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !

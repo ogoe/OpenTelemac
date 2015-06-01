@@ -21,7 +21,7 @@
 !+            WITH NO FRICTION
 !warning  DISCRETISATION OF VISC
 !
-!warning  SEE BELOW FOR DEFIITION OF IOPT1 AND IOPT2, RETRIEVED FROM IOPT  
+!warning  SEE BELOW FOR DEFIITION OF IOPT1 AND IOPT2, RETRIEVED FROM IOPT
 !+        IOPT2=1 NOT TREATED HERE, MASS-CONSERVATION WILL BE DOWNGRADED
 !+        IN THIS CASE (A CORRECT TREATMENT MAY RESULT IN INFINITE F)
 !+        THE PROGRAM WILL NOT STOP IF IOPT2=1
@@ -47,12 +47,12 @@
 !+        20/04/2011
 !+        V6P1
 !+   Option IOPT2=1 taken into account when there is an implicit source
-!+   term. In other cases mass-conservation is not ensured (risk of 
+!+   term. In other cases mass-conservation is not ensured (risk of
 !+   division by 0). The implicit source must be negative, like settling
 !+   velocity in Sisyphe. It is impossible to have mass conservation and
 !+   monotonicity when the advection field does not obey the continuity
 !+   equation. The only known application so far is Sisyphe.
-!+  
+!+
 !+   Limitation of fluxes now programmed (see YAFLULIM and FLULIM)
 !
 !history  J-M HERVOUET (LNHE)
@@ -314,13 +314,13 @@
       IF(YAFLULIM) THEN
         DO I=1,MESH%NSEG
           FXMAT(I)=FXMAT(I)*FLULIM(I)
-        ENDDO  
+        ENDDO
       ENDIF
 !
       ELSE
         DO I=1,MESH%NSEG
           FXMAT(I)=GIVEN_FLUX%R(I)
-        ENDDO  
+        ENDDO
       ENDIF
 !
 !----------------------------------------
@@ -392,7 +392,7 @@
           HT%R(I)=HT%R(I)+DT*C
 !                                                VALUE IN RAIN
           F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(TRAIN-F%R(I))
-        ENDDO       
+        ENDDO
       ENDIF
 !
       IF(.NOT.YAFLBOR) THEN
@@ -742,12 +742,12 @@
         DO I=1,NPOIN
           C=MIN(PLUIE%R(I),0.D0)
 !         POSITIVITY NOT TESTED HERE, WOULD REQUIRE C=MAX(C,-HT%R(I)/DT)
-!         BUT THEN MASS-BALANCE WOULD NOT BE CORRECT, 
+!         BUT THEN MASS-BALANCE WOULD NOT BE CORRECT,
           HT%R(I)=HT%R(I)+DT*C
 !                                                VALUE IN VAPOR
 !         F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(0.D0-F%R(I))
           F%R(I)=F%R(I)-DT/MAX(HT%R(I),1.D-4)*C*F%R(I)
-        ENDDO       
+        ENDDO
       ENDIF
 !
 !     BOUNDARY FLUXES : ADDING THE EXITING (POSITIVE) FLUXES
@@ -820,7 +820,7 @@
           DO I = 1,MESH%NPOIN
           F%R(I)=(F%R(I)*HT%R(I)+DT*SM%R(I)*H%R(I))/(H%R(I)-DT*SMI%R(I))
           ENDDO
-        ENDIF            
+        ENDIF
 !
       ELSE
 !
@@ -829,7 +829,7 @@
         DO I = 1,MESH%NPOIN
           F%R(I) = F%R(I)+DT*SM%R(I)
         ENDDO
-!      
+!
       ENDIF
 !
 !-----------------------------------------------------------------------

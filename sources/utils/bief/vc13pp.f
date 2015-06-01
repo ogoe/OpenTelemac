@@ -48,7 +48,7 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
-!history  J-M HERVOUET (EDF R&D LNHE) 
+!history  J-M HERVOUET (EDF R&D LNHE)
 !+        07/01/2013
 !+        V6P3
 !+   X and Y are now given per element.
@@ -214,7 +214,7 @@
      &      +(2*F6-F1)*Y2*(-Z5-3*Z4+3*Z3+Z2)
      &      +2*(F6-F3)*Y3*(-2*Z5+2*Z4-Z2) )*XS144
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -306,7 +306,7 @@
      &    +2*(F6-F3)*X3*(2*Z5-2*Z4+Z2)  )*XS144
 !
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
       ELSEIF(ICOORD.EQ.3) THEN
 !
@@ -355,7 +355,7 @@
         W5(IELEM)=W2(IELEM)
         W6(IELEM)=W3(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !

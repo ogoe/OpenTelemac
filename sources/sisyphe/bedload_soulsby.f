@@ -1,5 +1,5 @@
 !                    **************************
-                     SUBROUTINE BEDLOAD_SOULSBY 
+                     SUBROUTINE BEDLOAD_SOULSBY
 !                    **************************
 !
      &  (UCMOY,HN, UW, NPOIN, DENS, GRAV, DM, DSTAR, HMIN, D90, QSC,
@@ -36,8 +36,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| D90            |-->| D90
@@ -48,7 +48,7 @@
 !| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
 !| HN             |-->| WATER DEPTH
 !| NPOIN          |-->| NUMBER OF POINTS
-!| QSC            |<->| BED LOAD TRANSPORT 
+!| QSC            |<->| BED LOAD TRANSPORT
 !| QSS            |<->| SUSPENDED LOAD TRANSPORT RATE
 !| UCMOY          |-->| CURRENT INTENSITY (M/S)
 !| UW             |-->| ORBITAL WAVE VELOCITY

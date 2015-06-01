@@ -167,7 +167,7 @@
      &                  + XA(IELEM,14) * Y(I4)
      &                  + XA(IELEM,15) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
@@ -222,7 +222,7 @@
      &                  + XA(IELEM,29) * Y(I4)
      &                  + XA(IELEM,30) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -316,7 +316,7 @@
      &                  - XA(IELEM,14) * Y(I4)
      &                  - XA(IELEM,15) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
@@ -371,7 +371,7 @@
      &                  - XA(IELEM,29) * Y(I4)
      &                  - XA(IELEM,30) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -465,7 +465,7 @@
      &                  + XA(IELEM,14) * Y(I4)
      &                  + XA(IELEM,15) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
@@ -520,7 +520,7 @@
      &                  + XA(IELEM,29) * Y(I4)
      &                  + XA(IELEM,30) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -603,7 +603,7 @@
      &                  - XA(IELEM,14) * Y(I4)
      &                  - XA(IELEM,15) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
@@ -658,7 +658,7 @@
      &                  - XA(IELEM,29) * Y(I4)
      &                  - XA(IELEM,30) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -741,7 +741,7 @@
      &                  + XA(IELEM,14) * Y(I4)
      &                  + XA(IELEM,15) * Y(I5) )
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
@@ -796,7 +796,7 @@
      &                  + XA(IELEM,29) * Y(I4)
      &                  + XA(IELEM,30) * Y(I5) )
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -879,7 +879,7 @@
      &                  + XA(IELEM,14) * Y(I4)
      &                  + XA(IELEM,15) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
@@ -934,7 +934,7 @@
      &                  + XA(IELEM,14) * Y(I4)
      &                  + XA(IELEM,15) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -1028,7 +1028,7 @@
      &                  - XA(IELEM,14) * Y(I4)
      &                  - XA(IELEM,15) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
@@ -1083,7 +1083,7 @@
      &                  - XA(IELEM,14) * Y(I4)
      &                  - XA(IELEM,15) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -1177,7 +1177,7 @@
      &                  + XA(IELEM,14) * Y(I4)
      &                  + XA(IELEM,15) * Y(I5)
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
@@ -1232,7 +1232,7 @@
      &                  + XA(IELEM,14) * Y(I4)
      &                  + XA(IELEM,15) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -1315,7 +1315,7 @@
      &                  - XA(IELEM,14) * Y(I4)
      &                  - XA(IELEM,15) * Y(I5)
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
@@ -1370,7 +1370,7 @@
      &                  - XA(IELEM,14) * Y(I4)
      &                  - XA(IELEM,15) * Y(I5)
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -1453,7 +1453,7 @@
      &                  + XA(IELEM,14) * Y(I4)
      &                  + XA(IELEM,15) * Y(I5) )
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'Q') THEN
 !
@@ -1508,7 +1508,7 @@
      &                  + XA(IELEM,14) * Y(I4)
      &                  + XA(IELEM,15) * Y(I5) )
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !

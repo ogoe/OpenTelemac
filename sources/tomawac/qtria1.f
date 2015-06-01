@@ -70,7 +70,7 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER           IIND  , IFMA  , IFF   , IPL   , IPO
-      DOUBLE PRECISION  CPH   , CGR   , BIF   , RPS2  , RP    , 
+      DOUBLE PRECISION  CPH   , CGR   , BIF   , RPS2  , RP    ,
      &                  FPS2  , CPHS2 , XKPS2 , URS   , RIND  , FMAX  ,
      &                  F2P   , CPH2P , XK2P  , CGR2P , E2P   , EPS2  ,
      &                  OMP   , OM2P  , COEF  , D     , DEUKD ,

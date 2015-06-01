@@ -1,5 +1,5 @@
 !                       *****************
-                        SUBROUTINE CONDIM 
+                        SUBROUTINE CONDIM
 !                       *****************
 !
 !
@@ -56,10 +56,10 @@
 !     X0=80.0D0
       X0=150.0D0
 !
-      DO IPOIN2=1,NPOIN2 
+      DO IPOIN2=1,NPOIN2
         HV1=SQRT(3.0D0/4.0D0*WH/WX**3.0D0)*(X(IPOIN2)-X0)
         HV2=2.0D0/(EXP(HV1)+EXP(-HV1))
-        H%R(IPOIN2)=H%R(IPOIN2) + WH*HV2**2 
+        H%R(IPOIN2)=H%R(IPOIN2) + WH*HV2**2
       END DO
 !
       CALL OS ('X=Y     ', HN, H, H, 0.D0)
@@ -155,7 +155,7 @@
       CALL OS( 'X=C     ' , V , V , V , 0.0D0 )
       CALL OS( 'X=C     ' , W , W , W , 0.0D0 )
 !
-! SOLITARY WAVE INITIAL VELOCITY - ANALYTICAL SOLUTION 
+! SOLITARY WAVE INITIAL VELOCITY - ANALYTICAL SOLUTION
 !
       DO IPLAN=1,NPLAN
         DO IPOIN2=1,NPOIN2
@@ -198,7 +198,7 @@
 !
 !
 ! INITIALIZE THE PRESSURE FIELDS TO 0.0
-! 
+!
       IF(NONHYD) THEN
         CALL OS('X=C     ',X=DP ,C=0.D0)
         CALL OS('X=C     ',X=DPN,C=0.D0)

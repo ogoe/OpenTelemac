@@ -77,7 +77,7 @@
            XSOM=XSOM-A(I,J)*B(J)
           ENDDO
         ELSEIF(XSOM.NE.0.D0) THEN
-          II=I 
+          II=I
           ! A NONZERO ELEMENT WAS ENCOUNTERED, SO FROM NOW ON
           ! WILL HAVE TO DO THE SUMS IN THE ABOVE LOOP
         ENDIF

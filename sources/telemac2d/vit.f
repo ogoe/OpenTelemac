@@ -82,12 +82,12 @@
           WRITE(FCT(5:6),FMT='(I2)') I
           FCT(7:7)=')'
         ELSE
-          IF (LNG.EQ.1) WRITE(LU,*) 'VIT NE PEUT PAS GERER PLUS 
+          IF (LNG.EQ.1) WRITE(LU,*) 'VIT NE PEUT PAS GERER PLUS
      &                               DE 99 FRONTIERES'
-          IF (LNG.EQ.2) WRITE(LU,*) 'VIT NOT PROGRAMMED FOR MORE 
+          IF (LNG.EQ.2) WRITE(LU,*) 'VIT NOT PROGRAMMED FOR MORE
      &                               THAN 99 BOUNDARIES'
           CALL PLANTE(1)
-          STOP 
+          STOP
         ENDIF
         CALL READ_FIC_FRLIQ(VIT,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
 !

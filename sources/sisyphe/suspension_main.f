@@ -55,7 +55,7 @@
 !+        BUG CORRECTION : SEND FDM(I) instead of ACLADM
 !+        suppression of NSOUS, ISOUS
 !+        adding VCE, TOCE_SABLE
-!+ 
+!+
 !history  J.-M. HERVOUET
 !+        19/04/2011
 !+        V6P1
@@ -64,7 +64,7 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables   
+!+   Name of variables
 !
 !history  MAK (HRW)
 !+        31/05/2012
@@ -75,12 +75,12 @@
 !+        18/06/2012
 !+        V6P2
 !+   updated version with HRW's development for Soulsby-van Rijn's concentration
-!+       V6P2    
+!+       V6P2
 !
 !history  C. VILLARET
 !+        21/08/2012
 !+        V6P2
-!+    Added call variable to suspension_computation     
+!+    Added call variable to suspension_computation
 !
 !history  C. VILLARET
 !+        28/08/2012
@@ -88,8 +88,8 @@
 !+    Added ES_SABLE and ES_VASE
 !+    Replaced CONC_VASE by CONC
 !
-!history  J-M HERVOUET (EDF LAB, LNHE) 
-!+        28/04/2014 
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        28/04/2014
 !+        V7P0
 !+   OPTSUP replaced by OPTADV in the call to suspension_computation.
 !+   (see keyword SCHME OPTION FOR ADVECTION)
@@ -103,7 +103,7 @@
 !| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS AND PER LAYER
 !| BFBOR          |-->| BOUNDARY CONDITION ON F: NU*DF/DN=AFBOR*F+BFBOR
 !| BILMA          |-->| MASS BALANCE
-!| CBOR           |<->| IMPOSED SUSPENDED SAND CONCENTRATION AT THE BOUNDARY 
+!| CBOR           |<->| IMPOSED SUSPENDED SAND CONCENTRATION AT THE BOUNDARY
 !| CF             |-->| QUADRATIC FRICTION COEFFICIENT
 !| CHARR          |-->| LOGICAL, BEDLOAD OR NOT
 !| CLT            |<->| BOUNDARY CONDITIONS FOR TRACER (MODIFIED LITBOR)
@@ -127,7 +127,7 @@
 !| ELAY           |<->| THICKNESS OF TOP ACTIVE LAYER (SANG GRADING ALGORITHM)
 !|                |<->| THICKNESS OF THE WHOLE COHESIVE SEDIMENT BED (CONSOLIDATION)
 !| ENTET          |<->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION
-!| ENTETS         |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION FOR SUSPENSION 
+!| ENTETS         |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION FOR SUSPENSION
 !| ES             |<->| THICKNESS OF EACH LAYER (M)
 !| ES_VASE        |<->| THICKNESS OF THE MUD LAYER (M)
 !| ES_SABLE       |<->| THICKNESS OF THE SAND LAYER (M)
@@ -147,16 +147,16 @@
 !| ICQ            |-->| FLAG FOR REFERENCE CONCENTRATION FORMULA
 !| IELMT          |-->| NUMBER OF ELEMENTS
 !| IFAMAS         |-->| A MODIFIED IFABOR WHEN ELEMENTS ARE MASKED
-!| IMP_INFLOW_C   |-->| LOGICAL, IMPOSED EQUILIBRIUM CONCENTRATION AT THE INFLOW OR NOT 
+!| IMP_INFLOW_C   |-->| LOGICAL, IMPOSED EQUILIBRIUM CONCENTRATION AT THE INFLOW OR NOT
 !| IT1            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
 !| IT2            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
 !| IT3            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
 !| IT4            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
-!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| KARMAN         |-->| VON KARMAN CONSTANT
 !| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
-!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION 
+!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
 !| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
 !| KNEU           |-->| CONVENTION FOR NEUMANN CONDITION
 !| KS             |-->| TOTAL BED ROUGHNESS
@@ -168,38 +168,38 @@
 !| KZ             |<->| COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
 !| LICBOR         |-->| BOUNDARY CONDITIONS FOR SEDIMENT
 !| LIMDIF         |<->| BOUNDARY CONDITIONS FOR DIFFUSION
-!| LT             |-->| ITERATION 
+!| LT             |-->| ITERATION
 !| MASDEP         |<--| TOTAL DEPOSITED MASS
 !| MASDEPT        |<--| DEPOSITED MASS DURING THE TIME STEP
 !| MASED0         |<->| SUSPENDED MASS BALANCE
 !| MASFIN         |<--| MASS AT THE END
 !| MASINI         |<->| INITIAL MASS
 !| MASKEL         |-->| MASKING OF ELEMENTS
-!| MASKPT         |-->| MASKING PER POINT 
+!| MASKPT         |-->| MASKING PER POINT
 !| MASKTR         |<->| MASKING FOR TRACERS, PER POINT
 !| MASSOU         |<--| MASS OF TRACER ADDED BY SOURCE TERM
 !|                |   | SEE DIFSOU
-!| MASTCP         |<--| ??? NE SERT A RIEN, A SUPPRIMER 
+!| MASTCP         |<--| ??? NE SERT A RIEN, A SUPPRIMER
 !| MASTEN         |<->| MASS ENTERED THROUGH LIQUID BOUNDARY
 !| MASTOU         |<->| MASS CREATED BY SOURCE TERM
 !| MAXADV         |-->| MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES
 !| MBOR           |<->| MATRIX OBJECT
 !| MESH           |<->| MESH STRUCTURE
 !| MIXTE          |-->| LOGICAL, MIXTE SEDIMENT OR NOT
-!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS 
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| MS_SABLE       |<->| MASS OF SAND PER LAYER (KG/M2)
 !| MS_VASE        |<->| MASS OF MUD PER LAYERv (KG/M2)
 !| MU             |-->| CORRECTION FACTOR FOR BED ROUGHNESS
 !| NOMBLAY        |-->| NUMBER OF LAYERS FOR CONSOLIDATION
 !| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
-!| NIT            |-->| TOTAL NUMBER OF ITERATIONS 
+!| NIT            |-->| TOTAL NUMBER OF ITERATIONS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
 !| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
 !| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
 !| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
-!| OPTDIF         |-->| OPTION FOR THE DISPERSION 
+!| OPTDIF         |-->| OPTION FOR THE DISPERSION
 !| OPTADV         |-->| SCHEME OPTION FOR ADVECTION
 !| PARTHENIADES   |-->| CONSTANT OF THE KRONE AND PARTHENIADES EROSION LAW (M/S)
 !| PASS           |<->| IN FACT PASS_SUSP IN SISYPHE.F, ARRIVES AS .TRUE.
@@ -212,7 +212,7 @@
 !| QS_C           |-->| BEDLOAD TRANSPORT RATE
 !| QS_S           |<->| SUSPENDED LOAD TRANSPORT RATE
 !| RESOL          |-->| CHOICE OF ADVECTION SCHEME
-!| S              |<->| VOID STRUCTURE 
+!| S              |<->| VOID STRUCTURE
 !| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT
 !| SLVTRA         |<->| SLVCFG STRUCTURE
 !| SOLSYS         |-->| SLVCFG STRUCTURE
@@ -256,15 +256,15 @@
 !|                |   | DEPENDS OF OPTIONS
 !| XKY            |-->| COEFFICIENT USED FOR COMPUTING THE DISPERSION
 !|                |   | DEPENDS OF OPTIONS
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !| XMVS           |-->| SEDIMENT DENSITY
 !| XWC            |-->| SETTLING VELOCITIES PER CLASS OF SEDIMENT
 !| ZCONV          |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
 !|                |   | IS DM1*GRAD(ZCONV)
 !| ZERO           |-->| ZERO
 !| ZF             |-->| ELEVATION OF BOTTOM
-!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT 
-!| ZF_S           |<->| ACCUMULATED BED EVOLUTION DUE TO SUSPENDED SEDIMENT 
+!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT
+!| ZF_S           |<->| ACCUMULATED BED EVOLUTION DUE TO SUSPENDED SEDIMENT
 !| ZREF           |-->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -352,7 +352,7 @@
         ! *************************  !
         ! III - INITIAL MASS-BALANCE !
         ! *************************  !
-!       
+!
         IF(BILMA) THEN
           DO I = 1,NSICLA
 !           JMH 18/04/2011: MUST BE DONE LIKE IN SUSPENSION_BILAN
@@ -362,17 +362,17 @@
 !           CALL VECTOR(T1, '=', 'MASVEC          ', IELMT, 1.D0,
 !    &                  CS%ADR(I)%P, T1, T1, T1, T1, T1, MESH, MSK,
 !    &                  MASKEL)
-!       
+!
 !           JMH 19/04/2011
             IF(CODE(1:7).EQ.'TELEMAC') THEN
 !             WITH COUPLING, HN-TEL IS THE OLD DEPTH
 !                            HN     IS THE NEW DEPTH
-              MASED0(I) = DOTS(T1,HN_TEL) 
+              MASED0(I) = DOTS(T1,HN_TEL)
             ELSE
-!             SISYPHE WITHOUT COUPLING, MASS CONSERVATION 
+!             SISYPHE WITHOUT COUPLING, MASS CONSERVATION
 !             DIFFICULT TO CHECK...
-              MASED0(I) = DOTS(T1,HN) 
-            ENDIF         
+              MASED0(I) = DOTS(T1,HN)
+            ENDIF
             IF(NCSIZE.GT.1) MASED0(I)=P_DSUM(MASED0(I))
             MASINI(I) = MASED0(I)
             MASTEN(I) = 0.D0
@@ -382,7 +382,7 @@
             IF(LNG.EQ.2) WRITE(LU,2) I, MASED0(I)
           ENDDO
         ENDIF
-!       
+!
         !----------------------------------------------------------------!
 001     FORMAT(1X,'QUANTITE INITIALE EN SUSPENSION POUR LA CLASSE ',
      &         I2,' : ', G16.7, ' M3')
@@ -448,15 +448,15 @@
               ES(I,J)= ES_VASE (I,J) + ES_SABLE(I,J)
               IF(ES(I,J).GT.1.D-04) THEN
                 AVAIL(I,J,1)= ES_SABLE(I,J)/ES(I,J)
-                AVAIL (I,J,2)= ES_VASE(I,J)/ES(I,J)    
+                AVAIL (I,J,2)= ES_VASE(I,J)/ES(I,J)
 !CVL          ELSE
 !CVL            AVAIL(I,J,1)=0.5 D0
-!CVL            AVAIL(I,J,2)=0.5 D0  
-              ENDIF      
+!CVL            AVAIL(I,J,2)=0.5 D0
+              ENDIF
             ENDIF
             ELAY%R(I)=ELAY%R(I)+ES(I,J)
-          ENDDO 
-        ENDDO      
+          ENDDO
+        ENDDO
       ENDIF
 !
       ! *********************************************************** !

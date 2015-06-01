@@ -45,7 +45,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER YEAR,MONTH,DAY,NDAY,HOUR,MINUTE,SECOND,I
-! 
+!
       DOUBLE PRECISION PI,TWOPI,DTR
       DOUBLE PRECISION TJ,PLUN,NLUN
       DOUBLE PRECISION XI,NU,TGI2,PPP,X1QA,X1RA,IANG,TGN2,AT1,AT2
@@ -183,7 +183,7 @@
       FWAVE(6) = F78
 ! 2SM6     TAB 2A
       FWAVE(7) = F78
-! EPSILON2 ( = MNS2)    TAB 2A 
+! EPSILON2 ( = MNS2)    TAB 2A
       FWAVE(8) = F78**2
 ! TTA1     A28
       FWAVE(9) = F76

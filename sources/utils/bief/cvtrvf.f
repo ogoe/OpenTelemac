@@ -19,7 +19,7 @@
 !+            WITH NO FRICTION
 !warning  DISCRETISATION OF VISC
 !
-!history  CHI-TUAN PHAM  (LNHE)  
+!history  CHI-TUAN PHAM  (LNHE)
 !+        09/10/09
 !+        V6P0
 !+
@@ -105,12 +105,12 @@
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| OPDADV         |-->| SCHEME OPTION FOR THE ADVECTION OF TRACERS
 !|                |   | WITH N SCHEME:
-!|                |   |  1: EXPLICIT   
+!|                |   |  1: EXPLICIT
 !|                |   |  2: IMPLICIT
 !|                |   |  3: PREDICTOR-CORRECTOR 2ND ORDER IN TIME (MONOTONICITY NOT PROVED)
 !|                |   |  4: IMPLICIT PREDICTOR EXPLICIT CORRECTOR 2ND ORDER IN TIME
 !|                |   | WITH PSI SCHEME:
-!|                |   |  1: EXPLICIT   
+!|                |   |  1: EXPLICIT
 !|                |   |  2: PREDICTOR-CORRECTOR 1ST ORDER IN TIME
 !|                |   |  3: PREDICTOR-CORRECTOR 2ND ORDER IN TIME (MONOTONICITY NOT PROVED)
 !|                |   |  4: IMPLICIT PREDICTOR EXPLICIT CORRECTOR 2ND ORDER IN TIME
@@ -420,7 +420,7 @@
 !
 !
       IF(NCSIZE.GT.1) DDT=P_DMIN(DDT)
-      DDT=MIN(DDT,DT_REMAIN) 
+      DDT=MIN(DDT,DT_REMAIN)
 !
 !     T2 WILL TAKE THE SUCCESSIVE VALUES OF H
 !     AT THE BEGINNING OF THE SUB-TIMESTEP
@@ -469,7 +469,7 @@
      &                    MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
 !    &                    FI_I,FSTAR,
      &                    T8%R,F%R,T5%R,MESH%SURFAC%R,DDT)
-        IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH)  
+        IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH)
 !
 !       COMPUTE THE SECOND ORDER CORRECTION FORM
 !

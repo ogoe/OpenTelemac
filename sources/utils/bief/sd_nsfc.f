@@ -51,7 +51,7 @@
 !+ NIA   \ IRU,  - VECTORS USED IN A MANNER ANALOGOUS TO  IRL AND JRL
 !+ NIA   \ JRU      TO FIND THE COLUMNS OF  U.
 !+       \           SIZE OF EACH = N.
-!+       
+!+
 !+  INTERNAL VARIABLES..
 !+    JLPTR - POINTS TO THE LAST POSITION USED IN  JL.
 !+    JUPTR - POINTS TO THE LAST POSITION USED IN  JU.
@@ -60,7 +60,7 @@
 !+                FOR EXAMPLE,  JMIN=IA(K), JMAX=IA(K+1)-1.
 !+
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
-!         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS 
+!         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS
 !         FOR CLARITY
 !
 !history  C. PEYRARD (LNHE)
@@ -69,7 +69,7 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FLAG           |<--| INDICATOR ERROR : 
+!| FLAG           |<--| INDICATOR ERROR :
 !|                |   |= N + R(K):  NULL ROW IN A
 !|                |   |= 2*N + R(K):DUPLICATE ENTRY IN A
 !|                |   |= 3*N + K:INSUFFICIENT STORAGE FOR JL

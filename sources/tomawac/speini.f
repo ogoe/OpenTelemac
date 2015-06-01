@@ -93,7 +93,7 @@
       INTEGER, INTENT(IN)    ::  NPOIN2, NPLAN , NF    , INISPE, FRABI
       DOUBLE PRECISION, INTENT(IN)    :: GRAVIT, FREMAX, FETCH , SIGMAA
       DOUBLE PRECISION, INTENT(IN)    :: SIGMAB, GAMMA
-      DOUBLE PRECISION, INTENT(IN)    :: FPIC  , HM0   , ALPHIL, TETA1 
+      DOUBLE PRECISION, INTENT(IN)    :: FPIC  , HM0   , ALPHIL, TETA1
       DOUBLE PRECISION, INTENT(IN)    :: SPRED1, TETA2
       DOUBLE PRECISION, INTENT(IN)    :: SPRED2, XLAMDA, E2FMIN
       DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF), TETA(NPLAN), SPEC(NF)
@@ -142,7 +142,7 @@
           IF (UVENT.GT.UVMIN) THEN
 !
 !           COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
-!           
+!
             GXU=GX/(UVENT*UVENT)
             UG = UVENT/GRAVIT
             FP = MAX(0.13D0,COEFA*GXU**COEFD)
@@ -154,7 +154,7 @@
      &  DEUPI , GRAVIT, E2FMIN, FPMIN )
 !
 !           COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!           
+!
             SPR1=SPRED1
             TET1=ATAN2(UV(IP),VV(IP))
             SPR2=1.D0
@@ -169,7 +169,7 @@
             ENDIF
 !
 !           COMPUTES THE DIRECTIONAL SPECTRUM
-!           
+!
             DO JF=1,NF
               DO JP=1,NPLAN
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
@@ -192,7 +192,7 @@
           UVENT=SQRT(UV(IP)**2+VV(IP)**2)
 !
 !         COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
-!         
+!
           IF(UVENT.GT.UVMIN) THEN
             GXU=GX/UVENT**2
             UG = UVENT/GRAVIT
@@ -209,7 +209,7 @@
      &  DEUPI , GRAVIT, E2FMIN, FPMIN )
 !
 !         COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!         
+!
           IF (UVENT.GT.UVMIN) THEN
             TET1=ATAN2(UV(IP),VV(IP))
           ELSE
@@ -228,7 +228,7 @@
           ENDIF
 !
 !         COMPUTES THE DIRECTIONAL SPECTRUM
-!         
+!
           DO JF=1,NF
             DO JP=1,NPLAN
               F(IP,JP,JF)=SPEC(JF)*FRA(JP)
@@ -259,7 +259,7 @@
      &  DEUPI , GRAVIT, E2FMIN, FPMIN )
 !
 !           COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!           
+!
             SPR1=SPRED1
             TET1=ATAN2(UV(IP),VV(IP))
             SPR2=1.D0
@@ -274,7 +274,7 @@
             ENDIF
 !
 !           COMPUTES THE DIRECTIONAL SPECTRUM
-!           
+!
             DO JF=1,NF
               DO JP=1,NPLAN
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
@@ -296,7 +296,7 @@
         DO IP=1,NPOIN2
 !
 !         COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
-!        
+!
           AL = ALPHIL
           FP = FPIC
           CALL SPEJON
@@ -304,7 +304,7 @@
      &  DEUPI , GRAVIT, E2FMIN, FPMIN )
 !
 !         COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!         
+!
           SPR1=SPRED1
           TET1=TETA1
           SPR2=SPRED2
@@ -319,7 +319,7 @@
           ENDIF
 !
 !         COMPUTES THE DIRECTIONAL SPECTRUM
-!         
+!
           DO JF=1,NF
             DO JP=1,NPLAN
               F(IP,JP,JF)=SPEC(JF)*FRA(JP)
@@ -345,7 +345,7 @@
           IF (UVENT.GT.UVMIN) THEN
 !
 !           COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
-!           
+!
             AL=COEF
             FP = FPIC
             CALL SPEJON
@@ -353,7 +353,7 @@
      &  DEUPI , GRAVIT, E2FMIN, FPMIN )
 !
 !           COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!           
+!
             SPR1=SPRED1
             TET1=ATAN2(UV(IP),VV(IP))
             SPR2=1.D0
@@ -368,7 +368,7 @@
             ENDIF
 !
 !           COMPUTES THE DIRECTIONAL SPECTRUM
-!           
+!
             DO JF=1,NF
               DO JP=1,NPLAN
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
@@ -393,7 +393,7 @@
         DO IP=1,NPOIN2
 !
 !         COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
-!         
+!
           AL = COEF
           FP = FPIC
           CALL SPEJON
@@ -401,7 +401,7 @@
      &  DEUPI , GRAVIT, E2FMIN, FPMIN )
 !
 !         COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!         
+!
           SPR1=SPRED1
           TET1=TETA1
           SPR2=SPRED2
@@ -417,7 +417,7 @@
 
 !
 !         COMPUTES THE DIRECTIONAL SPECTRUM
-!         
+!
           DO JF=1,NF
             DO JP=1,NPLAN
               F(IP,JP,JF)=SPEC(JF)*FRA(JP)
@@ -441,7 +441,7 @@
         DO IP=1,NPOIN2
 !
 !         COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
-!         
+!
           AL = COEF
           FP = FPIC
 !
@@ -450,7 +450,7 @@
      &  DEUPI , GRAVIT, E2FMIN, FPMIN , DEPTH(IP) )
 !
 !         COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!         
+!
           SPR1=SPRED1
           TET1=TETA1
           SPR2=SPRED2
@@ -465,7 +465,7 @@
           ENDIF
 !
 !         COMPUTES THE THE DIRECTIONAL SPECTRUM
-!         
+!
           DO JF=1,NF
             DO JP=1,NPLAN
               F(IP,JP,JF)=SPEC(JF)*FRA(JP)

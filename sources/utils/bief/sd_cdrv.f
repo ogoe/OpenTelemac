@@ -186,18 +186,18 @@
 !history  C.PEYRARD (LNHE)
 !+        30/06/2013
 !+        V6P3
-!+   SD_NDRV => SD_CDRV 
+!+   SD_NDRV => SD_CDRV
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->|NONZERO ENTRIES OF THE COEFFICIENT MATRIX M, 
+!| A              |-->|NONZERO ENTRIES OF THE COEFFICIENT MATRIX M,
 !|                |   |STORED BY ROWS
-!| B              |-->|RIGHT-HAND SIDE B ; 
+!| B              |-->|RIGHT-HAND SIDE B ;
 !| C              |-->|ORDERING OF THE COLUMNS OF MATRIX
-!| ESP            |---|INTEGER DIMENSION STORAGE : IF SUFFICIENT STORAGE  
-!|                |   |WAS AVAILABLE TO PERFORM THE SYMBOLIC  
-!|                |   |FACTORIZATION (NSF), THEN ESP IS SET TO THE AMOUNT 
-!|                |   | OF EXCESS STORAGE PROVIDED (NEGATIVE IF  
-!|                |   |INSUFFICIENT STORAGE WAS AVAILABLE TO PERFORM 
+!| ESP            |---|INTEGER DIMENSION STORAGE : IF SUFFICIENT STORAGE
+!|                |   |WAS AVAILABLE TO PERFORM THE SYMBOLIC
+!|                |   |FACTORIZATION (NSF), THEN ESP IS SET TO THE AMOUNT
+!|                |   | OF EXCESS STORAGE PROVIDED (NEGATIVE IF
+!|                |   |INSUFFICIENT STORAGE WAS AVAILABLE TO PERFORM
 !|                |   |THE NUMERIC FACTORIZATION (NNF)).
 !| FLAG           |<--|ERROR FLAG;  VALUES AND THEIR MEANINGS ARE :
 !|                |   |0     NO ERRORS DETECTED
@@ -250,18 +250,18 @@
       DOUBLE PRECISION, INTENT(INOUT) :: A(*),Z(N),RSP(NSP)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!      
-      INTEGER  D, U, Q, ROW, TMP, AR,  UMAX      
+!
+      INTEGER  D, U, Q, ROW, TMP, AR,  UMAX
       INTEGER IL,IJL,IU,IJU,IRL,JRL,JL,MAX,JLMAX,IRA,JRA,IRAC,IRU,JRU
       INTEGER JUTMP , JUMAX,JU
-      INTEGER I,J ,L,LMAX , LRATIO    
-      
+      INTEGER I,J ,L,LMAX , LRATIO
+
 !  SET LRATIO EQUAL TO THE RATIO BETWEEN THE LENGTH OF FLOATING POINT
 !  AND INTEGER ARRAY DATA.  E. G., LRATIO = 1 FOR (REAL, INTEGER),
 !  LRATIO = 2 FOR (DOUBLE PRECISION, INTEGER)
 !
-!      DATA LRATIO/2/  
-      LRATIO=1         
+!      DATA LRATIO/2/
+      LRATIO=1
       IF (PATH.LT.1 .OR. 5.LT.PATH)  GO TO 111
 !******INITIALIZE AND DIVIDE UP TEMPORARY STORAGE  *******************
       IL   = 1
@@ -270,7 +270,7 @@
       IJU  = IU  + (N+1)
       IRL  = IJU +   N
       JRL  = IRL +   N
-      JL   = JRL +   N      
+      JL   = JRL +   N
 !
 !  ******  REORDER A IF NECESSARY, CALL NSFC IF FLAG IS SET  ***********
       IF ((PATH-1) * (PATH-5) .NE. 0)  GO TO 5
@@ -324,7 +324,7 @@
       TMP   = ROW - N
       UMAX  = TMP - U
       ESP   = UMAX - (ISP(IU+N) - 1)
-!      
+!
       IF ((PATH-1) * (PATH-2) .NE. 0)  GO TO 6
         IF (UMAX.LT.0)  GO TO 110
 !CP        WRITE(LU,*) 'CCP : ON APPELLE SD_NNFC_CP'
@@ -349,7 +349,7 @@
      &     (N,  R, C,  ISP(IL), ISP(JL), ISP(IJL), RSP(L),
      &      RSP(D),    ISP(IU), ISP(JU), ISP(IJU), RSP(U),
      &      Z, B,  RSP(TMP))
-        
+
    8  RETURN
 !
 ! ** ERROR.. ERROR DETECTED IN NROC, NSFC, NNFC, OR NNSC

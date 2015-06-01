@@ -36,8 +36,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables   
-!+   
+!+   Name of variables
+!+
 !history  MAK (HRW)
 !+        31/05/2012
 !+        V6P2
@@ -65,9 +65,9 @@
 !| QSC            |-->| BED LOAD TRANSPORT RATE
 !| TAUP           |-->| SKIN FRICTION
 !| VCE            |-->| FLOW VISCOSITY
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !| XMVS           |-->| WATER DENSITY
-!| XWC            |-->| SETTLING VELOCITIES 
+!| XWC            |-->| SETTLING VELOCITIES
 !| ZERO           |-->| ZERO
 !| ZREF           |-->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -126,25 +126,25 @@
 !
       ELSEIF(ICQ.EQ.3) THEN
 !
-        IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_VANRIJN' 
+        IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_VANRIJN'
         CALL SUSPENSION_VANRIJN(FDM,TAUP,NPOIN,GRAV,XMVE,XMVS,
      &                          VCE,ZERO,AC,CSTAEQ,ZREF)
         IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_VANRIJN'
         DO I=1,NPOIN
           CSTAEQ%R(I)=CSTAEQ%R(I)*AVA(I)
         ENDDO
-        CALL OS('X=CY    ', X=FLUER, Y=CSTAEQ, C=XWC) 
+        CALL OS('X=CY    ', X=FLUER, Y=CSTAEQ, C=XWC)
       ELSEIF(ICQ.EQ.4) THEN
         IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_SANDFLOW'
         CALL SUSPENSION_SANDFLOW(FDM,FD90,TAUP,NPOIN,GRAV,XMVE,XMVS,
      &              ZERO,AC,CSTAEQ,ZREF,HN,U2D,V2D,CSRATIO)
         IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_SANDFLOW'
-        DO I=1,NPOIN 
+        DO I=1,NPOIN
           CSTAEQ%R(I)=CSTAEQ%R(I)*AVA(I)
         ENDDO
-        CALL OS('X=CY    ', X=FLUER, Y=CSTAEQ, C=XWC) 
+        CALL OS('X=CY    ', X=FLUER, Y=CSTAEQ, C=XWC)
 !
-      ENDIF 
+      ENDIF
 !
 !======================================================================!
 !======================================================================!

@@ -1,7 +1,7 @@
 !                       *****************
                         SUBROUTINE CONDIM
 !                       *****************
-! 
+!
 !
 !***********************************************************************
 ! TELEMAC 3D VERSION 5.1    11/12/00      J-M HERVOUET(LNH) 30 87 80 18
@@ -62,17 +62,17 @@
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
 !     ZONE A MODIFIER
-!     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE                                                     
-        IF(LNG.EQ.1) WRITE(LU,10)                                       
-        IF(LNG.EQ.2) WRITE(LU,11)                                       
+!     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE
+        IF(LNG.EQ.1) WRITE(LU,10)
+        IF(LNG.EQ.2) WRITE(LU,11)
 10      FORMAT(1X,'CONDIM : AVEC DES CONDITIONS INITIALES PARTICULIERES'
-     &      ,/,1X,'         VOUS DEVEZ MODIFIER CONDIM')                
-11      FORMAT(1X,'CONDIM : WITH SPECIAL INITIAL CONDITIONS'            
-     &      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')                 
-        CALL PLANTE(1)                                                  
+     &      ,/,1X,'         VOUS DEVEZ MODIFIER CONDIM')
+11      FORMAT(1X,'CONDIM : WITH SPECIAL INITIAL CONDITIONS'
+     &      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')
+        CALL PLANTE(1)
         STOP
-!     END OF SPECIAL INITIAL CONDITIONS                                                            
-!     FIN DE LA ZONE A MODIFIER      
+!     END OF SPECIAL INITIAL CONDITIONS
+!     FIN DE LA ZONE A MODIFIER
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIM : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -81,7 +81,7 @@
         WRITE(LU,*) 'CONDIM: INITIAL CONDITION UNKNOWN: ',CDTINI
         ENDIF
         STOP
-      ENDIF 
+      ENDIF
       ELSE
         IF(LNG.EQ.1) WRITE(LU,*) 'HAUTEUR LUE DANS LE FICHIER BINAIRE 1'
         IF(LNG.EQ.2) WRITE(LU,*) 'DEPTH IS READ IN THE BINARY FILE 1'
@@ -156,7 +156,7 @@
 !
 !     INITIALISATION OF VELOCITIES
 !
-      IF(SUIT2) THEN       
+      IF(SUIT2) THEN
         DO I=1,NPLAN
           DO J=1,NPOIN2
             U%R((I-1)*NPOIN2+J)=U2D%R(J)
@@ -164,7 +164,7 @@
           ENDDO
         ENDDO
       ELSE
-! CV: initialisation vitesses comme dans Tel2d      
+! CV: initialisation vitesses comme dans Tel2d
         CALL OS( 'X=C     ' , U , U , U , 0.25D0/(0.6D0*1.1D0))
         CALL OS( 'X=C     ' , V , V , V , 0.D0 )
       ENDIF
@@ -202,8 +202,8 @@
       IF(NONHYD) THEN
         CALL OS('X=C     ', DP, DP, DP, 0.D0)
            WRITE (LU,*) 'CONDIM: DYNAMIC PRESSURE INITIALISED TO ZERO'
-        CALL PHSTAT                       
-     &       (PH%R,DELTAR%R,Z, T3_01%R, T3_02%R, RHO0, GRAV,          
+        CALL PHSTAT
+     &       (PH%R,DELTAR%R,Z, T3_01%R, T3_02%R, RHO0, GRAV,
      &                      NPOIN3, NPOIN2, NPLAN, PRIVE )
 !!!        WRITE (LU,*) 'CONDIM: HYDROSTATIC PRESSURE INITIALISED.'
       ENDIF
@@ -260,9 +260,9 @@
       INTEGER, INTENT(IN) :: NPOIN2, LISFON
       LOGICAL, INTENT(IN) :: MSK
       TYPE (BIEF_OBJ), INTENT(INOUT) :: SZF, ST1, ST2
-      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(INOUT) :: ZF, T1, T2 
-      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(IN) :: X,Y 
-      TYPE (BIEF_OBJ),  INTENT(INOUT) :: PRIVE 
+      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(INOUT) :: ZF, T1, T2
+      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(IN) :: X,Y
+      TYPE (BIEF_OBJ),  INTENT(INOUT) :: PRIVE
       TYPE (BIEF_OBJ),  INTENT(IN)    :: MASKEL
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: MATR2D
       TYPE (BIEF_MESH), INTENT(INOUT) :: MESH2D
@@ -292,15 +292,15 @@
 !
 !  Bosse à t=0
 !
-      PI=3.141592653589793D0 
-      DO I=1,NPOIN2                                              
+      PI=3.141592653589793D0
+      DO I=1,NPOIN2
         ZF(I) = 0.D0
         IF (MESH2D%X%R(I).GE.2.D0.AND.MESH2D%X%R(I).LE.10.D0) THEN
-           ZF(I)=.1D0*DSIN(PI*(MESH2D%X%R(I)-2.D0)/8.D0)**2      
-        END IF                                                  
-      ENDDO   
+           ZF(I)=.1D0*DSIN(PI*(MESH2D%X%R(I)-2.D0)/8.D0)**2
+        END IF
+      ENDDO
 !
-! 
+!
       RETURN
       END SUBROUTINE CORFON
 

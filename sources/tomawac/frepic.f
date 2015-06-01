@@ -50,7 +50,7 @@
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
       INTEGER,INTENT(IN)             :: NF    , NPLAN , NPOIN2
-      DOUBLE PRECISION,INTENT(IN)    :: F(NPOIN2,NPLAN,NF), FREQ(NF)  
+      DOUBLE PRECISION,INTENT(IN)    :: F(NPOIN2,NPLAN,NF), FREQ(NF)
       DOUBLE PRECISION,INTENT(INOUT) :: EMAX(NPOIN2),E(NPOIN2)
       DOUBLE PRECISION,INTENT(INOUT) :: FPIC(NPOIN2)
 !
@@ -62,7 +62,7 @@
       DO IP = 1,NPOIN2
         FPIC(IP) = 1.D-20
         EMAX(IP) = 0.D0
-      ENDDO ! IP 
+      ENDDO ! IP
 !
 !.....LOOP OVER DISCRETISED FREQUENCIES
 !     """""""""""""""""""""""""""""""""""""""""""""
@@ -77,7 +77,7 @@
           DO IP=1,NPOIN2
                  E(IP) = E(IP) + F(IP,JP,JF)
           ENDDO ! IP
-        ENDDO ! JP 
+        ENDDO ! JP
 !
 !.......KEEPS THE MAXIMUM VALUE FOR E(F) AND ASSOCIATED FREQUENCY
 !       """""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -88,7 +88,7 @@
           ENDIF
         ENDDO ! IP
 !
-      ENDDO ! JF 
+      ENDDO ! JF
 !
       RETURN
       END

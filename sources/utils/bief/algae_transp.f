@@ -1,6 +1,6 @@
       MODULE ALGAE_TRANSP
         USE BIEF_DEF, ONLY : BIEF_OBJ
-      IMPLICIT NONE   
+      IMPLICIT NONE
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   14/06/2013
 ! EDF R&D                                           antoine.joly@edf.fr
@@ -189,7 +189,7 @@
 ! EDF R&D                                           antoine.joly@edf.fr
 !***********************************************************************
 !
-!brief    ALLOCATES THE VARIABLES USED TO CALCULATE THE BASSET 
+!brief    ALLOCATES THE VARIABLES USED TO CALCULATE THE BASSET
 !+        HISTORY FORCE
 !
 !-----------------------------------------------------------------------
@@ -405,7 +405,7 @@
       CALL BIEF_INTERP(H,H_FLU,SHP_P,NDP,SHZ_P,ELT_P,W1,FRE,
      &           ELT_P,NP,NPOIN,1,IELM,IKLE,NELMAX,
      &           .FALSE.,.FALSE.)
-! 
+!
       RETURN
       END SUBROUTINE INTERP_ALGAE
 !
@@ -612,7 +612,7 @@
 ! !       WRITE(LOG_NAME,'(A,I1,A)')'../erreur_log',RANG,'.txt'
 ! !       OPEN(9999,FILE=LOG_NAME)
 ! !       OPEN(9999,FILE='../erreur_log.txt')
-! ! 
+! !
 ! !             WRITE(9999,*)LT
 ! !             WRITE(9999,*)PSI(1,1,:)
 
@@ -1002,7 +1002,7 @@
             WRITE(LU,*)'                           *T_I=TAU_PART*'
             WRITE(LU,*)'                           **************'
             WRITE(LU,*)''
-            CALL PLANTE(1) 
+            CALL PLANTE(1)
             STOP
           END IF
 !=======================================================================
@@ -1104,7 +1104,7 @@
             WRITE(LU,*)'                           *POSITION INF*'
             WRITE(LU,*)'                           **************'
             WRITE(LU,*)''
-            CALL PLANTE(1) 
+            CALL PLANTE(1)
             STOP
           END IF
 !
@@ -1128,7 +1128,7 @@
         V_Y(I_A)=V_I(2)
         X_A(I_A)=X_I(1)
         Y_A(I_A)=X_I(2)
-! 
+!
         DX_A(I_A)=X_I(1)-X_I_0(1)
         DY_A(I_A)=X_I(2)-X_I_0(2)
         IF(NDIM.EQ.3)THEN
@@ -1136,7 +1136,7 @@
           DZ_A(I_A)=X_I(3)-X_I_0(3)
         END IF
 
-! 
+!
         GOTO 13
 12      CONTINUE
 ! IF THE PARTICLES ARE NOT TRANSPORTED

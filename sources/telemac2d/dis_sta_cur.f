@@ -21,7 +21,7 @@
 !| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
 !| PTS            |-->| NUMBER OF POINTS IN THE STAGE-DISCHARGE CURVE
 !| QZ             |-->| ARRAY WITH STAGE-DISCHARGE CURVES
-!| ZN             |-->| ELEVATION 
+!| ZN             |-->| ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

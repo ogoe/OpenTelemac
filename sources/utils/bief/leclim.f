@@ -159,7 +159,7 @@
         VBOR(I) = 0.D0
         CHBORD(I) = 0.D0
         IF(TRAC) THEN
-          LITBOR(I) =  VAL - LIHBOR(I)*1000 - LIUBOR(I)*100 
+          LITBOR(I) =  VAL - LIHBOR(I)*1000 - LIUBOR(I)*100
      &                     - LIVBOR(I)*10
           TBOR(I) = 0.D0
           ATBOR(I) = 0.D0
@@ -175,7 +175,7 @@
       DO K=1,NPTFR
 !
 !       ADHERENCE FOR H CHANGED AT THE WALL
-!       
+!
         IF(LIHBOR(K).EQ.KADH) THEN
           LIHBOR(K)=KLOG
           IF(LNG.EQ.1) WRITE(LU,51) K
@@ -185,21 +185,21 @@
 52        FORMAT(1X,'LECLIM : ADHERENCE SUR LA HAUTEUR AU POINT ',1I6,
      &              '         CHANGEE EN CONDITION DE PAROI')
         ENDIF
-!       
+!
 !       INCIDENT WAVE FOR H TREATED LIKE A FREE EXIT
-!       
+!
         IF(LIHBOR(K).EQ.KINC) THEN
           LIHBOR(K)=KSORT
         ENDIF
-!       
+!
 !       CANCELS DIRICHLET VALUES WHEN THE POINT IS NOT DIRICHLET
 !       FOR POINTS WITH ADHERENCE, NEEDS UBOR OR VBOR =0
-!       
+!
         IF(LIUBOR(K).NE.KENT.AND.LIUBOR(K).NE.KENTU) UBOR(K)=0.D0
         IF(LIVBOR(K).NE.KENT.AND.LIVBOR(K).NE.KENTU) VBOR(K)=0.D0
-!       
+!
 !       BACKS UP UBOR AND VBOR ON THEIR SECOND DIMENSION
-!       
+!
         UBOR(K+DIMUBOR) = UBOR(K)
         VBOR(K+DIMUBOR) = VBOR(K)
 !

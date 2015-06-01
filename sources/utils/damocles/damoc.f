@@ -373,28 +373,28 @@
      &                             SIZE,MOTIGN,LONIGN,NMAXR,
      &                             NFICDA,LEN(DEFCAR(IVAL)))
             ENDIF
-!        
+!
 !           JMH CORRECTION 01/03/05
 !           SUBMIT FOR A CHARACTER ARRAY
 !           THERE IS ONLY ONE; WHEREAS IT WAS PREVIOUSLY ASSUMED
 !           THAT THERE WERE AS MANY AS CHARACTER STRINGS ?
 !           DEFATT(IVAL) = MOTATT(NTYP,ADD+IVAL-1)
             DEFATT(IVAL) = MOTATT(NTYP,ADD)
-!        
+!
 !           CASE OF THE OPTIONAL EMPTY SUBMIT: REMAINS OPTIONAL
             IF (ITAI.LE.1.AND.INDIC(NTYP,INDX).GE.2.AND.
      &        TROUVE(NTYP,INDX).EQ.3) THEN
               L1 = LONGLU(DEFCAR(IVAL))
               IF (L1.GT.0) TROUVE(NTYP,INDX)=2
-!        
+!
             ELSEIF(TROUVE(NTYP,INDX).LT.6) THEN
               TROUVE(NTYP,INDX)=2
-!        
+!
             ELSEIF (TROUVE(NTYP,INDX).EQ.6.OR.
      &        TROUVE(NTYP,INDX).EQ.7) THEN
               TROUVE(NTYP,INDX)=8
             ENDIF
-!        
+!
           ELSE
             NTYP = ITYP
             IF     (NTYP .EQ. 1) THEN
@@ -409,7 +409,7 @@
      &                             LEN(NULCAR))
             ENDIF
           ENDIF
-!        
+!
           ICOL = NEXT(ICOL+1,LIGNE)
           IF(ICOL.LE.LONGLI) THEN
             IF(LIGNE(ICOL:ICOL).EQ.PTVIRG) THEN
@@ -417,7 +417,7 @@
               GO TO 10
             ENDIF
           ENDIF
-!        
+!
           IF (LUIGN) GO TO 100
 !
 ! ALL THE VALUES FOR A KEYWORD HAVE BEEN READ
@@ -476,7 +476,7 @@
                     ADRESS(NTYP,I) = ADRESS(NTYP,I) + DEPLAC
                     IF (ADRESS(NTYP,I) .GT. NMAX) GO TO 1515
                   ENDIF
-!        
+!
                 ELSE IF (ADRESS(NTYP,I) .EQ. ADD) THEN
                   DO J=1 ,IVAL
                     IF     (NTYP.EQ.1) THEN
@@ -551,7 +551,7 @@
 ! COUNTED ONLY ONCE IN FIRST FOUND LANGUAGE
 !
             IF (.NOT.(VUMOT)) NBMOT = NBMOT + 1
-!          
+!
             ORDRE = 1
 !
 ! COMING FROM THE PRECEDING WORD, SORTS IT BEFORE READING THE FOLLOWING
@@ -567,7 +567,7 @@
 !
 ! SIGNALS THAT THIS NEW KEYWORD WAS ALREADY ENCOUNTERED IN ANOTHER LANGUAGE
             IF (.NOT.(VUMOT)) VUMOT=.TRUE.
-!          
+!
 !           NAME OF THE KEYWORD
             IF (LANGUE) THEN
               PARAM2= CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,SIZE,MOTIGN,
@@ -579,7 +579,7 @@
                  NULCAR = CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,SIZE,
      &                          MOTIGN,LONIGN,NMAXR,NFICDA,LEN(NULCAR))
             ENDIF
-!          
+!
             ICOL = NEXT(ICOL+1,LIGNE)
 !
 !    TYPE
@@ -663,10 +663,10 @@
             IF (LANGUE) THEN
               DEFLU = 1
               IF (NTYP.NE.4) TROUVE(NTYP,INDX) = 1
-!          
+!
 !200           ICOL = NEXT(ICOL+1,LIGNE) -1
 200           CONTINUE
-!          
+!
               IF (NTYP .EQ. 1) THEN
                 DEFINT(DEFLU) = INTLU(ICOL,LIGNE)
               ELSE IF (NTYP .EQ. 2) THEN
@@ -689,9 +689,9 @@
                   TROUVE(NTYP,INDX)=1
                 ENDIF
               ENDIF
-!          
+!
               ICOL = NEXT(ICOL+1,LIGNE)
-!          
+!
               IF(ICOL.GT.LONGLI) THEN
                 ICOL = LONGLI
               ELSE
@@ -702,7 +702,7 @@
                   ICOL=ICOL-1
                 ENDIF
               ENDIF
-              
+
 !
 !
 !
@@ -712,7 +712,7 @@
 !
 !210       ICOL = NEXT(ICOL+1,LIGNE) -1
  210          CONTINUE
-!            
+!
               IF (NTYP .EQ. 1) THEN
                 NULINT = INTLU(ICOL,LIGNE)
               ELSE IF (NTYP .EQ. 2) THEN
@@ -723,9 +723,9 @@
                 NULCAR = CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,SIZE,
      &                        MOTIGN,LONIGN,NMAXR,NFICDA,LEN(NULCAR))
               ENDIF
-!            
+!
               ICOL = NEXT(ICOL+1,LIGNE)
-!            
+!
               IF (LIGNE(ICOL:ICOL) .EQ. PTVIRG) THEN
                 GO TO 210
               ELSE
@@ -733,7 +733,7 @@
                 ICOL=ICOL-1
               ENDIF
             ENDIF
-!          
+!
             ICOL = NEXT(ICOL+1,LIGNE)
 !
 !    HELP
@@ -948,8 +948,8 @@
             ENDIF
           ENDIF
         ENDIF
-      ENDDO ! INDX 
-      ENDDO ! K 
+      ENDDO ! INDX
+      ENDDO ! K
 !
 1300  CONTINUE
       IF(ARRET) THEN

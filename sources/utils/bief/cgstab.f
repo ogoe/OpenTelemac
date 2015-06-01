@@ -48,7 +48,7 @@
 !| A              |-->| MATRIX OF THE SYSTEM
 !| AUX            |-->| PRECONDITIONING MATRIX
 !| B              |-->| RIGHT-HAND SIDE OF SYSTEM
-!| CFG            |-->| CFG(1): STORAGE OF MATRIX 
+!| CFG            |-->| CFG(1): STORAGE OF MATRIX
 !|                |   | CFG(2): MATRIX VECTOR PRODUCT
 !| INFOGR         |-->| IF YES, INFORMATION PRINTED
 !| MESH           |-->| MESH STRUCTURE

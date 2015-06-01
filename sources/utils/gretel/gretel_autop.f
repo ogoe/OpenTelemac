@@ -60,7 +60,7 @@
       CHARACTER*11 EXTENS
       EXTERNAL  EXTENS
       INTRINSIC REAL
-!     
+!
       INTEGER IERR, NRES, NRESPAR, NGEO
       INTEGER TYP_ELEM, TYP_BND_ELEM
       INTEGER DATE(3), TIME(3)
@@ -101,7 +101,7 @@
       ! GET THE MESH TITLE
       CALL GET_MESH_TITLE(RESFORMAT,NRESPAR,TITSEL,IERR)
       CALL CHECK_CALL(IERR,"GRETEL:GET_MESH_TITLE")
-     
+
 !     Get the number of variable
       CALL GET_DATA_NVAR(RESFORMAT,NRESPAR,NVAR_RES,IERR)
       CALL CHECK_CALL(IERR,"GRETEL:GET_DATA_NVAR")
@@ -137,7 +137,7 @@
 !     Get the number of timestep
       CALL GET_DATA_NTIMESTEP(RESFORMAT,NRESPAR,NTIMESTEP_RES,IERR)
       CALL CHECK_CALL(IERR,"GRETEL:GET_DATA_NTIMESTEP")
-     
+
       CALL CLOSE_MESH(RESFORMAT,NRESPAR,IERR)
       CALL CHECK_CALL(IERR,"GRETEL:CLOSE_MESH:RESPAR")
 
@@ -186,10 +186,10 @@
         CALL CHECK_ALLOCATE(IERR,'GRETEL:TMP0')
         DO I = 1,NDP
           DO IELEM = 1,NELEM_GEO
-            TMP2((I-1)*NELEM_GEO + IELEM) = IKLE_GEO((IELEM-1)*NDP+I) 
+            TMP2((I-1)*NELEM_GEO + IELEM) = IKLE_GEO((IELEM-1)*NDP+I)
           ENDDO
         ENDDO
-        
+
         CALL SET_MESH(RESFORMAT,NRES,2,TYP_ELEM,NDP,NPTFR,NPTIR,
      &                NELEM_GEO,NPOIN_GEO,TMP2,IPOBO_GEO,IPOBO_GEO,X,Y,
      &                NPLAN_RES,DATE,TIME,IERR)
@@ -217,18 +217,18 @@
         ! BUILDING 3D IKLE
         DO I=1,NPLAN_RES-1
           DO J=1,NELEM_GEO
-            IKLE3D(J+(I-1)*NELEM_GEO + (0*NELEM3D)) = 
-     &                    IKLE_GEO((J-1)*3+1) + (I-1)*NPOIN_GEO 
-            IKLE3D(J+(I-1)*NELEM_GEO + (1*NELEM3D)) = 
-     &                    IKLE_GEO((J-1)*3+2) + (I-1)*NPOIN_GEO 
-            IKLE3D(J+(I-1)*NELEM_GEO + (2*NELEM3D)) = 
-     &                    IKLE_GEO((J-1)*3+3) + (I-1)*NPOIN_GEO 
-            IKLE3D(J+(I-1)*NELEM_GEO + (3*NELEM3D)) = 
-     &                    IKLE_GEO((J-1)*3+1) + (I)*NPOIN_GEO 
-            IKLE3D(J+(I-1)*NELEM_GEO + (4*NELEM3D)) = 
-     &                    IKLE_GEO((J-1)*3+2) + (I)*NPOIN_GEO 
-            IKLE3D(J+(I-1)*NELEM_GEO + (5*NELEM3D)) = 
-     &                    IKLE_GEO((J-1)*3+3) + (I)*NPOIN_GEO 
+            IKLE3D(J+(I-1)*NELEM_GEO + (0*NELEM3D)) =
+     &                    IKLE_GEO((J-1)*3+1) + (I-1)*NPOIN_GEO
+            IKLE3D(J+(I-1)*NELEM_GEO + (1*NELEM3D)) =
+     &                    IKLE_GEO((J-1)*3+2) + (I-1)*NPOIN_GEO
+            IKLE3D(J+(I-1)*NELEM_GEO + (2*NELEM3D)) =
+     &                    IKLE_GEO((J-1)*3+3) + (I-1)*NPOIN_GEO
+            IKLE3D(J+(I-1)*NELEM_GEO + (3*NELEM3D)) =
+     &                    IKLE_GEO((J-1)*3+1) + (I)*NPOIN_GEO
+            IKLE3D(J+(I-1)*NELEM_GEO + (4*NELEM3D)) =
+     &                    IKLE_GEO((J-1)*3+2) + (I)*NPOIN_GEO
+            IKLE3D(J+(I-1)*NELEM_GEO + (5*NELEM3D)) =
+     &                    IKLE_GEO((J-1)*3+3) + (I)*NPOIN_GEO
           ENDDO
         ENDDO
         ! TODO: BOUNDARY TO HANDLE FOR MED ?
@@ -273,14 +273,14 @@
       ! LOOP ON ALL THE PARTITIONNED FILES
       DO ITIME=0,NTIMESTEP_RES-1
         DO IPID = 0, NPROC-1
-!       
+!
           RESPAR = TRIM(RES) // EXTENS(NPROC-1,IPID)
           CALL OPEN_MESH(RESFORMAT,RESPAR,NRESPAR,'READ     ',IERR)
           CALL CHECK_CALL(IERR,"GRETEL:OPEN_MESH:RESPAR2")
-!       
+!
           CALL GET_MESH_NPOIN(RESFORMAT,NRESPAR,TYP_ELEM,NPOIN_PAR,IERR)
           CALL CHECK_CALL(IERR,"GRETEL:GET_MESH_NPOIN:RESPAR")
-!       
+!
           ALLOCATE(KNOLG(NPOIN_PAR),STAT=IERR)
           CALL CHECK_ALLOCATE(IERR,'GRETEL:KNOLG')
           ALLOCATE(TMP(NPOIN_PAR),STAT=IERR)
@@ -294,8 +294,8 @@
           CALL GET_MESH_L2G_NUMBERING(RESFORMAT,NRESPAR,KNOLG,
      &                                NPOIN_PAR,IERR)
           CALL CHECK_CALL(IERR,'GRETEL:GET_MESH_L2G_NUMBERING:RESPAR')
-!  
-          ! LOOP ON ALL THE VARIABLE FOR THE TIMESTEP ITIME 
+!
+          ! LOOP ON ALL THE VARIABLE FOR THE TIMESTEP ITIME
           DO IVAR=1,NVAR_RES
             CALL GET_DATA_VALUE(RESFORMAT,NRESPAR,ITIME,
      &                          TEXTELU(IVAR)(1:16),TMP,
@@ -310,7 +310,7 @@
               ! 3D
               DO I=1,NPOIN_PAR/NPLAN_RES
                 DO J=1,NPLAN_RES
-                  RESDATA(KNOLG(I) + (J-1)*NPOIN_GEO, IVAR) = 
+                  RESDATA(KNOLG(I) + (J-1)*NPOIN_GEO, IVAR) =
      &                       TMP(I + (J-1)*NPOIN_PAR/NPLAN_RES)
                 ENDDO
               ENDDO
@@ -329,7 +329,7 @@
      &                  RESDATA(:,I),NPOIN_RES,IERR)
           CALL CHECK_CALL(IERR,'GRETEL:ADD_DATA:RES')
         ENDDO
-        
+
       ENDDO ! ITIME
 
       ! DONE

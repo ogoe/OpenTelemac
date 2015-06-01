@@ -281,9 +281,9 @@
               CALL CPSTVC(Y%ADR(IBL)%P,X%ADR(IBL)%P)
             ENDIF
           ENDIF
-!       
+!
 !         CHECKS MEMORY
-!       
+!
           N = X%ADR(IBL)%P%DIM1
           NMAX = X%ADR(IBL)%P%MAXDIM1
           IF(N.GT.NMAX) THEN
@@ -296,48 +296,48 @@
             CALL PLANTE(1)
             STOP
           ENDIF
-!       
+!
           IF(.NOT.PRESENT(IOPT)) THEN
-!       
+!
           IF(X%ADR(IBL)%P%DIM2.GT.1) THEN
-!       
+!
           DO IDIM = 1 , X%ADR(IBL)%P%DIM2
             CALL OV_2(OP,X%ADR(IBL)%P%R,IDIM,
      &                  YY%ADR(IBL)%P%R,IDIM,
      &                  ZZ%ADR(IBL)%P%R,IDIM, CC , NMAX , N )
           END DO
-!       
+!
           ELSE
-!       
+!
             CALL OV(OP,X%ADR(IBL)%P%R,
      &                YY%ADR(IBL)%P%R,
      &                ZZ%ADR(IBL)%P%R, CC , N )
-!       
+!
           ENDIF
-!       
+!
           ELSE
-!       
+!
           IF(X%ADR(IBL)%P%DIM2.GT.1) THEN
-!       
+!
           DO IDIM = 1 , X%ADR(IBL)%P%DIM2
             CALL OVD_2(OP,X%ADR(IBL)%P%R,IDIM,
      &                   YY%ADR(IBL)%P%R,IDIM,
      &                   ZZ%ADR(IBL)%P%R,IDIM, CC , NMAX , N ,
      &                   IOPT,INFINI,ZERO)
           END DO
-!       
+!
           ELSE
-!       
+!
             CALL OVD(OP,X%ADR(IBL)%P%R,
      &                 YY%ADR(IBL)%P%R,
      &                 ZZ%ADR(IBL)%P%R, CC , N ,IOPT,INFINI,ZERO)
-!       
+!
           ENDIF
-!       
+!
           ENDIF
-!       
-!       
-        ENDDO ! IBL 
+!
+!
+        ENDDO ! IBL
 !
 !-----------------------------------------------------------------------
 !

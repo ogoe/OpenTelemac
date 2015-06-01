@@ -8,8 +8,8 @@
 ! ARTEMIS   V7P0                                             18/03/2014
 !***********************************************************************
 !
-!brief    COMPUTES ANGLE TETAP ON THE BOUNDARY FROM THE WAVE INCIDENCE 
-!+        ON THE DOMAIN 
+!brief    COMPUTES ANGLE TETAP ON THE BOUNDARY FROM THE WAVE INCIDENCE
+!+        ON THE DOMAIN
 !         TETAP is given in degrees, in the interval [0 ; 90]
 !
 !history  C. PEYRARD (LNHE)
@@ -24,8 +24,8 @@
 !| YNEBOR         |-->| Y COMPONENT OF THE NORMAL TO THE BOUNDARY NODE
 !| XSGBOR         |-->| X COMPONENT OF THE NORMAL TO THE BOUNDARY SEGMENT
 !| YSGBOR         |-->| Y COMPONENT OF THE NORMAL TO THE BOUNDARY SEGMENT
-!| ADIR           |-->| INCIDENCE ANGLE OF WAVES 
-!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS 
+!| ADIR           |-->| INCIDENCE ANGLE OF WAVES
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -56,7 +56,7 @@
 !       NORMAL TO SEGMENT BEFORE
         XNB=XSGBOR(I,2)
         YNB=YSGBOR(I,2)
-!       NORMALIZATION NOT NECESSARY AS (XSGBOR(K,1),YSGBOR(K,1)) AND 
+!       NORMALIZATION NOT NECESSARY AS (XSGBOR(K,1),YSGBOR(K,1)) AND
 !       (XSGBOR(K,2),YSGBOR(K,2)) ARE ALREADY OF NORM 1
 !
 !       STEP 2 : VECTOR INCIDENCE AT NODE
@@ -68,7 +68,7 @@
 !       ===============================================================
         PSCALA=XNA*XI+YNA*YI
         PSCALB=XNB*XI+YNB*YI
-!       SMALLEST ANGLE BETWEEN NORMAL AND INCIDENCE (0<TETAP<90) 
+!       SMALLEST ANGLE BETWEEN NORMAL AND INCIDENCE (0<TETAP<90)
         IF(PSCALA.LT.0D0) THEN
           PSCALA=-PSCALA
         ENDIF
@@ -78,8 +78,8 @@
 !
 !       STEP 4 = TETAP IS GIVEN IN DEGRES
 !       =================================
-!       CHOOSE OF THE LOWER VALUE OF TETA (SEEMS BETTER AT CORNER CONSIDERING 
-!       THE PHBOR ROUTINE RULES)  
+!       CHOOSE OF THE LOWER VALUE OF TETA (SEEMS BETTER AT CORNER CONSIDERING
+!       THE PHBOR ROUTINE RULES)
         TETA(I)=MIN(180D0*ACOS(PSCALA)/PI,180D0*ACOS(PSCALB)/PI)
       ENDDO
 !=======================================================================

@@ -37,14 +37,14 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables   
-!+   
+!+   Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALPHA          |<->| RATIO BETWEEN CONVECTION VELOCITY FOR SEDIMENT AND MEAN FLOW  VELOCITY
 !| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
 !| HN             |-->| WATER DEPTH
-!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| KARMAN         |-->| VON KARMAN CONSTANT
 !| KSR            |-->| RIPPLE BED ROUGHNESS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| T1             |<->| WORK BIEF_OBJ STRUCTURE
@@ -52,9 +52,9 @@
 !| U2D            |-->| MEAN FLOW VELOCITY X-DIRECTION
 !| UCONV          |<->| X-COMPONENT ADVECTION FIELD (TELEMAC)
 !| V2D            |-->| MEAN FLOW VELOCITY Y-DIRECTION
-!| VCONV          |<->| Y-COMPONENT ADVECTION FIELD 
+!| VCONV          |<->| Y-COMPONENT ADVECTION FIELD
 !| XMVE           |-->| WATER DENSITY
-!| XWC            |-->| SETTLING VELOCITIES 
+!| XWC            |-->| SETTLING VELOCITIES
 !| ZERO           |-->| ZERO
 !| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

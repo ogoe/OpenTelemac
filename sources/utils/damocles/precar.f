@@ -78,7 +78,7 @@
         PRECAR = K
         GO TO 1000
       ENDIF
-      ENDDO ! K 
+      ENDDO ! K
 !
       PRECAR=LONGLI+1
 !

@@ -154,7 +154,7 @@
         A64(IELEM) = - A46(IELEM)
         A65(IELEM) = - A56(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -212,7 +212,7 @@
         A65(IELEM) = - A56(IELEM)
 !
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSE
 !

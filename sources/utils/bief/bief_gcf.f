@@ -18,10 +18,10 @@
 !+   First version sent by Michiel Knaapen (HRW) on 07/03/2013.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| PARAMETER 
-!| GAMMCF         |<->| Incomplete gamma function Q(a,x) 
-!| GLN            |<->| gamma(a) 
-!| X              |-->| OPERAND 
+!| A              |-->| PARAMETER
+!| GAMMCF         |<->| Incomplete gamma function Q(a,x)
+!| GLN            |<->| gamma(a)
+!| X              |-->| OPERAND
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !     USE BIEF
@@ -49,7 +49,7 @@
       INTRINSIC EXP,LOG,FLOAT,ABS
 !
 !-----------------------------------------------------------------------
-!      
+!
       GLN = BIEF_GAMMLN(A)
 !     This is the previous value, tested against for convergence.
       GOLD = 0.D0

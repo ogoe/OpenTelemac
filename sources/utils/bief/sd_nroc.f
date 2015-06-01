@@ -1,5 +1,5 @@
 !                    ******************
-                     SUBROUTINE SD_NROC 
+                     SUBROUTINE SD_NROC
 !                    ******************
 !
      &(N, IC, IA, JA, A, JAR, AR, P, FLAG)
@@ -12,8 +12,8 @@
 !                  REORDERS ROWS OF A, LEAVING ROW ORDER UNCHANGED
 !
 !  REORDERS ROWS OF A, LEAVING ROW ORDER UNCHANGED
-! 
-! 
+!
+!
 !        PARAMETERS USED INTERNALLY..
 !  NIA     P     - AT THE KTH STEP, P IS A LINKED LIST OF THE REORDERED
 !                    COLUMN INDICES OF THE KTH ROW OF A.  P(N+1) POINTS
@@ -25,10 +25,10 @@
 !  FIA     AR    - AT THE KTH STEP, AR CONTAINS THE ELEMENTS OF THE
 !                    REORDERED ROW OF A.
 !                    SIZE = N.
-! 
+!
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
 !
-!         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS 
+!         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS
 !         FOR CLARITY
 !
 !history  C. PEYRARD (LNHE)
@@ -37,7 +37,7 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->|NONZERO ENTRIES OF THE COEFFICIENT MATRIX M, 
+!| A              |-->|NONZERO ENTRIES OF THE COEFFICIENT MATRIX M,
 !|                |   |STORED BY ROWS
 !| IA ,JA         |-->|POINTERS TO DELIMIT THE ROWS IN A ; SIZE = N+1
 !| IL, JL         |-->| STRUCTURE OF LOWER FACTORISED TRIANGULAR MATRIX

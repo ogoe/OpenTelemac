@@ -215,9 +215,9 @@
         CALL OV( 'X=X+CY  ' , DM , DN , Z , C , NDIAG )
 !
         IF(NSEG1.NE.NSEG2) THEN
-          IF(LNG.EQ.1) WRITE(LU,*) 'M+CTN : MATRICE RECTANGULAIRE 
+          IF(LNG.EQ.1) WRITE(LU,*) 'M+CTN : MATRICE RECTANGULAIRE
      &                              NON IMPLEMENTE'
-          IF(LNG.EQ.2) WRITE(LU,*) 'M+CTN : RECTANGULAR MATRIX 
+          IF(LNG.EQ.2) WRITE(LU,*) 'M+CTN : RECTANGULAR MATRIX
      &                              NOT IMPLEMENTED'
           CALL PLANTE(1)
           STOP
@@ -248,9 +248,9 @@
           CALL OV( 'X=Y     ' , XM , XN , Z , C , NSEG1 )
         ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
           IF(TYPEXM(1:1).NE.'S'.AND.NSEG1.NE.NSEG2) THEN
-            IF(LNG.EQ.1) WRITE(LU,*) 'TN : MATRICE RECTANGULAIRE 
+            IF(LNG.EQ.1) WRITE(LU,*) 'TN : MATRICE RECTANGULAIRE
      &                                NON IMPLEMENTE'
-            IF(LNG.EQ.2) WRITE(LU,*) 'TN : RECTANGULAR MATRIX 
+            IF(LNG.EQ.2) WRITE(LU,*) 'TN : RECTANGULAR MATRIX
      &                                NOT IMPLEMENTED'
             CALL PLANTE(1)
             STOP
@@ -302,9 +302,9 @@
         CALL OV( 'X=X+Y   ' , DM , DN , Z , C , NDIAG )
 !
         IF(NSEG1.NE.NSEG2) THEN
-          IF(LNG.EQ.1) WRITE(LU,*) 'M+TN : MATRICE RECTANGULAIRE 
+          IF(LNG.EQ.1) WRITE(LU,*) 'M+TN : MATRICE RECTANGULAIRE
      &                              NON IMPLEMENTE'
-          IF(LNG.EQ.2) WRITE(LU,*) 'M+TN : RECTANGULAR MATRIX 
+          IF(LNG.EQ.2) WRITE(LU,*) 'M+TN : RECTANGULAR MATRIX
      &                              NOT IMPLEMENTED'
           CALL PLANTE(1)
           STOP

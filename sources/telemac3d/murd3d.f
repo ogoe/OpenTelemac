@@ -72,7 +72,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        04/01/2012
 !+        V6P2
-!+   Adaptation to tetrahedra, PSI scheme optimised 
+!+   Adaptation to tetrahedra, PSI scheme optimised
 !
 !history  J-M HERVOUET (LNHE)
 !+        23/04/2012
@@ -425,7 +425,7 @@
             ENDIF
           ENDIF
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSEIF(IELM3.EQ.51) THEN
 !
@@ -521,7 +521,7 @@
             ENDIF
           ENDIF
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSE
           WRITE(LU,*) 'ELEMENT ',IELM3,' NOT COMPUTED IN MURD3D'
@@ -550,7 +550,7 @@
 !
 !     REPLACES CALL MV0606 AND CALL ASSVEC
 !
-      CALL OV ('X=YZ    ',TRA02,DB,FC,C,NPOIN3) 
+      CALL OV ('X=YZ    ',TRA02,DB,FC,C,NPOIN3)
 !
       IF(IELM3.EQ.41) THEN
 !
@@ -626,7 +626,7 @@
      &                        + XB(11,IELEM) * FC(I2)
      &                        + XB(12,IELEM) * FC(I3)
 !
-      ENDDO      
+      ENDDO
 !
       ELSE
         WRITE(LU,*) 'ELEMENT ',IELM3,' NOT COMPUTED IN MURD3D'
@@ -747,7 +747,7 @@
         WRITE(LU,*) 'ELEMENT ',IELM3,' NOT COMPUTED IN MURD3D'
         CALL PLANTE(1)
         STOP
-      ENDIF      
+      ENDIF
 !
 !     IN PARALLEL MODE: GLOBAL EXTREMA
 !
@@ -851,7 +851,7 @@
               ENDIF
             ENDIF
           ENDIF
-        ENDDO   
+        ENDDO
       ENDIF
 !
       IF(NCSIZE.GT.1) ALFA = P_DMIN(ALFA)

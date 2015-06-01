@@ -32,12 +32,12 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-! 
+!+  Name of variables
+!
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        27/03/2014
 !+        V7P0
-!+  Adaptation to different numbering of boundary elements.     
+!+  Adaptation to different numbering of boundary elements.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CLT            |<->| TYPE OF BOUNDARY CONDITIONS FOR TRACER (MODIFIED LITBOR)
@@ -48,7 +48,7 @@
 !| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
 !| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
 !| KNEU           |-->| CONVENTION FOR NEUMANN CONDITION
-!| KSORT          |-->| CONVENTION FOR FREE OUTPUT  
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT
 !| LIMTRA         |<->| TYPE OF BOUNDARY CONDITION FOR TRACER
 !| LITBOR         |<->| TYPE OF BOUNDARY CONDITIONS FOR TRACER (***)
 !| MASKEL         |-->| MASKING OF ELEMENTS
@@ -97,14 +97,14 @@
 !======================================================================!
 !
       ! ****************************************************** !
-      ! I - TYPES OF BOUNDARY CONDITIONS FOR THE TRACER        ! 
-      !     MAY BE MODIFIED DEPENDING ON THE SIGN OF U.N       ! 
-      !     FOR THE LIQUID BOUNDARIES (N : OUTGOING NORMAL)    ! 
+      ! I - TYPES OF BOUNDARY CONDITIONS FOR THE TRACER        !
+      !     MAY BE MODIFIED DEPENDING ON THE SIGN OF U.N       !
+      !     FOR THE LIQUID BOUNDARIES (N : OUTGOING NORMAL)    !
       ! ****************************************************** !
 !
       DO K = 1, NPTFR
         CLT%I(K) = LITBOR%I(K)
-        ! I.1 - LIQUID BOUNDARIES 
+        ! I.1 - LIQUID BOUNDARIES
         ! --------------------------------------
         IF (CLT%I(K) == KENT) THEN
           USCALN = U%R(NBOR%I(K))*XNEBOR%R(K)
@@ -122,9 +122,9 @@
       ENDDO
 !
       ! **************************************************************** !
-      ! II - MASKTR ARRAY DEFINED AS A FUNCTION OF CLT                   ! 
+      ! II - MASKTR ARRAY DEFINED AS A FUNCTION OF CLT                   !
       !      EQUALS 1 FOR A SEGMENT OF NEUMANN TYPE, AND 0 OTHERWISE     !
-      !      A SEGMENT IS OF NEUMANN TYPE IF THE USER SPECIFIES AT LEAST ! 
+      !      A SEGMENT IS OF NEUMANN TYPE IF THE USER SPECIFIES AT LEAST !
       !      ONE OF ITS NODES AS NEUMANN.                                !
       ! **************************************************************** !
 !
@@ -143,7 +143,7 @@
           MASKTR%ADR(DDL)%P%R(IELEB) = 1.D0
         ELSEIF (CLT%I(K1).EQ.KSORT.OR.CLT%I(K2).EQ.KSORT) THEN
           MASKTR%ADR(DDL)%P%R(IELEB) = 1.D0
-        ! II.3 - OUTGOING TYPE SEGMENTS 
+        ! II.3 - OUTGOING TYPE SEGMENTS
         ! ------------------------------
         ELSEIF(CLT%I(K1).EQ.KSORT.AND.CLT%I(K2).EQ.KENT) THEN
           MASKTR%ADR(DDL)%P%R(IELEB) = 1.D0
@@ -181,11 +181,11 @@
           LIMTRA%I(K) = KDIR
         ELSEIF(CLT%I(K).EQ.KSORT) THEN
           LIMTRA%I(K) = KDDL
-        ! IV.2 - SOLID BOUNDARY : NEUMANN CONDITIONS 
+        ! IV.2 - SOLID BOUNDARY : NEUMANN CONDITIONS
         ! ------------------------------------
         ELSEIF(CLT%I(K).EQ.KLOG ) THEN
           LIMTRA%I(K) = KNEU
-        ! IV.3 - ERROR: UNKNOWN LITBOR VALUE 
+        ! IV.3 - ERROR: UNKNOWN LITBOR VALUE
         ! ----------------------------------------
         ELSE
           IF (LNG == 1) WRITE(LU,11) K, LITBOR%I(K)

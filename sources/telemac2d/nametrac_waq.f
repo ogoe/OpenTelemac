@@ -1,48 +1,48 @@
 !                       **************************
-                        SUBROUTINE NAMETRAC_WAQ 
+                        SUBROUTINE NAMETRAC_WAQ
 !                       **************************
      &  (NAMETRAC,WAQ,SECCURRENT,WAQPROCESS,NTRAC,IND_SEC)
-! 
-! 
-!*********************************************************************** 
-! TELEMAC2D   V7P0                                  
-!*********************************************************************** 
-! 
+!
+!
+!***********************************************************************
+! TELEMAC2D   V7P0
+!***********************************************************************
+!
 !brieF gives names to tracers added by the water quality
-! 
-! 
+!
+!
 !history  R.ATA
-!+        12/09/2014 
-!+        V7P0 
-!+        CREATION 
-! 
+!+        12/09/2014
+!+        V7P0
+!+        CREATION
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NAMETRAC       |<--| ARRAY OF NAMES OF TRACERS
-!| WAQPROCESS     |-->| WAQ PROCESS 
+!| WAQPROCESS     |-->| WAQ PROCESS
 !| WAQ            |-->| THERE IS WAQ OR NOT
 !| SECCURRENT     |-->| THERE IS SECONDARY CURRENTS OR NOT
 !| NTRAC          |-->| OLD NUMBER OF TRACER (BEFORE WAQ RTACERS)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-! 
-! 
-      IMPLICIT NONE 
-      INTEGER LNG,LU 
-      COMMON/INFO/LNG,LU 
-! 
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
-! 
-! 
-      CHARACTER(LEN=32), INTENT(INOUT)::  NAMETRAC(*) 
+!
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+      CHARACTER(LEN=32), INTENT(INOUT)::  NAMETRAC(*)
       INTEGER, INTENT(IN)             ::  WAQPROCESS,NTRAC,IND_SEC
       LOGICAL, INTENT(IN)             ::  WAQ,SECCURRENT
 !
-! 
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
-! 
-!   
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
       IF(SECCURRENT)THEN
         NAMETRAC(IND_SEC) ='OMEGA           NA              '
-      ENDIF  
+      ENDIF
       IF(WAQ)THEN
         SELECT CASE(WAQPROCESS)
 !         O2 MODULE
@@ -61,7 +61,7 @@
      &                         // '   mgO2/l       '
               NAMETRAC(NTRAC+3) = 'NH4 LOAD        '
      &                         // '   mgNH4/l      '
-            ENDIF 
+            ENDIF
 !         BIOMASS MODULE
           CASE(2)
             IF(LNG.EQ.1)THEN
@@ -86,7 +86,7 @@
      &                        //  '   mg/l         '
               NAMETRAC(NTRAC+5) = 'NO3 NON ASSIM   '
      &                        //  '   mg/l         '
-            ENDIF 
+            ENDIF
 !         EUTRO MODULE
           CASE(3)
             IF(LNG.EQ.1)THEN
@@ -123,7 +123,7 @@
      &                        //    '   mg/l         '
               NAMETRAC(NTRAC+8) = 'ORGANIC CHARGE  '
      &                        //  '   mgO2/l       '
-            ENDIF 
+            ENDIF
 !         MICROPOL MODULE
           CASE(4)
             IF(LNG.EQ.1)THEN
@@ -148,7 +148,7 @@
      &                        //  '   mg/l         '
               NAMETRAC(NTRAC+5) = 'ABSORB. BED SED.'
      &                        //  '   mg/l         '
-            ENDIF 
+            ENDIF
 !         THERMIC MODULE
           CASE(5)
             NAMETRAC(NTRAC+1) = '  TEMPERATURE   '
@@ -161,16 +161,16 @@
             ENDIF
             CALL PLANTE(1)
             STOP
-                         
+
         END SELECT
       ENDIF
 !
       RETURN
-!----------------------------------------------------------------------- 
-!     MESSAGES 
-10    FORMAT(1X,'NAMETRAC_WAQ: MODULE WAQ INCONNU : ',I4) 
-20    FORMAT(1X,'NAMETRAC_WAQ: UNKNOWN WAQ MODULE : ',I4) 
-!----------------------------------------------------------------------- 
-! 
-      RETURN 
-      END                   
+!-----------------------------------------------------------------------
+!     MESSAGES
+10    FORMAT(1X,'NAMETRAC_WAQ: MODULE WAQ INCONNU : ',I4)
+20    FORMAT(1X,'NAMETRAC_WAQ: UNKNOWN WAQ MODULE : ',I4)
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END

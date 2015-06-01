@@ -30,14 +30,14 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NPOIN          |-->| NUMBER OF POINTS
 !| PI             |-->| PI
-!| QU             |-->| DISCHARGE X 
-!| QV             |-->| DISCHARGE Y 
+!| QU             |-->| DISCHARGE X
+!| QV             |-->| DISCHARGE Y
 !| THETAC         |<->| CURRENT ANGLE TO THE X AXIS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

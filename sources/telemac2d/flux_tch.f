@@ -9,9 +9,9 @@
 ! TELEMAC-2D VERSION 6.2                                     03/15/2011
 !***********************************************************************
 !
-!brief  COMPUTES TCHAMEN FLUX AT THE INERNAL INTERFACES 
-!       REF.:"MODELING OF WETTING-DRYING TRANSITIONS IN FREE SURFACE FLOWS 
-!             OVER COMPLEX TOPOGRAPHIES" CMAME 199(2010) PP 2281-2304 
+!brief  COMPUTES TCHAMEN FLUX AT THE INERNAL INTERFACES
+!       REF.:"MODELING OF WETTING-DRYING TRANSITIONS IN FREE SURFACE FLOWS
+!             OVER COMPLEX TOPOGRAPHIES" CMAME 199(2010) PP 2281-2304
 !
 !history  R. ATA (EDF-LNHE)
 !+        06/01/2012
@@ -19,7 +19,7 @@
 !+
 !history  R. ATA (EDF-LNHE)
 !+        28/08/2012
-!+        V6P2 
+!+        V6P2
 !+     cleaning up unused variables
 !+
 !history  R. ATA (EDF-LNHE)
@@ -61,12 +61,12 @@
       DOUBLE PRECISION, INTENT(IN)    :: G,W(3,NS)
       DOUBLE PRECISION, INTENT(IN)    :: X(NS),Y(NS)
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3)
-      INTEGER, INTENT(IN)             :: IFABOR(NELEM,3) 
+      INTEGER, INTENT(IN)             :: IFABOR(NELEM,3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER NSG,NUBO1,NUBO2,IVAR,I,IDRY
-      INTEGER IEL,IER     
+      INTEGER IEL,IER
 !
       DOUBLE PRECISION ZF1,ZF2,XNN,YNN,RNN
       DOUBLE PRECISION V21,V22,V31,V32,DEMI
@@ -87,7 +87,7 @@
       ENDIF
 !
 ! INITIALIZATION OF CE
-! 
+!
       DO I=1,3
         DO IVAR=1,NS
           CE(IVAR,I) = 0.D0
@@ -102,7 +102,7 @@
 !
 !     LOOP OVER GLOBAL LIST OF EDGES
 !
-      DO IEL=1, NELEM 
+      DO IEL=1, NELEM
         DO I = 1,3
           IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
             NSG = ELTSEG(IEL,I)
@@ -129,23 +129,23 @@
 !           THEIR BATHYMETRIES
             ZF1 = ZF(NUBO1)
             ZF2 = ZF(NUBO2)
-!           
+!
 !           NORMAL COORDINATES NX, NY AND SEGMENT LENGTH
-!           
+!
             XNN = VNOCL(1,NSG)
             YNN = VNOCL(2,NSG)
-            RNN = VNOCL(3,NSG) 
-!           
+            RNN = VNOCL(3,NSG)
+!
 !           WATER DEPTH
-!           
+!
             H1 = W(1,NUBO1)
             H2 = W(1,NUBO2)
-!           
+!
 !           UNKNOWN SET (V1,V2,V3)=(eta,U,V) FOR EACH NODE
-!           
+!
             ETA1 = W(1,NUBO1)+ZF1
             ETA2 = W(1,NUBO2)+ZF2
-!           
+!
             IF(H1.GT.EPS) THEN
               V21 = W(2,NUBO1)/H1
               V31 = W(3,NUBO1)/H1
@@ -154,26 +154,26 @@
               V31=0.D0
               IDRY=IDRY+1
             ENDIF
-!           
+!
             IF(H2.GT.EPS)THEN
-              V22 = W(2,NUBO2)/H2 
+              V22 = W(2,NUBO2)/H2
               V32 = W(3,NUBO2)/H2
             ELSE
               V22=0.D0
               V32=0.D0
               IDRY=IDRY+1
             ENDIF
-!           
+!
 !           LOCAL FLUX COMPUTATION
-!           
+!
 !           AT LEAST ONE WET CELL
-!           
+!
             IF(IDRY.LT.2)THEN
               CALL FLU_TCHAMEN(H1,H2,ETA1,ETA2,V21,V22,
-     &                         V31,V32,XNN,YNN,FLXI,FLXJ,G) 
+     &                         V31,V32,XNN,YNN,FLXI,FLXJ,G)
 !
 !             FOR PARALLELISM
-!             
+!
               IF(NCSIZE.GT.1)THEN
                 IF(IFABOR(IEL,I).EQ.-2)THEN !THIS IS INTERFACE EDGE
                  ! DEMI=DEMI*SIGN(1.0D0,PROD_SCAL)
@@ -185,18 +185,18 @@
                   FLXJ(3)= DEMI*FLXJ(3)
                 ENDIF
               ENDIF
-!             
+!
 !             FLUX INCREMENT
-!             
+!
               CE(NUBO1,1) = CE(NUBO1,1) - RNN*FLXI(1)
-              CE(NUBO1,2) = CE(NUBO1,2) - RNN*FLXI(2) 
-              CE(NUBO1,3) = CE(NUBO1,3) - RNN*FLXI(3) 
-!             
+              CE(NUBO1,2) = CE(NUBO1,2) - RNN*FLXI(2)
+              CE(NUBO1,3) = CE(NUBO1,3) - RNN*FLXI(3)
+!
               CE(NUBO2,1) = CE(NUBO2,1) + RNN*FLXJ(1)
-              CE(NUBO2,2) = CE(NUBO2,2) + RNN*FLXJ(2) 
-              CE(NUBO2,3) = CE(NUBO2,3) + RNN*FLXJ(3) 
+              CE(NUBO2,2) = CE(NUBO2,2) + RNN*FLXJ(2)
+              CE(NUBO2,3) = CE(NUBO2,3) + RNN*FLXJ(3)
             ENDIF
-            YESNO(NSG)=.TRUE. 
+            YESNO(NSG)=.TRUE.
           ENDIF
         ENDDO
       ENDDO

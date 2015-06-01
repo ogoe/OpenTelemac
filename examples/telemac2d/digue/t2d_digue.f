@@ -71,7 +71,7 @@
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
         FCT(1:2)='Q('
-        IF(I.LT.10) THEN 
+        IF(I.LT.10) THEN
           WRITE(FCT(3:3),FMT='(I1)') I
           FCT(4:8)=')    '
         ELSEIF(I.LT.100) THEN
@@ -80,16 +80,16 @@
         ELSE
           WRITE(LU,*) 'Q NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
           CALL PLANTE(1)
-          STOP 
+          STOP
         ENDIF
-        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I)) 
+        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
 !
       ENDIF
 !
       IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
-! 
-!     PROGRAMMABLE PART                              
-!     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
+!
+!     PROGRAMMABLE PART
+!     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
 !
       RAMPE1 =  1800.D0
       RAMPE2 =  800.D0
@@ -97,27 +97,27 @@
 ! TEST  POUR INITIALISER LE DEBIT PARTIE DE MONTEE DE CRUE
 !
 !
-      Q = 1950.D0 * MIN(1.D0,AT/RAMPE1) +1.D0                           
+      Q = 1950.D0 * MIN(1.D0,AT/RAMPE1) +1.D0
 !
 ! TEST  POUR INITIALISER LE DEBIT PARTIE STATIONNAIRE
 !
       IF(AT.GT.1800.D0.AND.AT.LT.3000.D0) THEN
-        Q = 1950.D0                                                   
+        Q = 1950.D0
       ENDIF
 !
 ! TEST POUR INITIALISER LE DEBIT PARTIE DE DECRUE
 !
       IF(AT.GE.3000.D0.AND.AT.LT.3800.D0) THEN
-        Q = 1950.D0*(1.D0 - MIN(1.D0,(AT-3000.D0)/RAMPE2))             
+        Q = 1950.D0*(1.D0 - MIN(1.D0,(AT-3000.D0)/RAMPE2))
       ENDIF
         Q = DEBIT(I)
-! 
-      ENDIF          
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END      
+      END
 !                       *****************
                         SUBROUTINE CONDIN
 !                       *****************
@@ -134,7 +134,7 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |                | -- |  
+! |                | -- |
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !***********************************************************************
@@ -151,7 +151,7 @@
       INTEGER K,ITRAC
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!  
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -187,14 +187,14 @@
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
-!  ZONE A MODIFIER                                                      
-        DO K = 1,NPOIN                                                
+!  ZONE A MODIFIER
+        DO K = 1,NPOIN
           H%R(K) = 0.D0
           IF(ZF%R(K).LE.5.D0) THEN
             H%R(K) = 5.D0 - ZF%R(K)
           ENDIF
-        ENDDO                                          
-!  FIN DE LA ZONE A MODIFIER      
+        ENDDO
+!  FIN DE LA ZONE A MODIFIER
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -225,4 +225,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END           
+      END

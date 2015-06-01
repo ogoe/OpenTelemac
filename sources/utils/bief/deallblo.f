@@ -39,7 +39,7 @@
       ! If the block contains nothing ... do nothing
       IF(BLO%N.GT.0) THEN
         DO I=1,BLO%N
-            ! If the element of the block was added using bief_all_in_vec 
+            ! If the element of the block was added using bief_all_in_vec
             ! This means we have to deallocate the vector and the pointer
             IF(BLO%ADR(I)%P%TYPDIA(1:1).EQ.'W') THEN
               CALL BIEF_DEALLVEC(BLO%ADR(I)%P)

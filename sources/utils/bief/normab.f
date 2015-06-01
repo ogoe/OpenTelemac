@@ -67,7 +67,7 @@
 !+   boundary segments.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DISBOR         |<--| DISTANCE FROM BOUNDARY POINT TO CLOSER 
+!| DISBOR         |<--| DISTANCE FROM BOUNDARY POINT TO CLOSER
 !|                |   | INNER POINT
 !| IKLBOR         |-->| CONNECTIVITY TABLE FOR BOUNDARY ELEMENTS
 !| LGSEG          |<--| LENGTH OF BOUNDARY SEGMENTS
@@ -270,7 +270,7 @@
           YSGBOR(IELEB,2)= YSGBOR(K1,2)
           YSGBOR(IELEB,3)= YSGBOR(K1,3)
           YSGBOR(IELEB,4)= YSGBOR(K1,4)
-!         DISBOR(IELEB)  = DISBOR(K1) 
+!         DISBOR(IELEB)  = DISBOR(K1)
 !
         ENDDO
 !

@@ -66,7 +66,7 @@
 !| NPOIN2         |-->| NUMBER OF 2D POINTS
 !| NSUIS          |-->| LOGICAL UNIT NUMBER OF THE PREVIOUS SEDIMENT
 !|                |   | COMPUTATION FILE
-!| ZF             |-->| ELEVATION OF BED 
+!| ZF             |-->| ELEVATION OF BED
 !|                |   | (FROM GEOMETRY OR 3D PREVIOUS COMPUTATION FILE)
 !| ZR             |<--| ELEVATION OF RIGID BED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,14 +92,14 @@
       DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2)
 !!! TBE - THESE ARE FOR GIBSON MODEL (COMMENTED FOR NOW)
 !!!      DOUBLE PRECISION, INTENT(OUT)   :: IVIDE(NPOIN2,NCOUCH+1)
-!!!      DOUBLE PRECISION, INTENT(INOUT) :: TEMP(NPOIN2,NCOUCH)      
+!!!      DOUBLE PRECISION, INTENT(INOUT) :: TEMP(NPOIN2,NCOUCH)
 !!!      DOUBLE PRECISION, INTENT(OUT)   :: FLUER(NPOIN2), PDEPOT(NPOIN2)
 !!!      INTEGER, INTENT(OUT)            :: NPF(NPOIN2)
 !
-      CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT 
+      CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
 !
-!!!      LOGICAL, INTENT(IN)             :: TASSE 
-      
+!!!      LOGICAL, INTENT(IN)             :: TASSE
+
 !
 !----------------------------------------------------------------------
 !
@@ -107,12 +107,12 @@
 !
       INTEGER           :: IB(10),IERR
       CHARACTER(LEN=80) :: TITLE
-      INTEGER           :: RECORD 
-      LOGICAL           :: FOUND 
-      CHARACTER(LEN=16) :: VARNAME 
+      INTEGER           :: RECORD
+      LOGICAL           :: FOUND
+      CHARACTER(LEN=16) :: VARNAME
       INTEGER :: NPOIN_SUIS,TYP_ELEM,NELEM,NPTFR,NDP_SUIS,NPLAN
       DOUBLE PRECISION :: TIME
-!      
+!
       INTEGER           :: NVAR,I
 !
 !
@@ -124,7 +124,7 @@
         STOP
       ENDIF
 !
-!   READ THE HEADER AND CHECK QUANTITIES / OPTIONS 
+!   READ THE HEADER AND CHECK QUANTITIES / OPTIONS
       WRITE(LU,*) ' '
       IF(LNG.EQ.1) WRITE(LU,*)
      &   'LECTURE DU FICHIER DE SEDIMENT PRECEDENT'
@@ -147,65 +147,65 @@
       ENDIF
 !
       IF(ITASS.EQ.1) THEN
-! 
-!----------------------------------------------------------------------- 
-! 
-!     LOOK FOR 1. BED THICKNESS PER LAYER 
-!     IN THE RESULT FILE: 
-!     VARIABLE NAMES ARE BED DZ1, BED DZ2, etc....FOR EACH LAYER 
+!
+!-----------------------------------------------------------------------
+!
+!     LOOK FOR 1. BED THICKNESS PER LAYER
+!     IN THE RESULT FILE:
+!     VARIABLE NAMES ARE BED DZ1, BED DZ2, etc....FOR EACH LAYER
 !     UP TO NCOUCH (N.B. NCOUCH IS THE LOWEST LAYER)
-! 
+!
 !     ZERO THE TOTAL THICKNESS ARRAY
       DO IPOIN = 1,NPOIN2
           HDEP(IPOIN) = 0.D0
       ENDDO
 !
 !     FIND LAYER THICKNESS VARIABLES IN THE 2D RESULT FILE
-      DO I=1,NCOUCH 
-! 
-!       MAKE THE NUMBERED NAME STRING 
+      DO I=1,NCOUCH
+!
+!       MAKE THE NUMBERED NAME STRING
         IF(I.LT.10) THEN
-          WRITE(VARNAME,'(A5,I1,A10)')  'LAYER',I,'  THICKNES'  
+          WRITE(VARNAME,'(A5,I1,A10)')  'LAYER',I,'  THICKNES'
         ELSEIF(I.LT.100) THEN
-          WRITE(VARNAME,'(A5,I2,A9)')  'LAYER',I,' THICKNES'  
+          WRITE(VARNAME,'(A5,I2,A9)')  'LAYER',I,' THICKNES'
         ELSE
           WRITE (LU,*) 'SUISED: NOT IMPLEMENTED FOR ',NCOUCH,' LAYERS'
           CALL PLANTE(1)
-          STOP            
-        ENDIF 
-!           
+          STOP
+        ENDIF
+!
         WRITE(LU,*)  'CHECKING PREVIOUS SED FILE FOR VARIABLE'
-        
+
 !       PUT RESULTS INTO T2 BIEF OBJECT
         RECORD = -1 ! To get the last time step
         CALL READ_DATA(FFORMAT,NSUIS,T2%R,VARNAME,NPOIN_SUIS,IERR,
      &                 RECORD,TIME)
-!                       
+!
         IF (IERR.EQ.0)  THEN
           WRITE(LU,*)
-     &     'BED LAYER THICKNESS (LAYER',I,') FOUND IN GEOMETRY FILE' 
+     &     'BED LAYER THICKNESS (LAYER',I,') FOUND IN GEOMETRY FILE'
 !
 !         TRANSFER THE DATA FROM BIEF OBJECT TO DOUBLE ARRAY
           DO IPOIN = 1,NPOIN2
             EPAI(IPOIN,I) = T2%R(IPOIN)
-          ENDDO  
+          ENDDO
         ELSE
-          WRITE(LU,*)  
+          WRITE(LU,*)
      &     'BED LAYER THICKNESS (LAYER',I,') NOT FOUND IN GEOMETRY FILE'
         ENDIF
-! 
+!
 !       SUM THE TOTAL THICKNESS OF DEPOSIT (HDEP)
         DO IPOIN = 1,NPOIN2
           HDEP(IPOIN) = HDEP(IPOIN)+EPAI(IPOIN,I)
         ENDDO
 !
-      ENDDO 
-!       
+      ENDDO
+!
 !     ELEVATION OF RIGID BED
       DO IPOIN = 1,NPOIN2
         ZR(IPOIN) = ZF(IPOIN)-HDEP(IPOIN)
       ENDDO
-!             
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! STILL NEED TO CODE CONCENTRATION AND TIME OF CONSOLIDATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -289,9 +289,9 @@
 !!!!         CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,'STD',ISTAT)
 !!!        DEALLOCATE(XB)
         ENDIF
-!        
+!
 !     DEALLOCATE TEMPORARY STORAGE
-!      
+!
       RETURN
       END
 !

@@ -43,7 +43,7 @@
 !| FBOR           |-->| DIRICHLET BOUNDARY CONDITIONS
 !| KDIR           |-->| CONVENTION FOR DIRICHLET BOUNDARY CONDITIONS
 !| LIMDIR         |-->| TYPES OF BOUNDARY CONDITIONS
-!|                |   | IF LIMDIR(K) = KDIR LE KTH BOUNDARY POINT 
+!|                |   | IF LIMDIR(K) = KDIR LE KTH BOUNDARY POINT
 !|                |   | IS OF DIRICHLET TYPE.
 !| MASKPT         |-->| MASKING PER POINT.
 !|                |   | =1. : NORMAL   =0. : MASKED

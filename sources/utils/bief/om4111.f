@@ -135,7 +135,7 @@
              XM(K,1,16) = XM(K,1,16) + XN(K,4)
              XM(K,1,17) = XM(K,1,17) + XN(K,5)
              XM(K,1,21) = XM(K,1,21) + XN(K,6)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
@@ -148,7 +148,7 @@
              XM(K,1,16) = XM(K,1,16) + XN(K,1)
              XM(K,1,17) = XM(K,1,17) + XN(K,2)
              XM(K,1,21) = XM(K,1,21) + XN(K,3)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
@@ -158,7 +158,7 @@
              XM(K,1, 1) = XM(K,1, 1) + XN(K,1)
              XM(K,1, 2) = XM(K,1, 2) + XN(K,2)
              XM(K,1, 6) = XM(K,1, 6) + XN(K,3)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSE
            IF (LNG.EQ.1) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
@@ -188,7 +188,7 @@
              XM(K,1,16) = XM(K,1,16) + XN(K,1)
              XM(K,1,17) = XM(K,1,17) + XN(K,2)
              XM(K,1,21) = XM(K,1,21) + XN(K,3)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
@@ -201,7 +201,7 @@
              XM(K,1,16) = XM(K,1,16) + XN(K,1)
              XM(K,1,17) = XM(K,1,17) + XN(K,2)
              XM(K,1,21) = XM(K,1,21) + XN(K,3)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
@@ -211,7 +211,7 @@
              XM(K,1, 1) = XM(K,1, 1) + XN(K,1)
              XM(K,1, 2) = XM(K,1, 2) + XN(K,2)
              XM(K,1, 6) = XM(K,1, 6) + XN(K,3)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSE
            IF (LNG.EQ.1) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
@@ -237,7 +237,7 @@
              XM(K,NETAGE,28) = XM(K,NETAGE,28) + XN(K,4)
              XM(K,NETAGE,29) = XM(K,NETAGE,29) + XN(K,5)
              XM(K,NETAGE,30) = XM(K,NETAGE,30) + XN(K,6)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
@@ -250,7 +250,7 @@
              XM(K,NETAGE,28) = XM(K,NETAGE,28) + XN(K,1)
              XM(K,NETAGE,29) = XM(K,NETAGE,29) + XN(K,2)
              XM(K,NETAGE,30) = XM(K,NETAGE,30) + XN(K,3)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
@@ -260,7 +260,7 @@
              XM(K,NETAGE,13) = XM(K,NETAGE,13) + XN(K,1)
              XM(K,NETAGE,14) = XM(K,NETAGE,14) + XN(K,2)
              XM(K,NETAGE,15) = XM(K,NETAGE,15) + XN(K,3)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSE
            IF (LNG.EQ.1) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
@@ -286,7 +286,7 @@
              XM(K,NETAGE,28) = XM(K,NETAGE,28) + XN(K,1)
              XM(K,NETAGE,29) = XM(K,NETAGE,29) + XN(K,2)
              XM(K,NETAGE,30) = XM(K,NETAGE,30) + XN(K,3)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
@@ -299,7 +299,7 @@
              XM(K,NETAGE,28) = XM(K,NETAGE,28) + XN(K,1)
              XM(K,NETAGE,29) = XM(K,NETAGE,29) + XN(K,2)
              XM(K,NETAGE,30) = XM(K,NETAGE,30) + XN(K,3)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
@@ -309,7 +309,7 @@
              XM(K,NETAGE,13) = XM(K,NETAGE,13) + XN(K,1)
              XM(K,NETAGE,14) = XM(K,NETAGE,14) + XN(K,2)
              XM(K,NETAGE,15) = XM(K,NETAGE,15) + XN(K,3)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSE
            IF (LNG.EQ.1) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)

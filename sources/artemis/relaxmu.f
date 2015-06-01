@@ -60,15 +60,12 @@
           MODHMU = 1.D0
           MU%R(I) = MU2%R(I)
         ELSE
-!          WRITE(6,*) 'HMU,HMUANC=',HMU%R(I),HMUANC%R(I)
           ECRHMU = MAX(ECRHMU,ABS(HMU%R(I)-HMUANC%R(I)))
           MODHMU = MAX(MODHMU,ABS(HMU%R(I)))
           MU%R(I) = MU2%R(I)
           HMUANC%R(I) = HMU%R(I)
         ENDIF
       ENDDO
-!      WRITE(6,*) 'MODHMU AVANT MAX=',MODHMU
-!
 !
 !     RELAXES THE RELAXATION AT EACH SUB-ITERATION
 !     TO FACILITATE CONVERGENCE OF THE ALGORITHM USED TO
@@ -82,7 +79,6 @@
         ECRHMU = P_DMAX(ECRHMU)
         MODHMU = P_DMAX(MODHMU)
       END IF
-!      WRITE(6,*) 'MODHMU APRES MAX=',MODHMU,LNG
       IF (LNG.EQ.1) WRITE(LU,*) 'ECART ENTRE DEUX
      &        SOUS-ITERATIONS (%)',
      &        100*ECRHMU/MODHMU
@@ -90,7 +86,6 @@
      &        SUB-ITERATIONS (%) ',
      &        100*ECRHMU/MODHMU
       ITERMU = ITERMU + 1
-!      WRITE(6,*) 'ITERMU FIN RELAX=',ITERMU
 !
 !
 !     -----------------------------------------------------------

@@ -307,7 +307,7 @@
 !
       DO I=1,9
         CALL EXTMSK(MASK_3D%ADR(I)%P,MASK%ADR(I)%P%R,NPLAN-1,NELEB2)
-      ENDDO      
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

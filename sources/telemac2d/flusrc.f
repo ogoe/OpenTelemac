@@ -32,16 +32,16 @@
 !| EPS            |-->| TOLERANCE
 !| FLUSCE         |<->| SOURCE FLUXES
 !| G              |-->| GRAVITY
-!| IEL1           |-->| FIRST ELEMENT NUMBER 
+!| IEL1           |-->| FIRST ELEMENT NUMBER
 !| IEL2           |-->| SECOND ELEMENT NUMBER
 !| ISEGIN         |-->| SEGMENT NUMBER
-!| NPOIN          |-->| TOTAL NUMBER OF NODES 
+!| NPOIN          |-->| TOTAL NUMBER OF NODES
 !| NSEG           |-->| TOTAL NUMBER OF SEGMENTS IN THE MESH
 !| VNOIN          |-->| NORMAL VECTOR TO THE INTERFACE
 !|                |   | (2 FIRST COMPONENTS) AND
 !|                |   | LENGTH OF THE SEGMENT (3RD COMPONENT)
 !| W              |-->| CONSERVATIVE VARIABLE OF THE PROBLEM AT TIME TN
-!| X              |-->| X COORDINATES 
+!| X              |-->| X COORDINATES
 !| Y              |-->| Y COORDINATES
 !| ZF             |-->| BATHYMETRY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -285,7 +285,7 @@
           FLUSCE(1,IEL1) = 0.D0
           FLUSCE(2,IEL1) = 0.D0
           FLUSCE(3,IEL1) = 0.D0
-!         
+!
           FLUSCE(1,IEL2) = GE(1)*CT2*2.D0
           FLUSCE(2,IEL2) = GE(2)*CT2*2.D0
           FLUSCE(3,IEL2) = GE(3)*CT2*2.D0
@@ -336,7 +336,7 @@
           FLUSCE(1,IEL1) = 0.D0
           FLUSCE(2,IEL1) = 0.D0
           FLUSCE(3,IEL1) = 0.D0
-!         
+!
           FLUSCE(1,IEL2) = 0.D0
           FLUSCE(2,IEL2) = 0.D0
           FLUSCE(3,IEL2) = 0.D0
@@ -347,9 +347,9 @@
           FLUSCE(1,IEL1) = (PSA1*T11(1)+PSA2*T21(1))
           FLUSCE(2,IEL1) = (PSA1*T11(2)+PSA2*T21(2))
           FLUSCE(3,IEL1) = (PSA1*T11(3)+PSA2*T21(3))
-!         
+!
           PSA = TS12(1)*GE(1)+TS12(2)*GE(2)+TS12(3)*GE(3)
-!         
+!
           FLUSCE(1,IEL2) = PSA*T12(1)
           FLUSCE(2,IEL2) = PSA*T12(2)
           FLUSCE(3,IEL2) = PSA*T12(3)

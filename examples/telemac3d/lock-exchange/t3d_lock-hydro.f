@@ -229,7 +229,7 @@
       IF (NTRAC.NE.0) THEN
         DO I=1,NTRAC
           CALL OS( 'X=C     ', X=TA%ADR(I)%P, C=TRAC0(I))
-        ENDDO        
+        ENDDO
         DO IPLAN=1,NPLAN
           DO IPOIN2=1,NPOIN2
             IPOIN3 = IPOIN2 + (IPLAN-1)*NPOIN2

@@ -6,12 +6,12 @@
 !
 !***********************************************************************
 ! SISYPHE VERSION 6.0      02/02/2009 J-M HERVOUET (LNHE) 01 30 87 80 18
-!                                                                                               
-! COPYRIGHT EDF      
+!
+! COPYRIGHT EDF
 !***********************************************************************
 !
-!  FUNCTION: THIS IS THE INTERFACE TO DREDGESIM, CONTAINING ALL 
-!            DEPENDENCIES TO DREDGESIM LIBRARIES 
+!  FUNCTION: THIS IS THE INTERFACE TO DREDGESIM, CONTAINING ALL
+!            DEPENDENCIES TO DREDGESIM LIBRARIES
 !
 !  FOR REAL INTERFACING WITH DREDGESIM, COMMENTS "!" MUST BE REMOVED
 !
@@ -21,14 +21,14 @@
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
 ! |   OPTION       | -->| 1 : INITIALISATION (CALLED IN SISYPHE)
-! |                |    | 2 : CALLED EVERY TIME STEP (FROM 
+! |                |    | 2 : CALLED EVERY TIME STEP (FROM
 ! |                |    |     BEDLOAD_POSTTREATMENT)
 ! |                |    | 3 : END  (CALLED IN SISYPHE)
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !-----------------------------------------------------------------------
 ! PROGRAMME APPELANT : SISYPHE, BEDLOAD_POSTTREATMENT
-! PROGRAMMES APPELES : 
+! PROGRAMMES APPELES :
 !***********************************************************************
 !
       USE BIEF
@@ -62,14 +62,14 @@
       INTEGER I,J
       CHARACTER(LEN=11) EXTENS
       EXTERNAL          EXTENS
-      !LEO NEW VARIABLE FOR NODE_DEPTH OF SISYPHE 
-      DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE, SAVE,TARGET :: 
+      !LEO NEW VARIABLE FOR NODE_DEPTH OF SISYPHE
+      DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE, SAVE,TARGET ::
      &                TDS_SIS_NODE_DEPTH
-      DOUBLE PRECISION, DIMENSION (:,:), ALLOCATABLE, SAVE,TARGET :: 
+      DOUBLE PRECISION, DIMENSION (:,:), ALLOCATABLE, SAVE,TARGET ::
      &                TDS_NODE_SEDIMENT_FRACTION
-      DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE, SAVE,TARGET :: 
+      DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE, SAVE,TARGET ::
      &                TDS_HN
-      
+
 
 
 !
@@ -126,7 +126,7 @@
         DO I = 1,NPOIN
            WRITE(120,*), I, T13%R(I)
         END DO
-       
+
         CLOSE(120)
 !LEODEBUG output END COMUTE MESH AREA
 
@@ -135,12 +135,12 @@
 !L.S. removed debug commented out
         CALL INIT_AND_SETUP_DS(SIS_FILES(SISMAF)%LU,DREDGEINP,
      &                        SIS_FILES(SISGEO)%LU,SEDGEO,
-     &                         NCSIZE,IPID, 
+     &                         NCSIZE,IPID,
      &    NELEM, NSICLA, NPOIN, NLAYER, MESH, T13, ZF, E, ZR, HN,
      &    FDM,AVAIL, LEOPR, PTINIG, DT,LT,
      &    MARDAT, MARTIM, XKV, XMVS)
-  
-   
+
+
 !
       !#########################################
       !
@@ -162,31 +162,31 @@
           TDS_SIS_NODE_DEPTH(I) = ZF%R(I)
           TDS_HN(I) = HN%R(I)
         END DO
-       
+
         !LEO COPY SEDIMENT FRATIONS TO TDS_NODE_SEDIMENT_FRACTION
         DO IPOIN=1,NPOIN !GET_NOF_NODES()
           DO ISICLA=1,NSICLA !SIZE(NODE_SEDIMENT_FRACTION,2)
-            TDS_NODE_SEDIMENT_FRACTION(IPOIN,ISICLA) = 
+            TDS_NODE_SEDIMENT_FRACTION(IPOIN,ISICLA) =
      &                       AVAIL(IPOIN,1,ISICLA)
           END DO
         END DO
-   
+
         !-----------------RUN DREDGESIM -------------
         CALL RUN_DREDGESIM(DT,TDS_SIS_NODE_DEPTH,TDS_HN,AVAIL,NPOIN,
      &                     NSICLA,TDS_NODE_SEDIMENT_FRACTION)
 
         !---------------- DO SOME POSTPROCESSING -----
-       
-        !LEO OLD DEFAULT 
+
+        !LEO OLD DEFAULT
         !DZF_GF%R = NODE_DEPTH - ZF%R
-        
+
         DZF_GF%R =  TDS_SIS_NODE_DEPTH - ZF%R
         !LEO DZF_GF%R = NODE_DEPTH - TDS_SIS_NODE_DEPTH
-        
-        !LEO RESET ZF%R WITH TDS_SIS_NODE_DEPTH       
+
+        !LEO RESET ZF%R WITH TDS_SIS_NODE_DEPTH
         !LEO NOT LONGER NEEDED ZF%R = TDS_SIS_NODE_DEPTH
-        
-        
+
+
         AVAI_GF = NODE_SEDIMENT_FRACTION
 !
         DO J = 1, NPOIN
@@ -198,7 +198,7 @@
           ELSE
             DO I = 1, NSICLA
               ZFCL_C%ADR(I)%P%R(J) = ZFCL_C%ADR(I)%P%R(J) +
-     &                               DZF_GF%R(J)*AVAIL(J,1,I)   
+     &                               DZF_GF%R(J)*AVAIL(J,1,I)
             ENDDO
           ENDIF
         ENDDO
@@ -207,15 +207,15 @@
       ELSEIF(OPTION.EQ.3) THEN
 !
 !       CLOSING
-!      
+!
         CALL STOP_DREDGESIM()
         CALL CLEAR_DREDGESIM()
         CALL CLEAR_SISYDREDGE()
-        
+
         !LEO DEALLOCATE MY VARIABLES
-        DEALLOCATE(TDS_SIS_NODE_DEPTH) 
+        DEALLOCATE(TDS_SIS_NODE_DEPTH)
         DEALLOCATE(TDS_NODE_SEDIMENT_FRACTION)
-        DEALLOCATE(TDS_HN) 
+        DEALLOCATE(TDS_HN)
 !
       ELSE
 !
@@ -224,7 +224,7 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'MAUVAISE OPTION POUR DREDGESIM'
         IF(LNG.EQ.2) WRITE(LU,*) 'BAD OPTION FOR DREDGESIM'
         CALL PLANTE(1)
-        STOP        
+        STOP
 !
       ENDIF
 !

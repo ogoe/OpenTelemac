@@ -32,8 +32,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM1NHCOM       |-->| FIRST DIMENSION OF NH_COM_SEG
 !| FSEG            |<->| THE FUNCTION DEFINED ON SEGMENTS
-!| NB_NEIGHB_PT_SEG|-->| NUMBER OF SEGMENTS SHARED WITH A NEIGHBOUR  
-!|                 |   | PROCESSOR 
+!| NB_NEIGHB_PT_SEG|-->| NUMBER OF SEGMENTS SHARED WITH A NEIGHBOUR
+!|                 |   | PROCESSOR
 !| NB_NEIGHB_SEG   |-->| NUMBER OF NEIGHBOUR PROCESSORS (FOR SEGMENTS)
 !| NH_COM_SEG      |-->| ADDRESSES OF INTERFACE SEGMENTS
 !| NSEG            |-->| NUMBER OF SEGMENTS

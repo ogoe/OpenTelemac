@@ -9,7 +9,7 @@
 ! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
-!brief    Completing the weak form of the method of characteristics 
+!brief    Completing the weak form of the method of characteristics
 !+        after advection of the Gauss points.
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
@@ -34,7 +34,7 @@
 !| Z              |-->| ELEVATIONS OF POINTS IN THE MESH.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF  
+      USE BIEF
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -196,7 +196,7 @@
         DO IELEM=1,NELEM
           I1=IKLE(IELEM,1)
           I2=IKLE(IELEM,2)
-          I3=IKLE(IELEM,3)         
+          I3=IKLE(IELEM,3)
           WEIGH1=SURFAC(IELEM)*2.D0*0.111690794839005D0
           WEIGH2=SURFAC(IELEM)*2.D0*0.054975871827661D0
 !         POINT DE GAUSS 1
@@ -247,8 +247,8 @@
         DO IELEM=1,NELEM
           I1=IKLE(IELEM,1)
           I2=IKLE(IELEM,2)
-          I3=IKLE(IELEM,3) 
-          WEIGH1=SURFAC(IELEM)*2.D0*A1 
+          I3=IKLE(IELEM,3)
+          WEIGH1=SURFAC(IELEM)*2.D0*A1
           WEIGH2=SURFAC(IELEM)*2.D0*A2
           WEIGH3=SURFAC(IELEM)*2.D0*A3
 !         POINT DE GAUSS 1
@@ -288,7 +288,7 @@
           CV1%R(I3)=CV1%R(I3)+WEIGH3*FTILD_WEAK%R(IG)*(1.D0-B-B)
         ENDDO
 !
-      ELSEIF(NGAUSS.EQ.12.AND.IELM.EQ.11) THEN 
+      ELSEIF(NGAUSS.EQ.12.AND.IELM.EQ.11) THEN
 !
         IG=0
         A=0.063089014491502D0
@@ -302,8 +302,8 @@
         DO IELEM=1,NELEM
           I1=IKLE(IELEM,1)
           I2=IKLE(IELEM,2)
-          I3=IKLE(IELEM,3) 
-          WEIGH1=SURFAC(IELEM)*2.D0*A1 
+          I3=IKLE(IELEM,3)
+          WEIGH1=SURFAC(IELEM)*2.D0*A1
           WEIGH2=SURFAC(IELEM)*2.D0*A2
           WEIGH3=SURFAC(IELEM)*2.D0*A3
 !         POINT DE GAUSS 1
@@ -388,10 +388,10 @@
           I3=IKLE(IELEM,3)+(IPLAN-1)*NPOIN
           I4=I1+NPOIN
           I5=I2+NPOIN
-          I6=I3+NPOIN 
+          I6=I3+NPOIN
           H1=Z(I4)-Z(I1)
           H2=Z(I5)-Z(I2)
-          H3=Z(I6)-Z(I3)      
+          H3=Z(I6)-Z(I3)
           WEIGH1=SURFAC(IELEM)*(H1*(1.D0-A-A)+H2*A+H3*A)/6.D0
           WEIGH2=SURFAC(IELEM)*(H1*(1.D0-B-A)+H2*B+H3*A)/6.D0
           WEIGH3=SURFAC(IELEM)*(H1*(1.D0-A-B)+H2*A+H3*B)/6.D0

@@ -104,7 +104,7 @@
 !    &          1-4,2-4,3-4,4-4/
 !     INTEGER ISEGT(6,2)
 !     DATA ISEGT/1,2,3,1,2,3,2,3,1,4,4,4/
-!      
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -187,24 +187,24 @@
             ENDIF
 !
 !           NOW TAKING CONTRIBUTIONS OF TETRAHEDRON K= 1, 2 AND 3
-!   
+!
             DO K=1,3
               IELEM3D=3*(IPLAN-1)*NELEM2+IELEM+(K-1)*NELEM2
 !             SEGMENTS 1 TO 6
-              DO ISEG=1,6            
+              DO ISEG=1,6
 !               LOCAL NUMBERS OF 2 POINTS OF SEGMENT IN THE TETRAHEDRON
                 L1=ISEGT(ISEG,1)
                 L2=ISEGT(ISEG,2)
 !               GLOBAL NUMBERS OF 2 POINTS OF SEGMENT
                 I1=IKLE(IELEM3D,L1)
-                I2=IKLE(IELEM3D,L2)          
+                I2=IKLE(IELEM3D,L2)
 !               NUMBERS OF 2 POINTS OF SEGMENT IN THE ORIGINAL PRISM
                 IT1=TETRA(S1,S2,S3,K,L1)
                 IT2=TETRA(S1,S2,S3,K,L2)
 !               WE LOOK FOR VERTICALS OF THE ORIGINAL PRISM
                 IF(IT1.EQ.1.AND.IT2.EQ.4) THEN
                   XAUX(I1,3)=XAUX(I1,3)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 1-4
-                  XAUX(I2,1)=XAUX(I2,1)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 4-1 
+                  XAUX(I2,1)=XAUX(I2,1)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 4-1
                   AX(IELEM3D,STO(L1,L2))=
      &            AX(IELEM3D,STO(L1,L2))*(1.D0-TETA)
                 ELSEIF(IT1.EQ.4.AND.IT2.EQ.1) THEN
@@ -224,15 +224,15 @@
      &            AX(IELEM3D,STO(L1,L2))*(1.D0-TETA)
                 ELSEIF(IT1.EQ.3.AND.IT2.EQ.6) THEN
                   XAUX(I1,3)=XAUX(I1,3)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 3-6
-                  XAUX(I2,1)=XAUX(I2,1)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 6-3 
+                  XAUX(I2,1)=XAUX(I2,1)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 6-3
                   AX(IELEM3D,STO(L1,L2))=
-     &            AX(IELEM3D,STO(L1,L2))*(1.D0-TETA)     
+     &            AX(IELEM3D,STO(L1,L2))*(1.D0-TETA)
                 ELSEIF(IT1.EQ.6.AND.IT2.EQ.3) THEN
                   XAUX(I1,1)=XAUX(I1,1)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 6-3
                   XAUX(I2,3)=XAUX(I2,3)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 3-6
                   AX(IELEM3D,STO(L1,L2))=
      &            AX(IELEM3D,STO(L1,L2))*(1.D0-TETA)
-                ENDIF           
+                ENDIF
               ENDDO
             ENDDO
 !

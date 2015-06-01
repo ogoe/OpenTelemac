@@ -15,7 +15,7 @@
      & TYPSEUIL,NWEIRS,NPSING,NDGA1,NDGB1,NBOR)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                
+! TELEMAC2D   V7P0
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCE TERMS IN THE CONTINUITY EQUATION
@@ -85,7 +85,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        20/02/2012
 !+        V6P2
-!+   Rain-evaporation added (after initial code provided by O. Boutron, 
+!+   Rain-evaporation added (after initial code provided by O. Boutron,
 !+   Tour du Valat and O. Bertrand, Artelia-group).
 !
 !history  C.COULET (ARTELIA)
@@ -292,7 +292,7 @@
 !=======================================================================
 !
 !  SECONDARY CURRENTS
-!  
+!
       IF(SECCURRENTS) THEN
 !
 !       TAU_SEC
@@ -363,7 +363,7 @@
 !=======================================================================
 !
 ! CORIOLIS FORCE
-!       
+!
 !
 !                FU           =  + FCOR * V
 !                  CORIOLIS
@@ -458,7 +458,7 @@
           ENDDO
         ELSE
           CALL OS('X=C     ',X=PLUIE,C=RAIN_MPS)
-        ENDIF 
+        ENDIF
       ENDIF
 !
 !     SOURCES
@@ -617,7 +617,7 @@
 !=======================================================================
 !
 !  WAVE DRIVEN CURRENTS
-!      
+!
 !
 !                FU        =  FXWAVE
 !                  COUROU
@@ -640,14 +640,14 @@
 !
         IF(.NOT.DEJALU.AND..NOT.INCLUS(COUPLING,'TOMAWAC')) THEN
 !
-            ! Records numbering starts from 0 
+            ! Records numbering starts from 0
             IREC = NPTH - 1
 !           NBI1 : BINARY DATA FILE 1
             NOMX='FORCE FX        M/S2            '
             NOMY='FORCE FY        M/S2            '
             FFORMAT = T2D_FILES(T2DBI1)%FMT
             FILE_ID = T2D_FILES(T2DBI1)%LU
-            CALL GET_MESH_NPOIN(FFORMAT, FILE_ID, TRIANGLE_ELT_TYPE, 
+            CALL GET_MESH_NPOIN(FFORMAT, FILE_ID, TRIANGLE_ELT_TYPE,
      &                          NP, ERR)
             CALL CHECK_CALL(ERR,'PROSOU:GET_MESH_NPOIN')
             CALL READ_DATA(FFORMAT, FILE_ID, FXWAVE%R, NOMX, NPOIN,
@@ -670,7 +670,7 @@
 !           CLANDESTINE VARIABLES FROM TOMAWAC TO SISYPHE
             IF(NVARCL.GT.0) THEN
               DO I=1,NVARCL
-                CALL READ_DATA(FFORMAT, FILE_ID, VARCL%ADR(I)%P%R, 
+                CALL READ_DATA(FFORMAT, FILE_ID, VARCL%ADR(I)%P%R,
      &                         VARCLA(I)(1:16), NPOIN,
      &                          ERR,IREC,ATH)
                 IF(ERR.NE.0) THEN

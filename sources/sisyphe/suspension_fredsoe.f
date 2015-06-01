@@ -38,7 +38,7 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !+
-!+ 
+!+
 !history  C. VILLARET
 !+        20/03/2011
 !+        V6P1
@@ -47,8 +47,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables   
-!+   
+!+   Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
@@ -57,7 +57,7 @@
 !| GRAV           |-->| ACCELERATION OF GRAVITY
 !| NPOIN          |-->| NUMBER OF POINTS
 !| TAUP           |-->| CRITICAL SHEAR STRESS
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !| XMVS           |-->| WATER DENSITY
 !| ZERO           |-->| ZERO
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

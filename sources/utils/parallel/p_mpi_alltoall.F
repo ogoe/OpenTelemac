@@ -29,16 +29,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| SEND_BUFFER   |-->| SEND BUFFER  
+!| SEND_BUFFER   |-->| SEND BUFFER
 !| NSEND         |-->| SPECIFIES THE NUMBER OF ELEMENTS TO SEND TO EACH
-!|               |   | PROCESSOR  
+!|               |   | PROCESSOR
 !| SEND_DATYP    |-->| DATA TYPE OF SEND BUFFER ELEMENTS
 !| RECV_BUFFER   |<--| RECEIVE BUFFER
-!| NRECV         |-->| SPECIFIES THE MAXIMUM NUMBER OF ELEMENTS THAT 
-!|               |   | CAN BE RECEIVED FROM EACH PROCESSOR 
+!| NRECV         |-->| SPECIFIES THE MAXIMUM NUMBER OF ELEMENTS THAT
+!|               |   | CAN BE RECEIVED FROM EACH PROCESSOR
 !| RECV_DATYP    |-->| DATA TYPE OF RECEIVE BUFFER ELEMENTS
-!| COMM          |-->| COMMUNICATOR 
-!| IERR          |<--| ERROR VALUE 
+!| COMM          |-->| COMMUNICATOR
+!| IERR          |<--| ERROR VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_PARALLEL
@@ -54,7 +54,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      RECV_BUFFER(1) = 0 
+      RECV_BUFFER(1) = 0
       IERR = 0
 #if defined (HAVE_MPI)
       CALL MPI_ALLTOALL(SEND_BUFFER,NSEND,SEND_DATYP,

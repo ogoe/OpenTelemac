@@ -50,9 +50,9 @@
 !| FFORMAT         |-->| DATA FILE FORMAT
 !| CHDON          |-->| NAME OF THE VARIABLE READ FROM THE DATA FILE
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
-!| F1             |<--| FIRST VARIABLE TO READ 
-!| F2             |<--| SECOND VARIABLE TO READ 
-!| F3             |<--| THIRD VARIABLE TO READ 
+!| F1             |<--| FIRST VARIABLE TO READ
+!| F2             |<--| SECOND VARIABLE TO READ
+!| F3             |<--| THIRD VARIABLE TO READ
 !| F11            |<->| DATA VALUES AT TIME TV1 IN THE DATA FILE FOR F1
 !| F12            |<->| DATA VALUES AT TIME TV2 IN THE DATA FILE FOR F1
 !| F21            |<->| DATA VALUES AT TIME TV1 IN THE DATA FILE FOR F2
@@ -117,7 +117,7 @@
       DOUBLE PRECISION COEF
       CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3),FULL_NAME(3)
       CHARACTER(LEN=16), ALLOCATABLE :: VAR_NAME(:), VAR_UNIT(:)
-      CHARACTER(LEN=32) COMPONENT      
+      CHARACTER(LEN=32) COMPONENT
       LOGICAL COUUT,VENUT,MARUT
       DATA COUUT/.FALSE./
       DATA VENUT/.FALSE./
@@ -162,7 +162,7 @@
 !
         CALL GET_DATA_NVAR(FFORMAT,NDON,NVAR,IERR)
         CALL CHECK_CALL(IERR,'LECDOI:GET_DATA_NVAR')
-        ! 
+        !
         ALLOCATE(VAR_NAME(NVAR),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'LECDOI:VAR_NAME')
         ALLOCATE(VAR_UNIT(NVAR),STAT=IERR)
@@ -195,7 +195,7 @@
           CALL GET_DATA_TIME(FFORMAT,NDON,RECORD1,TIME1,IERR)
           CALL CHECK_CALL(IERR,'NOUDON:GET_DATA_TIME')
           TV1=(TIME1-PHASTIME)*UNITIME
-          DO 
+          DO
             CALL GET_DATA_TIME(FFORMAT,NDON,RECORD2,TIME2,IERR)
             CALL CHECK_CALL(IERR,'NOUDON:GET_DATA_TIME')
             TV2=(TIME2-PHASTIME)*UNITIME
@@ -250,7 +250,7 @@
             ENDIF
           ENDDO
           ! Read the variables
-          ! 
+          !
           ! Check if all the variables are found for record2
           DO J=1,3
             IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
@@ -286,13 +286,13 @@
               ENDIF
             ENDIF
           ENDDO
-!         
+!
         ELSEIF (INDIC.EQ.4) THEN
-!         
+!
 !     ---------------------------------------------------------------------
 !           READS A USER-DEFINED FILE FORMAT
 !     ---------------------------------------------------------------------
-!         
+!
           IF(CHDON(1:1).EQ.'C') THEN
             TROUVE(1)=.TRUE.
             TROUVE(2)=.TRUE.
@@ -311,9 +311,9 @@
             CALL MARUTI(X,Y,NPOIN,NDON,FFORMAT,NBOR,NPTFR,AT,DDC,
      &                  TV1,TV2,F31,F32)
           ENDIF
-!         
+!
         ELSE
-!         
+!
           WRITE(LU,*) '************************************************'
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'NOUDON : INDICATEUR DE FORMAT INCONNU : ',INDIC

@@ -181,7 +181,7 @@
         A22(IELEM) = - A12(IELEM) - A32(IELEM)
         A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -239,7 +239,7 @@
         A22(IELEM) = - A12(IELEM) - A32(IELEM)
         A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSE
 !
@@ -269,7 +269,7 @@
 !
             Y2 = YEL(IELEM,2)
             Y3 = YEL(IELEM,3)
-!           
+!
             F1  =  F(IKLE1(IELEM))
             F2  =  F(IKLE2(IELEM))
             F3  =  F(IKLE3(IELEM))
@@ -328,7 +328,7 @@
             A33(IELEM) = ((24.D0*(F3-F6)+5.D0*F1-4.D0*F4-F2)*Y2
      &                 +  (6.D0*(F2-F1)+24.D0*(F6-F5)      )*Y3)*XSUR360
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -342,7 +342,7 @@
 !
             X2  =  XEL(IELEM,2)
             X3  =  XEL(IELEM,3)
-!          
+!
             F1  =  F(IKLE1(IELEM))
             F2  =  F(IKLE2(IELEM))
             F3  =  F(IKLE3(IELEM))
@@ -401,7 +401,7 @@
             A33(IELEM) = ((4.D0*F4-5.D0*F1+24.D0*(F6-F3)+F2)*X2
      &                 +  (6.D0*(F1-F2)+24.D0*(F5-F6)      )*X3)*XSUR360
 !
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSE
 !

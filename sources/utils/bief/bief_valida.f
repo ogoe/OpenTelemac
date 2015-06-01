@@ -58,8 +58,8 @@
 !| TEXTRES        |-->| NAMES & UNITS OF VARIABLES IN THE RESULTS FILE
 !| UREF           |-->| LOGICAL UNIT OF REFERENCE FILE
 !| URES           |-->| LOGICAL UNIT OF RESULTS FILE
-!| VARREF         |-->| BLOCK OF VARIABLES IN REFERENCE FILE 
-!| VARRES         |-->| BLOCK OF VARIABLES IN RESULTS FILE 
+!| VARREF         |-->| BLOCK OF VARIABLES IN REFERENCE FILE
+!| VARRES         |-->| BLOCK OF VARIABLES IN RESULTS FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BIEF_VALIDA => BIEF_VALIDA

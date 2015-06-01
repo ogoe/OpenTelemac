@@ -93,7 +93,7 @@
         BETA(IP) = COEF/DEPTH(IP)**1.5*DSQRT(VARIAN(IP)*GG1)
      &               *DSQRT(DMAX1(0.D0,GG2*VARIAN(IP)
      &               /(DEPTH(IP)*DEPTH(IP))-EM2SIH))
-      ENDDO ! IP 
+      ENDDO ! IP
 !
 !
 !.....TAKES THE SOURCE TERM INTO ACCOUNT
@@ -103,9 +103,9 @@
           DO IP = 1,NPOIN2
             TSTOT(IP,JP,IFF) = TSTOT(IP,JP,IFF)+BETA(IP)*F(IP,JP,IFF)
 !            TSDER(IP,JP,IFF) = TSDER(IP,JP,IFF)+BETA(IP)
-          ENDDO ! IP 
-        ENDDO ! JP 
-      ENDDO ! IFF 
+          ENDDO ! IP
+        ENDDO ! JP
+      ENDDO ! IFF
 !
       RETURN
       END

@@ -131,7 +131,7 @@
       INTEGER           IP    , JF    , JT    , JF1   , JT1   , IQ_OM2,
      &                  JFM0  , JFM1  , JFM2  , JFM3  , IXF1  , IXF2  ,
      &                  IXF3  , JFMIN , JFMAX , ICONF
-      INTEGER           KT1P  , KT1M  , JT1P  , JT1M  , KT1P2P, KT1P2M, 
+      INTEGER           KT1P  , KT1M  , JT1P  , JT1M  , KT1P2P, KT1P2M,
      &                  KT1P3P, KT1P3M, KT1M2P, KT1M2M, KT1M3P, KT1M3M,
      &                  JT1P2P, JT1P2M, JT1P3P, JT1P3M, JT1M2P, JT1M2M,
      &                  JT1M3P, JT1M3M
@@ -212,9 +212,9 @@
 !       ---------Recovers the multiplicative factor of QNL4
         FACTOR=TB_FAC(IQ_OM2,JT1,JF1)
 !
-!       = = = = = = = = = = = = = = = = = = = = = = = = = 
+!       = = = = = = = = = = = = = = = = = = = = = = = = =
 !       STARTS LOOP 2 OVER THE SPECTRUM FREQUENCIES
-!       = = = = = = = = = = = = = = = = = = = = = = = = = 
+!       = = = = = = = = = = = = = = = = = = = = = = = = =
         DO JF=JFMIN,JFMAX
 !
 !.........Recovers the coefficient for the coupling factor
@@ -386,9 +386,9 @@
 !         -------------------------------------------------
 !
         ENDDO
-!       = = = = = = = = = = = = = = = = = = = = = = = = = 
+!       = = = = = = = = = = = = = = = = = = = = = = = = =
 !       END OF LOOP 2 OVER THE SPECTRUM FREQUENCIES
-!       = = = = = = = = = = = = = = = = = = = = = = = = = 
+!       = = = = = = = = = = = = = = = = = = = = = = = = =
 !
       ENDDO
 !     ==================================================

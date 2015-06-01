@@ -33,7 +33,7 @@
 !+        21/07/2013
 !+        V6P3
 !+   Adaptation for new data structure of finite volumes
-!+   clean and optimize 
+!+   clean and optimize
 !+   parallelism
 !history  R.ATA EDF R&D-LNHE
 !+        24/02/2015
@@ -63,14 +63,14 @@
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NS             |-->| TOTAL NUMER OF POINTS IN THE MESH
 !| NSEG           |-->| NUMBER OF EDGES IN THE MESH
-!| NTRAC          |-->| NUMBER OF TRACERS 
+!| NTRAC          |-->| NUMBER OF TRACERS
 !| NUBO           |-->| GLOBAL NUMBERS OF THE NODES FORMING THE EDGE
 !| UA             |-->| UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
 !| VNOCL          |-->| NORMAL VECTOR TO THE INTERFACE
 !|                |   | (2 FIRST COMPONENTS) AND
 !|                |   | LENGTH OF THE SEGMENT (3RD COMPONENT)
 !| X,Y            |-->| COORDINATES IF THE NODES
-!| XNEBOR,YNEBOR  |-->| NORMAL VECTOR TO BOUNDARY NODES 
+!| XNEBOR,YNEBOR  |-->| NORMAL VECTOR TO BOUNDARY NODES
 !| ZF             |-->| BATHYMETRY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -94,7 +94,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: DJX(3,*),DJY(3,*)
       DOUBLE PRECISION, INTENT(IN)    :: DX(3,*),DY(3,*)
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLUXTEMP
-      INTEGER, INTENT(IN)             :: IFABOR(NELEM,3) 
+      INTEGER, INTENT(IN)             :: IFABOR(NELEM,3)
       TYPE(BIEF_MESH),INTENT(INOUT)   :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -193,7 +193,7 @@
 !  2ND ORDER RECONSTRUCTION
 !  ************************
 !
-!    INITIALIZATION    
+!    INITIALIZATION
       DTLL(:)=(/(1.E10,I=1,NS)/)
       DSP (:)=(/(0.D0,I=1,NS)/)
       DSM (:)=(/(0.D0,I=1,NS)/)
@@ -208,24 +208,24 @@
 !GIVES ERROR WITH INTEL COMPILER IF WRITTEN LIKE THIS
 !       CALL OV( 'X=C     ' ,DSH(1,1:NSEG),DSM ,DSM ,0.D0,NSEG)
 !
-!    INITIALIZATION  OF GRADIENTS 
+!    INITIALIZATION  OF GRADIENTS
       GRADI(1,:)=(/(0.D0,I=1,NSEG)/)
       GRADI(2,:)=(/(0.D0,I=1,NSEG)/)
       GRADI(3,:)=(/(0.D0,I=1,NSEG)/)
-!     
+!
       GRADJ(1,:)=(/(0.D0,I=1,NSEG)/)
       GRADJ(2,:)=(/(0.D0,I=1,NSEG)/)
       GRADJ(3,:)=(/(0.D0,I=1,NSEG)/)
-!     
+!
       GRADIJ(1,:)=(/(0.D0,I=1,NSEG)/)
       GRADIJ(2,:)=(/(0.D0,I=1,NSEG)/)
       GRADIJ(3,:)=(/(0.D0,I=1,NSEG)/)
-!     
+!
       GRADJI(1,:)=(/(0.D0,I=1,NSEG)/)
       GRADJI(2,:)=(/(0.D0,I=1,NSEG)/)
       GRADJI(3,:)=(/(0.D0,I=1,NSEG)/)
 !
-      DO IEL=1, NELEM 
+      DO IEL=1, NELEM
         DO I = 1,3
           IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
             NSG = ELTSEG(IEL,I)
@@ -243,7 +243,7 @@
               NUBO1 = NUBO(2,NSG)
               NUBO2 = NUBO(1,NSG)
             ENDIF
-!           
+!
             ZF1        = ZF(NUBO1)
             ZF2        = ZF(NUBO2)
             IF(PROD_SCAL.LT.0.D0)THEN
@@ -253,7 +253,7 @@
               DSZ(1,NSG) = DSZ0(1,NSG)
               DSZ(2,NSG) = DSZ0(2,NSG)
             ENDIF
-!           
+!
             HI0=UA(1,NUBO1)
             HJ0=UA(1,NUBO2)
 !
@@ -265,7 +265,7 @@
      &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HI0
      &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HJ0)  THEN
 !ra02/05/2013 FOR OPTIMIZATION
-              YESNO(NSG)=.TRUE. 
+              YESNO(NSG)=.TRUE.
               CYCLE
 !           DSH(1,NSG) =0.D0
 !           DSH(2,NSG) =0.D0
@@ -276,23 +276,23 @@
 !           DSZ(1,NSG) =0.D0
 !           DSZ(2,NSG) =0.D0
             ELSE
-!             
+!
               AIX = CMI(1,NSG)-X(NUBO1) ! THESE ARE COORDINATES OF
               AIY = CMI(2,NSG)-Y(NUBO1) !  VECTOR PM (EQ 5.1)
               AJX = CMI(1,NSG)-X(NUBO2) ! P: NUBO1 OR NUBO2
               AJY = CMI(2,NSG)-Y(NUBO2) ! M: CMI(NSG)
-!             
+!
               DO IVAR=1,3
                 GRADI(IVAR,NSG) = AIX*DX(IVAR,NUBO1)+AIY*DY(IVAR,NUBO1)!NODE GRADIENT (PM.GRADZ)
                 GRADJ(IVAR,NSG) = AJX*DX(IVAR,NUBO2)+AJY*DY(IVAR,NUBO2)!eq 5.1 of audusse paper)
-!             
+!
                 GRADIJ(IVAR,NSG) = AIX*DJX(IVAR,J) + AIY*DJY(IVAR,J)
                 GRADJI(IVAR,NSG) = AJX*DJX(IVAR,J) + AJY*DJY(IVAR,J)
               ENDDO
 !
             ENDIF
-            YESNO(NSG)=.TRUE. 
-          ENDIF 
+            YESNO(NSG)=.TRUE.
+          ENDIF
         ENDDO
       ENDDO
 !
@@ -303,7 +303,7 @@
       DO I=1,NSEG
         YESNO(I)=.FALSE.
       ENDDO
-      DO IEL=1, NELEM 
+      DO IEL=1, NELEM
         DO I = 1,3
           IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
             NSG = ELTSEG(IEL,I)
@@ -317,7 +317,7 @@
               NUBO1 = NUBO(2,NSG)
               NUBO2 = NUBO(1,NSG)
             ENDIF
-!           
+!
             ZF1        = ZF(NUBO1)
             ZF2        = ZF(NUBO2)
             IF(PROD_SCAL.LT.0.D0)THEN
@@ -327,7 +327,7 @@
               DSZ(1,NSG) = DSZ0(1,NSG)
               DSZ(2,NSG) = DSZ0(2,NSG)
             ENDIF
-!           
+!
             HI0=UA(1,NUBO1)
             HJ0=UA(1,NUBO2)
 !
@@ -339,8 +339,8 @@
      &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HI0
      &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HJ0)  THEN
 !ra02/05/2013 FOR APTIMIZATION
-              YESNO(NSG)=.TRUE. 
-              CYCLE 
+              YESNO(NSG)=.TRUE.
+              CYCLE
             ELSE
 !
 !     NORMALIZED UNIT NORMAL (VNOCL), RNN LENGTH OF LIJ
@@ -353,15 +353,15 @@
               GRADI2       = GRADI(2,NSG)
               GRADI(2,NSG) = XNN*GRADI2+YNN*GRADI(3,NSG)
               GRADI(3,NSG) =-YNN*GRADI2+XNN*GRADI(3,NSG)
-!             
+!
               GRADIJ2      = GRADIJ(2,NSG)
               GRADIJ(2,NSG)= XNN*GRADIJ2+YNN*GRADIJ(3,NSG)
               GRADIJ(3,NSG)=-YNN*GRADIJ2+XNN*GRADIJ(3,NSG)
-!             
+!
               GRADJ2       = GRADJ(2,NSG)
               GRADJ(2,NSG) = XNN*GRADJ2+YNN*GRADJ(3,NSG)
               GRADJ(3,NSG) =-YNN*GRADJ2+XNN*GRADJ(3,NSG)
-!             
+!
               GRADJI2      = GRADJI(2,NSG)
               GRADJI(2,NSG)= XNN*GRADJI2+YNN*GRADJI(3,NSG)
               GRADJI(3,NSG)=-YNN*GRADJI2+XNN*GRADJI(3,NSG)
@@ -370,21 +370,21 @@
 !
               ILIM=1
               BETA=1.D0
-!             
+!
               DSH(1,NSG) = EXLIM(ILIM,BETA,GRADI(1,NSG),GRADIJ(1,NSG))
               DSH(2,NSG) = EXLIM(ILIM,BETA,GRADJ(1,NSG),GRADJI(1,NSG))
               !   FOR PARALLELILSM
               IF(NCSIZE.GT.1.AND.IFABOR(IEL,I).EQ.-2)THEN ! THIS IS AN INTERFACE EDGE
                 IF(DSH(1,NSG).GE.0.D0) THEN
                   DSP(NUBO1) = DSP(NUBO1)+DEMI*AIRST(1,NSG)*DSH(1,NSG) ! WE CONSIDER ONLY
-                ELSE                                                  ! 0.5 AIRST 
-                  DSM(NUBO1) = DSM(NUBO1)-DEMI*AIRST(1,NSG)*DSH(1,NSG) ! PARCOM2 WILL ADD 
+                ELSE                                                  ! 0.5 AIRST
+                  DSM(NUBO1) = DSM(NUBO1)-DEMI*AIRST(1,NSG)*DSH(1,NSG) ! PARCOM2 WILL ADD
                 ENDIF                                                 ! CONTRIBUTIONS
                 IF(DSH(2,NSG).GE.0.D0) THEN
                   DSP(NUBO2) = DSP(NUBO2)+DEMI*AIRST(2,NSG)*DSH(2,NSG)
                 ELSE
                   DSM(NUBO2) = DSM(NUBO2)-DEMI*AIRST(2,NSG)*DSH(2,NSG)
-                ENDIF 
+                ENDIF
               ELSE ! NO PARALLELILSM OR NO INTERFACE EDGE
                 IF(DSH(1,NSG).GE.0.D0) THEN
                   DSP(NUBO1) = DSP(NUBO1) + AIRST(1,NSG)*DSH(1,NSG)
@@ -397,24 +397,24 @@
                   DSM(NUBO2) = DSM(NUBO2) - AIRST(2,NSG)*DSH(2,NSG)
                 ENDIF
               ENDIF
-!             
+!
               ILIM=2
-              BETA=0.3333D0 ! THESE ARE CHOICES OF INRIA 1/3 FOR 
+              BETA=0.3333D0 ! THESE ARE CHOICES OF INRIA 1/3 FOR
                             ! VELOCITIES AND 1 FOR H
-!             
+!
               DSU(1,NSG) = EXLIM(ILIM,BETA,GRADI(2,NSG),GRADIJ(2,NSG))
               DSU(2,NSG) = EXLIM(ILIM,BETA,GRADJ(2,NSG),GRADJI(2,NSG))
-!             
+!
               DSV(1,NSG) = EXLIM(ILIM,BETA,GRADI(3,NSG),GRADIJ(3,NSG))
               DSV(2,NSG) = EXLIM(ILIM,BETA,GRADJ(3,NSG),GRADJI(3,NSG))
 !
             ENDIF
-            YESNO(NSG)=.TRUE. 
-          ENDIF 
+            YESNO(NSG)=.TRUE.
+          ENDIF
         ENDDO
       ENDDO
       !  FOR PARALLELILSM
-      IF(NCSIZE.GT.1)THEN     
+      IF(NCSIZE.GT.1)THEN
         CALL PARCOM2(DSP,DSM,DSM,NS,1,2,2,MESH)
       ENDIF
 !
@@ -426,7 +426,7 @@
         IF(AMDS.GT.0.D0) THEN
           CORR(IS) = CORR(IS)/AMDS
         ENDIF
-      ENDDO 
+      ENDDO
 ! IF ORDER 2 REINITIALIZATION OF YESNO
       DO I=1,NSEG
         YESNO(I)=.FALSE.
@@ -437,7 +437,7 @@
 !     LOOP ON GLOBAL LIST OF EDGES
 !    ******************************
 !
-      DO IEL=1, NELEM 
+      DO IEL=1, NELEM
         DO I = 1,3
           IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
             NSG = ELTSEG(IEL,I)
@@ -452,23 +452,23 @@
              NUBO1 = NUBO(2,NSG)
              NUBO2 = NUBO(1,NSG)
             ENDIF
-!           
+!
             ZF1  = ZF(NUBO1)
             ZF2  = ZF(NUBO2)
             DSZ1 = 0.D0
             DSZ2 = 0.D0
-!           
+!
             XNN  = VNOCL(1,NSG)
             YNN  = VNOCL(2,NSG)
             RNN  = VNOCL(3,NSG)
-!           
+!
             UAS11 = UA(1,NUBO1)
             UAS12 = UA(1,NUBO2)
             UAS21 = UA(2,NUBO1)
             UAS22 = UA(2,NUBO2)
             UAS31 = UA(3,NUBO1)
             UAS32 = UA(3,NUBO2)
-!           
+!
             HI0 = UAS11
             HJ0 = UAS12
 !
@@ -477,11 +477,11 @@
             UAS210 = UAS21
             UAS21  = XNN*UAS210+YNN*UAS31
             UAS31  =-YNN*UAS210+XNN*UAS31
-!           
+!
             UAS220 = UAS22
             UAS22  = XNN*UAS220+YNN*UAS32
             UAS32  =-YNN*UAS220+XNN*UAS32
-!           
+!
             IF(NORDRE.EQ.1)  GOTO 1234
 !
 !    REBUILDING FOR 2ND ORDER
@@ -494,27 +494,27 @@
      &     .OR. 2.*ABS(DSZ(1,NSG)).GE.HJ0
      &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HI0
      &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HJ0)  GOTO 1234
-!          
-!          
+!
+!
             UAS11  = UAS11  + DSH(1,NSG)  -  DSZ(1,NSG) +
      &        MIN(0.D0,CORR(NUBO1))*MAX(0.D0,DSH(1,NSG))+
      &        MAX(0.D0,CORR(NUBO1))*MAX(0.D0,-DSH(1,NSG))
-!          
+!
             UAS21  = UAS21 + DSU(1,NSG)
             UAS31  = UAS31 + DSV(1,NSG)
             DSZ1   = DSZ(1,NSG)
             ZF1    = ZF1 + DSZ1
-!          
+!
             UAS12  = UAS12  + DSH(2,NSG)  -  DSZ(2,NSG) +
      &        MIN(0.D0,CORR(NUBO2))*MAX(0.D0,DSH(2,NSG))+
      &        MAX(0.D0,CORR(NUBO2))*MAX(0.D0,-DSH(2,NSG))
-!          
+!
             UAS22  = UAS22 + DSU(2,NSG)
             UAS32  = UAS32 + DSV(2,NSG)
             DSZ2   = DSZ(2,NSG)
             ZF2    = ZF2 + DSZ2
-!          
-!          
+!
+!
             IF(UAS11.LE.0.D0) THEN
               UAS11 = 0.D0
               UAS21 = 0.D0
@@ -535,26 +535,26 @@
             DTL    = CFL*AIRST(1,NSG)/(RNN*SIGMAX)
             DTLL(NUBO1) = MIN (DTL,DTLL(NUBO1))
             DT          = MIN(DT, DTL)
-!           
+!
             SIGMAX=MAX( 1.D-2, RA3* SQRT(UAS12) + ABS(UAS22) )
             DTL    = CFL*AIRST(2,NSG)/(RNN*SIGMAX)
             DTLL(NUBO2) = MIN (DTL,DTLL(NUBO2))
             DT          = MIN(DT, DTL)
 ! PARALLEL: TAKE MIN DT OF ALL SUBDOMAINS
-!          IF(NCSIZE.GT.1)DT = P_DMIN(DT) !WILL BE PLACED AT THE END (SEE BELOW) 
+!          IF(NCSIZE.GT.1)DT = P_DMIN(DT) !WILL BE PLACED AT THE END (SEE BELOW)
 !
 1234        CONTINUE
 !
 !
-!   MAIN FLUX COMPUTATAION 
+!   MAIN FLUX COMPUTATAION
 !
             HI        = UAS11
             HC(1,NSG) = UAS11
-!           
+!
             DZIJ = MAX(0.D0,ZF2-ZF1)
             HIJ  = MAX(0.D0, HI- DZIJ)
-!           
-!           
+!
+!
             IF(HIJ.LE.0.D0) THEN
               CIJ  = 0.D0
               FLU11= 0.D0
@@ -562,22 +562,22 @@
             ELSE
               CIJ  = SQRT(HIJ)
               EXT1 = MIN(RA3,MAX(-RA3,-UAS21/CIJ))
-!           
+!
               A01  = ALP*(RA3-EXT1)
               A11  = ALP*(RA3**2-EXT1**2)/2.D0
               A21  = ALP*(RA3**3-EXT1**3)/3.D0
-!           
+!
               FLU11= HIJ*(UAS21*A01+CIJ*A11)
               FLU21= UAS21*(FLU11+CIJ*HIJ*A11) +A21*HIJ*HIJ
             ENDIF
-!           
-!           
+!
+!
             HJ   = UAS12
             HC(2,NSG) = UAS12
-!           
+!
             DZJI = MAX(0.D0,ZF1-ZF2)
             HJI  = MAX(0.D0, HJ- DZJI)
-!           
+!
             IF(HJI.LE.0.D0) THEN
               CJI   = 0.D0
               FLU12 = 0.D0
@@ -585,32 +585,32 @@
             ELSE
               CJI  = SQRT(HJI)
               EXT2 = MIN(RA3,MAX(-RA3,-UAS22/CJI))
-!           
+!
               A02  = ALP*(RA3+EXT2)
               A12  = ALP*(EXT2**2-RA3**2)/2.D0
               A22  = ALP*(RA3**3+EXT2**3)/3.D0
-!           
+!
               FLU12= HJI*(UAS22*A02+CJI*A12)
               FLU22= UAS22*(FLU12+CJI*HJI*A12) +A22*HJI*HJI
             ENDIF
-!           
+!
             HGZI = 0.5D0*RNN*(HIJ+HI)*(HIJ-HI)
             HGZJ = 0.5D0*RNN*(HJI+HJ)*(HJI-HJ)
-!           
+!
             IF(NORDRE.EQ.2) THEN
               HGZI = HGZI - 0.5D0*RNN*(HI0+HI)*DSZ1
               HGZJ = HGZJ - 0.5D0*RNN*(HJ0+HJ)*DSZ2
             ENDIF
-!           
+!
             FLU11=(FLU11+FLU12)*RNN
             FLU21=(FLU21+FLU22)*RNN
-!           
+!
             IF(NTRAC.GT.0) THEN
               DO ITRAC=1,NTRAC
                 FLUXTEMP%ADR(ITRAC)%P%R(NSG)=FLU11
               ENDDO
             ENDIF
-!           
+!
             IF(FLU11.GE.0.D0) THEN
               FLU31 =  UAS31 * FLU11
             ELSE
@@ -627,7 +627,7 @@
 !
             HDXZ1  = G*XNN*HGZI
             HDYZ1  = G*YNN*HGZI
-!           
+!
             HDXZ2  = G*XNN*HGZJ
             HDYZ2  = G*YNN*HGZJ
 !
@@ -638,7 +638,7 @@
                 FLU11= DEMI*FLU11
                 FLU21= DEMI*FLU21
                 FLU31= DEMI*FLU31
-!            
+!
                 HDXZ1 = DEMI*HDXZ1
                 HDYZ1 = DEMI*HDYZ1
                 HDXZ2 = DEMI*HDXZ2
@@ -658,12 +658,12 @@
             CE(NUBO1,1) = CE(NUBO1,1) - FLU11
             CE(NUBO1,2) = CE(NUBO1,2) - FLU21 + HDXZ1
             CE(NUBO1,3) = CE(NUBO1,3) - FLU31 + HDYZ1
-!           
+!
             CE(NUBO2,1) = CE(NUBO2,1) + FLU11
             CE(NUBO2,2) = CE(NUBO2,2) + FLU21 - HDXZ2
             CE(NUBO2,3) = CE(NUBO2,3) + FLU31 - HDYZ2
-!           
-            YESNO(NSG)=.TRUE. 
+!
+            YESNO(NSG)=.TRUE.
           ENDIF
         ENDDO
       ENDDO
@@ -689,7 +689,7 @@
 !       FOR PARALLELISME
         IF(NCSIZE.GT.1) DT=P_DMIN(DT)
       ENDIF
-! 
+!
       DEALLOCATE(YESNO)
 !
 !-----------------------------------------------------------------------

@@ -32,7 +32,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NELEM,NELMAX 
+      INTEGER, INTENT(IN) :: NELEM,NELMAX
       DOUBLE PRECISION, INTENT(INOUT) :: GRAZCO(NELMAX,2)
       DOUBLE PRECISION, INTENT(IN)    :: ZCONV(NELMAX,3)
       DOUBLE PRECISION, INTENT(IN)    :: XEL(NELMAX,3),YEL(NELMAX,3)

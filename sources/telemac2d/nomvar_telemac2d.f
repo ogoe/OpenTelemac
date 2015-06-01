@@ -5,7 +5,7 @@
      &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                               
+! TELEMAC2D   V7P0
 !***********************************************************************
 !
 !brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY

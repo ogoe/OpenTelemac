@@ -4,7 +4,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -80,11 +80,11 @@
 !
       DOUBLE PRECISION PI,BID
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
+!     ----------------------------------------
+!
+! JCB :
       INTEGER I    , IG, IB,JB,IG0,ISUIV,IDEB
 ! JCB
 !
@@ -116,8 +116,8 @@
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
       HB%R(:)    = 0.0D0
- 
-      
+
+
       DO IB=1,NPTFR
         JB=BOUNDARY_COLOUR%I(IB)
 !       --------------------------------
@@ -128,7 +128,7 @@
           TETAP%R(IB) = 45.D0
           TETAB%R(IB) = -45D0
         ENDIF
-!        
+!
         IF(JB.GE.1.AND.JB.LE.112)THEN
           LIHBOR%I(IB)= KINC
           HB%R(IB)    = 1D0
@@ -136,13 +136,13 @@
           TETAB%R(IB) = -45D0
         ENDIF
 !       --------------------------------
-        
+
 !       --------------------------------
 !       Free exit
         IF(JB.GE.113.AND.JB.LE.312)THEN
           LIHBOR%I(IB) = KSORT
           TETAP%R(IB) = 45.D0
-        ENDIF 
+        ENDIF
 !       --------------------------------
       ENDDO
 
@@ -151,7 +151,7 @@
 !-----------------------------------------------------------------------
 !       FOR REFERENCE (INPUT KINC WHEN NO AUTOMATIC PHASE CALCULATED)
 
-! -----Incident wave-------------- 
+! -----Incident wave--------------
 !      DEGRAD     =  PI/180.0D0
 !      HINC       = 1.0D0
 !      THB        = -45.D0
@@ -186,7 +186,7 @@
 !          PHASOI=KINF*AUXIC*(X(IG)-X0)+KINF*AUXIS*(Y(IG)-Y0)
 !          ALFAP%R(IB) = PHASOI/DEGRAD
 !      ENDIF
-      
+
 
 !      IF(JB.GE.1.AND.JB.LE.112)THEN
 !         LIHBOR%I(IB) = KINC
@@ -199,7 +199,7 @@
 !          ALFAP%R(IB) = PHASOI/DEGRAD
 !      ENDIF
 ! --------------------------------
- 
+
       RETURN
       END
 !                       *****************
@@ -268,13 +268,13 @@
 !
 !-----------------------------------------------------------------------
 
-! bathy 
+! bathy
       DO I = 1,NPOIN
         ZF%R(I) = -100D0
       ENDDO
 !
       RETURN
-      END                  
+      END
 
 
 

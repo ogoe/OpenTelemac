@@ -38,18 +38,18 @@
 !+    INTRODUCTION OF FLBOR AND MASS BALANCE
 !+    CHANGE CE(3,NS) TO CE(NS,3)
 !
-!history  R. ATA 
+!history  R. ATA
 !+        28/01/2014
 !+        V7P0
 !+    change diemensions of CMI
 !+    from (2,nseg) to (nseg,2)
 !
-!history  R. ATA 
+!history  R. ATA
 !+        18/06/2014
 !+        V7P0
 !+    parcom_bord after cdl
-!+    
-!history  R. ATA 
+!+
+!history  R. ATA
 !+        18/01/2015
 !+        V7P0
 !+    remove parcom_bord, no need for it
@@ -75,7 +75,7 @@
 !| FLUXTEMP       |<--| FLUX FOR TRACER
 !| G              |-->| GRAVITY
 !| HBOR           |-->| PRESCRIBED VALUES FOR H
-!| HC             |<--| RECONSTRUCTED H FOR ORDRE 2 
+!| HC             |<--| RECONSTRUCTED H FOR ORDRE 2
 !| IVIS           |-->| OPTION FOR THE DIFFUSION OF VELOCITIES
 !| JMI            |-->| NUMBER OF THE TRIANGLE IN WHICH IS LOCATED
 !|                |   | THE MIDDLE POINT OF THE INTERFACE
@@ -99,7 +99,7 @@
 !|                |   | (2 FIRST COMPONENTS) AND
 !|                |   | LENGTH OF THE SEGMENT (3RD COMPONENT)
 !| X,Y            |-->| COORDINATES IF THE NODES
-!| XNEBOR,YNEBOR  |-->| NORMAL VECTOR TO BOUNDARY NODES 
+!| XNEBOR,YNEBOR  |-->| NORMAL VECTOR TO BOUNDARY NODES
 !| ZF             |-->| BATHYMETRY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -128,12 +128,12 @@
       DOUBLE PRECISION, INTENT(IN) :: DSZ(2,*),DPX(3,NT),DPY(3,NT)
       DOUBLE PRECISION, INTENT(INOUT) :: DJX(3,*),DJY(3,*)
       DOUBLE PRECISION, INTENT(INOUT) :: DX(3,*),DY(3,*)
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: FLUXTEMP,FLUHBTEMP,FLBOR 
-      INTEGER, INTENT(IN)             :: IFABOR(NT,3) 
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: FLUXTEMP,FLUHBTEMP,FLBOR
+      INTEGER, INTENT(IN)             :: IFABOR(NT,3)
       TYPE(BIEF_MESH),INTENT(INOUT)   :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!  
+!
       INTEGER IS,ITRAC
 !
 !-----------------------------------------------------------------------

@@ -135,7 +135,7 @@
             ENDDO
           ENDDO
         ENDIF
-!       
+!
         CALL P_IWRITI(BUF_SEND(1,IL),IAN*IKA*NPLAN,
      &                IPA,PARACO_MSG_TAG,SEND_REQ(IL))
 !
@@ -147,9 +147,9 @@
         IKA = NB_NEIGHB_PT(IL)
         IPA = LIST_SEND(IL)
         CALL P_WAIT_PARACO(RECV_REQ(IL),1)
-!       
+!
         K=1
-!       
+!
         IF(ICOM.EQ.1) THEN
           IF(IAN.EQ.3) THEN
             DO J=1,NPLAN

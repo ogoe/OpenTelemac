@@ -75,10 +75,10 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM1T          |-->| FIRST DIMENSION OF T (NELMAX OR NELEBX)
-!| F              |-->| FUNCTION USED IN THE VECTOR FORMULA 
+!| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
 !| FORMUL         |-->| STRING WITH THE FORMULA DESCRIBING THE VECTOR
-!| G              |-->| FUNCTION USED IN THE VECTOR FORMULA 
-!| H              |-->| FUNCTION USED IN THE VECTOR FORMULA 
+!| G              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| H              |-->| FUNCTION USED IN THE VECTOR FORMULA
 !| IELM1          |-->| TYPE OF ELEMENT
 !| IKLBOR         |-->| CONNECTIVITY TABLE OF BOUNDARY ELEMENTS.
 !| IKLE           |-->| CONNECTIVITY TABLE.
@@ -109,9 +109,9 @@
 !| SW             |-->| BIEF_OBJ STRUCTURE OF W
 !| SURFAC         |-->| AREA OF TRIANGLES
 !| T              |-->| WORK ARRAY WITH THE NON ASSEMBLED VECTOR
-!| U              |-->| FUNCTION USED IN THE VECTOR FORMULA 
-!| V              |-->| FUNCTION USED IN THE VECTOR FORMULA 
-!| W              |-->| FUNCTION USED IN THE VECTOR FORMULA 
+!| U              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| V              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| W              |-->| FUNCTION USED IN THE VECTOR FORMULA
 !| VEC            |<->| RESULTING VECTOR
 !| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
 !| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
@@ -1395,7 +1395,7 @@
             IF(ASSPAR) THEN
               CALL PARCOM2I8(MESH%TI8,MESH%TI8,MESH%TI8,
      &                       NPT,NPLAN,2,1,MESH)
-            ENDIF 
+            ENDIF
             IF(INIT) THEN
               CALL INTEGER_TO_DOUBLE('=',MESH%TI8,VEC,NPT,QT)
             ELSE

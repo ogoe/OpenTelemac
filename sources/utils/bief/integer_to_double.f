@@ -18,7 +18,7 @@
 !+   First version.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IX             |-->| INTEGER ARRAY CODING THE REAL ARRAY 
+!| IX             |-->| INTEGER ARRAY CODING THE REAL ARRAY
 !| N              |-->| NUMBER OF POINTS IN THE ARRAYS X AND IX
 !| OP             |-->| IF '=', X REINITIALISED, IF '+' ADDITION TO X
 !| QT             |-->| THE QUANTUM USED FOR CODING

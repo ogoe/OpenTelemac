@@ -38,20 +38,20 @@
 !| C              |<->| CELERITY
 !| CONVV          |-->| LOGICAL ARRAY SAYING IF A VARIABLE IS ADVECTED OR NOT
 !| CTILD          |-->| CELERITY BEFORE CURRENT STEP
-!| EP             |<->| TURBULENT ENERGY DISSIPASSION 
+!| EP             |<->| TURBULENT ENERGY DISSIPASSION
 !| EPTILD         |-->| TURBULENT ENERGY DISSIPASSION BEFORE CURRENT STEP
 !| IETAPE         |-->| FRACTIONAL STEP NUMBER
 !| ITURB          |-->| TURBULENCE MODEL 1: LAMINAR, CONSTANT COEFFICIENT
 !|                |   |                  2: MIXING LENGTH
 !|                |   |                  3: K-EPSILON
 !| PROPA          |-->| IF PROPA=.FALSE. : NO PROPAGATION STEP.
-!| T              |<->| BLOCK OF TRACERS 
+!| T              |<->| BLOCK OF TRACERS
 !| TRAC           |-->| LOGICAL, YES IF THERE ARE TRACERS
 !| TTILD          |-->| BLOCK OF TRACERS BEFORE CURRENT STEP
 !| U              |<->| X-COMPONENT OF VELOCITY
 !| V              |<->| Y-COMPONENT OF VELOCITY
-!| UTILD          |-->| X-COMPONENT OF VELOCITY BEFORE CURRENT STEP 
-!| VTILD          |-->| Y-COMPONENT OF VELOCITY BEFORE CURRENT STEP 
+!| UTILD          |-->| X-COMPONENT OF VELOCITY BEFORE CURRENT STEP
+!| VTILD          |-->| Y-COMPONENT OF VELOCITY BEFORE CURRENT STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

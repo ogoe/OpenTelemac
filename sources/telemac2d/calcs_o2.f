@@ -93,7 +93,7 @@
 !
 !     LOCAL VARIABLES
       INTEGER                     :: I,RANKTR1,RANKTR2
-      INTEGER         , PARAMETER :: ADDTR = 3   
+      INTEGER         , PARAMETER :: ADDTR = 3
       DOUBLE PRECISION, PARAMETER :: EPS=1.D-3
       DOUBLE PRECISION, PARAMETER :: CORR1=1.065D0
       DOUBLE PRECISION, PARAMETER :: CORR2=1.0241D0
@@ -103,7 +103,7 @@
 !
 !     PRELIMINARY COMPUTATIONS
 !
-      POWER   = WATTEMP-20.D0  
+      POWER   = WATTEMP-20.D0
 !     HERE TEMPERATURE IS FIXED WHICH IS NOT PHYSICAL
 !     TO INVESTIGATE IF NECESSARY TO USE T VARIABLE !
       CORR1T  = CORR1**POWER
@@ -116,8 +116,8 @@
 !
       IF(FORMCS.NE.0)THEN
         IF(FORMCS.EQ.1)THEN
-          O2SATU = 14.652D0 - 0.41022D0 * WATTEMP 
-     &         + 0.007991D0 * WATTEMP**2 
+          O2SATU = 14.652D0 - 0.41022D0 * WATTEMP
+     &         + 0.007991D0 * WATTEMP**2
      &         - 7.7774D-5 * WATTEMP**3
         ELSEIF(FORMCS.EQ.2)THEN
           IF(ABS(31.6D0+WATTEMP).GT.EPS)THEN
@@ -144,8 +144,8 @@
         DO I =1,NPOIN
 !
           UNORM = SQRT(UN%R(I)**2+VN%R(I)**2) !  GENERALIZATION OF U IN 1D
-!         HEAD OR WATER DEPTH TO REPLACE RH ? 
-          PJ = HPROP%R(I)  !ZF%R(I)+HPROP%R(I)+UNORM**2/DEUXG  
+!         HEAD OR WATER DEPTH TO REPLACE RH ?
+          PJ = HPROP%R(I)  !ZF%R(I)+HPROP%R(I)+UNORM**2/DEUXG
 !         FORMULA OF THE TENESSEE VALLEY AUTHORITY
           IF( FORMK2.EQ.1 ) THEN
             K2%R(I) = 5.23D0*UNORM* MAX(HPROP%R(I),EPS)**(-1.67D0)
@@ -153,26 +153,26 @@
           ELSEIF(FORMK2.EQ.2)THEN
             K2%R(I) = 5.33D0*(UNORM**0.67D0)*
      &              MAX(HPROP%R(I),EPS)**(-1.85D0)
-!         FORMULA OF CHURCHILL ET AL. 
+!         FORMULA OF CHURCHILL ET AL.
           ELSEIF(FORMK2.EQ.3)THEN
-            K2%R(I) = 0.746D0 * (UNORM**2.695D0) / 
-     &      (MAX(HPROP%R(I),EPS)**(-3.085D0) * 
+            K2%R(I) = 0.746D0 * (UNORM**2.695D0) /
+     &      (MAX(HPROP%R(I),EPS)**(-3.085D0) *
      &       MAX(ABS(PJ),EPS)**0.823D0) ! VERIFY THE FORMULA, SOME DOUBT ?
-!         FORMULA OF O CONNOR & DOBBINS' 
+!         FORMULA OF O CONNOR & DOBBINS'
           ELSEIF(FORMK2.EQ.4)THEN
-            K2%R(I) = (3.90D0 * UNORM**0.5D0 ) / 
+            K2%R(I) = (3.90D0 * UNORM**0.5D0 ) /
      &               MAX(HPROP%R(I),EPS)**(1.5D0)
 !         FORMULA OF ?? INVISIBLE MAN :) : IT SEEMS TO BE A COMBINATION OF THE 3 LAST FORMULA ?!
-          ELSEIF( FORMK2.EQ.5 ) THEN 
+          ELSEIF( FORMK2.EQ.5 ) THEN
             IF( HPROP%R(I).LE.0.6D0 ) THEN
               K2%R(I) = 5.33D0 * (UNORM**0.67D0) *
      &                MAX(HPROP%R(I),EPS)**(-1.85D0)
             ELSEIF (HPROP%R(I).LT.(12.D0*UNORM-6.6D0)) THEN
               K2%R(I) =  0.746D0*(UNORM**2.695D0)/
-     &                (MAX(HPROP%R(I),EPS)**(-3.085D0) * 
+     &                (MAX(HPROP%R(I),EPS)**(-3.085D0) *
      &                 MAX(ABS(PJ),EPS)**0.823D0)
             ELSE
-              K2%R(I) = 3.90D0 * (UNORM**0.5D0)/ 
+              K2%R(I) = 3.90D0 * (UNORM**0.5D0)/
      &                MAX(HPROP%R(I),EPS)**1.5D0
             ENDIF
           ELSE
@@ -197,7 +197,7 @@
 !     RANKTR3 =NTRAC
       DO I=1,NPOIN
 !       FIRST TRACER O2 (RANK NTRAC-ADDTR+1) (EXPLICIT ?)
-        TEXP%ADR(RANKTR1)%P%R(I) = 
+        TEXP%ADR(RANKTR1)%P%R(I) =
      &   K2%R(I) * CORR2T * (O2SATU-TN%ADR(RANKTR1)%P%R(I)) -
      &   K1 * TN%ADR(RANKTR2)%P%R(I) -
      &   K44 * TN%ADR(NTRAC)%P%R(I)  +
@@ -205,10 +205,10 @@
 !
 !       SECOND TRACER [L] ORGANIC LOAD
 !
-        TEXP%ADR(RANKTR2)%P%R(I) = 
+        TEXP%ADR(RANKTR2)%P%R(I) =
      &      -K1*TN%ADR(RANKTR2)%P%R(I)
 !       THIRD TRACER [NH4]
-        TEXP%ADR(NTRAC)%P%R(I) = 
+        TEXP%ADR(NTRAC)%P%R(I) =
      &      -K44*TN%ADR(NTRAC)%P%R(I)
 !
       ENDDO
@@ -216,7 +216,7 @@
       CALL OS('X=CX    ',X=TEXP%ADR(RANKTR1)%P,C=DAYTOSEC)
       CALL OS('X=CX    ',X=TEXP%ADR(RANKTR2)%P,C=DAYTOSEC)
       CALL OS('X=CX    ',X=TEXP%ADR(NTRAC  )%P,C=DAYTOSEC)
-!    
+!
 !
 !     ERROR MESSAGES
 !
@@ -230,4 +230,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END 
+      END

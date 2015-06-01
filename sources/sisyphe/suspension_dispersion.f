@@ -31,12 +31,12 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables   
-!+   
+!+   Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| HYDRODYNAMIC CODE IN CASE OF COUPLING
-!| DISP           |-->| VISCOSITY COEFFICIENTS ALONG X,Y AND Z 
+!| DISP           |-->| VISCOSITY COEFFICIENTS ALONG X,Y AND Z
 !|                |   | IF P0 : PER ELEMENT
 !|                |   | IF P1 : PER POINT
 !| HN             |-->| WATER DEPTH
@@ -44,7 +44,7 @@
 !| KY             |<->| COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
 !| KZ             |<->| COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
 !| NPOIN          |-->| NUMBER OF POINTS
-!| OPTDIF         |-->| OPTION FOR THE DISPERSION 
+!| OPTDIF         |-->| OPTION FOR THE DISPERSION
 !| T1             |<->| WORK BIEF_OBJ STRUCTURE
 !| T2             |<->| WORK BIEF_OBJ STRUCTURE
 !| T3             |<->| WORK BIEF_OBJ STRUCTURE
@@ -56,7 +56,7 @@
 !|                |   | DEPENDS OF OPTIONS
 !| XKY            |-->| COEFFICIENT USED FOR COMPUTING THE DISPERSION
 !|                |   | DEPENDS OF OPTIONS
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,

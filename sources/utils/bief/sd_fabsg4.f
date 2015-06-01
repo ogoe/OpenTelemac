@@ -127,7 +127,7 @@
         CALL PLANTE(1)
         STOP
 !
-      ENDIF   
+      ENDIF
 !
 !     BLOCKS 2 AND 3 (EXTRA-DIAG)
 !     ------------------------

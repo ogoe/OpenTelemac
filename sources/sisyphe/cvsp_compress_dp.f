@@ -42,13 +42,13 @@
       DOUBLE PRECISION,  INTENT(IN)    :: THRESHOLD
       INTEGER I,K, MARKERMAX, MARKERCNT,  TTT, NNN, JG
       INTEGER MAXPOS, M, MARKERMAXOLD, MARKERMAXVERYOLD
-      INTEGER MARKER(PRO_MAX_MAX), MARKERTEMP(PRO_MAX_MAX)      
+      INTEGER MARKER(PRO_MAX_MAX), MARKERTEMP(PRO_MAX_MAX)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-! 
+!
 !     USED TO MARK NODES THAT WILL BE KEPT
 !
-      DOUBLE PRECISION LOSS(PRO_MAX_MAX)      
+      DOUBLE PRECISION LOSS(PRO_MAX_MAX)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! STORES THE FRACTION ERRORS THAT WILL OCCURE IF THE POINT IS ELEMINATED FROM CURRENT PROFILE
@@ -61,10 +61,10 @@
       DOUBLE PRECISION  FI, FJ, FK, DI, DJ, DK, THRESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!      
+!
       LOGICAL, EXTERNAL:: DB
 !
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 ! PARALLEL: LOCAL TO GLOBAL
 !-----------------------------------------------------------------------
 !
@@ -76,14 +76,14 @@
 !-----------------------------------------------------------------------
 !
       IF(DB(JG,0)) CALL CVSP_P('./','V_H',JG)
-      
+
 !--------------------------------------------------------------------------
 ! INIT
 !-----------------------------------------------------------------------
 !
       IF(PRO_MAX(J) <= 2) RETURN
 !
-!-----------------------------------------------------------------------       
+!-----------------------------------------------------------------------
 !FIRST AND LAST POINT WILL ALWAY BE KEPT
 !-----------------------------------------------------------------------
 !
@@ -100,10 +100,10 @@
 !
       DO NNN = 1,1              !4
         IF (NNN > 1) WRITE(LU,*) 'COMPRESS', J, NNN
-!        
+!
         THRESH = THRESH * (10**(1-NNN))
         MARKERMAXVERYOLD = MARKERMAX
-!         
+!
 !--------------------------------------------------------------------------
 ! ITERATE UNTIL NOTHING CHANGES ANYMORE
 !-----------------------------------------------------------------------
@@ -121,21 +121,21 @@
             MAXDIST = 0      !INITS THE MAXIMUM FRACTION ERROR
             MAXPOS = -1      !INITS THE NODE WHICH PRODUCES THE MAXIMUM FRACTION ERROR
             IF (MARKER(I+1)-MARKER(I) >= 2 ) THEN
-!         
-!--------------------------------------------------------------------------                  
+!
+!--------------------------------------------------------------------------
 ! LOOP OVER ALL UNMARKED NODES IN BETWEEN 2 MARKED NODES
 !-----------------------------------------------------------------------
 !
               DO M = MARKER(I) + 1 , MARKER(I + 1) - 1
-!         
-!--------------------------------------------------------------------------                     
+!
+!--------------------------------------------------------------------------
 ! HOW MUCH VOLUME=FRACTION IS LOST IF WE ELIMINATE THIS PROFILEPOINT
 ! USING "VOLUME" !!! ORIGINAL DOUGLAS-PEUKER: DISTANCE TO INTERCONNECTION !!!
 ! "ERROR TRIANGLE VOLUME" IS CALCULATED BY GAUSSIAN POLYGON FORMULA!
 !-----------------------------------------------------------------------
 !
                 LOSS(M) = 0.D0
-!               
+!
                 DO K = 1, NSICLA
                   IF (NNN.GE.5) THEN
                     FI = PRO_F(J,M-1,K)
@@ -152,22 +152,22 @@
                     DJ = PRO_D(J,MARKER(I+1),K)
                     DK = PRO_D(J,M,K)
                   ENDIF
-!                  
+!
                   LOSS(M) = LOSS(M) +
      &                 ABS(0.5D0 * ((FI+FJ) * (DI-DJ) +
      &                 (FJ+FK) * (DJ-DK) +
      &                 (FK+FI) * (DK-DI)))
-                   
+
                 ENDDO      !K
-!                                     
+!
                 IF(LOSS(M).GT.MAXDIST) THEN
                   MAXDIST = LOSS(M)
                   MAXPOS = M
                 ENDIF
-!                 
+!
               ENDDO         !M
 !
-!-----------------------------------------------------------------------                   
+!-----------------------------------------------------------------------
 ! IF ANY POINT IS TO FAR OUT OF RANGE: ADD IT TO THE MARKER LIST
 !-----------------------------------------------------------------------
 !
@@ -175,28 +175,28 @@
                 MARKERCNT = MARKERCNT + 1
                 MARKERTEMP(MARKERCNT) = MAXPOS
               ENDIF
-                              
+
             ENDIF
 !
-!-----------------------------------------------------------------------                
+!-----------------------------------------------------------------------
 ! ADD THE ENDPOINT OF THIS SECTION
 !-----------------------------------------------------------------------
 !
             MARKERCNT = MARKERCNT + 1
             MARKERTEMP(MARKERCNT) = MARKER(I+1)
-!             
+!
           ENDDO               !I
-!          
+!
           DO I = 1, MARKERCNT
             MARKER(I) = MARKERTEMP(I)
           ENDDO
           MARKERMAX = MARKERCNT
-!          
+!
           IF (MARKERMAX - MARKERMAXOLD == 0 ) EXIT !STOP ITERATION, AS NOTHING CHANGED!
         ENDDO                  ! TTT
         IF (MARKERMAX - MARKERMAXVERYOLD == 0 ) EXIT !STOP ITERATION, AS NOTHING CHANGED!
       ENDDO                     ! NNN
-!      
+!
 !--------------------------------------------------------------------------
 ! RECREATE THE SORTING PROFILE WITH LESSER NUMBER OF SECTIONS
 !-----------------------------------------------------------------------
@@ -207,9 +207,9 @@
           PRO_D(J,I,K) = PRO_D(J,MARKER(I),K)
         ENDDO                  !I
       ENDDO                     !K
-!      
+!
       PRO_MAX(J) = MARKERMAX
-!      
+!
 !--------------------------------------------------------------------------
 ! BRUTFORCE COMPRESSION IN CASE OF EXCEPTIONAL FRAGMENTATION
 !-----------------------------------------------------------------------
@@ -224,8 +224,8 @@
 !-----------------------------------------------------------------------
 !
       IF(DB(JG,0)) CALL CVSP_P('./','V_I',JG)
-!     
+!
 !-----------------------------------------------------------------------
-!      
+!
       RETURN
       END SUBROUTINE CVSP_COMPRESS_DP

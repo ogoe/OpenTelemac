@@ -8,7 +8,7 @@
 ! HERMES   V7P0                                               01/05/2014
 !***********************************************************************
 !
-!brief    Returns The value for each point of a given variable 
+!brief    Returns The value for each point of a given variable
 !+        for a given time step
 !
 !history  Y AUDOUIN (LNHE)
@@ -21,7 +21,7 @@
 !| FILE_ID        |-->| FILE DESCRIPTOR
 !| RECORD         |-->| TIME STEP TO READ IN THE FILE
 !| VAR_NAME       |-->| VARIABLE FOR WHICH WE NEED THE VALUE
-!| RES_VALUE      |<->| VALUE FOR EACH POINT AT TIME STEP RECORD 
+!| RES_VALUE      |<->| VALUE FOR EACH POINT AT TIME STEP RECORD
 !|                |   | FOR THE VARIABLE VAR_NAME
 !| N              |-->| SIZE OF RES_VALUE
 !| IERR           |<--| 0 IF NO ERROR DURING THE EXECUTION

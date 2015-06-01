@@ -13,7 +13,7 @@
 !
 !warning  USER SUBROUTINE; MUST BE CODED BY THE USER
 !!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AVA0           |-->| VOLUME PERCENT 
+!| AVA0           |-->| VOLUME PERCENT
 !| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
 !| CONC           |<->| CONC OF EACH BED LAYER (KG/M3)
 !| CONC_VASE      |<->| MUD CONCENTRATION FOR EACH LAYER
@@ -32,7 +32,7 @@
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!    
+!
       INTEGER, INTENT(IN)              :: NPOIN,NOMBLAY,NSICLA
       DOUBLE PRECISION, INTENT(INOUT)  :: ES(NPOIN,NOMBLAY)
       DOUBLE PRECISION, INTENT(IN)     :: CONC_VASE(NOMBLAY)
@@ -59,7 +59,7 @@
 !     EPAI_VASE(8)=1.5071D0
 !     EPAI_VASE(9)=0.86410D0
 !     EPAI_VASE(9)=0.80D0
-!          
+!
 !
 !     HERE A CONSTANT
 !
@@ -71,12 +71,12 @@
       ENDDO
 !-----------------------------------------------------------------------
 !
-!     INITIALISING OF LAYER THICKNESS AND CONC 
-!        
- 
+!     INITIALISING OF LAYER THICKNESS AND CONC
+!
+
 !     BY DEFAULT : UNIFORM BED COMPOSITION (KEY WORDS)
 !     V6P3: IT WILL BE POSSIBLE TO HAVE A SPATIAL DISTRIBUTION OF THE BED CONC
-!     V6P2: SO FAR THE MUD CONC IS CONSTANT PER LAYER 
+!     V6P2: SO FAR THE MUD CONC IS CONSTANT PER LAYER
 !     si mixte: calculer aussi les AVAI!
 !
       DO I=1,NPOIN
@@ -84,7 +84,7 @@
 !
           CONC(I,J) = CONC_VASE(J)
           ES(I,J)   = EPAI_VASE(J)
-!         
+!
           IF(NSICLA.GT.1) THEN
             ES(I,J)= ES(I,J) + EPAI_SABLE(J)
             IF(ES(I,J).GE.1.D-6) THEN
@@ -95,7 +95,7 @@
               AVAIL(I,J,1)= AVA0(1)
               AVAIL(I,J,2)= AVA0(2)
             ENDIF
-          ENDIF   
+          ENDIF
 !
         ENDDO
       ENDDO

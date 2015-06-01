@@ -11,14 +11,14 @@
 !***********************************************************************
 !
 !brief    This subroutine, called from CALCOT, is designed to adaptively
-!+        determine vertical layer positions based on the gradient of the 
-!+        variable passed as OBJSOL. Layer positions are determined 
+!+        determine vertical layer positions based on the gradient of the
+!+        variable passed as OBJSOL. Layer positions are determined
 !+        in each column of nodes individually, with some horizontal
-!+        smoothing applied to maintain mesh quality. 
+!+        smoothing applied to maintain mesh quality.
 !+
 !+        The algorithm used is similar to the 'variable diffusion'
 !+        approach of Winslow (1969), with some refinements loosely
-!+        based on Tang & Tang (2003). 
+!+        based on Tang & Tang (2003).
 !
 !history  Chris Cawthorn (HR-Wallingford) c.cawthorn@hrwallingford.co.uk
 !+        28/03/2011
@@ -26,13 +26,13 @@
 !+        Original version
 !+
 !
-!history  J-M Hervouet (LNHE)    
+!history  J-M Hervouet (LNHE)
 !+        25/05/2011
 !+        V6P1
 !+        Parallelism
 !+
 !
-!history  J-M Hervouet (LNHE)    
+!history  J-M Hervouet (LNHE)
 !+        12/06/2012
 !+        V6P1
 !+        MCOEFF now double precision
@@ -61,12 +61,12 @@
 !| NPOIN2         |-->| NUMBER OF NODES IN 2D
 !| NSEG2          |-->| NUMBER OF EDGES IN 2D
 !| OBJSOL         |-->| OBJECTIVE VARIABLE TO BE USED FOR MESH REFINEMENT
-!| REFTYPE        |-->| TYPE OF MONITOR FUNCTION 
-!|                |   | (A=ARCLENGTH, C=CURVATURE) 
+!| REFTYPE        |-->| TYPE OF MONITOR FUNCTION
+!|                |   | (A=ARCLENGTH, C=CURVATURE)
 !| SMONITOR       |<->| SMOOTHED MONITOR FUNCTION (WORK ARRAY)
 !| SNNEIGH        |<->| STRUCTURE OF NNEIGH
 !| SSMONITOR      |<->| STRUCTURE OF SMONITOR
-!| Z0             |<->| ORIGINAL LAYER POSITIONS (WORK ARRAY) 
+!| Z0             |<->| ORIGINAL LAYER POSITIONS (WORK ARRAY)
 !| ZEXT           |<->| POSITITIONS OF EXTREMA (WORK ARRAY)
 !| ZVALS          |<->| VERTICAL LAYER POSITIONS
 !|                |   | ON OUTPUT, ADAPTED LAYER POSITIONS
@@ -76,7 +76,7 @@
 !
       IMPLICIT NONE
       INTEGER LNG,LU
-      COMMON/INFO/LNG,LU     
+      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -84,7 +84,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: OBJSOL(NPOIN2,NPLAN)
       CHARACTER,        INTENT(IN)    :: REFTYPE
       INTEGER,          INTENT(IN)    :: GLOSEG(DIMGLO,2)
-      DOUBLE PRECISION, INTENT(INOUT) :: ZVALS(NPOIN2,NPLAN) 
+      DOUBLE PRECISION, INTENT(INOUT) :: ZVALS(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: Z0(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: NEWZ(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: ZEXT(NPOIN2,NPLAN)
@@ -94,7 +94,7 @@
       INTEGER,          INTENT(INOUT) :: NEXTR(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: NNEIGH(NPOIN2),MCOEFF(NPOIN2)
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: SNNEIGH,SSMONITOR
-      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH2D,MESH3D     
+      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH2D,MESH3D
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -174,7 +174,7 @@
         DO IPOIN = 1,NPOIN2
           MCOEFF(IPOIN) = 0.D0
           DO IPLAN = 1,NPLAN-1
-            DSDZ = (OBJSOL(IPOIN,IPLAN+1)-OBJSOL(IPOIN,IPLAN)) / 
+            DSDZ = (OBJSOL(IPOIN,IPLAN+1)-OBJSOL(IPOIN,IPLAN)) /
      &             (ZVALS(IPOIN,IPLAN+1)-ZVALS(IPOIN,IPLAN))
             IF(ABS(DSDZ).GT.MCOEFF(IPOIN)) THEN
               MCOEFF(IPOIN) = ABS(DSDZ)
@@ -201,7 +201,7 @@
 !                   OR  W = SQRT(1+MCOEFF*CURVATURE^2)    (CURVATURE)
 ! --------------------------------------------------------------------
 !
-      DO ITERS=1,MAX_ITERATIONS 
+      DO ITERS=1,MAX_ITERATIONS
 !
 !       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !       1. FIND MONITOR FUNCTION W(I,J) = W(Z(I,J+1/2))
@@ -211,11 +211,11 @@
         IF(REFTYPE.EQ.'A') THEN ! ARC LENGTH
           DO IPOIN = 1,NPOIN2
             DO IPLAN = 1,NPLAN-1
-              DSDZ = (INTSOL(IPOIN,IPLAN+1)-INTSOL(IPOIN,IPLAN)) / 
+              DSDZ = (INTSOL(IPOIN,IPLAN+1)-INTSOL(IPOIN,IPLAN)) /
      &               (ZVALS(IPOIN,IPLAN+1)-ZVALS(IPOIN,IPLAN))
               MONITOR(IPOIN,IPLAN)=SQRT(1.D0+MCOEFF(IPOIN)*DSDZ**2)
             ENDDO
-          ENDDO              
+          ENDDO
         ELSEIF (REFTYPE.EQ.'C') THEN
           WRITE(LU,*) 'AMR_PLAN: CURVATURE-BASED REFINEMENT NOT
      &                         YET IMPLEMENTED'
@@ -226,20 +226,20 @@
      &                         REFTYPE
           CALL PLANTE(1)
           STOP
-        ENDIF  
+        ENDIF
 !
 !      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !      2. SMOOTH MONITOR FUNCTION USING A LOW-PASS FILTER
-!         FIRST IN VERTICAL, THEN IN HORIZONTAL. 
-!         (OR JUST BY LOOPING THROUGH EDGES?) 
+!         FIRST IN VERTICAL, THEN IN HORIZONTAL.
+!         (OR JUST BY LOOPING THROUGH EDGES?)
 !      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!        < VERTICAL SMOOTHING > 
+!        < VERTICAL SMOOTHING >
 !
         DO IPOIN = 1,NPOIN2
           DO IPLAN = 2,NPLAN-2
-            SMONITOR(IPOIN,IPLAN) = 0.25*(MONITOR(IPOIN,IPLAN-1) + 
-     &                                  2*MONITOR(IPOIN,IPLAN  ) + 
+            SMONITOR(IPOIN,IPLAN) = 0.25*(MONITOR(IPOIN,IPLAN-1) +
+     &                                  2*MONITOR(IPOIN,IPLAN  ) +
      &                                    MONITOR(IPOIN,IPLAN+1))
           ENDDO              ! IPLAN = 2,NPLAN-2
         ENDDO                 ! IPOIN = 1,NPOIN2
@@ -250,16 +250,16 @@
         ENDDO                 ! IPOIN = 1,NPOIN2
 !
 !       < HORIZONTAL SMOOTHING >
-! 
+!
         DO JPLAN = 1,20  ! 20 ITERATIONS
-! 
+!
         DO IPOIN = 1,NPOIN2
           NNEIGH(IPOIN) = 0.D0
           DO IPLAN = 1,NPLAN
             SMONITOR(IPOIN,IPLAN) = 0.D0
-          ENDDO              
+          ENDDO
         ENDDO
-!               
+!
 !       LOOP THROUGH SEGMENTS IN 2D MESH TO FIND NEIGHBOURS
 !       AND COMPUTE A WEIGHTED MEAN OF THE MONITOR FUNCTION ON EACH NODE
 !
@@ -275,19 +275,19 @@
      &                           + COEF(ISEG)*MONITOR(P2,IPLAN)
               SMONITOR(P2,IPLAN) = SMONITOR(P2,IPLAN)
      &                           + COEF(ISEG)*MONITOR(P1,IPLAN)
-            ENDDO              
-          ENDDO 
+            ENDDO
+          ENDDO
 !         THE POINT ITSELF (MAY APPEAR SEVERAL TIMES IN PARALLEL, HENCE FAC)
           DO IPOIN = 1,NPOIN2
             NNEIGH(IPOIN)=NNEIGH(IPOIN)+MESH2D%FAC%R(IPOIN)
             DO IPLAN = 1,NPLAN
               SMONITOR(IPOIN,IPLAN)=SMONITOR(IPOIN,IPLAN)
      &        + MONITOR(IPOIN,IPLAN)*MESH2D%FAC%R(IPOIN)
-            ENDDO    
+            ENDDO
           ENDDO
 !         PARALLEL GATHERING AT INTERFACE NODES
           CALL PARCOM(SNNEIGH  ,2,MESH2D)
-          CALL PARCOM(SSMONITOR,2,MESH3D)                        
+          CALL PARCOM(SSMONITOR,2,MESH3D)
         ELSE
           DO ISEG = 1,NSEG2
             P1 = GLOSEG(ISEG,1)
@@ -305,7 +305,7 @@
             DO IPLAN = 1,NPLAN
               SMONITOR(IPOIN,IPLAN)=SMONITOR(IPOIN,IPLAN)
      &                             + MONITOR(IPOIN,IPLAN)
-            ENDDO 
+            ENDDO
           ENDDO
         ENDIF
 !
@@ -314,21 +314,21 @@
         DO IPOIN = 1,NPOIN2
           DO IPLAN = 2,NPLAN-2
             MONITOR(IPOIN,IPLAN)=SMONITOR(IPOIN,IPLAN)/NNEIGH(IPOIN)
-          ENDDO              
-        ENDDO 
-!               
+          ENDDO
+        ENDDO
+!
         ENDDO  ! JPLAN = 1,20 (20 ITERATION OF HORIZONTAL SMOOTHING)
-!     
+!
 !      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!      3. FIND NEW POINT LOCATIONS USING A SINGLE STEP 
+!      3. FIND NEW POINT LOCATIONS USING A SINGLE STEP
 !         OF A GAUSS-SIEDEL TYPE METHOD
 !      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
         DO IPOIN = 1,NPOIN2
           DO IPLAN = 2,NPLAN-1
-            NEWZ(IPOIN,IPLAN) = (1.D0-RR)*ZVALS(IPOIN,IPLAN) + 
-     &        RR*( MONITOR(IPOIN,IPLAN  )*ZVALS(IPOIN,IPLAN+1) + 
-     &             MONITOR(IPOIN,IPLAN-1)*ZVALS(IPOIN,IPLAN-1) ) / 
+            NEWZ(IPOIN,IPLAN) = (1.D0-RR)*ZVALS(IPOIN,IPLAN) +
+     &        RR*( MONITOR(IPOIN,IPLAN  )*ZVALS(IPOIN,IPLAN+1) +
+     &             MONITOR(IPOIN,IPLAN-1)*ZVALS(IPOIN,IPLAN-1) ) /
      &            (MONITOR(IPOIN,IPLAN)+MONITOR(IPOIN,IPLAN-1))
           ENDDO              ! IPLAN = 2,NPLAN-1
         ENDDO                 ! IPOIN = 1,NPOIN2
@@ -355,7 +355,7 @@
 !
 !      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !      5. INTERPOLATE ORIGINAL SOLUTION AT NEW MESH POINTS
-!      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~       
+!      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
         DO IPOIN = 1,NPOIN2
 !
@@ -364,7 +364,7 @@
 !
 !           ------------------------------
 !           FIND INTERVAL CONTAINING POINT
-!           ------------------------------                  
+!           ------------------------------
 !
             DO JPLAN = LASTJ,NPLAN-1
               ZL = Z0(IPOIN,JPLAN)
@@ -406,10 +406,10 @@
 !-----------------------------------------------------------------------
 !
 ! ZVALS NOW CONTAINS THE NEW LAYER POSITIONS
-! INTSOL CONTAINS AN INTERPOLATION OF THE ORIGINAL SOLUTION 
+! INTSOL CONTAINS AN INTERPOLATION OF THE ORIGINAL SOLUTION
 ! ON THE NEW MESH POINTS (NOT NEEDED BY TELEMAC)
 !
 !-----------------------------------------------------------------------
-! 
-      RETURN    
-      END 
+!
+      RETURN
+      END

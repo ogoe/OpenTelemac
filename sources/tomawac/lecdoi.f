@@ -66,9 +66,9 @@
 !| FONFMT         |-->| DATA FILE FORMAT
 !| CHDON          |-->| NAME OF THE VARIABLE READ FROM THE DATA FILE
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
-!| F1             |<--| FIRST VARIABLE TO READ 
-!| F2             |<--| SECOND VARIABLE TO READ 
-!| F3             |<--| THIRD VARIABLE TO READ 
+!| F1             |<--| FIRST VARIABLE TO READ
+!| F2             |<--| SECOND VARIABLE TO READ
+!| F3             |<--| THIRD VARIABLE TO READ
 !| F11            |<->| DATA VALUES AT TIME TV1 IN THE DATA FILE FOR F1
 !| F12            |<->| DATA VALUES AT TIME TV2 IN THE DATA FILE FOR F1
 !| F21            |<->| DATA VALUES AT TIME TV1 IN THE DATA FILE FOR F2
@@ -172,10 +172,10 @@
         ! Getting title
         CALL GET_MESH_TITLE(FFORMAT,NDON,TITCAS,IERR)
         CALL CHECK_CALL(IERR,'LECDOI:GET_MESH_TITLE')
-        ! 
+        !
         CALL GET_DATA_NVAR(FFORMAT,NDON,NVAR,IERR)
         CALL CHECK_CALL(IERR,'LECDOI:GET_DATA_NVAR')
-        ! 
+        !
         ALLOCATE(VAR_NAME(NVAR),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'LECDOI:VAR_NAME')
         ALLOCATE(VAR_UNIT(NVAR),STAT=IERR)
@@ -302,7 +302,7 @@
           ENDIF
         ENDDO
         ! Read the variables
-        ! 
+        !
         ! Check if all the variables are found for record2
         DO J=1,3
           IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN

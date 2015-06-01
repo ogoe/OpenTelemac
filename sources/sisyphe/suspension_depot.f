@@ -33,8 +33,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables   
-!+   
+!+   Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBUG          |-->| FLAG FOR DEBUGGING
@@ -42,14 +42,14 @@
 !| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
 !| HN             |-->| WATER DEPTH
 !| KARMAN         |-->| VON KARMAN CONSTANT
-!| NPOIN          |-->| NUMBER OF POINTS 
+!| NPOIN          |-->| NUMBER OF POINTS
 !| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT
 !| T1             |<->| WORK BIEF_OBJ STRUCTURE
 !| T2             |<->| WORK BIEF_OBJ STRUCTURE
 !| TOB            |-->| BED SHEAR STRESS (TOTAL FRICTION)
 !| VITCD          |-->| CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION
-!| XMVE           |-->| FLUID DENSITY 
-!| XWC            |-->| SETTLING VELOCITIES 
+!| XMVE           |-->| FLUID DENSITY
+!| XWC            |-->| SETTLING VELOCITIES
 !| ZERO           |-->| ZERO
 !| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -136,7 +136,7 @@
 !
         ELSEIF (SET_LAG) THEN
 
-          IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BETAFACTOR' 
+          IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BETAFACTOR'
           CALL SUSPENSION_MILES(HN,NPOIN,KARMAN,HMIN,ZERO,
      &                  FDM,FD90,XWC,ZREF,T2)
           IF (DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_BETAFACTOR'

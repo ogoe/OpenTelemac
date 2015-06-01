@@ -74,7 +74,7 @@
 !| S              |-->|
 !| SIGMAG         |-->| LOGICAL FOR GENERALISED SIGMA TRANSFORMATION
 !| U              |<->| COMPONENT OF VELOCITY
-!| UNSVOL         |<->| INVERSE OF VOLUME OF BASIS FUNCTIONS 
+!| UNSVOL         |<->| INVERSE OF VOLUME OF BASIS FUNCTIONS
 !| V              |<->| COMPONENT OF VELOCITY
 !| W              |<->| COMPONENT OF VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

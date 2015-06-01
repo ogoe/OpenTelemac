@@ -49,7 +49,7 @@
 !| SF             |-->| BIEF_OBJ STRUCTURE OF F
 !| SURFAC         |-->| AREA OF ELEMENTS
 !| W              |<->| RESULT IN NON ASSEMBLED FORM
-!| XMUL           |-->| MULTIPLICATION COEFFICIENT 
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -8,7 +8,7 @@
      &  DEPTH , DZHDT , DZX   , DZY   , U     , V     , DUX   , DUY   ,
      &  DVX   , DVY   , XK    , CG    , COSF  , TGF   , ITR01 , NPOIN3,
      &  NPOIN2, NELEM2, NPLAN , NF    , SURDET, COURAN, SPHE  ,
-     &  PROINF, PROMIN, MESH  , MESH3D, SIKLE2, TB,IELM3, DIFFRA, 
+     &  PROINF, PROMIN, MESH  , MESH3D, SIKLE2, TB,IELM3, DIFFRA,
      &  MAREE , ISUB)
 !
 !***********************************************************************
@@ -91,11 +91,11 @@
 !| NPOIN3         |-->| NPOIN2*NPLAN
 !| PROINF         |-->| LOGICAL INDICATING INFINITE DEPTH ASSUMPTION
 !| PROMIN         |-->| MINIMUM VALUE OF WATER DEPTH
-!| SHF            |<->| BARYCENTRIC COORDINATES ALONG F OF THE 
+!| SHF            |<->| BARYCENTRIC COORDINATES ALONG F OF THE
 !|                |   | NODES IN THEIR ASSOCIATED FREQUENCIES "FRE"
 !| SHP            |<->| BARYCENTRIC COORDINATES OF THE NODES IN
 !|                |   | THEIR ASSOCIATED 2D ELEMENT "ELT"
-!| SHZ            |<->| BARYCENTRIC COORDINATES ALONG TETA OF THE 
+!| SHZ            |<->| BARYCENTRIC COORDINATES ALONG TETA OF THE
 !|                |   | NODES IN THEIR ASSOCIATED LAYER "ETA"
 !| SIKLE2         |-->| IKLE2 IN A BIEF_OBJ STRUCTURE
 !| SINTET         |-->| SINE OF TETA ANGLE
@@ -172,7 +172,7 @@
      &  DZX   , DZY   , FREQ%R , COSTET, SINTET, NPOIN2, NPLAN , JF  ,
      &  NF    , PROINF, SPHE , PROMIN, TRA01)
 !
-!      ----------------------------------------------------------------         
+!      ----------------------------------------------------------------
 !
           DO IEL=1,NELEM2
             I1=IKLE2(IEL,1)
@@ -199,7 +199,7 @@
      &            BID,BID,SLVBID,0.D0,.FALSE.,3,BID,1,
 !                 A POSTERIORI INTERPOLATION
      &            .TRUE.,
-!                 AND PERIODICITY 
+!                 AND PERIODICITY
      &            .TRUE.)
 !
         ENDDO ! JF
@@ -212,16 +212,16 @@
 !   IT IS NO LONGER POSSIBLE TO SEPARATE THE FREQUENCIES OUT
 !
         DO JF=1,NF
-!       
+!
           CALL CONW4D(CX%R,CY%R,CT%R,CF%R,
      &                U,V,XK,CG,COSF,TGF,DEPTH,DZHDT,DZY,DZX,DVY,DVX,
      &                DUY,DUX,FREQ%R,COSTET,SINTET,NPOIN2,NPLAN,
      &                JF,NF,PROINF,SPHE,MAREE,TRA01)
-!       
+!
         ENDDO
-!       
-        DO JF=1,NF       
-!       
+!
+        DO JF=1,NF
+!
           CALL CHARAC(SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,0,
      &                CX,CY,CT,CF,TETA,FREQ,DT,MESH3D%IFABOR,IELM3,
      &                NPOIN2,NPLAN,JF,NF,.FALSE.,BID,SHP%ADR(JF)%P,
@@ -232,11 +232,11 @@
      &                BID,BID,SLVBID,0.D0,.FALSE.,3,BID,1,
 !                     A POSTERIORI INTERPOLATION
      &                .TRUE.,
-!                     AND PERIODICITY 
+!                     AND PERIODICITY
      &                .TRUE.,
 !                     AND 4D
-     &                .TRUE.) 
-!       
+     &                .TRUE.)
+!
         ENDDO
 !
       ENDIF

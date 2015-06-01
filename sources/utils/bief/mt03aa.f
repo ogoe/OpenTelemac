@@ -160,7 +160,7 @@
       A32(IELEM) = - A22(IELEM) - A12(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -209,7 +209,7 @@
       A32(IELEM) = - A22(IELEM) - A12(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !     OTHER TYPES OF FUNCTIONS F AND G
 !
 !-----------------------------------------------------------------------

@@ -49,9 +49,9 @@
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NIT            |-->| TOTAL NUMBER OF TIME STEPS
-!| T              |-->| TRACER AT TIME T(N+1) 
+!| T              |-->| TRACER AT TIME T(N+1)
 !| TETAT          |-->| SEMI-IMPLICITATION DU TRACEUR.
-!| TN             |-->| TRACER AT TIME T(N) 
+!| TN             |-->| TRACER AT TIME T(N)
 !| UCONV          |-->| X-COMPONENT OF ADVECTION FIELD
 !| VCONV          |-->| Y-COMPONENT OF ADVECTION FIELD
 !| WORK1          |<->| WORK ARRAY IN A BIEF_OBJ STRUCTURE

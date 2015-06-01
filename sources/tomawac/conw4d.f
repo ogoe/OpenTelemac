@@ -41,7 +41,7 @@
 !history  J-M HERVOUET (EDF-LNHE)
 !+        27/11/2012
 !+        V6P3
-!+   Optimisation (loops on NPOIN2 and NPLAN swapped to get smaller 
+!+   Optimisation (loops on NPOIN2 and NPLAN swapped to get smaller
 !+   strides, work array TRA01 differently used, etc.)
 !
 !history  J-M HERVOUET (EDF-LNHE)
@@ -154,7 +154,7 @@
 !       ----------------------------------------------------------------
 !
         ELSE
-!   
+!
           DO IP=1,NPLAN
             TR1=GSQP/FREQ(JF)*COSTET(IP)
             TR2=GSQP/FREQ(JF)*SINTET(IP)
@@ -168,7 +168,7 @@
      &               (COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
      &              + SINTET(IP)*SRCF*
      &               (COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-              CY(IPOIN,IP,JF)=(TR1+V(IPOIN))*GRADEG*SR 
+              CY(IPOIN,IP,JF)=(TR1+V(IPOIN))*GRADEG*SR
               CX(IPOIN,IP,JF)=(TR2+U(IPOIN))*GRADEG*SRCF
               CT(IPOIN,IP,JF)=TR2*TGF(IPOIN)*SR - LSDUDN*GRADEG
               CF(IPOIN,IP,JF)= - LSDUDS*GRADEG*
@@ -215,8 +215,8 @@
               TRA01(IPOIN)=XK(IPOIN,JF)*DEUPI*FREQ(JF)/SINH(DEUKD)
             ENDIF
           ENDDO
-!   
-          IF(MAREE) THEN        
+!
+          IF(MAREE) THEN
             DO IP=1,NPLAN
               DO IPOIN=1,NPOIN2
                 LSDUDN= SINTET(IP)*
@@ -293,8 +293,8 @@
             ENDIF
           ENDDO
 !
-          IF(MAREE) THEN 
-            DO IP=1,NPLAN         
+          IF(MAREE) THEN
+            DO IP=1,NPLAN
               DO IPOIN=1,NPOIN2
                 SRCF=SR/COSF(IPOIN)
                 LSDUDN= SINTET(IP)*SR*

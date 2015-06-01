@@ -162,7 +162,7 @@
         W3(IELEM)=W1(IELEM)
         W4(IELEM)=W1(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -226,7 +226,7 @@
         W3(IELEM)=W1(IELEM)
         W4(IELEM)=W1(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !

@@ -29,7 +29,7 @@
 !| W              |-->| FINITE ELEMENT FLUXES (I.E. LEAVING POINTS)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF     
+      USE BIEF
 !
       IMPLICIT NONE
       INTEGER LNG,LU

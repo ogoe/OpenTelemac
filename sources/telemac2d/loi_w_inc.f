@@ -41,7 +41,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       SLOPE = DABS(YS1-YS2)/WIDTH
-!      
+!
       IF (SLOPE.GT.1.D-4) THEN
         YSMIN = DMIN1(YS1,YS2)
         XPD = (YAM-YSMIN)/SLOPE

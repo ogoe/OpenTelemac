@@ -74,7 +74,7 @@
       INTEGER I,J,K,ADD
 !
 !     LOCAL ARRAYS DIMENSIONED WITH FIXED PARAMETERS FROM
-!     DECLARATIONS_SISYPHE. IT IS NOT A HIDDEN DYNAMIC ALLOCATION   
+!     DECLARATIONS_SISYPHE. IT IS NOT A HIDDEN DYNAMIC ALLOCATION
 !
       CHARACTER(LEN=32) TEXTE_QS(NSICLM)
       CHARACTER(LEN=32) TEXTE_CS(NSICLM),TEXTE_QSC(NSICLM)
@@ -119,7 +119,7 @@
             WRITE (LU,*) 'NOMVAR_SISYPHE: NOT IMPLEMENTED FOR ',NOMBLAY
             WRITE (LU,*) '                LAYERS'
             CALL PLANTE(1)
-            STOP          
+            STOP
           ENDIF
           IF(I.LT.10) THEN
             WRITE(CLA,'(I1)') I
@@ -148,7 +148,7 @@
           WRITE (LU,*) 'NOMVAR_SISYPHE: NOT IMPLEMENTED FOR ',NSICLA
           WRITE (LU,*) '                CLASSES'
           CALL PLANTE(1)
-          STOP        
+          STOP
         ENDIF
         TEXTE_QS(J)  = TRIM('QS CLASS '//CLA)
         TEXTE_QSC(J) = TRIM('QS BEDLOAD CL'//CLA)
@@ -176,8 +176,8 @@
           WRITE (LU,*) 'NOMVAR_SISYPHE: NOT IMPLEMENTED FOR ',NOMBLAY
           WRITE (LU,*) '                LAYERS'
           CALL PLANTE(1)
-          STOP            
-        ENDIF   
+          STOP
+        ENDIF
         TEXTE_ES(K)(1:16)  = 'LAYER'//LAY//' THICKNESS'
         TEXTE_ES(K)(17:32) = 'M               '
       ENDDO
@@ -193,8 +193,8 @@
           WRITE (LU,*) 'NOMVAR_SISYPHE: NOT IMPLEMENTED FOR ',NOMBLAY
           WRITE (LU,*) '                LAYERS'
           CALL PLANTE(1)
-          STOP            
-        ENDIF   
+          STOP
+        ENDIF
         TEXTE_CONC(K)(1:12)  = 'LAYER'//LAY//' CONC'
         TEXTE_CONC(K)(17:32) = 'KG/L            '
       ENDDO
@@ -400,7 +400,7 @@
 !     MNEMO(31+ADD) = '????????'
 !
 !----------------------------
-!CV V6P2 
+!CV V6P2
 !      ADD=NSICLA*(NOMBLAY+4)+NOMBLAY+27+MAX(NPRIV,4)
       ADD=NSICLA*(NOMBLAY+4)+2*NOMBLAY+27+MAX(NPRIV,4)
       IF(ADD.LT.MAXVAR) THEN
@@ -427,8 +427,8 @@
 ! SISYPHE VERSION 5.3                             E. PELTIER    11/09/95
 !                                                 C. LENORMANT
 !                                                 J.-M. HERVOUET
-!                                                
-! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT      
+!
+! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT
 !***********************************************************************
 !
 !     FONCTION  : VALEURS IMPOSEES
@@ -464,7 +464,7 @@
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !-----------------------------------------------------------------------
 ! PROGRAMME APPELANT : SISYPH
-! PROGRAMMES APPELES : 
+! PROGRAMMES APPELES :
 !***********************************************************************
 !
       IMPLICIT NONE
@@ -506,19 +506,19 @@
         QV(I)=0.D0
         Z(I)=.6D0
         ZF(I)=0.D0
-      ENDDO    
+      ENDDO
       PI=3.1415926D0
       DO I=1,NPOIN
         IF (X(I) .GE. 2.D0 .AND. X(I) .LE. 10.D0) THEN
-          ZF(I)=0.1D0*SIN(PI*(X(I)-2.D0)/8.D0)**2    
-        ENDIF                                       
-        H(I)=Z(I)-ZF(I) 
+          ZF(I)=0.1D0*SIN(PI*(X(I)-2.D0)/8.D0)**2
+        ENDIF
+        H(I)=Z(I)-ZF(I)
 ! 25/01/2007
-! Definition du U2D, V2D 
-!    
+! Definition du U2D, V2D
+!
         U(I)=QU(I)/H(I)
-        V(I)=QV(I)/H(I)                            
-      ENDDO 
+        V(I)=QV(I)/H(I)
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -546,21 +546,21 @@
 !
       DX=0.01D0
       PI= 4.D0*ATAN(1.D0)
-!       
-      DO II=1,NN 
+!
+      DO II=1,NN
         XFICTIF(II) = (II-1)*DX
       ENDDO
-      DO II=1,NN 
-        H0(II)=0.D0 
-        ZF0(II)=0.D0   
+      DO II=1,NN
+        H0(II)=0.D0
+        ZF0(II)=0.D0
         IF(XFICTIF(II).GE. 2.D0 .AND.
-     &     XFICTIF(II).LE.10.D0) THEN                        
-          ZF0(II)=0.1D0*SIN(PI*(XFICTIF(II)-2.D0)/8.D0)**2 
-        ENDIF                                             
-        H0(II)=0.6D0-ZF0(II)  
+     &     XFICTIF(II).LE.10.D0) THEN
+          ZF0(II)=0.1D0*SIN(PI*(XFICTIF(II)-2.D0)/8.D0)**2
+        ENDIF
+        H0(II)=0.6D0-ZF0(II)
       ENDDO
       DO II=1,NN
-        XNEW(II)=0.D0 
+        XNEW(II)=0.D0
         IF(H0(II).GE.1.D0) H0(II)=0
       ENDDO
 !
@@ -570,7 +570,7 @@
       DO I=1,NPOIN
         HFINAL(I)=0.D0
       ENDDO
-!      
+!
 !  CALCUL DE LA HAUTEUR D'EAU MOYENNE
 !----------------------------------------------------------------
 !
@@ -596,7 +596,7 @@
 !
 !  CREATION DE LA SOLUTION PAR METHODE DES CARACTERISTIQUES
 !----------------------------------------------------------------
-!     
+!
       DO I=1,NN
         XNEW(I) = XFICTIF(I) + K*TEMPS/H0(I)**6
       ENDDO
@@ -620,8 +620,8 @@
       ENDDO
 !
 !----------------------------------------------------------------
-!     
-      RETURN     
+!
+      RETURN
       END
 !                       *****************
                         SUBROUTINE PREDES
@@ -633,11 +633,11 @@
 ! SISYPHE VERSION 6.0                             E. PELTIER    11/09/95
 !                                                 C. LENORMANT
 !                                                 J.-M. HERVOUET
-! 
+!
 !
 ! JMH 07/12/2009: KS SET TO 0 IF LLT=0
-!                                               
-! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT   
+!
+! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT
 !***********************************************************************
 !
 !     FONCTION  : PREPARATION DE VARIABLES QUI SERONT ECRITES SUR
@@ -648,13 +648,13 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |      LLT       |--> | LOCAL LT (MAY BE LT-1+PERCOU) 
+! |      LLT       |--> | LOCAL LT (MAY BE LT-1+PERCOU)
 ! |      AAT       |--> | CURRENT TIME (FOR BUILDING SOLUTIONS)
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !-----------------------------------------------------------------------
 !
-!     - PROGRAMME APPELANT : SISYPH  
+!     - PROGRAMME APPELANT : SISYPH
 !     - SOUS-PROGRAMMES APPELES : OVD,OV
 !
 !***********************************************************************
@@ -669,9 +669,9 @@
       DOUBLE PRECISION, INTENT(IN) :: AAT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!     
-      DOUBLE PRECISION BID 
-      INTEGER LTT,IN      
+!
+      DOUBLE PRECISION BID
+      INTEGER LTT,IN
       LOGICAL IMP,LEO
 !
 !-----------------------------------------------------------------------
@@ -724,14 +724,14 @@
 !
       IF ((LEO.AND.SORLEO(7)).OR.(IMP.AND.SORIMP(7))) THEN
         CALL OS( 'X=Y/Z   ' , T1 , QU , HN , 0.D0 , 2 , 0.D0 , HMIN )
-        CALL OS( 'X=Y/Z   ' , T2 , QV , HN , 0.D0 , 2 , 0.D0 , HMIN ) 
-        CALL CPSTVC(QU,T4) 
+        CALL OS( 'X=Y/Z   ' , T2 , QV , HN , 0.D0 , 2 , 0.D0 , HMIN )
+        CALL CPSTVC(QU,T4)
         DO IN=1,NPOIN
           T4%R(IN)= T1%R(IN)**2+T2%R(IN)**2
-        ENDDO       
-        CALL OS( 'X=Y/Z   ' , T4 , T4 , HN , 0.D0 , 2 , 0.D0 , HMIN )  
+        ENDDO
+        CALL OS( 'X=Y/Z   ' , T4 , T4 , HN , 0.D0 , 2 , 0.D0 , HMIN )
         DO IN=1,NPOIN
-          T4%R(IN)=SQRT(T4%R(IN)/GRAV)        
+          T4%R(IN)=SQRT(T4%R(IN)/GRAV)
         ENDDO
       ENDIF
 !
@@ -764,5 +764,5 @@
 !=======================================================================
 !
       RETURN
-      END 
+      END
 

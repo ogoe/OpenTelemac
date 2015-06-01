@@ -235,7 +235,7 @@
 !-----------------------------------------------------------------------
 !
       IF(CLIPK) THEN
-!       LIMITS K BY THE NORM OF THE HORIZONTAL VELOCITY 
+!       LIMITS K BY THE NORM OF THE HORIZONTAL VELOCITY
         DO N=1,NPOIN3
           AK(N)=MIN(PERNORM2*(U%R(N)**2+V%R(N)**2+W%R(N)**2),AK(N))
           AK(N)=MAX(AK(N),KMIN)
@@ -243,14 +243,14 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-!                             STRESS TENSOR 
+!                             STRESS TENSOR
 !-----------------------------------------------------------------------
 !
       DO N=1,NPOIN3
         S2%R(N) = 2.D0 * (DUDX%R(N)**2+DVDY%R(N)**2+DWDZ%R(N)**2)
      &            + ( DUDY%R(N)+DVDX%R(N) )**2
      &            + ( DUDZ%R(N)+DWDX%R(N) )**2
-     &            + ( DVDZ%R(N)+DWDY%R(N) )**2  
+     &            + ( DVDZ%R(N)+DWDY%R(N) )**2
       ENDDO
 !
 !-----------------------------------------------------------------------

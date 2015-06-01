@@ -6,13 +6,13 @@
 !
 !
 !
-! global variable for recirculation per class 
-        MODULE RECIRCMODUL 
-!              use declarations_sisyphe :: nsicla 
- 
-        IMPLICIT NONE 
-!              DOUBLE PRECISION, SAVE  :: Q_outCLA(NSICLA) 
-              DOUBLE PRECISION, SAVE  :: Q_OUTCLA(10)=0.0000001 
+! global variable for recirculation per class
+        MODULE RECIRCMODUL
+!              use declarations_sisyphe :: nsicla
+
+        IMPLICIT NONE
+!              DOUBLE PRECISION, SAVE  :: Q_outCLA(NSICLA)
+              DOUBLE PRECISION, SAVE  :: Q_OUTCLA(10)=0.0000001
 !
               INTEGER       :: OUTPUTCOUNTER = 0
 !
@@ -94,78 +94,78 @@
 !
       RETURN
       END SUBROUTINE NOEROD
-!                         ********************* 
-                          SUBROUTINE INIT_COMPO 
-!                         ********************* 
-! 
-     &(NCOUCHES) 
-! 
-!*********************************************************************** 
-! SISYPHE VERSION 6.2 
+!                         *********************
+                          SUBROUTINE INIT_COMPO
+!                         *********************
+!
+     &(NCOUCHES)
+!
+!***********************************************************************
+! SISYPHE VERSION 6.2
 !
 !           Version for the FLUME CASES OF ASTRID BLOM (2003)
-!              @ DELFT / DELTARES 
-! 
+!              @ DELFT / DELTARES
+!
 !           prepared by uwe.merkel@uwe-merkel.com
 !
-!           Choose:  BLOMCASE = 'B1' or A1 / A2 / T5 / T10 
-! 
-!*********************************************************************** 
-! 
-!     FONCTION  : DISTRIBUTION DES CLASSES 
-!                 % PAR COUCHE, STRATIFICATION 
-!     SUBROUTINE A REMPLIR PAR l'UTILISATEUR 
-! 
-! 
-!     FUNCTION  : INITIAL FRACTION DISTRIBUTION, STRATIFICATION, 
-!                 VARIATION IN SPACE 
-! 
-!----------------------------------------------------------------------- 
-!                             ARGUMENTS 
-! .________________.____.______________________________________________ 
-! |      NOM       |MODE|                   ROLE 
-! |________________|____|______________________________________________ 
-! |                |    | 
-! |    AVAIL       |<-- | SEDIMENT FRACTION FOR EACH LAYER, CLASS AND NODE 
-! |                |    | AVAIL(NPOIN,10,NSICLA) 
-! |    ES          |<-- | THICKNESS FOR EACH LAYER AND NODE ES(NPOIN,10) 
-! |    NCOUCHES    |--> | NUMBER OF LAYER FOR EACH POINT 
-! |    NSICLA      |--> | NUMBER OF SIZE-CLASSES OF BED MATERIAL 
-! |                |    | (LESS THAN 10) 
-! |    NPOIN       |--> | NUMBER OF NODES 
-! |________________|____|______________________________________________ 
-! MODE : -->(INPUT), <--(RESULT), <--> (MODIFIED INPUT) 
-!----------------------------------------------------------------------- 
-! PROGRAMME APPELANT : INIT_AVAI 
-! PROGRAMMES APPELES : NONE 
-!*********************************************************************** 
-! 
-      USE BIEF 
-      USE DECLARATIONS_TELEMAC 
-      USE DECLARATIONS_SISYPHE 
-! 
-      IMPLICIT NONE 
+!           Choose:  BLOMCASE = 'B1' or A1 / A2 / T5 / T10
+!
+!***********************************************************************
+!
+!     FONCTION  : DISTRIBUTION DES CLASSES
+!                 % PAR COUCHE, STRATIFICATION
+!     SUBROUTINE A REMPLIR PAR l'UTILISATEUR
+!
+!
+!     FUNCTION  : INITIAL FRACTION DISTRIBUTION, STRATIFICATION,
+!                 VARIATION IN SPACE
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |                |    |
+! |    AVAIL       |<-- | SEDIMENT FRACTION FOR EACH LAYER, CLASS AND NODE
+! |                |    | AVAIL(NPOIN,10,NSICLA)
+! |    ES          |<-- | THICKNESS FOR EACH LAYER AND NODE ES(NPOIN,10)
+! |    NCOUCHES    |--> | NUMBER OF LAYER FOR EACH POINT
+! |    NSICLA      |--> | NUMBER OF SIZE-CLASSES OF BED MATERIAL
+! |                |    | (LESS THAN 10)
+! |    NPOIN       |--> | NUMBER OF NODES
+! |________________|____|______________________________________________
+! MODE : -->(INPUT), <--(RESULT), <--> (MODIFIED INPUT)
+!-----------------------------------------------------------------------
+! PROGRAMME APPELANT : INIT_AVAI
+! PROGRAMMES APPELES : NONE
+!***********************************************************************
+!
+      USE BIEF
+      USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_SISYPHE
+!
+      IMPLICIT NONE
       INTEGER LNG,LU,KK
       CHARACTER*2 BLOMCASE
-      COMMON/INFO/LNG,LU 
-! 
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
-! 
-!                                       NPOIN 
-      INTEGER, INTENT (INOUT)::NCOUCHES(*) 
-! 
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
-! 
-      INTEGER I, J, K 
-! 
-!----------------------------------------------------------------------- 
-! 
-      DO J=1,NPOIN 
-! 
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!                                       NPOIN
+      INTEGER, INTENT (INOUT)::NCOUCHES(*)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER I, J, K
+!
+!-----------------------------------------------------------------------
+!
+      DO J=1,NPOIN
+!
             NCOUCHES(J) = NOMBLAY
             NLAYER%I(J) = NOMBLAY
 
-            ES(J,1) = 0.03D0 
+            ES(J,1) = 0.03D0
 
             ES(J,2) = 0.01D0
             ES(J,3) = 0.01D0
@@ -178,33 +178,33 @@
             ES(J,9) = (ZF%R(J) -ZR%R(J)-(NOMBLAY-2)*0.01D0 - ES(J,1))
 !
           BLOMCASE = 'B1'
-! 
-          DO I = 1, NSICLA 
-          DO K = 1, NCOUCHES(J) 
-!        Nur für BLOOM B CASES 
-            IF (BLOMCASE.EQ.'A1') THEN 
-              AVAIL(J,K,I) = AVA0(I) 
-            ELSEIF (BLOMCASE.EQ.'A2') THEN 
-              AVAIL(J,K,I) = AVA0(I) 
-            ELSEIF (BLOMCASE.EQ.'T5') THEN 
-              AVAIL(J,K,I) = AVA0(I) 
-            ELSEIF (BLOMCASE.EQ.'T10') THEN 
-              AVAIL(J,K,I) = AVA0(I) 
-            ELSEIF ((K.EQ.1)) THEN 
-              AVAIL(J,K,I) = AVA0(I) 
-            ELSE 
-              AVAIL(J,K,1) = 0.998D0 
-              AVAIL(J,K,2) = 0.001D0 
-              AVAIL(J,K,3) = 0.001D0 
-            ENDIF 
- 
-          ENDDO 
-        ENDDO 
- 
- 
-      ENDDO 
-! 
-!----------------------------------------------------------------------- 
+!
+          DO I = 1, NSICLA
+          DO K = 1, NCOUCHES(J)
+!        Nur für BLOOM B CASES
+            IF (BLOMCASE.EQ.'A1') THEN
+              AVAIL(J,K,I) = AVA0(I)
+            ELSEIF (BLOMCASE.EQ.'A2') THEN
+              AVAIL(J,K,I) = AVA0(I)
+            ELSEIF (BLOMCASE.EQ.'T5') THEN
+              AVAIL(J,K,I) = AVA0(I)
+            ELSEIF (BLOMCASE.EQ.'T10') THEN
+              AVAIL(J,K,I) = AVA0(I)
+            ELSEIF ((K.EQ.1)) THEN
+              AVAIL(J,K,I) = AVA0(I)
+            ELSE
+              AVAIL(J,K,1) = 0.998D0
+              AVAIL(J,K,2) = 0.001D0
+              AVAIL(J,K,3) = 0.001D0
+            ENDIF
+
+          ENDDO
+        ENDDO
+
+
+      ENDDO
+!
+!-----------------------------------------------------------------------
 !  !CONVERT TO CVSM in CASE VSMTYPE = 1
 !  No user edit necessary
 !-----------------------------------------------------------------------
@@ -227,8 +227,8 @@
           CALL CVSP_P('./','V_', CVSMOUTPUT(KK))
         ENDIF
         ENDDO
-      ENDIF ! END CVSM 
-      RETURN 
+      ENDIF ! END CVSM
+      RETURN
       END SUBROUTINE INIT_COMPO
 !                    *********************
                      SUBROUTINE CONLIT_UWE
@@ -313,11 +313,11 @@
               KK = MESH%KP1BOR%I(K)
           IF (K.NE.KK) THEN
               IF((NUMLIQ%I(K).EQ.2).AND.(NUMLIQ%I(KK).EQ.2)) THEN ! FLUX FOR ONE CLASS
-                IF(LIEBOR%I(K).EQ.4.AND.LIHBOR%I(K).EQ.4) THEN 
-                INFLOWWIDTH = INFLOWWIDTH + MESH%LGSEG%R(K) 
+                IF(LIEBOR%I(K).EQ.4.AND.LIHBOR%I(K).EQ.4) THEN
+                INFLOWWIDTH = INFLOWWIDTH + MESH%LGSEG%R(K)
 !                PRINT*,'INFLOWWIDTH',K,MESH%LGSEG%R(K),INFLOWWIDTH
-!     &           ,MESH%X%R(MESH%NBOR%I(K)),MESH%X%R(MESH%NBOR%I(KK)) 
-                ENDIF 
+!     &           ,MESH%X%R(MESH%NBOR%I(K)),MESH%X%R(MESH%NBOR%I(KK))
+                ENDIF
               ENDIF ! FLUX FOR ONE CLASS
           ENDIF
       ENDDO
@@ -441,20 +441,20 @@
       INTEGER  I, J, K, M, L, MDISC, UBS
       DOUBLE PRECISION DEPTH
 !
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 !
       ALLOCATE(PRO_D(NPOIN,PRO_MAX_MAX,NSICLA))
       ALLOCATE(PRO_F(NPOIN,PRO_MAX_MAX,NSICLA))
       ALLOCATE(PRO_MAX(NPOIN))
 !
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 !
       DO J=1,NPOIN
         DEPTH = 0                    ! INIT DEPTH OF THE VSP
         PRO_MAX(J) =  2* NLAYER%I(J) ! 2 SECTION POINTS PER LAYER
         L = PRO_MAX(J)
 !
-!-----------------------------------------------------------------------     
+!-----------------------------------------------------------------------
 ! WATER / BOTTOM
 !-----------------------------------------------------------------------
 !
@@ -463,8 +463,8 @@
           PRO_F(J,L,I) = AVAIL(J,1,I)
         ENDDO
 !
-!-----------------------------------------------------------------------     
-! SECTIONS 
+!-----------------------------------------------------------------------
+! SECTIONS
 !-----------------------------------------------------------------------
 !
         DO M=1,NLAYER%I(J)-1   !FOR THE UPPER 8 LAYERS
@@ -481,10 +481,10 @@
            ENDDO
         ENDDO
 !
-!-----------------------------------------------------------------------     
+!-----------------------------------------------------------------------
 ! BOTTOM / RIGID BED
 !-----------------------------------------------------------------------
-!         
+!
         L = L - 1
         DO I=1,NSICLA
           PRO_D(J,L,I) = ZR%R(J)

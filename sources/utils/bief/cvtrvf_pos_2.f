@@ -356,7 +356,7 @@
           HT%R(I)=HT%R(I)+DT*C
           F1%R(I)=F1%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(TRAIN1-F1%R(I))
           F2%R(I)=F2%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(TRAIN2-F2%R(I))
-        ENDDO       
+        ENDDO
       ENDIF
 !
       IF(.NOT.YAFLBOR) THEN
@@ -735,14 +735,14 @@
         DO I=1,NPOIN
           C=MIN(PLUIE%R(I),0.D0)
 !         POSITIVITY NOT TESTED HERE, WOULD REQUIRE C=MAX(C,-HT%R(I)/DT)
-!         BUT THEN MASS-BALANCE WOULD NOT BE CORRECT, 
+!         BUT THEN MASS-BALANCE WOULD NOT BE CORRECT,
           HT%R(I)=HT%R(I)+DT*C
 !                                                  VALUE IN VAPOR
 !         F1%R(I)=F1%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(0.D0-F1%R(I))
           F1%R(I)=F1%R(I)-DT/MAX(HT%R(I),1.D-4)*C*F1%R(I)
 !         F2%R(I)=F2%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(0.D0-F2%R(I))
           F2%R(I)=F2%R(I)-DT/MAX(HT%R(I),1.D-4)*C*F2%R(I)
-        ENDDO       
+        ENDDO
       ENDIF
 !
 !     BOUNDARY FLUXES : ADDING THE EXITING (POSITIVE) FLUXES

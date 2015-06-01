@@ -102,7 +102,7 @@
 !      KARMAN = 0.40D0
 !
 !     SCHMIDT NUMBER (not used)
-!  
+!
 !      SCHMIT = 1.D0
 !
 !     PRANDTL NUMBER (BETWEEN 0.8 AND 0.9 FOR TEMPERATURE)

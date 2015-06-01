@@ -58,10 +58,10 @@
       DOUBLE PRECISION UNORM,AIRE,SOM,XSOM(4),YSOM(4),X4,Y4
 !     DOUBLE PRECISION, PARAMETER :: CD=1.56D0,DIAM=2.D0
       DOUBLE PRECISION, PARAMETER :: CD=1.34D0,DIAM=2.D0
-      INTEGER, PARAMETER :: N=1  
+      INTEGER, PARAMETER :: N=1
 !
       DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM    
+      EXTERNAL         P_DSUM
 !
 !-----------------------------------------------------------------------
 !
@@ -171,7 +171,7 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |                | -- |  
+! |                | -- |
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !***********************************************************************
@@ -187,8 +187,8 @@
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-! 
-      INTEGER ITRAC 
+!
+      INTEGER ITRAC
 !
 !-----------------------------------------------------------------------
 !
@@ -198,7 +198,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!   INITIALISATION DES VITESSES : 
+!   INITIALISATION DES VITESSES :
 !
       CALL OS( 'X=C     ' , U , U , U , 0.625D0 )
       CALL OS( 'X=C     ' , V , V , V , 0.D0 )
@@ -224,16 +224,16 @@
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
-!  ZONE A MODIFIER                                                      
-        IF(LNG.EQ.1) WRITE(LU,10)                                       
-        IF(LNG.EQ.2) WRITE(LU,11)                                       
+!  ZONE A MODIFIER
+        IF(LNG.EQ.1) WRITE(LU,10)
+        IF(LNG.EQ.2) WRITE(LU,11)
 10      FORMAT(1X,'CONDIN : AVEC DES CONDITIONS INITIALES PARTICULIERES'
-     &         ,/,'         VOUS DEVEZ MODIFIER CONDIN')                
-11      FORMAT(1X,'CONDIN : WITH SPECIAL INITIAL CONDITIONS'            
-     &         ,/,'         YOU HAVE TO MODIFY CONDIN')                 
-        CALL PLANTE(1)                                                  
-        STOP                                                            
-!  FIN DE LA ZONE A MODIFIER      
+     &         ,/,'         VOUS DEVEZ MODIFIER CONDIN')
+11      FORMAT(1X,'CONDIN : WITH SPECIAL INITIAL CONDITIONS'
+     &         ,/,'         YOU HAVE TO MODIFY CONDIN')
+        CALL PLANTE(1)
+        STOP
+!  FIN DE LA ZONE A MODIFIER
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -280,7 +280,7 @@
 !
 !
 !-----------------------------------------------------------------------
-!  ARGUMENTS 
+!  ARGUMENTS
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|_______________________________________________
@@ -314,7 +314,7 @@
 !
 !     EXAMPLE : POROSITY IS SET TO 0.5 IN A QUADRILATERAL
 !
-!     Surface de 20 x 40 centree sur (0,0) 
+!     Surface de 20 x 40 centree sur (0,0)
 !
       NSOM = 4
       XSOM(1) = -20.D0
@@ -325,20 +325,20 @@
       YSOM(2) = -21.D0
       YSOM(3) =  21.D0
       YSOM(4) =  21.D0
-!                                                                       
+!
 !-----------------------------------------------------------------------
-!                                                                  
+!
       CALL OS( 'X=C     ' , POROS , POROS , POROS , 1.D0 )
-!                                                                       
+!
 !--------------------------------------------------------------
 !
       POR=19.D0/20.D0
 !
-      DO IELEM = 1 , NELEM                                         
+      DO IELEM = 1 , NELEM
 !
         XX1 = (  X(IKLE%I(IELEM)          )+
      &           X(IKLE%I(IELEM+NELMAX)   )+
-     &           X(IKLE%I(IELEM+2*NELMAX) ))/3.D0 
+     &           X(IKLE%I(IELEM+2*NELMAX) ))/3.D0
         YY1 = (  Y(IKLE%I(IELEM)          )+
      &           Y(IKLE%I(IELEM+NELMAX)   )+
      &           Y(IKLE%I(IELEM+2*NELMAX) ))/3.D0
@@ -352,11 +352,11 @@
             POROS%R(IELEM) = POR + (1.D0-POR) * (XX1-10.D0) / 10.D0
           ENDIF
         ENDIF
-!                                      
-      ENDDO                                                       
+!
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
-      
+

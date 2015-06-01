@@ -3,7 +3,7 @@
 !                    ****************
 !
      &( CONC  , EPAI   , FLUER  , TOB    , DENSI  ,
-     &  MPART , DT     , NPOIN2 , NCOUCH ,TOCE, HN, HMIN, 
+     &  MPART , DT     , NPOIN2 , NCOUCH ,TOCE, HN, HMIN,
      &  MIXTE, EPAICO)
 !
 !***********************************************************************
@@ -67,7 +67,7 @@
 !|                |   | (GIBSON MODEL)
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| TOB            |-->| BOTTOM FRICTION
-!| TOCE           |-->| CRITICAL EROSION SHEAR STRESS 
+!| TOCE           |-->| CRITICAL EROSION SHEAR STRESS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -113,7 +113,7 @@
 !
 !         TESTS IF TOB > CRITICAL EROSION FRICTION OF SURFACE LAYER
 !
-!          IF ((TOB(IPOIN)-TOCE(IPOIN,1)).GE.1.D-8) THEN  
+!          IF ((TOB(IPOIN)-TOCE(IPOIN,1)).GE.1.D-8) THEN
 !
 !            FLUER(IPOIN)=MPART*((TOB(IPOIN)/TOCE(IPOIN,1))-1.D0)
 !            FLUER(IPOIN)=MIN(FLUER(IPOIN),
@@ -127,10 +127,10 @@
 !CV
 !     ---- TEMPS:TIME COUNTER FOR EROSION ----
 !
-      IF(MIXTE) THEN 
+      IF(MIXTE) THEN
 
         DO IPOIN=1,NPOIN2
-!            
+!
         FLUER(IPOIN) = 0.D0
         IF(HN(IPOIN).LT.HMIN) GOTO 50
 !
@@ -172,7 +172,7 @@
       ELSE
 
       DO IPOIN=1,NPOIN2
-!            
+!
         FLUER(IPOIN) = 0.D0
         IF(HN(IPOIN).LT.HMIN) GOTO 30
 !
@@ -205,7 +205,7 @@
 
             ENDIF
 !
-  
+
           ENDDO
 !
 20      CONTINUE
@@ -219,6 +219,6 @@
       ENDDO
 
       ENDIF
-!     
+!
       RETURN
       END

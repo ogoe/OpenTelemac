@@ -126,7 +126,7 @@
         W2(IELEM) = W1(IELEM)
         W3(IELEM) = W1(IELEM)
 !
-      ENDDO 
+      ENDDO
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -180,7 +180,7 @@
         W2(IELEM)=(-3*Y2*F3+Y3*(-3*F4+F3+4*F2)) * XSUR18
         W3(IELEM)=(Y2*(3*F4-4*F3-F2)+3*Y3*F2) * XSUR18
 !
-      ENDDO 
+      ENDDO
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -200,7 +200,7 @@
         W2(IELEM)=(3*X2*F3+X3*(3*F4-F3-4*F2)) * XSUR18
         W3(IELEM)=(X2*(-3*F4+4*F3+F2)-3*X3*F2) * XSUR18
 !
-      ENDDO 
+      ENDDO
 !
       ELSE
 !
@@ -255,7 +255,7 @@
         W2(IELEM)=(3*X2*F3+X3*(3*F4-F3-4*F2)) * XSUR18
         W3(IELEM)=(X2*(-3*F4+4*F3+F2)-3*X3*F2) * XSUR18
 !
-      ENDDO 
+      ENDDO
 !
       ELSE
 !
@@ -283,7 +283,7 @@
         W2(IELEM) = W1(IELEM)
         W3(IELEM) = W1(IELEM)
 !
-      ENDDO 
+      ENDDO
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -296,7 +296,7 @@
         W2(IELEM) =  W1(IELEM)
         W3(IELEM) =  W1(IELEM)
 !
-      ENDDO 
+      ENDDO
 !
       ELSE
 !

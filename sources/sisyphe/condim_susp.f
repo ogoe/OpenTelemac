@@ -31,13 +31,13 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TIME 
+!| AT             |-->| TIME
 !| CS             |<->| SUSPENDED SEDIMENT CONCENTRATION
-!| CS0            |-->| INITIAL CONCENTRATIONS (CONSTANT VALUES)/CLASS  
+!| CS0            |-->| INITIAL CONCENTRATIONS (CONSTANT VALUES)/CLASS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
 !| X              |-->| X-COORDINATE

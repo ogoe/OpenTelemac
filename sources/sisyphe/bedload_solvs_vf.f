@@ -42,45 +42,45 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+  
+!+  Name of variables
+!+
 !
 !history  J-M HERVOUET (EDF-LNHE)
 !+        21/02/2012
 !+        V6P2
 !+  Corrections for a perfect mass balance: FLBTRA built to be used in
 !+  bilan_sisyphe, coefficient AVA added in Dirichlet value, QBOR
-!+  dealt with.    
+!+  dealt with.
 !
 !history  R.ATA (EDF-LNHE)
 !+        02/06/2014
 !+        V7P0
-!+  Corrections of normals and nubo tables 
+!+  Corrections of normals and nubo tables
 !+  after changes in FV data structure of Telemac2d
-!+  
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AVA            |-->| PERCENTAGE OF CLASS IN SEDIMENT
-!| BREACH         |<->| INDICATOR FOR NON ERODIBLE BED 
+!| BREACH         |<->| INDICATOR FOR NON ERODIBLE BED
 !| DT             |-->| TIME STEP
 !| EBOR           |<->| BOUNDARY CONDITION FOR BED EVOLUTION (DIRICHLET)
 !| FLBCLA         |<->| FLUXES AT BOUNDARY FOR THE CLASS
-!| FLUX           |<->| SEDIMENT FLUX  
+!| FLUX           |<->| SEDIMENT FLUX
 !| KDIR           |-->| CONVENTION FOR DIRICHLET VALUE
-!| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM 
-!| KENT           |-->| CONVENTION FOR PRESCRIBED VALUE AT ENTRANCE 
+!| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
+!| KENT           |-->| CONVENTION FOR PRESCRIBED VALUE AT ENTRANCE
 !| LIMTEC         |-->| TECHNICAL BOUNDARY CONDITIONS FOR BED EVOLUTION
 !| LIQBOR         |-->| TYPE OF BOUNDARY CONDITIONS FOR BEDLOAD DISCHARGE
 !| MESH           |<->| MESH STRUCTURE
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSEG           |-->| NUMBER OF SEGMENTS
-!| NUBO           |-->| GLOBAL NUMBER OF EDGE EXTREMITIES         
+!| NUBO           |-->| GLOBAL NUMBER OF EDGE EXTREMITIES
 !| QBOR           |-->| PRESCRIBED BEDLOAD DISCHARGES
 !| QSX            |<->| BEDLOAD TRANSPORT RATE X-DIRECTION
 !| QSY            |<->| BEDLOAD TRANSPORT RATE Y-DIRECTION
 !| T10            |<->| WORK BIEF_OBJ STRUCTURE
 !| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
-!| VNOIN          |-->| OUTWARD UNIT NORMALS                        
+!| VNOIN          |-->| OUTWARD UNIT NORMALS
 !| ZFCL           |<->| BEDLOAD EVOLUTION FOR EACH SEDIMENT CLASS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -119,7 +119,7 @@
 !
       CALL OS('X=0     ', X=FLUX)
 !
-!     DETERMINES THE OUTGOING FLUX FOR EACH CELL 
+!     DETERMINES THE OUTGOING FLUX FOR EACH CELL
 !
       DO ISEGIN = 1, NSEG
 !
@@ -174,15 +174,15 @@
 !       QBOR HAS PRIORITY HERE, SO IN CASE OF LIQBOR=KENT
 !       LIMTEC=KDIR WILL NOT BE CONSIDERED, SEE BEDLOAD_SOLVS_FE
 !       FOR MORE EXPLANATIONS
-! 
-        IF(LIQBOR%I(K).EQ.KENT) THEN 
+!
+        IF(LIQBOR%I(K).EQ.KENT) THEN
           FLBCLA%R(K) = QBOR%R(K)
-          FLUX%R(IEL) = FLUX%R(IEL) + FLBCLA%R(K)             
+          FLUX%R(IEL) = FLUX%R(IEL) + FLBCLA%R(K)
         ELSEIF(LIMTEC%I(K).EQ.KDDL.OR.LIMTEC%I(K).EQ.KDIR) THEN
 !         IF KDIR WILL BE UPDATED LATER
           FLBCLA%R(K)= QSX%R(IEL)*XN + QSY%R(IEL)*YN
 !         ADDS THE CONTRIBUTION OF THE FLUX ON THE BOUNDARY SEGMENT
-          FLUX%R(IEL) = FLUX%R(IEL) + FLBCLA%R(K)           
+          FLUX%R(IEL) = FLUX%R(IEL) + FLBCLA%R(K)
         ELSE
 !         NO SEDIMENT FLUX ACCROSS SOLID BOUNDARIES
           FLBCLA%R(K)=0.D0
@@ -200,14 +200,14 @@
 !
       DO K=1,NPTFR
 !                                  PRIORITY OF LIQBOR, SEE ABOVE
-        IF(LIMTEC%I(K).EQ.KDIR.AND.LIQBOR%I(K).NE.KENT) THEN       
+        IF(LIMTEC%I(K).EQ.KDIR.AND.LIQBOR%I(K).NE.KENT) THEN
           N = MESH%NBOR%I(K)
-!         ZFCLDIR: DIRICHLET VALUE OF EVOLUTION, ZFCL WILL BE DIVIDED BY 
+!         ZFCLDIR: DIRICHLET VALUE OF EVOLUTION, ZFCL WILL BE DIVIDED BY
 !         CSF_SABLE AFTER, AND THEN IT WILL BE AVA(N)*EBOR...
           ZFCLDIR = AVA(N)*EBOR%R(K)*CSF_SABLE
-!         CORRECTION OF BOUNDARY FLUX TO GET ZFCLDIR          
-          FLBCLA%R(K)=FLBCLA%R(K)-(ZFCLDIR-ZFCL%R(N))/(DT*UNSV2D%R(N)) 
-!         ZFCLDIR FINALLY IMPOSED                   
+!         CORRECTION OF BOUNDARY FLUX TO GET ZFCLDIR
+          FLBCLA%R(K)=FLBCLA%R(K)-(ZFCLDIR-ZFCL%R(N))/(DT*UNSV2D%R(N))
+!         ZFCLDIR FINALLY IMPOSED
           ZFCL%R(N) = ZFCLDIR
         ENDIF
 !

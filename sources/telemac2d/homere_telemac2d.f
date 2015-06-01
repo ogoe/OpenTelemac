@@ -78,7 +78,7 @@
 !     READS THE STEERING FILE
 !
       DUMMY = ' '
-!     
+!
       CALL LECDON_TELEMAC2D(MOTCAR,WMOTCAR,FILE_DESC,WFILE_DESC,
      &                      PATH,NCAR,DUMMY,DUMMY)
 !

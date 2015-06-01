@@ -107,12 +107,12 @@
 !+        19/04/2011
 !+        V6P1
 !+   Adaptation to the new call of Sisyphe in Telemac-2D, and various
-!+   modifications for mass-conservation.   
+!+   modifications for mass-conservation.
 !
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables     
+!+   Name of variables
 !
 !history  MAK (HRW)
 !+        31/05/2012
@@ -135,18 +135,18 @@
 !history  J.-M. HERVOUET (LNHE)
 !+        15/04/2013
 !+        V6P3
-!+   YAFLULIM was not initialised in one case. 
+!+   YAFLULIM was not initialised in one case.
 !
 !history  J.-M. HERVOUET (LNHE)
 !+        18/11/2013
 !+        V6P3
 !+   Pointers GLOSEG1 and GLOSEG2 added to avoid an unwanted copy of
-!+   arrays in call to suspension_conv (after message by Intel compiler) 
+!+   arrays in call to suspension_conv (after message by Intel compiler)
 !
 !history  J.-M. HERVOUET (LNHE)
 !+        28/04/2014
 !+        V7P0
-!+   Call to diffin modified. 
+!+   Call to diffin modified.
 !+   OPTSUP replaced by OPTADV in the call to cvdftr.
 !+   (see keyword SCHME OPTION FOR ADVECTION)
 !
@@ -159,7 +159,7 @@
 !| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
 !| BFBOR          |-->| BOUNDARY CONDITION ON F: NU*DF/DN=AFBOR*F+BFBOR
 !| BILMA          |-->| MASS BALANCE
-!| CBOR           |<->| IMPOSED SUSPENDED SAND CONCENTRATION AT THE BOUNDARY 
+!| CBOR           |<->| IMPOSED SUSPENDED SAND CONCENTRATION AT THE BOUNDARY
 !| CF             |-->| QUADRATIC FRICTION COEFFICIENT
 !| CHARR          |-->| LOGICAL, BEDLOAD OR NOT
 !| CLT            |<->| BOUNDARY CONDITIONS FOR TRACER (MODIFIED LITBOR)
@@ -183,7 +183,7 @@
 !| DTS            |-->| TIME STEP FOR SUSPENSION
 !| ELAY           |<->| THICKNESS OF EACH LAYER
 !| ENTET          |<->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION
-!| ENTETS         |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION FOR SUSPENSION 
+!| ENTETS         |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION FOR SUSPENSION
 !| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
 !| FLBORTRA       |<->| FLUXES AT BOUNDARIES TRACER
 !| FLBOR_SIS      |<->| FLUXES AT BOUNDARIES SISYPHE
@@ -205,11 +205,11 @@
 !| IT2            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
 !| IT3            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
 !| IT4            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
-!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| KARMAN         |-->| VON KARMAN CONSTANT
 !| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
-!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION 
+!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
 !| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
 !| KNEU           |-->| CONVENTION FOR NEUMANN CONDITION
 !| KS             |-->| TOTAL BED ROUGHNESS
@@ -221,38 +221,38 @@
 !| KZ             |<->| COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
 !| LICBOR         |-->| BOUNDARY CONDITIONS FOR SEDIMENT
 !| LIMDIF         |<->| BOUNDARY CONDITIONS FOR DIFFUSION
-!| LT             |-->| ITERATION 
+!| LT             |-->| ITERATION
 !| MASDEP         |<--| TOTAL DEPOSITED MASS
 !| MASDEPT        |<--| DEPOSITED MASS DURING THE TIME STEP
 !| MASED0         |<->| SUSPENDED MASS BALANCE
 !| MASFIN         |<--| MASS AT THE END
 !| MASINI         |<->| INITIAL MASS
 !| MASKEL         |-->| MASKING OF ELEMENTS
-!| MASKPT         |-->| MASKING PER POINT 
+!| MASKPT         |-->| MASKING PER POINT
 !| MASKTR         |<->| MASKING FOR TRACERS, PER POINT
 !| MASSOU         |<--| MASS OF TRACER ADDED BY SOURCE TERM
 !|                |   | SEE DIFSOU
-!| MASTCP         |<--| ??? NE SERT A RIEN, A SUPPRIMER 
+!| MASTCP         |<--| ??? NE SERT A RIEN, A SUPPRIMER
 !| MASTEN         |<->| MASS ENTERED THROUGH LIQUID BOUNDARY
 !| MASTOU         |<->| MASS CREATED BY SOURCE TERM
 !| MAXADV         |<->| MAXIMUM NUMBER OF ITERATIONS OF ADVECTION SCHEMES
 !| MBOR           |<->| MATRIX OBJECT
 !| MESH           |<->| MESH STRUCTURE
 !| MIXTE          |-->| MIXTURE OF COHESIVE AND NON COHESIVE SEDIMENT
-!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS 
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| MS_SABLE       |<->| MASS OF SAND PER LAYER (KG/M2)
 !| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
 !| MU             |-->| CORRECTION FACTOR FOR BED ROUGHNESS
-!| NOMBLAY        |-->| NUMBER OF LAYERS 
+!| NOMBLAY        |-->| NUMBER OF LAYERS
 !| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
-!| NIT            |-->| TOTAL NUMBER OF ITERATIONS 
+!| NIT            |-->| TOTAL NUMBER OF ITERATIONS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
 !| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
 !| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
 !| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
-!| OPTDIF         |-->| OPTION FOR THE DISPERSION 
+!| OPTDIF         |-->| OPTION FOR THE DISPERSION
 !| OPTADV         |-->| SCHEME OPTION FOR ADVECTION
 !| PARTHENIADES   |-->| CONSTANT OF THE KRONE AND PARTHENIADES EROSION LAW (M/S)
 !| PASS           |<->| IN FACT PASS_SUSP IN SISYPHE.F, ARRIVES AS .TRUE.
@@ -265,7 +265,7 @@
 !| QS_C           |-->| BEDLOAD TRANSPORT RATE
 !| QS_S           |<->| SUSPENDED TRANSPORT RATE
 !| RESOL          |-->| CHOICE OF ADVECTION SCHEME
-!| S              |<->| VOID STRUCTURE 
+!| S              |<->| VOID STRUCTURE
 !| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT
 !| SLVTRA         |<->| SLVCFG STRUCTURE
 !| SOLSYS         |-->| SLVCFG STRUCTURE
@@ -289,7 +289,7 @@
 !| TETA_SUSP      |<->| IMPLICITATION FACTOR FOR THE DEPOSITION FLUX AND DIFFUSION
 !| TOB            |-->| BED SHEAR STRESS (TOTAL FRICTION)
 !| TOCE_SABLE     |<->| CRITICAL BED SHEAR STRESS OF SAND
-!| TOCE_MIXTE     |<->| CRITICAL BED SHEAR STRESS OF THE MIXED SEDUIMENT PER LAYER 
+!| TOCE_MIXTE     |<->| CRITICAL BED SHEAR STRESS OF THE MIXED SEDUIMENT PER LAYER
 !| TOCE_VASE      |<->| CRITICAL EROSION SHEAR STRESS OF THE MUD PER LAYER (N/M2)
 !| U2D            |-->| MEAN FLOW VELOCITY X-DIRECTION
 !| UCONV          |<->| X-COMPONENT ADVECTION FIELD (SISYPHE)
@@ -309,15 +309,15 @@
 !|                |   | DEPENDS OF OPTIONS
 !| XKY            |-->| COEFFICIENT USED FOR COMPUTING THE DISPERSION
 !|                |   | DEPENDS OF OPTIONS
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !| XMVS           |-->| SEDIMENT DENSITY
-!| XWC            |-->| SETTLING VELOCITIES 
+!| XWC            |-->| SETTLING VELOCITIES
 !| ZCONV          |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
 !|                |   | IS DM1*GRAD(ZCONV)
 !| ZERO           |-->| ZERO
 !| ZF             |-->| ELEVATION OF BOTTOM
-!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT 
-!| ZF_S           |<->| ACCUMULATED BED EVOLUTION DUE TO SUSPENDED SEDIMENT 
+!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT
+!| ZF_S           |<->| ACCUMULATED BED EVOLUTION DUE TO SUSPENDED SEDIMENT
 !| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -374,7 +374,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: MS_SABLE(NPOIN, NOMBLAY)
       DOUBLE PRECISION, INTENT(INOUT) :: MS_VASE(NPOIN, NOMBLAY)
       DOUBLE PRECISION, INTENT(INOUT) :: ES_SABLE(NPOIN,NOMBLAY)
-      DOUBLE PRECISION, INTENT(INOUT) :: ES_VASE(NPOIN,NOMBLAY)     
+      DOUBLE PRECISION, INTENT(INOUT) :: ES_VASE(NPOIN,NOMBLAY)
       DOUBLE PRECISION, INTENT(INOUT) :: MASFIN,MASDEPT,MASDEP
       DOUBLE PRECISION, INTENT(IN)    :: ZERO
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
@@ -406,7 +406,7 @@
       IELMT=IELM
 !
 !     UCONV POINTER SAVED BEFORE PLAYING WITH IT
-!    
+!
       SAVE_UCONV=>UCONV%R
       SAVE_VCONV=>VCONV%R
       GLOSEG1=>MESH%GLOSEG%I(1:MESH%GLOSEG%DIM1)
@@ -420,7 +420,7 @@
 !
 !     TAKES DETAILS OF THE CONTINUITY EQUATION INTO ACCOUNT
 !     IN TELEMAC-2D OR 3D, WITH SOLSYS=2, DM1 AND ZCONV ARE USED.
-!  
+!
       IF(CODE(1:9).EQ.'TELEMAC2D') THEN
         SOLSYS_SIS=SOLSYS
       ELSEIF(LT.GT.1.AND.CODE(1:9).EQ.'TELEMAC3D') THEN
@@ -428,7 +428,7 @@
         SOLSYS_SIS=SOLSYS
       ELSE
         SOLSYS_SIS=1
-      ENDIF 
+      ENDIF
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ! 1.  COMPUTES THE REFERENCE ELEVATION  -->  ZREF
@@ -457,8 +457,8 @@
      &            'UNEXPECTED VALUE:',1I6)
         CALL PLANTE(1)
         STOP
-      ENDIF 
-!   
+      ENDIF
+!
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ! 2.  ADVECTION VELOCITY -->  UCONV, VCONV
 !     TAKING INTO ACCOUNT THE VERTICAL PROFILE
@@ -473,7 +473,7 @@
 !                                   1 : CHI-TUAN CONSTANT
 !                                   2 : LEO POSTMA CONSTANT
 !                                   SEE CVTRVF IN BIEF AND
-!                                   V5.7 RELEASE NOTES      
+!                                   V5.7 RELEASE NOTES
 !
       YAFLULIM=.FALSE.
 !
@@ -496,7 +496,7 @@
 !       WITH 2: MONOTONICITY BUT NO MASS CONSERVATION
 !               WRONG THEORY
 !       OPTVF=2
-!     
+!
 !       OPTVF=2 IS POSSIBLE BUT WITH MASS CONSERVATION SPOILED
 !       THE UNIT (HERE 2) IS REDONE IN CVDFTR ACCORDING TO THE
 !       VALUE OF RESOL, SO IT IS NOT IMPORTANT HERE.
@@ -517,20 +517,20 @@
 !       THAT SATISFIES CONTINUITY + LEO-POSTMA CONSTANT
         OPTVF=2
 !
-      ENDIF   
+      ENDIF
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ! 3.  EROSION FLUX   : FLUER
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
-!     
+!
 !     SKIN FRICTION TAUP  --> T4
 !
       CALL OS('X=CYZ   ', X= T4, Y= TOB, Z= MU, C=1.D0)
       CALL OS('X=+(Y,C)', X=T4, Y=T4, C=ZERO)
 !
 !     SAND ONLY
-!       
+!
       IF(.NOT.MIXTE) THEN
         IF(.NOT.SEDCO) THEN
           IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_EROSION'
@@ -539,14 +539,14 @@
      &                            ZREF,AC,FLUER,CSTAEQ,QS_C,ICQ,U2D,V2D,
      &                            CSRATIO,T14,DEBUG)
           IF (DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_EROSION'
-!         
+!
 !         NOTE JMH : THIS SHOULD BE INCLUDED IN SUSPENSION_EROSION
-!         
+!
           DO I=1,NPOIN
             FLUER%R(I)=MIN(FLUER%R(I),ELAY%R(I)*AVA(I)/DT*CSF_SABLE)
           ENDDO
 !
-!       MUD ONLY 
+!       MUD ONLY
 !
         ELSE
 !  CV : debut modifs
@@ -562,14 +562,14 @@
            CALL SUSPENSION_EROSION_COH(T4,NPOIN,XMVS,
      &                      PARTHENIADES,ZERO,FLUER,
      &                      TOCE_VASE,NOMBLAY,DT,MS_VASE)
-! 
+!
           IF(NOMBLAY.EQ.1) THEN
             DO I=1,NPOIN
               FLUER%R(I)=MIN(FLUER%R(I),MS_VASE(I,1)/DT/XMVS)
             ENDDO
           ELSE
             DO I=1,NPOIN
-              MSTOT=0.D0   
+              MSTOT=0.D0
               DO J=1,NOMBLAY
                 MSTOT=MSTOT+MS_VASE(I,J)
               ENDDO
@@ -595,7 +595,7 @@
           IF (DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_FLUX_MOY'
         ENDIF
         IF(SEDCO) CALL OS('X=Y     ',X=FLUER, Y=FLUER_VASE)
-      ENDIF      
+      ENDIF
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !  4. DEPOSITION FLUX   : FLUDPT =WC*T2
@@ -608,7 +608,7 @@
 !
       IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_DEPOT'
       CALL SUSPENSION_DEPOT(TOB,HN,NPOIN,HMIN,XWC,VITCD,ZERO,KARMAN,
-     &    FDM,FD90,XMVE,T1,T2,ZREF,FLUDPT,DEBUG,SEDCO,CSTAEQ)     
+     &    FDM,FD90,XMVE,T1,T2,ZREF,FLUDPT,DEBUG,SEDCO,CSTAEQ)
 ! TO ADD? mak   &    FDM,FD90,XMVE,T1,CSRATIO,T14,ZREF,FLUDPT,DEBUG,SEDCO,U2D,V2D,
 ! TO ADD? mak   &    CSTAEQ,DT)
 !     &                      XMVE,T1,T2,ZREF,FLUDPT,DEBUG,SEDCO)
@@ -658,11 +658,11 @@
               IF(MIXTE) CBOR%R(K) = FLUER%R(I)/T2%R(I)/XWC
             ELSE
               CBOR%R(K) = FLUER%R(I)/XWC
-            ENDIF     
+            ENDIF
 !           THIS IS THE CONDITION TO HAVE NO EVOLUTION
 !           CS%R(I) MAY BE DIFFERENT FROM CBOR%R(K) IF UNSTEADY FLOW
-!           OR IF DIRFLU.EQ.2 (CASE OF PRIORITY TO FLUXES)            
-            FLUER%R(I)=FLUDPT%R(I)*CS%R(I)                           
+!           OR IF DIRFLU.EQ.2 (CASE OF PRIORITY TO FLUXES)
+            FLUER%R(I)=FLUDPT%R(I)*CS%R(I)
           ENDIF
         ENDDO
 !
@@ -707,7 +707,7 @@
 !         FLUER WILL BE USED AS T11*HN, SO IT MUST BE
 !         CANCELLED ACCORDINGLY, OTHERWISE MASS BALANCE WRONG
           FLUER%R(I)=0.D0
-        ENDIF 
+        ENDIF
       ENDDO
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -765,7 +765,7 @@
       ENDIF
 !
       IF(DEBUG > 0) WRITE(LU,*) 'APPEL DE CVDFTR'
-!      
+!
       CALL CVDFTR
      & (CST, CTILD, CS, T2,
 !                            H         HTILD
@@ -801,12 +801,12 @@
 !     COMPUTES EVOLUTION AND UPDATES DATA
 !     TASS TO BE PASSED IN ARGUMENT
 !
-!       
+!
       IF(.NOT.SEDCO) THEN
         IF(.NOT.MIXTE) THEN
           CALL OS('X=Y-Z   ', X=ZFCL_S, Y=FLUDP, Z=FLUER)
           CALL OS('X=CX    ', X=ZFCL_S, C=DT/CSF_SABLE)
-        ELSE 
+        ELSE
           DO I=1, NPOIN
             DO J= 1, NOMBLAY
               CONC_SABLE(I,J)=XMVS
@@ -814,8 +814,8 @@
           ENDDO
           CALL SUSPENSION_EVOL(ZFCL_S,FLUDP,FLUER,DT,
      &                NPOIN,XMVS,T3,MS_SABLE,ES_SABLE,
-     &                   CONC_SABLE,NOMBLAY)           
-        ENDIF                 
+     &                   CONC_SABLE,NOMBLAY)
+        ENDIF
       ELSE
         CALL SUSPENSION_EVOL(ZFCL_S,FLUDP,FLUER,DT,
      &      NPOIN,XMVS,T3,MS_VASE,ES_VASE,
@@ -829,7 +829,7 @@
         CALL SUSPENSION_LISTING(MESH,CST,ZFCL_S,UCONV,VCONV,
      &                          MASKEL,IELMT,DT,MSK,T1)
         IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_LISTING'
-      ENDIF 
+      ENDIF
 !
 !     MASS-BALANCE FOR THE SUSPENSION
 !
@@ -841,21 +841,21 @@
      &         MS_VASE,NOMBLAY,NPOIN,
      &         MASSOU,MASED0,MSK,ENTETS,MASTEN,MASTOU,
      &         MASINI,T1,T2,T3,MASFIN,MASDEPT,MASDEP,AGGLOT,VOLU2D,
-     &         NUMLIQ,NFRLIQ,NPTFR,FLBORTRA,SEDCO)     
+     &         NUMLIQ,NFRLIQ,NPTFR,FLBORTRA,SEDCO)
           IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN_COH'
         ELSE
-!Modifs CVL       
+!Modifs CVL
           IF(MIXTE) THEN
-            IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BILAN_COH'     
+            IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BILAN_COH'
             CALL SUSPENSION_BILAN_COH
      &           (MESH,CST,HN,ZFCL_S,MASKEL,IELMT,ITRA,LT,NIT,DT,XMVS,
      &           MS_SABLE,NOMBLAY,NPOIN,
      &           MASSOU,MASED0,MSK,ENTETS,MASTEN,MASTOU,
      &           MASINI,T1,T2,T3,MASFIN,MASDEPT,MASDEP,AGGLOT,VOLU2D,
      &           NUMLIQ,NFRLIQ,NPTFR,FLBORTRA,SEDCO)
-            IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN_COH'    
-          ELSE              
-! fin modifs CVL        
+            IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN_COH'
+          ELSE
+! fin modifs CVL
             IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BILAN'
             CALL SUSPENSION_BILAN
      &          (MESH,CST,HN,ZFCL_S,MASKEL,IELMT,ITRA,LT,NIT,
@@ -863,9 +863,9 @@
      &           MASINI,T2,T3,MASFIN,MASDEPT,MASDEP,AGGLOT,VOLU2D,
      &           NUMLIQ,NFRLIQ,NPTFR,FLBORTRA)
             IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN'
-          ENDIF  
+          ENDIF
         ENDIF
-      ENDIF    
+      ENDIF
 !
 !
       CALL OS('X=Y     ', X=CS, Y=CST)
@@ -880,7 +880,7 @@
 !     RESTORING UCONV POINTERS
 !
       UCONV%R=>SAVE_UCONV
-      VCONV%R=>SAVE_VCONV    
+      VCONV%R=>SAVE_VCONV
 !
 !======================================================================!
 !======================================================================!

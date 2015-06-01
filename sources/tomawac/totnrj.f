@@ -82,8 +82,8 @@
           DO IP=1,NPOIN2
             VARIAN(IP) = VARIAN(IP) + F(IP,JP,JF)*AUX1
           ENDDO ! IP
-        ENDDO ! JP 
-      ENDDO ! JF 
+        ENDDO ! JP
+      ENDDO ! JF
 !
 !-----C-------------------------------------------------------------C
 !-----C  TAKES THE HIGH FREQUENCY PART INTO ACCOUNT (OPTIONAL)      C
@@ -98,7 +98,7 @@
         DO IP=1,NPOIN2
           VARIAN(IP) = VARIAN(IP) + F(IP,JP,NF)*AUX1
         ENDDO ! IP
-      ENDDO ! JP 
+      ENDDO ! JP
 !
       RETURN
       END

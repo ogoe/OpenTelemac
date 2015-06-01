@@ -8,9 +8,9 @@
 ! TELEMAC 2D VERSION 6.2                                     03/15/2011
 !***********************************************************************
 !
-!brief  COMPUTES TCHAMEN FLUX AT THE INERNAL INTERFACES 
-!       REF.:"MODELING OF WETTING-DRYING TRANSITIONS IN FREE SURFACE FLOWS 
-!             OVER COMPLEX TOPOGRAPHIES" CMAME 199(2010) PP 2281-2304 
+!brief  COMPUTES TCHAMEN FLUX AT THE INERNAL INTERFACES
+!       REF.:"MODELING OF WETTING-DRYING TRANSITIONS IN FREE SURFACE FLOWS
+!             OVER COMPLEX TOPOGRAPHIES" CMAME 199(2010) PP 2281-2304
 !
 !history  R. ATA (EDF-LNHE)
 !+
@@ -25,7 +25,7 @@
 !|  XNN,YNN       |-->|  X AND Y COMPONENTS OF THE OUTWARD UNIT NORMAL
 !|  FLXI,FLXJ     |<--|  RIGHT AND LEFT CONTRIBUTIONS TO THE FLUX
 !|  G             |-->|  GRAVITY CONSTANT
-!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION 
+!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -33,16 +33,16 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-! 
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION, INTENT(IN)    :: G,H1,H2,ETA1,ETA2,U1,U2
       DOUBLE PRECISION, INTENT(IN)    :: V1,V2,XNN,YNN
       DOUBLE PRECISION, INTENT(INOUT) :: FLXI(3),FLXJ(3)
-! 
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IVAR 
+      INTEGER IVAR
 !
       DOUBLE PRECISION FLUIJ_20
 !
@@ -55,14 +55,14 @@
       DOUBLE PRECISION FLUIJ_3,FLUIJ_3I,FLUIJ_3J
 !
 !-----------------------------------------------------------------------
-! 
+!
       ALPHA=1.D0
       CHOICE_D=2
       GSUR2=G/2.D0
 !
 !-----------------------------------------------------------------------
 !
-!     INITIALIZATION OF FLXI AND FLXJ 
+!     INITIALIZATION OF FLXI AND FLXJ
 !
       DO IVAR=1,3
         FLXI(IVAR) = 0.D0
@@ -132,7 +132,7 @@
       FLUIJ_3=0.5D0*(H1*UI*VI+H2*UJ*VJ)
 !
 ! UPWINDING
-! 
+!
       DIJS2=0.5D0*D_IJ
       FLUIJ_1=FLUIJ_1 -    DIJS2*(ETA2-ETA1)
       FLUIJ_2I = FLUIJ_2I- DIJS2*(H2*UJ-H1*UI)
@@ -151,15 +151,15 @@
       FLUIJ_2J  = XNN*FLUIJ_20-YNN*FLUIJ_3J
       FLUIJ_3J  = YNN*FLUIJ_20+XNN*FLUIJ_3J
 !
-! FINAL FLUX 
+! FINAL FLUX
 !
       FLXI(1) =  FLUIJ_1
-      FLXI(2) =  FLUIJ_2I 
-      FLXI(3) =  FLUIJ_3I 
+      FLXI(2) =  FLUIJ_2I
+      FLXI(3) =  FLUIJ_3I
 !
       FLXJ(1) =  FLUIJ_1
-      FLXJ(2) =  FLUIJ_2J 
-      FLXJ(3) =  FLUIJ_3J 
+      FLXJ(2) =  FLUIJ_2J
+      FLXJ(3) =  FLUIJ_3J
 !
 !-----------------------------------------------------------------------
 !

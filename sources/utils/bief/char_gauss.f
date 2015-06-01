@@ -36,7 +36,7 @@
 !| ZSTAR          |-->| TRANSFORMED ELEVATIONS OF MESH POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF   
+      USE BIEF
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -412,10 +412,10 @@
           I3=IKLE(IELEM,3)
 !
           IG=IG+1
-          SHP(1,IG)=(1.D0-A-A) 
-          SHP(2,IG)=A          
-          SHP(3,IG)=A          
-          SHZ(IG)=C  
+          SHP(1,IG)=(1.D0-A-A)
+          SHP(2,IG)=A
+          SHP(3,IG)=A
+          SHZ(IG)=C
           XCONV(IG)=(1.D0-SHZ(IG))*( SHP(1,IG)*X(I1)
      &                              +SHP(2,IG)*X(I2)
      &                              +SHP(3,IG)*X(I3) )
@@ -434,10 +434,10 @@
           ETA(IG)=IPLAN
 !
           IG=IG+1
-          SHP(1,IG)=(1.D0-B-A) 
-          SHP(2,IG)=B          
-          SHP(3,IG)=A          
-          SHZ(IG)=C         
+          SHP(1,IG)=(1.D0-B-A)
+          SHP(2,IG)=B
+          SHP(3,IG)=A
+          SHZ(IG)=C
           XCONV(IG)=(1.D0-SHZ(IG))*( SHP(1,IG)*X(I1)
      &                              +SHP(2,IG)*X(I2)
      &                              +SHP(3,IG)*X(I3) )
@@ -456,10 +456,10 @@
           ETA(IG)=IPLAN
 !
           IG=IG+1
-          SHP(1,IG)=(1.D0-A-B) 
-          SHP(2,IG)=A          
-          SHP(3,IG)=B          
-          SHZ(IG)=C         
+          SHP(1,IG)=(1.D0-A-B)
+          SHP(2,IG)=A
+          SHP(3,IG)=B
+          SHZ(IG)=C
           XCONV(IG)=(1.D0-SHZ(IG))*( SHP(1,IG)*X(I1)
      &                              +SHP(2,IG)*X(I2)
      &                              +SHP(3,IG)*X(I3) )
@@ -478,10 +478,10 @@
           ETA(IG)=IPLAN
 !
           IG=IG+1
-          SHP(1,IG)=(1.D0-A-A) 
-          SHP(2,IG)=A          
-          SHP(3,IG)=A          
-          SHZ(IG)=D         
+          SHP(1,IG)=(1.D0-A-A)
+          SHP(2,IG)=A
+          SHP(3,IG)=A
+          SHZ(IG)=D
           XCONV(IG)=(1.D0-SHZ(IG))*( SHP(1,IG)*X(I1)
      &                              +SHP(2,IG)*X(I2)
      &                              +SHP(3,IG)*X(I3) )
@@ -500,10 +500,10 @@
           ETA(IG)=IPLAN
 !
           IG=IG+1
-          SHP(1,IG)=(1.D0-B-A) 
-          SHP(2,IG)=B          
-          SHP(3,IG)=A          
-          SHZ(IG)=D         
+          SHP(1,IG)=(1.D0-B-A)
+          SHP(2,IG)=B
+          SHP(3,IG)=A
+          SHZ(IG)=D
           XCONV(IG)=(1.D0-SHZ(IG))*( SHP(1,IG)*X(I1)
      &                              +SHP(2,IG)*X(I2)
      &                              +SHP(3,IG)*X(I3) )
@@ -522,10 +522,10 @@
           ETA(IG)=IPLAN
 !
           IG=IG+1
-          SHP(1,IG)=(1.D0-A-B) 
-          SHP(2,IG)=A          
-          SHP(3,IG)=B          
-          SHZ(IG)=D         
+          SHP(1,IG)=(1.D0-A-B)
+          SHP(2,IG)=A
+          SHP(3,IG)=B
+          SHZ(IG)=D
           XCONV(IG)=(1.D0-SHZ(IG))*( SHP(1,IG)*X(I1)
      &                              +SHP(2,IG)*X(I2)
      &                              +SHP(3,IG)*X(I3) )

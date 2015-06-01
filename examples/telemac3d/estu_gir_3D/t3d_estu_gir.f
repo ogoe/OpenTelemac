@@ -101,12 +101,12 @@
 !
       DOUBLE PRECISION ALF ,PI,Y100,AJUL4,NLUN, HT
       DOUBLE PRECISION  DD,JD,TUNIV,HSUN,SLUN,PLUN,TLUN,PSUN
-      DOUBLE PRECISION TONDES (120) 
+      DOUBLE PRECISION TONDES (120)
       DOUBLE PRECISION UONDES(120),FONDES(120),VONDES(120)
       DOUBLE PRECISION AHN(50,120) , PHN(50,120)
       INTEGER NPTFRL,IPTFRL,NPTFRLM,IONDES,NONDES,NSPECTR
       INTEGER YY,MM,DAY,HOUR,MINU,SEC,AJUL,BJUL,NFO1
-      DOUBLE PRECISION NIVM(50)        
+      DOUBLE PRECISION NIVM(50)
       DOUBLE PRECISION PROF(NPOIN2)
       INTEGER NSURF(NPTFR2)
       DOUBLE PRECISION TEMPS
@@ -114,8 +114,8 @@
 !
       INTRINSIC COS,SIN,INT,MOD,ACOS
 !
-      SAVE AHN, PHN 
-!   
+      SAVE AHN, PHN
+!
 !=========================================================================
 !     DOUBLE PRECISION XB,YB,ZB,WW,TREEL,A,B,CP,LAMB,RO,RO0,SAL
 !     INTGER ITEMP
@@ -180,27 +180,27 @@
       NFO1 = T3DFO1
       REWIND NFO1
       READ(NFO1,*) NSPECTR
-        
+
       READ(NFO1,*) NONDES
-      
+
       DO IONDES =1,NONDES
         READ (NFO1,*) TONDES(IONDES)
       ENDDO
-      
+
       DO IONDES =NONDES+1,NSPECTR
         READ (NFO1,*) TONDES(IONDES)
       ENDDO
-      DO IPTFRL = 1,NPTFRLM           
+      DO IPTFRL = 1,NPTFRLM
         IONDES=1
 !       LECTURE DES HN ET GN DES NONDES POUR LES DIFFERENTS NOEUDS FRONTIÈRES
         READ(NFO1,*)
         READ(NFO1,*)   NIVM(IPTFRL), ALF
-        DO IONDES =1,NONDES     
+        DO IONDES =1,NONDES
           READ(NFO1,*) AHN(IPTFRL,IONDES),PHN(IPTFRL,IONDES)
           AHN(IPTFRL,IONDES)=0.01D0*AHN(IPTFRL,IONDES)
         ENDDO
-! 
-        DO IONDES =NONDES+1,NSPECTR       
+!
+        DO IONDES =NONDES+1,NSPECTR
           READ(NFO1,*) AHN(IPTFRL,IONDES),PHN(IPTFRL,IONDES)
           AHN(IPTFRL,IONDES)=0.01D0*AHN(IPTFRL,IONDES)
         ENDDO
@@ -211,23 +211,23 @@
 !
 ! les phases sont calcul�es de mani�re � se recaler en temps par rapport
 ! au 06 avril 1999 22h (t=0 simu, TU)
-    
+
 
 
 !  Etape 2 calcul de un, fn, Vn
 ! ----------------------------------------------------------------
-! ----------------------------------------------------------------      
+! ----------------------------------------------------------------
 !        Definition de la date
 !-----------------------------------------------------------------
 ! -------------------------------------------------------------------
 !     year
       YY=1999
-!     month 
+!     month
       MM=4
-! day 
+! day
       DAY=8
       HOUR=22
-      MINU=0 
+      MINU=0
       SEC=0
 !---------------------------------------------------------------
 !         passage en calendrier Julien JD et temps universel Tuniv
@@ -248,11 +248,11 @@
       BJUL=2.D0-AJUL+INT(AJUL4)
 !     reutilsation des var y100, ajul4
 
-      Y100=365.25D0*YY 
+      Y100=365.25D0*YY
       AJUL4=30.6001D0*(MM+1)
 
       JD= INT(Y100)+INT(AJUL4)+DD +1720994.5D0+BJUL
-      
+
       TUNIV=(JD-2415020.5D0)/36525.D0
 !-------------------------------------------------------
 !           calcul des variables fondamentales des astres
@@ -265,11 +265,11 @@
       TLUN=MOD(15.D0*HT+HSUN-SLUN,360.D0)
       PLUN=MOD(334.3853D0+4069.034D0*TUNIV
      &   -0.0103D0*TUNIV**2.D0,360.D0)
-  
+
       NLUN=MOD(100.8432D0+1934.142D0*TUNIV
-     &   -0.0021D0*TUNIV**2.D0,360.D0) 
+     &   -0.0021D0*TUNIV**2.D0,360.D0)
       PSUN=MOD(281.2209D0+1.7192D0*TUNIV
-     &   +0.0005D0*TUNIV**2.D0,360.D0)    
+     &   +0.0005D0*TUNIV**2.D0,360.D0)
 ! Calcul des un , facteurs nodaux de phases
 !    Sa,Q1,O1,K1,N2,M2,S2,MN4,M4,MS4
 !     Sa
@@ -280,7 +280,7 @@
       UONDES(3)=-10.8D0*SIN(PI*NLUN/180.D0)
 !     k1 à changer aussi
       UONDES(4)=11.36D0*SIN(PI*NLUN/180.D0)
-!     N2             
+!     N2
       UONDES(5)=2.1D0*SIN(PI*NLUN/180.D0)
 !     M2
       UONDES(6)=UONDES(5)
@@ -296,7 +296,7 @@
 !     old waves
 !     M3
       UONDES(20)=3.15D0*SIN(PI*NLUN/180.D0)
-!     K2 
+!     K2
       UONDES(11)=24.97D0*SIN(PI*NLUN/180.D0)
 
       UONDES(13)=2.1D0*SIN(PI*NLUN/180.D0)
@@ -313,8 +313,8 @@
       UONDES(21)=6.22D0*SIN(PI*NLUN/180.D0)
 
 ! Calcul de VN phase de l 'astre perturbateur
-             
-            
+
+
 
       IONDES=1
       VONDES (1)=MOD(2.D0*HSUN,360.D0)
@@ -341,22 +341,22 @@
       VONDES (20)=MOD(3.D0*TLUN,360.D0)
       VONDES (21)=MOD(6.D0*TLUN,360.D0)
 !     Calcul des fn, facteurs nodaux en amplitudes
-      DO IONDES =1,NONDES       
+      DO IONDES =1,NONDES
         FONDES (IONDES)=1.D0
       ENDDO
-      
+
       IONDES=1
-      
-      FONDES(2)=1.009D0+0.187D0*COS(PI*NLUN/180.D0)  
-      FONDES(3)=1.009D0+0.187D0*COS(PI*NLUN/180.D0) 
-      FONDES(4)=1.006+0.198*COS(PI*NLUN/180.D0)         
+
+      FONDES(2)=1.009D0+0.187D0*COS(PI*NLUN/180.D0)
+      FONDES(3)=1.009D0+0.187D0*COS(PI*NLUN/180.D0)
+      FONDES(4)=1.006+0.198*COS(PI*NLUN/180.D0)
       FONDES(5)=1.D0-0.037D0*COS(PI*NLUN/180.D0)
       FONDES(6)=FONDES(5)
 !     uncommented on 10/06/2014 to avoid a crash
       FONDES(7)=1.D0
-      FONDES(8)=FONDES(6)**2            
+      FONDES(8)=FONDES(6)**2
       FONDES(9)=FONDES(5)**2
-             
+
       FONDES (9)=1.D0-0.056D0*COS(PI*NLUN/180.D0)
       FONDES(10)=1.0D0-0.037D0*COS(PI*NLUN/180.D0)
       FONDES(11)=1.0D0+0.436D0*COS(PI*NLUN/180.D0)
@@ -374,7 +374,7 @@
 !        print *,'avt',IONDES, AHN(IPTFRL,IONDES)
         ENDDO
       ENDDO
-! ----------------------------------------------------------------------           
+! ----------------------------------------------------------------------
 
 
 !
@@ -419,21 +419,21 @@
 !        print *, K,IPTFRL,IONDES,AHN(IPTFRL,1)
 !      END DO
 !      IF (LIHBOR%I(K).EQ.KENT) THEN
-!     ajout du niveau moyen et de la bathy     
+!     ajout du niveau moyen et de la bathy
 !       HBOR(K) = -ZF(NBOR(K)) + NIVM(IPTFRL) + PROF(K)+0.312d0
-!       HBOR%R(NSURF(IPTFR)) = -ZF%R(NBOR2%I(NSURF(IPTFR))) + 0.2d0    
+!       HBOR%R(NSURF(IPTFR)) = -ZF%R(NBOR2%I(NSURF(IPTFR))) + 0.2d0
 !     *  + PROF(NSURF(IPTFR))
 
         HBOR%R(K) = -ZF%R(NBOR2%I(K)) + 0.2D0 + PROF(K)
-!       if (K.eq.130) then       
+!       if (K.eq.130) then
 !       print *,AT,PROF(130)
-!       endif 
- 
+!       endif
+
 !
 !
         IPTFRL=IPTFRL+1
-      ENDIF         
-51    CONTINUE   
+      ENDIF
+51    CONTINUE
 !===================================================================
 !     IMPORTANT OPTION:
 !     VERTICAL VELOCITIES ARE SET AS HORIZONTAL VELOCITIES
@@ -999,7 +999,7 @@
         IF (Y(I)-X(I).GE.10000.D0) THEN
           CF%R(I) = 70.D0
         ELSEIF (X(I).LE.370000.D0) THEN
-          CF%R(I) = 75.D0 
+          CF%R(I) = 75.D0
         ELSEIF (X(I).LE.374000.D0.AND.Y(I).GE.282000.D0) THEN
           CF%R(I) = 70.D0
         ELSE
@@ -1128,8 +1128,8 @@
       DO I=1,NPOIN2
         IF (ZF(I).GE.7.D0) ZF(I)=7.D0
       ENDDO
-      
-      
+
+
       DO I=1,NPOIN2
         IF(X(I).GT.417939.D0.AND.X(I).LT.421750.D0.AND.
      &     Y(I).GT.283000.D0.AND.Y(I).LT.284451.D0      ) THEN
@@ -1139,7 +1139,7 @@
      &     Y(I).GT.255750.D0.AND.Y(I).LT.256250.D0      ) THEN
           ZF(I)=0.D0
         ENDIF
-      ENDDO     
+      ENDDO
 !-----------------------------------------------------------------------
 !
       RETURN
@@ -1200,7 +1200,7 @@
 !| NIT            |-->| NUMBER OF TIME STEPS
 !| NPLAN          |-->| NUMBER OF PLANES
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
-!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR
 !|                |   | ELEMENTS.
 !| SHZFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR LEVEL
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
@@ -1262,12 +1262,12 @@
       COEF2=COEF1/1.53**2
       DELTA=(RHO_EAU-RHO_OIL)/(RHO_EAU)
 !
-      IF(LT.EQ.250) THEN 
+      IF(LT.EQ.250) THEN
         NUM_GLO=0
         NUM_MAX=0
         NUM_LOC=0
         COORD_X=0.D0
-        COORD_Y=0.D0 
+        COORD_Y=0.D0
         NUM_MAX=INT(SQRT(REAL(NFLOT_MAX)))
         DO K=0,NUM_MAX-1
           DO J=0,NUM_MAX-1
@@ -1310,7 +1310,7 @@
               IF(ETAL.EQ.1)THEN
                 PARTICULES(NUM_LOC)%SURFACE=PI*COEF2*
      &               (DELTA*GRAV/(VOLDEV*NU2))**(1.D0/6.D0)
-     &               *VOLDEV/NFLOT_MAX 
+     &               *VOLDEV/NFLOT_MAX
               ELSEIF(ETAL.EQ.3)THEN
                 PARTICULES(NUM_LOC)%SURFACE = AREA
               ELSEIF(ETAL.EQ.2) THEN

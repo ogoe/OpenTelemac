@@ -452,7 +452,7 @@
       A55(IELEM) = - A51(IELEM) - A52(IELEM) - A53(IELEM)
      &             - A54(IELEM) - A56(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 ! CASE WHERE U IS OF P2 DISCRETISATION
@@ -1069,7 +1069,7 @@
       A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
      &             - A64(IELEM) - A65(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !     OTHER TYPES OF FUNCTIONS F AND G
 !

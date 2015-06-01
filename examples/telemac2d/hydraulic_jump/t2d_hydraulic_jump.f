@@ -38,7 +38,7 @@
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!     
+!
       LOGICAL IMP,LEO
 !
       INTEGER LTT,N,IMAX
@@ -138,31 +138,31 @@
 78      FORMAT(1X,'PRERES : NOMBRE DE COURANT MAXIMUM :',G16.7)
 79      FORMAT(1X,'PRERES: MAXIMUM COURANT NUMBER: ',G16.7)
       ENDIF
-! 
-!=======================================================================  
-! CALCUL DE LA VITESSE ET DE LA HAUTEUR EXACTE : FORME CONSERVATIVE                          
-!=======================================================================  
-!                                                                         
+!
+!=======================================================================
+! CALCUL DE LA VITESSE ET DE LA HAUTEUR EXACTE : FORME CONSERVATIVE
+!=======================================================================
+!
       IF(((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))).AND.
-     &   ((LEO.AND.SORLEO(24)).OR.(IMP.AND.SORIMP(24)))) THEN 
-!                   HAUTEUR          VITESSE            
+     &   ((LEO.AND.SORLEO(24)).OR.(IMP.AND.SORIMP(24)))) THEN
+!                   HAUTEUR          VITESSE
         CALL EXACTE(PRIVE%ADR(1)%P%R,PRIVE%ADR(2)%P%R,ZF%R,X,NPOIN,1)
       ENDIF
-!                                                                         
-!=======================================================================  
-! CALCUL DE LA SURFACE LIBRE EXACTE                                       
-!=======================================================================  
-!                                                                         
+!
+!=======================================================================
+! CALCUL DE LA SURFACE LIBRE EXACTE
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(25)).OR.(IMP.AND.SORIMP(25))) THEN
-!                            Z               
+!                            Z
         CALL OV( 'X=Y+Z   ' ,PRIVE%ADR(3)%P%R,
      &                       PRIVE%ADR(1)%P%R,ZF%R,0.D0,NPOIN)
       ENDIF
 !
-!=======================================================================  
-! CALCUL DE LA SURFACE LIBRE "NON-CONSERVATIVE"                                        
-!=======================================================================  
-!                                                                         
+!=======================================================================
+! CALCUL DE LA SURFACE LIBRE "NON-CONSERVATIVE"
+!=======================================================================
+!
       IF((LEO.AND.SORLEO(26)).OR.(IMP.AND.SORIMP(26))) THEN
         DO N=1,NPOIN
           HHH = MAX(PRIVE%ADR(1)%P%R(N),1.D-8)
@@ -178,232 +178,232 @@
 !                       *****************
                         SUBROUTINE EXACTE
 !                       *****************
-!                                                                         
+!
      &(HN,U,ZF,X,NPOIN,ICONS)
-!                                                                         
+!
 !***********************************************************************
 ! PROGICIEL : 'TELEMAC'       12/12/88    F. LEPEINTRE
 !                             10/02/92    J-M HERVOUET (REMPLACEMENT
 !                             DE ZRPOLY PAR ZBRENT, IMPLICIT NONE ET
-!                             DOUBLE PRECISION)                           
-!                             02/03/92    F. LEPEINTRE                    
-!***********************************************************************  
-!                                                                         
-!      FONCTION:    SOLUTION EXACTE DE L'ECOULEMENT TRANSCRITIQUE         
-!                   SUR UN BUMP. AVEC UN RESSAUT                          
-!                                                                         
-!                   PAR CONVENTION, ZF=0. AU POINT CRITIQUE               
-!                                                                                                                                                  
-!      ATTENTION : ON UTILISE ICI LE FAIT QUE LE MAILLAGE                 
-!                  EST RECTANGULAIRE.                                     
-! 
+!                             DOUBLE PRECISION)
+!                             02/03/92    F. LEPEINTRE
+!***********************************************************************
+!
+!      FONCTION:    SOLUTION EXACTE DE L'ECOULEMENT TRANSCRITIQUE
+!                   SUR UN BUMP. AVEC UN RESSAUT
+!
+!                   PAR CONVENTION, ZF=0. AU POINT CRITIQUE
+!
+!      ATTENTION : ON UTILISE ICI LE FAIT QUE LE MAILLAGE
+!                  EST RECTANGULAIRE.
+!
 !
 !      ICONS = 1 : HAUTEURS CONJUGUEES CLASSIQUES
 !      ICONS = 2 : HAUTEURS CONJUGUEES "NON CONSERVATIVES"
-!                                                                        
-!-----------------------------------------------------------------------  
-!                             ARGUMENTS                                   
-! .________________.____.______________________________________________.  
-! |      NOM       |MODE|                   ROLE                       |  
-! |________________|____|______________________________________________|  
-! |     HN         |<-- |  HAUTEUR D'EAU.                              |  
-! |     U          |<-- |  VITESSE U.                                     
-! |     ZF         | -->|  COTE DU FOND.                                  
-! |     X          | -->|  ABCISSES DES POINTS DU MAILLAGE                
-! |     NPOIN      | -->|  NOMBRE DE POINTS DU MAILLAGE                   
-! |________________|____|______________________________________________|  
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)   
-!**********************************************************************   
-!                                                                         
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! |      NOM       |MODE|                   ROLE                       |
+! |________________|____|______________________________________________|
+! |     HN         |<-- |  HAUTEUR D'EAU.                              |
+! |     U          |<-- |  VITESSE U.
+! |     ZF         | -->|  COTE DU FOND.
+! |     X          | -->|  ABCISSES DES POINTS DU MAILLAGE
+! |     NPOIN      | -->|  NOMBRE DE POINTS DU MAILLAGE
+! |________________|____|______________________________________________|
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!**********************************************************************
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!                                                                         
+!
       DOUBLE PRECISION U(132,11),ZF(132,11),X(132,11),HN(132,11)
       DOUBLE PRECISION YVF(300),YV(300),PRAD(300),YAVAL
       DOUBLE PRECISION QFIXG,G,ST,PRK,XRK,YRK,XRKPR,YRKPR,YCRIT
       DOUBLE PRECISION XRKCO,YRKCO,YFLU,CSTE,RES,Y(1),Z(1)
-!                                                                         
+!
       INTEGER IM,JM,I,J,ICRIT,INOEUD,NOEUD,NOEUDF,ND,NG,NRK,N,IC,NPOIN
       INTEGER ICONS
-!                                                                         
+!
       DOUBLE PRECISION A(4)
       COMMON/FORFC1/A
       COMMON/HCRIT/YCRIT
-!                                                                         
-      EXTERNAL F                                                   
-      DOUBLE PRECISION F                                           
-!                                                                         
+!
+      EXTERNAL F
+      DOUBLE PRECISION F
+!
       INTRINSIC REAL
-!                                                                         
-!-----------------------------------------------------------------------  
-! 
+!
+!-----------------------------------------------------------------------
+!
 !     LARGEUR DU CANAL EGALE A 1.
-! 
+!
 !     MAILLAGE DE CARRES DECOUPES EN TRIANGLES, L'ORDRE DES POINTS EST TEL
-!     QU'ON PEUT FAIRE COMME SUR UN MAILLAGE REGULIER.                                                                       
+!     QU'ON PEUT FAIRE COMME SUR UN MAILLAGE REGULIER.
       IM = 132
-      JM = 11 
+      JM = 11
 !     POINT DE PASSAGE EN CRITIQUE (DIFFERENT DU SEUIL)
 !     LE FOND A ETE CALCULE POUR AVOIR LE POINT CRITIQUE A
 !     LA PREMIERE MAILLE APRES LE SEUIL.
-!                                                            
-      ICRIT = 63 
-!     COTE AVAL                                                                                                            
-      YAVAL  = 0.6D0 
-!     DEBIT LINEIQUE (PAR M2 DE LARGEUR)                                                     
+!
+      ICRIT = 63
+!     COTE AVAL
+      YAVAL  = 0.6D0
+!     DEBIT LINEIQUE (PAR M2 DE LARGEUR)
       QFIXG  = 1.D0
-      G      = 9.81D0 
-!     COEFFICIENT DE STRICKLER                                                    
-      ST     = 40.D0                                                   
-!                                                                                                                              
+      G      = 9.81D0
+!     COEFFICIENT DE STRICKLER
+      ST     = 40.D0
+!
       DO NOEUD=1,IM-1
         ND = NOEUD + 1
         NG = NOEUD
-!       PENTE RADIER ? (AVEC UN SIGNE -)                                                      
+!       PENTE RADIER ? (AVEC UN SIGNE -)
         PRAD(NOEUD) = -(ZF(ND,5)-ZF(NG,5)) / (X(ND,5)-X(NG,5))
       ENDDO
-!                                                                         
-!     PAR RUNGE-KUTTA (METHODE DE LA TANGENTE AMELIOREE)                  
-!     NOMBRE DE SOUS PAS                                                  
+!
+!     PAR RUNGE-KUTTA (METHODE DE LA TANGENTE AMELIOREE)
+!     NOMBRE DE SOUS PAS
       NRK = 10000
-!     PAS DE RUNGE-KUTTA                                                  
+!     PAS DE RUNGE-KUTTA
       PRK = (X(IM,5)-X(1,5))/FLOAT(NRK-1)
-!                                                                         
-!     ON COMMENCE PAR CALCULER LA LIGNE D'EAU FLUVIALE                    
-!     DEPUIS L'AVAL TANT QUE Y SUPERIEUR A YCRITIQUE                      
-!                                                                         
+!
+!     ON COMMENCE PAR CALCULER LA LIGNE D'EAU FLUVIALE
+!     DEPUIS L'AVAL TANT QUE Y SUPERIEUR A YCRITIQUE
+!
       YCRIT=(QFIXG**2/G)**(1.D0/3.D0)
-      YVF(IM) = YAVAL                                                   
+      YVF(IM) = YAVAL
       XRK = X(IM,5)
       YRK = YAVAL
       IC  = IM-1
-!                                                                         
+!
       DO N=1,NRK
-!                                                                         
-!       PREDICTION                                                       
-        XRKPR = XRK - PRK                                       
-        YRKPR = YRK - PRK*F(YRK,IC,QFIXG,PRAD,ST)               
-        IF(YRKPR.LT.YCRIT) THEN                                 
-!         CHARGE INSUFFISANTE POUR PASSER LE SEUIL EN FLUVIAL  
-          NOEUDF = IC+1                                        
-          GOTO 30                                              
-        ENDIF                                                   
-!       CORRECTION                                              
-        XRKCO = XRKPR                                           
-        YRKCO = YRK - PRK*(F(YRK  ,IC,QFIXG,PRAD,ST) +           
-     &                     F(YRKPR,IC,QFIXG,PRAD,ST))*0.5D0    
-        IF(YRKCO.LT.YCRIT) THEN                                 
-!         CHARGE INSUFFISANTE POUR PASSER LE SEUIL EN FLUVIAL  
-          NOEUDF = IC+1                                        
-          GOTO 30                                              
-        ENDIF                                                   
-!                                                               
-!       EST-ON SORTI DE LA MAILLE COURANTE ?                    
-        IF(XRKCO.LE.X(IC,5)) THEN                               
-!         CALCUL DE Y AU NOEUD PAR INTERPOLATION LINEAIRE      
-          YVF(IC) = (YRK-YRKCO)/PRK*(X(IC,5)-XRK)+ YRK         
-!         CHANGEMENT DE MAILLE COURANTE                        
-          IC = IC-1                                            
-          IF (IC.EQ.0) GOTO 40                                 
-        ENDIF                                                   
-!       ACTUALISATION                                           
-        XRK = XRKCO                                             
-        YRK = YRKCO                                             
-!                                                               
-        ENDDO                                                
-40      DO NOEUD=1,IM                                        
-          YV(NOEUD) = YVF(NOEUD)                               
-        ENDDO                                                
-        GOTO 60                                                 
-!                                                                        
-30      CONTINUE   
+!
+!       PREDICTION
+        XRKPR = XRK - PRK
+        YRKPR = YRK - PRK*F(YRK,IC,QFIXG,PRAD,ST)
+        IF(YRKPR.LT.YCRIT) THEN
+!         CHARGE INSUFFISANTE POUR PASSER LE SEUIL EN FLUVIAL
+          NOEUDF = IC+1
+          GOTO 30
+        ENDIF
+!       CORRECTION
+        XRKCO = XRKPR
+        YRKCO = YRK - PRK*(F(YRK  ,IC,QFIXG,PRAD,ST) +
+     &                     F(YRKPR,IC,QFIXG,PRAD,ST))*0.5D0
+        IF(YRKCO.LT.YCRIT) THEN
+!         CHARGE INSUFFISANTE POUR PASSER LE SEUIL EN FLUVIAL
+          NOEUDF = IC+1
+          GOTO 30
+        ENDIF
+!
+!       EST-ON SORTI DE LA MAILLE COURANTE ?
+        IF(XRKCO.LE.X(IC,5)) THEN
+!         CALCUL DE Y AU NOEUD PAR INTERPOLATION LINEAIRE
+          YVF(IC) = (YRK-YRKCO)/PRK*(X(IC,5)-XRK)+ YRK
+!         CHANGEMENT DE MAILLE COURANTE
+          IC = IC-1
+          IF (IC.EQ.0) GOTO 40
+        ENDIF
+!       ACTUALISATION
+        XRK = XRKCO
+        YRK = YRKCO
+!
+        ENDDO
+40      DO NOEUD=1,IM
+          YV(NOEUD) = YVF(NOEUD)
+        ENDDO
+        GOTO 60
+!
+30      CONTINUE
 !
 !
 !       CALCUL DE LA LIGNE D'EAU A PARTIR DU POINT CRITIQUE
-!                                                                       
+!
 !       PARTIE FLUVIALE
-!                                                 
-!       PAR RUNGE-KUTTA (METHODE DE LA TANGENTE AMELIOREE)               
-!       NOMBRE DE SOUS PAS                                               
-        NRK = 10000                                                     
-!       PAS DE RUNGE-KUTTA                                               
-        PRK = (X(ICRIT,5)-X(1,5))/REAL(NRK-1)                           
-!                                                                       
-        YV(ICRIT) = YCRIT                                             
-        XRK = X(ICRIT,5)                                                
-        YRK = YV(ICRIT)                                            
-        IC  = ICRIT-1                                                   
-!                                                                        
-        DO N=1,NRK                                                   
-!                                                                        
-!       PREDICTION                                                       
+!
+!       PAR RUNGE-KUTTA (METHODE DE LA TANGENTE AMELIOREE)
+!       NOMBRE DE SOUS PAS
+        NRK = 10000
+!       PAS DE RUNGE-KUTTA
+        PRK = (X(ICRIT,5)-X(1,5))/REAL(NRK-1)
+!
+        YV(ICRIT) = YCRIT
+        XRK = X(ICRIT,5)
+        YRK = YV(ICRIT)
+        IC  = ICRIT-1
+!
+        DO N=1,NRK
+!
+!       PREDICTION
           XRKPR = XRK - PRK
           YRKPR = YRK - PRK*F(YRK,IC,QFIXG,PRAD,ST)
-!       CORRECTION                                                       
+!       CORRECTION
           XRKCO = XRKPR
           YRKCO = YRK - PRK*(F(YRK  ,IC,QFIXG,PRAD,ST)+
      &                       F(YRKPR,IC,QFIXG,PRAD,ST))/2.D0
-!                                                                        
+!
 !       EST-ON SORTI DE LA MAILLE COURANTE ?
           IF (XRKCO.LE.X(IC,5)) THEN
 !           CALCUL DE Y AU NOEUD PAR INTERPOLATION LINEAIRE
             YV(IC) = (YRK-YRKCO)/PRK*(X(IC,5)-XRK)+ YRK
-!           CHANGEMENT DE MAILLE COURANTE                                
+!           CHANGEMENT DE MAILLE COURANTE
             IC = IC-1
             IF (IC.EQ.0) GOTO 80
           ENDIF
-!         ACTUALISATION                                                  
+!         ACTUALISATION
           XRK = XRKCO
           YRK = YRKCO
-!                                                                        
-          ENDDO 
-!                                                     
+!
+          ENDDO
+!
 !         PARTIE TORRENTIELLE
-!                                           
+!
 80        CONTINUE
-!                                                                                             
-!         PAR RUNGE-KUTTA (METHODE DE LA TANGENTE AMELIOREE)             
-!         NOMBRE DE SOUS PAS                                             
-          NRK = 10000                                                   
-!         PAS DE RUNGE-KUTTA                                             
-          PRK = (X(IM,5)-X(ICRIT,5))/REAL(NRK-1)                      
-!                                                                        
+!
+!         PAR RUNGE-KUTTA (METHODE DE LA TANGENTE AMELIOREE)
+!         NOMBRE DE SOUS PAS
+          NRK = 10000
+!         PAS DE RUNGE-KUTTA
+          PRK = (X(IM,5)-X(ICRIT,5))/REAL(NRK-1)
+!
           XRK = X(ICRIT,5)
-!         0.9999 POUR PARTIR SUR LA BONNE BRANCHE DE SOLUTION                                                         
-          YRK = 0.9999D0*YCRIT                                         
-          IC  = ICRIT + 1                                               
-!                                                                         
-      DO N=1,NRK                                                       
-!                                                                         
-!       PREDICTION                                                       
+!         0.9999 POUR PARTIR SUR LA BONNE BRANCHE DE SOLUTION
+          YRK = 0.9999D0*YCRIT
+          IC  = ICRIT + 1
+!
+      DO N=1,NRK
+!
+!       PREDICTION
         XRKPR = XRK + PRK
         YRKPR = YRK + PRK*F(YRK,IC-1,QFIXG,PRAD,ST)
-!       CORRECTION                                                       
+!       CORRECTION
         XRKCO = XRKPR
         YRKCO = YRK + PRK*(F(YRK,IC-1,QFIXG,PRAD,ST)+
      &                     F(YRKPR,IC-1,QFIXG,PRAD,ST))/2.D0
-!                                                                        
-!       EST-ON SORTI DE LA MAILLE COURANTE                               
+!
+!       EST-ON SORTI DE LA MAILLE COURANTE
         IF (XRKCO.GE.X(IC,5)) THEN
-!         CALCUL DE Y AU NOEUD PAR INTERPOLATION LINEAIRE               
+!         CALCUL DE Y AU NOEUD PAR INTERPOLATION LINEAIRE
           YV(IC) = (YRKCO-YRK)/PRK*(X(IC,5)-XRK)+ YRK
 !         CHANGEMENT DE MAILLE COURANTE
           IC = IC+1
         ENDIF
-!                                                                        
-!       ACTUALISATION 
-!                                                     
+!
+!       ACTUALISATION
+!
         XRK = XRKCO
         YRK = YRKCO
-!                                                         
+!
       ENDDO
-!                                                                         
-!     RECHERCHE D'UN RESSAUT 
-!                                             
-      IF (NOEUDF.EQ.IM) GOTO 120                                        
+!
+!     RECHERCHE D'UN RESSAUT
+!
+      IF (NOEUDF.EQ.IM) GOTO 120
       DO NOEUD=NOEUDF,IM
-!       HAUTEUR CONJUGUEE DU FLUVIAL H1*H2(H1+H2)=2HC**3                                    
+!       HAUTEUR CONJUGUEE DU FLUVIAL H1*H2(H1+H2)=2HC**3
         YFLU = YVF(NOEUD)
         IF(ICONS.EQ.1) THEN
           RES = (-YFLU**2+SQRT(YFLU**4+8*YFLU*YCRIT**3))/(2*YFLU)
@@ -413,7 +413,7 @@
         ELSE
           WRITE(LU,*) 'ICONS = 1 OU 2, PAS ',ICONS
           STOP
-        ENDIF                            
+        ENDIF
         IF (RES.LE.YV(NOEUD)) THEN
           DO INOEUD=NOEUD+1,IM
             YV(INOEUD)=YVF(INOEUD)
@@ -421,64 +421,64 @@
           GOTO 60
         ENDIF
       ENDDO
-!     PAS DE RESSAUT                                                   
+!     PAS DE RESSAUT
 120   CONTINUE
 !
 60    CONTINUE
-!                                                                         
-!-----------------------------------------------------------------------  
-!                                                                                                                                                 
+!
+!-----------------------------------------------------------------------
+!
       DO I=1,IM
         DO J=1,JM
           HN(I,J) = YV(I)
           U(I,J) = QFIXG/HN(I,J)
         ENDDO
       ENDDO
-!                                                                         
-!-----------------------------------------------------------------------  
-!                                                                         
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
 !                       ***************************
                         DOUBLE PRECISION FUNCTION F
 !                       ***************************
-!                                                                         
+!
      &(Z,MAILLE,QFIXG,PRAD,ST)
-!                                                                         
-!***********************************************************************  
-! PROGICIEL : TELEMAC        07/12/88    J-M HERVOUET (LNH) 30 71 80 18   
-!***********************************************************************  
-!                                                                         
-!  FONCTION  :                                                            
-!                                                                         
-!-----------------------------------------------------------------------  
-!                             ARGUMENTS                                   
-! .________________.____.______________________________________________   
-! |      NOM       |MODE|                   ROLE                          
-! |________________|____|______________________________________________   
-! |   Z            | -->|                                                 
-! |   MAILLE       | -->|                                                 
-! |   QFIXG        | -->|                                                 
-! |   PRAD         | -->|                                                 
-! |   ST           | -->|                                                 
-! |________________|____|______________________________________________   
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)   
-!***********************************************************************  
-!                                                                         
+!
+!***********************************************************************
+! PROGICIEL : TELEMAC        07/12/88    J-M HERVOUET (LNH) 30 71 80 18
+!***********************************************************************
+!
+!  FONCTION  :
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |   Z            | -->|
+! |   MAILLE       | -->|
+! |   QFIXG        | -->|
+! |   PRAD         | -->|
+! |   ST           | -->|
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!***********************************************************************
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!                                                                        
+!
       DOUBLE PRECISION PRAD(*),G,ANUM,DENO,QFIXG,ST,Z,YCRIT,Y
-!                                                                         
+!
       INTEGER MAILLE
-!                                                                         
+!
       INTRINSIC ABS,SIGN
-! 
+!
       COMMON/HCRIT/YCRIT
-!                                                                        
-!-----------------------------------------------------------------------  
-! 
+!
+!-----------------------------------------------------------------------
+!
 !     SI ON EST A LA PROFONDEUR CRITIQUE (DENO=0), ON PREND LA VALEUR
 !     DE LA PENTE SUR UN POINT PROCHE
 !
@@ -487,16 +487,16 @@
       ELSE
         Y=Z
       ENDIF
-!                                                                        
+!
       G = 9.81D0
       ANUM = PRAD(MAILLE) - (QFIXG**2/(ST**2*Y**(10.D0/3.D0)))
       DENO = 1.D0 - (QFIXG**2/(G*Y**3))
-!     IF (ABS(DENO).LT.1.D-6) DENO = SIGN(1.D-6,DENO)                     
-!                                                                         
+!     IF (ABS(DENO).LT.1.D-6) DENO = SIGN(1.D-6,DENO)
+!
       F = ANUM/DENO
-!                                                                         
-!-----------------------------------------------------------------------  
-!                                                                         
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
 !                       ***************************
@@ -506,7 +506,7 @@
      &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC)
 !
 !***********************************************************************
-!  TELEMAC 2D 7.0    
+!  TELEMAC 2D 7.0
 !
 !***********************************************************************
 !
@@ -586,7 +586,7 @@
       TEXTE (22) = 'COURANT NUMBER                  '
       TEXTE (23) = 'EXACT DEPTH     M               '
       TEXTE (24) = 'EXACT VELOCITY  M/S             '
-      TEXTE (25) = 'EXACT ELEVATION M               '       
+      TEXTE (25) = 'EXACT ELEVATION M               '
       TEXTE (26) = 'NONCONS   ELEV  M               '
       TEXTE (27) = 'HIGH WATER MARK M               '
       TEXTE (28) = 'HIGH WATER TIME S               '
@@ -665,7 +665,7 @@
       TEXTE (22) = 'NBRE DE COURANT                 '
       TEXTE (23) = 'EXACT DEPTH     M               '
       TEXTE (24) = 'EXACT VELOCITY  M/S             '
-      TEXTE (25) = 'EXACT ELEVATION M               '       
+      TEXTE (25) = 'EXACT ELEVATION M               '
       TEXTE (26) = 'NONCONS   ELEV  M               '
       TEXTE (27) = 'COTE MAXIMUM    M               '
       TEXTE (28) = 'TEMPS COTE MAXI S               '
@@ -861,7 +861,7 @@
 !
 !
 !-----------------------------------------------------------------------
-!  ARGUMENTS USED IN THE EXAMPLE 
+!  ARGUMENTS USED IN THE EXAMPLE
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|_______________________________________________

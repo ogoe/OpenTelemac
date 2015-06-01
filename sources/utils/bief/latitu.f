@@ -35,7 +35,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COSLAT         |<--| COSINUS OF LAMBDA0
-!| LAMBD0         |-->| LATITUDE OF ORIGIN POINT 
+!| LAMBD0         |-->| LATITUDE OF ORIGIN POINT
 !| NPOIN          |-->| NUMBER OF POINTS
 !| SINLAT         |<--| SINUS OF LAMBDA0
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH

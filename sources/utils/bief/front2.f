@@ -118,7 +118,7 @@
           ENDIF
           IF(NS.GT.MAXNS) MAXNS = NS
         ENDIF
-      ENDDO ! K 
+      ENDDO ! K
 !
       EPS = (MAXNS-MINNS) * 1.D-4
 !
@@ -134,7 +134,7 @@
             ENDIF
           ENDIF
         ENDIF
-      ENDDO ! K 
+      ENDDO ! K
 !
 !-----------------------------------------------------------------------
 !
@@ -283,7 +283,7 @@
           NILE = NILE + 1
           GO TO 20
         ENDIF
-      ENDDO ! K 
+      ENDDO ! K
 !
 !-----------------------------------------------------------------------
 !
@@ -321,7 +321,7 @@
      &                            X(NBOR(DEBLIQ(K))),Y(NBOR(DEBLIQ(K))),
      &                            FINLIQ(K),NBOR(FINLIQ(K)),
      &                            X(NBOR(FINLIQ(K))),Y(NBOR(FINLIQ(K)))
-        ENDDO ! K 
+        ENDDO ! K
       ENDIF
 !
       IF(NFRSOL.NE.0) THEN
@@ -338,7 +338,7 @@
      &                            X(NBOR(DEBSOL(K))),Y(NBOR(DEBSOL(K))),
      &                            FINSOL(K),NBOR(FINSOL(K)),
      &                            X(NBOR(FINSOL(K))),Y(NBOR(FINSOL(K)))
-        ENDDO ! K 
+        ENDDO ! K
       ENDIF
 !
 !-----------------------------------------------------------------------

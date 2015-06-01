@@ -40,17 +40,17 @@
 !| CHARR          |-->| LOGICAL, BEDLOAD
 !| CTRLSC         |-->| CONTROL SECTION
 !| DT             |-->| TIME STEP
-!| H              |-->| WATER DEPTH 
+!| H              |-->| WATER DEPTH
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| INFO           |-->| IF YES, PRINT
 !| NCP            |-->| TWO TIMES THE NUMBER OF CONTROL SECTIONS
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
-!| QSXC           |<->| BEDLOAD TRANSPORT RATE X-DIRECTION 
-!| QSXS           |<->| SUSPENSION TRANSPORT RATE X-DIRECTION 
+!| QSXC           |<->| BEDLOAD TRANSPORT RATE X-DIRECTION
+!| QSXS           |<->| SUSPENSION TRANSPORT RATE X-DIRECTION
 !| QSYC           |<->| BEDLOAD TRANSPORT RATE Y-DIRECTION
-!| QSYS           |<->| SUSPENSION TRANSPORT RATE Y-DIRECTION 
-!| SUSP           |-->| LOGICAL, SUSPENSION 
+!| QSYS           |<->| SUSPENSION TRANSPORT RATE Y-DIRECTION
+!| SUSP           |-->| LOGICAL, SUSPENSION
 !| TPS            |-->| TEMPS
 !| U,V            |-->| VELOCITY FIELD COMPONENTS
 !| X,Y            |-->| NODES COORDINATES

@@ -84,20 +84,20 @@
 !
       SELECT CASE(WAQPROCESS)
 !       O2 MODULE
-        CASE(1) 
+        CASE(1)
           CALL CALCS_O2(NPOIN,WATTEMP,O2SATU,DEMBEN,FORMK2,K1,K44,
      &                  K22,PHOTO,RESP,TN,TEXP,NTRAC)
 !       BIOMASS MODULE
-        CASE(2) 
+        CASE(2)
           CALL CALCS_BIOMASS
 !       EUTRO MODULE
-        CASE(3) 
+        CASE(3)
           CALL CALCS_EUTRO
 !       MICROPOL MODULE
-        CASE(4) 
+        CASE(4)
           CALL CALCS_MICROPOL
 !       THERMIC MODULE
-        CASE(5) 
+        CASE(5)
            CALL CALCS_THERMIC(NPOIN,TN,TEXP)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN
@@ -110,8 +110,8 @@
 !
       END SELECT
 !
-10    FORMAT(1X,'SOURCE_WAQ: MODULE WAQ INCONNU : ',I4) 
-20    FORMAT(1X,'SOURCE_WAQ: UNKNOWN WAQ MODULE : ',I4)  
+10    FORMAT(1X,'SOURCE_WAQ: MODULE WAQ INCONNU : ',I4)
+20    FORMAT(1X,'SOURCE_WAQ: UNKNOWN WAQ MODULE : ',I4)
 !
 !-----------------------------------------------------------------------
 !

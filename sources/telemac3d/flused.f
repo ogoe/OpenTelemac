@@ -59,12 +59,12 @@
 !+   New developments in sediment for mixed sediment transport
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ATABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM) 
+!| ATABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM)
 !| ATABOS         |<->| FOR BOUNDARY CONDITION (SURFACE) NOT USED
-!| BTABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM) 
+!| BTABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM)
 !| BTABOS         |<->| FOR BOUNDARY CONDITION (SURFACE) NOT USED
 !| FLUDPT         |<->| IMPLICIT DEPOSITION FLUX
-!| FLUDPTC        |<->| IMPLICIT DEPOSITION FLUX FOR COHESIVE SEDIMENT 
+!| FLUDPTC        |<->| IMPLICIT DEPOSITION FLUX FOR COHESIVE SEDIMENT
 !| FLUDPTNC       |<->| IMPLICIT DEPOSITION FLUX FOR NON-COHESIVE SEDIMENT
 !| FLUER          |<->| EROSION  FLUX FOR EACH 2D POINT
 !| GRADZFX        |-->| NOT USED
@@ -74,7 +74,7 @@
 !| HMIN           |-->| MINIMUM WATER DEPTH TO PREVENT EROSION ON TIDAL FLATS
 !| HN             |-->| WATER DEPTH AT TIME N
 !| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
-!| LITABF         |-->| FOR BOUNDARY CONDITION BOTTOM 
+!| LITABF         |-->| FOR BOUNDARY CONDITION BOTTOM
 !| LITABS         |<->| FOR BOUNDARY CONDITION SURFACE (NOT USED)
 !| MIXTE          |-->| LOGICAL, MIXED SEDIMENTS OR NOT
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
@@ -85,7 +85,7 @@
 !| SETDEP         |-->| CHOICE OF CONVECTION SCHEME FOR VERTICAL SETTLING
 !| TA             |-->| CONCENTRATION OF SEDIMENTS
 !| TOB            |<->| BOTTOM FRICTION
-!| TOCD           |-->| CRITICAL SHEAR STRESS FOR SEDIMENT DEPOSITION 
+!| TOCD           |-->| CRITICAL SHEAR STRESS FOR SEDIMENT DEPOSITION
 !| WC             |-->| SETTLING VELOCITY OF MUD
 !| WCS            |-->| SETTLING VELOCITY OF SAND
 !| X              |-->| COORDINATE
@@ -179,7 +179,7 @@
 !
       ENDIF
 
-      IF(SEDNCO) THEN      
+      IF(SEDNCO) THEN
 !
 !       NON COHESIVE SEDIMENT
 !
@@ -239,15 +239,15 @@
         DO I=1,NPOIN2
           IF(HN(I).LE.HMIN) THEN
             FLUER(I) = 0.D0
-          ENDIF            
+          ENDIF
         ENDDO
 !
         DO I=1,NPOIN2
           IF(LITABF(I).EQ.KLOG) THEN
-!           TOM : erosion and deposition are treated with advection  
+!           TOM : erosion and deposition are treated with advection
             ATABOF(I) = 0.D0
-            BTABOF(I) = 0.D0     
-          ENDIF    
+            BTABOF(I) = 0.D0
+          ENDIF
         ENDDO
 !
       ELSEIF(SIGMAG.OR.OPTBAN.EQ.1) THEN
@@ -258,8 +258,8 @@
           IF(LITABF(I).EQ.KLOG) THEN
 !           NO EROSION AND DEPOSITION ON TIDAL FLATS
             IF(IPBOT%I(I).NE.NPLAN-1) THEN
-              ATABOF(I) = -FLUDPT(I)  
-              BTABOF(I) =  FLUER(I) 
+              ATABOF(I) = -FLUDPT(I)
+              BTABOF(I) =  FLUER(I)
             ENDIF
           ENDIF
         ENDDO
@@ -273,11 +273,11 @@
 !           WC
 !           ATABOF(I) = - WC(I) * PDEPOT(I) * NZ
 !           BTABOF(I) = - FLUER(I) * NZ
-!           JMH: BEWARE, IN DIFF3D NZ IS CONSIDERED AS -1. 
+!           JMH: BEWARE, IN DIFF3D NZ IS CONSIDERED AS -1.
 !                HENCE WRONG FORMULA BELOW IS ACTUALLY CORRECT
-            ATABOF(I) = -FLUDPT(I) 
-            BTABOF(I) =  FLUER(I)         
-          ENDIF    
+            ATABOF(I) = -FLUDPT(I)
+            BTABOF(I) =  FLUER(I)
+          ENDIF
         ENDDO
 !
       ENDIF

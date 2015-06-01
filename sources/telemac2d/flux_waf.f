@@ -10,11 +10,11 @@
 ! TELEMAC 2D VERSION 6.3                                         R. ATA
 !
 !***********************************************************************
-!brief 
-! 
+!brief
+!
 !     FUNCTION  : SUBROUTINE COMPUTES WAF FLUX: THREE HYDRODYNAMICAL
 !                 COMPENENTS + TRACER TRANSPORT
-!      SEE TORO: SHOCK CAPTURING METHODS FOR FREE 
+!      SEE TORO: SHOCK CAPTURING METHODS FOR FREE
 !            SURFACE FLOWS (WILEY 2005)
 !
 !history  RIADH ATA (EDF R&D-LNHE)
@@ -48,10 +48,10 @@
 ! |  WAFFLX        | <--|  FLUX COMPONENTS AT THE INTERFACE            |
 ! ______________________________________________________________________
 !
-!  MODE: -->(UNCHANGEABLE INPUT),<--(OUTPUT),<-->(CHANGEABLE INPUT)   
+!  MODE: -->(UNCHANGEABLE INPUT),<--(OUTPUT),<-->(CHANGEABLE INPUT)
 !-----------------------------------------------------------------------
-!  CALLING SUBROUTINE FLUX_WAF OR FLUX_HLLC OR FLUXZZ 
-! 
+!  CALLING SUBROUTINE FLUX_WAF OR FLUX_HLLC OR FLUXZZ
+!
 !***********************************************************************
 !
       USE BIEF
@@ -60,7 +60,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!     
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION, INTENT(IN)    :: H1,H2,U1,U2,PSI1,PSI2
@@ -69,7 +69,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: PSIL_UP,PSIR_UP
       DOUBLE PRECISION, INTENT(IN)    :: DX
       DOUBLE PRECISION, INTENT(INOUT) :: WAFFLX(4)
-!     
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER                         :: I,ILIM
@@ -143,8 +143,8 @@
       UR  = XNN*U0+YNN*VR
       VR  =-YNN*U0+XNN*VR
 !
-! CASE WITH DRY LEFT AND RIGHT  
-      IF(HL.LT.EPS.AND.HR.LT.EPS) GOTO 20 
+! CASE WITH DRY LEFT AND RIGHT
+      IF(HL.LT.EPS.AND.HR.LT.EPS) GOTO 20
 !
 ! CELERITIES
 !
@@ -154,17 +154,17 @@
 ! STAR VARIABLES
 !
       HSTAR = 0.5D0*(HL+HR)-0.25D0*(UR-UL)*(HL+HR)/(AL+AR)
-!RA BUG FIXED WHEN COMPUTING U STAR, THANKS TO L.STADLER (BAW) 
+!RA BUG FIXED WHEN COMPUTING U STAR, THANKS TO L.STADLER (BAW)
 !     USTAR = 0.5D0*(UL+UR)-0.25D0*(HR-HL)*(AL+AR)/(HL+HR)
       USTAR = 0.5D0*(UL+UR)-       (HR-HL)*(AL+AR)/(HL+HR)
 
 ! COMPUTE PQL AND PQR:
-! IT DEPENDS IF WE ARE IN PRESENCE OF SHOCK OR RAREFACTION WAVE 
+! IT DEPENDS IF WE ARE IN PRESENCE OF SHOCK OR RAREFACTION WAVE
       IF(HSTAR.LT.HL)THEN
 !       RAREFACTION
         PQL = 1.0D0
       ELSE
-!       SHOCK 
+!       SHOCK
         IF(HL.GT.EPS)THEN
           PQL = SQRT(0.5D0*(HSTAR+HL)*HSTAR/HL**2)
         ELSE
@@ -190,12 +190,12 @@
       FL(1)   = HL*UL
       FL(2)   = HL*UL**2 +GSUR2*HL**2
       FL(3)   = HL*UL*VL
-      FL(4)   = HL*UL*PSI_L 
+      FL(4)   = HL*UL*PSI_L
 !
       FR(1)   = HR*UR
       FR(2)   = HR*UR**2 +GSUR2*HR**2
       FR(3)   = HR*UR*VR
-      FR(4)   = HR*UR*PSI_R 
+      FR(4)   = HR*UR*PSI_R
 !
 !     SL, SR AND SSTAR  (WE CONSIDER DRY CASES)
 !
@@ -222,7 +222,7 @@
 ! WEIGHTING COEFFICIENTS WL,WLR, WR WLSTAR AND WRSTAR
 !
 !     COURANT NUMBERS FOR ALL WAVES
-      DTDX  = DT/DX 
+      DTDX  = DT/DX
       CL    = SL*DTDX
       CR    = SR*DTDX
       CSTAR = SSTAR*DTDX
@@ -277,7 +277,7 @@
           DELTA = VR_UP-VR
         ENDIF
         RSTAR = DELTA/(VR-VL+EPS)
-! 
+!
         LIM_RL    = LIMITER(ILIM,RL,CL)
         LIM_RR    = LIMITER(ILIM,RR,CR)
         LIM_RSTAR = LIMITER(ILIM,RSTAR,CSTAR)
@@ -302,15 +302,15 @@
 !
 ! INVERSE ROTATION
 !
-      FLU2X  = XNN*FLX(2) - YNN*FLX(3) 
+      FLU2X  = XNN*FLX(2) - YNN*FLX(3)
       FLU2Y  = YNN*FLX(2) + XNN*FLX(3)
 !
-! FINAL WAF FLUX 
+! FINAL WAF FLUX
 !
       WAFFLX(1) = FLX(1)
-      WAFFLX(2) = FLU2X 
+      WAFFLX(2) = FLU2X
       WAFFLX(3) = FLU2Y
-      WAFFLX(4) = FLX(4) 
+      WAFFLX(4) = FLX(4)
 !
 !
 !-----------------------------------------------------------------------

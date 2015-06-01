@@ -4,7 +4,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -106,61 +106,61 @@
         JB=BOUNDARY_COLOUR%I(I)
 !       -----------------------------
 !       EXEMPLE DE CONDITIONS LIMITES  :
-!     
-!                                                                             
-!       PAROIS SOLIDES                                                        
+!
+!
+!       PAROIS SOLIDES
         IF(JB.GE.2.AND.JB.LE.139)THEN
           LIHBOR%I(I) = KLOG
           RP%R(I) = 1.D0
           TETAP%R(I) = 90.D0
           ALFAP%R(I) = 0.D0
-        ENDIF      
+        ENDIF
         IF(JB.GE.146.AND.JB.LE.283)THEN
           LIHBOR%I(I) = KLOG
           RP%R(I) = 1.D0
           TETAP%R(I) = 90.D0
           ALFAP%R(I) = 0.D0
-        ENDIF      
-!      
-!    
-!       PAROIS AUX FRONTIERES OUVERTES                                        
-!      
+        ENDIF
+!
+!
+!       PAROIS AUX FRONTIERES OUVERTES
+!
         IF(JB.GE.140.AND.JB.LE.145)THEN
           LIHBOR%I(I) = KSORT
           TETAP%R(I) = 0.D0
-        ENDIF      
-!      
-!      
+        ENDIF
+!
+!
 !       FRONTIERE ONDE INCIDENTE
-!      
+!
         IF(JB.GE.284.AND.JB.LE.288)THEN
           LIHBOR%I(I) = KINC
           HB%R(I) = 0.202D0
           TETAB%R(I) = 0.D0
           TETAP%R(I) = 0.D0
           ALFAP%R(I) = 0.D0
-        ENDIF      
-        
+        ENDIF
+
         IF(JB.EQ.1)THEN
           LIHBOR%I(I) = KINC
           HB%R(I) = 0.202D0
           TETAB%R(I) = 0.D0
           TETAP%R(I) = 0.D0
           ALFAP%R(I) = 0.D0
-        ENDIF  
-      
-      ENDDO    
-!                                                        
-! POUR UN CALCUL EN HOULE ALEATOIRE MULTIDIRECTIONNELLE, LE CODE        
-! CALCULE LES DIRECTIONS DE PROPAGATION A PARTIR DES DONNEES DU FICHIER 
-! DES MOTS CLES.                                                        
-!                                                                       
-!                                                                       
+        ENDIF
+
+      ENDDO
+!
+! POUR UN CALCUL EN HOULE ALEATOIRE MULTIDIRECTIONNELLE, LE CODE
+! CALCULE LES DIRECTIONS DE PROPAGATION A PARTIR DES DONNEES DU FICHIER
+! DES MOTS CLES.
+!
+!
 !-----------------------------------------------------------------------
-!                                                                       
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+!
+      RETURN
+      END
 !                       *****************
                         SUBROUTINE ART_CORFON
 !                       *****************
@@ -246,4 +246,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END                  
+      END

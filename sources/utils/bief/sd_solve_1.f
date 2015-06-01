@@ -180,20 +180,20 @@
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        18/04/2014
 !+        V7P0
-!+   Checking that 2*NSP is less than HUGE(1). Meshes with about 
+!+   Checking that 2*NSP is less than HUGE(1). Meshes with about
 !+   2 millions of points will trigger memory allocations of numbers
 !+   greater than the largest I4 integer.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DA             |-->| MATRIX DIAGONAL COEFFICIENTS
-!| XA             |-->| OFF-DIAGONAL TERM OF MATRIX 
+!| XA             |-->| OFF-DIAGONAL TERM OF MATRIX
 !| GLOSEG         |-->| GLOBAL NUMBER OF SEGMENTS OF THE MATRIX
 !| INFOGR         |-->| IF, YES INFORMATIONS ON LISTING
 !| MAXSEG         |-->| MAXIMUM NUMBER OF SEGMENTS
 !| NPOIN          |-->| NUMBER OF UNKNOWN
 !| NSEGB          |-->| NUMBER OF SEGMENTS
 !| RHS            |-->| SECOND MEMBER OF LINEAR EQUATION
-!| TYPEXT         |---| = 'S' : SYMETRIC MATRIX 
+!| TYPEXT         |---| = 'S' : SYMETRIC MATRIX
 !| XINC           |<--| SOLUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

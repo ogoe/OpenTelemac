@@ -52,7 +52,7 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
-!history  J-M HERVOUET (LNHE)  
+!history  J-M HERVOUET (LNHE)
 !+        15/06/2012
 !+        V6P2
 !+   SURFAC changed into SURDET and formulas changed accordingly
@@ -171,7 +171,7 @@
       A22(IELEM) = - A12(IELEM) - A32(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -210,7 +210,7 @@
       A22(IELEM) = - A12(IELEM) - A32(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSE
 !
@@ -283,7 +283,7 @@
       A22(IELEM) = - A12(IELEM) - A32(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -337,7 +337,7 @@
       A22(IELEM) = - A12(IELEM) - A32(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSE
           IF (LNG.EQ.1) WRITE(LU,200) ICOORD

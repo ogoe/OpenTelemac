@@ -73,17 +73,17 @@
         JDISTMIN=P_IMAX(JDISTMIN)
       ENDIF
       IF(LNG.EQ.1) THEN
-        WRITE(LU,*) 
+        WRITE(LU,*)
         WRITE(LU,*) 'VERIFICATION DU MAILLAGE'
-        WRITE(LU,*) 
+        WRITE(LU,*)
         WRITE(LU,*) 'PLUS PETITE DISTANCE ENTRE DEUX POINTS : ',
      &              SQRT(DIST2MIN)
         WRITE(LU,*) 'ENTRE LES POINTS : ',IDISTMIN,' ET ',JDISTMIN
       ENDIF
       IF(LNG.EQ.2) THEN
-        WRITE(LU,*) 
+        WRITE(LU,*)
         WRITE(LU,*) 'CHECKING THE MESH'
-        WRITE(LU,*) 
+        WRITE(LU,*)
         WRITE(LU,*) 'SMALLEST DISTANCE BETWEEN TWO POINTS:',
      &              SQRT(DIST2MIN)
         WRITE(LU,*) 'BETWEEN POINTS: ',IDISTMIN,' AND ',JDISTMIN

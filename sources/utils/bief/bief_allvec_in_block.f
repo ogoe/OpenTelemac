@@ -88,11 +88,11 @@
       IF(BLO%N+N.LE.BLO%MAXBLOCK) THEN
 !
         IF(N.GT.0) THEN
-!       
+!
           DO I = BLO%N+1 , BLO%N+N
-!         
+!
 !           NAME OF THE VECTOR
-!         
+!
             NOM=NOMGEN
             IF(I.LT.10) THEN
               IDEB = MIN(6,IDEB)
@@ -108,22 +108,22 @@
               NOM(IDEB+1:IDEB+1) = CHIFFRE(II/10)
               NOM(IDEB+2:IDEB+2) = CHIFFRE(II-10*(II/10))
             ELSE
-              IF(LNG.EQ.1) WRITE(LU,*) 'PLUS DE 999 VECTEURS DEMANDER 
+              IF(LNG.EQ.1) WRITE(LU,*) 'PLUS DE 999 VECTEURS DEMANDER
      &                                  DANS ALLVEC_IN_BLOCK'
-              IF(LNG.EQ.2) WRITE(LU,*) 'MORE THAN 999 VECTORS ASKED 
+              IF(LNG.EQ.2) WRITE(LU,*) 'MORE THAN 999 VECTORS ASKED
      &                                  IN ALLVEC_IN_BLOCK'
               CALL PLANTE(1)
               STOP
             ENDIF
-!         
+!
 !           ALLOCATES THE VECTOR
-!         
+!
             ALLOCATE(BLO%ADR(I)%P)
             CALL BIEF_ALLVEC(NAT,BLO%ADR(I)%P,NOM,IELM,NDIM,STATUT,MESH)
             BLO%ADR(I)%P%TYPDIA = 'W'
-!         
-          ENDDO ! I 
-!         
+!
+          ENDDO ! I
+!
           BLO%N=BLO%N+N
 !
         ENDIF

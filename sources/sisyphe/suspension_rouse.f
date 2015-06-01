@@ -41,17 +41,17 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables   
-!+   
+!+   Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
 !| HN             |-->| WATER DEPTH
-!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| KARMAN         |-->| VON KARMAN CONSTANT
 !| NPOIN          |-->| NUMBER OF POINTS
 !| T2             |<->| WORK BIEF_OBJ STRUCTURE
-!| USTAR          |-->| SHEAR VELOCITY 
-!| XWC            |-->| SETTLING VELOCITIES 
+!| USTAR          |-->| SHEAR VELOCITY
+!| XWC            |-->| SETTLING VELOCITIES
 !| ZERO           |-->| ZERO
 !| ZREF           |-->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

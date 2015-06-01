@@ -91,8 +91,8 @@
             AUX1(IP) = AUX1(IP) + F(IP,JP,JF)*AUX3
             AUX2(IP) = AUX2(IP) + F(IP,JP,JF)*AUX4
           ENDDO ! IP
-        ENDDO ! JP 
-      ENDDO ! JF 
+        ENDDO ! JP
+      ENDDO ! JF
 !
 !-----C-------------------------------------------------------------C
 !-----C (OPTIONALLY) TAKES INTO ACCOUNT THE HIGH-FREQUENCY PART     C
@@ -109,7 +109,7 @@
           AUX1(IP) = AUX1(IP) + F(IP,JP,NF)*AUX3
           AUX2(IP) = AUX2(IP) + F(IP,JP,NF)*AUX4
         ENDDO ! IP
-      ENDDO ! JP 
+      ENDDO ! JP
 !
 !-----C-------------------------------------------------------------C
 !-----C COMPUTES THE MEAN FREQUENCY                                 C

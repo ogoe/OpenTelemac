@@ -1,6 +1,6 @@
-!                   **********************************                   
+!                   **********************************
                     DOUBLE PRECISION FUNCTION BIEF_ERF
-!                   **********************************  
+!                   **********************************
 !
      &(X)
 !
@@ -9,7 +9,7 @@
 !***********************************************************************
 !
 !brief    Function erf (until all compilers have it).
-!+        From 'Numerical Recipes' Chapter 6, and Tideway model. 
+!+        From 'Numerical Recipes' Chapter 6, and Tideway model.
 !
 !history  D J Evans-Roberts (HRW)
 !+        23/11/1993
@@ -17,7 +17,7 @@
 !+   First version sent by Michiel Knaapen (HRW) on 07/03/2013.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| X              |-->| OPERAND 
+!| X              |-->| OPERAND
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !     USE BIEF

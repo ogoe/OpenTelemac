@@ -29,7 +29,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| TRANS          |-->| IF YES, Y WILL BE CONSIDERED TRANSPOSED OF X 
+!| TRANS          |-->| IF YES, Y WILL BE CONSIDERED TRANSPOSED OF X
 !| X              |-->| THE STRUCTURE OF X WILL BE COPIED ON Y
 !| Y              |<->| THE MODIFIED MATRIX STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -86,7 +86,7 @@
         V(IKLE(IELEM,4)) = V(IKLE(IELEM,4)) + 1.D0
         V(IKLE(IELEM,5)) = V(IKLE(IELEM,5)) + 1.D0
         V(IKLE(IELEM,6)) = V(IKLE(IELEM,6)) + 1.D0
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !  VECTOR MODE WITH FORCED VECTORISATION
 ! (FUJITSU COMMANDS, THEN CRAY COMMANDS)
@@ -101,8 +101,8 @@
         V(IKLE(IELEM,4)) = V(IKLE(IELEM,4)) - 1.D0
         V(IKLE(IELEM,5)) = V(IKLE(IELEM,5)) - 1.D0
         V(IKLE(IELEM,6)) = V(IKLE(IELEM,6)) - 1.D0
-      ENDDO ! IELEM 
-      ENDDO ! IB 
+      ENDDO ! IELEM
+      ENDDO ! IB
 !
 !-----------------------------------------------------------------------
 !

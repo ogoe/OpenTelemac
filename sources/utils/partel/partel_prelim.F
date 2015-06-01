@@ -77,7 +77,7 @@
 !   MAXIMUM GEOMETRICAL MULTIPLICITY OF A NODE (VARIABLE AUSSI
 !   PRESENTE DANS LA BIEF, NE PAS CHANGER L'UNE SANS L'AUTRE)
       INTEGER, PARAMETER :: NBMAXNSHARE =  10
-!     
+!
       INTEGER, PARAMETER :: MAXNPROC = 100000 ! MAX PARTITION NUMBER [00000..99999]
       INTEGER, PARAMETER :: MAXLENSOFT = 144 ! SOFT MAX FILE NAME LENGTH
       INTEGER, PARAMETER :: MAXLENHARD = 250 ! HARD MAX FILE NAME LENGTH
@@ -102,7 +102,7 @@
 !
       CHARACTER(LEN=80)  :: TITLE
       CHARACTER(LEN=32)  :: VARI
-      CHARACTER(LEN=MAXLENHARD)  :: NAMEINP  
+      CHARACTER(LEN=MAXLENHARD)  :: NAMEINP
 !
       INTEGER I, J, K, ERR
       INTEGER ISTOP, ISTART, ILOOP
@@ -125,11 +125,11 @@
 !
 ! INTRODUCE YOURSELF
 !
-!      IF (ID .EQ. 0) THEN 
+!      IF (ID .EQ. 0) THEN
 !       WRITE(LU,*) ' '
 !       WRITE(LU,*) '+-------------------------------------------------+'
 !       WRITE(LU,*) '  PRELIMINARY TASK FOR PARTEL                    '
-!       WRITE(LU,*) '  PARALLEL VERSION DEVELOPPED BY                   '          
+!       WRITE(LU,*) '  PARALLEL VERSION DEVELOPPED BY                   '
 !       WRITE(LU,*) '  CHRISTOPHE DENIS  (SINETICS)'
 !       WRITE(LU,*) '  PARTEL (C) COPYRIGHT 2000-2002 '
 !       WRITE(LU,*) '  BUNDESANSTALT FUER WASSERBAU, KARLSRUHE'
@@ -139,27 +139,27 @@
 !       WRITE(LU,*) ' '
 !       WRITE(LU,*) '  BIEF 5.9 (C) COPYRIGHT 2010 EDF'
 !       WRITE(LU,*) '+-------------------------------------------------+'
-!       WRITE(LU,*) '    LUN MAI 31 17:21:20 CEST 2010               ' 
+!       WRITE(LU,*) '    LUN MAI 31 17:21:20 CEST 2010               '
 !       WRITE(LU,*) ' '
 !       WRITE(LU,*) '+-----------------------------------------------+'
 !      END IF
-!     
+!
 !----------------------------------------------------------------------
 ! NAMES OF THE INPUT FILES:
       INQUIRE (FILE='RESULT_SEQ_METIS',EXIST=IS)
-      IF (IS) THEN 
+      IF (IS) THEN
         CALL PLANTE(0)
         STOP
-      END IF  
+      END IF
       OPEN(UNIT=72,FILE='PARTEL.PAR')
       READ(72,*) NAMEINP
-      READ(72,*) 
+      READ(72,*)
       READ(72,*) NPARTS
-      READ(72,*) 
+      READ(72,*)
       CLOSE(72)
 !
       INQUIRE (FILE=NAMEINP,EXIST=IS)
-      IF (.NOT.IS) THEN 
+      IF (.NOT.IS) THEN
         WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEINP
         CALL PLANTE(1)
         STOP
@@ -178,7 +178,7 @@
         WRITE(LU,*) 'ATTENTION:'
         WRITE(LU,*) 'THE NAME OF THE INPUT FILE:'
         WRITE(LU,*) NAMEINP
-        WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS' 
+        WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS'
         WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
         WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
         CALL PLANTE(1)
@@ -190,7 +190,7 @@
 !
       READ (NINP) TITLE
       READ (NINP) I, J
-      NVAR = I + J 
+      NVAR = I + J
       ISTART = 42
       DO I=1,NVAR
         READ(NINP) VARI
@@ -214,23 +214,23 @@
       IF (IB(8).NE.0.OR.IB(9).NE.0) THEN
         WRITE(LU,*) 'THIS IS A PARTIAL OUTPUT FILE'
         WRITE(LU,*) 'MAYBE MEET GRETEL BEFORE...'
-      ENDIF 
+      ENDIF
       NPLAN = IB(7)
 !
       IF (IB(10).EQ.1) THEN
         READ(NINP) DATE(1), DATE(2), DATE(3), TIME(1), TIME(2), TIME(3)
-      ENDIF 
+      ENDIF
 !
       READ (NINP) NELEM,NPOIN,NDP,NDUM
       IF (NPLAN.GT.1) THEN
         NPOIN2 = NPOIN/NPLAN
         NELEM2 = NELEM/(NPLAN-1)
-        IF (MOD(NPOIN,NPLAN).NE.0) THEN 
+        IF (MOD(NPOIN,NPLAN).NE.0) THEN
           WRITE (LU,*) 'BUT NPOIN2 /= NPOIN3/NPLAN!'
           CALL PLANTE(1)
-          STOP   
+          STOP
         ENDIF
-        IF (MOD(NELEM,(NPLAN-1)).NE.0) THEN 
+        IF (MOD(NELEM,(NPLAN-1)).NE.0) THEN
           WRITE (LU,*) 'BUT NELEM2 /= NELEM3/NPLAN!'
           CALL PLANTE(1)
           STOP
@@ -240,25 +240,25 @@
         NELEM2 = NELEM
       ENDIF
 !
-      IF (NDP.EQ.3) THEN  
+      IF (NDP.EQ.3) THEN
 !         WRITE(LU,*) 'THE INPUT FILE ASSUMED TO BE 2D SELAFIN'
       ELSEIF (NDP.EQ.6) THEN
 !         WRITE(LU,*) 'THE INPUT FILE ASSUMED TO BE 3D SELAFIN'
-      ELSE   
+      ELSE
 !         WRITE(LU,*) 'THE ELEMENTS ARE NEITHER TRIANGLES NOR PRISMS!'
 !         WRITE(LU,*) 'NDP = ',NDP
         CALL PLANTE(1)
         STOP
       ENDIF
 !
-! NOW LET US ALLOCATE 
+! NOW LET US ALLOCATE
 !
       ALLOCATE (IKLES(NELEM2*3),STAT=ERR)
       CALL CHECK_ALLOCATE (ERR, 'IKLES')
       IF(NPLAN.GT.1) THEN
         ALLOCATE (IKLES3D(NELEM*NDP),STAT=ERR)
         CALL CHECK_ALLOCATE (ERR, 'IKLES3D')
-      ENDIF 
+      ENDIF
       ALLOCATE (IRAND(NPOIN),STAT=ERR)
       CALL CHECK_ALLOCATE (ERR, 'IRAND')
 !   NVAR+2 : FIRST TWO FUNCTIONS ARE X AND Y
@@ -284,7 +284,7 @@
       READ(NINP) (F(J,2),J=1,NPOIN)
 !
       ILOOP = 0
-!      DO 
+!      DO
 !
 !  READ THE TIME STEP
 !
@@ -311,7 +311,7 @@
       OPEN(UNIT=256,FILE='RESULT_SEQ_METIS')
       DO I=1,NELEM2
         WRITE(256,*) EPART(I)
-      END DO 
+      END DO
 
       !WRITE(*,*) 'END OF THE PRELIMINARY PART OF PARTEL'
 !

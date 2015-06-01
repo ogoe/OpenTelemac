@@ -96,7 +96,7 @@
 !-----------------------------------------------------------------------
 !
       RADDEG = 180.D0/3.141592654D0
-! 
+!
 !
 !=======================================================================
 !
@@ -151,8 +151,8 @@
 !
 ! READS THE BOUNDARY CONDITIONS AND INDICES FOR THE BOUNDARY NODES.
 !
-! CCP : WARNING : 
-!       V6P2 LECLIM_ARTEMIS IS NOT USED ANYMORE. 
+! CCP : WARNING :
+!       V6P2 LECLIM_ARTEMIS IS NOT USED ANYMORE.
 !       IN LECLIM we use 0 0 0 0 0 0 values for KENT,KENTU, etc...
 !       This way LECLIM ONLY READ the boundary conditions file and
 !       DO NOT CHANGE the LIHBOR values
@@ -245,7 +245,7 @@
 !     READ TOMAWAC SPECTRUM IF NECESSARY
 !
       IF (CHAINTWC.AND.(.NOT.ALEMUL)) THEN
-        WRITE(6,*) 'CHAINING WITH TOMAWAC NEEDS MULTIDIRECTIONAL
+        WRITE(LU,*) 'CHAINING WITH TOMAWAC NEEDS MULTIDIRECTIONAL
      &                    RAMDOM SEA OPTION                          '
         CALL PLANTE(0)
       ENDIF
@@ -298,7 +298,7 @@
 !
 ! START OF COMPUTATION
 !
-! LT REFERS TO THE CURRENT CALCULATION 
+! LT REFERS TO THE CURRENT CALCULATION
 !  (STARTS FROM 0 SO THAT THE FIRST COMPUTATION ALWAYS BE RECORDED)
 !  (ENDS AT NDALE x NPALE -1 SO THAT ALL DIRECTION AND FREQUENCIES ARE SOLVED)
       LT  = 0
@@ -397,24 +397,23 @@
 ! RANDOM INCIDENT WAVE for freq i : HBi = Hs/sqrt(Ndale*Npale)
 ! This way Hs**2 = (HB1**2+HB2**2+...+HBN**2)
 ! Thus, HB is a significant wave height such as :
-! HB = sqrt(2) * Hi where Hi=Ai/2 where Ai**2 = 2 Sp(f,teta) df dteta) 
+! HB = sqrt(2) * Hi where Hi=Ai/2 where Ai**2 = 2 Sp(f,teta) df dteta)
 ! N.B :
-! If sign. wave height has to be varied depending on f,teta, 
+! If sign. wave height has to be varied depending on f,teta,
 ! USE HB(I) = 16D0*(Sp(f,teta)*df*dteta) , or PONDER = 16D0*(Sp(f,teta)*df*dteta)/Hs
 ! ==================================================================================
       PONDER=1D0/DBLE(NPALE*NDALE)
-!      WRITE(6,*) 'HB ponder=',HSCAL*SQRT(PONDER)
       IF (ALEMON.OR.ALEMUL) THEN
         IF (CHAINTWC) THEN
-!         IF SPECTRUM FROM TOMAWAC, Hs TAKEN FROM SPECTRUM INTEGRATION 
+!         IF SPECTRUM FROM TOMAWAC, Hs TAKEN FROM SPECTRUM INTEGRATION
           DO I=1,NPTFR
             HB%R(I)=HSCAL*SQRT(PONDER)
           ENDDO
         ELSE
-!         IF SPECTRUM FROM ARTEMIS, HS TAKEN FROM BORH FILE     
+!         IF SPECTRUM FROM ARTEMIS, HS TAKEN FROM BORH FILE
           DO I=1,NPTFR
             HB%R(I)=HB%R(I)*SQRT(PONDER)
-          ENDDO 
+          ENDDO
         ENDIF
       ENDIF
 !
@@ -430,9 +429,7 @@
 !
 !=======================================================================
 !
-!      WRITE(6,*) 'AVANT BERKHO'
       CALL BERKHO (LF)
-!      WRITE(6,*) 'APRES BERKHO'
 !
 !
 !=======================================================================
@@ -487,7 +484,6 @@
      & GRAV,PER,OMEGA,MESH%IKLE%I,MESH%NBOR%I,MESH%KP1BOR%I,
      & NELEM,NELMAX,IELM,IELMB,NPTFR,NPOIN,PRIVE)
 !
-!      WRITE(6,*) 'SORTIE  DE  UTIMP'
 !=======================================================================
 !
 ! : 7                  PRINTS OUT THE RESULTS
@@ -613,7 +609,7 @@
 !
 !
 !=======================================================================
-!         LOOP ON THE DISSIPATION COEFFICIENT 
+!         LOOP ON THE DISSIPATION COEFFICIENT
 !                    FOR IRREGULAR WAVES
 !
           IF (DEFERL .OR. FROTTE) THEN
@@ -630,7 +626,7 @@
               LDIR = 1
               LPER = 1
               PER  = PALE%R(LPER)
-!             FOR USE OF CALCULATED MU IN BERKHO 
+!             FOR USE OF CALCULATED MU IN BERKHO
               LF   = 1
               LT   = 0
               GOTO 300
@@ -709,7 +705,7 @@
 !
       RETURN
       END
-      
+
 
 
 

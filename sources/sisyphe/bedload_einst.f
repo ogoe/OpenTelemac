@@ -35,8 +35,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DENS           |-->| RELATIVE SENSITY OF SEDIMENT
@@ -70,7 +70,7 @@
 !                               PROGRAM                                !
 !======================================================================!
 !
-!     BEDLOAD TRANSPORT 
+!     BEDLOAD TRANSPORT
 !
       CEINST = 36.D0/(DSTAR**3)
       CEINST = SQRT(2.D0/3.D0+CEINST) -  SQRT(CEINST)

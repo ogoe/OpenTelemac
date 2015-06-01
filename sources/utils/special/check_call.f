@@ -14,7 +14,7 @@
 !history  Y AUDOUIN (LNHE)
 !+        11/07/2008
 !+        V7P0
-!+  
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| N              |-->| TOTAL NUMBER OF PROCESSORS
@@ -38,7 +38,7 @@
           WRITE(LU,*) 'ERROR ',IERR,'DURING CALL OF ',CHFILE
           WRITE(LU,*) 'ERROR TEXTE: ',WRITE_ERROR(IERR)
         ENDIF
-        IF(LNG.EQ.2) THEN 
+        IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'ERREUR ',IERR,'LORS DE L APPEL A ',
      &                          CHFILE
           WRITE(LU,*) 'TEXTE DE L''ERROR : ',WRITE_ERROR(IERR)

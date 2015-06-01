@@ -1,5 +1,5 @@
-!                       ***************** 
-                        SUBROUTINE CONVERTER 
+!                       *****************
+                        SUBROUTINE CONVERTER
 !                       *****************
      &(LOC_INPFILE,LOC_LOGFILE,LOC_BNDFILE,
      & LOC_OUTFILE,LOC_OUTLOGFILE,LOC_OUTBNDFILE)
@@ -10,7 +10,7 @@
 !
 !BRIEF    WRITE A FILE OF MED FORMAT WITH THE MESH OBJECT
 !+        INFORMATIONS
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
@@ -29,7 +29,7 @@
       USE CONV_LIM
       USE CONV_CGNS
       USE CONV_UNV
-!      
+!
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
       INTEGER LNG,LU
@@ -48,9 +48,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!======================================================================= 
-!     READING MESH FILE AND FILLING MESH_OBJ 
-!======================================================================= 
+!=======================================================================
+!     READING MESH FILE AND FILLING MESH_OBJ
+!=======================================================================
 !
       IF(LNG.EQ.1) THEN
         IF(DEBUG) WRITE(LU,*) '---INFORMATION SUR LES FICHIERS---'
@@ -61,7 +61,7 @@
         IF(DEBUG) WRITE(LU,*) 'FICHIER LOG       : ',LOGFILE
         IF(DEBUG) WRITE(LU,*) 'FICHIER DE SORTIE   : ',OUTFILE
         IF(DEBUG) WRITE(LU,*) 'FORMAT DU FICHIER DE SORTIE : ',OUTFMT
-        IF(DEBUG) WRITE(LU,*) 
+        IF(DEBUG) WRITE(LU,*)
      &      'FICHIER DES CONDITIONS LIMITES EN SORTIE : ',OUTBNDFILE
         IF(DEBUG) WRITE(LU,*) 'FICHIER LOG EN SORTIE  : ',OUTLOGFILE
       ENDIF
@@ -79,7 +79,7 @@
 !
       ! INITIALISE MESH VALUES
       CALL INI_MESH
-!      
+!
       IF(INFMT .EQ. 'SERAFIN') THEN
         CALL READ_SERAFIN(LOC_INPFILE,LOC_BNDFILE,.FALSE.)
       ELSEIF(INFMT .EQ. 'SERAFIND') THEN
@@ -99,9 +99,9 @@
       ! CHECK IF THE MESH IS COMPLETE
       IF(DEBUG) CALL CHECK_MESH
 !
-!======================================================================= 
+!=======================================================================
 !     WRITING MESH_OBJ INTO FILE
-!======================================================================= 
+!=======================================================================
 !
       IF(OUTFMT .EQ. 'SERAFIN') THEN
         CALL WRITE_SERAFIN(LOC_OUTFILE,LOC_OUTBNDFILE,.FALSE.)

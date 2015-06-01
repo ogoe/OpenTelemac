@@ -95,9 +95,9 @@
 !         RHO = RHOREF(1-(7(T-T0)**2)*1.E-6)
 !                                                  -3
 !         WITH T0=4degC   AND   RHOREF=999.972 KG.M
-!         
+!
 !         NOTE: ONLY THE GRADIENT OF DELTAR APPEARS IN EQUATIONS
-!         
+!
           CALL OS( 'X=Y+C   ',X=RHO,Y=TA%ADR(IND_T)%P,C=-4.D0)
           CALL OS( 'X=XY    ',X=RHO,Y=RHO)
           CALL OS( 'X=CX    ',X=RHO,C=7.D-6 )
@@ -108,10 +108,10 @@
 !
 !         LAW ACCORDING TO SALINITY S
 !         RHO = RHOREF(1+750S*1.E-6)
-!         
+!
 !                                 -3
 !         WITH RHOREF=999.972 KG.M
-!         
+!
           CALL OS( 'X=CY    ',X=RHO,Y=TA%ADR(IND_S)%P,C=750.D-6)
           CALL OS( 'X=X+C   ',X=RHO,C=1.D0)
           CALL OS( 'X=CX    ',X=RHO,C=999.972D0)
@@ -122,7 +122,7 @@
 !         RHO = RHOREF(1-(7(T-T0)**2-750S)*1.E-6)
 !                                                  -3
 !         WITH T0=4degC   AND   RHOREF=999.972 KG.M
-!         
+!
           CALL OS( 'X=Y+C   ',X=RHO,Y=TA%ADR(IND_T)%P,C=-4.D0  )
           CALL OS( 'X=XY    ',X=RHO,Y=RHO)
           CALL OS( 'X=CX    ',X=RHO,C=7.D-6 )
@@ -194,7 +194,7 @@
       IF(SEDI) THEN
         IF(MIXTE) THEN
           CALL OS('X=X+CY  ',X=DELTAR,Y=TA%ADR(NTRAC-1)%P,
-     &                       C=(RHOS-RHO0)/(RHO0*RHOS))        
+     &                       C=(RHOS-RHO0)/(RHO0*RHOS))
           CALL OS('X=X+CY  ',X=DELTAR,Y=TA%ADR(NTRAC)%P,
      &                       C=(RHOS-RHO0)/(RHO0*RHOS))
         ELSE

@@ -323,7 +323,7 @@
         ENDDO
       ENDIF
 !
-      ENDDO ! K 
+      ENDDO ! K
 !
 !-----------------------------------------------------------------------
 !
@@ -333,7 +333,7 @@
 !
 !-----------------------------------------------------------------------
 !
-! COURANTS GENERES PAR LA HOULE (COUROU) 
+! COURANTS GENERES PAR LA HOULE (COUROU)
 !
 !
       IF (COUROU) CALL LITTORAL_CURRENT(H,UBOR,VBOR,U,V,LIUBOR,XNEBOR,
@@ -454,15 +454,15 @@
       INTEGER, INTENT(IN) :: LIUBOR(NPTFR)
       INTEGER, INTENT(IN) :: NBOR(NPTFR2)
       DOUBLE PRECISION, INTENT(IN) :: XNEBOR(NPTFR),YNEBOR(NPTFR)
-      DOUBLE PRECISION, INTENT(INOUT) :: UBOR(NPTFR2,2),VBOR(NPTFR,2) 
+      DOUBLE PRECISION, INTENT(INOUT) :: UBOR(NPTFR2,2),VBOR(NPTFR,2)
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: H,U,V
 !
       INTEGER K
       DOUBLE PRECISION FORCE, UMAG,FX,FY,EPS,CCF,HH,HBREAK
-!      
+!
       EPS= 1.D-04
-!      
-! BREAKING DEPTH : OUTSIDE THE BREAK ZONE ,FORCING IS SET TO ZERO 
+!
+! BREAKING DEPTH : OUTSIDE THE BREAK ZONE ,FORCING IS SET TO ZERO
 !
       HBREAK=2.5D0
 !
@@ -479,28 +479,28 @@
           HH=MAX(H%R(NBOR(K)),0.D0)
           IF(HH.GE.HBREAK) FORCE=0.D0
           UMAG= SQRT(2*ABS(FORCE)*HH/CCF)
-          IF (FORCE.GE.EPS) THEN  
+          IF (FORCE.GE.EPS) THEN
 !           UBOR(K,1) = UBOR(K,1)- XNEBOR(K) * UMAG
 !           VBOR(K,1) = VBOR(K,1)- YNEBOR(K) * UMAG
             UBOR(K,1) = - XNEBOR(K) * UMAG
             VBOR(K,1) = - YNEBOR(K) * UMAG
- 
-          ELSEIF (FORCE.LE.-EPS) THEN 
+
+          ELSEIF (FORCE.LE.-EPS) THEN
 !           UBOR(K,1) = UBOR(K,1)+XNEBOR(K) * UMAG
 !           VBOR(K,1) = VBOR(K,1)+YNEBOR(K) * UMAG
             UBOR(K,1) = +XNEBOR(K) * UMAG
             VBOR(K,1) = +YNEBOR(K) * UMAG
           ELSE
 !           UBOR(K,1)= UBOR(K,1)
-!           VBOR(K,1)= UBOR(K,1)           
+!           VBOR(K,1)= UBOR(K,1)
             UBOR(K,1)= 0.D0
-            VBOR(K,1)= 0.D0         
+            VBOR(K,1)= 0.D0
 
           ENDIF
           U%R(NBOR(K)) =  UBOR(K,1)
           V%R(NBOR(K)) = VBOR(K,1)
-        ENDIF  
-      ENDDO 
+        ENDIF
+      ENDDO
 !-----------------------------------------------------------------------
       RETURN
       END

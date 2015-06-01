@@ -342,7 +342,7 @@
 99      FORMAT(1X,'NOMVAR_2D_IN_3D : MAXVAR=100 TOO SMALL')
       ENDIF
 !
-! CV LAYER THICKNESS PRINTOUT 
+! CV LAYER THICKNESS PRINTOUT
 !
       DO K=1,NCOUCH
         IF(K.LT.10) THEN
@@ -355,40 +355,40 @@
           WRITE (LU,*) 'NOMVAR_2D: NOT IMPLEMENTED FOR ',NCOUCH
           WRITE (LU,*) '                LAYERS'
           CALL PLANTE(1)
-          STOP            
-        ENDIF   
+          STOP
+        ENDIF
         TEXTE_ES(K)(1:16)  = 'LAYER'//LAY//' THICKNESS'
         TEXTE_ES(K)(17:32) = 'M               '
       ENDDO
-!   
+!
       NEXT=NEXT+NTRAC
 !
 !
       DO I=1,NCOUCH
-!      
+!
         TEXTE(NEXT+I-1) = TEXTE_ES(I)
         MNEMO(NEXT+I-1) = MNEMO_ES(I)
 !
       ENDDO
 !
       NEXT = NEXT + NCOUCH
-!       
-      IF(MIXTE) THEN 
+!
+      IF(MIXTE) THEN
 !       PERCENTAGE OF MUD IN THE BED
         IF(LNG.EQ.1) THEN
           TEXTE(NEXT) = 'POURCENTAGE VASE                '
-        ENDIF    
+        ENDIF
         IF(LNG.EQ.2) THEN
           TEXTE(NEXT) = 'MUD PERCENTAGE                  '
         ENDIF
         MNEMO(NEXT) = 'PVSCO   '
 !       PERCENTAGE OF SAND IN THE BED
         IF(LNG.EQ.1) THEN
-          TEXTE(NEXT+1) = 'POURCENT. SABLE                 ' 
-        ENDIF    
+          TEXTE(NEXT+1) = 'POURCENT. SABLE                 '
+        ENDIF
         IF(LNG.EQ.2) THEN
           TEXTE(NEXT+1) = 'SAND PERCENTAGE                 '
-        ENDIF 
+        ENDIF
         MNEMO(NEXT+1) = 'PVSNCO  '
       ENDIF
 

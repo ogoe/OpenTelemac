@@ -179,7 +179,7 @@
         A33(IELEM) = (Y2*(11*F3+3*F2-2*F1)+5*Y3*(-F2+F1))*XSUR72
         A44(IELEM) = (Y2*(F3-F1)+Y3*(-F2+F1))*XSUR24
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -221,7 +221,7 @@
         A33(IELEM) = (X2*(-11*F3-3*F2+2*F1)+5*X3*(F2-F1))*XSUR72
         A44(IELEM) = (X2*(-F3+F1)+X3*(F2-F1))*XSUR24
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSE
 !
@@ -282,7 +282,7 @@
         A33(IELEM) = (Y2*(12*F3-3*F4+4*F2-F1)+5*Y3*(-F2+F1))*XSUR72
         A44(IELEM) = (Y2*(F3-F1)+Y3*(-F2+F1))*XSUR24
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -328,7 +328,7 @@
         A33(IELEM) = (X2*(-12*F3+3*F4-4*F2+F1)+5*X3*(F2-F1))*XSUR72
         A44(IELEM) = (X2*(-F3+F1)+X3*(F2-F1))*XSUR24
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSE
 !

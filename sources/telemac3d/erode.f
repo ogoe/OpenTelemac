@@ -162,13 +162,13 @@
             CALL PLANTE(1)
             STOP
 !
-11          FORMAT('SOUS-PROGRAMME ERODE : DONNER LA VITESSE 
+11          FORMAT('SOUS-PROGRAMME ERODE : DONNER LA VITESSE
      &             CRITIQUE',/,
-     &             'D''EROSION DU LIT CONSOLIDE FONCTION DE LA 
+     &             'D''EROSION DU LIT CONSOLIDE FONCTION DE LA
      &             CONCENTRATION')
-12          FORMAT('SUBROUTINE ERODE : EXPRESS THE CRITICAL 
+12          FORMAT('SUBROUTINE ERODE : EXPRESS THE CRITICAL
      &             SHEAR STRESS FOR',
-     &             /, 'EROSION (CONSOLIDATED BED) FUNCTION OF 
+     &             /, 'EROSION (CONSOLIDATED BED) FUNCTION OF
      &             THE CONCENTRATION')
 !
 !-----------------------------------------------------------------------

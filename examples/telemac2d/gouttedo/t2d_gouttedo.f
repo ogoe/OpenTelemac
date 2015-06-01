@@ -490,7 +490,7 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |                | -- |  
+! |                | -- |
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !***********************************************************************
@@ -506,7 +506,7 @@
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!  
+!
       INTEGER IPOIN,ITRAC
 !
       DOUBLE PRECISION EIKON
@@ -541,7 +541,7 @@
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES') THEN
       DO IPOIN=1,NPOIN
         EIKON=( (X(IPOIN)-10.05D0)**2 + (Y(IPOIN)-10.05D0)**2 ) / 4.D0
-        H%R(IPOIN) = 2.4D0 * ( 1.D0 + EXP(-EIKON) ) 
+        H%R(IPOIN) = 2.4D0 * ( 1.D0 + EXP(-EIKON) )
       ENDDO
       ELSE
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -555,7 +555,7 @@
       IF(NTRAC.GT.0) THEN
         CALL OS( 'X=0     ' , X=T%ADR(1)%P )
         DO IPOIN=1,NPOIN
-          IF((X(IPOIN)-10.05D0)**2+(Y(IPOIN)-10.05D0)**2.LT.4.D0**2) 
+          IF((X(IPOIN)-10.05D0)**2+(Y(IPOIN)-10.05D0)**2.LT.4.D0**2)
      &    THEN
             T%ADR(1)%P%R(IPOIN) = 1.D0
           ENDIF
@@ -571,7 +571,7 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END             
+      END
 !                       ***************
                         SUBROUTINE HREF
 !                       ***************
@@ -584,7 +584,7 @@
 !              DE BOUSSINESQ
 !
 !              PAR DEFAUT ON PREND LA HAUTEUR INITIALE
-!     
+!
 !              CE SOUS-PROGRAMME PEUT ETRE MODIFIE
 !
 !              ON PEUT METTRE PAR EXEMPLE LA HAUTEUR DE LINEARISATION
@@ -619,13 +619,13 @@
       USE DECLARATIONS_TELEMAC2D
 !
       IMPLICIT NONE
-      INTEGER LNG,LU                                                 
-      COMMON/INFO/LNG,LU        
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 !-----------------------------------------------------------------------
 !
 !     CALL OS( 'X=Y     ' , H0 , H , H , C )
-!     
+!
       CALL OS( 'X=C     ' , H0 , H , H , 2.4D0 )
 !
 !-----------------------------------------------------------------------

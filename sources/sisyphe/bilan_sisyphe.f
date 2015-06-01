@@ -36,15 +36,15 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !history  J-M HERVOUET (EDF-LNHE)
 !+        14/02/2012
 !+        V6P2
 !+  NSICLM and MAXFRO used instead of 10 and 300. New and compatible
 !+  computation: flux given as argument, mass computed differently,
-!+  and coefficient CSF_SABLE. 
+!+  and coefficient CSF_SABLE.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CSF_SABLE      |-->| 1-POROSITY
@@ -53,7 +53,7 @@
 !| E              |-->| BED EVOLUTION AT A GIVEN TIME STEP
 !| ESOMT          |-->| CUMULATED BED EVOLUTION
 !| FLBCLA         |-->| BLOCK OF FLUXES AT BOUNDARY FOR EACH CLASS
-!| IELMU          |-->| NUMER OF ELEMENTS 
+!| IELMU          |-->| NUMER OF ELEMENTS
 !| INFO           |-->| IF YES : INFORMATION IS PRINTED
 !| LGRAFED        |---| A SUPPRIMER
 !| LT             |-->| CURRENT TIME STEP
@@ -78,7 +78,7 @@
 !| T2             |<->| WORK BIEF_OBJ STRUCTURE
 !| VCUMU          |<->| VOLUME OF SEDIMENT ENTERING THE DOMAIN
 !| VF             |-->| IF YES : FINITE VOLUMES IF NO : FINITE ELEMENTS
-!| VOLTOT         |-->| VOLUME TOTAL PER CLASS OF SEDIMENT 
+!| VOLTOT         |-->| VOLUME TOTAL PER CLASS OF SEDIMENT
 !| VOLU2D         |-->| INTEGRAL OF TEST FUNCTIONS (NOT ASSEMBLED IN //)
 !| ZFCL_C         |<->| BEDLOAD EVOLUTION FOR EACH SEDIMENT CLASS
 !| ZFCL_S         |<->| SUSPENDED LOAD EVOLUTION FOR EACH SEDIMENT CLASS

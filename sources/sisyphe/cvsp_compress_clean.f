@@ -40,7 +40,7 @@
 !
 ! STORES THE FRACTION ERRORS THAT WILL OCCURE IF THE POINT IS ELEMINATED FROM CURRENT PROFILE
 !
-      DOUBLE PRECISION SUMFERR 
+      DOUBLE PRECISION SUMFERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -49,14 +49,14 @@
       DOUBLE PRECISION  DIST, SUMF
       LOGICAL DB
 !
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 ! LOCAL -> GLOBAL / PARALLEL STUFF
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 !
       JG = J
       IF (NCSIZE.GT.1) JG = MESH%KNOLG%I(J)
 !
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 ! INITIAL DEBUGGING OUTPUT ...
 !-----------------------------------------------------------------------
 !
@@ -84,7 +84,7 @@
           SUMFERR = ABS((PRO_F(J,TTT,I)-PRO_F(J,MARKER(MARKERCNT),I)))
      &         + SUMFERR
         ENDDO
-!        
+!
         IF (TTT > 1) THEN
           DIST = ABS((PRO_D(J,TTT,1)-PRO_D(J,MARKER(MARKERCNT),1)))
           IF ((DIST.GT.ZERO).OR.(SUMFERR.GT.0.D0)) THEN
@@ -118,7 +118,7 @@
       IF (PRO_MAX(J) < 4) THEN
         CALL CVSP_COMPRESS_BRUT(J)
       ENDIF
-!      
+!
 !--------------------------------------------------------------------------
 ! FINAL DEBUGGING OUTPUT ...
 !-----------------------------------------------------------------------
@@ -126,6 +126,6 @@
       IF(DB(JG,0)) CALL CVSP_P('./','V_V',JG)
 !
 !-----------------------------------------------------------------------
-!      
+!
       RETURN
       END SUBROUTINE CVSP_COMPRESS_CLEAN

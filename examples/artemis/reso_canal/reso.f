@@ -4,7 +4,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 6.2    07/12   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 6.2    07/12   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -77,19 +77,19 @@
 !
       INTEGER I
 !
-      DOUBLE PRECISION PI,BID         
+      DOUBLE PRECISION PI,BID
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!           
-!                                                                   
-! JCB :    
-      INTEGER IG              
-                                                              
+!     ----------------------------------------
+!
+!
+! JCB :
+      INTEGER IG
+
 !
 !CP
-      INTEGER IG0 ,JB             
+      INTEGER IG0 ,JB
       DOUBLE PRECISION PHASOI,AUXIC,AUXIS,DEGRAD,X0,Y0,KK
 !CP
 !
@@ -116,41 +116,41 @@
       TETAP%R(:) = 0.D0
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
-      HB%R(:)    = 1.D0 
+      HB%R(:)    = 1.D0
 !
 ! PAROIS SOLIDES
 !
       DO I=1,NPTFR
           JB=BOUNDARY_COLOUR%I(I)
-          
+
           IF(JB.GE.101.AND.JB.LE.304)THEN
             LIHBOR%I(I)=KLOG
             RP%R(I)=1.D0
           ENDIF
 !         PAROIS LIQUIDES -FRONTIERE LIBRE
-!        
+!
           IF(JB.GE.42.AND.JB.LE.100)THEN
             LIHBOR%I(I)=KSORT
           ENDIF
           IF(JB.GE.305.AND.JB.LE.363)THEN
             LIHBOR%I(I)=KSORT
           ENDIF
-!        
+!
 !         PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
-!        
+!
           DEGRAD=PI/180.D0
           PHASOI=0.D0
           X0=2000.
           Y0=4500.
           AUXIC =COS(TETAH*DEGRAD)
           AUXIS =SIN(TETAH*DEGRAD)
-!        
-!         
+!
+!
           IF(JB.GE.364.AND.JB.LE.484)THEN
             LIHBOR%I(I)=KINC
             TETAB%R(I)=0.
             HB%R(I)=1.D0
-!   ------- PHASE 
+!   ------- PHASE
             IG   = MESH%NBOR%I(I)
             KK=K%R(IG)
             PHASOI=KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
@@ -160,7 +160,7 @@
             LIHBOR%I(I)=KINC
             TETAB%R(I)=0.
             HB%R(I)=1.D0
-!   ------- PHASE 
+!   ------- PHASE
             IG   = MESH%NBOR%I(I)
             KK=K%R(IG)
             PHASOI=KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
@@ -168,14 +168,14 @@
           ENDIF
       ENDDO
 !
-! ------------ 
-!                                                                       
-! JCB :                                                                       
+! ------------
+!
+! JCB :
 !
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+      RETURN
+      END
 !                       *****************
                         SUBROUTINE ART_CORFON
 !                       *****************
@@ -260,8 +260,8 @@
 !
 !
       RETURN
-      END 
- 
+      END
+
 !                    **********************
                      PROGRAM HOMERE_ARTEMIS
 !                    **********************

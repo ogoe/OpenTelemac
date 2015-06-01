@@ -27,7 +27,7 @@
       INTERFACE
 !
 !-----------------------------------------------------------------------
-!      
+!
 !     DEFINITION OF INTERFACES
 !
       SUBROUTINE ERRPVM(ERROR_NUMBER)
@@ -43,10 +43,10 @@
       END SUBROUTINE
 !
       SUBROUTINE ORG_CHARAC_TYPE1(NOMB,TRACE,CHARACTERISTIC)
-        IMPLICIT NONE  
-        INTEGER, INTENT(IN)    :: NOMB 
-        INTEGER, INTENT(INOUT) :: CHARACTERISTIC 
-        LOGICAL, INTENT(IN)    :: TRACE 
+        IMPLICIT NONE
+        INTEGER, INTENT(IN)    :: NOMB
+        INTEGER, INTENT(INOUT) :: CHARACTERISTIC
+        LOGICAL, INTENT(IN)    :: TRACE
       END SUBROUTINE
 !
       DOUBLE PRECISION FUNCTION P_DMAX(MYPART)
@@ -208,7 +208,7 @@
         INTEGER, INTENT(IN)  :: I1(*),I2,I3,I5,I6,I7
         INTEGER, INTENT(OUT) :: I4(*),I8
       END SUBROUTINE
-!   
+!
       SUBROUTINE P_MPI_TYPE_COMMIT(I1,I2)
         IMPLICIT NONE
         INTEGER, INTENT(IN)  :: I1

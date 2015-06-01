@@ -89,14 +89,14 @@
       INTEGER, INTENT(IN)           :: NTRAC,HIND_TYPE, FLOC_TYPE
       DOUBLE PRECISION, INTENT(IN)  :: WCHU0,TURBA,TURBB,HMIN,CGEL
       DOUBLE PRECISION, INTENT(IN)  :: CINI
-!     
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !     CONSTANT VALUE GIVEN HERE
 !
-      CALL OS( 'X=C     ' , X=WCHU , C=WCHU0 )   
+      CALL OS( 'X=C     ' , X=WCHU , C=WCHU0 )
 !
-! 1. FLOCCULATION 
+! 1. FLOCCULATION
 !
       IF(FLOC) THEN
         IF(FLOC_TYPE.EQ.1) THEN
@@ -104,10 +104,10 @@
 !         APPLY REDUCTION DUE TO TURBULENT BREAKUP OF FLOCS
 !
           CALL WCTURB(WCHU,WCHU0,U,V,W,H,RUGOF,LISRUF,
-     &                TRAV1,TRAV2,TRAV3, S,MESH3D,IELM3,NPOIN2,        
+     &                TRAV1,TRAV2,TRAV3, S,MESH3D,IELM3,NPOIN2,
      &                NPLAN,TURBA,TURBB,MSK,MASKEL,UETCAR)
 !
-        ELSEIF(FLOC_TYPE.EQ.2) THEN 
+        ELSEIF(FLOC_TYPE.EQ.2) THEN
 !
 !         SOULSBY FLOC MODEL
 !
@@ -117,7 +117,7 @@
             CALL OS('X=Y     ',X=TRAV1,Y=TA%ADR(NTRAC)%P)
           ENDIF
 !
-          CALL SOULSBYFLOC3D(WCHU,TRAV1%R,MESH3D,NPOIN2, 
+          CALL SOULSBYFLOC3D(WCHU,TRAV1%R,MESH3D,NPOIN2,
      &                       NPOIN3,NPLAN,HN,HMIN,UETCAR%R)
 !
         ELSE
@@ -127,16 +127,16 @@
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'UNKNOWN FLOCCULATION FORMULA: ',FLOC_TYPE
-          ENDIF      
+          ENDIF
           CALL PLANTE(1)
           STOP
 !
-        ENDIF       
-      ENDIF 
+        ENDIF
+      ENDIF
 !
 ! 2. HINDERED SETTLING
-! 
-! LIMIT THE CONCENTRATION TO CINI (IF HINDERED SETTLING IS ON) (tbe comment: no! 
+!
+! LIMIT THE CONCENTRATION TO CINI (IF HINDERED SETTLING IS ON) (tbe comment: no!
 !                                  It only gets limited for the floc model)
 !
       IF(HINDER) THEN
@@ -153,4 +153,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END 
+      END

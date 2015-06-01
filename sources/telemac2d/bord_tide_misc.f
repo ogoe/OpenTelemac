@@ -30,8 +30,8 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BOUNDARY_COLOUR|-->| AN INTEGER LINKED TO BOUNDARY POINTS
-!|                |   | BY DEFAULT THE LAST LINE OF BOUNDARY CONDITIONS 
-!|                |   | FILE, HENCE THE GLOBAL BOUNDARY NUMBER, BUT CAN 
+!|                |   | BY DEFAULT THE LAST LINE OF BOUNDARY CONDITIONS
+!|                |   | FILE, HENCE THE GLOBAL BOUNDARY NUMBER, BUT CAN
 !|                |   | BE CHANGED BY USER.
 !| CTIDE          |-->| COEFFICIENT TO CALIBRATE THE TIDAL RANGE
 !| CTIDEV         |-->| COEFFICIENT TO CALIBRATE THE VELOCITIES
@@ -126,7 +126,7 @@
       LOGICAL DEJA
       DATA    DEJA /.FALSE./
 !
-      SAVE  
+      SAVE
 !
 !-----------------------------------------------------------------------
 !
@@ -232,7 +232,7 @@
         SHIFTTIDE(1) = 0
 !
         DO I=2,NTIDE
-          SHIFTTIDE(I) = LASTTIDE(I-1) - FIRSTTIDE(I-1) + 1 
+          SHIFTTIDE(I) = LASTTIDE(I-1) - FIRSTTIDE(I-1) + 1
      &                 + SHIFTTIDE(I-1)
         ENDDO
 !

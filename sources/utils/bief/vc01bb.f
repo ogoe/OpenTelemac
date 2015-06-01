@@ -108,7 +108,7 @@
 !
         W4(IELEM) = SURFAC(IELEM)*(F3+F2+F1)*XSUR09
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !     F QUASI-BUBBLE
@@ -131,7 +131,7 @@
         W3(IELEM) = SURFAC(IELEM)*(2*F4+4*F3+  F2+  F1)*XSUR36
         W4(IELEM) = SURFAC(IELEM)*(3*F4+  F3+  F2+  F1)*XSUR18
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !      OTHER

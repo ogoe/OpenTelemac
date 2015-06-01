@@ -10,7 +10,7 @@
 !
 !brief    For every point in the mesh, gives an element that contains
 !+        this point. This element must be the same in scalar and in
-!+        parallel mode, ELTCAR(I)=0 means that the element is in another 
+!+        parallel mode, ELTCAR(I)=0 means that the element is in another
 !+        sub-domain.
 !
 !note     In every triangle a point is followed by another one:
@@ -60,11 +60,11 @@
 !| NPLAN          |-->| NUMBER OF PLANES (CASE OF A 3D MESH, OR 1 IN 2D)
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!    
+!
       USE BIEF_DEF
       IMPLICIT NONE
       INTEGER LNG,LU
-      COMMON/INFO/LNG,LU     
+      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -72,7 +72,7 @@
       INTEGER, INTENT(IN)             :: IKLE(NELMAX,*),KNOLG(NPOIN2)
       INTEGER, INTENT(INOUT)          :: ELTCAR(*)
       INTEGER, INTENT(INOUT)          :: ISCORE(*)
-      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH      
+      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -92,33 +92,33 @@
       DO I=1,NP
         ISCORE(I)=0
       ENDDO
-!        
+!
       IF(NCSIZE.LE.1) THEN
 !
 !       SIMPLE CASE: SCALAR MODE
 !
         IF(IELM.EQ.11.OR.IELM.EQ.12.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
-! 
+!
           DO IELEM = 1,NELEM2
             N1=IKLE(IELEM,1)
             N2=IKLE(IELEM,2)
             N3=IKLE(IELEM,3)
-            IF(ISCORE(N1).LT.N2) THEN 
+            IF(ISCORE(N1).LT.N2) THEN
               ISCORE(N1)=N2
               ELTCAR(N1)=IELEM
             ENDIF
-            IF(ISCORE(N2).LT.N3) THEN 
+            IF(ISCORE(N2).LT.N3) THEN
               ISCORE(N2)=N3
               ELTCAR(N2)=IELEM
             ENDIF
-            IF(ISCORE(N3).LT.N1) THEN 
+            IF(ISCORE(N3).LT.N1) THEN
               ISCORE(N3)=N1
               ELTCAR(N3)=IELEM
             ENDIF
           ENDDO
 !
         ELSEIF(IELM.EQ.13) THEN
-!        
+!
           DO IELEM = 1,NELEM2
             N1=IKLE(IELEM,1)
             N2=IKLE(IELEM,2)
@@ -126,30 +126,30 @@
             N4=IKLE(IELEM,4)
             N5=IKLE(IELEM,5)
             N6=IKLE(IELEM,6)
-            IF(ISCORE(N1).LT.N2) THEN 
+            IF(ISCORE(N1).LT.N2) THEN
               ISCORE(N1)=N2
               ELTCAR(N1)=IELEM
             ENDIF
-            IF(ISCORE(N2).LT.N3) THEN 
+            IF(ISCORE(N2).LT.N3) THEN
               ISCORE(N2)=N3
               ELTCAR(N2)=IELEM
             ENDIF
-            IF(ISCORE(N3).LT.N1) THEN 
+            IF(ISCORE(N3).LT.N1) THEN
               ISCORE(N3)=N1
               ELTCAR(N3)=IELEM
             ENDIF
-            IF(ISCORE(N4).LT.N2) THEN 
+            IF(ISCORE(N4).LT.N2) THEN
               ISCORE(N4)=N2
               ELTCAR(N4)=IELEM
-            ENDIF 
-            IF(ISCORE(N5).LT.N3) THEN 
+            ENDIF
+            IF(ISCORE(N5).LT.N3) THEN
               ISCORE(N5)=N3
               ELTCAR(N5)=IELEM
             ENDIF
-            IF(ISCORE(N6).LT.N1) THEN 
+            IF(ISCORE(N6).LT.N1) THEN
               ISCORE(N6)=N1
               ELTCAR(N6)=IELEM
-            ENDIF             
+            ENDIF
           ENDDO
 !
         ENDIF
@@ -159,20 +159,20 @@
 !       NOW IN PARALLEL, FIRST LIKE IN SCALAR BUT WITH GLOBAL NUMBERS
 !
         IF(IELM.EQ.11.OR.IELM.EQ.12.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
-! 
+!
           DO IELEM = 1,NELEM2
             N1=IKLE(IELEM,1)
             N2=IKLE(IELEM,2)
             N3=IKLE(IELEM,3)
-            IF(ISCORE(N1).LT.KNOLG(N2)) THEN 
+            IF(ISCORE(N1).LT.KNOLG(N2)) THEN
               ISCORE(N1)=KNOLG(N2)
               ELTCAR(N1)=IELEM
             ENDIF
-            IF(ISCORE(N2).LT.KNOLG(N3)) THEN 
+            IF(ISCORE(N2).LT.KNOLG(N3)) THEN
               ISCORE(N2)=KNOLG(N3)
               ELTCAR(N2)=IELEM
             ENDIF
-            IF(ISCORE(N3).LT.KNOLG(N1)) THEN 
+            IF(ISCORE(N3).LT.KNOLG(N1)) THEN
               ISCORE(N3)=KNOLG(N1)
               ELTCAR(N3)=IELEM
             ENDIF
@@ -187,34 +187,34 @@
             N4=IKLE(IELEM,4)
             N5=IKLE(IELEM,5)
             N6=IKLE(IELEM,6)
-            IF(ISCORE(N1).LT.KNOLG(N2)) THEN 
+            IF(ISCORE(N1).LT.KNOLG(N2)) THEN
               ISCORE(N1)=KNOLG(N2)
               ELTCAR(N1)=IELEM
             ENDIF
-            IF(ISCORE(N2).LT.KNOLG(N3)) THEN 
+            IF(ISCORE(N2).LT.KNOLG(N3)) THEN
               ISCORE(N2)=KNOLG(N3)
               ELTCAR(N2)=IELEM
             ENDIF
-            IF(ISCORE(N3).LT.KNOLG(N1)) THEN 
+            IF(ISCORE(N3).LT.KNOLG(N1)) THEN
               ISCORE(N3)=KNOLG(N1)
               ELTCAR(N3)=IELEM
             ENDIF
-            IF(ISCORE(N4).LT.KNOLG(N2)) THEN 
+            IF(ISCORE(N4).LT.KNOLG(N2)) THEN
               ISCORE(N4)=KNOLG(N2)
               ELTCAR(N4)=IELEM
-            ENDIF 
-            IF(ISCORE(N5).LT.KNOLG(N3)) THEN 
+            ENDIF
+            IF(ISCORE(N5).LT.KNOLG(N3)) THEN
               ISCORE(N5)=KNOLG(N3)
               ELTCAR(N5)=IELEM
             ENDIF
-            IF(ISCORE(N6).LT.KNOLG(N1)) THEN 
+            IF(ISCORE(N6).LT.KNOLG(N1)) THEN
               ISCORE(N6)=KNOLG(N1)
               ELTCAR(N6)=IELEM
-            ENDIF             
+            ENDIF
           ENDDO
 !
         ENDIF
-!        
+!
 !       LARGEST VALUE BETWEEN NEIGHBOURING SUB-DOMAINS TAKEN
         CALL PARCOM2I(ISCORE,ISCORE,ISCORE,NPOIN2,1,1,1,MESH)
         IF(IELM.EQ.13) THEN
@@ -230,14 +230,14 @@
             N1=IKLE(IELEM,1)
             N2=IKLE(IELEM,2)
             N3=IKLE(IELEM,3)
-            IF(ISCORE(N1).EQ.KNOLG(N2)) THEN 
+            IF(ISCORE(N1).EQ.KNOLG(N2)) THEN
 !             THERE IS NO BETTER ELEMENT IN ANOTHER SUB-DOMAIN
               ISCORE(N1)=0
-            ENDIF          
+            ENDIF
             IF(ISCORE(N2).EQ.KNOLG(N3)) THEN
 !             THERE IS NO BETTER ELEMENT IN ANOTHER SUB-DOMAIN
               ISCORE(N2)=0
-            ENDIF          
+            ENDIF
             IF(ISCORE(N3).EQ.KNOLG(N1)) THEN
 !             THERE IS NO BETTER ELEMENT IN ANOTHER SUB-DOMAIN
               ISCORE(N3)=0
@@ -253,26 +253,26 @@
             N4=IKLE(IELEM,4)
             N5=IKLE(IELEM,5)
             N6=IKLE(IELEM,6)
-            IF(ISCORE(N1).EQ.KNOLG(N2)) THEN 
+            IF(ISCORE(N1).EQ.KNOLG(N2)) THEN
 !             THERE IS NO BETTER ELEMENT IN ANOTHER SUB-DOMAIN
               ISCORE(N1)=0
-            ENDIF          
+            ENDIF
             IF(ISCORE(N2).EQ.KNOLG(N3)) THEN
 !             THERE IS NO BETTER ELEMENT IN ANOTHER SUB-DOMAIN
               ISCORE(N2)=0
-            ENDIF          
+            ENDIF
             IF(ISCORE(N3).EQ.KNOLG(N1)) THEN
 !             THERE IS NO BETTER ELEMENT IN ANOTHER SUB-DOMAIN
               ISCORE(N3)=0
             ENDIF
-            IF(ISCORE(N4).EQ.KNOLG(N2)) THEN 
+            IF(ISCORE(N4).EQ.KNOLG(N2)) THEN
 !             THERE IS NO BETTER ELEMENT IN ANOTHER SUB-DOMAIN
               ISCORE(N4)=0
-            ENDIF          
+            ENDIF
             IF(ISCORE(N5).EQ.KNOLG(N3)) THEN
 !             THERE IS NO BETTER ELEMENT IN ANOTHER SUB-DOMAIN
               ISCORE(N5)=0
-            ENDIF          
+            ENDIF
             IF(ISCORE(N6).EQ.KNOLG(N1)) THEN
 !             THERE IS NO BETTER ELEMENT IN ANOTHER SUB-DOMAIN
               ISCORE(N6)=0
@@ -298,7 +298,7 @@
         DO IELEM=1,NELEM2
           ELTCAR(NPOIN2+IELEM)=IELEM
         ENDDO
-      ENDIF     
+      ENDIF
 !
 !     COMPLETING FOR 3D PRISMS
 !
@@ -329,14 +329,14 @@
 !                 THE LAST HIT IS KEPT, SAME BEHAVIOUR IN SCALAR OR
 !                 PARALLEL. NOT VERY ELEGANT, BETTER IDEA ?
                   IF(IKLE(IELEM3D,1).EQ.I3D) THEN
-                    ELTCAR(I3D)=IELEM3D 
+                    ELTCAR(I3D)=IELEM3D
                   ELSEIF(IKLE(IELEM3D,2).EQ.I3D) THEN
-                    ELTCAR(I3D)=IELEM3D 
+                    ELTCAR(I3D)=IELEM3D
                   ELSEIF(IKLE(IELEM3D,3).EQ.I3D) THEN
-                    ELTCAR(I3D)=IELEM3D 
+                    ELTCAR(I3D)=IELEM3D
                   ELSEIF(IKLE(IELEM3D,4).EQ.I3D) THEN
                     ELTCAR(I3D)=IELEM3D
-                  ENDIF 
+                  ENDIF
                 ENDDO
               ELSE
                 ELTCAR(I3D)=0

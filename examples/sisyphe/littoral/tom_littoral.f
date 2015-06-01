@@ -170,20 +170,20 @@
 !     THE FIRST TIME (AND POSSIBLY SUBSEQUENTLY IF THE WIND IS NOT
 !     STATIONARY AND IF THE BOUNDARY SPECTRUM DEPENDS ON IT),
 !     COMPUTES THE BOUNDARY SPECTRUM
-!    
+!
       IF(LT.LT.1 .OR. (.NOT.VENSTA.AND.FLAG) .OR. SPEULI) THEN
         IF(FLAG) THEN
           DO IPTFR=1,NPTFR
             UV2D(IPTFR)=UV(NBOR(IPTFR))
             VV2D(IPTFR)=VV(NBOR(IPTFR))
-          ENDDO     
+          ENDDO
         ENDIF
         IF(LIMSPE.EQ.7 .OR. SPEULI) THEN
           DO IPTFR=1,NPTFR
             PROF(IPTFR)=DEPTH(NBOR(IPTFR))
           ENDDO
         ENDIF
-!   
+!
         E2FMIN = 1.D-30
 !
 !       WHEN NPB=1 FBOR ONLY FILLED FOR FIRST POINT
@@ -292,7 +292,7 @@
 !
 !-----------------------------------------------------------------------
 !     MODIFICATION M. BENOIT (12/03/2002) POUR METTRE SUR LES LIMITES
-!     LATERALES LE SPECTRE CALCULE SUR L'AXE DU DOMAINE 
+!     LATERALES LE SPECTRE CALCULE SUR L'AXE DU DOMAINE
 !     (ATTENTION : CECI N'EST VALABLE QUE POUR LE MAILLAGE "COURANT
 !      LITTORAL" ; LES NUMEROS DE POINTS SONT CODES EN DUR)
 !-----------------------------------------------------------------------
@@ -419,18 +419,18 @@
                         SUBROUTINE ANACOS
 !                       *****************
 !
-     &( UC    , VC    , X     , Y     , NPOIN2 ) 
+     &( UC    , VC    , X     , Y     , NPOIN2 )
 !
 !***********************************************************************
-!  TOMAWAC VERSION 5.2    07/06/01       
+!  TOMAWAC VERSION 5.2    07/06/01
 !***********************************************************************
 !
-!     FONCTION  : PERMET LA SPECIFICATION D'UN COURANT ANALYTIQUE 
+!     FONCTION  : PERMET LA SPECIFICATION D'UN COURANT ANALYTIQUE
 !                 (! STATIONNAIRE !)
 !
-!     FUNCTION  : SPECIFICATION OF AN ANALYTICAL CURRENT 
+!     FUNCTION  : SPECIFICATION OF AN ANALYTICAL CURRENT
 !                 (! STATIONNARY !)
-!                 
+!
 !
 !-----------------------------------------------------------------------
 !                             ARGUMENTS

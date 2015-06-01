@@ -86,15 +86,15 @@
 !| NFLOT_MAX      |<->| MAXIMUM NUMBER OF FLOATS.
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
-!| SHPBUF         |<->| WORK ARRAY 
-!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!| SHPBUF         |<->| WORK ARRAY
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR
 !|                |   | ELEMENTS.
-!| SHZBUF         |<->| WORK ARRAY 
+!| SHZBUF         |<->| WORK ARRAY
 !| SHZFLO         |<->| BARYCENTRIC COORDINATE ON VERTICAL
 !| SIZEBUF        |-->| DILMENSION OF SOME WORK ARRAYS
 !| SURDET         |-->| 1/DETERMINANT, USED IN ISOPARAMETRIC
 !|                |   | TRANSFORMATION.
-!| TAGFLO         |-->| TAGS OF FLOATS  
+!| TAGFLO         |-->| TAGS OF FLOATS
 !| U              |-->| X-COMPONENT OF VELOCITY
 !| UL             |-->| LOGICAL UNIT OF OUTPUT FILE
 !| V              |-->| Y-COMPONENT OF VELOCITY
@@ -169,7 +169,7 @@
 !
       LOGICAL DEJA
       DATA    DEJA/.FALSE./
-! 
+!
 !     DEFINE VARIABLES THAT ARE USED IN ALGAE TRANSPORT
 !     THESE ARE NECESSARY IF NFLOT_MAX IS TOO LARGE
 !
@@ -352,7 +352,7 @@
      &             SHPFLO,SHZFLO,SHZFLO,
      &             SURDET,DT,IKLE,IFABOR,ELTFLO,ETAFLO,
      &             FRE,ELTBUF,ISUB,IELM,IELMU,
-     &             NELEM,NELMAX,            
+     &             NELEM,NELMAX,
      &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
      &             BUFF_2D,BUFF_1D,BUFF_1D,FREBUF,SIZEBUF2,
      &             AALG=ALGAE,APOST=.TRUE.)
@@ -365,7 +365,7 @@
      &             SHPFLO,SHZFLO,SHZFLO,
      &             SURDET,DT,IKLE,IFABOR,ELTFLO,ETAFLO,
      &             FRE,ELTBUF,ISUB,IELM,IELMU,
-     &             NELEM,NELMAX,            
+     &             NELEM,NELMAX,
      &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
      &             SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
      &             AALG=ALGAE,APOST=.TRUE.)
@@ -375,7 +375,7 @@
      &             XFLOT,YFLOT,ZFLOT,ZFLOT,
      &             DX,DY,DZ,DZ,Z,SHPFLO,SHZFLO,SHZFLO,SURDET,DT,
      &             IKLE,IFABOR,ELTFLO,ETAFLO,
-     &             FRE,ELTBUF,ISUB,IELM,IELMU,NELEM,NELMAX,            
+     &             FRE,ELTBUF,ISUB,IELM,IELMU,NELEM,NELMAX,
      &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
      &             SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
      &             APOST=.TRUE.,ASTOCHA=STOCHA,AVISC=VISC)
@@ -401,43 +401,43 @@
                 N3=IKLE(ELT,3)
                 XFLOT(IFLOT)=SHPFLO(1,IFLOT)*X(N1)
      &                      +SHPFLO(2,IFLOT)*X(N2)
-     &                      +SHPFLO(3,IFLOT)*X(N3)     
+     &                      +SHPFLO(3,IFLOT)*X(N3)
                 YFLOT(IFLOT)=SHPFLO(1,IFLOT)*Y(N1)
      &                      +SHPFLO(2,IFLOT)*Y(N2)
      &                      +SHPFLO(3,IFLOT)*Y(N3)
               ENDIF
-            ENDIF  
-          ENDDO 
+            ENDIF
+          ENDDO
         ELSEIF(IELM.EQ.41) THEN
           DO IFLOT=1,NFLOT
             IF(ISUB(IFLOT).EQ.IPID) THEN
               ELT=ELTFLO(IFLOT)
-              IF(ELT.GT.0) THEN     
-                N1=IKLE(ELT,1)+NPOIN2*(ETAFLO(IFLOT)-1) 
+              IF(ELT.GT.0) THEN
+                N1=IKLE(ELT,1)+NPOIN2*(ETAFLO(IFLOT)-1)
                 N2=IKLE(ELT,2)+NPOIN2*(ETAFLO(IFLOT)-1)
                 N3=IKLE(ELT,3)+NPOIN2*(ETAFLO(IFLOT)-1)
-                N4=IKLE(ELT,1)+NPOIN2* ETAFLO(IFLOT) 
+                N4=IKLE(ELT,1)+NPOIN2* ETAFLO(IFLOT)
                 N5=IKLE(ELT,2)+NPOIN2* ETAFLO(IFLOT)
                 N6=IKLE(ELT,3)+NPOIN2* ETAFLO(IFLOT)
                 XFLOT(IFLOT)=SHPFLO(1,IFLOT)*X(N1)
      &                      +SHPFLO(2,IFLOT)*X(N2)
-     &                      +SHPFLO(3,IFLOT)*X(N3)     
+     &                      +SHPFLO(3,IFLOT)*X(N3)
                 YFLOT(IFLOT)=SHPFLO(1,IFLOT)*Y(N1)
      &                      +SHPFLO(2,IFLOT)*Y(N2)
      &                      +SHPFLO(3,IFLOT)*Y(N3)
-                ZFLOT(IFLOT)=(Z(N1)*SHPFLO(1,IFLOT) 
+                ZFLOT(IFLOT)=(Z(N1)*SHPFLO(1,IFLOT)
      &                      +Z(N2)*SHPFLO(2,IFLOT)
      &                      +Z(N3)*SHPFLO(3,IFLOT))*(1.D0-SHZFLO(IFLOT))
-     &                      +(Z(N4)*SHPFLO(1,IFLOT) 
-     &                      +Z(N5)*SHPFLO(2,IFLOT) 
+     &                      +(Z(N4)*SHPFLO(1,IFLOT)
+     &                      +Z(N5)*SHPFLO(2,IFLOT)
      &                      +Z(N6)*SHPFLO(3,IFLOT))*SHZFLO(IFLOT)
               ENDIF
-            ENDIF   
-          ENDDO 
-        ENDIF        
+            ENDIF
+          ENDDO
+        ENDIF
 !
       ENDIF
-! 
+!
 !     SEND THE ALGAE INFORMATION IF IT IS NECESSARY
 !
       IF(NCSIZE.GT.1.AND.ALGAE) THEN
@@ -465,7 +465,7 @@
 !-----------------------------------------------------------------------
 !
 !     CASE OF LOST FLOATS (EXITED OR NOW REMOVED AFTER BEING SENT TO
-!                          ANOTHER SUB-DOMAIN) 
+!                          ANOTHER SUB-DOMAIN)
 !
       IFLOT=1
       IF(NCSIZE.GT.1) THEN
@@ -476,7 +476,7 @@
 !       LOST OR MIGRATED FLOATS
         IF(NFLOT.GT.0.AND.NCSIZE.GT.1) THEN
           IF(ELTFLO(IFLOT).LE.0.OR.ISUB(IFLOT).NE.IPID) THEN
-! 
+!
 !           REMOVE ALGAE INFORMATION FROM A SUB DOMAIN IF IT IS NECESSARY
 !
             IF(ALGAE) THEN
@@ -508,7 +508,7 @@
             DY_A%R(IFLOT)=DY(IFLOT)
             DZ_A%R(IFLOT)=DZ(IFLOT)
           ENDIF
-! 
+!
           IFLOT=IFLOT+1
           IF(IFLOT.LE.NFLOT) GO TO 11
         ENDIF
@@ -520,7 +520,7 @@
 10      CONTINUE
 !       LOST FLOATS ONLY
         IF(NFLOT.GT.0) THEN
-          IF(ELTFLO(IFLOT).LE.0) THEN 
+          IF(ELTFLO(IFLOT).LE.0) THEN
 !
 !           REMOVE INFORMATION FROM A SUB DOMAIN IF NECESSARY
 !
@@ -535,7 +535,7 @@
             ELSE
               CALL DEL_PARTICLE(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,XFLOT,
      &                    YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,ELTFLO,
-     &                    ETAFLO,MESH%TYPELM)            
+     &                    ETAFLO,MESH%TYPELM)
             ENDIF
 !
 !           THE SAME IFLOT IS NOW A NEW PARTICLE AND MUST BE CHECKED AGAIN!
@@ -563,7 +563,7 @@
 !
 !       WAITING ALL PROCESSORS (SO THAT NFLOT IS UPDATED FOR ALL
 !                               BEFORE CALLING P_ISUM)
-! 
+!
         CALL P_SYNC
 !
 !       PARALLEL VERSION
@@ -572,7 +572,7 @@
         IF(NFLOTG.GT.0.AND.(LT.EQ.1.OR.(LT/FLOPRD)*FLOPRD.EQ.LT)) THEN
 !
 !         1) EVERY PROCESSOR WRITES ITS OWN DATA IN A FILE WITH EXTENSION
-! 
+!
           IF(NFLOT.GT.0) THEN
             OPEN(99,FILE=EXTENS(NCSIZE,IPID+1),
      &           FORM='FORMATTED',STATUS='NEW')
@@ -594,7 +594,7 @@
 !
           CALL P_SYNC
 !
-!         3) PROCESSOR 0 READS ALL EXISTING FILES AND MERGES 
+!         3) PROCESSOR 0 READS ALL EXISTING FILES AND MERGES
 !            THEM IN THE FINAL FILE
 !
           IF(IPID.EQ.0) THEN
@@ -639,7 +639,7 @@
 301       FORMAT(I6,',',F16.8,',',F16.8,',',F16.8,',',I2)
         ENDIF
 !
-      ENDIF      
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

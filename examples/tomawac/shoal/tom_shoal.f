@@ -39,7 +39,7 @@
 !| DEPTH          |-->| WATER DEPTH
 !| DEUPI          |-->| 2.PI
 !| E2FMIN         |-->| SPECTRUM ENERGY THRESHOLD
-!| FP             |-->| JONSWAP SPECTRUM PEAK FREQUENCY 
+!| FP             |-->| JONSWAP SPECTRUM PEAK FREQUENCY
 !| FPMIN          |-->| MINIMUM PEAK FREQUENCY VALUE
 !| FREQ           |-->| DISCRETIZED FREQUENCIES
 !| GAMMA          |-->| JONSWAP SPECTRUM PEAK FACTOR
@@ -69,7 +69,7 @@
       IF (FP.GT.FPMIN) THEN
 !GM alpha impose = 0.0144 comme dans Briggs
         AL=0.0144
-!GM Fin 
+!GM Fin
         COEF=AL*GRAVIT**2/DEUPI**4
         DO JF=1,NF
           FF=FREQ(JF)

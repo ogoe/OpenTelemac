@@ -53,7 +53,7 @@
 !| IELM2H         |-->| DISCRETISATION TYPE FOR 2D HORIZONTAL MESH
 !| IELM2V         |-->| DISCRETISATION TYPE FOR 2D VERTICAL MESH
 !| IELM3          |-->| TYPE OF ELEMENT IN 3D
-!| IPBOT          |-->| IPBOT(I)+1 IS THE FIRST FREE PLANE ABOVE 
+!| IPBOT          |-->| IPBOT(I)+1 IS THE FIRST FREE PLANE ABOVE
 !|                |   | 2D POINT I.
 !| MASKBR         |<->| 3D MASK ON LATERAL BOUNDARIES
 !| MASKEL         |-->| MASKING OF ELEMENTS
@@ -107,7 +107,7 @@
         CALL OSDB(OP,SEM3D,T3,T3,1.D0,MESH3D)
       ENDIF
 !
-!     BOTTOM 
+!     BOTTOM
 !
       IF(BFBORF%TYPR.NE.'0') THEN
         CALL VECTOR(T2,'=','MASBAS          ',IELM2H,1.D0,
@@ -120,8 +120,8 @@
 !             OF TIDAL FLAT
               IF(IPBOT(I).NE.NPLAN-1) THEN
                 I3D=IPBOT(I)*NPOIN2+I
-                SEM3D%R(I3D)=SEM3D%R(I3D)+T2%R(I)              
-              ENDIF         
+                SEM3D%R(I3D)=SEM3D%R(I3D)+T2%R(I)
+              ENDIF
             ENDDO
           ELSEIF(OP.EQ.'X=X-Y   ') THEN
             DO I=1,NPOIN2
@@ -129,8 +129,8 @@
 !             OF TIDAL FLAT
               IF(IPBOT(I).NE.NPLAN-1) THEN
                 I3D=IPBOT(I)*NPOIN2+I
-                SEM3D%R(I3D)=SEM3D%R(I3D)-T2%R(I)              
-              ENDIF         
+                SEM3D%R(I3D)=SEM3D%R(I3D)-T2%R(I)
+              ENDIF
             ENDDO
           ELSE
             WRITE(LU,*) 'UNEXPECTED OPERATION : ',OP

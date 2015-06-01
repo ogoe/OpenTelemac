@@ -311,7 +311,7 @@
 ! |    NBOR        | -->|  ADRESSES DES POINTS DE BORD                 |
 ! |  TRA05,TRA06   | -->|  TABLEAUX DE TRAVAIL                         |
 ! |   LIHBOR       | -->|  CONDITIONS AUX LIMITES SUR H                |
-! | LIUBOR         | -->|  CONDITIONS AUX LIMITES SUR U 
+! | LIUBOR         | -->|  CONDITIONS AUX LIMITES SUR U
 ! |   LITBOR       | -->|  CONDITIONS AUX LIMITES SUR LE TRACEUR       |
 ! |   NPOIN        | -->|  NOMBRE DE POINTS DU MAILLAGE.               |
 ! |   NPTFR        | -->|  NOMBRE DE POINTS FRONTIERE.                 |
@@ -361,7 +361,7 @@
       INTEGER NUMLIQ(NPTFR)
 !
       DOUBLE PRECISION HBOR(NPTFR),UBOR(NPTFR,2),VBOR(NPTFR,2)
-      DOUBLE PRECISION ZF(NPOIN) 
+      DOUBLE PRECISION ZF(NPOIN)
       DOUBLE PRECISION XNEBOR(NPTFR),YNEBOR(NPTFR)
 !
       DOUBLE PRECISION TEMPS,Z
@@ -378,7 +378,7 @@
       INTRINSIC MAX
 !
 !  TABLEAUX ISSUS DU FICHIER 26 , DONNANT LES CONDITIONS AUX LIMITES
-!            
+!
       DOUBLE PRECISION C,HB(77),PHASEB(77),HC(77),PHASEC(77)
 !
       DOUBLE PRECISION TE,T2,TI,PI,AN,ARG,T,W
@@ -421,11 +421,11 @@
         AN  = AN + HC(K) * COS(ARG)
         IF (TEMPS.LT.2500.D0) AN=AN*0.0004D0*TEMPS
         IF(NCSIZE.GT.0) THEN
-          DO KK=1,NPTFR 
+          DO KK=1,NPTFR
             IF(BOUNDARY_COLOUR%I(KK).EQ.NBORL(K)) THEN
               HBOR(KK)=AN-ZF(NBOR(KK))
             ENDIF
-          ENDDO 
+          ENDDO
         ELSE
           HBOR(NBORL(K))=AN-ZF(NBOR(NBORL(K)))
         ENDIF
@@ -434,7 +434,7 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END 
+      END
 !                       *****************
                         SUBROUTINE CORFON
 !                       *****************
@@ -449,7 +449,7 @@
 !
 !
 !-----------------------------------------------------------------------
-!  ARGUMENTS USED IN THE EXAMPLE 
+!  ARGUMENTS USED IN THE EXAMPLE
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|_______________________________________________

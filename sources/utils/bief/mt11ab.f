@@ -159,7 +159,7 @@
         A22(IELEM) = (14*Y2*(F3-F1)+Y3*(-5*F3-28*F2+9*F1))*XSU216
         A33(IELEM) = (Y2*(28*F3+5*F2-9*F1)+14*Y3*(-F2+F1))*XSU216
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -197,7 +197,7 @@
         A22(IELEM) = (14*X2*(-F3+F1)+X3*(5*F3+28*F2-9*F1))*XSU216
         A33(IELEM) = (X2*(-28*F3-5*F2+9*F1)+14*X3*(F2-F1))*XSU216
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSE
 !
@@ -260,7 +260,7 @@
         A22(IELEM) = (14*Y2*(F3-F1)+Y3*(-10*F3+15*F4-33*F2+4*F1))*XSU216
         A33(IELEM) = (Y2*(33*F3-15*F4+10*F2-4*F1)+14*Y3*(-F2+F1))*XSU216
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -306,7 +306,7 @@
         A22(IELEM) = (14*X2*(-F3+F1)+X3*(10*F3-15*F4+33*F2-4*F1))*XSU216
         A33(IELEM) = (X2*(-33*F3+15*F4-10*F2+4*F1)+14*X3*(F2-F1))*XSU216
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSE
 !

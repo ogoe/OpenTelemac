@@ -17,14 +17,14 @@
 !history  C.VILLARET (EDF-LNHE)
 !+        19/07/2011
 !+        V6P2
-!+   New subroutine: mass balance for cohesive sediments   
-!+   
+!+   New subroutine: mass balance for cohesive sediments
+!+
 !
 !history  P.TASSI PAT (EDF-LNHE)
 !+        13/02/2013
 !+        V6P3
 !+   Correction bug NUMLIQ(NPTFR)
-!+   
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOT         |-->| COEFFICIENT OF MASS-LUMPING
@@ -35,7 +35,7 @@
 !| HN             |-->| WATER DEPTH
 !| IELMT          |-->| NUMBER OF ELEMENTS
 !| ITRA           |-->| TRACER INDEX
-!| LT             |-->| ITERATION 
+!| LT             |-->| ITERATION
 !| MASDEP         |<--| TOTAL DEPOSITED MASS
 !| MASDEPT        |<--| DEPOSITED MASS DURING THE TIME STEP
 !| MASED0         |<->| SUSPENDED MASS BALANCE
@@ -47,9 +47,9 @@
 !| MASTOU         |<->| MASS CREATED BY SOURCE TERM
 !| MESH           |<->| MESH STRUCTURE
 !| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
-!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS 
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
-!| NIT            |-->| TOTAL NUMBER OF ITERATIONS 
+!| NIT            |-->| TOTAL NUMBER OF ITERATIONS
 !| NOMBLAY        |-->| NUMBER OF VERTICAL BED LAYERS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
@@ -58,13 +58,13 @@
 !| T3             |<->| WORK BIEF_OBJ STRUCTURE
 !| VOLU2D         |-->| INTEGRAL OF BASES
 !| XMVS           |-->| SOLID DENSITY
-!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT 
+!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SUSPENSION_BILAN_COH
      &                    => SUSPENSION_BILAN_COH
       USE BIEF
-! FOR MUD      
+! FOR MUD
       USE DECLARATIONS_SISYPHE, ONLY: MASV0, MASVT
 ! FOR SAND
       USE DECLARATIONS_SISYPHE, ONLY: MASS0, MASST
@@ -87,7 +87,7 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T2,T3,T1
       DOUBLE PRECISION, INTENT(INOUT) :: MASFIN,MASDEPT,MASDEP
       DOUBLE PRECISION, INTENT(IN)    :: MS_VASE(NPOIN, NOMBLAY)
-      
+
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER IFRLIQ,I,J
@@ -127,7 +127,7 @@
       ! ************************** !
 !     CALL VECTOR(T2, '=', 'MASVEC          ',IELMT,CSF,ZFCL_S,HN,
 !    &            HN,HN,HN,HN,MESH,MSK,MASKEL)
-     
+
 !      IF(AGGLOT.GT.0.999999D0) THEN
 !       ASSUMES HERE THAT AGGLOT=1.D0
 !        CALL OS('X=CYZ   ',X=T2,Y=VOLU2D,Z=ZFCL_S,C=CSF)
@@ -136,12 +136,12 @@
 !     &             1.D0-AGGLOT,ZFCL_S,T3,T3,T3,T3,T3,MESH,MSK,MASKEL)
 !        CALL OS('X=X+CYZ ',X=T2,Y=VOLU2D,Z=ZFCL_S,C=AGGLOT)
 !        CALL OS('X=CX    ',X=T2,C=CSF)
-!      ENDIF        
+!      ENDIF
 !      MASDEPT = BIEF_SUM(T2)
 !      IF(NCSIZE.GT.1) MASDEPT = P_DSUM(MASDEPT)
-! 
+!
       ! **************************             !
-      ! II - TOTAL MASS OF SEDIMENT BED  (KG)  ! 
+      ! II - TOTAL MASS OF SEDIMENT BED  (KG)  !
       !                           ---> MASVT   !
       ! **************************             !
 ! SAVE RESULT PAS DE TEMPS PRECEDENT : MASS_INIT
@@ -158,12 +158,12 @@
         ENDDO
       ENDDO
       IF(SEDCO) THEN
-        MASVT=DOTS(T1,VOLU2D)      
+        MASVT=DOTS(T1,VOLU2D)
         IF(NCSIZE.GT.1) MASVT=P_DSUM(MASVT)
       ELSE
         MASST=DOTS(T1,VOLU2D)
         IF(NCSIZE.GT.1) MASST=P_DSUM(MASST)
-      ENDIF    
+      ENDIF
 !
 
 
@@ -263,17 +263,17 @@
       ! ************************************** !
       IF(LT.EQ.NIT.AND.ENTET) THEN
         IF(SEDCO)THEN
-          PERDUE = MASED0*XMVS + MASV0 
-     &         + MASTEN*XMVS 
+          PERDUE = MASED0*XMVS + MASV0
+     &         + MASTEN*XMVS
      &         - MASFIN*XMVS - MASVT
 !              + MASTOU*XMVS
         ELSE
-          PERDUE = MASED0*XMVS + MASS0 
-     &         + MASTEN*XMVS 
+          PERDUE = MASED0*XMVS + MASS0
+     &         + MASTEN*XMVS
      &         - MASFIN*XMVS - MASST
 !              + MASTOU*XMVS
         ENDIF
-        
+
         IF(LNG.EQ.1) THEN
 !
           WRITE(LU,3000) ITRA
@@ -295,7 +295,7 @@
       ! XII - UPDATES INITIAL MASS  !
       ! *************************** !
 
-      MASINI = MASFIN 
+      MASINI = MASFIN
 
       !----------------------------------------------------------------!
 

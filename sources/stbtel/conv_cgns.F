@@ -1,7 +1,7 @@
       MODULE CONV_CGNS
       CONTAINS
-!                       ***************** 
-                        SUBROUTINE READ_CGNS 
+!                       *****************
+                        SUBROUTINE READ_CGNS
 !                       *****************
      &(CGNSFILE)
 !
@@ -10,7 +10,7 @@
 !***********************************************************************
 !
 !BRIEF    READS A FILE OF CGNS FORMAT AND FILL THE MESH OBJECT
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
@@ -27,16 +27,16 @@
 !
       USE DECLARATIONS_STBTEL
       USE DECLARATIONS_SPECIAL
-!      
-      IMPLICIT NONE      
+!
+      IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-#if defined(HAVE_CGNS)      
+#if defined(HAVE_CGNS)
       INCLUDE 'cgnslib_f.h'
-#endif      
-!      
+#endif
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: CGNSFILE
@@ -44,7 +44,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined(HAVE_CGNS)      
+#if defined(HAVE_CGNS)
       INTEGER :: IERR
       INTEGER :: I, J, I1
       INTEGER :: ITIME, IVAR
@@ -60,12 +60,12 @@
       INTEGER :: ISTART, IEND
       INTEGER :: DATATYPE, GRIDLOCATION
       DOUBLE PRECISION, ALLOCATABLE :: TMP(:)
-!      
+!
       WRITE(LU,*) '----------------------------------------------------'
       IF(LNG.EQ.2) WRITE(LU,*) '------BEGINNING READING OF CGNS FILE'
       IF(LNG.EQ.1) WRITE(LU,*) '------DEBUT LECTURE DU FICHIER CGNS'
       WRITE(LU,*) '----------------------------------------------------'
-!      
+!
 !-----------------------------------------------------------------------
 !
       CALL CG_OPEN_F(CGNSFILE,CG_MODE_READ,NINP,IERR)
@@ -98,7 +98,7 @@
       IF(DEBUG) WRITE(LU,*) 'ZONENAME: ',CGNSNAME
       IF(DEBUG) WRITE(LU,*) 'NUMBER OF POINTS: ',MESH2%NPOIN
       ENDIF
-      ! READ COORDINATES 
+      ! READ COORDINATES
       ALLOCATE(MESH2%X(MESH2%NPOIN),STAT=IERR)
       CALL FNCT_CHECK(IERR,'ALLOCATION MESH2%X')
       CALL CG_COORD_READ_F(NINP,INDEX_BASE,INDEX_ZONE,'CoordinateX',
@@ -141,7 +141,7 @@
       ! SET ELEMENT CONNECTIVITY:
       ALLOCATE(IELEM(MESH2%NDP,MESH2%NELEM),STAT=IERR)
       CALL FNCT_CHECK(IERR,'ALLOCATE IELEM')
-      ! READING THE CONNECTIVITY TABLE 
+      ! READING THE CONNECTIVITY TABLE
       CALL CG_ELEMENTS_READ_F(NINP,INDEX_BASE,INDEX_ZONE,INDEX_SECTION,
      &          IELEM,PARENT,IERR)
       CALL FNCT_CHECK(IERR,'CG_ELEMENTS_READ_F')
@@ -200,9 +200,9 @@
             CALL CG_NFIELDS_F(NINP,INDEX_BASE,INDEX_ZONE,ITIME,
      &                        MESH2%NVAR,IERR)
             CALL FNCT_CHECK(IERR,'CG_NFIELDS_F')
-            IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 
+            IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*)
      &             'NOMBRE DE VARIABLES :',MESH2%NVAR
-            IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 
+            IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*)
      &             'NUMBER OF VARIABLES:',MESH2%NVAR
             ALLOCATE(MESH2%RESULTS(MESH2%TIMESTEP,MESH2%NVAR,
      &                             MESH2%NPOIN),STAT=IERR)
@@ -220,9 +220,9 @@
             CALL CG_FIELD_INFO_F(NINP,INDEX_BASE,INDEX_ZONE,ITIME,
      &                           IVAR,DATATYPE,VARNAME,IERR)
             CALL FNCT_CHECK(IERR,'CG_FIELD_INFO_F '//I2CHAR(IVAR))
-            IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 
+            IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*)
      &              'NOM DE LA VARIABLE :',VARNAME
-            IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 
+            IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*)
      &              'NAME OF THE VARIABLE:',VARNAME
             ! IF FIRST TIME STEP SAVING VAR NAMES
             IF (ITIME.EQ.1) THEN
@@ -256,7 +256,7 @@
       ! CLOSE CGNS CFILE
       CALL CG_CLOSE_F(NINP,IERR)
       CALL FNCT_CHECK(IERR,'CG_CLOSE_F')
-!      
+!
 !-----------------------------------------------------------------------
 !
       WRITE(LU,*) '----------------------------------------------------'
@@ -269,12 +269,12 @@
      &       'CGNS SANS LA BILOTHEQUE CGNS'
       IF(LNG.EQ.2) WRITE(LU,*)
      &       'ERROR : TRYING TO READ CGNS FILE WITHOUT CGNS LIBRARY'
-      CALL PLANTE(1)      
+      CALL PLANTE(1)
 #endif
-! ENDIF HAVE_CGNS      
+! ENDIF HAVE_CGNS
       END SUBROUTINE
-!                       ***************** 
-                        SUBROUTINE WRITE_CGNS 
+!                       *****************
+                        SUBROUTINE WRITE_CGNS
 !                       *****************
      &(CGNSFILE)
 !
@@ -284,7 +284,7 @@
 !
 !BRIEF    WRITE A FILE OF CGNS FORMAT WITH THE MESH OBJECT
 !+        INFORMATIONS
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
@@ -300,9 +300,9 @@
       ! LANGAE AND OUTPUT VALUE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-#if defined(HAVE_CGNS)      
+#if defined(HAVE_CGNS)
       INCLUDE 'cgnslib_f.h'
-#endif      
+#endif
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -330,7 +330,7 @@
       IF(LNG.EQ.1) WRITE(LU,*) '------DEBUT ECRITURE DU FICHIER CGNS'
       IF(LNG.EQ.2) WRITE(LU,*) '------BEGINNING WRITTING OF CGNS FILE'
       WRITE(LU,*) '----------------------------------------------------'
-!      
+!
 !-----------------------------------------------------------------------
 !
 
@@ -378,7 +378,7 @@
       ! UNSORTED BOUNDARY ELEMENTS
       NBDYELEM=0
       ! DEFINES THE CGNS TYPE
-      ! WRITE ELEMENT CONNECTIVITY 
+      ! WRITE ELEMENT CONNECTIVITY
       SELECT CASE (MESH2%TYPE_ELEM)
       CASE(TRIANGLE_ELT_TYPE)
         CALL CG_SECTION_WRITE_F(NOUT,INDEX_BASE,INDEX_ZONE,
@@ -399,7 +399,7 @@
       END SELECT
       CALL FNCT_CHECK(IERR,'CG_SECTION_WRITE_F')
       DEALLOCATE(IELEM)
-      
+
       ! RESULTS INFORMATIONS
       ! IF WE HAVE RESULTS
       IF(MESH2%TIMESTEP.NE.0) THEN
@@ -423,7 +423,7 @@
             ! DECLARING A NEW VARIABLE
             VARNAME = MESH2%NAMEVAR(IVAR)
             DO K=1,MESH2%NPOIN
-              TMP(K) = MESH2%RESULTS(ITIME,IVAR,K) 
+              TMP(K) = MESH2%RESULTS(ITIME,IVAR,K)
             ENDDO
             CALL CG_FIELD_WRITE_F(NOUT,INDEX_BASE,INDEX_ZONE,
      &               INDEX_FLOW,REALDOUBLE,VARNAME,
@@ -466,7 +466,7 @@
       ! CLOSE CGNS CFILE
       CALL CG_CLOSE_F(NOUT,IERR)
       CALL FNCT_CHECK(IERR,'CG_CLOSE_F')
-!      
+!
 !-----------------------------------------------------------------------
 !
       WRITE(LU,*) '----------------------------------------------------'
@@ -478,8 +478,8 @@
      &            'FICHIER CGNS SANS LA BIBLIOTHEQUE'
       IF(LNG.EQ.2) WRITE(LU,*)'ERROR : TRYING TO WRITE CGNS FILE ',
      &            'WITHOUT CGNS LIBRARY'
-      CALL PLANTE(1)      
+      CALL PLANTE(1)
 #endif
-! ENDIF HAVE_CGNS      
+! ENDIF HAVE_CGNS
       END SUBROUTINE
       END MODULE

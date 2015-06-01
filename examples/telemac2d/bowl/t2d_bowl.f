@@ -14,7 +14,7 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |                | -- |  
+! |                | -- |
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !***********************************************************************
@@ -23,7 +23,7 @@
       USE DECLARATIONS_TELEMAC2D
 !
       IMPLICIT NONE
-      INTEGER LNG,LU 
+      INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -33,7 +33,7 @@
       INTEGER I,ITRAC
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!  
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -69,10 +69,10 @@
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
-!  ZONE A MODIFIER                                                      
+!  ZONE A MODIFIER
 !
-!=====================================     
-! DEFINITION DES PARAMETRES A UTILISER                        
+!=====================================
+! DEFINITION DES PARAMETRES A UTILISER
       GR=9.81D0
       PERI=1773.D0
 !     ALPHA=1.6E-7
@@ -84,20 +84,20 @@
       RAY=SQRT(1.0D0/(ALPHA*(X1-Y1)))
       CONST1=1.0D0/(X1+Y1)
       CONST2=ALPHA*(Y1**2-X1**2)
-! ===================================      
-      DO I = 1 , NPOIN        
+! ===================================
+      DO I = 1 , NPOIN
 !  CALCUL DE r
-      R=SQRT(X(I)**2+Y(I)**2) 
-      IF(R.LE.RAY) THEN                                           
+      R=SQRT(X(I)**2+Y(I)**2)
+      IF(R.LE.RAY) THEN
         H%R(I) = CONST1+(CONST2*R**2)*CONST1**2
-        U%R(I) = 0.D0                         
-      ELSE      
-        H%R(I) = 0.D0   
-        U%R(I) = 0.D0   
-      ENDIF                 
-!             
-      ENDDO                          
-!  FIN DE LA ZONE A MODIFIER      
+        U%R(I) = 0.D0
+      ELSE
+        H%R(I) = 0.D0
+        U%R(I) = 0.D0
+      ENDIF
+!
+      ENDDO
+!  FIN DE LA ZONE A MODIFIER
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -143,7 +143,7 @@
 !
 !
 !-----------------------------------------------------------------------
-!  ARGUMENTS USED IN THE EXAMPLE 
+!  ARGUMENTS USED IN THE EXAMPLE
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|_______________________________________________
@@ -201,13 +201,13 @@
       ALPHA=PI**2/(2.D0*PERI**2*GR)
 !     ALPHA=1.6E-7
       DO I=1,NPOIN
-        RAY2=X(I)**2+Y(I)**2 
+        RAY2=X(I)**2+Y(I)**2
         ZF%R(I) = ALPHA*RAY2
       ENDDO
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END     
-                              
- 
+      END
+
+

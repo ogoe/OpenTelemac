@@ -99,11 +99,11 @@
 !-----------------------------------------------------------------------
 !
       INTEGER          I1,IAD,L1,L2,TRANS,ISIZE,K,I,N
-      CHARACTER(LEN=72)  :: FMT0, FMT1, FMT2, FMT3, FMT4, FMT5, FMT6, 
-     &     FMT7, FMT8, FMT9, FMT10, FMT11, FMT12, FMT13, FMT14, FMT15, 
-     &     FMT16, FMT17, FMT18, FMT19, FMT20, FMT21, FMT22, FMT23, 
-     &     FMT24, FMT25, FMT26, FMT27, FMT28, FMT29, FMT30, FMT31, 
-     &     FMT32, FMT33, FMT34, FMT35 
+      CHARACTER(LEN=72)  :: FMT0, FMT1, FMT2, FMT3, FMT4, FMT5, FMT6,
+     &     FMT7, FMT8, FMT9, FMT10, FMT11, FMT12, FMT13, FMT14, FMT15,
+     &     FMT16, FMT17, FMT18, FMT19, FMT20, FMT21, FMT22, FMT23,
+     &     FMT24, FMT25, FMT26, FMT27, FMT28, FMT29, FMT30, FMT31,
+     &     FMT32, FMT33, FMT34, FMT35
       CHARACTER*6      TYP(4)
       CHARACTER*1      TABUL
 !
@@ -234,7 +234,7 @@
 213               FORMAT(1X,A,/,1X,'VALUE NOT FOUND',/,1X)
                 ENDIF
               ENDIF
-!             
+!
             ENDIF
           ENDDO ! I
         ENDDO ! N
@@ -292,11 +292,11 @@
         FMT33="(1X,'NOMBRE TOTAL DE MOTS CLES  = ',I4)"
         FMT34="(1X,'TOTAL NUMBER OF KEY WORDS     = ',I4)"
         FMT35="(/,1X,70('-'),/,1X,A,/,1X,70('-'))"
-! 
-! TITLE 
+!
+! TITLE
         IF(LNG.EQ.1) THEN
           WRITE(LU,FMT23)
-!      
+!
           WRITE(LU,*)' '
           WRITE(LU,*)'====================================='
           WRITE(LU,FMT25) NMOT(1),NMAXR(1)
@@ -309,7 +309,7 @@
           WRITE(LU,*)' '
         ELSE
           WRITE(LU,FMT24)
-!      
+!
           WRITE(LU,*)' '
           WRITE(LU,*)'====================================='
           WRITE(LU,FMT26) NMOT(1),NMAXR(1)
@@ -320,9 +320,9 @@
           WRITE(LU,FMT34) NMOT(1)+NMOT(2)+NMOT(3)+NMOT(4)
           WRITE(LU,*)'====================================='
           WRITE(LU,*)' '
-         
+
         ENDIF
-!      
+!
         DO N =1,4
           DO I = 1 , NMAXR(N)
             IF(UTINDX(N,I)) THEN
@@ -333,10 +333,10 @@
                   IF(LNG.EQ.1) WRITE(LU,FMT9)
                   IF(LNG.EQ.2) WRITE(LU,FMT10)
                 ENDIF
-! INDEX         
+! INDEX
                 IF(LNG.EQ.1) WRITE(LU,FMT19) I
                 IF(LNG.EQ.2) WRITE(LU,FMT20) I
-! SIZE          
+! SIZE
                 IF(LNG.EQ.1) WRITE(LU,FMT13) DIMENS(N,I)
                 IF(LNG.EQ.2) WRITE(LU,FMT14) DIMENS(N,I)
                 IF (DIMENS(N,I).GT.1.AND.
@@ -344,8 +344,8 @@
                   IF(LNG.EQ.1) WRITE(LU,FMT11)
                   IF(LNG.EQ.2) WRITE(LU,FMT12)
                 ENDIF
-!             
-! TROUVE ?    
+!
+! TROUVE ?
                 IF (TROUVE(N,I).EQ.3) THEN
                   IF(LNG.EQ.1) WRITE(LU,FMT15)
                   IF(LNG.EQ.2) WRITE(LU,FMT16)
@@ -357,7 +357,7 @@
 !
 ! LINEFEED FOR PRESENTATION PURPOSES
                 IF (DIMENS(N,I).GT.1) WRITE(LU,*) ' '
-!               
+!
                 DO K=1,DIMENS(N,I)
                   IAD = ADRESS(N,I) + K - 1
                   IF (INDIC(N,I).GE.2) THEN
@@ -368,7 +368,7 @@
                     MOTATT(N,IAD)=' '
                     L1 =1
                   ENDIF
-!                
+!
 !                 IF (TROUVE(N,I).NE.3) THEN
                   SELECT CASE (N+TRANS)
                   CASE(1)
@@ -417,7 +417,7 @@
                 ENDIF
                 WRITE(LU,*)' '
               ENDIF
-!        
+!
             ENDIF
           ENDDO ! I
         ENDDO ! N
@@ -443,7 +443,7 @@
 !
         DO N = 1 , 4
           DO I = 1 , NMAXR(N)
-!        
+!
             IF(UTINDX(N,I)) THEN
               IAD = ADRESS(N,I)
               WRITE (LU,FMT5) MOTCLE(N,I)(1:SIZE(N,I))

@@ -16,7 +16,7 @@
 !+   First version.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IX             |<--| INTEGER ARRAY CODING THE REAL ARRAY 
+!| IX             |<--| INTEGER ARRAY CODING THE REAL ARRAY
 !| N              |-->| NUMBER OF POINTS IN THE ARRAYS X AND IX
 !| NSUM           |-->| MAXIMUM NUMBER OF SUMS THAT WILL BE POSSIBLE
 !| QT             |<--| THE QUANTUM USED FOR CODING
@@ -47,7 +47,7 @@
       INTRINSIC NINT,MAX,ABS
 !
 !-----------------------------------------------------------------------
-!   
+!
       CALL MINI(XMIN,I,X,N)
       CALL MAXI(XMAX,I,X,N)
 !

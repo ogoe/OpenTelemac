@@ -52,17 +52,17 @@
 !
         INTEGER,        POINTER :: NIT
         INTEGER,        POINTER :: LT
-! 
+!
         TYPE(BIEF_FILE), POINTER :: T2D_FILES(:)
         INTEGER :: MAXLU_T2D
-        INTEGER :: MAXKEY 
+        INTEGER :: MAXKEY
         INTEGER, POINTER :: T2DRES
         INTEGER, POINTER :: T2DGEO
         INTEGER, POINTER :: T2DCLI
 !
         CHARACTER(LEN=144), POINTER :: COUPLING
 !
-  
+
         TYPE(BIEF_OBJ), POINTER :: TE5
         TYPE(BIEF_OBJ), POINTER :: ZF
         TYPE(BIEF_OBJ), POINTER :: H
@@ -86,22 +86,22 @@
 !      end type ! instance_t2d
 !
       INTEGER, PARAMETER :: MAX_INSTANCES=10
-      TYPE(INSTANCE_T2D), POINTER, SAVE :: INSTANCE_LIST(:) 
+      TYPE(INSTANCE_T2D), POINTER, SAVE :: INSTANCE_LIST(:)
       LOGICAL, ALLOCATABLE, SAVE :: USED_INSTANCE(:)
 !
       CONTAINS
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      !brief creates a telemac2d instance 
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !history y audouin (edf r&d, lnhe)                                
-      !+       21/08/2013 
+      !brief creates a telemac2d instance
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !history y audouin (edf r&d, lnhe)
+      !+       21/08/2013
       !+       creation of the file
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !param id   [out]    id of the new instance
-      !param ierr [out]    0 if subroutine successfull, 
+      !param ierr [out]    0 if subroutine successfull,
       !+                   error id otherwise
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE CREATE_INSTANCE_T2D(ID,IERR)
@@ -127,9 +127,9 @@
           ENDIF
         ENDIF
 !
-        ! look for the first instance available  
+        ! look for the first instance available
         I = 1
-        DO WHILE(USED_INSTANCE(I).AND.I.LE.MAX_INSTANCES) 
+        DO WHILE(USED_INSTANCE(I).AND.I.LE.MAX_INSTANCES)
           I = I + 1
         ENDDO
         ID = I
@@ -155,13 +155,13 @@
         INSTANCE_LIST(ID)%FLUX_BOUNDARIES => FLUX_BOUNDARIES
         INSTANCE_LIST(ID)%COTE => COTE
         INSTANCE_LIST(ID)%DEBIT  => DEBIT
-!              
+!
         INSTANCE_LIST(ID)%MESH   => MESH
         INSTANCE_LIST(ID)%LIHBOR => LIHBOR
         INSTANCE_LIST(ID)%LIUBOR => LIUBOR
         INSTANCE_LIST(ID)%LIVBOR => LIVBOR
         INSTANCE_LIST(ID)%NUMLIQ => NUMLIQ
-!              
+!
         INSTANCE_LIST(ID)%NIT    => NIT
         INSTANCE_LIST(ID)%LT     => LT
 !
@@ -174,27 +174,27 @@
 !
         INSTANCE_LIST(ID)%COUPLING => COUPLING
 !
-        INSTANCE_LIST(ID)%TE5    => TE5 
-        INSTANCE_LIST(ID)%ZF     => ZF 
-        INSTANCE_LIST(ID)%H      => H  
+        INSTANCE_LIST(ID)%TE5    => TE5
+        INSTANCE_LIST(ID)%ZF     => ZF
+        INSTANCE_LIST(ID)%H      => H
 !
         INSTANCE_LIST(ID)%DEBUG  => DEBUG
-       
-        
-        
+
+
+
       END SUBROUTINE CREATE_INSTANCE_T2D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      !brief deletes a telemac2d instance 
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !history y audouin (edf r&d, lnhe)                                
-      !+       21/08/2013 
+      !brief deletes a telemac2d instance
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !history y audouin (edf r&d, lnhe)
+      !+       21/08/2013
       !+       creation of the file
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !param id    [in]    id of the instance
-      !param ierr [out]    0 if subroutine successfull, 
+      !param ierr [out]    0 if subroutine successfull,
       !+                   error id otherwise
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE DELETE_INSTANCE_T2D(ID,IERR)
@@ -202,7 +202,7 @@
         INTEGER, INTENT(OUT) :: IERR
 !
         IERR = 0
-        ! 
+        !
         CALL CHECK_INSTANCE_T2D(ID,IERR)
         IF(IERR.NE.0) RETURN
         USED_INSTANCE(ID) = .FALSE.
@@ -210,28 +210,28 @@
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !brief check if the id is following convention
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !history y audouin (edf r&d, lnhe)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !history y audouin (edf r&d, lnhe)
+      !+       21/08/2013
       !+       creation of the file
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !param id    [in]    id of the instance
-      !param ierr [out]    0 if subroutine successfull, 
+      !param ierr [out]    0 if subroutine successfull,
       !+                   error id otherwise
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE CHECK_INSTANCE_T2D(ID,IERR) 
+      SUBROUTINE CHECK_INSTANCE_T2D(ID,IERR)
         INTEGER, INTENT(IN) :: ID
         INTEGER, INTENT(OUT) :: IERR
-!      
+!
         IERR = 0
-        IF(ID.LE.0 .OR. ID.GT.MAX_INSTANCES) THEN 
+        IF(ID.LE.0 .OR. ID.GT.MAX_INSTANCES) THEN
           IERR = INVALID_INSTANCE_NUM_ERROR
           ERR_MESS = 'INVALID INSTANCE NUMBER'
           RETURN
         ENDIF
-        IF(.NOT.USED_INSTANCE(ID)) THEN 
+        IF(.NOT.USED_INSTANCE(ID)) THEN
           IERR = UNUSED_INSTANCE_ERROR
           ERR_MESS = 'INSTANCE NUMBER WAS NOT CREATED'
           RETURN
@@ -240,21 +240,21 @@
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !brief Returns the error message of the instance
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !history y audouin (edf r&d, lnhe)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !history y audouin (edf r&d, lnhe)
+      !+       21/08/2013
       !+       creation of the file
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !param id    [in]    id of the instance
       !param mess  [out]   The erro message
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE GET_INSTANCE_ERROR_T2D(ID,MESS) 
+      SUBROUTINE GET_INSTANCE_ERROR_T2D(ID,MESS)
         INTEGER, INTENT(IN) :: ID
         CHARACTER(LEN=200), INTENT(OUT) :: MESS
-!      
+!
         MESS = INSTANCE_LIST(ID)%ERROR_MESSAGE
-!        
+!
       END SUBROUTINE GET_INSTANCE_ERROR_T2D
       END MODULE API_INSTANCE_T2D

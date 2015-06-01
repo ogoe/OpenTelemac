@@ -32,8 +32,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| L              |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
 !| LAST           |-->| INTEGER ONE-DIMENSIONAL ARRAY USED TO RETURN THE
-!|                |   | PERMUTATION OF THE ROWS AND COLUMNS OF M 
-!|                |   | CORRESPONDING TO THE MINIMUM DEGREE ORDERING;  
+!|                |   | PERMUTATION OF THE ROWS AND COLUMNS OF M
+!|                |   | CORRESPONDING TO THE MINIMUM DEGREE ORDERING;
 !|                |   | DIMENSION = N
 !| MARK           |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
 !| NEXT           |-->| INVERSE OF THE PERMUTATION RETURNED IN LAST

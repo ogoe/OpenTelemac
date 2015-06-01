@@ -11,7 +11,7 @@
         INTEGER RANK,NCSIZE,PMETHOD,VAR_SIZE
 !       PARAMETER FOR TELEMAC2D/MASCARET COUPLING
         ! TYPE FOR MASCARET BOUNDARY CONDITION
-       
+
         ! OUTPUT FOR WRITING
         LU=6
         ! 1 FOR FRENCH 2 FOR ENGLISH
@@ -41,7 +41,7 @@
 !         CALL PARTEL(GEO_FILE,CLI_FILE,NCSIZE,PMETHOD,
 !    &                .FALSE.,' ',.FALSE.,' ')
         ENDIF
-!        
+!
         CALL RUN_SET_CONFIG_T2D(ID,LU,LNG,IERR)
         PRINT *, 'IERR',IERR
         PRINT *, 'ID',ID
@@ -55,10 +55,10 @@
         PRINT *, 'RANK:',RANK,'VAR_SIZE:',VAR_SIZE
         CALL SET_STRING_T2D(ID,VARNAME,RES_FILE,VAR_SIZE,IERR)
         PRINT *, 'IERR',IERR
-        
+
         CALL RUN_ALLOCATION_T2D(ID,IERR)
         PRINT *, 'IERR',IERR
- 
+
         CALL RUN_INIT_T2D(ID,IERR)
         PRINT *, 'IERR',IERR
 
@@ -79,7 +79,7 @@
         PRINT *, 'IERR',IERR
 
         VARNAME = 'MODEL.NTIMESTEPS'
-        CALL GET_INTEGER_T2D(ID, VARNAME, NTIME_STEPS, 
+        CALL GET_INTEGER_T2D(ID, VARNAME, NTIME_STEPS,
      &                       0, 0, 0, IERR)
         PRINT *, 'IERR',IERR
 

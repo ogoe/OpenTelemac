@@ -98,7 +98,7 @@
           FLAG = .TRUE.
           MASKEL(IELEM) = 0.D0
         ENDIF
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 20    CONTINUE
 !
@@ -128,14 +128,14 @@
 !
           ENDIF
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         DO IELEM = 1,NELEM
           IF (ITRA01(IELEM).EQ.1) THEN
             FLAG = .TRUE.
             MASKEL(IELEM) = 0.D0
           ENDIF
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         GOTO 20
 !

@@ -1,20 +1,20 @@
-!                 ********************** 
+!                 **********************
                   SUBROUTINE SOLVELAMBDA
-!                 ********************** 
-!                  
+!                 **********************
+!
      &(XK,XUC,XVC,XKX,XKY,XH)
 !
 !***********************************************************************
 ! ARTEMIS   V6P3                                     06/2013
 !***********************************************************************
 !
-!brief    RESOLUTION OF DISPERSION EQUATION WITH CURRENT  
+!brief    RESOLUTION OF DISPERSION EQUATION WITH CURRENT
 !+        USING  DICHOTOMIE
 !
 !code                          ->->
 !+      Eq solved on k : omega-k.U = sqrt(gk tanh(kH))
 !
-!history  D.IDIER / J.PARISI / C.PEYRARD 
+!history  D.IDIER / J.PARISI / C.PEYRARD
 !+        30/06/2013
 !+        V6P3
 !+
@@ -53,9 +53,9 @@
       K30 =(K10+K20)*0.5D0
       AK01=(XUC*XKX)
       AK02=(XVC*XKY)
-      AK03=SQRT(XKX**2+XKY**2) 
-!         
-97    CONTINUE   
+      AK03=SQRT(XKX**2+XKY**2)
+!
+97    CONTINUE
       NIT=NIT+1
       IF (NIT.GT.100000) THEN
         WRITE(LU,*) 'ERREUR : ROUTINE SOLVELAMBDA !        '
@@ -68,16 +68,16 @@
         WRITE(LU,*) '--------------------------------------'
         CALL PLANTE(1)
         STOP
-      ENDIF     
-!     
+      ENDIF
+!
       AK10=SQRT(GRAV*K10*TANH(K10*XH))-OMEGA
      & +    (AK01+AK02)*K10/AK03
-      AK20=SQRT(GRAV*K20*TANH(K20*XH))-OMEGA 
+      AK20=SQRT(GRAV*K20*TANH(K20*XH))-OMEGA
      & +    (AK01+AK02)*K20/AK03
       AK30=SQRT(GRAV*K30*TANH(K30*XH))-OMEGA
-     & +    (AK01+AK02)*K30/AK03 
-!      
-      IF(AK30*AK20.GE.0.D0)THEN 
+     & +    (AK01+AK02)*K30/AK03
+!
+      IF(AK30*AK20.GE.0.D0)THEN
         K20=K30
       ELSEIF(AK30*AK10.GE.0.D0)THEN
         K10=K30
@@ -94,8 +94,8 @@
         STOP
       ENDIF
       DELTA=ABS(K20-K10)/K20
-      K30=(K10+K20)*0.5D0     
-!      
+      K30=(K10+K20)*0.5D0
+!
       IF(DELTA.GT.1D-06)THEN
         GOTO 97
       ELSE

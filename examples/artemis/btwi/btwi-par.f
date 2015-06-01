@@ -4,7 +4,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 6.2   07/12   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 6.2   07/12   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -77,18 +77,18 @@
 !
       INTEGER I
 !
-      DOUBLE PRECISION PI,BID         
+      DOUBLE PRECISION PI,BID
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
+!     ----------------------------------------
 !
-      INTEGER IG              
+! JCB :
+!
+      INTEGER IG
 !
 !CP
-      INTEGER IG0 ,JB             
+      INTEGER IG0 ,JB
       DOUBLE PRECISION PHASOI,AUXIC,AUXIS,DEGRAD,X0,Y0,KK
       DOUBLE PRECISION DINF,KINF,DLOC,KLOC,AUX1,AUX2
 !CP
@@ -114,7 +114,7 @@
       TETAP%R(:) = 0.D0
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
-      HB%R(:)    = 1.0D0 
+      HB%R(:)    = 1.0D0
 ! --- INCIDENT WAVE PHASE DEFINITION
       DEGRAD=PI/180.D0
       PHASOI=0.D0
@@ -134,39 +134,39 @@
       KINF = SQRT( AUX1*(AUX1 + 1.D0/AUX2) )
       KINF = KINF/DINF
 
-      
+
 
 
       DO I=1,NPTFR
         JB=BOUNDARY_COLOUR%I(I)
-        
+
 !       PAROIS SOLIDES
-!       
+!
         IF(JB.GE.245.AND.JB.LE.902)THEN
           LIHBOR%I(I)=KLOG
-          RP%R(I)=1.D0  
+          RP%R(I)=1.D0
           TETAP%R(I)=0.D0
           ALFAP%R(I)=0.D0
         ENDIF
-!       
-!       
+!
+!
 !       PAROIS LIQUIDES -FRONTIERE LIBRE
-!       
+!
         IF(JB.GE.903.AND.JB.LE.953)THEN
           LIHBOR%I(I)=KSORT
           TETAP%R(I)=24.D0
         ENDIF
-!       
+!
         IF(JB.GE.954.AND.JB.LE.1042)THEN
           LIHBOR%I(I)=KSORT
           TETAP%R(I)=66.D0
         ENDIF
-!       
-!       
-!       
+!
+!
+!
 !       PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
-!       
-!       
+!
+!
         IF(JB.GE.1.AND.JB.LE.244)THEN
           LIHBOR%I(I)=KINC
           TETAB%R(I)=114.D0
@@ -182,9 +182,9 @@
 !
 !
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+      RETURN
+      END
 !                       *****************
                         SUBROUTINE ART_CORFON
 !                       *****************
@@ -249,7 +249,7 @@
 !
       ENDIF
 !
- 
+
 
 !-----------------------------------------------------------------------
 !
@@ -266,4 +266,4 @@
 !
 !
       RETURN
-      END                  
+      END

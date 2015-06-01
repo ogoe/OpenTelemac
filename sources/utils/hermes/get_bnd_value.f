@@ -8,7 +8,7 @@
 ! HERMES   V7P0                                               01/05/2014
 !***********************************************************************
 !
-!brief    Returns an array containing the boundary type for each 
+!brief    Returns an array containing the boundary type for each
 !+        boundary point
 !
 !history  Y AUDOUIN (LNHE)
@@ -52,7 +52,7 @@
         CASE ('SERAFIN ','SERAFIND')
           CALL GET_BND_VALUE_SRF(FID, TYP_BND_ELEM,NPTFR,VALUE, IERR)
         CASE ('MED     ')
-          CALL GET_BND_VALUE_MED(FID, TYP_BND_ELEM,NELEBD,VALUE, 
+          CALL GET_BND_VALUE_MED(FID, TYP_BND_ELEM,NELEBD,VALUE,
      &                           NPTFR,NBOR,IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

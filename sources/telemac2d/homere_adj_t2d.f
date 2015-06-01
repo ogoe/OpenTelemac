@@ -356,15 +356,15 @@
 !
 !  READS TELEMAC2D RESULTS (RESULTS FILE - UNIT NRES)
 !
-          ITER=LT 
+          ITER=LT
           ! Started counting from 0
-!        
+!
           CALL READ_DATASET(T2D_FILES(T2DRES)%FMT,T2D_FILES(T2DRES)%LU,
      &                      VARSOR,NPOIN,ITER,AT1,TEXTE,TROUVE,ALIRRES,
      &                      LISTIN,.FALSE.,MAXVAR)
-!        
+!
 !         GETTING MEASUREMENTS AND WEIGHTS AT THE SAME TIME
-!        
+!
 !         HERE ALPHA1, ALPHA2 AND ALPHA3 ARE ALSO SET.
           CALL MESURES(ITER,AT1)
 !
@@ -453,12 +453,12 @@
      &        (ERRH.LE.TOLEST(1).AND.
      &         ERRU.LE.TOLEST(2).AND.
      &         ERRV.LE.TOLEST(3))       ) THEN
-!       
+!
           IF(LISTIN) THEN
             IF(LNG.EQ.1) WRITE(LU,395) NITERA
             IF(LNG.EQ.2) WRITE(LU,396) NITERA
           ENDIF
-!       
+!
 395       FORMAT(/,1X,'------------------------------------------',/
      &            ,1X,'    SOLUTION TROUVEE EN ',1I3,' ITERATIONS',/
      &            ,1X,'------------------------------------------')
@@ -468,9 +468,9 @@
           WRITE(LU,*) 'GRADIENT OF ZONE 1 : ',GRADJ%R(1)
           WRITE(LU,*) 'STRICKLER OF POINT 10 : ',CHESTR%R(10)
           GO TO 999
-!       
+!
         ELSEIF (NITERA.GT.MAXEST) THEN
-!       
+!
           IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'PAS DE CONVERGENCE EN ',NITERA,' ITERATIONS'
           WRITE(LU,*) 'STRICKLER DU POINT 10 : ',CHESTR%R(10)
@@ -487,9 +487,9 @@
      &            'PRECISION  :',G16.7,1X,'JCOUTN/JCOUT1 :',G16.7)
           ENDIF
           GO TO 999
-!       
+!
         ELSEIF (JCOUT.GT.JCOUTN.AND..NOT.RSTART) THEN
-!       
+!
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LA FONCTION COUT AUGMENTE : STOP'
             WRITE(LU,*) 'STRICKLER DU POINT 10 : ',CHESTR%R(10)
@@ -498,9 +498,9 @@
             WRITE(LU,*) 'STRICKLER OF POINT 10 : ',CHESTR%R(10)
           ENDIF
 !         GO TO 999
-!       
+!
         ENDIF
-!       
+!
 ! ADJO  INT SYSTEM
 !
         IF(LNG.EQ.1) WRITE(LU,403)
@@ -612,7 +612,7 @@
       IF(.NOT.INCLU2(ESTIME,'DEBUG')) THEN
 !
         NPLAN = 1
-        CALL WRITE_HEADER(T2D_FILES(T2DRBI)%FMT,T2D_FILES(T2DRBI)%LU, 
+        CALL WRITE_HEADER(T2D_FILES(T2DRBI)%FMT,T2D_FILES(T2DRBI)%LU,
      &                    TITCAS, MAXVAR, TEXTE, SORLEOA)
         CALL WRITE_MESH(T2D_FILES(T2DRBI)%FMT,T2D_FILES(T2DRBI)%LU,MESH,
      &                  NPLAN, MARDAT, MARTIM)

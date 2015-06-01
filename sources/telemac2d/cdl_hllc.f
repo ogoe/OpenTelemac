@@ -1,12 +1,12 @@
-!                       ********************                             
+!                       ********************
                         SUBROUTINE CDL_HLLC
-!                       ********************                             
-!                                                                       
+!                       ********************
+!
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,
      & W,CE,FLUENT,FLUSORT,FLBOR,EPS,WINF,
      & G,HBOR,UBOR,VBOR,MESH)
 
-!                                                                       
+!
 !
 !***********************************************************************
 ! TELEMAC 2D VERSION 6.2                                     01/15/2012
@@ -25,7 +25,7 @@
 !+
 !+        V6P3
 !+ reimplement strong imposition
-!+ cleaning 
+!+ cleaning
 !
 !history  R. ATA (EDF-LNHE) 06/05/2014
 !+
@@ -48,19 +48,19 @@
 !|  KDIR          |-->|  CONVENTION FOR DIRICHLET POINTS
 !|  KNEU          |-->|  CONVENTION FOR NEUMANN POINTS
 !|  W             |-->|  UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
-!|  CE            |<->|  FLUX 
+!|  CE            |<->|  FLUX
 !|  FLUENT,FLUSORT|<--|  IN AND OUT MASS FLUX
 !|  FLBOR         |<--|  IN AND OUT WATER MASS FLUX
-!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION 
+!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION
 !|  HBOR,UBOR,VBOR|-->|  PRESCRIBED H, U AND V GIVEN BY BORD
-!|  WINF          |-->|  PRESCRIBED BOUNDARY CONDITIONS 
+!|  WINF          |-->|  PRESCRIBED BOUNDARY CONDITIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC,ONLY: KDIR,KENT,KDDL,KNEU,KENTU
       USE DECLARATIONS_TELEMAC2D,ONLY:NUMLIQ,LIUBOR,ENTET
       USE INTERFACE_TELEMAC2D, EX_CDL_HLLC => CDL_HLLC
-!  
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -81,7 +81,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IS,K,IDRY
-!    
+!
       DOUBLE PRECISION :: VNX,VNY,XNN,YNN,VNL(NPTFR)
       DOUBLE PRECISION :: UNN,VNN,LAMBDA1,LAMBDA2
       DOUBLE PRECISION :: FLX(NPTFR,4),H1,U10,U1,V1
@@ -114,7 +114,7 @@
         FLX(K,4)     = 0.D0
 !     INDICATOR FOR DRY CELLS
         IDRY=0
-!     NORMALIZED NORMAL    
+!     NORMALIZED NORMAL
         XNN=XNEBOR(K)
         YNN=YNEBOR(K)
 !     NON NORMALIZED NORMAL
@@ -122,7 +122,7 @@
         VNY=YNEBOR(K+NPTFR)
 !
         VNL(K)=SQRT(VNX**2+VNY**2)
-!     
+!
         H1 = W(1,IS)
         IF(H1.GT.EPS)THEN
           U1 = W(2,IS)/H1
@@ -139,18 +139,18 @@
 !     SLIPPING CONDITION
 !===============================
 !
-        IF(LIMPRO(K,1).EQ.KNEU) THEN 
+        IF(LIMPRO(K,1).EQ.KNEU) THEN
 
 ! FIRST METHOD: STRONG IMPOSITION
 !********************************
 !    CE.n = 0  is done in cdlproj
 ! DEFINITION OF THE GHOST STATE Ue
           H2=H1
-!         ROTATION 
+!         ROTATION
           U10 = U1
           U1  = XNN*U10+YNN*V1
           V1  =-YNN*U10+XNN*V1
-! PUT NORMAL COMPONENT = 0        
+! PUT NORMAL COMPONENT = 0
           U1 =  0.0D0
           U2 =  U1
           V2 =  V1
@@ -158,7 +158,7 @@
           U10 = U1
           U1  = -YNN*V1
           V1  =  XNN*V1
-!          
+!
           U2  = -YNN*V2
           V2  =  XNN*V2
 ! SECOND METHOD: WEAK IMPOSITION
@@ -178,7 +178,7 @@
 !**************************************************
 !         LIQUID BOUNDARIES
 !**************************************************
-        ELSEIF((LIMPRO(K,1).EQ.KDIR).OR.(LIMPRO(K,1).EQ.KDDL))THEN 
+        ELSEIF((LIMPRO(K,1).EQ.KDIR).OR.(LIMPRO(K,1).EQ.KDDL))THEN
 
 !         PREPARE COMPUTATION OF RIEMANN INVARIANTS
           IF(H1.LT.EPS)THEN
@@ -193,14 +193,14 @@
 !===============================
 !
           IF(LIMPRO(K,1).EQ.KDIR) THEN
-!   
+!
             HG = HBOR(K) ! THIS IS HG (GHOST STATE)
             CG = SQRT(G*HG)
-            C1 = SQRT(G*H1) 
+            C1 = SQRT(G*H1)
             LAMBDA1 = UNN + C1 ! WE USE REAL H (H1) TO ASSESS THE REGIME
             LAMBDA2 = UNN - C1
             REGIME  = LAMBDA1*LAMBDA2
-!         
+!
             IF(REGIME.LT.0.D0.OR.UNN.LE.0.D0) THEN ! SUBCRITICAL REGIME OR ENTRY
               IF(HG.LT.EPS)THEN
                 UG = 0.D0 !  UG (GHOST)
@@ -211,9 +211,9 @@
                   UG = UNN +2.D0*(C1-CG)
                   VG = VNN
 !                 INVERSE ROTATION
-                  UGTEMP = UG 
-                  UG = XNN*UGTEMP - YNN*VG 
-                  VG = YNN*UGTEMP + XNN*VG 
+                  UGTEMP = UG
+                  UG = XNN*UGTEMP - YNN*VG
+                  VG = YNN*UGTEMP + XNN*VG
                 ELSE                            ! SUPERCRITICAL
                   IF(LIUBOR%I(K).EQ.KENTU.OR.LIUBOR%I(K).EQ.KENT) THEN ! IMPOSED INFLOW
                                                                    ! OR IMPOSED VELOCITY
@@ -230,8 +230,8 @@
                   ENDIF
                 ENDIF
               ENDIF
-            ELSE !THIS IS A SUPERCRITICAL OUTFLOW (NO NEED FOR GIVEN H) 
-              IF(.NOT.DEJA.AND.ENTET)THEN 
+            ELSE !THIS IS A SUPERCRITICAL OUTFLOW (NO NEED FOR GIVEN H)
+              IF(.NOT.DEJA.AND.ENTET)THEN
                 IF(LNG.EQ.1) WRITE(LU,60) NUMLIQ%I(K),ABS(UNN)/
      &                                    MAX(EPS,C1)
                 IF(LNG.EQ.2) WRITE(LU,61) NUMLIQ%I(K),ABS(UNN)/
@@ -246,49 +246,49 @@
 !==================================
 !      IF GIVEN VELOCITY OR DISCHARGE
 !==================================
-! 
+!
           ELSEIF(LIMPRO(K,2).EQ.KDIR)THEN     !   (LIUBOR%I(K).EQ.KENTU)THEN
 !
             UG = UBOR(K) ! GIVEN BY BORD
             VG = VBOR(K) ! GIVEN BY BORD
-!           
-            UGN =  XNN*UG + YNN*VG ! TO RETRIEVE NORMAL COMPONENT OF UG 
+!
+            UGN =  XNN*UG + YNN*VG ! TO RETRIEVE NORMAL COMPONENT OF UG
 !           VGN = -YNN*UG + XNN*VG ! AND SO ON
 !
-            HG = (UNN + 2.D0*SQRT(G*H1)-UGN)**2/FOURG 
+            HG = (UNN + 2.D0*SQRT(G*H1)-UGN)**2/FOURG
 !
             IF(HG.LE.EPS)THEN
               IDRY = IDRY + 1
             ENDIF
 !
-            GOTO 90 ! TO COMPUTE THE FLUX         
+            GOTO 90 ! TO COMPUTE THE FLUX
 !=========================================================
 !     IF GIVEN DISCHARGE :CONSIDERED IN THE PREVIOUS CASES
 !     THANKS TO SUBROUTINE DEBIMP WHICH TRANSFORMS FLOWRATES
-!     TO H (AT TN, WHICH CAN BE IMPROVED) AND VELOCITY 
+!     TO H (AT TN, WHICH CAN BE IMPROVED) AND VELOCITY
 !==========================================================
 !         ELSE IF(LIUBOR%I(K).EQ.KENT)THEN
 !
 !===============================
 !     FREE CONDITION
 !===============================
-          ELSE  
-!         NOTHING TO DO   
+          ELSE
+!         NOTHING TO DO
             HG = 0.D0
             UG = 0.D0
-            VG = 0.D0 
-            IDRY = IDRY+1    
+            VG = 0.D0
+            IDRY = IDRY+1
           ENDIF
 !
 90        CONTINUE
-!         COMPUTE THE FLUX 
+!         COMPUTE THE FLUX
           IF(IDRY.LT.2)THEN
 !         AT LEAST ONE WET CELL
             CALL FLUX_HLLC(XI,H1,HG,U1,UG,V1,VG,PSI1,PSI2,
      &                     XNN,YNN,ROT,FLX(K,:))
           ENDIF
-!   
-         ENDIF
+!
+        ENDIF
       ENDDO
       ENDIF
 !
@@ -309,7 +309,7 @@
         ELSE
           OUTFLOW  = FLX(K,1)*VNL(K)
         ENDIF
-        IF(FLX(K,1).LE.0D0)THEN ! INLET 
+        IF(FLX(K,1).LE.0D0)THEN ! INLET
           FLUENT = FLUENT + OUTFLOW
         ELSE                    ! OUTLET
           FLUSORT = FLUSORT + OUTFLOW
@@ -317,12 +317,12 @@
         FLBOR%R(K) = OUTFLOW
 !
 !100     CONTINUE
-!  
+!
         CE(IS,1)  = CE(IS,1) - VNL(K)*FLX(K,1)
         CE(IS,2)  = CE(IS,2) - VNL(K)*FLX(K,2)
         CE(IS,3)  = CE(IS,3) - VNL(K)*FLX(K,3)
       ENDDO
-!       
+!
       ENDIF ! PARALLEL CASES
 !
 30    FORMAT(1X,'CDL_HLLC: ATTENTION SUR LA FRONTIERE ',1I6,/,1X,

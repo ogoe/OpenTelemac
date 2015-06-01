@@ -32,7 +32,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| INIT           |-->| LOGICAL : IF TRUE X IS INITIALISED TO 0.
-!| LV             |-->| VECTOR LENGTH OF THE COMPUTER 
+!| LV             |-->| VECTOR LENGTH OF THE COMPUTER
 !| NDP            |-->| SECOND DIMENSION OF IKLE
 !| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
 !| NELMAX         |-->| FIRST DIMENSION OF IKLE AND W.

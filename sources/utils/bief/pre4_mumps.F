@@ -83,7 +83,7 @@
 !
       INTEGER, ALLOCATABLE          :: GLOSEG4(:)
       DOUBLE PRECISION, ALLOCATABLE :: XA(:),DA(:)
-      DOUBLE PRECISION, ALLOCATABLE :: RHS(:),XINC(:)     
+      DOUBLE PRECISION, ALLOCATABLE :: RHS(:),XINC(:)
 !
       INTEGER SIZE_GLOSEG4,SIZE_DA,SIZE_XA,SIZE_RHS,SIZE_XINC
 !
@@ -98,32 +98,32 @@
 !-----------------------------------------------------------------------
 !
       NPBLK=NPOIN*2
-      NSEGBLK=4*NSEGB+NPOIN 
-!    
-      IF(SIZE_GLOSEG4.EQ.0) THEN      
+      NSEGBLK=4*NSEGB+NPOIN
+!
+      IF(SIZE_GLOSEG4.EQ.0) THEN
         ALLOCATE(GLOSEG4(2*NSEGBLK))
         SIZE_GLOSEG4=    2*NSEGBLK
       ELSEIF(            2*NSEGBLK.GT.SIZE_GLOSEG4) THEN
         DEALLOCATE(GLOSEG4)
         ALLOCATE(GLOSEG4(2*NSEGBLK))
         SIZE_GLOSEG4=    2*NSEGBLK
-      ENDIF 
+      ENDIF
       IF(SIZE_DA.EQ.0) THEN
-        ALLOCATE(DA(NPBLK))      
+        ALLOCATE(DA(NPBLK))
         SIZE_DA=    NPBLK
       ELSEIF(       NPBLK.GT.SIZE_DA) THEN
         DEALLOCATE(DA)
         ALLOCATE(DA(NPBLK))
         SIZE_DA=    NPBLK
-      ENDIF                
-      IF(SIZE_XA.EQ.0) THEN      
+      ENDIF
+      IF(SIZE_XA.EQ.0) THEN
         ALLOCATE(XA(2*NSEGBLK))
         SIZE_XA=    2*NSEGBLK
       ELSEIF(       2*NSEGBLK.GT.SIZE_XA) THEN
         DEALLOCATE(XA)
         ALLOCATE(XA(2*NSEGBLK))
         SIZE_XA=    2*NSEGBLK
-      ENDIF              
+      ENDIF
       IF(SIZE_RHS.EQ.0) THEN
         ALLOCATE(RHS(NPBLK))
         SIZE_RHS=    NPBLK
@@ -131,7 +131,7 @@
         DEALLOCATE(RHS)
         ALLOCATE(RHS(NPBLK))
         SIZE_RHS=    NPBLK
-      ENDIF 
+      ENDIF
       IF(SIZE_XINC.EQ.0) THEN
         ALLOCATE(XINC(NPBLK))
         SIZE_XINC=    NPBLK
@@ -139,10 +139,10 @@
         DEALLOCATE(XINC)
         ALLOCATE(XINC(NPBLK))
         SIZE_XINC=    NPBLK
-      ENDIF 
+      ENDIF
 !
 !-----------------------------------------------------------------------
-!       
+!
 !     1. SECOND MEMBRE DU SYSTEME
 !     ===========================
 !
@@ -150,23 +150,23 @@
         RHS(I)      = CVB1(I)
         RHS(I+NPOIN)= CVB2(I)
       ENDDO
-!              
+!
 !     2. CONSTRUCTION STOCKAGE SEGMENT MATRICE BLOCK (DE 4)
-!     ===================================================== 
+!     =====================================================
 !
       CALL SD_STRSG4(NPOIN,NSEGB,GLOSEGB,NPBLK,NSEGBLK,GLOSEG4)
-!     
+!
       CALL SD_FABSG4(NPOIN,NSEGB,DAB1,DAB2,DAB3,DAB4,
      &               XAB1,XAB2,XAB3,XAB4,NPBLK,NSEGBLK,DA,XA,
      &               TYPEXT1,TYPEXT2,TYPEXT3,TYPEXT4)
-! 
+!
 !     3. RESOLUTION : APPEL A MUMPS
 !     =============================
-! 
+!
 !     NOTE JMH 23/02/2015 : THE ARGUMENTS GIVEN TO SOLVE_MUMPS ARE THOSE
 !                           OF SOLVE_MUMPS_PAR !!!!
 !                           AND SOLVE_MUMPS IS VOID !!!!!
-!   
+!
 !     CALL SOLVE_MUMPS(NPBLK,NSEGBLK,GLOSEG4,NSEGBLK,DA,XA,
 !    &                 XINC,RHS,INFOGR,TYPEXT,KNOLG,
 !    &                 NPOIN_TOT,IPID)
@@ -176,13 +176,13 @@
      &                     NPOIN_TOT,IPID)
 !
 !     4. RECUPERATION DES INCONNUES
-!     ============================= 
-! 
+!     =============================
+!
       DO I=1,NPOIN
         XX1(I)= XINC(I)
         XX2(I)= XINC(I+NPOIN)
       ENDDO
-!   
+!
 #else
       IF(LNG.EQ.1) WRITE(LU,2018)
       IF(LNG.EQ.2) WRITE(LU,2019)

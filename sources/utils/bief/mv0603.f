@@ -173,7 +173,7 @@
             W6(IELEM) =     XA61(IELEM) * Y(IKLE1(IELEM))
      &                    + XA62(IELEM) * Y(IKLE2(IELEM))
      &                    + XA63(IELEM) * Y(IKLE3(IELEM))
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -236,7 +236,7 @@
             W6(IELEM) =   - XA61(IELEM) * Y(IKLE1(IELEM))
      &                    - XA62(IELEM) * Y(IKLE2(IELEM))
      &                    - XA63(IELEM) * Y(IKLE3(IELEM))
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -280,7 +280,7 @@
             W6(IELEM) = W6(IELEM) + XA61(IELEM) * Y(IKLE1(IELEM))
      &                            + XA62(IELEM) * Y(IKLE2(IELEM))
      &                            + XA63(IELEM) * Y(IKLE3(IELEM))
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -332,7 +332,7 @@
             W6(IELEM) = W6(IELEM) - XA61(IELEM) * Y(IKLE1(IELEM))
      &                            - XA62(IELEM) * Y(IKLE2(IELEM))
      &                            - XA63(IELEM) * Y(IKLE3(IELEM))
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -390,7 +390,7 @@
      &              + C * (      XA61(IELEM) * Y(IKLE1(IELEM))
      &                         + XA62(IELEM) * Y(IKLE2(IELEM))
      &                         + XA63(IELEM) * Y(IKLE3(IELEM)) )
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -457,7 +457,7 @@
      &                    + XA43(IELEM) * Y(IKLE4(IELEM))
      &                    + XA53(IELEM) * Y(IKLE5(IELEM))
      &                    + XA63(IELEM) * Y(IKLE6(IELEM))
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -498,7 +498,7 @@
      &                    - XA43(IELEM) * Y(IKLE4(IELEM))
      &                    - XA53(IELEM) * Y(IKLE5(IELEM))
      &                    - XA63(IELEM) * Y(IKLE6(IELEM))
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).EQ.'0') THEN
 !
@@ -554,7 +554,7 @@
      &                            + XA43(IELEM) * Y(IKLE4(IELEM))
      &                            + XA53(IELEM) * Y(IKLE5(IELEM))
      &                            + XA63(IELEM) * Y(IKLE6(IELEM))
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -602,7 +602,7 @@
      &                            - XA43(IELEM) * Y(IKLE4(IELEM))
      &                            - XA53(IELEM) * Y(IKLE5(IELEM))
      &                            - XA63(IELEM) * Y(IKLE6(IELEM))
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !
@@ -653,7 +653,7 @@
      &                           + XA43(IELEM) * Y(IKLE4(IELEM))
      &                           + XA53(IELEM) * Y(IKLE5(IELEM))
      &                           + XA63(IELEM) * Y(IKLE6(IELEM)))
-          ENDDO ! IELEM 
+          ENDDO ! IELEM
 !
         ELSEIF(TYPEXT(1:1).NE.'0') THEN
 !

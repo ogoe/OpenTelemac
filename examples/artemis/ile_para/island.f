@@ -4,7 +4,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 6.1 28/06/11   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 6.1 28/06/11   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -77,15 +77,15 @@
 !
       INTEGER I
 !
-      DOUBLE PRECISION PI,BID         
+      DOUBLE PRECISION PI,BID
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!           
-!                                                                   
-! JCB :    
-      INTEGER IG  ,JB            
+!     ----------------------------------------
+!
+!
+! JCB :
+      INTEGER IG  ,JB
       DOUBLE PRECISION R0,R1  ,PHASOI,DEGRAD,X0,Y0
       DOUBLE PRECISION AUXIC,AUXIS,KK
 !
@@ -111,9 +111,9 @@
       TETAP%R(:) = 0.D0
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
-      HB%R(:)    = 1.D0 
+      HB%R(:)    = 1.D0
 
-! PHASE INITIALISATION      
+! PHASE INITIALISATION
       DEGRAD=PI/180.D0
       PHASOI=0.D0
       X0=-240000.D0
@@ -129,7 +129,7 @@
            LIHBOR%I(I)=KINC
            HB%R(I)=1.D0
            TETAB%R(I)=90.D0
-!CP ---- PHASE : K and THETAB are the same everywhere on the boundary 
+!CP ---- PHASE : K and THETAB are the same everywhere on the boundary
            IG   = MESH%NBOR%I(I)
            AUXIC =COS(TETAB%R(I)*DEGRAD)
            AUXIS =SIN(TETAB%R(I)*DEGRAD)
@@ -147,9 +147,9 @@
         ENDIF
 
       ENDDO
-      
-      RETURN                                                            
-      END 
+
+      RETURN
+      END
 
 !                       *****************
                         SUBROUTINE ART_CORFON
@@ -199,10 +199,10 @@
       PARAMETER( PI = 3.1415926535897932384626433D0)
 !
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
+!     ----------------------------------------
+!
 ! JCB :
       DOUBLE PRECISION R0,R1,R2
 !
@@ -225,7 +225,7 @@
 !     *              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
 !
 !      ENDIF
-!                                                            
+!
 ! RAYON DU CYLINDRE
 !      R0 = 1.D50
 !      DO I=1,NPOIN
@@ -250,10 +250,10 @@
 !
 !
       RETURN
-      END                                                      
+      END
 
 
- 
+
 
 !                    *****************
                      SUBROUTINE CORRXY
@@ -351,4 +351,4 @@
 !
       RETURN
       END
- 
+

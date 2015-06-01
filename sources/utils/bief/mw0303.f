@@ -97,7 +97,7 @@
 !
       INTEGER, INTENT(IN) :: DIMIKM,MXPTVS,NPMAX,NPOIN
 !                                                      11: SEE ALMESH
-!                                                          AND OPTASS                                           
+!                                                          AND OPTASS
       INTEGER, INTENT(IN) :: IKLEM1(DIMIKM,4,2),LIMVOI(11,2)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: X(*),TRAV(*)

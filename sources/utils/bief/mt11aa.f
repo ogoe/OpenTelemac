@@ -145,7 +145,7 @@
       A31(IELEM)  =      Y2 * (F3+F3+F2+F1)  +      Y3 * (-F2+F1)
       A32(IELEM)  = (Y2+Y2) * (F3+F2)        +      Y3 * (-F2+F1)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -179,7 +179,7 @@
       A31(IELEM)  =      X2 * (-F3-F3-F2-F1) +      X3 * (F2-F1)
       A32(IELEM)  =-(X2+X2) * (F3+F2)        +      X3 * (F2-F1)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSE
 !

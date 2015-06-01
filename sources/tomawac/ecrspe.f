@@ -117,13 +117,13 @@
       LOGICAL, INTENT(IN)             :: DEBRES
       CHARACTER(LEN=72), INTENT(IN)   :: TITCAS
       CHARACTER(LEN=*) , INTENT(IN)   :: BINSCO
-      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH 
-      CHARACTER(LEN=144), INTENT(IN)  :: TISPEF  
-      INTEGER, INTENT(IN)             :: NSPE         
+      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
+      CHARACTER(LEN=144), INTENT(IN)  :: TISPEF
+      INTEGER, INTENT(IN)             :: NSPE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER  ISTAT , II    , JF    , K 
+      INTEGER  ISTAT , II    , JF    , K
       INTEGER  KAMP1 , KAMP2 , KAMP3 , KAMP4 , KAMP5 , KAMP6 , ILEO
       INTEGER  IBID(1), NELEM, NPSPE
       CHARACTER(LEN=72) C
@@ -132,7 +132,7 @@
       CHARACTER(LEN=2)  CC
       CHARACTER(LEN=1)  C1,C2,C3,C4,C5,C6
       TYPE(BIEF_MESH) MESHF
-      LOGICAL         SORLEO(99)    
+      LOGICAL         SORLEO(99)
       DOUBLE PRECISION DTETAR
       REAL W(1)
       CHARACTER(LEN=11) EXTENS
@@ -216,7 +216,7 @@
         ENDDO
 !
 !       WRITES OUT THE ARRAYS X AND Y
-!       
+!
         ALLOCATE(MESHF%X%R(NPLAN*NF))
         ALLOCATE(MESHF%Y%R(NPLAN*NF))
         MESHF%NPTFR = 2*NPLAN
@@ -259,10 +259,10 @@
           CALL WRITE_MESH(BINSCO, ! RESULTS FILE FORMAT
      &                    NSCO,   ! LU FOR RESULTS FILE
      &                    MESHF,
-     &                    1,      ! NUMBER OF PLANES 
+     &                    1,      ! NUMBER OF PLANES
      &                    DATE,   ! START DATE
      &                    TIME)   ! START TIME
-!   
+!
           IF(TISPEF(1:1).NE.' ') THEN
             WRITE(NSPE,'(A1,A72)') '/', TITCAS
             WRITE(NSPE,'(I3)') NLEO
@@ -280,9 +280,9 @@
       IF(IPID.EQ.0) THEN
         IF(LNG.EQ.1) WRITE(NSPE,1007) AT
         IF(LNG.EQ.2) WRITE(NSPE,1008) AT
-      ENDIF   
-1007  FORMAT('TEMPS = ',F13.5) 
-1008  FORMAT('TIME  = ',F13.5)     
+      ENDIF
+1007  FORMAT('TEMPS = ',F13.5)
+1008  FORMAT('TIME  = ',F13.5)
 !
       IF(NCSIZE.GT.1) THEN
 !
@@ -325,7 +325,7 @@
               DO K=1,NPLAN
                 F_INTF(ILEO,JF)=F_INTF(ILEO,JF)+AUXIL(K,JF)*DTETAR
               ENDDO
-            ENDDO  
+            ENDDO
             CLOSE(99,STATUS='DELETE')
           ENDDO
           DO JF=1,NF
@@ -349,11 +349,11 @@
           CALL ADD_DATA(BINSCO,NSCO,TEXTE(ILEO),AT,LT,ILEO.EQ.1,
      &                  AUXIL,NPSPE,ISTAT)
           CALL CHECK_CALL(ISTAT,'ECRSPE:ADD_DATA')
-        ENDDO 
+        ENDDO
         DO JF=1,NF
           WRITE(NSPE,'(100(E10.4,2X))') FREQ(JF),
      &                                (F_INTF(ILEO,JF),ILEO=1,NLEO)
-        ENDDO 
+        ENDDO
 !
       ENDIF
 !

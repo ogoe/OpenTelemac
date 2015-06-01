@@ -53,7 +53,7 @@
 !history  J-M HERVOUET (EDF-LNHE)
 !+        23/11/20012
 !+        V6P3
-!+   XRELV, YRELV, ZR removed, must be declared locally 
+!+   XRELV, YRELV, ZR removed, must be declared locally
 !+   if necessary.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,7 +61,7 @@
 !| BINMAR         |-->| TIDAL WATER LEVEL FILE BINARY
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
-!| NMAR           |-->| LOGICAL UNIT NUMBER OF TIDAL WATER LEVEL FILE 
+!| NMAR           |-->| LOGICAL UNIT NUMBER OF TIDAL WATER LEVEL FILE
 !| NPOIN          |-->| NUMBER OF POINTS IN 2D MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| TV1            |-->| TIME T1 IN THE TIDAL WATER LEVEL FILE

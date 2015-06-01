@@ -53,8 +53,8 @@
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSEG           |-->| NUMBER OF SEGMENTS
-!| OPTASS         |-->| OPTION OF MATRIX STORAGE 
-!|                |   | 1: ELEMENT PER ELEMENT 3: EDGE-BASED 
+!| OPTASS         |-->| OPTION OF MATRIX STORAGE
+!|                |   | 1: ELEMENT PER ELEMENT 3: EDGE-BASED
 !| PRODUC         |-->| CHOICE OF MATRIX-VECTOR PRODUCT
 !|                |   | 1: NORMAL 2: FRONTAL
 !| SIZGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -101,7 +101,7 @@
 !
         DO IPOIN = 1,NPOIN
           T1(IPOIN) = 0
-        ENDDO  
+        ENDDO
 !
 !       NUMBER OF ELEMENTS NEIGHBOURING A POINT
 !
@@ -109,7 +109,7 @@
           T1(IKLE(IELEM,1)) = T1(IKLE(IELEM,1)) + 1
           T1(IKLE(IELEM,2)) = T1(IKLE(IELEM,2)) + 1
           T1(IKLE(IELEM,3)) = T1(IKLE(IELEM,3)) + 1
-        ENDDO  
+        ENDDO
 !
 !       NUMBER OF POINTS NEIGHBOURING A POINT
 !     = NUMBER OF ELEMENTS NEIGHBOURING A POINT
@@ -117,7 +117,7 @@
 !
         DO IPTFR = 1,NPTFR
           T1(NBOR(IPTFR)) = T1(NBOR(IPTFR)) + 1
-        ENDDO  
+        ENDDO
 !
 !=======================================================================
 ! CHECKS THAT THE RENUMBERING WAS MADE CORRECTLY IN STBTEL
@@ -151,7 +151,7 @@
             CALL PLANTE(1)
             STOP
           ENDIF
-        ENDDO  
+        ENDDO
 !
 !  BUILDS ARRAY LIMVOI
 !  LIMVOI(K,1) : BEGINNING OF SERIES WITH K NEIGHBOURS

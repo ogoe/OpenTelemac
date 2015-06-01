@@ -9,7 +9,7 @@
 !***********************************************************************
 !
 !brief    READS AND INTERPOLATES VARIABLES IN AN ASCII FILE
-!+        
+!+
 !
 !history  R. SAMIE, E. RAZAFINDRAKOTO, C.-T. PHAM (EDF-LNHE)
 !+        09/07/2014
@@ -128,7 +128,7 @@
           WRITE(LU,*)'  FIN DE LECTURE DU FICHIER D''ENTREE  '
           WRITE(LU,*)'     IL Y A ',NBENR,' ENREGISTREMENTS  '
           WRITE(LU,*)'  DE T = ',TABENT(1,1), ' A  = ',
-     &               TABENT(NBENR,1),' SECONDES '            
+     &               TABENT(NBENR,1),' SECONDES '
           WRITE(LU,*)'======================================='
         ENDIF
         IF(LNG.EQ.2) THEN
@@ -136,7 +136,7 @@
           WRITE(LU,*)'  END OF READING OF INPUT DATA         '
           WRITE(LU,*)'  THERE ARE ',NBENR,' RECORDS          '
           WRITE(LU,*)'  FROM T = ',TABENT(1,1), ' TO = ',
-     &               TABENT(NBENR,1),' SECONDS '            
+     &               TABENT(NBENR,1),' SECONDS '
           WRITE(LU,*)'======================================='
         ENDIF
 !
@@ -165,14 +165,14 @@
         IF(POSTAB.GT.NBENR) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*)'==============================================='
-            WRITE(LU,*)'ATTENTION : LE TEMPS DU CALCUL AT = ', AT 
+            WRITE(LU,*)'ATTENTION : LE TEMPS DU CALCUL AT = ', AT
             WRITE(LU,*)'EST SUPERIEUR AU TEMPS MAXIMUM DE VOTRE FICHIER'
             WRITE(LU,*)'DE DONNEES D''ENTREE T = ', TABENT(NBENR,1)
             WRITE(LU,*)'==============================================='
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*)'==============================================='
-            WRITE(LU,*)'WARNING: TIME OF CALCULATION AT = ', AT 
+            WRITE(LU,*)'WARNING: TIME OF CALCULATION AT = ', AT
             WRITE(LU,*)'IS BIGGER THAN MAXIMUM TIME IN YOUR INPUT DATA '
             WRITE(LU,*)'FILE T = ', TABENT(NBENR,1)
             WRITE(LU,*)'==============================================='
@@ -181,20 +181,20 @@
         ELSEIF(POSTAB.LT.1) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*)'==============================================='
-            WRITE(LU,*)'ATTENTION : LE TEMPS DU CALCUL AT = ', AT 
+            WRITE(LU,*)'ATTENTION : LE TEMPS DU CALCUL AT = ', AT
             WRITE(LU,*)'EST INFERIEUR AU TEMPS MINIMUM DE VOTRE FICHIER'
             WRITE(LU,*)'DE DONNEES D''ENTREE T = ', TABENT(1,1)
             WRITE(LU,*)'==============================================='
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*)'==============================================='
-            WRITE(LU,*)'WARNING: TIME OF CALCULATION AT = ', AT 
+            WRITE(LU,*)'WARNING: TIME OF CALCULATION AT = ', AT
             WRITE(LU,*)'IS LOWER THAN MINIMUM TIME IN YOUR INPUT DATA '
             WRITE(LU,*)'FILE T = ', TABENT(1,1)
             WRITE(LU,*)'==============================================='
           ENDIF
           CALL PLANTE(1)
-        ENDIF            
+        ENDIF
         GO TO 120
       ENDIF
 !

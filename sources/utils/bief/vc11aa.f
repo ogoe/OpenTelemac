@@ -133,7 +133,7 @@
         W3(IELEM)=(Y2*(-2*G3*F3+2*G3*F1-G2*F3+G2*F1-G1*F3+G1*F1)+Y3*(
      &             2*G3*F2-2*G3*F1+G2*F2-G2*F1+G1*F2-G1*F1))* XSUR24
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -157,7 +157,7 @@
         W3(IELEM)=(X2*(2*G3*F3-2*G3*F1+G2*F3-G2*F1+G1*F3-G1*F1)+X3*(-
      &             2*G3*F2+2*G3*F1-G2*F2+G2*F1-G1*F2+G1*F1)) * XSUR24
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !

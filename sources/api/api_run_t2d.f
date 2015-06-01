@@ -39,20 +39,20 @@
       PUBLIC :: RUN_FINALIZE_T2D_D
 
       CONTAINS
-      ! SET THE LU AND LNG VALUES 
+      ! SET THE LU AND LNG VALUES
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      !BRIEF INITIALISE THE INSTANCE AND SET THE OUTPUT                
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !BRIEF INITIALISE THE INSTANCE AND SET THE OUTPUT
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST [IN,OUT]    THE INSTANCE
-      !PARAM LU       [IN]    OUTPUT STREAM ID 
+      !PARAM LU       [IN]    OUTPUT STREAM ID
       !PARAM LNG      [IN]    OUTPUT KANGUAGE 2 ENGLISH 1 FRENCH
-      !PARAM IERR    [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR    [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                      ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE RUN_SET_CONFIG_T2D_D(INST, U_LU, U_LNG, IERR)
@@ -70,18 +70,18 @@
 !!!!!!! FUNCTION HANDLING THE EXECUTION OF THE SIMULATION
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      !BRIEF READS THE CASE FILE 
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !BRIEF READS THE CASE FILE
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM CAS_FILE   [IN]    PATH TO THE CASE FILE
       !PARAM DICO_FILE  [IN]    PATH TO THE DICTIONARY FILE
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE RUN_READ_CASE_T2D_D(INST,CAS_FILE, DICO_FILE,IERR)
@@ -90,7 +90,7 @@
         CHARACTER(LEN=144), INTENT(IN) :: CAS_FILE
         CHARACTER(LEN=144), INTENT(IN) :: DICO_FILE
         INTEGER,            INTENT(OUT) :: IERR
-!       
+!
         CHARACTER(LEN=144) MOTCAR(INST%MAXKEY)
         CHARACTER(LEN=144) FILE_DESC(4,INST%MAXKEY)
         CHARACTER(LEN=144) WMOTCAR(INST%MAXKEY)
@@ -109,8 +109,8 @@
         IF(LNG.EQ.1) WRITE(LU,100)
         IF(LNG.EQ.2) WRITE(LU,101)
         WRITE(LU,102)
-  100   FORMAT(/////,1X,'LISTING DE TELEMAC-2D ',78('-'))  
-  101   FORMAT(/////,1X,'LISTING OF TELEMAC-2D ',78('-'))  
+  100   FORMAT(/////,1X,'LISTING DE TELEMAC-2D ',78('-'))
+  101   FORMAT(/////,1X,'LISTING OF TELEMAC-2D ',78('-'))
   102   FORMAT(/////,
      &  14X,'   API      TELEMAC-2D       INTEROPERABLE        ',/,
      &  14X,'   BY Y AUDOUIN EDF R&D SINETICS                  ',/,
@@ -135,23 +135,23 @@
 !-----------------------------------------------------------------------
 !
 !     OPENS THE FILES FOR TELEMAC2D
-!     
+!
       END SUBROUTINE RUN_READ_CASE_T2D_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF ALLOCATE ALL OF TELEMAC2D VARIABLES
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE RUN_ALLOCATION_T2D_D(INST,IERR)  
+      SUBROUTINE RUN_ALLOCATION_T2D_D(INST,IERR)
         TYPE(INSTANCE_T2D), INTENT(INOUT) :: INST
         INTEGER,            INTENT(OUT) :: IERR
 !
@@ -163,25 +163,25 @@
         IFLOT = 0
         IS_COUPLED = INCLUS(INST%COUPLING,'SISYPHE')
      &           .OR. INCLUS(INST%COUPLING,'TOMAWAC')
- 
+
         CALL BIEF_OPEN_FILES(CODE1,INST%T2D_FILES,
      &                       INST%MAXLU_T2D,
      &                       PATH,NCAR,
      &                       IS_COUPLED,IFLOT,1,.TRUE.)
-!     
+!
 !-----------------------------------------------------------------------
 !
 !     ALLOCATES MEMORY
-!     
+!
         CALL POINT_TELEMAC2D
-!     
+!
 !-----------------------------------------------------------------------
 !
 !     INITIALISES SISYPHE
 !
 !   TODO: HANDLE COUPLING WITH TOMAWAC/SISYPHE ???
 !         IF(INCLUS(COUPLING,'SISYPHE')) THEN
-!     
+!
 !           IF(LNG.EQ.1) WRITE(LU,103)
 !           IF(LNG.EQ.2) WRITE(LU,104)
 !           WRITE(LU,105)
@@ -197,28 +197,28 @@
 !    &             14X,'                VERSION 6.1               ',/,
 !    &             14X,'      COUPLED WITH TELEMAC-2D INTERNALLY  ',/,
 !    &             14X,/////)
-!     
+!
 !           CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE1)
 !
 !           CALL BIEF_OPEN_FILES(CODE2,SIS_FILES,MAXLU_SIS,PATH,NCAR,
 !    &              .TRUE.,IFLOT,2)
-!     
+!
 !     RESETS TELEMAC2D CONFIGURATION
-!     
+!
 !           CALL CONFIG_CODE(1)
-!     
+!
 !     MEMORY ORGANISATION
-!     
+!
 !           CALL POINT_SISYPHE
-!     
+!
 !         ENDIF
-!     
+!
 !-----------------------------------------------------------------------
 !
 !     INITIALISES TOMAWAC
-!     
+!
 !         IF(INCLUS(COUPLING,'TOMAWAC')) THEN
-!     
+!
 !            WRITE(LU,106)
 !            WRITE(LU,107)
 !106         FORMAT(100(1H-),////////,
@@ -252,33 +252,33 @@
 !    &            ,/,15X,
 !    &            '             ^^^^      ^^^                 '
 !    &            ,///)
-!     
+!
 !            CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE3)
 !            CALL BIEF_OPEN_FILES(CODE3,WAC_FILES,MAXLU_WAC,PATH,NCAR,
 !    &              .TRUE.,IFLOT,3)
-!     
+!
 !     RESETS TELEMAC2D CONFIGURATION
-!     
+!
 !            CALL CONFIG_CODE(1)
-!     
+!
 !     MEMORY ORGANISATION
 !
 !            CALL POINT_TOMAWAC
-!     
+!
 !         ENDIF
       END SUBROUTINE RUN_ALLOCATION_T2D_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF INITIALISE THE TELEMAC2D VARIABLES
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE RUN_INIT_T2D_D(INST,IERR)
@@ -298,15 +298,15 @@
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF RUN A TIMESTEP IN TELEMAC2D
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE RUN_TIMESTEP_T2D_D(INST,IERR)
@@ -329,15 +329,15 @@
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF FINALIZE A TELEMAC2D RUN
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -350,12 +350,12 @@
 !
         CALL BIEF_CLOSE_FILES(CODE1,INST%T2D_FILES,
      &                        INST%MAXLU_T2D,.TRUE.)
-!      
+!
 !       IF(INCLUS(COUPLING,'SISYPHE')) THEN
 !         CALL CONFIG_CODE(2)
 !         CALL BIEF_CLOSE_FILES(CODE2,SIS_FILES,MAXLU_SIS,.FALSE.)
 !       ENDIF
-!      
+!
 !       IF(INCLUS(COUPLING,'TOMAWAC')) THEN
 !         CALL CONFIG_CODE(3)
 !         CALL BIEF_CLOSE_FILES(CODE3,WAC_FILES,MAXLU_WAC,.FALSE.)

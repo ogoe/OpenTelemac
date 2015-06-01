@@ -66,49 +66,49 @@
       A1(1)=  30.D0
       A2(1)= -63.D0
       C(1) = 54.3D0
-!                                                                               
+!
       X0(2)=-2.71D0
       Y0(2)=49.36D0
       A1(2)=  47.D0
       A2(2)= -30.D0
       C(2) = 47.2D0
-!                                                                               
+!
       X0(3)=-2.71D0
       Y0(3)=49.36D0
       A1(3)= -30.D0
       A2(3)=-110.D0
       C(3) = 47.2D0
-!                                                                               
+!
       X0(4)=-2.12D0
       Y0(4)=49.14D0
       A1(4)=  45.D0
       A2(4)= -83.D0
       C(4) = 47.2D0
-!                                                                           
+!
       X0(5)=-2.00D0
       Y0(5)=49.75D0
       A1(5)= 110.D0
       A2(5)= -40.D0
       C(5) = 62.2D0
-!                  
+!
       X0(6)=-1.35D0
       Y0(6)=49.68D0
       A1(6)=   0.D0
       A2(6)= -90.D0
       C(6) = 62.2D0
-!                  
+!
       X0(7)= 0.57D0
       Y0(7)=50.85D0
       A1(7)=  90.D0
       A2(7)= -48.D0
       C(7) = 62.2D0
-!                  
+!
       X0(8)= 1.47D0
       Y0(8)=51.00D0
       A1(8)= 132.D0
       A2(8)= -48.D0
       C(8) = 76.5D0
-!                                                                                                                                                              
+!
       PI=3.1415926535D0
       R=6400000.D0
       DO I=1,8
@@ -118,7 +118,7 @@
         A1(I)=A1(I)*PI/180.D0
         A2(I)=A2(I)*PI/180.D0
       ENDDO
-!                                                                               
+!
       DO I=1,NPOIN
         CHESTR%R(I) = 95.3D0
       ENDDO
@@ -201,51 +201,51 @@
       Y0(1)=50.18D0
       A1(1)=  30.D0
       A2(1)= -63.D0
-      C(1) = 60.D0 
-!                  
+      C(1) = 60.D0
+!
       X0(2)=-2.71D0
       Y0(2)=49.36D0
       A1(2)=  47.D0
       A2(2)= -30.D0
-      C(2) = 45.D0 
-!                  
+      C(2) = 45.D0
+!
       X0(3)=-2.71D0
       Y0(3)=49.36D0
       A1(3)= -30.D0
       A2(3)=-110.D0
-      C(3) = 45.D0 
-!                  
+      C(3) = 45.D0
+!
       X0(4)=-2.12D0
       Y0(4)=49.14D0
       A1(4)=  45.D0
       A2(4)= -83.D0
-      C(4) = 45.D0 
-!                                                                            
+      C(4) = 45.D0
+!
       X0(5)=-2.00D0
       Y0(5)=49.75D0
       A1(5)= 110.D0
       A2(5)= -40.D0
-      C(5) = 73.D0 
-!                  
+      C(5) = 73.D0
+!
       X0(6)=-1.35D0
       Y0(6)=49.68D0
       A1(6)=   0.D0
       A2(6)= -90.D0
-      C(6) = 73.D0 
-!                  
+      C(6) = 73.D0
+!
       X0(7)= 0.57D0
       Y0(7)=50.85D0
       A1(7)=  90.D0
       A2(7)= -48.D0
-      C(7) = 73.D0 
-!                  
+      C(7) = 73.D0
+!
       X0(8)= 1.47D0
       Y0(8)=51.00D0
       A1(8)= 132.D0
       A2(8)= -48.D0
-      C(8) = 60.D0 
-!                                                                               
-!                                                                               
+      C(8) = 60.D0
+!
+!
       PI=3.141592653589793D0
       R=6400000.D0
       DO I=1,8
@@ -255,7 +255,7 @@
         A1(I)=A1(I)*PI/180.D0
         A2(I)=A2(I)*PI/180.D0
       ENDDO
-!                                                                               
+!
       DO I=1,NPOIN
         CHESTR%R(I) = 90.D0
       ENDDO
@@ -311,7 +311,7 @@
 ! |    NBOR        | -->|  ADRESSES DES POINTS DE BORD                 |
 ! |  TRA05,TRA06   | -->|  TABLEAUX DE TRAVAIL                         |
 ! |   LIHBOR       | -->|  CONDITIONS AUX LIMITES SUR H                |
-! | LIUBOR         | -->|  CONDITIONS AUX LIMITES SUR U 
+! | LIUBOR         | -->|  CONDITIONS AUX LIMITES SUR U
 ! |   LITBOR       | -->|  CONDITIONS AUX LIMITES SUR LE TRACEUR       |
 ! |   NPOIN        | -->|  NOMBRE DE POINTS DU MAILLAGE.               |
 ! |   NPTFR        | -->|  NOMBRE DE POINTS FRONTIERE.                 |
@@ -361,7 +361,7 @@
       INTEGER NUMLIQ(NPTFR)
 !
       DOUBLE PRECISION HBOR(NPTFR),UBOR(NPTFR,2),VBOR(NPTFR,2)
-      DOUBLE PRECISION ZF(NPOIN) 
+      DOUBLE PRECISION ZF(NPOIN)
       DOUBLE PRECISION XNEBOR(NPTFR),YNEBOR(NPTFR)
 !
       DOUBLE PRECISION TEMPS,Z
@@ -376,26 +376,26 @@
       DOUBLE PRECISION Q,SL,VIT,TR
       EXTERNAL         Q,SL,VIT,TR ,P_IMAX
       INTRINSIC MAX
-!                                                                               
+!
 !  TABLEAUX ISSUS DU FICHIER 26 , DONNANT LES CONDITIONS AUX LIMITES
-!            
+!
       DOUBLE PRECISION C,HB(77),PHASEB(77),HC(77),PHASEC(77)
-!                                                                               
-      DOUBLE PRECISION TE,T2,TI,PI,AN,ARG,T,W          
-!                                                                               
-      INTEGER N,NBORL(77),NPTFRL,I,KK                                   
-!                                                                               
-!  TABLEAUX DE DONNEES TEMPORELLES                                             
-!                                                                               
+!
+      DOUBLE PRECISION TE,T2,TI,PI,AN,ARG,T,W
+!
+      INTEGER N,NBORL(77),NPTFRL,I,KK
+!
+!  TABLEAUX DE DONNEES TEMPORELLES
+!
       SAVE
-!                                                                               
+!
 !-----------------------------------------------------------------------
 !
       MSK1 = 1
 !
-!  LECTURE SUR LE FICHIER 26 DE HB ET PHASEB, CALCULES                          
-!  PAR INTERPOLATION SUR CHAQUE POINT FRONTIERE                                 
-!                                                                               
+!  LECTURE SUR LE FICHIER 26 DE HB ET PHASEB, CALCULES
+!  PAR INTERPOLATION SUR CHAQUE POINT FRONTIERE
+!
       PI = 3.141592653589793D0
       NPTFRL=77
       IF(LT.EQ.0) THEN
@@ -412,10 +412,10 @@
           NBORL(K)=I
         ENDDO
       ENDIF
-!                                                        
+!
       T=44714.D0
       W=2*PI/T
-!                                                        
+!
       DO K= 1 , NPTFRL
         ARG = MOD (W*TEMPS - PHASEB(K),2*PI)
         AN  = HB(K) * COS(ARG)
@@ -423,15 +423,15 @@
         AN  = AN + HC(K) * COS(ARG)
         IF (TEMPS.LT.2500.D0) AN=AN*0.0004D0*TEMPS
         IF(NCSIZE.GT.0) THEN
-          DO KK=1,NPTFR 
+          DO KK=1,NPTFR
             IF(BOUNDARY_COLOUR%I(KK).EQ.NBORL(K)) THEN
               HBOR(KK)=AN-ZF(NBOR(KK))
             ENDIF
-          ENDDO 
+          ENDDO
         ELSE
           HBOR(NBORL(K))=AN-ZF(NBOR(NBORL(K)))
         ENDIF
-      ENDDO 
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -451,7 +451,7 @@
 !
 !
 !-----------------------------------------------------------------------
-!  ARGUMENTS USED IN THE EXAMPLE 
+!  ARGUMENTS USED IN THE EXAMPLE
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|_______________________________________________
@@ -504,13 +504,13 @@
 !
 !-----------------------------------------------------------------------
 !
-!  CALCUL DU DEMI-MARNAGE EN CHAQUE POINT DU MAILLAGE                           
-!                                                                               
+!  CALCUL DU DEMI-MARNAGE EN CHAQUE POINT DU MAILLAGE
+!
       REWIND 27
-!                                                                               
-!  LECTURE DES DEMI-MARNAGES DONNES PAR LE FICHIER                              
-!  INITIALISATIONS DES TABLEAUX ET DES VARIABLES                                
-!  CALCUL DE LA COTE DU FOND AU POINT I                                         
+!
+!  LECTURE DES DEMI-MARNAGES DONNES PAR LE FICHIER
+!  INITIALISATIONS DES TABLEAUX ET DES VARIABLES
+!  CALCUL DE LA COTE DU FOND AU POINT I
 !
       IF(NCSIZE.GT.1) THEN
 !       NOMBRE DE POINTS DU MAILLAGE NON DECOUPE (5023 DANS FICHIER)
@@ -527,11 +527,11 @@
           ZF%R(I)=ZF%R(I)-ZM*12.D0/7.D0
         ENDDO
       ENDIF
-!                                                                               
-! ON LISSE 5 FOIS LE FOND (PB DE PENTE DU TALUS)                                
-!                                                                               
-      MAS = .TRUE.  
-      LISFON = 5 
+!
+! ON LISSE 5 FOIS LE FOND (PB DE PENTE DU TALUS)
+!
+      MAS = .TRUE.
+      LISFON = 5
       CALL FILTER(ZF,MAS,T1,T2,AM1,'MATMAS          ',
      &              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
 !

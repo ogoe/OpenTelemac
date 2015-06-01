@@ -8,7 +8,7 @@
 ! SISYPHE   V6P3                                   14/03/2013
 !***********************************************************************
 !
-!brief    ADDS A SECTION TO THE VERTICAL SORTING PROFILE 
+!brief    ADDS A SECTION TO THE VERTICAL SORTING PROFILE
 !+        WITH 0 STRENGTH
 !
 !history  UWE MERKEL
@@ -37,7 +37,7 @@
 !
       INTEGER  I
 !
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 !
       PRO_MAX(J)  = PRO_MAX(J) + 2
 !

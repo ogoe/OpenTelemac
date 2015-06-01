@@ -2,13 +2,13 @@
                      SUBROUTINE CHARAC
 !                    *****************
 !
-     &( FN    , FTILD  , NOMB  , UCONV  , VCONV , WCONV  , FRCONV , 
+     &( FN    , FTILD  , NOMB  , UCONV  , VCONV , WCONV  , FRCONV ,
      &  ZSTAR , FREQ   ,
      &  DT    , IFAMAS , IELM  , NPOIN2 , NPLAN , JF     , NF     ,
      &  MSK   , MASKEL , SHP   , SHZ    , SHF   , TB     , ELT    ,
      &  ETA   , FRE    , IT3   , ISUB   , FREBUF, MESH   ,
-     &  NELEM2, NELMAX2, IKLE2 , SURDET2, AM1   , RHS    , SLV    , 
-     &  AGGLO , LISTIN , NGAUSS, UNSV   , OPTCHA, POST   , PERIO  , 
+     &  NELEM2, NELMAX2, IKLE2 , SURDET2, AM1   , RHS    , SLV    ,
+     &  AGGLO , LISTIN , NGAUSS, UNSV   , OPTCHA, POST   , PERIO  ,
      &  YA4D  , SIGMA  , STOCHA, VISC )
 !
 !***********************************************************************
@@ -20,7 +20,7 @@
 !
 !warning  So far the size of some arrays cannot be checked:
 !+        FRE, ELT, ETA, IT3, ISUB, FREBUF, it would be better to send
-!+        BIEF_OBJ structures.        
+!+        BIEF_OBJ structures.
 !
 !history  J-M HERVOUET (LNHE)
 !+        12/02/2010
@@ -121,11 +121,11 @@
 !| VISC           |-->| VISCOSITY (MAY BE TENSORIAL)
 !| WCONV          |-->| Z-COMPONENT OF ADVECTION FIELD IN THE TRANSFORMED MESH
 !| YA4D           |-->| IF YES, 4D VERSION FOR TOMAWAC
-!| ZSTAR          |-->| TRANSFORMED VERTICAL COORDINATES IN 3D 
+!| ZSTAR          |-->| TRANSFORMED VERTICAL COORDINATES IN 3D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CHARAC => CHARAC
-      USE STREAMLINE, ONLY : SCARACT  
+      USE STREAMLINE, ONLY : SCARACT
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -161,7 +161,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NPOIN,IELMU,SIZEBUF,ASTOCHA   
+      INTEGER NPOIN,IELMU,SIZEBUF,ASTOCHA
 !
 !-----------------------------------------------------------------------
 !
@@ -177,7 +177,7 @@
       DATA DEJA/.FALSE./
       INTRINSIC MIN
       SAVE
-! 
+!
 !-----------------------------------------------------------------------
 !
       IF(OPTCHA.GT.1) THEN
@@ -189,7 +189,7 @@
         IF(.NOT.DEJA) THEN
           CALL ALLBLO(FTILD_WEAK,'FTIWEA')
           CALL BIEF_ALLVEC_IN_BLOCK(FTILD_WEAK,FTILD%N,1,
-     &                              'FTW   ',NG,1,0,MESH)        
+     &                              'FTW   ',NG,1,0,MESH)
           CALL BIEF_ALLVEC(1,T1WEAK,'T1WEAK',NG,1,0,MESH)
           CALL BIEF_ALLVEC(1,T2WEAK,'T2WEAK',NG,1,0,MESH)
           CALL BIEF_ALLVEC(1,T4WEAK,'T4WEAK',NG,1,0,MESH)
@@ -205,21 +205,21 @@
             CALL BIEF_ALLVEC(1,T6WEAK,'T6WEAK', 1,1,0,MESH)
             CALL BIEF_ALLVEC(1,T7WEAK,'T7WEAK', 1,1,0,MESH)
             CALL BIEF_ALLVEC(1,SHZWEA,'SHZWEA',1 ,1,0,MESH)
-          ENDIF 
+          ENDIF
           IF(NCSIZE.GT.1) THEN
             CALL BIEF_ALLVEC(1,SHPBUF,'SHPBUF',NG,3,0,MESH)
           ELSE
             CALL BIEF_ALLVEC(1,SHPBUF,'SHPBUF',1 ,3,0,MESH)
-          ENDIF 
+          ENDIF
           IF(NCSIZE.GT.1.AND.IELM.EQ.41) THEN
             CALL BIEF_ALLVEC(1,SHZBUF,'SHZBUF',NG,1,0,MESH)
           ELSE
             CALL BIEF_ALLVEC(1,SHZBUF,'SHZBUF',1 ,1,0,MESH)
-          ENDIF 
+          ENDIF
           DEJA=.TRUE.
         ENDIF
       ENDIF
-! 
+!
 !-----------------------------------------------------------------------
 !  OPTIONAL OPTIONS
 !-----------------------------------------------------------------------
@@ -229,7 +229,7 @@
       IF(PRESENT(POST)) THEN
         APOST=POST
       ELSE
-        APOST=.FALSE.      
+        APOST=.FALSE.
       ENDIF
 !
 !     PERIODICITY FOR TOMAWAC
@@ -237,7 +237,7 @@
       IF(PRESENT(PERIO)) THEN
         APERIO=PERIO
       ELSE
-        APERIO=.FALSE.      
+        APERIO=.FALSE.
       ENDIF
 !
 !     4D FOR TOMAWAC
@@ -276,14 +276,14 @@
             WRITE(LU,*) '        AN ARGUMENT VISC MUST BE GIVEN'
           ENDIF
           CALL PLANTE(1)
-          STOP          
+          STOP
         ELSE
-!         HERE A DUMMY TARGET, WILL NOT BE USED 
+!         HERE A DUMMY TARGET, WILL NOT BE USED
 !         MAYBE NULLIFY WOULD BE BETTER ?
           AVISC => IFAMAS
         ENDIF
       ENDIF
-! 
+!
 !-----------------------------------------------------------------------
 !  TABLEAUX DE TRAVAIL PRIS DANS LE BLOC TB
 !-----------------------------------------------------------------------
@@ -362,7 +362,7 @@
       QUAD=.FALSE.
       QUAB=.FALSE.
       NPT=0
-      IF(FN%TYPE.EQ.4) THEN    
+      IF(FN%TYPE.EQ.4) THEN
         DO I=1,FN%N
           IF(FN%ADR(I)%P%ELM.EQ.12) QUAB = .TRUE.
           IF(FN%ADR(I)%P%ELM.EQ.13) QUAD = .TRUE.
@@ -411,7 +411,7 @@
         ENDIF
         CALL PLANTE(1)
         STOP
-      ENDIF      
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !  APPEL DE SCARACT
@@ -446,14 +446,14 @@
         CALL OS('X=Y     ',X=T2,Y=MESH%Y)
 !
 !       IELM MUST BE INTENT(INOUT) BECAUSE IT IS SUCH IN CHGDIS
-        IF(QUAD) THEN    
+        IF(QUAD) THEN
           CALL CHGDIS(T1,IELM,13,MESH)
           CALL CHGDIS(T2,IELM,13,MESH)
         ELSEIF(QUAB) THEN
           CALL CHGDIS(T1,IELM,12,MESH)
           CALL CHGDIS(T2,IELM,12,MESH)
-        ENDIF 
-!           
+        ENDIF
+!
         IF(IELM.EQ.11) THEN
           CALL GTSH11(SHP%R,ELT,IKLE2%I,MESH%ELTCAR%I,NPOIN2,
      &                NELEM2,NELMAX2,MESH%NSEG,QUAB,QUAD)
@@ -464,12 +464,12 @@
             DO I= (IPLAN-1)*NPOIN2+1,IPLAN*NPOIN2
               T3%R(I)=ZSTAR%R(IPLAN)
             ENDDO
-          ENDDO 
+          ENDDO
 !         IN 4D, STARTING F OF POINTS (T9=FCONV)
           IF(AYA4D) THEN
             CALL OV('X=C     ',T9%R,T9%R,T9%R,
      &              FREQ%R(JF),NPOIN2*NPLAN)
-          ENDIF   
+          ENDIF
           CALL GTSH41(SHP%R,SHZ%R,SHF%R,WCONV%R,FRCONV%R,
      &                ELT,ETA,FRE,IKLE2%I,MESH%ELTCAR%I,
      &                NPOIN2,NELMAX2,NPLAN,JF,NF,AYA4D)
@@ -477,10 +477,10 @@
         ELSE
           WRITE(LU,*) 'ELEMENT NOT IMPLEMENTED IN CHARAC: ',IELM
           CALL PLANTE(1)
-          STOP  
-        ENDIF 
+          STOP
+        ENDIF
 !
-      ENDIF       
+      ENDIF
 !
       CALL SCARACT(FN,PT_FTILD,UCONV%R,VCONV%R,WCONV%R,FRCONV%R,
      &             MESH%X%R,MESH%Y%R,ZSTAR%R,FREQ%R,
@@ -495,38 +495,38 @@
 !                  SHPBUF      SHZBUF      SHFBUF
      &             PT_SHPBUF%R,T7%R       ,T10%R,FREBUF,SIZEBUF,
      &             APOST,APERIO,AYA4D,ASIGMA,ASTOCHA,AVISC)
-! 
+!
       IF(OPTCHA.GT.1) THEN
 !
         IF(NOMB.GT.0) THEN
-          IF(FTILD%TYPE.EQ.2) THEN 
+          IF(FTILD%TYPE.EQ.2) THEN
             CALL CHAR_WEAK(FTILD,FTILD_WEAK,MESH%SURFAC%R,IKLE2%I,
      &                     NPOIN2,NELEM2,NELMAX2,NG,NGAUSS,
      &                     MESH,T1,T2,TB,AGGLO,IELM,NPLAN,MESH%Z%R,
-     &                     RHS,AM1,SLV,UNSV,LISTIN,.TRUE.) 
-          ELSEIF(FTILD%TYPE.EQ.4) THEN 
-            DO I=1,NOMB          
+     &                     RHS,AM1,SLV,UNSV,LISTIN,.TRUE.)
+          ELSEIF(FTILD%TYPE.EQ.4) THEN
+            DO I=1,NOMB
               CALL CHAR_WEAK(FTILD%ADR(I)%P,FTILD_WEAK%ADR(I)%P,
      &                       MESH%SURFAC%R,IKLE2%I,
      &                       NPOIN2,NELEM2,NELMAX2,NG,NGAUSS,
      &                       MESH,T1,T2,TB,AGGLO,IELM,NPLAN,MESH%Z%R,
-     &                       RHS,AM1,SLV,UNSV,LISTIN,.TRUE.) 
-            ENDDO 
-          ENDIF 
+     &                       RHS,AM1,SLV,UNSV,LISTIN,.TRUE.)
+            ENDDO
+          ENDIF
         ENDIF
 !
       ELSE
 !
 !     PARALLEL COMMUNICATION
-! 
+!
         IF(NCSIZE.GT.1.AND.NOMB.GT.0) THEN
-          IF(FTILD%TYPE.EQ.2) THEN 
-            CALL PARCOM(FTILD,1,MESH)               
-          ELSEIF(FTILD%TYPE.EQ.4) THEN 
-            DO I=1,NOMB          
-              CALL PARCOM(FTILD%ADR(I)%P,1,MESH) 
-            ENDDO 
-          ENDIF 
+          IF(FTILD%TYPE.EQ.2) THEN
+            CALL PARCOM(FTILD,1,MESH)
+          ELSEIF(FTILD%TYPE.EQ.4) THEN
+            DO I=1,NOMB
+              CALL PARCOM(FTILD%ADR(I)%P,1,MESH)
+            ENDDO
+          ENDIF
         ENDIF
 !
       ENDIF

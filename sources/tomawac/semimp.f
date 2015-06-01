@@ -25,7 +25,7 @@
      & CBAJ)
 !
 !***********************************************************************
-! TOMAWAC   V7P0                                  
+! TOMAWAC   V7P0
 !***********************************************************************
 !
 !brief    SOLVES THE INTEGRATION STEP OF THE SOURCE TERMS USING
@@ -96,9 +96,9 @@
 !+   Friction due to vegetation added.
 !
 !history THIERRY FOUQUET (EDF-LNHE)
-!+       19/11/2014 
+!+       19/11/2014
 !+       V7P0
-!+   BAJ MODELISATION    
+!+   BAJ MODELISATION
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALFABJ         |-->| COEFFICIENT ALPHA OF BJ WAVE BREAKING MODEL
@@ -112,7 +112,7 @@
 !| BETAM          |-->| WIND GENERATION COEFFICIENT
 !| BINVEN         |-->| WIND FILE BINARY
 !| BORETG         |-->| COEFFICIENT B OF BREAKING WAVE TG MODEL
-!| CBAJ           |-->| CHOICE OF THE CENTRAL FREQUENCY CALCULUS 
+!| CBAJ           |-->| CHOICE OF THE CENTRAL FREQUENCY CALCULUS
 !| CDRAG          |-->| WIND DRAG COEFFICIENT
 !| CDSCUR         |-->| COEFFICIENT OF DISSIPATION BY STRONG CURRENT
 !| CF             |-->| ADVECTION FIELD ALONG FREQUENCY
@@ -284,8 +284,8 @@
 !
       INTEGER, INTENT(IN) :: NPOIN2,NPLAN,NF,NSITS,NPTFR,NVEB
       INTEGER, INTENT(INOUT) :: NVWIN,NVEF
-      INTEGER, INTENT(IN) :: SMOUT , SFROT , SVENT , STRIF , 
-     &                   SBREK , INDIC 
+      INTEGER, INTENT(IN) :: SMOUT , SFROT , SVENT , STRIF ,
+     &                   SBREK , INDIC
       INTEGER, INTENT(IN) :: IQBBJ, IHMBJ, IFRBJ, IWHTG , IFRTG , IFRRO
       INTEGER, INTENT(IN) :: IEXPRO, IFRIH, NDTBRK, IDISRO, STRIA
       INTEGER, INTENT(IN) :: NBOR(NPTFR)   , IANGNL(NPLAN,8)
@@ -297,29 +297,29 @@
      &                  COEFHS, VX_CTE, VY_CTE, CIMPLI,
      &                  GAMARO, ALFARO, GAM2RO, EM2SIH, BETAIH, XDTBRK,
      &                  ALFLTA, RFMLTA, KSPB  , BDISPB, BDSSPB, F1
-      DOUBLE PRECISION, INTENT(INOUT) :: TV1   ,TV2   
+      DOUBLE PRECISION, INTENT(INOUT) :: TV1   ,TV2
       DOUBLE PRECISION, INTENT(IN) ::  DEPTH(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: USNEW(NPOIN2) , USOLD(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: VARIAN(NPOIN2),  FMOY(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: XKMOY(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TWOLD(NPOIN2), TWNEW(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: Z0OLD(NPOIN2), Z0NEW(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: VENTX(NPOIN2), VENTY(NPOIN2) 
-      DOUBLE PRECISION, INTENT(INOUT) :: U1(NPOIN2),    U2(NPOIN2)  
+      DOUBLE PRECISION, INTENT(INOUT) :: VENTX(NPOIN2), VENTY(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: U1(NPOIN2),    U2(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: V1(NPOIN2), V2(NPOIN2)
       DOUBLE PRECISION, INTENT(IN) ::    X(NPOIN2)   ,   Y(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: TAUWAV(NPOIN2), TAUX1(NPOIN2), 
-     &                                   TAUX2(NPOIN2),TAUX3(NPOIN2), 
-     &                                   TAUX4(NPOIN2),TAUX5(NPOIN2), 
+      DOUBLE PRECISION, INTENT(INOUT) :: TAUWAV(NPOIN2), TAUX1(NPOIN2),
+     &                                   TAUX2(NPOIN2),TAUX3(NPOIN2),
+     &                                   TAUX4(NPOIN2),TAUX5(NPOIN2),
      &                                   TAUX6(NPOIN2),TAUX7(NPOIN2)
       DOUBLE PRECISION, INTENT(IN) ::  COEFNL(16)
       DOUBLE PRECISION, INTENT(IN) :: TETA(NPLAN), SINTET(NPLAN)
-      DOUBLE PRECISION, INTENT(IN) :: COSTET(NPLAN) 
-      DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN2,NPLAN,NF) 
+      DOUBLE PRECISION, INTENT(IN) :: COSTET(NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(IN) :: XK(NPOIN2,NF), FREQ(NF), DFREQ(NF)
       DOUBLE PRECISION, INTENT(INOUT) :: DF_LIM(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TSDER(NPOIN2,NPLAN,NF)
-      DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NPOIN2,NPLAN,NF) 
+      DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(INOUT) :: TOLD(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: TNEW(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: BETA(NPOIN2)
@@ -357,9 +357,9 @@
      &        K_1M3P(NF2,NT1,NF1), K_1M3M(NF2,NT1,NF1)
       INTEGER, INTENT(IN) :: IDCONF(NCONFM,3)
       DOUBLE PRECISION, INTENT(IN) :: TB_V14(NF1)
-      DOUBLE PRECISION, INTENT(IN) :: TB_V24(NF2,NT1,NF1), 
+      DOUBLE PRECISION, INTENT(IN) :: TB_V24(NF2,NT1,NF1),
      &                                TB_V34(NF2,NT1,NF1),
-     &                                TB_TPM(NF2,NT1,NF1), 
+     &                                TB_TPM(NF2,NT1,NF1),
      &                                TB_TMP(NF2,NT1,NF1),
      &                                TB_FAC(NF2,NT1,NF1)
 
@@ -368,10 +368,10 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER ISITS,IFF,IP,JP,K,NVENT,IFCAR,MF1,MF2,MFMAX,IDT
-      DOUBLE PRECISION AUX1,AUX2,AUX3,AUX4,COEF   
+      DOUBLE PRECISION AUX1,AUX2,AUX3,AUX4,COEF
       DOUBLE PRECISION FM1,FM2,TDEB,TFIN,VITVEN
       DOUBLE PRECISION VITMIN,HM0,HM0MAX,DTN,SUME,AUXI,USMIN
-!                              MDIA, HERE HARDCODED    
+!                              MDIA, HERE HARDCODED
       DOUBLE PRECISION  XCCMDI(4)
 !
       LOGICAL TROUVE(3)
@@ -475,13 +475,13 @@
               BINVEN=BINVEB
             ENDIF
             CALL NOUDON(VENTX,NAMEWX,
-     &                        'WIND ALONG X    M/S             ',2,    
+     &                        'WIND ALONG X    M/S             ',2,
      &                  VENTY,NAMEWY,
-     &                        'WIND ALONG Y    M/S             ',2, 
+     &                        'WIND ALONG Y    M/S             ',2,
      &                  VENTY,'????????????????????????????????',
-     &                        '????????????????????????????????',0, 
+     &                        '????????????????????????????????',0,
      &                  MESH%X%R,MESH%Y%R,NPOIN2,
-     &                  NVENT,BINVEN,NBOR,NPTFR,TFIN,DDC,TV1,TV2, 
+     &                  NVENT,BINVEN,NBOR,NPTFR,TFIN,DDC,TV1,TV2,
      &                  U1,U2,V1,V2,V1,V2,INDIC,
      &                  'WIND   ',NVWIN,TEXVEB,TROUVE,UNITVEB,PHASVEB)
           ELSE
@@ -534,7 +534,7 @@
 !
 !       3.3 COMPUTES THE MEAN WAVE NUMBER OF THE SPECTRUM
 !       -------------------------------------------------
-             CALL KMOYEN (XKMOY, XK , F, FREQ, DFREQ , TAILF, NF, 
+             CALL KMOYEN (XKMOY, XK , F, FREQ, DFREQ , TAILF, NF,
      &            NPLAN, NPOIN2, TAUX1 , TAUX2 , TAUX3 )
           ELSEIF (CBAJ.EQ.1) THEN
 !
@@ -600,7 +600,7 @@
 !       """""""""""""""""""""""""""""""""""""""
 !
           IF(LVENT.EQ.1) THEN
-            CALL QWINDL(TSTOT,FREQ,USOLD,USNEW,TWOLD,TWNEW,TETA, 
+            CALL QWINDL(TSTOT,FREQ,USOLD,USNEW,TWOLD,TWNEW,TETA,
      &                  NF,NPLAN,NPOIN2,CIMPLI,T3_01%R,T3_02%R,
      &                  TAUX5,TAUX6)
           ENDIF
@@ -613,7 +613,7 @@
 !
         ENDIF
 
-        IF (CBAJ.EQ.1) THEN 
+        IF (CBAJ.EQ.1) THEN
 ! Calculation pf mean frequency fmean_WS put in the  tabular TAUX7
            SEUILF = 1.D-20
            DO IP=1,NPOIN2
@@ -720,9 +720,9 @@
 !
         IF (CBAJ.EQ.1) THEN
            LIMIT=3
-!     or doing it in lecdon 
+!     or doing it in lecdon
         ENDIF
-! if nf is growing, inverse if limit and loop on nf 
+! if nf is growing, inverse if limit and loop on nf
         DO IFF=1,NF
 !         LIMITING FACTOR TAKEN FROM WAM-CYCLE 4
           IF(LIMIT.EQ.1) THEN
@@ -791,8 +791,8 @@
           AUX2=2.5D0/FREQ(1)
           AUX3=1.D0/LOG10(RAISF)
 !
-!     IF CBAJ and loop inversed 6.2 and 6.3 written twice with a different formula for FM2 
-          IF(CBAJ.EQ.0) THEN 
+!     IF CBAJ and loop inversed 6.2 and 6.3 written twice with a different formula for FM2
+          IF(CBAJ.EQ.0) THEN
              DO IP=1,NPOIN2
 !
 !       6.2 COMPUTES THE LAST FREQUENCY OF THE DISCRETISED SPECTRUM.
@@ -846,7 +846,7 @@
           ENDIF
           CALL PLANTE(1)
           STOP
-        ENDIF 
+        ENDIF
 !
 !
 !       7. TAKES THE BREAKING SOURCE TERM INTO ACCOUNT
@@ -880,8 +880,8 @@
 !           - - - - - - - - - - - -
 !
   751       CONTINUE
-            IF (CBAJ.EQ.1) THEN 
-              CALL FREMOY(TAUX3, F, FREQ, DFREQ, TAILF, NF, NPLAN, 
+            IF (CBAJ.EQ.1) THEN
+              CALL FREMOY(TAUX3, F, FREQ, DFREQ, TAILF, NF, NPLAN,
      &              NPOIN2, TAUX1, TAUX2 )
             ELSE
               DO IP=1,NPOIN2
@@ -971,7 +971,7 @@
 !         - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !
           ELSEIF(SBREK.EQ.2) THEN
-!  
+!
           CALL QBREK2
      &( TSTOT , TSDER , F     , TAUX3 , VARIAN, DEPTH , BORETG, GAMATG,
      &  IWHTG , NF    , NPLAN , NPOIN2, BETA )
@@ -1029,8 +1029,8 @@
 !         -----------------------------
           IF(SDSCU.EQ.2) THEN
             CALL QDSCUR
-     &( TSTOT , TSDER , F     , CF    , XK    , FREQ  , USOLD , USNEW , 
-     &  DEPTH , PROINF, CDSCUR, CMOUT4, NF    , NPLAN , NPOIN2, CIMPLI, 
+     &( TSTOT , TSDER , F     , CF    , XK    , FREQ  , USOLD , USNEW ,
+     &  DEPTH , PROINF, CDSCUR, CMOUT4, NF    , NPLAN , NPOIN2, CIMPLI,
      &  TAUX2 ,T3_01%R,T3_02%R)
           ENDIF
 !
@@ -1040,7 +1040,7 @@
 !======================================================================
 !
           IF(VEGETATION) THEN
-            CALL QVEG( TSTOT , TSDER , F , VARIAN , DEPTH, FMOY , 
+            CALL QVEG( TSTOT , TSDER , F , VARIAN , DEPTH, FMOY ,
      &                 XKMOY , NF    , NPLAN  , NPOIN2   , BETA  )
           ENDIF
 !

@@ -41,27 +41,27 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| PHASE VELOCITY
 !| CG             |-->| GROUP VELOCITY
-!| DIAM50         |-->| MAXIMUM GRAIN DIAMETER WHICH DEFINES 50% OF THE 
+!| DIAM50         |-->| MAXIMUM GRAIN DIAMETER WHICH DEFINES 50% OF THE
 !|                |   | TOTAL WEIGTH OF SEDIMENT
-!| DIAM90         |-->| MAXIMUM GRAIN DIAMETER WHICH DEFINES 90% OF THE 
+!| DIAM90         |-->| MAXIMUM GRAIN DIAMETER WHICH DEFINES 90% OF THE
 !|                |   | TOTAL WEIGTH OF SEDIMENT
-!| ENTREG         |-->| LOGICAL USED TO IMPOSE THE HYDRAULIC REGIME 
-!|                |   | (FOR FRICTION CALCULATION) 
-!| ENTRUG         |-->| LOGICAL USED TO RESTRICT THE TOTAL ROUGHNESS TO 
+!| ENTREG         |-->| LOGICAL USED TO IMPOSE THE HYDRAULIC REGIME
+!|                |   | (FOR FRICTION CALCULATION)
+!| ENTRUG         |-->| LOGICAL USED TO RESTRICT THE TOTAL ROUGHNESS TO
 !|                |   | THE SKIN ROUGHNESS (FOR FRICTION CALCULATION)
 !| FFW            |<--| FRICTION FACTOR
-!| FORMFR         |-->| FRICTION LAW 
+!| FORMFR         |-->| FRICTION LAW
 !| GRAV           |-->| GRAVITY
 !| H              |-->| WATER HEIGHT
 !| HMU            |-->| WAVE HEIGHT
 !| I              |-->| CURRENT POINT NUMBER
 !| K              |-->| WAVE NUMBER
 !| MVEAU          |-->| FLUID SPECIFIC WEIGTH
-!| MVSED          |-->| SEDIMENT SPECIFIC WEIGTH 
+!| MVSED          |-->| SEDIMENT SPECIFIC WEIGTH
 !| NPOIN          |-->| NUMBER OF POINT
 !| OMEGA          |-->| WAVE  PULSATION
 !| REGIDO         |-->| TYPE OF HYDRAULIC REGIME
-!| RICOEF         |-->| RIPPLES COEFFICIENT 
+!| RICOEF         |-->| RIPPLES COEFFICIENT
 !| VISCO          |-->| KINEMATIC VISCOSITY OF THE FLUID
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

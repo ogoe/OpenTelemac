@@ -25,7 +25,7 @@
 !+      SMV IS THE SECOND MEMBER IN THE EQUATION FOR V.
 !
 !warning   THIS SUBROUTINE IS NOT CURRENTLY USED
-!+               
+!+
 !
 !history  J-M HERVOUET (LNHE)     ; C MOULIN (LNH)
 !+        17/08/1994
@@ -59,7 +59,7 @@
 !| S              |-->| VOID STRUCTURE
 !| SMU            |<--| RIGHT-HAND SIDE OF U EQUATION
 !| SMV            |<--| RIGHT-HAND SIDE OF V EQUATION
-!| VR             |<->| ADDITIONAL VARIABLE IN BOUSSINESQ COIMBRA MODEL 
+!| VR             |<->| ADDITIONAL VARIABLE IN BOUSSINESQ COIMBRA MODEL
 !| VS             |<->| ADDITIONAL VARIABLE IN BOUSSINESQ COIMBRA MODEL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

@@ -138,7 +138,7 @@
         W5(IELEM) = W4(IELEM)
         W6(IELEM) = W4(IELEM)
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
 !================================
 !  DERIVATIVE WRT Y  =
@@ -162,7 +162,7 @@
         W5(IELEM) = W4(IELEM)
         W6(IELEM) = W4(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSE
 !
@@ -198,7 +198,7 @@
         W5(IELEM) = W4(IELEM)
         W6(IELEM) = W4(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -220,7 +220,7 @@
         W5(IELEM) = W4(IELEM)
         W6(IELEM) = W4(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSE
 !
@@ -267,7 +267,7 @@
         W6(IELEM) = ((4.D0*(F4-F5)+3.D0*(F1-F3)       )*Y2
      &            +  (4.D0*F4-3.D0*F1+8.D0*(F5-F6)-F2 )*Y3) * XSUR30
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !================================
 !  DERIVATIVE WRT Y  =
@@ -300,7 +300,7 @@
         W6(IELEM) = ((3.D0*(F3-F1)-4.D0*(F4-F5)      )*X2
      &            +  (8.D0*(F6-F5)+3.D0*F1+F2-4.D0*F4)*X3) * XSUR30
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSE
 !
@@ -381,7 +381,7 @@
         W6(IELEM) = ((3.D0*(F3-F1)-4.D0*(F4-F5)      )*X2
      &            +  (8.D0*(F6-F5)+3.D0*F1+F2-4.D0*F4)*X3) * XSUR30
 !
-      ENDDO 
+      ENDDO
 !
         ELSE
 !

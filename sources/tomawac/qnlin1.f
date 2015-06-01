@@ -119,7 +119,7 @@
 !-----------------------------------------------------------------------
 !
 !     RECOVERS THE COEFFICIENTS COMPUTED IN 'PRENL1'
-!    
+!
       C1    = COEFNL( 1)
       C2    = COEFNL( 2)
       C3    = COEFNL( 3)
@@ -144,7 +144,7 @@
       C8SQ  = C8**2
 !
 !     CORRECTION FACTOR FOR FINITE WATER DEPTH
-!     
+!
       IF(.NOT.PROINF) THEN
         DO IP=1,NPOIN2
           TERM1 = MAX(0.75D0*DEPTH(IP)*XKMOY(IP),0.5D0)
@@ -154,28 +154,28 @@
       ENDIF
 !
 !     FIRST LOOP ON THE FREQUENCIES
-!     
+!
       DO JF=JFMIN,JFMAX
 !
 !       COMPUTES THE CONSIDERED FREQUENCY
-!       
+!
         FREQ = F1*RAISF**(JF-1)
 !
 !       GETS THE INDICES OF THE FREQUENCIES EITHER SIDE OF THE
 !       'MAX' FREQUENCY: FREQ(JFP0)
-!       
+!
         JFP0=JF+JFP
         JFP1=JFP0+1
 !
 !       GETS THE INDICES OF THE FREQUENCIES EITHER SIDE OF THE
 !       'MIN' FREQUENCY: FREQ(JFM0)
-!       
+!
         JFM0=JF+JFM-1
         JFM1=JFM0+1
 !
 !       LIMITS THE INDICES TO NF AND TAKES INTO ACCOUNT ANALYTICALLY
 !       THE SPECTRUM TAIL (DECREASE IN -TAILF).
-!      
+!
         CALL CQUEUE( NF , RAISF , TAILF , JFP1 , JBP1 , COEFP1 )
         CALL CQUEUE( NF , RAISF , TAILF , JFP0 , JBP0 , COEFP0 )
         CALL CQUEUE( NF , RAISF , TAILF , JF   , JB   , COEFJF )
@@ -183,7 +183,7 @@
         CALL CQUEUE( NF , RAISF , TAILF , JFM0 , JBM0 , COEFM0 )
 !
 !       INTERPOLATION COEFFICIENTS FOR THE MODIFIED SPECTRUM
-!       
+!
         D1=C1*COEFP0*US1PL4
         D2=C2*COEFP0*US1PL4
         D3=C3*COEFP1*US1PL4
@@ -195,7 +195,7 @@
 !
 !       COMPUTES THE MULTIPLICATIVE COEFFICIENT (IN F**11) AND TAKES
 !       INTO ACCOUNT THE CORRECTION TERM IN FINITE DEPTH
-!       
+!
         XXFAC= 3000.D0*FREQ**11
         IF(PROINF) THEN
           DO IP=1,NPOIN2
@@ -208,20 +208,20 @@
         ENDIF
 !
 !       SECOND LOOP ON ANGULAR SYMMETRY
-!       
+!
         DO IMAGE=1,2
 !
           KAUX=(IMAGE-1)*4
-!         
+!
 !         THIRD LOOP ON THE DIRECTIONS
-!         
+!
           DO JP=1,NPLAN
-!         
+!
             JPP0 = IANGNL(JP,KAUX+1)
             JPP1 = IANGNL(JP,KAUX+2)
             JPM0 = IANGNL(JP,KAUX+3)
             JPM1 = IANGNL(JP,KAUX+4)
-!          
+!
             IF (JFM0.LT.1) THEN
 !
 !........./-------------------------------------------------------/
@@ -233,24 +233,24 @@
                 FDEJF = F(IP,JP,JB )*COEFJF
                 FPLUS = F(IP,JPP0,JBP0)*D1 + F(IP,JPP1,JBP0)*D2
      &                + F(IP,JPP0,JBP1)*D3 + F(IP,JPP1,JBP1)*D4
-!              
+!
                 TERM1 = FDEJF*FPLUS
                 TERM3 = TAUX1(IP)*FDEJF
-!              
+!
                 TAUX2(IP) = TERM1*TERM3
                 TAUX3(IP) = 2.D0*TERM1*TAUX1(IP)
                 TAUX5(IP) = FDEJF*US1PL4*TERM3
               ENDDO ! IP
-!             
+!
               IF (JB.EQ.JF) THEN
-!             
+!
                 DO IP=1,NPOIN2
                   TSTOT(IP,JP  ,JF  )=TSTOT(IP,JP  ,JF  )-TAUX2(IP)*2.D0
                   TSDER(IP,JP  ,JF  )=TSDER(IP,JP  ,JF  )-TAUX3(IP)*2.D0
                 ENDDO ! IP
-!               
+!
                 IF (JBP0.EQ.JFP0) THEN
-!               
+!
                   DO IP=1,NPOIN2
                    TSTOT(IP,JPP0,JFP0)=TSTOT(IP,JPP0,JFP0)+TAUX2(IP)*C1
                    TSTOT(IP,JPP1,JFP0)=TSTOT(IP,JPP1,JFP0)+TAUX2(IP)*C2
@@ -259,9 +259,9 @@
                    TSDER(IP,JPP1,JFP0)=TSDER(IP,JPP1,JFP0)
      &                                +TAUX5(IP)*C2SQ
                   ENDDO ! IP
-!               
+!
                   IF (JBP1.EQ.JFP1) THEN
-!                 
+!
                     DO IP=1,NPOIN2
                      TSTOT(IP,JPP0,JFP1)=TSTOT(IP,JPP0,JFP1)
      &                                  +TAUX2(IP)*C3
@@ -272,11 +272,11 @@
                      TSDER(IP,JPP1,JFP1)=TSDER(IP,JPP1,JFP1)
      &                                  +TAUX5(IP)*C4SQ
                     ENDDO ! IP
-!                 
+!
                   ENDIF
                 ENDIF
               ENDIF
-!             
+!
             ELSE
 !
 !........./--------------------------------------------------------/
@@ -289,28 +289,28 @@
      &                + F(IP,JPP0,JBP1)*D3 + F(IP,JPP1,JBP1)*D4
                 FMOIN = F(IP,JPM0,JBM0)*D5 + F(IP,JPM1,JBM0)*D6
      &                + F(IP,JPM0,JBM1)*D7 + F(IP,JPM1,JBM1)*D8
-!              
+!
                 TERM1 = FDEJF*(FPLUS+FMOIN)
                 TERM2 = 2.D0*FPLUS*FMOIN
                 TERM3 = TAUX1(IP)*FDEJF
-!              
+!
                 TAUX2(IP) = (TERM1-TERM2)*TERM3
                 TAUX3(IP) = (2.D0*TERM1-TERM2)*TAUX1(IP)
                 TAUX5(IP) = (FDEJF-2.D0*FMOIN)*US1PL4*TERM3
                 TAUX4(IP) = (FDEJF-2.D0*FPLUS)*US1ML4*TERM3
               ENDDO ! IP
-!             
+!
               IF (JBM0.EQ.JFM0) THEN
-!             
+!
                 DO IP=1,NPOIN2
                   TSTOT(IP,JPM0,JFM0)=TSTOT(IP,JPM0,JFM0)+TAUX2(IP)*C5
                   TSTOT(IP,JPM1,JFM0)=TSTOT(IP,JPM1,JFM0)+TAUX2(IP)*C6
                   TSDER(IP,JPM0,JFM0)=TSDER(IP,JPM0,JFM0)+TAUX4(IP)*C5SQ
                   TSDER(IP,JPM1,JFM0)=TSDER(IP,JPM1,JFM0)+TAUX4(IP)*C6SQ
                 ENDDO ! IP
-!               
+!
                 IF (JBM1.EQ.JFM1) THEN
-!               
+!
                   DO IP=1,NPOIN2
                     TSTOT(IP,JPM0,JFM1)=TSTOT(IP,JPM0,JFM1)+TAUX2(IP)*C7
                     TSTOT(IP,JPM1,JFM1)=TSTOT(IP,JPM1,JFM1)+TAUX2(IP)*C8
@@ -319,18 +319,18 @@
                     TSDER(IP,JPM1,JFM1)=TSDER(IP,JPM1,JFM1)
      &                                 +TAUX4(IP)*C8SQ
                   ENDDO ! IP
-!                 
+!
                   IF (JB.EQ.JF) THEN
-!                 
+!
                     DO IP=1,NPOIN2
                       TSTOT(IP,JP  ,JF  )=TSTOT(IP,JP  ,JF  )
      &                                   -TAUX2(IP)*2.D0
                       TSDER(IP,JP  ,JF  )=TSDER(IP,JP  ,JF  )
      &                                   -TAUX3(IP)*2.D0
                     ENDDO ! IP
-!                   
+!
                     IF (JBP0.EQ.JFP0) THEN
-!                   
+!
                       DO IP=1,NPOIN2
                         TSTOT(IP,JPP0,JFP0)=TSTOT(IP,JPP0,JFP0)
      &                                     +TAUX2(IP)*C1
@@ -341,9 +341,9 @@
                         TSDER(IP,JPP1,JFP0)=TSDER(IP,JPP1,JFP0)
      &                                     +TAUX5(IP)*C2SQ
                       ENDDO ! IP
-!                     
+!
                       IF (JBP1.EQ.JFP1) THEN
-!                     
+!
                         DO IP=1,NPOIN2
                           TSTOT(IP,JPP0,JFP1)=TSTOT(IP,JPP0,JFP1)
      &                                       +TAUX2(IP)*C3
@@ -354,13 +354,13 @@
                           TSDER(IP,JPP1,JFP1)=TSDER(IP,JPP1,JFP1)
      &                                       +TAUX5(IP)*C4SQ
                         ENDDO ! IP
-!                       
+!
                       ENDIF
                     ENDIF
                   ENDIF
                 ENDIF
               ENDIF
-!           
+!
             ENDIF
 !
           ENDDO ! JP

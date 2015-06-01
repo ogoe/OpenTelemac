@@ -9,7 +9,7 @@
 !
 !brief    READ A SPECTRUM IN 1 POINT AND 1 DATE FROM A TOMAWAC SPE FILE
 !         THIS SPECTRUM IS APPLIED ON THE WAVE INCIDENT BOURNDARIES
-! 
+!
 !history  C PEYRARD (LNHE)
 !+        07/2014
 !+        V7P0
@@ -34,22 +34,22 @@
       REAL         PI,DEGRAD,DF,DTETA,FF,DD,EPS
       PARAMETER(PI = 3.1415926535897932384626433D0 , DEGRAD=PI/180.D0)
 
-!     A AJOUTER DANS LE DICO 
-!      NFTWC  = 50 
+!     A AJOUTER DANS LE DICO
+!      NFTWC  = 50
 !      NDTWC  = 48
 !      TPSTWC =30000D0
 !.....CONTROLE SIZE OF TABLES FROM TOMAWAC
-      IF (NDTWC.GT.MAXDIR) THEN 
+      IF (NDTWC.GT.MAXDIR) THEN
         WRITE(LU,*) 'TOO MANY DIRECTIONS IN TOMAWAC SPECTRUM  '
         WRITE(LU,*) 'INCREASE MAXDIR IN declarations_artemis.f'
         CALL PLANTE(0)
       ENDIF
-      IF (NFTWC.GT.MAXFRE) THEN 
+      IF (NFTWC.GT.MAXFRE) THEN
         WRITE(LU,*) 'TOO MANY FREQUENCIES IN TOMAWAC SPECTRUM  '
         WRITE(LU,*) 'INCREASE MAXFRE IN declarations_artemis.f'
         CALL PLANTE(0)
       ENDIF
-!-------------------------------------------   
+!-------------------------------------------
       WRITE(LU,*) '==================================================='
       WRITE(LU,*) '========== READING SPECTRUM FROM TOMAWAC =========='
 !=====READING SELAPHIN FILE (.spe)
@@ -84,11 +84,11 @@
       READ(NBI1) BID
 !     Looking for the right date
       IF (ABS(BID-TPSTWC).GE.1E-2) THEN
-        READ(NBI1) (READTWC(KK),KK=1,NFTWC*NDTWC)        
+        READ(NBI1) (READTWC(KK),KK=1,NFTWC*NDTWC)
         GOTO 50
       ENDIF
 !
-      DO IP=1,NBCL 
+      DO IP=1,NBCL
         READ(NBI1) (READTWC(KK),KK=1,NFTWC*NDTWC)
         KK=1
 !       order DATA into line,column format : CL1
@@ -104,9 +104,9 @@
 
 
 
-!.......SPECTRUM CONSTRUCTION 
+!.......SPECTRUM CONSTRUCTION
 !=============================
-!=====DIRECTION 
+!=====DIRECTION
       DO ID=1,NDTWC
 !       COMPUTE DIRECTION FROM .spe file
         DIRTWC(NDTWC-ID+1)  = ATAN2(YTWC(ID,NFTWC),XTWC(ID,NFTWC))
@@ -139,11 +139,11 @@
       ENDDO
       DIRTWC(NDTWC+1)=DIRTWC(1)+360D0
 !
-!=====FREQUENCY 
+!=====FREQUENCY
       DO IFF=1,NFTWC
         FREQTWC(IFF)  = SQRT(XTWC(1,IFF)**2+YTWC(1,IFF)**2)
       ENDDO
-!=====AMPLITUDE 
+!=====AMPLITUDE
       DO ID=1,NDTWC
 !       JD correspond to ID in the CL1 table
         JD=NDTWC-ID+1
@@ -158,7 +158,7 @@
           SPETWC(J,IFF)= CL1(JD,IFF,1)
           IF (J.EQ.1) THEN
             SPETWC(NDTWC+J,IFF)= SPETWC(J,IFF)
-          ENDIF 
+          ENDIF
         ENDDO
       ENDDO
 ! END BUILDING
@@ -167,11 +167,11 @@
       WRITE(LU,*) '========END READING SPRECTRUM FROM TOMAWAC========='
       WRITE(LU,*) '                                                   '
 
-! TEST CHAINAGE          
+! TEST CHAINAGE
 !      DO ID=1,NDTWC+1
 !        DD= DIRTWC(ID)
 !        DO IFF=1,NFTWC
-!          FF=FREQTWC(IFF) 
+!          FF=FREQTWC(IFF)
 !          SPETWC(ID,IFF) =SPE(FF)*SPD(DD-270D0)
 !        ENDDO
 !      ENDDO

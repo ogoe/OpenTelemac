@@ -273,28 +273,28 @@
       DO I=1,NPTFR
         JB=BOUNDARY_COLOUR%I(I)
 !
-        IF(JB.GE.821.AND.JB.LE.840) THEN     
+        IF(JB.GE.821.AND.JB.LE.840) THEN
           LIHBOR%I(I)=KINC
           HB%R(I)=0.202D0
           TETAB%R(I)=0.D0
           TETAP%R(I)=0.D0
         ENDIF
-        IF(JB.EQ.1) THEN     
+        IF(JB.EQ.1) THEN
           LIHBOR%I(I)=KINC
           HB%R(I)=0.202D0
           TETAB%R(I)=0.D0
           TETAP%R(I)=0.D0
         ENDIF
-!     
+!
 !       PAROIS LIQUIDES -FRONTIERE LIBRE
-!     
+!
         IF(JB.GE.401.AND.JB.LE.421) THEN
           LIHBOR%I(I)=KSORT
           TETAP%R(I)=0.D0
         ENDIF
-!     
+!
 !       PAROIS SOLIDES
-        IF(JB.GE.2.AND.JB.LE.400) THEN 
+        IF(JB.GE.2.AND.JB.LE.400) THEN
           LIHBOR%I(I)=KLOG
           RP%R(I)=1.D0
           TETAP%R(I)=0.D0
@@ -347,7 +347,7 @@
 !history  C.PEYRARD (EDF)
 !+        18/03/2014
 !+        V7P0
-!+   Computation of reference wave number for automatic 
+!+   Computation of reference wave number for automatic
 !+   phase calculation
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -448,7 +448,7 @@
 !
 !     COMPUTE REFERENCE WAVE NUMBER KPHREF FOR AUTOMATIC PHASE CALCULATION
       IF (LPHASEAUTO) THEN
-!       CHECKS THE REFERENCE DEPTH HAS BEEN GIVEN 
+!       CHECKS THE REFERENCE DEPTH HAS BEEN GIVEN
         IF (DEPREF.LT.0D0) THEN
           IF(LNG.EQ.1) THEN
            WRITE(LU,220)
@@ -461,14 +461,14 @@
      &           ,/,'         RENSEIGNER UNE PROFONDEUR DE REFERENCE  '
      &           ,/,'         MOT CLEF : PROFONDEUR DE REFERENCE POUR '
      &           ,/,'         LA PHASE AUTOMATIQUE                    ')
-         
+
 221       FORMAT(1X,'CONDIH : ERROR. IF YOU USE AUTOMATIC PHASE       '
      &           ,/,'         CALCULATION, YOU HAVE TO GIVE A         '
      &           ,/,'         REFERENCE WATER DEPTH                   '
      &           ,/,'         KEY WORD :                              '
      &           ,/,'        REFERENCE WATER DEPTH FOR AUTOMATIC PHASE')
-          CALL PLANTE(1) 
-          STOP               
+          CALL PLANTE(1)
+          STOP
         ENDIF
         T1REF= OMEGA**2/GRAV * DEPREF
         T2REF = 1.D0 + T1REF *( 0.6522D0 +
@@ -511,7 +511,7 @@
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-!         CURRENT DEFINITION ON THE DOMAIN : DEFAULT 0 
+!         CURRENT DEFINITION ON THE DOMAIN : DEFAULT 0
 !                       (EXAMPLE IS GIVEN BELOW)
 !----------------------------------------------------------------------
 !   => DEFINE YOUR CURRENT VALUES IN THE FOLLOWING LOOP
@@ -524,7 +524,7 @@
       ENDIF
 !
 !=====================================
-! === EXAMPLE OF X,Y DEPENDENT CURRENT 
+! === EXAMPLE OF X,Y DEPENDENT CURRENT
 !=====================================
 !      IF(COURANT) THEN
 !

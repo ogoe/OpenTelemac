@@ -167,7 +167,7 @@
               GLOSEG(NSE,1) = I2
               GLOSEG(NSE,2) = I1
               ORISEG(IELEM1,IFACE) = 2
-            ENDIF       
+            ENDIF
 !           OTHER ELEMENT NEIGHBOURING THIS SEGMENT
             IELEM2 = IFABOR(IELEM1,IFACE)
 !           IELEM2 = 0 OR -1 MAY OCCUR IN PARALLEL MODE

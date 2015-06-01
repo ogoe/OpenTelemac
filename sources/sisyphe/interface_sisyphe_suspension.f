@@ -149,7 +149,7 @@
       DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN, NOMBLAY)
       DOUBLE PRECISION, INTENT(INOUT) :: ES_SABLE(NPOIN,NOMBLAY)
       DOUBLE PRECISION, INTENT(INOUT) :: ES_VASE(NPOIN,NOMBLAY)
-!CV      
+!CV
       DOUBLE PRECISION, INTENT(INOUT)  :: MASFIN,MASDEPT,MASDEP
       DOUBLE PRECISION, INTENT(IN)    :: ZERO
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
@@ -205,8 +205,8 @@
       !================================================================!
 
       !==============================!
-      SUBROUTINE SUSPENSION_DEPOT    ! 
-      ! **************************** !   
+      SUBROUTINE SUSPENSION_DEPOT    !
+      ! **************************** !
      &(TOB,HN, NPOIN, HMIN,XWC,VITCD,
      & ZERO,KARMAN,FDM,FD90,XMVE, T1,T2,ZREF,FLUDPT,DEBUG,SEDCO,CSTAEQ)
       USE BIEF
@@ -486,7 +486,7 @@
         SUBROUTINE SUSPENSION_VANRIJN ! (_IMP_)
       ! ***************************** !
 
-     &  (FDM, TAUP, NPOIN, GRAV, 
+     &  (FDM, TAUP, NPOIN, GRAV,
      &   XMVE, XMVS,VCE, ZERO, AC, CSTAEQ,ZREF)
 
       USE BIEF
@@ -534,7 +534,7 @@
       !----------------------------------------------------------------!
       END SUBROUTINE SUSPENSION_MILES
       !================================================================!
-     
+
       END INTERFACE
       END MODULE INTERFACE_SISYPHE_SUSPENSION
 !

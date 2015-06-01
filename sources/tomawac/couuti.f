@@ -55,7 +55,7 @@
 !history  J-M HERVOUET (EDF-LNHE)
 !+        23/11/20012
 !+        V6P3
-!+   XRELC, YRELC, UR, VR removed, must be declared locally 
+!+   XRELC, YRELC, UR, VR removed, must be declared locally
 !+   if necessary.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

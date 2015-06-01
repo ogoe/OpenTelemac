@@ -195,7 +195,7 @@
         END DO FACBOUCLE
 !
 !       IDENTIFIES THE LAYER
-!       
+!
 !       COORDINATES IN THE 2D REFERENCE ELEMENT
         XAR1 = X    (IKLE3(IELAR,1     ,1))
         XAR2 = X    (IKLE3(IELAR,1     ,2))
@@ -207,7 +207,7 @@
      &          ((XAR2-XAR1)*(YAR3-YAR1) - (XAR3-XAR1)*(YAR2-YAR1))
         BETA  = ((XAR2-XAR1)*(YC  -YAR1) - (XC  -XAR1)*(YAR2-YAR1))/
      &          ((XAR2-XAR1)*(YAR3-YAR1) - (XAR3-XAR1)*(YAR2-YAR1))
-!       
+!
 !       COMPUTES THE LAYER
         ZS1H = Z(IKLE3(IELAR,NETAGE,4))
         ZS2H = Z(IKLE3(IELAR,NETAGE,5))
@@ -215,12 +215,12 @@
         ZS1B = Z(IKLE3(IELAR,1     ,1))
         ZS2B = Z(IKLE3(IELAR,1     ,2))
         ZS3B = Z(IKLE3(IELAR,1     ,3))
-!       
+!
         ZHAU = (1.D0-ALPHA-BETA)*ZS1H + ALPHA*ZS2H + BETA*ZS3H
         ZBAS = (1.D0-ALPHA-BETA)*ZS1B + ALPHA*ZS2B + BETA*ZS3B
-!       
+!
 !       ARE WE IN THE DOMAIN ?
-!       
+!
         IF ( (ZC-ZHAU)/(ZHAU-ZBAS).GT.EPSILO .OR.
      &      (ZBAS-ZC)/(ZHAU-ZBAS).GT.EPSILO      ) THEN
           IF (.NOT.ENTREE) THEN
@@ -247,25 +247,25 @@
             RETURN
           ENDIF
         ENDIF
-!       
+!
 !       NUMBER OF THE LAYER
         IETAGE = MIN(1+INT(NETAGE*ABS((ZC-ZBAS)/(ZHAU-ZBAS))),NETAGE)
-!       
+!
 !       WE ARE IN THE DOMAIN
         IF (.NOT.ENTREE) ENTREE = .TRUE.
-!       
+!
         ZAR1 = Z    (IKLE3(IELAR,IETAGE,1))
         ZAR2 = Z    (IKLE3(IELAR,IETAGE,2))
         ZAR3 = Z    (IKLE3(IELAR,IETAGE,3))
         ZAR4 = Z    (IKLE3(IELAR,IETAGE,4))
         ZAR5 = Z    (IKLE3(IELAR,IETAGE,5))
         ZAR6 = Z    (IKLE3(IELAR,IETAGE,6))
-!       
+!
 !       COORDINATES IN THE 3D REFERENCE ELEMENT
         A1 = ((1.D0-ALPHA-BETA)*ZAR1 + ALPHA*ZAR2 + BETA*ZAR3)/2.D0
         A2 = ((1.D0-ALPHA-BETA)*ZAR4 + ALPHA*ZAR5 + BETA*ZAR6)/2.D0
         GAMMA = ( ZC-A1-A2)/(A2-A1)
-!       
+!
 !       BASE FUNCTIONS IN THE REFERENCE ELEMENT
         SHP1 = (1.D0-ALPHA-BETA)*(1.D0-GAMMA)/2.D0
         SHP2 =       ALPHA      *(1.D0-GAMMA)/2.D0
@@ -273,7 +273,7 @@
         SHP4 = (1.D0-ALPHA-BETA)*(1.D0+GAMMA)/2.D0
         SHP5 =       ALPHA      *(1.D0+GAMMA)/2.D0
         SHP6 =             BETA *(1.D0+GAMMA)/2.D0
-!       
+!
 !       INTERPOLATES
         F1 = F    (IKLE3(IELAR,IETAGE,1))
         F2 = F    (IKLE3(IELAR,IETAGE,2))
@@ -281,10 +281,10 @@
         F4 = F    (IKLE3(IELAR,IETAGE,4))
         F5 = F    (IKLE3(IELAR,IETAGE,5))
         F6 = F    (IKLE3(IELAR,IETAGE,6))
-!       
+!
         FINT(IPOIN) = SHP1*F1 + SHP2*F2 + SHP3*F3 + SHP4*F4 + SHP5*F5
      &              + SHP6*F6
-!       
+!
 !       COMPUTES THE CURVILINEAR X-COORDINATE
         SCURV(IPOIN) = SQRT( (XC-X1)**2 + (YC-Y1)**2 + (ZC-Z1)**2 )
 !

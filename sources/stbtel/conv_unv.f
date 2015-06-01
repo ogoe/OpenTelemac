@@ -1,7 +1,7 @@
       MODULE CONV_UNV
       CONTAINS
-!                       ***************** 
-                        SUBROUTINE READ_UNV 
+!                       *****************
+                        SUBROUTINE READ_UNV
 !                       *****************
      &(UNVFILE,LOGFILE2)
 !
@@ -10,7 +10,7 @@
 !***********************************************************************
 !
 !BRIEF    READS A FILE OF UNV FORMAT AND FILL THE MESH OBJECT
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
@@ -23,7 +23,7 @@
 !
       USE DECLARATIONS_STBTEL
       USE DECLARATIONS_SPECIAL
-!      
+!
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
       INTEGER LNG,LU
@@ -58,12 +58,12 @@
       INTEGER, ALLOCATABLE :: TMP_VALFAM(:)
       INTEGER, ALLOCATABLE :: TMP_NGROUPFAM(:)
       CHARACTER(LEN=LNAME_SIZE), ALLOCATABLE :: TMP_GROUPFAM(:,:)
-!      
+!
       WRITE(LU,*) '----------------------------------------------------'
       IF(LNG.EQ.1) WRITE(LU,*) '------DEBUT LECTURE DU FICHIER UNV'
       IF(LNG.EQ.2) WRITE(LU,*) '------BEGINNING READING OF UNV FILE'
       WRITE(LU,*) '----------------------------------------------------'
-!      
+!
 !-----------------------------------------------------------------------
 !
       IDUM=0
@@ -93,7 +93,7 @@
 !
       CLOSE(NLOG,IOSTAT=IERR)
       CALL FNCT_CHECK(IERR,'CLOSE '//TRIM(LOGFILE2))
-!      
+!
       ! READING THE UNV FILE
       OPEN(NINP,IOSTAT=IERR,FILE=UNVFILE,FORM='FORMATTED')
       CALL FNCT_CHECK(IERR,'OPEN '//TRIM(UNVFILE))
@@ -106,7 +106,7 @@
         MOINS1 = '  '
         BLANC  = '1111'
         DO WHILE (MOINS1.NE.'-1' .OR. BLANC.NE.'    ')
-          READ(NINP,'(A4,A2)') BLANC,MOINS1 
+          READ(NINP,'(A4,A2)') BLANC,MOINS1
         ENDDO
         ! READING THE SECTION NUMBER
         NSEC=-1
@@ -151,13 +151,13 @@
                 VALUES(NFAMNODE) = MESH2%COLOR(I)
               ENDIF
             ENDIF
-            READ(NINP,*) MESH2%X(I), MESH2%Y(I), MESH2%Z(I) 
+            READ(NINP,*) MESH2%X(I), MESH2%Y(I), MESH2%Z(I)
           ENDDO
           ! BUIDING THE FAMILIES IN TEMPORARY TABLES
           ! BECAUSE WE HAVE TO WANT FOR THE FAMILIES ON ELEMENTS
-          IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 
+          IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*)
      &          'NOMBRE DE FAMILLES SUR LES NOEUDS : ',NFAMNODE
-          IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 
+          IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*)
      &          'NUMBER OF NODES FAMILIES: ',NFAMNODE
           ALLOCATE(TMP_IDFAM(NFAMNODE),STAT=IERR)
           CALL FNCT_CHECK(IERR,'ALLOCATE TMP_IDFAM')
@@ -218,7 +218,7 @@
               READ_NSEC3 = .TRUE.
               CYCLE
             ENDIF
-            SELECT CASE (ELEM) 
+            SELECT CASE (ELEM)
             ! TRIANGLE
             CASE (91,41)
               IELEM2 = IELEM2 + 1
@@ -268,11 +268,11 @@
           DEALLOCATE(TEMPO)
           ! IF NO 3D ELEMENTS
           IF(IELEM.EQ.0) THEN
-            ! IT MEANS WE ARE IN 2D 
+            ! IT MEANS WE ARE IN 2D
             MESH2%NDIM = 2
             ! WE DON'T NEED Z
             DEALLOCATE(MESH2%Z)
-            ! RECOPY 
+            ! RECOPY
             MESH2%NELEM = IELEM2
             MESH2%TYPE_ELEM = MESH2%TYPE_ELEM2
             MESH2%NDP = MESH2%NDP2
@@ -302,14 +302,14 @@
      &                 MESH2%NELEM*MESH2%NDP)),STAT=IERR)
               CALL FNCT_CHECK(IERR,'ALLOCATE TMP')
               !IKLES
-              TMP(1:MESH2%NELEM*MESH2%NDP) = 
+              TMP(1:MESH2%NELEM*MESH2%NDP) =
      &            MESH2%IKLES(1:MESH2%NELEM*MESH2%NDP)
               DEALLOCATE(MESH2%IKLES)
               ALLOCATE(MESH2%IKLES(MESH2%NELEM*MESH2%NDP),STAT=IERR)
               CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%IKLES BIS')
               MESH2%IKLES = TMP(1:MESH2%NELEM*MESH2%NDP)
               ! IKLES2
-              TMP(1:MESH2%NELEM2*MESH2%NDP2) = 
+              TMP(1:MESH2%NELEM2*MESH2%NDP2) =
      &            MESH2%IKLES2(1:MESH2%NELEM2*MESH2%NDP2)
               DEALLOCATE(MESH2%IKLES2)
               ALLOCATE(MESH2%IKLES2(MESH2%NELEM2*MESH2%NDP2),STAT=IERR)
@@ -379,7 +379,7 @@
      &            'FAM_COLOR_FACES_'//TRIM(I2CHAR(VALUES(I)))
             MESH2%VALFAM(I+NFAMNODE) = VALUES(I)
             MESH2%NGROUPFAM(I+NFAMNODE) = 1
-            MESH2%GROUPFAM(I+NFAMNODE,1) = 
+            MESH2%GROUPFAM(I+NFAMNODE,1) =
      &            'COLOR_FACES_'//TRIM(I2CHAR(VALUES(I)))
             IF(DEBUG) WRITE(LU,*) 'NAMEFAM: ',MESH2%NAMEFAM(I+NFAMNODE)
             IF(DEBUG) WRITE(LU,*) 'IDFAM : ',MESH2%IDFAM(I+NFAMNODE)
@@ -415,10 +415,10 @@
         CALL BLANC2USCORE(MESH2%NAMECOO(I),16)
         CALL BLANC2USCORE(MESH2%UNITCOO(I),16)
       ENDDO
-!      
+!
       CLOSE(NINP,IOSTAT=IERR)
       CALL FNCT_CHECK(IERR,'CLOSE '//TRIM(UNVFILE))
-!      
+!
 !-----------------------------------------------------------------------
 !
       WRITE(LU,*) '----------------------------------------------------'
@@ -426,8 +426,8 @@
       IF(LNG.EQ.2) WRITE(LU,*) '------ENDING READING OF UNV FILE'
       WRITE(LU,*) '----------------------------------------------------'
       END SUBROUTINE
-!                       ***************** 
-                        SUBROUTINE WRITE_UNV 
+!                       *****************
+                        SUBROUTINE WRITE_UNV
 !                       *****************
      &(UNVFILE,LOGFILE2)
 !
@@ -437,7 +437,7 @@
 !
 !BRIEF    WRITE A FILE OF UNV FORMAT AND WITH THE MESH OBJECT
 !+        INFORMATIONS
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
@@ -450,7 +450,7 @@
 !
       USE DECLARATIONS_STBTEL
       USE DECLARATIONS_SPECIAL
-!      
+!
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
       INTEGER LNG,LU
@@ -475,12 +475,12 @@
       INTEGER :: ELEM
       INTEGER :: TEMPMIN
       INTEGER :: POS(1)
-!      
+!
       WRITE(LU,*) '----------------------------------------------------'
       IF(LNG.EQ.1) WRITE(LU,*) '------DEBUT ECRITURE DU FICHIER UNV'
       IF(LNG.EQ.2) WRITE(LU,*) '------BEGINNING WRITTING OF UNV FILE'
       WRITE(LU,*) '----------------------------------------------------'
-!      
+!
 !-----------------------------------------------------------------------
 !
       NOUT = 666
@@ -530,7 +530,7 @@
 
       OPEN(NOUT,IOSTAT=IERR,FILE=UNVFILE,STATUS='NEW',FORM='FORMATTED')
       CALL FNCT_CHECK(IERR,'OPEN '//TRIM(UNVFILE))
-!      
+!
       ! WRITTING SECTION 1 TITLE
       IF(LNG.EQ.1) WRITE(LU,*) '---ECRITURE DE LA SECTION TITRE'
       IF(LNG.EQ.2) WRITE(LU,*) '---WRITTING TITLE SECTION'
@@ -645,7 +645,7 @@
 !
       CLOSE(NOUT,IOSTAT=IERR)
       CALL FNCT_CHECK(IERR,'CLOSE '//TRIM(UNVFILE))
-!      
+!
 !-----------------------------------------------------------------------
 !
       WRITE(LU,*) '----------------------------------------------------'

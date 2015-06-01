@@ -2,7 +2,7 @@
                      SUBROUTINE QSFORM
 !                    *****************
 !
-     &(U2D, V2D, TOB, HN, XMVE, TETAP, MU, NPOIN, DM, 
+     &(U2D, V2D, TOB, HN, XMVE, TETAP, MU, NPOIN, DM,
      & DENS, GRAV, DSTAR, AC, QSC, QSS)
 !
 !***********************************************************************
@@ -70,17 +70,17 @@
 !     C2 = 0.053D0 * SQRT(DM**3*DENS*GRAV) * DSTAR**(-0.3D0)
 !
 !     DO I = 1, NPOIN
-! 
+!
 !       TRANSPORT STAGE PARAMETER
-! 
+!
 !       IF(TETAP%R(I) .LE. AC) THEN
 !         T = 0.D0
 !       ELSE
 !         T = (TETAP%R(I)-AC)/MAX(AC,1.D-06)
 !       ENDIF
-!     
+!
 !       BEDLOAD TRANSPORT RATE
-! 
+!
 !       QSC%R(I) = C2 * T**2.1D0
 !       QSS%R(I) = 0.D0
 !

@@ -36,12 +36,12 @@
 !+   Checking elements for building GLOSEG. New optional argument MESH2D.
 !+   for prisms split into tetrahedrons (call of STOSEG51)
 !
-!history  J-M HERVOUET (LNHE) 
+!history  J-M HERVOUET (LNHE)
 !+        10/09/2012
 !+        V6P2
 !+   Different call to VOISIN31, and call added for IELM=51
 !
-!history  J-M HERVOUET (LNHE) 
+!history  J-M HERVOUET (LNHE)
 !+        06/03/2013
 !+        V6P3
 !+   XEL, YEL now built in 3D. SURFAC based on XEL and YEL. Mercator
@@ -151,12 +151,12 @@
       IF(MODASS.EQ.2) THEN
         ALLOCATE(MESH%WI8(NELMAX*NDP))
         ALLOCATE(MESH%TI8(NPOIN))
-      ENDIF 
+      ENDIF
 !
 !     PARALLEL MODE : INITIALISES THE ARRAYS NHP,NHM
 !                        INDPU,FAC, ETC.
 !
-!  
+!
       IF(NCSIZE.GT.1) THEN
 !
         CALL PARINI(MESH%NHP%I,MESH%NHM%I,MESH%INDPU%I,
@@ -222,7 +222,7 @@
      &             MESH%IFABOR%I,MESH%NBOR%I,MESH%IKLE%I,MESH%IKLE%DIM1,
      &             MESH%IKLBOR%I,NELEM2,NELMAX2,NPOIN2,NPTFR2,IELM,
      &             LIHBOR,KLOG,MESH%IFANUM%I,OPTASS,MESH%ISEG%I,
-     &             IT1%I,IT2%I,IT3%I,MESH%NELEBX,MESH%NELEB)  
+     &             IT1%I,IT2%I,IT3%I,MESH%NELEBX,MESH%NELEB)
 !
       ENDIF
 !
@@ -260,13 +260,13 @@
      &                 MESH2D%NELBOR%I,MESH%IKLBOR%I,
      &                 MESH%NELEB,MESH%NELEBX,MESH%NULONE%I,NELEM2,
      &                 NPOIN2,NPLAN,NPLAN-1,NPTFR2,
-     &                 MESH2D%IKLBOR%I,MESH2D%NELEB,MESH2D%NELEBX) 
+     &                 MESH2D%IKLBOR%I,MESH2D%NELEB,MESH2D%NELEBX)
         ELSE
           WRITE(LU,*) 'ARGUMENT MESH2D SHOULD BE ADDED TO INBIEF'
           WRITE(LU,*) 'FOR A CALL WITH IELM=51'
           CALL PLANTE(1)
           STOP
-        ENDIF      
+        ENDIF
 !
       ELSEIF(IELM.NE.11) THEN
 !
@@ -342,7 +342,7 @@
             T2%R(I)=MESH%Y%R(I)*MESH%COSLAT%R(I)
           ENDDO
         ENDIF
-!       COMPLETING UPPER LAYERS FOR 3D MESHES     
+!       COMPLETING UPPER LAYERS FOR 3D MESHES
         IF(IELM.EQ.41) THEN
           DO IPLAN=2,NPLAN
             DO I=1,NPOIN2
@@ -355,7 +355,7 @@
 !
 !       CONVERTS TO COORDINATES BY ELEMENTS (STARTING WITH X AND Y)
         CALL PTTOEL(MESH%XEL,T1,MESH)
-        CALL PTTOEL(MESH%YEL,T2,MESH)       
+        CALL PTTOEL(MESH%YEL,T2,MESH)
 !
       ELSE
 !
@@ -392,7 +392,7 @@
 !         CALL OV_2('X=X-Y   ',MESH%ZEL%R,IDP,
 !    &                         MESH%ZEL%R,1  ,
 !    &                         MESH%ZEL%R,1  , 0.D0 , NELMAX , NELEM )
-!       ENDDO 
+!       ENDDO
 !       CALL OV('X=C     ', MESH%ZEL%R , Z , Z , 0.D0 , NELEM )
 !     ENDIF
 !

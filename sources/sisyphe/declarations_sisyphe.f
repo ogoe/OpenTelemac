@@ -53,7 +53,7 @@
 !history  CV (EDF)
 !+        30/07/2012
 !+        V6P2
-!+ added new variable ZFCL_MS 
+!+ added new variable ZFCL_MS
 !
 !history  Pablo Tassi PAT (EDF-LNHE)
 !+        12/02/2013
@@ -373,7 +373,7 @@
 !
       TYPE(BIEF_OBJ), TARGET :: HIDING
 !
-! 
+!
 !
       TYPE(BIEF_OBJ), TARGET :: ELAY
 !
@@ -421,7 +421,7 @@
 !
       TYPE(BIEF_OBJ), TARGET :: HPROP
 !
-! 
+!
 !
       TYPE(BIEF_OBJ), TARGET :: DISP,DISP_C
 !
@@ -595,7 +595,7 @@
       TYPE(BIEF_OBJ), TARGET :: ZFCL_MS
 
 !> @brief MEYER PETER MUELLER factor
-!  
+!
       TYPE(BIEF_OBJ), TARGET :: MPM_ARAY
 !
 !     FLUX LIMITATION PER SEGMENT
@@ -605,9 +605,9 @@
 !     FLUXES AT BOUNDARY FOR EVERY CLASS
 !
       TYPE(BIEF_OBJ), TARGET :: FLBCLA
-! 
+!
 !     CV modifs V6P2 new variables for consolidation model
-! 
+!
 !     VOID INDEX OF BED LAYERS
 !
       DOUBLE PRECISION,DIMENSION(:,:),TARGET,ALLOCATABLE::IVIDE
@@ -662,11 +662,11 @@
       INTEGER :: NCONDIS
 !
 !     LAW OF BOTTOM FRICTION
-! 
+!
       INTEGER KFROT
 !
 !     BED-LOAD TRANSPORT FORMULA
-! 
+!
       INTEGER ICF
 !
 !> @brief
@@ -674,7 +674,7 @@
       INTEGER NPAS
 !
 !     NUMBER OF TIDES OR FLOODS
-! 
+!
       INTEGER NMAREE
 !> @brief
 !
@@ -696,15 +696,15 @@
       INTEGER LOGDES ,LOGPRE ,OPTBAN ,LVMAC
 !
 !     HYDRODYNAMIC CODE
-! 
+!
       INTEGER HYDRO
 !
 !     MATRIX STORAGE
-! 
+!
       INTEGER OPTASS
 !
 !     NUMBER OF SUB-ITERATIONS
-! 
+!
       INTEGER NSOUS
 !
 !> @brief
@@ -712,18 +712,18 @@
       INTEGER MARDAT(3),MARTIM(3),PRODUC
 !
 !     OPTION FOR THE TREATMENT OF NON ERODABLE BEDS
-! 
+!
       INTEGER CHOIX
 !> @brief
 !
       INTEGER PTINIL,PTINIG
 !
 !     NUMBER OF PRIVATE ARRAYS
-! 
+!
       INTEGER NPRIV
 !
 !     COUPLING PERIOD
-! 
+!
       INTEGER PERCOU
 !
 !     NUMERO DU PAS DE TEMPS
@@ -762,7 +762,7 @@
 !     NUMBER OF BED LOAD MODEL LAYERS
 !
       INTEGER NOMBLAY
-!     
+!
 !     FORMULATION FOR THE HIDING FACTOR
 !
       INTEGER HIDFAC
@@ -955,7 +955,7 @@
 ! si oui, couplage avec dredgesim
       LOGICAL :: DREDGESIM
 !> @brief BED FRICTION PREDICTION
-! 
+!
       LOGICAL :: KSPRED
 !
 ! MAK
@@ -1117,7 +1117,7 @@
 !> @brief PI
 !
       DOUBLE PRECISION :: PI
-!> @brief Meyer Peter Mueller-Coefficient 
+!> @brief Meyer Peter Mueller-Coefficient
       DOUBLE PRECISION :: MPM
 !
 !     Secondary Current Alpha Coefficient
@@ -1156,11 +1156,11 @@
       DOUBLE PRECISION :: TOCE_SABLE
 !
 !     THIEBOT MODEL
-! 
+!
       DOUBLE PRECISION :: CONC_GEL, COEF_N,CONC_MAX
 !
 !     PRESCRIBED SOLID DISCHARGES
-! 
+!
       DOUBLE PRECISION :: SOLDIS(MAXFRO)
 !
 !     FOR MASS BALANCE OF COHESIVE SEDIMENT
@@ -1233,7 +1233,7 @@
       TYPE(BIEF_OBJ),POINTER :: T13,T14
 !
 !     USEFUL COMPONENTS IN STRUCTURE MESH
-! 
+!
 !
 !     CONNECTIVITY TABLE
 !

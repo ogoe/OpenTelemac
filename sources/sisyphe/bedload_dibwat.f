@@ -37,8 +37,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALPHAW         |<->| ANGLE BETWEEN WAVE AND CURRENT
@@ -55,7 +55,7 @@
 !| T2             |<->| WORK BIEF_OBJ STRUCTURE
 !| T3             |<->| WORK BIEF_OBJ STRUCTURE
 !| THETAC         |<->| CURRENT ANGLE TO THE X AXIS
-!| THETAW         |-->| ANGLE BETWEEN WAVE AND CURRENT 
+!| THETAW         |-->| ANGLE BETWEEN WAVE AND CURRENT
 !| TOB            |-->| BED SHEAR STRESS (TOTAL FRICTION)
 !| TOBW           |-->| WAVE INDUCED SHEAR STRESS
 !| TW             |-->| WAVE PERIOD
@@ -69,7 +69,7 @@
 !| UW1            |<->| MEAN CURRENT IN THE WAVE DIRECTION
 !| UW2            |<->| MEAN CURRENT IN THE OPPOSITE DIRECTION
 !| V2D            |<->| MEAN FLOW VELOCITY Y-DIRECTION
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !| XWC            |-->| SETTLING VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -188,7 +188,7 @@
         IF ((UW2%R(I)*TW2%R(I) + UW1%R(I)*TW1%R(I)) > 0.D0 ) THEN
           GAMMAW = (  UW1%R(I) * TW1%R(I) * (W1**3+WP2**3)
      &              - UW2%R(I) * TW2%R(I) * (W2**3+WP1**3))
-     &           / ( UW1%R(I)*TW1%R(I)+UW2%R(I)*TW2%R(I)) 
+     &           / ( UW1%R(I)*TW1%R(I)+UW2%R(I)*TW2%R(I))
         ELSE
           GAMMAW = (2.D0 * UCW%R(I)**2 / DENS / GRAV / DM)**3
         ENDIF

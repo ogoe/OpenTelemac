@@ -26,8 +26,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables   
-!+   
+!+   Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
@@ -36,7 +36,7 @@
 !| DZF_TASS       |-->| BED EVOLUTION DUE TO CONSOLIDATION
 !| ELAY           |<->| THICKNESS OF EACH LAYER
 !| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
-!| LT             |-->| ITERATION 
+!| LT             |-->| ITERATION
 !| MS_SABLE       |<->| MASS OF SAND PER LAYER (KG/M2)
 !| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
 !| NOMBLAY        |-->| NUMBER OF LAYERS FOR CONSOLIDATION

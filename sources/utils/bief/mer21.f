@@ -107,7 +107,7 @@
           X(IKLE2(IELEM))=X(IKLE2(IELEM))+XA5(IELEM)*X(IKLE4(IELEM))
      &                                   +XA4(IELEM)*X(IKLE3(IELEM))
           X(IKLE3(IELEM))=X(IKLE3(IELEM))+XA6(IELEM)*X(IKLE4(IELEM))
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !
@@ -123,8 +123,8 @@
           X(IKLE2(IELEM))=X(IKLE2(IELEM))+XA5(IELEM)*X(IKLE4(IELEM))
      &                                   +XA4(IELEM)*X(IKLE3(IELEM))
           X(IKLE3(IELEM))=X(IKLE3(IELEM))+XA6(IELEM)*X(IKLE4(IELEM))
-      ENDDO ! IELEM 
-      ENDDO ! IB 
+      ENDDO ! IELEM
+      ENDDO ! IB
 !
       ENDIF
 !

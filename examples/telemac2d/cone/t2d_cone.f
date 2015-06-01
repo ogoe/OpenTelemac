@@ -3,9 +3,9 @@
 !
 !  HYDRODYNAMICS IS GIVEN IN CONDIN, AND IS NOT SOLUTION OF
 !  SHALLOW WATER EQUATIONS (IT IS JUST DIVERGENCE FREE)
-!          
-!  PROPAG: EMPTIED SUBROUTINE, EXCEPT A FEW LINES, SEE BELOW 
-!  DIFFIN: CHECKING OF ENTERING AND EXITING BOUNDARIES REMOVED         
+!
+!  PROPAG: EMPTIED SUBROUTINE, EXCEPT A FEW LINES, SEE BELOW
+!  DIFFIN: CHECKING OF ENTERING AND EXITING BOUNDARIES REMOVED
 !
 !
 !                    *****************
@@ -134,7 +134,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        09/04/2013
 !+        V6P3
-!+   DIMGLO=MESH%GLOSEG%DIM1 used in call to CVTRVF_POS_2. Strangely 
+!+   DIMGLO=MESH%GLOSEG%DIM1 used in call to CVTRVF_POS_2. Strangely
 !+   avoids an "array temporary created" with Intel compiler.
 !
 !history  J-M HERVOUET (LNHE)
@@ -248,12 +248,12 @@
 !|                |   | OF WEIR I (side2)
 !| NWEIRS         |-->| NUMBER OF SINGULARITIES
 !| OPDVIT         |-->| OPTION FOR DIFFUSION OF VELOCITIES
-!| OPTBAN         |-->| KEYWORD: 'OPTION FOR THE TREATMENT OF TIDAL FLATS' 
+!| OPTBAN         |-->| KEYWORD: 'OPTION FOR THE TREATMENT OF TIDAL FLATS'
 !| OPTSOU         |-->| KEYWORD: 'TYPE OF SOURCES'
 !| OPTSUP         |-->| KEYWORD: 'SUPG OPTION'
 !| PATMOS         |-->| ATMOSPHERIC PRESSURE
 !| PLUIE          |-->| RAIN OR EVAPORATION IN M/S IN A BIEF_OBJ
-!| PRECCU         |-->| KEYWORD: 'C-U PRECONDITIONING' 
+!| PRECCU         |-->| KEYWORD: 'C-U PRECONDITIONING'
 !| PRIVE          |-->| BLOCK OF WORK BIEF_OBJ STRUCTURES
 !| RAIN           |-->| IF YES, RAIN OR EVAPORATION
 !| RHS            |<->| BLOCK OF PRIVATE BIEF_OBJ STRUCTURES
@@ -263,7 +263,7 @@
 !| S              |-->| VOID STRUCTURE
 !| SLVPRO         |-->| SOLVER STRUCTURE FOR PROPAGATION
 !| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
-!| SOLSYS         |-->| KEYWORD: 'TREATMENT OF THE LINEAR SYSTEM' 
+!| SOLSYS         |-->| KEYWORD: 'TREATMENT OF THE LINEAR SYSTEM'
 !| T1             |<->| WORK BIEF_OBJ STRUCTURE
 !| T2             |<->| WORK BIEF_OBJ STRUCTURE
 !| T3             |<->| WORK BIEF_OBJ STRUCTURE
@@ -279,7 +279,7 @@
 !| TE4            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
 !| TE5            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
 !| TETAD          |-->| IMPLICITATION ON DIFFUSION
-!| TETAH          |-->| IMPLICITATION OF H IN U EQUATION 
+!| TETAH          |-->| IMPLICITATION OF H IN U EQUATION
 !| TETAHC         |-->| IMPLICITATION OF H IN CONTINUITY
 !| TETAU          |-->| IMPLICITATION OF U AND
 !| TM1            |<->| MATRIX
@@ -417,7 +417,7 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |                | -- |  
+! |                | -- |
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !***********************************************************************
@@ -433,7 +433,7 @@
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!  
+!
       INTEGER IPOIN,ITRAC
 !
       DOUBLE PRECISION EIKON
@@ -454,7 +454,7 @@
       CALL OS( 'X=C     ' , V , V , V , 0.D0 )
       DO IPOIN=1,NPOIN
         U%R(IPOIN) = -(Y(IPOIN)-10.05D0)
-        V%R(IPOIN) =  (X(IPOIN)-10.05D0) 
+        V%R(IPOIN) =  (X(IPOIN)-10.05D0)
       ENDDO
 !
 !-----------------------------------------------------------------------

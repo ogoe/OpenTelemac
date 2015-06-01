@@ -46,7 +46,7 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
-!history  J-M HERVOUET (LNHE)   
+!history  J-M HERVOUET (LNHE)
 !+        07/12/2011
 !+        V6P2
 !+   Removing preconditioning 17 in case of 2 planes.
@@ -316,7 +316,7 @@
 !       PRECONDITIONING 17 WILL NOT BE ACCEPTED IN 2D
         IS=SLVPOI%PRECON
         IF(17*(IS/17).EQ.IS) SLVPOI%PRECON=IS/17
-! 
+!
         CALL SOLVE(PD,MDIFF,SEM3D,TRAV2,SLVPOI,INFO,MESH2D,
      &             MAT2D%ADR(1)%P)
 !

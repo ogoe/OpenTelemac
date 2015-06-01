@@ -4,7 +4,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 6.2   07/12   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 6.2   07/12   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -77,12 +77,12 @@
 !
       INTEGER I,JB
 !
-      DOUBLE PRECISION PI,BID         
+      DOUBLE PRECISION PI,BID
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!           
+!     ----------------------------------------
+!
 !
       PARAMETER( PI = 3.1415926535897932384626433D0)
 !
@@ -106,45 +106,45 @@
       TETAP%R(:) = 0.D0
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
-      HB%R(:)    = 1.D0 
-!       
+      HB%R(:)    = 1.D0
+!
       DO I=1,NPTFR
         JB=BOUNDARY_COLOUR%I(I)
-                                                                      
+
 !       PAROIS SOLIDES
         IF(JB.GE.242.AND.JB.LE.268)THEN
           LIHBOR%I(I)=KLOG
           RP%R(I)=1.D0
           TETAP%R(I)=0.D0
           ALFAP%R(I)=0.D0
-        ENDIF 
+        ENDIF
         IF(JB.GE.294.AND.JB.LE.320)THEN
           LIHBOR%I(I)=KLOG
           RP%R(I)=1.D0
           TETAP%R(I)=0.D0
           ALFAP%R(I)=0.D0
-        ENDIF 
-!       
+        ENDIF
+!
 !       PAROIS LIQUIDES -FRONTIERE LIBRE
-!       
+!
         IF(JB.GE.1.AND.JB.LE.241)THEN
           LIHBOR%I(I)=KSORT
-        ENDIF 
-!       
+        ENDIF
+!
 !       PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
-!       
+!
         IF(JB.GE.269.AND.JB.LE.293)THEN
           LIHBOR%I(I)=KINC
           HB%R(I)=1.D0
           TETAB%R(I)=0.
           ALFAP%R(I)=0.D0
-        ENDIF 
+        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+      RETURN
+      END
 !                       *****************
                         SUBROUTINE ART_CORFON
 !                       *****************
@@ -227,7 +227,7 @@
 !
 !
       RETURN
-      END                  
+      END
 !                    *****************
                      SUBROUTINE CORRXY
 !                    *****************

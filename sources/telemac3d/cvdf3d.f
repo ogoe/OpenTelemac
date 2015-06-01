@@ -282,7 +282,7 @@
       NUZTYPR=VISCF%ADR(3)%P%TYPR
 !
 !     DEALING WITH A VELOCITY ?
-!      
+!
       VELOCITY=.FALSE.
       IF(FN%NAME(1:1).EQ.'U'.OR.
      &   FN%NAME(1:1).EQ.'V'.OR.
@@ -381,7 +381,7 @@
 !=======================================================================
 !
 !     WITH DISTRIBUTIVE SCHEMES, RIGHT-HAND SIDE MUST BE
-!     IN INTEGRATED FORM 
+!     IN INTEGRATED FORM
 !
       IF(SCHCF.EQ.ADV_NSC.OR.SCHCF.EQ.ADV_PSI.OR.SCHCF.EQ.ADV_LPO.OR.
      &   SCHCF.EQ.ADV_NSC_TF.OR.SCHCF.EQ.ADV_LPO_TF) THEN
@@ -397,9 +397,9 @@
      &                S0F,S0F,S0F,S0F,S0F,S0F,MESH3D,MSK,MASKEL)
           IF(NCSIZE.GT.1) CALL PARCOM(S0F2,2,MESH3D)
 !
-        ENDIF        
+        ENDIF
 !
-      ENDIF      
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -602,7 +602,7 @@
 !         RAIN HAS ALREADY BEEN TREATED BY DISTRIBUTIVE SCHEMES
           YARAIN=.FALSE.
         ENDIF
-! 
+!
         CALL DIFF3D(FD,FC,FN,VISCF,SIGMAF,
      &              S0F,YAS0F,S1F,YAS1F,
      &              FBORL,FBORF,FBORS,AFBORL,AFBORF,AFBORS,
@@ -618,7 +618,7 @@
      &              VOLUME,YASCE,NSCE,FSCE,SOURCES,TETASUPG,
      &              VELOCITY,YARAIN,PLUIE%R,TRAIN,SIGMAG,IPBOT,
      &              SETDEP)
-! 
+!
         IF(SCHCF.EQ.ADV_SUP.AND..NOT.VELOCITY) THEN
 !         MESH3D%Z RESTORED
           MESH3D%Z%R=>SAVEZ

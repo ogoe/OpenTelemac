@@ -137,7 +137,7 @@
         A33(IELEM) = - A31(IELEM)  - A32(IELEM) - A34(IELEM)
         A44(IELEM) = 0.D0
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -175,7 +175,7 @@
         A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
         A44(IELEM) = 0.D0
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSE
 !

@@ -54,7 +54,7 @@
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: FN,WCC,VOLU
       TYPE(BIEF_OBJ)  , INTENT(INOUT) :: FC,T1
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH3D,MESH2D
-! 
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I2D,IPLAN,I3D,IINF,ISUP
@@ -82,24 +82,24 @@
 !         3D POINT NUMBER
           I3D=I2D+(IPLAN-1)*NPOIN2
 !         BOTTOM
-          ZBOT=MESH3D%Z%R(I2D) 
+          ZBOT=MESH3D%Z%R(I2D)
 !         DEPARTURE POINT
-          ZDEP=MESH3D%Z%R(I3D) 
-!         ARRIVAL POINT (WCC>0)      
+          ZDEP=MESH3D%Z%R(I3D)
+!         ARRIVAL POINT (WCC>0)
           ZARR=MAX(ZDEP-WCC%R(I3D)*DT,ZBOT)
 !         LOCATING THE ARRIVAL POINT
           IINF=IPLAN-1
           ISUP=IPLAN
-1         CONTINUE          
-          ZINF=MESH3D%Z%R(I2D+(IINF-1)*NPOIN2) 
-          ZSUP=MESH3D%Z%R(I2D+(ISUP-1)*NPOIN2)        
+1         CONTINUE
+          ZINF=MESH3D%Z%R(I2D+(IINF-1)*NPOIN2)
+          ZSUP=MESH3D%Z%R(I2D+(ISUP-1)*NPOIN2)
           IF(ZARR.LT.ZINF) THEN
             IINF=IINF-1
             ISUP=ISUP-1
             GO TO 1
-          ENDIF 
+          ENDIF
 !         PROJECTION OF THE ORIGINAL MASS ON THE TWO POINTS
-          ALFA=(ZARR-ZINF)/MAX(ZSUP-ZINF,1.D-7) 
+          ALFA=(ZARR-ZINF)/MAX(ZSUP-ZINF,1.D-7)
 !         MASS ON IINF
           FC%R(I2D+(IINF-1)*NPOIN2)
      &   =FC%R(I2D+(IINF-1)*NPOIN2)+(1.D0-ALFA)*FN%R(I3D)*VOLU%R(I3D)
@@ -125,7 +125,7 @@
 !
       DO I3D=1,NPOIN3
         FC%R(I3D)=FC%R(I3D)/MAX(T1%R(I3D),1.D-6)
-      ENDDO     
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

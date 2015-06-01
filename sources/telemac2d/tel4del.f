@@ -489,9 +489,9 @@
 !
 ! LP 27/02/2011: BECAUSE OF UNFORMATTED FILES. ALL NOW IN 1 RECORD
 !
-        WRITE(NMAF) 0, (((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG+MBND),     
-     &                    NLAY=1,NOLAY), ((1.0,1.0), K=NOQ1+1,NOQ)     
-!        LP 27/02/2011 
+        WRITE(NMAF) 0, (((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG+MBND),
+     &                    NLAY=1,NOLAY), ((1.0,1.0), K=NOQ1+1,NOQ)
+!        LP 27/02/2011
 !        BECAUSE OF UNFORMATTED FILES ALL NOW IN 1 RECORD
 !
 !       DERIVES THE FROM-TO EXCHANGE TABLE FOR COMPUTATIONAL ELEMENTS
@@ -519,8 +519,8 @@
 !
         DO NLAY = 1 , NOLAY-1
 !  LP 05/04/2009
-           AREAWQ( (NOLAY*(NSEG+MBND))+(NLAY-1)*NPOIN2+1 :             
-     &             (NOLAY*(NSEG+MBND))+ NLAY   *NPOIN2     ) = V2DPAR  
+           AREAWQ( (NOLAY*(NSEG+MBND))+(NLAY-1)*NPOIN2+1 :
+     &             (NOLAY*(NSEG+MBND))+ NLAY   *NPOIN2     ) = V2DPAR
         ENDDO
 !
         IF(TRICK) THEN

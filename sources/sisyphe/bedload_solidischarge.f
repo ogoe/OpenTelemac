@@ -63,45 +63,45 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+ 
+!+  Name of variables
+!+
 !history  J-M HERVOUET (EDF-LNHE)
 !+        22/02/2012
 !+        V6P2
 !+  Dirichlet treatment of QBOR removed
-!+  It is now done in bedload_solvs_ef and vf   
+!+  It is now done in bedload_solvs_ef and vf
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
 !| AVA            |-->| PERCENT AVAILABLE
-!| BETA           |-->| COEFFICIENT FOR SLOPING BED EFFECT ( KOCH AND FLOKSTRA) 
+!| BETA           |-->| COEFFICIENT FOR SLOPING BED EFFECT ( KOCH AND FLOKSTRA)
 !| BETA2          |-->| COEFFICIENT FOR THE DEVIATION  (TALMON ET AL.)
 !| BIJK           |-->| COEFFICIENT OF THE BIJKER FORMULA
-!| CALFA          |<->| COSINUS OF THE ANGLE BETWEEN MEAN FLOW AND TRANSPORT 
+!| CALFA          |<->| COSINUS OF THE ANGLE BETWEEN MEAN FLOW AND TRANSPORT
 !| CF             |-->| QUADRATIC FRICTION COEFFICIENT
 !| COEFPN         |<->| CORRECTION OF TRANSORT FOR SLOPING BED EFFECT
 !| D90            |-->| D90
 !| DEBUG          |-->| FLAG FOR DEBUGGING
-!| DEVIA          |-->| SLOPE EFFECT FORMULA FOR DEVIATION 
+!| DEVIA          |-->| SLOPE EFFECT FORMULA FOR DEVIATION
 !| DM             |-->| SEDIMENT GRAIN DIAMETER
 !| FW             |---| QUADRATIC FRICTION COEFFICIENT (WAVE)
 !| GRAV           |-->| ACCELERATION OF GRAVITY
 !| HIDFAC         |-->| HIDING FACTOR FORMULAS
 !| HIDI           |-->| HIDING FACTOR FOR PARTICULAR SIZE CLASS (HIDFAC =0)
-!| HIDING         |-->| HIDING FACTOR CORRECTION  
+!| HIDING         |-->| HIDING FACTOR CORRECTION
 !| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
 !| HN             |-->| WATER DEPTH
 !| HOULE          |-->| LOGICAL, FOR WAVE EFFECTS
 !| ICF            |-->| BED-LOAD OR TOTAL LOAD TRANSPORT FORMULAS
 !| IELMT          |-->| NUMBER OF ELEMENTS
-!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| KARMAN         |-->| VON KARMAN CONSTANT
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
 !| KSP            |-->| BED SKIN ROUGHNESS
 !| KSR            |-->| RIPPLE BED ROUGHNESS
-!| LIQBOR         |-->| TYPE OF BOUNDARY CONDITION FOR QS 
+!| LIQBOR         |-->| TYPE OF BOUNDARY CONDITION FOR QS
 !| MASKEL         |-->| MASKING OF ELEMENTS
-!| MASKPT         |-->| MASKING PER POINT 
+!| MASKPT         |-->| MASKING PER POINT
 !| MESH           |<->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| MU             |<->| CORRECTION FACTOR FOR BED ROUGHNESS
@@ -111,13 +111,13 @@
 !| PHISED         |-->| ANGLE OF REPOSE OF THE SEDIMENT
 !| PI             |-->| PI
 !| QBOR           |-->| BOUNDARY CONDITION FOR TRANSPORT RATE
-!| QSC            |<->| BED LOAD TRANSPORT 
+!| QSC            |<->| BED LOAD TRANSPORT
 !| QSS            |<->| SUSPENDED LOAD TRANSPORT RATE
 !| S              |-->| VOID STRUCTURE
-!| SALFA          |<->| SINUS OF THE ANGLE BETWEEN TRANSPORT RATE AND CURRENT 
+!| SALFA          |<->| SINUS OF THE ANGLE BETWEEN TRANSPORT RATE AND CURRENT
 !| SECCURRENT     |-->| LOGICAL, PARAMETRISATION FOR SECONDARY CURRENTS
-!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT 
-!| SUSP           |-->| LOGICAL, SUSPENSION 
+!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT
+!| SUSP           |-->| LOGICAL, SUSPENSION
 !| T1             |<->| WORK BIEF_OBJ STRUCTURE
 !| T10            |<->| WORK BIEF_OBJ STRUCTURE
 !| T11            |<->| WORK BIEF_OBJ STRUCTURE
@@ -131,7 +131,7 @@
 !| T7             |<->| WORK BIEF_OBJ STRUCTURE
 !| T8             |<->| WORK BIEF_OBJ STRUCTURE
 !| T9             |<->| WORK BIEF_OBJ STRUCTURE
-!| THETAW         |-->| ANGLE BETWEEN WAVE AND CURRENT 
+!| THETAW         |-->| ANGLE BETWEEN WAVE AND CURRENT
 !| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
 !| TOBW           |-->| WAVE INDUCED SHEAR STRESS
 !| TW             |-->| WAVE PERIOD
@@ -142,11 +142,11 @@
 !| UW             |-->| ORBITAL WAVE VELOCITY
 !| V2D            |<->| MEAN FLOW VELOCITY Y-DIRECTION
 !| VCE            |-->| WATER VISCOSITY
-!| XMVE           |-->| FLUID DENSITY 
-!| XMVS           |-->| WATER DENSITY 
+!| XMVE           |-->| FLUID DENSITY
+!| XMVS           |-->| WATER DENSITY
 !| XWC            |-->| SETTLING VELOCITY
 !| ZERO           |-->| ZERO
-!| ZF_C           |<->| BEDLOAD EVOLUTION 
+!| ZF_C           |<->| BEDLOAD EVOLUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,
@@ -258,7 +258,7 @@
      &   SLOPEFF, COEFPN, BIJK, HOULE)
       IF (DEBUG > 0) WRITE(LU,*) 'END_BEDLOAD_FORMULA'
 !
-!     TIDAL FLATS 
+!     TIDAL FLATS
 !
       IF(OPTBAN.EQ.2) THEN
         IF (DEBUG > 0) WRITE(LU,*) 'TIDAL_FLATS_TREATMENT'

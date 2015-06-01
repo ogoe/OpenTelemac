@@ -54,9 +54,9 @@
 !| INFO           |-->| IF YES : INFORMATION IS PRINTED
 !| NCSIZE         |-->| NUMBER OF PROCESSORS (PARALLEL)
 !| NSEC           |-->| NUMBER OF CONTROL SECTIONS
-!| NSEG           |-->| NUMBER OF SEGMENTS PER CONTROL SECTION 
+!| NSEG           |-->| NUMBER OF SEGMENTS PER CONTROL SECTION
 !| SUSP           |-->| LOGICAL, SUSPENSION OR NOT
-!| TPS            |-->| TIME 
+!| TPS            |-->| TIME
 !| VOLNEG         |-->| CUMULATED NEGATIVE VOLUME THROUGH SECTIONS
 !| VOLNEGC        |-->| CUMULATED NEGATIVE VOLUME FOR THE BEDLOAD
 !| VOLNEGS        |-->| CUMULATED NEGATIVE VOLUME FOR THE SUSPENSION
@@ -127,19 +127,19 @@
 !
         INIT=.FALSE.
 !
-        IF(CHARR.AND..NOT.SUSP) THEN 
+        IF(CHARR.AND..NOT.SUSP) THEN
           WRITE(NSEO,*) ' INTEGRATED BEDLOAD DISCHARGES '
           WRITE(NSEO,*) ' VARIABLES = TIME(S) QC(M3/S) FOR',
      &           (' '//TRIM(CHAIN(ISEC)%DESCR), ISEC=1,NSEC)
         ENDIF
 !
-        IF(SUSP.AND..NOT.CHARR) THEN 
+        IF(SUSP.AND..NOT.CHARR) THEN
           WRITE(NSEO,*) ' INTEGRATED SUSPENDED LOAD DISCHARGES '
           WRITE(NSEO,*) ' VARIABLES = TIME   QS (M3/S) FOR SECTIONS '
      &           ,(II,II=1,NSEC)
         ENDIF
 !
-        IF(CHARR.AND.SUSP) THEN 
+        IF(CHARR.AND.SUSP) THEN
           WRITE(NSEO,*) ' INTEGRATED BEDLOAD AND SUSPENDED LOAD '
           WRITE(NSEO,*) 'VARIABLES = TIME , QC FOR ',
      &           (' '//TRIM(CHAIN(ISEC)%DESCR), ISEC=1,NSEC), ' QS FOR',
@@ -152,8 +152,8 @@
       ENDIF
 !
       IF(INFO) THEN
-!      
-      IF(OLD_METHOD) THEN 
+!
+      IF(OLD_METHOD) THEN
 !
         IF(NCSIZE.LE.1) THEN
 !
@@ -169,7 +169,7 @@
      &                                 CTRLSC(2+2*(ISEC-1)),
      &                                 FLX(ISEC),VOLNEG(ISEC),
      &                                 VOLPOS(ISEC)
-!    
+!
 130         FORMAT(1X,/,1X,'SECTION DE CONTROLE ',1I2,
      &               ' (ENTRE LES POINTS ',1I5,' ET ',1I5,')',//,5X,
      &               'DEBIT :                     ',G16.7,/,5X,
@@ -211,7 +211,7 @@
             ENDIF
 !
           ENDDO
-!    
+!
         ELSE
 !
 !         PARALLEL MODE
@@ -234,7 +234,7 @@
      &                 P_DMIN(FLX(ISEC))+P_DMAX(FLX(ISEC)),
      &                                   P_DMIN(VOLNEG(ISEC)),
      &                                   P_DMAX(VOLPOS(ISEC))
-! 
+!
               IF(SUSP) THEN
                 IF(LNG.EQ.1) WRITE(LU,1301)
      &              P_DMIN(FLXS(ISEC))+P_DMAX(FLXS(ISEC)),
@@ -255,7 +255,7 @@
      &                                  P_DMIN(VOLNEGC(ISEC)),
      &                                  P_DMAX(VOLPOSC(ISEC))
               ENDIF
-! 
+!
 !           OLD METHOD AND SECTION ON SEVERAL SUB-DOMAIN
 !           IN THIS CASE NOTHING IS COMPUTED
 !
@@ -275,12 +275,12 @@
             ENDIF
 !
           ENDDO
-!  
+!
         ENDIF
 !
 !-----------------------------------------------------------------------
 !
-      ELSE 
+      ELSE
 !
 !       NEW METHOD
 !       CHAIN ALLOCATED, I.E. SERIAL OR PARALLEL CASE FROM SECTIONS INPUT FILE
@@ -360,18 +360,18 @@
 !
 !
       ENDIF ! IF OLD_METHOD
-! 
+!
 !     A SECTIONS OUTPUT FILE HAS BEEN GIVEN, IT IS FILLED
-! 
+!
       IF(TRIM(SIS_FILES(SISSEO)%NAME).NE.'') THEN
 !
 !       ONLY BEDLOAD
 !
-        IF(CHARR.AND..NOT.SUSP) THEN  
+        IF(CHARR.AND..NOT.SUSP) THEN
           IF(NCSIZE.GT.1) THEN
             DO ISEC=1,NSEC
               WORK(ISEC)=P_DSUM(FLXC(ISEC))
-            ENDDO 
+            ENDDO
 !           IN // ONLY PROCESSOR 0 WRITES THE FILE
             IF(IPID.EQ.0) THEN
               WRITE(NSEO,FMT=FMTZON) TPS,(WORK(ISEC),ISEC=1,NSEC)
@@ -380,7 +380,7 @@
             WRITE(NSEO,FMT=FMTZON) TPS,(FLXC(ISEC),ISEC=1,NSEC)
           ENDIF
         ENDIF
-! 
+!
 !       ONLY SUSPENSION
 !
         IF(SUSP.AND..NOT.CHARR) THEN
@@ -394,7 +394,7 @@
             ENDIF
           ELSE
             WRITE(NSEO,FMT=FMTZON) TPS,(FLXS(ISEC),ISEC=1,NSEC)
-          ENDIF         
+          ENDIF
         ENDIF
 !
 !       BOTH BEDLOAD AND SUSPENSION
@@ -407,8 +407,8 @@
             ENDDO
             IF(IPID.EQ.0) THEN
               WRITE (NSEO,FMT=FMTZON) TPS,(WORK(ISEC),ISEC=1,NSEC),
-     &                                    (WORKB(ISEC), ISEC=1,NSEC) 
-            ENDIF 
+     &                                    (WORKB(ISEC), ISEC=1,NSEC)
+            ENDIF
           ELSE
             WRITE (NSEO,FMT=FMTZON) TPS,(FLXC(ISEC),ISEC=1,NSEC),
      &                                  (FLXS(ISEC),ISEC=1,NSEC)
@@ -423,4 +423,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE FLUXPR_SISYPHE 
+      END SUBROUTINE FLUXPR_SISYPHE

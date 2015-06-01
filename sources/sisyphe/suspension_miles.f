@@ -8,7 +8,7 @@
 ! SISYPHE   V6P3                                   16/05/2011
 !***********************************************************************
 !
-!brief    COMPUTES THE BED EXCHANGE FACTOR BETA BASED ON MILES (1986) 
+!brief    COMPUTES THE BED EXCHANGE FACTOR BETA BASED ON MILES (1986)
 !         FOUND IN HR WALLINGFORD REPORT: SR75.
 !
 !history  D. M. KELLY (HRW)
@@ -63,8 +63,8 @@
 !
 !     COMPUTE CONSTANTS:
 !
-      RRTPI = 1.D0/SQRT(3.1415926535D0)      
-      FVINV = 1.D0/XWC**2 
+      RRTPI = 1.D0/SQRT(3.1415926535D0)
+      FVINV = 1.D0/XWC**2
 !
 !     DMK MOD 03/05/2011
 !
@@ -72,14 +72,14 @@
 !     LAG INTO CONSIDERATION VIA A BETA COMPUTATION.
 !
       DO I=1,NPOIN
-!         
+!
         IF(FDM.LT.500.E-6) THEN
 !         UCR = 0.19D0*(D50**0.1D0)*LOG10(4.D0*(HN%R(I)/FDM))    ! SANDFLOW
           UCR = 0.19D0*(FDM**0.1D0)*LOG10(4.D0*HN%R(I)/FD90)  ! CORRECT
         ELSE
 !         UCR = 8.5D0*(D50**0.6D0)*LOG10(4.D0*(HN%R(I)/D50))      ! SANDFLOW
           UCR = 8.5D0*(FDM**0.6D0)*LOG10(4.D0*HN%R(I)/FD90)    ! CORRECT
-        ENDIF  
+        ENDIF
 !
         UB = SQRT(U2D%R(I)**2+V2D%R(I)**2)
 !
@@ -87,11 +87,11 @@
           USTARS = 1.3D0*UB*SQRT(SFON/8.D0)
           RB     = XWC*15.D0/USTARS
 !         THIS IS DIFFERENT BETWEEN MILES’ PAPERS DUE TO TYPO IN DEF OF R
-          BETAS  = RB/(1.D0-EXP(-RB)) 
+          BETAS  = RB/(1.D0-EXP(-RB))
 !         ACTUAL EQUATION FROM MILES (1981)  [1]
           DZ     = (1.D0/6.D0)*0.4D0*HN%R(I)*USTARS
-!         USE WITH [1] 
-          TAU    = XWC*SQRT(DT/(4.D0*DZ))          
+!         USE WITH [1]
+          TAU    = XWC*SQRT(DT/(4.D0*DZ))
           TAU_SQ = TAU**2
 !         EQ. (27) NOTE THIS IS ALREADY INTEGRATED WITH RESPECT TO TIME (DTS)
 !
@@ -102,14 +102,14 @@
 !
           SFBETA(I)=
      &      DZ*FVINV*BETAS*(4.D0*TAU_SQ*(1.D0+TAU_SQ)*(1.D0-AUX)
-     &    + AUX - 2.D0*TAU*(1.D0+2.D0*TAU_SQ)*EXP(-TAU_SQ)*RRTPI) 
-! 
+     &    + AUX - 2.D0*TAU*(1.D0+2.D0*TAU_SQ)*EXP(-TAU_SQ)*RRTPI)
+!
           IF(SFBETA(I)*XWC/HN%R(I).GT.1.D0) SFBETA(I)=1.D0/(XWC*HN%R(I))
 !         DIVIDE BACK THROUGH BY DT AS WE WILL INTEGRATE UP  WRTT LATER
           CSRATIO%R(I)=SFBETA(I)/DT ! FOR USE WITH EQ. (27)
 !         NOTE WE RECORD BETA_S (PROFILE PARAMETER) I.E. THE RATIO OF REF LEVEL CONC
 !         TO DEPTH AVERAGED CONC THIS WILL THEN BE USED IN SUSPENSION_SANDFLOW.F:
-!         NB: STORED IN T14 
+!         NB: STORED IN T14
         ELSE
           SFBETA(I) = 1.D0
           CSRATIO%R(I) = 1.D0
@@ -118,7 +118,7 @@
       ENDDO
 !
 !     END BETA FACTOR COMPUTATION
-!       
+!
 !======================================================================!
 !======================================================================!
 !

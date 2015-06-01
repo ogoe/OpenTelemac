@@ -28,8 +28,8 @@
 !| KSPRATIO       |-->| RATIO BETWEEN SKIN BED ROUGHNESS AND GRAIN DIAMETER
 !| HOULE          |-->| LOGICAL, WAVE EFFECT OR NOT
 !| GRAV           |-->| ACCELERATION OF GRAVITY
-!| XMVE           |-->| FLUID DENSITY 
-!| XMVS           |-->| SEDIMENT DENSITY 
+!| XMVE           |-->| FLUID DENSITY
+!| XMVS           |-->| SEDIMENT DENSITY
 !| VCE            |-->| WATER VISCOSITY
 !| HMIN           |-->| MINIMUM WATER DEPTH
 !| HN             |-->| WATER DEPTH
@@ -122,7 +122,7 @@
      &            'UNEXPECTED VALUE:',1I6)
         CALL PLANTE(1)
         STOP
-!      
+!
       ENDIF
 !
 !-----------------------------------------------------------------------

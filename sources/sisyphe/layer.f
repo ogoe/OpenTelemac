@@ -53,12 +53,12 @@
 !history  C. VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+ 
+!+  Name of variables
+!+
 !history  C. VILLARET (EDF-LNHE)
 !+        18/01/2012
 !+        V6P1
-!+  Dimension 10 of AVAIL changed into NOMBLAY    
+!+  Dimension 10 of AVAIL changed into NOMBLAY
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
@@ -66,7 +66,7 @@
 !| CONST_ALAYER   |-->| CONSTANT ACTIVE LAYER THICKNESS OR NOT
 !| DTS            |-->| TIME STEP FOR SUSPENSION
 !| ELAY           |<->| ACTIVE LAYER THICKNESS FOR EACH POINT
-!| ELAY0          |<->| ACTIVE LAYER THICKNESS 
+!| ELAY0          |<->| ACTIVE LAYER THICKNESS
 !| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
 !| ESTRAT         |<->| ACTIVE STRATUM THICKNESS FOR EACH POINT
 !| ESTRATNEW      |<->| ACTIVE STRATUM THICKNESS AT TIME T+DT
@@ -254,7 +254,7 @@
                 NLAYNEW(J) = NLAYER%I(J) - 1
                 ESTRATNEW(J) = ESTRAT%R(J) + EVOL + ES(J,3)
 !CV              DO K=3,MIN(9,NLAYER%I(J))
-! Pourquoi pas NOMBLAY? 
+! Pourquoi pas NOMBLAY?
                 DO K=3,MIN(NOMBLAY-1,NLAYER%I(J))
                   ES(J,K) = ES(J,K+1)
                 ENDDO
@@ -421,8 +421,8 @@
 !     CORRECTION JMH 12/04/2011: IN CASE OF RESTART, ES(J,2)
 !     WILL BE STORED IN A FILE AND LOOKED AT TO COUNT THE
 !     NUMBER OF LAYERS
-!     IF(NLAYER%I(J).GT.1) ES(J,2) = ESTRAT%R(J) 
-      ES(J,2) = ESTRAT%R(J)    
+!     IF(NLAYER%I(J).GT.1) ES(J,2) = ESTRAT%R(J)
+      ES(J,2) = ESTRAT%R(J)
 !
       TEST1 = 0.D0
       TEST2 = 0.D0

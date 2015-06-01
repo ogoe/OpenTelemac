@@ -42,7 +42,7 @@
 !| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
 !| NIT            |-->| NUMBER OF TIME STEPS
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
-!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR
 !|                |   | ELEMENTS.
 !| X,Y            |-->| COORDINATES OF POINTS IN THE MESH
 !| XFLOT,YFLOT    |<--| POSITIONS OF FLOATING BODIES
@@ -71,7 +71,7 @@
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-! 
+!
 !     EXAMPLE : AT ITERATION 1 AND EVERY 10 ITERATIONS AFTER 600
 !               A PARTICLE IS RELEASED WITH COORDINATES
 !               X=-220.
@@ -94,12 +94,12 @@
 !     ENDIF
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-! 
+!
 !     EXAMPLE : FOR ALGAE PARTICLE TRANSPORT
 !               => ALGAE_START NEEDS TO BE DEFINED
-! 
+!
 !       ALGAE_START=2
-! 
+!
 !       IF(LT.EQ.MAX(1,ALGAE_START)) THEN
 !         DO I=1,NFLOT_MAX
 !           CALL ADD_PARTICLE(0.175D0,0.45D0,0.D0,I,NFLOT,

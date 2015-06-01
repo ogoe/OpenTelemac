@@ -134,12 +134,12 @@
             I2 = IKLE2(IELEM)
             I3 = IKLE3(IELEM)
             I4 = IKLE4(IELEM)
-!           
+!
             F1 = F(I1)
             F2 = F(I2)
             F3 = F(I3)
             F4 = F(I4)
-!           
+!
             IF (IELMG.EQ.31) THEN
               G1 = G(I1)
               G2 = G(I2)
@@ -151,8 +151,8 @@
               G3 = G1
               G4 = G1
             ENDIF
-               
-!           
+
+!
             F2MF1 = F2-F1
             F3MF1 = F3-F1
             F4MF1 = F4-F1
@@ -208,24 +208,24 @@
      &               ) * XSUR120
 !
           ENDDO
-!      
+!
         ELSE IF (ICOORD.EQ.2) THEN
 !
 !-----------------------------------------------------------------------
 !  DERIVATIVE WRT Y
 !
           DO   IELEM = 1 , NELEM
-!       
+!
             I1 = IKLE1(IELEM)
             I2 = IKLE2(IELEM)
             I3 = IKLE3(IELEM)
             I4 = IKLE4(IELEM)
-!           
+!
             F1 = F(I1)
             F2 = F(I2)
             F3 = F(I3)
             F4 = F(I4)
-!           
+!
             IF (IELMG.EQ.31) THEN
               G1 = G(I1)
               G2 = G(I2)
@@ -237,7 +237,7 @@
               G3 = G1
               G4 = G1
             ENDIF
-!           
+!
             F2MF1 = F2-F1
             F3MF1 = F3-F1
             F4MF1 = F4-F1
@@ -285,7 +285,7 @@
      &Z2*X4*G4MG1-2*F2MF1*X3*Z4*G4MG1+2*F4MF1*Z2*X3*G4MG1 ) * XSUR120
 !
           ENDDO
-!      
+!
         ELSE IF (ICOORD.EQ.3) THEN
 !-----------------------------------------------------------------------
 !  DERIVATIVE WRT Z
@@ -296,12 +296,12 @@
             I2 = IKLE2(IELEM)
             I3 = IKLE3(IELEM)
             I4 = IKLE4(IELEM)
-!         
+!
             F1 = F(I1)
             F2 = F(I2)
             F3 = F(I3)
             F4 = F(I4)
-!         
+!
             IF (IELMG.EQ.31) THEN
               G1 = G(I1)
               G2 = G(I2)
@@ -313,23 +313,23 @@
               G3 = G1
               G4 = G1
             ENDIF
-!         
+!
             F2MF1 = F2-F1
             F3MF1 = F3-F1
             F4MF1 = F4-F1
             G2MG1 = G2-G1
             G3MG1 = G3-G1
             G4MG1 = G4-G1
-!         
+!
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT
-!         
+!
             X2  =  X(I2) - X(I1)
             X3  =  X(I3) - X(I1)
             X4  =  X(I4) - X(I1)
             Y2  =  Y(I2) - Y(I1)
             Y3  =  Y(I3) - Y(I1)
             Y4  =  Y(I4) - Y(I1)
-!         
+!
             W1(IELEM) = (
      &         5*F2MF1*X3*Y4*G1+F2MF1*X3*Y4*G2MG1+F2MF1*X3*Y4*G3MG1-5*F2
      &MF1*X4*Y3*G1-F2MF1*X4*Y3*G2MG1-F2MF1*X4*Y3*G3MG1-5*F3MF1*X2*Y4*G1-
@@ -359,7 +359,7 @@
      &3*Y4*G4MG1+2*F3MF1*Y2*X4*G4MG1-2*F2MF1*X4*Y3*G4MG1 ) * XSUR120
 !
           ENDDO
-!      
+!
         ELSE
 !
 !-----------------------------------------------------------------------

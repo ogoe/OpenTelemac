@@ -269,7 +269,7 @@
                 N2 = NBOR3%I(L2)
                 N3 = NBOR3%I(L3)
                 N4 = NBOR3%I(L4)
-!               
+!
                 FLUDI(5+ITRAC) = FLUDI(5+ITRAC) + SUR12 *
      &          ( ATABOL%ADR(ITRAC)%P%R(L1)*TA%ADR(ITRAC)%P%R(N1)
      &          + ATABOL%ADR(ITRAC)%P%R(L2)*TA%ADR(ITRAC)%P%R(N2)
@@ -296,7 +296,7 @@
                 Z_2 = ZPROP%R(N3) - ZPROP%R(N2)
                 A1 = D * (Z_1+Z_1+Z_2)
                 A2 = D * (Z_2+Z_2+Z_1)
-!               
+!
                 FLUDI(5+ITRAC) = FLUDI(5+ITRAC) + SUR12 *
      &          ( BTABOL%ADR(ITRAC)%P%R(L1)*A1
      &           +BTABOL%ADR(ITRAC)%P%R(L2)*A2

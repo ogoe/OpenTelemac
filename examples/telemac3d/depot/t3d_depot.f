@@ -167,7 +167,7 @@
 !-----------------------------------------------------------------------
 !
 ! INITIALIZE THE PRESSURE FIELDS TO 0.0
-! 
+!
       IF(NONHYD) THEN
         CALL OS('X=C     ',X=DP,C=0.D0)
         WRITE (LU,*) 'CONDIM: DYNAMIC PRESSURE INITIALISED TO ZERO'
@@ -239,9 +239,9 @@
       INTEGER, INTENT(IN) :: NPOIN2, LISFON
       LOGICAL, INTENT(IN) :: MSK
       TYPE (BIEF_OBJ), INTENT(INOUT) :: SZF, ST1, ST2
-      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(INOUT) :: ZF, T1, T2 
-      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(IN) :: X,Y 
-      TYPE (BIEF_OBJ),  INTENT(INOUT) :: PRIVE 
+      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(INOUT) :: ZF, T1, T2
+      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(IN) :: X,Y
+      TYPE (BIEF_OBJ),  INTENT(INOUT) :: PRIVE
       TYPE (BIEF_OBJ),  INTENT(IN)    :: MASKEL
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: MATR2D
       TYPE (BIEF_MESH), INTENT(INOUT) :: MESH2D
@@ -274,7 +274,7 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END 
+      END
 !                    *****************
                      SUBROUTINE BORD3D
 !                    *****************
@@ -803,7 +803,7 @@
         ENDIF
       ENDIF
 !
-      ENDDO ! IFRLIQ 
+      ENDDO ! IFRLIQ
       ENDIF
 !
 !     RESETS BOUNDARY CONDITIONS ON U AND V (WILL BE USED BY TFOND

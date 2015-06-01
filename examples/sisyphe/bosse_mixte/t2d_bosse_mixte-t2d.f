@@ -108,7 +108,7 @@
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!    
+!
       INTEGER, INTENT(IN)              :: NPOIN,NOMBLAY,NSICLA
       DOUBLE PRECISION, INTENT(INOUT)  :: ES(NPOIN,NOMBLAY)
       DOUBLE PRECISION, INTENT(IN)     :: CONC_VASE(NOMBLAY)
@@ -137,7 +137,7 @@
 !-----------------------------------------------------------------------
 !
 !     INITIALISING THE NUMBER OF LAYERS
-!        
+!
 
       DO J= 1,NOMBLAY
         EPAI_VASE(J) = 0.1D0
@@ -147,12 +147,12 @@
       ENDDO
 !-----------------------------------------------------------------------
 !
-!     INITIALISING OF LAYER THICKNESS AND CONC 
-!        
- 
+!     INITIALISING OF LAYER THICKNESS AND CONC
+!
+
 !     BY DEFAULT : UNIFORM BED COMPOSITION (KEY WORDS)
 !     V6P3: IT WILL BE POSSIBLE TO HAVE A SPATIAL DISTRIBUTION OF THE BED CONC
-!     V6P2: SO FAR THE MUD CONC IS CONSTANT PER LAYER 
+!     V6P2: SO FAR THE MUD CONC IS CONSTANT PER LAYER
 !     si mixte: calculer aussi les AVAI!
 !
       DO I=1,NPOIN
@@ -171,7 +171,7 @@
               AVAIL(I,J,1)= AVA0(1)
               AVAIL(I,J,2)= AVA0(2)
             ENDIF
-          ENDIF   
+          ENDIF
 !
         ENDDO
       ENDDO

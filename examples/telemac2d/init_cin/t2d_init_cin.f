@@ -55,7 +55,7 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END          
+      END
 !                       *******************************
                         DOUBLE PRECISION FUNCTION TRSCE
 !                       *******************************
@@ -80,7 +80,7 @@
 ! |   TIME         | -->| TIME
 ! |   I            | -->| NUMBER OF SOURCE
 ! |   TRASCE       | -->| ARRAY OF PRESCRIBED VALUES OF THE TRACER
-! |                |    | (READ IN THE PARAMETER FILE) 
+! |                |    | (READ IN THE PARAMETER FILE)
 ! |                |    | NAME OF TRASCE IN TELEMAC-2D IS TSCE
 ! |________________|____|______________________________________________|
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
@@ -104,7 +104,7 @@
       INTEGER         , INTENT(IN) :: I,ITRAC
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-! 
+!
       TRSCE = TSCE(I,ITRAC)
 !
 !-----------------------------------------------------------------------

@@ -28,7 +28,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DT             |-->| HYDRAULIC TIME STEP 
+!| DT             |-->| HYDRAULIC TIME STEP
 !| DTT            |<->| TRACER TIME STEP
 !| FLUHBOR        |<->| TRACER FLUX AT THE BOUNDARY (INCREMENTED)
 !| FLUHBTEMP      |-->| HYDRO BOUNDARY FLUX OF ONE TIME STEP

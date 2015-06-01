@@ -151,7 +151,7 @@
         DOUBLE PRECISION, INTENT(IN):: AT
         END SUBROUTINE
       END INTERFACE
-! 
+!
       INTERFACE
         DOUBLE PRECISION FUNCTION CGL( I , AT)
           IMPLICIT NONE
@@ -190,8 +190,8 @@
       CHARACTER*10,     INTENT(IN)    :: SOMETEXT
       END FUNCTION
       END INTERFACE
-!     
-      
+!
+
 ! UHM + PAT
       INTERFACE
         DOUBLE PRECISION FUNCTION CVSP_ALT(J, FORMULA)
@@ -538,7 +538,7 @@
 !
       INTERFACE
         SUBROUTINE QSFORM
-     &     (U2D, V2D, TOB, HN, XMVE, TETAP, MU, NPOIN, DM, 
+     &     (U2D, V2D, TOB, HN, XMVE, TETAP, MU, NPOIN, DM,
      &       DENS, GRAV, DSTAR, AC, QSC, QSS)
         USE BIEF_DEF
           IMPLICIT NONE

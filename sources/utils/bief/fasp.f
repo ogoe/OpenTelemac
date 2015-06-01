@@ -38,7 +38,7 @@
 !| X,Y            |-->| MESH COORDINATES
 !| XRELV          |-->| ABCISSAE OF BATHYMETRY POINTS
 !| YRELV          |-->| ORDINATES OF BATHYMETRY POINTS
-!| ZF             |<--| INTERPOLATED BATHYMETRY 
+!| ZF             |<--| INTERPOLATED BATHYMETRY
 !| ZRELV          |-->| ELEVATIONS OF BATHYMETRY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -180,7 +180,7 @@
         ZF(I) = -1.D6
       ENDIF
 !
-      ENDDO ! I 
+      ENDDO ! I
 !
 !-----------------------------------------------------------------------
 !

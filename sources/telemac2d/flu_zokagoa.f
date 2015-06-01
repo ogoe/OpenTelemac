@@ -9,9 +9,9 @@
 ! TELEMAC 2D VERSION 6.3                                     06/02/2013
 !***********************************************************************
 !
-!brief  COMPUTES ZOKAGOA FLUX AT THE INERNAL INTERFACES 
-!       REF.:"MODELING OF WETTING-DRYING TRANSITIONS IN FREE SURFACE FLOWS 
-!             OVER COMPLEX TOPOGRAPHIES" CMAME 199(2010) PP 2281-2304 
+!brief  COMPUTES ZOKAGOA FLUX AT THE INERNAL INTERFACES
+!       REF.:"MODELING OF WETTING-DRYING TRANSITIONS IN FREE SURFACE FLOWS
+!             OVER COMPLEX TOPOGRAPHIES" CMAME 199(2010) PP 2281-2304
 !
 !history  R. ATA (EDF-LNHE)
 !+        06/01/2012
@@ -24,7 +24,7 @@
 !+ remove unused variables
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION 
+!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION
 !|  ETA1,ETA2     |-->|  LEFT AND RIGHT FREE SURFACES
 !|  FLXI,FLXJ     |<--|  RIGHT AND LEFT CONTRIBUTIONS TO THE FLUX
 !|  G             |-->|  GRAVITY CONSTANT
@@ -46,7 +46,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IVAR ,CHOICE_D  
+      INTEGER IVAR ,CHOICE_D
 !
       DOUBLE PRECISION GSUR2,ALPHA,FLUIJ_1,EPS,UI,UJ,VI,VJ
       DOUBLE PRECISION U_IJ,D_IJ,C_IJ,C_I,C_J,UI0,UJ0
@@ -112,7 +112,7 @@
 !
       ELSE
 !
-!       ERROR MESSAGE        
+!       ERROR MESSAGE
 !
         IF(LNG.EQ.1) WRITE(LU,4010) CHOICE_D
         IF(LNG.EQ.2) WRITE(LU,4020) CHOICE_D
@@ -128,15 +128,15 @@
 !
 ! ZOKAGOA FLUX
 !
-      FLUIJ_1 = 0.5D0*(H1*UI+H2*UJ) 
+      FLUIJ_1 = 0.5D0*(H1*UI+H2*UJ)
       FLUIJ_2I= 0.5D0*(H1*(UI*UI)+H2*(UJ*UJ) +
      &          GSUR2*((ETA1*ETA1)+(ETA2*ETA2))-
      &          G*ZF1*(ETA1+ETA2) )
-      FLUIJ_2J= FLUIJ_2I+GSUR2*(ETA1+ETA2)*(ZF1-ZF2) 
-      FLUIJ_3 = 0.5D0*(H1*UI*VI+H2*UJ*VJ) 
+      FLUIJ_2J= FLUIJ_2I+GSUR2*(ETA1+ETA2)*(ZF1-ZF2)
+      FLUIJ_3 = 0.5D0*(H1*UI*VI+H2*UJ*VJ)
 !
 ! UPWIND ADDING
-! 
+!
       DIJS2=0.5D0*D_IJ
       FLUIJ_1  = FLUIJ_1 - DIJS2*(ETA2-ETA1)
       FLUIJ_2I = FLUIJ_2I- DIJS2*(H2*UJ-H1*UI)
@@ -155,15 +155,15 @@
       FLUIJ_2J  = XNN*FLUIJ_20-YNN*FLUIJ_3J
       FLUIJ_3J  = YNN*FLUIJ_20+XNN*FLUIJ_3J
 !
-! FINAL FLUX 
+! FINAL FLUX
 !
       FLXI(1) =  FLUIJ_1
-      FLXI(2) =  FLUIJ_2I 
-      FLXI(3) =  FLUIJ_3I 
+      FLXI(2) =  FLUIJ_2I
+      FLXI(3) =  FLUIJ_3I
 !
       FLXJ(1) =  FLUIJ_1
-      FLXJ(2) =  FLUIJ_2J 
-      FLXJ(3) =  FLUIJ_3J 
+      FLXJ(2) =  FLUIJ_2J
+      FLXJ(3) =  FLUIJ_3J
 !
 !-----------------------------------------------------------------------
 !

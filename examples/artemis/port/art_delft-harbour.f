@@ -5,7 +5,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -79,11 +79,11 @@
 !
       DOUBLE PRECISION PI,BID
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
+!     ----------------------------------------
+!
+! JCB :
       INTEGER I   , IG,IG0 , IB,JB,IDEB,ISUIV
       INTEGER I1,I32,I33,I42,I43,I58,I59,I82,I83
       INTEGER I103,I104,I135,I136,I165
@@ -112,49 +112,49 @@
       TETAP%R(:) = 0.D0
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
-      HB%R(:)    = 0.04D0      
+      HB%R(:)    = 0.04D0
 !
 
 
       DO IB=1,NPTFR
         JB=BOUNDARY_COLOUR%I(IB)
-                    
+
         IF(JB.GE.1.AND.JB.LE.32)THEN
           LIHBOR%I(IB)=KLOG
           RP%R(IB)=0.23D0
           TETAP%R(IB)=0.D0
         ENDIF
-!      
-        IF(JB.GE.33.AND.JB.LE.42)THEN        
+!
+        IF(JB.GE.33.AND.JB.LE.42)THEN
           LIHBOR%I(IB)=KLOG
           RP%R(IB)=1.D0
           TETAP%R(IB)=0.D0
         ENDIF
-!      
+!
         IF(JB.GE.59.AND.JB.LE.82)THEN
           LIHBOR%I(IB)=KLOG
           RP%R(IB)=1.D0
           TETAP%R(IB)=0.D0
         ENDIF
-!      
+!
         IF(JB.GE.83.AND.JB.LE.103)THEN
           LIHBOR%I(IB)=KLOG
           RP%R(IB)=0.05D0
           TETAP%R(IB)=45.D0
         ENDIF
-!      
+!
         IF(JB.GE.104.AND.JB.LE.135)THEN
           LIHBOR%I(IB)=KLOG
           RP%R(IB)=0.05D0
           TETAP%R(IB)=0.D0
         ENDIF
-!      
+!
         IF(JB.GE.136.AND.JB.LE.165)THEN
           LIHBOR%I(IB)=KLOG
           RP%R(IB)=0.23D0
           TETAP%R(IB)=0.D0
         ENDIF
-       
+
         IF(JB.GE.43.AND.JB.LE.58)THEN
           LIHBOR%I(IB)=KINC
           HB%R(IB)    =0.04D0
@@ -162,14 +162,14 @@
           TETAB%R(IB) =TETAH
           ALFAP%R(IB) = 0.D0
         ENDIF
-      
+
       ENDDO
 !
 
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+      RETURN
+      END
 !                       *****************
                         SUBROUTINE ART_CORFON
 !                       *****************
@@ -213,11 +213,11 @@
 !
       INTEGER I
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
+!     ----------------------------------------
+!
+! JCB :
 !
 !
 !
@@ -259,6 +259,6 @@
 !
 !
       RETURN
-      END                  
- 
- 
+      END
+
+

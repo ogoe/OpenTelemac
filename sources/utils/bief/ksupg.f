@@ -43,7 +43,7 @@
 !| MESH           |-->| MESH STRUCTURE
 !| U              |-->| FIRST COMPONENT OF VELOCITY
 !| V              |-->| SECOND COMPONENT OF VELOCITY
-!| XMUL           |-->| MULTIPLICATION COEFICIENT 
+!| XMUL           |-->| MULTIPLICATION COEFICIENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_KSUPG => KSUPG

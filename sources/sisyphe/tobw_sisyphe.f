@@ -31,18 +31,18 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+   Name of variables   
-!+   
+!+   Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |-->| QUADRATIC FRICTION COEFFICIENT
 !| FW             |-->| QUADRATIC FRICTION COEFFICIENT (WAVE)
 !| HN             |-->| WATER DEPTH AT TIME N
 !| NPOIN          |-->| NUMBER OF POINTS
-!| TOBW           |-->| TOTAL BED SHEAR STRESS 
-!| TW             |-->| WAVE PERIOD 
+!| TOBW           |-->| TOTAL BED SHEAR STRESS
+!| TW             |-->| WAVE PERIOD
 !| UW             |-->| ORBITAL VELOCITY (WAVE)
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -39,16 +39,16 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRS           |-->| CELL AREA
-!| DDMIN          |<--| MINIMUM DISTANCE 
+!| DDMIN          |<--| MINIMUM DISTANCE
 !| EPS            |-->| TOLERANCE
-!| FLUENT         |<--| MASS FLUX MASSE INLET 
+!| FLUENT         |<--| MASS FLUX MASSE INLET
 !| FLUSCE         |-->| SOURCE FLUXES
-!| FLUSORT        |<--| MASS FLUX MASSE OUTLET 
+!| FLUSORT        |<--| MASS FLUX MASSE OUTLET
 !| FLUX           |<--| ROE FLUX
 !| G              |-->| GRAVITY
 !| KDDL           |-->| CONVENTION FOR FREE POINTS (BC)
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINTS
-!| KFROT          |-->| BED FRICTION LAW 
+!| KFROT          |-->| BED FRICTION LAW
 !| KNEU           |-->| CONVENTION NEUMANN POINTS
 !| LIMPRO         |-->| TYPES OF BOUNDARY CONDITION!
 !| NBOR           |-->| NUMER OF BORD NODES
@@ -58,7 +58,7 @@
 !| NSEG           |-->| NUMBER OF EDGES
 !| NUBO           |-->| GLOBAL INDICES OF EDGE EXTREMITIES
 !| VNOIN          |-->| NORMAL TO THE INTERFACE
-!|                |   | (2 FIRS COMPOSANTES) AND 
+!|                |   | (2 FIRS COMPOSANTES) AND
 !|                |   | SEGMENT LENGTH (3RD COMPONENT)
 !| W              |<->| WORKING TABLE
 !| WINF           |-->| PRESCRIBED VALUES AT THE INLET AND OUTLET
@@ -87,7 +87,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: FLUSCE(3,NPOIN),FLUSORT,FLUENT
 ! RA
       TYPE(BIEF_OBJ), INTENT(INOUT)  :: FLBOR
-      INTEGER, INTENT(IN)            :: IFABOR(NELEM,3) 
+      INTEGER, INTENT(IN)            :: IFABOR(NELEM,3)
       TYPE(BIEF_MESH),INTENT(INOUT)  :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -139,11 +139,11 @@
 !       ----------------------------------
 !
       DDMIN = 10000.D0
-      DO IEL=1, NELEM 
+      DO IEL=1, NELEM
         DO I = 1,3
           IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
             NSG = ELTSEG(IEL,I)
-!           
+!
 !           RECUPERATE NODES OF THE EDGE WITH THE GOOD ORIENTATION
 !           WITH RESPECT TO THE NORMAL
             NUBO1 = NUBO(1,NSG)
@@ -168,7 +168,7 @@
               VI = 0.D0
               HI = 0.D0
             ENDIF
-!         
+!
             HJ = W(1,NUBO2)
             IF(HJ.GT.EPS) THEN
               UJ = W(2,NUBO2) / HJ
@@ -179,17 +179,17 @@
               VJ = 0.D0
               HJ = 0.D0
             ENDIF
-!         
+!
             DIJ = SQRT((X(NUBO1)-Y(NUBO2))**2+(Y(NUBO1)-Y(NUBO2))**2)
             IF(DIJ.LE.DDMIN) THEN
               DDMIN=DIJ
             ENDIF
             RNORM = VNOIN(3,NSG)
-!         
+!
             IF(INDIC.LT.2) THEN
               XN = VNOIN (1,NSG)
               YN = VNOIN (2,NSG)
-!         
+!
               CALL FLUXE(HJ,UJ,VJ,HI,UI,VI,XN,YN,RNORM,G,FLULOC)
               CALL FLUSRC(NUBO1,NUBO2,NSG,VNOIN,W,FLUSCE,X,Y,AIRS,NPOIN,
      &                 NSEG,ZF,EPS,G)
@@ -213,7 +213,7 @@
                 FLULOC(1)= DEMI*FLULOC(1)
                 FLULOC(2)= DEMI*FLULOC(2)
                 FLULOC(3)= DEMI*FLULOC(3)
-!            
+!
                 FLUSCE(1,NUBO1)= DEMI*FLUSCE(1,NUBO1)
                 FLUSCE(2,NUBO1)= DEMI*FLUSCE(2,NUBO1)
                 FLUSCE(3,NUBO1)= DEMI*FLUSCE(3,NUBO1)
@@ -222,18 +222,18 @@
                 FLUSCE(3,NUBO2)= DEMI*FLUSCE(3,NUBO2)
               ENDIF
             ENDIF
-!           
+!
             FLUX(NUBO1,1)=FLUX(NUBO1,1)+FLULOC(1)*RNORM+FLUSCE(1,NUBO1)
             FLUX(NUBO1,2)=FLUX(NUBO1,2)+FLULOC(2)*RNORM+FLUSCE(2,NUBO1)
             FLUX(NUBO1,3)=FLUX(NUBO1,3)+FLULOC(3)*RNORM+FLUSCE(3,NUBO1)
-!           
+!
             FLUX(NUBO2,1)=FLUX(NUBO2,1)-FLULOC(1)*RNORM+FLUSCE(1,NUBO2)
             FLUX(NUBO2,2)=FLUX(NUBO2,2)-FLULOC(2)*RNORM+FLUSCE(2,NUBO2)
             FLUX(NUBO2,3)=FLUX(NUBO2,3)-FLULOC(3)*RNORM+FLUSCE(3,NUBO2)
 !
-            YESNO(NSG)=.TRUE. 
+            YESNO(NSG)=.TRUE.
           ENDIF
-        
+
         ENDDO
       ENDDO
 
@@ -288,7 +288,7 @@
             XN = XNEBOR(K)
             YN = YNEBOR(K)
             RNORM = SQRT( XNEBOR(K+NPTFR)**2 + YNEBOR(K+NPTFR)**2 )
-!           
+!
             IF(INDIC.LT.2) THEN
               CALL FLUXE(HJ,UJ,VJ,HI,UI,VI,XN,YN,RNORM,G,FLULOC)
               OUTFLOW = FLULOC(1)*RNORM
@@ -326,14 +326,14 @@
             XN = XNEBOR(K)
             YN = YNEBOR(K)
             RNORM = SQRT( XNEBOR(K+NPTFR)**2 + YNEBOR(K+NPTFR)**2 )
-!          
+!
             IF(INDIC.LT.2) THEN
              CALL FLUXE(HI,UI,VI,HJ,UJ,VJ,XN,YN,RNORM,G,FLULOC)
-! RA       
+! RA
              INFLOW = FLULOC(1)*RNORM
              FLUENT = FLUENT + INFLOW
              FLBOR%R(K)=INFLOW
-!          
+!
             ELSE
              FLULOC(1)= 0.D0
              FLULOC(2)= 0.D0
@@ -341,7 +341,7 @@
              FLBOR%R(K)=0.0D0
             ENDIF
           ENDIF
-!         
+!
           FLUX(NB,1)=FLUX(NB,1)+FLULOC(1)*RNORM
           FLUX(NB,2)=FLUX(NB,2)+FLULOC(2)*RNORM
           FLUX(NB,3)=FLUX(NB,3)+FLULOC(3)*RNORM
@@ -357,7 +357,7 @@
             PRI =G*( W(1,NB)*W(1,NB))/2.D0
             USN = (W(2,NB)*XNEBOR(K)+W(3,NB)*YNEBOR(K))/W(1,NB)
             CT = SQRT(G*W(1,NB))
-!           
+!
             IF((USN+2.D0*CT).LE.0.D0) THEN
               PRI =0.D0
             ELSEIF(((USN+2.D0*CT).GE.0.D0) .AND. (USN.LE.0.D0)) THEN
@@ -365,17 +365,17 @@
      &                  * (1.D0 +  USN / 2.D0 / CT)
      &                  * (1.D0 +  USN / 2.D0 / CT)
      &                  * (1.D0 +  USN / 2.D0 / CT)
-!           
+!
             ELSEIF(USN.GE.0.D0) THEN
               PRI = PRI*(1.D0 + 2.D0 * USN / CT)
             ENDIF
-!           
+!
             FLUX(NB,2) = FLUX(NB,2) + XNEBOR(K+NPTFR) * PRI
             FLUX(NB,3) = FLUX(NB,3) + YNEBOR(K+NPTFR) * PRI
           ENDIF
 !
         ENDIF
-      ENDDO ! K 
+      ENDDO ! K
 !
       DEALLOCATE(YESNO)
 !-----------------------------------------------------------------------

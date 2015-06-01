@@ -33,7 +33,7 @@
 !+        V6P3
 !+   Adding the format FFORMAT
 !
-!history  Y AUDOUIN 
+!history  Y AUDOUIN
 !+        21/05/2015
 !+        V7P0
 !+   Adapt code to work with the hermes module
@@ -75,9 +75,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      ! WE CHECK IF THE RECORD IS IN THE FILE BY GETTING THE NUMBER OF 
+      ! WE CHECK IF THE RECORD IS IN THE FILE BY GETTING THE NUMBER OF
       ! TIMESTEPS AND CHECKING THAT THE RECORD IS INDEED
-      ! BETWEEN 0 AND NTIMESTEP - 1 
+      ! BETWEEN 0 AND NTIMESTEP - 1
       CALL GET_DATA_NTIMESTEP(FFORMAT,NFIC,NTIMESTEP,IERR)
       CALL CHECK_CALL(IERR, 'READ_DATA:GET_DATA_NTIMESTEP')
       IF((RECORD.LT.0).AND.(RECORD.GE.NTIMESTEP)) THEN
@@ -104,7 +104,7 @@
       ENDIF
       DEALLOCATE(VAR_LIST)
       DEALLOCATE(UNIT_LIST)
-      
+
       IF(PRESENT(TIME)) THEN
         CALL GET_DATA_TIME(FFORMAT,NFIC,RECORD,TIME,IERR)
         IF(IERR.NE.0) THEN
@@ -120,7 +120,7 @@
      &                    NPOIN,IERR)
       IF(IERR.NE.0) THEN
         IF (LNG.EQ.1) WRITE(LU,*) 'ERREUR LORS DE LA LECTURE DES ',
-     &                            'RESULTATS POUR LA VARIABLE', 
+     &                            'RESULTATS POUR LA VARIABLE',
      &                             VAR_NAME,
      &                            'A L ITERATION :', RECORD
         IF (LNG.EQ.2) WRITE(LU,*) 'ERROR WHILE READING VALUE ',

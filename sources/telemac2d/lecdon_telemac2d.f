@@ -61,12 +61,12 @@
 !history R. ATA
 !+        10/11/2014
 !+        V7P0
-!+   introduction of water quality 
+!+   introduction of water quality
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        18/05/2015
 !+        V7P1
-!+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH' 
+!+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH'
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -100,7 +100,7 @@
 !     API
       CHARACTER(LEN=144), INTENT(IN)    :: DICO_FILE
       CHARACTER(LEN=144), INTENT(IN)    :: CAS_FILE
-!                                                 
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,K,ERR,ITRAC,NTRTOT
@@ -258,14 +258,14 @@
 !     CLOSES DICTIONNARY AND STEERING FILES
 !-----------------------------------------------------------------------
       CLOSE(2)
-      CLOSE(3)  
+      CLOSE(3)
 !
 !     FIRST VERIFY IF WE CALL WAQ OR NOT
 !
-      WATQUA    = MOTLOG( ADRESS(3, 48) ) 
+      WATQUA    = MOTLOG( ADRESS(3, 48) )
 !     SECONDARY CURRENT ALSO
       SECCURRENTS = MOTLOG(ADRESS(3,49))
-      IF(WATQUA)THEN  
+      IF(WATQUA)THEN
 !
         OPEN(2,FILE=NOM_DIC_WAQ,FORM='FORMATTED',ACTION='READ',ERR=9000)
         OPEN(3,FILE=NOM_CAS_WAQ,FORM='FORMATTED',ACTION='READ',ERR=9000)
@@ -288,8 +288,8 @@
 !
       CALL READ_SUBMIT(T2D_FILES,   MAXLU_T2D,   CODE1,FILE_DESC, 300)
 !
-!      NOT NECESSAY SO FAR, TO ACTIVATE WHEN WORKING IN STANDALONE  
-!      IF(WATQUA) CALL 
+!      NOT NECESSAY SO FAR, TO ACTIVATE WHEN WORKING IN STANDALONE
+!      IF(WATQUA) CALL
 !     &     READ_SUBMIT(WAQTEL_FILES,MAXLU_WAQTEL,CODE1,WFILE_DESC,300)
 
 !-----------------------------------------------------------------------
@@ -353,9 +353,9 @@
           T2DMAB=I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DVEF') THEN
           T2DVEF=I
-        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DSEC') THEN 
+        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DSEC') THEN
           T2DSEC=I
-        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DSEO') THEN 
+        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DSEO') THEN
           T2DSEO=I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DMIG') THEN
           T2DMIG=I
@@ -389,18 +389,18 @@
 !         ONE FILE THAT SHOULD HAVE A STRING 'SUBMIT' IN DICTIONARY
 !         HAS RECEIVED NO NAME
           IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'LECDON_TELEMAC2D: ERREUR POUR LE FICHIER' 
+            WRITE(LU,*) 'LECDON_TELEMAC2D: ERREUR POUR LE FICHIER'
             WRITE(LU,*) 'I=',I,' NOM=',T2D_FILES(I)%TELNAME
             WRITE(LU,*) 'IL MANQUE UNE CHAINE SUBMIT DANS LE'
             WRITE(LU,*) 'DICTIONNAIRE'
             WRITE(LU,*) 'OU INSTALLATION DEFECTUEUSE.'
           ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'LECDON_TELEMAC2D: ERROR FOR FILE NUMBER' 
+            WRITE(LU,*) 'LECDON_TELEMAC2D: ERROR FOR FILE NUMBER'
             WRITE(LU,*) 'I=',I,' NAME=',T2D_FILES(I)%TELNAME
             WRITE(LU,*) 'THIS FILE SHOULD HAVE A STRING SUBMIT'
             WRITE(LU,*) 'IN DICTIONARY'
             WRITE(LU,*) 'OR INSTALLATION PROBLEM.'
-          ENDIF 
+          ENDIF
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -409,7 +409,7 @@
       IF(WATQUA)THEN
 !
 !     RETRIEVES FILES NUMBERS IN WAQTEL PARAMETERS
-!  
+!
         DO I=1,MAXLU_WAQTEL
           IF    (WAQTEL_FILES(I)%TELNAME.EQ.'WAQCAS') THEN
             WAQCAS=I
@@ -421,7 +421,7 @@
             WAQREF=I
           ENDIF
         ENDDO
-!     
+!
 !     ASSIGNS THE WAQ STEERING FILE VALUES TO THE PARAMETER FORTRAN NAME
 !
 !-----------------------------------------------------------------------
@@ -441,7 +441,7 @@
         DEBUG      = WMOTINT( WADRESS(1, 11) )
 !
 !*******************************
-!       WAQ REAL KEYWORDS        *                   
+!       WAQ REAL KEYWORDS        *
 !*******************************
 !
         ROO    = WMOTREA( WADRESS(2,  2) )
@@ -491,14 +491,14 @@
         CP_EAU = WMOTREA( WADRESS(2,119) )
         CP_AIR = WMOTREA( WADRESS(2,121) )
         CFAER(1)=WMOTREA( WADRESS(2,125) )
-        CFAER(2)=WMOTREA( WADRESS(2,125)+1) 
+        CFAER(2)=WMOTREA( WADRESS(2,125)+1)
         COEF_K = WMOTREA( WADRESS(2,127) )
         EMA    = WMOTREA( WADRESS(2,129) )
         EMI_EAU= WMOTREA( WADRESS(2,131) )
 !       INITIALIZE K2 DONE IN CALCS_O2
 !        IF(WAQPROCESS.EQ.1.AND.FORMK2.EQ.0)THEN
 !          CALL OS('X=C     ',K2,K2,K2,K22)
-!        ENDIF      
+!        ENDIF
 !
 !*******************************
 !       LOGICAL KEYWORDS         *
@@ -522,17 +522,17 @@
 !       WAQTEL_FILES(WAQHYD)%NAME=WMOTCAR( WADRESS(4,14) )
 !
       ENDIF
-!     JUMP HERE IF NO WAQ 
+!     JUMP HERE IF NO WAQ
 !
-!     LOOKS FOR THE NUMBER OF TRACERS TO BE INCREASED 
+!     LOOKS FOR THE NUMBER OF TRACERS TO BE INCREASED
 !     DEPENDING ON THE WAQ PROCESS
-!   
-      IF(WATQUA.OR.SECCURRENTS)THEN  
-!                                              
+!
+      IF(WATQUA.OR.SECCURRENTS)THEN
+!
         CALL INCREASE_NTRAC(ADDTR,WATQUA,WAQPROCESS,SECCURRENTS,
      &                      MOTCAR,                    ! HERE ARE NAMETRAC
-     &                      DIMEN(4,74),       
-     &                      MOTINT( ADRESS(1,67)   ))  ! HERE IS NTRAC 
+     &                      DIMEN(4,74),
+     &                      MOTINT( ADRESS(1,67)   ))  ! HERE IS NTRAC
       ENDIF
 !
 !
@@ -830,7 +830,7 @@
           ENDIF
         ENDDO
       ENDIF
-      DIFNU     = MOTREA( ADRESS(2,10) )         
+      DIFNU     = MOTREA( ADRESS(2,10) )
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
           SLVTRA(ITRAC)%ZERO = SLVPRO%ZERO
@@ -1263,7 +1263,7 @@
 !       GIVE THEM THEIR NAMES
         CALL NAMETRAC_WAQ(NAMETRAC,WATQUA,SECCURRENTS,
      &                    WAQPROCESS,NTRAC-ADDTR,IND_SEC)
-      ENDIF   
+      ENDIF
 !     SOURCES FILE
       T2D_FILES(T2DVEF)%NAME=MOTCAR( ADRESS(4,75) )
 !     76 AND 77 IN DELWAQ FILES ABOVE
@@ -1358,14 +1358,14 @@
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF'.AND.NCSIZE.GT.1) THEN
         IF(OPTVF.EQ.6) THEN
           WRITE(LU,*) REPEAT('+',50)
-          IF(LNG.EQ.1) WRITE(LU,1) 
-          IF(LNG.EQ.2) WRITE(LU,2) 
+          IF(LNG.EQ.1) WRITE(LU,1)
+          IF(LNG.EQ.2) WRITE(LU,2)
 1         FORMAT(1X,'PARALLELISME NON DISPONIBLE POUR LE SCHEMA WAF')
 2         FORMAT(1X,'PARALLEL OPTION NOT AVAILABLE FOR WAF SCHEME')
           WRITE(LU,*) REPEAT('+',50)
           CALL PLANTE(1)
           STOP
-        ENDIF       
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -1980,7 +1980,7 @@
 !-----------------------------------------------------------------------
 !
 !     CHECKS FRICTION COEFFICIENT
-! 
+!
       IF(FRICTB.AND.ESTIME.NE.' ') THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'LES MOTS CLES :'
@@ -2008,12 +2008,12 @@
         CALL PLANTE(1)
         STOP
       ELSEIF(TROUVE(1,8).NE.2) THEN
-        IF(LNG.EQ.1) WRITE(LU,2718) 
-        IF(LNG.EQ.2) WRITE(LU,2719) 
+        IF(LNG.EQ.1) WRITE(LU,2718)
+        IF(LNG.EQ.2) WRITE(LU,2719)
 2718    FORMAT(1X,'AUCUNE LOI DE FROTTEMENT N''EST DONNEE !')
-2719    FORMAT(1X,'NO FRICTION LAW IS PRESCRIBED!') 
+2719    FORMAT(1X,'NO FRICTION LAW IS PRESCRIBED!')
         CALL PLANTE(1)
-        STOP    
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -2142,10 +2142,10 @@
         STOP
       ENDIF
 !
-!  LOOKS FOR TEMPERATURE AND SALINITY IN THE TRACERS 
+!  LOOKS FOR TEMPERATURE AND SALINITY IN THE TRACERS
 !
       IF(.NOT.WATQUA)IND_T=0
-!     IF WATQUA, IND_T IS OBTAINED IN SUBROUTINE INCREASE_NTRAC 
+!     IF WATQUA, IND_T IS OBTAINED IN SUBROUTINE INCREASE_NTRAC
       IND_S=0
       IF(NTRAC.GE.1) THEN
         DO I=1,NTRAC

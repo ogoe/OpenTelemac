@@ -40,7 +40,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        01/12/2011
 !+        V6P2
-!+   Treatment of tidal flats in case of logarithmic derivatives. 
+!+   Treatment of tidal flats in case of logarithmic derivatives.
 !+   LINLOG as a new parameter for vertical velocity derivatives.
 !+   Hardcoded option:
 !+   Option 1 for taking advantage of verticals (previous versions)
@@ -144,7 +144,7 @@
 !     OPTION 2 : PURE FINITE ELEMENT PROGRAMMING (PRISMS OR TETRAHEDRONS)
 !
       OPTION = 1
-!  
+!
 !-----------------------------------------------------------------------
 !
       IF(OPTION.EQ.1.AND.IELM3.EQ.41) THEN
@@ -185,18 +185,18 @@
           I3D=I+NPOIN2*(IPLAN-1)
           IF(IPLAN.LE.IPBOT(I)+1) THEN
             TRAV7%R(I3D)=(Z%R(I3D+NPOIN2)-ZF%R(I)
-     &                   + RUGOF%R(I)/30.D0)*0.5D0 
+     &                   + RUGOF%R(I)/30.D0)*0.5D0
           ELSE
-            TRAV7%R(I3D)=(Z%R(I3D+NPOIN2)+Z%R(I3D))*0.5D0-ZF%R(I)     
+            TRAV7%R(I3D)=(Z%R(I3D+NPOIN2)+Z%R(I3D))*0.5D0-ZF%R(I)
           ENDIF
 !         THIS WILL TREAT TIDAL FLATS FOR WHICH Z=ZF
-          TRAV7%R(I3D)=MAX(TRAV7%R(I3D),RUGOF%R(I)/60.D0) 
+          TRAV7%R(I3D)=MAX(TRAV7%R(I3D),RUGOF%R(I)/60.D0)
           ENDDO
-        ENDDO     
+        ENDDO
       ENDIF
 !
 !     UPPER PLANE (USELESS HERE... BUT COMPUTATION DONE IN LONGML)
-!                           
+!
       DO I=1,NPOIN2
         I3D=I+NPOIN2*(NPLAN-1)
         TRAV7%R(I3D)=Z%R(I3D)-ZF%R(I)
@@ -212,7 +212,7 @@
           TRAV3%R(I)=(DELTAR%R(I+NPOIN2)-DELTAR%R(I))*SDELTAZ
         ENDDO
       ELSEIF(LINLOG.EQ.2) THEN
-!       LOGARITHMIC DERIVATIVE 
+!       LOGARITHMIC DERIVATIVE
 !       DU/DZ =DU/D(LOG(Z))/Z
 !
         IF(KFROT.NE.5) THEN
@@ -233,7 +233,7 @@
 !           LOGARITHMIC DERIVATIVE IN LOGARITHMIC PROFILE ZONE
             AUX=1.D0/(MAX(DENOM*TRAV7%R(I3D),1.D-8))
           ELSE
-!           LINEAR DERIVATIVE 
+!           LINEAR DERIVATIVE
             AUX=SDELTAZ
           ENDIF
 !         BOTTOM OR FIRST PLANE WITH FREE WATER ABOVE
@@ -245,7 +245,7 @@
             TRAV1%R(I3D)=(U%R(I3D+NPOIN2)-U%R(I3D))*AUX
             TRAV2%R(I3D)=(V%R(I3D+NPOIN2)-V%R(I3D))*AUX
           ENDIF
-!         LINEAR DERIVATIVE FOR DELTAR            
+!         LINEAR DERIVATIVE FOR DELTAR
           TRAV3%R(I3D)=(DELTAR%R(I3D+NPOIN2)-DELTAR%R(I3D))*SDELTAZ
         ENDDO
         ENDDO

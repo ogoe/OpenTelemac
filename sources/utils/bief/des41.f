@@ -141,7 +141,7 @@
      &                                -XA12(IELEM)*X(IKLE3(IELEM))
      &                                -XA14(IELEM)*X(IKLE4(IELEM))
      &                                -XA15(IELEM)*X(IKLE5(IELEM))
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !
@@ -166,8 +166,8 @@
      &                                -XA12(IELEM)*X(IKLE3(IELEM))
      &                                -XA14(IELEM)*X(IKLE4(IELEM))
      &                                -XA15(IELEM)*X(IKLE5(IELEM))
-      ENDDO ! IELEM 
-      ENDDO ! IB 
+      ENDDO ! IELEM
+      ENDDO ! IB
 !
       ENDIF
 !

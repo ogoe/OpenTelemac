@@ -4,7 +4,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 6.2 07/11   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 6.2 07/11   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -77,13 +77,13 @@
 !
       INTEGER I,JB
 !
-      DOUBLE PRECISION PI,BID         
+      DOUBLE PRECISION PI,BID
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!           
-!                                                                   
+!     ----------------------------------------
+!
+!
 !
       PARAMETER( PI = 3.1415926535897932384626433D0)
 !
@@ -108,8 +108,8 @@
       TETAP%R(:) = 0.D0
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
-      HB%R(:)    = 1.D0 
-!     
+      HB%R(:)    = 1.D0
+!
       DO I=1,NPTFR
         JB=BOUNDARY_COLOUR%I(I)
 
@@ -119,43 +119,43 @@
           RP%R(I)=1.D0
           TETAP%R(I)=0.D0
           ALFAP%R(I)=0.D0
-        ENDIF 
+        ENDIF
         IF(JB.GE.159.AND.JB.LE.301)THEN
           LIHBOR%I(I)=KLOG
           RP%R(I)=1.D0
           TETAP%R(I)=0.D0
           ALFAP%R(I)=0.D0
-        ENDIF 
-!       
+        ENDIF
+!
 !       PAROIS LIQUIDES -FRONTIERE LIBRE
-!       
+!
         IF(JB.GE.145.AND.JB.LE.158)THEN
            LIHBOR%I(I)=KSORT
-        ENDIF 
-!       
+        ENDIF
+!
 !       PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
-!       
-!       
+!
+!
         IF(JB.GE.302.AND.JB.LE.303)THEN
           LIHBOR%I(I)=KINC
           HB%R(I)=0.145D0
           ALFAP%R(I) = 0.D0
           TETAB%R(I)=0.
-        ENDIF 
-!       
+        ENDIF
+!
         IF(JB.EQ.1)THEN
           LIHBOR%I(I)=KINC
           HB%R(I)=0.145D0
           ALFAP%R(I) = 0.D0
           TETAB%R(I)=0.
-        ENDIF 
-      
-      ENDDO                                                         
+        ENDIF
+
+      ENDDO
 !
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+      RETURN
+      END
 !                       *****************
                         SUBROUTINE ART_CORFON
 !                       *****************
@@ -217,12 +217,12 @@
         MAS=.TRUE.
         CALL FILTER(ZF,MAS,T1,T2,AM1,'MATMAS          ',
      &              1.D0,T1,T1,T1,T1,T1,T1,MESH,MSK,MASKEL,LISFON)
-        MAS = .FALSE.                                                   
-!                                                                       
-      CONTINUE                                                          
-!                                                                       
-      ENDIF  
- 
+        MAS = .FALSE.
+!
+      CONTINUE
+!
+      ENDIF
+
 
 !-----------------------------------------------------------------------
 !
@@ -243,5 +243,5 @@
 !
 !
       RETURN
-      END                  
+      END
 !

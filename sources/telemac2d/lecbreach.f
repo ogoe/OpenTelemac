@@ -20,8 +20,8 @@
 !history  Y.B. TADESSE (TUHH, INSTITUTE OF RIVER AND COASTAL ENGINEERING)
 !+        14/02/2014
 !+        V6P3R2
-!+   Addition of later breach growth option      
-! 
+!+   Addition of later breach growth option
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFIC           |-->| LOGICAL UNIT OF BREACHES DATA FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -119,15 +119,15 @@
         IF(OPTNBR%I(N).EQ.3) THEN
           READ(IFIC,*,ERR=993) NUMPSD%I(N)
           READ(IFIC,*,END=900) ! COMMENT LINE
-          IF(NCSIZE.GT.1) THEN 
+          IF(NCSIZE.GT.1) THEN
             NUM = NUMPSD%I(N)
             NUMPSD%I(N) = 0
-            DO M=1,MESH%NPOIN 
-              IF(NUM.EQ.MESH%KNOLG%I(M)) THEN 
-                NUMPSD%I(N) = M 
-              ENDIF  
-            ENDDO  
-          ENDIF 
+            DO M=1,MESH%NPOIN
+              IF(NUM.EQ.MESH%KNOLG%I(M)) THEN
+                NUMPSD%I(N) = M
+              ENDIF
+            ENDDO
+          ENDIF
         ENDIF
         IF(OPTNBR%I(N).NE.1) THEN
           READ(IFIC,*,ERR=992) ZDECBR%R(N)
@@ -284,11 +284,11 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-! 
+!
         DO M=1, NBNDBR%I(N)
            INDBR%ADR(N)%P%I(M) = ITMP(M)
         ENDDO
-          
+
         IF (OPTERO%I(N).EQ.2) THEN
           IF(N.LE.DKAXCR%MAXBLOCK) THEN
             NOMX='XCB   '
@@ -326,7 +326,7 @@
      &          WRITE(LU,*)
      &            'MORE THAN 999 BREACHS ASKED IN LECBREACH'
               CALL PLANTE(1)
-              STOP 
+              STOP
             ENDIF
             ALLOCATE(DKAXCR%ADR(N)%P,DKAYCR%ADR(N)%P,PONDSB%ADR(N)%P)
             CALL BIEF_ALLVEC(1,DKAXCR%ADR(N)%P,NOMX,NBL,1,0,MESH)
@@ -419,7 +419,7 @@
       ELSEIF(LNG.EQ.2) THEN
         WRITE(LU,*) 'BREACH : UNAVAILABLE EROSION OPTION'
       ENDIF
-      GO TO 2000      
+      GO TO 2000
 !
 999   CONTINUE
       IF(LNG.EQ.1) THEN
@@ -580,5 +580,5 @@
 !
 1000  CONTINUE
       RETURN
-      END                  
- 
+      END
+

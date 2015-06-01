@@ -25,7 +25,7 @@
 !
 !history  J-M HERVOUET (LNHE)
 !+        27/07/2012
-!+        V6P2 
+!+        V6P2
 !+     Correction in parallel.
 !
 !history  C. COULET (ARTELIA)
@@ -282,7 +282,7 @@
         DO ITRAC=1,NTRAC
           IF(DBUS(N).GE.0.D0) THEN ! I1 --> I2
 !           CASE DBUS(N)=0.D0 NOT CLEAR, BUT A VALUE HAS TO BE
-!           GIVEN HERE, LEST IT IS USED AFTER 
+!           GIVEN HERE, LEST IT IS USED AFTER
             IF(I1.GT.0) THEN
               TBUS%ADR(ITRAC)%P%R(NBUSE+N)=T%ADR(ITRAC)%P%R(I1)
               TBUS%ADR(ITRAC)%P%R(N)      =T%ADR(ITRAC)%P%R(I1)

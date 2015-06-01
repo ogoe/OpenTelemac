@@ -4,7 +4,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 6.1 28/06/11   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 6.1 28/06/11   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -77,13 +77,13 @@
 !
       INTEGER I,JB
 !
-      DOUBLE PRECISION PI,BID    
+      DOUBLE PRECISION PI,BID
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
+!     ----------------------------------------
+!
+! JCB :
 !
 !
       PARAMETER( PI = 3.1415926535897932384626433D0)
@@ -107,16 +107,16 @@
       TETAP%R(:) = 0.D0
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
-      HB%R(:)    = 0.0D0 
+      HB%R(:)    = 0.0D0
 !
 ! -----------------------------
 
       DO I=1,NPTFR
       JB=BOUNDARY_COLOUR%I(I)
 
-!  
+!
 !     PLAGE - SORTIE LIBRE
-!                                                                    
+!
       IF(JB.GE.1.AND.JB.LE.161)THEN
         LIHBOR%I(I)=KSORT
         ALFAP%R(I)=0.D0
@@ -146,13 +146,13 @@
         ALFAP%R(I)=0.D0
         TETAP%R(I)=0.D0
       ENDIF
-      
+
       ENDDO
 !
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+      RETURN
+      END
 !                       *****************
                         SUBROUTINE ART_CORFON
 !                       *****************
@@ -195,11 +195,11 @@
       COMMON/INFO/LNG,LU
 !
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
+!     ----------------------------------------
+!
+! JCB :
       INTEGER KK
       DOUBLE PRECISION COSA,SINA
 !
@@ -260,4 +260,4 @@
 !
 !
       RETURN
-      END                  
+      END

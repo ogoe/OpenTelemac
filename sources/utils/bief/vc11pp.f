@@ -56,7 +56,7 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
-!history  J-M HERVOUET (EDF R&D LNHE) 
+!history  J-M HERVOUET (EDF R&D LNHE)
 !+        07/01/2013
 !+        V6P3
 !+   X and Y are now given per element.

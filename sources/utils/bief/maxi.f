@@ -32,7 +32,7 @@
 !| IMAX           |<--| INDEX OF MAXIMUM
 !| NPOIN          |-->| DIMENSION OF ARRAY X
 !| X              |-->| ARRAY WITH VALUES TO LOOK AT
-!| XMAX           |<--| THE MAXIMUM 
+!| XMAX           |<--| THE MAXIMUM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -62,7 +62,7 @@
           XMAX = X(I)
         ENDIF
 !
-      ENDDO ! I 
+      ENDDO ! I
 !
 !-----------------------------------------------------------------------
 !

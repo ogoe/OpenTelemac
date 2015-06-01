@@ -33,7 +33,7 @@
 !+        09/05/2012
 !+        V6P2
 !+   New version using ELTCAR (done in MAKE_ELTCAR called by INBIEF)
-!+       
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELT            |<--| 2D ELEMENT CHOSEN FOR EVERY POINT
@@ -68,7 +68,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: SHF(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: WS(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: FS(NPOIN2,NPLAN)
-      LOGICAL         , INTENT(IN)    :: YA4D 
+      LOGICAL         , INTENT(IN)    :: YA4D
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -80,7 +80,7 @@
 !
       DO I=1,NPOIN2
         IELEM=ELTCAR(I)
-        ELT(I,1) = IELEM 
+        ELT(I,1) = IELEM
         IF(IELEM.NE.0) THEN
           IF(IKLE(IELEM,1).EQ.I) THEN
             SHP(1,I,1)=1.D0
@@ -100,7 +100,7 @@
             STOP
           ENDIF
         ENDIF
-      ENDDO 
+      ENDDO
 !
 !     OTHER PLANES
 !
@@ -110,8 +110,8 @@
           SHP(1,I,IPLAN)=SHP(1,I,1)
           SHP(2,I,IPLAN)=SHP(2,I,1)
           SHP(3,I,IPLAN)=SHP(3,I,1)
-        ENDDO 
-      ENDDO 
+        ENDDO
+      ENDDO
 !
 !     NOW ETA AND SHZ, DONE DEPENDING ON THE VERTICAL VELOCITY
 !

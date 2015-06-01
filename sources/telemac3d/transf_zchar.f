@@ -109,7 +109,7 @@
             ZCHAR%R(IPLAN) = ZSTAR%R(IPLAN)
 !           SECURITY
             IF(IPLAN.EQ.1)     ZCHAR%R(IPLAN)=0.D0
-            IF(IPLAN.EQ.NPLAN) ZCHAR%R(IPLAN)=1.D0 
+            IF(IPLAN.EQ.NPLAN) ZCHAR%R(IPLAN)=1.D0
           ENDIF
         ENDDO
       ELSE

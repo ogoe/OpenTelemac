@@ -70,7 +70,7 @@
               ENDDO
             ENDIF
           ENDIF
-        ENDDO 
+        ENDDO
 !
       ELSEIF(IOPT.EQ.2) THEN
 !
@@ -112,7 +112,7 @@
             INTEG=INTEG+DZ*LOG(DELTAZ/Y0)/DENOM
           ENDDO
           UCOEF=HH*UBOR2D%R(IPTFR)/MAX(INTEG,1.D-10)
-          VCOEF=HH*VBOR2D%R(IPTFR)/MAX(INTEG,1.D-10)      
+          VCOEF=HH*VBOR2D%R(IPTFR)/MAX(INTEG,1.D-10)
           DO IPLAN=1,NPLAN
             IF(IPLAN.EQ.1) THEN
               DZ=(MESH3D%Z%R(IPOIN2+NPOIN2)-MESH3D%Z%R(IPOIN2))
@@ -125,7 +125,7 @@
             DELTAZ=MAX(DELTAZ,Y0)
             IPTFR3 = (IPLAN-1)*NPTFR2 + IPTFR
             UBORL%R(IPTFR3) = UCOEF*LOG(DELTAZ/Y0)/DENOM
-            VBORL%R(IPTFR3) = VCOEF*LOG(DELTAZ/Y0)/DENOM         
+            VBORL%R(IPTFR3) = VCOEF*LOG(DELTAZ/Y0)/DENOM
           ENDDO
 !
           ENDIF

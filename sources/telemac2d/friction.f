@@ -34,7 +34,7 @@
 !| H              |-->| WATER DEPTH AT TN
 !| NS             |-->| TOTAL NUMBER OF NODES
 !| QU             |-->| HU AT TIME TN
-!| QV             |-->| HV AT TIME TN 
+!| QV             |-->| HV AT TIME TN
 !| UA             |<->| (H,HU,HV) AT TN+1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

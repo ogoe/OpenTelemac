@@ -206,7 +206,7 @@
         A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
         A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -281,7 +281,7 @@
         A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
         A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -391,7 +391,7 @@
       A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
       A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !
@@ -463,7 +463,7 @@
         A33(IELEM) = - A31(IELEM) - A32(IELEM) - A34(IELEM)
         A44(IELEM) = - A41(IELEM) - A42(IELEM) - A43(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ENDIF
 !

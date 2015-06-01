@@ -33,7 +33,7 @@
 !| NBOR           |-->| GLOBAL INDICES FOR BORD NODES
 !| NPTFR          |-->| TOTAL NUMBER OF BOUNDARY NODES
 !| NS             |-->| TOTAL NUMBER OF NODES
-!| UA             |<->| WORKING TABLE 
+!| UA             |<->| WORKING TABLE
 !| XNEBOR         |-->| OUTWARD UNIT NORMAL (X COMPONENT)
 !| YNEBOR         |-->| OUTWARD UNIT NORMAL (Y COMPONENT)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,14 +64,14 @@
       DO K=1,NPTFR
 !
         IF(LIMPRO(K,1).EQ.KNEU) THEN
-!       
+!
           IS=NBOR(K)
           VNX=XNEBOR(K)
           VNY=YNEBOR(K)
           CEN=UA(2,IS)*VNX+UA(3,IS)*VNY
           UA(2,IS) = UA(2,IS) -CEN*VNX
           UA(3,IS) = UA(3,IS) -CEN*VNY
-!       
+!
         ENDIF
 !
       ENDDO

@@ -32,9 +32,9 @@
 !| DIMT           |-->| DIMENSION OF THE TRACER
 !| DT             |-->| HYDRO TIME STEP
 !| ISCE           |-->| GLOBAL INDICES OF SOURCE POINTS
-!| ITRAC          |-->| TRCER INDEX 
+!| ITRAC          |-->| TRCER INDEX
 !| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
-!| MAXTRA         |-->| MAXIMUM NUMER OF TRACERS 
+!| MAXTRA         |-->| MAXIMUM NUMER OF TRACERS
 !| NPOIN          |-->| TOTAL NUMBER OF NODES IN THE MESH
 !| NREJET         |-->| NUMBER OF SOURCE/SINK
 !| SMH            |-->| SOURCE TERMS FOR CONTINUITY EQUATION

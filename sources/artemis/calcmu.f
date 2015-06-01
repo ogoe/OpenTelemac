@@ -74,11 +74,11 @@
       IF ((.NOT. ALEMON).AND.(.NOT. ALEMUL)) THEN
 !       REGULAR WAVE HEIGHT GIVEN BY THE POTENTIAL
         IF (COURANT) THEN
-!         WE USE WR TO COMPUTE THE FREE SURFACE 
+!         WE USE WR TO COMPUTE THE FREE SURFACE
           CALL OS( 'X=CY    ', X=T2   ,Y=WR, C=2.D0/GRAV)
           CALL OS( 'X=YZ    ', X=HHO  ,Y=T1, Z=T2 )
         ELSE
-!         WE USE OMEGA TO COMPUTE THE FREE SURFACE 
+!         WE USE OMEGA TO COMPUTE THE FREE SURFACE
           CALL OS( 'X=CY    ', HMU , T1   , SBID , 2.D0*OMEGA/GRAV)
         ENDIF
       ELSE
@@ -172,7 +172,7 @@
           ENDIF
 !
 !     -------------------------------------------------------------
-!     IRREGULAR WAVES : 
+!     IRREGULAR WAVES :
 !     COMPUTES FIRST QB=T3, PROPORTION OF BREAKING OR BROKEN WAVES,
 !     THEN MU2 ACCORDING TO B&J 78 (RANDOM SEAS)
 !     -------------------------------------------------------------
@@ -283,8 +283,8 @@
 !
           IF ((.NOT. ALEMON).AND.(.NOT. ALEMUL)) THEN
             CALL CALCUE
-!                   WORK TABLE MODIFIED : T1,T2         
-!                   RESULTS WORK TABLE  : T4        
+!                   WORK TABLE MODIFIED : T1,T2
+!                   RESULTS WORK TABLE  : T4
           ELSE
             CALL OS( 'X=Y     ', T4 , UEB , SBID  , CBID )
           ENDIF

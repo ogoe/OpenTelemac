@@ -7,7 +7,7 @@
 !+       Creation of the file
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       MODULE API_HANDLE_ERROR_T2D
-      
+
       IMPLICIT NONE
       ! STRING SIZE
       INTEGER, PARAMETER :: T2D_ERROR_LEN = 50
@@ -24,7 +24,7 @@
       INTEGER, PARAMETER :: UNKNOWN_VAR_ERROR=8
 !     INTEGER, PARAMETER :: UNALLOCATED_ARRAY=5
 !
-      ! POSITION FOR A CALL FUNCTION 
+      ! POSITION FOR A CALL FUNCTION
       INTEGER, PARAMETER :: NO_POSITION=0
       INTEGER, PARAMETER :: RUN_SET_CONFIG_T2D_POS=1
       INTEGER, PARAMETER :: RUN_READ_CASE_T2D_POS=2
@@ -43,24 +43,24 @@
       CHARACTER(LEN=T2D_ERROR_MESS_LEN) :: ERR_MESS
 !
       CONTAINS
-        ! 
+        !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      !BRIEF CHECK THAT THE FLAG FOR POSTION CALL_POSITION 
+      !BRIEF CHECK THAT THE FLAG FOR POSTION CALL_POSITION
       !+     IS BETWEEN 'BEFORE' AND 'AFTER'
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM CALL8POSITION [IN]  ID OF THE CURRENT POSITION
       !PARAM CALL8POSITION [IN]  NAME OF THE FUNCTION
-      !PARAM CALL8POSITION [IN]  ID OF THE POSTION THE FUNCTION 
+      !PARAM CALL8POSITION [IN]  ID OF THE POSTION THE FUNCTION
       !+                         MUST BE CALLED AFTER
-      !PARAM CALL8POSITION [IN]  ID OF THE POSTION THE FUNCTION 
+      !PARAM CALL8POSITION [IN]  ID OF THE POSTION THE FUNCTION
       !+                         MUST BE CALLED BEFORE
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE CHECK_CALL_POSITION
@@ -88,10 +88,10 @@
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF RETURN THE ERROR MESSAGE OF THE LAST ERROR
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -17,8 +17,8 @@
 !+            THE MATRIX IS IDENTIFIED BY THE FORMULATION IN
 !+                CHARACTER STRING FORMUL.
 !
-!warning  Coordinates per element (XEL, YEL, ZEL) or coordinates per 
-!+        points (XPT,YPT, ZPT) may be used, depending on element and 
+!warning  Coordinates per element (XEL, YEL, ZEL) or coordinates per
+!+        points (XPT,YPT, ZPT) may be used, depending on element and
 !+        formula. ZEL is not built in 3D (as the mesh may be moving).
 !
 !code

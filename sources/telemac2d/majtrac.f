@@ -36,7 +36,7 @@
 !+        27/07/2013
 !+        V6P3
 !+   Adaptation for new data structure of finite volumes
-!+   clean and optimize 
+!+   clean and optimize
 !+   parallelism
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,7 +60,7 @@
 !| HSTOK          |-->| STOCKED WATER DEPTH
 !| HT             |<--| HT AT TIME N+1
 !| HTN,TN         |-->| HT AT TIME N
-!| JMI            |-->| NUMBER OF THE TRIANGLE IN WHICH IS LOCATED 
+!| JMI            |-->| NUMBER OF THE TRIANGLE IN WHICH IS LOCATED
 !|                |   | THE MIDPOINT OF THE INTERFACE
 !| MASSOU         |<--| MASS OF TRACER ADDED BY SOURCE TERM
 !| NBOR           |-->| GLOBAL NUMBERING OF BOUNDARY POINTS
@@ -71,7 +71,7 @@
 !| NT             |-->| TOTAL NUMBER OF ELEMENTS
 !| NU             |-->| NUMBERING OF NODES IN THE TRIANGLES
 !| NUBO           |-->| GLOBAL INDICES OF EDGE EXTREMITIES
-!| SMTR           |-->| TRACER SOURCE TERMS 
+!| SMTR           |-->| TRACER SOURCE TERMS
 !| TBOR           |-->| BOUNDARY CONDITIONS FOR T
 !| X,Y            |-->| COORDINATES IF THE NODES
 !| ZF             |-->| BATHYMETRY
@@ -147,7 +147,7 @@
         IF(ERR.NE.0) GO TO 1001
         GO TO 1002
 1001    CONTINUE
-        IF(LNG.EQ.1) WRITE(LU,1000) ERR 
+        IF(LNG.EQ.1) WRITE(LU,1000) ERR
         IF(LNG.EQ.2) WRITE(LU,2000) ERR
 1000    FORMAT(1X,'MAJTRAC : ERREUR A L''ALLOCATION DE MEMOIRE : ',/,1X,
      &         'CODE D''ERREUR : ',1I6)
@@ -194,14 +194,14 @@
       DSM(:)  =(/(0.D0,IS=1,NS)/)
       DST(1,:)=(/(0.D0,IS=1,NSEG)/)
       DST(2,:)=(/(0.D0,IS=1,NSEG)/)
-!    INITIALIZATION  OF GRADIENTS 
+!    INITIALIZATION  OF GRADIENTS
       GRADI(:) =(/(0.D0,IS=1,NSEG)/)
-      GRADJ(:) =(/(0.D0,IS=1,NSEG)/)     
+      GRADJ(:) =(/(0.D0,IS=1,NSEG)/)
       GRADIJ(:)=(/(0.D0,IS=1,NSEG)/)
       GRADJI(:)=(/(0.D0,IS=1,NSEG)/)
 !
 !
-      DO IEL=1, NT 
+      DO IEL=1, NT
         DO I = 1,3
           IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
             NSG = ELTSEG(IEL,I)
@@ -219,10 +219,10 @@
               NUBO1 = NUBO(2,NSG)
               NUBO2 = NUBO(1,NSG)
             ENDIF
-!           
+!
             ZF1 = ZF(NUBO1)
             ZF2 = ZF(NUBO2)
-!           
+!
             IF(PROD_SCAL.LT.0.D0)THEN
               DSZ1 = DSZ(2,NSG)
               DSZ2 = DSZ(1,NSG)
@@ -230,12 +230,12 @@
               DSZ1 = DSZ(1,NSG)
               DSZ2 = DSZ(2,NSG)
             ENDIF
-!           
+!
             HI0 = HSTOK(NUBO1)
             HJ0 = HSTOK(NUBO2)
 !
 !           STICKS TO 1ST ORDER FOR A COVERED EDGE
-!           
+!
             IF(ZF1.GE. (HJ0+ZF2) .OR. ZF2.GE. (HI0+ZF1)
      &         .OR. 2.*ABS(DSZ1).GE.HI0
      &         .OR. 2.*ABS(DSZ1).GE.HJ0
@@ -245,19 +245,19 @@
 !             DST(2,NSG) =0.D0
               CYCLE
             ELSE
-!           
+!
               AIX         = CMI(1,NSG)-X(NUBO1)
               AIY         = CMI(2,NSG)-Y(NUBO1)
               AJX         = CMI(1,NSG)-X(NUBO2)
               AJY         = CMI(2,NSG)-Y(NUBO2)
-!           
+!
               GRADI(NSG)  = AIX*DXT(NUBO1) + AIY*DYT(NUBO1)
               GRADJ(NSG)  = AJX*DXT(NUBO2) + AJY*DYT(NUBO2)
               GRADIJ(NSG) = AIX*DJXT(J) + AIY*DJYT(J)
               GRADJI(NSG) = AJX*DJXT(J) + AJY*DJYT(J)
             ENDIF
-            YESNO(NSG)=.TRUE. 
-          ENDIF 
+            YESNO(NSG)=.TRUE.
+          ENDIF
         ENDDO
       ENDDO
       IF(NCSIZE.GT.1)THEN      ! NPON,NPLAN,ICOM,IAN , HERE ICOM=1 VALUE WITH MAX | |
@@ -280,7 +280,7 @@
       DO I=1,NSEG
         YESNO(I)=.FALSE.
       ENDDO
-      DO IEL=1, NT 
+      DO IEL=1, NT
         DO I = 1,3
           IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
             NSG = ELTSEG(IEL,I)
@@ -294,23 +294,23 @@
               NUBO1 = NUBO(2,NSG)
               NUBO2 = NUBO(1,NSG)
             ENDIF
-!           
+!
 !           FOR PARALLELILSM
             IF(NCSIZE.GT.1.AND.IFABOR(IEL,I).EQ.-2)THEN ! THIS IS AN INTERFACE EDGE
               IF(DST(1,NSG).GE.0.D0) THEN
-                DSP(NUBO1) = DSP(NUBO1) + 
+                DSP(NUBO1) = DSP(NUBO1) +
      &                      DEMI*AIRST(1,NSG)*HCSTOK(1,NSG)*DST(1,NSG) ! WE CONSIDER ONLY
-              ELSE                                                      ! 0.5 AIRST 
-                DSM(NUBO1) = DSM(NUBO1) - 
-     &                      DEMI*AIRST(1,NSG)*HCSTOK(1,NSG)*DST(1,NSG) ! PARCOM2 WILL ADD 
+              ELSE                                                      ! 0.5 AIRST
+                DSM(NUBO1) = DSM(NUBO1) -
+     &                      DEMI*AIRST(1,NSG)*HCSTOK(1,NSG)*DST(1,NSG) ! PARCOM2 WILL ADD
               ENDIF                                                     ! CONTRIBUTIONS
               IF(DST(2,NSG).GE.0.D0) THEN
-                DSP(NUBO2) = DSP(NUBO2) + 
+                DSP(NUBO2) = DSP(NUBO2) +
      &                      DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST(2,NSG)
               ELSE
-                DSM(NUBO2) = DSM(NUBO2) - 
+                DSM(NUBO2) = DSM(NUBO2) -
      &                      DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST(2,NSG)
-              ENDIF 
+              ENDIF
             ELSE ! NO PARALLELILSM OR NO INTERFACE EDGE
               IF(DST(1,NSG).GE.0.D0) THEN
                 DSP(NUBO1) = DSP(NUBO1) +
@@ -327,13 +327,13 @@
      &          AIRST(2,NSG)* HCSTOK(2,NSG)*DST(2,NSG)
               ENDIF
             ENDIF
-!           
-            YESNO(NSG)=.TRUE. 
-          ENDIF 
+!
+            YESNO(NSG)=.TRUE.
+          ENDIF
         ENDDO
       ENDDO
       !  FOR PARALLELILSM
-      IF(NCSIZE.GT.1)THEN     
+      IF(NCSIZE.GT.1)THEN
         CALL PARCOM2(DSP,DSM,DSM,NS,1,2,2,MESH)
       ENDIF
 !
@@ -360,7 +360,7 @@
 !     LOOP ON GLOBAL LIST OF EDGES
 !    ******************************
 !
-      DO IEL=1, NT 
+      DO IEL=1, NT
         DO I = 1,3
           IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
             NSG = ELTSEG(IEL,I)
@@ -375,12 +375,12 @@
               NUBO1 = NUBO(2,NSG)
               NUBO2 = NUBO(1,NSG)
             ENDIF
-!           
+!
             UAS41     = TN(NUBO1)
             UAS42     = TN(NUBO2)
-!           
+!
             FLU11=FLUXT(NSG)
-!           
+!
             IF (FLU11.GE.0.) THEN
               IF(NORDRE.GE.2) THEN
                 UAS41 = UAS41  + DST(1,NSG) +
@@ -396,16 +396,16 @@
               ENDIF
               FLU41 =  UAS42 * FLU11
             ENDIF
-!           
+!
             CET(NUBO1) = CET(NUBO1) - FLU41
             CET(NUBO2) = CET(NUBO2) + FLU41
-!           
-            YESNO(NSG)=.TRUE. 
+!
+            YESNO(NSG)=.TRUE.
           ENDIF
         ENDDO
       ENDDO
       !  FOR PARALLELILSM
-      IF(NCSIZE.GT.1)THEN     
+      IF(NCSIZE.GT.1)THEN
         CALL PARCOM2(CET,CET,CET,NS,1,2,1,MESH)
       ENDIF
 !
@@ -414,9 +414,9 @@
       IF(NPTFR.GT.0)THEN  ! USEFUL FOR PARALLEL CASE
         DO K=1,NPTFR
           IS=NBOR(K)
-!         
+!
           FLUH =FLUHBOR(K)
-!         
+!
           IF(FLUH.GE.0.D0) THEN
             FLUT= TN(IS)*FLUH
             FLUTSOR = FLUTSOR +FLUT
@@ -424,7 +424,7 @@
             FLUT= TBOR(K)*FLUH
             FLUTENT = FLUTENT +FLUT
           ENDIF
-!         
+!
           CET(IS)  = CET(IS) - FLUT
 !
         ENDDO
@@ -440,7 +440,7 @@
         IF(HT(IS).LE.1.D-15) HT(IS)=0.D0
 !
       ENDDO
-! 
+!
       DEALLOCATE(YESNO)
 !
 !-----------------------------------------------------------------------

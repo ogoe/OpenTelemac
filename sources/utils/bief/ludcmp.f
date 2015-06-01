@@ -63,7 +63,7 @@
       DOUBLE PRECISION D
       INTEGER I,IMAX,J,K
       DOUBLE PRECISION AAMAX,DUM,XSOM,VV(500)
-      DOUBLE PRECISION, PARAMETER:: TINY=1.D-20 
+      DOUBLE PRECISION, PARAMETER:: TINY=1.D-20
 !
 !------------------------------------------------------------------------
 !

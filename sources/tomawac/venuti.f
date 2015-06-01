@@ -55,7 +55,7 @@
 !history  J-M HERVOUET (EDF-LNHE)
 !+        23/11/20012
 !+        V6P3
-!+   XRELV, YRELV, UR, VR, NPMAX, NP removed, must be declared locally 
+!+   XRELV, YRELV, UR, VR, NPMAX, NP removed, must be declared locally
 !+   if necessary.
 !
 !history Y AUDOUIN (LNHE)

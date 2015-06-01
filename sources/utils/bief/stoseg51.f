@@ -143,7 +143,7 @@
 !     BUILDING 2D VALUES (THAT WILL COINCIDE WITH FIRST LAYER OF THE 3D
 !     MESH). NOTE THAT NELMAX IS TRANSMITTED, A 3D VALUE, AND IT WILL
 !     DIMENSION ELTSEG AND ORISEG AS ELTSEG(NELMAX,3) AND ORISEG(NELMAX,3)
-!     IN STOSEG, SO THAT AFTER THE 3D ORISEG WILL BE PARTLY BUT CORRECTLY 
+!     IN STOSEG, SO THAT AFTER THE 3D ORISEG WILL BE PARTLY BUT CORRECTLY
 !     FILLED. THE SAME IS DONE WITH GLOSEG, WITH DIMENSION MAXSEG
 !
 !     IKLBOR, NELBOR AND NULONE ARE HERE THE 2D VALUES (SEE INBIEF)
@@ -209,7 +209,7 @@
           I3=II3+(IPLAN-1)*NPOIN2
           I4=I1+NPOIN2
           I5=I2+NPOIN2
-          I6=I3+NPOIN2      
+          I6=I3+NPOIN2
 !
 !         GLOBAL NUMBERS OF THE 12 SEGMENTS IN THE PRISM
 !         I.E. THE 12 DIFFERENT SEGMENTS FORMED BY TETRAHEDRONS
@@ -243,7 +243,7 @@
               IELEM3D=3*NELEM2*(IPLAN-1)+(I-1)*NELEM2+IELEM
               J1=IKLE(IELEM3D,ISEGT(ISEG,1))
               J2=IKLE(IELEM3D,ISEGT(ISEG,2))
-!             LOWER HORIZONTAL SEGMENTS 
+!             LOWER HORIZONTAL SEGMENTS
               IF((J1.EQ.I1.AND.J2.EQ.I2).OR.
      &           (J1.EQ.I2.AND.J2.EQ.I1)) THEN
                 ELTSEG(IELEM3D,ISEG)=ISEG01
@@ -269,7 +269,7 @@
                 ELSE
                   ORISEG(IELEM3D,ISEG)=3-ORISEG(IELEM,3)
                 ENDIF
-!             UPPER HORIZONTAL SEGMENTS 
+!             UPPER HORIZONTAL SEGMENTS
               ELSEIF((J1.EQ.I4.AND.J2.EQ.I5).OR.
      &               (J1.EQ.I5.AND.J2.EQ.I4)) THEN
                 ELTSEG(IELEM3D,ISEG)=ISEG04
@@ -399,22 +399,22 @@
               WRITE(LU,*) ' '
               WRITE(LU,*) 'ERROR IN STOSEG51'
               WRITE(LU,*) 'ELEMENT ',IELEM3D,' SEGMENT ',I
-              WRITE(LU,*) 'POINTS ',J1,J2 
-              WRITE(LU,*) 'GLOBAL SEGMENT ',ISEG 
-              WRITE(LU,*) 'POINTS ',I1,I2 
+              WRITE(LU,*) 'POINTS ',J1,J2
+              WRITE(LU,*) 'GLOBAL SEGMENT ',ISEG
+              WRITE(LU,*) 'POINTS ',I1,I2
               CALL PLANTE(1)
-              STOP              
+              STOP
             ENDIF
           ELSE
             IF(J1.NE.I2.OR.J2.NE.I1) THEN
               WRITE(LU,*) ' '
               WRITE(LU,*) 'ERROR IN STOSEG51'
               WRITE(LU,*) 'ELEMENT ',IELEM3D,' SEGMENT ',I
-              WRITE(LU,*) 'POINTS ',J1,J2 
-              WRITE(LU,*) 'GLOBAL SEGMENT ',ISEG 
-              WRITE(LU,*) 'POINTS ',I1,I2 
+              WRITE(LU,*) 'POINTS ',J1,J2
+              WRITE(LU,*) 'GLOBAL SEGMENT ',ISEG
+              WRITE(LU,*) 'POINTS ',I1,I2
               CALL PLANTE(1)
-              STOP                   
+              STOP
             ENDIF
           ENDIF
         ENDDO

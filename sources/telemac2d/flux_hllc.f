@@ -8,11 +8,11 @@
 ! TELEMAC 2D VERSION 7.0                                         R. ATA
 !
 !***********************************************************************
-!BRIEF 
-! 
+!BRIEF
+!
 !     FUNCTION  : SUBROUTINE COMPUTES HLLC FLUX: THREE HYDRODYNAMICAL
 !                 COMPENENTS + TRACER TRANSPORT
-!      SEE TORO: SHOCK CAPTURING METHODS FOR FREE 
+!      SEE TORO: SHOCK CAPTURING METHODS FOR FREE
 !            SURFACE FLOWS (WILEY 2005)
 !
 !HISTORY  RIADH ATA (EDF R&D-LNHE)
@@ -49,10 +49,10 @@
 ! |  XNN,YNN       | -->|  X AND Y COMPONENT OF THE OUTWARD NORMAL     |
 ! ______________________________________________________________________
 !
-!  MODE: -->(UNCHANGEABLE INPUT),<--(OUTPUT),<-->(CHANGEABLE INPUT)   
+!  MODE: -->(UNCHANGEABLE INPUT),<--(OUTPUT),<-->(CHANGEABLE INPUT)
 !-----------------------------------------------------------------------
-!  CALLING SUBROUTINE FLUX_WAF OR FLUX_HLLC OR FLUXZZ 
-! 
+!  CALLING SUBROUTINE FLUX_WAF OR FLUX_HLLC OR FLUXZZ
+!
 !***********************************************************************
 !
       USE BIEF
@@ -60,7 +60,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!     
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION, INTENT(IN)    :: H1,H2,U1,U2,PSI1,PSI2
@@ -122,8 +122,8 @@
       UR  = XNN*U0+YNN*VR
       VR  =-YNN*U0+XNN*VR
 !
-! CASE WITH DRY LEFT AND RIGHT  
-      IF(HL.LT.EPS.AND.HR.LT.EPS)GOTO 20 
+! CASE WITH DRY LEFT AND RIGHT
+      IF(HL.LT.EPS.AND.HR.LT.EPS)GOTO 20
 !
 ! CELERITIES
 !
@@ -131,16 +131,16 @@
       AR = SQRT(G*HR)
 ! STAR VARIABLES
       HSTAR = 0.5D0*(HL+HR)-0.25D0*(UR-UL)*(HL+HR)/(AL+AR)
-!RA BUG FIXED WHEN COMPUTING U STAR 
+!RA BUG FIXED WHEN COMPUTING U STAR
 !       USTAR = 0.5D0*(UL+UR)-0.25D0*(HR-HL)*(AL+AR)/(HL+HR)
       USTAR = 0.5D0*(UL+UR)-       (HR-HL)*(AL+AR)/(HL+HR)
 ! COMPUTE PQL AND PQR:
-! IT WILL DEPEND IF WE ARE IN PRESENCE OF SHOCK OR RAREFACTION WAVE 
+! IT WILL DEPEND IF WE ARE IN PRESENCE OF SHOCK OR RAREFACTION WAVE
       IF(HSTAR.LT.HL)THEN
 !       RAREFACTION
         PQL = 1.0D0
       ELSE
-!       SHOCK 
+!       SHOCK
         IF(HL.GT.EPS)THEN
           PQL = SQRT(0.5D0*(HSTAR+HL)*HSTAR/HL**2)
         ELSE
@@ -160,7 +160,7 @@
       ENDIF
 !
 20    CONTINUE
-! 
+!
 ! COMPUTE SL, SR AND SSTAR  (WE CONSIDER DRY CASES)
       IF(HL.GT.EPS)THEN
         SL = UL-AL*PQL
@@ -169,10 +169,10 @@
         SR = UR + AR
 ! RA+SP: USE OF ANALYTICAL FORMULA FOR SSTAR
 !       SSTAR = SL
-        GOTO 35        
+        GOTO 35
 ! RA+SP: USE OF ANALYTICAL FORMULA FOR SSTAR
 !        SSTAR = SL
-        GOTO 35        
+        GOTO 35
       ENDIF
 !
       IF(HR.GT.EPS)THEN
@@ -182,10 +182,10 @@
         SR = UL + 2.0D0*AL
 ! RA+SP: USE OF ANALYTICAL FORMULA FOR SSTAR
 !       SSTAR = SR
-        GOTO 35      
+        GOTO 35
 ! RA+SP: USE OF ANALYTICAL FORMULA FOR SSTAR
 !         SSTAR = SR
-        GOTO 35      
+        GOTO 35
       ENDIF
 !RA      SSTAR = USTAR
 35    CONTINUE
@@ -220,7 +220,7 @@
       QSTARL(4) = POND*PSI_L
 !
       IF(ABS(SR-SSTAR).GT.EPS)THEN
-        POND = HR*(SR-UR)/(SR-SSTAR) 
+        POND = HR*(SR-UR)/(SR-SSTAR)
       ELSE
         POND = 0.0D0
       ENDIF
@@ -234,14 +234,14 @@
       FL(1)     = HL*UL
       FL(2)     = HL*UL**2 +GSUR2*HL**2
       FL(3)     = HL*UL*VL
-      FL(4)     = HL*UL*PSI_L 
+      FL(4)     = HL*UL*PSI_L
 !
       FR(1)     = HR*UR
       FR(2)     = HR*UR**2 +GSUR2*HR**2
       FR(3)     = HR*UR*VR
-      FR(4)     = HR*UR*PSI_R 
+      FR(4)     = HR*UR*PSI_R
 !
-! COMPUTE FSTARL SFTARR 
+! COMPUTE FSTARL SFTARR
       FSTARL(1) = FL(1) + SL*(QSTARL(1)-QL(1))
       FSTARL(2) = FL(2) + SL*(QSTARL(2)-QL(2))
       FSTARL(3) = FL(3) + SL*(QSTARL(3)-QL(3))
@@ -286,22 +286,22 @@
 ! INVERSE ROTATION AND FINAL FLUX
 !
       IF(ROT)THEN
-        FLU2X  = XNN*FLX(2) - YNN*FLX(3) 
+        FLU2X  = XNN*FLX(2) - YNN*FLX(3)
         FLU2Y  = YNN*FLX(2) + XNN*FLX(3)
 !
         HLLCFLX(1) = FLX(1)
-        HLLCFLX(2) = FLU2X 
+        HLLCFLX(2) = FLU2X
         HLLCFLX(3) = FLU2Y
-        HLLCFLX(4) = FLX(4) 
+        HLLCFLX(4) = FLX(4)
       ELSE
 ! IN THIS CASE, NO ROTATION
 !
-! FINAL FLUX 
+! FINAL FLUX
 !
         HLLCFLX(1) = FLX(1)
-        HLLCFLX(2) = FLX(2) 
+        HLLCFLX(2) = FLX(2)
         HLLCFLX(3) = FLX(3)
-        HLLCFLX(4) = FLX(4) 
+        HLLCFLX(4) = FLX(4)
       ENDIF
 !
 !-----------------------------------------------------------------------

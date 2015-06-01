@@ -92,7 +92,7 @@
 !| NELEBX         |-->| MAXIMUM NUMBER OF BOUNDARY ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
+!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE
 !|                |   | ADJACENT ELEMENT, NULONE GIVES THE LOCAL
 !|                |   | NUMBER OF THE FIRST NODE OF THE BOUNDARY EDGE
 !|                |   | I.E. 1, 2 OR 3 FOR TRIANGLES.
@@ -200,7 +200,7 @@
              XM( IEL , CORNSY(NULONE(K),6) ) =
      &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+5*NELEBX)
 !
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
@@ -220,7 +220,7 @@
      &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+NELEBX)
              XM( IEL , CORNSY(NULONE(K),6) ) =
      &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+2*NELEBX)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
@@ -234,7 +234,7 @@
      &       XM( IEL , CORSYM(NULONE(K),2) ) + XN(K+NELEBX)
              XM( IEL , CORSYM(NULONE(K),3) ) =
      &       XM( IEL , CORSYM(NULONE(K),3) ) + XN(K+2*NELEBX)
-           ENDDO ! K 
+           ENDDO ! K
         ELSE
            IF (LNG.EQ.1) WRITE(LU,99) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
            IF (LNG.EQ.2) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
@@ -270,7 +270,7 @@
      &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+NELEBX)
              XM( IEL , CORNSY(NULONE(K),6) ) =
      &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+2*NELEBX)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSEIF(TYPEXM(1:1).EQ.'Q'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
@@ -290,7 +290,7 @@
      &       XM( IEL , CORNSY(NULONE(K),5) ) + XN(K+NELEBX)
              XM( IEL , CORNSY(NULONE(K),6) ) =
      &       XM( IEL , CORNSY(NULONE(K),6) ) + XN(K+2*NELEBX)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSEIF(TYPEXM(1:1).EQ.'S'.AND.TYPEXN(1:1).EQ.'S') THEN
 !
@@ -304,7 +304,7 @@
      &       XM( IEL , CORSYM(NULONE(K),2) ) + XN(K+NELEBX)
              XM( IEL , CORSYM(NULONE(K),3) ) =
      &       XM( IEL , CORSYM(NULONE(K),3) ) + XN(K+2*NELEBX)
-           ENDDO ! K 
+           ENDDO ! K
 !
         ELSE
            IF (LNG.EQ.1) WRITE(LU,99) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)

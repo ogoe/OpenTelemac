@@ -36,8 +36,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !history Y AUDOUIN (LNHE)
 !+       25/05/2015
@@ -45,7 +45,7 @@
 !+       Modification to comply with the hermes module
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT0            |-->|TIME 
+!| AT0            |-->|TIME
 !| BINRESSIS      |-->| BINARY OF RESULTS FILE (IBM,I3E,STD)
 !| EMAX           |-->|MAXIMUM BED EVOLUTION
 !| ESM            |-->|CUMULATED BED EVOLUTION

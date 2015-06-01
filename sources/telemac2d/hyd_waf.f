@@ -9,8 +9,8 @@
 ! TELEMAC 2D VERSION V6P3                                     15/01/2013
 !***********************************************************************
 !
-!brief 
-! 
+!brief
+!
 !     FUNCTION  : COMPUTES ALL THE FLUXES FOR INTERNAL INTERFACES USING
 !                 WAF FLUX.
 !
@@ -29,11 +29,11 @@
 ! |  CE            |<-->|  FLUX  INCREMENTS AT INTERNAL FACES          |                          |
 ! |  DT            | -->|  TIME STEP                                   |
 ! |  ELTSEG        | -->|  SEGMENT NUMBERS PER ELEMENT                 |
-! |  G             | -->|  GRAVITY                                     |  
+! |  G             | -->|  GRAVITY                                     |
 ! |  NELEM         | -->|  NUMBER OF TOTAL ELEMENTS                    |
 ! |  NS            | -->|  NUMBER OF TOTAL MESH NODES                  |
 ! |  NSEG          | -->|  NUMBER OF TOTAL MESH EDGES                  |
-! |  NUBO          ! -->!  GLOBAL NUMBER OF EDGE EXTREMITIES           |    
+! |  NUBO          ! -->!  GLOBAL NUMBER OF EDGE EXTREMITIES           |
 ! |  NEISEG        | -->| LEFT & RIGHT NEIGHBOUR SEGMENTS OF A SEGMENT |
 ! !  VNOCL         | -->|  OUTWARD UNIT NORMALS                        |
 ! !                |    |   (2 FIRST COMPONENTS) AND                   |
@@ -42,10 +42,10 @@
 ! |  X,Y           | -->|  X AND Y COORDINATES                         |
 ! |  ZF            | -->|  BATHYMETRIES                                |
 ! !________________|____|______________________________________________|
-!  MODE: -->( UNCHANGEABLE INPUT ),<--(OUTPUT),<-->(CHANGEABLE INPUT)   
+!  MODE: -->( UNCHANGEABLE INPUT ),<--(OUTPUT),<-->(CHANGEABLE INPUT)
 !-----------------------------------------------------------------------
-!     - CALLINF SUBROUTINE(S) : RESOLU                             
-! 
+!     - CALLINF SUBROUTINE(S) : RESOLU
+!
 !***********************************************************************
 !
       USE INTERFACE_TELEMAC2D, EX_HYD_WAF => HYD_WAF
@@ -54,7 +54,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!     
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NS,NSEG,NELEM
@@ -68,7 +68,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER    :: NSG,NUBO1,NUBO2,IVAR,I,IDRY,IEL  
+      INTEGER    :: NSG,NUBO1,NUBO2,IVAR,I,IDRY,IEL
       INTEGER    :: NUBOL,NUBOR,SEG1,SEG2,IER
 !
       DOUBLE PRECISION :: H1,H2,EPS,FLX(4)
@@ -83,7 +83,7 @@
       LOGICAL, ALLOCATABLE  :: YESNO(:)
 !  XI = X/T, AT THE (X,T) DIAGRAMM, WE COMPUETE THE FLUX AT XI = 0
       DOUBLE PRECISION,PARAMETER :: XI=0.0D0
-! PSI1 AND PSI2 ARE TRACER 
+! PSI1 AND PSI2 ARE TRACER
 ! NOT ADAPTED YET
       DOUBLE PRECISION           :: PSI1,PSI2
 !
@@ -91,7 +91,7 @@
       EPS=1.E-6
 ! NO TRACER UNTIL NOW ...
       PSI1 = 0.0D0
-      PSI2 = 0.0D0 
+      PSI2 = 0.0D0
       ALLOCATE(YESNO(NSEG),STAT=IER)
       IF(IER.NE.0)THEN
         IF(LNG.EQ.1)WRITE(LU,*)'FLUX_TCH: ERREUR D''ALLOCATION'
@@ -100,7 +100,7 @@
         STOP
       ENDIF
 !**************************************************************
-! INITIALIZATION OF CE      
+! INITIALIZATION OF CE
       DO I=1,3
         DO IVAR=1,NS
           CE(IVAR,I) = 0.D0
@@ -115,10 +115,10 @@
 !     LOOP OVER GLOBAL LIST OF EDGES
 !    *******************************
 !
-      DO IEL=1,NELEM 
+      DO IEL=1,NELEM
         DO I = 1,3
           IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
-            NSG = ELTSEG(IEL,I) 
+            NSG = ELTSEG(IEL,I)
 !           INDICATOR FOR DRY CELLS
             IDRY=0
 !           INITIALIZATION
@@ -126,7 +126,7 @@
             FLX(2) = 0.0D0
             FLX(3) = 0.0D0
             FLX(4) = 0.0D0
-!           
+!
 !           RECUPERATE NODES OF THE EDGE WITH THE GOOD ORIENTATION
 !           WITH RESPECT TO THE NORMAL
             NUBO1 = NUBO(1,NSG)
@@ -141,32 +141,32 @@
             ZF1   =    ZF(NUBO1)
             ZF2   =    ZF(NUBO2)
 !           MEAN DISTANCE BETWEEN THEM (FOR CFL)
-            DX    = 0.5D0*(DTHAUT(NUBO1)+DTHAUT(NUBO2)) 
+            DX    = 0.5D0*(DTHAUT(NUBO1)+DTHAUT(NUBO2))
 !           NORMAL COORDINATES NX, NY AND SEGMENT LENGTH
             XNN       = VNOCL(1,NSG)
             YNN       = VNOCL(2,NSG)
-            RNN       = VNOCL(3,NSG) 
-!           
+            RNN       = VNOCL(3,NSG)
+!
 !           WATER DEPTH
-!           
+!
             H1=W(1,NUBO1)
             H2=W(1,NUBO2)
 !******************************************************
 !           HYDROSTATIC RECONSTRUCTION !!!
-!           
+!
 !           BATHY AT THE INTERFACE
-!           
+!
             DZIJ = MAX(0.D0,ZF2-ZF1)
             HIJ  = MAX(0.D0,H1- DZIJ)
 !******************************************************
 !           HYDROSTATIC RECONSTRUCTION !!!
-!           
+!
             DZJI = MAX(0.D0,ZF1-ZF2)
             HJI  = MAX(0.D0,H2- DZJI)
 !******************************************************
-!           
-!           VELOCITY COMPONENTS 
-!           
+!
+!           VELOCITY COMPONENTS
+!
             IF(H1.GT.EPS)THEN
               V21 = W(2,NUBO1)/H1
               V31 = W(3,NUBO1)/H1
@@ -175,18 +175,18 @@
               V31=0.0D0
               IDRY=IDRY+1
             ENDIF
-!           
+!
             IF(H2.GT.EPS)THEN
-              V22 = W(2,NUBO2)/H2 
+              V22 = W(2,NUBO2)/H2
               V32 = W(3,NUBO2)/H2
             ELSE
               V22=0.0D0
               V32=0.0D0
               IDRY=IDRY+1
             ENDIF
-!           
+!
 !           SEGMENT NEIGHBORS (FOR LIMITER)
-!           
+!
             SEG1 = NEISEG(1,NSG)
             SEG2 = NEISEG(2,NSG)
 !             VERIFY THAT WE HAVE THE GOOD NEIGHBORS
@@ -198,19 +198,19 @@
               CALL PLANTE(1)
               STOP
             ENDIF
-!           
+!
             NUBOL=0
             NUBOR=0
-!           
+!
             IF(NUBO(1,SEG1).EQ.NUBO1) THEN
               NUBOL = NUBO(2,SEG1)
             ELSE
-              NUBOL = NUBO(1,SEG1) 
+              NUBOL = NUBO(1,SEG1)
             ENDIF
             IF(NUBO(1,SEG2).EQ.NUBO2) THEN
               NUBOR = NUBO(2,SEG2)
             ELSE
-              NUBOR = NUBO(1,SEG2) 
+              NUBOR = NUBO(1,SEG2)
             ENDIF
 !             VERIFY THAT WE HAVE THE GOOD NEIGHBORS
             IF(NUBOL.LE.0.OR.NUBOR.LE.0) THEN
@@ -221,9 +221,9 @@
               CALL PLANTE(1)
               STOP
             ENDIF
-!           
+!
 !           WATER DEPTH, VELOCITY, TRACER OF NEIGHBORS
-!           
+!
             HL_UP   = W(1,NUBOL)
             HR_UP   = W(1,NUBOR)
             IF(HL_UP.GT.EPS)THEN
@@ -238,39 +238,39 @@
             ENDIF
             PSIL_UP = PSI1
             PSIR_UP = PSI2
-!           
+!
 !           LOCAL FLUX COMPUTATION
-!           
+!
 !           AT LEAST ONE WET CELL
             IF(IDRY.LT.2)THEN
 !           CALL FLUX_WAF(XI,H1,H2,V21,V22,V31,V32,PSI1,PSI2,
               CALL FLUX_WAF(XI,HIJ,HJI,V21,V22,V31,V32,PSI1,PSI2,
      &                      HL_UP,HR_UP,VL_UP,VR_UP,PSIL_UP,PSIR_UP,
      &                      XNN,YNN,DT,DX,FLX)
-!           
+!
 !             GEOMETRIC SOURCE TERMS
-!           
+!
               HGZI =0.5D0*RNN*(HIJ+H1)*(HIJ-H1)
               HGZJ =0.5D0*RNN*(HJI+H2)*(HJI-H2)
-!           
+!
               HDXZ1  = G*XNN*HGZI
               HDYZ1  = G*YNN*HGZI
-!           
+!
               HDXZ2  = G*XNN*HGZJ
               HDYZ2  = G*YNN*HGZJ
-!           
+!
 !             FLUX INCREMENT
-!           
+!
               CE(NUBO1,1) = CE(NUBO1,1) - RNN*FLX(1)
               CE(NUBO1,2) = CE(NUBO1,2) - RNN*FLX(2) + HDXZ1
               CE(NUBO1,3) = CE(NUBO1,3) - RNN*FLX(3) + HDYZ1
-!           
+!
               CE(NUBO2,1) = CE(NUBO2,1) + RNN*FLX(1)
               CE(NUBO2,2) = CE(NUBO2,2) + RNN*FLX(2) - HDXZ2
               CE(NUBO2,3) = CE(NUBO2,3) + RNN*FLX(3) - HDYZ2
             ENDIF
-!           
-            YESNO(NSG)=.TRUE. 
+!
+            YESNO(NSG)=.TRUE.
           ENDIF
         ENDDO
       ENDDO

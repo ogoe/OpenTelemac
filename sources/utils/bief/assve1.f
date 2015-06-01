@@ -29,7 +29,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| CONNECTIVITY TABLE
-!| LV             |-->| VECTOR LENGTH OF THE COMPUTER 
+!| LV             |-->| VECTOR LENGTH OF THE COMPUTER
 !| MASKEL         |-->| MASKING OF ELEMENTS
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
@@ -72,7 +72,7 @@
 !
       DO IELEM = 1 , NELEM
         X(IKLE(IELEM)) = X(IKLE(IELEM)) + W(IELEM) * MASKEL(IELEM)
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !
@@ -83,8 +83,8 @@
 !DIR$ IVDEP
       DO IELEM = 1+(IB-1)*LV , MIN(NELEM,IB*LV)
         X(IKLE(IELEM)) = X(IKLE(IELEM)) + W(IELEM) * MASKEL(IELEM)
-      ENDDO ! IELEM 
-      ENDDO ! IB 
+      ENDDO ! IELEM
+      ENDDO ! IB
 !
       ENDIF
 !
@@ -100,7 +100,7 @@
 !
       DO IELEM = 1 , NELEM
         X(IKLE(IELEM)) = X(IKLE(IELEM)) + W(IELEM)
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !
@@ -111,8 +111,8 @@
 !DIR$ IVDEP
       DO IELEM = 1+(IB-1)*LV , MIN(NELEM,IB*LV)
         X(IKLE(IELEM)) = X(IKLE(IELEM)) + W(IELEM)
-      ENDDO ! IELEM 
-      ENDDO ! IB 
+      ENDDO ! IELEM
+      ENDDO ! IB
 !
       ENDIF
 !

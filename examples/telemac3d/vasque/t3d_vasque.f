@@ -59,9 +59,9 @@
       INTEGER, INTENT(IN) :: NPOIN2, LISFON
       LOGICAL, INTENT(IN) :: MSK
       TYPE (BIEF_OBJ), INTENT(INOUT) :: SZF, ST1, ST2
-      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(INOUT) :: ZF, T1, T2 
-      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(IN) :: X,Y 
-      TYPE (BIEF_OBJ),  INTENT(INOUT) :: PRIVE 
+      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(INOUT) :: ZF, T1, T2
+      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(IN) :: X,Y
+      TYPE (BIEF_OBJ),  INTENT(INOUT) :: PRIVE
       TYPE (BIEF_OBJ),  INTENT(IN)    :: MASKEL
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: MATR2D
       TYPE (BIEF_MESH), INTENT(INOUT) :: MESH2D
@@ -89,27 +89,27 @@
 !
       IM = 47
       JM = 10
-!                                                                         
-!  VARIANTE FOND EN PENTE RECTILIGNE + CUVETTE                            
-!                                                                         
-      DO I=1,IM 
-      DO J=1,JM 
-!       PENTE RECTILIGNE                                                       
+!
+!  VARIANTE FOND EN PENTE RECTILIGNE + CUVETTE
+!
+      DO I=1,IM
+      DO J=1,JM
+!       PENTE RECTILIGNE
         POS_LOC = GLOBAL_TO_LOCAL_POINT(I+(J-1)*IM,MESH3D)
 !
 !       NOTE JMH: THIS IS VERY HEAVY, THERE SHOULD BE A
 !                 FORMULA FUNCTION OF X.
 !
         IF(POS_LOC.GT.0) THEN
-          ZF(POS_LOC)=-0.6D0+0.46D0*FLOAT(I-1)/FLOAT(IM-1) 
-!         BOSSE GAUSSIENNE            
+          ZF(POS_LOC)=-0.6D0+0.46D0*FLOAT(I-1)/FLOAT(IM-1)
+!         BOSSE GAUSSIENNE
           IF(I.GT.9.AND.I.LT.29) THEN
-            EIKON = -(I-19)**2/20.D0 
+            EIKON = -(I-19)**2/20.D0
             ZF(POS_LOC) = ZF(POS_LOC) + 0.1D0*EXP(EIKON)
           ENDIF
-        ENDIF                                                 
-      ENDDO                                                            
-      ENDDO    
+        ENDIF
+      ENDDO
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -195,7 +195,7 @@
 !
 !       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
         FCT(1:3)='SL('
-        IF(I.LT.10) THEN 
+        IF(I.LT.10) THEN
           WRITE(FCT(4:4),FMT='(I1)') I
           FCT(5:8)=')   '
         ELSEIF(I.LT.100) THEN
@@ -211,17 +211,17 @@
       ENDIF
 !
       IF(.NOT.OK(I).OR.T3D_FILES(T3DIMP)%NAME(1:1).EQ.' ') THEN
-! 
-!     PROGRAMMABLE PART                              
-!     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
-!                                                                             
+!
+!     PROGRAMMABLE PART
+!     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
+!
 !       SL3 = COTIMP(I)
         PERIODE=600.D0
         OMEGA=2*PI/PERIODE
         A=0.55D0/2.D0
         SL3=A*(COS(OMEGA*TIME)-1.D0)
-! 
-      ENDIF           
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

@@ -46,12 +46,12 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+ 
+!+  Name of variables
+!+
 !history  J-M HERVOUET (EDF-LNHE)
 !+        27/02/2012
 !+        V6P2
-!+  ALPHA suppressed, was no longer used   
+!+  ALPHA suppressed, was no longer used
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| SHIELDS PARAMETER
@@ -65,10 +65,10 @@
 !| FW             |-->| WAVE FRICTION COEFFICIENT
 !| GRAV           |-->| GRAVITY
 !| HIDFAC         |-->| HIDING FACTOR FORMULA
-!| HIDING         |<->| HIDING FACTOR 
+!| HIDING         |<->| HIDING FACTOR
 !| HMIN           |-->| MININMUM WATER DEPTH
 !| HN             |-->| WATER DEPTH
-!| HOULE          |-->| EFFECT OF WAVE 
+!| HOULE          |-->| EFFECT OF WAVE
 !| ICF            |-->| CHOICE OF FORMULA
 !| IELMT          |-->| NUMBER OF ELEMENTS
 !| KARMAN         |-->| VON KARMAN COEFFICIENT
@@ -79,9 +79,9 @@
 !| PI             |-->| PI
 !| QSC            |<->| BED LOAD TRANSPORT RATE (m2/S)
 !| QSS            |<->| SUSPENDED LOAD TRANSPORT RATE (M2/S)
-!| SECCURRENT     |-->| EFFECT OF SECUNDARY CURRENTS 
+!| SECCURRENT     |-->| EFFECT OF SECUNDARY CURRENTS
 !| SLOPEFF        |-->| FORMULA FOR SLOPING BED EFFECTS
-!| SUSP           |-->| SUSPENSION TREATMENT 
+!| SUSP           |-->| SUSPENSION TREATMENT
 !| T1             |<->| WORKING ARRAYS
 !| T10            |<->| --
 !| T11            |<->| --
@@ -93,8 +93,8 @@
 !| T7             |<->| --
 !| T8             |<->| --
 !| T9             |<->| --
-!| TETAP          |<->| ADIMENSIONAL SKIN FRICTION 
-!| THETAW         |-->| WAVE/CURRENT ANGLE 
+!| TETAP          |<->| ADIMENSIONAL SKIN FRICTION
+!| THETAW         |-->| WAVE/CURRENT ANGLE
 !| TOB            |-->| TOTAL BED SHEAR STRESS (N/M2)
 !| TOBW           |-->| WAVE INDUCED BED SHEAR STRESS (N/M2)
 !| TW             |-->| WAVE PERIOD (S)
@@ -306,7 +306,7 @@
       ! ============================================ !
       ELSEIF (ICF == 0) THEN
         CALL QSFORM
-     &       (U2D, V2D, TOB, HN, XMVE, TETAP, MU, NPOIN, DM, 
+     &       (U2D, V2D, TOB, HN, XMVE, TETAP, MU, NPOIN, DM,
      &       DENS, GRAV, DSTAR, AC, QSC, QSS)
         DO I=1,NPOIN
            QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)

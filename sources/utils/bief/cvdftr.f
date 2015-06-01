@@ -111,7 +111,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        09/04/2013
 !+        V6P3
-!+   DIMGLO=MESH%GLOSEG%DIM1 used in call to CVTRVF_POS. Strangely 
+!+   DIMGLO=MESH%GLOSEG%DIM1 used in call to CVTRVF_POS. Strangely
 !+   avoids an "array temporary created" with Intel compiler.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
@@ -174,7 +174,7 @@
 !|                |   | ICONVF = 7 : NON CONSERVATIVE N SCHEME.
 !|                |   | ICONVF =13 : EDGE BY EDGE FORM OF 3
 !|                |   | ICONVF =14 : IDEM
-!| INFOGT         |-->| LOGICAL, IF YES INFORMATION ON SOLVER WILL BE 
+!| INFOGT         |-->| LOGICAL, IF YES INFORMATION ON SOLVER WILL BE
 !|                |   | PRINTED.
 !| ISOUSI         |-->| SUB-ITERATION NUMBER
 !| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
@@ -210,7 +210,7 @@
 !| PLUIE          |-->| RAIN OR EVAPORATION, IN M/S
 !| RAIN           |-->| IF YES: RAIN OR EVAPORATION
 !| S              |-->| VOID STRUCTURE
-!| SLVTRA         |-->| SOLVER CONFIGURATION (SLVCFG) STRUCTURE 
+!| SLVTRA         |-->| SOLVER CONFIGURATION (SLVCFG) STRUCTURE
 !|                |   | CONTAINING DATA FOR CALLING SOLVE
 !| SM             |-->| SOURCE TERMS.
 !| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION

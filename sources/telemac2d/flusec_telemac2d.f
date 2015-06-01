@@ -209,7 +209,7 @@
             ENDIF
           ENDIF
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         IF(IGBEST.EQ.PT) THEN
           IF(LNG.EQ.1) WRITE(LU,32)
@@ -288,7 +288,7 @@
 !       OTHER TRIANGLES WITH ONLY 1 POINT TOUCHING THE SECTION
 !       LOOKING AT NEIGHBOURS TO FIND THEIR SIDE
 !
-        DO 
+        DO
           OK=.TRUE.
           DO IEL=1,NELEM
             J1=IKLE(IEL,1)
@@ -413,7 +413,7 @@
 !     IF(NSEG(ISEC).GT.1)...
       ENDIF
 !
-      ENDDO ! ISEC 
+      ENDDO ! ISEC
 !
 !-----------------------------------------------------------------------
 !

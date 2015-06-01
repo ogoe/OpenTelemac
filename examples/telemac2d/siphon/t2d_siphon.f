@@ -14,7 +14,7 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |                | -- |  
+! |                | -- |
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !***********************************************************************
@@ -30,8 +30,8 @@
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-! 
-      INTEGER I,ITRAC 
+!
+      INTEGER I,ITRAC
 !
 !-----------------------------------------------------------------------
 !
@@ -67,19 +67,19 @@
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
-!  ZONE A MODIFIER 
+!  ZONE A MODIFIER
 !
 !  DANS CHACUN DES DEUX BASSINS LA SURFACE LIBRE N'EST PAS PLATE
 !  VOIR CORFON !!!!!!
-!                                                     
+!
         DO I = 1,NPOIN
           IF(X(I).LT.250.D0) THEN
             H%R(I)=4.D0
           ELSE
             H%R(I)=2.D0
           ENDIF
-        ENDDO                                         
-!  FIN DE LA ZONE A MODIFIER      
+        ENDDO
+!  FIN DE LA ZONE A MODIFIER
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -96,7 +96,7 @@
 !   INITIALISATION DU TRACEUR
 !
       IF(NTRAC.GT.0) THEN
-      DO ITRAC=1,NTRAC 
+      DO ITRAC=1,NTRAC
 !
         DO I = 1,NPOIN
           IF(X(I).LT.250.D0) THEN
@@ -107,7 +107,7 @@
         ENDDO
 !
       ENDDO
-      ENDIF                   
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -118,7 +118,7 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END           
+      END
 !                       *****************
                         SUBROUTINE CORFON
 !                       *****************
@@ -133,7 +133,7 @@
 !
 !
 !-----------------------------------------------------------------------
-!  ARGUMENTS USED IN THE EXAMPLE 
+!  ARGUMENTS USED IN THE EXAMPLE
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|_______________________________________________

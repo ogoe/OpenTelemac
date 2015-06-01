@@ -36,7 +36,7 @@
 ! |    NBOR        | -->|  ADRESSES DES POINTS DE BORD                 |
 ! |  TRA05,TRA06   | -->|  TABLEAUX DE TRAVAIL                         |
 ! |   LIHBOR       | -->|  CONDITIONS AUX LIMITES SUR H                |
-! | LIUBOR         | -->|  CONDITIONS AUX LIMITES SUR U 
+! | LIUBOR         | -->|  CONDITIONS AUX LIMITES SUR U
 ! |   LITBOR       | -->|  CONDITIONS AUX LIMITES SUR LE TRACEUR       |
 ! |   NPOIN        | -->|  NOMBRE DE POINTS DU MAILLAGE.               |
 ! |   NPTFR        | -->|  NOMBRE DE POINTS FRONTIERE.                 |
@@ -86,8 +86,8 @@
 !
       INTEGER YADEB(100)
 !
-      DOUBLE PRECISION HBOR(NPTFR),UBOR(NPTFR,2),VBOR(NPTFR,2) 
-      DOUBLE PRECISION ZF(NPOIN) 
+      DOUBLE PRECISION HBOR(NPTFR),UBOR(NPTFR,2),VBOR(NPTFR,2)
+      DOUBLE PRECISION ZF(NPOIN)
       DOUBLE PRECISION XNEBOR(NPTFR),YNEBOR(NPTFR)
 !
       DOUBLE PRECISION TEMPS,Z
@@ -127,7 +127,7 @@
         IF(NCOTE.GE.NUMLIQ(K)) THEN
           PI=3.141592653589D0
           AT1=TEMPS/44700.D0
-          H1 = 5.15D0+4.05D0*COS(PI*2.D0*AT1)  
+          H1 = 5.15D0+4.05D0*COS(PI*2.D0*AT1)
           HBOR(K) = -ZF(NBOR(K)) + H1
           HBOR(K) = MAX(0.D0,HBOR(K))
 !
@@ -279,5 +279,5 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END 
+      END
 

@@ -25,7 +25,7 @@
       CHARACTER(LEN=8)   :: GEOFORMAT,RESFORMAT
       CHARACTER(LEN=250) :: RES
       INTEGER            :: NPROC, NPLAN
-      
+
 !
 !-------------------------------------------------------------------------
 !

@@ -43,7 +43,7 @@
 !+         POROS%R(IELEM) = 0.5D0
 !+       ENDIF
 !+
-!+      ENDDO ! IELEM 
+!+      ENDDO ! IELEM
 !
 !history  J-M HERVOUET (LNHE)
 !+        01/03/1990
@@ -115,7 +115,7 @@
 !         POROS%R(IELEM) = 0.5D0
 !       ENDIF
 !
-!      ENDDO ! IELEM 
+!      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !

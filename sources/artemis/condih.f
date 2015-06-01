@@ -34,7 +34,7 @@
 !history  C.PEYRARD (EDF)
 !+        18/03/2014
 !+        V7P0
-!+   Computation of reference wave number for automatic 
+!+   Computation of reference wave number for automatic
 !+   phase calculation
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -135,7 +135,7 @@
 !
 !     COMPUTE REFERENCE WAVE NUMBER KPHREF FOR AUTOMATIC PHASE CALCULATION
       IF (LPHASEAUTO) THEN
-!       CHECKS THE REFERENCE DEPTH HAS BEEN GIVEN 
+!       CHECKS THE REFERENCE DEPTH HAS BEEN GIVEN
         IF (DEPREF.LT.0D0) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,220)
@@ -148,14 +148,14 @@
      &           ,/,'         RENSEIGNER UNE PROFONDEUR DE REFERENCE  '
      &           ,/,'         MOT CLEF : PROFONDEUR DE REFERENCE POUR '
      &           ,/,'         LA PHASE AUTOMATIQUE                    ')
-         
+
 221       FORMAT(1X,'CONDIH : ERROR. IF YOU USE AUTOMATIC PHASE       '
      &           ,/,'         CALCULATION, YOU HAVE TO GIVE A         '
      &           ,/,'         REFERENCE WATER DEPTH                   '
      &           ,/,'         KEY WORD :                              '
      &           ,/,'        REFERENCE WATER DEPTH FOR AUTOMATIC PHASE')
           CALL PLANTE(1)
-          STOP               
+          STOP
         ENDIF
         T1REF= OMEGA**2/GRAV * DEPREF
         T2REF = 1.D0 + T1REF *( 0.6522D0 +
@@ -198,7 +198,7 @@
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-!         CURRENT DEFINITION ON THE DOMAIN : DEFAULT 0 
+!         CURRENT DEFINITION ON THE DOMAIN : DEFAULT 0
 !                       (EXAMPLE IS GIVEN BELOW)
 !----------------------------------------------------------------------
 !   => DEFINE YOUR CURRENT VALUES IN THE FOLLOWING LOOP
@@ -211,7 +211,7 @@
       ENDIF
 !
 !=====================================
-! === EXAMPLE OF X,Y DEPENDENT CURRENT 
+! === EXAMPLE OF X,Y DEPENDENT CURRENT
 !=====================================
 !      IF(COURANT) THEN
 !

@@ -30,10 +30,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IELM           |-->| ELEMENT TYPE 
+!| IELM           |-->| ELEMENT TYPE
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| INIT           |-->| LOGICAL : IF TRUE X IS INITIALISED TO 0.
-!| LV             |-->| VECTOR LENGTH OF THE COMPUTER 
+!| LV             |-->| VECTOR LENGTH OF THE COMPUTER
 !| MASKEL         |-->| MASKING OF ELEMENTS
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.

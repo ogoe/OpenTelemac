@@ -68,7 +68,7 @@
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
 !     ZONE A MODIFIER
-!     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE                                                     
+!     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE
 !jaj free surface initialisation from a file and using surfini
 !
       READ(NFO1,*)
@@ -76,13 +76,13 @@
       WRITE(LU,*) 'CONDIM: READING FREE SURFACE INITIALISATION FILE'
       WRITE(LU,*) 'CONDIM: NSEC = ',NSEC
       WRITE(LU,*) ' '
-      WRITE(LU,'(5(1X,A15))') 
+      WRITE(LU,'(5(1X,A15))')
      &    'XLEFT', 'YLEFT', 'XRIGHT', 'YRIGHT', 'WATER_LEVEL'
       DO I=1,NSEC
         READ(NFO1,*) T3_01%R(I), T3_02%R(I), T3_04%R(I),
      &               T3_05%R(I), T3_03%R(I)
         T3_06%R(I) = T3_03%R(I)
-        WRITE(LU,'(5(1X,G15.6))') 
+        WRITE(LU,'(5(1X,G15.6))')
      &     T3_01%R(I), T3_02%R(I), T3_04%R(I),
      &     T3_05%R(I), T3_03%R(I)
       END DO
@@ -92,15 +92,15 @@
       CALL OS( 'X=C     ' , H , H  , H , COTINI )
 !
       CALL SURFINI
-     & (T3_01%R, T3_02%R, T3_03%R, T3_04%R, T3_05%R, T3_06%R, 
-     &  T3_07%R, T3_08%R, T3_09%R, 
-     &  MESH3D%X%R, MESH3D%Y%R, H%R, ZF%R, 
+     & (T3_01%R, T3_02%R, T3_03%R, T3_04%R, T3_05%R, T3_06%R,
+     &  T3_07%R, T3_08%R, T3_09%R,
+     &  MESH3D%X%R, MESH3D%Y%R, H%R, ZF%R,
      &  IT1%I, IT2%I, NSEC, NPOIN2)
 !
       CALL OS( 'X=X-Y   ' , H , ZF , ZF , 0.D0 )
 !
-!     END OF SPECIAL INITIAL CONDITIONS                                                            
-!     FIN DE LA ZONE A MODIFIER      
+!     END OF SPECIAL INITIAL CONDITIONS
+!     FIN DE LA ZONE A MODIFIER
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIM : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -109,7 +109,7 @@
         WRITE(LU,*) 'CONDIM: INITIAL CONDITION UNKNOWN: ',CDTINI
         ENDIF
         STOP
-      ENDIF 
+      ENDIF
       ELSE
         IF(LNG.EQ.1) WRITE(LU,*) 'HAUTEUR LUE DANS LE FICHIER BINAIRE 1'
         IF(LNG.EQ.2) WRITE(LU,*) 'DEPTH IS READ IN THE BINARY FILE 1'
@@ -212,7 +212,7 @@
 !
 !     INITIALISATION OF VELOCITIES
 !
-      IF(SUIT2) THEN       
+      IF(SUIT2) THEN
         DO I=1,NPLAN
           DO J=1,NPOIN2
            U%R((I-1)*NPOIN2+J)=U2D%R(J)
@@ -254,7 +254,7 @@
 !-----------------------------------------------------------------------
 !
 ! INITIALIZE THE PRESSURE FIELDS TO 0.0
-! 
+!
       IF(NONHYD) THEN
         CALL OS('X=C     ',X=DP,C=0.D0)
         WRITE (LU,*) 'CONDIM: DYNAMIC PRESSURE INITIALISED TO ZERO'
@@ -265,7 +265,7 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END     
+      END
 !
 !===========================================================
 ! Wesel-Xanten, The Rhine River, Rhein-km 812.5 - 821.5
@@ -275,7 +275,7 @@
      &  (XLE,YLI,ZLI,XRI,YRI,ZRE,XM,YM,ZM,
      &   X,Y,ZS,ZF,IKLE,ELEM,NSEC,NPOIN2)
 !
-      IMPLICIT NONE 
+      IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
@@ -286,7 +286,7 @@
       DOUBLE PRECISION, INTENT(IN) :: X(NPOIN2), Y(NPOIN2),ZF(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: ZS(NPOIN2)
       INTEGER, INTENT(INOUT) :: IKLE(2*NSEC-2,3)
-      INTEGER, INTENT(INOUT) :: ELEM(NPOIN2) 
+      INTEGER, INTENT(INOUT) :: ELEM(NPOIN2)
       DOUBLE PRECISION, ALLOCATABLE :: SHP(:,:)
 !
       INTEGER ISEC, I, IE
@@ -306,7 +306,7 @@
       END DO
 !
       DO IE=1,2*NSEC-3,2
-        IKLE(IE,1)   = IE 
+        IKLE(IE,1)   = IE
         IKLE(IE,2)   = IE+1
         IKLE(IE,3)   = IE+2
         IKLE(IE+1,1) = IE+1
@@ -323,16 +323,16 @@
           N1 = IKLE(IE,1)
           N2 = IKLE(IE,2)
           N3 = IKLE(IE,3)
-          A1 = (X(I)-XM(N3))*(YM(N2)-YM(N3)) 
+          A1 = (X(I)-XM(N3))*(YM(N2)-YM(N3))
      &       - (Y(I)-YM(N3))*(XM(N2)-XM(N3))
-          A2 = (X(I)-XM(N1))*(YM(N3)-YM(N1)) 
+          A2 = (X(I)-XM(N1))*(YM(N3)-YM(N1))
      &       - (Y(I)-YM(N1))*(XM(N3)-XM(N1))
-          A3 = (X(I)-XM(N2))*(YM(N1)-YM(N2)) 
+          A3 = (X(I)-XM(N2))*(YM(N1)-YM(N2))
      &       - (Y(I)-YM(N2))*(XM(N1)-XM(N2))
           IF ((A1.GE.0.).AND.(A2.GE.0.).AND.(A3.GE.0.)) THEN
             SURDET = 1.0 / ((XM(N2)-XM(N1))*(YM(N3)-YM(N1)) -
      &                      (YM(N2)-YM(N1))*(XM(N3)-XM(N1)))
-            ELEM(I) = IE   
+            ELEM(I) = IE
             SHP(I,1) = A1 * SURDET
             SHP(I,2) = A2 * SURDET
             SHP(I,3) = A3 * SURDET
@@ -345,7 +345,7 @@
         IF (ELEM(I)==0) THEN
           WRITE (LU,*) 'SURFINI: POINT ',I,
      &        ' IS OUTSIDE THE DOMAIN FOR FREE SURFACE INITIALISATION'
-          ZS(I) = ZF(I) 
+          ZS(I) = ZF(I)
         ELSE
           N1 = IKLE(ELEM(I),1)
           N2 = IKLE(ELEM(I),2)
@@ -354,7 +354,7 @@
           A2 = SHP(I,2)
           A3 = SHP(I,3)
           ZS(I) = A1*ZM(N1) + A2*ZM(N2) + A3*ZM(N3)
-        ENDIF 
+        ENDIF
       END DO
 !
       DEALLOCATE(SHP)
@@ -889,7 +889,7 @@
         ENDIF
       ENDIF
 !
-      ENDDO ! IFRLIQ 
+      ENDDO ! IFRLIQ
       ENDIF
 !
 !     RESETS BOUNDARY CONDITIONS ON U AND V (WILL BE USED BY TFOND

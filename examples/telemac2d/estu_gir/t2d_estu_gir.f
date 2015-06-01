@@ -54,7 +54,7 @@
 !| NIT            |-->| NUMBER OF TIME STEPS
 !| NPLAN          |-->| NUMBER OF PLANES
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
-!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR
 !|                |   | ELEMENTS.
 !| SHZFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR LEVEL
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
@@ -100,7 +100,7 @@
       DOUBLE PRECISION                :: SHZFLO(1)
       INTEGER                         :: TAGFLO(1)
       INTEGER                         :: ELTFLO(1)
-      INTEGER                         :: ETAFLO(1)     
+      INTEGER                         :: ETAFLO(1)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -116,12 +116,12 @@
       COEF2=COEF1/1.53**2
       DELTA=(RHO_EAU-RHO_OIL)/(RHO_EAU)
 !
-      IF(LT.EQ.10000) THEN 
+      IF(LT.EQ.10000) THEN
         NUM_GLO=0
         NUM_MAX=0
         NUM_LOC=0
         COORD_X=0.D0
-        COORD_Y=0.D0 
+        COORD_Y=0.D0
         NUM_MAX=INT(SQRT(REAL(NFLOT_MAX)))
         DO K=0,NUM_MAX-1
           DO J=0,NUM_MAX-1
@@ -164,7 +164,7 @@
               IF(ETAL.EQ.1)THEN
                 PARTICULES(NUM_LOC)%SURFACE=PI*COEF2*
      &               (DELTA*GRAV/(VOLDEV*NU2))**(1.D0/6.D0)
-     &               *VOLDEV/NFLOT_MAX 
+     &               *VOLDEV/NFLOT_MAX
               ELSEIF(ETAL.EQ.3)THEN
                 PARTICULES(NUM_LOC)%SURFACE = AREA
               ELSEIF(ETAL.EQ.2) THEN
@@ -277,7 +277,7 @@
      &       Y(I).GT.255750.D0.AND.Y(I).LT.256250.D0      ) THEN
           ZF%R(I)=0.D0
         ENDIF
-      ENDDO 
+      ENDDO
 !-----------------------------------------------------------------------
 !
       IF(LNG.EQ.1) THEN
@@ -376,7 +376,7 @@
         IF (Y(I)-X(I).GE.10000.D0) THEN
           CHESTR%R(I) = 70.D0
         ELSEIF (X(I).LE.370000.D0) THEN
-          CHESTR%R(I) = 75.D0 
+          CHESTR%R(I) = 75.D0
         ELSEIF (X(I).LE.374000.D0.AND.Y(I).GE.282000.D0) THEN
           CHESTR%R(I) = 70.D0
         ELSE
@@ -462,50 +462,50 @@
 ! |   PROVEL       | -->|  OPTION POUR LES PROFILS DE VITESSE          |
 ! |________________|____|______________________________________________|
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-! 
-!----------------------------------------------------------------------- 
-! 
-! APPELE PAR : TELMAC 
-! 
-! SOUS-PROGRAMME APPELE : DEBIMP 
-! 
-! FONCTIONS APPELEES : Q , SL , TR , VIT 
-! 
-!*********************************************************************** 
-! 
-      USE BIEF 
+!
+!-----------------------------------------------------------------------
+!
+! APPELE PAR : TELMAC
+!
+! SOUS-PROGRAMME APPELE : DEBIMP
+!
+! FONCTIONS APPELEES : Q , SL , TR , VIT
+!
+!***********************************************************************
+!
+      USE BIEF
       USE DECLARATIONS_TELEMAC2D, ONLY : T2D_FILES,T2DFO1
-! 
-      IMPLICIT NONE 
-      INTEGER LNG,LU 
-      COMMON/INFO/LNG,LU 
-! 
-      CHARACTER(LEN=144), INTENT(IN) :: NOMIMP 
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+      CHARACTER(LEN=144), INTENT(IN) :: NOMIMP
       INTEGER K,NPTFR,NDEBIT,NCOTE,NVITES,NTRACE,MSK1,NTRAC
-      INTEGER NPOIN,NFRLIQ,NPTFR2 
-      INTEGER IFRLIQ 
+      INTEGER NPOIN,NFRLIQ,NPTFR2
+      INTEGER IFRLIQ
       INTEGER KENT,KENTU
-      INTEGER NBOR(NPTFR) 
-      INTEGER LIHBOR(NPTFR) , LIUBOR(NPTFR) 
+      INTEGER NBOR(NPTFR)
+      INTEGER LIHBOR(NPTFR) , LIUBOR(NPTFR)
       INTEGER LITBOR(NPTFR) , PROVEL(100)
-      INTEGER NUMLIQ(NPTFR) 
-! 
-      INTEGER YADEB(100) 
-! 
-      DOUBLE PRECISION HBOR(NPTFR)     , UBOR(NPTFR,2)  , VBOR(NPTFR,2) 
-      DOUBLE PRECISION TBOR(NPTFR)   
-      DOUBLE PRECISION ZF(NPOIN)  
-      DOUBLE PRECISION XNEBOR(NPTFR)   , YNEBOR(NPTFR) 
+      INTEGER NUMLIQ(NPTFR)
 !
-      DOUBLE PRECISION TEMPS,Z(1),COEF 
+      INTEGER YADEB(100)
 !
-      CHARACTER(LEN=20) EQUA 
+      DOUBLE PRECISION HBOR(NPTFR)     , UBOR(NPTFR,2)  , VBOR(NPTFR,2)
+      DOUBLE PRECISION TBOR(NPTFR)
+      DOUBLE PRECISION ZF(NPOIN)
+      DOUBLE PRECISION XNEBOR(NPTFR)   , YNEBOR(NPTFR)
 !
-      TYPE(BIEF_MESH) :: MESH 
-      TYPE(BIEF_OBJ)  :: MASK,H,U,V,TRA05,TRA06 
+      DOUBLE PRECISION TEMPS,Z(1),COEF
 !
-      INTEGER P_IMAX 
-      DOUBLE PRECISION Q,SL,VIT,TR 
+      CHARACTER(LEN=20) EQUA
+!
+      TYPE(BIEF_MESH) :: MESH
+      TYPE(BIEF_OBJ)  :: MASK,H,U,V,TRA05,TRA06
+!
+      INTEGER P_IMAX
+      DOUBLE PRECISION Q,SL,VIT,TR
       EXTERNAL          Q,SL,VIT,TR ,P_IMAX
 !      INTRINSIC MAX
 !
@@ -514,32 +514,32 @@
 !GB       DECLARATION SUPPLEMENTAIRES : Variables pour la marée
 !GB********************************************************
 !GB
-  
-   
-!     
-!     
-!     variable pour calculer le temps universel et variables fonda:      
-      DOUBLE PRECISION ALF ,PI,Y100,AJUL4,NLUN, HT 
+
+
+!
+!
+!     variable pour calculer le temps universel et variables fonda:
+      DOUBLE PRECISION ALF ,PI,Y100,AJUL4,NLUN, HT
       DOUBLE PRECISION  DD,JD,TUNIV,HSUN,SLUN,PLUN,TLUN,PSUN
 !     periode des différentes ondes; nbre d'ondes max=120:
 !     NSPECTR: nombre d'ondes du spectre. Si NSPECTR>120 changer taille des vecteurs
-!     NONDES: nombre d'ondes selectionnées  
-      DOUBLE PRECISION TONDES (120) 
+!     NONDES: nombre d'ondes selectionnées
+      DOUBLE PRECISION TONDES (120)
 !     facteurs nodaux u f + phase Vn:
       DOUBLE PRECISION UONDES(120),FONDES(120),VONDES(120)
 !     amplitude et phase des ondes hn gn pour les Nondes en chaque noeud frontière:
       DOUBLE PRECISION AHN(50,120) , PHN(50,120)
-!     Indices noeud frontière maritime et nombre d'ondes + nbr de noeuds frontires maritime et 
+!     Indices noeud frontière maritime et nombre d'ondes + nbr de noeuds frontires maritime et
 !     d'ondes:
       INTEGER NPTFRL,IPTFRL,NPTFRLM,IONDES,NONDES,NSPECTR,NFO1
       INTEGER YY,MM,DAY,HOUR,MINU,SEC,AJUL,BJUL
 
 !
-      DOUBLE PRECISION NIVM(50)        
+      DOUBLE PRECISION NIVM(50)
       DOUBLE PRECISION PROF(NPOIN)
 !
 
-      SAVE AHN, PHN    
+      SAVE AHN, PHN
 !
 !GB****************************************************
 !GB     FIN DES DECLARATIONS SUPPLEMENTAIRES
@@ -550,7 +550,7 @@
       X=>MESH%X%R
       Y=>MESH%Y%R
 !
-      
+
       NFO1=T2D_FILES(T2DFO1)%LU
       MSK1 = 1
 !
@@ -560,7 +560,7 @@
         DO K=1,NFRLIQ
           YADEB(K)=0
         ENDDO
-      ENDIF                                                            
+      ENDIF
 !--------------------------------------------------------------------
 ! L'amplitude de la maree est representee par une somme d'harmonique
 ! Nondes= nombre d'ondes, donnees lue ds fichier 26
@@ -595,21 +595,21 @@
 ! 26 ou NF01
       REWIND NFO1
 ! 27 o NF02
-       
+
 
 
       READ(NFO1,*) NSPECTR
-      
+
       READ(NFO1,*) NONDES
-      
+
       DO IONDES =1,NONDES
         READ (NFO1,*) TONDES(IONDES)
       ENDDO
-      
+
       DO IONDES =NONDES+1,NSPECTR
         READ (NFO1,*) TONDES(IONDES)
       ENDDO
-       
+
 !
 
 !     plus utilise pour le moment
@@ -617,18 +617,18 @@
 !
 !         READ(27,*)
 !         READ(27,*)   NIVM(IPTFRL), ALF
-         
-         
+
+
         IONDES=1
-         
+
 
 !      Lecture des Hn et gn des Nondes pour les differents noeuds frontières
         READ(NFO1,*)
-        
+
         DO IONDES =1,NONDES
           READ(NFO1,777) AHN(IPTFRL,IONDES),PHN(IPTFRL,IONDES)
         ENDDO
- 
+
         DO IONDES =NONDES+1,NSPECTR
           READ(NFO1,777) AHN(IPTFRL,IONDES),PHN(IPTFRL,IONDES)
         ENDDO
@@ -639,23 +639,23 @@
 !
 ! les phases sont calcul�es de mani�re � se recaler en temps par rapport
 ! au 06 avril 1999 22h (t=0 simu, TU)
-    
+
 
 
 !  Etape 2 calcul de un, fn, Vn
 ! ----------------------------------------------------------------
-! ----------------------------------------------------------------      
+! ----------------------------------------------------------------
 !        Definition de la date
 !-----------------------------------------------------------------
 ! -------------------------------------------------------------------
 !       year
         YY=1999
-!       MONTH 
+!       MONTH
         MM=4
-! DAY 
+! DAY
         DAY=8
         HOUR=22
-        MINU=0 
+        MINU=0
         SEC=0
 !---------------------------------------------------------------
 !         passage en calendrier Julien JD et temps universel Tuniv
@@ -676,11 +676,11 @@
         BJUL=2.D0-AJUL+DINT(AJUL4)
 !       reutilsation des var y100, ajul4
 
-        Y100=365.25D0*YY 
+        Y100=365.25D0*YY
         AJUL4=30.6001D0*(MM+1)
 
         JD= DINT(Y100)+DINT(AJUL4)+DD +1720994.5D0+BJUL
-        
+
         TUNIV=(JD-2415020.5D0)/36525.D0
 !-------------------------------------------------------
 !           calcul des variables fondamentales des astres
@@ -693,15 +693,15 @@
         TLUN=DMOD(15.D0*HT+HSUN-SLUN,360.D0)
         PLUN=DMOD(334.3853D0+4069.034D0*TUNIV
      &           -0.0103D0*TUNIV**2.D0,360.D0)
-  
+
         NLUN=DMOD(100.8432D0+1934.142D0*TUNIV
-     &           -0.0021D0*TUNIV**2.D0,360.D0) 
+     &           -0.0021D0*TUNIV**2.D0,360.D0)
         PSUN=DMOD(281.2209D0+1.7192D0*TUNIV
-     &           +0.0005D0*TUNIV**2.D0,360.D0)    
+     &           +0.0005D0*TUNIV**2.D0,360.D0)
 !-----------------------------------------------
 ! Calcul des un , facteurs nodaux de phases
 !    M2,S2,N2,M4,K2,O1,K1,MN4,M3,2N2,MS4,P1,Q1,MU2
-!       M2             
+!       M2
         UONDES(1)=2.1D0*DSIN(PI*NLUN/180.D0)
 !       S2
         UONDES(2)=0.D0
@@ -723,34 +723,34 @@
         UONDES(12)=0.D0
         UONDES(13)=-10.8D0*DSIN(PI*NLUN/180.D0)
         UONDES(14)=2.1D0*DSIN(PI*NLUN/180.D0)
-!       do IONDES =1,NONDES 
+!       do IONDES =1,NONDES
 !       do IONDES =NONDES+1,NSPECTR
 !         print *,IONDES, Tondes(IONDES)
 !       enddo
-                             
+
 
 ! Calcul de VN phase de l 'astre perturbateur
-             
-            
 
-        IONDES=1 
 
-        VONDES (1)=MOD(2.D0*TLUN,360.D0) 
-        VONDES (2)=MOD(2.D0*TLUN+2.D0*SLUN-2.D0*HSUN,360.D0) 
-        VONDES (3)=MOD(2.D0*TLUN-SLUN+PLUN,360.D0) 
-        VONDES (4)=MOD(4.D0*TLUN,360.D0) 
-        VONDES (5)=MOD(2.D0*TLUN+2.D0*SLUN,360.D0) 
-        VONDES (6)=MOD(TLUN-SLUN,360.D0) 
-        VONDES (7)=MOD(TLUN+SLUN,360.D0) 
-        VONDES (8)=MOD(4.D0*TLUN-SLUN+PLUN,360.D0) 
-        VONDES (9)=MOD(3.D0*TLUN,360.D0) 
-        VONDES (10)=MOD(2.D0*TLUN-2.D0*SLUN+2.D0*PLUN,360.D0) 
-        VONDES (11)=MOD(4.D0*TLUN+2.D0*SLUN-2.D0*HSUN,360.D0) 
-        VONDES (12)=MOD(TLUN+SLUN-2.D0*HSUN,360.D0) 
-        VONDES (13)=MOD(TLUN-2.D0*SLUN+PLUN,360.D0) 
+
+        IONDES=1
+
+        VONDES (1)=MOD(2.D0*TLUN,360.D0)
+        VONDES (2)=MOD(2.D0*TLUN+2.D0*SLUN-2.D0*HSUN,360.D0)
+        VONDES (3)=MOD(2.D0*TLUN-SLUN+PLUN,360.D0)
+        VONDES (4)=MOD(4.D0*TLUN,360.D0)
+        VONDES (5)=MOD(2.D0*TLUN+2.D0*SLUN,360.D0)
+        VONDES (6)=MOD(TLUN-SLUN,360.D0)
+        VONDES (7)=MOD(TLUN+SLUN,360.D0)
+        VONDES (8)=MOD(4.D0*TLUN-SLUN+PLUN,360.D0)
+        VONDES (9)=MOD(3.D0*TLUN,360.D0)
+        VONDES (10)=MOD(2.D0*TLUN-2.D0*SLUN+2.D0*PLUN,360.D0)
+        VONDES (11)=MOD(4.D0*TLUN+2.D0*SLUN-2.D0*HSUN,360.D0)
+        VONDES (12)=MOD(TLUN+SLUN-2.D0*HSUN,360.D0)
+        VONDES (13)=MOD(TLUN-2.D0*SLUN+PLUN,360.D0)
         VONDES (14)=MOD(2.D0*TLUN-4.D0*SLUN+4.D0*HSUN,360.D0)
-          
-               
+
+
 
 ! Calcul des fn, facteurs nodaux en amplitudes
         DO IONDES =1,NONDES
@@ -772,23 +772,23 @@
         FONDES (9)=1.D0-0.056D0*DCOS(PI*NLUN/180.D0)
         FONDES(10)=1.0D0-0.037D0*DCOS(PI*NLUN/180.D0)
         FONDES(11)=1.0D0-0.037D0*DCOS(PI*NLUN/180.D0)
-        
+
         FONDES(13)=1.009D0+0.187D0*DCOS(PI*NLUN/180.D0)
         FONDES(14)=1.0D0-0.037D0*DCOS(PI*NLUN/180.D0)
 
-!       do IONDES =1,NONDES 
+!       do IONDES =1,NONDES
 !         do IONDES =NONDES+1,NSPECTR
 !        print *,IONDES, Vondes(IONDES),fondes(Iondes),
-!     * uondes(Iondes) 
+!     * uondes(Iondes)
 !       enddo
 ! calcul des dephasages gn-Vn-un
 
-            
+
         DO IONDES=1,NONDES
           PHN(IPTFRL,IONDES) = (PHN(IPTFRL,IONDES)-UONDES(IONDES)
      &            -VONDES(IONDES)) / 360.D0
         ENDDO
-! ----------------------------------------------------------------------           
+! ----------------------------------------------------------------------
 
 
 !
@@ -824,19 +824,19 @@
               PROF(K)=PROF(K)+AHN(IPTFRL,IONDES)*FONDES(IONDES)
      &        *COS(2.D0*PI*(TEMPS/TONDES(IONDES)-PHN(IPTFRL,IONDES)))
             ENDDO
-!           ajout du niveau moyen et de la bathy     
+!           ajout du niveau moyen et de la bathy
 !           HBOR(K) = -ZF(NBOR(K)) + NIVM(IPTFRL) + PROF(K)+0.312d0
-            HBOR(K) = -ZF(NBOR(K)) + 0.2D0+ PROF(K)    
+            HBOR(K) = -ZF(NBOR(K)) + 0.2D0+ PROF(K)
 !
 !GB
             IPTFRL=IPTFRL+1
         ENDIF
-     
+
 !
 !NC...On n'impose pas les vitesses
-!                                                                    
-!      IF(LIUBOR(K).EQ.KENTU) THEN                        
-!                                        
+!
+!      IF(LIUBOR(K).EQ.KENTU) THEN
+!
 !      UM2 = AUM2(IPTFRL) * COS(2.D0*PI*(TEMPS/TM2-PUM2(IPTFRL)))
 !      US2 = AUS2(IPTFRL) * COS(2.D0*PI*(TEMPS/TS2-PUS2(IPTFRL)))
 !      UN2 = AUN2(IPTFRL) * COS(2.D0*PI*(TEMPS/TN2-PUN2(IPTFRL)))
@@ -854,7 +854,7 @@
 !XC     ENDIF
 !
 !      IPTFRL=IPTFRL+1
-!      ENDIF   
+!      ENDIF
 !
 !=====================================================
 !
@@ -897,8 +897,8 @@
 !         PRINT*,'H%R(NBOR(K))=',H%R(NBOR(K))
         ENDIF
 !
-      ENDDO   
-!                                                                         
+      ENDDO
+!
 !!
 !-----------------------------------------------------------------------
 !
@@ -924,7 +924,7 @@
       IF(NFRLIQ.NE.0) THEN
 !
         DO IFRLIQ = 1 , NFRLIQ
-!       
+!
           IF(NDEBIT.NE.0) THEN
             IF(NDEBIT.GE.IFRLIQ) THEN
               IF(NCSIZE.GT.1) YADEB(IFRLIQ)=P_IMAX(YADEB(IFRLIQ))
@@ -947,7 +947,7 @@
               CALL PLANTE(1)
               STOP
             ENDIF
-!         
+!
           ENDIF
 !
 !
@@ -960,7 +960,7 @@
       IF(NCSIZE.GT.1) CALL PARCOM_BORD(HBOR,1,MESH)
 !
 !MB===============================================================
-!                                                               
-      RETURN                                                   
+!
+      RETURN
       END
 

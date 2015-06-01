@@ -30,7 +30,7 @@
 !history  C. GOEURY (EDF R&D LNHE)
 !+        25/07/2013
 !+        V6P3
-!+   Sum of HAP in oilspills has been added.  
+!+   Sum of HAP in oilspills has been added.
 !
 !history  J-M HERVOUET EDF R&D, LNHE)
 !+        02/01/2014

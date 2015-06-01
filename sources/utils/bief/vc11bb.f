@@ -140,7 +140,7 @@
         W3(IELEM)=(14*G3+5*G2+5*G1)*AUX*XSU216
         W4(IELEM)=(G3+G2+G1)       *AUX*XSUR18
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -163,7 +163,7 @@
         W3(IELEM)=AUX*(14*G3+5*G2+5*G1)*XSU216
         W4(IELEM)=AUX*(G3+G2+G1)       *XSUR18
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !
@@ -213,7 +213,7 @@
      &   Y3+Y2)*G1-(Y3-2*Y2)*G2+3*G3*Y2+6*G4*Y2)*F3+3*((Y3-Y2)
      &   *G1+G3*Y2-G2*Y3)*F4)*XSUR72
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -243,7 +243,7 @@
      &   6*G4+3*G2+G1)*X3-(G3-G1)*X2)*F2-3*((G3-G1)*X2-(G2-G1)*
      &   X3)*F4)*XSUR72
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSE
 !

@@ -67,7 +67,7 @@
       WRITE(LU,*) 'ERROR IN FUNCTION EOF (BIEF) ERROR IN BACKSPACE'
       WRITE(LU,*) 'AFTER A CORRECT READ, COMPILER ERROR ?'
       WRITE(LU,*) 'A TENTATIVE BIEF_EOF=.TRUE. IS RETURNED'
-      BIEF_EOF=.TRUE.    
+      BIEF_EOF=.TRUE.
 !
 !-----------------------------------------------------------------------
 !

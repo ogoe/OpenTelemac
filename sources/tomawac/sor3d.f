@@ -124,13 +124,13 @@
       ENDDO
 !
       SORLEO(NF+1)=.TRUE.
-      TEXTE(NF+1)='DEPTH                           ' 
+      TEXTE(NF+1)='DEPTH                           '
       TEXTE(NF+2)='CURRENT-WIND                    '
       IF(COURAN.OR.VENT) THEN
-        SORLEO(NF+2)=.TRUE.        
+        SORLEO(NF+2)=.TRUE.
       ELSE
-        SORLEO(NF+2)=.FALSE.     
-      ENDIF     
+        SORLEO(NF+2)=.FALSE.
+      ENDIF
 !
 !     CREATES THE DATA FILE USING A GIVEN FILE FORMAT
 !     THE DATA ARE CREATED IN THE FILE: NRES, AND IS
@@ -149,7 +149,7 @@
       CALL WRITE_MESH(BINR3D,     ! RESULTS FILE FORMAT
      &                NR3D,       ! LU FOR RESULTS FILE
      &                MESH3D,
-     &                NPLAN,      ! NUMBER OF PLANES 
+     &                NPLAN,      ! NUMBER OF PLANES
      &                DATE,       ! START DATE
      &                TIME)       ! START TIME
 !
@@ -171,7 +171,7 @@
      &                NPOIN2*NPLAN,ISTAT)
       ENDDO
 !
-!     WRITES DEPTH 
+!     WRITES DEPTH
 !
       IF(MAREE) THEN
         DO I=1,NPOIN2

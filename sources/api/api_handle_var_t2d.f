@@ -8,7 +8,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       MODULE API_HANDLE_VAR_T2D
-        
+
         USE API_HANDLE_ERROR_T2D
         USE API_INSTANCE_T2D
         ! Size of the string containing the name of a variable
@@ -20,15 +20,15 @@
         ! The maximum number of variable
 !TODO: Update nb_var_t2d to real value + update all fonctions
         INTEGER, PARAMETER :: NB_VAR_T2D=100
-!  
+!
       CONTAINS
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF GET A DOUBLE VARIABLE FROM TELEMAC2D
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,7 +38,7 @@
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_DOUBLE_T2D_D
@@ -91,15 +91,15 @@
           IERR = UNKNOWN_VAR_ERROR
           ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
         ENDIF
-!        
+!
       END SUBROUTINE GET_DOUBLE_T2D_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF DEFINES THE VALUE OF A DOUBLE VARIABLE OF TELEMAC2D
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,7 +109,7 @@
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_DOUBLE_T2D_D
@@ -154,15 +154,15 @@
           IERR = UNKNOWN_VAR_ERROR
           ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
         ENDIF
-!        
+!
       END SUBROUTINE SET_DOUBLE_T2D_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF GET AN INTEGER VARIABLE FROM TELEMAC2D
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -172,7 +172,7 @@
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_INTEGER_T2D_D
@@ -216,15 +216,15 @@
             IERR = UNKNOWN_VAR_ERROR
             ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
           ENDIF
-!        
+!
       END SUBROUTINE GET_INTEGER_T2D_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF DEFINES THE VALUE OF AN INTEGER VARIABLE OF TELEMAC2D
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -234,7 +234,7 @@
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_INTEGER_T2D_D
@@ -261,15 +261,15 @@
             IERR = UNKNOWN_VAR_ERROR
             ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
           ENDIF
-!        
+!
       END SUBROUTINE SET_INTEGER_T2D_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF GET A STRING VARIABLE FROM TELEMAC2D
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -279,7 +279,7 @@
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_STRING_T2D_D
@@ -297,18 +297,18 @@
           VALUE = ""
           IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
             I = INST%T2DRES
-            DO J = 1,144 
-              VALUE(J:J) = INST%T2D_FILES(I)%NAME(J:J) 
+            DO J = 1,144
+              VALUE(J:J) = INST%T2D_FILES(I)%NAME(J:J)
             ENDDO
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.BCFILE') THEN
             I = INST%T2DCLI
-            DO J = 1,144 
-              VALUE(J:J) = INST%T2D_FILES(I)%NAME(J:J) 
+            DO J = 1,144
+              VALUE(J:J) = INST%T2D_FILES(I)%NAME(J:J)
             ENDDO
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.GEOMETRYFILE') THEN
             I = INST%T2DGEO
-            DO J = 1,144 
-              VALUE(J:J) = INST%T2D_FILES(I)%NAME(J:J) 
+            DO J = 1,144
+              VALUE(J:J) = INST%T2D_FILES(I)%NAME(J:J)
             ENDDO
           ELSE IF(TRIM(VARNAME).EQ.'XXX') THEN
             VALUE = ""
@@ -316,15 +316,15 @@
             IERR = UNKNOWN_VAR_ERROR
             ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
           ENDIF
-!        
+!
       END SUBROUTINE GET_STRING_T2D_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF DEFINES THE VALUE OF A STRING VARIABLE OF TELEMAC2D
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -334,7 +334,7 @@
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_STRING_T2D_D
@@ -355,20 +355,20 @@
               INST%T2D_FILES(I)%NAME(J:J) = VALUE(J)
             ENDDO
           ELSE IF(TRIM(VARNAME).EQ.'XXX') THEN
-            IERR = 1 
+            IERR = 1
           ELSE
             IERR = UNKNOWN_VAR_ERROR
             ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
           ENDIF
-!        
+!
       END SUBROUTINE SET_STRING_T2D_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF GET A BOOLEAN VARIABLE FROM TELEMAC2D
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -378,7 +378,7 @@
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_BOOLEAN_T2D_D
@@ -402,15 +402,15 @@
             IERR = UNKNOWN_VAR_ERROR
             ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
           ENDIF
-!        
+!
       END SUBROUTINE GET_BOOLEAN_T2D_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF DEFINES THE VALUE OF A BOOLEAN VARIABLE OF TELEMAC2D
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -420,7 +420,7 @@
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_BOOLEAN_T2D_D
@@ -443,26 +443,26 @@
             IERR = UNKNOWN_VAR_ERROR
             ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
           ENDIF
-!        
+!
       END SUBROUTINE SET_BOOLEAN_T2D_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF GET INFORMATIONS ON A VARIABLE OF TELEMAC2D
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE
-      !PARAM VARTYPE   [OUT]    TYPE OF THE VARIABLE 
+      !PARAM VARTYPE   [OUT]    TYPE OF THE VARIABLE
       !+                        (INTEGER, DOUBLE, STRING, BOOLEAN)
       !PARAM READONLY  [OUT]    0 IF THE VARIABLE IS READ ONLY
       !+                        1 IF IT IS WRITTABLE
-      !PARAM NDIM      [OUT]    NUMBER OF DIMENSION 
+      !PARAM NDIM      [OUT]    NUMBER OF DIMENSION
       !+                        (0 IF IT IS NOT AN ARRAY)
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_VAR_SIZE_T2D_D
@@ -478,7 +478,7 @@
         DIM1 = 0
         DIM2 = 0
         DIM3 = 0
-!       
+!
         IF(TRIM(VARNAME).EQ.'MODEL.HBOR') THEN
           DIM1 = INST%HBOR%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.UBOR') THEN
@@ -525,15 +525,15 @@
           IERR = UNKNOWN_VAR_ERROR
           ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
         ENDIF
-         
+
       END SUBROUTINE GET_VAR_SIZE_T2D_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF GET THE SIZE OF EACH DIMENSION OF A VARAIBLE
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -542,7 +542,7 @@
       !PARAM DIM1      [OUT]    SIZE OF THE FIRST DIMENSION
       !PARAM DIM2      [OUT]    SIZE OF THE SECOND DIMENSION
       !PARAM DIM3      [OUT]    SIZE OF THE THIRD DIMENSION
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_VAR_TYPE_T2D_D
@@ -557,7 +557,7 @@
           VARTYPE = ''
           READONLY = 0
           NDIM = 0
-!        
+!
           IF(TRIM(VARNAME).EQ.'MODEL.HBOR') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
@@ -654,17 +654,17 @@
       END SUBROUTINE GET_VAR_TYPE_T2D_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      !BRIEF GET A DESCRIPTION OF EACH VARIABLE 
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-      !                                                                
-      !HISTORY Y AUDOUIN (EDF R&D, LNHE)                                
-      !+       21/08/2013 
+      !BRIEF GET A DESCRIPTION OF EACH VARIABLE
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN (EDF R&D, LNHE)
+      !+       21/08/2013
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM VARNAME   [OUT]    LIST OF ALL THE VARIABLES
       !PARAM DICO_FILE [OUT]    LIST OF ALL THE DESCRIPTIONS
-      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL, 
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_VAR_LIST_T2D_D(VARNAME, VARINFO, IERR)
@@ -761,8 +761,8 @@
         VARINFO(I) = 'STRIKLER ON POINT'
 !
       END SUBROUTINE GET_VAR_LIST_T2D_D
-        
-         
+
+
 !
 !
       ! getter and setter for the boundaries

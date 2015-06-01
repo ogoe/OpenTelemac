@@ -41,7 +41,7 @@
       INTEGER IELEM
 !
 !-----------------------------------------------------------------------
-! 
+!
       DO IELEM = 1 , NELEM
         IX(IKLE(IELEM)) = IX(IKLE(IELEM)) + IW(IELEM)
       ENDDO

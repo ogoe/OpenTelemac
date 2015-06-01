@@ -243,11 +243,11 @@
       DATA TPXO_W(6,:) /0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 1.D0, 0.D0, 0.D0/
       DATA TPXO_W(7,:) /0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 1.D0, 0.D0/
       DATA TPXO_W(8,:) /0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 1.D0/
-      DATA TPXO_W(9,:) /-0.0379D0, 0.D0,0.D0,0.D0, 
+      DATA TPXO_W(9,:) /-0.0379D0, 0.D0,0.D0,0.D0,
      &                  0.30859D0,0.D0, 0.03289D0,0.D0/
-      DATA TPXO_W(10,:)/-0.03961D0,0.D0,0.D0,0.D0, 
+      DATA TPXO_W(10,:)/-0.03961D0,0.D0,0.D0,0.D0,
      &                  0.34380D0,0.D0, 0.03436D0,0.D0/
-      DATA TPXO_W(11,:)/ 0.00696D0,0.D0,0.D0,0.D0, 
+      DATA TPXO_W(11,:)/ 0.00696D0,0.D0,0.D0,0.D0,
      &                   0.15719D0,0.D0,-0.00547D0,0.D0/
       DATA TPXO_W(12,:)/ 0.02884D0,0.D0,0.D0,0.D0,
      &                  -0.05036D0,0.D0, 0.07424D0,0.D0/
@@ -968,7 +968,7 @@
       INTEGER INDEX(TPXO_NCMX),I
 !     53 CHANGED INTO 55 TO ADD M8 AND 2MK3
       DOUBLE PRECISION ARG(55),F(55),U(55)
-      DOUBLE PRECISION DTR 
+      DOUBLE PRECISION DTR
 !
 !     INDEX GIVES CORRESPONDENCE BETWEEN CONSTIT AND RICHARD'S SUBROUTINES
 !     IN CONSTIT   M2,S2,K1,O1,N2,P1,K2,q1,2N2,mu2,nu2,L2,t2,
@@ -1893,7 +1893,7 @@
 !
       PI = 4.D0*ATAN(1.D0)
       DTR = PI/180.D0
-      RTD = 180.D0/PI      
+      RTD = 180.D0/PI
 !
 !-----------------------------------------------------------------------
 !
@@ -2194,7 +2194,7 @@
             TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
           ENDDO
         ENDIF
-        IF( IERR.EQ.0 ) U(IPOIN) = 
+        IF( IERR.EQ.0 ) U(IPOIN) =
      &      PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
 !
           CALL INTERPT(VT,NCON,N,M,MASKV,TH_LIM,PH_LIM,
@@ -2205,7 +2205,7 @@
               TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)
             ENDDO
           ENDIF
-          IF( IERR.EQ.0 ) V(IPOIN) = 
+          IF( IERR.EQ.0 ) V(IPOIN) =
      &       PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
 !
 !     VELOCITY READ IN M/S
@@ -2226,10 +2226,10 @@
         ENDDO
         DEALLOCATE( UT,VT,ZCON,MASKU,MASKV )
         DEALLOCATE( LON,LAT )
-!      
+!
         IF(LNG.EQ.1) WRITE(LU,*) 'FIN DE L''INITIALISATION TPXO'
         IF(LNG.EQ.2) WRITE(LU,*) 'END OF TPXO INITIALISATION'
-!      
+!
         DEJA = .TRUE.
 !
       ENDIF
@@ -2269,8 +2269,8 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BOUNDARY_COLOUR|-->| AN INTEGER LINKED TO BOUNDARY POINTS
-!|                |   | BY DEFAULT THE LAST LINE OF BOUNDARY CONDITIONS 
-!|                |   | FILE, HENCE THE GLOBAL BOUNDARY NUMBER, BUT CAN 
+!|                |   | BY DEFAULT THE LAST LINE OF BOUNDARY CONDITIONS
+!|                |   | FILE, HENCE THE GLOBAL BOUNDARY NUMBER, BUT CAN
 !|                |   | BE CHANGED BY USER.
 !| CTIDE          |-->| COEFFICIENT TO CALIBRATE THE TIDAL RANGE
 !| CTIDEV         |-->| COEFFICIENT TO CALIBRATE THE VELOCITIES
@@ -2370,7 +2370,7 @@
 !     HERE DEFINED AS COMPLEX
 !     C_ID_MOD INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
 !
-      SAVE  
+      SAVE
 !
       INTRINSIC ATAN
 !
@@ -2378,7 +2378,7 @@
 !
       PI = 4.D0*ATAN(1.D0)
       DTR = PI/180.D0
-      RTD = 180.D0/PI      
+      RTD = 180.D0/PI
 !
 !-----------------------------------------------------------------------
 !
@@ -2898,7 +2898,7 @@
 !
       PI = 4.D0*ATAN(1.D0)
       DTR = PI/180.D0
-      RTD = 180.D0/PI      
+      RTD = 180.D0/PI
 !
 !-----------------------------------------------------------------------
 !

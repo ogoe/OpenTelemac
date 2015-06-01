@@ -38,7 +38,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CONSTFLOW      |<->|LOGICAL, CONSTANT FLOW DISCHARGE OR NOT 
+!| CONSTFLOW      |<->|LOGICAL, CONSTANT FLOW DISCHARGE OR NOT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

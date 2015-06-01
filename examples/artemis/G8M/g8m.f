@@ -4,7 +4,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 6.1 28/06/11  D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 6.1 28/06/11  D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -79,12 +79,12 @@
 !
       DOUBLE PRECISION PI
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
-      INTEGER IG              
+!     ----------------------------------------
+!
+! JCB :
+      INTEGER IG
       DOUBLE PRECISION R0,R1
 ! JCB
 !
@@ -110,12 +110,12 @@
       TETAP%R(:) = 0.D0
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
-      HB%R(:)    = 0.0D0 
+      HB%R(:)    = 0.0D0
 !
-! ------------ 
+! ------------
 ! VOS CONDITIONS AUX LIMITES :
-! ------------ 
-!                                                                                                                                           
+! ------------
+!
 ! PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
 !
 !      WRITE(6,*) 'TETAH=',TETAH
@@ -178,8 +178,8 @@
       END DO
 !---------
 !
-      RETURN                                                            
-      END                                                               
+      RETURN
+      END
 !                       *****************
                         SUBROUTINE ART_CORFON
 !                       *****************
@@ -224,11 +224,11 @@
       INTEGER I,II
 !
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
+!     ----------------------------------------
+!
+! JCB :
       INTEGER KK
       DOUBLE PRECISION ECHEL
 ! JCB
@@ -289,7 +289,7 @@
 !-------------------------------------------------------
 !
       RETURN
-      END                  
+      END
 !                    *****************
                      SUBROUTINE CORRXY
 !                    *****************

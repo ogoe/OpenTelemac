@@ -109,7 +109,7 @@
 !-----------------------------------------------------------------------
 !     LUMPS THE OFF-DIAGONAL TERMS
 !
-!     ONLY VERTICAL OF POINT, LUMPING ALL TERMS HAS BEEN TESTED, SEE 
+!     ONLY VERTICAL OF POINT, LUMPING ALL TERMS HAS BEEN TESTED, SEE
 !     LINE COMMENTED, BUT DOES NOT WORK (E.G. TRY SOLITARY WAVE)
 !
 !
@@ -153,7 +153,7 @@
 !         XAUX(I2,2)=XAUX(I2,2)+AX(IELEM,06) ! TERM 2-3
 !         XAUX(I3,2)=XAUX(I3,2)+AX(IELEM,06) ! TERM 3-2
 !         XAUX(I2,3)=XAUX(I2,3)+AX(IELEM,07) ! TERM 2-4
-!         XAUX(I4,1)=XAUX(I4,1)+AX(IELEM,07) ! TERM 4-2          
+!         XAUX(I4,1)=XAUX(I4,1)+AX(IELEM,07) ! TERM 4-2
           XAUX(I2,3)=XAUX(I2,3)+AX(IELEM,08) ! TERM 2-5
           XAUX(I5,1)=XAUX(I5,1)+AX(IELEM,08) ! TERM 5-2
 !         XAUX(I2,3)=XAUX(I2,3)+AX(IELEM,09) ! TERM 2-6
@@ -161,15 +161,15 @@
 !         XAUX(I3,3)=XAUX(I3,3)+AX(IELEM,10) ! TERM 3-4
 !         XAUX(I4,1)=XAUX(I4,1)+AX(IELEM,10) ! TERM 4-3
 !         XAUX(I3,3)=XAUX(I3,3)+AX(IELEM,11) ! TERM 3-5
-!         XAUX(I5,1)=XAUX(I5,1)+AX(IELEM,11) ! TERM 5-3                    
-          XAUX(I3,3)=XAUX(I3,3)+AX(IELEM,12) ! TERM 3-6                    
-          XAUX(I6,1)=XAUX(I6,1)+AX(IELEM,12) ! TERM 6-3                    
+!         XAUX(I5,1)=XAUX(I5,1)+AX(IELEM,11) ! TERM 5-3
+          XAUX(I3,3)=XAUX(I3,3)+AX(IELEM,12) ! TERM 3-6
+          XAUX(I6,1)=XAUX(I6,1)+AX(IELEM,12) ! TERM 6-3
 !         XAUX(I4,2)=XAUX(I4,2)+AX(IELEM,13) ! TERM 4-5
 !         XAUX(I5,2)=XAUX(I5,2)+AX(IELEM,13) ! TERM 5-4
 !         XAUX(I4,2)=XAUX(I4,2)+AX(IELEM,14) ! TERM 4-6
 !         XAUX(I6,2)=XAUX(I6,2)+AX(IELEM,14) ! TERM 6-4
 !         XAUX(I5,2)=XAUX(I5,2)+AX(IELEM,15) ! TERM 5-6
-!         XAUX(I6,2)=XAUX(I6,2)+AX(IELEM,15) ! TERM 6-5                  
+!         XAUX(I6,2)=XAUX(I6,2)+AX(IELEM,15) ! TERM 6-5
         ENDDO
       ELSEIF(TYPEXT.EQ.'0') THEN
 !       NOTHING TO DO (BUT WHAT'S THE USE OF AN ITERATIVE SOLVER ?)

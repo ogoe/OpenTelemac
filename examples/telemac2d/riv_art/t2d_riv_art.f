@@ -55,7 +55,7 @@
 !| NIT            |-->| NUMBER OF TIME STEPS
 !| NPLAN          |-->| NUMBER OF PLANES
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
-!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR
 !|                |   | ELEMENTS.
 !| SHZFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR LEVEL
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
@@ -117,12 +117,12 @@
       COEF2=COEF1/1.53**2
       DELTA=(RHO_EAU-RHO_OIL)/(RHO_EAU)
 !
-      IF(LT.EQ.100) THEN 
+      IF(LT.EQ.100) THEN
         NUM_GLO=0
         NUM_MAX=0
         NUM_LOC=0
         COORD_X=0.D0
-        COORD_Y=0.D0 
+        COORD_Y=0.D0
         NUM_MAX=INT(SQRT(REAL(NFLOT_MAX)))
         DO K=0,NUM_MAX-1
           DO J=0,NUM_MAX-1
@@ -165,7 +165,7 @@
               IF(ETAL.EQ.1)THEN
                 PARTICULES(NUM_LOC)%SURFACE=PI*COEF2*
      &               (DELTA*GRAV/(VOLDEV*NU2))**(1.D0/6.D0)
-     &               *VOLDEV/NFLOT_MAX 
+     &               *VOLDEV/NFLOT_MAX
               ELSEIF(ETAL.EQ.3)THEN
                 PARTICULES(NUM_LOC)%SURFACE = AREA
               ELSEIF(ETAL.EQ.2) THEN

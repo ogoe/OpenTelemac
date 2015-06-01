@@ -6,11 +6,11 @@
      & X,Y,ELTSEG,CE,IFABOR)
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.3                                      01/07/2013    
+! TELEMAC 2D VERSION 6.3                                      01/07/2013
 !
 !***********************************************************************
 !
-!brief 
+!brief
 !+     FUNCTION  : COMPUTE ALL THE FLUXES FOR INTERNAL INTERFACES USING
 !+                 HLLC FLUX.
 !
@@ -29,16 +29,16 @@
 !+        18/01/2015
 !+        V7P0
 !+      optimization (change place of Hydro Reconst)
-!+  
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  CE            |<-->|  FLUX  INCREMENTS AT INTERNAL FACES          |                          |
 ! |  ELTSEG        | -->|  SEGMENT NUMBERS PER ELEMENT                 |
-! |  G             | -->|  GRAVITY                                     |  
+! |  G             | -->|  GRAVITY                                     |
 ! |  NELEM         | -->|  NUMBER OF TOTAL ELEMENTS                    |
 ! |  NS            | -->|  NUMBER OF TOTAL MESH NODES                  |
 ! |  NSEG          | -->|  NUMBER OF TOTAL MESH EDGES                  |
-! |  NUBO          ! -->!  GLOBAL NUMBER OF EDGE EXTREMITIES           |    
+! |  NUBO          ! -->!  GLOBAL NUMBER OF EDGE EXTREMITIES           |
 ! !  VNOCL         | -->|  OUTWARD UNIT NORMALS                        |
 ! !                |    |   (2 FIRST COMPONENTS) AND                   |
 ! !                |    |   SEGMENT LENGTH  (THIRD COMPONENT)          |
@@ -47,9 +47,9 @@
 ! |  ZF            | -->|  BATHYMETRIES                                |
 ! !________________|____|______________________________________________|
 !
-!  MODE: -->( UNCHANGEABLE INPUT ),<--(OUTPUT),<-->(CHANGEABLE INPUT)   
+!  MODE: -->( UNCHANGEABLE INPUT ),<--(OUTPUT),<-->(CHANGEABLE INPUT)
 !-----------------------------------------------------------------------
-!     - CALLING SUBROUTINE(S) : RESOLU                             
+!     - CALLING SUBROUTINE(S) : RESOLU
 !
 !***********************************************************************
 !
@@ -57,7 +57,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!     
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NS,NSEG,NELEM
@@ -67,11 +67,11 @@
       DOUBLE PRECISION, INTENT(IN)    :: X(NS),Y(NS)
       DOUBLE PRECISION, INTENT(IN)    :: G,W(3,NS)
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3)
-      INTEGER, INTENT(IN)             :: IFABOR(NELEM,3) 
+      INTEGER, INTENT(IN)             :: IFABOR(NELEM,3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NSG,NUBO1,NUBO2,IVAR,IS,IDRY,I,IEL  
+      INTEGER NSG,NUBO1,NUBO2,IVAR,IS,IDRY,I,IEL
 !
       DOUBLE PRECISION ZF1,ZF2,XNN,YNN,RNN
       DOUBLE PRECISION V21,V22,V31,V32
@@ -93,14 +93,14 @@
       EPS=1.E-6
       DEMI=0.5D0
       ROT =.TRUE.
-!     NO TRACER UNTIL NOW ... 
+!     NO TRACER UNTIL NOW ...
       PSI1 = 0.D0
-      PSI2 = 0.D0 
+      PSI2 = 0.D0
 !
 !-----------------------------------------------------------------------
 !
 ! INITIALIZATION OF CE
-!      
+!
       DO IS=1,3
         DO IVAR=1,NS
           CE(IVAR,IS) = 0.D0
@@ -115,10 +115,10 @@
 !
 !     LOOP OVER GLOBAL LIST OF EDGES
 !
-      DO IEL=1,NELEM 
+      DO IEL=1,NELEM
         DO I = 1,3
           IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
-            NSG = ELTSEG(IEL,I) 
+            NSG = ELTSEG(IEL,I)
 !    INDICATOR FOR DRY CELLS
             IDRY=0
 !    INITIALIZATION
@@ -142,12 +142,12 @@
 !    NORMAL COORDINATES NX, NY AND SEGMENT LENGTH
             XNN = VNOCL(1,NSG)
             YNN = VNOCL(2,NSG)
-            RNN = VNOCL(3,NSG) 
+            RNN = VNOCL(3,NSG)
 !    WATER DEPTH
             H1=W(1,NUBO1)
-            H2=W(1,NUBO2) 
+            H2=W(1,NUBO2)
 !
-!    VELOCITY COMPONENTS 
+!    VELOCITY COMPONENTS
 !
             IF(H1.GT.EPS)THEN
               V21 = W(2,NUBO1)/H1
@@ -157,9 +157,9 @@
               V31=0.D0
               IDRY=IDRY+1
             ENDIF
-!           
+!
             IF(H2.GT.EPS)THEN
-              V22 = W(2,NUBO2)/H2 
+              V22 = W(2,NUBO2)/H2
               V32 = W(3,NUBO2)/H2
             ELSE
               V22=0.0D0
@@ -188,10 +188,10 @@
 !
               HGZI = 0.5D0*RNN*(HIJ+H1)*(HIJ-H1)
               HGZJ = 0.5D0*RNN*(HJI+H2)*(HJI-H2)
-!             
+!
               HDXZ1 = G*XNN*HGZI
               HDYZ1 = G*YNN*HGZI
-!             
+!
               HDXZ2 = G*XNN*HGZJ
               HDYZ2 = G*YNN*HGZJ
 !
@@ -218,13 +218,13 @@
               CE(NUBO1,1) = CE(NUBO1,1) - RNN*FLX(1)
               CE(NUBO1,2) = CE(NUBO1,2) - RNN*FLX(2) + HDXZ1
               CE(NUBO1,3) = CE(NUBO1,3) - RNN*FLX(3) + HDYZ1
-!             
+!
               CE(NUBO2,1) = CE(NUBO2,1) + RNN*FLX(1)
               CE(NUBO2,2) = CE(NUBO2,2) + RNN*FLX(2) - HDXZ2
               CE(NUBO2,3) = CE(NUBO2,3) + RNN*FLX(3) - HDYZ2
             ENDIF
 !
-            YESNO(NSG)=.TRUE. 
+            YESNO(NSG)=.TRUE.
           ENDIF
         ENDDO
 !

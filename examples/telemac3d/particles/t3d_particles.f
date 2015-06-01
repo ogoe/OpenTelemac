@@ -375,7 +375,7 @@
 !| NIT            |-->| NUMBER OF TIME STEPS
 !| NPLAN          |-->| NUMBER OF PLANES
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
-!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR
 !|                |   | ELEMENTS.
 !| SHZFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR LEVEL
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
@@ -411,7 +411,7 @@
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH3D
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-! 
+!
       IF(LT.LE.600.AND.(10*(LT/10).EQ.LT.OR.LT.EQ.1)) THEN
         CALL ADD_PARTICLE(-220.D0,400.D0+LT/3.D0,259.D0+LT/100.D0,
      &                    LT,NFLOT,

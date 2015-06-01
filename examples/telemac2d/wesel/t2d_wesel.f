@@ -1,4 +1,4 @@
-            
+
 !===========================================================
 ! Wesel-Xanten, The Rhine River, Rhein-km 812.5 - 821.5
 !===========================================================
@@ -7,7 +7,7 @@
      &  (XLE,YLI,ZLI,XRI,YRI,ZRE,XM,YM,ZM,
      &   X,Y,ZS,ZF,IKLE,ELEM,NSEC,NPOIN2)
 
-      IMPLICIT NONE 
+      IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 
@@ -19,7 +19,7 @@
       DOUBLE PRECISION, INTENT(IN) :: X(NPOIN2), Y(NPOIN2),ZF(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: ZS(NPOIN2)
       INTEGER, INTENT(INOUT) :: IKLE(2*NSEC-2,3)
-      INTEGER, INTENT(INOUT) :: ELEM(NPOIN2) 
+      INTEGER, INTENT(INOUT) :: ELEM(NPOIN2)
       DOUBLE PRECISION, ALLOCATABLE :: SHP(:,:)
 
       INTEGER ISEC, I, IE
@@ -39,7 +39,7 @@
       END DO
 
       DO IE=1,2*NSEC-3,2
-        IKLE(IE,1)   = IE 
+        IKLE(IE,1)   = IE
         IKLE(IE,2)   = IE+1
         IKLE(IE,3)   = IE+2
         IKLE(IE+1,1) = IE+1
@@ -56,16 +56,16 @@
           N1 = IKLE(IE,1)
           N2 = IKLE(IE,2)
           N3 = IKLE(IE,3)
-          A1 = (X(I)-XM(N3))*(YM(N2)-YM(N3)) 
+          A1 = (X(I)-XM(N3))*(YM(N2)-YM(N3))
      &       - (Y(I)-YM(N3))*(XM(N2)-XM(N3))
-          A2 = (X(I)-XM(N1))*(YM(N3)-YM(N1)) 
+          A2 = (X(I)-XM(N1))*(YM(N3)-YM(N1))
      &       - (Y(I)-YM(N1))*(XM(N3)-XM(N1))
-          A3 = (X(I)-XM(N2))*(YM(N1)-YM(N2)) 
+          A3 = (X(I)-XM(N2))*(YM(N1)-YM(N2))
      &       - (Y(I)-YM(N2))*(XM(N1)-XM(N2))
           IF ((A1.GE.0.).AND.(A2.GE.0.).AND.(A3.GE.0.)) THEN
             SURDET = 1.0 / ((XM(N2)-XM(N1))*(YM(N3)-YM(N1)) -
      &                      (YM(N2)-YM(N1))*(XM(N3)-XM(N1)))
-            ELEM(I) = IE   
+            ELEM(I) = IE
             SHP(I,1) = A1 * SURDET
             SHP(I,2) = A2 * SURDET
             SHP(I,3) = A3 * SURDET
@@ -78,7 +78,7 @@
         IF (ELEM(I)==0) THEN
           WRITE (LU,*) 'SURFINI: POINT ',I,
      &        ' IS OUTSIDE THE DOMAIN FOR FREE SURFACE INITIALISATION'
-          ZS(I) = ZF(I) 
+          ZS(I) = ZF(I)
         ELSE
           N1 = IKLE(ELEM(I),1)
           N2 = IKLE(ELEM(I),2)
@@ -87,7 +87,7 @@
           A2 = SHP(I,2)
           A3 = SHP(I,3)
           ZS(I) = A1*ZM(N1) + A2*ZM(N2) + A3*ZM(N3)
-        ENDIF 
+        ENDIF
       END DO
 
       DEALLOCATE(SHP)
@@ -109,7 +109,7 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |                | -- |  
+! |                | -- |
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !***********************************************************************
@@ -127,8 +127,8 @@
       INTEGER I, IPOIN, NSEC,ITRAC,NFO1
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-! 
-      NFO1=T2D_FILES(T2DFO1)%LU 
+!
+      NFO1=T2D_FILES(T2DFO1)%LU
 !
 !-----------------------------------------------------------------------
 !
@@ -164,7 +164,7 @@
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
-!  ZONE A MODIFIER                                                      
+!  ZONE A MODIFIER
 
 !jaj free surface initialisation from a file and using surfini
 
@@ -173,12 +173,12 @@
       WRITE(LU,*) 'CONDIN: READING FREE SURFACE INITIALISATION FILE'
       WRITE(LU,*) 'CONDIN: NSEC = ',NSEC
       WRITE(LU,*) ' '
-      WRITE(LU,'(5(1X,A15))') 
+      WRITE(LU,'(5(1X,A15))')
      &    'XLEFT', 'YLEFT', 'XRIGHT', 'YRIGHT', 'WATER_LEVEL'
       DO I=1,NSEC
         READ(NFO1,*) T1%R(I), T2%R(I), T4%R(I), T5%R(I), T3%R(I)
         T6%R(I) = T3%R(I)
-        WRITE(LU,'(5(1X,G15.6))') 
+        WRITE(LU,'(5(1X,G15.6))')
      &     T1%R(I), T2%R(I), T4%R(I), T5%R(I), T3%R(I)
       END DO
       WRITE(LU,*) ' '
@@ -187,14 +187,14 @@
       CALL OS( 'X=C     ' , H , H  , H , COTINI )
 
       CALL SURFINI
-     & (T1%R, T2%R, T3%R, T4%R, T5%R, T6%R, 
-     &  T7%R, T8%R, T9%R, 
-     &  X, Y, H%R, ZF%R, 
+     & (T1%R, T2%R, T3%R, T4%R, T5%R, T6%R,
+     &  T7%R, T8%R, T9%R,
+     &  X, Y, H%R, ZF%R,
      &  IT1%I, IT2%I, NSEC, NPOIN)
 
       CALL OS( 'X=X-Y   ' , H , ZF , ZF , 0.D0 )
 
-!  FIN DE LA ZONE A MODIFIER      
+!  FIN DE LA ZONE A MODIFIER
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -569,7 +569,7 @@
         ENDDO
       ENDIF
 !
-      ENDDO ! K 
+      ENDDO ! K
 !
 !-----------------------------------------------------------------------
 !

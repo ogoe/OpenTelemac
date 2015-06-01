@@ -12,7 +12,7 @@
 !brief    ASSEMBLES 3D NON-ASSEMBLED FLUXES ON PLANES
 !+                THEN COMPUTES THE 2D SEGMENT FLUXES FOR EVERY PLANE.
 !+
-!+        
+!+
 !warning  For element 51 the result is summed on the vertical, and is
 !+        a 2D result (see correction_depth_3d where flux_ef_vf_3d is
 !+        called, otherwise this routine should not be called for
@@ -48,7 +48,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FLOW           |<--| FLUX
-!| IELM3          |-->| DISCRETISATION IN 3D 
+!| IELM3          |-->| DISCRETISATION IN 3D
 !|                |   | (41: PRISMS 51:PRISMS CUT INTO TETRAHEDRONS)
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| INIFLO         |-->| IF(YES) FLOW WILL BE INITIALISED AT 0.
@@ -69,8 +69,8 @@
 !| W3D            |-->| NON ASSEMBLED FLUXES LEAVING POINTS,PER PRISM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_FLUX_EF_VF_3D => FLUX_EF_VF_3D 
-      USE DECLARATIONS_TELEMAC, ONLY : TETRA  
+      USE BIEF, EX_FLUX_EF_VF_3D => FLUX_EF_VF_3D
+      USE DECLARATIONS_TELEMAC, ONLY : TETRA
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -178,7 +178,7 @@
      &                    MESH2D%IKLE%I,INIFLO,IOPT)
         ELSE
 !       INTERMEDIATE PLANE
-!         POINTS 4, 5 AND 6 OF LOWER LEVEL 
+!         POINTS 4, 5 AND 6 OF LOWER LEVEL
           N3=NELEM2*(IPLAN-2)
           DO IELEM=1,NELEM2
             W2D(IELEM,1)=W3D(N3+IELEM,4)
@@ -263,7 +263,7 @@
 !
 !         NOW TAKING CONTRIBUTIONS OF TETRAHEDRON K= 1, 2 AND 3
 !         OF LOWER AND UPPER LEVEL
-! 
+!
 !         LOWER LEVEL : POINTS 4,5,6 OF ORIGINAL PRISM CONTRIBUTE
 !
           IF(IPLAN.GT.1) THEN
@@ -273,10 +273,10 @@
 !             POINTS 1 TO 4
               DO L=1,4
 !               ORIGINAL NUMBER IN THE PRISM
-                IT=TETRA(S1,S2,S3,K,L)               
+                IT=TETRA(S1,S2,S3,K,L)
                 IF(IT.GE.4) THEN
                   W2D(IELEM,IT-3)=W2D(IELEM,IT-3)+W3D(IELEM3D,L)
-                ENDIF              
+                ENDIF
               ENDDO
             ENDDO
           ENDIF
@@ -290,10 +290,10 @@
 !             POINTS 1 TO 4
               DO L=1,4
 !               ORIGINAL NUMBER IN THE PRISM
-                IT=TETRA(S1,S2,S3,K,L)              
+                IT=TETRA(S1,S2,S3,K,L)
                 IF(IT.LE.3) THEN
                   W2D(IELEM,IT)=W2D(IELEM,IT)+W3D(IELEM3D,L)
-                ENDIF              
+                ENDIF
               ENDDO
             ENDDO
           ENDIF
@@ -308,18 +308,18 @@
           N2=(1+NPLAN-IPLAN)*NSEG2D
         ENDIF
 !
-      ENDDO 
+      ENDDO
 !
 !     HERE 2D FLUXES !!!!!!!!!!!!!
 !
       CALL FLUX_EF_VF(FLOW,W2D,NSEG2D,NELEM2,
      &                MESH2D%ELTSEG%I,MESH2D%ORISEG%I,
-     &                MESH2D%IKLE%I,INIFLO,IOPT)     
+     &                MESH2D%IKLE%I,INIFLO,IOPT)
 !
 !-----------------------------------------------------------------------
 !
       ELSE
-        WRITE(LU,*) 'UNEXPECTED ELEMENT TYPE IN FLUX_EF_VF_3D' 
+        WRITE(LU,*) 'UNEXPECTED ELEMENT TYPE IN FLUX_EF_VF_3D'
         CALL PLANTE(1)
         STOP
       ENDIF

@@ -26,9 +26,9 @@
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        09/05/2014
 !+        V7P0
-!+   Adding an allocation of BUF_SEND%I and BUF_RECV%I 
+!+   Adding an allocation of BUF_SEND%I and BUF_RECV%I
 !+   Adding an allocation of BUF_SENDI8 and BUF_RECVI8
-!+   for I4 and I8 integer communications.  
+!+   for I4 and I8 integer communications.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FAC              |<--| 1/(NUMBER OF NEIGHBOURING SUB-DOMAINS)
@@ -278,14 +278,14 @@
 !       ADDED FOR INTEGER I4 COMMUNICATIONS
 !
         ALLOCATE(MESH%BUF_SEND%I(IL*3*NB_NEIGHB))
-        ALLOCATE(MESH%BUF_RECV%I(IL*3*NB_NEIGHB))   
+        ALLOCATE(MESH%BUF_RECV%I(IL*3*NB_NEIGHB))
 !
 !       ADDED FOR INTEGER I8 COMMUNICATIONS
 !
         IF(MODASS.EQ.2) THEN
           ALLOCATE(MESH%BUF_SENDI8(IL*3*NB_NEIGHB))
           ALLOCATE(MESH%BUF_RECVI8(IL*3*NB_NEIGHB))
-        ENDIF       
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !

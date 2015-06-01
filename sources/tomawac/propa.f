@@ -59,11 +59,11 @@
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| NPOIN3         |-->| NPOIN2*NPLAN
-!| SHF            |-->| BARYCENTRIC COORDINATES ALONG F OF THE 
+!| SHF            |-->| BARYCENTRIC COORDINATES ALONG F OF THE
 !|                |   | NODES IN THEIR ASSOCIATED FREQUENCIES "FRE"
 !| SHP            |-->| BARYCENTRIC COORDINATES OF THE NODES IN
 !|                |   | THEIR ASSOCIATED 2D ELEMENT "ELT"
-!| SHZ            |-->| BARYCENTRIC COORDINATES ALONG TETA OF THE 
+!| SHZ            |-->| BARYCENTRIC COORDINATES ALONG TETA OF THE
 !|                |   | NODES IN THEIR ASSOCIATED LAYER "ETA"
 !| TRA01          |<->| WORK TABLE
 !| TRA02          |<->| WORK TABLE
@@ -111,7 +111,7 @@
           DO IPLAN=1,NPLAN
             DO I=1,NPOIN2
               I3=I+(IPLAN-1)*NPOIN2+(IFF-1)*NPOIN3
-              TRA02%R(I3)=F(I,IPLAN,IFF)*B(I,IFF) 
+              TRA02%R(I3)=F(I,IPLAN,IFF)*B(I,IFF)
             ENDDO
           ENDDO
         ENDDO
@@ -127,7 +127,7 @@
           DO IPLAN=1,NPLAN
             DO I=1,NPOIN2
               I3=I+(IPLAN-1)*NPOIN2
-              TRA02%R(I3)=F(I,IPLAN,IFF)*B(I,IFF) 
+              TRA02%R(I3)=F(I,IPLAN,IFF)*B(I,IFF)
             ENDDO
           ENDDO
         ENDIF
@@ -143,11 +143,11 @@
      &                   ITR01(2*NPOIN3+1:3*NPOIN3),
      &                   NPOIN3,
      &                   .TRUE.,
-!                      PERIODICITY 
+!                      PERIODICITY
      &                   COURAN)
 !                          4D
-!                                                        
-        IF(NCSIZE.GT.1) CALL PARCOM(T3_02,1,MESH3D)                    
+!
+        IF(NCSIZE.GT.1) CALL PARCOM(T3_02,1,MESH3D)
 !
 !       FINAL COMPUTATION OF F
 !
@@ -155,7 +155,7 @@
           DO I=1,NPOIN2
             I3=I+(IPLAN-1)*NPOIN2
 !           MAX(..,0.D0) SEEMS NECESSARY, WHERE F BECOMES < 0 ??
-            F(I,IPLAN,IFF)=MAX(T3_02%R(I3)/B(I,IFF),0.D0) 
+            F(I,IPLAN,IFF)=MAX(T3_02%R(I3)/B(I,IFF),0.D0)
           ENDDO
         ENDDO
 !

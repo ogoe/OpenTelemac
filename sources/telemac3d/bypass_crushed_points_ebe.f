@@ -16,10 +16,10 @@
 !+            THIS AVOIDS USELESS ITERATIONS.
 !+
 !+        The algorithm for prisms consists of several steps:
-!+ 
+!+
 !+        For every element in a vertical column, starting from bottom
 !+        to top:
-!+  
+!+
 !+        1) crossed fluxes going to or from a zero volume
 !+           are diverted through a vertical (up) + an upper horizontal
 !+           segment
@@ -220,7 +220,7 @@
 !          BECAUSE THE VOLUME OF THE POINT REMAINS ZERO)
 !         BUT SMALL MASS ERROR IF 3 FOLLOWING LINES ARE DELETED (WHY ?)
 !         HINT: THIS COEFFICIENTS ARE CHANGED BY PSI SCHEME AND
-!               AFTER THIS TREATMENT IT COULD BE THAT THEY NO 
+!               AFTER THIS TREATMENT IT COULD BE THAT THEY NO
 !               LONGER SUM TO 0 (BUT THIS CANNOT BE THE ONLY REASON,
 !               AS THE SAME BEHAVIOUR IS OBSERVED WITH N-SCHEME)
 !
@@ -255,7 +255,7 @@
         ENDIF
 !
         ENDDO
-      ENDDO   
+      ENDDO
 !
 !     UNGROUPS FLUXES
 !

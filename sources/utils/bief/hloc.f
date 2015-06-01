@@ -31,13 +31,13 @@
 ! history R. ATA
 !+         25/02/2012
 !+         V6P3
-!+   remove nubo and change by gloseg 
-!+   parallelization  
-!+ 
+!+   remove nubo and change by gloseg
+!+   parallelization
+!+
 !history R. ATA
 !+         25/05/2013
 !+         V6P3
-!+   clean unused variables and loop changed. 
+!+   clean unused variables and loop changed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRS           |-->| AREAS OF CELLS IN THE MESH.
@@ -55,7 +55,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF
-      USE BIEF, EX_HLOC => HLOC 
+      USE BIEF, EX_HLOC => HLOC
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -70,7 +70,7 @@
       DOUBLE PRECISION, INTENT(IN)   :: AIRS(NPOIN)
       DOUBLE PRECISION, INTENT(OUT)  :: DTHAUT(NPOIN)
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
-      INTEGER, INTENT(IN)            :: IFABOR(NELEM,3) 
+      INTEGER, INTENT(IN)            :: IFABOR(NELEM,3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -96,7 +96,7 @@
         YESNO(I)=.FALSE.
       ENDDO
 !
-      DO IELEM=1, NELEM 
+      DO IELEM=1, NELEM
         DO I = 1,3
           IF(.NOT.YESNO(ELTSEG(IELEM,I)))THEN
             NSG = ELTSEG(IELEM,I)

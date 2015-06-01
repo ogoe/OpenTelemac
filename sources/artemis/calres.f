@@ -54,7 +54,7 @@
 !
       PARAMETER (ZERO = 1.D-10)
       PARAMETER (PI = 3.1415926535897932384626433D0)
-      PARAMETER (RADDEG = 57.29577951D0)    
+      PARAMETER (RADDEG = 57.29577951D0)
 !
 !=======================================================================
 ! WAVE HEIGHT HHO <=> Hm0
@@ -62,11 +62,11 @@
 !
       CALL OS( 'X=N(Y,Z)', T1, PHIR, PHII , BID             )
       IF (COURANT) THEN
-!     WE USE WR (RELATIVE PULSATION) 
+!     WE USE WR (RELATIVE PULSATION)
         CALL OS( 'X=CY    ', X=T2   ,Y=WR, C=2.D0/GRAV)
         CALL OS( 'X=YZ    ', X=HHO  ,Y=T1, Z=T2 )
       ELSE
-!     WE USE OMEGA 
+!     WE USE OMEGA
         CALL OS( 'X=CY    ', X=HHO  ,Y=T1, C=2.D0*OMEGA/GRAV)
       ENDIF
 !
@@ -111,7 +111,7 @@
 !        PRIVE%ADR(4)%P%R(I) = T6%R(I)
 !       ENDDO
 !      ENDIF
- 
+
 !=======================================================================
 !
       RETURN

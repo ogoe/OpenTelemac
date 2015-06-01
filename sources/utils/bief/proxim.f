@@ -36,8 +36,8 @@
 !history  J-M HERVOUET (LNHE)
 !+        24/12/2013
 !+        V7P0
-!+   In parallel the distance between given points and points in the 
-!+   mesh must be now less than 1.D-8 instead of 1.D-4 (to avoid 
+!+   In parallel the distance between given points and points in the
+!+   mesh must be now less than 1.D-8 instead of 1.D-4 (to avoid
 !+   problems with subroutine ecrspe in Tomawac)
 !
 !history  J-M HERVOUET (LNHE)

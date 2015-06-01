@@ -70,7 +70,7 @@
 !
 !       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
         FCT(1:3)='SL('
-        IF(I.LT.10) THEN 
+        IF(I.LT.10) THEN
           WRITE(FCT(4:4),FMT='(I1)') I
           FCT(5:8)=')   '
         ELSEIF(I.LT.100) THEN
@@ -84,17 +84,17 @@
       ENDIF
 !
       IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
-! 
-!     PROGRAMMABLE PART                              
-!     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
-!                                                                             
-      PI = 3.141592653589D0                                             
-      PER=0.5D0                                            
+!
+!     PROGRAMMABLE PART
+!     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
+!
+      PI = 3.141592653589D0
+      PER=0.5D0
       WPLG=2.D0*PI/PER
       A=0.05D0
-      SL = 10.D0 + A*SIN(WPLG*AT)    
-! 
-      ENDIF           
+      SL = 10.D0 + A*SIN(WPLG*AT)
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -140,7 +140,7 @@
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!     
+!
       LOGICAL IMP,LEO
 !
       INTEGER LTT,N,IMAX
@@ -241,17 +241,17 @@
 78      FORMAT(1X,'PRERES : NOMBRE DE COURANT MAXIMUM :',G16.7)
 79      FORMAT(1X,'PRERES: MAXIMUM COURANT NUMBER: ',G16.7)
       ENDIF
-!           
+!
 !=======================================================================
-! CALCUL DE LA SOLUTION ANALYTIQUE                                       
+! CALCUL DE LA SOLUTION ANALYTIQUE
 !=======================================================================
-!  
+!
         PI = 3.141592653589D0
-        PER=0.5                                           
+        PER=0.5
         WPLG=2.*PI/PER
-        A=0.05    
-!                                                                           
-      IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN 
+        A=0.05
+!
+      IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN
         DO N = 1, NPOIN
           PHI = X(N)/SQRT(9.81*10.)
           B = (2.*PI*(AT-PHI))/PER
@@ -259,15 +259,15 @@
             PRIVE%ADR(1)%P%R(N) = 10.
           ELSE
             PRIVE%ADR(1)%P%R(N) = 10. + A*SIN(B)
-          ENDIF   
-        ENDDO    
-      ENDIF                                                         
+          ENDIF
+        ENDDO
+      ENDIF
 !
 !=======================================================================
 !
 1000  CONTINUE
       RETURN
-      END 
+      END
 !                       ***************************
                         SUBROUTINE NOMVAR_TELEMAC2D
 !                       ***************************
@@ -347,7 +347,7 @@
       TEXTE (20) = 'DRIFT ALONG X   M               '
       TEXTE (21) = 'DRIFT ALONG Y   M               '
       TEXTE (22) = 'COURANT NUMBER                  '
-      TEXTE (23) = 'SOLANAL                         '                   
+      TEXTE (23) = 'SOLANAL                         '
       TEXTE (24) = 'VARIABLE 24     UNIT   ??       '
       TEXTE (25) = 'VARIABLE 25     UNIT   ??       '
       TEXTE (26) = 'VARIABLE 26     UNIT   ??       '
@@ -546,12 +546,12 @@
      &                       //I_IN_2_LETTERS(I)
      &                       //'DEGRES          '
           MNEMO(32+2*(I-1)) = 'PHAS'//I_IN_2_LETTERS(I)//'  '
-        ENDDO 
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
-       
-       
+
+

@@ -39,19 +39,19 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !history  P.TASSI (EDF-LNHE)
 !+        30/05/2012
 !+        V6P2
-!+  Case DSTAR > 150 AC(I) = 0.045D0   
-!+   
+!+  Case DSTAR > 150 AC(I) = 0.045D0
+!+
 !
 !history  P.TASSI (EDF-LNHE)
 !+        06/07/2012
 !+        V6P2
-!+  Line MIXTE=.FALSE. added. 
+!+  Line MIXTE=.FALSE. added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
@@ -65,7 +65,7 @@
 !| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
 !| ES_SABLE       |<->| LAYER THICKNESSES OF SAND AS DOUBLE PRECISION
 !| ES_VASE        |<->| LAYER THICKNESSES OF MUD AS DOUBLE PRECISION
-!| FDM            |-->| DIAMETER DM FOR EACH CLASS 
+!| FDM            |-->| DIAMETER DM FOR EACH CLASS
 !| FRACSED_GF     |-->|(A SUPPRIMER)
 !| GRAV           |-->| ACCELERATION OF GRAVITY
 !| LGRAFED        |-->|(A SUPPRIMER)
@@ -74,14 +74,14 @@
 !| ES_SABLE       |<->| THICKNESS OF SAND LAYER (M)
 !| ES_VASE        |<->| THICKNESS OF MUD LAYER  (M)
 !| MIXTE          |<->| SEDIMENT MIXTE  (SABLE /VASE)
-!| NOMBLAY        |-->| NUMBER OF BED LAYERS 
+!| NOMBLAY        |-->| NUMBER OF BED LAYERS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NSICLA         |-->| NUMBER OF SEDIMENT CLASSES
 !| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT
 !| UNLADM         |-->| MEAN DIAMETER OF ACTIVE STRATUM LAYER
 !| VCE            |-->| WATER VISCOSITY
-!| XMVE           |-->| FLUID DENSITY 
-!| XMVS           |-->| WATER DENSITY 
+!| XMVE           |-->| FLUID DENSITY
+!| XMVS           |-->| WATER DENSITY
 !| XWC            |-->| SETTLING VELOCITY
 !| ZF             |-->| ELEVATION OF BOTTOM
 !| ZR             |-->| NON ERODABLE BED
@@ -172,7 +172,7 @@
             UNLADM%R(J)=MAX(UNLADM%R(J),0.D0)
           ENDDO
         ELSE
-!      
+!
           CALL INIT_MIXTE(XMVS,NPOIN,AVAIL,NSICLA,ES,
      &               ES_SABLE, ES_VASE, ELAY%R,
      &               NOMBLAY,CONC_VASE,MS_SABLE%R,
@@ -217,7 +217,7 @@
 !           CORRECTION 30/05/2012
 !           AC(I) = 0.055D0
             AC(I) = 0.045D0
-          ENDIF          
+          ENDIF
         ENDDO
       ENDIF
 !

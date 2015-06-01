@@ -53,7 +53,7 @@
 !
       CALL VECTOR(T3_06,'=','FLUBOR          ',IELBOR(IELM3,2),
      &            1.D0,SVIDE,SVIDE,SVIDE,UCONV,VCONV,SVIDE,
-     &            MESH3D,.TRUE.,MASK_3D%ADR(8)%P)          
+     &            MESH3D,.TRUE.,MASK_3D%ADR(8)%P)
 !
       CALL SUMVER(FLBOR%R,T3_06%R,NPOIN2,NPLAN,MESH2D%NPTFR)
 !
@@ -350,7 +350,7 @@
         CALL OS( 'X=0     ' , X=V )
         DO I=1,NPOIN3
           U%R(I) = -(Y(I)-10.05D0)
-          V%R(I) =  (X(I)-10.05D0) 
+          V%R(I) =  (X(I)-10.05D0)
         ENDDO
       ENDIF
 !
@@ -375,7 +375,7 @@
         ENDDO
       ENDIF
 !
-        
+
 !
 !-----------------------------------------------------------------------
 !   INITIALISES THE K-EPSILON MODEL (OPTIONAL)

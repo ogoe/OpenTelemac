@@ -70,7 +70,7 @@
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
         FCT(1:2)='Q('
-        IF(I.LT.10) THEN 
+        IF(I.LT.10) THEN
           WRITE(FCT(3:3),FMT='(I1)') I
           FCT(4:8)=')    '
         ELSEIF(I.LT.100) THEN
@@ -79,18 +79,18 @@
         ELSE
           STOP 'Q NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
         ENDIF
-        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I)) 
+        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
 !
       ENDIF
 !
       IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
-! 
-!     PROGRAMMABLE PART                              
-!     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
-!                                                                                                                                             
+!
+!     PROGRAMMABLE PART
+!     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
+!
       Q = DEBIT(I) * MIN( AT/10.D0 , 1.D0 )
-! 
-      ENDIF          
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -450,7 +450,7 @@
         ENDDO
       ENDIF
 !
-      ENDDO ! K 
+      ENDDO ! K
 !
 !-----------------------------------------------------------------------
 !
@@ -531,4 +531,4 @@
       RETURN
       END
 
-       
+

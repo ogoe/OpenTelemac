@@ -50,8 +50,8 @@
 !| DSM            |<->| EXTRAPOLATED GRADIENTS
 !| CORR           |<->| CORRECTION TO HAVE CONSERVATION
 !| DSZ            |<--| VARIATION OF Z FOR ORDRE 2
-!| DXIZ,DYIZ,DSP  |<->| WORKING TABLES 
-!| JV             |-->| NUMBER OF TRIANGLE IN WHICH IS LOCATED 
+!| DXIZ,DYIZ,DSP  |<->| WORKING TABLES
+!| JV             |-->| NUMBER OF TRIANGLE IN WHICH IS LOCATED
 !|                |   | THE INTERFACE MIDDLE POINT
 !| NS             |-->| TOTAL NUMER OF NODES IN THE MESH
 !| NSEG           |-->| TOTAL NUMER OF SEGMENTS IN THE MESH
@@ -73,7 +73,7 @@
       INTEGER, INTENT(IN)             :: NS,NT,NSEG
       INTEGER, INTENT(IN)             :: NU(NT,3),NUBO(2,NSEG),JV(*)
       DOUBLE PRECISION, INTENT(INOUT) :: DSZ(2,*)
-      INTEGER, INTENT(IN)             :: IFABOR(NT,3) 
+      INTEGER, INTENT(IN)             :: IFABOR(NT,3)
       INTEGER, INTENT(IN)             :: ELTSEG(NT,3)
       DOUBLE PRECISION, INTENT(IN)    :: X(NS),Y(NS),AIRT(NT),AIRS(NS)
       DOUBLE PRECISION, INTENT(INOUT) :: DXIZ(NS),DYIZ(NS)
@@ -90,7 +90,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      ! MINMOD LIMITER 
+      ! MINMOD LIMITER
       ! EXTRAPOLATION COEFFICIENT
       ILIM = 1
       BETA = 1.D0
@@ -102,9 +102,9 @@
       DSZ(1,1:NSEG)=(/(0.D0,I=1,NSEG)/)
       DSZ(2,1:NSEG)=(/(0.D0,I=1,NSEG)/)
 !
-!************************************************************************   
-!     THIS LOOP IS TO COMPUTE GRAD(Z) WITH EQUATION 5.2   
-!************************************************************************    
+!************************************************************************
+!     THIS LOOP IS TO COMPUTE GRAD(Z) WITH EQUATION 5.2
+!************************************************************************
       DO JT=1,NT
 !
         I1 = NU(JT,1)
@@ -132,17 +132,17 @@
       ENDIF
 !
       DO IS=1,NS
-        DXIZ(IS) = DXIZ(IS)/(3.D0*AIRS(IS))  ! DIVIDE BY SUM(|C_k|) 
-        DYIZ(IS) = DYIZ(IS)/(3.D0*AIRS(IS))  ! DIVIDE BY SUM(|C_k|) 
+        DXIZ(IS) = DXIZ(IS)/(3.D0*AIRS(IS))  ! DIVIDE BY SUM(|C_k|)
+        DYIZ(IS) = DYIZ(IS)/(3.D0*AIRS(IS))  ! DIVIDE BY SUM(|C_k|)
       ENDDO
-! ************************************************************************   
-!  GRAD(Z)_i IS NOW BUILT BY EQUATION 5.2      
-! ************************************************************************  
-!    REBUILDS BY INTERFACE 
+! ************************************************************************
+!  GRAD(Z)_i IS NOW BUILT BY EQUATION 5.2
+! ************************************************************************
+!    REBUILDS BY INTERFACE
 !
       DO NSG=1,NSEG
         FACT  = AIRST(1,NSG)! USEFUL FOR PARALLELISM
-!  
+!
         J     = JV(NSG) ! THIS THE TRIANGLE IN WHICH IS LOCATED CMI
         IF(NCSIZE.GT.1.AND.J.EQ.0)CYCLE  ! THAT MEANS CMI IS NOT LOCATED IN TRIANGLE J
         IF(J.EQ.0)THEN
@@ -164,7 +164,7 @@
 !
 !        NODE GRADIENTS (PM.GRAD(Z) eq 5.1 of audusse paper)
 !
-        GRADI = AIX*DXIZ(NUBO1) + AIY*DYIZ(NUBO1) 
+        GRADI = AIX*DXIZ(NUBO1) + AIY*DYIZ(NUBO1)
         GRADJ = AJX*DXIZ(NUBO2) + AJY*DYIZ(NUBO2)
 !
         I1 = NU(J,1)

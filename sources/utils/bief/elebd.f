@@ -195,8 +195,8 @@
             ENDIF
 !
           ENDIF
-        ENDDO ! IELEM 
-      ENDDO ! IFACE 
+        ENDDO ! IELEM
+      ENDDO ! IFACE
 !
 !     LOOP ON ALL THE POINTS:
 !
@@ -311,11 +311,11 @@
             NULONE(NELEB,1)=NULONE(K,1)
             NULONE(NELEB,2)=NULONE(K,2)
             IKLBOR(NELEB,1)=IKLBOR(K,1)
-            IKLBOR(NELEB,2)=IKLBOR(K,2)            
+            IKLBOR(NELEB,2)=IKLBOR(K,2)
           ENDIF
         ENDDO
       ELSE
-        NELEB=NPTFR       
+        NELEB=NPTFR
       ENDIF
 !
 !-----------------------------------------------------------------------

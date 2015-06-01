@@ -235,7 +235,7 @@
                 IR1=I1
                 QR1=Q(1)
                 IR2=I3
-                QR2=Q(3)               
+                QR2=Q(3)
               ELSE
 !               2 AND 3 GIVE TO 1
                 IG1=I2
@@ -292,7 +292,7 @@
               ZFCL_MS%ADR(I)%P%R(IR1)=ZFCL_MS%ADR(I)%P%R(IR1)
      &                               -QG1*AVAIL(IG1,1,I)
      &                               -QG2*AVAIL(IG2,1,I)
-            ENDDO            
+            ENDDO
 !
           ELSE
 !
@@ -306,11 +306,11 @@
      &                               +QR1*AVAIL(IG1,1,I)
               ZFCL_MS%ADR(I)%P%R(IR2)=ZFCL_MS%ADR(I)%P%R(IR2)
      &                               +QR2*AVAIL(IG1,1,I)
-            ENDDO                    
+            ENDDO
 !
           ENDIF
 !
-        ENDDO       
+        ENDDO
 !
 !       ADDING VOLUMES IN PARALLEL
 !

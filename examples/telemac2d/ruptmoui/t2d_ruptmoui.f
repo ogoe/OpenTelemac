@@ -79,7 +79,7 @@
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
 !  TO BE MODIFIED BY USER
-      DO I=1,NPOIN                                                   
+      DO I=1,NPOIN
 !
         IF(Y(I).GT.-0.1D0) THEN
           H%R(I) = 2.D0
@@ -87,7 +87,7 @@
           H%R(I) = 6.D0
         ENDIF
 !
-      ENDDO                                              
+      ENDDO
 !  END OF CODE TO BE MODIFIED BY USER
       ELSE
         IF(LNG.EQ.1) THEN
@@ -122,198 +122,198 @@
       END
 
 
-!                       *****************                               
-                        SUBROUTINE EXACTE                               
-!                       *****************                               
-!                                                                       
-     &(H,V,YG,YD,X,T)                                                   
-!                                                                       
+!                       *****************
+                        SUBROUTINE EXACTE
+!                       *****************
+!
+     &(H,V,YG,YD,X,T)
+!
 !***********************************************************************
-! PROGICIEL : TELEMAC        07/12/88    F. LEPEINTRE (LNH) 30 71 80 18 
-!                                                                       
+! PROGICIEL : TELEMAC        07/12/88    F. LEPEINTRE (LNH) 30 71 80 18
+!
 !***********************************************************************
-!                                                                       
-!     FONCTION  : SOLUTION EXACTE DE LA RUPTURE DE BARRAGE SUR          
-!                 FOND MOUILLE, DANS UN RECTANGLE.                      
-!                                                                       
-!     ATTENTION AUX CONVENTIONS :    ******                             
-!                                    *    *     ^                       
-!                                    *    *     |                       
-!                                    *    * JM  | X                     
-!                                    *    *     |                       
-!                                    *    *     |                       
-!                                    *    *     |                       
-!                                    ******     |                       
-!                                      IM                               
-!                                                                       
+!
+!     FONCTION  : SOLUTION EXACTE DE LA RUPTURE DE BARRAGE SUR
+!                 FOND MOUILLE, DANS UN RECTANGLE.
+!
+!     ATTENTION AUX CONVENTIONS :    ******
+!                                    *    *     ^
+!                                    *    *     |
+!                                    *    * JM  | X
+!                                    *    *     |
+!                                    *    *     |
+!                                    *    *     |
+!                                    ******     |
+!                                      IM
+!
 !-----------------------------------------------------------------------
-!                             ARGUMENTS                                 
-! .________________.____.______________________________________________ 
-! |      NOM       |MODE|                   ROLE                        
-! |________________|____|______________________________________________ 
-! |   H            |<-- | HAUTEUR D'EAU.                                
-! |   V            |<-- | VITESSE EXACTE.                               
-! |   YG           | -->| HAUTEUR D'EAU A GAUCHE DU BARRAGE.            
-! |   YD           | -->| HAUTEUR D'EAU A DROITE DU BARRAGE.            
-! |   X            | -->| COORDONNEES DES POINTS (BARRAGE EN 0.)        
-! |   T            | -->| TEMPS (DEPART A 0.)                           
-! |________________|____|______________________________________________ 
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE) 
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |   H            |<-- | HAUTEUR D'EAU.
+! |   V            |<-- | VITESSE EXACTE.
+! |   YG           | -->| HAUTEUR D'EAU A GAUCHE DU BARRAGE.
+! |   YD           | -->| HAUTEUR D'EAU A DROITE DU BARRAGE.
+! |   X            | -->| COORDONNEES DES POINTS (BARRAGE EN 0.)
+! |   T            | -->| TEMPS (DEPART A 0.)
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !-----------------------------------------------------------------------
-!                                                                       
-!   SOUS-PROGRAMMES APPELES : DEGRE3, FONCTION FC1                      
-!                                                                       
+!
+!   SOUS-PROGRAMMES APPELES : DEGRE3, FONCTION FC1
+!
 !***********************************************************************
-!                                                                       
-      IMPLICIT NONE                                                     
-!                                                                       
-      DOUBLE PRECISION T,G,YG,YD,CG,CD,FC1,H(21,81),X(21,81),V(21,81)   
-      DOUBLE PRECISION EPS,BG,BD,WR,URG,YRG,XC,XD,XE,XCOUR,CRG          
-!                                                                       
-      INTEGER IM,JM,ITMAX,NOEUD,I,J                                     
-!                                                                       
-      EXTERNAL FC1                                                     
-      COMMON /ICOEC1/ CG,CD                                             
-!                                                                       
+!
+      IMPLICIT NONE
+!
+      DOUBLE PRECISION T,G,YG,YD,CG,CD,FC1,H(21,81),X(21,81),V(21,81)
+      DOUBLE PRECISION EPS,BG,BD,WR,URG,YRG,XC,XD,XE,XCOUR,CRG
+!
+      INTEGER IM,JM,ITMAX,NOEUD,I,J
+!
+      EXTERNAL FC1
+      COMMON /ICOEC1/ CG,CD
+!
 !-----------------------------------------------------------------------
-!                                                                       
-!     CALCUL DES VALEURS INITIALES DE LA SITUATION THEORIQUE            
-!     ------------------------------------------------------            
+!
+!     CALCUL DES VALEURS INITIALES DE LA SITUATION THEORIQUE
+!     ------------------------------------------------------
 !
       IM=21
       JM=81
-!                                                                       
+!
       G=9.81D0
-      CG = SQRT(G*YG)                                                   
-      CD = SQRT(G*YD)                                                   
-!                                                                       
-!     VITESSE URG ET TIRANT D EAU YRG A GAUCHE DU RESSAUT:              
-!                                                                       
-      EPS    = 0.D0                                                     
-      BG     = CG                                                       
-      BD     = CD                                                       
-      ITMAX = 100                                                       
-!                                                                       
-      CALL ZBRENT(FC1,EPS,BG,BD,ITMAX)                                  
-!                                                                       
-      CRG = BD                                                          
-      WR  = (CRG/CD)*SQRT( (CRG**2+CD**2)/2.D0 )                        
-      URG = WR-(CD/CRG)*SQRT( (CRG**2+CD**2)/2.D0  )                    
-      YRG = CRG**2/G                                                    
-!                                                                       
-!     ---------------------------                                 
-!     |VIII) VALEURS THEORIQUES |                                 
-!     ---------------------------                                 
-!                                                                 
-!                                                                 
-!     DANS LE PLAN (X,T)                                          
-!     ON APPELLE C L'INTERSECTION A T AVEC X = -CG*T              
-!                D L'INTERSECTION A T AVEC X = (URG - CRG)*T      
-!                E L'INTERSECTION A T AVEC X =  WR*T              
-!                                    WR:VITESSE DU RESSAUT        
-!          A ET B LES LIMITES DU DOMAINE D'ETUDE                  
-!          A GAUCHE DE C , EAU IMMOBILE DE COTE YG                
-!          ENTRE C ET D , ONDE DE DETENTE                         
-!          ENTRE D ET E, EAU A VITESSE URG DE COTE (CRG**2)/G     
-!          A DROITE DE E , EAU IMMOBILE DE COTE YD                
-!                                                                 
-!     ABSCISSES DES POINTS C , D ET E                             
-      XC = -CG * T                                                
-      XD = (URG - CRG) * T                                        
-      XE = WR * T                                                 
-!                                                                 
-      DO NOEUD=1,JM                                           
-!                                                                 
-        XCOUR = X(1,NOEUD)                                       
-!                                                                
-        IF (XCOUR.LE.XC) THEN                                    
-!                                                                
-!         EN XCOUR LE NIVEAU EST DE YG                          
-          H(1,NOEUD)         = YG                               
-          V(1,NOEUD)         = 0.                               
+      CG = SQRT(G*YG)
+      CD = SQRT(G*YD)
+!
+!     VITESSE URG ET TIRANT D EAU YRG A GAUCHE DU RESSAUT:
+!
+      EPS    = 0.D0
+      BG     = CG
+      BD     = CD
+      ITMAX = 100
+!
+      CALL ZBRENT(FC1,EPS,BG,BD,ITMAX)
+!
+      CRG = BD
+      WR  = (CRG/CD)*SQRT( (CRG**2+CD**2)/2.D0 )
+      URG = WR-(CD/CRG)*SQRT( (CRG**2+CD**2)/2.D0  )
+      YRG = CRG**2/G
+!
+!     ---------------------------
+!     |VIII) VALEURS THEORIQUES |
+!     ---------------------------
+!
+!
+!     DANS LE PLAN (X,T)
+!     ON APPELLE C L'INTERSECTION A T AVEC X = -CG*T
+!                D L'INTERSECTION A T AVEC X = (URG - CRG)*T
+!                E L'INTERSECTION A T AVEC X =  WR*T
+!                                    WR:VITESSE DU RESSAUT
+!          A ET B LES LIMITES DU DOMAINE D'ETUDE
+!          A GAUCHE DE C , EAU IMMOBILE DE COTE YG
+!          ENTRE C ET D , ONDE DE DETENTE
+!          ENTRE D ET E, EAU A VITESSE URG DE COTE (CRG**2)/G
+!          A DROITE DE E , EAU IMMOBILE DE COTE YD
+!
+!     ABSCISSES DES POINTS C , D ET E
+      XC = -CG * T
+      XD = (URG - CRG) * T
+      XE = WR * T
+!
+      DO NOEUD=1,JM
+!
+        XCOUR = X(1,NOEUD)
+!
+        IF (XCOUR.LE.XC) THEN
+!
+!         EN XCOUR LE NIVEAU EST DE YG
+          H(1,NOEUD)         = YG
+          V(1,NOEUD)         = 0.
           CYCLE
-        ENDIF                                                    
-!                                                                
-        IF (XCOUR.LE.XD) THEN                                    
-!                                                                
-!         EN XCOUR POINT DE L'ONDE DE DETENTE                   
-          H(1,NOEUD) =   ((2./3.*CG-(XCOUR/(3.* T)))**2)/G      
-          V(1,NOEUD) = 2.*(CG - SQRT(G*H(1,NOEUD)))             
+        ENDIF
+!
+        IF (XCOUR.LE.XD) THEN
+!
+!         EN XCOUR POINT DE L'ONDE DE DETENTE
+          H(1,NOEUD) =   ((2./3.*CG-(XCOUR/(3.* T)))**2)/G
+          V(1,NOEUD) = 2.*(CG - SQRT(G*H(1,NOEUD)))
           CYCLE
-        ENDIF                                                    
-!                                                                
-        IF (XCOUR.LE.XE) THEN                                    
-!                                                                
-!         EN XCOUR TIRANT D'EAU EGAL TIRANT A GAUCHE DU RESSAUT 
-          H(1,NOEUD)= YRG                                       
-          V(1,NOEUD)= URG                                       
+        ENDIF
+!
+        IF (XCOUR.LE.XE) THEN
+!
+!         EN XCOUR TIRANT D'EAU EGAL TIRANT A GAUCHE DU RESSAUT
+          H(1,NOEUD)= YRG
+          V(1,NOEUD)= URG
           CYCLE
-        ENDIF                                                    
-!                                                                
-!       EN XCOUR TIRANT D'EAU EGAL TIRANT A DROITE DU RESSAUT    
-        H(1,NOEUD)         = YD                                  
-        V(1,NOEUD)         = 0.D0                                
-!                                                                 
-      ENDDO                                                    
-!                                                                       
-      DO J = 1,JM                                                   
-        DO I = 2,IM                                                   
+        ENDIF
+!
+!       EN XCOUR TIRANT D'EAU EGAL TIRANT A DROITE DU RESSAUT
+        H(1,NOEUD)         = YD
+        V(1,NOEUD)         = 0.D0
+!
+      ENDDO
+!
+      DO J = 1,JM
+        DO I = 2,IM
           H(I,J) = H(1,J)
           V(I,J) = V(1,J)
-        ENDDO                                                          
-      ENDDO                                                          
-!                                                                       
+        ENDDO
+      ENDDO
+!
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+      RETURN
+      END
 
-!                       *****************************                   
-                        DOUBLE PRECISION FUNCTION FC1                   
-!                       *****************************                   
-!                                                                       
-     &(X)                                                               
-!                                                                       
+!                       *****************************
+                        DOUBLE PRECISION FUNCTION FC1
+!                       *****************************
+!
+     &(X)
+!
 !***********************************************************************
-! PROGICIEL : TELEMAC        07/12/88    F. LEPEINTRE (LNH) 30 71 80 18 
-!                                                                       
+! PROGICIEL : TELEMAC        07/12/88    F. LEPEINTRE (LNH) 30 71 80 18
+!
 !***********************************************************************
-!                                                                       
-!     FONCTION  : FONCTION APPELEE PAR LE SOUS-PROGRAMME EXACTE         
-!                 DU CAS-TEST RUPTURE DE BARRAGE SUR FOND MOUILLE       
-!                                                                       
+!
+!     FONCTION  : FONCTION APPELEE PAR LE SOUS-PROGRAMME EXACTE
+!                 DU CAS-TEST RUPTURE DE BARRAGE SUR FOND MOUILLE
+!
 !-----------------------------------------------------------------------
-!                             ARGUMENTS                                 
-! .________________.____.______________________________________________ 
-! |      NOM       |MODE|                   ROLE                        
-! |________________|____|______________________________________________ 
-! |   X            | -->|                                               
-! |________________|____|______________________________________________ 
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE) 
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |   X            | -->|
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !-----------------------------------------------------------------------
-!                                                                       
+!
 !***********************************************************************
-!                                                                       
-      IMPLICIT NONE                                                     
-!                                                                       
-      DOUBLE PRECISION A0,A1,A2,A3,A4,A5,A6,CD,CG,X                     
-      COMMON /ICOEC1/ CG,CD                                             
-!                                                                       
+!
+      IMPLICIT NONE
+!
+      DOUBLE PRECISION A0,A1,A2,A3,A4,A5,A6,CD,CG,X
+      COMMON /ICOEC1/ CG,CD
+!
 !-----------------------------------------------------------------------
-!                                                                       
-      A6 =  1.D0                                                        
-      A5 =  0.D0                                                        
-      A4 = -9.D0*(CD**2)                                                
-      A3 = 16.D0*CG*(CD**2)                                             
-      A2 = -1.D0*(8.D0*(CG**2)*(CD**2)+CD**4)                           
-      A1 =  0.D0                                                        
-      A0 = CD**6                                                        
-!                                                                       
-      FC1 = A6*(X**6)+A4*(X**4)+A3*(X**3)+A2*(X**2)+A0                  
-!                                                                       
+!
+      A6 =  1.D0
+      A5 =  0.D0
+      A4 = -9.D0*(CD**2)
+      A3 = 16.D0*CG*(CD**2)
+      A2 = -1.D0*(8.D0*(CG**2)*(CD**2)+CD**4)
+      A1 =  0.D0
+      A0 = CD**6
+!
+      FC1 = A6*(X**6)+A4*(X**4)+A3*(X**3)+A2*(X**2)+A0
+!
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
+!
+      RETURN
       END
 
 
@@ -612,16 +612,16 @@
           T7%R(N) = SQRT(0.5D0*CF%R(N)*(U%R(N)**2+V%R(N)**2))
         ENDDO
       ENDIF
-!                                                                       
+!
 !=======================================================================
-! CALCUL DE LA VITESSE ET DE LA HAUTEUR EXACTE                          
+! CALCUL DE LA VITESSE ET DE LA HAUTEUR EXACTE
 !=======================================================================
-!                                                                       
-      IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN             
+!
+      IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN
         CALL EXACTE(VARSOR%ADR(23)%P%R,
      &              VARSOR%ADR(24)%P%R,6.D0,2.D0,Y,AT)
-      ENDIF 
-!                                                            
+      ENDIF
+!
 !=======================================================================
 !
 1000  CONTINUE
@@ -975,131 +975,131 @@
       RETURN
       END
 
-!                       *****************                               
-                        SUBROUTINE ZBRENT                               
-!                       *****************                               
-!                                                                       
-     &(FC1,EPS,X1,X2,ITMAX)                                             
-!                                                                       
+!                       *****************
+                        SUBROUTINE ZBRENT
+!                       *****************
+!
+     &(FC1,EPS,X1,X2,ITMAX)
+!
 !***********************************************************************
-! BIEF VERSION 3.0           18/08/94    J-M HERVOUET (LNH) 30 87 80 18 
-!                                                                       
+! BIEF VERSION 3.0           18/08/94    J-M HERVOUET (LNH) 30 87 80 18
+!
 !***********************************************************************
-!                                                                       
-!  FONCTION  :  SOLUTION D'UNE EQUATION DONT UN ZERO UNIQUE EST ENTRE   
-!               LES POINTS X1 ET X2.                                    
-!                                                                       
+!
+!  FONCTION  :  SOLUTION D'UNE EQUATION DONT UN ZERO UNIQUE EST ENTRE
+!               LES POINTS X1 ET X2.
+!
 !-----------------------------------------------------------------------
-!                             ARGUMENTS                                 
-! .________________.____.______________________________________________ 
-! |      NOM       |MODE|                   ROLE                        
-! |________________|____|______________________________________________ 
-! |   FC1          | -->| FONCTION DONT ON CHERCHE LE ZERO              
-! |                |    | DOIT ETRE DEFINIE EN DOUBLE PRECISION         
-! |                |    | PAR AILLEURS.                                 
-! |   EPS          | -->| PRECISION CHERCHEE.                           
-! |   X1,X2        | -->| ENCADREMENT DE LA SOLUTION ENTREE             
-! |                |<-->| X2 = SOLUTION EN SORTIE.                      
-! |   ITMAX        | -->| NOMBRE MAXIMUM D'ITERATIONS.                  
-! |________________|____|______________________________________________ 
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE) 
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |   FC1          | -->| FONCTION DONT ON CHERCHE LE ZERO
+! |                |    | DOIT ETRE DEFINIE EN DOUBLE PRECISION
+! |                |    | PAR AILLEURS.
+! |   EPS          | -->| PRECISION CHERCHEE.
+! |   X1,X2        | -->| ENCADREMENT DE LA SOLUTION ENTREE
+! |                |<-->| X2 = SOLUTION EN SORTIE.
+! |   ITMAX        | -->| NOMBRE MAXIMUM D'ITERATIONS.
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !-----------------------------------------------------------------------
-!                                                                       
-!  FONCTION APPELEE : FC1                                               
-!                                                                       
+!
+!  FONCTION APPELEE : FC1
+!
 !***********************************************************************
-!                                                                       
-      IMPLICIT NONE                                                     
-      INTEGER LNG,LU                                                    
-      COMMON/INFO/LNG,LU                                                
-!                                                                       
-      DOUBLE PRECISION A,B,C,D,E,X1,X2,FA,FB,FC,EPS,EPS2,XM,S,P,Q,R     
-!                                                                       
-      INTEGER ITMAX,ITER                                                
-!                                                                       
-      DOUBLE PRECISION FC1                                              
-      EXTERNAL FC1                                                      
-!                                                                       
-      INTRINSIC ABS,SIGN,MIN                                            
-!                                                                       
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+      DOUBLE PRECISION A,B,C,D,E,X1,X2,FA,FB,FC,EPS,EPS2,XM,S,P,Q,R
+!
+      INTEGER ITMAX,ITER
+!
+      DOUBLE PRECISION FC1
+      EXTERNAL FC1
+!
+      INTRINSIC ABS,SIGN,MIN
+!
 !-----------------------------------------------------------------------
-!                                                                       
-!  ON VERIFIE QU'ON ENCADRE BIEN LA SOLUTION :                          
-!                                                                       
-      A=X1                                                              
-      B=X2                                                              
-      FA=FC1(A)                                                         
-      FB=FC1(B)                                                         
-      IF(FB*FA.GT.0.D0) THEN                                            
+!
+!  ON VERIFIE QU'ON ENCADRE BIEN LA SOLUTION :
+!
+      A=X1
+      B=X2
+      FA=FC1(A)
+      FB=FC1(B)
+      IF(FB*FA.GT.0.D0) THEN
         IF (LNG.EQ.1) WRITE(LU,*) 'ZBRENT : FC1(X1)*FC1(X2) EST POSITIF'
         IF (LNG.EQ.2) WRITE(LU,*) 'ZBRENT : ROOT MUST BE BRACKETED'
         CALL PLANTE(1)
         STOP
-      ENDIF                                                             
-!                                                                       
-!  ITERATIONS :                                                         
-!                                                                       
-      FC=FB                                                             
-      DO ITER=1,ITMAX                                                
-        IF(FB*FC.GT.0.D0) THEN                                          
-          C=A                                                           
-          FC=FA                                                         
-          D=B-A                                                         
-          E=D                                                           
-        ENDIF                                                           
-        IF(ABS(FC).LT.ABS(FB)) THEN                                     
-          A=B                                                           
-          B=C                                                           
-          C=A                                                           
-          FA=FB                                                         
-          FB=FC                                                         
-          FC=FA                                                         
-        ENDIF                                                           
-        EPS2=0.5D0*EPS                                                  
-        XM=0.5D0*(C-B)                                                  
-        IF(ABS(XM).LE.EPS2.OR.FB.EQ.0.D0)THEN                           
-          X2=B                                                          
-          RETURN                                                        
-        ENDIF                                                           
-        IF(ABS(E).GE.EPS2.AND.ABS(FA).GT.ABS(FB)) THEN                  
-          S=FB/FA                                                       
-          IF(A.EQ.C) THEN                                               
-            P=2.D0*XM*S                                                 
-            Q=1.D0-S                                                    
-          ELSE                                                          
-            Q=FA/FC                                                     
-            R=FB/FC                                                     
-            P=S*(2.D0*XM*Q*(Q-R)-(B-A)*(R-1.D0))                        
-            Q=(Q-1.D0)*(R-1.D0)*(S-1.D0)                                
-          ENDIF                                                         
-          IF(P.GT.0.D0) Q=-Q                                            
-          P=ABS(P)                                                      
-          IF(2*P.LT.MIN(3.D0*XM*Q-ABS(EPS2*Q),ABS(E*Q))) THEN           
-            E=D                                                         
-            D=P/Q                                                       
-          ELSE                                                          
-            D=XM                                                        
-            E=D                                                         
-          ENDIF                                                         
-        ELSE                                                            
-          D=XM                                                          
-          E=D                                                           
-        ENDIF                                                           
-        A=B                                                             
-        FA=FB                                                           
-        IF(ABS(D).GT.EPS2) THEN                                         
-          B=B+D                                                         
-        ELSE                                                            
-          B=B+SIGN(EPS2,XM)                                             
-        ENDIF                                                           
-        FB=FC1(B)                                                       
-      ENDDO                                                          
-!                                                                       
+      ENDIF
+!
+!  ITERATIONS :
+!
+      FC=FB
+      DO ITER=1,ITMAX
+        IF(FB*FC.GT.0.D0) THEN
+          C=A
+          FC=FA
+          D=B-A
+          E=D
+        ENDIF
+        IF(ABS(FC).LT.ABS(FB)) THEN
+          A=B
+          B=C
+          C=A
+          FA=FB
+          FB=FC
+          FC=FA
+        ENDIF
+        EPS2=0.5D0*EPS
+        XM=0.5D0*(C-B)
+        IF(ABS(XM).LE.EPS2.OR.FB.EQ.0.D0)THEN
+          X2=B
+          RETURN
+        ENDIF
+        IF(ABS(E).GE.EPS2.AND.ABS(FA).GT.ABS(FB)) THEN
+          S=FB/FA
+          IF(A.EQ.C) THEN
+            P=2.D0*XM*S
+            Q=1.D0-S
+          ELSE
+            Q=FA/FC
+            R=FB/FC
+            P=S*(2.D0*XM*Q*(Q-R)-(B-A)*(R-1.D0))
+            Q=(Q-1.D0)*(R-1.D0)*(S-1.D0)
+          ENDIF
+          IF(P.GT.0.D0) Q=-Q
+          P=ABS(P)
+          IF(2*P.LT.MIN(3.D0*XM*Q-ABS(EPS2*Q),ABS(E*Q))) THEN
+            E=D
+            D=P/Q
+          ELSE
+            D=XM
+            E=D
+          ENDIF
+        ELSE
+          D=XM
+          E=D
+        ENDIF
+        A=B
+        FA=FB
+        IF(ABS(D).GT.EPS2) THEN
+          B=B+D
+        ELSE
+          B=B+SIGN(EPS2,XM)
+        ENDIF
+        FB=FC1(B)
+      ENDDO
+!
       IF (LNG.EQ.1) WRITE(LU,*) 'ZBRENT : MAXIMUM D''ITERATIONS ATTEINT'
-      IF (LNG.EQ.2) WRITE(LU,*) 'ZBRENT : EXCEEDING MAXIMUM ITERATIONS' 
-      X2=B                                                              
-!                                                                       
+      IF (LNG.EQ.2) WRITE(LU,*) 'ZBRENT : EXCEEDING MAXIMUM ITERATIONS'
+      X2=B
+!
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+      RETURN
+      END

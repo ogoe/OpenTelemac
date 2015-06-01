@@ -9,14 +9,14 @@
 !brief    a number of subroutines dedicated to the serafin format.
 !
 !history YOANN AUDOUIN
-!+       29/10/2011     
+!+       29/10/2011
 !+       V7P1
 !+       Creation of the file
 !
 !history J-M HERVOUET (EDF LAB, LNHE)
-!+       12/05/2015    
+!+       12/05/2015
 !+       V7P1
-!+       Correcting an old mistake on serafin files in prisms when the 
+!+       Correcting an old mistake on serafin files in prisms when the
 !+       computation is done with tetrahedra. See SET_MESH_SRF.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,18 +39,18 @@
         ! SIZE OF ELEMENTS
         INTEGER :: RS ! REAL SIZE (4 OR 8)
         ! POSITION IN FILE
-        INTEGER :: POS_TITLE 
+        INTEGER :: POS_TITLE
         INTEGER :: POS_NVAR != POS_TITLE + 4 + TITLE_SIZE + 4
         INTEGER :: POS_VARINFO != POS_NVAR + 4 + 2*IS + 4
         INTEGER :: POS_IB != POS_VARINFO + 4 + NVAR*VAR_SIZE + 4
         INTEGER :: POS_DATE != POS_IB + 4 + 10*IS + 4
         INTEGER :: POS_NUM != POS_DATE + (IB(10).NE.0)*(4 + 6*IS + 4)
-        INTEGER :: POS_IKLE != POS_NUM + 4 + 4*IS + 4 
+        INTEGER :: POS_IKLE != POS_NUM + 4 + 4*IS + 4
         INTEGER :: POS_IPOBO != POS_IKLE + 4 + NELEM*NDP*IS + 4
         INTEGER :: POS_COORD != POS_IPOBO + 4 + NPOIN*IS + 4
         INTEGER :: POS_DATA != POS_COORD + (4 + NPOIN*RS + 4)*NDIM
         ! COMPUTED INFORMATIONS
-        INTEGER :: SIZE_DATA != 4 + NPOIN*RS + 4 
+        INTEGER :: SIZE_DATA != 4 + NPOIN*RS + 4
         INTEGER :: SIZE_DATA_SET != 4 + RS + 4 + NVAR*(4 + NPOIN*RS + 4)
         ! STOCKED QUANTITIES AND SMALL VARIABLES
         INTEGER :: NTIMESTEP
@@ -62,17 +62,17 @@
         INTEGER :: NPTIR
         INTEGER :: NDIM
         INTEGER :: TYP_ELT
-        CHARACTER(LEN=VAR_SIZE),ALLOCATABLE :: VAR_LIST(:) 
+        CHARACTER(LEN=VAR_SIZE),ALLOCATABLE :: VAR_LIST(:)
         ! BOUNDARY INFORMATIONS
         INTEGER :: TYP_BND_ELT
         INTEGER :: NPTFR
         INTEGER :: NCLI
       END TYPE SRF_INFO
-      
+
       ! HASH TABLE FOR SERAFIN FILES
-      INTEGER :: HASH(MAX_FILE) = 
-     &         (/ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-     &            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+      INTEGER :: HASH(MAX_FILE) =
+     &         (/ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     &            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
      &            0, 0, 0, 0 /)
       TYPE(SRF_INFO),SAVE :: SRF_OBJ_TAB(MAX_FILE)
 !
@@ -99,11 +99,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_ID        |-->| ID OF THE FILE
 !| INFO           |<->| ID IN THE SRF_OBJ_TAB
-!| IERR           |-->| 0 IF EVERYTHING WENT FINE, ERROR INDEX OTHERWISE 
+!| IERR           |-->| 0 IF EVERYTHING WENT FINE, ERROR INDEX OTHERWISE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
         IMPLICIT NONE
-        ! 
+        !
         INTEGER, INTENT(IN) :: FILE_ID
         INTEGER, INTENT(INOUT) :: INFO
         INTEGER, INTENT(OUT) :: IERR
@@ -117,7 +117,7 @@
             IF (HASH(I).EQ.FILE_ID) SRF_ID = I
           ENDDO
         ENDIF
-        
+
         ! IF SRF_ID == 0 THEN NO ID WAS FOUND RETURN ERROR
         IF(SRF_ID.EQ.0) THEN
           IERR = HERMES_FILE_NOT_OPENED_ERR
@@ -128,7 +128,7 @@
         !
         RETURN
       END SUBROUTINE
-  
+
 !***********************************************************************
       SUBROUTINE ADD_SRF_FILE
 !***********************************************************************
@@ -149,11 +149,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_ID        |-->| ID OF THE FILE
 !| SRF_ID         |<->| ID IN THE SRF_OBJ_TAB
-!| IERR           |-->| 0 IF EVERYTHING WENT FINE, ERROR INDEX OTHERWISE 
+!| IERR           |-->| 0 IF EVERYTHING WENT FINE, ERROR INDEX OTHERWISE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
         IMPLICIT NONE
-        ! 
+        !
         INTEGER, INTENT(IN)  :: FILE_ID
         INTEGER, INTENT(INOUT) :: SRF_ID
         INTEGER, INTENT(OUT) :: IERR
@@ -161,11 +161,11 @@
         SRF_ID = 0
         ! CHECK IF THE FILE IS ALREADY OPEN
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
-        IF(SRF_ID.NE.0) THEN 
+        IF(SRF_ID.NE.0) THEN
           IERR = HERMES_FILE_ID_ALREADY_IN_USE_ERR
           RETURN
         ENDIF
-        ! WE RESET THE IERR TO ZERO AS THE PREVIOUS CALL SHOULD 
+        ! WE RESET THE IERR TO ZERO AS THE PREVIOUS CALL SHOULD
         ! HAVE CRASHED AS THE FILS IS NOT OPENED YET
         IERR = 0
         ! CHECK IF WE'VE REACH THE MAXIMUM NUMBER OF FILES
@@ -180,7 +180,7 @@
         !
         RETURN
       END SUBROUTINE
-      
+
 !***********************************************************************
       SUBROUTINE IDENTIFY_TYP_ELT
 !***********************************************************************
@@ -213,7 +213,7 @@
         INTEGER, INTENT(OUT) :: TYP_ELT
         !
         TYP_ELT = 0
-        ! Returns the element type by checking the couple 
+        ! Returns the element type by checking the couple
         ! (dimension, number of point per element)
         IF(NDIM.EQ.3) THEN
           IF(NDP.EQ.4) TYP_ELT = TETRAHEDRON_ELT_TYPE
@@ -264,13 +264,13 @@
         INTEGER :: NTIMESTEP
         REAL :: TIME
         INTEGER :: I, POS, FSIZE
-        ! 
+        !
         ! ADD A NEW FILE TO THE HASH TABLE
         CALL ADD_SRF_FILE(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:ADD_SRF_FILE')
         !
         ! BECAUSE of the stream mode in write only we need t ohave read access
-        ! to position the file pointer so if the file is in write only 
+        ! to position the file pointer so if the file is in write only
         ! we open it in readwrite
         IF(OPENMODE(1:5).EQ.'WRITE') THEN
           SRF_OPENMODE = 'READWRITE'
@@ -279,7 +279,7 @@
         ENDIF
         !
         ! OPEN THE FILE IN STREAM MODE
-        OPEN(FILE=FILE_NAME, ACTION=SRF_OPENMODE, UNIT=FILE_ID, 
+        OPEN(FILE=FILE_NAME, ACTION=SRF_OPENMODE, UNIT=FILE_ID,
      &       FORM='UNFORMATTED', ACCESS='STREAM',IOSTAT=IERR)
         CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:OPEN')
         !
@@ -289,20 +289,20 @@
           SRF_OBJ_TAB(SRF_ID)%RS = 4
         ELSE
           SRF_OBJ_TAB(SRF_ID)%RS = 8
-        ENDIF 
+        ENDIF
         ! ONLY DO THE SCAN OF THE FILE IF THE FILE IS READ ONLY
         IF(OPENMODE.EQ.'READ     ') THEN
-!         
+!
           ! IDENTIFY THE POSITION OF THE DIFFERENT MARKER OF THE FILE
-          ! EACH "SET" IS DELIMITED BETWEEN TWO 4 BYTE INTEGER 
+          ! EACH "SET" IS DELIMITED BETWEEN TWO 4 BYTE INTEGER
           ! INDICATING THE SIZE OF THE SET
           ! SEE COMMENT FOR TYPE SRF_INFO FOR A DESCRIPTION OF EVERY VARIABLE
           SRF_OBJ_TAB(SRF_ID)%POS_TITLE = 1
-          SRF_OBJ_TAB(SRF_ID)%POS_NVAR = SRF_OBJ_TAB(SRF_ID)%POS_TITLE 
+          SRF_OBJ_TAB(SRF_ID)%POS_NVAR = SRF_OBJ_TAB(SRF_ID)%POS_TITLE
      &                            + 4 + TITLE_SIZE + 4
           SRF_OBJ_TAB(SRF_ID)%POS_VARINFO = SRF_OBJ_TAB(SRF_ID)%POS_NVAR
      &                                   + 4 + 2*IS + 4
-!         
+!
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_NVAR+4
           READ(FILE_ID,POS=MY_POS,IOSTAT=IERR)
      &              B1,B2
@@ -312,14 +312,14 @@
           CALL CHECK_ALLOCATE(IERR,'OPEN_MESH_SRF:VAR_LIST')
           DO I=1,SRF_OBJ_TAB(SRF_ID)%NVAR
             POS = SRF_OBJ_TAB(SRF_ID)%POS_VARINFO + (I-1)*(4+VAR_SIZE+4)
-            READ(FILE_ID,POS=POS+4,IOSTAT=IERR) 
+            READ(FILE_ID,POS=POS+4,IOSTAT=IERR)
      &                      SRF_OBJ_TAB(SRF_ID)%VAR_LIST(I)
             CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:READ')
           ENDDO
-!         
-          SRF_OBJ_TAB(SRF_ID)%POS_IB = SRF_OBJ_TAB(SRF_ID)%POS_VARINFO 
+!
+          SRF_OBJ_TAB(SRF_ID)%POS_IB = SRF_OBJ_TAB(SRF_ID)%POS_VARINFO
      &                     + SRF_OBJ_TAB(SRF_ID)%NVAR*(4 + VAR_SIZE + 4)
-!         
+!
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_IB+4
           READ(FILE_ID, POS=MY_POS, IOSTAT=IERR) IB(1:10)
           CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:READ')
@@ -332,78 +332,78 @@
             SRF_OBJ_TAB(SRF_ID)%NDIM = 2
           ENDIF
 !
-          SRF_OBJ_TAB(SRF_ID)%POS_NUM = SRF_OBJ_TAB(SRF_ID)%POS_IB 
+          SRF_OBJ_TAB(SRF_ID)%POS_NUM = SRF_OBJ_TAB(SRF_ID)%POS_IB
      &                               + 4 + 10*IS + 4
-!         
+!
           ! IF IB(10).NE.0  THEN WE HAVE A DATE OF 6 INTEGER AFTER IB
-          IF(IB(10).NE.0) THEN 
-            
-            SRF_OBJ_TAB(SRF_ID)%POS_DATE = SRF_OBJ_TAB(SRF_ID)%POS_NUM 
-            SRF_OBJ_TAB(SRF_ID)%POS_NUM = SRF_OBJ_TAB(SRF_ID)%POS_NUM 
+          IF(IB(10).NE.0) THEN
+
+            SRF_OBJ_TAB(SRF_ID)%POS_DATE = SRF_OBJ_TAB(SRF_ID)%POS_NUM
+            SRF_OBJ_TAB(SRF_ID)%POS_NUM = SRF_OBJ_TAB(SRF_ID)%POS_NUM
      &                                 + 4 + 6*IS + 4
           ELSE
-            SRF_OBJ_TAB(SRF_ID)%POS_DATE = 0 
+            SRF_OBJ_TAB(SRF_ID)%POS_DATE = 0
           ENDIF
-!         
+!
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_NUM+4
           READ(FILE_ID,POS=MY_POS,IOSTAT=IERR) IB(1:4)
           CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:READ')
-        
-          SRF_OBJ_TAB(SRF_ID)%NELEM = IB(1) 
+
+          SRF_OBJ_TAB(SRF_ID)%NELEM = IB(1)
           SRF_OBJ_TAB(SRF_ID)%NPOIN = IB(2)
           SRF_OBJ_TAB(SRF_ID)%NDP = IB(3)
 !         Identify the type of element:
-          CALL IDENTIFY_TYP_ELT(SRF_OBJ_TAB(SRF_ID)%NDP, 
+          CALL IDENTIFY_TYP_ELT(SRF_OBJ_TAB(SRF_ID)%NDP,
      &                           SRF_OBJ_TAB(SRF_ID)%NDIM,
      &                           SRF_OBJ_TAB(SRF_ID)%TYP_ELT)
           SRF_OBJ_TAB(SRF_ID)%TYP_BND_ELT = POINT_BND_ELT_TYPE
-!         
-!         
-          SRF_OBJ_TAB(SRF_ID)%POS_IKLE = SRF_OBJ_TAB(SRF_ID)%POS_NUM 
+!
+!
+          SRF_OBJ_TAB(SRF_ID)%POS_IKLE = SRF_OBJ_TAB(SRF_ID)%POS_NUM
      &                                + (4 + 4*IS + 4)
-          SRF_OBJ_TAB(SRF_ID)%POS_IPOBO = SRF_OBJ_TAB(SRF_ID)%POS_IKLE 
-     &        + (4 + 
+          SRF_OBJ_TAB(SRF_ID)%POS_IPOBO = SRF_OBJ_TAB(SRF_ID)%POS_IKLE
+     &        + (4 +
      &             SRF_OBJ_TAB(SRF_ID)%NELEM*SRF_OBJ_TAB(SRF_ID)%NDP*IS
      &             + 4)
-          SRF_OBJ_TAB(SRF_ID)%POS_COORD = SRF_OBJ_TAB(SRF_ID)%POS_IPOBO 
+          SRF_OBJ_TAB(SRF_ID)%POS_COORD = SRF_OBJ_TAB(SRF_ID)%POS_IPOBO
      &        + (4 + SRF_OBJ_TAB(SRF_ID)%NPOIN*IS + 4)
           ! EVEN IN 3D THE SERAFON ONLY CONTAINS THE X AND Y COORDINATES AS THE Y VARIES WITH TIME
-          SRF_OBJ_TAB(SRF_ID)%POS_DATA = SRF_OBJ_TAB(SRF_ID)%POS_COORD 
-     &        + (4 + 
-     &             SRF_OBJ_TAB(SRF_ID)%NPOIN*SRF_OBJ_TAB(SRF_ID)%RS 
+          SRF_OBJ_TAB(SRF_ID)%POS_DATA = SRF_OBJ_TAB(SRF_ID)%POS_COORD
+     &        + (4 +
+     &             SRF_OBJ_TAB(SRF_ID)%NPOIN*SRF_OBJ_TAB(SRF_ID)%RS
      &             + 4)*2
-          SRF_OBJ_TAB(SRF_ID)%SIZE_DATA = 
+          SRF_OBJ_TAB(SRF_ID)%SIZE_DATA =
      &         4 + SRF_OBJ_TAB(SRF_ID)%NPOIN*SRF_OBJ_TAB(SRF_ID)%RS + 4
-          SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET = 
-     &         4 + SRF_OBJ_TAB(SRF_ID)%RS + 4 
+          SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET =
+     &         4 + SRF_OBJ_TAB(SRF_ID)%RS + 4
      &         + SRF_OBJ_TAB(SRF_ID)%NVAR*SRF_OBJ_TAB(SRF_ID)%SIZE_DATA
-!         
+!
           ! IF NPTFR IS NOT IN IB
           ! WE COMPUTE IT BY COUNTING THE NUMBER OF POINT FOR WHICH IPOBO == 1
-          IF((SRF_OBJ_TAB(SRF_ID)%NPTFR.EQ.0) 
-     &       .AND. (SRF_OBJ_TAB(SRF_ID)%NPTIR.EQ.0)) THEN 
+          IF((SRF_OBJ_TAB(SRF_ID)%NPTFR.EQ.0)
+     &       .AND. (SRF_OBJ_TAB(SRF_ID)%NPTIR.EQ.0)) THEN
             ! POSITION OF THE IPOBO ARRAY IN THE FILE
             MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_IPOBO + 4
             ! LOOP ON ALL THE POINTS
             DO I=1,SRF_OBJ_TAB(SRF_ID)%NPOIN
               READ(FILE_ID,POS=MY_POS+(I-1)*IS,IOSTAT=IERR) IDUM
               CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:READ')
-              IF(IDUM.NE.0) SRF_OBJ_TAB(SRF_ID)%NPTFR = 
+              IF(IDUM.NE.0) SRF_OBJ_TAB(SRF_ID)%NPTFR =
      &                          SRF_OBJ_TAB(SRF_ID)%NPTFR + 1
             ENDDO
           ENDIF
-          
+
           ! COUTING THE NUMBER OF TIME STEPS
           NTIMESTEP = 0
           IERR = 0
-          MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA 
-          DO 
+          MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA
+          DO
             READ(FILE_ID,POS=MY_POS+4,IOSTAT=IERR) TIME
             IF(IERR.LT.0) EXIT
             NTIMESTEP = NTIMESTEP + 1
-            MY_POS = MY_POS + SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET  
+            MY_POS = MY_POS + SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET
           ENDDO
-          
+
           SRF_OBJ_TAB(SRF_ID)%NTIMESTEP = NTIMESTEP
 !         INQUIRE(UNIT=FILE_ID,SIZE=FSIZE)
 !         ! TODO: Reaplace computation of number of time step by the use of size of file
@@ -411,7 +411,7 @@
 !         write(*,*) 'ntimestep',NTIMESTEP,
 !    &             (FSIZE - SRF_OBJ_TAB(SRF_ID)%POS_DATA + 1)
 !    &             /SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET
-          ! THE LAST READ IS GOING TO CRASH ON PURPOSE BECAUSE 
+          ! THE LAST READ IS GOING TO CRASH ON PURPOSE BECAUSE
           ! WE'VE REACHED THE END OF THE FILE
           IERR = 0
         ELSE
@@ -493,7 +493,7 @@
           SRF_OBJ_TAB(SRF_ID)%NCLI = SRF_OBJ_TAB(SRF_ID)%NCLI + 1
         ENDDO
         ! First we check if the file is already opened
-        ! Telemac is using one boundary file for all the mesh file 
+        ! Telemac is using one boundary file for all the mesh file
         ! so it could have been opened by another mesh before hand
         INQUIRE(FILE=FILE_NAME,OPENED=ISOPENED)
         IF(ISOPENED) THEN
@@ -515,7 +515,7 @@
             IF (IERR.LT.0) THEN
               ! END OF FILE REACHED
               EXIT
-            ELSE IF (IERR.GT.0) THEN 
+            ELSE IF (IERR.GT.0) THEN
               ! Error during read
               CALL CHECK_CALL(IERR,'OPEN_BND_SRF:READ')
             ENDIF
@@ -561,7 +561,7 @@
         CALL CHECK_CALL(IERR,'CLOSE_BND_SRF:GET_SRF_OBJ')
         !
         ISOPENED = .FALSE.
-        ! Check if the file is still opened as it could have been closed 
+        ! Check if the file is still opened as it could have been closed
         ! by another mesh file (see open_bnd_srf for more information)
         INQUIRE(UNIT=SRF_OBJ_TAB(SRF_ID)%NCLI,OPENED=ISOPENED)
         IERR = 0
@@ -608,15 +608,15 @@
         IF(I.EQ.NFILES) THEN
           HASH(I) = 0
         ELSE
-          DO 
+          DO
             HASH(I) = HASH(I+1)
             I = I + 1
             IF(I.GE.NFILES) EXIT
           ENDDO
           HASH(I) = 0
         ENDIF
-        NFILES = NFILES - 1 
-        ! Closing the file  
+        NFILES = NFILES - 1
+        ! Closing the file
         CLOSE(FILE_ID,IOSTAT=IERR)
         ! RESET SRF_OBJ_TAB(SRF_ID) TO ZEROS
         ! POSITION IN FILE
@@ -683,12 +683,12 @@
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID, MY_POS
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'CLOSE_MESH:GET_SRF_OBJ')
         !
         MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_TITLE + 4
-        READ(FILE_ID,POS=MY_POS,IOSTAT=IERR) 
+        READ(FILE_ID,POS=MY_POS,IOSTAT=IERR)
      &           TITLE(1:TITLE_SIZE)
         CALL CHECK_CALL(IERR,'GET_MESH_TITLE_SRF:READ')
         !
@@ -726,7 +726,7 @@
         INTEGER :: SRF_ID, MY_POS
         INTEGER :: I
         INTEGER(KIND=I4) :: TMP
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_MESH_DATE_SRF:GET_SRF_OBJ')
         !
@@ -776,7 +776,7 @@
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_MESH_NELEM_SRF:GET_SRF_OBJ')
         !
@@ -820,7 +820,7 @@
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,
      &                  'GET_MESH_NPOIN_PER_ELEMENT_SRF:GET_SRF_OBJ')
@@ -842,7 +842,7 @@
 ! HERMES   V7P0                                               01/05/2014
 !***********************************************************************
 !
-!brief    Returns the connectivity table for 
+!brief    Returns the connectivity table for
 !+        the element of type typ_elem in the mesh
 !+        will do nothing if there are no element of typ_elem in the mesh
 !
@@ -870,19 +870,19 @@
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID, ARRAY_SIZE
-        INTEGER :: MY_POS, I 
+        INTEGER :: MY_POS, I
         INTEGER(KIND=I4) :: TMP
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_MESH_CONNECTIVITY_SRF:GET_SRF_OBJ')
         !
         ARRAY_SIZE = SRF_OBJ_TAB(SRF_ID)%NELEM * SRF_OBJ_TAB(SRF_ID)%NDP
-        ! 
+        !
         IF(TYP_ELT.EQ.SRF_OBJ_TAB(SRF_ID)%TYP_ELT) THEN
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_IKLE + 4
           ! WE NEED TO CERTIFY THAT THE INTEGER READ IS ON 4 BYTES
           DO I=1,ARRAY_SIZE
-            READ(FILE_ID,POS=MY_POS+IS*(I-1),IOSTAT=IERR) TMP 
+            READ(FILE_ID,POS=MY_POS+IS*(I-1),IOSTAT=IERR) TMP
             CALL CHECK_CALL(IERR,'GET_MESH_CONNECTIVITY_SRF:READ')
             IKLE(I) = TMP
           ENDDO
@@ -922,7 +922,7 @@
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_MESH_NPOIN_SRF:GET_SRF_OBJ')
         !
@@ -960,7 +960,7 @@
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_MESH_NPLAN_SRF:GET_SRF_OBJ')
         !
@@ -998,7 +998,7 @@
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_MESH_DIMENSION_SRF:GET_SRF_OBJ')
         !
@@ -1044,17 +1044,17 @@
         INTEGER :: DBL_TYP
         REAL(KIND=R4) :: W
         REAL(KIND=R8) :: D
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_MESH_COORD_SRF:GET_SRF_OBJ')
         !
         ARRAY_SIZE = SRF_OBJ_TAB(SRF_ID)%NPOIN
-        DBL_TYP = SRF_OBJ_TAB(SRF_ID)%RS 
-        ! 
+        DBL_TYP = SRF_OBJ_TAB(SRF_ID)%RS
+        !
         ! Move to the position of the coordinates in the mesh file
         IF ((JDIM.GE.0).AND.(JDIM.LE.2)) THEN
-          MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_COORD 
-     &             + (JDIM-1)*(4 + ARRAY_SIZE*DBL_TYP + 4) 
+          MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_COORD
+     &             + (JDIM-1)*(4 + ARRAY_SIZE*DBL_TYP + 4)
      &             + 4
         ELSE
 !         ERROR ON JDIM
@@ -1065,7 +1065,7 @@
         ! TODO: Move pos= before loop
         DO I=1,ARRAY_SIZE
           IF(DBL_TYP.EQ.4) THEN
-            READ(FILE_ID,POS=MY_POS+(I-1)*DBL_TYP,IOSTAT=IERR) W 
+            READ(FILE_ID,POS=MY_POS+(I-1)*DBL_TYP,IOSTAT=IERR) W
             COORD(I) = DBLE(W)
           ELSE
             READ(FILE_ID,POS=MY_POS+(I-1)*DBL_TYP,IOSTAT=IERR) D
@@ -1111,12 +1111,12 @@
         INTEGER :: SRF_ID, MY_POS
         INTEGER :: ARRAY_SIZE,I
         INTEGER(KIND=I4) :: TMP
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_MESH_L2G_NUMBERING_SRF:GET_SRF_OBJ')
         !
         ARRAY_SIZE = SRF_OBJ_TAB(SRF_ID)%NPOIN
-        ! 
+        !
         MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_IPOBO + 4
         !TODO: Move pos= before loop
         DO I=1,ARRAY_SIZE
@@ -1158,7 +1158,7 @@
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
-        ! 
+        !
         !TODO: Remove that function ??
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_MESH_NPTIR_SRF:GET_SRF_OBJ')
@@ -1180,7 +1180,7 @@
 ! HERMES   V7P0                                               01/05/2014
 !***********************************************************************
 !
-!brief    Returns an array containing 
+!brief    Returns an array containing
 !+        1 if a point is a boundary point 0 otherwise
 !
 !history  Y AUDOUIN (LNHE)
@@ -1208,12 +1208,12 @@
         INTEGER :: SRF_ID, MY_POS
         INTEGER :: ARRAY_SIZE, I
         INTEGER(KIND=I4) TMP
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_BND_IPOBO_SRF:GET_SRF_OBJ')
         !
         ARRAY_SIZE = SRF_OBJ_TAB(SRF_ID)%NPOIN
-        ! 
+        !
         MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_IPOBO + 4
         DO I=1,ARRAY_SIZE
           READ(FILE_ID,POS=MY_POS+(I-1)*IS,IOSTAT=IERR) TMP
@@ -1234,7 +1234,7 @@
 ! HERMES   V7P0                                               01/05/2014
 !***********************************************************************
 !
-!brief    Returns an array containing 
+!brief    Returns an array containing
 !+        The association of boundary numbering to mesh numbering
 !
 !history  Y AUDOUIN (LNHE)
@@ -1246,7 +1246,7 @@
 !| FILE_ID        |-->| FILE DESCRIPTOR
 !| TYP_BND_ELEM   |-->| TYPE OF THE BOUNDARY ELEMENT
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| NBOR           |<->| AN ARRAY CONTAINING THE NUMBERING IN THE MESH 
+!| NBOR           |<->| AN ARRAY CONTAINING THE NUMBERING IN THE MESH
 !|                |   | OF ALL BOUNDARY POINTS
 !| IERR           |<--| 0 IF NO ERROR DURING THE EXECUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1291,7 +1291,7 @@
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_BND_NELEM_SRF:GET_SRF_OBJ')
         !
@@ -1342,7 +1342,7 @@
         INTEGER :: SRF_ID, I
         DOUBLE PRECISION :: DDUM
         INTEGER :: IDUM
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_BND_CONNECTIVITY_SRF:GET_SRF_OBJ')
         !
@@ -1362,7 +1362,7 @@
             ! End of file reached
             CALL CHECK_CALL(IERR,
      &               'GET_BND_CONNECTIVITY_SRF:READ:END OF FILE')
-          ELSE IF (IERR.GT.0) THEN 
+          ELSE IF (IERR.GT.0) THEN
             ! Error during read
             CALL CHECK_CALL(IERR,'GET_BND_CONNECTIVITY_SRF:READ')
           ENDIF
@@ -1380,7 +1380,7 @@
 ! HERMES   V7P0                                               01/05/2014
 !***********************************************************************
 !
-!brief    Returns an array containing the boundary type for each 
+!brief    Returns an array containing the boundary type for each
 !+        boundary point
 !
 !history  Y AUDOUIN (LNHE)
@@ -1408,7 +1408,7 @@
         INTEGER :: SRF_ID, I
         INTEGER :: IDUM,LIHBOR,LIUBOR,LIVBOR,LITBOR
         DOUBLE PRECISION :: DDUM
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_BND_VALUE_SRF:GET_SRF_OBJ')
         !
@@ -1417,11 +1417,11 @@
           IERR = HERMES_WRONG_ELEMENT_TYPE_ERR
           RETURN
         ENDIF
-        ! Reading the boundary file informations we only care 
+        ! Reading the boundary file informations we only care
         ! about the boundary type li[huvt]bor
         REWIND(SRF_OBJ_TAB(SRF_ID)%NCLI)
         DO I=1,SRF_OBJ_TAB(SRF_ID)%NPTFR
-          READ(SRF_OBJ_TAB(SRF_ID)%NCLI,*,IOSTAT=IERR) 
+          READ(SRF_OBJ_TAB(SRF_ID)%NCLI,*,IOSTAT=IERR)
      &           LIHBOR,LIUBOR,LIVBOR,
      &           DDUM  ,DDUM  ,DDUM,
      &           DDUM ,LITBOR,DDUM,DDUM,DDUM,
@@ -1429,7 +1429,7 @@
           IF(IERR.LT.0) THEN
             ! End of file reached
             CALL CHECK_CALL(IERR,'GET_BND_VALUE_SRF:READ:END OF FILE')
-          ELSE IF (IERR.GT.0) THEN 
+          ELSE IF (IERR.GT.0) THEN
             ! Error during read
             CALL CHECK_CALL(IERR,'GET_BND_VALUE_SRF:READ')
           ENDIF
@@ -1470,7 +1470,7 @@
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_BND_NPOIN_SRF:GET_SRF_OBJ')
         !
@@ -1516,7 +1516,7 @@
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_DATA_NVAR_SRF:GET_SRF_OBJ')
         !
@@ -1559,11 +1559,11 @@
         !
         INTEGER :: SRF_ID
         INTEGER :: I
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_DATA_VAR_LIST_SRF:GET_SRF_OBJ')
         !
-        ! Test if the number of variable given as argument is the same 
+        ! Test if the number of variable given as argument is the same
         ! as the one in the file
         IF(NVAR.NE.SRF_OBJ_TAB(SRF_ID)%NVAR) THEN
           IERR = HERMES_WRONG_ARRAY_SIZE_ERR
@@ -1606,7 +1606,7 @@
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_DATA_NTIMSTEP_SRF:GET_SRF_OBJ')
         !
@@ -1648,7 +1648,7 @@
         INTEGER :: SRF_ID, MY_POS
         REAL :: W
         INTEGER :: IREC,NTIMESTEP
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_DATA_TIME_SRF:GET_SRF_OBJ')
         !
@@ -1661,11 +1661,11 @@
           IREC = RECORD
         ENDIF
         ! POSITION OF THE TIME TO READ
-        MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA + 4 
+        MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA + 4
      &           + (IREC)*SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET
         ! DIFFERENCE BETWEEN REAL AND DOUBLE PRECISION
         IF(SRF_OBJ_TAB(SRF_ID)%RS.EQ.4) THEN
-          READ(FILE_ID,POS=MY_POS,IOSTAT=IERR) W 
+          READ(FILE_ID,POS=MY_POS,IOSTAT=IERR) W
           TIME = DBLE(W)
         ELSE
           READ(FILE_ID,POS=MY_POS,IOSTAT=IERR) TIME
@@ -1684,7 +1684,7 @@
 ! HERMES   V7P0                                               01/05/2014
 !***********************************************************************
 !
-!brief    Returns The value for each point of a given variable 
+!brief    Returns The value for each point of a given variable
 !+        for a given time step
 !
 !history  Y AUDOUIN (LNHE)
@@ -1696,7 +1696,7 @@
 !| FILE_ID        |-->| FILE DESCRIPTOR
 !| RECORD         |-->| TIME STEP TO READ IN THE FILE
 !| VAR_NAME       |-->| VARIABLE FOR WHICH WE NEED THE VALUE
-!| RES_VALUE      |<->| VALUE FOR EACH POINT AT TIME STEP RECORD 
+!| RES_VALUE      |<->| VALUE FOR EACH POINT AT TIME STEP RECORD
 !|                |   | FOR THE VARIABLE VAR_NAME
 !| N              |-->| SIZE OF RES_VALUE
 !| IERR           |<--| 0 IF NO ERROR DURING THE EXECUTION
@@ -1713,7 +1713,7 @@
         INTEGER :: SRF_ID, IVAR, MY_POS
         INTEGER :: I, ARRAY_SIZE, NTIMESTEP, IREC
         REAL :: W
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_DATA_VALUE_SRF:GET_SRF_OBJ')
         !
@@ -1741,15 +1741,15 @@
         ENDIF
         !
         ARRAY_SIZE = SRF_OBJ_TAB(SRF_ID)%NPOIN
-        ! 
+        !
         ! READ THE VARIABLES RESULT FOR THE GIVEN RECORD
         MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA + 4
-     &          + (IREC)*(SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET) 
+     &          + (IREC)*(SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET)
      &          + 4 + SRF_OBJ_TAB(SRF_ID)%RS + 4 ! THE TIME VALUE
      &          + (IVAR-1) * SRF_OBJ_TAB(SRF_ID)%SIZE_DATA
         DO I=1,ARRAY_SIZE
           IF(SRF_OBJ_TAB(SRF_ID)%RS.EQ.4) THEN
-            READ(FILE_ID,POS=MY_POS,IOSTAT=IERR) W 
+            READ(FILE_ID,POS=MY_POS,IOSTAT=IERR) W
             RES_VALUE(I) = DBLE(W)
           ELSE
             READ(FILE_ID,POS=MY_POS,IOSTAT=IERR) RES_VALUE(I)
@@ -1799,19 +1799,19 @@
         !
         INTEGER TAG,I,SRF_ID,MY_POS
         INTEGER(KIND=I4) :: TMP, TMP2
-        ! 
-        ! 
+        !
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'SET_HEADER_SRF:GET_SRF_OBJ')
         !
         ! WRITING THE TITLE RECORD
         TAG = TITLE_SIZE ! 80 CHARCATERS
-        
+
         SRF_OBJ_TAB(SRF_ID)%POS_TITLE = 1
         MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_TITLE
         WRITE(FILE_ID,POS=MY_POS,IOSTAT=IERR) TAG,TITLE,TAG
           CALL CHECK_CALL(IERR,'SET_HEADER_SRF:WRITE')
-        SRF_OBJ_TAB(SRF_ID)%POS_NVAR = SRF_OBJ_TAB(SRF_ID)%POS_TITLE 
+        SRF_OBJ_TAB(SRF_ID)%POS_NVAR = SRF_OBJ_TAB(SRF_ID)%POS_TITLE
      &                          + 4 + TITLE_SIZE + 4
         !
         ! WRINTING THE NUMBER OF VARIABLE RECORD
@@ -1820,10 +1820,10 @@
         TMP2 = 0
         WRITE(FILE_ID,IOSTAT=IERR) TAG,TMP,TMP2,TAG
         CALL CHECK_CALL(IERR,'SET_HEADER_SRF:WRITE')
-        SRF_OBJ_TAB(SRF_ID)%POS_VARINFO = SRF_OBJ_TAB(SRF_ID)%POS_NVAR 
+        SRF_OBJ_TAB(SRF_ID)%POS_VARINFO = SRF_OBJ_TAB(SRF_ID)%POS_NVAR
      &                               + 4 + 2*IS + 4
         !
-        ! WRITING THE NAME AND UNITS FOR EACH VARIABLE 
+        ! WRITING THE NAME AND UNITS FOR EACH VARIABLE
         ! I.E. NVAR RECORD OF VAR_SIZE CHARACTERS
         IF(.NOT.ALLOCATED(SRF_OBJ_TAB(SRF_ID)%VAR_LIST)) THEN
           ALLOCATE(SRF_OBJ_TAB(SRF_ID)%VAR_LIST(NVAR),STAT=IERR)
@@ -1836,7 +1836,7 @@
           SRF_OBJ_TAB(SRF_ID)%VAR_LIST(I) = VAR_NAME(I)
         ENDDO
         ! NOW WE UPDATE THE POSITION INFORMATION IN SRF_OBJ_TAB
-!       
+!
         SRF_OBJ_TAB(SRF_ID)%NVAR = NVAR
       END SUBROUTINE
 !***********************************************************************
@@ -1900,15 +1900,15 @@
         INTEGER,               INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID,IKLES_SIZE,IELEM,I,MY_POS,IPLAN,NELEM2
-        INTEGER :: IELEMP,IELEMT,NPOIN2,IELEM2        
+        INTEGER :: IELEMP,IELEMT,NPOIN2,IELEM2
         !
         INTEGER(KIND=I4) :: TMP(10), TAG
         INTEGER(KIND=I4), ALLOCATABLE :: IKLES(:)
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_MESH_SRF:GET_SRF_OBJ')
         !
-        ! DEFINES THE SIZE OF REAL IN THE FILE 
+        ! DEFINES THE SIZE OF REAL IN THE FILE
         IF(FFORMAT.EQ.'SERAFIND') THEN
           SRF_OBJ_TAB(SRF_ID)%RS = 8
         ELSE
@@ -1932,8 +1932,8 @@
         END SELECT
         !
         ! BUILDING THE 10 INTEGERS ARRAY
-        ! 
-        IF(NPLAN.LE.1) THEN 
+        !
+        IF(NPLAN.LE.1) THEN
           SRF_OBJ_TAB(SRF_ID)%NPLAN = 0
         ELSE
           SRF_OBJ_TAB(SRF_ID)%NPLAN = NPLAN
@@ -1955,7 +1955,7 @@
           TMP(10) = 1
         ENDIF
         ! WRITING THE RECORD WITH THE TAG
-        SRF_OBJ_TAB(SRF_ID)%POS_IB = SRF_OBJ_TAB(SRF_ID)%POS_VARINFO 
+        SRF_OBJ_TAB(SRF_ID)%POS_IB = SRF_OBJ_TAB(SRF_ID)%POS_VARINFO
      &                   + SRF_OBJ_TAB(SRF_ID)%NVAR*(4 + VAR_SIZE + 4)
         MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_IB
         ! Set position for writing
@@ -1965,17 +1965,17 @@
         CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
 
         ! WRITING THE DATE RECORD
-        IF(TMP(10).NE.0) THEN 
-          SRF_OBJ_TAB(SRF_ID)%POS_DATE = 
-     &           SRF_OBJ_TAB(SRF_ID)%POS_IB + 4 + 10*IS + 4 
+        IF(TMP(10).NE.0) THEN
+          SRF_OBJ_TAB(SRF_ID)%POS_DATE =
+     &           SRF_OBJ_TAB(SRF_ID)%POS_IB + 4 + 10*IS + 4
           TAG = IS*6
           WRITE(FILE_ID,IOSTAT=IERR) TAG,DATE,TIME,TAG
           CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
-          SRF_OBJ_TAB(SRF_ID)%POS_NUM = SRF_OBJ_TAB(SRF_ID)%POS_DATE 
+          SRF_OBJ_TAB(SRF_ID)%POS_NUM = SRF_OBJ_TAB(SRF_ID)%POS_DATE
      &                               + 4 + 6*IS + 4
         ELSE
-          SRF_OBJ_TAB(SRF_ID)%POS_DATE = 0 
-          SRF_OBJ_TAB(SRF_ID)%POS_NUM = SRF_OBJ_TAB(SRF_ID)%POS_IB 
+          SRF_OBJ_TAB(SRF_ID)%POS_DATE = 0
+          SRF_OBJ_TAB(SRF_ID)%POS_NUM = SRF_OBJ_TAB(SRF_ID)%POS_IB
      &                               + 4 + 10*IS + 4
         ENDIF
         !
@@ -1994,12 +1994,12 @@
         TAG = 4*IS
         WRITE(FILE_ID,IOSTAT=IERR) TAG,TMP(1:4),TAG
         CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
-        SRF_OBJ_TAB(SRF_ID)%POS_IKLE = SRF_OBJ_TAB(SRF_ID)%POS_NUM 
+        SRF_OBJ_TAB(SRF_ID)%POS_IKLE = SRF_OBJ_TAB(SRF_ID)%POS_NUM
      &                              + (4 + 4*IS + 4)
         !
         ! Writing ikle
-        ! 
-        ! Converting ikle->  ikles  
+        !
+        ! Converting ikle->  ikles
         ! Building ikles
         IF(TYPELT.NE.50) THEN
           IKLES_SIZE = NELEM*SRF_OBJ_TAB(SRF_ID)%NDP
@@ -2014,7 +2014,7 @@
         IF(TYPELT.NE.50) THEN
           DO I = 1,SRF_OBJ_TAB(SRF_ID)%NDP
             DO IELEM = 1,NELEM
-              IKLES((IELEM-1)*SRF_OBJ_TAB(SRF_ID)%NDP+I) = 
+              IKLES((IELEM-1)*SRF_OBJ_TAB(SRF_ID)%NDP+I) =
      &                                     IKLE((I-1)*NELEM+IELEM)
             ENDDO
           ENDDO
@@ -2027,18 +2027,18 @@
           NPOIN2=NPOIN/NPLAN
 !         loop on layers
           DO IPLAN=1,NPLAN-1
-            DO IELEM2=1,NELEM2 
+            DO IELEM2=1,NELEM2
 !             prism number
-              IELEMP=(IPLAN-1)*NELEM2+IELEM2  
+              IELEMP=(IPLAN-1)*NELEM2+IELEM2
 !             tetrahedron number (the first of the 3 in the prism ielemp)
-              IELEMT=(IPLAN-1)*NELEM2*3+IELEM2  
-!             ikles of the prism     
+              IELEMT=(IPLAN-1)*NELEM2*3+IELEM2
+!             ikles of the prism
               IKLES((IELEMP-1)*6+1) = IKLE(IELEMT)
               IKLES((IELEMP-1)*6+2) = IKLE(NELEM+IELEMT)
               IKLES((IELEMP-1)*6+3) = IKLE(2*NELEM+IELEMT)
               IKLES((IELEMP-1)*6+4) = IKLE(IELEMT)+NPOIN2
               IKLES((IELEMP-1)*6+5) = IKLE(NELEM+IELEMT)+NPOIN2
-              IKLES((IELEMP-1)*6+6) = IKLE(2*NELEM+IELEMT)+NPOIN2         
+              IKLES((IELEMP-1)*6+6) = IKLE(2*NELEM+IELEMT)+NPOIN2
             ENDDO
           ENDDO
         ENDIF
@@ -2047,9 +2047,9 @@
         WRITE(FILE_ID,IOSTAT=IERR)
      &                       TAG,IKLES(1:IKLES_SIZE),TAG
         CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
-        SRF_OBJ_TAB(SRF_ID)%POS_IPOBO = SRF_OBJ_TAB(SRF_ID)%POS_IKLE 
-     &      + (4 + 
-     &           SRF_OBJ_TAB(SRF_ID)%NELEM*SRF_OBJ_TAB(SRF_ID)%NDP*IS 
+        SRF_OBJ_TAB(SRF_ID)%POS_IPOBO = SRF_OBJ_TAB(SRF_ID)%POS_IKLE
+     &      + (4 +
+     &           SRF_OBJ_TAB(SRF_ID)%NELEM*SRF_OBJ_TAB(SRF_ID)%NDP*IS
      &           + 4)
         DEALLOCATE(IKLES)
         !
@@ -2063,13 +2063,13 @@
           WRITE(FILE_ID,IOSTAT=IERR) TAG,KNOLG(1:NPOIN),TAG
         ENDIF
         CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
-        SRF_OBJ_TAB(SRF_ID)%POS_COORD = SRF_OBJ_TAB(SRF_ID)%POS_IPOBO 
+        SRF_OBJ_TAB(SRF_ID)%POS_COORD = SRF_OBJ_TAB(SRF_ID)%POS_IPOBO
      &      + (4 + SRF_OBJ_TAB(SRF_ID)%NPOIN*IS + 4)
-        ! 
+        !
         ! Writing coordinates
         !
         TAG = SRF_OBJ_TAB(SRF_ID)%RS*NPOIN
-        ! convert in real if file in single precision 
+        ! convert in real if file in single precision
         IF(SRF_OBJ_TAB(SRF_ID)%RS.EQ.4) THEN
           ! X COORDINATES
           WRITE(FILE_ID,IOSTAT=IERR) TAG
@@ -2096,15 +2096,15 @@
           WRITE(FILE_ID,IOSTAT=IERR) TAG,Y(1:NPOIN),TAG
           CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
         ENDIF
-        SRF_OBJ_TAB(SRF_ID)%POS_DATA = SRF_OBJ_TAB(SRF_ID)%POS_COORD 
+        SRF_OBJ_TAB(SRF_ID)%POS_DATA = SRF_OBJ_TAB(SRF_ID)%POS_COORD
      &      + (4 + SRF_OBJ_TAB(SRF_ID)%NPOIN*SRF_OBJ_TAB(SRF_ID)%RS + 4)
      &       *2
-        SRF_OBJ_TAB(SRF_ID)%SIZE_DATA = 
+        SRF_OBJ_TAB(SRF_ID)%SIZE_DATA =
      &       4 + SRF_OBJ_TAB(SRF_ID)%NPOIN*SRF_OBJ_TAB(SRF_ID)%RS + 4
-        SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET =  
-     &       4 + SRF_OBJ_TAB(SRF_ID)%RS + 4 
+        SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET =
+     &       4 + SRF_OBJ_TAB(SRF_ID)%RS + 4
      &       + SRF_OBJ_TAB(SRF_ID)%NVAR*SRF_OBJ_TAB(SRF_ID)%SIZE_DATA
-        
+
       END SUBROUTINE
 !***********************************************************************
       SUBROUTINE ADD_DATA_SRF
@@ -2116,7 +2116,7 @@
 ! HERMES   V7P0                                               01/05/2014
 !***********************************************************************
 !
-!brief    Add data information for a given variable and a given time on 
+!brief    Add data information for a given variable and a given time on
 !+        all points of the mesh
 !
 !history  Y AUDOUIN (LNHE)
@@ -2135,7 +2135,7 @@
 !| IERR           |<--| 0 IF NO ERROR DURING THE EXECUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-        ! 
+        !
         IMPLICIT NONE
         !
         INTEGER,          INTENT(IN)  :: FILE_ID,N
@@ -2148,32 +2148,32 @@
         !
         INTEGER :: SRF_ID, I,IVAR, IREC, MY_POS
         INTEGER(KIND=I4) :: TAG
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'ADD_DATA_SRF:GET_SRF_OBJ')
         !
         ! Get the position of the variable
         IVAR = 0
         DO I=1,SRF_OBJ_TAB(SRF_ID)%NVAR
-          IF(SRF_OBJ_TAB(SRF_ID)%VAR_LIST(I)(1:16).EQ.VAR_NAME(1:16)) 
+          IF(SRF_OBJ_TAB(SRF_ID)%VAR_LIST(I)(1:16).EQ.VAR_NAME(1:16))
      &    THEN
             IVAR = I
             EXIT
           ENDIF
         ENDDO
         IF(IVAR.EQ.0) THEN
-          IERR = HERMES_VAR_UNKNOWN_ERR 
+          IERR = HERMES_VAR_UNKNOWN_ERR
           RETURN
         ENDIF
         IREC = RECORD
         IF(IREC.LT.0) THEN
-          IERR = HERMES_RECORD_UNKNOWN_ERR 
+          IERR = HERMES_RECORD_UNKNOWN_ERR
           RETURN
         ENDIF
         ! Write time of the dataset if it is the first variable
         IF(FIRST_VAR) THEN
-          MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA 
-     &            + (IREC)*(SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET) 
+          MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA
+     &            + (IREC)*(SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET)
           READ(FILE_ID,POS=MY_POS-4,IOSTAT=IERR) TAG
           TAG = SRF_OBJ_TAB(SRF_ID)%RS
           IF(SRF_OBJ_TAB(SRF_ID)%RS.EQ.4) THEN
@@ -2185,19 +2185,19 @@
           ! We only increase the number of timesteps if we add a new done
           ! i.e. irec is greater than ntimesteps
           IF(IREC.EQ.SRF_OBJ_TAB(SRF_ID)%NTIMESTEP) THEN
-            SRF_OBJ_TAB(SRF_ID)%NTIMESTEP = 
+            SRF_OBJ_TAB(SRF_ID)%NTIMESTEP =
      &                   SRF_OBJ_TAB(SRF_ID)%NTIMESTEP + 1
           ENDIF
         ELSE
-          MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA 
-     &            + (IREC)*(SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET) 
+          MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA
+     &            + (IREC)*(SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET)
      &            + 4 + SRF_OBJ_TAB(SRF_ID)%RS + 4 ! THE TIME VALUE
      &            + (IVAR-1) * SRF_OBJ_TAB(SRF_ID)%SIZE_DATA
           ! Using a read to go to position in file
           READ(FILE_ID,POS=MY_POS-4,IOSTAT=IERR) TAG
         ENDIF
         ! If the file is in single precision we convert the data
-        
+
         IF(SRF_OBJ_TAB(SRF_ID)%RS.EQ.4) THEN
           TAG = SRF_OBJ_TAB(SRF_ID)%RS*N
           WRITE(FILE_ID,IOSTAT=IERR) TAG
@@ -2258,7 +2258,7 @@
         !
         INTEGER :: SRF_ID, I, NCLI
         INTEGER :: VAL, LIHBOR, LIUBOR, LIVBOR, LITBOR
-        ! 
+        !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'SET_BND_SRF:GET_SRF_OBJ')
         !
@@ -2284,7 +2284,7 @@
           CALL CHECK_CALL(IERR,'SET_BND_SRF:WRITE:NCLI')
           SRF_OBJ_TAB(SRF_ID)%NPTFR=NELEBD
         ENDDO
-        
+
       END SUBROUTINE
 !
       END MODULE UTILS_SERAFIN

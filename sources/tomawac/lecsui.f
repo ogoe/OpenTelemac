@@ -205,7 +205,7 @@
         WRITE(LU,*) '- COMPUTATIONAL RESUMPTION AT TIME ',AT
       ENDIF
 !
-!     
+!
 ! Get the number of variables
       CALL GET_DATA_NVAR(FFORMAT,NPRE,NVA3,ISTAT)
       CALL CHECK_CALL(ISTAT,'LECSUI:GET_DATA_NVAR')
@@ -264,7 +264,7 @@
         TC1=AT
         TC2=AT
         CALL OV( 'X=Y     ' , UC1 , UC , Z , 0.D0 , NPOIN2)
-        CALL OV( 'X=Y     ' , UC2 , UC , Z , 0.D0 , NPOIN2)    
+        CALL OV( 'X=Y     ' , UC2 , UC , Z , 0.D0 , NPOIN2)
         CALL OV( 'X=Y     ' , VC1 , VC , Z , 0.D0 , NPOIN2)
         CALL OV( 'X=Y     ' , VC2 , VC , Z , 0.D0 , NPOIN2)
       ENDIF

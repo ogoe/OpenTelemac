@@ -50,8 +50,8 @@
 !
 !.....VARIABLES IN ARGUMENT
 !     """""""""""""""""""""
-      INTEGER, INTENT(IN)             :: NF    , JFRE  
-      DOUBLE PRECISION, INTENT(IN)    :: RAISF , TAILF 
+      INTEGER, INTENT(IN)             :: NF    , JFRE
+      DOUBLE PRECISION, INTENT(IN)    :: RAISF , TAILF
       DOUBLE PRECISION, INTENT(INOUT) :: COEF1
       INTEGER, INTENT(INOUT)          :: JBIS
 !

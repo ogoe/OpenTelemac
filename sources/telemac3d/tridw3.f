@@ -15,7 +15,7 @@
 !
 !brief    CORRECTS FLUXES AND COMPUTES AN AVERAGED VALUE OF
 !+        H * WSTAR IN A WAY COMPATIBLE WITH THE PSI SCHEME.
-!+        See release notes on Telemac version 6.1, chapter 2.       
+!+        See release notes on Telemac version 6.1, chapter 2.
 !
 !history  J-M HERVOUET (LNHE)
 !+        27/03/2012
@@ -354,8 +354,8 @@
 !    *          LIWBOL(IPTFR,IETAGE).EQ.KADH)
 !    *          C = 0.5D0*(WSBORL(IPTFR,IETAGE+1)-WS(IPOIN2,IETAGE)) + C
 !           WS(IPOIN2,IETAGE) = WS(IPOIN2,IETAGE) + C
-!        ENDDO ! IETAGE 
-!     ENDDO ! IPTFR 
+!        ENDDO ! IETAGE
+!     ENDDO ! IPTFR
 !
 !     WRITE(LU,*)'WSCONV=',DOTS(WSS,WSS)
 !

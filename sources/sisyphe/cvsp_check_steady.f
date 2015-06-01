@@ -35,16 +35,16 @@
       INTEGER, INTENT(IN) :: J
       INTEGER  K, JG
       DOUBLE PRECISION AT
-!     
+!
 !-----------------------------------------------------------------------
-!     
+!
       JG = J
       IF(NCSIZE > 1) JG = MESH%KNOLG%I(J)
-!      
+!
       AT = DT*LT/PERCOU
-!     
+!
 !-----------------------------------------------------------------------
-!     
+!
       DO K=1,PRO_MAX(J)-1
         IF((PRO_D(J,K+1,1) - PRO_D(J,K,1)).LT.0.D0) THEN
           WRITE(LU,*) 'ERR: UNSTEADY VSP! ,J,K,AT',
@@ -54,9 +54,9 @@
           STOP
         ENDIF
       ENDDO
-!     
+!
 !-----------------------------------------------------------------------
-!     
+!
       RETURN
       END SUBROUTINE
-     
+

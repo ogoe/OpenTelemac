@@ -30,7 +30,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        27/05/2013
 !+        V6P3
-!+   Now works with tabs as well as spaces as delimiters, and the 
+!+   Now works with tabs as well as spaces as delimiters, and the
 !+   variable FIRST introduced (NAG compiler refuses two successive
 !+   reads at an end of file, so error redirected as end).
 !
@@ -45,7 +45,7 @@
 !| NFIC           |-->| LOGICAL UNIT OF FILE
 !| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
 !| PTS_CURVES     |<--| NUMBER OF POINTS OF EVERY CURVE
-!| STA_DIS_CURVES |-->| KEYWORD: 'STAGE-DISCHARGE CURVES' 
+!| STA_DIS_CURVES |-->| KEYWORD: 'STAGE-DISCHARGE CURVES'
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TELEMAC2D, ONLY : QZ

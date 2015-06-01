@@ -10,7 +10,7 @@
 ! TELEMAC3D   V6P3                                   10/09/2012
 !***********************************************************************
 !
-!brief    Fills IFABOR of MESH3D for prisms cut into tetrahedra. After 
+!brief    Fills IFABOR of MESH3D for prisms cut into tetrahedra. After
 !+        to VOISIN31, all boundaries are quoted solid (-1), here we
 !+        treat liquid boundaries with the help of IFABOR2D
 !
@@ -24,7 +24,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFABOR         |<->| THE ELEMENT BEHIND A FACE OF AN ELEMENT (IN 3D)
 !| IFABOR2D       |-->| THE ELEMENT BEHIND A FACE OF AN ELEMENT (IN 2D)
-!| IKLE           |-->| GLOBAL NUMBERS OF POINTS IN 3D ELEMENTS 
+!| IKLE           |-->| GLOBAL NUMBERS OF POINTS IN 3D ELEMENTS
 !| IKLE2          |-->| GLOBAL NUMBERS OF POINTS IN 2D ELEMENTS
 !| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
 !| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
@@ -39,7 +39,7 @@
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPTFR          |-->| NUMBER OF 2D BOUNDARY POINTS
-!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
+!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE
 !|                |   | ADJACENT ELEMENT, NULONE GIVES THE LOCAL
 !|                |   | NUMBER OF THE FIRST NODE OF THE BOUNDARY EDGE
 !|                |   | I.E. 1, 2 OR 3 FOR TRIANGLES.
@@ -89,7 +89,7 @@
 !=======================================================================
 !
       DO IELEM2 = 1,NELEM2
-        DO IFACE=1,3   
+        DO IFACE=1,3
 !
           IF(IFABOR(IELEM2,IFACE).EQ.0) THEN
 !           ONE LIQUID BOUNDARY DETECTED
@@ -104,7 +104,7 @@
                   IF(IFABOR(ITET,IFAC).EQ.-1) THEN
 !                   THE TWO POINTS OF THE 2D SEGMENT
                     I1=IKLE2(IELEM2,IFACE)
-                    I2=IKLE2(IELEM2,ISUI(IFACE))     
+                    I2=IKLE2(IELEM2,ISUI(IFACE))
                     OK=.FALSE.
 !                   TO BE TAKEN INTO ACCOUNT
 !                   THIS FACE MUST HAVE ALL POINTS ABOVE I1 OR I2
@@ -119,11 +119,11 @@
      &                  (MOD(IT3-1,NPOIN2)+1.EQ.I1.OR.
      &                   MOD(IT3-1,NPOIN2)+1.EQ.I2    ) ) THEN
                       IFABOR(ITET,IFAC)=0
-                    ENDIF 
+                    ENDIF
                   ENDIF
                 ENDDO
               ENDDO
-            ENDDO 
+            ENDDO
           ENDIF
 !
         ENDDO

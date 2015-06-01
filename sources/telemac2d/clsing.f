@@ -73,10 +73,10 @@
 !| UBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
 !| VBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
 !| TBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON TRACER
-!| UNORM          |-->| NORM OF VELOCITY 
+!| UNORM          |-->| NORM OF VELOCITY
 !| X              |-->| ABSCISSAE OF NODES
 !| Y              |-->| ORDINATES OF NODES
-!| ZDIG           |-->| ELEVATIONS OF POINTS OF WEIRS 
+!| ZDIG           |-->| ELEVATIONS OF POINTS OF WEIRS
 !| ZF             |-->| BOTTOM TOPOGRAPHY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

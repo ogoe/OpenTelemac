@@ -42,7 +42,7 @@
       CHARACTER(LEN=8) :: FFORMAT
 !
       LOGICAL :: IS
-      INTEGER I 
+      INTEGER I
       INTEGER I_LENCLI, I_LENINP, I_LEN
       INTEGER IPAR, ICAS, IOS
 !
@@ -64,7 +64,7 @@
       IPAR = 72
       ICAS = 73
 !
-!     ALLOCATE(NULLTABLE(0))       
+!     ALLOCATE(NULLTABLE(0))
       WITH_SECTIONS = .FALSE.
       DONE_SECTIONS = .FALSE.
       WITH_ZONES = .FALSE.
@@ -103,75 +103,75 @@
       IF( FOUND ) OPEN(UNIT=IPAR,FILE='PARTEL.PAR')
 
       IF (FOUND) REWIND(IPAR)
-      DO 
-        IF( FOUND ) THEN                  
+      DO
+        IF( FOUND ) THEN
            WRITE(LU, FMT='(/,'' SELAFIN INPUT NAME <INPUT_NAME>: '')')
-           READ(IPAR,*) NAMEINP             
-        ELSE                              
+           READ(IPAR,*) NAMEINP
+        ELSE
            WRITE(LU, ADVANCE='NO', FMT=
      &         '(/,'' SELAFIN INPUT NAME <INPUT_NAME>: '')')
            READ(LI,'(A)') NAMEINP
-        ENDIF                            
+        ENDIF
         IF (NAMEINP.EQ.' ') THEN
-          WRITE (LU,'('' NO FILENAME'')') 
+          WRITE (LU,'('' NO FILENAME'')')
         ELSE
 ! CONTINUE WITH TELEMAC CODES
           WRITE(LU,*) 'INPUT: ',NAMEINP
-          EXIT 
-        ENDIF  
+          EXIT
+        ENDIF
       ENDDO
 
       INQUIRE (FILE=NAMEINP,EXIST=IS)
-      IF (.NOT.IS) THEN 
+      IF (.NOT.IS) THEN
         WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEINP
         CALL PLANTE(1)
         STOP
-      ENDIF  
+      ENDIF
 !
       DO
-        IF( FOUND ) THEN                      
+        IF( FOUND ) THEN
            WRITE(LU, FMT='(/,'' BOUNDARY CONDITIONS FILE NAME : '')')
-           READ(IPAR,*) NAMECLI                 
-        ELSE                                  
+           READ(IPAR,*) NAMECLI
+        ELSE
            WRITE(LU, ADVANCE='NO', FMT=
      &           '(/,'' BOUNDARY CONDITIONS FILE NAME : '')')
            READ(LI,'(A)') NAMECLI
-        ENDIF                                
+        ENDIF
         IF (NAMECLI.EQ.' ') THEN
-          WRITE (LU,'('' NO FILENAME'')') 
+          WRITE (LU,'('' NO FILENAME'')')
         ELSE
           WRITE(LU,*) 'INPUT: ',NAMECLI
           EXIT
         ENDIF
       ENDDO
-!  
+!
       INQUIRE (FILE=NAMECLI,EXIST=IS)
-      IF (.NOT.IS) THEN 
+      IF (.NOT.IS) THEN
         WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMECLI
         CALL PLANTE(1)
         STOP
-      ENDIF  
+      ENDIF
 !
-      DO 
-        IF( FOUND ) THEN                     
+      DO
+        IF( FOUND ) THEN
            WRITE(LU,FMT=
-     &    '(/,'' NUMBER OF PARTITIONS <NPARTS> [2 -'',I6,'']: '')') 
+     &    '(/,'' NUMBER OF PARTITIONS <NPARTS> [2 -'',I6,'']: '')')
      &        MAXNPROC
-           READ(IPAR,*) NPARTS                 
-        ELSE                                 
+           READ(IPAR,*) NPARTS
+        ELSE
            WRITE(LU, ADVANCE='NO',FMT=
-     &    '(/,'' NUMBER OF PARTITIONS <NPARTS> [2 -'',I6,'']: '')') 
+     &    '(/,'' NUMBER OF PARTITIONS <NPARTS> [2 -'',I6,'']: '')')
      &        MAXNPROC
            READ(LI,*) NPARTS
-        ENDIF                               
+        ENDIF
         IF ( (NPARTS > MAXNPROC) .OR. (NPARTS < 2) ) THEN
           WRITE(LU,
-     &    '('' NUMBER OF PARTITIONS MUST BE IN [2 -'',I6,'']'')') 
+     &    '('' NUMBER OF PARTITIONS MUST BE IN [2 -'',I6,'']'')')
      &      MAXNPROC
         ELSE
           WRITE(LU,'('' INPUT: '',I4)') NPARTS
           EXIT
-        ENDIF 
+        ENDIF
       ENDDO
 !
       WRITE(LU,FMT='(/,'' PARTITIONING OPTIONS: '')')
@@ -179,12 +179,12 @@
       DO
         IF( FOUND ) THEN
            WRITE(LU, FMT=
-     &    '(/,'' PARTITIONING METHOD <PMETHOD> 
-     &    [1 (METIS) OR 2 (SCOTCH)]: '')') 
-           READ(IPAR,*) PMETHOD                
-        ELSE                                 
+     &    '(/,'' PARTITIONING METHOD <PMETHOD>
+     &    [1 (METIS) OR 2 (SCOTCH)]: '')')
+           READ(IPAR,*) PMETHOD
+        ELSE
            WRITE(LU, ADVANCE='NO',FMT=
-     &    '(/,'' PARTITIONING METHOD <PMETHOD> 
+     &    '(/,'' PARTITIONING METHOD <PMETHOD>
      &    [1 (METIS) OR 2 (SCOTCH)]: '')')
            READ(LI,*) PMETHOD
         ENDIF
@@ -200,49 +200,49 @@
 !
       WRITE(LU,FMT='(/,'' FILES FORMAT: '')')
 
-      DO 
-        IF( FOUND ) THEN                     
+      DO
+        IF( FOUND ) THEN
            WRITE(LU, FMT=
-     &    '(/,'' FILE FORMAT <FFORMAT> [MED OR SERAFIN: '')') 
-           READ(72,*) FFORMAT                
-        ELSE                                 
+     &    '(/,'' FILE FORMAT <FFORMAT> [MED OR SERAFIN: '')')
+           READ(72,*) FFORMAT
+        ELSE
            WRITE(LU, ADVANCE='NO',FMT=
-     &    '(/,'' FILE FORMAT <FFORMAT> [MED OR SERAFIN: '')') 
+     &    '(/,'' FILE FORMAT <FFORMAT> [MED OR SERAFIN: '')')
            READ(LI,*) FFORMAT
-        ENDIF                                 
-        IF ( (FFORMAT .NE. 'MED     ' ) .AND. 
-     &       (FFORMAT .NE. 'SERAFIND' ) .AND. 
+        ENDIF
+        IF ( (FFORMAT .NE. 'MED     ' ) .AND.
+     &       (FFORMAT .NE. 'SERAFIND' ) .AND.
      &       (FFORMAT .NE. 'SERAFIN') ) THEN
           WRITE(LU,
-     &    '('' FILE FORMAT MUST BE "MED" OR "SERAFIN" '')') 
+     &    '('' FILE FORMAT MUST BE "MED" OR "SERAFIN" '')')
         ELSE
           WRITE(LU,'('' INPUT: '',A8)') FFORMAT
           EXIT
-        ENDIF 
+        ENDIF
       ENDDO
 !
-! #### THE SECTIONS FILE NAME 
+! #### THE SECTIONS FILE NAME
 !
       DO
-        IF( FOUND ) THEN                      
+        IF( FOUND ) THEN
            WRITE(LU, FMT=
-     &    '(/,'' WITH SECTIONS? [1:YES 0:NO]: '')') 
+     &    '(/,'' WITH SECTIONS? [1:YES 0:NO]: '')')
            READ(IPAR,*) I
-        ELSE                                  
+        ELSE
            WRITE(LU, ADVANCE='NO',FMT=
-     &    '(/,'' WITH SECTIONS? [1:YES 0:NO]: '')') 
+     &    '(/,'' WITH SECTIONS? [1:YES 0:NO]: '')')
            READ(LI,*) I
-        ENDIF                                
+        ENDIF
         IF ( I<0 .OR. I>1 ) THEN
-          WRITE(LU,'('' PLEASE ANSWER 1:YES OR 0:NO '')') 
+          WRITE(LU,'('' PLEASE ANSWER 1:YES OR 0:NO '')')
         ELSE
           WRITE(LU,'('' INPUT: '',I4)') I
           EXIT
-        ENDIF 
+        ENDIF
       ENDDO
       IF (I==1) WITH_SECTIONS=.TRUE.
 !
-      IF (WITH_SECTIONS) THEN 
+      IF (WITH_SECTIONS) THEN
         DO
           WRITE(LU, ADVANCE='NO', FMT=
      &      '(/,'' CONTROL SECTIONS FILE NAME (OR RETURN) : '')')
@@ -252,46 +252,46 @@
             READ(LI,'(A)') NAMESEC
           ENDIF
           IF (NAMESEC.EQ.' ') THEN
-            WRITE (LU,'('' NO FILENAME '')') 
+            WRITE (LU,'('' NO FILENAME '')')
           ELSE
             WRITE(LU,*) 'INPUT: ',NAMESEC
             EXIT
           ENDIF
         ENDDO
-!  
+!
         INQUIRE (FILE=NAMESEC,EXIST=IS)
         IF (.NOT.IS) THEN
           WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMESEC
           CALL PLANTE(1)
           STOP
-        ENDIF  
+        ENDIF
       ENDIF
       ! Not recalculating section if already done in previous run of partel
       INQUIRE(FILE=TRIM(NAMESEC)//EXTENS(NPARTS,0),EXIST=DONE_SECTIONS)
       WITH_SECTIONS = WITH_SECTIONS .AND. (.NOT. DONE_SECTIONS)
 !
-! #### THE ZONES FILE NAME 
+! #### THE ZONES FILE NAME
 !
       DO
-        IF( FOUND ) THEN                      
+        IF( FOUND ) THEN
            WRITE(LU, FMT=
-     &    '(/,'' WITH ZONES? [1:YES 0:NO]: '')') 
-           READ(IPAR,*) I                       
-        ELSE                                  
+     &    '(/,'' WITH ZONES? [1:YES 0:NO]: '')')
+           READ(IPAR,*) I
+        ELSE
            WRITE(LU, ADVANCE='NO',FMT=
-     &    '(/,'' WITH ZONES? [1:YES 0:NO]: '')') 
+     &    '(/,'' WITH ZONES? [1:YES 0:NO]: '')')
            READ(LI,*) I
-        ENDIF                                
+        ENDIF
         IF ( I<0 .OR. I>1 ) THEN
-          WRITE(LU,'('' PLEASE ANSWER 1:YES OR 0:NO '')') 
+          WRITE(LU,'('' PLEASE ANSWER 1:YES OR 0:NO '')')
         ELSE
           WRITE(LU,'('' INPUT: '',I4)') I
           EXIT
-        ENDIF 
+        ENDIF
       ENDDO
       IF (I==1) WITH_ZONES=.TRUE.
 !
-      IF (WITH_ZONES) THEN 
+      IF (WITH_ZONES) THEN
         DO
           WRITE(LU, ADVANCE='NO', FMT=
      &      '(/,'' FRICTION ZONES FILE NAME (OR RETURN) : '')')
@@ -301,19 +301,19 @@
             READ(LI,'(A)') NAMEZFI
           ENDIF
           IF (NAMEZFI.EQ.' ') THEN
-            WRITE (LU,'('' NO FILENAME '')') 
+            WRITE (LU,'('' NO FILENAME '')')
           ELSE
             WRITE(LU,*) 'INPUT: ',NAMEZFI
             EXIT
           ENDIF
         ENDDO
-!  
+!
         INQUIRE (FILE=NAMEZFI,EXIST=IS)
         IF (.NOT.IS) THEN
           WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') NAMEZFI
           CALL PLANTE(1)
           STOP
-        ENDIF  
+        ENDIF
       ENDIF
       ! Not recalculating zone if already done in previous run of partel
       INQUIRE(FILE=TRIM(NAMEZFI)//EXTENS(NPARTS-1,0),EXIST=DONE_ZONES)
@@ -331,7 +331,7 @@
         WRITE(LU,*) 'ATTENTION:'
         WRITE(LU,*) 'THE NAME OF THE INPUT FILE:'
         WRITE(LU,*) NAMEINP
-        WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS' 
+        WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS'
         WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
         WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
         CALL PLANTE(1)
@@ -347,7 +347,7 @@
         WRITE(LU,*) 'ATTENTION:'
         WRITE(LU,*) 'THE NAME OF THE BOUNDARY CONDITIONS FILE:'
         WRITE(LU,*) NAMECLI
-        WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS' 
+        WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS'
         WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
         WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
         CALL PLANTE(1)
@@ -391,8 +391,8 @@
       IF(NAMEINP(1:3) .EQ. 'ES3') THEN
         CALL PARES3D(NAMEINP, NAMECLI, NPARTS, PMETHOD, FORMAT_MED)
       ELSE
-        CALL PARTEL(NAMEINP, NAMECLI, NPARTS, PMETHOD, FFORMAT, 
-     &              WITH_SECTIONS, NAMESEC, 
+        CALL PARTEL(NAMEINP, NAMECLI, NPARTS, PMETHOD, FFORMAT,
+     &              WITH_SECTIONS, NAMESEC,
      &              WITH_ZONES, NAMEZFI)
       ENDIF
       END PROGRAM

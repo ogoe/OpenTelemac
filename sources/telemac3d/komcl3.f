@@ -148,7 +148,7 @@
 !
       INTEGER IPTFR, IPLAN, IPOIN2
 !
-      DOUBLE PRECISION HAUT 
+      DOUBLE PRECISION HAUT
       DOUBLE PRECISION SBETAS,UTANG, DIST, PROPNU
 !
       INTRINSIC SQRT,MAX,LOG
@@ -271,7 +271,7 @@
 !           ************************************
 !
 !             COMING INTO THE DOMAIN
-!            
+!
               KBORL(IPTFR,IPLAN) = MAX(NIVTURB*U(IPOIN2,IPLAN),KMIN)
 !
 !           ****************************************

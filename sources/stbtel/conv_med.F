@@ -1,7 +1,7 @@
       MODULE CONV_MED
       CONTAINS
-!                       ***************** 
-                        SUBROUTINE READ_MED 
+!                       *****************
+                        SUBROUTINE READ_MED
 !                       *****************
      &(MEDFILE,FAMFILE)
 !
@@ -10,7 +10,7 @@
 !***********************************************************************
 !
 !BRIEF    READS A FILE OF MED FORMAT AND FILL THE MESH OBJECT
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
@@ -23,8 +23,8 @@
 !
       USE DECLARATIONS_STBTEL
       USE DECLARATIONS_SPECIAL
-!      
-      IMPLICIT NONE      
+!
+      IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -37,7 +37,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined(HAVE_MED)      
+#if defined(HAVE_MED)
       INTEGER :: IERR,ITIME,IVAR
       INTEGER :: NMAA,MTYPE
       INTEGER :: PROFIL(1)
@@ -66,12 +66,12 @@
       INTEGER, ALLOCATABLE :: ELEMNUM2(:)
       LOGICAL :: MYFALSE
       INTEGER :: POS
-!      
+!
       WRITE(LU,*) '----------------------------------------------------'
       IF(LNG.EQ.1) WRITE(LU,*) '------BEGINNING READING OF MED FILE'
       IF(LNG.EQ.2) WRITE(LU,*) '------DEBUT LECTURE DU FICHIER MED'
       WRITE(LU,*) '----------------------------------------------------'
-!      
+!
 !-----------------------------------------------------------------------
 !
       CALL MFIOPE(NINP, MEDFILE, MED_ACC_RDONLY, IERR)
@@ -82,7 +82,7 @@
       CALL FNCT_CHECK(IERR,'MMHNMH')
       IF(LNG.EQ.1) WRITE(LU,*) '---INFORMATIONS SUR LE MAILLAGE'
       IF(LNG.EQ.2) WRITE(LU,*) '---MESH INFORMATIONS'
-      ! THERE IS SUPPOSED TO BE ONLY ONE MESH 
+      ! THERE IS SUPPOSED TO BE ONLY ONE MESH
       IF (NMAA .EQ. 1) THEN
         ! RADING THE NUMBER OF AXIS
         CALL MMHNAX(NINP,1,MESH2%NDIM,IERR)
@@ -108,11 +108,11 @@
         IF(LNG.EQ.2) WRITE(LU,*) 'ERROR: NUMBER OF MESH DIFFERENT TO 1'
         CALL PLANTE(1)
       END IF
-      ! READING THE NUMBER OF ELEMENTS 
+      ! READING THE NUMBER OF ELEMENTS
       CALL MED_GET_NELEM(MESHNAME,TYPGEO)
       CALL MED_GET_NELEM_BND(MESHNAME,TYPGEO2)
 !
-      IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 
+      IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*)
      &        'NOM DU MAILLAGE : ',MESH2%TITLE
       IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 'MESH NAME: ',MESH2%TITLE
       IF(DEBUG) WRITE(LU,*) 'NDIM :',MESH2%NDIM
@@ -131,7 +131,7 @@
      &            MED_COORDINATE,MED_NODAL,IDUM,IDUM,MESH2%NPOIN,IERR)
       CALL FNCT_CHECK(IERR,'MMHNME')
       IF(DEBUG) WRITE(LU,*) 'NPOIN :',MESH2%NPOIN
-!     
+!
       IF(LNG.EQ.1) WRITE(LU,*) '---INFORMATION SUR LES FAMILLES'
       IF(LNG.EQ.2) WRITE(LU,*) '---FAMILY INFORMATION'
       CALL MFANFA(NINP,MESHNAME,MESH2%NFAM,IERR)
@@ -144,7 +144,7 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'PAS DE FAMILLES'
         IF(LNG.EQ.2) WRITE(LU,*) 'NO FAMILIES'
       ELSE
-        ! READING FAMILIES INFORMATIONS 
+        ! READING FAMILIES INFORMATIONS
         ALLOCATE(MESH2%IDFAM(MESH2%NFAM),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%IDFAM')
         ALLOCATE(MESH2%NAMEFAM(MESH2%NFAM),STAT=IERR)
@@ -155,17 +155,17 @@
         CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%NGROUPFAM')
         ALLOCATE(MESH2%GROUPFAM(MESH2%NFAM,10),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%GROUPFAM')
-        MESH2%GROUPFAM(:,:) = ' ' 
+        MESH2%GROUPFAM(:,:) = ' '
         MESH2%NGROUPFAM = 0
         DO I=1,MESH2%NFAM
           CALL MFANFG(NINP,MESHNAME,I,MESH2%NGROUPFAM(I),IERR)
           CALL FNCT_CHECK(IERR,'MFANFG')
           IF(MESH2%NGROUPFAM(I).EQ.0) THEN
             CALL MFAFAI(NINP,MESHNAME,I,MESH2%NAMEFAM(I),MESH2%IDFAM(I),
-     &                  MESH2%GROUPFAM(I,1),IERR) 
+     &                  MESH2%GROUPFAM(I,1),IERR)
           ELSE
             CALL MFAFAI(NINP,MESHNAME,I,MESH2%NAMEFAM(I),MESH2%IDFAM(I),
-     &                  MESH2%GROUPFAM(I,1:MESH2%NGROUPFAM(I)),IERR) 
+     &                  MESH2%GROUPFAM(I,1:MESH2%NGROUPFAM(I)),IERR)
           ENDIF
           CALL FNCT_CHECK(IERR,'MFAFAI')
           ! IDENTIFYING COLOR VALUE FROM NAME
@@ -209,7 +209,7 @@
       ! this will make a segfault at the deallocate
       ALLOCATE(COOR(MESH2%NPOIN*3),STAT=IERR)
       CALL FNCT_CHECK(IERR,'ALLOCATE COOR')
-      
+
       CALL MMHCOR(NINP,TRIM(MESHNAME),MED_NO_DT,MED_NO_IT,
      &            MED_NO_INTERLACE,COOR,IERR)
       CALL FNCT_CHECK(IERR,'MMHCOR')
@@ -276,8 +276,8 @@
      &            MED_NONE,MESH2%KNOLG,IERR)
       ! CHECK IF THE NUMBERING IS AVAILABLE
       IF(IERR.NE.0) DEALLOCATE(MESH2%KNOLG)
-!      
-      IF(LNG.EQ.1) WRITE(LU,*) 
+!
+      IF(LNG.EQ.1) WRITE(LU,*)
      &            '---INFORMATIONS SUR LES CONDITIONS LIMITES'
       IF(LNG.EQ.2) WRITE(LU,*) '---BOUNDARY INFORMATIONS'
       IF(SRF_BND) THEN
@@ -285,7 +285,7 @@
       ELSE
         CALL MED_BUILD_BND(FAMFILE,MESHNAME,TYPGEO,TYPGEO2)
       ENDIF
-!      
+!
       IF(LNG.EQ.1) WRITE(LU,*) '---INFORMATIONS SUR LES RESULTATS'
       IF(LNG.EQ.2) WRITE(LU,*) '---RESULTS INFORMATIONS'
       ! READING THE VARIABLES
@@ -312,7 +312,7 @@
         ! REMOVE THE MODIF FIELD FROM THE COUNT OR
         ! IT WOULD DOUBLE THE NUMBER OF VARIABLES
         DEALLOCATE(NAMEVAR2,UNITVAR2)
-        IF (FIELDNAME(1:11).EQ.'MODIF_FIELD') CYCLE 
+        IF (FIELDNAME(1:11).EQ.'MODIF_FIELD') CYCLE
         MESH2%NVAR = MESH2%NVAR + NCOMP
       ENDDO
       IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 'NOMBRE DE VARIABLES :',
@@ -320,7 +320,7 @@
       IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 'NUMBER OF VARIABLES:',
      &                  MESH2%NVAR
       IF(MESH2%NVAR.EQ.0) THEN
-        IF(LNG.EQ.1) WRITE(LU,*) 
+        IF(LNG.EQ.1) WRITE(LU,*)
      &            'LE FICHIER NE CONTIENT PAS DE RESULTATS'
         IF(LNG.EQ.2) WRITE(LU,*) 'THE FILE CONTAINS NO RESULTS'
       ELSE
@@ -346,18 +346,18 @@
      &                UNITVAR2,DTUNIT,MESH2%TIMESTEP,IERR)
           CALL FNCT_CHECK(IERR,'MFDFDI')
           ! WE DON'T SAVE THE MODIF FIELD
-          IF (FIELDNAME(1:11).EQ.'MODIF_FIELD') 
+          IF (FIELDNAME(1:11).EQ.'MODIF_FIELD')
      &      DEALLOCATE(NAMEVAR2,UNITVAR2)
           IF (FIELDNAME(1:11).EQ.'MODIF_FIELD') CYCLE
           DO J=1,NCOMP
             MESH2%NAMEVAR(IVAR+J-1) = FIELDNAME(1:16)
             IF(NCOMP.NE.1) CALL RENAME_VECTOR(MESH2%NAMEVAR(IVAR+J-1),J)
             MESH2%UNITVAR(IVAR+J-1) = UNITVAR2(J)
-            IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 
+            IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*)
      &               'NOM DE LA VARIABLE : ',MESH2%NAMEVAR(IVAR+J-1)
             IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*)
      &               'UNITE DE LA VARIABLE : ',MESH2%UNITVAR(IVAR+J-1)
-            IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 
+            IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*)
      &               'NAME OF THE VARIABLE: ',MESH2%NAMEVAR(IVAR+J-1)
             IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*)
      &               'UNIT OF THE VARIABLE: ',MESH2%UNITVAR(IVAR+J-1)
@@ -365,9 +365,9 @@
           DEALLOCATE(NAMEVAR2,UNITVAR2)
           TYPENT = MED_NODE
           TYPGEO = MED_NONE
-          IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 
+          IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*)
      &                  'NOMBRE DE PAS DE TEMPS :',MESH2%TIMESTEP
-          IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 
+          IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*)
      &                  'NUMBER OF TIME STEPS:',MESH2%TIMESTEP
           ! DOING ALLOCATION ONLY ONCE
           IF(FIRST) THEN
@@ -387,10 +387,10 @@
             CALL MFDCSI(NINP,FIELDNAME,ITIME-1,IDUM,IDUM,
      &                  MESH2%TIMES(ITIME),IERR)
             CALL FNCT_CHECK(IERR,'MFDCSI')
-            IF(DEBUG.AND.(LNG.EQ.1)) 
+            IF(DEBUG.AND.(LNG.EQ.1))
      &               WRITE(LU,*) 'LECTURE DU PAS DE TEMPS :',
      &                 REAL(MESH2%TIMES(ITIME))
-            IF(DEBUG.AND.(LNG.EQ.2)) 
+            IF(DEBUG.AND.(LNG.EQ.2))
      &               WRITE(LU,*) 'READING VALUES FOR TIME:',
      &                 REAL(MESH2%TIMES(ITIME))
             ! GET THE NUMBER OF VALUE FOR THIS FIELD
@@ -404,43 +404,43 @@
             IF (NVAL .EQ. 0) THEN
               IF(LNG.EQ.1) WRITE(LU,*) 'PAS DE VALEUR ',
      &                  MESH2%NAMEVAR(IVAR),
-     &                  ' AU TEMPS :',MESH2%TIMES(ITIME)       
+     &                  ' AU TEMPS :',MESH2%TIMES(ITIME)
               IF(LNG.EQ.2) WRITE(LU,*) 'NO VALUE FOR ',
      &                  MESH2%NAMEVAR(IVAR),
-     &                  ' AT TIME:',MESH2%TIMES(ITIME)       
+     &                  ' AT TIME:',MESH2%TIMES(ITIME)
             ENDIF
             ! USING A ANOTHER TABLE BECAUSE SOMTIMES (QUASI BUBBLE) THE
             ! TABLE IS BIGGER THAN IT SHOULD BE
             IF(NVAL.NE.MESH2%NPOIN) THEN
-              IF(LNG.EQ.1) WRITE(LU,*) 
+              IF(LNG.EQ.1) WRITE(LU,*)
      &                    'NOMBRE DE VALEURS DIFFERENT DE',
      &                    ' POINTS * NOMBRE OF COMPOSANT',
      &                    'NVAL :',NVAL,'NPOIN :',MESH2%NPOIN
-              IF(LNG.EQ.2) WRITE(LU,*) 
+              IF(LNG.EQ.2) WRITE(LU,*)
      &                    'NUMBER OF VALUES DIFFERENT FROM NUMBER OF',
      &                    ' POINTS * NUMBER OF COMPONENT',
      &                    'NVAL :',NVAL,'NPOIN :',MESH2%NPOIN
             ENDIF
             ! IF THERE ARE VALUE IN THE FIELD
             ! READING THE FILED VALUES IN THE MESH FILE
-            IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 
+            IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*)
      &                  'NOMBRE DE COMPOSANT :',NCOMP
-            IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 
+            IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*)
      &                  'NUMBER OF COMPONANT:',NCOMP
             ALLOCATE(RES(NVAL*NCOMP),STAT=IERR)
             CALL FNCT_CHECK(IERR,'ALLOCATE RES')
             DO J=1,NCOMP
               CALL MFDRVR(NINP,FIELDNAME,ITIME-1,MED_NO_IT,TYPENT,
      &                    TYPGEO,MED_NO_INTERLACE,J,RES,IERR)
-              CALL FNCT_CHECK(IERR,'MFDRVR') 
-              MESH2%RESULTS(ITIME,IVAR+J-1,:) = 
+              CALL FNCT_CHECK(IERR,'MFDRVR')
+              MESH2%RESULTS(ITIME,IVAR+J-1,:) =
      &         RES((J-1)*MESH2%NPOIN+1:J*MESH2%NPOIN)
             ENDDO
             DEALLOCATE(RES)
             ! COPYING THE VALUES IN RESULTS
-            IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 
+            IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*)
      &                        '-FIN POUR LE PAS DE TEMPS',ITIME
-            IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 
+            IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*)
      &                        '-END FOR TIMESTEP',ITIME
           ENDDO
           IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) '--FIN POUR VAR',I
@@ -456,7 +456,7 @@
       MESH2%IB(:)=0
       MESH2%IB(1)=1
       IF(ALLOCATED(MESH2%KNOLG)) MESH2%IB(8)=1
-!      
+!
 !-----------------------------------------------------------------------
 !
       WRITE(LU,*) '----------------------------------------------------'
@@ -464,17 +464,17 @@
       IF(LNG.EQ.2) WRITE(LU,*) '------ENDING READING OF MED FILE'
       WRITE(LU,*) '----------------------------------------------------'
 #else
-      IF(LNG.EQ.1) WRITE(LU,*) 
+      IF(LNG.EQ.1) WRITE(LU,*)
      &       'ERREUR : TENTATIVE DE LECTURE D UN FICHIER MED ',
      &       'SANS LA BIBLIOTHEQUE'
-      IF(LNG.EQ.2) WRITE(LU,*) 
+      IF(LNG.EQ.2) WRITE(LU,*)
      &       'ERROR : TRYING TO READ MED FILE WITHOUT MED LIBRARY'
       CALL PLANTE(1)
 #endif
-! ENDIF HAVE_MED      
+! ENDIF HAVE_MED
       END SUBROUTINE
-!                       ***************** 
-                        SUBROUTINE WRITE_MED 
+!                       *****************
+                        SUBROUTINE WRITE_MED
 !                       *****************
      &(MEDFILE)
 !
@@ -484,7 +484,7 @@
 !
 !BRIEF    WRITE A FILE OF MED FORMAT WITH THE MESH OBJECT
 !+        INFORMATIONS
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
@@ -530,13 +530,13 @@
       IF(LNG.EQ.1) WRITE(LU,*) '------DEBUT ECRITURE DU FICHIER MED'
       IF(LNG.EQ.2) WRITE(LU,*) '------BEGINNING WRITTING OF MED FILE'
       WRITE(LU,*) '----------------------------------------------------'
-!      
+!
 !-----------------------------------------------------------------------
 !
       ! WRITING THE MESH INFORMATIONS
 !
       ! CREATING THE FILE
-      CALL MFIOPE(NOUT,MEDFILE,MED_ACC_CREAT,IERR) 
+      CALL MFIOPE(NOUT,MEDFILE,MED_ACC_CREAT,IERR)
       CALL FNCT_CHECK(IERR,'MFIOPE')
 !
       ! CREATING THE MESH
@@ -570,7 +570,7 @@
      &            MED_NO_INTERLACE,MESH2%NPOIN,COOR,IERR)
       CALL FNCT_CHECK(IERR,'MMHCOW')
       DEALLOCATE(COOR)
-!      
+!
       ! ADDING THE ELEMENTS
       ! CONSTRUCTING IKLE FOR MED
       ALLOCATE(CON(MESH2%NELEM*MESH2%NDP),STAT=IERR)
@@ -606,9 +606,9 @@
       DEALLOCATE(CON)
       ! ADDING THE 2D ELEMENTS IF THEY EXIST (ESTEL)
       IF(MESH2%NELEM2.NE.0) THEN
-        IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 
+        IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*)
      &                 '-AJOUT D UN SECOND TYPE D ELEMENT'
-        IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 
+        IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*)
      &                 '-ADDING SECOND ELEMENT TYPE'
         ALLOCATE(CON(MESH2%NELEM2*MESH2%NDP2),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE CON 2')
@@ -673,7 +673,7 @@
               ! WE TAKE ONLY FAMILIES ON NODES
               IF(MESH2%IDFAM(I).GT.0) THEN
                 IF(MESH2%LIHBOR(J).EQ.MESH2%VALFAM(I)) THEN
-                  MESH2%LIHBOR(J)=MESH2%IDFAM(I) 
+                  MESH2%LIHBOR(J)=MESH2%IDFAM(I)
                   I = MESH2%NFAM
                 ENDIF
               ENDIF
@@ -700,7 +700,7 @@
               ! WE ONLY DCONSIDER THE FAMILIES ON NODES (ID > 0)
               IF(MESH2%IDFAM(I).GT.0) THEN
                 IF(MESH2%COLOR(J).EQ.MESH2%VALFAM(I)) THEN
-                  MESH2%COLOR(J)=MESH2%IDFAM(I) 
+                  MESH2%COLOR(J)=MESH2%IDFAM(I)
                   ! FINISHING THE LOOP ON THE FAMILIES
                   I=MESH2%NFAM
                 ENDIF
@@ -721,7 +721,7 @@
             DO WHILE(I.LE.MESH2%NFAM)
               IF(MESH2%IDFAM(I).LT.0) THEN
                 IF(MESH2%NCOLOR(J).EQ.MESH2%VALFAM(I)) THEN
-                  MESH2%NCOLOR(J)=MESH2%IDFAM(I) 
+                  MESH2%NCOLOR(J)=MESH2%IDFAM(I)
                   ! END THE FAM LOOP
                   I=MESH2%NFAM
                 ENDIF
@@ -752,7 +752,7 @@
             DO WHILE(I.LE.MESH2%NFAM)
               IF(MESH2%IDFAM(I).LT.0) THEN
                 IF(MESH2%NCOLOR2(J).EQ.MESH2%VALFAM(I)) THEN
-                  MESH2%NCOLOR2(J)=MESH2%IDFAM(I) 
+                  MESH2%NCOLOR2(J)=MESH2%IDFAM(I)
                   ! END THE FAM LOOP
                   I=MESH2%NFAM
                 ENDIF
@@ -861,7 +861,7 @@
 !
       CALL MFICLO(NOUT,IERR)
       CALL FNCT_CHECK(IERR,'MFICLO')
-!      
+!
 !-----------------------------------------------------------------------
 !
       WRITE(LU,*) '----------------------------------------------------'
@@ -869,21 +869,21 @@
       IF(LNG.EQ.2) WRITE(LU,*) '------ENDING WRITTING OF MED FILE'
       WRITE(LU,*) '----------------------------------------------------'
 #else
-      IF(LNG.EQ.1) WRITE(LU,*) 
-     &     'ERREUR : TENTATIVE D ECRITURE D UN FICHIER MED ', 
+      IF(LNG.EQ.1) WRITE(LU,*)
+     &     'ERREUR : TENTATIVE D ECRITURE D UN FICHIER MED ',
      &     'SANS BIBLIOTHEQUE'
-      IF(LNG.EQ.2) WRITE(LU,*) 
+      IF(LNG.EQ.2) WRITE(LU,*)
      &     'ERROR : TRYING TO WRITE MED FILE WITHOUT MED LIBRARY'
       CALL PLANTE(1)
 #endif
-! ENDIF HAVE_MED      
+! ENDIF HAVE_MED
       END SUBROUTINE
 !
-!      
-#if defined(HAVE_MED)            
+!
+#if defined(HAVE_MED)
 !                    ************************
                      SUBROUTINE MED_GET_NELEM
-!                    ************************   
+!                    ************************
      & (MESHNAME,TYPGEO)
 !
 !***********************************************************************
@@ -891,7 +891,7 @@
 !***********************************************************************
 !
 !BRIEF    READS THE NUMBER OF ELEMENT IN A MED FILE
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
@@ -903,8 +903,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
         USE DECLARATIONS_STBTEL
-!        
-        IMPLICIT NONE      
+!
+        IMPLICIT NONE
         ! LANGAE AND OUTPUT VALUE
         INTEGER LNG,LU
         COMMON/INFO/LNG,LU
@@ -937,7 +937,7 @@
           ENDIF
           RETURN
         ENDIF
-! 
+!
         TYPGEO = MED_TETRA4
         MESH2%NDP = 4
         MESH2%TYPE_ELEM = TETRAHEDRON_ELT_TYPE
@@ -993,7 +993,7 @@
 
 !                    ************************
                      SUBROUTINE MED_GET_NELEM_BND
-!                    ************************   
+!                    ************************
      & (MESHNAME,TYPGEO)
 !
 !***********************************************************************
@@ -1001,7 +1001,7 @@
 !***********************************************************************
 !
 !BRIEF    READS THE NUMBER OF BOUNDARY ELEMENT IN A MED FILE
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
@@ -1014,8 +1014,8 @@
 !
 !
         USE DECLARATIONS_STBTEL
-!        
-        IMPLICIT NONE      
+!
+        IMPLICIT NONE
         ! LANGAE AND OUTPUT VALUE
         INTEGER LNG,LU
         COMMON/INFO/LNG,LU
@@ -1032,7 +1032,7 @@
 !-----------------------------------------------------------------------
 !
         IF(MESH2%NDIM.EQ.2) THEN
-          ! IN 2D THE BOUNDARY ELEMENT TYPE IS SEG 
+          ! IN 2D THE BOUNDARY ELEMENT TYPE IS SEG
           TYPGEO = MED_SEG2
           MESH2%NDP2 = 2
           MESH2%TYPE_ELEM2 = EDGE_BND_ELT_TYPE
@@ -1081,11 +1081,11 @@
         ENDIF
         MESH2%NELEM2 = NUM
 !
-      END SUBROUTINE 
+      END SUBROUTINE
 !
 !                    ************************
                      SUBROUTINE MED_BUILD_BND
-!                    ************************   
+!                    ************************
      & (LIMFILE,MESHNAME,TYPGEO,TYPGEO2)
 !
 !***********************************************************************
@@ -1093,7 +1093,7 @@
 !***********************************************************************
 !
 !BRIEF    READS THE NUMBER OF BOUNDARY ELEMENT IN A MED FILE
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
@@ -1107,8 +1107,8 @@
 !
         USE DECLARATIONS_STBTEL
         USE CONV_LIM
-!        
-        IMPLICIT NONE      
+!
+        IMPLICIT NONE
         ! LANGAE AND OUTPUT VALUE
         INTEGER LNG,LU
         COMMON/INFO/LNG,LU
@@ -1134,7 +1134,7 @@
       CALL MMHFNR(NINP,MESHNAME,MED_NO_DT,MED_NO_IT,MED_NODE,MED_NONE,
      &            MESH2%COLOR,IERR)
       ! DO NOT CHECK FOR IERR BECAUSE IF THEY ARE NO COLOR THE FUNCTION
-      ! FAILS 
+      ! FAILS
       ! COMPUTE NPTFR
       MESH2%NPTFR = COUNT(MESH2%COLOR.NE.0)
       IF(MESH2%NPTFR.EQ.0) THEN
@@ -1182,9 +1182,9 @@
           ENDIF
         ENDDO
       ENDIF
-      IF(DEBUG.AND.(LNG.EQ.1)) 
+      IF(DEBUG.AND.(LNG.EQ.1))
      &    WRITE(LU,*) 'NOMBRE DE POINT DE BORD :',MESH2%NPTFR
-      IF(DEBUG.AND.(LNG.EQ.2)) 
+      IF(DEBUG.AND.(LNG.EQ.2))
      &    WRITE(LU,*) 'NUMBER OF BOUNDARY POINTS:',MESH2%NPTFR
       ALLOCATE(MESH2%NCOLOR(MESH2%NELEM),STAT=IERR)
       CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%NCOLOR')
@@ -1237,7 +1237,7 @@
 !
 !                    ************************
                      SUBROUTINE MED_BUILD_BND_HYDRO
-!                    ************************   
+!                    ************************
      & (GRPFILE,MESHNAME,TYPGEO,TYPGEO2)
 !
 !***********************************************************************
@@ -1245,7 +1245,7 @@
 !***********************************************************************
 !
 !BRIEF    READS THE NUMBER OF BOUNDARY ELEMENT IN A MED FILE
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
@@ -1259,8 +1259,8 @@
 !
       USE DECLARATIONS_STBTEL
       USE CONV_LIM
-!      
-      IMPLICIT NONE      
+!
+      IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -1291,13 +1291,13 @@
       CALL FNCT_CHECK(IERR,'ALLOCATE GRP_VALUE')
       ALLOCATE(GRP_NAME(NGRP), STAT=IERR)
       CALL FNCT_CHECK(IERR,'ALLOCATE GRP_NAME')
-    
+
       DO I=1,NGRP
-        READ(666, '(A200)') LINE 
-        POS = INDEX(LINE, ':') 
+        READ(666, '(A200)') LINE
+        POS = INDEX(LINE, ':')
         GRP_NAME(I) = LINE(:POS-1)
         READ(LINE(POS+1:), *) GRP_VALUE(I)
-        WRITE(LU, *) TRIM(GRP_NAME(I)), ' <-> ', GRP_VALUE(I) 
+        WRITE(LU, *) TRIM(GRP_NAME(I)), ' <-> ', GRP_VALUE(I)
       ENDDO
       CLOSE(666)
 
@@ -1305,7 +1305,7 @@
       END SUBROUTINE
 !
       SUBROUTINE STB2MED_GEO(TYPE_ELEM,TYPGEO)
-!         GIVE MED EQUIVALENT FOR A GIVEN TELEMAC ELEMENT TYPE 
+!         GIVE MED EQUIVALENT FOR A GIVEN TELEMAC ELEMENT TYPE
       USE DECLARATIONS_STBTEL
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
@@ -1332,5 +1332,5 @@
       END SELECT
 
       END SUBROUTINE
-#endif      
+#endif
       END MODULE

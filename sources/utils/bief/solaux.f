@@ -89,7 +89,7 @@
         IAD=ITB
         CALL ADDBLO(TBB%ADR(IPT)%P,TB%ADR(IAD)%P)
         ITB = ITB + 1
-      ENDDO ! K 
+      ENDDO ! K
 !
 !-----------------------------------------------------------------------
 !

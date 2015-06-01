@@ -258,7 +258,7 @@
         A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
      &               - A64(IELEM) - A65(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -391,7 +391,7 @@
      &               - A54(IELEM) - A56(IELEM)
         A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
      &               - A64(IELEM) - A65(IELEM)
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -594,7 +594,7 @@
         A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
      &               - A64(IELEM) - A65(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ENDIF
 !

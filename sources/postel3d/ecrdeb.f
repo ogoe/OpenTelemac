@@ -100,9 +100,9 @@
         ALLOCATE(VAR_NAME(NBVAR),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'ECRDEB:VAR_NAME')
 !
-        IF (LNG.EQ.1) VAR_NAME(IVAR) = 
+        IF (LNG.EQ.1) VAR_NAME(IVAR) =
      &                        'INDICATEUR DOM.                 '
-        IF (LNG.EQ.2) VAR_NAME(IVAR) = 
+        IF (LNG.EQ.2) VAR_NAME(IVAR) =
      &                        'DOMAIN INDICATOR                '
         IVAR = IVAR + 1
 !
@@ -110,21 +110,21 @@
         ALLOCATE(VAR_NAME(NBVAR+2),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'ECRDEB:VAR_NAME')
 !
-        IF (LNG.EQ.1) VAR_NAME(IVAR) = 
+        IF (LNG.EQ.1) VAR_NAME(IVAR) =
      &                        'VITESSE UT      M/S             '
-        IF (LNG.EQ.2) VAR_NAME(IVAR) = 
+        IF (LNG.EQ.2) VAR_NAME(IVAR) =
      &                        'VELOCITY UT     M/S             '
         IVAR = IVAR + 1
 !
-        IF (LNG.EQ.1) VAR_NAME(IVAR) = 
+        IF (LNG.EQ.1) VAR_NAME(IVAR) =
      &                        'VITESSE W       M/S             '
-        IF (LNG.EQ.2) VAR_NAME(IVAR) = 
+        IF (LNG.EQ.2) VAR_NAME(IVAR) =
      &                        'VELOCITY W      M/S             '
         IVAR = IVAR + 1
 !
-        IF (LNG.EQ.1) VAR_NAME(IVAR) = 
+        IF (LNG.EQ.1) VAR_NAME(IVAR) =
      &                        'VITESSE UN      M/S             '
-        IF (LNG.EQ.2) VAR_NAME(IVAR) = 
+        IF (LNG.EQ.2) VAR_NAME(IVAR) =
      &                        'VELOCITY UN     M/S             '
         IVAR = IVAR + 1
 !

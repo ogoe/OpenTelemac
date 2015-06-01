@@ -154,7 +154,7 @@
           W5(IELEM) = SH2 * (SF2+SF5+SF5) + SHF2 + SHF5 + SHF5
           W6(IELEM) = SH3 * (SF3+SF6+SF6) + SHF3 + SHF6 + SHF6
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !

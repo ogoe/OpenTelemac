@@ -96,10 +96,10 @@
 ! phase de la houle
       TYPE(BIEF_OBJ), TARGET :: PHAS
 !brief SURFACE WAVE VELOCITY COMPONENT
-! vitesse en surface (a t=0)              
+! vitesse en surface (a t=0)
       TYPE(BIEF_OBJ), TARGET :: U0
 !brief SURFACE WAVE VELOCITY COMPONENT
-! vitesse en surface (a t=0)              
+! vitesse en surface (a t=0)
       TYPE(BIEF_OBJ), TARGET :: V0
 !brief MEAN COSINE OF WAVE DIRECTION
 ! moyennes des cosinus de la direction de houle
@@ -129,7 +129,7 @@
 ! coefficient de reflexion des parois
       TYPE(BIEF_OBJ), TARGET :: RP
 !brief ANGLE OF WAVE ATTACK (FROM NORMAL AXIS)
-! angle d'attaque de la houle sur les limites - pas seulement les parois (compte par rapport a a la normale , inclut dans [0;90]) 
+! angle d'attaque de la houle sur les limites - pas seulement les parois (compte par rapport a a la normale , inclut dans [0;90])
       TYPE(BIEF_OBJ), TARGET :: TETAP
 !brief DEPHASING CAUSED BY THE WALLS
 ! dephasage induit par la paroi entre l'onde reflechie et l'onde incidente (si alfap est positif, l'onde reflechie est en retard)
@@ -148,22 +148,22 @@
       TYPE(BIEF_OBJ), TARGET :: PHIIB
 
 !brief REAL PART OF INCIDENT POTENTIAL AT THE BOUNDARY
-! partie reelle du potentiel incident au bord 
+! partie reelle du potentiel incident au bord
       TYPE(BIEF_OBJ), TARGET :: PRB
 !brief IMMAGINARY PART OF INCIDENT POTENTIAL AT THE BOUNDARY
-! partie imaginaire du potentiel incident au bord 
+! partie imaginaire du potentiel incident au bord
       TYPE(BIEF_OBJ), TARGET :: PIB
 !brief REAL PART OF GRADIENT X COMPONENT OF INCIDENT POTENTIAL AT THE BOUNDARY
-! partie reele du gradient en X du potentiel incident au bord 
+! partie reele du gradient en X du potentiel incident au bord
       TYPE(BIEF_OBJ), TARGET :: DDXPRB
 !brief REAL PART OF GRADIENT Y COMPONENT OF INCIDENT POTENTIAL AT THE BOUNDARY
-! partie reele du gradient en Y du potentiel incident au bord 
+! partie reele du gradient en Y du potentiel incident au bord
       TYPE(BIEF_OBJ), TARGET :: DDYPRB
 !brief IMMAGINARY PART OF GRADIENT X COMPONENT OF INCIDENT POTENTIAL AT THE BOUNDARY
-! partie imaginaire du gradient en X du potentiel incident au bord 
+! partie imaginaire du gradient en X du potentiel incident au bord
       TYPE(BIEF_OBJ), TARGET :: DDXPIB
 !brief IMMAGINARY PART OF GRADIENT Y COMPONENT OF INCIDENT POTENTIAL AT THE BOUNDARY
-! partie imaginaire du gradient en Y du potentiel incident au bord 
+! partie imaginaire du gradient en Y du potentiel incident au bord
       TYPE(BIEF_OBJ), TARGET :: DDYPIB
 !brief COEFFICIENT FOR BOUNDARY CONDITIONS
 ! coefficient pour les conditions aux limites
@@ -177,7 +177,7 @@
 !brief COEFFICIENT FOR BOUNDARY CONDITIONS
 ! coefficient pour les conditions aux limites
       TYPE(BIEF_OBJ), TARGET :: DPHI1B
-!brief COEFFICIENT FOR BOUNDARY CONDITIONS 
+!brief COEFFICIENT FOR BOUNDARY CONDITIONS
 ! coefficient pour les conditions aux limites
       TYPE(BIEF_OBJ), TARGET :: CGRX1B
       TYPE(BIEF_OBJ), TARGET :: CGRY1B
@@ -220,10 +220,10 @@
 ! coefficient pour les conditions aux limites
       TYPE(BIEF_OBJ), TARGET :: DPHI4B
 !brief STORAGE OF ANGLE OF WAVE ATTACK (FROM NORMAL AXIS)
-! angle d'attaque de la houle sur les limites - pas seulement les parois (compte par rapport a a la normale , inclut dans [0;90]) 
+! angle d'attaque de la houle sur les limites - pas seulement les parois (compte par rapport a a la normale , inclut dans [0;90])
       TYPE(BIEF_OBJ), TARGET :: TETAPS
 !brief ANGLE OF WAVE ATTACK - IN LOOP STORAGE (FROM NORMAL AXIS)
-! angle d'attaque de la houle sur les limites - pas seulement les parois (compte par rapport a a la normale , inclut dans [0;90]) 
+! angle d'attaque de la houle sur les limites - pas seulement les parois (compte par rapport a a la normale , inclut dans [0;90])
       TYPE(BIEF_OBJ), TARGET :: TETAPM
 !
 !brief WORKING ARRAY
@@ -435,7 +435,7 @@
       INTEGER, PARAMETER :: MAXFRE = 300
 ! maximum de tableau du spectre TOMAWAC (direction)
       INTEGER, PARAMETER :: MAXDIR = 720
-!     OPEN BOUNDARY WITH INCIDENT POTENTIAL 
+!     OPEN BOUNDARY WITH INCIDENT POTENTIAL
       INTEGER, PARAMETER :: KPOT  =  7
 
 ! coordonnee de l'origine
@@ -560,9 +560,9 @@
       INTEGER NDTWC
 !brief DIRECTIONS FROM TOMAWAC
       INTEGER DTWC(2*MAXDIR+1)
-      
-      
-      
+
+
+
 !-----------------------------------------------------------------------
 !
 !       5) LOGICAL VALUES
@@ -620,13 +620,13 @@
 !brief COURANT
 ! Yes = current taken into account (defined in condih.f)
       LOGICAL COURANT
-!!brief AUTOMATIC ANGLES 
+!!brief AUTOMATIC ANGLES
 ! si oui,calcul automatique des angles de sortie TETAP
       LOGICAL LANGAUTO
 !!brief AUTOMATIC PHASES ON INCIDENT WAVE BOUNDARY
 ! si oui, calcul automatique des phases sur la frontière de type onde incidente (KINC)
       LOGICAL LPHASEAUTO
-!!brief CHAINING TOMAWAC AND ARTEMIS USING A TOMAWAC SPECTRUM ON A SINGLE POINT  
+!!brief CHAINING TOMAWAC AND ARTEMIS USING A TOMAWAC SPECTRUM ON A SINGLE POINT
 ! si oui, utilise un spectre issu de TOMAWAC (en 1 point) en entree du calcul artemis
       LOGICAL CHAINTWC
 !-----------------------------------------------------------------------
@@ -746,10 +746,10 @@
 !brief SUB-ITERATIONS ACCURACY FOR CURRENT(WAVE VECTOR DIRECTION)
 ! precision sur les sous-iterations pour le courant (direction vecteur d'onde)
       DOUBLE PRECISION EPSDIR
-!brief SUB-ITERATIONS ACCURACY FOR TETAP 
+!brief SUB-ITERATIONS ACCURACY FOR TETAP
 ! precision sur les sous-iterations sur le TETAP
       DOUBLE PRECISION EPSTP
-!briefRELAXATION COEFFICIENT FOR TETAP 
+!briefRELAXATION COEFFICIENT FOR TETAP
 ! coefficient de relaxation pour calcul automatic de TETAP
       DOUBLE PRECISION RELTP
 !brief SPECTRUM FROM TOMAWAC
@@ -762,7 +762,7 @@
       DOUBLE PRECISION FTWC(2*MAXFRE+1)
 !brief TIME AT WHICH TOMAWAC SPECTRUM IS TAKEN
       DOUBLE PRECISION TPSTWC
-! Significant wave height corresponding to global 
+! Significant wave height corresponding to global
 ! energy contained in TOMAWAC spectrum
       DOUBLE PRECISION HSCAL
 !-----------------------------------------------------------------------

@@ -12,10 +12,10 @@
 !+     V3.0.4 CHANGES MIGHT BE REQUIRED WITH FUTURE VERSIONS OF MED.
 !
 !history YOANN AUDOUIN
-!+       25/05/2015     
+!+       25/05/2015
 !+       V7P0
-!+       ADAPTING CODE TO MED V3.0.4         
-! 
+!+       ADAPTING CODE TO MED V3.0.4
+!
 !history VINCENT STOBIAC
 !+       23/05/2014
 !+       ADDING GENERAL MED SUBROUTINES
@@ -62,7 +62,7 @@
       SUBROUTINE GET_MED_OBJ(FILE_ID,INFO,IERR)
 !
 !brief    GET THE ID OF A MED FILE
-!                     
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_ID     |<--| ID OF THE FILE
 !| INFO        |-->| MED NUMBERING OF THE FILE
@@ -70,7 +70,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
         IMPLICIT NONE
-! 
+!
         INTEGER, INTENT(IN) :: FILE_ID
         INTEGER, INTENT(INOUT) :: INFO
         INTEGER, INTENT(OUT) :: IERR
@@ -87,7 +87,7 @@
             IF (HASH(I).EQ.FILE_ID) MED_ID = I
           ENDDO
         ENDIF
-!        
+!
 !       IF MED_ID == 0 THEN NO ID WAS FOUND RETURN ERROR
         IF(MED_ID.EQ.0) THEN
           IERR = HERMES_FILE_NOT_OPENED_ERR
@@ -104,7 +104,7 @@
       SUBROUTINE ADD_MED_OBJT_FILE(FILE_ID,MED_ID,IERR)
 !
 !brief    ADD NEW MED FILE IN HASH TABLE
-!                     
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_ID     |<--| ID OF THE FILE
 !| MED_ID      |-->| MED NUMBERING OF THE FILE
@@ -112,7 +112,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
         IMPLICIT NONE
-! 
+!
         INTEGER, INTENT(IN)  :: FILE_ID
         INTEGER, INTENT(OUT) :: IERR
         INTEGER, INTENT(INOUT) :: MED_ID
@@ -123,12 +123,12 @@
 !
 !       CHECK IF THE FILE IS ALREADY OPEN
         CALL GET_MED_OBJ(FILE_ID,MED_ID,IERR)
-        IF(MED_ID.NE.0) THEN 
+        IF(MED_ID.NE.0) THEN
           IERR = HERMES_FILE_ID_ALREADY_IN_USE_ERR
           RETURN
         ENDIF
 !
-!       WE RESET THE IERR TO ZERO AS THE PREVIOUS CALL SHOULD 
+!       WE RESET THE IERR TO ZERO AS THE PREVIOUS CALL SHOULD
 !       HAVE CRASHED AS THE FILE IS NOT OPENED YET
         IERR = 0
 !
@@ -183,7 +183,7 @@
         CASE('WRITE    ')
           MED_MODE = MED_ACC_CREAT
         CASE DEFAULT
-!         OPEN MODE IS INVALID          
+!         OPEN MODE IS INVALID
           IERR = HERMES_INVALID_OPEN_MODE_ERR
       END SELECT
 !
@@ -256,7 +256,7 @@
       IF(I.EQ.NFILES) THEN
         HASH(I) = 0
       ELSE
-        DO 
+        DO
           HASH(I) = HASH(I+1)
           I = I + 1
           IF(I.GE.NFILES) EXIT
@@ -298,12 +298,12 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
         IMPLICIT NONE
-!     
+!
         CHARACTER(LEN=*), INTENT(IN)  :: FILE_NAME
         INTEGER,          INTENT(IN)  :: FILE_ID
         CHARACTER(LEN=9), INTENT(IN)  :: OPEN_MODE
         INTEGER,          INTENT(OUT) :: IERR
-!     
+!
         INTEGER :: MED_ID,OFFSET
         LOGICAL :: ISOPENED
 !
@@ -312,7 +312,7 @@
         CALL GET_MED_OBJ(FILE_ID,MED_ID,IERR)
         CALL CHECK_CALL(IERR,'OPEN_BND_MED:GET_MED_OBJ')
 !
-!       In order to know the file_id for the boundary file we pick one 
+!       In order to know the file_id for the boundary file we pick one
 !       by adding an offset set to 666 worhsip satan...
         OFFSET = 666
         MED_OBJ_TAB(MED_ID)%NCLI = OFFSET + FILE_ID
@@ -341,7 +341,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
         IMPLICIT NONE
-!      
+!
         INTEGER, INTENT(IN)  :: FILE_ID
         INTEGER, INTENT(OUT) :: IERR
 !
@@ -355,7 +355,7 @@
 !
         IERR = 0
         ISOPENED = .FALSE.
-        ! CHECK IF THE FILE IS STILL OPENED AS IT COULD HAVE BEEN CLOSED 
+        ! CHECK IF THE FILE IS STILL OPENED AS IT COULD HAVE BEEN CLOSED
         ! BY ANOTHER MESH FILE (SEE OPEN_BND_SRF FOR MORE INFORMATION)
         INQUIRE(UNIT=MED_OBJ_TAB(MED_ID)%NCLI,OPENED=ISOPENED)
         IF(ISOPENED) THEN
@@ -472,7 +472,7 @@
       CALL CONVERT_ELEM_TYPE(TYPE_ELEM, TYPE_ELEM_MED, IERR)
       CALL CHECK_CALL(IERR,'GET_MESH_NELEM_MED_MED:CONVERT_ELEM_TYPE')
 !
-!     READ TOTAL NUMBER OF ELEMENTS 
+!     READ TOTAL NUMBER OF ELEMENTS
       CALL MMHNME(FILE_ID,MNAME,MED_NO_DT,MED_NO_IT,MED_CELL,
      &  TYPE_ELEM_MED,MED_CONNECTIVITY,MED_NODAL,CHGT,TSF,NELEM,IERR)
       CALL CHECK_CALL(IERR,'GET_MESH_NELEM_MED_MED:MMHNME')
@@ -966,7 +966,7 @@
       LOGICAL :: SWAP
 !
 !-----------------------------------------------------------------------
-!     
+!
 !     GET INFO FROM THE MED FILE OBJECT
       CALL GET_MED_OBJ(FILE_ID,MED_ID,IERR)
       CALL CHECK_CALL(IERR,'GET_BND_NUMBERING_MED:GET_MED_OBJ')
@@ -985,15 +985,15 @@
 !       CONVERTS TYPE OF ELEMENTS
         CALL CONVERT_ELEM_TYPE(TYP_ELEM_BND, TYPE_ELEM_MED, IERR)
         CALL CHECK_CALL(IERR,'GET_BND_NUMBERING_MED:CONVERT_ELEM_TYPE')
-!       
+!
 !       DETERMINE THE NUMBER OF NODES PER ELEMENT FROM THE TYPE
         CALL NDP_FROM_ELEMENT_TYPE_MED(TYPE_ELEM_MED,NDP,IERR)
         CALL CHECK_CALL(IERR,
      &                  'GET_BND_NUMBERING_MED:NDP_FROM_ELT_TYPE_MED')
-! 
+!
         CALL GET_BND_NELEM_MED(FILE_ID,TYP_ELEM_BND,NELEBD,IERR)
         CALL CHECK_CALL(IERR,'GET_BND_NUMBERING_MED:GET_BND_NELEM_MED')
-!       
+!
 !       READ THE ONNECTIVITY TABLE OF THE BOUNDARY ELEMENTS
         ALLOCATE(IKLE(NDP*NELEBD),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'GET_BND_NUMBERING_MED:BND_IKLE')
@@ -1001,7 +1001,7 @@
         CALL MMHCYR(FILE_ID,MNAME,MED_NO_DT,MED_NO_IT,MED_CELL,
      &    TYPE_ELEM_MED,MED_NODAL,MED_NO_INTERLACE,IKLE,IERR)
         CALL CHECK_CALL(IERR,'GET_BND_NUMBERING_MED:MMHCYR')
-! 
+!
 !       REORDER THE BOUNDARY POINT TO COMPLY WITH TELEMAC CONVENTION (SEE DOCUMENTATION)
         CALL GET_MESH_NPOIN_MED(FILE_ID,TYP_ELEM_BND,NPOIN,IERR)
         CALL CHECK_CALL(IERR,
@@ -1049,29 +1049,29 @@
             SOM2  = SOM1
             ISUIV = I
           ENDIF
-!       
+!
         ENDDO
-!       
+!
         NOEUD1 = TRAV1(ISUIV,1)
         NOEUD2 = TRAV1(ISUIV,2)
         TRAV1(ISUIV,1) = TRAV1(1,1)
         TRAV1(ISUIV,2) = TRAV1(1,2)
         TRAV1(1,1) = NOEUD1
         TRAV1(1,2) = NOEUD2
-!       
+!
         IILE = 0
         NILE = 1
-!       
+!
         DO I=2,NPTFR
           SWAP = .FALSE.
 !
 !         SEACH OF THE EDGE WHOSE FIRST NODE IS IDENTICAL TO THE SECOND ONE
 !         OF THE PREVIOUS EDGE
           DO ISUIV=I,NPTFR
-!       
+!
             IF (TRAV1(ISUIV,1).EQ.TRAV1(I-1,2)) THEN
 !
-!             PERMUTATION OF EDGE WITH NUMBER I+1 AND ISUIV 
+!             PERMUTATION OF EDGE WITH NUMBER I+1 AND ISUIV
               NOEUD1 = TRAV1(ISUIV,1)
               NOEUD2 = TRAV1(ISUIV,2)
               TRAV1(ISUIV,1) = TRAV1(I,1)
@@ -1082,9 +1082,9 @@
               KP1BOR(I-1) = I
               SWAP = .TRUE.
               EXIT
-!       
+!
             ENDIF
-!       
+!
           ENDDO! ISUIV
           IF(SWAP) CYCLE
 !
@@ -1092,7 +1092,7 @@
 !         POINTS ARE IDENTICAL. IT MEANS WE FOUND AN ISLAND, SO WE RETURN TO THE
 !         GLOBAL LOOP
           IF (TRAV1(NILE,1).NE.TRAV1(I-1,2)) THEN
-! 
+!
 !           OTHERWISE IT IS AN ERROR
             WRITE(*,4500) TRAV1(I-1,2)
 4500        FORMAT(1X,'ERROR IN STORING THE EDGE SEGMENTS',/,
@@ -1100,14 +1100,14 @@
             CALL PLANTE(1)
             STOP
           ENDIF
-!       
+!
           KP1BOR(NILE+NPTFR) = I-1
           KP1BOR(I-1) = NILE
           IILE = IILE+1
           NILE = I
-!       
+!
         ENDDO! I
-!       
+!
 !       WE VERIFY THAT THE LAST ISLAND IS CLOSED
         IF (TRAV1(NILE,1).NE.TRAV1(NPTFR,2)) THEN
           WRITE(*,5000) TRAV1(NILE,1),TRAV1(NPTFR,2)
@@ -1116,10 +1116,10 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-!       
+!
         KP1BOR(NILE+NPTFR) = NPTFR
         KP1BOR(NPTFR) = NILE
-!       
+!
         WRITE(*,5500) NPTFR
         WRITE(*,5600) IILE
  5500   FORMAT(1X,'NUMBER OF BOUNDARY POINTS      : ',I5)
@@ -1132,8 +1132,8 @@
           NBOR(I      ) = TRAV1(I,1)
           MED_OBJ_TAB(MED_ID)%NBOR(I) = NBOR(I)
         ENDDO
-        
-       
+
+
         DEALLOCATE(IKLE)
         DEALLOCATE(X,Y)
         DEALLOCATE(TRAV1)
@@ -1263,7 +1263,7 @@
 !
       SUBROUTINE GET_BND_FAM_VALUE_MED (FILE_ID, FAM_NAME, VALUE, IERR)
 !
-!BRIEF    GIVES THE VALUE OF THE BOUNDARY CONDITIONS ASSOCIATED TO A 
+!BRIEF    GIVES THE VALUE OF THE BOUNDARY CONDITIONS ASSOCIATED TO A
 !         FAMILY NAME
 !
 !WARNING  THIS FUNCTION COULD BE OPTIMIZED BY READING ALL THE INFO AT
@@ -1420,7 +1420,7 @@
             DO I=1,NB_GRP
 !             NEW GROUP IS FOUND
               IGRP = IGRP + 1
-!            
+!
 !             STORE INFORMATION ON THE FAMILY
               TEMP_NUM(IGRP) = INUM
               TEMP_NAME(IGRP) = GRP_NAME(I)
@@ -1596,7 +1596,7 @@
 !       CONVERTS TYPE OF ELEMENTS
         CALL CONVERT_ELEM_TYPE(TYP_BND_ELEM, TYPE_ELEM_MED, IERR)
         CALL CHECK_CALL(IERR,'GET_BND_VALUE_MED:CONVERT_ELEM_TYPE')
-!      
+!
 !       DETERMINE THE NUMBER OF NODES PER ELEMENT FROM THE TYPE
         CALL NDP_FROM_ELEMENT_TYPE_MED(TYPE_ELEM_MED,NDP,IERR)
         CALL CHECK_CALL(IERR,'GET_BND_VALUE_MED:NDP_FROM_ELT_TYPE_MED')
@@ -1607,7 +1607,7 @@
         CALL CHECK_ALLOCATE(IERR,'GET_BND_VALUE_MED:IKLE')
 !
 !       GET THE NAME OF THE FAMILY FOR EACH ELEMENT
-        CALL GET_BND_FAMILY_MED(FILE_ID, TYP_BND_ELEM, NELEBD, 
+        CALL GET_BND_FAMILY_MED(FILE_ID, TYP_BND_ELEM, NELEBD,
      &                         FAMILY, IERR)
         CALL CHECK_CALL(IERR,'GET_BND_VALUE_MED:GET_BND_FAMILY_MED')
 !
@@ -1656,7 +1656,7 @@
 !       FREE MEMORY
         DEALLOCATE(FAMILY)
         DEALLOCATE(IKLE)
-!        
+!
       END SUBROUTINE
 !
 !-----------------------------------------------------------------------
@@ -1697,7 +1697,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      SUBROUTINE GET_DATA_VAR_LIST_MED (FILE_ID, NVAR, VAR_LIST, 
+      SUBROUTINE GET_DATA_VAR_LIST_MED (FILE_ID, NVAR, VAR_LIST,
      &                                  UNIT_LIST, IERR)
 !
 !BRIEF    READS THE LIST OF THE DATA NAME
@@ -1784,7 +1784,7 @@
       CALL CHECK_CALL(IERR,'GET_DATA_NTIMESTEP_MED:GET_MED_OBJ')
       MNAME = MED_OBJ_TAB(MED_ID)%MESH_NAME
 !
-!     READ THE NUMBER OF VARIABLES 
+!     READ THE NUMBER OF VARIABLES
       CALL MFDNFD(FILE_ID,NVAR,IERR)
       CALL CHECK_CALL(IERR,'GET_DATA_NTIMESTEP_MED:MFDNFD')
 !
@@ -2001,7 +2001,7 @@
 !| NELEM          |<--| TOTAL NUMBER OF ELEMENTS
 !| NPOIN          |<--| TOTAL NUMBER OF NODES
 !| IKLE           |<--| CONNECTIVITY TABLE
-!| IPOBO          |<--| LOGICAL TABLE FOR BOUNDARY NODES 
+!| IPOBO          |<--| LOGICAL TABLE FOR BOUNDARY NODES
 !| KNOLG          |<--| NODES INDEX TABLE FROM LOCAL TO GLOBAL
 !| COORD          |<--| COORDINATES OF THE NODES
 !| IERR           |-->| ERROR TAG
@@ -2106,7 +2106,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      SUBROUTINE ADD_DATA_MED (FILE_ID, VAR_NAME, TIME, RECORD, 
+      SUBROUTINE ADD_DATA_MED (FILE_ID, VAR_NAME, TIME, RECORD,
      &  VAR_VALUE, N, IERR)
 !
 !BRIEF    WRITE DATA VALUES FOR A GIVEN VARIABLE
@@ -2136,7 +2136,7 @@
       CHARACTER(LEN=MED_NAME_SIZE) :: MNAME, VAR_NAME_MED
       CHARACTER(LEN=MED_SNAME_SIZE) :: VAR_COMP_MED, UNIT_VAR_MED
       CHARACTER(LEN=MED_SNAME_SIZE) :: UNIT_TIME_MED
-      INTEGER :: NB_COMP    
+      INTEGER :: NB_COMP
       INTEGER :: MED_ID
 !
 !-----------------------------------------------------------------------
@@ -2285,7 +2285,7 @@
       WRITE(NCLI,*) 4, 6, 6, 6, 'CONLIM_4666'
       WRITE(NCLI,*) 4, 5, 5, 5, 'CONLIM_4555'
       WRITE(NCLI,*) 5, 4, 4, 4, 'CONLIM_5444'
-      
+
 #else
 !
 !     MED LIBRARY NOT LOADED
@@ -2348,7 +2348,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      SUBROUTINE BLANC2_(STRING) 
+      SUBROUTINE BLANC2_(STRING)
 !
 !BRIEF    WRITE ' ' TO '_'
 !
@@ -2378,9 +2378,9 @@
 !
       SUBROUTINE IFVECTOR_(STRING,COMP_NUM,ISVECTOR)
 !
-!BRIEF    FIND '_U_' '_V_' '_W_' '_X_' '_Y_' '_Z_' IN NAME FIELD OF SCALAR 
+!BRIEF    FIND '_U_' '_V_' '_W_' '_X_' '_Y_' '_Z_' IN NAME FIELD OF SCALAR
 !         OR VECTOR
-!                     
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| STRING         |<->| THE NAME OF THE VARIABLE TO TEST
 !| COMP_NUM       |<--| DIRECTION OF VECTOR
@@ -2396,7 +2396,7 @@
 !
       ISVECTOR = .FALSE.
       COMP_NUM = 0
-       
+
       IF (STRING(1:6)/='COTE_Z') THEN
       DO J = 2,31
         IF (STRING(J-1:J+1) .EQ. '_U_') THEN
@@ -2459,7 +2459,7 @@
       SUBROUTINE CONVERT_ELEM_TYPE(TYPE_ELEM,TYPE_ELEM_MED,IERR)
 !
 !BRIEF    CONVERTS ELEMENT TYPE FROM SLF FORMAT TO MED
-!                     
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| TYPE_ELEM         |<--| ELEMENT TYPE WITH SLF FORMAT
 !| TYPE_ELEM_MED     |-->| ELEMENT TYPE WITH MED FORMAT
@@ -2518,7 +2518,7 @@
       SUBROUTINE NDP_FROM_ELEMENT_TYPE_MED(TYPE_ELEM_MED,NDP,IERR)
 !
 !brief    DEDUCES NUMBER OF NODES FROM ELEMENT TYPE IN MED NUMBERING
-!                     
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| TYPE_ELEM_MED     |-->| ELEMENT TYPE WITH MED NUMBERING
 !| NDP               |-->| NUMBER OF NODES PER ELEMENT
@@ -2552,7 +2552,7 @@
 !     ERROR IF UNKNOWN ELEMNT TYPE
       IF (NDP .EQ. -99) IERR = HERMES_UNKNOWN_ELEMENT_TYPE_ERR
 !
-#endif 
+#endif
       RETURN
       END SUBROUTINE
 !

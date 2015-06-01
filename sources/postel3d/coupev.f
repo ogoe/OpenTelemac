@@ -83,7 +83,7 @@
 !
       DOUBLE PRECISION U(NPOIN2,JM),V(NPOIN2,JM),W(NPOIN2,JM)
       DOUBLE PRECISION Z(NPOIN2,JM)
-      
+
       DOUBLE PRECISION TAB1(IM,JM),TAB2(IM,JM),TAB3(IM,JM)
       DOUBLE PRECISION X2DV(50,NC2DV),Y2DV(50,NC2DV),DISTOR(NC2DV)
       DOUBLE PRECISION LGDEB,LGSEG,ALFA,COST,SINT,A1,A2,A3,U1,V1
@@ -103,7 +103,7 @@
       INTEGER IKLE(((IM-1)*(JM-1))*2,3),IPOBO(IM*JM),NUMELEM
 !
 !     END OF NEW VARIABLES
-!      
+!
       LOGICAL FLAG
 !
       CHARACTER*32 TEXTLU(100)
@@ -292,23 +292,23 @@
         ENDDO !I
         IREC = 0
 !
-        IF (LNG.EQ.1) VAR_NAME = 
+        IF (LNG.EQ.1) VAR_NAME =
      &                        'VITESSE UT      M/S             '
-        IF (LNG.EQ.2) VAR_NAME = 
+        IF (LNG.EQ.2) VAR_NAME =
      &                        'VELOCITY UT     M/S             '
         CALL ADD_DATA(FFORMAT,CANAL,VAR_NAME,AT,IREC,.TRUE.,TAB1,
      &                IM*JM,IERR)
         CALL CHECK_CALL(IERR,'COUPEV:ADD_DATA:UT')
-        IF (LNG.EQ.1) VAR_NAME = 
+        IF (LNG.EQ.1) VAR_NAME =
      &                        'VITESSE W       M/S             '
-        IF (LNG.EQ.2) VAR_NAME = 
+        IF (LNG.EQ.2) VAR_NAME =
      &                        'VELOCITY W      M/S             '
         CALL ADD_DATA(FFORMAT,CANAL,VAR_NAME,AT,IREC,.FALSE.,TAB2,
      &                IM*JM,IERR)
         CALL CHECK_CALL(IERR,'COUPEV:ADD_DATA:W')
-        IF (LNG.EQ.1) VAR_NAME = 
+        IF (LNG.EQ.1) VAR_NAME =
      &                        'VITESSE UN      M/S             '
-        IF (LNG.EQ.2) VAR_NAME = 
+        IF (LNG.EQ.2) VAR_NAME =
      &                        'VELOCITY UN     M/S             '
         CALL ADD_DATA(FFORMAT,CANAL,VAR_NAME,AT,IREC,.FALSE.,TAB3,
      &                IM*JM,IERR)

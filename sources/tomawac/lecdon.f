@@ -56,9 +56,9 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BINDON         |-->| BINAIRE DU FICHIER DES DONNEES  (INDIC>2)
 !| CHDON          |-->| NAME OF THE VARIABLE READ FROM THE DATA FILE
-!| F1             |<--| FIRST VARIABLE TO READ 
-!| F2             |<--| SECOND VARIABLE TO READ 
-!| F3             |<--| THIRD VARIABLE TO READ 
+!| F1             |<--| FIRST VARIABLE TO READ
+!| F2             |<--| SECOND VARIABLE TO READ
+!| F3             |<--| THIRD VARIABLE TO READ
 !| INDIC          |-->| FILE FORMAT
 !| MODE1          |-->| MODE: 0= DO NOT READ
 !|                |   |       1= READ IF PRESENT
@@ -142,10 +142,10 @@
         ! Getting title
         CALL GET_MESH_TITLE(FFORMAT,NDON,TITCAS,IERR)
         CALL CHECK_CALL(IERR,'LECDON:GET_MESH_TITLE')
-        ! 
+        !
         CALL GET_DATA_NVAR(FFORMAT,NDON,NVAR,IERR)
         CALL CHECK_CALL(IERR,'LECDON:GET_DATA_NVAR')
-        ! 
+        !
         ALLOCATE(VAR_NAME(NVAR),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'LECDON:VAR_NAME')
         ALLOCATE(VAR_UNIT(NVAR),STAT=IERR)

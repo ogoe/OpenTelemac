@@ -629,7 +629,7 @@
         ENDIF
       ENDIF
 !
-      ENDDO ! IFRLIQ 
+      ENDDO ! IFRLIQ
       ENDIF
 !
 !     RESETS BOUNDARY CONDITIONS ON U AND V (WILL BE USED BY TFOND
@@ -927,7 +927,7 @@
             TREEL=TA%ADR(ITRAC)%P%R(NPOIN3-NPOIN2+I)
             RO=RO0*(1.D0-(7.D0*(TREEL-4.D0)**2-750.D0*SAL)*1.D-6)
             LAMB=RO*CP
-            S0TA%ADR(ITRAC)%P%R(J) = 
+            S0TA%ADR(ITRAC)%P%R(J) =
      &       KD*EXP(KD*(Z(J)-Z(I+(NPLAN-1)*NPOIN2)))
      &      *RAY_SOL/LAMB
 !

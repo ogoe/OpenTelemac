@@ -62,14 +62,14 @@
                      SUBROUTINE QVEG
 !                    ***************
 !
-     &( TSTOT , TSDER , F , VARIAN , DEPTH, FMOY , 
+     &( TSTOT , TSDER , F , VARIAN , DEPTH, FMOY ,
      &  XKMOY , NF    , NPLAN  , NPOIN2   , BETA  )
 !
 !***********************************************************************
-! TOMAWAC   V7P0                                 
+! TOMAWAC   V7P0
 !***********************************************************************
 !
-!brief    Takes into account the friction due to vegetation      
+!brief    Takes into account the friction due to vegetation
 !
 !history  VITO BACCHI (EDF - LNHE)
 !+        12/09/2014
@@ -98,7 +98,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
-      DOUBLE PRECISION, INTENT(IN)    :: XKMOY(NPOIN2),VARIAN(NPOIN2) 
+      DOUBLE PRECISION, INTENT(IN)    :: XKMOY(NPOIN2),VARIAN(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2),FMOY(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: BETA(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NPOIN2,NPLAN,NF)
@@ -115,7 +115,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!     NUMBER OF PLANTS*SQM 
+!     NUMBER OF PLANTS*SQM
       NV = 20.D0
 !     PLANT AREA PER UNINT HEIGHT
       BV = 0.25D0
@@ -129,7 +129,7 @@
 !
 !       VEGETATION OVER A CONSTANT DEPTH
 !       COMPUTES THE BETA COEFFICIENT : QVEG1 = BETA * F
-!    
+!
         DO IP=1,NPOIN2
           IF(X(IP).LT.50.D0.OR.X(IP).GT.150.D0) THEN
             ALFA = 0.D0
@@ -147,9 +147,9 @@
 !
 !
 !       LOOP OVER THE DISCRETISED FREQUENCIES
-!          
+!
 !         TAKES THE SOURCE TERM INTO ACCOUNT
-!         
+!
         DO JF=1,NF
           DO JP=1,NPLAN
             DO IP=1,NPOIN2
@@ -334,20 +334,20 @@
 !     THE FIRST TIME (AND POSSIBLY SUBSEQUENTLY IF THE WIND IS NOT
 !     STATIONARY AND IF THE BOUNDARY SPECTRUM DEPENDS ON IT),
 !     COMPUTES THE BOUNDARY SPECTRUM
-!    
+!
       IF(LT.LT.1 .OR. (.NOT.VENSTA.AND.FLAG) .OR. SPEULI) THEN
         IF(FLAG) THEN
           DO IPTFR=1,NPTFR
             UV2D(IPTFR)=UV(NBOR(IPTFR))
             VV2D(IPTFR)=VV(NBOR(IPTFR))
-          ENDDO     
+          ENDDO
         ENDIF
         IF(LIMSPE.EQ.7 .OR. SPEULI) THEN
           DO IPTFR=1,NPTFR
             PROF(IPTFR)=DEPTH(NBOR(IPTFR))
           ENDDO
         ENDIF
-!   
+!
         E2FMIN = 1.D-30
 !
 !       WHEN NPB=1 FBOR ONLY FILLED FOR FIRST POINT

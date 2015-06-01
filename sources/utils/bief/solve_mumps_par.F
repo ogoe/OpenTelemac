@@ -6,7 +6,7 @@
      & NPOIN_TOT,IPID)
 !
 !***********************************************************************
-!  BIEF VERSION 7.1    
+!  BIEF VERSION 7.1
 !***********************************************************************
 !
 !brief    PARALLEL DIRECT SYSTEM SOLUTION
@@ -28,11 +28,11 @@
 !| ...            |-->| ...
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!     PARALLEL SOLVING USING MUMPS 
+!     PARALLEL SOLVING USING MUMPS
       USE DECLARATIONS_PARALLEL
-!      
+!
       IMPLICIT NONE
-!     structures MPI et MUMPS     
+!     structures MPI et MUMPS
 #if defined (HAVE_MUMPS)
       INCLUDE 'dmumps_struc.h'
 #endif
@@ -49,7 +49,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      COMMON/INFO/LNG,LU 
+      COMMON/INFO/LNG,LU
       INTEGER LNG,LU
 #if defined (HAVE_MUMPS)
 !
@@ -59,9 +59,9 @@
       TYPE (DMUMPS_STRUC) MUMPS_PAR
 !     INDIRECT ARRAYS
       DOUBLE PRECISION ,ALLOCATABLE :: TEMP1(:),TEMP2(:),TEMP3(:)
-      INTEGER TAILLE 
+      INTEGER TAILLE
       INTEGER I,J,K,ERR,NBELEM,IERR,II,NC,IER
-!      
+!
 !     MUMPS INITIALISATION
       MUMPS_PAR%COMM = MPI_COMM_WORLD
       MUMPS_PAR%JOB = -1
@@ -73,19 +73,19 @@
       MUMPS_PAR%PAR = 1
       CALL DMUMPS(MUMPS_PAR)
 !     NO INFORMATION COMING FROM MUMPS ARE PRINTED
-!     TO BE MODIFIED TO INTRODUCE A DEBGUGGING MODE 
+!     TO BE MODIFIED TO INTRODUCE A DEBGUGGING MODE
       MUMPS_PAR%ICNTL(3)=-1
       MUMPS_PAR%ICNTL(4)=0
 !     THE MATRIX IS DISTRIBUTED OVER PROCESSORS AND PROVIDED BY THE USER
       MUMPS_PAR%ICNTL(18)=3
-!     THE MATRIX IS ASSEMBLED 
+!     THE MATRIX IS ASSEMBLED
       MUMPS_PAR%ICNTL(5)=0
 !     AUTOMATIC SCALING OF THE MATRIX
       MUMPS_PAR%ICNTL(6)=7
 !     AUTOMATIC REORDERING OF THE MATRIX
       MUMPS_PAR%ICNTL(7)=7
       MUMPS_PAR%ICNTL(11)=1
-!     
+!
       MUMPS_PAR%ICNTL(8)=77
       MUMPS_PAR%ICNTL(11)=77
       MUMPS_PAR%ICNTL(10)=10
@@ -94,12 +94,12 @@
 !
 !     SIZE OF THE MATRIX
       MUMPS_PAR%N = 2*NPOIN_TOT
-      IF(TYPEXT.EQ.'S') THEN 
+      IF(TYPEXT.EQ.'S') THEN
         MUMPS_PAR%NZ_LOC = NPOIN+NSEGB
       ELSE
         MUMPS_PAR%NZ_LOC = NPOIN+2*NSEGB
       ENDIF
-      IF (.NOT. ASSOCIATED(MUMPS_PAR%IRN_LOC)) THEN 
+      IF (.NOT. ASSOCIATED(MUMPS_PAR%IRN_LOC)) THEN
         ALLOCATE(TEMP1(MUMPS_PAR%N),STAT=ERR)
         IF(ERR.NE.0) GOTO 100
         ALLOCATE(TEMP2(MUMPS_PAR%N),STAT=ERR)
@@ -149,19 +149,19 @@
      &     MPI_COMM_WORLD,IER)
       DO I=1,MUMPS_PAR%N
         MUMPS_PAR%RHS(I)=TEMP2(I)
-      END DO 
+      END DO
 !
       NBELEM = NPOIN
-      IF(TYPEXT.EQ.'S') THEN 
+      IF(TYPEXT.EQ.'S') THEN
         DO K = 1,NSEGB
           I = TEMP3(GLOSEG(K,1))
-          J = TEMP3(GLOSEG(K,2))  
+          J = TEMP3(GLOSEG(K,2))
           NBELEM = NBELEM + 1
           IF(I.LT.J) THEN
-            MUMPS_PAR%IRN_LOC(NBELEM) = I 
+            MUMPS_PAR%IRN_LOC(NBELEM) = I
             MUMPS_PAR%JCN_LOC(NBELEM) = J
           ELSE
-            MUMPS_PAR%IRN_LOC(NBELEM) = J 
+            MUMPS_PAR%IRN_LOC(NBELEM) = J
             MUMPS_PAR%JCN_LOC(NBELEM) = I
           ENDIF
           MUMPS_PAR%A_LOC(NBELEM) = XA(K)
@@ -172,7 +172,7 @@
 !         I = TEMP3(GLOSEG(K,1))
 !         J = TEMP3(GLOSEG(K,2))
 !         NBELEM = NBELEM + 1
-!         MUMPS_PAR%IRN_LOC(NBELEM) = I 
+!         MUMPS_PAR%IRN_LOC(NBELEM) = I
 !         MUMPS_PAR%JCN_LOC(NBELEM) = J
 !         MUMPS_PAR%A_LOC(NBELEM) = XA(K)
 !       ENDDO
@@ -181,7 +181,7 @@
           I = TEMP3(GLOSEG(K,1))
           J = TEMP3(GLOSEG(K,2))
           NBELEM = NBELEM + 1
-          MUMPS_PAR%IRN_LOC(NBELEM) = I 
+          MUMPS_PAR%IRN_LOC(NBELEM) = I
           MUMPS_PAR%JCN_LOC(NBELEM) = J
           MUMPS_PAR%A_LOC(NBELEM) = XA(K)
         ENDDO
@@ -189,12 +189,12 @@
           I = TEMP3(GLOSEG(K,2))
           J = TEMP3(GLOSEG(K,1))
           NBELEM = NBELEM + 1
-          MUMPS_PAR%IRN_LOC(NBELEM) = I 
+          MUMPS_PAR%IRN_LOC(NBELEM) = I
           MUMPS_PAR%JCN_LOC(NBELEM) = J
           MUMPS_PAR%A_LOC(NBELEM) = XA(K+NSEGB)
         ENDDO
-      ENDIF     
-!         
+      ENDIF
+!
 !     -----------
 !     RESOLUTION
 !     -----------
@@ -225,7 +225,7 @@
 ! les lignes ci-dessous sont a decommenter s'il s'agit du dernier appel a MUMPS.
 ! Donc il faut prevoir de passer en argument  un flag (par ex. le nb de pas de temps max a simuler?)
 ! pour savoir quand le code appelant le solveur fait son dernier calcul.
-! Actuellement on suppose que l'instance et les tableaux de travail de MUMPS sont 
+! Actuellement on suppose que l'instance et les tableaux de travail de MUMPS sont
 ! automatiquement detruits a la sortie de l'execution de Telemac
 !/////////////////////////////////////////////////////////////////////////////////////////////////////
 ! Desallocation des tableaux de travail

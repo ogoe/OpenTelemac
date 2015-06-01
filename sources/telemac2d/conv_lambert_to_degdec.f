@@ -24,7 +24,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LAMBDATAB      |<--| LONGITUDE
 !| NUMZONE        |-->| NUMBER OF LAMBERT ZONE
-!| NTAB           |-->| NUMBER OF COORDINATES 
+!| NTAB           |-->| NUMBER OF COORDINATES
 !| PHITAB         |<--| LATITUDE
 !| XTAB           |-->| METRIC COORDINATES (LAMBERT)
 !| YTAB           |-->| METRIC COORDINATES (LAMBERT)
@@ -221,7 +221,7 @@
 !
 !  TRANSFORMATION CARTESIAN COORDINATES X, Y, Z --> GEOGRAPHIC COORDINATES LAMBDA, PHI
 !  HEISKANEN-MORITZ-BOUCHER METHOD (IGN: ALG0012)
-! 
+!
         LAMBDA = ATAN(Y/X)
 !  I = 0
         PHIM   = ATAN(Z/(SQRT(X**2+Y**2)*(1.D0-(AAA*EEE**2)

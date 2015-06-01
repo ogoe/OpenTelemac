@@ -90,7 +90,7 @@
 !|                |   | TYPEXT = 'Q' : ANY VALUE
 !|                |   | TYPEXT = 'S' : SYMMETRIC
 !|                |   | TYPEXT = '0' : ZERO
-!| W              |<--| WORK ARRAY WITH NON ASSEMBLED RESULT 
+!| W              |<--| WORK ARRAY WITH NON ASSEMBLED RESULT
 !| X              |<--| RESULTING VECTOR
 !| XA             |-->| OFF-DIAGONAL TERMS IN THE MATRIX A
 !| Y              |-->| A GIVEN VECTOR USED IN OPERATION OP

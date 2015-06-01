@@ -46,16 +46,16 @@
       DOUBLE PRECISION TEMP, AT
       INTEGER I, JG
 !
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 !
       AT = DT*LT/PERCOU
       JG = J
       IF (NCSIZE > 1) JG = MESH%KNOLG%I(J)
-!      
+!
       CVSP_CHECK_F = .TRUE.
       TEMP = 0.D0
 !
-!-----------------------------------------------------------------------           
+!-----------------------------------------------------------------------
 !SUM UP AND SLIGHT CORRECTION
 !-----------------------------------------------------------------------
 !
@@ -68,11 +68,11 @@
      &                  ,SOMETEXT,JG,K,I,PRO_F(J,K,I)
           ENDIF
         ENDIF
-!        
+!
         TEMP = TEMP + PRO_F(J,K,I)
       ENDDO
 !
-!-----------------------------------------------------------------------        
+!-----------------------------------------------------------------------
 ! CORRECT DEVIATIONS
 !-----------------------------------------------------------------------
 !
@@ -85,16 +85,16 @@
               PRO_F(J,K,I) = PRO_F(J,K,I) / TEMP
               EXIT
             ENDIF
-          ENDDO          
+          ENDDO
         ELSE
-!         SLIGHT DIFFERENCES TO 0 ARE CORRECTED BY CHANGING ONLY 
+!         SLIGHT DIFFERENCES TO 0 ARE CORRECTED BY CHANGING ONLY
 !         THE FIRST FRACTION BIG ENOUGH
           DO I=1,NSICLA
             IF(PRO_F(J,K,I).GT.ZERO) THEN
               PRO_F(J,K,I) = 1.D0-(TEMP-PRO_F(J,K,I))
               EXIT
             ENDIF
-          ENDDO            
+          ENDDO
         ENDIF
       ENDIF
 !
@@ -102,4 +102,4 @@
 !
       RETURN
       END FUNCTION CVSP_CHECK_F
-      
+

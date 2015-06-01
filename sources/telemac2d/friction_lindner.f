@@ -39,14 +39,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |-->| FRICTION COEFFICIENT FOR BOTTOM ROUGHNESS   
+!| CF             |-->| FRICTION COEFFICIENT FOR BOTTOM ROUGHNESS
 !| CP             |<--| FRICTION COEFFICIENT FOR NON-SUBMERGED VEGETATION
-!| DP             |-->| DIAMETER OF ROUGHNESS ELEMENT              
-!| G              |-->| GRAVITY ACCELERATION                        
-!| HA             |-->| FLOW DEPTH                                  
-!| SP             |-->| SPACING OF ROUGHNESS ELEMENT               
-!| VA             |-->| VELOCITY                                    
-!| VK             |-->| KINEMTIC VISCOSITY                           
+!| DP             |-->| DIAMETER OF ROUGHNESS ELEMENT
+!| G              |-->| GRAVITY ACCELERATION
+!| HA             |-->| FLOW DEPTH
+!| SP             |-->| SPACING OF ROUGHNESS ELEMENT
+!| VA             |-->| VELOCITY
+!| VK             |-->| KINEMTIC VISCOSITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

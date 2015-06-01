@@ -54,7 +54,7 @@
       INTEGER          I, N, ITRAC, INDIC
       INTEGER          IA1, IB1, IA2, IB2
       INTEGER          IC1, ID1, IC2, ID2
-!     
+!
       DOUBLE PRECISION PHI, GRAV, RELAX
       DOUBLE PRECISION YS1, YS2
       DOUBLE PRECISION SL_A1, SL_B1, SL_A2, SL_B2
@@ -78,7 +78,7 @@
       DOUBLE PRECISION XP_C1,XP_D1,XP_C2,XP_D2
       DOUBLE PRECISION YP_A1,YP_B1,YP_A2,YP_B2
       DOUBLE PRECISION YP_C1,YP_D1,YP_C2,YP_D2
-!     
+!
       DOUBLE PRECISION TRAC_A1(NTRAC),TRAC_B1(NTRAC)
       DOUBLE PRECISION TRAC_A2(NTRAC),TRAC_B2(NTRAC)
       DOUBLE PRECISION TRAC_C1(NTRAC),TRAC_D1(NTRAC)
@@ -322,28 +322,28 @@
 !
           IF(ABS(QELEM).GT.0.D0) THEN
             UWEIRA%ADR(N)%P%R(I)   = UTANA * TXA + QELEM * NXA / HA +
-     &         UWEIRA%ADR(N)%P%R(I)  
+     &         UWEIRA%ADR(N)%P%R(I)
             VWEIRA%ADR(N)%P%R(I)   = UTANA * TYA + QELEM * NYA / HA +
-     &         VWEIRA%ADR(N)%P%R(I)  
+     &         VWEIRA%ADR(N)%P%R(I)
             UWEIRA%ADR(N)%P%R(I+1) = UTANC * TXA + QELEM * NXA / HA +
      &         UWEIRA%ADR(N)%P%R(I+1)
             VWEIRA%ADR(N)%P%R(I+1) = UTANC * TYA + QELEM * NYA / HA +
      &         VWEIRA%ADR(N)%P%R(I+1)
             UWEIRB%ADR(N)%P%R(I)   = UTANB * TXB + QELEM * NXB / HB +
-     &         UWEIRB%ADR(N)%P%R(I)  
+     &         UWEIRB%ADR(N)%P%R(I)
             VWEIRB%ADR(N)%P%R(I)   = UTANB * TYB + QELEM * NYB / HB +
-     &         VWEIRB%ADR(N)%P%R(I)  
+     &         VWEIRB%ADR(N)%P%R(I)
             UWEIRB%ADR(N)%P%R(I+1) = UTAND * TXB + QELEM * NXB / HB +
      &         UWEIRB%ADR(N)%P%R(I+1)
             VWEIRB%ADR(N)%P%R(I+1) = UTAND * TYB + QELEM * NYB / HB +
      &         VWEIRB%ADR(N)%P%R(I+1)
           ELSE
-            UWEIRA%ADR(N)%P%R(I)   = 0.D0 + UWEIRA%ADR(N)%P%R(I)  
-            VWEIRA%ADR(N)%P%R(I)   = 0.D0 + VWEIRA%ADR(N)%P%R(I)  
+            UWEIRA%ADR(N)%P%R(I)   = 0.D0 + UWEIRA%ADR(N)%P%R(I)
+            VWEIRA%ADR(N)%P%R(I)   = 0.D0 + VWEIRA%ADR(N)%P%R(I)
             UWEIRA%ADR(N)%P%R(I+1) = 0.D0 + UWEIRA%ADR(N)%P%R(I+1)
             VWEIRA%ADR(N)%P%R(I+1) = 0.D0 + VWEIRA%ADR(N)%P%R(I+1)
-            UWEIRB%ADR(N)%P%R(I)   = 0.D0 + UWEIRB%ADR(N)%P%R(I)  
-            VWEIRB%ADR(N)%P%R(I)   = 0.D0 + VWEIRB%ADR(N)%P%R(I)  
+            UWEIRB%ADR(N)%P%R(I)   = 0.D0 + UWEIRB%ADR(N)%P%R(I)
+            VWEIRB%ADR(N)%P%R(I)   = 0.D0 + VWEIRB%ADR(N)%P%R(I)
             UWEIRB%ADR(N)%P%R(I+1) = 0.D0 + UWEIRB%ADR(N)%P%R(I+1)
             VWEIRB%ADR(N)%P%R(I+1) = 0.D0 + VWEIRB%ADR(N)%P%R(I+1)
           ENDIF

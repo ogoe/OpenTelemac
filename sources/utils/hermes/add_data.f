@@ -9,7 +9,7 @@
 ! HERMES   V7P0                                               01/05/2014
 !***********************************************************************
 !
-!brief    Add data information for a given variable and a given time on 
+!brief    Add data information for a given variable and a given time on
 !+        all points of the mesh
 !
 !history  Y AUDOUIN (LNHE)

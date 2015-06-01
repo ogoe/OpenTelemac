@@ -88,12 +88,12 @@
           WRITE(FCT(4:5),FMT='(I2)') I
           FCT(6:6)=')'
         ELSE
-          IF (LNG.EQ.1) WRITE(LU,*) 'SL3 NE PEUT PAS GERER PLUS 
+          IF (LNG.EQ.1) WRITE(LU,*) 'SL3 NE PEUT PAS GERER PLUS
      &                               DE 99 FRONTIERES'
-          IF (LNG.EQ.2) WRITE(LU,*) 'SL3 NOT PROGRAMMED FOR MORE 
+          IF (LNG.EQ.2) WRITE(LU,*) 'SL3 NOT PROGRAMMED FOR MORE
      &                               THAN 99 BOUNDARIES'
           CALL PLANTE(1)
-          STOP 
+          STOP
         ENDIF
         CALL READ_FIC_FRLIQ(SL3,FCT,TIME,T3D_FILES(T3DIMP)%LU,
      &                      ENTET,OK(I))

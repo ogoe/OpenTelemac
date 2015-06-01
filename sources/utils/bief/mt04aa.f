@@ -155,7 +155,7 @@
       A22(IELEM) = - A23(IELEM) - A12(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !  CASE WHERE U AND V ARE QUASI-BUBBLE
@@ -231,7 +231,7 @@
       A22(IELEM) = - A23(IELEM) - A12(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !
 !-----------------------------------------------------------------------
@@ -382,7 +382,7 @@
       A13(IELEM) = - A11(IELEM) - A12(IELEM)
       A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !
 !     OTHER TYPES OF DISCRETISATION FOR U
@@ -406,7 +406,7 @@
 201     FORMAT(1X,'MT04AA (BIEF) :',/,
      &         1X,'U AND V OF A DIFFERENT DISCRETISATION:',1I6,3X,1I6)
         ENDIF
-!       
+!
         CALL PLANTE(1)
         STOP
 !

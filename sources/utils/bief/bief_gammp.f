@@ -1,6 +1,6 @@
-!                  ************************************ 
+!                  ************************************
                    DOUBLE PRECISION FUNCTION BIEF_GAMMP
-!                  ************************************ 
+!                  ************************************
 !
      &(A,X)
 !
@@ -9,7 +9,7 @@
 !***********************************************************************
 !
 !brief    Incomplete Gamma function (until all compilers have it),
-!+        P(a,x) from 'Numerical Recipes' Chapter 6.2, and Tideway model 
+!+        P(a,x) from 'Numerical Recipes' Chapter 6.2, and Tideway model
 !+        This function is only valid for X.GE.0 or A.GT.0. Negative
 !+        X or A.LE.0 cannot occur when called from ERF or ERFC.
 !
@@ -19,8 +19,8 @@
 !+   First version sent by Michiel Knaapen (HRW) on 07/03/2013.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| PARAMETER 
-!| X              |-->| OPERAND 
+!| A              |-->| PARAMETER
+!| X              |-->| OPERAND
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !     USE BIEF
@@ -35,7 +35,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION GAMMCF,GLN 
+      DOUBLE PRECISION GAMMCF,GLN
 !
 !-----------------------------------------------------------------------
 !

@@ -472,23 +472,23 @@
 !
           A16(IELEM) = - A11(IELEM) - A12(IELEM) - A13(IELEM)
      &                 - A14(IELEM) - A15(IELEM)
-!         
+!
           A26(IELEM) = - A12(IELEM) - A22(IELEM) - A23(IELEM)
      &                 - A24(IELEM) - A25(IELEM)
-!         
+!
           A36(IELEM) = - A13(IELEM) - A23(IELEM) - A33(IELEM)
      &                 - A34(IELEM) - A35(IELEM)
-!         
+!
           A46(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
      &                 - A44(IELEM) - A45(IELEM)
-!         
+!
           A56(IELEM) = - A15(IELEM) - A25(IELEM) - A35(IELEM)
      &                 - A45(IELEM) - A55(IELEM)
-!         
+!
           A66(IELEM) = - A16(IELEM) - A26(IELEM) - A36(IELEM)
      &                 - A46(IELEM) - A56(IELEM)
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -1301,7 +1301,7 @@
         A66(IELEM) = - A16(IELEM) - A26(IELEM) - A36(IELEM)
      &                - A46(IELEM) - A56(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -1321,7 +1321,7 @@
 201     FORMAT(1X,'MT04CC (BIEF) :',/,
      &         1X,'U AND V OF A DIFFERENT DISCRETISATION:',1I6,3X,1I6)
         ENDIF
-!       
+!
         CALL PLANTE(1)
         STOP
 !

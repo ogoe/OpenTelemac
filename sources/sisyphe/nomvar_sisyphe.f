@@ -43,15 +43,15 @@
 !+        V6P2
 !+   Adaptation to greater numbers of layers and classes (up to 99 each)
 !
-!history  JWI (HRW) 
+!history  JWI (HRW)
 !+        14/06/2012
 !+        V6P2
-!+   Increment of one to include wave orbital velocities  
+!+   Increment of one to include wave orbital velocities
 !
 !history  PAT (LNHE)
 !+        18/06/2012
 !+        V6P2
-!+   updated version with HRW's development 
+!+   updated version with HRW's development
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MAXVAR         |-->| MAXIMUM NUMBER OF OUTPUT VARIABLES
@@ -84,7 +84,7 @@
       INTEGER I,J,K,ADD
 !
 !     LOCAL ARRAYS DIMENSIONED WITH FIXED PARAMETERS FROM
-!     DECLARATIONS_SISYPHE. IT IS NOT A HIDDEN DYNAMIC ALLOCATION   
+!     DECLARATIONS_SISYPHE. IT IS NOT A HIDDEN DYNAMIC ALLOCATION
 !
       CHARACTER(LEN=32) TEXTE_QS(NSICLM)
       CHARACTER(LEN=32) TEXTE_CS(NSICLM),TEXTE_QSC(NSICLM)
@@ -129,7 +129,7 @@
             WRITE (LU,*) 'NOMVAR_SISYPHE: NOT IMPLEMENTED FOR ',NOMBLAY
             WRITE (LU,*) '                LAYERS'
             CALL PLANTE(1)
-            STOP          
+            STOP
           ENDIF
           IF(I.LT.10) THEN
             WRITE(CLA,'(I1)') I
@@ -161,7 +161,7 @@
           WRITE (LU,*) 'NOMVAR_SISYPHE: NOT IMPLEMENTED FOR ',NSICLA
           WRITE (LU,*) '                CLASSES'
           CALL PLANTE(1)
-          STOP        
+          STOP
         ENDIF
         TEXTE_QS(J)  = TRIM('QS CLASS '//CLA)
         TEXTE_QSC(J) = TRIM('QS BEDLOAD CL'//CLA)
@@ -189,8 +189,8 @@
           WRITE (LU,*) 'NOMVAR_SISYPHE: NOT IMPLEMENTED FOR ',NOMBLAY
           WRITE (LU,*) '                LAYERS'
           CALL PLANTE(1)
-          STOP            
-        ENDIF   
+          STOP
+        ENDIF
         TEXTE_ES(K)(1:16)  = 'LAYER'//LAY//' THICKNES'
         TEXTE_ES(K)(17:32) = 'M               '
       ENDDO
@@ -206,8 +206,8 @@
           WRITE (LU,*) 'NOMVAR_SISYPHE: NOT IMPLEMENTED FOR ',NOMBLAY
           WRITE (LU,*) '                LAYERS'
           CALL PLANTE(1)
-          STOP            
-        ENDIF   
+          STOP
+        ENDIF
         TEXTE_CONC(K)(1:12)  = 'LAYER'//LAY//' CONC'
         TEXTE_CONC(K)(17:32) = 'KG/L            '
       ENDDO
@@ -369,8 +369,8 @@
       TEXTE(29+ADD)='PRIVE 1                         '
       TEXTE(30+ADD)='PRIVE 2                         '
       TEXTE(31+ADD)='PRIVE 3                         '
-      TEXTE(32+ADD)='PRIVE 4                         '   
-! JWI END                
+      TEXTE(32+ADD)='PRIVE 4                         '
+! JWI END
 !     NPRIV MAY BE GREATER THAN 4
 !     TEXTE(31+ADD)='PRIVE 5                         '
 !
@@ -451,7 +451,7 @@
 !     MNEMO(31+ADD) = '????????'
 !
 !----------------------------
-!CV V6P2 
+!CV V6P2
 !      ADD=NSICLA*(NOMBLAY+4)+NOMBLAY+27+MAX(NPRIV,4)
 ! JWI 31/05/2012 - added 1 to include wave orbital velocities
       ADD=NSICLA*(NOMBLAY+4)+2*NOMBLAY+28+MAX(NPRIV,4)

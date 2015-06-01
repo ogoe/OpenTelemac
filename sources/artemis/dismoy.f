@@ -88,10 +88,10 @@
      &                  (Y(NG)-Y(IKLE(IELEM,3))) **2.D0 )
             SOM = SOM + D1 + D2
             ISOM = ISOM + 2
-!           
+!
           ELSEIF (IKLE(IELEM,2).EQ.NG) THEN
 !         ------                       ----
-!           
+!
 !           PT 2 IS COMMON, COMPUTES THE DISTANCE TO PTS 1 AND 3
             D1 = SQRT ( (X(NG)-X(IKLE(IELEM,1))) **2.D0 +
      &                  (Y(NG)-Y(IKLE(IELEM,1))) **2.D0 )
@@ -99,10 +99,10 @@
      &                  (Y(NG)-Y(IKLE(IELEM,3))) **2.D0 )
             SOM = SOM + D1 + D2
             ISOM = ISOM + 2
-!           
+!
           ELSEIF (IKLE(IELEM,3).EQ.NG) THEN
 !         ------                       ----
-!           
+!
 !           PT 3 IS COMMON, COMPUTES THE DISTANCE TO PTS 1 AND 2
             D1 = SQRT ( (X(NG)-X(IKLE(IELEM,1))) **2.D0 +
      &                  (Y(NG)-Y(IKLE(IELEM,1))) **2.D0 )

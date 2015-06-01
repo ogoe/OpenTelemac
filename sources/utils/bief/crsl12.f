@@ -110,7 +110,7 @@
       SLM=MAX(SLM,NEWSL(IELEM,J(3)))
       NEWSL(IELEM,J(4))=OLDSL(IK(J(4)))-MAX(0.D0,ZF(IK(J(4)))-SLM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !

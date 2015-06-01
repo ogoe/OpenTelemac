@@ -113,16 +113,16 @@
 !     Q IS TAKEN FROM THE STEERING FILE, BUT MAY BE CHANGED
 !
         IF(NDEBIT.GE.I) THEN
-! 
-!         PROGRAMMABLE PART                              
-!         Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
-!                                                             
+!
+!         PROGRAMMABLE PART
+!         Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
+!
           IF(AT.LE.600.D0) THEN
             Q = DEBIT(I) * AT/600.D0
           ELSE
             Q = DEBIT(I)
-          ENDIF  
-!     
+          ENDIF
+!
         ELSE
 !
           IF(LNG.EQ.1) WRITE(LU,400) I
@@ -161,7 +161,7 @@
 !      IL DOIT ETRE REMPLI PAR L'UTILISATEUR
 !
 !
-! 
+!
 !
 !-----------------------------------------------------------------------
 !  EXAMPLE OF POSSIBLE ARGUMENTS

@@ -40,7 +40,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AD             |-->| DIAGONAL TERMS OF MATRIX
-!| AX             |-->| OFF-DIAGONAL TERMS OF MATRIX 
+!| AX             |-->| OFF-DIAGONAL TERMS OF MATRIX
 !|                |   | HERE DIMENSION 1 BECAUSE SYMMETRY
 !| IELM3          |-->| TYPE OF ELEMENT
 !| MESH           |-->| MESH STRUCTURE

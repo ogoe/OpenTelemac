@@ -113,11 +113,11 @@
 !   TEST FOR ORDER 1
 !
         IF(NORDRE.EQ.1) THEN
-!       
+!
           DO NSG=1,NSEG
             NUBO1=NUBO(1,NSG)
             NUBO2=NUBO(2,NSG)
-            AUX = FLUXT%ADR(ITRAC)%P%R(NSG) 
+            AUX = FLUXT%ADR(ITRAC)%P%R(NSG)
      &            + DT*FLUXTEMP%ADR(ITRAC)%P%R(NSG)
             IF(AUX.GE.0.D0) THEN
               FLUXTEST(NUBO1) = FLUXTEST(NUBO1) + AUX
@@ -137,7 +137,7 @@
             TEST=AIRS(IS)*HSTOK(IS)-FLUXTEST(IS)
             IF(TEST.LT.0.D0) RETURN
           ENDDO
-!       
+!
         ELSE
 !
 !   TEST FOR ORDER 2
@@ -145,28 +145,28 @@
           DO NSG=1,NSEG
             NUBO1=NUBO(1,NSG)
             NUBO2=NUBO(2,NSG)
-!         
+!
             AUX = FLUXT%ADR(ITRAC)%P%R(NSG)
      &          + DT*FLUXTEMP%ADR(ITRAC)%P%R(NSG)
-!         
+!
             IF(AUX.GE.0.D0) THEN
-!         
+!
               TEST=AIRST(1,NSG)*HCSTOK(1,NSG)-AUX
               IF(LOGFR(NUBO1).NE.0.AND.
      &           AIRST(1,NSG)*HCSTOK(1,NSG).GT.0.D0) THEN
                 FLUXTEST(NUBO1)= MAX(FLUXTEST(NUBO1),
      &          AUX/(AIRST(1,NSG)*HCSTOK(1,NSG)))
               ENDIF
-!         
+!
             ELSE
-!         
+!
               TEST=AIRST(2,NSG)*HCSTOK(2,NSG)+AUX
               IF(LOGFR(NUBO2).NE.0.AND.
      &          AIRST(2,NSG)*HCSTOK(2,NSG).GT.0.D0) THEN
                 FLUXTEST(NUBO2)= MAX(FLUXTEST(NUBO2),
      &          -AUX/(AIRST(2,NSG)*HCSTOK(2,NSG)))
               ENDIF
-!         
+!
             ENDIF
             IF(TEST.LT.0.D0) RETURN
           ENDDO
@@ -184,7 +184,7 @@
      &        TEST =-1.D0
             ENDIF
             IF(TEST.LT.0.D0) RETURN
-!        
+!
           ENDDO
         ENDIF
       ENDDO

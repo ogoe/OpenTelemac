@@ -15,10 +15,10 @@
 !history  J-M HERVOUET (LNHE)
 !+        20/09/2011
 !+        V6P2
-!+        
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| OPTION         |-->| 1: SAVING CONDITIONS 
+!| OPTION         |-->| 1: SAVING CONDITIONS
 !|                |   | 2: CHANGING CONDITIONS
 !|                |   | 3: RESTORING CONDITIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,7 +64,7 @@
             IF(FRTYPE(IFRLIQ).EQ.2.AND.H%R(N).GT.1.D-3) THEN
               LIHBOR%I(IPTFR) = KENT
               DO IPLAN=1,NPLAN
-                IPTFR3 = (IPLAN-1)*NPTFR2 + IPTFR              
+                IPTFR3 = (IPLAN-1)*NPTFR2 + IPTFR
                 LIUBOL%I(IPTFR3) = KENTU
                 LIVBOL%I(IPTFR3) = KENTU
 !               SECOND DIMENSION, SEE CVDF3D
@@ -84,7 +84,7 @@
           LIHBOR%I(IPTFR)=LIHBOR_USER%I(IPTFR)
         ENDDO
         DO IPTFR3 = 1 , NPTFR3
-          LIUBOL%I(IPTFR3)=LIUBOL_USER%I(IPTFR3) 
+          LIUBOL%I(IPTFR3)=LIUBOL_USER%I(IPTFR3)
           LIVBOL%I(IPTFR3)=LIVBOL_USER%I(IPTFR3)
         ENDDO
 !

@@ -142,11 +142,11 @@
         DO IVAR=1,3
 !
           GRADI(IVAR)  = AIX*DX(IVAR,NUBO1) + AIY*DY(IVAR,NUBO1)
-!         
+!
           GRADJ(IVAR)  = AJX*DX(IVAR,NUBO2) + AJY*DY(IVAR,NUBO2)
-!         
+!
           GRADIJ(IVAR)  = AIX*DJX(IVAR,J) + AIY*DJY(IVAR,J)
-!         
+!
           GRADJI(IVAR)  = AJX*DJX(IVAR,J) + AJY*DJY(IVAR,J)
 !
         ENDDO
@@ -175,10 +175,10 @@
 !
             GRIJ = GRADIJ(IVAR)
             GRJI = GRADJI(IVAR)
-!          
+!
             GRI = BETA1*GRADI(IVAR) - BETA*GRIJ
             GRJ = BETA1*GRADJ(IVAR) - BETA*GRJI
-!          
+!
             AUX1 = 0.5*(1.0+  DSIGN(1.0D0, GRI*GRIJ))
             AUX2 = 0.5*(1.0 + DSIGN(1.0D0, GRJ*GRJI))
 !
@@ -188,13 +188,13 @@
             GRIJ2 = GRIJ*GRIJ  + E2
             GRJ2  = GRJ*GRJ    + E2
             GRJI2 = GRJI*GRJI  + E2
-!           
+!
             GRADI(IVAR)  = AUX1*
      &         (GRI2  *GRIJ  + GRIJ2  *GRI )/(GRI2 + GRIJ2)
-!           
+!
             GRADJ(IVAR)  = AUX2*
      &         (GRJ2  *GRJI + GRJI2 *GRJ )/(GRJ2 + GRJI2)
-!           
+!
           ENDIF
         ENDDO
 !
@@ -215,10 +215,10 @@
            UAS12 =0.D0
            UAS22 =0.D0
         ENDIF
-!       
-!       
+!
+!
 1234    CONTINUE
-!       
+!
         HI   = UAS11*UAS11
 !
 !   ETAI = FREE SURFACE ELEVATION
@@ -295,13 +295,13 @@
 !
           A02  = ALP*(RA3+EXT2)
           A12  = ALP*(EXT2**2-RA3**2)/2.D0
-!        
+!
           FLU12= HJ*(UAS22*A02+CJI*A12)
         ENDIF
 !
 !
         FLU11=(FLU11 + FLU12)*RNN
-!       
+!
         IF(FLU11.GE.0.D0) THEN
           IF(NORDRE.GE.2) THEN
             UAS410 = UAS41
@@ -315,7 +315,7 @@
           ENDIF
           FLU41 =  UAS42 * FLU11
         ENDIF
-!       
+!
         CE(NUBO1,1) = CE(NUBO1,1) - FLU41
         CE(NUBO2,1) = CE(NUBO2,1) + FLU41
 !

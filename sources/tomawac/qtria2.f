@@ -89,7 +89,7 @@
       DOUBLE PRECISION  FREQ0, FREQ1, FREQ2, FREQ3, LRAISF, RAISM1
       DOUBLE PRECISION  VR1 , VR2 , VR3 , TK1 , TK2 , TK3
       DOUBLE PRECISION  BK1 , BK3 , DEP2
-      DOUBLE PRECISION  FILT , BISP, DEUPI2 
+      DOUBLE PRECISION  FILT , BISP, DEUPI2
       DOUBLE PRECISION  VAR1 , XC1 , XC2 , XC3
       DOUBLE PRECISION  BMS , BMSP
 !
@@ -136,18 +136,18 @@
                 K2NL   = DSQRT((XK3*COSTET(IPL)-XK1*COSTET(JPL))**2
      &                   +(XK3*SINTET(IPL)-XK1*SINTET(JPL))**2)
                 XK2    = (1.D0-FR1)*XK(IPO,IFR) + FR1*XK(IPO,IFR+1)
-!             
+!
                 TETA2=DATAN2(XK3*SINTET(IPL)-XK1*SINTET(JPL)
      &                      ,XK3*COSTET(IPL)-XK1*COSTET(JPL))
                 IF(TETA2.LT.0.D0) TETA2 = DEUPI + TETA2
-!             
+!
                 IF(TETA2.LT.BDISPB .OR. TETA2.GT.BDSSPB) THEN
 !               INTERACTIONS BETWEEN COMPONENTS WHICH DIRECTIONS ARE NOT
 !               WITHIN THE ANGULAR SECTOR DEFINED BY THE USER (VARIABLES
 !               BDISPB AND BDSSPB) ARE NOT TAKEN INTO ACCOUNT
                   CYCLE
                 ENDIF
-!             
+!
                 AP2    = (TETA2-TETA(1))/DTETA
                 IPM    = IDINT(AP2)
                 AP2    = AP2 - DBLE(IPM)
@@ -164,10 +164,10 @@
      &                       TETA(IPL))
 !               R(-M,P)
                 VR3 = KERBOU(-XK2,XK3,-FREQ2,FREQ3,DEP,TETA2,TETA(IPL))
-!               
+!
                 FILT = KSPB/((XK2-K2NL)**2+KSPB*KSPB)
                 FILT = -0.5D0*FILT/XK2
-!               
+!
                 DEP2 = DEP**2
                 VAR1 = 2.D0*BMS*DEP2
                 XC1  = VAR1*XK3*XK3
@@ -177,7 +177,7 @@
                 TK1 = (GRAVIT*DEP*(1.D0+XC1)-VAR1*FREQ3*FREQ3)
                 TK2 = (GRAVIT*DEP*(1.D0+XC2)-VAR1*FREQ2*FREQ2)
                 TK3 = (GRAVIT*DEP*(1.D0+XC3)-VAR1*FREQ1*FREQ1)
-!               
+!
                 BK1 = DEUPI*FREQ3*(1.D0+3.D0*XC1)
                 BK3 = DEUPI*FREQ1*(1.D0+3.D0*XC3)
 !
@@ -186,30 +186,30 @@
 !         """"""""""""""""""""""""""""""""
 !
                 NRJ2  = (1.D0-AP2)*((1.D0-FR1)*F(IPO,IPM,IFR)+FR1*
-     &                  F(IPO,IPM,IFR+1)) 
+     &                  F(IPO,IPM,IFR+1))
      &                  + AP2*((1.D0-FR1)*F(IPO,IPP,IFR)
      &                  +FR1*F(IPO,IPP,IFR+1))
-!               
+!
                 BISP  = FILT*
      &                  ((VR2/TK2)*F(IPO,IPL,IFF)*F(IPO,JPL,JFF)
      &                  +(VR3/TK3)*F(IPO,IPL,IFF)*NRJ2
      &                  -(VR1/TK1)*F(IPO,JPL,JFF)*NRJ2)
-!               
+!
 !                D12   = FILT*((VR2/TK2)*F(IPO,JPL,JFF)
 !    &                        +(VR3/TK3)*NRJ2)
 !                D21   = FILT*((VR2/TK2)*F(IPO,IPL,IFF)
 !    &                        -(VR1/TK1)*NRJ2)
                 VR1   = DFREQ(JFF)*DTETA*VR1/BK1
                 VR3   = 2.D0*DFREQ(IFF)*DTETA*VR3/BK3
-!               
+!
                 TSTOT(IPO,IPL,IFF) = TSTOT(IPO,IPL,IFF) + VR1*BISP
                 TSTOT(IPO,JPL,JFF) = TSTOT(IPO,JPL,JFF) - VR3*BISP
-!                
-              ENDDO ! IPO 
-            ENDDO ! IP1 
-          ENDDO ! IP3 
-        ENDDO ! JFF 
-      ENDDO ! IFF 
+!
+              ENDDO ! IPO
+            ENDDO ! IP1
+          ENDDO ! IP3
+        ENDDO ! JFF
+      ENDDO ! IFF
 !
       RETURN
       END

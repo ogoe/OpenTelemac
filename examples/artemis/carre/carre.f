@@ -4,7 +4,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -80,11 +80,11 @@
 !
       DOUBLE PRECISION PI,BID
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
+!     ----------------------------------------
+!
+! JCB :
       INTEGER I    , IG, IB,JB,IG0,ISUIV,IDEB
 ! JCB
 !
@@ -116,36 +116,36 @@
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
       HB%R(:)    = 0.0D0
-      
+
       PRB%R(:)   =0.D0
       PIB%R(:)   =0.D0
       DDXPRB%R(:)=0.D0
       DDYPRB%R(:)=0.D0
       DDXPIB%R(:)=0.D0
       DDYPIB%R(:)=0.D0
-      
-    
+
+
 
       DO IB=1,NPTFR
         JB=BOUNDARY_COLOUR%I(IB)
-        
-        
+
+
 !       solide en y=0
         IF(JB.GE.2.AND.JB.LE.320)THEN
           LIHBOR%I(IB) = KLOG
           RP%R(IB) =1D0
           TETAP%R(IB) = 90.D0
           ALFAP%R(IB) = 0.D0
-        ENDIF 
-        
+        ENDIF
+
 !       solide libre
         IF(JB.GE.321.AND.JB.LE.641)THEN
           LIHBOR%I(IB) = KSORT
           TETAP%R(IB) = 90.D0
-!       UNCOMMENT THIS LINE TO GET THE SOLUTION WITH IMPOSED TETAP 
+!       UNCOMMENT THIS LINE TO GET THE SOLUTION WITH IMPOSED TETAP
 !           TETAP%R(IB) = 0.D0
         ENDIF
-        
+
 !       solide en y = 1.6
         IF(JB.GE.642.AND.JB.LE.960)THEN
           LIHBOR%I(IB) = KLOG
@@ -153,7 +153,7 @@
           TETAP%R(IB) = 90.D0
           ALFAP%R(IB) = 0.D0
         ENDIF
-        
+
 !       Incident wave with PHASE=0.
         IF(JB.GE.961.AND.JB.LE.1280)THEN
           LIHBOR%I(IB) = KINC
@@ -167,8 +167,8 @@
           TETAP%R(IB) = 0.D0
           ALFAP%R(IB) = 0.D0
         ENDIF
-! Example : Incident potential with phase = 0. 
-!       PHASOI=0.D0    
+! Example : Incident potential with phase = 0.
+!       PHASOI=0.D0
 !       IF(JB.GE.4101.AND.JB.LE.4200)THEN
 !         LIHBOR%I(IB)= KPOT
 !         IG         = MESH%NBOR%I(IB)
@@ -196,13 +196,13 @@
 !         ALFAP%R(IB) = 0.D0
 !       ENDIF
 !
-!      
+!
       ENDDO
 
 
 
 !-----------------------------------------------------------------------
-! 
+!
       RETURN
       END
 !                       *****************
@@ -271,13 +271,13 @@
 !
 !-----------------------------------------------------------------------
 
-! bathy 
+! bathy
       DO I = 1,NPOIN
         ZF%R(I) = -100D0
       ENDDO
 !
       RETURN
-      END                  
+      END
 
 
 

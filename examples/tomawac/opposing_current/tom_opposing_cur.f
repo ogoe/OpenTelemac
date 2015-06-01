@@ -74,7 +74,7 @@
           UC(IP)=-0.22*1/(1+(0.3D0/1.22D0)*(X(IP)-5.22D0)/0.45D0)
         ELSE
           UC(IP)=-0.13D0
-        ENDIF  
+        ENDIF
         VC(IP)=0.D0
         WRITE(LU,*) IP,UC(IP),VC(IP),'IP,UC,VC'
       ENDDO
@@ -86,7 +86,7 @@
                         SUBROUTINE QDSCUR
 !                       *****************
 !
-     &( TSTOT , TSDER , F     , CF    , XK    , FREQ  , USOLD , USNEW , 
+     &( TSTOT , TSDER , F     , CF    , XK    , FREQ  , USOLD , USNEW ,
      &  DEPTH , PROINF, CDSCUR, CMOUT4, NF    , NPLAN , NPOIN2, CIMPLI,
      &  F_INT  , BETOTO, BETOTN)
 !
@@ -97,7 +97,7 @@
 !brief   COMPUTES THE CONTRIBUTION OF THE WAVE BLOCKING SINK TERM USING
 !+          THE  PARAMETRISATION OF VAN DER WESTHUYSEN (2012).
 !
-!reference    VAN DER WESTHUYSEN (2012):  SPECTRAL 
+!reference    VAN DER WESTHUYSEN (2012):  SPECTRAL
 !+              MODELLING OF WAVES DISSIPATION ON NEGATIVE
 !+                   CURRENT GRADIENTS
 !
@@ -148,8 +148,8 @@
       DOUBLE PRECISION, INTENT(IN)    :: CMOUT4, CDSCUR
       DOUBLE PRECISION, INTENT(IN)    :: CIMPLI
       DOUBLE PRECISION, INTENT(IN)    :: USNEW(NPOIN2),USOLD(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF),DEPTH(NPOIN2) 
-      DOUBLE PRECISION, INTENT(IN)    :: XK(NPOIN2,NF) 
+      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF),DEPTH(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: XK(NPOIN2,NF)
       DOUBLE PRECISION, INTENT(INOUT) :: F_INT(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: BETOTO(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: BETOTN(NPOIN2,NPLAN)
@@ -174,9 +174,9 @@
       SURCMOUT4=1.D0/CMOUT4
 !
 !     LOOP ON THE DISCRETISED FREQUENCIES
-! 
+!
       DO IFF=1,NF
-!       
+!
         SURDEUPIFREQ=1.D0/(DEUPI*FREQ(IFF))
 !
         DO IP=1,NPOIN2
@@ -197,15 +197,15 @@
 !
             CPHAS=XK(IP,IFF)*SURDEUPIFREQ
             P0O=3.D0+TANH(W*(USOLD(IP)*CPHAS-0.1D0))
-            P0N=3.D0+TANH(W*(USNEW(IP)*CPHAS-0.1D0))                    
+            P0N=3.D0+TANH(W*(USNEW(IP)*CPHAS-0.1D0))
             CG1=0.5D0*GRAVIT*SURDEUPIFREQ
             B=CG1*F_INT(IP)*XK(IP,IFF)**3
-            SQBSCMOUT4=SQRT(B*SURCMOUT4)           
+            SQBSCMOUT4=SQRT(B*SURCMOUT4)
             DO JP=1,NPLAN
               BETOTO(IP,JP)=-CDSCUR*SQBSCMOUT4**(P0O/2)*
-     &      MAX(CF(IP,JP,IFF)/FREQ(IFF),0.D0) 
+     &      MAX(CF(IP,JP,IFF)/FREQ(IFF),0.D0)
               BETOTN(IP,JP)=-CDSCUR*SQBSCMOUT4**(P0N/2)*
-     &      MAX(CF(IP,JP,IFF)/FREQ(IFF),0.D0) 
+     &      MAX(CF(IP,JP,IFF)/FREQ(IFF),0.D0)
             ENDDO
 !
           ENDDO
@@ -213,28 +213,28 @@
         ELSE
 !
           DO IP=1,NPOIN2
-! 
-            CPHAS=XK(IP,IFF)*SURDEUPIFREQ      
+!
+            CPHAS=XK(IP,IFF)*SURDEUPIFREQ
             P0O=3.D0+TANH(W*(USOLD(IP)*CPHAS-0.1D0))
-            P0N=3.D0+TANH(W*(USNEW(IP)*CPHAS-0.1D0))         
+            P0N=3.D0+TANH(W*(USNEW(IP)*CPHAS-0.1D0))
             KD=MIN(XK(IP,IFF)*DEPTH(IP),350.D0)
-            DEUKD=KD+KD                                            
-            CG1=( 0.5D0+XK(IP,IFF)*DEPTH(IP)/SINH(DEUKD) )/CPHAS     
+            DEUKD=KD+KD
+            CG1=( 0.5D0+XK(IP,IFF)*DEPTH(IP)/SINH(DEUKD) )/CPHAS
             B=CG1*F_INT(IP)*XK(IP,IFF)**3
-            SQBSCMOUT4=SQRT(B*SURCMOUT4)                            
+            SQBSCMOUT4=SQRT(B*SURCMOUT4)
             DO JP=1,NPLAN
               BETOTO(IP,JP)=-CDSCUR*SQBSCMOUT4**(P0O/2)*
-     &      MAX(CF(IP,JP,IFF)/FREQ(IFF),0.D0) 
+     &      MAX(CF(IP,JP,IFF)/FREQ(IFF),0.D0)
               BETOTN(IP,JP)=-CDSCUR*SQBSCMOUT4**(P0N/2)*
-     &      MAX(CF(IP,JP,IFF)/FREQ(IFF),0.D0) 
+     &      MAX(CF(IP,JP,IFF)/FREQ(IFF),0.D0)
             ENDDO
 !
-          ENDDO 
+          ENDDO
 !
-        ENDIF        
+        ENDIF
 !
 !       TAKES THE SOURCE TERM INTO ACCOUNT
-!      
+!
         DO JP=1,NPLAN
           DO IP=1,NPOIN2
             TSTOT(IP,JP,IFF)=TSTOT(IP,JP,IFF)
@@ -309,7 +309,7 @@
           ZF(IP)=-0.45-(30.D0/122.D0)*(X(IP)-5.22D0)
         ELSE
           ZF(IP)=-0.75D0
-        ENDIF  
+        ENDIF
       ENDDO
 !EGR---------------------------------MODIF fin
 !

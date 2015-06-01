@@ -63,7 +63,7 @@
 !
       CALL VECTOR(MESH%T,'=','MASBAS          ',
      &            IELM,1.D0,U,U,U,U,U,U,MESH,MSK,MASKEL)
-!     
+!
       IF(NCSIZE.GT.1) CALL PARCOM(MESH%T,2,MESH)
 !
       CALL CPSTVC(MESH%T,SYGMA)

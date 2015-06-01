@@ -73,7 +73,7 @@
       ENDDO
 !
 !     SUMS UP THE DISCRETISED PART OF THE SPECTRUM
-!     
+!
       DO JF = 1,NF
         COEF=2.D0*GRAVIT*DFREQ(JF)*DTETAR
         DO IP = 1,NPOIN2

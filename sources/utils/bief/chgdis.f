@@ -34,7 +34,7 @@
 !+                  X%ELM  = NEWELT
 !+        MOVED AT THE END, CHGDIS MAY BE CALLED WITH X%ELM BEING OLDELT
 !+        THEN IT MAKES OLDELT=NEWELT WHEREAS OLDELT WAS INTENT(IN) AND
-!+        SHOULD NOT BE CHANGED BEFORE TESTS ON IT.  
+!+        SHOULD NOT BE CHANGED BEFORE TESTS ON IT.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MESH           |-->| MESH STRUCTURE

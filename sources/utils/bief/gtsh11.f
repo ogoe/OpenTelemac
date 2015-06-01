@@ -34,7 +34,7 @@
 !history  C. DENIS (SINETICS) & J-M HERVOUET (LNHE)
 !+        09/05/2012
 !+        V6P2
-!+   New version using ELTCAR (done in MAKE_ELTCAR called by INBIEF)      
+!+   New version using ELTCAR (done in MAKE_ELTCAR called by INBIEF)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELT            |<--| ELEMENT CHOSEN FOR EVERY POINT
@@ -76,7 +76,7 @@
 !
       DO I=1,NPOIN
         IELEM=ELTCAR(I)
-        ELT(I) = IELEM 
+        ELT(I) = IELEM
         IF(IELEM.NE.0) THEN
           IF(IKLE(IELEM,1).EQ.I) THEN
             SHP(1,I)=1.D0
@@ -96,7 +96,7 @@
             STOP
           ENDIF
         ENDIF
-      ENDDO 
+      ENDDO
       IF(QUAB) THEN
         DO IELEM=1,NELEM
           I=NPOIN+IELEM

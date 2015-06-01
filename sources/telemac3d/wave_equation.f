@@ -71,8 +71,8 @@
 !+        V7P0
 !+   Correction in case of atmospheric pressure. Free surface and
 !+   atmospheric pressure did not balance their gradients exactly when
-!+   the free surface gradient compatibility was not 1. Now 
-!+   PATMOS/(RO*G) is added to the free surface also for the non 
+!+   the free surface gradient compatibility was not 1. Now
+!+   PATMOS/(RO*G) is added to the free surface also for the non
 !+   compatible part.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -457,7 +457,7 @@
 !    &            MESH3D,.TRUE.,MASKBR)
       CALL VECTOR(T3_06,'=','FLUBOR          ',IELBOR(IELM3,2),
      &            1.D0,SVIDE,SVIDE,SVIDE,UCONV,VCONV,SVIDE,
-     &            MESH3D,.TRUE.,MASK_3D%ADR(8)%P)          
+     &            MESH3D,.TRUE.,MASK_3D%ADR(8)%P)
 !
       CALL SUMVER(FLBOR%R,T3_06%R,NPOIN2,NPLAN,MESH2D%NPTFR)
 !
@@ -782,4 +782,4 @@
 !
       RETURN
       END
-      
+

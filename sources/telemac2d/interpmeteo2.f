@@ -10,7 +10,7 @@
 !***********************************************************************
 !
 !brief    READS AND INTERPOLATES VARIABLES IN AN ASCII FILE
-!+        
+!+
 !
 !history  R. SAMIE, E. RAZAFINDRAKOTO, C.-T. PHAM (EDF-LNHE)
 !+        09/07/2014
@@ -23,7 +23,7 @@
 !| C14_ATM        |<--|
 !| HREL           |<--| RELATIVE HUMIDITY
 !| HT0_ATM        |<--|
-!| I0             |<--| 
+!| I0             |<--|
 !| NEBU           |<--| NEBULOSITY
 !| NFO            |-->| LOGICAL UNIT OF THE FORMATTED DATA FILE
 !| PATM           |<--| ATMOSPHERIC PRESSURE
@@ -57,8 +57,8 @@
 !     NUMBER OF VARIABLES IN THE ASCII FILE NFO
 !       INTEGER, PARAMETER :: NINPUTVAR = 8
       INTEGER, PARAMETER :: NINPUTVAR = 9
-!     DESCRIPTION OF THE METEO FILE (GENERAL CASE) 
-!      1-TIME 2-TAIR 3-PVAP 4- WIND MAGN 5- WIND DIR 
+!     DESCRIPTION OF THE METEO FILE (GENERAL CASE)
+!      1-TIME 2-TAIR 3-PVAP 4- WIND MAGN 5- WIND DIR
 !      6 NEBULO 7-RAY3 8-PATM 9-RAIN
 !
       INTEGER, PARAMETER :: NLINESTOSKIP = 2
@@ -157,7 +157,7 @@
           WRITE(LU,*)'  FIN DE LECTURE DU FICHIER D''ENTREE  '
           WRITE(LU,*)'     IL Y A ',NBENR,' ENREGISTREMENTS  '
           WRITE(LU,*)'  DE T = ',TABENT(1,1), ' A  = ',
-     &               TABENT(NBENR,1),' SECONDES '            
+     &               TABENT(NBENR,1),' SECONDES '
           WRITE(LU,*)'======================================='
         ENDIF
         IF(LNG.EQ.2) THEN
@@ -165,7 +165,7 @@
           WRITE(LU,*)'  END OF READING OF INPUT DATA         '
           WRITE(LU,*)'  THERE ARE ',NBENR,' RECORDS          '
           WRITE(LU,*)'  FROM T = ',TABENT(1,1), ' TO = ',
-     &               TABENT(NBENR,1),' SECONDS '            
+     &               TABENT(NBENR,1),' SECONDS '
           WRITE(LU,*)'======================================='
         ENDIF
 !
@@ -194,14 +194,14 @@
         IF(POSTAB.GT.NBENR) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*)'==============================================='
-            WRITE(LU,*)'ATTENTION : LE TEMPS DU CALCUL AT = ', AT 
+            WRITE(LU,*)'ATTENTION : LE TEMPS DU CALCUL AT = ', AT
             WRITE(LU,*)'EST SUPERIEUR AU TEMPS MAXIMUM DE VOTRE FICHIER'
             WRITE(LU,*)'DE DONNEES D''ENTREE T = ', TABENT(NBENR,1)
             WRITE(LU,*)'==============================================='
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*)'==============================================='
-            WRITE(LU,*)'WARNING: TIME OF CALCULATION AT = ', AT 
+            WRITE(LU,*)'WARNING: TIME OF CALCULATION AT = ', AT
             WRITE(LU,*)'IS BIGGER THAN MAXIMUM TIME IN YOUR INPUT DATA '
             WRITE(LU,*)'FILE T = ', TABENT(NBENR,1)
             WRITE(LU,*)'==============================================='
@@ -210,20 +210,20 @@
         ELSEIF(POSTAB.LT.1) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*)'==============================================='
-            WRITE(LU,*)'ATTENTION : LE TEMPS DU CALCUL AT = ', AT 
+            WRITE(LU,*)'ATTENTION : LE TEMPS DU CALCUL AT = ', AT
             WRITE(LU,*)'EST INFERIEUR AU TEMPS MINIMUM DE VOTRE FICHIER'
             WRITE(LU,*)'DE DONNEES D''ENTREE T = ', TABENT(1,1)
             WRITE(LU,*)'==============================================='
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*)'==============================================='
-            WRITE(LU,*)'WARNING: TIME OF CALCULATION AT = ', AT 
+            WRITE(LU,*)'WARNING: TIME OF CALCULATION AT = ', AT
             WRITE(LU,*)'IS LOWER THAN MINIMUM TIME IN YOUR INPUT DATA '
             WRITE(LU,*)'FILE T = ', TABENT(1,1)
             WRITE(LU,*)'==============================================='
           ENDIF
           CALL PLANTE(1)
-        ENDIF            
+        ENDIF
         GO TO 120
       ENDIF
 !
@@ -269,12 +269,12 @@
 ! !     PCO2
 !       PCO2  =  TABENT(POSTAB,11)
 !      &      + (TABENT(POSTAB+1,11)-TABENT(POSTAB,11))*ALPHA
-! 
+!
 ! !     RELATIVE HUMIDITY (MOISTURE)
 !       HREL  =  TABENT(POSTAB,12)
 !      &      + (TABENT(POSTAB+1,12)-TABENT(POSTAB,12))*ALPHA
-! 
-! 
+!
+!
 ! !     C14_ATM
 !       C14_ATM  =  TABENT(POSTAB,13)
 !      &      + (TABENT(POSTAB+1,13)-TABENT(POSTAB,13))*ALPHA

@@ -39,7 +39,7 @@
 !history  J-M HERVOUET (EDF-LNHE)
 !+        27/11/2012
 !+        V6P3
-!+   Optimisation (loops on NPOIN2 and NPLAN swapped to get smaller 
+!+   Optimisation (loops on NPOIN2 and NPLAN swapped to get smaller
 !+   strides, work array TRA01 differently used, etc.).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -184,7 +184,7 @@
             DO IP=1,NPOIN2
               IF(DEPTH(IP).GT.PROMIN) THEN
                 SRCF=SR/COSF(IP)
-                TFSR=SR*TGF(IP)              
+                TFSR=SR*TGF(IP)
                 DDDN=-SINTET(JP)*DZY(IP)*SR+COSTET(JP)*DZX(IP)*SRCF
                 CY(IP,JP)=(CG(IP,JF)*COSTET(JP))*SR*GRADEG
                 CX(IP,JP)=(CG(IP,JF)*SINTET(JP))*SRCF*GRADEG

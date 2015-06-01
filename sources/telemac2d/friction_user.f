@@ -16,7 +16,7 @@
 !+        3  47
 !+        4  47
 !+        etc.
-!+           
+!+
 !
 !history  F. HUVELIN
 !+        15/04/2004
@@ -48,7 +48,7 @@
       USE FRICTION_DEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
-      IMPLICIT NONE      
+      IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
@@ -67,7 +67,7 @@
       NOMFILE = T2D_FILES(T2DZFI)%NAME
 !
 !     Reading File (which is now written in local numbering)
-! 
+!
       DO K=1,NPOIN
         READ(NFILE,*,END=997,ERR=998) I, IVAL2
         IF(K.EQ.I) THEN
@@ -88,7 +88,7 @@
       GOTO 997
 !
 !---------------------------------------------------------------------
-!             ERROR WHEN READING                          
+!             ERROR WHEN READING
 !---------------------------------------------------------------------
 !
 999   CONTINUE

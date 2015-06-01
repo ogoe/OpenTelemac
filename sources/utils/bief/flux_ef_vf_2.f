@@ -8,7 +8,7 @@
 ! BIEF   V7P0                                   21/08/2010
 !***********************************************************************
 !
-!brief    Equivalent of FLUX_EF_VF, but only for PSI scheme, and the 
+!brief    Equivalent of FLUX_EF_VF, but only for PSI scheme, and the
 !+        result is given in terms of contribution per point, not fluxes
 !+        between points, and takes a derivative in time into account.
 !
@@ -42,7 +42,7 @@
       TYPE(BIEF_OBJ), INTENT(IN)      :: FN
       DOUBLE PRECISION, INTENT(INOUT) :: FI_I(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FSTAR(NPOIN),H(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: SU(NELEM),DDT      
+      DOUBLE PRECISION, INTENT(IN)    :: SU(NELEM),DDT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -52,7 +52,7 @@
       DOUBLE PRECISION BETA1,BETA2,BETA3,BETA1PSI,BETA2PSI,BETA3PSI
       DOUBLE PRECISION FINCORR1,FINCORR2,FINCORR3
       DOUBLE PRECISION FI,BETA1FI,BETA2FI,BETA3FI
-      DOUBLE PRECISION PHITCOR,SUMAX,H1,H2,H3,COEF 
+      DOUBLE PRECISION PHITCOR,SUMAX,H1,H2,H3,COEF
 !
       INTRINSIC MIN,MAX,ABS
 !
@@ -154,7 +154,7 @@
           ENDIF
 !
 !         END OF "NOT IN MARIO RICCHIUTO'S THEORY" !!!!!!
-!         
+!
 !         COMPUTE THE NEW RESIDUAL AND NEW DISTRIBUTION
 !
           COEF=SU(IELEM)/(DDT*3.D0)
@@ -181,10 +181,10 @@
               BETA1PSI=MAX(0.D0,BETA1)/SUMAX
               BETA2PSI=MAX(0.D0,BETA2)/SUMAX
               BETA3PSI=MAX(0.D0,BETA3)/SUMAX
-              FI_I(I1)=FI_I(I1)+BETA1PSI*PHITCOR 
+              FI_I(I1)=FI_I(I1)+BETA1PSI*PHITCOR
               FI_I(I2)=FI_I(I2)+BETA2PSI*PHITCOR
-              FI_I(I3)=FI_I(I3)+BETA3PSI*PHITCOR 
-            ENDIF        
+              FI_I(I3)=FI_I(I3)+BETA3PSI*PHITCOR
+            ENDIF
           ENDIF
 !
         ENDDO

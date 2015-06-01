@@ -6,10 +6,10 @@
      & LASTRECORD,MAXVAR)
 !
 !***********************************************************************
-! BIEF   V7P1 
+! BIEF   V7P1
 !***********************************************************************
 !
-!brief    Reads the results for a given time step and 
+!brief    Reads the results for a given time step and
 !+        a given list of variables
 !
 !history Y AUDOUIN (LNHE)
@@ -20,7 +20,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FFORMAT        |-->| FORMAT OF THE FILE
 !| FID            |-->| LOGICAL UNIT OF FILE
-!| VARSOR         |<->| LIST OF ARRAY THAT WILL CONTAINS THE VARIABLE 
+!| VARSOR         |<->| LIST OF ARRAY THAT WILL CONTAINS THE VARIABLE
 !|                |   | VALUE ON EACH POINT
 !| NPOIN          |-->| NUMBER OF POINT IN THE GEOMETRY MESH
 !| RECORD         |-->| TIME STEP OF THE DATASET
@@ -79,7 +79,7 @@
       CALL CHECK_CALL(IERR,'READ_DATASET:GET_MESH_NPOIN')
       CALL GET_MESH_NPLAN(FFORMAT,FID,NPLAN_PREV,IERR)
       CALL CHECK_CALL(IERR,'READ_DATASET:GET_MESH_NPLAN')
-!      
+!
 !     Printout
 !
       CALL GET_MESH_TITLE(FFORMAT,FID,TITLE,IERR)
@@ -95,7 +95,7 @@
 !
       CALL GET_DATA_VAR_LIST(FFORMAT,FID,NVAR,VARNAME,VARUNIT,IERR)
       CALL CHECK_CALL(IERR,'BIEF_VALIDA:GET_DATA_NVAR')
-      
+
       IF(LISTIN.AND.LNG.EQ.1) WRITE(LU,300) TITLE
       IF(LISTIN.AND.LNG.EQ.2) WRITE(LU,301) TITLE
 300   FORMAT(1X,//,1X,'TITRE DU CAS PRECEDENT: ',A72,/)
@@ -129,9 +129,9 @@
         CALL CHECK_CALL(IERR,'READ_DATASET:GET_DATA_NTIMESTEP')
 !       Records go from 0 to ntimestep - 1
         IREC = IREC - 1
-        RECORD = IREC 
+        RECORD = IREC
       ELSE
-        IREC = RECORD 
+        IREC = RECORD
       ENDIF
 !
 !     GET THE TIME ASSOCIATED WITH THE RECORD
@@ -177,10 +177,10 @@
               ENDDO
             ENDIF
           ELSE
-             
+
             CALL GET_DATA_VALUE(FFORMAT,FID,IREC,VAR_LIST(L)(1:16),
      &                          VARSOR%ADR(L)%P%R,NPOIN_PREV,IERR)
-           
+
           ENDIF
           ! If the variable is not in the file
           IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
@@ -189,7 +189,7 @@
             CALL CHECK_CALL(IERR,'READ_DATASET:GET_DATA_VALUE')
             TROUVE(L) = 1
           ENDIF
-           
+
         ELSE
           ! if the record is not in the file
           TROUVE(L) = 0

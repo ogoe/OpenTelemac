@@ -8,7 +8,7 @@
 ! HERMES   V7P0                                               01/05/2014
 !***********************************************************************
 !
-!brief    Returns an array containing 
+!brief    Returns an array containing
 !+        The association of boundary numbering to mesh numbering
 !
 !history  Y AUDOUIN (LNHE)
@@ -21,7 +21,7 @@
 !| FID            |-->| FILE DESCRIPTOR
 !| TYP_BND_ELEM   |-->| TYPE OF THE BOUNDARY ELEMENT
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| NBOR           |<->| AN ARRAY CONTAINING THE NUMBERING IN THE MESH 
+!| NBOR           |<->| AN ARRAY CONTAINING THE NUMBERING IN THE MESH
 !|                |   | OF ALL BOUNDARY POINTS
 !| IERR           |<--| 0 IF NO ERROR DURING THE EXECUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

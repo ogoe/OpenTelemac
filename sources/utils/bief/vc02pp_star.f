@@ -24,7 +24,7 @@
 !+        V6P2
 !+   Replaced EPSILON with EPSI due to nag compiler problems
 !
-!history  J-M HERVOUET (EDF R&D LNHE) 
+!history  J-M HERVOUET (EDF R&D LNHE)
 !+        07/01/2013
 !+        V6P3
 !+   X and Y are now given per element.

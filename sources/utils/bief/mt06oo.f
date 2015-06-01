@@ -114,7 +114,7 @@
           A12(IELEM) = DET1 * F12
           A22(IELEM) = DET1 * (F12+2*F2)
 !
-        ENDDO 
+        ENDDO
 !
 !     F LINEAR BY SEGMENT, IN A BOUNDARY ARRAY
 !     NOTE: IKLE IS HERE A BOUNDARY IKLE
@@ -131,7 +131,7 @@
           A12(IELEM) = DET1 * F12
           A22(IELEM) = DET1 * (F12+2*F2)
 !
-        ENDDO 
+        ENDDO
 !
 !     F LINEAR, IN AN ARRAY DEFINED ON THE DOMAIN
 !
@@ -147,7 +147,7 @@
           A12(IELEM) = DET1 * F12
           A22(IELEM) = DET1 * (F12+2*F2)
 !
-        ENDDO 
+        ENDDO
 !
 !     OTHER TYPES OF DISCRETISATION OF F
 !

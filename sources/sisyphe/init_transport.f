@@ -54,13 +54,13 @@
 !+
 !history  C. VILLARET (LNHE)+ R. KOPMANN + U.MERKEL
 !+
-!+        20/03/2011   
+!+        20/03/2011
 !+        V6P1
 !
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
+!+  Name of variables
 !
 !history  MAK (HRW)
 !+        31/05/2012
@@ -77,7 +77,7 @@
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
 !| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
 !| BIJK           |-->| COEFFICIENT OF THE BIJKER FORMULA
-!| CALFA          |<->| COSINUS OF THE ANGLE BETWEEN MEAN FLOW AND TRANSPORT 
+!| CALFA          |<->| COSINUS OF THE ANGLE BETWEEN MEAN FLOW AND TRANSPORT
 !| CF             |-->| QUADRATIC FRICTION COEFFICIENT
 !| CHARR          |-->| BEDLOAD
 !| CMAX           |---| MAX(PARTHENIADES/SETTLING VELOCITY)
@@ -89,11 +89,11 @@
 !| CSRATIO        |<->| EQUILIBRIUM CONCENTRATION FOR SOULSBY-VAN RIJN EQ.
 !| DEBUG          |-->| FLAG FOR DEBUGGING
 !| FD90           |-->| DIAMETER D90
-!| FDM            |-->| DIAMETER DM FOR EACH CLASS 
+!| FDM            |-->| DIAMETER DM FOR EACH CLASS
 !| FW             |-->| WAVE FRICTION FACTOR
 !| GRAV           |-->| ACCELERATION OF GRAVITY
 !| HIDFAC         |-->| HIDING FACTOR FORMULAS
-!| HIDING         |-->| HIDING FACTOR CORRECTION  
+!| HIDING         |-->| HIDING FACTOR CORRECTION
 !| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
 !| HN             |-->| WATER DEPTH
 !| HOULE          |-->| LOGICAL, FOR WAVE EFFECTS
@@ -101,7 +101,7 @@
 !| ICQ            |-->| REFERENCE CONCENTRATION FORMULA
 !| IELMT          |-->| NUMBER OF ELEMENTS
 !| IMP_INFLOW_C   |-->| IMPOSED CONCENTRATION IN INFLOW
-!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| KARMAN         |-->| VON KARMAN CONSTANT
 !| KS             |-->| BED ROUGHNESS
 !| KSP            |-->| BED SKIN ROUGHNESS
 !| KSR            |-->| RIPPLE BED ROUGHNESS
@@ -121,11 +121,11 @@
 !| QSYS           |<->| SOLID DISCHARGE Y (SUSPENSION)
 !| QS_C           |-->| BEDLOAD TRANSPORT RATE
 !| QS_S           |<->| SUSPENDED LOAD TRANSPORT RATE
-!| SALFA          |<->| SINUS OF THE ANGLE BETWEEN TRANSPORT RATE AND CURRENT 
+!| SALFA          |<->| SINUS OF THE ANGLE BETWEEN TRANSPORT RATE AND CURRENT
 !| SECCURRENT     |-->| LOGICAL, PARAMETRISATION FOR SECONDARY CURRENTS
 !| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT
-!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT 
-!| SUSP           |-->| LOGICAL, SUSPENSION 
+!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT
+!| SUSP           |-->| LOGICAL, SUSPENSION
 !| T1             |<->| WORK BIEF_OBJ STRUCTURE
 !| T10            |<->| WORK BIEF_OBJ STRUCTURE
 !| T11            |<->| WORK BIEF_OBJ STRUCTURE
@@ -139,7 +139,7 @@
 !| T7             |<->| WORK BIEF_OBJ STRUCTURE
 !| T8             |<->| WORK BIEF_OBJ STRUCTURE
 !| T9             |<->| WORK BIEF_OBJ STRUCTURE
-!| THETAW         |-->| ANGLE BETWEEN WAVE AND CURRENT 
+!| THETAW         |-->| ANGLE BETWEEN WAVE AND CURRENT
 !| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
 !| TOBW           |-->| WAVE INDUCED SHEAR STRESS
 !| TW             |-->| WAVE PERIOD
@@ -150,11 +150,11 @@
 !| UW             |-->| ORBITAL WAVE VELOCITY
 !| V2D            |<->| MEAN FLOW VELOCITY Y-DIRECTION
 !| VCE            |-->| WATER VISCOSITY
-!| VCONV          |<->| Y-COMPONENT ADVECTION FIELD 
+!| VCONV          |<->| Y-COMPONENT ADVECTION FIELD
 !| VITCD          |-->| CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION
 !| VITCE          |-->| CRITICAL EROSION SHEAR VELOCITY OF THE MUD
-!| XMVE           |-->| FLUID DENSITY 
-!| XMVS           |-->| WATER DENSITY 
+!| XMVE           |-->| FLUID DENSITY
+!| XMVS           |-->| WATER DENSITY
 !| XWC            |-->| SETTLING VELOCITY
 !| ZERO           |-->| ZERO
 !| ZREF           |-->| REFERENCE ELEVATION
@@ -194,7 +194,7 @@
       DOUBLE PRECISION,  INTENT(IN)    :: PARTHENIADES,BIJK,XWC(NSICLA)
       DOUBLE PRECISION,  INTENT(IN)    :: FD90(NSICLA),CS0(NSICLA)
       DOUBLE PRECISION,  INTENT(IN)    :: VITCE,VITCD
-      DOUBLE PRECISION,  INTENT(INOUT) :: AC(NSICLA),CMAX,FDM(NSICLA) 
+      DOUBLE PRECISION,  INTENT(INOUT) :: AC(NSICLA),CMAX,FDM(NSICLA)
       DOUBLE PRECISION,  INTENT(INOUT) :: AVAIL(NPOIN,NOMBLAY,NSICLA)
 !
       TYPE(BIEF_OBJ),    INTENT(IN)    :: U3D,V3D
@@ -204,7 +204,7 @@
 !
       INTEGER I,J
       DOUBLE PRECISION AT0,AAA,USTARP,U3DNORM
-      LOGICAL NEED_CS     
+      LOGICAL NEED_CS
 !
 !======================================================================!
 !======================================================================!
@@ -216,7 +216,7 @@
 !
 !     FOR INITIALISATION : SLOPE EFFECT AND DEVIATION ARE CANCELLED
 !
-!     RK in case of coupling with T3D, the direction should 
+!     RK in case of coupling with T3D, the direction should
 !     come from the bottom velocity
 !
       IF(CODE(1:9).EQ.'TELEMAC3D') THEN
@@ -238,13 +238,13 @@
 !     appel a effpnt ?
 !
       CALL OS('X=C     ',X=COEFPN,C=1.D0)
-! 
+!
       IF(CHARR) THEN
 !
-!       MPM for each Layer 
-!       
-        CALL OS('X=C     ', X=MPM_ARAY, C=MPM) 
-!      
+!       MPM for each Layer
+!
+        CALL OS('X=C     ', X=MPM_ARAY, C=MPM)
+!
         CALL OS('X=C     ',X=HIDING,C=1.D0)
 !
         DO I = 1, NSICLA
@@ -262,7 +262,7 @@
      &        PI,SUSP,AC(I),HIDING,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,
      &        T11,T12,QSCL_C%ADR(I)%P,QSCL_S%ADR(I)%P,
      &        IELMT,SECCURRENT,SLOPEFF,COEFPN,BIJK,HOULE)
-!     
+!
           ENDIF
 !         SUM ON ALL CLASSES
           DO J=1,NPOIN
@@ -283,7 +283,7 @@
       IF(SUSP) THEN
 !
 !       INITIALISES ZREF
-!     
+!
         IF(ICQ.EQ.1) THEN
           CALL OS('X=Y     ', X=ZREF, Y=KSP)
         ELSEIF(ICQ.EQ.2) THEN
@@ -296,14 +296,14 @@
 !
 !       FOR RANK OF CS IN TROUVE SEE POINT_SISYPHE, NOMVAR_SISYPHE
 !       22+I+(NOMBLAY+1)*NSICLA IS THE ADDRESS OF CONCENTRATIONS
-!       
+!
         NEED_CS=.FALSE.
         DO I=1,NSICLA
           IF(TROUVE(22+I+(NOMBLAY+1)*NSICLA).EQ.0) NEED_CS=.TRUE.
         ENDDO
 !
 !       COMPUTES THE INITIAL CONCENTRATIONS
-!          
+!
         IF(.NOT.DEBU.OR.NEED_CS) THEN
 !
           CALL CONDIM_SUSP(CS,CS0,NSICLA,MESH%X%R,MESH%Y%R,AT0,NPOIN)
@@ -337,7 +337,7 @@
                   CALL SUSPENSION_VANRIJN(FDM(I),T8,NPOIN,
      &               GRAV,XMVE,XMVS,VCE,ZERO,AC(I), CSTAEQ,ZREF)
                 ELSEIF(ICQ.EQ.4) THEN
-                  CSRATIO%R=1D0   
+                  CSRATIO%R=1D0
                   CALL SUSPENSION_SANDFLOW(FDM(I),FD90(I),T8,NPOIN,
      &                                     GRAV,XMVE,XMVS,ZERO,AC(I),
      &                                     CSTAEQ,ZREF,HN,U2D,V2D,

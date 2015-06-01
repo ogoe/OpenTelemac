@@ -34,8 +34,8 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BOUNDARY_COLOUR|-->| AN INTEGER LINKED TO BOUNDARY POINTS
-!|                |   | BY DEFAULT THE LAST LINE OF BOUNDARY CONDITIONS 
-!|                |   | FILE, HENCE THE GLOBAL BOUNDARY NUMBER, BUT CAN 
+!|                |   | BY DEFAULT THE LAST LINE OF BOUNDARY CONDITIONS
+!|                |   | FILE, HENCE THE GLOBAL BOUNDARY NUMBER, BUT CAN
 !|                |   | BE CHANGED BY USER.
 !| CTIDE          |-->| COEFFICIENT TO CALIBRATE THE TIDAL RANGE
 !| CTIDEV         |-->| COEFFICIENT TO CALIBRATE THE VELOCITIES
@@ -142,7 +142,7 @@
       LOGICAL DEJA
       DATA    DEJA /.FALSE./
 !
-      SAVE  
+      SAVE
 !
 !-----------------------------------------------------------------------
 !
@@ -216,7 +216,7 @@
           WRITE(LU,*) 'READ ERROR AT POINT',NPTFRL+1
         ENDIF
         CALL PLANTE(1)
-        STOP      
+        STOP
       ENDIF
 !
 2     CONTINUE
@@ -295,7 +295,7 @@
         SHIFTTIDE(1) = 0
 !
         DO I=2,NTIDE
-          SHIFTTIDE(I) = LASTTIDE(I-1) - FIRSTTIDE(I-1) + 1 
+          SHIFTTIDE(I) = LASTTIDE(I-1) - FIRSTTIDE(I-1) + 1
      &                 + SHIFTTIDE(I-1)
         ENDDO
 !
@@ -488,7 +488,7 @@
               HN2 = AHN2(IPTFRL)*COS(TWOPI*TEMPS/TN2-PHN2(IPTFRL)-PI)
             ELSEIF(TIDALTYPE.EQ.7) THEN
               HN2 = FFMN2*(FHXN2(IPTFRL)*COS(FN2)
-     &                    +FHYN2(IPTFRL)*SIN(FN2)) 
+     &                    +FHYN2(IPTFRL)*SIN(FN2))
             ENDIF
 !
             IF(TIDALTYPE.EQ.1) THEN

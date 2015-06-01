@@ -31,34 +31,34 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+ 
+!+  Name of variables
+!+
 !history  C.VILLARET (EDF-LNHE)
 !+        22/08/2012
 !+        V6P2
-!+  Changing the calling to init_compo_coh: the number of layers is fixed   
+!+  Changing the calling to init_compo_coh: the number of layers is fixed
 !+  Testing SUM(layers) = ZF-ZR
-!+  Compute the initial mass balance  
+!+  Compute the initial mass balance
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AVA0           |-->| VOLUME PERCENT 
+!| AVA0           |-->| VOLUME PERCENT
 !| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
 !| CONC           |<->| CONC OF EACH BED LAYER (KG/M3)
 !| CONC_VASE      |<->| MUD CONCENTRATION FOR EACH LAYER
 !| DEBU           |-->| FLAG, FOR PREVIOUS SEDIMENTOLOGICAL FILE
-!| ELAY           |<->| THICKNESS OF TOTAL LAYER 
+!| ELAY           |<->| THICKNESS OF TOTAL LAYER
 !| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
 !| ES_SABLE       |<->| THICKNESS OF SAND LAYER (M)
 !| ES_VASE        |<->| THICKNESS OF MUD LAYER (M)
-!| MIXTE          |-->| SEDIMENT MIXTE (SABLE + VASE) 
+!| MIXTE          |-->| SEDIMENT MIXTE (SABLE + VASE)
 !| MS_SABLE       |<->| MASS OF SAND PER LAYER (KG/M2)
-!| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2) 
+!| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
 !| NOMBLAY        |-->| NUMBER OF LAYERS FOR CONSOLIDATION
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
-!| XMVS           |-->| WATER DENSITY 
+!| XMVS           |-->| WATER DENSITY
 !| ZF             |-->| ELEVATION OF BOTTOM
-!| ZR             |-->| NON ERODABLE BED 
+!| ZR             |-->| NON ERODABLE BED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -103,21 +103,21 @@
 !*******INITIAL SEDIMENT COMPOSITION IS IDENTICAL AT EACH NODE
 ! DEFAULT INITIALISATION: ALL LAYERS ARE EMPTY EXCEPT BED LAYER
 ! OTHERWISE SET THICKNESS OF THE MUD LAYERS IN EPAI_VASE(I= 1, NCOUCH_TASS-1)
-! 
+!
 !CV V6P2 ..
 
 !  INITIALISATION OF ES : THICKNESS OF EACH LAYERS
-!  INIT_COMPO_COH : composition of the sediment bed : thickness of layers 
+!  INIT_COMPO_COH : composition of the sediment bed : thickness of layers
 !                  and concentrations The number of sediment bed layers is fixed
- 
+
       IF(.NOT.DEBU) THEN
-!    
+!
         CALL INIT_COMPO_COH(ES,CONC_VASE,CONC,NPOIN,
      &     NOMBLAY,NSICLA,AVAIL,AVA0)
 !
 !       Recalcul des epaisseurs pour satisfaire : Sum (ES)=ZF-ZR
-! 
-        DO I=1,NPOIN 
+!
+        DO I=1,NPOIN
 !
           ELAY(I)=ZF(I)-ZR(I)
 !
@@ -138,22 +138,22 @@
               GOTO 144
             ENDIF
             HAUTSED = HAUTSED + ES(I,K)
-!           
+!
           ENDDO
-!         
+!
 144       CONTINUE
-!         
+!
 !         FOR CLEAN OUTPUTS
-!         
+!
           IF(NK.LT.NOMBLAY) THEN
             DO K=NK+1,NOMBLAY
               ES(I,K) = 0.D0
             ENDDO
           ENDIF
-!         
+!
 !         THE THICKNESS OF THE LAST LAYER IS ENLARGED SO THAT
 !         THE HEIGHT OF SEDIMENT (SUM OF ES) IS EQUAL TO ZF-ZR
-!         
+!
           IF(HAUTSED.LT.ELAY(I)) THEN
             ES(I,NOMBLAY)=ES(I,NOMBLAY)+ELAY(I)-HAUTSED
           ENDIF
@@ -162,8 +162,8 @@
 !
       ELSE
 !
-!      En cas de suite de calcul       
-!      Check that sum of layers (simple precision) is equal to ZF-ZR 
+!      En cas de suite de calcul
+!      Check that sum of layers (simple precision) is equal to ZF-ZR
 !
         DO I=1,NPOIN
 !
@@ -184,16 +184,16 @@
 !
           IF(ABS(DIFF).GE.1.D-4) THEN
             WRITE(LU,*) 'ERROR IN INIT-MIXTE:'
-            WRITE(LU,*) 'THE SUM OF THICKNESS OF BED LAYERS  
+            WRITE(LU,*) 'THE SUM OF THICKNESS OF BED LAYERS
      &     IS DIFFERENT FROM ERODIBLE BED THICKNESS'
             CALL PLANTE(1)
             STOP
-          ELSE 
+          ELSE
             ES(I,NOMBLAY) = MAX(ES(I,NOMBLAY)+ DIFF,0.D0)
           ENDIF
 !
-        ENDDO        
-!      
+        ENDDO
+!
       ENDIF
 !
 ! END LOOP  (initialization of layers)
@@ -207,14 +207,14 @@
         ENDDO
         DIFF=ABS(EST-ELAY(I))
         IF(DIFF.GT.1.D-08) THEN
-          WRITE(LU,*) 'ERREUR POINT I'   
+          WRITE(LU,*) 'ERREUR POINT I'
      &     , I, 'ELAY=',ELAY(I), 'EST=', EST
           CALL PLANTE(1)
           STOP
-        ENDIF    
-      ENDDO          
+        ENDIF
+      ENDDO
 !
- 
+
 !  COMPUTING THE INITIAL MASSES OF MUD AND SAND
 !
       DO I=1,NPOIN
@@ -224,7 +224,7 @@
           IF(NSICLA.EQ.1) THEN
             ES_VASE(I,J) = ES(I,J)
             MS_VASE(I,J) = ES(I,J)*CONC(I,J)
-          ELSE 
+          ELSE
 ! FOR MIXTE SEDIMENTS : (MUD, second class )
 !....         FILLING VOIDS BETWEEN SAND GRAINS ....(XKV=1)
 !
@@ -238,28 +238,28 @@
           IF(MIXTE) T2%R(I)=T2%R(I) + MS_SABLE(I,J)
         ENDDO
       ENDDO
-!      
-!      
+!
+!
 ! FOR MASS BALANCE
-! 
+!
       IF(BILMA) THEN
-        MASV0=DOTS(T1,VOLU2D)      
-        IF(MIXTE) MASS0= DOTS(T2,VOLU2D)        
+        MASV0=DOTS(T1,VOLU2D)
+        IF(MIXTE) MASS0= DOTS(T2,VOLU2D)
         IF(NCSIZE.GT.1) THEN
           MASV0=P_DSUM(MASV0)
           IF(MIXTE) MASS0=P_DSUM(MASS0)
         ENDIF
-!     
+!
         MASVT=MASV0
         IF(MIXTE) MASST=MASS0
-        IF (.NOT.MIXTE) THEN 
+        IF (.NOT.MIXTE) THEN
           IF(LNG.EQ.1) WRITE(LU,1) MASV0
           IF(LNG.EQ.2) WRITE(LU,2) MASV0
         ELSE
           IF(LNG.EQ.1) WRITE(LU,10) MASV0, MASS0
           IF(LNG.EQ.2) WRITE(LU,20) MASV0, MASS0
-        ENDIF  
-      ENDIF                   
+        ENDIF
+      ENDIF
 !
 001   FORMAT(1X,'MASSE INITIALE DU LIT DE VASE  : ', G20.11, ' KG')
 002   FORMAT(1X,'INITIAL MASS OF THE MUD BED: ', G20.11, ' KG')

@@ -106,7 +106,7 @@
                           I = J
                           GO TO 100
                      ENDIF
-                ENDDO ! J 
+                ENDDO ! J
                 I = LONGLI
                 GO TO 100
             ENDIF
@@ -114,8 +114,8 @@
 !-----------------------------------------------------------------------
 !
 998   CONTINUE
-      IF(LNG.EQ.1) WRITE(6,999) NFIC,NLIGN
-      IF(LNG.EQ.2) WRITE(6,1999) NFIC,NLIGN
+      IF(LNG.EQ.1) WRITE(LU,999) NFIC,NLIGN
+      IF(LNG.EQ.2) WRITE(LU,1999) NFIC,NLIGN
 999   FORMAT(1X,'UNITE LOGIQUE ',1I2,'   ERREUR LIGNE ',1I6)
 1999  FORMAT(1X,'LOGICAL UNIT ',1I2,'   ERROR LINE ',1I6)
 900   CONTINUE

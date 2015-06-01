@@ -76,7 +76,7 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP    , IFF   , IP
-      DOUBLE PRECISION COEF1 , COEF2 , SEUIL 
+      DOUBLE PRECISION COEF1 , COEF2 , SEUIL
       DOUBLE PRECISION A     , XM    , SIGMA , BX    , FN
 !
 !.....EXTERNAL FUNCTIONS
@@ -108,7 +108,7 @@
           ELSE
             BETA(IP) = 0.D0
           ENDIF
-        ENDDO ! IP 
+        ENDDO ! IP
 !
       ELSE
 !
@@ -120,18 +120,18 @@
           A  = 1.D0
           FN = QGAUSS(BX,IEXPRO,A,XM)
           BETA(IP) = COEF1*FCAR(IP)*FN
-        ENDDO ! IP 
+        ENDDO ! IP
       ENDIF
 !
 !     TAKES THE SOURCE TERM INTO ACCOUNT
-!     
+!
       DO IFF = 1,NF
         DO JP = 1,NPLAN
           DO IP = 1,NPOIN2
             TSTOT(IP,JP,IFF) = TSTOT(IP,JP,IFF)+BETA(IP)*F(IP,JP,IFF)
-          ENDDO ! IP 
-        ENDDO ! JP 
-      ENDDO ! IFF 
+          ENDDO ! IP
+        ENDDO ! JP
+      ENDDO ! IFF
 !
       RETURN
       END

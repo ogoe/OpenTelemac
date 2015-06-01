@@ -108,7 +108,7 @@
 !| A              |-->| MATRIX OF THE SYSTEM
 !| AHPK           |<->| WORK STRUCTURE
 !| B              |-->| RIGHT-HAND SIDE OF SYSTEM
-!| CFG            |-->| CFG(1): STORAGE OF MATRIX 
+!| CFG            |-->| CFG(1): STORAGE OF MATRIX
 !|                |   | CFG(2): MATRIX VECTOR PRODUCT
 !| G              |<->| GRADIENT.
 !| G0             |<->| INITIAL GRADIENT

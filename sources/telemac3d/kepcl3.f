@@ -237,7 +237,7 @@
         IPOIN2 = NBOR(IPTFR)
         DIST   = DISBOR(IPTFR) / FICTIF
         HAUT   = MAX(H(IPOIN2),1.D-7)
-!   
+!
         Z0=RUGOF%R(IPOIN2)/30.D0
 !
         DO IPLAN=1,NPLAN

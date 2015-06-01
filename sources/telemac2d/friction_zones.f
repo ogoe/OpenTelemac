@@ -157,14 +157,14 @@
       ENDDO
 !
 !     CV: WAVE INDUCED FRICTION ENHANCEMENT OCONNOR AND YOO (1988)
-! 
-      IF(FRICOU)THEN 
+!
+      IF(FRICOU)THEN
         CALL CPSTVC(CF,T2)
         CALL OS('X=N(Y,Z)',X=T2,Y=U,Z=V)
         CALL OS('X=+(Y,C)',X=T2,Y=T2,C=1.D-6)
         DO I=1,NPOIN
           CF%R(I)= CF%R(I)*(1.D0 + 0.72D0*ORBVEL%R(I)/T2%R(I))
-        ENDDO   
+        ENDDO
       ENDIF
 !
       ! ============= !

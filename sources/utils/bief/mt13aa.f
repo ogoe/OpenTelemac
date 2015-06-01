@@ -114,7 +114,7 @@
       A13(IELEM) = A33(IELEM)
       A23(IELEM) = A33(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -139,7 +139,7 @@
       A13(IELEM) = A33(IELEM)
       A23(IELEM) = A33(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSE
 !

@@ -33,32 +33,32 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
+!+  Name of variables
 !+
 !history  Pablo Tassi PAT (EDF-LNHE)
 !+        12/02/2013
 !+        V6P3
 !+ Correction by Rebekka Kopmann (BAW):
 !+ Avoiding the slope effect at the open boundaries
-!+ So far only the magnitude is set to 1, but the directions are due to the slope effect. 
-!+ Specially at the outlet boundary, this can create problems. 
-!+ If a bar is moved out of the model there can be the situation, 
-!+ that you have a negative slope in longitudinal, which creates in inflow of the bed load 
+!+ So far only the magnitude is set to 1, but the directions are due to the slope effect.
+!+ Specially at the outlet boundary, this can create problems.
+!+ If a bar is moved out of the model there can be the situation,
+!+ that you have a negative slope in longitudinal, which creates in inflow of the bed load
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETA           |-->| COEFFICIENT FOR SLOPING BED EFFECT ( KOCH AND FLOKSTRA) 
+!| BETA           |-->| COEFFICIENT FOR SLOPING BED EFFECT ( KOCH AND FLOKSTRA)
 !| BETA2          |-->| COEFFICIENT FOR THE DEVIATION  (TALMON ET AL.)
-!| CALFA          |<->| COSINUS OF THE ANGLE BETWEEN TRANSPORT RATE AND X-AXIS 
+!| CALFA          |<->| COSINUS OF THE ANGLE BETWEEN TRANSPORT RATE AND X-AXIS
 !| COEF           |<->| CORRECTION COEFFICIENT FOR THE INTENSITY OF BEDLOAD TRANSPORT
 !| CTETA          |<->| COSINUS OF THE ANGLE BETWEEN MEAN FLOW AND X-AXIS
-!| DEVIA          |-->| SLOPE EFFECT FORMULA FOR DEVIATION 
+!| DEVIA          |-->| SLOPE EFFECT FORMULA FOR DEVIATION
 !| DM             |-->| SEDIMENT GRAIN DIAMETER
 !| DZFDX          |<->| BOTTOM SLOPE IN THE X-DIRECTION
 !| DZFDY          |<->| BOTTOM SLOPE IN THE Y-DIRECTION
 !| GRAV           |-->| ACCELERATION OF GRAVITY
 !| IELMT          |-->| NUMBER OF ELEMENTS
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
-!| LIQBOR         |-->| TYPE OF BOUNDARY CONDITION FOR QS 
+!| LIQBOR         |-->| TYPE OF BOUNDARY CONDITION FOR QS
 !| MASKEL         |-->| MASKING OF ELEMENTS
 !| MESH           |<->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
@@ -67,16 +67,16 @@
 !| PHISED         |-->| ANGLE OF REPOSE OF THE SEDIMENT
 !| PI             |-->| PI
 !| S              |-->| VOID STRUCTURE
-!| SALFA          |<->| SINUS OF THE ANGLE BETWEEN TRANSPORT RATE AND X-AXIS 
-!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT 
+!| SALFA          |<->| SINUS OF THE ANGLE BETWEEN TRANSPORT RATE AND X-AXIS
+!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT
 !| STETA          |<->| COSINUS OF THE ANGLE BETWEEN MEAN FLOW AND Y-AXIS
 !| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
 !| U2D            |<->| MEAN FLOW VELOCITY X-DIRECTION
-!| UCMOY          |-->| MEAN CURRENT 
+!| UCMOY          |-->| MEAN CURRENT
 !| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
 !| V2D            |<->| MEAN FLOW VELOCITY Y-DIRECTION
-!| XMVE           |-->| FLUID DENSITY 
-!| XMVS           |-->| WATER DENSITY 
+!| XMVE           |-->| FLUID DENSITY
+!| XMVS           |-->| WATER DENSITY
 !| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -232,7 +232,7 @@
 !
 ! RK no slope effect at the open boundaries
       DO K = 1, NPTFR
-        IF (LIQBOR%I(K) == KENT) THEN 
+        IF (LIQBOR%I(K) == KENT) THEN
           COEF%R(MESH%NBOR%I(K)) = 1.D0
           CALFA%R(MESH%NBOR%I(K)) = CTETA%R(MESH%NBOR%I(K))
           SALFA%R(MESH%NBOR%I(K)) = STETA%R(MESH%NBOR%I(K))
@@ -245,7 +245,7 @@
           SALFA%R(MESH%NBOR%I(K)) = STETA%R(MESH%NBOR%I(K))
         ENDIF
       ENDDO
-!     
+!
 !======================================================================
 !======================================================================
 !

@@ -28,10 +28,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NBLOCK           |-->| NUMBER OF BLOCKS 
+!| NBLOCK           |-->| NUMBER OF BLOCKS
 !| NELEM            |-->| NUMBER OF ELEMENTS IN EACH BLOCK
 !| DISPL            |-->| BYTE DISLACEMENT   IN EACH BLOCK
-!| ELEM_TYPE        |-->| TYPE OF ELEMENTS   IN EACH BLOCK 
+!| ELEM_TYPE        |-->| TYPE OF ELEMENTS   IN EACH BLOCK
 !| NEW_DATATYPE     |<--| NEW DATATYPE
 !| IERR             |<--| ERROR VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

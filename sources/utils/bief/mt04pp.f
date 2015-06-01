@@ -163,9 +163,9 @@
 !     Y2  =  Y(I2) - Y(I1)
 !     Y3  =  Y(I3) - Y(I1)
       X2  =  X(IELEM,2)
-      X3  =  X(IELEM,3) 
+      X3  =  X(IELEM,3)
       Y2  =  Y(IELEM,2)
-      Y3  =  Y(IELEM,3) 
+      Y3  =  Y(IELEM,3)
 !
       U0 = (U(I1)+U(I2)+U(I3)+U(I4)+U(I5)+U(I6))/6.D0
       V0 = (V(I1)+V(I2)+V(I3)+V(I4)+V(I5)+V(I6))/6.D0
@@ -214,9 +214,9 @@
 !     Y2  =  Y(I2) - Y(I1)
 !     Y3  =  Y(I3) - Y(I1)
       X2  =  X(IELEM,2)
-      X3  =  X(IELEM,3) 
+      X3  =  X(IELEM,3)
       Y2  =  Y(IELEM,2)
-      Y3  =  Y(IELEM,3) 
+      Y3  =  Y(IELEM,3)
 !
 !     VELOCITIES CONSIDERED CONSTANT
       U0 = (U(I1)+U(I2)+U(I3)+U(I4)+U(I5)+U(I6))/6.D0

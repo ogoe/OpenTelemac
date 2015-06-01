@@ -74,7 +74,7 @@
 !+        V6P2
 !+   Replaced EPSILON with EPSI due to nag compiler problems
 !
-!history  J-M HERVOUET (EDF LAB, LNHE)     
+!history  J-M HERVOUET (EDF LAB, LNHE)
 !+        11/03/2014
 !+        V7P0
 !+   Now SH%TYPR checked to cancel vertical diffusion.

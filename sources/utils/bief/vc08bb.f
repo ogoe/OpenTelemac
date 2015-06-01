@@ -133,7 +133,7 @@
         W2(IELEM) = 0.D0
         W3(IELEM) = 0.D0
         W4(IELEM) = 0.D0
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !     PSI SCHEME, LOOP ON THE 3 SUB-TRIANGLES AND
 !     PREASSEMBLY
@@ -188,7 +188,7 @@
       W1(IAD2)=W1(IAD2)+ XMUL * SIG * MAX(MIN(SIG*BETAN2,SIG*PHIT),0.D0)
       W1(IAD3)=W1(IAD3)+ XMUL * SIG * MAX(MIN(SIG*BETAN3,SIG*PHIT),0.D0)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
       ENDDO ! IT
 !
       ELSE
@@ -240,7 +240,7 @@
      &    Y3)*F2-3*((V3-V1)*X2-(V2-V1)*X3-(Y3-Y2)*U1-U3*Y2+U2*Y3)*
      &    F4)*XSUR72
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ENDIF
 !
@@ -300,7 +300,7 @@
      &   *X2-(4*Y3-Y2)*U3-(3*Y3+Y2)*U1-5*U2*Y3)*F2-3*((V3-V1)*
      &   X2-(V2-V1)*X3-(Y3-Y2)*U1-U3*Y2+U2*Y3)*F4)*XSUR72
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
       ENDIF
 !

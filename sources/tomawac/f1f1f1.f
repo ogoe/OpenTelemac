@@ -36,7 +36,7 @@
       IMPLICIT NONE
 !
       INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU      
+      COMMON/INFO/ LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -58,7 +58,7 @@
             WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
           ELSEIF(LNG.EQ.2) THEN
             WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
-            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1  
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -84,7 +84,7 @@
             WRITE(LU,*) 'ARRET DANS F1F1F1 : VALEUR INCORRECTE DE NF1'
             WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
             WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
-            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1  
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -123,7 +123,7 @@
             WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
           ELSEIF(LNG.EQ.2) THEN
             WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
-            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1  
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1
           ENDIF
           CALL PLANTE(1)
           STOP

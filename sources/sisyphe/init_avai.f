@@ -189,7 +189,7 @@
         IF(NLAYER%I(J).GT.1) THEN
           ESTRAT%R(J) = ES(J,2)
         ENDIF
-!       
+!
 !       UNUSED AVAIL ARE FILLED WITH ZEROS (IS IT USEFUL ???)
 !
         IF(NLAYER%I(J).LT.NOMBLAY) THEN

@@ -36,8 +36,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALPHAW         |-->| ANGLE OF WAVES WITH OX
@@ -49,7 +49,7 @@
 !| TOBW           |-->| WAVE INDUCED SHEAR STRESS
 !| UCMOY          |-->| MEAN CURRENT
 !| UW             |-->| ORBITAL WAVE VELOCITY
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_INTERACT => BEDLOAD_INTERACT

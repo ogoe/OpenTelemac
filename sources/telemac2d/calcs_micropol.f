@@ -35,7 +35,7 @@
 !  RESULTATS------------------------------------------------------------
 ! !  RNUV     ! TR ! D  ! TERMES SOURCES VOLUMIQUES IMPLICITES         !
 ! !  RNUS     ! TR ! D  ! TERME SOURCE SURFACIQUE IMPLICITES           !
-! !  SV       ! TR ! D  ! TERMES SOURCES  EXPLICITES                   ! 
+! !  SV       ! TR ! D  ! TERMES SOURCES  EXPLICITES                   !
 ! !___________!____!____!______________________________________________!
 !                               COMMON
 ! .___________.____.____.______________________________________________.
@@ -77,7 +77,7 @@
 !
 !
 !
-      
+
       IF(LNG.EQ.1)THEN
         WRITE(LU,*) 'MICROPOL: NOT IMPLEMENTED YET'
       ELSE
@@ -85,11 +85,11 @@
       ENDIF
       CALL PLANTE(1)
       STOP
-      
+
 
 !
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END 
+      END

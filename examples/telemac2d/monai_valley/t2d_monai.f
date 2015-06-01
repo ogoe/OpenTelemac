@@ -38,7 +38,7 @@
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!     
+!
       LOGICAL IMP,LEO
 !
       INTEGER LTT,N,IMAX
@@ -139,17 +139,17 @@
 78      FORMAT(1X,'PRERES : NOMBRE DE COURANT MAXIMUM :',G16.7)
 79      FORMAT(1X,'PRERES: MAXIMUM COURANT NUMBER: ',G16.7)
       ENDIF
-!           
+!
 !=======================================================================
-! CALCUL DE LA SOLUTION ANALYTIQUE                                       
+! CALCUL DE LA SOLUTION ANALYTIQUE
 !=======================================================================
-!  
+!
         PI = 3.141592653589D0
-        PER=0.5                                           
+        PER=0.5
         WPLG=2.*PI/PER
-        A=0.39    
-!                                                                           
-      IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN 
+        A=0.39
+!
+      IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN
         DO N = 1, NPOIN
           PHI = X(N)/SQRT(9.81*10.)
           B = (2.*PI*(AT-PHI))/PER
@@ -157,15 +157,15 @@
             PRIVE%ADR(1)%P%R(N) = 10.
           ELSE
             PRIVE%ADR(1)%P%R(N) = 10. + A*SIN(B)
-          ENDIF   
-        ENDDO    
-      ENDIF                                                         
+          ENDIF
+        ENDDO
+      ENDIF
 !
 !=======================================================================
 !
 1000  CONTINUE
       RETURN
-      END 
+      END
 !                       ***************************
                         SUBROUTINE NOMVAR_TELEMAC2D
 !                       ***************************
@@ -245,7 +245,7 @@
       TEXTE (20) = 'DRIFT ALONG X   M               '
       TEXTE (21) = 'DRIFT ALONG Y   M               '
       TEXTE (22) = 'COURANT NUMBER                  '
-      TEXTE (23) = 'SOLANAL                         '                   
+      TEXTE (23) = 'SOLANAL                         '
       TEXTE (24) = 'VARIABLE 24     UNIT   ??       '
       TEXTE (25) = 'VARIABLE 25     UNIT   ??       '
       TEXTE (26) = 'VARIABLE 26     UNIT   ??       '
@@ -444,12 +444,12 @@
      &                       //I_IN_2_LETTERS(I)
      &                       //'DEGRES          '
           MNEMO(32+2*(I-1)) = 'PHAS'//I_IN_2_LETTERS(I)//'  '
-        ENDDO 
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
-       
-       
+
+

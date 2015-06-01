@@ -30,7 +30,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DTT            |<--| TIME STEP FOR TRACER
 !| FLUHBOR        |<--| TRACER FLUX AT HE BOUNDARY (UPDATED)
-!| FLUXT          |<--| TRACER FLUX (UPDATED)  
+!| FLUXT          |<--| TRACER FLUX (UPDATED)
 !| H              |-->| WATER DEPTH
 !| HC             |-->| RECONSRUCTED H FOR ORDRE 2 (CORRECTED)
 !| HCSTOK         |<--| RECONSTRUCTED H FOR ORDRE 2(CORRECTED AND STOCKE)
@@ -38,7 +38,7 @@
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NS             |-->| TOTAL NUMER OF POINTS IN THE MESH
 !| NSEG           |-->| NUMBER OF EDGES IN THE MESH
-!| NTRAC          |-->| NUMBER OF TRACERS 
+!| NTRAC          |-->| NUMBER OF TRACERS
 !| SMTR           |<--| TRACER SOURCE TERMS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

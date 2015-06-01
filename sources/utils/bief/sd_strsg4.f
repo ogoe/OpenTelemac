@@ -8,7 +8,7 @@
 ! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!brief    TRANSFORMS THE SEGMENTS OF A 4-MATRIX SYSTEM INTO 
+!brief    TRANSFORMS THE SEGMENTS OF A 4-MATRIX SYSTEM INTO
 !          THE SEGMENTS OF A SINGLE BLOCK.
 !
 !history  E. RAZAFINDRAKOTO (LNH)
@@ -30,7 +30,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| GLOSEG4        |<--| FIRST AND SECOND POINT OF SEGMENTS IN BLOCK
-!| GLOSEGB        |-->| FIRST AND SECOND POINT OF SEGMENTS 
+!| GLOSEGB        |-->| FIRST AND SECOND POINT OF SEGMENTS
 !| NPBLK          |-->| FINAL NUMBER OF UNKNOWNS IN THE BLOCK
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NSEG           |-->| NUMBER OF SEGMENTS

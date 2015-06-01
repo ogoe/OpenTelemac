@@ -7,7 +7,7 @@
      & DIRMOY_TEL,HM0_TEL,TPR5_TEL,ORBVEL_TEL)
 !
 !***********************************************************************
-! TOMAWAC   V7P0                                   
+! TOMAWAC   V7P0
 !***********************************************************************
 !
 !brief    MAIN SUBROUTINE OF TOMAWAC
@@ -37,7 +37,7 @@
 !history  J-M HERVOUET (EDF - LNHE)
 !+        15/09/2014
 !+        V7P0
-!+   Initialisation of STRA42 and STRA34 if .NOT.VENT 
+!+   Initialisation of STRA42 and STRA34 if .NOT.VENT
 !+   (a former overlooked bug)
 !+   PERCOU_WAC now used (correction by Catherine Villaret (HR+EDF)
 !+   and Pablo*(Tassi+Santoro)).
@@ -62,8 +62,8 @@
 !| NIT_TEL        |-->| NUMBER OF TELEMAC TIME STEPS
 !| ORBVEL_TEL     |-->| ORBITAL VELOCITY
 !| PART           |-->| -1: NO COUPLING
-!|                |   |  0: COUPLING WITH TELEMAC (INITIALISATION) 
-!|                |   |  1: COUPLING WITH TELEMAC (LOOP OVER TIME STEPS) 
+!|                |   |  0: COUPLING WITH TELEMAC (INITIALISATION)
+!|                |   |  1: COUPLING WITH TELEMAC (LOOP OVER TIME STEPS)
 !| PERCOU_WAC     |   | VARIABLE CURRENTLY NOT USED
 !| T_TEL          |-->| COMPUTATION TIME OF TELEMAC MODEL
 !| U_TEL          |-->| CURRENT VELOCITY ALONG X IN TELEMAC MODEL
@@ -188,7 +188,7 @@
       ENDIF
 !
 !.....1.4 INITIALISATION DES TABLEAUX DATE ET TIME
-!     
+!
       ADC=INT(DDC*1.D-8)
       MDC=INT(DDC*1.D-6)
       JDC=INT(DDC*1.D-4)
@@ -332,7 +332,7 @@
 !     PREPARATION DES SORTIES GRAPHIQUES
 !
 !     CREATION DU JEU DE DONNEES POUR UN FORMAT DE FICHIER FORMAT_RES.
-!     LE JEU DE DONNEES EST CREE DANS LE FICHIER NRES, ET EST DEFINI  
+!     LE JEU DE DONNEES EST CREE DANS LE FICHIER NRES, ET EST DEFINI
 !     PAR UN TITRE ET LES VARIABLES A ECRIRE.
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE WRITE_HEADER'
@@ -410,7 +410,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LECSUI'
       ELSE
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CONDIW'
-        CALL CONDIW(AT,LT,TC1,TC2,TV1,TV2,TM1,TM2, 
+        CALL CONDIW(AT,LT,TC1,TC2,TV1,TV2,TM1,TM2,
      &              NVHMA,NVCOU,NVWIN,PART,U_TEL,V_TEL,H_TEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CONDIW'
 !       JMH: DEPTH MAY BE MODIFIED IN CONDIW
@@ -470,27 +470,27 @@
         XMUMDI(3)=0.184D0
         XLAMDI(4)=0.394D0
         XMUMDI(4)=0.135D0
-!        
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PRENL2'
         DO K=1,MDIA
           CALL PRENL2(IANMDI(1,1,K),COEMDI(1,K),NPLAN,NF,RAISF,
      &                XLAMDI(K),XMUMDI(K))
         ENDDO
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PRENL2'
-!        
+!
 !.....GQM method (Lavrenov, 2001)
-!   
+!
       ELSEIF(STRIF.EQ.3) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PRENL3'
         CALL PRENL3
      &( NF    , NPLAN , RAISF , TAILF , FREQ  , TB_SCA, LBUF  , DIMBUF,
      &  F_POIN, F_COEF, T_POIN, F_PROJ, IQ_OM1, NQ_TE1, NQ_OM2, NF1   ,
-     &  NT1   , K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , 
+     &  NT1   , K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  ,
      &  K_1M  , K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M,
      &  K_1M3P, TB_TPM, TB_TMP, TB_FAC, SEUIL1, SEUIL2, ELIM  , NCONF ,
      &  NCONFM, IDCONF)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PRENL3'
-      ENDIF       
+      ENDIF
 !
       IF(STRIA.EQ.2) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREQT2'
@@ -523,11 +523,11 @@
         ELSEIF (SVENT.EQ.0.AND.LVENT.EQ.1) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE USTAR2'
           CALL USTAR2(STRA42%R,SUV%R,SVV%R,NPOIN2)
-          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE USTAR2' 
+          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE USTAR2'
         ELSEIF (SVENT.EQ.0.AND.LVENT.EQ.0.AND.SMOUT.EQ.2) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE USTAR2'
           CALL USTAR2(STRA42%R,SUV%R,SVV%R,NPOIN2)
-          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE USTAR2'    
+          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE USTAR2'
         ELSE
           IF(LNG.EQ.1) THEN
             WRITE(LU,*)
@@ -617,7 +617,7 @@
 !=====C===================================================
 !
 !.....9.1 CHOIX DES POINTS DE SORTIE DU SPECTRE DIRECTIONNEL.
-!     
+!
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PROXIM'
       IF(NPLEO.GT.0) THEN
@@ -627,7 +627,7 @@
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROXIM'
 !
 !.....9.2 TEST POUR SAVOIR SI ON IMPRIME OU PAS.
-!     
+!
       IMPRES=.FALSE.
       DEBRES=.FALSE.
       IF(LT.EQ.GRADEB) THEN
@@ -656,12 +656,12 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP'
 !
 !.....9.4 IMPRESSION (EVENTUELLE) DES SPECTRES DIRECTIONNELS.
-!    
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRSPE'
         IREC = (LT - GRADEB) ! Should be 0
         CALL ECRSPE
      &( SF%R    , STETA%R, NPLAN ,
-     &  SFR%R   , NF  , NF   , NPOIN2      , AT , IREC, 
+     &  SFR%R   , NF  , NF   , NPOIN2      , AT , IREC,
      &  STSDER%R, NOLEO , NPLEO , WAC_FILES(WACLEO)%LU ,
      &  WAC_FILES(WACLEO)%FMT, DEBRES , TITCAS , DATE , TIME ,
      &  MESH%KNOLG%I ,MESH ,WAC_FILES(WACSPE)%LU ,
@@ -670,7 +670,7 @@
 !
       ENDIF
 !
-!     CASE OF TRIPLE COUPLING, INITIAL CONDITIONS     
+!     CASE OF TRIPLE COUPLING, INITIAL CONDITIONS
 !
       IF(INCLUS(COUPLING,'SISYPHE').AND.PART.EQ.0) THEN
 !       3 VARIABLES THAT WILL BE TRANSMITTED TO SISYPHE
@@ -791,7 +791,7 @@
       DO LT_WAC=1,NIT
 !
 !.....11.1 AFFECTATION DE LA DATE DE FIN DU PAS DE TEMPS COURANT.
-!    
+!
       AT=AT+DT
 !Calcul de LT (NOTE JMH: WHY NOT LT=LT+1 ?)
       LT=NINT((AT-AT0)/DT)
@@ -801,7 +801,7 @@
       CALL IMPR(LISPRD,LT,AT,LT,3)
 !
 !     11.2 AFFECTATION DES CONDITIONS AUX LIMITES.
-!     
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LIMWAC'
       CALL LIMWAC
      &(SF%R    , SFBOR%R , SLIFBR%I , NPTFR  , NPLAN , NF    ,
@@ -817,7 +817,7 @@
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LIMWAC'
 !
 !     11.2b MISE A ZERO DU SPECTRE SUR LES POINTS OU PROF < PROMIN
-!     
+!
       IF (.NOT.PROINF) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRETE'
         CALL ECRETE(SF%R,SDEPTH%R,NPOIN2,NPLAN,NF,PROMIN)
@@ -837,13 +837,13 @@
       ENDIF
 !
 !......11.3 UPDATING DEPTH AND CURRENTS
-!      
+!
 !     COUPLING TELEMAC-TOMAWAC OR CURRENTS AND/OR DEPTH IN A FILE
 !     THEY ARE UPDATED HERE.
-!         
+!
       IF(MAREE.AND.LT.EQ.LT1.OR.
      &   (PART.EQ.1.AND.LT_WAC.EQ.1)) THEN
-        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORMAR'       
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORMAR'
         CALL CORMAR(AT,LT,TC1,TC2,TV1,TV2,TM1,TM2,
      &              NVHMA,NVCOU,PART,U_TEL,V_TEL,H_TEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CORMAR'
@@ -852,7 +852,7 @@
         ENDDO
 !
 !......11.3.1 PREPARING PROPAGATION (METHOD OF CHARACTERISTICS).
-!      
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE INIPHY'
         CALL INIPHY(SXK%R,SCG%R,SB%R,SDEPTH%R,SFR%R,
      &              SCOSF%R,NPOIN2,NF,PROINF,SPHE)
@@ -863,7 +863,7 @@
           CALL IMPR(LISPRD,LT,AT,LT,1)
           CALL IMPR(LISPRD,LT,AT,LT,2)
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREPRO 2'
-!         
+!
           CALL PREPRO
 !        EX-SCX      EX-SCY (MEMORY OPTIMISATION)
      & ( STSDER    , STSTOT     , SCT      , SCF     , DT  ,
@@ -899,13 +899,13 @@
      & ( STSDER   , STSTOT    , SCT    , DT    ,
      &   MESH%X%R  , MESH%Y%R , STETA ,
      &   SCOSTE%R , SSINTE%R  , SFR%R    , MESH%IKLE%I     ,
-     &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 , SSHZ    , 
+     &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 , SSHZ    ,
      &   SELT%I   , SETA%I    , SDEPTH%R,
-     &   SDZX%R    , SDZY%R   , 
-     &   SXK%R     , SCG%R    , 
+     &   SDZX%R    , SDZY%R   ,
+     &   SXK%R     , SCG%R    ,
      &   SITR01%I  , NPOIN3   , NPOIN2  , NELEM2,
      &   NPLAN    , NF        , MESH%SURDET%R, COURAN.OR.PART.EQ.1,
-     &   SPHE     , PROINF    , SA%R     , SDFR%R  , 
+     &   SPHE     , PROINF    , SA%R     , SDFR%R  ,
      &   SF%R,SCCG%R,SDIV%R   , SDELTA%R , SDDX%R  ,
      &   SDDY%R   , F2DIFM    , NBOR     , NPTFR   ,
      &   SXKONPT%R , SRK%R    , SRX%R    ,
@@ -919,13 +919,13 @@
 !-------------------------------------------------------------------
 !
 !.....11.3 PROPAGATION (INTERPOLATION AU PIED DES CARACTERISTIQUES).
-!     
+!
       IF(PROP) THEN
         CALL IMPR(LISPRD,LT,AT,LT,5)
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PROPA'
-        CALL PROPA(SF%R,SB%R,SSHP1, 
+        CALL PROPA(SF%R,SB%R,SSHP1,
      &             SSHZ,SSHF,SELT%I,SETA%I,SFRE%I,
-     &             IKLE_EXT,NPOIN3,NPOIN2, 
+     &             IKLE_EXT,NPOIN3,NPOIN2,
 !                                               WORK ARRAYS HERE
      &             NPLAN,NF,COURAN.OR.PART.EQ.1,STSDER%R,STSTOT,
      &             ITR01,T3_01,T3_02,ISUB,MESH3D)
@@ -974,11 +974,11 @@
           WRITE(LU,*) '****************************'
         ENDIF
         CALL PLANTE(1)
-        STOP      
+        STOP
       ENDIF
 !
 !.....11.5 INTEGRATION DES TERMES SOURCES.
-!   
+!
       IF(TSOU) THEN
         CALL IMPR(LISPRD,LT,AT,NSITS,4)
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SEMIMP'
@@ -1030,13 +1030,13 @@
         ENDIF
 !
 !.....11.8 IMPRESSION (EVENTUELLE) DES VARIABLES SUR LE MAILLAGE 2D.
-!     
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DUMP2D'
         IF(COURAN.OR.PART.EQ.1) THEN
           CALL DUMP2D(LT,STSTOT%R,NPOIN3*NF)
         ELSE
           CALL DUMP2D(LT,SF%R,NPOIN3*NF)
-        ENDIF       
+        ENDIF
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DUMP2D'
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
@@ -1047,7 +1047,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP'
 !
 !.....11.9 IMPRESSION (EVENTUELLE) DES SPECTRES DIRECTIONNELS.
-!     
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRSPE'
         IREC = (LT - GRADEB)/GRAPRD
         IF(COURAN.OR.PART.EQ.1) THEN
@@ -1063,14 +1063,14 @@
      &                STSDER%R,NOLEO,NPLEO,WAC_FILES(WACLEO)%LU,
      &                WAC_FILES(WACLEO)%FMT,DEBRES,TITCAS,DATE,TIME,
      &                MESH%KNOLG%I,MESH,WAC_FILES(WACSPE)%LU ,
-     &                WAC_FILES(WACSPE)%NAME)     
+     &                WAC_FILES(WACSPE)%NAME)
         ENDIF
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE ECRSPE'
 !
       ENDIF
 !
 !     RADIATION STRESSES COMPUTED HERE FOR TELEMAC INDEPENDENTLY
-!     OF THE PRINTS TO RESULT FILE, WHICH IS NOT MANDATORY  
+!     OF THE PRINTS TO RESULT FILE, WHICH IS NOT MANDATORY
 !
       IF(PART.EQ.1.AND.LT_WAC.EQ.NIT) THEN
 !       STSTOT WORK ARRAY (ABSOLUTE FREQUENCY) IN ALL THIS IF BLOCK
@@ -1079,12 +1079,12 @@
      &              SITR12%I , SITR13%I      , STRA31%R, STRA32%R,
      &              NPOIN2   , NPLAN , NF    , RAISF ,
 !                   TO FORCE THE WORK WHATEVER LT,GRADEB,GRAPRD
-     &              1,1,1)                   
+     &              1,1,1)
         CALL RADIAT(FX_WAC%R,FY_WAC%R,STRA53%R,STRA54%R,STRA55%R,
      &              SXK%R,STSTOT%R,SCG%R,SDEPTH%R,
 !                   STSDER%R WORK TABLE HERE
      &              STSDER%R,
-     &              STRA36%R,STRA37%R,STRA38%R,STRA39%R)        
+     &              STRA36%R,STRA37%R,STRA38%R,STRA39%R)
         IF(VENT) THEN
           CALL OV('X=Y     ',UV_WAC%R,SUV%R,SUV%R,0.D0,NPOIN2)
           CALL OV('X=Y     ',VV_WAC%R,SVV%R,SVV%R,0.D0,NPOIN2)
@@ -1118,7 +1118,7 @@
             TPR5_TEL%R(IP)=
      &      1.D0/MIN(MAX(TPR5_TEL%R(IP),FREQ(1)),FREQ(NF))
           ENDDO
-!         NEAR BED ORBITAL VELOCITY 
+!         NEAR BED ORBITAL VELOCITY
           CALL VITFON(ORBVEL_TEL%R,STSTOT%R,SXK%R,SDEPTH%R,
      &                SDFR%R,NF,NPOIN2,NPLAN,STRA39%R)
         ENDIF

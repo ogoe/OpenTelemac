@@ -40,7 +40,7 @@
 !| CLPMIN         |-->| LOGICAL, IF YES, CLIPPING OF MINIMUM VALUE
 !| F              |<->| ATTAY OF VALUES TO BE CHECKED
 !| NPOIN          |-->| NUMBER OF POINTS IN THE DOMAIN
-!| XMAX           |-->| MAXIMUM THRESHOLD VALUE 
+!| XMAX           |-->| MAXIMUM THRESHOLD VALUE
 !| XMIN           |-->| MINIMUM THRESHOLD VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

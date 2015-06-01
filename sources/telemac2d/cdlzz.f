@@ -16,10 +16,10 @@
 !history  R. ATA (EDF-LNHE)
 !+
 !+        V6P1
-!+ 
+!+
 ! history  R. ATA (EDF-LNHE) 01/07/2013
 !+
-!+        V6P3 
+!+        V6P3
 !+ COMMENT THE FLUX CALL FOR WALL CONDITTION
 !+ CLEAN UNUSED VARIABLES
 !
@@ -33,17 +33,17 @@
 !|  KNEU          |-->|  CONVENTION FOR NEUMANN POINTS
 !|  G             |-->|  GRAVITY CONSTANT
 !|  W             |-->|  UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
-!|  CE            |<->|  FLUX 
+!|  CE            |<->|  FLUX
 !|  FLUENT,FLUSORT|<--|  IN AND OUT MASS FLUX
 !|  FLBOR         |<--|  IN AND OUT WATER MASS FLUX
-!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION 
+!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION
 !|  ZF            |-->|  BATHYMETRY
-!|  WINF          |-->|  PRESCRIBED BOUNDARY CONDITIONS 
+!|  WINF          |-->|  PRESCRIBED BOUNDARY CONDITIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE INTERFACE_TELEMAC2D, EX_CDLZZ => CDLZZ
-!  
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -61,13 +61,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IS,K,IDRY    
-!    
+      INTEGER IS,K,IDRY
+!
       DOUBLE PRECISION VNX,VNY,XNN,YNN,VNL
       DOUBLE PRECISION :: FLXI(3),FLXJ(3),H1,U10,U1,V1,ETA1
       DOUBLE PRECISION :: H2,ETA2,U2,V2,ZF1,ZF2
       DOUBLE PRECISION :: INFLOW,OUTFLOW,EPS
-     
+
       EPS=1.0E-3
 !
 !     LOOP OVER BOUNDARY NODES
@@ -75,9 +75,9 @@
       DO K=1,NPTFR
 !
         IS=NBOR(K)
-!       
+!
 !       INITIALIZATION
-!       
+!
         FLUENT  = 0.D0
         FLUSORT = 0.0D0
         INFLOW  = 0.0D0
@@ -88,22 +88,22 @@
         FLXJ(1)  = 0.0D0
         FLXJ(2)  = 0.0D0
         FLXJ(3)  = 0.0D0
-!       
+!
 !       INDICATOR FOR DRY CELLS
-!       
+!
         IDRY=0
-!       
+!
 !       NORMALIZED NORMAL
-!       
+!
         XNN=XNEBOR(K)
         YNN=YNEBOR(K)
-!       
+!
 !       NON NORMALIZED NORMAL
-!       
+!
         VNX=XNEBOR(K+NPTFR)
         VNY=YNEBOR(K+NPTFR)
         VNL=SQRT(VNX**2+VNY**2)
-!       
+!
         H1   = W(1,IS)
         ZF1  = ZF(IS)
         ETA1 = H1+ZF1
@@ -120,33 +120,33 @@
 !       WALL BOUNDARIES
 !**************************************************
 !
-!   PERFECT SLIPPING CONDITION 
+!   PERFECT SLIPPING CONDITION
 !====================================
 !
-        IF(LIMPRO(K,1).EQ.KNEU) THEN 
+        IF(LIMPRO(K,1).EQ.KNEU) THEN
 !
 !         DEFINITION OF THE GOST STATE Ue
-!         
+!
           H2  = H1
           ETA2= ETA1
           ZF2 = ZF1
-!         ROTATION 
+!         ROTATION
           U10 = U1
           U1  = XNN*U10+YNN*V1
           V1  =-YNN*U10+XNN*V1
-!         
+!
 !         PUT NORMAL COMPONENT = 0
-!         
+!
           U1 =  0.0D0
           U2 =  U1
           V2 =  V1
-!         
+!
 !         INVERSE ROTATION
-!         
+!
           U10 = U1
           U1  = -YNN*V1
           V1  =  XNN*V1
-!         
+!
           U2  = -YNN*V2
           V2  =  XNN*V2
 ! NOT NECESARY
@@ -157,13 +157,13 @@
 !     LIQUID BOUNDARY
 !**************************************************
 !
-        ELSEIF(LIMPRO(K,1).EQ.KDIR.OR.LIMPRO(K,1).EQ.KDDL)THEN 
+        ELSEIF(LIMPRO(K,1).EQ.KDIR.OR.LIMPRO(K,1).EQ.KDDL)THEN
 !
 !   CASE1: H  IMPOSED
 !===============================
 !
           IF(LIMPRO(K,1).EQ.KDIR) THEN
-!         
+!
             H2 = WINF(1,K)
             ETA2 = H2 + ZF(IS)
             ZF2 = ZF(IS)
@@ -175,26 +175,26 @@
               V2 = 0.0D0
               IDRY = IDRY + 1
             ENDIF
-!         
+!
             IF(IDRY.LT.2)THEN
 !           AT LEAST ONE WET CELL
               CALL FLU_ZOKAGOA(H1,H2,ZF1,ZF2,ETA1,ETA2,U1,U2,
      &                         V1,V2,XNN,YNN,FLXI,FLXJ,G)
-            ENDIF 
+            ENDIF
             OUTFLOW    = FLXI(1)*VNL
             FLUSORT    = FLUSORT + OUTFLOW
             FLBOR%R(K) = OUTFLOW
-!         
-!         LIMPRO(K,1).NE.KDIR    
-          ELSE 
-!         
+!
+!         LIMPRO(K,1).NE.KDIR
+          ELSE
+!
             H2 = H1
             U2 = U1
             V2 = V1
             ZF1= ZF(IS)
             ZF2= ZF1
             ETA2=ETA1
-!         
+!
             H1 = WINF(1,K)
             ETA1=H1+ZF(IS)
             IF(H1.GT.EPS)THEN
@@ -205,16 +205,16 @@
               V1 = 0.0D0
               IDRY = IDRY + 1
             ENDIF
-!         
+!
             IF(IDRY.LT.2)THEN
 !           AT LEAST ONE WET CELL
               CALL FLU_ZOKAGOA(H2,H1,ZF1,ZF2,ETA2,ETA1,U2,U1,
      &                         V2,V1,XNN,YNN,FLXI,FLXJ,G)
-            ENDIF 
+            ENDIF
             INFLOW     = FLXI(1)*VNL
             FLUENT     = FLUENT + INFLOW
-            FLBOR%R(K) = INFLOW  
-!         
+            FLBOR%R(K) = INFLOW
+!
           ENDIF
         ENDIF
 !

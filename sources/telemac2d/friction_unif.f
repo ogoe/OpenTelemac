@@ -6,7 +6,7 @@
      & SB,NDEF,DP,SP,VK,KARMAN,GRAV,T1,T2,CHBORD,CF,CFBOR)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1                         
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES FRICTION FOR EACH NODE WHEN THERE IS ONLY
@@ -45,7 +45,7 @@
 !| CFBORD         |<--| ADIMENSIONAL FRICTION COEFFICIENT ON BOUNDARIES
 !| CHBORD         |-->| DEFAULT'S MANNING ON BOUNDARY
 !| CHESTR         |-->| FRICTION COEFFICIENTS
-!| DP             |-->| DIAMETER OF ROUGHNESS ELEMENT  
+!| DP             |-->| DIAMETER OF ROUGHNESS ELEMENT
 !| GRAV           |-->| GRAVITY
 !| H              |-->| WATER DEPTH
 !| ITURB          |---| NOT USED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -57,7 +57,7 @@
 !| NDEF           |-->| DEFAULT'S MANNING
 !| S              |-->| VOID BIEF_OBJ STRUCTURE
 !| SB             |---| NOT USED !!!!!!!!!!!!!!!!!!!!!!
-!| SP             |-->| SPACING OF ROUGHNESS ELEMENT 
+!| SP             |-->| SPACING OF ROUGHNESS ELEMENT
 !| T1             |<->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
 !| T2             |<->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
 !| U              |-->| X-COMPONENT OF VELOCITY
@@ -158,14 +158,14 @@
 !
 !     CV
 !     WAVE INDUCED FRICTION ENHANCMENT (OCONNOR AND YOO, 1988)
-! 
-      IF(FRICOU)THEN 
+!
+      IF(FRICOU)THEN
         CALL CPSTVC(CF,T2)
         CALL OS('X=N(Y,Z)', T2,  U, V, C)
-        CALL OS('X=+(Y,C)', T2, T2, S, 1.D-6)      
+        CALL OS('X=+(Y,C)', T2, T2, S, 1.D-6)
         DO I=1,NPOIN
           CF%R(I)=CF%R(I)*(1.D0 + 0.72D0*ORBVEL%R(I)/T2%R(I))
-        ENDDO   
+        ENDDO
       ENDIF
 !
 ! ============= !

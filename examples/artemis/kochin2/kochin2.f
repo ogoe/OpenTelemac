@@ -12,7 +12,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -85,19 +85,19 @@
 !
 !
       DOUBLE PRECISION PI,BID
-      
+
 !CP
       DOUBLE PRECISION PHI_RE    , PHI_IM
       DOUBLE PRECISION DDXPHI_RE , DDYPHI_RE , DDXPHI_IM , DDYPHI_IM
 
-!CP      
-      
+!CP
+
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
+!     ----------------------------------------
+!
+! JCB :
       INTEGER I , IG   , JB
 ! JCB
 !
@@ -124,32 +124,32 @@
       ALFAP%R(:) = 0.D0
       RP%R(:)    = 0.D0
       HB%R(:)    = 0.D0
-      
+
       PRB%R(:)   =0.D0
       PIB%R(:)   =0.D0
       DDXPRB%R(:)=0.D0
       DDYPRB%R(:)=0.D0
       DDXPIB%R(:)=0.D0
       DDYPIB%R(:)=0.D0
-      
-      
+
+
       DO I=1,NPTFR
         JB=BOUNDARY_COLOUR%I(I)
-      
+
 !       SORTIE
         IF(JB.GE.1.AND.JB.LE.72) THEN
            LIHBOR%I(I) = KSORT
            TETAP%R(I) = 90.D0
         ENDIF
-        
+
 !       Potentiel incident
         IF(JB.GE.73.AND.JB.LE.144) THEN
           LIHBOR%I(I) = KPOT
           TETAP%R(I)  =  90.D0
           IG   = MESH%NBOR%I(I)
-          
+
           CALL FAR_FIELD_POTENTIAL
-     &  ( X(IG)        , Y(IG)         , K%R(IG) , PHI_RE   , PHI_IM, 
+     &  ( X(IG)        , Y(IG)         , K%R(IG) , PHI_RE   , PHI_IM,
      &   DDXPHI_RE , DDYPHI_RE , DDXPHI_IM , DDYPHI_IM)
           PRB%R(I)   = PHI_RE
           PIB%R(I)   = PHI_IM
@@ -158,16 +158,16 @@
           DDXPIB%R(I)= DDXPHI_IM
           DDYPIB%R(I)= DDYPHI_IM
         ENDIF
-      
+
       ENDDO
 
 
 
 
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+      RETURN
+      END
 
 
 
@@ -193,7 +193,7 @@
       SUBROUTINE FAR_FIELD_POTENTIAL
 !     ******************************
 
-     &( X        , Y         , WNB       , PHI_RE   , PHI_IM, 
+     &( X        , Y         , WNB       , PHI_RE   , PHI_IM,
      & DDXPHI_RE , DDYPHI_RE , DDXPHI_IM , DDYPHI_IM)
 !
       IMPLICIT NONE
@@ -260,8 +260,8 @@
       R=DSQRT(X*X+Y*Y)
       TETA=DATAN2(Y,X)*180.D0/PI
 !      WRITE(6,*) 'TETA=',  X  ,  Y ,  TETA
-    
-      
+
+
   201 IF (TETA.LT.-180.D0) THEN
         TETA=TETA+360.D0
         GOTO 201
@@ -271,7 +271,7 @@
         GOTO 202
       ENDIF
 !
-!.....Calcul du module (ModZ) et de l'angle de la fonction de Kochin 
+!.....Calcul du module (ModZ) et de l'angle de la fonction de Kochin
 !.....H(Teta) par interp. lineaire dans le vecteur des valeurs fournies.
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
       XX=ABS(TETA)/5.0D0
@@ -279,11 +279,11 @@
       XX=XX-INT(XX)
       MODZ=(1.D0-XX)*MODZLU(IX)+XX*MODZLU(IX+1)
       ARGZ=(1.D0-XX)*ARGZLU(IX)+XX*ARGZLU(IX+1)
-      
-!      WRITE(6,*) 'KOCHIN=',  ModZ  ,  ArgZ 
+
+!      WRITE(6,*) 'KOCHIN=',  ModZ  ,  ArgZ
 
 !CP On recupere les derivees (attention : fonctions en rad)
-      DO II=1,38 
+      DO II=1,38
         IF (II.LE.37) THEN
           DDTMODZ(II)=(MODZLU(II+1)-MODZLU(II))/(5.0D0*PI/180.0D0)
           DDTARGZ(II)=(ARGZLU(II+1)-ARGZLU(II))/5.0D0
@@ -292,7 +292,7 @@
           DDTARGZ(II)=0.0D0
         ENDIF
       ENDDO
-      
+
       DMODTETA=(1.D0-XX)*DDTMODZ(IX)+XX*DDTMODZ(IX+1)
       DPHTETA =(1.D0-XX)*DDTARGZ(IX)+XX*DDTARGZ(IX+1)
 !CP
@@ -305,7 +305,7 @@
       AUX2 = WNB*R - PI/4.0D0 + ARGZ*PI/180.D0
       PHI_RE= AUX1*COS(AUX2)
       PHI_IM= AUX1*SIN(AUX2)
-!      WRITE(6,*) 'X   Y   PR   PI=', X  ,  Y  ,  Phi_Re  , Phi_Im 
+!      WRITE(6,*) 'X   Y   PR   PI=', X  ,  Y  ,  Phi_Re  , Phi_Im
 
 !
 
@@ -323,7 +323,7 @@
       RP12=DSQRT(R)
       RP32=RP12**3
 
-      
+
       AR= (-1.D0/(2.D0*RP32))*COS(ANG1) - (WNB/RP12)*SIN(ANG1)
       BR= (-1.D0/(2.D0*RP32))*SIN(ANG1) + (WNB/RP12)*COS(ANG1)
 
@@ -333,12 +333,12 @@
 
 ! -- DDTETA POTENTIEL
       ANG2=WNB*R - PI/4.0D0 + PHTETA
-      
+
       AR= DMODTETA*COS(ANG2)- MODTETA*DPHTETA*SIN(ANG2)
       BR= DMODTETA*SIN(ANG2)+ MODTETA*DPHTETA*COS(ANG2)
 
       AUX1=DSQRT(WNB/(2.D0*PI*R))*CORREC
-      
+
       DDTPHR=AUX1*AR
       DDTPHI=AUX1*BR
 
@@ -365,7 +365,7 @@
       SUBROUTINE SIMPLE_POTENTIAL
 !     ******************************
 
-     &( X        , Y         , WNB       , PHI_RE   , PHI_IM, 
+     &( X        , Y         , WNB       , PHI_RE   , PHI_IM,
      & DDXPHI_RE , DDYPHI_RE , DDXPHI_IM , DDYPHI_IM)
 !
       IMPLICIT NONE
@@ -409,8 +409,8 @@
       R=DSQRT(X*X+Y*Y)
       TETA=DATAN2(Y,X)*180.D0/PI
 !      WRITE(6,*) 'TETA=',  X  ,  Y ,  TETA
-    
-      
+
+
   201 IF (TETA.LT.-180.D0) THEN
         TETA=TETA+360.D0
         GOTO 201
@@ -423,7 +423,7 @@
 
       AUX1=H*GRAVIT/(2.0D0*OMEGA)
       AUX2=WNB*R
-      
+
       PHI_RE=  AUX1*SIN(AUX2)
       PHI_IM= -AUX1*COS(AUX2)
 
@@ -433,12 +433,12 @@
 ! -- DDR POTENTIEL
 
       AUX1  = AUX1*WNB
-      
+
       DDRPHR=AUX1*COS(AUX2)
       DDRPHI=AUX1*SIN(AUX2)
 
 ! -- DDTETA POTENTIEL
-      
+
       DDTPHR=0.0D0
       DDTPHI=0.0D0
 

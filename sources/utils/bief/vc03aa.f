@@ -150,7 +150,7 @@
       W2(IELEM) = ( WX2*G(IELEM) + WY2*H(IELEM) ) * COEF
       W3(IELEM) = ( WX3*G(IELEM) + WY3*H(IELEM) ) * COEF
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !

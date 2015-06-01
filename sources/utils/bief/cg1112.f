@@ -68,8 +68,8 @@
      &                                  + X(IKLE(IELEM,2),IDIM1)
      &                                  + X(IKLE(IELEM,3),IDIM1) )
 !
-      ENDDO ! IELEM 
-      ENDDO ! IDIM1  
+      ENDDO ! IELEM
+      ENDDO ! IDIM1
 !
 !-----------------------------------------------------------------------
 !

@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TOMAWAC   V7P0 
+! TOMAWAC   V7P0
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY.
@@ -123,7 +123,7 @@
       ELSE
 !       HERE POINTING IKLE_EXT%I ON IKLE2 WOULD WORK ALSO...
         CALL BIEF_ALLVEC(2,IKLE_EXT,'IK_EXT',NELEM2,3,0,MESH)
-      ENDIF      
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -463,7 +463,7 @@
       STRA63%R=>T3_03%R(NPOIN2+1:2*NPOIN2)
       STRA64%R=>T3_04%R(NPOIN2+1:2*NPOIN2)
       STRA65%R=>T3_05%R(NPOIN2+1:2*NPOIN2)
-      STRA66%R=>T3_06%R(NPOIN2+1:2*NPOIN2)     
+      STRA66%R=>T3_06%R(NPOIN2+1:2*NPOIN2)
 !
       TRA51   => STRA51%R
       TRA52   => STRA52%R
@@ -491,41 +491,41 @@
       CALL ADDBLO(VARSOR,STRA38)
 !     3: MEAN DIRECTION
       CALL ADDBLO(VARSOR,STRA32)
-!     4: 
+!     4:
       CALL ADDBLO(VARSOR,STRA31)
-!     5: 
+!     5:
       CALL ADDBLO(VARSOR,SZF)
-!     6: 
+!     6:
       CALL ADDBLO(VARSOR,SDEPTH)
-!     7: 
+!     7:
       CALL ADDBLO(VARSOR,SUC)
-!     8: 
+!     8:
       CALL ADDBLO(VARSOR,SVC)
-!     9: 
+!     9:
       CALL ADDBLO(VARSOR,SUV)
-!     10: 
+!     10:
       CALL ADDBLO(VARSOR,SVV)
-!     11: 
+!     11:
       CALL ADDBLO(VARSOR,STRA51)
-!     12: 
+!     12:
       CALL ADDBLO(VARSOR,STRA52)
-!     13: 
+!     13:
       CALL ADDBLO(VARSOR,STRA53)
-!     14: 
+!     14:
       CALL ADDBLO(VARSOR,STRA54)
-!     15: 
+!     15:
       CALL ADDBLO(VARSOR,STRA55)
-!     16: 
+!     16:
       CALL ADDBLO(VARSOR,STRA59)
-!     17: 
+!     17:
       CALL ADDBLO(VARSOR,SPRIVE)
-!     18: 
+!     18:
       CALL ADDBLO(VARSOR,STRA33)
-!     19: 
+!     19:
       CALL ADDBLO(VARSOR,STRA34)
-!     20: 
+!     20:
       CALL ADDBLO(VARSOR,STRA35)
-!     21: 
+!     21:
       CALL ADDBLO(VARSOR,STRA36)
 !     22: FPR5
       CALL ADDBLO(VARSOR,STRA56)
@@ -614,23 +614,23 @@
 !
       NRK_C=NPOIN2*MAXNSP
       IF(DIFFRA.GT.0) THEN
-        CALL BIEF_ALLVEC(1,SRK  ,'SRK   ', NRK_C, 1, 0, MESH)   
+        CALL BIEF_ALLVEC(1,SRK  ,'SRK   ', NRK_C, 1, 0, MESH)
         CALL BIEF_ALLVEC(1,SRX  ,'SRX   ', NRK_C, 1, 0, MESH)
-        CALL BIEF_ALLVEC(1,SRY  ,'SRY   ', NRK_C, 1, 0, MESH) 
+        CALL BIEF_ALLVEC(1,SRY  ,'SRY   ', NRK_C, 1, 0, MESH)
         CALL BIEF_ALLVEC(1,SRXX ,'SRXX  ', NRK_C, 1, 0, MESH)
         CALL BIEF_ALLVEC(1,SRYY ,'SRYY  ', NRK_C, 1, 0, MESH)
       ELSE
-        CALL BIEF_ALLVEC(1,SRK  ,'SRK   ', 1, 1, 0, MESH)   
+        CALL BIEF_ALLVEC(1,SRK  ,'SRK   ', 1, 1, 0, MESH)
         CALL BIEF_ALLVEC(1,SRX  ,'SRX   ', 1, 1, 0, MESH)
-        CALL BIEF_ALLVEC(1,SRY  ,'SRY   ', 1, 1, 0, MESH) 
+        CALL BIEF_ALLVEC(1,SRY  ,'SRY   ', 1, 1, 0, MESH)
         CALL BIEF_ALLVEC(1,SRXX ,'SRXX  ', 1, 1, 0, MESH)
         CALL BIEF_ALLVEC(1,SRYY ,'SRYY  ', 1, 1, 0, MESH)
       ENDIF
-! 
-      RK   => SRK%R  
-      RX   => SRX%R  
+!
+      RK   => SRK%R
+      RX   => SRX%R
       RY   => SRY%R
-      RXX   => SRXX%R  
+      RXX   => SRXX%R
       RYY   => SRYY%R
 !V6P2 End diffraction
 !-----------------------------------------------------------------------
@@ -730,10 +730,10 @@
 !       JMH 29/11/2012: THIS IS INTERACTIVE EXECUTION !!!!!!!
 !
 !       ELSEIF (IQ_OM1.EQ.5) THEN
-!         WRITE(6,*) 'Progression geometrique : Donnez NF1 : '
+!         WRITE(LU,*) 'Progression geometrique : Donnez NF1 : '
 !         READ(5,*) NF1
 !       ELSEIF (IQ_OM1.EQ.6) THEN
-!         WRITE(6,*) 'Progression arithmetique : Donnez NF1 : '
+!         WRITE(LU,*) 'Progression arithmetique : Donnez NF1 : '
 !         READ(5,*) NF1
         ELSEIF (IQ_OM1.EQ.7) THEN
           NF1=20

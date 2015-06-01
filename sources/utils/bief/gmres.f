@@ -137,7 +137,7 @@
 !| INFOGR         |-->| IF YES, PRINT A LOG.
 !| MESH           |-->| MESH STRUCTURE.
 !| R              |<->| RESIDUAL
-!| V              |<->| WORK ARRAY 
+!| V              |<->| WORK ARRAY
 !| X              |<->| INITIAL VALUE, THEN SOLUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -315,7 +315,7 @@
           H(I,K) = P_DOTS( AV%ADR(K)%P , V%ADR(I)%P , MESH )
           H(K+1,K) = H(K+1,K) - H(I,K)**2
 !
-        ENDDO ! I 
+        ENDDO ! I
 !       IN THEORY H(K+1,K) IS POSITIVE
 !       TO MACHINE ACCURACY
         H(K+1,K) = SQRT( ABS(H(K+1,K)) )
@@ -337,7 +337,7 @@
           ZZ       =  C(J) * H(J,I) + S(J) * H(J+1,I)
           H(J+1,I) = -S(J) * H(J,I) + C(J) * H(J+1,I)
           H(J,I) = ZZ
-        ENDDO ! J 
+        ENDDO ! J
       ENDIF
 !     MODIFIES COLUMN I OF H BY ROTATION I
       R = SQRT( H(I,I)**2 + H(I+1,I)**2 )
@@ -356,7 +356,7 @@
       E(I+1) = -S(I) * E(I)
       E(I  ) =  C(I) * E(I)
 !
-      ENDDO ! I 
+      ENDDO ! I
 !
 !-----------------------------------------------------------------------
 ! SOLVES SYSTEM H*Y = E     (H UPPER TRIANGULAR OF DIMENSION K)
@@ -369,9 +369,9 @@
       DO J = K-1,1,-1
       DO L = J+1,K
         E(J) = E(J) - H(J,L) * E(L)
-      ENDDO ! L 
+      ENDDO ! L
       E(J) = E(J) / H(J,J)
-      ENDDO ! J 
+      ENDDO ! J
 !
 !-----------------------------------------------------------------------
 ! BUILDS THE SOLUTION FOR STEP M : X(M+1) = X(M) + VK * Y(K)
@@ -387,7 +387,7 @@
 !
         CALL OS('X=X+CY  ', R0 , AV%ADR(L)%P , R0 , E(L) )
 !
-      ENDDO ! L 
+      ENDDO ! L
 !
 ! CHECKS THAT THE ACCURACY IS NOT ALREADY REACHED
 ! THE RESIDUAL NORM IS GIVEN BY ABS(E(K+1))

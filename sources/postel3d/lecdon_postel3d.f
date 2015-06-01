@@ -171,15 +171,15 @@
 !
       FFORMAT = POS_FILES(POSPRE)%FMT
       FID = POS_FILES(POSPRE)%LU
-      CALL OPEN_MESH(FFORMAT,POS_FILES(POSPRE)%TELNAME,FID,'READ     ', 
+      CALL OPEN_MESH(FFORMAT,POS_FILES(POSPRE)%TELNAME,FID,'READ     ',
      &               ERR)
       CALL CHECK_CALL(ERR,'LECDON_POSTEL3D:OPEN_MESH')
 !
-      ! Reading the title      
+      ! Reading the title
       CALL GET_MESH_TITLE(FFORMAT,FID,TITLE,ERR)
       CALL CHECK_CALL(ERR,'LECDON_POSTEL3D:GET_MESH_TITLE')
       TITCAS = TITLE(1:72)
- 
+
       ! Get the number of variables
       CALL GET_DATA_NVAR(FFORMAT,FID,NVA3,ERR)
       CALL CHECK_CALL(ERR,'LECDON_POSTEL3D:GET_DATA_NVAR')
@@ -205,10 +205,10 @@
       ! Get the number of planes
       CALL GET_DATA_NTIMESTEP(FFORMAT,FID,NENRE,ERR)
       CALL CHECK_CALL(ERR,'LECDON_POSTEL3D:GET_DATA_TIMESTEP')
-       
+
       CALL CLOSE_MESH(FFORMAT,FID,ERR)
       CALL CHECK_CALL(ERR,'LECDON_POSTEL3D:CLOSE_MESH')
-     
+
 !
 !
 !-----------------------------------------------------------------------

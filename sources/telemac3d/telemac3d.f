@@ -26,7 +26,7 @@
 !
 !history  J-M HERVOUET (LNHE)
 !+        05/05/2010
-!+        V6P0   
+!+        V6P0
 !+   K-OMEGA MODEL BY HOLGER WEILBEER (ISEB/UHA)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
@@ -43,41 +43,41 @@
 !
 !history  J-M HERVOUET (LNHE)
 !+        02/08/2011
-!+        V6P1   
+!+        V6P1
 !+   CALL MITTIT(18,AT,LT) changed into CALL MITTIT(19,AT,LT)
 !+   CALL MITTIT(19,AT,LT) changed into CALL MITTIT(20,AT,LT)
 !+   2 fractional steps were not correctly labelled in the listing
 !
 !history  J-M HERVOUET (LNHE)
 !+        12/08/2011
-!+        V6P2   
+!+        V6P2
 !+   Calls to CHECK and BIL3D changed
 !
 !history  J-M HERVOUET (LNHE)
 !+        02/04/2012
-!+        V6P2   
+!+        V6P2
 !+   Clean restart implemented.
 !
 !history  J-M HERVOUET (LNHE)
 !+        01/06/2012
-!+        V6P2   
+!+        V6P2
 !+   Call to vector before call to Tel4del corrected (GRAZCO)
 !+   Initialisation of TAN after call to condim.
 !
 !history  J-M HERVOUET (LNHE)
 !+        18/129/2012
-!+        V6P3   
+!+        V6P3
 !+   Call to IFAB3DT added, arguments of cstkep removed.
 !
 !history  J-M HERVOUET (LNHE)
 !+        25/01/2013
-!+        V6P3   
+!+        V6P3
 !+   TAN renamed TRN, copy of TRN on TA moved from after CONDIM to
-!+   after BIEF_SUITE, FLULIM set to 1 before first call to PREADV 
+!+   after BIEF_SUITE, FLULIM set to 1 before first call to PREADV
 !
 !history  J-M HERVOUET (LNHE)
 !+        11/03/2013
-!+        V6P3   
+!+        V6P3
 !+   Call to METEO modified. Stop if variables not found for a 2D
 !+   continuation.
 !
@@ -88,19 +88,19 @@
 !
 !history  J-M HERVOUET (LNHE)
 !+        18/03/2013
-!+        V6P3   
+!+        V6P3
 !+   Dealing with the newly created FILE FOR 2D CONTINUATION.
 !
 !history  J-M HERVOUET (LNHE)
 !+        25/04/2013
-!+        V6P3   
+!+        V6P3
 !+   AKN and EPN initialised in case of computation continued, for the
 !+   first call to PREADV.
 !+   Mesh better updated in case of coupling with Sisyphe.
 !
 !history  J-M HERVOUET (LNHE)
 !+        20/09/2013
-!+        V6P3   
+!+        V6P3
 !+   CALL PLANE_BOTTOM added at the beginning of time loop (otherwise
 !+   when calling kepcl3 IPBOT is done with ZPROP at the first iteration
 !+   and with Z for the others, while ZPROP is always sent as argument.
@@ -108,7 +108,7 @@
 !
 !history  J-M HERVOUET (LNHE)
 !+        15/11/2013
-!+        V6P3   
+!+        V6P3
 !+   After second call to bief_suite, checking that Z has been found,
 !+   otherwise stop
 !
@@ -119,7 +119,7 @@
 !
 !history  J-M HERVOUET (LNHE)
 !+        14/03/2014
-!+        V7P0  
+!+        V7P0
 !+   CALL BIL3D put out of the IF(SEDI) test. Address of depth-averaged
 !+   tracers from 38 to 37+NTRAC in ALIRE2D.
 !
@@ -195,7 +195,7 @@
 !-----------------------------------------------------------------------
 !
       INTEGER  P_IMAX
-      EXTERNAL P_IMAX  
+      EXTERNAL P_IMAX
 !
 !-----------------------------------------------------------------------
 ! DECLARES LOCAL VARIABLES FOR TELEMAC3D
@@ -242,11 +242,11 @@
 !
 !     IN 3D FILES
 !                                                        U V
-!                                            U V W       C C          
-!                                            C C C     D O O      
-!                                            O O O   D H N N     
-!                                        D   N N N   M H V V U V W 
-!                  Z U V W       K E     P   V V V   1 N C C D D D  
+!                                            U V W       C C
+!                                            C C C     D O O
+!                                            O O O   D H N N
+!                                        D   N N N   M H V V U V W
+!                  Z U V W       K E     P   V V V   1 N C C D D D
       DATA ALIRE3D/1,1,1,1,0,0,0,1,1,0,0,1,0,1,1,1,0,1,1,1,1,1,1,1,0,0,
      &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -271,7 +271,7 @@
 ! FOR DROGUES (CALLS TO FLOT3D WILL INCREASE OR DECREASE NFLOT)
 !=======================================================================
 !
-      NFLOT=0 
+      NFLOT=0
 !
 !=======================================================================
 ! FOR COMPUTING FLUXES OF ADVECTED VARIABLES
@@ -392,7 +392,7 @@
      &    KLOG,TRANSF)
       ELSEIF(IELM3.EQ.51) THEN
         CALL IFAB3DT
-     &   (MESH3D%IFABOR%I, 
+     &   (MESH3D%IFABOR%I,
      &    MESH2D%IFABOR%I,LIUBOF%I,LIUBOL%I,LIUBOS%I,
      &    MESH2D%KP1BOR%I,MESH2D%NELBOR%I,
      &    MESH2D%NULONE%I,IKLE2%I,IKLE3%I,
@@ -557,7 +557,7 @@
       IF(.NOT.DEBU) THEN
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SUITE'
-        CALL READ_DATASET(T3D_FILES(T3DPRE)%FMT,T3D_FILES(T3DPRE)%LU, 
+        CALL READ_DATASET(T3D_FILES(T3DPRE)%FMT,T3D_FILES(T3DPRE)%LU,
      &                  VARSO3,MESH3D%NPOIN,START_RECORD,AT,TEXTP3,
      &                  TROUVE,ALIRE3D,LISTIN,START_RECORD.EQ.0,MAXVAR)
         IF(TROUVE(1).NE.1) THEN
@@ -598,10 +598,10 @@
         ELSE
           DO I=1,NPOIN2
             HN%R(I)=H%R(I)
-          ENDDO          
+          ENDDO
         ENDIF
 !
-      ENDIF 
+      ENDIF
 !
 !     TIME OPTIONALLY RESET TO ZERO
 !
@@ -620,17 +620,17 @@
       IF(SEDI) THEN
 !
 !###>TBE/CV MODIFICATION:
-!    THE CALL TO CONDIS SHOULD ALWAYS BE DONE FIRST 
+!    THE CALL TO CONDIS SHOULD ALWAYS BE DONE FIRST
 !    VALUES THEN MAY BE MODIFIED FROM SEDIMENTOLOGICAL 2D RESULT
-!      
+!
 !        IF(T3D_FILES(T3DSUS)%NAME(1:1).EQ.' ') THEN
 !GA: CONDIS HAS BEEN MODIFIED TO ALLOW TWO SEDIMENT CLASSES
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CONDIS'
           CALL CONDIS(IVIDE%R,EPAI,TREST,CONC,TEMP%R,HDEP%R,
      &                ZR%R,ZF%R,X,Y,NPOIN2,NPOIN3,NPF%I,
      &                NCOUCH,TASSE,ITASS, RHOS,XKV,CFDEP,
-     &                ESOMT, TOCE, SEDCO,CONC_LAYER, 
-     &                TOCE_LAYER, ES_LAYER, SEDNCO, MIXTE, 
+     &                ESOMT, TOCE, SEDCO,CONC_LAYER,
+     &                TOCE_LAYER, ES_LAYER, SEDNCO, MIXTE,
      &                EPAICO%R, EPAINCO%R, PVSCO%R, PVSNCO%R,
      &                PVSNCO0)
 !
@@ -694,7 +694,7 @@
       CALL MESH_PROP(HPROP,HN,H,PROLIN,HAULIN,TETAH,NSOUSI,ZPROP,
      &               IPBOT,NPOIN2,NPLAN,OPTBAN,SIGMAG,OPT_HNEG,
      &               MDIFF,MESH3D,VOLU3D,VOLU3DPAR,
-     &               UNSV3D,MSK,MASKEL,IELM3)   
+     &               UNSV3D,MSK,MASKEL,IELM3)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE MESH_PROP'
 !
 ! INITIALISES THE MEAN VELOCITY IN 2D
@@ -1046,20 +1046,20 @@
 !
 !       INITIALIZATION OF BED PROPERTIES
 !       MASBED0 INITIAL MASS
-!       ESOMT : CUMULATED BED EVOLUTION 
+!       ESOMT : CUMULATED BED EVOLUTION
 !       --> Set to Zero but could be read from 2D file
-!       MASDEP : Set to Zero 
+!       MASDEP : Set to Zero
 !
 !GA: MASSED HAS BEEN MODIFIED TO ALLOW TWO SEDIMENT CLASSES
-        IF(SEDI) THEN      
+        IF(SEDI) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE MASSED'
           CALL MASSED(MASBED0,EPAI,CONC,HDEP%R,T2_01%R,NPOIN2,NPFMAX,
      &                NCOUCH,NPF%I,TASSE,GIBSON,RHOS,VOLU2D%R,
      &                CFDEP, EPAICO%R, EPAINCO%R, MIXTE)
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE MASSED'
-          MASDEP = 0.D0        
+          MASDEP = 0.D0
           CALL OS('X=0     ',X=ESOMT)
-!         PRINT INITIAL MASS 
+!         PRINT INITIAL MASS
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'MASSE INITIALE DU LIT :',MASBED0
           ENDIF
@@ -1116,7 +1116,7 @@
       ENDIF
 !
 !=======================================================================
-!     PREPARATION OF ADVECTION FOR THE FIRST TIME STEP 
+!     PREPARATION OF ADVECTION FOR THE FIRST TIME STEP
 !=======================================================================
 !
 !     WSCONV IS NOT INITIALISED BEFORE GOING INTO TRIDW2
@@ -1148,15 +1148,15 @@
 !       COMPUTING OLD ZCONV AND GRAZCO
         CALL MAKE_ZCONV(ZCONV,GRAZCO,ZFLATS,DH,HN,ZF,
      &                  TETAZCOMP,TETAH,
-     &                  NELEM2,OPTBAN,MESH2D%IKLE%I,MESH2D)     
+     &                  NELEM2,OPTBAN,MESH2D%IKLE%I,MESH2D)
 !       RESETTING NEW ZFLATS AND GRADZS
         CALL FSGRAD(GRADZS,ZFLATS,Z(NPOIN3-NPOIN2+1:NPOIN3),
      &              ZF,IELM2H,MESH2D,MSK,MASKEL,
-     &              UNSV2D,T2_01,NPOIN2,OPTBAN,SVIDE)     
+     &              UNSV2D,T2_01,NPOIN2,OPTBAN,SVIDE)
       ELSE
         CALL OS('X=0     ',X=DH)
         CALL OS('X=0     ',X=ZCONV)
-        CALL OS('X=0     ',X=GRAZCO)     
+        CALL OS('X=0     ',X=GRAZCO)
       ENDIF
 !
       IF(N_ADV(ADV_CAR).GT.0) THEN
@@ -1169,27 +1169,27 @@
       IF(DEBU.OR.(.NOT.DEBU.AND.TROUVE(18).NE.1)) THEN
         CALL OS('X=0     ',X=DM1)
       ENDIF
-!     
-!     INITIALISING SOURCES AND SMH 
+!
+!     INITIALISING SOURCES AND SMH
       CALL OS ('X=0     ',X=SMH)
 !     SOURCES : COMPUTATION OF INITIAL INPUTS WHEN VARYING IN TIME
       IF(NSCE.GT.0) THEN
-        IF(DEBUG.GT.0) WRITE(LU,*) 'APPELS DE T3D_DEBSCE' 
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPELS DE T3D_DEBSCE'
         DO I=1,NSCE
           QSCE2(I)=T3D_DEBSCE(AT,I,QSCE)
         ENDDO
         IF(DEBUG.GT.0) WRITE(LU,*) 'FIN DES APPELS DE T3D_DEBSCE'
         IF(NTRAC.GT.0) THEN
-          IF(DEBUG.GT.0) WRITE(LU,*) 'APPELS DE T3D_TRSCE'          
+          IF(DEBUG.GT.0) WRITE(LU,*) 'APPELS DE T3D_TRSCE'
           DO I=1,NSCE
-            DO ITRAC=1,NTRAC            
+            DO ITRAC=1,NTRAC
               TA_SCE%ADR(ITRAC)%P%R(I)=T3D_TRSCE(AT,I,ITRAC)
             ENDDO
           ENDDO
           IF(DEBUG.GT.0) WRITE(LU,*) 'FIN DES APPELS DE T3D_TRSCE'
         ENDIF
       ENDIF
-      IF(DEBUG.GT.0) WRITE(LU,*) 'PREMIER APPEL DE SOURCES_SINKS'  
+      IF(DEBUG.GT.0) WRITE(LU,*) 'PREMIER APPEL DE SOURCES_SINKS'
       CALL SOURCES_SINKS
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SOURCES_SINKS'
 !
@@ -1205,7 +1205,7 @@
 !
       CALL PREADV(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
 !
-      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DU PREMIER APPEL DE PREADV' 
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DU PREMIER APPEL DE PREADV'
 !
 !     NOW SETTING VOLUN=VOLU (IN CASE OF COMPUTATION CONTINUED IT HAS
 !     BEEN RETRIEVED FROM THE PREVIOUS COMPUTATION)
@@ -1285,7 +1285,7 @@
 !     CV:Floculation and  hindered settling
 !        Soulsby flocculation and hindered settling is now coded in VITCHU
 !        along with all the previous telemac methods
-!        NOTE: moved settling calculation to after CLSEDI since 
+!        NOTE: moved settling calculation to after CLSEDI since
 !        soulsby floc requires bed shear stress
 !
       IF(SEDI) THEN
@@ -1298,12 +1298,12 @@
 !###<TBE
      &              HINDER,HIND_TYPE,CGEL,CINI)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE VITCHU'
-!        
+!
         IF(MIXTE) THEN
-          CALL OS( 'X=C     ' , X=WCS , C=WCS0 )   
+          CALL OS( 'X=C     ' , X=WCS , C=WCS0 )
         ENDIF
       ENDIF
-! 
+!
 !=======================================================================
 ! THE TIME LOOP BEGINS HERE
 !=======================================================================
@@ -1321,13 +1321,13 @@
 !=======================================================================
 !
 !     CORRECTION JMH 20/09/2013
-!            
-!     IPBOT HAS BEEN MODIFIED FOR CVDF3D IN THE PREVIOUS TIME STEP, 
+!
+!     IPBOT HAS BEEN MODIFIED FOR CVDF3D IN THE PREVIOUS TIME STEP,
 !     IT IS RESTORED HERE WITH ZPROP
 !     NOTE: DIFFERENT IPBOT_Z AND IPBOT_ZPROP WOULD BE CLEARER....
       IF(LT.GT.1) THEN
         CALL PLANE_BOTTOM(IPBOT%I,ZPROP%R,NPOIN2,NPLAN,SIGMAG,OPTBAN)
-      ENDIF             
+      ENDIF
 !
 !=======================================================================
 ! SOURCES : COMPUTES INPUTS WHEN VARYING IN TIME
@@ -1362,7 +1362,7 @@
         CALL CONFIG_CODE(2)
         IBID=1
         LBID=.FALSE.
-        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SISYPHE'     
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SISYPHE'
         CALL SISYPHE(1,LT,GRAPRD,LISPRD,NIT,U2D,V2D,H,HN,ZF,UETCAR,
      &               CF,RUGOF,LBID,IBID,LBID,CODE1,PERCOU_SIS,
      &               U,V,AT,VISCVI,DT*PERCOU_SIS,CHARR,SUSP,
@@ -1374,7 +1374,7 @@
         CALL CONFIG_CODE(1)
 !
 !       HDEP MUST BE UPDATED BECAUSE SISYPHE CHANGED ZF
-        IF(SEDI) CALL OS('X=Y-Z   ',X=HDEP,Y=ZF,Z=ZR)     
+        IF(SEDI) CALL OS('X=Y-Z   ',X=HDEP,Y=ZF,Z=ZR)
 !
 !       RETRIEVES ORIGINAL U AND V STRUCTURE
         CALL CPSTVC(UN,U)
@@ -1522,9 +1522,9 @@
         ATABOF%ADR(ITRAC)%P%TYPR='Q'
         BTABOF%ADR(ITRAC)%P%TYPR='Q'
 
-          ENDDO 
+          ENDDO
 
-        ELSEIF (SEDCO.OR.SEDNCO) THEN   
+        ELSEIF (SEDCO.OR.SEDNCO) THEN
 
         CALL CLSEDI
      &   (ATABOF%ADR(NTRAC)%P%R,BTABOF%ADR(NTRAC)%P%R,
@@ -1577,7 +1577,7 @@
 !    &              NTRAC SET TO ZERO PROVISIONALLY
      &              0    ,NFRLIQ,FRTYPE,NUMLIQ%I)
 !       RESTORING USER BOUNDARY CONDITIONS BEFORE CALLING BORD3D
-!       TO AVOID UNDUE CALLS TO SL3, ETC. 
+!       TO AVOID UNDUE CALLS TO SL3, ETC.
         CALL THOMPS_BC(3)
 !
       ENDIF
@@ -1586,7 +1586,7 @@
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BORD3D'
       CALL BORD3D(AT,LT,INFOGR,NPTFR2,NFRLIQ)
-      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BORD3D' 
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BORD3D'
 !
       IF(THOMFR.AND.NFRLIQ.GT.0) THEN
 !
@@ -1693,7 +1693,7 @@
       CALL THOMPS_2DTO3D
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE THOMPS_2DTO3D'
 !
-      ENDIF  
+      ENDIF
 !
 !-----------------------------------------------------------------------
 ! SOURCE TERMS
@@ -1969,11 +1969,11 @@
 !     TEMPORARILY PUTS ZPROP IN MESH3D%Z
       SAVEZ     =>MESH3D%Z%R
 !     ALL PROPAGATION WILL BE DONE WITH ZPROP INSTEAD OF Z
-      MESH3D%Z%R=>ZPROP%R      
+      MESH3D%Z%R=>ZPROP%R
 !     IPBOT HAS BEEN MODIFIED FOR CVDF3D, IT IS RESTORED HERE WITH ZPROP
       IF(ISOUSI.GT.1) THEN
         CALL PLANE_BOTTOM(IPBOT%I,ZPROP%R,NPOIN2,NPLAN,SIGMAG,OPTBAN)
-      ENDIF            
+      ENDIF
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE WAVE_EQUATION'
 !
       CALL WAVE_EQUATION(LT,ISOUSI)
@@ -1998,7 +1998,7 @@
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CALCOT'
       CALL CALCOT(Z,H%R)
 !     IPBOT UPDATED ACCORDINGLY, E.G. FOR CALLS TO PREDIV AND CVDF3D
-      CALL PLANE_BOTTOM(IPBOT%I,Z,NPOIN2,NPLAN,SIGMAG,OPTBAN) 
+      CALL PLANE_BOTTOM(IPBOT%I,Z,NPOIN2,NPLAN,SIGMAG,OPTBAN)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CALCOT'
 !
 !----------------------------------------------------------------------
@@ -2133,7 +2133,7 @@
         CALL VELRES(U%R,V%R,W%R,DP,
      &             T3_01,T3_02,T3_03,MSK,MASKEL,MESH3D,
      &             SVIDE,IELM3,NPLAN,OPTBAN,T3_04,.TRUE.,NPOIN3,NPOIN2,
-     &             SIGMAG,IPBOT%I,AGGLOH)  
+     &             SIGMAG,IPBOT%I,AGGLOH)
 !
 !       BOUNDARY CONDITIONS ON W AT THE BOTTOM AND FREE SURFACE
 !
@@ -2186,7 +2186,7 @@
       ENDIF ! IF NONHYD
 !
 !-----------------------------------------------------------------------
-!     PREPARING SOURCE TERMS FOR ADVECTION-DIFFUSION STEP 
+!     PREPARING SOURCE TERMS FOR ADVECTION-DIFFUSION STEP
 !-----------------------------------------------------------------------
 !
 !     PREPARING SOURCE TERMS FOR K-EPSILON AND K-OMEGA MODELS
@@ -2501,15 +2501,15 @@
         IF (MIXTE) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE FONVAS MIXTE'
           CALL FONVAS
-     &       (IVIDE%R,EPAI,CONC,TREST,TEMP%R,HDEP%R, 
+     &       (IVIDE%R,EPAI,CONC,TREST,TEMP%R,HDEP%R,
      &        FLUDP%R,FLUDPT%R,FLUER%R,ZF%R,TA%ADR(NTRAC)%P%R,
      &        WCHU%R,T3_01%R,T3_02%R,T3_03%R,NPOIN2,NPOIN3,NPFMAX,
      &        NCOUCH,NPF%I,LT,DT,DTC,GRAV,RHOS,CFMAX,TASSE,ITASS,
      &        ZF_S%R,ESOMT%R,VOLU2D,MASDEP,SETDEP,ZR%R,
      &        TA%ADR(NTRAC-1)%P%R,FLUDPTC%R,FLUDPTNC%R,
-     &        FLUERC%R,FLUERNC%R,MIXTE,FLUDPC%R, 
-     &        FLUDPNC%R,PVSCO%R,PVSNCO%R,CFDEP, 
-     &        EPAICO%R,EPAINCO%R)  
+     &        FLUERC%R,FLUERNC%R,MIXTE,FLUDPC%R,
+     &        FLUDPNC%R,PVSCO%R,PVSNCO%R,CFDEP,
+     &        EPAICO%R,EPAINCO%R)
 
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FONVAS MIXTE'
 !
@@ -2517,15 +2517,15 @@
 
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE FONVAS '
           CALL FONVAS
-     &       (IVIDE%R,EPAI,CONC,TREST,TEMP%R,HDEP%R, 
+     &       (IVIDE%R,EPAI,CONC,TREST,TEMP%R,HDEP%R,
      &        FLUDP%R,FLUDPT%R,FLUER%R,ZF%R,TA%ADR(NTRAC)%P%R,
      &        WCHU%R,T3_01%R,T3_02%R,T3_03%R,NPOIN2,NPOIN3,NPFMAX,
      &        NCOUCH,NPF%I,LT,DT,DTC,GRAV,RHOS,CFMAX,TASSE,ITASS,
      &        ZF_S%R,ESOMT%R,VOLU2D,MASDEP,SETDEP,ZR%R,
      &        TA%ADR(NTRAC)%P%R,FLUDPTC%R,FLUDPTNC%R,
-     &        FLUERC%R,FLUERNC%R,MIXTE,FLUDPC%R, 
-     &        FLUDPNC%R,PVSCO%R,PVSNCO%R,CFDEP, 
-     &        EPAICO%R,EPAINCO%R)   
+     &        FLUERC%R,FLUERNC%R,MIXTE,FLUDPC%R,
+     &        FLUDPNC%R,PVSCO%R,PVSNCO%R,CFDEP,
+     &        EPAICO%R,EPAINCO%R)
 
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FONVAS '
         ELSE
@@ -2707,7 +2707,7 @@
 !
 !
         IF(SEDI) THEN
-!           
+!
 !         DETERMINE MASSUSP: MASS IN SUSPENSION
 !         MASBED: MASS OF SEDIMENT BED
 !         MASDEP: DEPOSITED MASS

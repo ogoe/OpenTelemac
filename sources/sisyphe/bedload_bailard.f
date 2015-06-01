@@ -37,8 +37,8 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALPHAW         |<->| ANGLE OF WAVES WITH OX
@@ -53,22 +53,22 @@
 !| QSC            |<->| BEDLOAD TRANSPORT RATE
 !| QSCX           |<->| BEDLOAD TRANSPORT RATE IN THE X-DIRECTION
 !| QSCY           |<->| BEDLOAD TRANSPORT RATE IN THE Y-DIRECTION
-!| QSS            |<->| SUSPENDED LOAD TRANSPORT RATE 
+!| QSS            |<->| SUSPENDED LOAD TRANSPORT RATE
 !| QSSX           |<->| SUSPENDED LOAD TRANSPORT RATE IN THE X-DIRECTION
 !| QSSY           |<->| SUSPENDED LOAD TRANSPORT RATE IN THE Y-DIRECTION
 !| THETAC         |<->| CURRENT ANGLE TO THE X DIRECTION
-!| THETAW         |-->| ANGLE BETWEEN WAVE AND CURRENT 
+!| THETAW         |-->| ANGLE BETWEEN WAVE AND CURRENT
 !| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
 !| TOBW           |-->| WAVE INDUCED SHEAR STRESS
 !| U2D            |<->| MEAN FLOW VELOCITY X-DIRECTION
 !| UC3X           |<->| WORK ARRAY
 !| UC3Y           |<->| WORK ARRAY
-!| UCMOY          |-->| MEAN CURRENT 
+!| UCMOY          |-->| MEAN CURRENT
 !| US4X           |<->| WORK ARRAY
 !| US4Y           |<->| WORK ARRAY
 !| UW             |-->| ORBITAL WAVE VELOCITY
 !| V2D            |<->| MEAN FLOW VELOCITY Y-DIRECTION
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !| XWC            |-->| SETTLING VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -169,7 +169,7 @@
 !
       ELSE
 !
-        WRITE(LU,*) 'BAILARD WITHOUT WAVES NOT PROGRAMMED' 
+        WRITE(LU,*) 'BAILARD WITHOUT WAVES NOT PROGRAMMED'
         CALL PLANTE(1)
         STOP
 !

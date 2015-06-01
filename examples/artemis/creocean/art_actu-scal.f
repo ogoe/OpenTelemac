@@ -7,10 +7,10 @@
 !
 !***********************************************************************
 !
-!    CE PROGRAMME MARCHE POUR LE MAILLAGE 
+!    CE PROGRAMME MARCHE POUR LE MAILLAGE
 !        borme_3_cl (et geo)
 !        distance de 3 m entre points de calcul
-!    
+!
 !    Les fronti≈res houle incidente et sortie libre correspondent
 !    au cas de houles venant de l'Est (90∞)
 !
@@ -106,13 +106,13 @@
       RP%R(:)    = 0.D0
       HB%R(:)    = 0.D0
 
-      
+
 
 
 !
 !**************************************************
 ! CONDITIONS AUX LIMITES DES FRONTIERES SOLIDES
-!**************************************************                                                                    
+!**************************************************
 !   plage au Nord Est
       WRITE(*,*) 'JE SUIS DANS BORD1'
       DO I = 1,1029
@@ -129,8 +129,8 @@
         ALFAP%R(I) = 0.D0
       ENDDO
 !   plage et cote basse
-      DO I = 785,947 
-        LIHBOR%I(I) = KLOG 
+      DO I = 785,947
+        LIHBOR%I(I) = KLOG
         RP%R(I) = 0.05D0
         TETAP%R(I) = 0.D0
         ALFAP%R(I) = 0.D0
@@ -157,7 +157,7 @@
       ENDDO
 !**************************************************
 ! CONDITIONS AUX LIMITES DES FRONTIERES LQUIDES
-!**************************************************    
+!**************************************************
 !
       DEGRAD=PI/180.D0
       PHASOI=0.D0
@@ -165,7 +165,7 @@
       AUXIS =SIN(180.D0*DEGRAD)
 
 !  --- REFERENCE POINT FOR THE PHASE
-!  -- THIS METHOD DOESN'T WORK IN PARALLEL 
+!  -- THIS METHOD DOESN'T WORK IN PARALLEL
       IG0=MESH%NBOR%I(332)
       X0=X(IG0)
       Y0=Y(IG0)
@@ -226,7 +226,7 @@
         TETAP%R(I) = 0.D0
         ALFAP%R(I) = 0.D0
       ENDDO
-       
-       
-      RETURN                                                            
+
+
+      RETURN
       END

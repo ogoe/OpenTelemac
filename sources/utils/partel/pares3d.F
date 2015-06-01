@@ -5,13 +5,13 @@
      &(NAMEINP,NAMELOG,NPARTS,PMETHOD,FORMAT_MED)
 !
 !**********************************************************************
-!  12/11/2009 CHRISTOPHE DENIS SINETICS/I23 
-!  NEW VERSION TO DECREASE THE PARES3D COMPUTING TIME BY IMPROVING 
+!  12/11/2009 CHRISTOPHE DENIS SINETICS/I23
+!  NEW VERSION TO DECREASE THE PARES3D COMPUTING TIME BY IMPROVING
 !
 !   - THE TETRA-TRIA CONNECTION
-!   - THE POSTPROCESSING 
+!   - THE POSTPROCESSING
 !
-! COMMENTS ON THIS NEW VERSION ->  CD 
+! COMMENTS ON THIS NEW VERSION ->  CD
 ! *********************************************************************
 !***********************************************************************
 ! PARTEL VERSION 5.6        08/06/06   O.BOITEAU/F.DECUNG(SINETICS/LNHE)
@@ -24,7 +24,7 @@
 !
 !    CONSTRUCTIONS DES FICHIERS POUR ALIMENTER LE FLOT DE DONNEES
 !    PARALLELE LORS D'UN CALCUL ESTEL3D PARALLELE EN ECOULEMENT
-! 
+!
 !
 !-----------------------------------------------------------------------
 !                             ARGUMENTS
@@ -32,7 +32,7 @@
 ! |      NOM       |MODE|                   ROLE                       |
 ! |________________|____|______________________________________________|
 ! |    NAMEINP     | -->| NOM DU FICHIER DE GEOMETRIE ESTEL3D
-! |    NAMELOG     | -->| NOM DU FICHIER LOG 
+! |    NAMELOG     | -->| NOM DU FICHIER LOG
 ! |    NPARTS      | -->| NOMBRE DE PARTITION
 ! |    PMETHOD     | -->| METHODE DE PARTITIONEMENT 1 metis 2 scotch
 ! |    FORMAT_MED  | -->| BOULEEN POUR LE MAILLAGE AU FORMAT MED
@@ -93,17 +93,17 @@
       INTEGER            :: IOS        ! STATUS INTEGER
       ! END ADDITION JP RENAUD
       CHARACTER(LEN=72) :: THEFORMAT
-      
+
       CHARACTER(LEN=80), ALLOCATABLE :: LOGFAMILY(:)  ! LOG INFORMATIONS
       INTEGER            :: NSEC       ! TYPE OF THE SECTION READ
-      INTEGER, PARAMETER :: NSEC1=151  ! MESH TITLE SECTION ID 
+      INTEGER, PARAMETER :: NSEC1=151  ! MESH TITLE SECTION ID
       INTEGER, PARAMETER :: NSEC2=2411 ! NODES COORDINATES SECTION ID
       INTEGER, PARAMETER :: NSEC3=2412 ! CONNECTIVITY SECTION ID
       LOGICAL            :: READ_SEC1  ! FLAG FOR READING SECTION 1
       LOGICAL            :: READ_SEC2  ! FLAG FOR READING SECTION 2
       LOGICAL            :: READ_SEC3  ! FLAG FOR READING SECTION 3
       INTEGER            :: NELEMTOTAL ! TOTAL NUMBER OF UNV ELEMENTS
-      INTEGER            :: NPOINT     ! TOTAL NUMBER OF NODES 
+      INTEGER            :: NPOINT     ! TOTAL NUMBER OF NODES
       INTEGER            :: NBFAMILY   ! TOTAL NUMBER OF FAMILY
       INTEGER            :: NELIN      ! TOTAL NUMBER OF INNER TRIANGLES
       INTEGER            :: SIZE_FLUX  !  TOTAL NUMBER OF INNER SURFACES
@@ -122,7 +122,7 @@
       CHARACTER(LEN=MED_NAME_SIZE)       :: MESH_NAME           ! CURRENT MESH NAME
       CHARACTER(LEN=MED_NAME_SIZE)       :: DTUNIT              ! TIME STEP UNIT
       CHARACTER(LEN=MED_COMMENT_SIZE)    :: DESC                ! MESH DESCRIPTION
-      CHARACTER(LEN=MED_LNAME_SIZE),DIMENSION(:),ALLOCATABLE :: 
+      CHARACTER(LEN=MED_LNAME_SIZE),DIMENSION(:),ALLOCATABLE ::
      &       GR_FAMILY
 #endif
       CHARACTER, DIMENSION(:), ALLOCATABLE :: DUMNAME
@@ -157,7 +157,7 @@
 
       DOUBLE PRECISION, ALLOCATABLE :: X1(:),Y1(:),Z1(:) ! COORD NODES
       INTEGER,          ALLOCATABLE :: ECOLOR(:) ! ELEMENTS' COLOUR
-      INTEGER            :: ELEM       ! TYPE OF THE ELEMENT 
+      INTEGER            :: ELEM       ! TYPE OF THE ELEMENT
       INTEGER            :: IKLE1,IKLE2,IKLE3,IKLE4,IKLEB   ! NODES
       INTEGER, DIMENSION(:), ALLOCATABLE :: IKLESTET ! CONNECTIVITE EN
                    ! RENUMEROTATION GLOBAL DE LA BIEF POUR LES TETRAEDRES
@@ -174,7 +174,7 @@
                                                   ! PAR ELEMENT
       INTEGER, DIMENSION(:), ALLOCATABLE :: NPART ! NUMERO DE PARTITION
                                                   ! PAR NOEUDS
-      INTEGER, DIMENSION(:), ALLOCATABLE :: CONVTRI ! CONVERTISSEUR 
+      INTEGER, DIMENSION(:), ALLOCATABLE :: CONVTRI ! CONVERTISSEUR
       ! NUMERO LOCAL TRIA/TETRA NUMERO GLOBAL; INVERSE DE TYPELEM(:,2)
       INTEGER            ::  PARSEC  ! RUNTIME
       INTEGER, DIMENSION(:), ALLOCATABLE :: NPOINTSD, NELEMSD ! NBRE
@@ -232,20 +232,20 @@
 !     SIZE NPARTS, NPOIN_P(I) IS THE NUMBER OF NODES  ASSIGNED TO SUBDOMAIN I
       INTEGER :: NODE
 !     ONE NODE ...
-      INTEGER ::  POS_NODE 
+      INTEGER ::  POS_NODE
 !     POSITION OF ONE ONE NODE
       INTEGER :: MAX_NELEM_P
 !     MAXIMUM NUMBER OF FINITE ELEMENTS ASSIGNED AMONG SUBDOMAINS
       INTEGER :: MAX_NPOIN_P
 !     MAXIMUM NUMBER OF NODES ASSIGNED AMONG SUBDOMAINS
       INTEGER :: MAX_TRIA
-!     MAXIMUM NUMBER OF TRIANGLE SHARING A NODE 
+!     MAXIMUM NUMBER OF TRIANGLE SHARING A NODE
       INTEGER :: THE_TRI
-!     ONE TRIANGLE 
+!     ONE TRIANGLE
       INTEGER :: JJ
 !     INDEX COUNTER
       INTEGER, DIMENSION(:), ALLOCATABLE :: NUMBER_TRIA
-!     MAXIMUM NUMBER OF TRIANGLE SHARING A SAME NODE  
+!     MAXIMUM NUMBER OF TRIANGLE SHARING A SAME NODE
       INTEGER, DIMENSION(:,:), ALLOCATABLE  :: ELEGL
 !     SIZE MAX_NELEM_P,NPARTS, ELEGL(J,I) IS THE GLOBAL NUMBER OF LOCAL FINITE ELEMENT J IN SUBDOMAIN I
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: NODEGL
@@ -257,7 +257,7 @@
 !     EXTENS
       CHARACTER(LEN=11) :: EXTENS
       EXTERNAL EXTENS
-!D********************************************************     
+!D********************************************************
       INTEGER SOMFAC(3,4)
       DATA SOMFAC / 1,2,3 , 4,1,2 , 2,3,4 , 3,4,1  /
 !
@@ -278,7 +278,7 @@
 #if defined (HAVE_MED)
         WRITE(LU,*) 'MED FORMAT IS USED FOR THE MESH'
 #else
-        WRITE(LU,*) 'ERROR: MED FORMAT IS USED FOR THE MESH BUT MED 
+        WRITE(LU,*) 'ERROR: MED FORMAT IS USED FOR THE MESH BUT MED
      & LIBRARY IS NOT INSTALLED'
         CALL PLANTE(1)
         STOP
@@ -310,7 +310,7 @@
         ! CHECK COMPATIBILITY (EXPECTED)
         CALL MFINVR (FID, MAJOR, MINOR, REL, CRET)
         CALL CHECK_CALL(CRET,'MFINVR')
-        IF (MAJOR.LT.3) WRITE(LU,*) 'MED FILE IS TOO ''OLD'' (' // 
+        IF (MAJOR.LT.3) WRITE(LU,*) 'MED FILE IS TOO ''OLD'' (' //
      &     TRIM(VERSION) // ') => PLEASE CONVERT IT WITH MEDIMPORT '
       END IF
 #endif
@@ -325,7 +325,7 @@
       OPEN(NLOG,FILE=NAMELOG,STATUS='OLD',FORM='FORMATTED',ERR=130)
       REWIND(NLOG)
 !     END MODIF V STOBIAC
-   
+
 !----------------------------------------------------------------------
 ! 2A. LECTURE DU FICHIER .LOG
 !---------------
@@ -355,8 +355,8 @@
       IF (IOS .NE. 0) THEN
         WRITE(LU,*)'FORMAT ERROR READING THE MESH COMPLEMENTARY FILE.'
         CALL PLANTE(1)
-      ENDIF    
-!     
+      ENDIF
+!
 !     The third line contains the number of families after a text descripto.
 !     We read a line, locate the colon ':' and then read the number.
       READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
@@ -440,14 +440,14 @@
       CLOSE(NLOG)
 !
 ! 2B. ALLOCATIONS MEMOIRES ASSOCIEES
-!--------------- 
+!---------------
 
 !D    ****************************** ALLOCATION MEMORY ADDED BY CD
       ALLOCATE(NELEM_P(NPARTS),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,'NELEM_P')
       ALLOCATE(NPOIN_P(NPARTS),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,'NPOIN_P')
-!D    *******************************      
+!D    *******************************
 
 !     BEGIN MODIF VSTOBIAC
 !     READ THE MESH FILE (MED)
@@ -561,7 +561,7 @@
           WRITE(LU,*) 'MED_ID=',ID_CHANGE_LOG(I,2),' <==> NCOLOR_ID=',
      &         ID_CHANGE_LOG(I,1)
         ENDDO
- 
+
         ! READ MESH ENTITIES (AXIS, NODES)
         !-------------------------------------------------------
 
@@ -574,8 +574,8 @@
         END IF
 
         ! READING THE NUMBER OF NODES
-        CALL MMHNME (FID, MESH_NAME, MED_NO_DT, MED_NO_IT, MED_NODE, 
-     &               MED_NONE, MED_COORDINATE, MED_NODAL, IDUM, IDUM, 
+        CALL MMHNME (FID, MESH_NAME, MED_NO_DT, MED_NO_IT, MED_NODE,
+     &               MED_NONE, MED_COORDINATE, MED_NODAL, IDUM, IDUM,
      &               NPOINT, CRET)
         CALL CHECK_CALL(CRET,'MMHNME')
 
@@ -661,7 +661,7 @@
         ! YA_PARA_MODIF FIN
 
         ! READ TRIANGLES CONNECTIVITY AND TRIANGLES FAMILIY
-        ! S. FALAPPI : NBTRI2 MAY BE NULL IF WE TRY TO READ A MESH FILE 
+        ! S. FALAPPI : NBTRI2 MAY BE NULL IF WE TRY TO READ A MESH FILE
         ! WRITTEN BY ESTEL-3D WHERE NO BORDER CONNECTIVITY IS WRITTEN (DEBUG PURPOSES)
         IF (NBTRI2.GT.0) THEN
 
@@ -708,9 +708,9 @@
         ! BUILD NUFANO (BORDER MESH COLOR)
         ! On va reconstruire nufano a partir de la connectivite et des priorites.
         ! On part de la priorite la moins elevee (la derniere) jusqu'a la premiere
-        ! Petit test pour savoir si on relit un maillage med de sortie de code ou 
+        ! Petit test pour savoir si on relit un maillage med de sortie de code ou
         ! un maillage med cree de toute piece.
-        ! Dans le premier cas, on a aucune information sur les faces 
+        ! Dans le premier cas, on a aucune information sur les faces
         ! et par contre nufano est juste
         ALLOCATE(NUFANO(NPOINT), STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,' NUFANO')
@@ -1003,7 +1003,7 @@
             CONVTRI(:)   = -1
 !
             IKLESTRIN(:,:) = -1
-                   
+
             FACE_CHECK(:) = .FALSE.
             !
             COLOR_PRIO(:)  = 0
@@ -1017,7 +1017,7 @@
 
               READ(NINP,*,ERR=1100,END=1200) NSEC, ELEM, N1, N2,
      &            NSOLS,N3
-          
+
               IF (NSEC == -1) EXIT
 
               SELECT CASE ( ELEM )
@@ -1028,7 +1028,7 @@
 
                 ECOLOR(IELEM) = NSOLS
 
-                READ(NINP,*, ERR=1100, END=1200) IKLE1, IKLE2, 
+                READ(NINP,*, ERR=1100, END=1200) IKLE1, IKLE2,
      &              IKLE3,IKLE4
 
                 IKLES(IELEM, 1) = TEMPO(IKLE1)
@@ -1037,16 +1037,16 @@
                 IKLES(IELEM, 4) = TEMPO(IKLE4)
 
 !OB'S STFF
-                N=4*(NBTET-1)+1                       
+                N=4*(NBTET-1)+1
                 IKLESTET(N)=IKLE1    ! VECTEUR DE CONNECTIVITE
                 IKLESTET(N+1)=IKLE2
                 IKLESTET(N+2)=IKLE3
                 IKLESTET(N+3)=IKLE4
                 TYPELEM(IELEM,1)=ELEM    ! POUR TYPER LES ELTS
                 TYPELEM(IELEM,2)=NBTET   ! POUR CONVERSION NUM ELT> NUM TETRA
-              
+
               CASE ( 91 )
-           
+
                 IF (NSOLS.GT.0.AND.NSOLS.LT.100) THEN
 
                   IF ( NSOLS > NCOL ) THEN
@@ -1062,7 +1062,7 @@
      &                 'VOIR LE FICHIER DES PARAMETRES '
                     CALL PLANTE(1)
                   END IF
-                
+
                   FACE_CHECK(PRIO_NEW) = .TRUE.
 
                   NBTRI = NBTRI + 1
@@ -1073,7 +1073,7 @@
                   !
                   PRIO_NEW = SIZE_FLUXIN(NSOLS)
                   !
-                  IF (PRIO_NEW.EQ.0) THEN 
+                  IF (PRIO_NEW.EQ.0) THEN
                     SIZE_FLUX = SIZE_FLUX + 1
                     SIZE_FLUXIN(NSOLS) = 1
                   ENDIF
@@ -1092,26 +1092,26 @@
                   CONVTRI(NBTRI)=IELEM
 
                   DO J=1,3
-                                        
+
                     IKL = IKLES(IELEM,J)
-                
+
                     IPTFR = GLOB_2_LOC(IKL)
 
                     IF ( IPTFR .EQ. 0 ) THEN
-                    
+
                       NPTFR           = NPTFR+1
                       NBOR2(NPTFR)    = IKL
-                      GLOB_2_LOC(IKL) = NPTFR        
+                      GLOB_2_LOC(IKL) = NPTFR
                       IPTFR           = NPTFR
 
                     END IF
-                  
+
                   ENDDO  ! LOOP OVER THE NODES OF THE ELEMENT
 
                 ELSE IF (NSOLS.GT.100) THEN
                   !
                   ! USER-DEFINED SURFACE FOR FLUXES COMPUTATION
-                  !                      
+                  !
                   ! NELIN IS THE COUNTER FOR THE INTERNAL ELEMENTS.
                   ! ACTUALLY, WE ARE READING THE NEXT INTERNAL ELEMENT.
 
@@ -1138,15 +1138,15 @@
                 ELSE        ! THIS IS AN INNER SURFACE, JUST READ THE LINE.
 
                   READ(NINP,*,ERR=1100,END=1200)IKLE1,IKLE2,IKLE3
-               
+
                 END IF
-                             
+
               CASE DEFAULT      ! THIS IS AN UNKNOWN ELEMENT.
-            
+
                 WRITE(LU,*) 'ELEMENT INCONNU DANS LE MAILLAGE'
-            
+
               END SELECT        ! THE TYPE OF THE MESH ELEMENT
-            
+
             END DO               ! LOOP OVER ELEMENTS TO READ.
 
             DO K=1,NBCOLOR
@@ -1155,11 +1155,11 @@
      &          ' N''APPARAIT PAS DANS LE MAILLAGE.'
               END IF
             END DO
-           
+
 !-----------------------------------------------------------------------
 
           END SELECT                ! TYPE OF THE SECTION
-      
+
         END DO                    ! WHILE LOOP OVER SECTIONS TO READ
 
 !------------------------------------------------------- FIN VERSION F.D
@@ -1218,7 +1218,7 @@
       DEALLOCATE(IKLESTRIN)
 !
       WRITE(LU,*) 'FIN DE LA COPIE DE LA CONNECTIVITE INITIALE'
-!      
+!
       ALLOCATE(NBOR(NPTFR),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,' NBOR')
 !
@@ -1235,15 +1235,15 @@
      &              LIHBOR,2,INDPU,IKLESTRI,NBTRI)
 !
       WRITE(LU,*) 'FIN DE PARTEL_VOISIN31'
-!      
+!
       ALLOCATE(LIHBOR(NPTFR),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,'LIHBOR')
       ALLOCATE(NULONE(NBTRI,3),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,' NULONE')
 !
-      CALL ELEBD31( NELBOR, NULONE, IKLBOR,    
-     &              IFABOR, NBOR, IKLE,         
-     &              NBTET, NBTRI, NBTET, NPOINT, 
+      CALL ELEBD31( NELBOR, NULONE, IKLBOR,
+     &              IFABOR, NBOR, IKLE,
+     &              NBTET, NBTRI, NBTET, NPOINT,
      &              NPTFR,31)
 !
       DEALLOCATE(LIHBOR)
@@ -1256,35 +1256,35 @@
 !
       MAX_TRIA=0
       DO J = 1, NBTRI
-        K = 3*(J-1)+1  
+        K = 3*(J-1)+1
         IKLE1 = IKLESTRI(K)
         IKLE2 = IKLESTRI(K+1)
         IKLE3 = IKLESTRI(K+2)
         THE_TRI=IKLE1
-        IF (IKLE2 < THE_TRI) THE_TRI=IKLE2 
+        IF (IKLE2 < THE_TRI) THE_TRI=IKLE2
         IF (IKLE3< THE_TRI)  THE_TRI=IKLE3
         NUMBER_TRIA(THE_TRI)=NUMBER_TRIA(THE_TRI)+1
       END DO
       MAX_TRIA=MAXVAL(NUMBER_TRIA)
-!    
+!
       DEALLOCATE(NUMBER_TRIA)
 !
       ALLOCATE(TRI_REF(NPOINT,0:MAX_TRIA),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,' TRI_REF')
-      TRI_REF=0 
+      TRI_REF=0
       DO J = 1, NBTRI
-        K = 3*(J-1)+1  
+        K = 3*(J-1)+1
         IKLE1 = IKLESTRI(K)
         IKLE2 = IKLESTRI(K+1)
         IKLE3 = IKLESTRI(K+2)
         THE_TRI=IKLE1
-        IF (IKLE2 < THE_TRI) THE_TRI=IKLE2 
+        IF (IKLE2 < THE_TRI) THE_TRI=IKLE2
         IF (IKLE3< THE_TRI)  THE_TRI=IKLE3
         TRI_REF(THE_TRI,0)=TRI_REF(THE_TRI,0)+1
         POS=TRI_REF(THE_TRI,0)
         TRI_REF(THE_TRI,POS)=J
       END DO
-      
+
       ALLOCATE(TETTRI(4*NBTET),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,' TETTRI')
       ALLOCATE(TETTRI2(NBTET),STAT=IERR)
@@ -1298,14 +1298,14 @@
         IKLE2 = NBOR(IKLBOR(IELEB,2))
         IKLE3 = NBOR(IKLBOR(IELEB,3))
         THE_TRI=IKLE1
-        IF (IKLE2 < THE_TRI) THE_TRI=IKLE2 
+        IF (IKLE2 < THE_TRI) THE_TRI=IKLE2
         IF (IKLE3<THE_TRI)  THE_TRI=IKLE3
         POS=TRI_REF(THE_TRI,0)
         IS = .FALSE.
         M  = -1
         DO JJ = 1, POS
           J=TRI_REF(THE_TRI,JJ)
-          K = 3*(J-1)+1            
+          K = 3*(J-1)+1
           IF ((IKLE1.EQ.IKLESTRI(K)).AND.
      &        (IKLE2.EQ.IKLESTRI(K+1)).AND.
      &        (IKLE3.EQ.IKLESTRI(K+2))) THEN
@@ -1329,7 +1329,7 @@
           ELSE IF ((IKLE3.EQ.IKLESTRI(K)).AND.
      &        (IKLE2.EQ.IKLESTRI(K+1)).AND.
      &        (IKLE1.EQ.IKLESTRI(K+2))) THEN
-            IS = .TRUE.         
+            IS = .TRUE.
           ENDIF
           IF (IS) THEN
             M = J
@@ -1339,7 +1339,7 @@
         DO I = 1,4
           IF (IFABOR(IELEM,I).LE.0) THEN
             IF ((IKLE1.EQ.(IKLE(NELBOR(IELEB),SOMFAC(1,I))))
-     &      .AND.(IKLE2.EQ.(IKLE(NELBOR(IELEB),SOMFAC(2,I))))  
+     &      .AND.(IKLE2.EQ.(IKLE(NELBOR(IELEB),SOMFAC(2,I))))
      &      .AND. (IKLE3.EQ.(IKLE(NELBOR(IELEB),SOMFAC(3,I)))))
      &      THEN
               NI = TETTRI2(IELEM)
@@ -1364,7 +1364,7 @@
 ! 3B. CONSTRUCTION DE NODES1/NODES2/NODES3: CONNECTIVITE INVERSE NOEUD > TETRA
 !     POUR L'ECRITURE A LA VOLEE DES UNV LOCAUX
 !---------------
-! PARCOURS DES MAILLES POUR CONNAITRE LE NOMBRE DE MAILLES QUI 
+! PARCOURS DES MAILLES POUR CONNAITRE LE NOMBRE DE MAILLES QUI
 ! LES REFERENCE
       ALLOCATE(NODES1(NPOINT),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,' NODES1')
@@ -1422,7 +1422,7 @@
           NODES1T(IKLEB)=NODES1T(IKLEB)+1
         ENDDO
       ENDDO
-      
+
       ALLOCATE(NODES2T(NPOINT+1),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,' NODES2T')
       COMPT=0
@@ -1457,13 +1457,13 @@
       WRITE(LU,*)' TEMPS CONNECTIVITE INVERSE PART1/ PART2',
      &          (1.0*(TEMPS_SC(3)-TEMPS_SC(2)))/(1.0*PARSEC),'/',
      &          (1.0*(TEMPS_SC(4)-TEMPS_SC(3)))/(1.0*PARSEC),' SECONDS'
-         
+
 !----------------------------------------------------------------------
 ! 4. PARTITIONING
 !---------------
 
 !        DO I=1,4*NBTET
-!                WRITE(LU,*) 'TETTRIALPHA',TETTRI(I)       
+!                WRITE(LU,*) 'TETTRIALPHA',TETTRI(I)
 !        ENDDO
 !        DO I=1,NBTET
 !                WRITE(LU,*) 'TETTRIBETA',TETTRI2(I)
@@ -1514,12 +1514,12 @@
       WRITE(LU,*) 'NB MAX OF TETRAS PER SUBDOMAIN : ',MAX_NELEM_P
       WRITE(LU,*) 'NB OF TETRA PER SUBDOMAIN :'
       DO I=1,NPARTS
-        WRITE(LU,*) I, NELEM_P(I) 
+        WRITE(LU,*) I, NELEM_P(I)
       ENDDO
       NELEM_P(:)=0
-!D     ALLOCATION OF THE ELEGL ARRAY 
+!D     ALLOCATION OF THE ELEGL ARRAY
       ALLOCATE(ELEGL(MAX_NELEM_P,NPARTS),STAT=IERR)
-!D     ELEGL IS THE FILLED 
+!D     ELEGL IS THE FILLED
       CALL CHECK_ALLOCATE(IERR,'ELEGL')
       DO I=1,NBTET
         NELEM_P(EPART(I))=NELEM_P(EPART(I))+1
@@ -1532,12 +1532,12 @@
 
       NODELG(:,:)=0
 !D    FOR EACH SUBDOMAIN IDD
-      DO IDD=1,NPARTS  
+      DO IDD=1,NPARTS
 !D      LOOP ON THE FINITE ELEMENTS IELEM ASSIGNED TO SUBDOMAIN IDD
         DO POS=1,NELEM_P(IDD)
           IELEM=ELEGL(POS,IDD)
           N=4*(IELEM-1)+1
-!D        LOOP OF THE NODE CONTAINED IN IELEM            
+!D        LOOP OF THE NODE CONTAINED IN IELEM
           DO K=0,3
             NODE=IKLESTET(N+K)
             IF (NODELG(NODE,IDD) .EQ. 0) THEN
@@ -1547,7 +1547,7 @@
           END DO
         END DO
       END DO
-!D    ALLOCATION AND FILLING OF  THE NODEGL ARRAY      
+!D    ALLOCATION AND FILLING OF  THE NODEGL ARRAY
       MAX_NPOIN_P=MAXVAL(NPOIN_P)
 
       WRITE(LU,*) 'NB MAX OF POINT PER SUBDOMAIN :', MAX_NPOIN_P
@@ -1566,7 +1566,7 @@
           END IF
         END DO
       END DO
-!            
+!
 !----------------------------------------------------------------------
 ! 5A. ALLOCATIONS POUR ECRITURE DES FICHIERS .UNV/.LOG ASSOCIANT UN SOUS-DOMAINE
 !     PAR PROC
@@ -1582,9 +1582,9 @@
       ALLOCATE(KNOLG(NPOINT),STAT=IERR)      ! C'EST SOUS-OPTIMAL EN
       CALL CHECK_ALLOCATE(IERR,' KNOLG')! TERME DE DIMENSIONNEMENT
       KNOLG(:)=-1      ! MAIS PLUS RAPIDE POUR LE REMPLISSAGE ULTERIEUR
-! 
+!
 ! PARAMETRE NBSDOMVOIS (NOMBRE DE SOUS DOMAINES VOISINS+2)
-!      
+!
       ALLOCATE(NACHB(NBSDOMVOIS,NPOINT),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,' NACHB')
       NACHB(1,:)=0
@@ -1637,7 +1637,7 @@
 !      DO IELEM = 1, NBCOLOR
 !         WRITE(LU,*) 'PRIOR',PRIORITY(IELEM)
 !      ENDDO
-!      
+!
 ! OB D
 !--------------
 ! RAJOUT POUR TENIR COMPTE DES COULEURS DES NOEUDS DE TETRAS LIES
@@ -1674,7 +1674,7 @@
 !         LE NOEUD J EST UN NOEUD D'INTERFACE. ON VA COMMUNIQUER AU NOEUD
 !         CORRESPONDANT DES TETRAS (SI UN TRIA DE BORD N'EST PAS SUR CETTE
 !         FACE AUXQUEL CAS LE PB EST DEJA REGLE), LA BONNE COULEUR.
-          IF (LINTER) THEN  
+          IF (LINTER) THEN
             DO N=NI,NF       ! BOUCLE SUR LES TETRA CONTENANT LE POINT J
               NT=NODES3(N)   ! TETRA DE NUMERO LOCAL NT
 !         ON VA TRIER LES CAS NON PATHOLOGIQUES ET TRES COURANT DE TETRA
@@ -1710,9 +1710,9 @@
               ENDDO  ! EN L
    21        CONTINUE
              ENDDO   ! FIN BOUCLE SUR LES TETRAS
-          ENDIF   ! FIN SI LINTER   
+          ENDIF   ! FIN SI LINTER
         ENDIF             ! FIN SI SUR NCOLOR2
-      ENDDO              ! FIN BOUCLE SUR LES POINTS DE BORD     
+      ENDDO              ! FIN BOUCLE SUR LES POINTS DE BORD
 ! OB F
       CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(8),COUNT_RATE=PARSEC)
       WRITE(LU,*)' NOMBRE DE RETOUCHE DU PARTITIONNEMENT (PART2): ',
@@ -1758,7 +1758,7 @@
         WRITE(NINP2,60,ERR=112)BLANC,MOINS1
         WRITE(NINP2,61,ERR=112)NSEC1
         WRITE(NINP2,62,ERR=112)TITRE
-        TITRE = ' ' 
+        TITRE = ' '
         WRITE(NINP2,62,ERR=112)TITRE
         WRITE(NINP2,62,ERR=112)TITRE
         WRITE(NINP2,62,ERR=112)TITRE
@@ -1779,7 +1779,7 @@
 !D       NI=NODES2(J)
 !D       NF=NI+NODES1(J)-1
 !D       DO N=NI,NF       ! BOUCLE SUR LES TETRA CONTENANT LE POINT J
-!D           NT=NODES3(N)   ! TETRA DE NUMERO LOCAL NT 
+!D           NT=NODES3(N)   ! TETRA DE NUMERO LOCAL NT
 !D           IF (EPART(NT)==IDD) THEN     ! C'EST UNE MAILLE DU SOUS-DOMAINE
           WRITE(NINP2,63,ERR=112)COMPT,IBID,IBID,NCOLOR2(J)
           WRITE(NINP2,64,ERR=112)X1(J),Y1(J),Z1(J)
@@ -1797,9 +1797,9 @@
             IF (K.GT.NBSDOMVOIS-2) GOTO 151
             NACHB(K+1,J)=IDD  ! NOEUD GLOBAL J CONCERNE PAR IDD
             NACHB(1,J)=K      ! SA MULTIPLICITE
-          ENDIF 
+          ENDIF
           COMPT=COMPT+1
-!          GOTO 10 ! ON PASSE AU NOEUD SUIVANT           
+!          GOTO 10 ! ON PASSE AU NOEUD SUIVANT
 !            ENDIF  ! EN EPART
 !          ENDDO ! EN N
 !   10     CONTINUE
@@ -1820,12 +1820,12 @@
 !D      DO J=1,NELEMTOTAL
 !D      IF (TYPELEM(J,1)==111) THEN ! C'EST UN TETRAEDRE
 !D        NUMTET=TYPELEM(J,2) ! NUM LOCAL DU TETRA DANS LA LISTE DES TETRAS
-!D            IF (EPART(NUMTET)==IDD) THEN 
+!D            IF (EPART(NUMTET)==IDD) THEN
 
         DO POS=1,NELEM_P(IDD)
                                 ! BOUCLE SUR TETRA ET TRIA POUR ECOLOR
           J=ELEGL(POS,IDD)
-          NUMTET=TYPELEM(J,2)  ! NUM LOCAL DU TETRA DANS LA LISTE DES TETRAS 
+          NUMTET=TYPELEM(J,2)  ! NUM LOCAL DU TETRA DANS LA LISTE DES TETRAS
           ELEM=111
 ! OB D
 ! PRETRAITEMENT POUR LES EVENTUELS PB DE COULEURS DES NOEUDS DE TETRAS
@@ -1836,7 +1836,7 @@
           IF (TETCOLOR(NUMTET,3)) IBIDC=IBIDC+  30
           IF (TETCOLOR(NUMTET,4)) IBIDC=IBIDC+   4
 ! POUR MONITORING
-!              IF (IBIDC/=0) WRITE(6,*)'IDD',IDD,'PARTEL',J,COMPT,IBIDC
+!              IF (IBIDC/=0) WRITE(LU,*)'IDD',IDD,'PARTEL',J,COMPT,IBIDC
 ! IDEM VERSION DE REFERENCE
 !             IBIDC=0
 ! OB F
@@ -1868,7 +1868,7 @@
               TRIUNV(4*NBTRIIDD+4)=IKLE3
               NBTRIIDD=NBTRIIDD+1
 !
-              IF ((IKLE1.LT.0).OR.(IKLE2.LT.0).OR.(IKLE3.LT.0)) 
+              IF ((IKLE1.LT.0).OR.(IKLE2.LT.0).OR.(IKLE3.LT.0))
      &           GOTO 147
 !
             ENDDO  ! EN M
@@ -1883,7 +1883,7 @@
           IKLE1=TRIUNV(4*(J-1)+2)
           IKLE2=TRIUNV(4*(J-1)+3)
           IKLE3=TRIUNV(4*(J-1)+4)
-          WRITE(NINP2,67,ERR=112)IKLE1,IKLE2,IKLE3        
+          WRITE(NINP2,67,ERR=112)IKLE1,IKLE2,IKLE3
           COMPT=COMPT+1
         ENDDO  ! EN J
 !
@@ -1943,7 +1943,7 @@
         ENDIF
 !
 !$$$        WRITE(LU,*) 'SUBDOMAIN',IDD,'INNERTRI',COMPT
-!        
+!
         WRITE(NINP2,60,ERR=112)BLANC,MOINS1
 !        WRITE(NINP2,60,ERR=112)BLANC,MOINS1
 !        WRITE(NINP2,61,ERR=112)NSEC4
@@ -1954,7 +1954,7 @@
 ! 5D. REMPLISSAGE EFFECTIF DU LOG PAR SD
 !---------------
 ! ELEMENT STANDARD DU FICHIER LOG (LOG PAR SD)
-        WRITE(NLOG2,51 ,ERR=113) NPOINTSD(IDD)      
+        WRITE(NLOG2,51 ,ERR=113) NPOINTSD(IDD)
         WRITE(NLOG2,52 ,ERR=113) NELEMSD(IDD)
         WRITE(NLOG2,523,ERR=113) SIZE_FLUX
 
@@ -1967,7 +1967,7 @@
             WRITE(NLOG2,50,ERR=113)'--'
           ENDDO
         ENDIF
-#endif 
+#endif
         IF (.NOT.FORMAT_MED) THEN
           WRITE(NLOG2,53 ,ERR=113) NBFAMILY-1
           DO J=1,NBFAMILY
@@ -2037,7 +2037,7 @@
                 NACHB(NBSDOMVOIS,J)=COMPT  ! A RETENIR COMME POINT D'INTERFACE
               ENDIF
             ENDDO            ! FIN BOUCLE SUR LES SD DU POINT J
-          ENDIF   
+          ENDIF
         ENDDO              ! FIN BOUCLE POINTS
         NPOINTISD(IDD)=COMPT ! NOMBRE DE POINTS D'INTERFACE DE IDD
 
@@ -2063,7 +2063,7 @@
 ! D'OU LA CONTRAINTE, UN PROC PAR SOUS-DOMAINE
                   VECTNB(COMPT)=NACHB(K+1,J)-1
                 ENDIF
-              ENDIF 
+              ENDIF
             ENDDO  ! EN K
 !           WRITE(NLOG2,561,ERR=113)J,(VECTNB(K),K=1,NBSDOMVOIS-3)
             NT = NBSDOMVOIS-3
@@ -2087,8 +2087,8 @@
             ENDIF
           ENDIF
         ENDDO  ! FIN BOUCLE EN J
-        WRITE(NLOG2,57,ERR=113)        
-        CLOSE(NLOG2)    
+        WRITE(NLOG2,57,ERR=113)
+        CLOSE(NLOG2)
       ENDDO  ! BOUCLE SUR LES SOUS-DOMAINES
       CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(9),COUNT_RATE=PARSEC)
       WRITE(LU,*)' REMPLISSAGE DES FICHIERS UNV ET LOG',
@@ -2096,7 +2096,7 @@
 !----------------------------------------------------------------------
 ! 6. AFFICHAGES DANS PARTEL.LOG ET TEST DE COMPLETUDE DU PARTITIONNEMENT
 !------------
- 
+
       WRITE(LU,*)' '
       COMPT1=0
       COMPT2=0
@@ -2147,31 +2147,31 @@
   640 FORMAT(6I9)        ! DERNIERE LIGNE DE BLOC NACHB
 
 
-  
+
    55 FORMAT(' FIN DE KNOLG: ',I10)
    56 FORMAT(' DEBUT DE NACHB: ',I10)
    57 FORMAT(' FIN DE NACHB: ')
 
 ! 7B. FORMAT DU UNV
 !---------------
-   60 FORMAT(A4,A2)       ! '    -1'   
+   60 FORMAT(A4,A2)       ! '    -1'
    61 FORMAT(I9)          ! LECTURE NSEC
-   62 FORMAT(A80)         ! LECTURE TITRE      
-   63 FORMAT(4I10)        ! LIGNE 1 BLOC COORD      
-   64 FORMAT(3D25.16)     ! LIGNE 2 BLOC COORD      
-   65 FORMAT(6I10)        ! LIGNE 1 BLOC CONNECTIVITE      
-   66 FORMAT(4I10)        ! LIGNE 2 BLOC CONNECTIVITE SI TETRA      
+   62 FORMAT(A80)         ! LECTURE TITRE
+   63 FORMAT(4I10)        ! LIGNE 1 BLOC COORD
+   64 FORMAT(3D25.16)     ! LIGNE 2 BLOC COORD
+   65 FORMAT(6I10)        ! LIGNE 1 BLOC CONNECTIVITE
+   66 FORMAT(4I10)        ! LIGNE 2 BLOC CONNECTIVITE SI TETRA
    67 FORMAT(3I10)        ! LIGNE 2 BLOC CONNECTIVITE SI TRIANGLE
 !  68 FORMAT(8I10)        ! BLOC FANTOCHE POUR MARQUER LA FIN DU BLOC
                           ! CONNECTIVITEE
-      
+
 ! 7.C AFFICHAGES DANS PARTEL.LOG
 !---------------
    80 FORMAT(' #NUMBER TOTAL OF ELEMENTS: ',I8,
      &       ' #NODES                 : ',I8)
    81 FORMAT(' #TETRAHEDRONS            : ',I8,
      &       ' #TRIANGLE MESH BORDER  : ',I8)
-   82 FORMAT(' #NPARTS                : ',I8)   
+   82 FORMAT(' #NPARTS                : ',I8)
    83 FORMAT('  RUNTIME                 : ',F10.2,' S')
    86 FORMAT('  DOMAIN: ',I3,' #ELEMENTS:   ',I8,' #NODES:   ',I8,
      &       ' #INTERFACENODES:   ',I8)
@@ -2205,7 +2205,7 @@
 
 ! 7.E MESSAGES D'ERREURS
 !---------------
- 
+
   111 TEXTERROR='! UNEXPECTED FILE FORMAT2: '//NAMEINP//' !'
       GOTO 999
   112 TEXTERROR='! UNEXPECTED FILE FORMAT3: '//NAMEINP2//' !'
@@ -2238,15 +2238,15 @@
       GOTO 999
   147 TEXTERROR='! PROBLEM WHILE WRITING: '//NAMEINP2//' !'
       GOTO 999
-  149 TEXTERROR='! NO INPUT UNV FILE !' 
+  149 TEXTERROR='! NO INPUT UNV FILE !'
       GOTO 999
   151 WRITE(UNIT=STR8,FMT='(I8)')J
       WRITE(UNIT=STR26,FMT='(I3,1X,I3,1X,I3,1X,I3,1X,I3,1X,I3)')
      &                 (NACHB(K,J),K=2,NBSDOMVOIS-1),IDD
       TEXTERROR='! NODE '//STR8//' BELONGS TO DOMAINS '//STR26(1:23)
-     &                 //' !' 
+     &                 //' !'
       GOTO 999
-  152 TEXTERROR='! PROBLEM WITH CONSTRUCTION OF VECTNB FOR NACHB !' 
+  152 TEXTERROR='! PROBLEM WITH CONSTRUCTION OF VECTNB FOR NACHB !'
       GOTO 999
   154 TEXTERROR='! PROBLEM WITH THE PRIORITY OF COLOR NODES !'
       GOTO 999

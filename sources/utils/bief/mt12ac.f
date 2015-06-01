@@ -180,7 +180,7 @@
         A22(IELEM) = 0.D0
         A33(IELEM) = 0.D0
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -234,7 +234,7 @@
         A22(IELEM) = 0.D0
         A33(IELEM) = 0.D0
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSE
 !
@@ -335,7 +335,7 @@
         A22(IELEM) = - A12(IELEM) - A32(IELEM)
         A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -424,7 +424,7 @@
         A22(IELEM) = - A12(IELEM) - A32(IELEM)
         A33(IELEM) = - A13(IELEM) - A23(IELEM)
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSE
           IF (LNG.EQ.1) WRITE(LU,200) ICOORD

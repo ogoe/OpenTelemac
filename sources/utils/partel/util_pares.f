@@ -64,13 +64,13 @@
       !-----------------------------------------------------------------------
       ! GLOBAL VARIABLES
       !VOIR LA SUBROUTINE VOISIN31.F DONT CETTE PROCEDURE EST DIRECTEMENT INSPIRE
-      ! 
+      !
       INTEGER,          INTENT(IN)  :: NELEM
       INTEGER,          INTENT(IN)  :: NPOIN
       INTEGER,          INTENT(IN)  :: IKLE(NELEM,4)
       INTEGER,          INTENT(OUT) :: NELEB
       !-----------------------------------------------------------------------
-      ! VARIABLES LOCALES 
+      ! VARIABLES LOCALES
 
       INTEGER :: NVOIS(NPOIN),IADR(NPOIN)
       INTEGER :: I,INOEUD,IELEM,IPOIN,ADR,IMAX,NBTRI,NV,NMXVOISIN,
@@ -78,7 +78,7 @@
       INTEGER, DIMENSION(:), ALLOCATABLE :: NEIGH
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: IKLE_TRI,VOIS_TRI,IFABOR
       LOGICAL :: FOUND
-      !   ~~~~~~~~~~~~~~~~~~~~~~~   
+      !   ~~~~~~~~~~~~~~~~~~~~~~~
       !     DEFINITION DES QUATRE TRIANGLES DU TETRAEDRE : LA PREMIERE
       !     DIMENSION DU TABLEAU EST LE NUMERO DU TRIANGLE, LA DEUXIEME DONNE
       !     LES NUMEROS DES NOEUDS DE TETRAEDRES QUI LE DEFINISSENT.
@@ -134,7 +134,7 @@
       END DO
 !-----------------------------------------------------------------------
 ! ETAPE 4 : Reperer les faces communes des tetraedres et remplir le
-! tableau IFABOR. 
+! tableau IFABOR.
 !-----------------------------------------------------------------------
       NBTRI = NMXVOISIN * 3
 !

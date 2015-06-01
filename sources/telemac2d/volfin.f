@@ -1,10 +1,10 @@
 !                       *****************
-                        SUBROUTINE VOLFIN 
+                        SUBROUTINE VOLFIN
 !                       *****************
 !
      & (W1,AT,DT,LT,NELEM,NPTFR,NSEG,
      &  TB,ZF,CF,NPOIN,HN,H,U,V,QU,QV,G,LISTIN,
-     &  MESH,LIMPRO,NBOR,KDIR,KNEU,KDDL, 
+     &  MESH,LIMPRO,NBOR,KDIR,KNEU,KDDL,
      &  HBOR,UBOR,VBOR,MASSES,FLUENT,FLUSOR,CFLWTD,DTVARI,KFROT,
      &  NREJET,ISCE,TSCE2,MAXSCE,MAXTRA,YASMH,SMH,
      &  NTRAC,DIMT,T,HT,TN,
@@ -20,9 +20,9 @@
 ! TELEMAC2D   V6P3                                   15/06/2013
 !***********************************************************************
 !
-!brief    1. SOLVES THE PROBLEM BY A METHOD OF TYPE ROE OR BY A KINETIC 
+!brief    1. SOLVES THE PROBLEM BY A METHOD OF TYPE ROE OR BY A KINETIC
 !            SCHEME (ORDER 1 OR 2) OR TCHAMEN/ZOKAGOA SCHEME
-!            FOR INTERIOR FLUXES 
+!            FOR INTERIOR FLUXES
 !            AND OF TYPE STEGER AND WARMING FOR I/O;
 !+
 !+
@@ -54,7 +54,7 @@
 !+        03/15/2011
 !+        V6P1
 !+    CHANGE EXPLICIT EULER BY NEWMARK SCHEME
-!+    ADD TCHAMEN AND ZOKAGA FLUXES 
+!+    ADD TCHAMEN AND ZOKAGA FLUXES
 !
 !history  R. ATA (EDF-LNHE)
 !+        07/15/2012
@@ -69,13 +69,13 @@
 !+   INSTEAD USE V2DPAR
 !+   CLEAN UNUSED VARIABLES
 !
-!history  R. ATA 
+!history  R. ATA
 !+        28/01/2014
 !+        V7P0
 !+    change diemensions of CMI
 !+    from (2,nseg) to (nseg,2)
 !
-!history  R. ATA 
+!history  R. ATA
 !+        25/05/2015
 !+        V7P1
 !+    include udel and vdel for the coupling
@@ -121,11 +121,11 @@
 !| IKLE           |-->| INDICES OF NODES FOR TRIANGLE
 !| ISCE           |-->| SOURCE POINTS
 !| ITURB          |-->| MODEL OF TURBULENCE  1 : LAMINAIRE
-!| JMI            |-->| NUMBER OF THE TRIANGLE IN WHICH IS LOCATED 
+!| JMI            |-->| NUMBER OF THE TRIANGLE IN WHICH IS LOCATED
 !|                |   | THE MIDPOINT OF THE INTERFACE
 !| KDDL           |-->| CONVENTION FOR FREE POINTS (BC)
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINTS
-!| KFROT          |-->| BED FRICTION LAW 
+!| KFROT          |-->| BED FRICTION LAW
 !| KNEU           |-->| CONVENTION NEUMANN POINTS
 !| LIMPRO         |-->| TYPES OF BOUNDARY CONDITION
 !| LIMTRA         |-->| TYPES OF BOUNDARY CONDITION FOR TRACER
@@ -136,7 +136,7 @@
 !| MASSOU         |<--| ADDED TRACER MASS BY SOURCE TERM
 !| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
 !| MAXTRA         |-->| MAXIMUM NUMBER OF TRACERS
-!| MXPTVS         |-->| MAX NUMBER OF NEIGHBOR FOR A NODE 
+!| MXPTVS         |-->| MAX NUMBER OF NEIGHBOR FOR A NODE
 !| NBOR           |-->| GLOBAL INDICES FOR BORD NODES
 !| NEISEG         |-->| NEIGHBOR OF THE SEGMENT
 !| NELEM          |-->| NUMBER OF ELEMENTS
@@ -151,7 +151,7 @@
 !| OPTVF          |-->| OPTION OF THE SCHEME
 !|                |   | 0:ROE, 1:KINETIC ORDRE 1,2:KINETIC ORDRE 2
 !|                |   | 3:ZOKAGOA, 4:TCHAMEN,5:HLLC,6:WAF
-!| PROPNU         |-->| COEFFICIENT OF MOLECULAR DIFFUSION 
+!| PROPNU         |-->| COEFFICIENT OF MOLECULAR DIFFUSION
 !| QU,QV          |<->| FLOW COMPOENENTS AT TIME N THEN AT TIME  N+1
 !| SMH            |-->| SOURCE TERMS FOR CONTINUITY EQUATION
 !| SMTR           |<--| SOURCE TERMS FOR TRACERS
@@ -164,7 +164,7 @@
 !| UBOR           |-->| IMPOSED VALUES FOR U
 !| VBOR           |-->| IMPOSED VALUES FOR V
 !| VNOIN          |-->| NORMAL TO THE INTERFACE
-!|                |   | (2 FIRST COMPONENTS) AND 
+!|                |   | (2 FIRST COMPONENTS) AND
 !|                |   | SEGMENT LENGTH (3RD COMPONENT)
 !| W              |<->| WORKING TABLE
 !| WINF           |-->| BOUNDARY CONDITIONS GIVEN BY BORD
@@ -176,8 +176,8 @@
 !
       USE BIEF
       USE INTERFACE_TELEMAC2D, EX_VOLFIN => VOLFIN
-! 
-      IMPLICIT NONE 
+!
+      IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
@@ -200,7 +200,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: DSZ(2,*),HC(2,*)
       DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN),V(NPOIN),HN(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: SMH(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN),ZF(NPOIN),G 
+      DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN),ZF(NPOIN),G
       DOUBLE PRECISION, INTENT(INOUT) :: HSTOK(DIMT),HCSTOK(2,*)
       DOUBLE PRECISION, INTENT(IN)    :: HBOR(NPTFR),UBOR(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: VBOR(NPTFR)
@@ -209,31 +209,31 @@
       DOUBLE PRECISION, INTENT(IN)    :: AIRST(2,*)
       DOUBLE PRECISION, INTENT(INOUT) :: DPX(3,*),DPY(3,*)
       DOUBLE PRECISION, INTENT(INOUT) :: CMI(NSEG,2),DJX(3,*),DJY(3,*)
-      DOUBLE PRECISION, INTENT(IN)    :: CFLWTD,DTHAUT(NPOIN),TMAX 
+      DOUBLE PRECISION, INTENT(IN)    :: CFLWTD,DTHAUT(NPOIN),TMAX
       DOUBLE PRECISION, INTENT(INOUT) :: FLUSOR,FLUENT,DTN,MASSOU(*)
       DOUBLE PRECISION, INTENT(INOUT) :: FLUSORTN,FLUENTN
       DOUBLE PRECISION, INTENT(INOUT) :: DJXT(*),DJYT(*)
-      DOUBLE PRECISION, INTENT(INOUT) :: FLUTENT(*),FLUTSOR(*)    
+      DOUBLE PRECISION, INTENT(INOUT) :: FLUTENT(*),FLUTSOR(*)
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TB,UDEL,VDEL
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
       TYPE(BIEF_OBJ) , INTENT(IN)     :: TBOR,TN,V2DPAR
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: T,HT,SMTR,FLUHBOR,FLUHBTEMP
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLUXTEMP,FLUXT,FLBOR,FLUX_OLD
 !
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !
 !
-      MASSES = 0.D0  
+      MASSES = 0.D0
 !
       CALL RESOLU(W1,W1(1+3*NPOIN),MESH%NUBO%I,
      &            MESH%VNOIN%R,W1(1+9*NPOIN),AT,DT,LT,
      &            NELEM,MESH%NSEG,NPTFR,W1(1+6*NPOIN),
 !RA  &            TB%ADR(1)%P%R,MESH%SURFAC%R,
      &            V2DPAR%R,MESH%SURFAC%R,
-     &            MESH%X%R,MESH%Y%R,MESH%IKLE%I, 
+     &            MESH%X%R,MESH%Y%R,MESH%IKLE%I,
      &            ZF,CF,NPOIN,HN,H,U,V,QU,QV,G,LISTIN,
-     &            MESH%XNEBOR%R,MESH%YNEBOR%R, 
+     &            MESH%XNEBOR%R,MESH%YNEBOR%R,
      &            LIMPRO,NBOR,KDIR,KNEU,KDDL,HBOR,UBOR,VBOR,
      &            FLUSOR,FLUENT,CFLWTD,DTVARI,MESH%NELMAX,KFROT,
      &            NREJET,ISCE,TSCE2,MAXSCE,MAXTRA,YASMH,SMH,MASSES,

@@ -45,7 +45,7 @@
 !+   In parallel, boundary elements that correspond to another subdomain
 !+   are given a IKLBOR that reduces the element to a point.
 !+   The previous version had IKLBOR = 0 which causes a crash when
-!+   checking bounds. 
+!+   checking bounds.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        19/03/2014
@@ -82,13 +82,13 @@
 !| NPLAN          |-->| NUMBER OF PLANES
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
+!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE
 !|                |   | ADJACENT ELEMENT, NULONE GIVES THE LOCAL
 !|                |   | NUMBER OF THE FIRST NODE OF THE BOUNDARY EDGE
 !|                |   | I.E. 1, 2 OR 3 FOR TRIANGLES.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_ELEB3DT => ELEB3DT 
+      USE BIEF, EX_ELEB3DT => ELEB3DT
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -111,7 +111,7 @@
 !
       INTEGER IELEM,IPOIN,T(3),IELEB,IELEB3,IPTFR2
       INTEGER IETAGE,IPTFR,IL1,IL2,IL3,IL4,IG(2,2,3),IL(2,2,3),IPLAN
-      INTEGER IG1,IG2,IG3,IG4,NUM1(12),NUM2(12),NUM3(12),K,L,M,N   
+      INTEGER IG1,IG2,IG3,IG4,NUM1(12),NUM2(12),NUM3(12),K,L,M,N
 !
       DATA NUM1 / 1 , 2 , 4 , 1 , 3 , 2 , 2 , 3 , 4 , 3 , 1 , 4 /
       DATA NUM2 / 2 , 4 , 1 , 3 , 2 , 1 , 3 , 4 , 2 , 1 , 4 , 3 /
@@ -123,20 +123,20 @@
 ! CORRESPONDENCE BETWEEN LOCAL BOUNDARY NUMBERS AND 3D LOCAL NUMBERS --> NULONE
 !
 !     COMPLETING NBOR
-!      
+!
       DO IPTFR = 1,NPTFR
         IPOIN = NBOR(IPTFR)
-        DO IPLAN = 2,NPLAN                   
+        DO IPLAN = 2,NPLAN
           NBOR(IPTFR +(IPLAN-1)*NPTFR)=IPOIN+(IPLAN-1)*NPOIN2
         ENDDO
-      ENDDO   
+      ENDDO
 !
 !     LATERAL BOUNDARIES :
 !     FOR EACH RECTANGULAR FACE SPLIT IN TWO TRIANGLES
 !     THE LOWER TRIANGLE IS NUMBER 1, THE HIGHER IS NUMBER 2
 !
-      DO IELEB = 1,NELEB2D         
-!     
+      DO IELEB = 1,NELEB2D
+!
         IPTFR =IKLBOR2D(IELEB,1)
         IPTFR2=IKLBOR2D(IELEB,2)
 !

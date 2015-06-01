@@ -128,7 +128,7 @@
         A22(IELEM) = 0.D0
         A33(IELEM) = 0.D0
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
         ELSEIF(ICOORD.EQ.2) THEN
 !
@@ -167,7 +167,7 @@
         A22(IELEM) = 0.D0
         A33(IELEM) = 0.D0
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
         ELSE
 !

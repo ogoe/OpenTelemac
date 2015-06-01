@@ -72,13 +72,13 @@
 !| TOB            |-->| BOTTOM FRICTION
 !| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY
 !| WCS            |-->| SETTLING VELOCITY FOR SAND
-!| Z              |-->| NODE COORDINATES 
+!| Z              |-->| NODE COORDINATES
 !| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC3D, ONLY: KARMAN,PRANDTL,FICT
-!      
+!
       USE INTERFACE_TELEMAC3D, EX_ERODNC => ERODNC
 !     TRIGGERS A PGI COMPILER ERROR
       USE INTERFACE_SISYPHE,ONLY:SUSPENSION_FREDSOE,SUSPENSION_VANRIJN
@@ -99,13 +99,13 @@
 !
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: DMOY,TOB,CF,HN
       TYPE(BIEF_OBJ)  , INTENT(INOUT) :: CREF,ZREF,RUGOF
-!      
+!
       DOUBLE PRECISION, INTENT(IN)    :: WCS(NPOIN3)
 
       LOGICAL, INTENT(IN)             :: MIXTE
 
       DOUBLE PRECISION, INTENT(IN)    :: Z(NPOIN3), UETCAR(NPOIN2)
-! 
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IPOIN,I
@@ -124,16 +124,16 @@
 !     FE scheme          = Dz1/2
 !
 !     ZYSERMAN & FREDSOE (1994) (BY DEFAULT)
-! 
+!
 !     SO FAR DMOY IS A CONSTANT
 !
-      IF(ICQ.EQ.1) THEN             
+      IF(ICQ.EQ.1) THEN
         CALL OS('X=CY    ', X=ZREF, Y=DMOY, C=2.D0)
         CALL SUSPENSION_FREDSOE(DMOY%R(1),TOB, NPOIN2,
      &                        GRAV,RHO0,RHOS,1.D-6,AC,CREF)
         CALL OS('X=CY    ', X=ZREF, Y=DMOY, C=2.D0)
       ELSEIF(ICQ.EQ.3) THEN
-        CALL OS('X=CY    ', X=ZREF, Y=RUGOF, C=0.5D0)      
+        CALL OS('X=CY    ', X=ZREF, Y=RUGOF, C=0.5D0)
         CALL SUSPENSION_VANRIJN(DMOY%R(1),TOB,NPOIN2,
      &                 GRAV,RHO0,RHOS,1.D-06,1.D-06,AC,CREF,ZREF)
       ENDIF
@@ -142,19 +142,19 @@
 !
       CALL OS('X=CX    ',X=CREF,C=RHOS)
 !
-!     JMH ON 05/05/2014 
+!     JMH ON 05/05/2014
 !     Following lines put under condition of SETDEP=1, they change a
-!     lot the test case depot (76 cm of deposition at the 
+!     lot the test case depot (76 cm of deposition at the
 !     entrance, while the bed should not evolve too much, as
 !     we simulate a Rouse profile. Lines below are probably compatible
-!     with FLUDPT done when SETDEP=1.    
-!     
+!     with FLUDPT done when SETDEP=1.
+!
 !     CV: Extrapolation of Rouse profile from ZREF to 1/2 or 1/4 of first grid mesh
 !
       IF(SETDEP.EQ.1) THEN
 !
         DO IPOIN =1,NPOIN2
-          USTAR=MAX(SQRT(UETCAR(IPOIN)),1.D-6) 
+          USTAR=MAX(SQRT(UETCAR(IPOIN)),1.D-6)
           ROUSE=PRANDTL*WCS(IPOIN)/KARMAN/USTAR
 !         rouse profile extrapolation up to 1/4 of the first layer
           DELTAZ=(Z(IPOIN +NPOIN2)-Z(IPOIN))/FICT
@@ -163,14 +163,14 @@
           CREF%R(IPOIN)=CREF%R(IPOIN)*ROUSE_Z**ROUSE
         ENDDO
 !
-      ENDIF            
+      ENDIF
 !
 !  ------------------------------------------------------------
 !  -----------------     EROSION STEP    ----------------------
 !  ------------------------------------------------------------
 !
       IF(MIXTE) THEN
-        
+
         DO I=1,NPOIN2
 !
         FLUER(I)= WCS(I)*CREF%R(I)

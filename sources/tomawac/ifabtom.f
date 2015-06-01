@@ -11,7 +11,7 @@
 !brief    FILLS 'IFABOR' OF MESH3D FOR TOMAWAC
 !
 !
-!history  J-M HERVOUET (LNHE)    
+!history  J-M HERVOUET (LNHE)
 !+        28/09/2012
 !+        V6P3
 !+

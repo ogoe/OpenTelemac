@@ -73,10 +73,10 @@
 !| UBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
 !| VBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
 !| TBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON TRACER
-!| UNORM          |-->| NORM OF VELOCITY 
+!| UNORM          |-->| NORM OF VELOCITY
 !| X              |-->| ABSCISSAE OF NODES
 !| Y              |-->| ORDINATES OF NODES
-!| ZDIG           |-->| ELEVATIONS OF POINTS OF WEIRS 
+!| ZDIG           |-->| ELEVATIONS OF POINTS OF WEIRS
 !| ZF             |-->| BOTTOM TOPOGRAPHY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -293,7 +293,7 @@
 !
         IF(NCSIZE.GT.1) THEN
           UNORM1 =P_DMAX(UNORM1)+P_DMIN(UNORM1)
-        ENDIF 
+        ENDIF
 !
         I2=NDGB1%ADR(N)%P%I(I)
         IF(I2.GT.0) THEN
@@ -339,7 +339,7 @@
               ENDIF
               IF(NCSIZE.GT.1) THEN
                 T1=P_DMAX(T1)+P_DMIN(T1)
-              ENDIF 
+              ENDIF
               IF(I2.GT.0) THEN
                 LITBOR%ADR(ITRAC)%P%I(I2)=5
                 TBOR%ADR(ITRAC)%P%R(I2)=T1
@@ -356,7 +356,7 @@
               ENDIF
               IF(NCSIZE.GT.1) THEN
                 T2=P_DMAX(T2)+P_DMIN(T2)
-              ENDIF 
+              ENDIF
               IF(I1.GT.0) THEN
                 LITBOR%ADR(ITRAC)%P%I(I1)=5
                 TBOR%ADR(ITRAC)%P%R(I1)=T2

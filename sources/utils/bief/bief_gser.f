@@ -8,10 +8,10 @@
 ! BIEF   V6P3                                   07/03/2013
 !***********************************************************************
 !
-!brief  Returns the incomplete gamma function P(a,x) evaluated by its 
-!+      series representation as GAMSER.  Also returns ln  gamma(a) as 
-!+      GLN. From 'Numerical Recipes' Chapter 6.2 This routine is only 
-!+      valid for X.GE.0 Negative X cannot occur when calling from ERF 
+!brief  Returns the incomplete gamma function P(a,x) evaluated by its
+!+      series representation as GAMSER.  Also returns ln  gamma(a) as
+!+      GLN. From 'Numerical Recipes' Chapter 6.2 This routine is only
+!+      valid for X.GE.0 Negative X cannot occur when calling from ERF
 !+      or ERFC via GAMMP or GAMMQ
 !
 !history  D J Evans-Roberts (HRW)
@@ -20,10 +20,10 @@
 !+   First version sent by Michiel Knaapen (HRW) on 07/03/2013.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| PARAMETER 
-!| GAMSER         |<->| Incomplete gamma function P(a,x) 
+!| A              |-->| PARAMETER
+!| GAMSER         |<->| Incomplete gamma function P(a,x)
 !| GLN            |<->| gamma(a)
-!| X              |-->| OPERAND 
+!| X              |-->| OPERAND
 !| IFAIL          |<->| ERROR TAG: 1 IS OK, 0 IS ERROR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

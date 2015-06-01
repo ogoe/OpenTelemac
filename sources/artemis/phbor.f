@@ -44,13 +44,13 @@
 !+        V6P0
 !+   KSORT   : end of application to neighbours
 !+   KINC    : end of applicatin to the I+1 node
-!+   SEGMENT : If a segment links a solid node to a liquid node, 
-!+             this segment is regarded as solid. 
+!+   SEGMENT : If a segment links a solid node to a liquid node,
+!+             this segment is regarded as solid.
 !+   BUG correction         : Full KINC boundaries taken into account
-!+   NEW boundary condition : incident potential can be given by the user 
+!+   NEW boundary condition : incident potential can be given by the user
 !+   Parallel correction    : - End of HBT,CGT,CTT,KT,XT,YT tables
 !+                              only   HB%R,CG%R, etc... are used.
-!+                            - No use of NCSIZE variable. 
+!+                            - No use of NCSIZE variable.
 !history  C.PEYRARD (LNHE)
 !+        18/03/2014
 !+        V7P0
@@ -68,10 +68,10 @@
 !
       INTEGER I,IG,IG0,IGP1
 !
-! 
+!
       DOUBLE PRECISION GRE, GIM
       DOUBLE PRECISION DDXGRE,DDYGRE,DDXGIM,DDYGIM
-!       
+!
 
       DOUBLE PRECISION PI,DEGRAD,PHASEOI,X0,Y0
       DOUBLE PRECISION AUXI1,AUXIC,AUXIS,RADDEG
@@ -152,7 +152,7 @@
 !
           AUXIC = COS(TETAB%R(I)*DEGRAD)
           AUXIS = SIN(TETAB%R(I)*DEGRAD)
-          AUXI1 = GRAV/OMEGA * HB%R(I)/2.D0 
+          AUXI1 = GRAV/OMEGA * HB%R(I)/2.D0
 
 !---------AUTOMATIC PHASE CALCULATION (TETAB HAVE TO BE UNIFORM ON THE BOUNDARY)
           IF(LPHASEAUTO) THEN
@@ -181,7 +181,7 @@
 ! ---- GRAD(Gamma) will be used in BERKHO...
           CGRX1B%R(I)=   ( DDXGRE ) *C%R(IG)*CG%R(IG)
           CGRY1B%R(I)=   ( DDYGRE ) *C%R(IG)*CG%R(IG)
-          DGRX1B%R(I)=   ( DDXGIM ) *C%R(IG)*CG%R(IG) 
+          DGRX1B%R(I)=   ( DDXGIM ) *C%R(IG)*CG%R(IG)
           DGRY1B%R(I)=   ( DDYGIM ) *C%R(IG)*CG%R(IG)
         ENDIF
 !
@@ -191,7 +191,7 @@
 !
         IF (LIHBOR%I(I).EQ.KPOT) THEN
 !
-!------------ POTENTIAL (REAL, IMAGINAR)            
+!------------ POTENTIAL (REAL, IMAGINAR)
           GRE=PRB%R(I)
           GIM=PIB%R(I)
 ! ----------- GRADIENTS (REAL, IMAGINAR)
@@ -211,7 +211,7 @@
 ! ----    GRAD(Gamma) will be used in BERKHO...
           CGRX1B%R(I)=   ( DDXGRE ) *C%R(IG)*CG%R(IG)
           CGRY1B%R(I)=   ( DDYGRE ) *C%R(IG)*CG%R(IG)
-          DGRX1B%R(I)=   ( DDXGIM ) *C%R(IG)*CG%R(IG) 
+          DGRX1B%R(I)=   ( DDXGIM ) *C%R(IG)*CG%R(IG)
           DGRY1B%R(I)=   ( DDYGIM ) *C%R(IG)*CG%R(IG)
         ENDIF
 !         -------------------------------------------------
@@ -219,7 +219,7 @@
 !         -------------------------------------------------
 !
         IF(LIHBOR%I(I).EQ.KSORT) THEN
-!       
+!
           APHI2B%R(I)  = - K%R(IG) * C%R(IG) * CG%R(IG)
      &                   * COS(TETAP%R(I)*DEGRAD)
           BPHI2B%R(I)  = 0.D0

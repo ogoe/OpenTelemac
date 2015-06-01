@@ -9,7 +9,7 @@
 !***********************************************************************
 !
 !brief    Assemble and Prints P_DOTS of a vector which is not assembled.
-!         This is for debugging parallelism and applies e.g. to 
+!         This is for debugging parallelism and applies e.g. to
 !         diagonals and right-hand sides of linear systems
 !         P_DOTS is the dot product of a vector in parallel.
 !         Only the master processor (IPID=0) prints the result
@@ -44,7 +44,7 @@
       CALL OS('X=Y     ',X=MESH%T,Y=X)
 !
       IF(NCSIZE.GT.1) CALL PARCOM(MESH%T,2,MESH)
-! 
+!
       RESULT=P_DOTS(MESH%T,MESH%T,MESH)
 !
       IF(IPID.EQ.0) THEN

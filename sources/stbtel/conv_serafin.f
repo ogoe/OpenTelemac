@@ -1,7 +1,7 @@
       MODULE CONV_SERAFIN
       CONTAINS
-!                       *********************** 
-                        SUBROUTINE READ_SERAFIN 
+!                       ***********************
+                        SUBROUTINE READ_SERAFIN
 !                       ***********************
 !
      &(SLFFILE,LIMFILE,SERAFIND)
@@ -11,7 +11,7 @@
 !***********************************************************************
 !
 !BRIEF    READS A FILE OF SERAFIN FORMAT AND FILL THE MESH OBJECT
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
@@ -32,7 +32,7 @@
       USE CONV_LIM
       USE INTERFACE_HERMES
       USE BIEF
-!      
+!
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
       INTEGER LNG,LU
@@ -56,7 +56,7 @@
       IF(LNG.EQ.1) WRITE(LU,*) '------DEBUT LECTURE DU FICHIER SERAFIN'
       IF(LNG.EQ.2) WRITE(LU,*) '------BEGINNING READING OF SERAFIN FILE'
       WRITE(LU,*) '----------------------------------------------------'
-!      
+!
 !-----------------------------------------------------------------------
 !
       ! IF THE OPTION SERAFIND IS TRUE WE READ IN DOUBLE
@@ -82,14 +82,14 @@
      &               MESH2%NVAR
       IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 'NUMBER OF VARIABLES :',
      &               MESH2%NVAR
-!      
+!
       IF(MESH2%NVAR.NE.0) THEN
         ALLOCATE(MESH2%NAMEVAR(MESH2%NVAR),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%NAMEVAR')
         ALLOCATE(MESH2%UNITVAR(MESH2%NVAR),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%UNITVAR')
         ! GET THE NAME AND UNIT OF EACH VARIABLE
-        CALL GET_DATA_VAR_LIST(FFORMAT, NINP, MESH2%NVAR, 
+        CALL GET_DATA_VAR_LIST(FFORMAT, NINP, MESH2%NVAR,
      &                         MESH2%NAMEVAR, MESH2%UNITVAR, IERR)
         DO I=1,MESH2%NVAR
           IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 'NOM DE LA VARIABLE : ',
@@ -104,8 +104,8 @@
       ENDIF
 !
       ! READING THE NUMBER ELEMENTS, POINT, ...
-      CALL READ_MESH_INFO(FFORMAT,NINP,TITLE,IDUM,MESH2%NPOIN, 
-     &                    MESH2%TYPE_ELEM, MESH2%NELEM, MESH2%NPTFR, 
+      CALL READ_MESH_INFO(FFORMAT,NINP,TITLE,IDUM,MESH2%NPOIN,
+     &                    MESH2%TYPE_ELEM, MESH2%NELEM, MESH2%NPTFR,
      &                    MESH2%IB(9), MESH2%NDP, MESH2%IB(7),
      &                    TYP_BND_ELEM,NELEBD)
       MESH2%IB(8) = MESH2%NPTFR
@@ -128,7 +128,7 @@
         ENDIF
         CALL PLANTE(-1)
       ENDIF
-!      
+!
       ! READING IPOBO AND IKLES
       ALLOCATE(MESH2%IKLES(MESH2%NELEM*MESH2%NDP),STAT=IERR)
       CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%IKLES')
@@ -141,7 +141,7 @@
         ALLOCATE(MESH2%KNOLG(1),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%KNOLG')
       ENDIF
-!      
+!
       CALL READ_MESH_CONN(FFORMAT,NINP,MESH2%NPOIN, MESH2%TYPE_ELEM,
      &                    MESH2%NELEM, MESH2%NDP,
      &                    TYP_BND_ELEM, NELEBD,
@@ -198,11 +198,11 @@
       ! WE DO A FIRST READ TO COUNT THE NUMBER OF TIMESTEPS
       MESH2%TIMESTEP = 0
       CALL GET_DATA_NTIMESTEP(FFORMAT,NINP,MESH2%TIMESTEP,IERR)
-!     
+!
       IF(MESH2%TIMESTEP .NE. 0) THEN
         ! IF WE HAVE RESULTS WE GO BACK TO BEGINNING OF THE FILE
         CALL FNCT_CHECK(IERR,'CLOSE '//TRIM(SLFFILE))
-        OPEN(NINP,FILE=SLFFILE, FORM='UNFORMATTED', IOSTAT=IERR) 
+        OPEN(NINP,FILE=SLFFILE, FORM='UNFORMATTED', IOSTAT=IERR)
         CALL FNCT_CHECK(IERR,'OPEN '//TRIM(SLFFILE))
         ! ALLOCATING RESULTS TABLES
         ALLOCATE(MESH2%TIMES(MESH2%TIMESTEP),STAT=IERR)
@@ -210,9 +210,9 @@
         ALLOCATE(MESH2%RESULTS(MESH2%TIMESTEP,MESH2%NVAR,
      &                             MESH2%NPOIN),STAT=IERR)
         CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%RESULTS')
-        IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 
+        IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*)
      &            'NOMBRE DE PAS DE TEMPS:',MESH2%TIMESTEP
-        IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 
+        IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*)
      &            'NUMBER OF TIME STEP:',MESH2%TIMESTEP
         ! THEN READ THE RESULTS FOR ALL VARIALBLES AND ALL TIMESTEPS
         ALLOCATE(TMP(MESH2%NPOIN),STAT=IERR)
@@ -248,13 +248,13 @@
 !
       CALL CLOSE_MESH(FFORMAT,NINP,IERR)
       CALL CHECK_CALL(IERR,'READ_SERAFIN:CLOSE_MESH')
-!      
-      IF(LNG.EQ.1) WRITE(LU,*) 
+!
+      IF(LNG.EQ.1) WRITE(LU,*)
      &       '---INFORMATIONS SUR LES CONDITIONS LIMITES'
       IF(LNG.EQ.2) WRITE(LU,*) '---BOUNDARY INFORMATIONS'
       IF(LIMFILE(1:1).EQ.' ') THEN
-        IF(LNG.EQ.1) WRITE(LU,*) 'PAS DE FICHIER DE CONDITIONS LIMITES' 
-        IF(LNG.EQ.2) WRITE(LU,*) 'NO BOUNDARY FILE' 
+        IF(LNG.EQ.1) WRITE(LU,*) 'PAS DE FICHIER DE CONDITIONS LIMITES'
+        IF(LNG.EQ.2) WRITE(LU,*) 'NO BOUNDARY FILE'
         MESH2%NPTFR = 0
       ELSE
         ! READING THE BOUNDARY LIMIT FILE
@@ -268,8 +268,8 @@
       IF(LNG.EQ.2) WRITE(LU,*) '------ENDING READING OF SERAFIN FILE'
       WRITE(LU,*) '----------------------------------------------------'
       END SUBROUTINE
-!                       ***************** 
-                        SUBROUTINE WRITE_SERAFIN 
+!                       *****************
+                        SUBROUTINE WRITE_SERAFIN
 !                       *****************
      &(SLFFILE,LIMFILE,SERAFIND)
 !
@@ -279,7 +279,7 @@
 !
 !BRIEF    WRITE A FILE OF SERAFIN FORMAT WITH THE MESH OBJECT
 !+        INFORMATIONS
-!                        
+!
 !HISTORY  Y.AUDOUIN (EDF)
 !+        11/07/2011
 !+        V6P1
@@ -294,7 +294,7 @@
       USE BIEF
       USE CONV_LIM
       USE INTERFACE_HERMES
-!      
+!
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
       INTEGER LNG,LU
@@ -319,7 +319,7 @@
       IF(LNG.EQ.1) WRITE(LU,*)'------DEBUT ECRITURE DU FICHIER SERAFIN'
       IF(LNG.EQ.2) WRITE(LU,*)'------BEGINNING WRITTING OF SERAFIN FILE'
       WRITE(LU,*) '----------------------------------------------------'
-!      
+!
 !-----------------------------------------------------------------------
 !
       ! IF THE OPTION DOUBLE PRECISION IS TRUE WE WRITE IN DOUBLE
@@ -338,7 +338,7 @@
       ALLOCATE(VARI(MESH2%NVAR),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,'WRITE_SERAFIN:VARI')
       DO I=1,MESH2%NVAR
-        VARI(I)(1:16) = MESH2%NAMEVAR(I) 
+        VARI(I)(1:16) = MESH2%NAMEVAR(I)
         VARI(I)(17:32) = MESH2%UNITVAR(I)
         CALL USCORE2BLANC(VARI(I),32)
         IF(DEBUG) WRITE(LU,*) '------',VARI(I)
@@ -358,7 +358,7 @@
      &              MESH2%Y,MESH2%IB(7),DATE,TIME,IERR)
       CALL CHECK_CALL(IERR,'WRITE_SERAFIN:SET_MESH')
 
-      ! RESULTS INFORMATIONS 
+      ! RESULTS INFORMATIONS
       IF(LNG.EQ.1) WRITE(LU,*) '---INFORMATIONS SUR LES RESUTATS'
       IF(LNG.EQ.2) WRITE(LU,*) '---RESULTS INFORMATIONS'
       IF(MESH2%TIMESTEP.NE.0) THEN
@@ -369,7 +369,7 @@
           DO J=1,MESH2%NVAR
             IF(DEBUG) WRITE(LU,*) '---------','VAR',VARI(J)
             DO K=1,MESH2%NPOIN
-              TMP(K) = MESH2%RESULTS(I,J,K) 
+              TMP(K) = MESH2%RESULTS(I,J,K)
             ENDDO
             CALL ADD_DATA(FFORMAT,NOUT,VARI(J),MESH2%TIMES(I),I-1,
      &                    J.EQ.1,TMP,MESH2%NPOIN,IERR)
@@ -383,18 +383,18 @@
       CALL CHECK_CALL(IERR,'WRITE_SERAFIN:CLOSE_MESH')
 
       DEALLOCATE(VARI)
-      IF(LNG.EQ.1) WRITE(LU,*) 
+      IF(LNG.EQ.1) WRITE(LU,*)
      &           '---INFORMATIONS SUR LES CONDITIONS LIMITES'
       IF(LNG.EQ.2) WRITE(LU,*) '---BOUNDARY INFORMATIONS'
       ! WRITTING THE BOUNFARY FILE
       IF(MESH2%NPTFR.EQ.0) THEN
-        IF(LNG.EQ.1) WRITE(LU,*) 
+        IF(LNG.EQ.1) WRITE(LU,*)
      &          'PAS D INFORMATIONS SUR LES CONDITIONS LIMITES'
         IF(LNG.EQ.2) WRITE(LU,*) 'NO BOUNDARY INFORMATIONS'
       ELSE
         CALL WRITE_LIM(LIMFILE)
       ENDIF
-!      
+!
 !-----------------------------------------------------------------------
 !
       WRITE(LU,*) '----------------------------------------------------'

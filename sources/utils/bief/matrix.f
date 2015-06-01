@@ -86,7 +86,7 @@
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
-!| OP             |-->| OPERATION TO BE DONE. IF '=' THEN M=... 
+!| OP             |-->| OPERATION TO BE DONE. IF '=' THEN M=...
 !|                |   |                       IF '+' THEN M=M+
 !| U              |-->| FUNCTION USED IN THE FORMULA (COMPONENT OF VECTOR)
 !| V              |-->| FUNCTION USED IN THE FORMULA (COMPONENT OF VECTOR)

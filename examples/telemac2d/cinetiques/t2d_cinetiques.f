@@ -14,7 +14,7 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |                | -- |  
+! |                | -- |
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !***********************************************************************
@@ -32,7 +32,7 @@
       INTEGER I,ITRAC
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!  
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -68,34 +68,34 @@
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
-!  ZONE A MODIFIER                                                      
-      CC = SQRT(4.D0*9.81D0) 
-!                             
-      DO I = 1 , NPOIN        
+!  ZONE A MODIFIER
+      CC = SQRT(4.D0*9.81D0)
+!
+      DO I = 1 , NPOIN
 !
 !  POUR TEMPS=0.9
-!                                                                       
+!
 !     U(I) = 2.D0*((X(I)-10.5D0)/TEMPS+C0)/3.D0
 !      U(I)=MAX(0.D0,U(I))
 !      H(I)=MIN(4.D0,H(I))
 !      IF(X(I).GT.10.5D0+2*C0*TEMPS) THEN
 !        U(I)=0.D0
 !        H(I)=0.D0
-!      ENDIF                         
+!      ENDIF
 !
 !  POUR TEMPS=0
-!                                                                       
-      IF(X(I).GT.10.5D0) THEN                                           
+!
+      IF(X(I).GT.10.5D0) THEN
         H%R(I) = 0.D0
         U%R(I) = 0.D0
-!       U%R(I) = 2.D0*SQRT(9.81D0*4.D0)  
-      ELSE      
-        H%R(I) = 4.D0   
-        U%R(I) = 0.D0   
-      ENDIF                 
-!             
-      ENDDO                          
-!  FIN DE LA ZONE A MODIFIER      
+!       U%R(I) = 2.D0*SQRT(9.81D0*4.D0)
+      ELSE
+        H%R(I) = 4.D0
+        U%R(I) = 0.D0
+      ENDIF
+!
+      ENDDO
+!  FIN DE LA ZONE A MODIFIER
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -167,7 +167,7 @@
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!     
+!
       LOGICAL IMP,LEO,DEJA1,DEJA2,DEJA3
 !
       INTEGER LTT,N,IMAX,I
@@ -198,11 +198,11 @@
 !-----------------------------------------------------------------------
 !
 ! 1)  PART WHICH MUST BE DONE EVEN IF THERE IS NO OUTPUT FOR THIS STEP
-!     BUT ONLY AFTER FIRST TIME STEP FOR GRAPHIC PRINTOUTS      
+!     BUT ONLY AFTER FIRST TIME STEP FOR GRAPHIC PRINTOUTS
 !
 !-----------------------------------------------------------------------
 !
-      IF(NPERIAF.GT.0.AND.LT.EQ.0) THEN 
+      IF(NPERIAF.GT.0.AND.LT.EQ.0) THEN
 !       FOR OUTPUT OF INITIAL CONDITIONS
         CALL OS('X=C     ',AMPL,AMPL,AMPL,0.D0)
         CALL OS('X=C     ',PHAS,PHAS,PHAS,0.D0)
@@ -342,16 +342,16 @@
 !
 !     ENDIF DE : IF(NPERIAF.GT.0) THEN
       ENDIF
-!     
+!
 !-----------------------------------------------------------------------
 !
 !     ENDIF DE : IF(LT.GE.PTINIG) THEN
       ENDIF
-!     
+!
 !-----------------------------------------------------------------------
 !
 ! 2)  PART WHICH MUST BE DONE ONLY IF THERE IS AN OUTPUT FOR THIS STEP
-!    
+!
 !-----------------------------------------------------------------------
 !
 !     PAS D'IMPRESSION, PAS DE SORTIE SUR FICHIER, ON RESSORT
@@ -451,7 +451,7 @@
           HHH = MAX(0.D0,CC-(X(N)-10.5D0)/2.D0/MAX(AT,DT))
           HHH = 4.D0*HHH**2/9.D0/9.81D0
           PRIVE%ADR(1)%P%R(N) = MIN(4.D0,HHH)
-        ENDDO     
+        ENDDO
       ENDIF
 !
 !=======================================================================
@@ -461,7 +461,7 @@
       IF((LEO.AND.SORLEO(24)).OR.(IMP.AND.SORIMP(24))) THEN
         DO N=1,NPOIN
           PRIVE%ADR(2)%P%R(N) = 2.D0*(CC+X(N)/MAX(AT,DT))/3.D0
-        ENDDO     
+        ENDDO
       ENDIF
 !
 !=======================================================================
@@ -748,7 +748,7 @@
      &                       //I_IN_2_LETTERS(I)
      &                       //'DEGRES          '
           MNEMO(32+2*(I-1)) = 'PHAS'//I_IN_2_LETTERS(I)//'  '
-        ENDDO 
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------

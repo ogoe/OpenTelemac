@@ -47,7 +47,7 @@
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
+!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE
 !|                |   | ADJACENT ELEMENT, NULONE GIVES THE LOCAL
 !|                |   | NUMBER OF THE FIRST NODE OF THE BOUNDARY EDGE
 !|                |   | I.E. 1, 2 OR 3 FOR TRIANGLES.
@@ -122,8 +122,8 @@
       DO I1    = 1 , MXPTVS+1
         DO IPOIN = 1 , NPOIN
           ITRA01(IPOIN,I1) = 0
-        ENDDO ! IPOIN 
-      ENDDO ! I1    
+        ENDDO ! IPOIN
+      ENDDO ! I1
 !
 !<<<<
 !
@@ -165,7 +165,7 @@
         ITRA01(I3,1) = IELEM
         ITRA02(I3)   = 3
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -180,7 +180,7 @@
       DO IPTFR = 1,NPTFR
         ITRA01(NBOR(IPTFR),1) = NELBOR(IPTFR)
         ITRA02(NBOR(IPTFR))   = NULONE(IPTFR)
-      ENDDO ! IPTFR 
+      ENDDO ! IPTFR
 !
 !-----------------------------------------------------------------------
 !
@@ -205,7 +205,7 @@
 !
       DO IPOIN = 1,NPOIN
         ITRA03(IPOIN) = 0
-      ENDDO ! IPOIN 
+      ENDDO ! IPOIN
 !
       IMAX = 0
 !
@@ -240,7 +240,7 @@
           ENDIF
         ENDIF
 !
-      ENDDO ! IPOIN 
+      ENDDO ! IPOIN
 !
       IF (FLAG) GOTO 40
 !
@@ -261,7 +261,7 @@
       DO IPOIN = 1,NPOIN
         ITRA02(IPOIN) = 0
         ITRA05(IPOIN) = 0
-      ENDDO ! IPOIN 
+      ENDDO ! IPOIN
 !
       DO I = 1,IMAX-1
 !
@@ -282,9 +282,9 @@
 !
           ENDIF
 !
-        ENDDO ! IPOIN 
+        ENDDO ! IPOIN
 !
-      ENDDO ! I 
+      ENDDO ! I
 !
       DO IPOIN = 1,NPOIN
         IF((ITRA03(IPOIN).LT.0.AND.(ITRA02(IPOIN).LE.-4.OR.
@@ -299,7 +299,7 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-      ENDDO ! IPOIN 
+      ENDDO ! IPOIN
 !
 !-----------------------------------------------------------------------
 !
@@ -448,7 +448,7 @@
 !
         ENDIF
 !
-      ENDDO ! IPOIN 
+      ENDDO ! IPOIN
 !
       IF (FLAG) THEN
 !
@@ -460,18 +460,18 @@
               DO I = ITRA02(IPOIN),ITRA03(IPOIN)
                 ZFE(ITRA01(IPOIN,I)) = MAX(ZFE(ITRA01(IPOIN,I)),
      &                                     ZREF(IPOIN))
-              ENDDO ! I 
+              ENDDO ! I
               ITRA02(IPOIN) = 1
             ENDIF
 !
             DO I = ITRA02(IPOIN),ITRA05(IPOIN)
               ZFE(ITRA01(IPOIN,I)) = MAX(ZFE(ITRA01(IPOIN,I)),
      &                                   ZREF(IPOIN))
-            ENDDO ! I 
+            ENDDO ! I
 !
           ENDIF
 !
-        ENDDO ! IPOIN 
+        ENDDO ! IPOIN
 !
         GOTO 60
 !

@@ -12,7 +12,7 @@
 !
 !
 !-----------------------------------------------------------------------
-!  ARGUMENTS USED IN THE EXAMPLE 
+!  ARGUMENTS USED IN THE EXAMPLE
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|_______________________________________________
@@ -53,8 +53,8 @@
 !
 !  Bosse à t=0
 !
-      PI=3.141592653D0 
-      DO I=1,NPOIN   
+      PI=3.141592653D0
+      DO I=1,NPOIN
         ZF%R(I) = 0.D0
         IF (X(I) .GE. 2.D0 .AND. X(I) .LE. 10.D0) THEN
           ZF%R(I)=0.1D0*SIN(PI*(X(I)-2.D0)/8.D0)**2
@@ -67,7 +67,7 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END                  
+      END
 !
 
 !                       **************************
@@ -90,21 +90,21 @@
 !
       DX=0.01D0
       PI= 4.D0*ATAN(1.D0)
-!       
-      DO II=1,NN 
+!
+      DO II=1,NN
         XFICTIF(II) = (II-1)*DX
       ENDDO
-      DO II=1,NN 
-        H0(II)=0.D0 
+      DO II=1,NN
+        H0(II)=0.D0
         ZF0(II)=0.D0
         IF(XFICTIF(II).GE. 2.D0 .AND.
-     &     XFICTIF(II).LE.10.D0) THEN                        
+     &     XFICTIF(II).LE.10.D0) THEN
           ZF0(II)=0.1D0*SIN(PI*(XFICTIF(II)-2.D0)/8.D0)**2
         ENDIF
-        H0(II)=0.6D0-ZF0(II)  
+        H0(II)=0.6D0-ZF0(II)
       ENDDO
       DO II=1,NN
-        XNEW(II)=0.D0 
+        XNEW(II)=0.D0
         IF(H0(II).GE.1.D0) H0(II)=0
       ENDDO
 !
@@ -114,7 +114,7 @@
       DO I=1,NPOIN
         HFINAL(I)=0.D0
       ENDDO
-!      
+!
 !  CALCUL DE LA HAUTEUR D'EAU MOYENNE
 !----------------------------------------------------------------
 !
@@ -140,7 +140,7 @@
 !
 !  CREATION DE LA SOLUTION PAR METHODE DES CARACTERISTIQUES
 !----------------------------------------------------------------
-!     
+!
       DO I=1,NN
         XNEW(I) = XFICTIF(I) + K*TEMPS/H0(I)**6
       ENDDO
@@ -164,8 +164,8 @@
       ENDDO
 !
 !----------------------------------------------------------------
-!     
-      RETURN     
+!
+      RETURN
       END
 !                       *****************
                         SUBROUTINE PREDES
@@ -177,11 +177,11 @@
 ! SISYPHE VERSION 6.0                             E. PELTIER    11/09/95
 !                                                 C. LENORMANT
 !                                                 J.-M. HERVOUET
-! 
+!
 !
 ! JMH 07/12/2009: KS SET TO 0 IF LLT=0
-!                                               
-! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT   
+!
+! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT
 !***********************************************************************
 !
 !     FONCTION  : PREPARATION DE VARIABLES QUI SERONT ECRITES SUR
@@ -192,13 +192,13 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |      LLT       |--> | LOCAL LT (MAY BE LT-1+PERCOU) 
+! |      LLT       |--> | LOCAL LT (MAY BE LT-1+PERCOU)
 ! |      AAT       |--> | CURRENT TIME (FOR BUILDING SOLUTIONS)
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !-----------------------------------------------------------------------
 !
-!     - PROGRAMME APPELANT : SISYPH  
+!     - PROGRAMME APPELANT : SISYPH
 !     - SOUS-PROGRAMMES APPELES : OVD,OV
 !
 !***********************************************************************
@@ -213,9 +213,9 @@
       DOUBLE PRECISION, INTENT(IN) :: AAT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!     
-      DOUBLE PRECISION BID 
-      INTEGER LTT,IN      
+!
+      DOUBLE PRECISION BID
+      INTEGER LTT,IN
       LOGICAL IMP,LEO
 !
 !-----------------------------------------------------------------------
@@ -268,14 +268,14 @@
 !
       IF ((LEO.AND.SORLEO(7)).OR.(IMP.AND.SORIMP(7))) THEN
         CALL OS( 'X=Y/Z   ' , T1 , QU , HN , 0.D0 , 2 , 0.D0 , HMIN )
-        CALL OS( 'X=Y/Z   ' , T2 , QV , HN , 0.D0 , 2 , 0.D0 , HMIN ) 
-        CALL CPSTVC(QU,T4) 
+        CALL OS( 'X=Y/Z   ' , T2 , QV , HN , 0.D0 , 2 , 0.D0 , HMIN )
+        CALL CPSTVC(QU,T4)
         DO IN=1,NPOIN
            T4%R(IN)= T1%R(IN)**2+T2%R(IN)**2
-        ENDDO       
-        CALL OS( 'X=Y/Z   ' , T4 , T4 , HN , 0.D0 , 2 , 0.D0 , HMIN )  
+        ENDDO
+        CALL OS( 'X=Y/Z   ' , T4 , T4 , HN , 0.D0 , 2 , 0.D0 , HMIN )
         DO IN=1,NPOIN
-          T4%R(IN)=SQRT(T4%R(IN)/GRAV)        
+          T4%R(IN)=SQRT(T4%R(IN)/GRAV)
         ENDDO
       ENDIF
 !
@@ -308,5 +308,5 @@
 !=======================================================================
 !
       RETURN
-      END 
+      END
 

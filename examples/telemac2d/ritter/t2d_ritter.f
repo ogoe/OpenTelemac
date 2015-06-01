@@ -14,7 +14,7 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |                | -- |  
+! |                | -- |
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !***********************************************************************
@@ -32,7 +32,7 @@
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!  
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -68,20 +68,20 @@
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
-!                                                                       
-!                                                                       
-      DO I=1,NPOIN                                                   
 !
-!                                                                       
-      IF(X(I).GT.8D0) THEN                                           
+!
+      DO I=1,NPOIN
+!
+!
+      IF(X(I).GT.8D0) THEN
         H%R(I) = 0.D0
         U%R(I) = 0.D0
-      ELSE                                                              
+      ELSE
         H%R(I) = 1.D0
         U%R(I) = 0.D0
-      ENDIF                                                             
-!                                                                       
-      ENDDO                                                          
+      ENDIF
+!
+      ENDDO
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -111,7 +111,7 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END           
+      END
 !                       ***************************
                         SUBROUTINE PRERES_TELEMAC2D
 !                       ***************************
@@ -152,7 +152,7 @@
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!     
+!
       LOGICAL IMP,LEO
 !
       INTEGER LTT,N,IMAX
@@ -254,24 +254,24 @@
 79      FORMAT(1X,'PRERES: MAXIMUM COURANT NUMBER: ',G16.7)
       ENDIF
 !=======================================================================
-! CALCUL DE LA HAUTEUR EXACTE                                           
+! CALCUL DE LA HAUTEUR EXACTE
 !=======================================================================
-!                                                                       
-      COEF = SQRT(1.D0*GRAV)                                            
-      IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN             
-        DO N=1,NPOIN 
-        ARG1 = COEF-(X(N)-8.D0)/2.D0/MAX(AT,DT)                         
-        PRIVE%ADR(1)%P%R(N) = MAX(0.D0,ARG1)               
-        PRIVE%ADR(1)%P%R(N) = 4.D0*PRIVE%ADR(1)%P%R(N)**2/9.D0/9.81     
-        PRIVE%ADR(1)%P%R(N) = MIN(4.D0,PRIVE%ADR(1)%P%R(N))             
-        ENDDO                                                        
-      ENDIF                                                             
+!
+      COEF = SQRT(1.D0*GRAV)
+      IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN
+        DO N=1,NPOIN
+        ARG1 = COEF-(X(N)-8.D0)/2.D0/MAX(AT,DT)
+        PRIVE%ADR(1)%P%R(N) = MAX(0.D0,ARG1)
+        PRIVE%ADR(1)%P%R(N) = 4.D0*PRIVE%ADR(1)%P%R(N)**2/9.D0/9.81
+        PRIVE%ADR(1)%P%R(N) = MIN(4.D0,PRIVE%ADR(1)%P%R(N))
+        ENDDO
+      ENDIF
 !
 !=======================================================================
 !
 1000  CONTINUE
       RETURN
-      END 
+      END
 !                       ***************************
                         SUBROUTINE NOMVAR_TELEMAC2D
 !                       ***************************
@@ -550,12 +550,12 @@
      &                       //I_IN_2_LETTERS(I)
      &                       //'DEGRES          '
           MNEMO(32+2*(I-1)) = 'PHAS'//I_IN_2_LETTERS(I)//'  '
-        ENDDO 
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
-       
-      
+
+

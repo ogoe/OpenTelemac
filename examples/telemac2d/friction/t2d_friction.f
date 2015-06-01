@@ -14,7 +14,7 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |                | -- |  
+! |                | -- |
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !***********************************************************************
@@ -32,7 +32,7 @@
       INTEGER I,ITRAC
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!  
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -70,7 +70,7 @@
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
 !  ZONE A MODIFIER
 !        CALL EXACTE(H%R,X,NPOIN)
-!  FIN DE LA ZONE A MODIFIER      
+!  FIN DE LA ZONE A MODIFIER
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -116,7 +116,7 @@
 !
 !
 !-----------------------------------------------------------------------
-!  ARGUMENTS USED IN THE EXAMPLE 
+!  ARGUMENTS USED IN THE EXAMPLE
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|_______________________________________________
@@ -167,12 +167,12 @@
 !-----------------------------------------------------------------------
 !
       DO I=1,NPOIN
-        ZF%R(I)=-1.853658536585365D0*1.D-5*X(I)-4.0D0   
+        ZF%R(I)=-1.853658536585365D0*1.D-5*X(I)-4.0D0
       ENDDO
 !-----------------------------------------------------------------------
 !
       RETURN
-      END          
+      END
 !                    ***************************
                      SUBROUTINE PRERES_TELEMAC2D
 !                    ***************************
@@ -841,18 +841,18 @@
                      SUBROUTINE EXACTE
 !                    *****************
 !
-     &(H,X,NPOIN) 
+     &(H,X,NPOIN)
 !
 !***********************************************************************
 !
-! DIRECT INTEGRATION OF THE EQUATION OF GRADUALLY VARIED FLOW 
-! REF 
-! 1.Restoration of the contact surface in FORCE-type centred schemes II 
+! DIRECT INTEGRATION OF THE EQUATION OF GRADUALLY VARIED FLOW
+! REF
+! 1.Restoration of the contact surface in FORCE-type centred schemes II
 ! Canestrelli, Toro 2012
-! 2.Direct integration of the equation of gradually varied flow 
-! Venutelli 2004          
+! 2.Direct integration of the equation of gradually varied flow
+! Venutelli 2004
 !
-! WARNING: THIS IS THE STEADY STATE SOLUTION        
+! WARNING: THIS IS THE STEADY STATE SOLUTION
 !          HOWEVER IT IS ADDED AT EVERY TIME
 !          AND STOCKED IN THE OUTPUT FILE
 !
@@ -867,9 +867,9 @@
 ! |________________|____|______________________________________________|
 !**********************************************************************
 !
-      IMPLICIT NONE   
+      IMPLICIT NONE
       INTEGER LNG,LU
-      COMMON/INFO/LNG,LU                                    
+      COMMON/INFO/LNG,LU
 !
       INTEGER I,J,NPOIN
       INTEGER, PARAMETER :: ITMAX = 4000
@@ -885,12 +885,12 @@
       DOUBLE PRECISION ALFA1,ALFA2,BETA1,BETA2
       DOUBLE PRECISION F1,F2,F3,F4,Z1,Z2,Z3,Z4
       DOUBLE PRECISION F1T,F2T,F3T,F4T,Z1T,Z2T,Z3T,Z4T
-      DOUBLE PRECISION F,G,FT,GT,GAMMA,DXIN      
+      DOUBLE PRECISION F,G,FT,GT,GAMMA,DXIN
       DOUBLE PRECISION XIN(ITMAX),YIN(ITMAX)
 !
       INTRINSIC SQRT,ABS,LOG,ATAN
 !
-! VARIABLES: S -> BED SLOPE; N -> COEFFICIENT OF MANNING                                                                          
+! VARIABLES: S -> BED SLOPE; N -> COEFFICIENT OF MANNING
 !-----------------------------------------------------------------------
 !
 ! INITIALIZE X ET YIN
@@ -905,7 +905,7 @@
       Q=6000.D0/450.D0
 !
 ! CRITICAL WATER DEPTH
-! 
+!
       YC=(Q**2/9.81D0)**UNT
 !
 ! WATER DEPTH FOR UNIFORM REGIME
@@ -917,7 +917,7 @@
 ! WATER DEPTH AND X(FLUME LENGTH) AT THE OUTLET (GIVEN DATA)
 !
       YOUT = YOUT_INI
-      XOUT = DOMAIN_L 
+      XOUT = DOMAIN_L
 !
 ! INCREMENT OF WATER DEPTH
 !
@@ -999,13 +999,13 @@
           CYCLE
         ENDIF
         DO J=1,ITMAX-1
-!       
+!
           IF(X(I).LT.XIN(J).AND.X(I).GT.XIN(J+1))THEN
              DXIN=XIN(J)-XIN(J+1)
              H(I)=(1.D0/DXIN)*((XIN(J)-X(I))*YIN(J+1)+
      &                         (X(I)-XIN(J+1))*YIN(J))
             CYCLE
-!           DEBUG 
+!           DEBUG
             IF(H(I).LE.0.D0)THEN
               WRITE(LU,*)'NEGATIVE H FOR I:',I
               WRITE(LU,*)'H IS EQUAL :',H(I)
@@ -1015,7 +1015,7 @@
             ENDIF
           ENDIF
         ENDDO
-      ENDDO 
+      ENDDO
 ! DEBUG RIADH
 !      CALL PLANTE(1)
 !      STOP

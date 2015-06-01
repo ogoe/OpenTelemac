@@ -104,7 +104,7 @@
       ! IB - FORMULATION FOR COHESIVE SEDIMENTS  + CONSOLIDATION !
       !      (WITH BEDLOAD)                                  !
       ! **************************************************** !
-!      BEWARE: HERE PARTHENIADES IS IN M/S 
+!      BEWARE: HERE PARTHENIADES IS IN M/S
         DO I=1,NPOIN
 ! Calcul des Flux de masse/couche  en Kg/m2/s
           DO J=1,NOMBLAY
@@ -145,7 +145,7 @@
 !          CALL PLANTE(1)
 !          STOP
 10        CONTINUE
-!   
+!
 
           FLUER%R(I) = MER_VASE/DT/XMVS
 !

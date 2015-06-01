@@ -2,14 +2,14 @@
                      SUBROUTINE QVEG
 !                    ***************
 !
-     &( TSTOT , TSDER , F , VARIAN , DEPTH, FMOY , 
+     &( TSTOT , TSDER , F , VARIAN , DEPTH, FMOY ,
      &  XKMOY , NF    , NPLAN  , NPOIN2   , BETA  )
 !
 !***********************************************************************
-! TOMAWAC   V7P0                                 
+! TOMAWAC   V7P0
 !***********************************************************************
 !
-!brief    Takes into account the friction due to vegetation      
+!brief    Takes into account the friction due to vegetation
 !
 !history  VITO BACCHI (EDF - LNHE)
 !+        12/09/2014
@@ -38,7 +38,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
-      DOUBLE PRECISION, INTENT(IN)    :: XKMOY(NPOIN2),VARIAN(NPOIN2) 
+      DOUBLE PRECISION, INTENT(IN)    :: XKMOY(NPOIN2),VARIAN(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2),FMOY(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: BETA(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NPOIN2,NPLAN,NF)
@@ -57,7 +57,7 @@
 !
 !     DISSIPATION COEFFICIENTS OF VEGETATION
       RO = 1.D0
-!     NUMBER OF PLANTS*SQM 
+!     NUMBER OF PLANTS*SQM
       NV = 20.D0
 !     PLANT AREA PER UNINT HEIGHT
       BV = 0.25D0
@@ -71,7 +71,7 @@
 !
 !     VEGETATION OVER A CONSTANT DEPTH
 !     COMPUTES THE BETA COEFFICIENT : QVEG1 = BETA * F
-!    
+!
       DO IP=1,NPOIN2
         ALFA = DV/DEPTH(IP)
         KH = XKMOY(IP)*DEPTH(IP)
@@ -85,9 +85,9 @@
 !
 !
 !     LOOP OVER THE DISCRETISED FREQUENCIES
-!          
+!
 !     TAKES THE SOURCE TERM INTO ACCOUNT
-!         
+!
       DO JF=1,NF
         DO JP=1,NPLAN
           DO IP=1,NPOIN2

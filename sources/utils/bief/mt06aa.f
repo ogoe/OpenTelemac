@@ -129,7 +129,7 @@
       A22(IELEM) = DET2 * (F123+F2+F2)
       A33(IELEM) = DET2 * (F123+F3+F3)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -158,7 +158,7 @@
       A22(IELEM) = DET2 * F1
       A33(IELEM) = DET2 * F1
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !     OTHER TYPES OF DISCRETISATION OF F
 !

@@ -3,7 +3,7 @@
 !                    **************************
 !
 !***********************************************************************
-! TELEMAC2D  
+! TELEMAC2D
 !***********************************************************************
 !
 !brief    Memory allocation of structures, aliases, blocks...
@@ -105,7 +105,7 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC2D     
+      USE DECLARATIONS_TELEMAC2D
       USE DECLARATIONS_WAQTEL,ONLY:K2
 !
       IMPLICIT NONE
@@ -830,7 +830,7 @@
         CALL BIEF_ALLVEC(1,ORBVEL,'ORBVEL',0    ,1,0,MESH)
 ! Cv added
         FRICOU = .FALSE.
-      ENDIF      
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -861,7 +861,7 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-! 
+!
 !     FUNCTIONS TO ADVECT BY CHARACTERISTICS: STRONG OR WEAK (INDEX 2)
 !
 !-----------------------------------------------------------------------
@@ -919,7 +919,7 @@
                   WRITE(LU,*) 'FOR TRACER ',ITRAC
                 ENDIF
                 CALL PLANTE(1)
-                STOP              
+                STOP
               ENDIF
             ENDIF
           ENDDO
@@ -945,9 +945,9 @@
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'POINT_TELEMAC2D : ',OPTADV_KE
             WRITE(LU,*) 'UNKNOWN OPTION OPTADV_KE'
-          ENDIF           
+          ENDIF
           CALL PLANTE(1)
-          STOP        
+          STOP
         ENDIF
       ENDIF
 !

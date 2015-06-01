@@ -37,12 +37,12 @@
 !+        V6P2
 !+   Second call to condim moved upwards out of test for calling BIEF_SUITE.
 !
-!history  MAK (HRW) 
+!history  MAK (HRW)
 !+        31/05/2012
 !+        V6P2
-!+   modifications to include CSRATIO       
+!+   modifications to include CSRATIO
 !
-!history  JWI (HRW) 
+!history  JWI (HRW)
 !+        14/06/2012
 !+        V6P2
 !+   added (several) lines to use wave orbital velocities directly if found in hydro file
@@ -52,29 +52,29 @@
 !+        V6P2
 !+   updated version with HRW's development (wave orbital velocities) + Soulsby-van Rijn's concentration
 !
-!history  CV (LNHE) 
+!history  CV (LNHE)
 !+        12/06/2012
-!+        V6P2 
+!+        V6P2
 !+   added AT0 to CALL CONLIT(MESH%NBOR%I,AT0)
 !
-!history  CV (LNHE) 
-!+        02/07/2012 
-!+        V6P2 
+!history  CV (LNHE)
+!+        02/07/2012
+!+        V6P2
 !+   DT changed to DTS in CALL FLUSEC_SISYPHE
 !
-!history  CV (LNHE) 
-!+        28/08/2012 
-!+        V6P2 
+!history  CV (LNHE)
+!+        28/08/2012
+!+        V6P2
 !+   Modification call to init_sediment and suspension_main
 !
-!history  J-M HERVOUET (EDF R&D, LNHE) 
-!+        08/03/2013 
-!+        V6P3 
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        08/03/2013
+!+        V6P3
 !+   Adding multiclass treatment in slides.
 !
-!history  J-M HERVOUET (EDF R&D, LNHE) 
-!+        22/03/2013 
-!+        V6P3 
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        22/03/2013
+!+        V6P3
 !+   Adding arguments THETAW_TEL, HW_TEL, TW_TEL for variables
 !+   transmitted from Tomawac to Sisyphe through Telemac-2D or 3D in the
 !+   of triple coupling.
@@ -84,21 +84,21 @@
 !+        V6P3
 !+   Adding the file format in the call to FONSTR.
 !
-!history  J-M HERVOUET (EDF R&D, LNHE) 
-!+        02/01/2014 
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        02/01/2014
 !+        V7P0
 !+   KNOGL removed from call to flusec_sisyphe.
 !
-!history  J-M HERVOUET (EDF R&D, LNHE) 
-!+        28/04/2014 
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        28/04/2014
 !+        V7P0
 !+   Use of KP1BOR removed, replaced by IKLBOR.
 !+   TPREC replaced by (TPREC-AT0) in formulas giving NUMEN0.
 !+   OPTSUP replaced by OPTADV in the call to suspension_main
 !+   (see keyword SCHME OPTION FOR ADVECTION)
 !
-!history  J-M HERVOUET (EDF R&D, LNHE) 
-!+        02/05/2014 
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        02/05/2014
 !+        V7P0
 !+   ZF_SIS renamed ZF_TEL (it is ZF in the memory of Telemac-2D or 3D
 !+   so clearer like this isn't it?
@@ -153,7 +153,7 @@
 !| V_TEL          |-->| V VELOCITY FROM TELEMAC
 !| ZCONV          |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
 !|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
-!| ZF_TEL         |<->| BOTTOM ELEVATION OF THE CALLING TELEMAC 
+!| ZF_TEL         |<->| BOTTOM ELEVATION OF THE CALLING TELEMAC
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_SISYPHE => SISYPHE
@@ -216,7 +216,7 @@
       DOUBLE PRECISION, ALLOCATABLE :: NULLD(:)
 !
 !     SAVES LOCAL VARIABLES
-! 
+!
       SAVE VCUMU       ! FOR THE BALANCE
       SAVE MASS_GF             ! FOR GRAIN-FEEDING
       SAVE PASS, PASS_SUSP     ! IDENTIFIES 1ST TIMESTEP
@@ -320,7 +320,7 @@
           MASDEP(I)=0.D0
           MASDEPT(I)=0.D0
         ENDDO
-!        
+!
 ! --------  INITIALISES (SETS TO 0) THE ARRAYS
 !
         CALL INIT_ZERO
@@ -505,7 +505,7 @@
           CALL GET_DATA_NTIMESTEP(SIS_FILES(SISHYD)%FMT,
      &                  SIS_FILES(SISHYD)%LU,NUMEN,IERR)
           CALL CHECK_CALL(IERR,'SISYPHE:GET_DATA_NTIMESTEP')
-          IF(PERMA) THEN 
+          IF(PERMA) THEN
             DT = DELT
           ELSE
             ! GET TIME FOR ONE BEFORE LAST RECORD
@@ -645,7 +645,7 @@
           IF(DEBUG.GT.0) WRITE(LU,*) 'SUITE_HOULE'
           WRITE(LU,*) ' LECTURE HOULE :',SIS_FILES(SISCOU)%NAME
           CALL READ_DATASET(SIS_FILES(SISCOU)%FMT,SIS_FILES(SISCOU)%LU,
-     &                      VARSOR,NPOIN,NUMENX,AT,TEXTPR,TROUVE,ALIRH, 
+     &                      VARSOR,NPOIN,NUMENX,AT,TEXTPR,TROUVE,ALIRH,
      &                      .TRUE.,.TRUE.,MAXVAR)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_SUITE_HOULE'
 !         TRACES IF WAVE DATA HAVE BEEN FOUND
@@ -699,7 +699,7 @@
             CALL OS( 'X=Y     ', UW , UW_TEL)
             HW%TYPR='Q'
             TW%TYPR='Q'
-            THETAW%TYPR='Q' 
+            THETAW%TYPR='Q'
             UW%TYPR='Q'
           ENDIF
 !
@@ -815,7 +815,7 @@
 !  WAVE ORBITAL VELOCITY
 ! =====================================================================
         IF(HOULE) THEN
-!         JWI 31/05/2012 - added lines to use wave orbital velocities 
+!         JWI 31/05/2012 - added lines to use wave orbital velocities
 !         directly if found in hydro file; otherwise compute with CALCUW
           IF(UW%TYPR.NE.'Q') THEN
             CALL CALCUW(UW%R,HN%R,HW%R,TW%R,GRAV,NPOIN)
@@ -857,16 +857,16 @@
 !
         IF(UNIT) CALL OS('X=CX    ',X=CS,C=XMVS)
         CALL PREDES(0,AT0)
-!       
+!
 !       PRINTS OUT THE RESULTS
-!       
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_DESIMP'
         CALL BIEF_DESIMP(SIS_FILES(SISRES)%FMT,VARSOR,
      &                   NPOIN,SIS_FILES(SISRES)%LU,'STD',
      &                   AT0,0,LISPR,LEOPR,SORLEO,SORIMP,MAXVAR,
      &                   TEXTE,PTINIG,PTINIL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END BIEF_DESIMP'
-!       
+!
         IF(UNIT) CALL OS('X=CX    ',X=CS,C=1.D0/XMVS)
 !
 !===============FIN IMPRESSION CONDITIONS INITIALES =================
@@ -878,7 +878,7 @@
           IF(LNG.EQ.1) WRITE(LU,*) 'SISYPHE COUPLE AVEC DREDGESIM'
           IF(LNG.EQ.2) WRITE(LU,*) 'SISYPHE COUPLED WITH DREDGESIM'
         ENDIF
-!      
+!
         IF(CODE(1:7).NE.'SISYPHE') THEN
           IF(LNG.EQ.1) WRITE(LU,*) 'SISYPHE COUPLE AVEC : ',CODE
           IF(LNG.EQ.2) WRITE(LU,*) 'SISYPHE COUPLED WITH: ',CODE
@@ -950,7 +950,7 @@
           SUSP= SUSP_TEL
           AT0=T_TEL
           DT=MOFAC*DT
-! 
+!
         ENDIF
 !
         DO MN = 1, NCALCU
@@ -1014,12 +1014,12 @@
      &        (U2D%R,V2D%R,QU%R,QV%R,HN%R,ZF%R,Z%R,ESOMT%R,THETAW%R,
      &        Q%R,HW%R,TW%R,MESH%X%R,MESH%Y%R,NPOIN,AT0,PMAREE)
               IF(DEBUG.GT.0) WRITE(LU,*) 'END_CONDIM_SISYPHE'
-!             
+!
 !             BEWARE : THE VALUE FOR ESOMT IS NOT READ FROM THE FILE SISHYD
 !             NOTE : NAME FOR SISHYD SET TO ' ' IF COUPLING
 !
               IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
-!             
+!
 !               WORK ON ZF,QU,QV,Z WILL BE IN FACT DONE ON:
 !               T4,DEL_QU,DEL_QV AND DEL_Z
 !               BY PLAYING WITH POINTERS
@@ -1038,30 +1038,30 @@
                 QV%R  =>DEL_QV%R
                 Z%R   =>DEL_Z%R
                 IF(HOULE.AND.UW%TYPR=='Q') UW%R  =>DEL_UW%R
-!             
+!
                 NUMDEB=NUMDEB+1
-!             
+!
                 IF(ENTET) WRITE(LU,*) 'DEFINITION INITIALE DES VITESSES'
-!             
+!
                 CALL READ_DATASET(SIS_FILES(SISHYD)%FMT,
      &                            SIS_FILES(SISHYD)%LU,VARSOR,NPOIN,
      &                            NUMDEB,BID,TEXTPR,TROUVE,ALIRE,
      &                            ENTET,PERMA,MAXVAR)
-!             
+!
                 IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE_NOTPERMA'
                 CALL RESCUE_SISYPHE_NOTPERMA
      &               (QU%R,QV%R,Q%R,U2D%R,V2D%R,HN%R,Z%R,T4%R,
      &                HW%R,TW%R,THETAW%R,NPOIN,TROUVE,ALIRE,ICF,ENTET,
      &                MAXVAR)
                 IF(DEBUG.GT.0) WRITE(LU,*) 'END_RESCUE_SISYPHE_NOTPERMA'
-!             
+!
 !               BACK TO ORIGINAL ADDRESSES
                 ZF%R=>SAVEZF
                 QU%R=>SAVEQU
                 QV%R=>SAVEQV
                 Z%R=>SAVEZ
                 IF(HOULE.AND.UW%TYPR=='Q') UW%R=>SAVEUW
-!             
+!
 !               INCREMENT OF QU, QV AND Z PER SUB-TIME-STEP
                 DO I = 1,NPOIN
                   DEL_QU%R(I) = (DEL_QU%R(I)-QU%R(I))/NSOUS
@@ -1071,15 +1071,15 @@
                     DEL_UW%R(I) = (DEL_UW%R(I)-UW%R(I))/NSOUS
                   ENDIF
                 ENDDO
-!             
+!
 !               UPDATES UNSTEADY HYDRO
 !               (TO BE MOVED TO RESCUE_SISYPHE_NOTPERMA)
 !               -----------------------------------
 !               CLIPS NEGATIVE DEPTHS
 !               COMPUTES U2D AND V2D
-!             
+!
                 CALL OS('X=Y-Z   ', X=HN, Y=Z, Z=ZF)
-!             
+!
                 IF(OPTBAN.GT.0) THEN
                   DO I = 1,NPOIN
                     IF(HN%R(I).LT.HMIN) THEN
@@ -1095,7 +1095,7 @@
                   CALL OS('X=Y/Z   ', X=U2D, Y=QU,   Z=HN)
                   CALL OS('X=Y/Z   ', X=V2D, Y=QV,   Z=HN)
                 ENDIF
-!             
+!
               ENDIF ! (SIS_FILES(SISHYD)%NAME(1:1) /=' ')
             ENDIF ! (NOT.PERMA.OR.PASS)
 !
@@ -1148,7 +1148,7 @@
             CALL OS( 'X=Y     ', UW , UW_TEL)
             HW%TYPR='Q'
             TW%TYPR='Q'
-            THETAW%TYPR='Q' 
+            THETAW%TYPR='Q'
             UW%TYPR='Q'
           ENDIF
 !
@@ -1284,7 +1284,7 @@
 !
           IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
             IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER AFTER BEDLOAD'
-            IF(VSMTYPE.EQ.0) THEN 
+            IF(VSMTYPE.EQ.0) THEN
               CALL LAYER(ZFCL_C,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
      &                   ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
      &                   AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
@@ -1292,7 +1292,7 @@
               CALL CVSP_MAIN(ZFCL_C,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
      &                       ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
      &                       AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-            ENDIF 
+            ENDIF
             IF(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
           ELSE
             CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
@@ -1342,15 +1342,15 @@
 !
           IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
             IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER AFTER SUSPENSION'
-            IF(VSMTYPE.EQ.0) THEN 
+            IF(VSMTYPE.EQ.0) THEN
               CALL LAYER(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
      &                   ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
      &                   AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-            ELSE 
+            ELSE
               CALL CVSP_MAIN(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
      &                       ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
      &                       AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-            ENDIF 
+            ENDIF
             IF(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
           ELSE
             CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
@@ -1396,15 +1396,15 @@
 !
         IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER AFTER SLIDE'
-          IF(VSMTYPE.EQ.0) THEN 
+          IF(VSMTYPE.EQ.0) THEN
             CALL LAYER(ZFCL_MS,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
      &                 ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
      &                 AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-          ELSE 
+          ELSE
             CALL CVSP_MAIN(ZFCL_MS,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
      &                     ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
      &                     AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-          ENDIF 
+          ENDIF
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
         ELSE
           CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
@@ -1534,7 +1534,7 @@
 !       GRAPHIC OUTPUTS AND VALIDATION STAGE
 !
         IF(BILMA) THEN
-! CVL Bilan in volume 
+! CVL Bilan in volume
 ! not valid for cohesif or mixte
           IF(.NOT.MIXTE.AND.(.NOT.SEDCO(1))) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'BILAN_SISYPHE'
@@ -1567,7 +1567,7 @@
         IF(.NOT.PERMA.AND.SIS_FILES(SISHYD)%NAME(1:1).NE.' ') THEN
 !
 !         UPDATES THE HYDRO
-!         
+!
 !         IF READING ON HYDRODYNAMIC FILE, INCREMENTS QU, QV AND Z
           IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
             CALL OS('X=X+Y   ', X=QU, Y=DEL_QU)
@@ -1745,12 +1745,12 @@
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_VALIDA'
         ENDIF
 !
-!       END OF THE LOOP ON THE RECORDS 
+!       END OF THE LOOP ON THE RECORDS
         ENDDO !MT
 !
 !=======================================================================
 !
-!       END OF THE LOOP ON THE NUMBER OF EVENTS 
+!       END OF THE LOOP ON THE NUMBER OF EVENTS
 !
         ENDDO !MN
 !

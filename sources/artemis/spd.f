@@ -44,7 +44,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| TETA           |-->| ANGLE FOR CONSIDERED WAVE PROPAGATION 
+!| TETA           |-->| ANGLE FOR CONSIDERED WAVE PROPAGATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_ARTEMIS, EX_SPD => SPD

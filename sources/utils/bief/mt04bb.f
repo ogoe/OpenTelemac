@@ -235,7 +235,7 @@
 !
         A44(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -370,7 +370,7 @@
 !
         A44(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -390,7 +390,7 @@
 201     FORMAT(1X,'MT04BB (BIEF) :',/,
      &         1X,'U AND V OF A DIFFERENT DISCRETISATION:',1I6,3X,1I6)
         ENDIF
-!       
+!
         CALL PLANTE(0)
         STOP
 !

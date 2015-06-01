@@ -58,10 +58,10 @@
       DOUBLE PRECISION UNORM,AIRE,SOM,XSOM(4),YSOM(4),X4,Y4
 !     DOUBLE PRECISION, PARAMETER :: CD=1.56D0,DIAM=2.D0
       DOUBLE PRECISION, PARAMETER :: CD=1.34D0,DIAM=2.D0
-      INTEGER, PARAMETER :: N=1  
+      INTEGER, PARAMETER :: N=1
 !
       DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM    
+      EXTERNAL         P_DSUM
 !
 !-----------------------------------------------------------------------
 !

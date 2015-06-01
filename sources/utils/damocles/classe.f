@@ -207,7 +207,7 @@
               DEFCAR(I) = DEFCAR(MAX(1,DEFLU))
             ENDIF
 !           DEFATT(NYTP,I) = DEFATT(NYTP,MAX(1,DEFLU))
-          ENDDO ! I 
+          ENDDO ! I
         ENDIF
         DEFLU = ITAI
       ENDIF
@@ -264,7 +264,7 @@
         ENDIF
         IF (INDIC(NTYP,INDX).GE.2)
      &    MOTATT(NTYP,ADRESS(NTYP,INDX)+I-1) = DEFATT(I)
-      ENDDO ! I 
+      ENDDO ! I
 !
 !   UPDATES THE NEXT FREE ADDRESS
 !

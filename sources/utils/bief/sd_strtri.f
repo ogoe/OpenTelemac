@@ -71,13 +71,13 @@
             EXIT
           ENDIF
 !
-        ENDDO ! K 
+        ENDDO ! K
 !
 !--->   ASSERTION : IS(IND(K))
 !
         IND(K+1)=I
 !
-      ENDDO ! I 
+      ENDDO ! I
 !
 !-----------------------------------------------------------------------
 !

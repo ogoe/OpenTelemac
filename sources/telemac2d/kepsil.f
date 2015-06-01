@@ -35,7 +35,7 @@
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        12/04/2013
 !+        V6P3
-!+   Now conditional call to DIRICH (for bound checking in parallelism)   
+!+   Now conditional call to DIRICH (for bound checking in parallelism)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |<--| TURBULENT KINETIC ENERGY K AT TIME T(N+1)
@@ -354,10 +354,10 @@
 !
 !***********************************************************************
 !
-!     COMBINES THE MASS AND DIFFUSION MATRICES                         
-!                                                                      
-!     MAK = MAK + TM1/SIGMAK                                           
-!     MAE = MAE + TM1/SIGMAE                                           
+!     COMBINES THE MASS AND DIFFUSION MATRICES
+!
+!     MAK = MAK + TM1/SIGMAK
+!     MAE = MAE + TM1/SIGMAE
 !
 !***********************************************************************
 !

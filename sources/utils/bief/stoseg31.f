@@ -147,7 +147,7 @@
               ENDIF
             ENDDO
           ENDDO
-          IF (.NOT. FOUND) THEN     
+          IF (.NOT. FOUND) THEN
             CALL PLANTE(1)
             STOP
           ENDIF
@@ -174,13 +174,13 @@
       COUNT = 0
       DO IELEB = 1, NELEB
         !
-        DO ISEG = 1, 3 ! BIEF_NBSEGEL(IELM2, 
+        DO ISEG = 1, 3 ! BIEF_NBSEGEL(IELM2,
           !
           IF(ELTSEGBOR(IELEB,ISEG).EQ.0) THEN
 !     BOTH NEIGHBOURING ELEBENTS ARE TREATED FOR THIS SEGMENT
             I1=NBOR(IKLBOR(IELEB,ISEGT(ISEG,1)))
             I2=NBOR(IKLBOR(IELEB,ISEGT(ISEG,2)))
-!     
+!
             IF(I1.EQ.I2) THEN
               IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'STOSEG31 : BORDER SEGMENT AVEC UN SEUL POINT'
@@ -193,11 +193,11 @@
               CALL PLANTE(1)
               STOP
             ENDIF
-!     
+!
 !     INTERNAL SEGMENT
             NSEBOR = NSEBOR + 1
             ELTSEGBOR(IELEB,ISEG) = NSEBOR
-!     
+!
 !     STORE LOCAL SEGMENT NUMBER (LOCAL BORDER NODE) BUT SORT ACCORDING TO GLOBAL NUMBER
             IF(NCSIZE.GT.1) THEN
               IG1=KNOLG(I1)
@@ -206,7 +206,7 @@
               IG1=I1
               IG2=I2
             ENDIF
-!     
+!
 !     SEGMENT ORIENTED LOWER RANK TO HIGHER RANK
 !     SORTING EVEN FOR BORDER SEGMENT (SLIGHT DIFFERENCE WITH STOSEG.f)
             IF(IG1.LT.IG2) THEN
@@ -218,19 +218,19 @@
               GLOSEGBOR(NSEBOR,2) = I1
               ORISEGBOR(IELEB,ISEG) = 2
             ENDIF
-!     
+!
 !     LOOKING FOR THE NEIGHBOUR ELEMENTS WHERE BOTH I1 & I2 BELONG TO
 !     FIRST STEP : I1 BELONGS TO IVOIS
             FOUND = .FALSE.
             DO I = 2, IND_ELEB(I1,1)+1
               IVOISB = IND_ELEB(I1,I)
-!     IVOIS <= IELEB IS ALREADY SET         
+!     IVOIS <= IELEB IS ALREADY SET
               IF (IVOISB.LE.IELEB) CYCLE
 !     SECOND STEP : I1 BELONGS TO IVOISB
               DO J = 2, IND_ELEB(I2,1)+1
                 IF (IVOISB.EQ.IND_ELEB(I2,J)) THEN
 !     GOT IT : [I1;I2] BELONGS TO IVOISB
-!     
+!
                   DO JSEG= 1, 3 ! BIEF_NBSEGEL(IELM2, MESH)
 !     LOOKS FOR THE RIGHT VERTICE OF ELEMENT IVOISB
                     J1=NBOR(IKLBOR(IVOISB,ISEGT(JSEG,1)))
@@ -239,11 +239,11 @@
 !     HOWEVER, IT DOESN'T WORK HERE...
                     IF ( (I1.EQ.J1.AND.I2.EQ.J2) .OR.
      &                   (I1.EQ.J2.AND.I2.EQ.J1)) THEN
-!     
+!
                       IF(ELTSEGBOR(IVOISB,JSEG).EQ.0) THEN
                         ELTSEGBOR(IVOISB,JSEG) = NSEBOR
                       ENDIF
-!     
+!
                       IF(NCSIZE.GT.1) THEN
                         IK1=KNOLG(J1)
                         IK2=KNOLG(J2)
@@ -261,9 +261,9 @@
                       FOUND = .TRUE.
                     ENDIF ! IF I1.EQ.J1...
                   ENDDO   ! JSEG = 1, 6
-!     
+!
 !-----------------------------------------------------------------------
-!     
+!
 !     VERTICE NOT FOUND, THIS IS AN ERROR
                   IF (.NOT. FOUND) THEN
                     IF(LNG.EQ.1) THEN
@@ -284,7 +284,7 @@
                     STOP
                   ENDIF   ! IF .NOT. FOUND
                 ENDIF      ! IF FOUND THE GOOD NEIGHBOUR (IVOISB.EQ.IELEB...)
-              ENDDO         ! 
+              ENDDO         !
             ENDDO
             !IF ( (.NOT. FOUND).AND.(NCSIZE.LE.1) ) THEN
 !     PATHOLOGIC CASE (AT THIS TIME BEING AT LEAST)
@@ -318,22 +318,22 @@
               WRITE(LU,*) ' '
               WRITE(LU,*) 'ERROR IN STOSEG31'
               WRITE(LU,*) 'ELEMENT ',IELEB,' SEGMENT ',ISEG
-              WRITE(LU,*) 'POINTS ',J1,J2 
-              WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG 
-              WRITE(LU,*) 'POINTS ',I1,I2 
+              WRITE(LU,*) 'POINTS ',J1,J2
+              WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG
+              WRITE(LU,*) 'POINTS ',I1,I2
               CALL PLANTE(1)
-              STOP              
+              STOP
             ENDIF
           ELSE IF(ORISEGBOR(IELEB,ISEG).EQ.2) THEN
             IF(J1.NE.I2.OR.J2.NE.I1) THEN
               WRITE(LU,*) ' '
               WRITE(LU,*) 'ERROR IN STOSEG31'
               WRITE(LU,*) 'ELEMENT ',IELEB,' SEGMENT ',ISEG
-              WRITE(LU,*) 'POINTS ',J1,J2 
-              WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG 
-              WRITE(LU,*) 'POINTS ',I1,I2 
+              WRITE(LU,*) 'POINTS ',J1,J2
+              WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG
+              WRITE(LU,*) 'POINTS ',I1,I2
               CALL PLANTE(1)
-              STOP                    
+              STOP
             ENDIF
           ENDIF
         ENDDO
@@ -349,12 +349,12 @@
           ORISEG(IELEM,ISEG) = 0
         ENDDO
       ENDDO
-!     
+!
       DO ISEG = 1, NSEG
         GLOSEG(ISEG,1) = 0
         GLOSEG(ISEG,2) = 0
       ENDDO
-!     
+!
 !     LOOP ON ELEMENTS FOR NUMBERING INTERNAL SEGMENTS AND FILLING:
 !     GLOSEG, ELTSEG, ORISEG
 !
@@ -369,7 +369,7 @@
 !     BOTH NEIGHBOURING ELEMENTS ARE TREATED FOR THIS SEGMENT
             I1=IKLE(IELEM,ISEGT(ISEG,1))
             I2=IKLE(IELEM,ISEGT(ISEG,2))
-!     
+!
             IF(I1.EQ.I2) THEN
               IF(LNG.EQ.1) THEN
                 WRITE(LU,*) 'STOSEG31 : SEGMENT AVEC UN SEUL POINT'
@@ -417,7 +417,7 @@
 !
 !     INTERNAL SEGMENT
             ELTSEG(IELEM,ISEG) = XSEG
-!     
+!
 !     STORE LOCAL SEGMENT NUMBER BUT SORT ACCORDING TO GLOBAL NUMBER
             IF(NCSIZE.GT.1) THEN
               IG1=KNOLG(I1)
@@ -426,7 +426,7 @@
               IG1=I1
               IG2=I2
             ENDIF
-!     
+!
 !     SEGMENT ORIENTED LOWER RANK TO HIGHER RANK
             IF(IG1.LT.IG2) THEN
               GLOSEG(XSEG,1) = I1
@@ -437,7 +437,7 @@
               GLOSEG(XSEG,2) = I1
               ORISEG(IELEM,ISEG) = 2
             ENDIF
-!     
+!
 !     LOOKING FOR THE NEIGHBOUR ELEMENTS WHERE BOTH I1 & I2 BELONG TO
 !     FIRST STEP : I1 BELONGS TO IVOIS
             DO I = 2, IND_ELEM(I1,1)+1
@@ -448,9 +448,9 @@
               DO J = 2, IND_ELEM(I2,1)+1
                 IF (IVOIS.EQ.IND_ELEM(I2,J)) THEN
 !     GOT IT : [I1;I2] BELONGS TO IVOIS
-!     
+!
                   FOUND = .FALSE.
-                  DO JSEG= 1, 6                       
+                  DO JSEG= 1, 6
 !     LOOKS FOR THE RIGHT VERTICE OF ELEMENT IVOIS
                     J1=IKLE(IVOIS,ISEGT(JSEG,1))
                     J2=IKLE(IVOIS,ISEGT(JSEG,2))
@@ -460,7 +460,7 @@
      &                   (I1.EQ.J2.AND.I2.EQ.J1)) THEN
 !
                       ELTSEG(IVOIS,JSEG) = XSEG
-!   
+!
                       IF(NCSIZE.GT.1) THEN
                         IG1=KNOLG(J1)
                         IG2=KNOLG(J2)
@@ -468,21 +468,21 @@
                         IG1=J1
                         IG2=J2
                       ENDIF
-!     
+!
 !     SEGMENT ORIENTED LOWER RANK TO HIGHER RANK
                       IF(IG1.LT.IG2) THEN
                          ORISEG(IVOIS,JSEG) = 1
                       ELSE
                          ORISEG(IVOIS,JSEG) = 2
                       ENDIF
-!     
+!
                       FOUND = .TRUE.
                       EXIT
                     ENDIF ! IF I1.EQ.J1...
                   ENDDO   ! JSEG = 1, 6
 !
 !-----------------------------------------------------------------------
-!     
+!
 !     VERTICE NOT FOUND, THIS IS AN ERROR
                   IF (.NOT. FOUND) THEN
             IF(LNG.EQ.1) THEN
@@ -503,7 +503,7 @@
             STOP
                   ENDIF   ! IF .NOT. FOUND
                 ENDIF      ! IF FOUND THE GOOD NEIGHBOUR (IVOIS.EQ.IELEM...)
-              ENDDO         ! 
+              ENDDO         !
             ENDDO
           ENDIF
         ENDDO
@@ -516,12 +516,12 @@
 !     MEMROY CHECKS (NSEG & NSEGBOR HAVE BEEN OVER-ESTIMATED IN NDS)
 !
       ERR = .FALSE.
-!     
+!
 !      IF(NSEG.NE.NSE) THEN
       IF(NSEG.LT.NSE) THEN
         IF (LNG.EQ.1) WRITE(LU,502) NSE,NSEG
         IF (LNG.EQ.2) WRITE(LU,503) NSE,NSEG
-502     FORMAT(1X,'STOSEG31 (BIEF) : MAUVAIS NB DE SEGMENTS : ',1I12, 
+502     FORMAT(1X,'STOSEG31 (BIEF) : MAUVAIS NB DE SEGMENTS : ',1I12,
      &  ' AU LIEU DE ',1I12,' ESTIMES')
 503     FORMAT(1X,'STOSEG31 (BIEF): WRONG NUMBER OF SEGMENTS : ',1I12,
      &  ' INSTEAD OF ',1I12,' ESTIMATED')
@@ -583,30 +583,30 @@
               WRITE(LU,*) ' '
               WRITE(LU,*) 'ERROR IN STOSEG31'
               WRITE(LU,*) 'ELEMENT ',IELEM,' SEGMENT ',ISEG
-              WRITE(LU,*) 'POINTS ',J1,J2 
-              WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG 
+              WRITE(LU,*) 'POINTS ',J1,J2
+              WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG
               WRITE(LU,*) 'POINTS ',I1,I2
               WRITE(LU,*) 'BORDER POINTS  ',IG1,IG2
               WRITE(LU,*) 'BORDER POINTS2 ',IPOBO(I1),IPOBO(I2)
               CALL PLANTE(1)
-              STOP              
+              STOP
             ENDIF
           ELSE
             IF(J1.NE.I2.OR.J2.NE.I1) THEN
               WRITE(LU,*) ' '
               WRITE(LU,*) 'ERROR IN STOSEG31'
               WRITE(LU,*) 'ELEMENT ',IELEM,' SEGMENT ',ISEG
-              WRITE(LU,*) 'POINTS ',J1,J2 
-              WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG 
-              WRITE(LU,*) 'POINTS ',I1,I2 
+              WRITE(LU,*) 'POINTS ',J1,J2
+              WRITE(LU,*) 'GLOBAL SEGMENT ',JSEG
+              WRITE(LU,*) 'POINTS ',I1,I2
               WRITE(LU,*) 'POINTS BORD  ',IG1,IG2
               WRITE(LU,*) 'POINTS BORD2 ',IPOBO(I1),IPOBO(I2)
               CALL PLANTE(1)
-              STOP                   
+              STOP
             ENDIF
           ENDIF
         ENDDO
-      ENDDO     
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

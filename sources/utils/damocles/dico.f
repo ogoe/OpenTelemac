@@ -144,7 +144,7 @@
               ENDIF
             ENDIF
           ENDDO ! INDX
-        ENDDO ! ITYP 
+        ENDDO ! ITYP
 !
 ! IF NOT, DETERMINES IF ITS AN EDAMOX KEYWORD OF INDEX = -1
 !

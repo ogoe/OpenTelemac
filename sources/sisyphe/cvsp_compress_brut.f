@@ -51,7 +51,7 @@
 ! USING T1 INSTEAD, ASSUMING THAT NUMBER OF NODES ALWAYS BIGGER THAN NUMBER OF GRAIN SIZE CLASSES
 !
       INTEGER NEWPRO_MAX, K, I, JG
-      LOGICAL DB,RET            
+      LOGICAL DB,RET
       LOGICAL, EXTERNAL          :: CVSP_CHECK_F
       DOUBLE PRECISION, EXTERNAL :: CVSP_INTEGRATE_VOLUME
 !
@@ -67,22 +67,22 @@
 !
       DOUBLE PRECISION,DIMENSION(:,:),TARGET,ALLOCATABLE::PRO_DNEW
 !
-!----------------------------------------------------------------------- 
-!      
+!-----------------------------------------------------------------------
+!
       ALLOCATE(PRO_DNEW(PRO_MAX_MAX,NSICLA))
       ALLOCATE(PRO_FNEW(PRO_MAX_MAX,NSICLA))
-      
+
       JG = J
       IF(NCSIZE.GT.1) JG = MESH%KNOLG%I(J)
       IF(DB(JG,0)) CALL CVSP_P('./','BRUA',JG)
 !
-!-----------------------------------------------------------------------     
+!-----------------------------------------------------------------------
 ! WORKS LIKE THE MAKE_ACT LAYER ROUTINE BUT FOR VSP
 !-----------------------------------------------------------------------
 !
       NEWPRO_MAX=INT(MAX(8.D0,(DBLE(PRO_MAX_MAX - 4 * NSICLA)*0.7D0)))
 !
-!-----------------------------------------------------------------------     
+!-----------------------------------------------------------------------
 ! NEW VSP SECTION HEIGHT
 !-----------------------------------------------------------------------
 !
@@ -90,19 +90,19 @@
 !
       DO K = 1, NEWPRO_MAX
         DO I = 1, NSICLA
-          PRO_DNEW(K,I) = (K-1)*SECHIGHT + PRO_D(J,1,1)            
+          PRO_DNEW(K,I) = (K-1)*SECHIGHT + PRO_D(J,1,1)
           Z_LOW  = PRO_DNEW(K,1) - 0.5D0*SECHIGHT
           Z_HIGH = PRO_DNEW(K,1) + 0.5D0*SECHIGHT
           IF(K.EQ.1) Z_LOW = PRO_D(J,1,1)
-          IF(K.EQ.NEWPRO_MAX) Z_HIGH = PRO_D(J,PRO_MAX(J),1)          
+          IF(K.EQ.NEWPRO_MAX) Z_HIGH = PRO_D(J,PRO_MAX(J),1)
           PRO_FNEW(K,I)=CVSP_INTEGRATE_VOLUME(J,I, Z_HIGH, Z_LOW,T1%R)
-     &         / SECHIGHT            
+     &         / SECHIGHT
           IF(K.EQ.1) PRO_FNEW(K,I) = PRO_FNEW(K,I) * 2.0D0
           IF(K.EQ.NEWPRO_MAX) PRO_FNEW(K,I) = PRO_FNEW(K,I) * 2.0D0
         ENDDO
       ENDDO
 !
-!-----------------------------------------------------------------------      
+!-----------------------------------------------------------------------
 ! RESUBSTITUTE
 !-----------------------------------------------------------------------
 !
@@ -112,23 +112,23 @@
           PRO_F(J,K,I) = PRO_FNEW(K,I)
         ENDDO
       ENDDO
-!      
+!
       PRO_MAX(J) = NEWPRO_MAX
-!      
+!
       IF(PRO_MAX(J).LE.2) THEN
         WRITE(LU,*) ' COMPRESSBRUT: NOT ENOUGH PRO_MAX '
         CALL PLANTE(1)
         STOP
       ENDIF
-!      
+!
       IF(DB(JG,0)) CALL CVSP_P('./','BRUE',JG)
 !
-!----------------------------------------------------------------------- 
-!     
+!-----------------------------------------------------------------------
+!
       DEALLOCATE(PRO_DNEW)
       DEALLOCATE(PRO_FNEW)
 !
-!-----------------------------------------------------------------------     
+!-----------------------------------------------------------------------
 ! REMOVES NUMERIC INSTABILITIES
 !-----------------------------------------------------------------------
 !
@@ -138,7 +138,7 @@
       CALL CVSP_CHECK_STEADY(J)
 !
 !-----------------------------------------------------------------------
-!      
+!
       RETURN
       END SUBROUTINE CVSP_COMPRESS_BRUT
 

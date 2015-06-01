@@ -58,9 +58,9 @@
       INTEGER, INTENT(IN) :: NPOIN2, LISFON
       LOGICAL, INTENT(IN) :: MSK
       TYPE (BIEF_OBJ), INTENT(INOUT) :: SZF, ST1, ST2
-      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(INOUT) :: ZF, T1, T2 
-      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(IN) :: X,Y 
-      TYPE (BIEF_OBJ),  INTENT(INOUT) :: PRIVE 
+      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(INOUT) :: ZF, T1, T2
+      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(IN) :: X,Y
+      TYPE (BIEF_OBJ),  INTENT(INOUT) :: PRIVE
       TYPE (BIEF_OBJ),  INTENT(IN)    :: MASKEL
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: MATR2D
       TYPE (BIEF_MESH), INTENT(INOUT) :: MESH2D
@@ -162,17 +162,17 @@
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
 !     ZONE A MODIFIER
-!     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE                                                     
-        IF(LNG.EQ.1) WRITE(LU,10)                                       
-        IF(LNG.EQ.2) WRITE(LU,11)                                       
+!     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE
+        IF(LNG.EQ.1) WRITE(LU,10)
+        IF(LNG.EQ.2) WRITE(LU,11)
 10      FORMAT(1X,'CONDIM : AVEC DES CONDITIONS INITIALES PARTICULIERES'
-     &      ,/,1X,'         VOUS DEVEZ MODIFIER CONDIM')                
-11      FORMAT(1X,'CONDIM : WITH SPECIAL INITIAL CONDITIONS'            
-     &      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')                 
-        CALL PLANTE(1)                                                  
+     &      ,/,1X,'         VOUS DEVEZ MODIFIER CONDIM')
+11      FORMAT(1X,'CONDIM : WITH SPECIAL INITIAL CONDITIONS'
+     &      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')
+        CALL PLANTE(1)
         STOP
-!     END OF SPECIAL INITIAL CONDITIONS                                                            
-!     FIN DE LA ZONE A MODIFIER      
+!     END OF SPECIAL INITIAL CONDITIONS
+!     FIN DE LA ZONE A MODIFIER
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIM : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -181,7 +181,7 @@
         WRITE(LU,*) 'CONDIM: INITIAL CONDITION UNKNOWN: ',CDTINI
         ENDIF
         STOP
-      ENDIF 
+      ENDIF
       ELSE
         IF(LNG.EQ.1) WRITE(LU,*) 'HAUTEUR LUE DANS LE FICHIER BINAIRE 1'
         IF(LNG.EQ.2) WRITE(LU,*) 'DEPTH IS READ IN THE BINARY FILE 1'
@@ -193,7 +193,7 @@
         H%R(I)=MAX(H%R(I),0.D0)
       ENDDO
 !
-! INITIALISATION OF THE FREE SURFACE 
+! INITIALISATION OF THE FREE SURFACE
 !
       CALL OS ('X=Y     ', X=HN, Y=H)
 !
@@ -267,7 +267,7 @@
 !
 !     INITIALISATION OF VELOCITIES
 !
-      IF(SUIT2) THEN       
+      IF(SUIT2) THEN
         DO I=1,NPLAN
           DO J=1,NPOIN2
           U%R((I-1)*NPOIN2+J)=U2D%R(J)
@@ -305,7 +305,7 @@
 !-----------------------------------------------------------------------
 !
 ! INITIALIZE THE PRESSURE FIELDS TO 0.0
-! 
+!
       IF(NONHYD) THEN
         CALL OS('X=C     ',X=DP,C=0.D0)
         WRITE (LU,*) 'CONDIM: DYNAMIC PRESSURE INITIALISED TO ZERO'

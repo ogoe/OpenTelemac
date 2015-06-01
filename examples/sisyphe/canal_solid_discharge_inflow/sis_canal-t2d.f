@@ -44,10 +44,10 @@
 !+        V6P2
 !+   Dealing with new key-word "prescribed solid discharges"
 !
-!history  P. TASSI 
+!history  P. TASSI
 !+        09/07/2013
 !+        V6P3
-!+   Correction for multiples boundaries. Thanks to Dougal Clunie 
+!+   Correction for multiples boundaries. Thanks to Dougal Clunie
 !+   for pointing out this error.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -133,15 +133,15 @@
 !
 !       CASES WHERE WE HAVE A PRESCRIBED DISCHARGE
 !
-        IF(LIQBOR%I(K).EQ.KENT) YADEB(NUMLIQ%I(K))=1       
+        IF(LIQBOR%I(K).EQ.KENT) YADEB(NUMLIQ%I(K))=1
 !
 !       DIRICHLET CONDITIONS
 !       EITHER ON EVOLUTION OR ON SOLID DISCHARGE
 !
 !       EXAMPLE 1: IMPOSED SOLID DISCHARGE - FREE BED EVOLUTION
-! 
+!
 !       QBOR%ADR(J)%P%R(K) IS THE SOLID DISCHARGE IMPOSED AT THE BOUNDARY
-!       NODE K , CLASS OF SEDIMENT J, EXCLUDING VOIDS 
+!       NODE K , CLASS OF SEDIMENT J, EXCLUDING VOIDS
 !
 !       LIEBOR%I(K)=KSORT
 !       LIQBOR%I(K)=KENT
@@ -170,7 +170,7 @@
      &                  T5,T1,
 !                             MASK OF LIQUID BOUNDARIES DONE IN SISYPHE
      &                  NPTFR,MASK%R,MESH)
-!    
+!
             IF(NSICLA.GT.1) THEN
               DO I=1,NSICLA
                 DO K=1,NPTFR
@@ -219,12 +219,12 @@
             ENDDO
           ENDIF
 !
-!         READING BOUNDARY CONDITION FILE 
+!         READING BOUNDARY CONDITION FILE
 !
           IF(LICBOR%I(K).EQ.KENT.AND.
      &                         SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
             IF(IFRLIQ.GT.0) THEN
-              DO I=1,NSICLA           
+              DO I=1,NSICLA
                 CBOR%ADR(I)%P%R(K)=CGL(IFRLIQ,AT)/XMVS
               ENDDO
             ENDIF
@@ -237,4 +237,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END 
+      END

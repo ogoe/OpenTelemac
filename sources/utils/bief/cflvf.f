@@ -156,7 +156,7 @@
         ENDDO
 !
       ELSEIF(OPT.EQ.2) THEN
-!       
+!
         DO I=1,NPOIN
           MINFC%R(I)=FC(I)
           MAXFC%R(I)=FC(I)
@@ -164,7 +164,7 @@
 !
         DO I=1,NPTFR
           IF(LIMTRA(I).EQ.KDIR) THEN
-            N=NBOR(I)          
+            N=NBOR(I)
             MINFC%R(N)=MIN(MINFC%R(N),FBOR(I))
             MAXFC%R(N)=MAX(MAXFC%R(N),FBOR(I))
           ENDIF
@@ -234,13 +234,13 @@
 !           MAX(...,0.D0) FOR 1
             TAB1%R(GLOSEG(I,1)) = TAB1%R(GLOSEG(I,1)) + FXMAT(I)
 !           MIN(...,0.D0) FOR 2
-            TAB1%R(GLOSEG(I,2)) = 
+            TAB1%R(GLOSEG(I,2)) =
      &      TAB1%R(GLOSEG(I,2)) - COEMIN * FXMAT(I)
           ELSE
 !           - FXMAT(I) POSITIVE
             TAB1%R(GLOSEG(I,2)) = TAB1%R(GLOSEG(I,2)) - FXMAT(I)
 !           MIN(...,0.D0) FOR 1
-            TAB1%R(GLOSEG(I,1)) = 
+            TAB1%R(GLOSEG(I,1)) =
      &      TAB1%R(GLOSEG(I,1)) + COEMIN * FXMAT(I)
           ENDIF
         ENDDO
@@ -264,7 +264,7 @@
             N=NBOR(I)
             DIFF=FC(N)-FBOR(I)
 !           FXBOR IS HERE IN GLOBAL NUMBERING
-            TAB1%R(N)=TAB1%R(N)-MIN(FXBOR(N),0.D0)*DIFF          
+            TAB1%R(N)=TAB1%R(N)-MIN(FXBOR(N),0.D0)*DIFF
           ENDIF
         ENDDO
 !
@@ -310,7 +310,7 @@
      &                             -MAX(SMH(I)+PLUIE(I),0.D0))
             IF(DENOM.GT.1.D-20) THEN
               DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
-            ENDIF 
+            ENDIF
           ENDDO
         ELSEIF(YASMH) THEN
           DO I = 1,NPOIN
@@ -318,7 +318,7 @@
      &                     +COESOU*(MIN(FXBOR(I),0.D0)-MAX(SMH(I),0.D0))
             IF(DENOM.GT.1.D-20) THEN
               DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
-            ENDIF 
+            ENDIF
           ENDDO
         ELSEIF(RAIN) THEN
           DO I = 1,NPOIN
@@ -336,7 +336,7 @@
             IF(DENOM.GT.1.D-20) THEN
               DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
             ENDIF
-          ENDDO  
+          ENDDO
         ENDIF
 !
       ELSEIF(OPT.EQ.2.OR.OPT.EQ.3) THEN
@@ -359,7 +359,7 @@
             ENDIF
           ENDIF
         ENDDO
-!     
+!
       ENDIF
 !
 !-----------------------------------------------------------------------

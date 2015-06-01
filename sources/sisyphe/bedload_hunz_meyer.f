@@ -45,25 +45,25 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+   
+!+  Name of variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
-!| ACP            |<->| MODIFIED SHIELDS PARAMETER 
+!| ACP            |<->| MODIFIED SHIELDS PARAMETER
 !| AHUNZI         |<->| COEFFICIENT OF HUNZIKER FORMULA
 !| DENS           |-->| RELATIVE DENSITY
 !| DM             |-->| SEDIMENT GRAIN DIAMETER
 !| GRAV           |-->| ACCELERATION OF GRAVITY
 !| HIDING         |-->| HIDING FACTOR CORRECTION
-!| MU             |<->| CORRECTION FACTOR FOR BED ROUGHNESS  
+!| MU             |<->| CORRECTION FACTOR FOR BED ROUGHNESS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| QSC            |<->| BED LOAD TRANSPORT
-!| TETAP          |<->| DIMENSIONLESS BED SHEAR STRESS 
+!| TETAP          |<->| DIMENSIONLESS BED SHEAR STRESS
 !| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
 !| UNLADM         |-->| MEAN DIAMETER OF ACTIVE STRATUM LAYER
-!| XMVE           |-->| FLUID DENSITY 
+!| XMVE           |-->| FLUID DENSITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,

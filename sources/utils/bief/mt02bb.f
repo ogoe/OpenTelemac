@@ -167,7 +167,7 @@
         A33(IELEM) = - A13(IELEM) - A23(IELEM) - A34(IELEM)
         A44(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -257,7 +257,7 @@
         A33(IELEM) = - A13(IELEM) - A23(IELEM) - A34(IELEM)
         A44(IELEM) = - A14(IELEM) - A24(IELEM) - A34(IELEM)
 !
-      ENDDO ! IELEM 
+      ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !

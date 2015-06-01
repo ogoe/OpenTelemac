@@ -223,7 +223,7 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-! 
+!
       RETURN
       END SUBROUTINE SOLRAD
 
@@ -239,7 +239,7 @@
 !
 !brief    DETERMINES WHETHER IYEAR IS A LEAP YEAR
 !+        DESCRIPTION - RETURNS 1 IF IYEAR IS A LEAP YEAR, 0 OTHERWISE
-!+        
+!+
 !
 !history  C. GUILBAUD (SOGREAH)
 !+        JUNE 2001
@@ -250,7 +250,7 @@
 !+        27/06/2012
 !+        V6P2
 !+   Introduction into EXCHANGE_WITH_ATMOSPHERE module + INTENT
-!+   
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IYEAR          |-->| INDEX OF YEAR
@@ -287,7 +287,7 @@
 !***********************************************************************
 !
 !brief    RETURNS DAY NUMBER OF THE YEAR (FRACTIONAL)
-!+        
+!+
 !
 !history  C. GUILBAUD (SOGREAH)
 !+        JUNE 2001
@@ -351,7 +351,7 @@
 !+        SOURCES:
 !+          - SWINBANK'S METHOD
 !+          - T.V.A. 1972
-!+        
+!+
 !
 !history  N. DURAND, A. GINEAU (EDF-LNHE)
 !+        MAY 2011

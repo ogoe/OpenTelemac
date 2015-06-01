@@ -1,34 +1,34 @@
       MODULE CONV_LIM
       CONTAINS
-!                       ***************** 
-                        SUBROUTINE READ_LIM 
+!                       *****************
+                        SUBROUTINE READ_LIM
 !                       *****************
      &(LIMFILE)
-!*********************************************************************** 
-! PROGICIEL : STBTEL  6.0           19/05/11    Y. AUDOUIN 
-!*********************************************************************** 
-! 
+!***********************************************************************
+! PROGICIEL : STBTEL  6.0           19/05/11    Y. AUDOUIN
+!***********************************************************************
+!
 !     FONCTION  : READ MED FILE AND FILL MESH_OBJ
-! 
-!----------------------------------------------------------------------- 
-!                             ARGUMENTS 
-! .________________.____.______________________________________________ 
-! |      NOM       |MODE|                   ROLE 
-! |________________|____|______________________________________________ 
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
 ! | INFILE         |--> | NAME OF THE BOUNDARY FILE
-! |________________|____|______________________________________________ 
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE) 
-!----------------------------------------------------------------------- 
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
 ! APPELE PAR : CONVERTER
-! APPEL DE :  
-!*********************************************************************** 
+! APPEL DE :
+!***********************************************************************
       USE DECLARATIONS_STBTEL
-!      
-      IMPLICIT NONE      
+!
+      IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!     
+!
       CHARACTER(LEN=MAXLENHARD),INTENT(IN) :: LIMFILE
 !
       INTEGER :: I
@@ -37,11 +37,11 @@
       DOUBLE PRECISION :: DDUM
 !
       WRITE(LU,*) '----------------------------------------------------'
-      IF(LNG.EQ.1)WRITE(LU,*) 
+      IF(LNG.EQ.1)WRITE(LU,*)
      &        '------DEBUT LECTURE FICHIER DES CONDITIONS LIMITES'
       IF(LNG.EQ.2)WRITE(LU,*) '------BEGINNING READING OF BOUNDARY FILE'
       WRITE(LU,*) '----------------------------------------------------'
-!      
+!
 !-----------------------------------------------------------------------
 !
       DDUM=0.0
@@ -56,8 +56,8 @@
         IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 'CALCULING NPTFR'
         DO WHILE(.TRUE.)
         ! COUNT THE NUMBER OF LINE IN THE FILE
-        READ(NLIM,*,END=666) IDUM, IDUM,IDUM, 
-     &             DDUM, DDUM, DDUM, 
+        READ(NLIM,*,END=666) IDUM, IDUM,IDUM,
+     &             DDUM, DDUM, DDUM,
      &             DDUM,IDUM,DDUM,DDUM,DDUM,
      &             IDUM,IDUM
         MESH2%NPTFR = MESH2%NPTFR + 1
@@ -77,7 +77,7 @@
       IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 'READING BOUNDARY FILE'
       ! BUILDING THE BOUNDARY FAMILIES
       VALUES(:) = 0
-      ! WE CONSIDER THAT IF WE READ THE BOUNDARY FILE 
+      ! WE CONSIDER THAT IF WE READ THE BOUNDARY FILE
       ! WE REMOVE THE FAMILIES IN THE MED FILE
       IF(MESH2%NFAM.NE.0) THEN
         DEALLOCATE(MESH2%IDFAM)
@@ -89,7 +89,7 @@
       ENDIF
       DO I=1,MESH2%NPTFR
         READ(NLIM,*) IHBOR, IUBOR, IVBOR,
-     &             DDUM, DDUM, DDUM, 
+     &             DDUM, DDUM, DDUM,
      &             DDUM,IDUM,DDUM,DDUM,DDUM,
      &             INBOR,IPTFR
         IF(IPTFR.NE.I) THEN
@@ -134,7 +134,7 @@
       ENDDO
       CLOSE(NLIM,IOSTAT=IERR)
       CALL FNCT_CHECK(IERR,'CLOSE '//TRIM(LIMFILE))
-!      
+!
 !-----------------------------------------------------------------------
 !
       WRITE(LU,*) '----------------------------------------------------'
@@ -144,47 +144,47 @@
       WRITE(LU,*) '----------------------------------------------------'
       END SUBROUTINE
 
-!                       ***************** 
-                        SUBROUTINE WRITE_LIM 
+!                       *****************
+                        SUBROUTINE WRITE_LIM
 !                       *****************
      &(LIMFILE)
-!*********************************************************************** 
-! PROGICIEL : STBTEL  6.0           19/05/11    Y. AUDOUIN 
-!*********************************************************************** 
-! 
+!***********************************************************************
+! PROGICIEL : STBTEL  6.0           19/05/11    Y. AUDOUIN
+!***********************************************************************
+!
 !     FONCTION  : READ MED FILE AND FILL MESH_OBJ
-! 
-!----------------------------------------------------------------------- 
-!                             ARGUMENTS 
-! .________________.____.______________________________________________ 
-! |      NOM       |MODE|                   ROLE 
-! |________________|____|______________________________________________ 
-! | INFILE         |--> | COORDONNEES DES POINTS DU MAILLAGE 
-! |________________|____|______________________________________________ 
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE) 
-!----------------------------------------------------------------------- 
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! | INFILE         |--> | COORDONNEES DES POINTS DU MAILLAGE
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
 ! APPELE PAR : CONVERTER
-! APPEL DE :  
-!*********************************************************************** 
+! APPEL DE :
+!***********************************************************************
       USE DECLARATIONS_STBTEL
-! 
-      IMPLICIT NONE      
+!
+      IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!     
+!
       CHARACTER(LEN=MAXLENHARD),INTENT(IN) :: LIMFILE
 !
       INTEGER :: IDUM,I,IERR,IHBOR,IUBOR,IVBOR
       DOUBLE PRECISION :: DDUM
 !
       WRITE(LU,*) '----------------------------------------------------'
-      IF(LNG.EQ.1) WRITE(LU,*) 
+      IF(LNG.EQ.1) WRITE(LU,*)
      &             '------BEGINNING WRITTING OF BOUNDARY FILE'
-      IF(LNG.EQ.2) WRITE(LU,*) 
+      IF(LNG.EQ.2) WRITE(LU,*)
      &           '------DEBUT LECTURE DU FICHIER DES CONDITIONS LIMITES'
       WRITE(LU,*) '----------------------------------------------------'
-!      
+!
 !-----------------------------------------------------------------------
 !
       OPEN(NBND,IOSTAT=IERR,FILE=LIMFILE,STATUS='NEW',FORM='FORMATTED')
@@ -195,19 +195,19 @@
         IHBOR = MESH2%LIHBOR(I)/100
         IUBOR = (MESH2%LIHBOR(I) - 100*IHBOR)/10
         IVBOR = MESH2%LIHBOR(I) - 100*IHBOR - 10*IUBOR
-        WRITE(NBND,*) 
-     &              IHBOR, IUBOR, IVBOR,  
-     &              DDUM, DDUM, DDUM, 
+        WRITE(NBND,*)
+     &              IHBOR, IUBOR, IVBOR,
+     &              DDUM, DDUM, DDUM,
      &              DDUM, IHBOR, DDUM, DDUM, DDUM,
      &              MESH2%NBOR(I), I
       ENDDO
       CLOSE(NLIM,IOSTAT=IERR)
       CALL FNCT_CHECK(IERR,'CLOSE '//TRIM(LIMFILE))
-!      
+!
 !-----------------------------------------------------------------------
 !
       WRITE(LU,*) '----------------------------------------------------'
-      IF(LNG.EQ.1) WRITE(LU,*) 
+      IF(LNG.EQ.1) WRITE(LU,*)
      &    '------FIN LECTURE DU FICHIER DES CONDITIONS LIMITES'
       IF(LNG.EQ.2) WRITE(LU,*) '------ENDING WRITTING OF BOUNDARY FILE'
       WRITE(LU,*) '----------------------------------------------------'

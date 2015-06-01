@@ -33,7 +33,7 @@
 !+        21/01/2013
 !+        V6P3
 !+   rewritten for new data structure of finite volumes
-!+   
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFAPAR         |-->| IFAPAR(1:3,IELEM)=PROCESSOR NUMBERS BEHIND THE
 !|                |   | 3 ELEMENT EDGES  (NUMBERS FROM 0 TO NCSIZE-1)
@@ -73,7 +73,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NSEG,NPOIN,NELEM
-!     TO REPLACE IN NEXT RELEASE      
+!     TO REPLACE IN NEXT RELEASE
       INTEGER, INTENT(INOUT)          :: NUBO(2,NSEG)
       INTEGER, INTENT(IN)             :: GLOSEG(NSEG,2)
       INTEGER, INTENT(IN)             :: ELTSEG(NELEM,3)
@@ -82,7 +82,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: VNOIN(3,NSEG)
       DOUBLE PRECISION, INTENT(INOUT) :: AIRST(2,*)
       DOUBLE PRECISION, INTENT(IN)    :: COORD_G(NSEG,4)
-      INTEGER, INTENT(IN)             :: IFABOR(NELEM,3) 
+      INTEGER, INTENT(IN)             :: IFABOR(NELEM,3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -118,7 +118,7 @@
 ! 2. MAIN LOOP
 !-----------------
 !
-      DO IEL=1, NELEM        
+      DO IEL=1, NELEM
         DO I = 1,3
           IF(.NOT.YESNO(ELTSEG(IEL,I)))THEN
             FACT=1
@@ -128,7 +128,7 @@
             NB2 = GLOSEG(ISEG,2)
 !           TO REMOVE REDUNDANT
             NUBO(1,ISEG) = NB1
-            NUBO(2,ISEG) = NB2 
+            NUBO(2,ISEG) = NB2
 !           THEIR COORDINATES
             X1 = XX(NB1)
             Y1 = YY(NB1)
@@ -139,8 +139,8 @@
             YG1 = COORD_G(ISEG,2)
             XG2 = COORD_G(ISEG,3)
             YG2 = COORD_G(ISEG,4)
-            IF(IFABOR(IEL,I).EQ.-1.OR.IFABOR(IEL,I).EQ.0)THEN  ! BOUNDARY SEGMENT 
-              IF(ABS(XG1).LT.EPS.AND.ABS(YG1).LT.EPS)THEN   !BOUNDARY SEGMENT (TO IMPROVE THE TEST!!!)     
+            IF(IFABOR(IEL,I).EQ.-1.OR.IFABOR(IEL,I).EQ.0)THEN  ! BOUNDARY SEGMENT
+              IF(ABS(XG1).LT.EPS.AND.ABS(YG1).LT.EPS)THEN   !BOUNDARY SEGMENT (TO IMPROVE THE TEST!!!)
                 XG1=CMI(1,ISEG)                   ! THIS CASE COULD REALLY HAPPEN ?!
                 YG1=CMI(2,ISEG)
               ELSEIF(ABS(XG2).LT.EPS.AND.ABS(YG2).LT.EPS)THEN
@@ -155,7 +155,7 @@
      &                              (Y2-YG1)*(X2-XG2))
 !           NORMAL VECTORS TO INTERFACES AND THEIR LENGHT
             XGG = XG1-XG2
-            YGG = YG1-YG2 
+            YGG = YG1-YG2
             RNORM=SQRT(XGG**2+YGG**2)
             IF(RNORM.GT.EPS) THEN
               IF(ORISEG(IEL,I).EQ.2) FACT=-FACT
@@ -180,8 +180,8 @@
             YESNO(ISEG)=.TRUE.
           ENDIF
         ENDDO
-      ENDDO 
-!   
+      ENDDO
+!
 !---------------------------------------------------------------------
 !
       RETURN

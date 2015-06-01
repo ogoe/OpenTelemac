@@ -24,7 +24,7 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|   
+!|                |-->|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -89,7 +89,7 @@
 !     TM2S2N2EQUAL: LOGICAL TO IMPOSE THE PERIODS OF S2 AND N2 WAVES
 !                   TO BE EQUAL TO THE PERIOD OF M2 WAVE
 !                   DEFAULT = .TRUE. (WARNING: CHANGED VALUE, .FALSE. IN V6P2)
-!                   FOR SCHEMATIC TIDES MODELLING ONLY! 
+!                   FOR SCHEMATIC TIDES MODELLING ONLY!
 !                   FOR JMJ DATA BASE ONLY AT THE MOMENT
 !
       TM2S2N2EQUAL = .TRUE.

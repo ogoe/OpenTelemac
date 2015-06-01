@@ -21,9 +21,9 @@
 !+        page 142.
 !
 !warning  This is probably not correct with spherical coordinates,
-!+        because in this case with characteristics we divide the 
+!+        because in this case with characteristics we divide the
 !+        advection field by cos(latitude). This is only possible if
-!+        U is different from UCONV, which is not done in the theory 
+!+        U is different from UCONV, which is not done in the theory
 !+        as non linear terms are dealt with. Here the advected
 !+        velocity U and the advection field UCONV are the same.
 !
@@ -186,21 +186,21 @@
       INTEGER, DIMENSION(:), POINTER  :: LISPFR
       INTEGER, DIMENSION(:),POINTER :: ELT_T
       INTEGER K,NPT,J,ITRAC,N,NOMB,NDP,NPLAN,IELMU,ETA(1),I,IFR,IPT
-      INTEGER FREBUF(1)              
+      INTEGER FREBUF(1)
       DOUBLE PRECISION HMIN,HHBOR,DETADX,DETADY,TBAR(100),TT(100)
       DOUBLE PRECISION UCSI,UCSIBAR,UETA,UETABAR,CBAR,HH,TETA
       DOUBLE PRECISION ZSTAR(1),ZCONV(1,1),SHZ(1),Z(1,1),UNORM,NORMZS
       INTEGER IELEM,SIZEBUF
 !
       DATA HMIN  /2.D-2/
-!      
+!
       LOGICAL INIT
       DATA    INIT/.TRUE./
       TYPE(BIEF_OBJ) :: FNCAR1,FTILD1
       SAVE
 !
 !-----------------------------------------------------------------------
-! 
+!
 !     SLICING IT1
 !
       I=MAX(1,NPTFR)
@@ -222,28 +222,28 @@
         CALL ADDBLO(FNCAR1,ZF)
         CALL ADDBLO(FTILD1,UBTIL)
         CALL ADDBLO(FTILD1,VBTIL)
-        CALL ADDBLO(FTILD1,HBTIL) 
-        CALL ADDBLO(FTILD1,ZBTIL)                     
+        CALL ADDBLO(FTILD1,HBTIL)
+        CALL ADDBLO(FTILD1,ZBTIL)
         IF(NTRAC.GT.0) THEN
           DO ITRAC=1,NTRAC
             CALL ADDBLO(FNCAR1,T%ADR(ITRAC)%P)
             CALL ADDBLO(FTILD1,TBTIL%ADR(ITRAC)%P)
           ENDDO
         ENDIF
-        INIT=.FALSE.     
+        INIT=.FALSE.
       ENDIF
 !
       ETA(1)=1
-!     NDP ALSO FIRST DIMENSION OF SHP AND SHPP     
+!     NDP ALSO FIRST DIMENSION OF SHP AND SHPP
       NDP=3
       NPLAN=1
-      IELMU=IELM 
+      IELMU=IELM
 !
 !-----------------------------------------------------------------------
 !
 !     CREATING FIELDS OF H, U AND V, THAT CONTAIN THE PRESCRIBED DATA
-!     WITH RELAXATION TETA (IF 1.D0, THE ROUGH DATA ARE TAKEN ON THE 
-!     THOMPSON BOUNDARIES FOR INTERPOLATION AT THE FOOT OF 
+!     WITH RELAXATION TETA (IF 1.D0, THE ROUGH DATA ARE TAKEN ON THE
+!     THOMPSON BOUNDARIES FOR INTERPOLATION AT THE FOOT OF
 !     CHARACTERISTICS)
 !
       CALL OS('X=Y     ',X=HFIELD,Y=H)
@@ -257,12 +257,12 @@
       HFIELD%ELM=IELM
 !
       UFIELD%DIM1=BIEF_NBPTS(IELM,MESH)
-      VFIELD%DIM1=BIEF_NBPTS(IELM,MESH) 
+      VFIELD%DIM1=BIEF_NBPTS(IELM,MESH)
       HFIELD%DIM1=BIEF_NBPTS(IELM,MESH)
-!      
+!
       TETA=1.D0
 !     CAN BE RELAXED, TESTED UP TO 0.05 IN PALUEL BOX MODEL
-!     TETA=0.05D0  
+!     TETA=0.05D0
 !
       DO K=1,NPTFR
         IF(NUMLIQ(K).NE.0) THEN
@@ -276,20 +276,20 @@
             ENDIF
             IF(LIVBOR(K).EQ.KENT.OR.LIVBOR(K).EQ.KENTU) THEN
               VFIELD%R(N)=TETA*VBOR(K)+(1.D0-TETA)*VFIELD%R(N)
-            ENDIF            
+            ENDIF
           ENDIF
         ENDIF
       ENDDO
 !
-!----------------------------------------------------------------------- 
+!-----------------------------------------------------------------------
 !
 !     COMPUTES THE CELERITY
-!     
+!
       CALL OS('X=CY    ',C,H,H,GRAV)
       CALL CLIP(C,0.D0,.TRUE.,1.D6,.FALSE.,0)
       CALL OS('X=SQR(Y)',X=C,Y=C)
 !
-!     COMPUTES MINUS THE FREE SURFACE GRADIENT 
+!     COMPUTES MINUS THE FREE SURFACE GRADIENT
 !
       CALL OS('X=Y+Z   ',X=ZS,Y=H,Z=ZF)
       CALL VECTOR(GZSX,'=','GRADF          X',IELM,
@@ -306,13 +306,13 @@
 !     NPT: NUMBER OF POINTS
 !     LISPFR: LIST OF THOSE POINTS (BOUNDARY NODE NUMBERS)
 !
-      NPT=0      
+      NPT=0
       DO K=1,NPTFR
         IF(NUMLIQ(K).NE.0) THEN
           N=NBOR(K)
-          IF(FRTYPE(NUMLIQ(K)).EQ.2.AND.MESH%ELTCAR%I(N).NE.0) THEN 
+          IF(FRTYPE(NUMLIQ(K)).EQ.2.AND.MESH%ELTCAR%I(N).NE.0) THEN
             NPT=NPT+1
-            LISPFR(NPT)=K 
+            LISPFR(NPT)=K
             IELEM= MESH%ELTCAR%I(N)
             IF(IKLE(IELEM,1).EQ.N) THEN
               SHP(1,N)=1.D0
@@ -328,18 +328,18 @@
               SHP(1,N)=0.D0
               SHP(2,N)=0.D0
               SHP(3,N)=1.D0
-            ENDIF           
+            ENDIF
           ENDIF
         ENDIF
       ENDDO
 !
-!--------------------------------------------------------------------     
+!--------------------------------------------------------------------
 !     CHARACTERISTICS WITH ADVECTION FIELD U
 !     MAY BE CALLED WITH NPT=0 IF OTHER PROCESSORS STILL AT WORK
 !--------------------------------------------------------------------
 !
 !     COMPUTES THE ADVECTION FIELD U
-!     
+!
       DO N=1,NPOIN
         UCONV%R(N)=U%R(N)
         VCONV%R(N)=V%R(N)
@@ -350,8 +350,8 @@
       DO IFR=1,NPT
         IPT=NBOR(LISPFR(IFR))
         XCONV%R(IFR) = X(IPT)
-        YCONV%R(IFR) = Y(IPT)         
-        ELT_T(IFR)   = MESH%ELTCAR%I(IPT) 
+        YCONV%R(IFR) = Y(IPT)
+        ELT_T(IFR)   = MESH%ELTCAR%I(IPT)
         SHPP(1,IFR)= SHP(1,IPT)
         SHPP(2,IFR)= SHP(2,IPT)
         SHPP(3,IFR)= SHP(3,IPT)
@@ -392,23 +392,23 @@
 !     BEFORE PARCOM_BORD ,CANCELLING VALUES OF POINTS TREATED
 !     IN ANOTHER SUB-DOMAIN
 !
-      IF(NCSIZE.GT.1) THEN      
+      IF(NCSIZE.GT.1) THEN
         DO K=1,NPTFR
-          IF(MESH%ELTCAR%I(NBOR(K)).EQ.0) THEN 
+          IF(MESH%ELTCAR%I(NBOR(K)).EQ.0) THEN
             UBTIL%R(K)=0.D0
             VBTIL%R(K)=0.D0
             HBTIL%R(K)=0.D0
-!           ZBTIL%R(K)=0.D0          
+!           ZBTIL%R(K)=0.D0
           ENDIF
         ENDDO
         IF(NTRAC.GT.0) THEN
           DO K=1,NPTFR
-            IF(MESH%ELTCAR%I(NBOR(K)).EQ.0) THEN 
+            IF(MESH%ELTCAR%I(NBOR(K)).EQ.0) THEN
               DO ITRAC=1,NTRAC
-                TBTIL%ADR(ITRAC)%P%R(K)=0.D0 
-              ENDDO     
+                TBTIL%ADR(ITRAC)%P%R(K)=0.D0
+              ENDDO
             ENDIF
-          ENDDO          
+          ENDDO
         ENDIF
         CALL PARCOM_BORD(UBTIL%R,1,MESH)
         CALL PARCOM_BORD(VBTIL%R,1,MESH)
@@ -429,7 +429,7 @@
       DO K=1,NPTFR
         IF(NUMLIQ(K).NE.0) THEN
         IF(FRTYPE(NUMLIQ(K)).EQ.2) THEN
-          N=NBOR(K)  
+          N=NBOR(K)
           UNORM=SQRT(U%R(N)**2+V%R(N)**2)
           IF(UNORM.GT.1.D-12) THEN
             DETADX=U%R(N)/UNORM
@@ -441,7 +441,7 @@
           UCSIBAR=-U%R(N)*DETADY+V%R(N)*DETADX
           HH=HBTIL%R(K)
           UCSI=-UBTIL%R(K)*DETADY+VBTIL%R(K)*DETADX
-          W1R(K)=HH*(UCSIBAR-UCSI) 
+          W1R(K)=HH*(UCSIBAR-UCSI)
           IF(NTRAC.GT.0) THEN
             DO ITRAC=1,NTRAC
               TBAR(ITRAC)=T%ADR(ITRAC)%P%R(N)
@@ -461,13 +461,13 @@
 !             W4
               TBOR%ADR(ITRAC)%P%R(K+NPTFR)=HH*(TT(ITRAC)-TBAR(ITRAC))
             ENDDO
-          ENDIF       
+          ENDIF
         ENDIF
         ENDIF
       ENDDO
 !
 !----------------------------------------------------------
-!     COMPUTES THE ADVECTION FIELD U + C 
+!     COMPUTES THE ADVECTION FIELD U + C
 !----------------------------------------------------------
 !
       DO N=1,NPOIN
@@ -486,7 +486,7 @@
             DETADY=0.D0
           ENDIF
         ENDIF
-        UETABAR=U%R(N)*DETADX+V%R(N)*DETADY+C%R(N)                   
+        UETABAR=U%R(N)*DETADX+V%R(N)*DETADY+C%R(N)
         UCONV%R(N)=UETABAR*DETADX
         VCONV%R(N)=UETABAR*DETADY
       ENDDO
@@ -501,8 +501,8 @@
       DO IFR=1,NPT
         IPT=NBOR(LISPFR(IFR))
         XCONV%R(IFR) = X(IPT)
-        YCONV%R(IFR) = Y(IPT)         
-        ELT_T(IFR)   = MESH%ELTCAR%I(IPT) 
+        YCONV%R(IFR) = Y(IPT)
+        ELT_T(IFR)   = MESH%ELTCAR%I(IPT)
         SHPP(1,IFR)  = SHP(1,IPT)
         SHPP(2,IFR)  = SHP(2,IPT)
         SHPP(3,IFR)  = SHP(3,IPT)
@@ -530,18 +530,18 @@
         VBTIL%R(K)=VBTIL%R(J)
         HBTIL%R(K)=HBTIL%R(J)
         ZBTIL%R(K)=ZBTIL%R(J)
-      ENDDO      
+      ENDDO
 !
 !     BEFORE PARCOM_BORD ,CANCELLING VALUES OF POINTS TREATED
 !     IN ANOTHER SUB-DOMAIN
 !
-      IF(NCSIZE.GT.1) THEN      
+      IF(NCSIZE.GT.1) THEN
         DO K=1,NPTFR
-          IF(MESH%ELTCAR%I(NBOR(K)).EQ.0) THEN 
+          IF(MESH%ELTCAR%I(NBOR(K)).EQ.0) THEN
             UBTIL%R(K)=0.D0
             VBTIL%R(K)=0.D0
             HBTIL%R(K)=0.D0
-            ZBTIL%R(K)=0.D0          
+            ZBTIL%R(K)=0.D0
           ENDIF
         ENDDO
         CALL PARCOM_BORD(UBTIL%R,1,MESH)
@@ -573,11 +573,11 @@
           UETA=UBTIL%R(K)*DETADX+VBTIL%R(K)*DETADY
           W2R(K)=(HH+ZBTIL%R(K)-ZF%R(N))*CBAR+HH*(UETA-UETABAR)
         ENDIF
-        ENDIF 
-      ENDDO          
+        ENDIF
+      ENDDO
 !
-!     COMPUTES THE ADVECTION FIELD U-C 
-!    
+!     COMPUTES THE ADVECTION FIELD U-C
+!
       DO N=1,NPOIN
         UNORM=SQRT(U%R(N)**2+V%R(N)**2)
         IF(UNORM.GT.1.D-12) THEN
@@ -593,7 +593,7 @@
             DETADY=0.D0
           ENDIF
         ENDIF
-        UETABAR=U%R(N)*DETADX+V%R(N)*DETADY-C%R(N)                   
+        UETABAR=U%R(N)*DETADX+V%R(N)*DETADY-C%R(N)
         UCONV%R(N)=UETABAR*DETADX
         VCONV%R(N)=UETABAR*DETADY
       ENDDO
@@ -605,8 +605,8 @@
       DO IFR=1,NPT
         IPT=NBOR(LISPFR(IFR))
         XCONV%R(IFR) = X(IPT)
-        YCONV%R(IFR) = Y(IPT)         
-        ELT_T(IFR)   = MESH%ELTCAR%I(IPT) 
+        YCONV%R(IFR) = Y(IPT)
+        ELT_T(IFR)   = MESH%ELTCAR%I(IPT)
         SHPP(1,IFR)  = SHP(1,IPT)
         SHPP(2,IFR)  = SHP(2,IPT)
         SHPP(3,IFR)  = SHP(3,IPT)
@@ -619,7 +619,7 @@
      &             DX_T,DY_T,DZ_T,DZ_T,Z,SHPP,SHZ,SHZ,
      &             SURDET,DT,IKLE,IFABOR,ELT_T,ETA,ETA,
      &             IT3%I,IT4%I,IELM,
-     &             IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN,NDP,NPLAN,1, 
+     &             IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN,NDP,NPLAN,1,
      &             MESH,NPT,U%DIM1,-1,
      &             SHPBUF%R,SHPBUF%R,SHPBUF%R,FREBUF,SIZEBUF)
 !
@@ -634,18 +634,18 @@
         VBTIL%R(K)=VBTIL%R(J)
         HBTIL%R(K)=HBTIL%R(J)
         ZBTIL%R(K)=ZBTIL%R(J)
-      ENDDO      
+      ENDDO
 !
 !     BEFORE PARCOM_BORD ,CANCELLING VALUES OF POINTS TREATED
 !     IN ANOTHER SUB-DOMAIN
 !
-      IF(NCSIZE.GT.1) THEN      
+      IF(NCSIZE.GT.1) THEN
         DO K=1,NPTFR
-          IF(MESH%ELTCAR%I(NBOR(K)).EQ.0) THEN 
+          IF(MESH%ELTCAR%I(NBOR(K)).EQ.0) THEN
             UBTIL%R(K)=0.D0
             VBTIL%R(K)=0.D0
             HBTIL%R(K)=0.D0
-            ZBTIL%R(K)=0.D0          
+            ZBTIL%R(K)=0.D0
           ENDIF
         ENDDO
         CALL PARCOM_BORD(UBTIL%R,1,MESH)
@@ -674,19 +674,19 @@
           CBAR=C%R(N)
           HH  =HBTIL%R(K)
           UETA=UBTIL%R(K)*DETADX+VBTIL%R(K)*DETADY
-          W3R(K)=(HH+ZBTIL%R(K)-ZF%R(N))*CBAR+HH*(-UETA+UETABAR)        
+          W3R(K)=(HH+ZBTIL%R(K)-ZF%R(N))*CBAR+HH*(-UETA+UETABAR)
         ENDIF
         ENDIF
       ENDDO
 !
 !----------------------------------------------------------------------
 !       RE-BUILDS THE TELEMAC-2D VARIABLES
-!----------------------------------------------------------------------       
+!----------------------------------------------------------------------
 !
       DO K=1,NPTFR
         IF(NUMLIQ(K).NE.0) THEN
         IF(FRTYPE(NUMLIQ(K)).EQ.2) THEN
-          N=NBOR(K) 
+          N=NBOR(K)
           UNORM=SQRT(U%R(N)**2+V%R(N)**2)
           IF(UNORM.GT.1.D-12) THEN
             DETADX=U%R(N)/UNORM
@@ -700,7 +700,7 @@
               DETADX=0.D0
               DETADY=0.D0
             ENDIF
-          ENDIF     
+          ENDIF
           IF(C%R(N)**2.GT.GRAV*HMIN) THEN
             HBOR(K)=(W2R(K)+W3R(K))/(2*C%R(N))
             IF(HBOR(K).GT.HMIN) THEN

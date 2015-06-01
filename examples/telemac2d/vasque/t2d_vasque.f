@@ -12,7 +12,7 @@
 !
 !
 !-----------------------------------------------------------------------
-!  ARGUMENTS USED IN THE EXAMPLE 
+!  ARGUMENTS USED IN THE EXAMPLE
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|_______________________________________________
@@ -63,32 +63,32 @@
 !
       IM = 47
       JM = 10
-!                                                                         
-!  VARIANTE FOND EN PENTE RECTILIGNE + CUVETTE                            
-!                                                                         
-      DO I=1,IM 
-      DO J=1,JM 
-!       PENTE RECTILIGNE                                                       
+!
+!  VARIANTE FOND EN PENTE RECTILIGNE + CUVETTE
+!
+      DO I=1,IM
+      DO J=1,JM
+!       PENTE RECTILIGNE
         POS_LOC = GLOBAL_TO_LOCAL_POINT(I+(J-1)*IM,MESH)
 !
 !       NOTE JMH: THIS IS VERY HEAVY, THERE SHOULD BE A
 !                 FORMULA FUNCTION OF X.
 !
         IF(POS_LOC.GT.0) THEN
-          ZF%R(POS_LOC)=-0.6D0+0.46D0*FLOAT(I-1)/FLOAT(IM-1) 
-!         BOSSE GAUSSIENNE            
+          ZF%R(POS_LOC)=-0.6D0+0.46D0*FLOAT(I-1)/FLOAT(IM-1)
+!         BOSSE GAUSSIENNE
           IF(I.GT.9.AND.I.LT.29) THEN
-            EIKON = -(I-19)**2/20.D0 
+            EIKON = -(I-19)**2/20.D0
             ZF%R(POS_LOC) = ZF%R(POS_LOC) + 0.1D0*EXP(EIKON)
           ENDIF
-        ENDIF                                                 
-      ENDDO                                                            
-      ENDDO    
+        ENDIF
+      ENDDO
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END                  
+      END
 !                       ***************************
                         DOUBLE PRECISION FUNCTION Q
 !                       ***************************
@@ -161,7 +161,7 @@
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
         FCT(1:2)='Q('
-        IF(I.LT.10) THEN 
+        IF(I.LT.10) THEN
           WRITE(FCT(3:3),FMT='(I1)') I
           FCT(4:8)=')    '
         ELSEIF(I.LT.100) THEN
@@ -170,21 +170,21 @@
         ELSE
           WRITE(LU,*) 'Q NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
           CALL PLANTE(1)
-          STOP 
+          STOP
         ENDIF
-        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I)) 
+        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
 !
       ENDIF
 !
       IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
-! 
-!     PROGRAMMABLE PART                              
-!     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
-!                                                                                                                                             
+!
+!     PROGRAMMABLE PART
+!     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
+!
 !       Q = DEBIT(I)
         Q = -5.D0*HN%R(236)/0.6D0
-! 
-      ENDIF          
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -263,7 +263,7 @@
 !
 !       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
         FCT(1:3)='SL('
-        IF(I.LT.10) THEN 
+        IF(I.LT.10) THEN
           WRITE(FCT(4:4),FMT='(I1)') I
           FCT(5:8)=')   '
         ELSEIF(I.LT.100) THEN
@@ -272,28 +272,28 @@
         ELSE
           WRITE(LU,*) 'SL NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
           CALL PLANTE(1)
-          STOP 
+          STOP
         ENDIF
         CALL READ_FIC_FRLIQ(SL,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
 !
       ENDIF
 !
       IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
-! 
-!     PROGRAMMABLE PART                              
-!     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED 
-!                                                                             
+!
+!     PROGRAMMABLE PART
+!     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
+!
         SL = COTE(I)
 !       DESCENTE DE LA COTE 0 A -0.55 EN 300 S
         PERIODE=600.D0
         OMEGA=2*PI/PERIODE
         A=0.55D0/2.D0
         SL=A*(COS(OMEGA*AT)-1.D0)
-! 
-      ENDIF           
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
- 
+

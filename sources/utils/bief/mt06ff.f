@@ -131,7 +131,7 @@
           IF(IEL.GT.0) THEN
 !
 !           ELEMENT IN DOMAIN
-!      
+!
 !           GLOBAL NUMBERING OF THE SIDE VERTICES
 !
             I1 = IKLE1(IELEM)
@@ -191,7 +191,7 @@
 !
           ENDIF
 !
-        ENDDO ! IELEM 
+        ENDDO ! IELEM
 !
 !-----------------------------------------------------------------------
 !

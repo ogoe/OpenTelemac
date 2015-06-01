@@ -1,7 +1,7 @@
 !                       ****************
-                        SUBROUTINE MAJZZ  
+                        SUBROUTINE MAJZZ
 !                       ****************
-!  
+!
      &(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      & HN,QU,QV,LT,GAMMA,
      & NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
@@ -21,13 +21,13 @@
 !+        03/15/2011
 !+        V6P1
 !+    CHANGE EXPLICIT EULER BY NEWMARK SCHEME
-!+    GAMMA FIXES THE SCHEME ACCURACY (SEE BELOW) 
+!+    GAMMA FIXES THE SCHEME ACCURACY (SEE BELOW)
 !
 !history  R. ATA (EDF-LNHE)
 !+        01/07/2013
 !+        V6P3
 !+    cleaning
-!+ 
+!+
 !history  R. ATA (EDF-LNHE)
 !+        01/25/2013
 !+        V7p0
@@ -48,7 +48,7 @@
 !|  KFROT         |-->|  LOGICAL! FRICTION OR NO FRICTION
 !|  KNEU          |-->|  CONVENTION FOR NEUMANN POINT
 !|  LIMPRO        |-->|  BC TYPE
-!|  LT            |-->|  CURRENT TIME ITERATION 
+!|  LT            |-->|  CURRENT TIME ITERATION
 !|  NBOR          |-->|  GLOBAL INDEX OF BOUNDARY NODES
 !|  NPOIN         |-->|  TOTAL NUMBER OF NODES
 !|  NPTFR         |-->|  TOTAL NUMNER OF BOUNDARY NODES
@@ -62,7 +62,7 @@
 !
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-! 
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN,KFROT,LT,NPTFR,KNEU
@@ -72,12 +72,12 @@
       DOUBLE PRECISION, INTENT(IN)    :: DT
       DOUBLE PRECISION, INTENT(IN)    :: FLUX_OLD(NPOIN,3),GAMMA
       DOUBLE PRECISION, INTENT(IN)    :: AIRS(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN),SMH(NPOIN) 
+      DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN),SMH(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: HN(NPOIN),QU(NPOIN),QV(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: G
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-! 
+!
       INTEGER I,K
       DOUBLE PRECISION FACT,UNMGAMMA,UGN
 !
@@ -90,26 +90,26 @@
         WRITE(LU,*)'*********************************************'
         WRITE(LU,*)'          WARNING: TIME STEP =0'
         WRITE(LU,*)'          IN MAJZZ SUBROUTINE...'
-        WRITE(LU,*)'*********************************************'  
+        WRITE(LU,*)'*********************************************'
         CALL PLANTE(1)
         STOP
       ENDIF
 !
 !      PROJECTION ON THE NORMAL TO ELIMINATE THE TANGENT COMPONENT
-!      ONLY FOR LIQUID BOUNDARY  
+!      ONLY FOR LIQUID BOUNDARY
 !
       DO K=1,NPTFR
         I=NBOR(K)
         IF(LIMPRO(K,1).NE.KNEU) THEN
-          !NORMALIZED NORMAL    
-          UGN =XNEBOR(K)*FLUX(I,2)+YNEBOR(K)*FLUX(I,3) ! TO RETRIEVE NORMAL COMPONENET OF UG 
+          !NORMALIZED NORMAL
+          UGN =XNEBOR(K)*FLUX(I,2)+YNEBOR(K)*FLUX(I,3) ! TO RETRIEVE NORMAL COMPONENET OF UG
 !         VGN =  0.D0  ! PUT TANGENTIAL COMPENENT =0
 !         INVERSE ROTATION
           FLUX(I,2) = XNEBOR(K)*UGN
           FLUX(I,3) = YNEBOR(K)*UGN
         ENDIF
-      ENDDO 
-!       
+      ENDDO
+!
 !
 !++++++++++++++++++++++++++++++++++++
 ! TIME INTEGRATION
@@ -123,9 +123,9 @@
 !
         DO I=1,NPOIN
           FACT=DT/AIRS(I)
-          W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I)) 
+          W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I))
           W(2,I) = QU(I) + FACT* FLUX(I,2)
-          W(3,I) = QV(I) + FACT* FLUX(I,3)     
+          W(3,I) = QV(I) + FACT* FLUX(I,3)
         ENDDO
 !
       ELSEIF(GAMMA.GE.0.D0.AND.GAMMA.LT.1.D0) THEN
@@ -133,26 +133,26 @@
 !==========================
 !---- NEWMARK SCHEME
 !==========================
-! 
+!
         UNMGAMMA = 1.D0-GAMMA
 !
 !       - FOR GAMMA=0.5, THIS CHOICE GIVES ORDER 2 ACCURACY AND
 !         THE SCHEME IS UNCONDITIALLY STABLE
 !       - FOR USER WHO PREFERS (EULER) EXPLICIT SCHEME,
-!         YOU HAVE TO PUT GAMMA=1  
+!         YOU HAVE TO PUT GAMMA=1
         DO I=1,NPOIN
           FACT=DT/AIRS(I)
           !--- FIRST TIME STEP
           IF(LT.EQ.1)THEN
-            W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I) ) 
+            W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I) )
             W(2,I) = QU(I) + FACT* FLUX(I,2)
             W(3,I) = QV(I) + FACT* FLUX(I,3)
           ELSE
-            W(1,I) = HN(I) + FACT*(UNMGAMMA*FLUX_OLD(I,1) + 
+            W(1,I) = HN(I) + FACT*(UNMGAMMA*FLUX_OLD(I,1) +
      &                             GAMMA*FLUX(I,1)+SMH(I))
-            W(2,I) = QU(I) + FACT*(UNMGAMMA*FLUX_OLD(I,2) + 
+            W(2,I) = QU(I) + FACT*(UNMGAMMA*FLUX_OLD(I,2) +
      &                             GAMMA*FLUX(I,2))
-            W(3,I) = QV(I) + FACT*(UNMGAMMA*FLUX_OLD(I,3) + 
+            W(3,I) = QV(I) + FACT*(UNMGAMMA*FLUX_OLD(I,3) +
      &                             GAMMA*FLUX(I,3))
           ENDIF
         ENDDO
@@ -161,7 +161,7 @@
         IF(LNG.EQ.1) THEN
            WRITE(LU,*) 'MAJZZ: ERREUR: COEFFICIENT DE NEWMARK DOIT ...'
            WRITE(LU,*) '... ETRE ENTRE 0 ET 1: ',GAMMA
-        ELSEIF(LNG.EQ.2) THEN 
+        ELSEIF(LNG.EQ.2) THEN
            WRITE(LU,*) 'MAJZZ: ERROR:NEWMARK COEFFICIENT MUST...'
            WRITE(LU,*) '... BE BETWEEN 0 AND 1: ',GAMMA
         ENDIF
@@ -184,7 +184,7 @@
 !     ***********************************
 !
       IF(KFROT.NE.0) CALL FRICTION(NPOIN,G,DT,W,HN,QU,QV,CF)
-! 
+!
 !-----------------------------------------------------------------------
 !
       RETURN

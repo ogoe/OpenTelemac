@@ -110,8 +110,8 @@
 !| DHN            |<--| H(N)-H(N-1)
 !| DIFVIT         |-->| IF YES, DIFFUSION OF VELOCITY
 !| DIRBOR         |<--| BLOCK WITH DIRICHLET BOUNDARY CONDITIONS
-!| DP             |-->| DIAMETER OF ROUGHNESS ELEMENT 
-!| DT             |-->| TIME STEP 
+!| DP             |-->| DIAMETER OF ROUGHNESS ELEMENT
+!| DT             |-->| TIME STEP
 !| DU             |<--| U(N+1)-U(N)
 !| DV             |<--| V(N+1)-V(N)
 !| EQUA           |-->| KEYWORD: 'EQUATIONS'
@@ -170,13 +170,13 @@
 !| NRES           |-->| LOGICAL UNIT OF RESULTS FILE
 !| NVARRES        |<--| NUMBER OF VARIABLES IN RESULTS FILE
 !| OPDVIT         |-->| OPTION FOR DIFFUSION OF VELOCITIES
-!| OPTBAN         |-->| KEYWORD: 'OPTION FOR THE TREATMENT OF TIDAL FLATS' 
+!| OPTBAN         |-->| KEYWORD: 'OPTION FOR THE TREATMENT OF TIDAL FLATS'
 !| OPTCOST        |-->| OPTION FOR COMPUTING THE COST FUNCTION
 !| OPTSOU         |-->| KEYWORD: 'TYPE OF SOURCES'
 !| OPTSUP         |-->| KEYWORD: 'SUPG OPTION'
 !| PATMOS         |-->| ATMOSPHERIC PRESSURE
 !| PP             |<--| ADJOINT H
-!| PRECCU         |-->| KEYWORD: 'C-U PRECONDITIONING' 
+!| PRECCU         |-->| KEYWORD: 'C-U PRECONDITIONING'
 !| PRIVE          |-->| BLOCK OF WORK BIEF_OBJ STRUCTURES
 !| QQ             |<--| ADJOINT U
 !| RHS            |<->| BLOCK OF PRIVATE BIEF_OBJ STRUCTURES
@@ -188,7 +188,7 @@
 !| SB             |---| NOT USED !!!!!!!!!!!!!!!!!!!!!!
 !| SLVPRO         |-->| SOLVER STRUCTURE FOR PROPAGATION
 !| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
-!| SOLSYS         |-->| KEYWORD: 'TREATMENT OF THE LINEAR SYSTEM' 
+!| SOLSYS         |-->| KEYWORD: 'TREATMENT OF THE LINEAR SYSTEM'
 !| SP             |-->| SPACING OF ROUGHNESS ELEMENT
 !| T1             |<->| WORK BIEF_OBJ STRUCTURE
 !| T2             |<->| WORK BIEF_OBJ STRUCTURE
@@ -214,7 +214,7 @@
 !| TE4            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
 !| TE5            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
 !| TETAD          |-->| IMPLICITATION ON DIFFUSION
-!| TETAH          |-->| IMPLICITATION OF H IN U EQUATION 
+!| TETAH          |-->| IMPLICITATION OF H IN U EQUATION
 !| TETAHC         |-->| IMPLICITATION OF H IN CONTINUITY
 !| TETAU          |-->| IMPLICITATION OF U AND
 !| TEXREF         |<--| NAMES AND UNITS OF VARIABLES IN REFERENCE FILE
@@ -709,7 +709,7 @@
 !
 !       STEADY STATE : DOES NOT UPDATE DATA AND RESULTS,
 !                      ONLY LAST TIMESTEP CONSIDERED
-!       
+!
 !       CALL OS( 'X=C     ' , ALPHA1 , ALPHA1 , ALPHA1 , 0.D0 )
 !       CALL OS( 'X=C     ' , ALPHA2 , ALPHA2 , ALPHA2 , 0.D0 )
 !       CALL OS( 'X=C     ' , ALPHA3 , ALPHA3 , ALPHA3 , 0.D0 )
@@ -721,19 +721,19 @@
       ELSE
 !
 !       UNSTEADY STATE : UPDATES DATA AND RESULTS
-!       
+!
         IF(LT.LT.NIT) THEN
-!       
+!
 !         HIT,.., HH,.. IN INITIAL CONDITIONS, SEE PROPIN_ADJ
           CALL OS( 'X=Y     ' , HH , HN  , HN  , C )
           CALL OS( 'X=Y     ' , UU , UN  , UN  , C )
           CALL OS( 'X=Y     ' , VV , VN  , VN  , C )
-!        
+!
 !         READS TELEMAC2D RESULTS (RESULTS FILE - UNIT NRES)
 !         SEE ALSO CONDIN_ADJ
-!        
+!
           ITER=NIT-LT
-!        
+!
           CALL GET_MESH_NPOIN(T2D_FILES(T2DRES)%FMT,
      &                        T2D_FILES(T2DRES)%LU,POINT_ELT_TYPE,
      &                        NPOIN,IERR)
@@ -741,11 +741,11 @@
           CALL READ_DATASET(T2D_FILES(T2DRES)%FMT,T2D_FILES(T2DRES)%LU,
      &                      VARSOR,NPOIN,ITER,AT1,TEXTE,TROUVE,ALIRE,
      &                      LISTIN,.FALSE.,MAXVAR)
-!        
+!
 !         READS THE MEASUREMENTS (REFERENCE FILE - UNIT NREF)
-!        
+!
           CALL MESURES(ITER,AT-DT)
-!        
+!
         ENDIF
       ENDIF
 !

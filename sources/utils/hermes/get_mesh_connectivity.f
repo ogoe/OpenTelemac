@@ -8,7 +8,7 @@
 ! HERMES   V7P0                                               01/05/2014
 !***********************************************************************
 !
-!brief    Returns the connectivity table for 
+!brief    Returns the connectivity table for
 !+        the element of type typ_elem in the mesh
 !+        will do nothing if there are no element of typ_elem in the mesh
 !
@@ -47,10 +47,10 @@
 !
       SELECT CASE (FFORMAT)
         CASE ('SERAFIN ','SERAFIND')
-          CALL GET_MESH_CONNECTIVITY_SRF(FID, TYP_ELEM, IKLE, NELEM, 
+          CALL GET_MESH_CONNECTIVITY_SRF(FID, TYP_ELEM, IKLE, NELEM,
      &                                   NDP, IERR)
         CASE ('MED     ')
-          CALL GET_MESH_CONNECTIVITY_MED(FID, TYP_ELEM, IKLE, NELEM, 
+          CALL GET_MESH_CONNECTIVITY_MED(FID, TYP_ELEM, IKLE, NELEM,
      &                                   NDP, IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

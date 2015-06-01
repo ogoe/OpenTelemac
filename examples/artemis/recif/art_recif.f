@@ -4,7 +4,7 @@
 !
 !***********************************************************************
 !
-!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12 
+!  ARTEMIS    VERSION 3.2 02/06/99   D. AELBRECHT (LNH) 01 30 87 74 12
 !
 !  LINKED TO BIEF VERS. 5.0          J-M HERVOUET (LNH) 01 30 87 80 18
 !
@@ -78,11 +78,11 @@
 !
       DOUBLE PRECISION PI,BID,PHASOI
 !
-!     ---------------------------------------- 
+!     ----------------------------------------
 !     VOS NOUVELLES DECLARATIONS DE VARIABLES :
-!     ---------------------------------------- 
-!                                                                       
-! JCB :                                                                       
+!     ----------------------------------------
+!
+! JCB :
       INTEGER I    , IB,JB
 ! JCB
 !
@@ -111,11 +111,11 @@
       HB%R(:)    = 0.0D0
 ! Incident wave with PHASE=0.
       PHASOI=0.D0
-      
-      
+
+
       DO I=1,NPTFR
         JB=BOUNDARY_COLOUR%I(I)
-      
+
         IF(JB.GE.4101.AND.JB.LE.4200)THEN
           LIHBOR%I(I) = KINC
           HB%R(I)     = 0.05D0
@@ -138,9 +138,9 @@
           RP%R(I) = 1.D0
           TETAP%R(I) = 0.D0
           ALFAP%R(I) = 0.D0
-        ENDIF 
-       
-!       solide libre  
+        ENDIF
+
+!       solide libre
         IF(JB.GE.2001.AND.JB.LE.2101)THEN
           LIHBOR%I(I) = KSORT
           TETAP%R(I)=0.D0
@@ -152,12 +152,12 @@
           TETAP%R(I) = 0.D0
           ALFAP%R(I) = 0.D0
         ENDIF
-      
+
       ENDDO
 !-----------------------------------------------------------------------
-!                                                                       
-      RETURN                                                            
-      END                                                               
+!
+      RETURN
+      END
 !                       *****************
                         SUBROUTINE ART_CORFON
 !                       *****************
@@ -225,7 +225,7 @@
 
       D1 = 6.
       D3 = 2.
-! value of variable b 
+! value of variable b
       L1 = 4.
       HCP=0.
       XRCP=0.
@@ -236,9 +236,9 @@
 ! TANH VARIATION
       DO I = 1,NPOIN
         XRCP=X(I)-XDEBUT
-        HCP =(D1+D3)/2.-( (D1-D3)*TANH(3.*PI*((XRCP/L1)-0.5)) )/2. 
+        HCP =(D1+D3)/2.-( (D1-D3)*TANH(3.*PI*((XRCP/L1)-0.5)) )/2.
         ZF%R(I) = D1-HCP
       ENDDO
 !
       RETURN
-      END                  
+      END

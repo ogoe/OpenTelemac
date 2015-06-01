@@ -40,10 +40,10 @@
 !| A22            |<->| MATRIX IN THE 2x2 LINEAR SYSTEM
 !| KDIR           |-->| CONVENTION FOR DIRICHLET BOUNDARY CONDITIONS
 !| LIDIR1         |-->| TYPES OF BOUNDARY CONDITIONS FOR VARIABLE 1
-!|                |   | IF LIMDIR(K) = KDIR THE KTH BOUNDARY POINT 
+!|                |   | IF LIMDIR(K) = KDIR THE KTH BOUNDARY POINT
 !|                |   | IS OF DIRICHLET TYPE.
 !| LIDIR2         |-->| TYPES OF BOUNDARY CONDITIONS FOR VARIABLE 2
-!|                |   | IF LIMDIR(K) = KDIR THE KTH BOUNDARY POINT 
+!|                |   | IF LIMDIR(K) = KDIR THE KTH BOUNDARY POINT
 !|                |   | IS OF DIRICHLET TYPE.
 !| MASKPT         |-->| MASKING PER POINT.
 !|                |   | =1. : NORMAL   =0. : MASKED
@@ -51,7 +51,7 @@
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| SM1            |-->| FIRST RIGHT-HAND SIDE OF THE SYSTEM.
 !| SM2            |-->| SECOND RIGHT-HAND SIDE OF THE SYSTEM.
-!| T1             |<->| WORK DOUBLE PRECISION ARRAY IN A BIEF_OBJ 
+!| T1             |<->| WORK DOUBLE PRECISION ARRAY IN A BIEF_OBJ
 !| T2             |<->| WORK DOUBLE PRECISION ARRAY IN A BIEF_OBJ
 !| T3             |<->| WORK DOUBLE PRECISION ARRAY IN A BIEF_OBJ
 !| T4             |<->| WORK DOUBLE PRECISION ARRAY IN A BIEF_OBJ

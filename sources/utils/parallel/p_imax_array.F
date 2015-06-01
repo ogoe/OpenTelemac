@@ -43,7 +43,7 @@
      &                   MPI_MAX,MPI_COMM_WORLD,IERR)
 !
       IF(IERR.NE.0) THEN
-        IF(LNG.EQ.1) WRITE(LU,*)  
+        IF(LNG.EQ.1) WRITE(LU,*)
      &           'P_IMAX_ARRAY: ERREUR DANS MPI_ALLREDUCE'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_IMAX_ARRAY: ERROR IN MPI_ALLREDUCE'
         WRITE (LU,*) 'MPI ERROR ',IERR

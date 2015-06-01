@@ -80,10 +80,10 @@
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
 !  TO BE MODIFIED BY USER
-      DO IPOIN=1,NPOIN                                                 
+      DO IPOIN=1,NPOIN
         EIKON=(  (X(IPOIN)-10.05D0)**2 + (Y(IPOIN)-10.05D0)**2 ) / 4.D0
         H%R(IPOIN) = 2.4D0 * ( 1.D0 + EXP(-EIKON) )
-      ENDDO                                                            
+      ENDDO
 !  END OF CODE TO BE MODIFIED BY USER
       ELSE
         IF(LNG.EQ.1) THEN

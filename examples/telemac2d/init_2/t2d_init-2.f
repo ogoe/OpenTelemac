@@ -14,7 +14,7 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|______________________________________________
-! |                | -- |  
+! |                | -- |
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !***********************************************************************
@@ -31,8 +31,8 @@
       DOUBLE PRECISION COT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-! 
-      INTEGER ITRAC 
+!
+      INTEGER ITRAC
 !
 !-----------------------------------------------------------------------
 !
@@ -68,16 +68,16 @@
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
-!  ZONE A MODIFIER                                                      
-        IF(LNG.EQ.1) WRITE(LU,10)                                       
-        IF(LNG.EQ.2) WRITE(LU,11)                                       
+!  ZONE A MODIFIER
+        IF(LNG.EQ.1) WRITE(LU,10)
+        IF(LNG.EQ.2) WRITE(LU,11)
 10      FORMAT(1X,'CONDIN : AVEC DES CONDITIONS INITIALES PARTICULIERES'
-     &         ,/,'         VOUS DEVEZ MODIFIER CONDIN')                
-11      FORMAT(1X,'CONDIN : WITH SPECIAL INITIAL CONDITIONS'            
-     &         ,/,'         YOU HAVE TO MODIFY CONDIN')                 
-        CALL PLANTE(1)                                                  
-        STOP                                                            
-!  FIN DE LA ZONE A MODIFIER      
+     &         ,/,'         VOUS DEVEZ MODIFIER CONDIN')
+11      FORMAT(1X,'CONDIN : WITH SPECIAL INITIAL CONDITIONS'
+     &         ,/,'         YOU HAVE TO MODIFY CONDIN')
+        CALL PLANTE(1)
+        STOP
+!  FIN DE LA ZONE A MODIFIER
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -129,4 +129,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END           
+      END

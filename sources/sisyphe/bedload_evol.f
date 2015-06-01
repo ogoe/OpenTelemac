@@ -37,29 +37,29 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables   
-!+ 
+!+  Name of variables
+!+
 !history  J-M HERVOUET (EDF-LNHE)
 !+        27/01/2012
 !+        V6P2
-!+  Argument ICLA added     
+!+  Argument ICLA added
 !
 !history  J-M HERVOUET (EDF-LNHE)
 !+        09/01/2013
 !+        V6P3
-!+  Pointer FLULIM added to avoid a hidden temporary array allocation    
+!+  Pointer FLULIM added to avoid a hidden temporary array allocation
 !
 !history  R.ATA (EDF-LNHE)
 !+        02/06/2014
 !+        V7P0
-!+  Corrections of normals and nubo tables 
+!+  Corrections of normals and nubo tables
 !+  after changes in FV data structure of Telemac2d
-!+  
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
 !| AVA            |-->| PERCENT AVAILABLE
 !| BREACH         |<->| INDICATOR FOR NON ERODIBLE BED (FINITE VOLUMES SHEMES)
-!| CALFA          |<->| COSINUS OF THE ANGLE BETWEEN MEAN FLOW AND TRANSPORT 
+!| CALFA          |<->| COSINUS OF THE ANGLE BETWEEN MEAN FLOW AND TRANSPORT
 !| COEFPN         |<->| CORRECTION OF TRANSORT FOR SLOPING BED EFFECT
 !| CONST_ALAYER   |-->| CONSTANT ACTIVE LAYER THICKNESS OR NOT
 !| D90            |---| D90
@@ -68,7 +68,7 @@
 !| DTS            |<->| TIME STEP FOR SUSPENSION
 !| EBOR           |<->| BOUNDARY CONDITION FOR BED EVOLUTION (DIRICHLET)
 !| ELAY           |<->| THICKNESS OF SURFACE LAYER
-!| ELAY0          |<->| ACTIVE LAYER THICKNESS 
+!| ELAY0          |<->| ACTIVE LAYER THICKNESS
 !| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION
 !| FLBCLA         |-->| BLOCK OF FLUXES AT BOUNDARY FOR EACH CLASS
 !| GRAV           |-->| ACCELERATION OF GRAVITY
@@ -81,7 +81,7 @@
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
 !| LCONDIS        |-->| LOGICAL, CONSTANT FLOW DISCHARGE
 !| LIMTEC         |<->| TYPE OF BOUNDARY CONDITION
-!| LIQBOR         |-->| TYPE OF BOUNDARY CONDITION FOR BEDLOAD DISCHARGE  
+!| LIQBOR         |-->| TYPE OF BOUNDARY CONDITION FOR BEDLOAD DISCHARGE
 !| LOADMETH       |-->| (A SUPPRIMER)
 !| LS0            |-->| (A SUPPRIMER)
 !| MASK           |-->| BLOCK OF MASKS, EVERY ONE FOR A TYPE OF BOUNDARY
@@ -91,14 +91,14 @@
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| Q              |-->| FLOW DISCHARGE 
-!| QBOR           |-->| PRESCRIBED BEDLOAD DISCHARGE  
+!| Q              |-->| FLOW DISCHARGE
+!| QBOR           |-->| PRESCRIBED BEDLOAD DISCHARGE
 !| QS             |<->| EDLOAD TRANSPORT RATE
-!| QSX            |<->| SOLID DISCHARGE X 
-!| QSY            |<->| SOLID DISCHARGE Y 
+!| QSX            |<->| SOLID DISCHARGE X
+!| QSY            |<->| SOLID DISCHARGE Y
 !| S              |-->| VOID STRUCTURE
 !| SALFA          |<->| SINUS OF THE ANGLE BETWEEN TRANSPORT RATE AND CURRENT
-!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT  
+!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT
 !| T1             |<->| WORK BIEF_OBJ STRUCTURE
 !| T10            |<->| WORK BIEF_OBJ STRUCTURE
 !| T11            |<->| WORK BIEF_OBJ STRUCTURE
@@ -116,8 +116,8 @@
 !| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS, ASSEMBLED IN PARALLEL
 !| VCE            |-->| WATER VISCOSITY
 !| VF             |-->| LOGICAL, FINITE VOLUMES OR NOT
-!| XMVE           |-->| FLUID DENSITY 
-!| XMVS           |-->| SEDIMENT DENSITY 
+!| XMVE           |-->| FLUID DENSITY
+!| XMVS           |-->| SEDIMENT DENSITY
 !| ZFCL           |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -153,7 +153,7 @@
       DOUBLE PRECISION, POINTER :: FLULIM(:)
 !
 !=======================================================================
-!                               PROGRAM                                
+!                               PROGRAM
 !=======================================================================
 !
 !     POINTER TO A WORK ARRAY
@@ -168,8 +168,8 @@
 !
 !     TREATMENT OF NON ERODABLE BOTTOM
 !
-      IF(VF) THEN  
-        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING BEDLOAD_NERBED_VF'   
+      IF(VF) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING BEDLOAD_NERBED_VF'
         CALL BEDLOAD_NERBED_VF
      &        (MESH,LIMTEC,KDDL,ELAY%R,V2DPAR%R,QSX,QSY,AVA,NPOIN,
      &         MESH%NSEG,NPTFR,DTS,QS,T1,T2,T3,BREACH,CSF_SABLE,
@@ -178,9 +178,9 @@
         CALL OS('X=YZ    ', X=QSX, Y=QS, Z=CALFA)
         CALL OS('X=YZ    ', X=QSY, Y=QS, Z=SALFA)
       ENDIF
-! 
-!     SOLVES THE BED-EVOLUTION EQUATION : F.V. 
-! 
+!
+!     SOLVES THE BED-EVOLUTION EQUATION : F.V.
+!
       IF(VF) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING BEDLOAD_SOLVS_VF'
         CALL BEDLOAD_SOLVS_VF(MESH,QSX,QSY,LIMTEC,UNSV2D,EBOR,
@@ -189,10 +189,10 @@
      &                        CSF_SABLE,FLBCLA%ADR(ICLA)%P,AVA,
      &                        LIQBOR,QBOR,MESH%NUBO%I,MESH%VNOIN%R)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETURN FROM BEDLOAD_SOLVS_VF'
-! 
-!     SOLVES THE BED-EVOLUTION EQUATION : F.E.    
-! 
-      ELSE       
+!
+!     SOLVES THE BED-EVOLUTION EQUATION : F.E.
+!
+      ELSE
         DO J=1,NPOIN
 !         T13 IS THE SEDIMENT HEIGHT (EXCLUDING VOIDS, SO *CSF_SABLE)
           T13%R(J)=AVA(J)*ELAY%R(J)*CSF_SABLE

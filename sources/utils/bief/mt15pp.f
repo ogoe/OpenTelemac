@@ -76,7 +76,7 @@
         I6=IKLE(IELEM,6)
 !
         T(IELEM,1)=0.D0
-        T(IELEM,2)=0.D0 
+        T(IELEM,2)=0.D0
         T(IELEM,3)=0.D0
 !
         XM(IELEM, 1)=0.D0
@@ -121,19 +121,19 @@
 !
         IF(ZPT(I4)-ZPT(I1).GT.1.D-4) THEN
 !         TERM 4-4
-          T(IELEM,4)=   F(I4)*SURFAC(IELEM)*XSUR3 
+          T(IELEM,4)=   F(I4)*SURFAC(IELEM)*XSUR3
 !         TERM 1-4
           XM(IELEM, 3)=-F(I4)*SURFAC(IELEM)*XSUR3
         ENDIF
         IF(ZPT(I5)-ZPT(I2).GT.1.D-4) THEN
 !         TERM 5-5
-          T(IELEM,5)=   F(I5)*SURFAC(IELEM)*XSUR3 
+          T(IELEM,5)=   F(I5)*SURFAC(IELEM)*XSUR3
 !         TERM 2-5
           XM(IELEM, 8)=-F(I5)*SURFAC(IELEM)*XSUR3
         ENDIF
         IF(ZPT(I6)-ZPT(I3).GT.1.D-4) THEN
 !         TERM 6-6
-          T(IELEM,6)=   F(I6)*SURFAC(IELEM)*XSUR3 
+          T(IELEM,6)=   F(I6)*SURFAC(IELEM)*XSUR3
 !         TERM 3-6
           XM(IELEM,12)=-F(I6)*SURFAC(IELEM)*XSUR3
         ENDIF

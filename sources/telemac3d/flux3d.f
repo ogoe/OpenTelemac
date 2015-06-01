@@ -49,13 +49,13 @@
 !history  J-M HERVOUET(LNHE)
 !+        08/07/2012
 !+        V6P2
-!+   Rain taken into account on prescribed depths to compute FLUEXT.  
+!+   Rain taken into account on prescribed depths to compute FLUEXT.
 !
 !history  J-M HERVOUET(LNHE)
 !+        23/08/2012
 !+        V6P2
 !+   Call to na_flux3d_lim added to limit the non assembled fluxes
-!+   stored into WEL and subsequent re-assembly of FLUINT. 
+!+   stored into WEL and subsequent re-assembly of FLUINT.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BYPASS         |---| IF YES, BYPASS VOID VOLUMES

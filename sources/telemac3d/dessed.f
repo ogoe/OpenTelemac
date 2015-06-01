@@ -249,7 +249,7 @@
 !
 ! A TRICK TO WRITE ONE NUMBER
 !
-      RECORD = (LT-GRADEB/GRAPRD)  
+      RECORD = (LT-GRADEB/GRAPRD)
 !
       IF (TASSE) THEN
 !
@@ -263,7 +263,7 @@
 !       ENDDO
 !       DO IPLAN = 2,NCOUCH
 !         DO IPOIN = 1, NPOIN2
-!           WSEB(IPOIN+NPOIN2*(IPLAN-1)) = 
+!           WSEB(IPOIN+NPOIN2*(IPLAN-1)) =
 !                     WSEB(IPOIN+NPOIN2*(IPLAN-2))
 !                     + EPAI(IPOIN+NPOIN2*(IPLAN-1))
 !          ENDDO
@@ -368,7 +368,7 @@
         DO IPOIN = 1, NPOIN2
           JPLAN = NPFMAX
           DO IPLAN = NPF(IPOIN),1,-1
-            WSEB(IPOIN+(JPLAN-1)*NPOIN2) = 
+            WSEB(IPOIN+(JPLAN-1)*NPOIN2) =
      &                 RHOS/(1.D0+IVIDE(IPLAN,IPOIN))
             JPLAN = JPLAN - 1
           ENDDO

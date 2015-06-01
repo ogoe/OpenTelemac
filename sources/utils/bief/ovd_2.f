@@ -43,7 +43,7 @@
 !|                |   |    ZERO BEING AN OPTIONAL ARGUMENT
 !| NPOIN          |-->| SIZE OF VECTORS
 !| OP             |-->| STRING INDICATING THE OPERATION TO BE DONE
-!| X              |<--| RESULTING VECTOR 
+!| X              |<--| RESULTING VECTOR
 !| Y              |-->| TO BE USED IN THE OPERATION
 !| Z              |-->| TO BE USED IN THE OPERATION
 !| ZERO           |-->| CRITERION FOR DIVISION BY ZERO

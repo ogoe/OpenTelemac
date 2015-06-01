@@ -1,13 +1,13 @@
 !
 ! TELEMAC-3D V5.1 REF. TEST CASE NH
-! SOLITARY WAVE PROPAGATION OVER AN 
-! UNEVEN SEABED 
+! SOLITARY WAVE PROPAGATION OVER AN
+! UNEVEN SEABED
 !
 !
 !                       *****************
-                        SUBROUTINE CONDIM 
+                        SUBROUTINE CONDIM
 !                       *****************
-! 
+!
 !
 !***********************************************************************
 ! TELEMAC-3D   V5.1         25/11/97      J-M HERVOUET(LNH) 30 87 80 18
@@ -49,10 +49,10 @@
       WX=10.0D0
       X0=80.0D0
 !
-      DO IPOIN2=1,NPOIN2 
+      DO IPOIN2=1,NPOIN2
         HV1=SQRT(3.0D0/4.0D0*WH/WX**3.0D0)*(X(IPOIN2)-X0)
         HV2=2.0D0/(EXP(HV1)+EXP(-HV1))
-        H%R(IPOIN2)=H%R(IPOIN2) + WH*HV2**2 
+        H%R(IPOIN2)=H%R(IPOIN2) + WH*HV2**2
       ENDDO
 !
       CALL OS ('X=Y     ', HN, H, H, 0.0D0)
@@ -142,7 +142,7 @@
       CALL OS( 'X=C     ' , W , W , W , 0.D0 )
 !
 !
-! SOLITARY WAVE INITIAL VELOCITY - ANALYTICAL SOLUTION 
+! SOLITARY WAVE INITIAL VELOCITY - ANALYTICAL SOLUTION
       DO IPLAN=1,NPLAN
         DO IPOIN2=1,NPOIN2
 !
@@ -162,7 +162,7 @@
 !
 !
 ! INITIALIZE THE PRESSURE FIELDS TO 0.0
-! 
+!
       IF(NONHYD) THEN
         CALL OS('X=C     ',X=DP,C=0.D0)
         WRITE (LU,*) 'CONDIM: DYNAMIC PRESSURE INITIALISED TO ZERO'
@@ -180,7 +180,7 @@
      & LISFON, MSK, MASKEL, MATR2D, MESH2D, S)
 !
 !***********************************************************************
-! TELEMAC-3D   V5.1      
+! TELEMAC-3D   V5.1
 ! FORTRAN95 VERSION         MARCH 1999        JACEK A. JANKOWSKI PINXIT
 !***********************************************************************
 !
@@ -227,9 +227,9 @@
       INTEGER, INTENT(IN) :: NPOIN2, LISFON
       LOGICAL, INTENT(IN) :: MSK
       TYPE (BIEF_OBJ), INTENT(INOUT) :: SZF, ST1, ST2
-      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(INOUT) :: ZF, T1, T2 
-      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(IN) :: X,Y 
-      TYPE (BIEF_OBJ),  INTENT(INOUT) :: PRIVE 
+      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(INOUT) :: ZF, T1, T2
+      DOUBLE PRECISION, DIMENSION(NPOIN2), INTENT(IN) :: X,Y
+      TYPE (BIEF_OBJ),  INTENT(INOUT) :: PRIVE
       TYPE (BIEF_OBJ),  INTENT(IN)    :: MASKEL
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: MATR2D
       TYPE (BIEF_MESH), INTENT(INOUT) :: MESH2D
@@ -261,4 +261,4 @@
       ENDIF
 !
       RETURN
-      END 
+      END

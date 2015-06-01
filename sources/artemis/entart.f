@@ -34,7 +34,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALEMON         |-->| TRUE IF MONODIRECTIONAL RANDOM WAVES 
+!| ALEMON         |-->| TRUE IF MONODIRECTIONAL RANDOM WAVES
 !| ALEMUL         |-->| TRUE IF MULTIDIRECTIONAL RANDOM WAVES
 !| BALAYE         |-->| TRUE IF PERIOD SCANNING
 !| ITITRE         |-->| TYPE OF TITLE TO PRINT

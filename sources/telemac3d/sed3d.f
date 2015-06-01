@@ -4,7 +4,7 @@
 !
      &(MASBED, MASBED0, MASDEP,WC,TA,EPAI,HDEP,CONC,FLUER,FLUDP,TRA02,
      & NELEM2,NPOIN2,NPOIN3,NPFMAX,NCOUCH,
-     & NPF,AT,TASSE,GIBSON,RHOS,VOLU2D, 
+     & NPF,AT,TASSE,GIBSON,RHOS,VOLU2D,
      & CFDEP,EPAICO,EPAINCO,MIXTE)
 !
 !***********************************************************************
@@ -102,7 +102,7 @@
       DOUBLE PRECISION, INTENT(IN) :: EPAI(NPOIN2,NCOUCH)
       DOUBLE PRECISION, INTENT(IN) :: EPAICO(NPOIN2), EPAINCO(NPOIN2)
       DOUBLE PRECISION, INTENT(IN) :: HDEP(NPOIN2),FLUER(NPOIN2)
-! BUG FIX T      
+! BUG FIX T
       DOUBLE PRECISION, INTENT(IN) :: FLUDP(NPOIN2),CONC(NPOIN2,NCOUCH)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: TRA02(NPOIN2)
@@ -155,7 +155,7 @@
 !=======================================================================
 !
 !      MASSE5=MASSE4-MASSE3
-!      
+!
 !=======================================================================
 !
 ! CUMULATED MASS OF SEDIMENT DEPOSITED (MASDEP =0 t=0)
@@ -186,10 +186,10 @@
           WRITE(LU,*) 'MASSE TOTALE  DEPOSEE               :', MASDEP
         ELSE
           WRITE(LU,*) 'MASSE TOTALE ERODEE                 : ',-MASDEP
-        ENDIF 
+        ENDIF
         WRITE(LU,*) 'BILAN MASSE DU LIT (GAIN>0-  PERTE <0)  :', ERROR
       ENDIF
-!      
+!
       IF(LNG.EQ.2) THEN
         WRITE(LU,*) 'SEDIMENT BED MASS BALANCE AT TIME=',AT
         WRITE(LU,*) 'MASSE OF BED                        : ',MASBED
@@ -197,7 +197,7 @@
           WRITE(LU,*) 'TOTAL DEPOSITED MASS               :', MASDEP
         ELSE
           WRITE(LU,*) 'TOTAL ERODED MASS                : ',-MASDEP
-        ENDIF 
+        ENDIF
         WRITE(LU,*) 'SEDIMENT BED MASS BALANCE  (GAIN>0 LOSS<0):', ERROR
       ENDIF
 !

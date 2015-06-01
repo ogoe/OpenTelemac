@@ -8,7 +8,7 @@
      & NPSING,NDGA1,NDGB1,TWEIRA,TWEIRB)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0      
+! TELEMAC2D   V7P0
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCES TERMS IN THE DIFFUSION EQUATION
@@ -216,9 +216,9 @@
       DO ITRAC=1,NTRA
 !
         IF(NREJTR.GT.0) THEN
-!       
+!
           DO I = 1 , NREJTR
-!         
+!
             IR = ISCE(I)
 !           TEST IR.GT.0 FOR THE PARALLELISM
             IF(IR.GT.0) THEN
@@ -239,14 +239,14 @@
               ENDIF
               TRASCE = TRASCE - (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
               TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR)+TRASCE
-!         
+!
 !             THE IMPLICIT PART OF THE TERM - T * SCE
 !             IS DEALT WITH IN CVDFTR.
-!         
+!
             ENDIF
-!         
+!
           ENDDO
-!       
+!
         ENDIF
 !
         IF(NSIPH.GT.0) THEN
@@ -343,7 +343,7 @@
                 IF(WATQUA.AND.WAQPROCESS.EQ.1)THEN
                   H1   = HPROP%R(IR)
                   TRUP = TN%ADR(NTRAC-ADDTR+1)%P%R(IR)
-                  IF(NCSIZE.GT.1)THEN 
+                  IF(NCSIZE.GT.1)THEN
                     H1   = P_DMIN(H1  )+P_DMAX(H1  )
                     TRUP = P_DMIN(TRUP)+P_DMAX(TRUP)
                   ENDIF
@@ -366,9 +366,9 @@
      &             TWEIRB%ADR(ITRAC)%P%R(INDIC) -
      &             (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
 !               RECUPERATE H FOR WAQ
-                IF(WATQUA.AND.WAQPROCESS.EQ.1)THEN 
+                IF(WATQUA.AND.WAQPROCESS.EQ.1)THEN
                   H2  = HPROP%R(IR)
-                  IF(NCSIZE.GT.1)THEN 
+                  IF(NCSIZE.GT.1)THEN
                     H2   = P_DMIN(H2  )+P_DMAX(H2  )
                   ENDIF
                 ENDIF
@@ -387,7 +387,7 @@
                       RSW = 0.11D0*AB*(1.D0+0.046D0*WATTEMP)*DZ
 !                   WRL FORMULA 1 (NO NEED TO AB ? )
                     ELSEIF(FORMRS.EQ.3 )THEN
-                      RSW = 1.D0+0.69D0*DZ*(1.D0-0.11D0*DZ ) 
+                      RSW = 1.D0+0.69D0*DZ*(1.D0-0.11D0*DZ )
      &                      *( 1.D0+0.046D0*WATTEMP)
 !                   WRL FORMULA 2
                     ELSEIF (FORMRS.EQ.4)THEN
@@ -404,11 +404,11 @@
                         WRITE(LU,*)'POSSIBLE CHOICES ARE FROM 1 TO 4'
                       ENDIF
                       CALL PLANTE(1)
-                      STOP                             
+                      STOP
                     ENDIF
 !
 !                   FORCING O2 DENSITY DOWNSTREAM THE WEIR
-!                   
+!
                     IF(ABS(RSW).GT.EPS)THEN
                       TRDO = O2SATU + (TRUP-O2SATU)/RSW
                     ELSE
@@ -420,7 +420,7 @@
                     TN%ADR(NTRAC-ADDTR+1)%P%R(IR)=TRDO
                   ENDIF
                 ENDIF
-              ENDIF               
+              ENDIF
             ENDDO
           ENDDO
         ENDIF
@@ -463,7 +463,7 @@
 !       INITIALISATIONS
 !
         CALL OS('X=0     ',X=TSCEXP%ADR(NTRAC)%P)
-        YASMI(NTRAC)=.TRUE.   
+        YASMI(NTRAC)=.TRUE.
 !
 !       SOURCE TERMS
 !
@@ -500,7 +500,7 @@
         MASSOU(NTRAC)=MASSOU(NTRAC)*DT
         IF(NCSIZE.GT.1) MASSOU(NTRAC)=P_DSUM(MASSOU(NTRAC))
 !
-      ENDIF     
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

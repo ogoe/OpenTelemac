@@ -2,7 +2,7 @@
                         DOUBLE PRECISION FUNCTION LIMITER
 !                       **********************************
 !
-     &(ILIM,R,C) 
+     &(ILIM,R,C)
 !
 !***********************************************************************
 ! TELEMAC 2D VERSION 6.2                                           R.ATA
@@ -42,11 +42,11 @@
 ! |                |    |     4      : HLLC SCHEME                     |
 ! |                |    |     5      : WAF SCHEME                      |
 ! |________________|____|______________________________________________|
-! 
-!  MODE: -->(UNCHANGEABLE INPUT),<--(OUTPUT),<-->(CHANGEABLE INPUT)   
+!
+!  MODE: -->(UNCHANGEABLE INPUT),<--(OUTPUT),<-->(CHANGEABLE INPUT)
 !-----------------------------------------------------------------------
-!  CALLING SUBROUTINE HYD_WAF OR FLUXZZ 
-! 
+!  CALLING SUBROUTINE HYD_WAF OR FLUXZZ
+!
 !***********************************************************************
 !
       IMPLICIT NONE
@@ -63,57 +63,57 @@
 !
 !-----------------------------------------------------------------------
 !
-!     WAF SCHEME: WHAT WE COMPUTE HERE IS NOT THE LIMITER B(r) 
+!     WAF SCHEME: WHAT WE COMPUTE HERE IS NOT THE LIMITER B(r)
 !                 BUT THE FUNCTION A(r) = 1-(1-|C|)B(r)
 
       SELECT CASE (ILIM)
         CASE (1)
-!       
+!
 !       MINMOD
-!       
-          LIMITER = 1.0D0 - (1.0D0-ABS(C)) 
+!
+          LIMITER = 1.0D0 - (1.0D0-ABS(C))
      &             *0.5D0*(1.0D0 + DSIGN(1.D0,R)) ! DSIGN(A,B) = |A|*SIGN(B)
      &             *ABS(R)
-!       
-!       
+!
+!
 !         ELSEIF (ILIM.EQ.2) THEN
         CASE (2)
-!       
+!
 !       VAN ALBADA
-!       
+!
           IF(R.LE.0)THEN
             LIMITER = 1.0D0
           ELSE
             LIMITER = 1.0D0-(1.0D0-ABS(C))*R*(1.0D0+R)/(1.0D0+R**2)
           ENDIF
-!       
+!
         CASE(3)
-!       
+!
 !       VAN LEER
-!       
+!
           EPS = 1.D-12
           IF(R.LE.0)THEN
             LIMITER = 1.0D0
           ELSE
             LIMITER = 1.0D0-2.0D0*(1.0D0-ABS(C))*R/(1.0D0+R+EPS)
           ENDIF
-!       
+!
         CASE(4)
-!       
+!
 !       MINBEE
-!       
+!
           IF(R.LE.0)THEN
             LIMITER = 1.0D0
           ELSEIF(R.GT.0.0D0.AND.R.LE.1)THEN
             LIMITER = 1.0D0-(1.0D0-ABS(C))*R
-          ELSE 
+          ELSE
             LIMITER = ABS(C)
           ENDIF
-!       
+!
         CASE(5)
-!       
+!
 !       SUPERBEE
-!       
+!
           IF(R.LE.0)THEN
             LIMITER = 1.0D0
           ELSEIF(R.GT.0.0D0.AND.R.LE.0.5D0)THEN
@@ -122,12 +122,12 @@
             LIMITER = ABS(C)
           ELSEIF(R.GT.1.0D0.AND.R.LE.2.0D0)THEN
             LIMITER = 1.0D0-(1.0D0-ABS(C))*R
-          ELSE 
+          ELSE
             LIMITER = 2.0D0*ABS(C)-1.0D0
-          ENDIF 
-!       
+          ENDIF
+!
         CASE DEFAULT
-!       
+!
           WRITE(LU,*)'INVALID LIMITER FOR WAF SCHEME'
           CALL PLANTE(1)
           STOP

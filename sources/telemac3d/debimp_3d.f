@@ -118,7 +118,7 @@
       ENDDO
 !
 !     IN THE FOLLOWING LOOP ONE RESTRICTS THE MASK OF DIRICHLET ELEMENTS
-!     TO THOSE OF THE LIQUID BOUNDARY NUMBER IFRLIQ. 
+!     TO THOSE OF THE LIQUID BOUNDARY NUMBER IFRLIQ.
 !
       CALL OS('X=0     ',X=MASKBR)
 !
@@ -178,7 +178,7 @@
 !           WBOR(I3D) = 0.D0
           ENDDO
         ENDIF
-      ENDDO      
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

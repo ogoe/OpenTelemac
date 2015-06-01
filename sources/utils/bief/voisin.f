@@ -208,7 +208,7 @@
             GO TO 81
           ENDIF
 !
-        ENDDO ! IV 
+        ENDDO ! IV
 !
         IF(LNG.EQ.1) WRITE(LU,82)
         IF(LNG.EQ.2) WRITE(LU,83)
