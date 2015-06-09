@@ -27,6 +27,8 @@ files: bief_def.f
   dealmesh.f
   inclus.f
   read_submit.f
+  flux_ef_vf_3.f
+  tvf_imp.f
   sortie.f
   streamline.f
   cpstvc.f
