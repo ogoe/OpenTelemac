@@ -380,10 +380,12 @@ files: bief_def.f
   vgfpsi.f
   flux_mask.f
   flux_ef_vf_2.f
+  flux_ef_vf_3.f
   tvf.f
   hvf.f
   tracvf.f
   tvf_2.f
+  tvf_imp.f
   cflvf.f
   cvtrvf.f
   kspg11.f

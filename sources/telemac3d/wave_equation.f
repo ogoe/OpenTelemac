@@ -5,7 +5,7 @@
      &(LT,ISOUSI)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   07/07/2014
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    DIFFUSION AND PROPAGATION STEP IN 3D USING THE WAVE
@@ -96,9 +96,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       CHARACTER(LEN=16) :: FORMUL
-      INTEGER           :: I,IPTFR3,IPOIN2,IPLAN,I1,I2,I3,NP,IELEM
-      INTEGER           :: I3D,IP,IAD1,IAD2,IAD3
-      LOGICAL           :: MSKGRA
+      INTEGER           :: I,IPTFR3,IPOIN2,IPLAN,I1,I2,I3,NP
+      INTEGER           :: I3D,IP
       DOUBLE PRECISION  :: C
 !
 !-----------------------------------------------------------------------

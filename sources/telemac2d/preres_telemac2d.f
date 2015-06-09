@@ -158,7 +158,7 @@
 !=======================================================================
 !
       IF(LT.EQ.NIT.AND.NPTS.GT.0) THEN
-        DO I=27,30
+        DO I=1,MAXVAR
 !         BEWARE : HERE SORLEO IS USED INSTEAD OF SORIMP
           IF(SORLEO(I)) THEN
             WRITE(LU,*) ' '

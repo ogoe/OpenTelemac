@@ -156,7 +156,7 @@
         ENDDO
 !
       ELSEIF(OPT.EQ.2) THEN
-!
+!       
         DO I=1,NPOIN
           MINFC%R(I)=FC(I)
           MAXFC%R(I)=FC(I)
@@ -164,7 +164,7 @@
 !
         DO I=1,NPTFR
           IF(LIMTRA(I).EQ.KDIR) THEN
-            N=NBOR(I)
+            N=NBOR(I)          
             MINFC%R(N)=MIN(MINFC%R(N),FBOR(I))
             MAXFC%R(N)=MAX(MAXFC%R(N),FBOR(I))
           ENDIF
@@ -234,13 +234,13 @@
 !           MAX(...,0.D0) FOR 1
             TAB1%R(GLOSEG(I,1)) = TAB1%R(GLOSEG(I,1)) + FXMAT(I)
 !           MIN(...,0.D0) FOR 2
-            TAB1%R(GLOSEG(I,2)) =
+            TAB1%R(GLOSEG(I,2)) = 
      &      TAB1%R(GLOSEG(I,2)) - COEMIN * FXMAT(I)
           ELSE
 !           - FXMAT(I) POSITIVE
             TAB1%R(GLOSEG(I,2)) = TAB1%R(GLOSEG(I,2)) - FXMAT(I)
 !           MIN(...,0.D0) FOR 1
-            TAB1%R(GLOSEG(I,1)) =
+            TAB1%R(GLOSEG(I,1)) = 
      &      TAB1%R(GLOSEG(I,1)) + COEMIN * FXMAT(I)
           ENDIF
         ENDDO
@@ -264,7 +264,7 @@
             N=NBOR(I)
             DIFF=FC(N)-FBOR(I)
 !           FXBOR IS HERE IN GLOBAL NUMBERING
-            TAB1%R(N)=TAB1%R(N)-MIN(FXBOR(N),0.D0)*DIFF
+            TAB1%R(N)=TAB1%R(N)-MIN(FXBOR(N),0.D0)*DIFF          
           ENDIF
         ENDDO
 !
@@ -304,40 +304,37 @@
 !
         IF(YASMH.AND.RAIN) THEN
           DO I = 1,NPOIN
-            DENOM=TAB1%R(I)+MAX(FXBOR(I),0.D0)
-     &                     -MIN(SMH(I)+PLUIE(I),0.D0)
-     &                     +COESOU*(MIN(FXBOR(I),0.D0)
-     &                             -MAX(SMH(I)+PLUIE(I),0.D0))
-            IF(DENOM.GT.1.D-20) THEN
-              DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
-            ENDIF
+            TAB1%R(I)=TAB1%R(I)+MAX(FXBOR(I),0.D0)
+     &                         -MIN(SMH(I)+PLUIE(I),0.D0)
+     &                 +COESOU*(MIN(FXBOR(I),0.D0)
+     &                         -MAX(SMH(I)+PLUIE(I),0.D0))
           ENDDO
         ELSEIF(YASMH) THEN
           DO I = 1,NPOIN
-            DENOM=TAB1%R(I)+        MAX(FXBOR(I),0.D0)-MIN(SMH(I),0.D0)
+            TAB1%R(I)=TAB1%R(I)+    MAX(FXBOR(I),0.D0)-MIN(SMH(I),0.D0)
      &                     +COESOU*(MIN(FXBOR(I),0.D0)-MAX(SMH(I),0.D0))
-            IF(DENOM.GT.1.D-20) THEN
-              DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
-            ENDIF
           ENDDO
         ELSEIF(RAIN) THEN
           DO I = 1,NPOIN
-            DENOM=TAB1%R(I)
+            TAB1%R(I)=TAB1%R(I)
      &                  +MAX(FXBOR(I),0.D0)-MIN(PLUIE(I),0.D0)
      &          +COESOU*(MIN(FXBOR(I),0.D0)-MAX(PLUIE(I),0.D0))
-            IF(DENOM.GT.1.D-20) THEN
-              DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
-            ENDIF
           ENDDO
         ELSE
           DO I = 1,NPOIN
-            DENOM=TAB1%R(I)+       MAX(FXBOR(I),0.D0)
-     &                     +COESOU*MIN(FXBOR(I),0.D0)
-            IF(DENOM.GT.1.D-20) THEN
-              DTMAX = MIN(DTMAX,SECU*MAS(I)*HSTART(I)/DENOM)
-            ENDIF
-          ENDDO
+            TAB1%R(I)=TAB1%R(I)+       MAX(FXBOR(I),0.D0)
+     &                         +COESOU*MIN(FXBOR(I),0.D0)
+          ENDDO  
         ENDIF
+!
+        DO I = 1,NPOIN
+          IF(TAB1%R(I).GT.1.D-20) THEN
+            MINFC%R(I)=SECU*MAS(I)*HSTART(I)/TAB1%R(I)
+            DTMAX=MIN(DTMAX,MINFC%R(I))
+          ELSE
+            MINFC%R(I)=DT
+          ENDIF
+        ENDDO  
 !
       ELSEIF(OPT.EQ.2.OR.OPT.EQ.3) THEN
 !
@@ -359,7 +356,7 @@
             ENDIF
           ENDIF
         ENDDO
-!
+!     
       ENDIF
 !
 !-----------------------------------------------------------------------

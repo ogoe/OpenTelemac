@@ -3,12 +3,13 @@
 !                    **************
 !
      &(F,FN,FC,H,FXMAT,FXMATPAR,
-     & UNSV2D,DT,FXBOR,FXBORPAR,T7,FBOR,SMH,YASMH,FSCEXP,
+     & VOLU2D,UNSV2D,DT,FXBOR,FXBORPAR,T7,FBOR,SMH,YASMH,FSCEXP,
      & NSEG,NPOIN,NPTFR,GLOSEG,SIZGLO,NBOR,LIMTRA,KDIR,KDDL,OPTSOU,HLIN,
-     & IOPT2,FLBORTRA,SURNIT,MESH,SF,RAIN,PLUIE,TRAIN)
+     & IOPT2,FLBORTRA,SURNIT,MESH,SF,RAIN,PLUIE,TRAIN,MASSOU,
+     & MASS_BALANCE)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES THE TRACER FOR FINITE VOLUME SCHEME.
@@ -37,6 +38,11 @@
 !+   Rain and evaporation added (after initiative by O. Boutron, from
 !+   Tour du Valat, and O. Bertrand, Artelia group)
 !
+!history  J-M HERVOUET (LNHE)
+!+        08/06/2015
+!+        V7P1
+!+   Now mass balance done on request.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME-STEP
 !| F              |<--| VALUES OF F AT TIME N+1 OF SUB-ITERATION
@@ -61,6 +67,9 @@
 !| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
 !| LIMTRA         |-->| TECHNICAL BOUNDARY CONDITIONS FOR TRACERS
+!| MASS_BALANCE   |-->| IF YES, ALL TERMS FOR MASS BALANCE 
+!|                |   | WILL BE COMPUTED
+!| MASSOU         |-->| MASS ADDED BY SOURCE TERM
 !| MESH           |-->| MESH STRUCTURE
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NPOIN          |-->| NUMBER OF POINTS
@@ -95,15 +104,15 @@
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMTRA(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: DT,SURNIT,TRAIN
       DOUBLE PRECISION, INTENT(INOUT) :: FLBORTRA(NPTFR)
-      DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN),MASSOU
       DOUBLE PRECISION, INTENT(IN)    :: FXBOR(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: FC(NPOIN),H(NPOIN),HLIN(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: SMH(NPOIN),UNSV2D(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: PLUIE(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: PLUIE(NPOIN),VOLU2D(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FSCEXP(NPOIN),FN(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FBOR(NPTFR),FXBORPAR(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FXMAT(NSEG),FXMATPAR(NSEG)
-      LOGICAL, INTENT(IN)             :: YASMH,RAIN
+      LOGICAL, INTENT(IN)             :: YASMH,RAIN,MASS_BALANCE
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T7,SF
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
 !
@@ -134,52 +143,62 @@
         STOP
       ENDIF
 !
-      IF(NCSIZE.GT.1) THEN
-!       THE CONTRIBUTION OF FLUXES IS BUILT APART FOR
-!       PRELIMINARY PARALLEL ASSEMBLING BEFORE ADDING ON F
-        DO I = 1,NPOIN
-          T7%R(I) = 0.D0
-        ENDDO
-        DO I = 1,NSEG
-          IF(FXMATPAR(I).LT.0.D0) THEN
-            T7%R(GLOSEG(I,1)) = T7%R(GLOSEG(I,1))
-     &      - DT/HLIN(GLOSEG(I,1))*UNSV2D(GLOSEG(I,1))
-     &      *FXMAT(I)*(FC(GLOSEG(I,2))-FC(GLOSEG(I,1)))
-          ELSEIF(FXMATPAR(I).GT.0.D0) THEN
-            T7%R(GLOSEG(I,2)) = T7%R(GLOSEG(I,2))
-     &      + DT/HLIN(GLOSEG(I,2))*UNSV2D(GLOSEG(I,2))
-     &      *FXMAT(I)*(FC(GLOSEG(I,1))-FC(GLOSEG(I,2)))
-          ENDIF
-        ENDDO
-        CALL PARCOM(T7,2,MESH)
-        DO I = 1,NPOIN
-          F(I) = F(I)+T7%R(I)
-        ENDDO
-      ELSE
-        DO I = 1,NSEG
-          IF(FXMATPAR(I).LT.0.D0) THEN
-            F(GLOSEG(I,1)) = F(GLOSEG(I,1))
-     &      - DT/HLIN(GLOSEG(I,1))*UNSV2D(GLOSEG(I,1))
-     &      *FXMAT(I)*(FC(GLOSEG(I,2))-FC(GLOSEG(I,1)))
-          ELSEIF(FXMATPAR(I).GT.0.D0) THEN
-            F(GLOSEG(I,2)) = F(GLOSEG(I,2))
-     &      + DT/HLIN(GLOSEG(I,2))*UNSV2D(GLOSEG(I,2))
-     &      *FXMAT(I)*(FC(GLOSEG(I,1))-FC(GLOSEG(I,2)))
-          ENDIF
-        ENDDO
-      ENDIF
+!     THE CONTRIBUTION OF FLUXES IS BUILT APART FOR
+!     PRELIMINARY PARALLEL ASSEMBLING BEFORE ADDING ON F
+!
+      DO I = 1,NPOIN
+        T7%R(I) = 0.D0
+      ENDDO
+      DO I = 1,NSEG
+        IF(FXMATPAR(I).LT.0.D0) THEN
+          T7%R(GLOSEG(I,1)) = T7%R(GLOSEG(I,1))
+     &    - DT/HLIN(GLOSEG(I,1))*UNSV2D(GLOSEG(I,1))
+     &    *FXMAT(I)*(FC(GLOSEG(I,2))-FC(GLOSEG(I,1)))
+        ELSEIF(FXMATPAR(I).GT.0.D0) THEN
+          T7%R(GLOSEG(I,2)) = T7%R(GLOSEG(I,2))
+     &    + DT/HLIN(GLOSEG(I,2))*UNSV2D(GLOSEG(I,2))
+     &    *FXMAT(I)*(FC(GLOSEG(I,1))-FC(GLOSEG(I,2)))
+        ENDIF
+      ENDDO
+      IF(NCSIZE.GT.1) CALL PARCOM(T7,2,MESH)
+      DO I = 1,NPOIN
+        F(I) = F(I)+T7%R(I)
+      ENDDO
 !
 !     SOURCE TERMS
 !
       IF(YASMH) THEN
         IF(OPTSOU.EQ.1) THEN
           DO I=1,NPOIN
-            F(I)=F(I)+DT/HLIN(I)*SMH(I)*(FSCEXP(I)+FN(I)-FC(I))
+            IF(SMH(I).GT.0.D0) THEN
+              F(I)=F(I)+DT/HLIN(I)*SMH(I)*(FSCEXP(I)-FC(I))
+            ENDIF
           ENDDO
         ELSEIF(OPTSOU.EQ.2) THEN
           DO I=1,NPOIN
-           F(I)=F(I)+DT/HLIN(I)*UNSV2D(I)*SMH(I)*(FSCEXP(I)+FN(I)-FC(I))
+            IF(SMH(I).GT.0.D0) THEN
+              F(I)=F(I)+DT/HLIN(I)*UNSV2D(I)*SMH(I)*(FSCEXP(I)-FC(I))
+            ENDIF
           ENDDO
+        ENDIF
+        IF(MASS_BALANCE) THEN
+          IF(OPTSOU.EQ.1) THEN
+            DO I=1,NPOIN
+              IF(SMH(I).GT.0.D0) THEN
+                MASSOU=MASSOU+DT*VOLU2D(I)*SMH(I)*FSCEXP(I)
+              ELSE
+                MASSOU=MASSOU+DT*VOLU2D(I)*SMH(I)*FC(I)
+              ENDIF
+            ENDDO
+          ELSEIF(OPTSOU.EQ.2) THEN
+            DO I=1,NPOIN
+              IF(SMH(I).GT.0.D0) THEN
+                MASSOU=MASSOU+DT*SMH(I)*FSCEXP(I)
+              ELSE
+                MASSOU=MASSOU+DT*SMH(I)*FC(I)
+              ENDIF
+            ENDDO
+          ENDIF
         ENDIF
       ENDIF
 !
@@ -204,13 +223,21 @@
         IF(LIMTRA(I).EQ.KDIR) THEN
           N=NBOR(I)
           F(N)=F(N)-DT/HLIN(N)*UNSV2D(N)*FXBORPAR(N)*(FBOR(I)-FC(N))
-        ELSEIF(LIMTRA(I).EQ.KDDL) THEN
-          N=NBOR(I)
-          FLBORTRA(I)=FLBORTRA(I)+FXBOR(I)*FC(N)*SURNIT
         ENDIF
       ENDDO
+      IF(MASS_BALANCE) THEN
+        DO I=1,NPTFR
+          IF(LIMTRA(I).EQ.KDIR) THEN
+            FLBORTRA(I)=FLBORTRA(I)+FXBOR(I)*FBOR(I)*SURNIT
+          ELSEIF(LIMTRA(I).EQ.KDDL) THEN
+            N=NBOR(I)
+            FLBORTRA(I)=FLBORTRA(I)+FXBOR(I)*FC(N)*SURNIT
+          ENDIF
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
+

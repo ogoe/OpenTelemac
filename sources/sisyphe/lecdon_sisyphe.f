@@ -13,8 +13,8 @@
 !history  C.VILLARET + JMH (EDF-LNHE)
 !+        02/05/2012
 !+        V6P2
-!+  File for liquid boundaries added
-!+
+!+  File for liquid boundaries added  
+!+   
 !
 !history  JWI
 !+        31/05/2012
@@ -25,7 +25,7 @@
 !history  PAT (LNHE)
 !+        18/06/2012
 !+        V6P2
-!+   updated version with HRW's development
+!+   updated version with HRW's development 
 !
 !history  Pablo Tassi PAT (EDF-LNHE)
 !+        12/02/2013
@@ -42,7 +42,7 @@
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        18/05/2015
 !+        V7P1
-!+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH'
+!+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH' 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -306,10 +306,10 @@
       ALT_MODEL   =   MOTINT(ADRESS(1,52)   )
       VSMTYPE     =   MOTINT(ADRESS(1,53)   )
 !// UHM //
-!
+! 
 !     MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES
 !
-      MAXADV = MOTINT(ADRESS(1,54))
+      MAXADV = MOTINT(ADRESS(1,54)) 
 !
 !     SCHEME OPTION FOR ADVECTION
 !
@@ -322,13 +322,14 @@
         OPTADV=OPTSUP
       ELSEIF(RESOL.EQ.5) THEN
 !       PSI SCHEME
-!       OPTADV_VI=OPTPSI (IN TELEMAC-2D, NOT IN SISYPHE YET)
+!       OPTADV_VI=OPTPSI (IN TELEMAC-2D, NOT IN SISYPHE YET) 
       ENDIF
 !     SCHEME OPTION FOR ADVECTION HAS PRIORITY WHEN PRESENT
       IF(TROUVE(1,55).EQ.2) THEN
         OPTADV = MOTINT(ADRESS(1,55))
       ENDIF
-!
+      NCO_DIST = MOTINT( ADRESS(1,56) )
+      NSP_DIST = MOTINT( ADRESS(1,57) )
 !
 ! ############### !
 ! REAL KEYWORDS   !
@@ -397,7 +398,7 @@
 !
 !     INITIAL CONCENTRATIONS
 !     ++++++++++++++++++++++
-!
+!     
       DO K=1,NSICLA
         CS0(K)=MOTREA( ADRESS(2,30) + K-1 )
       ENDDO
@@ -409,10 +410,10 @@
           CBOR_CLASSE(K)=MOTREA( ADRESS(2,31) + K-1 )
         ENDDO
       ENDIF
-!
-!     COHESIVE SEDIMENT
+! 
+!     COHESIVE SEDIMENT 
 !     +++++++++++++++++
-!
+! 
       NCOUCH_TASS = MOTINT( ADRESS(1,45)   )
 !
       IF(DIMENS(2,32).GT.0) THEN
@@ -424,7 +425,7 @@
 !     OBSOLETE KEY WORD : CSF_VASE = MOTREA( ADRESS(2, 29) )
 !
 !      CSF_VASE = CONC_VASE(1)/XMVS
-!
+! 
       IF(DIMENS(2,34).GT.0) THEN
         DO K=1,DIMENS(2,34)
           TOCE_VASE(K)=MOTREA( ADRESS(2,34) + K-1 )
@@ -434,7 +435,7 @@
 !     KRONE AND PARTHENIADES EROSION AND DEPOSITION LAW
 !
 !     OBSOLETE KEY WORD : VITCE= MOTREA( ADRESS(2,35))
-!
+!     
       VITCE = SQRT(TOCE_VASE(1)/XMVE)
       VITCD= MOTREA( ADRESS(2,36))
 !     PARTHENIADES WITH CONVERSION TO M/S
@@ -454,7 +455,7 @@
       ENDIF
 !
 ! V6P1
-! THIEBOT MULTI LAYER MODEL
+! THIEBOT MULTI LAYER MODEL 
 ! ITASS=2
 !
       CONC_GEL=MOTREA( ADRESS(2,38))
@@ -471,7 +472,7 @@
       ENDIF
 !
 !     HIDING EXPOSURE MULTI GRAIN MODEL
-!
+! 
       DO K=1,NSICLA
         HIDI(K)  = MOTREA( ADRESS(2,253) + K-1 )
         IF (TROUVE(2,255).EQ.1) THEN
@@ -568,7 +569,7 @@
       STAT_MODE  = MOTLOG(ADRESS(3,28) )
 !     Checking the mesh
       CHECK_MESH = MOTLOG(ADRESS(3,29) )
-!
+! 
 !
 ! ################################### !
 ! CHARACTER STRING KEYWORDS           !
@@ -671,7 +672,7 @@
 !        SORIMP(25+4*NSICLA)=.FALSE.
 !        SORIMP(26+4*NSICLA)=.FALSE.
       ENDIF
-!
+!   
 ! JWI 31/05/2012 - added 1 to include wave orbital velocities
       IF(.NOT.CHARR) THEN
         SORLEO(23+(NOMBLAY+2)*NSICLA)=.FALSE.
@@ -847,9 +848,9 @@
 302       FORMAT(1X,'METHODE DE RESOLUTION NON PROGRAMMEE : ',1I6)
 303       FORMAT(1X,'RESOLVING METHOD NOT IMPLEMENTED : ',1I6)
           IF(RESOL.EQ.8) THEN
-            IF(LNG.EQ.1) WRITE(LU,*)
+            IF(LNG.EQ.1) WRITE(LU,*) 
      &                'LE SCHEMA 8 AVANT VERSION 6.0 EST DEVENU LE 4'
-            IF(LNG.EQ.2) WRITE(LU,*)
+            IF(LNG.EQ.2) WRITE(LU,*) 
      &                'NUMBER 8 PRIOR TO VERSION 6.0 IS NOW NUMBER 4'
           ENDIF
           CALL PLANTE(1)

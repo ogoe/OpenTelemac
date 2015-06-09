@@ -320,7 +320,8 @@
      &                                 ADV_PSI_NC,ADV_NSC_NC,ADV_LPO,
      &                                 ADV_NSC_TF,ADV_PSI_TF,ADV_LPO_TF,
      &                                 KDDL
-      USE DECLARATIONS_TELEMAC2D, ONLY : TYPSEUIL,IT1,IT2
+      USE DECLARATIONS_TELEMAC2D, ONLY : TYPSEUIL,IT1,IT2,TB2,NCO_DIST,
+     &                                   NSP_DIST
 !
       USE INTERFACE_TELEMAC2D, EX_PROPAG => PROPAG
 !
@@ -881,7 +882,7 @@
         IF(ICONVF(1).EQ.ADV_PSI) IOPT=3
 !       HERE YASMH=.FALSE. (SOURCES ACCOUNTED FOR IN FU)
         IF(TB%N.LT.22) THEN
-          WRITE(LU,*) 'SIZE OF TB TOO SMALL IN PROPAG'
+          WRITE(LU,*) 'SIZE OF TB TOO SMALL FOR CVTRVF IN PROPAG'
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -893,25 +894,21 @@
         CALL CVTRVF(T1,UN,S,.FALSE.,.TRUE.,H,HN,
      &              HPROP,UCONV,VCONV,S,S,
      &              1,S,S,FU,S,.FALSE.,S,.FALSE.,UBOR,MASK,MESH,
-     &              TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
-     &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
-     &              TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
-     &              TB%ADR(22)%P,AGGLOH,TE1,DT,INFOGR,BILMAS,
+     &              AGGLOH,TE1,DT,INFOGR,BILMAS,
      &              1,MSK,MASKEL,S,C,1,IT1%I,
      &              KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
      &              VOLU2D,V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT,
-     &              RAIN,PLUIE,0.D0,OPTADV_VI)
+     &              RAIN,PLUIE,0.D0,OPTADV_VI,
+     &              TB,13,BM1S,TB2,NCO_DIST,NSP_DIST)
         CALL CVTRVF(T2,VN,S,.FALSE.,.TRUE.,H,HN,
      &              HPROP,UCONV,VCONV,S,S,
      &              1,S,S,FV,S,.FALSE.,S,.FALSE.,VBOR,MASK,MESH,
-     &              TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
-     &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
-     &              TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
-     &              TB%ADR(22)%P,AGGLOH,TE1,DT,INFOGR,BILMAS,
+     &              AGGLOH,TE1,DT,INFOGR,BILMAS,
      &              1,MSK,MASKEL,S,C,1,IT2%I,
      &              KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
      &              VOLU2D,V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT,
-     &              RAIN,PLUIE,0.D0,OPTADV_VI)
+     &              RAIN,PLUIE,0.D0,OPTADV_VI,
+     &              TB,13,BM1S,TB2,NCO_DIST,NSP_DIST)
         IF(IELMU.NE.11) THEN
           CALL CHGDIS(T1,DISCLIN,IELMU,MESH)
           CALL CHGDIS(T2,DISCLIN,IELMU,MESH)

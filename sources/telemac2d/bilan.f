@@ -32,10 +32,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
-! history R. ATA(LNHE)
-!         06/01/2012
-!         V6P0
-!     ADAPTATION FOR FV
+!
+!history R. ATA (LNHE)
+!+        06/01/2012 
+!+        V6P0
+!+    ADAPTATION FOR FV
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
@@ -186,7 +187,7 @@
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
         CONTRIB = DT*( (1-GAMMA)*FLUX1_OLD + GAMMA*FLUX1)
         MASENT = MASENT - CONTRIB
-      ELSE
+      ELSE 
         MASENT = MASENT - FLUX1*DT
       ENDIF
 !

@@ -197,7 +197,7 @@ NOM = 'OPTION DU SCHEMA PSI'
 NOM1 = 'PSI SCHEME OPTION'
 TYPE = ENTIER
 INDEX = 4
-MNEMO = 'OPTCHA'
+MNEMO = 'OPTPSI'
 TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
@@ -510,33 +510,34 @@ NIVEAU = -13
 AIDE = 'Non active pour l''instant.' 
 AIDE1 = 'Not yet implemented.' 
  
-NOM = 'ENTIER LIBRE 17' 
-NOM1 = 'FREE INTEGER 17' 
+NOM = 'NOMBRE DE CORRECTIONS DES SCHEMAS DISTRIBUTIFS' 
+NOM1 = 'NUMBER OF CORRECTIONS OF DISTRIBUTIVE SCHEMES' 
 TYPE = ENTIER 
 INDEX = 17 
-MNEMO = 'STDGEO' 
+MNEMO = 'NCO_DIST' 
 TAILLE = 0 
-DEFAUT = 3 
-DEFAUT1 = 3 
+DEFAUT = 1 
+DEFAUT1 = 1 
 NIVEAU = 2 
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
-AIDE = ' ' 
-AIDE1 = ' ' 
+AIDE = 'Pour les options avec predicteur-correcteur' 
+AIDE1 = 'For predictor-corrector options' 
  
-NOM = 'ENTIER LIBRE 18' 
-NOM1 = 'FREE INTEGER 18' 
+NOM = 'NOMBRE DE SOUS-PAS DES SCHEMAS DISTRIBUTIFS' 
+NOM1 = 'NUMBER OF SUB-STEPS OF DISTRIBUTIVE SCHEMES' 
 TYPE = ENTIER 
 INDEX = 18 
-MNEMO = 'STDRES' 
+MNEMO = 'NSP_DIST' 
 TAILLE = 0 
-DEFAUT = 3 
-DEFAUT1 = 3 
+DEFAUT = 1 
+DEFAUT1 = 1 
 NIVEAU = 2 
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
-AIDE = ' ' 
-AIDE1 = ' ' 
+AIDE = 'Pour les options predicteur-correcteur
+avec schema localement implicite' 
+AIDE1 = 'Only for implicit scheme with predictor-corrector' 
  
 NOM = 'SOLVEUR' 
 NOM1 = 'SOLVER' 
@@ -5739,13 +5740,14 @@ NIVEAU = 1
 AIDE = 'Si present remplace et a priorite sur :
 OPTION POUR LES CARACTERISTIQUES
 OPTION DE SUPG
-Si schema PSI : 1=explicite 2=predicteur-correcteur
-pour les traceurs'
+Si schema PSI ou N : 1=explicite 2=predicteur-correcteur
+3=predicteur-correcteur deuxieme ordre en temps 
+4=implicite'
 AIDE1 = 'If present replaces and has priority over:
 OPTION FOR CHARACTERISTICS
 SUPG OPTION
-IF PSI SCHEME: 1=explicit 2=predictor-corrector
-for tracers'
+if N or PSI SCHEME: 1=explicit 2=predictor-corrector
+3= predictor-corrector second-order in time 4= implicit'
 
 NOM = 'OPTION DU SCHEMA POUR LA CONVECTION DES VITESSES'
 NOM1 = 'SCHEME OPTION FOR ADVECTION OF VELOCITIES'
@@ -5762,13 +5764,14 @@ NIVEAU = 1
 AIDE = 'Si present remplace et a priorite sur :
 OPTION POUR LES CARACTERISTIQUES
 OPTION DE SUPG
-Si schema PSI : 1=explicite 2=predicteur-correcteur
-pour les traceurs'
+Si schema PSI ou N : 1=explicite 2=predicteur-correcteur
+3=predicteur-correcteur deuxieme ordre en temps 
+4=implicite'
 AIDE1 = 'If present replaces and has priority over:
 OPTION FOR CHARACTERISTICS
 SUPG OPTION
-IF PSI SCHEME: 1=explicit 2=predictor-corrector
-for velocities'
+if N or PSI SCHEME: 1=explicit 2=predictor-corrector
+3= predictor-corrector second-order in time 4= implicit'
 
 NOM = 'OPTION DU SCHEMA POUR LA CONVECTION DU K-EPSILON'
 NOM1 = 'SCHEME OPTION FOR ADVECTION OF K-EPSILON'
@@ -5785,13 +5788,14 @@ NIVEAU = 1
 AIDE = 'Si present remplace et a priorite sur :
 OPTION POUR LES CARACTERISTIQUES
 OPTION DE SUPG
-Si schema PSI : 1=explicite 2=predicteur-correcteur
-pour k et epsilon'
+Si schema PSI ou N : 1=explicite 2=predicteur-correcteur
+3=predicteur-correcteur deuxieme ordre en temps 
+4=implicite'
 AIDE1 = 'If present replaces and has priority over:
 OPTION FOR CHARACTERISTICS
 SUPG OPTION
-IF PSI SCHEME: 1=explicit 2=predictor-corrector
-for k and epsilon'
+if N or PSI SCHEME: 1=explicit 2=predictor-corrector
+3= predictor-corrector second-order in time 4= implicit'
 /
 NOM = 'COURANTS SECONDAIRES'
 NOM1 = 'SECONDARY CURRENTS'

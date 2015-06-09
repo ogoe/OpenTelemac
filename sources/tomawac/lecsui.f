@@ -7,7 +7,7 @@
      & TC1,TC2,ZM1,ZM2,DZHDT,TM1,TM2,MAREE,TRA01)
 !
 !***********************************************************************
-! TOMAWAC   V6P3                                   21/06/2011
+! TOMAWAC   V7P1
 !***********************************************************************
 !
 !brief    READS THE DATA FOR A CONTINUATION OF COMPUTATION.

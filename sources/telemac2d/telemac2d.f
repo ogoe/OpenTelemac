@@ -246,10 +246,20 @@
 !+   ALIRE variable was wrong for tracers, they now begin at rank 34,
 !+   so ALIRE(33+ITRAC)=1. After a remark by Noémie Durand.
 !
-!history Y AUDOUIN (LNHE)
+!history Y. AUDOUIN (LNHE)
 !+       25/05/2015
-!+       V7P0
-!+       Modification to comply with the hermes module
+!+       V7P1
+!+       Modification to comply with the hermes module.
+!
+!history R. ATA (LNHE)
+!+       27/05/2015
+!+       V7P1
+!+       UDEL and VDEL built for Delwaq in finite element options.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        28/05/2015
+!+        V7P1
+!+   Call to CVDFTR modified. 3 new arguments.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
@@ -300,12 +310,12 @@
 !
 ! INTEGERS
 !
-      INTEGER IELM,I,IELMX,ISOUSI,IBID,STOP2,LEOPRD_CHARR,DISCLIN
+      INTEGER IELM,I,IELMX,ISOUSI,STOP2,LEOPRD_CHARR,DISCLIN
       INTEGER ALIRE(MAXVAR),TROUVE(MAXVAR+10)
 !
 ! REAL SCALARS
 !
-      DOUBLE PRECISION KMIN,KMAX,KARMAN,FLUSOR,FLUENT,HIST(1),AT0
+      DOUBLE PRECISION KMIN,KMAX,KARMAN,FLUSOR,FLUENT,AT0
       DOUBLE PRECISION C,MASSES,RELAXS,RELAXB,CFLMAX,TETAHC,DTCAS,RELAX
       DOUBLE PRECISION EMAX,EMIN,SCHMIT,ESTAR,SIGMAE,SIGMAK,C2,C1,CMU
       DOUBLE PRECISION MASS_RAIN
@@ -359,10 +369,6 @@
 !-----------------------------------------------------------------------
 !
       INTRINSIC MAX
-!
-!-----------------------------------------------------------------------
-!
-      DATA HIST /9999.D0/
 !
 !-----------------------------------------------------------------------
 !
@@ -2144,13 +2150,13 @@
 !
       DO ITRAC=1,NTRAC
 !
-!  BOUNDARY CONDITIONS FOR THE DIFFUSION OF THE TRACER.
+!       BOUNDARY CONDITIONS FOR THE DIFFUSION OF THE TRACER.
 !
-      IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING DIFFCL POUR ITRAC=',ITRAC
-      CALL DIFFCL(LITBOR%ADR(ITRAC)%P%I,
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING DIFFCL POUR ITRAC=',ITRAC
+        CALL DIFFCL(LITBOR%ADR(ITRAC)%P%I,
      &            TTILD%ADR(ITRAC)%P%R,TBOR%ADR(ITRAC)%P%R,
      &            MESH%NBOR%I,ICONVFT(ITRAC),NPOIN,NPTFR)
-      IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM DIFFCL'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM DIFFCL'
 !
       ENDDO
 !
@@ -2210,7 +2216,7 @@
      &            OPTSOU,SLVTRA(ITRAC),FLBOR,VOLU2D,V2DPAR,UNSV2D,
      &            2,FLBORTRA,
      &            FLULIM,YAFLULIM,DIRFLU,RAIN,PLUIE,TRAIN(ITRAC),
-     &            FLODEL,.FALSE.,MAXADV)
+     &            FLODEL,.FALSE.,MAXADV,TB2,NCO_DIST,NSP_DIST)
 !
       ELSE
       CALL CVDFTR(T%ADR(ITRAC)%P,TTILD%ADR(ITRAC)%P,TN%ADR(ITRAC)%P,
@@ -2229,7 +2235,7 @@
      &            OPTSOU,SLVTRA(ITRAC),FLBOR,VOLU2D,V2DPAR,UNSV2D,
      &            2,FLBORTRA,
      &            FLULIM,YAFLULIM,DIRFLU,RAIN,PLUIE,TRAIN(ITRAC),
-     &            FLODEL,YAFLODEL,MAXADV)
+     &            FLODEL,YAFLODEL,MAXADV,TB2,NCO_DIST,NSP_DIST)
       ENDIF
       IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CVDFTR'
 !
@@ -2665,4 +2671,5 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE TELEMAC2D
+      END
+

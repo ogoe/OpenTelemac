@@ -6,7 +6,7 @@
      & SVIDE,MESH3,IELM3,MSK,MASKEL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES TURBULENT VISCOSITY USING
@@ -32,6 +32,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        28/05/2015
+!+        V7P1
+!+   Adding a missing coefficient unsv3d**(1/3) in the formula.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM3          |-->| TYPE OF ELEMENT
 !| MASKEL         |-->| MASKING OF ELEMENTS
@@ -52,6 +57,7 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_TELEMAC3D, ONLY : UNSV3D
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -70,21 +76,23 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      DOUBLE PRECISION CS,CS2,TIERS
       INTEGER I
 !
       INTRINSIC SQRT
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION CS,CS2
       CS = 0.1D0
       CS2 = CS**2
+      TIERS=1.D0/3.D0
 !
 !-----------------------------------------------------------------------
 !
 !     COMPUTES GRADIENTS (IN FACT AVERAGED GRADIENT MULTIPLIED BY
-!     A SURFACE WHICH IS THE INTEGRAL OF TEST FUNCTIONS ON THE DOMAIN,
-!     THIS SURFACE IS CONSIDERED TO BE (MESH SIZE)**2) )
+!     A VOLUME WHICH IS THE INTEGRAL OF TEST FUNCTIONS ON THE DOMAIN,
+!     THIS VOLUME IS CONSIDERED TO BE (MESH SIZE)**3), HENCE THE
+!     FACTOR UNSV3D**(1/3) TO GET (MESH SIZE)**2 )
 !
       CALL VECTOR(TRAV1,'=','GRADF          X',IELM3,
      &            1.D0,U,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
@@ -127,16 +135,17 @@
 !
       DO I=1,U%DIM1
 !
-      TRAV5%R(I) = CS2 * SQRT(  2.D0*(TRAV1%R(I)**2
-     &                               +TRAV5%R(I)**2
-     &                               +TRAV4%R(I)**2)
-     &                               +TRAV2%R(I)**2
-     &                               +TRAV3%R(I)**2
-     &                               +TRAV6%R(I)**2  )
+      TRAV5%R(I)=CS2*SQRT( 2.D0*(TRAV1%R(I)**2
+     &                          +TRAV5%R(I)**2
+     &                          +TRAV4%R(I)**2)
+     &                          +TRAV2%R(I)**2
+     &                          +TRAV3%R(I)**2
+     &                          +TRAV6%R(I)**2  ) * UNSV3D%R(I)**TIERS
 !
       ENDDO
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE SMAGO3D
+      END
+

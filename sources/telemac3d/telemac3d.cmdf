@@ -442,10 +442,12 @@ files: declarations_telemac.f
   vgfpsi.f
   flux_mask.f
   flux_ef_vf_2.f
+  flux_ef_vf_3.f
   tvf.f
   hvf.f
   tracvf.f
   tvf_2.f
+  tvf_imp.f
   cflvf.f
   cvtrvf.f
   cvtrvf_pos.f

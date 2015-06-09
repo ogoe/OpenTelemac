@@ -576,8 +576,8 @@
           DISCRE(K) = MOTINT( ADRESS(1,16) + K-1 )
         ENDDO ! K
       ENDIF
-!     STDGEO    = MOTINT( ADRESS(1,17) )
-!     STDRES    = MOTINT( ADRESS(1,18) )
+      NCO_DIST = MOTINT( ADRESS(1,17) )
+      NSP_DIST = MOTINT( ADRESS(1,18) )
       SLVPRO%SLV = MOTINT( ADRESS(1,19) )
 !     STDPRE    = MOTINT( ADRESS(1,20) )
       NSOUSI    = MOTINT( ADRESS(1,21) )
@@ -929,7 +929,7 @@
         STOP
       ENDIF
       NREJTR = DIMEN(2,39)
-      IF(NREJTR.EQ.NTRAC*NREJET) THEN
+      IF(NREJTR.GE.NTRAC*NREJET) THEN
         IF(NTRAC.GT.0) THEN
           DO ITRAC=1,NTRAC
           DO K=1,NREJET

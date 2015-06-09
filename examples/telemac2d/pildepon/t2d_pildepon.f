@@ -173,9 +173,12 @@
      &       LIUBOR(IFR).EQ.5) THEN
             UBOR(IFR,1) = 1.D0
             UBOR(IFR,2) = 1.D0
-          ENDIF
-
+          ENDIF          
           IF(N.EQ.121.OR.N.EQ.119.OR.N.EQ.110) THEN
+            DO ITRAC=1,NTRAC
+              TBOR%ADR(ITRAC)%P%R(IFR) = 2.D0
+            ENDDO
+          ELSE
             DO ITRAC=1,NTRAC
               TBOR%ADR(ITRAC)%P%R(IFR) = 1.D0
             ENDDO
@@ -332,7 +335,7 @@
         ENDDO
       ENDIF
 !
-      ENDDO ! K
+      ENDDO ! K 
 !
 !-----------------------------------------------------------------------
 !

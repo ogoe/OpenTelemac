@@ -44,7 +44,7 @@ SUITE DE CALCUL = NON
  PAS DE TEMPS = 0.8 NOMBRE DE PAS DE TEMPS = 100
 PERIODE POUR LES SORTIES GRAPHIQUES = 100
 PERIODE DE SORTIE LISTING           = 100                              
-VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,S,H,B,L,T*'                      
+VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,S,H,B,L,T*,T1*'                      
 /DISCRETISATIONS EN ESPACE : 12 ; 11                            
 FORME DE LA CONVECTION : 13;5;13        MODELE DE TURBULENCE = 1            
     OPTION DE SUPG     :  1;0;0                                          
@@ -73,18 +73,31 @@ TRAITEMENT DES FLUX AUX FRONTIERES : 2
 NOMBRE DE POINTS DE GAUSS POUR LES CARACTERISTIQUES FAIBLES:12
 MASS-LUMPING POUR LES CARACTERISTIQUES FAIBLES : 0.
 /
-NOMBRE DE TRACEURS : 6 
-VALEURS INITIALES DES TRACEURS                     : 0.;0.;0.;0.;0.;0.
-COEFFICIENT DE DIFFUSION DES TRACEURS              : 0.;0.;0.;0.;0.;0.
-SCHEMA POUR LA CONVECTION DES TRACEURS             : 1 ; 1; 4; 5; 5;13
-OPTION DU SCHEMA POUR LA CONVECTION DES TRACEURS   : 1 ; 2; 1; 1; 2;1
-SOLVEUR POUR LA DIFFUSION DES TRACEURS             : 1 ; 1; 1; 1; 1;1
-NOMS DES TRACEURS : 'TRACEUR 1       CARACT. FORTES  ';
-                    'TRACEUR 2       CARACT. FAIBLES ';
-                    'TRACEUR 3       SCHEMA N        ';
-                    'TRACEUR 4       SCHEMA PSI      ';
-                    'TRACEUR 5       SCHEMA PSI  COR ';
-                    'TRACEUR 6       NERD             '
+NOMBRE DE TRACEURS : 11
+VALEURS INITIALES DES TRACEURS : 1.D0;1.D0;1.D0;1.D0;1.D0;1.D0;1.D0;
+                                 1.D0;1.D0;1.D0;1.D0
+DIFFUSION DES TRACEURS : NON
+COEFFICIENT DE DIFFUSION DES TRACEURS :0.;0.;0.;0.;0.;0.;0.;0.;0.;0.;0.
+SCHEMA POUR LA CONVECTION DES TRACEURS         :1;1;4;4;4;4;5;5;5;5;13
+OPTION DU SCHEMA POUR LA CONVECTION DES TRACEURS:1;2;1;2;3;4;1;2;3;4;1
+SOLVEUR POUR LA DIFFUSION DES TRACEURS          :1;1;1;1;1;1;1;1;1;1;1
+/
+NOMS DES TRACEURS : 'CARACT. FORTES  TRACEUR 1       ';
+                    'CARACT. FAIBLES TRACEUR 2       ';
+                    'SCHEMA N        TRACEUR 3       ';
+                    'SCHEMA N  PC 1  TRACEUR 4       ';
+                    'SCHEMA N  PC 2  TRACEUR 5       ';
+                    'SCHEMA N  IMP   TRACEUR 6       ';
+                    'SCHEMA PSI      TRACEUR 7       ';
+                    'SCHEMA PSI PC 1 TRACEUR 8       ';
+                    'SCHEMA PSI PC 2 TRACEUR 9       ';
+                    'SCHEMA PSI IMP  TRACEUR 10      ';
+                    'NERD            TRACEUR 11      '
+/
+/  NEW !!
+/
+NOMBRE DE SOUS-PAS DES SCHEMAS DISTRIBUTIFS : 10
+NOMBRE DE CORRECTIONS DES SCHEMAS DISTRIBUTIFS : 5
 /
 / WEAK CHARACTERISTICS ON VELOCITIES TO GET MORE EDDIES
 /

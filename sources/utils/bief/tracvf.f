@@ -3,12 +3,13 @@
 !                    *****************
 !
      &(F,FN,FSCEXP,H,HN,FXMAT,FXMATPAR,
-     & V2DPAR,UNSV2D,DDT,FXBOR,FBOR,SMH,YASMH,T1,T2,T4,T5,T6,T7,T8,
+     & V2DPAR,VOLU2D,UNSV2D,DDT,FXBOR,FBOR,SMH,YASMH,
+     & T1,T2,T4,T5,T6,T7,T8,
      & MESH,LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,DT,RAIN,PLUIE,
-     & TRAIN)
+     & TRAIN,MASSOU,MASS_BALANCE)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES THE TRACER FOR FINITE VOLUME SCHEME.
@@ -37,6 +38,11 @@
 !+   Rain and evaporation added (after initiative by O. Boutron, from
 !+   Tour du Valat, and O. Bertrand, Artelia group)
 !
+!history  J-M HERVOUET (LNHE)
+!+        08/06/2015
+!+        V7P1
+!+   Now mass balance done on request.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DDT            |-->| SUB TIME-STEP
 !| DT             |-->| TIME-STEP
@@ -55,6 +61,9 @@
 !| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
 !| LIMTRA         |-->| TECHNICAL BOUNDARY CONDITIONS FOR TRACERS
+!| MASS_BALANCE   |-->| IF YES, ALL TERMS FOR MASS BALANCE 
+!|                |   | WILL BE COMPUTED
+!| MASSOU         |-->| MASS ADDED BY SOURCE TERM
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, MASKING OF DRY ELEMENTS
 !| OPTSOU         |-->| TYPE OF SOURCES
@@ -84,15 +93,16 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)           :: KDIR,KDDL,OPTSOU,LIMTRA(*)
-      INTEGER, INTENT(IN)           :: IOPT2
-      DOUBLE PRECISION, INTENT(IN)  :: DDT,DT,TRAIN
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: F,T1,T2,T4,T5,T6,T7,T8,FLBORTRA
-      TYPE(BIEF_OBJ), INTENT(IN)    :: FN,H,HN,V2DPAR,SMH,FBOR,FSCEXP
-      TYPE(BIEF_OBJ), INTENT(IN)    :: FXBOR,UNSV2D,PLUIE
-      DOUBLE PRECISION, INTENT(IN)  :: FXMAT(*),FXMATPAR(*)
-      TYPE(BIEF_MESH), INTENT(INOUT):: MESH
-      LOGICAL, INTENT(IN)           :: YASMH,MSK,RAIN
+      INTEGER, INTENT(IN)             :: KDIR,KDDL,OPTSOU,LIMTRA(*)
+      INTEGER, INTENT(IN)             :: IOPT2
+      DOUBLE PRECISION, INTENT(IN)    :: DDT,DT,TRAIN
+      DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: F,T1,T2,T4,T5,T6,T7,T8,FLBORTRA
+      TYPE(BIEF_OBJ), INTENT(IN)      :: FN,H,HN,V2DPAR,SMH,FBOR,FSCEXP
+      TYPE(BIEF_OBJ), INTENT(IN)      :: FXBOR,UNSV2D,VOLU2D,PLUIE
+      DOUBLE PRECISION, INTENT(IN)    :: FXMAT(*),FXMATPAR(*)
+      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
+      LOGICAL, INTENT(IN)             :: YASMH,MSK,RAIN,MASS_BALANCE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -108,13 +118,13 @@
 !
 !     T4 WILL TAKE THE SUCCESSIVE VALUES OF F (INITIALISED IN CVTRVF)
 !
-      CALL TVF(F%R,FN%R,T4%R,T5%R,FXMAT,FXMATPAR,UNSV2D%R,DDT,
+      CALL TVF(F%R,FN%R,T4%R,T5%R,FXMAT,FXMATPAR,VOLU2D%R,UNSV2D%R,DDT,
      &         FXBOR%R,T7%R,T8,FBOR%R,SMH%R,YASMH,FSCEXP%R,
      &         MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
      &         MESH%GLOSEG%I,MESH%GLOSEG%DIM1,
      &         MESH%NBOR%I,LIMTRA,KDIR,KDDL,
      &         OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,RAIN,PLUIE%R,
-     &         TRAIN)
+     &         TRAIN,MASSOU,MASS_BALANCE)
 !
 !-----------------------------------------------------------------------
 !
@@ -134,13 +144,13 @@
      &         MESH%GLOSEG%I,MESH%GLOSEG%DIM1,MESH%NBOR%I,OPTSOU,
      &         T8,MESH,MSK,RAIN,PLUIE%R)
 !
-      CALL TVF(F%R,FN%R,T4%R,T2%R,FXMAT,FXMATPAR,UNSV2D%R,DDT,
+      CALL TVF(F%R,FN%R,T4%R,T2%R,FXMAT,FXMATPAR,VOLU2D%R,UNSV2D%R,DDT,
      &         FXBOR%R,T7%R,T8,FBOR%R,SMH%R,YASMH,FSCEXP%R,
      &         MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
      &         MESH%GLOSEG%I,MESH%GLOSEG%DIM1,
      &         MESH%NBOR%I,LIMTRA,KDIR,KDDL,
      &         OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,RAIN,PLUIE%R,
-     &         TRAIN)
+     &         TRAIN,MASSOU,MASS_BALANCE)
 !
 !-----------------------------------------------------------------------
 !
@@ -159,3 +169,4 @@
 !
       RETURN
       END
+

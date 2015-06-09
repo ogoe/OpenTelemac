@@ -4,20 +4,19 @@
 !
      &(F,FN,FSCEXP,DIFT,CONV,H,HN,HPROP,UCONV,VCONV,DM1,ZCONV,SOLSYS,
      & VISC,VISC_S,SM,SMH,YASMH,SMI,YASMI,FBOR,MASKTR,MESH,
-     & T1,T2,T3,T4,T5,T6,T7,T8,HNT,HT,AGGLOH,TE1,DT,ENTET,BILAN,
+     & AGGLOH,TE1,DT,ENTET,BILAN,
      & OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,LIMTRA,KDIR,KDDL,NPTFR,FLBOR,
      & YAFLBOR,VOLU2D,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
-     & RAIN,PLUIE,TRAIN,OPTADV)
+     & RAIN,PLUIE,TRAIN,OPTADV,TB,FREE,AM2,TB2,NCO_DIST,NSP_DIST)
 !
 !***********************************************************************
-! BIEF   V7P0                                   21/08/2010
+! BIEF   V7P1 
 !***********************************************************************
 !
-!brief    FINITE VOLUMES, UPWIND, EXPLICIT ADVECTOR.
+!brief    DISTRIBUTIVE EXPLICIT OR IMPLICIT ADVECTOR.
 !
 !warning  AFBOR AND BFBOR MUST BE 0 FOR THE BOUNDARY ELEMENTS
 !+            WITH NO FRICTION
-!warning  DISCRETISATION OF VISC
 !
 !history  CHI-TUAN PHAM  (LNHE)
 !+        09/10/09
@@ -47,6 +46,13 @@
 !+        V6P3
 !+   New call to CFLVF, for new monotonicity criterion.
 !
+!history  SARA PAVAN & J-M HERVOUET (EDF LAB, LNHE)
+!+        05/05/2014
+!+        V7P0
+!+   New predictor-corrector PSI scheme (OPTADV=2). Security coefficient
+!+   on maximum time step to avoid truncation errors that would give
+!+   negative values.
+!
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        16/05/2014
 !+        V7P0
@@ -54,12 +60,10 @@
 !+   U.N in diffin.f, which is different from flbor here. Argument
 !+   VOLU2D added.
 !
-!history  SARA PAVAN & J-M HERVOUET (EDF LAB, LNHE)
-!+        03/10/2014
-!+        V7P0
-!+   New predictor-corrector PSI scheme (OPTADV=2). Security coefficient
-!+   on maximum time step to avoid truncation errors that would give
-!+   negative values.
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        08/06/2015
+!+        V7P1
+!+   Now with the locally implicit predictor-corrector.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -80,8 +84,6 @@
 !|                |   | EQUAL TO ZERO EVERYWHERE BUT ON SOURCES
 !|                |   | WHERE THERE IS FSCE - (1-TETAT) FN
 !|                |   | SEE DIFSOU
-!| HNT,HT         |<--| WORK ARRAYS (MODIFIED DEPTHS TO TAKE MASS-LUMPING
-!|                |   | INTO ACCOUNT)
 !| HPROP          |-->| PROPAGATION DEPTH (DONE IN CVDFTR).
 !| IOPT           |-->| OPTIONS FOR COMPUTATION (NUMBER BETWEEN 0 AND 13)
 !|                |   | THE TENS (IOPT2, I.E. 0 OR 1):
@@ -102,6 +104,8 @@
 !|                |   | SEE DIFSOU
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NCO_DIST       |-->| NUMBER OF CORRECTIONS OF DISTRIBUTIVE SCHEMES
+!| NSP_DIST       |-->| NUMBER OF SUB-STEPS OF DISTRIBUTIVE SCHEMES
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| OPDADV         |-->| SCHEME OPTION FOR THE ADVECTION OF TRACERS
 !|                |   | WITH N SCHEME:
@@ -123,14 +127,8 @@
 !| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
 !| SMI            |-->| IMPLICIT SOURCE TERM
 !| SOLSYS         |-->| 1 OR 2. IF 2 ADVECTION FIELD IS UCONV + DM1*GRAD(ZCONV)
-!| T1             |<->| WORK BIEF_OBJ STRUCTURE
-!| T2             |<->| WORK BIEF_OBJ STRUCTURE
-!| T3             |<->| WORK BIEF_OBJ STRUCTURE
-!| T4             |<->| WORK BIEF_OBJ STRUCTURE
-!| T5             |<->| WORK BIEF_OBJ STRUCTURE
-!| T6             |<->| WORK BIEF_OBJ STRUCTURE
-!| T7             |<->| WORK BIEF_OBJ STRUCTURE
-!| T8             |<->| WORK BIEF_OBJ STRUCTURE
+!| TB             |<->| BLOCK OF WORK STRUCTURES
+!| TB2            |<->| SECOND BLOCK OF AT LEAST 7 WORK STRUCTURES.
 !| TE1            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
 !| TRAIN          |-->| VALUE OF TRACER IN THE RAIN
 !| UCONV,VCONV    |-->| ADVECTION VELOCITY FIELD
@@ -149,6 +147,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CVTRVF => CVTRVF
+      USE INTERFACE_PARALLEL
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -157,7 +156,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: OPDTRA,OPTSOU,KDIR,NPTFR,SOLSYS
-      INTEGER, INTENT(IN)             :: KDDL,IOPT,OPTADV
+      INTEGER, INTENT(IN)             :: KDDL,IOPT,OPTADV,FREE
+      INTEGER, INTENT(IN)             :: NCO_DIST,NSP_DIST
       INTEGER, INTENT(INOUT)          :: LIMTRA(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: DT,AGGLOH,TRAIN
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
@@ -165,41 +165,98 @@
       LOGICAL, INTENT(IN)             :: DIFT,MSK,ENTET,YASMI,RAIN
       TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL,H,HN,DM1,ZCONV,MASKPT
       TYPE(BIEF_OBJ), INTENT(IN)      :: VOLU2D,V2DPAR,UNSV2D,HPROP
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: F,SM,HNT,HT
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: F,SM,AM2
       TYPE(BIEF_OBJ), INTENT(IN)      :: UCONV,VCONV,FN,SMI,SMH
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: FBOR
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: FBOR,TB,TB2
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TE1,FLBORTRA
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T4,T5,T6,T7,T8
       TYPE(BIEF_OBJ), INTENT(IN)      :: FSCEXP,S,MASKTR
       TYPE(BIEF_OBJ), INTENT(IN)      :: VISC_S,VISC,PLUIE
-      TYPE(BIEF_MESH) :: MESH
-      TYPE(BIEF_OBJ), INTENT(IN),    TARGET :: FLBOR
-      TYPE(BIEF_OBJ), INTENT(INOUT), TARGET :: T3
+      TYPE(BIEF_MESH)                 :: MESH
+      TYPE(BIEF_OBJ), INTENT(IN)      :: FLBOR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELMF,I,IOPT1,IOPT2,N,VARIANT,IELEM,I1,I2,I3,ITER
+      INTEGER IELMF,I,IOPT1,IOPT2,N,IELEM,I1,I2,I3,ICOR,NIT
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION DT_REMAIN,DDT,TDT,SECU,COEMIN,COESOU
+      DOUBLE PRECISION DT_REMAIN,DDT,TDT,SECU,TETAF,TETAFCOR,COEMIN
+      DOUBLE PRECISION COESOU,ADMASS
 !
       CHARACTER(LEN=16) FORMUL
-      DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVE_HT,SAVE_HNT
+!
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: FXMAT,FXMATPAR
-      DOUBLE PRECISION, POINTER, DIMENSION(:) :: FMIN,FMAX
-      TYPE(BIEF_OBJ), POINTER                 :: FLBOUND
 !
-      DOUBLE PRECISION P_DMIN,C
-      EXTERNAL         P_DMIN
+      DOUBLE PRECISION C
+      LOGICAL MASS_BAL,PREDICOR
 !
-      INTEGER NITMAX,NIT
+      TYPE(SLVCFG)::SLVPSI
+!
+!     HARDCODED PARAMETER !!!!!!!!!!
+!
+!     MAXIMUM NUMBER OF ITERATIONS
+      INTEGER NITMAX
       DATA NITMAX/200/
 !
 !-----------------------------------------------------------------------
 !
-      SAVE_HT =>HT%R
-      SAVE_HNT=>HNT%R
+      TYPE(BIEF_OBJ), POINTER :: T1,T2,FLBOUND,T4,T6,FXBORPAR,T8,HNT,HT
+      TYPE(BIEF_OBJ), POINTER :: HNP1MT,TETAF_VAR,FMIN,FMAX
+      DOUBLE PRECISION, POINTER, DIMENSION(:) :: DFDT
+!
+!-----------------------------------------------------------------------
+!
+!     LOCALLY DECLARED AND HARDCODED SOLVER OPTIONS FOR IMPLICIT SCHEMES
+!
+      SLVPSI%SLV=4
+      SLVPSI%NITMAX=100
+      SLVPSI%PRECON=2
+      SLVPSI%KRYLOV=3
+      SLVPSI%EPS=1.D-12
+      SLVPSI%ZERO=1.D-10
+!
+!-----------------------------------------------------------------------
+!
+      IF(AM2%STO.NE.3.AND.OPTADV.EQ.4) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'CVTRVF : STOCKAGE PAR SEGMENTS REQUIS'
+          WRITE(LU,*) '         AVEC SCHEMA N OU PSI IMPLICITE'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'CVTRVF: EDGE-BASED STORAGE REQUESTED WITH'
+          WRITE(LU,*) '        IMPLICIT N OR PSI SCHEME'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     BEWARE : OPTIMISATION OF MEMORY USE...
+!
+      HNP1MT    =>TB%ADR(FREE)%P
+      T1        =>TB%ADR(FREE+1)%P
+      T2        =>TB%ADR(FREE+2)%P
+      FLBOUND   =>TB%ADR(FREE+3)%P
+      T4        =>TB%ADR(FREE+4)%P
+      T6        =>TB%ADR(FREE+5)%P
+      FXBORPAR  =>TB%ADR(FREE+6)%P
+      T8        =>TB%ADR(FREE+7)%P
+      HNT       =>TB%ADR(FREE+8)%P
+      HT        =>TB%ADR(FREE+9)%P
+      TETAF_VAR =>TB%ADR(FREE+10)%P 
+!
+!     BEWARE : FMIN AND FMAX MIXED IN MEMORY WITH T6%R AND T8%R
+!              LOOK HOW DFDT AND T8 ARE ALWAYS RECOMPUTED AFTER FMIN AND FMAX
+!              ARE USED  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+!     BEWARE : DFDT=T6%R !!!!!!!!!!!
+      DFDT      => TB%ADR(FREE+5)%P%R
+      FMIN      => T6
+      FMAX      => T8
+!
+!-----------------------------------------------------------------------
+!
       FXMAT=>MESH%MSEG%X%R(1:MESH%NSEG)
 !     IN PARALLEL MODE, ASSEMBLED AND NON ASSEMBLED VERSIONS ARE DIFFERENT
       IF(NCSIZE.GT.1) THEN
@@ -214,6 +271,31 @@
 !
       IOPT2=IOPT/10
       IOPT1=IOPT-10*IOPT2
+!
+!     OPTIONS WITH AN EXPLICIT PREDICTOR-CORRECTOR
+!
+      IF((IOPT1.EQ.2.OR.IOPT1.EQ.3).AND.
+     &   (OPTADV.EQ.2.OR.OPTADV.EQ.3)) THEN
+        PREDICOR=.TRUE.
+      ELSE
+        PREDICOR=.FALSE.
+      ENDIF
+!
+!     SELECTING THE IMPLICITATION COEFFICIENT
+!     
+      IF((IOPT1.EQ.2.OR.IOPT1.EQ.3).AND.OPTADV.EQ.4) THEN
+!       ADAPTIVE IMPLICIT, N OR PSI
+        TETAF=1.D0
+      ELSEIF((IOPT1.EQ.2.OR.IOPT1.EQ.3).AND.OPTADV.EQ.3) THEN
+!       EXPLICIT PREDICTOR, PSEUDO-IMPLICIT CORRECTOR
+        TETAF=0.D0
+!       FROM 0 TO 1
+        TETAFCOR=0.5D0
+      ELSE
+!       EXPLICIT N OR PSI, EXPLICIT PREDICTOR-CORRECTOR PSI
+        TETAF=0.D0
+        TETAFCOR=0.D0
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -237,21 +319,19 @@
         CALL OS('X=X+CY  ',X=HT ,Y=H  ,C=AGGLOH)
         CALL OS('X=X+CY  ',X=HNT,Y=HN ,C=AGGLOH)
       ELSE
-!       CALL OS('X=Y     ',X=HT ,Y=H )
-!       CALL OS('X=Y     ',X=HNT,Y=HN)
-        HT%R =>H%R
-        HNT%R=>HN%R
+        CALL OS('X=Y     ',X=HT ,Y=H )
+        CALL OS('X=Y     ',X=HNT,Y=HN)
       ENDIF
 !
-!     IF NO FLBOR IS GIVEN, IT IS COMPUTED HERE IN T3
+!     IF NO FLBOR IS GIVEN, IT IS COMPUTED
 !
       IF(YAFLBOR) THEN
-        FLBOUND => FLBOR
+        CALL OS('X=Y     ',X=FLBOUND,Y=FLBOR)
       ELSE
 !       MASK=5 FOR NON NEUMANN BOUNDARIES IN DIFFIN
-        CALL VECTOR(T3,'=','FLUBDF          ',1,1.D0,HPROP,HPROP,HPROP,
+        CALL VECTOR(FLBOUND,'=','FLUBDF          ',1,1.D0,
+     &              HPROP,HPROP,HPROP,
      &              UCONV,VCONV,VCONV,MESH,.TRUE.,MASKTR%ADR(5)%P)
-        FLBOUND => T3
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -264,39 +344,37 @@
 !     AS U*N MAY NOT BE OF THE SAME SIGN AS FLBOR HERE (RARE BUT ALREADY
 !     SEEN).
 !
-      CALL CPSTVC(HN,T7)
+      CALL CPSTVC(HN,FXBORPAR)
 !     JUST IN CASE INTERNAL POINTS HAVE NON INITIALISED VALUES
-      CALL OS('X=0     ',X=T7)
+      CALL OS('X=0     ',X=FXBORPAR)
       DO I=1,MESH%NPTFR
         N=MESH%NBOR%I(I)
-        T7%R(N)=FLBOUND%R(I)
+        FXBORPAR%R(N)=FLBOUND%R(I)
       ENDDO
-      IF(NCSIZE.GT.1) CALL PARCOM(T7,2,MESH)
+      IF(NCSIZE.GT.1) CALL PARCOM(FXBORPAR,2,MESH)
       DO I=1,MESH%NPTFR
         N=MESH%NBOR%I(I)
-        IF(LIMTRA(I).EQ.KDIR.AND.T7%R(N).GT.0.D0) THEN
+        IF(LIMTRA(I).EQ.KDIR.AND.FXBORPAR%R(N).GT.0.D0) THEN
           LIMTRA(I)=KDDL
-        ELSEIF(LIMTRA(I).EQ.KDDL.AND.T7%R(N).LT.0.D0) THEN
+        ELSEIF(LIMTRA(I).EQ.KDDL.AND.FXBORPAR%R(N).LT.0.D0) THEN
           LIMTRA(I)=KDIR
+!         WHEN VELOCITIES RENTER THROUGH AN EXIT, WE ARBITRARILY CHOOSE
+!         THAT THE PRESCRIBED VALUE IS THE LAST KNOWN
           FBOR%R(I)=FN%R(N)
         ENDIF
       ENDDO
 !
-!     T7 MAY NOW BE REUSED
+!     MASKS FLBOR IF(MSK)
+!
+      IF(MSK) CALL OS('X=XY    ',X=FXBORPAR,Y=MASKPT)
 !
 !-----------------------------------------------------------------------
 !
-!     INITIALISES THE TRACER FLUX AT THE BOUNDARY
+!     INITIALISES THE ADDED MASS AND THE TRACER FLUX AT THE BOUNDARY
 !
-
+      ADMASS=0.D0
       DO I=1,MESH%NPTFR
-        IF(LIMTRA(I).EQ.KDIR) THEN
-!         FLBOR IS NOT ASSEMBLED IN PARALLEL MODE
-          FLBORTRA%R(I)=FLBOUND%R(I)*FBOR%R(I)
-        ELSE
-!         FOR KDDL, WILL BE DONE IN TVF OR TVF_2 OR TVF_IMP
-          FLBORTRA%R(I)=0.D0
-        ENDIF
+        FLBORTRA%R(I)=0.D0
       ENDDO
 !
 !     COMPUTES THE FLUXES PHIIJ = FXMAT
@@ -310,17 +388,17 @@
       NIT=0
       DT_REMAIN=DT
       TDT=0.D0
-      CALL CPSTVC(H ,T5)
-      CALL CPSTVC(H ,T4)
+      CALL CPSTVC(H,HNP1MT)
+      CALL CPSTVC(H,T4)
       CALL CPSTVC(F,T8)
 !
 !     T4 WILL BE F PROGRESSIVELY UPDATED
-!     T5 WILL BE THE DEPTH AT THE END OF THE SUB-TIMESTEP
+!     HNP1MT WILL BE THE DEPTH AT THE END OF THE SUB-TIMESTEP
 !     (INITIALISED HERE TO CALL  CFLVF)
 !
       DO I=1,HN%DIM1
         T4%R(I)=FN%R(I)
-        T5%R(I)=HNT%R(I)
+        HNP1MT%R(I)=HNT%R(I)
       ENDDO
 !
 !     T1 WILL BE THE DEPTH ACCORDING TO THE CONTINUITY EQUATION
@@ -361,36 +439,29 @@
 ! DETERMINES THE LARGEST ADMISSIBLE TIMESTEP
 !--------------------------------------------
 !
-!     THIS COULD BE PUT OUTSIDE THE LOOP, BUT T7 USED LATER IN THE LOOP...
-!
-!     IN CFLVF, T7 WILL BE FLBOR WITH A DIMENSION NPOIN
-      CALL OS('X=0     ',X=T7)
-      DO I=1,MESH%NPTFR
-        N=MESH%NBOR%I(I)
-        T7%R(N)=FLBOUND%R(I)
-      ENDDO
-      IF(NCSIZE.GT.1) CALL PARCOM(T7,2,MESH)
-!
-!     MASKS FLBOR IF(MSK)
-!
-      IF(MSK) CALL OS('X=XY    ',X=T7,Y=MASKPT)
-!
 !     COMPUTES THE MAXIMUM TIMESTEP ENSURING MONOTONICITY
 !     ACCORDING TO THEORY
 !
       COESOU=0.D0
-      COEMIN=0.D0
-      SECU=0.99D0
 !
-      IF(IOPT1.EQ.3.AND.OPTADV.EQ.2) THEN
+      IF(PREDICOR) THEN
         SECU=1.D0
         COEMIN=-1.D0
         COESOU=COEMIN
+      ELSEIF((IOPT1.EQ.2.OR.IOPT1.EQ.3).AND.OPTADV.EQ.4) THEN
+!       SAME AS PREDICOR
+        SECU=1.D0
+        COEMIN=-1.D0
+        COESOU=COEMIN
+      ELSE
+        SECU=0.99D0
+        COEMIN=0.D0
+        COESOU=COEMIN
       ENDIF
 !
-      CALL CFLVF(DDT,T5%R,HT%R,FXMAT,FXMATPAR,
-!                               FLBOR%R(NPOIN)
-     &           V2DPAR%R,DT_REMAIN,T7%R   ,SMH%R,
+      CALL CFLVF(DDT,HNP1MT%R,HT%R,FXMAT,FXMATPAR,
+!                                   FLBOR%R(NPOIN)
+     &           V2DPAR%R,DT_REMAIN,FXBORPAR%R   ,SMH%R,
      &           YASMH,T8,MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
      &           MESH%GLOSEG%I,MESH%GLOSEG%DIM1,MESH,MSK,MASKPT,
      &           RAIN,PLUIE%R,T4%R,MESH%NELEM,MESH%IKLE%I,
@@ -400,7 +471,10 @@
 !     NOW RECOMPUTING THE PSI FLUXES (THE N FLUXES HAVE BEEN
 !     USED FOR THE STABILITY CRITERION).
 !
-      IF(IOPT1.EQ.3) THEN
+!     WITH THE SEMI-IMPLICIT SCHEME, THE PSI FLUXES CANNOT BE USED
+!     AT THIS LEVEL
+!
+      IF(IOPT1.EQ.3.AND.OPTADV.NE.4) THEN
         CALL FLUX_EF_VF(FXMAT,MESH%W%R,MESH%NSEG,MESH%NELEM,
      &                  MESH%ELTSEG%I,MESH%ORISEG%I,
      &                  MESH%IKLE%I,.TRUE.,IOPT1,T4)
@@ -422,12 +496,45 @@
       IF(NCSIZE.GT.1) DDT=P_DMIN(DDT)
       DDT=MIN(DDT,DT_REMAIN)
 !
+!     CASE OF ADAPTIVE IMPLICIT N SCHEME: BACK TO EXPLICIT WHEN POSSIBLE
+!
+      IF((IOPT1.EQ.2.OR.IOPT1.EQ.3).AND.OPTADV.EQ.4) THEN   
+        IF(DDT.EQ.DT) THEN
+!         BACK TO EXPLICIT SCHEME
+          TETAF=0.D0
+        ELSE
+!         ARBITRARY NUMBER, MUST JUST BE # 0.D0
+          TETAF=1.D0
+!         0.9999D0 TO BE SURE THAT DDT=DT_REMAIN
+!         WHEN DOING DDT=MIN(DDT/(1.D0-TETAF),DT_REMAIN)  
+!         TETAF=1.D0-0.9999D0*DDT/DT
+          SECU=0.9999999D0
+          DO I=1,HN%DIM1
+!           FOR CLASSICAL N-SCHEME
+!           TETAF_VAR(I)=MAX(0.D0,1.D0-SECU*NN*T2%R(I)/DT)
+!           FOR PREDICTOR CORRECTOR N-SCHEME
+            TETAF_VAR%R(I)=MAX(0.D0,1.D0-0.5D0*SECU*NSP_DIST*T2%R(I)/DT)
+! ESSAI !!!!!!
+!           TETAF_VAR(I)=MAX(0.5D0,1.D0-0.5D0*SECU*NN*T2%R(I)/DT)
+          ENDDO
+          DDT=DT/NSP_DIST/SECU
+          DDT=MIN(DDT,DT_REMAIN)
+        ENDIF
+      ELSEIF(TETAF.GT.0.D0) THEN
+!       SEMI_IMPLICIT CASE: FINAL POSSIBLE TIME STEP
+        IF(TETAF.NE.1.D0) THEN
+          DDT=MIN(DDT/(1.D0-TETAF),DT_REMAIN)  
+        ELSE
+          DDT=DT_REMAIN
+        ENDIF
+      ENDIF
+!
 !     T2 WILL TAKE THE SUCCESSIVE VALUES OF H
 !     AT THE BEGINNING OF THE SUB-TIMESTEP
 !     WARNING: T2 ALSO USED WITH IOPT2=1, BUT SO FAR PREDICTOR-CORRECTOR
 !              NOT USED WITH THIS OPTION
 !
-      IF(IOPT1.EQ.3.AND.OPTADV.EQ.2) THEN
+      IF(PREDICOR) THEN
         DO I=1,HN%DIM1
           T2%R(I)=HNT%R(I)+TDT*(HT%R(I)-HNT%R(I))/DT
         ENDDO
@@ -435,18 +542,25 @@
 !
       TDT=TDT+DDT
 !
-!     T5 WILL TAKE THE SUCCESSIVE VALUES OF H
-!     AT THE END OF THE SUB-TIMESTEP
+!     HNP1MT WILL TAKE THE SUCCESSIVE VALUES OF H
+!     AT THE END OF THE SUB-TIMESTEP (EXPLICIT) OR IN BETWEEN (IMPLICIT)
 !
-      DO I=1,HN%DIM1
-        T5%R(I)=HNT%R(I)+TDT*(HT%R(I)-HNT%R(I))/DT
-      ENDDO
+      IF(TETAF.GT.0.D0) THEN
+        DO I=1,HN%DIM1
+          HNP1MT%R(I)=HNT%R(I)+
+     &               (TDT-TETAF_VAR%R(I)*DDT)*(HT%R(I)-HNT%R(I))/DT
+        ENDDO
+      ELSE
+        DO I=1,HN%DIM1
+          HNP1MT%R(I)=HNT%R(I)+TDT*(HT%R(I)-HNT%R(I))/DT
+        ENDDO
+      ENDIF
 !
 !     IN TVF FACTOR HT/HLIN MAY TRIGGER DIVERGENCE FOR DRY POINTS
 !
       IF(MSK) THEN
         DO I=1,HN%DIM1
-          IF(MASKPT%R(I).LT.0.5D0) T5%R(I)=HT%R(I)
+          IF(MASKPT%R(I).LT.0.5D0) HNP1MT%R(I)=HT%R(I)
         ENDDO
       ENDIF
 !
@@ -454,34 +568,284 @@
 !  FINAL RESOLUTION OR PREDICTOR STEP
 !------------------------------------
 !
-      CALL TRACVF(F,FN,FSCEXP,HT,HNT,FXMAT,FXMATPAR,V2DPAR,UNSV2D,
-     &            DDT,FLBOUND,FBOR,SMH,YASMH,T1,T2,T4,T5,T6,T7,T8,
-     &            MESH,LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,
-     &            DT,RAIN,PLUIE,TRAIN)
+      IF(TETAF.EQ.0.D0) THEN
 !
-!--------------------------------
-!  CORRECTOR STEP FOR PSI SCHEME
-!--------------------------------
+        CALL TRACVF(F,FN,FSCEXP,HT,HNT,FXMAT,FXMATPAR,V2DPAR,
+     &              VOLU2D,UNSV2D,
+     &              DDT,FLBOUND,FBOR,SMH,YASMH,T1,T2,T4,HNP1MT,T6,
+     &              FXBORPAR,T8,
+     &              MESH,LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,
+     &              DT,RAIN,PLUIE,TRAIN,ADMASS,
+!                   CASES WHERE THE MASS BALANCE MUST BE PREPARED
+!                   EVEN OPTADV=4 MAY CALL TRACVF IF ALL TETA=0
+     &              OPTADV.EQ.1.OR.NCO_DIST.EQ.0.OR.OPTADV.EQ.4)
 !
-      IF(IOPT1.EQ.3.AND.OPTADV.EQ.2) THEN
+      ELSE
 !
-        CALL FLUX_EF_VF_2(MESH%W%R,MESH%NELEM,
+!       FOR GETTING THE EXPLICIT PSI CONTRIBUTION
+!       WITHOUT THE DERIVATIVE IN TIME
+        DO I=1,HN%DIM1
+          DFDT(I)=0.D0
+        ENDDO 
+        CALL FLUX_EF_VF_3(MESH%W%R,MESH%NELEM,
+     &                    MESH%ELTSEG%I,MESH%ORISEG%I,
+     &                    FXMATPAR,MESH%NSEG,
+!                                                      FN
      &                    MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
-!    &                    FI_I,FSTAR,
-     &                    T8%R,F%R,T5%R,MESH%SURFAC%R,DDT)
-        IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH)
+!    &                    FI_I               HDFDT
+     &                    T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,F%R)
+!       NO, WILL GO INTO SM THAT IS NOT ASSEMBLED
+!       IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH) 
 !
-!       COMPUTE THE SECOND ORDER CORRECTION FORM
+!       BUILDING AND SOLVING THE LINEAR SYSTEM (NORMAL OR PREDICTOR)
 !
-        CALL TVF_2(F%R,FN%R,T4%R,UNSV2D%R,DDT,
-     &             FLBOUND%R,T7%R,FBOR%R,SMH%R,YASMH,FSCEXP%R,
-     &             MESH%NPOIN,MESH%NPTFR,MESH%NBOR%I,
-     &             LIMTRA,KDIR,KDDL,
-     &             OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,RAIN,
-     &             PLUIE%R,TRAIN,T8%R)
-!                                FI_I
+        CALL TVF_IMP(F%R,T4%R,FXMAT,
+     &               FXMATPAR,UNSV2D%R,DDT,
+     &               FLBOUND%R,FXBORPAR%R,HNP1MT%R,
+     &               FBOR%R,SMH%R,YASMH,FSCEXP%R,
+     &               MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
+     &               MESH%GLOSEG%I,MESH%GLOSEG%DIM1,
+     &               MESH%NBOR%I,LIMTRA,KDIR,KDDL,
+     &               OPTSOU,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,
+     &               RAIN,PLUIE%R,TRAIN,TETAF_VAR%R,
+     &               ENTET,VOLU2D%R,V2DPAR%R,
+     &               T6,T8%R,AM2,TB2,SLVPSI,
+!                    PREDICTOR CORRECTOR
+     &               .TRUE.,   .FALSE.,0,NCO_DIST,ADMASS)
+!
+!       NUMBER OF CORRECTION STEPS
+!
+        IF(NCO_DIST.GT.0) THEN
+!
+!         CORRECTOR STEP
+!
+          DO ICOR=1,NCO_DIST
+!           THE FIRST CORRECTOR IS GUARANTEDD WITHOUT STABILITY PROBLEM
+            IF(ICOR.NE.1) THEN
+!             LIMITING THE PREDICTOR
+              DO I=1,HN%DIM1
+                FMIN%R(I)=T4%R(I)
+                FMAX%R(I)=T4%R(I)
+              ENDDO 
+              DO IELEM=1,MESH%NELEM
+                I1=MESH%IKLE%I(IELEM)
+                I2=MESH%IKLE%I(IELEM+  MESH%NELMAX)
+                I3=MESH%IKLE%I(IELEM+2*MESH%NELMAX)
+                FMIN%R(I1)=MIN(FMIN%R(I1),F%R(I1),F%R(I2),F%R(I3),
+     &                                T4%R(I1),T4%R(I2),T4%R(I3))
+                FMAX%R(I1)=MAX(FMAX%R(I1),F%R(I1),F%R(I2),F%R(I3),
+     &                                T4%R(I1),T4%R(I2),T4%R(I3))
+                FMIN%R(I2)=MIN(FMIN%R(I2),F%R(I1),F%R(I2),F%R(I3),
+     &                                T4%R(I1),T4%R(I2),T4%R(I3))
+                FMAX%R(I2)=MAX(FMAX%R(I2),F%R(I1),F%R(I2),F%R(I3),
+     &                                T4%R(I1),T4%R(I2),T4%R(I3))
+                FMIN%R(I3)=MIN(FMIN%R(I3),F%R(I1),F%R(I2),F%R(I3),
+     &                                T4%R(I1),T4%R(I2),T4%R(I3))
+                FMAX%R(I3)=MAX(FMAX%R(I3),F%R(I1),F%R(I2),F%R(I3),
+     &                                T4%R(I1),T4%R(I2),T4%R(I3))
+              ENDDO
+              IF(NCSIZE.GT.1) THEN
+                CALL PARCOM(FMIN,4,MESH)
+                CALL PARCOM(FMAX,3,MESH)
+              ENDIF
+              DO I=1,HN%DIM1
+                F%R(I)=MIN(F%R(I),T4%R(I)+0.5D0*(FMAX%R(I)-T4%R(I)))
+                F%R(I)=MAX(F%R(I),T4%R(I)+0.5D0*(FMIN%R(I)-T4%R(I)))
+              ENDDO 
+            ENDIF
+!
+!           FOR GETTING THE EXPLICIT PSI CONTRIBUTION
+!           WITH THE DERIVATIVE IN TIME
+            DO I=1,HN%DIM1
+!             HERE DFDT=H*DFDT WITH SEMI IMPLICIT H
+              DFDT(I)=HNP1MT%R(I)*(F%R(I)-T4%R(I))/DDT          
+            ENDDO 
+            CALL FLUX_EF_VF_3(MESH%W%R,MESH%NELEM,
+     &                        MESH%ELTSEG%I,MESH%ORISEG%I,
+     &                        FXMATPAR,MESH%NSEG,
+!                                                          FN
+     &                        MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
+!    &                        FI_I               HDFDT
+     &                        T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,F%R)
+!           NO, WILL GO INTO SM THAT IS NOT ASSEMBLED
+!           IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH) 
+!
+            CALL TVF_IMP(F%R,T4%R,FXMAT,
+     &               FXMATPAR,UNSV2D%R,DDT,
+     &               FLBOUND%R,FXBORPAR%R,HNP1MT%R,
+     &               FBOR%R,SMH%R,YASMH,FSCEXP%R,
+     &               MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
+     &               MESH%GLOSEG%I,MESH%GLOSEG%DIM1,
+     &               MESH%NBOR%I,LIMTRA,KDIR,KDDL,
+     &               OPTSOU,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,
+     &               RAIN,PLUIE%R,TRAIN,TETAF_VAR%R,
+     &               ENTET,VOLU2D%R,V2DPAR%R,
+     &               T6,T8%R,AM2,TB2,SLVPSI,
+!                    PREDICTOR CORRECTOR
+     &               .FALSE.,  .TRUE.,ICOR,NCO_DIST,ADMASS)
+!
+          ENDDO
+!
+        ENDIF
 !
       ENDIF
+!
+!--------------------------------
+!  CORRECTOR STEP FOR N AND PSI SCHEME
+!--------------------------------
+!
+      IF(PREDICOR) THEN
+!
+!       CASES WITH A LIMITATION OF THE FIRST CORRECTOR
+!      
+        IF(OPTADV.EQ.3) THEN
+!         COMPUTING THE MINIMUM AND MAXIMUM
+          DO I=1,HN%DIM1
+            FMIN%R(I)=T4%R(I)
+            FMAX%R(I)=T4%R(I)
+          ENDDO 
+          DO IELEM=1,MESH%NELEM
+            I1=MESH%IKLE%I(IELEM)
+            I2=MESH%IKLE%I(IELEM+  MESH%NELMAX)
+            I3=MESH%IKLE%I(IELEM+2*MESH%NELMAX)
+            FMIN%R(I1)=MIN(FMIN%R(I1),F%R(I1),F%R(I2),F%R(I3),
+     &                            T4%R(I1),T4%R(I2),T4%R(I3))
+            FMAX%R(I1)=MAX(FMAX%R(I1),F%R(I1),F%R(I2),F%R(I3),
+     &                            T4%R(I1),T4%R(I2),T4%R(I3))
+            FMIN%R(I2)=MIN(FMIN%R(I2),F%R(I1),F%R(I2),F%R(I3),
+     &                            T4%R(I1),T4%R(I2),T4%R(I3))
+            FMAX%R(I2)=MAX(FMAX%R(I2),F%R(I1),F%R(I2),F%R(I3),
+     &                            T4%R(I1),T4%R(I2),T4%R(I3))
+            FMIN%R(I3)=MIN(FMIN%R(I3),F%R(I1),F%R(I2),F%R(I3),
+     &                            T4%R(I1),T4%R(I2),T4%R(I3))
+            FMAX%R(I3)=MAX(FMAX%R(I3),F%R(I1),F%R(I2),F%R(I3),
+     &                            T4%R(I1),T4%R(I2),T4%R(I3))
+          ENDDO
+          IF(NCSIZE.GT.1) THEN
+            CALL PARCOM(FMIN,4,MESH)
+            CALL PARCOM(FMAX,3,MESH)
+          ENDIF
+!         FOR SECOND ORDER, LIMITATION OF F ALREADY AT THIS LEVEL
+          DO I=1,HN%DIM1
+            F%R(I)=MIN(F%R(I),
+     &           T4%R(I)+1.D0/(2.D0*TETAFCOR)*(T4%R(I)-FMIN%R(I)))
+            F%R(I)=MAX(F%R(I),
+     &           T4%R(I)+1.D0/(2.D0*TETAFCOR)*(T4%R(I)-FMAX%R(I)))
+          ENDDO 
+        ENDIF
+!
+        DO I=1,HN%DIM1
+          DFDT(I)=(F%R(I)-T4%R(I))/DDT
+        ENDDO
+!
+        CALL FLUX_EF_VF_2(MESH%W%R,MESH%NELEM,
+!                                                      FN
+     &                    MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
+!    &                    FI_I,FSTAR, HN   H
+     &                    T8%R,F%R   ,T2%R,HNP1MT%R,MESH%SURFAC%R,DDT,
+     &                    TETAFCOR,DFDT)
+        IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH)
+!
+        IF(PREDICOR.AND.NCO_DIST.GT.1) THEN  
+          MASS_BAL=.FALSE.
+        ELSE
+          MASS_BAL=.TRUE.
+        ENDIF  
+        DO I=1,HN%DIM1
+!         WILL BE FSTAR IN TVF_2
+          T6%R(I)=F%R(I)
+        ENDDO    
+        CALL TVF_2(F%R,T6%R,T4%R,VOLU2D%R,UNSV2D%R,DDT,
+     &             FLBOUND%R,FXBORPAR%R,FBOR%R,SMH%R,YASMH,FSCEXP%R,
+     &             MESH%NPOIN,MESH%NPTFR,MESH%NBOR%I,LIMTRA,KDIR,KDDL,
+     &             OPTSOU,HNP1MT%R,IOPT2,FLBORTRA%R,DDT/DT,RAIN,
+     &             PLUIE%R,TRAIN,T8%R,OPTADV,TETAFCOR,MASS_BAL,ADMASS)
+!                                FI_I
+!       
+!       POSSIBLE SUPPLEMENTARY ITERATIONS OF THE CORRECTOR
+ 
+        IF(NCO_DIST.GT.1) THEN  
+        DO N=2,NCO_DIST
+!
+!         COMPUTATION OF MIN MAX
+          DO I=1,HN%DIM1
+            FMIN%R(I)=T4%R(I)
+            FMAX%R(I)=T4%R(I)
+          ENDDO
+          DO IELEM=1,MESH%NELEM
+            I1=MESH%IKLE%I(IELEM)
+            I2=MESH%IKLE%I(IELEM+  MESH%NELMAX)
+            I3=MESH%IKLE%I(IELEM+2*MESH%NELMAX)
+            FMIN%R(I1)=MIN(FMIN%R(I1),F%R(I1),F%R(I2),F%R(I3),
+     &                            T4%R(I1),T4%R(I2),T4%R(I3))
+            FMAX%R(I1)=MAX(FMAX%R(I1),F%R(I1),F%R(I2),F%R(I3),
+     &                            T4%R(I1),T4%R(I2),T4%R(I3))
+            FMIN%R(I2)=MIN(FMIN%R(I2),F%R(I1),F%R(I2),F%R(I3),
+     &                            T4%R(I1),T4%R(I2),T4%R(I3))
+            FMAX%R(I2)=MAX(FMAX%R(I2),F%R(I1),F%R(I2),F%R(I3),
+     &                            T4%R(I1),T4%R(I2),T4%R(I3))
+            FMIN%R(I3)=MIN(FMIN%R(I3),F%R(I1),F%R(I2),F%R(I3),
+     &                            T4%R(I1),T4%R(I2),T4%R(I3))
+            FMAX%R(I3)=MAX(FMAX%R(I3),F%R(I1),F%R(I2),F%R(I3),
+     &                            T4%R(I1),T4%R(I2),T4%R(I3))
+          ENDDO
+          IF(NCSIZE.GT.1) THEN
+            CALL PARCOM(FMIN,4,MESH)
+            CALL PARCOM(FMAX,3,MESH)
+          ENDIF
+!  
+          IF(OPTADV.EQ.2) THEN
+            DO I=1,HN%DIM1
+!             LIMITING THE PREDICTOR
+              F%R(I)=MIN(F%R(I),T4%R(I)+0.5D0*(FMAX%R(I)-T4%R(I)))
+              F%R(I)=MAX(F%R(I),T4%R(I)+0.5D0*(FMIN%R(I)-T4%R(I)))
+!             NEW DERIVATIVE IN TIME
+              DFDT(I)=(F%R(I)-T4%R(I))/DDT
+            ENDDO 
+          ELSEIF(OPTADV.EQ.3) THEN
+            DO I=1,HN%DIM1
+!             LIMITING THE PREDICTOR
+              F%R(I)=MIN(F%R(I),
+     &             T4%R(I)+0.5D0/TETAFCOR*(T4%R(I)-FMIN%R(I)))
+              F%R(I)=MAX(F%R(I),
+     &             T4%R(I)+0.5D0/TETAFCOR*(T4%R(I)-FMAX%R(I)))
+              F%R(I)=MIN(F%R(I),
+     &              T4%R(I)+1.D0/(2.D0-TETAFCOR)*(FMAX%R(I)-T4%R(I)))
+              F%R(I)=MAX(F%R(I),
+     &              T4%R(I)+1.D0/(2.D0-TETAFCOR)*(FMIN%R(I)-T4%R(I)))
+!             NEW DERIVATIVE IN TIME
+              DFDT(I)=(F%R(I)-T4%R(I))/DDT
+            ENDDO 
+          ENDIF
+!
+          CALL FLUX_EF_VF_2(MESH%W%R,MESH%NELEM,
+!                                                        FN
+     &                      MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
+!    &                      FI_I,FSTAR, HN   H
+     &                      T8%R,F%R   ,T2%R,HNP1MT%R,MESH%SURFAC%R,DDT,
+     &                      TETAFCOR,DFDT)
+          IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH) 
+          IF(N.EQ.NCO_DIST) THEN
+            MASS_BAL=.TRUE.
+          ELSE
+            MASS_BAL=.FALSE.
+          ENDIF
+          DO I=1,HN%DIM1
+!           NEW FSTAR
+            T6%R(I)=F%R(I)
+          ENDDO 
+          CALL TVF_2(F%R,T6%R,T4%R,VOLU2D%R,UNSV2D%R,DDT,
+     &               FLBOUND%R,FXBORPAR%R,FBOR%R,SMH%R,YASMH,FSCEXP%R,
+     &               MESH%NPOIN,MESH%NPTFR,MESH%NBOR%I,LIMTRA,KDIR,KDDL,
+     &               OPTSOU,HNP1MT%R,IOPT2,FLBORTRA%R,DDT/DT,RAIN,
+     &               PLUIE%R,TRAIN,T8%R,OPTADV,TETAFCOR,MASS_BAL,
+!                                  FI_I             
+     &               ADMASS)
+!
+        ENDDO
+        ENDIF
+!
+      ENDIF  ! IF(NCO_DIST.GT.1)
 !
 !-----------------
 ! END CORRECTOR STEP
@@ -521,9 +885,11 @@
 !
 !     EXPLICIT SOURCE TERM
 !
-      DO I = 1,MESH%NPOIN
-        F%R(I) = F%R(I)+DT*SM%R(I)
-      ENDDO
+      IF(TETAF.EQ.0.D0) THEN
+        DO I = 1,MESH%NPOIN
+          F%R(I) = F%R(I)+DT*SM%R(I)
+        ENDDO
+      ENDIF
 !
 !     IMPLICIT SOURCE TERM
 !
@@ -535,84 +901,13 @@
 !
 !-----------------------------------------------------------------------
 !
-!     LOCAL MASS BALANCE (FOR CHECKING PURPOSES)
+!     UPDATING MASSOU
 !
-!     CALL OS('X=Y-Z   ',X=T7,Y=T5,Z=HT)
-!     WRITE(LU,*)'DIFFERENCE ENTRE H RECALCULE ET H : ',DOTS(T7,T7)
-!     CHECKS THE TRACER EQUATION
-!     CALL CPSTVC(FBOR,T4)
-!     T4 : F AT THE BOUNDARIES AS TAKEN FOR THE BOUNDARY FLUXES
-!     DO I=1,NPTFR
-!       IF(LIMTRA(I).EQ.KDIR) THEN
-!         T4%R(I)=FBOR%R(I)
-!       ELSE
-!         T4%R(I)=FN%R(MESH%NBOR%I(I))
-!       ENDIF
-!     ENDDO
-!     CALL OS('X=YZ    ',X=T6,Y=FN,Z=HNT)
-!     CALL OS('X=YZ    ',X=T7,Y=F ,Z=HT )
-!     MASSETN=P_DOTS(V2DPAR,T6,MESH)
-!     MASSET =P_DOTS(V2DPAR,T7,MESH)
-!     FXT2   =P_DOTS(FLBOR,T4,MESH)
-!     WRITE(LU,*)'MASSE INIT: ',MASSETN,' MASSE FINALE: ',MASSET
-!     WRITE(LU,*)'FLUX: ',FXT2
-!     MASSETN = MASSETN - FXT2*DT
-!     TSOU=0.D0
-!     IF(YASMH) THEN
-!       IF(OPTSOU.EQ.1) THEN
-!         DO I=1,MESH%NPOIN
-!           MASSETN=MASSETN
-!    &             +DT*V2DPAR%R(I)*SMH%R(I)*(FSCEXP%R(I)+FN%R(I))
-!           TSOU=TSOU+DT*V2DPAR%R(I)*SMH%R(I)*(FSCEXP%R(I)+FN%R(I))
-!         ENDDO
-!       ELSEIF(OPTSOU.EQ.2) THEN
-!         DO I=1,MESH%NPOIN
-!           MASSETN=MASSETN
-!    &             +DT*SMH%R(I)*(FSCEXP%R(I)+FN%R(I))
-!           TSOU=TSOU+DT*SMH%R(I)*(FSCEXP%R(I)+FN%R(I))
-!         ENDDO
-!       ENDIF
-!     ENDIF
-!     WRITE(LU,*)'CREATION PAR SOURCE : ',TSOU
-!     WRITE(LU,*)'ERREUR DE MASSE DE TRACEUR VF : ',MASSETN-MASSET
-!     CHECKS THE CONTINUITY EQUATION
-!     DO I = 1,MESH%NPOIN
-!       T5%R(I)=V2DPAR%R(I)*(HT%R(I)-HNT%R(I))
-!     ENDDO
-!     DO I = 1,MESH%NSEG
-!       T5%R(MESH%GLOSEG%I(I)) =
-!    &  T5%R(MESH%GLOSEG%I(I)) + DT*MESH%MSEG%X%R(I)
-!       T5%R(MESH%GLOSEG%I(I+MESH%NSEG)) =
-!    &  T5%R(MESH%GLOSEG%I(I+MESH%NSEG)) - DT*MESH%MSEG%X%R(I)
-!     ENDDO
-!     DO I = 1,MESH%NPTFR
-!       T5%R(MESH%NBOR%I(I))=T5%R(MESH%NBOR%I(I))+DT*FLBOR%R(I)
-!     ENDDO
-!     IF(YASMH) THEN
-!       IF(OPTSOU.EQ.1) THEN
-!         DO I = 1,MESH%NPOIN
-!           T5%R(I)=T5%R(I)-DT*V2DPAR%R(I)*SMH%R(I)
-!         ENDDO
-!       ELSEIF(OPTSOU.EQ.2) THEN
-!         DO I = 1,MESH%NPOIN
-!           T5%R(I)=T5%R(I)-DT*SMH%R(I)
-!         ENDDO
-!       ENDIF
-!     ENDIF
-!     MASSET=0.D0
-!     MASSETN = 0.D0
-!     DO I = 1,MESH%NPOIN
-!       MASSET=MASSET+T5%R(I)
-!       MASSETN=MAX(MASSETN,ABS(T5%R(I)))
-!     ENDDO
-!     WRITE(LU,*)'ERREUR DE MASSE GLOBALE : ',MASSET,' LOCALE : ',MASSETN
-!
-!-----------------------------------------------------------------------
-!
-!     RETURNS POINTERS HT AND HNT
-!
-      HT%R =>SAVE_HT
-      HNT%R=>SAVE_HNT
+      IF(NCSIZE.GT.1) THEN
+        MASSOU=MASSOU+P_DSUM(ADMASS)
+      ELSE
+        MASSOU=MASSOU+ADMASS
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

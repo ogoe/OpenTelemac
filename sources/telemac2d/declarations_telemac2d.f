@@ -554,9 +554,9 @@
 !
       TYPE(BIEF_OBJ), TARGET :: MASK
 !
-!     BLOCK OF WORKING ARRAYS
+!     BLOCKS OF WORKING ARRAYS
 !
-      TYPE(BIEF_OBJ), TARGET :: TB
+      TYPE(BIEF_OBJ), TARGET :: TB,TB2
 !
 !     BLOCK OF PRIVATE VECTORS
 !
@@ -1126,6 +1126,11 @@
 !     OPTION FOR WIND
 !
       INTEGER OPTWIND
+!
+!     NUMBER OF CORRECTIONS FOR DISTRIBUTIVE SCHEMES 
+!     NUMBER OF SUB-STEPS FOR DISTRIBUTIVE SCHEMES 
+!
+      INTEGER NCO_DIST,NSP_DIST
 !
 !-----------------------------------------------------------------------
 !

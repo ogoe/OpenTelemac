@@ -53,7 +53,7 @@
 !history  CV (EDF)
 !+        30/07/2012
 !+        V6P2
-!+ added new variable ZFCL_MS
+!+ added new variable ZFCL_MS 
 !
 !history  Pablo Tassi PAT (EDF-LNHE)
 !+        12/02/2013
@@ -373,7 +373,7 @@
 !
       TYPE(BIEF_OBJ), TARGET :: HIDING
 !
-!
+! 
 !
       TYPE(BIEF_OBJ), TARGET :: ELAY
 !
@@ -421,7 +421,7 @@
 !
       TYPE(BIEF_OBJ), TARGET :: HPROP
 !
-!
+! 
 !
       TYPE(BIEF_OBJ), TARGET :: DISP,DISP_C
 !
@@ -507,9 +507,9 @@
 !
       TYPE(BIEF_OBJ), TARGET :: MASK
 !
-!     BLOCK OF WORKING ARRAYS
+!     BLOCKS OF WORKING ARRAYS
 !
-      TYPE(BIEF_OBJ), TARGET :: TB
+      TYPE(BIEF_OBJ), TARGET :: TB,TB2
 !
 !     BLOCK OF PRIVATE VECTORS
 !
@@ -595,7 +595,7 @@
       TYPE(BIEF_OBJ), TARGET :: ZFCL_MS
 
 !> @brief MEYER PETER MUELLER factor
-!
+!  
       TYPE(BIEF_OBJ), TARGET :: MPM_ARAY
 !
 !     FLUX LIMITATION PER SEGMENT
@@ -605,9 +605,9 @@
 !     FLUXES AT BOUNDARY FOR EVERY CLASS
 !
       TYPE(BIEF_OBJ), TARGET :: FLBCLA
-!
+! 
 !     CV modifs V6P2 new variables for consolidation model
-!
+! 
 !     VOID INDEX OF BED LAYERS
 !
       DOUBLE PRECISION,DIMENSION(:,:),TARGET,ALLOCATABLE::IVIDE
@@ -650,10 +650,12 @@
 !     OPTION FOR THE DIFFUSION OF TRACER
 !
       INTEGER OPDTRA
-!> @brief OPTION FOR THE DISPERSION
-! option pour la dispersion
+!
+!     OPTION FOR THE DISPERSION
+! 
       INTEGER OPTDIF
-!> @brief 'SUPG OPTION'
+!
+!     SUPG OPTION
 !
       INTEGER OPTSUP
 !
@@ -662,11 +664,11 @@
       INTEGER :: NCONDIS
 !
 !     LAW OF BOTTOM FRICTION
-!
+! 
       INTEGER KFROT
 !
 !     BED-LOAD TRANSPORT FORMULA
-!
+! 
       INTEGER ICF
 !
 !> @brief
@@ -674,65 +676,57 @@
       INTEGER NPAS
 !
 !     NUMBER OF TIDES OR FLOODS
-!
+! 
       INTEGER NMAREE
-!> @brief
 !
       INTEGER LEOPR
-!> @brief
 !
       INTEGER LISPR
-!> @brief
 !
       INTEGER NVARCL
-!> @brief
 !
       INTEGER IELMT,IELMH_SIS,IELMU_SIS,IELMX
-!> @brief
+!
 ! standard du fichier de geometrie
       INTEGER STDGEO
-!> @brief
 !
       INTEGER LOGDES ,LOGPRE ,OPTBAN ,LVMAC
 !
 !     HYDRODYNAMIC CODE
-!
+! 
       INTEGER HYDRO
 !
 !     MATRIX STORAGE
-!
+! 
       INTEGER OPTASS
 !
 !     NUMBER OF SUB-ITERATIONS
-!
+! 
       INTEGER NSOUS
 !
-!> @brief
+!
 !
       INTEGER MARDAT(3),MARTIM(3),PRODUC
 !
 !     OPTION FOR THE TREATMENT OF NON ERODABLE BEDS
-!
+! 
       INTEGER CHOIX
-!> @brief
 !
       INTEGER PTINIL,PTINIG
 !
 !     NUMBER OF PRIVATE ARRAYS
-!
+! 
       INTEGER NPRIV
 !
 !     COUPLING PERIOD
-!
+! 
       INTEGER PERCOU
 !
 !     NUMERO DU PAS DE TEMPS
 !
       INTEGER LT
-!> @brief
 !
       INTEGER RESOL
-!> @brief
 !
       INTEGER DEPER
 !
@@ -762,7 +756,7 @@
 !     NUMBER OF BED LOAD MODEL LAYERS
 !
       INTEGER NOMBLAY
-!
+!     
 !     FORMULATION FOR THE HIDING FACTOR
 !
       INTEGER HIDFAC
@@ -843,6 +837,11 @@
 !
       INTEGER OPTADV
 !
+!     NUMBER OF CORRECTIONS FOR DISTRIBUTIVE SCHEMES 
+!     NUMBER OF SUB-STEPS FOR DISTRIBUTIVE SCHEMES 
+!
+      INTEGER NCO_DIST,NSP_DIST
+!
 !-----------------------------------------------------------------------
 !
 !       5) LOGICAL VALUES
@@ -857,105 +856,137 @@
 !  C-VSM_FULL WRITES OUT (OR NOT) EVER
 !
       LOGICAL :: CVSM_OUT_FULL !UHM
-
-!> @brief GRAPHICAL OUTPUT
+!
+!     GRAPHICAL OUTPUT
 !
       LOGICAL :: SORLEO(MAXVAR)
-!> @brief LISTING OUTPUT
+!
+!     LISTING OUTPUT
 !
       LOGICAL :: SORIMP(MAXVAR)
-!> @brief MASKING
+!
+!     MASKING
 !
       LOGICAL :: MSK
-!> @brief WRITES OUT (OR NOT)
+!
+!     WRITES OUT (OR NOT)
 !
       LOGICAL :: ENTET
-!> @brief RESOLUTION FOR SUSPENSION IS IMPLICIT (OR NOT)
+!
+!     RESOLUTION FOR SUSPENSION IS IMPLICIT (OR NOT)
 !
       LOGICAL :: YASMI
-!> @brief SPHERICAL EQUATIONS (HARD-CODED)
+!
+!     SPHERICAL EQUATIONS (HARD-CODED)
 !
       LOGICAL :: SPHERI
-!> @brief STEADY HYDRODYNAMICS
+!
+!     STEADY HYDRODYNAMICS
 !
       LOGICAL :: PERMA
-!> @brief TIDAL FLATS
+!
+!     TIDAL FLATS
 !
       LOGICAL :: BANDEC
-!> @brief WAVE EFFECT
-! si oui, prise en compte de la houle
+!
+!     WAVE EFFECT
+! 
       LOGICAL :: HOULE
-!> @brief FALL VELOCITY (PARTIALLY HARD-CODED)
+!
+!     FALL VELOCITY (PARTIALLY HARD-CODED)
 !
       LOGICAL :: CALWC
-!> @brief SHIELDS PARAMETER
+!
+!     SHIELDS PARAMETER
 !
       LOGICAL :: CALAC
-!> @brief BEDLOAD
+!
+!     BEDLOAD
 !
       LOGICAL :: CHARR
-!> @brief LOADING LAW USED OR NOT
+!
+!     LOADING LAW USED OR NOT
 !
       LOGICAL :: NOEQUBED
-!> @brief FINITE VOLUMES
-! si oui, volumes finis
+!
+!     FINITE VOLUMES
+! 
       LOGICAL :: VF
-!> @brief MASS-LUMPING
+!
+!     MASS-LUMPING
 !
       LOGICAL :: LUMPI
-!> @brief CONSTANT FLOW DISCHARGE
+!
+!     CONSTANT FLOW DISCHARGE
 !
       LOGICAL :: LCONDIS
-!> @brief GRAIN-FEEDING
-! si oui, grain-feeding
+!
+!     GRAIN-FEEDING
+! 
       LOGICAL :: LGRAFED
-!> @brief CONSTANT ACTIVE LAYER THICKNESS
-! si oui, epaisseur de couche active constante
+!
+!     CONSTANT ACTIVE LAYER THICKNESS
+! 
       LOGICAL :: CONST_ALAYER
-!> @brief SUSPENSION
-! si oui, prise en compte de la suspension
+!
+!     SUSPENSION
+! 
       LOGICAL :: SUSP
-!> @brief MASS BALANCE
+!
+!     MASS BALANCE
 !
       LOGICAL :: BILMA
-!> @brief VALIDATION
-! si oui, validation
-      LOGICAL :: VALID
-!> @brief IMPOSED CONCENTRATION IN INFLOW
-! si oui, concentration d'equilibre en entree
-      LOGICAL :: IMP_INFLOW_C
-!> @brief SECONDARY CURRENTS
-! si oui, courants secondaires
-      LOGICAL :: SECCURRENT
-!> @brief MASS CONCENTRATIONS IN G/L
-! si oui, concentration massique
-      LOGICAL :: UNIT
-!> @brief CORRECTION ON CONVECTION VELOCITY
-! si oui, correction du champ convecteur
-      LOGICAL :: CORR_CONV
-!> @brief COMPUTATION CONTINUED
-! si oui, suite de calcul
-      LOGICAL :: DEBU
-!> @brief DIFFUSION OF SUSPENDED SEDIMENT CONCENTRATION
-! si oui, diffusion
-      LOGICAL :: DIFT
-!> @brief SEDIMENT SLIDE
-! si oui, glissement du sediment
-      LOGICAL :: SLIDE
-!> @brief COHESIVE SEDIMENTS (FOR EACH CLASS)
-! si oui, sediments cohesifs
-      LOGICAL :: SEDCO(NSICLM)
-!> @brief CONSOLIDATION TAKEN INTO ACCOUNT
-! si oui, tassement du lit cohesif
-      LOGICAL :: TASS
-!> @brief MIXED SEDIMENTS
-! si oui, sediment mixte
-      LOGICAL :: MIXTE
-!> @brief COUPLING WITH DREDGESIM
-! si oui, couplage avec dredgesim
-      LOGICAL :: DREDGESIM
-!> @brief BED FRICTION PREDICTION
 !
+!     VALIDATION
+! 
+      LOGICAL :: VALID
+!
+!     IMPOSED CONCENTRATION IN INFLOW
+! 
+      LOGICAL :: IMP_INFLOW_C
+!
+!     SECONDARY CURRENTS
+! 
+      LOGICAL :: SECCURRENT
+!
+!     MASS CONCENTRATIONS IN G/L
+! 
+      LOGICAL :: UNIT
+!
+!     CORRECTION ON CONVECTION VELOCITY
+! 
+      LOGICAL :: CORR_CONV
+!
+!     COMPUTATION CONTINUED
+! 
+      LOGICAL :: DEBU
+!
+!     DIFFUSION OF SUSPENDED SEDIMENT CONCENTRATION
+! 
+      LOGICAL :: DIFT
+!
+!     SEDIMENT SLIDE
+! 
+      LOGICAL :: SLIDE
+!
+!     COHESIVE SEDIMENTS (FOR EACH CLASS)
+! 
+      LOGICAL :: SEDCO(NSICLM)
+!
+!     CONSOLIDATION TAKEN INTO ACCOUNT
+! 
+      LOGICAL :: TASS
+!
+!     MIXED SEDIMENTS
+! 
+      LOGICAL :: MIXTE
+!
+!     COUPLING WITH DREDGESIM
+! 
+      LOGICAL :: DREDGESIM
+!
+!     BED FRICTION PREDICTION
+! 
       LOGICAL :: KSPRED
 !
 ! MAK
@@ -973,14 +1004,16 @@
 !
 !-----------------------------------------------------------------------
 !
-!> @brief
+!
 !
       DOUBLE PRECISION RC
-!> @brief WATER DENSITY
-! masse volumique de l'eau
+!
+!     WATER DENSITY
+! 
       DOUBLE PRECISION XMVE
-!> @brief SAND DENSITY
-! masse volumique du sediment
+!
+!     SAND DENSITY
+! 
       DOUBLE PRECISION XMVS
 !> @brief COEFFICIENT FUNCTION OF THE POROSITY
 ! coefficient fonction de la porosite
@@ -1117,7 +1150,7 @@
 !> @brief PI
 !
       DOUBLE PRECISION :: PI
-!> @brief Meyer Peter Mueller-Coefficient
+!> @brief Meyer Peter Mueller-Coefficient 
       DOUBLE PRECISION :: MPM
 !
 !     Secondary Current Alpha Coefficient
@@ -1156,11 +1189,11 @@
       DOUBLE PRECISION :: TOCE_SABLE
 !
 !     THIEBOT MODEL
-!
+! 
       DOUBLE PRECISION :: CONC_GEL, COEF_N,CONC_MAX
 !
 !     PRESCRIBED SOLID DISCHARGES
-!
+! 
       DOUBLE PRECISION :: SOLDIS(MAXFRO)
 !
 !     FOR MASS BALANCE OF COHESIVE SEDIMENT
@@ -1233,7 +1266,7 @@
       TYPE(BIEF_OBJ),POINTER :: T13,T14
 !
 !     USEFUL COMPONENTS IN STRUCTURE MESH
-!
+! 
 !
 !     CONNECTIVITY TABLE
 !

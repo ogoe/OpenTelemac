@@ -8,7 +8,7 @@
      & NPSING,NDGA1,NDGB1,TWEIRA,TWEIRB)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0
+! TELEMAC2D   V7P1      
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCES TERMS IN THE DIFFUSION EQUATION
@@ -73,6 +73,11 @@
 !+        V7P0
 !+   add new water quality processes
 !
+!history  J-M HERVOUET (LNHE)
+!+        08/06/2015
+!+        V7P1
+!+   Treatment of sources modified for distributive schemes.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| DBUS           |-->| DISCHARGE OF TUBES.
@@ -112,10 +117,12 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC
       USE INTERFACE_PARALLEL
       USE DECLARATIONS_TELEMAC2D, ONLY : LOITRAC, COEF1TRAC, QWA, QWB,
-     &   MAXNPS,U,V,UNSV2D,V2DPAR,VOLU2D,T1,T2,T3,T4,MESH,MSK,MASKEL,
-     &   IELMU,S,NPOIN,CF,H,SECCURRENTS,SEC_AS,SEC_DS,SEC_R,WATQUA,IND_T
+     &  MAXNPS,U,V,UNSV2D,V2DPAR,VOLU2D,T1,T2,T3,T4,MESH,MSK,MASKEL,
+     &  IELMU,S,NPOIN,CF,H,SECCURRENTS,SEC_AS,SEC_DS,SEC_R,WATQUA,IND_T,
+     &  ICONVFT,OPTADV_TR
       USE DECLARATIONS_WAQTEL,ONLY: WAQPROCESS,FORMRS,O2SATU,ADDTR,
      &                              WATTEMP,RSW,ABRS
 !
@@ -143,15 +150,13 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,K,IR,ITRAC,N,INDIC,NTRA
+      LOGICAL DISTRI
 !
       DOUBLE PRECISION DEBIT,TRASCE
       DOUBLE PRECISION DENOM,NUMER,NORM2,SEC_RMAX,RMAX
 !
       DOUBLE PRECISION H1,H2,TRUP,TRDO,AB,DZ
       DOUBLE PRECISION, PARAMETER :: EPS=1.D-6
-!
-!      DOUBLE PRECISION P_DSUM,P_DMIN,P_DMAX
-!      EXTERNAL         P_DSUM,P_DMIN,P_DMAX
 !
       INTRINSIC SQRT
 !
@@ -216,9 +221,9 @@
       DO ITRAC=1,NTRA
 !
         IF(NREJTR.GT.0) THEN
-!
+!       
           DO I = 1 , NREJTR
-!
+!         
             IR = ISCE(I)
 !           TEST IR.GT.0 FOR THE PARALLELISM
             IF(IR.GT.0) THEN
@@ -227,26 +232,38 @@
                 TRASCE = TSCE(I,ITRAC)
               ELSE
 !               THE VALUE AT THE SOURCE IS TN IF THE FLOW IS OUTGOING
+!               IT WILL BE WRONG BUT NOT CONSIDERED FOR LOCALLY IMPLICIT
+!               SCHEMES
                 TRASCE = TN%ADR(ITRAC)%P%R(IR)
               ENDIF
-!             SOURCE TERM ADDED TO THE MASS OF TRACER
-              IF(NCSIZE.GT.1) THEN
-!               FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
-!               (SEE CALL TO P_DSUM BELOW)
-                MASSOU(ITRAC)=MASSOU(ITRAC)+DT*DEBIT*TRASCE*FAC(IR)
-              ELSE
-                MASSOU(ITRAC)=MASSOU(ITRAC)+DT*DEBIT*TRASCE
-              ENDIF
-              TRASCE = TRASCE - (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
-              TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR)+TRASCE
 !
+!             SCHEME SENSITIVE, HERE NOT FOR LOCALLY IMPLICIT SCHEMES
+!             BECAUSE THEY WILL DO THE JOB THEMSELVES
+!
+              DISTRI=.FALSE.
+              IF(ICONVFT(ITRAC).EQ.ADV_NSC) DISTRI=.TRUE. 
+              IF(ICONVFT(ITRAC).EQ.ADV_PSI) DISTRI=.TRUE. 
+!
+              IF(.NOT.DISTRI) THEN
+!               SOURCE TERM ADDED TO THE MASS OF TRACER
+                IF(NCSIZE.GT.1) THEN
+!                 FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
+!                 (SEE CALL TO P_DSUM BELOW)
+                  MASSOU(ITRAC)=MASSOU(ITRAC)+DT*DEBIT*TRASCE*FAC(IR)
+                ELSE
+                  MASSOU(ITRAC)=MASSOU(ITRAC)+DT*DEBIT*TRASCE
+                ENDIF
+                TRASCE = TRASCE - (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
+              ENDIF
+              TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR)+TRASCE
+! 
 !             THE IMPLICIT PART OF THE TERM - T * SCE
 !             IS DEALT WITH IN CVDFTR.
-!
+!         
             ENDIF
-!
+!         
           ENDDO
-!
+!       
         ENDIF
 !
         IF(NSIPH.GT.0) THEN
@@ -343,7 +360,7 @@
                 IF(WATQUA.AND.WAQPROCESS.EQ.1)THEN
                   H1   = HPROP%R(IR)
                   TRUP = TN%ADR(NTRAC-ADDTR+1)%P%R(IR)
-                  IF(NCSIZE.GT.1)THEN
+                  IF(NCSIZE.GT.1)THEN 
                     H1   = P_DMIN(H1  )+P_DMAX(H1  )
                     TRUP = P_DMIN(TRUP)+P_DMAX(TRUP)
                   ENDIF
@@ -366,9 +383,9 @@
      &             TWEIRB%ADR(ITRAC)%P%R(INDIC) -
      &             (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
 !               RECUPERATE H FOR WAQ
-                IF(WATQUA.AND.WAQPROCESS.EQ.1)THEN
+                IF(WATQUA.AND.WAQPROCESS.EQ.1)THEN 
                   H2  = HPROP%R(IR)
-                  IF(NCSIZE.GT.1)THEN
+                  IF(NCSIZE.GT.1)THEN 
                     H2   = P_DMIN(H2  )+P_DMAX(H2  )
                   ENDIF
                 ENDIF
@@ -387,7 +404,7 @@
                       RSW = 0.11D0*AB*(1.D0+0.046D0*WATTEMP)*DZ
 !                   WRL FORMULA 1 (NO NEED TO AB ? )
                     ELSEIF(FORMRS.EQ.3 )THEN
-                      RSW = 1.D0+0.69D0*DZ*(1.D0-0.11D0*DZ )
+                      RSW = 1.D0+0.69D0*DZ*(1.D0-0.11D0*DZ ) 
      &                      *( 1.D0+0.046D0*WATTEMP)
 !                   WRL FORMULA 2
                     ELSEIF (FORMRS.EQ.4)THEN
@@ -404,11 +421,11 @@
                         WRITE(LU,*)'POSSIBLE CHOICES ARE FROM 1 TO 4'
                       ENDIF
                       CALL PLANTE(1)
-                      STOP
+                      STOP                             
                     ENDIF
 !
 !                   FORCING O2 DENSITY DOWNSTREAM THE WEIR
-!
+!                   
                     IF(ABS(RSW).GT.EPS)THEN
                       TRDO = O2SATU + (TRUP-O2SATU)/RSW
                     ELSE
@@ -420,7 +437,7 @@
                     TN%ADR(NTRAC-ADDTR+1)%P%R(IR)=TRDO
                   ENDIF
                 ENDIF
-              ENDIF
+              ENDIF               
             ENDDO
           ENDDO
         ENDIF
@@ -463,7 +480,7 @@
 !       INITIALISATIONS
 !
         CALL OS('X=0     ',X=TSCEXP%ADR(NTRAC)%P)
-        YASMI(NTRAC)=.TRUE.
+        YASMI(NTRAC)=.TRUE.   
 !
 !       SOURCE TERMS
 !
@@ -500,7 +517,7 @@
         MASSOU(NTRAC)=MASSOU(NTRAC)*DT
         IF(NCSIZE.GT.1) MASSOU(NTRAC)=P_DSUM(MASSOU(NTRAC))
 !
-      ENDIF
+      ENDIF     
 !
 !-----------------------------------------------------------------------
 !

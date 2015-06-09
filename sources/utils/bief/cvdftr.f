@@ -11,10 +11,10 @@
      & ISOUSI,LT,NIT,OPDTRA,OPTBAN,MSK,MASKEL,MASKPT,MBOR,
      & S,MASSOU,OPTSOU,SLVTRA,FLBOR,VOLU2D,V2DPAR,UNSV2D,OPTVF,FLBORTRA,
      & FLULIM,YAFLULIM,DIRFLU,RAIN,PLUIE,TRAIN,
-     & GIVEN_FLUX,FLUX_GIVEN,MAXADV)
+     & GIVEN_FLUX,FLUX_GIVEN,MAXADV,TB2,NCO_DIST,NSP_DIST)
 !
 !***********************************************************************
-! BIEF   V7P0                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    DIFFUSION, ADVECTION AND SOURCE TERMS FOR A TRACER.
@@ -132,6 +132,12 @@
 !+   Checking mass in case of implicit source terms SMI depends on the
 !+   advection scheme, a section was added for distributive schemes.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        28/05/2015
+!+        V7P1
+!+   Adaptation to new subroutine cvtrvf with locally implicit
+!+   predictor-corrector distributive schemes.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR,BFBOR    |-->| COEFFICIENTS OF NEUMANN CONDITION
 !|                |   | VISC*DF/DN = AFBOR*F + BFBOR
@@ -191,6 +197,8 @@
 !| MBOR           |-->| BOUNDARY MATRIX
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NCO_DIST       |-->| NUMBER OF CORRECTIONS OF DISTRIBUTIVE SCHEMES
+!| NSP_DIST       |-->| NUMBER OF SUB-STEPS OF DISTRIBUTIVE SCHEMES
 !| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
 !| OPTADV         |-->| ADVECTION SCHEME OPTION, THE MEANING DEPENDS ON
 !|                |   | ICONVF
@@ -225,6 +233,8 @@
 !| T6             |<->| WORK BIEF_OBJ STRUCTURE
 !| T7             |<->| WORK BIEF_OBJ STRUCTURE
 !| TB             |<->| BLOCK OF WORK BIEF_OBJ STRUCTURES (CONTAINS T1,...)
+!| TB2            |<->| SECOND BLOCK OF WORK BIEF_OBJ STRUCTURES
+!|                |   | FOR IMPLICIT SCHEMES ONLY
 !| TE1,TE2,TE3    |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
 !| TETAH          |-->| IMPLICITATION BETWEEN H AND HN
 !| TETAT          |-->| IMPLICITATION COEFFICIENT OF ADVECTION
@@ -260,6 +270,7 @@
       INTEGER, INTENT(IN)           :: ICONVF,ISOUSI,OPTADV,OPDTRA,KENT
       INTEGER, INTENT(IN)           :: LT,NIT,OPTBAN,OPTSOU,KDIR,SOLSYS
       INTEGER, INTENT(IN)           :: KDDL,OPTVF,DIRFLU,MAXADV
+      INTEGER, INTENT(IN)           :: NCO_DIST,NSP_DIST
       DOUBLE PRECISION, INTENT(IN)  :: TETAT,AGGLOT,TETAH,DT,TRAIN
       DOUBLE PRECISION, INTENT(INOUT)  :: MASSOU
       LOGICAL, INTENT(IN)           :: INFOGT,BILAN,CONV,YASMH,RAIN
@@ -279,7 +290,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT) :: FLBOR,LIMTRA
       TYPE(BIEF_OBJ), INTENT(INOUT) :: VISC_S,VISC
       TYPE(BIEF_OBJ), INTENT(INOUT) :: AM1,AM2,MBOR
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: TB
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: TB,TB2
       TYPE(BIEF_OBJ), INTENT(IN)    :: MASKTR,GIVEN_FLUX
       TYPE(BIEF_MESH)               :: MESH
 !
@@ -291,7 +302,7 @@
 !
       LOGICAL MSQ,FV_SCHEME
 !
-      CHARACTER*16 FORMUL
+      CHARACTER(LEN=16) FORMUL
 !
 !-----------------------------------------------------------------------
 !
@@ -576,17 +587,13 @@
         ENDIF
         CALL CVTRVF(F,FN,FSCEXP,DIFT,CONV,H,HN,HPROP,UCONV,VCONV,
      &              DM1,ZCONV,SOLSYS,VISC,VISC_S,SM,SMH,YASMH,SMI,YASMI,
-     &              FBOR,MASKTR,MESH,
-     &              TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
-     &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
-     &              TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
-     &              TB%ADR(22)%P,
-     &              AGGLOT,TE1,DT,ENTET,BILAN,
+     &              FBOR,MASKTR,MESH,AGGLOT,TE1,DT,ENTET,BILAN,
      &              OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,
 !                                                       YAFLBOR
      &              LIMTRA%I,KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
      &              VOLU2D,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
-     &              RAIN,PLUIE,TRAIN,OPTADV)
+     &              RAIN,PLUIE,TRAIN,OPTADV,TB,12,AM2,TB2,
+     &              NCO_DIST,NSP_DIST)
 !       IF EXITS AT THIS POINT, THE DIRICHLET ARE NOT DONE, ALSO WORKS
 !       CAN THEN CHECK THE MASS CONSERVATION EXACTLY
         IF(.NOT.DIFT) RETURN
@@ -880,7 +887,7 @@
           ENDIF
         ELSEIF(YASMI.AND.(FV_SCHEME.AND.CONV)) THEN
 !         THIS IS CONSISTENT WITH WHAT IS DONE
-!         AT THE END OF CVTRVF_POS, FOR SCHEME 14.
+!         AT THE END OF CVTRVF_POS, FOR SCHEME 13 OR 14.
           C=0.D0
           DO I=1,SMI%DIM1
             C = C + DT*SMI%R(I)*F%R(I)*VOLU2D%R(I)
