@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                  21/08/2010
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    PREPARES THE VARIABLES WHICH WILL BE WRITTEN TO
@@ -42,6 +42,12 @@
 !+        V7P0
 !+   Initialising Lagrangian drifts for iteration 0 in case they are
 !+   in outputs.
+!
+!history  R. ATA & J-M HERVOUET (EDF LAB, LNHE)
+!+        10/06/2015
+!+        V7P1
+!+   Now all the variables asked for graphic printouts are written for
+!+   remarkable points.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -151,34 +157,6 @@
             ENDIF
           ENDDO
         ENDIF
-      ENDIF
-!
-!=======================================================================
-! PRINTOUTS FOR THE REMARKABLE POINTS
-!=======================================================================
-!
-      IF(LT.EQ.NIT.AND.NPTS.GT.0) THEN
-        DO I=1,MAXVAR
-!         BEWARE : HERE SORLEO IS USED INSTEAD OF SORIMP
-          IF(SORLEO(I)) THEN
-            WRITE(LU,*) ' '
-            WRITE(LU,*) ' '
-            WRITE(LU,*) ' '
-            WRITE(LU,*) TEXTE(I)(1:16)
-            WRITE(LU,*) ' '
-            DO N=1,NPTS
-!             IN PARALLEL POINT DOES NOT ALWAYS EXIST, MAYBE ELSEWHERE
-              IF(NCSIZE.GT.1) THEN
-                HHH=0.D0
-                IF(LIST_PTS(N).GT.0) HHH=VARSOR%ADR(I)%P%R(LIST_PTS(N))
-                WRITE(LU,*) NAME_PTS(N),' : ',P_DMIN(HHH)+P_DMAX(HHH)
-              ELSE
-                WRITE(LU,*) NAME_PTS(N),' : ',
-     &                                    VARSOR%ADR(I)%P%R(LIST_PTS(N))
-              ENDIF
-            ENDDO
-          ENDIF
-        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -347,6 +325,34 @@
 !=======================================================================
 !
       IF(NPERIAF.GT.0) CALL SPECTRE
+!
+!=======================================================================
+! PRINTOUTS FOR THE REMARKABLE POINTS
+!=======================================================================
+!
+      IF(LT.EQ.NIT.AND.NPTS.GT.0) THEN
+        DO I=1,MAXVAR
+!         BEWARE : HERE SORLEO IS USED INSTEAD OF SORIMP
+          IF(SORLEO(I)) THEN
+            WRITE(LU,*) ' '
+            WRITE(LU,*) ' '
+            WRITE(LU,*) ' '
+            WRITE(LU,*) TEXTE(I)(1:16)
+            WRITE(LU,*) ' '
+            DO N=1,NPTS
+!             IN PARALLEL POINT DOES NOT ALWAYS EXIST, MAYBE ELSEWHERE
+              IF(NCSIZE.GT.1) THEN
+                HHH=0.D0
+                IF(LIST_PTS(N).GT.0) HHH=VARSOR%ADR(I)%P%R(LIST_PTS(N))
+                WRITE(LU,*) NAME_PTS(N),' : ',P_DMIN(HHH)+P_DMAX(HHH)
+              ELSE
+                WRITE(LU,*) NAME_PTS(N),' : ',
+     &                                    VARSOR%ADR(I)%P%R(LIST_PTS(N))
+              ENDIF
+            ENDDO
+          ENDIF
+        ENDDO
+      ENDIF
 !
 !=======================================================================
 !
