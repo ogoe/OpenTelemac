@@ -332,7 +332,7 @@
             ELSEIF(J.EQ.2) THEN
               CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
      &                            FULL_NAME(J),F22,NP,IERR)
-            ELSEIF(J.EQ.2) THEN
+            ELSEIF(J.EQ.3) THEN
               CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
      &                            FULL_NAME(J),F32,NP,IERR)
             ENDIF
