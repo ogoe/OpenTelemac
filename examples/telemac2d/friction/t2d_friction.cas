@@ -13,7 +13,6 @@ VALIDATION            : OUI
 /----------------------------------------------------------------------/ 
 /                     OPTIONS GENERALES                                  
 /----------------------------------------------------------------------/ 
-PROCESSEURS PARALLELES = 8
 DEBUGGER        = 0
 TITRE           = 'TELEMAC 2D : FRICTION CHANNEL'              
 SUITE DE CALCUL = NON                                                    

@@ -60,7 +60,6 @@ MATRIX STORAGE : 3
 / PARAMETRES NUMERIQUES,SOLVEUR
 /---------------------------------------------------------------------
 
-PARALLEL PROCESSORS : 4
 SOLVER =3
 /SOLVER =8
 /PRECONDITIONING = 5

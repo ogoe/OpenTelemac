@@ -59,7 +59,6 @@ MATRIX STORAGE =3
 /---------------------------------------------------------------------
 /SOLVER =8
 
-PARALLEL PROCESSORS : 4
 SOLVER =3
 /AUTOMATIC TETAP CALCULATION : YES
 /SUB-ITERATIONS ACCURACY FOR TETAP=1E-4
