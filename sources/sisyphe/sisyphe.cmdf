@@ -229,7 +229,6 @@ files: bief_def.f
   downup.f
   p_dot.f
   p_dots.f
-  parmoy.f
   trid3d.f
   gracjg.f
   equnor.f

@@ -2,12 +2,10 @@
                         SUBROUTINE HYD_HLLC
 !                       *******************
 
-     &(NS,NELEM,NSEG,NUBO,G,W,ZF,VNOCL,
-     & X,Y,ELTSEG,CE,IFABOR)
+     &(NS,NELEM,NSEG,NUBO,G,W,ZF,VNOCL,X,Y,ELTSEG,CE,IFABOR)
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.3                                      01/07/2013
-!
+! TELEMAC 2D VERSION 7.1
 !***********************************************************************
 !
 !brief
@@ -54,6 +52,8 @@
 !***********************************************************************
 !
       USE BIEF_DEF
+      USE INTERFACE_TELEMAC2D, EX_HYD_HLLC => HYD_HLLC
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU

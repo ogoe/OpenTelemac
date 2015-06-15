@@ -2,25 +2,21 @@
                      SUBROUTINE SHARE_3D_FLUXES
 !                    **************************
 !
-     &(FLUX,XMUL,NPLAN,MESH2,MESH3,OPT)
+     &(FLUX,NPLAN,MESH2,MESH3,OPT)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
-!brief    SHARES ASSEMBLED FLUXES BETWEEN SUB-DOMAINS.
-!+
-!+            THIS IS IN SOME SENSE THE CONTRARY OF PARCOM2_SEG, BUT
-!+                THE FLUXES ON THE HORIZONTAL SEGMENTS WILL BE DIVIDED
-!+                BY XMUL*2 AND THE FLUXES OF VERTICAL INTERFACE SEGMENTS
-!+                WILL BE DIVIDED BY XMUL*MESH%FAC%R.
+!brief    Shares assembled fluxes between sub-domains.
+!+        Only one sub-domain will receive the whole flux to be treated.
 !
 !warning  MUST NOT BE CALLED WHEN NCSIZE = 0
 !
 !history  J-M HERVOUET (LNHE)
 !+        14/04/2010
 !+        V6P0
-!+
+!+   First version
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -34,6 +30,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        12/06/2015
+!+        V7P1
+!+   The fluxes are no longer shared but given to a single processor.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FLUX           |<->| FLUXES TO BE SHARED
 !| MESH2          |-->| 2D MESH
@@ -44,7 +45,7 @@
 !| XMUL           |-->| MULTIPLICATING FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF
+      USE BIEF, EX_SHARE_3D_FLUXES => SHARE_3D_FLUXES
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -57,7 +58,6 @@
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH2,MESH3
 !
       DOUBLE PRECISION, INTENT(INOUT) :: FLUX(*)
-      DOUBLE PRECISION, INTENT(IN)    :: XMUL
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -78,7 +78,7 @@
      &                          MESH2%NH_COM_SEG%DIM1,
      &                          MESH2%NB_NEIGHB_SEG,
      &                          MESH2%NB_NEIGHB_PT_SEG%I,
-     &                          0.5D0*XMUL,NSEG)
+     &                          MESH2%LIST_SEND_SEG%I,MESH2%NSEG)
       ENDDO
 !
 !     VERTICAL FLUXES (SAME NUMBERING AS POINTS, SO FAC%R(I))
@@ -90,16 +90,10 @@
         I2D=MESH2%NACHB%I(IAD)
         DO IPLAN=1,NPLAN-1
           I3D=(IPLAN-1)*NPOIN2+I2D
-          FLUX(NSEGH+I3D)=FLUX(NSEGH+I3D)*MESH3%FAC%R(I3D)*XMUL
+          FLUX(NSEGH+I3D)=FLUX(NSEGH+I3D)*MESH3%IFAC%I(I3D)
         ENDDO
         IAD=IAD+NBMAXNSHARE
       ENDDO
-!
-!     ALTERNATIVE: SIMPLER BUT LESS EFFICIENT FOR VERTICAL FLUXES:
-!
-!     DO I3D=1,NSEGV
-!       FLUX(NSEGH+I3D)=FLUX(NSEGH+I3D)*MESH3%FAC%R(I3D)*XMUL
-!     ENDDO
 !
 !     CROSSED FLUXES (SEE STOSEG41 FOR STORAGE). THERE ARE 2*NESG
 !     PER LAYER AND NPLAN-1 LAYER. HERE ORISEG=1 AND ORISEG=2 SEGMENTS
@@ -114,7 +108,7 @@
      &                            MESH2%NH_COM_SEG%DIM1,
      &                            MESH2%NB_NEIGHB_SEG,
      &                            MESH2%NB_NEIGHB_PT_SEG%I,
-     &                            0.5D0*XMUL,NSEG)
+     &                            MESH2%LIST_SEND_SEG%I,MESH2%NSEG)
         ENDDO
       ENDIF
 !
@@ -122,3 +116,4 @@
 !
       RETURN
       END
+

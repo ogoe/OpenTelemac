@@ -247,7 +247,7 @@
 !
       ELSEIF(OPT.EQ.2.OR.OPT.EQ.3) THEN
 !
-!       NEW CRITERION, COMPUTES MIN(FI_ij,0)*(Ci-Cj)
+!       NEW CRITERION, COMPUTES - MIN(FI_ij,0)*(Ci-Cj)
 !
         DO I=1,NSEG
           IF(FXMATPAR(I).LT.0.D0) THEN

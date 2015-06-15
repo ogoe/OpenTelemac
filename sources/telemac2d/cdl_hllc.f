@@ -5,11 +5,9 @@
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,
      & W,CE,FLUENT,FLUSORT,FLBOR,EPS,WINF,
      & G,HBOR,UBOR,VBOR,MESH)
-
-!
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.2                                     01/15/2012
+! TELEMAC 2D VERSION 7.1
 !***********************************************************************
 !
 !brief  COMPUTATION OF THE CONVECTIVE FLUXES AT BOUNDARIES FOR HLLC FLUX

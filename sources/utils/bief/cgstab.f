@@ -5,7 +5,7 @@
      &(X, A,B , MESH, P,Q,R,S,T,V, CFG,INFOGR,AUX)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    SOLVES THE LINEAR SYSTEM A X = B
@@ -43,6 +43,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        10/06/2015
+!+        V7P1
+!+   CALL PARMOY removed, and stop if Crout preconditionning is asked
+!+   in parallel.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRIX OF THE SYSTEM
@@ -131,8 +137,12 @@
 !
       IF(CROUT) THEN
 !       COMPUTES C R  = B
+        IF(NCSIZE.GT.1) THEN
+          WRITE(LU,*) 'NO CROUT PRECONDITIONNING IN PARALLEL'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
         CALL DOWNUP(R, AUX , B , 'D' , MESH)
-        IF(NCSIZE.GT.1) CALL PARMOY(R,MESH)
       ELSE
         CALL OS( 'X=Y     ' , R , B , B , C )
       ENDIF
@@ -142,8 +152,12 @@
 !-----------------------------------------------------------------------
 !
       IF(CROUT) THEN
+        IF(NCSIZE.GT.1) THEN
+          WRITE(LU,*) 'NO CROUT PRECONDITIONNING IN PARALLEL'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
         CALL DOWNUP(V, AUX , V , 'D' , MESH)
-        IF(NCSIZE.GT.1) CALL PARMOY(V,MESH)
       ENDIF
 !
       CALL OS( 'X=X-Y   ' , R , V , V , C    )
@@ -172,8 +186,12 @@
       CALL MATRBL( 'X=AY    ',V,A,Q,C,  MESH)
 !
       IF(CROUT) THEN
+        IF(NCSIZE.GT.1) THEN
+          WRITE(LU,*) 'NO CROUT PRECONDITIONNING IN PARALLEL'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
         CALL DOWNUP(V, AUX , V , 'D' , MESH)
-        IF(NCSIZE.GT.1) CALL PARMOY(V,MESH)
       ENDIF
 !
       OMEG1 = P_DOTS(P,V,MESH)
@@ -184,8 +202,12 @@
       CALL MATRBL( 'X=AY    ',T,A,S,C,  MESH)
 !
       IF(CROUT) THEN
+        IF(NCSIZE.GT.1) THEN
+          WRITE(LU,*) 'NO CROUT PRECONDITIONNING IN PARALLEL'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
         CALL DOWNUP(T, AUX , T , 'D' , MESH)
-        IF(NCSIZE.GT.1) CALL PARMOY(T,MESH)
       ENDIF
 !
       ALFA  = P_DOTS(T,S,MESH)
@@ -260,3 +282,4 @@
 !-----------------------------------------------------------------------
 !
       END
+

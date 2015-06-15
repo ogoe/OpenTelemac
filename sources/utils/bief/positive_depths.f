@@ -8,7 +8,7 @@
      & NAMECODE,OPTION,NITMAX)
 !
 !***********************************************************************
-! BIEF   V7P0                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    SUPPRESSES NEGATIVE DEPTHS BY A LIMITATION OF FLUXES.
@@ -53,6 +53,12 @@
 !+   points are done, then the negative sources are treated. In this way
 !+   the transfers cannot be corrupted by an initial negative depth.
 !+   + one NCSIZE.GT.0 changed into NCSISE.GT.1.
+!
+!history  J-M HERVOUET (LNHE)
+!+        11/06/2015
+!+        V7P1
+!+   Adaptation to new coefficient IFAC instead of FAC.
+!+   Option 1 removed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL HERE
@@ -144,6 +150,19 @@
 !
 !-----------------------------------------------------------------------
 !
+      IF(OPTION.NE.2) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'OPTION INCONNUE DANS POSITIVE_DEPTHS : ',OPTION
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'UNKNOWN OPTION IN POSITIVE_DEPTHS: ',OPTION
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
       IF(TESTING) THEN
         C=1.D99
         CINIT=1.D99
@@ -161,8 +180,8 @@
         CINIT=0.D0
         IF(NCSIZE.GT.1) THEN
           DO I=1,NPOIN
-            C    =C    +H%R(I) *MESH%FAC%R(I)/UNSV2D%R(I)
-            CINIT=CINIT+HN%R(I)*MESH%FAC%R(I)/UNSV2D%R(I)
+            C    =C    +H%R(I) *MESH%IFAC%I(I)/UNSV2D%R(I)
+            CINIT=CINIT+HN%R(I)*MESH%IFAC%I(I)/UNSV2D%R(I)
           ENDDO
           C    =P_DSUM(C    )
           CINIT=P_DSUM(CINIT)
@@ -195,11 +214,13 @@
       IF(NCSIZE.GT.1) THEN
         CALL PARCOM2_SEG(FLODEL%R,FLODEL%R,FLODEL%R,
      &                   MESH%NSEG,1,2,1,MESH,1,11)
+!       ON INTERFACE SEGMENTS, ONLY ONE OF THE TWO TWIN SEGMENTS
+!       WILL RECEIVE THE TOTAL FLUX, THE OTHER WILL GET 0.
         CALL MULT_INTERFACE_SEG(FLODEL%R,MESH%NH_COM_SEG%I,
      &                          MESH%NH_COM_SEG%DIM1,
      &                          MESH%NB_NEIGHB_SEG,
      &                          MESH%NB_NEIGHB_PT_SEG%I,
-     &                          0.5D0,MESH%NSEG)
+     &                          MESH%LIST_SEND_SEG%I,MESH%NSEG)
       ENDIF
 !
       CALL CPSTVC(H,T2)
@@ -214,8 +235,7 @@
       CINIT=CPREV
       IF(TESTING) WRITE(LU,*) 'SOMME INITIALE DES FLUX=',CPREV
 !
-!     BOUCLE SUR LES SEGMENTS, POUR PRENDRE EN COMPTE LES FLUX
-!     ADMISSIBLES
+!     LOOP ON SEGMENTS, TO TAKE INTO ACCOUNT THE ACCEPTABLE FLUXES
 !
 !     ADDING THE SOURCES (SMH IS NATURALLY ASSEMBLED IN //)
 !     FIRST THE POSITIVE SOURCES
@@ -258,92 +278,82 @@
 777   CONTINUE
       NITER = NITER + 1
 !
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !     FOR DISTRIBUTING THE DEPTHS BETWEEN SEGMENTS
 !
-      IF(OPTION.EQ.2) THEN
+!     T1 : TOTAL FLUX THAT HAS TO BE REMOVED OF EACH POINT
+!     T4 : DEPTH H SAVED
 !
-!       T1 : TOTAL FLUX REMOVED OF EACH POINT
-!       T4 : DEPTH H SAVED
-!
-        CALL CPSTVC(H,T1)
-        IF(NITER.EQ.1) THEN
-          DO I=1,NPOIN
-            T1%R(I)=0.D0
-            T4%R(I)=H%R(I)
-          ENDDO
-        ELSE
-!         NOT ALL THE POINTS NEED TO BE INITIALISED NOW
-          DO IR=1,REMAIN_SEG
-            I=INDIC(IR)
-            I1=GLOSEG1(I)
-            I2=GLOSEG2(I)
-            T1%R(I1)=0.D0
-            T1%R(I2)=0.D0
-!           SAVING THE DEPTH
-            T4%R(I1)=H%R(I1)
-            T4%R(I2)=H%R(I2)
-          ENDDO
-!         CANCELLING INTERFACE POINTS (SOME MAY BE ISOLATED IN A SUBDOMAIN
-!         AT THE TIP OF AN ACTIVE SEGMENT WHICH IS ELSEWHERE)
-          IF(NCSIZE.GT.1) THEN
-            DO IPTFR=1,NPTIR
-              I=MESH%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
-              T1%R(I)=0.D0
-!             SAVING THE DEPTH
-              T4%R(I)=H%R(I)
-            ENDDO
-          ENDIF
-        ENDIF
-!       COMPUTING DEMAND FOR EVERY POINT
-!       CANCELLING DEPTHS THAT WILL BE DISTRIBUTED TO ACTIVE SEGMENTS
-!       I.E. AS SOON AS THERE IS A DEMAND
-!       ANYWAY THEY ARE STORED IN T4 THAT WILL BE USED INSTEAD
+      CALL CPSTVC(H,T1)
+      IF(NITER.EQ.1) THEN
+        DO I=1,NPOIN
+          T1%R(I)=0.D0
+          T4%R(I)=H%R(I)
+        ENDDO
+      ELSE
+!       NOT ALL THE POINTS NEED TO BE INITIALISED NOW
         DO IR=1,REMAIN_SEG
           I=INDIC(IR)
           I1=GLOSEG1(I)
           I2=GLOSEG2(I)
-          IF(FLODEL%R(I).GT.EPS_FLUX) THEN
-            T1%R(I1)=T1%R(I1)+FLODEL%R(I)
-            H%R(I1)=0.D0
-          ELSEIF(FLODEL%R(I).LT.-EPS_FLUX) THEN
-            T1%R(I2)=T1%R(I2)-FLODEL%R(I)
-            H%R(I2)=0.D0
+          T1%R(I1)=0.D0
+          T1%R(I2)=0.D0
+!         SAVING THE DEPTH
+          T4%R(I1)=H%R(I1)
+          T4%R(I2)=H%R(I2)
+        ENDDO
+!       CANCELLING INTERFACE POINTS (SOME MAY BE ISOLATED IN A SUBDOMAIN
+!       AT THE TIP OF AN ACTIVE SEGMENT WHICH IS ELSEWHERE)
+        IF(NCSIZE.GT.1) THEN
+          DO IPTFR=1,NPTIR
+            I=MESH%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
+            T1%R(I)=0.D0
+!           SAVING THE DEPTH
+            T4%R(I)=H%R(I)
+          ENDDO
+        ENDIF
+      ENDIF
+!
+!     COMPUTING THE DEMAND FOR EVERY POINT
+!     CANCELLING DEPTHS THAT WILL BE DISTRIBUTED TO ACTIVE SEGMENTS
+!     I.E. AS SOON AS THERE IS A DEMAND
+!     ANYWAY THEY ARE STORED IN T4 THAT WILL BE USED INSTEAD
+!
+      DO IR=1,REMAIN_SEG
+        I=INDIC(IR)
+        I1=GLOSEG1(I)
+        I2=GLOSEG2(I)
+        IF(FLODEL%R(I).GT.EPS_FLUX) THEN
+          T1%R(I1)=T1%R(I1)+FLODEL%R(I)
+          H%R(I1)=0.D0
+        ELSEIF(FLODEL%R(I).LT.-EPS_FLUX) THEN
+          T1%R(I2)=T1%R(I2)-FLODEL%R(I)
+          H%R(I2)=0.D0
+        ENDIF
+      ENDDO
+!
+      IF(NCSIZE.GT.1) THEN
+!       DEMAND ASSEMBLED IN PARALLEL
+        CALL PARCOM(T1,2,MESH)
+!       FOR ISOLATED POINTS CONNECTED TO AN ACTIVE
+!       SEGMENT THAT IS IN ANOTHER SUBDOMAIN
+!       H MUST BE CANCELLED, IF NOT, IT IS SHARED
+!       SO THAT IT IS FOUND AGAIN ONCE ASSEMBLED
+        DO IPTFR=1,NPTIR
+          I=MESH%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
+!         AT THIS LEVEL H IS THE SAME AT INTERFACE POINTS
+!         NOW H IS SHARED BETWEEN PROCESSORS TO ANTICIPATE
+!         THE FINAL PARALLEL ASSEMBLY
+          IF(T1%R(I).GT.EPS_FLUX) THEN
+!           POINT THAT WILL GIVE
+            H%R(I)=0.D0
+          ELSE
+!           POINT THAT WILL ONLY RECEIVE
+!           IN THIS CASE THEIR DEPTH WILL NOT BE DISTRIBUTED
+!           IN THE LOOP ON SEGMENTS, IT IS LEFT UNCHANGED
+!           H IS SHARED TO ANTICIPATE THE FURTHER PARCOM
+            H%R(I)=H%R(I)*MESH%IFAC%I(I)
           ENDIF
         ENDDO
-!
-        IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(T1,2,MESH)
-!         FOR ISOLATED POINTS CONNECTED TO AN ACTIVE
-!         SEGMENT THAT IS IN ANOTHER SUBDOMAIN
-!         H MUST BE CANCELLED, IF NOT, IT IS SHARED
-          DO IPTFR=1,NPTIR
-            I=MESH%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
-!           AT THIS LEVEL H IS THE SAME AT INTERFACE POINTS
-!           NOW H IS SHARED BETWEEN PROCESSORS TO ANTICIPATE
-            IF(T1%R(I).GT.EPS_FLUX) THEN
-              H%R(I)=0.D0
-            ELSE
-              H%R(I)=H%R(I)*MESH%FAC%R(I)
-            ENDIF
-          ENDDO
-        ENDIF
-!
-      ELSEIF(OPTION.EQ.1) THEN
-!
-!       AT THIS LEVEL H IS THE SAME AT INTERFACE POINTS
-!       NOW H IS SHARED BETWEEN PROCESSORS TO ANTICIPATE
-!       A FURTHER PARCOM
-        IF(NCSIZE.GT.1) THEN
-          DO IPTFR=1,NPTIR
-!           AVAILABLE DEPTH IS SHARED BETWEEN PROCESSORS
-!           NACHB(1,IPTFR) WITH DIMENSION NACHB(NBMAXNSHARE,NPTIR)
-            I=MESH%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
-            H%R(I)=H%R(I)*MESH%FAC%R(I)
-          ENDDO
-        ENDIF
-!
       ENDIF
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -351,48 +361,7 @@
       C=0.D0
       NEWREMAIN=0
 !
-      IF(OPTION.EQ.1) THEN
-!
-      DO IR=1,REMAIN_SEG
-        I=INDIC(IR)
-        IF(FLODEL%R(I).GT.EPS_FLUX) THEN
-          I1=GLOSEG1(I)
-          I2=GLOSEG2(I)
-          HFL1= DT*UNSV2D%R(I1)*FLODEL%R(I)
-          IF(HFL1.GT.H%R(I1)) THEN
-            TET=H%R(I1)/HFL1
-            H%R(I1)=0.D0
-            H%R(I2)=H%R(I2)+DT*UNSV2D%R(I2)*FLODEL%R(I)*TET
-            FLODEL%R(I)=FLODEL%R(I)*(1.D0-TET)
-            C=C+FLODEL%R(I)
-            NEWREMAIN=NEWREMAIN+1
-            INDIC(NEWREMAIN)=I
-          ELSE
-            H%R(I1)=H%R(I1)-HFL1
-            H%R(I2)=H%R(I2)+DT*UNSV2D%R(I2)*FLODEL%R(I)
-            FLODEL%R(I)=0.D0
-          ENDIF
-        ELSEIF(FLODEL%R(I).LT.-EPS_FLUX) THEN
-          I1=GLOSEG1(I)
-          I2=GLOSEG2(I)
-          HFL2=-DT*UNSV2D%R(I2)*FLODEL%R(I)
-          IF(HFL2.GT.H%R(I2)) THEN
-            TET=H%R(I2)/HFL2
-            H%R(I1)=H%R(I1)-DT*UNSV2D%R(I1)*FLODEL%R(I)*TET
-            H%R(I2)=0.D0
-            FLODEL%R(I)=FLODEL%R(I)*(1.D0-TET)
-            C=C-FLODEL%R(I)
-            NEWREMAIN=NEWREMAIN+1
-            INDIC(NEWREMAIN)=I
-          ELSE
-            H%R(I1)=H%R(I1)-DT*UNSV2D%R(I1)*FLODEL%R(I)
-            H%R(I2)=H%R(I2)-HFL2
-            FLODEL%R(I)=0.D0
-          ENDIF
-        ENDIF
-      ENDDO
-!
-      ELSEIF(OPTION.EQ.2) THEN
+!     TRANSFER OF FLUXES
 !
       DO IR=1,REMAIN_SEG
         I=INDIC(IR)
@@ -436,10 +405,6 @@
           ENDIF
         ENDIF
       ENDDO
-!
-!     ELSE
-!       UNKNOWN OPTION
-      ENDIF
 !
       REMAIN_SEG=NEWREMAIN
 !
@@ -508,8 +473,6 @@
         ENDIF
       ENDIF
 !
-!
-!
       IF(TESTING) THEN
         C=1.D99
         DO I=1,NPOIN
@@ -518,9 +481,9 @@
         IF(NCSIZE.GT.1) C=P_DMIN(C)
         WRITE(LU,*) 'APRES TRAITEMENT HAUTEURS NEGATIVES, HMIN=',C
         C=0.D0
-        IF(NCSIZE.GT.0) THEN
+        IF(NCSIZE.GT.1) THEN
           DO I=1,NPOIN
-            C=C+H%R(I)*MESH%FAC%R(I)/UNSV2D%R(I)
+            C=C+H%R(I)*MESH%IFAC%I(I)/UNSV2D%R(I)
           ENDDO
           C=P_DSUM(C)
         ELSE

@@ -5,7 +5,7 @@
      &( X , Y , MESH )
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    SAME AS DOTS BUT TAKING PARALLELISM INTO ACCOUNT.
@@ -36,6 +36,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        10/06/2015
+!+        V7P1
+!+   Moving from double precisiion FAC to integer IFAC.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MESH           |-->| MESH STRUCTURE
@@ -82,7 +87,7 @@
           DO IBL = 1 , X%N
             P_DOTS=P_DOTS+P_DOT(X%ADR(IBL)%P%DIM1,X%ADR(IBL)%P%R,
      &                                            Y%ADR(IBL)%P%R,
-     &                                            MESH%FAC%R)
+     &                                            MESH%IFAC%I)
           ENDDO
         ENDIF
 !
@@ -111,7 +116,7 @@
         IF(NCSIZE.LE.1.OR.NPTIR.EQ.0) THEN
           P_DOTS=DOT(NPX,X%R,Y%R)
         ELSE
-          P_DOTS=P_DOT(NPX,X%R,Y%R,MESH%FAC%R)
+          P_DOTS=P_DOT(NPX,X%R,Y%R,MESH%IFAC%I)
         ENDIF
 !
 !-----------------------------------------------------------------------
@@ -147,3 +152,4 @@
 !
       RETURN
       END
+

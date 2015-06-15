@@ -5,7 +5,7 @@
      &(X, A,B , MESH,D,AD,AG,G,R, CFG,INFOGR,AUX)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    SOLVES THE LINEAR SYSTEM A X = B
@@ -48,6 +48,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        10/06/2015
+!+        V7P1
+!+   CALL PARMOY removed, and stop if Crout preconditionning is asked
+!+   in parallel.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRIX OF THE SYSTEM
@@ -93,9 +99,9 @@
 !
       INTEGER M
 !
-      DOUBLE PRECISION XL,RMRM,RMDM,RMGM,TESTL,GAD
-      DOUBLE PRECISION AGAD,BETA,ADAD,RO,DAD,RM1GM1,GMGM,GM1GM1,STO1
-      DOUBLE PRECISION STO2,TGMTGM,C
+      DOUBLE PRECISION XL,RMRM,TESTL,GAD
+      DOUBLE PRECISION AGAD,BETA,ADAD,RO,DAD
+      DOUBLE PRECISION C
 !
       LOGICAL RELAT,PREC,CROUT,GSEB,PREBE,PRE3D
 !
@@ -106,10 +112,7 @@
 !-----------------------------------------------------------------------
 !
 !   INITIALISES
-!     STO1 AND STO2 AVOID A WARNING MESSAGE FROM CRAY COMPILER
-      STO1  =0.D0
-      STO2  =0.D0
-      TGMTGM=0.D0
+!
       CROUT =.FALSE.
       IF(7*(CFG%PRECON/7).EQ.CFG%PRECON) CROUT=.TRUE.
       GSEB=.FALSE.
@@ -143,8 +146,6 @@
 !
       CALL OS( 'X=X-Y   ' , R , B , B , C )
       RMRM   = P_DOTS(R,R,MESH)
-      RMGM   = RMRM
-      GMGM   = RMRM
 !
       IF (RMRM.LT.CFG%EPS**2*XL) GO TO 900
 !
@@ -157,8 +158,12 @@
 ! COMPUTES C G0 = R
 !
         IF(CROUT.OR.GSEB.OR.PREBE) THEN
+          IF(NCSIZE.GT.1) THEN
+            WRITE(LU,*) 'NO CROUT PRECONDITIONNING IN PARALLEL'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
           CALL DOWNUP(G, AUX , R , 'D' , MESH)
-          IF(NCSIZE.GT.1) CALL PARMOY(G,MESH)
         ELSEIF(PRE3D) THEN
           CALL CPSTVC(R%ADR(1)%P,G%ADR(1)%P)
           CALL TRID3D(AUX%X%R,G%ADR(1)%P%R,R%ADR(1)%P%R,
@@ -186,8 +191,12 @@
 !   COMPUTES  C DPRIM = AD  (DPRIM PUT IN B)
 !
         IF(CROUT.OR.GSEB.OR.PREBE) THEN
+          IF(NCSIZE.GT.1) THEN
+            WRITE(LU,*) 'NO CROUT PRECONDITIONNING IN PARALLEL'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
           CALL DOWNUP(B, AUX , AD , 'D' , MESH)
-          IF(NCSIZE.GT.1) CALL PARMOY(B,MESH)
         ELSEIF(PRE3D) THEN
           CALL CPSTVC(R%ADR(1)%P,G%ADR(1)%P)
           CALL TRID3D(AUX%X%R,B%ADR(1)%P%R,AD%ADR(1)%P%R,
@@ -228,12 +237,7 @@
 !
 !  SOME VALUES WILL CHANGE IN CASE OF PRECONDITIONING
 !
-      GM1GM1 = GMGM
-      RM1GM1 = RMGM
       RMRM   = P_DOTS(R,R,MESH)
-      RMDM   = RMRM
-      RMGM   = RMRM
-      GMGM   = RMRM
 !
 ! CHECKS END:
 !
@@ -280,8 +284,12 @@
 !   COMPUTES  C DPRIM = AD  (DPRIM PUT IN B)
 !
         IF(CROUT.OR.GSEB.OR.PREBE) THEN
+          IF(NCSIZE.GT.1) THEN
+            WRITE(LU,*) 'NO CROUT PRECONDITIONNING IN PARALLEL'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
           CALL DOWNUP(B , AUX , AD , 'D' , MESH)
-          IF(NCSIZE.GT.1) CALL PARMOY(B,MESH)
         ELSEIF(PRE3D) THEN
           CALL TRID3D(AUX%X%R,B%ADR(1)%P%R,AD%ADR(1)%P%R,
      &                MESH%NPOIN,BIEF_NBPTS(11,MESH))
@@ -362,3 +370,4 @@
 !-----------------------------------------------------------------------
 !
       END
+

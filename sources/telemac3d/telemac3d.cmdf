@@ -308,7 +308,6 @@ files: declarations_telemac.f
   dot.f
   p_dot.f
   p_dots.f
-  parmoy.f
   trid3d.f
   gracjg.f
   equnor.f

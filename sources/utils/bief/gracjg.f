@@ -5,7 +5,7 @@
      &(X, A,B , MESH, D,AD,G,R, CFG,INFOGR,AUX)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    SOLVES THE LINEAR SYSTEM A X = B
@@ -48,6 +48,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        10/06/2015
+!+        V7P1
+!+   CALL PARMOY removed, and stop if Crout preconditionning is asked
+!+   in parallel.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRIX OF THE SYSTEM
@@ -159,8 +165,12 @@
       IF(PREC) THEN
 !       COMPUTES C G0 = R0
         IF(CROUT.OR.GSEB.OR.PREBE) THEN
+          IF(NCSIZE.GT.1) THEN
+            WRITE(LU,*) 'NO CROUT PRECONDITIONNING IN PARALLEL'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
           CALL DOWNUP( G, AUX , R , 'D' , MESH )
-          IF(NCSIZE.GT.1) CALL PARMOY(G,MESH)
         ELSEIF(PRE3D) THEN
           CALL CPSTVC(R%ADR(1)%P,G%ADR(1)%P)
           CALL TRID3D(AUX%X%R,G%ADR(1)%P%R,R%ADR(1)%P%R,
@@ -228,8 +238,12 @@
 !
 !       SOLVES C G = R
         IF(CROUT.OR.GSEB.OR.PREBE) THEN
+          IF(NCSIZE.GT.1) THEN
+            WRITE(LU,*) 'NO CROUT PRECONDITIONNING IN PARALLEL'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
           CALL DOWNUP( G, AUX , R , 'D' , MESH )
-          IF(NCSIZE.GT.1) CALL PARMOY(G,MESH)
         ELSEIF(PRE3D) THEN
           CALL CPSTVC(R%ADR(1)%P,G%ADR(1)%P)
           CALL TRID3D(AUX%X%R,G%ADR(1)%P%R,R%ADR(1)%P%R,
@@ -340,3 +354,4 @@
 !-----------------------------------------------------------------------
 !
       END
+

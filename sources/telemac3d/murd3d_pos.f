@@ -10,7 +10,7 @@
      & T5,FLUX_REMOVED,SAVED_VOLU2,SAVED_F,OPTION,IELM3,NITMAX)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    ADVECTION OF A VARIABLE WITH AN UPWIND FINITE
@@ -27,7 +27,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        19/04/2010
 !+        V6P0
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -50,7 +50,12 @@
 !history  J-M HERVOUET (LNHE)
 !+        23/04/2012
 !+        V6P2
-!+   Values of tracers in rain taken into account.
+!+   Values of tracers in rain taken into account. Option 1 removed.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        12/06/2015
+!+        V7P1
+!+   Sharing at interfaces done differently, one subdomain receives all.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
@@ -185,6 +190,20 @@
       INTEGER, ALLOCATABLE :: INDIC(:)
       SAVE
 !
+!-----------------------------------------------------------------------
+!
+      IF(OPTION.NE.2) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'OPTION INCONNUE DANS MURD3D_POS : ',OPTION
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'UNKNOWN OPTION IN MURD3D_POS: ',OPTION
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
 !
       CALL CPSTVC(SVOLU2,STRA01)
       CALL CPSTVC(SVOLU2,STRA02)
@@ -201,7 +220,7 @@
           I2D=MESH2%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
           DO IPLAN=1,NPLAN
             I3D=I2D+(IPLAN-1)*NPOIN2
-            TRA03(I3D)=TRA03(I3D)*MESH3%FAC%R(I3D)
+            TRA03(I3D)=TRA03(I3D)*MESH3%IFAC%I(I3D)
           ENDDO
         ENDDO
       ENDIF
@@ -245,24 +264,17 @@
         ENDIF
       ENDIF
 !
-      IF(OPTION.EQ.2) CALL CPSTVC(SVOLU2,FLUX_REMOVED)
+      CALL CPSTVC(SVOLU2,FLUX_REMOVED)
 !
 !***********************************************************************
 !
 !     COPIES FLUXES FROM FLODEL TO ARRAY RMASS (REMAINING MASSES
 !     TO BE TRANSFERRED AND THEIR ADDRESS IN INDIC)
 !
-      IF(OPTION.EQ.1) THEN
-        DO I=1,REMAIN_SEG
-          INDIC(I)=I
-          RMASS(I)=DT*FLOPAR(I)
-        ENDDO
-      ELSEIF(OPTION.EQ.2) THEN
-        DO I=1,REMAIN_SEG
-          INDIC(I)=I
-          RMASS(I)=-DT*FLOPAR(I)
-        ENDDO
-      ENDIF
+      DO I=1,REMAIN_SEG
+        INDIC(I)=I
+        RMASS(I)=-DT*FLOPAR(I)
+      ENDDO
 !
 !     SHARES ASSEMBLED FLUXES ON INTERFACE SEGMENTS BY:
 !     DIVIDING BY 2 ON INTERFACE HORIZONTAL AND CROSSED SEGMENTS
@@ -270,7 +282,7 @@
 !     THIS WILL GIVE THE SAME UPWINDING INFORMATION
 !
       IF(NCSIZE.GT.1) THEN
-        CALL SHARE_3D_FLUXES(RMASS,1.D0,NPLAN,MESH2,MESH3,OPT)
+        CALL SHARE_3D_FLUXES(RMASS,NPLAN,MESH2,MESH3,OPT)
       ENDIF
 !
 !     REMAINING FLUXES (SPLIT INTO POSITIVE AND NEGATIVE
@@ -381,110 +393,93 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !     FOR DISTRIBUTING THE VOLUMES BETWEEN SEGMENTS
 !
-      IF(OPTION.EQ.2) THEN
-!
 !       FLUX_REMOVED (T6)    : TOTAL FLUX REMOVED OF EACH POINT
 !       SAVED_VOLU2 (T8)     : VOLUME VOLU2 SAVED
 !       SAVED_F (T9)         : TRACER SAVED
 !
-        IF(NITER.EQ.1) THEN
-          DO I=1,NPOIN3
-            FLUX_REMOVED%R(I)=0.D0
-            SAVED_VOLU2%R(I)=VOLU2(I)
-            SAVED_F%R(I)=FC(I)
-            T5%R(I)=FC(I)*VOLU2(I)
-          ENDDO
-          IF(NCSIZE.GT.1) THEN
-!           SHARES AFTER SUMMING (AS HAS BEEN DONE WITH FLUXES)
-            DO IPTFR=1,NPTIR
-              I2D=MESH2%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
-              DO IPLAN=1,NPLAN
-                I3D=I2D+(IPLAN-1)*NPOIN2
-                VOLU2(I3D)=VOLU2(I3D)*MESH3%FAC%R(I3D)
-                T5%R(I3D) = T5%R(I3D)*MESH3%FAC%R(I3D)
-              ENDDO
-            ENDDO
-          ENDIF
-        ELSE
-!         NOT ALL THE POINTS NEED TO BE INITIALISED NOW
-          DO IR=1,REMAIN_SEG
-            I=INDIC(IR)
-            I1=GLOSEG(I,1)
-            I2=GLOSEG(I,2)
-            FLUX_REMOVED%R(I1)=0.D0
-            FLUX_REMOVED%R(I2)=0.D0
-!           SAVING THE DEPTH AND TRACER
-            SAVED_VOLU2%R(I1)=VOLU2(I1)
-            SAVED_VOLU2%R(I2)=VOLU2(I2)
-            SAVED_F%R(I1)=FC(I1)
-            SAVED_F%R(I2)=FC(I2)
-            T5%R(I1)=FC(I1)*VOLU2(I1)
-            T5%R(I2)=FC(I2)*VOLU2(I2)
-          ENDDO
-!         CANCELLING INTERFACE POINTS (SOME MAY BE ISOLATED IN A SUBDOMAIN
-!         AT THE TIP OF AN ACTIVE SEGMENT WHICH IS ELSEWHERE)
-          IF(NCSIZE.GT.1) THEN
-            DO IPTFR=1,NPTIR
-              I2D=MESH3%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
-              DO IPLAN=1,NPLAN
-                I3D=(IPLAN-1)*NPOIN2+I2D
-                FLUX_REMOVED%R(I3D)=0.D0
-!               SAVING THE VOLUME AND TRACER
-                SAVED_VOLU2%R(I3D)=VOLU2(I3D)
-                SAVED_F%R(I3D)=FC(I3D)
-                VOLU2(I3D)=VOLU2(I3D)*MESH3%FAC%R(I3D)
-                T5%R(I3D) = T5%R(I3D)*MESH3%FAC%R(I3D)
-              ENDDO
-            ENDDO
-          ENDIF
-        ENDIF
-        DO I=1,REMAIN_SEG
-          ISEG3D=INDIC(I)
-          I1=GLOSEG(ISEG3D,1)
-          I2=GLOSEG(ISEG3D,2)
-!         POSITIVE FLUXES FROM 1 TO 2 !!!
-          IF(RMASS(ISEG3D).GT.EPS_VOLUME) THEN
-            FLUX_REMOVED%R(I1)=FLUX_REMOVED%R(I1)+RMASS(ISEG3D)
-            VOLU2(I1)=0.D0
-            T5%R(I1)=0.D0
-          ELSEIF(RMASS(ISEG3D).LT.-EPS_VOLUME) THEN
-            FLUX_REMOVED%R(I2)=FLUX_REMOVED%R(I2)-RMASS(ISEG3D)
-            VOLU2(I2)=0.D0
-            T5%R(I2)=0.D0
-          ENDIF
+      IF(NITER.EQ.1) THEN
+        DO I=1,NPOIN3
+          FLUX_REMOVED%R(I)=0.D0
+          SAVED_VOLU2%R(I)=VOLU2(I)
+          SAVED_F%R(I)=FC(I)
+          T5%R(I)=FC(I)*VOLU2(I)
         ENDDO
-!
-        IF(NCSIZE.GT.1) CALL PARCOM(FLUX_REMOVED,2,MESH3)
-!
-!       FOR ISOLATED POINTS CONNECTED TO AN ACTIVE SEGMENT
-!       THAT IS IN ANOTHER SUBDOMAIN
-        IF(NCSIZE.GT.1) THEN
-          DO IPTFR=1,NPTIR
-            I2D=MESH3%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
-            DO IPLAN=1,NPLAN
-              I3D=(IPLAN-1)*NPOIN2+I2D
-              IF(FLUX_REMOVED%R(I3D).GT.EPS_VOLUME) THEN
-!               ALL VOLUME SHARED
-                VOLU2(I3D)=0.D0
-                T5%R(I3D)=0.D0
-              ENDIF
-            ENDDO
-          ENDDO
-        ENDIF
-!
-      ELSEIF(OPTION.EQ.1) THEN
-!
         IF(NCSIZE.GT.1) THEN
 !         SHARES AFTER SUMMING (AS HAS BEEN DONE WITH FLUXES)
           DO IPTFR=1,NPTIR
             I2D=MESH2%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
             DO IPLAN=1,NPLAN
               I3D=I2D+(IPLAN-1)*NPOIN2
-              VOLU2(I3D)=VOLU2(I3D)*MESH3%FAC%R(I3D)
+              VOLU2(I3D)=VOLU2(I3D)*MESH3%IFAC%I(I3D)
+              T5%R(I3D) = T5%R(I3D)*MESH3%IFAC%I(I3D)
             ENDDO
           ENDDO
         ENDIF
+      ELSE
+!       NOT ALL THE POINTS NEED TO BE INITIALISED NOW
+        DO IR=1,REMAIN_SEG
+          I=INDIC(IR)
+          I1=GLOSEG(I,1)
+          I2=GLOSEG(I,2)
+          FLUX_REMOVED%R(I1)=0.D0
+          FLUX_REMOVED%R(I2)=0.D0
+!         SAVING THE DEPTH AND TRACER
+          SAVED_VOLU2%R(I1)=VOLU2(I1)
+          SAVED_VOLU2%R(I2)=VOLU2(I2)
+          SAVED_F%R(I1)=FC(I1)
+          SAVED_F%R(I2)=FC(I2)
+          T5%R(I1)=FC(I1)*VOLU2(I1)
+          T5%R(I2)=FC(I2)*VOLU2(I2)
+        ENDDO
+!       CANCELLING INTERFACE POINTS (SOME MAY BE ISOLATED IN A SUBDOMAIN
+!       AT THE TIP OF AN ACTIVE SEGMENT WHICH IS ELSEWHERE)
+        IF(NCSIZE.GT.1) THEN
+          DO IPTFR=1,NPTIR
+            I2D=MESH3%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
+            DO IPLAN=1,NPLAN
+              I3D=(IPLAN-1)*NPOIN2+I2D
+              FLUX_REMOVED%R(I3D)=0.D0
+!             SAVING THE VOLUME AND TRACER
+              SAVED_VOLU2%R(I3D)=VOLU2(I3D)
+              SAVED_F%R(I3D)=FC(I3D)
+              VOLU2(I3D)=VOLU2(I3D)*MESH3%IFAC%I(I3D)
+              T5%R(I3D) = T5%R(I3D)*MESH3%IFAC%I(I3D)
+            ENDDO
+          ENDDO
+        ENDIF
+      ENDIF
+      DO I=1,REMAIN_SEG
+        ISEG3D=INDIC(I)
+        I1=GLOSEG(ISEG3D,1)
+        I2=GLOSEG(ISEG3D,2)
+!       POSITIVE FLUXES FROM 1 TO 2 !!!
+        IF(RMASS(ISEG3D).GT.EPS_VOLUME) THEN
+          FLUX_REMOVED%R(I1)=FLUX_REMOVED%R(I1)+RMASS(ISEG3D)
+          VOLU2(I1)=0.D0
+          T5%R(I1)=0.D0
+        ELSEIF(RMASS(ISEG3D).LT.-EPS_VOLUME) THEN
+          FLUX_REMOVED%R(I2)=FLUX_REMOVED%R(I2)-RMASS(ISEG3D)
+          VOLU2(I2)=0.D0
+          T5%R(I2)=0.D0
+        ENDIF
+      ENDDO
 !
+      IF(NCSIZE.GT.1) CALL PARCOM(FLUX_REMOVED,2,MESH3)
+!
+!     FOR ISOLATED POINTS CONNECTED TO AN ACTIVE SEGMENT
+!     THAT IS IN ANOTHER SUBDOMAIN
+      IF(NCSIZE.GT.1) THEN
+        DO IPTFR=1,NPTIR
+          I2D=MESH3%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
+          DO IPLAN=1,NPLAN
+            I3D=(IPLAN-1)*NPOIN2+I2D
+            IF(FLUX_REMOVED%R(I3D).GT.EPS_VOLUME) THEN
+!             ALL VOLUME SHARED
+              VOLU2(I3D)=0.D0
+              T5%R(I3D)=0.D0
+            ENDIF
+          ENDDO
+        ENDDO
       ENDIF
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -498,61 +493,6 @@
 !
       RFLUX=0.D0
       NEWREMAIN=0
-!
-      IF(OPTION.EQ.1) THEN
-!
-      DO I=1,REMAIN_SEG
-        ISEG3D=INDIC(I)
-        IF(RMASS(ISEG3D).GT.EPS_VOLUME) THEN
-!         FLUX FROM 2 TO 1 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
-          I1=GLOSEG(ISEG3D,1)
-          I2=GLOSEG(ISEG3D,2)
-          IF(RMASS(ISEG3D).GT.VOLU2(I2)) THEN
-            RMASS(ISEG3D)=RMASS(ISEG3D)-VOLU2(I2)
-            NEWVOL=VOLU2(I1)+VOLU2(I2)
-            IF(NEWVOL.GT.0.D0) THEN
-              FC(I1)=FC(I1)+VOLU2(I2)*(FC(I2)-FC(I1))/NEWVOL
-              VOLU2(I1)=NEWVOL
-              VOLU2(I2)=0.D0
-            ENDIF
-            RFLUX=RFLUX+RMASS(ISEG3D)
-            NEWREMAIN=NEWREMAIN+1
-            INDIC(NEWREMAIN)=ISEG3D
-          ELSE
-            NEWVOL=VOLU2(I1)+RMASS(ISEG3D)
-            IF(NEWVOL.GT.0.D0) THEN
-              FC(I1)=FC(I1)+RMASS(ISEG3D)*(FC(I2)-FC(I1))/NEWVOL
-            ENDIF
-            VOLU2(I1)=NEWVOL
-            VOLU2(I2)=VOLU2(I2)-RMASS(ISEG3D)
-          ENDIF
-        ELSEIF(RMASS(ISEG3D).LT.-EPS_VOLUME) THEN
-!         FLUX FROM 1 TO 2 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
-          I1=GLOSEG(ISEG3D,1)
-          I2=GLOSEG(ISEG3D,2)
-          IF(-RMASS(ISEG3D).GT.VOLU2(I1)) THEN
-            RMASS(ISEG3D)=RMASS(ISEG3D)+VOLU2(I1)
-            NEWVOL=VOLU2(I2)+VOLU2(I1)
-            IF(NEWVOL.GT.0.D0) THEN
-              FC(I2)=FC(I2)+VOLU2(I1)*(FC(I1)-FC(I2))/NEWVOL
-              VOLU2(I2)=NEWVOL
-              VOLU2(I1)=0.D0
-            ENDIF
-            RFLUX=RFLUX-RMASS(ISEG3D)
-            NEWREMAIN=NEWREMAIN+1
-            INDIC(NEWREMAIN)=ISEG3D
-          ELSE
-            NEWVOL=VOLU2(I2)-RMASS(ISEG3D)
-            IF(NEWVOL.GT.0.D0) THEN
-              FC(I2)=FC(I2)-RMASS(ISEG3D)*(FC(I1)-FC(I2))/NEWVOL
-            ENDIF
-            VOLU2(I2)=NEWVOL
-            VOLU2(I1)=VOLU2(I1)+RMASS(ISEG3D)
-          ENDIF
-        ENDIF
-      ENDDO
-!
-      ELSEIF(OPTION.EQ.2) THEN
 !
       DO IR=1,REMAIN_SEG
         I=INDIC(IR)
@@ -627,10 +567,6 @@
           ENDIF
         ENDIF
       ENDDO
-!
-!     ELSE
-!       UNKNOWN OPTION
-      ENDIF
 !
       REMAIN_SEG=NEWREMAIN
 !
@@ -783,7 +719,7 @@
         C=0.D0
         IF(NCSIZE.GT.1) THEN
           DO I=1,NPOIN3
-            C=C+ABS(VOLU2(I)-TRA03(I))*MESH3%FAC%R(I)
+            C=C+ABS(VOLU2(I)-TRA03(I))*MESH3%IFAC%I(I)
           ENDDO
           C=P_DSUM(C)
         ELSE

@@ -2,10 +2,10 @@
                      DOUBLE PRECISION FUNCTION P_DOT
 !                    *******************************
 !
-     &(NPOIN,X,Y,FAC)
+     &(NPOIN,X,Y,IFAC)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    SCALAR PRODUCT OF VECTORS X AND Y (SIZE NPOIN)
@@ -14,11 +14,6 @@
 !history  REINHARD HINKELMANN (HANNOVER UNI.)
 !+
 !+
-!+
-!
-!history  J-M HERVOUET (LNH)
-!+        24/04/97
-!+        V5P5
 !+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
@@ -32,6 +27,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        10/06/2015
+!+        V7P1
+!+   Moving from double precision FAC to integer IFAC.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FAC            |-->| FAC=1/(NUMBER OF NEIGHBOURING SUB-DOMAINS)
@@ -50,7 +50,8 @@
 !
       INTEGER, INTENT(IN) :: NPOIN
 !
-      DOUBLE PRECISION, INTENT(IN) :: X(NPOIN),Y(NPOIN),FAC(NPOIN)
+      DOUBLE PRECISION, INTENT(IN) :: X(NPOIN),Y(NPOIN)
+      INTEGER, INTENT(IN)          :: IFAC(NPOIN)
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -61,10 +62,11 @@
       P_DOT = 0.D0
 !
       DO I = 1 , NPOIN
-        P_DOT = P_DOT + X(I) * Y(I) * FAC(I)
-      ENDDO ! I
+        P_DOT = P_DOT + X(I) * Y(I) * IFAC(I)
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
+

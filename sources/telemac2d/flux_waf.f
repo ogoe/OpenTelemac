@@ -7,8 +7,7 @@
      & XNN,YNN,DT,DX,WAFFLX)
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.3                                         R. ATA
-!
+! TELEMAC 2D 7.1
 !***********************************************************************
 !brief
 !
@@ -55,7 +54,7 @@
 !***********************************************************************
 !
       USE BIEF
-      USE INTERFACE_TELEMAC2D,ONLY: LIMITER,FLUX_HLLC
+      USE INTERFACE_TELEMAC2D, EX_FLUX_WAF => FLUX_WAF
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -79,7 +78,7 @@
       DOUBLE PRECISION                :: HL,UL,VL,PSI_L
       DOUBLE PRECISION                :: HR,UR,VR,PSI_R
       DOUBLE PRECISION                :: AL,AR,HSTAR,USTAR
-      DOUBLE PRECISION                :: PQL,PQR,SL,SR
+      DOUBLE PRECISION                :: PQL,PQR,SLI,SR
       DOUBLE PRECISION                :: FL(4),FR(4)
 !
       DOUBLE PRECISION                :: GSUR2,EPS,DTDX
@@ -108,7 +107,8 @@
       AL    = 0.D0
       AR    = 0.D0
 !
-!***********************************************************************
+!-----------------------------------------------------------------------
+!
 !     INITIALIZATION OF FLX, HLLCFLX AND WAFFLX
       DO I=1,4
         FLX(I)     = 0.D0
@@ -117,7 +117,9 @@
       ENDDO
 !
 !-----------------------------------------------------------------------
+!
 !     DEPTHS, VELOCITIES, TRACERS
+!
       HL    = H1
       UL    = U1
       VL    = V1
@@ -128,7 +130,7 @@
       VR    = V2
       PSI_R = PSI2
 !
-! LET'S START BY COMPUT GNIHLLC FLUX (WITHOUT INVERSE ROTATION IN THE END)
+! LET'S START BY COMPUTING GNIHLLC FLUX (WITHOUT INVERSE ROTATION IN THE END)
 !
       CALL FLUX_HLLC(XI,HL,HR,UL,UR,VL,VR,PSI_L,PSI_R,
      &               XNN,YNN,ROT,HLLCFLX)
@@ -197,20 +199,20 @@
       FR(3)   = HR*UR*VR
       FR(4)   = HR*UR*PSI_R
 !
-!     SL, SR AND SSTAR  (WE CONSIDER DRY CASES)
+!     SLI, SR AND SSTAR  (WE CONSIDER DRY CASES)
 !
       IF(HL.GT.EPS) THEN
-        SL    = UL-AL*PQL
+        SLI   = UL-AL*PQL
       ELSE
-        SL    = UR - 2.D0*AR
+        SLI   = UR - 2.D0*AR
         SR    = UR + AR
-        SSTAR = SL
+        SSTAR = SLI
       ENDIF
 !
       IF(HR.GT.EPS)THEN
         SR    = UR + AR*PQR
       ELSE
-        SL    = UL - AL
+        SLI   = UL - AL
         SR    = UL + 2.D0*AL
         SSTAR = SR
         GOTO 35
@@ -223,7 +225,7 @@
 !
 !     COURANT NUMBERS FOR ALL WAVES
       DTDX  = DT/DX
-      CL    = SL*DTDX
+      CL    = SLI*DTDX
       CR    = SR*DTDX
       CSTAR = SSTAR*DTDX
 !
@@ -257,7 +259,7 @@
 !     PREPARE rK BEFORE CALLING LIMITER
 !     COMPUTE ALL rK (SEE LOUKILI ET AL. PAGE 4)
 !       RL
-        IF(SL.GT.0.D0)THEN
+        IF(SLI.GT.0.D0)THEN
           DELTA = HL-HL_UP
         ELSE
           DELTA = HR_UP-HR
@@ -299,7 +301,6 @@
 !
       ENDIF
 !
-!
 ! INVERSE ROTATION
 !
       FLU2X  = XNN*FLX(2) - YNN*FLX(3)
@@ -311,7 +312,6 @@
       WAFFLX(2) = FLU2X
       WAFFLX(3) = FLU2Y
       WAFFLX(4) = FLX(4)
-!
 !
 !-----------------------------------------------------------------------
 !

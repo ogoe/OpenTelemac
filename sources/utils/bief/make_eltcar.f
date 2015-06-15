@@ -2,16 +2,20 @@
                      SUBROUTINE MAKE_ELTCAR
 !                    **********************
 !
-     &(ELTCAR,IKLE,NPOIN2,NELEM2,NELMAX,KNOLG,ISCORE,MESH,NPLAN,IELM)
+     &(ELTCAR,IFAC,
+     & IKLE,NPOIN2,NELEM2,NELMAX,KNOLG,ISCORE,MESH,NPLAN,IELM)
 !
 !***********************************************************************
-! BIEF   V7P0                                       21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    For every point in the mesh, gives an element that contains
 !+        this point. This element must be the same in scalar and in
 !+        parallel mode, ELTCAR(I)=0 means that the element is in another
 !+        sub-domain.
+!+        A byproduct is array IFAC, for every point it is 1, except
+!+        on boundaries between sub-domains, where it is 0 for all
+!+        sub-domain but 1.
 !
 !note     In every triangle a point is followed by another one:
 !+        2 follows 1, 3 follows 2, 1 follows 3
@@ -48,6 +52,11 @@
 !+        Call of PARCOM2I and PARCOM2I_SEG added for ISCORE, instead of
 !+        copying to a double precision SCORE (the latter suppressed).
 !
+!history  J-M HERVOUET (LNHE, EDF LAB)
+!+        10/06/2015
+!+        V7P1
+!+        Array IFAC built, based on ELTCAR. This is for dot product.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTCAR         |<--| ELEMENT CHOSEN FOR EVERY POINT
 !| IELM           |-->| TYPE OF ELEMENT (11: TRIANGLE, 41: PRISM...)
@@ -70,7 +79,7 @@
 !
       INTEGER, INTENT(IN)             :: NPOIN2,NELEM2,NELMAX,NPLAN,IELM
       INTEGER, INTENT(IN)             :: IKLE(NELMAX,*),KNOLG(NPOIN2)
-      INTEGER, INTENT(INOUT)          :: ELTCAR(*)
+      INTEGER, INTENT(INOUT)          :: ELTCAR(*),IFAC(*)
       INTEGER, INTENT(INOUT)          :: ISCORE(*)
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
 !
@@ -86,7 +95,6 @@
         WRITE(LU,*) 'MAKE_ELTCAR NOT PROGRAMMED FOR IELM=',IELM
         CALL PLANTE(1)
         STOP
-        RETURN
       ENDIF
 !
       DO I=1,NP
@@ -292,11 +300,30 @@
 !
 !-----------------------------------------------------------------------
 !
+!     NOW DEDUCING IFAC
+!
+      IF(NCSIZE.GT.1) THEN
+        DO I=1,NP
+          IF(ELTCAR(I).NE.0) THEN
+            IFAC(I)=1
+          ELSE
+            IFAC(I)=0
+          ENDIF
+        ENDDO
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
 !     COMPLETING FOR QUASI-BUBBLE
 !
       IF(IELM.EQ.12) THEN
         DO IELEM=1,NELEM2
           ELTCAR(NPOIN2+IELEM)=IELEM
+        ENDDO
+      ENDIF
+      IF(NCSIZE.GT.1.AND.IELM.EQ.12) THEN
+        DO IELEM=1,NELEM2
+          IFAC(NPOIN2+IELEM)=1
         ENDDO
       ENDIF
 !
@@ -344,9 +371,22 @@
             ENDDO
           ENDDO
         ENDIF
+!
+!       COMPLETING IFAC FOR PRISMS OR PRISMS CUT INTO TETRAHEDRA 
+!
+        IF(NCSIZE.GT.1) THEN
+          DO IPLAN=2,NPLAN
+            DO I=1,NPOIN2
+!             ACCORDING TO POINT AND ELEMENT NUMBERING IN PRISMS
+              IFAC(I+(IPLAN-1)*NPOIN2)=IFAC(I)
+            ENDDO
+          ENDDO
+        ENDIF
+!
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
+

@@ -11,7 +11,7 @@
      & NITMAX)
 !
 !***********************************************************************
-! BIEF   V7P0                                     13/06/2014
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    FINITE VOLUMES, UPWIND, EXPLICIT AND MONOTONIC
@@ -82,6 +82,11 @@
 !+        V7P0
 !+   LIMTRA and FBOR corrected depending on the fluxes at boundaries,
 !+   their intent modified accordingly.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        12/06/2015
+!+        V7P1
+!+   Adaptation to the fact that MESH%FAC is now replaced by MESH%IFAC.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING UTILISE DANS L'EQUATION DE CONTINUITE
@@ -236,6 +241,19 @@
 !
 !-----------------------------------------------------------------------
 !
+      IF(OPTION.NE.2) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'OPTION INCONNUE DANS POSITIVE_DEPTHS : ',OPTION
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'UNKNOWN OPTION IN POSITIVE_DEPTHS: ',OPTION
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
       FXMAT=>MESH%MSEG%X%R(1:MESH%NSEG)
 !
 !-----------------------------------------------------------------------
@@ -325,8 +343,8 @@
 !
 !----------------------------------------
 !
-!     AVERAGING FLUXES ON INTERFACE SEGMENTS BY ASSEMBLING AND
-!     DIVIDING BY 2. THIS WILL GIVE THE UPWINDING INFORMATION
+!     INTERFACE SEGMENTS: ONLY ONE OF THE TWINS WILL RECEIVE
+!     THE ASSEMBLED FLUX
 !
       IF(NCSIZE.GT.1) THEN
         CALL PARCOM2_SEG(FXMAT,FXMAT,FXMAT,MESH%NSEG,1,2,1,MESH,
@@ -335,7 +353,7 @@
      &                          MESH%NH_COM_SEG%DIM1,
      &                          MESH%NB_NEIGHB_SEG,
      &                          MESH%NB_NEIGHB_PT_SEG%I,
-     &                          0.5D0,MESH%NSEG)
+     &                          MESH%LIST_SEND_SEG%I,MESH%NSEG)
       ENDIF
 !
 !----------------------------------------
@@ -450,168 +468,92 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !     FOR DISTRIBUTING THE DEPTHS BETWEEN SEGMENTS
 !
-      IF(OPTION.EQ.2) THEN
+!     T1 : TOTAL FLUX REMOVED OF EACH POINT
+!     T4 : DEPTH H SAVED
+!     T6 : F SAVED
 !
-!       T1 : TOTAL FLUX REMOVED OF EACH POINT
-!       T4 : DEPTH H SAVED
-!       T6 : F SAVED
-!
-        CALL CPSTVC(H,T1)
-        IF(NITER.EQ.1) THEN
-          DO I=1,NPOIN
-            T1%R(I)=0.D0
-            T4%R(I)=HT%R(I)
-            T6%R(I)=F%R(I)
+      CALL CPSTVC(H,T1)
+      IF(NITER.EQ.1) THEN
+        DO I=1,NPOIN
+          T1%R(I)=0.D0
+          T4%R(I)=HT%R(I)
+          T6%R(I)=F%R(I)
+          T5%R(I)=HT%R(I)*F%R(I)
+        ENDDO
+        IF(NCSIZE.GT.1) THEN
+          DO IPTFR=1,NPTIR
+            I=MESH%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
+!           AVAILABLE DEPTH AND TRACER QUANTITY ARE SHARED BETWEEN PROCESSORS
+!           FOR POINTS GIVING WATER, THEY WILL BE CANCELLED LATER
+            HT%R(I)=HT%R(I)*MESH%IFAC%I(I)
             T5%R(I)=HT%R(I)*F%R(I)
           ENDDO
-          IF(NCSIZE.GT.1) THEN
-            DO IPTFR=1,NPTIR
-              I=MESH%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
-!             AVAILABLE DEPTH IS SHARED BETWEEN PROCESSORS
-              HT%R(I)=HT%R(I)*MESH%FAC%R(I)
-              T5%R(I)=T5%R(I)*MESH%FAC%R(I)
-            ENDDO
-          ENDIF
-        ELSE
-!         NOT ALL THE POINTS NEED TO BE INITIALISED NOW
-          DO IR=1,REMAIN_SEG
-            I=INDIC(IR)
-            I1=GLOSEG1(I)
-            I2=GLOSEG2(I)
-            T1%R(I1)=0.D0
-            T1%R(I2)=0.D0
-!           SAVING THE DEPTH AND TRACER
-            T4%R(I1)=HT%R(I1)
-            T4%R(I2)=HT%R(I2)
-            T6%R(I1)=F%R(I1)
-            T6%R(I2)=F%R(I2)
-            T5%R(I1)=HT%R(I1)*F%R(I1)
-            T5%R(I2)=HT%R(I2)*F%R(I2)
-          ENDDO
-!         CANCELLING INTERFACE POINTS (SOME MAY BE ISOLATED IN A SUBDOMAIN
-!         AT THE TIP OF AN ACTIVE SEGMENT WHICH IS ELSEWHERE)
-          IF(NCSIZE.GT.1) THEN
-            DO IPTFR=1,NPTIR
-              I=MESH%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
-              T1%R(I)=0.D0
-!             SAVING THE DEPTH AND TRACER
-              T4%R(I)=HT%R(I)
-              T6%R(I)=F%R(I)
-!             AVAILABLE DEPTH IS SHARED BETWEEN PROCESSORS
-              HT%R(I)=HT%R(I)*MESH%FAC%R(I)
-              T5%R(I)=T5%R(I)*MESH%FAC%R(I)
-            ENDDO
-          ENDIF
         ENDIF
+      ELSE
+!       NOT ALL THE POINTS NEED TO BE INITIALISED NOW
         DO IR=1,REMAIN_SEG
           I=INDIC(IR)
           I1=GLOSEG1(I)
           I2=GLOSEG2(I)
-          IF(FXMAT(I).GT.EPS_FLUX) THEN
-            T1%R(I1)=T1%R(I1)+FXMAT(I)
-            HT%R(I1)=0.D0
-            T5%R(I1)=0.D0
-          ELSEIF(FXMAT(I).LT.-EPS_FLUX) THEN
-            T1%R(I2)=T1%R(I2)-FXMAT(I)
-            HT%R(I2)=0.D0
-            T5%R(I2)=0.D0
+          T1%R(I1)=0.D0
+          T1%R(I2)=0.D0
+!         SAVING THE DEPTH AND TRACER
+          T4%R(I1)=HT%R(I1)
+          T4%R(I2)=HT%R(I2)
+          T6%R(I1)=F%R(I1)
+          T6%R(I2)=F%R(I2)
+          T5%R(I1)=HT%R(I1)*F%R(I1)
+          T5%R(I2)=HT%R(I2)*F%R(I2)
+        ENDDO
+!       CANCELLING INTERFACE POINTS (SOME MAY BE ISOLATED IN A SUBDOMAIN
+!       AT THE TIP OF AN ACTIVE SEGMENT WHICH IS ELSEWHERE)
+        IF(NCSIZE.GT.1) THEN
+          DO IPTFR=1,NPTIR
+            I=MESH%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
+            T1%R(I)=0.D0
+!           SAVING THE DEPTH AND TRACER
+            T4%R(I)=HT%R(I)
+            T6%R(I)=F%R(I)
+!           AVAILABLE DEPTH AND TRACER QUANTITY ARE SHARED BETWEEN PROCESSORS
+!           FOR POINTS GIVING WATER, THEY WILL BE CANCELLED LATER
+            HT%R(I)=HT%R(I)*MESH%IFAC%I(I)
+            T5%R(I)=HT%R(I)*F%R(I)
+          ENDDO
+        ENDIF
+      ENDIF
+      DO IR=1,REMAIN_SEG
+        I=INDIC(IR)
+        I1=GLOSEG1(I)
+        I2=GLOSEG2(I)
+        IF(FXMAT(I).GT.EPS_FLUX) THEN
+          T1%R(I1)=T1%R(I1)+FXMAT(I)
+          HT%R(I1)=0.D0
+          T5%R(I1)=0.D0
+        ELSEIF(FXMAT(I).LT.-EPS_FLUX) THEN
+          T1%R(I2)=T1%R(I2)-FXMAT(I)
+          HT%R(I2)=0.D0
+          T5%R(I2)=0.D0
+        ENDIF
+      ENDDO
+!
+      IF(NCSIZE.GT.1) CALL PARCOM(T1,2,MESH)
+!
+!     FOR ISOLATED POINTS CONNECTED TO AN ACTIVE SEGMENT
+!     THAT IS IN ANOTHER SUBDOMAIN
+      IF(NCSIZE.GT.1) THEN
+        DO IPTFR=1,NPTIR
+          I=MESH%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
+          IF(T1%R(I).GT.EPS_FLUX) THEN
+            HT%R(I)=0.D0
+            T5%R(I)=0.D0
           ENDIF
         ENDDO
-!
-        IF(NCSIZE.GT.1) CALL PARCOM(T1,2,MESH)
-!
-!       FOR ISOLATED POINTS CONNECTED TO AN ACTIVE SEGMENT
-!       THAT IS IN ANOTHER SUBDOMAIN
-        IF(NCSIZE.GT.1) THEN
-          DO IPTFR=1,NPTIR
-            I=MESH%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
-            IF(T1%R(I).GT.EPS_FLUX) THEN
-              HT%R(I)=0.D0
-              T5%R(I)=0.D0
-            ENDIF
-          ENDDO
-        ENDIF
-!
-      ELSEIF(OPTION.EQ.1) THEN
-!
-!       AT THIS LEVEL H THE SAME AT INTERFACE POINTS
-!       THIS IS DONE EVEN FOR OPTION 2, TO ANTICIPATE THE FINAL PARCOM
-        IF(NCSIZE.GT.1) THEN
-          DO IPTFR=1,NPTIR
-!           AVAILABLE DEPTH IS SHARED BETWEEN PROCESSORS
-!           NACHB(1,IPTFR) WITH DIMENSION NACHB(NBMAXNSHARE,NPTIR)
-            I=MESH%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
-            HT%R(I)=HT%R(I)*MESH%FAC%R(I)
-          ENDDO
-        ENDIF
-!
       ENDIF
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
       C=0.D0
       NEWREMAIN=0
-!
-      IF(OPTION.EQ.1) THEN
-!
-      DO IR=1,REMAIN_SEG
-        I=INDIC(IR)
-        IF(FXMAT(I).GT.EPS_FLUX) THEN
-          I1=GLOSEG1(I)
-          I2=GLOSEG2(I)
-          HFL1= DT*UNSV2D%R(I1)*FXMAT(I)
-          HFL2=-DT*UNSV2D%R(I2)*FXMAT(I)
-!         POUR TRACEURS
-          H1N=HT%R(I1)
-          H2N=HT%R(I2)
-!         FIN POUR TRACEURS
-          IF(HFL1.GT.HT%R(I1)) THEN
-            TET=HT%R(I1)/HFL1
-            HT%R(I1)=0.D0
-            HT%R(I2)=HT%R(I2)-HFL2*TET
-            FXMAT(I)=FXMAT(I)*(1.D0-TET)
-            C=C+FXMAT(I)
-            NEWREMAIN=NEWREMAIN+1
-            INDIC(NEWREMAIN)=I
-          ELSE
-            HT%R(I1)=HT%R(I1)-HFL1
-            HT%R(I2)=HT%R(I2)-HFL2
-          ENDIF
-!         TRACER (WITH TEST HT%R(I2) CANNOT BE 0.D0)
-          IF(H2N.LT.HT%R(I2)) THEN
-            F%R(I2)=F%R(I2)+(1.D0-H2N/HT%R(I2))*(F%R(I1)-F%R(I2))
-          ENDIF
-!         END TRACER
-        ELSEIF(FXMAT(I).LT.-EPS_FLUX) THEN
-          I1=GLOSEG1(I)
-          I2=GLOSEG2(I)
-          HFL1= DT*UNSV2D%R(I1)*FXMAT(I)
-          HFL2=-DT*UNSV2D%R(I2)*FXMAT(I)
-!         POUR TRACEURS
-          H1N=HT%R(I1)
-          H2N=HT%R(I2)
-!         FIN POUR TRACEURS
-          IF(HFL2.GT.HT%R(I2)) THEN
-            TET=HT%R(I2)/HFL2
-            HT%R(I1)=HT%R(I1)-HFL1*TET
-            HT%R(I2)=0.D0
-            FXMAT(I)=FXMAT(I)*(1.D0-TET)
-            C=C-FXMAT(I)
-            NEWREMAIN=NEWREMAIN+1
-            INDIC(NEWREMAIN)=I
-          ELSE
-            HT%R(I1)=HT%R(I1)-HFL1
-            HT%R(I2)=HT%R(I2)-HFL2
-          ENDIF
-!         TRACER (WITH TEST HT%R(I1) CANNOT BE 0.D0)
-          IF(H1N.LT.HT%R(I1)) THEN
-            F%R(I1)=F%R(I1)+(1.D0-H1N/HT%R(I1))*(F%R(I2)-F%R(I1))
-          ENDIF
-!         FIN TRACEUR
-        ENDIF
-      ENDDO
-!
-      ELSEIF(OPTION.EQ.2) THEN
 !
       DO IR=1,REMAIN_SEG
         I=INDIC(IR)
@@ -702,10 +644,6 @@
           ENDIF
         ENDIF
       ENDDO
-!
-!     ELSE
-!       UNKNOWN OPTION
-      ENDIF
 !
       REMAIN_SEG=NEWREMAIN
 !

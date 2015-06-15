@@ -6,7 +6,7 @@
      & LAMBD0,SPHERI,MESH,T1,T2,OPTASS,PRODUC,EQUA,MESH2D)
 !
 !***********************************************************************
-! BIEF   V7P0                                   28/03/2014
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    PREPARES THE DATA STRUCTURE FOR BIEF.
@@ -63,6 +63,11 @@
 !+        V7P0
 !+   Allocation of new vectors of I8 integers MESH%WI8 and MESH%TI8
 !+   for finite element assembly with integers.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        10/06/2015
+!+        V7P1
+!+   Call of make_eltcar modified to compute IFAC.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
@@ -636,10 +641,12 @@
 !
 ! COMPUTES THE STARTING ELEMENT FOR THE METHOD OF CHARACTERISTICS
 !
-      CALL MAKE_ELTCAR(MESH%ELTCAR%I,MESH%IKLE%I,NPOIN2,NELEM2,
+      CALL MAKE_ELTCAR(MESH%ELTCAR%I,MESH%IFAC%I,
+     &                 MESH%IKLE%I,NPOIN2,NELEM2,
      &                 NELMAX,MESH%KNOLG%I,IT1%I,MESH,NPLAN,IELMX)
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
+
