@@ -4,11 +4,11 @@
 !
      &(DTMAX,HSTART,H,FXMAT,FXMATPAR,MAS,DT,FXBOR,SMH,YASMH,TAB1,NSEG,
      & NPOIN,NPTFR,GLOSEG,SIZGLO,MESH,MSK,MASKPT,RAIN,PLUIE,FC,
-     & NELEM,IKLE,LIMTRA,KDIR,FBOR,FSCEXP,TRAIN,NBOR,MINFC,MAXFC,
-     & SECU,COEMIN,COESOU)
+     & NELEM,IKLE,LIMTRA,KDIR,KDDL,FBOR,FSCEXP,TRAIN,NBOR,MINFC,MAXFC,
+     & SECU,COEMIN,COESOU,OPT)
 !
 !***********************************************************************
-! BIEF   V7P0
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES THE MAXIMUM TIMESTEP THAT ENABLES
@@ -74,6 +74,11 @@
 !+   More general formula with parameters COEMIN and COESOU to account
 !+   for predictor-corrector scheme.
 !
+!history  S. PAVAN & J-M HERVOUET (EDF LAB, LNHE)
+!+        16/06/2015
+!+        V7P1
+!+   Option OPT added in argument. Implementation of OPT=2 changed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COEMIN         |-->| COEFFICIENT IN THE STABILITY CONDITION
 !| COESOU         |-->| COEFFICIENT IN THE STABILITY CONDITION
@@ -92,6 +97,8 @@
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSEG           |-->| NUMBER OF SEGMENTS
+!| OPT            |-->| OPTION: 1=CLASSIC 2=BASED ON MIN AND MAX
+!|                |   |         3=BASED ON GIVEN MIN AND MAX
 !| PLUIE          |-->| RAIN OR EVAPORATION IN M/S
 !| RAIN           |-->| IF YES: RAIN OR EVAPORATION
 !| SIZGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -108,10 +115,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NSEG,NPOIN,NPTFR,SIZGLO
+      INTEGER, INTENT(IN)             :: NSEG,NPOIN,NPTFR,SIZGLO,OPT
       INTEGER, INTENT(IN)             :: GLOSEG(SIZGLO,2),NELEM
       INTEGER, INTENT(IN)             :: IKLE(NELEM,3),NBOR(NPTFR)
-      INTEGER, INTENT(IN)             :: LIMTRA(NPTFR),KDIR
+      INTEGER, INTENT(IN)             :: LIMTRA(NPTFR),KDIR,KDDL
       DOUBLE PRECISION, INTENT(INOUT) :: DTMAX
       DOUBLE PRECISION, INTENT(IN)    :: DT,HSTART(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: H(NPOIN),MAS(NPOIN),SMH(NPOIN)
@@ -130,23 +137,26 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,IELEM,I1,I2,I3,OPT,N
+      INTEGER I,J,IELEM,I1,I2,I3,N,ISEG
       DOUBLE PRECISION DENOM,A,B,DIFF,DI,MINEL,MAXEL
 !
 !     HARDCODED OPTION (1: CLASSICAL 2: BASED ON LOCAL MIN AND MAX
 !                                    3: MIN AND MAX GIVEN)
-      OPT=1
+!     OPT=1
 !
 !-----------------------------------------------------------------------
 ! DETERMINES MAX AND MIN FOR THE NEW MONOTONICITY CRITERION
 !-----------------------------------------------------------------------
 !
+      IF(OPT.EQ.2.OR.OPT.EQ.3) THEN
+        CALL CPSTVC(MASKPT,MINFC)
+        CALL CPSTVC(MASKPT,MAXFC)
+      ENDIF
+!
       IF(OPT.EQ.3) THEN
 !
 !       HARDCODED MIN AND MAX
 !
-        CALL CPSTVC(MASKPT,MINFC)
-        CALL CPSTVC(MASKPT,MAXFC)
         DO I=1,NPOIN
           MINFC%R(I)=0.D0
           MAXFC%R(I)=1000.D0
@@ -204,9 +214,6 @@
 !       IN PARALLEL MODE: GLOBAL EXTREMA
 !
         IF(NCSIZE.GT.1) THEN
-!         ENSURING THAT THE WORK BIEF_OBJ HAVE THE RIGHT DISCRETISATION
-          CALL CPSTVC(MASKPT,MINFC)
-          CALL CPSTVC(MASKPT,MAXFC)
 !         GLOBAL EXTREMA
           CALL PARCOM(MAXFC,3,MESH)
           CALL PARCOM(MINFC,4,MESH)
@@ -218,15 +225,15 @@
 !
 ! COMPUTES THE CRITERION FOR COURANT NUMBER
 !
-      DO I = 1,NPOIN
-        TAB1%R(I) = 0.D0
-      ENDDO
-!
 !     USES HERE FXMAT ASSEMBLED IN PARALLEL FOR UPWINDING
 !
       IF(OPT.EQ.1) THEN
 !
 !       CLASSICAL CRITERION
+!
+        DO I = 1,NPOIN
+          TAB1%R(I) = 0.D0
+        ENDDO
 !
         DO I = 1,NSEG
           IF(FXMATPAR(I).GT.0.D0) THEN
@@ -245,58 +252,15 @@
           ENDIF
         ENDDO
 !
-      ELSEIF(OPT.EQ.2.OR.OPT.EQ.3) THEN
+        IF(NCSIZE.GT.1) CALL PARCOM(TAB1,2,MESH)
 !
-!       NEW CRITERION, COMPUTES - MIN(FI_ij,0)*(Ci-Cj)
-!
-        DO I=1,NSEG
-          IF(FXMATPAR(I).LT.0.D0) THEN
-            DIFF=FC(GLOSEG(I,1))-FC(GLOSEG(I,2))
-            TAB1%R(GLOSEG(I,1))=TAB1%R(GLOSEG(I,1))-FXMAT(I)*DIFF
-          ELSEIF(FXMATPAR(I).GT.0.D0) THEN
-            DIFF=FC(GLOSEG(I,2))-FC(GLOSEG(I,1))
-            TAB1%R(GLOSEG(I,2))=TAB1%R(GLOSEG(I,2))+FXMAT(I)*DIFF
-          ENDIF
-        ENDDO
-!
-        DO I=1,NPTFR
-          IF(LIMTRA(I).EQ.KDIR) THEN
-            N=NBOR(I)
-            DIFF=FC(N)-FBOR(I)
-!           FXBOR IS HERE IN GLOBAL NUMBERING
-            TAB1%R(N)=TAB1%R(N)-MIN(FXBOR(N),0.D0)*DIFF          
-          ENDIF
-        ENDDO
-!
-        IF(YASMH) THEN
-          DO I = 1,NPOIN
-            DIFF=FC(I)-FSCEXP(I)
-            TAB1%R(I)=TAB1%R(I)+MAX(SMH(I),0.D0)*DIFF
-          ENDDO
+!       MASKS TAB1
+        IF(MSK) THEN
+          CALL OS('X=XY    ',X=TAB1,Y=MASKPT)
         ENDIF
 !
-        IF(RAIN) THEN
-          DO I = 1,NPOIN
-            DIFF=FC(I)-TRAIN
-            TAB1%R(I)=TAB1%R(I)+MAX(PLUIE(I),0.D0)*DIFF
-          ENDDO
-        ENDIF
-!
-      ENDIF
-!
-      IF(NCSIZE.GT.1) CALL PARCOM(TAB1,2,MESH)
-!
-!     MASKS TAB1
-!
-      IF(MSK) THEN
-        CALL OS('X=XY    ',X=TAB1,Y=MASKPT)
-      ENDIF
-!
-!     STABILITY (AND MONOTONICITY) CRITERION
-!
-      DTMAX = DT
-!
-      IF(OPT.EQ.1) THEN
+!       STABILITY (AND MONOTONICITY) CRITERION
+        DTMAX = DT
 !
 !       SEE RELEASE NOTES 5.7, CRITERION AT THE END OF 4.4 PAGE 33
 !       BUT HERE THE FINAL H IS NOT H(N+1) BUT A FUNCTION OF DTMAX ITSELF
@@ -338,25 +302,144 @@
 !
       ELSEIF(OPT.EQ.2.OR.OPT.EQ.3) THEN
 !
-!       NEW CRITERION, SEE RELEASE NOTES 6.3
+        DTMAX = DT
+!
+!       NEW CRITERION, COMPUTING BI (SEE RELEASE NOTES 7.1)
+!
+!       WITH MAXFC%R
+!
+        DO I = 1,NPOIN
+          TAB1%R(I) = 0.D0
+        ENDDO
+!
+        DO ISEG=1,NSEG
+          I=GLOSEG(ISEG,1)
+          J=GLOSEG(ISEG,2)
+          IF(FXMATPAR(ISEG).LT.0.D0) THEN
+            TAB1%R(I)=TAB1%R(I)
+     &               -FXMAT(ISEG)*(FC(J)-MAXFC%R(I))
+            TAB1%R(J)=TAB1%R(J)
+     &               +FXMAT(ISEG)*(FC(J)-MAXFC%R(J))
+          ELSE
+            TAB1%R(I)=TAB1%R(I)
+     &               -FXMAT(ISEG)*(FC(I)-MAXFC%R(I))
+            TAB1%R(J)=TAB1%R(J)
+     &               +FXMAT(ISEG)*(FC(I)-MAXFC%R(J))
+          ENDIF
+        ENDDO
+!
+        DO I=1,NPTFR
+          IF(LIMTRA(I).EQ.KDIR) THEN
+            N=NBOR(I)
+!           FXBOR IS HERE IN GLOBAL NUMBERING
+            TAB1%R(N)=TAB1%R(N)
+     &               -MIN(FXBOR(N),0.D0)*(FBOR(I)-MAXFC%R(N))    
+          ELSEIF(LIMTRA(I).EQ.KDDL) THEN 
+            N=NBOR(I) 
+            TAB1%R(N)=TAB1%R(N)
+     &               -MAX(FXBOR(N),0.D0)*(FC(N)  -MAXFC%R(N))        
+          ENDIF
+        ENDDO
+!
+        IF(YASMH) THEN
+          DO I = 1,NPOIN
+            TAB1%R(I)=TAB1%R(I)
+     &               +MAX(SMH(I),0.D0)*(FSCEXP(I)-MAXFC%R(I))
+     &               +MIN(SMH(I),0.D0)*(FC(I)    -MAXFC%R(I))
+          ENDDO
+        ENDIF
+!
+        IF(RAIN) THEN
+          DO I = 1,NPOIN
+            TAB1%R(I)=TAB1%R(I)
+     &               +MAX(PLUIE(I),0.D0)*(TRAIN-MAXFC%R(I))
+     &               +MIN(PLUIE(I),0.D0)*(FC(I)-MAXFC%R(I))
+          ENDDO
+        ENDIF
+!
+        IF(NCSIZE.GT.1) CALL PARCOM(TAB1,2,MESH)
+!
+!       MASKS TAB1
+!
+        IF(MSK) CALL OS('X=XY    ',X=TAB1,Y=MASKPT)
 !
         DO I= 1,NPOIN
           DI=TAB1%R(I)/MAS(I)
           IF(DI.GT.1.D-12) THEN
-            A=(FC(I)-MINFC%R(I))/DI
-            B=DT+A*(HSTART(I)-H(I))
-            IF(B.GT.0.D0) THEN
-              DTMAX = MIN(DTMAX,A*HSTART(I)*DT/B)
-            ENDIF
-          ELSEIF(DI.LT.-1.D-12) THEN
-            A=(FC(I)-MAXFC%R(I))/DI
-            B=DT+A*(HSTART(I)-H(I))
-            IF(B.GT.0.D0) THEN
-              DTMAX = MIN(DTMAX,A*HSTART(I)*DT/B)
-            ENDIF
+            DTMAX = MIN(DTMAX,HSTART(I)*(MAXFC%R(I)-FC(I))/DI)
           ENDIF
         ENDDO
-!     
+!
+!       WITH MINFC%R
+!
+        DO I = 1,NPOIN
+          TAB1%R(I) = 0.D0
+        ENDDO
+!
+        DO ISEG=1,NSEG
+          I=GLOSEG(ISEG,1)
+          J=GLOSEG(ISEG,2)
+          IF(FXMATPAR(ISEG).LT.0.D0) THEN
+            TAB1%R(I)=TAB1%R(I)
+     &               -FXMAT(ISEG)*(FC(J)-MINFC%R(I))
+            TAB1%R(J)=TAB1%R(J)
+     &               +FXMAT(ISEG)*(FC(J)-MINFC%R(J))
+          ELSE
+            TAB1%R(I)=TAB1%R(I)
+     &               -FXMAT(ISEG)*(FC(I)-MINFC%R(I))
+            TAB1%R(J)=TAB1%R(J)
+     &               +FXMAT(ISEG)*(FC(I)-MINFC%R(J))
+          ENDIF
+        ENDDO
+!
+        DO I=1,NPTFR
+          IF(LIMTRA(I).EQ.KDIR) THEN
+            N=NBOR(I)
+!           FXBOR IS HERE IN GLOBAL NUMBERING
+            TAB1%R(N)=TAB1%R(N)
+     &               -MIN(FXBOR(N),0.D0)*(FBOR(I)-MINFC%R(N))    
+          ELSEIF(LIMTRA(I).EQ.KDDL) THEN  
+            N=NBOR(I)
+            TAB1%R(N)=TAB1%R(N)
+     &               -MAX(FXBOR(N),0.D0)*(FC(N)  -MINFC%R(N))        
+          ENDIF
+        ENDDO
+!
+        IF(YASMH) THEN
+          DO I = 1,NPOIN
+            TAB1%R(I)=TAB1%R(I)
+     &               +MAX(SMH(I),0.D0)*(FSCEXP(I)-MINFC%R(I))
+     &               +MIN(SMH(I),0.D0)*(FC(I)    -MINFC%R(I))
+          ENDDO
+        ENDIF
+!
+        IF(RAIN) THEN
+          DO I = 1,NPOIN
+            TAB1%R(I)=TAB1%R(I)
+     &               +MAX(PLUIE(I),0.D0)*(TRAIN-MINFC%R(I))
+     &               +MIN(PLUIE(I),0.D0)*(FC(I)-MINFC%R(I))
+          ENDDO
+        ENDIF
+!
+        IF(NCSIZE.GT.1) CALL PARCOM(TAB1,2,MESH)
+!
+!       MASKS TAB1
+!
+        IF(MSK) CALL OS('X=XY    ',X=TAB1,Y=MASKPT)
+!
+        DO I= 1,NPOIN
+          DI=TAB1%R(I)/MAS(I)
+          IF(DI.LT.-1.D-12) THEN
+            DTMAX = MIN(DTMAX,HSTART(I)*(MINFC%R(I)-FC(I))/DI)
+          ENDIF
+        ENDDO
+!
+      ELSE
+!
+        WRITE(LU,*) 'UNKNOWN OPTION IN CFLVF: ',OPT
+        CALL PLANTE(1)
+        STOP
+!
       ENDIF
 !
 !-----------------------------------------------------------------------

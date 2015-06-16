@@ -61,9 +61,10 @@
 !+   VOLU2D added.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        08/06/2015
+!+        16/06/2015
 !+        V7P1
 !+   Now with the locally implicit predictor-corrector.
+!+   Call of CFLVF changed, with option OPTCFL added in the arguments.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -176,7 +177,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELMF,I,IOPT1,IOPT2,N,IELEM,I1,I2,I3,ICOR,NIT
+      INTEGER IELMF,I,IOPT1,IOPT2,N,IELEM,I1,I2,I3,ICOR,NIT,OPTCFL
 !
 !-----------------------------------------------------------------------
 !
@@ -393,8 +394,9 @@
       CALL CPSTVC(F,T8)
 !
 !     T4 WILL BE F PROGRESSIVELY UPDATED
-!     HNP1MT WILL BE THE DEPTH AT THE END OF THE SUB-TIMESTEP
-!     (INITIALISED HERE TO CALL  CFLVF)
+!     HNP1MT WILL BE THE DEPTH AT THE END OF THE PREVIOUS SUB-TIMESTEP
+!     HENCE THE DEPTH At THE BEGINNING OF THE NEXT SUB TIME-STEP
+!     (INITIALISED HERE TO CALL CFLVF)
 !
       DO I=1,HN%DIM1
         T4%R(I)=FN%R(I)
@@ -459,14 +461,20 @@
         COESOU=COEMIN
       ENDIF
 !
+!     HARDCODED OPTION FOR THE CFL (OPTION 2 ONLY FOR THE N SCHEME)
+!
+      OPTCFL=1
+!     OPTCFL=2
+!     IF(OPTADV.NE.1.OR.IOPT1.NE.2) OPTCFL=1
+!
       CALL CFLVF(DDT,HNP1MT%R,HT%R,FXMAT,FXMATPAR,
 !                                   FLBOR%R(NPOIN)
      &           V2DPAR%R,DT_REMAIN,FXBORPAR%R   ,SMH%R,
      &           YASMH,T8,MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
      &           MESH%GLOSEG%I,MESH%GLOSEG%DIM1,MESH,MSK,MASKPT,
      &           RAIN,PLUIE%R,T4%R,MESH%NELEM,MESH%IKLE%I,
-     &           LIMTRA,KDIR,FBOR%R,FSCEXP%R,TRAIN,MESH%NBOR%I,
-     &           T2,T6,SECU,COEMIN,COESOU)
+     &           LIMTRA,KDIR,KDDL,FBOR%R,FSCEXP%R,TRAIN,MESH%NBOR%I,
+     &           T2,T6,SECU,COEMIN,COESOU,OPTCFL)
 !
 !     NOW RECOMPUTING THE PSI FLUXES (THE N FLUXES HAVE BEEN
 !     USED FOR THE STABILITY CRITERION).
