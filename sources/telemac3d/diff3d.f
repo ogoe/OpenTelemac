@@ -15,7 +15,7 @@
      & SIGMAG,IPBOT,SETDEP)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                  21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    SOLVES THE DIFFUSION AND SUPG ADVECTION STEPS
@@ -88,6 +88,11 @@
 !+   Positivity is ensured without any condition, and stability
 !+   if the solver can resist to non dominant diagonals...
 !+   Call to t3d_stress changed (for treatment of tidal flats).
+!
+!history  J.M. HERVOUET (EDF LAB, LNHE)
+!+        16/06/2015
+!+        V7P1
+!+   Changing %FAC%R into %IFAC%I.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
@@ -643,7 +648,7 @@
 !               FIRST FREE ARE TREATED AS DIRICHLET WITH FBORF VALUE
                 DO I=0,IPBOT(I2D)
                   IPOIN3 = I2D+I*NPOIN2
-                  MTRA2%D%R(IPOIN3)=MESH3D%FAC%R(IPOIN3)
+                  MTRA2%D%R(IPOIN3)=MESH3D%IFAC%I(IPOIN3)
                   IT1%I(IPOIN3)   = KDIR
                   T3_03%R(IPOIN3) = FBORF%R(I2D)
                 ENDDO
@@ -656,7 +661,7 @@
                 DO I=0,IPBOT(I2D)
                   IPOIN3 = I2D+I*NPOIN2
                   IF(T3_02%R(IPOIN3).LT.1.D-10) THEN
-                    MTRA2%D%R(IPOIN3)=MESH3D%FAC%R(IPOIN3)
+                    MTRA2%D%R(IPOIN3)=MESH3D%IFAC%I(IPOIN3)
                     IT1%I(IPOIN3)   = KDIR
                     T3_03%R(IPOIN3) = FN%R(IPOIN3)
                   ENDIF

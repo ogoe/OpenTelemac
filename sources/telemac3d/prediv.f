@@ -5,7 +5,7 @@
      & ( PD, UP, VP, WP, INFO , BC , OPT, DIRSUR, DIRBOT, DIRLAT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    SOLVES THE PRESSURE POISSON EQUATION
@@ -50,6 +50,11 @@
 !+        07/12/2011
 !+        V6P2
 !+   Removing preconditioning 17 in case of 2 planes.
+!
+!history  J-M HERVOUET (LNHE)
+!+        16/06/2015
+!+        V7P1
+!+   Changing %FAC%R into %IFAC%I.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BC             |-->| LOGICAL, IF YES, BOUNDARY CONDITIONS
@@ -239,7 +244,7 @@
             IPOIN3=NPOIN3-NPOIN2+IPOIN2
             IT1%I(IPOIN3) = KDIR
             T3_03%R(IPOIN3) = PBORS%R(IPOIN2)
-            MDIFF%D%R(IPOIN3)=MESH3D%FAC%R(IPOIN3)
+            MDIFF%D%R(IPOIN3)=MESH3D%IFAC%I(IPOIN3)
           ENDIF
         ENDDO
       ELSE
@@ -266,7 +271,7 @@
           CALL PARCOM(T3_02,2,MESH3D)
           DO IPOIN3=1,NPOIN3
             IF(T3_02%R(IPOIN3).LT.1.D-10) THEN
-              MDIFF%D%R(IPOIN3)= MESH3D%FAC%R(IPOIN3)
+              MDIFF%D%R(IPOIN3)= MESH3D%IFAC%I(IPOIN3)
               IT1%I(IPOIN3)    = KDIR
               IT2%I(IPOIN3)    = 1
               T3_03%R(IPOIN3)  = PD%R(IPOIN3)
@@ -363,3 +368,4 @@
 !
       RETURN
       END
+

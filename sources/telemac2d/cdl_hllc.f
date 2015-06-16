@@ -149,7 +149,7 @@
           U1  = XNN*U10+YNN*V1
           V1  =-YNN*U10+XNN*V1
 ! PUT NORMAL COMPONENT = 0
-          U1 =  0.0D0
+          U1 =  0.D0
           U2 =  U1
           V2 =  V1
 ! INVERSE ROTATION
@@ -170,13 +170,13 @@
 !           V2 = V1 - U10*YNN
 !
           CALL FLUX_HLLC(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
-     &                 XNN,YNN,ROT,FLX(K,:))
+     &                   XNN,YNN,ROT,FLX(K,:))
 !          GOTO 100
 !
 !**************************************************
 !         LIQUID BOUNDARIES
 !**************************************************
-        ELSEIF((LIMPRO(K,1).EQ.KDIR).OR.(LIMPRO(K,1).EQ.KDDL))THEN
+        ELSEIF(LIMPRO(K,1).EQ.KDIR.OR.LIMPRO(K,1).EQ.KDDL)THEN
 
 !         PREPARE COMPUTATION OF RIEMANN INVARIANTS
           IF(H1.LT.EPS)THEN
@@ -295,7 +295,7 @@
         CALL PARCOM_BORD(FLX(1,2),1,MESH)
         CALL PARCOM_BORD(FLX(1,3),1,MESH)
 !       FOR TRACER UNCOMMENT WHEN IMPLEMENTED
-!        CALL PARCOM_BORD(FLX(1,4),1,MESH)
+!       CALL PARCOM_BORD(FLX(1,4),1,MESH)
       ENDIF
 
       IF(NPTFR.GT.0)THEN
@@ -303,11 +303,11 @@
         IS=NBOR(K)
 !       FINAL BALANCE
         IF(NCSIZE.GT.1)THEN
-          OUTFLOW  = FLX(K,1)*VNL(K)*MESH%FAC%R(IS)
+          OUTFLOW  = FLX(K,1)*VNL(K)*MESH%IFAC%I(IS)
         ELSE
           OUTFLOW  = FLX(K,1)*VNL(K)
         ENDIF
-        IF(FLX(K,1).LE.0D0)THEN ! INLET
+        IF(FLX(K,1).LE.0.D0)THEN ! INLET
           FLUENT = FLUENT + OUTFLOW
         ELSE                    ! OUTLET
           FLUSORT = FLUSORT + OUTFLOW

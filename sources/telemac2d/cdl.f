@@ -363,7 +363,7 @@
           IS=NBOR(K)
 !
           IF(NCSIZE.GT.1)THEN
-            OUTFLOW  = FLUH(K)*MESH%FAC%R(IS)
+            OUTFLOW  = FLUH(K)*MESH%IFAC%I(IS)
           ELSE
             OUTFLOW  = FLUH(K)
           ENDIF

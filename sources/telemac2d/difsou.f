@@ -78,6 +78,11 @@
 !+        V7P1
 !+   Treatment of sources modified for distributive schemes.
 !
+!history  J-M HERVOUET (LNHE)
+!+        16/06/2015
+!+        V7P1
+!+   FAC is now an integer.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| DBUS           |-->| DISCHARGE OF TUBES.
@@ -137,10 +142,11 @@
       INTEGER          , INTENT(IN)    :: ENTSIP(NSIPH),SORSIP(NSIPH)
       INTEGER          , INTENT(IN)    :: ENTBUS(NBUSE),SORBUS(NBUSE)
       INTEGER          , INTENT(IN)    :: MAXSCE,MAXTRA,TYPSEUIL
+      INTEGER          , INTENT(IN)    :: FAC(*)
       LOGICAL          , INTENT(INOUT) :: YASMI(*)
       DOUBLE PRECISION , INTENT(IN)    :: AT,DT,TETAT,DSCE(*)
       DOUBLE PRECISION , INTENT(IN)    :: DSIP(NSIPH),DBUS(NBUSE)
-      DOUBLE PRECISION , INTENT(IN)    :: TSCE(MAXSCE,MAXTRA),FAC(*)
+      DOUBLE PRECISION , INTENT(IN)    :: TSCE(MAXSCE,MAXTRA)
       DOUBLE PRECISION , INTENT(INOUT) :: MASSOU(*)
       TYPE(BIEF_OBJ)   , INTENT(IN)    :: TN,HPROP,TSIP,TBUS
       TYPE(BIEF_OBJ)   , INTENT(IN)    :: TWEIRA,TWEIRB
