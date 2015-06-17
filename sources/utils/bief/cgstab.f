@@ -90,6 +90,9 @@
 !
       LOGICAL RELAT,CROUT
 !
+      DOUBLE PRECISION RMIN
+      DATA RMIN/1.D-15/
+!
       INTRINSIC SQRT
 !
 !-----------------------------------------------------------------------
@@ -116,9 +119,9 @@
 !
 ! IF THE SECOND MEMBER IS 0, X=0 AND IT'S THE END
 !
-      IF(XL.LT.CFG%ZERO**2) THEN
+      IF(SQRT(XL).LT.RMIN) THEN
         RMRM = 0.D0
-        CALL OS( 'X=C     ' , X , X , X , 0.D0 )
+        CALL OS( 'X=0     ' , X=X )
         GOTO 900
       ENDIF
 !
@@ -126,7 +129,7 @@
 !
       CALL MATRBL( 'X=AY    ',V,A,X,C,  MESH)
 !
-      CALL OS( 'X=Y-Z   ' , R , B , V , C )
+      CALL OS( 'X=Y-Z   ' , X=R , Y=B , Z=V )
       RMRM   = P_DOTS(R,R,MESH)
 !
       IF (RMRM.LT.CFG%EPS**2*XL) GO TO 900
@@ -160,10 +163,10 @@
         CALL DOWNUP(V, AUX , V , 'D' , MESH)
       ENDIF
 !
-      CALL OS( 'X=X-Y   ' , R , V , V , C    )
-      CALL OS( 'X=Y     ' , P , R , R , C    )
-      CALL OS( 'X=C     ' , V , V , V , 0.D0 )
-      CALL OS( 'X=C     ' , Q , Q , Q , 0.D0 )
+      CALL OS( 'X=X-Y   ' , R , V , V , C )
+      CALL OS( 'X=Y     ' , P , R , R , C )
+      CALL OS( 'X=0     ' , X=V )
+      CALL OS( 'X=0     ' , X=Q )
 !
       ALFA  = 1.D0
       BETA  = 1.D0
@@ -173,7 +176,8 @@
 !  ITERATIONS:
 !-----------------------------------------------------------------------
 !
-2     M  = M  + 1
+2     CONTINUE 
+      M  = M  + 1
 !
       BETA1 = P_DOTS(R,P,MESH)
       OMEG2 = OMEG1*BETA1/BETA

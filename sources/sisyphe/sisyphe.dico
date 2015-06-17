@@ -1321,13 +1321,13 @@ NOM = 'ZERO'
 NOM1 = 'ZERO'                            
 TYPE = REEL
 INDEX = 9
-DEFAUT = 1.E-6
-DEFAUT1 = 1.E-6
+DEFAUT = 1.E-10
+DEFAUT1 = 1.E-10
 RUBRIQUE = 'NUMERIQUE'
 RUBRIQUE1 = 'NUMERICAL'
 NIVEAU = 1
-AIDE = 'Fixe le zero du code.'
-AIDE1 = 'Sets the zero of the code.'
+AIDE = 'Pas utilise.'
+AIDE1 = 'Not yet used.'
 
 NOM = 'VISCOSITE CINEMATIQUE EAU'
 NOM1 = 'WATER VISCOSITY'        
