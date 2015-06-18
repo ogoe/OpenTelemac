@@ -16,9 +16,9 @@
 !brief    Semi-implicit distributive scheme.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        15/05/2014
+!+        18/006/2015
 !+        V7P1
-!+   First version
+!+   First version.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME-STEP
@@ -97,7 +97,6 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,N,I1,I2
-      DOUBLE PRECISION C
 !
 !-----------------------------------------------------------------------
 !
@@ -133,20 +132,6 @@
       AM2%TYPEXT='Q'
       AM2%TYPDIA='Q'
 !
-!     OFF-DIAGONAL TERMS 
-!
-      DO I=1,NSEG
-        I1=GLOSEG(I,1)  
-        I2=GLOSEG(I,2)
-        IF(FXMATPAR(I).LT.0.D0) THEN
-          AM2%X%R(I)=DT*TETAF(I2)*FXMAT(I)
-          AM2%X%R(I+NSEG)=0.D0
-        ELSE
-          AM2%X%R(I)=0.D0
-          AM2%X%R(I+NSEG)=-DT*TETAF(I1)*FXMAT(I)
-        ENDIF
-      ENDDO
-!
 !     DIAGONAL  
 !
       DO I=1,NPOIN
@@ -162,15 +147,19 @@
         ENDIF
       ENDDO
 !
-!     DIAGONAL TERMS
+!     DIAGONAL AND OFF-DIAGONAL TERMS
 !
       DO I=1,NSEG
         I1=GLOSEG(I,1)  
         I2=GLOSEG(I,2)
         IF(FXMATPAR(I).LT.0.D0) THEN
           AM2%D%R(I1) = AM2%D%R(I1) - DT*TETAF(I1)*FXMAT(I)
+          AM2%X%R(I)=DT*TETAF(I2)*FXMAT(I)
+          AM2%X%R(I+NSEG)=0.D0
         ELSE
           AM2%D%R(I2) = AM2%D%R(I2) + DT*TETAF(I2)*FXMAT(I)
+          AM2%X%R(I)=0.D0
+          AM2%X%R(I+NSEG)=-DT*TETAF(I1)*FXMAT(I)
         ENDIF        
       ENDDO
 !
@@ -261,8 +250,13 @@
 !     TIDAL FLATS
 ! 
       DO I=1,NPOIN
-        AM2%D%R(I)=MAX(1.D-20,AM2%D%R(I))
-      ENDDO 
+!       SEE PRECD1 EPSILON HERE MUST BE GREATER THAN 1.D-20, OR PRECD1 WILL
+!       DO THE CLIPPING ITSELF, IN A LESS CONSISTANT WAY
+        IF(AM2%D%R(I).LT.1.D-15) THEN
+          AM2%D%R(I)=VOLU2D(I)
+          SM%R(I)=VOLU2D(I)*FC(I)
+        ENDIF
+      ENDDO
 !
 !     CALL MINI(C,I1,F,NPOIN)
 !     PRINT*,'AVANT SOLVE MIN DE F=',C
@@ -283,6 +277,7 @@
 !     SOLVING THE FINAL LINEAR SYSTEM
 !
       CALL SOLVE(SF,AM2,SM,BB,SLVPSI,INFOGT,MESH,AM2)
+!
 !
 !     CALL MINI(C,I1,F,NPOIN)
 !     PRINT*,'APRES SOLVE MIN DE F=',C

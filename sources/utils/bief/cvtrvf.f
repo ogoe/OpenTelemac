@@ -61,7 +61,7 @@
 !+   VOLU2D added.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        16/06/2015
+!+        18/06/2015
 !+        V7P1
 !+   Now with the locally implicit predictor-corrector.
 !+   Call of CFLVF changed, with option OPTCFL added in the arguments.
@@ -209,7 +209,8 @@
 !
 !     LOCALLY DECLARED AND HARDCODED SOLVER OPTIONS FOR IMPLICIT SCHEMES
 !
-      SLVPSI%SLV=4
+      SLVPSI%SLV=7
+!     SLVPSI%SLV=8
       SLVPSI%NITMAX=100
       SLVPSI%PRECON=2
       SLVPSI%KRYLOV=3

@@ -6125,7 +6125,7 @@ RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
 AIDE = 'Choix de schema vertical pour la diffusion et le depot du sediment
 : 0 Diffusion implicite
-: 1 schema implicit de convection-diffusion (tridiagonal matrix solver)
+: 1 schema implicite de convection-diffusion (tridiagonal matrix solver)
 : 2 convection faible sed_fall.f'
 AIDE1 = 'Choice of vertical scheme for diffusion and settling of sediment
 : 0 Implicit-diffusion scheme 
