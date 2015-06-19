@@ -7,7 +7,8 @@
      & AGGLOH,TE1,DT,ENTET,BILAN,
      & OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,LIMTRA,KDIR,KDDL,NPTFR,FLBOR,
      & YAFLBOR,VOLU2D,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
-     & RAIN,PLUIE,TRAIN,OPTADV,TB,FREE,AM2,TB2,NCO_DIST,NSP_DIST)
+     & RAIN,PLUIE,TRAIN,OPTADV,TB,FREE,AM2,TB2,NCO_DIST,NSP_DIST,
+     & YAFLULIM,FLULIM)
 !
 !***********************************************************************
 ! BIEF   V7P1 
@@ -61,10 +62,12 @@
 !+   VOLU2D added.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        18/06/2015
+!+        19/06/2015
 !+        V7P1
 !+   Now with the locally implicit predictor-corrector.
 !+   Call of CFLVF changed, with option OPTCFL added in the arguments.
+!+   For locally implicit schemes, fluxes may be reduced with array
+!+   FLULIM.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -80,6 +83,7 @@
 !| FBOR           |-->| DIRICHLET CONDITIONS ON F.
 !| FLBOR          |-->| FLUXES AT BOUNDARIES
 !| FLBORTRA       |<->| TRACER FLUXES AT BOUNDARIES
+!| FLULIM         |-->| A LIMITATION OF FLUXES IF YAFLULIM=.TRUE.
 !| FN             |-->| F AT TIME T(N)
 !| FSCEXP         |-->| EXPLICIT PART OF THE SOURCE TERM
 !|                |   | EQUAL TO ZERO EVERYWHERE BUT ON SOURCES
@@ -141,6 +145,7 @@
 !|                |   | IF P1 : PERR POINT
 !| VISC_S         |<->| WORK ARRAY FOR SAVING VISC
 !| YAFLBOR        |-->| IF YES FLBOR IS GIVEN
+!| YAFLULIM       |-->| IF YES FLULIM IS GIVEN
 !| YASMH          |-->| IF YES, SMH MUST BE TAKEN INTO ACCOUNT
 !| YASMI          |-->| IF YES, SMI MUST BE TAKEN INTO ACCOUNT
 !| ZCONV          |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
@@ -161,9 +166,11 @@
       INTEGER, INTENT(IN)             :: NCO_DIST,NSP_DIST
       INTEGER, INTENT(INOUT)          :: LIMTRA(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: DT,AGGLOH,TRAIN
+      DOUBLE PRECISION, INTENT(IN)    :: FLULIM(*)
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
       LOGICAL, INTENT(IN)             :: BILAN,CONV,YASMH,YAFLBOR
       LOGICAL, INTENT(IN)             :: DIFT,MSK,ENTET,YASMI,RAIN
+      LOGICAL, INTENT(IN)             :: YAFLULIM
       TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL,H,HN,DM1,ZCONV,MASKPT
       TYPE(BIEF_OBJ), INTENT(IN)      :: VOLU2D,V2DPAR,UNSV2D,HPROP
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: F,SM,AM2
@@ -213,6 +220,8 @@
 !     SLVPSI%SLV=8
       SLVPSI%NITMAX=100
       SLVPSI%PRECON=2
+!     CHANGING THIS WILL TRIGGER CHANGING THE SIZE OF TB2 IN CALLING
+!     PROGRAMMES
       SLVPSI%KRYLOV=3
       SLVPSI%EPS=1.D-12
       SLVPSI%ZERO=1.D-10
@@ -360,7 +369,7 @@
           LIMTRA(I)=KDDL
         ELSEIF(LIMTRA(I).EQ.KDDL.AND.FXBORPAR%R(N).LT.0.D0) THEN
           LIMTRA(I)=KDIR
-!         WHEN VELOCITIES RENTER THROUGH AN EXIT, WE ARBITRARILY CHOOSE
+!         WHEN VELOCITIES RE-ENTER THROUGH AN EXIT, WE ARBITRARILY CHOOSE
 !         THAT THE PRESCRIBED VALUE IS THE LAST KNOWN
           FBOR%R(I)=FN%R(N)
         ENDIF
@@ -424,7 +433,17 @@
      &                  MESH%ELTSEG%I,MESH%ORISEG%I,
      &                  MESH%IKLE%I,.TRUE.,2    ,T4)
 !                                          IOPT1 HERE FORCED TO N SCHEME
+!
+!       POSSIBLE CORRECTION OF FLUXES, PROVIDED BY POSITIVE_DEPTHS
+!       THIS IS NOT USEFUL WITH OPTIONS THAT DO NOT WORK WITH TIDAL FLATS
+        IF(OPTADV.EQ.4.AND.YAFLULIM) THEN
+          DO I=1,MESH%NSEG
+            FXMAT(I)=FXMAT(I)*FLULIM(I)
+          ENDDO        
+        ENDIF
+!
 !       CANCELS FLUXES TO AND FROM MASKED POINTS
+!
         IF(MSK) THEN
           CALL FLUX_MASK(FXMAT,MESH%NSEG,
      &                   MESH%GLOSEG%I,MESH%GLOSEG%DIM1,MASKPT%R)
@@ -462,7 +481,7 @@
         COESOU=COEMIN
       ENDIF
 !
-!     HARDCODED OPTION FOR THE CFL (OPTION 2 ONLY FOR THE N SCHEME)
+!     HARDCODED OPTION FOR THE CFL (AND OPTION 2 ONLY FOR THE N SCHEME)
 !
       OPTCFL=1
 !     OPTCFL=2
@@ -602,7 +621,8 @@
 !                                                      FN
      &                    MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
 !    &                    FI_I               HDFDT
-     &                    T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,F%R)
+     &                    T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,
+     &                    YAFLULIM,FLULIM)
 !       NO, WILL GO INTO SM THAT IS NOT ASSEMBLED
 !       IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH) 
 !
@@ -675,7 +695,8 @@
 !                                                          FN
      &                        MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
 !    &                        FI_I               HDFDT
-     &                        T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,F%R)
+     &                        T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,
+     &                        YAFLULIM,FLULIM)
 !           NO, WILL GO INTO SM THAT IS NOT ASSEMBLED
 !           IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH) 
 !

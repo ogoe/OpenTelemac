@@ -55,10 +55,11 @@
 !+   + one NCSIZE.GT.0 changed into NCSISE.GT.1.
 !
 !history  J-M HERVOUET (LNHE)
-!+        11/06/2015
+!+        19/06/2015
 !+        V7P1
 !+   Adaptation to new coefficient IFAC instead of FAC.
-!+   Option 1 removed.
+!+   Option 1 removed. FLULIM now equal on either side of a segment
+!+   in parallel. FLODEL differently shared at the exit.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL HERE
@@ -112,7 +113,8 @@
       INTEGER, INTENT(IN)             :: GLOSEG1(*),GLOSEG2(*)
       INTEGER, INTENT(IN)             :: NBOR(NPTFR)
       INTEGER, INTENT(IN)             :: LIMPRO(NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: DT,FLOPOINT(NPOIN),HBOR(NPTFR)
+!                                                    3*NELEM
+      DOUBLE PRECISION, INTENT(IN)    :: DT,FLOPOINT(*),HBOR(NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: FLULIM(*)
       TYPE(BIEF_MESH),INTENT(INOUT)   :: MESH
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,FLODEL,H,FLBOR
@@ -498,13 +500,19 @@
 !
 !     NOW WE WANT:
 !     FLULIM TO BE THE PERCENTAGE OF FLUX THAT HAS BEEN TRANSMITTED
-!     FLODEL TO BE THE ACTUAL FLUX THAT HAS BEEn TRANSMITTED
+!     FLODEL TO BE THE ACTUAL FLUX THAT HAS BEEN TRANSMITTED
 !
-!     AND WE START WITH FLULIM=THE ORIGINAL FLODEL
+!     WE START WITH FLULIM=THE ORIGINAL FLODEL
 !
-!     NOTE: FLULIM MAY BE DIFFERENT ON EITHER SIDE OF AN INTERFACE
-!           IN PARALLEL MODE (BUT FLUXES CORRECTED WITH FLULIM
-!           WILL BE AVERAGED SO THIS IS NOT A PROBLEM)
+!     WORKING ON ASSEMBLED VALUES TO FIND AN AVERAGE FLULIM
+!     THAT WILL BE THE SAME AT INTERFACES
+!
+      IF(NCSIZE.GT.1) THEN
+        CALL PARCOM2_SEG(FLODEL%R,FLODEL%R,FLODEL%R,
+     &                   MESH%NSEG,1,2,1,MESH,1,11)
+        CALL PARCOM2_SEG(FLULIM,FLULIM,FLULIM,
+     &                   MESH%NSEG,1,2,1,MESH,1,11)
+      ENDIF
 !
       DO I=1,MESH%NSEG
 !       ACTUAL FLUX TRANSMITTED (=ORIGINAL-REMAINING)
@@ -516,6 +524,43 @@
           FLULIM(I)=0.D0
         ENDIF
       ENDDO
+!
+      IF(NCSIZE.GT.1) THEN
+!       SHARING AGAIN FLODEL FOR FURTHER USES
+!       ON INTERFACE SEGMENTS, ONLY ONE OF THE TWO TWIN SEGMENTS
+!       WILL RECEIVE THE TOTAL FLUX, THE OTHER WILL GET 0.
+        CALL MULT_INTERFACE_SEG(FLODEL%R,MESH%NH_COM_SEG%I,
+     &                          MESH%NH_COM_SEG%DIM1,
+     &                          MESH%NB_NEIGHB_SEG,
+     &                          MESH%NB_NEIGHB_PT_SEG%I,
+     &                          MESH%LIST_SEND_SEG%I,MESH%NSEG)
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     CHECKING: COMPARING H(N+1) WITH H RECONSTRUCTED WITH THE FLUXES
+!               SOURCES LACKING...
+!
+      IF(TESTING) THEN
+        DO I=1,NPOIN
+          T1%R(I)=0.D0
+        ENDDO
+        DO I=1,MESH%NSEG
+          I1=GLOSEG1(I)
+          I2=GLOSEG2(I)
+          T1%R(I1)=T1%R(I1)-DT*UNSV2D%R(I1)*FLODEL%R(I)
+          T1%R(I2)=T1%R(I2)+DT*UNSV2D%R(I2)*FLODEL%R(I)
+        ENDDO
+        DO IPTFR=1,NPTFR
+          I=NBOR(IPTFR)
+          T1%R(I)=T1%R(I)-DT*UNSV2D%R(I)*FLBOR%R(IPTFR)
+        ENDDO
+        IF(NCSIZE.GT.1) CALL PARCOM(T1,2,MESH)
+        DO I=1,NPOIN           
+          T1%R(I)=T1%R(I)+HN%R(I)-H%R(I)
+        ENDDO
+        WRITE(LU,*) 'ERREUR POSITIVE_DEPTHS=',P_DOTS(T1,T1,MESH)
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
