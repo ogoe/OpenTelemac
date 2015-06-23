@@ -899,7 +899,7 @@
      &              KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
      &              VOLU2D,V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT,
      &              RAIN,PLUIE,0.D0,OPTADV_VI,
-     &              TB,13,BM1S,TB2,NCO_DIST,NSP_DIST)
+     &              TB,13,BM1S,TB2,NCO_DIST,NSP_DIST,YAFLULIM,FLULIM%R)
         CALL CVTRVF(T2,VN,S,.FALSE.,.TRUE.,H,HN,
      &              HPROP,UCONV,VCONV,S,S,
      &              1,S,S,FV,S,.FALSE.,S,.FALSE.,VBOR,MASK,MESH,
@@ -908,7 +908,7 @@
      &              KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
      &              VOLU2D,V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT,
      &              RAIN,PLUIE,0.D0,OPTADV_VI,
-     &              TB,13,BM1S,TB2,NCO_DIST,NSP_DIST)
+     &              TB,13,BM1S,TB2,NCO_DIST,NSP_DIST,YAFLULIM,FLULIM%R)
         IF(IELMU.NE.11) THEN
           CALL CHGDIS(T1,DISCLIN,IELMU,MESH)
           CALL CHGDIS(T2,DISCLIN,IELMU,MESH)
