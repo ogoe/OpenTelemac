@@ -5,7 +5,7 @@
      &( ICOL , LIGNE )
 !
 !***********************************************************************
-! DAMOCLES   V6P0                                   21/08/2010
+! DAMOCLES   V7P1
 !***********************************************************************
 !
 !brief    DECODES AN INTEGER, FROM COLUMN ICOL+1 OF THE LINE.
@@ -23,12 +23,7 @@
 !history  J.M. HERVOUET (LNH); A. YESSAYAN
 !+        30/09/1993
 !+        V5P1
-!+
-!
-!history  O. QUIQUEMPOIX (LNH)
-!+        15/12/1993
-!+
-!+
+!+   First version
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -42,6 +37,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J.M. HERVOUET (EDF LAB, LNHE)
+!+        23/06/2015
+!+        V7P1
+!+   Mixture of French and English corrected in an error message.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ICOL           |<->| POSITION COURANTE DU POINTEUR DANS LA LIGNE
 !| LIGNE          |<->| LIGNE EN COURS DE DECODAGE
@@ -49,8 +49,8 @@
 !
       IMPLICIT NONE
 !
-      INTEGER          ICOL
-      CHARACTER*(*)    LIGNE
+      INTEGER, INTENT(INOUT)       :: ICOL
+      CHARACTER*(*), INTENT(INOUT) :: LIGNE
 !
       INTEGER          NEXT,PREVAL
       EXTERNAL NEXT,PREVAL
@@ -62,13 +62,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTRINSIC DLOG10,DBLE,INT,CHAR
+      INTRINSIC LOG10,DBLE,INT,CHAR
 !
-      INTEGER          I1,I2,ILONG,ISIGNE,IVAL,JD1,I3
-      LOGICAL          LUFIC,LISUIV
-      CHARACTER*1      CDEB,TABUL
-      CHARACTER*3      LLONG
-      CHARACTER*72     LIGNE2,FORMA
+      INTEGER           I1,I2,ILONG,ISIGNE,IVAL,JD1,I3
+      LOGICAL           LUFIC,LISUIV
+      CHARACTER(LEN=1)  CDEB,TABUL
+      CHARACTER(LEN=3)  LLONG
+      CHARACTER(LEN=72) LIGNE2,FORMA
 !
 !-----------------------------------------------------------------------
 !
@@ -109,9 +109,9 @@
         READ(NFIC,END=900,ERR=998,FMT='(A)') LIGNE2
         CDEB = LIGNE2(1:1)
         IF (CDEB.EQ.'0'.OR.CDEB.EQ.'1'.OR.CDEB.EQ.'2'.OR.
-     &     CDEB.EQ.'3'.OR.CDEB.EQ.'4'.OR.CDEB.EQ.'5'.OR.
-     &     CDEB.EQ.'6'.OR.CDEB.EQ.'7'.OR.CDEB.EQ.'8'.OR.
-     &     CDEB.EQ.'9'.OR.CDEB.EQ.'.') THEN
+     &      CDEB.EQ.'3'.OR.CDEB.EQ.'4'.OR.CDEB.EQ.'5'.OR.
+     &      CDEB.EQ.'6'.OR.CDEB.EQ.'7'.OR.CDEB.EQ.'8'.OR.
+     &      CDEB.EQ.'9'.OR.CDEB.EQ.'.') THEN
           LISUIV = .TRUE.
           I3=1
           I3=PREVAL(I3,LIGNE2 , ' ' , ';', TABUL)
@@ -141,7 +141,7 @@
 !
 !     //// DECODING FORMAT ////
 !
-      JD1 = 3 - INT(DLOG10(DBLE(ILONG)))
+      JD1 = 3 - INT(LOG10(DBLE(ILONG)))
       WRITE ( LLONG , '(I3)' ) ILONG
 !
       IF(I1.EQ.1) THEN
@@ -183,7 +183,7 @@
       IF(LNG.EQ.2) WRITE(LU,1996) NLIGN
       WRITE(LU,*) LIGNE
 996   FORMAT(1X,'ERREUR LIGNE ',1I6,', UN ENTIER EST ATTENDU : ',/)
-1996  FORMAT(1X,'ERREUR LINE ',1I6,', INTEGER EXPECTED : ',/)
+1996  FORMAT(1X,'ERROR LINE ',1I6,', INTEGER EXPECTED : ',/)
       ERREUR=.TRUE.
       RETURN
 !

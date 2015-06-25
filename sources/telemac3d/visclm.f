@@ -9,7 +9,7 @@
      & RUGOF,ZF,LINLOG,IPBOT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    INITIALISES VISCOSITIES.
@@ -52,6 +52,12 @@
 !+   Treatment of tidal flats in case of logarithmic derivatives
 !+   and Nikuradse: specific treatment for first plane.
 !+
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        25/06/2015
+!+        V7P1
+!+   DNUTAV is now an array.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DAMPING        |-->| NUMBER FOR CHOICE OF DAMPING FUNCION
 !| DELTAR         |-->| (RHO-RHO0)/RHO0
@@ -112,7 +118,7 @@
       INTEGER, INTENT(IN)            :: NTRAC,DAMPING,LINLOG
       INTEGER, INTENT(IN)            :: IELM3, MIXING,IND_T
       INTEGER, INTENT(IN)            :: IPBOT(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)   :: GRAV,DNUVIV,DNUTAV,KARMAN
+      DOUBLE PRECISION, INTENT(IN)   :: GRAV,DNUVIV,DNUTAV(NTRAC),KARMAN
       DOUBLE PRECISION, INTENT(IN)   :: PRANDTL
       LOGICAL, INTENT(IN)            :: MSK
       TYPE (BIEF_OBJ), INTENT(INOUT) :: VISCVI, VISCTA
@@ -452,7 +458,8 @@
 !
 !         ADDING THE MOLECULAR VISCOSITY
 !
-          CALL OS('X=X+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,C=DNUTAV)
+          CALL OS('X=X+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
+     &                       C=DNUTAV(ITRAC))
 !
         ENDDO
 !

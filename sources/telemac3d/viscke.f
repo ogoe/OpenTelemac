@@ -6,7 +6,7 @@
      & DNUVIH,DNUVIV,DNUTAH,DNUTAV,KMIN,EMIN,ITURBH,ITURBV,PRANDTL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                  21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES THE TURBULENT VISCOSITY
@@ -17,11 +17,6 @@
 !+        **/03/99
 !+
 !+   FORTRAN95 VERSION
-!
-!history
-!+
-!+        V6P0
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -34,6 +29,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        25/06/2015
+!+        V7P1
+!+   DNUTAH and DNUTAV are now arrays.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |-->| TURBULENT ENERGY
@@ -62,8 +62,9 @@
 !
       INTEGER, INTENT(IN)          :: NTRAC,ITURBH,ITURBV
       DOUBLE PRECISION, INTENT(IN) :: CMU,PRANDTL
-      DOUBLE PRECISION, INTENT(IN) :: DNUVIH, DNUVIV
-      DOUBLE PRECISION, INTENT(IN) :: DNUTAH, DNUTAV,KMIN,EMIN
+      DOUBLE PRECISION, INTENT(IN) :: DNUVIH,DNUVIV
+      DOUBLE PRECISION, INTENT(IN) :: DNUTAH(NTRAC),DNUTAV(NTRAC)
+      DOUBLE PRECISION, INTENT(IN) :: KMIN,EMIN
       TYPE(BIEF_OBJ), INTENT(INOUT):: VISCVI, VISCTA
       TYPE(BIEF_OBJ), INTENT(IN)   :: AK,EP
 !
@@ -102,13 +103,13 @@
 !         HERE PRANDTL TURBULENT = 1.0
           DO ITRAC = 1,NTRAC
             CALL OS('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
-     &                         Y=VISCVI%ADR(3)%P,C=DNUTAV)
+     &                         Y=VISCVI%ADR(3)%P,C=DNUTAV(ITRAC))
           ENDDO
         ELSE
           DO ITRAC = 1,NTRAC
             DO I=1,NPOIN3
               VISCTA%ADR(ITRAC)%P%ADR(3)%P%R(I)=
-     &        VISCVI%ADR(3)%P%R(I)/PRANDTL + DNUTAV
+     &        VISCVI%ADR(3)%P%R(I)/PRANDTL + DNUTAV(ITRAC)
             ENDDO
           ENDDO
         ENDIF
@@ -117,7 +118,7 @@
 !           HERE PRANDTL TURBULENT = 1.0
             DO ITRAC = 1,NTRAC
               CALL OS('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(1)%P,
-     &                           Y=VISCVI%ADR(3)%P,C=DNUTAH)
+     &                           Y=VISCVI%ADR(3)%P,C=DNUTAH(ITRAC))
               CALL OS('X=Y     ',X=VISCTA%ADR(ITRAC)%P%ADR(2)%P,
      &                           Y=VISCTA%ADR(ITRAC)%P%ADR(1)%P)
             ENDDO
@@ -125,7 +126,7 @@
             DO ITRAC = 1,NTRAC
               DO I=1,NPOIN3
                 VISCTA%ADR(ITRAC)%P%ADR(1)%P%R(I)=
-     &          VISCVI%ADR(3)%P%R(I)/PRANDTL + DNUTAH
+     &          VISCVI%ADR(3)%P%R(I)/PRANDTL + DNUTAH(ITRAC)
               ENDDO
               CALL OS('X=Y     ',X=VISCTA%ADR(ITRAC)%P%ADR(2)%P,
      &                           Y=VISCTA%ADR(ITRAC)%P%ADR(1)%P)

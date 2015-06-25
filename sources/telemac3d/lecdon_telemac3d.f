@@ -48,6 +48,12 @@
 !+        V7P1
 !+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH'
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        25/06/2015
+!+        V7P1
+!+  Adding vertical velocity of sources and diffusion coefficient of
+!+  tracers given per tracer.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<->| KEYWORD IN CHARACTER
@@ -604,8 +610,30 @@
       HAULIN    = MOTREA(ADRESS(2,15))
       DNUVIH    = MOTREA(ADRESS(2,16))
       DNUVIV    = MOTREA(ADRESS(2,17))
-      DNUTAH    = MOTREA(ADRESS(2,18))
-      DNUTAV    = MOTREA(ADRESS(2,19))
+!
+      IF(NTRAC.GT.0) THEN
+        IF(TROUVE(2,18).GE.1.AND.DIMEN(2,18).EQ.NTRAC) THEN
+          DO I=1,NTRAC
+            DNUTAH(I) = MOTREA(ADRESS(2,18)+I-1)
+          ENDDO
+        ELSE
+          DO I=1,NTRAC
+            DNUTAH(I) = MOTREA(ADRESS(2,18))
+          ENDDO
+        ENDIF
+      ENDIF
+!
+      IF(NTRAC.GT.0) THEN
+        IF(TROUVE(2,19).GE.1.AND.DIMEN(2,19).EQ.NTRAC) THEN
+          DO I=1,NTRAC
+            DNUTAV(I) = MOTREA(ADRESS(2,19)+I-1)
+          ENDDO
+        ELSE
+          DO I=1,NTRAC
+            DNUTAV(I) = MOTREA(ADRESS(2,19))
+          ENDDO
+        ENDIF
+      ENDIF
 !
       IF(NTRAC.GT.0) THEN
         IF(TROUVE(2,20).EQ.2.AND.DIMEN(2,20).GE.NTRAC) THEN
@@ -707,22 +735,61 @@
 ! NON-HYDROSTATIC
 !
       SLVPOI%EPS = MOTREA( ADRESS(2, 71) )
-!     ??????     = MOTREA( ADRESS(2, 72) )
+!     FOR MOTREA( ADRESS(2, 72) ) SEE AFTER REAL 87 
       SLVPRJ%EPS = MOTREA( ADRESS(2, 73) )
 !     ?????      = MOTREA( ADRESS(2, 74) )
       PHILAT     = MOTREA( ADRESS(2, 75) )
       DELTA      = MOTREA( ADRESS(2, 76) )
-! SOGREAH ADDITIONS
       LATIT      = MOTREA( ADRESS(2, 77) )
       LONGIT     = MOTREA( ADRESS(2, 78) )
       NORD       = MOTREA( ADRESS(2, 79) )
+!
+!     THE NUMBER OF SOURCES IS CONSIDERED TO BE THE NUMBER OF
+!     ABSCISSAE GIVEN
+!
       NSCE=DIMEN(2,80)
       DO I=1,NSCE
         XSCE(I) = MOTREA(ADRESS(2,80)+I-1)
-        YSCE(I) = MOTREA(ADRESS(2,81)+I-1)
-        ZSCE(I) = MOTREA(ADRESS(2,82)+I-1)
-        QSCE(I) = MOTREA(ADRESS(2,83)+I-1)
       ENDDO
+!
+      IF(DIMEN(2,81).EQ.NSCE) THEN
+        DO I=1,NSCE
+          YSCE(I) = MOTREA(ADRESS(2,81)+I-1)
+        ENDDO
+      ELSE
+        IF(LNG.EQ.1) WRITE(LU,*)
+     &    'MAUVAIS NOMBRE D''ORDONNEES DES SOURCES'
+        IF(LNG.EQ.2) WRITE(LU,*)
+     &    'WRONG NUMBER OF ORDINATES OF SOURCES'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+      IF(DIMEN(2,82).EQ.NSCE) THEN
+        DO I=1,NSCE
+          ZSCE(I) = MOTREA(ADRESS(2,82)+I-1)
+        ENDDO
+      ELSE
+        IF(LNG.EQ.1) WRITE(LU,*)
+     &    'MAUVAIS NOMBRE DE COTES DES SOURCES'
+        IF(LNG.EQ.2) WRITE(LU,*)
+     &    'WRONG NUMBER OF ELEVATIONS OF SOURCES'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+      IF(DIMEN(2,83).EQ.NSCE) THEN
+        DO I=1,NSCE
+          QSCE(I) = MOTREA(ADRESS(2,83)+I-1)
+        ENDDO
+      ELSE
+        IF(LNG.EQ.1) WRITE(LU,*)
+     &    'MAUVAIS NOMBRE DE DEBITS DES SOURCES'
+        IF(LNG.EQ.2) WRITE(LU,*)
+     &    'WRONG NUMBER OF DISCHARGES OF SOURCES'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
@@ -770,6 +837,25 @@
      &    'MAUVAIS NOMBRE DE VITESSES DES SOURCES SELON Y'
         IF(LNG.EQ.2) WRITE(LU,*)
      &    'WRONG NUMBER OF VELOCITIES OF SOURCES ALONG Y'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+      IF(DIMEN(2,72).EQ.NSCE) THEN
+        DO I=1,NSCE
+          WSCE(I) = MOTREA(ADRESS(2,72)+I-1)
+        ENDDO
+      ELSEIF(DIMEN(2,72).EQ.0) THEN
+        DO I=1,NSCE
+          WSCE(I) = 0.D0
+        ENDDO
+      ELSE
+        IF(LNG.EQ.1) WRITE(LU,*)
+     &    'MAUVAIS NOMBRE DE VITESSES DES SOURCES SELON Z'
+        IF(LNG.EQ.2) WRITE(LU,*)
+     &    'WRONG NUMBER OF VELOCITIES OF SOURCES ALONG Z'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 ! END OF SOGREAH ADDITIONS

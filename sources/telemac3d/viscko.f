@@ -5,7 +5,7 @@
      &(VISCVI,VISCTA,ROTAT,AK,EP,NTRAC,CMU,DNUVIH,DNUVIV,DNUTAH,DNUTAV)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES THE TURBULENT VISCOSITY
@@ -39,6 +39,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        25/06/2015
+!+        V7P1
+!+   DNUTAH and DNUTAV are now arrays.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |-->| TURBULENT ENERGY
 !| CMU            |-->| CONSTANT FOR K-EPSILON MODEL
@@ -63,7 +68,7 @@
       INTEGER, INTENT(IN)          :: NTRAC
       DOUBLE PRECISION, INTENT(IN) :: CMU
       DOUBLE PRECISION, INTENT(IN) :: DNUVIH, DNUVIV
-      DOUBLE PRECISION, INTENT(IN) :: DNUTAH, DNUTAV
+      DOUBLE PRECISION, INTENT(IN) :: DNUTAH(NTRAC),DNUTAV(NTRAC)
       TYPE(BIEF_OBJ), INTENT(INOUT)  :: VISCVI, VISCTA
       TYPE(BIEF_OBJ), INTENT(IN)   :: ROTAT, AK, EP
 !
@@ -98,14 +103,16 @@
           CALL OS('X=CY    ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
      &                       Y=VISCVI%ADR(3)%P,C=1.D0)
           CALL OS('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(1)%P,
-     &                       Y=VISCTA%ADR(ITRAC)%P%ADR(3)%P,C=DNUTAH)
+     &                       Y=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
+     &                       C=DNUTAH(ITRAC))
           CALL OS('X=Y     ',X=VISCTA%ADR(ITRAC)%P%ADR(2)%P,
      &                       Y=VISCTA%ADR(ITRAC)%P%ADR(1)%P)
-          CALL OS('X=X+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,C=DNUTAV)
+          CALL OS('X=X+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
+     &                       C=DNUTAV(ITRAC))
         ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE VISCKO
+      END

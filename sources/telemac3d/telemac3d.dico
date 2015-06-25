@@ -1563,7 +1563,6 @@ TYPE = REEL
 INDEX = 16
 MNEMO = 'DNUVIH'
 TAILLE = 0
-/ NOUVELLE VALEUR : 28/02/2006 (demande Sogreah) ancienne : 1.E-4
 DEFAUT = 1.E-6
 DEFAUT1 = 1.E-6
 RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE';'VISCOSITE CONSTANTE'
@@ -1611,7 +1610,7 @@ NOM1 = 'COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACERS'
 TYPE = REEL
 INDEX = 18
 MNEMO = 'DNUTAH'
-TAILLE = 0
+TAILLE = 1
 DEFAUT = 1.E-6
 DEFAUT1 = 1.E-6
 RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE';'VISCOSITE CONSTANTE'
@@ -1632,7 +1631,7 @@ NOM1 = 'COEFFICIENT FOR VERTICAL DIFFUSION OF TRACERS'
 TYPE = REEL
 INDEX = 19
 MNEMO = 'DNUTAV'
-TAILLE = 0
+TAILLE = 1
 DEFAUT = 1.E-6
 DEFAUT1 = 1.E-6
 RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE';'VISCOSITE CONSTANTE'
@@ -3725,20 +3724,21 @@ NIVEAU = 1
 AIDE = 'fixe la precision pour l equation de Poisson'
 AIDE1 = 'Set the precision needed for the pressure computation'
 
-
-NOM = 'REEL 72'
-NOM1 = 'REAL 72'
+NOM = 'VITESSE DES SOURCES SELON X'
+NOM1 = 'VELOCITIES OF THE SOURCES ALONG X'
 TYPE = REEL
 INDEX = 72
-MNEMO = ''
-TAILLE = 0
-DEFAUT = 0.
-DEFAUT1 = 0.
-RUBRIQUE = ' '
-RUBRIQUE1 = ' '
+MNEMO = 'WSCE'
+TAILLE = 2
+RUBRIQUE = 'EQUATIONS';'SOURCES'
+RUBRIQUE1 = 'EQUATIONS';'SOURCES'
 NIVEAU = 1
-AIDE = ' '
-AIDE1 = ' '
+AIDE = 'Permet de specifier la composante selon z de la vitesse aux sources.
+Si rien n est specifie, les sources diffusent sans vitesse 
+dans toutes les directions (cf. cas de validation 004_source).'
+AIDE1 = 'Specifies the compoment along z of the velocities of the sources.
+If nothing is specified, the sources diffuse without any velocity
+in every direction (cf. validation case 004_source).'
 
 NOM = 'PRECISION POUR LA PROJECTION'
 NOM1 = 'ACCURACY FOR PROJECTION'

@@ -2,11 +2,10 @@
                      SUBROUTINE VISCOS
 !                    *****************
 !
-     &(VISCVI,VISCTA,DNUTAV,DNUTAH,DNUVIV,DNUVIH,
-     & NTRAC,ITURBH,ITURBV)
+     &(VISCVI,VISCTA,DNUTAV,DNUTAH,DNUVIV,DNUVIH,NTRAC,ITURBH,ITURBV)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    INITIALISES VISCOSITIES.
@@ -33,6 +32,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        25/06/2015
+!+        V7P1
+!+   DNUTAH and DNUTAV are now arrays.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DNUTAH         |-->| COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACER
 !| DNUTAV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF TRACER
@@ -56,9 +60,9 @@
 !
       INTEGER, INTENT(IN)            :: NTRAC
       INTEGER, INTENT(IN)            :: ITURBH,ITURBV
-      TYPE (BIEF_OBJ), INTENT(INOUT) :: VISCVI, VISCTA
-      DOUBLE PRECISION, INTENT(IN)   :: DNUVIH, DNUVIV
-      DOUBLE PRECISION, INTENT(IN)   :: DNUTAH, DNUTAV
+      TYPE (BIEF_OBJ), INTENT(INOUT) :: VISCVI,VISCTA
+      DOUBLE PRECISION, INTENT(IN)   :: DNUVIH,DNUVIV
+      DOUBLE PRECISION, INTENT(IN)   :: DNUTAH(NTRAC),DNUTAV(NTRAC)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -86,9 +90,9 @@
           DO ITRAC=1,NTRAC
 !
             CALL OS('X=C     ',X=VISCTA%ADR(ITRAC)%P%ADR(1)%P,
-     &                         C=DNUTAH)
+     &                         C=DNUTAH(ITRAC))
             CALL OS('X=C     ',X=VISCTA%ADR(ITRAC)%P%ADR(2)%P,
-     &                         C=DNUTAH)
+     &                         C=DNUTAH(ITRAC))
 !
           ENDDO
 !
@@ -105,7 +109,7 @@
           DO ITRAC=1,NTRAC
 !
             CALL OS ('X=C     ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
-     &                          C=DNUTAV)
+     &                          C=DNUTAV(ITRAC))
 !
           ENDDO
 !

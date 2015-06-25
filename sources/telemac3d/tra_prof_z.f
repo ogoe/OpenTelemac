@@ -5,15 +5,15 @@
      &( I , IPOIN2 , TIME , LT , IPLAN , ENTET , IOPT , ITRAC )
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    GIVES THE VERTICAL PROFILE FOR TRACERS.
 !
 !history  J-M HERVOUET (LNHE)
-!+        12/09/07
+!+        12/09/2007
 !+        V5P8
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -31,6 +31,11 @@
 !+        27/02/2014
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        25/06/2015
+!+        V5P8
+!+   First version.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ENTET          |-->| LOGICAL, IF YES INFORMATION IS PRINTED: NOT USED
@@ -63,7 +68,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION USTAR,HH,DELTAZ,ROUSE,ZREFE
-      DOUBLE PRECISION CMEAN,B, BROUSE
+      DOUBLE PRECISION CMEAN,B,BROUSE
       INTEGER IPOIN3
 !
 !-----------------------------------------------------------------------
@@ -150,9 +155,10 @@
           HH=MAX( MESH3D%Z%R(IPOIN2+(NPLAN-1)*NPOIN2)
      &           -MESH3D%Z%R(IPOIN2)                  , 1.D-4)
           DELTAZ=MESH3D%Z%R(IPOIN3)-MESH3D%Z%R(IPOIN2)
-          TRA_PROF_Z=((HH-DELTAZ)/(DELTAZ+DNUTAV/KARMAN/USTAR))**ROUSE
+          TRA_PROF_Z=((HH-DELTAZ)/(DELTAZ+DNUTAV(ITRAC)/
+     &                                         KARMAN/USTAR))**ROUSE
           TRA_PROF_Z= CREF%R(IPOIN2)*TRA_PROF_Z
-     &     *(DNUTAV/KARMAN/USTAR/HH)**ROUSE
+     &     *(DNUTAV(ITRAC)/KARMAN/USTAR/HH)**ROUSE
         ENDIF
 !
       ELSE

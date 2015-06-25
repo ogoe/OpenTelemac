@@ -687,31 +687,25 @@
 !
 !     FLUER AND FLUDPT CANCELLED IN FOLLOWING SUBROUTINES
 !
-!
 !                    *****************
                      SUBROUTINE ERODNC
 !                    *****************
 !
-     &(CFDEP  , WC     , HDEP     , FLUER , TOB   , DT    ,
-     & NPOIN2 , NPOIN3 , KSPRATIO , AC    , RHOS  , RHO0  , HN ,
-     & GRAV   , DMOY   , CREF     , ZREF  , CF    , ICQ   ,RUGOF,
-     & Z, UETCAR, SETDEP)
+     &(CFDEP  , WCS    , HDEP     , FLUER  , TOB   , DT    ,
+     & NPOIN2 , NPOIN3 , KSPRATIO , AC     , RHOS  , RHO0  , HN ,
+     & GRAV   , DMOY   , CREF     , ZREF   , CF    , ICQ   ,RUGOF,
+     & Z      , UETCAR , SETDEP   , EPAINCO, MIXTE)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODELS EROSION FOR NON-COHESIVE SEDIMENTS.
 !
 !history  CAMILLE LEQUETTE
-!+        **/06/2003
-!+
-!+
-!
-!history  J.-M. HERVOUET
-!+        12/09/2007
-!+        V6P0
-!+
+!+        06/06/2003
+!+        V5P3
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -730,6 +724,19 @@
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        05/05/2014
+!+        V7P0
+!+   New extrapolation of Rouse profile removed. It spoils the test case
+!+   depot, which is so far the only official test case of Telemac-3D
+!+   with erosion and deposition. This must be clarified.
+!
+!history  G. ANTOINE & M. JODEAU & J.M. HERVOUET (EDF - LNHE)
+!+        13/10/2014
+!+        V7P0
+!+   New developments in sediment for mixed sediment transport
+!+   WC changed into WCS
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |-->| CRITICAL SHIELDS PARAMETER
 !| CF             |-->| QUADRATIC FRICTION COEFFICIENT (NOT USED)
@@ -737,22 +744,24 @@
 !| CREF           |<->| EQUILIBRIUM CONCENTRATION
 !| DMOY           |-->| MEAN DIAMETER OF GRAINS
 !| DT             |-->| TIME STEP
-!| SETDEP         |-->| EXPLICIT SETTLING (INTEGER)
+!| EPAINCO        |-->| THICKNESS OF NON-COHESIVE SUB-LAYER
 !| FLUER          |<->| EROSION  FLUX
 !| GRAV           |-->| GRAVITY ACCELERATION
 !| HDEP           |<->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
 !| HN             |-->| WATER DEPTH AT TIME N
 !| ICQ            |-->| FLAG FOR REFERENCE CONCENTRATION FORMULA
 !| KSPRATIO       |-->| NOT USED
+!| MIXTE          |-->| LOGICAL, MIXED SEDIMENTS OR NOT
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPOIN3         |-->| NUMBER OF 3D POINTS
 !| RHO0           |-->| WATER DENSITY AT REFERENCE CONCENTRATION
 !| RHOS           |-->| SEDIMENT DENSITY
 !| RUGOF          |<->| FRICTION COEFFICIENT ON THE BOTTOM
+!| SETDEP         |-->| OPTION FOR THE TREATMENT OF SETTLING VELOCITY
 !| TOB            |-->| BOTTOM FRICTION
 !| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY
-!| WC             |-->| SETTLING VELOCITY
-!|     Z          |-->| NODE COORDINATES
+!| WCS            |-->| SETTLING VELOCITY FOR SAND
+!| Z              |-->| NODE COORDINATES
 !| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -772,8 +781,7 @@
       INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3,ICQ,SETDEP
 !
       DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2),FLUER(NPOIN2)
-!
-      DOUBLE PRECISION, INTENT(IN)    :: WC(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN)    :: EPAINCO(NPOIN2)
 !
       DOUBLE PRECISION, INTENT(IN)    :: DT,CFDEP,GRAV,RHOS,RHO0
       DOUBLE PRECISION, INTENT(IN)    :: KSPRATIO,AC
@@ -781,12 +789,16 @@
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: DMOY,TOB,CF,HN
       TYPE(BIEF_OBJ)  , INTENT(INOUT) :: CREF,ZREF,RUGOF
 !
+      DOUBLE PRECISION, INTENT(IN)    :: WCS(NPOIN3)
+
+      LOGICAL, INTENT(IN)             :: MIXTE
+
       DOUBLE PRECISION, INTENT(IN)    :: Z(NPOIN3), UETCAR(NPOIN2)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IPOIN,I
-      DOUBLE PRECISION USTAR, ROUSE, ROUSE_Z, DELTAZ,QS
+      DOUBLE PRECISION USTAR, ROUSE, ROUSE_Z, DELTAZ, QS
 !
       INTRINSIC MIN,MAX
 !
@@ -819,31 +831,50 @@
 !
       CALL OS('X=CX    ',X=CREF,C=RHOS)
 !
+!     JMH ON 05/05/2014
+!     Following lines put under condition of SETDEP=1, they change a
+!     lot the test case depot (76 cm of deposition at the
+!     entrance, while the bed should not evolve too much, as
+!     we simulate a Rouse profile. Lines below are probably compatible
+!     with FLUDPT done when SETDEP=1.
+!
 !     CV: Extrapolation of Rouse profile from ZREF to 1/2 or 1/4 of first grid mesh
 !
       IF(SETDEP.EQ.1) THEN
+!
         DO IPOIN =1,NPOIN2
           USTAR=MAX(SQRT(UETCAR(IPOIN)),1.D-6)
-          ROUSE=PRANDTL*WC(IPOIN)/KARMAN/USTAR
+          ROUSE=PRANDTL*WCS(IPOIN)/KARMAN/USTAR
 !         rouse profile extrapolation up to 1/4 of the first layer
-!         DELTAZ=(MESH3D%Z%R(IPOIN +NPOIN2)-MESH3D%Z%R(IPOIN))/4.D0
           DELTAZ=(Z(IPOIN +NPOIN2)-Z(IPOIN))/FICT
           ROUSE_Z=ZREF%R(IPOIN)/(HN%R(IPOIN)-ZREF%R(IPOIN))
-     &        *(HN%R(IPOIN)-DELTAZ)/DELTAZ
+     &           *(HN%R(IPOIN)-DELTAZ)/DELTAZ
           CREF%R(IPOIN)=CREF%R(IPOIN)*ROUSE_Z**ROUSE
         ENDDO
+!
       ENDIF
 !
 !  ------------------------------------------------------------
 !  -----------------     EROSION STEP    ----------------------
 !  ------------------------------------------------------------
 !
-      DO I=1,NPOIN2
+      IF(MIXTE) THEN
+
+        DO I=1,NPOIN2
+!
+        FLUER(I)= WCS(I)*CREF%R(I)
+        QS=CFDEP*EPAINCO(I)
+        FLUER(I)=MIN(FLUER(I),QS/DT)
+!
+        ENDDO
+
+      ELSE
+
+        DO I=1,NPOIN2
 !
 !       COMPUTES THE EROSION FLUX
 !
-!CV        FLUER(I)=-WC(I)*CREF%R(I)
-        FLUER(I)= WC(I)*CREF%R(I)
+        FLUER(I)= WCS(I)*CREF%R(I)
 !
 !       QUANTITY OF SOLID IN THE LAYER BEFORE EROSION
 !
@@ -852,19 +883,18 @@
 !
 !       LAYER THICKNESS AFTER EROSION
 !
-!CV        HDEP(I)=MAX(0.D0,HDEP(I)-(FLUER(I)*DT/CFDEP))
+!CV     HDEP(I)=MAX(0.D0,HDEP(I)-(FLUER(I)*DT/CFDEP))
 !
 !       LIMITS THE EROSION FLUX
 !
-!       !!!!!!!!  THIS TEST-CASE  !!!!!!!!!
-!
+!       SPECIFIC TO THIS CASE
 !       FLUER(I)=MIN(FLUER(I),QS/DT)
         FLUER(I)=0.D0
-!
-!       !!!!!!!!  THIS TEST-CASE  !!!!!!!!!
+!       END OF SPECIFIC TO THIS CASE
 !
       ENDDO
 !
+      ENDIF
 !-----------------------------------------------------------------------
 !
       RETURN
@@ -873,16 +903,17 @@
                      SUBROUTINE FLUSED
 !                    *****************
 !
-     &(ATABOF , BTABOF , ATABOS , BTABOS ,
-     & LITABF , LITABS , TA     , WC     ,
-     & X      , Y      , Z      , HN     ,
-     & GRADZFX, GRADZFY, GRADZSX, GRADZSY,
-     & TOB    , FLUDPT , FLUER  , TOCD   ,
-     & NPOIN3 , NPOIN2 , NPLAN  , KLOG   ,
-     & HMIN   , SEDCO  , SETDEP)
+     &(ATABOF , BTABOF , ATABOS , BTABOS  ,
+     & LITABF , LITABS , TA     , WC      ,
+     & X      , Y      , Z      , HN      ,
+     & GRADZFX, GRADZFY, GRADZSX, GRADZSY ,
+     & TOB    , FLUDPT , FLUER  , TOCD    ,
+     & NPOIN3 , NPOIN2 , NPLAN  , KLOG    ,
+     & HMIN   , SEDCO  , SETDEP , SEDNCO  ,
+     & WCS    , MIXTE  , FLUDPTC, FLUDPTNC)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P0                                   03/06/2014
 !***********************************************************************
 !
 !brief    WRITES THE FLUXES AT THE BOTTOM AND FREE SURFACE
@@ -918,13 +949,24 @@
 !+        V7P0
 !+   Erosion and deposition fluxes cancelled on tidal flats.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        03/06/2014
+!+        V7P0
+!+   Crushed planes treated with IPBOT.
+!
+!history  G. ANTOINE & M. JODEAU & J.M. HERVOUET (EDF - LNHE)
+!+        13/10/2014
+!+        V7P0
+!+   New developments in sediment for mixed sediment transport
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM)
 !| ATABOS         |<->| FOR BOUNDARY CONDITION (SURFACE) NOT USED
 !| BTABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM)
 !| BTABOS         |<->| FOR BOUNDARY CONDITION (SURFACE) NOT USED
-!| EXPSETDEP      |-->| EXPLICIT DEPOSITION SCHEME
-!| FLUDPT         |-->| IMPLICIT DEPOSITION FLUX
+!| FLUDPT         |<->| IMPLICIT DEPOSITION FLUX
+!| FLUDPTC        |<->| IMPLICIT DEPOSITION FLUX FOR COHESIVE SEDIMENT
+!| FLUDPTNC       |<->| IMPLICIT DEPOSITION FLUX FOR NON-COHESIVE SEDIMENT
 !| FLUER          |<->| EROSION  FLUX FOR EACH 2D POINT
 !| GRADZFX        |-->| NOT USED
 !| GRADZFY        |-->| NOT USED
@@ -935,16 +977,18 @@
 !| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
 !| LITABF         |-->| FOR BOUNDARY CONDITION BOTTOM
 !| LITABS         |<->| FOR BOUNDARY CONDITION SURFACE (NOT USED)
+!| MIXTE          |-->| LOGICAL, MIXED SEDIMENTS OR NOT
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN2         |-->| NUMBER OF 2D POINTS
 !| NPOIN3         |-->| NUMBER OF 3D POINTS
-!| PDEPOT         |<->| PROBABILITY OF DEPOSIT FOR EACH 2D POINT
 !| SEDCO          |-->| LOGICAL FOR COHESIVE SEDIMENT
+!| SEDNCO         |-->| LOGICAL, SEDIMENT NON-COHESIVE OR NOT
 !| SETDEP         |-->| CHOICE OF CONVECTION SCHEME FOR VERTICAL SETTLING
 !| TA             |-->| CONCENTRATION OF SEDIMENTS
 !| TOB            |<->| BOTTOM FRICTION
 !| TOCD           |-->| CRITICAL SHEAR STRESS FOR SEDIMENT DEPOSITION
-!| WC             |-->| SETTLING VELOCITY
+!| WC             |-->| SETTLING VELOCITY OF MUD
+!| WCS            |-->| SETTLING VELOCITY OF SAND
 !| X              |-->| COORDINATE
 !| Y              |-->| COORDINATE
 !| Z              |-->| COORDINATE
@@ -952,6 +996,7 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC3D, ONLY: IPBOT,SIGMAG,OPTBAN
+      USE INTERFACE_TELEMAC3D, EX_FLUSED => FLUSED
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -959,7 +1004,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NPOIN3,NPOIN2,NPLAN,KLOG,SETDEP
-      LOGICAL, INTENT(IN) :: SEDCO
+      LOGICAL, INTENT(IN) :: SEDCO, SEDNCO, MIXTE
 !
 !     BOTTOM
 !     ****
@@ -995,13 +1040,16 @@
       DOUBLE PRECISION, INTENT(IN) :: HN(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TOB(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: FLUDPT(NPOIN2), FLUER(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: FLUDPTC(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: FLUDPTNC(NPOIN2)
 !
       DOUBLE PRECISION, INTENT(IN) :: TOCD
+      DOUBLE PRECISION, INTENT(IN) :: WCS(NPOIN3)
       DOUBLE PRECISION, INTENT(IN) :: HMIN
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I
+      INTEGER I,I3D
 !
       INTRINSIC MAX
 !
@@ -1013,58 +1061,93 @@
 !
 !       COHESIVE SEDIMENT (Here FLUDPT >0)
 !
-        DO I=1,NPOIN2
-          FLUDPT(I)= WC(I)*MAX(1.D0-(TOB(I)/MAX(TOCD,1.D-6)),0.D0)
-        ENDDO
+        IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
+          DO I=1,NPOIN2
+            IF(IPBOT%I(I).NE.NPLAN-1) THEN
+!             DEPOSITION ON THE FIRST FREE PLANE WITH LOCAL VELOCITY
+              I3D=I+IPBOT%I(I)*NPOIN2
+              FLUDPT(I) = WC(I3D)*MAX(1.D0-TOB(I)/MAX(TOCD,1.D-6),0.D0)
+            ELSE
+!             TIDAL FLAT
+              FLUDPT(I) = 0.D0
+            ENDIF
+          ENDDO
+        ELSE
+          DO I=1,NPOIN2
+            FLUDPT(I) = WC(I)*MAX(1.D0-(TOB(I)/MAX(TOCD,1.D-6)),0.D0)
+          ENDDO
+        ENDIF
 !
-      ELSE
+      ENDIF
+
+      IF(SEDNCO) THEN
 !
-!       NON COHESIVE SEDIMENT : PDEPOT = 1.
+!       NON COHESIVE SEDIMENT
 !
-        DO I=1,NPOIN2
-!         !!!!!!!!  THIS TEST-CASE  !!!!!!!!!
-!         FLUDPT(I)= WC(I)
-          FLUDPT(I)= 0.D0
-!         !!!!!!!!  THIS TEST-CASE  !!!!!!!!!
-        ENDDO
+        IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
+          DO I=1,NPOIN2
+            IF(IPBOT%I(I).NE.NPLAN-1) THEN
+!             DEPOSITION ON THE FIRST FREE PLANE WITH LOCAL VELOCITY
+!             SPECIFIC TO THIS CASE !!!!!!!!!!!!!!!!
+!             FLUDPT(I) = WC(I)
+              FLUDPT(I) = 0.D0
+!             END OF SPECIFIC TO THIS CASE !!!!!!!!!!!!!!!!
+            ELSE
+!             TIDAL FLAT
+              FLUDPT(I) = 0.D0
+            ENDIF
+          ENDDO
+        ELSE
+          DO I=1,NPOIN2
+!   SPECIFIC TO THIS CASE !!!!!!!!!!!!!!!!
+!           FLUDPT(I) = WC(I)
+            FLUDPT(I) = 0.D0
+!   END OF SPECIFIC TO THIS CASE !!!!!!!!!!!!!!!!
+          ENDDO
+        ENDIF
+!
+      ENDIF
+
+      IF(MIXTE) THEN
+
+        IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
+          DO I=1,NPOIN2
+            IF(IPBOT%I(I).NE.NPLAN-1) THEN
+!             DEPOSITION ON THE FIRST FREE PLANE WITH LOCAL VELOCITY
+              I3D = I+IPBOT%I(I)*NPOIN2
+              FLUDPTC(I) = WC(I3D)*MAX(1.D0-TOB(I)/MAX(TOCD,1.D-6),0.D0)
+              FLUDPTNC(I)= WCS(I)
+              FLUDPT(I)  = FLUDPTC(I)+FLUDPTNC(I)
+            ELSE
+!             TIDAL FLAT
+              FLUDPT   = 0.D0
+              FLUDPTC  = 0.D0
+              FLUDPTNC = 0.D0
+            ENDIF
+          ENDDO
+        ELSE
+          DO I=1,NPOIN2
+            FLUDPTC(I)  = WC(I)*MAX(1.D0-(TOB(I)/MAX(TOCD,1.D-6)),0.D0)
+            FLUDPTNC(I) = WCS(I)
+            FLUDPT(I)   = FLUDPTC(I)+FLUDPTNC(I)
+          ENDDO
+        ENDIF
 !
       ENDIF
 !
+
 !-----------------------------------------------------------------------
 !
-!     CORRECTION OF EROSION FLUXES ON TIDAL FLATS
-!
-      DO I=1,NPOIN2
-        IF(HN(I).LE.HMIN) THEN
-          FLUER(I)= 0.D0
-        ENDIF
-      ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!     COMMENTED BY JMH ON 28/02/2014 (IF IT IS REALLY A PROBLEM
-!                                     WE NEED TO FIND A CLEANER SOLUTION)
-!
-!     PREVENTING EROSION AND DEPOSITION ON THE EXIT BOUNDARY
-!     (Fixed water depth)
-!
-!     DO IPTFR = 1,NPTFR2
-!       IF(LIHBOR%I(IPTFR).EQ.KENT) THEN
-!         I = NBOR2%I(IPTFR)
-!         FLUDPT(I)=0.D0
-!         FLUER(I)=0.D0
-!         DO IPLAN=1, NPLAN
-!           I3D= I + (IPLAN-1)*NPOIN2
-!           WC(I3D)=0.D0
-!         ENDDO
-!       ENDIF
-!     ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!     COMMON COMPUTATION OF THE TRACER FLUX ON THE BOTTOM
+!     COMPUTATION OF THE TRACER FLUX ON THE BOTTOM
 !
       IF(SETDEP.EQ.1) THEN
+!
+!       USING HMIN TO CLIP EROSION (DIFFERENT FROM USING IPBOT)
+        DO I=1,NPOIN2
+          IF(HN(I).LE.HMIN) THEN
+            FLUER(I) = 0.D0
+          ENDIF
+        ENDDO
 !
         DO I=1,NPOIN2
           IF(LITABF(I).EQ.KLOG) THEN
@@ -1077,13 +1160,13 @@
       ELSEIF(SIGMAG.OR.OPTBAN.EQ.1) THEN
 !
         DO I=1,NPOIN2
-          ATABOF(I)=0.D0
-          BTABOF(I)=0.D0
+          ATABOF(I) = 0.D0
+          BTABOF(I) = 0.D0
           IF(LITABF(I).EQ.KLOG) THEN
 !           NO EROSION AND DEPOSITION ON TIDAL FLATS
             IF(IPBOT%I(I).NE.NPLAN-1) THEN
-              ATABOF(I) = - FLUDPT(I)
-              BTABOF(I) = FLUER(I)
+              ATABOF(I) = -FLUDPT(I)
+              BTABOF(I) =  FLUER(I)
             ENDIF
           ENDIF
         ENDDO
@@ -1099,8 +1182,8 @@
 !           BTABOF(I) = - FLUER(I) * NZ
 !           JMH: BEWARE, IN DIFF3D NZ IS CONSIDERED AS -1.
 !                HENCE WRONG FORMULA BELOW IS ACTUALLY CORRECT
-            ATABOF(I) = - FLUDPT(I)
-            BTABOF(I) = FLUER(I)
+            ATABOF(I) = -FLUDPT(I)
+            BTABOF(I) =  FLUER(I)
           ENDIF
         ENDDO
 !
@@ -1123,3 +1206,4 @@
 !
       RETURN
       END
+
