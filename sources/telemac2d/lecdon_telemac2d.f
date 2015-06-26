@@ -68,6 +68,12 @@
 !+        V7P1
 !+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH'
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        26/06/2015
+!+        V7P1
+!+  Stopping when advection schemes not programmed for quasi-bubble or
+!+  quadratic elements are asked.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
@@ -2476,6 +2482,41 @@
 !
 !-----------------------------------------------------------------------
 !
+!     ADVECTION SCHEMES THAT ARE NOT IMPLEMENTED FOR QUASI-BUBBLE
+!     VELOCITIES OR QUADRATIC VELOCITIES
+!
+      IF(IELMU.EQ.12.OR.IELMU.EQ.13) THEN
+        IF(ICONVF(1).EQ.1.AND.OPTADV_VI.EQ.2) THEN
+          WRITE(LU,*) ' '
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'CARACTERISTIQUES FAIBLES NON PROGRAMMEES POUR'
+            WRITE(LU,*) 'LES ELEMENTS QUASI-BULLE OU QUADRATIQUE'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'WEAK CHARACTERISTICS NOT IMPLEMENTED FOR'
+            WRITE(LU,*) 'QUASI-BULLE AND QUADRATIC ELEMENTS'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        IF(ICONVF(1).EQ.4 .OR.ICONVF(1).EQ.5.OR.
+     &     ICONVF(1).EQ.13.OR.ICONVF(1).EQ.14) THEN
+          WRITE(LU,*) ' '
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'SCHEMAS DISTRIBUTIFS NON PROGRAMMES POUR'
+            WRITE(LU,*) 'LES ELEMENTS QUASI-BULLE OU QUADRATIQUE'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'DISTRIBUTIVE SCHEMES NOT IMPLEMENTED FOR'
+            WRITE(LU,*) 'QUASI-BULLE AND QUADRATIC ELEMENTS'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ENDIF  
+!
+!-----------------------------------------------------------------------
+!
 !  WRITES OUT THE TITLE
 !
       IF(LISTIN) THEN
@@ -2497,4 +2538,8 @@
      &       /,1X,A172,1X/A172)
       CALL PLANTE(1)
       STOP
+!
+!-----------------------------------------------------------------------
+!
       END
+

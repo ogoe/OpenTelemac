@@ -16,7 +16,7 @@
 !brief    Semi-implicit distributive scheme.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        18/006/2015
+!+        26/06/2015
 !+        V7P1
 !+   First version.
 !
@@ -124,13 +124,13 @@
 !     THE MATRIX IS NOT DONE WITH A CALL MATRIX
 !     SO ITS FEATURES HAVE TO BE HARDCODED HERE 
 !
-!     A ENLEVER, VERIFIER JUSTE LE STOCKAGE DE LA MATRICE
-!
       AM2%X%DIM1=2*NSEG
       AM2%X%DIM2=1
-      AM2%D%DIM1=NPOIN
       AM2%TYPEXT='Q'
       AM2%TYPDIA='Q'
+      AM2%ELMLIN=11
+      AM2%ELMCOL=11
+      CALL CPSTVC(SF,AM2%D)
 !
 !     DIAGONAL  
 !

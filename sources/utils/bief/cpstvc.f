@@ -5,15 +5,15 @@
      &( X , Y )
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    COPIES A VECTOR STRUCTURE ONTO ANOTHER.
 !
 !history  J-M HERVOUET (LNH)
-!+        01/03/95
+!+        01/03/1995
 !+        V5P1
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -27,10 +27,15 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
-!history  J-M HERVOUET (LNH)
+!history  J-M HERVOUET (LNHE)
 !+        22/05/2013
 !+        V6P3
 !+   STATUS now also considered.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        26/06/2015
+!+        V7P1
+!+   More accurate messages.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| X              |-->| STRUCTURE TO BE COPIED
@@ -89,8 +94,10 @@
       IF(Y%ELM.NE.X%ELM.AND.Y%STATUS.EQ.1) THEN
         IF(LNG.EQ.1) WRITE(LU,400) X%NAME,Y%NAME
         IF(LNG.EQ.2) WRITE(LU,401) X%NAME,Y%NAME
-400     FORMAT(1X,'CPSTVC : COPIE DE ',A6,' INTERDITE SUR ',A6)
-401     FORMAT(1X,'CPSTVC : COPY OF ',A6,' FORBIDDEN ON ',A6)
+400     FORMAT(1X,'CPSTVC : COPIE DE ',A6,' INTERDITE SUR ',A6,
+     &  ' CAR SON STATUT EST 1')
+401     FORMAT(1X,'CPSTVC : COPY OF ',A6,' FORBIDDEN ON ',A6,
+     &  ' BECAUSE ITS STATUS IS 1')
         CALL PLANTE(1)
         STOP
       ELSE
@@ -114,3 +121,4 @@
 !
       RETURN
       END
+

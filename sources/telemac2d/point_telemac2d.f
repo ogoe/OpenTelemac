@@ -697,7 +697,7 @@
 !
 !  ADDITIONAL ARRAYS IF THERE ARE TRACERS
 !
-      CALL ALLBLO(T      ,'T     ')
+      CALL ALLBLO(T      ,'TRAC  ')
       CALL ALLBLO(TTILD  ,'TTILD ')
       CALL ALLBLO(TN     ,'TN    ')
       CALL ALLBLO(TEXP   ,'TEXP  ')
