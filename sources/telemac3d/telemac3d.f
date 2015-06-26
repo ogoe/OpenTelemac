@@ -164,15 +164,15 @@
 !+   Just a few extra debugger prints, up to CALL KEPINI, where was the
 !+   last user bug I looked for.
 !
-!history  J-M HERVOUET (EDF LAB, LNHE)
-!+        16/05/2015
-!+        V7P1
-!+   3D RESULT FILE can be optional. Tests for writing it added.
-!
 !history Y AUDOUIN (LNHE)
 !+       25/05/2015
 !+       V7P0
 !+       Modification to comply with the hermes module
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        26/06/2015
+!+        V7P1
+!+   2D and 3D RESULT FILE can be optional. Tests for writing them added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -936,35 +936,43 @@
 !     3D OUTPUT (OPTIONAL)
 !
       IF(T3D_FILES(T3DRES)%NAME(1:1).NE.' ') THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE WRITE_HEADER'
         CALL WRITE_HEADER(T3D_FILES(T3DRES)%FMT, ! RESULT FILE FORMAT
      &                    T3D_FILES(T3DRES)%LU,  ! RESULT FILE LU
      &                    TITCAS,     ! TITLE
      &                    MAXVA3,     ! MAX NUMBER OF OUTPUT VARIABLES
      &                    TEXT3,      ! NAMES OF OUTPUT VARIABLES
      &                    SORG3D)     ! OUTPUT OR NOT
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE WRITE_HEADER'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE WRITE_MESH'
         CALL WRITE_MESH(T3D_FILES(T3DRES)%FMT, ! RESULT FILE FORMAT
      &                  T3D_FILES(T3DRES)%LU,  ! RESULT FILE LU
      &                  MESH3D,
      &                  NPLAN,           ! NUMBER OF PLANE /NA/
      &                  DATE,            ! START DATE
      &                  TIME)            ! START HOUR
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE WRITE_MESH'
       ENDIF
 !
 !     3D OUTPUT FOR RESTART
 !
       IF(RESTART_MODE.AND.T3D_FILES(T3DRST)%NAME(1:1).NE.' ') THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE WRITE_HEADER EN RESTART'
         CALL WRITE_HEADER(T3D_FILES(T3DRST)%FMT, ! RESULT FILE FORMAT
      &                    T3D_FILES(T3DRST)%LU,  ! RESULT FILE LU
      &                    TITCAS,     ! TITLE
      &                    MAXVA3,     ! MAX NUMBER OF OUTPUT VARIABLES
      &                    TEXT3,      ! NAMES OF OUTPUT VARIABLES
      &                    SOREST)     ! OUTPUT OR NOT
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE WRITE_HEADER EN RESTART'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE WRITE_MESH EN RESTART'
         CALL WRITE_MESH(T3D_FILES(T3DRST)%FMT, ! RESULT FILE FORMAT
      &                  T3D_FILES(T3DRST)%LU,  ! RESULT FILE LU
      &                  MESH3D,
      &                  NPLAN,           ! NUMBER OF PLANE /NA/
      &                  DATE,            ! START DATE
      &                  TIME)            ! START HOUR
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE WRITE_MESH EN RESTART'
       ENDIF
 !
 !     THESE VARIABLES ARE INITIALISED FOR THE FIRST CALL TO BIEF_DESIMP
@@ -1002,31 +1010,33 @@
 !
 ! PREPARES THE 2D OUTPUT FILE : NHYD CHANNEL, NSOR VARIABLES (?)
 !
-      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE WRITE_HEADER'
-      CALL WRITE_HEADER(T3D_FILES(T3DHYD)%FMT, ! FORMAT FICHIER RESULTAT
+      IF(T3D_FILES(T3DHYD)%NAME(1:1).NE.' ') THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE WRITE_HEADER'
+        CALL WRITE_HEADER(T3D_FILES(T3DHYD)%FMT, ! FORMAT FICHIER RESULTAT
+     &                    T3D_FILES(T3DHYD)%LU,  ! LU FICHIER RESULTAT
+     &                    TITCAS,     ! TITRE DE L'ETUDE
+     &                    MAXVAR,     ! MAX VARIABLES SORTIE
+     &                    TEXTE,      ! NOMS VARIABLES SORTIE
+     &                    SORG2D)     ! SORTIE OU PAS DES VARIABLES
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE WRITE_HEADER'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE WRITE_MESH'
+        CALL WRITE_MESH(T3D_FILES(T3DHYD)%FMT, ! FORMAT FICHIER RESULTAT
      &                  T3D_FILES(T3DHYD)%LU,  ! LU FICHIER RESULTAT
-     &                  TITCAS,     ! TITRE DE L'ETUDE
-     &                  MAXVAR,     ! MAX VARIABLES SORTIE
-     &                  TEXTE,      ! NOMS VARIABLES SORTIE
-     &                  SORG2D)     ! SORTIE OU PAS DES VARIABLES
-      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE WRITE_HEADER'
-      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE WRITE_MESH'
-      CALL WRITE_MESH(T3D_FILES(T3DHYD)%FMT, ! FORMAT FICHIER RESULTAT
-     &                T3D_FILES(T3DHYD)%LU,  ! LU FICHIER RESULTAT
-     &                MESH2D,
-     &                1,               ! NOMBRE DE PLAN /NA/
-     &                DATE,            ! DATE DEBUT
-     &                TIME)            ! HEURE DEBUT
-      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE WRITE_MESH'
+     &                  MESH2D,
+     &                  1,               ! NOMBRE DE PLAN /NA/
+     &                  DATE,            ! DATE DEBUT
+     &                  TIME)            ! HEURE DEBUT
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE WRITE_MESH'
 !
-! 2D OUTPUT
+!       2D OUTPUT
 !
-      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP POUR 2D'
-      CALL BIEF_DESIMP(T3D_FILES(T3DHYD)%FMT,VARSOR,
-     &                 NPOIN2,T3D_FILES(T3DHYD)%LU,'STD',AT,LT,
-     &                 LISPRD,GRAPRD,
-     &                 SORG2D,SORIMP,MAXVAR,TEXTE,GRADEB,LISDEB)
-      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP POUR 2D'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP POUR 2D'
+        CALL BIEF_DESIMP(T3D_FILES(T3DHYD)%FMT,VARSOR,
+     &                   NPOIN2,T3D_FILES(T3DHYD)%LU,'STD',AT,LT,
+     &                   LISPRD,GRAPRD,
+     &                   SORG2D,SORIMP,MAXVAR,TEXTE,GRADEB,LISDEB)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP POUR 2D'
+      ENDIF
 !
 !-----------------------------------------------------------------------
 ! INITIALISES MASS BALANCE AND CUMULATIVE FLUXES
@@ -2585,31 +2595,32 @@
 !
       IF(MOD(LT,GRAPRD).EQ.0.AND.LT.GE.GRADEB) THEN
 !
-! 3D OUTPUT
+!       3D OUTPUT
 !
-      IF(T3D_FILES(T3DRES)%NAME(1:1).NE.' ') THEN
-        CALL BIEF_DESIMP(T3D_FILES(T3DRES)%FMT,VARSO3,
-     &                   NPOIN3,T3D_FILES(T3DRES)%LU,BINRES,AT,LT,
-     &                   LISPRD,GRAPRD,
-     &                   SORG3D,SORIM3,MAXVA3,TEXT3,GRADEB,LISDEB)
-      ENDIF
+        IF(T3D_FILES(T3DRES)%NAME(1:1).NE.' ') THEN
+          CALL BIEF_DESIMP(T3D_FILES(T3DRES)%FMT,VARSO3,
+     &                     NPOIN3,T3D_FILES(T3DRES)%LU,BINRES,AT,LT,
+     &                     LISPRD,GRAPRD,
+     &                     SORG3D,SORIM3,MAXVA3,TEXT3,GRADEB,LISDEB)
+        ENDIF
 !
-! 3D OUTPUT FOR RESTART
+!       3D OUTPUT FOR RESTART
 !
-      IF(LT.EQ.NIT.AND.RESTART_MODE
-     &            .AND.T3D_FILES(T3DRST)%NAME(1:1).NE.' ') THEN
-        CALL BIEF_DESIMP(T3D_FILES(T3DRST)%FMT,VARSO3,NPOIN3,
-     &                   T3D_FILES(T3DRST)%LU,BINRES,AT,LT,
-     &                   1,NIT,
-     &                   SOREST,SORIS3,MAXVA3,TEXT3,1,NIT)
-      ENDIF
+        IF(LT.EQ.NIT.AND.RESTART_MODE
+     &              .AND.T3D_FILES(T3DRST)%NAME(1:1).NE.' ') THEN
+          CALL BIEF_DESIMP(T3D_FILES(T3DRST)%FMT,VARSO3,NPOIN3,
+     &                     T3D_FILES(T3DRST)%LU,BINRES,AT,LT,
+     &                     1,NIT,SOREST,SORIS3,MAXVA3,TEXT3,1,NIT)
+        ENDIF
 !
-! 2D OUTPUT
+!       2D OUTPUT
 !
-      CALL BIEF_DESIMP(T3D_FILES(T3DHYD)%FMT,VARSOR,
-     &                 NPOIN2,T3D_FILES(T3DHYD)%LU,BINHYD,AT,LT,
-     &                 LISPRD,GRAPRD,
-     &                 SORG2D,SORIMP,MAXVAR,TEXTE,GRADEB,LISDEB)
+        IF(T3D_FILES(T3DHYD)%NAME(1:1).NE.' ') THEN
+          CALL BIEF_DESIMP(T3D_FILES(T3DHYD)%FMT,VARSOR,
+     &                     NPOIN2,T3D_FILES(T3DHYD)%LU,BINHYD,AT,LT,
+     &                     LISPRD,GRAPRD,
+     &                     SORG2D,SORIMP,MAXVAR,TEXTE,GRADEB,LISDEB)
+        ENDIF
 !
       ENDIF
 !

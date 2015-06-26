@@ -41,6 +41,11 @@
 !+        V7P0
 !+   Adapt code to work with the hermes module
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        26/06/2015
+!+        V7P1
+!+   Deallocate of IPOBO must always be done.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FFORMAT        |-->| FILE FORMAT
 !| NFILE          |-->| LOGICAL UNIT OF FILE
@@ -102,7 +107,7 @@
         CALL CHECK_CALL(IERR,'WRITE_MESH:SET_MESH')
       ENDIF
 !
-      IF(NCSIZE.LE.1) DEALLOCATE(IPOBO)
+      DEALLOCATE(IPOBO)
 !
 !-----------------------------------------------------------------------
 !
