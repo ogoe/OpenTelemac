@@ -113,11 +113,13 @@
         SRF_ID = 0
         ! LOOK FOR THE ID LINKED TO THAT FILE_ID
         IF(NFILES.GE.1) THEN
-          DO I=1,NFILES
-            IF (HASH(I).EQ.FILE_ID) SRF_ID = I
+          DO I=1,MAX_FILE
+            IF (HASH(I).EQ.FILE_ID) THEN
+              SRF_ID = I
+              EXIT
+            ENDIF
           ENDDO
         ENDIF
-
         ! IF SRF_ID == 0 THEN NO ID WAS FOUND RETURN ERROR
         IF(SRF_ID.EQ.0) THEN
           IERR = HERMES_FILE_NOT_OPENED_ERR
@@ -174,9 +176,14 @@
           RETURN
         ENDIF
         !
+        ! Look far a place in the hash table
+        SRF_ID = 1
+        DO
+          IF(HASH(SRF_ID).EQ.0) EXIT
+          SRF_ID = SRF_ID + 1
+        ENDDO
         NFILES = NFILES + 1
-        HASH(NFILES) = FILE_ID
-        SRF_ID = NFILES
+        HASH(SRF_ID) = FILE_ID
         !
         RETURN
       END SUBROUTINE
@@ -262,6 +269,7 @@
         CHARACTER(LEN=9) :: SRF_OPENMODE
         INTEGER(KIND=I4) :: B1, B2, IB(10), IDUM
         INTEGER :: NTIMESTEP
+        INTEGER(kind=K4) :: TAG
         REAL :: TIME
         INTEGER :: I, POS, FSIZE
         !
@@ -367,6 +375,32 @@
      &             + 4)
           SRF_OBJ_TAB(SRF_ID)%POS_COORD = SRF_OBJ_TAB(SRF_ID)%POS_IPOBO
      &        + (4 + SRF_OBJ_TAB(SRF_ID)%NPOIN*IS + 4)
+          !
+          !Check if we are indeed in single or double precision
+          ! If we are in single precision the tag for the coordiantes should be:
+          ! npoin*4 if we are in double it will be npoin*8
+          !
+          READ(FILE_ID,POS=SRF_OBJ_TAB(SRF_ID)%POS_COORD) TAG
+          IF(FFORMAT.EQ.'SERAFIN ') THEN
+            IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
+              WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
+     &                    'IT IS A SERAFIND FILE'
+              SRF_OBJ_TAB(SRF_ID)%RS = 8
+            ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
+              IERR = HERMES_INVALID_SERAFIN_FILE
+              RETURN
+            ENDIF
+          ELSE
+            IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
+              WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
+     &                    'IT IS A SERAFIN FILE'
+              SRF_OBJ_TAB(SRF_ID)%RS = 4
+            ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
+              IERR = HERMES_INVALID_SERAFIN_FILE
+              RETURN
+            ENDIF
+          ENDIF
+!          
           ! EVEN IN 3D THE SERAFON ONLY CONTAINS THE X AND Y COORDINATES AS THE Y VARIES WITH TIME
           SRF_OBJ_TAB(SRF_ID)%POS_DATA = SRF_OBJ_TAB(SRF_ID)%POS_COORD
      &        + (4 +
@@ -603,18 +637,8 @@
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'CLOSE_MESH:GET_SRF_OBJ')
         !
-        ! Moving everything after srf_id one case to the left
-        I = SRF_ID
-        IF(I.EQ.NFILES) THEN
-          HASH(I) = 0
-        ELSE
-          DO
-            HASH(I) = HASH(I+1)
-            I = I + 1
-            IF(I.GE.NFILES) EXIT
-          ENDDO
-          HASH(I) = 0
-        ENDIF
+        ! Clearing id in the hash table
+        HASH(SRF_ID) = 0
         NFILES = NFILES - 1
         ! Closing the file
         CLOSE(FILE_ID,IOSTAT=IERR)

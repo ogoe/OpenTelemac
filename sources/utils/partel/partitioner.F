@@ -1,6 +1,6 @@
-!                    **************
+!                    **********************
                      SUBROUTINE PARTITIONER
-!                    **************
+!                    **********************
      &    (PMETHOD, NELEM, NPOIN, NDP, NPARTS, IKLES, EPART, NPART)
 !
 !

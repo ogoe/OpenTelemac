@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|utils|gretel
 module: gretel
-liborder: special hermes bief gretel
+liborder: special hermes bief partel gretel
 name: HOMERE_GRETEL
 
 [bief]
@@ -44,6 +44,10 @@ files: interface_hermes.f
   add_data.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
+
+[partel]
+path: <root>|sources|utils|partel
+files: declarations_partel.f
 
 [special]
 path: <root>|sources|utils|special

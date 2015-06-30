@@ -16,8 +16,6 @@
 #
 NOM_GENERIQUE = api_t2d
 
-VERSION	      = v7p0
-
 ###########################
 # Definition des macros
 #

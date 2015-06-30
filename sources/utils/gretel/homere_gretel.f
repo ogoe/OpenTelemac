@@ -1,6 +1,6 @@
-!                    ********************
+!                    *********************
                      PROGRAM HOMERE_GRETEL
-!                    ********************
+!                    *********************
 !
 !
 !***********************************************************************
@@ -8,11 +8,16 @@
 !***********************************************************************
 !
 !brief    MERGES THE RESULTS OF A PARALLEL COMPUTATION
-!+                TO WRITE A SINGLE FILE IN SELAFIN FORMAT.
+!+                TO WRITE A SINGLE FILE.
 !
+!history  Y. AUDOUIN (EDF)
+!+        09/2012
+!+        V7P0
+!+        Reorganizing reading of parameters
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_PARTEL
       IMPLICIT NONE
       INTEGER LNG,LU
       INTEGER LI
@@ -24,8 +29,7 @@
       CHARACTER(LEN=250) :: GEO
       CHARACTER(LEN=8)   :: GEOFORMAT,RESFORMAT
       CHARACTER(LEN=250) :: RES
-      INTEGER            :: NPROC, NPLAN
-
+      INTEGER            :: NPARTS, NPLAN
 !
 !-------------------------------------------------------------------------
 !
@@ -33,45 +37,102 @@
       LU=6
       LNG=2
 !
-      WRITE(LU,*) 'I AM GRETEL FROM BAW HAMBURG'
-      WRITE(LU,*) 'REINCARNATED BY HOLGER WEILBEER'
-      WRITE(LU,*) 'ON 20TH FEBRUARY 2003'
-      WRITE(LU,*)
+!----------------------------------------------------------------------
+! INTRODUCE YOURSELF
 !
-      WRITE (LU, ADVANCE='NO',
-     &    FMT='(/,'' GLOBAL GEOMETRY FILE: '')')
+      WRITE(LU,*) ' '
+      WRITE(LU,*) '+-------------------------------------------------+'
+      WRITE(LU,*) '  GRETEL: TELEMAC MERGER'
+      WRITE(LU,*) '                                                   '
+      WRITE(LU,*) '  HOLGER WEIL BEER (BAW)'
+      WRITE(LU,*) '  JEAN-MICHEL HERVOUET (LNHE)'
+      WRITE(LU,*) '  YOANN AUDOUIN        (LNHE) '
+      WRITE(LU,*) '  GRETEL (C) COPYRIGHT 2003-2012 '
+      WRITE(LU,*) '  BUNDESANSTALT FUER WASSERBAU, KARLSRUHE'
+      WRITE(LU,*) ' '
+      WRITE(LU,*) '+-------------------------------------------------+'
+      WRITE(LU,*) ' '
+      WRITE(LU,*) ' '
+      WRITE(LU,*) '  MAXIMUM NUMBER OF PARTITIONS: ',MAXNPROC
+      WRITE(LU,*) ' '
+      WRITE(LU,*) '+--------------------------------------------------+'
+      WRITE(LU,*) ' '
+!
+      WRITE (LU,*) '--GLOBAL GEOMETRY FILE: '
       READ(LI,*) GEO
-      WRITE(LU,*) GEO
 !
-      WRITE (LU,ADVANCE='NO',
-     &    FMT='(/,'' FORMAT OF THE GEOMERTY FILE: '')')
-      READ (LI,*) GEOFORMAT
-      WRITE (LU,*) GEOFORMAT
-!
-      WRITE(LU, ADVANCE='NO', FMT='(/,'' RESULT FILE: '')')
-      READ(LI,*) RES
-      WRITE(LU,*) RES
-!
-      WRITE (LU,ADVANCE='NO',FMT='(/,'' FORMAT OF THE RESULT FILE: '')')
-      READ (LI,*) RESFORMAT
-      WRITE (LU,*) RESFORMAT
-!
-      WRITE (LU,ADVANCE='NO',FMT='(/,'' NUMBER OF PROCESSORS: '')')
-      READ (LI,*) NPROC
-      WRITE (LU,*) NPROC
-!
-      WRITE (LU,ADVANCE='NO',FMT='(/,'' NUMBER OF PLANES: '')')
-      READ (LI,*) NPLAN
-      WRITE (LU,*) NPLAN
-!
-      INQUIRE (FILE=GEO,EXIST=IS)
-      IF(.NOT.IS) THEN
-        WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
+      IF (GEO.EQ.' ') THEN
+        WRITE (LU,*) ' NO FILENAME ' 
         CALL PLANTE(1)
         STOP
-      ENDIF
+      ELSE
+        WRITE(LU,*) 'INPUT: ',TRIM(GEO)
+      ENDIF  
+
+      INQUIRE (FILE=GEO,EXIST=IS)
+      IF (.NOT.IS) THEN 
+        WRITE (LU,*)' FILE DOES NOT EXIST: ',TRIM(GEO)
+        CALL PLANTE(1)
+        STOP
+      ENDIF  
 !
-      CALL GRETEL_AUTOP(GEO,GEOFORMAT,RES,RESFORMAT,NPROC,NPLAN)
+      WRITE(LU,*)
+     & '--GEOMETRY FILE FORMAT <FFORMAT> [MED,SERAFIN,SERAFIND]: ' 
+      READ(LI,*) GEOFORMAT                
+      IF ( (GEOFORMAT .NE. 'MED     ') .AND. 
+     &     (GEOFORMAT .NE. 'SERAFIN ') .AND.
+     &     (GEOFORMAT .NE. 'SERAFIND') ) THEN
+        WRITE(LU,*)
+     &  ' FILE FORMAT MUST BE "MED" OR "SERAFIN" OR "SERAFIND" ' 
+        CALL PLANTE(1)
+        STOP
+      ELSE
+        WRITE(LU,*) ' INPUT: ', GEOFORMAT
+      ENDIF 
+!
+      WRITE(LU,*) '--RESULT FILE: '
+      READ(LI,*) RES
+!
+      IF (RES.EQ.' ') THEN
+        WRITE (LU,*) ' NO FILENAME ' 
+        CALL PLANTE(1)
+        STOP
+      ELSE
+        WRITE(LU,*) 'INPUT: ',TRIM(RES)
+      ENDIF  
+!
+      WRITE(LU,*)
+     & '--RESULT FILE FORMAT <FFORMAT> [MED,SERAFIN,SERAFIND]: ' 
+      READ(LI,*) RESFORMAT                
+      IF ( (RESFORMAT .NE. 'MED     ') .AND. 
+     &     (RESFORMAT .NE. 'SERAFIN ') .AND.
+     &     (RESFORMAT .NE. 'SERAFIND') ) THEN
+        WRITE(LU,*)
+     &  ' FILE FORMAT MUST BE "MED" OR "SERAFIN" OR "SERAFIND" ' 
+        CALL PLANTE(1)
+        STOP
+      ELSE
+        WRITE(LU,*) ' INPUT: ', RESFORMAT
+      ENDIF 
+!
+      WRITE(LU,FMT='(A,I6,A)')
+     &  '--NUMBER OF PARTITIONS <NPARTS> [2 -',MAXNPROC,']: ' 
+      READ(LI,*) NPARTS                 
+!
+      IF ( (NPARTS > MAXNPROC) .OR. (NPARTS < 2) ) THEN
+        WRITE(LU,FMT='(A,I6,A)')
+     &  ' NUMBER OF PARTITIONS MUST BE IN [2 -',MAXNPROC,']' 
+        CALL PLANTE(1)
+        STOP
+      ELSE
+        WRITE(LU,*)' INPUT: ', NPARTS
+      ENDIF 
+!
+      WRITE (LU,*) '--NUMBER OF PLANES: '
+      READ (LI,*) NPLAN
+      WRITE (LU,*) ' INPUT: ',NPLAN
+!
+      CALL GRETEL_AUTOP(GEO,GEOFORMAT,RES,RESFORMAT,NPARTS,NPLAN)
 !
       STOP 0
       END PROGRAM

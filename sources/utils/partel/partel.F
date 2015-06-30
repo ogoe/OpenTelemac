@@ -2,7 +2,7 @@
                      SUBROUTINE PARTEL
 !                    *****************
      & (NAMEINP, NAMECLI, NPARTS, PMETHOD, FFORMAT,
-     &  WITH_SECTIONS, NAMESEC, WITH_ZONES, NAMEZFI)
+     &  NAMESEC, NAMEZFI)
 !
 !
 !***********************************************************************
@@ -74,6 +74,13 @@
 !+       Modification to comply with the hermes module
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| NAMEGEO        |<--| NAME OF THE GEOMETRY FILE
+!| NAMECLI        |<--| NAME OF THE BOUNDARY CONDITIONS FILE
+!| NPARTS         |<--| NUMBER OF PARTITIONS
+!| PMETHOD        |<--| 1: FOR METIS 2: FOR SCOTCH
+!| FFORMAT        |<--| FORMAT OF THE GEOMETRY FILE
+!| NAMESEC        |<--| NAME OF THE SECTION FILE ' ' IF THERE ARE NONE
+!| NAMEZFI        |<--| NAME OF THE FRICTION ZONE FILE ' ' IF THERE ARE NONE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_PARTEL
@@ -93,9 +100,7 @@
       INTEGER, INTENT(IN) :: NPARTS
       INTEGER, INTENT(IN) :: PMETHOD
       CHARACTER(LEN=8), INTENT(IN) :: FFORMAT
-      LOGICAL, INTENT(INOUT) :: WITH_SECTIONS
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMESEC
-      LOGICAL, INTENT(INOUT) :: WITH_ZONES
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMEZFI
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -153,7 +158,6 @@
       INTEGER :: NFRLIQ,NFRSOL
       INTEGER,ALLOCATABLE :: DEBLIQ(:),FINLIQ(:)
       INTEGER,ALLOCATABLE :: DEBSOL(:),FINSOL(:)
-      DOUBLE PRECISION, ALLOCATABLE :: X_D(:), Y_D(:)
 !
 ! FOR CALLING BIEF MESH SUBROUTINES (TO BE OPTIMISED SOON):
 !
@@ -216,11 +220,13 @@
       INTEGER :: PT, I1,I2,I3, ARR,DEP, ILPREC,ILBEST,ELBEST,IGBEST
       DOUBLE PRECISION :: XA, YA, DISTB, DISTE, DMINB, DMINE
       DOUBLE PRECISION :: DIST1, DIST2, DIST3, DIST
+      LOGICAL :: WITH_SECTIONS
 !
 ! #### FOR ZONES
 !
       INTEGER, ALLOCATABLE :: FRICTION(:)
       INTEGER :: NZFI,I_GLOB,VAL_ZFI
+      LOGICAL :: WITH_ZONES
 !
 !     CD: FLAG FOR SERAFIN FORMAT (.TRUE. IF DOUBLE PRECISION)
 !
@@ -232,6 +238,7 @@
 !
       NDP_2D=3
 !
+      WRITE(LU,*) '+---- PARTEL: BEGINNING -------------+'
       CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
       TIMECOUNT = .TRUE.
       IF (PARSEC==0) TIMECOUNT = .FALSE.  ! COUNT_RATE == 0 : NO CLOCK
@@ -473,10 +480,6 @@
       CALL CHECK_ALLOCATE(ERR, 'DEBLIQ')
       ALLOCATE (FINLIQ(MAXFRO),STAT=ERR)
       CALL CHECK_ALLOCATE(ERR, 'FINLIQ')
-      ALLOCATE (X_D(NPOIN2),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'X_D')
-      ALLOCATE (Y_D(NPOIN2),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'Y_D')
 !
 ! TRANSFORM IKLES--> IKLE FOR 2D ROUTINES  (AN OLD TELEMAC DISEASE)
 !
@@ -530,8 +533,6 @@
       ENDIF
 !
       DEALLOCATE (DEJAVU)
-      DEALLOCATE (X_D)
-      DEALLOCATE (Y_D)
 !JAJ //// IFABOR APPLIED LATER FOR FINDING HALO CELL NEIGHBOURHOODS
 !!!!      DEALLOCATE (IFABOR)
       DEALLOCATE (IFANUM)
@@ -1261,6 +1262,7 @@
 !----------------------------------------------------------------------
 ! !JAJ #### DEAL WITH SECTIONS
 !
+      WITH_SECTIONS = NAMESEC(1:1) .NE. ' ' 
       IF (NPLAN.NE.0) WITH_SECTIONS=.FALSE.
       IF (WITH_SECTIONS) THEN ! PRESENTLY, FOR TELEMAC2D, EV. SISYPHE
 !
@@ -1560,6 +1562,7 @@
 !
 !----------------------------------------------------------------------
 !
+      WITH_ZONES = NAMEZFI(1:1) .NE. ' ' 
       IF (NPLAN.NE.0) WITH_ZONES = .FALSE.
       IF(WITH_ZONES) THEN
 !

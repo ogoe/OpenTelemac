@@ -137,10 +137,15 @@
           IERR = HERMES_MAX_FILE_ERR
           RETURN
         ENDIF
-!
+!       
+!       Look far a place in the hash table
+        MED_ID = 1
+        DO
+          IF(HASH(MED_ID).EQ.0) EXIT
+          MED_ID = MED_ID + 1
+        ENDDO
         NFILES = NFILES + 1
-        HASH(NFILES) = FILE_ID
-        MED_ID = NFILES
+        HASH(MED_ID) = FILE_ID
 !
         RETURN
       END SUBROUTINE
@@ -251,18 +256,8 @@
       CALL GET_MED_OBJ(FILE_ID,MED_ID,IERR)
       CALL CHECK_CALL(IERR,'CLOSE_MESH_MED:GET_MED_OBJ')
 !
-!     MOVING EVERYTHING AFTER SRF_ID ONE CASE TO THE LEFT
-      I = MED_ID
-      IF(I.EQ.NFILES) THEN
-        HASH(I) = 0
-      ELSE
-        DO
-          HASH(I) = HASH(I+1)
-          I = I + 1
-          IF(I.GE.NFILES) EXIT
-        ENDDO
-        HASH(I) = 0
-      ENDIF
+      ! Clearing id in the hash table
+      HASH(MED_ID) = 0
       NFILES = NFILES - 1
 !
 !     CLOSE MED FILE

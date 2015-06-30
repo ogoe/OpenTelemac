@@ -359,7 +359,7 @@ sub acquihpextens {
 } #acquihpextens
 
 #jaj number of parameters changed, added secFIC
-sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, secFICname, zonFIC, zonFICname)
+sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, secFICname, zonFIC, zonFICname, geomFICname)
 #_______________________________________________________________________
 #
 #  Acquisition des fichiers en mode PARALLEL  ($NCSIZE > 1)
@@ -375,6 +375,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
  my $secFICname=@_[6];  #the sections input file real name #jaj
  my $zfiFIC=@_[7];      #the zones input file workdir name #ya
  my $zfiFICname=@_[8];  #the zones input file real name #ya
+ my $geomFICname=@_[9];  #the geometry file linked to the user file
 #
  my @lfic=();
 #
@@ -411,7 +412,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
    	  else
    	    { acquihp   ( $FIL1, $FIL2);
    	      chdir($REP);
-   	      $rcp = RunPartel ($FIL2, $conlimFIC, $NCSIZE, $secFIC, $secFICname, $zfiFIC, $zfiFICname); #jaj
+   	      $rcp = RunPartel ($FIL2, $conlimFIC, $NCSIZE, $secFICname, $zfiFICname, $geomFICname); #jaj
               if ( $rcp != 0 )  
                 {
                   open(F, ">>$REPLANCE$ps"."$PARA$WORKING"."_error.log");
@@ -929,7 +930,7 @@ sub restihpPARAL    # (ficnamcode, ficnam, ficGEOM, modepar, autopar)
 
 
 
-sub RunPartel       # (geo, cli, NCSIZE, sec, secname, zon, zonname); #jaj added sec, secname)
+sub RunPartel       # (geo, cli, NCSIZE, secname, zonname,geomname); #jaj added sec, secname)
 #_______________________________________________________________________
 #
 #  Partitionnement automatique avec PARTEL
@@ -940,9 +941,7 @@ sub RunPartel       # (geo, cli, NCSIZE, sec, secname, zon, zonname); #jaj added
  #Arguments de PARTEL dans "partel.par"
   open(FPAR,">partel.par") or die "File \'partel.par\' cannot be opened!";
  #PARTEL parameters (METIS_PartMeshDual method always choosen [=1])
-  if (@_[4] eq "") {$ifsec=0;$ifsecname=""} else {$ifsec=1;$ifsecname=@_[3]}          #jaj
-  if (@_[6] eq "") {$ifzon=0;$ifzonname=""} else {$ifzon=1;$ifzonname=@_[5]}          #jaj
-  print FPAR "@_[0]\n@_[1]\n@_[2]\n1\nSERAFIN\n$ifsec\n$ifsecname\n$ifzon\n$ifzonname\n";  #jaj
+  print FPAR "@_[0]\nSERAFIN\n@_[1]\n@_[2]\n1\n@_[3]\n@_[4]\n@_[5]\nSERAFIN";  #jaj
   close(FPAR) or die "File \'partel.par\' cannot be closed!";
 # partel outputs redirected to a file
   $command=join "",$PROJECT,$ps,"builds$ps$dirlib$ps","bin$ps","partel$VERS[$0].exe < partel.par >> partel.log";
@@ -1465,6 +1464,8 @@ $iclCOD=0; $conlimF=@clF[$iclCOD];
            $sectionFname=@seF2[$iclCOD]; #jaj
            $zoneF=@zoF[$iclCOD]; #ya
            $zoneFname=@zoF2[$iclCOD]; #ya
+           $geoDSC=@selgeomDSC[$iclCOD];
+my @v=split(";", $geoDSC); $geomF=$v[1];
 
 foreach (@FDESC)
 {
@@ -1478,6 +1479,8 @@ foreach (@FDESC)
         $sectionFname=@seF2[$iclCOD]; #jaj
         $zoneF=@zoF[$iclCOD];  #ya
         $zoneFname=@zoF2[$iclCOD]; #ya
+        $geoDSC=@selgeomDSC[$iclCOD];
+        my @v=split(";", $geoDSC); $geomF=$v[1];
         next;
        }
     
@@ -1488,7 +1491,7 @@ foreach (@FDESC)
       ecrire_FicTitrVal($FLNG1[$i],$FLNG2[$i], $$varnam);
 #
       if ( $NCSIZE > 1)
-        { acquihpPARAL  ( $$varnam, "$ficnamcod", $modepar, $conlimF, $AUTOPAR, $sectionF, $sectionFname, $zoneF, $zoneFname);} #jaj
+        { acquihpPARAL  ( $$varnam, "$ficnamcod", $modepar, $conlimF, $AUTOPAR, $sectionF, $sectionFname, $zoneF, $zoneFname, $geomF);} #jaj
       else
         { acquihp       ( $$varnam, "$ficnamcod");}
 
