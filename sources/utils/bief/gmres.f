@@ -5,7 +5,7 @@
      & (X,A,B,MESH,R0,V,AV,CFG,INFOGR,AUX)
 !
 !***********************************************************************
-! BIEF   V7P0                                   12/06/2014
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    SOLVES A LINEAR SYSTEM A X = B
@@ -127,6 +127,12 @@
 !+   The case A=diagonal caused a crash, because in that case the Krylov
 !+   space cannot be a basis. This case is now treated since the
 !+   solution is easily found : X=A%D/B
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        06/07/2015
+!+        V7P1
+!+   Now returning without stopping when algorithm fails. The accuracy
+!+   is printed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRIX OF THE SYSTEM
@@ -284,15 +290,13 @@
           NR0=P_DOTS(R0,R0,MESH)
           NR0=SQRT(NR0)
           PREC = NR0/NB
-          IF(PREC.LE.CFG%EPS) THEN
-            GO TO 3000
-          ELSE
+          IF(PREC.GT.CFG%EPS) THEN
             WRITE(LU,*) 'PREC=',PREC,' CFG%EPS=',CFG%EPS
-            WRITE(LU,*) 'GMRES: MATRIX NOT DIAGONAL,'
-            WRITE(LU,*) '       ALGORITHM FAILS.'
-            CALL PLANTE(1)
-            STOP
+            WRITE(LU,*) 'ALGORITHM FAILS. RESIDUAL: ',NR0
+            WRITE(LU,*) 'INITIAL RESIDUAL: ',NB
+            WRITE(LU,*) 'NOW RETURNING WITHOUT STOPPING'
           ENDIF
+          GO TO 3000
         ENDIF
         CALL OS('X=CX    ',V%ADR(J+1)%P, B, B, 1.D0/H(J+1,J))
 !
