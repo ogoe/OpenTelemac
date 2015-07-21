@@ -84,6 +84,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TOMAWAC,ONLY: DEBUG
       USE INTERFACE_TOMAWAC, EX_NOUDON => NOUDON
       USE INTERFACE_HERMES
       IMPLICIT NONE
@@ -144,10 +145,12 @@
 !
       IF(AT.GT.TV2) THEN
 !
+        IF(DEBUG.GT.0) THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) '   NOUDON : LECTURE D''UN NOUVEL ENREGISTREMENT'
         ELSEIF(LNG.EQ.2) THEN
           WRITE(LU,*) '   NOUDON : READING A NEW RECORD'
+        ENDIF
         ENDIF
 !
         IF(INDIC.EQ.3) THEN
@@ -156,7 +159,6 @@
 !       READS A SELAFIN FILE OF TYPE: TELEMAC
 !     ------------------------------------------------------------------
 !
-
 !
 !     The test is useless as fields have already been checked for the initial value
 !
@@ -188,45 +190,48 @@
         ENDDO
         DEALLOCATE(VAR_NAME)
         DEALLOCATE(VAR_UNIT)
-
-          ! Look for the two record before and after at for the interpolation
-          RECORD1 = 0
-          RECORD2 = 1
-          CALL GET_DATA_TIME(FFORMAT,NDON,RECORD1,TIME1,IERR)
+!
+! Look for the two record before and after at for the interpolation
+        RECORD1 = 0
+        RECORD2 = 1
+        CALL GET_DATA_TIME(FFORMAT,NDON,RECORD1,TIME1,IERR)
+        CALL CHECK_CALL(IERR,'NOUDON:GET_DATA_TIME')
+        TV1=(TIME1-PHASTIME)*UNITIME
+        DO
+          CALL GET_DATA_TIME(FFORMAT,NDON,RECORD2,TIME2,IERR)
           CALL CHECK_CALL(IERR,'NOUDON:GET_DATA_TIME')
-          TV1=(TIME1-PHASTIME)*UNITIME
-          DO
-            CALL GET_DATA_TIME(FFORMAT,NDON,RECORD2,TIME2,IERR)
-            CALL CHECK_CALL(IERR,'NOUDON:GET_DATA_TIME')
-            TV2=(TIME2-PHASTIME)*UNITIME
-            IF(TV2.LT.AT) THEN
+          TV2=(TIME2-PHASTIME)*UNITIME
+          IF(TV2.LT.AT) THEN
+            IF(DEBUG.GT.0) then
               IF(LNG.EQ.1) THEN
                 WRITE(LU,*) ' NOUDON : ON SAUTE 1 ENREGISTREMENT'
               ELSEIF(LNG.EQ.2) THEN
                 WRITE(LU,*) ' NOUDON: JUMP OF 1 DATA RECORD'
               ENDIF
-              RECORD1 = RECORD2
-              RECORD2 = RECORD2 + 1
-              TV1 = TV2
-            ELSE
-              EXIT
             ENDIF
-          ENDDO
-          ! Check if all the variables are found for record1
-          DO J=1,3
-            IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
-              IF(LNG.EQ.1) THEN
-                WRITE(LU,*) 'LECDOI : VARIABLE ',J,' NON TROUVEE'
-                WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OU ',
-     &                      TRIM(NAMEGB(J)(1:16))
-              ELSEIF(LNG.EQ.2) THEN
-                WRITE(LU,*) 'LECDOI: VARIABLE ',NAME1GB,' NOT FOUND'
-                WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OR ',
-     &                      TRIM(NAMEGB(J)(1:16))
-              ENDIF
-              CALL PLANTE(1)
-              STOP
-            ELSEIF(MODE(J).GT.0.AND.TROUVE(J)) THEN
+            RECORD1 = RECORD2
+            RECORD2 = RECORD2 + 1
+            TV1 = TV2
+          ELSE
+            EXIT
+          ENDIF
+        ENDDO
+!       Check if all the variables are found for record1
+        DO J=1,3
+          IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'NOUDON : VARIABLE ',J,' NON TROUVEE'
+              WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OU ',
+     &                    TRIM(NAMEGB(J)(1:16))
+            ELSEIF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'NOUDON: VARIABLE ',NAME1GB,' NOT FOUND'
+              WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OR ',
+     &                    TRIM(NAMEGB(J)(1:16))
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ELSEIF(MODE(J).GT.0.AND.TROUVE(J)) THEN
+            IF(DEBUG.GT.0) THEN
               IF(LNG.EQ.1) THEN
                 WRITE(LU,*) 'VARIABLE ',J,' LUE (',
      &          TRIM(NAMEFR(J)(1:16)),' OU ',
@@ -236,56 +241,59 @@
      &          TRIM(NAMEFR(J)(1:16)),' OR ',
      &          TRIM(NAMEGB(J)(1:16)),') AT TIME ',TV1
               ENDIF
-              ! Read the data for varialbe j on record1
-              IF(J.EQ.1) THEN
-                CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
-     &                              FULL_NAME(J),F11,NPOIN,IERR)
-              ELSEIF(J.EQ.2) THEN
-                CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
-     &                              FULL_NAME(J),F21,NPOIN,IERR)
-              ELSEIF(J.EQ.3) THEN
-                CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
-     &                              FULL_NAME(J),F31,NPOIN,IERR)
-              ENDIF
             ENDIF
-          ENDDO
-          ! Read the variables
-          !
-          ! Check if all the variables are found for record2
-          DO J=1,3
-            IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
-              IF(LNG.EQ.1) THEN
-                WRITE(LU,*) 'LECDON : VARIABLE ',J,' NON TROUVEE'
-                WRITE(LU,*) NAMEFR(J),' OU ',NAMEGB(J)
-              ELSEIF(LNG.EQ.2) THEN
-                WRITE(LU,*) 'LECDON: VARIABLE ',NAME1GB,' NOT FOUND'
-                WRITE(LU,*) NAMEFR(J),' OR ',NAMEGB(J)
-              ENDIF
-              CALL PLANTE(1)
-              STOP
-            ELSEIF(MODE(J).GT.0.AND.TROUVE(J)) THEN
-              IF(LNG.EQ.1) THEN
-                WRITE(LU,*) 'VARIABLE ',J,' LUE (',
+!           Read the data for varialbe j on record1
+            IF(J.EQ.1) THEN
+               CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
+     &                           FULL_NAME(J),F11,NPOIN,IERR)
+            ELSEIF(J.EQ.2) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
+     &                            FULL_NAME(J),F21,NPOIN,IERR)
+            ELSEIF(J.EQ.3) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
+     &                            FULL_NAME(J),F31,NPOIN,IERR)
+            ENDIF
+          ENDIF
+        ENDDO
+!       Read the variables
+!        
+!       Check if all the variables are found for record2
+        DO J=1,3
+          IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'LECDON : VARIABLE ',J,' NON TROUVEE'
+              WRITE(LU,*) NAMEFR(J),' OU ',NAMEGB(J)
+            ELSEIF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'LECDON: VARIABLE ',NAME1GB,' NOT FOUND'
+              WRITE(LU,*) NAMEFR(J),' OR ',NAMEGB(J)
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ELSEIF(MODE(J).GT.0.AND.TROUVE(J)) THEN
+            IF(DEBUG.GT.0) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'VARIABLE ',J,' LUE (',
      &          TRIM(NAMEFR(J)(1:16)),' OU ',
      &          TRIM(NAMEGB(J)(1:16)),') AU TEMPS ',TV2
-              ELSEIF(LNG.EQ.2) THEN
-                WRITE(LU,*) 'VARIABLE ',J,' READ (',
+            ELSEIF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'VARIABLE ',J,' READ (',
      &          TRIM(NAMEFR(J)(1:16)),' OR ',
      &          TRIM(NAMEGB(J)(1:16)),') AT TIME ',TV2
-              ENDIF
-              ! Read the data for varialbe j on record1
-              IF(J.EQ.1) THEN
-                CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
-     &                              FULL_NAME(J),F12,NPOIN,IERR)
-              ELSEIF(J.EQ.2) THEN
-                CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
-     &                              FULL_NAME(J),F22,NPOIN,IERR)
-              ELSEIF(J.EQ.3) THEN
-                CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
-     &                              FULL_NAME(J),F32,NPOIN,IERR)
-              ENDIF
             ENDIF
-          ENDDO
+            ENDIF
+!           Read the data for varialbe j on record2
+            IF(J.EQ.1) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
+     &                            FULL_NAME(J),F12,NPOIN,IERR)
+            ELSEIF(J.EQ.2) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
+     &                            FULL_NAME(J),F22,NPOIN,IERR)
+            ELSEIF(J.EQ.3) THEN
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD2,
+     &                            FULL_NAME(J),F32,NPOIN,IERR)
+            ENDIF
+          ENDIF
+        ENDDO
 !
         ELSEIF (INDIC.EQ.4) THEN
 !
