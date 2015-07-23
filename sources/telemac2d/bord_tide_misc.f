@@ -28,6 +28,11 @@
 !+   (e.g. LEGOS-NEA, Previmer, FES).
 !+   Adding 7 extra harmonic constituents.
 !
+!history  C-T PHAM (LNHE)
+!+        30/06/2015
+!+        V7P1
+!+   Schematic tides
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BOUNDARY_COLOUR|-->| AN INTEGER LINKED TO BOUNDARY POINTS
 !|                |   | BY DEFAULT THE LAST LINE OF BOUNDARY CONDITIONS
@@ -90,14 +95,14 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,IERR,I,J
+      INTEGER K,IERR,I,J,J2,J3
 !
 !-----------------------------------------------------------------------
 !
       INTEGER, PARAMETER   :: MISC_NCMX = 54
-      INTEGER IPTFR,IPTFRL,NPTFRL,NTIDE,NWAVES
+      INTEGER IPTFR,IPTFRL,NPTFRL,NTIDE,NWAVES,NWAVES2
       INTEGER, ALLOCATABLE :: FIRSTTIDE(:),LASTTIDE(:),SHIFTTIDE(:)
-      INTEGER, ALLOCATABLE :: INDW(:)
+      INTEGER, ALLOCATABLE :: INDW(:),INDW2(:),INDW3(:)
 !
       DOUBLE PRECISION PI,DTR
       DOUBLE PRECISION SUMH,SUMU,SUMV
@@ -136,19 +141,18 @@
 !  TEST TO CHECK CORRECT VALUES FOR TIDALTYPE
 !
       IF(.NOT.DEJA) THEN
-!$$$        IF(TIDALTYPE.LT.1.OR.TIDALTYPE.GT.6) THEN
-        IF(TIDALTYPE.NE.1) THEN
+        IF(TIDALTYPE.LT.1.OR.TIDALTYPE.GT.6) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'MAUVAISE VALEUR POUR TIDALTYPE =',TIDALTYPE
-            WRITE(LU,*) 'ELLE DOIT ETRE EGALE A 1 ACTUELLEMENT'
+            WRITE(LU,*) 'ELLE DOIT ETRE COMPRISE ENTRE 1 ET 6'
+            WRITE(LU,*) 'ACTUELLEMENT'
             WRITE(LU,*) 'AVEC LES BASES DE DONNEES DE MAREE MISC'
-!$$$            WRITE(LU,*) 'ELLE DOIT ETRE COMPRISE ENTRE 1 ET 6'
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'UNEXPECTED VALUE FOR TIDALTYPE=',TIDALTYPE
-            WRITE(LU,*) 'IT MUST BE CHOSEN EQUAL TO 1 CURRENTLY'
+            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
+            WRITE(LU,*) 'CURRENTLY'
             WRITE(LU,*) 'WITH MISC TIDAL DATA BASES'
-!$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -250,27 +254,151 @@
           ENDDO
         ENDDO
 !
-        DO K = 1,NWAVES
-          INDW(K) = 0
-          DO I = 1,MISC_NCMX
-            IF(NAMEWAVE(K).EQ.MISC_CONSTID(I)) THEN
-              INDW(K) = I
-              EXIT
+        IF(TIDALTYPE.EQ.1) THEN
+          DO K = 1,NWAVES
+            INDW(K) = 0
+            DO I = 1,MISC_NCMX
+              IF(NAMEWAVE(K).EQ.MISC_CONSTID(I)) THEN
+                INDW(K) = I
+                EXIT
+              ENDIF
+            ENDDO
+            IF(INDW(K).EQ.0) THEN
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) 'MISC : ATTENTION :' //
+     &           'COMPOSANTE ID ',NAMEWAVE(K),' N''EST PAS PERMISE'
+              ENDIF
+              IF(LNG.EQ.2) THEN
+                WRITE(LU,*) 'MISC : WARNING:' //
+     &           'CONSTITUENT ID ',NAMEWAVE(K),' IS NOT ALLOWED'
+              ENDIF
+              CALL PLANTE(1)
+              STOP
             ENDIF
           ENDDO
-          IF(INDW(K).EQ.0) THEN
-            IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'MISC : ATTENTION :' //
-     &         'COMPOSANTE ID ',NAMEWAVE(K),' N''EST PAS PERMISE'
+        ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+!  BEGINNING: SAME AS FOR TIDALTYPE = 1
+!  TO BE SURE THAT EVERY CONSTITUENT IS ALLOWED
+          DO K = 1,NWAVES
+            INDW(K) = 0
+            DO I = 1,MISC_NCMX
+              IF(NAMEWAVE(K).EQ.MISC_CONSTID(I)) THEN
+                INDW(K) = I
+                EXIT
+              ENDIF
+            ENDDO
+            IF(INDW(K).EQ.0) THEN
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) 'MISC : ATTENTION :' //
+     &           'COMPOSANTE ID ',NAMEWAVE(K),' N''EST PAS PERMISE'
+              ENDIF
+              IF(LNG.EQ.2) THEN
+                WRITE(LU,*) 'MISC : WARNING:' //
+     &           'CONSTITUENT ID ',NAMEWAVE(K),' IS NOT ALLOWED'
+              ENDIF
+              CALL PLANTE(1)
+              STOP
             ENDIF
-            IF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'MISC : WARNING:' //
-     &         'CONSTITUENT ID ',NAMEWAVE(K),' IS NOT ALLOWED'
-            ENDIF
-            CALL PLANTE(1)
-            STOP
+          ENDDO
+!
+!  TREATMENTS FOR SCHEMATIC TIDES
+!
+          I = 0
+          IF(LNG.EQ.1) THEN
+             WRITE(LU,*) 'ONDES DISPONIBLES POUR MAREES SCHEMATIQUES :'
           ENDIF
-        ENDDO
+          IF(LNG.EQ.2) THEN
+             WRITE(LU,*) 'AVAILABLE CONSTITUENTS FOR SCHEMATIC TIDES:'
+          ENDIF
+!
+          IF(TIDALTYPE.EQ.2.OR.TIDALTYPE.EQ.6) THEN
+            DO K = 1,NWAVES
+              IF(NAMEWAVE(K)(2:2).EQ.'1'.OR.NAMEWAVE(K)(3:3).EQ.'1'
+     &       .OR.NAMEWAVE(K)(4:4).EQ.'1'.OR.NAMEWAVE(K)(2:2).EQ.'2'
+     &       .OR.NAMEWAVE(K)(3:3).EQ.'2'.OR.NAMEWAVE(K)(4:4).EQ.'2'
+     &       .OR.NAMEWAVE(K)(2:2).EQ.'4'.OR.NAMEWAVE(K)(3:3).EQ.'4'
+     &       .OR.NAMEWAVE(K)(4:4).EQ.'4') THEN
+                I = I + 1
+                WRITE(LU,*) 'NAMEWAVE(',K,') = ',NAMEWAVE(K)
+              ENDIF
+            ENDDO
+          ELSEIF(TIDALTYPE.EQ.3.OR.TIDALTYPE.EQ.5) THEN
+            DO K = 1,NWAVES
+              IF(NAMEWAVE(K)(1:2).EQ.'M2'.OR.NAMEWAVE(K)(1:2).EQ.'S2'
+     &       .OR.NAMEWAVE(K)(1:2).EQ.'M4') THEN
+                I = I + 1
+                WRITE(LU,*) 'NAMEWAVE(',K,') = ',NAMEWAVE(K)
+              ENDIF
+            ENDDO
+          ELSEIF(TIDALTYPE.EQ.4) THEN
+            DO K = 1,NWAVES
+              IF(NAMEWAVE(K)(1:2).EQ.'M2'.OR.NAMEWAVE(K)(1:2).EQ.'M4')
+     &        THEN
+                I = I + 1
+                WRITE(LU,*) 'NAMEWAVE(',K,') = ',NAMEWAVE(K)
+              ENDIF
+            ENDDO
+          ENDIF
+          NWAVES2 = I
+          IF(LNG.EQ.1) WRITE(LU,*) 'NOMBRE ONDES DISPONIBLES ' //
+     &                             'POUR MAREES SCHEMATIQUES :',NWAVES2
+          IF(LNG.EQ.2) WRITE(LU,*) 'AVAILABLE CONSTITUENTS ' //
+     &                             'FOR SCHEMATIC TIDES:',NWAVES2
+!  INDW2: INDICES IN MISC_CONSTID NUMBER (POSSIBLE CONSTITUENTS)
+!  INDW3: INDICES IN THE HARMONIC CONSTANTS FILE NUMBER
+          ALLOCATE(INDW2(NWAVES2))
+          ALLOCATE(INDW3(NWAVES2))
+!
+          J = 1
+!
+          IF(TIDALTYPE.EQ.2.OR.TIDALTYPE.EQ.6) THEN
+            DO K = 1,NWAVES
+              IF(NAMEWAVE(K)(2:2).EQ.'1'.OR.NAMEWAVE(K)(3:3).EQ.'1'
+     &       .OR.NAMEWAVE(K)(4:4).EQ.'1'.OR.NAMEWAVE(K)(2:2).EQ.'2'
+     &       .OR.NAMEWAVE(K)(3:3).EQ.'2'.OR.NAMEWAVE(K)(4:4).EQ.'2'
+     &       .OR.NAMEWAVE(K)(2:2).EQ.'4'.OR.NAMEWAVE(K)(3:3).EQ.'4'
+     &       .OR.NAMEWAVE(K)(4:4).EQ.'4') THEN
+                INDW3(J) = K
+                DO I = 1,MISC_NCMX
+                  IF(NAMEWAVE(K).EQ.MISC_CONSTID(I)) THEN
+                    INDW2(J) = I
+                    EXIT
+                  ENDIF
+                ENDDO
+                J = J+1
+              ENDIF
+            ENDDO
+          ELSEIF(TIDALTYPE.EQ.3.OR.TIDALTYPE.EQ.5) THEN
+            DO K = 1,NWAVES
+              IF(NAMEWAVE(K)(1:2).EQ.'M2'.OR.NAMEWAVE(K)(1:2).EQ.'S2'
+     &       .OR.NAMEWAVE(K)(1:2).EQ.'M4') THEN
+                INDW3(J) = K
+                DO I = 1,MISC_NCMX
+                  IF(NAMEWAVE(K).EQ.MISC_CONSTID(I)) THEN
+                    INDW2(J) = I
+                    EXIT
+                  ENDIF
+                ENDDO
+                J = J+1
+              ENDIF
+            ENDDO
+          ELSEIF(TIDALTYPE.EQ.4) THEN
+            DO K = 1,NWAVES
+              IF(NAMEWAVE(K)(1:2).EQ.'M2'.OR.NAMEWAVE(K)(1:2).EQ.'M4')
+     &        THEN
+                INDW3(J) = K
+                DO I = 1,MISC_NCMX
+                  IF(NAMEWAVE(K).EQ.MISC_CONSTID(I)) THEN
+                    INDW2(J) = I
+                    EXIT
+                  ENDIF
+                ENDDO
+                J = J+1
+              ENDIF
+            ENDDO
+          ENDIF
+!
+        ENDIF
 !
 !       POTENTIAL SPECIFIC TREATMENTS
 !
@@ -331,6 +459,25 @@
           CALL NODALF_SCHUREMAN(FF,NODALCORR,TEMPS-DT,DEJA,
      &                          MARDAT,MARTIM)
 !
+!  JUST TO COMPUTE OMEGA FOR EVERY WAVE FOR SCHEMATIC TIDES ONLY
+!
+        ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+          CALL NODALUPV_SCHUREMAN(UPV,OMEGA,MARDAT,MARTIM)
+          DO I = 1,MISC_NCMX
+            IF(    MISC_CONSTID(I)(2:2).EQ.'2'
+     &         .OR.MISC_CONSTID(I)(3:3).EQ.'2'
+     &         .OR.MISC_CONSTID(I)(4:4).EQ.'2') THEN
+              OMEGA(I) = OMEGA(18)
+            ELSEIF(    MISC_CONSTID(I)(2:2).EQ.'4'
+     &             .OR.MISC_CONSTID(I)(3:3).EQ.'4'
+     &             .OR.MISC_CONSTID(I)(4:4).EQ.'4') THEN
+              OMEGA(I) = OMEGA(19)
+            ELSEIF(    MISC_CONSTID(I)(2:2).EQ.'1'
+     &             .OR.MISC_CONSTID(I)(3:3).EQ.'1'
+     &             .OR.MISC_CONSTID(I)(4:4).EQ.'1') THEN
+              OMEGA(I) = OMEGA(18)*0.5D0
+            ENDIF
+          ENDDO
         ENDIF
 !
         DEJA = .TRUE.
@@ -373,23 +520,51 @@
      &                         *COS( TEMPS*OMEGA(J)-PH(IPTFRL,I)+UPV(J))
                 ENDIF
               ENDDO
-!$$$            ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
-            ELSEIF(TIDALTYPE.EQ.2) THEN
+            ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.4) THEN
               SUMH = 0.D0
-              DO I=1,NWAVES
-                J = INDW(I)
-                IF(J.NE.0) THEN
-                  SUMH = SUMH + AH(IPTFRL,I)
-     &                         *COS(TEMPS*OMEGA(J)-PH(IPTFRL,I))
+              DO I=1,NWAVES2
+                J2 = INDW2(I)
+                J3 = INDW3(I)
+                IF(J2.NE.0.AND.J3.NE.0) THEN
+                  SUMH = SUMH + AH(IPTFRL,J3)
+     &                         *COS(TEMPS*OMEGA(J2)-PH(IPTFRL,J3))
+                ENDIF
+              ENDDO
+            ELSEIF(TIDALTYPE.EQ.5) THEN
+              SUMH = 0.D0
+              DO I=1,NWAVES2
+                J2 = INDW2(I)
+                J3 = INDW3(I)
+                IF(J2.NE.0.AND.J3.NE.0) THEN
+                  IF(MISC_CONSTID(J2).NE.'S2  ') THEN
+                    SUMH = SUMH + AH(IPTFRL,J3)
+     &                           *COS(TEMPS*OMEGA(J2)-PH(IPTFRL,J3))
+                  ELSE
+                    SUMH = SUMH - AH(IPTFRL,J3)
+     &                           *COS(TEMPS*OMEGA(J2)-PH(IPTFRL,J3))
+                  ENDIF
+                ENDIF
+              ENDDO
+            ELSEIF(TIDALTYPE.EQ.6) THEN
+              SUMH = 0.D0
+              DO I=1,NWAVES2
+                J2 = INDW2(I)
+                J3 = INDW3(I)
+                IF(J2.NE.0.AND.J3.NE.0) THEN
+                  IF(    MISC_CONSTID(J2).EQ.'M2  '
+     &               .OR.MISC_CONSTID(J2).EQ.'K2  '
+     &               .OR.MISC_CONSTID(J2).EQ.'M4  ') THEN
+                    SUMH = SUMH + AH(IPTFRL,J3)
+     &                           *COS(TEMPS*OMEGA(J2)-PH(IPTFRL,J3))
+                  ELSE
+                    SUMH = SUMH - AH(IPTFRL,J3)
+     &                           *COS(TEMPS*OMEGA(J2)-PH(IPTFRL,J3))
+                  ENDIF
                 ENDIF
               ENDDO
             ENDIF
 !
-            IF(TIDALTYPE.EQ.1.OR.TIDALTYPE.EQ.2) THEN
-              HBTIDE%R(K) = -ZF(NBOR(K)) + CTIDE*SUMH + MSL
-!$$$            ELSEIF(TIDALTYPE.EQ.2.AND.TIDALTYPE.LE.6) THEN
-            ENDIF
-!
+            HBTIDE%R(K) = -ZF(NBOR(K)) + CTIDE*SUMH + MSL
           ENDIF
 !         ELSE HBOR TAKEN IN BOUNDARY CONDITIONS FILE
         ENDIF
@@ -428,27 +603,65 @@
      &                         *COS( TEMPS*OMEGA(J)-PV(IPTFRL,I)+UPV(J))
                 ENDIF
               ENDDO
-!$$$            ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
-            ELSEIF(TIDALTYPE.EQ.2) THEN
+            ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.4) THEN
               SUMU = 0.D0
               SUMV = 0.D0
-              DO I=1,NWAVES
-                J = INDW(I)
-                IF(J.NE.0) THEN
-                  SUMU = SUMU + AU(IPTFRL,I)
-     &                         *COS(TEMPS*OMEGA(J)-PU(IPTFRL,I))
-                  SUMV = SUMV + AV(IPTFRL,I)
-     &                         *COS(TEMPS*OMEGA(J)-PV(IPTFRL,I))
+              DO I=1,NWAVES2
+                J2 = INDW2(I)
+                J3 = INDW3(I)
+                IF(J2.NE.0.AND.J3.NE.0) THEN
+                  SUMU = SUMU + AU(IPTFRL,J3)
+     &                         *COS(TEMPS*OMEGA(J2)-PU(IPTFRL,J3))
+                  SUMV = SUMV + AV(IPTFRL,J3)
+     &                         *COS(TEMPS*OMEGA(J2)-PV(IPTFRL,J3))
+                ENDIF
+              ENDDO
+            ELSEIF(TIDALTYPE.EQ.5) THEN
+              SUMU = 0.D0
+              SUMV = 0.D0
+              DO I=1,NWAVES2
+                J2 = INDW2(I)
+                J3 = INDW3(I)
+                IF(J2.NE.0.AND.J3.NE.0) THEN
+                  IF(MISC_CONSTID(J2).NE.'S2  ') THEN
+                    SUMU = SUMU + AU(IPTFRL,J3)
+     &                           *COS(TEMPS*OMEGA(J2)-PU(IPTFRL,J3))
+                    SUMV = SUMV + AV(IPTFRL,J3)
+     &                           *COS(TEMPS*OMEGA(J2)-PV(IPTFRL,J3))
+                  ELSE
+                    SUMU = SUMU - AU(IPTFRL,J3)
+     &                           *COS(TEMPS*OMEGA(J2)-PU(IPTFRL,J3))
+                    SUMV = SUMV - AV(IPTFRL,J3)
+     &                           *COS(TEMPS*OMEGA(J2)-PV(IPTFRL,J3))
+                  ENDIF
+                ENDIF
+              ENDDO
+            ELSEIF(TIDALTYPE.EQ.6) THEN
+              SUMU = 0.D0
+              SUMV = 0.D0
+              DO I=1,NWAVES2
+                J2 = INDW2(I)
+                J3 = INDW3(I)
+                IF(J2.NE.0.AND.J3.NE.0) THEN
+                  IF(    MISC_CONSTID(J2).EQ.'M2  '
+     &               .OR.MISC_CONSTID(J2).EQ.'K2  '
+     &               .OR.MISC_CONSTID(J2).EQ.'M4  ') THEN
+                    SUMU = SUMU + AU(IPTFRL,J3)
+     &                           *COS(TEMPS*OMEGA(J2)-PU(IPTFRL,J3))
+                    SUMV = SUMV + AV(IPTFRL,J3)
+     &                           *COS(TEMPS*OMEGA(J2)-PV(IPTFRL,J3))
+                  ELSE
+                    SUMU = SUMU - AU(IPTFRL,J3)
+     &                           *COS(TEMPS*OMEGA(J2)-PU(IPTFRL,J3))
+                    SUMV = SUMV - AV(IPTFRL,J3)
+     &                           *COS(TEMPS*OMEGA(J2)-PV(IPTFRL,J3))
+                  ENDIF
                 ENDIF
               ENDDO
             ENDIF
 !
-            IF(TIDALTYPE.EQ.1.OR.TIDALTYPE.EQ.2) THEN
-              UBTIDE%R(K) = CTIDEV*SUMU
-              VBTIDE%R(K) = CTIDEV*SUMV
-!$$$            ELSEIF(TIDALTYPE.EQ.2.AND.TIDALTYPE.LE.6) THEN
-            ENDIF
-!
+            UBTIDE%R(K) = CTIDEV*SUMU
+            VBTIDE%R(K) = CTIDEV*SUMV
           ENDIF
         ENDIF
       ENDIF

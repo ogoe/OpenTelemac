@@ -269,15 +269,36 @@
 !
       INTEGER NCON
 !
-!     INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+!     NUMBER OF CONSTITUENTS TURNED ON FOR SCHEMATIC TIDES
+!
+      INTEGER NCON2
+!
+!     INDICES OF THE CONSTITUENTS TURNED ON FOR SCHEMATIC TIDES
+!
+      INTEGER, ALLOCATABLE :: INDW(:)
+!
+!     INDICES OF AVAILABLE CONSTITUENTS AMONGST THE ALL POSSIBLE
 !
       CHARACTER(LEN=4) C_ID(TPXO_NCMX)
+!     SAME AS C_ID FOR SCHEMATIC TIDES
+!     BUT ONLY FOR DIURNAL, SEMIDIUARNAL AND FOURTH-DIURNAL WAVES
+      CHARACTER(LEN=4), ALLOCATABLE :: C_ID2(:)
+!
       INTEGER, ALLOCATABLE :: CCIND(:)
+!     SAME AS CCIND FOR SCHEMATIC TIDES
+!     BUT ONLY FOR DIURNAL, SEMIDIUARNAL AND FOURTH-DIURNAL WAVES
+      INTEGER, ALLOCATABLE :: CCIND2(:)
 !
 !     INTERPOLATED CONSTITUENTS FOR LIQUID BOUNDARY NODES
 !
       INTEGER, ALLOCATABLE :: TPXO_NFR(:)
       COMPLEX(KIND(1.D0)), ALLOCATABLE :: TPXO_BOR(:,:,:)
+!     SAME AS TPXO_BOR FOR SCHEMATIC TIDES
+!     BUT ONLY FOR DIURNAL, SEMIDIUARNAL AND FOURTH-DIURNAL WAVES
+      COMPLEX(KIND(1.D0)), ALLOCATABLE :: TPXO_BOR2(:,:,:)
+!     TO CALIBRATE HIGH WATER FOR SCHEMATIC TIDES
+      COMPLEX(KIND(1.D0)), ALLOCATABLE :: BOR2HW(:)
+      DOUBLE PRECISION, ALLOCATABLE    :: ARGHW(:)
 !
 !     WHETHER DATA ARE ALREADY READ OR NOT
 !
@@ -573,6 +594,106 @@
       RETURN
       END SUBROUTINE INTERPT
 
+!                    ************************
+                     SUBROUTINE INTERPT_SCHEM
+!                    ************************
+!
+     &( UV,NT,NT2,INDW,N,M,MZ,TH_LIM,PH_LIM,XLAT,XLON,UV1,IERR,ZUV )
+!
+!***********************************************************************
+! TELEMAC2D   V7P1                                   19/03/2015
+!***********************************************************************
+!
+!brief    INTERPOLATES COMPLEX ARRAY UV(NT,N,M) AT POINT XLAT,XLON
+!+        TH_LIM AND PH_LIM GIVE LATITUDE AND LONGITUDE LIMITS OF GRID
+!+        FOR SCHEMATIC TIDES
+!+        INDW + NT2: ONLY A PART OF THE AVAILABLE CONSTITUENTS IS USED
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!|  IERR          |<--| ERROR INDEX
+!|  INDW          |-->| INDICES FOR SCHEMATIC TIDES
+!|  M             |-->| ONE SIZE OF ARRAY UV
+!|  MZ            |-->| MASK (=1 FOR OCEAN NODE)
+!|  N             |-->| ONE SIZE OF ARRAY UV
+!|  NT            |-->| NUMBER OF CONSTITUENTS TURNED ON (NCON)
+!|  NT2           |-->| NUMBER OF CONSTITUENTS TURNED ON (NCON2)
+!|                |   | FOR SCHEMATIC TIDES
+!|  PH_LIM        |-->| LONGITUDE LIMITS OF GRID
+!|  TH_LIM        |-->| LATITUDE LIMITS OF GRID
+!|  UV            |-->| COMPLEX ARRAY TO BE INTERPOLATED AT POINT XLAT,XLON
+!|  UV1           |<--| INTERPOLATION OF UV AT POINT XLAT,XLON
+!|  XLAT          |-->| LATITUDE OF THE POINT WHERE INTERPOLATED
+!|  XLON          |-->| LONGITUDE OF THE POINT WHERE INTERPOLATED
+!|  ZUV           |-->| C-GRID ZUV: 'u','v','z' ('U','V','Z')
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      IMPLICIT NONE
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)  :: N,M
+      INTEGER, INTENT(OUT) :: IERR
+      INTEGER, INTENT(IN)  :: MZ(N,M),NT
+      INTEGER, INTENT(IN)  :: NT2,INDW(NT2)
+      CHARACTER(LEN=1), INTENT(IN) :: ZUV
+      DOUBLE PRECISION, INTENT(IN) :: TH_LIM(2),PH_LIM(2)
+      DOUBLE PRECISION, INTENT(IN) :: XLON,XLAT
+      COMPLEX, INTENT(IN)  :: UV(NT,N,M)
+      COMPLEX(KIND(1.D0)), INTENT(OUT) :: UV1(NT2)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER K
+      INTEGER IW(0:1),JW(0:1)
+!
+      DOUBLE PRECISION WW(0:1,0:1),DLAT,DLON
+      DOUBLE PRECISION DTHETA,DPHI,XLONC
+!
+!-----------------------------------------------------------------------
+!
+      IERR = 0
+      DTHETA = ( TH_LIM(2)-TH_LIM(1) )/( REAL(M) )
+      DPHI   = ( PH_LIM(2)-PH_LIM(1) )/( REAL(N) )
+!
+!     CHECKS XLON LONGITUDE CONVENTION
+!
+      XLONC = XLON
+      IF( XLONC.LT.PH_LIM(1) ) XLONC = XLONC + 360.D0
+      IF( XLONC.GT.PH_LIM(2) ) XLONC = XLONC - 360.D0
+      IF( XLONC.LT.PH_LIM(1).OR.XLONC.GT.PH_LIM(2) ) THEN
+        IERR = -1
+        RETURN
+      END IF
+      IF( XLAT.LT.TH_LIM(1).OR.XLAT.GT.TH_LIM(2) ) THEN
+        IERR = -1
+        RETURN
+      END IF
+      DLAT = XLAT
+      DLON = XLONC
+!
+      CALL BSI_WEIGHTS( ZUV,DLAT,DLON,TH_LIM,PH_LIM,
+     &                 DPHI,DTHETA,MZ,N,M,WW,IW,JW )
+!
+      IF( (WW(0,0)+WW(1,0)+WW(0,1)+WW(1,1)).LT.0.01D0 ) THEN
+        IERR = -2
+        DO K = 1,NT2
+          UV1(K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+        ENDDO
+      ELSE
+        IERR = 0
+        DO K = 1,NT2
+          UV1(K) = UV(INDW(K),IW(0),JW(0))*WW(0,0) +
+     &             UV(INDW(K),IW(1),JW(0))*WW(1,0) +
+     &             UV(INDW(K),IW(0),JW(1))*WW(0,1) +
+     &             UV(INDW(K),IW(1),JW(1))*WW(1,1)
+        ENDDO
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END SUBROUTINE INTERPT_SCHEM
+
 !                    **********************
                      SUBROUTINE BSI_WEIGHTS
 !                    **********************
@@ -822,6 +943,55 @@
       RETURN
       END FUNCTION PTIDE
 
+!             *************************************
+              DOUBLE PRECISION FUNCTION PTIDE_SCHEM
+!             *************************************
+!
+     &( Z1,CID,NCON,IND,TIME )
+!
+!***********************************************************************
+! TELEMAC2D   V7P1                                   19/03/2015
+!***********************************************************************
+!
+!brief
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!|  CID           |-->| GIVEN CONSTITUENTS
+!|  IND           |-->| INDICES OF GIVEN CONTITUENTS
+!|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
+!|  TIME          |-->| TIME IN SECONDS!
+!|                |   | WARNING DIFFERENT FROM REAL TIDES
+!|  Z1            |-->| FIELD TO INTERPOLATE
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      IMPLICIT NONE
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN) :: NCON
+      INTEGER, INTENT(IN) :: IND(NCON)
+      CHARACTER(LEN=4), INTENT(IN) :: CID(NCON)
+      DOUBLE PRECISION, INTENT(IN) :: TIME
+      COMPLEX(KIND(1.D0)), INTENT(IN) :: Z1(NCON)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      COMPLEX(KIND(1.D0)), ALLOCATABLE:: A(:)
+!
+!-----------------------------------------------------------------------
+!
+      ALLOCATE( A(NCON) )
+!
+      CALL MAKE_A_SCHEM(IND,NCON,CID,TIME,A)
+      PTIDE_SCHEM = HEIGHT(A,Z1,NCON)
+!
+      DEALLOCATE(A)
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END FUNCTION PTIDE_SCHEM
+
 !             ************************************
               DOUBLE PRECISION FUNCTION TPXO_PTIDE
 !             ************************************
@@ -880,6 +1050,63 @@
 !
       RETURN
       END FUNCTION TPXO_PTIDE
+
+!             ******************************************
+              DOUBLE PRECISION FUNCTION TPXO_PTIDE_SCHEM
+!             ******************************************
+!
+     &( IV,KFR,TPXO_NFR,TPXO_BOR,C_ID,NCON,CCIND,TIME )
+!
+!***********************************************************************
+! TELEMAC2D   V7P1                                   19/03/2015
+!***********************************************************************
+!
+!brief    Prescribes the free surface elevation, u or v-component
+!+        of the velocity based on the TPXO tidal model,
+!+        for level or velocity imposed liquid boundary
+!+        for schematic tides
+!
+!history  C.-T. PHAM (LNHE)
+!+        19/03/2015
+!+        V7P1
+!+        For schematic tides
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!|  C_ID          |-->| NAME OF GIVEN CONSTITUENTS
+!|  CCIND         |-->| INDICES OF GIVEN CONTITUENTS
+!|  IV            |-->| INDEX OF COMPONENT. 1: WATER LEVEL,
+!|                |   | 2: U-VELOCITY COMPONENT, 3: V-VELOCITY COMPONENT
+!|  KFR           |-->| BOUNDARY GLOBAL NODE NUMBER
+!|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
+!|  TIME          |-->| TIME IN SECONDS!
+!|                |   | WARNING DIFFERENT FROM REAL TIDES
+!|  TPXO_BOR      |-->| ARRAY OF HARMONIC CONSTITUENTS
+!|  TPXO_NFR      |-->| ARRAY OF MARITIME BOUNDARY NODES
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      IMPLICIT NONE
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN) :: IV,KFR,NCON
+      INTEGER, INTENT(IN) :: CCIND(NCON)
+      INTEGER, INTENT(IN) :: TPXO_NFR(:)
+      CHARACTER(LEN=4), INTENT(IN) :: C_ID(NCON)
+      DOUBLE PRECISION, INTENT(IN) :: TIME
+      COMPLEX(KIND(1.D0)), INTENT(IN) :: TPXO_BOR(:,:,:)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      TPXO_PTIDE_SCHEM = 0.D0
+      IF( TPXO_NFR(KFR).NE.0 ) THEN
+        TPXO_PTIDE_SCHEM = PTIDE_SCHEM( TPXO_BOR(IV,TPXO_NFR(KFR),:),
+     &                                  C_ID,NCON,CCIND,TIME )
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END FUNCTION TPXO_PTIDE_SCHEM
 
 !                    **************
                      SUBROUTINE MKW
@@ -1409,6 +1636,70 @@
 !
       RETURN
       END SUBROUTINE MAKE_A
+!
+!                    ***********************
+                     SUBROUTINE MAKE_A_SCHEM
+!                    ***********************
+!
+     &( IND,NC,CID,TIME,A )
+!
+!***********************************************************************
+! TELEMAC2D   V7P1                                   19/03/2015
+!***********************************************************************
+!
+!brief    COMPUTES A MATRIX ELEMENTS FOR ONE DATA POINT
+!+        FOR SCHEMATIC TIDES
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!|  A             |<--| MATRIX
+!|  CID           |-->| GIVEN CONSTITUENTS
+!|  IND           |-->| INDICES OF GIVEN CONTITUENTS
+!|  NC            |-->| NUMBER OF CONSTITUENTS TURNED ON
+!|  TIME          |-->| TIME IN SECONDS
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      IMPLICIT NONE
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)  :: NC
+      INTEGER, INTENT(IN)  :: IND(NC)
+      CHARACTER(LEN=4), INTENT(IN) :: CID(NC)
+      DOUBLE PRECISION, INTENT(IN) :: TIME
+      COMPLEX(KIND(1.D0)), INTENT(OUT) :: A(NC)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER I,J
+!
+!-----------------------------------------------------------------------
+!
+!
+      DO J = 1,NC
+        I = IND(J)
+        IF( I.NE.0 .AND. CID(J)(2:2).EQ.'2' ) THEN
+!         I =  1 => M2
+          A(J) = CMPLX( COS(TPXO_OMEGA_D(1)*TIME),
+     &                  SIN(TPXO_OMEGA_D(1)*TIME),
+     &                  KIND(1.D0))
+        ELSEIF( I.NE.0 .AND.
+     &          ( CID(J)(2:2).EQ.'4' .OR. CID(J)(3:3).EQ.'4' ) ) THEN
+!         I = 21 => M4
+          A(J) = CMPLX( COS(TPXO_OMEGA_D(21)*TIME),
+     &                  SIN(TPXO_OMEGA_D(21)*TIME),
+     &                  KIND(1.D0))
+        ELSEIF( I.NE.0 .AND. CID(J)(2:2).EQ.'1' ) THEN
+!         I = 1 => M2 OVER 2 FOR DIURNAL WAVES (TIMES 2 FOR THE PERIODS)
+          A(J) = CMPLX( COS(TPXO_OMEGA_D(1)*0.5D0*TIME),
+     &                  SIN(TPXO_OMEGA_D(1)*0.5D0*TIME),
+     &                  KIND(1.D0))
+        ENDIF
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END SUBROUTINE MAKE_A_SCHEM
 
 !                    **********************
                      SUBROUTINE INFER_MINOR
@@ -2267,6 +2558,11 @@
 !+        V6P2
 !+
 !
+!history  C.-T. PHAM (LNHE)
+!+        19/03/2015
+!+        V7P1
+!+        Schematic tides
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BOUNDARY_COLOUR|-->| AN INTEGER LINKED TO BOUNDARY POINTS
 !|                |   | BY DEFAULT THE LAST LINE OF BOUNDARY CONDITIONS
@@ -2344,7 +2640,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IC,I,J,K,IPOIN,IERR,NC,N,M
-      INTEGER IPTFR,NPTFRL
+      INTEGER IPTFR,NPTFRL,IPTFRL
       INTEGER, ALLOCATABLE :: MASKT(:,:),MASKU(:,:),MASKV(:,:)
 !
       DOUBLE PRECISION PI,DTR,RTD
@@ -2373,6 +2669,9 @@
       SAVE
 !
       INTRINSIC ATAN
+!
+      DOUBLE PRECISION P_DMAX,P_DMIN
+      EXTERNAL         P_DMAX,P_DMIN
 !
 !-----------------------------------------------------------------------
 !
@@ -2409,19 +2708,16 @@
 !  TEST TO CHECK CORRECT VALUES FOR TIDALTYPE
 !
       IF(.NOT.DEJA) THEN
-!$$$        IF(TIDALTYPE.LT.1.OR.TIDALTYPE.GT.6) THEN
-        IF(TIDALTYPE.NE.1) THEN
+        IF(TIDALTYPE.LT.1.OR.TIDALTYPE.GT.6) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'MAUVAISE VALEUR POUR TIDALTYPE =',TIDALTYPE
-            WRITE(LU,*) 'ELLE DOIT ETRE EGALE A 1 ACTUELLEMENT'
+            WRITE(LU,*) 'ELLE DOIT ETRE COMPRISE ENTRE 1 ET 6'
             WRITE(LU,*) 'AVEC LA BASE DE DONNEES DE MAREE TPXO'
-!$$$            WRITE(LU,*) 'ELLE DOIT ETRE COMPRISE ENTRE 1 ET 6'
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'UNEXPECTED VALUE FOR TIDALTYPE=',TIDALTYPE
-            WRITE(LU,*) 'IT MUST BE CHOSEN EQUAL TO 1 CURRENTLY'
+            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
             WRITE(LU,*) 'WITH TPXO TIDAL DATA BASE'
-!$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -2513,6 +2809,116 @@
           ENDDO
         ENDDO
       ENDDO
+!
+!-----------------------------------------------------------------------
+!
+!     TREATMENTS FOR SCHEMATIC TIDES
+!
+      IF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+        I = 0
+        IF(LNG.EQ.1) THEN
+           WRITE(LU,*) 'ONDES DISPONIBLES POUR MAREES SCHEMATIQUES :'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+           WRITE(LU,*) 'AVAILABLE CONSTITUENTS FOR SCHEMATIC TIDES:'
+        ENDIF
+      ENDIF
+!
+      IF(TIDALTYPE.EQ.2.OR.TIDALTYPE.EQ.6) THEN
+        DO IC = 1,NCON
+          IF(C_ID(IC)(2:2).EQ.'1'.OR.C_ID(IC)(2:2).EQ.'2'.OR.
+     &       C_ID(IC)(2:2).EQ.'4'.OR.C_ID(IC)(3:3).EQ.'4') THEN
+            I = I+1
+            WRITE(LU,*) 'C_ID(',IC,') = ',C_ID(IC)
+          ENDIF
+        ENDDO
+      ELSEIF(TIDALTYPE.EQ.3.OR.TIDALTYPE.EQ.5) THEN
+        DO IC = 1,NCON
+          IF(C_ID(IC).EQ.'m2  '.OR.C_ID(IC).EQ.'s2  '.OR.
+     &       C_ID(IC).EQ.'m4  ') THEN
+            I = I+1
+            WRITE(LU,*) 'C_ID(',IC,') = ',C_ID(IC)
+          ENDIF
+        ENDDO
+      ELSEIF(TIDALTYPE.EQ.4) THEN
+        DO IC = 1,NCON
+          IF(C_ID(IC).EQ.'m2  '.OR.C_ID(IC).EQ.'m4  ') THEN
+            I = I+1
+            WRITE(LU,*) 'C_ID(',IC,') = ',C_ID(IC)
+          ENDIF
+        ENDDO
+      ELSE
+!     REAL TIDES, TIDALTYPE = 1
+        DO IC = 1,NCON
+          WRITE(LU,*) 'C_ID(',IC,') = ',C_ID(IC)
+        ENDDO
+        I = NCON
+      ENDIF
+!
+      IF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+        NCON2 = I
+        ALLOCATE(CCIND2(NCON2))
+        ALLOCATE(INDW(NCON2),STAT=IERR)
+        ALLOCATE(C_ID2(NCON2))
+        ALLOCATE(ARGHW(NCON2))
+        ALLOCATE(BOR2HW(NCON2))
+      ENDIF
+!
+      I = 1
+!
+      IF(TIDALTYPE.EQ.2.OR.TIDALTYPE.EQ.6) THEN
+        DO IC = 1,NCON
+          IF(C_ID(IC)(2:2).EQ.'1'.OR.C_ID(IC)(2:2).EQ.'2'.OR.
+     &       C_ID(IC)(2:2).EQ.'4'.OR.C_ID(IC)(3:3).EQ.'4') THEN
+            CCIND2(I) = CCIND(IC)
+            INDW(I)   = IC
+            C_ID2(I)  = C_ID(IC)
+            I = I+1
+          ENDIF
+        ENDDO
+      ELSEIF(TIDALTYPE.EQ.3.OR.TIDALTYPE.EQ.5) THEN
+        DO IC = 1,NCON
+          IF(C_ID(IC).EQ.'m2  '.OR.C_ID(IC).EQ.'s2  '.OR.
+     &       C_ID(IC).EQ.'m4  ') THEN
+            CCIND2(I) = CCIND(IC)
+            INDW(I)   = IC
+            C_ID2(I)  = C_ID(IC)
+            I = I+1
+          ENDIF
+        ENDDO
+      ELSEIF(TIDALTYPE.EQ.4) THEN
+        DO IC = 1,NCON
+          IF(C_ID(IC).EQ.'m2  '.OR.C_ID(IC).EQ.'m4  ') THEN
+            CCIND2(I) = CCIND(IC)
+            INDW(I)   = IC
+            C_ID2(I)  = C_ID(IC)
+            I = I+1
+          ENDIF
+        ENDDO
+      ENDIF
+!
+      IF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+        ALLOCATE( TPXO_BOR2(3,NPTFRL,NCON2) )
+        DO K=1,NCON2
+          DO J=1,NPTFRL
+            DO I=1,3
+              TPXO_BOR2(I,J,K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+            ENDDO
+          ENDDO
+        ENDDO
+!
+        IF(ICALHW.EQ.0) THEN
+          IF(LNG.EQ.1) WRITE(LU,*) 'DONNER UN NUMERO DE NOEUD ' //
+     &       'DE FRONTIERE D UNE FRONTIERE LIQUIDE'  //
+     &       'POUR CALAGE DE PLEINE MER EN MAREES SCHEMATIQUES'
+          IF(LNG.EQ.2) WRITE(LU,*) 'GIVE A NUMBER OF BOUNDARY' //
+     &       'NODE FOR A LIQUID BOUNDARY' //
+     &       'TO CALIBRATE HIGH WATER FOR SCHEMATIC TIDES'
+          CALL PLANTE(1)
+          STOP
+        ENDIF    
+        WRITE(LU,*) 'ICALHW =',ICALHW
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -2641,18 +3047,57 @@
       IF(LNG.EQ.1) WRITE(LU,*) ' - INTERPOLATION DES NIVEAUX'
       IF(LNG.EQ.2) WRITE(LU,*) ' - INTERPOLATING LEVELS'
 !
-      ALLOCATE( ZCON(NCON) )
-      DO IPOIN = 1,NPOIN
+      IF(TIDALTYPE.EQ.1) THEN
+        ALLOCATE( ZCON(NCON) )
+        DO IPOIN = 1,NPOIN
 !
-        CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
-     &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
-        IF( TPXO_NFR(IPOIN).NE.0 ) THEN
-          DO K=1,NCON
-            TPXO_BOR(1,TPXO_NFR(IPOIN),K) = ZCON(K)
+          CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
+     &                  LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
+          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+            DO K=1,NCON
+              TPXO_BOR(1,TPXO_NFR(IPOIN),K) = ZCON(K)
+            ENDDO
+          ENDIF
+!
+        ENDDO
+      ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+        ALLOCATE( ZCON(NCON2) )
+        DO IPOIN = 1,NPOIN
+!
+          CALL INTERPT_SCHEM( ZT,NCON,NCON2,INDW,N,M,MASKT,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON,
+     &                        IERR,'z' )
+          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+            DO K=1,NCON2
+              TPXO_BOR2(1,TPXO_NFR(IPOIN),K) = ZCON(K)
+            ENDDO
+          ENDIF
+!
+        ENDDO
+!
+        DO K=1,NCON2
+          ARGHW(K)  = 0.D0
+!
+          DO J=1,NPTFR
+            IF(BOUNDARY_COLOUR%I(J).EQ.ICALHW) THEN
+              ARGHW(K)  = ATAN2(AIMAG(TPXO_BOR2(1,TPXO_NFR(NBOR(J)),K)),
+     &                           REAL(TPXO_BOR2(1,TPXO_NFR(NBOR(J)),K)))
+            ENDIF
           ENDDO
-        ENDIF
 !
-      ENDDO
+          IF(NCSIZE.GT.1) THEN
+            ARGHW(K)  = P_DMAX(ARGHW(K))  + P_DMIN(ARGHW(K))
+          ENDIF
+!
+          BOR2HW(K) = CMPLX( COS(ARGHW(K)), -SIN(ARGHW(K)), KIND(1.D0))
+        ENDDO
+!
+        DO IPTFRL = 1,NPTFRL
+          DO K=1,NCON2
+            TPXO_BOR2(1,IPTFRL,K) = TPXO_BOR2(1,IPTFRL,K)*BOR2HW(K)
+          ENDDO
+        ENDDO
+      ENDIF
       DEALLOCATE( ZCON,ZT,MASKT )
 !
 !-----------------------------------------------------------------------
@@ -2694,28 +3139,90 @@
       IF(LNG.EQ.1) WRITE(LU,*) ' - INTERPOLATION DES VITESSES'
       IF(LNG.EQ.2) WRITE(LU,*) ' - INTERPOLATING VELOCITIES'
 !
-      ALLOCATE( ZCON(NCON) )
-      DO IPOIN = 1,NPOIN
+      IF(TIDALTYPE.EQ.1) THEN
+        ALLOCATE( ZCON(NCON) )
+        DO IPOIN = 1,NPOIN
 !
-        CALL INTERPT(UT,NCON,N,M,MASKU,TH_LIM,PH_LIM,
-     &               LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
-        IF( TPXO_NFR(IPOIN).NE.0 ) THEN
-          DO K=1,NCON
+          CALL INTERPT(UT,NCON,N,M,MASKU,TH_LIM,PH_LIM,
+     &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
+          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+            DO K=1,NCON
 !     VELOCITY READ IN M2/S
-            TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
-          ENDDO
-        ENDIF
+              TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
+            ENDDO
+          ENDIF
 !
-        CALL INTERPT(VT,NCON,N,M,MASKV,TH_LIM,PH_LIM,
-     &               LAT(IPOIN),LON(IPOIN),ZCON,IERR,'v')
-        IF( TPXO_NFR(IPOIN).NE.0 ) THEN
-          DO K=1,NCON
+          CALL INTERPT(VT,NCON,N,M,MASKV,TH_LIM,PH_LIM,
+     &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'v')
+          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+            DO K=1,NCON
 !     VELOCITY READ IN M2/S
-            TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)
-          ENDDO
-        ENDIF
+              TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)
+            ENDDO
+          ENDIF
 !
-      ENDDO
+        ENDDO
+      ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+        ALLOCATE( ZCON(NCON2) )
+        DO IPOIN = 1,NPOIN
+!
+          CALL INTERPT_SCHEM( UT,NCON,NCON2,INDW,N,M,MASKU,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON,
+     &                        IERR,'u' )
+          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+            DO K=1,NCON2
+!     VELOCITY READ IN M2/S
+              TPXO_BOR2(2,TPXO_NFR(IPOIN),K) = ZCON(K)*BOR2HW(K)
+            ENDDO
+          ENDIF
+!
+          CALL INTERPT_SCHEM( VT,NCON,NCON2,INDW,N,M,MASKV,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON,
+     &                        IERR,'v' )
+          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+            DO K=1,NCON2
+!     VELOCITY READ IN M2/S
+              TPXO_BOR2(3,TPXO_NFR(IPOIN),K) = ZCON(K)*BOR2HW(K)
+            ENDDO
+          ENDIF
+!
+        ENDDO
+      ENDIF
+!
+!     SPECIFIC TREATMENTS FOR NEAP TIDES, IN PARTICULAR FOR S2 WAVE
+!
+      IF(TIDALTYPE.EQ.5) THEN
+        DO IPOIN = 1,NPOIN
+          J = TPXO_NFR(IPOIN)
+          IF( J.NE.0 ) THEN
+            DO K=1,NCON2
+              IF(C_ID2(K).EQ.'s2  ') THEN
+                TPXO_BOR2(1,J,K) = -TPXO_BOR2(1,J,K)
+                TPXO_BOR2(2,J,K) = -TPXO_BOR2(2,J,K)
+                TPXO_BOR2(3,J,K) = -TPXO_BOR2(3,J,K)
+              ENDIF
+            ENDDO
+          ENDIF
+        ENDDO
+      ELSEIF(TIDALTYPE.EQ.6) THEN
+        DO IPOIN = 1,NPOIN
+          J = TPXO_NFR(IPOIN)
+          IF( J.NE.0 ) THEN
+            DO K=1,NCON2
+              IF(C_ID2(K).EQ.'s2  '.OR.C_ID2(K).EQ.'n2  '
+     &           .OR.C_ID2(K).EQ.'k2  '.OR.C_ID2(K).EQ.'k1  '
+     &           .OR.C_ID2(K).EQ.'p1  '.OR.C_ID2(K).EQ.'q1  '
+     &           .OR.C_ID2(K).EQ.'o1  '
+     &           .OR.C_ID2(K).EQ.'ms4 '.OR.C_ID2(K).EQ.'mn4 ') THEN
+                TPXO_BOR2(1,J,K) = -TPXO_BOR2(1,J,K)
+                TPXO_BOR2(2,J,K) = -TPXO_BOR2(2,J,K)
+                TPXO_BOR2(3,J,K) = -TPXO_BOR2(3,J,K)
+              ENDIF
+            ENDDO
+          ENDIF
+        ENDDO
+      ENDIF
+!
       DEALLOCATE( UT,VT,ZCON,MASKU,MASKV )
       DEALLOCATE( LON,LAT )
 !
@@ -2757,7 +3264,11 @@
      &                           STIME_MJD+TEMPS/86400.D0,INTMICON)
      &        + MSL
             HBTIDE%R(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
-!$$$          ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+          ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+            Z = CTIDE*TPXO_PTIDE_SCHEM(1,NBOR(K),TPXO_NFR,TPXO_BOR2,
+     &                                 C_ID2,NCON2,CCIND2,TEMPS)
+     &        + MSL
+            HBTIDE%R(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
           ENDIF
 !         ELSE HBOR TAKEN IN BOUNDARY CONDITIONS FILE
 !$$$          ENDIF
@@ -2801,7 +3312,21 @@
      &                                STIME_MJD+TEMPS/86400.D0,INTMICON)
      &              / MAX( 0.1D0 , Z-ZF(NBOR(K)) )
 !$$$           ENDIF
-!$$$          ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+          ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+!  IF LIHBOR(K).EQ.4, Z IS NOT CALCULATED BEFORE
+            Z = CTIDE*TPXO_PTIDE_SCHEM(1,NBOR(K),TPXO_NFR,TPXO_BOR2,
+     &                                 C_ID2,NCON2,CCIND2,TEMPS)
+     &        + MSL
+!$$$           IF(PROVEL(NUMLIQ(K)).EQ.1) THEN
+            UBTIDE%R(K) =
+     &         CTIDEV*TPXO_PTIDE_SCHEM(2,NBOR(K),TPXO_NFR,TPXO_BOR2,
+     &                                 C_ID2,NCON2,CCIND2,TEMPS)
+     &               / MAX( 0.1D0 , Z-ZF(NBOR(K)) )
+            VBTIDE%R(K) =
+     &         CTIDEV*TPXO_PTIDE_SCHEM(3,NBOR(K),TPXO_NFR,TPXO_BOR2,
+     &                                 C_ID2,NCON2,CCIND2,TEMPS)
+     &              / MAX( 0.1D0 , Z-ZF(NBOR(K)) )
+!$$$           ENDIF
           ENDIF
 !
         ENDIF
