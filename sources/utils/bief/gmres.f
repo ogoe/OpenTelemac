@@ -129,10 +129,12 @@
 !+   solution is easily found : X=A%D/B
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        06/07/2015
+!+        23/07/2015
 !+        V7P1
-!+   Now returning without stopping when algorithm fails. The accuracy
-!+   is printed.
+!+   Now when the algorithm fails the dimension of the Krylov space
+!+   is reduced. This is more general than the previous solution
+!+   that assumed the matrix diagonal. Various cases with diagonal
+!+   matrix also tested.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRIX OF THE SYSTEM
@@ -165,7 +167,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!  MAXIMUM CFG%KRYLOV=20
+!     HARDCODED MAXIMUM CFG%KRYLOV=20
 !
       DOUBLE PRECISION H(21,20),C(20),S(20),E(21),BID
 !
@@ -178,8 +180,6 @@
       INTRINSIC SQRT,ABS
 !
 !-----------------------------------------------------------------------
-!
-      K = CFG%KRYLOV
 !
       CROUT=.FALSE.
       IF(MOD(CFG%PRECON,7).EQ.0) CROUT=.TRUE.
@@ -234,6 +234,10 @@
 !
       M = M+1
 !
+!     K CAN BE REDUCED DURING THE ITERATION IF THE ALGORITHM FAILS
+!
+      K = CFG%KRYLOV
+!
 ! COMPUTES THE VECTOR V1 = - R0 / NORM(R0)
 ! (- SIGN BECAUSE R = AX - B INSTEAD OF B - AX)
 !
@@ -255,48 +259,35 @@
           CALL MATRBL( 'X=AY    ',AV%ADR(J)%P,A,V%ADR(J)%P,BID,MESH)
         ENDIF
 !
-        CALL OS('X=Y     ', V%ADR(J+1)%P ,AV%ADR(J)%P , X , BID )
+!       NEXT VECTOR IN THE BASIS : V%ADR(J+1)%P
+!
+        CALL OS('X=Y     ',X=V%ADR(J+1)%P,Y=AV%ADR(J)%P)
+!
+!       ORTHOGONALISATION PROCESS
 !
         DO I = 1,J
-!
           H(I,J) = P_DOTS( V%ADR(J+1)%P , V%ADR(I)%P , MESH )
-          CALL OS('X=X+CY  ',V%ADR(J+1)%P,V%ADR(I)%P,V%ADR(I)%P,-H(I,J))
-!
+          CALL OS('X=X+CY  ',X=V%ADR(J+1)%P,Y=V%ADR(I)%P,C=-H(I,J))
         ENDDO
 !
-        H(J+1,J)=P_DOTS(V%ADR(J+1)%P,V%ADR(J+1)%P,MESH)
-        H(J+1,J) = SQRT( H(J+1,J) )
+        H(J+1,J)=SQRT(P_DOTS(V%ADR(J+1)%P,V%ADR(J+1)%P,MESH))
 !
         IF(H(J+1,J).LT.1.D-20) THEN
           IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'GMRES : ECHEC DE L''ALGORITHME, MATRICE'
-            WRITE(LU,*) 'DESORMAIS SUPPOSEE DIAGONALE'
+            WRITE(LU,*) 'GMRES : ECHEC DE L''ALGORITHME'
+            WRITE(LU,*) 'NORME DU VECTEUR DE RANG ',J+1
+            WRITE(LU,*) 'DANS LA BASE EGALE A ',H(J+1,J)
+            WRITE(LU,*) 'DIMENSION DE L''ESPACE DE KRYLOV REDUITE A ',J
           ENDIF
           IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'GMRES: ALGORITHM FAILS, MATRIX ASSUMED'
-            WRITE(LU,*) 'DIAGONAL'
+            WRITE(LU,*) 'GMRES: ALGORITHM FAILS'
+            WRITE(LU,*) 'NORM OF VECTOR ',J+1
+            WRITE(LU,*) 'IN THE BASIS EQUALS ',H(J+1,J)
+            WRITE(LU,*) 'SIZE OF KRYLOV SPACE REDUCED TO ',J
           ENDIF
-!         SIMPLE SOLUTION IF A DIAGONAL...
-!         HERE NOT DONE FOR BLOCKS...
-          IF(A%TYPE.EQ.3) THEN
-            CALL OS('X=Y/Z   ',X=X%ADR(1)%P,Y=B%ADR(1)%P,Z=A%D)
-          ELSE
-            WRITE(LU,*) 'CASE NOT IMPLEMENTED IN GMRES'
-            CALL PLANTE(1)
-            STOP
-          ENDIF
-          CALL MATRBL('X=AY    ',R0,A,X,BID,MESH)
-          CALL OS('X=X-Y   ', R0 , B , B , BID )
-          NR0=P_DOTS(R0,R0,MESH)
-          NR0=SQRT(NR0)
-          PREC = NR0/NB
-          IF(PREC.GT.CFG%EPS) THEN
-            WRITE(LU,*) 'PREC=',PREC,' CFG%EPS=',CFG%EPS
-            WRITE(LU,*) 'ALGORITHM FAILS. RESIDUAL: ',NR0
-            WRITE(LU,*) 'INITIAL RESIDUAL: ',NB
-            WRITE(LU,*) 'NOW RETURNING WITHOUT STOPPING'
-          ENDIF
-          GO TO 3000
+!         REDUCTION OF KRYLOV SPACE
+          K=J
+          GO TO 2000
         ENDIF
         CALL OS('X=CX    ',V%ADR(J+1)%P, B, B, 1.D0/H(J+1,J))
 !
@@ -304,25 +295,26 @@
 !
 ! K-TH COLUMN (VECTOR V(K+1) IS NOT COMPLETELY BUILT)
 !
-        IF(PRECO) THEN
-          CALL GOUP(B , AUX , V%ADR(K)%P , 'D' ,MESH,.TRUE.)
-          CALL MATRBL( 'X=AY    ',AV%ADR(K)%P,A,B,BID,MESH)
-          CALL GODOWN(AV%ADR(K)%P,AUX,AV%ADR(K)%P,'D',MESH,.FALSE.)
-        ELSE
-          CALL MATRBL( 'X=AY    ',AV%ADR(K)%P,A,V%ADR(K)%P,BID,MESH)
-        ENDIF
+2000  CONTINUE
 !
-        H(K+1,K) = P_DOTS( AV%ADR(K)%P , AV%ADR(K)%P , MESH )
+      IF(PRECO) THEN
+        CALL GOUP(B , AUX , V%ADR(K)%P , 'D' ,MESH,.TRUE.)
+        CALL MATRBL( 'X=AY    ',AV%ADR(K)%P,A,B,BID,MESH)
+        CALL GODOWN(AV%ADR(K)%P,AUX,AV%ADR(K)%P,'D',MESH,.FALSE.)
+      ELSE
+        CALL MATRBL( 'X=AY    ',AV%ADR(K)%P,A,V%ADR(K)%P,BID,MESH)
+      ENDIF
 !
-        DO I = 1,K
+      H(K+1,K) = P_DOTS( AV%ADR(K)%P , AV%ADR(K)%P , MESH )
 !
-          H(I,K) = P_DOTS( AV%ADR(K)%P , V%ADR(I)%P , MESH )
-          H(K+1,K) = H(K+1,K) - H(I,K)**2
+      DO I = 1,K
+        H(I,K) = P_DOTS( AV%ADR(K)%P , V%ADR(I)%P , MESH )
+        H(K+1,K) = H(K+1,K) - H(I,K)**2
+      ENDDO
 !
-        ENDDO ! I
-!       IN THEORY H(K+1,K) IS POSITIVE
-!       TO MACHINE ACCURACY
-        H(K+1,K) = SQRT( ABS(H(K+1,K)) )
+!     IN THEORY H(K+1,K) IS POSITIVE
+!     TO MACHINE ACCURACY
+      H(K+1,K) = SQRT( MAX(H(K+1,K),0.D0) )
 !
 !-----------------------------------------------------------------------
 ! BUILDS GIVENS' ROTATIONS AND APPLIES TO H AND E
@@ -335,30 +327,30 @@
 !
       DO I = 1 , K
 !
-!     MODIFIES COLUMN I OF H BY THE PREVIOUS ROTATIONS
-      IF(I.GE.2) THEN
-        DO J = 1,I-1
-          ZZ       =  C(J) * H(J,I) + S(J) * H(J+1,I)
-          H(J+1,I) = -S(J) * H(J,I) + C(J) * H(J+1,I)
-          H(J,I) = ZZ
-        ENDDO ! J
-      ENDIF
-!     MODIFIES COLUMN I OF H BY ROTATION I
-      R = SQRT( H(I,I)**2 + H(I+1,I)**2 )
-      IF(ABS(R).LT.1.D-6) THEN
-        IF(INFOGR) THEN
-          IF (LNG.EQ.1) WRITE(LU,91) R
-          IF (LNG.EQ.2) WRITE(LU,92) R
+!       MODIFIES COLUMN I OF H BY THE PREVIOUS ROTATIONS
+        IF(I.GE.2) THEN
+          DO J = 1,I-1
+            ZZ       =  C(J) * H(J,I) + S(J) * H(J+1,I)
+            H(J+1,I) = -S(J) * H(J,I) + C(J) * H(J+1,I)
+            H(J,I)   = ZZ
+          ENDDO ! J
         ENDIF
-        GO TO 3000
-      ENDIF
-      C(I) =  H(I,I)   / R
-      S(I) =  H(I+1,I) / R
-      H(I,I) = R
-!     H(I+1,I) = 0.D0    (WILL NOT BE USED AGAIN)
-!     MODIFIES VECTOR E
-      E(I+1) = -S(I) * E(I)
-      E(I  ) =  C(I) * E(I)
+!       MODIFIES COLUMN I OF H BY ROTATION I
+        R = SQRT( H(I,I)**2 + H(I+1,I)**2 )
+        IF(ABS(R).LT.1.D-6) THEN
+          IF(INFOGR) THEN
+            IF (LNG.EQ.1) WRITE(LU,91) R
+            IF (LNG.EQ.2) WRITE(LU,92) R
+          ENDIF
+          GO TO 3000
+        ENDIF
+        C(I) =  H(I,I)   / R
+        S(I) =  H(I+1,I) / R
+        H(I,I) = R
+!       H(I+1,I) = 0.D0    (WILL NOT BE USED AGAIN)
+!       MODIFIES VECTOR E
+        E(I+1) = -S(I) * E(I)
+        E(I  ) =  C(I) * E(I)
 !
       ENDDO ! I
 !
@@ -371,11 +363,11 @@
 !
       E(K) = E(K) / H(K,K)
       DO J = K-1,1,-1
-      DO L = J+1,K
-        E(J) = E(J) - H(J,L) * E(L)
-      ENDDO ! L
-      E(J) = E(J) / H(J,J)
-      ENDDO ! J
+        DO L = J+1,K
+          E(J) = E(J) - H(J,L) * E(L)
+        ENDDO
+        E(J) = E(J) / H(J,J)
+      ENDDO
 !
 !-----------------------------------------------------------------------
 ! BUILDS THE SOLUTION FOR STEP M : X(M+1) = X(M) + VK * Y(K)
@@ -391,7 +383,7 @@
 !
         CALL OS('X=X+CY  ', R0 , AV%ADR(L)%P , R0 , E(L) )
 !
-      ENDDO ! L
+      ENDDO
 !
 ! CHECKS THAT THE ACCURACY IS NOT ALREADY REACHED
 ! THE RESIDUAL NORM IS GIVEN BY ABS(E(K+1))
