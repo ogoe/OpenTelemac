@@ -1,18 +1,18 @@
-!                    *****************
+!                    *******************
                      SUBROUTINE DEALMESH
-!                    *****************
+!                    *******************
      &(MESH)
 !
 !***********************************************************************
-! BIEF   V7P0
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    Deallocates a bief_mesh mesh structure.
 !
-!history  Y AUDOUIN (LNHE)
+!history  Y. AUDOUIN (EDF LAB, LNHE)
 !+        23/05/2013
 !+        V6P3
-!+   First version
+!+   First version.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MESH           |<->| MESH STRUCTURE TO BE ALLOCATED
@@ -93,6 +93,8 @@
       DEALLOCATE(MESH%YSEG)
       CALL BIEF_DEALLOBJ(MESH%FAC)
       DEALLOCATE(MESH%FAC)
+      CALL BIEF_DEALLOBJ(MESH%IFAC)
+      DEALLOCATE(MESH%IFAC)
       IF(NCSIZE.GT.1) THEN
         CALL BIEF_DEALLOBJ(MESH%BUF_SEND)
         CALL BIEF_DEALLOBJ(MESH%BUF_RECV)
@@ -179,7 +181,7 @@
       DEALLOCATE(MESH%NB_NEIGHB_PT_SEG)
       DEALLOCATE(MESH%LIST_SEND_SEG)
       DEALLOCATE(MESH%NH_COM_SEG)
-
+!
       CALL BIEF_DEALLOBJ(MESH%NUBO)
       DEALLOCATE(MESH%NUBO)
       CALL BIEF_DEALLOBJ(MESH%JMI)

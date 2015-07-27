@@ -5,7 +5,7 @@
      &(U,V,H,S,ZF,T,TRAC0,NTRAC,ITURB,NPOIN,AKEP,TROUVE)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES MISSING DATA/VARIABLES (WHEN RESUMING SIMULATION).
@@ -13,7 +13,7 @@
 !history  J-M HERVOUET (LNH)
 !+        31/08/2007
 !+        V5P8
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -31,6 +31,11 @@
 !+        10/07/2014
 !+        V7P0
 !+   Tracers ranks shifted due to secondary currents variables.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        24/07/2015
+!+        V5P8
+!+   English message corrected.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AKEP           |-->| IF YES, K AND EPSILON TO BE INITIALISED
@@ -63,7 +68,6 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER ITRAC
-      DOUBLE PRECISION BID
 !
 !-----------------------------------------------------------------------
 !
@@ -105,7 +109,7 @@
      &         /,1X,'         ET LA SURFACE LIBRE')
 401       FORMAT(1X,'RESCUE : WATER DEPTH COMPUTED WITH BATHYMETRY',
      &         /,1X,'         AND SURFACE ELEVATION')
-          CALL OV( 'X=Y-Z   ' , H , S , ZF , BID , NPOIN )
+          CALL OV( 'X=Y-Z   ' , H , S , ZF , 0.D0 , NPOIN )
         ELSE
           IF(LNG.EQ.1) WRITE(LU,420)
           IF(LNG.EQ.2) WRITE(LU,421)
@@ -145,7 +149,7 @@
         IF(LNG.EQ.1) WRITE(LU,950)
         IF(LNG.EQ.2) WRITE(LU,951)
 950     FORMAT(1X,'RESCUE : K ET EPSILON SERONT REINITIALISES')
-951     FORMAT(1X,'RESCUE : K ET EPSILON WILL BE SET AGAIN')
+951     FORMAT(1X,'RESCUE : K AND EPSILON WILL BE SET AGAIN')
       ENDIF
 !
 !-----------------------------------------------------------------------

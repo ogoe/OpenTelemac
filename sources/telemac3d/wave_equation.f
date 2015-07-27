@@ -75,6 +75,13 @@
 !+   PATMOS/(RO*G) is added to the free surface also for the non
 !+   compatible part.
 !
+!history  J-M HERVOUET (LNHE)
+!+        27/07/2015
+!+        V7P1
+!+   In parallel SEM2D must be non assembled but it was initialised with
+!+   SMH (assembled in parallel). SEM2D is now shared again after copy
+!+   of SMH.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -318,6 +325,15 @@
 !     STARTS COMPUTATION OF THE SECOND MEMBER (IN SEM2D%ADR(1)%P)
 !
       CALL OS('X=Y     ',X=SEM2D%ADR(1)%P,Y=SMH)
+!
+!     SMH IS ASSEMBLED BUT SEM2D MUST NOT, IT IS SHARED AGAIN HERE.   
+!     NOT VERY ELEGANT BUT EFFECTIVE...
+!
+      IF(NCSIZE.GT.1) THEN
+        DO I=1,NPOIN2
+          SEM2D%ADR(1)%P%R(I)=SEM2D%ADR(1)%P%R(I)*MESH2D%IFAC%I(I)
+        ENDDO
+      ENDIF
 !
 !     PSEUDO-VISCOSITY IN THE WAVE EQUATION (IN NUWAVE, P0 FUNCTION)
 !
