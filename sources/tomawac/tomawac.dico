@@ -3737,7 +3737,7 @@ VARIABLES FOR 2D GRAPHIC PRINTOUTS
 PERIOD FOR GRAPHIC PRINTOUTS 
 NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS' 
  
-NOM = 'FORMAT DU FICHIER DES RESULTAT 2D' 
+NOM = 'FORMAT DU FICHIER DES RESULTATS 2D' 
 NOM1 = '2D RESULTS FILE FORMAT' 
 TYPE = CARACTERE 
 INDEX = 17 
@@ -4239,12 +4239,12 @@ CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 1 
 RUBRIQUE = 'FICHIERS DE DONNEES' 
 RUBRIQUE1 = 'DATA FILE' 
-AIDE = 'Format du fichier de resultats du calcul precedent. 
+AIDE = 'Format du fichier des vents binaire. 
 Les valeurs possibles sont : 
 - SERAFIN : format standard simple precision pour Telemac; 
 - SERAFIND: format standard double precision pour Telemac; 
 - MED     : format MED base sur HDF5' 
-AIDE1 = 'Previous computation results file format. 
+AIDE1 = 'Binary xind file format. 
 Possible values are: 
 - SERAFIN : classical single precision format in Telemac; 
 - SERAFIND: classical double precision format in Telemac; 
@@ -4350,12 +4350,12 @@ CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 1 
 RUBRIQUE = 'FICHIERS DE DONNEES' 
 RUBRIQUE1 = 'DATA FILE' 
-AIDE = 'Format du fichier de resultats du calcul precedent. 
+AIDE = 'Format du fichier de la maree binaire. 
 Les valeurs possibles sont : 
 - SERAFIN : format standard simple precision pour Telemac; 
 - SERAFIND: format standard double precision pour Telemac; 
 - MED     : format MED base sur HDF5' 
-AIDE1 = 'Previous computation results file format. 
+AIDE1 = 'binary tidal water file format. 
 Possible values are: 
 - SERAFIN : classical single precision format in Telemac; 
 - SERAFIND: classical double precision format in Telemac; 

@@ -1321,16 +1321,8 @@ if ($CRAY eq "oui" || $FUJI eq "oui")
 #sa1 ecrire_variable_fichier(F,"CAS", @vals[0]);
 #
 #--- NUMERO DE VERSION
-@vals = tm_casdico::recup_valeur_mot(\%motsEtude, "NUMERO DE VERSION"); 
-if (scalar(@vals) == 0)
-  {  ecrire("ERREUR : Mot clef du dictionnaire 'NUMERO DE VERSION' non defini",
-            "ERROR : undefined dictionary parameter 'NUMERO DE VERSION'");
-     exit 1;}
-$vs=@vals[0];          #traitement specifique pour accepter la forme
-if (@vals > 1)         #         V5P2;V5P2;V5P1;V5P1
-  { for ($i=1;$i<@vals;$i++)  { $vs=$vs.",@vals[i]";}
-  }
-$vs=~tr/A-Z/a-z/;
+# Récuperation du numéro de version defini dans le systel.ini
+$vs=$hash{"VERSION"};
 ecrire_variable_fichier(F,"VERSION", $vs);
 
 #

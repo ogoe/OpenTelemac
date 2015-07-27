@@ -945,6 +945,7 @@ sub RunPartel       # (geo, cli, NCSIZE, secname, zonname,geomname); #jaj added 
   close(FPAR) or die "File \'partel.par\' cannot be closed!";
 # partel outputs redirected to a file
   $command=join "",$PROJECT,$ps,"builds$ps$dirlib$ps","bin$ps","partel$VERS[$0].exe < partel.par >> partel.log";
+  print $command;
 # this line will redirect partel outputs to screen or listing instead of partel.log
 # $command=join "",$PathParall,"partel < partel.par ";
   $ret = system ("$command");
