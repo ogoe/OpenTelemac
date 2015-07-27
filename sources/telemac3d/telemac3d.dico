@@ -3724,8 +3724,8 @@ NIVEAU = 1
 AIDE = 'fixe la precision pour l equation de Poisson'
 AIDE1 = 'Set the precision needed for the pressure computation'
 
-NOM = 'VITESSE DES SOURCES SELON X'
-NOM1 = 'VELOCITIES OF THE SOURCES ALONG X'
+NOM = 'VITESSE DES SOURCES SELON Z'
+NOM1 = 'VELOCITIES OF THE SOURCES ALONG Z'
 TYPE = REEL
 INDEX = 72
 MNEMO = 'WSCE'
