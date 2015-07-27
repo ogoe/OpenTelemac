@@ -1398,7 +1398,9 @@
       SUBROUTINE GET_BND_VALUE_SRF
 !***********************************************************************
 !
-     &(FILE_ID,TYP_BND_ELEM,NPTFR,VALUE,IERR)
+     &(FILE_ID,TYP_BND_ELEM,NPTFR,LIHBOR,LIUBOR,
+     & LIVBOR,HBOR,UBOR,VBOR,CHBORD,TRAC,
+     & LITBOR,TBOR,ATBOR,BTBOR, IERR)
 !
 !***********************************************************************
 ! HERMES   V7P0                                               01/05/2014
@@ -1416,7 +1418,17 @@
 !| FILE_ID        |-->| FILE DESCRIPTOR
 !| TYP_BND_ELEM   |-->| TYPE OF THE BOUNDARY ELEMENTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| VALUE          |<->| TYPE OF BOUNDARY FOR EACH POINT
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON U
+!| LIVBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON V
+!| HBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON DEPTH
+!| UBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
+!| VBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
+!| CHBORD         |<--| FRICTION COEFFICIENT AT BOUNDARY
+!| TRAC           |-->| IF YES, THERE ARE TRACERS
+!| LITBOR         |-->| PHYSICAL BOUNDARY CONDITIONS FOR TRACERS
+!| TBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON TRACER
+!| ATBOR,BTBOR    |<--| THERMAL EXCHANGE COEFFICIENTS.
 !| IERR           |<--| 0 IF NO ERROR DURING THE EXECUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -1426,11 +1438,17 @@
         INTEGER, INTENT(IN) :: FILE_ID
         INTEGER, INTENT(IN) :: TYP_BND_ELEM
         INTEGER, INTENT(IN) :: NPTFR
-        INTEGER, INTENT(INOUT) :: VALUE(NPTFR)
+        INTEGER, INTENT(INOUT) :: LIUBOR(NPTFR),LIVBOR(NPTFR)
+        INTEGER, INTENT(INOUT) :: LIHBOR(NPTFR),LITBOR(*)
+        DOUBLE PRECISION, INTENT(INOUT) :: UBOR(*),VBOR(*)
+        DOUBLE PRECISION, INTENT(INOUT) :: HBOR(NPTFR),CHBORD(NPTFR)
+        DOUBLE PRECISION, INTENT(INOUT) :: TBOR(NPTFR),ATBOR(NPTFR)
+        DOUBLE PRECISION, INTENT(INOUT) :: BTBOR(NPTFR)
+        LOGICAL, INTENT(IN)    :: TRAC
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID, I
-        INTEGER :: IDUM,LIHBOR,LIUBOR,LIVBOR,LITBOR
+        INTEGER :: IDUM
         DOUBLE PRECISION :: DDUM
         !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
@@ -1445,11 +1463,20 @@
         ! about the boundary type li[huvt]bor
         REWIND(SRF_OBJ_TAB(SRF_ID)%NCLI)
         DO I=1,SRF_OBJ_TAB(SRF_ID)%NPTFR
-          READ(SRF_OBJ_TAB(SRF_ID)%NCLI,*,IOSTAT=IERR)
-     &           LIHBOR,LIUBOR,LIVBOR,
-     &           DDUM  ,DDUM  ,DDUM,
-     &           DDUM ,LITBOR,DDUM,DDUM,DDUM,
-     &           IDUM,IDUM
+          IF(TRAC) THEN
+            READ(SRF_OBJ_TAB(SRF_ID)%NCLI,*,IOSTAT=IERR)
+     &             LIHBOR(I),LIUBOR(I),LIVBOR(I),
+     &             HBOR(I)  ,UBOR(I)  ,VBOR(I),
+     &             CHBORD(I) ,LITBOR(I),
+     &             TBOR(I),ATBOR(I),BTBOR(I),
+     &             IDUM,IDUM
+          ELSE
+            READ(SRF_OBJ_TAB(SRF_ID)%NCLI,*,IOSTAT=IERR)
+     &             LIHBOR(I),LIUBOR(I),LIVBOR(I),
+     &             HBOR(I)  ,UBOR(I)  ,VBOR(I),
+     &             CHBORD(I) ,IDUM,DDUM,DDUM,DDUM,
+     &             IDUM,IDUM
+          ENDIF
           IF(IERR.LT.0) THEN
             ! End of file reached
             CALL CHECK_CALL(IERR,'GET_BND_VALUE_SRF:READ:END OF FILE')
@@ -1457,7 +1484,6 @@
             ! Error during read
             CALL CHECK_CALL(IERR,'GET_BND_VALUE_SRF:READ')
           ENDIF
-          VALUE(I) = LIHBOR*1000 + LIUBOR*100 + LIVBOR*10 + LITBOR
         ENDDO
         !
         RETURN
@@ -2246,7 +2272,10 @@
       SUBROUTINE SET_BND_SRF
 !***********************************************************************
 !
-     &(FILE_ID,TYPE_BND_ELT,NELEBD,NDP,IKLE,VALUE,IERR)
+     &(FILE_ID,TYPE_BND_ELT,NELEBD,NDP,IKLE,
+     & LIHBOR,LIUBOR,
+     & LIVBOR,HBOR,UBOR,VBOR,CHBORD,
+     & LITBOR,TBOR,ATBOR,BTBOR,IERR)
 !
 !***********************************************************************
 ! HERMES   V7P0                                               01/05/2014
@@ -2265,7 +2294,16 @@
 !| NELEBD         |-->| NUMBER OF BOUNDARY ELEMENTS
 !| NDP            |-->| NUMBER OF POINTS PER BOUNDARY ELEMENT
 !| IKLE           |-->| CONNECTIVITY ARRAY FOR THE BOUNDARY ELEMENTS
-!| VALUE          |-->| VALUE FOR EACH BOUNDARY ELEMENT
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON U
+!| LIVBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON V
+!| HBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON DEPTH
+!| UBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
+!| VBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
+!| CHBORD         |<--| FRICTION COEFFICIENT AT BOUNDARY
+!| LITBOR         |-->| PHYSICAL BOUNDARY CONDITIONS FOR TRACERS
+!| TBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON TRACER
+!| ATBOR,BTBOR    |<--| THERMAL EXCHANGE COEFFICIENTS.
 !| IERR           |<--| 0 IF NO ERROR DURING THE EXECUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -2277,11 +2315,15 @@
         INTEGER,          INTENT(IN)  :: NELEBD
         INTEGER,          INTENT(IN)  :: NDP
         INTEGER,          INTENT(IN)  :: IKLE(NELEBD*NDP)
-        INTEGER,          INTENT(IN)  :: VALUE(NELEBD)
+        INTEGER,          INTENT(IN)  :: LIUBOR(NELEBD),LIVBOR(NELEBD)
+        INTEGER,          INTENT(IN)  :: LIHBOR(NELEBD),LITBOR(NELEBD)
+        DOUBLE PRECISION, INTENT(IN)  :: UBOR(NELEBD),VBOR(NELEBD)
+        DOUBLE PRECISION, INTENT(IN)  :: HBOR(NELEBD),CHBORD(NELEBD)
+        DOUBLE PRECISION, INTENT(IN)  :: TBOR(NELEBD),ATBOR(NELEBD)
+        DOUBLE PRECISION, INTENT(IN)  :: BTBOR(NELEBD)
         INTEGER,          INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID, I, NCLI
-        INTEGER :: VAL, LIHBOR, LIUBOR, LIVBOR, LITBOR
         !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'SET_BND_SRF:GET_SRF_OBJ')
@@ -2290,17 +2332,11 @@
         SRF_OBJ_TAB(SRF_ID)%TYP_BND_ELT = TYPE_BND_ELT
         REWIND(NCLI)
         DO I=1,NELEBD
-          ! Convert the value to get li[huvt]bor
-          VAL = VALUE(I)
-          LIHBOR = (VAL/1000)
-          LIUBOR = (VAL - LIHBOR*1000)/100
-          LIVBOR = (VAL - LIHBOR*1000 - LIUBOR*100)/10
-          LITBOR =  VAL - LIHBOR*1000 - LIUBOR*100 - LIVBOR*10
           ! Write connectivity and bnoundary value the rest is set to 0.D0
-          WRITE(NCLI,4000,IOSTAT=IERR) LIHBOR,LIUBOR,LIVBOR,
-     &                         0.D0,0.D0,0.D0,
-     &                         0.D0,LITBOR,0.D0,
-     &                         0.D0,0.D0,
+          WRITE(NCLI,4000,IOSTAT=IERR) LIHBOR(I),LIUBOR(I),LIVBOR(I),
+     &                         HBOR(I),UBOR(I),VBOR(I),
+     &                         CHBORD(I),LITBOR(I),
+     &                         TBOR(I),ATBOR(I),BTBOR(I),
      &                         IKLE(I),I
  4000       FORMAT (1X,I2,1X,2(I1,1X),3(F24.12,1X),1X,
      &           F24.12,3X,I1,1X,3(F24.12,1X),1I9,1X,1I9,

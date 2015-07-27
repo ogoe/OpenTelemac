@@ -1556,7 +1556,8 @@
 !-----------------------------------------------------------------------
 !
       SUBROUTINE GET_BND_VALUE_MED(FILE_ID,TYP_BND_ELEM,NELEBD,
-     &                             VALUE,NPTFR,NBOR,IERR)
+     &                             LIHBOR,LIUBOR,LIVBOR,TRAC,LITBOR,
+     &                             NPTFR,NBOR,IERR)
 !
 !BRIEF    DETERMINE THE NUMBER OF BOUNDARY POINTS
 !
@@ -1564,7 +1565,11 @@
 !| FILE_ID        |<--| MED FILE DESCRIPTOR
 !| TYPE_BND_ELEM  |<--| TYPE OF THE BOUNDARY ELEMENT
 !| NELEBD         |<--| NUMBER OF BOUNDARY ELEMENTS
-!| VALUE          |-->| COLOR TABLE OF THE BOUNDARY NODES
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON U
+!| LIVBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON V
+!| TRAC           |-->| IF YES, THERE ARE TRACERS
+!| LITBOR         |-->| PHYSICAL BOUNDARY CONDITIONS FOR TRACERS
 !| NPTFR          |<--| NUMBER OF BOUNDARY NODES
 !| NBOR           |<--| LOGICAL TABLE FOR BOUNDARY NODES
 !| IERR           |-->| ERROR TAG
@@ -1576,7 +1581,9 @@
         INTEGER, INTENT(IN) :: TYP_BND_ELEM
         INTEGER, INTENT(IN) :: NELEBD
         INTEGER, INTENT(IN) :: NPTFR
-        INTEGER, INTENT(INOUT) :: VALUE(NPTFR)
+        INTEGER, INTENT(INOUT) :: LIUBOR(NPTFR),LIVBOR(NPTFR)
+        INTEGER, INTENT(INOUT) :: LIHBOR(NPTFR),LITBOR(*)
+        LOGICAL, INTENT(IN)    :: TRAC
         INTEGER, INTENT(IN) :: NBOR(NPTFR)
         INTEGER, INTENT(OUT) :: IERR
 !
@@ -1611,11 +1618,6 @@
      &                                NDP, IKLE, IERR)
         CALL CHECK_CALL(IERR,'GET_BND_VALUE_MED:GET_BND_IKLE_MED')
 !
-!       INITIALISATION
-        DO INODE=1,NPTFR
-          VALUE(INODE) = 0
-        ENDDO
-!
 !       LOOP ON ALL ELEMENTS
         DO IELEM=1,NELEBD
           CALL GET_BND_FAM_VALUE_MED(FILE_ID,FAMILY(IELEM),VAL,IERR)
@@ -1643,7 +1645,14 @@
             ENDIF
 !
 !           STORE VALUE OF THE GIVEN NODE
-            VALUE(IPTFR) = VAL
+            LIHBOR(IPTFR) = VAL/1000
+            LIUBOR(IPTFR) = (VAL - LIHBOR(IPTFR)*1000)/100
+            LIVBOR(IPTFR) = (VAL - LIHBOR(IPTFR)*1000 
+     &                           - LIUBOR(IPTFR)*100)/10
+            IF (TRAC) THEN
+              LITBOR(IPTFR) =  VAL - LIHBOR(IPTFR)*1000 
+     &                         - LIUBOR(IPTFR)*100 - LIVBOR(IPTFR)*10
+            ENDIF
 !
           ENDDO
         ENDDO
@@ -2172,7 +2181,7 @@
 !-----------------------------------------------------------------------
 !
       SUBROUTINE SET_BND_MED(FILE_ID,TYPE_BND_ELT,NELEBD,NDP,IKLE_BND,
-     &                       VALUE,IERR)
+     &                       LIHBOR,LIUBOR,LIVBOR,LITBOR,IERR)
 !
 !BRIEF    WRITE DATA VALUES FOR A GIVEN VARIABLE
 !         ONLY FOR VALUES WITH DOUBLE PRECISION, ONE COMPONENT AND VALUE
@@ -2184,7 +2193,10 @@
 !| NELEBD         |<--| NUMBER OF BOUNDARY ELEMENT
 !| NDP            |<--| NUMBER OF NODES PER ELEMENT
 !| IKLE           |<--| CONNECTIVITY TABLE OF THE BOUNDARY ELEMENTS
-!| VAR_VALUE      |<--| VALUE TABLE OF THE BOUNDARY ELEMENT
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON U
+!| LIVBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON V
+!| LITBOR         |-->| PHYSICAL BOUNDARY CONDITIONS FOR TRACERS
 !| IERR           |-->| ERROR TAG
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -2195,7 +2207,8 @@
       INTEGER,          INTENT(IN)  :: NELEBD
       INTEGER,          INTENT(IN)  :: NDP
       INTEGER,          INTENT(IN)  :: IKLE_BND(NELEBD*NDP)
-      INTEGER,          INTENT(IN)  :: VALUE(NELEBD)
+      INTEGER,          INTENT(IN)  :: LIUBOR(NELEBD),LIVBOR(NELEBD)
+      INTEGER,          INTENT(IN)  :: LIHBOR(NELEBD),LITBOR(NELEBD)
       INTEGER,          INTENT(OUT) :: IERR
 !
 #if defined (HAVE_MED)
@@ -2203,7 +2216,7 @@
       INTEGER :: MED_ID, TYPE_BND_ELEM_MED
       CHARACTER(LEN=MED_LNAME_SIZE) GRP_NAME
       CHARACTER(LEN=MED_NAME_SIZE) FAM_NAME
-      INTEGER :: NCLI,I,IFAM
+      INTEGER :: NCLI,I,IFAM,VAL
       INTEGER :: FAM_NUM(NELEBD)
 !
 !-----------------------------------------------------------------------
@@ -2253,7 +2266,8 @@
 !
 !     DEFINE FAMILY NUMBER
       DO I=1,NELEBD
-        SELECT CASE(VALUE(I))
+        VAL = LIHBOR(I)*1000 + LIUBOR(I)*100 + LIVBOR(I)*10 + LITBOR(I)
+        SELECT CASE(VAL)
         CASE(2222)
           FAM_NUM(I) = -1
         CASE(5666)

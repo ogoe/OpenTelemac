@@ -147,30 +147,16 @@
       ENDIF
       ! Get value of each boundary conditions
       CALL GET_BND_VALUE(FFORMAT,NGEO,TYPE_BND_ELEM,NELEBD,
-     &                   LIHBOR,NPTFR_BND,MESH%NBOR%I,IERR)
+     & LIHBOR,LIUBOR,LIVBOR,HBOR,UBOR,VBOR,CHBORD,TRAC,
+     & LITBOR,TBOR,ATBOR,BTBOR,NPTFR_BND,MESH%NBOR%I, IERR)
       CALL CHECK_CALL(IERR,'LECLIM:GET_BND_VALUE')
-      DO I=1,NPTFR_BND
-        VAL = LIHBOR(I)
-        LIHBOR(I) = VAL/1000
-        LIUBOR(I) = (VAL - LIHBOR(I)*1000)/100
-        LIVBOR(I) = (VAL - LIHBOR(I)*1000 - LIUBOR(I)*100)/10
-        HBOR(I) = 0.D0
-        UBOR(I) = 0.D0
-        VBOR(I) = 0.D0
-        CHBORD(I) = 0.D0
-        IF(TRAC) THEN
-          LITBOR(I) =  VAL - LIHBOR(I)*1000 - LIUBOR(I)*100
-     &                     - LIVBOR(I)*10
-          TBOR(I) = 0.D0
-          ATBOR(I) = 0.D0
-          BTBOR(I) = 0.D0
-        ENDIF
-        IF(NCSIZE.LE.1) THEN
-          IF(PRESENT(BOUNDARY_COLOUR)) THEN
+      IF(NCSIZE.LE.1) THEN
+        IF(PRESENT(BOUNDARY_COLOUR)) THEN
+          DO I=1,NPTFR_BND
             BOUNDARY_COLOUR(I) = I
-          ENDIF
+          ENDDO
         ENDIF
-      ENDDO
+      ENDIF
 !
       DO K=1,NPTFR
 !

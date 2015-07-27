@@ -61,6 +61,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER ICODE, IERR
+      INTEGER MPI_IS_INIT
 !
 !-----------------------------------------------------------------------
 !
@@ -80,31 +81,22 @@
 !     HOWEVER, CODE IS NOT ALWAYS SENT TO STDERR
 !     (COMPILER DEPENDENT, NAG DOESN'T FOR INSTANCE)
 !     ICODE MIGHT BE USED IN A POSSIBLE SYSTEM DEPENDENT EXIT PROCEDURE
+#if defined(HAVE_MPI)
+      CALL MPI_INITIALIZED(MPI_IS_INIT,ICODE)
+#endif
       IF(IVAL.LT.0) THEN
         ICODE = 0      ! JUST ASSUMED FOR NON-ERROR STOP
       ELSEIF(IVAL.EQ.0.OR.IVAL.EQ.1) THEN
         ICODE = 2      ! EXIT IVAL 0 OR 1 INDICATING A "CONTROLLED" ERROR
-#if defined(HAVE_MPI)
-      CALL MPI_ABORT(MPI_COMM_WORLD,ICODE,IERR)
-#endif
-        STOP 2
       ELSE
         ICODE = 1     ! SOMETHING ELSE? BUT AN ERROR!
-#if defined(HAVE_MPI)
-      CALL MPI_ABORT(MPI_COMM_WORLD,ICODE,IERR)
-#endif
-        STOP 1
       ENDIF
       WRITE(LU,*) 'RETURNING EXIT CODE: ', ICODE
 !
-!     POSSIBLE SYSTEM DEPENDENT EXIT PROCEDURE
-!     YA: THIS CALL IS OBSOLETE
-!      CALL SPECIAL_PLANTE(IVAL,NCSIZE,LNG,LU)
-!
 #if defined(HAVE_MPI)
-      CALL MPI_ABORT(MPI_COMM_WORLD,ICODE,IERR)
+      IF(MPI_IS_INIT.EQ.0) CALL MPI_ABORT(MPI_COMM_WORLD,ICODE,IERR)
 #endif
-      STOP 0   ! WHICH IS USUALLY EQUIVALENT TO CALL EXIT(0)
+      STOP 1   ! WHICH IS USUALLY EQUIVALENT TO CALL EXIT(1)
 !
 !-----------------------------------------------------------------------
 !
