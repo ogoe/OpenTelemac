@@ -241,6 +241,7 @@
       ! Check if the geometry has already been partitionned
       INQUIRE(FILE=TRIM(NAMEGEO)//EXTENS(NPARTS-1,0),
      &        EXIST=RES_ONLY)
+      IF(NAMEGEO.EQ.NAMEINP) RES_ONLY = .FALSE.
  
 !
 ! FIND THE INPUT FILE CORE NAME LENGTH
