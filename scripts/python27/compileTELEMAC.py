@@ -446,37 +446,6 @@ if __name__ == "__main__":
    BYPASS = True  # /!\ Temporary bypass for subroutine within programs
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   USETELCFG = ''
-   if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
-   PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
-   SYSTELCFG = path.join(PWD,'configs')
-   if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
-   if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
-
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ banners ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   mes = MESSAGES()  # runcode takes its version number from the CAS file
-   svnrev = ''
-   svnurl = ''
-   svnban = 'unknown revision'
-   try:
-      key_equals = re.compile(r'(?P<key>[^:]*)(?P<after>.*)',re.I)
-      tail,code = mes.runCmd('svn info '+PWD,True)
-      for line in tail.split('\n'):
-         proc = re.match(key_equals,line)
-         if proc:
-            if proc.group('key').strip() == 'Revision': svnrev = proc.group('after')[1:].strip()
-            if proc.group('key').strip() == 'URL': svnurl = proc.group('after')[1:].strip()
-   except:
-      pass
-   if svnrev+svnurl == '':
-      print '\n'.join(banner('unknown revision'))
-   else:
-      if svnurl != '': print '\n'.join(banner(svnurl.split('/')[-1]))
-      if svnrev != '': print '\n'.join(banner('rev. #'+svnrev))
-
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
@@ -484,12 +453,12 @@ if __name__ == "__main__":
    parser.add_option("-c", "--configname",
                       type="string",
                       dest="configName",
-                      default=USETELCFG,
+                      default='',
                       help="specify configuration name, default is randomly found in the configuration file" )
    parser.add_option("-f", "--configfile",
                       type="string",
                       dest="configFile",
-                      default=SYSTELCFG,
+                      default='',
                       help="specify configuration file, default is systel.cfg" )
    parser.add_option("-r", "--rootdir",
                       type="string",
@@ -517,6 +486,47 @@ if __name__ == "__main__":
                       default=False,
                       help="will erase all object, executable libraries from folder on the selected configs/modules" )
    options, args = parser.parse_args()
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # path to the root
+   PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
+   if options.rootDir != '': PWD = options.rootDir
+   # user configuration name
+   USETELCFG = ''
+   if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
+   if options.configName == '': options.configName = USETELCFG
+   # user configuration file
+   SYSTELCFG = path.join(PWD,'configs')
+   if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
+   if options.configFile != '': SYSTELCFG = options.configFile
+   if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
+   options.configFile = SYSTELCFG
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ banners ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   mes = MESSAGES()  # runcode takes its version number from the CAS file
+   svnrev = ''
+   svnurl = ''
+   svnban = 'unknown revision'
+   try:
+      key_equals = re.compile(r'(?P<key>[^:]*)(?P<after>.*)',re.I)
+      tail,code = mes.runCmd('svn info '+PWD,True)
+      for line in tail.split('\n'):
+         proc = re.match(key_equals,line)
+         if proc:
+            if proc.group('key').strip() == 'Revision': svnrev = proc.group('after')[1:].strip()
+            if proc.group('key').strip() == 'URL': svnurl = proc.group('after')[1:].strip()
+   except:
+      pass
+   if svnrev+svnurl == '':
+      print '\n'.join(banner('unknown revision'))
+   else:
+      if svnurl != '': print '\n'.join(banner(svnurl.split('/')[-1]))
+      if svnrev != '': print '\n'.join(banner('rev. #'+svnrev))
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
       dircfg = path.abspath(path.dirname(options.configFile))
@@ -525,7 +535,8 @@ if __name__ == "__main__":
          _, _, filenames = walk(dircfg).next()
          for fle in filenames :
             head,tail = path.splitext(fle)
-            if tail == '.cfg' : print '    +> ',fle
+            if tail == '.cfg' :
+               print '    +> ',fle
       sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -692,7 +703,9 @@ if __name__ == "__main__":
                      if e == '': pbar.write( '   - completed: ' + x.split()[-1],ibar )
                      else: xcpts.addMessages([{'name':'compileTELEMAC::createObjFiles:\n      +> failed: '+x+'\n'+e}])
                      ibar = ibar + 1; pbar.update(ibar)
-                  #if xcpts.notEmpty(): raise Exception([{'name':'compileTELEMAC','msg':'Failed compiling for the follwoing reason(s) ' + xcpts.exceptMessages() }])
+                  if xcpts.notEmpty():
+                     print '\n\nHummm ... I could not complete my work.\n'+'~'*72 + '\n\n' + xcpts.exceptMessages()
+                     sys.exit(1)
                # ~~> waiting for the remaining queued jobs to complete
                out = mes.flushCmd(tasks)
                for x,o,e,c in out:
@@ -700,7 +713,9 @@ if __name__ == "__main__":
                   else: xcpts.addMessages([{'name':'compileTELEMAC::createObjFiles:\n      +> failed: '+x+'\n'+e}])
                   ibar = ibar + 1; pbar.update(ibar)
                pbar.finish()               
-               #if xcpts.notEmpty(): raise Exception([{'name':'compileTELEMAC','msg':'Failed compiling for the following reason(s) ' + xcpts.exceptMessages() }])
+               if xcpts.notEmpty():
+                  print '\n\nHummm ... I could not complete my work.\n'+'~'*72 + '\n\n' + xcpts.exceptMessages()
+                  sys.exit(1)
 # ~~ Creates libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             foundLib = True
             for lib in HOMERES[item]['deps']:
@@ -710,7 +725,9 @@ if __name__ == "__main__":
                for x,o,e,c in out:
                   if e == '': print '   - completed: ' + x.split()[-1]
                   else: xcpts.addMessages([{'name':'compileTELEMAC::createLibFiles:\n      +> failed: '+x+'\n'+e}])
-               #if xcpts.notEmpty(): raise Exception([{'name':'compileTELEMAC','msg':'Failed linking for the following reason(s) ' + xcpts.exceptMessages() }])
+               if xcpts.notEmpty():
+                  print '\n\nHummm ... I could not complete my work.\n'+'~'*72 + '\n\n' + xcpts.exceptMessages()
+                  sys.exit(1)
                foundLib = foundLib and f
             if foundLib: print '      +> There is no need to package any library'
 # ~~ Creates executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

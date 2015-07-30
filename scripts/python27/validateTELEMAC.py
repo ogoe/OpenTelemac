@@ -257,51 +257,13 @@ if __name__ == "__main__":
    debug = False
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   USETELCFG = ''
-   if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
-   PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
-   SYSTELCFG = path.join(PWD,'configs')
-   if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
-   if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
-   PYTELPATH = path.dirname(sys.argv[0])
-   if 'PYTELPATH' not in environ:
-      environ.update({'PYTELPATH':PYTELPATH})
-      sys.path.append( PYTELPATH ) # clever you !
-
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ banners ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   mes = MESSAGES()  # validation takes its version number from the SVN revision
-   VERSION = 'report'
-   svnrev = ''
-   svnurl = ''
-   svnban = 'unknown revision'
-   try:
-      key_equals = re.compile(r'(?P<key>[^:]*)(?P<after>.*)',re.I)
-      tail,code = mes.runCmd('svn info '+PWD,True)
-      for line in tail.split('\n'):
-         proc = re.match(key_equals,line)
-         if proc:
-            if proc.group('key').strip() == 'Revision': svnrev = proc.group('after')[1:].strip()
-            if proc.group('key').strip() == 'URL': svnurl = proc.group('after')[1:].strip()
-   except:
-      if options.version != '': svnrev += options.version
-   if svnrev != '': VERSION += '-svn'+svnrev
-   if svnurl != '': VERSION += '-'+svnurl.split('/')[-1]
-   if svnrev+svnurl == '':
-      print '\n'.join(banner('unknown revision'))
-   else:
-      if svnurl != '': print '\n'.join(banner(svnurl.split('/')[-1]))
-      if svnrev != '': print '\n'.join(banner('rev. #'+svnrev))
-
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configname",type="string",dest="configName",default=USETELCFG,
+   parser.add_option("-c", "--configname",type="string",dest="configName",default='',
       help="specify configuration name, default is the first found in the configuration file" )
-   parser.add_option("-f", "--configfile",type="string",dest="configFile",default=SYSTELCFG,
+   parser.add_option("-f", "--configfile",type="string",dest="configFile",default='',
       help="specify configuration file, default is systel.cfg" )
    parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',
       help="specify the root, default is taken from config file" )
@@ -358,8 +320,57 @@ if __name__ == "__main__":
    # ~~> Other
    parser.add_option("--use-link",action="store_true",dest="use_link",default=False,
       help="Will use link instead of copy in the temporary folder (Unix system only)" )
-	  
    options, args = parser.parse_args()
+	  
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # path to the root
+   PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
+   if options.rootDir != '': PWD = options.rootDir
+   # user configuration name
+   USETELCFG = ''
+   if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
+   if options.configName == '': options.configName = USETELCFG
+   # user configuration file
+   SYSTELCFG = path.join(PWD,'configs')
+   if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
+   if options.configFile != '': SYSTELCFG = options.configFile
+   if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
+   options.configFile = SYSTELCFG
+   # additional addition to make sure
+   PYTELPATH = path.dirname(sys.argv[0])
+   if options.rootDir != '': PYTELPATH = path.join(path.join(options.rootDir,'scripts'),'python27')
+   if 'PYTELPATH' not in environ:
+      environ.update({'PYTELPATH':PYTELPATH}) # do you need this ?
+      sys.path.append( PYTELPATH ) # clever you !
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ banners ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   mes = MESSAGES()  # validation takes its version number from the SVN revision
+   VERSION = 'report'
+   svnrev = ''
+   svnurl = ''
+   svnban = 'unknown revision'
+   try:
+      key_equals = re.compile(r'(?P<key>[^:]*)(?P<after>.*)',re.I)
+      tail,code = mes.runCmd('svn info '+PWD,True)
+      for line in tail.split('\n'):
+         proc = re.match(key_equals,line)
+         if proc:
+            if proc.group('key').strip() == 'Revision': svnrev = proc.group('after')[1:].strip()
+            if proc.group('key').strip() == 'URL': svnurl = proc.group('after')[1:].strip()
+   except:
+      if options.version != '': svnrev += options.version
+   if svnrev != '': VERSION += '-svn'+svnrev
+   if svnurl != '': VERSION += '-'+svnurl.split('/')[-1]
+   if svnrev+svnurl == '':
+      print '\n'.join(banner('unknown revision'))
+   else:
+      if svnurl != '': print '\n'.join(banner(svnurl.split('/')[-1]))
+      if svnrev != '': print '\n'.join(banner('rev. #'+svnrev))
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
       dircfg = path.abspath(path.dirname(options.configFile))

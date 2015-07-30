@@ -85,13 +85,52 @@ if __name__ == "__main__":
    debug = False
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nLoading Options and Configurations\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
+   parser.add_option("-c", "--configname",
+                      type="string",
+                      dest="configName",
+                      default='',
+                      help="specify configuration name, default is randomly found in the configuration file" )
+   parser.add_option("-f", "--configfile",
+                      type="string",
+                      dest="configFile",
+                      default='',
+                      help="specify configuration file, default is systel.cfg" )
+   parser.add_option("-r", "--rootdir",
+                      type="string",
+                      dest="rootDir",
+                      default='',
+                      help="specify the root, default is taken from config file" )
+   parser.add_option("-a", "--archiveName",
+                      type="string",
+                      dest="archiveName",
+                      default='',
+                      help="specify the archive name, default is taken as the config name" )
+   parser.add_option("-m", "--modules",
+                      type="string",
+                      dest="modules",
+                      default='',
+                      help="specify the list modules, default is taken from config file" )
+   options, args = parser.parse_args()
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # path to the root
+   PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
+   if options.rootDir != '': PWD = options.rootDir
+   # user configuration name
    USETELCFG = ''
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
-   PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
+   if options.configName == '': options.configName = USETELCFG
+   # user configuration file
    SYSTELCFG = path.join(PWD,'configs')
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
+   if options.configFile != '': SYSTELCFG = options.configFile
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
+   options.configFile = SYSTELCFG
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ banners ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -116,36 +155,7 @@ if __name__ == "__main__":
       if svnrev != '': print '\n'.join(banner('rev. #'+svnrev))
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configname",
-                      type="string",
-                      dest="configName",
-                      default=USETELCFG,
-                      help="specify configuration name, default is randomly found in the configuration file" )
-   parser.add_option("-f", "--configfile",
-                      type="string",
-                      dest="configFile",
-                      default=SYSTELCFG,
-                      help="specify configuration file, default is systel.cfg" )
-   parser.add_option("-r", "--rootdir",
-                      type="string",
-                      dest="rootDir",
-                      default='',
-                      help="specify the root, default is taken from config file" )
-   parser.add_option("-a", "--archiveName",
-                      type="string",
-                      dest="archiveName",
-                      default='',
-                      help="specify the archive name, default is taken as the config name" )
-   parser.add_option("-m", "--modules",
-                      type="string",
-                      dest="modules",
-                      default='',
-                      help="specify the list modules, default is taken from config file" )
-   options, args = parser.parse_args()
+# ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
       dircfg = path.abspath(path.dirname(options.configFile))
@@ -154,7 +164,8 @@ if __name__ == "__main__":
          _, _, filenames = walk(dircfg).next()
          for fle in filenames :
             head,tail = path.splitext(fle)
-            if tail == '.cfg' : print '    +> ',fle
+            if tail == '.cfg' :
+               print '    +> ',fle
       sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

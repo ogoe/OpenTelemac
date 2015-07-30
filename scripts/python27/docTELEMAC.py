@@ -112,16 +112,6 @@ def main():
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n'+'~'*72+'\n'
-   usetelcfg = ''
-   if 'USETELCFG' in environ: 
-      usetelcfg = environ['USETELCFG']
-   pwd = path.dirname(path.dirname(path.dirname(sys.argv[0])))
-   systelcfg = path.join(pwd, 'configs')
-   if 'SYSTELCFG' in environ: 
-      systelcfg = environ['SYSTELCFG']
-   if path.isdir(systelcfg): 
-      systelcfg = path.join(systelcfg, 'systel.cfg')
-
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.\n"\
                     "By Default all the documentation are generated\n"\
                     "use the options --validation/reference/user/"\
@@ -129,13 +119,13 @@ def main():
    parser.add_option("-c", "--configname",
                  type="string",
                  dest="configName",
-                 default=usetelcfg,
+                 default='',
                  help="specify configuration name, default is the "\
                      "first found in the configuration file" )
    parser.add_option("-f", "--configfile",
                  type="string",
                  dest="configFile",
-                 default=systelcfg,
+                 default='',
                  help="specify configuration file, "\
                      "default is systel.cfg" )
    parser.add_option("-r", "--root_dir",
@@ -187,7 +177,25 @@ def main():
                  dest="fullcleanup",
                  default=False,
                  help="Same as clean but removes the pdf as well" )
-   
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # path to the root
+   PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
+   if options.rootDir != '': PWD = options.rootDir
+   # user configuration name
+   USETELCFG = ''
+   if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
+   if options.configName == '': options.configName = USETELCFG
+   # user configuration file
+   SYSTELCFG = path.join(PWD,'configs')
+   if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
+   if options.configFile != '': SYSTELCFG = options.configFile
+   if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
+   options.configFile = SYSTELCFG
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    options, _ = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: %s\n' % \
