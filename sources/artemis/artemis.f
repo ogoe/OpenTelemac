@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! ARTEMIS   V6P3                                   21/08/2010
+! ARTEMIS   V7P1
 !***********************************************************************
 !
 !brief    SOLVES THE MODIFIED BERKHOFF EQUATION.
@@ -177,7 +177,8 @@
 !
       CALL FONSTR(T1,ZF,T2,FW,ART_FILES(ARTGEO)%LU,
      &            ART_FILES(ARTGEO)%FMT,ART_FILES(ARTFON)%LU,
-     &            ART_FILES(ARTFON)%NAME,MESH,FFON,LISTIN)
+     &            ART_FILES(ARTFON)%NAME,MESH,FFON,LISTIN,
+     &            0,NAMES_PRIVE,PRIVE)
 !-----------------------------------------------------------------------
 !
 ! PREPARES THE RESULTS FILE (OPTIONAL)

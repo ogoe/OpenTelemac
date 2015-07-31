@@ -1,12 +1,11 @@
-!                       ***********************
+!                        ********************
                          SUBROUTINE FLUX_HLLC
-!                       ***********************
+!                        ********************
      &(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
      & XNN,YNN,ROT,HLLCFLX)
 !
 !***********************************************************************
 ! TELEMAC 2D VERSION 7.0                                         R. ATA
-!
 !***********************************************************************
 !BRIEF
 !
@@ -67,7 +66,8 @@
       DOUBLE PRECISION, INTENT(IN)    :: XI,V1,V2,XNN,YNN
       LOGICAL, INTENT(IN)             :: ROT
       DOUBLE PRECISION, INTENT(INOUT) :: HLLCFLX(4)
-!***********************************************************************
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER                         :: I,SPY
       DOUBLE PRECISION, PARAMETER     :: G = 9.81D0
@@ -83,7 +83,9 @@
       DOUBLE PRECISION                :: FLU2X,FLU2Y
       DOUBLE PRECISION                :: U0,POND,SSTAR
       DOUBLE PRECISION                :: FLX(4)
+!
 !-----------------------------------------------------------------------
+!
       EPS   = 1.E-6
       GSUR2 = G/2.0D0
       SPY   = 0

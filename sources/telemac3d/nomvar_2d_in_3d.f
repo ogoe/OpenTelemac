@@ -2,10 +2,11 @@
                      SUBROUTINE NOMVAR_2D_IN_3D
 !                    **************************
 !
-     &(TEXTE,TEXTPR,MNEMO,NTRAC,NAMETRAC)
+     &(TEXTE,TEXTPR,MNEMO,NTRAC,MAXTRA,
+     & NAMETRAC,N_NAMES_PRIV2D,NAMES_PRIVE2D)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY
@@ -33,6 +34,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| MAXTRA         |-->| MAXIMUM NUMBER OF TRACERS
 !| MNEMO          |<->| MNEMOTECHNIC NAME
 !| NAMETRAC       |-->| NAME OF TRACERS
 !| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
@@ -48,15 +50,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER          , INTENT(IN)    :: NTRAC,N_NAMES_PRIV2D,MAXTRA
       CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(*),TEXTPR(*)
       CHARACTER(LEN=8) , INTENT(INOUT) :: MNEMO(*)
-      CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(32)
-!
-      INTEGER, INTENT(IN) :: NTRAC
-! CV: New array
-      CHARACTER(LEN=32) TEXTE_ES(NLAYMAX)
-      CHARACTER(LEN=8)  MNEMO_ES(NLAYMAX)
-      CHARACTER(LEN=2)  LAY
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(MAXTRA)
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMES_PRIVE2D(4)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -65,6 +63,10 @@
      &                     '10','11','12','13','14','15','16','17','18',
      &                     '19','20','21','22','23','24','25','26','27',
      &                     '28','29','30','31','32'/
+!
+      CHARACTER(LEN=32) TEXTE_ES(NLAYMAX)
+      CHARACTER(LEN=8)  MNEMO_ES(NLAYMAX)
+      CHARACTER(LEN=2)  LAY
 !
       INTEGER I,NEXT,K
 !
@@ -240,8 +242,18 @@
       TEXTPR (35) = 'COTE MAXIMUM    M               '
       TEXTPR (36) = 'TEMPS COTE MAXI S               '
       TEXTPR (37) = 'EVOLUTION FOND  M               '
-
 !
+!-----------------------------------------------------------------------
+!
+      ENDIF
+!
+!     NAMES OF 2D PRIVATE VARIABLES
+!
+      IF(N_NAMES_PRIV2D.GT.0) THEN
+        DO I=1,N_NAMES_PRIV2D
+          TEXTE(26+I)  = NAMES_PRIVE2D(I)
+          TEXTPR(26+I) = NAMES_PRIVE2D(I)
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -323,8 +335,10 @@
       MNEMO(36)   = 'TMXZ    '
 !     BED EVOLUTION
       MNEMO(37)   = 'DZF     '
-
+!
 !-----------------------------------------------------------------------
+!
+!     TRACERS
 !
       NEXT = 37+1
 !

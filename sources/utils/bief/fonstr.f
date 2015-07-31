@@ -2,10 +2,11 @@
                      SUBROUTINE FONSTR
 !                    *****************
 !
-     &(H,ZF,Z,CHESTR,NGEO,FFORMAT,NFON,NOMFON,MESH,FFON,LISTIN)
+     &(H,ZF,Z,CHESTR,NGEO,FFORMAT,NFON,NOMFON,MESH,FFON,LISTIN,
+     & N_NAMES_PRIV,NAMES_PRIVE,PRIVE)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    LOOKS FOR 'BOTTOM' IN THE GEOMETRY FILE.
@@ -20,7 +21,7 @@
 !history  J-M HERVOUET (LNH)
 !+        17/08/94
 !+        V5P6
-!+
+!+   First version
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -40,9 +41,14 @@
 !+   Adding the format FFORMAT
 !
 !history Y AUDOUIN (LNHE)
-!+       25/05/2015
-!+       V7P0
-!+       Modification to comply with the hermes module
+!+        25/05/2015
+!+        V7P0
+!+        Modification to comply with the hermes module
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/07/2015
+!+        V7P1
+!+   Now able to read user variables and put them in PRIVE arrays.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHESTR         |<--| FRICTION COEFFICIENT (DEPENDING ON FRICTION LAW)
@@ -50,9 +56,12 @@
 !| H              |<--| WATER DEPTH
 !| LISTIN         |-->| IF YES, WILL GIVE A REPORT
 !| MESH           |-->| MESH STRUCTURE
+!| N_NAMES_PRIV   |-->| NUMBER OF PRIVATE ARRAYS WITH GIVEN NAMES
+!| NAMES_PRIV     |-->| NAMES OF PRIVATE ARRAYS GIVEN BY USER
 !| NFON           |-->| LOGICAL UNIT OF BOTTOM FILE
 !| NGEO           |-->| LOGICAL UNIT OF GEOMETRY FILE
 !| NOMFON         |-->| NAME OF BOTTOM FILE
+!| PRIVE          |<->| BLOCK OF PRIVATE ARRAYS
 !| Z              |<--| FREE SURFACE ELEVATION
 !| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,17 +76,18 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: H,ZF,Z,CHESTR
-      CHARACTER(LEN=72), INTENT(IN) :: NOMFON
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: H,ZF,Z,CHESTR,PRIVE
       TYPE(BIEF_MESH), INTENT(IN)   :: MESH
       DOUBLE PRECISION, INTENT(IN)  :: FFON
       LOGICAL, INTENT(IN)           :: LISTIN
-      INTEGER, INTENT(IN)           :: NGEO,NFON
+      INTEGER, INTENT(IN)           :: NGEO,NFON,N_NAMES_PRIV
+      CHARACTER(LEN=72), INTENT(IN) :: NOMFON
+      CHARACTER(LEN=32), INTENT(IN) :: NAMES_PRIVE(4)
       CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ERR, IERR, RECORD
+      INTEGER ERR,IERR,RECORD,I
 !
       DOUBLE PRECISION BID
       REAL, ALLOCATABLE :: W(:)
@@ -219,7 +229,7 @@
 !
         IF (LUZ.AND.LUH) THEN
 !
-          CALL OS( 'X=Y-Z   ' , ZF , Z , H , BID )
+          CALL OS( 'X=Y-Z   ',X=ZF,Y=Z,Z=H)
           IF(LNG.EQ.1) WRITE(LU,24)
           IF(LNG.EQ.2) WRITE(LU,25)
 24        FORMAT(1X,'FONSTR (BIEF) : ATTENTION, FOND CALCULE AVEC',/,
@@ -278,7 +288,30 @@
      &         /,1X,'               LEVEL IS FIXED TO ZERO BUT STILL',
      &         /,1X,'               CAN BE MODIFIED IN CORFON.',
      &         /,1X)
-        CALL OS( 'X=C     ' , ZF , ZF , ZF , 0.D0 )
+        CALL OS( 'X=0     ',X=ZF)
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+! LOOKING FOR THE USER VARIABLES
+!
+      IF(N_NAMES_PRIV.GT.0) THEN
+        DO I=1,N_NAMES_PRIV
+          CALL READ_DATA(FFORMAT,NGEO,PRIVE%ADR(I)%P%R,
+     &                   NAMES_PRIVE(I)(1:16),MESH%NPOIN,
+     &                   IERR,RECORD,TIME=BID)
+          IF(IERR.EQ.0) THEN
+            IF(LNG.EQ.1) WRITE(LU,*) 'VARIABLE ',NAMES_PRIVE(I)(1:32),
+     &                         ' TROUVEE DANS LE FICHIER DE GEOMETRIE'
+            IF(LNG.EQ.2) WRITE(LU,*) 'VARIABLE ',NAMES_PRIVE(I)(1:32),
+     &                                   ' FOUND IN THE GEOMETRY FILE'
+          ELSE
+            IF(LNG.EQ.1) WRITE(LU,*) 'VARIABLE ',NAMES_PRIVE(I)(1:32),
+     &                     ' NON TROUVEE DANS LE FICHIER DE GEOMETRIE'
+            IF(LNG.EQ.2) WRITE(LU,*) 'VARIABLE ',NAMES_PRIVE(I)(1:32),
+     &                               ' NOT FOUND IN THE GEOMETRY FILE'
+          ENDIF
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -298,3 +331,4 @@
 !
       RETURN
       END
+

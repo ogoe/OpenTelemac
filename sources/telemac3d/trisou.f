@@ -64,6 +64,12 @@
 !+       V7P0
 !+       Modification to comply with the hermes module
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        30/07/2015
+!+        V7P1
+!+   A division by VOLU was done in case of sources, it had to be the
+!+   assembled volumes in parallel.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME OF TIME STEP
 !| CORIOL         |-->| LOGICAL IF CORIOLIS FORCE OR NOT
@@ -623,19 +629,20 @@
           SCV2%TYPR='Q'
         ENDIF
 !
+!       ASSEMBLING THE VOLUMES IN PARALLEL
+!
+        CALL OS('X=Y     ',X=ST1,Y=SVOLU)
+        IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH3)
+!
 !       WITH DISTRIBUTIVE SCHEMES AND FINITE VOLUME SCHEMES
 !       THIS IS DONE DIRECTLY INTO SUBROUTINE MURD3D, AND NOT WITH CV1
 !
         DO I=1,NREJEU
           IF(ISCE(I).GT.0) THEN
-            CV1((KSCE(I)-1)*NPOIN2+ISCE(I))=
-     &      CV1((KSCE(I)-1)*NPOIN2+ISCE(I))
-     &      +(USCE(I)-UN3((KSCE(I)-1)*NPOIN2+ISCE(I)))*
-     &                                     QSCE(I)/VOLU(ISCE(I),KSCE(I))
-            CV2((KSCE(I)-1)*NPOIN2+ISCE(I))=
-     &      CV2((KSCE(I)-1)*NPOIN2+ISCE(I))
-     &      +(VSCE(I)-VN3((KSCE(I)-1)*NPOIN2+ISCE(I)))*
-     &                                     QSCE(I)/VOLU(ISCE(I),KSCE(I))
+            I3D=(KSCE(I)-1)*NPOIN2+ISCE(I)
+            A=MAX(ST1%R(I3D),1.D-6)
+            CV1(I3D)=CV1(I3D)+(USCE(I)-UN3(I3D))*QSCE(I)/A
+            CV2(I3D)=CV2(I3D)+(VSCE(I)-VN3(I3D))*QSCE(I)/A
           ENDIF
         ENDDO
 !
@@ -645,3 +652,4 @@
 !
       RETURN
       END
+

@@ -497,10 +497,12 @@
 !brief MATRIX-VECTOR PRODUCT
 ! produit matrice-vecteur
       INTEGER PRODUC
-!brief NUMBER OF PRIVATE ARRAYS
-! nombre de tableaux prives
-      INTEGER NPRIV
-!brief
+!
+!     NUMBER OF PRIVATE ARRAYS, NUMBER OF PRIVATE ARRAYS WITH GIVEN NAME
+!
+      INTEGER NPRIV,N_NAMES_PRIV
+!
+!
 !
       INTEGER PTINIG
 !brief
@@ -794,13 +796,17 @@
       CHARACTER*20 EQUA
 !brief
 !
-      CHARACTER*32 VARCLA(10)
+      CHARACTER(LEN=32) VARCLA(10)
 !brief
 !
-      CHARACTER*32 TEXTE(MAXVAR)
+      CHARACTER(LEN=32) TEXTE(MAXVAR)
 !brief
 !
-      CHARACTER*32 TEXTPR(MAXVAR)
+      CHARACTER(LEN=32) TEXTPR(MAXVAR)
+!
+!     NAMES OF PRIVATE ARRAYS (GIVEN BY USER)
+!
+      CHARACTER(LEN=32) NAMES_PRIVE(4)    
 !
 !-----------------------------------------------------------------------
 !

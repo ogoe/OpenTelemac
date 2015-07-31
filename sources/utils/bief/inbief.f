@@ -65,9 +65,9 @@
 !+   for finite element assembly with integers.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        10/06/2015
+!+        30/07/2015
 !+        V7P1
-!+   Call of make_eltcar modified to compute IFAC.
+!+   Call of make_eltcar modified to compute IFAC. FAC suppressed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
@@ -165,17 +165,9 @@
       IF(NCSIZE.GT.1) THEN
 !
         CALL PARINI(MESH%NHP%I,MESH%NHM%I,MESH%INDPU%I,
-     &              MESH%FAC,NPOIN2,MESH%NACHB%I,NPLAN,MESH,
+     &              NPOIN2,MESH%NACHB%I,NPLAN,MESH,
      &              MESH%NB_NEIGHB,MESH%NB_NEIGHB_SEG,
-     &              NELEM2,MESH%IFAPAR%I)
-!
-!       PRISMS: COMPLEMENTS FAC
-        IF(IELM.EQ.41.OR.IELM.EQ.51) THEN
-          DO I = 2,NPLAN
-            CALL OV_2('X=Y     ',MESH%FAC%R,I,MESH%FAC%R,1,
-     &                           MESH%FAC%R,1,0.D0,NPOIN2,NPOIN2)
-          ENDDO
-        ENDIF
+     &              NELEM2,MESH%IFAPAR%I,MODASS)
 !
       ELSE
 !       THESE STUCTURES ARE ALLOCATED IN PARINI
@@ -540,8 +532,8 @@
 !       COMPLETES FAC ONCE IFABOR AND ELTSEG ARE KNOWN
 !
         IF(IELM.EQ.11.AND.IELMX.EQ.13) THEN
-          CALL COMP_FAC(MESH%ELTSEG%I,MESH%IFABOR%I,NELEM,
-     &                  NPOIN,MESH%FAC)
+          CALL COMP_FAC(MESH%ELTSEG%I,MESH%ORISEG%I,MESH%IFABOR%I,NELEM,
+     &                  NPOIN,MESH%IFAC)
         ENDIF
 !
       ENDIF

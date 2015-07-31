@@ -393,7 +393,8 @@
         CALL FONSTR(T1,ZF,T2,CHESTR,SIS_FILES(SISGEO)%LU,
      &              SIS_FILES(SISGEO)%FMT,
      &              SIS_FILES(SISFON)%LU,SIS_FILES(SISFON)%NAME,
-     &              MESH,SFON,.TRUE.)
+     &              MESH,SFON,.TRUE.,
+     &              N_NAMES_PRIV,NAMES_PRIVE,PRIVE)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_FONSTR'
 !
 !-----------------------------------------------------------------------

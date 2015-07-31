@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    ALLOCATES TELEMAC3D STRUCTURES.
@@ -12,7 +12,7 @@
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/1999
 !+
-!+   FORTRAN95 VERSION
+!+   FORTRAN 95 VERSION
 !
 !history  J-M HERVOUET (LNHE)
 !+        19/10/2009
@@ -55,6 +55,11 @@
 !+        19/09/2014
 !+        V7P0
 !+   Adding variables for mixed sediment, see IF(MIXTE).
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        28/07/2015
+!+        V7P1
+!+   Adding aliases and 2D private arrays.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -871,6 +876,20 @@
       CALL ALLBLO (PRIVE,'PRIVE ')
       CALL BIEF_ALLVEC_IN_BLOCK(PRIVE,MAX(4,NPRIV),
      &                          1,'PRIV  ',IELM3,1,2,MESH3D)
+!     ALIASES
+      PRIVE1=>PRIVE%ADR(1)%P
+      PRIVE2=>PRIVE%ADR(2)%P
+      PRIVE3=>PRIVE%ADR(3)%P
+      PRIVE4=>PRIVE%ADR(4)%P
+!
+      CALL ALLBLO (PRIVE2D,'PRIVE2')
+      CALL BIEF_ALLVEC_IN_BLOCK(PRIVE2D,MAX(4,NPRIV2D),
+     &                          1,'PRI2  ',IELM2H,1,2,MESH2D)
+!     ALIASES
+      PRIVE2D1=>PRIVE2D%ADR(1)%P
+      PRIVE2D2=>PRIVE2D%ADR(2)%P
+      PRIVE2D3=>PRIVE2D%ADR(3)%P
+      PRIVE2D4=>PRIVE2D%ADR(4)%P
 !
 ! INTEGER WORK FIELDS
 !
@@ -1204,7 +1223,7 @@
 !
 !     SECOND MEMBERS BLOCK - 3 NEEDED
 !
-      CALL ALLBLO (SEM2D,'SEM2D ')
+      CALL ALLBLO(SEM2D,'SEM2D ')
       CALL BIEF_ALLVEC_IN_BLOCK(SEM2D,3,1,'SEM2D ',IELMU,1,2,MESH2D)
 !
 !     WORK FIELDS WITH A DIMENSION OF THE MAX. 2D ELEMENT NUMBER
@@ -1397,10 +1416,10 @@
       CALL ADDBLO(VARSOR,HDEP)            ! HD 24 BED THICKNESS
       CALL ADDBLO(VARSOR,FLUER)           ! EF 25 EROSION FLUX
       CALL ADDBLO(VARSOR,FLUDP)           ! DF 26 DEPOSITION FLUX
-      CALL ADDBLO(VARSOR,PRIVE%ADR(1)%P)  !    27 MNEMO PRIVE1
-      CALL ADDBLO(VARSOR,PRIVE%ADR(2)%P)  !    28 MNEMO PRIVE2
-      CALL ADDBLO(VARSOR,PRIVE%ADR(3)%P)  !    29 MNEMO PRIVE3
-      CALL ADDBLO(VARSOR,PRIVE%ADR(4)%P)  !    30 MNEMO PRIVE4
+      CALL ADDBLO(VARSOR,PRIVE2D%ADR(1)%P)  !    27 MNEMO PRIVE1
+      CALL ADDBLO(VARSOR,PRIVE2D%ADR(2)%P)  !    28 MNEMO PRIVE2
+      CALL ADDBLO(VARSOR,PRIVE2D%ADR(3)%P)  !    29 MNEMO PRIVE3
+      CALL ADDBLO(VARSOR,PRIVE2D%ADR(4)%P)  !    30 MNEMO PRIVE4
       CALL ADDBLO(VARSOR,T2_07)           ! US 31 FRICTION VELOCITY
       CALL ADDBLO(VARSOR,T2_11)           ! QS 32 SOLID DISCHARGE
       CALL ADDBLO(VARSOR,T2_12)           ! QS 33 SOLID DISCHARGE ALONG X

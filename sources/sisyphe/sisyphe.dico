@@ -3529,6 +3529,24 @@ RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 AIDE = 'Pour les options predicteur-correcteur
 avec schema localement implicite' 
 AIDE1 = 'Only for implicit scheme with predictor-corrector' 
+
+NOM = 'NOMS DES VARIABLES PRIVEES' 
+NOM1 = 'NAMES OF PRIVATE VARIABLES' 
+TYPE = CARACTERE 
+INDEX = 42 
+MNEMO = 'NAMES_PRIVE' 
+TAILLE = 2 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'Noms des variables privees en 32 caracteres, 16 pour le nom 
+         16 pour l''unite. Elles correspondent au bloc PRIVE
+         et peuvent etre lues dans le fichier de geometrie si elles
+         y sont presentes avec leur nom' 
+AIDE1 = 'Name of private variables in 32 characters, 16 for the name, 
+         16 for the unit. They are stored in the block PRIVE and
+         can be read in the geometry file if they are here with their
+         name'
 /
 / FOR PERL OR PYTHON SCRIPTS
 /

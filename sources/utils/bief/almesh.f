@@ -61,7 +61,7 @@
 !+       Modification to comply with the hermes module
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
-!+        10/06/2015
+!+        30/07/2015
 !+        V7P1
 !+   Introducing MESH%IFAC, to replace MESH%FAC.
 !
@@ -454,7 +454,6 @@
 !
       ALLOCATE(MESH%XSEG)
       ALLOCATE(MESH%YSEG)
-      ALLOCATE(MESH%FAC)
       ALLOCATE(MESH%IFAC)
 !     THERE ALLVEC IS IN PARINI
       ALLOCATE(MESH%BUF_SEND)
@@ -466,15 +465,12 @@
         CALL BIEF_ALLVEC(1,MESH%XSEG,'XSEG  ',IELBOR(IELM1,2),1,2,MESH)
 !       YSEG
         CALL BIEF_ALLVEC(1,MESH%YSEG,'YSEG  ',IELBOR(IELM1,2),1,2,MESH)
-!       FAC
-        CALL BIEF_ALLVEC(1,MESH%FAC ,'FAC   ',IELM ,1,2,MESH)
 !       IFAC
         CALL BIEF_ALLVEC(2,MESH%IFAC,'IFAC  ',IELM ,1,2,MESH)
 !
       ELSE
         CALL BIEF_ALLVEC(1,MESH%XSEG  ,'XSEG  ',0,1,0,MESH)
         CALL BIEF_ALLVEC(1,MESH%YSEG  ,'YSEG  ',0,1,0,MESH)
-        CALL BIEF_ALLVEC(1,MESH%FAC   ,'FAC   ',0,1,0,MESH)
         CALL BIEF_ALLVEC(2,MESH%IFAC  ,'IFAC  ',0,1,0,MESH)
       ENDIF
 !

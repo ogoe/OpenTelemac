@@ -9,7 +9,7 @@
      & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN,IELM3)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    ADVECTION OF A VARIABLE WITH THE DISTRIBUTIVE SCHEME
@@ -78,6 +78,12 @@
 !+        23/04/2012
 !+        V6P2
 !+   Values of tracers in rain taken into account.
+!
+!history  J-M HERVOUET (LNHE)
+!+        27/07/2015
+!+        V7P1
+!+   Guilty point in case of maximum iterations is now printed with its
+!+   global number in parallel.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE

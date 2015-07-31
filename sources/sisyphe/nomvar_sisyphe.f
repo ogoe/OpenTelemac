@@ -2,10 +2,11 @@
                      SUBROUTINE NOMVAR_SISYPHE
 !                    *************************
 !
-     &(TEXTE,TEXTPR,MNEMO,NSICLA,UNIT,MAXVAR,NPRIV,NOMBLAY)
+     &(TEXTE,TEXTPR,MNEMO,NSICLA,UNITE,MAXVAR,NPRIV,NOMBLAY,
+     & N_NAMES_PRIV,NAMES_PRIVE)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   18/06/2012
+! SISYPHE   V7P1
 !***********************************************************************
 !
 !brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND
@@ -53,6 +54,11 @@
 !+        V6P2
 !+   updated version with HRW's development
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        28/07/2015
+!+        V7P1
+!+   Adding the names of private variables.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MAXVAR         |-->| MAXIMUM NUMBER OF OUTPUT VARIABLES
 !| MNEMO          |<--| SYMBOLS TO SPECIFY THE VARIABLES FOR OUTPUT
@@ -74,10 +80,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)         :: NSICLA,MAXVAR,NPRIV,NOMBLAY
-      CHARACTER*8, INTENT(INOUT)  :: MNEMO(MAXVAR)
-      CHARACTER*32, INTENT(INOUT) :: TEXTE(MAXVAR),TEXTPR(MAXVAR)
-      LOGICAL, INTENT(IN)         :: UNIT
+      INTEGER, INTENT(IN)              :: NSICLA,MAXVAR,NPRIV,NOMBLAY
+      INTEGER, INTENT(IN)              :: N_NAMES_PRIV
+      CHARACTER(LEN=8), INTENT(INOUT)  :: MNEMO(MAXVAR)
+      CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(MAXVAR),TEXTPR(MAXVAR)
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMES_PRIVE(N_NAMES_PRIV)
+      LOGICAL, INTENT(IN)              :: UNITE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -93,12 +101,10 @@
       CHARACTER(LEN=8)  MNEMO_CS(NSICLM),MNEMO_ES(NLAYMAX)
       CHARACTER(LEN=8)  MNEMO_QSC(NSICLM),MNEMO_QSS(NSICLM)
       CHARACTER(LEN=2)  CLA,LAY
-! V6P2
       CHARACTER(LEN=32) TEXTE_CONC(NLAYMAX)
       CHARACTER(LEN=8)  MNEMO_CONC(NLAYMAX)
-!-----------------------------------------------------------------------
 !
-!      ADD=27+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+NOMBLAY
+!-----------------------------------------------------------------------
 !
       ADD=27+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+2*NOMBLAY
 !
@@ -143,12 +149,8 @@
           ENDIF
 !         AVAIL: ALL LAYERS OF CLASS 1, THEN ALL LAYERS OF CLASS 2, ETC.
 !         SAME ORDER AS IN POINT_SISYPHE
-!         BEWARE, 21 IS DUE TO OTHER VARIABLES BEFORE, SEE BELOW
-! CV
-!          TEXTE(21+(I-1)*NOMBLAY+J)=TRIM('FRACLAY '//LAY//' CL '//CLA)
-!          MNEMO(21+(I-1)*NOMBLAY+J)=TRIM(LAY)//'A'//CLA
-           TEXTE(22+(I-1)*NOMBLAY+J)=TRIM('FRACLAY '//LAY//' CL '//CLA)
-           MNEMO(22+(I-1)*NOMBLAY+J)=TRIM(LAY)//'A'//CLA
+          TEXTE(22+(I-1)*NOMBLAY+J)=TRIM('FRACLAY '//LAY//' CL '//CLA)
+          MNEMO(22+(I-1)*NOMBLAY+J)=TRIM(LAY)//'A'//CLA
         ENDDO
       ENDDO
 !
@@ -166,7 +168,7 @@
         TEXTE_QS(J)  = TRIM('QS CLASS '//CLA)
         TEXTE_QSC(J) = TRIM('QS BEDLOAD CL'//CLA)
         TEXTE_QSS(J) = TRIM('QS SUSP. CL'//CLA)
-        IF(UNIT) THEN
+        IF(UNITE) THEN
           TEXTE_CS(J) = TRIM('CONC MAS CL'//CLA)
           TEXTE_CS(J)(17:19) = 'G/L'
         ELSE
@@ -194,7 +196,7 @@
         TEXTE_ES(K)(1:16)  = 'LAYER'//LAY//' THICKNES'
         TEXTE_ES(K)(17:32) = 'M               '
       ENDDO
-!V6P2
+!
       DO K=1,NOMBLAY
         IF(K.LT.10) THEN
           WRITE(LAY,'(I1)') K
@@ -240,26 +242,8 @@
         TEXTE(19) = 'RUGOSITE TOTALE M               '
         TEXTE(20) = 'FROT. PEAU MU                   '
         TEXTE(21) = 'MEAN DIAMETER M                 '
-
-! JWI 31/05/2012 - added line to include wave orbital velocities
-        TEXTE(22)  = 'BOTTOM VELOCITY M/S             '
-! JWI END
+        TEXTE(22) = 'BOTTOM VELOCITY M/S             '
 !
-!       THIS IS DONE ABOVE
-!
-!       DO J=1,NOMBLAY
-!         DO I=1,NSICLA
-!           TEXTE(21+(I-1)*NOMBLAY+J) = ...
-!           MNEMO(21+(I-1)*NOMBLAY+J) = ...
-!         ENDDO
-!       ENDDO
-! modif CV
-!       DO I=1,NSICLA
-!         TEXTE(21+I+NOMBLAY*NSICLA)     = TEXTE_QS(I)
-!         MNEMO(21+I+NOMBLAY*NSICLA)     = MNEMO_QS(I)
-!         TEXTE(21+I+(NOMBLAY+1)*NSICLA) = TEXTE_CS(I)
-!         MNEMO(21+I+(NOMBLAY+1)*NSICLA) = MNEMO_CS(I)
-!       ENDDO
         DO I=1,NSICLA
           TEXTE(22+I+NOMBLAY*NSICLA)     = TEXTE_QS(I)
           MNEMO(22+I+NOMBLAY*NSICLA)     = MNEMO_QS(I)
@@ -268,14 +252,12 @@
         ENDDO
 !
         ADD=NSICLA*(NOMBLAY+2)
-! JWI 31/05/2012 - added 1 to include wave orbital velocities
         TEXTE(23+ADD)='QS BEDLOAD      M2/S            '
         TEXTE(24+ADD)='QS BEDLOAD X    M2/S            '
         TEXTE(25+ADD)='QS BEDLOAD Y    M2/S            '
         TEXTE(26+ADD)='QS SUSPENSION   M2/S            '
         TEXTE(27+ADD)='QS SUSPENSION X M2/S            '
         TEXTE(28+ADD)='QS SUSPENSION Y M2/S            '
-! JWI END
 !
       ELSE
 !
@@ -302,83 +284,63 @@
         TEXTE(19)  = 'RUGOSITE TOTALE.M               '
         TEXTE(20)  = 'CORR FROTT PEAU MU              '
         TEXTE(21)  = 'DIAMETRE MOYEN  M               '
-! JWI 31/05/2012 - added line to include wave orbital velocities
         TEXTE(22)  = 'VITESSE FOND    M/S             '
-! JWI END
-!
-!       THIS IS DONE ABOVE
-!
-!       DO J=1,NOMBLAY
-!         DO I=1,NSICLA
-!           TEXTE(21+(I-1)*NOMBLAY+J) = ...
-!           MNEMO(21+(I-1)*NOMBLAY+J) = ...
-!         ENDDO
-!       ENDDO
 !
         DO I=1,NSICLA
-! JWI 31/05/2012 - added 1 to include wave orbital velocities
           TEXTE(22+I+NOMBLAY*NSICLA)     = TEXTE_QS(I)
           MNEMO(22+I+NOMBLAY*NSICLA)     = MNEMO_QS(I)
           TEXTE(22+I+(NOMBLAY+1)*NSICLA) = TEXTE_CS(I)
           MNEMO(22+I+(NOMBLAY+1)*NSICLA) = MNEMO_CS(I)
-! JWI END
         ENDDO
 !
         ADD=NSICLA*(NOMBLAY+2)
-! JWI 31/05/2012 - added 1 to include wave orbital velocities
         TEXTE(23+ADD)='QS CHARRIAGE    M2/S            '
         TEXTE(24+ADD)='QS CHARRIAGE X  M2/S            '
         TEXTE(25+ADD)='QS CHARRIAGE Y  M2/S            '
         TEXTE(26+ADD)='QS SUSPENSION   M2/S            '
         TEXTE(27+ADD)='QS SUSPENSION X M2/S            '
         TEXTE(28+ADD)='QS SUSPENSION Y M2/S            '
-! JWI END
 !
       ENDIF
 !
-! JWI 31/05/2012 - added 1 to include wave orbital velocities
       DO I=1,NSICLA
         TEXTE(28+I+NSICLA*(NOMBLAY+2)) = TEXTE_QSC(I)
         MNEMO(28+I+NSICLA*(NOMBLAY+2)) = MNEMO_QSC(I)
         TEXTE(28+I+NSICLA*(NOMBLAY+3)) = TEXTE_QSS(I)
         MNEMO(28+I+NSICLA*(NOMBLAY+3)) = MNEMO_QSS(I)
-! JWI END
       ENDDO
 !
       DO I=1,NOMBLAY
-! JWI 31/05/2012 - added 1 to include wave orbital velocities
         TEXTE(28+I+NSICLA*(NOMBLAY+4)) = TEXTE_ES(I)
         MNEMO(28+I+NSICLA*(NOMBLAY+4)) = MNEMO_ES(I)
-! JWI END
       ENDDO
-! V6P2
-!     DO I=1,NOMBLAY
-!       TEXTE(27+I+NSICLA*(NOMBLAY+4)+NOMBLAY) = TEXTE_CONC(I)
-!       MNEMO(27+I+NSICLA*(NOMBLAY+4)+NOMBLAY) = MNEMO_CONC(I)
-!     ENDDO
+!
       DO I=1,NOMBLAY
         TEXTE(28+I+NSICLA*(NOMBLAY+4)+NOMBLAY) = TEXTE_CONC(I)
         MNEMO(28+I+NSICLA*(NOMBLAY+4)+NOMBLAY) = MNEMO_CONC(I)
       ENDDO
 !
-!     ADD=NSICLA*(NOMBLAY+4)+NOMBLAY
       ADD=NSICLA*(NOMBLAY+4)+2*NOMBLAY
-! ... V6P2
 !
-! JWI 31/05/2012 - added 1 to include wave orbital velocities
       TEXTE(29+ADD)='PRIVE 1                         '
       TEXTE(30+ADD)='PRIVE 2                         '
       TEXTE(31+ADD)='PRIVE 3                         '
       TEXTE(32+ADD)='PRIVE 4                         '
-! JWI END
+! 
 !     NPRIV MAY BE GREATER THAN 4
 !     TEXTE(31+ADD)='PRIVE 5                         '
 !
-! JWI 31/05/2012 - added 1 to include wave orbital velocities
-      DO I=1,32+NSICLA*(NOMBLAY+4)+2*NOMBLAY
+!     IF NAMES OF PRIVATE VARIABLES GIVEN
+!
+      IF(N_NAMES_PRIV.GT.0) THEN
+        DO I=1,N_NAMES_PRIV
+          TEXTE(ADD+28+I)=NAMES_PRIVE(I)
+        ENDDO
+      ENDIF
+!
+      DO I=1,32+ADD
         TEXTPR(I)=TEXTE(I)
       ENDDO
-! JWI END
 !
 !-----------------------------------------------------------------------
 !

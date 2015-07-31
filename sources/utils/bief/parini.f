@@ -2,11 +2,11 @@
                      SUBROUTINE PARINI
 !                    *****************
 !
-     &(NHP,NHM,INDPU,FAC,NPOIN2,NACHB,NPLAN,MESH,NB_NEIGHB,
-     & NB_NEIGHB_SEG,NELEM2,IFAPAR)
+     &(NHP,NHM,INDPU,NPOIN2,NACHB,NPLAN,MESH,NB_NEIGHB,
+     & NB_NEIGHB_SEG,NELEM2,IFAPAR,MODASS)
 !
 !***********************************************************************
-! BIEF   V7P0                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    INITIALISES THE ARRAYS USED IN PARALLEL MODE.
@@ -30,8 +30,12 @@
 !+   Adding an allocation of BUF_SENDI8 and BUF_RECVI8
 !+   for I4 and I8 integer communications.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        30/07/2015
+!+        V7P1
+!+   FAC suppressed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FAC              |<--| 1/(NUMBER OF NEIGHBOURING SUB-DOMAINS)
 !| IFAPAR           |-->| IFAPAR(1:3,IELEM)=PROCESSOR NUMBERS BEHIND THE
 !|                  |   | 3 ELEMENT EDGES  (NUMBERS FROM 0 TO NCSIZE-1)
 !|                  |   | IFAPAR(4:6,IELEM): -LOCAL- ELEMENT NUMBERS
@@ -40,6 +44,7 @@
 !|                  |   |               IF NOT 0: ADDRESS IN THE LIST
 !|                  |   |               OF BOUNDARY POINTS.
 !| MESH             |-->| MESH STRUCTURE
+!| MODASS           |-->| ASSEMBLY MODE 1: NORMAL 2: WITH INTEGERS
 !| NACHB            |-->| IF 'IL' IS THE LOCAL RANK OF A NEIGHBOURING
 !|                  |   | SUB-DOMAIN AND 'IP' ONE INTERFACE POINT
 !|                  |   | NACHB(IL,IP) WILL BE THE REAL NUMBER OF THIS
@@ -59,7 +64,6 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PARINI => PARINI
-      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -67,14 +71,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)            :: NPOIN2,NPLAN,NELEM2
+      INTEGER, INTENT(IN)            :: NPOIN2,NPLAN,NELEM2,MODASS
       INTEGER, INTENT(INOUT)         :: NB_NEIGHB,NB_NEIGHB_SEG
       INTEGER, INTENT(INOUT)         :: NHP(NBMAXDSHARE,NPTIR)
       INTEGER, INTENT(INOUT)         :: NHM(NBMAXDSHARE,NPTIR)
       INTEGER, INTENT(IN)            :: NACHB(NBMAXNSHARE,NPTIR)
       INTEGER, INTENT(IN)            :: IFAPAR(6,NELEM2)
       INTEGER, INTENT(INOUT)         :: INDPU(NPOIN2)
-      TYPE(BIEF_OBJ), INTENT(INOUT)  :: FAC
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -373,34 +376,18 @@
 !
 !-----------------------------------------------------------------------
 !
-!     COMPUTES THE FACTORS FOR LATER QUADRATIC NORMS
-!     IDENTIFIES INTERNAL NODES/PROCESSORS
 !     INDEX TABLE FOR BUFFER IN COMMUNICATION
 !
       DO I=1,NPOIN2
         INDPU(I)=0
       ENDDO
 !
-      CALL OS( 'X=C      ' ,X=FAC , C=1.D0 )
-!
 !  COEFFICIENTS FOR THE SCALAR PRODUCT:
 !
       IF(NPTIR.GT.0) THEN
-!
         DO I=1,NPTIR
-!
-!         FAC = 1/(NUMBER OF DOMAINS NEIGHBOURING A POINT)
-!         SEE ALSO SUBROUTINE COMP_FAC FOR COMPLETION WITH QUADRATIC
-!         ELEMENTS
-!
-          DO J=NBMAXNSHARE,3,-1
-            IF(NACHB(J,I).EQ.-1) FAC%R(NACHB(1,I))=1.D0/(DBLE(J)-1.D0)
-          ENDDO
-!
           INDPU(NACHB(1,I))=I
-!
         ENDDO
-!
       ENDIF
 !
 !-----------------------------------------------------------------------

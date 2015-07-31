@@ -263,6 +263,7 @@
 !-----------------------------------------------------------------------
 !     CLOSES DICTIONNARY AND STEERING FILES
 !-----------------------------------------------------------------------
+!
       CLOSE(2)
       CLOSE(3)
 !
@@ -275,6 +276,20 @@
 !
         OPEN(2,FILE=NOM_DIC_WAQ,FORM='FORMATTED',ACTION='READ',ERR=9000)
         OPEN(3,FILE=NOM_CAS_WAQ,FORM='FORMATTED',ACTION='READ',ERR=9000)
+        GO TO 9003
+9000    CONTINUE
+        IF(LNG.EQ.1) WRITE(LU,9001) NOM_CAS_WAQ,NOM_DIC_WAQ
+        IF(LNG.EQ.2) WRITE(LU,9002) NOM_CAS_WAQ,NOM_DIC_WAQ
+9001    FORMAT(/1X,'ERREUR DANS L OUVERTURE DU FICHIER WAQ OU DU DICO :',
+     &         /,1X,A172,1X/A172)
+9002    FORMAT(/1X,'PROBLEM IN OPENING WAQ STEERING FILE OR DICO :',
+     &         /,1X,A172,1X/A172)
+        CALL PLANTE(1)
+        STOP
+9003    CONTINUE
+!
+!-----------------------------------------------------------------------
+!
 !
 !       CALLING DAMOCLE FOR WAQTEL
 !
@@ -1310,7 +1325,13 @@
       T2D_FILES(T2DWAQ)%NAME=MOTCAR( ADRESS(4,93) )
 !     WAQ DICTIONARY
       T2D_FILES(T2DWQD)%NAME=MOTCAR( ADRESS(4,94) )
-
+!     NAMES OF PRIVATE VARIABLES
+      N_NAMES_PRIV = MIN(4,DIMEN(4,98))
+      IF(N_NAMES_PRIV.GT.0) THEN
+        DO K=1,N_NAMES_PRIV
+          NAMES_PRIVE(K) = MOTCAR(ADRESS(4,98)+K-1)(1:32)
+        ENDDO
+      ENDIF
       IF(LISTIN) THEN
         IF(LNG.EQ.1) WRITE(LU,1000)
         IF(LNG.EQ.2) WRITE(LU,1001)
@@ -1383,7 +1404,8 @@
       DO I=1,MAXVAR
         MNEMO(I) = '        '
       ENDDO
-      CALL NOMVAR_TELEMAC2D(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC)
+      CALL NOMVAR_TELEMAC2D(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC,
+     &                      N_NAMES_PRIV,NAMES_PRIVE,SECCURRENTS)
       CALL SORTIE(VARDES , MNEMO , MAXVAR , SORLEO )
       CALL SORTIE(VARIMP , MNEMO , MAXVAR , SORIMP )
 !
@@ -2529,15 +2551,6 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-9000  CONTINUE
-      IF(LNG.EQ.1)WRITE(LU,9001)NOM_CAS_WAQ,NOM_DIC_WAQ
-      IF(LNG.EQ.2)WRITE(LU,9002)NOM_CAS_WAQ,NOM_DIC_WAQ
-9001  FORMAT(/1X,'ERREUR DANS L OUVERTURE DU FICHIER WAQ OU DU DICO :',
-     &       /,1X,A172,1X/A172)
-9002  FORMAT(/1X,'PROBLEM IN OPENING WAQ STEERING FILE OR DICO :',
-     &       /,1X,A172,1X/A172)
-      CALL PLANTE(1)
-      STOP
 !
 !-----------------------------------------------------------------------
 !
