@@ -882,32 +882,6 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    if cfg['HPC'] != {}: hpcpass = ( cfg['HPC'].has_key('PYCODE') )
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-   # ~~ Common behaviours for all CAS files ~~~~~~~~~~~~~~~~~~~~~~~
-   # You need to do this if ...
-   #    - if options.split, to copy the correct CAS files once ncsize updated
-   #    - if options.run, to re-copy the correct CAS file
-   #    - if options.merge, to get ncsize but no need to copy correct CAS file anymore
-   # Outputs ...
-   #    > nctile, ncnode, ncsize
-   #    > lang, casdir
-   print '\n... checking parallelisation'
-   nctile,ncnode,ncsize = checkParaTilling(options.nctile,options.ncnode,options.ncsize,ncruns,ncsize)
-   if cfg['MPI'] != {}: ncsize = max( 1, ncsize )
-   elif ncsize > 1:
-      raise Exception([{'name':'runCAS','msg':'parallel inconsistency: ' \
-         '\n    +> you may be using an inappropriate configuration: '+cfgName+ \
-         '\n    +> or may be wishing for scalar mode while setting to '+str(ncsize)+' processors'}])
-   if cfg['MPI'] == {}: ncsize = 0      #TODO: check if this is still useful
-   # ~~ Forces keyword if parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # /!\ in case of multiple CAS files, you have to have the same ncsize
-   if lang == 1:
-      for name in CASFiles: CASFiles[name]['cas'] = \
-         setKeyValue('PROCESSEURS PARALLELES',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['frgb'],ncsize)
-   elif lang == 2:
-      for name in CASFiles: CASFiles[name]['cas'] = \
-         setKeyValue('PARALLEL PROCESSORS',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['frgb'],ncsize)
-
-   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # You need to do this if ...
    #    - if options.split, to know where to copy the LIT files into
@@ -969,6 +943,39 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                CASFiles[name]['with'].update({ casNamePlage:{ 'code':mod, 'cas':casPlage[0] } })
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   # ~~ Common behaviours for all CAS files ~~~~~~~~~~~~~~~~~~~~~~~
+   # You need to do this if ...
+   #    - if options.split, to copy the correct CAS files once ncsize updated
+   #    - if options.run, to re-copy the correct CAS file
+   #    - if options.merge, to get ncsize but no need to copy correct CAS file anymore
+   # Outputs ...
+   #    > nctile, ncnode, ncsize
+   #    > lang, casdir
+   print '\n... checking parallelisation'
+   nctile,ncnode,ncsize = checkParaTilling(options.nctile,options.ncnode,options.ncsize,ncruns,ncsize)
+   if cfg['MPI'] != {}: ncsize = max( 1, ncsize )
+   elif ncsize > 1:
+      raise Exception([{'name':'runCAS','msg':'parallel inconsistency: ' \
+         '\n    +> you may be using an inappropriate configuration: '+cfgName+ \
+         '\n    +> or may be wishing for scalar mode while setting to '+str(ncsize)+' processors'}])
+   if cfg['MPI'] == {}: ncsize = 0      #TODO: check if this is still useful
+   # ~~ Forces keyword if parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # /!\ in case of multiple CAS files, you have to have the same ncsize
+   if lang == 1:
+      proc_parall='PROCESSEURS PARALLELES'
+   elif lang == 2:
+      proc_parall='PARALLEL PROCESSORS'
+   # Adding the number of processors in the cas file
+   for name in CASFiles: 
+      CASFiles[name]['cas'] = \
+         setKeyValue(proc_parall,CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['frgb'],ncsize)
+      # Adding in coupled cas file as well
+      for modcasname in CASFiles[name]['with']:
+         setKeyValue(proc_parall,CASFiles[name]['with'][modcasname]['cas'],
+                     MODFiles[CASFiles[name]['with'][modcasname]['code']]['frgb'],
+                     ncsize)
+
+   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Handling all input files (PART I) ~~~~~~~~~~~~~~~~~~~~~~~~~~
    # You need to do this if ...
    #    - if options.split, obvisouly this is PART I of the main file pre-processing
@@ -982,14 +989,22 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          chdir(CASFiles[name]['dir'])
          # >>> Copy INPUT files into wdir
          try:
-            section_name,zone_name = processLIT(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'],
+            section_name,zone_name = processLIT(CASFiles[name]['cas'],
+                       MODFiles[CASFiles[name]['code']]['iFS'],
                        CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],options.use_link)
+            # Adding section name to CAS file information as the coupled module 
+            # might have sections and zones as well
+            CASFiles[name]['section'] = section_name
+            CASFiles[name]['zone'] = zone_name
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
          for cplage in CASFiles[name]['with']:
             try:
-               section_name,zone_name = processLIT(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],
+               section_name,zone_name = processLIT(CASFiles[name]['with'][cplage]['cas'],
+                          MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],
                           CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],options.use_link)
+               CASFiles[name]['with'][cplage]['section'] = section_name
+               CASFiles[name]['with'][cplage]['zone'] = zone_name
             except Exception as e:
                raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
          # >>> Placing yourself into the wdir
@@ -1151,6 +1166,8 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                             MODFiles[CASFiles[name]['code']]['iFS'])    # Global CONLIM file
          GLOGEO,FMTGEO = getGLOGEO(CASFiles[name]['cas'],
                                    MODFiles[CASFiles[name]['code']]['iFS'])    # Global GEO file
+         section_name = CASFiles[name]['section']
+         zone_name = CASFiles[name]['zone']
          try:
             runPartition(parcmd,GLOGEO,FMTGEO,CONLIM,ncsize,options.bypass,section_name,zone_name)
          except Exception as e:
@@ -1163,6 +1180,8 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          for cplage in CASFiles[name]['with']:
             CONLIM = getCONLIM(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
             GLOGEO, FMTGEO = getGLOGEO(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
+            section_name = CASFiles[name]['with'][cplage]['section']
+            zone_name = CASFiles[name]['with'][cplage]['zone']
             try:
                runPartition(parcmd,GLOGEO,FMTGEO,CONLIM,ncsize,options.bypass,section_name,zone_name)
             except Exception as e:
