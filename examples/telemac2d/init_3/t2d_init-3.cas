@@ -17,9 +17,9 @@
 / HP C3700 compilateur Nag         : 211 s   6.0 26/11/2009
 / Dell 2.8 MHz compilateur Intel   :  41 s   6.0 26/11/2009
 /
-/ Version 6.2
+/ Version 7.1, with new options for a perfect mass balance
 /
-/ HP C3700 compilateur HP          :  73 s   22/05/2012
+/ HP Z600 compilateur Nag         :  37 s   30/07/2015
 /
 /----------------------------------------------------------------------
 /             Exemple d'initiation - Calcul numero 3
@@ -69,14 +69,17 @@ DEBITS IMPOSES                                    : 0.;700.
 BANCS DECOUVRANTS                                 : NON
 MODELE DE TURBULENCE                              : 1                    
 BILAN DE MASSE                                    : OUI
-PRECISION DU SOLVEUR                              : 1.E-4
+PRECISION DU SOLVEUR                              : 1.E-8
 MAXIMUM D'ITERATIONS POUR LE SOLVEUR              : 100
-FORME DE LA CONVECTION                            : 6;5;6
+FORME DE LA CONVECTION                            : 1;5;5
 SOLVEUR                                           : 7
 SOLVEUR POUR LA DIFFUSION DES TRACEURS            : 7
 COEFFICIENT DE DIFFUSION DES VITESSES             : 1.E-2
 COEFFICIENT DE DIFFUSION DES TRACEURS             : 0.
 TRAITEMENT DU SYSTEME LINEAIRE                    : 2
+/ FOR A PERFECT MASS BALANCE
+CORRECTION DE CONTINUITE                          : OUI
+TRAITEMENT DES HAUTEURS NEGATIVES                 : 2
 /
 /----------------------------------------------------------------------
 /                       TRACEUR

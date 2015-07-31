@@ -2,6 +2,8 @@ PARALLEL PROCESSORS : 0
 /
 /  DONAU : TESTING NEW POSSIBILITIES ON FRICTION
 /          DEVELOPPED AT BAW
+/          Note JMH: the duration is far from giving a steady state
+/                    only both ends get some velocity.
 /
 /
 /  HP C3700 compilateur HP      :  2375 s  version 5.5  23/11/2004
@@ -41,7 +43,6 @@ REFERENCE FILE                               : f2d_donau.slf
 TITLE : 'donau_00'
 /
 VARIABLES FOR GRAPHIC PRINTOUTS             : 'U,V,S,B,H,Q,M,W'
-VARIABLES TO BE PRINTED                     : ''
 /
 TIME STEP                                   : 0.5
 NUMBER OF TIME STEPS                        : 900
@@ -65,13 +66,6 @@ INITIAL CONDITIONS                          :'CONSTANT ELEVATION'
 INITIAL ELEVATION                           : 309.4D0
 /
 /----------------------------------------------------------------------
-/                            PHYSICAL CONSTANTS
-/----------------------------------------------------------------------
-/
-LATITUDE OF ORIGIN POINT                    : 48.
-WATER DENSITY                               : 1000.
-/
-/----------------------------------------------------------------------
 /                       NUMERICAL OPTIONS
 /----------------------------------------------------------------------
 /
@@ -83,8 +77,8 @@ SOLVER OPTION				    : 5
 SOLVER ACCURACY                             : 1.D-6
 MAXIMUM NUMBER OF ITERATIONS FOR SOLVER     : 70
 PRECONDITIONING			            : 2
-TYPE OF ADVECTION                           : 7;5
-SUPG OPTION                                 : 2;2;2;2
+TYPE OF ADVECTION                           : 1;5
+SUPG OPTION                                 : 2;2
 DISCRETIZATIONS IN SPACE                    : 11; 11
 MATRIX STORAGE				    : 3
 IMPLICITATION FOR DEPTH                     : 1.
@@ -101,8 +95,6 @@ VELOCITY DIFFUSIVITY                        : 10.
 /   FRICTION PARAMETERS                                  /
 /--------------------------------------------------------/
 LAW OF BOTTOM FRICTION            = 0
-/LAW OF BOTTOM FRICTION            = 5
-/FRICTION COEFFICIENT              = 0.025
 /
 FRICTION DATA                      = YES
 FRICTION DATA FILE                 = roughness.tbl

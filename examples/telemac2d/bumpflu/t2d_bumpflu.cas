@@ -35,7 +35,7 @@ FICHIER DES RESULTATS             : r2d_bumpflu.slf
 TITRE = 'TELEMAC 2D : ECOULEMENT FLUVIAL SUR UN OBSTACLE$'          
 SUITE DE CALCUL = NON                                                     
 PAS DE TEMPS = 0.01        NOMBRE DE PAS DE TEMPS = 1000                 
-PERIODE POUR LES SORTIES GRAPHIQUES = 100 PERIODE DE SORTIE LISTING = 50   
+PERIODE POUR LES SORTIES GRAPHIQUES =1000 PERIODE DE SORTIE LISTING = 50   
 VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,S,B,Q,F,H,N,O,R,Z'           
 LOI DE FROTTEMENT SUR LE FOND = 0    COEFFICIENT DE FROTTEMENT = 80.      
 COEFFICIENT DE DIFFUSION DES VITESSES = 0.                                
@@ -47,8 +47,10 @@ DEBITS IMPOSES : 0.;8.858893836   COTES IMPOSEES : 1.8;0.
 VALIDATION  : OUI  
 NOMBRE DE TABLEAUX PRIVES : 4                                                     
 /----------------------------------------------------------------------/  
-FORME DE LA CONVECTION : 6;5                                              
+FORME DE LA CONVECTION : 4;5                                              
         OPTION DE SUPG : 1;2                                              
 /DISCRETISATIONS EN ESPACE : 12 ; 11 
 COMPATIBILITE DU GRADIENT DE SURFACE LIBRE : 0.9
+TRAITEMENT DU SYSTEME LINEAIRE : 2
+SOLVEUR : 1
 BANCS DECOUVRANTS : NON                                     

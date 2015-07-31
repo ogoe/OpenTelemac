@@ -1,3 +1,4 @@
+PROCESSEURS PARALLELES : 0
 /
 /  HP C3700 compilateur HP         :  459 s  5.7 17/04/2007
 /  HP C3700 compilateur Nag        : 1291 s  5.7 17/04/2007
@@ -15,9 +16,10 @@
 /  HP C3700 compilateur Nag        :  971 s  6.0 26/11/2009 
 /  DELL Linux compilateur pgi 6.2  :  161 s  6.0 26/11/2009
 /
-/  Version 6.2
+/  Version 7.1 
 /
-/  HP C3700 compilateur HP         :  351 s  22/05/2012
+/  HP Z600 compilateur Nag   1 proc   :  64 s  31/07/2015
+/  HP Z600 compilateur Nag   8 procs  :  12 s  31/07/2015
 /
 FICHIER FORTRAN                    : t2d_digue.f
 FICHIER DES CONDITIONS AUX LIMITES : geo_digue.cli
@@ -32,8 +34,8 @@ COEFFICIENT DE DIFFUSION DES VITESSES = 2.  MODELE DE TURBULENCE : 1
 VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,H,S,B'             
 PERIODE POUR LES SORTIES GRAPHIQUES:500  PERIODE DE SORTIE LISTING =100   
 LOI DE FROTTEMENT SUR LE FOND : 3   COEFFICIENT DE FROTTEMENT = 55.       
-FORME DE LA CONVECTION = 6;5            VALIDATION : OUI                  
-      OPTION DE SUPG   = 2;2                                                                                                        
+FORME DE LA CONVECTION = 1;5    VALIDATION : OUI    
+OPTION DE SUPG : 2;2                                                                                                    
 PRECONDITIONNEMENT : 2    OPTION DU SOLVEUR : 3           
 PRECISION DU SOLVEUR = 1.E-6                                                
 MASS-LUMPING SUR H : 1.                                                   
