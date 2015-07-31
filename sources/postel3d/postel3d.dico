@@ -101,7 +101,7 @@ DEFAUT1 = 120
 RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
 RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
 NIVEAU = 2
-AIDE = 'Il s''agit du nombre de points suivant l''horizontal.'
+AIDE = 'Il s''agit du nombre de points suivant l''horizontale.'
 AIDE1 = ''
 
 /----------------------------------------------------------------------/
