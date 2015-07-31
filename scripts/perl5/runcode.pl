@@ -412,7 +412,18 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
    	  else
    	    { acquihp   ( $FIL1, $FIL2);
    	      chdir($REP);
-   	      $rcp = RunPartel ($FIL2, $conlimFIC, $NCSIZE, $secFICname, $zfiFICname, $geomFICname); #jaj
+              # If section secFICname should contain the name of the file
+              # And secFIC always contains the name in the temporary folder
+              if($secFICname eq '') 
+                {
+                  $secFIC = '';
+                }
+              # Same thing for the zone file
+              if($zfiFICname eq '') 
+                {
+                  $zfiFIC = '';
+                }
+   	      $rcp = RunPartel ($FIL2, $conlimFIC, $NCSIZE, $secFIC, $zfiFIC, $geomFICname); #jaj
               if ( $rcp != 0 )  
                 {
                   open(F, ">>$REPLANCE$ps"."$PARA$WORKING"."_error.log");
@@ -939,12 +950,12 @@ sub RunPartel       # (geo, cli, NCSIZE, secname, zonname,geomname); #jaj added 
 {#RunPartel
 
  #Arguments de PARTEL dans "partel.par"
-  open(FPAR,">partel.par") or die "File \'partel.par\' cannot be opened!";
+  open(FPAR,">partel_@_[0].par") or die "File \'partel.par\' cannot be opened!";
  #PARTEL parameters (METIS_PartMeshDual method always choosen [=1])
   print FPAR "@_[0]\nSERAFIN\n@_[1]\n@_[2]\n1\n@_[3]\n@_[4]\n@_[5]\nSERAFIN";  #jaj
   close(FPAR) or die "File \'partel.par\' cannot be closed!";
 # partel outputs redirected to a file
-  $command=join "",$PROJECT,$ps,"builds$ps$dirlib$ps","bin$ps","partel$VERS[$0].exe < partel.par >> partel.log";
+  $command=join "",$PROJECT,$ps,"builds$ps$dirlib$ps","bin$ps","partel$VERS[$0].exe < partel_@_[0].par >> partel_@_[0].log";
   print $command;
 # this line will redirect partel outputs to screen or listing instead of partel.log
 # $command=join "",$PathParall,"partel < partel.par ";
