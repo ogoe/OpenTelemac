@@ -151,17 +151,34 @@
                 WRITE(LU,*) 'NO BOUNDARY CONDITIONS FILE'
               ENDIF
             ENDIF
-            IF((NCSIZE.LE.1).OR.(FILES(I)%TYPE(1:4).EQ.'SCAL')) THEN
-              FILE_NAME = PATH(1:NCAR)//TRIM(FILES(I)%TELNAME)
-              IF(ICLI.NE.0) THEN
-                CLI_NAME = PATH(1:NCAR)//TRIM(FILES(ICLI)%TELNAME)
+            ! Rename file_name and cli_name
+            IF(FULLNAME) THEN
+              IF((NCSIZE.LE.1).OR.(FILES(I)%TYPE(1:4).EQ.'SCAL')) THEN
+                FILE_NAME = PATH(1:NCAR)//TRIM(FILES(I)%NAME)
+                IF(ICLI.NE.0) THEN
+                  CLI_NAME = PATH(1:NCAR)//TRIM(FILES(ICLI)%NAME)
+                ENDIF
+              ELSE
+                FILE_NAME = PATH(1:NCAR)//TRIM(FILES(I)%NAME)
+     &                      //EXTENS(NCSIZE-1,IPID)
+                IF(ICLI.NE.0) THEN
+                  CLI_NAME = PATH(1:NCAR)//TRIM(FILES(ICLI)%NAME)
+     &                        //EXTENS(NCSIZE-1,IPID)
+                ENDIF
               ENDIF
             ELSE
-              FILE_NAME = PATH(1:NCAR)//TRIM(FILES(I)%TELNAME)
-     &                    //EXTENS(NCSIZE-1,IPID)
-              IF(ICLI.NE.0) THEN
-                CLI_NAME = PATH(1:NCAR)//TRIM(FILES(ICLI)%TELNAME)
+              IF((NCSIZE.LE.1).OR.(FILES(I)%TYPE(1:4).EQ.'SCAL')) THEN
+                FILE_NAME = PATH(1:NCAR)//TRIM(FILES(I)%TELNAME)
+                IF(ICLI.NE.0) THEN
+                  CLI_NAME = PATH(1:NCAR)//TRIM(FILES(ICLI)%TELNAME)
+                ENDIF
+              ELSE
+                FILE_NAME = PATH(1:NCAR)//TRIM(FILES(I)%TELNAME)
      &                      //EXTENS(NCSIZE-1,IPID)
+                IF(ICLI.NE.0) THEN
+                  CLI_NAME = PATH(1:NCAR)//TRIM(FILES(ICLI)%TELNAME)
+     &                        //EXTENS(NCSIZE-1,IPID)
+                ENDIF
               ENDIF
             ENDIF
 
