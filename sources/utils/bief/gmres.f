@@ -273,17 +273,18 @@
         H(J+1,J)=SQRT(P_DOTS(V%ADR(J+1)%P,V%ADR(J+1)%P,MESH))
 !
         IF(H(J+1,J).LT.1.D-20) THEN
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'GMRES : ECHEC DE L''ALGORITHME'
-            WRITE(LU,*) 'NORME DU VECTEUR DE RANG ',J+1
-            WRITE(LU,*) 'DANS LA BASE EGALE A ',H(J+1,J)
-            WRITE(LU,*) 'DIMENSION DE L''ESPACE DE KRYLOV REDUITE A ',J
-          ENDIF
-          IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'GMRES: ALGORITHM FAILS'
-            WRITE(LU,*) 'NORM OF VECTOR ',J+1
-            WRITE(LU,*) 'IN THE BASIS EQUALS ',H(J+1,J)
-            WRITE(LU,*) 'SIZE OF KRYLOV SPACE REDUCED TO ',J
+          IF(INFOGR) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'GMRES : NORME DU VECTEUR DE RANG ',J+1
+              WRITE(LU,*) 'DANS LA BASE EGALE A ',H(J+1,J)
+              WRITE(LU,*) 'DIMENSION DE L''ESPACE DE KRYLOV'
+              WRITE(LU,*) 'REDUITE A ',J
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'GMRES: NORM OF VECTOR ',J+1
+              WRITE(LU,*) 'IN THE BASIS EQUALS ',H(J+1,J)
+              WRITE(LU,*) 'SIZE OF KRYLOV SPACE REDUCED TO ',J
+            ENDIF
           ENDIF
 !         REDUCTION OF KRYLOV SPACE
           K=J
