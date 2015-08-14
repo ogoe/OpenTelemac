@@ -74,6 +74,11 @@
 !+  Stopping when advection schemes not programmed for quasi-bubble or
 !+  quadratic elements are asked.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        14/08/2015
+!+        V7P1
+!+  A message was truncated due to a wrong format.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
@@ -1772,12 +1777,10 @@
             OPTSUP(2)=0
             IF(LNG.EQ.1) WRITE(LU,8000)
             IF(LNG.EQ.2) WRITE(LU,8001)
-8000        FORMAT(1X,'LECDON : SCHEMA VOLUMES FINIS SUR LE TRACEUR ',
-     &      1I6,/,1X,
-     &      'VALEUR FORCEE : OPTION DE SUPG = 0 POUR H')
-8001        FORMAT(1X,'LECDON : FINITE VOLUME SCHEME ON THE TRACER ',
-     &      1I6,/,1X,
-     &      'IMPOSED VALUE: SUPG OPTION = 0 FOR DEPTH')
+8000        FORMAT(1X,'LECDON : SCHEMA VOLUMES FINIS SUR LE TRACEUR ',/,
+     &      1X,'VALEUR FORCEE : OPTION DE SUPG = 0 POUR H')
+8001        FORMAT(1X,'LECDON : FINITE VOLUME SCHEME ON THE TRACER ',/,
+     &      1X,'IMPOSED VALUE: SUPG OPTION = 0 FOR DEPTH')
             IF(OPTASS.NE.3) THEN
               IF(LNG.EQ.1) WRITE(LU,2216)
               IF(LNG.EQ.2) WRITE(LU,2217)
