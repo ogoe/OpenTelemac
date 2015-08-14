@@ -85,6 +85,12 @@
 !+   went to another subdomain just after. Look for 08/07/2014 to trace
 !+   the corrections.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        14/08/2015
+!+        V7P1
+!+   Argument NRK added to SCARACT, it was hardcoded to 3. It is the
+!+   number of sub-steps to do the characteristic pathline.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -6842,13 +6848,12 @@
      &(U,UTILD,UCONV,VCONV,WCONV,FRCONV,X,Y,ZSTAR,FREQ,
      & XCONV,YCONV,ZCONV,FCONV,DX,DY,DZ,DF,Z,SHP,SHZ,SHF,SURDET,
      & DT   , IKLE,IFABOR, ELT, ETA , FRE, ELTBUF, ISUB, IELM ,
-     & IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN2,NDP,NPLAN,NF,
+     & IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN2,NDP,NRK,NPLAN,NF,
      & MESH ,NPLOT,DIM1U, SENS,SHPBUF,SHZBUF,SHFBUF,FREBUF,SIZEBUF,
      & APOST,APERIO,AYA4D,ASIGMA,ASTOCHA,AVISC,AALG)
 !
 !***********************************************************************
-! BIEF VERSION 6.3           24/04/97    J-M JANIN (LNH) 30 87 72 84
-!
+! BIEF VERSION 7.1
 !***********************************************************************
 !
 !brief    Computes characteristic pathlines and interpolates functions
@@ -6869,6 +6874,12 @@
 !+        V6P3
 !+        Small modifications to allow scaract to be used to find the
 !+        element and sub-domain after the transport of algae
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        14/08/2015
+!+        V7P1
+!+   Argument NRK added, it was hardcoded to 3. It is the
+!+   number of sub-steps to do the characteristic pathline.
 !
 !-----------------------------------------------------------------------
 !                             ARGUMENTS
@@ -6919,6 +6930,7 @@
 ! |   NPOIN        | -->| NOMBRE TOTAL DE POINTS DU MAILLAGE.
 ! |   NPOIN2       | -->| NOMBRE DE POINTS DU MAILLAGE 2D (POUR TEL3D).
 ! |   NDP          | -->| NOMBRE DE POINTS PAR ELEMENT 2D.
+! |   NRK          | -->| NUMBER OF SUB-STEPS FOR COMPUTING THE PATHLINES.
 ! |   NPLAN        | -->| NOMBRE DE PLAN SUIVANT Z (POUR TEL3D).
 ! |   DIM1U        | -->| FIRST DIMENSIONS OF VARIABLES, THAT WILL BE
 ! |                |    | CONSIDERED IN SUBROUTINE INTERP
@@ -6950,7 +6962,7 @@
 !
       INTEGER, INTENT(IN)             :: NELEM,NELMAX,NPOIN,NPOIN2,NPLOT
       INTEGER, INTENT(IN)             :: NOMB,NDP,NPLAN,IELM,IELMU,NF
-      INTEGER, INTENT(IN)             :: DIM1U,SENS,SIZEBUF
+      INTEGER, INTENT(IN)             :: DIM1U,SENS,SIZEBUF,NRK
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: U
       TYPE(BIEF_OBJ)  , INTENT(INOUT) :: UTILD
       DOUBLE PRECISION, INTENT(INOUT) :: XCONV(*),YCONV(*),FCONV(*)
@@ -6983,7 +6995,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NRK,I,ISTOP,ISTOP2,STOCHA
+      INTEGER I,ISTOP,ISTOP2,STOCHA
       INTEGER, POINTER, DIMENSION(:)  :: ETABUF
 !
       LOGICAL POST,PERIO,YA4D,SIGMA,ALG
@@ -7122,12 +7134,8 @@
         NCHARA=0
 !
       ENDIF
-
 !
 !***********************************************************************
-! NUMBER OF RUNGE-KUTTA SUB-STEPS PER ELEMENT CROSSED
-!
-      NRK = 3
 !
       IF(PRESENT(AALG).AND.POST) THEN
 !       IF AALG IS TRUE THEN COLLECT THE POSITION OF THE ALGAE

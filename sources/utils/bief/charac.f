@@ -172,11 +172,17 @@
       TYPE(BIEF_OBJ), TARGET  :: FTILD_WEAK,SHPBUF,SHZBUF,SHZWEA
       INTEGER, DIMENSION(:), POINTER :: IFA
       DOUBLE PRECISION, DIMENSION(:), POINTER :: PT_SHP,PT_SHZ
-      INTEGER I,NPT,DIM1F,IPLAN,NG
+      INTEGER I,NPT,DIM1F,IPLAN,NG,NRK
       LOGICAL QUAD,QUAB,APOST,APERIO,AYA4D,ASIGMA,DEJA
       DATA DEJA/.FALSE./
       INTRINSIC MIN
       SAVE
+!
+!-----------------------------------------------------------------------
+!
+!     HARDCODED NUMBER OF SUB-STEPS FOR COMPUTING THE PATH-LINES
+!
+      NRK=3
 !
 !-----------------------------------------------------------------------
 !
@@ -491,7 +497,7 @@
      &             SURDET2%R,DT,IKLE2%I,IFA,ELT,
      &             ETA,FRE,IT3,ISUB,
      &             IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
-     &             3,NPLAN,NF,MESH,NPT,DIM1F,-1,
+     &             3,NRK,NPLAN,NF,MESH,NPT,DIM1F,-1,
 !                  SHPBUF      SHZBUF      SHFBUF
      &             PT_SHPBUF%R,T7%R       ,T10%R,FREBUF,SIZEBUF,
      &             APOST,APERIO,AYA4D,ASIGMA,ASTOCHA,AVISC)

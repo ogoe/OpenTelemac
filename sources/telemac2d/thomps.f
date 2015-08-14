@@ -62,6 +62,11 @@
 !+   Size of IT1 changed from 2*NPTFR to NPOIN (to avoid a problem of
 !+   bound checking when NPTFR=0)
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        14/08/2015
+!+        V7P1
+!+   Argument NRK added to SCARACT.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| WORK ARRAY: CELERITY OF WAVES
 !| DT             |-->| TIME STEP
@@ -185,7 +190,7 @@
 !
       INTEGER, DIMENSION(:), POINTER  :: LISPFR
       INTEGER, DIMENSION(:),POINTER :: ELT_T
-      INTEGER K,NPT,J,ITRAC,N,NOMB,NDP,NPLAN,IELMU,ETA(1),I,IFR,IPT
+      INTEGER K,NPT,J,ITRAC,N,NOMB,NDP,NPLAN,IELMU,ETA(1),I,IFR,IPT,NRK
       INTEGER FREBUF(1)
       DOUBLE PRECISION HMIN,HHBOR,DETADX,DETADY,TBAR(100),TT(100)
       DOUBLE PRECISION UCSI,UCSIBAR,UETA,UETABAR,CBAR,HH,TETA
@@ -236,6 +241,7 @@
       ETA(1)=1
 !     NDP ALSO FIRST DIMENSION OF SHP AND SHPP
       NDP=3
+      NRK=3
       NPLAN=1
       IELMU=IELM
 !
@@ -365,7 +371,7 @@
      &             SHPP,SHZ,SHZ,
      &             SURDET,DT,IKLE,IFABOR,ELT_T,
      &             ETA,ETA,IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,
-     &             NOMB,NPOIN,NPOIN,NDP,NPLAN,1,MESH,NPT,U%DIM1,-1,
+     &             NOMB,NPOIN,NPOIN,NDP,NRK,NPLAN,1,MESH,NPT,U%DIM1,-1,
      &             SHPBUF%R,SHPBUF%R,SHPBUF%R,FREBUF,SIZEBUF)
 !
 !----------------------------------------------------------------------
@@ -516,7 +522,7 @@
      &             SHPP,SHZ,SHZ,
      &             SURDET,DT,IKLE,IFABOR,ELT_T,ETA,ETA,
      &             IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,NOMB,NPOIN,
-     &             NPOIN,NDP,NPLAN,1,MESH,NPT,U%DIM1,-1,
+     &             NPOIN,NDP,NRK,NPLAN,1,MESH,NPT,U%DIM1,-1,
      &             SHPBUF%R,SHPBUF%R,SHPBUF%R,FREBUF,SIZEBUF)
 !
 !----------------------------------------------------------------------
@@ -619,7 +625,7 @@
      &             DX_T,DY_T,DZ_T,DZ_T,Z,SHPP,SHZ,SHZ,
      &             SURDET,DT,IKLE,IFABOR,ELT_T,ETA,ETA,
      &             IT3%I,IT4%I,IELM,
-     &             IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN,NDP,NPLAN,1,
+     &             IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN,NDP,NRK,NPLAN,1,
      &             MESH,NPT,U%DIM1,-1,
      &             SHPBUF%R,SHPBUF%R,SHPBUF%R,FREBUF,SIZEBUF)
 !

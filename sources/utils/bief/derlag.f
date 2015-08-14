@@ -44,6 +44,11 @@
 !+   + error message : parallelism does not work here.
 !+   (possible but a long implementation copied on particles)
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        14/08/2015
+!+        V7P1
+!+   Hardcoded argument NRK added for SCARACT.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBLAG         |-->| TIME STEP FOR STARTING THE COMPUTATION
 !| DT             |-->| TIME STEP
@@ -103,7 +108,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ILAG,JLAG,LTT,IPOIN,ETA(1),SENS,NPLAN,FRE(1),FREBUF(1)
+      INTEGER ILAG,JLAG,LTT,IPOIN,ETA(1),SENS,NPLAN,FRE(1),FREBUF(1),NRK
       TYPE(BIEF_OBJ) :: SVOID
 !
       DOUBLE PRECISION ZSTAR(1),ZCONV(1),SHZ(1),Z(1),C,SHF(1)
@@ -123,6 +128,10 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
+!
+!     HARDCODED NUMBER OF SUB-STEPS FOR COMPUTING THE PATH-LINES
+!
+      NRK=3
 !
 !     2D HERE
 !
@@ -187,7 +196,7 @@
      &                 MESH%SURDET%R,
      &                 DT,MESH%IKLE%I,MESH%IFABOR%I,ELTLAG(1,ILAG),
      &                 ETA,FRE,NSP,ISPDONE,IELM,IELMU,NELEM,NELMAX,
-     &                 0,NPOIN,NPOIN,NDP,NPLAN,1,
+     &                 0,NPOIN,NPOIN,NDP,NRK,NPLAN,1,
      &                 MESH,NPOIN,BIEF_NBPTS(IELMU,MESH),SENS,
 !                      PROVISIONAL, THIS WILL NOT WORK IN PARALLEL
      &                 SHPBUF,SHZBUF,SHZBUF,FREBUF,1,

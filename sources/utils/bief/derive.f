@@ -60,6 +60,11 @@
 !+     - Only tested in 2D
 !+     - Does not work for quadratic elements
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        14/08/2015
+!+        V7P1
+!+   Hardcoded argument NRK added for SCARACT.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
 !| DX             |<->| WORK ARRAY (DISPLACEMENTS ALONG X)
@@ -150,7 +155,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IFLOT,FRE(1),FREBUF(1),IPROC,NFLOTG,NPLAN,ELT
-      INTEGER N1,N2,N3,N4,N5,N6,NOMB,SENS
+      INTEGER N1,N2,N3,N4,N5,N6,NOMB,SENS,NRK
 !
       DOUBLE PRECISION ZSTAR(1)
 !
@@ -181,6 +186,12 @@
       DOUBLE PRECISION,DIMENSION(:,:),ALLOCATABLE::BUFF_2D
 !
       SAVE
+!
+!-----------------------------------------------------------------------
+!
+!     HARDCODED NUMBER OF SUB-STEPS FOR COMPUTING THE PATH-LINES
+!
+      NRK=3
 !
 !-----------------------------------------------------------------------
 !
@@ -345,41 +356,36 @@
 !
         IF(NFLOT_MAX.GT.SIZEBUF)THEN
           CALL SCARACT(SVOID,SVOID,U,V,W,W,X,Y,ZSTAR,ZSTAR,
-     &             XFLOT,YFLOT,
-     &             ZFLOT,ZFLOT,
-     &             DX,DY,
-     &             DZ,DZ,Z,
-     &             SHPFLO,SHZFLO,SHZFLO,
-     &             SURDET,DT,IKLE,IFABOR,ELTFLO,ETAFLO,
-     &             FRE,ELTBUF,ISUB,IELM,IELMU,
-     &             NELEM,NELMAX,
-     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
-     &             BUFF_2D,BUFF_1D,BUFF_1D,FREBUF,SIZEBUF2,
-     &             AALG=ALGAE,APOST=.TRUE.)
+     &                 XFLOT,YFLOT,ZFLOT,ZFLOT,DX,DY,DZ,DZ,Z,
+     &                 SHPFLO,SHZFLO,SHZFLO,
+     &                 SURDET,DT,IKLE,IFABOR,ELTFLO,ETAFLO,
+     &                 FRE,ELTBUF,ISUB,IELM,IELMU,
+     &                 NELEM,NELMAX,NOMB,NPOIN,NPOIN2,NDP,NRK,
+     &                 NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
+     &                 BUFF_2D,BUFF_1D,BUFF_1D,FREBUF,SIZEBUF2,
+     &                 AALG=ALGAE,APOST=.TRUE.)
         ELSE
           CALL SCARACT(SVOID,SVOID,U,V,W,W,X,Y,ZSTAR,ZSTAR,
-     &             XFLOT,YFLOT,
-     &             ZFLOT,ZFLOT,
-     &             DX,DY,
-     &             DZ,DZ,Z,
-     &             SHPFLO,SHZFLO,SHZFLO,
-     &             SURDET,DT,IKLE,IFABOR,ELTFLO,ETAFLO,
-     &             FRE,ELTBUF,ISUB,IELM,IELMU,
-     &             NELEM,NELMAX,
-     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
-     &             SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
-     &             AALG=ALGAE,APOST=.TRUE.)
+     &                 XFLOT,YFLOT,ZFLOT,ZFLOT,DX,DY,DZ,DZ,Z,
+     &                 SHPFLO,SHZFLO,SHZFLO,
+     &                 SURDET,DT,IKLE,IFABOR,ELTFLO,ETAFLO,
+     &                 FRE,ELTBUF,ISUB,IELM,IELMU,
+     &                 NELEM,NELMAX,NOMB,NPOIN,NPOIN2,NDP,NRK,
+     &                 NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
+     &                 SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
+     &                 AALG=ALGAE,APOST=.TRUE.)
         ENDIF
       ELSE
         CALL SCARACT(SVOID,SVOID,U,V,W,W,X,Y,ZSTAR,ZSTAR,
-     &             XFLOT,YFLOT,ZFLOT,ZFLOT,
-     &             DX,DY,DZ,DZ,Z,SHPFLO,SHZFLO,SHZFLO,SURDET,DT,
-     &             IKLE,IFABOR,ELTFLO,ETAFLO,
-     &             FRE,ELTBUF,ISUB,IELM,IELMU,NELEM,NELMAX,
-     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
-     &             SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
-     &             APOST=.TRUE.,ASTOCHA=STOCHA,AVISC=VISC)
-!                  APOST=.TRUE. OTHERWISE ISUB IS NOT FILLED
+     &               XFLOT,YFLOT,ZFLOT,ZFLOT,
+     &               DX,DY,DZ,DZ,Z,SHPFLO,SHZFLO,SHZFLO,SURDET,DT,
+     &               IKLE,IFABOR,ELTFLO,ETAFLO,
+     &               FRE,ELTBUF,ISUB,IELM,IELMU,NELEM,NELMAX,
+     &               NOMB,NPOIN,NPOIN2,NDP,NRK,
+     &               NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
+     &               SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
+     &               APOST=.TRUE.,ASTOCHA=STOCHA,AVISC=VISC)
+!                    APOST=.TRUE. OTHERWISE ISUB IS NOT FILLED
       ENDIF
 !
 !-----------------------------------------------------------------------
