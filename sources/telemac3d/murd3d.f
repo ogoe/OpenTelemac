@@ -195,10 +195,7 @@
       DATA EPS /1.D-6/
 !     DATA EPS /10.D0/
 !
-      INTEGER TOTITER
-      DATA TOTITER /0/
-!
-!***********************************************************************
+!-----------------------------------------------------------------------
 !
       CALL CPSTVC(SVOLU2,STRA01)
       CALL CPSTVC(SVOLU2,STRA02)
@@ -974,7 +971,6 @@
 !     DTJ WAS THE REMAINING TIME, ALFA*DTJ HAS BEEN DONE, THE REST IS:
       DTJ = DTJ * (1.D0-ALFA)
       NITER = NITER + 1
-      TOTITER = TOTITER + 1
       IF(NITER.GE.100) THEN
         WRITE(LU,*) 'MURD3D: ITERATION NO. REACHED ',NITER,', STOP.'
         IF(NCSIZE.GT.1) THEN
