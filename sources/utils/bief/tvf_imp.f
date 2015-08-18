@@ -20,6 +20,13 @@
 !+        V7P1
 !+   First version.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/08/2015
+!+        V7P1
+!+   Optimisation. Matrix simplified into a diagonal except for the last
+!+   correction. Does not spoil mass conservation and results virtually
+!+   unchanged.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME-STEP
 !| F              |<--| VALUES OF F AT TIME N+1 OF SUB-ITERATION
@@ -33,6 +40,7 @@
 !| FXMAT          |-->| FLUXES (NON ASSEMBLED IN PARALLEL)
 !| FXMATPAR       |-->| FLUXES (ASSEMBLED IN PARALLEL)
 !| GLOSEG         |-->| GLOBAL NUMBER OF THE 2 POINTS OF A SEGMENT.
+!| ICOR           |-->| CURRENT CORRECTION NUMBER
 !| INFOGT         |-->| IF YES, PRINT INFORMATION ON SOLVER
 !| IOPT2          |-->| 0: CONSERVATIVE ADVECTION FIELD
 !|                |   | 1: NON CONSERVATIVE ADVECTION FIELD
@@ -42,6 +50,7 @@
 !| MASSOU         |-->| MASS ADDED BY SOURCE TERM
 !| MESH           |-->| MESH STRUCTURE
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NCOR           |-->| TOTAL NUMBER OF CORRECTIONS ASKED
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSEG           |-->| NUMBER OF SEGMENTS
@@ -132,52 +141,6 @@
       AM2%ELMCOL=11
       CALL CPSTVC(SF,AM2%D)
 !
-!     DIAGONAL  
-!
-      DO I=1,NPOIN
-        AM2%D%R(I)=HNP1MT(I)*VOLU2D(I)
-      ENDDO
-!
-!     IMPLICIT BOUNDARY TERM
-!
-      DO I=1,NPTFR
-        N=NBOR(I)
-        IF(LIMTRA(I).EQ.KDIR) THEN
-          AM2%D%R(N)=AM2%D%R(N)-DT*TETAF(N)*FXBOR(I)
-        ENDIF
-      ENDDO
-!
-!     DIAGONAL AND OFF-DIAGONAL TERMS
-!
-      DO I=1,NSEG
-        I1=GLOSEG(I,1)  
-        I2=GLOSEG(I,2)
-        IF(FXMATPAR(I).LT.0.D0) THEN
-          AM2%D%R(I1) = AM2%D%R(I1) - DT*TETAF(I1)*FXMAT(I)
-          AM2%X%R(I)=DT*TETAF(I2)*FXMAT(I)
-          AM2%X%R(I+NSEG)=0.D0
-        ELSE
-          AM2%D%R(I2) = AM2%D%R(I2) + DT*TETAF(I2)*FXMAT(I)
-          AM2%X%R(I)=0.D0
-          AM2%X%R(I+NSEG)=-DT*TETAF(I1)*FXMAT(I)
-        ENDIF        
-      ENDDO
-!
-!     SOURCES IN CONTINUITY EQUATION (SMH)
-!
-      IF(YASMH) THEN
-        IF(OPTSOU.EQ.1) THEN
-          DO I=1,NPOIN
-            AM2%D%R(I)=AM2%D%R(I)
-     &                +DT*TETAF(I)*VOLU2D(I)*MAX(SMH(I),0.D0)
-          ENDDO
-        ELSEIF(OPTSOU.EQ.2) THEN
-          DO I=1,NPOIN
-            AM2%D%R(I)=AM2%D%R(I)+DT*TETAF(I)*MAX(SMH(I),0.D0)
-          ENDDO
-        ENDIF
-      ENDIF 
-!
 !     RIGHT HAND SIDE 
 !
 !     TERM FROM THE DERIVATIVE IN TIME
@@ -195,6 +158,70 @@
         CALL PLANTE(1)
         STOP
       ENDIF
+!
+!     DIAGONAL OF MATRIX 
+!
+      DO I=1,NPOIN
+        AM2%D%R(I)=HNP1MT(I)*VOLU2D(I)
+      ENDDO
+!
+!     IMPLICIT BOUNDARY TERM
+!
+      DO I=1,NPTFR
+        N=NBOR(I)
+        IF(LIMTRA(I).EQ.KDIR) THEN
+          AM2%D%R(N)=AM2%D%R(N)-DT*TETAF(N)*FXBOR(I)
+        ENDIF
+      ENDDO
+!
+!     DIAGONAL AND OFF-DIAGONAL TERMS
+!
+      IF(ICOR.LT.NCOR) THEN
+!       SYSTEM SIMPLIFIED, MASS SPOILED, BUT IT WILL BE CORRECTED AFTER
+!       BY THE LAST CORRECTION
+        DO I=1,NSEG
+          I1=GLOSEG(I,1)  
+          I2=GLOSEG(I,2)
+          IF(FXMATPAR(I).LT.0.D0) THEN
+            AM2%D%R(I1) = AM2%D%R(I1) - DT*TETAF(I1)*FXMAT(I)
+            SM%R(I1)=SM%R(I1)-DT*TETAF(I2)*FXMAT(I)*F(I2)
+          ELSE
+            AM2%D%R(I2) = AM2%D%R(I2) + DT*TETAF(I2)*FXMAT(I)
+            SM%R(I2)=SM%R(I2)+DT*TETAF(I1)*FXMAT(I)*F(I1)
+          ENDIF        
+        ENDDO
+      ELSE
+!       NO SIMPLIFICATION, REAL MATRIX
+        DO I=1,NSEG
+          I1=GLOSEG(I,1)  
+          I2=GLOSEG(I,2)
+          IF(FXMATPAR(I).LT.0.D0) THEN
+            AM2%D%R(I1) = AM2%D%R(I1) - DT*TETAF(I1)*FXMAT(I)
+            AM2%X%R(I)=DT*TETAF(I2)*FXMAT(I)
+            AM2%X%R(I+NSEG)=0.D0
+          ELSE
+            AM2%D%R(I2) = AM2%D%R(I2) + DT*TETAF(I2)*FXMAT(I)
+            AM2%X%R(I)=0.D0
+            AM2%X%R(I+NSEG)=-DT*TETAF(I1)*FXMAT(I)
+          ENDIF        
+        ENDDO
+!
+      ENDIF
+!
+!     SOURCES IN CONTINUITY EQUATION (SMH)
+!
+      IF(YASMH) THEN
+        IF(OPTSOU.EQ.1) THEN
+          DO I=1,NPOIN
+            AM2%D%R(I)=AM2%D%R(I)
+     &                +DT*TETAF(I)*VOLU2D(I)*MAX(SMH(I),0.D0)
+          ENDDO
+        ELSEIF(OPTSOU.EQ.2) THEN
+          DO I=1,NPOIN
+            AM2%D%R(I)=AM2%D%R(I)+DT*TETAF(I)*MAX(SMH(I),0.D0)
+          ENDDO
+        ENDIF
+      ENDIF 
 !
 !     TERMES BII * CIN ET BIJ * CJN
 !
@@ -280,7 +307,18 @@
 !
 !     SOLVING THE FINAL LINEAR SYSTEM
 !
-      CALL SOLVE(SF,AM2,SM,BB,SLVPSI,INFOGT,MESH,AM2)
+      IF(ICOR.LT.NCOR) THEN
+!       HERE THE MATRIX IS DIAGONAL
+        IF(NCSIZE.GT.1) THEN
+          CALL PARCOM(AM2%D,2,MESH)
+          CALL PARCOM(SM,2,MESH)
+        ENDIF
+        DO I=1,NPOIN
+          F(I)=SM%R(I)/AM2%D%R(I)
+        ENDDO       
+      ELSE
+        CALL SOLVE(SF,AM2,SM,BB,SLVPSI,INFOGT,MESH,AM2)
+      ENDIF
 !
 !
 !     CALL MINI(C,I1,F,NPOIN)
