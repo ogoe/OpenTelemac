@@ -37,9 +37,15 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER NTRAC,NTRPA,I
-      CHARACTER*32 NOMTAC(NTRAC),NOMTPA(NTRPA)
-      CHARACTER*32 TEXTE
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN) :: NTRAC,NTRPA
+      CHARACTER(LEN=32), INTENT(INOUT) :: NOMTAC(NTRAC),NOMTPA(NTRPA)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER I
+      CHARACTER(len=32) TEXTE
 !
 !-----------------------------------------------------------------------
 !

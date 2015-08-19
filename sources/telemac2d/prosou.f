@@ -650,29 +650,29 @@
             CALL GET_MESH_NPOIN(FFORMAT, FILE_ID, TRIANGLE_ELT_TYPE,
      &                          NP, ERR)
             CALL CHECK_CALL(ERR,'PROSOU:GET_MESH_NPOIN')
-            CALL READ_DATA(FFORMAT, FILE_ID, FXWAVE%R, NOMX, NPOIN,
-     &                     ERR, IREC, ATH)
+            CALL FIND_VARIABLE(FFORMAT, FILE_ID, NOMX, FXWAVE%R, NPOIN,
+     &                     ERR, RECORD=IREC, TIME_RECORD=ATH)
             OKX = ERR.EQ.0
-            CALL READ_DATA(FFORMAT, FILE_ID, FYWAVE%R, NOMY, NPOIN,
-     &                     ERR, IREC, ATH)
+            CALL FIND_VARIABLE(FFORMAT, FILE_ID, NOMY, FYWAVE%R, NPOIN,
+     &                     ERR, RECORD=IREC, TIME_RECORD=ATH)
             OKY = ERR.EQ.0
             IF(.NOT.OKX.OR..NOT.OKY) THEN
 !             SECOND TRY (OLD VERSIONS OF ARTEMIS OR TOMAWAC)
               NOMX='FORCE_FX                      '
               NOMY='FORCE_FY                      '
-              CALL READ_DATA(FFORMAT, FILE_ID, FXWAVE%R, NOMX, NPOIN,
-     &                       ERR, IREC, ATH)
+              CALL FIND_VARIABLE(FFORMAT, FILE_ID,NOMX, FXWAVE%R, NPOIN,
+     &                       ERR, RECORD=IREC,TIME_RECORD=ATH)
               OKX = ERR.EQ.0
-              CALL READ_DATA(FFORMAT, FILE_ID, FYWAVE%R, NOMY, NPOIN,
-     &                       ERR, IREC, ATH)
+              CALL FIND_VARIABLE(FFORMAT, FILE_ID,NOMY, FYWAVE%R, NPOIN,
+     &                       ERR, RECORD=IREC,TIME_RECORD=ATH)
               OKY = ERR.EQ.0
             ENDIF
 !           CLANDESTINE VARIABLES FROM TOMAWAC TO SISYPHE
             IF(NVARCL.GT.0) THEN
               DO I=1,NVARCL
-                CALL READ_DATA(FFORMAT, FILE_ID, VARCL%ADR(I)%P%R,
-     &                         VARCLA(I)(1:16), NPOIN,
-     &                          ERR,IREC,ATH)
+                CALL FIND_VARIABLE(FFORMAT, FILE_ID, 
+     &                         VARCLA(I)(1:16),VARCL%ADR(I)%P%R, NPOIN,
+     &                          ERR,RECORD=IREC,TIME_RECORD=ATH)
                 IF(ERR.NE.0) THEN
                   IF(LNG.EQ.1) WRITE(LU,7) VARCLA(I)(1:16)
                   IF(LNG.EQ.2) WRITE(LU,8) VARCLA(I)(1:16)

@@ -1,7 +1,8 @@
+!                       *****************
                         SUBROUTINE PRE2DV
 !                       *****************
 !
-     &(X,Y,SHP,NSEG,IMSEG,X2DV,Y2DV,IKLES,INDIC,ELEM,
+     &(X,Y,SHP,NSEG,IMSEG,X2DV,Y2DV,IKLES,ELEM,
      & NPOIN2,NELEM2,IM,JM,NC2DV)
 !
 !***********************************************************************
@@ -23,7 +24,6 @@
 ! !   X2DV         ! -->! ABSCISSES DES SOMMETS DES COUPES VERTICALES  !
 ! !   Y2DV         ! -->! ORDONNEES DES SOMMETS DES COUPES VERTICALES  !
 ! !   IKLES        ! -->! TABLE DE CONNECTIVITE                        !
-! !   INDIC        !<-- ! INDICATEUR DE LA NATURE DES POINTS           !
 ! !   ELEM         !<-- ! NUMERO DES ELEMENTS CONTENANT LES PTS DE COUPE
 ! !   NPOIN2       ! -->! NOMBRE DE POINTS DU MAILLAGE 2D              !
 ! !   NELEM2       ! -->! NOMBRE D'ELEMENTS DU MAILLAGE 2D             !
@@ -42,16 +42,23 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER NPOIN2,NELEM2,IM,JM,NC2DV,IC,N1,N2,N3,I,J,N
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION X(NPOIN2),Y(NPOIN2)
+!
+      INTEGER, INTENT(IN) :: NPOIN2,NELEM2,IM,JM,NC2DV
+      DOUBLE PRECISION, INTENT(IN) :: X(NPOIN2),Y(NPOIN2)
       DOUBLE PRECISION , INTENT(INOUT) :: SHP(IM,3,NC2DV)
-      DOUBLE PRECISION X2DV(50,NC2DV),Y2DV(50,NC2DV)
-      DOUBLE PRECISION XM,YM,A1,A2,A3,SURDET,LGTOT,LGSEG(49)
+      DOUBLE PRECISION, INTENT(IN) :: X2DV(50,NC2DV),Y2DV(50,NC2DV)
+      INTEGER, INTENT(INOUT) :: IKLES(3,NELEM2)
+      INTEGER, INTENT(INOUT) :: ELEM(IM,NC2DV)
+      INTEGER, INTENT(INOUT) :: NSEG(NC2DV),IMSEG(49,NC2DV)
 !
-      INTEGER IKLES(3,NELEM2),INDIC(IM,JM,NC2DV),ELEM(IM,NC2DV)
-      INTEGER NSEG(NC2DV),IMSEG(49,NC2DV)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      DOUBLE PRECISION :: XM,YM,A1,A2,A3,SURDET,LGTOT
       INTEGER IMTOT,IMMAX,NSEGMA,ISEG,IDSEG,IFSEG
+      INTEGER IC,N1,N2,N3,I,N
+      DOUBLE PRECISION :: LGSEG(49)
 !
       LOGICAL FLAG
 !
@@ -99,7 +106,6 @@
           YM = ((IFSEG-I)*Y2DV(ISEG,IC) + (I-IDSEG)*Y2DV(ISEG+1,IC))
      &       / FLOAT(IFSEG-IDSEG)
 !
-          INDIC(I,1,IC) = 0
           ELEM(I,IC) = 1
           SHP(I,1,IC) = 1.
           SHP(I,2,IC) = 0.
@@ -116,7 +122,6 @@
               FLAG = .FALSE.
               SURDET = 1. / ((X(N2)-X(N1))*(Y(N3)-Y(N1)) -
      &                       (Y(N2)-Y(N1))*(X(N3)-X(N1)))
-              INDIC(I,1,IC) = -1
               ELEM(I,IC) = N
               SHP(I,1,IC) = A1 * SURDET
               SHP(I,2,IC) = A2 * SURDET
@@ -130,12 +135,6 @@
           IF (LNG.EQ.1) WRITE(LU,101) IC
           IF (LNG.EQ.2) WRITE(LU,102) IC
         ENDIF
-!
-        DO J = 2,JM
-          DO I = 1,IM
-            INDIC(I,J,IC) = INDIC(I,1,IC)
-          ENDDO
-        ENDDO
 !
       ENDDO !IC
 !

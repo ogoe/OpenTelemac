@@ -118,22 +118,22 @@
 !
 !     LOOKS FOR THE FRICTION COEFFICIENT IN THE FILE
 !
-      IF(LNG.EQ.1) CALL READ_DATA(FFORMAT, NGEO, CHESTR%R,
-     &                            'FROTTEMENT      ', MESH%NPOIN,
-     &                            IERR,RECORD,TIME=BID)
-      IF(LNG.EQ.2) CALL READ_DATA(FFORMAT, NGEO, CHESTR%R,
-     &                            'BOTTOM FRICTION ', MESH%NPOIN,
-     &                            IERR,RECORD,TIME=BID)
+      IF(LNG.EQ.1) CALL FIND_VARIABLE(FFORMAT, NGEO,'FROTTEMENT      ', 
+     &                            CHESTR%R, MESH%NPOIN,
+     &                            IERR,RECORD=RECORD,TIME_RECORD=BID)
+      IF(LNG.EQ.2) CALL FIND_VARIABLE(FFORMAT, NGEO,'BOTTOM FRICTION ',
+     &                            CHESTR%R, MESH%NPOIN,
+     &                            IERR,RECORD=RECORD,TIME_RECORD=BID)
 !     CASE OF A GEOMETRY FILE IN ANOTHER LANGUAGE
       IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.1) THEN
-        CALL READ_DATA(FFORMAT, NGEO, CHESTR%R,
-     &                 'BOTTOM FRICTION ', MESH%NPOIN,
-     &                 IERR,RECORD,TIME=BID)
+        CALL FIND_VARIABLE(FFORMAT, NGEO,'BOTTOM FRICTION ',
+     &                  CHESTR%R, MESH%NPOIN,
+     &                 IERR,RECORD=RECORD,TIME_RECORD=BID)
       ENDIF
       IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.2) THEN
-        CALL READ_DATA(FFORMAT, NGEO, CHESTR%R,
-     &                 'FROTTEMENT      ', MESH%NPOIN,
-     &                 IERR,RECORD,TIME=BID)
+        CALL FIND_VARIABLE(FFORMAT, NGEO, 'FROTTEMENT      ', 
+     &                 CHESTR%R,MESH%NPOIN,
+     &                 IERR,RECORD=RECORD,TIME_RECORD=BID)
       ENDIF
       IF(IERR.EQ.0) THEN
         CALFRO = .FALSE.
@@ -147,74 +147,74 @@
 !
 !     LOOKS FOR THE BOTTOM ELEVATION IN THE FILE
 !
-      IF(LNG.EQ.1) CALL READ_DATA(FFORMAT, NGEO, ZF%R,
-     &                            'FOND            ', MESH%NPOIN,
-     &                            IERR,RECORD,TIME=BID)
-      IF(LNG.EQ.2) CALL READ_DATA(FFORMAT, NGEO, ZF%R,
-     &                            'BOTTOM          ', MESH%NPOIN,
-     &                            IERR,RECORD,TIME=BID)
+      IF(LNG.EQ.1) CALL FIND_VARIABLE(FFORMAT, NGEO,'FOND            ', 
+     &                            ZF%R, MESH%NPOIN,
+     &                            IERR,RECORD=RECORD,TIME_RECORD=BID)
+      IF(LNG.EQ.2) CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                            'BOTTOM          ',ZF%R, MESH%NPOIN,
+     &                            IERR,RECORD=RECORD,TIME_RECORD=BID)
       IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.1) THEN
-        CALL READ_DATA(FFORMAT, NGEO, ZF%R,
-     &                 'BOTTOM          ', MESH%NPOIN,
-     &                 IERR,RECORD,TIME=BID)
+        CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                 'BOTTOM          ', ZF%R,MESH%NPOIN,
+     &                 IERR,RECORD=RECORD,TIME_RECORD=BID)
       ENDIF
       IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.2) THEN
-        CALL READ_DATA(FFORMAT, NGEO, ZF%R,
-     &                 'FOND            ', MESH%NPOIN,
-     &                 IERR,RECORD,TIME=BID)
+        CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                 'FOND            ', ZF%R,MESH%NPOIN,
+     &                 IERR,RECORD=RECORD,TIME_RECORD=BID)
       ENDIF
 !     MESHES FROM BALMAT ?
       IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR)
-     &                   CALL READ_DATA(FFORMAT, NGEO, ZF%R,
-     &                   'ALTIMETRIE      ', MESH%NPOIN,
-     &                   IERR,RECORD,TIME=BID)
+     &                   CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                   'ALTIMETRIE      ', ZF%R,MESH%NPOIN,
+     &                   IERR,RECORD=RECORD,TIME_RECORD=BID)
 !     TOMAWAC IN FRENCH ?
       IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR)
-     &                   CALL READ_DATA(FFORMAT, NGEO, ZF%R,
-     &                   'COTE_DU_FOND    ', MESH%NPOIN,
-     &                   IERR,RECORD,TIME=BID)
+     &                   CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                   'COTE_DU_FOND    ', ZF%R,MESH%NPOIN,
+     &                   IERR,RECORD=RECORD,TIME_RECORD=BID)
 !     TOMAWAC IN ENGLISH ?
       IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR)
-     &                   CALL READ_DATA(FFORMAT, NGEO, ZF%R,
-     &                   'BOTTOM_LEVEL    ', MESH%NPOIN,
-     &                   IERR,RECORD,TIME=BID)
+     &                   CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                   'BOTTOM_LEVEL    ', ZF%R,MESH%NPOIN,
+     &                   IERR,RECORD=RECORD,TIME_RECORD=BID)
       LUZF = IERR.EQ.0
 !
       IF(.NOT.LUZF) THEN
 !       LOOKS FOR WATER DEPTH AND FREE SURFACE ELEVATION
-        IF(LNG.EQ.1) CALL READ_DATA(FFORMAT, NGEO, H%R,
-     &                              'HAUTEUR D''EAU   ', MESH%NPOIN,
-     &                              IERR,RECORD,TIME=BID)
-        IF(LNG.EQ.2) CALL READ_DATA(FFORMAT, NGEO, H%R,
-     &                              'WATER DEPTH     ', MESH%NPOIN,
-     &                              IERR,RECORD,TIME=BID)
+        IF(LNG.EQ.1) CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                              'HAUTEUR D''EAU   ', H%R,MESH%NPOIN,
+     &                              IERR,RECORD=RECORD,TIME_RECORD=BID)
+        IF(LNG.EQ.2) CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                              'WATER DEPTH     ', H%R,MESH%NPOIN,
+     &                              IERR,RECORD=RECORD,TIME_RECORD=BID)
         IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.1) THEN
-          CALL READ_DATA(FFORMAT, NGEO, H%R,
-     &                   'WATER DEPTH     ', MESH%NPOIN,
-     &                   IERR,RECORD,TIME=BID)
+          CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                   'WATER DEPTH     ', H%R,MESH%NPOIN,
+     &                   IERR,RECORD=RECORD,TIME_RECORD=BID)
 
         ENDIF
         IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.2) THEN
-          CALL READ_DATA(FFORMAT, NGEO, H%R,
-     &                   'HAUTEUR D''EAU   ', MESH%NPOIN,
-     &                   IERR,RECORD,TIME=BID)
+          CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                   'HAUTEUR D''EAU   ', H%R,MESH%NPOIN,
+     &                   IERR,RECORD=RECORD,TIME_RECORD=BID)
         ENDIF
         LUH = IERR.EQ.0
-        IF(LNG.EQ.1) CALL READ_DATA(FFORMAT, NGEO, Z%R,
-     &                              'SURFACE LIBRE   ', MESH%NPOIN,
-     &                              IERR, RECORD,TIME=BID)
-        IF(LNG.EQ.2) CALL READ_DATA(FFORMAT, NGEO, Z%R,
-     &                              'FREE SURFACE    ', MESH%NPOIN,
-     &                              IERR, RECORD,TIME=BID)
+        IF(LNG.EQ.1) CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                              'SURFACE LIBRE   ', Z%R,MESH%NPOIN,
+     &                              IERR, RECORD=RECORD,TIME_RECORD=BID)
+        IF(LNG.EQ.2) CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                              'FREE SURFACE    ',Z%R, MESH%NPOIN,
+     &                              IERR, RECORD=RECORD,TIME_RECORD=BID)
         IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.1) THEN
-          CALL READ_DATA(FFORMAT, NGEO, Z%R,
-     &                   'FREE SURFACE    ', MESH%NPOIN,
-     &                   IERR, RECORD,TIME=BID)
+          CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                   'FREE SURFACE    ', Z%R,MESH%NPOIN,
+     &                   IERR, RECORD=RECORD,TIME_RECORD=BID)
         ENDIF
         IF((IERR.EQ.HERMES_VAR_UNKNOWN_ERR).AND.LNG.EQ.2) THEN
-          CALL READ_DATA(FFORMAT, NGEO, Z%R,
-     &                   'SURFACE LIBRE   ', MESH%NPOIN,
-     &                   IERR, RECORD,TIME=BID)
+          CALL FIND_VARIABLE(FFORMAT, NGEO, 
+     &                   'SURFACE LIBRE   ', Z%R,MESH%NPOIN,
+     &                   IERR, RECORD=RECORD,TIME_RECORD=BID)
         ENDIF
         LUZ = IERR.EQ.0
       ENDIF
@@ -297,9 +297,9 @@
 !
       IF(N_NAMES_PRIV.GT.0) THEN
         DO I=1,N_NAMES_PRIV
-          CALL READ_DATA(FFORMAT,NGEO,PRIVE%ADR(I)%P%R,
-     &                   NAMES_PRIVE(I)(1:16),MESH%NPOIN,
-     &                   IERR,RECORD,TIME=BID)
+          CALL FIND_VARIABLE(FFORMAT,NGEO,NAMES_PRIVE(I)(1:16),
+     &                   PRIVE%ADR(I)%P%R,MESH%NPOIN,
+     &                   IERR,RECORD=RECORD,TIME_RECORD=BID)
           IF(IERR.EQ.0) THEN
             IF(LNG.EQ.1) WRITE(LU,*) 'VARIABLE ',NAMES_PRIVE(I)(1:32),
      &                         ' TROUVEE DANS LE FICHIER DE GEOMETRIE'

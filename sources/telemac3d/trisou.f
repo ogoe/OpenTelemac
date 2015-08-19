@@ -557,11 +557,11 @@
           NOMY='FORCE FY        '
           FFORMAT = T3D_FILES(T3DBI1)%FMT
           FILE_ID = T3D_FILES(T3DBI1)%LU
-          CALL READ_DATA(FFORMAT, FILE_ID, FXH%R ,NOMX, NPOIN2,
-     &                   IERR,NPTH,ATH)
+          CALL FIND_VARIABLE(FFORMAT, FILE_ID, NOMX, FXH%R, NPOIN2,
+     &                   IERR,RECORD=NPTH,TIME_RECORD=ATH)
           OKX = IERR.EQ.0
-          CALL READ_DATA(FFORMAT, FILE_ID, FYH%R ,NOMY, NPOIN2,
-     &                   IERR,NPTH,ATH)
+          CALL FIND_VARIABLE(FFORMAT, FILE_ID, NOMY, FYH%R, NPOIN2,
+     &                   IERR,RECORD=NPTH,TIME_RECORD=ATH)
           OKY = IERR.EQ.0
 !
           IF(.NOT.OKX.OR..NOT.OKY) THEN

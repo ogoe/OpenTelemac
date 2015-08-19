@@ -3,6 +3,7 @@
 
 SRCS= \
 declarations_postel3d.f \
+interface_postel3d.f \
 coupeh.f           exten1.f           exten2.f          \
 lecdon_postel3d.f        postel3d.f                     \
 coupev.f           lecr3d.f           pre2dh.f          \

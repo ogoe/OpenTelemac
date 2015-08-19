@@ -12,8 +12,6 @@ files: bief_def.f
   front2.f
   voisin.f
   read_mesh_info.f
-  elebd31.f
-  voisin31.f
 
 [hermes]
 path: <root>|sources|utils|hermes
@@ -39,7 +37,6 @@ files: interface_hermes.f
   get_bnd_connectivity.f
   get_bnd_nelem.f
   close_bnd.f
-  get_mesh_l2g_numbering.f
   get_mesh_nelem.f
   get_mesh_npoin_per_element.f
   get_mesh_nplan.f
@@ -50,13 +47,12 @@ files: interface_hermes.f
   get_mesh_npoin.f
   get_bnd_value.f
   get_mesh_connectivity.f
+  get_mesh_l2g_numbering.f
 
 [parallel]
 path: <root>|sources|utils|parallel
-files: interface_parallel.f
-  declarations_parallel.f
-  p_init.F
-  p_exit.F
+files: declarations_parallel.F
+  interface_parallel.f
 
 [partel]
 path: <root>|sources|utils|partel
@@ -64,8 +60,6 @@ files: declarations_partel.f
   partitioner.F
   partel.F
   parres.f
-  util_pares.f
-  pares3d.F
   homere_partel.f
 
 [special]

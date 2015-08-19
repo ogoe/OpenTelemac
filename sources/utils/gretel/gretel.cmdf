@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|utils|gretel
 module: gretel
-liborder: special hermes bief partel gretel
+liborder: special hermes bief gretel partel
 name: HOMERE_GRETEL
 
 [bief]
@@ -25,22 +25,22 @@ files: interface_hermes.f
   set_mesh.f
   get_data_value.f
   get_data_var_list.f
+  get_data_nvar.f
   get_mesh_l2g_numbering.f
   get_data_time.f
   open_mesh.f
-  close_mesh.f
+  get_mesh_nplan.f
   get_mesh_coord.f
   get_mesh_title.f
+  close_mesh.f
+  get_data_ntimestep.f
   get_mesh_nelem.f
   get_mesh_npoin_per_element.f
-  get_mesh_nplan.f
   get_bnd_nelem.f
   get_mesh_nptir.f
   get_bnd_npoin.f
-  get_data_nvar.f
   get_mesh_dimension.f
   get_mesh_npoin.f
-  get_data_ntimestep.f
   add_data.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f

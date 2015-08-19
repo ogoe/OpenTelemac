@@ -3,7 +3,7 @@
 !                       *****************
 !
      &(X,Y,IKLES,IPOBO,NPOIN2,NELEM2,NC2DH,NCOU,TITCAS,
-     & NVAR,NTRAC,NTRPA,FFORMAT,NVA3,TEXTLU)
+     & FFORMAT,NVA3,TEXTLU)
 !
 !***********************************************************************
 ! POSTEL3D VERSION 5.1   01/09/99   T. DENOT (LNH) 01 30 87 74 89
@@ -26,9 +26,6 @@
 ! !   NC2DH        ! -->! NOMBRE DE COUPES HORIZONTALES                !
 ! !   NCOU         ! -->! NUMERO DE CANAL - 1 DE LA PREMIERE COUPE     !
 ! !   TITCAS       ! -->! TITRE A PORTER SUR CHAQUE COUPE              !
-! !   NVAR         ! -->! NOMBRE DE VARIABLES ENREGISTREES             !
-! !   NTRAC        ! -->! NOMBRE DE TRACEURS ACTIFS                    !
-! !   NTRPA        ! -->! NOMBRE DE TRACEURS PASSIFS                   !
 ! !   SORG3D       ! -->! INDICATEUR DES VARIABLES ENREGISTREES        !
 ! !   BINCOU       ! -->! STANDARD DE BINAIRE POUR LES COUPES          !
 ! !________________!____!______________________________________________!
@@ -52,23 +49,29 @@
       USE BIEF
       USE DECLARATIONS_SPECIAL
       USE INTERFACE_HERMES
+      USE INTERFACE_POSTEL3D, EX_PRE2DH => PRE2DH
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER NPOIN2,NELEM2,NC2DH,NCOU,NVAR(1),NTRAC,NTRPA
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION X(NPOIN2),Y(NPOIN2)
-!
+      INTEGER, INTENT(IN) ::NPOIN2,NELEM2,NC2DH,NCOU
+      DOUBLE PRECISION, INTENT(IN) :: X(NPOIN2),Y(NPOIN2)
+      CHARACTER(LEN=72), INTENT(IN) :: TITCAS
       INTEGER , INTENT(INOUT) :: IKLES(3,NELEM2),IPOBO(NPOIN2)
-      INTEGER IC,J,CANAL,IBID(1),ISTAT
-      INTEGER NVA3
-      INTEGER N
+      CHARACTER(LEN=32), INTENT(IN) :: TEXTLU(100)
+      CHARACTER(LEN=8),INTENT(IN) :: FFORMAT
+      INTEGER,INTENT(IN) :: NVA3
 !
-      CHARACTER*72 TITCAS
-      CHARACTER*32 TEXTLU(100)
-      CHARACTER*8 FFORMAT
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+      INTEGER IC,I,CANAL
+      INTEGER N,IELEM
+!
+      INTEGER, ALLOCATABLE :: IKLE(:)
 !
       INTEGER :: DATE(3), TIME(3), IERR
 !-----------------------------------------------------------------------
@@ -86,7 +89,7 @@
 !     OUVERTURE DU FICHIER + ENREGISTREMENT DES PREMIERS PARAMETRES
 !     -------------------------------------------------------------
 !
-        CALL ECRDEB(CANAL,FFORMAT,TITCAS,NVA3,NTRAC,NTRPA,.TRUE.,
+        CALL ECRDEB(CANAL,FFORMAT,TITCAS,NVA3,.TRUE.,
      &               TEXTLU,IC,N)
 !
 !     ENREGISTREMENT DES AUTRES PARAMETRES DE L'ENTETE
@@ -94,10 +97,18 @@
 !
         DATE = (/0,0,0/)
         TIME = (/0,0,0/)
+        ALLOCATE(IKLE(NELEM2*3),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR,'GRETEL:TMP0')
+        DO I = 1,3
+          DO IELEM = 1,NELEM2
+            IKLE((I-1)*NELEM2 + IELEM) = IKLES(I,IELEM)
+          ENDDO
+        ENDDO
         CALL SET_MESH(FFORMAT,CANAL,2,TRIANGLE_ELT_TYPE,3,0,0,
-     &                NELEM2,NPOIN2,IKLES,IPOBO,IPOBO,X,Y,0,
+     &                NELEM2,NPOIN2,IKLE,IPOBO,IPOBO,X,Y,0,
      &                DATE,TIME,IERR)
         CALL CHECK_CALL(IERR,'PRED2H:SET_MESH')
+        DEALLOCATE(IKLE)
 !
       ENDDO
 !

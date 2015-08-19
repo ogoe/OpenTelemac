@@ -31,6 +31,7 @@ files: declarations_telemac.f
   allblo_in_block.f
   dimens.f
   cpstvc.f
+  checkmesh.f
   bief_nbsegel.f
   segbor.f
   bief_nbfel.f
@@ -44,7 +45,6 @@ files: declarations_telemac.f
   ov_2.f
   mxptel31.f
   mxptel.f
-  checkmesh.f
   almesh.f
   bief_open_files.f
   ovd.f
@@ -349,7 +349,7 @@ files: declarations_telemac.f
   flux3dlim.f
   read_dataset.f
   bief_valida.f
-  read_data.f
+  find_variable.f
   write_mesh.f
   write_data.f
   impvec.f
@@ -440,13 +440,13 @@ files: declarations_telemac.f
   cflpsi.f
   vgfpsi.f
   flux_mask.f
-  flux_ef_vf_2.f
   flux_ef_vf_3.f
+  flux_ef_vf_2.f
+  tvf_imp.f
   tvf.f
   hvf.f
   tracvf.f
   tvf_2.f
-  tvf_imp.f
   cflvf.f
   cvtrvf.f
   cvtrvf_pos.f
@@ -521,8 +521,10 @@ files: interface_hermes.f
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
   p_init.F
-  p_imax.F
   interface_parallel.f
+  p_imax.F
+  p_dmin.F
+  p_dmax.F
   p_exit.F
   p_mpi_type_get_extent.F
   p_mpi_type_create_struct.F
@@ -537,14 +539,12 @@ files: declarations_parallel.F
   p_mpi_alltoallv_oil.F
   p_mpi_type_free.F
   org_charac_type_alg.F
-  p_dmax.F
   p_wait_paraco.F
   p_iwrit.F
   p_iread.F
   p_dsum.F
   p_ireadi8.F
   p_iwriti8.F
-  p_dmin.F
   p_ireadi.F
   p_iwriti.F
   p_imin.F
@@ -686,8 +686,8 @@ files: friction_def.f
   meteo.f
   read_fic_frliq.f
   sta_dis_cur.f
-  conv_mercator_to_degdec.f
   conv_lambert_to_degdec.f
+  conv_mercator_to_degdec.f
   tpxo.f
   nodalf_pugh.f
   nodalupv_pugh.f

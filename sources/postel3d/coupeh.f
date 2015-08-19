@@ -69,31 +69,36 @@
 !
       USE BIEF
       USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_POSTEL3D, ONLY: PREZ => Z
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER NC2DH,NPOIN2,NCOU,NPLAN,IC,I,J,CANAL
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN) :: NC2DH,NPOIN2,NCOU,NPLAN
       INTEGER, INTENT(IN) :: IREC
-!
-      DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN2,NPLAN)
-      DOUBLE PRECISION, INTENT(INOUT) :: V(NPOIN2,NPLAN)
-      DOUBLE PRECISION, INTENT(INOUT) :: W(NPOIN2,NPLAN)
-      DOUBLE PRECISION, INTENT(INOUT) :: Z(NPOIN2,NPLAN)
-!
+      DOUBLE PRECISION, INTENT(IN) :: U(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(IN) :: V(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(IN) :: W(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(IN) :: Z(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: AT
-      DOUBLE PRECISION, INTENT(INOUT) :: HREF(9)
-      INTEGER , INTENT(INOUT) :: NPLREF(9)
+      DOUBLE PRECISION, INTENT(IN) :: HREF(9)
+      INTEGER , INTENT(IN) :: NPLREF(9)
       INTEGER , INTENT(INOUT) :: PLINF(NPOIN2)
-!
       TYPE (BIEF_OBJ), INTENT(INOUT) :: TAB
+      INTEGER, INTENT(IN) :: NVA3
+      CHARACTER(LEN=8) :: FFORMAT
+      DOUBLE PRECISION,INTENT(INOUT) :: VAR(NPOIN2),SHZ(NPOIN2)
+      CHARACTER(LEN=32), INTENT(IN) :: TEXTELU(100)
 !
-      DOUBLE PRECISION VAR(NPOIN2),SHZ(NPOIN2)
-      INTEGER NVA3
-      CHARACTER*8 FFORMAT
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IC,I,J,CANAL
 !
       INTEGER IERR
-      CHARACTER(LEN=32) :: VAR_NAME, TEXTELU(100)
+      CHARACTER(LEN=32) :: VAR_NAME
 !
 !***********************************************************************
 !
@@ -142,6 +147,19 @@
      &                NPOIN2,IERR)
         CALL CHECK_CALL(IERR,'COUPEH:ADD_DATA:DOM')
 !
+!       Adding z
+! 
+        DO I = 1,NPOIN2
+          VAR(I) = 0.D0
+          IF (SHZ(I).GT.-1.D-6.AND.SHZ(I).LT.1.000001D0)
+     &       VAR(I) =
+     &     PREZ((PLINF(I)-1)*NPOIN2+I)*(1.-SHZ(I))
+     &   + PREZ( PLINF(I)   *NPOIN2+I)*    SHZ(I)
+        ENDDO
+        CALL ADD_DATA(FFORMAT,CANAL,TEXTELU(1),AT,IREC,.FALSE.,VAR,
+     &                NPOIN2,IERR)
+        CALL CHECK_CALL(IERR,'COUPEH:ADD_DATA:J')
+!
 !
 !    COMPOSANTE U DE LA VITESSE
 !    --------------------------
@@ -150,22 +168,10 @@
           IF (SHZ(I).GT.-1.D-6.AND.SHZ(I).LT.1.000001D0)
      &    VAR(I) = U(I,PLINF(I))*(1.-SHZ(I))+U(I,PLINF(I)+1)*SHZ(I)
         ENDDO
-        IF (LNG.EQ.1) VAR_NAME = 'VITESSE U       M/S             '
-        IF (LNG.EQ.2) VAR_NAME = 'VELOCITY U      M/S             '
-
+        VAR_NAME = TEXTELU(2)
         CALL ADD_DATA(FFORMAT,CANAL,VAR_NAME,AT,IREC,.FALSE.,VAR,
      &                NPOIN2,IERR)
-        ! If variable unknown try again with version in the other language
-        IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
-          IF (LNG.EQ.2) VAR_NAME = 'VITESSE U       M/S             '
-          IF (LNG.EQ.1) VAR_NAME = 'VELOCITY U      M/S             '
-
-          CALL ADD_DATA(FFORMAT,CANAL,VAR_NAME,AT,IREC,.FALSE.,VAR,
-     &                  NPOIN2,IERR)
-          CALL CHECK_CALL(IERR,'COUPEH:ADD_DATA:U2')
-        ELSE
-          CALL CHECK_CALL(IERR,'COUPEH:ADD_DATA:U')
-        ENDIF
+        CALL CHECK_CALL(IERR,'COUPEH:ADD_DATA:U')
 !
 !
 !    COMPOSANTE V DE LA VITESSE
@@ -175,50 +181,31 @@
           IF (SHZ(I).GT.-1.D-6.AND.SHZ(I).LT.1.000001D0)
      &    VAR(I) = V(I,PLINF(I))*(1.-SHZ(I))+V(I,PLINF(I)+1)*SHZ(I)
         ENDDO
-        IF (LNG.EQ.1) VAR_NAME = 'VITESSE V       M/S             '
-        IF (LNG.EQ.2) VAR_NAME = 'VELOCITY V      M/S             '
+        VAR_NAME = TEXTELU(3)
         CALL ADD_DATA(FFORMAT,CANAL,VAR_NAME,AT,IREC,.FALSE.,VAR,
      &                NPOIN2,IERR)
-        ! If variable unknown try again with version in the other language
-        IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
-          IF (LNG.EQ.2) VAR_NAME = 'VITESSE V       M/S             '
-          IF (LNG.EQ.1) VAR_NAME = 'VELOCITY V      M/S             '
-          CALL ADD_DATA(FFORMAT,CANAL,VAR_NAME,AT,IREC,.FALSE.,VAR,
-     &                  NPOIN2,IERR)
-          CALL CHECK_CALL(IERR,'COUPEH:ADD_DATA:V2')
-        ELSE
-          CALL CHECK_CALL(IERR,'COUPEH:ADD_DATA:V')
-        ENDIF
+        CALL CHECK_CALL(IERR,'COUPEH:ADD_DATA:V')
 !
 !    COMPOSANTE W DE LA VITESSE
 !    --------------------------
         DO I = 1,NPOIN2
           VAR(I) = W(I,PLINF(I))*(1.-SHZ(I))+W(I,PLINF(I)+1)*SHZ(I)
         ENDDO
-        IF (LNG.EQ.1) VAR_NAME = 'VITESSE W       M/S             '
-        IF (LNG.EQ.2) VAR_NAME = 'VELOCITY W      M/S             '
+        VAR_NAME = TEXTELU(4)
         CALL ADD_DATA(FFORMAT,CANAL,VAR_NAME,AT,IREC,.FALSE.,VAR,
      &                NPOIN2,IERR)
-        ! If variable unknown try again with version in the other language
-        IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
-          IF (LNG.EQ.2) VAR_NAME = 'VITESSE W       M/S             '
-          IF (LNG.EQ.1) VAR_NAME = 'VELOCITY W      M/S             '
-          CALL ADD_DATA(FFORMAT,CANAL,VAR_NAME,AT,IREC,.FALSE.,VAR,
-     &                  NPOIN2,IERR)
-          CALL CHECK_CALL(IERR,'COUPEH:ADD_DATA:W2')
-        ELSE
-          CALL CHECK_CALL(IERR,'COUPEH:ADD_DATA:W')
-        ENDIF
+        CALL CHECK_CALL(IERR,'COUPEH:ADD_DATA:W')
 !
+!       Other variables
 !
         IF (NVA3.GT.4) THEN
-          DO J=1,NVA3-4
+          DO J=5,NVA3
             DO I = 1,NPOIN2
               VAR(I) = 0.D0
               IF (SHZ(I).GT.-1.D-6.AND.SHZ(I).LT.1.000001D0)
      &           VAR(I) =
-     &         TAB%ADR(J)%P%R((PLINF(I)-1)*NPOIN2+I)*(1.-SHZ(I))
-     &       + TAB%ADR(J)%P%R( PLINF(I)   *NPOIN2+I)*    SHZ(I)
+     &         TAB%ADR(J-4)%P%R((PLINF(I)-1)*NPOIN2+I)*(1.-SHZ(I))
+     &       + TAB%ADR(J-4)%P%R( PLINF(I)   *NPOIN2+I)*    SHZ(I)
             ENDDO
             CALL ADD_DATA(FFORMAT,CANAL,TEXTELU(J),AT,IREC,.FALSE.,VAR,
      &                    NPOIN2,IERR)

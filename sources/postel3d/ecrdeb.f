@@ -2,7 +2,7 @@
                         SUBROUTINE ECRDEB
 !                       *****************
 !
-     &(CANAL,FFORMAT,TITCAS,NBV,NTRAC,NTRPA,C2DH,TEXTLU,IC,N)
+     &(CANAL,FFORMAT,TITCAS,NBVAR,C2DH,TEXTLU,IC,N)
 !
 !***********************************************************************
 ! POSTEL3D VERSION 5.1   01/09/99   T. DENOT (LNH) 01 30 87 74 89
@@ -18,11 +18,9 @@
 ! !      NOM       !MODE!                   ROLE                       !
 ! !________________!____!______________________________________________!
 ! !   CANAL        ! -->! CANAL DE SORTIE                              !
-! !   BINCOU       ! -->! STANDARD DE BINAIRE POUR LES COUPES          !
+! !   FFORMAT      ! -->! FORMAT DU FICHIER POUR LES COUPES            !
 ! !   TITCAS       ! -->! TITRE LU DANS LE FICHIER DE RESULTATS        !
 ! !   NBV          ! -->! NOMBRE DE VARIABLES EN SORTIE                !
-! !   NTRAC        ! -->! NOMBRE DE TRACEURS ACTIFS                    !
-! !   NTRPA        ! -->! NOMBRE DE TRACEURS PASSIFS                   !
 ! !   SORG3D       ! -->! INDICATEUR DES VARIABLES ENREGISTREES        !
 ! !   C2DH         ! -->! INDICATEUR DE LA NATURE DE LA COUPE (H OU V) !
 ! !________________!____!______________________________________________!
@@ -46,23 +44,25 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER ,INTENT(IN) :: NBV(2),CANAL,NTRAC,NTRPA
-      INTEGER I
-      INTEGER IC,N
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL C2DH
+      INTEGER ,INTENT(IN) :: NBVAR,CANAL
+      INTEGER, INTENT(IN) :: IC,N
+      LOGICAL, INTENT(IN) :: C2DH
+      CHARACTER(LEN=72), INTENT(IN) :: TITCAS
+      CHARACTER(LEN=32), INTENT(IN) :: TEXTLU(100)
+      CHARACTER(LEN=8), INTENT(IN) ::  FFORMAT
 !
-      CHARACTER*80 TITRE
-      CHARACTER*72 TITCAS
-      CHARACTER*32 TEXTLU(100)
-      CHARACTER*15  NOMCOU
-      CHARACTER*8 , INTENT(IN) ::  FFORMAT
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER :: I
+      CHARACTER(len=80) TITRE
+      CHARACTER(len=15)  NOMCOU
 !
       CHARACTER(LEN=3) :: EXTEN1
       CHARACTER(LEN=7) :: EXTEN2
       EXTERNAL EXTEN1,EXTEN2
-      INTEGER :: NBVAR
-      CHARACTER*32, ALLOCATABLE :: VAR_NAME(:)
+      CHARACTER(LEN=32), ALLOCATABLE :: VAR_NAME(:)
       INTEGER :: IVAR, IERR
 !
 !-----------------------------------------------------------------------
@@ -89,7 +89,6 @@
 !  ECRITURE DU NOMBRE DE VARIABLES EN SORTIE
 !
 !
-      NBVAR = NBV(1) + NBV(2)
       IVAR = 1
 !
 !-----------------------------------------------------------------------
@@ -97,7 +96,7 @@
 !  ECRITURE DES TEXTES
 !
       IF (C2DH) THEN
-        ALLOCATE(VAR_NAME(NBVAR),STAT=IERR)
+        ALLOCATE(VAR_NAME(NBVAR+1),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'ECRDEB:VAR_NAME')
 !
         IF (LNG.EQ.1) VAR_NAME(IVAR) =
@@ -107,7 +106,7 @@
         IVAR = IVAR + 1
 !
       ELSE
-        ALLOCATE(VAR_NAME(NBVAR+2),STAT=IERR)
+        ALLOCATE(VAR_NAME(NBVAR),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'ECRDEB:VAR_NAME')
 !
         IF (LNG.EQ.1) VAR_NAME(IVAR) =
@@ -130,15 +129,19 @@
 !
       ENDIF
 !
-!th pas besoin de 1 car on ne veut pas z
+!     Adding z
+      VAR_NAME(IVAR) = TEXTLU(1)
+      IVAR = IVAR + 1
       IF (C2DH) THEN
-        DO I=2,NBV(1)
+        DO I=2,NBVAR
           VAR_NAME(IVAR) = TEXTLU(I)
           IVAR = IVAR + 1
         ENDDO
+        write(lu,*) 'var_name: ',var_name
       ELSE
-        IF (NBV(1).GT.3) THEN
-          DO I=4,NBV(1)
+        IF (NBVAR.GT.4) THEN
+          ! Adding the rest of the variable skipping velocity
+          DO I=5,NBVAR
             VAR_NAME(IVAR) = TEXTLU(I)
             IVAR = IVAR + 1
           ENDDO

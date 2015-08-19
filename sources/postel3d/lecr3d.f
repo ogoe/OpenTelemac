@@ -1,7 +1,8 @@
+!                       *****************
                         SUBROUTINE LECR3D
 !                       *****************
 !
-     &(IREC,AT,Z,U,V,W,NPOIN3,NPOIN2,NPLAN,NRES,FFORMAT,RB,NVA3,TAB,
+     &(IREC,AT,Z,U,V,W,NPOIN3,NPOIN2,NPLAN,NRES,FFORMAT,NVA3,TAB,
      & VARSUB)
 !
 !***********************************************************************
@@ -54,27 +55,29 @@
       USE BIEF
       USE DECLARATIONS_POSTEL3D, ONLY: TEXTLU
       USE INTERFACE_HERMES
+      USE INTERFACE_POSTEL3D, EX_LECR3D => LECR3D
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER NPOIN3,NPOIN2,NPLAN,NRES
-      INTEGER NVA3
-!      INTEGER , INTENT(IN) :: NELEM3
-      CHARACTER*8 FFORMAT
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: IREC
+      INTEGER, INTENT(IN) :: NPOIN3,NPOIN2,NPLAN,NRES
+      CHARACTER(LEN=8), INTENT(IN) :: FFORMAT
+      INTEGER, INTENT(INOUT) :: NVA3
+      TYPE (BIEF_OBJ) , INTENT(INOUT) :: TAB
       DOUBLE PRECISION , INTENT(INOUT) :: AT
       DOUBLE PRECISION , INTENT(INOUT) :: U(NPOIN3)
       DOUBLE PRECISION , INTENT(INOUT) :: V(NPOIN3)
       DOUBLE PRECISION , INTENT(INOUT) :: W(NPOIN3)
       DOUBLE PRECISION , INTENT(INOUT) :: Z(NPOIN2,NPLAN)
-      LOGICAL , INTENT(IN) :: VARSUB
-      TYPE (BIEF_OBJ) , INTENT(INOUT) :: TAB
+      LOGICAL , INTENT(INOUT) :: VARSUB
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I
-      REAL, INTENT(INOUT) :: RB(NPOIN3)
       INTEGER IERR
 !
 !***********************************************************************
@@ -98,7 +101,7 @@
 !
       IF (NVA3.GT.4) THEN
         DO I=1,NVA3-4
-          CALL GET_DATA_VALUE(FFORMAT,NRES,IREC,TEXTLU(4),
+          CALL GET_DATA_VALUE(FFORMAT,NRES,IREC,TEXTLU(I+4),
      &                        TAB%ADR(I)%P%R,NPOIN3,IERR)
           CALL CHECK_CALL(IERR,'LECR3D:GET_DATA_VALUE:W')
         ENDDO

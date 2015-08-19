@@ -381,7 +381,7 @@
       IMPLICIT NONE
 !
       INTEGER,           INTENT(IN)  :: FILE_ID
-      CHARACTER(LEN=80), INTENT(OUT) :: TITLE
+      CHARACTER(LEN=80), INTENT(INOUT) :: TITLE
       INTEGER,           INTENT(OUT) :: IERR
 !
 #if defined (HAVE_MED)
@@ -446,7 +446,7 @@
 !
       INTEGER, INTENT(IN)  :: FILE_ID
       INTEGER, INTENT(IN)  :: TYPE_ELEM
-      INTEGER, INTENT(OUT) :: NELEM
+      INTEGER, INTENT(INOUT) :: NELEM
       INTEGER, INTENT(OUT) :: IERR
 !
 #if defined (HAVE_MED)
@@ -497,7 +497,7 @@
       IMPLICIT NONE
 !
       INTEGER, INTENT(IN)  :: TYPE_ELEM
-      INTEGER, INTENT(OUT) :: NDP
+      INTEGER, INTENT(INOUT) :: NDP
       INTEGER, INTENT(OUT) :: IERR
 !
 #if defined (HAVE_MED)
@@ -600,7 +600,7 @@
 !
       INTEGER, INTENT(IN)  :: FILE_ID
       INTEGER, INTENT(IN)  :: TYPE_ELEM
-      INTEGER, INTENT(OUT) :: NPOIN
+      INTEGER, INTENT(INOUT) :: NPOIN
       INTEGER, INTENT(OUT) :: IERR
 !
 #if defined (HAVE_MED)
@@ -650,7 +650,7 @@
       IMPLICIT NONE
 !
       INTEGER, INTENT(IN)  :: FILE_ID
-      INTEGER, INTENT(OUT) :: NDIM
+      INTEGER, INTENT(INOUT) :: NDIM
       INTEGER, INTENT(OUT) :: IERR
 !
 #if defined (HAVE_MED)
@@ -707,7 +707,7 @@
 !
       INTEGER, INTENT(IN)  :: FILE_ID, JDIM, NDIM, NPOIN
       INTEGER, INTENT(OUT) :: IERR
-      DOUBLE PRECISION, INTENT(OUT) :: COORD_AXE(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: COORD_AXE(NPOIN)
 !
 #if defined (HAVE_MED)
       CHARACTER(LEN=MED_NAME_SIZE) :: MNAME
@@ -769,7 +769,7 @@
       INTEGER, INTENT(IN)  :: FILE_ID
       INTEGER, INTENT(IN)  :: NPOIN
       INTEGER, INTENT(OUT) :: IERR
-      INTEGER, INTENT(OUT) :: KNOLG(NPOIN)
+      INTEGER, INTENT(INOUT) :: KNOLG(NPOIN)
 !
 #if defined (HAVE_MED)
       CHARACTER(LEN=MED_NAME_SIZE) :: MNAME
@@ -814,7 +814,7 @@
       IMPLICIT NONE
 !
       INTEGER, INTENT(IN)  :: FILE_ID
-      INTEGER, INTENT(OUT) :: NPTIR
+      INTEGER, INTENT(INOUT) :: NPTIR
       INTEGER, INTENT(OUT) :: IERR
 !
 #if defined (HAVE_MED)
@@ -866,7 +866,7 @@
       IMPLICIT NONE
 !
       INTEGER, INTENT(IN) :: FILE_ID, TYPE_ELEM_BND, NPOIN, NELEBD
-      INTEGER, INTENT(OUT) :: IPOBO(NPOIN)
+      INTEGER, INTENT(INOUT) :: IPOBO(NPOIN)
       INTEGER, INTENT(OUT) :: IERR
 !
 #if defined (HAVE_MED)
@@ -1161,7 +1161,7 @@
 !
       INTEGER, INTENT(IN)  :: FILE_ID
       INTEGER, INTENT(IN)  :: TYPE_ELEM
-      INTEGER, INTENT(OUT) :: BND_NELEM
+      INTEGER, INTENT(INOUT) :: BND_NELEM
       INTEGER, INTENT(OUT) :: IERR
 !
 #if defined (HAVE_MED)
@@ -1220,7 +1220,7 @@
       INTEGER, INTENT(IN)  :: NELEM
       INTEGER, INTENT(IN)  :: NDP
       INTEGER, INTENT(IN)  :: TYPE_ELEM
-      INTEGER, INTENT(OUT) :: BND_IKLE(NELEM*NDP)
+      INTEGER, INTENT(INOUT) :: BND_IKLE(NELEM*NDP)
       INTEGER, INTENT(OUT) :: IERR
 !
 #if defined (HAVE_MED)
@@ -1276,7 +1276,7 @@
 !
       INTEGER, INTENT(IN) :: FILE_ID
       CHARACTER(LEN=16), INTENT(IN)  :: FAM_NAME
-      INTEGER, INTENT(OUT) :: VALUE
+      INTEGER, INTENT(INOUT) :: VALUE
       INTEGER, INTENT(OUT) :: IERR
 !
       INTEGER :: NCLI,MED_ID,I1,I2,I3,I4,I
@@ -1678,7 +1678,7 @@
       IMPLICIT NONE
 !
       INTEGER, INTENT(IN)  :: FILE_ID
-      INTEGER, INTENT(OUT) :: NVAR
+      INTEGER, INTENT(INOUT) :: NVAR
       INTEGER, INTENT(OUT) :: IERR
 !
 !-----------------------------------------------------------------------
@@ -1717,8 +1717,8 @@
 !
       INTEGER, INTENT(IN)  :: FILE_ID
       INTEGER, INTENT(IN)  :: NVAR
-      CHARACTER(LEN=16), DIMENSION(:), INTENT(OUT) :: VAR_LIST
-      CHARACTER(LEN=16), DIMENSION(:), INTENT(OUT) :: UNIT_LIST
+      CHARACTER(LEN=16), DIMENSION(:), INTENT(INOUT) :: VAR_LIST
+      CHARACTER(LEN=16), DIMENSION(:), INTENT(INOUT) :: UNIT_LIST
       INTEGER, INTENT(OUT) :: IERR
 !
 #if defined (HAVE_MED)
@@ -1772,7 +1772,7 @@
       IMPLICIT NONE
 !
       INTEGER, INTENT(IN)  :: FILE_ID
-      INTEGER, INTENT(OUT) :: NTIMESTEP
+      INTEGER, INTENT(INOUT) :: NTIMESTEP
       INTEGER, INTENT(OUT) :: IERR
 !
 #if defined (HAVE_MED)
@@ -1889,7 +1889,7 @@
 !
       INTEGER, INTENT(IN) :: FILE_ID, RECORD, N
       CHARACTER(LEN=16), INTENT(IN) :: VAR_NAME
-      DOUBLE PRECISION, INTENT(OUT) :: RES_VALUE(N)
+      DOUBLE PRECISION, INTENT(INOUT) :: RES_VALUE(N)
       INTEGER, INTENT(OUT) :: IERR
 !
 #if defined (HAVE_MED)
@@ -2396,8 +2396,8 @@
 !| ISVECTOR       |<--| TRUE IF VECTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       CHARACTER(LEN=32), INTENT(INOUT) :: STRING
-      INTEGER, INTENT(OUT)             :: COMP_NUM
-      LOGICAL, INTENT(OUT)             :: ISVECTOR
+      INTEGER, INTENT(INOUT)             :: COMP_NUM
+      LOGICAL, INTENT(INOUT)             :: ISVECTOR
 !
       INTEGER :: J
 !
@@ -2476,7 +2476,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       INTEGER, INTENT(IN)  :: TYPE_ELEM
-      INTEGER, INTENT(OUT) :: TYPE_ELEM_MED
+      INTEGER, INTENT(INOUT) :: TYPE_ELEM_MED
       INTEGER, INTENT(OUT) :: IERR
 !
 !-----------------------------------------------------------------------
@@ -2534,7 +2534,7 @@
 !| IERR              |-->| ERROR TAG
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       INTEGER, INTENT(IN)  :: TYPE_ELEM_MED
-      INTEGER, INTENT(OUT) :: NDP
+      INTEGER, INTENT(INOUT) :: NDP
       INTEGER, INTENT(OUT) :: IERR
 !
 !-----------------------------------------------------------------------

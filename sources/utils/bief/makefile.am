@@ -88,5 +88,4 @@ vc15aa.f     vc16aa.f       vc18pp.f      vc19aa.f      vecle3.f  vecle4.f vecle
 veclen.f     vector.f       vectos.f      vgfpsi.f  \
 voisin.f     voisin31.f     waitfor.f     write_header.f  write_data.f  write_mesh.f \
 solve_mumps_par.F pre4_mumps.F solve_mumps.F \
-read_dataset.f read_mesh_conn.f read_mesh_coord.f read_mesh_info.f read_partel_info.f \
-read_data.f
+read_dataset.f read_mesh_conn.f read_mesh_coord.f read_mesh_info.f read_partel_info.f

@@ -27,8 +27,6 @@ files: bief_def.f
   dealmesh.f
   inclus.f
   read_submit.f
-  flux_ef_vf_3.f
-  tvf_imp.f
   sortie.f
   streamline.f
   cpstvc.f
@@ -243,6 +241,9 @@ files: bief_def.f
   matriy.f
   matrix.f
   filter.f
+  dot.f
+  p_dot.f
+  p_dots.f
   mult_interface_seg.f
   osdb.f
   positive_depths.f
@@ -307,9 +308,6 @@ files: bief_def.f
   remseg.f
   dwnup1.f
   downup.f
-  dot.f
-  p_dot.f
-  p_dots.f
   trid3d.f
   gracjg.f
   equnor.f
@@ -343,7 +341,7 @@ files: bief_def.f
   gmres.f
   allblo_in_block.f
   solve.f
-  read_data.f
+  find_variable.f
   maskbd.f
   bief_allvec_in_block.f
   bief_valida.f
@@ -372,7 +370,9 @@ files: bief_def.f
   cflpsi.f
   vgfpsi.f
   flux_mask.f
+  flux_ef_vf_3.f
   flux_ef_vf_2.f
+  tvf_imp.f
   tvf.f
   hvf.f
   tracvf.f
@@ -463,6 +463,7 @@ files: bief_def.f
   bief_open_files.f
   bief_nbfel.f
   bief_allmat.f
+  checkmesh.f
   bief_nbsegel.f
   segbor.f
   bief_ininds.f
@@ -473,7 +474,6 @@ files: bief_def.f
   read_mesh_conn.f
   mxptel31.f
   mxptel.f
-  checkmesh.f
   almesh.f
 
 [damocles]
@@ -531,9 +531,6 @@ files: interface_hermes.f
   get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
-  set_bnd.f
-  get_mesh_date.f
-  get_bnd_connectivity.f
 
 [parallel]
 path: <root>|sources|utils|parallel
@@ -706,8 +703,8 @@ files: friction_def.f
   tr.f
   vit.f
   q.f
-  conv_mercator_to_degdec.f
   conv_lambert_to_degdec.f
+  conv_mercator_to_degdec.f
   tpxo.f
   nodalf_pugh.f
   nodalupv_pugh.f
@@ -797,11 +794,11 @@ files: friction_def.f
   flu_zokagoa.f
   cdlzz.f
   fluxzz.f
-  exlim.f
-  flucin.f
   zeropsi.f
   zerophi.f
   cdl.f
+  exlim.f
+  flucin.f
   gradnod.f
   fluhyd.f
   flux_hllc.f
@@ -887,7 +884,7 @@ files: declarations_tomawac.f
   couuti.f
   noudon.f
   stress.f
-  anaven.f
+  kmoye2.f
   tautot.f
   ustar1.f
   qdscur.f
@@ -912,6 +909,7 @@ files: declarations_tomawac.f
   qnlin3.f
   totnrj.f
   kmoyen.f
+  anaven.f
   frem01.f
   frem02.f
   qtria1.f
@@ -921,7 +919,6 @@ files: declarations_tomawac.f
   qtria2.f
   fpread.f
   qfrot1.f
-  kmoye2.f
   frepic.f
   qwindl.f
   semimp.f

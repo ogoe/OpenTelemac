@@ -3,8 +3,8 @@
 !                       *****************
 !
      &(AT,Z,U,V,W,
-     & SHP,IMSEG,X2DV,Y2DV,DISTOR,IKLES,INDIC,
-     & ELEM,NC2DV,NPOIN2,NELEM2,NCOU,FFORMAT,IM,JM,NVAR,
+     & SHP,IMSEG,X2DV,Y2DV,DISTOR,IKLES,
+     & ELEM,NC2DV,NPOIN2,NELEM2,NCOU,FFORMAT,IM,JM,
      & TITCAS,NVA3,TAB,TEXTLU,N)
 !
 !***********************************************************************
@@ -39,7 +39,6 @@
 ! !   Y2DV         ! -->! ORDONNEES DES SOMMETS DES COUPES VERTICALES  !
 ! !   DISTOR       ! -->! DISTORSION SUIVANT Z DE CHAQUE COUPE VERTICALE
 ! !   IKLES        ! -->! TABLE DE CONNECTIVITE                        !
-! !   INDIC        ! -->! INDICATEUR DE LA NATURE DES POINTS           !
 ! !   ELEM         ! -->! NUMERO DES ELEMENTS CONTENANT LES PTS DE COUPE
 ! !   NC2DV        ! -->! NOMBRE DE COUPES VERTICALES                  !
 ! !   NPOIN2       ! -->! NOMBRE DE POINTS DU MAILLAGE 2D              !
@@ -48,9 +47,6 @@
 ! !   BINCOU       ! -->! STANDARD DE BINAIRE POUR LES COUPES          !
 ! !   IM (LU)      ! -->! NOMBRE DE PTS DE COUPE SUIVANT L'HORIZONTALE !
 ! !   JM (=NPLAN)  ! -->! NOMBRE DE PTS DE COUPE SUIVANT LA VERTICALE  !
-! !   NVAR         ! -->! NOMBRE DE VARIABLES ENREGISTREES             !
-! !   NTRAC        ! -->! NOMBRE DE TRACEURS ACTIFS                    !
-! !   NTRPA        ! -->! NOMBRE DE TRACEURS PASSIFS                   !
 ! !   SORG3D       ! -->! INDICATEUR DES VARIABLES ENREGISTREES        !
 ! !   TITCAS       ! -->! TITRE A PORTER SUR CHAQUE COUPE              !
 ! !________________!____!______________________________________________!
@@ -72,31 +68,40 @@
       USE BIEF
       USE INTERFACE_HERMES
       USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_POSTEL3D, ONLY: PREZ => Z
+      USE INTERFACE_POSTEL3D, EX_COUPEV => COUPEV
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER IREC
-      INTEGER NPOIN2,NELEM2,NCOU,IM,JM,NC2DV,NVAR(1),NTRAC,NTRPA
-      INTEGER , INTENT(IN) :: N
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION U(NPOIN2,JM),V(NPOIN2,JM),W(NPOIN2,JM)
-      DOUBLE PRECISION Z(NPOIN2,JM)
-
-      DOUBLE PRECISION TAB1(IM,JM),TAB2(IM,JM),TAB3(IM,JM)
-      DOUBLE PRECISION X2DV(50,NC2DV),Y2DV(50,NC2DV),DISTOR(NC2DV)
-      DOUBLE PRECISION LGDEB,LGSEG,ALFA,COST,SINT,A1,A2,A3,U1,V1
-!      DOUBLE PRECISION , INTENT(INOUT) :: AT
+      INTEGER,INTENT(IN) :: NPOIN2,NELEM2,NCOU,IM,JM,NC2DV
       DOUBLE PRECISION ,INTENT(IN) ::AT
       DOUBLE PRECISION , INTENT(INOUT) :: SHP(IM,3,NC2DV)
       TYPE (BIEF_OBJ), INTENT(INOUT) :: TAB
+      INTEGER , INTENT(IN) :: N
+      DOUBLE PRECISION, INTENT(IN) :: U(NPOIN2,JM),V(NPOIN2,JM)
+      DOUBLE PRECISION, INTENT(IN) :: Z(NPOIN2,JM),W(NPOIN2,JM)
+      INTEGER, INTENT(IN) :: IKLES(3,NELEM2)
+      INTEGER, INTENT(IN) :: ELEM(IM,NC2DV)
+      INTEGER, INTENT(INOUT) :: NVA3
+      INTEGER, INTENT(IN) :: IMSEG(49,NC2DV)
+      DOUBLE PRECISION, INTENT(IN) :: X2DV(50,NC2DV),Y2DV(50,NC2DV)
+      DOUBLE PRECISION, INTENT(IN) :: DISTOR(NC2DV)
+      CHARACTER(LEN=8),  INTENT(IN) :: FFORMAT
+      CHARACTER(LEN=32), INTENT(IN) ::TEXTLU(100)
+      CHARACTER(LEN=72), INTENT(IN) ::TITCAS
 !
-      INTEGER IKLES(3,NELEM2),INDIC(IM,JM,NC2DV),ELEM(IM,NC2DV)
-      INTEGER IMSEG(49,NC2DV)
-      INTEGER NBV(2),IG(5),IB(10),IC,N1,N2,N3,I,J,K,CANAL
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+      DOUBLE PRECISION TAB1(IM,JM),TAB2(IM,JM),TAB3(IM,JM)
+      DOUBLE PRECISION LGDEB,LGSEG,ALFA,COST,SINT,A1,A2,A3,U1,V1
+!
+      INTEGER IB(10),IC,N1,N2,N3,I,J,K,CANAL
       INTEGER ISEG,IDSEG,IFSEG
-      INTEGER NVA3
 !
 !     NEW VARIABLES FOR SERAFIN FORMAT
 !
@@ -106,36 +111,13 @@
 !
       LOGICAL FLAG
 !
-      CHARACTER*32 TEXTLU(100)
-      CHARACTER*72 TITCAS
-      CHARACTER*8  FFORMAT
 !
 !
       CHARACTER(LEN=32) :: VAR_NAME
-      INTEGER :: IERR
+      INTEGER :: IERR,IREC
       INTEGER DATE(3),TIME(3)
 !
 !***********************************************************************
-!
-!  NOMBRE DE VARIABLES EN SORTIE :
-!  (ON NE SORT PAS LES VITESSES SI ON N'A PAS LES 3 COMPOSANTES
-!   ET ON NE SORT PAS LES VARIABLES QUI SERVENT A SUBIEF-3D)
-!
-!     plus de z
-!
-      NBV(1) = NVA3-1
-      NBV(2) = 0
-!
-!  DIMENSIONS DES GRILLES
-!
-!   IG(1), IG(2) : DIMENSIONS GRILLE 1.
-      IG(1)=IM
-      IG(2)=JM
-!   IG(3), IG(4) : DIMENSIONS GRILLE 2.
-      IG(3)=IM
-      IG(4)=JM
-!   IG(5) : DECALAGE DE LA GRILLE 2 PAR RAPPORT A LA GRILLE 1.
-      IG(5)=1
 !
 !  LISTE DE FUTURS PARAMETRES DEJA PREVUS.(SEUL LES PREMIERS SERVENT)
 !
@@ -149,6 +131,7 @@
 !
 !  POUR CHAQUE COUPE VERTICALE FAIRE :
 !
+      IREC = 0
       DO IC = 1,NC2DV
 !
         CANAL = NCOU + IC -1
@@ -156,23 +139,23 @@
 !    OUVERTURE DU FICHIER + ENREGISTREMENT DES PREMIERS PARAMETRES
 !    -------------------------------------------------------------
 !
-        CALL ECRDEB(CANAL,FFORMAT,TITCAS,NBV,NTRAC,NTRPA,.FALSE.,
+        CALL ECRDEB(CANAL,FFORMAT,TITCAS,NVA3,.FALSE.,
      &              TEXTLU,IC,N)
 !
-!    CALCUL DES AUTRES PARAMETRES DE L'ENTETE
-!    ----------------------------------------
-!
-!    MAILLAGE LEONARD ASSOCIE A LA COUPE IC ET AU PAS DE TEMPS IT
-!
+!       CALCUL DES AUTRES PARAMETRES DE L'ENTETE
+!       ----------------------------------------
+!       
+!       MAILLAGE LEONARD ASSOCIE A LA COUPE IC ET AU PAS DE TEMPS IT
+!       
         ISEG = 0
         IFSEG = 1
         LGDEB = 0.D0
         LGSEG = 0.D0
-!
+!       
         DO I = 1,IM
-!
+!       
 !         COORDONNEE HORIZONTALE SUIVANT LE PLAN DE COUPE (X)
-!
+!       
           IF (I.GT.IFSEG.OR.I.EQ.1) THEN
             ISEG = ISEG + 1
             IDSEG = IFSEG
@@ -181,27 +164,27 @@
             LGSEG = SQRT((X2DV(ISEG+1,IC)-X2DV(ISEG,IC))**2
      &                  +(Y2DV(ISEG+1,IC)-Y2DV(ISEG,IC))**2)
           ENDIF
-!
+!       
           TAB1(I,1) = LGDEB + FLOAT(I-IDSEG)*LGSEG/FLOAT(IFSEG-IDSEG)
-!
+!       
 !         COORDONNEE VERTICALE (Y)
-!
+!       
           DO J = 1,JM
-!
+!       
             TAB1(I,J) = TAB1(I,1)
             TAB2(I,J) = ( SHP(I,1,IC)*Z(IKLES(1,ELEM(I,IC)),J)
      &                  + SHP(I,2,IC)*Z(IKLES(2,ELEM(I,IC)),J)
      &                  + SHP(I,3,IC)*Z(IKLES(3,ELEM(I,IC)),J) )
      &                  * DISTOR(IC)
-!
+!       
           ENDDO
         ENDDO !I
 !
-!    ENREGISTREMENT DES AUTRES PARAMETRES DE L'ENTETE
-!    ------------------------------------------------
+!       ENREGISTREMENT DES AUTRES PARAMETRES DE L'ENTETE
+!       ------------------------------------------------
 !
-! BUILD OF IKLE ARRAY. EACH QUADRANGLE IS DIVIDED INTO 2 TRIANGLES
-! NUMELEM VARIABLE MANAGES THE NUMBER OF ELEMENT
+!       BUILD OF IKLE ARRAY. EACH QUADRANGLE IS DIVIDED INTO 2 TRIANGLES
+!       NUMELEM VARIABLE MANAGES THE NUMBER OF ELEMENT
         NUMELEM = 1
         DO J = 1,JM-1
           DO I = 1,IM-1
@@ -290,7 +273,6 @@
 !
           ENDDO
         ENDDO !I
-        IREC = 0
 !
         IF (LNG.EQ.1) VAR_NAME =
      &                        'VITESSE UT      M/S             '
@@ -314,24 +296,41 @@
      &                IM*JM,IERR)
         CALL CHECK_CALL(IERR,'COUPEV:ADD_DATA:UN')
 !
+!       Adding z
+!
+        DO J = 1,JM
+          DO I = 1,IM
+            TAB1(I,J) = SHP(I,1,IC)
+     &      *PREZ(IKLES(1,ELEM(I,IC))+(J-1)*NPOIN2)
+     &                + SHP(I,2,IC)
+     &      *PREZ(IKLES(2,ELEM(I,IC))+(J-1)*NPOIN2)
+     &                + SHP(I,3,IC)
+     &      *PREZ(IKLES(3,ELEM(I,IC))+(J-1)*NPOIN2)
+          ENDDO !I
+        ENDDO !J
+        VAR_NAME = TEXTLU(1)
+        CALL ADD_DATA(FFORMAT,CANAL,VAR_NAME,AT,IREC,.FALSE.,TAB1,
+     &                IM*JM,IERR)
+        CALL CHECK_CALL(IERR,'COUPEV:ADD_DATA:Z')
+!
 !       other variables
 !
-        IF (NBV(1).GT.3) THEN
-          DO K = 1,NBV(1)-3
+        IF (NVA3.GT.4) THEN
+          DO K = 5,NVA3
             DO J = 1,JM
               DO I = 1,IM
                 TAB1(I,J) = SHP(I,1,IC)
-     &          *TAB%ADR(K)%P%R(IKLES(1,ELEM(I,IC))+(J-1)*NPOIN2)
+     &          *TAB%ADR(K-4)%P%R(IKLES(1,ELEM(I,IC))+(J-1)*NPOIN2)
      &                    + SHP(I,2,IC)
-     &          *TAB%ADR(K)%P%R(IKLES(2,ELEM(I,IC))+(J-1)*NPOIN2)
+     &          *TAB%ADR(K-4)%P%R(IKLES(2,ELEM(I,IC))+(J-1)*NPOIN2)
      &                    + SHP(I,3,IC)
-     &          *TAB%ADR(K)%P%R(IKLES(3,ELEM(I,IC))+(J-1)*NPOIN2)
+     &          *TAB%ADR(K-4)%P%R(IKLES(3,ELEM(I,IC))+(J-1)*NPOIN2)
               ENDDO !I
             ENDDO !J
             VAR_NAME = TEXTLU(K)
             CALL ADD_DATA(FFORMAT,CANAL,VAR_NAME,AT,IREC,.FALSE.,TAB1,
      &                    IM*JM,IERR)
-            CALL CHECK_CALL(IERR,'COUPEV:ADD_DATA:J')
+            CALL CHECK_CALL(IERR,'COUPEV:ADD_DATA:K')
           ENDDO !K
 !
         ENDIF

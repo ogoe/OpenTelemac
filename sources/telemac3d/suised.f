@@ -178,8 +178,8 @@
 
 !       PUT RESULTS INTO T2 BIEF OBJECT
         RECORD = -1 ! To get the last time step
-        CALL READ_DATA(FFORMAT,NSUIS,T2%R,VARNAME,NPOIN_SUIS,IERR,
-     &                 RECORD,TIME)
+        CALL FIND_VARIABLE(FFORMAT,NSUIS,VARNAME,T2%R,NPOIN_SUIS,IERR,
+     &                 RECORD=RECORD,TIME_RECORD=TIME)
 !
         IF (IERR.EQ.0)  THEN
           WRITE(LU,*)
@@ -210,13 +210,13 @@
 ! STILL NEED TO CODE CONCENTRATION AND TIME OF CONSOLIDATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !!!! YA
-!!!! USE READ_DATA INSTEAD OF LIT
+!!!! USE FIND_VARIABLE INSTEAD OF LIT
 !!!!
 !!!! CONCENTRATION
 !!!        RECORD = -1 ! To get the last time step
 !!!        VARNAME = 'xxxxxxxxxxxxxxxx'
-!!!        CALL READ_DATA(FFORMAT,NSUIS,VALUE,VARNAME,NPOIN_SUIS,IERR,
-!!!     &                 RECORD,TIME)
+!!!        CALL FIND_VARIABLE(FFORMAT,NSUIS,VARNAME,VALUE,NPOIN_SUIS,IERR,
+!!!     &                 RECORD=RECORD,TIME_RECORD=TIME)
 !!!        DO I=1,NPOIN2
 !!!          DO IPLAN = 1,NCOUCH
 !!!            CONC(IPOIN,IPLAN) = VALUE(1+(IPLAN-1)*NPOIN2)* UNITCONV
@@ -224,14 +224,13 @@
 !!!        ENDDO
 !!!! TIME OF CONSOLIDATION
 !!!        VARNAME = 'xxxxxxxxxxxxxxxx'
-!!!        CALL READ_DATA(FFORMAT,NSUIS,TEMP,VARNAME,NPOIN_SUIS,IERR,
-!!!     &                 RECORD,TIME)
+!!!        CALL FIND_VARIABLE(FFORMAT,NSUIS,VARNAME,TEMP,NPOIN_SUIS,IERR,
+!!!     &                 RECORD=RECORD,TIME_RECORD=TIME)
 !!!
         ELSEIF (ITASS.EQ.2) THEN
 !###>TBE - COMMENTED GIBSON (NOT WORKING YET)
 !!!!> ELEVATION Z (TEMPORARILY STORES TRUE LAYER THICKNESS)
 !!!        CALL LIT(XB,RB,IB,CB,NPFMAX*NPOIN2,'R4',NSUIS,'STD',ISTAT)
-!!!        CALL READ_DATA
 !!!        DO IPOIN = 1,NPOIN2
 !!!          ZR(IPOIN) = DBLE( RB(IPOIN) )
 !!!          ZPLAN = ZR(IPOIN)

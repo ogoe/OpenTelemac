@@ -12,7 +12,7 @@
 !
 !  declaration of the global data structure in Telemac-3D
 !
-        USE BIEF_DEF
+      USE BIEF_DEF
 !
 !       note: this module is organised in 10 parts
 !
@@ -33,7 +33,7 @@
 !
 ! 3D velocity components
 !
-        TYPE(BIEF_OBJ), TARGET :: U, V, W
+      TYPE(BIEF_OBJ), TARGET :: U, V, W
 !
 !-----------------------------------------------------------------------
 ! (2) matrices
@@ -44,7 +44,7 @@
 !-----------------------------------------------------------------------
 !
 !
-        TYPE(BIEF_OBJ), TARGET :: TAB
+      TYPE(BIEF_OBJ), TARGET :: TAB
 !
 !
 ! 2D output compatibility - output variables organised in blocks
@@ -57,7 +57,7 @@
 ! key words and parameters
 !
 !       maximum de variables de sortie
-        INTEGER, PARAMETER :: MAXVAR = 100
+      INTEGER, PARAMETER :: MAXVAR = 100
 !
 ! previous common mitint: integer steering parameters
 !
@@ -72,9 +72,9 @@
       INTEGER NPLREF(9),NSEG(9)
 !
 !      nombre max de coupes
-        INTEGER, PARAMETER :: MAXCOU = 9
+      INTEGER, PARAMETER :: MAXCOU = 9
 !      nombre max de points pour les coupes verticales
-        INTEGER, PARAMETER :: MAXPTS = 50
+      INTEGER, PARAMETER :: MAXPTS = 50
 !
 !-----------------------------------------------------------------------
 ! (5) logical values
@@ -129,7 +129,7 @@
 ! two separate meshes, 2D as usual and 3D with sigma-mesh specific
 ! features, see almesh.f
 !
-        TYPE(BIEF_MESH) :: MESH2D, MESH3D
+      TYPE(BIEF_MESH) :: MESH2D, MESH3D
 !
 !-----------------------------------------------------------------------
 ! (10) aliases
@@ -141,51 +141,51 @@
 !
 ! x,y,z node coordinates: base mesh and 3D sigma mesh
 !
-        TYPE(BIEF_OBJ), POINTER :: X2, Y2, Z2, X3, Y3, Z3
+      TYPE(BIEF_OBJ), POINTER :: X2, Y2, Z2, X3, Y3, Z3
 !
 !th surement plein de choses a virer
 !th
-        TYPE(BIEF_OBJ), POINTER :: XNEBOR2, YNEBOR2
-        TYPE(BIEF_OBJ), POINTER :: XNEBOR3, YNEBOR3, ZNEBOR3
+      TYPE(BIEF_OBJ), POINTER :: XNEBOR2, YNEBOR2
+      TYPE(BIEF_OBJ), POINTER :: XNEBOR3, YNEBOR3, ZNEBOR3
 !
 ! 2D and 3D lateral boundary normal vectors defined
 ! per boundary segment (2D) or boundary element (3D)
 !
-        TYPE(BIEF_OBJ), POINTER :: XSGBOR2, YSGBOR2
-        TYPE(BIEF_OBJ), POINTER :: XSGBOR3, YSGBOR3, ZSGBOR3
+      TYPE(BIEF_OBJ), POINTER :: XSGBOR2, YSGBOR2
+      TYPE(BIEF_OBJ), POINTER :: XSGBOR3, YSGBOR3, ZSGBOR3
 !
 ! connectivity tables 2D and 3D
 ! (element number and local node number) --> global node number
 !
-        TYPE(BIEF_OBJ), POINTER :: IKLE2, IKLE3
+      TYPE(BIEF_OBJ), POINTER :: IKLE2, IKLE3
 !
 ! tables connecting (node boundary number) --> global node number
 !
-        TYPE(BIEF_OBJ), POINTER :: NBOR2, NBOR3
+      TYPE(BIEF_OBJ), POINTER :: NBOR2, NBOR3
 !
 ! real field pointers for node coordinates
 !
-        DOUBLE PRECISION, DIMENSION(:), POINTER :: X,Y,Z
+      DOUBLE PRECISION, DIMENSION(:), POINTER :: X,Y,Z
 !
 ! a number of extremely useful integers describing the mesh structure
 ! see almesh.f and point_telemac3d.f
 !
-        INTEGER, POINTER :: NELEM2, NELEM3
+      INTEGER, POINTER :: NELEM2, NELEM3
 !
-        INTEGER, POINTER :: NELMAX2
-        INTEGER, POINTER :: NELMAX3 ! PREVIOUSLY NELMA3
+      INTEGER, POINTER :: NELMAX2
+      INTEGER, POINTER :: NELMAX3 ! PREVIOUSLY NELMA3
 !
-        INTEGER, POINTER :: NPTFR2  ! PREVIOUSLY SIMPLY NPTFR
-        INTEGER, POINTER :: NPTFR3
-        INTEGER, POINTER :: NELEB, NELEBX
+      INTEGER, POINTER :: NPTFR2  ! PREVIOUSLY SIMPLY NPTFR
+      INTEGER, POINTER :: NPTFR3
+      INTEGER, POINTER :: NELEB, NELEBX
 !
-        INTEGER, POINTER :: NPTFRX2, NPTFRX3
-        INTEGER, POINTER :: DIM2, DIM3
-        INTEGER, POINTER :: TYPELM2, TYPELM3
-        INTEGER, POINTER :: NPOIN2, NPOIN3
-        INTEGER, POINTER :: NPMAX2, NPMAX3
-        INTEGER, POINTER :: MXPTVS2, MXPTVS3
-        INTEGER, POINTER :: MXELVS2, MXELVS3
+      INTEGER, POINTER :: NPTFRX2, NPTFRX3
+      INTEGER, POINTER :: DIM2, DIM3
+      INTEGER, POINTER :: TYPELM2, TYPELM3
+      INTEGER, POINTER :: NPOIN2, NPOIN3
+      INTEGER, POINTER :: NPMAX2, NPMAX3
+      INTEGER, POINTER :: MXPTVS2, MXPTVS3
+      INTEGER, POINTER :: MXELVS2, MXELVS3
 !
 !     NEW FILE FORMATS
 !
