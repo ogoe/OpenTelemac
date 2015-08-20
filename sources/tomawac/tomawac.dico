@@ -4239,12 +4239,12 @@ CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 1 
 RUBRIQUE = 'FICHIERS DE DONNEES' 
 RUBRIQUE1 = 'DATA FILE' 
-AIDE = 'Format du fichier des vents binaire. 
+AIDE = 'Format du fichier de resultats du calcul precedent. 
 Les valeurs possibles sont : 
 - SERAFIN : format standard simple precision pour Telemac; 
 - SERAFIND: format standard double precision pour Telemac; 
 - MED     : format MED base sur HDF5' 
-AIDE1 = 'Binary xind file format. 
+AIDE1 = 'Previous computation results file format. 
 Possible values are: 
 - SERAFIN : classical single precision format in Telemac; 
 - SERAFIND: classical double precision format in Telemac; 
@@ -4788,9 +4788,9 @@ NOM1 = 'BINARY DATA FILE 1 FORMAT'
 TYPE = CARACTERE 
 INDEX = 43 
 MNEMO = 'WAC_FILES(WACBI1)%FMT' 
-DEFAUT = 'SERAFIN ' 
-DEFAUT1 = 'SERAFIN ' 
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+DEFAUT = '        '
+DEFAUT1 = '        ' 
+CHOIX = '        ';'SERAFIN ';'SERAFIND';'MED     ' 
 NIVEAU = 2 
 RUBRIQUE = 'FICHIERS DE DONNEES' 
 RUBRIQUE1 = 'DATA FILE' 
