@@ -133,7 +133,7 @@
 !+   advection scheme, a section was added for distributive schemes.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        19/06/2015
+!+        20/08/2015
 !+        V7P1
 !+   Adaptation to new subroutine cvtrvf with locally implicit
 !+   predictor-corrector distributive schemes.
@@ -593,7 +593,7 @@
      &              LIMTRA%I,KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
      &              VOLU2D,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
      &              RAIN,PLUIE,TRAIN,OPTADV,TB,12,AM2,TB2,
-     &              NCO_DIST,NSP_DIST,YAFLULIM,FLULIM%R)
+     &              NCO_DIST,NSP_DIST,YAFLULIM,FLULIM%R,SLVTRA)
 !       IF EXITS AT THIS POINT, THE DIRICHLET ARE NOT DONE, ALSO WORKS
 !       CAN THEN CHECK THE MASS CONSERVATION EXACTLY
         IF(.NOT.DIFT) RETURN

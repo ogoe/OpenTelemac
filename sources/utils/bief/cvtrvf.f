@@ -8,7 +8,7 @@
      & OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,LIMTRA,KDIR,KDDL,NPTFR,FLBOR,
      & YAFLBOR,VOLU2D,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
      & RAIN,PLUIE,TRAIN,OPTADV,TB,FREE,AM2,TB2,NCO_DIST,NSP_DIST,
-     & YAFLULIM,FLULIM)
+     & YAFLULIM,FLULIM,SLVTRA)
 !
 !***********************************************************************
 ! BIEF   V7P1 
@@ -62,12 +62,13 @@
 !+   VOLU2D added.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        10/08/2015
+!+        20/08/2015
 !+        V7P1
 !+   Now with the locally implicit predictor-corrector.
 !+   Call of CFLVF changed, with option OPTCFL added in the arguments.
 !+   For locally implicit schemes, fluxes may be reduced with array
-!+   FLULIM.
+!+   FLULIM. The solver configuration of tracers is copied but the
+!+   choice of the solver is set to GMRES or direct.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -123,6 +124,7 @@
 !|                |   | 1: NORMAL
 !|                |   | 2: DIRAC
 !| S              |-->| VOID STRUCTURE
+!| SLVTRA         |-->| SOLVER CONFIGURATION FOR TRACER DIFFUSION.
 !| SM             |-->| SOURCE TERMS.
 !| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
 !| SMI            |-->| IMPLICIT SOURCE TERM
@@ -177,6 +179,7 @@
       TYPE(BIEF_OBJ), INTENT(IN)      :: VISC_S,VISC,PLUIE
       TYPE(BIEF_MESH)                 :: MESH
       TYPE(BIEF_OBJ), INTENT(IN)      :: FLBOR
+      TYPE(SLVCFG), INTENT(IN)        :: SLVTRA
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -212,32 +215,26 @@
 !
 !-----------------------------------------------------------------------
 !
-!     LOCALLY DECLARED AND HARDCODED SOLVER OPTIONS FOR IMPLICIT SCHEMES
+!     SOLVER OPTIONS FOR IMPLICIT SCHEMES : SLVTRA TAKEN BUT EITHER
+!                                           GMRES OR DIRECT ASKED
+!                                           AND HARDCODED HERE
+!                                           KRYLOV DIMENSION SET TO 3
+      SLVPSI%SLV   =SLVTRA%SLV
+      SLVPSI%NITMAX=SLVTRA%NITMAX
+      SLVPSI%PRECON=SLVTRA%PRECON
+      SLVPSI%KRYLOV=SLVTRA%KRYLOV
+      SLVPSI%EPS   =SLVTRA%EPS
+      SLVPSI%ZERO  =SLVTRA%ZERO
 !
-      SLVPSI%SLV=7
-!     SLVPSI%SLV=8
-      SLVPSI%NITMAX=100
-      SLVPSI%PRECON=2
+!     HARDCODED MODIFICATIONS: THE SYSTEM WILL BE NON SYMMETRIC
+!                              AND MINIMAL ERROR DOES NOT WORK
+!
+      IF(SLVPSI%SLV.NE.7.AND.SLVPSI%SLV.NE.8) THEN
+        SLVPSI%SLV=7
+      ENDIF
 !     CHANGING THIS WILL TRIGGER CHANGING THE SIZE OF TB2 IN CALLING
 !     PROGRAMMES
       SLVPSI%KRYLOV=3
-      SLVPSI%EPS=1.D-12
-      SLVPSI%ZERO=1.D-10
-!
-!-----------------------------------------------------------------------
-!
-      IF(AM2%STO.NE.3.AND.OPTADV.EQ.4) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'CVTRVF : STOCKAGE PAR SEGMENTS REQUIS'
-          WRITE(LU,*) '         AVEC SCHEMA N OU PSI IMPLICITE'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'CVTRVF: EDGE-BASED STORAGE REQUESTED WITH'
-          WRITE(LU,*) '        IMPLICIT N OR PSI SCHEME'
-        ENDIF
-        CALL PLANTE(1)
-        STOP
-      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -276,17 +273,56 @@
 !
 !-----------------------------------------------------------------------
 !
-!     EXTRACTS THE OPTIONS
+!     CHECKING OPTIONS
+!
+      IF(OPTADV.LT.1.OR.OPTADV.GT.4) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'CVTRVF : OPTION DU SCHEMA DE CONVECTION'
+          WRITE(LU,*) '         INCONNUE : ',OPTADV
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'CVTRVF: OPTION OF ADVECTION SCHEME'
+          WRITE(LU,*) '        UNKNOWN: ',OPTADV
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+      IF(AM2%STO.NE.3.AND.OPTADV.EQ.4) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'CVTRVF : STOCKAGE PAR SEGMENTS REQUIS'
+          WRITE(LU,*) '         AVEC SCHEMA N OU PSI IMPLICITE'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'CVTRVF: EDGE-BASED STORAGE REQUESTED WITH'
+          WRITE(LU,*) '        IMPLICIT N OR PSI SCHEME'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!     EXTRACTS OTHER OPTIONS
 !
       IOPT2=IOPT/10
       IOPT1=IOPT-10*IOPT2
 !
-      IF(IOPT1.NE.0.AND.IOPT1.NE.1.AND.IOPT1.NE.2.AND.IOPT1.NE.3) THEN
+      IF(IOPT1.LT.1.OR.IOPT1.GT.3) THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'CVTRVF : OPTION IOPT1=',IOPT1,' INCONNUE'
         ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'CVTRVF : OPTION IOPT1=',IOPT1,' UNKNOWN'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+      IF(IOPT2.LT.0.OR.IOPT2.GT.1) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'CVTRVF : OPTION IOPT2=',IOPT2,' INCONNUE'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'CVTRVF : OPTION IOPT2=',IOPT2,' UNKNOWN'
         ENDIF
         CALL PLANTE(1)
         STOP

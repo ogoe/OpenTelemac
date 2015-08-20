@@ -108,30 +108,31 @@
           FP13=MAX(MIN(K1,-K3),0.D0)
 !
 !         CORRECTING THE FLUXES WHEN THEIR SIGN IS NOT THE SAME
-!         AS THE ASSEMBLED VALUE
+!         AS THE ASSEMBLED VALUE, KNOWING THAT ALL THE FPIJ ARE 
+!         POSITIVE BY CONSTRUCTION
 !
 !         SEGMENT 1
 !
           IF(ORISEG(IELEM,1).EQ.1) THEN
-            IF(FXMATPAR(ISEG1)*FP12.GT.0.D0) THEN
+            IF(FXMATPAR(ISEG1).GT.0.D0) THEN
               FP12=0.D0
-            ELSEIF(ABS(FP12).GT.ABS(FXMATPAR(ISEG1))) THEN
+            ELSEIF(FP12.GT.-FXMATPAR(ISEG1)) THEN
               FP12=-FXMATPAR(ISEG1)
             ENDIF
-            IF(FXMATPAR(ISEG1)*FP21.LT.0.D0) THEN
+            IF(FXMATPAR(ISEG1).LT.0.D0) THEN
               FP21=0.D0
-            ELSEIF(ABS(FP21).GT.ABS(FXMATPAR(ISEG1))) THEN
+            ELSEIF(FP21.GT.FXMATPAR(ISEG1)) THEN
               FP21=FXMATPAR(ISEG1)
             ENDIF
           ELSE
-            IF(FXMATPAR(ISEG1)*FP12.LT.0.D0) THEN
+            IF(FXMATPAR(ISEG1).LT.0.D0) THEN
               FP12=0.D0
-            ELSEIF(ABS(FP12).GT.ABS(FXMATPAR(ISEG1))) THEN
+            ELSEIF(FP12.GT.FXMATPAR(ISEG1)) THEN
               FP12=FXMATPAR(ISEG1)
             ENDIF
-            IF(FXMATPAR(ISEG1)*FP21.GT.0.D0) THEN
+            IF(FXMATPAR(ISEG1).GT.0.D0) THEN
               FP21=0.D0
-            ELSEIF(ABS(FP21).GT.ABS(FXMATPAR(ISEG1))) THEN
+            ELSEIF(FP21.GT.-FXMATPAR(ISEG1)) THEN
               FP21=-FXMATPAR(ISEG1)
             ENDIF
           ENDIF
@@ -139,25 +140,25 @@
 !         SEGMENT 2
 !
           IF(ORISEG(IELEM,2).EQ.1) THEN
-            IF(FXMATPAR(ISEG2)*FP23.GT.0.D0) THEN
+            IF(FXMATPAR(ISEG2).GT.0.D0) THEN
               FP23=0.D0
-            ELSEIF(ABS(FP23).GT.ABS(FXMATPAR(ISEG2))) THEN
+            ELSEIF(FP23.GT.-FXMATPAR(ISEG2)) THEN
               FP23=-FXMATPAR(ISEG2)
             ENDIF
-            IF(FXMATPAR(ISEG2)*FP32.LT.0.D0) THEN
+            IF(FXMATPAR(ISEG2).LT.0.D0) THEN
               FP32=0.D0
-            ELSEIF(ABS(FP32).GT.ABS(FXMATPAR(ISEG2))) THEN
+            ELSEIF(FP32.GT.FXMATPAR(ISEG2)) THEN
               FP32=FXMATPAR(ISEG2)
             ENDIF
           ELSE
-            IF(FXMATPAR(ISEG2)*FP23.LT.0.D0) THEN
+            IF(FXMATPAR(ISEG2).LT.0.D0) THEN
               FP23=0.D0
-            ELSEIF(ABS(FP23).GT.ABS(FXMATPAR(ISEG2))) THEN
+            ELSEIF(FP23.GT.FXMATPAR(ISEG2)) THEN
               FP23=FXMATPAR(ISEG2)
             ENDIF
-            IF(FXMATPAR(ISEG2)*FP32.GT.0.D0) THEN
+            IF(FXMATPAR(ISEG2).GT.0.D0) THEN
               FP32=0.D0
-            ELSEIF(ABS(FP32).GT.ABS(FXMATPAR(ISEG2))) THEN
+            ELSEIF(FP32.GT.-FXMATPAR(ISEG2)) THEN
               FP32=-FXMATPAR(ISEG2)
             ENDIF
           ENDIF
@@ -165,25 +166,25 @@
 !         SEGMENT 3
 !
           IF(ORISEG(IELEM,3).EQ.1) THEN
-            IF(FXMATPAR(ISEG3)*FP31.GT.0.D0) THEN
+            IF(FXMATPAR(ISEG3).GT.0.D0) THEN
               FP31=0.D0
-            ELSEIF(ABS(FP31).GT.ABS(FXMATPAR(ISEG3))) THEN
+            ELSEIF(FP31.GT.-FXMATPAR(ISEG3)) THEN
               FP31=-FXMATPAR(ISEG3)
             ENDIF
-            IF(FXMATPAR(ISEG3)*FP13.LT.0.D0) THEN
+            IF(FXMATPAR(ISEG3).LT.0.D0) THEN
               FP13=0.D0
-            ELSEIF(ABS(FP13).GT.ABS(FXMATPAR(ISEG3))) THEN
+            ELSEIF(FP13.GT.FXMATPAR(ISEG3)) THEN
               FP13=FXMATPAR(ISEG3)
             ENDIF
           ELSE
-            IF(FXMATPAR(ISEG3)*FP31.LT.0.D0) THEN
+            IF(FXMATPAR(ISEG3).LT.0.D0) THEN
               FP31=0.D0
-            ELSEIF(ABS(FP31).GT.ABS(FXMATPAR(ISEG3))) THEN
+            ELSEIF(FP31.GT.FXMATPAR(ISEG3)) THEN
               FP31=FXMATPAR(ISEG3)
             ENDIF
-            IF(FXMATPAR(ISEG3)*FP13.GT.0.D0) THEN
+            IF(FXMATPAR(ISEG3).GT.0.D0) THEN
               FP13=0.D0
-            ELSEIF(ABS(FP13).GT.ABS(FXMATPAR(ISEG3))) THEN
+            ELSEIF(FP13.GT.-FXMATPAR(ISEG3)) THEN
               FP13=-FXMATPAR(ISEG3)
             ENDIF
           ENDIF
@@ -286,25 +287,25 @@
 !         SEGMENT 1
 !
           IF(ORISEG(IELEM,1).EQ.1) THEN
-            IF(FXMATPAR(ISEG1)*FP12.GT.0.D0) THEN
+            IF(FXMATPAR(ISEG1).GT.0.D0) THEN
               FP12=0.D0
-            ELSEIF(ABS(FP12).GT.ABS(FXMATPAR(ISEG1))) THEN
+            ELSEIF(FP12.GT.-FXMATPAR(ISEG1)) THEN
               FP12=-FXMATPAR(ISEG1)
             ENDIF
-            IF(FXMATPAR(ISEG1)*FP21.LT.0.D0) THEN
+            IF(FXMATPAR(ISEG1).LT.0.D0) THEN
               FP21=0.D0
-            ELSEIF(ABS(FP21).GT.ABS(FXMATPAR(ISEG1))) THEN
+            ELSEIF(FP21.GT.FXMATPAR(ISEG1)) THEN
               FP21=FXMATPAR(ISEG1)
             ENDIF
           ELSE
-            IF(FXMATPAR(ISEG1)*FP12.LT.0.D0) THEN
+            IF(FXMATPAR(ISEG1).LT.0.D0) THEN
               FP12=0.D0
-            ELSEIF(ABS(FP12).GT.ABS(FXMATPAR(ISEG1))) THEN
+            ELSEIF(FP12.GT.FXMATPAR(ISEG1)) THEN
               FP12=FXMATPAR(ISEG1)
             ENDIF
-            IF(FXMATPAR(ISEG1)*FP21.GT.0.D0) THEN
+            IF(FXMATPAR(ISEG1).GT.0.D0) THEN
               FP21=0.D0
-            ELSEIF(ABS(FP21).GT.ABS(FXMATPAR(ISEG1))) THEN
+            ELSEIF(FP21.GT.-FXMATPAR(ISEG1)) THEN
               FP21=-FXMATPAR(ISEG1)
             ENDIF
           ENDIF
@@ -312,25 +313,25 @@
 !         SEGMENT 2
 !
           IF(ORISEG(IELEM,2).EQ.1) THEN
-            IF(FXMATPAR(ISEG2)*FP23.GT.0.D0) THEN
+            IF(FXMATPAR(ISEG2).GT.0.D0) THEN
               FP23=0.D0
-            ELSEIF(ABS(FP23).GT.ABS(FXMATPAR(ISEG2))) THEN
+            ELSEIF(FP23.GT.-FXMATPAR(ISEG2)) THEN
               FP23=-FXMATPAR(ISEG2)
             ENDIF
-            IF(FXMATPAR(ISEG2)*FP32.LT.0.D0) THEN
+            IF(FXMATPAR(ISEG2).LT.0.D0) THEN
               FP32=0.D0
-            ELSEIF(ABS(FP32).GT.ABS(FXMATPAR(ISEG2))) THEN
+            ELSEIF(FP32.GT.FXMATPAR(ISEG2)) THEN
               FP32=FXMATPAR(ISEG2)
             ENDIF
           ELSE
-            IF(FXMATPAR(ISEG2)*FP23.LT.0.D0) THEN
+            IF(FXMATPAR(ISEG2).LT.0.D0) THEN
               FP23=0.D0
-            ELSEIF(ABS(FP23).GT.ABS(FXMATPAR(ISEG2))) THEN
+            ELSEIF(FP23.GT.FXMATPAR(ISEG2)) THEN
               FP23=FXMATPAR(ISEG2)
             ENDIF
-            IF(FXMATPAR(ISEG2)*FP32.GT.0.D0) THEN
+            IF(FXMATPAR(ISEG2).GT.0.D0) THEN
               FP32=0.D0
-            ELSEIF(ABS(FP32).GT.ABS(FXMATPAR(ISEG2))) THEN
+            ELSEIF(FP32.GT.-FXMATPAR(ISEG2)) THEN
               FP32=-FXMATPAR(ISEG2)
             ENDIF
           ENDIF
@@ -338,25 +339,25 @@
 !         SEGMENT 3
 !
           IF(ORISEG(IELEM,3).EQ.1) THEN
-            IF(FXMATPAR(ISEG3)*FP31.GT.0.D0) THEN
+            IF(FXMATPAR(ISEG3).GT.0.D0) THEN
               FP31=0.D0
-            ELSEIF(ABS(FP31).GT.ABS(FXMATPAR(ISEG3))) THEN
+            ELSEIF(FP31.GT.-FXMATPAR(ISEG3)) THEN
               FP31=-FXMATPAR(ISEG3)
             ENDIF
-            IF(FXMATPAR(ISEG3)*FP13.LT.0.D0) THEN
+            IF(FXMATPAR(ISEG3).LT.0.D0) THEN
               FP13=0.D0
-            ELSEIF(ABS(FP13).GT.ABS(FXMATPAR(ISEG3))) THEN
+            ELSEIF(FP13.GT.FXMATPAR(ISEG3)) THEN
               FP13=FXMATPAR(ISEG3)
             ENDIF
           ELSE
-            IF(FXMATPAR(ISEG3)*FP31.LT.0.D0) THEN
+            IF(FXMATPAR(ISEG3).LT.0.D0) THEN
               FP31=0.D0
-            ELSEIF(ABS(FP31).GT.ABS(FXMATPAR(ISEG3))) THEN
+            ELSEIF(FP31.GT.FXMATPAR(ISEG3)) THEN
               FP31=FXMATPAR(ISEG3)
             ENDIF
-            IF(FXMATPAR(ISEG3)*FP13.GT.0.D0) THEN
+            IF(FXMATPAR(ISEG3).GT.0.D0) THEN
               FP13=0.D0
-            ELSEIF(ABS(FP13).GT.ABS(FXMATPAR(ISEG3))) THEN
+            ELSEIF(FP13.GT.-FXMATPAR(ISEG3)) THEN
               FP13=-FXMATPAR(ISEG3)
             ENDIF
           ENDIF
