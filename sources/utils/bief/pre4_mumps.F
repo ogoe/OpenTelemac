@@ -40,6 +40,14 @@
 !+        V7P1
 !+   Arguments TYPEXT1,2,3,4 added, for calling SD_FABSG4
 !
+!history  S.E.BOURBAN (HRW)
+!+        21/08/2015
+!+        V7P1
+!+   Final tweak to the arguments of SOLVE_MUMPS_PAR for linkage with
+!+   MUMPS ... It now works !
+!+   Although letting MUMPS recreate a new split of the mesh is not
+!+   helpful at this stage.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CVB1,CVB2      |-->| SECONDS MEMBRES
 !| DAB1           |---|
@@ -172,7 +180,7 @@
 !    &                 NPOIN_TOT,IPID)
 !
       CALL SOLVE_MUMPS_PAR(NPBLK,NSEGBLK,GLOSEG4,NSEGBLK,DA,XA,
-     &                     XINC,RHS,INFOGR,TYPEXT,KNOLG,
+     &                     XINC,RHS,INFOGR,'Q',KNOLG,
      &                     NPOIN_TOT,IPID)
 !
 !     4. RECUPERATION DES INCONNUES
