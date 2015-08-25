@@ -59,17 +59,16 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELEM,I1,I2,I3,I,ISEG1,ISEG2,ISEG3
-      DOUBLE PRECISION K1,K2,K3,FN1,FN2,FN3
-      DOUBLE PRECISION BETA1,BETA2,BETA3,BETA1PSI,BETA2PSI,BETA3PSI
-      DOUBLE PRECISION FINCORR1,FINCORR2,FINCORR3
-      DOUBLE PRECISION PHITCOR,SUMAX,COEF
+      DOUBLE PRECISION K1,K2,K3,FN1,FN2,FN3,BETA1,BETA2,BETA3
+      DOUBLE PRECISION FINCORR1,FINCORR2,FINCORR3,PHITCOR,COEF
 !     PSI FLUXES WITH FN
-      DOUBLE PRECISION FP21,FP32,FP13,FP12,FP23,FP31,MIN12,MIN23,MIN13
+      DOUBLE PRECISION FP21,FP32,FP13,FP12,FP23,FP31
+      DOUBLE PRECISION MIN12,MIN23,MIN13,MT1,MT2,MT3
 !
       INTRINSIC MIN,MAX,ABS
 !
-      DOUBLE PRECISION EPSPHI
-      DATA EPSPHI/1.D-12/
+      DOUBLE PRECISION, PARAMETER :: EPSPHI=1.D-12
+      DOUBLE PRECISION, PARAMETER :: TIERS =1.D0/3.D0
 !
 !-----------------------------------------------------------------------
 !
@@ -116,24 +115,18 @@
           IF(ORISEG(IELEM,1).EQ.1) THEN
             IF(FXMATPAR(ISEG1).GT.0.D0) THEN
               FP12=0.D0
-            ELSEIF(FP12.GT.-FXMATPAR(ISEG1)) THEN
-              FP12=-FXMATPAR(ISEG1)
-            ENDIF
-            IF(FXMATPAR(ISEG1).LT.0.D0) THEN
+              IF(FP21.GT. FXMATPAR(ISEG1)) FP21=FXMATPAR(ISEG1)
+            ELSE
               FP21=0.D0
-            ELSEIF(FP21.GT.FXMATPAR(ISEG1)) THEN
-              FP21=FXMATPAR(ISEG1)
+              IF(FP12.GT.-FXMATPAR(ISEG1)) FP12=-FXMATPAR(ISEG1)
             ENDIF
           ELSE
-            IF(FXMATPAR(ISEG1).LT.0.D0) THEN
-              FP12=0.D0
-            ELSEIF(FP12.GT.FXMATPAR(ISEG1)) THEN
-              FP12=FXMATPAR(ISEG1)
-            ENDIF
             IF(FXMATPAR(ISEG1).GT.0.D0) THEN
               FP21=0.D0
-            ELSEIF(FP21.GT.-FXMATPAR(ISEG1)) THEN
-              FP21=-FXMATPAR(ISEG1)
+              IF(FP12.GT. FXMATPAR(ISEG1)) FP12=FXMATPAR(ISEG1)
+            ELSE
+              FP12=0.D0
+              IF(FP21.GT.-FXMATPAR(ISEG1)) FP21=-FXMATPAR(ISEG1)
             ENDIF
           ENDIF
 !
@@ -142,24 +135,18 @@
           IF(ORISEG(IELEM,2).EQ.1) THEN
             IF(FXMATPAR(ISEG2).GT.0.D0) THEN
               FP23=0.D0
-            ELSEIF(FP23.GT.-FXMATPAR(ISEG2)) THEN
-              FP23=-FXMATPAR(ISEG2)
-            ENDIF
-            IF(FXMATPAR(ISEG2).LT.0.D0) THEN
+              IF(FP32.GT. FXMATPAR(ISEG2)) FP32=FXMATPAR(ISEG2)
+            ELSE
               FP32=0.D0
-            ELSEIF(FP32.GT.FXMATPAR(ISEG2)) THEN
-              FP32=FXMATPAR(ISEG2)
+              IF(FP23.GT.-FXMATPAR(ISEG2)) FP23=-FXMATPAR(ISEG2)            
             ENDIF
           ELSE
-            IF(FXMATPAR(ISEG2).LT.0.D0) THEN
-              FP23=0.D0
-            ELSEIF(FP23.GT.FXMATPAR(ISEG2)) THEN
-              FP23=FXMATPAR(ISEG2)
-            ENDIF
             IF(FXMATPAR(ISEG2).GT.0.D0) THEN
               FP32=0.D0
-            ELSEIF(FP32.GT.-FXMATPAR(ISEG2)) THEN
-              FP32=-FXMATPAR(ISEG2)
+              IF(FP23.GT. FXMATPAR(ISEG2)) FP23=FXMATPAR(ISEG2)
+            ELSE
+              FP23=0.D0
+              IF(FP32.GT.-FXMATPAR(ISEG2)) FP32=-FXMATPAR(ISEG2)            
             ENDIF
           ENDIF
 !
@@ -168,24 +155,18 @@
           IF(ORISEG(IELEM,3).EQ.1) THEN
             IF(FXMATPAR(ISEG3).GT.0.D0) THEN
               FP31=0.D0
-            ELSEIF(FP31.GT.-FXMATPAR(ISEG3)) THEN
-              FP31=-FXMATPAR(ISEG3)
-            ENDIF
-            IF(FXMATPAR(ISEG3).LT.0.D0) THEN
+              IF(FP13.GT. FXMATPAR(ISEG3)) FP13=FXMATPAR(ISEG3)
+            ELSE
               FP13=0.D0
-            ELSEIF(FP13.GT.FXMATPAR(ISEG3)) THEN
-              FP13=FXMATPAR(ISEG3)
+              IF(FP31.GT.-FXMATPAR(ISEG3)) FP31=-FXMATPAR(ISEG3)           
             ENDIF
           ELSE
-            IF(FXMATPAR(ISEG3).LT.0.D0) THEN
-              FP31=0.D0
-            ELSEIF(FP31.GT.FXMATPAR(ISEG3)) THEN
-              FP31=FXMATPAR(ISEG3)
-            ENDIF
             IF(FXMATPAR(ISEG3).GT.0.D0) THEN
               FP13=0.D0
-            ELSEIF(FP13.GT.-FXMATPAR(ISEG3)) THEN
-              FP13=-FXMATPAR(ISEG3)
+              IF(FP31.GT.FXMATPAR(ISEG3)) FP31=FXMATPAR(ISEG3)          
+            ELSE
+              FP31=0.D0
+              IF(FP13.GT.-FXMATPAR(ISEG3)) FP13=-FXMATPAR(ISEG3)
             ENDIF
           ENDIF
 !
@@ -197,25 +178,25 @@
 !
 !         MINIMUM OF THE 1-TETA
 !
-          MIN12=MIN(1.D0-TETA(I1),1.D0-TETA(I2))
-          MIN13=MIN(1.D0-TETA(I1),1.D0-TETA(I3))
-          MIN23=MIN(1.D0-TETA(I2),1.D0-TETA(I3))
+          MT1=1.D0-TETA(I1)
+          MT2=1.D0-TETA(I2)
+          MT3=1.D0-TETA(I3)
+          MIN12=MIN(MT1,MT2)
+          MIN13=MIN(MT1,MT3)
+          MIN23=MIN(MT2,MT3)
 !
 !         PART OF CONTRIBUTIONS THAT WILL NOT BE LIMITED, IMMEDIATELY ASSEMBLED
 !
-          FI_I(I1)=FI_I(I1)
-     &    +FP12*(FN1*(1.D0-TETA(I1)-MIN12)-FN2*(1.D0-TETA(I2)-MIN12))
-     &    +FP13*(FN1*(1.D0-TETA(I1)-MIN13)-FN3*(1.D0-TETA(I3)-MIN13))
-          FI_I(I2)=FI_I(I2)
-     &    +FP21*(FN2*(1.D0-TETA(I2)-MIN12)-FN1*(1.D0-TETA(I1)-MIN12))
-     &    +FP23*(FN2*(1.D0-TETA(I2)-MIN23)-FN3*(1.D0-TETA(I3)-MIN23))
-          FI_I(I3)=FI_I(I3)
-     &    +FP31*(FN3*(1.D0-TETA(I3)-MIN13)-FN1*(1.D0-TETA(I1)-MIN13))
-     &    +FP32*(FN3*(1.D0-TETA(I3)-MIN23)-FN2*(1.D0-TETA(I2)-MIN23))
+          FI_I(I1)=FI_I(I1)+FP12*(FN1*(MT1-MIN12)-FN2*(MT2-MIN12))
+     &                     +FP13*(FN1*(MT1-MIN13)-FN3*(MT3-MIN13))
+          FI_I(I2)=FI_I(I2)+FP21*(FN2*(MT2-MIN12)-FN1*(MT1-MIN12))
+     &                     +FP23*(FN2*(MT2-MIN23)-FN3*(MT3-MIN23))
+          FI_I(I3)=FI_I(I3)+FP31*(FN3*(MT3-MIN13)-FN1*(MT1-MIN13))
+     &                     +FP32*(FN3*(MT3-MIN23)-FN2*(MT2-MIN23))
 !       
 !         NOW PART OF CONTRIBUTIONS THAT WILL BE LIMITED
 !
-          COEF=SU(IELEM)/3.D0
+          COEF=SU(IELEM)*TIERS
 !
 !         AS CLASSICAL N SCHEME, BUT WITH DERIVATIVE IN TIME ADDED
 !         HDFDT MUST BE ((1.D0-TETA)*H+TETA*HN)*(FSTAR-F)/DDT
@@ -231,25 +212,30 @@
 !
           PHITCOR=FINCORR1+FINCORR2+FINCORR3
 !
-          IF(ABS(PHITCOR).GT.EPSPHI) THEN
-!           NO BOUNDARY WITH FLUX IN THIS TRIANGLE
-            BETA1=FINCORR1/PHITCOR
-            BETA2=FINCORR2/PHITCOR
-            BETA3=FINCORR3/PHITCOR
-            SUMAX=MAX(0.D0,BETA1)+MAX(0.D0,BETA2)+MAX(0.D0,BETA3)
-            IF(SUMAX.GT.1.D-20) THEN
-              BETA1PSI=MAX(0.D0,BETA1)/SUMAX
-              BETA2PSI=MAX(0.D0,BETA2)/SUMAX
-              BETA3PSI=MAX(0.D0,BETA3)/SUMAX
-              FI_I(I1)=FI_I(I1)+BETA1PSI*PHITCOR 
-              FI_I(I2)=FI_I(I2)+BETA2PSI*PHITCOR
-              FI_I(I3)=FI_I(I3)+BETA3PSI*PHITCOR
-            ENDIF
+          IF(PHITCOR.GT.EPSPHI) THEN
+!           PSI REDUCTION
+            BETA1=MAX(FINCORR1,0.D0)
+            BETA2=MAX(FINCORR2,0.D0)
+            BETA3=MAX(FINCORR3,0.D0)
+            COEF=PHITCOR/(BETA1+BETA2+BETA3)
+            FI_I(I1)=FI_I(I1)+BETA1*COEF
+            FI_I(I2)=FI_I(I2)+BETA2*COEF
+            FI_I(I3)=FI_I(I3)+BETA3*COEF
+          ELSEIF(PHITCOR.LT.-EPSPHI) THEN
+!           PSI REDUCTION
+            BETA1=MIN(FINCORR1,0.D0)
+            BETA2=MIN(FINCORR2,0.D0)
+            BETA3=MIN(FINCORR3,0.D0)
+            COEF=PHITCOR/(BETA1+BETA2+BETA3)
+            FI_I(I1)=FI_I(I1)+BETA1*COEF
+            FI_I(I2)=FI_I(I2)+BETA2*COEF
+            FI_I(I3)=FI_I(I3)+BETA3*COEF
           ELSE
+!           NO REDUCTION
             FI_I(I1)=FI_I(I1)+FINCORR1 
             FI_I(I2)=FI_I(I2)+FINCORR2
             FI_I(I3)=FI_I(I3)+FINCORR3
-          ENDIF      
+          ENDIF
 !
         ENDDO
 !
@@ -289,24 +275,18 @@
           IF(ORISEG(IELEM,1).EQ.1) THEN
             IF(FXMATPAR(ISEG1).GT.0.D0) THEN
               FP12=0.D0
-            ELSEIF(FP12.GT.-FXMATPAR(ISEG1)) THEN
-              FP12=-FXMATPAR(ISEG1)
-            ENDIF
-            IF(FXMATPAR(ISEG1).LT.0.D0) THEN
+              IF(FP21.GT. FXMATPAR(ISEG1)) FP21=FXMATPAR(ISEG1)
+            ELSE
               FP21=0.D0
-            ELSEIF(FP21.GT.FXMATPAR(ISEG1)) THEN
-              FP21=FXMATPAR(ISEG1)
+              IF(FP12.GT.-FXMATPAR(ISEG1)) FP12=-FXMATPAR(ISEG1)
             ENDIF
           ELSE
-            IF(FXMATPAR(ISEG1).LT.0.D0) THEN
-              FP12=0.D0
-            ELSEIF(FP12.GT.FXMATPAR(ISEG1)) THEN
-              FP12=FXMATPAR(ISEG1)
-            ENDIF
             IF(FXMATPAR(ISEG1).GT.0.D0) THEN
               FP21=0.D0
-            ELSEIF(FP21.GT.-FXMATPAR(ISEG1)) THEN
-              FP21=-FXMATPAR(ISEG1)
+              IF(FP12.GT. FXMATPAR(ISEG1)) FP12=FXMATPAR(ISEG1)
+            ELSE
+              FP12=0.D0
+              IF(FP21.GT.-FXMATPAR(ISEG1)) FP21=-FXMATPAR(ISEG1)
             ENDIF
           ENDIF
 !
@@ -315,24 +295,18 @@
           IF(ORISEG(IELEM,2).EQ.1) THEN
             IF(FXMATPAR(ISEG2).GT.0.D0) THEN
               FP23=0.D0
-            ELSEIF(FP23.GT.-FXMATPAR(ISEG2)) THEN
-              FP23=-FXMATPAR(ISEG2)
-            ENDIF
-            IF(FXMATPAR(ISEG2).LT.0.D0) THEN
+              IF(FP32.GT. FXMATPAR(ISEG2)) FP32=FXMATPAR(ISEG2)
+            ELSE
               FP32=0.D0
-            ELSEIF(FP32.GT.FXMATPAR(ISEG2)) THEN
-              FP32=FXMATPAR(ISEG2)
+              IF(FP23.GT.-FXMATPAR(ISEG2)) FP23=-FXMATPAR(ISEG2)            
             ENDIF
           ELSE
-            IF(FXMATPAR(ISEG2).LT.0.D0) THEN
-              FP23=0.D0
-            ELSEIF(FP23.GT.FXMATPAR(ISEG2)) THEN
-              FP23=FXMATPAR(ISEG2)
-            ENDIF
             IF(FXMATPAR(ISEG2).GT.0.D0) THEN
               FP32=0.D0
-            ELSEIF(FP32.GT.-FXMATPAR(ISEG2)) THEN
-              FP32=-FXMATPAR(ISEG2)
+              IF(FP23.GT. FXMATPAR(ISEG2)) FP23=FXMATPAR(ISEG2)
+            ELSE
+              FP23=0.D0
+              IF(FP32.GT.-FXMATPAR(ISEG2)) FP32=-FXMATPAR(ISEG2)            
             ENDIF
           ENDIF
 !
@@ -341,24 +315,18 @@
           IF(ORISEG(IELEM,3).EQ.1) THEN
             IF(FXMATPAR(ISEG3).GT.0.D0) THEN
               FP31=0.D0
-            ELSEIF(FP31.GT.-FXMATPAR(ISEG3)) THEN
-              FP31=-FXMATPAR(ISEG3)
-            ENDIF
-            IF(FXMATPAR(ISEG3).LT.0.D0) THEN
+              IF(FP13.GT. FXMATPAR(ISEG3)) FP13=FXMATPAR(ISEG3)
+            ELSE
               FP13=0.D0
-            ELSEIF(FP13.GT.FXMATPAR(ISEG3)) THEN
-              FP13=FXMATPAR(ISEG3)
+              IF(FP31.GT.-FXMATPAR(ISEG3)) FP31=-FXMATPAR(ISEG3)           
             ENDIF
           ELSE
-            IF(FXMATPAR(ISEG3).LT.0.D0) THEN
-              FP31=0.D0
-            ELSEIF(FP31.GT.FXMATPAR(ISEG3)) THEN
-              FP31=FXMATPAR(ISEG3)
-            ENDIF
             IF(FXMATPAR(ISEG3).GT.0.D0) THEN
               FP13=0.D0
-            ELSEIF(FP13.GT.-FXMATPAR(ISEG3)) THEN
-              FP13=-FXMATPAR(ISEG3)
+              IF(FP31.GT.FXMATPAR(ISEG3)) FP31=FXMATPAR(ISEG3)          
+            ELSE
+              FP31=0.D0
+              IF(FP13.GT.-FXMATPAR(ISEG3)) FP13=-FXMATPAR(ISEG3)
             ENDIF
           ENDIF
 !
@@ -370,25 +338,25 @@
 !
 !         MINIMUM OF THE 1-TETA
 !
-          MIN12=MIN(1.D0-TETA(I1),1.D0-TETA(I2))
-          MIN13=MIN(1.D0-TETA(I1),1.D0-TETA(I3))
-          MIN23=MIN(1.D0-TETA(I2),1.D0-TETA(I3))
+          MT1=1.D0-TETA(I1)
+          MT2=1.D0-TETA(I2)
+          MT3=1.D0-TETA(I3)
+          MIN12=MIN(MT1,MT2)
+          MIN13=MIN(MT1,MT3)
+          MIN23=MIN(MT2,MT3)
 !
 !         PART OF CONTRIBUTIONS THAT WILL NOT BE LIMITED, IMMEDIATELY ASSEMBLED
 !
-          FI_I(I1)=FI_I(I1)
-     &    +FP12*(FN1*(1.D0-TETA(I1)-MIN12)-FN2*(1.D0-TETA(I2)-MIN12))
-     &    +FP13*(FN1*(1.D0-TETA(I1)-MIN13)-FN3*(1.D0-TETA(I3)-MIN13))
-          FI_I(I2)=FI_I(I2)
-     &    +FP21*(FN2*(1.D0-TETA(I2)-MIN12)-FN1*(1.D0-TETA(I1)-MIN12))
-     &    +FP23*(FN2*(1.D0-TETA(I2)-MIN23)-FN3*(1.D0-TETA(I3)-MIN23))
-          FI_I(I3)=FI_I(I3)
-     &    +FP31*(FN3*(1.D0-TETA(I3)-MIN13)-FN1*(1.D0-TETA(I1)-MIN13))
-     &    +FP32*(FN3*(1.D0-TETA(I3)-MIN23)-FN2*(1.D0-TETA(I2)-MIN23))
+          FI_I(I1)=FI_I(I1)+FP12*(FN1*(MT1-MIN12)-FN2*(MT2-MIN12))
+     &                     +FP13*(FN1*(MT1-MIN13)-FN3*(MT3-MIN13))
+          FI_I(I2)=FI_I(I2)+FP21*(FN2*(MT2-MIN12)-FN1*(MT1-MIN12))
+     &                     +FP23*(FN2*(MT2-MIN23)-FN3*(MT3-MIN23))
+          FI_I(I3)=FI_I(I3)+FP31*(FN3*(MT3-MIN13)-FN1*(MT1-MIN13))
+     &                     +FP32*(FN3*(MT3-MIN23)-FN2*(MT2-MIN23))
 !       
 !         NOW PART OF CONTRIBUTIONS THAT WILL BE LIMITED
 !
-          COEF=SU(IELEM)/3.D0
+          COEF=SU(IELEM)*TIERS
 !
 !         AS CLASSICAL N SCHEME, BUT WITH DERIVATIVE IN TIME ADDED
 !         HDFDT MUST BE ((1.D0-TETA)*H+TETA*HN)*(FSTAR-F)/DDT
@@ -404,25 +372,30 @@
 !
           PHITCOR=FINCORR1+FINCORR2+FINCORR3
 !
-          IF(ABS(PHITCOR).GT.EPSPHI) THEN
-!           NO BOUNDARY WITH FLUX IN THIS TRIANGLE
-            BETA1=FINCORR1/PHITCOR
-            BETA2=FINCORR2/PHITCOR
-            BETA3=FINCORR3/PHITCOR
-            SUMAX=MAX(0.D0,BETA1)+MAX(0.D0,BETA2)+MAX(0.D0,BETA3)
-            IF(SUMAX.GT.1.D-20) THEN
-              BETA1PSI=MAX(0.D0,BETA1)/SUMAX
-              BETA2PSI=MAX(0.D0,BETA2)/SUMAX
-              BETA3PSI=MAX(0.D0,BETA3)/SUMAX
-              FI_I(I1)=FI_I(I1)+BETA1PSI*PHITCOR 
-              FI_I(I2)=FI_I(I2)+BETA2PSI*PHITCOR
-              FI_I(I3)=FI_I(I3)+BETA3PSI*PHITCOR
-            ENDIF
+          IF(PHITCOR.GT.EPSPHI) THEN
+!           PSI REDUCTION
+            BETA1=MAX(FINCORR1,0.D0)
+            BETA2=MAX(FINCORR2,0.D0)
+            BETA3=MAX(FINCORR3,0.D0)
+            COEF=PHITCOR/(BETA1+BETA2+BETA3)
+            FI_I(I1)=FI_I(I1)+BETA1*COEF
+            FI_I(I2)=FI_I(I2)+BETA2*COEF
+            FI_I(I3)=FI_I(I3)+BETA3*COEF
+          ELSEIF(PHITCOR.LT.-EPSPHI) THEN
+!           PSI REDUCTION
+            BETA1=MIN(FINCORR1,0.D0)
+            BETA2=MIN(FINCORR2,0.D0)
+            BETA3=MIN(FINCORR3,0.D0)
+            COEF=PHITCOR/(BETA1+BETA2+BETA3)
+            FI_I(I1)=FI_I(I1)+BETA1*COEF
+            FI_I(I2)=FI_I(I2)+BETA2*COEF
+            FI_I(I3)=FI_I(I3)+BETA3*COEF
           ELSE
+!           NO REDUCTION
             FI_I(I1)=FI_I(I1)+FINCORR1 
             FI_I(I2)=FI_I(I2)+FINCORR2
             FI_I(I3)=FI_I(I3)+FINCORR3
-          ENDIF      
+          ENDIF
 !
         ENDDO
 !
