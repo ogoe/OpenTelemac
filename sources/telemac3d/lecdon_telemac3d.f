@@ -2394,8 +2394,19 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-!       OTHERWISE WOULD TRIGGER A 3D RESTART
-        DEBU=.TRUE.
+!       BOTH TYPES OF CONTINUATIONS ARE FORBIDDEN
+        IF(.NOT.DEBU) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'SUITE 2D & SUITE DE CALCUL'
+            WRITE(LU,*) 'NE PEUVENT ETRE SIMULTANEMENT A OUI'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) '2D CONTINUATION & CONTINUATION CONTINUED:'
+            WRITE(LU,*) 'CANNOT BE BOTH SET TO TRUE'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------
