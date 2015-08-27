@@ -21,11 +21,13 @@
 !+   First version.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        13/08/2015
+!+        27/08/2015
 !+        V7P1
 !+   Optimisation. Matrix simplified into a diagonal except for the last
 !+   correction. Does not spoil mass conservation and results virtually
 !+   unchanged.
+!+   Jacobi solver programmed here, when GMRES or direct solver
+!+   is not asked.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME-STEP
@@ -106,6 +108,17 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,N,I1,I2
+      DOUBLE PRECISION NORMR,NORMB
+      TYPE(BIEF_OBJ), POINTER :: BB1,SURDIAG,R
+!
+      INTRINSIC SQRT
+!
+      BB1    =>BB%ADR(1)%P
+      R      =>BB%ADR(2)%P
+      SURDIAG=>BB%ADR(3)%P
+      CALL CPSTVC(SF,BB1)
+      CALL CPSTVC(SF,R)
+      CALL CPSTVC(SF,SURDIAG)
 !
 !-----------------------------------------------------------------------
 !
@@ -179,15 +192,14 @@
       IF(ICOR.LT.NCOR) THEN
 !       SYSTEM SIMPLIFIED, MASS SPOILED, BUT IT WILL BE CORRECTED AFTER
 !       BY THE LAST CORRECTION
+!       HERE EXTRA-DIAGONAL TERMS NOT BUILT
         DO I=1,NSEG
           I1=GLOSEG(I,1)  
           I2=GLOSEG(I,2)
           IF(FXMATPAR(I).LT.0.D0) THEN
             AM2%D%R(I1) = AM2%D%R(I1) - DT*TETAF(I1)*FXMAT(I)
-            SM%R(I1)=SM%R(I1)-DT*TETAF(I2)*FXMAT(I)*F(I2)
           ELSE
             AM2%D%R(I2) = AM2%D%R(I2) + DT*TETAF(I2)*FXMAT(I)
-            SM%R(I2)=SM%R(I2)+DT*TETAF(I1)*FXMAT(I)*F(I1)
           ENDIF        
         ENDDO
       ELSE
@@ -276,13 +288,13 @@
 !
 !     TIDAL FLATS
 ! 
-      CALL OS('X=Y     ',X=BB%ADR(1)%P,Y=AM2%D)
-      IF(NCSIZE.GT.1) CALL PARCOM(BB%ADR(1)%P,2,MESH)
+      CALL OS('X=Y     ',X=BB1,Y=AM2%D)
+      IF(NCSIZE.GT.1) CALL PARCOM(BB1,2,MESH)
       DO I=1,NPOIN
 !       SEE PRECD1 EPSILON HERE MUST BE GREATER THAN 1.D-20, OR PRECD1 WILL
 !       DO THE CLIPPING ITSELF, IN A LESS CONSISTANT WAY
 !       THE TEST MUST BE DONE ON THE ASSEMBLED DIAGONAL
-        IF(BB%ADR(1)%P%R(I).LT.1.D-15) THEN
+        IF(BB1%R(I).LT.1.D-15) THEN
 !         VOLU2D IS A NON ASSEMBLED COEFFICIENT, ANY SUCH COEFFICIENT WOULD WORK...
 !         DRY POINT THAT RECEIVES NO WATER, F=FC IS GIVEN AS EQUATION
           AM2%D%R(I)=VOLU2D(I)
@@ -308,7 +320,16 @@
 !     SOLVING THE FINAL LINEAR SYSTEM
 !
       IF(ICOR.LT.NCOR) THEN
-!       HERE THE MATRIX IS DIAGONAL
+!       HERE ONE ITERATION OF JACOBI
+        DO I=1,NSEG
+          I1=GLOSEG(I,1)  
+          I2=GLOSEG(I,2)
+          IF(FXMATPAR(I).LT.0.D0) THEN
+            SM%R(I1)=SM%R(I1)-DT*TETAF(I2)*FXMAT(I)*F(I2)
+          ELSE
+            SM%R(I2)=SM%R(I2)+DT*TETAF(I1)*FXMAT(I)*F(I1)
+          ENDIF        
+        ENDDO
         IF(NCSIZE.GT.1) THEN
           CALL PARCOM(AM2%D,2,MESH)
           CALL PARCOM(SM,2,MESH)
@@ -317,7 +338,91 @@
           F(I)=SM%R(I)/AM2%D%R(I)
         ENDDO       
       ELSE
-        CALL SOLVE(SF,AM2,SM,BB,SLVPSI,INFOGT,MESH,AM2)
+        IF(SLVPSI%SLV.EQ.7.OR.SLVPSI%SLV.EQ.8) THEN
+          CALL SOLVE(SF,AM2,SM,BB,SLVPSI,INFOGT,MESH,AM2)
+        ELSE
+!         IF NOT GMRES OR DIRECT, JACOBI SOLUTION
+          N=0
+          CALL OS('X=Y     ',X=BB1,Y=SM)
+          CALL OS('X=Y     ',X=SURDIAG,Y=AM2%D)
+          IF(NCSIZE.GT.1) THEN
+            CALL PARCOM(SURDIAG,2,MESH)
+            CALL PARCOM(BB1,2,MESH)
+          ENDIF
+          CALL OS('X=1/Y   ',X=SURDIAG,Y=SURDIAG)
+          NORMB=SQRT(P_DOTS(BB1,BB1,MESH))
+100       CONTINUE
+          N=N+1
+!         ONE ITERATION OF JACOBI
+          CALL OS('X=Y     ',X=BB1,Y=SM)
+          DO I=1,NSEG
+            I1=GLOSEG(I,1)  
+            I2=GLOSEG(I,2)
+            IF(FXMATPAR(I).LT.0.D0) THEN
+              BB1%R(I1)=BB1%R(I1)-AM2%X%R(I     )*F(I2)
+            ELSE
+              BB1%R(I2)=BB1%R(I2)-AM2%X%R(I+NSEG)*F(I1)
+            ENDIF        
+          ENDDO
+          IF(NCSIZE.GT.1) CALL PARCOM(BB1,2,MESH)
+!         NEW SOLUTION IN BB1
+          DO I=1,NPOIN
+            BB1%R(I)=BB1%R(I)*SURDIAG%R(I)
+          ENDDO
+!         END OF ONE ITERATION, COMPUTING THE RESIDUAL
+!         (A%D+A%X)X-B = A%X*(NEW F - OLD F)
+          CALL OS('X=0     ',X=R)
+          DO I=1,NSEG
+            I1=GLOSEG(I,1)  
+            I2=GLOSEG(I,2)
+            IF(FXMATPAR(I).LT.0.D0) THEN
+              R%R(I1)=R%R(I1)-AM2%X%R(I     )*(F(I2)-BB1%R(I2))
+            ELSE
+              R%R(I2)=R%R(I2)-AM2%X%R(I+NSEG)*(F(I1)-BB1%R(I1))
+            ENDIF        
+          ENDDO
+          IF(NCSIZE.GT.1) CALL PARCOM(R,2,MESH)
+          NORMR=SQRT(P_DOTS(R,R,MESH))
+!         COPY OF NEW SOLUTION ON F
+          DO I=1,NPOIN
+            F(I)=BB1%R(I)
+          ENDDO
+          IF(N.LT.SLVPSI%NITMAX.AND.NORMR.GT.SLVPSI%EPS*NORMB) THEN
+            GO TO 100
+          ENDIF
+!         DONE !
+          IF(INFOGT) THEN
+            IF(NORMR.GT.SLVPSI%EPS*NORMB) THEN
+              IF(NORMB.GT.1.D0) THEN
+                IF(LNG.EQ.1) WRITE(LU,*) 
+     &            'JACOBI : MAXIMUM D''ITERATIONS ATTEINT :',N,
+     &            ' PRECISION RELATIVE = ',NORMR/NORMB 
+                IF(LNG.EQ.2) WRITE(LU,*) 
+     &            'JACOBI: MAXIMUM ITERATIONS REACHED ',N,
+     &            ' ITERATIONS, RELATIVE PRECISION = ',NORMR/NORMB   
+              ELSE
+                IF(LNG.EQ.1) WRITE(LU,*)
+     &            'JACOBI : MAXIMUM D''ITERATIONS ATTEINT :',N,
+     &            ' ITERATIONS, PRECISION ABSOLUE = ',NORMR 
+                IF(LNG.EQ.2) WRITE(LU,*)
+     &            'JACOBI: MAXIMUM ITERATIONS REACHED ',N,
+     &            ' ITERATIONS, ABSOLUTE PRECISION = ',NORMR 
+              ENDIF 
+            ELSE
+              IF(NORMB.GT.1.D0) THEN
+                IF(LNG.EQ.1) WRITE(LU,*) 'JACOBI :',N,
+     &            ' ITERATIONS, PRECISION RELATIVE = ',NORMR/NORMB 
+                IF(LNG.EQ.2) WRITE(LU,*) 'JACOBI:',N,
+     &            ' ITERATIONS, RELATIVE PRECISION = ',NORMR/NORMB   
+              ELSE
+                IF(LNG.EQ.1) WRITE(LU,*) 'JACOBI :',N,
+     &            ' ITERATIONS, PRECISION ABSOLUE = ',NORMR 
+                IF(LNG.EQ.2) WRITE(LU,*) 'JACOBI:',N,
+     &            ' ITERATIONS, ABSOLUTE PRECISION = ',NORMR 
+              ENDIF 
+            ENDIF
+          ENDIF 
+        ENDIF  
       ENDIF
 !
 !

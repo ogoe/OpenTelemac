@@ -62,7 +62,7 @@
 !+   VOLU2D added.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        20/08/2015
+!+        27/08/2015
 !+        V7P1
 !+   Now with the locally implicit predictor-corrector.
 !+   Call of CFLVF changed, with option OPTCFL added in the arguments.
@@ -219,6 +219,9 @@
 !                                           GMRES OR DIRECT ASKED
 !                                           AND HARDCODED HERE
 !                                           KRYLOV DIMENSION SET TO 3
+!
+!     SEE ALSO TVF_IMP WITH A JACOBI METHOD
+!
       SLVPSI%SLV   =SLVTRA%SLV
       SLVPSI%NITMAX=SLVTRA%NITMAX
       SLVPSI%PRECON=SLVTRA%PRECON
@@ -226,12 +229,6 @@
       SLVPSI%EPS   =SLVTRA%EPS
       SLVPSI%ZERO  =SLVTRA%ZERO
 !
-!     HARDCODED MODIFICATIONS: THE SYSTEM WILL BE NON SYMMETRIC
-!                              AND MINIMAL ERROR DOES NOT WORK
-!
-      IF(SLVPSI%SLV.NE.7.AND.SLVPSI%SLV.NE.8) THEN
-        SLVPSI%SLV=7
-      ENDIF
 !     CHANGING THIS WILL TRIGGER CHANGING THE SIZE OF TB2 IN CALLING
 !     PROGRAMMES
       SLVPSI%KRYLOV=3
@@ -862,7 +859,7 @@
 !
       IF(DT_REMAIN.NE.0.D0.AND.NIT.LT.NITMAX) GO TO 100
 !
-      IF(NIT.GE.NITMAX) THEN
+      IF(NIT.GE.NITMAX.AND.OPTADV.NE.4) THEN
         IF(LNG.EQ.1) WRITE(LU,900) NIT
         IF(LNG.EQ.2) WRITE(LU,901) NIT
 900     FORMAT(1X,'CVTRVF : ',1I6,' SOUS-ITERATIONS DEMANDEES POUR LE'
