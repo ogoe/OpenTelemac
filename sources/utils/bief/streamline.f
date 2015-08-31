@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! BIEF 7.0
+! BIEF 7.1
 !***********************************************************************
 !
 !brief    MODULE FOR PARALLEL CHARACTERISTICS FOR TELEMAC2D (OR TELEMAC3D)
@@ -90,6 +90,13 @@
 !+        V7P1
 !+   Argument NRK added to SCARACT, it was hardcoded to 3. It is the
 !+   number of sub-steps to do the characteristic pathline.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        31/08/2015
+!+        V7P1
+!+   Subroutine introduce_recvchar optimised (after results of a 
+!+   profiler saying we spent 12% of the time in it, but this seems
+!+   wrong).   
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1316,19 +1323,32 @@
                 VAL%R(RECVCHAR(I)%IOR)=RECVCHAR(I)%BASKET(1)
               ENDDO
             ELSEIF(VAL%TYPE.EQ.4) THEN
+!             LOOKING FOR THE LARGEST SIZE IN ALL ARRAYS TO INTERPOLATE
+              MAXDIM=VAL%ADR(1)%P%DIM1
+              IF(NOMB.GT.1) THEN
+                DO N=2,NOMB
+                  MAXDIM=MAX(MAXDIM,VAL%ADR(N)%P%DIM1)
+                ENDDO
+              ENDIF
               DO N=1,NOMB
-                MAXDIM=VAL%ADR(N)%P%DIM1
-                DO I=1,NARRV
-!                 NASTY LOSS OF OPTIMISATION:
+                IF(VAL%ADR(N)%P%DIM1.LT.MAXDIM) THEN
+!                 HERE LOSS OF OPTIMISATION:
 !                 IF CHARACTERISTICS COMPUTED FOR QUASI BUBBLE
 !                 OR QUADRATIC, FUNCTIONS WHICH ARE LINEAR
 !                 MUST NOT BE INTERPOLATED BEYOND THEIR SIZE.
-!                 NO NEED TO DO THIS IN 3D SO FAR
-                  IF(RECVCHAR(I)%IOR.LE.MAXDIM) THEN
+                  DO I=1,NARRV
+                    IF(RECVCHAR(I)%IOR.LE.MAXDIM) THEN
+                      VAL%ADR(N)%P%R(RECVCHAR(I)%IOR)=
+     &                RECVCHAR(I)%BASKET(N)
+                    ENDIF
+                  ENDDO
+                ELSE
+!                 HERE NO RISK
+                  DO I=1,NARRV
                     VAL%ADR(N)%P%R(RECVCHAR(I)%IOR)=
      &              RECVCHAR(I)%BASKET(N)
-                  ENDIF
-                ENDDO
+                  ENDDO
+                ENDIF
               ENDDO
             ELSE
               WRITE(LU,*)'STREAMLINE::INTRODUCE_RECVCHAR'
