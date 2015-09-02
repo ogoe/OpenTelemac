@@ -21,7 +21,7 @@
 !+   First version.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        27/08/2015
+!+        01/09/2015
 !+        V7P1
 !+   Optimisation. Matrix simplified into a diagonal except for the last
 !+   correction. Does not spoil mass conservation and results virtually
@@ -154,29 +154,29 @@
       AM2%ELMCOL=11
       CALL CPSTVC(SF,AM2%D)
 !
+!     DIAGONAL OF MATRIX 
+!
+      DO I=1,NPOIN
+        AM2%D%R(I)=HNP1MT(I)*VOLU2D(I)
+      ENDDO
+!
 !     RIGHT HAND SIDE 
 !
 !     TERM FROM THE DERIVATIVE IN TIME
       IF(PREDICTOR) THEN
         DO I=1,NPOIN
-          SM%R(I)=VOLU2D(I)*HNP1MT(I)*FC(I)
+          SM%R(I)=AM2%D%R(I)*FC(I)
         ENDDO
       ELSEIF(CORRECTOR) THEN
 !       THE PREDICTOR IS TAKEN, AT THIS LEVEL IT IS STILL F
         DO I=1,NPOIN
-          SM%R(I)=VOLU2D(I)*HNP1MT(I)*F(I)
+          SM%R(I)=AM2%D%R(I)*F(I)
         ENDDO
       ELSE
         WRITE(LU,*) 'TVF_IMP, CHECK ARGUMENTS PREDICTOR, CORRECTOR'
         CALL PLANTE(1)
         STOP
       ENDIF
-!
-!     DIAGONAL OF MATRIX 
-!
-      DO I=1,NPOIN
-        AM2%D%R(I)=HNP1MT(I)*VOLU2D(I)
-      ENDDO
 !
 !     IMPLICIT BOUNDARY TERM
 !
@@ -224,13 +224,18 @@
 !
       IF(YASMH) THEN
         IF(OPTSOU.EQ.1) THEN
+!         SEE DIFSOU, FSCEXP CONTAINS THE VALUE OF THE TRACER AT THE SOURCE
           DO I=1,NPOIN
             AM2%D%R(I)=AM2%D%R(I)
      &                +DT*TETAF(I)*VOLU2D(I)*MAX(SMH(I),0.D0)
+            SM%R(I)=SM%R(I)+(FSCEXP(I)-(1.D0-TETAF(I))*FC(I))
+     &                     *VOLU2D(I)*DT*MAX(SMH(I),0.D0)
           ENDDO
         ELSEIF(OPTSOU.EQ.2) THEN
           DO I=1,NPOIN
             AM2%D%R(I)=AM2%D%R(I)+DT*TETAF(I)*MAX(SMH(I),0.D0)
+            SM%R(I)=SM%R(I)+(FSCEXP(I)-(1.D0-TETAF(I))*FC(I))
+     &                     *DT*MAX(SMH(I),0.D0)
           ENDDO
         ENDIF
       ENDIF 
@@ -251,23 +256,6 @@
           SM%R(N)=SM%R(N)+DT*FXBOR(I)*((1.D0-TETAF(N))*FC(N)-FBOR(I))
         ENDIF
       ENDDO
-!
-!     SOURCE TERMS
-!
-      IF(YASMH) THEN
-!       SEE DIFSOU, FSCEXP CONTAINS THE VALUE OF THE TRACER AT THE SOURCE
-        IF(OPTSOU.EQ.1) THEN
-          DO I=1,MESH%NPOIN
-            SM%R(I)=SM%R(I)+(FSCEXP(I)-(1.D0-TETAF(I))*FC(I))
-     &                     *VOLU2D(I)*DT*MAX(SMH(I),0.D0)
-          ENDDO
-        ELSEIF(OPTSOU.EQ.2) THEN
-          DO I=1,MESH%NPOIN
-            SM%R(I)=SM%R(I)+(FSCEXP(I)-(1.D0-TETAF(I))*FC(I))
-     &             *DT*MAX(SMH(I),0.D0)
-          ENDDO
-        ENDIF
-      ENDIF
 !
 !     RAIN-EVAPORATION
 !
@@ -302,25 +290,10 @@
         ENDIF
       ENDDO
 !
-!     CALL MINI(C,I1,F,NPOIN)
-!     PRINT*,'AVANT SOLVE MIN DE F=',C
-!     IF(C.LT.0.999999D0) THEN
-!       PRINT*,'F=',C,' AU POINT ',I1
-!       CALL PLANTE(1)
-!       STOP
-!     ENDIF
-!     CALL MAXI(C,I1,F,NPOIN)
-!     PRINT*,'AVANT SOLVE MAX DE F=',C
-!     IF(C.GT.2.D0) THEN
-!       PRINT*,'F=',C,' AU POINT ',I1
-!       CALL PLANTE(1)
-!       STOP
-!     ENDIF
-!
 !     SOLVING THE FINAL LINEAR SYSTEM
 !
       IF(ICOR.LT.NCOR) THEN
-!       HERE ONE ITERATION OF JACOBI
+!       HERE ONE ITERATION OF JACOBI, OFF-DIAGONAL TERMS BUILT ON THE SPOT
         DO I=1,NSEG
           I1=GLOSEG(I,1)  
           I2=GLOSEG(I,2)
@@ -328,7 +301,7 @@
             SM%R(I1)=SM%R(I1)-DT*TETAF(I2)*FXMAT(I)*F(I2)
           ELSE
             SM%R(I2)=SM%R(I2)+DT*TETAF(I1)*FXMAT(I)*F(I1)
-          ENDIF        
+          ENDIF
         ENDDO
         IF(NCSIZE.GT.1) THEN
           CALL PARCOM(AM2%D,2,MESH)
@@ -370,7 +343,7 @@
             BB1%R(I)=BB1%R(I)*SURDIAG%R(I)
           ENDDO
 !         END OF ONE ITERATION, COMPUTING THE RESIDUAL
-!         (A%D+A%X)X-B = A%X*(NEW F - OLD F)
+!         AX-B = (A%D+A%X)X-B = A%X*(NEW F - OLD F)
           CALL OS('X=0     ',X=R)
           DO I=1,NSEG
             I1=GLOSEG(I,1)  

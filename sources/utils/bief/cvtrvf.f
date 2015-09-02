@@ -62,13 +62,14 @@
 !+   VOLU2D added.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        27/08/2015
+!+        01/09/2015
 !+        V7P1
 !+   Now with the locally implicit predictor-corrector.
 !+   Call of CFLVF changed, with option OPTCFL added in the arguments.
 !+   For locally implicit schemes, fluxes may be reduced with array
 !+   FLULIM. The solver configuration of tracers is copied but the
-!+   choice of the solver is set to GMRES or direct.
+!+   choice of the solver, if not GMRES or direct, is set to Jacobi
+!+   in TVF_IMP.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -685,7 +686,14 @@
               DO I=1,HN%DIM1
                 FMIN%R(I)=T4%R(I)
                 FMAX%R(I)=T4%R(I)
-              ENDDO 
+              ENDDO
+              DO I=1,NPTFR
+                IF(LIMTRA(I).EQ.KDIR) THEN
+                  N=MESH%NBOR%I(I)
+                  FMIN%R(N)=MIN(FMIN%R(N),FBOR%R(I))
+                  FMAX%R(N)=MAX(FMAX%R(N),FBOR%R(I))
+                ENDIF
+              ENDDO
               DO IELEM=1,MESH%NELEM
                 I1=MESH%IKLE%I(IELEM)
                 I2=MESH%IKLE%I(IELEM+  MESH%NELMAX)
@@ -761,7 +769,14 @@
           DO I=1,HN%DIM1
             FMIN%R(I)=T4%R(I)
             FMAX%R(I)=T4%R(I)
-          ENDDO 
+          ENDDO
+          DO I=1,NPTFR
+            IF(LIMTRA(I).EQ.KDIR) THEN
+              N=MESH%NBOR%I(I)
+              FMIN%R(N)=MIN(FMIN%R(N),FBOR%R(I))
+              FMAX%R(N)=MAX(FMAX%R(N),FBOR%R(I))
+            ENDIF
+          ENDDO
           DO IELEM=1,MESH%NELEM
             I1=MESH%IKLE%I(IELEM)
             I2=MESH%IKLE%I(IELEM+  MESH%NELMAX)
