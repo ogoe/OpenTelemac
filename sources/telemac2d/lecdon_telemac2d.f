@@ -75,9 +75,10 @@
 !+  quadratic elements are asked.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        14/08/2015
+!+        02/09/2015
 !+        V7P1
-!+  A message was truncated due to a wrong format.
+!+  TIDALTYPE replaced by BND_TIDE which is an array, and the value of
+!+  TIDALTYPE is now deduced from BND_TIDE.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -199,7 +200,8 @@
         FRTYPE(K)=1
         PROVEL(K)=1
         STA_DIS_CURVES(K)=0
-      ENDDO ! K
+        BND_TIDE(K)=0
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -221,7 +223,7 @@
         WDIMEN(2,K) = 0
         WDIMEN(3,K) = 0
         WDIMEN(4,K) = 0
-      ENDDO ! K
+      ENDDO
 !     WRITES OUT INFO
       DOC = .FALSE.
       ADDTR = 0
@@ -767,8 +769,14 @@
       PERCOU_WAC = MOTINT(ADRESS(1,73))
 !     TREATMENT OF FLUXES AT THE BOUNDARIES
       DIRFLU     = MOTINT(ADRESS(1,74))
-!     OPTION FOR TIDAL BOUNDARY CONDITIONS
-      TIDALTYPE  = MOTINT(ADRESS(1,75))
+!     OPTION FOR TIDAL BOUNDARY CONDITIONS (TIDALTYPE IS DEDUCED FROM BND_TIDE)
+      TIDALTYPE=0
+      IF(DIMEN(1,75).NE.0) THEN
+        DO K=1,DIMEN(1,75)
+          BND_TIDE(K) = MOTINT( ADRESS(1,75) + K-1 )
+          TIDALTYPE=MAX(TIDALTYPE,BND_TIDE(K))
+        ENDDO
+      ENDIF
 !     OPTION FOR TSUNAMI GENERATION
       OPTTSUNAMI = MOTINT(ADRESS(1,76))
 !     INPUT TIDAL DATA BASE

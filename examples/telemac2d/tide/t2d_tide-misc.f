@@ -49,7 +49,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,NODALCORR,ICALHW
+      INTEGER K,NODALCORR,ICALHW,IFRLIQ
       DOUBLE PRECISION XSHIFT,YSHIFT,BETA
       LOGICAL TIDALBCGEN,TM2S2N2EQUAL
 !
@@ -260,8 +260,10 @@
 !-----------------------------------------------------------------------
 !
       DO K=1,NPTFR
-        IF(NUMTIDE%I(K).GT.0) THEN
-!         POSSIBLE SMOOTHING AT THE BEGINNING
+        IFRLIQ=NUMLIQ%I(K)
+!       NOTE JMH: TESTING NUMTIDE%I(K).GT.0 IS NOW PROBABLY NOT USEFUL
+        IF(NUMTIDE%I(K).GT.0.AND.BND_TIDE(IFRLIQ).GT.0) THEN
+!         HARDCODED SMOOTHING AT THE BEGINNING
           IF(AT.LT.1800.D0) THEN
             UBTIDE%R(K) = UBTIDE%R(K)*(AT/1800.D0)
             VBTIDE%R(K) = VBTIDE%R(K)*(AT/1800.D0)

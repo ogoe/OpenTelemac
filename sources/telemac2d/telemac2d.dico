@@ -4847,7 +4847,7 @@ NOM = 'OPTION POUR LES CONDITIONS AUX LIMITES DE MAREE'
 NOM1 = 'OPTION FOR TIDAL BOUNDARY CONDITIONS'
 TYPE = INTEGER
 INDEX = 75
-MNEMO = 'TIDALTYPE'
+MNEMO = 'BND_TIDE'
 TAILLE = 0
 DEFAUT = 0
 DEFAUT1= 0
@@ -4873,11 +4873,14 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
 NIVEAU = 1
 AIDE = 'Option pour les conditions aux limites de maree.
-Pour des marees reelles, l option 1 est recommandee.
+Pour des marees reelles, 1 est recommande.
 Calage possible par les mots-cles COEFFICIENT POUR CALAGE EN MARNAGE
-et COEFFICIENT POUR CALAGE EN NIVEAU.'
+et COEFFICIENT POUR CALAGE EN NIVEAU.
+Une valeur par frontiere liquide doit etre donnee,
+avec point-virgule comme separateur'
 AIDE1= 'Option for tidal boundary conditions.
-For real tides, option 1 is recommended.
+For real tides, 1 is recommended.
+Give one value per liquid boundary, separated by semicolons.
 Possible calibration with keywords COEFFICIENT TO ADJUST TIDAL RANGE
 and COEFFICIENT TO ADJUST SEA LEVEL.'
 

@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                   02/10/2014
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    FINDS TIDAL BOUNDARY CONDITIONS AT THE OPEN SEA BOUNDARIES
@@ -253,7 +253,7 @@
 !-----------------------------------------------------------------------
 !
       DO K=1,NPTFR
-        IF(NUMTIDE%I(K).GT.0) THEN
+        IF(NUMTIDE%I(K).GT.0.AND.BND_TIDE(IFRLIQ).GT.0) THEN
 !         POSSIBLE SMOOTHING AT THE BEGINNING
 !         IF(AT.LT.1800.D0) THEN
 !           UBTIDE%R(K) = UBTIDE%R(K)*(AT/1800.D0)
