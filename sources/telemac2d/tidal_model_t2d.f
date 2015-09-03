@@ -42,7 +42,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,NODALCORR,ICALHW
+      INTEGER K,NODALCORR,ICALHW,IFRLIQ
       DOUBLE PRECISION XSHIFT,YSHIFT,BETA
       LOGICAL TIDALBCGEN,TM2S2N2EQUAL
 !
