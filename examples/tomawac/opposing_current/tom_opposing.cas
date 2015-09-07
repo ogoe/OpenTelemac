@@ -6,12 +6,19 @@
 /--------------------------------------------------------------------/
 /     FICHIERS
 /--------------------------------------------------------------------/
-FICHIER FORTRAN = 'tom_opposing_cur.f'
-FICHIER DE GEOMETRIE = 'geo_opposing_cur.slf'
+/FICHIER FORTRAN = 'tom_opposing_cur.f'
+/FICHIER DE GEOMETRIE = 'geo_opposing_cur.slf'
+FICHIER DE GEOMETRIE = 'geom.slf'
 FICHIER DES CONDITIONS AUX LIMITES = 'geo_opposing_cur.cli'
+FICHIER DES COURANTS BINAIRE = 'current.slf'
+FORMAT DU FICHIER DES COURANTS = 3
+
 FICHIER DES RESULTATS 2D = 'tom_opposing_cur.slf'
+/FICHIER DES RESULTATS 2D = 'geom.slf'
+/FICHIER DES RESULTATS 2D = 'current.slf'
 FICHIER DES RESULTATS PONCTUELS = 'tom_opposing_cur.spe'
 FICHIER DES RESULTATS SPECTRES 1D = 'tom_opposing_cur.txt'
+/FICHIER DE REFERENCE = 'BIG_opposing_cur.slf' IF 4000
 FICHIER DE REFERENCE = 'fom_opposing_cur.slf'
 VALIDATION = OUI
 /--------------------------------------------------------------------/
@@ -31,7 +38,8 @@ ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 2.0;2.0;2.0;2.0;2.0;2.0;
 / DISCRETISATION
 /--------------------------------------------------------------------/
 PAS DE TEMPS = 0.1
-NOMBRE DE PAS DE TEMPS = 4000
+/NOMBRE DE PAS DE TEMPS = 4000 IF SO THEN CHANGE FICHIER DE REFERENCE
+NOMBRE DE PAS DE TEMPS = 400
 NOMBRE DE DIRECTIONS = 72
 FREQUENCE MINIMALE = 0.25
 RAISON FREQUENTIELLE = 1.1

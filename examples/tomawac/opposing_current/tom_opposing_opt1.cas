@@ -11,6 +11,7 @@ FICHIER DES CONDITIONS AUX LIMITES = 'geo_opposing_cur.cli'
 FICHIER DES RESULTATS 2D = 'tom_opposing_cur_opt1.slf'
 FICHIER DES RESULTATS PONCTUELS = 'tom_opposing_cur_opt1.spe'
 FICHIER DES RESULTATS SPECTRES 1D = 'tom_opposing_cur_opt1.txt'
+/FICHIER DE REFERENCE = 'BIG_opposing_cur_opt1.slf' IF 4000
 FICHIER DE REFERENCE = 'fom_opposing_cur_opt1.slf'
 VALIDATION = OUI
 /--------------------------------------------------------------------/
@@ -31,9 +32,10 @@ ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 0.3000000119209290;
 ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 2.;2.;2.;2.;2.;2.;2.
 /--------------------------------------------------------------------/
 / DISCRETISATION
-/--5.8000001907348633------------------------------------------------------------------/
+/--------------------------------------------------------------------/
 PAS DE TEMPS = 0.1
-NOMBRE DE PAS DE TEMPS = 4000
+/NOMBRE DE PAS DE TEMPS = 4000 / IF SO THEN CHANGE FICHIER DE REFERENCE
+NOMBRE DE PAS DE TEMPS = 400
 NOMBRE DE DIRECTIONS = 72
 FREQUENCE MINIMALE = 0.25
 RAISON FREQUENTIELLE = 1.1
