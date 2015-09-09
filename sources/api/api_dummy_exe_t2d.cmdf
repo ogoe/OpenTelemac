@@ -104,6 +104,7 @@ files: bief_def.f
   double_to_integer.f
   vc03aa.f
   vc15aa.f
+  vc05aa.f
   vectos.f
   vector.f
   somme.f

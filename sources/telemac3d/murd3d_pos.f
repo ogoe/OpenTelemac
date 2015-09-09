@@ -113,6 +113,7 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU,T2_18,MESH2D
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -364,6 +365,29 @@
      &                       *SOURCES%ADR(IS)%P%R(IPOIN)/VOLU2(IPOIN)
             ENDIF
           ENDDO
+        ENDDO
+      ENDIF
+!     ENTERING BEDFLUXES
+      IF(BEDBOU) THEN
+!         DO IPOIN=1,NPOIN2
+!         HERE VERSION OF BEDFLUXES ASSEMBLED IN PARALLEL
+!           IF(BEDFLU%R(IPOIN).GT.0.D0) THEN
+!             VOLU2(IPOIN)=VOLU2(IPOIN)+DT*BEDFLU%R(IPOIN)
+!             FC(IPOIN)=FC(IPOIN)-DT*FC(IPOIN)
+!      &                     *BEDFLU%R(IPOIN)/VOLU2(IPOIN)
+!           ENDIF
+!         ENDDO
+        ! STORE BEDFLU IN T2_18 AS IT NEEDS TO BE ASSEMBLED
+        CALL CPSTVC(BEDFLU,T2_18)
+        CALL OS('X=Y     ',X=T2_18,Y=BEDFLU)
+        IF(NCSIZE.GT.1) CALL PARCOM(T2_18,2,MESH2D)
+        DO IPOIN=1,NPOIN2
+!         HERE VERSION OF BEDFLUXES ASSEMBLED IN PARALLEL
+          IF(T2_18%R(IPOIN).GT.0.D0) THEN
+            VOLU2(IPOIN)=VOLU2(IPOIN)+DT*T2_18%R(IPOIN)
+            FC(IPOIN)=FC(IPOIN)-DT*FC(IPOIN)
+     &                     *T2_18%R(IPOIN)/VOLU2(IPOIN)
+          ENDIF
         ENDDO
       ENDIF
 !
@@ -650,6 +674,16 @@
             ENDDO
           ENDDO
         ENDIF
+!       EXITING BEDFLUXES
+        IF(BEDBOU) THEN
+!         HERE IN PARALLEL BEDFLUXES WITHOUT PARCOM
+          DO IPOIN=1,NPOIN2
+              IF(BEDFLU%R(IPOIN).LT.0.D0) THEN
+                FLUX=FLUX
+     &              -DT*FC(IPOIN)*BEDFLU%R(IPOIN)
+              ENDIF
+            ENDDO
+        ENDIF
       ENDIF
 !
 !     RAIN-EVAPORATION (HERE ONLY EVAPORATION, NOT RAIN, HENCE
@@ -679,6 +713,20 @@
      &                      DT*SOURCES%ADR(IS)%P%R(IPOIN)
               ENDIF
             ENDDO
+          ENDDO
+        ENDIF
+!       EXITING BEDFLUXES (WITH FC UNCHANGED)
+        IF(BEDBOU) THEN
+          DO IPOIN=1,NPOIN2
+!           HERE VERSION OF BEDFLU ASSEMBLED IN PARALLEL
+!             IF(BEDFLU%R(IPOIN).LT.0.D0) THEN
+!               VOLU2(IPOIN)=VOLU2(IPOIN)+
+!      &                    DT*BEDFLU%R(IPOIN)
+!             ENDIF
+            IF(T2_18%R(IPOIN).LT.0.D0) THEN
+              VOLU2(IPOIN)=VOLU2(IPOIN)+
+     &                    DT*T2_18%R(IPOIN)
+            ENDIF
           ENDDO
         ENDIF
 !       EXITING FLUXES

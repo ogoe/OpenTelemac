@@ -151,6 +151,13 @@
 !       ENDIF
       ENDIF
 !
+! BEDFLUXES
+      IF(BEDBOU) THEN
+        DO I=1,NBEDFLO
+          FLUXTOTAL = FLUXTOTAL - BEDFLO(I)
+        ENDDO
+      ENDIF
+!
 !=======================================================================
 !
 !  COMPUTES THE FLUXES BY DIFFUSION AND SOURCES OF TRACERS

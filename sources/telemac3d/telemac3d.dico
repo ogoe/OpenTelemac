@@ -6435,6 +6435,38 @@ la premiere  maille utilisee par le modele de turbulence
 k-eps et pour le transport du sable'
 AIDE1 = 'Ratio between  the ficitious bed and 
 the grid size above the bed'
+
+NOM = 'CONDITIONS OUVERTES SUR LE FOND'
+NOM1 = 'OPEN BOUNDARY CONDITIONS ON THE BED'
+TYPE = LOGIQUE
+INDEX = 118
+MNEMO = 'BEDBOU'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Determine si il y a des conditions ouvertes sur le fond'
+AIDE1 = 'Defines if there are open boundary conditions
+on the bed'
+
+NOM = 'DEBITS IMPOSES SUR LE FOND'
+NOM1 = 'PRESCRIBED FLOWRATES ON THE BED'
+TYPE = REEL
+INDEX = 119
+MNEMO = 'BEDFLO'
+TAILLE = 10
+DEFAUT = 0.D0;0.D0;0.D0;0.D0;0.D0;0.D0;0.D0;0.D0;0.D0;0.D0
+DEFAUT1 = 0.D0;0.D0;0.D0;0.D0;0.D0;0.D0;0.D0;0.D0;0.D0;0.D0
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Fixe le debit sur les frontieres a debit impose du fond'
+AIDE1 = 'Sets the value for flow rate on flow 
+rate-imposed bed boundaries'
+
+
 /
 / CONSOLIDATION
 / 

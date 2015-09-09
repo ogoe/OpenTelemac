@@ -460,6 +460,8 @@ files: declarations_telemac.f
   masktf.f
   global_to_local_point.f
   gregtim.f
+  solve_mumps_par.F
+  vc05aa.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -839,6 +841,7 @@ files: declarations_telemac3d.f
   condis.f
   telemac3d.f
   homere_telemac3d.f
+  bed_fluxes.f
 
 [tomawac]
 path: <root>|sources|tomawac

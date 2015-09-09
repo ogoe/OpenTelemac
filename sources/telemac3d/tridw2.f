@@ -89,6 +89,7 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -135,6 +136,13 @@
           SEM2D%ADR(1)%P%R(I) = FLUINT%R(IAD1)-FLUEXT%R(IAD1)
      &                         +SURDT*(VOLUN%R(IAD1)-VOLU%R(IAD1))
         ENDDO
+
+!       WITH BED FLUXES
+!
+        IF(BEDBOU.AND.(IETAGE.EQ.1)) THEN
+          CALL OS('X=X+Y   ',X=SEM2D%ADR(1)%P,Y=BEDFLU)
+        ENDIF
+
 !
 !       PARALLELISM
 !

@@ -435,6 +435,8 @@ files: bief_def.f
   bief_open_files.f
   time_in_seconds.f
   bief_close_files.f
+  solve_mumps_par.F
+  vc05aa.f
 
 [damocles]
 path: <root>|sources|utils|damocles

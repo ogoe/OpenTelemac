@@ -206,6 +206,7 @@
 !     PROVISOIRE
 !
       USE DECLARATIONS_TELEMAC3D, ONLY:UCONV,VCONV,WSCONV,DM1,ZCONV
+      USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -353,6 +354,15 @@
 !           IMPLICIT SOURCE TERM : SEE BELOW
           ENDDO
         ENDDO
+        ! BEDFLUXES
+        IF(BEDBOU)THEN
+          DO I=1,NPOIN2
+!           EXPLICIT SOURCE TERM
+            SEM3D%R(I) = SEM3D%R(I)
+     &                 - MAX(BEDFLU%R(I),0.D0)*
+     &                   (1.D0-TETASUPG)*FN%R(I)
+          ENDDO
+        ENDIF
       ENDIF
 !
 !=======================================================================
@@ -411,6 +421,13 @@
      &                   MAX(SOURCES%ADR(IIS)%P%R(I),0.D0)*TETASUPG
           ENDDO
         ENDDO
+        IF(BEDBOU)THEN
+          DO I=1,NPOIN2
+!           IMPLICIT BEDFLUX TERM
+            MTRA2%D%R(I)=MTRA2%D%R(I)+
+     &                   MAX(BEDFLU%R(I),0.D0)*TETASUPG
+          ENDDO
+        ENDIF
       ENDIF
 !
 !     RAIN (ALL TRACERS) - IMPLICIT PART

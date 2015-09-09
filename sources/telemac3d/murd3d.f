@@ -142,6 +142,7 @@
       USE BIEF
       USE INTERFACE_PARALLEL
       USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU,T2_18,MESH2D
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -783,6 +784,29 @@
         ENDDO
       ENDIF
 !
+!     POSITIVE BED FLUXES CHANGE THE MONOTONICITY CRITERION
+!
+      IF(BEDBOU) THEN
+        ! STORE BEDFLU IN T2_18 AS IT NEEDS TO BE ASSEMBLED
+        CALL CPSTVC(BEDFLU,T2_18)
+        CALL OS('X=Y     ',X=T2_18,Y=BEDFLU)
+        IF(NCSIZE.GT.1) CALL PARCOM(T2_18,2,MESH2D)
+        DO IPOIN=1,NPOIN2
+          IF(T2_18%R(IPOIN).GT.0.D0) THEN
+            TRA03(IPOIN)=TRA03(IPOIN)
+     &                  -DTJ*T2_18%R(IPOIN)
+!                                        WITH PARCOM
+          ENDIF
+        ENDDO
+!         DO IPOIN=1,NPOIN2
+!           IF(BEDFLU%R(IPOIN).GT.0.D0) THEN
+!             TRA03(IPOIN)=TRA03(IPOIN)
+!      &                  -DTJ*BEDFLU%R(IPOIN)
+! !                                        WITH PARCOM
+!           ENDIF
+!         ENDDO
+      ENDIF
+!
       ELSEIF(OPT.EQ.1) THEN
 !
       IF(SCHCF.EQ.ADV_PSI) THEN
@@ -806,6 +830,29 @@
 !                                          WITHOUT PARCOM
             ENDIF
           ENDDO
+        ENDDO
+      ENDIF
+!
+!     POSITIVE BED FLUXES CHANGE THE MONOTONICITY CRITERION
+!
+      IF(BEDBOU) THEN
+!         DO IPOIN=1,NPOIN2
+!           IF(BEDFLU%R(IPOIN).GT.0.D0) THEN
+!             TRA03(IPOIN)=TRA03(IPOIN)
+!      &                  -DTJ*BEDFLU%R(IPOIN)
+! !                                        WITHOUT PARCOM
+!           ENDIF
+!         ENDDO
+        ! STORE BEDFLU IN T2_18 AS IT NEEDS TO BE ASSEMBLED
+        CALL CPSTVC(BEDFLU,T2_18)
+        CALL OS('X=Y     ',X=T2_18,Y=BEDFLU)
+        IF(NCSIZE.GT.1) CALL PARCOM(T2_18,2,MESH2D)
+        DO IPOIN=1,NPOIN2
+          IF(T2_18%R(IPOIN).GT.0.D0) THEN
+            TRA03(IPOIN)=TRA03(IPOIN)
+     &                  -DTJ*T2_18%R(IPOIN)
+!                                        WITHOUT PARCOM
+          ENDIF
         ENDDO
       ENDIF
 !
@@ -889,6 +936,19 @@
             ENDDO
           ENDDO
         ENDIF
+!       FOR BED FLUXES
+        IF(BEDBOU) THEN
+          DO IPOIN=1,NPOIN2
+!             IF(BEDFLU%R(IPOIN).LE.0.D0) THEN
+!               FLUX=FLUX
+!      &             -DTJALFA*FC(IPOIN)*BEDFLU%R(IPOIN)
+!             ENDIF
+            IF(T2_18%R(IPOIN).LE.0.D0) THEN
+              FLUX=FLUX
+     &             -DTJALFA*FC(IPOIN)*T2_18%R(IPOIN)
+            ENDIF
+          ENDDO
+        ENDIF
       ENDIF
 !
 !     ADVECTION DURING ALFA*DTJ
@@ -913,6 +973,39 @@
             ENDDO
           ENDIF
         ENDDO
+      ENDIF
+!     BEDFLUXES
+      IF(BEDBOU) THEN
+!         IF(OPTBAN.EQ.2) THEN
+!           DO IPOIN=1,NPOIN2
+!             IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
+!               FC(IPOIN)=FC(IPOIN)-DTJALFA*FC(IPOIN)
+!      &          *MAX(BEDFLU%R(IPOIN),0.D0)/TRA01(IPOIN)
+!             ENDIF
+!           ENDDO
+!         ELSE
+!           DO IPOIN=1,NPOIN2
+!             IF(TRA01(IPOIN).GT.EPS) THEN
+!               FC(IPOIN)=FC(IPOIN)-DTJALFA*FC(IPOIN)
+!      &        *MAX(BEDFLU%R(IPOIN),0.D0)/TRA01(IPOIN)
+!             ENDIF
+!           ENDDO
+!         ENDIF
+        IF(OPTBAN.EQ.2) THEN
+          DO IPOIN=1,NPOIN2
+            IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
+              FC(IPOIN)=FC(IPOIN)-DTJALFA*FC(IPOIN)
+     &          *MAX(T2_18%R(IPOIN),0.D0)/TRA01(IPOIN)
+            ENDIF
+          ENDDO
+        ELSE
+          DO IPOIN=1,NPOIN2
+            IF(TRA01(IPOIN).GT.EPS) THEN
+              FC(IPOIN)=FC(IPOIN)-DTJALFA*FC(IPOIN)
+     &        *MAX(T2_18%R(IPOIN),0.D0)/TRA01(IPOIN)
+            ENDIF
+          ENDDO
+        ENDIF
       ENDIF
 !
 !     RAIN (NOTE: SHOULD BE TAKEN INTO ACCOUNT IN STABILITY CRITERION)

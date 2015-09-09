@@ -461,6 +461,7 @@ files: bief_def.f
   bief_erf.f
   masktf.f
   gregtim.f
+  vc05aa.f
 
 [damocles]
 path: <root>|sources|utils|damocles

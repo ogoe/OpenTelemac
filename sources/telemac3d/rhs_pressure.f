@@ -18,6 +18,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -72,6 +73,16 @@
           IF(NCSIZE.GT.1) IIS=IS+NSCE
           CALL OS('X=X+Y   ',X=DIVU,Y=SOURCES%ADR(IIS)%P)
         ENDDO
+      ENDIF
+!
+!     + BEDFLUXES
+!
+      IF(BEDBOU) THEN
+!       HERE BED_SOURCES IN THE NON ASSEMBLED (PARCOM) FORM
+!       SEE BED_FLUXES
+          DO IPOIN2=1,NPOIN2
+            DIVU%R(IPOIN2)=DIVU%R(IPOIN2)+BEDFLU%R(IPOIN2)
+          ENDDO
       ENDIF
 !
 !     + RAIN

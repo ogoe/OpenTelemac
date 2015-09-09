@@ -597,6 +597,26 @@
      &                IKLBOR(1,1),IKLBOR(1,2),IKLBOR(1,3),IKLBOR(1,4),
      &                NBOR,NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4),
      &                NELBOR,NULONE,NELMAX)
+
+! !
+! !       ELEMENT P1 PRISM
+! !
+!         ELSEIF(IELM1.EQ.41) THEN
+!
+!           CALL VC05PP(XMUL,SF,F,ZPT,SURFAC,
+!      &                IKLE(1,1),IKLE(1,2),IKLE(1,3),
+!      &                IKLE(1,4),IKLE(1,5),IKLE(1,6),
+!      &                NELEM,NELMAX,T(1,1),T(1,2),T(1,3),
+!      &                T(1,4),T(1,5),T(1,6) )
+!
+!
+!       ELEMENT P1 TRIANGLES
+!
+        ELSEIF(IELM1.EQ.11) THEN
+!
+          CALL VC05AA(XMUL,SF,F,SURFAC,
+     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),
+     &                NELEM,NELMAX,T(1,1),T(1,2),T(1,3) )
 !
 !       ELEMENT LINEAR SEGMENT
 !

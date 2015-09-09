@@ -76,6 +76,7 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -216,6 +217,13 @@
 !             NON ASSEMBLED SOURCES
               SUMFLU%R(I)=SUMFLU%R(I)-SOURCES%ADR(IS+NSCE)%P%R(I)
             ENDDO
+          ENDDO
+        ENDIF
+!       WITH BED FLUXES
+        IF(BEDBOU) THEN
+          DO I=1,NPOIN2
+!           NON ASSEMBLED BED FLUXES
+            SUMFLU%R(I)=SUMFLU%R(I)-BEDFLU%R(I)
           ENDDO
         ENDIF
         IF(RAIN) THEN

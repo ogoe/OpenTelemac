@@ -434,6 +434,8 @@ files: bief_def.f
   global_to_local_point.f
   write_mesh.f
   bief_close_files.f
+  solve_mumps_par.F
+  vc05aa.f
 
 [damocles]
 path: <root>|sources|utils|damocles

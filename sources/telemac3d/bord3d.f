@@ -96,9 +96,9 @@
       LOGICAL YAZMIN
       DOUBLE PRECISION ROEAU,ROAIR,VITV,PROFZ,WINDRELX,WINDRELY
 !
-      DOUBLE PRECISION P_DMIN
+      DOUBLE PRECISION P_DMIN,P_DSUM
       INTEGER  P_IMAX
-      EXTERNAL P_IMAX,P_DMIN
+      EXTERNAL P_IMAX,P_DMIN,P_DSUM
       DOUBLE PRECISION STA_DIS_CUR
       EXTERNAL STA_DIS_CUR
 !
@@ -116,6 +116,8 @@
 !     DOUBLE PRECISION XB,YB,ZB
       INTEGER NFO
       INTEGER ITEMP
+!     NORMALS TO THE BED
+      DOUBLE PRECISION XNB,YNB,ZNB
 !
 !     SIMPLE CASES FOR LATERAL BOUNDARIES ARE TREATED AUTOMATICALLY:
 !
@@ -469,6 +471,37 @@
         ENDDO
         ENDDO
       ENDIF
+
+!     PRESCRIBED FLOWRATES ON THE BED GIVEN BY THE USER 
+!     --------------------------------------------------------
+!
+! FIND THE AREA OF EACH ELEMENT
+      DO IFRLIQ=1,MAXBLB
+        BEDQAREA(IFRLIQ) = 0.D0
+      END DO
+!
+      ! T2_01 TEMPORARY ARRAY WHERE THE AREA WILL BE STORED
+      CALL CPSTVC(WBORF,T2_01)
+      ! T2_02 EMPTY ARRAY USED TO CALCULATE THE AREA
+      CALL CPSTVC(WBORF,T2_02)
+      CALL OS('X=0     ',X=T2_02)
+!
+      CALL VECTOR(T2_01,'=','MASBAS          ',IELM2H,1.D0,T2_02,
+     &            T2_02,T2_02,T2_02,T2_02,T2_02,MESH2D,.FALSE.,MASK)
+!
+      DO K=1,NPOIN2
+!
+!     A VELOCITY PROFILE IS SET HERE AND WILL BE CORRECTED LATER (IT IS ACTUALLY NOT USED)
+!
+      IF(LIWBOF%I(K).EQ.KENT.AND.NBEDFLO.NE.0) THEN
+!
+        IFRLIQ=NLIQBED%I(K)
+!
+        BEDQAREA(IFRLIQ) = BEDQAREA(IFRLIQ) + T2_01%R(K)
+!
+      ENDIF
+!
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -550,6 +583,52 @@
 !         ENDDO
 !       ENDIF
 !     ENDDO
+!
+!     PRESCRIBED FLOWRATES ON THE BED: FINAL TREATMENT
+!     --------------------------------------------------------
+!
+      IF(NBEDFLO.NE.0) THEN
+!
+      DO IFRLIQ = 1 , NBEDFLO
+!
+!***********************************************************************
+        IF(NCSIZE.GT.1) BEDQAREA(IFRLIQ)=P_DSUM(BEDQAREA(IFRLIQ))
+!
+      ENDDO ! IFRLIQ
+      DO K=1,NPOIN2
+!
+!     CORRECT THE VELOCITY PROFILES BY DIVIDING THE FLOW RATE WITH
+!     THE CROSS-SECTIONAL AREA OVERWHICH IT WILL BE IMPOSED
+!
+      IF(LIWBOF%I(K).EQ.KENT.AND.NBEDFLO.NE.0) THEN
+!
+        IFRLIQ=NLIQBED%I(K)
+        IF(BEDQAREA(IFRLIQ).GT.0.D0)THEN
+          ! GRADZF IS THE GRADIENT OF THE BED, I.E. OUTWARD NORMAL
+          ! THE Z COMPONENT IS ASSUMED TO BE ALWAYS NEGATIVE
+          XNB=GRADZF%ADR(1)%P%R(K)
+          YNB=GRADZF%ADR(2)%P%R(K)
+          ZNB=-SQRT(1-XNB**2-YNB**2)
+          UBORF%R(K)=-XNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
+          VBORF%R(K)=-YNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
+          WBORF%R(K)=-ZNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
+!         NO OUTFLOW IF NO WATER
+          IF((H%R(K).LT.1.D-4).AND.(BEDFLO(IFRLIQ).LT.0.D0)) THEN
+            UBORF%R(K)=0.D0
+            VBORF%R(K)=0.D0
+            WBORF%R(K)=0.D0
+          ENDIF
+        ELSE
+          UBORF%R(K)=0.D0
+          VBORF%R(K)=0.D0
+          WBORF%R(K)=0.D0
+        ENDIF
+!
+      ENDIF
+!
+      ENDDO ! NPOIN2
+!
+      ENDIF ! IF(NBEDLIQ.NE.0)
 !
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !           END OF AUTOMATIC TREATMENT OF LIQUID BOUNDARIES

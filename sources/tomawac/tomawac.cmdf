@@ -393,6 +393,8 @@ files: bief_def.f
   read_submit.f
   sortie.f
   bief_close_files.f
+  solve_mumps_par.F
+  vc05aa.f
 
 [damocles]
 path: <root>|sources|utils|damocles
