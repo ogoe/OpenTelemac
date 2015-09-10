@@ -51,7 +51,7 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC2D, ONLY: MAXSCE,AT,ENTET,NREJET,DT,
-     &                                  T2D_FILES,T2DVEF
+     &                                  T2D_FILES,T2DVEF,OKDEBSCE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -64,26 +64,14 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*9 FCT
-      INTEGER N
-      LOGICAL, SAVE :: DEJA=.FALSE.
-      LOGICAL, DIMENSION(MAXSCE), SAVE :: OK
+      CHARACTER(LEN=9) FCT
       DOUBLE PRECISION DEBSCE1,DEBSCE2
 !
-!     FIRST CALL, OK INITIALISED TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO N=1,NREJET
-          OK(N)=.TRUE.
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
-!
 !     IF SOURCES FILE EXISTING, ATTEMPT TO FIND
-!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-!                      IF  NO, OK SET     TO .FALSE.
+!     THE VALUE IN IT. IF YES, OKDEBSCE REMAINS TO .TRUE. FOR NEXT CALLS
+!                      IF  NO, OKDEBSCE SET     TO .FALSE.
 !
-      IF(OK(I).AND.T2D_FILES(T2DVEF)%NAME(1:1).NE.' ') THEN
+      IF(OKDEBSCE(I).AND.T2D_FILES(T2DVEF)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
         FCT='Q(       '
@@ -99,9 +87,9 @@
           STOP
         ENDIF
         CALL READ_FIC_SOURCES(DEBSCE1,FCT,AT-DT,T2D_FILES(T2DVEF)%LU,
-     &                        ENTET,OK(I))
+     &                        ENTET,OKDEBSCE(I))
         CALL READ_FIC_SOURCES(DEBSCE2,FCT,AT   ,T2D_FILES(T2DVEF)%LU,
-     &                        ENTET,OK(I))
+     &                        ENTET,OKDEBSCE(I))
         DEBSCE=(DEBSCE1+DEBSCE2)*0.5D0
 !
       ENDIF
@@ -109,7 +97,7 @@
 !     BEWARE, AN ERROR IN THE SOURCES FILE MAY REMAIN UNNOTICED
 !     BECAUSE WE RESORT HERE TO THE PARAMETER FILE
 !
-      IF(.NOT.OK(I).OR.T2D_FILES(T2DVEF)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OKDEBSCE(I).OR.T2D_FILES(T2DVEF)%NAME(1:1).EQ.' ') THEN
 !
 !       PROGRAMMABLE PART
 !       DISCE IS TAKEN IN THE PARAMETER FILE

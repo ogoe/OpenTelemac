@@ -5,7 +5,7 @@
      &( I , N )
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   08/11/2011
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    PRESCRIBES THE VELOCITY FOR VEL IMPOSED LIQUID BOUNDARIES.
@@ -53,25 +53,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*9 FCT
-      INTEGER J
-      LOGICAL, SAVE :: DEJA=.FALSE.
-      LOGICAL, DIMENSION(MAXFRO), SAVE :: OK
-!
-!     FIRST CALL, OK INITIALISED TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO J=1,MAXFRO
-          OK(J)=.TRUE.
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
+      CHARACTER(LEN=9) FCT
 !
 !     IF THE LIQUID BOUNDARY FILE EXISTS, ATTEMPTS TO FIND
-!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-!                      IF  NO, OK SET     TO .FALSE.
+!     THE VALUE IN IT. IF YES, OKVIT REMAINS TO .TRUE. FOR NEXT CALLS
+!                      IF  NO, OKVIT SET     TO .FALSE.
 !
-      IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
+      IF(OKVIT(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE VIT(1), VIT(2), ETC, VIT(99), DEPENDING ON I
         FCT='VIT(     '
@@ -89,11 +77,12 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-        CALL READ_FIC_FRLIQ(VIT,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+        CALL READ_FIC_FRLIQ(VIT,FCT,AT,T2D_FILES(T2DIMP)%LU,
+     &                      ENTET,OKVIT(I))
 !
       ENDIF
 !
-      IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OKVIT(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
 !
 !     PROGRAMMABLE PART
 !     VIT IS TAKEN FROM THE STEERING FILE, BUT MAY BE CHANGED

@@ -227,12 +227,13 @@
 !=======================================================================
 !
 !                     **********************
-!                     *   REAL ARRAYS      *
+!                     *   VARIOUS ARRAYS   *
 !                     **********************
 !
 !-----------------------------------------------------------------------
 !
       ALLOCATE(W(NPOIN),STAT=ERR)
+!
       IF(ERR.NE.0) THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'POINT_TELEMAC2D : MAUVAISE ALLOCATION DE W'
@@ -243,6 +244,20 @@
         CALL PLANTE(1)
         STOP
       ENDIF
+!
+!     FOR TRACERS
+!
+!     DOUBLE PRECISION
+      ALLOCATE(MASTEN(NTRAC))
+      ALLOCATE(MASTOU(NTRAC))
+      ALLOCATE(MASTRAIN(NTRAC))
+      ALLOCATE(MASSOU(NTRAC))
+      ALLOCATE(MASTR0(NTRAC))
+      ALLOCATE(MASTR2(NTRAC))
+      ALLOCATE(FLUTSOR(NTRAC))
+      ALLOCATE(FLUTENT(NTRAC))
+!     LOGICAL
+      ALLOCATE(YASMI(NTRAC))
 !
 !-----------------------------------------------------------------------
 !

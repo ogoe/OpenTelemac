@@ -1,11 +1,10 @@
-!                    *************************
+!                     ************************
                       SUBROUTINE CALCS_THERMIC
-!                    *************************
-     & (NPOIN,TN,TEXP)
-!
+!                     ************************
+     &(NPOIN,TN,TEXP)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                        21/09/2014
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES SOURCE TERMS FOR  WAQ THERMIC PROCESS
@@ -13,7 +12,12 @@
 !history  R. ATA
 !+        21/09/2014
 !+        V7P0
-!+       CREATION
+!+      CREATION
+!
+!history  J-M HERVOUET
+!+        07/09/2015
+!+        V7P1
+!+      Checking that the air pressure has been given
 !
 !-----------------------------------------------------------------------
 !                             ARGUMENTS
@@ -63,16 +67,15 @@
 !  MODE: -->(DONNEE NON MODIFIEE),<--(RESULTAT),<-->(DONNEE MODIFIEE)
 !               (ENTREE)              (SORTIE)       (ENTREE/SORTIE)
 !-----------------------------------------------------------------------
-!***********************************************************************
 !
       USE BIEF_DEF
       USE DECLARATIONS_WAQTEL,ONLY:COEF_K,EMA,CFAER,PVAP,RAY3,
      &                             TAIR,NEBU,NWIND,BOLTZ,CP_EAU,CP_AIR,
      &                             EMI_EAU,EMA,ROO
-!      USE EXCHANGE_WITH_ATMOSPHERE
-      USE DECLARATIONS_TELEMAC2D,ONLY: HPROP,PATMOS,IND_T,LISTIN
+!     USE EXCHANGE_WITH_ATMOSPHERE
+      USE DECLARATIONS_TELEMAC2D,ONLY: HPROP,PATMOS,IND_T,LISTIN,ATMOS
       USE INTERFACE_TELEMAC2D, EX_CALCS_THERMIC => CALCS_THERMIC
-
+!
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -94,7 +97,8 @@
       DOUBLE PRECISION            :: TEMPER,HA_SAT
       DOUBLE PRECISION            :: ROA,HA,P_VAP_SAT
       DOUBLE PRECISION   :: CONSTCE,CONSTCV,CONSTRA,CONSTSS,CONSTRE
-!     THE FOLLOWING CONSTANTS ARE THOSE OF EXXHANGE_WITH_ATM MODULE
+!
+!     THE FOLLOWING CONSTANTS ARE THOSE OF EXCHANGE_WITH_ATM MODULE
 !     TO REMOVE LATER CP_EAU,CP_AIR,BOLTZ,ROO,EMI_EAU
 !
       INTRINSIC MAX
@@ -102,8 +106,26 @@
 ! ----------------------------------------------------------------
 !
 !     HERE WE NEED ONLY TAIR, PVAP, NWIND, NEBU, RAY3, PATM
-!     HERE PATM IS CONSTANT, WHILE FOR TELEMAC PATMOS VARIES IN SPACE !
-      PATM =PATMOS%R(1)
+!     HERE PATM IS CONSTANT, WHILE FOR TELEMAC PATMOS VARIES IN SPACE
+!
+      IF(ATMOS) THEN
+!       Note JMH: this will not work in parallel if the pressure is
+!                 variable in space...
+        PATM=PATMOS%R(1)
+      ELSE
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'CALCS_THERMIC : LE MOT-CLE'
+          WRITE(LU,*) '                PRESSION ATMOSPHERIQUE'
+          WRITE(LU,*) '                DOIT ETRE A OUI'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'CALCS_THERMIC : KEYWORD'
+          WRITE(LU,*) '                AIR PRESSURE'
+          WRITE(LU,*) '                MUST BE YES'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 !     AIR DENSITY
       ROA = 100.D0*PATM/((TAIR+273.15D0)*287.D0)

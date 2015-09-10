@@ -36,7 +36,7 @@
 !-----------------------------------------------------------------------
 !
       CALL OUTBIEF(MESH)
-      ! Deallocate the mesh structure
+!     Deallocate the mesh structure
       CALL DEALMESH(MESH)
       NULLIFY(IKLE)
       NULLIFY(X)
@@ -53,7 +53,7 @@
 !
       DEALLOCATE(W)
 !
-      ! Deallocating all the blocks first
+!     Deallocating all the blocks first
       CALL BIEF_DEALLOBJ(T     )
       CALL BIEF_DEALLOBJ(VARSOR)
       CALL BIEF_DEALLOBJ(UNK)
@@ -302,9 +302,8 @@
       CALL BIEF_DEALLOBJ(MAXV )
       CALL BIEF_DEALLOBJ(TMAXV)
 !
+!     Deallocate some global variables allocated at some point in the code
 !
-!
-      ! Deallocate some global variables allocated at some point in the code
       IF(ALLOCATED(CTRLSC)) THEN
         DEALLOCATE(CTRLSC)
       ENDIF
@@ -317,7 +316,45 @@
       IF(ALLOCATED(CHAIN)) THEN
         DEALLOCATE(CHAIN)
       ENDIF
-
+!
+!     Deallocating arrays allocated in lecdon_telemac2d
+!
+      DEALLOCATE(FRTYPE)
+      DEALLOCATE(PROVEL)
+      DEALLOCATE(DEBLIQ)
+      DEALLOCATE(FINLIQ)
+      DEALLOCATE(DEBSOL)
+      DEALLOCATE(FINSOL)
+      DEALLOCATE(PTS_CURVES)
+      DEALLOCATE(STA_DIS_CURVES)
+      DEALLOCATE(BND_TIDE)
+      DEALLOCATE(DEBIT)
+      DEALLOCATE(COTE)
+      DEALLOCATE(VITES)
+      DEALLOCATE(TRACER)
+      DEALLOCATE(FLUX_BOUNDARIES)
+      DEALLOCATE(ISCE)
+      DEALLOCATE(XSCE)
+      DEALLOCATE(YSCE)
+      DEALLOCATE(DSCE)
+      DEALLOCATE(DSCE2)
+      DEALLOCATE(TSCE)
+      DEALLOCATE(TSCE2)
+      DEALLOCATE(USCE)
+      DEALLOCATE(VSCE)
+      DEALLOCATE(OKDEBSCE)
+      DEALLOCATE(OKTRSCE)
+      DEALLOCATE(OKVIT)
+      DEALLOCATE(OKQ)
+      DEALLOCATE(OKSL)
+      DEALLOCATE(OKTR)
+      DEALLOCATE(ICONVFT)
+      DEALLOCATE(LOITRAC)
+      DEALLOCATE(COEF1TRAC)
+      DEALLOCATE(TRAIN)
+      DEALLOCATE(OPTADV_TR)
+      DEALLOCATE(SLVTRA)
+      DEALLOCATE(TRAC0)
 !
 !=======================================================================
 !

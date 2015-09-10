@@ -499,53 +499,75 @@
 !
       RETURN
       END
-!                       ***************************
-                        SUBROUTINE NOMVAR_TELEMAC2D
-!                       ***************************
+!                    ***************************
+                     SUBROUTINE NOMVAR_TELEMAC2D
+!                    ***************************
 !
-     &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC)
-!
-!***********************************************************************
-!  TELEMAC 2D 7.0
+     &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC,N_NAMES_PRIV,
+     & NAMES_PRIVE,SECCURRENTS)
 !
 !***********************************************************************
+! TELEMAC2D   V7P1
+!***********************************************************************
 !
-! FONCTION  :  FIXE LES NOMS DES VARIABLES DU CODE POUR LES FICHIERS
-!              DE RESULTAT ET DE GEOMETRIE (TEXTE) ET POUR LE FICHIER
-!              DE RESULTATS DU CALCUL PRECEDENT (TEXTPR)
+!brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY
+!+                FILES (IN TEXTE) AND FOR THE PREVIOUS COMPUTATION
+!+                RESULTS FILE (IN TEXTPR).
+!+
+!+                TEXTE AND TEXTPR ARE GENERALLY EQUAL EXCEPT IF THE
+!+                PREVIOUS COMPUTATION COMES FROM ANOTHER SOFTWARE.
 !
-!              EN GENERAL TEXTE ET TEXTPR SONT EGAUX SAUF SI ON FAIT
-!              UNE SUITE A PARTIR D'UN AUTRE LOGICIEL.
+!history  J-M HERVOUET (LNHE)
+!+        31/08/2007
+!+        V5P8
+!+   First version.
 !
-!-----------------------------------------------------------------------
-!                             ARGUMENTS
-! .________________.____.______________________________________________.
-! |      NOM       |MODE|                   ROLE |
-! |________________|____|______________________________________________|
-! |   TEXTE        |<-- | NOM DES VARIABLES
-! |   TEXTPR       |<-- | NOM DES VARIABLES DU CALCUL PRECEDENT
-! |________________|____|______________________________________________|
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
-!-----------------------------------------------------------------------
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
-! APPELE PAR : PREDON
+!history  D WANG & P TASSI (LNHE)
+!+        10/07/2014
+!+        V7P0
+!+   Secondary flow correction: add variables
+!+   tau_s, Omega/h and r^{-1} for visualization
 !
-! SOUS-PROGAMME APPELE : NEANT
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/07/2015
+!+        V7P1
+!+   Now taking into account names of private arrays given by user.
 !
-!**********************************************************************
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| MNEMO          |<--| MNEMONIC FOR 'VARIABLES FOR GRAPHIC OUTPUTS'
+!| N_NAMES_PRIV   |-->| NUMBER OF NAMES OF PRIVATE VARIABLES GIVEN
+!| NAMES_PRIVE    |-->| NAME OF PRIVATE VARIABLES GIVEN BY USER
+!| NAMETRAC       |-->| NAME OF TRACERS (GIVEN BY KEYWORDS)
+!| NPERIAF        |-->| NUMBER OF PERIODS FOR FOURRIER ANALYSIS
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| TEXTE          |<--| SEE ABOVE
+!| TEXTPR         |<--| SEE ABOVE
+!| SECCURRENTS    |-->| IF YES SECONDARY CURRENTS COMPUTED
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_TELEMAC2D, ONLY : SECCURRENTS
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER, INTENT(IN)              :: NPERIAF,NTRAC,N_NAMES_PRIV
       CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(*),TEXTPR(*)
       CHARACTER(LEN=8),  INTENT(INOUT) :: MNEMO(*)
-      INTEGER, INTENT(IN)              :: NPERIAF,NTRAC
-      CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(32)
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(32),NAMES_PRIVE(4)
+      LOGICAL, INTENT(IN)              :: SECCURRENTS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -841,6 +863,12 @@
           TEXTPR(33+NTRAC)= NAMETRAC(NTRAC)
           MNEMO(33+NTRAC) = 'OMEGA   '
         ENDIF
+      ENDIF
+      IF(N_NAMES_PRIV.GT.0) THEN
+        DO I=1,N_NAMES_PRIV
+          TEXTE(22+I)  = NAMES_PRIVE(I)
+          TEXTPR(22+I) = NAMES_PRIVE(I)
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------

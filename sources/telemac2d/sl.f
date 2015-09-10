@@ -54,27 +54,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*9 FCT
-      INTEGER J
-      LOGICAL, SAVE :: DEJA=.FALSE.
-      LOGICAL, DIMENSION(MAXFRO), SAVE :: OK
-!
-!     FIRST CALL, OK INITIALISED TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO J=1,MAXFRO
-          OK(J)=.TRUE.
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
+      CHARACTER(LEN=9) FCT
 !
 !-----------------------------------------------------------------------
 !
 !     IF THE LIQUID BOUNDARY FILE EXISTS, ATTEMPTS TO FIND
-!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-!                      IF  NO, OK IS SET  TO .FALSE.
+!     THE VALUE IN IT. IF YES, OKSL REMAINS TO .TRUE. FOR NEXT CALLS
+!                      IF  NO, OKSL IS SET  TO .FALSE.
 !
-      IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
+      IF(OKSL(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
         FCT='SL(      '
@@ -89,11 +77,12 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-        CALL READ_FIC_FRLIQ(SL,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+        CALL READ_FIC_FRLIQ(SL,FCT,AT,T2D_FILES(T2DIMP)%LU,
+     &                      ENTET,OKSL(I))
 !
       ENDIF
 !
-      IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OKSL(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
 !
 !     PROGRAMMABLE PART
 !     SL IS READ FROM THE STEERING FILE, BUT MAY BE CHANGED

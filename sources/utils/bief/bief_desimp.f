@@ -6,7 +6,7 @@
      & SORLEO,SORIMP,MAXVAR,TEXTE,PTINIG,PTINIL,MESH)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    WRITES TO RESULT OR LISTING FILE.
@@ -57,8 +57,6 @@
 !| MESH (OPTIONAL) |-->| MESH STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!      USE BIEF_DEF
-!      USE BIEF, ONLY: IMPVEC
       USE BIEF, EX_BIEF_DESIMP => BIEF_DESIMP
       USE INTERFACE_HERMES
 !

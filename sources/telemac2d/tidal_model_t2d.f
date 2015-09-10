@@ -253,7 +253,10 @@
 !-----------------------------------------------------------------------
 !
       DO K=1,NPTFR
-        IF(NUMTIDE%I(K).GT.0.AND.BND_TIDE(IFRLIQ).GT.0) THEN
+        IFRLIQ=NUMLIQ%I(K)
+!       TEST ON NUMTIDE PROBABLY NO LONGER USEFUL
+        IF(NUMTIDE%I(K).GT.0.AND.IFRLIQ.GT.0) THEN
+        IF(BND_TIDE(IFRLIQ).GT.0) THEN
 !         POSSIBLE SMOOTHING AT THE BEGINNING
 !         IF(AT.LT.1800.D0) THEN
 !           UBTIDE%R(K) = UBTIDE%R(K)*(AT/1800.D0)
@@ -269,6 +272,7 @@
             HBOR%R(K) = HBTIDE%R(K)
             H%R(MESH%NBOR%I(K)) = HBOR%R(K)
           ENDIF
+        ENDIF
         ENDIF
       ENDDO
 !

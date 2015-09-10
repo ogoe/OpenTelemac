@@ -5,7 +5,7 @@
      &(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    PREPARES THE ADVECTION STEP BY COMPUTING THE
@@ -122,6 +122,7 @@
      &                                   NELEM2,MSUPG,UNSV2D,NSCE,
      &                                   SOURCES,SEM2D,UNSV3D,GRADZF,
      &                                   SEM3D,DSSUDT,OPTBAN,INFOGR,
+     &                                   SLVPRO,AGGLOW,NGAUSS,OPTCHA,
      &                                   U,UN,V,VN,WN,NSOUSI,OPTSOU
 !
       IMPLICIT NONE
@@ -478,4 +479,3 @@
 !
       RETURN
       END
-

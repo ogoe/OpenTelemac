@@ -47,27 +47,14 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
-      INTEGER N
-      LOGICAL DEJA,OK(MAXFRO)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
+      CHARACTER(LEN=9) FCT
       DOUBLE PRECISION RAMPE1,RAMPE2
-!
-!     FIRST CALL, OK INITIALISED TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO N=1,MAXFRO
-          OK(N)=.TRUE.
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
 !
 !     IF FILE OF LIQUID BOUNDARIES EXISTING, ATTEMPT TO FIND
 !     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
 !                      IF  NO, OK SET     TO .FALSE.
 !
-      IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
+      IF(OKQ(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
         FCT(1:2)='Q('
@@ -82,11 +69,12 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,
+     &                      ENTET,OKQ(I))
 !
       ENDIF
 !
-      IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OKQ(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
 !
 !     PROGRAMMABLE PART
 !     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED

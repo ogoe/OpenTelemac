@@ -61,6 +61,7 @@ INITIAL CONDITIONS              = PARTICULAR
 /  PHYSICAL PARAMETERS
 /----------------------------------------------
 /
+AIR PRESSURE : YES
 LAW OF BOTTOM FRICTION           = 0
 /----------------------------------------------
 /  NUMERICAL PARAMETERS 
@@ -80,7 +81,7 @@ CONTINUITY CORRECTION             = YES
 / TRACER 
 /************************************
 NUMBER OF TRACERS = 1
-NAMES OF TRACERS = 'TEMPERATURE            °C           '
+NAMES OF TRACERS = 'TEMPERATURE     °C              '
 INITIAL VALUES OF TRACERS            = 20.
 DIFFUSION OF TRACERS                 = NO
 COEFFICIENT FOR DIFFUSION OF TRACERS = 0. 
@@ -90,6 +91,5 @@ COEFFICIENT FOR DIFFUSION OF TRACERS = 0.
 WATER QUALITY        = YES
 WAQ STEERING FILE    = 'waq_steer.cas'
 WAQ DICTIONARY       = 'waqtel.dico'
-
 &FIN
 

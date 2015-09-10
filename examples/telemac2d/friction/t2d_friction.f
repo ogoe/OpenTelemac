@@ -498,16 +498,15 @@
 !
       RETURN
       END
-!
-!
 !                    ***************************
                      SUBROUTINE NOMVAR_TELEMAC2D
 !                    ***************************
 !
-     &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC)
+     &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC,N_NAMES_PRIV,
+     & NAMES_PRIVE,SECCURRENTS)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY
@@ -520,7 +519,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        31/08/2007
 !+        V5P8
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -534,13 +533,27 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  D WANG & P TASSI (LNHE)
+!+        10/07/2014
+!+        V7P0
+!+   Secondary flow correction: add variables
+!+   tau_s, Omega/h and r^{-1} for visualization
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/07/2015
+!+        V7P1
+!+   Now taking into account names of private arrays given by user.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MNEMO          |<--| MNEMONIC FOR 'VARIABLES FOR GRAPHIC OUTPUTS'
+!| N_NAMES_PRIV   |-->| NUMBER OF NAMES OF PRIVATE VARIABLES GIVEN
+!| NAMES_PRIVE    |-->| NAME OF PRIVATE VARIABLES GIVEN BY USER
 !| NAMETRAC       |-->| NAME OF TRACERS (GIVEN BY KEYWORDS)
 !| NPERIAF        |-->| NUMBER OF PERIODS FOR FOURRIER ANALYSIS
 !| NTRAC          |-->| NUMBER OF TRACERS
 !| TEXTE          |<--| SEE ABOVE
 !| TEXTPR         |<--| SEE ABOVE
+!| SECCURRENTS    |-->| IF YES SECONDARY CURRENTS COMPUTED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -549,18 +562,19 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER, INTENT(IN)              :: NPERIAF,NTRAC,N_NAMES_PRIV
       CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(*),TEXTPR(*)
       CHARACTER(LEN=8),  INTENT(INOUT) :: MNEMO(*)
-      INTEGER, INTENT(IN)              :: NPERIAF,NTRAC
-      CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(32)
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(32),NAMES_PRIVE(4)
+      LOGICAL, INTENT(IN)              :: SECCURRENTS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER(LEN=2) I_IN_2_LETTERS(32)
+      CHARACTER(LEN=2) I_IN_2_LETTERS(34)
       DATA I_IN_2_LETTERS /'1 ','2 ','3 ','4 ','5 ','6 ','7 ','8 ','9 ',
      &                     '10','11','12','13','14','15','16','17','18',
      &                     '19','20','21','22','23','24','25','26','27',
-     &                     '28','29','30','31','32'/
+     &                     '28','29','30','31','32','33','34'/
       INTEGER I
 !
 !-----------------------------------------------------------------------
@@ -782,6 +796,10 @@
 !     VARIABLE 31
       MNEMO(31)   = 'US      '
 !
+      MNEMO(32)   = 'TAU_S   '
+!
+      MNEMO(33)   = '1/R     '
+!
 !-----------------------------------------------------------------------
 !
 !     FOURIER ANALYSES
@@ -789,34 +807,34 @@
       IF(NPERIAF.GT.0) THEN
         DO I=1,NPERIAF
           IF(LNG.EQ.1) THEN
-            TEXTE(32+NTRAC+2*(I-1)) =  'AMPLI PERIODE '
+            TEXTE(34+NTRAC+2*(I-1)) =  'AMPLI PERIODE '
      &                         //I_IN_2_LETTERS(I)
      &                         //'M               '
-            TEXTE(33+NTRAC+2*(I-1)) =  'PHASE PERIODE '
+            TEXTE(35+NTRAC+2*(I-1)) =  'PHASE PERIODE '
      &                         //I_IN_2_LETTERS(I)
      &                         //'DEGRES          '
-            TEXTPR(32+NTRAC+2*(I-1)) =  'AMPLI PERIODE '
+            TEXTPR(34+NTRAC+2*(I-1)) =  'AMPLI PERIODE '
      &                         //I_IN_2_LETTERS(I)
      &                         //'M               '
-            TEXTPR(33+NTRAC+2*(I-1)) =  'PHASE PERIODE '
+            TEXTPR(35+NTRAC+2*(I-1)) =  'PHASE PERIODE '
      &                         //I_IN_2_LETTERS(I)
      &                         //'DEGRES          '
           ELSE
-            TEXTE(32+NTRAC+2*(I-1)) =  'AMPLI PERIOD  '
+            TEXTE(34+NTRAC+2*(I-1)) =  'AMPLI PERIOD  '
      &                         //I_IN_2_LETTERS(I)
      &                         //'M               '
-            TEXTE(33+NTRAC+2*(I-1)) =  'PHASE PERIOD  '
+            TEXTE(35+NTRAC+2*(I-1)) =  'PHASE PERIOD  '
      &                         //I_IN_2_LETTERS(I)
      &                         //'DEGRES          '
-            TEXTPR(32+NTRAC+2*(I-1)) =  'AMPLI PERIOD  '
+            TEXTPR(34+NTRAC+2*(I-1)) =  'AMPLI PERIOD  '
      &                         //I_IN_2_LETTERS(I)
      &                         //'M               '
-            TEXTPR(33+NTRAC+2*(I-1)) =  'PHASE PERIOD  '
+            TEXTPR(35+NTRAC+2*(I-1)) =  'PHASE PERIOD  '
      &                         //I_IN_2_LETTERS(I)
      &                         //'DEGRES          '
           ENDIF
-          MNEMO(32+NTRAC+2*(I-1)) = 'AMPL'//I_IN_2_LETTERS(I)//'  '
-          MNEMO(33+NTRAC+2*(I-1)) = 'PHAS'//I_IN_2_LETTERS(I)//'  '
+          MNEMO(34+NTRAC+2*(I-1)) = 'AMPL'//I_IN_2_LETTERS(I)//'  '
+          MNEMO(35+NTRAC+2*(I-1)) = 'PHAS'//I_IN_2_LETTERS(I)//'  '
         ENDDO
       ENDIF
 !
@@ -826,9 +844,21 @@
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
-          TEXTE(31+I)  = NAMETRAC(I)
-          TEXTPR(31+I) = NAMETRAC(I)
-          MNEMO(31+I)  = 'T'//I_IN_2_LETTERS(I)//'   '
+          TEXTE(33+I)  = NAMETRAC(I)
+          TEXTPR(33+I) = NAMETRAC(I)
+          MNEMO(33+I)  = 'T'//I_IN_2_LETTERS(I)//'   '
+        ENDDO
+!       OMEGA FOR SECONDARY CURRENTS
+        IF(SECCURRENTS) THEN
+          TEXTE(33+NTRAC) = NAMETRAC(NTRAC)
+          TEXTPR(33+NTRAC)= NAMETRAC(NTRAC)
+          MNEMO(33+NTRAC) = 'OMEGA   '
+        ENDIF
+      ENDIF
+      IF(N_NAMES_PRIV.GT.0) THEN
+        DO I=1,N_NAMES_PRIV
+          TEXTE(22+I)  = NAMES_PRIVE(I)
+          TEXTPR(22+I) = NAMES_PRIVE(I)
         ENDDO
       ENDIF
 !
@@ -836,7 +866,6 @@
 !
       RETURN
       END
-!
 !                    *****************
                      SUBROUTINE EXACTE
 !                    *****************

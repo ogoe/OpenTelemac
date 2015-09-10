@@ -210,26 +210,14 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
+      CHARACTER(LEN=9) FCT
       INTEGER N
-      LOGICAL DEJA,OK(MAXFRO)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
-!
-!     FIRST CALL, OK INITIALISED TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO N=1,MAXFRO
-          OK(N)=.TRUE.
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
 !
 !     IF FILE OF LIQUID BOUNDARIES EXISTING, ATTEMPT TO FIND
-!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-!                      IF  NO, OK SET     TO .FALSE.
+!     THE VALUE IN IT. IF YES, OKQ REMAINS TO .TRUE. FOR NEXT CALLS
+!                      IF  NO, OKQ SET     TO .FALSE.
 !
-      IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
+      IF(OKQ(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
         FCT(1:2)='Q('
@@ -242,11 +230,12 @@
         ELSE
           STOP 'Q NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
         ENDIF
-        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,
+     &                      ENTET,OKSL(I))
 !
       ENDIF
 !
-      IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OKQ(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
 !
 !     PROGRAMMABLE PART
 !     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
@@ -287,7 +276,6 @@
 !
 !-----------------------------------------------------------------------
 !
-!     PRINT * , 'I=',I,' Q=',Q
       RETURN
       END
 !                       ****************************
@@ -340,28 +328,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
-      INTEGER J
-      LOGICAL DEJA,OK(MAXFRO)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
-!
-!     FIRST CALL, OK INITIALISED TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO J=1,MAXFRO
-          OK(J)=.TRUE.
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
+      CHARACTER(LEN=9) FCT
 !
 !-----------------------------------------------------------------------
 !
 !     IF FILE OF LIQUID BOUNDARIES EXISTING, ATTEMPT TO FIND
-!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-!                      IF  NO, OK SET     TO .FALSE.
+!     THE VALUE IN IT. IF YES, OKSL REMAINS TO .TRUE. FOR NEXT CALLS
+!                      IF  NO, OKSL SET     TO .FALSE.
 !
-      IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
+      IF(OKSL(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
         FCT(1:3)='SL('
@@ -376,11 +351,12 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-        CALL READ_FIC_FRLIQ(SL,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+        CALL READ_FIC_FRLIQ(SL,FCT,AT,T2D_FILES(T2DIMP)%LU,
+     &                      ENTET,OKSL(I))
 !
       ENDIF
 !
-      IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OKSL(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
 !
 !     PROGRAMMABLE PART
 !     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED

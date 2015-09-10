@@ -1,3 +1,246 @@
+!                    ****************************
+                     DOUBLE PRECISION FUNCTION SL
+!                    ****************************
+!
+     &( I , N )
+!
+!***********************************************************************
+! TELEMAC2D   V6P2                                   08/11/2011
+!***********************************************************************
+!
+!brief    PRESCRIBES THE FREE SURFACE ELEVATION FOR LEVEL IMPOSED
+!+                LIQUID BOUNDARIES.
+!
+!history  J-M HERVOUET (LNHE)
+!+        17/08/1994
+!+        V6P0
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  C. COULET (ARTELIA GROUP)
+!+        08/11/2011
+!+        V6P2
+!+   Modification size FCT due to modification of TRACER numbering
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| I              |-->| NUMBER OF LIQUID BOUNDARY
+!| N              |-->| GLOBAL NUMBER OF POINT
+!|                |   | IN PARALLEL NUMBER IN THE ORIGINAL MESH
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+      USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_TELEMAC2D
+      USE INTERFACE_TELEMAC2D, EX_SL => SL
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN) :: I,N
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      CHARACTER(LEN=9) FCT
+      DOUBLE PRECISION PI,OMEGA,PERIODE,A
+      DATA PI/3.141592653589D0/
+!
+!-----------------------------------------------------------------------
+!
+!     IF THE LIQUID BOUNDARY FILE EXISTS, ATTEMPTS TO FIND
+!     THE VALUE IN IT. IF YES, OKSL REMAINS TO .TRUE. FOR NEXT CALLS
+!                      IF  NO, OKSL IS SET  TO .FALSE.
+!
+      IF(OKSL(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
+!
+!       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
+        FCT='SL(      '
+        IF(I.LT.10) THEN
+          WRITE(FCT(4:4),FMT='(I1)') I
+          FCT(5:5)=')'
+        ELSEIF(I.LT.100) THEN
+          WRITE(FCT(4:5),FMT='(I2)') I
+          FCT(6:6)=')'
+        ELSE
+          WRITE(LU,*) 'SL NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        CALL READ_FIC_FRLIQ(SL,FCT,AT,T2D_FILES(T2DIMP)%LU,
+     &                      ENTET,OKSL(I))
+!
+      ENDIF
+!
+      IF(.NOT.OKSL(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
+!
+!     PROGRAMMABLE PART
+!     SL IS READ FROM THE STEERING FILE, BUT MAY BE CHANGED
+!
+        IF(NCOTE.GE.I) THEN
+          SL = COTE(I)
+!         DESCENTE DE LA COTE 0 A -0.55 EN 300 S
+          PERIODE=600.D0
+          OMEGA=2*PI/PERIODE
+          A=0.55D0/2.D0
+          SL=A*(COS(OMEGA*AT)-1.D0)
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,100) I
+100       FORMAT(1X,/,1X,'SL : COTES IMPOSEES EN NOMBRE INSUFFISANT'
+     &             ,/,1X,'     DANS LE FICHIER DES PARAMETRES'
+     &             ,/,1X,'     IL EN FAUT AU MOINS : ',1I6)
+          IF(LNG.EQ.2) WRITE(LU,101) I
+101       FORMAT(1X,/,1X,'SL: MORE PRESCRIBED ELEVATIONS ARE REQUIRED'
+     &             ,/,1X,'     IN THE PARAMETER FILE'
+     &             ,/,1X,'     AT LEAST ',1I6,' MUST BE GIVEN')
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END
+!                    ***************************
+                     DOUBLE PRECISION FUNCTION Q
+!                    ***************************
+!
+     &(I)
+!
+!***********************************************************************
+! TELEMAC2D   V6P2                                   08/11/2011
+!***********************************************************************
+!
+!brief    PRESCRIBES THE DISCHARGE FOR FLOW IMPOSED
+!+                LIQUID BOUNDARIES.
+!
+!history  J-M HERVOUET (LNHE)
+!+        09/01/2004
+!+        V5P6
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  C. COULET (ARTELIA GROUP)
+!+        08/11/2011
+!+        V6P2
+!+   Modification of FCT size due to modification of TRACER numbering
+!
+!history  J-M HERVOUET (LNHE)
+!+        21/05/2012
+!+        V6P2
+!+   Discharge taken at mid distance between AT-DT AND AT, except
+!+   for finite volumes (DT unknown, and AT time of beginning of time
+!+   step in this case)
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| I              |-->| NUMBER OF THE LIQUID BOUNDARY.
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+      USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_TELEMAC2D
+      USE INTERFACE_TELEMAC2D, EX_Q => Q
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER         , INTENT(IN) :: I
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      CHARACTER(LEN=9) FCT
+      DOUBLE PRECISION Q1,Q2
+!
+!-----------------------------------------------------------------------
+!
+!     IF LIQUID BOUNDARY FILE EXISTS, ATTEMPTS TO FIND
+!     THE VALUE IN IT. IF YES, OKQ REMAINS TO .TRUE. FOR NEXT CALLS
+!                      IF  NO, OKQ IS SET  TO .FALSE.
+!
+      IF(OKQ(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
+!
+!       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
+        FCT='Q(       '
+        IF(I.LT.10) THEN
+          WRITE(FCT(3:3),FMT='(I1)') I
+          FCT(4:4)=')'
+        ELSEIF(I.LT.100) THEN
+          WRITE(FCT(3:4),FMT='(I2)') I
+          FCT(5:5)=')'
+        ELSE
+          WRITE(LU,*) 'Q NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
+          CALL READ_FIC_FRLIQ(Q1,FCT,AT-DT,
+     &                        T2D_FILES(T2DIMP)%LU,ENTET,OKQ(I))
+          CALL READ_FIC_FRLIQ(Q2,FCT,AT   ,
+     &                        T2D_FILES(T2DIMP)%LU,ENTET,OKQ(I))
+          Q=(Q1+Q2)*0.5D0
+        ELSE
+          CALL READ_FIC_FRLIQ(Q,FCT,AT   ,
+     &                        T2D_FILES(T2DIMP)%LU,ENTET,OKQ(I))
+        ENDIF
+!
+      ENDIF
+!
+      IF(.NOT.OKQ(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
+!
+!     PROGRAMMABLE PART
+!     Q IS TAKEN FROM THE STEERING FILE, BUT MAY BE CHANGED
+!
+        IF(NDEBIT.GE.I) THEN
+!         Q = DEBIT(I)
+          Q = -5.D0*HN%R(236)/0.6D0
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,400) I
+400       FORMAT(1X,/,1X,'Q : DEBITS IMPOSES',/,
+     &                1X,'    EN NOMBRE INSUFFISANT',/,
+     &                1X,'    DANS LE FICHIER DES PARAMETRES',/,
+     &                1X,'    IL EN FAUT AU MOINS : ',1I6)
+          IF(LNG.EQ.2) WRITE(LU,401) I
+401       FORMAT(1X,/,1X,'Q : MORE PRESCRIBED FLOWRATES',/,
+     &                1X,'    ARE REQUIRED IN THE PARAMETER FILE',/,
+     &                1X,'    AT LEAST ',1I6,' MUST BE GIVEN')
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END
 !                       *****************
                         SUBROUTINE CORFON
 !                       *****************
@@ -89,211 +332,5 @@
 !
       RETURN
       END
-!                       ***************************
-                        DOUBLE PRECISION FUNCTION Q
-!                       ***************************
-!
-     &( I )
-!
-!***********************************************************************
-!  TELEMAC 2D VERSION 5.1    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
-!
-!***********************************************************************
-!
-! FONCTION  : DONNE LA VALEUR DU DEBIT POUR TOUTES LES ENTREES A DEBIT
-!             IMPOSE.
-!
-!-----------------------------------------------------------------------
-!                             ARGUMENTS
-! .________________.____.______________________________________________.
-! |      NOM       |MODE|                   ROLE                       |
-! |________________|____|______________________________________________|
-! |   AT           | -->| TEMPS AUQUEL ON DONNE LE DEBIT               |
-! |   I            | -->| RANG DE LA FRONTIERE A DEBIT IMPOSE          |
-! |                |    | (1 S'IL N'Y EN A QU'UNE)                     |
-! |   DEBIT        | -->| TABLEAU DES DEBITS IMPOSES.                  |
-! |                |    | (LU DANS LE FICHIER DES PARAMETRES)          |
-! |   HAUTEUR D'EAU| -->| TABLEAU DES HAUTEURS D'EAU.                  |
-! |   NPOIN        | -->| NOMBRE DE POINTS DU TABLEAU DES HAUTEURS     |
-! |________________|____|______________________________________________|
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-!
-!-----------------------------------------------------------------------
-!
-!  APPELE PAR : BORD
-!
-!***********************************************************************
-!
-      USE BIEF
-      USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC2D
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER         , INTENT(IN) :: I
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      CHARACTER*8 FCT
-      INTEGER N
-      LOGICAL DEJA,OK(MAXFRO)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
-!
-!     FIRST CALL, OK INITIALISED TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO N=1,MAXFRO
-          OK(N)=.TRUE.
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
-!
-!     IF FILE OF LIQUID BOUNDARIES EXISTING, ATTEMPT TO FIND
-!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-!                      IF  NO, OK SET     TO .FALSE.
-!
-      IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
-!
-!       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
-        FCT(1:2)='Q('
-        IF(I.LT.10) THEN
-          WRITE(FCT(3:3),FMT='(I1)') I
-          FCT(4:8)=')    '
-        ELSEIF(I.LT.100) THEN
-          WRITE(FCT(3:4),FMT='(I2)') I
-          FCT(5:8)=')   '
-        ELSE
-          WRITE(LU,*) 'Q NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
-          CALL PLANTE(1)
-          STOP
-        ENDIF
-        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
-!
-      ENDIF
-!
-      IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
-!
-!     PROGRAMMABLE PART
-!     Q IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
-!
-!       Q = DEBIT(I)
-        Q = -5.D0*HN%R(236)/0.6D0
-!
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      RETURN
-      END
-!                       ****************************
-                        DOUBLE PRECISION FUNCTION SL
-!                       ****************************
-!
-!
-     &( I , N )
-!
-!***********************************************************************
-!  TELEMAC 2D VERSION 5.1    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
-!
-!***********************************************************************
-!
-! FONCTION  : DONNE LA VALEUR DE LA COTE DE LA SURFACE LIBRE POUR TOUTES
-!             LES ENTREES A COTE IMPOSEE.
-!
-!-----------------------------------------------------------------------
-!                             ARGUMENTS
-! .________________.____.______________________________________________.
-! |      NOM       |MODE|                   ROLE                       |
-! |________________|____|______________________________________________|
-! |   I            | -->| RANG DE LA FRONTIERE A COTE IMPOSEE
-! |                |    | (1 S'IL N'Y EN A QU'UNE)
-! |   N            | -->| NUMERO GLOBAL DU POINT
-! |________________|____|_______________________________________________
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-!
-!-----------------------------------------------------------------------
-!
-!  APPELE PAR : BORD
-!
-!***********************************************************************
-!
-      USE BIEF
-      USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC2D
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER, INTENT(IN) :: I,N
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      CHARACTER*8 FCT
-      INTEGER J
-      LOGICAL DEJA,OK(MAXFRO)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
-      DOUBLE PRECISION PI,OMEGA,PERIODE,A
-      DATA PI/3.141592653589D0/
-!
-!     FIRST CALL, OK INITIALISED TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO J=1,MAXFRO
-          OK(J)=.TRUE.
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-!     IF FILE OF LIQUID BOUNDARIES EXISTING, ATTEMPT TO FIND
-!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-!                      IF  NO, OK SET     TO .FALSE.
-!
-      IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
-!
-!       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
-        FCT(1:3)='SL('
-        IF(I.LT.10) THEN
-          WRITE(FCT(4:4),FMT='(I1)') I
-          FCT(5:8)=')   '
-        ELSEIF(I.LT.100) THEN
-          WRITE(FCT(4:5),FMT='(I2)') I
-          FCT(6:8)=')  '
-        ELSE
-          WRITE(LU,*) 'SL NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
-          CALL PLANTE(1)
-          STOP
-        ENDIF
-        CALL READ_FIC_FRLIQ(SL,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
-!
-      ENDIF
-!
-      IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
-!
-!     PROGRAMMABLE PART
-!     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
-!
-        SL = COTE(I)
-!       DESCENTE DE LA COTE 0 A -0.55 EN 300 S
-        PERIODE=600.D0
-        OMEGA=2*PI/PERIODE
-        A=0.55D0/2.D0
-        SL=A*(COS(OMEGA*AT)-1.D0)
-!
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      RETURN
-      END
+
 

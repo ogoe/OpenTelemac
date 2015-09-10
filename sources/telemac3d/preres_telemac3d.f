@@ -5,7 +5,7 @@
      &(LT)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE VARIABLES WHICH WILL BE WRITTEN TO
@@ -42,6 +42,12 @@
 !+        14/03/2014
 !+        V7P0
 !+   New developments in sediment merged on 14/03/2014.
+!
+!history  J-M HERVOUET (LNHE)
+!+        10/09/2015
+!+        V7P1
+!+   With the decision to always issue the initial condition, this
+!+   subroutine must be changed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LT             |-->| ITERATION NUMBER
@@ -83,22 +89,22 @@
 ! COMPUTES THE MAXIMUM ELEVATION AND ASSOCIATED TIME
 !=======================================================================
 !
-      IF(SORG2D(35)) THEN
-        IF(.NOT.DEJA) THEN
-          CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
-          CALL OS('X=C     ',X=TMAXZ,C=AT)
-          DEJA=.TRUE.
-        ELSE
-          DO I=1,NPOIN2
-            XMAX=H%R(I)+ZF%R(I)
-!           DRY LAND EXCLUDED (TO AVOID RANDOM TIMES)
-            IF(XMAX.GT.MAXZ%R(I).AND.H%R(I).GT.0.01D0) THEN
-              MAXZ%R(I)=XMAX
-              IF(SORG2D(36)) TMAXZ%R(I)=AT
-            ENDIF
-          ENDDO
+        IF(SORG2D(35)) THEN
+          IF(.NOT.DEJA) THEN
+            CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+            CALL OS('X=C     ',X=TMAXZ,C=AT)
+            DEJA=.TRUE.
+          ELSE
+            DO I=1,NPOIN2
+              XMAX=H%R(I)+ZF%R(I)
+!             DRY LAND EXCLUDED (TO AVOID RANDOM TIMES)
+              IF(XMAX.GT.MAXZ%R(I).AND.H%R(I).GT.0.01D0) THEN
+                MAXZ%R(I)=XMAX
+                IF(SORG2D(36)) TMAXZ%R(I)=AT
+              ENDIF
+            ENDDO
+          ENDIF
         ENDIF
-      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -109,7 +115,6 @@
         IF(SORG2D(35)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
         IF(SORG2D(36)) CALL OS('X=C     ',X=TMAXZ,C=AT)
 !
-!     ENDIF FOR : IF(LT.GE.GRADEB) THEN
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -122,7 +127,9 @@
 !
       LEO=.FALSE.
       LTT=(LT/GRAPRD)*GRAPRD
-      IF((LT.EQ.LTT.OR.LT.EQ.NIT).AND.LT.GE.GRADEB) LEO=.TRUE.
+      IF((LT.EQ.LTT.OR.LT.EQ.NIT).AND.(LT.GE.GRADEB.OR.LT.EQ.0)) THEN
+        LEO=.TRUE.
+      ENDIF
 !
 !     NO PRINT OUT, NO OUTPUT TO FILE: EXITS
       IF(.NOT.LEO) GO TO 1000
@@ -305,3 +312,4 @@
 1000  CONTINUE
       RETURN
       END
+

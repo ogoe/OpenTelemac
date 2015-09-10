@@ -5,7 +5,7 @@
      &( I , ITRAC , N , IERR )
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   08/11/2011
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    PRESCRIBES THE TRACER VALUES FOR TRACER IMPOSED
@@ -58,32 +58,21 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*9 FCT
-      INTEGER J,K,IRANK
-      LOGICAL, SAVE :: DEJA=.FALSE.
-      LOGICAL, DIMENSION(MAXFRO,MAXTRA), SAVE :: OK
+      CHARACTER(LEN=9) FCT
+      INTEGER IRANK
+!
+!-----------------------------------------------------------------------
 !
 !     A PRIORI ASSUMES THAT TR WILL BE FOUND
 !
       IERR=0
 !
-!     FIRST CALL, OK INITIALISED TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO K=1, MAXTRA
-           DO J=1,MAXFRO
-              OK(J,K)=.TRUE.
-           ENDDO
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
-!
 !     IF LIQUID BOUNDARY FILE EXISTS, ATTEMPTS TO FIND
-!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-!                      IF  NO, OK SET     TO .FALSE.
+!     THE VALUE IN IT. IF YES, OKTR REMAINS TO .TRUE. FOR NEXT CALLS
+!                      IF  NO, OKTR SET     TO .FALSE.
 !     RANK OF VALUE IN ARRAY TRACER OR IN LIQUID BOUNDARY FILE
 !
-      IF(OK(I,ITRAC).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
+      IF(OKTR(I,ITRAC).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE TR(I,ITRAC)
         FCT='TR(      '
@@ -116,7 +105,7 @@
           STOP
         ENDIF
         CALL READ_FIC_FRLIQ(TR,FCT,AT,T2D_FILES(T2DIMP)%LU,
-     &                      ENTET,OK(I,ITRAC))
+     &                      ENTET,OKTR(I,ITRAC))
 !
       ENDIF
 !
@@ -124,12 +113,12 @@
 !     OR IF THERE IS NO LIQUID BOUNDARY FILE
 !     ATTEMPTS TO FIND IT IN THE STEERING FILE
 !
-      IF(.NOT.OK(I,ITRAC).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OKTR(I,ITRAC).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
 !
         IRANK=ITRAC+(I-1)*NTRAC
         IF(NTRACE.GE.IRANK) THEN
           TR = TRACER(IRANK)
-          OK(I,ITRAC)=.TRUE.
+          OKTR(I,ITRAC)=.TRUE.
         ELSEIF(NTRACE.NE.0) THEN
           IF(LNG.EQ.1) WRITE(LU,300) IRANK
 300       FORMAT(1X,/,1X,'TR : VALEURS IMPOSEES DU TRACEUR'
@@ -149,7 +138,7 @@
 !
 !     NOTHING FOUND: VALUES WILL BE TAKEN FROM BOUNDARY CONDITION FILE
 !
-      IF(.NOT.OK(I,ITRAC)) THEN
+      IF(.NOT.OKTR(I,ITRAC)) THEN
         TR=0.D0
         IERR=1
       ENDIF

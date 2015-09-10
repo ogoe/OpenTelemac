@@ -75,10 +75,11 @@
 !+  quadratic elements are asked.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        02/09/2015
+!+        08/09/2015
 !+        V7P1
 !+  TIDALTYPE replaced by BND_TIDE which is an array, and the value of
 !+  TIDALTYPE is now deduced from BND_TIDE.
+!+  Tests on preconditioning for tracers not done if no tracer
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -195,13 +196,6 @@
       CRIPER(1) = 1.D-4
       CRIPER(2) = 1.D-4
       CRIPER(3) = 1.D-4
-!
-      DO K=1,MAXFRO
-        FRTYPE(K)=1
-        PROVEL(K)=1
-        STA_DIS_CURVES(K)=0
-        BND_TIDE(K)=0
-      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -434,6 +428,83 @@
         ENDIF
       ENDDO
 !
+!-----------------------------------------------------------------------
+!
+!     READING FIRST 3 KEYWORDS THAT WILL BE DIMENSIONS TO ARRAYS THAT
+!     WILL STORE OTHER KEYWORDS, THEN ALLOCATING THESE ARRAYS
+!
+      MAXFRO = MOTINT(ADRESS(1,95))
+      MAXSCE = MOTINT(ADRESS(1,96))
+      MAXTRA = MOTINT(ADRESS(1,97))
+!
+!     ALLOCATING
+!
+      ALLOCATE(FRTYPE(MAXFRO))
+      ALLOCATE(PROVEL(MAXFRO))
+      ALLOCATE(DEBLIQ(MAXFRO))
+      ALLOCATE(FINLIQ(MAXFRO))
+      ALLOCATE(DEBSOL(MAXFRO))
+      ALLOCATE(FINSOL(MAXFRO))
+      ALLOCATE(PTS_CURVES(MAXFRO))
+      ALLOCATE(STA_DIS_CURVES(MAXFRO))
+      ALLOCATE(BND_TIDE(MAXFRO))
+      ALLOCATE(DEBIT(MAXFRO))
+      ALLOCATE(COTE(MAXFRO))
+      ALLOCATE(VITES(MAXFRO))
+      ALLOCATE(OKQ(MAXFRO))
+      ALLOCATE(OKSL(MAXFRO))
+      ALLOCATE(OKVIT(MAXFRO))
+      ALLOCATE(OKTR(MAXFRO,MAXTRA))
+      ALLOCATE(TRACER(MAXTRA*MAXFRO))
+      ALLOCATE(FLUX_BOUNDARIES(MAXFRO))
+      ALLOCATE(ISCE(MAXSCE))
+      ALLOCATE(XSCE(MAXSCE))
+      ALLOCATE(YSCE(MAXSCE))
+      ALLOCATE(DSCE(MAXSCE))
+      ALLOCATE(DSCE2(MAXSCE))
+      ALLOCATE(TSCE(MAXSCE,MAXTRA))
+      ALLOCATE(TSCE2(MAXSCE,MAXTRA))
+      ALLOCATE(USCE(MAXSCE))
+      ALLOCATE(VSCE(MAXSCE))
+      ALLOCATE(OKDEBSCE(MAXSCE))
+      ALLOCATE(OKTRSCE(MAXSCE,MAXTRA))
+      ALLOCATE(ICONVFT(MAXTRA))
+      ALLOCATE(LOITRAC(MAXTRA))
+      ALLOCATE(COEF1TRAC(MAXTRA))
+      ALLOCATE(TRAIN(MAXTRA))
+      ALLOCATE(OPTADV_TR(MAXTRA))
+      ALLOCATE(SLVTRA(MAXTRA))
+      ALLOCATE(TRAC0(MAXTRA))
+!
+!     INITIALISING
+!
+      DO K=1,MAXFRO
+        FRTYPE(K)=1
+        PROVEL(K)=1
+        STA_DIS_CURVES(K)=0
+        BND_TIDE(K)=0
+        OKVIT(K)=.TRUE.
+        OKSL(K)=.TRUE.
+        OKQ(K)=.TRUE.
+      ENDDO
+      DO ITRAC=1,MAXTRA
+        DO K=1,MAXFRO
+          OKTR(K,ITRAC)=.TRUE.
+        ENDDO
+      ENDDO
+      DO K=1,MAXSCE
+        OKDEBSCE(K)=.TRUE.
+      ENDDO
+      DO ITRAC=1,MAXTRA
+        DO K=1,MAXSCE
+          OKTRSCE(K,ITRAC)=.TRUE.
+        ENDDO
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+!     WHEN A WATER QUALITY MODEL IS USED
+!
       IF(WATQUA)THEN
 !
 !     RETRIEVES FILES NUMBERS IN WAQTEL PARAMETERS
@@ -450,9 +521,10 @@
           ENDIF
         ENDDO
 !
+!-----------------------------------------------------------------------
+!
 !     ASSIGNS THE WAQ STEERING FILE VALUES TO THE PARAMETER FORTRAN NAME
 !
-!-----------------------------------------------------------------------
 !*******************************
 !   WAQ  INTEGER KEYWORDS      *
 !*******************************
@@ -771,7 +843,7 @@
       DIRFLU     = MOTINT(ADRESS(1,74))
 !     OPTION FOR TIDAL BOUNDARY CONDITIONS (TIDALTYPE IS DEDUCED FROM BND_TIDE)
       TIDALTYPE=0
-      IF(DIMEN(1,75).NE.0) THEN
+      IF(DIMEN(1,75).GT.0) THEN
         DO K=1,DIMEN(1,75)
           BND_TIDE(K) = MOTINT( ADRESS(1,75) + K-1 )
           TIDALTYPE=MAX(TIDALTYPE,BND_TIDE(K))
@@ -1568,10 +1640,10 @@
           IF(LNG.EQ.1) WRITE(LU,2000)
           IF(LNG.EQ.2) WRITE(LU,2001)
 2000      FORMAT(1X,'MOT-CLES SOLVEURS ET PRECONDITIONNEMENTS :',/,1X,
-     &              'SUR MACHINE VECTORIELLE,',/,1X,
+     &              'SUR MACHINE VECTORIELLE',/,1X,
      &              'NE PAS UTILISER GMRES + CROUT',///)
 2001      FORMAT(1X,'KEY-WORDS SOLVERS AND PRECONDITONING:',/,1X,
-     &              'ON VECTOR MACHINES,',/,1X,
+     &              'ON VECTOR MACHINES',/,1X,
      &              'DO NOT USE GMRES + CROUT',///)
           CALL PLANTE(1)
           STOP
@@ -1603,12 +1675,6 @@
      &      SLVPRO%PRECON.NE.0).OR.
      &     (MOD(SLVPRO%PRECON,13).EQ.0.AND.
      &      SLVPRO%PRECON.NE.0).OR.
-     &     (MOD(SLVTRA(1)%PRECON, 7).EQ.0.AND.
-     &      SLVTRA(1)%PRECON.NE.0).OR.
-     &     (MOD(SLVTRA(1)%PRECON,11).EQ.0.AND.
-     &      SLVTRA(1)%PRECON.NE.0).OR.
-     &     (MOD(SLVTRA(1)%PRECON,13).EQ.0.AND.
-     &      SLVTRA(1)%PRECON.NE.0).OR.
      &     (MOD(SLVK%PRECON, 7).EQ.0.AND.
      &      SLVK%PRECON.NE.0).OR.
      &     (MOD(SLVK%PRECON,11).EQ.0.AND.
@@ -1639,6 +1705,17 @@
             IF(SLVTRA(ITRAC)%SLV.EQ.8) THEN
               IF(LNG.EQ.1) WRITE(LU,2018)
               IF(LNG.EQ.2) WRITE(LU,2019)
+              CALL PLANTE(1)
+              STOP
+            ENDIF
+            IF((MOD(SLVTRA(1)%PRECON, 7).EQ.0.AND.
+     &          SLVTRA(1)%PRECON.NE.0).OR.
+     &         (MOD(SLVTRA(1)%PRECON,11).EQ.0.AND.
+     &          SLVTRA(1)%PRECON.NE.0).OR.
+     &         (MOD(SLVTRA(1)%PRECON,13).EQ.0.AND.
+     &          SLVTRA(1)%PRECON.NE.0)) THEN
+              IF(LNG.EQ.1) WRITE(LU,2014)
+              IF(LNG.EQ.2) WRITE(LU,2015)
               CALL PLANTE(1)
               STOP
             ENDIF
@@ -2574,8 +2651,5 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-!
-!-----------------------------------------------------------------------
-!
       END
 
