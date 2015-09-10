@@ -6110,6 +6110,27 @@ NIVEAU = 2
 AIDE = 'Pourcentage initial du sediment non cohesif'
 AIDE1 = 'Initial percentage of non cohesive sediment'
 /
+NOM = 'TYPE DES SOURCES'
+NOM1 = 'TYPE OF SOURCES'
+TYPE = ENTIER
+INDEX = 55
+MNEMO = 'OPTSOU'
+CONTROLE = 1;2
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 =1
+CHOIX = '1="Normal"';'2="Dirac"'
+CHOIX1= '1="Normal"';'2="Dirac"'
+RUBRIQUE = 'EQUATIONS, SOURCES'
+RUBRIQUE1 = 'EQUATIONS, SOURCE TERMS'
+NIVEAU = 2
+AIDE = '1: Source portee par une base elements finis
+        2: Source portee  par une fonction de Dirac
+           (recommandé quand il y a beaucoup de sources)'
+AIDE1= '1: Source term multiplied by a finite element basis
+        2: Source term multiplied by a Dirac function
+           (recommended with high numbers of sources)'
+/
 / TBE +cv
 /
 NOM = 'SCHEMA DE CONVECTION DIFFUSION AVEC VITESSE DE CHUTE'

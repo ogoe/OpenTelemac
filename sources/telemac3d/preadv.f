@@ -86,6 +86,12 @@
 !+   Block of advected variables with characteristics changed in the
 !+   case of more than 2 subiterations.
 !
+!history  A. LEROY (EDF LAB, LNHE)
+!+        28/08/2015
+!+        V7P1
+!+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
+!+   not (OPTSOU=1).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -116,8 +122,7 @@
      &                                   NELEM2,MSUPG,UNSV2D,NSCE,
      &                                   SOURCES,SEM2D,UNSV3D,GRADZF,
      &                                   SEM3D,DSSUDT,OPTBAN,INFOGR,
-     &                                   SLVPRO,AGGLOW,NGAUSS,OPTCHA,
-     &                                   U,UN,V,VN,WN,NSOUSI
+     &                                   U,UN,V,VN,WN,NSOUSI,OPTSOU
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -178,7 +183,7 @@
 !
       IF(OPT_TRID.EQ.2) THEN
         CALL TRIDW2(WSCONV,VOLU,VOLUN,SEM2D,FLUINT,FLUEXT,SOURCES,
-     &              NSCE,NETAGE,NPOIN2,DT,UNSV2D,MESH2D)
+     &              NSCE,NETAGE,NPOIN2,DT,UNSV2D,MESH2D,OPTSOU)
       ELSEIF(OPT_TRID.EQ.3) THEN
 !       OTHERWISE WCONV DONE IN WAVE_EQUATION
         IF(LT.EQ.0) CALL OS('X=Y     ',X=WCONV,Y=W)
@@ -187,7 +192,7 @@
      &              OPTBAN,MESH3D,MTRA1,MASKEL,NPOIN2,T2_01,NPLAN,
      &              FLUEXT,NSCE,SOURCES,RAIN,PLUIE,FLUINT,NETAGE,UNSV2D,
      &              SVIDE,NELEM2,MSK,N_ADV,VOLU2D,INFOGR,DSSUDT,IELM3,
-     &              DM1,GRAZCO,MESH2D,SEM3D,NELEM3,GRADZF)
+     &              DM1,GRAZCO,MESH2D,SEM3D,NELEM3,GRADZF,OPTSOU)
       ENDIF
 !
 !=======================================================================

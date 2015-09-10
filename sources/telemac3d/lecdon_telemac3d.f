@@ -1459,8 +1459,7 @@
 !
       OPDVIT = 1
 !     OPTSOU : TREATMENT OF SOURCES, NORMAL (1) OR DIRAC (2)
-!     HERE 2 BECAUSE IT WILL AVOID AN INTEGRATION OF SMH IN PROPAG
-      OPTSOU = 2
+      OPTSOU    = MOTINT( ADRESS(1,55) )
       TETAD  = 1.D0
 !
 !-----------------------------------------------------------------------

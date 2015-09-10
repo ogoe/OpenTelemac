@@ -12,7 +12,7 @@
      & MDIFF,MATR2H,MASKBR,SVIDE,MSK,MASKEL,H,
      & NPLAN,OPTBAN,OPTDIF,TETADI,YAWCC,WCC,AGGLOD,VOLU,
      & YASCE,NSCE,FSCE,SOURCES,TETASUPG,VELOCITY,RAIN,PLUIE,TRAIN,
-     & SIGMAG,IPBOT,SETDEP)
+     & SIGMAG,IPBOT,SETDEP,OPTSOU)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P1
@@ -93,6 +93,12 @@
 !+        16/06/2015
 !+        V7P1
 !+   Changing %FAC%R into %IFAC%I.
+!
+!history  A. LEROY (EDF LAB, LNHE)
+!+        28/08/2015
+!+        V7P1
+!+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
+!+   not (OPTSOU=1).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
@@ -206,7 +212,7 @@
 !     PROVISOIRE
 !
       USE DECLARATIONS_TELEMAC3D, ONLY:UCONV,VCONV,WSCONV,DM1,ZCONV
-      USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU
+      USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU,ISCE,KSCE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -215,7 +221,7 @@
 !-----------------------------------------------------------------------
 !
       INTEGER, INTENT(IN)             :: SCHCF,SCHDF,TRBAF,OPTDIF,NSCE
-      INTEGER, INTENT(IN)             :: NPOIN2,SETDEP
+      INTEGER, INTENT(IN)             :: NPOIN2,SETDEP,OPTSOU
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FD,FC,FN,S0F,S1F,VISCF
       TYPE(BIEF_OBJ), INTENT(IN)      :: LIFBOL,LIFBOF,LIFBOS
       TYPE(BIEF_OBJ), INTENT(IN)      :: FBORL,FBORF,FBORS
@@ -342,18 +348,43 @@
 !
       IF(YASCE.AND.NSCE.GT.0) THEN
         DO IS=1,NSCE
-!         IF INTAKE FSCE=F, SO NO EXTRA TERM
-          IIS=IS
-!         IN PARALLEL MODE SOURCES WITHOUT PARCOM
-          IF(NCSIZE.GT.1) IIS=IIS+NSCE
-          DO I=1,NPOIN3
+          IF(OPTSOU.EQ.1) THEN
+          ! SOURCE NOT CONSIDERED AS A DIRAC
+!          IF INTAKE FSCE=F, SO NO EXTRA TERM
+            IIS=IS
+!           IN PARALLEL MODE SOURCES WITHOUT PARCOM
+            IF(NCSIZE.GT.1) IIS=IIS+NSCE
+            DO I=1,NPOIN3
+!             EXPLICIT SOURCE TERM
+              SEM3D%R(I) = SEM3D%R(I)
+     &                   + MAX(SOURCES%ADR(IIS)%P%R(I),0.D0)*
+     &              (FSCE(IS)-(1.D0-TETASUPG)*FN%R(I))
+!            IMPLICIT SOURCE TERM : SEE BELOW
+            ENDDO
+          ELSE IF(OPTSOU.EQ.2) THEN
+          ! SOURCE CONSIDERED AS A DIRAC
+            IIS=1
+!           IN PARALLEL MODE SOURCES WITHOUT PARCOM
+            IF(NCSIZE.GT.1) IIS=2
+            IF(ISCE(IS).GT.0) THEN
+              I=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+!             EXPLICIT SOURCE TERM
+              SEM3D%R(I) = SEM3D%R(I)
+     &                   + MAX(SOURCES%ADR(IIS)%P%R(I),0.D0)*
+     &              (FSCE(IS)-(1.D0-TETASUPG)*FN%R(I))
+!            IMPLICIT SOURCE TERM : SEE BELOW
+            ENDIF
+          ENDIF
+        ENDDO
+        ! BEDFLUXES
+        IF(BEDBOU)THEN
+          DO I=1,NPOIN2
 !           EXPLICIT SOURCE TERM
             SEM3D%R(I) = SEM3D%R(I)
-     &                 + MAX(SOURCES%ADR(IIS)%P%R(I),0.D0)*
-     &            (FSCE(IS)-(1.D0-TETASUPG)*FN%R(I))
-!           IMPLICIT SOURCE TERM : SEE BELOW
+     &                 - MAX(BEDFLU%R(I),0.D0)*
+     &                   (1.D0-TETASUPG)*FN%R(I)
           ENDDO
-        ENDDO
+        ENDIF
         ! BEDFLUXES
         IF(BEDBOU)THEN
           DO I=1,NPOIN2
@@ -410,17 +441,38 @@
 !     SOURCES INSIDE THE DOMAIN
 !
       IF(YASCE.AND.NSCE.GT.0) THEN
-        DO IS=1,NSCE
-!         IF INTAKE FSCE=T, SO NO EXTRA TERM
-          IIS=IS
+        IF(OPTSOU.EQ.1) THEN
+        ! SOURCE NOT CONSIDERED AS A DIRAC
+          DO IS=1,NSCE
+!           IF INTAKE FSCE=T, SO NO EXTRA TERM
+            IIS=IS
+!           IN PARALLEL MODE SOURCES WITHOUT PARCOM
+            IF(NCSIZE.GT.1) IIS=IIS+NSCE
+            DO I=1,NPOIN3
+!             IMPLICIT SOURCE TERM
+              MTRA2%D%R(I)=MTRA2%D%R(I)+
+     &                     MAX(SOURCES%ADR(IIS)%P%R(I),0.D0)*TETASUPG
+            ENDDO
+          ENDDO
+        ELSE IF(OPTSOU.EQ.2) THEN
+        ! SOURCE CONSIDERED AS A DIRAC
+          IIS=1
 !         IN PARALLEL MODE SOURCES WITHOUT PARCOM
-          IF(NCSIZE.GT.1) IIS=IIS+NSCE
+          IF(NCSIZE.GT.1) IIS=2
           DO I=1,NPOIN3
 !           IMPLICIT SOURCE TERM
             MTRA2%D%R(I)=MTRA2%D%R(I)+
      &                   MAX(SOURCES%ADR(IIS)%P%R(I),0.D0)*TETASUPG
           ENDDO
-        ENDDO
+        ENDIF
+        
+        IF(BEDBOU)THEN
+          DO I=1,NPOIN2
+!           IMPLICIT BEDFLUX TERM
+            MTRA2%D%R(I)=MTRA2%D%R(I)+
+     &                   MAX(BEDFLU%R(I),0.D0)*TETASUPG
+          ENDDO
+        ENDIF
         IF(BEDBOU)THEN
           DO I=1,NPOIN2
 !           IMPLICIT BEDFLUX TERM

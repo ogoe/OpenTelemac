@@ -6,7 +6,7 @@
      & TRA01,TRA02,TRA03,STRA01,STRA02,STRA03,IKLE3,MESH3,
      & NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL,INFOR,CALFLU,FLUX,FLUEXT,
      & S0F,NSCE,SOURCES,FSCE,RAIN,PLUIE,TRAIN,NPOIN2,MINFC,MAXFC,MASKPT,
-     & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN,IELM3)
+     & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN,IELM3,OPTSOU)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P1
@@ -85,6 +85,12 @@
 !+   Guilty point in case of maximum iterations is now printed with its
 !+   global number in parallel.
 !
+!history  A. LEROY (EDF LAB, LNHE)
+!+        28/08/2015
+!+        V7P1
+!+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
+!+   not (OPTSOU=1).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
 !| DB             |<->| NOT SYMMETRIC MURD MATRIX OPTION N
@@ -142,7 +148,8 @@
       USE BIEF
       USE INTERFACE_PARALLEL
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU,T2_18,MESH2D
+      USE DECLARATIONS_TELEMAC3D, ONLY: BEDBOU,BEDFLU,T2_18,MESH2D,
+     &                                  KSCE, ISCE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -151,7 +158,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: SCHCF,NELEM3,NPOIN3,LV,NPOIN2
-      INTEGER, INTENT(IN)             :: IELM3,DIM1XB
+      INTEGER, INTENT(IN)             :: IELM3,DIM1XB,OPTSOU
 !                                                     6 OR 4
       INTEGER, INTENT(IN)             :: IKLE3(NELEM3,*),NSCE,OPTBAN
       INTEGER, INTENT(IN)             :: NSEG,NPLAN,DIMGLO
@@ -773,15 +780,52 @@
       ENDDO
 !     POSITIVE SOURCES CHANGE THE MONOTONICITY CRITERION
       IF(NSCE.GT.0) THEN
-        DO IS=1,NSCE
-          DO IPOIN=1,NPOIN3
-            IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
-              TRA03(IPOIN)=TRA03(IPOIN)
-     &                    -DTJ*SOURCES%ADR(IS)%P%R(IPOIN)
-!                                          WITH PARCOM
+        IF(OPTSOU.EQ.1) THEN
+        ! SOURCE NOT CONSIDERED AS A DIRAC
+          DO IS=1,NSCE
+            DO IPOIN=1,NPOIN3
+              IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
+                TRA03(IPOIN)=TRA03(IPOIN)
+     &                      -DTJ*SOURCES%ADR(IS)%P%R(IPOIN)
+!                                            WITH PARCOM
+              ENDIF
+            ENDDO
+          ENDDO
+        ELSE IF(OPTSOU.EQ.2) THEN
+        ! SOURCE CONSIDERED AS A DIRAC
+          DO IS=1,NSCE
+            IF(ISCE(IS).GT.0) THEN
+              IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+              IF(SOURCES%ADR(1)%P%R(IPOIN).GT.0.D0) THEN
+                TRA03(IPOIN)=TRA03(IPOIN)
+     &                      -DTJ*SOURCES%ADR(1)%P%R(IPOIN)
+              ENDIF
             ENDIF
           ENDDO
+        ENDIF
+      ENDIF
+!
+!     POSITIVE BED FLUXES CHANGE THE MONOTONICITY CRITERION
+!
+      IF(BEDBOU) THEN
+        ! STORE BEDFLU IN T2_18 AS IT NEEDS TO BE ASSEMBLED
+        CALL CPSTVC(BEDFLU,T2_18)
+        CALL OS('X=Y     ',X=T2_18,Y=BEDFLU)
+        IF(NCSIZE.GT.1) CALL PARCOM(T2_18,2,MESH2D)
+        DO IPOIN=1,NPOIN2
+          IF(T2_18%R(IPOIN).GT.0.D0) THEN
+            TRA03(IPOIN)=TRA03(IPOIN)
+     &                  -DTJ*T2_18%R(IPOIN)
+!                                        WITH PARCOM
+          ENDIF
         ENDDO
+!         DO IPOIN=1,NPOIN2
+!           IF(BEDFLU%R(IPOIN).GT.0.D0) THEN
+!             TRA03(IPOIN)=TRA03(IPOIN)
+!      &                  -DTJ*BEDFLU%R(IPOIN)
+! !                                        WITH PARCOM
+!           ENDIF
+!         ENDDO
       ENDIF
 !
 !     POSITIVE BED FLUXES CHANGE THE MONOTONICITY CRITERION
@@ -822,14 +866,60 @@
 !     POSITIVE SOURCES CHANGE THE MONOTONICITY CRITERION
 !
       IF(NSCE.GT.0) THEN
-        DO IS=1,NSCE
-          DO IPOIN=1,NPOIN3
-            IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
-              TRA03(IPOIN)=TRA03(IPOIN)
-     &                    -DTJ*SOURCES%ADR(IS+NSCE)%P%R(IPOIN)
-!                                          WITHOUT PARCOM
+        IF(OPTSOU.EQ.1) THEN
+        ! SOURCE NOT CONSIDERED AS A DIRAC
+          DO IS=1,NSCE
+            IIS=IS
+!           HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!           ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
+            IF(NCSIZE.GT.1) IIS=IIS+NSCE
+            DO IPOIN=1,NPOIN3
+              IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
+                TRA03(IPOIN)=TRA03(IPOIN)
+     &                      -DTJ*SOURCES%ADR(IIS)%P%R(IPOIN)
+!                                            WITHOUT PARCOM
+              ENDIF
+            ENDDO
+          ENDDO
+        ELSE IF(OPTSOU.EQ.2) THEN
+        ! SOURCE CONSIDERED AS A DIRAC
+          DO IS=1,NSCE
+            IIS=1
+!           HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!           ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
+            IF(NCSIZE.GT.1) IIS=2
+            IF(ISCE(IS).GT.0) THEN
+              IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+              IF(SOURCES%ADR(1)%P%R(IPOIN).GT.0.D0) THEN
+                TRA03(IPOIN)=TRA03(IPOIN)
+     &                      -DTJ*SOURCES%ADR(IIS)%P%R(IPOIN)
+!                                              WITHOUT PARCOM
+              ENDIF
             ENDIF
           ENDDO
+        ENDIF
+      ENDIF
+!
+!     POSITIVE BED FLUXES CHANGE THE MONOTONICITY CRITERION
+!
+      IF(BEDBOU) THEN
+!         DO IPOIN=1,NPOIN2
+!           IF(BEDFLU%R(IPOIN).GT.0.D0) THEN
+!             TRA03(IPOIN)=TRA03(IPOIN)
+!      &                  -DTJ*BEDFLU%R(IPOIN)
+! !                                        WITHOUT PARCOM
+!           ENDIF
+!         ENDDO
+        ! STORE BEDFLU IN T2_18 AS IT NEEDS TO BE ASSEMBLED
+        CALL CPSTVC(BEDFLU,T2_18)
+        CALL OS('X=Y     ',X=T2_18,Y=BEDFLU)
+        IF(NCSIZE.GT.1) CALL PARCOM(T2_18,2,MESH2D)
+        DO IPOIN=1,NPOIN2
+          IF(T2_18%R(IPOIN).GT.0.D0) THEN
+            TRA03(IPOIN)=TRA03(IPOIN)
+     &                  -DTJ*T2_18%R(IPOIN)
+!                                        WITHOUT PARCOM
+          ENDIF
         ENDDO
       ENDIF
 !
@@ -921,19 +1011,38 @@
         ENDDO
         IF(NSCE.GT.0) THEN
           DO IS=1,NSCE
-            IIS=IS
-!           HERE IN PARALLEL SOURCES WITHOUT PARCOM
-!           ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
-            IF(NCSIZE.GT.1) IIS=IIS+NSCE
-            DO IPOIN=1,NPOIN3
-              IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
-                FLUX=FLUX
-     &              -DTJALFA*FSCE(IS)*SOURCES%ADR(IIS)%P%R(IPOIN)
-              ELSE
-                FLUX=FLUX
-     &              -DTJALFA*FC(IPOIN)*SOURCES%ADR(IIS)%P%R(IPOIN)
+            IF(OPTSOU.EQ.1) THEN
+            ! SOURCE NOT CONSIDERED AS A DIRAC
+              IIS=IS
+!             HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!             ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
+              IF(NCSIZE.GT.1) IIS=IIS+NSCE
+              DO IPOIN=1,NPOIN3
+                IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
+                  FLUX=FLUX
+     &                -DTJALFA*FSCE(IS)*SOURCES%ADR(IIS)%P%R(IPOIN)
+                ELSE
+                  FLUX=FLUX
+     &                -DTJALFA*FC(IPOIN)*SOURCES%ADR(IIS)%P%R(IPOIN)
+                ENDIF
+              ENDDO
+            ELSE IF(OPTSOU.EQ.2) THEN
+            ! SOURCE CONSIDERED AS A DIRAC
+              IIS=1
+!             HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!             ARE STORED AT ADRESSES 2 (SEE SOURCES_SINKS.F)
+              IF(NCSIZE.GT.1) IIS=2
+              IF(ISCE(IS).GT.0) THEN
+                IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+                IF(SOURCES%ADR(1)%P%R(IPOIN).GT.0.D0) THEN
+                  FLUX=FLUX
+     &                -DTJALFA*FSCE(IS)*SOURCES%ADR(IIS)%P%R(IPOIN)
+                ELSE
+                  FLUX=FLUX
+     &                -DTJALFA*FC(IPOIN)*SOURCES%ADR(IIS)%P%R(IPOIN)
+                ENDIF
               ENDIF
-            ENDDO
+            ENDIF
           ENDDO
         ENDIF
 !       FOR BED FLUXES
@@ -958,19 +1067,43 @@
       IF(NSCE.GT.0) THEN
         DO IS=1,NSCE
           IF(OPTBAN.EQ.2) THEN
-            DO IPOIN=1,NPOIN3
-              IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
-                FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
-     &          *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+            IF(OPTSOU.EQ.1) THEN
+            ! THE SOURCE IS NOT CONSIDERED AS A DIRAC
+              DO IPOIN=1,NPOIN3
+                IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
+                    FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
+     &              *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+                ENDIF
+              ENDDO
+            ELSE IF(OPTSOU.EQ.2) THEN
+            ! THE SOURCE IS CONSIDERED AS A DIRAC
+              IF(ISCE(IS).GT.0) THEN
+                IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+                IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
+                  FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
+     &            *MAX(SOURCES%ADR(1)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+                ENDIF
               ENDIF
-            ENDDO
+            ENDIF
           ELSE
-            DO IPOIN=1,NPOIN3
-              IF(TRA01(IPOIN).GT.EPS) THEN
-                FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
-     &          *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+            IF(OPTSOU.EQ.1) THEN
+            ! THE SOURCE IS NOT CONSIDERED AS A DIRAC
+              IF(ISCE(IS).GT.0) THEN
+                IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+                IF(TRA01(IPOIN).GT.EPS) THEN
+                  FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
+     &            *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+                ENDIF
               ENDIF
-            ENDDO
+            ELSE IF(OPTSOU.EQ.2) THEN
+            ! THE SOURCE IS CONSIDERED AS A DIRAC
+              DO IPOIN=1,NPOIN3
+                IF(TRA01(IPOIN).GT.EPS) THEN
+                  FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
+     &            *MAX(SOURCES%ADR(1)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+                ENDIF
+              ENDDO
+            ENDIF
           ENDIF
         ENDDO
       ENDIF

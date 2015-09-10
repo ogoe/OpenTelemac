@@ -17,7 +17,7 @@
      & YAWCC,WCC,AGGLOD,NSCE,SOURCES,FSCE,NUMLIQ,DIRFLU,NFRLIQ,
      & VOLUT,ZT,ZPROP,RAIN,PLUIE,PARAPLUIE,TRAIN,
      & FLODEL,FLOPAR,SIGMAG,IPBOT,MAXADV,FLUDPT,FLUDP,FLUER,
-     & VOLU2D,V2DPAR,SETDEP)
+     & VOLU2D,V2DPAR,SETDEP,OPTSOU)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P0                                   21/08/2010
@@ -75,6 +75,12 @@
 !+        29/04/2014
 !+        V7P0
 !+   Argument SETDEP added to diff3d.
+!
+!history  A. LEROY (EDF LAB, LNHE)
+!+        28/08/2015
+!+        V7P1
+!+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
+!+   not (OPTSOU=1).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
@@ -206,7 +212,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE INTERFACE_TELEMAC3D, EX_CVDF3D => CVDF3D
-      USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU
+      USE DECLARATIONS_TELEMAC3D, ONLY : KSCE, ISCE,
+     &                                   BEDBOU,BEDFLU
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -228,6 +235,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: FLUXF,TETADI
       INTEGER, INTENT(IN)             :: SCHCF,SCHDF,TRBAF,NPTFR3,NFRLIQ
       INTEGER, INTENT(IN)             :: NUMLIQ(*),DIRFLU(0:NFRLIQ)
+      INTEGER, INTENT(IN)             :: OPTSOU
       LOGICAL, INTENT(IN)             :: CLIMIN,CLIMAX,RAIN,YAS0F,YAS1F
       LOGICAL, INTENT(IN)             :: INFOR,NEWDIF,CALFLU,MSK,SIGMAG
       TYPE(SLVCFG)                    :: SLVDIF
@@ -429,7 +437,8 @@
      &              RAIN,PARAPLUIE%R,TRAIN,NPOIN2,
      &              TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
      &              FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
-     &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3)
+     &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3,
+     &              OPTSOU)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !       IF DIFF3D IS CALLED AFTER
@@ -450,7 +459,8 @@
      &              RAIN,PARAPLUIE%R,TRAIN,NPOIN2,
      &              TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
      &              FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
-     &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3)
+     &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3,
+     &              OPTSOU)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !       IF DIFF3D IS CALLED AFTER
@@ -473,7 +483,7 @@
      &                  MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,
      &                  TRAV3%ADR(6)%P,TRAV3%ADR(7)%P,
      &                  TRAV3%ADR(8)%P,
-     &                  TRAV3%ADR(9)%P,2,IELM3,MAXADV)
+     &                  TRAV3%ADR(9)%P,2,IELM3,MAXADV,OPTSOU)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !       IF DIFF3D IS CALLED AFTER
@@ -500,7 +510,7 @@
      &                  MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,
      &                  TRAV3%ADR(6)%P,TRAV3%ADR(7)%P,
      &                  TRAV3%ADR(8)%P,
-     &                  TRAV3%ADR(9)%P,2,IELM3,MAXADV)
+     &                  TRAV3%ADR(9)%P,2,IELM3,MAXADV,OPTSOU)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !       IF DIFF3D IS CALLED AFTER
@@ -618,7 +628,7 @@
      &              NPLAN,OPTBAN,OPTDIF,TETADI,YAWCC,WCC,AGGLOD,
      &              VOLUME,YASCE,NSCE,FSCE,SOURCES,TETASUPG,
      &              VELOCITY,YARAIN,PLUIE%R,TRAIN,SIGMAG,IPBOT,
-     &              SETDEP)
+     &              SETDEP,OPTSOU)
 !
         IF(SCHCF.EQ.ADV_SUP.AND..NOT.VELOCITY) THEN
 !         MESH3D%Z RESTORED
@@ -650,18 +660,54 @@
 !       (FOR DISTRIBUTIVE SCHEMES IT IS DONE IN MURD3D)
 !
         IF(NSCE.GT.0.AND.(SCHCF.EQ.ADV_CAR.OR.SCHCF.EQ.ADV_SUP)) THEN
-          DO IS=1,NSCE
-            IIS=IS
+          IF(OPTSOU.EQ.1) THEN
+          ! SOURCE NOT CONSIDERED AS A DIRAC
+            DO IS=1,NSCE
+              IIS=IS
+!             HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!             ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
+              IF(NCSIZE.GT.1) IIS=IIS+NSCE
+              DO IP=1,NPOIN3
+                IF(SOURCES%ADR(IS)%P%R(IP).GT.0.D0) THEN
+                  FLUXF=FLUXF-FSCE(IS)*SOURCES%ADR(IIS)%P%R(IP)*DT
+                ELSE
+!                             FN FOR CHARACTERISTICS ?
+                  FLUXF=FLUXF-FD%R(IP)*SOURCES%ADR(IIS)%P%R(IP)*DT
+                ENDIF
+              ENDDO
+            ENDDO
+          ELSE IF(OPTSOU.EQ.2) THEN
+          ! SOURCE CONSIDERED AS A DIRAC
+            IIS = 1
 !           HERE IN PARALLEL SOURCES WITHOUT PARCOM
-            IF(NCSIZE.GT.1) IIS=IIS+NSCE
-            DO IP=1,NPOIN3
-              IF(SOURCES%ADR(IS)%P%R(IP).GT.0.D0) THEN
-                FLUXF=FLUXF-FSCE(IS)*SOURCES%ADR(IIS)%P%R(IP)*DT
-              ELSE
-!                           FN FOR CHARACTERISTICS ?
-                FLUXF=FLUXF-FD%R(IP)*SOURCES%ADR(IIS)%P%R(IP)*DT
+!           ARE STORED AT ADRESSES 2 (SEE SOURCES_SINKS.F)
+            IF(NCSIZE.GT.1) IIS=2
+            DO IS=1,NSCE
+              IF(ISCE(IS).GT.0) THEN
+                IP=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+                IF(SOURCES%ADR(1)%P%R(IP).GT.0.D0) THEN
+                  FLUXF=FLUXF-FSCE(IS)*SOURCES%ADR(IIS)%P%R(IP)*DT
+                ENDIF
               ENDIF
             ENDDO
+            DO IP=1,NPOIN3
+              IF(SOURCES%ADR(1)%P%R(IP).LE.0.D0) THEN
+!                             FN FOR CHARACTERISTICS ?
+                  FLUXF=FLUXF-FD%R(IP)*SOURCES%ADR(IIS)%P%R(IP)*DT
+              ENDIF
+            ENDDO
+          ENDIF
+        ENDIF
+!
+!       CHARACTERISTICS OR SUPG : BED FLUXES
+!       (FOR DISTRIBUTIVE SCHEMES IT IS DONE IN MURD3D)
+!
+        IF(BEDBOU.AND.(SCHCF.EQ.ADV_CAR.OR.SCHCF.EQ.ADV_SUP)) THEN
+          DO IP=1,NPOIN2
+            IF(BEDFLU%R(IP).LE.0.D0) THEN
+!                         FN FOR CHARACTERISTICS ?
+              FLUXF=FLUXF-FD%R(IP)*BEDFLU%R(IP)*DT
+            ENDIF
           ENDDO
         ENDIF
 !

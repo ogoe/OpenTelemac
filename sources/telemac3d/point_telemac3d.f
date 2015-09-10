@@ -1178,7 +1178,15 @@
       I=NSCE
       IF(NCSIZE.GT.1) I=2*NSCE
       IF(NSCE.GT.0) THEN
-        CALL BIEF_ALLVEC_IN_BLOCK(SOURCES,I,1,'SCE   ',IELM3,1,1,MESH3D)
+        IF(OPTSOU.EQ.1) THEN
+          CALL BIEF_ALLVEC_IN_BLOCK(SOURCES,I,1,'SCE   ',IELM3,
+     &                              1,1,MESH3D)
+        ELSE IF(OPTSOU.EQ.2) THEN
+          I=1
+          IF(NCSIZE.GT.1) I=2
+          CALL BIEF_ALLVEC_IN_BLOCK(SOURCES,I,1,'SCE   ',IELM3,
+     &                              1,1,MESH3D)
+        ENDIF
       ELSE
         CALL BIEF_ALLVEC_IN_BLOCK(SOURCES,I,1,'SCE   ',0    ,1,0,MESH3D)
       ENDIF

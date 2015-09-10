@@ -56,6 +56,12 @@
 !+        V7P1
 !+   Changing %FAC%R into %IFAC%I.
 !
+!history  A. LEROY (EDF LAB, LNHE)
+!+        28/08/2015
+!+        V7P1
+!+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
+!+   not (OPTSOU=1).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BC             |-->| LOGICAL, IF YES, BOUNDARY CONDITIONS
 !|                |   | ARE TAKEN INTO ACCOUNT (SEE CALL FLUPRI...)
@@ -135,12 +141,31 @@
 !       WITH OPTIONS 2 AND 3, THIS IS ALREADY IN RHS_PRESSURE
 !
         IF(NSCE.GE.1) THEN
-          DO IS=1,NSCE
-            IIS=IS
+          IF(OPTSOU.EQ.1) THEN
+          ! SOURCE NOT CONSIDERED AS A DIRAC
+            DO IS=1,NSCE
+              IIS=IS
+!             HERE SOURCES IN THE NON ASSEMBLED (PARCOM) FORM
+!             SEE SOURCES_SINKS
+              IF(NCSIZE.GT.1) IIS=IS+NSCE
+              CALL OS('X=X+Y   ',X=SEM3D,Y=SOURCES%ADR(IIS)%P)
+            ENDDO
+          ELSE IF(OPTSOU.EQ.2) THEN
+          ! SOURCE CONSIDERED AS A DIRAC
+            IIS=1
 !           HERE SOURCES IN THE NON ASSEMBLED (PARCOM) FORM
 !           SEE SOURCES_SINKS
-            IF(NCSIZE.GT.1) IIS=IS+NSCE
+            IF(NCSIZE.GT.1) IIS=2
             CALL OS('X=X+Y   ',X=SEM3D,Y=SOURCES%ADR(IIS)%P)
+          ENDIF
+        ENDIF
+!
+!       BED FLUXES : DIV(U) WILL NOT BE 0
+!       WITH OPTIONS 2 AND 3, THIS IS ALREADY IN RHS_PRESSURE
+!
+        IF(BEDBOU) THEN
+          DO IPOIN2=1,NPOIN2
+            SEM3D%R(IPOIN2)=SEM3D%R(IPOIN2)+BEDFLU%R(IPOIN2)
           ENDDO
         ENDIF
 !
@@ -158,7 +183,7 @@
         CALL RHS_PRESSURE(SEM3D,UP,VP,WP,IELM3,DM1,GRAZCO,SVIDE,
      &                    MESH3D,MSK,MASKEL,FLUEXT,NSCE,RAIN,PLUIE,
      &                    SOURCES,GRADZF,VOLU2D,DSSUDT,
-     &                    NPOIN2,NPOIN3,NPLAN)
+     &                    NPOIN2,NPOIN3,NPLAN,OPTSOU)
 !
       ELSE
 !

@@ -3,7 +3,8 @@
 !                    ***********************
 !
      &(DIVU,UP,VP,WP,IELM3,DM1,GRAZCO,SVIDE,MESH3D,MSK,MASKEL,FLUEXT,
-     & NSCE,RAIN,PLUIE,SOURCES,GRADZF,VOLU2D,DSSUDT,NPOIN2,NPOIN3,NPLAN)
+     & NSCE,RAIN,PLUIE,SOURCES,GRADZF,VOLU2D,DSSUDT,NPOIN2,NPOIN3,NPLAN,
+     & OPTSOU)
 !
 !***********************************************************************
 ! TELEMAC3D
@@ -27,6 +28,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER,         INTENT(IN)    :: IELM3,NSCE,NPOIN2,NPOIN3,NPLAN
+      INTEGER,         INTENT(IN)    :: OPTSOU
       LOGICAL,         INTENT(IN)    :: MSK,RAIN
       TYPE(BIEF_OBJ),  INTENT(INOUT) :: DIVU
       TYPE(BIEF_OBJ),  INTENT(IN)    :: UP,VP,WP,PLUIE,SOURCES,GRADZF
@@ -66,13 +68,22 @@
 !     + SOURCE
 !
       IF(NSCE.GE.1) THEN
-        DO IS=1,NSCE
-          IIS=IS
+        IF(OPTSOU.EQ.1) THEN
+        ! SOURCE NOT CONSIDERED AS A DIRAC
+          DO IS=1,NSCE
+            IIS=IS
+!           HERE SOURCES IN THE NON ASSEMBLED (PARCOM) FORM
+!           SEE SOURCES_SINKS
+            IF(NCSIZE.GT.1) IIS=IS+NSCE
+            CALL OS('X=X+Y   ',X=DIVU,Y=SOURCES%ADR(IIS)%P)
+          ENDDO
+        ELSE IF(OPTSOU.EQ.2) THEN
+          IIS=1
 !         HERE SOURCES IN THE NON ASSEMBLED (PARCOM) FORM
 !         SEE SOURCES_SINKS
-          IF(NCSIZE.GT.1) IIS=IS+NSCE
+          IF(NCSIZE.GT.1) IIS=2
           CALL OS('X=X+Y   ',X=DIVU,Y=SOURCES%ADR(IIS)%P)
-        ENDDO
+        ENDIF
       ENDIF
 !
 !     + BEDFLUXES

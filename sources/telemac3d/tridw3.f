@@ -7,7 +7,7 @@
      & SIGMAG,OPTBAN,MESH3D,MTRA1,MASKEL,NPOIN2,T2_01,NPLAN,
      & FLUEXT,NSCE,SOURCES,RAIN,PLUIE,FLUINT,NETAGE,UNSV2D,SVIDE,
      & NELEM2,MSK,N_ADV,VOLU2D,INFOGR,DSSUDT,IELM3,DM1,
-     & GRAZCO,MESH2D,SEM3D,NELEM3,GRADZF)
+     & GRAZCO,MESH2D,SEM3D,NELEM3,GRADZF,OPTSOU)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P2                                   21/08/2010
@@ -21,6 +21,12 @@
 !+        27/03/2012
 !+        V6P2
 !+
+!
+!history  A. LEROY (EDF LAB, LNHE)
+!+        28/08/2015
+!+        V7P1
+!+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
+!+   not (OPTSOU=1).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COR_EXT        |<->| WORK ARRAY, CORRECTION OF FLUEXT
@@ -86,7 +92,7 @@
 !
       INTEGER, INTENT(IN)           :: NPOIN2,NPOIN3,IELM3,NELEM3,NETAGE
       INTEGER, INTENT(IN)           :: NPLAN,NSCE,OPTBAN,N_ADV(0:15)
-      INTEGER, INTENT(IN)           :: NELEM2
+      INTEGER, INTENT(IN)           :: NELEM2,OPTSOU
       LOGICAL, INTENT(IN)           :: RAIN,MSK,INFOGR,SIGMAG
       DOUBLE PRECISION, INTENT(IN)  :: DT
       TYPE(BIEF_OBJ), INTENT(INOUT) :: WSCONV,FLUVER,SUMFLU,ERROR,FLUINT
@@ -101,7 +107,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IETAGE, I,IAD1,IAD2,IAD3,IS,IPLAN,IPOIN2
+      INTEGER IETAGE, I,IAD1,IAD2,IAD3,IS,IPLAN,IPOIN2,IIS
       DOUBLE PRECISION :: SURDT
       CHARACTER(LEN=16) FORMUL
       LOGICAL TESTING
@@ -212,11 +218,35 @@
 !       LIKE WITH PREVIOUS TRIDW2)
         IF(NSCE.GT.0) THEN
 !         WITH SOURCES
-          DO IS=1,NSCE
+          IF(OPTSOU.EQ.1) THEN
+          ! SOURCE NOT CONSIDERED AS A DIRAC
+            DO IS=1,NSCE
+              IIS=IS
+!             HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!             ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
+              IF(NCSIZE.GT.1) IIS=IIS+NSCE
+              DO I=1,NPOIN3
+!               NON ASSEMBLED SOURCES
+                SUMFLU%R(I)=SUMFLU%R(I)-SOURCES%ADR(IIS)%P%R(I)
+              ENDDO
+            ENDDO
+          ELSE IF(OPTSOU.EQ.2) THEN
+            IIS=1
+!           HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!           ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
+            IF(NCSIZE.GT.1) IIS=2
+          ! SOURCE CONSIDERED AS A DIRAC
             DO I=1,NPOIN3
 !             NON ASSEMBLED SOURCES
-              SUMFLU%R(I)=SUMFLU%R(I)-SOURCES%ADR(IS+NSCE)%P%R(I)
+              SUMFLU%R(I)=SUMFLU%R(I)-SOURCES%ADR(IIS)%P%R(I)
             ENDDO
+          ENDIF
+        ENDIF
+!       WITH BED FLUXES
+        IF(BEDBOU) THEN
+          DO I=1,NPOIN2
+!           NON ASSEMBLED BED FLUXES
+            SUMFLU%R(I)=SUMFLU%R(I)-BEDFLU%R(I)
           ENDDO
         ENDIF
 !       WITH BED FLUXES

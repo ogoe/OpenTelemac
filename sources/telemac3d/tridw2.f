@@ -3,7 +3,7 @@
 !                    *****************
 !
      &(WSCONV,VOLU,VOLUN,SEM2D,FLUINT,FLUEXT,SOURCES,NSCE,NETAGE,NPOIN2,
-     & DT,UNSV2D,MESH2D)
+     & DT,UNSV2D,MESH2D,OPTSOU)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P2                                   21/08/2010
@@ -70,6 +70,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  A. LEROY (EDF LAB, LNHE)
+!+        28/08/2015
+!+        V7P1
+!+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
+!+   not (OPTSOU=1).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
 !| FLUINT         |-->| INTERNAL FLUXES
@@ -97,7 +103,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)           :: NSCE,NETAGE,NPOIN2
+      INTEGER, INTENT(IN)           :: NSCE,NETAGE,NPOIN2,OPTSOU
       DOUBLE PRECISION, INTENT(IN)  :: DT
       TYPE(BIEF_OBJ), INTENT(INOUT) :: WSCONV,SEM2D
       TYPE(BIEF_OBJ), INTENT(IN)    :: VOLU,VOLUN,FLUINT,FLUEXT
@@ -153,13 +159,23 @@
 !
         IF(NSCE.GT.0) THEN
 !         WITH SOURCES
-          DO IS=1,NSCE
-          DO I=1,NPOIN2
-            IAD2=(IETAGE-1)*NPOIN2+I
-            SEM2D%ADR(1)%P%R(I) = SEM2D%ADR(1)%P%R(I)
-     &                            + SOURCES%ADR(IS)%P%R(IAD2)
-          ENDDO
-          ENDDO
+          IF(OPTSOU.EQ.1) THEN
+          ! SOURCE NOT CONSIDERED AS A DIRAC
+            DO IS=1,NSCE
+              DO I=1,NPOIN2
+                IAD2=(IETAGE-1)*NPOIN2+I
+                SEM2D%ADR(1)%P%R(I) = SEM2D%ADR(1)%P%R(I)
+     &                              + SOURCES%ADR(IS)%P%R(IAD2)
+              ENDDO
+            ENDDO
+          ELSE IF(OPTSOU.EQ.2) THEN
+          ! SOURCE CONSIDERED AS A DIRAC
+            DO I=1,NPOIN2
+              IAD2=(IETAGE-1)*NPOIN2+I
+              SEM2D%ADR(1)%P%R(I) = SEM2D%ADR(1)%P%R(I)
+     &                            + SOURCES%ADR(1)%P%R(IAD2)
+            ENDDO
+          ENDIF
         ENDIF
 !
 !       SOLVES THE SYSTEM (JUST A DIVISION BY DIAGONAL)

@@ -43,6 +43,12 @@
 !+   Correction of SMH in parallel with sources : it must be
 !+   assembled.
 !
+!history  A. LEROY (EDF LAB, LNHE)
+!+        28/08/2015
+!+        V7P1
+!+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
+!+   not (OPTSOU=1).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -75,37 +81,65 @@
 !     SOURCES AND SINKS
 !
       IF(NSCE.GT.0) THEN
+
+        IF(OPTSOU.EQ.1) THEN
 !
-!       HERE T3_02 LIKE VOLU, BUT CALL PARCOM (AND ZPROP INSTEAD OF Z)
-        CALL VECTOR(T3_02,'=','MASBAS          ',IELM3,1.D0,SVIDE,
-     &              SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
-     &              MESH3D,.FALSE.,MASKEL)
-        IF(NCSIZE.GT.1) CALL PARCOM(T3_02,2,MESH3D)
-        CALL CPSTVC(T3_02,T3_03)
-        DO IS=1,NSCE
-          CALL OS('X=0     ',X=T3_03)
-!         IN PARALLEL IF ISCE(IS)=0, THE POINT IS OUTSIDE THE SUBDOMAIN
-          IF(ISCE(IS).GT.0) THEN
-            I=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
-            T3_03%R(I)=QSCE2(IS)/MAX(1.D-8,T3_02%R(I))
-          ENDIF
-          CALL VECTOR(SOURCES%ADR(IS)%P,'=','MASVEC          ',
-     &                IELM3,1.D0,T3_03,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
-     &                MESH3D,MSK,MASKEL)
-        ENDDO
-!       SUMS ON THE VERTICAL TO GET THE 2D SOURCES
-        CALL CPSTVC(SMH,T2_01)
-        CALL OS('X=0     ',X=T2_01)
-        DO IS=1,NSCE
-          DO IP=1,NPLAN
-            DO I=1,NPOIN2
-              T2_01%R(I)=T2_01%R(I)+SOURCES%ADR(IS)%P%R(I+NPOIN2*(IP-1))
+!         HERE T3_02 LIKE VOLU, BUT CALL PARCOM (AND ZPROP INSTEAD OF Z)
+          CALL VECTOR(T3_02,'=','MASBAS          ',IELM3,1.D0,SVIDE,
+     &                SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
+     &                MESH3D,.FALSE.,MASKEL)
+          IF(NCSIZE.GT.1) CALL PARCOM(T3_02,2,MESH3D)
+          CALL CPSTVC(T3_02,T3_03)
+          DO IS=1,NSCE
+            CALL OS('X=0     ',X=T3_03)
+!           IN PARALLEL IF ISCE(IS)=0, THE POINT IS OUTSIDE THE SUBDOMAIN
+            IF(ISCE(IS).GT.0) THEN
+              I=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+              T3_03%R(I)=QSCE2(IS)/MAX(1.D-8,T3_02%R(I))
+            ENDIF
+            CALL VECTOR(SOURCES%ADR(IS)%P,'=','MASVEC          ',
+     &                  IELM3,1.D0,T3_03,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
+     &                  MESH3D,MSK,MASKEL)
+          ENDDO
+!         SUMS ON THE VERTICAL TO GET THE 2D SOURCES
+          CALL CPSTVC(SMH,T2_01)
+          CALL OS('X=0     ',X=T2_01)
+          DO IS=1,NSCE
+            DO IP=1,NPLAN
+              DO I=1,NPOIN2
+                T2_01%R(I)=T2_01%R(I)+
+     &                     SOURCES%ADR(IS)%P%R(I+NPOIN2*(IP-1))
+              ENDDO
             ENDDO
           ENDDO
-        ENDDO
-!       SMH IS ASSEMBLED IN //
-        IF(NCSIZE.GT.1) CALL PARCOM(T2_01,2,MESH2D)
-        CALL OS('X=X+Y   ',X=SMH,Y=T2_01)
+!         SMH IS ASSEMBLED IN //
+          IF(NCSIZE.GT.1) CALL PARCOM(T2_01,2,MESH2D)
+          CALL OS('X=X+Y   ',X=SMH,Y=T2_01)
+!
+        ELSE IF(OPTSOU.EQ.2) THEN
+          CALL OS ('X=0     ',X=SOURCES%ADR(1)%P)
+          CALL OS ('X=0     ',X=SOURCES%ADR(2)%P)
+          DO IS=1,NSCE
+!           IN PARALLEL IF ISCE(IS)=0, THE POINT IS OUTSIDE THE SUBDOMAIN
+            IF(ISCE(IS).GT.0) THEN
+              I=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+              SOURCES%ADR(1)%P%R(I)=QSCE2(IS)*MESH3D%IFAC%I(I)
+              SOURCES%ADR(2)%P%R(I)=QSCE2(IS)
+            ENDIF
+          ENDDO
+!         SUMS ON THE VERTICAL TO GET THE 2D SOURCES
+          CALL CPSTVC(SMH,T2_01)
+          CALL OS('X=0     ',X=T2_01)
+          DO IP=1,NPLAN
+            DO I=1,NPOIN2
+              T2_01%R(I)=T2_01%R(I)+SOURCES%ADR(2)%P%R(I+NPOIN2*(IP-1))
+            ENDDO
+          ENDDO
+!         SMH IS ASSEMBLED IN //
+          IF(NCSIZE.GT.1) CALL PARCOM(T2_01,2,MESH2D)
+          CALL OS('X=X+Y   ',X=SMH,Y=T2_01)
+!
+        ENDIF
 !
       ENDIF
 !
@@ -180,11 +214,13 @@
 !
       IF(NCSIZE.GT.1) THEN
         IF(NSCE.GT.0) THEN
-          DO IS=1,NSCE
-            CALL OS('X=Y     ',X=SOURCES%ADR(IS+NSCE)%P,
-     &                         Y=SOURCES%ADR(IS     )%P)
-            CALL PARCOM(SOURCES%ADR(IS)%P,2,MESH3D)
-          ENDDO
+          IF(OPTSOU.EQ.1) THEN
+            DO IS=1,NSCE
+              CALL OS('X=Y     ',X=SOURCES%ADR(IS+NSCE)%P,
+     &                           Y=SOURCES%ADR(IS     )%P)
+              CALL PARCOM(SOURCES%ADR(IS)%P,2,MESH3D)
+            ENDDO
+          ENDIF
         ENDIF
       ENDIF
 !

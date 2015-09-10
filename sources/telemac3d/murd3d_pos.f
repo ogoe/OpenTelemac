@@ -7,7 +7,7 @@
      & NELEM3,NPOIN3,DT,SCHCF,MSK,MASKEL,INFOR,CALFLU,FLUX,FLUEXT,
      & S0F,NSCE,SOURCES,FSCE,RAIN,PLUIE,TRAIN,NPOIN2,
      & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN,
-     & T5,FLUX_REMOVED,SAVED_VOLU2,SAVED_F,OPTION,IELM3,NITMAX)
+     & T5,FLUX_REMOVED,SAVED_VOLU2,SAVED_F,OPTION,IELM3,NITMAX,OPTSOU)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P1
@@ -56,6 +56,12 @@
 !+        12/06/2015
 !+        V7P1
 !+   Sharing at interfaces done differently, one subdomain receives all.
+!
+!history  A. LEROY (EDF LAB, LNHE)
+!+        28/08/2015
+!+        V7P1
+!+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
+!+   not (OPTSOU=1).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
@@ -113,7 +119,8 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU,T2_18,MESH2D
+      USE DECLARATIONS_TELEMAC3D, ONLY: BEDBOU,BEDFLU,T2_18,MESH2D,
+     &                                  KSCE,ISCE 
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -124,7 +131,7 @@
       INTEGER, INTENT(IN)             :: SCHCF,NELEM3,NPOIN3,NPOIN2
       INTEGER, INTENT(IN)             :: NSCE,OPTBAN,NSEG,NPLAN,DIMGLO
       INTEGER, INTENT(IN)             :: GLOSEG(DIMGLO,2),OPTION,IELM3
-      INTEGER, INTENT(IN)             :: NITMAX
+      INTEGER, INTENT(IN)             :: NITMAX,OPTSOU
 !
       DOUBLE PRECISION, INTENT(INOUT) :: FC(NPOIN3)
       DOUBLE PRECISION, INTENT(IN)    :: FN(NPOIN3),PLUIE(NPOIN2)
@@ -335,15 +342,30 @@
 !       ENTERING SOURCES
         IF(NSCE.GT.0) THEN
           DO IS=1,NSCE
-            IIS=IS
-!           HERE IN PARALLEL SOURCES WITHOUT PARCOM
-!           ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
-            IF(NCSIZE.GT.1) IIS=IIS+NSCE
-            DO IPOIN=1,NPOIN3
-              IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
-                FLUX=FLUX-DT*FSCE(IS)*SOURCES%ADR(IIS)%P%R(IPOIN)
+            IF(OPTSOU.EQ.1) THEN
+            ! THE SOURCES ARE NOT CONSIDERED AS A DIRAC
+              IIS=IS
+!             HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!             ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
+              IF(NCSIZE.GT.1) IIS=IIS+NSCE
+              DO IPOIN=1,NPOIN3
+                IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
+                  FLUX=FLUX-DT*FSCE(IS)*SOURCES%ADR(IIS)%P%R(IPOIN)
+                ENDIF
+              ENDDO
+            ELSE IF(OPTSOU.EQ.2) THEN
+            ! THE SOURCES ARE CONSIDERED AS A DIRAC
+              IIS=1
+!             HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!             ARE STORED AT ADRESS 2 (SEE SOURCES_SINKS.F)
+              IF(NCSIZE.GT.1) IIS=2
+              IF(ISCE(IS).GT.0) THEN
+                IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+                IF(SOURCES%ADR(1)%P%R(IPOIN).GT.0.D0) THEN
+                  FLUX=FLUX-DT*FSCE(IS)*SOURCES%ADR(IIS)%P%R(IPOIN)
+                ENDIF
               ENDIF
-            ENDDO
+            ENDIF
           ENDDO
         ENDIF
       ENDIF
@@ -357,14 +379,28 @@
 !     IT WILL ALWAYS GIVE POSITIVE VOLUMES
       IF(NSCE.GT.0) THEN
         DO IS=1,NSCE
-          DO IPOIN=1,NPOIN3
-!           HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
-            IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
-              VOLU2(IPOIN)=VOLU2(IPOIN)+DT*SOURCES%ADR(IS)%P%R(IPOIN)
-              FC(IPOIN)=FC(IPOIN)+DT*(FSCE(IS)-FC(IPOIN))
-     &                       *SOURCES%ADR(IS)%P%R(IPOIN)/VOLU2(IPOIN)
+          IF(OPTSOU.EQ.1) THEN
+          ! THE SOURCES ARE NOT CONSIDERED AS A DIRAC
+            DO IPOIN=1,NPOIN3
+!             HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
+              IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
+                VOLU2(IPOIN)=VOLU2(IPOIN)+DT*SOURCES%ADR(IS)%P%R(IPOIN)
+                FC(IPOIN)=FC(IPOIN)+DT*(FSCE(IS)-FC(IPOIN))
+     &                         *SOURCES%ADR(IS)%P%R(IPOIN)/VOLU2(IPOIN)
+              ENDIF
+            ENDDO
+          ELSEIF(OPTSOU.EQ.2) THEN
+          ! THE SOURCES ARE CONSIDERED AS A DIRAC
+            IF(ISCE(IS).GT.0) THEN
+              IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+!             HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
+              IF(SOURCES%ADR(1)%P%R(IPOIN).GT.0.D0) THEN
+                VOLU2(IPOIN)=VOLU2(IPOIN)+DT*SOURCES%ADR(1)%P%R(IPOIN)
+                FC(IPOIN)=FC(IPOIN)+DT*(FSCE(IS)-FC(IPOIN))
+     &                         *SOURCES%ADR(1)%P%R(IPOIN)/VOLU2(IPOIN)
+              ENDIF
             ENDIF
-          ENDDO
+          ENDIF
         ENDDO
       ENDIF
 !     ENTERING BEDFLUXES
@@ -661,18 +697,45 @@
         ENDIF
 !       EXITING SOURCES
         IF(NSCE.GT.0) THEN
-          DO IS=1,NSCE
-            IIS=IS
-!           HERE IN PARALLEL SOURCES WITHOUT PARCOM
-!           ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
-            IF(NCSIZE.GT.1) IIS=IIS+NSCE
-            DO IPOIN=1,NPOIN3
-              IF(SOURCES%ADR(IS)%P%R(IPOIN).LT.0.D0) THEN
-                FLUX=FLUX
-     &              -DT*FC(IPOIN)*SOURCES%ADR(IIS)%P%R(IPOIN)
+          IF(OPTSOU.EQ.1) THEN
+          ! SOURCE NOT CONSIDERED AS A DIRAC
+            DO IS=1,NSCE
+              IIS=IS
+!             HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!             ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
+              IF(NCSIZE.GT.1) IIS=IIS+NSCE
+              DO IPOIN=1,NPOIN3
+                IF(SOURCES%ADR(IS)%P%R(IPOIN).LT.0.D0) THEN
+                  FLUX=FLUX
+     &                -DT*FC(IPOIN)*SOURCES%ADR(IIS)%P%R(IPOIN)
+                ENDIF
+              ENDDO
+            ENDDO
+          ELSE IF(OPTSOU.EQ.2) THEN
+          ! SOURCE CONSIDERED AS A DIRAC
+            DO IS=1,NSCE
+!             HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!             ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
+              IF(NCSIZE.GT.1) IIS=2
+              IF(ISCE(IS).GT.0) THEN
+                IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+                IF(SOURCES%ADR(1)%P%R(IPOIN).LT.0.D0) THEN
+                  FLUX=FLUX
+     &                -DT*FC(IPOIN)*SOURCES%ADR(IIS)%P%R(IPOIN)
+                ENDIF
               ENDIF
             ENDDO
-          ENDDO
+          ENDIF
+        ENDIF
+!       EXITING BEDFLUXES
+        IF(BEDBOU) THEN
+!         HERE IN PARALLEL BEDFLUXES WITHOUT PARCOM
+          DO IPOIN=1,NPOIN2
+              IF(BEDFLU%R(IPOIN).LT.0.D0) THEN
+                FLUX=FLUX
+     &              -DT*FC(IPOIN)*BEDFLU%R(IPOIN)
+              ENDIF
+            ENDDO
         ENDIF
 !       EXITING BEDFLUXES
         IF(BEDBOU) THEN
@@ -705,14 +768,41 @@
       IF(TESTING) THEN
 !       EXITING SOURCES (WITH FC UNCHANGED)
         IF(NSCE.GT.0) THEN
-          DO IS=1,NSCE
-            DO IPOIN=1,NPOIN3
-!             HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
-              IF(SOURCES%ADR(IS)%P%R(IPOIN).LT.0.D0) THEN
-                VOLU2(IPOIN)=VOLU2(IPOIN)+
-     &                      DT*SOURCES%ADR(IS)%P%R(IPOIN)
-              ENDIF
+          IF(OPTSOU.EQ.1) THEN
+          ! SOURCE NOT CONSIDERED AS A DIRAC
+            DO IS=1,NSCE
+              DO IPOIN=1,NPOIN3
+!               HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
+                IF(SOURCES%ADR(IS)%P%R(IPOIN).LT.0.D0) THEN
+                  VOLU2(IPOIN)=VOLU2(IPOIN)+
+     &                        DT*SOURCES%ADR(IS)%P%R(IPOIN)
+                ENDIF
+              ENDDO
             ENDDO
+          ELSE IF(OPTSOU.EQ.2) THEN
+          ! SOURCE CONSIDERED AS A DIRAC
+            IF(ISCE(IS).GT.0) THEN
+              IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+!             HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
+              IF(SOURCES%ADR(1)%P%R(IPOIN).LT.0.D0) THEN
+                VOLU2(IPOIN)=VOLU2(IPOIN)+
+     &                      DT*SOURCES%ADR(1)%P%R(IPOIN)
+              ENDIF
+            ENDIF
+          ENDIF
+        ENDIF
+!       EXITING BEDFLUXES (WITH FC UNCHANGED)
+        IF(BEDBOU) THEN
+          DO IPOIN=1,NPOIN2
+!           HERE VERSION OF BEDFLU ASSEMBLED IN PARALLEL
+!             IF(BEDFLU%R(IPOIN).LT.0.D0) THEN
+!               VOLU2(IPOIN)=VOLU2(IPOIN)+
+!      &                    DT*BEDFLU%R(IPOIN)
+!             ENDIF
+            IF(T2_18%R(IPOIN).LT.0.D0) THEN
+              VOLU2(IPOIN)=VOLU2(IPOIN)+
+     &                    DT*T2_18%R(IPOIN)
+            ENDIF
           ENDDO
         ENDIF
 !       EXITING BEDFLUXES (WITH FC UNCHANGED)
