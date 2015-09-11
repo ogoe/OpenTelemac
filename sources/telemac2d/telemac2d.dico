@@ -3140,7 +3140,7 @@ NIVEAU = 1
 AIDE = 'Fixe la valeur du coefficient de la force de Coriolis. 
 Celui-ci doit etre calcule en fonction de la latitude l par la formule 
      FCOR = 2w sin(l) , w etant la vitesse de rotation de la terre. 
-                        w = 7.27 10-5 rad/s 
+                        w = 7.2921 10-5 rad/s 
 Les composantes de la force de Coriolis sont alors : 
    FU =   FCOR x V 
    FV = - FCOR x U' 

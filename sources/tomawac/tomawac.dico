@@ -1038,15 +1038,17 @@ TYPE = ENTIER
 INDEX = 30 
 MNEMO = 'LIMIT' 
 TAILLE= 0 
-CONTROLE = 0 ; 2 
+CONTROLE = 0 ; 3 
 DEFAUT = 1 
 DEFAUT1 = 1 
 CHOIX = '0="pas de limiteur"';
 '1="limiteur type WAM 4 original"';
-'2="limiteur de Hersbach et Janssen (1999)"'
+'2="limiteur de Hersbach et Janssen (1999)"';
+'3="Laugel limiter"'
 CHOIX1 = '0="no wave growth limiter"';
 '1="WAM 4 original limiter"';
-'2="Hersbach et Janssen (1999) limiter"'
+'2="Hersbach et Janssen (1999) limiter"';
+'3="Laugel-BAJ limiter"'
 RUBRIQUE = 'GENERAL' 
 RUBRIQUE1 = 'GENERAL' 
 NIVEAU = 1 
@@ -1054,12 +1056,14 @@ AIDE = 'Choix du type de limiteur de croissance.
 Si la valeur est 0, pas de limiteur. 
 Si la valeur est 1, limiteur type WAM 4 original. 
 Si la valeur est 2, limiteur de Hersbach et Janssen (1999). 
+Si la valeur est 3, limiteur de BAJ Laugel. 
 **Mots-cles associes :** 
 PRISE EN COMPTE DES TERMES SOURCES' 
 AIDE1 = 'Choice of the wave growth limiter. 
 If LIMIT=0, no wave growth limiter. 
 If LIMIT=1, WAM 4 original limiter. 
 If LIMIT=2, Hersbach et Janssen (1999) limiter. 
+If LIMIT=3, Laugel BAJ limiter. 
 **Related keywords :** 
 CONSIDERATION OF SOURCE TERMS' 
  
@@ -3913,12 +3917,12 @@ CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 1 
 RUBRIQUE = 'FICHIERS DE DONNEES' 
 RUBRIQUE1 = 'DATA FILE' 
-AIDE = 'Format du fichier de resultats du calcul precedent. 
+AIDE = 'Format du fichier binaire des courants. 
 Les valeurs possibles sont : 
 - SERAFIN : format standard simple precision pour Telemac; 
 - SERAFIND: format standard double precision pour Telemac; 
 - MED     : format MED base sur HDF5' 
-AIDE1 = 'Previous computation results file format. 
+AIDE1 = 'Currents binary file format. 
 Possible values are: 
 - SERAFIN : classical single precision format in Telemac; 
 - SERAFIND: classical double precision format in Telemac; 
@@ -4239,12 +4243,12 @@ CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 1 
 RUBRIQUE = 'FICHIERS DE DONNEES' 
 RUBRIQUE1 = 'DATA FILE' 
-AIDE = 'Format du fichier de resultats du calcul precedent. 
+AIDE = 'Format du fichier binaire des vents. 
 Les valeurs possibles sont : 
 - SERAFIN : format standard simple precision pour Telemac; 
 - SERAFIND: format standard double precision pour Telemac; 
 - MED     : format MED base sur HDF5' 
-AIDE1 = 'Previous computation results file format. 
+AIDE1 = 'wind data binary file format 
 Possible values are: 
 - SERAFIN : classical single precision format in Telemac; 
 - SERAFIND: classical double precision format in Telemac; 
@@ -4272,25 +4276,6 @@ AIDE1 = 'Name of wind data file (if formatted).
 CONSIDERATION OF WIND 
 BINARY WINDS FILE 
 WINDS FILE FORMAT' 
- 
-NOM = 'FICHIER DE PARALLELISME' 
-NOM1 = 'PARALLELISM FILE' 
-TYPE = CARACTERE 
-INDEX = 33 
-MNEMO = 'Variable WAC_FILES(WACPAR)%NAME' 
-TAILLE= 0 
-SUBMIT = 'WACPAR-READ-40;WACPAR;FACUL;ASC;LIT;SCAL' 
-DEFAUT = ' ' 
-DEFAUT1 = ' ' 
-RUBRIQUE = 'INUTILE' 
-RUBRIQUE1 = 'USELESS' 
-NIVEAU = 0 
-AIDE = 'Nom du fichier utilise pour le parallelisme 
-**Mots-cles associes :** 
-NOMBRE DE PROCESSEURS' 
-AIDE1 = 'Name of the parallelim file. 
-**Related keywords :** 
-NUMBER OF PROCESSORS' 
  
 NOM = 'FICHIER DE REFERENCE' 
 NOM1 = 'REFERENCE FILE' 
@@ -4794,12 +4779,12 @@ CHOIX = '        ';'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2 
 RUBRIQUE = 'FICHIERS DE DONNEES' 
 RUBRIQUE1 = 'DATA FILE' 
-AIDE = 'Format du fichier de resultats du calcul precedent. 
+AIDE = 'Format du fichier des données binaires. 
 Les valeurs possibles sont : 
 - SERAFIN : format standard simple precision pour Telemac; 
 - SERAFIND: format standard double precision pour Telemac; 
 - MED     : format MED base sur HDF5' 
-AIDE1 = 'Previous computation results file format. 
+AIDE1 = 'binary data file format. 
 Possible values are: 
 - SERAFIN : classical single precision format in Telemac; 
 - SERAFIND: classical double precision format in Telemac; 
@@ -5130,36 +5115,36 @@ Van der Westhuysen (2012).
 **Related keywords:**
 DISSIPATION COEFFICIENT FOR STRONG CURRENT'
 /
-/ ADDED BY TF ON 19/11/2014 
+/ ADDED BY TF ON 19/11/2014
 /
-NOM = 'MODELISATION BAJ' 
-NOM1 = 'BAJ MODELISATION' 
-TYPE = ENTIER 
+NOM = 'MODELISATION BAJ'
+NOM1 = 'BAJ MODELISATION'
+TYPE = ENTIER
 INDEX = 51
-MNEMO = 'CBAJ' 
-TAILLE= 0 
-CONTROLE = 0 ; 1 
-DEFAUT = 0 
-DEFAUT1 = 0 
+MNEMO = 'CBAJ'
+TAILLE= 0
+CONTROLE = 0 ; 1
+DEFAUT = 0
+DEFAUT1 = 0
 /CHOIX = '0="Modelisation classique"';
 /'1="Modelisation BAJ"';
 /CHOIX1 = '0="classical modelisation"';
 /'1="BAJ Modelisation"';
 RUBRIQUE = 'SPECTRE'
 RUBRIQUE1 = 'SPECTRUM'
-NIVEAU = 1 
+NIVEAU = 1
 AIDE = 'Type de calcul de la frequence centrale
-Si sa valeur est 0, on prend la formulation classique 
-Si sa valeur est 1 on pren la modélisation BAJ proposee 
-par Laugel (2013) pour le calcul de la frequence centrale 
+Si sa valeur est 0, on prend la formulation classique
+Si sa valeur est 1 on pren la modélisation BAJ proposee
+par Laugel (2013) pour le calcul de la frequence centrale
 et le limiteur de croissance
-**Mots-cles associes :** 
-PRISE EN COMPTE DES TERMES SOURCES' 
+**Mots-cles associes :**
+PRISE EN COMPTE DES TERMES SOURCES'
 AIDE1 = 'Choice of the calculus of centrale frequency
-if its value is 0, classical choice 
-if its value is 1, BAJ choice proposed by Laugel (2013).  
+if its value is 0, classical choice
+if its value is 1, BAJ choice proposed by Laugel (2013).
 **Related keywords:**
-CONSIDERATION OF SOURCE TERMS' 
+CONSIDERATION OF SOURCE TERMS'
 /
 NOM = 'COEFFICIENT DE DISSIPATION PAR FORT COURANT'
 NOM1 = 'DISSIPATION COEFFICIENT FOR STRONG CURRENT'

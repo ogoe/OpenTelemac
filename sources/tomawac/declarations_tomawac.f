@@ -1175,10 +1175,6 @@
 !
       INTEGER :: WACVEF
 !
-!     PARALLELISM FILE (???)
-!
-      INTEGER :: WACPAR
-!
 !     VALIDATION FILE
 !
       INTEGER :: WACREF

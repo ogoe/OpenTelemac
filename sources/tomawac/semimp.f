@@ -704,9 +704,22 @@
 !       4.5 BOTTOM FRICTION DISSIPATION
 !       -------------------------------
 !
-        IF(SFROT.EQ.1.AND..NOT.PROINF) CALL QFROT1
+        IF(SFROT.EQ.1.AND..NOT.PROINF) THEN 
+           CALL QFROT1
      &( TSTOT , TSDER , F     , XK    , DEPTH , CFROT1, GRAVIT, NF    ,
      &  NPLAN , NPOIN2, TAUX1 )
+        ELSEIF(SFROT.NE.0) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'OPTION POUR LA DISSIPATION PAR FROTTEMENT'
+            WRITE(LU,*) 'INCONNUE : SFROT=',SFROT
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'OPTION FOR BOTTOM FRICTION DISSIPATION'
+            WRITE(LU,*) 'UNKNOWN: SFROT=',SFROT
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !       5. UPDATES THE SPECTRUM - TAKES THE SOURCE TERMS INTO ACCOUNT
 !         (GENERATION, WHITECAPPING AND QUADRUPLET INTERACTIONS)
@@ -717,12 +730,7 @@
 !                       IN THE LOOP TO HAVE DF_LIM(NPOIN2) INSTEAD
 !                       OF DF_LIM(NPOIN2,NF)
 !
-!
-        IF (CBAJ.EQ.1) THEN
-           LIMIT=3
-!     or doing it in lecdon
-        ENDIF
-! if nf is growing, inverse if limit and loop on nf
+! if nf is growing, inverse if limit and loop on nf 
         DO IFF=1,NF
 !         LIMITING FACTOR TAKEN FROM WAM-CYCLE 4
           IF(LIMIT.EQ.1) THEN
@@ -740,7 +748,7 @@
               DF_LIM(IP)=AUXI*MAX(USNEW(IP),USMIN)
             ENDDO
 !
-!           LIMITING FACTOR FROM LAUGIER
+!           LIMITING FACTOR FROM LAUGEL ou BAJ
 !
           ELSEIF (LIMIT.EQ.3) THEN
             COEF=3.0D-7*GRAVIT*DTSI
