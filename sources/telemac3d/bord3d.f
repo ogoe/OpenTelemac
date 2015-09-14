@@ -471,37 +471,32 @@
         ENDDO
         ENDDO
       ENDIF
-
-!     PRESCRIBED FLOWRATES ON THE BED GIVEN BY THE USER 
-!     --------------------------------------------------------
 !
-! FIND THE AREA OF EACH ELEMENT
-      DO IFRLIQ=1,MAXBLB
-        BEDQAREA(IFRLIQ) = 0.D0
-      END DO
+      IF(NBEDFLO.GT.0) THEN
 !
-      ! T2_01 TEMPORARY ARRAY WHERE THE AREA WILL BE STORED
-      CALL CPSTVC(WBORF,T2_01)
-      ! T2_02 EMPTY ARRAY USED TO CALCULATE THE AREA
-      CALL CPSTVC(WBORF,T2_02)
-      CALL OS('X=0     ',X=T2_02)
+!       PRESCRIBED FLOWRATES ON THE BED GIVEN BY THE USER 
+!       --------------------------------------------------------
 !
-      CALL VECTOR(T2_01,'=','MASBAS          ',IELM2H,1.D0,T2_02,
-     &            T2_02,T2_02,T2_02,T2_02,T2_02,MESH2D,.FALSE.,MASK)
+!       FIND THE AREA OF EACH ELEMENT
+        DO IFRLIQ=1,MAXBLB
+          BEDQAREA(IFRLIQ) = 0.D0
+        ENDDO
 !
-      DO K=1,NPOIN2
+        CALL VECTOR(T2_01,'=','MASBAS          ',IELM2H,1.D0,WBORF,
+     &              WBORF,WBORF,WBORF,WBORF,WBORF,MESH2D,.FALSE.,MASK)
 !
-!     A VELOCITY PROFILE IS SET HERE AND WILL BE CORRECTED LATER (IT IS ACTUALLY NOT USED)
+        DO K=1,NPOIN2
 !
-      IF(LIWBOF%I(K).EQ.KENT.AND.NBEDFLO.NE.0) THEN
+!         A VELOCITY PROFILE IS SET HERE AND WILL BE CORRECTED LATER (IT IS ACTUALLY NOT USED)
 !
-        IFRLIQ=NLIQBED%I(K)
+          IF(LIWBOF%I(K).EQ.KENT) THEN
+            IFRLIQ=NLIQBED%I(K)
+            BEDQAREA(IFRLIQ) = BEDQAREA(IFRLIQ) + T2_01%R(K)
+          ENDIF
 !
-        BEDQAREA(IFRLIQ) = BEDQAREA(IFRLIQ) + T2_01%R(K)
+        ENDDO
 !
       ENDIF
-!
-      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -587,48 +582,47 @@
 !     PRESCRIBED FLOWRATES ON THE BED: FINAL TREATMENT
 !     --------------------------------------------------------
 !
-      IF(NBEDFLO.NE.0) THEN
+      IF(NBEDFLO.GT.0) THEN
 !
-      DO IFRLIQ = 1 , NBEDFLO
-!
-!***********************************************************************
-        IF(NCSIZE.GT.1) BEDQAREA(IFRLIQ)=P_DSUM(BEDQAREA(IFRLIQ))
-!
-      ENDDO ! IFRLIQ
-      DO K=1,NPOIN2
-!
-!     CORRECT THE VELOCITY PROFILES BY DIVIDING THE FLOW RATE WITH
-!     THE CROSS-SECTIONAL AREA OVERWHICH IT WILL BE IMPOSED
-!
-      IF(LIWBOF%I(K).EQ.KENT.AND.NBEDFLO.NE.0) THEN
-!
-        IFRLIQ=NLIQBED%I(K)
-        IF(BEDQAREA(IFRLIQ).GT.0.D0)THEN
-          ! GRADZF IS THE GRADIENT OF THE BED, I.E. OUTWARD NORMAL
-          ! THE Z COMPONENT IS ASSUMED TO BE ALWAYS NEGATIVE
-          XNB=GRADZF%ADR(1)%P%R(K)
-          YNB=GRADZF%ADR(2)%P%R(K)
-          ZNB=-SQRT(1-XNB**2-YNB**2)
-          UBORF%R(K)=-XNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
-          VBORF%R(K)=-YNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
-          WBORF%R(K)=-ZNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
-!         NO OUTFLOW IF NO WATER
-          IF((H%R(K).LT.1.D-4).AND.(BEDFLO(IFRLIQ).LT.0.D0)) THEN
-            UBORF%R(K)=0.D0
-            VBORF%R(K)=0.D0
-            WBORF%R(K)=0.D0
-          ENDIF
-        ELSE
-          UBORF%R(K)=0.D0
-          VBORF%R(K)=0.D0
-          WBORF%R(K)=0.D0
+        IF(NCSIZE.GT.1) THEN
+          DO IFRLIQ = 1 , NBEDFLO
+            BEDQAREA(IFRLIQ)=P_DSUM(BEDQAREA(IFRLIQ))
+          ENDDO
         ENDIF
 !
-      ENDIF
+        DO K=1,NPOIN2
 !
-      ENDDO ! NPOIN2
+!         CORRECT THE VELOCITY PROFILES BY DIVIDING THE FLOW RATE WITH
+!         THE CROSS-SECTIONAL AREA OVER WHICH IT WILL BE IMPOSED
 !
-      ENDIF ! IF(NBEDLIQ.NE.0)
+          IF(LIWBOF%I(K).EQ.KENT) THEN
+            IFRLIQ=NLIQBED%I(K)
+            IF(BEDQAREA(IFRLIQ).GT.0.D0)THEN
+!             GRADZF IS THE GRADIENT OF THE BED, I.E. OUTWARD NORMAL
+!             THE Z COMPONENT IS ASSUMED TO BE ALWAYS NEGATIVE
+              XNB=GRADZF%ADR(1)%P%R(K)
+              YNB=GRADZF%ADR(2)%P%R(K)
+              ZNB=-SQRT(1-XNB**2-YNB**2)
+!             NO OUTFLOW IF NO WATER
+              IF(H%R(K).LT.1.D-4.AND.BEDFLO(IFRLIQ).LE.0.D0) THEN
+                UBORF%R(K)=0.D0
+                VBORF%R(K)=0.D0
+                WBORF%R(K)=0.D0
+              ELSE
+                UBORF%R(K)=-XNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
+                VBORF%R(K)=-YNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
+                WBORF%R(K)=-ZNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
+              ENDIF
+            ELSE
+              UBORF%R(K)=0.D0
+              VBORF%R(K)=0.D0
+              WBORF%R(K)=0.D0
+            ENDIF
+          ENDIF
+!
+        ENDDO ! NPOIN2
+!
+      ENDIF ! IF(NBEDFLO.GT.0)
 !
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !           END OF AUTOMATIC TREATMENT OF LIQUID BOUNDARIES
