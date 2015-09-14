@@ -538,6 +538,7 @@
       IMPLICIT NONE
 
       CHARACTER*32 VLABEL
+      CHARACTER(LEN=72) :: UR3D_TITLE, UR2DHYD_TITLE
       CHARACTER(LEN=11) :: EXTENS
       INTEGER I, K, IERR
 !
@@ -576,6 +577,9 @@
       DO I =1,USRMSH%NPTFR
         USRMSH%NBOR%I(I) = I
       END DO
+      DO I=1,USRMSH%NPOIN
+        USRMSH%Z%R(I) = 0.D0
+      ENDDO
 !
 !-----------------------------------------------------------------------
 ! ALLOCATES A 3D MESH FOR USEROUTPU: HERE VSPHYD
@@ -588,6 +592,9 @@
       DO I =1,USRMSH_2DHYD%NPTFR
         USRMSH_2DHYD%NBOR%I(I) = I
       END DO
+      DO I=1,USRMSH_2DHYD%NPOIN
+        USRMSH_2DHYD%Z%R(I) = 0.D0
+      ENDDO
 !
 !-----------------------------------------------------------------------
 ! SET HERE THE NAMES OF THE PRINTOUT VARIABLES FOR THE USER FILE VSPRES
@@ -658,18 +665,18 @@
 ! WRITES THE HEADER OF THE RESFILES
 !-----------------------------------------------------------------------
 !
+      UR3D_TITLE = 'USEROUTPUT3D'//REPEAT(' ',70)
       CALL WRITE_HEADER(CP_FILES(3)%FMT,
      &     CP_FILES(3)%LU,
-     &     'USEROUTPUT3D                   '//
-     &     '                                         ',
+     &     UR3D_TITLE,
      &     NUMVARUR3D2RES,
      &     UR3D_FILES_LABELS,
      &     UR3D_FILES_OUTVAR)
 
+      UR2DHYD_TITLE = '2D HYDRAULIC PARAMETERS IN 3D'//REPEAT(' ',43)
       CALL WRITE_HEADER(CP_FILES(4)%FMT,
      &     CP_FILES(4)%LU,
-     &     '2D HYDRAULIC PARAMETERS IN 3D  '//
-     &     '                                         ',
+     &     UR2DHYD_TITLE,
      &     NUMVAR2DHYD,
      &     UR2DHYD_FILES_LABELS,
      &     UR2DHYD_FILES_OUTVAR)

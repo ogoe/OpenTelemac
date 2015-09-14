@@ -79,6 +79,7 @@
       LOGICAL :: FIRST_VAR
       INTEGER :: I,IERR, NPT, NB_DIM
       DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: COORD
+      CHARACTER(LEN=32) :: VAR_NAME
 !
 !-----------------------------------------------------------------------
 !
@@ -106,7 +107,8 @@
         ! IF THE VARIABLE MUST BE WRITTEN
         IF(OUTVAR(I)) THEN
           IF(ASSOCIATED(BVARSOR%ADR(I)%P%R)) THEN
-            CALL ADD_DATA(FFORMAT,FILERES,NOMVAR(I),TIME,TIMESTEP,
+            VAR_NAME = NOMVAR(I)
+            CALL ADD_DATA(FFORMAT,FILERES,VAR_NAME,TIME,TIMESTEP,
      &                    FIRST_VAR,BVARSOR%ADR(I)%P%R,N,IERR)
             CALL CHECK_CALL(IERR,'WRITE_DATASET:ADD_DATA')
             FIRST_VAR = .FALSE.

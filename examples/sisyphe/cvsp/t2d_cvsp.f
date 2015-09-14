@@ -69,7 +69,7 @@
      &14X,'     T    E      L      E      M   M  A   A  C    ',/,
      &14X,'     T    EEEEE  LLLLL  EEEEE  M   M  A   A  CCCCC',/,
      &14X,'                                                  ',/,
-     &14X,'           2D    VERSION 7.0    FORTRAN 90        ',/,
+     &14X,'           2D    VERSION 7.1    FORTRAN 90        ',/,
      &14X,'                 WITH SEVERAL TRACERS             ',/,
      &14X,'           COUPLED WITH SISYPHE AND TOMAWAC       ',/,
      &14X,/////)
@@ -79,8 +79,10 @@
 !     READS THE STEERING FILE
 !
       DUMMY = ' '
+!
       CALL LECDON_TELEMAC2D(MOTCAR,WMOTCAR,FILE_DESC,WFILE_DESC,
      &                      PATH,NCAR,DUMMY,DUMMY)
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -89,7 +91,8 @@
       IFLOT = 0
       CALL BIEF_OPEN_FILES(CODE1,T2D_FILES,MAXLU_T2D,PATH,NCAR,
      &                     INCLUS(COUPLING,'SISYPHE').OR.
-     &                     INCLUS(COUPLING,'TOMAWAC'),IFLOT,1,.FALSE.)
+     &                     INCLUS(COUPLING,'TOMAWAC'),
+     &                     IFLOT,1,.FALSE.)
 !
 !-----------------------------------------------------------------------
 !
@@ -129,7 +132,7 @@
      &  14X,'       S I      S   Y   P     H   H E     ',/,
      &  14X,'   SSSS  I  SSSS    Y   P     H   H EEEEE' ,/,
      &  14X,'                                          ',/,
-     &  14X,'                VERSION 7.0               ',/,
+     &  14X,'                VERSION 7.1               ',/,
      &  14X,'      COUPLED WITH TELEMAC-2D INTERNALLY  ',/,
      &  14X,/////)
 !
@@ -179,7 +182,7 @@
      &  ,/,15X,
      &  '           _____|____|____|____\\\__       '
      &  ,/,15X,
-     &  '  ---------\               7.0  /---------  '
+     &  '  ---------\               7.1  /---------  '
      &  ,/,15X,
      & '    ^^^^^^^^^^^^^^^^^^^^^^^^^^^             '
      &  ,/,15X,

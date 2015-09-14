@@ -1038,7 +1038,7 @@
             IF(H(I).LE.0.D0)THEN
               WRITE(LU,*)'NEGATIVE H FOR I:',I
               WRITE(LU,*)'H IS EQUAL :',H(I)
-              WRITE(LU,*),'BORDED BY: ', XIN(J),XIN(J+1)
+              WRITE(LU,*)'BORDED BY: ', XIN(J),XIN(J+1)
               CALL PLANTE(1)
               STOP
             ENDIF

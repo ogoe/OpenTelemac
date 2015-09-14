@@ -26,6 +26,7 @@
 !| MYPART         |-->| PARTITION NUMBER OF A POINT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE BIEF, ONLY : IPID, NCSIZE
 #if defined (HAVE_SCOTCH)
       USE ISO_C_BINDING
 #endif
@@ -62,11 +63,12 @@
 #if defined (HAVE_PTSCOTCH) || defined (HAVE_PARMETIS)
       INTEGER, ALLOCATABLE :: EPART_LOC(:)
       INTEGER :: NUMFLAG
-      INTEGER :: T_P,N_P
+      INTEGER :: IPID,NCSIZE
       INTEGER :: NCON
       INTEGER :: NELEM_GLOBAL, NELEM_LOC
       INTEGER :: OPTIONS(0:2)
       INTEGER, ALLOCATABLE :: RECVBUF(:)
+      INTEGER, ALLOCATABLE :: ELMDIST(:)
 #endif
 
 #if defined (HAVE_PTSCOTCH)
@@ -106,7 +108,7 @@
           ENDDO
           ELMDIST(NPARTS+1) = NELEM + 1
 !
-          NELEM_LOC = ELMDIST(ID+2) - ELMDIST(ID+1)
+          NELEM_LOC = ELMDIST(IPID+2) - ELMDIST(IPID+1)
 !
           ALLOCATE (EPTR(NELEM_LOC+1),STAT=ERR)
           CALL CHECK_ALLOCATE(ERR, 'EPTR')
@@ -122,7 +124,7 @@
           ENDDO
 !
           K=1
-          DO I=ELMDIST(ID+1),ELMDIST(ID+2)-1
+          DO I=ELMDIST(IPID+1),ELMDIST(IPID+2)-1
             DO J=1,NDP
               EIND(K) = IKLES((I-1)*NDP+J)
               K = K + 1
@@ -169,7 +171,7 @@
 #if defined (HAVE_PTSCOTCH)
           WRITE(LU,*) 'BEGIN PARTITIONING WITH PTSCOTCH'
 !
-          ALLOCATE (ELMDIST(N_P+1),STAT=ERR)
+          ALLOCATE (ELMDIST(NCSIZE+1),STAT=ERR)
           CALL CHECK_ALLOCATE(ERR, 'ELMDIST')
 !
 !!        The number of common point needed between 2 elements to make an
@@ -187,12 +189,12 @@
 !!             IT IS ANALOGOUS TO THE VTXDIST ARRAY. ITS CONTENTS ARE IDENTICAL FOR EVERY PROCESSOR.
 !              SAME PRINCIPAL AS FOR XADJ AND ADJCNY
           ELMDIST(1)=1
-          DO I=1,N_P-1
-             ELMDIST(I+1) = ELMDIST(I) + NELEM_GLOBAL/N_P
+          DO I=1,NCSIZE-1
+             ELMDIST(I+1) = ELMDIST(I) + NELEM_GLOBAL/NCSIZE
           ENDDO
-          ELMDIST(N_P+1) = NELEM_GLOBAL + 1
+          ELMDIST(NCSIZE+1) = NELEM_GLOBAL + 1
 !
-          NELEM_LOC = ELMDIST(T_P+1) - ELMDIST(T_P)
+          NELEM_LOC = ELMDIST(IPID+1) - ELMDIST(IPID)
 !
           ALLOCATE (EPTR(NELEM_LOC+1),STAT=ERR)
           CALL CHECK_ALLOCATE(ERR, 'EPTR')
@@ -209,7 +211,7 @@
           ENDDO
 !
           K=1
-          DO I=ELMDIST(T_P),ELMDIST(T_P+1)-1
+          DO I=ELMDIST(IPID),ELMDIST(IPID+1)-1
              DO J=1,NDP
                 EIND(K) = IKLES((I-1)*NDP+J)
                 K = K + 1
