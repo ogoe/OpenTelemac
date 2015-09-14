@@ -267,9 +267,6 @@
 !
       RETURN
       END
-
-
-
 !                    *****************
                      SUBROUTINE LIMI3D
 !                    *****************
@@ -341,16 +338,13 @@
           VBORF%R(IPOIN2)  = 0.D0
           WBORF%R(IPOIN2)  = 0.D0
           IF(SQRT((X(IPOIN2)-2000.D0)**2+(Y(IPOIN2)-2000.D0)**2)
-     &       .LE.50.D0)THEN
+     &       .LE.50.D0) THEN
             !KENT = 5; I.E. IMPOSED FLOW RATE
             !KENTU = 6; I.E. IMPOSED VELOCITY
             LIUBOF%I(IPOIN2) = 5 ! AT THE MOMENT KENT DOES NOT WORK
             LIVBOF%I(IPOIN2) = 5 ! AT THE MOMENT KENT DOES NOT WORK
             LIWBOF%I(IPOIN2) = 5 ! AT THE MOMENT KENT DOES NOT WORK
             NLIQBED%I(IPOIN2) = 1
-            PRINT*, '========================'
-            PRINT*, 'FOR POINT ',IPOIN2
-            PRINT*, 'BEDFLO',BEDFLO(1),' NBEDFLO',NBEDFLO
           ENDIF
         ENDDO
 !

@@ -94,6 +94,11 @@
 !+        V7P1
 !+   Changing %FAC%R into %IFAC%I.
 !
+!history  A. JOLY (EDF LAB, LNHE)
+!+        27/08/2015
+!+        V7P1
+!+   Imposed flowrates on the bed.
+!
 !history  A. LEROY (EDF LAB, LNHE)
 !+        28/08/2015
 !+        V7P1

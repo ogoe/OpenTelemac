@@ -5,7 +5,7 @@
      &(TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   09/07/2014
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    SPECIFIC BOUNDARY CONDITIONS.
@@ -18,16 +18,6 @@
 !+     3) SEDIMENT IS THE LAST TRACER.
 !
 !warning  MAY BE MODIFIED BY THE USER
-!
-!history
-!+        11/02/2008
-!+
-!+   LOOP ON THE BOUNDARY POINTS SPLIT IN 3 LOOPS TO REVERSE
-!
-!history  J.-M. HERVOUET (LNHE)
-!+        21/08/2009
-!+        V6P0
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -60,6 +50,11 @@
 !+        09/07/2014
 !+        V7P0
 !+   Adding the heat balance of exchange with atmosphere
+!
+!history  A. JOLY (EDF LAB, LNHE)
+!+        27/08/2015
+!+        V7P1
+!+   Imposed flowrates on the bed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS
@@ -475,25 +470,47 @@
       IF(NBEDFLO.GT.0) THEN
 !
 !       PRESCRIBED FLOWRATES ON THE BED GIVEN BY THE USER 
-!       --------------------------------------------------------
+!       -------------------------------------------------
 !
-!       FIND THE AREA OF EACH ELEMENT
-        DO IFRLIQ=1,MAXBLB
+        CALL VECTOR(T2_01,'=','MASBAS          ',IELM2H,1.D0,
+     &              WBORF,WBORF,WBORF,WBORF,WBORF,WBORF,MESH2D,
+     &              .FALSE.,MASKEL)
+!
+!       FIND THE AREA OF EACH BOUNDARY
+        DO IFRLIQ=1,NBEDFLO
           BEDQAREA(IFRLIQ) = 0.D0
         ENDDO
 !
-        CALL VECTOR(T2_01,'=','MASBAS          ',IELM2H,1.D0,WBORF,
-     &              WBORF,WBORF,WBORF,WBORF,WBORF,MESH2D,.FALSE.,MASK)
-!
         DO K=1,NPOIN2
-!
-!         A VELOCITY PROFILE IS SET HERE AND WILL BE CORRECTED LATER (IT IS ACTUALLY NOT USED)
-!
           IF(LIWBOF%I(K).EQ.KENT) THEN
             IFRLIQ=NLIQBED%I(K)
-            BEDQAREA(IFRLIQ) = BEDQAREA(IFRLIQ) + T2_01%R(K)
+            IF(IFRLIQ.GT.0) THEN
+              BEDQAREA(IFRLIQ) = BEDQAREA(IFRLIQ) + T2_01%R(K)
+            ENDIF
           ENDIF
+        ENDDO
 !
+        IF(NCSIZE.GT.1) THEN
+          DO IFRLIQ = 1 , NBEDFLO
+            BEDQAREA(IFRLIQ)=P_DSUM(BEDQAREA(IFRLIQ))
+          ENDDO
+        ENDIF
+!
+        DO IFRLIQ = 1 , NBEDFLO
+          IF(BEDQAREA(IFRLIQ).LE.0.D0) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'BORD3D : FRONTIERE DU FOND ',IFRLIQ
+              WRITE(LU,*) '         AVEC SURFACE EGALE A : ',
+     &                              BEDQAREA(IFRLIQ)
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'BORD3D: BOUNDARY ON THE BOTTOM: ',IFRLIQ
+              WRITE(LU,*) '        WITH AREA EQUAL TO : ',
+     &                             BEDQAREA(IFRLIQ)
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
         ENDDO
 !
       ENDIF
@@ -584,12 +601,6 @@
 !
       IF(NBEDFLO.GT.0) THEN
 !
-        IF(NCSIZE.GT.1) THEN
-          DO IFRLIQ = 1 , NBEDFLO
-            BEDQAREA(IFRLIQ)=P_DSUM(BEDQAREA(IFRLIQ))
-          ENDDO
-        ENDIF
-!
         DO K=1,NPOIN2
 !
 !         CORRECT THE VELOCITY PROFILES BY DIVIDING THE FLOW RATE WITH
@@ -597,12 +608,12 @@
 !
           IF(LIWBOF%I(K).EQ.KENT) THEN
             IFRLIQ=NLIQBED%I(K)
-            IF(BEDQAREA(IFRLIQ).GT.0.D0)THEN
+            IF(IFRLIQ.GT.0) THEN
 !             GRADZF IS THE GRADIENT OF THE BED, I.E. OUTWARD NORMAL
 !             THE Z COMPONENT IS ASSUMED TO BE ALWAYS NEGATIVE
               XNB=GRADZF%ADR(1)%P%R(K)
               YNB=GRADZF%ADR(2)%P%R(K)
-              ZNB=-SQRT(1-XNB**2-YNB**2)
+              ZNB=-SQRT(1.D0-XNB**2-YNB**2)
 !             NO OUTFLOW IF NO WATER
               IF(H%R(K).LT.1.D-4.AND.BEDFLO(IFRLIQ).LE.0.D0) THEN
                 UBORF%R(K)=0.D0
@@ -613,10 +624,6 @@
                 VBORF%R(K)=-YNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
                 WBORF%R(K)=-ZNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
               ENDIF
-            ELSE
-              UBORF%R(K)=0.D0
-              VBORF%R(K)=0.D0
-              WBORF%R(K)=0.D0
             ENDIF
           ENDIF
 !
@@ -774,3 +781,4 @@
 !
       RETURN
       END
+

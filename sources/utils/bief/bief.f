@@ -16,6 +16,11 @@
 !+     All interfaces reactivated. Some were commented to overcome a bug
 !+     of HP compiler on Linux.
 !
+!history  A. JOLY (EDF LAB, LNHE)
+!+        27/08/2015
+!+        V7P1
+!+   Adding vc05aa.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

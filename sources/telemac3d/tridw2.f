@@ -6,7 +6,7 @@
      & DT,UNSV2D,MESH2D,OPTSOU)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES AN AVERAGED VALUE OF H * WSTAR IN A WAY
@@ -69,6 +69,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  A. JOLY (EDF LAB, LNHE)
+!+        27/08/2015
+!+        V7P1
+!+   Imposed flowrates on the bed.
 !
 !history  A. LEROY (EDF LAB, LNHE)
 !+        28/08/2015
@@ -142,13 +147,12 @@
           SEM2D%ADR(1)%P%R(I) = FLUINT%R(IAD1)-FLUEXT%R(IAD1)
      &                         +SURDT*(VOLUN%R(IAD1)-VOLU%R(IAD1))
         ENDDO
-
+!
 !       WITH BED FLUXES
 !
-        IF(BEDBOU.AND.(IETAGE.EQ.1)) THEN
+        IF(BEDBOU.AND.IETAGE.EQ.1) THEN
           CALL OS('X=X+Y   ',X=SEM2D%ADR(1)%P,Y=BEDFLU)
         ENDIF
-
 !
 !       PARALLELISM
 !

@@ -20,7 +20,7 @@
      & VOLU2D,V2DPAR,SETDEP,OPTSOU)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    SOLVES THE ADVECTION-DIFFUSION STEP.
@@ -75,6 +75,11 @@
 !+        29/04/2014
 !+        V7P0
 !+   Argument SETDEP added to diff3d.
+!
+!history  A. JOLY (EDF LAB, LNHE)
+!+        27/08/2015
+!+        V7P1
+!+   Imposed flowrates on the bed.
 !
 !history  A. LEROY (EDF LAB, LNHE)
 !+        28/08/2015
@@ -212,8 +217,7 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE INTERFACE_TELEMAC3D, EX_CVDF3D => CVDF3D
-      USE DECLARATIONS_TELEMAC3D, ONLY : KSCE, ISCE,
-     &                                   BEDBOU,BEDFLU
+      USE DECLARATIONS_TELEMAC3D, ONLY : KSCE, ISCE,BEDBOU,BEDFLU
 !
       IMPLICIT NONE
       INTEGER LNG,LU

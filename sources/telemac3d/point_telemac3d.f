@@ -61,6 +61,11 @@
 !+        V7P1
 !+   Adding aliases and 2D private arrays.
 !
+!history  A. JOLY (EDF LAB, LNHE)
+!+        27/08/2015
+!+        V7P1
+!+   Imposed flowrates on the bed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -305,8 +310,14 @@
 ! OPEN BED BOUNDARIES VARIABLES
 !
       IF(BEDBOU)THEN
-        CALL BIEF_ALLVEC(2,NLIQBED,  'NLIQBE', IELM2H, 1, 1,MESH2D)
-        CALL BIEF_ALLVEC(1,BEDFLU,  'BEDFLU', IELM2H, 1, 1,MESH2D)
+        CALL BIEF_ALLVEC(2,NLIQBED, 'NLIQBE', IELM2H, 1, 1,MESH2D)
+        CALL BIEF_ALLVEC(1,BEDFLU , 'BEDFLU', IELM2H, 1, 1,MESH2D)
+        DO I=1,MAXBLB
+          NLIQBED%I(I)=0
+        ENDDO
+      ELSE
+        CALL BIEF_ALLVEC(2,NLIQBED, 'NLIQBE', 0     , 1, 0,MESH2D)
+        CALL BIEF_ALLVEC(1,BEDFLU , 'BEDFLU', 0     , 1, 0,MESH2D)
       ENDIF
 !
 !-----------------------------------------------------------------------

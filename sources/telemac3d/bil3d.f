@@ -5,7 +5,7 @@
      &(LT,IKLBORL,NPTFR,NETAG,NELEM)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES THE RELATIVE BALANCE OF THE MASSES OF
@@ -51,6 +51,11 @@
 !+        V7P0
 !+   The fact that the bottom value may not be on the bottom (depending
 !+   on IPBOT) if(SIGMAG.OR.OPTBAN.EQ.1) is taken into account.
+!
+!history  A. JOLY (EDF LAB, LNHE)
+!+        27/08/2015
+!+        V7P1
+!+   Imposed flowrates on the bed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLBORL        |-->| CONNECTIVITY TABLE OF LATERAL BOUNDARIES

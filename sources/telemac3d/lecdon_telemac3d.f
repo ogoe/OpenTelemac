@@ -54,6 +54,11 @@
 !+  Adding vertical velocity of sources and diffusion coefficient of
 !+  tracers given per tracer.
 !
+!history  A. JOLY (EDF LAB, LNHE)
+!+        27/08/2015
+!+        V7P1
+!+   Imposed flowrates on the bed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<->| KEYWORD IN CHARACTER

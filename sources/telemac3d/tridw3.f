@@ -20,7 +20,12 @@
 !history  J-M HERVOUET (LNHE)
 !+        27/03/2012
 !+        V6P2
-!+
+!+   First version.
+!
+!history  A. JOLY (EDF LAB, LNHE)
+!+        27/08/2015
+!+        V7P1
+!+   Imposed flowrates on the bed.
 !
 !history  A. LEROY (EDF LAB, LNHE)
 !+        28/08/2015

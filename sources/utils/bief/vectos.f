@@ -10,7 +10,7 @@
      & IELM1,LV,MSK,MASKEL,MESH,DIM1T,NELBOR,NULONE,ASSPAR)
 !
 !***********************************************************************
-! BIEF   V7P0                                  21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES VECTORS.
@@ -72,6 +72,11 @@
 !+   Discontinuous elements better treated: new types 15, 16 and 17 for
 !+   discontinuous linear, quasi-bubble, and quadratic, rather than
 !+   using component DIMDISC=11, 12 or 13.
+!
+!history  A. JOLY (EDF LAB, LNHE)
+!+        27/08/2015
+!+        V7P1
+!+   Adding vc05aa.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM1T          |-->| FIRST DIMENSION OF T (NELMAX OR NELEBX)

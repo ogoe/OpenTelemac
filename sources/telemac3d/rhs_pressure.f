@@ -10,6 +10,16 @@
 ! TELEMAC3D
 !***********************************************************************
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/08/2010
+!+        V6P1
+!+   First version.
+!
+!history  A. JOLY (EDF LAB, LNHE)
+!+        27/08/2015
+!+        V7P1
+!+   Imposed flowrates on the bed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIVU           |<--| RESULT
 !| IELM3          |-->| TYPE OF ELEMENT
@@ -91,9 +101,9 @@
       IF(BEDBOU) THEN
 !       HERE BED_SOURCES IN THE NON ASSEMBLED (PARCOM) FORM
 !       SEE BED_FLUXES
-          DO IPOIN2=1,NPOIN2
-            DIVU%R(IPOIN2)=DIVU%R(IPOIN2)+BEDFLU%R(IPOIN2)
-          ENDDO
+        DO IPOIN2=1,NPOIN2
+          DIVU%R(IPOIN2)=DIVU%R(IPOIN2)+BEDFLU%R(IPOIN2)
+        ENDDO
       ENDIF
 !
 !     + RAIN
