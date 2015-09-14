@@ -28,7 +28,7 @@
 !
       IMPLICIT NONE
 !
-      INTEGER  I, J, K, M, L, MDISC, UBS
+      INTEGER  I, J, M, L
       DOUBLE PRECISION DEPTH
 !
 !-----------------------------------------------------------------------

@@ -174,34 +174,51 @@
 !
 !-----------------------------------------------------------------------
 !
-!   ASSIGNS THE STEERING FILE VALUES TO THE PARAMETER FORTRAN NAME
+!     ALLOCATING ARRAYS DEPENDING ON MAXFRO
 !
 !-----------------------------------------------------------------------
 !
-! ################# !
-! INTEGER KEYWORDS  !
-! ################# !
-! OPTION OF MATRIX ASSEMBLY IS HARD-CODED
-! ---------------------------------------------
+!     MAXIMUM NUMBER OF BOUNDARIES
+      MAXFRO   = MOTINT( ADRESS(1,58) )
+!
+      ALLOCATE(DEBLIQ(MAXFRO))
+      ALLOCATE(FINLIQ(MAXFRO))
+      ALLOCATE(DEBSOL(MAXFRO))
+      ALLOCATE(FINSOL(MAXFRO))
+      ALLOCATE(SOLDIS(MAXFRO))
+      ALLOCATE(OKCGL(MAXFRO))
+      ALLOCATE(CBOR_CLASSE(NSICLM*MAXFRO))
+!
+      DO K=1,MAXFRO
+        OKCGL(K)=.TRUE.
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+!     ASSIGNS THE STEERING FILE VALUES TO THE PARAMETER FORTRAN NAME
+!
+!-----------------------------------------------------------------------
+!
+!     OPTION OF MATRIX ASSEMBLY IS HARD-CODED
 !
       OPTASS = 1
       PRODUC = 1
-
-      ! DISCRETISES THE VARIABLES
-      ! ----------------------------
+!
+!     DISCRETISATIONS
+! 
       IELMT     = 11 ! SEDIMENTOLOGICAL VARIABLES
       IELMH_SIS = 11 ! VARIABLES ASSOCIATED WITH WATER DEPTH
       IELMU_SIS = 11 ! VARIABLES ASSOCIATED WITH VELOCITIES
-
-      ! FOR NOW PRINTOUTS START AT ZERO
-      ! -----------------------------------------------
+!
+!     FOR NOW PRINTOUTS START AT ZERO
+! 
       PTINIG = 0
       PTINIL = 0
-
-      ! NON-EQUILIBIRUM BEDLOAD
-      ! ------------------------
+!
+!     NON-EQUILIBIRUM BEDLOAD
+!
       LOADMETH = 0
-
+!
 !     ICM           = MOTINT( ADRESS(1,  1) )
       ICF           = MOTINT( ADRESS(1,  2) )
       NPAS          = MOTINT( ADRESS(1,  3) )

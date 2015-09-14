@@ -1,10 +1,11 @@
-!                    ***********************************
-                     DOUBLE PRECISION FUNCTION CGL(I,AT)
-!                    ***********************************
+!                    *****************************
+                     DOUBLE PRECISION FUNCTION CGL
+!                    *****************************
 !
+     &(I,AT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   08/11/2011
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    PRESCRIBES THE FREE SURFACE ELEVATION FOR LEVEL IMPOSED
@@ -54,52 +55,39 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*9 FCT
-      INTEGER J
-      LOGICAL, SAVE :: DEJA=.FALSE.
-      LOGICAL, DIMENSION(MAXFRO), SAVE :: OK
-!
-!
-!     FIRST CALL, OK INITIALISED TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO J=1,MAXFRO
-          OK(J)=.TRUE.
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
+      CHARACTER(LEN=9) FCT
 !
 !-----------------------------------------------------------------------
 !
 !     IF THE LIQUID BOUNDARY FILE EXISTS, ATTEMPTS TO FIND
 !     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
 !                      IF  NO, OK IS SET  TO .FALSE.
-! je pense que ce test est inutile (cf apel dans conlit.f)
-!      IF(OK(I).AND.SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
 !
-!     FCT WILL BE CGL(1), CGL(2), ETC, CGL(9), DEPENDING ON I
-      FCT='CG(      '
-      IF(I.LT.10) THEN
-        WRITE(FCT(4:4),FMT='(I1)') I
-        FCT(5:5)=')'
-!      ELSEIF(I.LT.100) THEN
-!        WRITE(FCT(4:5),FMT='(I2)') I
-!        FCT(6:6)=')'
-      ELSE
-        WRITE(LU,*)'I=',I
-        WRITE(LU,*) 'CGL NOT PROGRAMMED FOR MORE THAN 9 BOUNDARIES'
-        CALL PLANTE(1)
-        STOP
+      IF(OKCGL(I).AND.SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
+!
+!       FCT WILL BE CGL(1), CGL(2), ETC, CGL(9), DEPENDING ON I
+        FCT='CG(      '
+        IF(I.LT.10) THEN
+          WRITE(FCT(4:4),FMT='(I1)') I
+          FCT(5:5)=')'
+        ELSEIF(I.LT.100) THEN
+          WRITE(FCT(4:5),FMT='(I2)') I
+          FCT(6:6)=')'
+        ELSE
+          WRITE(LU,*)'I=',I
+          WRITE(LU,*) 'CGL NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!
+        CALL READ_FIC_CONC(CGL,FCT,AT,SIS_FILES(SISLIQ)%LU,
+     &                     ENTET,OKCGL(I))
+!
       ENDIF
 !
-      CALL READ_FIC_CONC(CGL,FCT,AT,SIS_FILES(SISLIQ)%LU,ENTET,OK(I))
-!
-      IF(.NOT.OK(I).OR.SIS_FILES(SISLIQ)%NAME(1:1).EQ.' ') THEN
-!
-
-!     PROGRAMMABLE PART
-!     SL IS READ FROM THE STEERING FILE, BUT MAY BE CHANGED
-!
+      IF(.NOT.OKCGL(I).OR.SIS_FILES(SISLIQ)%NAME(1:1).EQ.' ') THEN
+!       PROGRAMMABLE PART
+!       SL IS READ FROM THE STEERING FILE, BUT MAY BE CHANGED
         IF(LNG.EQ.1) WRITE(LU,10 0) I
 100     FORMAT(1X,/,1X,'CG : CONC IMPOSEES EN NOMBRE INSUFFISANT'
      &           ,/,1X,'     DANS LE FICHIER DES PARAMETRES'
@@ -116,4 +104,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END FUNCTION CGL
+      END

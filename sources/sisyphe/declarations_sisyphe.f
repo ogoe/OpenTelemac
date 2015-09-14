@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P3                                   12/02/2013
+! SISYPHE   V7P1
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINCIPAL SISYPHE VARIABLES
@@ -66,6 +66,11 @@
 !+        V6P3
 !+ Settling lag: determines choice between Rouse and Miles concentration profile
 !+ (by Michiel Knaapen HRW)
+!
+!history  J-M HERVOUET (EDF-LAB, LNHE)
+!+        11/09/2015
+!+        V7P1
+!+ Arrays of size MAXFRO now allocatable. 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -633,19 +638,15 @@
 !
 !     MAXIMUM NUMBER OF (LIQUID BOUNDARIES, SOLID BOUNDARIES)
 !
-      INTEGER, PARAMETER :: MAXFRO = 3000
+      INTEGER MAXFRO
 !
 !     NUMBER OF LIQUID, SOLID BOUNDARIES
 !
       INTEGER NFRLIQ,NFRSOL
 !
-!     BEGINNING AND END OF LIQUID BOUNDARIES
+!     BEGINNING AND END OF LIQUID BOUNDARIES, OF SOLID BOUNDARIES
 !
-      INTEGER DEBLIQ(MAXFRO),FINLIQ(MAXFRO)
-!
-!     BEGINNING AND END OF SOLID BOUNDARIES
-!
-      INTEGER DEBSOL(MAXFRO),FINSOL(MAXFRO)
+      INTEGER, ALLOCATABLE :: DEBLIQ(:),FINLIQ(:),DEBSOL(:),FINSOL(:)
 !
 !     OPTION FOR THE DIFFUSION OF TRACER
 !
@@ -687,7 +688,8 @@
 !
       INTEGER IELMT,IELMH_SIS,IELMU_SIS,IELMX
 !
-! standard du fichier de geometrie
+!     standard du fichier de geometrie
+!
       INTEGER STDGEO
 !
       INTEGER LOGDES ,LOGPRE ,OPTBAN ,LVMAC
@@ -848,6 +850,9 @@
 !
 !-----------------------------------------------------------------------
 !
+!     USED IN FUNCTION CGL
+!
+      LOGICAL, ALLOCATABLE :: OKCGL(:)
 !
 !  C-VSM WRITES OUT (OR NOT) IN THIS TIMESTEP
 !
@@ -1015,142 +1020,158 @@
 !     SAND DENSITY
 ! 
       DOUBLE PRECISION XMVS
-!> @brief COEFFICIENT FUNCTION OF THE POROSITY
-! coefficient fonction de la porosite
+!
+!     COEFFICIENT FUNCTION OF THE POROSITY
+! 
       DOUBLE PRECISION XKV
-!> @brief GRAVITY ACCELERATION
-! acceleration de la pesanteur
+!
+!     GRAVITY ACCELERATION
+! 
       DOUBLE PRECISION GRAV
-!> @brief
 !
       DOUBLE PRECISION SFON
-!> @brief FLOW VISCOSITY
-! viscosite de l'eau
+!
+!     FLOW VISCOSITY
+! 
       DOUBLE PRECISION VCE
-!> @brief
 !
       DOUBLE PRECISION TETA
-!> @brief MINIMAL VALUE OF THE WATER HEIGHT
-! hauteur d'eau minimale
+!
+!     MINIMAL VALUE OF THE WATER HEIGHT
+! 
       DOUBLE PRECISION HMIN
-!> @brief
 !
       DOUBLE PRECISION BETA ,DELT
-!> @brief TIDAL PERIOD
+!
+!     TIDAL PERIOD
 !
       DOUBLE PRECISION PMAREE
-!> @brief STARTING TIME OF THE HYDROGRAM
-! temps d'origine de l'hydrogramme
+!
+!     STARTING TIME OF THE HYDROGRAM
+! 
       DOUBLE PRECISION TPREC
-!> @brief
 !
       DOUBLE PRECISION PHI0
-!> @brief
-! pas de temps
+!
+!     TIME STEP
+!
       DOUBLE PRECISION DT
-!> @brief CRITERION TO UPDATE THE FLOW (WITH CONSTANT FLOW DISCHARGE)
-! critere pour mettre a jour l'hydrodynamique
+!
+!     CRITERION TO UPDATE THE FLOW (WITH CONSTANT FLOW DISCHARGE)
+!
       DOUBLE PRECISION :: CRIT_CFD
-!> @brief
 !
       DOUBLE PRECISION :: FRACSED_GF(NSICLM)
-!> @brief INITIAL SUSPENSION CONCENTRATIONS
-! concentrations initiales en suspension
+!
+!     INITIAL SUSPENSION CONCENTRATIONS
+! 
       DOUBLE PRECISION :: CS0(NSICLM)
-!> @brief MASS EXCHANGED BY SOURCE TERM
+!
+!     MASS EXCHANGED BY SOURCE TERM
 !
       DOUBLE PRECISION MASSOU
-!> @brief
 !
       DOUBLE PRECISION CSF_SABLE
-!> @brief SETTLING VELOCITIES
-! vitesses de chute
+!
+!     SETTLING VELOCITIES
+! 
       DOUBLE PRECISION XWC(NSICLM)
-!> @brief CRITICAL SHIELDS PARAMETER
+!
+!     CRITICAL SHIELDS PARAMETER
 !
       DOUBLE PRECISION AC(NSICLM)
-!> @brief TETA SUSPENSION
+!
+!     TETA SUSPENSION
 !
       DOUBLE PRECISION TETA_SUSP
-!> @brief
 !
       DOUBLE PRECISION  XKX, XKY
-!> @brief FRICTION ANGLE OF THE SEDIMENT
-! angle de frottement du sediment
+!
+!     FRICTION ANGLE OF THE SEDIMENT
+! 
       DOUBLE PRECISION PHISED
-!> @brief PARAMETER FOR DEVIATION
-! parametre pour la deviation
+!
+!     PARAMETER FOR DEVIATION
+! 
       DOUBLE PRECISION BETA2
 !
-! NON-EQUILIBRIUM BEDLOAD AND NON-UNIFORM BED MATERIA (BMD AND MGDL)
-! --------
-!
-!> @brief HIDING FACTOR FOR PARTICULAR SIZE CLASS WHEN THE USER SUBROUTINE INIT_HIDING IS NOT USED
-! hiding factor par classe granulo
+!     HIDING FACTOR FOR PARTICULAR SIZE CLASS WHEN THE USER SUBROUTINE INIT_HIDING IS NOT USED
+! 
       DOUBLE PRECISION HIDI(NSICLM)
-!> @brief D90
-! d90
+!
+!     D90
+! 
       DOUBLE PRECISION FD90(NSICLM)
-!> @brief SEDIMENT DIAMETERS
-! diametres des grains
+!
+!     SEDIMENT DIAMETERS
+! 
       DOUBLE PRECISION FDM(NSICLM)
-!> @brief INITIAL SEDIMENT COMPOSITION FOR PARTICULAR SIZE CLASS WHEN INIT_COMPO IS NOT USED
-! fraction initiale par classe sedimentologique
+!
+!     INITIAL SEDIMENT COMPOSITION FOR PARTICULAR SIZE CLASS WHEN INIT_COMPO IS NOT USED
+! 
       DOUBLE PRECISION AVA0(NSICLM)
-!> @brief WANTED ACTIVE LAYER THICKNESS; ELAYO=FIXED VALUE, ELAY=REAL VALUE FOR EACH POINT; WHEN ENOUGH SEDIMENT ELAY = ELAY0
-! epaisseur de couche active
+!
+!     WANTED ACTIVE LAYER THICKNESS; ELAYO=FIXED VALUE, ELAY=REAL VALUE FOR EACH POINT; WHEN ENOUGH SEDIMENT ELAY = ELAY0
+! 
       DOUBLE PRECISION ELAY0
-!> @brief TOTAL VOLUME OF SEDIMENT IN EACH CLASS
+!
+!     TOTAL VOLUME OF SEDIMENT IN EACH CLASS
 !
       DOUBLE PRECISION VOLTOT(NSICLM)
-!> @brief CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION
-! vitesse critique de depot de la vase
+!
+!     CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION
+! 
       DOUBLE PRECISION :: VITCD
-!> @brief CRITICAL EROSION SHEAR VELOCITY OF THE MUD
-! vitesse critique d'erosion de la vase
+!
+!     CRITICAL EROSION SHEAR VELOCITY OF THE MUD
+! 
       DOUBLE PRECISION :: VITCE
-!> @brief SUSPENDED MASS BALANCE
+!
+!     SUSPENDED MASS BALANCE
 !
       DOUBLE PRECISION :: MASED0(NSICLM)
-!> @brief SUSPENDED MASS BALANCE
+!
+!     SUSPENDED MASS BALANCE
 !
       DOUBLE PRECISION :: MASINI(NSICLM)
-!> @brief
+      DOUBLE PRECISION :: MASTEN(NSICLM),MASTOU(NSICLM)
+      DOUBLE PRECISION :: MASTCP(NSICLM),MASFIN(NSICLM)
+      DOUBLE PRECISION :: MASDEP(NSICLM),MASDEPT(NSICLM)
 !
-      DOUBLE PRECISION :: MASTEN(NSICLM), MASTOU(NSICLM)
-!> @brief
-!
-      DOUBLE PRECISION :: MASTCP(NSICLM), MASFIN(NSICLM)
-!> @brief
-!
-      DOUBLE PRECISION :: MASDEP(NSICLM), MASDEPT(NSICLM)
-!> @brief
-! CV: masse du lit sedimentaire pour bilan mixte et cohesif
 !     FOR MASS BALANCE OF COHESIVE SEDIMENT AND MIXTE
+!
       DOUBLE PRECISION :: MASVT,MASV0,MASST,MASS0
-!..
-!!> @brief FOR NON-EQUILIBIRUM BEDLOAD
+!
+!     FOR NON-EQUILIBIRUM BEDLOAD
 !
       DOUBLE PRECISION :: LS0
-!> @brief RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER
-! ratio entre la rugosite de peau et le diametre moyen
+!
+!     RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER
+! 
       DOUBLE PRECISION :: KSPRATIO
-!> @brief KARIM, HOLLY & YANG CONSTANT
+!
+!     KARIM, HOLLY & YANG CONSTANT
 !
       DOUBLE PRECISION :: KARIM_HOLLY_YANG
-!> @brief KARMAN CONSTANT
-! constante de karman
+!
+!     KARMAN CONSTANT
+!
       DOUBLE PRECISION :: KARMAN
-!> @brief PARTHENIADES CONSTANT
-! constante de partheniades
+!
+!     PARTHENIADES CONSTANT
+! 
       DOUBLE PRECISION :: PARTHENIADES
-!> @brief MAXIMUM CONCENTRATION
+!
+!     MAXIMUM CONCENTRATION
 !
       DOUBLE PRECISION :: CMAX
-!> @brief PI
+!
+!     PI
 !
       DOUBLE PRECISION :: PI
-!> @brief Meyer Peter Mueller-Coefficient 
+!
+!     Meyer Peter Mueller-Coefficient
+! 
       DOUBLE PRECISION :: MPM
 !
 !     Secondary Current Alpha Coefficient
@@ -1160,7 +1181,8 @@
 !     Morphological Factor
 !
       DOUBLE PRECISION :: MOFAC
-!> @brief ZERO OF THE CODE
+!
+!     ZERO OF THE CODE
 !
       DOUBLE PRECISION :: ZERO
 !
@@ -1170,9 +1192,9 @@
 !
 !     MUD CONCENTRATION AT BOUNDARIES FOR EACH CLASS
 !
-      DOUBLE PRECISION :: CBOR_CLASSE(NSICLM*MAXFRO)
+      DOUBLE PRECISION, ALLOCATABLE :: CBOR_CLASSE(:)
 !
-!     MUD CONCENTRATION FOR EACH LAYER (Constante
+!     MUD CONCENTRATION FOR EACH LAYER (Constant)
 !
       DOUBLE PRECISION :: CONC_VASE(NLAYMAX)
 !
@@ -1194,12 +1216,11 @@
 !
 !     PRESCRIBED SOLID DISCHARGES
 ! 
-      DOUBLE PRECISION :: SOLDIS(MAXFRO)
+      DOUBLE PRECISION, ALLOCATABLE :: SOLDIS(:)
 !
 !     FOR MASS BALANCE OF COHESIVE SEDIMENT
 !
       DOUBLE PRECISION :: MASBED0,MASBED
-!
 !
 !-----------------------------------------------------------------------
 !
@@ -1209,10 +1230,8 @@
 !
 !
       CHARACTER(LEN=72) TITCA,SORTIS,VARIM
-!> @brief
 !
       CHARACTER(LEN=3) BINGEOSIS,BINPRESIS,BINHYDSIS
-!> @brief
 !
       CHARACTER(LEN=3) BINRESSIS,BINREFSIS
 !
@@ -1232,8 +1251,6 @@
 !
       CHARACTER(LEN=8) MNEMO(MAXVAR)
 !
-!
-!
       CHARACTER(LEN=144) COUPLINGSIS
 !
 !-----------------------------------------------------------------------
@@ -1242,10 +1259,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!> @brief
-!
       TYPE(SLVCFG) :: SLVSED
-!> @brief
 !
       TYPE(SLVCFG) :: SLVTRA
 !
@@ -1279,40 +1293,34 @@
 !     CONNECTIVITY TABLE
 !
       TYPE(BIEF_OBJ),   POINTER :: IKLE
-!> @brief 2D COORDINATES OF THE MESH
-! coordonnees des points du maillage
-      DOUBLE PRECISION, DIMENSION(:), POINTER :: X
-!> @brief 2D COORDINATES OF THE MESH
-! coordonnees des points du maillage
-      DOUBLE PRECISION, DIMENSION(:), POINTER :: Y
-!> @brief NUMBER OF ELEMENTS IN THE MESH
-! nombre d'elements du maillage
-      INTEGER, POINTER:: NELEM
-!> @brief MAXIMUM NUMBER OF ELEMENTS IN THE MESH
-! nombre maximum d'elements du maillage
-      INTEGER, POINTER:: NELMAX
-!> @brief NUMBER OF BOUNDARY POINTS
-! nombre de points frontieres
-      INTEGER, POINTER:: NPTFR
-!> @brief
 !
-      INTEGER, POINTER:: NPTFRX
-!> @brief
+!     2D COORDINATES OF THE MESH
+! 
+      DOUBLE PRECISION, DIMENSION(:), POINTER :: X,Y
+!
+!     NUMBER OF ELEMENTS IN THE MESH
+! 
+      INTEGER, POINTER:: NELEM
+!
+!     MAXIMUM NUMBER OF ELEMENTS IN THE MESH
+! 
+      INTEGER, POINTER:: NELMAX
+!
+!     NUMBER OF BOUNDARY POINTS, MAXIMUM NUMBER
+! 
+      INTEGER, POINTER:: NPTFR,NPTFRX
 !
       INTEGER, POINTER:: TYPELM
-!> @brief NUMBER OF 2D POINTS IN THE MESH
-! nombre de points 2d du maillage
+!
+!     NUMBER OF 2D POINTS IN THE MESH
+! 
       INTEGER, POINTER:: NPOIN
-!> @brief
 !
       INTEGER, POINTER:: NPMAX
-!> @brief
 !
       INTEGER, POINTER:: MXPTVS
-!> @brief
 !
       INTEGER, POINTER:: MXELVS
-!> @brief
 !
       INTEGER, POINTER:: LV
 !
@@ -1325,49 +1333,15 @@
 !     MAXIMUM RANK OF LOGICAL UNITS AS DECLARED IN SUBMIT STRINGS IN THE DICTIONARY
 !
       INTEGER, PARAMETER :: MAXLU_SIS = 46
-!> @brief
+!
+!     FOR STORING INFORMATION ON FILES
 !
       TYPE(BIEF_FILE) :: SIS_FILES(MAXLU_SIS)
-!> @brief
 !
-      INTEGER SISRES
-!> @brief
+!     VARIOUS FILES RANKS, WHICH ARE ALSO LOGICAL UNITS IF NO COUPLING
 !
-      INTEGER SISREF
-!> @brief
-!
-      INTEGER SISPRE
-!> @brief
-!
-      INTEGER SISHYD
-!> @brief
-!
-      INTEGER SISCOU
-!> @brief
-!
-      INTEGER SISGEO
-!> @brief
-!
-      INTEGER SISCLI
-!> @brief
-!
-      INTEGER SISCAS
-!> @brief
-!
-      INTEGER SISFON
-!> @brief
-!
-      INTEGER SISMAF
-!> @brief
-!
-      INTEGER SISSEC
-!> @brief
-!
-      INTEGER SISSEO
-!
-!     RANK OF 'FILE FOR LIQUID BOUNDARIES' IN SIS_FILES
-!
-      INTEGER SISLIQ
+      INTEGER SISRES,SISREF,SISPRE,SISHYD,SISCOU,SISGEO,SISCLI,SISCAS
+      INTEGER SISFON,SISMAF,SISSEC,SISSEO,SISLIQ
 !
 !-----------------------------------------------------------------------
 !
@@ -1376,8 +1350,6 @@
 !-----------------------------------------------------------------------
 !
       TYPE (CHAIN_TYPE), ALLOCATABLE :: CHAIN(:)
-!
-      SAVE   ! VERY IMPORTANT
 !
       END MODULE DECLARATIONS_SISYPHE
 

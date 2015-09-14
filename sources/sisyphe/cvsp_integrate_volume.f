@@ -46,12 +46,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION TEMP,TEMPOLD, DHIG, DLOW, AT, SUMUP, FLOW, FHIG
+      DOUBLE PRECISION TEMP,DHIG, DLOW, AT, SUMUP, FLOW, FHIG
       DOUBLE PRECISION TEMP2, TEMP2MAX, SUMUP2,TEMP3, TEMP3MAX, SUMUP3
       DOUBLE PRECISION CORRECT, CHSUM
       INTEGER L_CNT, MYCASE, F_CNT, REVCNT, HELPER, LASTCASE, JG, K
       LOGICAL RET,CVSP_CHECK_F
-      LOGICAL, EXTERNAL:: DB
 !
 !-----------------------------------------------------------------------
 !
@@ -81,7 +80,7 @@
 !-----------------------------------------------------------------------
 !
         DO L_CNT = 0,(PRO_MAX(J)-2)
-          TEMPOLD = TEMP
+!
           REVCNT = PRO_MAX(J)-L_CNT
 !
 !-----------------------------------------------------------------------

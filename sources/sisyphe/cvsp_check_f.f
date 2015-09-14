@@ -27,7 +27,7 @@
 !| SOMETEXT       |<--| DEBUGING TEXT FOR LOG-OUTPUT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF_DEF, ONLY: IPID, NCSIZE
+      USE BIEF_DEF, ONLY : NCSIZE
       USE BIEF
       USE DECLARATIONS_SISYPHE
 !
@@ -37,9 +37,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER,          INTENT(IN)    :: J
-      INTEGER,          INTENT(IN)    :: K
-      CHARACTER*10,     INTENT(IN)    :: SOMETEXT
+      INTEGER,          INTENT(IN) :: J
+      INTEGER,          INTENT(IN) :: K
+      CHARACTER(LEN=10),INTENT(IN) :: SOMETEXT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

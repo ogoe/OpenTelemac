@@ -1,8 +1,8 @@
-!                    ****************************
-                     SUBROUTINE BEDLOAD_VANRIJN !
-!                    ****************************
+!                    **************************
+                     SUBROUTINE BEDLOAD_VANRIJN
+!                    **************************
 !
-     &  (TETAP,MU, NPOIN, DM, DENS, GRAV, DSTAR, AC, QSC)
+     &(TETAP,MU, NPOIN, DM, DENS, GRAV, DSTAR, AC, QSC)
 !
 !***********************************************************************
 ! SISYPHE   V6P1                                   21/07/2011
