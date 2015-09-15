@@ -6,7 +6,7 @@
      & X,Y,NBOR,KP1BOR,DEJAVU,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ,MAXFRO)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    IDENTIFIES AND NUMBERS THE LIQUID AND SOLID BOUNDARIES.
@@ -15,11 +15,6 @@
 !+         FOR A BOUNDARY NODE NUMBER K.
 !+         A SEGMENT CONNECTING A LIQUID AND A SOLID NODE IS
 !+         CONSIDERED TO BE SOLID.
-!
-!history  J-M HERVOUET
-!+        27/02/04
-!+        V5P6
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -32,6 +27,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET
+!+        15/09/2015
+!+        V7P1
+!+   Now checking the maximum number of boundaries before using the
+!+   would-be undersized arrays.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBLIQ         |<--| BEGINNING OF LIQUID BOUNDARIES
@@ -161,12 +162,14 @@
       IF(LIHBOR(K).EQ.KLOG.OR.LIHBOR(KP1BOR(K)).EQ.KLOG) THEN
 !       THE 1ST SEGMENT IS SOLID
         NFRSOL = NFRSOL + 1
+        IF(NFRSOL.GT.MAXFRO) GO TO 1000
         SOL1 = NFRSOL
         SOLD = .TRUE.
         LIQD = .FALSE.
       ELSE
 !       THE 1ST SEGMENT IS LIQUID
         NFRLIQ = NFRLIQ + 1
+        IF(NFRLIQ.GT.MAXFRO) GO TO 1000
         LIQ1 = NFRLIQ
         LIQD = .TRUE.
         SOLD = .FALSE.
@@ -190,6 +193,7 @@
       IF(L1.EQ.KLOG.AND.L2.NE.KLOG.AND.L3.NE.KLOG) THEN
 !     SOLID-LIQUID TRANSITION AT POINT K
         NFRLIQ = NFRLIQ + 1
+        IF(NFRLIQ.GT.MAXFRO) GO TO 1000
         FINSOL(NFRSOL) = K
         DEBLIQ(NFRLIQ) = K
         LIQF = .TRUE.
@@ -197,6 +201,7 @@
       ELSEIF(L1.NE.KLOG.AND.L2.NE.KLOG.AND.L3.EQ.KLOG) THEN
 !     LIQUID-SOLID TRANSITION AT POINT K
         NFRSOL = NFRSOL + 1
+        IF(NFRSOL.GT.MAXFRO) GO TO 1000
         FINLIQ(NFRLIQ) = K
         DEBSOL(NFRSOL) = K
         LIQF = .FALSE.
@@ -206,6 +211,7 @@
         IF(L2.NE.L3.OR.LIUBOR(K).NE.LIUBOR(KP1BOR(K))) THEN
           FINLIQ(NFRLIQ) = K
           NFRLIQ = NFRLIQ + 1
+          IF(NFRLIQ.GT.MAXFRO) GO TO 1000
           DEBLIQ(NFRLIQ) = KP1BOR(K)
         ENDIF
       ELSEIF(L1.EQ.KLOG.AND.L2.NE.KLOG.AND.L3.EQ.KLOG) THEN
@@ -343,6 +349,10 @@
 !
 !-----------------------------------------------------------------------
 !
+      GO TO 2000
+!
+!-----------------------------------------------------------------------
+!
 !  FORMATS
 !
 69    FORMAT(/,1X,'IL Y A ',1I3,' ILE(S) DANS LE DOMAINE')
@@ -376,20 +386,28 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(NFRSOL.GT.MAXFRO.OR.NFRLIQ.GT.MAXFRO) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'FRONT2 : DEPASSEMENT DE TABLEAUX'
-          WRITE(LU,*) '         AUGMENTER MAXFRO DANS LE CODE APPELANT'
-          WRITE(LU,*) '         A LA VALEUR ',MAX(NFRSOL,NFRLIQ)
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'FRONT2: SIZE OF ARRAYS EXCEEDED'
-          WRITE(LU,*) '        INCREASE MAXFRO IN THE CALLING PROGRAM'
-          WRITE(LU,*) '        UP TO THE VALUE ',MAX(NFRSOL,NFRLIQ)
-        ENDIF
-        CALL PLANTE(1)
-        STOP
+1000  CONTINUE
+!
+      IF(LNG.EQ.1) THEN
+        WRITE(LU,*) 'FRONT2 : DEPASSEMENT DE TABLEAUX'
+        WRITE(LU,*) '         AUGMENTER LE'
+        WRITE(LU,*) '         NOMBRE MAXIMUM DE FRONTIERES'
+        WRITE(LU,*) '         DANS LE CODE APPELANT'
+        WRITE(LU,*) '         LA VALEUR ACTUELLE EST ',MAXFRO
       ENDIF
+      IF(LNG.EQ.2) THEN
+        WRITE(LU,*) 'FRONT2: SIZE OF ARRAYS EXCEEDED'
+        WRITE(LU,*) '        INCREASE THE'
+        WRITE(LU,*) '        MAXIMUM NUMBER OF BOUNDARIES'
+        WRITE(LU,*) '        IN THE CALLING PROGRAM'
+        WRITE(LU,*) '        THE CURRENT VALUE IS ',MAXFRO
+      ENDIF
+      CALL PLANTE(1)
+      STOP
+!
+!-----------------------------------------------------------------------
+!
+2000  CONTINUE
 !
 !-----------------------------------------------------------------------
 !
