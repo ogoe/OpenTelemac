@@ -269,7 +269,7 @@
         CHARACTER(LEN=9) :: SRF_OPENMODE
         INTEGER(KIND=I4) :: B1, B2, IB(10), IDUM
         INTEGER :: NTIMESTEP
-        INTEGER(kind=K4) :: TAG
+        INTEGER(KIND=K4) :: TAG
         REAL :: TIME
         INTEGER :: I, POS, FSIZE
         !

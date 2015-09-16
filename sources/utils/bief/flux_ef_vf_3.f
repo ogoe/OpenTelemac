@@ -138,7 +138,7 @@
               IF(FP32.GT. FXMATPAR(ISEG2)) FP32=FXMATPAR(ISEG2)
             ELSE
               FP32=0.D0
-              IF(FP23.GT.-FXMATPAR(ISEG2)) FP23=-FXMATPAR(ISEG2)            
+              IF(FP23.GT.-FXMATPAR(ISEG2)) FP23=-FXMATPAR(ISEG2)
             ENDIF
           ELSE
             IF(FXMATPAR(ISEG2).GT.0.D0) THEN
@@ -146,7 +146,7 @@
               IF(FP23.GT. FXMATPAR(ISEG2)) FP23=FXMATPAR(ISEG2)
             ELSE
               FP23=0.D0
-              IF(FP32.GT.-FXMATPAR(ISEG2)) FP32=-FXMATPAR(ISEG2)            
+              IF(FP32.GT.-FXMATPAR(ISEG2)) FP32=-FXMATPAR(ISEG2)
             ENDIF
           ENDIF
 !
@@ -158,7 +158,7 @@
               IF(FP13.GT. FXMATPAR(ISEG3)) FP13=FXMATPAR(ISEG3)
             ELSE
               FP13=0.D0
-              IF(FP31.GT.-FXMATPAR(ISEG3)) FP31=-FXMATPAR(ISEG3)           
+              IF(FP31.GT.-FXMATPAR(ISEG3)) FP31=-FXMATPAR(ISEG3)
             ENDIF
           ELSE
             IF(FXMATPAR(ISEG3).GT.0.D0) THEN
@@ -298,7 +298,7 @@
               IF(FP32.GT. FXMATPAR(ISEG2)) FP32=FXMATPAR(ISEG2)
             ELSE
               FP32=0.D0
-              IF(FP23.GT.-FXMATPAR(ISEG2)) FP23=-FXMATPAR(ISEG2)            
+              IF(FP23.GT.-FXMATPAR(ISEG2)) FP23=-FXMATPAR(ISEG2)
             ENDIF
           ELSE
             IF(FXMATPAR(ISEG2).GT.0.D0) THEN
@@ -306,7 +306,7 @@
               IF(FP23.GT. FXMATPAR(ISEG2)) FP23=FXMATPAR(ISEG2)
             ELSE
               FP23=0.D0
-              IF(FP32.GT.-FXMATPAR(ISEG2)) FP32=-FXMATPAR(ISEG2)            
+              IF(FP32.GT.-FXMATPAR(ISEG2)) FP32=-FXMATPAR(ISEG2)
             ENDIF
           ENDIF
 !
@@ -318,7 +318,7 @@
               IF(FP13.GT. FXMATPAR(ISEG3)) FP13=FXMATPAR(ISEG3)
             ELSE
               FP13=0.D0
-              IF(FP31.GT.-FXMATPAR(ISEG3)) FP31=-FXMATPAR(ISEG3)           
+              IF(FP31.GT.-FXMATPAR(ISEG3)) FP31=-FXMATPAR(ISEG3)
             ENDIF
           ELSE
             IF(FXMATPAR(ISEG3).GT.0.D0) THEN

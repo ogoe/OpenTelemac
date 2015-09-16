@@ -566,13 +566,13 @@
       ENDIF
 !GM Fin
       IF(CBAJ.EQ.1) THEN
-         LIMIT=3
-         STRIF=1
-         SVENT=1
-         SMOUT=1
-         CMOUT1=2.1D0
-         CMOUT2=0.4D0
-         ALPHA=0.0095D0
+        LIMIT=3
+        STRIF=1
+        SVENT=1
+        SMOUT=1
+        CMOUT1=2.1D0
+        CMOUT2=0.4D0
+        ALPHA=0.0095D0
       ENDIF
 !
 !

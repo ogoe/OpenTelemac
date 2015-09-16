@@ -427,7 +427,7 @@
           ELSEIF(LIMTRA(I).EQ.KDDL) THEN
             N=NBOR(I) 
             FLBORTRA(I)=FLBORTRA(I)
-     &            +FXBOR(I)*(TETAF(N)*F(N)+(1.D0-TETAF(N))*FC(N))*SURNIT  
+     &            +FXBOR(I)*(TETAF(N)*F(N)+(1.D0-TETAF(N))*FC(N))*SURNIT
           ENDIF
         ENDDO
         IF(YASMH) THEN

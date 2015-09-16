@@ -56,8 +56,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER :: I
-      CHARACTER(len=80) TITRE
-      CHARACTER(len=15)  NOMCOU
+      CHARACTER(LEN=80) TITRE
+      CHARACTER(LEN=15)  NOMCOU
 !
       CHARACTER(LEN=3) :: EXTEN1
       CHARACTER(LEN=7) :: EXTEN2
@@ -137,7 +137,6 @@
           VAR_NAME(IVAR) = TEXTLU(I)
           IVAR = IVAR + 1
         ENDDO
-        write(lu,*) 'var_name: ',var_name
       ELSE
         IF (NBVAR.GT.4) THEN
           ! Adding the rest of the variable skipping velocity

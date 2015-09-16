@@ -134,12 +134,6 @@ def main():
                  default='',
                  help="specify the root, default is "\
                      "taken from config file" )
-   parser.add_option("-v", "--version",
-                 type="string",
-                 dest="version",
-                 default='',
-                 help="specify the version number, mandatory for "\
-                     "documentation purposes" )
    parser.add_option("-m", "--modules",
                  type="string",
                  dest="modules",
@@ -180,9 +174,10 @@ def main():
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   options, _ = parser.parse_args()
    # path to the root
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
-   if options.rootDir != '': PWD = options.rootDir
+   if options.root_dir != '': PWD = options.root_dir
    # user configuration name
    USETELCFG = ''
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
@@ -196,7 +191,6 @@ def main():
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
-   options, _ = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: %s\n' % \
            options.configFile
@@ -223,10 +217,6 @@ def main():
          root = path.abspath(options.root_dir)
       else : 
          root = cfgs[cfgname]['root']  
-      if options.version == '': 
-         print '\nYou need a reference version for this documentation'
-         sys.exit(1)
-         cfgs[cfgname]['version'] = options.version
       if options.modules != '': 
          cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
       cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])

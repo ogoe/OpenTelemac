@@ -202,7 +202,7 @@
           CALL CHECK_CALL(IERR,'NOUDON:GET_DATA_TIME')
           TV2=(TIME2-PHASTIME)*UNITIME
           IF(TV2.LT.AT) THEN
-            IF(DEBUG.GT.0) then
+            IF(DEBUG.GT.0) THEN
               IF(LNG.EQ.1) THEN
                 WRITE(LU,*) ' NOUDON : ON SAUTE 1 ENREGISTREMENT'
               ELSEIF(LNG.EQ.2) THEN
@@ -244,8 +244,8 @@
             ENDIF
 !           Read the data for varialbe j on record1
             IF(J.EQ.1) THEN
-               CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
-     &                           FULL_NAME(J),F11,NPOIN,IERR)
+              CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
+     &                            FULL_NAME(J),F11,NPOIN,IERR)
             ELSEIF(J.EQ.2) THEN
               CALL GET_DATA_VALUE(FFORMAT,NDON,RECORD1,
      &                            FULL_NAME(J),F21,NPOIN,IERR)
