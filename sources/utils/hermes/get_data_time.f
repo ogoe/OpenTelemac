@@ -5,15 +5,15 @@
      &(FFORMAT,FID,RECORD,TIME,IERR)
 !
 !***********************************************************************
-! HERMES   V7P0                                               01/05/2014
+! HERMES   V7P1
 !***********************************************************************
 !
 !brief    Returns the time value of a given time step
 !
 !history  Y AUDOUIN (LNHE)
 !+        24/03/2014
-!+        V7P0
-!+
+!+        V7P1
+!+   First version
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FFORMAT        |-->| FORMAT OF THE FILE
@@ -36,7 +36,6 @@
       INTEGER,          INTENT(IN)  :: RECORD
       DOUBLE PRECISION, INTENT(INOUT) :: TIME
       INTEGER,          INTENT(OUT) :: IERR
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

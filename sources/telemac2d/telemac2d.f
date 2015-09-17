@@ -262,9 +262,9 @@
 !+   Call to CVDFTR modified. 3 new arguments.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        25/08/2015
+!+        17/09/2015
 !+        V7P1
-!+   Call to TEL4DEL modified.
+!+   Call to TEL4DEL modified. Printouts in Debug mode added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
@@ -528,7 +528,11 @@
 !  DEFINITION OF ZONES BY THE USER
 !-----------------------------------------------------------------------
 !
-      IF(DEFZON) CALL DEF_ZONES
+      IF(DEFZON) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING DEF_ZONES'
+        CALL DEF_ZONES
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM DEF_ZONES'
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !  CHANGES FROM GLOBAL TO LOCAL IN LIST OF POINTS IN PARALLEL
@@ -560,21 +564,25 @@
       IF(     .NOT.INCLU2(ESTIME,'FROTTEMENT')
      &   .AND..NOT.INCLU2(ESTIME,'FRICTION'  )  ) THEN
 !       NO PARAMETER ESTIMATION
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING FONSTR'
         CALL FONSTR(T1,ZF,T2,CHESTR,T2D_FILES(T2DGEO)%LU,
      &              T2D_FILES(T2DGEO)%FMT,
      &              T2D_FILES(T2DFON)%LU,T2D_FILES(T2DFON)%NAME,
      &              MESH,FFON,LISTIN,
      &              N_NAMES_PRIV,NAMES_PRIVE,PRIVE)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM FONSTR'
         CORBOT=.TRUE.
       ELSEIF(NITERA.EQ.1.AND..NOT.ADJO) THEN
 !       WITH PARAMETER ESTIMATION (HENCE NITERA DEFINED),
 !       FONSTR CALLED ONCE TO GET
 !       THE BOTTOM TOPOGRAPHY AND THE INITIAL FRICTION (CALL TO STRCHE)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING FONSTR'
         CALL FONSTR(T1,ZF,T2,CHESTR,T2D_FILES(T2DGEO)%LU,
      &              T2D_FILES(T2DGEO)%FMT,
      &              T2D_FILES(T2DFON)%LU,T2D_FILES(T2DFON)%NAME,
      &              MESH,FFON,LISTIN,
      &              N_NAMES_PRIV,NAMES_PRIVE,PRIVE)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM FONSTR'
 !       IF OPTID=0, VALUES OF SETSTR ARE GIVEN BY FILE, MUST NOT BE ERASED
         IF(OPTID.NE.0) CALL INITSTR(CHESTR,SETSTR,ZONE%I,NZONE,NPOIN,T1)
         CALL ASSIGNSTR(CHESTR,SETSTR,ZONE%I,NZONE,NPOIN)

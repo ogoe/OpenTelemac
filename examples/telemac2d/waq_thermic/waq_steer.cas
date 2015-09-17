@@ -105,7 +105,6 @@ WATER TEMPERATURE    = 20.
 //
 //THERMIC PROCESS 
 //
-WATER DENSITY                                      = 1000. 
 WATER SPECIFIC HEAT                                = 4180.
 AIR SPECIFIC HEAT                                  = 1002.
 COEFFICIENTS OF AERATION FORMULA                   = 0.0025;0.0025

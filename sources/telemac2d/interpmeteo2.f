@@ -1,12 +1,11 @@
-!                    **********************
+!                    ***********************
                      SUBROUTINE INTERPMETEO2
-!                    **********************
+!                    ***********************
 !
-     &(WW,WINDX,WINDY,TAIR,PATM,NEBU,RAINFALL,
-     & PVAP,RAY3,AT,NFO)
+     &(WW,WINDX,WINDY,TAIR,PATM,NEBU,RAINFALL,PVAP,RAY3,AT,NFO)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                   09/07/2014
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    READS AND INTERPOLATES VARIABLES IN AN ASCII FILE
@@ -15,8 +14,12 @@
 !history  R. SAMIE, E. RAZAFINDRAKOTO, C.-T. PHAM (EDF-LNHE)
 !+        09/07/2014
 !+        V7P0
-!+        FROM LAPLUIE AND LECENT
-!+
+!+    First version
+!
+!history  J-M HERVOUET (EDF-LNHE)
+!+        17/09/2015
+!+        V7P1
+!+    Avoiding an allocation of array by the compiler during a READ.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME OF TIME STEP
@@ -49,11 +52,9 @@
       DOUBLE PRECISION, INTENT(INOUT) :: WW,WINDX,WINDY,TAIR,PATM
       DOUBLE PRECISION, INTENT(INOUT) :: NEBU,RAINFALL,PVAP,RAY3
 !
-!      DOUBLE PRECISION, INTENT(INOUT) :: I0,PCO2,C14_ATM,HT0_ATM,HREL
-!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER POSTAB,I,NBENR
+      INTEGER POSTAB,I,J,NBENR
 !     NUMBER OF VARIABLES IN THE ASCII FILE NFO
 !       INTEGER, PARAMETER :: NINPUTVAR = 8
       INTEGER, PARAMETER :: NINPUTVAR = 9
@@ -82,7 +83,7 @@
 !  READS INPUT DATA FILE
 !  AT THE FIRST TIME STEP AND FILLS IN TABENT ARRAY
 !
-      IF (.NOT.DEJA) THEN
+      IF(.NOT.DEJA) THEN
 !
         IF(LNG.EQ.1) THEN
           WRITE(LU,*)'====================================='
@@ -149,7 +150,7 @@
 !  READS VARIABLES AND FILLS IN TABENT ARRAY
 !
         DO I=1,NBENR
-          READ(NFO,*)TABENT(I,1:NINPUTVAR)
+          READ(NFO,*) (TABENT(I,J),J=1,NINPUTVAR)
         ENDDO
 !
         IF(LNG.EQ.1) THEN
@@ -286,3 +287,4 @@
 !
       RETURN
       END
+

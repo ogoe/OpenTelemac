@@ -80,10 +80,7 @@ MODULE b_datetime
   !
   ! [A.1] BASIS-Modul mit globalen Konstantwerten
   !
-  USE b_constants, ONLY : &
-       ! Parameter
-       double,         &
-       short
+  USE b_constants, ONLY : double,short
   !
   ! [A.2] BASIS-Modul mit Fehler-Typ und -Routinen 
   !
@@ -158,12 +155,12 @@ MODULE b_datetime
   !! zone : Zeitzone als Anzahl der Stunden bezogen auf UTC
   TYPE , PUBLIC :: t_datetime
      PRIVATE
-     TYPE (t_date)         :: date     ! 
-     INTEGER (KIND=short)  :: hour     ! 
-     INTEGER (KIND=short)  :: min      ! 
-     INTEGER (KIND=short)  :: sec      ! 
-     INTEGER               :: nanosec  ! 
-     INTEGER (KIND=short)  :: zone     ! 
+     TYPE (t_date)         :: date
+     INTEGER (KIND=short)  :: hour
+     INTEGER (KIND=short)  :: min
+     INTEGER (KIND=short)  :: sec
+     INTEGER               :: nanosec
+     INTEGER (KIND=short)  :: zone
   END TYPE t_datetime
   !
   ! [C.2] Konstantwerte (Parameter) [moeglichst nicht verwenden]
@@ -4648,4 +4645,4 @@ CONTAINS
   END SUBROUTINE print_datetime_zone
   !
 END MODULE b_datetime
-! TailOfBaseModule --------------------------------------------------------
+
