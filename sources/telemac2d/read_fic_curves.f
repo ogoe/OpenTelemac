@@ -5,7 +5,7 @@
      &(NFIC,NFRLIQ,STA_DIS_CURVES,PTS_CURVES)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/08/2010
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    READS STAGE-DISCHARGE CURVES IN THEIR FILE (STORED IN QZ)
@@ -13,7 +13,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        27/03/2008
 !+        V5P9
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -40,6 +40,13 @@
 !+   Empty lines tested and considered as commented lines when reading
 !+   data Q and Z. This allows carriage returns followed by an empty
 !+   line at the end of the file.
+!
+!history  J-M HERVOUET (LNHE)
+!+        18/09/2015
+!+        V7P1
+!+   Bug corrected: test IF(PTS_CURVES(ICURVE).GT.0) 
+!+   replaced by IF(STA_DIS_CURVES(ICURVE).GT.0) for printing points of 
+!+   a curve (for some liquid boundaries PTS_CURVES is not initialised).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NFIC           |-->| LOGICAL UNIT OF FILE
@@ -131,6 +138,7 @@
 !       SKIPS UNITS (UNITS NOT CHECKED)
         READ(NFIC,FMT='(A)',END=1000,ERR=999) LIGNE
         PTS_CURVES(ICURVE)=0
+        PRINT*,'INITIALISATION ICURVE=',ICURVE
 4       CONTINUE
         READ(NFIC,FMT='(A)',END=1001,ERR=999) LIGNE
         IF(LIGNE(1:1).NE.'#'.AND.LIGNE.NE.'') THEN
@@ -213,7 +221,7 @@
 !     REPORTS IN LISTING
 !
       DO ICURVE=1,NFRLIQ
-        IF(PTS_CURVES(ICURVE).GT.0) THEN
+        IF(STA_DIS_CURVES(ICURVE).GT.0) THEN
           WRITE(LU,*) ' '
           IF(LNG.EQ.1) WRITE(LU,*) 'COURBE DE TARAGE :',ICURVE
           IF(LNG.EQ.2) WRITE(LU,*) 'STAGE-DISCHARGE CURVE:',ICURVE
