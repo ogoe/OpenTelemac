@@ -67,7 +67,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION, DIMENSION(MESH_DIM*NPOIN) :: COORD
+      DOUBLE PRECISION, ALLOCATABLE :: COORD(:)
       INTEGER :: I
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -79,6 +79,8 @@
      &                      KNOLG,X,Y,NPLAN,DATE,TIME,IERR)
         CASE ('MED     ')
 !         STORE COORDINATES
+          ALLOCATE(COORD(NPOIN*MESH_DIM),STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,'SET_MESH:COORD')
           DO I=1,NPOIN
             COORD(I) = X(I)
             COORD(I+NPOIN) = Y(I)
@@ -87,6 +89,7 @@
 !
           CALL SET_MESH_MED(FILE_ID,MESH_DIM,MESH_DIM,TYPELM,NDP,NPTFR,
      &      NPTIR,NELEM,NPOIN,IKLE,IPOBO,KNOLG,COORD,IERR)
+          DEALLOCATE(COORD)
 
         CASE DEFAULT
           IF(LNG.EQ.1) THEN
