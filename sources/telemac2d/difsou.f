@@ -2,7 +2,7 @@
                      SUBROUTINE DIFSOU
 !                    *****************
 !
-     &(TEXP,TIMP,YASMI,TSCEXP,HPROP,TN,TETAT,NREJTR,ISCE,DSCE,TSCE,
+     &(TEXP,TIMP,YASMI,TSCEXP,HPROP,TN,TETAT,NREJET,ISCE,DSCE,TSCE,
      & MAXSCE,MAXTRA,AT,DT,MASSOU,NTRAC,FAC,NSIPH,ENTSIP,SORSIP,
      & DSIP,TSIP,NBUSE,ENTBUS,SORBUS,DBUS,TBUS,NWEIRS,TYPSEUIL,
      & NPSING,NDGA1,NDGB1,TWEIRA,TWEIRB)
@@ -79,9 +79,10 @@
 !+   Treatment of sources modified for distributive schemes.
 !
 !history  J-M HERVOUET (LNHE)
-!+        16/06/2015
+!+        18/09/2015
 !+        V7P1
-!+   FAC is now an integer.
+!+   FAC is now an integer. NREJET is now the number of sources, before
+!+   NREJTR was sent by telemac2d.f.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
@@ -99,7 +100,7 @@
 !| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
 !| MAXTRA         |-->| MAXIMUM NUMBER OF TRACERS
 !| NBUSE          |-->| NUMBER OF TUBES
-!| NREJTR         |-->| NUMBER OF POINT SOURCES AS GIVEN BY TRACERS KEYWORDS
+!| NREJET         |-->| NUMBER OF POINT SOURCES.
 !| NSIPH          |-->| NUMBER OF CULVERTS
 !| NTRAC          |-->| NUMBER OF TRACERS
 !| NWEIRS         |-->| NUMBER OF WEIRS
@@ -137,7 +138,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER          , INTENT(IN)    :: ISCE(*),NREJTR,NTRAC
+      INTEGER          , INTENT(IN)    :: ISCE(*),NREJET,NTRAC
       INTEGER          , INTENT(IN)    :: NSIPH,NBUSE,NWEIRS
       INTEGER          , INTENT(IN)    :: ENTSIP(NSIPH),SORSIP(NSIPH)
       INTEGER          , INTENT(IN)    :: ENTBUS(NBUSE),SORBUS(NBUSE)
@@ -226,9 +227,9 @@
 !
       DO ITRAC=1,NTRA
 !
-        IF(NREJTR.GT.0) THEN
+        IF(NREJET.GT.0) THEN
 !       
-          DO I = 1 , NREJTR
+          DO I = 1 , NREJET
 !         
             IR = ISCE(I)
 !           TEST IR.GT.0 FOR THE PARALLELISM
@@ -449,7 +450,7 @@
         ENDIF
 !
         IF(NCSIZE.GT.1.AND.
-     &     (NREJTR.GT.0.OR.NSIPH.GT.0.OR.NBUSE.GT.0.OR.
+     &     (NREJET.GT.0.OR.NSIPH.GT.0.OR.NBUSE.GT.0.OR.
      &      (NWEIRS.GT.0.AND.TYPSEUIL.EQ.2))) THEN
           MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
         ENDIF

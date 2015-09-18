@@ -249,12 +249,12 @@
 !history Y. AUDOUIN (LNHE)
 !+       25/05/2015
 !+       V7P1
-!+       Modification to comply with the hermes module.
+!+   Modification to comply with the hermes module.
 !
 !history R. ATA (LNHE)
 !+       27/05/2015
 !+       V7P1
-!+       UDEL and VDEL built for Delwaq in finite element options.
+!+   UDEL and VDEL built for Delwaq in finite element options.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        28/05/2015
@@ -262,9 +262,10 @@
 !+   Call to CVDFTR modified. 3 new arguments.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        17/09/2015
+!+        18/09/2015
 !+        V7P1
-!+   Call to TEL4DEL modified. Printouts in Debug mode added.
+!+   Call to TEL4DEL modified. Printouts in Debug mode added. Argument
+!+   NREJTR changed into NREJET in the call to difsou.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
@@ -622,12 +623,14 @@
 !       THE DATA ARE CREATED IN THE LOGICAL UNIT T2D_FILES(T2DRES)%LU
 !       WITH A TITLE AND NAMES OF OUTPUT VARIABLES.
 !
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING WRITE_HEADER'
         CALL WRITE_HEADER(T2D_FILES(T2DRES)%FMT, ! RESULTS FILE FORMAT
      &                    T2D_FILES(T2DRES)%LU,  ! LU FOR RESULTS FILE
      &                    TITCAS,     ! TITLE
      &                    MAXVAR,     ! MAX NUMBER OF OUTPUT VARIABLES
      &                    TEXTE,      ! NAMES OF OUTPUT VARIABLES
      &                    SORLEO)     ! PRINT TO FILE OR NOT
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM WRITE_HEADER'
 !
 !       WRITES THE MESH IN THE OUTPUT FILE :
 !       IN PARALLEL, REQUIRES NCSIZE AND NPTIR.
@@ -635,12 +638,14 @@
 !       ALSO WRITES : START DATE/TIME AND COORDINATES OF THE
 !       ORIGIN.
 !
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING WRITE_MESH'
         CALL WRITE_MESH(T2D_FILES(T2DRES)%FMT, ! RESULTS FILE FORMAT
      &                  T2D_FILES(T2DRES)%LU,  ! LU FOR RESULTS FILE
      &                  MESH,
      &                  1,             ! NUMBER OF PLANES /NA/
      &                  MARDAT,        ! START DATE
      &                  MARTIM)        ! START TIME
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM WRITE_MESH'
 !
       ENDIF
 !
@@ -2178,7 +2183,7 @@
 !  SOURCE TERMS FOR DIFFUSION - SOURCE TERMS OF THE TRACER
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING DIFSOU'
-      CALL DIFSOU(TEXP,TIMP,YASMI,TSCEXP,HPROP,TN,TETAT,NREJTR,
+      CALL DIFSOU(TEXP,TIMP,YASMI,TSCEXP,HPROP,TN,TETAT,NREJET,
      &            ISCE,DSCE2,TSCE2,MAXSCE,MAXTRA,AT,DT,MASSOU,NTRAC,
      &            MESH%IFAC%I,NSIPH,ENTSIP%I,SORSIP%I,DSIP%R,TSIP,
      &            NBUSE,ENTBUS%I,SORBUS%I,DBUS%R,TBUS,NWEIRS,TYPSEUIL,
