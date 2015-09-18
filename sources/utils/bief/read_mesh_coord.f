@@ -16,6 +16,10 @@
 !+        V7P1
 !+   First version.
 !
+!history  M.S.TURNBULL (HRW)
+!+        18/09/2015
+!+        V7P1
+!+   Correction to the conversion from degree to Mercator projection.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FFORMAT        |-->| FORMAT FOR GEOMETRY FILE
@@ -85,8 +89,8 @@
 !
       IF(PROJECTION.EQ.3) THEN
         PS4=ATAN(1.D0)
-        LONGIRAD=LONGI0*PS4/90.D0
-        TAN2=TAN(LATI0*PS4/180.D0+PS4)
+        LONGIRAD=LONGI0*PS4/45.D0
+        TAN2=TAN(LATI0*PS4/90.D0+PS4)
         IF(TAN2.LT.0.D0) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LATI0=',LATI0,' EST PROBABLEMENT FAUSSE'
@@ -98,8 +102,8 @@
           STOP
         ENDIF
         DO I=1,NPOIN
-          X(I)=R*(X(I)*PS4/90.D0-LONGIRAD)
-          TAN1=TAN(Y(I)*PS4/180.D0+PS4)
+          X(I)=R*(X(I)*PS4/45.D0-LONGIRAD)
+          TAN1=TAN(Y(I)*PS4/90.D0+PS4)
           IF(TAN1.LT.0.D0) THEN
             IF(LNG.EQ.1) THEN
               WRITE(LU,*) 'LA LATITUDE DOIT ETRE DONNEE EN DEGRES'
