@@ -62,24 +62,13 @@
 !
       CHARACTER*9 FCT
       INTEGER N
-      LOGICAL,SAVE :: DEJA=.FALSE.
-      LOGICAL, DIMENSION(MAXFRO), SAVE :: OK
       DOUBLE PRECISION Q1,Q2
 !
-!     FIRST CALL, OK INITIALISED TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO N=1,MAXFRO
-          OK(N)=.TRUE.
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
-!
 !     IF LIQUID BOUNDARY FILE EXISTS, ATTEMPTS TO FIND
-!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-!                      IF  NO, OK IS SET  TO .FALSE.
+!     THE VALUE IN IT. IF YES, OKQ REMAINS TO .TRUE. FOR NEXT CALLS
+!                      IF  NO, OKQ IS SET  TO .FALSE.
 !
-      IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
+      IF(OKQ(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
         FCT='Q(       '
@@ -96,18 +85,18 @@
         ENDIF
         IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
           CALL READ_FIC_FRLIQ(Q1,FCT,AT-DT,
-     &                        T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+     &                        T2D_FILES(T2DIMP)%LU,ENTET,OKQ(I))
           CALL READ_FIC_FRLIQ(Q2,FCT,AT   ,
-     &                        T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+     &                        T2D_FILES(T2DIMP)%LU,ENTET,OKQ(I))
           Q=(Q1+Q2)*0.5D0
         ELSE
           CALL READ_FIC_FRLIQ(Q,FCT,AT,
-     &                        T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+     &                        T2D_FILES(T2DIMP)%LU,ENTET,OKQ(I))
         ENDIF
 !
       ENDIF
 !
-      IF(.NOT.OK(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OKQ(I).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
 !
 !     PROGRAMMABLE PART
 !     Q IS TAKEN FROM THE STEERING FILE, BUT MAY BE CHANGED

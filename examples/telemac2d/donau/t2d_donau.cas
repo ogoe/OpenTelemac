@@ -57,6 +57,7 @@ COMPUTATION CONTINUED                       : NO
 /
 PRESCRIBED ELEVATIONS                       : 309.205 ; 309.205
 PRESCRIBED FLOWRATES                        : 218.0 ; 218.0
+MAXIMUM NUMBER OF BOUNDARIES                : 50
 /
 /----------------------------------------------------------------------
 /                      INITIAL CONDITIONS

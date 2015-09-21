@@ -120,7 +120,7 @@ MPM COEFFICIENT = 5.0D0
 VERTICAL GRAIN SORTING MODEL  = 1 
 /         0 = Layer = HR-VSM (HIRANO + RIBBERINK) 
 /         1 = C-VSM 
-C-VSM MAXIMUM SECTIONS        = 100 
+C-VSM MAXIMUM SECTIONS        = 200 
 /         Should be at least 4 + 4x Number of fractions, better > 250 
 C-VSM FULL PRINTOUT PERIOD    = 0 
 /         0 => GRAPHIC PRINTOUT PERIOD 
