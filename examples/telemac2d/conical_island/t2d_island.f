@@ -6,8 +6,7 @@
      &( I , N )
 !
 !***********************************************************************
-!  TELEMAC 2D VERSION 5.0    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
-!
+!  TELEMAC 2D VERSION 7.1
 !***********************************************************************
 !
 ! FONCTION  : DONNE LA VALEUR DE LA COTE DE LA SURFACE LIBRE POUR TOUTES
@@ -45,7 +44,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
+      CHARACTER(LEN=9) FCT
       INTEGER J
 !
 !-----------------------------------------------------------------------
@@ -78,11 +77,11 @@
 !     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
 !
         PI = 3.141592653589D0
-        T0 = 10
+        T0 = 10.D0
         WD=0.32D0
         WH=WD*0.045D0
 !
-        K=SQRT((3*WH)/(4*(WD**3)))
+        K=SQRT(3*WH/(4*WD**3))
         G=9.8D0
         C=SQRT(G*(WD+WH))
         SL= WD+ WH*(1/((COSH(K*(C*AT-T0)))**2))
