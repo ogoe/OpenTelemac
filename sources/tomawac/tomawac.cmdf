@@ -238,7 +238,6 @@ files: bief_def.f
   dlduseg.f
   decldu.f
   dcpldu.f
-  solve_mumps_par.F
   sd_strsg4.f
   sd_fabsg4.f
   pre4_mumps.F

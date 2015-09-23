@@ -156,6 +156,13 @@
           IF(INTERPOLATE) THEN
             CALL GET_DATA_VALUE(FFORMAT,FID,IREC,VAR_LIST(L)(1:16),
      &                          WD,NPOIN_PREV,IERR)
+            ! If the variable is not in the file
+            IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
+              TROUVE(L) = 0
+            ELSE
+              CALL CHECK_CALL(IERR,'READ_DATASET:GET_DATA_VALUE')
+              TROUVE(L) = 1
+            ENDIF
 !           COPIES BOTTOM AND FREE SURFACE
             CALL OV('X=Y     ',VARSOR%ADR(L)%P%R,WD,WD,0.D0,NPOIN2)
             CALL OV('X=Y     ',VARSOR%ADR(L)%P%R(NPOIN-NPOIN2+1:NPOIN),
@@ -181,13 +188,13 @@
             CALL GET_DATA_VALUE(FFORMAT,FID,IREC,VAR_LIST(L)(1:16),
      &                          VARSOR%ADR(L)%P%R,NPOIN_PREV,IERR)
 
-          ENDIF
-          ! If the variable is not in the file
-          IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
-            TROUVE(L) = 0
-          ELSE
-            CALL CHECK_CALL(IERR,'READ_DATASET:GET_DATA_VALUE')
-            TROUVE(L) = 1
+            ! If the variable is not in the file
+            IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
+              TROUVE(L) = 0
+            ELSE
+              CALL CHECK_CALL(IERR,'READ_DATASET:GET_DATA_VALUE')
+              TROUVE(L) = 1
+            ENDIF
           ENDIF
 
         ELSE
