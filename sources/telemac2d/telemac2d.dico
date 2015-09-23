@@ -5520,13 +5520,13 @@ MNEMO = 'STOCHA'
 TAILLE = 0
 DEFAUT = 0
 DEFAUT1 = 0
-CHOIX='0="Pas de modele"';'1="??"';'2="??"'
-CHOIX1='0="No model"';'1="??"';'2="??"'
+CHOIX='0="Pas de modele"';'1="mouvement brownien"'
+CHOIX1='0="No model"';'1="brownian movement"'
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 2
-AIDE = 'Pour les particules : flotteurs, algues, hydrocarbures'
-AIDE1 = 'Meant for particles: drogues, algae, oil spills'
+AIDE = 'Pour les particules : flotteurs, hydrocarbures'
+AIDE1 = 'Meant for particles: drogues, oil spills'
 
 NOM = 'NOMBRE DE POINTS DE GAUSS POUR LES CARACTERISTIQUES FAIBLES' 
 NOM1 = 'NUMBER OF GAUSS POINTS FOR WEAK CHARACTERISTICS' 
