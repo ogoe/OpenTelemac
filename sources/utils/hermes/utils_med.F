@@ -1506,7 +1506,6 @@
 !
 !     FREE MEMORY
       DEALLOCATE(NUM_FAMILY)
-      DEALLOCATE(NUM_FAMILY)
 !
 #else
 !
