@@ -45,6 +45,8 @@
 !| TEXTPR         |<->| SEE ABOVE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TELEMAC3D, ONLY: NCOUCH, NLAYMAX, MIXTE
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -54,7 +56,12 @@
       CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(*),TEXTPR(*)
       CHARACTER(LEN=8) , INTENT(INOUT) :: MNEMO(*)
       CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(32)
+!
       INTEGER, INTENT(IN) :: NTRAC
+! CV: New array
+      CHARACTER(LEN=32) TEXTE_ES(NLAYMAX)
+      CHARACTER(LEN=8)  MNEMO_ES(NLAYMAX)
+      CHARACTER(LEN=2)  LAY
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -64,7 +71,7 @@
      &                     '19','20','21','22','23','24','25','26','27',
      &                     '28','29','30','31','32'/
 !
-      INTEGER I,NEXT
+      INTEGER I,NEXT,K
 !
 !-----------------------------------------------------------------------
 !
@@ -95,9 +102,9 @@
       TEXTE (21) = 'DRIFT ALONG Y   M               '
       TEXTE (22) = 'COURANT NUMBER                  '
       TEXTE (23) = 'RIGID BED       M               '
-      TEXTE (24) = 'FRESH DEPOSITS  M               '
-      TEXTE (25) = 'EROSION FLUX    UNIT   ??       '
-      TEXTE (26) = 'DEPOSITION PROBA                '
+      TEXTE (24) = 'BED THICKNESS   M               '
+      TEXTE (25) = 'EROSION FLUX    KG/M2/S         '
+      TEXTE (26) = 'DEPOSITION FLUX KG/M2/S         '
       TEXTE (27) = 'PRIVE 1         ??              '
       TEXTE (28) = 'PRIVE 2         ??              '
       TEXTE (29) = 'PRIVE 3         ??              '
@@ -108,12 +115,17 @@
       TEXTE (34) = 'SOLID DIS IN Y  M2/S            '
       TEXTE (35) = 'HIGH WATER MARK M               '
       TEXTE (36) = 'HIGH WATER TIME S               '
+      TEXTE (37) = 'BED EVOLUTION   M               '
 !
 ! TEXTPR IS USED TO READ PREVIOUS COMPUTATION FILES.
 ! IN GENERAL TEXTPR=TEXTE BUT YOU CAN FOLLOW UP A COMPUTATION
 ! FROM ANOTHER CODE WITH DIFFERENT VARIABLE NAMES, WHICH MUST
 ! BE GIVEN HERE:
 !
+!     TEXTPR (1 ) = 'VELOCITY U      M/S             '
+!     TEXTPR (2 ) = 'VELOCITY V      M/S             '
+!     TEXTPR (3 ) = 'CELERITY        M/S             '
+!     TEXTPR (4 ) = 'WATER DEPTH     M               '
 !     NEXT LINE MODIFIED
       TEXTPR (1 ) = 'VITESSE U       M/S             '
 !     NEXT LINE MODIFIED
@@ -140,9 +152,9 @@
       TEXTPR (21) = 'DRIFT ALONG Y   M               '
       TEXTPR (22) = 'COURANT NUMBER                  '
       TEXTPR (23) = 'RIGID BED       M               '
-      TEXTPR (24) = 'FRESH DEPOSITS  M               '
-      TEXTPR (25) = 'EROSION FLUX    UNIT   ??       '
-      TEXTPR (26) = 'DEPOSITION PROBA                '
+      TEXTPR (24) = 'BED THICKNESS   M               '
+      TEXTPR (25) = 'EROSION FLUX    KG/M2/S         '
+      TEXTPR (26) = 'DEPOSITION FLUX KG/M2/S         '
       TEXTPR (27) = 'PRIVE 1         ??              '
       TEXTPR (28) = 'PRIVE 2         ??              '
       TEXTPR (29) = 'PRIVE 3         ??              '
@@ -153,6 +165,7 @@
       TEXTPR (34) = 'SOLID DIS IN Y  M2/S            '
       TEXTPR (35) = 'HIGH WATER MARK M               '
       TEXTPR (36) = 'HIGH WATER TIME S               '
+      TEXTPR (37) = 'BED EVOLUTION   M               '
 !
 !-----------------------------------------------------------------------
 !
@@ -183,19 +196,20 @@
       TEXTE (21) = 'DERIVE EN Y     M               '
       TEXTE (22) = 'NBRE DE COURANT                 '
       TEXTE (23) = 'FOND RIGIDE     M               '
-      TEXTE (24) = 'DEPOT FRAIS     M               '
-      TEXTE (25) = 'FLUX D''EROSION  UNITES ??       '
-      TEXTE (26) = 'PROBA DE DEPOT                  '
+      TEXTE (24) = 'EPAISSEUR DU LITM               '
+      TEXTE (25) = 'FLUX D''EROSION KG/M2/S         '
+      TEXTE (26) = 'FLUX DE DEPOT   KG/M2/S         '
       TEXTE (27) = 'PRIVE 1         ??              '
       TEXTE (28) = 'PRIVE 2         ??              '
       TEXTE (29) = 'PRIVE 3         ??              '
       TEXTE (30) = 'PRIVE 4         ??              '
-      TEXTE (31) = 'VITESSE DE FROT.M/S             '
+      TEXTE (31) = 'VITESSE FROT    M/S             '
       TEXTE (32) = 'DEBIT SOLIDE    M2/S            '
       TEXTE (33) = 'DEBIT SOL EN X  M2/S            '
       TEXTE (34) = 'DEBIT SOL EN Y  M2/S            '
       TEXTE (35) = 'COTE MAXIMUM    M               '
       TEXTE (36) = 'TEMPS COTE MAXI S               '
+      TEXTE (37) = 'EVOLUTION FOND  M               '
 !
 ! TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
 ! A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
@@ -224,19 +238,21 @@
       TEXTPR (21) = 'DERIVE EN Y     M               '
       TEXTPR (22) = 'NBRE DE COURANT                 '
       TEXTPR (23) = 'FOND RIGIDE     M               '
-      TEXTPR (24) = 'DEPOT FRAIS     M               '
-      TEXTPR (25) = 'FLUX D''EROSION  UNITES ??       '
-      TEXTPR (26) = 'PROBA DE DEPOT                  '
+      TEXTPR (24) = 'EPAISSEUR DU LITM               '
+      TEXTPR (25) = 'FLUX D''EROSION KG/M2/S         '
+      TEXTPR (26) = 'FLUX DE DEPOT   KG/M2/S         '
       TEXTPR (27) = 'PRIVE 1         ??              '
       TEXTPR (28) = 'PRIVE 2         ??              '
       TEXTPR (29) = 'PRIVE 3         ??              '
       TEXTPR (30) = 'PRIVE 4         ??              '
-      TEXTPR (31) = 'VITESSE DE FROT.M/S             '
+      TEXTPR (31) = 'VITESSE FROT    M/S             '
       TEXTPR (32) = 'DEBIT SOLIDE    M2/S            '
       TEXTPR (33) = 'DEBIT SOL EN X  M2/S            '
       TEXTPR (34) = 'DEBIT SOL EN Y  M2/S            '
       TEXTPR (35) = 'COTE MAXIMUM    M               '
       TEXTPR (36) = 'TEMPS COTE MAXI S               '
+      TEXTPR (37) = 'EVOLUTION FOND  M               '
+
 !
       ENDIF
 !
@@ -291,12 +307,12 @@
       MNEMO(22)   = 'L       '
 !     RIGID BOTTOM
       MNEMO(23)   = 'RB      '
-!     FRESH DEPOSIT
-      MNEMO(24)   = 'FD      '
+!     SEDIMENT LAYER THICKNESS
+      MNEMO(24)   = 'HD      '
 !     EROSION FLUX
       MNEMO(25)   = 'EF      '
-!     PROBABILITY OF DEPOSITION
-      MNEMO(26)   = 'DP      '
+!     DEPOSITION FLUX
+      MNEMO(26)   = 'DF      '
 !     VARIABLE 27
       MNEMO(27)   = 'PRIVE1  '
 !     VARIABLE 28
@@ -317,10 +333,12 @@
       MNEMO(35)   = 'MAXZ    '
 !     HIGH WATER TIME
       MNEMO(36)   = 'TMXZ    '
-!
+!     BED EVOLUTION
+      MNEMO(37)   = 'DZF     '
+
 !-----------------------------------------------------------------------
 !
-      NEXT = 37
+      NEXT = 37+1
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
@@ -332,11 +350,61 @@
       IF(NEXT+NTRAC-1.GT.100) THEN
         IF(LNG.EQ.1) WRITE(LU,98)
 98      FORMAT(1X,'NOMVAR_2D_IN_3D : MAXVAR=100 TROP PETIT')
-        IF(LNG.EQ.1) WRITE(LU,99)
+        IF(LNG.EQ.2) WRITE(LU,99)
 99      FORMAT(1X,'NOMVAR_2D_IN_3D : MAXVAR=100 TOO SMALL')
       ENDIF
 !
-      DO I=NEXT,100
+! CV LAYER THICKNESS PRINTOUT
+!
+      DO K=1,NCOUCH
+        IF(K.LT.10) THEN
+          WRITE(LAY,'(I1)') K
+          MNEMO_ES(K) = TRIM(LAY)//'ES     '
+        ELSEIF(K.LT.100) THEN
+          WRITE(LAY,'(I2)') K
+          MNEMO_ES(K) = TRIM(LAY)//'ES    '
+        ELSE
+          WRITE (LU,*) 'NOMVAR_2D: NOT IMPLEMENTED FOR ',NCOUCH
+          WRITE (LU,*) '                LAYERS'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        TEXTE_ES(K)(1:16)  = 'LAYER'//LAY//' THICKNESS'
+        TEXTE_ES(K)(17:32) = 'M               '
+      ENDDO
+!
+      NEXT=NEXT+NTRAC
+!
+!
+      DO I=1,NCOUCH
+!
+        TEXTE(NEXT+I-1) = TEXTE_ES(I)
+        MNEMO(NEXT+I-1) = MNEMO_ES(I)
+!
+      ENDDO
+!
+      NEXT = NEXT + NCOUCH
+!
+      IF(MIXTE) THEN
+!       PERCENTAGE OF MUD IN THE BED
+        IF(LNG.EQ.1) THEN
+          TEXTE(NEXT) = 'POURCENTAGE VASE                '
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          TEXTE(NEXT) = 'MUD PERCENTAGE                  '
+        ENDIF
+        MNEMO(NEXT) = 'PVSCO   '
+!       PERCENTAGE OF SAND IN THE BED
+        IF(LNG.EQ.1) THEN
+          TEXTE(NEXT+1) = 'POURCENT. SABLE                 '
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          TEXTE(NEXT+1) = 'SAND PERCENTAGE                 '
+        ENDIF
+        MNEMO(NEXT+1) = 'PVSNCO  '
+      ENDIF
+
+      DO I=38,100
         TEXTPR(I)=TEXTE(I)
       ENDDO
 !
@@ -355,9 +423,8 @@
 ! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
-!brief    THE USER MUST GIVE :
-!+
-!+
+!brief    This subroutine is called at every time step, and the user can
+!+        add or remove particles as in the example given
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        26/02/2013

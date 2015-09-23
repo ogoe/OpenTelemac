@@ -1,35 +1,87 @@
-!                       *****************
-                        SUBROUTINE CONDIM
-!                       *****************
+!
+!  CHANGES VS SOURCE FILES:
+!  IN CONDIM: SPECIAL INITIAL CONDITIONS ON DEPTH USING SURFINI SUBTROUTINE
+!  IN BORD3D: CHANGES FOR SOME BOUNDARY NODES FOR UBOR2D
+!
+!                    *****************
+                     SUBROUTINE CONDIM
+!                    *****************
 !
 !
 !***********************************************************************
-! TELEMAC 3D VERSION 5.5    11/12/00      J-M HERVOUET(LNH) 30 87 80 18
-! FORTRAN95 VERSION         MARCH 1999        JACEK A. JANKOWSKI PINXIT
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
-!      FONCTION:
-!      =========
+!brief    INITIALISES VELOCITY, DEPTH AND TRACERS.
 !
-!      INITIALISATION DES TABLEAUX DES GRANDEURS PHYSIQUES
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/1999
+!+
+!+   FORTRAN95 VERSION
 !
-!-----------------------------------------------------------------------
+!history  J-M HERVOUET(LNH)
+!+        11/12/2000
+!+        V5P1
+!+   TELEMAC 3D VERSION 5.1
 !
-!      FUNCTION:
-!      =========
+!history
+!+        20/04/2007
+!+
+!+   ADDED INITIALISATION OF DPWAVE
 !
-!      INITIALISATION OF VELOCITY, DEPTH AND TRACERS
+!history
+!+        23/01/2009
+!+
+!+   ADDED CHECK OF ZSTAR
 !
-!-----------------------------------------------------------------------
+!history
+!+        16/03/2010
+!+
+!+   NEW OPTIONS FOR BUILDING THE MESH IN CONDIM, SEE BELOW
 !
-! SOUS-PROGRAMME APPELE PAR : TELEMAC-3D
-! SOUS-PROGRAMMES APPELES : OV , (CALCOT)
+!history  J-M HERVOUET(LNHE)
+!+        05/05/2010
+!+        V6P0
+!+   SUPPRESSED INITIALISATION OF DPWAVE
 !
-!***********************************************************************
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  M.S.TURNBULL (HRW), N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        C.-T. PHAM (LNHE)
+!+        19/07/2012
+!+        V6P2
+!+   Addition of the TPXO tidal model by calling CONDI_TPXO
+!+   (the TPXO model being coded in module TPXO)
+!
+!history  C.-T. PHAM (LNHE), M.S.TURNBULL (HRW)
+!+        02/11/2012
+!+        V6P3
+!+   Correction of bugs when initialising velocity with TPXO
+!+   or when sea levels are referenced with respect to Chart Datum (CD)
+!
+!history  C.-T. PHAM (LNHE)
+!+        03/09/2015
+!+        V7P1
+!+   Change in the number of arguments when calling CONDI_TPXO
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_TELEMAC3D, EX_CONDIM => CONDIM
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
+      USE TPXO
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -37,16 +89,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER IPLAN, I,J,NSEC,NFO1
-      NFO1=T3D_FILES(T3DFO1)%LU
+      INTEGER IPLAN, I,J
+      INTEGER NSEC,NFO1
 !
 !***********************************************************************
 !
-!     TIME ORIGIN
+!     ORIGIN OF TIME
 !
-      AT  = 0.D0
+      IF(.NOT.SUIT2) AT  = 0.D0
 !
-!     INITIALISATION OF H, THE WATER DEPTH
+!     INITIALISES H, THE WATER DEPTH
 !
       IF(.NOT.SUIT2) THEN
 !
@@ -64,43 +116,50 @@
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
      &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
         CALL OS( 'X=C     ' ,X=H,C=HAUTIN)
+      ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
+     &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
+        CALL OS('X=-Y    ',X=H,Y=ZF)
+        CALL CONDI_TPXO(NPOIN2,MESH2D%NPTFR,MESH2D%NBOR%I,
+     &                  X2%R,Y2%R,H%R,U2D%R,V2D%R,
+     &                  LIHBOR%I,LIUBOL%I,KENT,KENTU,
+     &                  GEOSYST,NUMZONE,LATIT,LONGIT,
+     &                  T3D_FILES,T3DBB1,T3DBB2,
+     &                  MARDAT,MARTIM,INTMICON,MSL,
+     &                  TIDALTYPE,BOUNDARY_COLOUR,ICALHWG)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
-!     ZONE A MODIFIER
-!     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE
+!     USER INPUT :
+!     PROGRAM HERE SPECIAL INITIAL CONDITIONS ON DEPTH
+        NFO1=T3D_FILES(T3DFO1)%LU
 !jaj free surface initialisation from a file and using surfini
 !
-      READ(NFO1,*)
-      READ(NFO1,*) NSEC
-      WRITE(LU,*) 'CONDIM: READING FREE SURFACE INITIALISATION FILE'
-      WRITE(LU,*) 'CONDIM: NSEC = ',NSEC
-      WRITE(LU,*) ' '
-      WRITE(LU,'(5(1X,A15))')
-     &    'XLEFT', 'YLEFT', 'XRIGHT', 'YRIGHT', 'WATER_LEVEL'
-      DO I=1,NSEC
-        READ(NFO1,*) T3_01%R(I), T3_02%R(I), T3_04%R(I),
-     &               T3_05%R(I), T3_03%R(I)
-        T3_06%R(I) = T3_03%R(I)
-        WRITE(LU,'(5(1X,G15.6))')
-     &     T3_01%R(I), T3_02%R(I), T3_04%R(I),
-     &     T3_05%R(I), T3_03%R(I)
-      END DO
-      WRITE(LU,*) ' '
+        READ(NFO1,*)
+        READ(NFO1,*) NSEC
+        WRITE(LU,*) 'CONDIM: READING FREE SURFACE INITIALISATION FILE'
+        WRITE(LU,*) 'CONDIM: NSEC = ',NSEC
+        WRITE(LU,*) ' '
+        WRITE(LU,'(5(1X,A15))') 'XLEFT','YLEFT','XRIGHT','YRIGHT',
+     &                          'WATER_LEVEL'
+        DO I=1,NSEC
+          READ(NFO1,*) T3_01%R(I), T3_02%R(I), T3_04%R(I),
+     &                 T3_05%R(I), T3_03%R(I)
+          T3_06%R(I) = T3_03%R(I)
+          WRITE(LU,'(5(1X,G15.6))') T3_01%R(I), T3_02%R(I), T3_04%R(I),
+     &                              T3_05%R(I), T3_03%R(I)
+        ENDDO
+        WRITE(LU,*) ' '
 !
-      WRITE(LU,*) 'CONDIM: COTINI = ',COTINI
-      CALL OS( 'X=C     ' , H , H  , H , COTINI )
+        WRITE(LU,*) 'CONDIM: COTINI = ',COTINI
+        CALL OS( 'X=C     ' , X=H, C=COTINI)
 !
-      CALL SURFINI
-     & (T3_01%R, T3_02%R, T3_03%R, T3_04%R, T3_05%R, T3_06%R,
-     &  T3_07%R, T3_08%R, T3_09%R,
-     &  MESH3D%X%R, MESH3D%Y%R, H%R, ZF%R,
-     &  IT1%I, IT2%I, NSEC, NPOIN2)
+        CALL SURFINI(T3_01%R,T3_02%R,T3_03%R,T3_04%R,T3_05%R,T3_06%R,
+     &               T3_07%R,T3_08%R,T3_09%R,MESH3D%X%R,MESH3D%Y%R,
+     &               H%R,ZF%R,IT1%I,IT2%I,NSEC,NPOIN2)
 !
-      CALL OS( 'X=X-Y   ' , H , ZF , ZF , 0.D0 )
-!
+        CALL OS( 'X=X-Y   ' , H , ZF , ZF , 0.D0 )
 !     END OF SPECIAL INITIAL CONDITIONS
-!     FIN DE LA ZONE A MODIFIER
+!     END OF USER INPUT
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIM : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -108,6 +167,7 @@
         IF(LNG.EQ.2) THEN
         WRITE(LU,*) 'CONDIM: INITIAL CONDITION UNKNOWN: ',CDTINI
         ENDIF
+        CALL PLANTE(1)
         STOP
       ENDIF
       ELSE
@@ -115,16 +175,13 @@
         IF(LNG.EQ.2) WRITE(LU,*) 'DEPTH IS READ IN THE BINARY FILE 1'
       ENDIF
 !
-!     CLIPPING OF H
+!     CLIPS H
 !
       DO I=1,NPOIN2
         H%R(I)=MAX(H%R(I),0.D0)
       ENDDO
 !
       CALL OS ('X=Y     ',X=HN,Y=H)
-!
-!-----------------------------------------------------------------------
-!
 !
 !-----------------------------------------------------------------------
 !
@@ -165,10 +222,12 @@
 !     DO IPLAN = 1,NPLAN
 !       TRANSF_PLANE%I(IPLAN)=2
 !     ENDDO
+!     ZSTAR%R(1)=0.D0
 !     ZSTAR%R(2)=0.02D0
 !     ZSTAR%R(3)=0.1D0
 !     ...
 !     ZSTAR%R(NPLAN-1)=0.95D0
+!     ZSTAR%R(NPLAN)=1.D0
 !
 !
 !     EXAMPLE 3: ONE PLANE (NUMBER 4) WITH PRESCRIBED ELEVATION
@@ -200,35 +259,42 @@
 !     ZSTAR%R(6)=0.9D0
 !
 !
-!
 !***********************************************************************
 !
-!     COMPUTATION OF ELEVATIONS
+!     COMPUTES ELEVATIONS
 !     IF IT IS A CONTINUATION, WILL BE DONE AFTER CALLING 'SUITE'
 !
       IF(DEBU) CALL CALCOT(Z,H%R)
 !
 !***********************************************************************
 !
-!     INITIALISATION OF VELOCITIES
+!     INITIALISES VELOCITIES
 !
       IF(SUIT2) THEN
         DO I=1,NPLAN
           DO J=1,NPOIN2
-           U%R((I-1)*NPOIN2+J)=U2D%R(J)
-           V%R((I-1)*NPOIN2+J)=V2D%R(J)
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
+          ENDDO
+        ENDDO
+      ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
+     &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
+        DO I=1,NPLAN
+          DO J=1,NPOIN2
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
           ENDDO
         ENDDO
       ELSE
-        CALL OS( 'X=C     ' , X=U , C=0.D0 )
-        CALL OS( 'X=C     ' , X=V , C=0.D0 )
+        CALL OS( 'X=0     ' , X=U )
+        CALL OS( 'X=0     ' , X=V )
       ENDIF
 !
-      CALL OS( 'X=C     ' , X=W , C=0.D0 )
+      CALL OS( 'X=0     ' , X=W )
 !
 !-----------------------------------------------------------------------
 !
-!     TRACERS INITIALIZATION
+!     INITIALISES TRACERS
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
@@ -238,22 +304,21 @@
 !
 !
 !-----------------------------------------------------------------------
-!   INITIALISATION DU MODELE K-EPSILON (FACULTATIF)
-!   SI VOUS LE FAITES, INDIQUEZ AKEP = .FALSE.
+!   INITIALISES THE K-EPSILON MODEL (OPTIONAL)
+!   WHEN DONE: AKEP = .FALSE.
 !
       AKEP=.TRUE.
 !
 !     IF(ITURBV.EQ.3) THEN
 !
-!       HERE INITIALISE K AND EPSILON
+!       HERE INITIALISES K AND EPSILON
 !
 !       AKEP = .FALSE.
 !     ENDIF
 !
-!
 !-----------------------------------------------------------------------
 !
-! INITIALIZE THE PRESSURE FIELDS TO 0.0
+! INITIALISES THE PRESSURE FIELDS TO 0.0
 !
       IF(NONHYD) THEN
         CALL OS('X=C     ',X=DP,C=0.D0)
@@ -511,6 +576,7 @@
 !
 !     VELOCITIES
 !
+! BEGINNING OF SPECIFIC TO THIS CASE
       DO IPTFR=1,NPTFR2
         IPOIN2 = NBOR2%I(IPTFR)
         IF(NCSIZE.GT.1) IPOIN2 = MESH3D%KNOLG%I(IPOIN2)
@@ -524,6 +590,7 @@
         IF(IPOIN2.EQ.449) UBOR2D%R(IPOIN2) = 0.6D0
         IF(IPOIN2.EQ.450) UBOR2D%R(IPOIN2) = 0.3D0
       ENDDO
+! END OF SPECIFIC TO THIS CASE
       DO IPTFR = 1,NPTFR2
         IPOIN2 = NBOR2%I(IPTFR)
         DO IPLAN = 1,NPLAN

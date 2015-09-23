@@ -11,7 +11,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                   02/10/2014
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    FINDS TIDAL BOUNDARY CONDITIONS AT THE OPEN SEA BOUNDARIES
@@ -49,7 +49,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,NODALCORR,ICALHW
+      INTEGER K,NODALCORR,IFRLIQ
       DOUBLE PRECISION XSHIFT,YSHIFT,BETA
       LOGICAL TIDALBCGEN,TM2S2N2EQUAL
 !
@@ -84,14 +84,6 @@
 !                 FOR JMJ DATA BASE ONLY AT THE MOMENT
 !
       TIDALBCGEN = .TRUE.
-!
-!     ICALHW: NUMBER THAT MAY BE CHOSEN BY THE USER TO CALIBRATE HIGH WATER
-!             OR AUTOMATICALLY CHOSEN, WHEN MODELLING A SCHEMATIC TIDE
-!             IN SUBROUTINE BORD_TIDE
-!             DEFAULT = 0 (AUTOMATICALLY CHOSEN)
-!             FOR JMJ DATA BASE ONLY AT THE MOMENT
-!
-      ICALHW = 0
 !
 !     TM2S2N2EQUAL: LOGICAL TO IMPOSE THE PERIODS OF S2 AND N2 WAVES
 !                   TO BE EQUAL TO THE PERIOD OF M2 WAVE
@@ -190,7 +182,7 @@
      &                 T2D_FILES(T2DIMP)%NAME,TIDALTYPE,
      &                 CTIDE,MSL,CTIDEV,NODALCORR,T2D_FILES(T2DHAR)%LU,
      &                 BOUNDARY_COLOUR,
-     &                 HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
+     &                 HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHWB,
      &                 MARDAT,MARTIM,TM2S2N2EQUAL)
       ELSEIF(TIDALDB.EQ.2) THEN
         CALL BORD_TIDE_TPXO(ZF%R,MESH%NBOR%I,LIHBOR%I,LIUBOR%I,
@@ -199,7 +191,7 @@
      &                      T2D_FILES(T2DIMP)%NAME,TIDALTYPE,
      &                      CTIDE,MSL,CTIDEV,NODALCORR,
      &                      BOUNDARY_COLOUR,
-     &                      HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
+     &                      HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHWG,
      &                      MARDAT,MARTIM,T2D_FILES,T2DBB1,T2DBB2,
      &                      X,Y,GEOSYST,NUMZONE,LAMBD0,PHI0,INTMICON)
       ELSEIF(TIDALDB.EQ.3) THEN
@@ -219,7 +211,7 @@
      &                      T2D_FILES(T2DIMP)%NAME,TIDALTYPE,
      &                      CTIDE,MSL,CTIDEV,NODALCORR,
      &                      T2D_FILES(T2DHAR)%LU,BOUNDARY_COLOUR,
-     &                      HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
+     &                      HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHWB,
      &                      MARDAT,MARTIM)
       ELSEIF(TIDALDB.EQ.-1) THEN
         IF(LNG.EQ.1) THEN
@@ -260,7 +252,10 @@
 !-----------------------------------------------------------------------
 !
       DO K=1,NPTFR
-        IF(NUMTIDE%I(K).GT.0) THEN
+        IFRLIQ=NUMLIQ%I(K)
+!       TEST ON NUMTIDE PROBABLY NO LONGER USEFUL
+        IF(NUMTIDE%I(K).GT.0.AND.IFRLIQ.GT.0) THEN
+        IF(BND_TIDE(IFRLIQ).GT.0) THEN
 !         POSSIBLE SMOOTHING AT THE BEGINNING
           IF(AT.LT.1800.D0) THEN
             UBTIDE%R(K) = UBTIDE%R(K)*(AT/1800.D0)
@@ -276,6 +271,7 @@
             HBOR%R(K) = HBTIDE%R(K)
             H%R(MESH%NBOR%I(K)) = HBOR%R(K)
           ENDIF
+        ENDIF
         ENDIF
       ENDDO
 !

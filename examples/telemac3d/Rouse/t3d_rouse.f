@@ -1,10 +1,19 @@
+!
+!  CHANGES VS SOURCE FILES:
+!  IN CONDIM: DEFINITION OF TRANSF_PLANE = 2 + ZSTAR
+!           + INITIALISATION OF THE VELOCITES
+!  IN T3D_CORFON
+!  IN PRERES_TELEMAC3D
+!  IN ERODNC: FLUER  = 0 IF NOT MIXTE
+!  IN FLUSED: FLUDPT = 0 IF NON COHESIVE SEDIMENT
+!
 !                    *****************
                      SUBROUTINE CONDIM
 !                    *****************
 !
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES VELOCITY, DEPTH AND TRACERS.
@@ -13,6 +22,11 @@
 !+        **/03/1999
 !+
 !+   FORTRAN95 VERSION
+!
+!history  J-M HERVOUET(LNH)
+!+        11/12/2000
+!+        V5P1
+!+   TELEMAC 3D VERSION 5.1
 !
 !history
 !+        20/04/2007
@@ -46,6 +60,24 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  M.S.TURNBULL (HRW), N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        C.-T. PHAM (LNHE)
+!+        19/07/2012
+!+        V6P2
+!+   Addition of the TPXO tidal model by calling CONDI_TPXO
+!+   (the TPXO model being coded in module TPXO)
+!
+!history  C.-T. PHAM (LNHE), M.S.TURNBULL (HRW)
+!+        02/11/2012
+!+        V6P3
+!+   Correction of bugs when initialising velocity with TPXO
+!+   or when sea levels are referenced with respect to Chart Datum (CD)
+!
+!history  C.-T. PHAM (LNHE)
+!+        03/09/2015
+!+        V7P1
+!+   Change in the number of arguments when calling CONDI_TPXO
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -53,6 +85,7 @@
       USE INTERFACE_TELEMAC3D, EX_CONDIM => CONDIM
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
+      USE TPXO
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -61,8 +94,6 @@
 !-----------------------------------------------------------------------
 !
       INTEGER IPLAN, I,J
-!
-!-----------------------------------------------------------------------
 !
       DOUBLE PRECISION DELTAZ,AL,AUX
 !
@@ -89,10 +120,17 @@
         CALL OS( 'X=C     ' ,X=H,C=0.D0)
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
      &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
-!       CALL OS( 'X=C     ' ,X=H,C=HAUTIN)
-        IF(LNG.EQ.1) WRITE(LU,*) 'HAUTEUR MISE A 0.5'
-        IF(LNG.EQ.2) WRITE(LU,*) 'DEPTH IS SET TO 0.5'
-        CALL OS('X=C     ',X=H,C=0.5D0)
+        CALL OS( 'X=C     ' ,X=H,C=HAUTIN)
+      ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
+     &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
+        CALL OS('X=-Y    ',X=H,Y=ZF)
+        CALL CONDI_TPXO(NPOIN2,MESH2D%NPTFR,MESH2D%NBOR%I,
+     &                  X2%R,Y2%R,H%R,U2D%R,V2D%R,
+     &                  LIHBOR%I,LIUBOL%I,KENT,KENTU,
+     &                  GEOSYST,NUMZONE,LATIT,LONGIT,
+     &                  T3D_FILES,T3DBB1,T3DBB2,
+     &                  MARDAT,MARTIM,INTMICON,MSL,
+     &                  TIDALTYPE,BOUNDARY_COLOUR,ICALHWG)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
@@ -115,6 +153,7 @@
         IF(LNG.EQ.2) THEN
         WRITE(LU,*) 'CONDIM: INITIAL CONDITION UNKNOWN: ',CDTINI
         ENDIF
+        CALL PLANTE(1)
         STOP
       ENDIF
       ELSE
@@ -169,10 +208,12 @@
 !     DO IPLAN = 1,NPLAN
 !       TRANSF_PLANE%I(IPLAN)=2
 !     ENDDO
+!     ZSTAR%R(1)=0.D0
 !     ZSTAR%R(2)=0.02D0
 !     ZSTAR%R(3)=0.1D0
 !     ...
 !     ZSTAR%R(NPLAN-1)=0.95D0
+!     ZSTAR%R(NPLAN)=1.D0
 !
 !
 !     EXAMPLE 3: ONE PLANE (NUMBER 4) WITH PRESCRIBED ELEVATION
@@ -203,17 +244,19 @@
 !     ZSTAR%R(5)=0.1D0
 !     ZSTAR%R(6)=0.9D0
 !
-!-----------------------------------------------------------------------
-!
-!     CV : MAILLAGE A PAS VARIABLE
+!     BEGIN CV : MESH WITH VARIABLE STEP
 !
       DO IPLAN = 1,NPLAN
         TRANSF_PLANE%I(IPLAN)=2
       ENDDO
-      AL=1.3D0
+!
+      AL = 1.3D0
+!
       DO IPLAN = 1,NPLAN
         ZSTAR%R(IPLAN) = (1.D0-AL**(IPLAN-1))/(1.D0-AL**(NPLAN-1))
       END DO
+!
+!     END CV : MESH WITH VARIABLE STEP
 !
 !***********************************************************************
 !
@@ -229,11 +272,20 @@
       IF(SUIT2) THEN
         DO I=1,NPLAN
           DO J=1,NPOIN2
-           U%R((I-1)*NPOIN2+J)=U2D%R(J)
-           V%R((I-1)*NPOIN2+J)=V2D%R(J)
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
+          ENDDO
+        ENDDO
+      ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
+     &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
+        DO I=1,NPLAN
+          DO J=1,NPOIN2
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
           ENDDO
         ENDDO
       ELSE
+!     BEGINNING OF SPECIFIC TO THIS CASE
 !       CALL OS( 'X=0     ' , X=U )
         DO IPLAN=1,NPLAN
           DO I=1,NPOIN2
@@ -247,6 +299,7 @@
             U%R(I+(IPLAN-1)*NPOIN2)=(0.0703D0/0.41D0)*LOG(AUX)
           ENDDO
         ENDDO
+!     END OF SPECIFIC TO THIS CASE
         CALL OS( 'X=0     ' , X=V )
       ENDIF
 !
@@ -299,7 +352,7 @@
      & LISFON, MSK, MASKEL, MATR2D, MESH2D, S)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODIFIES THE BOTTOM TOPOGRAPHY.
@@ -333,20 +386,28 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        29/09/2011
+!+        V6P2
+!+   Name changed into T3D_CORFON to avoid duplication with Telemac-2D
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LISFON         |-->| NUMBER OF SMOOTHINGS REQUIRED
 !| MASKEL         |-->| MASK OF ELEMENTS
-!| MATR2D         |---|
-!| MESH2D         |---|
+!| MATR2D         |<->| WORK MATRIX IN 2DH
+!| MESH2D         |<->| 2D MESH
 !| MSK            |-->| IF YES, THERE ARE MASKED ELEMENTS
 !| NPOIN2         |-->| NUMBER OF 2D POINTS
-!| PRIVE          |-->| BLOCK OF PRIVATE ARRAYS
-!| S              |---|
-!| ST1            |---|
-!| ST2            |---|
-!| SZF            |---|
-!| T2             |---|
-!| X,Y            |-->| MESH COORDINATES
+!| PRIVE          |<->| BLOCK OF PRIVATE ARRAYS FOR USER
+!| S              |-->| VOID STRUCTURE
+!| ST1            |<->| STRUCTURE OF T1
+!| ST2            |<->| STRUCTURE OF T2
+!| SZF            |<->| STRUCTURE OF ZF
+!| T1             |<->| WORK ARRAY
+!| T2             |<->| WORK ARRAY
+!| X              |-->| MESH COORDINATE
+!| Y              |-->| MESH COORDINATE
+!| ZF             |<->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -370,10 +431,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,I
+      INTEGER I
       LOGICAL MAS
 !
-!***********************************************************************
+!-----------------------------------------------------------------------
 !
 !     SMOOTHES THE BOTTOM ELEVATION
 !
@@ -402,7 +463,7 @@
      &(LT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V7P0                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE VARIABLES WHICH WILL BE WRITTEN TO
@@ -425,6 +486,21 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        14/10/2011
+!+        V6P2
+!+   ADDING MAXIMUM ELEVATION AND ASSOCIATED TIME
+!
+!history  J-M HERVOUET (LNHE)
+!+        02/04/2012
+!+        V6P2
+!+   DH and HN added in a 3D array for a clean restart.
+!
+!history  C. VILLARET & T. BENSON & D. KELLY (HR-WALLINGFORD)
+!+        14/03/2014
+!+        V7P0
+!+   New developments in sediment merged on 14/03/2014.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LT             |-->| ITERATION NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -443,12 +519,62 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL LEO
+      LOGICAL LEO,DEJA
 !
-      INTEGER LTT,I,IPLAN,I3,NODE,N
-      DOUBLE PRECISION DELTAZ,U_0,U_1,V_0,V_1,C_0,C_1,ULOG,AUX
+      INTEGER LTT,I,IPLAN,I3
+      INTEGER NODE,N
+      DOUBLE PRECISION DELTAZ,U_0,U_1,V_0,V_1,C_0,C_1,XMAX
+      DOUBLE PRECISION ULOG,AUX
+!
+      DATA DEJA/.FALSE./
 !
       INTRINSIC SQRT,MAX
+!
+!-----------------------------------------------------------------------
+!
+! 1)  PART WHICH MUST BE DONE EVEN IF THERE IS NO OUTPUT FOR THIS TIMESTEP
+!     BUT ONLY AFTER FIRST TIMESTEP FOR GRAPHIC PRINTOUTS
+!
+!-----------------------------------------------------------------------
+!
+      IF(LT.GE.GRADEB) THEN
+!
+!=======================================================================
+! COMPUTES THE MAXIMUM ELEVATION AND ASSOCIATED TIME
+!=======================================================================
+!
+      IF(SORG2D(35)) THEN
+        IF(.NOT.DEJA) THEN
+          CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+          CALL OS('X=C     ',X=TMAXZ,C=AT)
+          DEJA=.TRUE.
+        ELSE
+          DO I=1,NPOIN2
+            XMAX=H%R(I)+ZF%R(I)
+!           DRY LAND EXCLUDED (TO AVOID RANDOM TIMES)
+            IF(XMAX.GT.MAXZ%R(I).AND.H%R(I).GT.0.01D0) THEN
+              MAXZ%R(I)=XMAX
+              IF(SORG2D(36)) TMAXZ%R(I)=AT
+            ENDIF
+          ENDDO
+        ENDIF
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      ELSE
+!
+!       CASE WHERE OUTINI=.TRUE. : PRIORITY ON PTINIG, VALUES FOR LT=0
+!       OTHERWISE THEY WOULD NOT BE INITIALISED
+        IF(SORG2D(35)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+        IF(SORG2D(36)) CALL OS('X=C     ',X=TMAXZ,C=AT)
+!
+!     ENDIF FOR : IF(LT.GE.GRADEB) THEN
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+! 2)  PART WHICH MUST BE DONE ONLY IF THERE IS AN OUTPUT FOR THIS TIMESTEP
 !
 !-----------------------------------------------------------------------
 !
@@ -468,9 +594,9 @@
 !
 !-----------------------------------------------------------------------
 !
-! SPECIFIQUE PROFIL DE ROUSE
+!     SPECIFIC TO ROUSE'S PROFILE
 !
-! ESSAI JMH
+!     BEGINNING OF ESSAI JMH
       N=46
       IF(NCSIZE.GT.1) THEN
         NODE=0
@@ -482,7 +608,8 @@
       ENDIF
       IF(LT.EQ.NIT.AND.NODE.GT.0) THEN
       IF(NTRAC.GT.0) THEN
-        PRINT*,'        Z                      U                  ULOG'
+        WRITE(LU,*)
+     &          '        Z                      U                  ULOG'
         DO I=1,NPLAN
           IF(I.EQ.1) THEN
             DELTAZ=(MESH3D%Z%R(NODE+NPOIN2)-MESH3D%Z%R(NODE))
@@ -492,22 +619,24 @@
           ENDIF
           AUX=MAX(30.D0*DELTAZ/0.0162D0,1.D0)
           ULOG=(0.0703D0/0.41D0)*LOG(AUX)
-          PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),U%R(NODE+(I-1)*NPOIN2),
-     &           ULOG
+          WRITE(LU,*) MESH3D%Z%R(NODE+(I-1)*NPOIN2),
+     &                U%R(NODE+(I-1)*NPOIN2), ULOG
         ENDDO
-        PRINT*,'         Z                  NUT VIT '
+        WRITE(LU,*) '         Z                  NUT VIT '
         DO I=1,NPLAN
-          PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),
-     &           VISCVI%ADR(3)%P%R(NODE+(I-1)*NPOIN2)
+          WRITE(LU,*) MESH3D%Z%R(NODE+(I-1)*NPOIN2),
+     &                VISCVI%ADR(3)%P%R(NODE+(I-1)*NPOIN2)
         ENDDO
-        PRINT*,'         Z                      C               NU TRAC'
+        WRITE(LU,*)
+     &         '         Z                      C               NU TRAC'
         DO I=1,NPLAN
-          PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),
-     &           TA%ADR(NTRAC)%P%R(NODE+(I-1)*NPOIN2),
-     &           VISCTA%ADR(NTRAC)%P%ADR(3)%P%R(NODE+(I-1)*NPOIN2)
+          WRITE(LU,*) MESH3D%Z%R(NODE+(I-1)*NPOIN2),
+     &                TA%ADR(NTRAC)%P%R(NODE+(I-1)*NPOIN2),
+     &                VISCTA%ADR(NTRAC)%P%ADR(3)%P%R(NODE+(I-1)*NPOIN2)
         ENDDO
       ELSE
-        PRINT*,'        Z                       U                  ULOG'
+        WRITE(LU,*)
+     &         '        Z                       U                  ULOG'
         DO I=1,NPLAN
           IF(I.EQ.1) THEN
             DELTAZ=(MESH3D%Z%R(NODE+NPOIN2)-MESH3D%Z%R(NODE))
@@ -517,17 +646,17 @@
           ENDIF
           AUX=MAX(30.D0*DELTAZ/0.0162D0,1.D0)
           ULOG=(0.0703D0/0.41D0)*LOG(AUX)
-           PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),U%R(NODE+(I-1)*NPOIN2),
-     &            ULOG
+          WRITE(LU,*) MESH3D%Z%R(NODE+(I-1)*NPOIN2),
+     &                U%R(NODE+(I-1)*NPOIN2), ULOG
         ENDDO
-        PRINT*,'         Z                  NUT VIT '
+        WRITE(LU,*) '         Z                  NUT VIT '
         DO I=1,NPLAN
-          PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),
-     &           VISCVI%ADR(3)%P%R(NODE+(I-1)*NPOIN2)
+          WRITE(LU,*) MESH3D%Z%R(NODE+(I-1)*NPOIN2),
+     &                VISCVI%ADR(3)%P%R(NODE+(I-1)*NPOIN2)
         ENDDO
       ENDIF
       ENDIF
-! FIN ESSAI JMH
+!     END ESSAI JMH
 !
 !=======================================================================
 ! CELERITY OF WAVES = SQRT(GH) : PUT INTO T2_10
@@ -596,9 +725,9 @@
 ! FIRST TIMESTEP : SETS HERE TO 0 IF LT=0
 !=======================================================================
 !
-!     IF(LEO.AND.SORG2D(24).AND.LT.EQ.0) CALL OS( 'X=0     ' , X=EPAI)
+!      IF(LEO.AND.SORG2D(24).AND.LT.EQ.0) CALL OS( 'X=0     ' , X=EPAI)
       IF(LEO.AND.SORG2D(25).AND.LT.EQ.0) CALL OS( 'X=0     ' , X=FLUER)
-      IF(LEO.AND.SORG2D(26).AND.LT.EQ.0) CALL OS( 'X=0     ' , X=PDEPO)
+      IF(LEO.AND.SORG2D(26).AND.LT.EQ.0) CALL OS( 'X=0     ' , X=FLUDP)
 !
 !=======================================================================
 ! FRICTION VELOCITY
@@ -648,12 +777,12 @@
       ENDIF
 !
 !=======================================================================
-! DEPTH-AVERAGED TRACERS (VARIABLES 34 TO 34+NTRAC)
+! DEPTH-AVERAGED TRACERS (VARIABLES 38 TO 37+NTRAC)
 !=======================================================================
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
-          IF(LEO.AND.SORG2D(34+I)) THEN
+          IF(LEO.AND.SORG2D(37+I)) THEN
             CALL VERMOY(TRAV2%ADR(13+I)%P%R,TRAV2%ADR(13+I)%P%R,
      &                  TA%ADR(I)%P%R,TA%ADR(I)%P%R,1,Z,
      &                  T3_01%R,T3_02%R,T3_03%R,1,NPLAN,NPOIN2,
@@ -679,11 +808,26 @@
       ENDIF
 !
 !=======================================================================
+! FOR RESTARTS, STORAGE OF DH AND HN IN A 3D ARRAY
+!=======================================================================
+!
+      IF(LEO.AND.(SORG3D(19).OR.(SOREST(19).AND.LT.EQ.NIT))) THEN
+        DO I=1,NPOIN2
+          DHHN%R(I       )=DH%R(I)
+          DHHN%R(I+NPOIN2)=HN%R(I)
+        ENDDO
+        IF(NPLAN.GT.2) THEN
+          DO I=2*NPOIN2+1,NPLAN*NPOIN2
+            DHHN%R(I)=0.D0
+          ENDDO
+        ENDIF
+      ENDIF
+!
+!=======================================================================
 !
 1000  CONTINUE
       RETURN
       END
-!
 !
 !     FLUER AND FLUDPT CANCELLED IN FOLLOWING SUBROUTINES
 !
@@ -887,7 +1031,7 @@
 !
 !       LIMITS THE EROSION FLUX
 !
-!       SPECIFIC TO THIS CASE
+!       BEGINNING OF SPECIFIC TO THIS CASE
 !       FLUER(I)=MIN(FLUER(I),QS/DT)
         FLUER(I)=0.D0
 !       END OF SPECIFIC TO THIS CASE
@@ -1088,10 +1232,10 @@
           DO I=1,NPOIN2
             IF(IPBOT%I(I).NE.NPLAN-1) THEN
 !             DEPOSITION ON THE FIRST FREE PLANE WITH LOCAL VELOCITY
-!             SPECIFIC TO THIS CASE !!!!!!!!!!!!!!!!
+!             BEGINNING OF SPECIFIC TO THIS CASE
 !             FLUDPT(I) = WC(I)
               FLUDPT(I) = 0.D0
-!             END OF SPECIFIC TO THIS CASE !!!!!!!!!!!!!!!!
+!             END OF SPECIFIC TO THIS CASE
             ELSE
 !             TIDAL FLAT
               FLUDPT(I) = 0.D0
@@ -1099,10 +1243,10 @@
           ENDDO
         ELSE
           DO I=1,NPOIN2
-!   SPECIFIC TO THIS CASE !!!!!!!!!!!!!!!!
+!           BEGINNING OF SPECIFIC TO THIS CASE
 !           FLUDPT(I) = WC(I)
             FLUDPT(I) = 0.D0
-!   END OF SPECIFIC TO THIS CASE !!!!!!!!!!!!!!!!
+!           END OF SPECIFIC TO THIS CASE
           ENDDO
         ENDIF
 !

@@ -7,7 +7,7 @@
 /                       INFORMATIC ENVIRONMENT
 /----------------------------------------------------------------------/
 /
-FORTRAN FILE                       : t2d_tide-misc.f
+FORTRAN FILE                       : t2d_tide.f
 BOUNDARY CONDITIONS FILE           : geo_tide.cli
 GEOMETRY FILE                      : geo_tide.slf
 HARMONIC CONSTANTS FILE            : har_tide-NEA_prior.txt

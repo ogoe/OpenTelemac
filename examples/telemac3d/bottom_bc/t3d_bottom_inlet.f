@@ -1,3 +1,8 @@
+!
+!  CHANGES VS SOURCE FILES:
+!  IN CONDIM: QUADRATIC GROWTH OF THE PLANES
+!  IN LIMI3D: BOTTOM: SOURCES FROM THE BOTTOM
+!
 !                    *****************
                      SUBROUTINE CONDIM
 !                    *****************
@@ -64,6 +69,11 @@
 !+   Correction of bugs when initialising velocity with TPXO
 !+   or when sea levels are referenced with respect to Chart Datum (CD)
 !
+!history  C.-T. PHAM (LNHE)
+!+        03/09/2015
+!+        V7P1
+!+   Change in the number of arguments when calling CONDI_TPXO
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -116,7 +126,8 @@
      &                  LIHBOR%I,LIUBOL%I,KENT,KENTU,
      &                  GEOSYST,NUMZONE,LATIT,LONGIT,
      &                  T3D_FILES,T3DBB1,T3DBB2,
-     &                  MARDAT,MARTIM,INTMICON,MSL)
+     &                  MARDAT,MARTIM,INTMICON,MSL,
+     &                  TIDALTYPE,BOUNDARY_COLOUR,ICALHWG)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
@@ -172,28 +183,88 @@
 !
 !     STANDARD BELOW IS: EVENLY SPACED PLANES, NO OTHER DATA REQUIRED
 !
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=1
+!     ENDDO
+!
+!     OTHER EXAMPLES:
+!
+!     EXAMPLE 1: ALL PLANES WITH PRESCRIBED ELEVATION
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=3
+!     ENDDO
+!     ZPLANE%R(2)=-7.D0
+!     ZPLANE%R(3)=-4.D0
+!     ...
+!     ZPLANE%R(NPLAN-1)=-0.05D0
+!
+!
+!     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     ZSTAR%R(1)=0.D0
+!     ZSTAR%R(2)=0.02D0
+!     ZSTAR%R(3)=0.1D0
+!     ...
+!     ZSTAR%R(NPLAN-1)=0.95D0
+!     ZSTAR%R(NPLAN)=1.D0
+!
+!
+!     EXAMPLE 3: ONE PLANE (NUMBER 4) WITH PRESCRIBED ELEVATION
+!                AND SIGMA ELSEWHERE
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=1
+!     ENDDO
+!     TRANSF_PLANE%I(4)=3
+!     ZPLANE%R(4)=-3.D0
+!
+!
+!     EXAMPLE 4: ONE PLANE WITH PRESCRIBED ELEVATION
+!                AND 2 SIGMA TRANSFORMATIONS, WITH NPLAN=7
+!                SIGMA TRANSFORMATIONS ARE MEANT BETWEEN
+!                BOTTOM, FIXED ELEVATION PLANES AND FREE SURFACE
+!                THE VALUES OF ZSTAR ARE LOCAL FOR EVERY
+!                SIGMA TRANSFORMATION: 0. FOR LOWER FIXED PLANE
+!                                      1. FOR UPPER FIXED PLANE
+!
+!     DO IPLAN = 1,7
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     TRANSF_PLANE%I(4)=3
+!     ZPLANE%R(4)=3.D0
+!     ZSTAR%R(2)=0.2D0
+!     ZSTAR%R(3)=0.8D0
+!     ZSTAR%R(5)=0.1D0
+!     ZSTAR%R(6)=0.9D0
+!
+!     BEGIN OF PART SPECIFIC TO THIS CASE
       DO IPLAN = 1,NPLAN
         TRANSF_PLANE%I(IPLAN)=2
       ENDDO
-      IPCENTER = INT(REAL(NPLAN)/2.0+0.5)
-      ZSTAR%R(1)=0.D0
-      ZSTAR%R(IPCENTER)=0.5D0
-      ZSTAR%R(NPLAN)=1.D0
-      !QUADRATIC PROFILE
-      ! BOTTOM HALF
-      A=(0.5-0.D0)/REAL(IPCENTER-1)/REAL(IPCENTER-1)
-      B=-2.D0*A
-      C=0.D0+A
+      IPCENTER = INT(REAL(NPLAN)/2.D0+0.5D0)
+      ZSTAR%R(1)        = 0.D0
+      ZSTAR%R(IPCENTER) = 0.5D0
+      ZSTAR%R(NPLAN)    = 1.D0
+!     QUADRATIC PROFILE
+!     BOTTOM HALF
+      A = 0.5D0/REAL(IPCENTER-1)/REAL(IPCENTER-1)
+      B = -2.D0*A
+      C = A
       DO IPLAN = 2,IPCENTER-1
-        ZSTAR%R(IPLAN)=A*REAL(IPLAN)**2+B*REAL(IPLAN)+C
+        ZSTAR%R(IPLAN) = A*REAL(IPLAN)**2+B*REAL(IPLAN)+C
       ENDDO
-      ! TOP HALF
-      A=(0.5-1.0)/REAL(NPLAN-IPCENTER)/REAL(IPCENTER-NPLAN)
-      B=2.D0*REAL(NPLAN)*A
-      C=1.D0-REAL(NPLAN)**2*A
+!     TOP HALF
+      A =-0.5D0/REAL(NPLAN-IPCENTER)/REAL(IPCENTER-NPLAN)
+      B = 2.D0*REAL(NPLAN)*A
+      C = 1.D0-REAL(NPLAN)**2*A
       DO IPLAN = IPCENTER+1,NPLAN-1
-        ZSTAR%R(IPLAN)=-A*REAL(IPLAN)**2+B*REAL(IPLAN)+C
+        ZSTAR%R(IPLAN) = -A*REAL(IPLAN)**2+B*REAL(IPLAN)+C
       ENDDO
+!     END OF PART SPECIFIC TO THIS CASE
 !
 !***********************************************************************
 !
@@ -209,8 +280,8 @@
       IF(SUIT2) THEN
         DO I=1,NPLAN
           DO J=1,NPOIN2
-           U%R((I-1)*NPOIN2+J)=U2D%R(J)
-           V%R((I-1)*NPOIN2+J)=V2D%R(J)
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
           ENDDO
         ENDDO
       ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
@@ -337,6 +408,7 @@
           UBORF%R(IPOIN2)  = 0.D0
           VBORF%R(IPOIN2)  = 0.D0
           WBORF%R(IPOIN2)  = 0.D0
+! BEGIN OF PART SPECIFIC TO THIS CASE
           IF(SQRT((X(IPOIN2)-2000.D0)**2+(Y(IPOIN2)-2000.D0)**2)
      &       .LE.50.D0) THEN
             !KENT = 5; I.E. IMPOSED FLOW RATE
@@ -346,6 +418,7 @@
             LIWBOF%I(IPOIN2) = 5 ! AT THE MOMENT KENT DOES NOT WORK
             NLIQBED%I(IPOIN2) = 1
           ENDIF
+! END OF PART SPECIFIC TO THIS CASE
         ENDDO
 !
       ELSEIF(BC_BOTTOM.EQ.2) THEN

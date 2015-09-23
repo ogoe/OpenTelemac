@@ -33,6 +33,11 @@
 !+   by calling CONDI_OKADA and of the TPXO tidal model by calling
 !+   CONDI_TPXO (the TPXO model being coded in module TPXO)
 !
+!history  C.-T. PHAM (LNHE)
+!+        03/09/2015
+!+        V7P1
+!+   Change in the number of arguments when calling CONDI_TPXO
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -92,7 +97,8 @@
      &                  LIHBOR%I,LIUBOR%I,KENT,KENTU,
      &                  GEOSYST,NUMZONE,LAMBD0,PHI0,
      &                  T2D_FILES,T2DBB1,T2DBB2,
-     &                  MARDAT,MARTIM,INTMICON,MSL)
+     &                  MARDAT,MARTIM,INTMICON,MSL,
+     &                  TIDALTYPE,BOUNDARY_COLOUR,ICALHWG)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN

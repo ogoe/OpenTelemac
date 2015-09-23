@@ -1,3 +1,7 @@
+!
+!  CHANGES VS SOURCE FILES:
+!  IN BORD3D: CHANGES FOR SOME BOUNDARY NODES FOR TRACERS
+!
 !                    *****************
                      SUBROUTINE BORD3D
 !                    *****************
@@ -182,6 +186,8 @@
 !     ENDDO
 !
 !     TRACERS
+!
+! BEGINNING OF SPECIFIC TO THIS CASE
       DO IPTFR=1,NPTFR2
         IPOIN2 = NBOR2%I(IPTFR)
         IF(NCSIZE.GT.1) IPOIN2 = MESH3D%KNOLG%I(IPOIN2)
@@ -194,6 +200,7 @@
           ENDIF
         ENDDO
       ENDDO
+! END OF SPECIFIC TO THIS CASE
 !
 !     IF(NTRAC.NE.0) THEN
 !

@@ -1,56 +1,55 @@
-!                       *****************
-                        SUBROUTINE CORRXY
-!                       *****************
+!
+!  CHANGES VS SOURCE FILES:
+!  IN CORRXY
+!  IN CONDIM: SPECIAL INITIAL CONDITION FOR X-VELOCITY AND TRACER
+!  IN T3D_CORFON
+!  IN BORD3D: STRATIFICATION PUT AT THE ENTRANCE
+!
+!                    *****************
+                     SUBROUTINE CORRXY
+!                    *****************
+!
      & (X,Y,NPOIN)
 !
 !***********************************************************************
-! BIEF VERSION 5.6  17/10/05  EMILE RAZAFINDRAKOTO (LNHE) 01 30 87 74 03
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
-!  USER SUBROUTINE CORRXY
+!brief    MODIFIES THE COORDINATES OF THE POINTS IN THE MESH.
 !
-!  FUNCTION  : MODIFICATION OF THE COORDINATES OF THE POINTS IN THE MESH
+!warning  USER SUBROUTINE; COMMENTED LINES ARE AN EXAMPLE
 !
+!warning  DO NOT PERFORM ROTATIONS AS IT WILL CHANGE
+!+            THE NUMBERING OF THE LIQUID BOUNDARIES
 !
-!              THIS SUBROUTINE MUST BE MODIFIED ACCORDING TO
-!              THE CALLING PROGRAM AND THE NEEDED MODIFICATION
-!              BY ADDING USE DECLARATIONS_"NAME OF CALLING CODE"
-!              ALL THE DATA STRUCTURE OF THIS CODE IS
-!              AVAILABLE
+!history  EMILE RAZAFINDRAKOTO (LNHE)
+!+        17/10/05
+!+        V5P6
+!+
 !
-!              BEWARE : DO NOT DO ROTATIONS THAT WILL CHANGE THE
-!                       NUMBERING OF LIQUID BOUNDARIES
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
-!
-!-----------------------------------------------------------------------
-!  ARGUMENTS USED IN THE EXAMPLE
-! .________________.____.______________________________________________
-! |      NOM       |MODE|                   ROLE
-! |________________|____|_______________________________________________
-! |    X,Y         | -->|  COORDONNEES DU MAILLAGE .                   |
-! |    NPOIN       | -->|  NOMBRE DE POINTS DU MAILLAGE                |
-! |________________|____|______________________________________________
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-!-----------------------------------------------------------------------
-!
-! PROGRAMME APPELANT :
-! PROGRAMMES APPELES : RIEN EN STANDARD
-!
-!***********************************************************************
-!
-! APPELE PAR : INBIEF
-!
-! SOUS-PROGRAMME APPELE : NEANT
-!
-!***********************************************************************
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
+!| X              |<->| ABSCISSAE OF POINTS IN THE MESH
+!| X,Y            |<->| ORDINATES OF POINTS IN THE MESH
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CORRXY => CORRXY
 !
+!     OTHER DATA ARE AVAILABLE WITH THE DECLARATIONS OF EACH PROGRAM
 !
-!     OTHER DATA ARE AVAILABLE WITH THE DECLARATIONS OF EVERY PROGRAM
-!
-!     USE DECLARATIONS_TELEMAC3D
+!     USE DECLARATIONS_TELEMAC2D
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -60,21 +59,47 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+!     THIS SUBROUTINE MUST BE MODIFIED ACCORDING TO
+!     THE CALLING PROGRAM AND THE NEEDED MODIFICATION
+!     BY ADDING USE DECLARATIONS_"NAME OF CALLING CODE"
+!     ALL THE DATA STRUCTURE OF THIS CODE IS AVAILABLE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I
 !
 !-----------------------------------------------------------------------
 !
-!  EXAMPLE : MULTIPLICATION BY A CONSTANT (SCALING THE MESH)
-!            CHANGING OF THE ORIGIN
+!      EXAMPLE 1: MULTIPLIES BY A CONSTANT (SCALES THE MESH)
+!                 AND CHANGES THE ORIGIN
+!
+      INTEGER I
+!
+!      DO I = 1 , NPOIN
+!        X(I) = 3.D0 * X(I) + 100.D0
+!        Y(I) = 5.D0 * Y(I) - 50.D0
+!      ENDDO
 !
       DO I = 1 , NPOIN
         X(I) = 4.D0 * X(I)
       ENDDO
 !
 !-----------------------------------------------------------------------
+!
+!      EXAMPLE 2: CHANGING LATITUDE-LONGITUDE IN DEGREES TO RADIANS
+!
+!      INTEGER I
+!      DOUBLE PRECISION DEGTORAD
+!      INTRINSIC ACOS
+!
+!      DEGTORAD=ACOS(-1.D0)/180.D0
+!      DO I = 1 , NPOIN
+!        X(I) = X(I) * DEGTORAD
+!        Y(I) = Y(I) * DEGTORAD
+!      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+!     THIS SHOULD BE CHANGED IF MODIFICATIONS ARE DONE
 !
       IF(LNG.EQ.1) THEN
         WRITE(LU,*)'CORRXY (BIEF) : MODIFICATION DES COORDONNEES'
@@ -89,31 +114,85 @@
 !
       RETURN
       END
-!                       *****************
-                        SUBROUTINE CONDIM
-!                       *****************
+!                    *****************
+                     SUBROUTINE CONDIM
+!                    *****************
 !
 !
 !***********************************************************************
-! TELEMAC 3D VERSION 5.1    11/12/00      J-M HERVOUET(LNH) 30 87 80 18
-! FORTRAN95 VERSION         MARCH 1999        JACEK A. JANKOWSKI PINXIT
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
-!      FONCTION:
-!      =========
+!brief    INITIALISES VELOCITY, DEPTH AND TRACERS.
 !
-!    INITIALISATION DES TABLEAUX DES GRANDEURS PHYSIQUES
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/1999
+!+
+!+   FORTRAN95 VERSION
 !
-!-----------------------------------------------------------------------
+!history  J-M HERVOUET(LNH)
+!+        11/12/2000
+!+        V5P1
+!+   TELEMAC 3D VERSION 5.1
 !
-! SOUS-PROGRAMME APPELE PAR : TELEMAC-3D
-! SOUS-PROGRAMMES APPELES : OV , (CALCOT)
+!history
+!+        20/04/2007
+!+
+!+   ADDED INITIALISATION OF DPWAVE
 !
-!***********************************************************************
+!history
+!+        23/01/2009
+!+
+!+   ADDED CHECK OF ZSTAR
+!
+!history
+!+        16/03/2010
+!+
+!+   NEW OPTIONS FOR BUILDING THE MESH IN CONDIM, SEE BELOW
+!
+!history  J-M HERVOUET(LNHE)
+!+        05/05/2010
+!+        V6P0
+!+   SUPPRESSED INITIALISATION OF DPWAVE
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  M.S.TURNBULL (HRW), N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        C.-T. PHAM (LNHE)
+!+        19/07/2012
+!+        V6P2
+!+   Addition of the TPXO tidal model by calling CONDI_TPXO
+!+   (the TPXO model being coded in module TPXO)
+!
+!history  C.-T. PHAM (LNHE), M.S.TURNBULL (HRW)
+!+        02/11/2012
+!+        V6P3
+!+   Correction of bugs when initialising velocity with TPXO
+!+   or when sea levels are referenced with respect to Chart Datum (CD)
+!
+!history  C.-T. PHAM (LNHE)
+!+        03/09/2015
+!+        V7P1
+!+   Change in the number of arguments when calling CONDI_TPXO
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_TELEMAC3D, EX_CONDIM => CONDIM
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
+      USE TPXO
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -121,88 +200,232 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER IPLAN, I,J,ITRAC
-      DOUBLE PRECISION DELTAZ,AL
+      INTEGER IPLAN, I,J
+      INTEGER ITRAC
 !
 !***********************************************************************
-! TIME ORIGIN
 !
-      AT  = 0.D0
+!     ORIGIN OF TIME
 !
-! INITIALISATION DE H , LA HAUTEUR D'EAU.
+      IF(.NOT.SUIT2) AT  = 0.D0
 !
-      IF(LNG.EQ.1) WRITE(LU,*) 'HAUTEUR MISE A 10.'
-      IF(LNG.EQ.2) WRITE(LU,*) 'DEPTH IS SET TO 10.'
-      CALL OS('X=C     ',X=H,C=10.D0)
+!     INITIALISES H, THE WATER DEPTH
 !
-!  CLIPPING OF H
+      IF(.NOT.SUIT2) THEN
+!
+      IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
+     &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
+        CALL OS( 'X=C     ' ,X=H,C=0.D0)
+        CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
+      ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
+     &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
+        CALL OS( 'X=C     ' ,X=H,C=COTINI)
+        CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
+      ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
+     &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
+        CALL OS( 'X=C     ' ,X=H,C=0.D0)
+      ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
+     &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
+        CALL OS( 'X=C     ' ,X=H,C=HAUTIN)
+      ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
+     &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
+        CALL OS('X=-Y    ',X=H,Y=ZF)
+        CALL CONDI_TPXO(NPOIN2,MESH2D%NPTFR,MESH2D%NBOR%I,
+     &                  X2%R,Y2%R,H%R,U2D%R,V2D%R,
+     &                  LIHBOR%I,LIUBOL%I,KENT,KENTU,
+     &                  GEOSYST,NUMZONE,LATIT,LONGIT,
+     &                  T3D_FILES,T3DBB1,T3DBB2,
+     &                  MARDAT,MARTIM,INTMICON,MSL,
+     &                  TIDALTYPE,BOUNDARY_COLOUR,ICALHWG)
+      ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
+     &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
+     &       CDTINI(1:07).EQ.'SPECIAL') THEN
+!     USER INPUT :
+!     PROGRAM HERE SPECIAL INITIAL CONDITIONS ON DEPTH
+        IF(LNG.EQ.1) WRITE(LU,10)
+        IF(LNG.EQ.2) WRITE(LU,11)
+10      FORMAT(1X,'CONDIM : AVEC DES CONDITIONS INITIALES PARTICULIERES'
+     &      ,/,1X,'         VOUS DEVEZ MODIFIER CONDIM')
+11      FORMAT(1X,'CONDIM : WITH SPECIAL INITIAL CONDITIONS'
+     &      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')
+        CALL PLANTE(1)
+        STOP
+!     END OF SPECIAL INITIAL CONDITIONS
+!     END OF USER INPUT
+      ELSE
+        IF(LNG.EQ.1) THEN
+        WRITE(LU,*) 'CONDIM : CONDITION INITIALE NON PREVUE : ',CDTINI
+        ENDIF
+        IF(LNG.EQ.2) THEN
+        WRITE(LU,*) 'CONDIM: INITIAL CONDITION UNKNOWN: ',CDTINI
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+      ELSE
+        IF(LNG.EQ.1) WRITE(LU,*) 'HAUTEUR LUE DANS LE FICHIER BINAIRE 1'
+        IF(LNG.EQ.2) WRITE(LU,*) 'DEPTH IS READ IN THE BINARY FILE 1'
+      ENDIF
+!
+!     CLIPS H
 !
       DO I=1,NPOIN2
-        H%R(I)=MAX(H%R(I),HMIN)
+        H%R(I)=MAX(H%R(I),0.D0)
       ENDDO
 !
       CALL OS ('X=Y     ',X=HN,Y=H)
 !
 !-----------------------------------------------------------------------
 !
-!     EVENLY SPACED PLANES, NO OTHER DATA REQUIRED
+!     DATA TO BUILD VERTICAL COORDINATES IN CALCOT
+!
+!     TRANSF IS KEYWORD "MESH TRANSFORMATION"
+!     IF TRANSF = 0, SUBROUTINE CALCOT MUST BE IMPLEMENTED BY THE USER
+!
+!     AN EQUIVALENT OF TRANSF MUST BE GIVEN FOR EVERY PLANE:
+!
+!     POSSIBLE VALUES OF TRANSF_PLANE :
+!
+!     1 : SIGMA TRANSFORMATION WITH EVENLY SPACED PLANES
+!     2 : SIGMA TRANSFORMATION WITH PROPORTIONS GIVEN IN ZSTAR
+!     3 : PRESCRIBED ELEVATION GIVEN IN ZPLANE
+!
+!     STANDARD BELOW IS: EVENLY SPACED PLANES, NO OTHER DATA REQUIRED
 !
       DO IPLAN = 1,NPLAN
         TRANSF_PLANE%I(IPLAN)=1
       ENDDO
 !
+!     OTHER EXAMPLES:
+!
+!     EXAMPLE 1: ALL PLANES WITH PRESCRIBED ELEVATION
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=3
+!     ENDDO
+!     ZPLANE%R(2)=-7.D0
+!     ZPLANE%R(3)=-4.D0
+!     ...
+!     ZPLANE%R(NPLAN-1)=-0.05D0
+!
+!
+!     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     ZSTAR%R(1)=0.D0
+!     ZSTAR%R(2)=0.02D0
+!     ZSTAR%R(3)=0.1D0
+!     ...
+!     ZSTAR%R(NPLAN-1)=0.95D0
+!     ZSTAR%R(NPLAN)=1.D0
+!
+!
+!     EXAMPLE 3: ONE PLANE (NUMBER 4) WITH PRESCRIBED ELEVATION
+!                AND SIGMA ELSEWHERE
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=1
+!     ENDDO
+!     TRANSF_PLANE%I(4)=3
+!     ZPLANE%R(4)=-3.D0
+!
+!
+!     EXAMPLE 4: ONE PLANE WITH PRESCRIBED ELEVATION
+!                AND 2 SIGMA TRANSFORMATIONS, WITH NPLAN=7
+!                SIGMA TRANSFORMATIONS ARE MEANT BETWEEN
+!                BOTTOM, FIXED ELEVATION PLANES AND FREE SURFACE
+!                THE VALUES OF ZSTAR ARE LOCAL FOR EVERY
+!                SIGMA TRANSFORMATION: 0. FOR LOWER FIXED PLANE
+!                                      1. FOR UPPER FIXED PLANE
+!
+!     DO IPLAN = 1,7
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     TRANSF_PLANE%I(4)=3
+!     ZPLANE%R(4)=3.D0
+!     ZSTAR%R(2)=0.2D0
+!     ZSTAR%R(3)=0.8D0
+!     ZSTAR%R(5)=0.1D0
+!     ZSTAR%R(6)=0.9D0
+!
+!
 !***********************************************************************
 !
-!     COMPUTATION OF ELEVATIONS
+!     COMPUTES ELEVATIONS
 !     IF IT IS A CONTINUATION, WILL BE DONE AFTER CALLING 'SUITE'
 !
       IF(DEBU) CALL CALCOT(Z,H%R)
 !
 !***********************************************************************
 !
-!     INITIALISATION OF VELOCITIES
+!     INITIALISES VELOCITIES
 !
-      CALL OS( 'X=C     ' , X=U,C=1.D0 )
-      CALL OS( 'X=0     ' , X=V )
+      IF(SUIT2) THEN
+        DO I=1,NPLAN
+          DO J=1,NPOIN2
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
+          ENDDO
+        ENDDO
+      ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
+     &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
+        DO I=1,NPLAN
+          DO J=1,NPOIN2
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
+          ENDDO
+        ENDDO
+      ELSE
+! BEGIN OF PART SPECIFIC TO THIS CASE
+!       CALL OS( 'X=0     ' , X=U )
+        CALL OS( 'X=C     ' , X=U, C=1.D0 )
+! END OF PART SPECIFIC TO THIS CASE
+        CALL OS( 'X=0     ' , X=V )
+      ENDIF
+!
       CALL OS( 'X=0     ' , X=W )
 !
 !-----------------------------------------------------------------------
 !
-!     TRACERS INITIALIZATION
+!     INITIALISES TRACERS
 !
-      IF(NTRAC.NE.0) THEN
+      IF(NTRAC.GT.0) THEN
+! BEGIN OF PART SPECIFIC TO THIS CASE
         DO ITRAC=1,NTRAC
-!         CALL OS('X=C     ',X=TA%ADR(ITRAC)%P,C=TRAC0(ITRAC))
+!         CALL OS( 'X=C     ', X=TA%ADR(ITRAC)%P, C=TRAC0(ITRAC))
           DO IPLAN=1,NPLAN
             DO I=1,NPOIN2
               J=NPOIN2*(IPLAN-1)+I
               IF(IPLAN.GT.18) THEN
-                TA%ADR(ITRAC)%P%R(J)=28.D0
+                TA%ADR(ITRAC)%P%R(J) = 28.D0
               ELSE
-                TA%ADR(ITRAC)%P%R(J)=38.D0
+                TA%ADR(ITRAC)%P%R(J) = 38.D0
               ENDIF
             ENDDO
           ENDDO
+! END OF PART SPECIFIC TO THIS CASE
         ENDDO
       ENDIF
 !
 !
 !-----------------------------------------------------------------------
-!   INITIALISATION DU MODELE K-EPSILON (FACULTATIF)
-!   SI VOUS LE FAITES, INDIQUEZ AKEP = .FALSE.
+!   INITIALISES THE K-EPSILON MODEL (OPTIONAL)
+!   WHEN DONE: AKEP = .FALSE.
 !
       AKEP=.TRUE.
 !
 !     IF(ITURBV.EQ.3) THEN
 !
-!       HERE INITIALISE K AND EPSILON
+!       HERE INITIALISES K AND EPSILON
 !
 !       AKEP = .FALSE.
 !     ENDIF
 !
 !-----------------------------------------------------------------------
 !
-! INITIALIZE THE PRESSURE FIELDS TO 0.0
+! INITIALISES THE PRESSURE FIELDS TO 0.0
 !
       IF(NONHYD) THEN
         CALL OS('X=C     ',X=DP,C=0.D0)
@@ -215,62 +438,79 @@
 !
       RETURN
       END
-!                       *********************
-                        SUBROUTINE T3D_CORFON
-!                       *********************
+!                    *********************
+                     SUBROUTINE T3D_CORFON
+!                    *********************
 !
      &(SZF, ST1, ST2, ZF, T1, T2, X, Y, PRIVE, NPOIN2,
      & LISFON, MSK, MASKEL, MATR2D, MESH2D, S)
 !
 !***********************************************************************
-! TELEMAC 3D VERSION 5.1    25/11/97      J.M. JANIN  (LNH) 30 87 72 84
-! FORTRAN95 VERSION         MARCH 1999        JACEK A. JANKOWSKI PINXIT
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
-!  FONCTION  : CORRECTION DES FONDS RELEVES POUR TELEMAC-3D
-!              (EQUIVALENT A CORFON DANS BIEF MAIS AVEC
-!               DISTINCTION ENTRE DONNEES ET STRUCTURES)
+!brief    MODIFIES THE BOTTOM TOPOGRAPHY.
+!+
+!+            STANDARD ACTION: SMOOTHES THE BOTTOM ELEVATION.
+!+
+!+           (KEYWORD:  'NUMBER OF BOTTOM SMOOTHINGS')
 !
-!              EN STANDARD, CE SOUS-PROGRAMME UTILITAIRE NE FAIT
-!              QUE DE LISSER LES FONDS AU PRORATA DU NOMBRE DE
-!              LISSAGES FIXE DANS LE FICHIER DES PARAMETRES.
+!note     EQUIVALENT TO CORFON (BIEF LIBRARY), EXCEPT THAT THIS
+!+         SUBROUTINE DISTINGUISHES DATA FROM STRUCTURES.
 !
-!              IL EST A LA DISPOSITION DES UTILISATEURS, POUR
-!              LISSER SELECTIVEMENT OU CORRIGER DES FONDS SAISIS
-!              PAR EXEMPLE.
+!history  J.M. JANIN  (LNH)
+!+        25/11/97
+!+        V5P1
+!+
 !
-!-----------------------------------------------------------------------
-!                             ARGUMENTS
-! .________________.____.______________________________________________.
-! !  NOM           !MODE!                  ROLE                        !
-! !________________!____!______________________________________________!
-! !  (S)ZF         !<-->! FOND A MODIFIER.(SI S DEVANT : STRUCTURE)    !
-! !  (S)T1,2       !<-->! TABLEAUX DE TRAVAIL (SI S DEVANT : STRUCTURE)!
-! !  X,Y           ! -->! COORDONNEES DU MAILLAGE                      !
-! !  PRIVE         ! -->! TABLEAU PRIVE POUR L'UTILISATEUR.            !
-! !  NPOIN2        ! -->! NOMBRE DE POINTS DU MAILLAGE 2D.             !
-! !  LISFON        ! -->! NOMBRE DE LISSAGES DU FOND.                  !
-! !  MSK           ! -->! SI OUI, PRESENCE D'ELEMENTS MASQUES          !
-! !  MASKEL        ! -->! MASQUAGE DES ELEMENTS                        !
-! !  MATR          !<-->! MATRICE DE TRAVAIL                           !
-! !  IMESH2        ! -->! BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE 2D   !
-! !  AMESH2        ! -->! BLOC DES TABLEAUX DE REELS DU MAILLAGE 2D    !
-! !________________!____!______________________________________________!
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-!-----------------------------------------------------------------------
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/99
+!+
+!+   FORTRAN95 VERSION
 !
-! SOUS-PROGRAMME APPELE PAR : MITRID
-! SOUS-PROGRAMMES APPELES : FILTER
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
-!***********************************************************************
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        29/09/2011
+!+        V6P2
+!+   Name changed into T3D_CORFON to avoid duplication with Telemac-2D
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| LISFON         |-->| NUMBER OF SMOOTHINGS REQUIRED
+!| MASKEL         |-->| MASK OF ELEMENTS
+!| MATR2D         |<->| WORK MATRIX IN 2DH
+!| MESH2D         |<->| 2D MESH
+!| MSK            |-->| IF YES, THERE ARE MASKED ELEMENTS
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| PRIVE          |<->| BLOCK OF PRIVATE ARRAYS FOR USER
+!| S              |-->| VOID STRUCTURE
+!| ST1            |<->| STRUCTURE OF T1
+!| ST2            |<->| STRUCTURE OF T2
+!| SZF            |<->| STRUCTURE OF ZF
+!| T1             |<->| WORK ARRAY
+!| T2             |<->| WORK ARRAY
+!| X              |-->| MESH COORDINATE
+!| Y              |-->| MESH COORDINATE
+!| ZF             |<->| ELEVATION OF BOTTOM
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-!------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NPOIN2, LISFON
       LOGICAL, INTENT(IN) :: MSK
@@ -283,14 +523,14 @@
       TYPE (BIEF_MESH), INTENT(INOUT) :: MESH2D
       TYPE (BIEF_OBJ),  INTENT(IN)    :: S
 !
-!------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,I
+      INTEGER I
       LOGICAL MAS
 !
-!***********************************************************************
+!-----------------------------------------------------------------------
 !
-!  LISSAGES EVENTUELS DU FOND
+!     SMOOTHES THE BOTTOM ELEVATION
 !
       IF(LISFON.GT.0) THEN
 !
@@ -298,159 +538,98 @@
 !
         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
      &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
-
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
       DO I=1,NPOIN2
-        ZF(I)=-9.473D-6*MESH2D%X%R(I)
+        ZF(I) = -9.473D-6*MESH2D%X%R(I)
       ENDDO
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
-!                       *****************
-                        SUBROUTINE BORD3D
-!                       *****************
 !
 !   ICI STRATIFICATION DE TRACEUR MISE EN ENTREE
 !
+!                    *****************
+                     SUBROUTINE BORD3D
+!                    *****************
 !
-!
-     & (TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
-!
-!***********************************************************************
-! TELEMAC 3D VERSION 5.7 07/08/2006 J.-M. HERVOUET (LNHE) 01 30 87 80 18
-!
-!***********************************************************************
-!
-!      FONCTION:
-!      =========
-!
-!      CONDITIONS AUX LIMITES SPECIFIQUES. PEUT ETRE MODIFIE PAR
-!      L'UTILISATEUR
-!
-!-----------------------------------------------------------------------
-!
-!      FUNCTION:
-!      =========
-!
-!      SPECIFIC BOUNDARY CONDITIONS, MAY BE MODIFIED BY THE USER.
-!
-!-----------------------------------------------------------------------
-!                          SOME USEFUL PARAMETERS
-! .________________.____.______________________________________________.
-! !  NOM           !MODE!                  ROLE                        !
-! !________________!____!______________________________________________!
-! !  UBORF         !<-- ! PRESCRIBED VELOCITY ALONG X ON THE BOTTOM
-! !  UBORL         !<-- ! PRESCRIBED VELOCITY ALONG X ON THE LATERAL
-! !                !    ! BOUNDARY
-! !  UBORS         !<-- ! PRESCRIBED VELOCITY ALONG X AT FREE SURFACE
-! !  VBORF         !<-- ! PRESCRIBED VELOCITY ALONG Y ON THE BOTTOM
-! !  VBORL         !<-- ! PRESCRIBED VELOCITY ALONG Y ON THE LATERAL
-! !                !    ! BOUNDARY
-! !  VBORS         !<-- ! PRESCRIBED VELOCITY ALONG Y AT FREE SURFACE
-! !  WBORF         !<-- ! PRESCRIBED VELOCITY ALONG Z ON THE BOTTOM
-! !  WBORL         !<-- ! PRESCRIBED VELOCITY ALONG Z ON THE LATERAL
-! !                !    ! BOUNDARY
-! !  WBORS         !<-- ! PRESCRIBED VELOCITY ALONG Z AT FREE SURFACE
-! !  TABORF        !<-- ! PRESCRIBED TRACERS ON THE BOTTOM
-! !  TABORL        !<-- ! PRESCRIBED TRACERS ON THE LATERAL BOUNDARY
-! !  TABORS        !<-- ! PRESCRIBED TRACERS AT FREE SURFACE
-! !                !    !
-! !                !    ! LOGARITHMIC LAWS : AUBORF,L,S AND BUBORF,L,S
-! !                !    !                    FOR VELOCITIES
-! !                !    !                    ATABO,L,S AND BTABO,L,S
-! !                !    !                    FOR TRACERS
-! !                !    !
-! ! AUBOR,BUBOR    !<-- ! LOG LAW: NU*DU/DN = AUBOR*U + BUBOR
-! !                !    ! IF BUBOR(F,L,S) ADDED HERE, SPECIFY BUBOR%TYPR='Q'
-! !                !    ! SEE END OF THE ROUTINE
-! ! AUBOR,BVBOR    !<-- ! LOG LAW: NU*DV/DN = AVBOR*V + BVBOR
-! !                !    ! IF BVBOR(F,L,S) ADDED HERE, SPECIFY BVBOR%TYPR='Q'
-! !                !    ! SEE END OF THE ROUTINE
-! ! AWBOR,BWBOR    !<-- ! LOG LAW: NU*DW/DN = AWBOR*W + BWBOR
-! !                !    ! IF BWBOR(F,L,S) ADDED HERE, SPECIFY BWBOR%TYPR='Q'
-! !                !    ! SEE END OF THE ROUTINE
-! !                !    !
-! ! ATABO,BTABO    !<-- ! LOG LAW: NU*DTA/DN = ATABO*TA + BTABO
-! !                !    !
-! !                !    ! TYPES OF BOUNDARY CONDITIONS
-! !                !    !
-! !  LIU,V,WBOF    !<-->! ON BOTTOM FOR U,V,W
-! !  LIU,V,WBOL    !<-->! ON LATERAL BOUNDARIES FOR U,V,W
-! !  LIU,V,WBOS    !<-->! AT FREE SURFACE FOR U,V,W
-! !  LITA,BF       !<-->! ON BOTTOM FOR TRACERS
-! !  LITA,BL       !<-->! ON LATERAL BOUNDARIES FOR TRACERS
-! !  LITA,BS       !<-->! AT FREE SURFACE FOR TRACERS
-! !                !    !
-! !  U,V,W         ! -->! COMPONENTS OF VELOCITY
-! !  UMOY,VMOY     ! -->! DEPTH AVERAGED VELOCITY
-! !  TA            ! -->! CONCENTRATION OF TRACERS
-! !  ITURBV        ! -->! TURBULENCE MODEL (1:LAMINAR 2: MIXING LENGTH..)
-! !  VENT          ! -->! WITH WIND (.TRUE.) OR WITHOUT (.FALSE.)
-! !  FAIR          ! -->! DRAG COEFFICIENT OF WIND
-! !  VENTX         ! -->! WIND VELOCITY ALONG X
-! !  VENTY         ! -->! WIND VELOCITY ALONG Y
-! !  AT            ! -->! TIME
-! !  LT            ! -->! CURRENT NUMBER OF TIME-STEP
-! !  DT            ! -->! TIME-STEP
-! !  LIHBOR        ! -->! TYPE OF BOUNDARY CONDITIONS ON DEPTH
-! !  HBOR          ! -->! PRESCRIBED DEPTH ON LATERAL BOUNDARIES
-! !  HN            ! -->! DEPTH AT TIME TN
-! !  X,Y,Z         ! -->! MESH COORDINATES
-! !  ZF            ! -->! BOTTOM ELEVATION
-! !  NBOR          ! -->! GLOBAL NUMBER OF 2D BOUNDARY POINTS
-! !  NELEM3        ! -->! NUMBER OF 3D ELEMENTS
-! !  IKLE3         ! -->! CONNECTIVITY TABLE IN 3D
-! !  KP1BOR        ! -->! IN 2D : NEXT POINT ON THE BOUNDARY
-! !                !    ! (BOUNDARY NUMBERING)
-! ! XSGBOR,YSGBOR  ! -->! 2D NORMAL VECTORS TO THE SEGMENTS
-! !  NPOIN3        ! -->! NUMBER OF POINTS IN 3D
-! !  NPOIN2        ! -->! NUMBER OF POINTS IN 2D
-! !  NETAGE        ! -->! NUMBER OF LAYERS OF 3D ELEMENTS
-! !  NPTFR         ! -->! NUMBER OF BOUNDARY POINTS IN 2D
-! !  NPTFR3        ! -->! NUMBER OF BOUNDARY POINTS IN 3D
-! !  NPLAN         ! -->! NUMBER OF PLANES ON THE VERTICAL
-! !  NELEM2        ! -->! NUMBER OF ELEMENTS IN 2D
-! !                !    !
-! !                !    ! POSSIBLE TYPES OF BOUNDARY CONDITIONS
-! !                !    !
-! !  KENT          ! -->! PRESCRIBED VALUE
-! !  KENTU         ! -->! PRESCRIBED VELOCITY
-! !  KSORT         ! -->! FREE (E.G. AT AN OUTPUT)
-! !  KADH          ! -->! NO SLIP CONDITION
-! !  KLOG          ! -->! SOLID BOUNDARY
-! !  NTRAC         ! -->! NUMBER OF TRACERS
-! !  SEDI          ! -->! IF YES, THERE IS SEDIMENT
-! !  PRIVE         ! -->! BLOCK OF ARRAYS FOR THE USER
-! !  NPRIV         ! -->! NUMBER OF ARRAYS IN BLOCK PRIVE
-! !  NDEBIT        ! -->! NUMBER OF BOUNDARIES WITH PRESCRIBED DISCHARGE
-! !  NVIT          ! -->! NUMBER OF BOUNDARIES WITH PRESCRIBED VELOCITY
-! !  NCOTE         ! -->! NUMBER OF BOUNDARIES WITH PRESCRIBED ELEVATION
-! !  DEBIMP        ! -->! ARRAY OF PRESCRIBED DISCHARGES
-! !  COTIMP        ! -->! ARRAY OF PRESCRIBED ELEVATIONS
-! !  VITIMP        ! -->! ARRAY OF PRESCRIBED VELOCITIES
-! !________________!____!______________________________________________!
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+     &(TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 !
 !***********************************************************************
-!
-! INFORMATION : FOR PRESCRIBED BOUNDARIES OF POINT BEING BOTH LATERAL
-!               AND BOTTOM, USE LATERAL ARRAYS.
-!
-!               FOR TYPES OF BOUNDARY CONDITIONS : USE SUBROUTINE LIMI3D
-!
-!               SEDIMENT IS THE LAST TRACER
-!
+! TELEMAC3D   V7P0                                   09/07/2014
 !***********************************************************************
+!
+!brief    SPECIFIC BOUNDARY CONDITIONS.
+!
+!note     1) FOR PRESCRIBED BOUNDARIES OF POINT BEING BOTH LATERAL
+!+            AND BOTTOM : USE LATERAL ARRAYS.
+!+
+!+     2) FOR TYPES OF BOUNDARY CONDITIONS : USE SUBROUTINE LIMI3D.
+!+
+!+     3) SEDIMENT IS THE LAST TRACER.
+!
+!warning  MAY BE MODIFIED BY THE USER
+!
+!history
+!+        11/02/2008
+!+
+!+   LOOP ON THE BOUNDARY POINTS SPLIT IN 3 LOOPS TO REVERSE
+!
+!history  J.-M. HERVOUET (LNHE)
+!+        21/08/2009
+!+        V6P0
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  J.-M. HERVOUET (LNHE)
+!+        19/09/2011
+!+        V6P2
+!+   Call to DEBIMP3D replaced by CALL DEBIMP_3D (new arguments)
+!
+!history  J.-M. HERVOUET (LNHE)
+!+        11/03/2013
+!+        V6P3
+!+   Test IFRLIQ.NE.0 line 210.
+!
+!history  C. VILLARET & T. BENSON (HR-WALLINGFORD)
+!+        27/02/2014
+!+        V7P0
+!+   Case IPROF.EQ.3 added to test IPROF.EQ.2.
+!
+!history  A. GINEAU, N. DURAND, N. LORRAIN, C.-T. PHAM (LNHE)
+!+        09/07/2014
+!+        V7P0
+!+   Adding the heat balance of exchange with atmosphere
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS
+!|                |   | CONSERVATION.
+!| LT             |-->| CURRENT TIME STEP NUMBER
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NPTFR2_DIM     |-->| NPTFR2? NOT USED
+!| TIME           |-->| TIME OF TIME STEP
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D, EX_NFRLIQ=>NFRLIQ
       USE INTERFACE_TELEMAC3D, EX_BORD3D => BORD3D
+      USE EXCHANGE_WITH_ATMOSPHERE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -458,30 +637,40 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+!     TIME AND ENTET ARE AT AND INFOGR (NOW IN DECLARATIONS_TELEMAC3D)
       DOUBLE PRECISION, INTENT(IN)    :: TIME
       INTEGER         , INTENT(IN)    :: LT
       LOGICAL         , INTENT(IN)    :: ENTET
       INTEGER         , INTENT(IN)    :: NPTFR2_DIM
-      INTEGER         , INTENT(IN) :: NFRLIQ
+      INTEGER         , INTENT(IN)    :: NFRLIQ
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,IPOIN2,NP,K1,IBORD,IVIT,ICOT,IDEB,IFRLIQ,IPROF
-      INTEGER IPTFR,ITRAC,IPLAN
-      DOUBLE PRECISION ROEAU,ROAIR,VITV,PROFZ
+      INTEGER IPOIN2,NP,IBORD,IVIT,ICOT,IDEB,IFRLIQ,IPROF,K,N
+      INTEGER IPTFR,ITRAC,IPLAN,I3D
+      LOGICAL YAZMIN
+      DOUBLE PRECISION ROEAU,ROAIR,VITV,PROFZ,WINDRELX,WINDRELY
 !
-
-      INTEGER K
-      INTEGER N,ERR
+      DOUBLE PRECISION P_DMIN
       INTEGER  P_IMAX
-      EXTERNAL P_IMAX
+      EXTERNAL P_IMAX,P_DMIN
+      DOUBLE PRECISION STA_DIS_CUR
+      EXTERNAL STA_DIS_CUR
 !
-!--------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION XB,YB,ZB,NORM,CP
-      DOUBLE PRECISION RO0,A,B,SAL,WW,TREEL,RO,LAMB
+      DOUBLE PRECISION ZMIN(MAXFRO)
 !
-      INTEGER YADEB(100),MSK1,IPTFR2,I2,IJK,ITEMP
+      INTEGER YADEB(MAXFRO),MSK1,IJK
+!
+!     DECLARATION RELATED TO HEAT EXCHANGE
+      DOUBLE PRECISION PATM,HREL,NEBU,RAINFALL,WW2,WINDX,WINDY
+      DOUBLE PRECISION RAY_ATM,RAY_EAU,FLUX_EVAP,FLUX_SENS,DEBEVAP
+!
+      DOUBLE PRECISION WW,TREEL,A,B,LAMB,RO,SAL
+!     DOUBLE PRECISION XB,YB,ZB
+      INTEGER NFO
+      INTEGER ITEMP
 !
 !     SIMPLE CASES FOR LATERAL BOUNDARIES ARE TREATED AUTOMATICALLY:
 !
@@ -489,14 +678,14 @@
 !     - PRESCRIBED VELOCITY  (  6 6)
 !     - PRESCRIBED DISCHARGE (  5 5)
 !
-!     CORRESPONDING KEY-WORDS ARE:
+!     CORRESPONDING KEYWORDS ARE:
 !
 !     'PRESCRIBED ELEVATIONS' OR 'COTES IMPOSEES'
 !     'PRESCRIBED VELOCITIES' OR 'VITESSES IMPOSEES'
 !     'PRESCRIBED FLOWRATES' OR 'DEBITS IMPOSES'
 !
 !     THE IMPLEMENTATION OF AUTOMATIC CASES MAY BE CANCELLED
-!     PROVIDED THAT THE  RELEVANT ARRAYS ARE FILLED
+!     PROVIDED THAT THE RELEVANT ARRAYS ARE FILLED
 !
 !
 !***********************************************************************
@@ -506,9 +695,10 @@
 !              AUTOMATIC TREATMENT OF LIQUID BOUNDARIES
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !
+!
 !=======================================================================
 !
-!     SECURING NO SLIP BOUNDARY CONDITIONS
+!     SECURES NO SLIP BOUNDARY CONDITIONS
 !
       IF(LT.EQ.1) THEN
 !
@@ -534,7 +724,7 @@
       ENDDO
 !
 !     IMPORTANT OPTION:
-!     VERTICAL VELOCITIES SET AS HORIZONTAL VELOCITIES
+!     VERTICAL VELOCITIES ARE SET AS HORIZONTAL VELOCITIES
 !     THIS IS AN OPTION, OTHERWISE LIWBOL=KSORT (SEE LIMI3D)
 !
 !     DO IPTFR = 1,NPTFR2
@@ -577,11 +767,32 @@
       ENDIF
 !
 !=======================================================================
+!  FOR ALL TIMESTEPS
+!=======================================================================
 !
+!     IF VELOCITY PROFILE OPTION 5: MINIMUM ELEVATION OF EVERY BOUNDARY
 !
-!  FOR ALL TIME STEPS
+      YAZMIN=.FALSE.
+      DO IFRLIQ=1,NFRLIQ
+        ZMIN(IFRLIQ)=1.D99
+        IF(PROFVEL(IFRLIQ).EQ.5) YAZMIN=.TRUE.
+      ENDDO
+      IF(YAZMIN) THEN
+        DO K=1,NPTFR2
+          IFRLIQ=NUMLIQ%I(K)
+          IPOIN2=NBOR2%I(K)
+          IF(IFRLIQ.NE.0) THEN
+            ZMIN(IFRLIQ)=MIN(ZMIN(IFRLIQ),ZF%R(IPOIN2)+H%R(IPOIN2))
+          ENDIF
+        ENDDO
+        IF(NCSIZE.GT.1) THEN
+          DO IFRLIQ=1,NFRLIQ
+            ZMIN(IFRLIQ)=P_DMIN(ZMIN(IFRLIQ))
+          ENDDO
+        ENDIF
+      ENDIF
 !
-!     INITIALISING YADEB
+!     INITIALISES YADEB
 !
       IF(NFRLIQ.GE.1) THEN
         DO K=1,NFRLIQ
@@ -597,41 +808,59 @@
 !
       DO K=1,NPTFR2
 !
-!     PRESCRIBED ELEVATION GIVEN IN PARAMETER FILE (NCOTE<>0)
+!     PRESCRIBED ELEVATION GIVEN IN STEERING FILE (NCOTE<>0)
 !     -------------------------------------------------------
 !
       IF(LIHBOR%I(K).EQ.KENT.AND.NCOTE.NE.0) THEN
 !
-        IF(NCOTE.GE.NUMLIQ%I(K)) THEN
-!
+        IPOIN2 = NBOR2%I(K)
         ICOT=NUMLIQ%I(K)
-        HBOR%R(K) = SL3(ICOT,AT,NBOR2%I(K),INFOGR)-ZF%R(NBOR2%I(K))
-        HBOR%R(K) = MAX(0.D0,HBOR%R(K))
+        IF(STA_DIS_CURVES(ICOT).EQ.1) THEN
+          HBOR%R(K) = STA_DIS_CUR(ICOT,FLUX_BOUNDARIES(ICOT),
+     &                            PTS_CURVES(ICOT),QZ,NFRLIQ,
+     &                            ZF%R(IPOIN2)+H%R(IPOIN2))
+     &                - ZF%R(IPOIN2)
+          HBOR%R(K) = MAX(0.D0,HBOR%R(K))
+        ELSEIF(NCOTE.GE.NUMLIQ%I(K)) THEN
+          N=IPOIN2
+          IF(NCSIZE.GT.1) N=MESH2D%KNOLG%I(N)
+          HBOR%R(K) = SL3(ICOT,AT,N,INFOGR)-ZF%R(IPOIN2)
+          HBOR%R(K) = MAX(0.D0,HBOR%R(K))
         ELSE
           IF(LNG.EQ.1) WRITE(LU,100) NUMLIQ%I(K)
 100       FORMAT(1X,'BORD3D : COTES IMPOSEES EN NOMBRE INSUFFISANT',/,
-     &           1X,'       DANS LE FICHIER DES PARAMETRES',/,
-     &           1X,'       IL EN FAUT AU MOINS : ',1I6)
+     &           1X,'         DANS LE FICHIER DES PARAMETRES',/,
+     &           1X,'         IL EN FAUT AU MOINS : ',1I6,/,
+     &           1X,'         AUTRE POSSIBILITE :',/,
+     &           1X,'         FICHIER DES COURBES DE TARAGE MANQUANT')
           IF(LNG.EQ.2) WRITE(LU,101) NUMLIQ%I(K)
-101       FORMAT(1X,'BORD3D : MORE PRESCRIBED ELEVATIONS ARE REQUIRED',
-     &           /,1X,'       IN THE PARAMETER FILE',/,
-     &           1X,'       AT LEAST ',1I6,' MUST BE GIVEN')
+101       FORMAT(1X,'BORD3D: MORE PRESCRIBED ELEVATIONS ARE REQUIRED',/,
+     &           1X,'        IN THE PARAMETER FILE',/,
+     &           1X,'        AT LEAST ',1I6,' MUST BE GIVEN',/,
+     &           1X,'        OTHER POSSIBILITY:',/,
+     &           1X,'        STAGE-DISCHARGE CURVES FILE MISSING')
           CALL PLANTE(1)
           STOP
         ENDIF
 !
       ENDIF
 !
-!     PRESCRIBED DISCHARGE GIVEN IN PARAMETER FILE (NDEBIT<>0)
+      ENDDO
+!
+!     PRESCRIBED DISCHARGE GIVEN IN STEERING FILE (NDEBIT<>0)
 !     --------------------------------------------------------
 !
-!     A VELOCITY PROFILE IS SET HERE AND WILL BE CORRECTED AFTER
+      DO K=1,NPTFR2
+!
+!     A VELOCITY PROFILE IS SET HERE AND WILL BE CORRECTED LATER
 !     TO GET THE CORRECT DISCHARGE (CALL TO DEBIMP3D)
 !
       IF(LIUBOL%I(K).EQ.KENT.AND.NDEBIT.NE.0) THEN
 !
+        IPOIN2 = NBOR2%I(K)
         DO NP=1,NPLAN
           IJK=(NP-1)*NPTFR2+K
+          I3D=(NP-1)*NPOIN2+IPOIN2
           IFRLIQ=NUMLIQ%I(K)
           IF(PROFVEL(IFRLIQ).EQ.2) THEN
 !           GIVEN BY USER IN BOUNDARY CONDITIONS FILE
@@ -643,15 +872,22 @@
             VBORL%R(IJK) = -YNEBOR2%R(K)*UBOR2D%R(K+NPTFR2)
           ELSEIF(PROFVEL(IFRLIQ).EQ.4) THEN
 !           NORMAL AND PROPORTIONAL TO SQRT(H)
-            UBORL%R(IJK)=-XNEBOR2%R(K) * SQRT(MAX(H%R(NBOR2%I(K)),0.D0))
-            VBORL%R(IJK)=-YNEBOR2%R(K) * SQRT(MAX(H%R(NBOR2%I(K)),0.D0))
+            UBORL%R(IJK)=-XNEBOR2%R(K) * SQRT(MAX(H%R(IPOIN2),0.D0))
+            VBORL%R(IJK)=-YNEBOR2%R(K) * SQRT(MAX(H%R(IPOIN2),0.D0))
+          ELSEIF(PROFVEL(IFRLIQ).EQ.5) THEN
+!           NORMAL PROFILE IN SQUARE ROOT OF H, BUT VIRTUAL H
+!           DEDUCED FROM LOWEST FREE SURFACE OF THE BOUNDARY
+            UBORL%R(IJK)=-XNEBOR2%R(K) *
+     &                   SQRT(MAX(ZMIN(IFRLIQ)-ZF%R(IPOIN2),0.D0))
+            VBORL%R(IJK)=-YNEBOR2%R(K) *
+     &                   SQRT(MAX(ZMIN(IFRLIQ)-ZF%R(IPOIN2),0.D0))
           ELSE
 !           NORMAL AND NORM 1
             UBORL%R(IJK)=-XNEBOR2%R(K)
             VBORL%R(IJK)=-YNEBOR2%R(K)
           ENDIF
 !         NO VELOCITY IF NO WATER
-          IF(H%R(NBOR2%I(K)).LT.1.D-4) THEN
+          IF(H%R(IPOIN2).LT.1.D-4) THEN
             UBORL%R(IJK) = 0.D0
             VBORL%R(IJK) = 0.D0
           ENDIF
@@ -664,32 +900,37 @@
           ENDIF
 !         U AND V INITIALISED WITH PRESCRIBED VALUES (FOR DEBIMP3D)
 !         WILL BE CHANGED AGAIN AFTER DEBIMP3D
-          U%R((NP-1)*NPOIN2+NBOR2%I(K))=UBORL%R(IJK)
-          V%R((NP-1)*NPOIN2+NBOR2%I(K))=VBORL%R(IJK)
+          U%R(I3D)=UBORL%R(IJK)
+          V%R(I3D)=VBORL%R(IJK)
         ENDDO
 !
         YADEB(NUMLIQ%I(K))=1
 !
       ENDIF
 !
-!     PRESCRIBED VELOCITY GIVEN IN PARAMETER FILE (NVIT<>0)
+      ENDDO
+!
+!     PRESCRIBED VELOCITY GIVEN IN STEERING FILE (NVIT<>0)
 !     -----------------------------------------------------
+!
+      DO K=1,NPTFR2
 !
 !     THIS VELOCITY IS CONSIDERED NORMAL TO THE BOUNDARY
 !
       IF(LIUBOL%I(K).EQ.KENTU.AND.NVIT.NE.0) THEN
         IVIT=NUMLIQ%I(K)
         IF(NVIT.GE.IVIT) THEN
-!
           DO NP=1,NPLAN
             IBORD = (NP-1)*NPTFR2+K
-            UBORL%R(IBORD) =
-     &      -MESH2D%XNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
-            VBORL%R(IBORD) =
-     &      -MESH2D%YNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
+            IF(NCSIZE.GT.1) THEN
+              N=MESH2D%KNOLG%I(NBOR2%I(K))+(NP-1)*NPOIN2
+            ELSE
+              N=NBOR3%I(IBORD)
+            ENDIF
+            UBORL%R(IBORD)=-MESH2D%XNEBOR%R(K)*VIT3(IVIT,AT,N,INFOGR)
+            VBORL%R(IBORD)=-MESH2D%YNEBOR%R(K)*VIT3(IVIT,AT,N,INFOGR)
             WBORL%R(IBORD)=0.D0
-          END DO
-!
+          ENDDO
         ELSE
           IF(LNG.EQ.1) WRITE(LU,200) NUMLIQ%I(K)
 200       FORMAT(1X,'BORD3D : VITESSES IMPOSEES EN NOMBRE INSUFFISANT',
@@ -704,21 +945,40 @@
         ENDIF
       ENDIF
 !
-!     PRESCRIBED TRACER GIVEN IN PARAMETER FILE, BUT POSSIBLE
-!     OVERWRITING IF LIQUID BOUNDARY FILE IS GIVEN
+      ENDDO
+!
+!     PRESCRIBED TRACER GIVEN IN STEERING FILE,
+!     BUT POSSIBLE OVERWRITING IF LIQUID BOUNDARY FILE IS GIVEN
 !     SEE FUNCTION TR3
 !     -------------------------------------------------------
 !
-      IF(NTRAC.GT.0) THEN
+      IF(NTRAC.GT.0.AND.NTRACER.GT.0) THEN
         DO ITRAC=1,NTRAC
+        DO K=1,NPTFR2
         DO NP=1,NPLAN
           IBORD = (NP-1)*NPTFR2+K
-          IFRLIQ=NUMLIQ%I(K)
-          IF(LITABL%ADR(ITRAC)%P%I(IBORD).EQ.KENT.AND.NTRACER.NE.0) THEN
+          IF(LITABL%ADR(ITRAC)%P%I(IBORD).EQ.KENT) THEN
             IFRLIQ=NUMLIQ%I(K)
+            IF(IFRLIQ.EQ.0) THEN
+              IF(LNG.EQ.1) WRITE(LU,298) IBORD
+298           FORMAT(1X,'BORD3D : VALEURS IMPOSEES DU TRACEUR',/,
+     &               1X,'         SUR PAROI SOLIDE',/,
+     &               1X,'         AU POINT DE BORD ',1I6)
+              IF(LNG.EQ.2) WRITE(LU,299) IBORD
+299           FORMAT(1X,'BORD3D: PRESCRIBED TRACER VALUE',/,
+     &               1X,'        ON A SOLID BOUNDARY',/,
+     &               1X,'        AT BOUNDARY POINT ',1I6)
+              CALL PLANTE(1)
+              STOP
+            ENDIF
             IF(NTRACER.GE.IFRLIQ*NTRAC) THEN
-              TABORL%ADR(ITRAC)%P%R(IBORD) =
-     &        TR3(IFRLIQ,ITRAC,NBOR3%I(IBORD),AT,INFOGR)
+              IF(NCSIZE.GT.1) THEN
+                N=MESH2D%KNOLG%I(NBOR2%I(K))+(NP-1)*NPOIN2
+              ELSE
+                N=NBOR3%I(IBORD)
+              ENDIF
+              TABORL%ADR(ITRAC)%P%R(IBORD)=
+     &                                   TR3(IFRLIQ,ITRAC,N,AT,INFOGR)
             ELSE
               IF(LNG.EQ.1) WRITE(LU,300) NUMLIQ%I(K)*NTRAC
 300           FORMAT(1X,'BORD3D : VALEURS IMPOSEES DU TRACEUR',/,
@@ -735,30 +995,49 @@
 !           CASE OF A PROFILE ON THE VERTICAL
             IPROF=VERPROTRA(ITRAC+(IFRLIQ-1)*NTRAC)
             IF(IPROF.NE.1) THEN
-              PROFZ=TRA_PROF_Z(IFRLIQ,NBOR2%I(K),
-     &                         AT,LT,NP,INFOGR,IPROF,ITRAC)
-              IF(IPROF.EQ.2.OR.IPROF.EQ.3) THEN
+              PROFZ=TRA_PROF_Z(IFRLIQ,NBOR2%I(K),AT,LT,NP,
+     &                         INFOGR,IPROF,ITRAC)
+              IF(IPROF.EQ.2.OR.IPROF.EQ.0) THEN
+!               Rouse concentrations profiles (IPROF=2) or values given by user (IPROF=0)
                 TABORL%ADR(ITRAC)%P%R(IBORD)=PROFZ
-              ELSE
+              ELSEIF(IPROF.EQ.3) THEN
+!               Normalised concentrations profiles (IPROF=3)
                 TABORL%ADR(ITRAC)%P%R(IBORD)=
      &          TABORL%ADR(ITRAC)%P%R(IBORD)*PROFZ
+              ELSE
+                WRITE(LU,*) 'BORD3D : IPROF=',IPROF
+                IF(LNG.EQ.1) THEN
+                  WRITE(LU,*) 'OPTION INCONNUE POUR LES'
+                  WRITE(LU,*) 'PROFILS DES TRACEURS SUR LA VERTICALE'
+                ENDIF
+                IF(LNG.EQ.2) THEN
+                  WRITE(LU,*) 'UNKNOWN OPTION FOR THE'
+                  WRITE(LU,*) 'TRACERS VERTICAL PROFILES'
+                ENDIF
+                CALL PLANTE(1)
+                STOP
               ENDIF
             ENDIF
-!
-!   STRATIFICATION MISE EN ENTREE
-!
+!BEGINNING OF SPECIFIC TO THIS CASE
+!           STRATIFICATION MISE EN ENTREE
             IF(NP.GT.18.AND.ITRAC.EQ.1) THEN
-              TABORL%ADR(ITRAC)%P%R(IBORD)=28.D0
+              TABORL%ADR(ITRAC)%P%R(IBORD) = 28.D0
             ENDIF
-!
-!
+!END OF SPECIFIC TO THIS CASE
           ENDIF
 !
         ENDDO
         ENDDO
+        ENDDO
       ENDIF
 !
-      ENDDO
+!-----------------------------------------------------------------------
+!
+!     AUTOMATIC TIDAL BOUNDARY CONDITIONS
+!
+      IF(TIDALTYPE.GE.1) CALL TIDAL_MODEL_T3D()
+!
+!-----------------------------------------------------------------------
 !
 !     PRESCRIBED DISCHARGES: FINAL TREATMENT OF VELOCITIES
 !     ----------------------------------------------------
@@ -794,13 +1073,12 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-
       ENDIF
 !
-      ENDDO
+      ENDDO ! IFRLIQ
       ENDIF
 !
-!     RESETTING BOUNDARY CONDITIONS ON U AND V (WILL BE USED BY TFOND
+!     RESETS BOUNDARY CONDITIONS ON U AND V (WILL BE USED BY TFOND
 !     AND OTHER SUBROUTINES BEFORE THE NEXT BOUNDARY CONDITIONS TREATMENT)
 !
       DO K=1,NPTFR2
@@ -812,6 +1090,27 @@
           ENDDO
         ENDIF
       ENDDO
+!
+!     EXAMPLE OF PRESCRIBED VERTICAL VELOCITIES AT ENTRANCES
+!     VELOCITIES TANGENT TO BOTTOM AND FREE SURFACE
+!
+!     DO K=1,NPTFR2
+!       IF(LIWBOL%I(K).EQ.KENT.OR.LIWBOL%I(K).EQ.KENTU) THEN
+!         DO NP=1,NPLAN
+!             IJK=(NP-1)*NPTFR2+K
+!             I2D=NBOR2%I(K)
+!             I3D=(NP-1)*NPOIN2+I2D
+!             WBORL DEDUCED FROM FREE SURFACE AND BOTTOM
+!             TETA=(Z(I3D)-Z(I2D))/
+!    *        MAX(1.D-3,Z((NPLAN-1)*NPOIN2+I2D)-Z(I2D))
+!             GX=        TETA *GRADZN%ADR(1)%P%R(I2D)
+!    *            +(1.D0-TETA)*GRADZF%ADR(1)%P%R(I2D)
+!             GY=        TETA *GRADZN%ADR(2)%P%R(I2D)
+!    *            +(1.D0-TETA)*GRADZF%ADR(2)%P%R(I2D)
+!             WBORL%R(IJK)=UBORL%R(IJK)*GX+VBORL%R(IJK)*GY
+!         ENDDO
+!       ENDIF
+!     ENDDO
 !
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !           END OF AUTOMATIC TREATMENT OF LIQUID BOUNDARIES
@@ -827,23 +1126,32 @@
         ROEAU = 1000.D0
         ROAIR = 1.3D0
         DO IPOIN2 = 1,NPOIN2
-          VITV  = SQRT(WIND%ADR(1)%P%R(IPOIN2)**2
-     &               + WIND%ADR(2)%P%R(IPOIN2)**2)
-!
-! A MORE ACCURATE TREATMENT
-!
-!CX       IF(VITV.LE.5.D0) THEN
-!CX         FAIR = ROAIR/ROEAU*0.565D-3
-!CX       ELSEIF (VITV.LE.19.22D0) THEN
-!CX         FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3
-!CX       ELSE
-!CX         FAIR = ROAIR/ROEAU*2.513D-3
-!CX       ENDIF
-!
-! BEWARE : BUBORS IS VISCVI*DU/DN, NOT DU/DN
-!
-          BUBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2)
-          BVBORS%R(IPOIN2) = FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2)
+!         RELATIVE WIND
+          WINDRELX=WIND%ADR(1)%P%R(IPOIN2)-U%R(NPOIN3-NPOIN2+IPOIN2)
+          WINDRELY=WIND%ADR(2)%P%R(IPOIN2)-V%R(NPOIN3-NPOIN2+IPOIN2)
+          VITV=SQRT(WINDRELX**2+WINDRELY**2)
+!         A MORE ACCURATE TREATMENT
+!         IF(VITV.LE.5.D0) THEN
+!           FAIR = ROAIR/ROEAU*0.565D-3
+!         ELSEIF (VITV.LE.19.22D0) THEN
+!           FAIR = ROAIR/ROEAU*(-0.12D0+0.137D0*VITV)*1.D-3
+!         ELSE
+!           FAIR = ROAIR/ROEAU*2.513D-3
+!         ENDIF
+!         BEWARE : BUBORS IS VISCVI*DU/DN, NOT DU/DN
+          IF(H%R(IPOIN2).GT.HWIND) THEN
+!           EXPLICIT PART
+            BUBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(1)%P%R(IPOIN2)
+            BVBORS%R(IPOIN2) =  FAIR*VITV*WIND%ADR(2)%P%R(IPOIN2)
+!           IMPLICIT PART
+            AUBORS%R(IPOIN2) = -FAIR*VITV
+            AVBORS%R(IPOIN2) = -FAIR*VITV
+          ELSE
+            BUBORS%R(IPOIN2) = 0.D0
+            BVBORS%R(IPOIN2) = 0.D0
+            AUBORS%R(IPOIN2) = 0.D0
+            AVBORS%R(IPOIN2) = 0.D0
+          ENDIF
         ENDDO
       ENDIF
 !
@@ -860,36 +1168,59 @@
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !
 !
-!                 LINES BELOW WITH '!C' ARE AN EXAMPLE
-!
+!                 LINES BELOW ARE AN EXAMPLE
+!                                    =======
 !    TO BE GIVEN :
 !
 !    ITEMP = NUMBER OF TRACER WHICH IS THE HEAT
-!    TAIR  = CONSTANT AIR TEMPERATURE
-!    SAL   = CONSTANT WATER SALINITY
+!    TAIR  = AIR TEMPERATURE WHICH MAY VARY WITH TIME
+!    SAL   = SALINITY WHICH MAY VARY WITH TIME
 !
-!C    ITEMP=1
-!C    CP=4.18D3
-!C    RO0=999.972D0
-!C    B=0.0025D0
-!C    TAIR=15.D0
-!C    SAL=35.D-3
-!C    WW=0.D0
-!C    IF (VENT) WW=VITV
-!C    DO IPOIN2=1,NPOIN2
-!C       TREEL=TA%ADR(ITEMP)%P%R(NPOIN3-NPOIN2+IPOIN2)
-!C       RO=RO0*(1.D0-(7.D0*(TREEL-4.D0)*(TREEL-4.D0)-750.D0*SAL)*1D-6)
-!C       LAMB=RO*CP
-!C       A=(4.48D0+0.049D0*TREEL)+2021.5D0*B*(1.D0+WW)*
-!C   &     (1.12D0+0.018D0*TREEL+0.00158D0*TREEL*TREEL)
-!C       ATABOS%ADR(ITEMP)%P%R(IPOIN2)=-A/LAMB
-!C       BTABOS%ADR(ITEMP)%P%R(IPOIN2)= A*TAIR/LAMB
-!C    ENDDO
+      IF (ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
+!       READING OF INPUT DATA FILE
+        NFO = T3D_FILES(T3DFO1)%LU   ! FORMATTED DATA FILE 1
+        CALL INTERPMETEO(WW,WINDX,WINDY,
+     &                   TAIR,PATM,HREL,NEBU,RAINFALL,AT,NFO)
+        ITEMP = 1
+!       LOG LAW FOR WIND AT 2 METERS
+!        WW2 = WW * LOG(2.D0/0.0002D0)/LOG(10.D0/0.0002D0)
+!       WRITTEN BELOW AS:
+        WW2 = WW * LOG(1.D4)/LOG(5.D4)
+!       ALTERNATIVE LAW FOR WIND AT 2 METERS
+!        WW2 = 0.6D0*WW
+        DO IPOIN2=1,NPOIN2
+          TREEL=TA%ADR(ITEMP)%P%R(NPOIN3-NPOIN2+IPOIN2)
+!          SAL = 35.D-3 ! EXAMPLE OF SEA SALINITY
+          SAL = 0.D0
+          RO = RO0*(1.D0-(7.D0*(TREEL-4.D0)**2-750.D0*SAL)*1.D-6)
+          LAMB=RO*CP
+
+          IF(ATMOSEXCH.EQ.1) THEN
+            A=(4.48D0+0.049D0*TREEL)+2021.5D0*C_ATMOS*(1.D0+WW)*
+     &        (1.12D0+0.018D0*TREEL+0.00158D0*TREEL**2)
+            ATABOS%ADR(ITEMP)%P%R(IPOIN2)=-A/LAMB
+            BTABOS%ADR(ITEMP)%P%R(IPOIN2)= A*TAIR/LAMB
+          ELSEIF(ATMOSEXCH.EQ.2) THEN
+!     SENSIBLE HEAT FLUXES
+            CALL EVAPO(TREEL,TAIR,WW2,PATM,HREL,RO,
+     &                 FLUX_EVAP,FLUX_SENS,DEBEVAP,C_ATMOS)
+!     LONGWAVE HEAT FLUXES
+            CALL SHORTRAD(TREEL,TAIR,NEBU,RAY_ATM,RAY_EAU)
+!
+!     BOUNDARY CONDITION FOR TEMPERATURE AT SURFACE
+            ATABOS%ADR(ITEMP)%P%R(IPOIN2) = 0.D0
+            BTABOS%ADR(ITEMP)%P%R(IPOIN2) = (RAY_ATM-RAY_EAU-FLUX_EVAP
+     &                                      -FLUX_SENS)/LAMB
+          ENDIF
+        ENDDO
+      ENDIF
 !     IMPORTANT:
-!     STATING THAT ATABOS AND BTABOS ARE NOT ZERO (SEE LIMI3D AND DIFF3D)
+!     STATES THAT ATABOS AND BTABOS ARE NOT ZERO (SEE LIMI3D AND DIFF3D)
 !     OTHERWISE THEY WILL NOT BE CONSIDERED
-!C    ATABOS%ADR(ITEMP)%P%TYPR='Q'
-!C    BTABOS%ADR(ITEMP)%P%TYPR='Q'
+      IF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
+        ATABOS%ADR(ITEMP)%P%TYPR='Q'
+        BTABOS%ADR(ITEMP)%P%TYPR='Q'
+      ENDIF
 !
 !
 !           +++++++++++++++++++++++++++++++++++++++++++++++
@@ -900,9 +1231,9 @@
 !
 !-----------------------------------------------------------------------
 !
-!     OPTIMIZATION:
+!     OPTIMISATION:
 !
-!     EXPLICIT STRESSES WILL NOT BE TREATED IF SAID TO BE ZERO
+!     EXPLICIT STRESSES WILL NOT BE TREATED IF SAID TO BE 0
 !
 !     EXPLICIT STRESSES SET TO 0 ON VELOCITIES (UNLESS PROGRAMMED
 !                                               IN THIS SUBROUTINE):
@@ -920,6 +1251,8 @@
       IF(VENT) THEN
         BUBORS%TYPR='Q'
         BVBORS%TYPR='Q'
+        AUBORS%TYPR='Q'
+        AVBORS%TYPR='Q'
       ELSE
         BUBORS%TYPR='0'
         BVBORS%TYPR='0'

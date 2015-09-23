@@ -5995,6 +5995,55 @@ Sert au dimensionnement de la memoire, a augmenter si necessaire'
 AIDE1 = 'maximal number of tracers.
 Used for dimensioning arrays. Can be increased if needed' 
 
+NOM = 'NUMERO LOCAL DU POINT POUR CALER LA PLEINE MER'
+NOM1 = 'LOCAL NUMBER OF THE POINT TO CALIBRATE HIGH WATER'
+TYPE = INTEGER
+INDEX = 98
+MNEMO = 'ICALHWB'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1= 0
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 1
+AIDE = 'Numero local du point entre 1 et le nombre de points
+de frontiere maritime (du FICHIER DES CONSTANTES HARMONIQUES)
+ou les conditions aux limites de maree sont calculees
+avec les bases de donnees JMJ, NEA, FES, PREVIMER
+(sauf les bases de type TPXO).
+Les ondes de maree sont dephasees par rapport a ce point
+pour debuter le calcul par une pleine mer
+(en marees schematiques seulement).'
+AIDE1= 'Local number between 1 and the number of tidal boundary points
+(of the HARMONIC CONSTANTS FILE) where the tidal boundary conditions
+are computed with JMJ, NEA, FES, PREVIMER databases
+(except TPXO-type databases).
+The tidal constituents have their phase shifted with respect to
+this point to start the simulation with a high water
+(for schematic tides only).'
+
+NOM = 'NUMERO GLOBAL DU POINT POUR CALER LA PLEINE MER'
+NOM1 = 'GLOBAL NUMBER OF THE POINT TO CALIBRATE HIGH WATER'
+TYPE = INTEGER
+INDEX = 99
+MNEMO = 'ICALHWG'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1= 0
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 1
+AIDE = 'Numero global du point par rapport auquel
+les ondes de maree sont dephasees
+pour debuter le calcul par une pleine mer
+(en marees schematiques seulement).
+Ne concerne que les bases de constantes harmoniques de type TPXO.'
+AIDE1= 'Global number of the point with respect to which
+the tidal constituents have their phase shifted
+to start the calculation with a high water
+(for schematic tides only).
+Only harmonic constants databases like TPXO are concerned.'
+
 / 
 / POUR LES LANCEURS PERL : 
 / 

@@ -1,24 +1,86 @@
-!                       *****************
-                        SUBROUTINE CONDIM
-!                       *****************
+!
+!  CHANGES VS SOURCE FILES:
+!  IN CONDIM: SPECIAL INITIAL CONDITIONS FOR DEPTH AND VELOCITIES
+!
+!                    *****************
+                     SUBROUTINE CONDIM
+!                    *****************
 !
 !
 !***********************************************************************
-! TELEMAC-3D   V5.1          25/11/97      J-M HERVOUET(LNH) 30 87 80 18
-! FORTRAN95 VERSION         MARCH 1999        JACEK A. JANKOWSKI PINXIT
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
-!      FONCTION:
-!      =========
+!brief    INITIALISES VELOCITY, DEPTH AND TRACERS.
 !
-!    INITIALISATION DES TABLEAUX DES GRANDEURS PHYSIQUES
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/1999
+!+
+!+   FORTRAN95 VERSION
 !
+!history  J-M HERVOUET(LNH)
+!+        11/12/2000
+!+        V5P1
+!+   TELEMAC 3D VERSION 5.1
 !
-!***********************************************************************
+!history
+!+        20/04/2007
+!+
+!+   ADDED INITIALISATION OF DPWAVE
+!
+!history
+!+        23/01/2009
+!+
+!+   ADDED CHECK OF ZSTAR
+!
+!history
+!+        16/03/2010
+!+
+!+   NEW OPTIONS FOR BUILDING THE MESH IN CONDIM, SEE BELOW
+!
+!history  J-M HERVOUET(LNHE)
+!+        05/05/2010
+!+        V6P0
+!+   SUPPRESSED INITIALISATION OF DPWAVE
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  M.S.TURNBULL (HRW), N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        C.-T. PHAM (LNHE)
+!+        19/07/2012
+!+        V6P2
+!+   Addition of the TPXO tidal model by calling CONDI_TPXO
+!+   (the TPXO model being coded in module TPXO)
+!
+!history  C.-T. PHAM (LNHE), M.S.TURNBULL (HRW)
+!+        02/11/2012
+!+        V6P3
+!+   Correction of bugs when initialising velocity with TPXO
+!+   or when sea levels are referenced with respect to Chart Datum (CD)
+!
+!history  C.-T. PHAM (LNHE)
+!+        03/09/2015
+!+        V7P1
+!+   Change in the number of arguments when calling CONDI_TPXO
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_TELEMAC3D, EX_CONDIM => CONDIM
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
+      USE TPXO
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -26,21 +88,57 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER IPLAN, I, IPOIN2, IPOIN3
+      INTEGER IPLAN, I,J
+      INTEGER IPOIN2,IPOIN3
       DOUBLE PRECISION PI
       PARAMETER (PI = 3.1415926535897932384626433D0)
 !     FOR SOLITARY WAVE
-      DOUBLE PRECISION WX, WH, HV1, HV2, HV3, HV4, X0
+      DOUBLE PRECISION WX,WH,HV1,HV2,HV3,HV4,X0
 !
 !***********************************************************************
-! TIME ORIGIN
 !
-      AT  = 0.D0
+!     ORIGIN OF TIME
+!
+      IF(.NOT.SUIT2) AT  = 0.D0
+!
+!     INITIALISES H, THE WATER DEPTH
+!
+      IF(.NOT.SUIT2) THEN
+!
+      IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
+     &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
+        CALL OS( 'X=C     ' ,X=H,C=0.D0)
+        CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
+      ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
+     &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
+        CALL OS( 'X=C     ' ,X=H,C=COTINI)
+        CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
+      ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
+     &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
+        CALL OS( 'X=C     ' ,X=H,C=0.D0)
+      ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
+     &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
+        CALL OS( 'X=C     ' ,X=H,C=HAUTIN)
+      ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
+     &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
+        CALL OS('X=-Y    ',X=H,Y=ZF)
+        CALL CONDI_TPXO(NPOIN2,MESH2D%NPTFR,MESH2D%NBOR%I,
+     &                  X2%R,Y2%R,H%R,U2D%R,V2D%R,
+     &                  LIHBOR%I,LIUBOL%I,KENT,KENTU,
+     &                  GEOSYST,NUMZONE,LATIT,LONGIT,
+     &                  T3D_FILES,T3DBB1,T3DBB2,
+     &                  MARDAT,MARTIM,INTMICON,MSL,
+     &                  TIDALTYPE,BOUNDARY_COLOUR,ICALHWG)
+      ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
+     &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
+     &       CDTINI(1:07).EQ.'SPECIAL') THEN
+!     USER INPUT :
+!     PROGRAM HERE SPECIAL INITIAL CONDITIONS ON DEPTH
 !
 ! INITIALISATION DE H , LA HAUTEUR D'EAU, POUR UNE COTE NULLE.
 !
-      CALL OS( 'X=C     ' , H   , H , H , 0.D0)
-      CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0, NPOIN2)
+        CALL OS( 'X=C     ' , H   , H , H , 0.D0)
+        CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0, NPOIN2)
 !
 ! *** SOLITARY WAVE ***
 !
@@ -48,21 +146,41 @@
 ! WX WQUILIBRIUM WATER DEPTH
 ! X0 CREST INITIAL POSITION
 !
+!       WH=2.D0
+        WH=1.D0
+        WX=10.D0
+!       X0=80.D0
+        X0=150.D0
 !
+        DO IPOIN2=1,NPOIN2
+          HV1=SQRT(3.D0/4.D0*WH/WX**3.D0)*(X(IPOIN2)-X0)
+          HV2=2.D0/(EXP(HV1)+EXP(-HV1))
+          H%R(IPOIN2)=H%R(IPOIN2) + WH*HV2**2
+        ENDDO
+!     END OF SPECIAL INITIAL CONDITIONS
+!     END OF USER INPUT
+      ELSE
+        IF(LNG.EQ.1) THEN
+        WRITE(LU,*) 'CONDIM : CONDITION INITIALE NON PREVUE : ',CDTINI
+        ENDIF
+        IF(LNG.EQ.2) THEN
+        WRITE(LU,*) 'CONDIM: INITIAL CONDITION UNKNOWN: ',CDTINI
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+      ELSE
+        IF(LNG.EQ.1) WRITE(LU,*) 'HAUTEUR LUE DANS LE FICHIER BINAIRE 1'
+        IF(LNG.EQ.2) WRITE(LU,*) 'DEPTH IS READ IN THE BINARY FILE 1'
+      ENDIF
 !
-!     WH=2.0D0
-      WH=1.D0
-      WX=10.0D0
-!     X0=80.0D0
-      X0=150.0D0
+!     CLIPS H
 !
-      DO IPOIN2=1,NPOIN2
-        HV1=SQRT(3.0D0/4.0D0*WH/WX**3.0D0)*(X(IPOIN2)-X0)
-        HV2=2.0D0/(EXP(HV1)+EXP(-HV1))
-        H%R(IPOIN2)=H%R(IPOIN2) + WH*HV2**2
-      END DO
+      DO I=1,NPOIN2
+        H%R(I)=MAX(H%R(I),0.D0)
+      ENDDO
 !
-      CALL OS ('X=Y     ', HN, H, H, 0.D0)
+      CALL OS ('X=Y     ',X=HN,Y=H)
 !
 !-----------------------------------------------------------------------
 !
@@ -103,10 +221,12 @@
 !     DO IPLAN = 1,NPLAN
 !       TRANSF_PLANE%I(IPLAN)=2
 !     ENDDO
+!     ZSTAR%R(1)=0.D0
 !     ZSTAR%R(2)=0.02D0
 !     ZSTAR%R(3)=0.1D0
 !     ...
 !     ZSTAR%R(NPLAN-1)=0.95D0
+!     ZSTAR%R(NPLAN)=1.D0
 !
 !
 !     EXAMPLE 3: ONE PLANE (NUMBER 4) WITH PRESCRIBED ELEVATION
@@ -140,26 +260,48 @@
 !
 !***********************************************************************
 !
+!
 ! ON NE DISPOSE PAS AU DEBUT DE CE SOUS-PROG. DE Z EN TOUS LES POINTS.
 ! (CAR POUR CONNAITRE Z, IL FAUT CONNAITRE ZSTAR ET H).
 ! NEANMOINS, ON PEUT, A CETTE ETAPE DE LA ROUTINE, CALCULER Z.
 ! CELA PEUT SERVIR PAR EXEMPLE POUR INITIALISER VITESSES ET TRACEURS.
 !
-      CALL CALCOT(Z,H%R)
+!     COMPUTES ELEVATIONS
+!     IF IT IS A CONTINUATION, WILL BE DONE AFTER CALLING 'SUITE'
+!
+      IF(DEBU) CALL CALCOT(Z,H%R)
 !
 !***********************************************************************
 !
-!     INITIALISATION DES VITESSES
+!     INITIALISES VELOCITIES
 !
-      CALL OS( 'X=C     ' , U , U , U , 0.0D0 )
-      CALL OS( 'X=C     ' , V , V , V , 0.0D0 )
-      CALL OS( 'X=C     ' , W , W , W , 0.0D0 )
+      IF(SUIT2) THEN
+        DO I=1,NPLAN
+          DO J=1,NPOIN2
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
+          ENDDO
+        ENDDO
+      ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
+     &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
+        DO I=1,NPLAN
+          DO J=1,NPOIN2
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
+          ENDDO
+        ENDDO
+      ELSE
+        CALL OS( 'X=0     ' , X=U )
+        CALL OS( 'X=0     ' , X=V )
+      ENDIF
 !
+      CALL OS( 'X=0     ' , X=W )
+!
+! BEGIN OF PART SPECIFIC TO THIS CASE
 ! SOLITARY WAVE INITIAL VELOCITY - ANALYTICAL SOLUTION
 !
       DO IPLAN=1,NPLAN
         DO IPOIN2=1,NPOIN2
-!
           IPOIN3 = (IPLAN-1)*NPOIN2 + IPOIN2
 !
           HV1=SQRT(3.D0/4.D0*WH/WX**3)*(X(IPOIN3)-X0)
@@ -170,38 +312,44 @@
           HV4=SQRT(3.D0*GRAV*WX)
      &       *((SQRT(WH/WX))**3)*(Z(IPOIN3)+WX)/WX
           W%R(IPOIN3)=(HV4*HV2**2)*HV3
-!
         ENDDO
       ENDDO
+! END OF PART SPECIFIC TO THIS CASE
 !
 !-----------------------------------------------------------------------
 !
-!     INITIALISATION DES TRACEURS
+!     INITIALISES TRACERS
 !
-      IF (NTRAC.NE.0) THEN
-        CALL OS( 'X=C     ', TA, TA, TA, 0.D0)
+      IF(NTRAC.GT.0) THEN
+        DO I=1,NTRAC
+          CALL OS( 'X=C     ', X=TA%ADR(I)%P, C=TRAC0(I))
+        ENDDO
       ENDIF
 !
 !
 !-----------------------------------------------------------------------
-!   INITIALISATION DU MODELE K-EPSILON (FACULTATIF)
-!   SI VOUS LE FAITES, INDIQUEZ AKEP = .FALSE.
+!   INITIALISES THE K-EPSILON MODEL (OPTIONAL)
+!   WHEN DONE: AKEP = .FALSE.
+!
+      AKEP=.TRUE.
 !
 !     IF(ITURBV.EQ.3) THEN
+!
+!       HERE INITIALISES K AND EPSILON
+!
 !       AKEP = .FALSE.
 !     ENDIF
 !
 !-----------------------------------------------------------------------
+!
 ! (TO BE DELETED WHEN NO PROJECTION TWO...)
 ! INITIALIZE THE HYDRODYNAMIC PRESSURE FIELD TO 0.0
 ! (IT MAY BE APPROPRIATE TO SOLVE A POISSON EQUATION FOR IT)
 !
-!
-! INITIALIZE THE PRESSURE FIELDS TO 0.0
+! INITIALISES THE PRESSURE FIELDS TO 0.0
 !
       IF(NONHYD) THEN
-        CALL OS('X=C     ',X=DP ,C=0.D0)
-        CALL OS('X=C     ',X=DPN,C=0.D0)
+        CALL OS('X=C     ',X=DP,C=0.D0)
         WRITE (LU,*) 'CONDIM: DYNAMIC PRESSURE INITIALISED TO ZERO'
         CALL OS('X=C     ',X=PH,C=0.D0)
         WRITE (LU,*) '        HYDROSTATIC PRESSURE INITIALISED TO ZERO.'

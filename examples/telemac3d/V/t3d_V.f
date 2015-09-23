@@ -1,19 +1,14 @@
 !
-!----------------------------------------------------------
-!   TELEMAC-3D  V5.1 TEST CASE
+!  CHANGES VS SOURCE FILES:
+!  IN CONDIM: SPECIAL INITIAL CONDITIONS FOR TRACER
+!  IN T3D_CORFON
 !
 !   "V" Shapped Container
 !   Updated 12/2000 AG @ LNHE
 !
-!-----------------------------------------------------------
-! In Here :
-! CONDIM and T3D_CORFON
-!-----------------------------------------------------------
-!
-!
-!                       *****************
-                        SUBROUTINE CONDIM
-!                       *****************
+!                    *****************
+                     SUBROUTINE CONDIM
+!                    *****************
 !
 !
 !***********************************************************************
@@ -77,6 +72,11 @@
 !+   Correction of bugs when initialising velocity with TPXO
 !+   or when sea levels are referenced with respect to Chart Datum (CD)
 !
+!history  C.-T. PHAM (LNHE)
+!+        03/09/2015
+!+        V7P1
+!+   Change in the number of arguments when calling CONDI_TPXO
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -126,7 +126,8 @@
      &                  LIHBOR%I,LIUBOL%I,KENT,KENTU,
      &                  GEOSYST,NUMZONE,LATIT,LONGIT,
      &                  T3D_FILES,T3DBB1,T3DBB2,
-     &                  MARDAT,MARTIM,INTMICON,MSL)
+     &                  MARDAT,MARTIM,INTMICON,MSL,
+     &                  TIDALTYPE,BOUNDARY_COLOUR,ICALHWG)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
@@ -149,6 +150,7 @@
         IF(LNG.EQ.2) THEN
         WRITE(LU,*) 'CONDIM: INITIAL CONDITION UNKNOWN: ',CDTINI
         ENDIF
+        CALL PLANTE(1)
         STOP
       ENDIF
       ELSE
@@ -254,8 +256,8 @@
       IF(SUIT2) THEN
         DO I=1,NPLAN
           DO J=1,NPOIN2
-          U%R((I-1)*NPOIN2+J)=U2D%R(J)
-          V%R((I-1)*NPOIN2+J)=V2D%R(J)
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
           ENDDO
         ENDDO
       ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
@@ -281,9 +283,11 @@
         DO I=1,NTRAC
           CALL OS( 'X=C     ', X=TA%ADR(I)%P, C=TRAC0(I))
         ENDDO
+! BEGINNING OF SPECIFIC TO THIS CASE
         DO I=1,NPOIN3
            TA%ADR(1)%P%R(I) = 10.D0+Z(I)/1.3D0
         ENDDO
+! END OF PART SPECIFIC TO THIS CASE
       ENDIF
 !
 !
@@ -402,21 +406,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,I
+      INTEGER I
       LOGICAL MAS
 !
-!***********************************************************************
+!-----------------------------------------------------------------------
 !
 !     SMOOTHES THE BOTTOM ELEVATION
 !
-
-      DO I = 1,NPOIN2
-        ZF(I) = -13.D0 + ABS(Y(I)-50.D0)*13.D0/50.D0
-      ENDDO
-!     DO  I=1,NPOIN2
-!        ZF(I)=-13.D0 + 12.d0*ABS(x(I)-250.D0)/250.D0
-!      ENDDO
-
       IF(LISFON.GT.0) THEN
 !
         MAS = .TRUE.
@@ -424,6 +420,15 @@
         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
      &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
       ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      DO I = 1,NPOIN2
+        ZF(I) = -13.D0 + ABS(Y(I)-50.D0)*13.D0/50.D0
+      ENDDO
+!     DO I=1,NPOIN2
+!       ZF(I) = -13.D0 + 12.D0*ABS(X(I)-250.D0)/250.D0
+!     ENDDO
 !
 !-----------------------------------------------------------------------
 !

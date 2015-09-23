@@ -1,3 +1,7 @@
+!
+!  CHANGES VS SOURCE FILES:
+!  IN BORD3D: SPECIAL BOUNDARY CONDITIONS FOR TRACER
+!
 !                    *****************
                      SUBROUTINE BORD3D
 !                    *****************
@@ -182,6 +186,7 @@
 !     ENDDO
 !
 !     TRACERS
+! BEGIN OF PART SPECIFIC TO THIS CASE
       DO IPTFR=1,NPTFR2
         IPOIN2 = NBOR2%I(IPTFR)
         DO IPLAN = 1,NPLAN
@@ -196,6 +201,7 @@
           ENDIF
         ENDDO
       ENDDO
+! END OF PART SPECIFIC TO THIS CASE
 !
 !     IF(NTRAC.NE.0) THEN
 !

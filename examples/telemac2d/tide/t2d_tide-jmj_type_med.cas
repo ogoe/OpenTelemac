@@ -7,7 +7,7 @@
 /                       INFORMATIC ENVIRONMENT
 /----------------------------------------------------------------------/
 /
-FORTRAN FILE                       : t2d_tide-jmj.f
+FORTRAN FILE                       : t2d_tide.f
 BOUNDARY CONDITIONS FILE           : geo_tide.clm
 GEOMETRY FILE                      : geo_tide.med
 GEOMETRY FILE FORMAT               : MED

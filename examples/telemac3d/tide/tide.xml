@@ -25,16 +25,11 @@
        title="tide scalar mode real gen" 
    />
    <action xref="2" rank="7"
-       do="translate;compile;run;cas;princi" 
-       code="telemac3d" target="t3d_tide-jmj_type_gen.cas" 
-       title="tide scalar mode type gen" 
-   />
-   <action xref="3" rank="7"
        do="translate;compile;run;cas;princi"
        code="telemac3d" target="t3d_tide-jmj_type.cas" 
        title="tide scalar mode type" 
    />    
-   <action xref="4" rank="5"
+   <action xref="3" rank="5"
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac3d" target="t3d_tide-jmj_type.cas" 
        title="tide parallel mode type" 

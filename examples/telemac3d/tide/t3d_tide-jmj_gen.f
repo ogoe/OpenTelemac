@@ -49,7 +49,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,NODALCORR,ICALHW,NP,IBORD
+      INTEGER K,NODALCORR,NP,IBORD
       DOUBLE PRECISION XSHIFT,YSHIFT,BETA0
       LOGICAL TIDALBCGEN,TM2S2N2EQUAL
 !
@@ -84,14 +84,6 @@
 !                 FOR JMJ DATA BASE ONLY AT THE MOMENT
 !
       TIDALBCGEN = .TRUE.
-!
-!     ICALHW: NUMBER THAT MAY BE CHOSEN BY THE USER TO CALIBRATE HIGH WATER
-!             OR AUTOMATICALLY CHOSEN, WHEN MODELLING A SCHEMATIC TIDE
-!             IN SUBROUTINE BORD_TIDE
-!             DEFAULT = 0 (AUTOMATICALLY CHOSEN)
-!             FOR JMJ DATA BASE ONLY AT THE MOMENT
-!
-      ICALHW = 0
 !
 !     TM2S2N2EQUAL: LOGICAL TO IMPOSE THE PERIODS OF S2 AND N2 WAVES
 !                   TO BE EQUAL TO THE PERIOD OF M2 WAVE
@@ -190,7 +182,7 @@
      &                 T3D_FILES(T3DIMP)%NAME,TIDALTYPE,
      &                 CTIDE,MSL,CTIDEV,NODALCORR,T3D_FILES(T3DHAR)%LU,
      &                 BOUNDARY_COLOUR,
-     &                 HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
+     &                 HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHWB,
      &                 MARDAT,MARTIM,TM2S2N2EQUAL)
       ELSEIF(TIDALDB.EQ.2) THEN
         CALL BORD_TIDE_TPXO(ZF%R,MESH2D%NBOR%I,LIHBOR%I,LIUBOL%I,
@@ -199,7 +191,7 @@
      &                      T3D_FILES(T3DIMP)%NAME,TIDALTYPE,
      &                      CTIDE,MSL,CTIDEV,NODALCORR,
      &                      BOUNDARY_COLOUR,
-     &                      HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
+     &                      HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHWG,
      &                      MARDAT,MARTIM,T3D_FILES,T3DBB1,T3DBB2,
      &                      X,Y,GEOSYST,NUMZONE,LATIT,LONGIT,INTMICON)
       ELSEIF(TIDALDB.EQ.3) THEN
@@ -219,7 +211,7 @@
      &                      T3D_FILES(T3DIMP)%NAME,TIDALTYPE,
      &                      CTIDE,MSL,CTIDEV,NODALCORR,
      &                      T3D_FILES(T3DHAR)%LU,BOUNDARY_COLOUR,
-     &                      HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
+     &                      HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHWB,
      &                      MARDAT,MARTIM)
       ELSEIF(TIDALDB.EQ.-1) THEN
         IF(LNG.EQ.1) THEN
@@ -372,12 +364,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,I
+      INTEGER I
       LOGICAL MAS
 !
-      INTEGER          N,FIRST,LAST
+      INTEGER N,FIRST,LAST
 !
-!***********************************************************************
+!-----------------------------------------------------------------------
 !
 !     SMOOTHES THE BOTTOM ELEVATION
 !

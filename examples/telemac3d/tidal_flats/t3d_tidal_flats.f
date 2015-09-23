@@ -1,3 +1,7 @@
+!
+!  CHANGES VS SOURCE FILES:
+!  IN CONDIM: SPECIAL INITIAL CONDITION FOR TRACER
+!
 !                    *****************
                      SUBROUTINE CONDIM
 !                    *****************
@@ -13,6 +17,11 @@
 !+        **/03/1999
 !+
 !+   FORTRAN95 VERSION
+!
+!history  J-M HERVOUET(LNH)
+!+        11/12/2000
+!+        V5P1
+!+   TELEMAC 3D VERSION 5.1
 !
 !history
 !+        20/04/2007
@@ -58,6 +67,11 @@
 !+        V6P3
 !+   Correction of bugs when initialising velocity with TPXO
 !+   or when sea levels are referenced with respect to Chart Datum (CD)
+!
+!history  C.-T. PHAM (LNHE)
+!+        03/09/2015
+!+        V7P1
+!+   Change in the number of arguments when calling CONDI_TPXO
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -108,7 +122,8 @@
      &                  LIHBOR%I,LIUBOL%I,KENT,KENTU,
      &                  GEOSYST,NUMZONE,LATIT,LONGIT,
      &                  T3D_FILES,T3DBB1,T3DBB2,
-     &                  MARDAT,MARTIM,INTMICON,MSL)
+     &                  MARDAT,MARTIM,INTMICON,MSL,
+     &                  TIDALTYPE,BOUNDARY_COLOUR,ICALHWG)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
@@ -131,6 +146,7 @@
         IF(LNG.EQ.2) THEN
         WRITE(LU,*) 'CONDIM: INITIAL CONDITION UNKNOWN: ',CDTINI
         ENDIF
+        CALL PLANTE(1)
         STOP
       ENDIF
       ELSE
@@ -236,8 +252,8 @@
       IF(SUIT2) THEN
         DO I=1,NPLAN
           DO J=1,NPOIN2
-           U%R((I-1)*NPOIN2+J)=U2D%R(J)
-           V%R((I-1)*NPOIN2+J)=V2D%R(J)
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
           ENDDO
         ENDDO
       ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
@@ -261,16 +277,16 @@
 !
 !###>TBE modification for tidal test case, apply susp sediment
 !    in the right hand side of the model (where the intertidals are)
-      DO I = 1, NPOIN2
+      DO I = 1,NPOIN2
         DO IPLAN = 1,NPLAN
           J = (IPLAN-1)*NPOIN2 + I
           IF (X(I).GT.15000.D0) THEN
-            TA%ADR(1)%P%R(J)     = 0.3D0
+            TA%ADR(1)%P%R(J) = 0.3D0
           ELSE
-            TA%ADR(1)%P%R(J)     = 0.D0
+            TA%ADR(1)%P%R(J) = 0.D0
           ENDIF
-        END DO
-      END DO
+        ENDDO
+      ENDDO
 !###<TBE end of modification
 !
 !-----------------------------------------------------------------------

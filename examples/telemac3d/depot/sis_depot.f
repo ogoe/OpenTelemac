@@ -1,70 +1,111 @@
-!                       *****************
-                        SUBROUTINE NOEROD
-!                       *****************
+!
+!  CHANGES VS SOURCE FILES:
+!  IN NOEROD: ZR=ZF-0.01D0 RATHER THAN ZF-100.D0
+!
+!                    *****************
+                     SUBROUTINE NOEROD
+!                    *****************
 !
      & (H , ZF , ZR , Z , X , Y , NPOIN , CHOIX , NLISS )
 !
 !***********************************************************************
-! SISYPHE VERSION 5.1                             C. LENORMANT
-!
-! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT
+! SISYPHE   V6P3                                  21/07/2011
 !***********************************************************************
 !
-!     FONCTION  : IMPOSE LA VALEUR DE LA COTE DU FOND NON ERODABLE  ZR
+!brief    FIXES THE NON-ERODABLE BED ELEVATION ZR.
 !
+!note     METHODS OF TREATMENT OF NON-ERODABLE BEDS CAN LEAD TO ZF.
+!note  CHOOSE TO SMOOTH THE SOLUTION WITH NLISS > 0.
 !
-!     RQ: LES METHODES DE TRAITEMENT DES FONDS NON ERODABLES PEUVENT CONDUIRE
-!     A ZF < ZR A CERTAINS PAS DE TEMPS, POUR PALLIER A CELA ON PEUT CHOISIR
-!     CHOISIR DE LISSER LA SOLUTION OBTENUE i.e NLISS > 0.
+!history  C. LENORMANT
+!+
+!+        V5P1
+!+
 !
-!     FUNCTION  : IMPOSE THE RIGID BED LEVEL  ZR
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
-!-----------------------------------------------------------------------
-!                             ARGUMENTS
-! .________________.____.______________________________________________
-! |      NOM       |MODE|                   ROLE
-! |________________|____|______________________________________________
-! |   H            | -->| WATER DEPTH
-! |   ZF           | -->| BED LEVEL
-! |   ZR           |<-- | RIGID BED LEVEL
-! |   Z            | -->| FREE SURFACE
-! |   X,Y          | -->| 2D COORDINATES
-! |   NPOIN        | -->| NUMBER OF 2D POINTS
-! |   CHOIX        | -->| SELECTED METHOD FOR THE TREATMENT OF RIGID BEDS
-! |   NLISS        |<-->| NUMBER OF SMOOTHINGS
-! |________________|____|______________________________________________
-! MODE : -->(INPUT), <--(RESULT), <-->(MODIFIED DATA)
-!-----------------------------------------------------------------------
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        21/06/2013
+!+        V6P3
+!+   Now ZR=ZF-100.D0 by default
+!+   previous versions was erronneously ZR=-100.D0
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| CHOIX          |-->| SELECTED METHOD FOR THE TREATMENT OF RIGID BEDS
+!| H              |-->| WATER DEPTH
+!| NLISS          |<->| NUMBER OF SMOOTHINGS
+!| NPOIN          |-->| NUMBER OF 2D POINTS
+!| X,Y            |-->| 2D COORDINATES
+!| Z              |-->| FREE SURFACE
+!| ZF             |-->| BED LEVEL
+!| ZR             |<--| RIGID BED LEVEL
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER NPOIN,CHOIX,NLISS,I
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION Z(NPOIN) , ZF(NPOIN) , ZR(NPOIN)
-      DOUBLE PRECISION X(NPOIN) , Y(NPOIN)  , H(NPOIN)
+      INTEGER, INTENT(IN):: NPOIN , CHOIX
+      INTEGER, INTENT(INOUT):: NLISS
 !
-!-----------------------------------------------------------------------
+      DOUBLE PRECISION, INTENT(IN)::  Z(NPOIN) , ZF(NPOIN)
+      DOUBLE PRECISION , INTENT(IN)::  X(NPOIN) , Y(NPOIN), H(NPOIN)
+      DOUBLE PRECISION , INTENT(INOUT)::  ZR(NPOIN)
 !
-!--------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!     INTEGER I
+!
+!---------------------
 ! RIGID BEDS POSITION
 !---------------------
+!
+!     DEFAULT VALUE: ZR=ZF-100.D0
+!
+! BEGIN OF PART SPECIFIC TO THIS CASE
+!     CALL OV('X=Y+C   ',ZR,ZF,ZF,-100.D0,NPOIN)
 !
 !     HERE ZR=ZF-0.01D0 : PROVISIONAL, SHOULD BE 0,
 !                         WAITING FOR TELEMAC-3D CORRECTION... SO THAT
 !                         ZF ALWAYS >= ZR
 !
       CALL OV('X=Y+C   ',ZR,ZF,ZF,-0.01D0,NPOIN)
+! END OF PART SPECIFIC TO THIS CASE
 !
 !------------------
 ! SMOOTHING OPTION
 !------------------
+!
 !     NLISS : NUMBER OF SMOOTHING IF  (ZF - ZR ) NEGATIVE
-!                DEFAULT VALUE : NLISS = 0 (NO SMOOTHING)
+!             DEFAULT VALUE : NLISS = 0 (NO SMOOTHING)
 !
       NLISS = 0
+!
+!--------------------------------------------------
+! CONTROL (CAN BE ACTIVATED IF ZR USER DEFINED...)
+!--------------------------------------------------
+!
+!     DO I=1,NPOIN
+!       IF(ZR(I).GT.ZF(I)) THEN
+!         WRITE(LU,*) 'POINT ',I,' NON ERODABLE BED HIGHER THAN BED'
+!         CALL PLANTE(1)
+!         STOP
+!       ENDIF
+!     ENDDO
 !
 !-----------------------------------------------------------------------
 !

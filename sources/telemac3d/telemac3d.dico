@@ -6610,7 +6610,55 @@ AIDE = 'Noms des variables dans les tableaux prives en 32 caracteres,
 AIDE1 = 'Name of variables in 2D private arrays in 32 characters, 
         16 for the name, 16 for the unit. If present, will be read
         in the geometry file.'
+/
+NOM = 'NUMERO LOCAL DU POINT POUR CALER LA PLEINE MER'
+NOM1 = 'LOCAL NUMBER OF THE POINT TO CALIBRATE HIGH WATER'
+TYPE = INTEGER
+INDEX = 119
+MNEMO = 'ICALHWB'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1= 0
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 1
+AIDE = 'Numero local du point entre 1 et le nombre de points
+de frontiere maritime (du FICHIER DES CONSTANTES HARMONIQUES)
+ou les conditions aux limites de maree sont calculees
+avec les bases de donnees JMJ, NEA, FES, PREVIMER
+(sauf les bases de type TPXO).
+Les ondes de maree sont dephasees par rapport a ce point
+pour debuter le calcul par une pleine mer
+(en marees schematiques seulement).'
+AIDE1= 'Local number between 1 and the number of tidal boundary points
+(of the HARMONIC CONSTANTS FILE) where the tidal boundary conditions
+are computed with JMJ, NEA, FES, PREVIMER databases
+(except TPXO-type databases).
+The tidal constituents have their phase shifted with respect to
+this point to start the simulation with a high water
+(for schematic tides only).'
 
+NOM = 'NUMERO GLOBAL DU POINT POUR CALER LA PLEINE MER'
+NOM1 = 'GLOBAL NUMBER OF THE POINT TO CALIBRATE HIGH WATER'
+TYPE = INTEGER
+INDEX = 120
+MNEMO = 'ICALHWG'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1= 0
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 1
+AIDE = 'Numero global du point par rapport auquel
+les ondes de maree sont dephasees
+pour debuter le calcul par une pleine mer
+(en marees schematiques seulement).
+Ne concerne que les bases de constantes harmoniques de type TPXO.'
+AIDE1= 'Global number of the point with respect to which
+the tidal constituents have their phase shifted
+to start the calculation with a high water
+(for schematic tides only).
+Only harmonic constants databases like TPXO are concerned.'
 /
 / FOR SCRIPTS
 /

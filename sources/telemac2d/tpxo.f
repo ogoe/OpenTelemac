@@ -2073,10 +2073,10 @@
 !
      &(NPOIN,NPTFR,NBOR,X,Y,H,U,V,LIHBOR,LIUBOR,KENT,KENTU,
      & GEOSYST,NUMZONE,LAMBD0,PHI0,T2D_FILES,T2DBB1,T2DBB2,
-     & MARDAT,MARTIM,INTMICON,MSL)
+     & MARDAT,MARTIM,INTMICON,MSL,TIDALTYPE,BOUNDARY_COLOUR,ICALHW)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   06/12/2011
+! TELEMAC2D   V7P1                                   22/07/2015
 !***********************************************************************
 !
 !brief    Prepare a level boundary filter to store the TPXO constituents
@@ -2102,10 +2102,22 @@
 !
 !warning  (-ZF) should be stored in H as you enter this subroutine
 !
+!history  C.-T. PHAM (LNHE)
+!+        22/07/2015
+!+        V7P1
+!+        Schematic tides, High Water at the beginning
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| BOUNDARY_COLOUR|-->| AN INTEGER LINKED TO BOUNDARY POINTS
+!|                |   | BY DEFAULT THE LAST LINE OF BOUNDARY CONDITIONS 
+!|                |   | FILE, HENCE THE GLOBAL BOUNDARY NUMBER, BUT CAN 
+!|                |   | BE CHANGED BY USER.
 !|  GEOSYST       |-->| TYPE OF GEOGRAPHIC SYSTEM (WGS84 LONG/LAT, UTM OR LAMBERT)
 !|  H             |<->| COMES IN AS -ZF, TO WHICH THE TPXO FREE SURFACE
 !|                |   | WILL BE ADDED TO PRODUCE WATER DEPTH
+!|  ICALHW        |<->| NUMBER THAT MAY BE CHOSEN BY THE USER
+!|                |   | TO CALIBRATE HIGH WATER OR AUTOMATICALLY CHOSEN
+!|                |   | IN CASE OF THE MODELLING OF A SCHEMATIC TIDE
 !|  INTMICON      |-->| IF YES, INFERENCE OF MINOR CONSTITUENTS
 !|  KENT          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
 !|  KENTU         |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
@@ -2124,6 +2136,7 @@
 !|  T2DBB1        |-->| ADDRESS OF DATA BASE 1 IN T2D_FILES
 !|  T2DBB2        |-->| ADDRESS OF DATA BASE 2 IN T2D_FILES
 !|  T2D_FILES     |-->| ARRAY OF FILES
+!|  TIDALTYPE     |-->| TYPE OF TIDE TO MODEL
 !|  U             |<--| 2D DEPTH-AVERAGED VELOCITY COMPONENT U
 !|  V             |<--| 2D DEPTH-AVERAGED VELOCITY COMPONENT V
 !|  X             |-->| COORDINATES X OF THE NODES OF THE MESH
@@ -2143,20 +2156,23 @@
       INTEGER, INTENT(IN)             :: LIHBOR(*),LIUBOR(*)
       INTEGER, INTENT(IN)             :: NBOR(NPTFR)
       INTEGER, INTENT(IN)             :: GEOSYST,NUMZONE
-      INTEGER, INTENT(IN)             :: MARTIM(3)
-      INTEGER, INTENT(INOUT)          :: MARDAT(3)
+      INTEGER, INTENT(IN)             :: TIDALTYPE,MARTIM(3)
+      INTEGER, INTENT(INOUT)          :: ICALHW,MARDAT(3)
       DOUBLE PRECISION, INTENT(IN)    :: LAMBD0,PHI0,MSL
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN),V(NPOIN)
       TYPE(BIEF_FILE), INTENT(IN)     :: T2D_FILES(*)
+      TYPE(BIEF_OBJ), INTENT(IN)      :: BOUNDARY_COLOUR
       LOGICAL, INTENT(INOUT)          :: INTMICON
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IC,I,J,K,IPOIN,IERR,NC,N,M,NPTFRL
+      INTEGER IPTFR,IPTFRL
       INTEGER, ALLOCATABLE :: MASKT(:,:),MASKU(:,:),MASKV(:,:)
       DOUBLE PRECISION PI,DTR,RTD
+      DOUBLE PRECISION Z
       DOUBLE PRECISION STIME_MJD
       DOUBLE PRECISION XM,XL,YL,XO,YO,ALPHA,RADIUS
       DOUBLE PRECISION, ALLOCATABLE :: LAT(:),LON(:)
@@ -2165,7 +2181,7 @@
       COMPLEX, ALLOCATABLE :: ZT(:,:,:)
       COMPLEX, ALLOCATABLE :: UT(:,:,:), VT(:,:,:)
       COMPLEX, ALLOCATABLE :: UV(:,:,:)
-      COMPLEX(KIND(1.D0)), ALLOCATABLE :: ZCON(:)
+      COMPLEX(KIND(1.D0)), ALLOCATABLE :: ZCON(:),ZCON2(:),ZCON3(:)
       CHARACTER(LEN=4) C_ID_MOD(TPXO_NCMX)
       DOUBLE PRECISION SPEED,MAXSP
 !
@@ -2179,6 +2195,9 @@
 !     C_ID_MOD INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
 !
       INTRINSIC ATAN
+!
+      DOUBLE PRECISION P_DMAX,P_DMIN
+      EXTERNAL         P_DMAX,P_DMIN
 !
 !-----------------------------------------------------------------------
 !
@@ -2204,6 +2223,25 @@
       RADIUS = 6371000.D0
 !
 !-----------------------------------------------------------------------
+!
+!  TEST TO CHECK CORRECT VALUES FOR TIDALTYPE
+!
+      IF(.NOT.DEJA) THEN
+        IF(TIDALTYPE.LT.1.OR.TIDALTYPE.GT.6) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'MAUVAISE VALEUR POUR TIDALTYPE =',TIDALTYPE
+            WRITE(LU,*) 'ELLE DOIT ETRE COMPRISE ENTRE 1 ET 6'
+            WRITE(LU,*) 'AVEC LA BASE DE DONNEES DE MAREE TPXO'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'UNEXPECTED VALUE FOR TIDALTYPE=',TIDALTYPE
+            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
+            WRITE(LU,*) 'WITH TPXO TIDAL DATA BASE'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ENDIF
 !
       IF(.NOT.DEJA) THEN
 !     PREPARE STORAGE ON LEVEL BOUNDARIES
@@ -2275,6 +2313,116 @@
 !
       STIME_MJD = DATE_MJD( MARDAT(2),MARDAT(3),MARDAT(1) ) +
      &            MARTIM(1)/24.D0+MARTIM(2)/1440.D0+MARTIM(3)/86400.D0
+!
+!-----------------------------------------------------------------------
+!
+!     TREATMENTS FOR SCHEMATIC TIDES
+!
+      IF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+        I = 0
+        IF(LNG.EQ.1) THEN
+           WRITE(LU,*) 'ONDES DISPONIBLES POUR MAREES SCHEMATIQUES :'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+           WRITE(LU,*) 'AVAILABLE CONSTITUENTS FOR SCHEMATIC TIDES:'
+        ENDIF
+      ENDIF
+!
+      IF(TIDALTYPE.EQ.2.OR.TIDALTYPE.EQ.6) THEN
+        DO IC = 1,NCON
+          IF(C_ID(IC)(2:2).EQ.'1'.OR.C_ID(IC)(2:2).EQ.'2'.OR.
+     &       C_ID(IC)(2:2).EQ.'4'.OR.C_ID(IC)(3:3).EQ.'4') THEN
+            I = I+1
+            WRITE(LU,*) 'C_ID(',IC,') = ',C_ID(IC)
+          ENDIF
+        ENDDO
+      ELSEIF(TIDALTYPE.EQ.3.OR.TIDALTYPE.EQ.5) THEN
+        DO IC = 1,NCON
+          IF(C_ID(IC).EQ.'m2  '.OR.C_ID(IC).EQ.'s2  '.OR.
+     &       C_ID(IC).EQ.'m4  ') THEN
+            I = I+1
+            WRITE(LU,*) 'C_ID(',IC,') = ',C_ID(IC)
+          ENDIF
+        ENDDO
+      ELSEIF(TIDALTYPE.EQ.4) THEN
+        DO IC = 1,NCON
+          IF(C_ID(IC).EQ.'m2  '.OR.C_ID(IC).EQ.'m4  ') THEN
+            I = I+1
+            WRITE(LU,*) 'C_ID(',IC,') = ',C_ID(IC)
+          ENDIF
+        ENDDO
+      ELSE
+!     REAL TIDES, TIDALTYPE = 1
+        DO IC = 1,NCON
+          WRITE(LU,*) 'C_ID(',IC,') = ',C_ID(IC)
+        ENDDO
+        I = NCON
+      ENDIF
+!
+      IF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+        NCON2 = I
+        ALLOCATE(CCIND2(NCON2))
+        ALLOCATE(INDW(NCON2),STAT=IERR)
+        ALLOCATE(C_ID2(NCON2))
+        ALLOCATE(ARGHW(NCON2))
+        ALLOCATE(BOR2HW(NCON2))
+      ENDIF
+!
+      I = 1
+!
+      IF(TIDALTYPE.EQ.2.OR.TIDALTYPE.EQ.6) THEN
+        DO IC = 1,NCON
+          IF(C_ID(IC)(2:2).EQ.'1'.OR.C_ID(IC)(2:2).EQ.'2'.OR.
+     &       C_ID(IC)(2:2).EQ.'4'.OR.C_ID(IC)(3:3).EQ.'4') THEN
+            CCIND2(I) = CCIND(IC)
+            INDW(I)   = IC
+            C_ID2(I)  = C_ID(IC)
+            I = I+1
+          ENDIF
+        ENDDO
+      ELSEIF(TIDALTYPE.EQ.3.OR.TIDALTYPE.EQ.5) THEN
+        DO IC = 1,NCON
+          IF(C_ID(IC).EQ.'m2  '.OR.C_ID(IC).EQ.'s2  '.OR.
+     &       C_ID(IC).EQ.'m4  ') THEN
+            CCIND2(I) = CCIND(IC)
+            INDW(I)   = IC
+            C_ID2(I)  = C_ID(IC)
+            I = I+1
+          ENDIF
+        ENDDO
+      ELSEIF(TIDALTYPE.EQ.4) THEN
+        DO IC = 1,NCON
+          IF(C_ID(IC).EQ.'m2  '.OR.C_ID(IC).EQ.'m4  ') THEN
+            CCIND2(I) = CCIND(IC)
+            INDW(I)   = IC
+            C_ID2(I)  = C_ID(IC)
+            I = I+1
+          ENDIF
+        ENDDO
+      ENDIF
+!
+      IF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+        ALLOCATE( TPXO_BOR2(3,NPTFRL,NCON2) )
+        DO K=1,NCON2
+          DO J=1,NPTFRL
+            DO I=1,3
+              TPXO_BOR2(I,J,K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+            ENDDO
+          ENDDO
+        ENDDO
+!
+        IF(ICALHW.EQ.0) THEN
+          IF(LNG.EQ.1) WRITE(LU,*) 'DONNER UN NUMERO DE NOEUD ' //
+     &       'DE FRONTIERE D UNE FRONTIERE LIQUIDE'  //
+     &       'POUR CALAGE DE PLEINE MER EN MAREES SCHEMATIQUES'
+          IF(LNG.EQ.2) WRITE(LU,*) 'GIVE A NUMBER OF BOUNDARY' //
+     &       'NODE FOR A LIQUID BOUNDARY' //
+     &       'TO CALIBRATE HIGH WATER FOR SCHEMATIC TIDES'
+          CALL PLANTE(1)
+          STOP
+        ENDIF    
+        WRITE(LU,*) 'ICALHW =',ICALHW
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -2403,31 +2551,95 @@
       IF(LNG.EQ.1) WRITE(LU,*) ' - INTERPOLATION DES NIVEAUX'
       IF(LNG.EQ.2) WRITE(LU,*) ' - INTERPOLATING LEVELS'
 !
-      ALLOCATE( ZCON(NCON) )
-      DO IPOIN = 1,NPOIN
+      IF(TIDALTYPE.EQ.1) THEN
+        ALLOCATE( ZCON(NCON) )
+        DO IPOIN = 1,NPOIN
 !
-        CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
-     &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
-        IF( TPXO_NFR(IPOIN).NE.0 ) THEN
-          DO K=1,NCON
-            TPXO_BOR(1,TPXO_NFR(IPOIN),K) = ZCON(K)
-          ENDDO
-        ENDIF
-        IF( IERR.EQ.0 ) H(IPOIN) = H(IPOIN) +
-     &      PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
+          CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
+     &                  LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
+          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+            DO K=1,NCON
+              TPXO_BOR(1,TPXO_NFR(IPOIN),K) = ZCON(K)
+            ENDDO
+          ENDIF
+          IF( IERR.EQ.0 ) H(IPOIN) = H(IPOIN) +
+     &        PTIDE(ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON)
 !###> MST@HRW: CHECKING DRY LANDS
 !         IF(H(IPOIN).LT.0.D0) H(IPOIN) = 0.D0
 !         H(IPOIN) = MAX(H(IPOIN),0.D0)
 !     CTP@LNHE: CASE WHEN BOTTOM IS REFERENCED WITH RESPECT TO CD
 !               ALSO TAKEN INTO ACCOUNT
-        IF(H(IPOIN).LE.0.D0) THEN
-          H(IPOIN) = 0.D0
-        ELSE
-          H(IPOIN) = H(IPOIN) + MSL
-        ENDIF
+          IF(H(IPOIN).LE.0.D0) THEN
+            H(IPOIN) = 0.D0
+          ELSE
+            H(IPOIN) = H(IPOIN) + MSL
+          ENDIF
 !###< MST@HRW
 !
-      ENDDO
+        ENDDO
+      ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+        ALLOCATE( ZCON(NCON2) )
+        DO IPOIN = 1,NPOIN
+!
+          CALL INTERPT_SCHEM( ZT,NCON,NCON2,INDW,N,M,MASKT,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON,
+     &                        IERR,'z' )
+          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+            DO K=1,NCON2
+              TPXO_BOR2(1,TPXO_NFR(IPOIN),K) = ZCON(K)
+            ENDDO
+          ENDIF
+!
+        ENDDO
+!
+        DO K=1,NCON2
+          ARGHW(K)  = 0.D0
+!
+          DO J=1,NPTFR
+            IF(BOUNDARY_COLOUR%I(J).EQ.ICALHW) THEN
+              ARGHW(K)  = ATAN2(AIMAG(TPXO_BOR2(1,TPXO_NFR(NBOR(J)),K)),
+     &                           REAL(TPXO_BOR2(1,TPXO_NFR(NBOR(J)),K)))
+            ENDIF
+          ENDDO
+!
+          IF(NCSIZE.GT.1) THEN
+            ARGHW(K)  = P_DMAX(ARGHW(K))  + P_DMIN(ARGHW(K))
+          ENDIF
+!
+          BOR2HW(K) = CMPLX( COS(ARGHW(K)), -SIN(ARGHW(K)), KIND(1.D0))
+        ENDDO
+!
+        DO IPTFRL = 1,NPTFRL
+          DO K=1,NCON2
+            TPXO_BOR2(1,IPTFRL,K) = TPXO_BOR2(1,IPTFRL,K)*BOR2HW(K)
+          ENDDO
+        ENDDO
+!
+        DO IPOIN = 1,NPOIN
+!
+          CALL INTERPT_SCHEM( ZT,NCON,NCON2,INDW,N,M,MASKT,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON,
+     &                        IERR,'z' )
+          DO K=1,NCON2
+            ZCON(K) = ZCON(K)*BOR2HW(K)
+          ENDDO
+          IF( IERR.EQ.0 ) H(IPOIN) = H(IPOIN) +
+     &        PTIDE_SCHEM(ZCON,C_ID2,NCON2,CCIND2,0.D0)
+!###> MST@HRW: CHECKING DRY LANDS
+!         IF(H(IPOIN).LT.0.D0) H(IPOIN) = 0.D0
+!         H(IPOIN) = MAX(H(IPOIN),0.D0)
+!     CTP@LNHE: CASE WHEN BOTTOM IS REFERENCED WITH RESPECT TO CD
+!               ALSO TAKEN INTO ACCOUNT
+          IF(H(IPOIN).LE.0.D0) THEN
+            H(IPOIN) = 0.D0
+          ELSE
+            H(IPOIN) = H(IPOIN) + MSL
+          ENDIF
+!###< MST@HRW
+!
+        ENDDO
+!
+      ENDIF
       DEALLOCATE( ZCON,ZT,MASKT )
 !
 !-----------------------------------------------------------------------
@@ -2469,27 +2681,28 @@
       IF(LNG.EQ.1) WRITE(LU,*) ' - INTERPOLATION DES VITESSES'
       IF(LNG.EQ.2) WRITE(LU,*) ' - INTERPOLATING VELOCITIES'
 !
-      ALLOCATE( ZCON(NCON) )
-      DO IPOIN = 1,NPOIN
+      IF(TIDALTYPE.EQ.1) THEN
+        ALLOCATE( ZCON(NCON) )
+        DO IPOIN = 1,NPOIN
 !
 !     INITIALISATION AT 0.D0
 !
-        U(IPOIN) = 0.D0
-        V(IPOIN) = 0.D0
+          U(IPOIN) = 0.D0
+          V(IPOIN) = 0.D0
 !
-        CALL INTERPT(UT,NCON,N,M,MASKU,TH_LIM,PH_LIM,
-     &               LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
-        IF( TPXO_NFR(IPOIN).NE.0 ) THEN
-          DO K=1,NCON
+          CALL INTERPT(UT,NCON,N,M,MASKU,TH_LIM,PH_LIM,
+     &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
+          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+            DO K=1,NCON
 !     VELOCITY READ IN M2/S
-            TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
-          ENDDO
-        ENDIF
-        IF( IERR.EQ.0 ) U(IPOIN) =
-     &      PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
+              TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
+            ENDDO
+          ENDIF
+          IF( IERR.EQ.0 ) U(IPOIN) =
+     &        PTIDE(ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON)
 !
           CALL INTERPT(VT,NCON,N,M,MASKV,TH_LIM,PH_LIM,
-     &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'v')
+     &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'v')
           IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON
 !     VELOCITY READ IN M2/S
@@ -2497,7 +2710,7 @@
             ENDDO
           ENDIF
           IF( IERR.EQ.0 ) V(IPOIN) =
-     &       PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
+     &        PTIDE(ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON)
 !
 !     VELOCITY READ IN M/S
           IF( H(IPOIN).GT.0.1D0 ) THEN
@@ -2515,13 +2728,90 @@
           ENDIF
 !
         ENDDO
-        DEALLOCATE( UT,VT,ZCON,MASKU,MASKV )
-        DEALLOCATE( LON,LAT )
+      ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
+        ALLOCATE( ZCON(NCON2) )
+        ALLOCATE( ZCON2(NCON2),ZCON3(NCON2) )
+        DO IPOIN = 1,NPOIN
 !
-        IF(LNG.EQ.1) WRITE(LU,*) 'FIN DE L''INITIALISATION TPXO'
-        IF(LNG.EQ.2) WRITE(LU,*) 'END OF TPXO INITIALISATION'
+!     INITIALISATION AT 0.D0
 !
-        DEJA = .TRUE.
+          U(IPOIN) = 0.D0
+          V(IPOIN) = 0.D0
+!
+          CALL INTERPT_SCHEM( UT,NCON,NCON2,INDW,N,M,MASKU,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON2,
+     &                        IERR,'u' )
+          CALL INTERPT_SCHEM( VT,NCON,NCON2,INDW,N,M,MASKV,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON3,
+     &                        IERR,'v' )
+          DO K=1,NCON2
+            ZCON2(K) = ZCON2(K)*BOR2HW(K)
+            ZCON3(K) = ZCON3(K)*BOR2HW(K)
+          ENDDO
+!
+!     SPECIFIC TREATMENTS FOR NEAP TIDES, IN PARTICULAR FOR S2 WAVE
+!
+          IF(TIDALTYPE.EQ.5) THEN
+            DO K=1,NCON2
+              IF(C_ID2(K).EQ.'s2  ') THEN
+                ZCON2(K) = -ZCON2(K)
+                ZCON3(K) = -ZCON3(K)
+              ENDIF
+            ENDDO
+          ELSEIF(TIDALTYPE.EQ.6) THEN
+            DO K=1,NCON2
+              IF(C_ID2(K).EQ.'s2  '.OR.C_ID2(K).EQ.'n2  '
+     &           .OR.C_ID2(K).EQ.'k2  '.OR.C_ID2(K).EQ.'k1  '
+     &           .OR.C_ID2(K).EQ.'p1  '.OR.C_ID2(K).EQ.'q1  '
+     &           .OR.C_ID2(K).EQ.'o1  '
+     &           .OR.C_ID2(K).EQ.'ms4 '.OR.C_ID2(K).EQ.'mn4 ') THEN
+                ZCON2(K) = -ZCON2(K)
+                ZCON3(K) = -ZCON3(K)
+              ENDIF
+            ENDDO
+          ENDIF
+!
+          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+            DO K=1,NCON2
+!     VELOCITY READ IN M2/S
+              TPXO_BOR2(2,TPXO_NFR(IPOIN),K) = ZCON2(K)
+              TPXO_BOR2(3,TPXO_NFR(IPOIN),K) = ZCON3(K)
+            ENDDO
+          ENDIF
+!
+          IF( IERR.EQ.0 ) U(IPOIN) =
+     &        PTIDE_SCHEM(ZCON2,C_ID2,NCON2,CCIND2,0.D0)
+!
+          IF( IERR.EQ.0 ) V(IPOIN) =
+     &        PTIDE_SCHEM(ZCON3,C_ID2,NCON2,CCIND2,0.D0)
+!
+!     VELOCITY READ IN M/S
+          IF( H(IPOIN).GT.0.1D0 ) THEN
+            U(IPOIN) = U(IPOIN) / H(IPOIN)
+            V(IPOIN) = V(IPOIN) / H(IPOIN)
+            SPEED = SQRT( U(IPOIN)**2+V(IPOIN)**2 )
+            MAXSP = 2.D0
+            IF( SPEED.GT.2.D0 ) THEN
+              U(IPOIN) = MAXSP*U(IPOIN)/SPEED
+              V(IPOIN) = MAXSP*V(IPOIN)/SPEED
+            ENDIF
+          ELSE
+            U(IPOIN) = 0.D0
+            V(IPOIN) = 0.D0
+          ENDIF
+!
+        ENDDO
+!
+        DEALLOCATE( ZCON2,ZCON3 )
+!
+      ENDIF
+      DEALLOCATE( UT,VT,ZCON,MASKU,MASKV )
+      DEALLOCATE( LON,LAT )
+!
+      IF(LNG.EQ.1) WRITE(LU,*) 'FIN DE L''INITIALISATION TPXO'
+      IF(LNG.EQ.2) WRITE(LU,*) 'END OF TPXO INITIALISATION'
+!
+      DEJA = .TRUE.
 !
       ENDIF
 !

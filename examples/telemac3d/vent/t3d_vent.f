@@ -1,59 +1,81 @@
-!                       *********************
-                        SUBROUTINE T3D_CORFON
-!                       *********************
+!
+!  CHANGES VS SOURCE FILES:
+!  IN T3D_CORFON
+!  IN CONDIM: DEFINITION OF PLANE FOR TRANSF_PLANE = 2
+!
+!                    *********************
+                     SUBROUTINE T3D_CORFON
+!                    *********************
 !
      &(SZF, ST1, ST2, ZF, T1, T2, X, Y, PRIVE, NPOIN2,
      & LISFON, MSK, MASKEL, MATR2D, MESH2D, S)
 !
 !***********************************************************************
-! TELEMAC-3D   V5P5         25/11/97      J.M. JANIN  (LNH) 30 87 72 84
-! FORTRAN95 VERSION         MARCH 1999        JACEK A. JANKOWSKI PINXIT
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
-!  FONCTION  : CORRECTION DES FONDS RELEVES POUR TELEMAC-3D
-!              (EQUIVALENT A CORFON DANS BIEF MAIS AVEC
-!               DISTINCTION ENTRE DONNEES ET STRUCTURES)
+!brief    MODIFIES THE BOTTOM TOPOGRAPHY.
+!+
+!+            STANDARD ACTION: SMOOTHES THE BOTTOM ELEVATION.
+!+
+!+           (KEYWORD:  'NUMBER OF BOTTOM SMOOTHINGS')
 !
-!              EN STANDARD, CE SOUS-PROGRAMME UTILITAIRE NE FAIT
-!              QUE DE LISSER LES FONDS AU PRORATA DU NOMBRE DE
-!              LISSAGES FIXE DANS LE FICHIER DES PARAMETRES.
+!note     EQUIVALENT TO CORFON (BIEF LIBRARY), EXCEPT THAT THIS
+!+         SUBROUTINE DISTINGUISHES DATA FROM STRUCTURES.
 !
-!              IL EST A LA DISPOSITION DES UTILISATEURS, POUR
-!              LISSER SELECTIVEMENT OU CORRIGER DES FONDS SAISIS
-!              PAR EXEMPLE.
+!history  J.M. JANIN  (LNH)
+!+        25/11/97
+!+        V5P1
+!+
 !
-!-----------------------------------------------------------------------
-!                             ARGUMENTS
-! .________________.____.______________________________________________.
-! !  NOM           !MODE!                  ROLE                        !
-! !________________!____!______________________________________________!
-! !  (S)ZF         !<-->! FOND A MODIFIER.(SI S DEVANT : STRUCTURE)    !
-! !  (S)T1,2       !<-->! TABLEAUX DE TRAVAIL (SI S DEVANT : STRUCTURE)!
-! !  X,Y           ! -->! COORDONNEES DU MAILLAGE                      !
-! !  PRIVE         ! -->! TABLEAU PRIVE POUR L'UTILISATEUR.            !
-! !  NPOIN2        ! -->! NOMBRE DE POINTS DU MAILLAGE 2D.             !
-! !  LISFON        ! -->! NOMBRE DE LISSAGES DU FOND.                  !
-! !  MSK           ! -->! SI OUI, PRESENCE D'ELEMENTS MASQUES          !
-! !  MASKEL        ! -->! MASQUAGE DES ELEMENTS                        !
-! !  MATR          !<-->! MATRICE DE TRAVAIL                           !
-! !  IMESH2        ! -->! BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE 2D   !
-! !  AMESH2        ! -->! BLOC DES TABLEAUX DE REELS DU MAILLAGE 2D    !
-! !________________!____!______________________________________________!
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-!-----------------------------------------------------------------------
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/99
+!+
+!+   FORTRAN95 VERSION
 !
-! SOUS-PROGRAMME APPELE PAR : MITRID
-! SOUS-PROGRAMMES APPELES : FILTER
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
-!***********************************************************************
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        29/09/2011
+!+        V6P2
+!+   Name changed into T3D_CORFON to avoid duplication with Telemac-2D
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| LISFON         |-->| NUMBER OF SMOOTHINGS REQUIRED
+!| MASKEL         |-->| MASK OF ELEMENTS
+!| MATR2D         |<->| WORK MATRIX IN 2DH
+!| MESH2D         |<->| 2D MESH
+!| MSK            |-->| IF YES, THERE ARE MASKED ELEMENTS
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| PRIVE          |<->| BLOCK OF PRIVATE ARRAYS FOR USER
+!| S              |-->| VOID STRUCTURE
+!| ST1            |<->| STRUCTURE OF T1
+!| ST2            |<->| STRUCTURE OF T2
+!| SZF            |<->| STRUCTURE OF ZF
+!| T1             |<->| WORK ARRAY
+!| T2             |<->| WORK ARRAY
+!| X              |-->| MESH COORDINATE
+!| Y              |-->| MESH COORDINATE
+!| ZF             |<->| ELEVATION OF BOTTOM
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-!------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NPOIN2, LISFON
       LOGICAL, INTENT(IN) :: MSK
@@ -66,14 +88,13 @@
       TYPE (BIEF_MESH), INTENT(INOUT) :: MESH2D
       TYPE (BIEF_OBJ),  INTENT(IN)    :: S
 !
-!------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,I
       LOGICAL MAS
 !
-!***********************************************************************
+!-----------------------------------------------------------------------
 !
-!  LISSAGES EVENTUELS DU FOND
+!     SMOOTHES THE BOTTOM ELEVATION
 !
       IF(LISFON.GT.0) THEN
 !
@@ -81,49 +102,101 @@
 !
         CALL FILTER(SZF,MAS,ST1,ST2,MATR2D,'MATMAS          ',
      &              1.D0,S,S,S,S,S,S,MESH2D,MSK,MASKEL,LISFON)
-
       ENDIF
+!
+!-----------------------------------------------------------------------
 !
 ! - D - CGD SOGREAH
 !
-!  MISE A JOUR DE LA BATHYMETRIE
+!  UPDATE OF THE BATHYMETRY
 !
       CALL OV( 'X=X+C     ' , ZF , ZF , ZF , -10.D0 , NPOIN2)
 !
 ! - F - CGD SOGREAH
 !
-!
 !-----------------------------------------------------------------------
 !
       RETURN
       END
-!                       *****************
-                        SUBROUTINE CONDIM
-!                       *****************
+!                    *****************
+                     SUBROUTINE CONDIM
+!                    *****************
 !
 !
 !***********************************************************************
-! TELEMAC-3D   V5P1         11/12/00      J-M HERVOUET(LNH) 30 87 80 18
-!                                         F LEPEINTRE (LNH) 30 87 78 54
-!                                         J-M JANIN   (LNH) 30 87 72 84
-! FORTRAN95 VERSION         MARCH 1999        JACEK A. JANKOWSKI PINXIT
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
-!      FONCTION:
-!      =========
+!brief    INITIALISES VELOCITY, DEPTH AND TRACERS.
 !
-!    INITIALISATION DES TABLEAUX DES GRANDEURS PHYSIQUES
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/1999
+!+
+!+   FORTRAN95 VERSION
 !
-!-----------------------------------------------------------------------
+!history  J-M HERVOUET(LNH)
+!+        11/12/2000
+!+        V5P1
+!+   TELEMAC 3D VERSION 5.1
 !
-! SOUS-PROGRAMME APPELE PAR : TELEMAC-3D
-! SOUS-PROGRAMMES APPELES : OV , (CALCOT)
+!history
+!+        20/04/2007
+!+
+!+   ADDED INITIALISATION OF DPWAVE
 !
-!***********************************************************************
+!history
+!+        23/01/2009
+!+
+!+   ADDED CHECK OF ZSTAR
+!
+!history
+!+        16/03/2010
+!+
+!+   NEW OPTIONS FOR BUILDING THE MESH IN CONDIM, SEE BELOW
+!
+!history  J-M HERVOUET(LNHE)
+!+        05/05/2010
+!+        V6P0
+!+   SUPPRESSED INITIALISATION OF DPWAVE
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  M.S.TURNBULL (HRW), N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        C.-T. PHAM (LNHE)
+!+        19/07/2012
+!+        V6P2
+!+   Addition of the TPXO tidal model by calling CONDI_TPXO
+!+   (the TPXO model being coded in module TPXO)
+!
+!history  C.-T. PHAM (LNHE), M.S.TURNBULL (HRW)
+!+        02/11/2012
+!+        V6P3
+!+   Correction of bugs when initialising velocity with TPXO
+!+   or when sea levels are referenced with respect to Chart Datum (CD)
+!
+!history  C.-T. PHAM (LNHE)
+!+        03/09/2015
+!+        V7P1
+!+   Change in the number of arguments when calling CONDI_TPXO
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_TELEMAC3D, EX_CONDIM => CONDIM
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
+      USE TPXO
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -134,35 +207,44 @@
       INTEGER IPLAN, I,J
 !
 !***********************************************************************
-! TIME ORIGIN
 !
-      AT  = 0.D0
+!     ORIGIN OF TIME
 !
-! INITIALISATION DE H , LA HAUTEUR D'EAU.
+      IF(.NOT.SUIT2) AT  = 0.D0
+!
+!     INITIALISES H, THE WATER DEPTH
 !
       IF(.NOT.SUIT2) THEN
 !
-!     INITIALISATION OF H , THE DEPTH
-!
       IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
      &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
-        CALL OS( 'X=C     ' , H   , H , H , 0.D0 )
+        CALL OS( 'X=C     ' ,X=H,C=0.D0)
         CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
       ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
      &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
-        CALL OS( 'X=C     ' , H , H , H , COTINI )
+        CALL OS( 'X=C     ' ,X=H,C=COTINI)
         CALL OV( 'X=X-Y   ' , H%R , Z , Z , 0.D0 , NPOIN2 )
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
      &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
-        CALL OS( 'X=C     ' , H , H  , H , 0.D0  )
+        CALL OS( 'X=C     ' ,X=H,C=0.D0)
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
      &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
-        CALL OS( 'X=C     ' , H , H  , H , HAUTIN )
+        CALL OS( 'X=C     ' ,X=H,C=HAUTIN)
+      ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
+     &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
+        CALL OS('X=-Y    ',X=H,Y=ZF)
+        CALL CONDI_TPXO(NPOIN2,MESH2D%NPTFR,MESH2D%NBOR%I,
+     &                  X2%R,Y2%R,H%R,U2D%R,V2D%R,
+     &                  LIHBOR%I,LIUBOL%I,KENT,KENTU,
+     &                  GEOSYST,NUMZONE,LATIT,LONGIT,
+     &                  T3D_FILES,T3DBB1,T3DBB2,
+     &                  MARDAT,MARTIM,INTMICON,MSL,
+     &                  TIDALTYPE,BOUNDARY_COLOUR,ICALHWG)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
-!     ZONE A MODIFIER
-!     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE
+!     USER INPUT :
+!     PROGRAM HERE SPECIAL INITIAL CONDITIONS ON DEPTH
         IF(LNG.EQ.1) WRITE(LU,10)
         IF(LNG.EQ.2) WRITE(LU,11)
 10      FORMAT(1X,'CONDIM : AVEC DES CONDITIONS INITIALES PARTICULIERES'
@@ -172,7 +254,7 @@
         CALL PLANTE(1)
         STOP
 !     END OF SPECIAL INITIAL CONDITIONS
-!     FIN DE LA ZONE A MODIFIER
+!     END OF USER INPUT
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIM : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -180,6 +262,7 @@
         IF(LNG.EQ.2) THEN
         WRITE(LU,*) 'CONDIM: INITIAL CONDITION UNKNOWN: ',CDTINI
         ENDIF
+        CALL PLANTE(1)
         STOP
       ENDIF
       ELSE
@@ -187,91 +270,135 @@
         IF(LNG.EQ.2) WRITE(LU,*) 'DEPTH IS READ IN THE BINARY FILE 1'
       ENDIF
 !
-!  CLIPPING OF H
+!     CLIPS H
 !
       DO I=1,NPOIN2
         H%R(I)=MAX(H%R(I),0.D0)
       ENDDO
 !
-! INITIALISATION OF THE FREE SURFACE
-!
-      CALL OS ('X=Y     ', X=HN, Y=H)
+      CALL OS ('X=Y     ',X=HN,Y=H)
 !
 !-----------------------------------------------------------------------
 !
-!     INITIALISATION DE ZSTAR, LE RAPPORT ENTRE LA HAUTEUR D'EAU SOUS
-!     UN PLAN QUASI HORIZONTAL ET LA HAUTEUR D'EAU TOTALE
+!     DATA TO BUILD VERTICAL COORDINATES IN CALCOT
 !
-! CAS SANS PLAN INTERMEDIAIRE DE REFERENCE
-! ----------------------------------------
+!     TRANSF IS KEYWORD "MESH TRANSFORMATION"
+!     IF TRANSF = 0, SUBROUTINE CALCOT MUST BE IMPLEMENTED BY THE USER
 !
-!         ON DOIT AVOIR :
-!            * ZSTAR%R(1)     = 0.D0 ( PLAN DU FOND )
-!            * ZSTAR%R(NPLAN) = 1.D0 ( PLAN DE LA SURFACE LIBRE )
-!         ET POUR TOUT I COMPRIS ENTRE 1 ET NPLAN-1
-!            * ZSTAR%R(I) < ZSTAR%R(I+1)
+!     AN EQUIVALENT OF TRANSF MUST BE GIVEN FOR EVERY PLANE:
 !
-! CAS AVEC PLAN INTERMEDIAIRE DE REFERENCE
-! ----------------------------------------
+!     POSSIBLE VALUES OF TRANSF_PLANE :
 !
-!         ON DOIT AVOIR :
-!            * ZSTAR%R(1)      = -1.D0 ( PLAN DU FOND )
-!            * ZSTAR%R(NPLINT) =  0.D0 ( PLAN INTERMEDIAIRE DE REFERENCE
-!            * ZSTAR%R(NPLAN)  =  1.D0 ( PLAN DE LA SURFACE LIBRE )
-!         ET POUR TOUT I COMPRIS ENTRE 1 ET NPLAN-1
-!            * ZSTAR%R(I) < ZSTAR%R(I+1)
+!     1 : SIGMA TRANSFORMATION WITH EVENLY SPACED PLANES
+!     2 : SIGMA TRANSFORMATION WITH PROPORTIONS GIVEN IN ZSTAR
+!     3 : PRESCRIBED ELEVATION GIVEN IN ZPLANE
 !
-!     PAR DEFAUT, LES PLANS QUASI HORIZONTAUX SONT REGULIEREMENT ESPACES
+!     STANDARD BELOW IS: EVENLY SPACED PLANES, NO OTHER DATA REQUIRED
 !
-!***********************************************************************
-!     POUR DONNER VOTRE PROPRE REPARTITION DES PLANS, MODIFIEZ LES
-!     DEUX BOUCLES SUIVANTES
-!     REMARQUE : NPLINT=1 QUAND IL N'Y A PAS DE PLAN INTERMEDIAIRE
-!     ATTENTION : EN CAS DE TRANSFORMATION SIGMA GENERALISEE,
-!     ---------   ZSTAR(2) A ZSTAR(NPLAN-1) DOIVENT ETRE MODIFIEES
-!                 ET CONTENIR LA COTE DE POSITIONNEMENT DES DIFFERENTS
-!                 PLANS DU MAILLAGE (IL VA DE SOIT QUE CELLES-CI DOIVENT
-!                 ETRE DONNEES DANS UN ORDRE STRICTEMENT CROISSANT).
-!***********************************************************************
+      DO IPLAN = 1,NPLAN
+        TRANSF_PLANE%I(IPLAN)=1
+      ENDDO
 !
+!     OTHER EXAMPLES:
+!
+!     EXAMPLE 1: ALL PLANES WITH PRESCRIBED ELEVATION
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=3
+!     ENDDO
+!     ZPLANE%R(2)=-7.D0
+!     ZPLANE%R(3)=-4.D0
+!     ...
+!     ZPLANE%R(NPLAN-1)=-0.05D0
+!
+!
+!     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     ZSTAR%R(1)=0.D0
+!     ZSTAR%R(2)=0.02D0
+!     ZSTAR%R(3)=0.1D0
+!     ...
+!     ZSTAR%R(NPLAN-1)=0.95D0
+!     ZSTAR%R(NPLAN)=1.D0
+!
+!
+!     EXAMPLE 3: ONE PLANE (NUMBER 4) WITH PRESCRIBED ELEVATION
+!                AND SIGMA ELSEWHERE
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=1
+!     ENDDO
+!     TRANSF_PLANE%I(4)=3
+!     ZPLANE%R(4)=-3.D0
+!
+!
+!     EXAMPLE 4: ONE PLANE WITH PRESCRIBED ELEVATION
+!                AND 2 SIGMA TRANSFORMATIONS, WITH NPLAN=7
+!                SIGMA TRANSFORMATIONS ARE MEANT BETWEEN
+!                BOTTOM, FIXED ELEVATION PLANES AND FREE SURFACE
+!                THE VALUES OF ZSTAR ARE LOCAL FOR EVERY
+!                SIGMA TRANSFORMATION: 0. FOR LOWER FIXED PLANE
+!                                      1. FOR UPPER FIXED PLANE
+!
+!     DO IPLAN = 1,7
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     TRANSF_PLANE%I(4)=3
+!     ZPLANE%R(4)=3.D0
+!     ZSTAR%R(2)=0.2D0
+!     ZSTAR%R(3)=0.8D0
+!     ZSTAR%R(5)=0.1D0
+!     ZSTAR%R(6)=0.9D0
+!
+! BEGINNING OF SPECIFIC TO THIS CASE
       DO IPLAN = 1,NPLAN
         TRANSF_PLANE%I(IPLAN)=2
       ENDDO
 !
-      ZSTAR%R( 1) =   0.D0
-      ZSTAR%R( 2) =   0.075D0
-      ZSTAR%R( 3) =   0.15D0
-      ZSTAR%R( 4) =   0.225D0
-      ZSTAR%R( 5) =   0.325D0
-      ZSTAR%R( 6) =   0.425D0
-      ZSTAR%R( 7) =   0.525D0
-      ZSTAR%R( 8) =   0.625D0
-      ZSTAR%R( 9) =   0.7D0
-      ZSTAR%R(10) =   0.775D0
-      ZSTAR%R(11) =   0.85D0
-      ZSTAR%R(12) =   0.925D0
-      ZSTAR%R(13) =   0.97D0
-      ZSTAR%R(14) =   0.99D0
-      ZSTAR%R(15) =   1.D0
+      ZSTAR%R( 1) = 0.D0
+      ZSTAR%R( 2) = 0.075D0
+      ZSTAR%R( 3) = 0.15D0
+      ZSTAR%R( 4) = 0.225D0
+      ZSTAR%R( 5) = 0.325D0
+      ZSTAR%R( 6) = 0.425D0
+      ZSTAR%R( 7) = 0.525D0
+      ZSTAR%R( 8) = 0.625D0
+      ZSTAR%R( 9) = 0.7D0
+      ZSTAR%R(10) = 0.775D0
+      ZSTAR%R(11) = 0.85D0
+      ZSTAR%R(12) = 0.925D0
+      ZSTAR%R(13) = 0.97D0
+      ZSTAR%R(14) = 0.99D0
+      ZSTAR%R(15) = 1.D0
+! END OF PART SPECIFIC TO THIS CASE
 !
 !***********************************************************************
 !
-! ON NE DISPOSE PAS AU DEBUT DE CE SOUS-PROG. DE Z EN TOUS LES POINTS.
-! (CAR POUR CONNAITRE Z, IL FAUT CONNAITRE ZSTAR ET H).
-! NEANMOINS, ON PEUT, A CETTE ETAPE DE LA ROUTINE, CALCULER Z.
-! CELA PEUT SERVIR PAR EXEMPLE POUR INITIALISER VITESSES ET TRACEURS.
+!     COMPUTES ELEVATIONS
+!     IF IT IS A CONTINUATION, WILL BE DONE AFTER CALLING 'SUITE'
 !
-      CALL CALCOT(Z,H%R)
+      IF(DEBU) CALL CALCOT(Z,H%R)
 !
 !***********************************************************************
 !
-!     INITIALISATION OF VELOCITIES
+!     INITIALISES VELOCITIES
 !
       IF(SUIT2) THEN
         DO I=1,NPLAN
           DO J=1,NPOIN2
-          U%R((I-1)*NPOIN2+J)=U2D%R(J)
-          V%R((I-1)*NPOIN2+J)=V2D%R(J)
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
+          ENDDO
+        ENDDO
+      ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
+     &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
+        DO I=1,NPLAN
+          DO J=1,NPOIN2
+            U%R((I-1)*NPOIN2+J)=U2D%R(J)
+            V%R((I-1)*NPOIN2+J)=V2D%R(J)
           ENDDO
         ENDDO
       ELSE
@@ -283,28 +410,31 @@
 !
 !-----------------------------------------------------------------------
 !
-!     INITIALISATION DES TRACEURS ACTIFS
+!     INITIALISES TRACERS
 !
-      IF(NTRAC.NE.0) THEN
-        CALL OS('X=0     ',X=TA)
+      IF(NTRAC.GT.0) THEN
+        DO I=1,NTRAC
+          CALL OS( 'X=C     ', X=TA%ADR(I)%P, C=TRAC0(I))
+        ENDDO
       ENDIF
 !
+!
 !-----------------------------------------------------------------------
-!   INITIALISATION DU MODELE K-EPSILON (FACULTATIF)
-!   SI VOUS LE FAITES, INDIQUEZ AKEP = .FALSE.
+!   INITIALISES THE K-EPSILON MODEL (OPTIONAL)
+!   WHEN DONE: AKEP = .FALSE.
 !
       AKEP=.TRUE.
 !
 !     IF(ITURBV.EQ.3) THEN
 !
-!       HERE INITIALISE K AND EPSILON
+!       HERE INITIALISES K AND EPSILON
 !
 !       AKEP = .FALSE.
 !     ENDIF
 !
 !-----------------------------------------------------------------------
 !
-! INITIALIZE THE PRESSURE FIELDS TO 0.0
+! INITIALISES THE PRESSURE FIELDS TO 0.0
 !
       IF(NONHYD) THEN
         CALL OS('X=C     ',X=DP,C=0.D0)
