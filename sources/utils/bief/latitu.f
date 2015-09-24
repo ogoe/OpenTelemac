@@ -2,7 +2,7 @@
                      SUBROUTINE LATITU
 !                    *****************
 !
-     &(COSLAT,SINLAT,LAMBD0,  Y,NPOIN)
+     &(YDIST,COSLAT,SINLAT,LAMBD0,Y,NPOIN)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -33,6 +33,11 @@
 !+        V6P3
 !+   More precise value of Earth radius.
 !
+!history  M.S.TURNBULL (HRW)
+!+        24/09/2015
+!+        V7P1
+!+   Correction to the computation of the Y in spherical coordinates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COSLAT         |<--| COSINUS OF LAMBDA0
 !| LAMBD0         |-->| LATITUDE OF ORIGIN POINT
@@ -49,6 +54,7 @@
 !
       INTEGER         , INTENT(IN)    :: NPOIN
       DOUBLE PRECISION, INTENT(IN)    :: Y(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: YDIST(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: COSLAT(NPOIN),SINLAT(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: LAMBD0
 !
@@ -56,7 +62,7 @@
 !
       INTEGER I
 !
-      DOUBLE PRECISION LB2RAD,SURR,PISUR4,PISUR2,XLAMB
+      DOUBLE PRECISION LB2RAD,R,SURR,PISUR4,PISUR2,XLAMB
 !
       INTRINSIC TAN,ATAN,SIN,COS,EXP
 !
@@ -64,7 +70,8 @@
 !
 ! EARTH RADIUS
 !
-      SURR = 1.D0 / 6370000.D0
+      R = 6370000.D0
+      SURR = 1.D0 / R
 !
 !-----------------------------------------------------------------------
 !
@@ -80,6 +87,7 @@
       DO I = 1 , NPOIN
 !
         XLAMB = 2.D0* ATAN(EXP(Y(I)*SURR)*TAN(LB2RAD+PISUR4))-PISUR2
+        YDIST(I) = XLAMB * R
         COSLAT(I) = COS(XLAMB)
         SINLAT(I) = SIN(XLAMB)
 !

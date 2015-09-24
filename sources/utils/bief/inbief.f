@@ -69,6 +69,11 @@
 !+        V7P1
 !+   Call of make_eltcar modified to compute IFAC. FAC suppressed.
 !
+!history  M.S.TURNBULL (HRW)
+!+        24/09/2015
+!+        V7P1
+!+   Correction to the computation of the Y in spherical coordinates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
 !| IELMX          |-->| THE MORE COMPLEX ELEMENT USED (FOR MEMORY)
@@ -328,15 +333,16 @@
 !
       IF(SPHERI) THEN
 !
-        CALL LATITU(MESH%COSLAT%R,MESH%SINLAT%R,LAMBD0,MESH%Y%R,NPOIN2)
-        CALL CORLAT
         CALL CPSTVC(MESH%X,T1)
         CALL CPSTVC(MESH%Y,T2)
+        CALL LATITU(T2%R,MESH%COSLAT%R,MESH%SINLAT%R,
+     &              LAMBD0,MESH%Y%R,NPOIN2)
+        CALL CORLAT
 !
         IF(IELM.EQ.11.OR.IELM.EQ.41) THEN
           DO I=1,NPOIN2
             T1%R(I)=MESH%X%R(I)*MESH%COSLAT%R(I)
-            T2%R(I)=MESH%Y%R(I)*MESH%COSLAT%R(I)
+!            T2%R(I)=MESH%Y%R(I)*MESH%COSLAT%R(I)
           ENDDO
         ENDIF
 !       COMPLETING UPPER LAYERS FOR 3D MESHES
@@ -345,7 +351,7 @@
             DO I=1,NPOIN2
               I3D=(IPLAN-1)*NPOIN2+I
               T1%R(I3D)=MESH%X%R(I3D)*MESH%COSLAT%R(I)
-              T2%R(I3D)=MESH%Y%R(I3D)*MESH%COSLAT%R(I)
+              T2%R(I3D)=T2%R(I)
             ENDDO
           ENDDO
         ENDIF
