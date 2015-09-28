@@ -159,6 +159,7 @@
             ! If the variable is not in the file
             IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
               TROUVE(L) = 0
+              CONTINUE
             ELSE
               CALL CHECK_CALL(IERR,'READ_DATASET:GET_DATA_VALUE')
               TROUVE(L) = 1
