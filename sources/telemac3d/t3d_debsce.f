@@ -5,7 +5,7 @@
      &( TIME , I , DISCE )
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   08/11/2011
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    PRESCRIBES THE DISCHARGE FOR EVERY SOURCE POINT
@@ -17,7 +17,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        08/04/09
 !+        V6P0
-!+
+!+   Original version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -35,6 +35,11 @@
 !+        08/11/2011
 !+        V6P2
 !+   Modification size FCT due to modification of TRACER numbering
+!
+!history  J-M HERVOUET (LNHE)
+!+        28/09/2015
+!+        V7P1
+!+   Removing hardcoded array OK.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DISCE          |-->| ARRAY OF DISCHARGES OF SOURCES.
@@ -59,25 +64,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*9 FCT
-      INTEGER N
-      LOGICAL, SAVE :: DEJA=.FALSE.
-      LOGICAL, DIMENSION(MAXSCE), SAVE :: OK
+      CHARACTER(LEN=9) :: FCT
 !
-!     FIRST CALL, INITIALISES OK TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO N=1,NSCE
-          OK(N)=.TRUE.
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
+!-----------------------------------------------------------------------
 !
 !     IF SOURCE FILE EXISTS, ATTEMPTS TO FIND
 !     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
 !                      IF  NO, OK IS SET  TO .FALSE.
 !
-      IF(OK(I).AND.T3D_FILES(T3DVEF)%NAME(1:1).NE.' ') THEN
+      IF(OKDEBSCE(I).AND.T3D_FILES(T3DVEF)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
         FCT='Q(       '
@@ -94,14 +89,14 @@
           STOP
         ENDIF
         CALL READ_FIC_SOURCES(T3D_DEBSCE,FCT,AT,T3D_FILES(T3DVEF)%LU,
-     &                        INFOGR,OK(I))
+     &                        INFOGR,OKDEBSCE(I))
 !
       ENDIF
 !
 !     BEWARE: AN ERROR IN THE SOURCE FILE MAY REMAIN UNNOTICED
 !     BECAUSE RESORTS HERE TO THE STEERING FILE
 !
-      IF(.NOT.OK(I).OR.T3D_FILES(T3DVEF)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OKDEBSCE(I).OR.T3D_FILES(T3DVEF)%NAME(1:1).EQ.' ') THEN
 !
 !       PROGRAMMABLE PART
 !       DISCE IS TAKEN FROM THE STEERING FILE

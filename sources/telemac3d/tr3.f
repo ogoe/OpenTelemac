@@ -5,7 +5,7 @@
      &( I , ITRAC , N , TIME , ENTET )
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   08/11/2011
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    PRESCRIBES THE TRACER  FOR TRACER IMPOSED
@@ -14,7 +14,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        08/04/09
 !+        V6P0
-!+
+!+   Original version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -33,6 +33,11 @@
 !+        V6P2
 !+   Modification size FCT and OK due to modification of TRACER
 !+    numbering TRACER is now identified by 2 values (Ifront, Itracer)
+!
+!history  J-M HERVOUET (LNHE)
+!+        28/09/2015
+!+        V7P1
+!+   Removing hardcoded array OK.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ENTET          |-->| LOGICAL, IF YES INFORMATION IS PRINTED
@@ -59,21 +64,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*9 FCT
-      INTEGER J,K,IRANK
-      LOGICAL, SAVE :: DEJA=.FALSE.
-      LOGICAL, DIMENSION(MAXFRO,MAXTRA), SAVE :: OK
+      CHARACTER(LEN=9) :: FCT
+      INTEGER IRANK
 !
-!     FIRST CALL, INITIALISES OK TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO K=1, MAXTRA
-           DO J=1,MAXFRO
-              OK(J,K)=.TRUE.
-           ENDDO
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
+!-----------------------------------------------------------------------
 !
 !     IF LIQUID BOUNDARY FILE EXISTS, ATTEMPTS TO FIND
 !     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
@@ -81,7 +75,7 @@
 !
 !     RANK OF VALUE IN ARRAY TRACER OR IN LIQUID BOUNDARY FILE
 !
-      IF(OK(I,ITRAC).AND.T3D_FILES(T3DIMP)%NAME(1:1).NE.' ') THEN
+      IF(OKTR3(I,ITRAC).AND.T3D_FILES(T3DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE TR(I,ITRAC)
         FCT='TR(      '
@@ -114,11 +108,11 @@
           STOP
         ENDIF
         CALL READ_FIC_FRLIQ(TR3,FCT,TIME,T3D_FILES(T3DIMP)%LU,
-     &                      ENTET,OK(I,ITRAC))
+     &                      ENTET,OKTR3(I,ITRAC))
 !
       ENDIF
 !
-      IF(.NOT.OK(I,ITRAC).OR.T3D_FILES(T3DIMP)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OKTR3(I,ITRAC).OR.T3D_FILES(T3DIMP)%NAME(1:1).EQ.' ') THEN
 !
 !     PROGRAMMABLE PART
 !     TRACER IS TAKEN FROM THE STEERING FILE, BUT MAY BE CHANGED

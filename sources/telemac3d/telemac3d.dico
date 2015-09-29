@@ -6659,6 +6659,68 @@ the tidal constituents have their phase shifted
 to start the calculation with a high water
 (for schematic tides only).
 Only harmonic constants databases like TPXO are concerned.'
+
+NOM = 'NOMBRE MAXIMUM DE FRONTIERES' 
+NOM1 = 'MAXIMUM NUMBER OF BOUNDARIES' 
+TYPE = INTEGER 
+INDEX = 121 
+MNEMO = 'MAXFRO' 
+DEFAUT = 30 
+DEFAUT1 = 30 
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1 
+AIDE = 'nombre maximal de frontieres differentes dans le maillage.
+Sert au dimensionnement de la memoire, a augmenter si necessaire' 
+AIDE1 = 'maximal number of boundaries in the mesh.
+Used for dimensioning arrays. Can be increased if needed' 
+
+NOM = 'NOMBRE MAXIMUM DE SOURCES' 
+NOM1 = 'MAXIMUM NUMBER OF SOURCES' 
+TYPE = INTEGER 
+INDEX = 122 
+MNEMO = 'MAXSCE' 
+DEFAUT = 20 
+DEFAUT1 = 20 
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1 
+AIDE = 'nombre maximal de points sources dans le maillage.
+Sert au dimensionnement de la memoire, a augmenter si necessaire' 
+AIDE1 = 'maximal number of punctual sources in the mesh.
+Used for dimensioning arrays. Can be increased if needed' 
+
+NOM = 'NOMBRE MAXIMUM DE TRACEURS' 
+NOM1 = 'MAXIMUM NUMBER OF TRACERS' 
+TYPE = INTEGER 
+INDEX = 123 
+MNEMO = 'MAXTRA' 
+DEFAUT = 20 
+DEFAUT1 = 20 
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1 
+AIDE = 'nombre maximal de traceurs.
+Sert au dimensionnement de la memoire, a augmenter si necessaire' 
+AIDE1 = 'maximal number of tracers.
+Used for dimensioning arrays. Can be increased if needed' 
+
+NOM = 'NOMBRE MAXIMUM DE FRONTIERES SUR LE FOND' 
+NOM1 = 'MAXIMUM NUMBER OF BOUNDARIES ON THE BED' 
+TYPE = INTEGER 
+INDEX = 124 
+MNEMO = 'MAXBLB' 
+DEFAUT = 30 
+DEFAUT1 = 30 
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1 
+AIDE = 'nombre maximal de frontieres liquides sur le fond.
+Sert au dimensionnement de la memoire, a augmenter si necessaire' 
+AIDE1 = 'maximal number of liquid boundaries on the bed.
+Used for dimensioning arrays. Can be increased if needed' 
+
+
 /
 / FOR SCRIPTS
 /

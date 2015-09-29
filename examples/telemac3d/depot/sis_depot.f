@@ -62,9 +62,9 @@
       INTEGER, INTENT(IN):: NPOIN , CHOIX
       INTEGER, INTENT(INOUT):: NLISS
 !
-      DOUBLE PRECISION, INTENT(IN)::  Z(NPOIN) , ZF(NPOIN)
-      DOUBLE PRECISION , INTENT(IN)::  X(NPOIN) , Y(NPOIN), H(NPOIN)
-      DOUBLE PRECISION , INTENT(INOUT)::  ZR(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)   :: Z(NPOIN) , ZF(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)   :: X(NPOIN) , Y(NPOIN), H(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT):: ZR(NPOIN)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -74,16 +74,12 @@
 ! RIGID BEDS POSITION
 !---------------------
 !
-!     DEFAULT VALUE: ZR=ZF-100.D0
-!
 ! BEGIN OF PART SPECIFIC TO THIS CASE
-!     CALL OV('X=Y+C   ',ZR,ZF,ZF,-100.D0,NPOIN)
 !
-!     HERE ZR=ZF-0.01D0 : PROVISIONAL, SHOULD BE 0,
-!                         WAITING FOR TELEMAC-3D CORRECTION... SO THAT
-!                         ZF ALWAYS >= ZR
+!     HERE ZR=ZF
 !
-      CALL OV('X=Y+C   ',ZR,ZF,ZF,-0.01D0,NPOIN)
+      CALL OV('X=Y     ',ZR,ZF,ZF,0.D0,NPOIN)
+!
 ! END OF PART SPECIFIC TO THIS CASE
 !
 !------------------

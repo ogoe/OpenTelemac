@@ -2,16 +2,15 @@
                      SUBROUTINE CONDIS
 !                    *****************
 !
-
      &(IVIDE   , EPAI  , TREST , CONC  , TEMP      , HDEP      ,
      & ZR      , ZF    , X     , Y     , NPOIN2    , NPOIN3    ,
-     & NPF     , NCOUCH, TASSE , ITASS , RHOS      , XKV       ,
+     & NPF     , NCOUCH, TASSE , ITASS , RHOS      , XKV       , 
      & CFDEP   , ESOMT , TOCE  , SEDCO , CONC_LAYER, TOCE_LAYER,
-     & ES_LAYER, SEDNCO, MIXTE , EPAICO, EPAINCO   , PVSCO     ,
+     & ES_LAYER, SEDNCO, MIXTE , EPAICO, EPAINCO   , PVSCO     , 
      & PVSNCO  , PVSNCO0)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    INITIALISES THE SEDIMENT VARIABLES.
@@ -53,6 +52,11 @@
 !+        13/10/2014
 !+        V7P0
 !+   New developments in sediment for mixed sediment transport
+!
+!history  C. VILLARET (EDF LAB, LNHE)
+!+        02/09/2015
+!+        V7P1
+!+   Noerod from Sisyphe called to get the same non erodable bed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CONC           |<--| CONCENTRATION OF MUD BED LAYER
@@ -96,7 +100,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC3D, ONLY : H,Z,NPLAN, DMOY, DEBUG
+      USE DECLARATIONS_TELEMAC3D, ONLY : H,Z,NPLAN
       USE INTERFACE_TELEMAC3D, EX_CONDIS => CONDIS
       IMPLICIT NONE
 !
@@ -111,12 +115,10 @@
       DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPOIN2,NCOUCH)
       DOUBLE PRECISION, INTENT(INOUT) :: EPAICO(NPOIN2), EPAINCO(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: PVSCO(NPOIN2), PVSNCO(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: CONC(NPOIN2,NCOUCH)
-!
-      DOUBLE PRECISION, INTENT(OUT)   :: TEMP(NCOUCH,NPOIN2)
-!
-      DOUBLE PRECISION, INTENT(OUT)   :: HDEP(NPOIN2)
-      DOUBLE PRECISION, INTENT(OUT)   :: ZR(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: CONC(NPOIN2,NCOUCH)    
+      DOUBLE PRECISION, INTENT(INOUT) :: TEMP(NCOUCH,NPOIN2)    
+      DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZR(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: ZF(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TREST(NCOUCH)
@@ -124,8 +126,8 @@
       DOUBLE PRECISION, INTENT(IN)    :: CONC_LAYER(NCOUCH)
       DOUBLE PRECISION, INTENT(IN)    :: ES_LAYER(NCOUCH)
       DOUBLE PRECISION, INTENT(IN)    :: TOCE_LAYER(NCOUCH)
-      INTEGER, INTENT(OUT)            :: NPF(NPOIN2)
-      TYPE(BIEF_OBJ), INTENT (INOUT)  :: ESOMT
+      INTEGER, INTENT(INOUT)          :: NPF(NPOIN2)
+      TYPE(BIEF_OBJ), INTENT (INOUT)  :: ESOMT      
       LOGICAL, INTENT(IN)             :: TASSE
       LOGICAL, INTENT(IN)             :: SEDCO, SEDNCO, MIXTE
       INTEGER, INTENT(IN)             :: ITASS
@@ -133,16 +135,14 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION ECOUCH,PVSCO0
-      INTEGER IPOIN,IC,IPF
-!      LAST METHOD TO DEFINE HARD BOTTOM
-!      INTEGER CHOIX,NLISS
-!      DOUBLE PRECISION, POINTER :: ZS(:)!
-!      A POINTER TO THE FREE SURFACE IN Z.
-!      ZS => Z(1+(NPLAN-1)*NPOIN2:NPLAN*NPOIN2)
+      DOUBLE PRECISION ECOUCH,PVSCO0,HAUTSED,ERROR 
+      INTEGER IPOIN,IC,IPF,CHOIX,NLISS,NLAYER,K,J
+      DOUBLE PRECISION, POINTER :: ZS(:)
 !
-!-----------------------------------------------------------------------
+!     A POINTER TO THE FREE SURFACE IN Z
 !
+      ZS => Z(1+(NPLAN-1)*NPOIN2:NPLAN*NPOIN2) 
+
 !     INITIALISES BED EVOLUTION ESOMT -----
 !
       CALL OS('X=0     ',X=ESOMT)
@@ -151,9 +151,14 @@
 !     INITIAL CONDITIONS FOR THE MULTILAYER COHESIVE BED MODEL
 !     --------------------------------------------------------
 !
+!     CALLING NOEROD OF LIBRARY SISYPHE, TO GET ZR
+!     NOTE: CHOIX AND NLISS NOT DEFINED, NOT USED
+!    
+      CALL NOEROD(H%R,ZF,ZR,ZS,X,Y,NPOIN2,CHOIX,NLISS)
+!
       IF(SEDCO) THEN
 !
-!       COHESIVE SEDIMENT
+!       COHESIVE SEDIMENT OR NON COHESIVE
 !
         DO IPOIN=1,NPOIN2
           HDEP(IPOIN) = 0.D0
@@ -161,43 +166,34 @@
             CONC(IPOIN,IC) = CONC_LAYER(IC)
             TOCE(IPOIN,IC) = TOCE_LAYER(IC)
             EPAI(IPOIN,IC) = ES_LAYER(IC)
-            HDEP(IPOIN)    = HDEP(IPOIN) + EPAI(IPOIN,IC)
-          ENDDO
+            HDEP(IPOIN)    = HDEP(IPOIN) + EPAI(IPOIN,IC)  
+          ENDDO        
         ENDDO
-!
-!       INITIALISES ZR TO ZF-HDEP
-        CALL OV('X=Y-Z   ' ,ZR,ZF,HDEP,0.D0,NPOIN2)
-!
+!   
       ENDIF
-
-
+!
       IF(SEDNCO) THEN
 !       LAST METHOD TO DEFINE HARD BOTTOM
 !       NON ERODABLE BED: CALLING NOEROD OF SISYPHE
 !       ZS, CHOIX AND NLISS ARE NOT USED IN DEFAULT NOEROD
 !       NOEROD IS IN LIBRARY SISYPHE
-!       CALL NOEROD(H%R,ZF,ZR,ZS,X,Y,NPOIN2,CHOIX,NLISS)
 !
-!       INITIALISES HDEP=ZF-ZR (NOT USED BY THE MULTILAYER MODEL)
-!
-!       CALL OV('X=Y-Z   ',HDEP,ZF,ZR,0.D0,NPOIN2)
-!
-!       ONLY ONE LAYER
+!       ONLY ONE LAYER 
         CFDEP = (1.D0-XKV)*RHOS
         DO IPOIN = 1,NPOIN2
-          CONC(IPOIN,1) = CFDEP
-          EPAI(IPOIN,1) = ES_LAYER(1)
-          HDEP(IPOIN)   = EPAI(IPOIN,1)
+          HDEP(IPOIN) = 0.D0
+!         CV adding layers for non cohesive
+          DO IC=1, NCOUCH
+            CONC(IPOIN,IC) = CFDEP
+            EPAI(IPOIN,IC) = ES_LAYER(IC)
+            HDEP(IPOIN)   = HDEP(IPOIN)+EPAI(IPOIN,IC)
+          ENDDO
         ENDDO
-!       INITIALISES ZR TO ZF-HDEP
-        CALL OV('X=Y-Z   ' ,ZR,ZF,HDEP,0.D0,NPOIN2)
       ENDIF
-
+!
       IF(MIXTE) THEN
-!
-      CFDEP= (1.D0-XKV)*RHOS
-      PVSCO0 = 1.D0-PVSNCO0
-!
+        CFDEP= (1.D0-XKV)*RHOS
+        PVSCO0 = 1.D0-PVSNCO0
         DO IPOIN=1,NPOIN2
           CONC(IPOIN,1)  = CONC_LAYER(1)
           TOCE(IPOIN,1)  = TOCE_LAYER(1)
@@ -208,12 +204,56 @@
           EPAI(IPOIN,1)  = ES_LAYER(1)
           HDEP(IPOIN)    = EPAI(IPOIN,1)
         ENDDO
-!
-!       INITIALISES ZR TO ZF-HDEP
-        CALL OV('X=Y-Z   ' ,ZR,ZF,HDEP,0.D0,NPOIN2)
-!
       ENDIF
 !
+!     Debut modif CV
+!     CORRECTION OF LAYERS (see in INIT_AVAI)
+!     THE HEIGHT OF SEDIMENT (SUM OF ES) MUST NOT BE MORE THAN ZF-ZR
+!     IF SO, THE HEIGHT OF THE LAST LAYER IS REDUCED
+!     IF THERE ARE LAYERS UNDER ZR, THEY ARE NOT TAKEN INTO ACCOUNT
+      DO J=1,NPOIN2
+        HAUTSED = 0.D0
+        DO K=1,NCOUCH
+          IF(HAUTSED + EPAI(J,K) .GE. ZF(J) - ZR(J)) THEN
+            EPAI(J,K) = ZF(J) - ZR(J) -  HAUTSED
+            NLAYER = K
+            HAUTSED = HAUTSED + EPAI(J,K)
+            EXIT
+          ENDIF
+          HAUTSED = HAUTSED + EPAI(J,K)
+        ENDDO
+!       OTHER LAYERS SET TO 0.D0
+        IF(NLAYER.LT.NCOUCH) THEN
+          DO K=NLAYER+1,NCOUCH
+            EPAI(J,K) = 0.D0
+          ENDDO
+        ENDIF
+!       THE THICKNESS OF THE LAST LAYER IS ENLARGED SO THAT
+!       THE HEIGHT OF SEDIMENT (SUM OF ES) IS EQUAL TO ZF-ZR
+        IF(HAUTSED.LT.ZF(J)-ZR(J)) THEN
+          EPAI(J,NCOUCH)=EPAI(J,NCOUCH)+ZF(J)-ZR(J)-HAUTSED
+        ENDIF
+      ENDDO
+!  
+      DO J=1, NPOIN2
+        HDEP(J) =0.D0
+        DO K = 1, NCOUCH
+          HDEP(J) = HDEP(J)+ EPAI(J,K)
+        ENDDO
+        ERROR= HDEP(J)-(ZF(J)-ZR(J))
+        IF(ABS(ERROR).GT.1.D-6) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'CONDIS : ERREUR D''INITIALISATION : ',ITASS
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'CONDIS: INITIALISATION ERROR ',ITASS
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ENDDO
+!
+! END modif CV
 !
 !     ------------------------------------------
 !     INITIAL CONDITIONS FOR CONSOLIDATION MODEL
@@ -222,24 +262,24 @@
       IF(TASSE) THEN
 !
         IF(ITASS.EQ.1) THEN
-!
+!      
 !         SIMPLE MULTI-LAYER MODEL
-!
+!   
 !         CHANGES HOURS INTO SECONDS  -----
           CALL OV( 'X=CX    ',TREST,TREST,TREST,3600.D0,NCOUCH)
 !         INITIALISES TEMP
           CALL OV( 'X=C     ',TEMP,TEMP,TEMP,0.D0,NPOIN2*NCOUCH)
 !
         ELSEIF(ITASS.EQ.2) THEN
-!
+!   
 !         GIBSON MODEL
-!
+! 
           DO IPOIN=1,NPOIN2
             NPF(IPOIN) =NCOUCH
             DO IPF= 1, NCOUCH
               ECOUCH=(RHOS-CONC(IPOIN,IPF))/CONC(IPOIN,IPF)
-              IF(IPF.EQ.1) THEN
-                IVIDE(IPOIN,IPF)=ECOUCH
+              IF(IPF.EQ.1) THEN 
+                IVIDE(IPOIN,IPF)=ECOUCH 
               ELSE
                 IVIDE(IPOIN,IPF)= 2.D0*ECOUCH-IVIDE(IPOIN,IPF-1)
               ENDIF
@@ -260,9 +300,10 @@
 !
         ENDIF
 !
-      ENDIF
+      ENDIF 
 !
-!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------      
 !
       RETURN
       END
+

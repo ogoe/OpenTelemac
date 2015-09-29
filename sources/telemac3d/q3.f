@@ -5,7 +5,7 @@
      &( I , TIME , ENTET )
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   08/11/2011
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    PRESCRIBES THE DISCHARGE FOR FLOW IMPOSED
@@ -14,7 +14,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        08/04/09
 !+        V6P0
-!+
+!+   Original version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -32,6 +32,11 @@
 !+        08/11/2011
 !+        V6P2
 !+   Modification of FCT size due to modification of TRACER numbering
+!
+!history  J-M HERVOUET (LNHE)
+!+        28/09/2015
+!+        V7P1
+!+   Removing hardcoded array OK.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ENTET          |-->| IF YES, LISTING PRINTOUTS ALLOWED
@@ -55,25 +60,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*9 FCT
-      INTEGER N
-      LOGICAL,SAVE :: DEJA=.FALSE.
-      LOGICAL, DIMENSION(MAXFRO), SAVE :: OK
+      CHARACTER(LEN=9) :: FCT
 !
-!     FIRST CALL, INITIALISES OK TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO N=1,MAXFRO
-          OK(N)=.TRUE.
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
+!-----------------------------------------------------------------------
 !
 !     IF LIQUID BOUNDARY FILE EXISTS, ATTEMPTS TO FIND
-!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-!                      IF  NO, OK IS SET  TO .FALSE.
+!     THE VALUE IN IT. IF YES, OKQ3 REMAINS TO .TRUE. FOR NEXT CALLS
+!                      IF  NO, OKQ3 IS SET  TO .FALSE.
 !
-      IF(OK(I).AND.T3D_FILES(T3DIMP)%NAME(1:1).NE.' ') THEN
+      IF(OKQ3(I).AND.T3D_FILES(T3DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
         FCT='Q(       '
@@ -92,11 +87,11 @@
           STOP
         ENDIF
         CALL READ_FIC_FRLIQ(Q3,FCT,TIME,T3D_FILES(T3DIMP)%LU,
-     &                      ENTET,OK(I))
+     &                      ENTET,OKQ3(I))
 !
       ENDIF
 !
-      IF(.NOT.OK(I).OR.T3D_FILES(T3DIMP)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OKQ3(I).OR.T3D_FILES(T3DIMP)%NAME(1:1).EQ.' ') THEN
 !
 !     PROGRAMMABLE PART
 !     Q IS TAKEN FROM THE STEERING FILE, BUT MAY BE CHANGED

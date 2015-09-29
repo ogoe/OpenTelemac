@@ -5,7 +5,7 @@
      &( I , TIME , N , ENTET )
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   08/11/2011
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    PRESCRIBES THE VELOCITY FOR VEL IMPOSED
@@ -14,7 +14,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        08/04/09
 !+        V6P0
-!+
+!+   Original version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -32,6 +32,11 @@
 !+        08/11/2011
 !+        V6P2
 !+   Modification size FCT due to modification of TRACER numbering
+!
+!history  J-M HERVOUET (LNHE)
+!+        28/09/2015
+!+        V7P1
+!+   Removing hardcoded array OK.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ENTET          |-->| LOGICAL, IF YES INFORMATION IS PRINTED
@@ -57,25 +62,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*9 FCT
-      INTEGER J
-      LOGICAL, SAVE :: DEJA=.FALSE.
-      LOGICAL, DIMENSION(MAXFRO), SAVE :: OK
+      CHARACTER(LEN=9) :: FCT
 !
-!     FIRST CALL, INITIALISES OK TO .TRUE.
-!
-      IF(.NOT.DEJA) THEN
-        DO J=1,MAXFRO
-          OK(J)=.TRUE.
-        ENDDO
-        DEJA=.TRUE.
-      ENDIF
+!-----------------------------------------------------------------------
 !
 !     IF LIQUID BOUNDARY FILE EXISTS, ATTEMPTS TO FIND
 !     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
 !                      IF  NO, OK IS SET  TO .FALSE.
 !
-      IF(OK(I).AND.T3D_FILES(T3DIMP)%NAME(1:1).NE.' ') THEN
+      IF(OKVIT3(I).AND.T3D_FILES(T3DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE VIT(1), VIT(2), ETC, VIT(99), DEPENDING ON I
         FCT='VIT(     '
@@ -94,11 +89,11 @@
           STOP
         ENDIF
         CALL READ_FIC_FRLIQ(VIT3,FCT,TIME,T3D_FILES(T3DIMP)%LU,
-     &                      ENTET,OK(I))
+     &                      ENTET,OKVIT3(I))
 !
       ENDIF
 !
-      IF(.NOT.OK(I).OR.T3D_FILES(T3DIMP)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OKVIT3(I).OR.T3D_FILES(T3DIMP)%NAME(1:1).EQ.' ') THEN
 !
 !     PROGRAMMABLE PART
 !     SL IS TAKEN FROM THE STEERING FILE, BUT MAY BE CHANGED

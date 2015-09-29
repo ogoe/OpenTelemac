@@ -6,7 +6,7 @@ DEBUGGER : 0
 /----------------------------------------------------------------------/
 /
 FICHIER DE GEOMETRIE               = geo_depot.slf
-/FICHIER FORTRAN                    = sis_depot.f
+FICHIER FORTRAN                    = sis_depot.f
 FICHIER DES CONDITIONS AUX LIMITES = geo_sisyphe.cli
 FICHIER DES RESULTATS              = rsi_depot.slf
 FICHIER DE REFERENCE               = fis_depot.slf

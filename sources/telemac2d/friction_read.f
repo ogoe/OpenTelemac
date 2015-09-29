@@ -12,8 +12,8 @@
 !
 !history  F. HUVELIN
 !+        20/04/2004
-!+
-!+
+!+        V5P4
+!+   First version
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -33,6 +33,11 @@
 !+   Data on lateral friction are now asked as soon as LISRUG=2
 !+   and not only in case of k-epsilon model.
 !
+!history  J-M HERVOUET (LNHE)
+!+        29/09/2015
+!+        V7P1
+!+   Bug corrected when the number of zones is the maximum.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FRTAB          |-->| FRICTION_OBJ STRUCTURE WITH DATA ON FRICTION
 !| ITURB          |-->| TURBULENCE MODEL
@@ -40,7 +45,7 @@
 !| LISRUG         |-->| TURBULENCE REGIME (1: SMOOTH 2: ROUGH)
 !| NCOF           |-->| LOGICAL UNIT OF FRICTION FILE
 !| NOMCOF         |-->| NAME OF FRICTION FILE
-!| NZONES         |-->| NUMBER OF FRICTION ZONES
+!| NZONES         |<--| NUMBER OF FRICTION ZONES
 !| NZONMX         |-->| MAXIMUM NUMBER OF FRICTION ZONES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -114,157 +119,156 @@
 !
       IZONE = 0
       LINE = 0
-      DO I = 1, NZONMX
+1000  CONTINUE
 !
-!       FIND THE NEXT ZONE INDEX AND LAW
+!     FIND THE NEXT ZONE INDEX AND LAW
 !
-        CALL FRICTION_SCAN(NCOF,NOMCOF,TYP,LINE)
+      CALL FRICTION_SCAN(NCOF,NOMCOF,TYP,LINE)
 !
-!       END OF FILE => EXIT
-        IF (TYP == 3) THEN
-          NZONES = IZONE
-          EXIT
-        ENDIF
-!
-!       INCREMENT NUMBER OF ZONES
+!     END OF FILE => EXIT
+      IF(TYP == 3) THEN
+        NZONES = IZONE
+        GO TO 1001
+      ELSE
         IZONE = IZONE + 1
-!
-!       NOT ENOUGH ZONES ALLOCATED
-        IF (IZONE > NZONMX) THEN
+        IF(IZONE.GT.NZONMX) THEN
           IF (LNG == 1) WRITE(LU,5)
           IF (LNG == 2) WRITE(LU,6)
           CALL PLANTE(1)
           STOP
         ENDIF
+      ENDIF
 !
-!       READ AND SAVE PARAMETERS OF THE ZONE
-        IF (TYP == 1) N = 1
-        IF (TYP == 2) N = 4
+!     READ AND SAVE PARAMETERS OF THE ZONE
+      IF (TYP == 1) N = 1
+      IF (TYP == 2) N = 4
 !
-        DO LOOP = 1, NLOOP
+      DO LOOP = 1, NLOOP
 !
-          IF(LOOP == 2) BACKSPACE(NCOF)
-!         READ THE NAME OF THE LAW AND NUMBERING OF THE ZONE
-          CHAINE(1) = ' '
-          IF(TYP == 1) THEN
-            READ(NCOF,*,END=999,ERR=998) IZ1,(CHAINE(J),J=2,N),LAW
-            IZ2 = IZ1
-          ELSEIF (TYP == 2) THEN
-            READ(NCOF,*,END=999,ERR=998) CHAINE(1),IZ1,CHAINE(3),IZ2,
+        IF(LOOP == 2) BACKSPACE(NCOF)
+!       READ THE NAME OF THE LAW AND NUMBERING OF THE ZONE
+        CHAINE(1) = ' '
+        IF(TYP.EQ.1) THEN
+          READ(NCOF,*,END=999,ERR=998) IZ1,(CHAINE(J),J=2,N),LAW
+          IZ2 = IZ1
+        ELSEIF(TYP.EQ.2) THEN
+           READ(NCOF,*,END=999,ERR=998) CHAINE(1),IZ1,CHAINE(3),IZ2,
      &                                   (CHAINE(J),J=5,N),LAW
-          ENDIF
+        ENDIF
 !
-!         LOCAL-GLOBAL NUMBER OF THE ZONE
+!       LOCAL-GLOBAL NUMBER OF THE ZONE
 !
-          IF (LOOP == 1) FRTAB%ADR(I)%P%GNUMB(1) = IZ1
-          IF (LOOP == 1) FRTAB%ADR(I)%P%GNUMB(2) = IZ2
+        IF (LOOP == 1) FRTAB%ADR(IZONE)%P%GNUMB(1) = IZ1
+        IF (LOOP == 1) FRTAB%ADR(IZONE)%P%GNUMB(2) = IZ2
 !
-          BACKSPACE(NCOF)
-          CALL MAJUS(LAW)
+        BACKSPACE(NCOF)
+        CALL MAJUS(LAW)
 !
-!         FIND THE LAW AND THE NUMBER OF PARAMETERS TO READ
+!       FIND THE LAW AND THE NUMBER OF PARAMETERS TO READ
 !
-          SELECT CASE (LAW)
+        SELECT CASE (LAW)
 !
-          CASE('NOFR')
-            READ(NCOF,*,END=999,ERR=900) (CHAINE(J),J=1,N),LAW
-            FRTAB%ADR(I)%P%RTYPE(LOOP) = 0
-            FRTAB%ADR(I)%P%RCOEF(LOOP) = 0.D0
-            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
-            N = N + 1
-          CASE('HAAL')
-            READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
-            FRTAB%ADR(I)%P%RTYPE(LOOP) = 1
-            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
+        CASE('NOFR')
+          READ(NCOF,*,END=999,ERR=900) (CHAINE(J),J=1,N),LAW
+          FRTAB%ADR(IZONE)%P%RTYPE(LOOP) = 0
+          FRTAB%ADR(IZONE)%P%RCOEF(LOOP) = 0.D0
+          FRTAB%ADR(IZONE)%P%NDEF (LOOP) = 0.D0
+          N = N + 1
+        CASE('HAAL')
+          READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
+          FRTAB%ADR(IZONE)%P%RTYPE(LOOP) = 1
+          FRTAB%ADR(IZONE)%P%RCOEF(LOOP) = R1
+          FRTAB%ADR(IZONE)%P%NDEF (LOOP) = 0.D0
 !
-!           THE BOUNDARY COEFFICIENT COEF MUST BE THE SAME AS THE BOTTOM
+!         THE BOUNDARY COEFFICIENT COEF MUST BE THE SAME AS THE BOTTOM
 !
-            IF ( ( ((N>1).AND.(TYP==1)).OR.((N>4).AND.(TYP==2)) )
-     &          .AND.
-     &           (FRTAB%ADR(I)%P%RCOEF(1)/=FRTAB%ADR(I)%P%RCOEF(2))
-     &         ) THEN
-              IF (LNG==1) WRITE(LU,15) NOMCOF,I,
-     &                                 FRTAB%ADR(I)%P%RCOEF(1)
-              IF (LNG==2) WRITE(LU,16) NOMCOF,I,
-     &                                 FRTAB%ADR(I)%P%RCOEF(1)
-              CALL PLANTE(1)
-              STOP
-            ENDIF
-            N = N + 2
-          CASE('CHEZ')
-            READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
-            FRTAB%ADR(I)%P%RTYPE(LOOP) = 2
-            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
-            N = N + 2
-          CASE('STRI')
-            READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
-            FRTAB%ADR(I)%P%RTYPE(LOOP) = 3
-            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
-            N = N + 2
-          CASE('MANN')
-            READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
-            FRTAB%ADR(I)%P%RTYPE(LOOP) = 4
-            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
-            N = N + 2
-          CASE('NIKU')
-            READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
-            FRTAB%ADR(I)%P%RTYPE(LOOP) = 5
-            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
-            N = N + 2
-          CASE('LOGW')
-            IF (((N == 1).AND.(TYP == 1))  .OR.
-     &          ((N == 4).AND.(TYP == 2))) THEN
-              IF (LNG == 1) WRITE(LU,7) NOMCOF, I
-              IF (LNG == 2) WRITE(LU,8) NOMCOF, I
-              CALL PLANTE(1)
-              STOP
-            ENDIF
-            READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
-            FRTAB%ADR(I)%P%RTYPE(LOOP) = 6
-            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-            FRTAB%ADR(I)%P%NDEF (LOOP) = 0.D0
-            N = N + 2
-          CASE('COWH')
-            READ(NCOF,*,END=999,ERR=907) (CHAINE(J),J=1,N),LAW,R1,R2
-            FRTAB%ADR(I)%P%RTYPE(LOOP) = 7
-            FRTAB%ADR(I)%P%RCOEF(LOOP) = R1
-            FRTAB%ADR(I)%P%NDEF (LOOP) = R2
-            N = N + 3
-          CASE DEFAULT
-            IF (LNG==1) WRITE(LU, 9) LINE, IZ1, IZ2, LAW
-            IF (LNG==2) WRITE(LU,10) LINE, IZ1, IZ2, LAW
+          IF( ( (N.GT.1.AND.TYP.EQ.1).OR.(N.GT.4.AND.TYP.EQ.2) )
+     &        .AND.
+     &     (FRTAB%ADR(IZONE)%P%RCOEF(1).NE.FRTAB%ADR(IZONE)%P%RCOEF(2))
+     &      ) THEN
+            IF (LNG==1) WRITE(LU,15) NOMCOF,IZONE,
+     &                               FRTAB%ADR(IZONE)%P%RCOEF(1)
+            IF (LNG==2) WRITE(LU,16) NOMCOF,IZONE,
+     &                               FRTAB%ADR(IZONE)%P%RCOEF(1)
             CALL PLANTE(1)
             STOP
-          END SELECT
-        ENDDO
+          ENDIF
+          N = N + 2
+        CASE('CHEZ')
+          READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
+          FRTAB%ADR(IZONE)%P%RTYPE(LOOP) = 2
+          FRTAB%ADR(IZONE)%P%RCOEF(LOOP) = R1
+          FRTAB%ADR(IZONE)%P%NDEF (LOOP) = 0.D0
+          N = N + 2
+        CASE('STRI')
+          READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
+          FRTAB%ADR(IZONE)%P%RTYPE(LOOP) = 3
+          FRTAB%ADR(IZONE)%P%RCOEF(LOOP) = R1
+          FRTAB%ADR(IZONE)%P%NDEF (LOOP) = 0.D0
+          N = N + 2
+        CASE('MANN')
+          READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
+          FRTAB%ADR(IZONE)%P%RTYPE(LOOP) = 4
+          FRTAB%ADR(IZONE)%P%RCOEF(LOOP) = R1
+          FRTAB%ADR(IZONE)%P%NDEF (LOOP) = 0.D0
+          N = N + 2
+        CASE('NIKU')
+          READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
+          FRTAB%ADR(IZONE)%P%RTYPE(LOOP) = 5
+          FRTAB%ADR(IZONE)%P%RCOEF(LOOP) = R1
+          FRTAB%ADR(IZONE)%P%NDEF (LOOP) = 0.D0
+          N = N + 2
+        CASE('LOGW')
+          IF (((N == 1).AND.(TYP == 1))  .OR.
+     &        ((N == 4).AND.(TYP == 2))) THEN
+            IF (LNG == 1) WRITE(LU,7) NOMCOF, IZONE
+            IF (LNG == 2) WRITE(LU,8) NOMCOF, IZONE
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          READ(NCOF,*,END=999,ERR=901) (CHAINE(J),J=1,N),LAW,R1
+          FRTAB%ADR(IZONE)%P%RTYPE(LOOP) = 6
+          FRTAB%ADR(IZONE)%P%RCOEF(LOOP) = R1
+          FRTAB%ADR(IZONE)%P%NDEF (LOOP) = 0.D0
+          N = N + 2
+        CASE('COWH')
+          READ(NCOF,*,END=999,ERR=907) (CHAINE(J),J=1,N),LAW,R1,R2
+          FRTAB%ADR(IZONE)%P%RTYPE(LOOP) = 7
+          FRTAB%ADR(IZONE)%P%RCOEF(LOOP) = R1
+          FRTAB%ADR(IZONE)%P%NDEF (LOOP) = R2
+          N = N + 3
+        CASE DEFAULT
+          IF (LNG==1) WRITE(LU, 9) LINE, IZ1, IZ2, LAW
+          IF (LNG==2) WRITE(LU,10) LINE, IZ1, IZ2, LAW
+          CALL PLANTE(1)
+          STOP
+        END SELECT
+      ENDDO
 !
 !       READ NON-SUBMERGED COEFFICIENT IF NEEDED
 !
-        IF(LINDNER) THEN
-          BACKSPACE(NCOF)
-          READ(NCOF,*,END=999,ERR=888) (CHAINE(J),J=1,N),R1,R2
-          FRTAB%ADR(I)%P%DP = R1
-          FRTAB%ADR(I)%P%SP = R2
-        ELSE
-          FRTAB%ADR(I)%P%DP = 0.D0
-          FRTAB%ADR(I)%P%SP = 0.D0
-        ENDIF
-        WRITE(LU,11) FRTAB%ADR(I)%P%GNUMB(1),
-     &               FRTAB%ADR(I)%P%GNUMB(2),
-     &               FRTAB%ADR(I)%P%RTYPE(1),
-     &               FRTAB%ADR(I)%P%RCOEF(1),
-     &               FRTAB%ADR(I)%P%NDEF (1),
-     &               FRTAB%ADR(I)%P%RTYPE(2),
-     &               FRTAB%ADR(I)%P%RCOEF(2),
-     &               FRTAB%ADR(I)%P%NDEF (2),
-     &               FRTAB%ADR(I)%P%DP,
-     &               FRTAB%ADR(I)%P%SP
-      ENDDO
+      IF(LINDNER) THEN
+        BACKSPACE(NCOF)
+        READ(NCOF,*,END=999,ERR=888) (CHAINE(J),J=1,N),R1,R2
+        FRTAB%ADR(IZONE)%P%DP = R1
+        FRTAB%ADR(IZONE)%P%SP = R2
+      ELSE
+        FRTAB%ADR(IZONE)%P%DP = 0.D0
+        FRTAB%ADR(IZONE)%P%SP = 0.D0
+      ENDIF
+      WRITE(LU,11) FRTAB%ADR(IZONE)%P%GNUMB(1),
+     &             FRTAB%ADR(IZONE)%P%GNUMB(2),
+     &             FRTAB%ADR(IZONE)%P%RTYPE(1),
+     &             FRTAB%ADR(IZONE)%P%RCOEF(1),
+     &             FRTAB%ADR(IZONE)%P%NDEF (1),
+     &             FRTAB%ADR(IZONE)%P%RTYPE(2),
+     &             FRTAB%ADR(IZONE)%P%RCOEF(2),
+     &             FRTAB%ADR(IZONE)%P%NDEF (2),
+     &             FRTAB%ADR(IZONE)%P%DP,
+     &             FRTAB%ADR(IZONE)%P%SP
+!
+      GO TO 1000
+1001  CONTINUE
 !
 !     END
 !

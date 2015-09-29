@@ -5,7 +5,7 @@
      &(YDIST,COSLAT,SINLAT,LAMBD0,Y,NPOIN)
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES THE ARRAYS THAT DEPEND ON THE LATITUDE
@@ -14,7 +14,7 @@
 !history  J-M HERVOUET (LNH)
 !+        10/01/95
 !+        V5P1
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -36,7 +36,7 @@
 !history  M.S.TURNBULL (HRW)
 !+        24/09/2015
 !+        V7P1
-!+   Correction to the computation of the Y in spherical coordinates
+!+   Correction to the computation of the Y in spherical coordinates.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COSLAT         |<--| COSINUS OF LAMBDA0
