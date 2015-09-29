@@ -390,15 +390,6 @@
      &                   (1.D0-TETASUPG)*FN%R(I)
           ENDDO
         ENDIF
-        ! BEDFLUXES
-        IF(BEDBOU)THEN
-          DO I=1,NPOIN2
-!           EXPLICIT SOURCE TERM
-            SEM3D%R(I) = SEM3D%R(I)
-     &                 - MAX(BEDFLU%R(I),0.D0)*
-     &                   (1.D0-TETASUPG)*FN%R(I)
-          ENDDO
-        ENDIF
       ENDIF
 !
 !=======================================================================
@@ -471,13 +462,6 @@
           ENDDO
         ENDIF
         
-        IF(BEDBOU)THEN
-          DO I=1,NPOIN2
-!           IMPLICIT BEDFLUX TERM
-            MTRA2%D%R(I)=MTRA2%D%R(I)+
-     &                   MAX(BEDFLU%R(I),0.D0)*TETASUPG
-          ENDDO
-        ENDIF
         IF(BEDBOU)THEN
           DO I=1,NPOIN2
 !           IMPLICIT BEDFLUX TERM

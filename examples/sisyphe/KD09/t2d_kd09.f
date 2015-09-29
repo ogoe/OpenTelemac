@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE PHYSICAL PARAMETERS H, U, V ETC.
@@ -32,6 +32,11 @@
 !+   Addition of the Tsunami displacement (based on Okada's model)
 !+   by calling CONDI_OKADA and of the TPXO tidal model by calling
 !+   CONDI_TPXO (the TPXO model being coded in module TPXO)
+!
+!history  C.-T. PHAM (LNHE)
+!+        03/09/2015
+!+        V7P1
+!+   Change in the number of arguments when calling CONDI_TPXO
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,24 +98,24 @@
      &                  LIHBOR%I,LIUBOR%I,KENT,KENTU,
      &                  GEOSYST,NUMZONE,LAMBD0,PHI0,
      &                  T2D_FILES,T2DBB1,T2DBB2,
-     &                  MARDAT,MARTIM,INTMICON,MSL,TIDALTYPE,
-     &                  BOUNDARY_COLOUR,ICALHWG)
+     &                  MARDAT,MARTIM,INTMICON,MSL,
+     &                  TIDALTYPE,BOUNDARY_COLOUR,ICALHWG)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
 !
 !  TO BE MODIFIED BY USER IF SPECIAL INITIAL CONDITIONS
 !
-! KD09 dam-break IC:
-      DO I=1,NPOIN
-        IF(X(I)>5.0D0) THEN
-          H%R(I) = 0.D0
-          U%R(I) = 0.D0
-        ELSE
-          H%R(I) = 1.D0
-          U%R(I) = 0.D0
-        ENDIF
-      END DO
+!  KD09 dam-break IC:
+        DO I=1,NPOIN
+          IF(X(I).GT.5.D0) THEN
+            H%R(I) = 0.D0
+            U%R(I) = 0.D0
+          ELSE
+            H%R(I) = 1.D0
+            U%R(I) = 0.D0
+          ENDIF
+        ENDDO
 !
 !  END OF CODE TO BE MODIFIED BY USER
 !
@@ -153,9 +158,6 @@
 !
       RETURN
       END
-
-! @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 !                    *****************
                      SUBROUTINE QSFORM
 !                    *****************

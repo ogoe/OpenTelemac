@@ -833,29 +833,6 @@
 !         ENDDO
       ENDIF
 !
-!     POSITIVE BED FLUXES CHANGE THE MONOTONICITY CRITERION
-!
-      IF(BEDBOU) THEN
-        ! STORE BEDFLU IN T2_18 AS IT NEEDS TO BE ASSEMBLED
-        CALL CPSTVC(BEDFLU,T2_18)
-        CALL OS('X=Y     ',X=T2_18,Y=BEDFLU)
-        IF(NCSIZE.GT.1) CALL PARCOM(T2_18,2,MESH2D)
-        DO IPOIN=1,NPOIN2
-          IF(T2_18%R(IPOIN).GT.0.D0) THEN
-            TRA03(IPOIN)=TRA03(IPOIN)
-     &                  -DTJ*T2_18%R(IPOIN)
-!                                        WITH PARCOM
-          ENDIF
-        ENDDO
-!         DO IPOIN=1,NPOIN2
-!           IF(BEDFLU%R(IPOIN).GT.0.D0) THEN
-!             TRA03(IPOIN)=TRA03(IPOIN)
-!      &                  -DTJ*BEDFLU%R(IPOIN)
-! !                                        WITH PARCOM
-!           ENDIF
-!         ENDDO
-      ENDIF
-!
       ELSEIF(OPT.EQ.1) THEN
 !
       IF(SCHCF.EQ.ADV_PSI) THEN
@@ -903,29 +880,6 @@
             ENDIF
           ENDDO
         ENDIF
-      ENDIF
-!
-!     POSITIVE BED FLUXES CHANGE THE MONOTONICITY CRITERION
-!
-      IF(BEDBOU) THEN
-!         DO IPOIN=1,NPOIN2
-!           IF(BEDFLU%R(IPOIN).GT.0.D0) THEN
-!             TRA03(IPOIN)=TRA03(IPOIN)
-!      &                  -DTJ*BEDFLU%R(IPOIN)
-! !                                        WITHOUT PARCOM
-!           ENDIF
-!         ENDDO
-        ! STORE BEDFLU IN T2_18 AS IT NEEDS TO BE ASSEMBLED
-        CALL CPSTVC(BEDFLU,T2_18)
-        CALL OS('X=Y     ',X=T2_18,Y=BEDFLU)
-        IF(NCSIZE.GT.1) CALL PARCOM(T2_18,2,MESH2D)
-        DO IPOIN=1,NPOIN2
-          IF(T2_18%R(IPOIN).GT.0.D0) THEN
-            TRA03(IPOIN)=TRA03(IPOIN)
-     &                  -DTJ*T2_18%R(IPOIN)
-!                                        WITHOUT PARCOM
-          ENDIF
-        ENDDO
       ENDIF
 !
 !     POSITIVE BED FLUXES CHANGE THE MONOTONICITY CRITERION

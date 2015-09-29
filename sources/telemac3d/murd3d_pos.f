@@ -737,16 +737,6 @@
               ENDIF
             ENDDO
         ENDIF
-!       EXITING BEDFLUXES
-        IF(BEDBOU) THEN
-!         HERE IN PARALLEL BEDFLUXES WITHOUT PARCOM
-          DO IPOIN=1,NPOIN2
-              IF(BEDFLU%R(IPOIN).LT.0.D0) THEN
-                FLUX=FLUX
-     &              -DT*FC(IPOIN)*BEDFLU%R(IPOIN)
-              ENDIF
-            ENDDO
-        ENDIF
       ENDIF
 !
 !     RAIN-EVAPORATION (HERE ONLY EVAPORATION, NOT RAIN, HENCE
@@ -790,20 +780,6 @@
               ENDIF
             ENDIF
           ENDIF
-        ENDIF
-!       EXITING BEDFLUXES (WITH FC UNCHANGED)
-        IF(BEDBOU) THEN
-          DO IPOIN=1,NPOIN2
-!           HERE VERSION OF BEDFLU ASSEMBLED IN PARALLEL
-!             IF(BEDFLU%R(IPOIN).LT.0.D0) THEN
-!               VOLU2(IPOIN)=VOLU2(IPOIN)+
-!      &                    DT*BEDFLU%R(IPOIN)
-!             ENDIF
-            IF(T2_18%R(IPOIN).LT.0.D0) THEN
-              VOLU2(IPOIN)=VOLU2(IPOIN)+
-     &                    DT*T2_18%R(IPOIN)
-            ENDIF
-          ENDDO
         ENDIF
 !       EXITING BEDFLUXES (WITH FC UNCHANGED)
         IF(BEDBOU) THEN

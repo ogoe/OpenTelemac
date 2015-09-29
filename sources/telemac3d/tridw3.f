@@ -254,13 +254,6 @@
             SUMFLU%R(I)=SUMFLU%R(I)-BEDFLU%R(I)
           ENDDO
         ENDIF
-!       WITH BED FLUXES
-        IF(BEDBOU) THEN
-          DO I=1,NPOIN2
-!           NON ASSEMBLED BED FLUXES
-            SUMFLU%R(I)=SUMFLU%R(I)-BEDFLU%R(I)
-          ENDDO
-        ENDIF
         IF(RAIN) THEN
           DO IPOIN2=1,NPOIN2
             I=NPOIN3-NPOIN2+IPOIN2

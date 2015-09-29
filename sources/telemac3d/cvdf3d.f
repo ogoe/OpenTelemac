@@ -715,18 +715,6 @@
           ENDDO
         ENDIF
 !
-!       CHARACTERISTICS OR SUPG : BED FLUXES
-!       (FOR DISTRIBUTIVE SCHEMES IT IS DONE IN MURD3D)
-!
-        IF(BEDBOU.AND.(SCHCF.EQ.ADV_CAR.OR.SCHCF.EQ.ADV_SUP)) THEN
-          DO IP=1,NPOIN2
-            IF(BEDFLU%R(IP).LE.0.D0) THEN
-!                         FN FOR CHARACTERISTICS ?
-              FLUXF=FLUXF-FD%R(IP)*BEDFLU%R(IP)*DT
-            ENDIF
-          ENDDO
-        ENDIF
-!
       ENDIF
 !
 !-----------------------------------------------------------------------
