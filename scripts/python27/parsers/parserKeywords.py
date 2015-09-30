@@ -108,7 +108,7 @@ def scanCAS(lines):
    # ~~ clean comments
    core = []
    for i in range(len(lines)):
-      line = lines[i].replace('"""',"'''").replace('"',"'").replace("''",'"')
+      line = lines[i].replace('"""',"'''").replace('"',"'") #.replace("''",'"')
       proc = re.match(key_comment,line+'/')
       line = proc.group('before').strip() + ' '
       proc = re.match(emptyline,line)
@@ -142,7 +142,7 @@ def scanCAS(lines):
       else:
          keylist.append(kw)
          vallist.append(val)
-   
+
    return lines,(keylist,vallist)
 
 def readCAS(cas,dico,frgb):
