@@ -84,7 +84,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: TN,TEXP
+      TYPE(BIEF_OBJ), INTENT(IN)      :: TN
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: TEXP
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
