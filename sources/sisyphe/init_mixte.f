@@ -39,6 +39,11 @@
 !+  Changing the calling to init_compo_coh: the number of layers is fixed
 !+  Testing SUM(layers) = ZF-ZR
 !+  Compute the initial mass balance
+!+
+!history  PABLO SANTORO (IMFIA) AND PABLO TASSI (EDF R&D - LHSV)
+!+        01/08/2015
+!+        V7P1
+!+  small correction for continuous computation 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AVA0           |-->| VOLUME PERCENT
@@ -175,6 +180,7 @@
 !
            DO J=1,NOMBLAY
               EST=EST+ES(I,J)
+              CONC(I,J) = CONC_VASE(J)
            ENDDO
 !          ELSE
 !            EST=ES(I,1)

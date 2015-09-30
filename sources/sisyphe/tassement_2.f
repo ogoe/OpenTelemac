@@ -12,11 +12,16 @@
 !BRIEF    COMPUTES THE CONSOLIDATION BASED ON GIBSON THEORY
 !+
 !
-!HISTORY  LAN ANH VAN (LHSV)
+!history LAN ANH VAN (LHSV)
 !+        10/01/2011
 !+        V6P2
 !+   FIRST VERSION IN TEST (NOT YET CALLED IN CURRENT VERSION 6.2)
 !+
+!history  PABLO SANTORO (IMFIA) AND PABLO TASSI (EDF R&D - LHSV)
+!+        01/08/2015
+!+        V7P1
+!+   INFLUENCE OF THE DIFFUSION EFFECT IN COMPUTATION OF
+!+   THE EFFECTIVE STRESS, SEE VAN (2012)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COEF_N         |-->| PERMEABILITY COEFFICIENT
@@ -71,6 +76,8 @@
       DOUBLE PRECISION KSED(NLAYMAX),KCONSO(NLAYMAX)
 !     SEDIMENT FLUX BETWEEN TWO CONSECUTIVE LAYERS
       DOUBLE PRECISION FLUX(NLAYMAX)
+!     DIFFUSION TERM
+      DOUBLE PRECISION DIFFU(NLAYMAX)
 !
 !     ******************************************************************
 !     * PROGRAM SIMULATING THE SEDIMENTATION-CONSOLIDATION             *
@@ -81,11 +88,23 @@
         DO J=1,NOMBLAY
           T2%R(I)=T2%R(I)+ES(I,J)
         ENDDO
+
+!       FROM VAN (2012)
+!       DEPENDING ON THE CLOSURE EQUATIONS,
+!       THE INPUT CAN BE EFFECTIVE STRESS OF DIFFUSION TERM (=
+!       KC*DSIGMA/DC/(G*RHO_F))
 !
+!        EFFECTIVE STRESS: DIFFUSION TERM
+!       ----------------------------------
+        DO J = 1,NOMBLAY
+       DIFFU(J)=11.55D0*(CONC_VASE(J)/(XMVS*0.0296D0))**12.D0*
+     & (LT*DTS)**(-3.4D0)
+        ENDDO
+
 !       EFFECTIVE STRESS
 !       ------------------------
         DO J = 1,NOMBLAY
-          SIG_EFF(J)=119033.D0*(CONC_VASE(J)/XMVS)**14
+          SIG_EFF(J)=119033.D0*(CONC_VASE(J)/XMVS)**14.D0
         ENDDO
 
 !       PERMEABILITY
@@ -100,17 +119,22 @@
      &            (1.D0-(CONC_VASE(J)/CONC_MAX))**COEF_N/
      &            ((XMVS-XMVE)*(CONC_VASE(J)/XMVS)/XMVE)
 !
-!       IF (CONC_VASE(J).GT.CONC_GEL) THEN
-        IF(LT.GT.11000.D0) THEN
+       IF (CONC_VASE(J).GT.CONC_GEL) THEN
 !
 !     SEDIMENTATION AND CONSOLIDATION :
 !     --------------------------------
-          IF ((ES(I,J+1) + ES(I,J)).GT.1.D-8) THEN
+        IF ((ES(I,J+1) + ES(I,J)).GT.1.D-8) THEN
             V_S(J) =
-     &          KCONSO(J) * CONC_VASE(J) * (1.D0/XMVS - 1.D0/XMVE)
-     &          + ( KCONSO(J) / (XMVE * GRAV)) *
-     &          (SIG_EFF(J+1) - SIG_EFF(J)) /
-     &          (0.5D0 * (ES(I,J+1) + ES(I,J)))
+     & KCONSO(J) * CONC_VASE(J) * (1.D0/XMVS - 1.D0/XMVE)
+     & + DIFFU(J)/CONC_VASE(J)*
+     & (CONC_VASE(J+1)-CONC_VASE(J))/
+     & (0.5D0 * (ES(I,J+1) + ES(I,J)))
+! CALCULATE FROM SIG_EFF
+!            V_S(J) =
+!     &          KCONSO(J) * CONC_VASE(J) * (1.D0/XMVS - 1.D0/XMVE)
+!     &          + ( KCONSO(J) / (XMVE * GRAV)) *
+!     &          (SIG_EFF(J+1) - SIG_EFF(J)) / 
+!     &          (0.5D0 * (ES(I,J+1) + ES(I,J)))
           ELSE
             V_S(J) = 1.D8
           ENDIF
@@ -125,7 +149,7 @@
           IF (V_S(J).GT.0.D0) V_S(J) = 0.D0
         ENDDO
 !
-!      FALLVING VELOCITY AT THE LEVEL OF ZR (AT THE BED)
+!      FALLING VELOCITY AT THE LEVEL OF ZR (AT THE BED)
           V_S(NOMBLAY) = 0.D0
 !      SEDIMENT FLUX :
 !     --------------
