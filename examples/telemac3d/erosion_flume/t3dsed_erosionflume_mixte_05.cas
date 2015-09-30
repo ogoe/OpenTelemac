@@ -16,7 +16,6 @@ BOTTOM TOPOGRAPHY FILE          = semis3.xyz
 BOUNDARY CONDITIONS FILE        = canalmesh_fond_BC.cli
 3D RESULT FILE                  = r3d_erosionflume_mixte-05.slf
 2D RESULT FILE                  = r2d_erosionflume_mixte-05.slf
-PARALLEL PROCESSORS             = 8
 VALIDATION = YES
 REFERENCE FILE                  = f3d_erosionflume_mixte-05.slf
 /DEBUGGER =1
