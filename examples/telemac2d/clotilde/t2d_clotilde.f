@@ -317,10 +317,6 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-      DOUBLE PRECISION :: FLXCR
-      COMMON/FLUX/FLXCR
-      DOUBLE PRECISION Q1CR, Q2CR, Z1CR, Z2CR
-      DOUBLE PRECISION CLIMIT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -328,7 +324,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      DOUBLE PRECISION :: FLXCR
+      COMMON/FLUX/FLXCR
+      DOUBLE PRECISION Q1CR, Q2CR, Z1CR, Z2CR
       CHARACTER(LEN=9) FCT
+      DOUBLE PRECISION CLIMIT
+      EXTERNAL CLIMIT
 !
 !-----------------------------------------------------------------------
 !
@@ -363,29 +364,28 @@
 !
         REWIND 26
         SL = COTE(I)
-        IF (I.EQ.7) THEN
-            IF (AT.LE.35400.D0) THEN
-                SL = 0.0005D0*AT+41.3D0
-            ELSE
-                READ(26,200) Q2CR, Z2CR
-                Q1CR = 3900.D0
-                Z1CR = 58.50D0
-                DO WHILE (Q2CR.LT.FLXCR)
-                Q1CR = Q2CR
-                Z1CR = Z2CR
-                READ(26,200) Q2CR, Z2CR
-                ENDDO
- 200   FORMAT((F10.2,F5.2))
-                SL = CLIMIT(Q1CR,Q2CR,Z1CR,Z2CR)
-!                print *, Q1CR, Q2CR, Z1CR, Z2CR, SL
-            ENDIF
+        IF(I.EQ.7) THEN
+          IF(AT.LE.35400.D0) THEN
+            SL = 0.0005D0*AT+41.3D0
+          ELSE
+            READ(26,200) Q2CR, Z2CR
+            Q1CR = 3900.D0
+            Z1CR = 58.50D0
+            DO WHILE (Q2CR.LT.FLXCR)
+              Q1CR = Q2CR
+              Z1CR = Z2CR
+              READ(26,200) Q2CR, Z2CR
+            ENDDO
+ 200        FORMAT((F10.2,F5.2))
+            SL = CLIMIT(Q1CR,Q2CR,Z1CR,Z2CR)
+          ENDIF
         ENDIF
-        IF (I.EQ.1) THEN
-            IF (AT.LE.42860.D0) THEN
-                SL = 0.0005D0*AT+16.7D0
-            ELSE
-                SL = COTE(I)
-            ENDIF
+        IF(I.EQ.1) THEN
+          IF(AT.LE.42860.D0) THEN
+            SL = 0.0005D0*AT+16.7D0
+          ELSE
+            SL = COTE(I)
+          ENDIF
         ENDIF
 !
       ENDIF
@@ -407,11 +407,9 @@
       DOUBLE PRECISION :: FLXCR
       COMMON/FLUX/FLXCR
 !
-!
 !-----------------------------------------------------------------------
 !
       CLIMIT = (X2 - X1)/(Q2CR - Q1CR) * ( FLXCR - Q1CR) + X1
-
 !
 !-----------------------------------------------------------------------
 !
