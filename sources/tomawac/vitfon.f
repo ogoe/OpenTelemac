@@ -47,6 +47,7 @@
 !
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT
 !
+      USE INTERFACE_TOMAWAC, EX_VITFON => VITFON
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

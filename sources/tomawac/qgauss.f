@@ -40,6 +40,7 @@
 !| XM             |-->| PARAMETER M OF THE FUNCTION TO BE INTEGRATED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_QGAUSS => QGAUSS
       IMPLICIT NONE
 !
 !     VARIABLES IN ARGUMENT
@@ -56,8 +57,8 @@
 !
 !     EXTERNAL FUNCTIONS
 !     """""""""""""""""""
-      DOUBLE PRECISION  FONCRO
-      EXTERNAL          FONCRO
+!      DOUBLE PRECISION  FONCRO
+!      EXTERNAL          FONCRO
 !
       DATA X/.1488743389D0,.4333953941D0,.6794095682D0,
      &       .8650633666D0,.9739065285D0/

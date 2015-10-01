@@ -74,6 +74,7 @@
       USE BIEF
       USE DECLARATIONS_TOMAWAC
 !
+      USE INTERFACE_TOMAWAC, EX_RADIAT => RADIAT
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

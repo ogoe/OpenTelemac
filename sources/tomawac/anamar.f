@@ -68,6 +68,7 @@
 !| ZM2            |-->| DEPTH AT TIME TM2, AT THE MESH POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_ANAMAR => ANAMAR
       IMPLICIT NONE
 !
       INTEGER LNG,LU

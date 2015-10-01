@@ -62,6 +62,7 @@
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_QFROT1 => QFROT1
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

@@ -47,16 +47,17 @@
 !| SS             |-->| EXPONENT OF THE DIRECTIONAL SPREADING FUNCTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_DELFRA => DELFRA
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
+!     """""""""""""""""""""
       DOUBLE PRECISION DELFRA, SS    , DEUPI
 !
 !.....EXTERNAL FUNCTIONS
 !     """"""""""""""""""
-      DOUBLE PRECISION GAMMLN
-      EXTERNAL         GAMMLN
+!      DOUBLE PRECISION GAMMLN
+!      EXTERNAL         GAMMLN
 !
 !
       DELFRA=SQRT(DEUPI/2.D0)

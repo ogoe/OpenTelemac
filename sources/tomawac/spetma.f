@@ -50,6 +50,7 @@
 !| SPEC           |<--| TMA VARIANCE DENSITY FREQUENCY SPECTRUM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_SPETMA => SPETMA
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

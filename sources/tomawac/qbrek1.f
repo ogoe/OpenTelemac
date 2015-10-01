@@ -65,6 +65,7 @@
 !| VARIAN         |-->| SPECTRUM VARIANCE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_QBREK1 => QBREK1
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -85,8 +86,8 @@
 !
 !.....EXTERNAL FUNCTIONS
 !     """"""""""""""""""
-      DOUBLE PRECISION   QBBJ78
-      EXTERNAL           QBBJ78
+!      DOUBLE PRECISION   QBBJ78
+!      EXTERNAL           QBBJ78
 !
 !
       SEUIL=1.D-6

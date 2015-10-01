@@ -56,6 +56,7 @@
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_INTANG => INTANG
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

@@ -45,6 +45,7 @@
 !| TETA           |-->| DISCRETIZED DIRECTIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_PREQT2 => PREQT2
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

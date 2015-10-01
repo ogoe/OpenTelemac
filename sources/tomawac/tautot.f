@@ -63,6 +63,7 @@
 !| ZVENT          |-->| WIND MEASUREMENT LEVEL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_TAUTOT => TAUTOT
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

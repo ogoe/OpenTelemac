@@ -60,6 +60,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TOMAWAC, ONLY : PISUR2,DEUPI
+      USE INTERFACE_TOMAWAC, EX_QBREK3 => QBREK3
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -81,8 +82,8 @@
 !
 !.....EXTERNAL FUNCTIONS
 !     """"""""""""""""""
-      DOUBLE PRECISION   GAMMLN, QGAUSS
-      EXTERNAL           GAMMLN, QGAUSS
+!      DOUBLE PRECISION   GAMMLN, QGAUSS
+!      EXTERNAL           GAMMLN, QGAUSS
 !
 !
       SEUIL  = 1.D-6

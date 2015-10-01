@@ -41,6 +41,7 @@
 !| XM             |-->| PARAMETER M OF THE FUNCTION TO BE INTEGRATED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_FONCRO => FONCRO
       IMPLICIT NONE
 !
 !     VARIABLES IN ARGUMENT

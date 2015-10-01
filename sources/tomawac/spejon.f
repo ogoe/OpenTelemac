@@ -49,6 +49,7 @@
 !| SPEC           |<--| JONSWAP VARIANCE DENSITY FREQUENCY SPECTRUM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_SPEJON => SPEJON
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

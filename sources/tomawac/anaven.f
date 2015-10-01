@@ -57,6 +57,7 @@
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_ANAVEN => ANAVEN
       IMPLICIT NONE
 !
 !     WHEN COUPLING WITH TELEMAC-2D, THIS WILL ALLOW A COPY OF WIND

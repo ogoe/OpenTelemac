@@ -59,6 +59,7 @@
 !
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
 !
+      USE INTERFACE_TOMAWAC, EX_TETMOY => TETMOY
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

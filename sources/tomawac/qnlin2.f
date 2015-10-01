@@ -62,6 +62,7 @@
 !
       USE DECLARATIONS_TOMAWAC, ONLY : GRAVIT
 !                                                                     !
+      USE INTERFACE_TOMAWAC, EX_QNLIN2 => QNLIN2
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

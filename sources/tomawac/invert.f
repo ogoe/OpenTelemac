@@ -30,6 +30,7 @@
 !| RN             |<->| MATRIX TO INVERT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_INVERT => INVERT
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

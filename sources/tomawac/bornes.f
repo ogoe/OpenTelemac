@@ -42,6 +42,7 @@
 !| XM             |-->| PARAMETER XM OF THE FUNCTION TO INTGRATE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_BORNES => BORNES
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -60,8 +61,8 @@
 !
 !.....EXTERNAL FUNCTIONS
 !     """"""""""""""""""
-      DOUBLE PRECISION  FONCRO
-      EXTERNAL          FONCRO
+!      DOUBLE PRECISION  FONCRO
+!      EXTERNAL          FONCRO
 !
 !
       I1  = 11

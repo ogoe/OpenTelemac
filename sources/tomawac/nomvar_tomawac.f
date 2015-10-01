@@ -45,6 +45,7 @@
 !| TEXTPR         |<--| NAMES OF VARIABLES OF THE PREVIOUS COMPUTATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_NOMVAR_TOMAWAC => NOMVAR_TOMAWAC
       IMPLICIT NONE
 !
       INTEGER LNG,LU

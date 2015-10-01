@@ -45,6 +45,7 @@
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_FREPIC => FREPIC
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

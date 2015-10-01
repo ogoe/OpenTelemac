@@ -88,6 +88,7 @@
 !| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_QNLIN3 => QNLIN3
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

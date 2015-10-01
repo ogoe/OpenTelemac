@@ -48,6 +48,7 @@
 !| VV             |-->| WIND VELOCITY ALONG Y AT THE MESH POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_USTAR2 => USTAR2
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

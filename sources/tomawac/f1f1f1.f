@@ -33,6 +33,7 @@
 !| NF1            |-->|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_F1F1F1 => F1F1F1
       IMPLICIT NONE
 !
       INTEGER LNG,LU

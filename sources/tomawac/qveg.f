@@ -33,6 +33,7 @@
       USE BIEF
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT,PI
 !
+      USE INTERFACE_TOMAWAC, EX_QVEG => QVEG
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

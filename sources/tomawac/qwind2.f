@@ -76,6 +76,7 @@
 !
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,USDPI
 !
+      USE INTERFACE_TOMAWAC, EX_QWIND2 => QWIND2
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

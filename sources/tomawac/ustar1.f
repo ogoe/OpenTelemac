@@ -58,6 +58,7 @@
 !| ZVENT          |-->| COTE A LAQUELLE EST MESURE LE VENT (M)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_USTAR1 => USTAR1
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

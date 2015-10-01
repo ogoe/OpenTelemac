@@ -48,6 +48,7 @@
 !| XX             |-->| VALUE AT WHICH LOG(GAMMA) IS CALCULATED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_GAMMLN => GAMMLN
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

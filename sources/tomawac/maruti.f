@@ -71,6 +71,7 @@
 !| Z2             |<->| TIDAL LEVEL AT TV2 IN TIDAL WATER LEVEL FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_MARUTI => MARUTI
       IMPLICIT NONE
 !
       INTEGER LNG,LU

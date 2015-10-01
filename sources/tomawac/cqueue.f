@@ -46,6 +46,7 @@
 !| TAILF          |-->| SPECTRUM QUEUE FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_CQUEUE => CQUEUE
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

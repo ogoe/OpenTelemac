@@ -57,6 +57,7 @@
 !| VARIAN         |-->| SPECTRUM VARIANCE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_QBREK4 => QBREK4
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

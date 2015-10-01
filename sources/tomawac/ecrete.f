@@ -43,6 +43,7 @@
 !| PROMIN         |-->| MINIMUM VALUE OF WATER DEPTH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_ECRETE => ECRETE
       IMPLICIT NONE
 !
       INTEGER LNG,LU

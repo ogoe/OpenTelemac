@@ -46,6 +46,7 @@
 !| IQBBJ          |-->| INDEX OF THE SLECTED COMPUTATION METHOD
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_QBBJ78 => QBBJ78
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

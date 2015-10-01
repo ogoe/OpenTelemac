@@ -66,6 +66,7 @@
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TOMAWAC
 !
+      USE INTERFACE_TOMAWAC, EX_INITAB => INITAB
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

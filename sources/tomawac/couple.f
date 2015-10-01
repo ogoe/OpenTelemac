@@ -32,6 +32,7 @@
 !| XK4, YK4       |-->| COUPLING COEFFICIENT FOR QNL4 (GQM METHOD)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_COUPLE => COUPLE
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

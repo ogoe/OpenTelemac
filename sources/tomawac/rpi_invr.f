@@ -41,6 +41,7 @@
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TOMAWAC, EX_RPI_INVR => RPI_INVR
       IMPLICIT NONE
 !
 !     VARIABLES IN ARGUMENT

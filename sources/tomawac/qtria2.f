@@ -61,6 +61,7 @@
 !
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT
 !
+      USE INTERFACE_TOMAWAC, EX_QTRIA2 => QTRIA2
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -98,8 +99,8 @@
 !
 !.....EXTERNAL FUNCTIONS
 !     """""""""""""""""""
-      DOUBLE PRECISION KERBOU
-      EXTERNAL         KERBOU
+!      DOUBLE PRECISION KERBOU
+!      EXTERNAL         KERBOU
 !
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 !
