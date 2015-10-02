@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 <!-- Validation and verification of test cases, given a list of CAS files 
 --> 
-<validation xref="lock-exchange"> 
+<validation xref="lock-exchange" rank="5"> 
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
@@ -15,27 +15,45 @@
    <deco xref="line"> 
       <look colour="k" /> 
    </deco> 
- 
+   <deco xref="PlotVert1"> 
+      <look aspect="1" size="(20,10)" title="Vertical" roi="(-1;-5)(16;1)"/> 
+   </deco>
+   <deco xref="PlotVert2"> 
+      <look aspect="2" size="(20,10)" title="Vertical" roi="(0;-4)(30;0)"/> 
+   </deco>
+   <deco xref="PlotHoriz"> 
+      <look title="Horizontal" size="(20,5)" roi="(0;0)(30;1.2)" />
+   </deco> 
+   <deco xref="3D_Plot1"> 
+       <look size="(1000,1000)"/>
+   </deco>
+   <deco xref="3D_Plot1_i"> 
+       <look size="(1000,1000)" interactive="yes"/>
+   </deco>
+   <deco xref="3D_Layer1"> 
+      <look opacity = "0.5" z_scale = "1" colour_range="(0;1)" number_colours = "10"/>
+   </deco>
+
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="1"  rank="5"
-       do="translate;compile;run;cas;princi" 
+   <action xref="1"
+       do="translate;run;cas;princi" 
        code="telemac3d" target="t3d_lock-hydro.cas" 
        title="lock-exchange scalar mode" 
    />  
-   <action xref="2"  rank="5"
-       do="translate;compile;run;cas;princi" 
+   <action xref="2"
+       do="translate;run;cas;princi" 
        code="telemac3d" target="t3d_lock-nonhydro.cas" 
        title="lock-exchange scalar mode" 
    />
-   <action xref="3"  rank="5"
-       do="translate;compile;run;cas;princi" ncsize="4" 
+   <action xref="3"
+       do="translate;run;cas;princi" ncsize="4" 
        code="telemac3d" target="t3d_lock-hydro.cas" 
        title="lock-exchange parallel mode" 
    />  
-   <action xref="4"  rank="5"
-       do="translate;compile;run;cas;princi" ncsize="4" 
+   <action xref="4"
+       do="translate;run;cas;princi" ncsize="4" 
        code="telemac3d" target="t3d_lock-nonhydro.cas" 
        title="lock-exchange parallel mode" 
    />   
@@ -49,8 +67,91 @@
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
-   <plot2d xref="mesh" config="oneofall" time="[-1]" size="[12;7]" > 
+   <plot2d xref="v1_mesh" type="v-section" extract="(0;1)(30;1)" config="oneofall" time="[-1]" deco="PlotVert1" > 
       <layer vars="elevation z:mesh" target="1:T3DRES" /> 
    </plot2d> 
+   <plot2d xref="h12_mesh" type="p-section" extract="[]#[-1]" config="oneofall" time="[-1]" deco="PlotHoriz" > 
+      <layer vars="elevation z:mesh" target="1:T3DRES" /> 
+   </plot2d> 
+
+   <plot2d xref="v1_hydro_sal_initial" type="v-section" config="oneofall" time="[0]" deco="PlotVert2"> 
+      <layer vars="salinity:map" extract="(0;1)(30;1)" target="1:T3DRES" /> 
+   </plot2d>
+
+   <plot2d xref="v1_hydro_sal_final" type="v-section" config="oneofall" time="[-1]" deco="PlotVert2"> 
+      <layer vars="salinity:map" extract="(0;1)(30;1)" target="1:T3DRES" /> 
+   </plot2d>
+
+   <plot2d xref="v1_hydro_vel_final" type="v-section" config="oneofall" time="[-1]" deco="PlotVert2"> 
+      <layer vars="velocity:map" extract="(0;1)(30;1)" target="1:T3DRES" /> 
+   </plot2d>
+
+   <plot2d xref="h01_hydro_sal_final" type="p-section" config="oneofall" time="[-1]" deco="PlotHoriz" > 
+      <layer vars="salinity:map" extract="[]#[0]" target="1:T3DRES" /> 
+   </plot2d>
+
+   <plot2d xref="h12_hydro_sal_final" type="p-section" config="oneofall" time="[-1]" deco="PlotHoriz" > 
+      <layer vars="salinity:map" extract="[]#[-1]" target="1:T3DRES" /> 
+   </plot2d>
+
+   <plot2d xref="v1_nonhydro_sal_initial" type="v-section" config="oneofall" time="[0]" deco="PlotVert2" > 
+      <layer vars="salinity:map" extract="(0;1)(30;1)" target="2:T3DRES" /> 
+   </plot2d>
+
+   <plot2d xref="v1_nonhydro_sal_final" type="v-section" config="oneofall" time="[-1]" deco="PlotVert2" > 
+      <layer vars="salinity:map" extract="(0;1)(30;1)" target="2:T3DRES" /> 
+   </plot2d>
+
+   <plot2d xref="v1_nonhydro_vel_final" type="v-section" config="oneofall" time="[-1]" deco="PlotVert2" > 
+      <layer vars="velocity:map" extract="(0;1)(30;1)" target="2:T3DRES" /> 
+   </plot2d>
+
+   <plot2d xref="h01_nonhydro_sal_final" type="p-section" config="oneofall" time="[-1]" deco="PlotHoriz" > 
+      <layer vars="salinity:map" extract="[]#[0]" target="2:T3DRES" /> 
+   </plot2d>
+
+   <plot2d xref="h12_nonhydro_sal_final" type="p-section" config="oneofall" time="[-1]" deco="PlotHoriz" > 
+      <layer vars="salinity:map" extract="[]#[-1]" target="2:T3DRES" /> 
+   </plot2d>
+
+<!-- plot3d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+  --> 
+
+   <plot3d xref="3d_nonhyd_sal_map" config="oneofall" time="[-1]" deco="3D_Plot1"> 
+      <layer vars="salinity:map" target="2:T3DRES" deco="3D_Layer1"/> 
+   </plot3d>
+
+   <plot3d xref="3d_nonhyd_sal_contour" config="oneofall" time="[-1]" deco="3D_Plot1"> 
+      <layer vars="salinity:contour" target="2:T3DRES" deco="3D_Layer1"/> 
+   </plot3d>
+
+   <plot3d xref="3d_nonhyd_hsection" type="p-section" config="oneofall" time="[-1]" deco="3D_Plot1"> 
+      <layer vars="salinity:map" extract="[]#[0]" target="2:T3DRES" deco="3D_Layer1"/> 
+      <layer vars="salinity:map" extract="[]#[4]" target="2:T3DRES" deco="3D_Layer1"/> 
+      <layer vars="salinity:map" extract="[]#[8]" target="2:T3DRES" deco="3D_Layer1"/> 
+      <layer vars="salinity:map" extract="[]#[-1]" target="2:T3DRES" deco="3D_Layer1"/> 
+   </plot3d>
+
+   <plot3d xref="3d_nonhyd_vsection" type="v-section" config="oneofall" time="[-1]" deco="3D_Plot1"> 
+      <layer vars="salinity:map" extract="(0;0)(30;1.2)" target="2:T3DRES" deco="3D_Layer1"/> 
+      <layer vars="salinity:map" extract="(0;0.6)(30;0.6)" target="2:T3DRES" deco="3D_Layer1"/> 
+      <layer vars="salinity:map" extract="(0;1.2)(30;0)" target="2:T3DRES" deco="3D_Layer1"/> 
+   </plot3d>
+
+   <plot3d xref="3d_nonhyd_h+vsection" config="oneofall" time="[-1]" deco="3D_Plot1"> 
+      <layer vars="salinity:map" type="3d:p-section" extract="[]#[0]" target="2:T3DRES" deco="3D_Layer1"/> 
+      <layer vars="salinity:map" type="3d:p-section" extract="[]#[-1]" target="2:T3DRES" deco="3D_Layer1"/> 
+      <layer vars="salinity:map" type="3d:v-section" extract="(0;0.6)(30;0.6)" target="2:T3DRES" deco="3D_Layer1"/> 
+      <layer vars="salinity:map" type="3d:v-section" extract="(0;0)(0;1.2)" target="2:T3DRES" deco="3D_Layer1"/> 
+      <layer vars="salinity:map" type="3d:v-section" extract="(5;0)(5;1.2)" target="2:T3DRES" deco="3D_Layer1"/> 
+      <layer vars="salinity:map" type="3d:v-section" extract="(10;0)(10;1.2)" target="2:T3DRES" deco="3D_Layer1"/> 
+      <layer vars="salinity:map" type="3d:v-section" extract="(20;0)(20;1.2)" target="2:T3DRES" deco="3D_Layer1"/> 
+      <layer vars="salinity:map" type="3d:v-section" extract="(25;0)(25;1.2)" target="2:T3DRES" deco="3D_Layer1"/> 
+      <layer vars="salinity:map" type="3d:v-section" extract="(30;0)(30;1.2)" target="2:T3DRES" deco="3D_Layer1"/> 
+   </plot3d>
+
+   <plot3d xref="3d_nonhyd_vectors" config="oneofall" time="[-1]" deco="3D_Plot1"> 
+      <layer vars="velocity:arrow" target="2:T3DRES" /> 
+   </plot3d>
  
 </validation> 

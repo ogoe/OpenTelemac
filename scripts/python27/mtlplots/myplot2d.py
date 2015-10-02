@@ -10,7 +10,7 @@
  /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
 !________!                                                        `--'   `--
 """
-"""@history 30/08/2011 -- Sebastien E. Bourban 
+"""@history 30/08/2011 -- Sebastien E. Bourban
 """
 """@brief
 """
@@ -36,14 +36,14 @@ from plotTELEMAC import getColourMap
 # ~~> dependencies towards other pytel/modules
 from samplers.mycast import Caster,whatVarsSLF
 from parsers.parserSELAFIN import SELAFIN,SELAFINS
-from parsers.parserStrings import parseArrayFrame
+from parsers.parserStrings import parseArrayFrame, parseArrayPaires
 
 # _____               ______________________________________________
 # ____/ Default DECO /_____________________________________________/
 #
 
 decoDefault = {
-   "size":'', "dpi":'', "ratio2d": '', "title": '', "roi": '', "type":'',
+   "size":'(10;10)', "aspect":'1', "dpi":'', "ratio2d": '', "title": '', "roi": '', "type":'',
    ### LINES
    # See http://matplotlib.org/api/artist_api.html#module-matplotlib.lines for more
    # information on line properties.
@@ -144,7 +144,7 @@ decoDefault = {
 #
 
 def mapDecoDefault(decoUser,default):
-   
+
    # ~~~ melting the pot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mpar = {}                    # mpar, contains the matplotlib parameters (defaults)
    upar = deepcopy(default) # upar, contains the user parameters (from the XML)
@@ -165,7 +165,7 @@ def mapDecoDefault(decoUser,default):
                if type(mpl.rcParams[key][0]) == type(1) or type(mpl.rcParams[key][0]) == type(1.0):
                   mpar[key] = parseArrayFrame(upar[key])
                   del upar[key]
-               if type(mpl.rcParams[key][0]) == type("") or type(mpl.rcParams[key][0]) == type(unicode('')):
+               elif type(mpl.rcParams[key][0]) == type("") or type(mpl.rcParams[key][0]) == type(unicode('')):
                   print upar[key].strip('[]')
                   mpar[key] = [ s.strip() for s in upar[key].strip('[]').replace(';',',').split(',') ]
                   del upar[key]
@@ -194,7 +194,7 @@ def mapDecoDefault(decoUser,default):
          del upar[key]
       elif key == "size":
          if upar[key] != '':
-            mpar.update({ 'figure.figsize': parseArrayFrame(upar[key]) })
+            mpar.update({ 'figure.figsize': parseArrayPaires(upar[key])[0]})
          del upar[key]
 
    return mpar,upar
@@ -203,7 +203,7 @@ def mapDecoDefault(decoUser,default):
 # ____/ Primary Method:Draw /______________________________________/
 #
 
-def drawMesh2DElements(myplt,deco,elements):
+def drawMesh2DElements(myplt,decoUser,elements):
 
    #  *2DElements: draw individual elements polygons  (triangle or quads)
    # ~~> Focus on current subplot / axes instance
@@ -216,28 +216,28 @@ def drawMesh2DElements(myplt,deco,elements):
    # ~~> Plot data
    #ex: fig = myplt.figure(1,figsize=(3.0,4.0),dpi=100), where figsize is in inches
    crax.add_collection(colection)   # adds, or plots our collection
-   
+
    return
 
-def drawColouredTriMaps(myplt,deco,(x,y,ikle,z)):
+def drawColouredTriMaps(myplt,decoUser,(x,y,ikle,z)):
 
    # ~~> Line Width
    linewidths = decoDefault['lines.linewidth']
-   if deco.has_key('linewidths'): linewidths = float(deco['linewidths'])
+   if decoUser.has_key('linewidths'): linewidths = float(decoUser['linewidths'])
    # ~~> Line Colour
    colors = decoDefault['lines.color']
-   if deco.has_key('colors'): colors = deco['colors']
+   if decoUser.has_key('colors'): colors = decoUser['colors']
    # ~~> Line Labels
    fontsize = 9        #/!\ do find and set a default
-   if deco.has_key('fontsize'): fontsize = int(deco['fontsize'])
+   if decoUser.has_key('fontsize'): fontsize = int(decoUser['fontsize'])
    inline = 1          #/!\ do find and set a default
-   if deco.has_key('inline'): inline = int(deco['inline'])
-   fmt='%1.1f'         #/!\ do find and set a default
-   if deco.has_key('fmt'): fmt = deco['fmt']  
+   if decoUser.has_key('inline'): inline = int(decoUser['inline'])
+   fmt=u'%1.1f'         #/!\ do find and set a default
+   if decoUser.has_key('fmt'): fmt = decoUser['fmt']
 
    # ~~> Colour maps
    cmap = cm.jet       #/!\ do find and set a default
-   if deco.has_key('cmap'): cmap = mpl.colors.LinearSegmentedColormap('user',getColourMap(deco['cmap']))
+   if decoUser.has_key('cmap'): cmap = mpl.colors.LinearSegmentedColormap('user',getColourMap(decoUser['cmap']))
 
    # ~~> Colour maps
    myplt.tricontourf(x,y,ikle, z, cmap=cmap)
@@ -246,11 +246,12 @@ def drawColouredTriMaps(myplt,deco,(x,y,ikle,z)):
    if zmin < zmax:
       cs = myplt.tricontour(x,y,ikle, z, linewidths=linewidths, colors=colors)
       myplt.clabel(cs,fmt=fmt,fontsize=fontsize,inline=inline)
+      myplt.clabel(cs,fontsize=fontsize,inline=inline)
       #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')
 
    return
 
-def drawLabeledTriContours(myplt,deco,(x,y,ikle,z)):
+def drawLabeledTriContours(myplt,decoUser,(x,y,ikle,z)):
 
    # Convert negative dashed default contour lines by solids
    # matplotlib.rcParams['contour.negative_linestyle'] = 'solid'
@@ -320,7 +321,7 @@ def drawLabeledTriContours(myplt,deco,(x,y,ikle,z)):
 
    return
 
-def drawColouredTriVects(myplt,deco,(x,y,uv,normalised)):
+def drawColouredTriVects(myplt,decoUser,(x,y,uv,normalised)):
 
    # ~~> Plot data
    colourmap = cm.jet
@@ -416,14 +417,14 @@ class Dumper2D(Caster):
       Caster.__init__(self,{'object':caster.object,'obdata':caster.obdata})
       self.obtype = dump['outFormat']    # the type of file, 'slf' most probably
       self.oudata = None          # the loaded SELAFIN object itself, most probably
-      self.obdump = dumpSELAFIN()
+      #self.obdump = dumpSELAFIN()
 
    def add(self,typl,what):
       Caster.add(self,typl,what)
-      
+
       # ~~> output from for 2D file
       if self.obtype == 'slf':
-         self.obdump.add(self.object[what['file']])
+         #self.obdump.add(self.object[what['file']])
          cast = self.get(typl,what)
          support = cast.support
          values = cast.values
@@ -471,7 +472,7 @@ class Dumper2D(Caster):
       else: # TODO: raise exception
          print '... do not know how to write to this format: ' + self.obtype
          sys.exit(1)
-         
+
    def save(self,fileName):
       # gather common information for the final header
       if self.obtype == 'slf':
@@ -500,6 +501,13 @@ class Figure2D(Caster):
    def __init__(self,caster,plot):
       Caster.__init__(self,{'object':caster.object,'obdata':caster.obdata})
 
+      # ~~~ special case for size ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      if 'size' in plot.keys():
+         if 'look' in plot['deco'].keys():
+            for l in plot['deco']['look']:
+               l.update({'size':plot['size']})
+         else: plot['deco'].update({'look':[{'size':plot['size']}]})
+         del plot['size']
       # ~~~ figure decoration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       self.mpar,self.upar = mapDecoDefault( plot['deco'],decoDefault )
       mpl.rcParams.update(self.mpar)
@@ -507,42 +515,43 @@ class Figure2D(Caster):
       #self.mpar.update({ 'grid.alpha':1.0 })
 
       # ~~~ create figure ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      fig = plt.figure() # TODO: do this when you draw
+      fig = plt.figure(figsize=self.mpar['figure.figsize']) # TODO: do this when you draw
       # ~~> add_subplot, or ax definition
       fig.add_subplot(111)
+      ax1, = fig.get_axes()
       # fig.add_subplot(111) returns an Axes instance, where we can plot and this is
       #   also the reason why we call the variable referring to that instance ax.
       #   This is a common way to add an Axes to a Figure, but add_subplot() does a
       #   bit more: it adds a subplot. So far we have only seen a Figure with one Axes
       #   instance, so only one area where we can draw, but Matplotlib allows more than one
-      
+
       # ~~~ figure decoration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       mpl.rcdefaults()
-      
+
       # ~~> user params
       if self.upar['title'] != '': plt.title(self.upar['title'])
       # ~~> type of plot
       if self.upar['type'] != '':
          if self.upar['type'][1] == 'line' or self.upar['type'][1] == 'rose':
-            fig.add_subplot(adjustable='datalim')
+            ax1.set_adjustable('datalim')
          else:
-            fig.add_subplot(aspect='equal')
-      else: fig.add_subplot(aspect='equal')
+            ax1.set_aspect(self.upar['aspect'])
+      else: ax1.set_aspect(self.upar['aspect'])
       # ~~> region of interes and defaault margins
       if self.upar["roi"] != '': self.upar["roi"] = [ parseArrayPaires(self.upar["roi"]), [0,0,0,0] ]
 
-      self.plt = plt 
+      self.plt = plt
       self.fig = fig
 
    def add(self,typl,what):
       Caster.add(self,typl,what)
-      
+
       if len(what['vars'].split(';')) > 1: # TODO: raise exception
          print '... do not know support multiple variables anymore: ' + what['vars']
          sys.exit(1)
-      
+
       if what['type'].split(':')[1] == 'v-section':
-         
+
          cast = self.get(typl,what)
          elements = cast.support
          VARSORS = cast.values
@@ -603,9 +612,9 @@ class Figure2D(Caster):
       if 'WACLEO' in typl.upper() or \
          'SELAFIN' in typl.upper() or \
          'slf' in typl.lower():
-         
+
          if what['type'].split(':')[1] == 'v-section':
-            
+
             # ~~> Loop on variables
             for vtype in what['vars'].split(';'):
                vtype = vtype.split(':')[1]
@@ -633,7 +642,7 @@ class Figure2D(Caster):
                   deco(self.plt,self.upar,np.ravel(MESHX[IKLE3]),np.ravel(MESHZ[IKLE3]))
 
          elif what['type'].split(':')[1] == 'p-section':
-            
+
             # ~~> Loop on variables
             for vtype in what['vars'].split(';'):
                vtype = vtype.split(':')[1]
@@ -672,8 +681,13 @@ class Figure2D(Caster):
       #else: # TODO: raise exception
       #   print '... do not know how to draw from this format: ' + typl
 
-   def show(self): self.plt.show()
-   def save(self,fileName): self.plt.savefig(fileName)
+   def show(self):
+      self.plt.show()
+      self.plt.close()
+
+   def save(self,fileName):
+      self.plt.savefig(fileName)
+      self.plt.close()
 
 # _____               ______________________________________________
 # ____/ Mesh Toolbox /_____________________________________________/
@@ -683,7 +697,7 @@ class Figure2D(Caster):
 #   - see also drawCoulouredMesh*
 #Note: triplot could be used but would not be valid for quads
 
-   def drawColouredMeshLines(self,edges,deco): pass
+   def drawColouredMeshLines(self,edges,decoUser): pass
 
 # _____               ______________________________________________
 # ____/ Grid Toolbox /_____________________________________________/
@@ -698,7 +712,7 @@ class Figure2D(Caster):
 #      - see also drawGridContours, drawColouredGridContours, drawLabeledGridContours, etc.
 #   *Contours: draw iso-value contours
 
-def drawGridContours(plt,(x,y,z),deco):
+def drawGridContours(plt,decoUser,(x,y,z)):
 
    # ~~> Focus on current subplot / axes instance
    #crax = plt.gca()
@@ -706,15 +720,15 @@ def drawGridContours(plt,(x,y,z),deco):
    # ~~ Split contours in major/minor classes ~~~~~~~~~~~~~~~~~~~~~~
 
    # ~~> Draw major contours
-   cs1 = plt.contour(x,y,z, levels[::2], colors = deco['contour.major.color'], hold='on')
+   cs1 = plt.contour(x,y,z, levels[::2], colors = decoUser['contour.major.color'], hold='on')
    for c in cs1.collections:
-      c.set_linestyle(deco['contour.major.style'])
+      c.set_linestyle(decoUser['contour.major.style'])
       c.set_zorder(zorder)
 
    # ~~> Draw minor contours
-   cs2 = plt.contour(x,y,z, levels[1::2], colors = deco['contour.minor.color'], hold='on')
+   cs2 = plt.contour(x,y,z, levels[1::2], colors = decoUser['contour.minor.color'], hold='on')
    for c in cs2.collections:
-      c.set_linestyle(deco['contour.minor.style'])
+      c.set_linestyle(decoUser['contour.minor.style'])
       c.set_zorder(zorder)
 
     # label every 4th level
@@ -749,7 +763,7 @@ def drawMeshLines(myplt,edges):
 
    return
 
-def drawColouredQuadMaps(plt,(nelem,npoin,ndp,nplan),(x,y,ikle,z),deco):
+def drawColouredQuadMaps(plt,decoUser,(nelem,npoin,ndp,nplan),(x,y,ikle,z)):
 
    # ~~> Focus on current subplot / axes instance
    crax = plt.gca()
@@ -762,7 +776,6 @@ def drawColouredQuadMaps(plt,(nelem,npoin,ndp,nplan),(x,y,ikle,z),deco):
    nx = npoin-nelem
    ny = int(npoin/nx)
    mesh = np.column_stack((x,y))
-   print nx*ny,len(x),len(mesh)
    msh = collections.QuadMesh(nx-1,ny-1,mesh,True,shading='gouraud')
    #msh.set_array(np.zeros(self.x_cells*self.y_cells))
    #msh.set_array(np.array(self.FD.GetTimestepData(0)))
@@ -780,10 +793,10 @@ def drawColouredQuadMaps(plt,(nelem,npoin,ndp,nplan),(x,y,ikle,z),deco):
    #plt.tricontourf(x,y,ikle, z, cmap=colourmap)
    # adds numbers along the iso-contours
    #plt.clabel(cs,fontsize=9,inline=1)
-   xmin = min(deco['roi'][0][0],deco['roi'][1][0])
-   xmax = max(deco['roi'][0][0],deco['roi'][1][0])
-   ymin = min(deco['roi'][0][1],deco['roi'][1][1])
-   ymax = max(deco['roi'][0][1],deco['roi'][1][1])
+   xmin = min(decoUser['roi'][0][0],decoUser['roi'][1][0])
+   xmax = max(decoUser['roi'][0][0],decoUser['roi'][1][0])
+   ymin = min(decoUser['roi'][0][1],decoUser['roi'][1][1])
+   ymax = max(decoUser['roi'][0][1],decoUser['roi'][1][1])
    crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
    crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
    crax.axis('equal')         # sets both axis scale to be equal

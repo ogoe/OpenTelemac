@@ -1,0 +1,85 @@
+<?xml version="1.0"?> 
+<!-- Validation and verification of python scripts
+--> 
+<validation xref="save3d" rank="2"> 
+ 
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ This section is being ignored at the moment --> 
+   <deco xref="default"> 
+      <look format="png" colourbar="jet.xml" /> 
+      <data title="Sub-critical flow over a bump" author="S.E.Bourban" contact="s.bourban@hrwallingford.com" /> 
+   </deco> 
+   <deco xref="vect"> 
+      <look cmap="Blue.xml" linewidths="1.0" /> 
+   </deco> 
+   <deco xref="line"> 
+      <look colour="k" /> 
+   </deco> 
+   <deco xref="size1"> 
+      <look size="(12,3)" /> 
+   </deco> 
+   <deco xref="size2"> 
+      <look size="(12,5)" /> 
+   </deco> 
+  
+<!-- Plot from SELAFIN files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   --> 
+   <!-- Plot a vertical cross section re-sampled onto a grid into the PNG file "figure1.png".
+      - Locations: extraction along the line defined by the 2 points (0;1) and (21;1)
+      - Sampling:  resampling within the box defined by the points (10;0) and (15;0.5) resampled 10 times along x and 4 times along y
+      - Variables: extraction of Z from the 3D results
+      - Duration:  extraction at the end of time (-1)
+      - File:      extraction from file "f3d_bump.slf"
+   -->
+   <deco xref="figure1"> 
+      <look format="png" colourbar="jet.xml" size="(12,5)" /> 
+      <data title="Sub-critical flow over a bump" /> 
+   </deco> 
+   <plot2d xref="figure1" type="v-section" config="oneofall" time="[-1]" deco="figure1;size1" > 
+      <layer vars="Z:grid" extract="(0;1)(21;1)" target="f3d_bump.slf" sample="(10;0)(15;0.5){10;4}" /> 
+   </plot2d>
+
+   <!-- Plot a 3D view into the PNG file "figure1.png".
+    -->  
+   <deco xref="figure2"> 
+      <look format="png" colourbar="jet.xml" size="(12,5)" /> 
+      <data title="Sub-critical flow over a bump" /> 
+   </deco> 
+   <plot3d xref="figure2" config="oneofall" time="[-1]" deco="figure2;size2" > 
+      <layer vars="TEMPERATURE:map" target="f3d_amr.slf" /> 
+   </plot3d>
+<!-- Cast analytical solution before plotting ~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <!-- Cast analytical solution on the same support as the data
+        extracted from the SELAFIN file
+      - File: 
+      - TODO: 
+
+   <cast xref="flow2d" config="oneofall" > 
+      <python>
+def calc(a1,a2):
+   return max(np.ravel(a1.values-a2.values))
+      </python>
+      <f2d vars="VITESSE:map" type="2d:" time="[-1]" sample="(0;0),(20.2;5){10;4}" target="f2d_gouttedo.slf" /> 
+      <r2d vars="VITESSE:map" type="2d:" time="[-1]" sample="(0;0),(20.2;5){10;4}" target="r2d_gouttedo.slf" /> 
+      <return fail="calc(f2d,r2d) > 0.02" warn="calc(f2d,r2d) > 0.002" value="calc(f2d,r2d)"
+           title="Goutedo.|
+Velocity comparison" />
+   </cast>
+
+   <cast xref="flow3d" config="oneofall"> 
+      <python>
+def calc(a1,a2):
+   return max(np.ravel(a1.values-a2.values))
+      </python>
+      <f3d vars="VITESSE:map" type="3d:" time="[-1]" target="f3d_gouttedo.slf" /> 
+      <r3d vars="VITESSE:map" type="3d:" time="[-1]" target="r3d_gouttedo.slf" /> 
+      <return fail="calc(f3d,r3d) > 0.02" warn="calc(f3d,r3d) > 0.002" value="calc(f3d,r3d)"
+           title="Goutedo.|
+Velocity comparison" />
+   </cast>
+
+      -->
+<!-- End of Validation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+</validation>

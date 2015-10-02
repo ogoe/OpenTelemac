@@ -72,7 +72,8 @@
 !history  M.S.TURNBULL (HRW)
 !+        24/09/2015
 !+        V7P1
-!+   Correction to the computation of the Y in spherical coordinates
+!+   Correction to the computation of the both Y and XDEL in spherical
+!+      coordinates, accounting for the fact that the Earth is round.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
@@ -341,7 +342,7 @@
 !
         IF(IELM.EQ.11.OR.IELM.EQ.41) THEN
           DO I=1,NPOIN2
-            T1%R(I)=MESH%X%R(I)*MESH%COSLAT%R(I)
+            T1%R(I)=MESH%X%R(I)
 !            T2%R(I)=MESH%Y%R(I)*MESH%COSLAT%R(I)
           ENDDO
         ENDIF
@@ -350,7 +351,7 @@
           DO IPLAN=2,NPLAN
             DO I=1,NPOIN2
               I3D=(IPLAN-1)*NPOIN2+I
-              T1%R(I3D)=MESH%X%R(I3D)*MESH%COSLAT%R(I)
+              T1%R(I3D)=MESH%X%R(I3D)
               T2%R(I3D)=T2%R(I)
             ENDDO
           ENDDO
@@ -386,6 +387,13 @@
 !
       CALL OV('X=C     ', MESH%XEL%R , Z , Z , 0.D0 , NELEM )
       CALL OV('X=C     ', MESH%YEL%R , Z , Z , 0.D0 , NELEM )
+!
+!
+      IF(SPHERI) THEN
+!
+        CALL LONGITU(MESH%XEL%R,MESH%COSLAT%R,MESH%IKLE%I,NELMAX,NELEM)
+!
+      ENDIF
 !
 !     IF DONE FOR Z (BUT IN MOVING MESHES SHOULD NOT BE USED !!!!)
 !

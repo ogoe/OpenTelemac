@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case">
+<validation xref="case" rank="5">
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
@@ -19,8 +19,8 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="1" rank="5"
-       do="translate;compile;run;cas;princi"
+   <action xref="1"
+       do="translate;run;cas;princi"
        code="artemis" target="carre.cas"
        title="Automatic TETAP calculation in a square domain"
    />
@@ -29,31 +29,31 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-   <plot1d xref="Section1" type="v-section" config="together" size="[10;7]" > 
+   <plot1d xref="Section1" type="v-section" config="together" size="(10;7)" > 
       <layer vars="wave height:line" extract="(217.413;84.862)(363.825;154.561)" target="1:ARTRES" time="[0]" /> 
    </plot1d>
-   <plot1d xref="Section2" type="v-section" config="together" size="[10;7]" > 
+   <plot1d xref="Section2" type="v-section" config="together" size="(10;7)" > 
       <layer vars="wave height:line" extract="(264.673;206.254)(318.419;173.821)" target="1:ARTRES" time="[0]" /> 
    </plot1d>
-   <plot1d xref="Section3" type="v-section" config="together" size="[10;7]" > 
+   <plot1d xref="Section3" type="v-section" config="together" size="(10;7)" > 
       <layer vars="wave height:line" extract="(352.705;203.474)(418.498;242.394)" target="1:ARTRES" time="[0]" /> 
    </plot1d>
-   <plot1d xref="Section4" type="v-section" config="together" size="[10;7]" > 
+   <plot1d xref="Section4" type="v-section" config="together" size="(10;7)" > 
       <layer vars="wave height:line" extract="(377.725;175.674)(436.104;203.474)" target="1:ARTRES" time="[0]" /> 
    </plot1d>   
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <plot2d xref="Mesh" size="[12;8]" > 
+   <plot2d xref="Mesh" size="(12;8)" > 
       <layer vars="bottom:mesh" target="1:ARTGEO" config="oneofall" /> 
    </plot2d>
-   <plot2d xref="Bathy" size="[12;8]" > 
+   <plot2d xref="Bathy" size="(12;8)" > 
       <layer vars="bottom:map" target="1:ARTRES" config="oneofall" /> 
    </plot2d>
-   <plot2d xref="WaveHeight" size="[12;8]" > 
+   <plot2d xref="WaveHeight" size="(12;8)" > 
       <layer vars="wave height:map" target="1:ARTRES" config="oneofall" /> 
    </plot2d>   
-   <plot2d xref="Breaking" size="[12;8]" > 
+   <plot2d xref="Breaking" size="(12;8)" > 
       <layer vars="qb:map" target="1:ARTRES" config="oneofall" /> 
    </plot2d>
 

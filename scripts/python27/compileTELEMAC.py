@@ -122,7 +122,7 @@ def trimTree(name,lname,lst,rebuild):
             libdws.append(lrank[lib]['dw'])
             del lrank[lib]
          for ldw in lrank:
-            if lib in lrank[ldw]['up']: 
+            if lib in lrank[ldw]['up']:
                lrank[ldw]['up'].remove(lib)
    return liborder
 
@@ -136,7 +136,7 @@ def getTree(name,lname,lst,level,lrank,rebuild):
    # ~~ New leaf ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    level.append((name,lname))
    # ~~ Ranking ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if lname not in lrank: 
+   if lname not in lrank:
       lrank.update({ lname:{'up':[],'dw':[]} })
    for lib in zip(*level)[1]:
       if lib not in lrank[lname]['up'] and lib != lname: lrank[lname]['up'].append(lib)
@@ -265,7 +265,7 @@ def createObjFiles(cfg,oname,oprog,odict,ocfg,mes,tasks,bypass):
    if debug : print cmd
    # ~~> remove gosts
    out = mes.cleanCmd(tasks)
-   task = mes.startCmd( tasks,(cmd,bypass,Array('c',' '*10000),Value('i',0)) )
+   task = mes.startCmd( tasks,(cmd,bypass,Array('c',' '*10000),Value('i',0)),path.join(odict['path'],oname).replace(path.dirname(cfg['root']),'...') )
    if odict['type'] == 'M': out.extend( mes.flushCmd(tasks) )
    # ~~> and remove .f from objList
    odict['time'] = 1
@@ -305,7 +305,7 @@ def createLibFiles(cfg,lname,lcfg,lprog,mes,tasks,bypass):
    cmd = cmd.replace('<libname>',LibFile)
 
    if debug : print cmd
-   mes.startCmd( tasks,(cmd,bypass,Array('c',' '*10000),Value('i',0)) )
+   mes.startCmd( tasks,(cmd,bypass,Array('c',' '*10000),Value('i',0)),LibFile.replace(path.dirname(cfg['root']),'...') )
    return False
 
 def createExeFiles(cfg,ename,ecfg,eprog,mes,bypass):
@@ -380,18 +380,18 @@ def createExeFiles(cfg,ename,ecfg,eprog,mes,bypass):
       if cfg['COMPILER']['REBUILD'] > 2 or cfg['COMPILER']['REBUILD'] == 0:
          refresh = False
          for o in ObjFiles.split(): refresh = refresh or ( isNewer(o,ExeFile) == 0 )
-         for l in LibFiles.split(): 
+         for l in LibFiles.split():
             # Only checks the telemac libraries
             if l.find(cfg['root']+sep+'builds'+sep+ecfg+sep+'lib') != -1:
                refresh = refresh or ( isNewer(l,ExeFile) == 0 )
          if refresh: remove(ExeFile)
    if path.exists(ExeFile): return True
-   
+
    # ~~ creation of the exe (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe /stack:536870912 /out:postel3dV5P9.exe declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj ..\..\..\bief\bief_V5P9\1\biefV5P9.lib ..\..\..\damocles\damo_V5P9\1\damoV5P9.lib ..\..\..\paravoid\paravoid_V5P9\1\paravoidV5P9.lib ..\..\..\special\special_V5P9\1\specialV5P9.lib
    cmd = cmd.replace('<libs>',LibFiles)
    cmd = cmd.replace('<objs>',ObjFiles)
-   
+
    xocmd = cfg['MODULES'][eprog]['xobj']
    xocmd = xocmd.replace('<incs>',cfg['MODULES'][eprog]['incs'])
    mods = ''
@@ -400,7 +400,7 @@ def createExeFiles(cfg,ename,ecfg,eprog,mes,bypass):
    xocmd = xocmd.replace('<mods>',mods)
    # <f95name> ... still to be replaced
    xocmd = xocmd.replace('<config>',LibDir).replace('<root>',cfg['root'])
-   
+
    LibFiles = libFile + ' ' + LibFiles
    xecmd = cfg['MODULES'][eprog]['xexe']
    xecmd = xecmd.replace('<libs>',LibFiles)
@@ -423,7 +423,7 @@ def createExeFiles(cfg,ename,ecfg,eprog,mes,bypass):
       if path.exists(ObjCmd): remove(ObjCmd)
       if path.exists(ExeCmd): remove(ExeCmd)
       raise Exception([{'name':'createExeFiles','msg':'something went wrong, I am not sure why (runcode='+str(code)+').\n      '+tail}])
-   print '   - created ' + ExeFile
+   print '   - created ' + ExeFile.replace(path.dirname(cfg['root']),'...')
 
    # ~~> Make the keys portable (no full path)
    for k in cfg['TRACE']:
@@ -485,6 +485,11 @@ if __name__ == "__main__":
                       dest="cleanup",
                       default=False,
                       help="will erase all object, executable libraries from folder on the selected configs/modules" )
+   parser.add_option("-j",
+                      type="string",
+                      dest="ncsize",
+                      default='0',
+                      help="set the number of core used for the parallel compilation of objects" )
    options, args = parser.parse_args()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -583,7 +588,7 @@ if __name__ == "__main__":
 
             if prg[item][0] in cfg['COMPILER']['MODULES']:
                print '      +> '+item
-                  
+
 # ~~ Builds the Call Tree for each main program ~~~~~~~~~~~~~~~~~~~~
                debug = False; rebuild = cfg['COMPILER']['REBUILD']
                MAKSYSTEL = {'add':[],'tag':[],'deps':[]}
@@ -600,7 +605,7 @@ if __name__ == "__main__":
                for lib in LIBDEPS:
                  if lib in MAKSYSTEL['deps']: fixedLibOrder.append(lib)
                #TODO: Replace fixedLibOrder by MAKSYSTEL['deps']
-               FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'name':item,'module':prg[item][0],'liborder':fixedLibOrder}} 
+               FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'name':item,'module':prg[item][0],'liborder':fixedLibOrder}}
                for obj,lib in HOMERES[item]['add']:
                   try:
                      fic = all_file[lib][path.splitext(path.basename(obj.replace('|',sep)))[0].upper()]
@@ -689,7 +694,7 @@ if __name__ == "__main__":
                      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Could not find the following file for compilation: '+path.basename(srcName)+'\n         ... so it may have to be removed from the following cmdf file: '+cmdFile},e,options.bypass)])
 # ~~ Parallel log files
             tasks = []
-            mes = MESSAGES(size=10)
+            mes = MESSAGES(size=10,ncsize=int(options.ncsize))
 # ~~ Creates modules and objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             if HOMERES[item]['add'] == []: print '      +> There is no need to compile any object'
             else:
@@ -699,8 +704,8 @@ if __name__ == "__main__":
                      {'libname':lib,'type':getPrincipalWrapNames(path.join(cmdfFiles[mod][item][lib]['path'],obj))[0][0], \
                       'path':cmdfFiles[mod][item][lib]['path']}, \
                       cfgname,mes,tasks,options.bypass)
-                  for x,o,e,c in out:
-                     if e == '': pbar.write( '   - completed: ' + x.split()[-1],ibar )
+                  for x,o,e,c,m in out:
+                     if e == '': pbar.write( '   - completed: ' + m,ibar )
                      else: xcpts.addMessages([{'name':'compileTELEMAC::createObjFiles:\n      +> failed: '+x+'\n'+e}])
                      ibar = ibar + 1; pbar.update(ibar)
                   if xcpts.notEmpty():
@@ -708,11 +713,11 @@ if __name__ == "__main__":
                      sys.exit(1)
                # ~~> waiting for the remaining queued jobs to complete
                out = mes.flushCmd(tasks)
-               for x,o,e,c in out:
-                  if e == '': pbar.write( '   - completed: ' + x.split()[-1],ibar )
+               for x,o,e,c,m in out:
+                  if e == '': pbar.write( '   - completed: ' + m,ibar )
                   else: xcpts.addMessages([{'name':'compileTELEMAC::createObjFiles:\n      +> failed: '+x+'\n'+e}])
                   ibar = ibar + 1; pbar.update(ibar)
-               pbar.finish()               
+               pbar.finish()
                if xcpts.notEmpty():
                   print '\n\nHummm ... I could not complete my work.\n'+'~'*72 + '\n\n' + xcpts.exceptMessages()
                   sys.exit(1)
@@ -722,8 +727,8 @@ if __name__ == "__main__":
                f = createLibFiles(cfg,lib,cfgname,item,mes,tasks,options.bypass)
                # ~~> waiting for the remaining queued jobs to complete
                out = mes.flushCmd(tasks)
-               for x,o,e,c in out:
-                  if e == '': print '   - completed: ' + x.split()[-1]
+               for x,o,e,c,m in out:
+                  if e == '': print '   - completed: ' + m
                   else: xcpts.addMessages([{'name':'compileTELEMAC::createLibFiles:\n      +> failed: '+x+'\n'+e}])
                if xcpts.notEmpty():
                   print '\n\nHummm ... I could not complete my work.\n'+'~'*72 + '\n\n' + xcpts.exceptMessages()
@@ -747,6 +752,6 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   else: 
-      print '\n\nMy work is done\n\n' 
+   else:
+      print '\n\nMy work is done\n\n'
       sys.exit(0)

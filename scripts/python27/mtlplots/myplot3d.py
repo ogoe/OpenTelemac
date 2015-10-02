@@ -30,7 +30,15 @@ from plotTELEMAC import getColourMap
 # ~~> dependencies towards other pytel/modules
 from samplers.mycast import Caster
 from parsers.parserSELAFIN import SELAFIN
-from parsers.parserStrings import parseArrayFrame
+from parsers.parserStrings import parseArrayFrame, parseArrayPaires
+
+# _____                        _____________________________________
+# ____/ Allows interactive view /__________________________________/
+#
+
+@mlab.show
+def nothing():
+   return
 
 # _____                        _____________________________________
 # ____/ Primary Mayavi Object /____________________________________/
@@ -38,19 +46,36 @@ from parsers.parserStrings import parseArrayFrame
 
 def typeUnstructuredGrid(xyz,ikle):
 
-    cellUG = tvtk.CellArray()
-    cellUG.set_cells( len(ikle),np.insert(ikle,0,6, axis=1).ravel() )
-    typeUG = tvtk.UnstructuredGrid( points=xyz )
-    typeUG.set_cells( 13*np.ones(len(ikle)), 7*np.arange(len(ikle)), cellUG )
-    
-    return typeUG
+   cellUG = tvtk.CellArray()
+   cellUG.set_cells( len(ikle),np.insert(ikle,0,6, axis=1).ravel() )
+   typeUG = tvtk.UnstructuredGrid( points=xyz )
+   typeUG.set_cells( 13*np.ones(len(ikle)), 7*np.arange(len(ikle)), cellUG )
+
+   return typeUG
+
+# _____                                _____________________________
+# ____/ Primary Mayavi Object (Plane) /____________________________/
+#
+
+def typeUnstructuredGrid_Plane(xyz,ikle):
+
+   cellUG = tvtk.CellArray()
+   cellUG.set_cells( len(ikle),np.insert(ikle,0,3, axis=1).ravel() )
+   typeUG = tvtk.UnstructuredGrid( points=xyz )
+   typeUG.set_cells( 5*np.ones(len(ikle)), 7*np.arange(len(ikle)), cellUG )
+
+   return typeUG
 
 # _____               ______________________________________________
 # ____/ Default DECO /_____________________________________________/
 #
 
 decoDefault = {
-   "size":'', "dpi":'', "ratio2d": '', "title": '', "roi": '', "type":''
+   "dpi":'', "ratio2d": '', "title": '', "roi": '', "type":'',
+   "azimuth":'', "elevation":'', "distance":'',
+   "focalx":'', "focaly":'', "focalz":'',
+   "interactive":'',
+   "size":'(10;10)'
 }
 
 # _____                  ___________________________________________
@@ -58,7 +83,7 @@ decoDefault = {
 #
 
 def mapDecoDefault(decoUser,default):
-   
+
    # ~~~ melting the pot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mpar = {}                    # mpar, contains the matplotlib parameters (defaults)
    upar = deepcopy(default) # upar, contains the user parameters (from the XML)
@@ -70,6 +95,8 @@ def mapDecoDefault(decoUser,default):
    # ~~~ special conversions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # Replaces the relevat mpar by the upar values
    for key in upar.keys(): # /!\ the .keys() is necessary
+
+      """ Skip most of this
       if key in mpl.rcParams.keys():
          if type(mpl.rcParams[key]) == type(upar[key]):
             mpar[key] = deepcopy(upar[key])
@@ -79,7 +106,7 @@ def mapDecoDefault(decoUser,default):
                if type(mpl.rcParams[key][0]) == type(1) or type(mpl.rcParams[key][0]) == type(1.0):
                   mpar[key] = parseArrayFrame(upar[key])
                   del upar[key]
-               if type(mpl.rcParams[key][0]) == type("") or type(mpl.rcParams[key][0]) == type(unicode('')):
+               elif type(mpl.rcParams[key][0]) == type("") or type(mpl.rcParams[key][0]) == type(unicode('')):
                   print upar[key].strip('[]')
                   mpar[key] = [ s.strip() for s in upar[key].strip('[]').replace(';',',').split(',') ]
                   del upar[key]
@@ -106,9 +133,11 @@ def mapDecoDefault(decoUser,default):
             mpar.update({ 'savefig.dpi': int(upar[key]) })
             mpar.update({ 'figure.dpi': int(upar[key]) })
          del upar[key]
-      elif key == "size":
+      """
+
+      if key == "size":
          if upar[key] != '':
-            mpar.update({ 'figure.figsize': parseArrayFrame(upar[key]) })
+            mpar.update({ 'figure_size': parseArrayPaires(upar[key])[0]})
          del upar[key]
 
    return mpar,upar
@@ -117,75 +146,173 @@ def mapDecoDefault(decoUser,default):
 # ____/ Primary Method:Draw /______________________________________/
 #
 
-def drawColouredTriMaps(myplt,deco,(x,y,z,ikle,v)):
+def drawColouredTriMaps(myplt,decoUser,vtype,(x,y,z,ikle,v)):
 
-   # ~~> Line Width
-   #linewidths = decoDefault['lines.linewidth']
-   #if deco.has_key('linewidths'): linewidths = float(deco['linewidths'])
-   # ~~> Line Colour
-   #colors = decoDefault['lines.color']
-   #if deco.has_key('colors'): colors = deco['colors']
-   # ~~> Line Labels
-   #fontsize = 9        #/!\ do find and set a default
-   #if deco.has_key('fontsize'): fontsize = int(deco['fontsize'])
-   #inline = 1          #/!\ do find and set a default
-   #if deco.has_key('inline'): inline = int(deco['inline'])
-   #fmt='%1.1f'         #/!\ do find and set a default
-   #if deco.has_key('fmt'): fmt = deco['fmt']  
-
-   # ~~> Colour maps
-   #cmap = cm.jet       #/!\ do find and set a default
-   #if deco.has_key('cmap'): cmap = mpl.colors.LinearSegmentedColormap('user',getColourMap(deco['cmap']))
+   opacity = 0.5
+   if decoUser.has_key('opacity'):
+      if decoUser['opacity'] != '':
+         opacity = float(decoUser['opacity'])
 
    # ~~> Unstructured 3D Mesh
    # points as the shape of [ [x1,y1,z1],...[xn,yn,zn] ]
    points = np.dstack((x,y,z))[0]
-   
+
    struct = typeUnstructuredGrid(points,ikle)
    struct.point_data.scalars = v.ravel()
    struct.point_data.scalars.name = 'z'
 
-   #myplt.tricontourf(x,y,ikle, z, cmap=cmap)
-   # ~~> Iso-contours and Labels
-   #zmin = np.min(z); zmax = np.max(z)
-   #if zmin < zmax:
-   #   cs = myplt.tricontour(x,y,ikle, z, linewidths=linewidths, colors=colors)
-   #   myplt.clabel(cs,fmt=fmt,fontsize=fontsize,inline=inline)
-   #   #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')
+   surf = myplt.pipeline.surface( struct, opacity=opacity)
+   surf.actor.mapper.interpolate_scalars_before_mapping = True
+   surf.actor.property.lighting = False
+
+   colours = surf.parent
+
+   if decoUser.has_key('colour_range'):
+      if decoUser['colour_range'] != '':
+         colour_range = parseArrayPaires(decoUser['colour_range'])[0][:]
+         colours.scalar_lut_manager.data_range = colour_range
+
+   if decoUser.has_key('number_colours'):
+      if decoUser['number_colours'] != '':
+         number_colours = int(decoUser['number_colours'])
+         colours.scalar_lut_manager.number_of_colors = number_colours
+         colours.scalar_lut_manager.number_of_labels = number_colours + 1
+
+   if decoUser.has_key('z_scale'):
+      if decoUser['z_scale'] != '':
+         z_scale = float(decoUser['z_scale'])
+         surf.actor.actor.scale = np.array([1.0, 1.0, z_scale])
+
    out = myplt.outline(color=(0, 0, 0))
-   out.actor.actor.scale = np.array([ 1.,    1.,    10.])
-   surf = myplt.pipeline.surface( struct, opacity=0.5)
-   surf.actor.actor.scale = np.array([ 1.,    1.,    10.])
-   #vitesse = mlab.pipeline.vectors(bathy,mask_points=5)
-   #vitesse.actor.actor.scale = array([ 1.,    1.,    500.])
-   #vitesse.glyph.glyph.scale_factor = 1500.0
-   #edges = myplt.pipeline.surface(myplt.pipeline.extract_edges(surf),color=(0.5, 0.5, 0.5),opacity=0.1 )
-   #edges.actor.actor.scale = np.array([ 1.,    1.,    10.])
+
+   if "contour" in vtype:
+      surf.enable_contours = True
+      if decoUser.has_key('number_colours'):
+         if decoUser['number_colours'] != '':
+            number_colours = int(decoUser['number_colours'])
+            surf.contour.number_of_contours = number_colours
+
+   for key in decoUser:
+      try:
+         exec(str(key)+' = '+str(decoUser[key]))
+      except:
+         pass
 
    return
 
-def drawColouredTriVects(myplt,deco,(x,y,z,uvw,normalised)):
+def drawColouredTriVects(myplt,decoUser,vtype,(x,y,z,ikle,uvw,normalised)):
 
    # ~~> Unstructured 3D Mesh
    # points as the shape of [ [x1,y1,z1],...[xn,yn,zn] ]
    points = np.dstack((x,y,z))[0]
-   
+
    struct = typeUnstructuredGrid(points,ikle)
-   struct.point_data.vectors = uvw[0].ravel()
+   struct.point_data.vectors = uvw[0].T
    struct.point_data.vectors.name = 'velocity'
 
-   # ~~> Plot data
-   #colourmap = cm.jet
-   #if geometry.has_key('cmapPlot'):
-   #   colourmap = LinearSegmentedColormap('User', getColourMap(geometry['cmapPlot']))
-   # get vector magnitude, i.e norm-2
-   #z = np.sqrt(np.sum(np.power(np.dstack(uvw[0:2])[0],2),axis=1))
-   #zmin = np.min(z); zmax = np.max(z)
-   #if not normalised : cs = myplt.quiver(x,y,uvw[0],uvw[1], cmap=colourmap )
-   #else: cs = myplt.quiver(x,y,uvw[0],uvw[1], cmap=colourmap, norm=myplt.Normalize(zmin,zmax))
-   #cs.set_array(z)
-   #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')
-   # adds numbers along the iso-contours
+   vel = myplt.pipeline.vectors( struct )
+
+   if decoUser.has_key('z_scale'):
+      if decoUser['z_scale'] != '':
+         z_scale = float(decoUser['z_scale'])
+         vel.actor.actor.scale = np.array([1.0, 1.0, z_scale])
+
+   colours = vel.parent
+
+   if decoUser.has_key('colour_range'):
+      if decoUser['colour_range'] != '':
+         colour_range = parseArrayPaires(decoUser['colour_range'])[0][:]
+         colours.scalar_lut_manager.data_range = colour_range
+
+   if decoUser.has_key('number_colours'):
+      if decoUser['number_colours'] != '':
+         number_colours = int(decoUser['number_colours'])
+         colours.scalar_lut_manager.number_of_colors = number_colours
+         colours.scalar_lut_manager.number_of_labels = number_colours + 1
+
+   out = myplt.outline(color=(0, 0, 0))
+
+   if "streamline" in vtype:
+
+      vel.glyph.visible = False
+      vel.actor.actor.visibility = False
+      vel.visible = False
+
+      norm = myplt.pipeline.extract_vector_norm( struct )
+      stream = myplt.pipeline.streamline( norm )
+
+      stream.seed.widget = stream.seed.widget_list[2]
+      stream.seed.widget.enabled = False
+
+      if decoUser.has_key('z_scale'):
+         if decoUser['z_scale'] != '':
+            z_scale = float(decoUser['z_scale'])
+            stream.actor.actor.scale = np.array([1.0, 1.0, z_scale])
+
+      colours = stream.parent
+
+      if decoUser.has_key('colour_range'):
+         if decoUser['colour_range'] != '':
+            colour_range = parseArrayPaires(decoUser['colour_range'])[0][:]
+            colours.scalar_lut_manager.data_range = colour_range
+
+      if decoUser.has_key('number_colours'):
+         if decoUser['number_colours'] != '':
+            number_colours = int(decoUser['number_colours'])
+            colours.scalar_lut_manager.number_of_colors = number_colours
+            colours.scalar_lut_manager.number_of_labels = number_colours + 1
+
+   for key in decoUser:
+      try:
+         exec(str(key)+' = '+str(decoUser[key]))
+      except:
+         pass
+
+   return
+
+def drawColouredTriMaps_Plane(myplt,decoUser,vtype,(x,y,z,ikle,v)):
+
+   opacity = 0.5
+   if decoUser.has_key('opacity'):
+      if decoUser['opacity'] != '':
+         opacity = float(decoUser['opacity'])
+
+   # ~~> Unstructured 3D Mesh
+   # points as the shape of [ [x1,y1,z1],...[xn,yn,zn] ]
+
+   points = np.dstack((x,y,z))[0]
+
+   struct = typeUnstructuredGrid_Plane(points,ikle)
+   struct.point_data.scalars = v.ravel()
+   struct.point_data.scalars.name = 'z'
+
+   surf = myplt.pipeline.surface( struct, opacity=opacity)
+   surf.actor.mapper.interpolate_scalars_before_mapping = True
+   surf.actor.property.lighting = False
+
+   if decoUser.has_key('z_scale'):
+      if decoUser['z_scale'] != '':
+         z_scale = float(decoUser['z_scale'])
+         surf.actor.actor.scale = np.array([1.0, 1.0, z_scale])
+
+   colours = surf.parent
+
+   if decoUser.has_key('colour_range'):
+      if decoUser['colour_range'] != '':
+         colour_range = parseArrayPaires(decoUser['colour_range'])[0][:]
+         colours.scalar_lut_manager.data_range = colour_range
+
+   if decoUser.has_key('number_colours'):
+      if decoUser['number_colours'] != '':
+         number_colours = int(decoUser['number_colours'])
+         colours.scalar_lut_manager.number_of_colors = number_colours
+         colours.scalar_lut_manager.number_of_labels = number_colours + 1
+
+   for key in decoUser:
+      try:
+         exec(str(key)+' = '+str(decoUser[key]))
+      except:
+         pass
 
    return
 
@@ -206,7 +333,7 @@ class Dumper3D(Caster):
 
    def add(self,typl,what):
       Caster.add(self,typl,what)
-      
+
       # ~~> output from for 3D file
       if self.obtype == 'slf':
          if not self.oudata: self.oudata = SELAFIN()
@@ -228,17 +355,18 @@ class Figure3D(Caster):
       Caster.__init__(self,{'object':caster.object,'obdata':caster.obdata})
 
       # ~~~ figure decoration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      #self.mpar,self.upar = mapDecoDefault( plot['deco'],decoDefault )
+      self.mpar,self.upar = mapDecoDefault( plot['deco'],decoDefault )
+
       #mpl.rcParams.update(self.mpar)
       # ~~> by default, there is no grid in 1D
       #self.mpar.update({ 'grid.alpha':1.0 })
 
       # ~~~ create figure ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      fig = mlab.figure(bgcolor=(1, 1, 1))
+      fig = mlab.figure(bgcolor=(1, 1, 1),size=self.mpar['figure_size'])
 
       # ~~~ figure decoration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       #mpl.rcdefaults()
-      
+
       # ~~> user params
       #if self.upar['title'] != '': mlab.title(self.upar['title'])
       # ~~> type of plot
@@ -252,7 +380,7 @@ class Figure3D(Caster):
       #if self.upar["roi"] != '': self.upar["roi"] = [ parseArrayPaires(self.upar["roi"]), [0,0,0,0] ]
 
       self.plt = mlab
-      self.fig = fig      
+      self.fig = fig
 
    def add(self,typl,what):
       Caster.add(self,typl,what)
@@ -261,8 +389,8 @@ class Figure3D(Caster):
          'slf' in typl.lower():
 
          # TODO: range of plans and resample within a 2d and a 3d box.
-         if what['type'].split(':')[1] == '':
-         
+         if what['type'].split(':')[1] == 'i-surface':
+
             cast = self.get(typl,what)
             elements = cast.support
             VARSORS = cast.values
@@ -287,18 +415,76 @@ class Figure3D(Caster):
                   #if len(VARSORS) > 1:
                   #   if "map" in vtype: VARSORS = [ np.sqrt(np.sum(np.power(np.dstack(VARSORS[0:2])[0],2),axis=1)) ]
                   # ~~> Draw/Dump (multiple options possible)
-                  if "map" in vtype: drawColouredTriMaps(self.plt,what['deco'],(MESHX,MESHY,MESHZ,IKLE3,VARSORS[0]))
+
+                  if "map" in vtype or "contour" in vtype:
+                    drawColouredTriMaps(self.plt,what['deco'],vtype,(MESHX,MESHY,MESHZ,IKLE3,VARSORS[0]))
+
                   #elif "label" in vtype: drawLabeledTriContours(self.plt,what['deco'],(MESHX,MESHY,IKLE3,VARSORS[0]))
-                  elif "arrow" in vtype or "vector" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHY,MESHZ,VARSORS,False))
-                  #elif "angle" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHY,VARSORS,True))
+
+                  elif "arrow" in vtype or "vector" in vtype or "streamline" in vtype:
+                    drawColouredTriVects(self.plt,what['deco'],vtype,(MESHX,MESHY,MESHZ,IKLE3,VARSORS,False))
+
+                  #elif "angle" in vtype: drawColouredTriVects(self.plt,what['deco'],vtype,(MESHX,MESHY,VARSORS,True))
                   #else: print '... do not know how to draw this SELAFIN type: ' + vtype
                   #deco(self.plt,self.upar,np.ravel(MESHX[IKLE3]),np.ravel(MESHY[IKLE3]))
 
+         elif what['type'].split(':')[1] == 'p-section':
+
+            cast = self.get(typl,what)
+            elements = cast.support
+            VARSORS = cast.values
+            vtype = what['vars'].split(':')[1]
+
+            MESHX,MESHY,MESHZ,IKLE3 = elements
+
+            if "map" in vtype:
+              drawColouredTriMaps_Plane(self.plt,what['deco'],vtype,(MESHX,MESHY,MESHZ,IKLE3,VARSORS[0]))
+
+         elif what['type'].split(':')[1] == 'v-section':
+
+            cast = self.get(typl,what)
+            elements = cast.support
+            VARSORS = cast.values
+            vtype = what['vars'].split(':')[1]
+
+            MESHX,MESHY,MESHZ,IKLE3 = elements
+
+            if "map" in vtype:
+              drawColouredTriMaps_Plane(self.plt,what['deco'],vtype,(MESHX,MESHY,MESHZ,IKLE3,VARSORS[0]))
 
    def show(self):
       self.fig.scene.isometric_view()
       self.plt.show()
-   def save(self,fileName): self.plt.savefig(fileName)
+      self.plt.close()
+
+   def save(self,fileName):
+      default_view = mlab.view()
+      azimuth = default_view[0]
+      elevation = default_view[1]
+      distance = default_view[2]
+      focalpoint = default_view[3]
+
+      if self.upar['azimuth']!='':
+         azimuth = float(self.upar['azimuth'])
+      if self.upar['elevation']!='':
+         elevation = float(self.upar['elevation'])
+      if self.upar['distance']!='':
+         distance = float(self.upar['distance'])
+      if self.upar['focalx']!='' and self.upar['focaly']!='' and self.upar['focalz']!='':
+         focalpoint = (float(self.upar['focalx']),
+                       float(self.upar['focaly']),
+                       float(self.upar['focalz']))
+
+      mlab.view(azimuth = azimuth,
+                elevation = elevation,
+                distance = distance,
+                focalpoint = focalpoint)
+
+      if self.upar['interactive']!='':
+         nothing()
+
+      self.plt.savefig(fileName)
+      self.plt.close()
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/

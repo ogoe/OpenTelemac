@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case">
+<validation xref="case" rank="3">
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
@@ -19,13 +19,13 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="1" rank="3"
-       do="translate;compile;run;cas;princi"
+   <action xref="1"
+       do="translate;run;cas;princi"
        code="sisyphe" target="sis_glissement.cas"
        title="glissement sisyphe only scalar mode"
    />
-   <action xref="2" rank="3"
-       do="translate;compile;run;cas;princi" ncsize="4"
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
        code="sisyphe" target="sis_glissement.cas"
        title="glissement sisyphe only parallel mode"
    />   

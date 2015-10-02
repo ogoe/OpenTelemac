@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 <!-- Validation and verification of test cases, given a list of CAS files 
 --> 
-<validation xref="init_3"> 
+<validation xref="init_3" rank="5"> 
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
@@ -19,14 +19,14 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="1"  rank="5"
-       do="translate;compile;run;cas;princi" 
+   <action xref="1"
+       do="translate;run;cas;princi" 
        code="telemac2d" target="t2d_init-3.cas" 
        title="init_3 scalar mode" 
    />
 <!-- Error in Spectre tomawac
    <action xref="2" 
-       do="translate;compile;run;cas;princi" ncsize="4" 
+       do="translate;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_init-3.cas" 
        title="init_3 parallel mode" 
    />   

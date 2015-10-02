@@ -441,6 +441,7 @@ files: bief_def.f
   make_eltcar.f
   stoseg51.f
   latitu.f
+  longitu.f
   comp_fac.f
   gradp.f
   voisin31.f

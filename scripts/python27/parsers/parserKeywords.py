@@ -134,7 +134,8 @@ def scanCAS(lines):
       if not proc: raise Exception([{'name':'scanCAS','msg':'no value to keyword '+kw}])
       val = []
       while proc:
-         val.append(proc.group('val').replace("'",''))
+         if proc.group('val') == '"': val.append('')
+         else: val.append(proc.group('val').replace("'",''))
          casStream = proc.group('after')   # still hold the separator
          proc = re.match(val_equals,casStream)
       if kw in keylist:
@@ -179,7 +180,7 @@ def readCAS(cas,dico,frgb):
          vallist[keylist.index(key)] = vals
       else:
          vals = []
-         for val in value: vals.append(repr(val))
+         for val in value: vals.append(repr(val.replace('"',"''")).replace('"',"'"))
          vallist[keylist.index(key)] = vals
 
    return lines,(keylist,vallist)

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case">
+<validation xref="case" rank="5">
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
@@ -19,8 +19,8 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="1" rank="5"
-       do="translate;compile;run;cas;princi"
+   <action xref="1"
+       do="translate;run;cas;princi"
        code="artemis" target="art_creocean-scal.cas"
        title="creocean scalar mode"
    />
@@ -34,16 +34,16 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <plot2d xref="Mesh" size="[12;8]" > 
+   <plot2d xref="Mesh" size="(12;8)" > 
       <layer vars="bottom:mesh" target="1:ARTRES" config="oneofall" /> 
    </plot2d>
-   <plot2d xref="Bathy" size="[12;8]" > 
+   <plot2d xref="Bathy" size="(12;8)" > 
       <layer vars="bottom:map" target="1:ARTRES" config="oneofall" /> 
    </plot2d>
-   <plot2d xref="WaveHeight" size="[12;8]" > 
+   <plot2d xref="WaveHeight" size="(12;8)" > 
       <layer vars="wave height:map" target="1:ARTRES" config="oneofall" /> 
    </plot2d>   
-   <plot2d xref="Breaking" size="[12;8]" > 
+   <plot2d xref="Breaking" size="(12;8)" > 
       <layer vars="qb:map" target="1:ARTRES" config="oneofall" /> 
    </plot2d>
 

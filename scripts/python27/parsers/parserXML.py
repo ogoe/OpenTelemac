@@ -72,7 +72,7 @@ from fractions import gcd
 import numpy as np
 import math
 # ~~> dependencies from within pytel/parsers
-from parserKeywords import scanDICO,scanCAS,readCAS,translateCAS, getCASLang,getKeyWord,setKeyValue, getIOFilesSubmit
+from parserKeywords import scanDICO,scanCAS,readCAS,rewriteCAS,translateCAS, getCASLang,getKeyWord,setKeyValue, getIOFilesSubmit
 from parserSortie import getLatestSortieFiles
 #from parserCSV import getVariableCSV,putDataCSV,addColumnCSV
 from parserFortran import getPrincipalWrapNames,filterPrincipalWrapNames
@@ -137,17 +137,20 @@ def getXMLKeys(xml,do):
 
 def setSafe(casFile,cas,idico,odico,safe):
 
-   copyFile(casFile,safe)   # TODO: look at relative paths
+   sacFile = path.join(safe,path.basename(casFile))
+   putFileContent(sacFile,rewriteCAS(cas))
+   # copyFile(casFile,safe)   # TODO: look at relative paths
    wDir = path.dirname(casFile)
 
    # ~~> process sortie files if any
-   sacFile = path.join(safe,casFile)
    sortieFiles = getLatestSortieFiles(sacFile)
 
    # ~~> process input / output
    iFS = []; oFS = []
    for k,v in zip(*cas[1]):
       if k in idico:
+         if idico[k].split(';')[-1] == 'CAS': continue
+         if v[0].strip("'\"") == '': continue
          copyFile(path.join(wDir,v[0].strip("'\"")),safe)
          ifile = path.join(safe,v[0].strip("'\""))
          iFS.append([k,[ifile],idico[k]])
@@ -218,7 +221,7 @@ class ACTION:
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    availacts = ''
    availkeys = { 'path':'','safe':'','cfg':'',
-         "target": '', "xref": '', "do": '', "rank":'',
+         "target": '', "xref": '', "do": '', "rank":'', "set": '',
          "title": '', "deprefs":'', "outrefs":'', "where":'' }
 
    def __init__(self,title='',bypass=True):
@@ -272,6 +275,7 @@ class ACTION:
          'safe': self.active['safe'],
          'path': self.active['path'],
          'title': self.active["title"],
+         'set': self.active["set"],
          'cmaps': path.join(cfg['PWD'],'ColourMaps')
          } } )
 
@@ -367,7 +371,7 @@ class GROUPS:
       # ~~> set default
       self.tasks[nametask][index]['deco'] = deco
 
-   
+
 # _____                        _____________________________________
 # ____/ Secondary Class: DECO /____________________________________/
 #
@@ -463,7 +467,7 @@ class actionRUN(ACTION):
       oneup = path.dirname(active['safe'])            # copied one level up
       if matchSafe(casFile,active["target"]+'.??',oneup,rebuild):
          print '      ~> translate cas file: ' + active["target"]
-         casfr,casgb = translateCAS(sacFile,DICOS[active['dico']]['frgb'])  #/!\ removes comments at end of lines
+         casfr,casgb = translateCAS(casFile,DICOS[active['dico']]['frgb'])  #/!\ removes comments at end of lines
          moveFile(casfr,oneup)
          moveFile(casgb,oneup)
       # ~~> associated CAS files
@@ -473,7 +477,7 @@ class actionRUN(ACTION):
          sacFile = path.join(active['safe'],link['target'])
          if matchSafe(casFile,link['target']+'.??',oneup,rebuild):
             print '      ~> translate cas file: ' + link['target']
-            casfr,casgb = translateCAS(sacFile,DICOS[link['dico']]['frgb'])  #/!\ removes comments at end of lines
+            casfr,casgb = translateCAS(casFile,DICOS[link['dico']]['frgb'])  #/!\ removes comments at end of lines
             moveFile(casfr,oneup)
             moveFile(casgb,oneup)
             updated = True
@@ -483,7 +487,7 @@ class actionRUN(ACTION):
    def runCAS(self,options,cfg,rebuild):
       updated = False
       if not "run" in self.availacts.split(';'): return updated
-      
+
       # ~~> prepare options as if run from command line
       specs = Values()
       specs.configName = options.configName
@@ -493,9 +497,9 @@ class actionRUN(ACTION):
       specs.rootDir = options.rootDir
       specs.wDir = options.wDir
       specs.compileonly = False
-      if options.hosts != '': 
+      if options.hosts != '':
          specs.hosts = options.hosts
-      else: 
+      else:
          specs.hosts = gethostname().split('.')[0]
       specs.split = options.split
       specs.run = options.run
@@ -505,7 +509,7 @@ class actionRUN(ACTION):
       specs.walltime = options.walltime
       specs.email = options.email
       specs.mpi = options.mpi
-      if options.ncsize != '' and self.active["ncsize"] != '': 
+      if options.ncsize != '' and self.active["ncsize"] != '':
          self.active["ncsize"] = options.ncsize
       specs.ncsize = self.active["ncsize"]
       specs.nctile = ''    # default but should not be used for validation
@@ -520,11 +524,11 @@ class actionRUN(ACTION):
       outputs = self.dids[self.active["xref"]][self.active['cfg']]['output']
       if matchSafe(casFile,self.active["target"]+'_*??h??min??s*.sortie',self.active['safe'],rebuild):
          print '     +> running cas file: ' + self.active["target"]
-         for k in outputs: 
-           # In case k is read and write
-           if 'LIT' in k[2]:
-             continue
-           matchSafe('',path.basename(k[1][0]),self.active['safe'],2)
+         for k in outputs:
+            # In case k is read and write
+            if 'LIT' in k[2]:
+               continue
+            matchSafe('',path.basename(k[1][0]),self.active['safe'],2)
          try:
             sortieFiles = runCAS(self.active['cfg'],cfg,self.active["code"],[sacFile],specs)
             updated = True
@@ -549,7 +553,7 @@ class actionRUN(ACTION):
       princiFile = ''
       if value != []:
          princiFile = path.join(active['path'],value[0].strip("'\""))
-         if path.exists(princiFile):
+         if path.isfile(princiFile):
             htmlFile = path.join(oneup,path.splitext(path.basename(princiFile))[0]+'.html')
             if matchSafe(htmlFile,path.basename(htmlFile),oneup,rebuild):
                # ~~> Scans the principal user PRINCI file
@@ -594,7 +598,7 @@ class actionRUN(ACTION):
       # ~~> associated PRINCI file
       # TODO: case of coupling with multiple PRINCI files
       return updated
- 
+
    # ~~ Compile the PRINCI file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    def compilePRINCI(self,cfg,rebuild):
       updated = False
@@ -609,7 +613,7 @@ class actionRUN(ACTION):
       princiFile = ''; princiSafe = ''
       if value != []:       # you do not need to compile the default executable
          princiFile = path.join(active['path'],value[0].strip("'\""))
-         if path.exists(princiFile):
+         if path.isfile(princiFile):
             exeFile = path.join(active['safe'],path.splitext(value[0].strip("'\""))[0] + \
                       cfg['SYSTEM']['sfx_exe'])
             if not path.exists(exeFile) or cfg['REBUILD'] == 0:
@@ -627,7 +631,7 @@ class actionRUN(ACTION):
          princiFilePlage = ''
          if value != []:       # you do not need to compile the default executable
             princiFilePlage = path.join(active['path'],value[0].strip("'\""))
-            if path.exists(princiFilePlage):
+            if path.isfile(princiFilePlage):
                if princiSafe != '':
                   print '*********adding content of '+path.basename(princiFilePlage)+' to '+princiSafe
                   putFileContent(princiSafe,getFileContent(princiSafe)+['']+getFileContent(princiFilePlage))
@@ -656,7 +660,7 @@ class actionRUN(ACTION):
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    def runCommand(self,rebuild):
-      
+
       updated = False
       print '    +> executing your command:\n      ', self.active["do"]
       mes = MESSAGES(size=10)
@@ -693,7 +697,7 @@ class actionRUN(ACTION):
                if path.exists(path.join(self.active["where"],oFile)): copyFile(path.join(self.active["where"],oFile),self.active['safe'])
             elif path.exists(path.join(self.path,oFile)): copyFile(path.join(self.path,oFile),self.active['safe'])
             else: raise Exception([{'name':'runCommand','msg':'could not find reference to the dependant: '+oFile}])
-            
+
       # ~~> associated secondary inputs
       for xref in self.active["deprefs"]:
          if xref in self.dids.keys():
@@ -732,7 +736,7 @@ class actionRUN(ACTION):
                                  raise Exception([filterMessage({'name':'runCommand','msg':'I can see your input file '+layer[0][0]+'but cannot copy it'},e,True)])
                            else: raise Exception([{'name':'runCommand','msg':'could not find reference to the dependant: '+layer[0][0]}])
                   if layer == []: raise Exception([{'name':'runCommand','msg':'could not find reference to the linked file: '+self.active["deprefs"][xref]}])
-      
+
       # ~~> execute command locally
       chdir(self.active['safe'])
       try:
@@ -741,7 +745,7 @@ class actionRUN(ACTION):
       except Exception as e:
          raise Exception([filterMessage({'name':'runCommand','msg':'something went wrong when executing you command.'},e,True)])
       if code != 0: raise Exception([{'name':'runCommand','msg':'Could not run your command ('+exeCmd+').\n      '+tail}])
-      
+
       # ~~> copy of outputs /!\ you are replacing one config by another
       for oFile in self.active["outrefs"]:
          if path.exists(path.join(self.active['safe'],self.active["outrefs"][oFile])):
@@ -798,7 +802,7 @@ class groupPLOT(GROUPS):
          "deprefs":'', "outrefs":'', "where":'',
          "type":'', "config": 'distinct' })
    groupkeys = deepcopy(GROUPS.groupkeys)
-   groupkeys.update({ "vars":'', "time":'', "extract":'', "sample": '', "config":'', "where":'' })
+   groupkeys.update({ "vars":'', "time":'', "extract":'', "sample": '', "config":'', "where":'', "type":''})
    avaylkeys = deepcopy(GROUPS.avaylkeys)
    avaylkeys.update({ "title":'', "target":'', "deco":'' })
 
@@ -928,15 +932,26 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
 
    # ~~ Parse xmlFile ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    import xml.etree.ElementTree as XML
-   print '... reading XML test specification file: ' + path.basename(xmlFile)
    f = open(xmlFile,'r')
    xmlTree = XML.parse(f)  # may need to try first and report error
    xmlRoot = xmlTree.getroot()
    f.close()
-   # ~~ Default Ranking ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   rank = ''
-   if "rank" in xmlRoot: rank = xmlRoot.attrib["rank"]
 
+   # ~~ Simplying Ranking ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   dodo = True
+   # /!\ There is a lot more to dodo
+   rank = '1'
+   if "rank" in xmlRoot.keys(): rank = xmlRoot.attrib["rank"]
+   rankdo = int(rank)
+   rankdont = 0
+   if xmlConfig[xmlConfig.keys()[0]]['options'].rank != '': rankdont = int(xmlConfig[xmlConfig.keys()[0]]['options'].rank)
+   if rankdont == 1: dodo = False
+   if gcd(rankdont,rankdo) == 1: dodo = False
+   if not dodo:
+      print '    > nothing to do here at this stage'
+      return reports
+
+   print '... interpreting XML test specification file: ' + path.basename(xmlFile)
    # ~~ Decoration process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #
    #    This needs to be developed further
@@ -987,11 +1002,14 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
    cast = groupCAST(xmlFile,title,bypass)
    cast.addGroupType("cast")
    # ~~> Create casts for future references
-   caster = Caster()
+   caster = Caster({'object':{},'obdata':{}})
+
+   # ~~ The new frontier ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   space = locals()
 
    for xmlChild in xmlRoot:
 
-   # ~~ Main action process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~ Main action process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #
    #    Whether an action is carried out or not, it is known through:
    #       xmlConfig[cfgname]['options'].todos['act']['todo']
@@ -1001,7 +1019,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
    # _______________________________________________________//        \\
    # _______________________________________________________>> ACTION <<
    #                                                        \\        //
-   #for action in xmlRoot.findall("action"):      
+   #for action in xmlRoot.findall("action"):
       if xmlChild.tag == "action":
          report = {}; updated = False
          action = xmlChild
@@ -1058,6 +1076,12 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                if lang == 2:
                   cas = setKeyValue('STEERING FILE',cas,frgb,repr(path.basename(casFile)))
                   cas = setKeyValue('DICTIONARY',cas,frgb,repr(path.normpath(frgb['DICO'])))
+               # ~~> Parse user defined keywords
+               if do.active['set'] != '':
+                  for set in do.active['set'].split('|'):
+                     kw,val = scanCAS(set)[1]
+                     cas = setKeyValue(kw[0],cas,frgb,';'.join(val[0]))
+               # ~~> Parse other special keys
                if do.active["ncsize"] != '': cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(do.active["ncsize"]))
                ncsize = getNCSIZE(cas,dico,frgb)
                do.updateCFG({'cas':cas})
@@ -1194,12 +1218,12 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
             xcpt.append(filterMessage({'name':'runXML','msg':'add extract object to the list'},e,bypass))
             continue   # bypass the rest of the for loop
 
-         # ~~> Temper with rank but still gather intelligence
-         dodo = True
-         rankdo = cast.active['rank']
-         rankdont = cast.dids[typeCast][cast.active['xref']]['rank']
-         if rankdont == 1: dodo = False
-         if gcd(rankdont,rankdo) == 1: dodo = False
+         # ~~> Temper with rank without gathering intelligence
+         #dodo = True
+         #rankdo = cast.dids[typeCast][cast.active['xref']]['rank']
+         #rankdont = xmlConfig[xmlConfig.keys()[0]]['options'].todos['cast']['rank']
+         #if rankdont == 1: continue #dodo = False
+         #if gcd(rankdont,rankdo) == 1: continue #dodo = False
 
          # ~~ Step 2. Python code ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          if len(casting.findall("python")) > 1:
@@ -1215,7 +1239,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
          # ~~ Step 3. Return statement ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          if len(casting.findall("return")) > 1:
             raise Exception([{'name':'runXML','msg':'you can only have one return key in cast referenced: '+cast.tasks["xref"]}])
-         if len(casting.findall("return")) > 0 and dodo:
+         if len(casting.findall("return")) > 0:
             code = casting.findall("return")[0]
             try:
                cast.addReturnTask(code)
@@ -1270,12 +1294,11 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                   for cfgname in xmlConfig: findlayer.update({ cfgname:[[path.join(save.path,target)],'',t] })
                   cast.targetSubTask(findlayer,index,namex)
                continue # try finding the next variable
-               
+
             if xref in do.dids:
                layers = {}
                oneFound = False
                for cfgname in xmlConfig:
-                  rankdont = xmlConfig[cfgname]['options'].todos['cast']['rank']
                   if rankdont == 1: continue
                   if gcd(rankdont,rankdo) == 1: continue
                   oneFound = True
@@ -1320,7 +1343,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
             elif task['config'] == 'oneofall':
                xys = []
                if var['fileName'] != {}: cfg = var['fileName'].iterkeys().next()
-               else: cfg = '-'                  
+               else: cfg = '-'
                for x in xvars.split('|'): xys.append( (x+';'+cfg).strip(';') )
                xvars = '|'.join(xys)
             else:
@@ -1338,7 +1361,6 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
          # ~~> Second, casting and extracting data
          nbFile = 0; avars = xvars.split('|')
 
-         space = globals()
          for cfglist in avars:
             # ~~> Cast all variables
             for var,cfgs in zip(task["vars"],cfglist.split(';')):
@@ -1385,7 +1407,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
    #for extracting in xmlRoot.findall(typeSave):
       if xmlChild.tag[0:4] == "save":
          report = {}; updated = False
-         # /!\ typeSave should be in ['save1d','save2d','save3d']         
+         # /!\ typeSave should be in ['save1d','save2d','save3d']
          typeSave = xmlChild.tag
          if "type" not in xmlChild.attrib:  #TODO: This will eventually be removed
             if len(typeSave) == 4: raise Exception([{'name':'runXML','msg':'do not know what dimension your saved data will be in: '+xmlChild.attrib["xref"]}])
@@ -1442,9 +1464,9 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                oneFound = False
                findlayer = []
                for cfgname in xmlConfig:
-                  #rankdont = xmlConfig[cfgname]['options'].todos['save']['rank']
-                  #if rankdont == 1: continue
-                  #if gcd(rankdont,rankdo) == 1: continue
+                  rankdont = xmlConfig[cfgname]['options'].todos['save']['rank']
+                  if rankdont == 1: continue
+                  if gcd(rankdont,rankdo) == 1: continue
                   for var in cast.dids['cast'][xref]['vars']:
                      if src == var['xref']:
                         oneFound = True
@@ -1531,7 +1553,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
    #   for did in save.dids:
    #      if xref in save.dids[did]: typeSave = did
          xref = save.tasks['xref']
-         
+
          task = save.dids[typeSave][xref]
          if not "layers" in task: continue
          oneFound = False
@@ -1591,7 +1613,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
          if updated: report.update({ 'updt':updated, 'title':'My work is done' })
 
          if xcpt != []: raise Exception({'name':'runXML','msg':'looking at savings in xmlFile: '+xmlFile,'tree':xcpt})
-         
+
          oneFound = False
          for i in range(len(reports)):
             if reports[i]['xref'] == report['xref']:  #/!\ You are sure there is one xref (?)
@@ -1606,7 +1628,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
       if xmlChild.tag[0:4] == "plot":
          report = {}; updated = False
          # /!\ typePlot should be in ['plot1d','plot2d','plot3d','plotpv']
-         typePlot = xmlChild.tag 
+         typePlot = xmlChild.tag
          if "type" not in xmlChild.attrib:  #TODO: This will eventually be removed
             if len(typePlot) == 4: raise Exception([{'name':'runXML','msg':'do not know what dimension your plotted data will be in: '+xmlChild.attrib["xref"]}])
             elif len(typePlot) == 6:     # defaults for each type
@@ -1618,14 +1640,14 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
             if len(typePlot) == 4:
                if len(xmlChild.attrib["type"].split(':')) == 2: typePlot = typePlot + xmlChild.attrib["type"].split(':')[0]
                else: raise Exception([{'name':'runXML','msg':'do not know what dimension your plotted data will be in: '+xmlChild.attrib["xref"]}])
-            elif len(typePlot) == 6: 
+            elif len(typePlot) == 6:
                if len(xmlChild.attrib["type"].split(':')) == 2:
                   if typePlot[4:6] != xmlChild.attrib["type"].split(':')[0]: raise Exception([{'name':'runXML','msg':'inconsistency in the dimension of your plotted data in: '+xmlChild.attrib["xref"]}])
                else: xmlChild.attrib["type"] = typePlot[4:6] + ":" + xmlChild.attrib["type"]
             else: raise Exception([{'name':'runXML','msg':'the type of your plot should be in: ["plot1d","plot2d","plot3d","plotpv"] for '+xmlChild.attrib["xref"]}])
          plot.active['type'] = typePlot
          ploting = xmlChild
-         
+
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          try:
             plot.addDraw(ploting,rank)
@@ -1656,9 +1678,9 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                oneFound = False
                findlayer = []
                for cfgname in xmlConfig:
-                  #rankdont = xmlConfig[cfgname]['options'].todos['draw']['rank']
-                  #if rankdont == 1: continue
-                  #if gcd(rankdont,rankdo) == 1: continue
+                  rankdont = xmlConfig[cfgname]['options'].todos['draw']['rank']
+                  if rankdont == 1: continue
+                  if gcd(rankdont,rankdo) == 1: continue
                   for var in cast.dids['cast'][xref]['vars']:
                      if src == var['xref']:
                         oneFound = True
@@ -1734,7 +1756,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                elif dc.dids['deco'].has_key(plot.tasks['xref']):
                   plot.tasks['deco'] = dc.dids['deco'][plot.tasks['xref']]
                else:
-                  if typePlot[4:6] == '1d': plot.tasks['deco'] = decoDefault1D
+                  if typePlot[4:6] == '1d': plot.tasks['deco'] = {} #{'look':[decoDefault1D]}
                   if typePlot[4:6] == '2d': plot.tasks['deco'] = decoDefault2D
                   if typePlot[4:6] == '3d': plot.tasks['deco'] = decoDefault3D
             # > at the layer level
@@ -1748,7 +1770,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                            if name in ['look','data']: plot.tasks[namex][index]['deco'].update(dc.dids['deco'][deco][name][0])
                      else: raise Exception([{'name':'runXML','msg':'could not find reference to layer deco tag: '+deco+' for figure '+plot.tasks['xref']}])
                else:
-                  if typePlot[4:6] == '1d': plot.tasks[namex][index]['deco'] = decoDefault1D
+                  if typePlot[4:6] == '1d': plot.tasks[namex][index]['deco'] = {} #{'look':[decoDefault1D]}
                   if typePlot[4:6] == '2d': plot.tasks[namex][index]['deco'] = decoDefault2D
                   if typePlot[4:6] == '3d': plot.tasks[namex][index]['deco'] = decoDefault3D
 
@@ -1819,7 +1841,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                      figure.add( layer['fileName'][cfg][2], { 'file': fle,
                         'deco': layer["deco"], 'xref':xref,
                         'vars': layer["vars"], 'extract':layer["extract"], 'sample':layer["sample"],
-                        'type': draw['type'], 'time':layer["time"] } )
+                        'type': layer['type'], 'time':layer["time"] } )
 
             if display: figure.show()
             else: figure.save(figureName)
@@ -1839,7 +1861,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
    # ~~ Error management ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpt != []:  # raise full failure report
       raise Exception({'name':'runXML','msg':'in xmlFile: '+xmlFile,'tree':xcpt})
-   
+
    # ~~ Final report summary ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    return reports
 

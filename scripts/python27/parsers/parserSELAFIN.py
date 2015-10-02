@@ -126,6 +126,8 @@ def getValueHistorySLF( hook,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,va
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    z = np.zeros((len(varsIndexes),lens,len(time)))
+   if fsize == 4: z = np.zeros((len(varsIndexes),lens,len(time)),dtype=np.float32)
+   else: z = np.zeros((len(varsIndexes),lens,len(time)),dtype=np.float64)
    for it in range(len(time)):            # it is from 0 to len(time)-1
       f.seek(tags['cores'][time[it]])     # time[it] is the frame to be extracted
       f.seek(4+fsize+4,1)                     # the file pointer is initialised
@@ -233,7 +235,8 @@ def getValuePolylineSLF(hook,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,va
    lens = len(support[0][1])
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   z = np.zeros((len(varsIndexes),len(time),lens,len(support)),dtype=np.float64)
+   if fsize == 4: z = np.zeros((len(varsIndexes),len(time),lens,len(support)),dtype=np.float32)
+   else: z = np.zeros((len(varsIndexes),len(time),lens,len(support)),dtype=np.float64)
    # ~~ Extract data along line ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for it in range(len(time)):            # it is from 0 to len(time)-1
       f.seek(tags['cores'][time[it]])     # time[it] is the frame to be extracted
@@ -269,7 +272,8 @@ def getValuePolyplanSLF(hook,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,va
    ftype,fsize = hook['float']
 
    # ~~ Extract planes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   z = np.zeros((len(varsIndexes),len(time),len(support),NPOIN3/NPLAN),dtype=np.float64) #,len(tags['cores'])))
+   if fsize == 4: z = np.zeros((len(varsIndexes),len(time),len(support),NPOIN3/NPLAN),dtype=np.float32)
+   else: z = np.zeros((len(varsIndexes),len(time),len(support),NPOIN3/NPLAN),dtype=np.float64)
    # ~~ Extract data on several planes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for it in range(len(time)):            # it is from 0 to len(time)-1
       f.seek(tags['cores'][time[it]])     # time[it] is the frame to be extracted
@@ -588,7 +592,8 @@ class SELAFIN:
       f = self.file['hook']
       endian = self.file['endian']
       ftype,fsize = self.file['float']
-      z = np.zeros((len(varsIndexes),self.NPOIN3))
+      if fsize == 4: z = np.zeros((len(varsIndexes),self.NPOIN3),dtype=np.float32)
+      else: z = np.zeros((len(varsIndexes),self.NPOIN3),dtype=np.float64)
       # if tags has 31 frames, len(tags)=31 from 0 to 30, then frame should be >= 0 and < len(tags)
       if frame < len(self.tags['cores']) and frame >= 0:
          f.seek(self.tags['cores'][frame])
@@ -715,7 +720,8 @@ class SELAFIN:
       # This assumes that nodes starts at 1
       onodes = np.sort(np.array( zip(range(len(nodes)),nodes), dtype=[ ('0',int),('1',int) ] ),order='1')
       # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      z = np.zeros((len(varsIndexes),len(nodes),len(self.tags['cores'])))
+      if fsize == 4: z = np.zeros((len(varsIndexes),len(nodes),len(self.tags['cores'])),dtype=np.float32)
+      else: z = np.zeros((len(varsIndexes),len(nodes),len(self.tags['cores'])),dtype=np.float64)
       f.seek(self.tags['cores'][0])
       if showbar: pbar = ProgressBar(maxval=len(self.tags['cores'])).start()
       for t in range(len(self.tags['cores'])):
@@ -954,8 +960,10 @@ class PARAFINS(SELAFINS):
       return
 
    def getPALUES(self,t):
+      ftype,fsize = self.file['float']
       if len(self.slfs) > 0:
-         VARSOR = np.zeros((self.slf.NBV1+self.slf.NBV2,self.slf.NPOIN3))
+         if fsize == 4: VARSOR = np.zeros((self.slf.NBV1+self.slf.NBV2,self.slf.NPOIN3),dtype=np.float32)
+         else: VARSOR = np.zeros((self.slf.NBV1+self.slf.NBV2,self.slf.NPOIN3),dtype=np.float64)
          for slf in self.slfs:
             VARSUB = slf.getVALUES(t)
             for v in range(self.slf.NVAR): VARSOR[v][slf.IPOB3-1] = VARSUB[v]
@@ -963,9 +971,11 @@ class PARAFINS(SELAFINS):
       return VARSOR
 
    def getSERIES(self,nodes,varsIndexes=[]):
+      ftype,fsize = self.file['float']
       if varsIndexes == []: varsIndexes = self.slf.VARINDEX
       if len(self.slfs) > 0:
-         z = np.zeros((len(varsIndexes),len(nodes),len(self.slf.tags['cores'])))
+         if fsize == 4: z = np.zeros((len(varsIndexes),len(nodes),len(self.slf.tags['cores'])),dtype=np.float32)
+         else: z = np.zeros((len(varsIndexes),len(nodes),len(self.slf.tags['cores'])),dtype=np.float64)
          mproc = self.mapPOIN[nodes]
          print '      +> Extracting time series from the following partitions:'
          for islf,slf in zip(range(len(self.slfs)),self.slfs):
@@ -1002,6 +1012,7 @@ class PARAFINS(SELAFINS):
          sub = deepcopy(slf)
          sub.fole.update({ 'endian': islf.fole['endian'] })
          sub.fole.update({ 'float': islf.fole['float'] })
+         ftype,fsize = islf.fole['float']
          # ~~ Conversion to local islf ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          # you know the geom is 2D
          # keep the IPOBO2, X2D, Y2D and IKLE2 and replace the rest
@@ -1075,7 +1086,8 @@ class PARAFINS(SELAFINS):
          print '         ~> '+path.basename(fileName)
          # ~~> Time stepping
          sub.tags['times'] = islf.tags['times']
-         VARSORS = np.zeros((sub.NVAR,sub.NPOIN3),dtype=np.float64)
+         if fsize == 4: VARSORS = np.zeros((sub.NVAR,sub.NPOIN3),dtype=np.float32)
+         else: VARSORS = np.zeros((sub.NVAR,sub.NPOIN3),dtype=np.float64)
          for t in range(len(islf.tags['times'])):
             sub.appendCoreTimeSLF(t) # Time stamps
             for ivar,var in zip(range(sub.NVAR),islf.getVALUES(t)):

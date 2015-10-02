@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="waq_thermic">
+<validation xref="waq_thermic" rank="11">
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
@@ -19,13 +19,13 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="1" rank="11"
-       do="translate;compile;run;cas;princi"
+   <action xref="1"
+       do="translate;run;cas;princi"
        code="telemac2d" target="t2d_waq_thermic.cas"
        title="tracer decay scalar mode"
    />
-   <action xref="2" rank="11"
-       do="translate;compile;run;cas;princi" ncsize="8" 
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="8" 
        code="telemac2d" target="t2d_waq_thermic.cas"
        title="water quality- thermic process"
    />   

@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 <!-- Validation and verification of test cases, given a list of CAS files 
 --> 
-<validation xref="case"> 
+<validation xref="case" rank="5"> 
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
@@ -19,23 +19,23 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="infinitedepthscalar"  rank="5"
-       do="translate;compile;run;cas;princi" 
+   <action xref="infinitedepthscalar"
+       do="translate;run;cas;princi" 
        code="tomawac" target="tom_fetch_lim_id.cas" 
        title="fetch_lim scalar mode" 
    />
-   <action xref="infinitedepthparallel"  rank="5"
-       do="translate;compile;run;cas;princi" ncsize="4" 
+   <action xref="infinitedepthparallel"
+       do="translate;run;cas;princi" ncsize="4" 
        code="tomawac" target="tom_fetch_lim_id.cas" 
        title="fetch_lim parallel mode" 
    />   
-   <action xref="finitedepthscalar"  rank="5"
-       do="translate;compile;run;cas;princi" 
+   <action xref="finitedepthscalar"
+       do="translate;run;cas;princi" 
        code="tomawac" target="tom_fetch_lim_fd.cas" 
        title="fetch_lim scalar mode" 
    />
-   <action xref="finitedepthparallel"  rank="5"
-       do="translate;compile;run;cas;princi" ncsize="4" 
+   <action xref="finitedepthparallel"
+       do="translate;run;cas;princi" ncsize="4" 
        code="tomawac" target="tom_fetch_lim_fd.cas" 
        title="fetch_lim parallel mode" 
    />   

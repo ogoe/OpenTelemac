@@ -1,47 +1,86 @@
-<?xml version="1.0"?> 
-<!-- Validation and verification of test cases, given a list of CAS files 
---> 
-<validation xref="bumpflu"> 
- 
-<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ This section is being ignored at the moment --> 
-   <deco xref="default"> 
-      <look format="png" colourbar="jet.xml" /> 
-      <data title="Sub-critical flow over a bump" author="S.E.Bourban" contact="s.bourban@hrwallingford.com" /> 
-   </deco> 
-   <deco xref="vect"> 
-      <look colour="jet.xml" /> 
-   </deco> 
-   <deco xref="line"> 
-      <look colour="k" /> 
-   </deco> 
-   <deco xref="test">
-      <data title="Sub-critical flow over a bump" author="S.E.Bourban" contact="s.bourban@hrwallingford.com" /> 
-   </deco> 
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="bumpflu" rank="3">
 
-<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ do="cas;princi" are being ignored at the moment <look roi="(7;0.25)(13.5;1.75)" /> 
--->  
-   <action xref="1"  rank="3"
-       do="translate;compile;run;cas;princi" 
-       code="telemac2d" target="t2d_bumpflu.cas" 
-       title="bumpflu scalar mode" 
+<!-- Decos and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="Sub-critical flow over a bump" author="S.E.Bourban" contact="s.bourban@hrwallingford.com" />
+   </deco>
+
+<!-- Python sub-scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <cast xref="fcts" >
+      <python>
+def mapdiff(a1,a2):
+   return a1.support,a2.values-a1.values
+def maxdiff(d0):
+   a0 = max(np.ravel(d0.values))
+   if a0 > 0.0:
+      a1 = np.argwhere(d0.values == a0)[-1]
+      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
+   a0 = min(np.ravel(d0.values))
+   if 0.0 > a0:
+      a1 = np.argwhere(d0.values == a0)[-1]
+      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
+   return "My work has been validated"
+      </python>
+   </cast>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment <look roi="(7;0.25)(13.5;1.75)" />
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_bumpflu.cas"
+       title="bumpflu scalar mode"
    />
-    <action xref="2"  rank="3"
-       do="translate;compile;run;cas;princi" ncsize="4" 
-       code="telemac2d" target="t2d_bumpflu.cas" 
-       title="bumpflu parallel mode" 
-   />  
-  
-<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+    <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_bumpflu.cas"
+       title="bumpflu parallel mode"
+   />
+
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   <save xref="f2d-r2d" type="2d:" config="oneofall" time="[-1]"  >
+      <layer vars="v3:map" target="f2d-r2d:v3" />
+   </save>
+-->
+   <cast xref="f2d-r2d" config="oneofall" time="[0:-1]" type="2d:">
+      <v1 vars=":map" target="1:T2DRES" />
+      <v2 vars=":map" target="1:T2DREF" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="max(v3.values.ravel()) > 1.e-6"
+         warn="max(v3.values.ravel()) > 1.e-12"
+         value="maxdiff(v3)" />
+   </cast>
+<!-- Check on Parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   <save xref="r2d-r2d" type="2d:" config="oneofall" time="[-1]"  >
+      <layer vars="v4:map" target="r2d-r2d" />
+   </save>
+-->
+   <cast xref="r2d-r2d" config="oneofall" time="[0:-1]" type="2d:">
+      <v1 vars=":map" target="1:T2DRES" />
+      <v2 vars=":map" target="2:T2DRES" />
+      <v4 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the parallel file."
+         fail="max(v4.values.ravel()) > 1.e-6"
+         warn="max(v4.values.ravel()) > 1.e-12"
+         value="maxdiff(v4)" />
+   </cast>
+
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
    <!-- Save 2 time histories into the CSV file "figure1.csv".
       - Locations: extraction at node 703 and at point (0,1)
       - Variables: extraction of SURFACE LIBRE
       - Duration:  extraction from time start (0) to end of time (-1)
       - File:      extraction from xref 1:T2DRES above
-   <save1d xref="figure1" type="history" config="together" time="[0:-1]" deco="default" > 
-      <layer vars="surface libre:line" extract="703;(0;1)" target="1:T2DRES" /> 
+   <save1d xref="figure1" type="history" config="together" time="[0:-1]" deco="default" >
+      <layer vars="surface libre:line" extract="703;(0;1)" target="1:T2DRES" />
    </save1d>
    -->
    <!-- Save a profile along a line into the CSV file "figure2.csv".
@@ -51,9 +90,9 @@
       - File:      extraction from xref 1:T2DRES above
       - TODO:  deal with several variables of name VITESSE with a calculation action
       - NOTE:  the key extract, can also be moved up a level to the tag saved1d
-   <save1d xref="figure2" type="v-section" config="oneofall" time="[-1]" > 
-      <layer vars="surface libre:line;fond:line" extract="(0;0.93):(21;1.07)" target="1:T2DRES" /> 
-      <layer vars="vitesse:line" extract="(0;0.93):(21;1.07)" target="1:T2DRES" /> 
+   <save1d xref="figure2" type="v-section" config="oneofall" time="[-1]" >
+      <layer vars="surface libre:line;fond:line" extract="(0;0.93):(21;1.07)" target="1:T2DRES" />
+      <layer vars="vitesse:line" extract="(0;0.93):(21;1.07)" target="1:T2DRES" />
    </save1d>
    -->
 
@@ -65,8 +104,8 @@
       - Duration:  extraction from time start (0) to end of time (-1)
       - File:      extraction from xref 1:T2DRES above
    -->
-   <plot1d xref="figure1" type="history" config="together" time="[0:-1]" deco="default" size="[12;3]" > 
-      <layer vars="surface libre:line" extract="703;(0;1)" target="1:T2DRES" /> 
+   <plot1d xref="figure1" type="history" config="together" time="[0:-1]" deco="default" size="(12;3)" >
+      <layer vars="surface libre:line" extract="703;(0;1)" target="1:T2DRES" />
    </plot1d>
    <!-- Plot a profile along a line into the PNG file "figure2.png".
       - Locations: extraction along the line defined by the 2 points (0;0.93) and (21;1.07)
@@ -75,9 +114,9 @@
       - File:      extraction from xref 1:T2DRES above
       - NOTE:  the key extract, can also be moved up a level to the tag saved1d
    -->
-   <plot1d xref="figure2" type="v-section" extract="(0;0.93):(21;1.07)" config="oneofall" time="[-1]" size="[12;5]" > 
-      <layer vars="surface libre:line" target="1:T2DRES" /> 
-      <layer vars="fond:line" target="1:T2DRES" /> 
+   <plot1d xref="figure2" type="v-section" extract="(0;0.93):(21;1.07)" config="oneofall" time="[-1]" size="(12;5)" >
+      <layer vars="surface libre:line" target="1:T2DRES" />
+      <layer vars="fond:line" target="1:T2DRES" />
    </plot1d>
 
    <!-- Plot a coloured surface into the PNG file "figure6.png".
@@ -87,16 +126,16 @@
       - Duration:  extraction at the end of time (-1)
       - File:      extraction from file 1:T2DRES above
    -->
-   <plot2d xref="figure6" config="oneofall" time="[-1]" size="[12;3]" > 
-      <layer vars="VITESSE:map" target="1:T2DRES" /> 
-      <layer vars="VITESSE:angle" target="1:T2DRES"  sample="(7;0.25)(13.5;1.75){10;4}" /> 
+   <plot2d xref="figure6" config="oneofall" time="[-1]" size="(12;3)" >
+      <layer vars="VITESSE:map" target="1:T2DRES" />
+      <layer vars="VITESSE:angle" target="1:T2DRES"  sample="(7;0.25)(13.5;1.75){10;4}" />
    </plot2d>
 
    <!-- Plot a mesh into the PNG file "figure7.png".
       - Locations: extraction for the entire mesh
       - File:      extraction from file 1:T2DGEO above
    -->
-   <plot2d xref="figure7" size="[12;3]" deco="default" >
+   <plot2d xref="figure7" size="(12;3)" deco="default" >
       <layer vars="FOND:mesh" target="1:T2DGEO" config="oneofall" />
    </plot2d>
 
@@ -107,9 +146,9 @@
       - Duration:  extraction at the end of time (-1)
       - File:      extraction from file 1:T2DRES above
    -->
-   <plot2d xref="figure8" size="[20;5]" > 
+   <plot2d xref="figure8" size="(20;5)" >
       <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" />
       <layer vars="surface libre:wire" sample="(7;0.25)(13.5;1.75){10;4}" target="1:T2DRES" config="oneofall" />
    </plot2d>
- 
+
 </validation>

@@ -65,7 +65,7 @@ from utils.messages import filterMessage
 def checkSymLink(use_link):
    return ( SYMLINK_AVAIL and use_link )
 
-   
+
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
 #
@@ -171,7 +171,7 @@ def symlinkFile(src, dest):
    try:
       symlink(src, dest)
    except OSError, e:
-      if e.errno == errno.EEXIST: 
+      if e.errno == errno.EEXIST:
          remove(dest)
          symlink(src, dest)
 

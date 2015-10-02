@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case">
+<validation xref="case" rank="2">
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
@@ -9,23 +9,46 @@
       <look format="png" colourbar="jet.xml" />
       <data title="kochin" author="artemis" contact="www.opentelemac.org" />
    </deco>
-   <deco xref="vect">
-      <look colour="jet.xml" />
-   </deco>
-   <deco xref="line">
-      <look colour="k" />
-   </deco>
+
+<!-- Python sub-scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <cast xref="fcts" >
+      <python>
+def mapdiff(a1,a2):
+   return a1.support,a2.values-a1.values
+def maxdiff(d0):
+   a0 = max(np.ravel(d0.values))
+   if a0 > 0.0:
+      a1 = np.argwhere(d0.values == a0)[-1]
+      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
+   a0 = min(np.ravel(d0.values))
+   if 0.0 > a0:
+      a1 = np.argwhere(d0.values == a0)[-1]
+      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
+   return "My work has been validated"
+      </python>
+   </cast>
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
---> 
-   <action xref="1"  rank="2"  
-       do="translate;compile;run;cas;princi" ncsize="4"
+-->
+   <action xref="1"
+       do="translate;run;cas;princi" ncsize="4"
        code="artemis" target="kochin2.cas"
        title="AUTOMATIC TETAP CALCULATION FOR RADIAL WAVE POTENTIAL"
-   /> 
-<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /!\ This section is being ignored at the moment -->
+   />
+
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <cast xref="frt-art" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars="VE:map" target="1:ARTRES" />
+      <v2 vars="VE:map" target="1:ARTREF" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="max(v3.values.ravel()) > 1.e-6"
+         warn="max(v3.values.ravel()) > 1.e-12"
+         value="maxdiff(v3)" />
+   </cast>
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
@@ -33,17 +56,17 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <plot2d xref="Mesh" size="[8;8]" > 
-      <layer vars="bottom:mesh" target="1:ARTGEO" config="oneofall" /> 
+   <plot2d xref="Mesh" size="(8;8)" >
+      <layer vars="bottom:mesh" target="1:ARTGEO" config="oneofall" />
    </plot2d>
-   <plot2d xref="WaveHeight" size="[8;8]" > 
-      <layer vars="wave height:map" target="1:ARTRES" config="oneofall" /> 
+   <plot2d xref="WaveHeight" size="(8;8)" >
+      <layer vars="wave height:map" target="1:ARTRES" config="oneofall" />
    </plot2d>
-   <plot2d xref="RealPotential" size="[8;8]" > 
-      <layer vars="real potential:map" target="1:ARTRES" config="oneofall" /> 
+   <plot2d xref="RealPotential" size="(8;8)" >
+      <layer vars="real potential:map" target="1:ARTRES" config="oneofall" />
    </plot2d>
-   <plot2d xref="ImagPotential" size="[8;8]" > 
-      <layer vars="imag potential:map" target="1:ARTRES" config="oneofall" /> 
+   <plot2d xref="ImagPotential" size="(8;8)" >
+      <layer vars="imag potential:map" target="1:ARTRES" config="oneofall" />
    </plot2d>
 
 </validation>

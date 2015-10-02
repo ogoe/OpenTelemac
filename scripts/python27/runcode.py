@@ -148,9 +148,9 @@ from parsers.parserSortie import getLatestSortieFiles
    nctile: is the number of core utilised per node
    ncsize: is the value of set in the CAS file, i.e. the total
       number of geometrical sub-domains.
-   
+
    Note: ncsize = 0 is also supported.
-   
+
    Logic:
       First, nctile is the one parameter we cannot modify, unless
          ncnode and ncsize are provided.
@@ -161,7 +161,7 @@ from parsers.parserSortie import getLatestSortieFiles
          might be too much or too few.
        - if ncnode is not provided, the ncnode will be adjusted to
          best fit ncsize * ncruns with a constant nctile.
-      If ncruns = 1, then normal adjustment will be done, 
+      If ncruns = 1, then normal adjustment will be done,
       with:
        - if ncnode is given by the user then ...
           + if ncsize is given by the user, there will be a
@@ -177,7 +177,7 @@ def checkParaTilling(onctile,oncnode,oncsize,ncruns,ncsize):
    ncnode = 1
    if oncnode != '': ncnode = max( 1,int(oncnode) )
    if oncsize != '': ncsize = int(oncsize)
-   
+
    # ~~ Special case of nctile ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    nctile = 1
    if onctile != '': nctile = max( 1,int(onctile) )
@@ -217,7 +217,7 @@ def checkParaTilling(onctile,oncnode,oncsize,ncruns,ncsize):
    return nctile,ncnode,ncsize
 
    # ~~ check for openmi consistency ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   
+
    return True
 
 def processCAS(casFiles,dico,frgb):
@@ -225,10 +225,10 @@ def processCAS(casFiles,dico,frgb):
    # ~~ Aquire CAS Files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cases = []; langs = []
    for casFile in casFiles:
-      
+
       #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
       casFile = path.realpath(casFile)
-      if not path.exists(casFile): 
+      if not path.exists(casFile):
          raise Exception([{'name':'runCAS','msg':'inexistent CAS file: '+casFile+ \
             '    +> or you may have forgotten an option key in your command line'}])
 
@@ -277,9 +277,9 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
    # ~~ copy input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k,v in zip(*cas[1]):
       if k in iFiles:
-         cref = v[0].strip("'\"") 
+         cref = v[0].strip("'\"")
          if not ( path.isfile(cref) or path.isdir(cref) ):
-            xcpt.append({'name':'processLIT','msg':'file does not exist: '+path.basename(cref)})
+            xcpt.append({'name':'processLIT','msg':'file does not exist ( '+path.basename(cref)+' ) for key '+k})
             continue
          crun = path.join(TMPDir,iFiles[k].split(';')[1])
          if path.exists(crun) and update:    # update is always True because we now copy the CAS file regardeless
@@ -487,7 +487,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                xcpt.append({'name':'processECR','msg':'could not find the listing file: '+crun})
                raise Exception(xcpt) # raise full report
             shutil.copy(crun,cref)
-            print '       copying: ',path.basename(cref)            
+            print '       copying: ',path.basename(cref)
             sortiefiles.append(cref)
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpt != []: raise Exception(xcpt) # raise full report
@@ -558,7 +558,7 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
          raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason. Please verify your external library installation.'},e,bypass)])
       if code != 0: raise Exception([{'name':'processExecutable','msg':'could not link your executable (runcode='+str(code)+').\n      '+tail}])
       print '       created: ',path.basename(useName)
-   
+
    else:
    # ~~ default executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       shutil.copy2(useName,path.basename(useName))
@@ -610,20 +610,20 @@ def getGLOGEO(cas,iFiles):
    FMTGEO = ''
    for k in cas[1][0]:
       if k in iFiles:
-         if iFiles[k].split(';')[5][-4:] == 'GEOM': 
+         if iFiles[k].split(';')[5][-4:] == 'GEOM':
             GLOGEO = iFiles[k].split(';')[1]
             FMTGEO = getFileFormat(cas,k)
    return GLOGEO,FMTGEO
 
 def getFileFormat(cas,keyword):
    """
-   Search in a cas object for the format key word 
+   Search in a cas object for the format key word
    associated with the keyword in argument
    """
    i = 0
    # Loop on all the keywords in the cas file
    for k in cas[1][0]:
-      # The keyword we are searching for contains both the keyword 'keyword' 
+      # The keyword we are searching for contains both the keyword 'keyword'
       # and the word FORMAT (same word in french and english)
       if keyword in k and 'FORMAT ' in k:
          return cas[1][1][i][0].strip("'\"")
@@ -665,12 +665,12 @@ def copyPartition(partel,cas,geom,fmtgeom,conlim,iFiles,ncsize,bypass,section_na
          elif iFiles[k].split(';')[5][0:5] == 'PARAL':
             if use_link:
                print '  duplilinking: ', path.basename(crun)
-               for n in range(ncsize): 
+               for n in range(ncsize):
                   symlinkFile(crun,
                               crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
             else:
                print '   duplicating: ', path.basename(crun)
-               for n in range(ncsize): 
+               for n in range(ncsize):
                   shutil.copy2(crun,
                                crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
 
@@ -710,14 +710,14 @@ def runPARTEL(partel,file,fileFormat,conlim,ncsize,bypass,section_name,zone_name
 # ~~~      print_twice echos the listing output to the sortie file ~~~
 def print_twice(pipe,ofile):
 
-   # Utility subroutine to print listing data both to stdout 
+   # Utility subroutine to print listing data both to stdout
    # and to the listing file, accessed via the ofile handle
    lastlineempty = False      # JPG addition here as opposed to argument
    for line in iter(pipe.readline,''):
       dat = line.rstrip()
-      # This IF statement just avoid printing a lot of blank lines 
+      # This IF statement just avoid printing a lot of blank lines
       # at the end of the run, before Python realises that the process
-      # has stopped. 
+      # has stopped.
       if (dat == ''):
          if not lastlineempty:
             print dat                   # Print to screen
@@ -774,7 +774,7 @@ def runRecollection(gretel,cas,glogeo,fmtgeo,oFiles,ncsize,bypass):
                   idx = cas[1][0].index("NUMBER OF HORIZONTAL LEVELS")
                if "NOMBRE DE PLANS HORIZONTAUX" in cas[1][0]:
                   idx = cas[1][0].index("NOMBRE DE PLANS HORIZONTAUX")
-               nplan = 0 if idx == -1 else cas[1][1][idx][0]  
+               nplan = 0 if idx == -1 else cas[1][1][idx][0]
                runGRETEL(gretel,crun,fileFormat,glogeo,fmtgeo,ncsize,nplan,bypass)
             except Exception as e:
                raise Exception([filterMessage({'name':'runRecollection'},e,bypass)])
@@ -802,7 +802,7 @@ def runGRETEL(gretel,file,fileFormat,geom,geoFormat,ncsize,nplan,bypass):
                 'msg':'something went wrong, I am not sure why. Here is the log:\n'\
                       +'\n'.join(getFileContent('gretel_'+file+'.log'))
                },e,bypass)])
-   if code != 0: 
+   if code != 0:
       raise Exception([
             {'name':'runGRETEL',
              'msg':'Could not split your file '+file\
@@ -966,7 +966,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    elif lang == 2:
       proc_parall='PARALLEL PROCESSORS'
    # Adding the number of processors in the cas file
-   for name in CASFiles: 
+   for name in CASFiles:
       CASFiles[name]['cas'] = \
          setKeyValue(proc_parall,CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['frgb'],ncsize)
       # Adding in coupled cas file as well
@@ -992,7 +992,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             section_name,zone_name = processLIT(CASFiles[name]['cas'],
                        MODFiles[CASFiles[name]['code']]['iFS'],
                        CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],options.use_link)
-            # Adding section name to CAS file information as the coupled module 
+            # Adding section name to CAS file information as the coupled module
             # might have sections and zones as well
             CASFiles[name]['section'] = section_name
             CASFiles[name]['zone'] = zone_name
@@ -1048,11 +1048,11 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                                 +cfg['SYSTEM']['sfx_exe'])
             # /!\ removing dependency over cfg['REBUILD']:
             if path.exists(useFile):
-               if cfg['REBUILD'] == 1: 
+               if cfg['REBUILD'] == 1:
                   remove(useFile)
-               elif isNewer(useFile,exeFile) == 1: 
+               elif isNewer(useFile,exeFile) == 1:
                   remove(useFile)
-               elif isNewer(useFile,useFort) == 1: 
+               elif isNewer(useFile,useFort) == 1:
                   remove(useFile)
             #> default command line compilation and linkage
          if not path.exists(path.join(plib,CASFiles[name]['code']+'.cmdo')):
@@ -1079,7 +1079,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          print '    re-copying: ',path.basename(useFile),exename
          shutil.copy2(path.basename(useFile),path.join(CASFiles[name]['dir'],path.basename(useFile)))
          shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
-   
+
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Handling the MPI command ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # You need to do this if ...
@@ -1148,7 +1148,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          # ~~> Path
          PARDir = pbin
          if cfg['PARTEL'] != {}:
-            if cfg['PARTEL'].has_key('PATH'): 
+            if cfg['PARTEL'].has_key('PATH'):
                PARDir = cfg['PARTEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
          # ~~> Call to PARTEL
          parcmd = path.join(pbin+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' < PARTEL.PAR >> <partel.log>')
@@ -1190,7 +1190,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             copyPartition(parcmd,CASFiles[name]['with'][cplage]['cas'],GLOGEO,FMTGEO,CONLIM,\
                           MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],\
                           ncsize,False,section_name,zone_name,options.use_link)
-  
+
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Getting out if split only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if options.split and not hpcpass:
@@ -1287,7 +1287,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                if 'exe' in CASFiles[name]: stdin = stdin.replace('<exename>',path.basename(CASFiles[name]['exe']))
                else: stdin = stdin.replace('<exename>',CASFiles[name]['run'])
                stdin = stdin.replace('<mpi_cmdexec>',CASFiles[name]['run'])   # /!\ serial mode
-            # ~~> Recreate the runcode.py command 
+            # ~~> Recreate the runcode.py command
             else:
                stdin = stdin.replace('<exename>',name)
                runcmd = 'runcode.py ' + codeName + ' --mpi '
@@ -1319,9 +1319,9 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
             jobID = getFileContent(sortie)[0].strip()
             print '... Your simulation ('+name+') has been launched through the queue.\n'
-            if hpcpass: 
+            if hpcpass:
                print '   +> You need to wait for completion before checking on results.\n'
-            else: 
+            else:
                print '   +> You need to wait for completion before re-collecting files using the option --merge\n'
          return []
 
@@ -1342,7 +1342,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
       # ~~> Path
       PARDir = pbin
       if cfg['PARTEL'] != {}:
-         if cfg['PARTEL'].has_key('PATH'): 
+         if cfg['PARTEL'].has_key('PATH'):
             PARDir = cfg['PARTEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
       # ~~> GRETEL Executable
       execmd = path.join(PARDir,'gretel'+cfg['SYSTEM']['sfx_exe'])
@@ -1351,7 +1351,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          print '    +> ',name
          chdir(CASFiles[name]['wir'])
          # Global GEO file
-         GLOGEO,FMTGEO = getGLOGEO(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])    
+         GLOGEO,FMTGEO = getGLOGEO(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['iFS'])
          runRecollection(execmd,CASFiles[name]['cas'],GLOGEO,FMTGEO,
                          MODFiles[CASFiles[name]['code']]['oFS'],
                          ncsize,options.bypass)
@@ -1428,10 +1428,10 @@ def main(module=None):
    parser.add_option("-w", "--workdirectory",type="string",dest="wDir",default='',
       help="specify whether to re-run within a defined subdirectory" )
    # ~~> HPC / parallel
-   if module is None: 
+   if module is None:
       parser.add_option("--jobname",type="string",dest="jobname",default=path.basename(sys.argv[0]),
                         help="specify a jobname for HPC queue tracking" )
-   else: 
+   else:
       parser.add_option("--jobname",type="string",dest="jobname",default=module,
                         help="specify a jobname for HPC queue tracking" )
    parser.add_option("--queue",type="string",dest="hpc_queue",default='',
@@ -1465,7 +1465,7 @@ def main(module=None):
    # If module is given add it as first argument
    if not module is None:
        args.insert(0,module)
-       
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # path to the root
@@ -1540,11 +1540,11 @@ def main(module=None):
    if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
    # recognised keys in the config
-   if options.ncsize == '' and cfgs[cfgname].has_key('ncsize'): 
+   if options.ncsize == '' and cfgs[cfgname].has_key('ncsize'):
       options.ncsize = cfgs[cfgname]['ncsize']
-   if options.nctile == '' and cfgs[cfgname].has_key('nctile'): 
+   if options.nctile == '' and cfgs[cfgname].has_key('nctile'):
       options.nctile = cfgs[cfgname]['nctile']
-   if options.ncnode == '' and cfgs[cfgname].has_key('ncnode'): 
+   if options.ncnode == '' and cfgs[cfgname].has_key('ncnode'):
       options.ncnode = cfgs[cfgname]['ncnode']
 
    # bypass errors and carries on
@@ -1563,10 +1563,10 @@ def main(module=None):
       sys.exit(1)
    # parsing for proper naming
    cfg = parseConfig_RunningTELEMAC(cfgs[cfgname])
-   
+
    print '\n\nRunning your CAS file for:\n'+'~'*72+'\n'
    print '    +> configuration: ' +  cfgname
-   if 'brief' in cfgs[cfgname]: 
+   if 'brief' in cfgs[cfgname]:
       print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
    print '    +> root:          ' +  cfgs[cfgname]['root']
    if options.wDir != '':
@@ -1575,7 +1575,7 @@ def main(module=None):
    print '\n\n'+'~'*72+'\n'
 
 # >>> Check wether the config has been compiled for the runcode
-   if options.compileonly: 
+   if options.compileonly:
       cfg['REBUILD'] = 1
    if codeName not in cfg['MODULES']:
       print '\nThe code requested is not installed on this system : ' + codeName + '\n'
@@ -1587,7 +1587,7 @@ def main(module=None):
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Run the Code from the CAS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   try: 
+   try:
       runCAS(cfgname,cfg,codeName,casFiles,options)
    except Exception as e:
       xcpts.addMessages(filterMessage({'name':'_____________\nruncode::main:\n'},e,options.bypass))
@@ -1601,7 +1601,7 @@ def main(module=None):
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   else: 
+   else:
       print '\n\nMy work is done\n\n'
       sys.exit(0)
 

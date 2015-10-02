@@ -16,10 +16,10 @@
       <look colour="k" /> 
    </deco> 
    <deco xref="size1"> 
-      <look size="[12;3]" /> 
+      <look size="(12,3)" /> 
    </deco> 
    <deco xref="size2"> 
-      <look size="[12;5]" /> 
+      <look size="(12,5)" /> 
    </deco> 
 
 <!-- Plot from SELAFIN files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,7 +32,7 @@
       - File:      extraction from file "f3d_bump.slf"
    -->
    <deco xref="figure1"> 
-      <look format="png" colourbar="jet.xml" size="[12;5]" /> 
+      <look format="png" colourbar="jet.xml" size="(12,5)" /> 
       <data title="Sub-critical flow over a bump" /> 
    </deco> 
    <plot2d xref="figure1" type="v-section" config="oneofall" time="[-1]" deco="figure1;size1" > 
@@ -51,7 +51,7 @@
       - File:      extraction from file "f3d_bump.slf"
    -->
    <deco xref="figure3"> 
-      <look format="png" colourbar="jet.xml" size="[12;3]" /> 
+      <look format="png" colourbar="jet.xml" size="(12,3)" /> 
       <data title="Sub-critical flow over a bump" /> 
    </deco> 
    <plot2d xref="figure3" type="p-section" config="oneofall" time="[-1]" > 

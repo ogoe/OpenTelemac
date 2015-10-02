@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 <!-- Validation and verification of test cases, given a list of CAS files 
 --> 
-<validation xref="weirs"> 
+<validation xref="weirs" rank="5"> 
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
@@ -19,23 +19,23 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="1"  rank="5"
-       do="translate;compile;run;cas;princi" 
+   <action xref="1"
+       do="translate;run;cas;princi" 
        code="telemac2d" target="t2d_bowl_fe_fr.cas" 
        title="parabolic bowl finite elements scalar mode" 
    />  
-   <action xref="2"  rank="5"
-       do="translate;compile;run;cas;princi" 
+   <action xref="2"
+       do="translate;run;cas;princi" 
        code="telemac2d" target="t2d_bowl_vf_fr.cas" 
        title="parabolic bowl finite elements scalar mode" 
    />  
-   <action xref="3"  rank="5"
-       do="translate;compile;run;cas;princi" 
+   <action xref="3"
+       do="translate;run;cas;princi" 
        code="telemac2d" target="t2d_bowl_vf_gb.cas" 
        title="parabolic bowl finite elements scalar mode" 
    />
-   <action xref="4"  rank="5"
-       do="translate;compile;run;cas;princi" ncsize="4" 
+   <action xref="4"
+       do="translate;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_bowl_fe_fr.cas" 
        title="parabolic bowl finite elements parallel mode" 
    />  
@@ -44,34 +44,34 @@
  
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    --> 
-   <plot1d xref="FreeSurface_Section" type="v-section" size="[12;5]" config="together" >
+   <plot1d xref="FreeSurface_Section" type="v-section" size="(12;5)" config="together" >
       <layer vars="surface libre:line" extract="(-4000;0)(4000;0)" target="1:T2DRES" time="[0:-1]"/> 
    </plot1d>  
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
-   <plot2d xref="Mesh" size="[10;10]" > 
+   <plot2d xref="Mesh" size="(10;10)" > 
       <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" /> 
    </plot2d> 
-   <plot2d xref="Bathy" size="[10;10]" > 
+   <plot2d xref="Bathy" size="(10;10)" > 
       <layer vars="fond:map" target="1:T2DRES" config="oneofall" /> 
    </plot2d>  
-    <plot2d xref="FreeSurface_fe" size="[10;10]" > 
+    <plot2d xref="FreeSurface_fe" size="(10;10)" > 
       <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
    </plot2d> 
-   <plot2d xref="VelocityU_fe" size="[10;10]" > 
+   <plot2d xref="VelocityU_fe" size="(10;10)" > 
       <layer vars="vitesse U:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
    </plot2d>
-   <plot2d xref="VelocityV_fe" size="[10;10]" > 
+   <plot2d xref="VelocityV_fe" size="(10;10)" > 
       <layer vars="vitesse V:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
    </plot2d>
-    <plot2d xref="FreeSurface_vf_fr" size="[10;10]" > 
+    <plot2d xref="FreeSurface_vf_fr" size="(10;10)" > 
       <layer vars="surface libre:map" target="2:T2DRES" config="oneofall" time="[-1]" /> 
    </plot2d> 
-   <plot2d xref="VelocityU_vf_fr" size="[10;10]" > 
+   <plot2d xref="VelocityU_vf_fr" size="(10;10)" > 
       <layer vars="vitesse U:map" target="2:T2DRES" config="oneofall" time="[-1]" /> 
    </plot2d>
-   <plot2d xref="VelocityV_vf_fr" size="[10;10]" > 
+   <plot2d xref="VelocityV_vf_fr" size="(10;10)" > 
       <layer vars="vitesse V:map" target="2:T2DRES" config="oneofall" time="[-1]" /> 
    </plot2d>
    

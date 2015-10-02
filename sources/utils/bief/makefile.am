@@ -36,7 +36,7 @@ gtsh11.f     gtsh31.f       gtsh41.f       hloc.f        hvf.f ielbor.f  \
 impvec.f     inbief.f       inclu2.f      inclus.f  \
 infcel.f     inpoly.f       integer_to_double.f \
 invmtx.f     jultim.f       kspg11.f   ksupg.f   \
-latitu.f     leclim.f       lubksb.f   ludcmp.f  lump.f  make_eltcar.f  maskbd.f \
+latitu.f     longitu.f      leclim.f       lubksb.f   ludcmp.f  lump.f  make_eltcar.f  maskbd.f \
 masktf.f     maskto.f       matrbl.f      matrix.f   matriy.f  \
 matvct.f     matvec.f       maxi.f        mer11.f   \
 mer21.f      mer41.f        mini.f        mvseg.f   \

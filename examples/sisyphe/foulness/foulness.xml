@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="foulness">
+<validation xref="foulness" rank="7">
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
@@ -19,8 +19,8 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="RunCase" rank="7"
-       do="translate;compile;run;cas;princi"
+   <action xref="RunCase"
+       do="translate;run;cas;princi"
        code="sisyphe" target="sis_foulness.cas"
        title="Run Foulness with uncoupled sisyphe"
    />

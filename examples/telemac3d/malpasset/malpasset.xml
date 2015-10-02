@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 <!-- Validation and verification of test cases, given a list of CAS files 
 --> 
-<validation xref="case"> 
+<validation xref="case" rank="3"> 
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
@@ -20,42 +20,42 @@
    /!\ do="cas;princi" are being ignored at the moment 
 -->  <!--
    <action xref="1" 
-       do="translate;compile;run;cas;princi" 
+       do="translate;run;cas;princi" 
        code="telemac3d" target="t3d_malpasset_p2.cas" 
        title="malpasset scalar mode" 
    />  
    <action xref="2" 
-       do="translate;compile;run;cas;princi" 
+       do="translate;run;cas;princi" 
        code="telemac3d" target="t3d_malpasset_p6.cas" 
        title="malpasset scalar mode" 
    />  
    <action xref="3" 
-       do="translate;compile;run;cas;princi" 
+       do="translate;run;cas;princi" 
        code="telemac3d" target="t3d_malpasset_pos.cas" 
        title="malpasset scalar mode" 
    /> 
    <action xref="4" 
-       do="translate;compile;run;cas;princi" 
+       do="translate;run;cas;princi" 
        code="telemac3d" target="t3d_malpasset_large.cas" 
        title="malpasset scalar mode" 
    /> -->
-   <action xref="5"  rank="3"
-       do="translate;compile;run;cas;princi" ncsize="4" 
+   <action xref="5"
+       do="translate;run;cas;princi" ncsize="4" 
        code="telemac3d" target="t3d_malpasset_p2.cas" 
        title="malpasset parallel mode" 
    />  
-   <action xref="6"  rank="3"
-       do="translate;compile;run;cas;princi" ncsize="4" 
+   <action xref="6"
+       do="translate;run;cas;princi" ncsize="4" 
        code="telemac3d" target="t3d_malpasset_p6.cas" 
        title="malpasset parallel mode" 
    />  
-   <action xref="7"  rank="3"
-       do="translate;compile;run;cas;princi" ncsize="4"
+   <action xref="7"
+       do="translate;run;cas;princi" ncsize="4"
        code="telemac3d" target="t3d_malpasset_pos.cas" 
        title="malpasset parallel mode" 
    /> 
-   <action xref="8"  rank="3"
-       do="translate;compile;run;cas;princi" ncsize="4" 
+   <action xref="8"
+       do="translate;run;cas;princi" ncsize="4" 
        code="telemac3d" target="t3d_malpasset_large.cas" 
        title="malpasset parallel mode" 
    />   

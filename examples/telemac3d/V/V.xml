@@ -1,45 +1,80 @@
-<?xml version="1.0"?> 
-<!-- Validation and verification of test cases, given a list of CAS files 
---> 
-<validation xref="case"> 
- 
-<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ This section is being ignored at the moment --> 
-   <deco xref="default"> 
-      <look format="png" colourbar="jet.xml" /> 
-      <data title="V" author="telemac3d" contact="www.opentelemac.org" /> 
-   </deco> 
-   <deco xref="vect"> 
-      <look colour="jet.xml" /> 
-   </deco> 
-   <deco xref="line"> 
-      <look colour="k" /> 
-   </deco> 
- 
-<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ do="cas;princi" are being ignored at the moment 
--->  
-   <action xref="1"  rank="2"
-       do="translate;compile;run;cas;princi" 
-       code="telemac3d" target="t3d_V.cas" 
-       title="V scalar mode" 
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="2">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="V" author="telemac3d" contact="www.opentelemac.org" />
+   </deco>
+
+<!-- Python sub-scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <cast xref="fcts" >
+      <python>
+def mapdiff(a1,a2):
+   return a1.support,a2.values-a1.values
+def maxdiff(d0):
+   a0 = max(np.ravel(d0.values))
+   if a0 > 0.0:
+      a1 = np.argwhere(d0.values == a0)[-1]
+      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
+   a0 = min(np.ravel(d0.values))
+   if 0.0 > a0:
+      a1 = np.argwhere(d0.values == a0)[-1]
+      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
+   return "My work has been validated"
+      </python>
+   </cast>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac3d" target="t3d_V.cas"
+       title="V scalar mode"
    />
-   <action xref="2"  rank="2"
-       do="translate;compile;run;cas;princi" ncsize="4" 
-       code="telemac3d" target="t3d_V.cas" 
-       title="V parallel mode" 
-   />   
-<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ This section is being ignored at the moment --> 
- 
-<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   --> 
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
---> 
- 
-<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-  --> 
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
---> 
- 
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac3d" target="t3d_V.cas"
+       title="V parallel mode"
+   />
+
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <cast xref="f3d-r3d" config="oneofall" time="[-1]" type="3d:">
+      <v1 vars=":map" target="1:T3DRES" />
+      <v2 vars=":map" target="1:T3DREF" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="max(v3.values.ravel()) > 1.e-6"
+         warn="max(v3.values.ravel()) > 1.e-12"
+         value="maxdiff(v3)" />
+   </cast>
+
+<!-- Check on Parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <cast xref="t3d-t3d" config="oneofall" time="[-1]" type="3d:">
+      <v1 vars=":map" target="1:T3DRES" />
+      <v2 vars=":map" target="2:T3DRES" />
+      <v4 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the parallel file."
+         fail="max(v4.values.ravel()) > 1.e-6"
+         warn="max(v4.values.ravel()) > 1.e-12"
+         value="maxdiff(v4)" />
+   </cast>
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
+-->
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
+-->
+
 </validation>

@@ -79,13 +79,14 @@ def getSegmentIntersection( (x1,y1),(x2,y2),(x3,y3),(x4,y4) ):
    # ~~> Using the bounding box method
    x0 = ((x3-x4)*(x1*y2-y1*x2)-(x1-x2)*(x3*y4-y3*x4))/det
    y0 = ((y3-y4)*(x1*y2-y1*x2)-(y1-y2)*(x3*y4-y3*x4))/det
-   accuracy = np.power(10.0, -5  +np.floor(np.log10(abs(x1+x2+x3+x4))))
+   accuracy = 0
+#   accuracy = np.power(10.0, -5  +np.floor(np.log10(abs(x1+x2+x3+x4))))
    if ( min(x1,x2)-x0 ) > accuracy or ( x0-max(x1,x2) ) > accuracy: return []
    if ( min(x3,x4)-x0 ) > accuracy or ( x0-max(x3,x4) ) > accuracy: return []
-   accuracy = np.power(10.0, -5  +np.floor(np.log10(abs(y1+y2+y3+y4))))
+#   accuracy = np.power(10.0, -5  +np.floor(np.log10(abs(y1+y2+y3+y4))))
    if ( min(y1,y2)-y0 ) > accuracy or ( y0-max(y1,y2) ) > accuracy: return []
    if ( min(y3,y4)-y0 ) > accuracy or ( y0-max(y3,y4) ) > accuracy: return []
-   return [[x0,y0],getNorm2((x0,y0),(x4,y4))/getNorm2((x3,y3),(x4,y4))]
+   return [[x0,y0],getNorm2((x0,y0),(x2,y2))/getNorm2((x1,y1),(x2,y2))]
 
 """@brief
    Returns the coordinate of the point at the intersection

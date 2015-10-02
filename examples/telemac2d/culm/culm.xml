@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="culm">
+<validation xref="culm" rank="5">
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
@@ -18,17 +18,17 @@
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
---> 
-   <action xref="1" rank="5"
-       do="translate;compile;run;cas;princi"
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
        code="telemac2d" target="t2d_culm.cas"
        title="culm scalar mode"
    />
-   <action xref="2" rank="5"
-       do="translate;compile;run;cas;princi" ncsize="4" 
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
        code="telemac2d" target="t2d_culm.cas"
        title="culm parallel mode"
-   />   
+   />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
@@ -39,17 +39,17 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <plot2d xref="Mesh" size="[7;7]" > 
-      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" /> 
-   </plot2d> 
-   <plot2d xref="Bathy" size="[7;7]" > 
-      <layer vars="bottom:map" target="1:T2DRES" config="oneofall" /> 
+   <plot2d xref="Mesh" size="(7;7)" >
+      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" />
    </plot2d>
-   <plot2d xref="Water depth" size="[7;7]" > 
-      <layer vars="water depth:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   <plot2d xref="Bathy" size="(7;7)" >
+      <layer vars="bottom:map" target="1:T2DRES" config="oneofall" />
    </plot2d>
-   <plot2d xref="Velocity" size="[7;7]" > 
-      <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
-   </plot2d>  
+   <plot2d xref="Water depth" size="(7;7)" >
+      <layer vars="water depth:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+   </plot2d>
+   <plot2d xref="Velocity" size="(7;7)" >
+      <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+   </plot2d>
 
 </validation>

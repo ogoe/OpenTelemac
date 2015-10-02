@@ -31,14 +31,14 @@ from plotTELEMAC import getColourMap
 # ~~> dependencies towards other pytel/modules
 from samplers.mycast import Caster
 from parsers.parserCSV import CSV
-from parsers.parserStrings import parseArrayFrame
+from parsers.parserStrings import parseArrayFrame, parseArrayPaires
 
 # _____               ______________________________________________
 # ____/ Default DECO /_____________________________________________/
 #
 
 decoDefault = {
-   "size":'', "dpi":'', "ratio2d": '', "title": '', "roi": '', "type":'',
+   "size":'(10;10)', "aspect":'1', "dpi":'', "ratio2d": '', "title": '', "roi": '', "type":'',
    ### LINES
    # See http://matplotlib.org/api/artist_api.html#module-matplotlib.lines for more
    # information on line properties.
@@ -139,7 +139,7 @@ decoDefault = {
 #
 
 def mapDecoDefault(decoUser,default):
-   
+
    # ~~~ melting the pot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mpar = {}                    # mpar, contains the matplotlib parameters (defaults)
    upar = deepcopy(default) # upar, contains the user parameters (from the XML)
@@ -158,9 +158,9 @@ def mapDecoDefault(decoUser,default):
          else:
             if type(mpl.rcParams[key]) == type([]):
                if type(mpl.rcParams[key][0]) == type(1) or type(mpl.rcParams[key][0]) == type(1.0):
-                  mpar[key] = parseArrayFrame(upar[key])
+                  mpar[key] =  parseArrayPaires(upar[key])[0]
                   del upar[key]
-               if type(mpl.rcParams[key][0]) == type("") or type(mpl.rcParams[key][0]) == type(unicode('')):
+               elif type(mpl.rcParams[key][0]) == type("") or type(mpl.rcParams[key][0]) == type(unicode('')):
                   print upar[key].strip('[]')
                   mpar[key] = [ s.strip() for s in upar[key].strip('[]').replace(';',',').split(',') ]
                   del upar[key]
@@ -189,7 +189,7 @@ def mapDecoDefault(decoUser,default):
          del upar[key]
       elif key == "size":
          if upar[key] != '':
-            mpar.update({ 'figure.figsize': parseArrayFrame(upar[key]) })
+            mpar.update({ 'figure.figsize': parseArrayPaires(upar[key])[0]})
          del upar[key]
 
    return mpar,upar
@@ -198,7 +198,7 @@ def mapDecoDefault(decoUser,default):
 # ____/ Primary Method:Draw /______________________________________/
 #
 
-def drawHistoryLines(myplt,x,ys):
+def drawHistoryLines(myplt,decoUser,x,ys):
 
    axes = myplt.axis()
    # ~~ Data draw ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -211,14 +211,14 @@ def drawHistoryLines(myplt,x,ys):
       n0 = ynames[1]
       for i0 in range(len(n0)): # each variables
          myplt.ylabel(n0[i0])
-         myplt.plot(x0,y0[i0])
+         myplt.plot(x0,y0[i0],**decoUser)
    elif dim == 2:
       # ~~> This is called for 1d:history, for instance
       n0,n1 = ynames[1:]
       for i1 in range(len(n1)):    # each location
          for i0 in range(len(n0)): # each variables
             #myplt.ylabel(str(n1[])) you could label each curve in time and plan
-            myplt.plot(x0,y0[i0][i1])
+            myplt.plot(x0,y0[i0][i1],**decoUser)
    elif dim == 3:
       # ~~> This is called for 1d:v-section, for instance
       n0,n1,n2 = ynames[1:]
@@ -226,7 +226,7 @@ def drawHistoryLines(myplt,x,ys):
          for i1 in range(len(n1)):    # each time
             for i0 in range(len(n0)): # each variables
                #myplt.ylabel(str(n1[])) you could label each curve in time and plan
-               myplt.plot(x0,y0[i0][i1][i2])
+               myplt.plot(x0,y0[i0][i1][i2],**decoUser)
    elif dim == 4:
       n0,n1,n2,n3 = ynames[1:]
       for i3 in range(len(n3)):
@@ -234,11 +234,11 @@ def drawHistoryLines(myplt,x,ys):
             for i1 in range(len(n1)):
                for i0 in range(len(n0)):
                   #myplt.ylabel(str(n1[]))
-                  myplt.plot(x0,y0[i0][i1][i2][i3])
+                  myplt.plot(x0,y0[i0][i1][i2][i3],**decoUser)
 
    return x0,y0
 
-def drawPolylineLines(myplt,x,ys):
+def drawPolylineLines(myplt,decoUser,x,ys):
 
    axes = myplt.axis()
    # ~~ Data draw ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -251,13 +251,14 @@ def drawPolylineLines(myplt,x,ys):
       n0 = ynames[1]
       for i0 in range(len(n0)): # each variables
          myplt.ylabel(n0[i0])
-         myplt.plot(x0,y0[i0])
+         myplt.plot(x0,y0[i0],**decoUser)
    elif dim == 2:
       n0,n1 = ynames[1:]
       for i1 in range(len(n1)):    # each time
          for i0 in range(len(n0)): # each variables
             #myplt.ylabel(n0[i])
-            myplt.plot(x0,y0[i0][i1])
+            myplt.plot(x0,y0[i0][i1],**decoUser)
+            #myplot.plot[i].updte()
    elif dim == 3:
       # ~~> This is called for 1d:v-section, for instance
       n0,n1,n2 = ynames[1:]
@@ -265,7 +266,7 @@ def drawPolylineLines(myplt,x,ys):
          for i1 in range(len(n1)):    # each time
             for i0 in range(len(n0)): # each variables
                #myplt.ylabel(str(n1[])) you could label each curve in time and plan
-               myplt.plot(x0,y0[i0][i1][i2])
+               myplt.plot(x0,y0[i0][i1][i2],**decoUser)
    elif dim == 4:
       n0,n1,n2,n3 = ynames[1:]
       for i3 in range(len(n3)):
@@ -273,7 +274,7 @@ def drawPolylineLines(myplt,x,ys):
             for i1 in range(len(n1)):
                for i0 in range(len(n0)):
                   #myplt.ylabel(str(n1[]))
-                  myplt.plot(x0,y0[i0][i1][i2][i3])
+                  myplt.plot(x0,y0[i0][i1][i2][i3],**decoUser)
 
    return x0,y0
 
@@ -326,15 +327,15 @@ def deco(myplt,upar,x0,y0):
 #
 
 class Dumper1D(Caster):
-   
+
    def __init__(self,caster,dump):
       Caster.__init__(self,{'object':caster.object,'obdata':caster.obdata})
       self.obtype = dump['outFormat']
       self.oudata = None
-   
+
    def add(self,typl,what):
       Caster.add(self,typl,what)
-      
+
       # ~~> only csv is recognised fr now
       if self.obtype != 'csv': # TODO: raise exception
          print '... do not know how to write to this format: ' + self.obtype
@@ -344,9 +345,10 @@ class Dumper1D(Caster):
       if not self.oudata: self.oudata = CSV()
 
       # ~~> write-up
+      cast = self.get(typl,what)
+
       # ~~> 1D time history from 2D or 3D results
       if what['type'].split(':')[1] == 'history' or 'sortie' in typl.lower():
-         cast = self.get(typl,what)
          #try: # if instance unit exist
          self.oudata.addColumns(( cast.unit,cast.support ),( cast.function,cast.values ))
          #except:
@@ -354,7 +356,7 @@ class Dumper1D(Caster):
 
       # ~~> 1D vertical cross section from 2D or 3D results
       elif what['type'].split(':')[1] == 'v-section' or 'csv' in typl.lower():
-         cast = self.get(typl,what)
+         #cast = self.get(typl,what)
          try: # if instance unit exist
             self.oudata.addColumns(( cast.unit,cast.support ),( cast.function,cast.values ))
          except:
@@ -369,7 +371,7 @@ class Dumper1D(Caster):
       else: # TODO: raise exception
          print '... do not know how to extract from this format: ' + typl
          sys.exit(1)
-         
+
    def save(self,fileName):
       self.oudata.putFileContent(fileName)
 
@@ -381,6 +383,13 @@ class Figure1D(Caster):
    def __init__(self,caster,plot):
       Caster.__init__(self,{'object':caster.object,'obdata':caster.obdata})
 
+      # ~~~ special case for size ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      if 'size' in plot.keys():
+         if 'look' in plot['deco'].keys():
+            for l in plot['deco']['look']:
+               l.update({'size':plot['size']})
+         else: plot['deco'].update({'look':[{'size':plot['size']}]})
+         del plot['size']
       # ~~~ figure decoration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       self.mpar,self.upar = mapDecoDefault( plot['deco'],decoDefault )
       mpl.rcParams.update(self.mpar)
@@ -399,7 +408,7 @@ class Figure1D(Caster):
 
       # ~~~ figure decoration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       mpl.rcdefaults()
-      
+
       # ~~> user params
       if self.upar['title'] != '': plt.title(self.upar['title'])
       # ~~> type of plot
@@ -412,7 +421,7 @@ class Figure1D(Caster):
       # ~~> region of interes and defaault margins
       if self.upar["roi"] != '': self.upar["roi"] = [ parseArrayPaires(self.upar["roi"]), [0,0,0,0] ]
 
-      self.plt = plt 
+      self.plt = plt
       self.fig = fig
 
    def add(self,typl,what):
@@ -426,7 +435,7 @@ class Figure1D(Caster):
       if what['type'].split(':')[1] == 'history' or 'sortie' in typl.lower():
          cast = self.get(typl,what)
          #try: # if instance unit exist
-         x0,y0 = drawHistoryLines(self.plt,( cast.unit,cast.support ),( cast.function,cast.values ))
+         x0,y0 = drawHistoryLines(self.plt,what['deco'],( cast.unit,cast.support ),( cast.function,cast.values ))
          deco(self.plt,self.upar,x0,y0)
          #except:
          #   x0,y0 = drawHistoryLines(self.plt,( 'unit',cast.support ),( ('history','function'),cast.values ))
@@ -436,24 +445,29 @@ class Figure1D(Caster):
       elif what['type'].split(':')[1] == 'v-section' or 'csv' in typl.lower():
          cast = self.get(typl,what)
          try: # if instance unit exist
-            x0,y0 = drawPolylineLines(self.plt,( cast.unit,cast.support ),( cast.function,cast.values ))
-            deco(self.plt,self.upar,x0,y0)         
+            x0,y0 = drawPolylineLines(self.plt,what['deco'],( cast.unit,cast.support ),( cast.function,cast.values ))
+            #deco(self.plt,self.upar,x0,y0)
          except:
             dim = len(cast.values.shape)
             fct = ['v-section']
             if dim > 1: fct.append([ 'VAR'+str(ivar) for ivar in range(cast.values.shape[0]) ])
             if dim > 2: fct.append([ str(itim) for itim in range(cast.values.shape[1]) ])
             if dim > 3: fct.append([ str(ilay) for ilay in range(cast.values.shape[2]) ])
-            x0,y0 = drawPolylineLines(self.plt,( 'unit',cast.support ),( fct,cast.values ))
-            deco(self.plt,self.upar,x0,y0)         
+            x0,y0 = drawPolylineLines(self.plt,what['deco'],( 'unit',cast.support ),( fct,cast.values ))
+            #deco(self.plt,self.upar,x0,y0)
 
       # ~~> unkonwn
       else: # TODO: raise exception
          print '... do not know how to draw from this format: ' + typl
          sys.exit(1)
 
-   def show(self): self.plt.show()
-   def save(self,fileName): self.plt.savefig(fileName)
+   def show(self):
+      self.plt.show()
+      self.plt.close()
+
+   def save(self,fileName):
+      self.plt.savefig(fileName)
+      self.plt.close()
 
 
 # _____             ________________________________________________

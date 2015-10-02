@@ -42,7 +42,7 @@
       - example of direct use of matplotlib feature: xtick.major.size="-8"
    -->
    <deco xref="figure1"> 
-      <look format="png" colourbar="jet.xml" xtick.major.size="-8"  size="[12;5]"  /> 
+      <look format="png" colourbar="jet.xml" xtick.major.size="-8"  size="(12;5)"  /> 
       <data title="Sub-critical flow over a bump" /> 
    </deco> 
    <plot xref="figure1" type="1d:history" config="oneofall" time="[0:-1]" > 

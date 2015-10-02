@@ -1,56 +1,56 @@
-<?xml version="1.0"?> 
-<!-- Validation and verification of test cases, given a list of CAS files 
---> 
-<validation xref="case"> 
- 
-<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ This section is being ignored at the moment --> 
-   <deco xref="default"> 
-      <look format="png" colourbar="jet.xml" /> 
-      <data title="heat_exchange" author="telemac3d" contact="www.opentelemac.org" /> 
-   </deco> 
-   <deco xref="vect"> 
-      <look colour="jet.xml" /> 
-   </deco> 
-   <deco xref="line"> 
-      <look colour="k" /> 
-   </deco> 
- 
-<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ do="cas;princi" are being ignored at the moment 
--->  
-   <action xref="1"  rank="3"
-       do="translate;compile;run;cas;princi" 
-       code="telemac3d" target="t3d_heat_exchange.cas" 
-       title="heat exchange scalar mode" 
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="3">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="heat_exchange" author="telemac3d" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac3d" target="t3d_heat_exchange.cas"
+       title="heat exchange scalar mode"
    />
-   <action xref="2"  rank="5"
-       do="translate;compile;run;cas;princi" 
-       code="telemac3d" target="t3d_heat_exchange_rain_wind.cas" 
-       title="heat exchange rain wind scalar mode" 
+   <action xref="2"
+       do="translate;run;cas;princi"
+       code="telemac3d" target="t3d_heat_exchange_rain_wind.cas"
+       title="heat exchange rain wind scalar mode"
    />
-<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ This section is being ignored at the moment --> 
- 
-<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   --> 
-   <plot1d xref="timeseries" type="history" config="together" time="[0:-1]" size="[12;7]" > 
-      <layer vars="Z:line" extract="(0;0)#[-1]" target="1:T3DRES" /> 
-   </plot1d> 
-   <plot1d xref="timeseries_all_layers" type="history" config="together" time="[0:-1]" size="[12;7]" > 
-      <layer vars="Z:line" extract="(0;0)" target="1:T3DRES" /> 
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="timeseries" type="history" config="together" time="[0:-1]" size="(12;7)" >
+      <layer vars="Z:line" extract="(0;0)#[-1]" target="1:T3DRES" />
    </plot1d>
- 
-<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-  --> 
-   <plot2d xref="mesh" config="oneofall" time="[-1]" size="[12;7]" > 
-      <layer vars="cote Z:mesh" target="1:T3DRES" /> 
+   <plot1d xref="timeseries_all_layers" type="history" config="together" time="[0:-1]" size="(12;7)" >
+      <layer vars="Z:line" extract="(0;0)" target="1:T3DRES" />
+   </plot1d>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="mesh" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="cote Z:mesh" target="1:T3DRES" />
    </plot2d>
-   <plot2d xref="mesh_section" type="v-section" config="oneofall" time="[-1]" size="[12;7]" > 
-      <layer vars="Z:wire" extract="(-100;0)(100;0)" target="1:T3DRES"  /> 
-   </plot2d>    
-   <plot2d xref="velocity" config="oneofall" time="[-1]" size="[12;7]" > 
-      <layer vars="vitesse U:map" extract="[]#[-1]" target="1:T3DRES"  /> 
-   </plot2d>   
- 
+   <plot2d xref="mesh_section" type="v-section" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="Z:wire" extract="(-100;0)(100;0)" target="1:T3DRES"  />
+   </plot2d>
+   <plot2d xref="velocity" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="vitesse U:map" extract="[]#[-1]" target="1:T3DRES"  />
+   </plot2d>
+
 </validation>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case">
+<validation xref="case" rank="5">
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
@@ -18,28 +18,28 @@
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
---> 
-   <action xref="1" rank="5"
-       do="translate;compile;run;cas;princi"
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
        code="telemac3d" target="t3d_piledepon.cas"
        title="pildepon scalar mode"
-   /> 
-   <action xref="2" rank="5"
-       do="translate;compile;run;cas;princi"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi"
        code="telemac3d" target="t3d_piledepon-nonhydro.cas"
        title="pildepon scalar mode"
    />
-   <action xref="3" rank="5"
-       do="translate;compile;run;cas;princi" ncsize="4"
+   <action xref="3"
+       do="translate;run;cas;princi" ncsize="4"
        code="telemac3d" target="t3d_piledepon.cas"
        title="pildepon parallel mode"
-   /> 
-   <action xref="4" rank="5"
-       do="translate;compile;run;cas;princi" ncsize="4"
+   />
+   <action xref="4"
+       do="translate;run;cas;princi" ncsize="4"
        code="telemac3d" target="t3d_piledepon-nonhydro.cas"
        title="pildepon parallel mode"
    />
-   
+
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
@@ -50,8 +50,8 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <plot2d xref="mesh" config="oneofall" time="[-1]" size="[12;7]" > 
-      <layer vars="fond:mesh" target="1:T3DGEO" /> 
-   </plot2d> 
+   <plot2d xref="mesh" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="fond:mesh" target="1:T3DGEO" />
+   </plot2d>
 
 </validation>

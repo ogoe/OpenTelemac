@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="vasque">
+<validation xref="vasque" rank="3">
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
@@ -18,45 +18,45 @@
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
---> 
-   <action xref="1" rank="3"
-       do="translate;compile;run;cas;princi"
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
        code="telemac2d" target="t2d_vasque.cas"
        title="vasque scalar mode"
    />
-   <action xref="2" rank="3"
-       do="translate;compile;run;cas;princi" ncsize="4"
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
        code="telemac2d" target="t2d_vasque.cas"
        title="vasque parallel mode"
-   />   
+   />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-   <plot1d xref="FreeSurface_Y5" type="v-section" size="[12;5]" config="together">
+   <plot1d xref="FreeSurface_Y5" type="v-section" size="(12;5)" config="together">
       <layer vars="surface libre:line" extract="(0;5)(46;5)" target="1:T2DRES" time="[0:-1]"/>
    </plot1d>
-   <plot1d xref="WaterDepth_Y5" type="v-section" size="[12;5]" config="together">
+   <plot1d xref="WaterDepth_Y5" type="v-section" size="(12;5)" config="together">
       <layer vars="hauteur d'eau:line" extract="(0;5)(46;5)" target="1:T2DRES" time="[0:-1]"/>
    </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <plot2d xref="Mesh" size="[10;5]" > 
-      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
+   <plot2d xref="Mesh" size="(10;5)" >
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" />
    </plot2d>
-   <plot2d xref="Bathy" size="[10;5]" > 
-      <layer vars="fond:map" target="1:T2DRES" config="oneofall" /> 
-   </plot2d>   
-   <plot2d xref="FreeSurface_t1" size="[10;5]" > 
-      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[1]" /> 
+   <plot2d xref="Bathy" size="(10;5)" >
+      <layer vars="fond:map" target="1:T2DRES" config="oneofall" />
    </plot2d>
-   <plot2d xref="FreeSurface_t2" size="[10;5]" > 
-      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[2]" /> 
-   </plot2d>  
-   <plot2d xref="FreeSurface_t3" size="[10;5]" > 
-      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[3]" /> 
+   <plot2d xref="FreeSurface_t1" size="(10;5)" >
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[1]" />
    </plot2d>
-   
+   <plot2d xref="FreeSurface_t2" size="(10;5)" >
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[2]" />
+   </plot2d>
+   <plot2d xref="FreeSurface_t3" size="(10;5)" >
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[3]" />
+   </plot2d>
+
 </validation>

@@ -1,67 +1,67 @@
-<?xml version="1.0"?> 
-<!-- Validation and verification of test cases, given a list of CAS files 
---> 
-<validation xref="delwaq"> 
- 
-<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ This section is being ignored at the moment --> 
-   <deco xref="default"> 
-      <look format="png" colourbar="jet.xml" /> 
-      <data title="delwaq" author="telemac2d" contact="www.opentelemac.org" /> 
-   </deco> 
-   <deco xref="vect"> 
-      <look colour="jet.xml" /> 
-   </deco> 
-   <deco xref="line"> 
-      <look colour="k" /> 
-   </deco> 
- 
-<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ do="cas;princi" are being ignored at the moment 
--->  
-   <action xref="1"  rank="3"
-       do="translate;compile;run;cas;princi" 
-       code="telemac2d" target="t2d_delwaq.cas" 
-       title="delwaq scalar mode" 
-   />
-<!-- Case removed no direct solver in parallel mode 
-   <action xref="2" 
-       do="translate;compile;run;cas;princi" ncsize="4" 
-       code="telemac2d" target="t2d_delwaq.cas" 
-       title="delwaq parallel mode" 
-   />   
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
 -->
-<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ This section is being ignored at the moment --> 
- 
-<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   --> 
-   <plot1d xref="Velocity1d" type="history" time="[0:-1]" size="[12;5]" config="oneofall" > 
-      <layer vars="vitesse u:line" target="1:T2DRES" extract="(5.2;4.6)" /> 
+<validation xref="delwaq" rank="3">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="delwaq" author="telemac2d" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_delwaq.cas"
+       title="delwaq scalar mode"
+   />
+<!-- Case removed no direct solver in parallel mode
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_delwaq.cas"
+       title="delwaq parallel mode"
+   />
+-->
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="Velocity1d" type="history" time="[0:-1]" size="(12;5)" config="oneofall" >
+      <layer vars="vitesse u:line" target="1:T2DRES" extract="(5.2;4.6)" />
       <layer vars="vitesse v:line" target="1:T2DRES" extract="(5.2;4.6)" />
 <!--
-      <layer vars="vitesse u:line" target="2:T2DRES" extract="[5.2;4.6]" /> 
-      <layer vars="vitesse v:line" target="2:T2DRES" extract="[5.2;4.6]" />	  
+      <layer vars="vitesse u:line" target="2:T2DRES" extract="[5.2;4.6]" />
+      <layer vars="vitesse v:line" target="2:T2DRES" extract="[5.2;4.6]" />
 -->
    </plot1d>
- 
-<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-  --> 
- 
-   <plot2d xref="Mesh" size="[10;8]" > 
-      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
-   </plot2d> 
-   <plot2d xref="Bathy" size="[10;8]" > 
-      <layer vars="fond:map" target="1:T2DRES" config="oneofall" /> 
-   </plot2d>   
-   <plot2d xref="Velocity map t1" size="[10;8]" > 
-      <layer vars="vitesse:map" target="1:T2DRES" config="oneofall" time="[1]" /> 
-   </plot2d>  
-   <plot2d xref="Velocity map t15" size="[10;8]" > 
-      <layer vars="vitesse:map" target="1:T2DRES" config="oneofall" time="[15]" /> 
-   </plot2d>   
-   <plot2d xref="Velocity arrows" size="[10;10]" >   
-      <layer vars="vitesse:angle" target="1:T2DRES" config="oneofall" time="[15]" extract="[20;20]" /> 
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+   <plot2d xref="Mesh" size="(10;8)" >
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" />
+   </plot2d>
+   <plot2d xref="Bathy" size="(10;8)" >
+      <layer vars="fond:map" target="1:T2DRES" config="oneofall" />
+   </plot2d>
+   <plot2d xref="Velocity map t1" size="(10;8)" >
+      <layer vars="vitesse:map" target="1:T2DRES" config="oneofall" time="[1]" />
+   </plot2d>
+   <plot2d xref="Velocity map t15" size="(10;8)" >
+      <layer vars="vitesse:map" target="1:T2DRES" config="oneofall" time="[15]" />
+   </plot2d>
+   <plot2d xref="Velocity arrows" size="(10;10)" >
+      <layer vars="vitesse:angle" target="1:T2DRES" config="oneofall" time="[15]" extract="[20;20]" />
    </plot2d>
 
-</validation> 
+</validation>

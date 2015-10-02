@@ -49,7 +49,7 @@ def whatTimeSLF(instr,ctimes):
    #t = parseArrayFrame(instr,len(ctimes))
    #if len(t) != 1: print '... the time definition should only have one frame in this case. It is: ',instr,'. I will assume you wish to plot the last frame.'
    #return [ t[len(t)-1] ]
-   
+
 def whatVarsSLF(instr,vnames):
 # instr ~ what['vars']: list of pairs "variable:support" delimited by ';'
 # vnames ~ slf.VARNAMES: list of variables names from the SELAFIN file
@@ -203,6 +203,57 @@ class castSELAFIN(SELAFIN): # /!\ does not support PARAFINS yet -- because of th
 
       return IKLE,MESHX,MESHZ, support3d
 
+   def castVMeshAtPolyline_Plane(self,whatTIME,whatPOINTS):
+
+      # whatPOINTS: could be list delimited by ';', of:
+      #    + points (x;y),
+      #    + 2D points (x;y) bundled within (x;y)#n or (x;y)@d#n, delimited by ';'
+      #      where n is a plan number and d is depth from that plane (or the surface by default)
+      xyo = []; zpo = []
+      for xyi,zpi in parseArrayPoint(whatPOINTS,self.NPLAN):
+         if xyi == []:
+            print '... I could not find anything to extract in "',what["extract"].strip(),'" as support for the cross section.'
+            sys.exit(1)
+         if type(xyi) == type(()): xyo.append(xyi)
+         else: xyo.append( (self.MESHX[xyi],self.MESHY[xyi]) )
+         for p in zpi:                         # /!\ common deinition of plans
+            if p not in zpo: zpo.append(p)     # /!\ only allowing plans for now
+
+      # ~~> Extract horizontal cross MESHX
+      xys,support2d = sliceMesh(xyo,self.IKLE2,self.MESHX,self.MESHY,self.tree)
+      support3d = []
+      for s2d in support2d: support3d.append( (s2d,zpo) )   # common vertical definition to all points
+
+      # Distance d-axis
+      distot = 0.0
+      d = [ distot ]
+      for xy in range(len(xys)-1):
+         distot += np.sqrt( np.power(xys[xy+1][0]-xys[xy][0],2) + np.power(xys[xy+1][1]-xys[xy][1],2) )
+         d.append(distot)
+
+      newx = []
+      newy = []
+      for xy in range(len(xys)):
+        newx.append(xys[xy][0])
+        newy.append(xys[xy][1])
+
+      MESHX = np.repeat(newx,len(zpo))
+      MESHY = np.repeat(newy,len(zpo))
+
+      # ~~>  Extract MESHZ for more than one time frame
+      varz = subsetVariablesSLF('z',self.VARNAMES)
+      t = whatTimeSLF(whatTIME,self.tags['cores'])
+      MESHZ = np.ravel( getValuePolylineSLF(self.file,self.tags,t,support3d,self.NVAR,self.NPOIN3,self.NPLAN,varz)[0][0].T )
+
+      # ~~>  Connect with IKLE, keeping quads
+      IKLE = []
+      for j in range(len(d)-1):
+         for i in range(len(zpo)-1):
+            IKLE.append([ i+j*len(zpo),i+(j+1)*len(zpo),i+1+(j+1)*len(zpo),i+1+j*len(zpo) ])
+      IKLE = np.array(IKLE)
+
+      return IKLE,MESHX,MESHY,MESHZ, support3d
+
    def castHMeshAtLevels(self,whatPOINTS):
 
       # whatPOINTS: could be list delimited by ';', of:
@@ -214,7 +265,7 @@ class castSELAFIN(SELAFIN): # /!\ does not support PARAFINS yet -- because of th
          #if xyi != []:
          #   print '... I will assume that all 2D nodes are considered at this stage.'
          #   sys.exit(1)
-         for p in zpi:                         # /!\ common deinition of plans
+         for p in zpi:                         # /!\ common definition of plans
             if p not in zpo: zpo.append(p)     # /!\ only allowing plans for now
 
       return self.IKLE2,self.MESHX,self.MESHY, zpo
@@ -228,6 +279,10 @@ class castSELAFIN(SELAFIN): # /!\ does not support PARAFINS yet -- because of th
       for vname in self.VARNAMES:
          if 'ELEVATION' in vname: vars = subsetVariablesSLF('ELEVATION',self.VARNAMES)
          if 'COTE Z' in vname: vars = subsetVariablesSLF('COTE Z',self.VARNAMES)
+         if 'WATER DEPTH' in vname: vars = subsetVariablesSLF('WATER DEPTH',self.VARNAMES)
+         if 'HAUTEUR D\'EAU' in vname: vars = subsetVariablesSLF('HAUTEUR D\'EAU',self.VARNAMES)
+         if 'FREE SURFACE' in vname: vars = subsetVariablesSLF('FREE SURFACE',self.VARNAMES)
+         if 'SURFACE LIBRE' in vname: vars = subsetVariablesSLF('SURFACE LIBRE',self.VARNAMES)
       if vars == []:
          print '... Could not find [\'ELEVATION\'] or [\'COTE Z\'] in ',self.VARNAMES
          print '   +> Your file may not be a 3D file (?)'
@@ -259,11 +314,13 @@ class castSELAFIN(SELAFIN): # /!\ does not support PARAFINS yet -- because of th
 
    def castValues(self,whatVARS,whatTIME):
 
+      ftype,fsize = self.file['float']
       # /!\ For the moment, only one frame at a time
       ts = whatTimeSLF(whatTIME,self.tags['cores'])
       # whatVARS: list of pairs variables:support2d delimited by ';'
       varsIndexes,varsName = subsetVariablesSLF(whatVARS,self.VARNAMES)
-      VARSORS = np.zeros((len(ts),len(varsIndexes),self.NPOIN3),dtype=np.float)
+      if fsize == 4: VARSORS = np.zeros((len(ts),len(varsIndexes),self.NPOIN3),dtype=np.float32)
+      else: VARSORS = np.zeros((len(ts),len(varsIndexes),self.NPOIN3),dtype=np.float64)
       for it in range(len(ts)): VARSORS[it] = self.getVariablesAt( ts[it],varsIndexes )
       return VARSORS
 
@@ -375,7 +432,8 @@ class Caster:
       if 'WACLEO' in typl.upper() or \
          'SELAFIN' in typl.upper() or \
          'slf' in typl.lower():
-         
+         ftype,fsize = obj.file['float']
+
          if what['type'].split(':')[1] == 'v-section':
 
             # ~~> Extract data
@@ -413,7 +471,8 @@ class Caster:
 
                # ~~> Re-sampling
                if what["sample"] != '':
-                  data = np.zeros((len(vars[0]),len(support2d)),dtype=np.float64)
+                  if fsize == 4: data = np.zeros((len(vars[0]),len(support2d)),dtype=np.float32)
+                  else: data = np.zeros((len(vars[0]),len(support2d)),dtype=np.float64)
                   for ivar in range(len(vars[0])):
                      for ipt in range(len(support2d)):
                         ln,bn = support2d[ipt]
@@ -485,7 +544,8 @@ class Caster:
                VARSORS = obj.castHValueAtLevels(v,what['time'],what['extract'])
                # ~~> Re-sampling
                if support2d != []:
-                  data = np.zeros((len(vars[0]),len(support2d)),dtype=np.float64)
+                  if fsize == 4: data = np.zeros((len(vars[0]),len(support2d)),dtype=np.float32)
+                  else: data = np.zeros((len(vars[0]),len(support2d)),dtype=np.float64)
                   for ivar in range(len(vars[0])):
                      for ipt in range(len(support2d)):
                         ln,bn = support2d[ipt]
@@ -521,7 +581,7 @@ class Caster:
                else: print '... do not know how to draw this SELAFIN type: ' + vtype
 
          elif what['type'].split(':')[1] == '':
-            
+
             # ~~> Extract data
             IKLE3 = obj.IKLE3
             MESHX = obj.MESHX
@@ -559,7 +619,8 @@ class Caster:
                VARSORS = obj.castValues(v,what['time'])
                # ~~> Re-sampling
                if support2d != []:
-                  data = np.zeros(VARSORS.shape,dtype=np.float64)
+                  if fsize == 4: data = np.zeros(VARSORS.shape,dtype=np.float32)
+                  else: data = np.zeros(VARSORS.shape,dtype=np.float64)
                   for itime in range(len(VARSORS)):
                      for ivar in range(len(vars[0])):
                         for ipt in range(len(support2d)):
@@ -593,7 +654,7 @@ class Caster:
                   return self.obdata[what["xref"]]
                   # return (MESHX,MESHY,IKLE3),VARSORS
                else: print '... do not know how to draw this SELAFIN type: ' + vtype
-            
+
          # ~~> unkonwn
          else: # TODO: raise exception
             print '... do not know how to do this type of extraction: ' + what['type'].split(':')[1]
@@ -607,10 +668,11 @@ class Caster:
 
       if 'SELAFIN' in typl.upper() or \
          'slf' in typl.lower():
+         ftype,fsize = obj.file['float']
 
          # TODO: range of plans and resample within a 2d and a 3d box.
-         if what['type'].split(':')[1] == '':
-            
+         if what['type'].split(':')[1] == 'i-surface':
+
             # ~~> Extract data
             IKLE2 = obj.IKLE2
             IKLE3 = obj.IKLE3
@@ -647,7 +709,8 @@ class Caster:
                MESHY = np.asarray(MESHY)
                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                # ~~> Vertical component
-               data = np.zeros((len(plans),len(support2d)),dtype=np.float64)
+               if fsize == 4: data = np.zeros((len(plans),len(support2d)),dtype=np.float32)
+               else: data = np.zeros((len(plans),len(support2d)),dtype=np.float64)
                for ipt in range(len(support2d)):
                   ln,bn = support2d[ipt]
                   for inod in range(len(bn)):  # /!\ node could be outside domain
@@ -673,23 +736,208 @@ class Caster:
                      'unit':'wire', 'support':np.dstack((MESHX[IKLE4],MESHY[IKLE4],MESHZ[IKLE4])),
                      'function':'none', 'values':[] })
                   return self.obdata[what["xref"]]
-               if "map" in vtype or "label" in vtype:
+               if "map" in vtype or "label" in vtype or "contour" in vtype:
                   self.obdata[what["xref"]] = Values({'type':what['type'],
                      'unit':'map', 'support':(MESHX,MESHY,MESHZ,IKLE4),
                      'function':'none', 'values':VARSORS })
                   return self.obdata[what["xref"]]
-               elif "arrow" in vtype or "vector" in vtype or "angle" in vtype:
+               elif "arrow" in vtype or "vector" in vtype or "angle" in vtype or "streamline" in vtype:
                   self.obdata[what["xref"]] = Values({'type':what['type'],
                      'unit':'vector', 'support':(MESHX,MESHY,MESHZ,IKLE4),
                      'function':'none', 'values':VARSORS })
                   return self.obdata[what["xref"]]
                else: print '... do not know how to draw this SELAFIN type: ' + vtype
-            
-         # ~~> unkonwn
+
+         elif what['type'].split(':')[1] == 'p-section':
+
+            # ~~> Extract data
+            IKLE3,MESHX,MESHY,zpo = obj.castHMeshAtLevels(what['extract'])
+            if obj.NDP2 == 4: IKLE3 = splitQuad2Triangle(IKLE3)
+            IKLE4 = IKLE3
+            vars,vtypes = whatVarsSLF(what['vars'],obj.VARNAMES)
+            tree = obj.tree
+            tria = obj.neighbours
+
+            MESHZ = obj.castVMeshAtLevels(what["time"],what["extract"])[3].ravel()
+
+            # ~~> Possible re-sampling
+            support2d = []
+            if what["sample"] != '':
+               supMESHX = MESHX; supMESHY = MESHY
+               MESHX = []; MESHY = []
+               IKLE4 = []
+               grids,n = whatSample(what["sample"],[(min(supMESHX),min(supMESHY)),(max(supMESHX),max(supMESHY))])
+               for dimx,dimy,x,y in grids:
+                  for xyi in np.dstack((x,y))[0]:
+                     support2d.append( xysLocateMesh(xyi,IKLE3,supMESHX,supMESHY,tree,tria) )
+                  IKLE4.extend(([ i+j*dimx,i+1+j*dimx,i+1+(j+1)*dimx,i+(j+1)*dimx ] for j in range(dimy-1) for i in range(dimx-1) ))
+                  MESHX.extend(x)
+                  MESHY.extend(y)
+               IKLE4 = np.asarray(IKLE4)
+               IKLE3 = splitQuad2Triangle(IKLE4)
+               MESHX = np.asarray(MESHX)
+               MESHY = np.asarray(MESHY)
+
+            # ~~> Loop on variables
+            for var in what["vars"].split(';'):
+               v,vtype = var.split(':')
+
+               # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               # ~~> Extract variable data for only one time frame and one plane
+               VARSORS = obj.castHValueAtLevels(v,what['time'],what['extract'])
+               # ~~> Re-sampling
+               if support2d != []:
+                  if fsize == 4: data = np.zeros((len(vars[0]),len(support2d)),dtype=np.float32)
+                  else: data = np.zeros((len(vars[0]),len(support2d)),dtype=np.float64)
+                  for ivar in range(len(vars[0])):
+                     for ipt in range(len(support2d)):
+                        ln,bn = support2d[ipt]
+                        data[ivar][ipt] = 0.0
+                        for inod in range(len(bn)):                  # /!\ node could be outside domain
+                           if ln[inod] >=0: data[ivar][ipt] += bn[inod]*VARSORS[ivar][ln[inod]]
+                  VARSORS = data
+                  supMESHZ = MESHZ
+                  if fsize == 4: MESHZ = np.zeros(len(support2d),dtype=np.float32)
+                  else: MESHZ = np.zeros(len(support2d),dtype=np.float64)
+                  for ipt in range(len(support2d)):
+                     ln,bn = support2d[ipt]
+                     MESHZ[ipt] = 0.0
+                     for inod in range(len(bn)):                  # /!\ node could be outside domain
+                        if ln[inod] >=0: MESHZ[ipt] += bn[inod]*supMESHZ[ln[inod]]
+               # ~~> Draw/Dump (multiple options possible)
+               if "map" in vtype or "label" in vtype:
+                  self.obdata[what["xref"]] = Values({'type':what['type'],
+                     'unit':'map', 'support':(MESHX,MESHY,MESHZ,IKLE3),
+                     'function':'none', 'values':VARSORS })
+                  return self.obdata[what["xref"]]
+                  # return (MESHX,MESHY,MESHZ,IKLE3),VARSORS
+               elif "arrow" in vtype or "vector" in vtype or "angle" in vtype:
+                  self.obdata[what["xref"]] = Values({'type':what['type'],
+                     'unit':'vector', 'support':(MESHX,MESHY,MESHZ,IKLE3),
+                     'function':'none', 'values':VARSORS })
+                  return self.obdata[what["xref"]]
+                  # return (MESHX,MESHY,MESHZ,IKLE3),VARSORS
+               else: print '... do not know how to draw this SELAFIN type: ' + vtype
+
+         elif what['type'].split(':')[1] == 'v-section':
+
+            # ~~> Extract data
+            IKLE4,MESHX,MESHY,MESHZ, support3d = obj.castVMeshAtPolyline_Plane(what["time"],what["extract"])
+
+            # split each quad into triangles
+            IKLE3 = splitQuad2Triangle(IKLE4)
+            vars,vtypes = whatVarsSLF(what['vars'],obj.VARNAMES)
+            time = whatTimeSLF(what['time'],obj.tags['cores'])
+            tree = getKDTree(MESHX,MESHZ,IKLE3)
+            tria = getMPLTri(MESHX,MESHZ,IKLE3)[0]
+            data = getValuePolylineSLF(obj.file,obj.tags,time,support3d,obj.NVAR,obj.NPOIN3,obj.NPLAN,vars)
+
+            # ~~> Possible sampling of the data
+            # No resampling yet
+
+            # ~~> Loop on variables
+            for v,vtype in zip(vars,vtypes):
+
+               VARSORS = []
+               for ivar in range(len(vars[0])): VARSORS.append( np.ravel(data[ivar][0].T) )
+
+               # ~~> Re-sampling
+               # No resampling yet
+
+               # ~~> Draw/Dump (multiple options possible)
+               if "map" in vtype or "label" in vtype:
+                  self.obdata[what["xref"]] = Values({'type':what['type'],
+                     'unit':'map', 'support':(MESHX,MESHY,MESHZ,IKLE3),
+                     'function':'none', 'values':VARSORS })
+                  return self.obdata[what["xref"]]
+                  # return (MESHX,MESHZ,IKLE3),VARSORS
+               if "arrow" in vtype or "vector" in vtype or "angle" in vtype:
+                  self.obdata[what["xref"]] = Values({'type':what['type'],
+                     'unit':'vector', 'support':(MESHX,MESHY,MESHZ,IKLE3),
+                     'function':'none', 'values':VARSORS })
+                  return self.obdata[what["xref"]]
+                  # return (MESHX,MESHZ,IKLE3),VARSORS
+
+         elif what['type'].split(':')[1] == '':
+
+            # ~~> Extract data
+            IKLE3 = obj.IKLE3
+            MESHX = obj.MESHX
+            MESHY = obj.MESHY
+            if obj.NDP2 == 4: IKLE3 = splitQuad2Triangle(IKLE3)
+            IKLE4 = IKLE3
+            vars,vtypes = whatVarsSLF(what['vars'],obj.VARNAMES)
+            tree = obj.tree
+            tria = obj.neighbours
+
+            # ~~> Possible re-sampling
+            support2d = []
+            #if what["sample"] != '':
+            #   supMESHX = MESHX; supMESHY = MESHY
+            #   MESHX = []; MESHY = []
+            #   IKLE4 = []; support2d = []
+            #   grids,n = whatSample(what["sample"],[(min(supMESHX),min(supMESHY)),(max(supMESHX),max(supMESHY))])
+            #   for dimx,dimy,x,y in grids:
+            #      for xyi in np.dstack((x,y))[0]:
+            #         support2d.append( xysLocateMesh(xyi,IKLE3,supMESHX,supMESHY,tree,tria) )
+            #      IKLE4.extend(([ i+j*dimx,i+1+j*dimx,i+1+(j+1)*dimx,i+(j+1)*dimx ] for j in range(dimy-1) for i in range(dimx-1) ))
+            #      MESHX.extend(x)
+            #      MESHY.extend(y)
+            #   IKLE4 = np.asarray(IKLE4)
+            #   IKLE3 = splitQuad2Triangle(IKLE4)
+            #   MESHX = np.asarray(MESHX)
+            #   MESHY = np.asarray(MESHY)
+
+            # ~~> Loop on variables
+            for var in what["vars"].split(';'):
+               v,vtype = var.split(':')
+
+               # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               # ~~> Extract variable data for only one plane
+               VARSORS = obj.castValues(v,what['time'])
+               # ~~> Re-sampling
+               if support2d != []:
+                  if fsize == 4: data = np.zeros(VARSORS.shape,dtype=np.float32)
+                  else: data = np.zeros(VARSORS.shape,dtype=np.float64)
+                  for itime in range(len(VARSORS)):
+                     for ivar in range(len(vars[0])):
+                        for ipt in range(len(support2d)):
+                           ln,bn = support2d[ipt]
+                           for inod in range(len(bn)):                  # /!\ node could be outside domain
+                              if ln[inod] >=0: data[itime][ivar][ipt] += bn[inod]*VARSORS[itime][ivar][ln[inod]]
+                  VARSORS = data
+               # ~~> Draw/Dump (multiple options possible)
+               if "wire" in vtype or "grid" in vtype:
+                  self.obdata[what["xref"]] = Values({'type':what['type'],
+                     'unit':'wire', 'support':np.dstack((MESHX[IKLE4],MESHY[IKLE4])),
+                     'function':'none', 'values':[] })
+                  return self.obdata[what["xref"]]
+                  # return np.dstack((MESHX[IKLE4],MESHY[IKLE4]))
+               if "mesh" in vtype:
+                  self.obdata[what["xref"]] = Values({'type':what['type'],
+                     'unit':'wire', 'support':np.dstack((MESHX[IKLE3],MESHY[IKLE3])),
+                     'function':'none', 'values':[] })
+                  return self.obdata[what["xref"]]
+                  # return np.dstack((MESHX[IKLE3],MESHY[IKLE3]))
+               if "map" in vtype or "label" in vtype:
+                  self.obdata[what["xref"]] = Values({'type':what['type'],
+                     'unit':'map', 'support':(MESHX,MESHY,IKLE3),
+                     'function':'none', 'values':VARSORS })
+                  return self.obdata[what["xref"]]
+                  # return (MESHX,MESHY,IKLE3),VARSORS
+               elif "arrow" in vtype or "vector" in vtype or "angle" in vtype:
+                  self.obdata[what["xref"]] = Values({'type':what['type'],
+                     'unit':'vector', 'support':(MESHX,MESHY,IKLE3),
+                     'function':'none', 'values':VARSORS })
+                  return self.obdata[what["xref"]]
+                  # return (MESHX,MESHY,IKLE3),VARSORS
+               else: print '... do not know how to draw this SELAFIN type: ' + vtype
+
+         # ~~> unknown
          else: # TODO: raise exception
             print '... do not know how to do this type of extraction: ' + what['type'].split(':')[1]
 
-      # ~~> unkonwn
+      # ~~> unknown
       else: # TODO: raise exception
          print '... do not know how to extract from this format: ' + typl
 

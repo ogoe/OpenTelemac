@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 <!-- Validation and verification of test cases, given a list of CAS files 
 --> 
-<validation xref="tracer_decrease"> 
+<validation xref="tracer_decrease" rank="5"> 
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
@@ -19,12 +19,12 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
 -->  
-   <action xref="1"  rank="5"
+   <action xref="1"
        do="translate;run;cas;princi" 
        code="telemac2d" target="t2d_trdec.cas" 
        title="tracer decrease scalar mode" 
    />
-   <action xref="2"  rank="5"
+   <action xref="2"
        do="translate;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_trdec.cas" 
        title="tracer decrease parallel mode" 

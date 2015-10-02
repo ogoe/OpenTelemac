@@ -1,48 +1,48 @@
-<?xml version="1.0"?> 
-<!-- Validation and verification of test cases, given a list of CAS files 
---> 
-<validation xref="friction"> 
- 
-<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ This section is being ignored at the moment --> 
-   <deco xref="default"> 
-      <look format="png" colourbar="jet.xml" /> 
-      <data title="cone" author="telemac2d" contact="www.opentelemac.org" /> 
-   </deco> 
-   <deco xref="vect"> 
-      <look colour="jet.xml" /> 
-   </deco> 
-   <deco xref="line"> 
-      <look colour="k" /> 
-   </deco> 
- 
-<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ do="cas;princi" are being ignored at the moment 
--->  
-   <action xref="1"  rank="5"
-       do="translate;compile;run;cas;princi" 
-       code="telemac2d" target="t2d_friction.cas" 
-       title="friction channel in 2D finite volume" 
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="friction" rank="5">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="cone" author="telemac2d" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_friction.cas"
+       title="friction channel in 2D finite volume"
    />
-    <action xref="2"  rank="5"
-       do="translate;compile;run;cas;princi" ncsize="4" 
-       code="telemac2d" target="t2d_friction.cas" 
-       title="friction channel finite volume parallel mode" 
-   />   
-<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   --> 
-<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   --> 
-   <plot1d xref="figure1" type="v-section" size="[12;3]" > 
-      <layer vars="hauteur d:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" /> 
-      <layer vars="hauteur e:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" /> 
+    <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_friction.cas"
+       title="friction channel finite volume parallel mode"
+   />
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="figure1" type="v-section" size="(12;3)" >
+      <layer vars="hauteur d:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" />
+      <layer vars="hauteur e:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" />
    </plot1d>
-   <plot1d xref="figure2" type="v-section" size="[12;3]" > 
-      <layer vars="surface l:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" /> 
-      <layer vars="surface e:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" /> 
+   <plot1d xref="figure2" type="v-section" size="(12;3)" >
+      <layer vars="surface l:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" />
+      <layer vars="surface e:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" />
    </plot1d>
- 
-<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-  --> 
- 
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
 </validation>

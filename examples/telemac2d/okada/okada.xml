@@ -1,56 +1,56 @@
-<?xml version="1.0"?> 
-<!-- Validation and verification of test cases, given a list of CAS files 
---> 
-<validation xref="okada"> 
- 
-<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ This section is being ignored at the moment --> 
-   <deco xref="default"> 
-      <look format="png" colourbar="jet.xml" /> 
-      <data title="Testing of the Okada Tsunami model" author="telemac2d" contact="s.bourban@hrwallingford.com" /> 
-   </deco> 
-   <deco xref="vect"> 
-      <look colour="jet.xml" /> 
-   </deco> 
-   <deco xref="line"> 
-      <look colour="k" /> 
-   </deco> 
- 
-<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ do="cas;princi" are being ignored at the moment 
--->  
-   <action xref="1"  rank="3"
-       do="translate;compile;run;cas;princi" 
-       code="telemac2d" target="t2d_okada.cas" 
-       title="okada scalar mode" 
-   />
-   <action xref="2"  rank="3"
-       do="translate;compile;run;cas;princi" ncsize="4" 
-       code="telemac2d" target="t2d_okada.cas" 
-       title="okada parallel mode" 
-   />   
-<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ This section is being ignored at the moment --> 
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="okada" rank="3">
 
-<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   --> 
-   <plot1d xref="FS_section" type="v-section" size="[12;5]" config="oneofall" > 
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="Testing of the Okada Tsunami model" author="telemac2d" contact="s.bourban@hrwallingford.com" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_okada.cas"
+       title="okada scalar mode"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_okada.cas"
+       title="okada parallel mode"
+   />
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="FS_section" type="v-section" size="(12;5)" config="oneofall" >
       <layer vars="free surface:line" target="1:T2DRES" extract="(-1600000;-1400000)(-1000000;-2000000)" time="[0;1;2;3]" />
    </plot1d>
 
-   
-<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-    <plot2d xref="Mesh" size="[8;8]" > 
-      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" /> 
-   </plot2d> 
-   <plot2d xref="FreeSurfacet0" size="[8;8]" > 
-      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[0]" /> 
+    <plot2d xref="Mesh" size="(8;8)" >
+      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" />
    </plot2d>
-   <plot2d xref="FreeSurfacet3" size="[8;8]" > 
-      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[3]" /> 
+   <plot2d xref="FreeSurfacet0" size="(8;8)" >
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[0]" />
    </plot2d>
-   <plot2d xref="FreeSurfacetf" size="[8;8]" > 
-      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   <plot2d xref="FreeSurfacet3" size="(8;8)" >
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[3]" />
+   </plot2d>
+   <plot2d xref="FreeSurfacetf" size="(8;8)" >
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[-1]" />
    </plot2d>
 </validation>

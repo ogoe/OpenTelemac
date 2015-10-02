@@ -55,7 +55,7 @@ def filterMessage(d,e=None,bypass=True):
             for i in e.args: message.append(i)
             cd.update({'tree':message})
          else:
-            cd = {'name':'uncontroled error from python:','msg':repr(e)+ 
+            cd = {'name':'uncontroled error from python:','msg':repr(e)+
                '\n'+'~'*18+'\n'+
                ''.join(traceback.format_exception(*sys.exc_info()))+
                '~'*18}
@@ -109,10 +109,12 @@ def reprMessage(items):
 
 class MESSAGES:
 
-   def __init__(self,size=0):
+   def __init__(self,size=0,ncsize=0):
       self.messages = []
       self.tail = ''
       self.size = size
+      self.ncsize = ncsize
+      if ncsize == 0: self.ncsize = cpu_count()
 
    def addMessages(self,ms):
       for item in ms: self.messages.append(item)  # because of tuple to array
@@ -123,13 +125,13 @@ class MESSAGES:
    def notEmpty(self):
       return ( self.messages != [] )
 
-   def startCmd(self,tasks,args):
+   def startCmd(self,tasks,args,memo):
       # ~~> prevents from overloading your system
-      while len(active_children()) >= cpu_count(): continue
+      while len(active_children()) >= self.ncsize: continue
       # ~~> subcontract the task out
       task = paraProcess(self.runCmd,args)
       # ~~> update the log pile
-      tasks.append([task,args])
+      tasks.append([task,args,memo])
       # ~~> order the work
       task.start()
       # ~~> return to high grounds
@@ -138,33 +140,33 @@ class MESSAGES:
    def flushCmd(self,tasks):
       messages = []
       while tasks != []:
-         task,(exe,bp,tail,code) = tasks.pop(-1)
+         task,(exe,bp,tail,code),memo = tasks.pop(-1)
          task.join()
          if tail.value.strip() != '':
             self.clearCmd(tasks)
-         messages.append([exe,'',tail.value.strip(),code.value])
+         messages.append([exe,'',tail.value.strip(),code.value,memo])
       return messages
 
    def cleanCmd(self,tasks):
       i = len(tasks)
       messages = []
       while 0 < i:
-         task,(exe,bp,tail,code) = tasks[i-1]
-         if not task.is_alive(): 
+         task,(exe,bp,tail,code),memo = tasks[i-1]
+         if not task.is_alive():
             tasks.pop(i-1)
             task.join()
             if tail.value.strip() != '':
-               messages.append([exe,'',tail.value.strip(),code.value])
+               messages.append([exe,'',tail.value.strip(),code.value,memo])
                self.clearCmd(tasks)
                break
             else:
-               messages.append([exe,'','',code.value])
+               messages.append([exe,'','',code.value,memo])
          i -= 1
       return messages
 
    def clearCmd(self,tasks):
       while tasks != []:
-         task,(exe,bp,tail,code) = tasks.pop()
+         task,(exe,bp,tail,code),memo = tasks.pop()
          task.terminate()
 
    def runCmd(self,exe,bypass,tail=Array('c',' '*10000),code=Value('i',0)):
@@ -197,8 +199,8 @@ class MESSAGES:
          else:
             lastlineempty = False
             self.tail = self.tail +'\n'+ dat
-      if len(self.tail.split('\n')) > self.size: self.tail = '\n'.join((self.tail.split('\n'))[-self.size:]) 
-   
+      if len(self.tail.split('\n')) > self.size: self.tail = '\n'.join((self.tail.split('\n'))[-self.size:])
+
 # _____                     ________________________________________
 # ____/ Parallel Utilities /_______________________________________/
 #
@@ -217,7 +219,7 @@ class paraProcess(Process):
 #
 
 def banner(text,size=1):
-   
+
    l = LETTERS(size)
    return l.render(text)
 
@@ -327,7 +329,7 @@ class LETTERS:
       self.ascii[124][1]  = ['  _ ',' | |',' | |',' | |',' | |',' | |',' | |',' |_|']                                                           #>  |
       self.ascii[125][1]  = [' __  ',' \\ \\ ',' | | ','  \\ \\','  / /',' | | ',' /_/ ','     ']                                               #>  }
       self.ascii[126][1]  = ['      ','      ','      ','  /\\/|',' |/\\/ ','      ','      ','      ']                                         #>  ~
-      
+
       # ~~> print the ASCII character set one character at a time
       #for i in self.ascii: print '\n'+str(i)+' -> '+self.ascii[i][0]+'\n'+'\n'.join(self.ascii[i][size])
       # ~~> print the ASCII character on one line
@@ -335,7 +337,7 @@ class LETTERS:
       #for i in self.ascii:
       #   for j in range(len(self.ascii[i][size])): lines[j] += self.ascii[i][size][j]
       #print '\n'.join(lines)
-      
+
    def render(self,text):
       lines = [ ' ' for i in self.ascii[32][self.size] ]
       for c in range(len(text)):

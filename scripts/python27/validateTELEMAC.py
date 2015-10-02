@@ -445,6 +445,8 @@ if __name__ == "__main__":
    if not options.display:
       import matplotlib.pyplot as plt
       plt.switch_backend('agg')
+      from mayavi import mlab
+      mlab.options.offscreen = True
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

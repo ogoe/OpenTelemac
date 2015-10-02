@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="ondem2">
+<validation xref="ondem2" rank="3">
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
@@ -18,39 +18,39 @@
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
---> 
-   <action xref="1" rank="3"
-       do="translate;compile;run;cas;princi"
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
        code="telemac2d" target="t2d_ondem2.cas"
        title="ondem2 scalar mode"
    />
-   <action xref="2" rank="3"
-       do="translate;compile;run;cas;princi" ncsize="4"
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
        code="telemac2d" target="t2d_ondem2.cas"
        title="ondem2 parallel mode"
-   />   
+   />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-   <plot1d xref="FreeSurfaceTimeSeries" type="history" config="together" time="[0:-1]" size="[12;5]" > 
-      <layer vars="surface libre:line" extract="(-280000;200000)" target="1:T2DRES" /> 
-   </plot1d> 
+   <plot1d xref="FreeSurfaceTimeSeries" type="history" config="together" time="[0:-1]" size="(12;5)" >
+      <layer vars="surface libre:line" extract="(-280000;200000)" target="1:T2DRES" />
+   </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <plot2d xref="Mesh" size="[10;10]" > 
-      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
-   </plot2d> 
-   <plot2d xref="Bathy" size="[10;10]" > 
-      <layer vars="fond:map" target="1:T2DRES" config="oneofall" /> 
-   </plot2d> 
-   <plot2d xref="Amplitude" size="[10;10]" > 
-      <layer vars="AMPLI PERIODE 1:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
-   </plot2d> 
-   <plot2d xref="Phase" size="[10;10]" > 
-      <layer vars="PHASE PERIODE 1:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   <plot2d xref="Mesh" size="(10;10)" >
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" />
+   </plot2d>
+   <plot2d xref="Bathy" size="(10;10)" >
+      <layer vars="fond:map" target="1:T2DRES" config="oneofall" />
+   </plot2d>
+   <plot2d xref="Amplitude" size="(10;10)" >
+      <layer vars="AMPLI PERIODE 1:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+   </plot2d>
+   <plot2d xref="Phase" size="(10;10)" >
+      <layer vars="PHASE PERIODE 1:map" target="1:T2DRES" config="oneofall" time="[-1]" />
    </plot2d>
 
 </validation>
