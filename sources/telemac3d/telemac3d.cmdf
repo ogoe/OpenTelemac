@@ -846,11 +846,11 @@ files: declarations_telemac3d.f
 [tomawac]
 path: <root>|sources|tomawac
 files: declarations_tomawac.f
+  interface_tomawac.f
   point_tomawac.f
   nomvar_tomawac.f
   tomawac_constants.f
   lecdon_tomawac.f
-  interface_tomawac.f
   preqt2.f
   tetmoy.f
   lecsui.f
