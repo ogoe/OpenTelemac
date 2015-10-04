@@ -206,7 +206,7 @@ def getConfigs(file,name,bypass=False):
             print '\n ... use instead:'
             for cfg in cfgnames : print '    +> ',cfg
             sys.exit(1)
-         
+
       cfgnames = [name]
    # ~~ Verify presence of configs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for cfg in cfgnames:
@@ -237,7 +237,7 @@ def parseConfigFile(file,name,bypass=False):
    # ~~ Parse CFG File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print "... parsing configuration file: " + file
    generalDict,configDict = getConfigs(file,name,bypass)
-   
+
    # ~~ Replacing user keys throughout ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    key_sqbrack = re.compile(r'(?P<brack>\[[\w_.-~=+]*?\])') #,re.I)
    for cfgname in configDict:
@@ -593,7 +593,7 @@ def parseConfig_ValidateTELEMAC(cfg):
       if val_mod != {}:
          cfgTELEMAC['VALIDATION'].update({mod:{'path':path.realpath(val_dir)}})
          cfgTELEMAC['VALIDATION'][mod].update(val_mod)
-   
+
    # Get path_parallel for partel
    cfgTELEMAC.update({'PARTEL':getPARTEL(cfg)})
    # Get mpi_cpulist and mpi_cmdexec: for mpi option
@@ -735,7 +735,7 @@ def getFolders_ModulesTELEMAC(root):
                   elif not 'files' in modules[moddir]: modules[moddir].update({'files':[path.join(dirpath,fle)]})
                   else: modules[moddir]['files'].append(path.join(dirpath,fle))
             # ~~> Two levels in modroot
-            
+
             for subdir in dirnames:
                if subdir[0] != '.':
                   # Special treatment for folders in utils as they are like the one
@@ -773,7 +773,7 @@ def getFolders_ModulesTELEMAC(root):
                            if not modName in modules: modules.update({modName:{'path':subpath,'files':[path.join(subpath,fle)],'cmdfs':[]}})
                            elif not 'files' in modules[modName]: modules[modName].update({'files':[path.join(subpath,fle).replace(sep,'|')]})
                            else: modules[modName]['files'].append(path.join(subpath,fle))
-                  
+
 
    return modules
 
@@ -1051,10 +1051,10 @@ if __name__ == "__main__":
       print '    +> root:    ',cfg['root']
       print '    +> module:  ',' / '.join(cfg['MODULES'].keys())
       if options.configDelete: cleanConfig(cfg,cfgname)
-   
+
    print '\n\n'+'~'*72+'\n'
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
-   
+
    sys.exit(0)

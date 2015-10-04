@@ -209,9 +209,12 @@ def drawMesh2DElements(myplt,decoUser,elements):
    # ~~> Focus on current subplot / axes instance
    crax = myplt.gca()
    # ~~>  Collections
-   colection = collections.PolyCollection(
-      elements, cmap=cm.jet, antialiaseds=0, # norm=myplt.Normalize()
-      edgecolors = 'k', linewidth=1, facecolors = 'none')
+#   colection = collections.PolyCollection(
+#      elements, cmap=cm.jet, antialiaseds=0, # norm=myplt.Normalize()
+#      edgecolors = 'k', linewidth=1, facecolors = 'none')
+
+   colection = collections.PolyCollection(elements)
+
       #colection.set_array(val)       # each triangle colour dependent on its value from its verticies
    # ~~> Plot data
    #ex: fig = myplt.figure(1,figsize=(3.0,4.0),dpi=100), where figsize is in inches
@@ -240,13 +243,29 @@ def drawColouredTriMaps(myplt,decoUser,(x,y,ikle,z)):
    if decoUser.has_key('cmap'): cmap = mpl.colors.LinearSegmentedColormap('user',getColourMap(decoUser['cmap']))
 
    # ~~> Colour maps
-   myplt.tricontourf(x,y,ikle, z, cmap=cmap)
+#   myplt.tricontourf(x,y,ikle, z, cmap=cmap)
+
+   for key in decoUser:
+     try:
+       decoUser[key] = eval(decoUser[key])
+     except:
+       pass
+
+   if decoUser.has_key('levels'): decoUser['levels'] = sorted(decoUser['levels'])
+
+   cs = myplt.tricontourf(x,y,ikle, z, **decoUser)
+
+   if (decoUser.has_key('colourbar')):
+     if (decoUser['colourbar'] == "yes"):
+     # make a colour bar
+       cb = myplt.colorbar(cs, shrink=1.0, extend='both')
+
    # ~~> Iso-contours and Labels
-   zmin = np.min(z); zmax = np.max(z)
-   if zmin < zmax:
-      cs = myplt.tricontour(x,y,ikle, z, linewidths=linewidths, colors=colors)
-      myplt.clabel(cs,fmt=fmt,fontsize=fontsize,inline=inline)
-      myplt.clabel(cs,fontsize=fontsize,inline=inline)
+#   zmin = np.min(z); zmax = np.max(z)
+#   if zmin < zmax:
+#      cs = myplt.tricontour(x,y,ikle, z, linewidths=linewidths, colors=colors)
+#      myplt.clabel(cs,fmt=fmt,fontsize=fontsize,inline=inline)
+#      myplt.clabel(cs,fontsize=fontsize,inline=inline)
       #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')
 
    return
@@ -258,6 +277,17 @@ def drawLabeledTriContours(myplt,decoUser,(x,y,ikle,z)):
 
    # contour levels based on z values
    zmin = np.min(z); zmax = np.max(z)
+
+   for key in decoUser:
+     try:
+       decoUser[key] = eval(decoUser[key])
+     except:
+       pass
+
+   if zmin < zmax:
+      cs = myplt.tricontour(x,y,ikle, z, **decoUser)
+      myplt.clabel(cs, **decoUser)
+
    levels = np.arange(zmin,zmax,(zmax-zmin)/8)
 
    # + the value (or array) after the z are the levels
@@ -271,11 +301,11 @@ def drawLabeledTriContours(myplt,decoUser,(x,y,ikle,z)):
    # ex: self.plt.tricontour(x,y,ikle, z, linewidths=0.5, colors='k')
    # ex:                     , linewidths=np.arange(.5, 4, .5),
    # ex: colors=('r', 'green', 'blue', (1,1,0), '#afeeee', '0.5')
-   try:
-      cs = myplt.tricontour( x,y,ikle, z , levels, linewidths=np.arange(.5,4,.5))
-   except:
-      print '\ntricontour not available on your system'
-      print ' ... unable to plot 2D figures'
+#   try:
+#      cs = myplt.tricontour( x,y,ikle, z , levels, linewidths=np.arange(.5,4,.5))
+#   except:
+#      print '\ntricontour not available on your system'
+#      print ' ... unable to plot 2D figures'
 
    # + inline of clabel() can be either:
    #    0 (the label is written on top of the contour)
@@ -287,14 +317,14 @@ def drawLabeledTriContours(myplt,decoUser,(x,y,ikle,z)):
    # ex: self.plt.clabel(cs, levels[1::2], fmt='%1.1f', inline=1, fontsize=9)
    #   np.arange(-1.2, 1.6, 0.2)
    #levels = np.asarray([-0.175, -0.15, -0.125, -0.1, -0.075, -0.05, -0.025])
-   myplt.clabel(cs, levels[1::2], fmt='%1.3f', inline=1, fontsize=9, colors='k')
+#   myplt.clabel(cs, levels[1::2], fmt='%1.3f', inline=1, fontsize=9, colors='k')
 
    # Extras: thicken the zero contour.
-   myplt.setp( cs.collections[6], linewidth=4 )
+#   myplt.setp( cs.collections[6], linewidth=4 )
    # TODO: investigate use of extent ( extent=(-3,3,-2,2) )
 
    # make a colorbar for the contour lines
-   cb = myplt.colorbar(cs, shrink=0.8, extend='both')
+#   cb = myplt.colorbar(cs, shrink=0.8, extend='both')
    #self.plt.hot()  # Now change the colormap for the contour lines and colorbar
    #self.plt.flag()
 
@@ -325,14 +355,42 @@ def drawColouredTriVects(myplt,decoUser,(x,y,uv,normalised)):
 
    # ~~> Plot data
    colourmap = cm.jet
+
    #if geometry.has_key('cmapPlot'):
    #   colourmap = LinearSegmentedColormap('User', getColourMap(geometry['cmapPlot']))
    # get vector magnitude, i.e norm-2
+
    z = np.sqrt(np.sum(np.power(np.dstack(uv[0:2])[0],2),axis=1))
    zmin = np.min(z); zmax = np.max(z)
    if not normalised : cs = myplt.quiver(x,y,uv[0],uv[1], cmap=colourmap )
    else: cs = myplt.quiver(x,y,uv[0],uv[1], cmap=colourmap, norm=myplt.Normalize(zmin,zmax))
+
    cs.set_array(z)
+
+   if (decoUser.has_key('colourbar')):
+     if (decoUser['colourbar'] == "yes"):
+     # make a colour bar
+       cb = myplt.colorbar(cs, shrink=1.0, extend='both')
+
+   key_x = 0.8
+   key_y = 0.05
+   key_length = 1.0
+   key_label = ''
+
+   if (decoUser.has_key('key_x')):
+     key_x = float(decoUser['key_x'])
+   if (decoUser.has_key('key_y')):
+     key_y = float(decoUser['key_y'])
+   if (decoUser.has_key('key_length')):
+     key_length = float(decoUser['key_length'])
+   if (decoUser.has_key('key_label')):
+     key_label = decoUser['key_label']
+
+   if (decoUser.has_key('key')):
+     if (decoUser['key'] == "yes"):
+     # make a colour bar
+       cb = myplt.quiverkey(cs,key_x,key_y,key_length,key_label)
+
    #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')
    # adds numbers along the iso-contours
 
@@ -526,7 +584,7 @@ class Figure2D(Caster):
       #   instance, so only one area where we can draw, but Matplotlib allows more than one
 
       # ~~~ figure decoration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      mpl.rcdefaults()
+#      mpl.rcdefaults()
 
       # ~~> user params
       if self.upar['title'] != '': plt.title(self.upar['title'])

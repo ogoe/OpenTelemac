@@ -1012,8 +1012,8 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
    # ~~ Main action process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #
    #    Whether an action is carried out or not, it is known through:
-   #       xmlConfig[cfgname]['options'].todos['act']['todo']
-   #    PRINCAS(ACTION) will still be loaded to register various files
+   #       xmlConfig[cfgname]['options'].todos
+   #    CAS file will still be loaded to register various other files
    #       for possible subsequent extraction, plotting or analysis
    #    TODO: limit the number of path / safe duplication
    # _______________________________________________________//        \\
@@ -1046,12 +1046,12 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
             do.addCFG(cfgname,cfg) #if not : continue
 
             # ~~> Temper with rank but still gather intelligence
-            dodo = True
-            rankdo = do.active['rank']
-            rankdont = xmlConfig[cfgname]['options'].todos['act']['rank']
-            if rankdont == 1: dodo = False
-            if gcd(rankdont,rankdo) == 1: dodo = False
-            do.updateCFG({'dodo':dodo})
+            #dodo = True
+            #rankdo = do.active['rank']
+            #rankdont = xmlConfig[cfgname]['options'].rank
+            #if rankdont == 1: dodo = False
+            #if gcd(rankdont,rankdo) == 1: dodo = False
+            #do.updateCFG({'dodo':dodo})
 
             # ~~> Create the safe
             createDirectories(do.active['safe'])
@@ -1127,13 +1127,13 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                if links != {}: do.updateCFG({ "links":links })
 
                # ~~> Complete all actions
-               # options.todos['act']['todo'] takes: translate;run;compile and none
-               doable = xmlConfig[cfgname]['options'].todos['act']['todo']
+               # options.todos takes: translate;run;compile and none
+               doable = xmlConfig[cfgname]['options'].todos
                if doable == '': doable = do.active["do"]
                if doable == '' or doable == 'all': doable = do.availacts
 
                # ~~> Action type A. Translate the CAS file
-               if "translate" in doable.split(';') and dodo:
+               if "translate" in doable.split(';'):
                   try:
                      # - exchange keywords between dictionaries
                      do.translateCAS(cfg['REBUILD'])
@@ -1144,28 +1144,25 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                # ~~> Action type B. Analysis of the CAS file
                # TODO:
                # - comparison with DEFAULT values of the DICTIONARY
-               #if "cas" in doable.split(';') and dodo:
+               #if "cas" in doable.split(';'):
                # - comparison of dictionnaries betwen configurations
-               #if "dico" in doable.split(';') and dodo:
+               #if "dico" in doable.split(';'):
 
                # ~~> Action type C. Analysis of the PRINCI file
-               if "princi" in doable.split(';') and dodo:
-                  #try:
-                     # - comparison with standard source files
-                     specs = Values()
-                     specs.unified = False
-                     specs.ndiff = False
-                     specs.html = True
-                     specs.ablines = True
-                     specs.context = False
-                     do.diffPRINCI(specs,cfg,cfg['REBUILD'])
-                     #updated = do.diffPRINCI(specs,cfg,cfg['REBUILD'])
-                  #except Exception as e:
-                  #   xcpt.append(filterMessage({'name':'runXML','msg':'   +> diff(princi)'},e,bypass))
+               if "princi" in doable.split(';'):
+                  # - comparison with standard source files
+                  specs = Values()
+                  specs.unified = False
+                  specs.ndiff = False
+                  specs.html = True
+                  specs.ablines = True
+                  specs.context = False
+                  do.diffPRINCI(specs,cfg,cfg['REBUILD'])
+                  #updated = do.diffPRINCI(specs,cfg,cfg['REBUILD'])
                # TODO: - comparison of subroutines between action items
 
                # ~~> Action type E. Running CAS files
-               if "run" in doable.split(';') and dodo:
+               if "run" in doable.split(';'):
                   try:
                      updated = do.runCAS(xmlConfig[cfgname]['options'],cfg,cfg['REBUILD'])
                   except Exception as e:
@@ -1177,13 +1174,13 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                do.availacts = "exec"
 
                # ~~> Complete all actions
-               # options.todos['act']['todo'] takes: exec and none
-               doable = xmlConfig[cfgname]['options'].todos['act']['todo']
+               # options.todos takes: exec and none
+               doable = xmlConfig[cfgname]['options'].todos
                if doable == '': doable = do.active["code"]
                if doable == '' or doable == 'all': doable = do.availacts
 
                # ~~> Action type E. Running exec
-               if "exec" in doable.split(';') and dodo:
+               if "exec" in doable.split(';'):
                   try:
                      # - simply run the exec as stated
                      updated = do.runCommand(cfg['REBUILD'])
@@ -1217,13 +1214,6 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add extract object to the list'},e,bypass))
             continue   # bypass the rest of the for loop
-
-         # ~~> Temper with rank without gathering intelligence
-         #dodo = True
-         #rankdo = cast.dids[typeCast][cast.active['xref']]['rank']
-         #rankdont = xmlConfig[xmlConfig.keys()[0]]['options'].todos['cast']['rank']
-         #if rankdont == 1: continue #dodo = False
-         #if gcd(rankdont,rankdo) == 1: continue #dodo = False
 
          # ~~ Step 2. Python code ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          if len(casting.findall("python")) > 1:
@@ -1464,9 +1454,6 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                oneFound = False
                findlayer = []
                for cfgname in xmlConfig:
-                  rankdont = xmlConfig[cfgname]['options'].todos['save']['rank']
-                  if rankdont == 1: continue
-                  if gcd(rankdont,rankdo) == 1: continue
                   for var in cast.dids['cast'][xref]['vars']:
                      if src == var['xref']:
                         oneFound = True
@@ -1484,9 +1471,6 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                   layers = {}
                   oneFound = False
                   for cfgname in xmlConfig:
-                     rankdont = xmlConfig[cfgname]['options'].todos['save']['rank']
-                     if rankdont == 1: continue
-                     if gcd(rankdont,rankdo) == 1: continue
                      oneFound = True
                      findlayer = findTargets(do.dids[xref][cfgname],src)
                      if findlayer != []: layers.update({ cfgname:findlayer })
@@ -1678,9 +1662,6 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                oneFound = False
                findlayer = []
                for cfgname in xmlConfig:
-                  rankdont = xmlConfig[cfgname]['options'].todos['draw']['rank']
-                  if rankdont == 1: continue
-                  if gcd(rankdont,rankdo) == 1: continue
                   for var in cast.dids['cast'][xref]['vars']:
                      if src == var['xref']:
                         oneFound = True
@@ -1698,9 +1679,6 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                   layers = {}
                   oneFound = False
                   for cfgname in xmlConfig:
-                     rankdont = xmlConfig[cfgname]['options'].todos['draw']['rank']
-                     if rankdont == 1: continue
-                     if gcd(rankdont,rankdo) == 1: continue
                      oneFound = True
                      findlayer = findTargets(save.dids[xref][cfgname],src)
                      if findlayer != []: layers.update({ cfgname:findlayer })
@@ -1714,9 +1692,6 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                   layers = {}
                   oneFound = False
                   for cfgname in xmlConfig:
-                     rankdont = xmlConfig[cfgname]['options'].todos['draw']['rank']
-                     if rankdont == 1: continue
-                     if gcd(rankdont,rankdo) == 1: continue
                      oneFound = True
                      findlayer = findTargets(do.dids[xref][cfgname],src)
                      if findlayer != []: layers.update({ cfgname:findlayer })

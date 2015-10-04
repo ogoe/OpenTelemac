@@ -80,6 +80,11 @@
    The content of the log files from GRETEL and PARTEL are now reported
    in the error report.
 """
+"""@history 01/10/2015 -- Sebastien Bourban
+   Simplification of the rank and of the options --action, --draw --cast --save,
+      into just the one value for the rank.
+   The rank is now defined at the top of the XML validation file.
+"""
 """@brief
 """
 # _____          ___________________________________________________
@@ -111,7 +116,7 @@ from utils.files import checkSymLink,moveFile2File,putFileContent
  where each "xmlfile" dict has the following keys:
    [ '', '', '' ]
  and where the various "root" are roots to a particular branch of the system.
- 
+
 """
 class REPORT:
 
@@ -158,7 +163,7 @@ class REPORT:
    """
    def add(self,repname,root,version):
       if repname == '': return {}
-      
+
       # ~~> Current file name
       self.fileFields[0] = version
       self.fileFields[1] = repname
@@ -178,7 +183,7 @@ class REPORT:
                moveFile2File(path.join(dirpath,file),fileName)
                self.reports[repname].update({ 'head':self.loadHead(fileName) })
                self.reports[repname].update({ 'core':self.loadCore(fileName) })
-      
+
       return self.reports[repname]['core']
 
    def loadHead(self,fileName):
@@ -205,7 +210,7 @@ class REPORT:
             caseName = corerow[self.hkeys.index('file')]
             if caseName not in r: r.update({ caseName:{ 'casts':[] } })           # name of the xml file
             r[caseName]['file'] = path.join(corerow[self.hkeys.index('path')],caseName)
-            r[caseName]['duration'] = float(corerow[self.hkeys.index('duration')])            
+            r[caseName]['duration'] = float(corerow[self.hkeys.index('duration')])
             cast = {}
             if corerow[self.hkeys.index('fail')] != '': cast.update({ 'fail': ( 'true' in corerow[self.hkeys.index('fail')].lower() ) })
             if corerow[self.hkeys.index('warn')] != '': cast.update({ 'warn': ( 'true' in corerow[self.hkeys.index('warn')].lower() ) })
@@ -302,17 +307,10 @@ if __name__ == "__main__":
    parser.add_option("-b","--bypass",action="store_true",dest="bypass",default=False,
       help="will bypass execution failures and try to carry on (final report at the end)" )
 # Combine with all filters above, "rank" now controls everything and Jenkins can control "rank"
-   parser.add_option("-k","--rank",type="string",dest="rank",default='',
-      help="5 integers joined by point (--rank 0.0.0.0 is all by default)" )
-# These filters reset "rank" to do just one or more things
-   parser.add_option("--act",type="string",dest="action",default='',
+   parser.add_option("-k","--rank",type="string",dest="rank",default='0',
+      help="1 integer only (--rank 0 is the default)" )
+   parser.add_option("--todos",type="string",dest="todos",default='',
       help="filter specific actions from the XML file, and will only do these by default" )
-   parser.add_option("--draw",type="string",dest="drawing",default='',
-      help="filter specific drawings from the XML file, and will only do these by default" )
-   parser.add_option("--save",type="string",dest="saving",default='',
-      help="filter specific data extractions from the XML file and will only do these by default" )
-   parser.add_option("--cast",type="string",dest="casting",default='',
-      help="filter specific drawing actions from the XML file, and will only do these" )
    parser.add_option("--report",type="string",dest="report",default='',
       help="will create a report summary of with your chosen middle name" )
    parser.add_option("--clean",action="store_true",dest="cleanup",default=False,
@@ -321,7 +319,7 @@ if __name__ == "__main__":
    parser.add_option("--use-link",action="store_true",dest="use_link",default=False,
       help="Will use link instead of copy in the temporary folder (Unix system only)" )
    options, args = parser.parse_args()
-	  
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # path to the root
@@ -389,56 +387,6 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
-
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~ Manage options to run only ranked actions ~~~~~~~~~~~~~~~~~~~~
-#
-# if no option are set, then all will be available
-#   as a results: todos = {'cast': {'todo': '', 'rank': 0}, 'draw': {'todo': '', 'rank': 0}, 'save': {'todo': '', 'rank': 0}, 'act': {'todo': '', 'rank': 0}}
-#   where if rank=0, it can be divided by all prime numbers
-#
-# if one option is set, for instance --act prnci, then all not set will be turned off
-#   as a result: todos = {'cast': {'todo': '', 'rank': -1}, 'draw': {'todo': '', 'rank': -1}, 'save': {'todo': '', 'rank': -1}, 'act': {'todo': 'princi', 'rank': 0}}
-#   where 1 or -1 is used to turn off an option as it cannot be divided by any prime number
-#
-# if --rank is used, then all are sreset accordingly, for instance --rank 2.0.1.1
-#   as a result: todos = {'cast': {'todo': 'none', 'rank': 1}, 'draw': {'todo': '', 'rank': 0}, 'save': {'todo': 'none', 'rank': 1}, 'act': {'todo': '', 'rank': 2}}
-#   where the numbers are associated to act,draw,save and cast respectively
-#
-   if options.action + options.drawing + options.saving + options.casting == '' :
-      # rank = 0 can be divided by all prime numbers
-      options.todos = { 'act':{'rank':0,'todo':options.action},
-         'draw':{'rank':0,'todo':options.drawing},
-         'save':{'rank':0,'todo':options.saving},
-         'cast':{'rank':0,'todo':options.casting} }
-   # else, only those options will be avaiable at their specific rank
-   else:
-      # rank =1 or -1 cannot be divided by any prime number
-      options.todos = { 'act':{'rank':-1,'todo':''},
-         'draw':{'rank':-1,'todo':''},
-         'save':{'rank':-1,'todo':''},
-         'cast':{'rank':-1,'todo':''} }
-      if options.action != '': options.todos['act'] = {'rank':0,'todo':options.action}
-      if options.drawing != '': options.todos['draw'] = {'rank':0,'todo':options.drawing}
-      if options.saving != '': options.todos['save'] = {'rank':0,'todo':options.saving}
-      if options.casting != '': options.todos['cast'] = {'rank':0,'todo':options.casting}
-   # however, if rank is present, then it takes over
-   if options.rank != '':
-      rank = options.rank.split('.')
-      if len(rank) == 1: rank = [ rank[0],rank[0],rank[0],rank[0] ]
-      if len(rank) != 4:
-         print '\nNot able to decode you rank: ' + options.rank
-         print ' ... it should be something like 2.3.1.0, where the numbers are associated to act,draw,save and cast respectively,'
-         print '     or it could be just one integer, in which case rank will associate the integer to act,draw,save and cast.'
-         sys.exit(1)
-      options.todos['act']['rank'] = int(rank[0])
-      if abs(options.todos['act']['rank']) == 1:  options.todos['act']['todo'] = 'none'
-      options.todos['draw']['rank'] = int(rank[1])
-      if abs(options.todos['draw']['rank']) == 1:  options.todos['draw']['todo'] = 'none'
-      options.todos['save']['rank'] = int(rank[2])
-      if abs(options.todos['save']['rank']) == 1:  options.todos['save']['todo'] = 'none'
-      options.todos['cast']['rank'] = int(rank[3])
-      if abs(options.todos['cast']['rank']) == 1:  options.todos['cast']['todo'] = 'none'
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Forces not to use any Xwindows backend for Jenkins ~~~~~~~~~~
@@ -570,7 +518,7 @@ if __name__ == "__main__":
                         'casts':[{ 'xref':'*****', 'fail':True, 'warn':True, 'updt':True, 'rank':-1, 'value':0, 'title':reprMessage([mes]).replace('\n','') }]
                      } })
 
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<         
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Writes the Validation Report in a CSV file ~~~~~~~~~~~~~~~~~~~~
    reports.dump()
 
@@ -584,6 +532,6 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   else: 
+   else:
       print '\n\nMy work is done\n\n'
       sys.exit(0)
