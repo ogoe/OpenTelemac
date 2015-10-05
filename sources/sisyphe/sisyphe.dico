@@ -115,7 +115,7 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'kCONC="concentration of bed layer k"';
 'QSi="debit solide pour la classe i"';
 'CSi="concentration volumique ou g/l pour la classe i"';
-'CSAT="concentration volumique equil. ou g/l"';
+'CSAT="concentration volumique equil ou g/l"';
 'A="variable supplementaire A"';
 'G="variable supplementaire G"';
 'L="variable supplementaire L"';
@@ -162,7 +162,7 @@ CHOIX1= 'U="velocity along x axis (m/s)"';
 RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
 RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
 NIVEAU = 1
-AIDE  = 'Noms des variables que l''utilisateur veut ecrire dans
+AIDE = 'Noms des variables que l''utilisateur veut ecrire dans
 le fichier des resultats.
 Chaque variable est representee par une lettre.
 Le choix des separateurs est libre. Voir CHOIX ci-dessus.
@@ -205,6 +205,7 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'CSi="concentration pour la classe i"';
 '*ES = "thicknes of bed layer i"';
 '*CONC= "concentration of bed layer i "';
+'CSAT="saturated concentration (kg/m3)"';
 'A="variable supplementaire A"';
 'G="variable supplementaire G"';
 'L="variable supplementaire L"';
@@ -243,7 +244,7 @@ CHOIX1= 'U="velocity along x axis (m/s)"';
 RUBRIQUE = 'RESULTATS'
 RUBRIQUE1 = 'RESULTS'
 NIVEAU = 2
-AIDE  = 'Nom des variables que l''utilisateur desire ecrire sur
+AIDE = 'Nom des variables que l''utilisateur desire ecrire sur
 le lisring. Meme possibilites que pour les sorties graphiques.'
 AIDE1 = 'Names of variables the user wants to write on the listing.
 Each variable is represented by a letter in the same manner as
@@ -703,7 +704,6 @@ INDEX = 5
 MNEMO = ' '
 DEFAUT = NON
 DEFAUT1 = NO
-NIVEAU = 1                                                              
 RUBRIQUE = 'INUTILE'
 RUBRIQUE1 = 'USELESS'   
 NIVEAU = 1                                                              
@@ -1000,6 +1000,7 @@ RUBRIQUE = 'INUTILE'
 RUBRIQUE1 = 'USELESS'
 NIVEAU = 0
 AIDE = 'specifie le code utilise pour modeliser l''hydrodynamique'
+AIDE1 = 'specifie le code utilise pour modeliser l''hydrodynamique'
 
 NOM = 'NOMBRE DE SOUS-ITERATIONS'
 NOM1 = 'NUMBER OF SUB-ITERATIONS'
@@ -1326,8 +1327,8 @@ DEFAUT1 = 1.E-10
 RUBRIQUE = 'NUMERIQUE'
 RUBRIQUE1 = 'NUMERICAL'
 NIVEAU = 1
-AIDE = 'Pas utilise.'
-AIDE1 = 'Not yet used.'
+AIDE = 'Fixe le zero du code.'
+AIDE1 = 'Sets the zero of the code.'
 
 NOM = 'VISCOSITE CINEMATIQUE EAU'
 NOM1 = 'WATER VISCOSITY'        
@@ -1705,7 +1706,6 @@ TYPE = LOGIQUE
 INDEX = 7
 DEFAUT = NON
 DEFAUT1 = NO
-NIVEAU = 1                                                              
 RUBRIQUE = 'SUSPENSION'
 RUBRIQUE1 = 'SUSPENSION'    
 NIVEAU = 1                                                              
@@ -1718,7 +1718,6 @@ TYPE = LOGIQUE
 INDEX = 8
 DEFAUT = OUI
 DEFAUT1 = YES
-NIVEAU = 1                                                              
 RUBRIQUE = 'CHARRIAGE'
 RUBRIQUE1 = 'BED-LOAD'     
 NIVEAU = 1                                                              
@@ -1756,6 +1755,7 @@ CHOIX1 =
 RUBRIQUE = 'NUMERIQUE'
 RUBRIQUE1 = 'NUMERICAL'
 COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+NIVEAU = 1
 AIDE = 'Determine le schema utilise pour la convection :
 1: caracteristiques
 2: schema semi-implicite + supg
@@ -1764,7 +1764,6 @@ AIDE = 'Determine le schema utilise pour la convection :
 6: schema psi non conservatif
 7: schema N non conservatif
 13 et 14: schema N par segment (recommande pour les bancs decouvrants)'
-
 AIDE1 = 'Scheme used for advection of suspended sediment :
 1: characteristics
 2: semi-implicit SUPG
@@ -1793,6 +1792,7 @@ CHOIX1 = '1="conjugate gradient"';
 '7="gmres (see option for the solver for tracer diffusion)"'
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'SOLVEUR';'SUSPENSION'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'SOLVER';'SUSPENSION'
+NIVEAU = 1
 AIDE = '
 Permet de choisir le solveur utilise pour la resolution
 de l''etape de propagation. Toutes les methodes proposees
@@ -1859,6 +1859,8 @@ RUBRIQUE = 'SOLVEUR'
 RUBRIQUE1 = 'SOLVER'
 NIVEAU = 2
 COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = ' '
+AIDE1 = ' '
 
 NOM = 'OPTION DE SUPG'
 NOM1 = 'SUPG OPTION' 
@@ -1871,6 +1873,8 @@ RUBRIQUE = 'NUMERIQUE'
 RUBRIQUE1 = 'NUMERICAL'
 NIVEAU = 2
 COMPORT = 'DISPLAY %FORME DE LA CONVECTION% = 2'
+AIDE = ' '
+AIDE1 = ' '
 
 NOM = 'PRODUIT MATRICE-VECTEUR'
 NOM1 = 'MATRIX-VECTOR PRODUCT' 
@@ -1882,6 +1886,8 @@ DEFAUT1 = 1
 RUBRIQUE = 'NUMERIQUE'
 RUBRIQUE1 = 'NUMERICAL'
 NIVEAU = 3
+AIDE = ' '
+AIDE1 = ' '
 
 NOM = 'STOCKAGE DES MATRICES'
 NOM1 = 'MATRIX STORAGE'
@@ -1894,6 +1900,8 @@ DEFAUT1 = 1
 RUBRIQUE = 'NUMERIQUE'
 RUBRIQUE1 = 'NUMERICAL'
 NIVEAU = 1
+AIDE = ' '
+AIDE1 = ' '
 
 NOM = 'OPTION POUR LA DIFFUSION DU TRACEUR'
 NOM1 = 'OPTION FOR THE DIFFUSION OF TRACER'
@@ -1924,12 +1932,17 @@ TAILLE = 0
 DEFAUT = 1
 RUBRIQUE = 'SUSPENSION'
 RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 1
 AIDE = ' 1 les mots cles dispersion longitudinale
 et dispersion transversale permettent d affecter une valeur constante,
 2 K1=alphal u*h et K2=alphat u*h affectent les valeurs alphal et alphat 
 (par default alphal=6 et alphat=0.6, 3 dipersion fournie par
  telemac2d'
-
+AIDE1 = ' 1 les mots cles dispersion longitudinale
+et dispersion transversale permettent d affecter une valeur constante,
+2 K1=alphal u*h et K2=alphat u*h affectent les valeurs alphal et alphat 
+(par default alphal=6 et alphat=0.6, 3 dipersion fournie par
+ telemac2d'
 
 / NOTE JMH : CE MOT-CLEF N EST PLUS UTILISE
 NOM = 'FORMULATION POUR DEPOT ET EROSION'
@@ -1947,6 +1960,9 @@ CHOIX1 =
 '2="FREDSOE / ROUSE"'
 RUBRIQUE = 'SUSPENSION'
 RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 1
+AIDE = ' '
+AIDE1 = ' '
 
 NOM = 'LOI DE FROTTEMENT SUR LE FOND'
 NOM1 = 'LAW OF BOTTOM FRICTION'
@@ -1993,7 +2009,7 @@ NIVEAU = 2
 COMPORT = 'DISPLAY %SUSPENSION% = OUI'
 AIDE='facteur implicitation du terme de depot et de la diffusion.
  si teta =0, tout le terme de depot est traite de maniere explicite.'
-AIDE=' implicitation factor for the deposition flux and the diffusion.
+AIDE1 =' implicitation factor for the deposition flux and the diffusion.
  for teta =0, the deposition flux is only explicit.'
 
 
@@ -2008,6 +2024,8 @@ RUBRIQUE = 'SUSPENSION'
 RUBRIQUE1 = 'SUSPENSION'
 NIVEAU = 1
 COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = ' '
+AIDE1 = ' '
 
 NOM = 'DISPERSION TRANSVERSALE'
 NOM1 = 'DISPERSION ACROSS THE FLOW'
@@ -2020,6 +2038,8 @@ RUBRIQUE = 'SUSPENSION'
 RUBRIQUE1 = 'SUSPENSION'
 NIVEAU = 1
 COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = ' '
+AIDE1 = ' '
 
 NOM = 'PRECISION DU SOLVEUR POUR LA SUSPENSION'
 NOM1 = 'SOLVER ACCURACY FOR SUSPENSION'             
@@ -2032,6 +2052,8 @@ RUBRIQUE = 'SOLVEUR'
 RUBRIQUE1 = 'SOLVER'
 NIVEAU = 1
 COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = ' '
+AIDE1 = ' '
 
 
 NOM = 'VITESSES DE CHUTE'
@@ -2123,7 +2145,7 @@ To use with the option constant flow discharge'
 
 NOM = 'CRITERE POUR METTRE A JOUR L''HYDRODYNAMIQUE'
 NOM1 = 'CRITERION TO UPDATE THE FLOW'
-TYPE = REAL
+TYPE = REEL
 INDEX = 23
 MNEMO = 'CRIT_CFD'
 DEFAUT = 0.1
@@ -2197,7 +2219,7 @@ It is also possible to define new boundary conditions.'
 
 NOM = 'RATIO ENTRE LA RUGOSITE DE PEAU ET LE DIAMETRE MOYEN'
 NOM1 = 'RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER'
-TYPE = REAL
+TYPE = REEL
 INDEX = 24
 MNEMO = 'KSPRATIO'
 DEFAUT = 3.0
@@ -2299,7 +2321,7 @@ AIDE1 = '1 : formula of Koch et Flokstra, modification of bed load
  
 NOM = 'ANGLE DE FROTTEMENT DU SEDIMENT' 
 NOM1 = 'FRICTION ANGLE OF THE SEDIMENT' 
-TYPE = REAL 
+TYPE = REEL 
 INDEX = 25 
 MNEMO = 'PHISED' 
 DEFAUT = 40. 
@@ -2320,7 +2342,7 @@ NOM1 = 'FORMULA FOR DEVIATION'
 TYPE = ENTIER 
 INDEX = 40 
 MNEMO = 'DEVIA' 
-DEFAUT  = 1 
+DEFAUT = 1 
 DEFAUT1 = 1 
 RUBRIQUE = 'EFFET PENTE'
 RUBRIQUE1 = 'SLOPE EFFECT'
@@ -2335,7 +2357,7 @@ AIDE1 = '1: Koch and Flokstra
  
 NOM = 'PARAMETRE POUR LA DEVIATION' 
 NOM1 = 'PARAMETER FOR DEVIATION' 
-TYPE = REAL 
+TYPE = REEL 
 INDEX = 26 
 MNEMO = 'BETA2' 
 DEFAUT = 0.85
@@ -2354,7 +2376,7 @@ AIDE1 = 'Parameter pour la deviation pour la formule de Talmon et al.'
  
 NOM = 'COEFFICIENT B DE LA FORMULE DE BIJKER' 
 NOM1 = 'B VALUE FOR THE BIJKER FORMULA' 
-TYPE = REAL 
+TYPE = REEL 
 INDEX = 27
 MNEMO = 'BIJK' 
 DEFAUT = 2.D0
@@ -2412,7 +2434,7 @@ INDEX = 19
 MNEMO = 'SEDCO'
 TAILLE = 10 
 /     SYNTAXE ACCEPTEE PAR DAMOCLES POUR UN LOGIQUE
-DEFAUT  = 0;0;0;0;0;0;0;0;0;0
+DEFAUT = 0;0;0;0;0;0;0;0;0;0
 DEFAUT1 = 0;0;0;0;0;0;0;0;0;0
 RUBRIQUE = 'GRANULOMETRIE'
 RUBRIQUE1 = 'BED MATERIAL'
@@ -2440,7 +2462,7 @@ TYPE = ENTIER
 INDEX = 43
 MNEMO = 'I_ORIG,J_ORIG'
 TAILLE = 2
-DEFAUT  = 0;0
+DEFAUT = 0;0
 DEFAUT1 = 0;0
 RUBRIQUE = 'DIVERS'
 RUBRIQUE1 = 'MISCELLANEOUS'
@@ -2466,7 +2488,7 @@ added in Selafin format, but so far no other treatment'
 /'MUD CONCENTRATION PER LAYER'
 /
 
-NOM  = 'GLISSEMENT DU SEDIMENT'
+NOM = 'GLISSEMENT DU SEDIMENT'
 NOM1 = 'SEDIMENT SLIDE'
 TYPE = LOGIQUE
 INDEX = 20
@@ -2477,12 +2499,12 @@ DEFAUT1 = NO
 RUBRIQUE = 'EFFET PENTE'
 RUBRIQUE1 = 'SLOPE EFFECT'
 NIVEAU = 2
-AIDE= 'Prise en compte de la pente d''equilibre du sable donnee par le mot-cle
+AIDE = 'Prise en compte de la pente d''equilibre du sable donnee par le mot-cle
 ANGLE DE FROTTEMENT DU SEDIMENT'
 AIDE1 = 'If yes, the key-word FRICTION ANGLE OF THE SEDIMENT is taken into account
 for slope stability'
 /
-NOM  = 'DIFFUSION'
+NOM = 'DIFFUSION'
 NOM1 = 'DIFFUSION'
 TYPE = LOGIQUE
 INDEX = 21
@@ -2493,12 +2515,12 @@ DEFAUT1 = YES
 RUBRIQUE = 'SUSPENSION'
 RUBRIQUE1 = 'SUSPENSION'
 NIVEAU = 2
-AIDE= 'Prise en compte de la diffusion de la concentration de sediment
+AIDE = 'Prise en compte de la diffusion de la concentration de sediment
 en suspension'
 AIDE1 = 'If yes, diffusion of the concentration of suspended 
 sediment is done'
 /
-NOM  = 'EFFET DE PENTE'
+NOM = 'EFFET DE PENTE'
 NOM1 = 'SLOPE EFFECT'
 TYPE = LOGIQUE
 INDEX = 22
@@ -2509,7 +2531,7 @@ DEFAUT1 = YES
 RUBRIQUE = 'EFFET PENTE'
 RUBRIQUE1 = 'SLOPE EFFECT'
 NIVEAU = 2
-AIDE= 'Prise en compte de l''effet de pente : 
+AIDE = 'Prise en compte de l''effet de pente : 
 deviation et modification du seuil critique. 
 NON supprime les mots-cles
  POUR EFFET DE PENTE et  POUR LA DEVIATION'
@@ -2520,7 +2542,7 @@ FORMULA FOR SLOPE EFFECT and FORMULA FOR DEVIATION'
 /
 / VERSION 5.9 
 /
-NOM  = 'DEBUGGER'
+NOM = 'DEBUGGER'
 NOM1 = 'DEBUGGER'
 TYPE = INTEGER
 INDEX = 44
@@ -2540,7 +2562,7 @@ TYPE = REEL
 INDEX = 30
 TAILLE = 2
 MNEMO = 'CS0'
-DEFAUT  = 0.;0.;0.;0.;0.;0.;0.;0.;0.;0.
+DEFAUT = 0.;0.;0.;0.;0.;0.;0.;0.;0.;0.
 DEFAUT1 = 0.;0.;0.;0.;0.;0.;0.;0.;0.;0.
 RUBRIQUE = 'SUSPENSION'
 RUBRIQUE1 = 'SUSPENSION'
@@ -2626,8 +2648,8 @@ TYPE = REEL
 INDEX = 32
 TAILLE = 2
 MNEMO = 'CONC_VASE'
-DEFAUT  = 50. ;100.;150.;200.;250.;300.;350.;400.;450.;500.
-DEFAUT1  = 50. ;100.;150.;200.;250.;300.;350.;400.;450.;500.
+DEFAUT = 50. ;100.;150.;200.;250.;300.;350.;400.;450.;500.
+DEFAUT1 = 50. ;100.;150.;200.;250.;300.;350.;400.;450.;500.
 RUBRIQUE = 'COHESIVE SEDIMENT'
 RUBRIQUE1 = 'COHESIVE SEDIMENT'
 NIVEAU = 2
@@ -2641,7 +2663,7 @@ TYPE = REEL
 INDEX = 34
 TAILLE = 10
 MNEMO = 'TOCE_VASE'
-DEFAUT  = 0.01;0.02;0.03;0.04;0.05;0.06;0.07;0.08;0.09;1.
+DEFAUT = 0.01;0.02;0.03;0.04;0.05;0.06;0.07;0.08;0.09;1.
 DEFAUT1 = 0.01;0.02;0.03;0.04;0.05;0.06;0.07;0.08;0.09;1.
 RUBRIQUE = 'COHESIVE SEDIMENT'
 RUBRIQUE1 = 'COHESIVE SEDIMENT'
@@ -2659,9 +2681,9 @@ TYPE = REEL
 INDEX = 33
 TAILLE = 2
 MNEMO = 'TRANS_MASS'
-DEFAUT  = 5.D-05;4.5D-05;4.0D-05;3.5D-05;3.0D-05;
+DEFAUT = 5.D-05;4.5D-05;4.0D-05;3.5D-05;3.0D-05;
 2.5D-05;2.0D-05;1.5D-05;1.0D-05;0.D0
-DEFAUT1  = 5.D-05;4.5D-05;4.0D-05;3.5D-05;3.0D-05;
+DEFAUT1 = 5.D-05;4.5D-05;4.0D-05;3.5D-05;3.0D-05;
 2.5D-05;2.0D-05;1.5D-05;1.0D-05;0.D0
 RUBRIQUE = 'TASSEMENT'
 RUBRIQUE1 = 'CONSOLIDATION'
@@ -2865,7 +2887,7 @@ AIDE1= 'formula to predict the skin bed roughness (see also KSPRATIO)
 /INDEX = 35
 /TAILLE = 1
 /MNEMO = 'VITCE'
-/DEFAUT  = 0.01
+/DEFAUT = 0.01
 /DEFAUT1 = 0.01
 /RUBRIQUE = 'SUSPENSION'
 /RUBRIQUE1 = 'SUSPENSION'
@@ -2884,7 +2906,7 @@ NOM1 = 'CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION'
 TYPE = REEL
 INDEX = 36
 MNEMO = 'VITCD'
-DEFAUT  = 1000.
+DEFAUT = 1000.
 DEFAUT1 = 1000.
 RUBRIQUE = 'SUSPENSION'
 RUBRIQUE1 = 'SUSPENSION'
@@ -2898,7 +2920,7 @@ NOM1 = 'PARTHENIADES CONSTANT'
 TYPE = REEL
 INDEX = 37
 MNEMO = 'PARTHENIADES'
-DEFAUT  = 1.E-03
+DEFAUT = 1.E-03
 DEFAUT1 = 1.E-03
 RUBRIQUE = 'SUSPENSION'
 RUBRIQUE1 = 'SUSPENSION'
@@ -3038,7 +3060,7 @@ NOM1 = 'GEL CONCENTRATION'
 TYPE = REEL
 INDEX = 38
 MNEMO = 'CONC_GEL'
-DEFAUT  = 310.D0
+DEFAUT = 310.D0
 DEFAUT1 = 310.D0
 RUBRIQUE = 'TASSEMENT'
 RUBRIQUE1 = 'CONSOLIDATION'
@@ -3054,7 +3076,7 @@ NOM1 = 'MAXIMUM CONCENTRATION'
 TYPE = REEL
 INDEX = 50
 MNEMO = 'CONC_MAX'
-DEFAUT  = 364.D0
+DEFAUT = 364.D0
 DEFAUT1 = 364.D0
 RUBRIQUE = 'TASSEMENT'
 RUBRIQUE1 = 'CONSOLIDATION'
@@ -3069,7 +3091,7 @@ NOM1 = 'PERMEABILITY COEFFICIENT'
 TYPE = REEL
 INDEX = 39
 MNEMO = 'COEF_N'
-DEFAUT  = 8.D0
+DEFAUT = 8.D0
 DEFAUT1 = 8.D0
 RUBRIQUE = 'TASSEMENT'
 RUBRIQUE1 = 'CONSOLIDATION'
@@ -3085,7 +3107,7 @@ NOM1 = 'MPM COEFFICIENT'
 TYPE = REEL
 INDEX = 260
 MNEMO = 'MPM'
-DEFAUT  = 8.0E-00
+DEFAUT = 8.0E-00
 DEFAUT1 = 8.0E-00
 RUBRIQUE = ''
 RUBRIQUE1 = ''
@@ -3100,7 +3122,7 @@ NOM1 = 'SECONDARY CURRENTS ALPHA COEFFICIENT'
 TYPE = REEL
 INDEX = 261
 MNEMO = 'ALPHA'
-DEFAUT  = 1.0E-00
+DEFAUT = 1.0E-00
 DEFAUT1 = 1.0E-00
 RUBRIQUE = 'SEDIMENTOLOGIE';'GENERAL'
 RUBRIQUE1 = 'SEDIMENTOLOGY';'GENERAL'
@@ -3115,7 +3137,7 @@ NOM1 = 'MORPHOLOGICAL FACTOR'
 TYPE = REEL
 INDEX = 262
 MNEMO = 'MOFAC'
-DEFAUT  = 1.0E-00
+DEFAUT = 1.0E-00
 DEFAUT1 = 1.0E-00
 RUBRIQUE = 'OPTIONS DE CALCUL';'GENERAL'
 RUBRIQUE1 = 'COMPUTATIONAL INFORMATION';'GENERAL'
@@ -3166,10 +3188,10 @@ TYPE = ENTIER
 INDEX = 53
 MNEMO = 'VSMTYPE'
 TAILLE = 0
-DEFAUT  = 0
+DEFAUT = 0
 DEFAUT1 = 0
-RUBRIQUE = 'GRANULOMETRIE;C-VSM'
-RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+RUBRIQUE = 'GRANULOMETRIE';'C-VSM'
+RUBRIQUE1 = 'BED MATERIAL';'C-VSM'
 NIVEAU = 2
 AIDE = '(-)'
 AIDE1 = 'Defines the model of the vertical grain sorting:
@@ -3184,10 +3206,10 @@ TYPE = ENTIER
 INDEX = 49
 MNEMO = 'PRO_MAX_MAX'
 TAILLE = 0
-DEFAUT  = 200
+DEFAUT = 200
 DEFAUT1 = 200
-RUBRIQUE = 'GRANULOMETRIE;C-VSM'
-RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+RUBRIQUE = 'GRANULOMETRIE';'C-VSM'
+RUBRIQUE1 = 'BED MATERIAL';'C-VSM'
 NIVEAU = 2
 AIDE = '(-)'
 AIDE1 = 'Defines the maximum discretisation of the
@@ -3206,10 +3228,10 @@ TYPE = ENTIER
 INDEX = 50
 MNEMO = 'CVSMPPERIOD'
 TAILLE = 0
-DEFAUT  = 0
+DEFAUT = 0
 DEFAUT1 = 0
-RUBRIQUE = 'GRANULOMETRIE;C-VSM'
-RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+RUBRIQUE = 'GRANULOMETRIE';'C-VSM'
+RUBRIQUE1 = 'BED MATERIAL';'C-VSM'
 NIVEAU = 2
 AIDE = '(-)'
 AIDE1 = 'Number of Timesteps to next printout
@@ -3227,10 +3249,10 @@ TYPE = CARACTERE
 INDEX = 51
 MNEMO = 'CVSMOUTPUT'
 TAILLE = 0
-DEFAUT  = 0;0;0;0;0;0;0;0;0;0;0;0;0
+DEFAUT = 0;0;0;0;0;0;0;0;0;0;0;0;0
 DEFAUT1 = 0;0;0;0;0;0;0;0;0;0;0;0;0
-RUBRIQUE = 'GRANULOMETRIE;C-VSM'
-RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+RUBRIQUE = 'GRANULOMETRIE';'C-VSM'
+RUBRIQUE1 = 'BED MATERIAL';'C-VSM'
 NIVEAU = 2
 AIDE = '(-)'
 AIDE1 = 'Printout the C-VSM for the whole model as SELAFIN
@@ -3247,10 +3269,10 @@ TYPE = ENTIER
 INDEX = 52
 MNEMO = 'ALT_MODEL'
 TAILLE = 0
-DEFAUT  = 5
+DEFAUT = 5
 DEFAUT1 = 5
-RUBRIQUE = 'GRANULOMETRIE;C-VSM'
-RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+RUBRIQUE = 'GRANULOMETRIE';'C-VSM'
+RUBRIQUE1 = 'BED MATERIAL';'C-VSM'
 NIVEAU = 2
 AIDE = '(-)'
 AIDE1 = 'MODEL FOR ACTIVE LAYER THICKNESS
@@ -3623,6 +3645,11 @@ DEFAUT1 ='GEOMETRY FILE';
          'SECTIONS INPUT FILE';
          'SECTIONS OUTPUT FILE';
          'LIQUID BOUNDARIES FILE'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = ' '
+AIDE1 = ' '
          
 NOM = 'DESCRIPTION DES LIBRAIRIES'
 NOM1 = 'DESCRIPTION OF LIBRARIES'
@@ -3647,7 +3674,7 @@ DEFAUT1 = 'builds|PPP|lib|sisypheMMMVVV.LLL';
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
-AIDE  = 'Description des librairies de SISYPHE'
+AIDE = 'Description des librairies de SISYPHE'
 AIDE1 = 'SISYPHE LIBRARIES description'
 
 NOM = 'EXECUTABLE PAR DEFAUT'
@@ -3656,12 +3683,12 @@ TYPE = CARACTERE
 INDEX = 57
 MNEMO = 'EXEDEF'
 TAILLE = 1
-DEFAUT  = 'builds|PPP|bin|sisypheMMMVVV.exe'
+DEFAUT = 'builds|PPP|bin|sisypheMMMVVV.exe'
 DEFAUT1 = 'builds|PPP|bin|sisypheMMMVVV.exe'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
-AIDE  = 'Executable par defaut de SISYPHE'
+AIDE = 'Executable par defaut de SISYPHE'
 AIDE1 = 'Default executable for SISYPHE'
 
 NOM = 'EXECUTABLE PARALLELE PAR DEFAUT'
@@ -3670,11 +3697,11 @@ TYPE = CARACTERE
 INDEX = 58
 MNEMO = 'EXEDEFPARA'
 TAILLE = 1
-DEFAUT  = 'builds|PPP|bin|sisypheMMMVVV.exe'
+DEFAUT = 'builds|PPP|bin|sisypheMMMVVV.exe'
 DEFAUT1 = 'builds|PPP|bin|sisypheMMMVVV.exe'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
-AIDE  = 'Executable par defaut de SISYPHE'
+AIDE = 'Executable par defaut de SISYPHE'
 AIDE1 = 'Default executable for SISYPHE'
 /

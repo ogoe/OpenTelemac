@@ -210,7 +210,7 @@ NIVEAU = 1
 AIDE = 'Determine le numero de pas de temps a partir duquel debute
 l''ecriture des resultats dans le ''FICHIER DES RESULTATS 2D ou 3D''.'
 AIDE1 = 'Determines the number of time steps after which the results
-are first written into the 2D or 3D RESULT FILE.'
+are first written into the 2D or 3D RESULTS FILE.'
 
 NOM = 'NUMERO DU PREMIER PAS DE TEMPS POUR LES SORTIES LISTING'
 NOM1 = 'NUMBER OF FIRST TIME STEP FOR LISTING PRINTOUTS'
@@ -726,7 +726,7 @@ NOM1 = 'PRECONDITIONING FOR DIFFUSION OF TRACERS'
 TYPE = ENTIER
 INDEX = 28
 MNEMO = 'SLVDTA(ITRAC)%PRECON'
-TAILLE = 1
+TAILLE = 2
 DEFAUT = 2
 DEFAUT1 = 2
 CHOIX = '0="AUCUN"';
@@ -954,7 +954,7 @@ NOM1 = 'SOLVER FOR DIFFUSION OF TRACERS'
 TYPE = ENTIER
 INDEX = 34
 MNEMO = 'SLVDTA(ITRAC)%SLV'
-TAILLE = 1
+TAILLE = 2
 DEFAUT = 1
 DEFAUT1 = 1
 CHOIX = '1="GRADIENT CONJUGUE"';
@@ -1118,7 +1118,7 @@ NOM1 = 'MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF TRACERS'
 TYPE = ENTIER
 INDEX = 40
 MNEMO = 'SLVDTA(ITRAC)%NITMAX'
-TAILLE = 0
+TAILLE = 2
 DEFAUT = 60
 DEFAUT1 = 60
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'TRACEUR'
@@ -1696,7 +1696,7 @@ NOM1 = 'ACCURACY FOR DIFFUSION OF TRACERS'
 TYPE = REEL
 INDEX = 23
 MNEMO = 'SLVDTA(ITRAC)%EPS'
-TAILLE = 0
+TAILLE = 2
 DEFAUT = 1.E-6
 DEFAUT1 = 1.E-6
 RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE';'VISCOSITE CONSTANTE'
@@ -3524,7 +3524,7 @@ NOM1 = 'OPTION OF SOLVER FOR DIFFUSION OF TRACERS'
 TYPE = ENTIER
 INDEX = 75
 MNEMO = 'SLVDTA(ITRAC)%KRYLOV'
-TAILLE = 0
+TAILLE = 2
 DEFAUT = 3
 DEFAUT1 = 3
 RUBRIQUE = ' '
@@ -5279,7 +5279,7 @@ Les valeurs possibles sont :
 - SERAFIN : format standard simple precision pour Telemac; 
 - SERAFIND: format standard double precision pour Telemac;
 - MED     : format MED base sur HDF5'
-AIDE1 = '3D result file format. Possible values are:
+AIDE1 = '3D results file format. Possible values are:
 - SERAFIN : classical single precision format in Telemac; 
 - SERAFIND: classical double precision format in Telemac;
 - MED     : MED format based on HDF5'
@@ -5974,8 +5974,8 @@ DEFAUT = 1
 DEFAUT1 = 1
 CHOIX='1="fortes"';'2="faibles"'
 CHOIX1='1="strong"';'2="weak"'
-RUBRIQUE = 'PARAMETRES NUMERIQUES'
-RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS' 
 NIVEAU = 2
 AIDE = '1: forme forte 2: forme faible'
 AIDE1 = '1: strong form 2: weak form'
@@ -5998,14 +5998,14 @@ AIDE1 = 'See release notes 6.3'
 
 NOM = 'MASS-LUMPING POUR LES CARACTERISTIQUES FAIBLES'
 NOM1 = 'MASS-LUMPING FOR WEAK CHARACTERISTICS'
-TYPE = REAL
+TYPE = REEL
 INDEX = 102
 MNEMO = 'AGGLOW'
 TAILLE = 0
 DEFAUT = 0.
 DEFAUT1 = 0.
-RUBRIQUE = 'PARAMETRES NUMERIQUES'
-RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
 NIVEAU = 2
 AIDE = 'Applique a la matrice de masse'
 AIDE1 = 'To be applied to the mass matrix'
@@ -6719,7 +6719,6 @@ AIDE = 'nombre maximal de frontieres liquides sur le fond.
 Sert au dimensionnement de la memoire, a augmenter si necessaire' 
 AIDE1 = 'maximal number of liquid boundaries on the bed.
 Used for dimensioning arrays. Can be increased if needed' 
-
 
 /
 / FOR SCRIPTS
