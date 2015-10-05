@@ -94,7 +94,7 @@
 import sys
 import re
 import time
-from os import path,walk,environ
+from os import path,walk,environ,remove
 from copy import deepcopy
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
@@ -180,9 +180,13 @@ class REPORT:
          if n[0] == version and repname in n[1]:
             if path.join(dirpath,file) != fileName:
                print '      +> Moving existing: ' + n[2] + ' to ' + path.basename(fileName)
-               moveFile2File(path.join(dirpath,file),fileName)
-               self.reports[repname].update({ 'head':self.loadHead(fileName) })
-               self.reports[repname].update({ 'core':self.loadCore(fileName) })
+               try:
+                  self.reports[repname].update({ 'head':self.loadHead(path.join(dirpath,file)) })
+                  self.reports[repname].update({ 'core':self.loadCore(path.join(dirpath,file)) })
+                  moveFile2File(path.join(dirpath,file),fileName)
+               except:
+                  print '      ... I could not make sense of your previous report: ' + file + ' so I deleted it '
+                  remove(path.join(dirpath,file))
 
       return self.reports[repname]['core']
 
