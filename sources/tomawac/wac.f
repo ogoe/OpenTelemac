@@ -587,7 +587,7 @@
      & GAMMAL  , FPICL   , HM0L     , APHILL , TETA1L, SPRE1L,
      & TETA2L  , SPRE2L  , XLAMDL   , MESH%X%R   ,
      & MESH%Y%R, KENT    , KSORT    , WAC_FILES(WACFO1)%LU  ,
-     & WAC_FILES(WACBI1)%LU         , BINBI1 ,
+     & WAC_FILES(WACBI1)%LU         , WAC_FILES(WACBI1)%FMT ,
      & SUV%R   , SVV%R   , SPEULI   , VENT  , VENSTA, GRAVIT ,
      & DEUPI   , SPRIVE%R, NPRIV    , STRA31%R , STRA32%R,
      & DEPTH   , FRABL   , BOUNDARY_COLOUR%I)
@@ -811,7 +811,7 @@
      & GAMMAL     , FPICL      , HM0L  , APHILL , TETA1L, SPRE1L,
      & TETA2L     , SPRE2L     , XLAMDL, MESH%X%R   ,
      & MESH%Y%R   , KENT       , KSORT , WAC_FILES(WACFO1)%LU ,
-     & WAC_FILES(WACBI1)%LU    , BINBI1,
+     & WAC_FILES(WACBI1)%LU    , WAC_FILES(WACBI1)%FMT,
      & SUV%R   , SVV%R   , SPEULI      , VENT  , VENSTA, GRAVIT ,
      & DEUPI      , SPRIVE%R, NPRIV      , STRA31%R , STRA32%R,
      & DEPTH      , FRABL   ,BOUNDARY_COLOUR%I)
