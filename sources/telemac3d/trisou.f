@@ -242,7 +242,7 @@
       SCV2%TYPR='0'
 !
 !-----------------------------------------------------------------------
-!  BUOYANCY SOURCE TERMS
+!  BUOYANCY SOURCE TERMS (ONLY WITH DENLAW NOT 0, EVEN FOR SEDIMENT !!)
 !-----------------------------------------------------------------------
 !
       YASEM3D=.FALSE.
