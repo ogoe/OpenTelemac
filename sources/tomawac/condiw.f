@@ -6,7 +6,7 @@
      &  NVHMA,NVCOU,NVWIN, PART , U_TEL, V_TEL , H_TEL )
 !
 !***********************************************************************
-! TOMAWAC   V6P3                                   10/06/2011
+! TOMAWAC   V7P1
 !***********************************************************************
 !
 !brief    INITIALISES THE ARRAYS WITH PHYSICAL PARAMETERS.
@@ -47,6 +47,12 @@
 !+       25/05/2015
 !+       V7P0
 !+       Modification to comply with the hermes module
+!
+!history T FOUQUET (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to initialise spectrum when no wind 
+!+       and speini =1,3,5
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |<--| COMPUTATION TIME
@@ -202,30 +208,20 @@
       IF(COUSTA) THEN
         IF(WAC_FILES(WACCOF)%NAME(1:1).EQ.' '.AND.
      &     WAC_FILES(WACCOB)%NAME(1:1).EQ.' ') THEN
-          IF(COUSTA) THEN
-            CALL ANACOS(SUC%R,SVC%R,MESH%X%R,MESH%Y%R,NPOIN2)
-            WRITE(LU,*)' '
-            IF(LNG.EQ.1) THEN
+           CALL ANACOS(SUC%R,SVC%R,MESH%X%R,MESH%Y%R,NPOIN2)
+           WRITE(LU,*)' '
+           IF(LNG.EQ.1) THEN
               WRITE(LU,*)'PRISE EN COMPTE D''UN COURANT'
               WRITE(LU,*)
      &        'MAIS PAS DE FICHIER DES COURANTS (OU DONNEES TELEMAC)'
               WRITE(LU,*)'==> LE COURANT EST INITIALISE DANS ANACOS'
-            ELSEIF(LNG.EQ.2) THEN
+           ELSEIF(LNG.EQ.2) THEN
               WRITE(LU,*)'USE OF CURRENT VELOCITIES'
               WRITE(LU,*)
      &        'BUT NO CURRENT FILE (NEITHER TELEMAC DATA FILE)'
               WRITE(LU,*)
      &        '==> INITIALISATION OF CURRENT VELOCITIES IN ANACOS'
-            ENDIF
-          ELSE
-            IF(LNG.EQ.1) THEN
-              WRITE(LU,*)'RELECTURE D''UNE VARIABLE TELEMAC IMPOSSIBLE'
-            ELSE
-              WRITE(LU,*)' READING OF A TELEMAC DATA IMPOSSIBLE '
-            ENDIF
-            CALL PLANTE(1)
-            STOP
-          ENDIF
+           ENDIF
         ELSE
           IF(WAC_FILES(WACCOF)%NAME(1:1).NE.' ') THEN
             UL=WAC_FILES(WACCOF)%LU
@@ -311,11 +307,20 @@
 !
 !     INITIALISES F
 !
-      CALL SPEINI(SF%R,TRA01(1:NF),TRA01(NF+1:NF+NPLAN),
-     &            SUV%R,SVV%R,SFR%R,STETA%R,GRAVIT,
-     &            FREMAX,FETCH,SIGMAA,SIGMAB,GAMMA,FPIC,HM0,
-     &            ALPHIL,TETA1,SPRED1,TETA2,SPRED2,XLAMDA,NPOIN2,
-     &            NPLAN,NF,INISPE,E2FMIN,DEPTH,FRABI)
+      IF((INISPE.EQ.1.OR.INISPE.EQ.3.OR.INISPE.EQ.5).AND..NOT.VENT) THEN
+!       SPECTRUM is NULL
+        CALL SPEINI(SF%R,TRA01(1:NF),TRA01(NF+1:NF+NPLAN),
+     &              SUV%R,SVV%R,SFR%R,STETA%R,GRAVIT,
+     &              FREMAX,FETCH,SIGMAA,SIGMAB,GAMMA,FPIC,HM0,
+     &              ALPHIL,TETA1,SPRED1,TETA2,SPRED2,XLAMDA,NPOIN2,
+     &              NPLAN,NF,0,E2FMIN,DEPTH,FRABI)
+      ELSE
+        CALL SPEINI(SF%R,TRA01(1:NF),TRA01(NF+1:NF+NPLAN),
+     &              SUV%R,SVV%R,SFR%R,STETA%R,GRAVIT,
+     &              FREMAX,FETCH,SIGMAA,SIGMAB,GAMMA,FPIC,HM0,
+     &              ALPHIL,TETA1,SPRED1,TETA2,SPRED2,XLAMDA,NPOIN2,
+     &              NPLAN,NF,INISPE,E2FMIN,DEPTH,FRABI)
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
