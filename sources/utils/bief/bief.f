@@ -556,6 +556,13 @@
       TYPE(SLVCFG)    , INTENT(INOUT)        :: SLV
         END SUBROUTINE
 !
+        SUBROUTINE CHECKMESH(MESH,NPOIN)
+          USE BIEF_DEF
+          IMPLICIT NONE
+          INTEGER          , INTENT(IN)    :: NPOIN
+          TYPE(BIEF_MESH)  , INTENT(INOUT) :: MESH
+        END SUBROUTINE
+!
         SUBROUTINE CHGDIS(X,OLDELT,NEWELT,MESH)
           USE BIEF_DEF
           IMPLICIT NONE
