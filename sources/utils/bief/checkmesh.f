@@ -90,7 +90,7 @@
       ENDIF
       IF(DIST2MIN.LT.1.D-8) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'VALEUR TROP PETITE'
-        IF(LNG.EQ.1) WRITE(LU,*) 'VALUE TOO SMALL'
+        IF(LNG.EQ.2) WRITE(LU,*) 'VALUE TOO SMALL'
         CALL PLANTE(1)
         STOP
       ENDIF
