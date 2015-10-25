@@ -510,6 +510,7 @@ files: declarations_parallel.F
   p_ireadi.F
   p_iwriti.F
   p_exit.F
+  p_isum.F
 
 [special]
 path: <root>|sources|utils|special
