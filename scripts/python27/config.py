@@ -453,6 +453,9 @@ def parseConfig_DoxygenTELEMAC(cfg):
    # Get destination doxydocs: ...
    get = getConfigKey(cfg,'doxydocs',True,True).lower()
    cfgTELEMAC.update({'doxydocs':get})
+   # Get doxygen command: ...
+   get = getConfigKey(cfg,'cmd_doxygen',True,True).lower()
+   cfgTELEMAC.update({'cmd_doxygen':get})
    # Get options for printing purposes
    get = getConfigKey(cfg,'options',False,False).lower()
    cfgTELEMAC.update({'options':get})

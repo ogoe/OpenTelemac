@@ -1355,6 +1355,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
             # ~~> Cast all variables
             for var,cfgs in zip(task["vars"],cfglist.split(';')):
                for cfg in cfgs.split(':'):
+                  if var['fileName'] != {}: cfg = var['fileName'].keys()[0] # you just need one for a cast
                   space[var['xref']] = Values() # more practical than a dict { 'support':None, 'values':None }
                   if var['fileName'] != {} and var['fileName'][cfg][0] != []:
                      fileName = var['fileName'][cfg]

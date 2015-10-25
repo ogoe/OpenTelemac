@@ -9,12 +9,28 @@
       <look format="png" colourbar="jet.xml" />
       <data title="pildepon" author="telemac2d" contact="www.opentelemac.org" />
    </deco>
-   <deco xref="vect">
-      <look colour="jet.xml" />
-   </deco>
    <deco xref="line">
       <look colour="k" />
    </deco>
+
+<!-- Python sub-scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <cast xref="fcts" >
+      <python>
+def mapdiff(a1,a2):
+   return a1.support,a2.values-a1.values
+def maxdiff(d0):
+   a0 = max(np.ravel(d0.values))
+   if a0 > 0.0:
+      a1 = np.argwhere(d0.values == a0)[-1]
+      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
+   a0 = min(np.ravel(d0.values))
+   if 0.0 > a0:
+      a1 = np.argwhere(d0.values == a0)[-1]
+      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
+   return "My work has been validated"
+      </python>
+   </cast>
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
@@ -44,12 +60,57 @@
        code="telemac2d" target="t2d_pildepon_qua.cas"
        title="pildepon parallel mode"
    />
-<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /!\ This section is being ignored at the moment -->
 
-<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   -->
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <cast xref="1-f2d-r2d" config="oneofall" time="[-1]" type="2d:">
+      <v11 vars=":map" target="1:T2DRES" />
+      <v12 vars=":map" target="1:T2DREF" />
+      <v13 vars="mapdiff(v11,v12)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="max(v13.values.ravel()) > 1.e-6"
+         warn="max(v13.values.ravel()) > 1.e-12"
+         value="maxdiff(v13)" />
+   </cast>
+   <cast xref="2-f2d-r2d" config="oneofall" time="[-1]" type="2d:">
+      <v21 vars="SURF:map" target="2:T2DRES" />
+      <v22 vars="SURF:map" target="2:T2DREF" />
+      <v23 vars="mapdiff(v21,v22)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="max(v23.values.ravel()) > 1.e-6"
+         warn="max(v23.values.ravel()) > 1.e-12"
+         value="maxdiff(v23)" />
+   </cast>
+   <cast xref="3-f2d-r2d" config="oneofall" time="[-1]" type="2d:">
+      <v31 vars=":map" target="3:T2DRES" />
+      <v32 vars=":map" target="3:T2DREF" />
+      <v33 vars="mapdiff(v31,v32)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="max(v33.values.ravel()) > 1.e-6"
+         warn="max(v33.values.ravel()) > 1.e-12"
+         value="maxdiff(v33)" />
+   </cast>
 
+<!-- Check on Parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <cast xref="4-t2d-t2d" config="oneofall" time="[-1]" type="2d:">
+      <v41 vars=":map" target="1:T2DRES" />
+      <v42 vars=":map" target="4:T2DRES" />
+      <v44 vars="mapdiff(v41,v42)" />
+      <return title="Comparison with the last time frame of the parallel file."
+         fail="max(v44.values.ravel()) > 1.e-6"
+         warn="max(v44.values.ravel()) > 1.e-12"
+         value="maxdiff(v44)" />
+   </cast>
+   <cast xref="5-t2d-t2d" config="oneofall" time="[-1]" type="2d:">
+      <v51 vars=":map" target="3:T2DRES" />
+      <v52 vars=":map" target="5:T2DRES" />
+      <v54 vars="mapdiff(v51,v52)" />
+      <return title="Comparison with the last time frame of the parallel file."
+         fail="max(v54.values.ravel()) > 1.e-6"
+         warn="max(v54.values.ravel()) > 1.e-12"
+         value="maxdiff(v54)" />
+   </cast>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
@@ -59,7 +120,7 @@
    <plot2d xref="Bathy" size="(10;8)" >
       <layer vars="fond:map" target="1:T2DRES" config="oneofall" />
    </plot2d>
-   <plot2d xref="Velocity_t1" size="(10;80" >
+   <plot2d xref="Velocity_t1" size="(10;8)" >
       <layer vars="vitesse:map" target="1:T2DRES" config="oneofall" time="[-2]" />
    </plot2d>
    <plot2d xref="Velocity_tf" size="(10;8)" >
@@ -68,7 +129,5 @@
    <plot2d xref="Velocity arrows" size="(10;8)" >
       <layer vars="vitesse:angle" target="1:T2DRES" config="oneofall" time="[-1]" extract="[20;20]" />
    </plot2d>
-
-
 
 </validation>

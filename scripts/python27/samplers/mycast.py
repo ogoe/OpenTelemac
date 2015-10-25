@@ -353,6 +353,10 @@ class Caster:
          self.object.update({ what['file']:Sortie(what['file']) })
       elif 'csv' in typl.lower():
          self.object.update({ what['file']:CSV(what['file']) })
+      elif 'tif' in typl.lower() or 'jpg' in typl.lower()  \
+        or 'gif' in typl.lower() or 'png' in typl.lower()   \
+        or 'bmp' in typl.lower():
+         self.object.update({ what['file']:'image' })
       # ~~> SELAFIN file
       elif 'SELAFIN' in typl.upper() or 'slf' in typl.lower():
          slf = castSELAFIN(what['file'])

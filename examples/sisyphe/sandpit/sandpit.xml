@@ -25,7 +25,7 @@
 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-   <cast xref="Data" type="1d:v-section" config="one" >
+   <cast xref="Data" type="1d:v-section" config="oneofall" >
       <python>
 def scalxy(d0):
    return 10*d0.support-50,10*d0.values

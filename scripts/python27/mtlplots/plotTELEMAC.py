@@ -146,7 +146,8 @@ def getColourMap(fileName):
       blue.append((float(entry.attrib["x"]),float(entry.attrib["b"]),float(entry.attrib["b"])))
       green.append((float(entry.attrib["x"]),float(entry.attrib["g"]),float(entry.attrib["g"])))
 
-   return { 'blue': tuple(reversed(blue)), 'red': tuple(reversed(red)), 'green': tuple(reversed(green)) }
+   return { 'blue': blue, 'red': red, 'green': green }
+#   return { 'blue': tuple(reversed(blue)), 'red': tuple(reversed(red)), 'green': tuple(reversed(green)) }
    
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/

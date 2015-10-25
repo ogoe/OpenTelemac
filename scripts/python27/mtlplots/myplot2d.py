@@ -44,6 +44,7 @@ from parsers.parserStrings import parseArrayFrame, parseArrayPaires
 
 decoDefault = {
    "size":'(10;10)', "aspect":'1', "dpi":'', "ratio2d": '', "title": '', "roi": '', "type":'',
+   "background":'(1.0,0.90196,0.6)',
    ### LINES
    # See http://matplotlib.org/api/artist_api.html#module-matplotlib.lines for more
    # information on line properties.
@@ -203,6 +204,39 @@ def mapDecoDefault(decoUser,default):
 # ____/ Primary Method:Draw /______________________________________/
 #
 
+def drawGeo(myplt,decoUser,fname):
+
+   import gdal
+   import Image
+   image1 = Image.open(fname)
+   dataset = gdal.Open(fname)
+   cols = dataset.RasterXSize
+   rows = dataset.RasterYSize
+   geotransform = dataset.GetGeoTransform()
+   x1 = geotransform[0]
+   y2 = geotransform[3]
+   dx = geotransform[1]
+   dy = geotransform[5]
+   x2 = x1 + dx*cols
+   y1 = y2 + dy*rows
+   myplt.imshow(image1.transpose(1),extent=[x1,x2,y1,y2])
+
+   return
+
+def drawImage(myplt,decoUser,fname):
+
+   import Image
+   image1 = Image.open(fname)
+
+   if decoUser.has_key('extent'):
+     extent = eval(decoUser['extent'])
+     myplt.imshow(image1.transpose(1),extent=extent)
+   else:
+     print 'Specify extent in deco'
+     myplt.imshow(image1.transpose(1))
+
+   return
+
 def drawMesh2DElements(myplt,decoUser,elements):
 
    #  *2DElements: draw individual elements polygons  (triangle or quads)
@@ -240,7 +274,10 @@ def drawColouredTriMaps(myplt,decoUser,(x,y,ikle,z)):
 
    # ~~> Colour maps
    cmap = cm.jet       #/!\ do find and set a default
-   if decoUser.has_key('cmap'): cmap = mpl.colors.LinearSegmentedColormap('user',getColourMap(decoUser['cmap']))
+
+   if decoUser.has_key('cmap'): 
+     cmap = mpl.colors.LinearSegmentedColormap('user',getColourMap(decoUser['cmap']))
+     decoUser['cmap'] = cmap
 
    # ~~> Colour maps
 #   myplt.tricontourf(x,y,ikle, z, cmap=cmap)
@@ -575,7 +612,14 @@ class Figure2D(Caster):
       # ~~~ create figure ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       fig = plt.figure(figsize=self.mpar['figure.figsize']) # TODO: do this when you draw
       # ~~> add_subplot, or ax definition
-      fig.add_subplot(111)
+
+      background = self.upar['background']
+      try:
+        background = eval(background)
+      except:
+        pass
+
+      fig.add_subplot(111,axisbg=background)
       ax1, = fig.get_axes()
       # fig.add_subplot(111) returns an Axes instance, where we can plot and this is
       #   also the reason why we call the variable referring to that instance ax.
@@ -608,7 +652,17 @@ class Figure2D(Caster):
          print '... do not know support multiple variables anymore: ' + what['vars']
          sys.exit(1)
 
-      if what['type'].split(':')[1] == 'v-section':
+      if 'tif' in typl.lower():
+         vtype = what['vars'].split(':')[1]
+         if "geo" in vtype: drawGeo(self.plt,what['deco'],what['file'])
+         if "image" in vtype: drawImage(self.plt,what['deco'],what['file'])
+
+      elif 'jpg' in typl.lower() or 'gif' in typl.lower()  \
+        or 'png' in typl.lower() or 'bmp' in typl.lower():
+         vtype = what['vars'].split(':')[1]
+         if "image" in vtype: drawImage(self.plt,what['deco'],what['file'])
+
+      elif what['type'].split(':')[1] == 'v-section':
 
          cast = self.get(typl,what)
          elements = cast.support

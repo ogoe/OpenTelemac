@@ -282,48 +282,48 @@ def replaceDOXYGEN(doxydocs):
    oTextList = [ r"""<!DOCTYPE install PUBLIC "-//Joomla! 2.5//DTD template 1.0//EN" "http://www.joomla.org/xml/dtd/1.6/template-install.dtd">
    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
    <head>
-      <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
-      <meta name="keywords" content="open, telemac, mascaret, hydraulique, surface libre, houle, vague, hydraulic, free surface, wave, sediment" /> 
-      <meta name="robots" content="index, follow" /> 
-      <meta name="date" content="2013-07-24T16:49:04+0100"/> 
-      <meta name="description" content="The open TELEMAC-MASCARET system is a set of software for free surface numerical modelling of:\n* 2D, 3D Hydrodynamics,\n* Sediment (sand and muds),\n* Waves." /> 
-      <TITLE>The open TELEMAC-MASCARET system: 2D, 3D hydrodynamics sediment waves simulation system</TITLE> 
-      <link rel="shortcut icon" href="./images/favicon.ico" type="image/vnd.microsoft.icon" /> 
+      <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+      <meta name="keywords" content="open, telemac, mascaret, hydraulique, surface libre, houle, vague, hydraulic, free surface, wave, sediment" />
+      <meta name="robots" content="index, follow" />
+      <meta name="date" content="2013-07-24T16:49:04+0100"/>
+      <meta name="description" content="The open TELEMAC-MASCARET system is a set of software for free surface numerical modelling of:\n* 2D, 3D Hydrodynamics,\n* Sediment (sand and muds),\n* Waves." />
+      <TITLE>The open TELEMAC-MASCARET system: 2D, 3D hydrodynamics sediment waves simulation system</TITLE>
+      <link rel="shortcut icon" href="./images/favicon.ico" type="image/vnd.microsoft.icon" />
       <script src="./images/jquery-1.4.2.min.js" type="text/javascript"></script>
       <link rel="stylesheet" href="./images/system.css" type="text/css" />
       <link rel="stylesheet" href="./images/position.css" type="text/css" media="screen,projection" />
       <link rel="stylesheet" href="./images/layout.css" type="text/css" media="screen,projection" />
       <link rel="stylesheet" href="./images/general.css" type="text/css" />
       <link rel="stylesheet" href="./images/principal.css" type="text/css" />
-      <style type="text/css"> 
-      #ahgalleryOTconsortium { margin-left: auto; margin-right: auto; margin-top: 0px !important; margin-bottom: 0px !important; width: 1000px; } 
-      #ahgalleryOTconsortium ul.hover_block0, #ahgalleryOTconsortium ul.hover_block1, #ahgalleryOTconsortium ul.hover_block2 { display: block; overflow: hidden; padding-top: 20px; padding-left: 2px; background: transparent; margin-left: 2px; margin-top: 0 !important; margin-bottom: 0 !important; } 
-      #ahgalleryOTconsortium ul.bottom_block { padding-bottom: 20px ; } 
-      #ahgalleryOTconsortium ul.hover_block0 li.item, #ahgalleryOTconsortium ul.hover_block1 li.item, #ahgalleryOTconsortium ul.hover_block2 li.item { margin-left: 0; padding-left: 0; list-style:none; list-style-position: inside; float:left; background: transparent; width: 150px; position: relative; } 
-      #ahgalleryOTconsortium ul.hover_block0 li a.teaser, #ahgalleryOTconsortium ul.hover_block1 li a.teaser , #ahgalleryOTconsortium ul.hover_block2 li a.teaser{ display: block; position: relative; overflow: hidden; height: 60px; width: 130px; padding: 1px; } 
-      #ahgalleryOTconsortium ul.hover_block0 li div.teaser, #ahgalleryOTconsortium ul.hover_block1 li div.teaser , #ahgalleryOTconsortium ul.hover_block2 li div.teaser { display: block; position: relative; overflow: hidden; height: 60px; width: 140px; padding: 1px; } 
-      #ahgalleryOTconsortium ul.hover_block0 li img.overlay, #ahgalleryOTconsortium ul.hover_block1 li img.overlay, #ahgalleryOTconsortium ul.hover_block2 li img.overlay { margin: 0; position: absolute; top: 5px; left: 0; border: 0; } 
-      </style> 
+      <style type="text/css">
+      #ahgalleryOTconsortium { margin-left: auto; margin-right: auto; margin-top: 0px !important; margin-bottom: 0px !important; width: 1000px; }
+      #ahgalleryOTconsortium ul.hover_block0, #ahgalleryOTconsortium ul.hover_block1, #ahgalleryOTconsortium ul.hover_block2 { display: block; overflow: hidden; padding-top: 20px; padding-left: 2px; background: transparent; margin-left: 2px; margin-top: 0 !important; margin-bottom: 0 !important; }
+      #ahgalleryOTconsortium ul.bottom_block { padding-bottom: 20px ; }
+      #ahgalleryOTconsortium ul.hover_block0 li.item, #ahgalleryOTconsortium ul.hover_block1 li.item, #ahgalleryOTconsortium ul.hover_block2 li.item { margin-left: 0; padding-left: 0; list-style:none; list-style-position: inside; float:left; background: transparent; width: 150px; position: relative; }
+      #ahgalleryOTconsortium ul.hover_block0 li a.teaser, #ahgalleryOTconsortium ul.hover_block1 li a.teaser , #ahgalleryOTconsortium ul.hover_block2 li a.teaser{ display: block; position: relative; overflow: hidden; height: 60px; width: 130px; padding: 1px; }
+      #ahgalleryOTconsortium ul.hover_block0 li div.teaser, #ahgalleryOTconsortium ul.hover_block1 li div.teaser , #ahgalleryOTconsortium ul.hover_block2 li div.teaser { display: block; position: relative; overflow: hidden; height: 60px; width: 140px; padding: 1px; }
+      #ahgalleryOTconsortium ul.hover_block0 li img.overlay, #ahgalleryOTconsortium ul.hover_block1 li img.overlay, #ahgalleryOTconsortium ul.hover_block2 li img.overlay { margin: 0; position: absolute; top: 5px; left: 0; border: 0; }
+      </style>
       <script type="text/javascript" src="./images/hide.js"></script>
-      <script type="text/javascript"> 
-         window.addEvent(\'load\', function() { 
-            new JCaption(\'img.caption\'); 
-         }); 
-         window.addEvent(\'domready\', function() { 
-            $$(\'.hasTip\').each(function(el) { 
-               var title = el.get(\'title\'); 
-               if (title) { 
-                  var parts = title.split(\'::\', 2); 
-                  el.store(\'tip:title\', parts[0]); 
-                  el.store(\'tip:text\', parts[1]); 
-            }}); 
-            var JTooltips = new Tips($$(\'.hasTip\'), { maxTitleChars: 50, fixed: false}); 
-         }); 
-      </script> 
-      <link href="./images/tabsVTK.css" rel="stylesheet" type="text/css"/> 
-      <link href="./images/searchVTK.css" rel="stylesheet" type="text/css"/> 
-      <script type="text/javaScript" src="./images/searchVTK.js"></script> 
-      <link href="./images/doxygenVTK.css" rel="stylesheet" type="text/css"/> 
+      <script type="text/javascript">
+         window.addEvent(\'load\', function() {
+            new JCaption(\'img.caption\');
+         });
+         window.addEvent(\'domready\', function() {
+            $$(\'.hasTip\').each(function(el) {
+               var title = el.get(\'title\');
+               if (title) {
+                  var parts = title.split(\'::\', 2);
+                  el.store(\'tip:title\', parts[0]);
+                  el.store(\'tip:text\', parts[1]);
+            }});
+            var JTooltips = new Tips($$(\'.hasTip\'), { maxTitleChars: 50, fixed: false});
+         });
+      </script>
+      <link href="./images/tabsVTK.css" rel="stylesheet" type="text/css"/>
+      <link href="./images/searchVTK.css" rel="stylesheet" type="text/css"/>
+      <script type="text/javaScript" src="./images/searchVTK.js"></script>
+      <link href="./images/doxygenVTK.css" rel="stylesheet" type="text/css"/>
       </HEAD>
    <BODY BGCOLOR="#FFFFFF">""",
       """<div id="all">
@@ -343,7 +343,7 @@ def replaceDOXYGEN(doxydocs):
        <li><a href="http://www.opentelemac.org/index.php/kunena"><span class="image-title">FORUM</span> </a></li>
           <li><a href="http://wiki.opentelemac.org/doku.php"><span class="image-title">WIKI</span> </a></li>
             </ul>
-            </div>    
+            </div>
             </div>
 
       <!-- Generated by Doxygen 1.7.0 -->
@@ -582,8 +582,14 @@ if __name__ == "__main__":
          putFileContent(ofile,olines)
 
    # ~~ Run Doxygen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\nNow running DOXYGEN within ' + cfg['doxydocs'] + '\n'+'~'*72+'\n'
    chdir(cfg['doxydocs'])
-   if sp.call(['doxygen']): sys.exit(1)
+   if not path.exists(cfgs[cfgname]['cmd_doxygen']):
+      print 'Do not know where to find ',cfgs[cfgname]['cmd_doxygen']
+      print ' ... you can correct this through the key cmd_doxygen in your configuration file'
+      sys.exit(1)
+   if sp.call([cfgs[cfgname]['cmd_doxygen']]):
+      sys.exit(1)
 
    # ~~ Scan all HTML files and replace template in phases
    replaceDOXYGEN(path.join(cfgs[cfgname]['doxydocs'],'html'))
