@@ -43,6 +43,10 @@ files: bief_def.f
   bief_init.f
   bief_open_files.f
   bief_close_files.f
+  paraco.f
+  parcom2.f
+  parcom2_seg.f
+  parcom.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -104,6 +108,10 @@ files: declarations_parallel.F
   p_dmax.F
   p_init.F
   p_exit.F
+  p_isum.F
+  p_wait_paraco.F
+  p_iwrit.F
+  p_iread.F
 
 [postel3d]
 path: <root>|sources|postel3d
