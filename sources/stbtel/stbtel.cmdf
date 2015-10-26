@@ -86,9 +86,9 @@ path: <root>|sources|utils|special
 files: declarations_special.f
   plante.F
   get_nodes_per_element.f
+  check_allocate.f
   write_error.f
   check_call.f
-  check_allocate.f
 
 [stbtel]
 path: <root>|sources|stbtel

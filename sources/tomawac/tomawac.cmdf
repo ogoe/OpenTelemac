@@ -167,6 +167,7 @@ files: bief_def.f
   vc13cc.f
   vc04tt.f
   vc01tt0.f
+  vc05aa.f
   vc01aa.f
   paracoi8.f
   parcom2i8.f
@@ -238,6 +239,7 @@ files: bief_def.f
   dlduseg.f
   decldu.f
   dcpldu.f
+  solve_mumps_par.F
   sd_strsg4.f
   sd_fabsg4.f
   pre4_mumps.F
@@ -331,6 +333,7 @@ files: bief_def.f
   build_ikle_ext.f
   ludcmp.f
   lubksb.f
+  longitu.f
   vecle3.f
   vecle6.f
   vecle4.f
@@ -365,11 +368,10 @@ files: bief_def.f
   make_eltcar.f
   stoseg51.f
   latitu.f
-  longitu.f
   comp_fac.f
-  gradp.f
-  voisin31.f
   infcel.f
+  voisin31.f
+  gradp.f
   surv11.f
   survol.f
   geoelt.f
@@ -393,8 +395,6 @@ files: bief_def.f
   read_submit.f
   sortie.f
   bief_close_files.f
-  solve_mumps_par.F
-  vc05aa.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -421,10 +421,11 @@ path: <root>|sources|utils|hermes
 files: interface_hermes.f
   utils_med.F
   utils_serafin.f
-  get_data_ntimestep.f
-  get_data_time.f
   get_data_value.f
   get_data_var_list.f
+  get_data_time.f
+  get_data_ntimestep.f
+  get_data_nvar.f
   get_mesh_nelem.f
   get_mesh_npoin_per_element.f
   get_mesh_nplan.f
@@ -432,7 +433,6 @@ files: interface_hermes.f
   get_mesh_nptir.f
   get_mesh_title.f
   get_bnd_npoin.f
-  get_data_nvar.f
   get_mesh_dimension.f
   get_mesh_npoin.f
   get_bnd_numbering.f
@@ -488,9 +488,9 @@ path: <root>|sources|utils|special
 files: declarations_special.f
   plante.F
   check_allocate.f
+  get_nodes_per_element.f
   write_error.f
   check_call.f
-  get_nodes_per_element.f
   extens.f
 
 [tomawac]
@@ -588,9 +588,9 @@ files: declarations_tomawac.f
   anamar.f
   cormar.f
   sor3d.f
-  anacos.f
-  lecdoi.f
   lecdon.f
+  lecdoi.f
+  anacos.f
   condiw.f
   wac.f
   point_tomawac.f

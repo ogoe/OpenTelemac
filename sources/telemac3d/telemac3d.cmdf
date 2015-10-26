@@ -31,6 +31,10 @@ files: declarations_telemac.f
   allblo_in_block.f
   dimens.f
   cpstvc.f
+  paraco.f
+  parcom2.f
+  parcom2_seg.f
+  parcom.f
   checkmesh.f
   bief_nbsegel.f
   segbor.f
@@ -53,10 +57,6 @@ files: declarations_telemac.f
   os.f
   bief_close_files.f
   streamline.f
-  paraco.f
-  parcom2.f
-  parcom2_seg.f
-  parcom.f
   mult_interface_seg.f
   mv0403.f
   mv0404.f
@@ -187,6 +187,7 @@ files: declarations_telemac.f
   vc13cc.f
   vc04tt.f
   vc01tt0.f
+  vc05aa.f
   vc01aa.f
   paracoi8.f
   parcom2i8.f
@@ -265,6 +266,7 @@ files: declarations_telemac.f
   dlduseg.f
   decldu.f
   dcpldu.f
+  solve_mumps_par.F
   sd_strsg4.f
   sd_fabsg4.f
   pre4_mumps.F
@@ -386,6 +388,7 @@ files: declarations_telemac.f
   build_ikle_ext.f
   ludcmp.f
   lubksb.f
+  longitu.f
   vecle3.f
   vecle6.f
   vecle4.f
@@ -419,11 +422,10 @@ files: declarations_telemac.f
   make_eltcar.f
   stoseg51.f
   latitu.f
-  longitu.f
   comp_fac.f
-  gradp.f
-  voisin31.f
   infcel.f
+  voisin31.f
+  gradp.f
   surv11.f
   survol.f
   geoelt.f
@@ -460,8 +462,6 @@ files: declarations_telemac.f
   masktf.f
   global_to_local_point.f
   gregtim.f
-  solve_mumps_par.F
-  vc05aa.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -524,16 +524,19 @@ path: <root>|sources|utils|parallel
 files: declarations_parallel.F
   p_init.F
   interface_parallel.f
+  p_isum.F
+  p_wait_paraco.F
+  p_iwrit.F
+  p_iread.F
+  p_dmax.F
   p_imax.F
   p_dmin.F
-  p_dmax.F
   p_exit.F
   p_mpi_type_get_extent.F
   p_mpi_type_create_struct.F
   p_mpi_type_commit.F
   org_charac_type1.F
   p_sync.F
-  p_isum.F
   p_mpi_alltoall.F
   p_mpi_alltoallv.F
   oil_org_charac_type.F
@@ -541,9 +544,6 @@ files: declarations_parallel.F
   p_mpi_alltoallv_oil.F
   p_mpi_type_free.F
   org_charac_type_alg.F
-  p_wait_paraco.F
-  p_iwrit.F
-  p_iread.F
   p_dsum.F
   p_ireadi8.F
   p_iwriti8.F
@@ -669,9 +669,9 @@ path: <root>|sources|utils|special
 files: declarations_special.f
   plante.F
   get_nodes_per_element.f
+  check_allocate.f
   write_error.f
   check_call.f
-  check_allocate.f
   extens.f
 
 [telemac2d]
@@ -819,6 +819,7 @@ files: declarations_telemac3d.f
   clsedi.f
   bil3d.f
   soukep.f
+  bed_fluxes.f
   phstat.f
   preres_telemac3d.f
   suised.f
@@ -841,13 +842,12 @@ files: declarations_telemac3d.f
   condis.f
   telemac3d.f
   homere_telemac3d.f
-  bed_fluxes.f
 
 [tomawac]
 path: <root>|sources|tomawac
 files: declarations_tomawac.f
-  interface_tomawac.f
   point_tomawac.f
+  interface_tomawac.f
   nomvar_tomawac.f
   tomawac_constants.f
   lecdon_tomawac.f
@@ -942,8 +942,8 @@ files: declarations_tomawac.f
   anamar.f
   cormar.f
   sor3d.f
-  anacos.f
-  lecdoi.f
   lecdon.f
+  lecdoi.f
+  anacos.f
   condiw.f
   wac.f

@@ -17,6 +17,10 @@ files: bief_def.f
   bief_allvec_in_block.f
   dimens.f
   cpstvc.f
+  paraco.f
+  parcom2.f
+  parcom2_seg.f
+  parcom.f
   checkmesh.f
   bief_nbsegel.f
   ielbor.f
@@ -43,10 +47,6 @@ files: bief_def.f
   bief_init.f
   bief_open_files.f
   bief_close_files.f
-  paraco.f
-  parcom2.f
-  parcom2_seg.f
-  parcom.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -103,20 +103,20 @@ files: interface_hermes.f
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
   interface_parallel.f
-  p_imax.F
-  p_dmin.F
-  p_dmax.F
-  p_init.F
-  p_exit.F
   p_isum.F
   p_wait_paraco.F
   p_iwrit.F
   p_iread.F
+  p_dmax.F
+  p_imax.F
+  p_dmin.F
+  p_init.F
+  p_exit.F
 
 [postel3d]
 path: <root>|sources|postel3d
-files: declarations_postel3d.f
-  interface_postel3d.f
+files: interface_postel3d.f
+  declarations_postel3d.f
   lecdon_postel3d.f
   point_postel3d.f
   exten2.f

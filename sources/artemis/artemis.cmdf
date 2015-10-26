@@ -69,6 +69,10 @@ files: bief_def.f
   bief_allvec_in_block.f
   dimens.f
   cpstvc.f
+  paraco.f
+  parcom2.f
+  parcom2_seg.f
+  parcom.f
   checkmesh.f
   bief_nbsegel.f
   ielbor.f
@@ -102,6 +106,7 @@ files: bief_def.f
   vc13cc.f
   vc04tt.f
   vc01tt0.f
+  vc05aa.f
   vc01aa.f
   paracoi8.f
   parcom2i8.f
@@ -144,10 +149,6 @@ files: bief_def.f
   vc11bb.f
   vc19aa.f
   vc16aa.f
-  paraco.f
-  parcom2.f
-  parcom2_seg.f
-  parcom.f
   vc08bb.f
   vc00aa.f
   vc13pp.f
@@ -298,6 +299,7 @@ files: bief_def.f
   dlduseg.f
   decldu.f
   dcpldu.f
+  solve_mumps_par.F
   sd_strsg4.f
   sd_fabsg4.f
   pre4_mumps.F
@@ -389,6 +391,7 @@ files: bief_def.f
   impvec.f
   bief_desimp.f
   clip.f
+  longitu.f
   vecle3.f
   vecle6.f
   vecle4.f
@@ -423,11 +426,10 @@ files: bief_def.f
   make_eltcar.f
   stoseg51.f
   latitu.f
-  longitu.f
   comp_fac.f
-  gradp.f
-  voisin31.f
   infcel.f
+  voisin31.f
+  gradp.f
   surv11.f
   survol.f
   geoelt.f
@@ -435,8 +437,6 @@ files: bief_def.f
   bief_open_files.f
   time_in_seconds.f
   bief_close_files.f
-  solve_mumps_par.F
-  vc05aa.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -477,14 +477,14 @@ files: interface_hermes.f
   get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
-  get_data_ntimestep.f
-  get_data_time.f
   get_data_value.f
+  get_data_var_list.f
+  get_data_time.f
+  get_data_ntimestep.f
   get_bnd_numbering.f
   get_bnd_value.f
   set_header.f
   set_mesh.f
-  get_data_var_list.f
   add_data.f
   update_data_mesh.f
   open_mesh.f
@@ -496,29 +496,29 @@ files: interface_hermes.f
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
   interface_parallel.f
-  p_imax.F
-  p_dmin.F
-  p_dmax.F
-  p_init.F
+  p_isum.F
   p_wait_paraco.F
-  p_ireadi8.F
-  p_iwriti8.F
   p_iwrit.F
   p_iread.F
+  p_dmax.F
+  p_imax.F
+  p_dmin.F
+  p_init.F
+  p_ireadi8.F
+  p_iwriti8.F
   p_imin.F
   p_dsum.F
   p_ireadi.F
   p_iwriti.F
   p_exit.F
-  p_isum.F
 
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
   plante.F
   get_nodes_per_element.f
+  check_allocate.f
   write_error.f
   check_call.f
-  check_allocate.f
   gracestop.f
   extens.f
